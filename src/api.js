@@ -1,3 +1,5 @@
+import Hangul from "hangul-js";
+
 const VERSION_URL = "https://ddragon.leagueoflegends.com/api/versions.json";
 const CHAMP_LIST_URL = (VERSION, LANG) =>
   `https://ddragon.leagueoflegends.com/cdn/${VERSION}/data/${LANG}/champion.json`;
@@ -32,9 +34,18 @@ export function getVersion() {
 export function getChampionList(version, lang) {
   return fetchData(CHAMP_LIST_URL(version, lang), (res) => res.data).then(
     (data) =>
-      Object.values(data).sort((a, b) => {
-        return a.name < b.name ? -1 : a.name > b.name ? 1 : 0;
-      })
+      Object.values(data)
+        .sort((a, b) => (a.name < b.name ? -1 : a.name > b.name ? 1 : 0))
+        .map((e) => {
+          e["hangul"] =
+            lang === "ko_KR"
+              ? Hangul.d(e.name, true).reduce(
+                  (acc, array) => acc + array[0],
+                  ""
+                )
+              : "";
+          return e;
+        })
   );
 }
 export function getChampionInfo(version, lang, name) {

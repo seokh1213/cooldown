@@ -105,8 +105,9 @@ export default function Input({
     />
   );
   const search = (value) => {
-    return championList.filter((champ) =>
-      champ.name.toLowerCase().includes(value)
+    return championList.filter(
+      (champ) =>
+        champ.name.toLowerCase().includes(value) || champ.hangul.includes(value)
     );
   };
 
