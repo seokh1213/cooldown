@@ -4,14 +4,15 @@ import ChampionThumbnail from "./ChampionThumbnail";
 import { CHAMP_ICON_URL } from "../api";
 
 const FlexDiv = styled.div`
-  margin-top: 30px;
   border-radius: 5px;
   display: flex;
   flex-direction: column;
-  width: 100%;
+  width: min(750px, calc(100% - 20px));
   box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.3);
-  margin-bottom: 15px;
-  position: relative;
+  margin-top: 30px;
+  position: fixed;
+  z-index: 1;
+  left: calc(50% - min(375px, calc(50% - 10px)));
 `;
 const TextInput = styled.input`
   box-sizing: border-box;
@@ -19,10 +20,10 @@ const TextInput = styled.input`
   display: block;
   width: 100%;
   padding: 10px;
-  height: 40px;
+  height: 50px;
   border: 0;
   caret-color: gray;
-  font-size: 1em;
+  font-size: 1.25em;
   ${(props) =>
     props.clicked
       ? "border-bottom-left-radius: 0;border-bottom-right-radius: 0;"
@@ -39,7 +40,7 @@ const ChampionList = styled.div`
   overflow: auto;
   box-sizing: border-box;
   width: 100%;
-  height: 420px;
+  height: 508px;
   background-color: rgba(255, 255, 255, 0.96);
   border-radius: 5px;
   border-top-left-radius: 0;

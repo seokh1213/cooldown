@@ -10,8 +10,8 @@ const FlexDiv = styled.div`
   margin: 10px;
 `;
 const Thumbnail = styled.img`
-  width: 60px;
-  height: 60px;
+  width: 80px;
+  height: 80px;
   border-radius: 50%;
   background-color: black;
   border: 0;
@@ -38,7 +38,7 @@ export default function ChampionThumbnail({
       >
         <Thumbnail selected={selected} src={thumbnailSrc} alt={name} />
       </div>
-      <div style={{ fontSize: "0.8em", whiteSpace: "nowrap" }}>{name}</div>
+      <div style={{ fontSize: "1em", whiteSpace: "nowrap" }}>{name}</div>
     </FlexDiv>
   );
 }

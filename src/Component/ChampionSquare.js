@@ -10,12 +10,12 @@ const FlexDiv = styled.div`
   margin: 10px;
 `;
 const Square = styled.img`
-  width: 60px;
-  height: 60px;
+  width: 90px;
+  height: 90px;
   border-radius: 12px;
   background-color: black;
   border: 0;
-  margin-bottom: 5px;
+  margin-bottom: 8px;
   box-sizing: border-box;
 `;
 
@@ -23,11 +23,7 @@ export default function ChampionSquare({ name, squareSrc }) {
   return (
     <FlexDiv>
       <Square src={squareSrc} alt={name} />
-      <div
-        style={{ fontSize: "0.8em", whiteSpace: "nowrap", color: "#676869" }}
-      >
-        {name}
-      </div>
+      <div style={{ whiteSpace: "nowrap", color: "#676869" }}>{name}</div>
     </FlexDiv>
   );
 }

@@ -5,18 +5,18 @@ const CHAMP_INFO_URL = (VERSION, LANG, NAME) =>
   `https://ddragon.leagueoflegends.com/cdn/${VERSION}/data/${LANG}/champion/${NAME}.json`;
 
 export const SKILL_IMG_URL = (VERSION, NAME) =>
-  `http://ddragon.leagueoflegends.com/cdn/${VERSION}/img/spell/${NAME}.png`;
+  `https://ddragon.leagueoflegends.com/cdn/${VERSION}/img/spell/${NAME}.png`;
 
 export const SPLASH_IMG_URL = (NAME) =>
-  `http://ddragon.leagueoflegends.com/cdn/img/champion/splash/${NAME}.jpg`;
+  `https://ddragon.leagueoflegends.com/cdn/img/champion/splash/${NAME}.jpg`;
 export const LOADING_IMG_URL = (NAME) =>
-  `http://ddragon.leagueoflegends.com/cdn/img/champion/loading/${NAME}.jpg`;
+  `https://ddragon.leagueoflegends.com/cdn/img/champion/loading/${NAME}.jpg`;
 export const CHAMP_ICON_URL = (VERSION, NAME) =>
-  `http://ddragon.leagueoflegends.com/cdn/${VERSION}/img/champion/${NAME}.png`;
+  `https://ddragon.leagueoflegends.com/cdn/${VERSION}/img/champion/${NAME}.png`;
 export const PASSIVE_ICON_URL = (VERSION, NAME) =>
-  `http://ddragon.leagueoflegends.com/cdn/${VERSION}/img/passive/${NAME}`;
+  `https://ddragon.leagueoflegends.com/cdn/${VERSION}/img/passive/${NAME}`;
 export const SKILL_ICON_URL = (VERSION, NAME) =>
-  `http://ddragon.leagueoflegends.com/cdn/${VERSION}/img/spell/${NAME}.png`;
+  `https://ddragon.leagueoflegends.com/cdn/${VERSION}/img/spell/${NAME}.png`;
 
 function fetchData(URL, f) {
   return fetch(URL)

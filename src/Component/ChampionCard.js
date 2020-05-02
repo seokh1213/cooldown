@@ -7,13 +7,13 @@ import ChampionSquare from "./ChampionSquare";
 import SkillTable from "./SkillTable";
 
 const Card = styled.div`
-  margin: 10px;
-  width: calc(100% - 20px);
+  width: 425px;
   background-color: white;
   border: 1px solid #bbb;
   border-radius: 5px;
   display: flex;
   flex-direction: column;
+  box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.1);
 `;
 
 const ChampionLoader = () => (
@@ -44,10 +44,9 @@ export default function ChampionCard({ lang, champion }) {
     let idx = skinIdx + inc;
     idx = idx === championInfo.skins.length ? 0 : idx;
     idx = idx === -1 ? championInfo.skins.length - 1 : idx;
-    console.log("Splash Image : ", idx);
     setSkin(idx);
   };
-  console.log(championInfo);
+
   return (
     <Card>
       {championInfo ? (

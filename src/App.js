@@ -7,11 +7,14 @@ import Body from "./Component/Body";
 const GlobalStyle = createGlobalStyle`
 
   #root{
-    
+    font-family:"Noto Sans KR","Malgun Gothic";
     display: flex;
     width: 100%;
     flex-direction: column;
     align-items:center;
+  }
+  img {
+    box-shadow:3px 3px 5px rgba(0,0,0,0.3);
   }
 `;
 

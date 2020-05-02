@@ -20,7 +20,7 @@ export default ({ style, handler }) => (
         x2="10.103"
         transform="translate(1439.234 325.567) rotate(180)"
         fill="none"
-        stroke="rgba(255,255,255,0.5)"
+        stroke="rgba(255,255,255,0.8)"
         strokeWidth="1"
       />
       <line
@@ -29,7 +29,7 @@ export default ({ style, handler }) => (
         x2="14.915"
         transform="translate(1439.523 315.036) rotate(-135)"
         fill="none"
-        stroke="rgba(255,255,255,0.5)"
+        stroke="rgba(255,255,255,0.8)"
         strokeWidth="1"
       />
     </g>

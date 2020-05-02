@@ -9,38 +9,40 @@ const GridLayout = styled.div`
   place-items: center;
   color: #676869;
   row-gap: 4px;
-  font-size: 0.9em;
+  font-size: 1.15em;
 `;
+
+const PASSIVE_SIZE = 37.5;
+const SKILL_SIZE = 50;
 
 const SkillIcon = function ({ src, rule }) {
   return (
     <div
       style={{
         position: "relative",
-        width: rule ? "30px" : "20px",
-        height: rule ? "30px" : "20px",
+        width: rule ? SKILL_SIZE + "px" : PASSIVE_SIZE + "px",
+        height: rule ? SKILL_SIZE + "px" : PASSIVE_SIZE + "px",
       }}
     >
       <img
-        style={{ width: "100%", height: "100%", borderRadius: "3px" }}
+        style={{ width: "100%", height: "100%", borderRadius: "5px" }}
         src={src}
         alt={rule ? rule : "passive"}
       />
       {rule ? (
         <div
           style={{
-            borderRadius: "3px",
+            borderRadius: "5px",
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
             position: "absolute",
             bottom: "0",
             right: "0",
-            width: rule ? "15px" : "10px",
-            height: rule ? "15px" : "10px",
+            width: SKILL_SIZE / 2 + "px",
+            height: SKILL_SIZE / 2 + "px",
             backgroundColor: "rgba(0,0,0,.7)",
             color: "white",
-            fontSize: "0.6em",
           }}
         >
           {rule}
@@ -55,9 +57,9 @@ const SkillIcon = function ({ src, rule }) {
 const SkillInfo = function ({ lv, cooldown }) {
   return (
     <>
-      <div style={{ fontSize: "0.7em", fontWeight: "400" }}>{lv}lv</div>
+      <div style={{ fontSize: "0.9em", fontWeight: "400" }}>{lv}lv</div>
       {cooldown.map((cool, idx) => (
-        <div style={{ color: "#373839" }} key={idx}>
+        <div style={{ color: "#373839", fontSize: "1.2em" }} key={idx}>
           {cool !== "" ? `${cool}s` : ""}
         </div>
       ))}

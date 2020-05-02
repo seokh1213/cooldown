@@ -5,13 +5,13 @@ import RightArrow from "../resource/RightArrow";
 
 const SplashImg = styled.img`
   width: 100%;
-  height: 166px;
+  min-height: 250px;
   border-radius: 5px;
   border-bottom-left-radius: 0;
   border-bottom-right-radius: 0;
 `;
 const SkinName = styled.div`
-  font-size: 0.6em;
+  font-size: 0.8em;
   color: #676869;
   text-align: right;
   padding: 2px;
@@ -25,8 +25,10 @@ export default function SplashImage({ src, name, changeHandler }) {
       <LeftArrow
         handler={() => changeHandler(-1)}
         style={{
+          width: "20px",
+          height: "40px",
           position: "absolute",
-          top: "70px",
+          top: "105px",
           left: "10px",
           cursor: "pointer",
         }}
@@ -34,8 +36,10 @@ export default function SplashImage({ src, name, changeHandler }) {
       <RightArrow
         handler={() => changeHandler(1)}
         style={{
+          width: "20px",
+          height: "40px",
           position: "absolute",
-          top: "70px",
+          top: "105px",
           right: "10px",
           cursor: "pointer",
         }}

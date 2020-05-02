@@ -2,6 +2,7 @@ import React from "react";
 import styled from "styled-components";
 
 const NavWrapper = styled.div`
+  box-sizing: border-box;
   padding: 10px;
   width: 600px;
   display: flex;
