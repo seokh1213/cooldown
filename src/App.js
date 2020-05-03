@@ -38,6 +38,7 @@ export default class App extends Component {
       championList: null,
       selectedChampions: [],
     };
+
     this.init();
   }
   async init() {
@@ -54,11 +55,16 @@ export default class App extends Component {
           version={this.state.version}
           lang={this.state.lang}
           selectHandler={(lang) => {
-            this.setState({ lang });
+            this.setState({ lang, selectedChampions: [] });
             this.init();
           }}
         />
-        <Body lang={this.state.lang} championList={this.state.championList} />
+        <Body
+          lang={this.state.lang}
+          championList={this.state.championList}
+          selectedChampions={this.state.selectedChampions}
+          setChampions={(list) => this.setState({ selectedChampions: list })}
+        />
       </>
     );
   }

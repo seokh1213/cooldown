@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import styled from "styled-components";
 import Input from "./Input";
 import ChampionCard from "./ChampionCard";
@@ -16,9 +16,12 @@ const ChampionCards = styled.div`
   gap: 15px;
 `;
 
-export default function Body({ championList, lang }) {
-  const [selectedChampions, setChampions] = useState([]);
-
+export default function Body({
+  championList,
+  lang,
+  selectedChampions,
+  setChampions,
+}) {
   return (
     <Content>
       <Input

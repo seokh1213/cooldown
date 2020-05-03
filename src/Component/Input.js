@@ -90,7 +90,7 @@ export default function Input({
   const addChampion = (champion, selected) => {
     setChampions(
       selected
-        ? selectedChampions.filter((c) => c !== champion)
+        ? selectedChampions.filter((c) => c.id !== champion.id)
         : [...selectedChampions, champion]
     );
   };
