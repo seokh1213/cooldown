@@ -1,6 +1,6 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "89277ee5d55eb99f7b53abe0cf9596cd",
+    "revision": "6089d3f5bd195186470696a94950d232",
     "url": "/cooldown/index.html"
   },
   {
@@ -12,8 +12,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/cooldown/static/js/2.41b77c00.chunk.js.LICENSE.txt"
   },
   {
-    "revision": "88e072e7cc42b8a14f4e",
-    "url": "/cooldown/static/js/main.208f0515.chunk.js"
+    "revision": "03243a17f0dc21437c8d",
+    "url": "/cooldown/static/js/main.baf8831b.chunk.js"
   },
   {
     "revision": "6f4e3822a195955820b7",
