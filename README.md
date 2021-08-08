@@ -1,4 +1,4 @@
-# Chagne lol champion skill cool time.
+# Check difference lol champion skill cool time.
 
 #### https://seokh1213.github.io/cooldown/
 
