@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React, {useEffect, useState} from "react";
 import styled from "styled-components";
 import ChampionThumbnail from "./ChampionThumbnail";
-import { CHAMP_ICON_URL } from "../api";
+import {CHAMP_ICON_URL} from "../api";
 
 const FlexDiv = styled.div`
   border-radius: 5px;
@@ -24,11 +24,11 @@ const TextInput = styled.input`
   border: 0;
   caret-color: gray;
   font-size: 1.25em;
-  ${(props) =>
-    props.clicked
-      ? "border-bottom-left-radius: 0;border-bottom-right-radius: 0;"
-      : ""}
 
+  ${(props) =>
+          props.clicked
+                  ? "border-bottom-left-radius: 0;border-bottom-right-radius: 0;"
+                  : ""}
   &:focus {
     outline: none;
   }
@@ -48,17 +48,13 @@ const ChampionList = styled.div`
   border-top: 1px solid #c8cacb;
 `;
 
-export default function Input({
-  championList,
-  selectedChampions,
-  setChampions,
-}) {
+export default function Input({championList, selectedChampions, setChampions}) {
   const [value, setValue] = useState("");
   const [clicked, setClicked] = useState(true);
 
-  document.body.onclick = (e) => {
+  const handlerBlur = (e) => {
     if (
-      !e.path.filter((node) =>
+      !e.composedPath().filter((node) =>
         typeof node.className === "string"
           ? node.className.includes(FlexDiv.styledComponentId)
           : false
@@ -69,20 +65,13 @@ export default function Input({
     }
   };
 
+  useEffect(() => {
+    document.body.onclick = handlerBlur
+  }, []);
+
   const handleClick = () => {
     if (!clicked) {
-      document.body.onclick = (e) => {
-        if (
-          !e.path.filter((node) =>
-            typeof node.className === "string"
-              ? node.className.includes(FlexDiv.styledComponentId)
-              : false
-          )[0]
-        ) {
-          setClicked(false);
-          document.body.onclick = null;
-        }
-      };
+      document.body.onclick = handlerBlur
     }
     setClicked(true);
   };
@@ -128,11 +117,11 @@ export default function Input({
             {value !== ""
               ? search(value).map(listToThumbnail)
               : [
-                  ...selectedChampions,
-                  ...championList.filter(
-                    (champ) => !selectedChampions.includes(champ)
-                  ),
-                ].map(listToThumbnail)}
+                ...selectedChampions,
+                ...championList.filter(
+                  (champ) => !selectedChampions.includes(champ)
+                ),
+              ].map(listToThumbnail)}
           </ChampionList>
         ) : (
           "Sorry not yet loading."
