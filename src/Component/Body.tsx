@@ -1,21 +1,7 @@
 import React from "react";
-import styled from "styled-components";
 import Input from "./Input";
 import ChampionCard from "./ChampionCard";
 import { Champion } from "../types";
-
-const Content = styled.div`
-  width: 1311px;
-  display: flex;
-  margin: 0 auto;
-  flex-direction: column;
-`;
-const ChampionCards = styled.div`
-  margin-top: 110px;
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 15px;
-`;
 
 interface BodyProps {
   championList: Champion[] | null;
@@ -31,18 +17,18 @@ function Body({
   setChampions,
 }: BodyProps) {
   return (
-    <Content>
+    <div className="w-full max-w-[1311px] mx-auto flex flex-col">
       <Input
         selectedChampions={selectedChampions}
         setChampions={setChampions}
         championList={championList}
       />
-      <ChampionCards>
+      <div className="mt-[110px] grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {selectedChampions.map((champion) => (
           <ChampionCard lang={lang} key={champion.id} champion={champion} />
         ))}
-      </ChampionCards>
-    </Content>
+      </div>
+    </div>
   );
 }
 

@@ -1,17 +1,7 @@
 import React, { useMemo, useState, useCallback } from "react";
-import styled from "styled-components";
 import { PASSIVE_ICON_URL, SKILL_ICON_URL } from "../api";
 import { Champion } from "../types";
-
-const GridLayout = styled.div`
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  flex: 1;
-  place-items: center;
-  color: #676869;
-  row-gap: 4px;
-  font-size: 1.15em;
-`;
+import { cn } from "@/lib/utils";
 
 const PASSIVE_SIZE = 37.5;
 const SKILL_SIZE = 50;
@@ -31,34 +21,18 @@ const SkillIcon = React.memo(function SkillIcon({ src, rule }: SkillIconProps) {
   }, []);
 
   return (
-    <div
-      style={{
-        position: "relative",
-        width: `${size}px`,
-        height: `${size}px`,
-      }}
-    >
+    <div className="relative" style={{ width: `${size}px`, height: `${size}px` }}>
       {!isLoaded && (
         <div
-          style={{
-            position: "absolute",
-            top: 0,
-            left: 0,
-            width: `${size}px`,
-            height: `${size}px`,
-            backgroundColor: "#1a1a1a",
-            borderRadius: "5px",
-          }}
+          className="absolute top-0 left-0 bg-muted rounded"
+          style={{ width: `${size}px`, height: `${size}px` }}
         />
       )}
       <img
-        style={{
-          width: "100%",
-          height: "100%",
-          borderRadius: "5px",
-          opacity: isLoaded ? 1 : 0,
-          transition: "opacity 0.2s ease-in-out",
-        }}
+        className={cn(
+          "w-full h-full rounded transition-opacity duration-200",
+          isLoaded ? "opacity-100" : "opacity-0"
+        )}
         src={src}
         alt={rule || "passive"}
         loading="lazy"
@@ -66,18 +40,10 @@ const SkillIcon = React.memo(function SkillIcon({ src, rule }: SkillIconProps) {
       />
       {rule && (
         <div
+          className="absolute bottom-0 right-0 rounded flex items-center justify-center bg-black/70 text-white text-xs"
           style={{
-            borderRadius: "5px",
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            position: "absolute",
-            bottom: "0",
-            right: "0",
             width: `${SKILL_SIZE / 2}px`,
             height: `${SKILL_SIZE / 2}px`,
-            backgroundColor: "rgba(0,0,0,.7)",
-            color: "white",
           }}
         >
           {rule}
@@ -97,9 +63,9 @@ interface SkillInfoProps {
 const SkillInfo = React.memo(function SkillInfo({ lv, cooldown }: SkillInfoProps) {
   return (
     <>
-      <div style={{ fontSize: "0.9em", fontWeight: "400" }}>{lv}lv</div>
+      <div className="text-sm font-normal text-muted-foreground">{lv}lv</div>
       {cooldown.map((cool, idx) => (
-        <div style={{ color: "#373839", fontSize: "1.2em" }} key={idx}>
+        <div className="text-lg text-foreground" key={idx}>
           {cool !== "" ? `${cool}s` : ""}
         </div>
       ))}
@@ -139,7 +105,7 @@ function SkillTable({ championInfo, version }: SkillTableProps) {
   );
 
   return (
-    <GridLayout>
+    <div className="grid grid-cols-5 flex-1 place-items-center text-muted-foreground text-lg gap-y-1">
       <SkillIcon src={passiveIconUrl} />
       {championInfo.spells.map((skill, idx) => (
         <SkillIcon
@@ -149,7 +115,7 @@ function SkillTable({ championInfo, version }: SkillTableProps) {
         />
       ))}
       {skills}
-    </GridLayout>
+    </div>
   );
 }
 

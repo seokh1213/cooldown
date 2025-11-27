@@ -1,22 +1,8 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { getVersion, getChampionList } from "./api";
-import { createGlobalStyle } from "styled-components";
 import Nav from "./Component/Nav";
 import Body from "./Component/Body";
 import { Champion } from "./types";
-
-const GlobalStyle = createGlobalStyle`
-  #root{
-    font-family:"Noto Sans KR","Malgun Gothic";
-    display: flex;
-    width: 100%;
-    flex-direction: column;
-    align-items:center;
-  }
-  img {
-    box-shadow:3px 3px 5px rgba(0,0,0,0.3);
-  }
-`;
 
 /* Todo: Tip list
 
@@ -61,8 +47,7 @@ function App() {
   }, []);
 
   return (
-    <>
-      <GlobalStyle />
+    <div className="min-h-screen bg-background">
       <Nav
         version={version}
         lang={lang}
@@ -74,7 +59,7 @@ function App() {
         selectedChampions={selectedChampions}
         setChampions={handleSetChampions}
       />
-    </>
+    </div>
   );
 }
 

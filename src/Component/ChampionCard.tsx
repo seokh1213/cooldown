@@ -1,42 +1,35 @@
 import React, { useState, useEffect, useCallback, useMemo } from "react";
-import styled from "styled-components";
 import { SPLASH_IMG_URL, CHAMP_ICON_URL, getChampionInfo } from "../api";
-import ContentLoader from "react-content-loader";
 import SplashImage from "./SplashImage";
 import ChampionSquare from "./ChampionSquare";
 import SkillTable from "./SkillTable";
 import { Champion } from "../types";
-
-const Card = styled.div`
-  width: 425px;
-  background-color: white;
-  border: 1px solid #bbb;
-  border-radius: 5px;
-  display: flex;
-  flex-direction: column;
-  box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.1);
-`;
-
-const ChampionLoader = React.memo(() => (
-  <ContentLoader viewBox="0 0 400 350" speed={3}>
-    <rect x="0" y="0" rx="5" ry="5" width="100%" height="180" />
-    <rect x="300" y="190" rx="2" ry="2" width="100" height="15" />
-    <rect x="20" y="220" rx="10" ry="10" width="120" height="120" />
-    <rect x="20" y="220" rx="5" ry="5" width="120" height="120" />
-    <rect x="180" y="220" rx="5" ry="5" width="40" height="40" />
-    <rect x="230" y="220" rx="5" ry="5" width="40" height="40" />
-    <rect x="280" y="220" rx="5" ry="5" width="40" height="40" />
-    <rect x="330" y="220" rx="5" ry="5" width="40" height="40" />
-    <rect x="180" y="280" rx="5" ry="5" width="190" height="60" />
-  </ContentLoader>
-));
-
-ChampionLoader.displayName = "ChampionLoader";
+import { Card } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface ChampionCardProps {
   lang: string;
   champion: Champion;
 }
+
+const ChampionLoader = React.memo(() => (
+  <Card className="w-[425px] flex flex-col p-0">
+    <Skeleton className="w-full h-[180px] rounded-t-md" />
+    <div className="p-4 space-y-4">
+      <Skeleton className="h-4 w-[100px] ml-auto" />
+      <div className="flex gap-4">
+        <Skeleton className="w-[120px] h-[120px] rounded-lg" />
+        <div className="flex-1 grid grid-cols-4 gap-2">
+          {Array.from({ length: 4 }).map((_, i) => (
+            <Skeleton key={i} className="w-full h-[40px] rounded" />
+          ))}
+        </div>
+      </div>
+    </div>
+  </Card>
+));
+
+ChampionLoader.displayName = "ChampionLoader";
 
 function ChampionCard({ lang, champion }: ChampionCardProps) {
   const [championInfo, setChampionInfo] = useState<Champion | null>(null);
@@ -105,15 +98,11 @@ function ChampionCard({ lang, champion }: ChampionCardProps) {
   );
 
   if (!championInfo) {
-    return (
-      <Card>
-        <ChampionLoader />
-      </Card>
-    );
+    return <ChampionLoader />;
   }
 
   return (
-    <Card>
+    <Card className="w-[425px] flex flex-col p-0 shadow-md">
       <SplashImage
         src={splashImageUrl}
         name={skinName}
@@ -121,7 +110,7 @@ function ChampionCard({ lang, champion }: ChampionCardProps) {
         nextSkinSrc={nextSkinUrl}
         prevSkinSrc={prevSkinUrl}
       />
-      <div style={{ display: "flex" }}>
+      <div className="flex p-2">
         <ChampionSquare name={championInfo.name} squareSrc={champIconUrl} />
         <SkillTable
           championInfo={championInfo}

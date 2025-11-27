@@ -1,53 +1,9 @@
 import React, { useEffect, useState, useCallback, useMemo, useRef } from "react";
-import styled from "styled-components";
 import ChampionThumbnail from "./ChampionThumbnail";
 import { CHAMP_ICON_URL } from "../api";
 import { Champion } from "../types";
-
-const FlexDiv = styled.div<{ clicked?: boolean }>`
-  border-radius: 5px;
-  display: flex;
-  flex-direction: column;
-  width: min(750px, calc(100% - 20px));
-  box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.3);
-  margin-top: 30px;
-  position: fixed;
-  z-index: 1;
-  left: calc(50% - min(375px, calc(50% - 10px)));
-`;
-const TextInput = styled.input<{ clicked?: boolean }>`
-  box-sizing: border-box;
-  border-radius: 5px;
-  display: block;
-  width: 100%;
-  padding: 10px;
-  height: 50px;
-  border: 0;
-  caret-color: gray;
-  font-size: 1.25em;
-
-  ${(props) =>
-    props.clicked
-      ? "border-bottom-left-radius: 0;border-bottom-right-radius: 0;"
-      : ""}
-  &:focus {
-    outline: none;
-  }
-`;
-
-const ChampionList = styled.div`
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  overflow: auto;
-  box-sizing: border-box;
-  width: 100%;
-  height: 508px;
-  background-color: rgba(255, 255, 255, 0.96);
-  border-radius: 5px;
-  border-top-left-radius: 0;
-  border-top-right-radius: 0;
-  border-top: 1px solid #c8cacb;
-`;
+import { Input as UIInput } from "@/components/ui/input";
+import { cn } from "@/lib/utils";
 
 interface InputProps {
   championList: Champion[] | null;
@@ -99,7 +55,7 @@ function Input({
 
   const filteredChampions = useMemo(() => {
     if (!championList) return [];
-    
+
     if (value === "") {
       return [
         ...selectedChampions,
@@ -118,18 +74,32 @@ function Input({
   }, [championList, selectedChampions, value]);
 
   return (
-    <FlexDiv ref={containerRef} onClick={handleClick} clicked={clicked}>
-      <TextInput
+    <div
+      ref={containerRef}
+      onClick={handleClick}
+      className={cn(
+        "rounded-md flex flex-col w-full max-w-[750px] shadow-md mt-8 fixed z-10 left-1/2 -translate-x-1/2",
+        "bg-card border border-border"
+      )}
+    >
+      <UIInput
         type="text"
         placeholder="Champion Name"
         autoComplete="off"
         value={value}
         onChange={(e) => setValue(e.target.value)}
-        clicked={clicked}
+        className={cn(
+          "text-xl h-[50px] border-0 rounded-md",
+          clicked && "rounded-b-none"
+        )}
       />
 
       {clicked && (
-        <ChampionList>
+        <div
+          className={cn(
+            "grid grid-cols-5 overflow-auto w-full h-[508px] bg-background/96 rounded-md rounded-t-none border-t border-border p-2"
+          )}
+        >
           {championList ? (
             filteredChampions.map((champion) => (
               <ChampionThumbnail
@@ -142,11 +112,13 @@ function Input({
               />
             ))
           ) : (
-            <div>Sorry not yet loading.</div>
+            <div className="col-span-5 flex items-center justify-center h-full text-muted-foreground">
+              Sorry not yet loading.
+            </div>
           )}
-        </ChampionList>
+        </div>
       )}
-    </FlexDiv>
+    </div>
   );
 }
 

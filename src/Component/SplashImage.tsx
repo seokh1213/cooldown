@@ -1,72 +1,8 @@
 import React, { useCallback, useEffect, useState } from "react";
-import styled from "styled-components";
 import LeftArrow from "../resource/LeftArrow";
 import RightArrow from "../resource/RightArrow";
 import { useImagePreload } from "../hooks/useImagePreload";
-
-const SplashImgContainer = styled.div`
-  position: relative;
-  width: 100%;
-  min-height: 250px;
-  background-color: #1a1a1a;
-  border-radius: 5px;
-  border-bottom-left-radius: 0;
-  border-bottom-right-radius: 0;
-  overflow: hidden;
-`;
-
-const SplashImg = styled.img<{ loaded: boolean }>`
-  width: 100%;
-  min-height: 250px;
-  border-radius: 5px;
-  border-bottom-left-radius: 0;
-  border-bottom-right-radius: 0;
-  opacity: ${(props) => (props.loaded ? 1 : 0)};
-  transition: opacity 0.3s ease-in-out;
-  object-fit: cover;
-`;
-
-const LoadingPlaceholder = styled.div`
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, #1a1a1a 0%, #2a2a2a 50%, #1a1a1a 100%);
-  background-size: 200% 100%;
-  animation: loading 1.5s ease-in-out infinite;
-  
-  @keyframes loading {
-    0% {
-      background-position: 200% 0;
-    }
-    100% {
-      background-position: -200% 0;
-    }
-  }
-`;
-
-const SkinName = styled.div`
-  font-size: 0.8em;
-  color: #676869;
-  text-align: right;
-  padding: 2px;
-  text-transform: capitalize;
-  position: absolute;
-  bottom: 0;
-  right: 0;
-  left: 0;
-  background: linear-gradient(to top, rgba(0, 0, 0, 0.7), transparent);
-`;
-
-const arrowStyle: React.CSSProperties = {
-  width: "20px",
-  height: "40px",
-  position: "absolute",
-  top: "105px",
-  cursor: "pointer",
-  zIndex: 1,
-};
+import { cn } from "@/lib/utils";
 
 interface SplashImageProps {
   src: string;
@@ -107,27 +43,47 @@ function SplashImage({ src, name, changeHandler, nextSkinSrc, prevSkinSrc }: Spl
   }, [changeHandler]);
 
   return (
-    <SplashImgContainer>
-      {!isLoaded && !hasError && <LoadingPlaceholder />}
-      <SplashImg
+    <div className="relative w-full min-h-[250px] bg-muted rounded-md rounded-b-none overflow-hidden">
+      {!isLoaded && !hasError && (
+        <div className="absolute inset-0 bg-gradient-to-r from-muted via-muted/80 to-muted bg-[length:200%_100%] animate-[loading_1.5s_ease-in-out_infinite]" />
+      )}
+      <img
+        className={cn(
+          "w-full min-h-[250px] rounded-md rounded-b-none object-cover transition-opacity duration-300",
+          isLoaded ? "opacity-100" : "opacity-0"
+        )}
         src={src}
         alt={name}
-        loaded={isLoaded}
         loading="eager"
-        onLoad={() => {
-          // 이미지 로드 완료 확인
-        }}
       />
-      <SkinName>{name}</SkinName>
+      <div className="absolute bottom-0 left-0 right-0 text-xs text-muted-foreground text-right p-0.5 capitalize bg-gradient-to-t from-black/70 to-transparent">
+        {name}
+      </div>
       <LeftArrow
         handler={handlePrevious}
-        style={{ ...arrowStyle, left: "10px" }}
+        style={{
+          width: "20px",
+          height: "40px",
+          position: "absolute",
+          top: "105px",
+          left: "10px",
+          cursor: "pointer",
+          zIndex: 1,
+        }}
       />
       <RightArrow
         handler={handleNext}
-        style={{ ...arrowStyle, right: "10px" }}
+        style={{
+          width: "20px",
+          height: "40px",
+          position: "absolute",
+          top: "105px",
+          right: "10px",
+          cursor: "pointer",
+          zIndex: 1,
+        }}
       />
-    </SplashImgContainer>
+    </div>
   );
 }
 

@@ -1,29 +1,6 @@
 import React, { useCallback } from "react";
-import styled from "styled-components";
-
-const NavWrapper = styled.div`
-  box-sizing: border-box;
-  padding: 10px;
-  width: 600px;
-  display: flex;
-  align-items: baseline;
-  margin: 0 auto;
-`;
-export const HorizontalLine = styled.div<{ backgroundColor?: string }>`
-  width: 100%;
-  height: 1px;
-  background-color: ${(props) =>
-    props.backgroundColor ? props.backgroundColor : "black"};
-`;
-
-const SelectItem = styled.select`
-  border: 0;
-  background-color: #f8f9fa;
-  &:active,
-  &:focus {
-    outline: 0;
-  }
-`;
+import { Select } from "@/components/ui/select";
+import { cn } from "@/lib/utils";
 
 interface NavProps {
   version?: string;
@@ -41,16 +18,20 @@ function Nav({ version = "10.8.1", lang, selectHandler }: NavProps) {
 
   return (
     <>
-      <NavWrapper>
-        <div>Cooldown</div>
-        <div style={{ flex: "1" }} />
-        <div style={{ fontSize: "0.6em" }}>v{version}</div>
-        <SelectItem defaultValue={lang} onChange={handleChange}>
+      <nav className="box-border w-full max-w-[600px] mx-auto px-2.5 py-2.5 flex items-baseline">
+        <div className="text-lg font-semibold">Cooldown</div>
+        <div className="flex-1" />
+        <div className="text-xs text-muted-foreground">v{version}</div>
+        <Select
+          defaultValue={lang}
+          onChange={handleChange}
+          className="ml-2 border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0"
+        >
           <option value="ko_KR">한국어</option>
           <option value="en_US">Eng</option>
-        </SelectItem>
-      </NavWrapper>
-      <HorizontalLine />
+        </Select>
+      </nav>
+      <div className="w-full h-px bg-border" />
     </>
   );
 }

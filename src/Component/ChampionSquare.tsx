@@ -1,47 +1,5 @@
 import React, { useState, useCallback } from "react";
-import styled from "styled-components";
-
-const FlexDiv = styled.div`
-  display: flex;
-  height: fit-content;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  margin: 10px;
-`;
-
-const SquareContainer = styled.div`
-  position: relative;
-  width: 90px;
-  height: 90px;
-`;
-
-const Square = styled.img<{ loaded: boolean }>`
-  width: 90px;
-  height: 90px;
-  border-radius: 12px;
-  background-color: black;
-  border: 0;
-  margin-bottom: 8px;
-  box-sizing: border-box;
-  opacity: ${(props) => (props.loaded ? 1 : 0)};
-  transition: opacity 0.2s ease-in-out;
-`;
-
-const Placeholder = styled.div`
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 90px;
-  height: 90px;
-  border-radius: 12px;
-  background-color: #1a1a1a;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #666;
-  font-size: 0.7em;
-`;
+import { cn } from "@/lib/utils";
 
 interface ChampionSquareProps {
   name: string;
@@ -56,19 +14,26 @@ function ChampionSquare({ name, squareSrc }: ChampionSquareProps) {
   }, []);
 
   return (
-    <FlexDiv>
-      <SquareContainer>
-        {!isLoaded && <Placeholder>...</Placeholder>}
-        <Square
+    <div className="flex flex-col items-center justify-center m-2.5 h-fit">
+      <div className="relative w-[90px] h-[90px]">
+        {!isLoaded && (
+          <div className="absolute top-0 left-0 w-[90px] h-[90px] rounded-xl bg-muted flex items-center justify-center text-muted-foreground text-xs">
+            ...
+          </div>
+        )}
+        <img
+          className={cn(
+            "w-[90px] h-[90px] rounded-xl bg-black border-0 mb-2 box-border transition-opacity duration-200",
+            isLoaded ? "opacity-100" : "opacity-0"
+          )}
           src={squareSrc}
           alt={name}
-          loaded={isLoaded}
           loading="lazy"
           onLoad={handleLoad}
         />
-      </SquareContainer>
-      <div style={{ whiteSpace: "nowrap", color: "#676869" }}>{name}</div>
-    </FlexDiv>
+      </div>
+      <div className="whitespace-nowrap text-muted-foreground">{name}</div>
+    </div>
   );
 }
 
