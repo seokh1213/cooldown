@@ -27,42 +27,65 @@ interface ChampionData {
   };
 }
 
-function fetchData<T>(URL: string, f: (res: any) => T): Promise<T> {
+interface VersionResponse extends Array<string> {}
+
+function fetchData<T>(URL: string, transform: (res: unknown) => T): Promise<T> {
   return fetch(URL)
-    .then((res) => res.json())
-    .then((res) => f(res))
+    .then((res) => {
+      if (!res.ok) {
+        throw new Error(`HTTP error! status: ${res.status}`);
+      }
+      return res.json();
+    })
+    .then((res) => transform(res))
     .catch((err) => {
-      console.log(err);
+      console.error("API request failed:", err);
       throw err;
     });
 }
 
 export function getVersion(): Promise<string> {
-  return fetchData<string[]>(VERSION_URL, (res) => res[0]);
+  return fetchData<VersionResponse>(VERSION_URL, (res) => {
+    if (Array.isArray(res) && res.length > 0 && typeof res[0] === "string") {
+      return res[0];
+    }
+    throw new Error("Invalid version response format");
+  });
 }
 
 export function getChampionList(version: string, lang: string): Promise<Champion[]> {
-  return fetchData<ChampionData>(CHAMP_LIST_URL(version, lang), (res) => res.data).then(
-    (data) =>
-      Object.values(data)
-        .sort((a, b) => (a.name < b.name ? -1 : a.name > b.name ? 1 : 0))
-        .map((e) => {
-          e["hangul"] =
+  return fetchData<ChampionData>(CHAMP_LIST_URL(version, lang), (res) => {
+    if (res && typeof res === "object" && "data" in res) {
+      return res.data;
+    }
+    throw new Error("Invalid champion list response format");
+  }).then((data) =>
+    Object.values(data)
+      .sort((a, b) => (a.name < b.name ? -1 : a.name > b.name ? 1 : 0))
+      .map((e) => {
+        const champion: Champion = {
+          ...e,
+          hangul:
             lang === "ko_KR"
               ? Hangul.d(e.name, true).reduce(
                   (acc: string, array: string[]) => acc + array[0],
                   ""
                 )
-              : "";
-          return e;
-        })
+              : "",
+        };
+        return champion;
+      })
   );
 }
 
 export function getChampionInfo(version: string, lang: string, name: string): Promise<Champion> {
   return fetchData<ChampionData>(
     CHAMP_INFO_URL(version, lang, name),
-    (res) => res.data[name]
+    (res) => {
+      if (res && typeof res === "object" && "data" in res && name in res.data) {
+        return res.data[name];
+      }
+      throw new Error(`Champion ${name} not found`);
+    }
   );
 }
-

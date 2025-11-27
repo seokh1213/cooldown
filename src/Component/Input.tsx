@@ -20,27 +20,29 @@ function Input({
   const [clicked, setClicked] = useState(true);
   const containerRef = useRef<HTMLDivElement>(null);
 
-  const handlerBlur = useCallback((e: MouseEvent) => {
-    const target = e.target as HTMLElement;
-    if (containerRef.current && !containerRef.current.contains(target)) {
-      setClicked(false);
-      document.body.onclick = null;
-    }
-  }, []);
+  const handlerBlur = useCallback(
+    (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      if (containerRef.current && !containerRef.current.contains(target)) {
+        setClicked(false);
+      }
+    },
+    []
+  );
 
   useEffect(() => {
-    document.body.onclick = handlerBlur as any;
-    return () => {
-      document.body.onclick = null;
-    };
-  }, [handlerBlur]);
+    if (clicked) {
+      // addEventListener를 사용하여 이벤트 리스너 등록
+      document.addEventListener("mousedown", handlerBlur);
+      return () => {
+        document.removeEventListener("mousedown", handlerBlur);
+      };
+    }
+  }, [clicked, handlerBlur]);
 
   const handleClick = useCallback(() => {
-    if (!clicked) {
-      document.body.onclick = handlerBlur as any;
-    }
     setClicked(true);
-  }, [clicked, handlerBlur]);
+  }, []);
 
   const addChampion = useCallback(
     (champion: Champion, selected: boolean) => {
