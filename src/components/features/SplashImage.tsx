@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from "react";
-import LeftArrow from "../resource/LeftArrow";
-import RightArrow from "../resource/RightArrow";
-import { useImagePreload } from "../hooks/useImagePreload";
+import LeftArrow from "@/components/icons/LeftArrow";
+import RightArrow from "@/components/icons/RightArrow";
+import { useImagePreload } from "@/hooks/useImagePreload";
 import { cn } from "@/lib/utils";
 
 interface SplashImageProps {

@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useCallback, useMemo, useRef } from "react";
 import ChampionThumbnail from "./ChampionThumbnail";
-import { CHAMP_ICON_URL } from "../api";
-import { Champion } from "../types";
+import { CHAMP_ICON_URL } from "@/services/api";
+import { Champion } from "@/types";
 import { Input as UIInput } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 

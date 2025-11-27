@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useCallback, useMemo } from "react";
-import { SPLASH_IMG_URL, CHAMP_ICON_URL, getChampionInfo } from "../api";
+import { SPLASH_IMG_URL, CHAMP_ICON_URL, getChampionInfo } from "@/services/api";
 import SplashImage from "./SplashImage";
 import ChampionSquare from "./ChampionSquare";
 import SkillTable from "./SkillTable";
-import { Champion } from "../types";
+import { Champion } from "@/types";
 import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 

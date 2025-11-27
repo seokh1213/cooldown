@@ -1,7 +1,7 @@
 import React from "react";
 import Input from "./Input";
 import ChampionCard from "./ChampionCard";
-import { Champion } from "../types";
+import { Champion } from "@/types";
 
 interface BodyProps {
   championList: Champion[] | null;

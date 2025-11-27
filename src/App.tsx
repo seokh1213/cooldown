@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { getVersion, getChampionList } from "./api";
-import Nav from "./Component/Nav";
-import Body from "./Component/Body";
-import { Champion } from "./types";
+import { getVersion, getChampionList } from "@/services/api";
+import Nav from "@/components/features/Nav";
+import Body from "@/components/features/Body";
+import { Champion } from "@/types";
 
 /* Todo: Tip list
 

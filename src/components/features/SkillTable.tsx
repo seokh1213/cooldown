@@ -1,6 +1,6 @@
 import React, { useMemo, useState, useCallback } from "react";
-import { PASSIVE_ICON_URL, SKILL_ICON_URL } from "../api";
-import { Champion } from "../types";
+import { PASSIVE_ICON_URL, SKILL_ICON_URL } from "@/services/api";
+import { Champion } from "@/types";
 import { cn } from "@/lib/utils";
 
 const PASSIVE_SIZE = 37.5;

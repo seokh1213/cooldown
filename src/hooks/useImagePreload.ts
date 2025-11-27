@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { preloadImage } from "../utils/imageUtils";
+import { preloadImage } from "@/lib/imageUtils";
 
 /**
  * 이미지 preload를 관리하는 hook

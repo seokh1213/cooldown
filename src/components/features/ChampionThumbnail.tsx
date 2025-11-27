@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from "react";
-import { Champion } from "../types";
+import { Champion } from "@/types";
 import { cn } from "@/lib/utils";
 
 interface ChampionThumbnailProps {
