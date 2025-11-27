@@ -1,5 +1,11 @@
 import React from "react";
-export default ({ style, handler }) => (
+
+interface LeftArrowProps {
+  style?: React.CSSProperties;
+  handler: () => void;
+}
+
+export default ({ style, handler }: LeftArrowProps) => (
   <svg
     onClick={handler}
     style={style}
@@ -35,3 +41,5 @@ export default ({ style, handler }) => (
     </g>
   </svg>
 );
+
+

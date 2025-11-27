@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import { PASSIVE_ICON_URL, SKILL_ICON_URL } from "../api";
+import { Champion } from "../types";
 
 const GridLayout = styled.div`
   display: grid;
@@ -15,7 +16,12 @@ const GridLayout = styled.div`
 const PASSIVE_SIZE = 37.5;
 const SKILL_SIZE = 50;
 
-const SkillIcon = function ({ src, rule }) {
+interface SkillIconProps {
+  src: string;
+  rule?: string;
+}
+
+const SkillIcon = function ({ src, rule }: SkillIconProps) {
   return (
     <div
       style={{
@@ -54,7 +60,12 @@ const SkillIcon = function ({ src, rule }) {
   );
 };
 
-const SkillInfo = function ({ lv, cooldown }) {
+interface SkillInfoProps {
+  lv: number;
+  cooldown: (number | string)[];
+}
+
+const SkillInfo = function ({ lv, cooldown }: SkillInfoProps) {
   return (
     <>
       <div style={{ fontSize: "0.9em", fontWeight: "400" }}>{lv}lv</div>
@@ -67,14 +78,21 @@ const SkillInfo = function ({ lv, cooldown }) {
   );
 };
 
-export default function SkillTable({ championInfo, version }) {
+interface SkillTableProps {
+  championInfo: Champion;
+  version: string;
+}
+
+export default function SkillTable({ championInfo, version }: SkillTableProps) {
+  if (!championInfo.spells) return null;
+  
   const maxLv = championInfo.spells.reduce(
     (acc, v) => (acc > v.maxrank ? acc : v.maxrank),
     0
   );
-  let skills = [];
+  const skills = [];
   for (let i = 0; i < maxLv; i++) {
-    let cooldown = championInfo.spells.map((skill) =>
+    const cooldown = championInfo.spells.map((skill) =>
       skill.cooldown[i] !== undefined ? skill.cooldown[i] : ""
     );
     skills.push(<SkillInfo key={i} lv={i + 1} cooldown={cooldown} />);
@@ -82,7 +100,7 @@ export default function SkillTable({ championInfo, version }) {
   return (
     <GridLayout>
       <SkillIcon
-        src={PASSIVE_ICON_URL(version, championInfo.passive.image.full)}
+        src={PASSIVE_ICON_URL(version, championInfo.passive?.image?.full || "")}
       />
       {championInfo.spells.map((skill, idx) => (
         <SkillIcon
@@ -95,3 +113,5 @@ export default function SkillTable({ championInfo, version }) {
     </GridLayout>
   );
 }
+
+

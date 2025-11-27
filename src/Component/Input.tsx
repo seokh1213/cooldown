@@ -1,9 +1,10 @@
-import React, {useEffect, useState} from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import ChampionThumbnail from "./ChampionThumbnail";
-import {CHAMP_ICON_URL} from "../api";
+import { CHAMP_ICON_URL } from "../api";
+import { Champion } from "../types";
 
-const FlexDiv = styled.div`
+const FlexDiv = styled.div<{ clicked?: boolean }>`
   border-radius: 5px;
   display: flex;
   flex-direction: column;
@@ -14,7 +15,7 @@ const FlexDiv = styled.div`
   z-index: 1;
   left: calc(50% - min(375px, calc(50% - 10px)));
 `;
-const TextInput = styled.input`
+const TextInput = styled.input<{ clicked?: boolean }>`
   box-sizing: border-box;
   border-radius: 5px;
   display: block;
@@ -26,9 +27,9 @@ const TextInput = styled.input`
   font-size: 1.25em;
 
   ${(props) =>
-          props.clicked
-                  ? "border-bottom-left-radius: 0;border-bottom-right-radius: 0;"
-                  : ""}
+    props.clicked
+      ? "border-bottom-left-radius: 0;border-bottom-right-radius: 0;"
+      : ""}
   &:focus {
     outline: none;
   }
@@ -48,60 +49,68 @@ const ChampionList = styled.div`
   border-top: 1px solid #c8cacb;
 `;
 
-export default function Input({championList, selectedChampions, setChampions}) {
+interface InputProps {
+  championList: Champion[] | null;
+  selectedChampions: Champion[];
+  setChampions: (champions: Champion[]) => void;
+}
+
+export default function Input({
+  championList,
+  selectedChampions,
+  setChampions,
+}: InputProps) {
   const [value, setValue] = useState("");
   const [clicked, setClicked] = useState(true);
 
-  const handlerBlur = (e) => {
-    if (
-      !e.composedPath().filter((node) =>
-        typeof node.className === "string"
-          ? node.className.includes(FlexDiv.styledComponentId)
-          : false
-      )[0]
-    ) {
+  const handlerBlur = (e: MouseEvent) => {
+    const target = e.target as HTMLElement;
+    const flexDiv = target.closest(`[class*="${FlexDiv.styledComponentId}"]`);
+    if (!flexDiv) {
       setClicked(false);
       document.body.onclick = null;
     }
   };
 
   useEffect(() => {
-    document.body.onclick = handlerBlur
+    document.body.onclick = handlerBlur as any;
   }, []);
 
   const handleClick = () => {
     if (!clicked) {
-      document.body.onclick = handlerBlur
+      document.body.onclick = handlerBlur as any;
     }
     setClicked(true);
   };
 
-  const addChampion = (champion, selected) => {
+  const addChampion = (champion: Champion, selected: boolean) => {
     setChampions(
       selected
         ? selectedChampions.filter((c) => c.id !== champion.id)
         : [...selectedChampions, champion]
     );
   };
-  const listToThumbnail = (data, idx) => (
+  const listToThumbnail = (data: Champion, idx: number) => (
     <ChampionThumbnail
       addChampion={addChampion}
       data={data}
       key={idx}
       name={data.name}
       selected={selectedChampions.includes(data)}
-      thumbnailSrc={CHAMP_ICON_URL(data.version, data.id)}
+      thumbnailSrc={CHAMP_ICON_URL(data.version || "", data.id)}
     />
   );
-  const search = (value) => {
+  const search = (value: string) => {
+    if (!championList) return [];
     return championList.filter(
       (champ) =>
-        champ.name.toLowerCase().includes(value) || champ.hangul.includes(value)
+        champ.name.toLowerCase().includes(value) ||
+        (champ.hangul && champ.hangul.includes(value))
     );
   };
 
   return (
-    <FlexDiv onClick={handleClick}>
+    <FlexDiv onClick={handleClick} clicked={clicked}>
       <TextInput
         type="text"
         placeholder="Champion Name"
@@ -117,11 +126,11 @@ export default function Input({championList, selectedChampions, setChampions}) {
             {value !== ""
               ? search(value).map(listToThumbnail)
               : [
-                ...selectedChampions,
-                ...championList.filter(
-                  (champ) => !selectedChampions.includes(champ)
-                ),
-              ].map(listToThumbnail)}
+                  ...selectedChampions,
+                  ...championList.filter(
+                    (champ) => !selectedChampions.includes(champ)
+                  ),
+                ].map(listToThumbnail)}
           </ChampionList>
         ) : (
           "Sorry not yet loading."
@@ -132,3 +141,4 @@ export default function Input({championList, selectedChampions, setChampions}) {
     </FlexDiv>
   );
 }
+

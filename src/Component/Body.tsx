@@ -2,6 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import Input from "./Input";
 import ChampionCard from "./ChampionCard";
+import { Champion } from "../types";
 
 const Content = styled.div`
   width: 1311px;
@@ -16,12 +17,19 @@ const ChampionCards = styled.div`
   gap: 15px;
 `;
 
+interface BodyProps {
+  championList: Champion[] | null;
+  lang: string;
+  selectedChampions: Champion[];
+  setChampions: (list: Champion[]) => void;
+}
+
 export default function Body({
   championList,
   lang,
   selectedChampions,
   setChampions,
-}) {
+}: BodyProps) {
   return (
     <Content>
       <Input
@@ -37,3 +45,5 @@ export default function Body({
     </Content>
   );
 }
+
+

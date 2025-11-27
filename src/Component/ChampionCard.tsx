@@ -5,6 +5,7 @@ import ContentLoader from "react-content-loader";
 import SplashImage from "./SplashImage";
 import ChampionSquare from "./ChampionSquare";
 import SkillTable from "./SkillTable";
+import { Champion } from "../types";
 
 const Card = styled.div`
   width: 425px;
@@ -30,17 +31,23 @@ const ChampionLoader = () => (
   </ContentLoader>
 );
 
-export default function ChampionCard({ lang, champion }) {
-  const [championInfo, setChampionInfo] = useState(null);
+interface ChampionCardProps {
+  lang: string;
+  champion: Champion;
+}
+
+export default function ChampionCard({ lang, champion }: ChampionCardProps) {
+  const [championInfo, setChampionInfo] = useState<Champion | null>(null);
   const [skinIdx, setSkin] = useState(1);
 
   useEffect(() => {
-    getChampionInfo(champion.version, lang, champion.id).then((data) =>
+    getChampionInfo(champion.version || "", lang, champion.id).then((data) =>
       setChampionInfo(data)
     );
   }, [champion.version, lang, champion.id]);
 
-  const changeHandler = (inc) => {
+  const changeHandler = (inc: number) => {
+    if (!championInfo || !championInfo.skins) return;
     let idx = skinIdx + inc;
     idx = idx === championInfo.skins.length ? 0 : idx;
     idx = idx === -1 ? championInfo.skins.length - 1 : idx;
@@ -53,10 +60,10 @@ export default function ChampionCard({ lang, champion }) {
         <>
           <SplashImage
             src={SPLASH_IMG_URL(
-              `${championInfo.id}_${championInfo.skins[skinIdx].num}`
+              `${championInfo.id}_${championInfo.skins?.[skinIdx]?.num || 0}`
             )}
             name={
-              championInfo.skins[skinIdx].name === "default"
+              championInfo.skins?.[skinIdx]?.name === "default"
                 ? championInfo.name
                 : championInfo.skins[skinIdx].name
             }
@@ -65,11 +72,11 @@ export default function ChampionCard({ lang, champion }) {
           <div style={{ display: "flex" }}>
             <ChampionSquare
               name={championInfo.name}
-              squareSrc={CHAMP_ICON_URL(champion.version, champion.id)}
+              squareSrc={CHAMP_ICON_URL(champion.version || "", champion.id)}
             />
             <SkillTable
               championInfo={championInfo}
-              version={champion.version}
+              version={champion.version || ""}
             />
           </div>
         </>
@@ -79,3 +86,5 @@ export default function ChampionCard({ lang, champion }) {
     </Card>
   );
 }
+
+

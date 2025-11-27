@@ -19,7 +19,12 @@ const Square = styled.img`
   box-sizing: border-box;
 `;
 
-export default function ChampionSquare({ name, squareSrc }) {
+interface ChampionSquareProps {
+  name: string;
+  squareSrc: string;
+}
+
+export default function ChampionSquare({ name, squareSrc }: ChampionSquareProps) {
   return (
     <FlexDiv>
       <Square src={squareSrc} alt={name} />
@@ -27,3 +32,5 @@ export default function ChampionSquare({ name, squareSrc }) {
     </FlexDiv>
   );
 }
+
+

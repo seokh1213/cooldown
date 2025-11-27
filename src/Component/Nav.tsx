@@ -9,7 +9,7 @@ const NavWrapper = styled.div`
   align-items: baseline;
   margin: 0 auto;
 `;
-export const HorizontalLine = styled.div`
+export const HorizontalLine = styled.div<{ backgroundColor?: string }>`
   width: 100%;
   height: 1px;
   background-color: ${(props) =>
@@ -25,7 +25,13 @@ const SelectItem = styled.select`
   }
 `;
 
-export default function Nav({ version = "10.8.1", lang, selectHandler }) {
+interface NavProps {
+  version?: string;
+  lang: string;
+  selectHandler: (lang: string) => void;
+}
+
+export default function Nav({ version = "10.8.1", lang, selectHandler }: NavProps) {
   return (
     <>
       <NavWrapper>
@@ -44,3 +50,5 @@ export default function Nav({ version = "10.8.1", lang, selectHandler }) {
     </>
   );
 }
+
+

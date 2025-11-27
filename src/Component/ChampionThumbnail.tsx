@@ -1,5 +1,6 @@
 import React from "react";
 import styled from "styled-components";
+import { Champion } from "../types";
 
 const FlexDiv = styled.div`
   display: flex;
@@ -9,7 +10,7 @@ const FlexDiv = styled.div`
   align-items: center;
   margin: 10px;
 `;
-const Thumbnail = styled.img`
+const Thumbnail = styled.img<{ selected?: boolean }>`
   width: 80px;
   height: 80px;
   border-radius: 50%;
@@ -23,13 +24,21 @@ const Thumbnail = styled.img`
   ${(props) => (props.selected ? "border:4px solid #2ecc71" : "")}
 `;
 
+interface ChampionThumbnailProps {
+  addChampion: (champion: Champion, selected: boolean) => void;
+  data: Champion;
+  name: string;
+  thumbnailSrc: string;
+  selected: boolean;
+}
+
 export default function ChampionThumbnail({
   addChampion,
   data,
   name,
   thumbnailSrc,
   selected,
-}) {
+}: ChampionThumbnailProps) {
   return (
     <FlexDiv>
       <div
@@ -42,3 +51,5 @@ export default function ChampionThumbnail({
     </FlexDiv>
   );
 }
+
+

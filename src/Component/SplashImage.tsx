@@ -17,7 +17,14 @@ const SkinName = styled.div`
   padding: 2px;
   text-transform: capitalize;
 `;
-export default function SplashImage({ src, name, changeHandler }) {
+
+interface SplashImageProps {
+  src: string;
+  name: string;
+  changeHandler: (inc: number) => void;
+}
+
+export default function SplashImage({ src, name, changeHandler }: SplashImageProps) {
   return (
     <div style={{ position: "relative", marginBottom: "5px" }}>
       <SplashImg src={src} alt={name} />
@@ -47,3 +54,5 @@ export default function SplashImage({ src, name, changeHandler }) {
     </div>
   );
 }
+
+

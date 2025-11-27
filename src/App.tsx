@@ -3,6 +3,7 @@ import { getVersion, getChampionList } from "./api";
 import { createGlobalStyle } from "styled-components";
 import Nav from "./Component/Nav";
 import Body from "./Component/Body";
+import { Champion } from "./types";
 
 const GlobalStyle = createGlobalStyle`
 
@@ -18,6 +19,13 @@ const GlobalStyle = createGlobalStyle`
   }
 `;
 
+interface AppState {
+  lang: string;
+  version: string;
+  championList: Champion[] | null;
+  selectedChampions: Champion[];
+}
+
 /* Todo: Tip list
 
   Duration
@@ -29,9 +37,9 @@ const GlobalStyle = createGlobalStyle`
   
    Spell time, Ward time
 */
-export default class App extends Component {
-  constructor() {
-    super();
+export default class App extends Component<{}, AppState> {
+  constructor(props: {}) {
+    super(props);
     this.state = {
       lang: "ko_KR",
       version: "10.8.1",
@@ -69,3 +77,5 @@ export default class App extends Component {
     );
   }
 }
+
+
