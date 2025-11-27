@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback, useMemo, useRef } from "react";
 import styled from "styled-components";
 import ChampionThumbnail from "./ChampionThumbnail";
 import { CHAMP_ICON_URL } from "../api";
@@ -55,62 +55,70 @@ interface InputProps {
   setChampions: (champions: Champion[]) => void;
 }
 
-export default function Input({
+function Input({
   championList,
   selectedChampions,
   setChampions,
 }: InputProps) {
   const [value, setValue] = useState("");
   const [clicked, setClicked] = useState(true);
+  const containerRef = useRef<HTMLDivElement>(null);
 
-  const handlerBlur = (e: MouseEvent) => {
+  const handlerBlur = useCallback((e: MouseEvent) => {
     const target = e.target as HTMLElement;
-    const flexDiv = target.closest(`[class*="${FlexDiv.styledComponentId}"]`);
-    if (!flexDiv) {
+    if (containerRef.current && !containerRef.current.contains(target)) {
       setClicked(false);
       document.body.onclick = null;
     }
-  };
+  }, []);
 
   useEffect(() => {
     document.body.onclick = handlerBlur as any;
-  }, []);
+    return () => {
+      document.body.onclick = null;
+    };
+  }, [handlerBlur]);
 
-  const handleClick = () => {
+  const handleClick = useCallback(() => {
     if (!clicked) {
       document.body.onclick = handlerBlur as any;
     }
     setClicked(true);
-  };
+  }, [clicked, handlerBlur]);
 
-  const addChampion = (champion: Champion, selected: boolean) => {
-    setChampions(
-      selected
-        ? selectedChampions.filter((c) => c.id !== champion.id)
-        : [...selectedChampions, champion]
-    );
-  };
-  const listToThumbnail = (data: Champion, idx: number) => (
-    <ChampionThumbnail
-      addChampion={addChampion}
-      data={data}
-      key={idx}
-      name={data.name}
-      selected={selectedChampions.includes(data)}
-      thumbnailSrc={CHAMP_ICON_URL(data.version || "", data.id)}
-    />
+  const addChampion = useCallback(
+    (champion: Champion, selected: boolean) => {
+      setChampions(
+        selected
+          ? selectedChampions.filter((c) => c.id !== champion.id)
+          : [...selectedChampions, champion]
+      );
+    },
+    [selectedChampions, setChampions]
   );
-  const search = (value: string) => {
+
+  const filteredChampions = useMemo(() => {
     if (!championList) return [];
+    
+    if (value === "") {
+      return [
+        ...selectedChampions,
+        ...championList.filter(
+          (champ) => !selectedChampions.some((c) => c.id === champ.id)
+        ),
+      ];
+    }
+
+    const lowerValue = value.toLowerCase();
     return championList.filter(
       (champ) =>
-        champ.name.toLowerCase().includes(value) ||
-        (champ.hangul && champ.hangul.includes(value))
+        champ.name.toLowerCase().includes(lowerValue) ||
+        (champ.hangul && champ.hangul.includes(lowerValue))
     );
-  };
+  }, [championList, selectedChampions, value]);
 
   return (
-    <FlexDiv onClick={handleClick} clicked={clicked}>
+    <FlexDiv ref={containerRef} onClick={handleClick} clicked={clicked}>
       <TextInput
         type="text"
         placeholder="Champion Name"
@@ -120,25 +128,26 @@ export default function Input({
         clicked={clicked}
       />
 
-      {clicked ? (
-        championList ? (
-          <ChampionList>
-            {value !== ""
-              ? search(value).map(listToThumbnail)
-              : [
-                  ...selectedChampions,
-                  ...championList.filter(
-                    (champ) => !selectedChampions.includes(champ)
-                  ),
-                ].map(listToThumbnail)}
-          </ChampionList>
-        ) : (
-          "Sorry not yet loading."
-        )
-      ) : (
-        ""
+      {clicked && (
+        <ChampionList>
+          {championList ? (
+            filteredChampions.map((champion) => (
+              <ChampionThumbnail
+                addChampion={addChampion}
+                data={champion}
+                key={champion.id}
+                name={champion.name}
+                selected={selectedChampions.some((c) => c.id === champion.id)}
+                thumbnailSrc={CHAMP_ICON_URL(champion.version || "", champion.id)}
+              />
+            ))
+          ) : (
+            <div>Sorry not yet loading.</div>
+          )}
+        </ChampionList>
       )}
     </FlexDiv>
   );
 }
 
+export default React.memo(Input);

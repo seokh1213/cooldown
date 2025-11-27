@@ -24,7 +24,7 @@ interface ChampionSquareProps {
   squareSrc: string;
 }
 
-export default function ChampionSquare({ name, squareSrc }: ChampionSquareProps) {
+function ChampionSquare({ name, squareSrc }: ChampionSquareProps) {
   return (
     <FlexDiv>
       <Square src={squareSrc} alt={name} />
@@ -33,4 +33,4 @@ export default function ChampionSquare({ name, squareSrc }: ChampionSquareProps)
   );
 }
 
-
+export default React.memo(ChampionSquare);

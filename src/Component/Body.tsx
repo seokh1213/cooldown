@@ -24,7 +24,7 @@ interface BodyProps {
   setChampions: (list: Champion[]) => void;
 }
 
-export default function Body({
+function Body({
   championList,
   lang,
   selectedChampions,
@@ -38,12 +38,12 @@ export default function Body({
         championList={championList}
       />
       <ChampionCards>
-        {selectedChampions.map((champion, idx) => (
-          <ChampionCard lang={lang} key={idx} champion={champion} />
+        {selectedChampions.map((champion) => (
+          <ChampionCard lang={lang} key={champion.id} champion={champion} />
         ))}
       </ChampionCards>
     </Content>
   );
 }
 
-
+export default React.memo(Body);

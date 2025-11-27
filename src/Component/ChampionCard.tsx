@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback, useMemo } from "react";
 import styled from "styled-components";
 import { SPLASH_IMG_URL, CHAMP_ICON_URL, getChampionInfo } from "../api";
 import ContentLoader from "react-content-loader";
@@ -17,7 +17,7 @@ const Card = styled.div`
   box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.1);
 `;
 
-const ChampionLoader = () => (
+const ChampionLoader = React.memo(() => (
   <ContentLoader viewBox="0 0 400 350" speed={3}>
     <rect x="0" y="0" rx="5" ry="5" width="100%" height="180" />
     <rect x="300" y="190" rx="2" ry="2" width="100" height="15" />
@@ -29,62 +29,89 @@ const ChampionLoader = () => (
     <rect x="330" y="220" rx="5" ry="5" width="40" height="40" />
     <rect x="180" y="280" rx="5" ry="5" width="190" height="60" />
   </ContentLoader>
-);
+));
+
+ChampionLoader.displayName = "ChampionLoader";
 
 interface ChampionCardProps {
   lang: string;
   champion: Champion;
 }
 
-export default function ChampionCard({ lang, champion }: ChampionCardProps) {
+function ChampionCard({ lang, champion }: ChampionCardProps) {
   const [championInfo, setChampionInfo] = useState<Champion | null>(null);
   const [skinIdx, setSkin] = useState(1);
 
   useEffect(() => {
-    getChampionInfo(champion.version || "", lang, champion.id).then((data) =>
-      setChampionInfo(data)
-    );
+    let cancelled = false;
+    getChampionInfo(champion.version || "", lang, champion.id).then((data) => {
+      if (!cancelled) {
+        setChampionInfo(data);
+      }
+    });
+
+    return () => {
+      cancelled = true;
+    };
   }, [champion.version, lang, champion.id]);
 
-  const changeHandler = (inc: number) => {
-    if (!championInfo || !championInfo.skins) return;
-    let idx = skinIdx + inc;
-    idx = idx === championInfo.skins.length ? 0 : idx;
-    idx = idx === -1 ? championInfo.skins.length - 1 : idx;
-    setSkin(idx);
-  };
+  const changeHandler = useCallback(
+    (inc: number) => {
+      if (!championInfo?.skins) return;
+      const totalSkins = championInfo.skins.length;
+      setSkin((prevIdx) => {
+        let newIdx = prevIdx + inc;
+        if (newIdx >= totalSkins) newIdx = 0;
+        if (newIdx < 0) newIdx = totalSkins - 1;
+        return newIdx;
+      });
+    },
+    [championInfo]
+  );
+
+  const splashImageUrl = useMemo(() => {
+    if (!championInfo?.skins?.[skinIdx]) return "";
+    return SPLASH_IMG_URL(
+      `${championInfo.id}_${championInfo.skins[skinIdx].num}`
+    );
+  }, [championInfo, skinIdx]);
+
+  const skinName = useMemo(() => {
+    if (!championInfo?.skins?.[skinIdx]) return "";
+    return championInfo.skins[skinIdx].name === "default"
+      ? championInfo.name
+      : championInfo.skins[skinIdx].name;
+  }, [championInfo, skinIdx]);
+
+  const champIconUrl = useMemo(
+    () => CHAMP_ICON_URL(champion.version || "", champion.id),
+    [champion.version, champion.id]
+  );
+
+  if (!championInfo) {
+    return (
+      <Card>
+        <ChampionLoader />
+      </Card>
+    );
+  }
 
   return (
     <Card>
-      {championInfo ? (
-        <>
-          <SplashImage
-            src={SPLASH_IMG_URL(
-              `${championInfo.id}_${championInfo.skins?.[skinIdx]?.num || 0}`
-            )}
-            name={
-              championInfo.skins?.[skinIdx]?.name === "default"
-                ? championInfo.name
-                : championInfo.skins[skinIdx].name
-            }
-            changeHandler={changeHandler}
-          />
-          <div style={{ display: "flex" }}>
-            <ChampionSquare
-              name={championInfo.name}
-              squareSrc={CHAMP_ICON_URL(champion.version || "", champion.id)}
-            />
-            <SkillTable
-              championInfo={championInfo}
-              version={champion.version || ""}
-            />
-          </div>
-        </>
-      ) : (
-        <ChampionLoader />
-      )}
+      <SplashImage
+        src={splashImageUrl}
+        name={skinName}
+        changeHandler={changeHandler}
+      />
+      <div style={{ display: "flex" }}>
+        <ChampionSquare name={championInfo.name} squareSrc={champIconUrl} />
+        <SkillTable
+          championInfo={championInfo}
+          version={champion.version || ""}
+        />
+      </div>
     </Card>
   );
 }
 
-
+export default React.memo(ChampionCard);

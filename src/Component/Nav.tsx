@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback } from "react";
 import styled from "styled-components";
 
 const NavWrapper = styled.div`
@@ -31,17 +31,21 @@ interface NavProps {
   selectHandler: (lang: string) => void;
 }
 
-export default function Nav({ version = "10.8.1", lang, selectHandler }: NavProps) {
+function Nav({ version = "10.8.1", lang, selectHandler }: NavProps) {
+  const handleChange = useCallback(
+    (e: React.ChangeEvent<HTMLSelectElement>) => {
+      selectHandler(e.target.value);
+    },
+    [selectHandler]
+  );
+
   return (
     <>
       <NavWrapper>
         <div>Cooldown</div>
         <div style={{ flex: "1" }} />
         <div style={{ fontSize: "0.6em" }}>v{version}</div>
-        <SelectItem
-          defaultValue={lang}
-          onChange={(e) => selectHandler(e.target.value)}
-        >
+        <SelectItem defaultValue={lang} onChange={handleChange}>
           <option value="ko_KR">한국어</option>
           <option value="en_US">Eng</option>
         </SelectItem>
@@ -51,4 +55,4 @@ export default function Nav({ version = "10.8.1", lang, selectHandler }: NavProp
   );
 }
 
-
+export default React.memo(Nav);

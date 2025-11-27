@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback } from "react";
 import styled from "styled-components";
 import { Champion } from "../types";
 
@@ -32,19 +32,20 @@ interface ChampionThumbnailProps {
   selected: boolean;
 }
 
-export default function ChampionThumbnail({
+function ChampionThumbnail({
   addChampion,
   data,
   name,
   thumbnailSrc,
   selected,
 }: ChampionThumbnailProps) {
+  const handleClick = useCallback(() => {
+    addChampion(data, selected);
+  }, [addChampion, data, selected]);
+
   return (
     <FlexDiv>
-      <div
-        style={{ cursor: "pointer" }}
-        onClick={() => addChampion(data, selected)}
-      >
+      <div style={{ cursor: "pointer" }} onClick={handleClick}>
         <Thumbnail selected={selected} src={thumbnailSrc} alt={name} />
       </div>
       <div style={{ fontSize: "1em", whiteSpace: "nowrap" }}>{name}</div>
@@ -52,4 +53,4 @@ export default function ChampionThumbnail({
   );
 }
 
-
+export default React.memo(ChampionThumbnail);

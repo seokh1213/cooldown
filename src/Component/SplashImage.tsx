@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback } from "react";
 import styled from "styled-components";
 import LeftArrow from "../resource/LeftArrow";
 import RightArrow from "../resource/RightArrow";
@@ -18,41 +18,43 @@ const SkinName = styled.div`
   text-transform: capitalize;
 `;
 
+const arrowStyle: React.CSSProperties = {
+  width: "20px",
+  height: "40px",
+  position: "absolute",
+  top: "105px",
+  cursor: "pointer",
+};
+
 interface SplashImageProps {
   src: string;
   name: string;
   changeHandler: (inc: number) => void;
 }
 
-export default function SplashImage({ src, name, changeHandler }: SplashImageProps) {
+function SplashImage({ src, name, changeHandler }: SplashImageProps) {
+  const handlePrevious = useCallback(() => {
+    changeHandler(-1);
+  }, [changeHandler]);
+
+  const handleNext = useCallback(() => {
+    changeHandler(1);
+  }, [changeHandler]);
+
   return (
     <div style={{ position: "relative", marginBottom: "5px" }}>
       <SplashImg src={src} alt={name} />
       <SkinName>{name}</SkinName>
       <LeftArrow
-        handler={() => changeHandler(-1)}
-        style={{
-          width: "20px",
-          height: "40px",
-          position: "absolute",
-          top: "105px",
-          left: "10px",
-          cursor: "pointer",
-        }}
+        handler={handlePrevious}
+        style={{ ...arrowStyle, left: "10px" }}
       />
       <RightArrow
-        handler={() => changeHandler(1)}
-        style={{
-          width: "20px",
-          height: "40px",
-          position: "absolute",
-          top: "105px",
-          right: "10px",
-          cursor: "pointer",
-        }}
+        handler={handleNext}
+        style={{ ...arrowStyle, right: "10px" }}
       />
     </div>
   );
 }
 
-
+export default React.memo(SplashImage);

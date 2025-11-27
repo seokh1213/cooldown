@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import styled from "styled-components";
 import { PASSIVE_ICON_URL, SKILL_ICON_URL } from "../api";
 import { Champion } from "../types";
@@ -15,27 +15,30 @@ const GridLayout = styled.div`
 
 const PASSIVE_SIZE = 37.5;
 const SKILL_SIZE = 50;
+const SKILL_LETTERS = ["Q", "W", "E", "R"] as const;
 
 interface SkillIconProps {
   src: string;
   rule?: string;
 }
 
-const SkillIcon = function ({ src, rule }: SkillIconProps) {
+const SkillIcon = React.memo(function SkillIcon({ src, rule }: SkillIconProps) {
+  const size = rule ? SKILL_SIZE : PASSIVE_SIZE;
+  
   return (
     <div
       style={{
         position: "relative",
-        width: rule ? SKILL_SIZE + "px" : PASSIVE_SIZE + "px",
-        height: rule ? SKILL_SIZE + "px" : PASSIVE_SIZE + "px",
+        width: `${size}px`,
+        height: `${size}px`,
       }}
     >
       <img
         style={{ width: "100%", height: "100%", borderRadius: "5px" }}
         src={src}
-        alt={rule ? rule : "passive"}
+        alt={rule || "passive"}
       />
-      {rule ? (
+      {rule && (
         <div
           style={{
             borderRadius: "5px",
@@ -45,27 +48,27 @@ const SkillIcon = function ({ src, rule }: SkillIconProps) {
             position: "absolute",
             bottom: "0",
             right: "0",
-            width: SKILL_SIZE / 2 + "px",
-            height: SKILL_SIZE / 2 + "px",
+            width: `${SKILL_SIZE / 2}px`,
+            height: `${SKILL_SIZE / 2}px`,
             backgroundColor: "rgba(0,0,0,.7)",
             color: "white",
           }}
         >
           {rule}
         </div>
-      ) : (
-        ""
       )}
     </div>
   );
-};
+});
+
+SkillIcon.displayName = "SkillIcon";
 
 interface SkillInfoProps {
   lv: number;
   cooldown: (number | string)[];
 }
 
-const SkillInfo = function ({ lv, cooldown }: SkillInfoProps) {
+const SkillInfo = React.memo(function SkillInfo({ lv, cooldown }: SkillInfoProps) {
   return (
     <>
       <div style={{ fontSize: "0.9em", fontWeight: "400" }}>{lv}lv</div>
@@ -76,37 +79,47 @@ const SkillInfo = function ({ lv, cooldown }: SkillInfoProps) {
       ))}
     </>
   );
-};
+});
+
+SkillInfo.displayName = "SkillInfo";
 
 interface SkillTableProps {
   championInfo: Champion;
   version: string;
 }
 
-export default function SkillTable({ championInfo, version }: SkillTableProps) {
-  if (!championInfo.spells) return null;
-  
-  const maxLv = championInfo.spells.reduce(
-    (acc, v) => (acc > v.maxrank ? acc : v.maxrank),
-    0
-  );
-  const skills = [];
-  for (let i = 0; i < maxLv; i++) {
-    const cooldown = championInfo.spells.map((skill) =>
-      skill.cooldown[i] !== undefined ? skill.cooldown[i] : ""
+function SkillTable({ championInfo, version }: SkillTableProps) {
+  const skills = useMemo(() => {
+    if (!championInfo.spells) return [];
+    
+    const maxLv = championInfo.spells.reduce(
+      (acc, v) => Math.max(acc, v.maxrank),
+      0
     );
-    skills.push(<SkillInfo key={i} lv={i + 1} cooldown={cooldown} />);
-  }
+    
+    return Array.from({ length: maxLv }, (_, i) => {
+      const cooldown = championInfo.spells!.map((skill) =>
+        skill.cooldown[i] !== undefined ? skill.cooldown[i] : ""
+      );
+      return <SkillInfo key={i} lv={i + 1} cooldown={cooldown} />;
+    });
+  }, [championInfo.spells]);
+
+  if (!championInfo.spells) return null;
+
+  const passiveIconUrl = PASSIVE_ICON_URL(
+    version,
+    championInfo.passive?.image?.full || ""
+  );
+
   return (
     <GridLayout>
-      <SkillIcon
-        src={PASSIVE_ICON_URL(version, championInfo.passive?.image?.full || "")}
-      />
+      <SkillIcon src={passiveIconUrl} />
       {championInfo.spells.map((skill, idx) => (
         <SkillIcon
-          key={idx}
+          key={skill.id}
           src={SKILL_ICON_URL(version, skill.id)}
-          rule={["Q", "W", "E", "R"][idx]}
+          rule={SKILL_LETTERS[idx]}
         />
       ))}
       {skills}
@@ -114,4 +127,4 @@ export default function SkillTable({ championInfo, version }: SkillTableProps) {
   );
 }
 
-
+export default React.memo(SkillTable);

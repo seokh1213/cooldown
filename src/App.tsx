@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { getVersion, getChampionList } from "./api";
 import { createGlobalStyle } from "styled-components";
 import Nav from "./Component/Nav";
@@ -6,7 +6,6 @@ import Body from "./Component/Body";
 import { Champion } from "./types";
 
 const GlobalStyle = createGlobalStyle`
-
   #root{
     font-family:"Noto Sans KR","Malgun Gothic";
     display: flex;
@@ -19,13 +18,6 @@ const GlobalStyle = createGlobalStyle`
   }
 `;
 
-interface AppState {
-  lang: string;
-  version: string;
-  championList: Champion[] | null;
-  selectedChampions: Champion[];
-}
-
 /* Todo: Tip list
 
   Duration
@@ -37,45 +29,53 @@ interface AppState {
   
    Spell time, Ward time
 */
-export default class App extends Component<{}, AppState> {
-  constructor(props: {}) {
-    super(props);
-    this.state = {
-      lang: "ko_KR",
-      version: "10.8.1",
-      championList: null,
-      selectedChampions: [],
-    };
 
-    this.init();
-  }
-  async init() {
-    await getVersion().then((version) => this.setState({ version }));
-    getChampionList(this.state.version, this.state.lang).then((championList) =>
-      this.setState({ championList })
-    );
-  }
-  render() {
-    return (
-      <>
-        <GlobalStyle />
-        <Nav
-          version={this.state.version}
-          lang={this.state.lang}
-          selectHandler={(lang) => {
-            this.setState({ lang, selectedChampions: [] });
-            this.init();
-          }}
-        />
-        <Body
-          lang={this.state.lang}
-          championList={this.state.championList}
-          selectedChampions={this.state.selectedChampions}
-          setChampions={(list) => this.setState({ selectedChampions: list })}
-        />
-      </>
-    );
-  }
+function App() {
+  const [lang, setLang] = useState<string>("ko_KR");
+  const [version, setVersion] = useState<string>("10.8.1");
+  const [championList, setChampionList] = useState<Champion[] | null>(null);
+  const [selectedChampions, setSelectedChampions] = useState<Champion[]>([]);
+
+  const initData = useCallback(async () => {
+    try {
+      const latestVersion = await getVersion();
+      setVersion(latestVersion);
+      const champions = await getChampionList(latestVersion, lang);
+      setChampionList(champions);
+    } catch (error) {
+      console.error("Failed to initialize data:", error);
+    }
+  }, [lang]);
+
+  useEffect(() => {
+    initData();
+  }, [initData]);
+
+  const handleLangChange = useCallback((newLang: string) => {
+    setLang(newLang);
+    setSelectedChampions([]);
+  }, []);
+
+  const handleSetChampions = useCallback((list: Champion[]) => {
+    setSelectedChampions(list);
+  }, []);
+
+  return (
+    <>
+      <GlobalStyle />
+      <Nav
+        version={version}
+        lang={lang}
+        selectHandler={handleLangChange}
+      />
+      <Body
+        lang={lang}
+        championList={championList}
+        selectedChampions={selectedChampions}
+        setChampions={handleSetChampions}
+      />
+    </>
+  );
 }
 
-
+export default App;
