@@ -17,13 +17,13 @@ function Body({
   setChampions,
 }: BodyProps) {
   return (
-    <div className="w-full max-w-[1311px] mx-auto flex flex-col">
+    <div className="w-[1311px] mx-auto flex flex-col">
       <Input
         selectedChampions={selectedChampions}
         setChampions={setChampions}
         championList={championList}
       />
-      <div className="mt-[110px] grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="mt-[110px] grid grid-cols-3 gap-4">
         {selectedChampions.map((champion) => (
           <ChampionCard lang={lang} key={champion.id} champion={champion} />
         ))}
