@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useMemo, useState, useCallback } from "react";
 import styled from "styled-components";
 import { PASSIVE_ICON_URL, SKILL_ICON_URL } from "../api";
 import { Champion } from "../types";
@@ -23,8 +23,13 @@ interface SkillIconProps {
 }
 
 const SkillIcon = React.memo(function SkillIcon({ src, rule }: SkillIconProps) {
+  const [isLoaded, setIsLoaded] = useState(false);
   const size = rule ? SKILL_SIZE : PASSIVE_SIZE;
-  
+
+  const handleLoad = useCallback(() => {
+    setIsLoaded(true);
+  }, []);
+
   return (
     <div
       style={{
@@ -33,10 +38,31 @@ const SkillIcon = React.memo(function SkillIcon({ src, rule }: SkillIconProps) {
         height: `${size}px`,
       }}
     >
+      {!isLoaded && (
+        <div
+          style={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            width: `${size}px`,
+            height: `${size}px`,
+            backgroundColor: "#1a1a1a",
+            borderRadius: "5px",
+          }}
+        />
+      )}
       <img
-        style={{ width: "100%", height: "100%", borderRadius: "5px" }}
+        style={{
+          width: "100%",
+          height: "100%",
+          borderRadius: "5px",
+          opacity: isLoaded ? 1 : 0,
+          transition: "opacity 0.2s ease-in-out",
+        }}
         src={src}
         alt={rule || "passive"}
+        loading="lazy"
+        onLoad={handleLoad}
       />
       {rule && (
         <div
@@ -91,12 +117,12 @@ interface SkillTableProps {
 function SkillTable({ championInfo, version }: SkillTableProps) {
   const skills = useMemo(() => {
     if (!championInfo.spells) return [];
-    
+
     const maxLv = championInfo.spells.reduce(
       (acc, v) => Math.max(acc, v.maxrank),
       0
     );
-    
+
     return Array.from({ length: maxLv }, (_, i) => {
       const cooldown = championInfo.spells!.map((skill) =>
         skill.cooldown[i] !== undefined ? skill.cooldown[i] : ""

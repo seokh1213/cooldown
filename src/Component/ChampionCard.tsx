@@ -76,6 +76,22 @@ function ChampionCard({ lang, champion }: ChampionCardProps) {
     );
   }, [championInfo, skinIdx]);
 
+  const nextSkinUrl = useMemo(() => {
+    if (!championInfo?.skins) return undefined;
+    const nextIdx = skinIdx + 1 >= championInfo.skins.length ? 0 : skinIdx + 1;
+    return SPLASH_IMG_URL(
+      `${championInfo.id}_${championInfo.skins[nextIdx].num}`
+    );
+  }, [championInfo, skinIdx]);
+
+  const prevSkinUrl = useMemo(() => {
+    if (!championInfo?.skins) return undefined;
+    const prevIdx = skinIdx - 1 < 0 ? championInfo.skins.length - 1 : skinIdx - 1;
+    return SPLASH_IMG_URL(
+      `${championInfo.id}_${championInfo.skins[prevIdx].num}`
+    );
+  }, [championInfo, skinIdx]);
+
   const skinName = useMemo(() => {
     if (!championInfo?.skins?.[skinIdx]) return "";
     return championInfo.skins[skinIdx].name === "default"
@@ -102,6 +118,8 @@ function ChampionCard({ lang, champion }: ChampionCardProps) {
         src={splashImageUrl}
         name={skinName}
         changeHandler={changeHandler}
+        nextSkinSrc={nextSkinUrl}
+        prevSkinSrc={prevSkinUrl}
       />
       <div style={{ display: "flex" }}>
         <ChampionSquare name={championInfo.name} squareSrc={champIconUrl} />
