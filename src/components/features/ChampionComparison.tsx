@@ -286,7 +286,7 @@ function SkillsSection({
   }, [champions, maxLevel]);
 
   return (
-    <TooltipProvider delayDuration={100} skipDelayDuration={0}>
+    <TooltipProvider delayDuration={0} skipDelayDuration={150}>
       <div className="overflow-x-auto -mx-4 md:mx-0 px-4 md:px-0">
       <div className="min-w-full">
         {/* Desktop Table */}
@@ -379,7 +379,7 @@ function SkillsSection({
                         {champion.passive && (
                           <Tooltip>
                             <TooltipTrigger asChild>
-                              <div className="flex flex-col items-center gap-0.5 cursor-help">
+                              <div className="flex flex-col items-center gap-0.5 cursor-help p-1 -m-1">
                                 <img
                                   src={PASSIVE_ICON_URL(
                                     version,
@@ -422,7 +422,7 @@ function SkillsSection({
                         {champion.spells?.map((skill, skillIdx) => (
                           <Tooltip key={skill.id}>
                             <TooltipTrigger asChild>
-                              <div className="flex flex-col items-center gap-0.5 cursor-help">
+                              <div className="flex flex-col items-center gap-0.5 cursor-help p-1 -m-1">
                                 <img
                                   src={SKILL_ICON_URL(version, skill.id)}
                                   alt={SKILL_LETTERS[skillIdx]}
