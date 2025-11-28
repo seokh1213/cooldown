@@ -1,13 +1,12 @@
-import React, { useState, useEffect, useCallback, useMemo } from "react";
+import { useState, useCallback, useMemo } from "react";
 import { Champion } from "@/types";
-import { getChampionInfo, CHAMP_ICON_URL } from "@/services/api";
+import { getChampionInfo } from "@/services/api";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { X, Plus, Search } from "lucide-react";
+import { Plus, Search } from "lucide-react";
 import { cn } from "@/lib/utils";
 import ChampionComparison from "@/components/features/ChampionComparison";
 import ChampionSelector from "@/components/features/ChampionSelector";
-import { Skeleton } from "@/components/ui/skeleton";
 
 interface EncyclopediaPageProps {
   lang: string;
@@ -79,92 +78,15 @@ function EncyclopediaPage({ lang, championList, version }: EncyclopediaPageProps
         </p>
       </div>
 
-      {/* Browser Tab Style Champion Tabs */}
-      <div className="mb-6 md:mb-8">
-        <div className="border-b border-border">
-          <div className="flex items-end gap-1 overflow-x-auto -mx-4 md:mx-0 px-4 md:px-0 scrollbar-hide">
-            {/* Add Champion Tab - 맨 앞으로 이동 */}
-            <button
-              onClick={() => {
-                if (!showSelector) {
-                  setShowSelector(true);
-                }
-              }}
-              disabled={showSelector}
-              className={cn(
-                "flex items-center justify-center gap-2 px-3 md:px-4 py-2 md:py-3",
-                "bg-muted/30 border border-b-0 border-border rounded-t-lg",
-                "hover:bg-muted/50 transition-colors",
-                "text-muted-foreground hover:text-foreground",
-                "shrink-0 min-w-[60px]",
-                showSelector && "opacity-50 cursor-not-allowed"
-              )}
-              aria-label="Add champion"
-            >
-              <Plus className="h-4 w-4" />
-              <span className="hidden sm:inline text-sm">추가</span>
-            </button>
-
-            {/* Champion Tabs */}
-            {selectedChampions.map((champion, index) => (
-              <div
-                key={champion.id}
-                className={cn(
-                  "group relative flex items-center gap-2 px-3 md:px-4 py-2 md:py-3",
-                  "bg-card border border-b-0 border-border rounded-t-lg",
-                  "transition-all duration-200",
-                  "hover:bg-muted/50",
-                  "min-w-[120px] md:min-w-[140px]",
-                  "shrink-0"
-                )}
-              >
-                {champion.isLoading ? (
-                  <div className="flex items-center gap-2 flex-1 min-w-0">
-                    <Skeleton className="w-5 h-5 rounded-full shrink-0" />
-                    <Skeleton className="h-3 flex-1 min-w-0" />
-                  </div>
-                ) : (
-                  <>
-                    <img
-                      src={CHAMP_ICON_URL(version, champion.id)}
-                      alt={champion.name}
-                      className="w-5 h-5 rounded-full shrink-0"
-                    />
-                    <span className="text-xs font-medium truncate flex-1 min-w-0">
-                      {champion.name}
-                    </span>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className={cn(
-                        "h-5 w-5 shrink-0",
-                        "hover:bg-destructive/10 hover:text-destructive"
-                      )}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        removeChampion(champion.id);
-                      }}
-                      aria-label={`Remove ${champion.name}`}
-                    >
-                      <X className="h-3 w-3" />
-                    </Button>
-                  </>
-                )}
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Champion Selector Modal */}
-        {showSelector && (
-          <ChampionSelector
-            championList={championList}
-            selectedChampions={selectedChampions}
-            onSelect={addChampion}
-            onClose={() => setShowSelector(false)}
-          />
-        )}
-      </div>
+      {/* Champion Selector Modal */}
+      {showSelector && (
+        <ChampionSelector
+          championList={championList}
+          selectedChampions={selectedChampions}
+          onSelect={addChampion}
+          onClose={() => setShowSelector(false)}
+        />
+      )}
 
       {/* Comparison Sections */}
       {selectedChampions.length > 0 && championsWithFullInfo.length > 0 && (
@@ -200,6 +122,9 @@ function EncyclopediaPage({ lang, championList, version }: EncyclopediaPageProps
                 champions={championsWithFullInfo.map((c) => c.fullInfo!)}
                 version={version}
                 activeTab={activeTab}
+                championList={championList}
+                onAddChampion={addChampion}
+                onRemoveChampion={removeChampion}
               />
             </div>
           )}
@@ -213,7 +138,7 @@ function EncyclopediaPage({ lang, championList, version }: EncyclopediaPageProps
             </div>
             <h2 className="text-xl font-semibold mb-2">챔피언을 선택하세요</h2>
             <p className="text-muted-foreground text-center max-w-md text-sm mb-4">
-              위의 "+ 추가" 버튼을 클릭하여 챔피언을 추가하고 비교해보세요.
+              아래 버튼을 클릭하여 챔피언을 추가하고 비교해보세요.
             </p>
             <Button
               onClick={() => setShowSelector(true)}

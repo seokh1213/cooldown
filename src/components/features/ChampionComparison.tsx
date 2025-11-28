@@ -1,14 +1,20 @@
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
 import { Champion } from "@/types";
 import { CHAMP_ICON_URL, PASSIVE_ICON_URL, SKILL_ICON_URL } from "@/services/api";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { Skeleton } from "@/components/ui/skeleton";
+import { X, Plus } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import ChampionSelector from "./ChampionSelector";
 
 interface ChampionComparisonProps {
   champions: Champion[];
   version: string;
   activeTab: "stats" | "skills";
+  championList?: Champion[] | null;
+  onAddChampion?: (champion: Champion) => void;
+  onRemoveChampion?: (championId: string) => void;
 }
 
 const SKILL_LETTERS = ["Q", "W", "E", "R"] as const;
@@ -37,29 +43,64 @@ const STAT_FIELDS = [
   { key: "mpregenperlevel", label: "레벨당 마나 재생", format: (v: number) => v.toFixed(1) },
 ];
 
-function StatsSection({ champions, version }: { champions: Champion[]; version: string }) {
+function StatsSection({ 
+  champions, 
+  version,
+  championList,
+  onAddChampion,
+  onRemoveChampion 
+}: { 
+  champions: Champion[]; 
+  version: string;
+  championList?: Champion[] | null;
+  onAddChampion?: (champion: Champion) => void;
+  onRemoveChampion?: (championId: string) => void;
+}) {
+  const [showAddSlot, setShowAddSlot] = useState(false);
+  
   return (
     <div className="overflow-x-auto -mx-4 md:mx-0 px-4 md:px-0">
       <div className="min-w-full">
         {/* Desktop Table */}
-        <div className="hidden md:block overflow-x-auto">
-          <table className="w-full border-collapse min-w-[600px] border border-border/30 rounded-lg overflow-hidden">
+        <div className="hidden md:block overflow-x-auto relative">
+          <table className="border-collapse border border-border/30 rounded-lg overflow-hidden table-fixed w-auto">
             <thead>
               <tr className="border-b border-border/30">
-                <th className="text-left p-2 pl-3 text-xs font-semibold sticky left-0 bg-card z-10 w-[90px] border-r border-border/30">
+                <th className="text-left p-2 pl-3 text-xs font-semibold sticky left-0 bg-card z-10 w-[90px] min-w-[90px] border-r border-border/30">
                   스탯
                 </th>
                 {champions.map((champion) => (
                   <th
                     key={champion.id}
-                    className="text-center p-3 text-xs font-semibold min-w-[140px]"
+                    className="text-center p-3 text-xs font-semibold w-[140px] md:w-[140px] lg:w-[160px] min-w-[120px] md:min-w-[140px] lg:min-w-[160px]"
                   >
-                    <div className="flex flex-col items-center gap-2">
-                      <img
-                        src={CHAMP_ICON_URL(version, champion.id)}
-                        alt={champion.name}
-                        className="w-12 h-12 rounded-full"
-                      />
+                    <div className="flex flex-col items-center gap-2 relative">
+                      <div className="relative">
+                        <img
+                          src={CHAMP_ICON_URL(version, champion.id)}
+                          alt={champion.name}
+                          className="w-12 h-12 rounded-full"
+                        />
+                        {onRemoveChampion && (
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className={cn(
+                              "absolute -top-1 -right-1 h-5 w-5 rounded-full",
+                              "bg-destructive/90 hover:bg-destructive text-white",
+                              "hover:scale-110 transition-transform",
+                              "shadow-md"
+                            )}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              onRemoveChampion(champion.id);
+                            }}
+                            aria-label={`Remove ${champion.name}`}
+                          >
+                            <X className="h-3 w-3" />
+                          </Button>
+                        )}
+                      </div>
                       <div>
                         <div className="text-xs font-semibold">{champion.name}</div>
                         <div className="text-[10px] text-muted-foreground">
@@ -103,11 +144,31 @@ function StatsSection({ champions, version }: { champions: Champion[]; version: 
                         </td>
                       );
                     })}
+                    {onAddChampion && (
+                      <td className="p-3 text-center border-l border-border/30">
+                        <div className="w-full h-full min-h-[40px]" />
+                      </td>
+                    )}
                   </tr>
                 );
               })}
             </tbody>
           </table>
+          {showAddSlot && onAddChampion && championList && (
+            <div className="absolute inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm">
+              <div className="relative w-full max-w-md mx-4">
+                <ChampionSelector
+                  championList={championList}
+                  selectedChampions={champions}
+                  onSelect={(champion) => {
+                    onAddChampion(champion);
+                    setShowAddSlot(false);
+                  }}
+                  onClose={() => setShowAddSlot(false)}
+                />
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Mobile Cards */}
@@ -158,10 +219,18 @@ function StatsSection({ champions, version }: { champions: Champion[]; version: 
 function SkillsSection({
   champions,
   version,
+  championList,
+  onAddChampion,
+  onRemoveChampion,
 }: {
   champions: Champion[];
   version: string;
+  championList?: Champion[] | null;
+  onAddChampion?: (champion: Champion) => void;
+  onRemoveChampion?: (championId: string) => void;
 }) {
+  const [showAddSlot, setShowAddSlot] = useState(false);
+  
   const maxLevel = useMemo(() => {
     return Math.max(
       ...champions.map((c) =>
@@ -192,24 +261,45 @@ function SkillsSection({
     <div className="overflow-x-auto -mx-4 md:mx-0 px-4 md:px-0">
       <div className="min-w-full">
         {/* Desktop Table */}
-        <div className="hidden md:block overflow-x-auto">
-          <table className="w-full border-collapse min-w-[600px] border border-border/30 rounded-lg overflow-hidden">
+        <div className="hidden md:block overflow-x-auto relative">
+          <table className="border-collapse border border-border/30 rounded-lg overflow-hidden table-fixed w-auto">
             <thead>
               <tr className="border-b border-border/30">
-                <th className="text-left p-2 pl-3 text-xs font-semibold sticky left-0 bg-card z-10 w-[80px] border-r border-border/30">
+                <th className="text-left p-2 pl-3 text-xs font-semibold sticky left-0 bg-card z-10 w-[80px] min-w-[80px] border-r border-border/30">
                   레벨
                 </th>
                 {champions.map((champion) => (
                   <th
                     key={champion.id}
-                    className="text-center p-3 text-xs font-semibold min-w-[200px]"
+                    className="text-center p-3 text-xs font-semibold w-[200px] md:w-[200px] lg:w-[220px] min-w-[180px] md:min-w-[200px] lg:min-w-[220px]"
                   >
-                    <div className="flex flex-col items-center gap-2">
-                      <img
-                        src={CHAMP_ICON_URL(version, champion.id)}
-                        alt={champion.name}
-                        className="w-12 h-12 rounded-full"
-                      />
+                    <div className="flex flex-col items-center gap-2 relative">
+                      <div className="relative">
+                        <img
+                          src={CHAMP_ICON_URL(version, champion.id)}
+                          alt={champion.name}
+                          className="w-12 h-12 rounded-full"
+                        />
+                        {onRemoveChampion && (
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className={cn(
+                              "absolute -top-1 -right-1 h-5 w-5 rounded-full",
+                              "bg-destructive/90 hover:bg-destructive text-white",
+                              "hover:scale-110 transition-transform",
+                              "shadow-md"
+                            )}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              onRemoveChampion(champion.id);
+                            }}
+                            aria-label={`Remove ${champion.name}`}
+                          >
+                            <X className="h-3 w-3" />
+                          </Button>
+                        )}
+                      </div>
                       <div>
                         <div className="text-xs font-semibold">{champion.name}</div>
                         <div className="text-[10px] text-muted-foreground">
@@ -219,6 +309,21 @@ function SkillsSection({
                     </div>
                   </th>
                 ))}
+                {onAddChampion && (
+                  <th className="text-center p-3 text-xs font-semibold w-[200px] md:w-[200px] lg:w-[220px] min-w-[180px] md:min-w-[200px] lg:min-w-[220px] border-l border-border/30">
+                    <button
+                      onClick={() => setShowAddSlot(true)}
+                      className="w-full flex flex-col items-center justify-center gap-2 p-2 rounded-lg border-2 border-dashed border-muted-foreground/30 hover:border-primary/50 hover:bg-muted/30 transition-colors group"
+                    >
+                      <div className="w-12 h-12 rounded-full bg-muted/30 flex items-center justify-center group-hover:bg-primary/10 transition-colors">
+                        <Plus className="w-6 h-6 text-muted-foreground group-hover:text-primary transition-colors" />
+                      </div>
+                      <div className="text-[10px] text-muted-foreground group-hover:text-primary transition-colors">
+                        추가
+                      </div>
+                    </button>
+                  </th>
+                )}
               </tr>
             </thead>
             <tbody>
@@ -243,6 +348,11 @@ function SkillsSection({
                     )}
                   </td>
                 ))}
+                {onAddChampion && (
+                  <td className="p-3 text-center border-l border-border/30">
+                    <div className="w-full h-full min-h-[40px]" />
+                  </td>
+                )}
               </tr>
 
               {/* Skills Header */}
@@ -271,6 +381,11 @@ function SkillsSection({
                     </div>
                   </td>
                 ))}
+                {onAddChampion && (
+                  <td className="p-3 text-center border-l border-border/30">
+                    <div className="w-full h-full min-h-[40px]" />
+                  </td>
+                )}
               </tr>
 
               {/* Skill Cooldowns by Level */}
@@ -304,10 +419,30 @@ function SkillsSection({
                       )}
                     </td>
                   ))}
+                  {onAddChampion && (
+                    <td className="p-3 text-center border-l border-border/30">
+                      <div className="w-full h-full min-h-[40px]" />
+                    </td>
+                  )}
                 </tr>
               ))}
             </tbody>
           </table>
+          {showAddSlot && onAddChampion && championList && (
+            <div className="absolute inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm">
+              <div className="relative w-full max-w-md mx-4">
+                <ChampionSelector
+                  championList={championList}
+                  selectedChampions={champions}
+                  onSelect={(champion) => {
+                    onAddChampion(champion);
+                    setShowAddSlot(false);
+                  }}
+                  onClose={() => setShowAddSlot(false)}
+                />
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Mobile Cards */}
@@ -402,6 +537,9 @@ function ChampionComparison({
   champions,
   version,
   activeTab,
+  championList,
+  onAddChampion,
+  onRemoveChampion,
 }: ChampionComparisonProps) {
   if (champions.length === 0) return null;
 
@@ -409,9 +547,21 @@ function ChampionComparison({
     <Card>
       <CardContent className="p-0">
         {activeTab === "stats" ? (
-          <StatsSection champions={champions} version={version} />
+          <StatsSection 
+            champions={champions} 
+            version={version}
+            championList={championList}
+            onAddChampion={onAddChampion}
+            onRemoveChampion={onRemoveChampion}
+          />
         ) : (
-          <SkillsSection champions={champions} version={version} />
+          <SkillsSection 
+            champions={champions} 
+            version={version}
+            championList={championList}
+            onAddChampion={onAddChampion}
+            onRemoveChampion={onRemoveChampion}
+          />
         )}
       </CardContent>
     </Card>
