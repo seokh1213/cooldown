@@ -101,6 +101,16 @@ function App() {
           <Route
             path="/"
             element={
+              <EncyclopediaPage
+                lang={lang}
+                championList={championList}
+                version={version}
+              />
+            }
+          />
+          <Route
+            path="/cooldown"
+            element={
               <CooldownPage
                 lang={lang}
                 championList={championList}

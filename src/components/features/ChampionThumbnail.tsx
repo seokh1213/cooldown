@@ -33,30 +33,44 @@ function ChampionThumbnail({
   }, []);
 
   return (
-    <div className="flex flex-col items-center justify-center m-2.5 h-fit">
-      <div className="cursor-pointer" onClick={handleClick}>
-        <div className="relative w-20 h-20">
+    <div className="flex flex-col items-center justify-center m-1 h-fit">
+      <button
+        className="cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-1 rounded-full shrink-0"
+        onClick={handleClick}
+        aria-label={selected ? `Deselect ${name}` : `Select ${name}`}
+        aria-pressed={selected}
+      >
+        {/* 고정 크기 컨테이너 - 레이아웃 시프트 방지 */}
+        <div className="relative w-12 h-12 md:w-14 md:h-14 shrink-0">
+          {/* Skeleton placeholder - 고정 크기로 레이아웃 시프트 방지 */}
           {!isLoaded && !hasError && (
-            <div className="absolute top-0 left-0 w-20 h-20 rounded-full bg-muted flex items-center justify-center text-muted-foreground text-xs">
-              ...
-            </div>
+            <div className="absolute inset-0 rounded-full bg-muted animate-pulse" />
           )}
+          {/* Blur placeholder - 이미지가 로드되기 전까지 */}
+          {!isLoaded && !hasError && (
+            <div className="absolute inset-0 rounded-full bg-gradient-to-br from-muted via-muted/80 to-muted/60 blur-sm" />
+          )}
+          {/* Actual image - 고정 크기로 레이아웃 시프트 방지 */}
           <img
             className={cn(
-              "w-20 h-20 rounded-full bg-black border-0 mb-1 box-border transition-opacity duration-200",
-              "hover:shadow-lg hover:shadow-red-900/50",
-              selected && "border-4 border-green-500",
+              "absolute inset-0 w-full h-full rounded-full bg-black/5 border-0 box-border transition-opacity duration-300 ease-out object-cover",
+              "hover:shadow-md hover:shadow-primary/20 hover:scale-105",
+              "focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-1",
+              selected && "border-2 border-primary ring-1 ring-primary/20",
               isLoaded ? "opacity-100" : "opacity-0"
             )}
             src={thumbnailSrc}
             alt={name}
             loading="lazy"
+            decoding="async"
+            width="56"
+            height="56"
             onLoad={handleLoad}
             onError={handleError}
           />
         </div>
-      </div>
-      <div className="text-base whitespace-nowrap">{name}</div>
+      </button>
+      <div className="text-xs md:text-sm whitespace-nowrap mt-0.5">{name}</div>
     </div>
   );
 }
