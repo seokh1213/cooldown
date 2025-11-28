@@ -287,7 +287,7 @@ function SkillsSection({
             <Table className="border-collapse table-fixed w-auto">
               <TableHeader>
                 <TableRow className="border-b border-border/30">
-                  <TableHead className="text-left p-2 pl-3 text-xs font-semibold sticky bg-card z-20 w-[80px] min-w-[80px] border-r border-border/30 border-l border-border/30 rounded-tl-lg transition-[left] duration-150 ease-out" style={{ left: '-1px' }}>
+                  <TableHead className="text-left p-2 pl-3 text-xs font-semibold sticky left-0 bg-card z-20 w-[80px] min-w-[80px] border-r border-border/30" style={{ left: 0 }}>
                     레벨
                   </TableHead>
                   {champions.map((champion, idx) => (
@@ -354,7 +354,7 @@ function SkillsSection({
               <TableBody>
                 {/* Passive Row */}
                 <TableRow className="border-b border-border/30">
-                  <TableCell className="p-2 pl-3 text-xs font-medium sticky bg-card z-20 border-r border-border/30 border-l border-border/30 transition-[left] duration-150 ease-out" style={{ left: '-1px' }}>
+                  <TableCell className="p-2 pl-3 text-xs font-medium sticky left-0 bg-card z-20 border-r border-border/30" style={{ left: 0 }}>
                     패시브
                   </TableCell>
                   {champions.map((champion, idx) => (
@@ -388,7 +388,7 @@ function SkillsSection({
 
                 {/* Skills Header */}
                 <TableRow className="border-b-2 border-border/30 bg-muted/30">
-                  <TableCell className="p-2 pl-3 text-xs font-medium sticky bg-card z-20 border-r border-border/30 border-l border-border/30 transition-[left] duration-150 ease-out" style={{ left: '-1px' }}>
+                  <TableCell className="p-2 pl-3 text-xs font-medium sticky left-0 bg-card z-20 border-r border-border/30" style={{ left: 0 }}>
                     스킬
                   </TableCell>
                   {champions.map((champion, idx) => (
@@ -432,9 +432,9 @@ function SkillsSection({
                     className="border-b border-border/30 hover:bg-muted/30 transition-colors"
                   >
                     <TableCell className={cn(
-                      "p-2 pl-3 text-xs font-medium sticky bg-card z-20 border-r border-border/30 border-l border-border/30 transition-[left] duration-150 ease-out",
+                      "p-2 pl-3 text-xs font-medium sticky left-0 bg-card z-20 border-r border-border/30",
                       rowIdx === skillRows.length - 1 && "rounded-bl-lg"
-                    )} style={{ left: '-1px' }}>
+                    )} style={{ left: 0 }}>
                       {row.level}레벨
                     </TableCell>
                     {row.skills.map((championSkills, champIdx) => (
