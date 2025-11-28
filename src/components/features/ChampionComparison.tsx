@@ -43,16 +43,16 @@ function StatsSection({ champions, version }: { champions: Champion[]; version: 
       <div className="min-w-full">
         {/* Desktop Table */}
         <div className="hidden md:block overflow-x-auto">
-          <table className="w-full border-collapse min-w-[600px]">
+          <table className="w-full border-collapse min-w-[600px] border border-border/30 rounded-lg overflow-hidden">
             <thead>
-              <tr className="border-b border-border">
-                <th className="text-left p-3 font-semibold sticky left-0 bg-card z-10 min-w-[120px]">
+              <tr className="border-b border-border/30">
+                <th className="text-left p-2 pl-3 text-xs font-semibold sticky left-0 bg-card z-10 w-[90px] border-r border-border/30">
                   스탯
                 </th>
                 {champions.map((champion) => (
                   <th
                     key={champion.id}
-                    className="text-center p-3 font-semibold min-w-[140px]"
+                    className="text-center p-3 text-xs font-semibold min-w-[140px]"
                   >
                     <div className="flex flex-col items-center gap-2">
                       <img
@@ -61,8 +61,8 @@ function StatsSection({ champions, version }: { champions: Champion[]; version: 
                         className="w-12 h-12 rounded-full"
                       />
                       <div>
-                        <div className="font-semibold">{champion.name}</div>
-                        <div className="text-xs text-muted-foreground">
+                        <div className="text-xs font-semibold">{champion.name}</div>
+                        <div className="text-[10px] text-muted-foreground">
                           {champion.title}
                         </div>
                       </div>
@@ -80,9 +80,9 @@ function StatsSection({ champions, version }: { champions: Champion[]; version: 
                 return (
                   <tr
                     key={field.key}
-                    className="border-b border-border/50 hover:bg-muted/30 transition-colors"
+                    className="border-b border-border/30 hover:bg-muted/30 transition-colors"
                   >
-                    <td className="p-3 font-medium sticky left-0 bg-card z-10">
+                    <td className="p-2 pl-3 text-xs font-medium sticky left-0 bg-card z-10 border-r border-border/30">
                       {field.label}
                     </td>
                     {champions.map((champion, idx) => {
@@ -94,7 +94,7 @@ function StatsSection({ champions, version }: { champions: Champion[]; version: 
                         <td
                           key={champion.id}
                           className={cn(
-                            "p-3 text-center",
+                            "p-3 text-xs text-center",
                             isMax && "text-primary font-semibold",
                             isMin && "text-muted-foreground"
                           )}
@@ -193,16 +193,16 @@ function SkillsSection({
       <div className="min-w-full">
         {/* Desktop Table */}
         <div className="hidden md:block overflow-x-auto">
-          <table className="w-full border-collapse min-w-[600px]">
+          <table className="w-full border-collapse min-w-[600px] border border-border/30 rounded-lg overflow-hidden">
             <thead>
-              <tr className="border-b border-border">
-                <th className="text-left p-3 font-semibold sticky left-0 bg-card z-10 min-w-[80px]">
+              <tr className="border-b border-border/30">
+                <th className="text-left p-2 pl-3 text-xs font-semibold sticky left-0 bg-card z-10 w-[80px] border-r border-border/30">
                   레벨
                 </th>
                 {champions.map((champion) => (
                   <th
                     key={champion.id}
-                    className="text-center p-3 font-semibold min-w-[200px]"
+                    className="text-center p-3 text-xs font-semibold min-w-[200px]"
                   >
                     <div className="flex flex-col items-center gap-2">
                       <img
@@ -211,8 +211,8 @@ function SkillsSection({
                         className="w-12 h-12 rounded-full"
                       />
                       <div>
-                        <div className="font-semibold">{champion.name}</div>
-                        <div className="text-xs text-muted-foreground">
+                        <div className="text-xs font-semibold">{champion.name}</div>
+                        <div className="text-[10px] text-muted-foreground">
                           {champion.title}
                         </div>
                       </div>
@@ -223,8 +223,8 @@ function SkillsSection({
             </thead>
             <tbody>
               {/* Passive Row */}
-              <tr className="border-b border-border/50">
-                <td className="p-3 font-medium sticky left-0 bg-card z-10">
+              <tr className="border-b border-border/30">
+                <td className="p-2 pl-3 text-xs font-medium sticky left-0 bg-card z-10 border-r border-border/30">
                   패시브
                 </td>
                 {champions.map((champion) => (
@@ -239,15 +239,15 @@ function SkillsSection({
                         className="w-10 h-10 mx-auto rounded"
                       />
                     ) : (
-                      <span className="text-muted-foreground">-</span>
+                      <span className="text-xs text-muted-foreground">-</span>
                     )}
                   </td>
                 ))}
               </tr>
 
               {/* Skills Header */}
-              <tr className="border-b-2 border-border bg-muted/30">
-                <td className="p-3 font-medium sticky left-0 bg-card z-10">
+              <tr className="border-b-2 border-border/30 bg-muted/30">
+                <td className="p-2 pl-3 text-xs font-medium sticky left-0 bg-muted/30 z-10 border-r border-border/30">
                   스킬
                 </td>
                 {champions.map((champion) => (
@@ -263,7 +263,7 @@ function SkillsSection({
                             alt={SKILL_LETTERS[idx]}
                             className="w-10 h-10 rounded"
                           />
-                          <span className="text-xs font-semibold">
+                          <span className="text-[10px] font-semibold">
                             {SKILL_LETTERS[idx]}
                           </span>
                         </div>
@@ -277,9 +277,9 @@ function SkillsSection({
               {skillRows.map((row) => (
                 <tr
                   key={row.level}
-                  className="border-b border-border/50 hover:bg-muted/30 transition-colors"
+                  className="border-b border-border/30 hover:bg-muted/30 transition-colors"
                 >
-                  <td className="p-3 font-medium sticky left-0 bg-card z-10">
+                  <td className="p-2 pl-3 text-xs font-medium sticky left-0 bg-card z-10 border-r border-border/30">
                     {row.level}레벨
                   </td>
                   {row.skills.map((championSkills, champIdx) => (
@@ -291,7 +291,7 @@ function SkillsSection({
                               key={skillIdx}
                               className="flex flex-col items-center min-w-[40px]"
                             >
-                              <span className="text-sm font-semibold">
+                              <span className="text-xs font-semibold">
                                 {skillData.cooldown !== ""
                                   ? `${skillData.cooldown}s`
                                   : "-"}
@@ -300,7 +300,7 @@ function SkillsSection({
                           ))}
                         </div>
                       ) : (
-                        <span className="text-muted-foreground">-</span>
+                        <span className="text-xs text-muted-foreground">-</span>
                       )}
                     </td>
                   ))}
