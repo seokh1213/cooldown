@@ -1,9 +1,9 @@
-import { useState, useCallback, useMemo } from "react";
+import { useState, useCallback, useMemo, useEffect } from "react";
 import { Champion } from "@/types";
 import { getChampionInfo } from "@/services/api";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Plus, Search } from "lucide-react";
+import { Plus, Search, RotateCcw } from "lucide-react";
 import { cn } from "@/lib/utils";
 import ChampionComparison from "@/components/features/ChampionComparison";
 import ChampionSelector from "@/components/features/ChampionSelector";
@@ -20,10 +20,76 @@ interface ChampionWithInfo extends Champion {
   skinIndex?: number;
 }
 
+const STORAGE_KEY = "encyclopedia_selected_champions";
+
 function EncyclopediaPage({ lang, championList, version }: EncyclopediaPageProps) {
   const [selectedChampions, setSelectedChampions] = useState<ChampionWithInfo[]>([]);
   const [activeTab, setActiveTab] = useState<"stats" | "skills">("stats");
   const [showSelector, setShowSelector] = useState(false);
+
+  // Load from localStorage on mount
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem(STORAGE_KEY);
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          // Restore champions (without fullInfo)
+          const restoredChampions = parsed.map((champion: Champion) => ({
+            ...champion,
+            isLoading: false,
+          }));
+          setSelectedChampions(restoredChampions);
+
+          // Reload full info for each champion
+          restoredChampions.forEach((champion: ChampionWithInfo) => {
+            if (champion.id) {
+              setSelectedChampions((prev) =>
+                prev.map((c) =>
+                  c.id === champion.id ? { ...c, isLoading: true } : c
+                )
+              );
+              getChampionInfo(version, lang, champion.id)
+                .then((fullInfo) => {
+                  setSelectedChampions((prev) =>
+                    prev.map((c) =>
+                      c.id === champion.id
+                        ? { ...c, fullInfo, isLoading: false }
+                        : c
+                    )
+                  );
+                })
+                .catch((error) => {
+                  console.error("Failed to load champion info:", error);
+                  setSelectedChampions((prev) =>
+                    prev.map((c) =>
+                      c.id === champion.id ? { ...c, isLoading: false } : c
+                    )
+                  );
+                });
+            }
+          });
+        }
+      }
+    } catch (error) {
+      console.error("Failed to load stored champions:", error);
+    }
+  }, [version, lang]);
+
+  // Save to localStorage whenever selectedChampions changes
+  useEffect(() => {
+    try {
+      if (selectedChampions.length > 0) {
+        // Store only essential data (without fullInfo to avoid large storage)
+        const toStore = selectedChampions.map(({ fullInfo, isLoading, ...rest }) => rest);
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(toStore));
+      } else {
+        localStorage.removeItem(STORAGE_KEY);
+      }
+    } catch (error) {
+      console.error("Failed to save champions to storage:", error);
+    }
+  }, [selectedChampions]);
 
   const addChampion = useCallback(
     (champion: Champion) => {
@@ -64,6 +130,11 @@ function EncyclopediaPage({ lang, championList, version }: EncyclopediaPageProps
     setSelectedChampions((prev) => prev.filter((c) => c.id !== championId));
   }, []);
 
+  const resetChampions = useCallback(() => {
+    setSelectedChampions([]);
+    localStorage.removeItem(STORAGE_KEY);
+  }, []);
+
   const championsWithFullInfo = useMemo(() => {
     return selectedChampions.filter((c) => c.fullInfo && !c.isLoading);
   }, [selectedChampions]);
@@ -92,29 +163,40 @@ function EncyclopediaPage({ lang, championList, version }: EncyclopediaPageProps
       {selectedChampions.length > 0 && championsWithFullInfo.length > 0 && (
             <div className="space-y-4 md:space-y-6">
               {/* Tab Navigation */}
-              <div className="flex gap-2 border-b border-border overflow-x-auto -mx-4 md:mx-0 px-4 md:px-0">
-                <button
-                  onClick={() => setActiveTab("stats")}
-                  className={cn(
-                    "px-4 py-2 text-sm font-medium transition-colors border-b-2 whitespace-nowrap",
-                    activeTab === "stats"
-                      ? "border-primary text-primary"
-                      : "border-transparent text-muted-foreground hover:text-foreground"
-                  )}
+              <div className="flex items-center justify-between gap-2 border-b border-border overflow-x-auto -mx-4 md:mx-0 px-4 md:px-0">
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => setActiveTab("stats")}
+                    className={cn(
+                      "px-4 py-2 text-sm font-medium transition-colors border-b-2 whitespace-nowrap",
+                      activeTab === "stats"
+                        ? "border-primary text-primary"
+                        : "border-transparent text-muted-foreground hover:text-foreground"
+                    )}
+                  >
+                    기본 스탯
+                  </button>
+                  <button
+                    onClick={() => setActiveTab("skills")}
+                    className={cn(
+                      "px-4 py-2 text-sm font-medium transition-colors border-b-2 whitespace-nowrap",
+                      activeTab === "skills"
+                        ? "border-primary text-primary"
+                        : "border-transparent text-muted-foreground hover:text-foreground"
+                    )}
+                  >
+                    스킬 쿨타임
+                  </button>
+                </div>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={resetChampions}
+                  className="flex items-center gap-1.5 shrink-0 text-muted-foreground hover:text-primary hover:bg-muted/30 border-0"
                 >
-                  기본 스탯
-                </button>
-                <button
-                  onClick={() => setActiveTab("skills")}
-                  className={cn(
-                    "px-4 py-2 text-sm font-medium transition-colors border-b-2 whitespace-nowrap",
-                    activeTab === "skills"
-                      ? "border-primary text-primary"
-                      : "border-transparent text-muted-foreground hover:text-foreground"
-                  )}
-                >
-                  스킬 쿨타임
-                </button>
+                  <RotateCcw className="h-3 w-3" />
+                  <span className="text-[10px]">초기화</span>
+                </Button>
               </div>
 
               {/* Comparison Content */}

@@ -62,22 +62,22 @@ function StatsSection({
     <div className="overflow-x-auto -mx-4 md:mx-0 px-4 md:px-0">
       <div className="min-w-full">
         {/* Desktop Table */}
-        <div className="hidden md:block overflow-x-auto relative">
-          <table className="border-collapse border border-border/30 rounded-lg overflow-hidden table-fixed w-auto">
+        <div className="hidden md:block relative">
+          <table className="border-collapse border border-border/30 rounded-lg table-fixed w-auto">
             <thead>
               <tr className="border-b border-border/30">
-                <th className="text-left p-2 pl-3 text-xs font-semibold sticky left-0 bg-card z-10 w-[90px] min-w-[90px] border-r border-border/30">
+                <th className="text-left p-2 pl-3 text-xs font-semibold sticky left-0 bg-card z-20 w-[90px] min-w-[90px] border-r border-border/30">
                   스탯
                 </th>
                 {champions.map((champion, idx) => (
                   <th
                     key={champion.id}
                     className={cn(
-                      "text-center p-2 text-xs font-semibold w-[180px] md:w-[200px] lg:w-[220px] min-w-[160px] md:min-w-[180px] lg:min-w-[200px]",
+                      "text-center p-2 text-xs font-semibold w-[100px] min-w-[100px]",
                       idx < champions.length - 1 && "border-r border-border/30"
                     )}
                   >
-                    <div className="flex flex-row items-center justify-center gap-2 relative">
+                    <div className="flex flex-col items-center justify-center gap-1.5 relative">
                       <div className="relative">
                         <img
                           src={CHAMP_ICON_URL(version, champion.id)}
@@ -104,17 +104,14 @@ function StatsSection({
                           </Button>
                         )}
                       </div>
-                      <div className="flex flex-col items-start">
-                        <div className="text-[11px] font-semibold leading-tight">{champion.name}</div>
-                        <div className="text-[9px] text-muted-foreground leading-tight">
-                          {champion.title}
-                        </div>
+                      <div className="text-[10px] font-semibold leading-tight text-center break-words">
+                        {champion.name}
                       </div>
                     </div>
                   </th>
                 ))}
                 {onAddChampion && (
-                  <th className="text-center p-2 text-xs font-semibold w-[180px] md:w-[200px] lg:w-[220px] min-w-[160px] md:min-w-[180px] lg:min-w-[200px] border-l border-border/30">
+                  <th className="text-center p-2 text-xs font-semibold w-[100px] min-w-[100px] border-l border-border/30">
                     <button
                       onClick={() => setShowAddSlot(true)}
                       className="w-full flex flex-row items-center justify-center gap-2 p-1.5 rounded-lg border-2 border-dashed border-muted-foreground/30 hover:border-primary/50 hover:bg-muted/30 transition-colors group"
@@ -141,7 +138,7 @@ function StatsSection({
                     key={field.key}
                     className="border-b border-border/30 hover:bg-muted/30 transition-colors"
                   >
-                    <td className="p-2 pl-3 text-xs font-medium sticky left-0 bg-card z-10 border-r border-border/30" style={{ wordBreak: 'keep-all' }}>
+                    <td className="p-2 pl-3 text-xs font-medium sticky left-0 bg-card z-20 border-r border-border/30" style={{ wordBreak: 'keep-all' }}>
                       {field.label}
                     </td>
                     {champions.map((champion, idx) => {
@@ -276,11 +273,11 @@ function SkillsSection({
     <div className="overflow-x-auto -mx-4 md:mx-0 px-4 md:px-0">
       <div className="min-w-full">
         {/* Desktop Table */}
-        <div className="hidden md:block overflow-x-auto relative">
-          <table className="border-collapse border border-border/30 rounded-lg overflow-hidden table-fixed w-auto">
+        <div className="hidden md:block relative">
+          <table className="border-collapse border border-border/30 rounded-lg table-fixed w-auto">
             <thead>
               <tr className="border-b border-border/30">
-                <th className="text-left p-2 pl-3 text-xs font-semibold sticky left-0 bg-card z-10 w-[80px] min-w-[80px] border-r border-border/30">
+                <th className="text-left p-2 pl-3 text-xs font-semibold sticky left-0 bg-card z-20 w-[80px] min-w-[80px] border-r border-border/30">
                   레벨
                 </th>
                 {champions.map((champion, idx) => (
@@ -347,7 +344,7 @@ function SkillsSection({
             <tbody>
               {/* Passive Row */}
               <tr className="border-b border-border/30">
-                <td className="p-2 pl-3 text-xs font-medium sticky left-0 bg-card z-10 border-r border-border/30">
+                <td className="p-2 pl-3 text-xs font-medium sticky left-0 bg-card z-20 border-r border-border/30">
                   패시브
                 </td>
                 {champions.map((champion, idx) => (
@@ -381,7 +378,7 @@ function SkillsSection({
 
               {/* Skills Header */}
               <tr className="border-b-2 border-border/30 bg-muted/30">
-                <td className="p-2 pl-3 text-xs font-medium sticky left-0 bg-muted/30 z-10 border-r border-border/30">
+                <td className="p-2 pl-3 text-xs font-medium sticky left-0 bg-muted/30 z-20 border-r border-border/30">
                   스킬
                 </td>
                 {champions.map((champion, idx) => (
@@ -424,7 +421,7 @@ function SkillsSection({
                   key={row.level}
                   className="border-b border-border/30 hover:bg-muted/30 transition-colors"
                 >
-                  <td className="p-2 pl-3 text-xs font-medium sticky left-0 bg-card z-10 border-r border-border/30">
+                  <td className="p-2 pl-3 text-xs font-medium sticky left-0 bg-card z-20 border-r border-border/30">
                     {row.level}레벨
                   </td>
                   {row.skills.map((championSkills, champIdx) => (
