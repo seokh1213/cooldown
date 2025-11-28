@@ -48,7 +48,7 @@ function Nav({
   return (
     <>
       <nav 
-        className="px-4 md:px-6 py-3 flex items-center gap-3 bg-card/80 backdrop-blur-md border-b border-border/50 fixed z-30 min-h-[60px]"
+        className="px-4 md:px-6 flex items-center gap-3 bg-card/80 backdrop-blur-md border-b border-border/50 fixed z-30 h-[60px] box-border"
         style={{ 
           left: navLeft,
           width: navWidth,
@@ -56,20 +56,17 @@ function Nav({
         }}
       >
         {isEncyclopediaPage && (
-          <h1 className="text-xl md:text-2xl font-bold flex-1">백과사전</h1>
+          <h1 className="text-base md:text-lg font-medium flex-1 text-foreground/70">백과사전</h1>
         )}
         {!isEncyclopediaPage && <div className="flex-1" />}
-        <div className="text-xs text-muted-foreground/80 hidden sm:block font-medium">v{version}</div>
+        <div className="text-xs text-muted-foreground/60 hidden sm:block font-medium">v{version}</div>
         {onThemeToggle && (
           <Button
             variant="ghost"
             size="icon"
             onClick={onThemeToggle}
             className={cn(
-              "h-9 w-9 transition-all duration-200",
-              theme === "dark" 
-                ? "text-amber-400 hover:bg-amber-400/10 hover:text-amber-400" 
-                : "text-slate-600 hover:bg-slate-100 hover:text-slate-800"
+              "h-9 w-9 transition-all duration-200 text-muted-foreground/60 hover:text-muted-foreground/80 hover:bg-accent/50"
             )}
             aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
             title={theme === "dark" ? "라이트 모드로 전환" : "다크 모드로 전환"}
@@ -84,7 +81,7 @@ function Nav({
         <Select
           defaultValue={lang}
           onChange={handleChange}
-          className="h-8 w-auto min-w-[90px] border border-border/50 bg-background/50 backdrop-blur-sm px-2 py-1 rounded-md focus-visible:ring-2 focus-visible:ring-primary/20 focus-visible:ring-offset-0 text-sm cursor-pointer hover:bg-accent/50 transition-colors"
+          className="h-7 w-auto min-w-[75px] border border-border/50 bg-background/50 backdrop-blur-sm px-1.5 py-0.5 rounded-md focus-visible:ring-2 focus-visible:ring-primary/20 focus-visible:ring-offset-0 text-xs text-muted-foreground/60 cursor-pointer hover:border-primary/50 transition-colors"
           aria-label="Select language"
         >
           <option value="ko_KR">한국어</option>

@@ -65,16 +65,16 @@ function Sidebar({ isOpen, onClose }: SidebarProps) {
             transform: isOpen ? "translateX(0)" : "translateX(-100%)",
           }}
           className={cn(
-            "md:!translate-x-0 transition-all duration-300 md:w-16 md:p-2"
+            "md:!translate-x-0 transition-all duration-300 md:w-16 md:p-2 pt-0 md:pt-0"
           )}
         >
-          <SidebarHeader className="flex-row items-center border-b border-border py-3 min-h-[60px] relative transition-all duration-300 px-0 md:px-2">
+          <SidebarHeader className="!flex !flex-row items-center border-b border-border/50 h-[60px] relative transition-all duration-300 px-0 md:px-2 box-border gap-0">
             {/* Mobile: Full header */}
-            <div className="md:hidden flex items-center gap-3 flex-1 px-4">
+            <div className="md:hidden flex items-center gap-3 flex-1 px-4 h-full">
               <img 
                 src={`${import.meta.env.BASE_URL}poro_logo.png`}
                 alt="Poro Logo" 
-                className="h-12 w-12 object-contain"
+                className="h-12 w-12 object-contain shadow-none"
                 style={{ imageRendering: 'high-quality' }}
               />
               <h2 className="text-lg font-semibold text-sidebar-foreground">Cooldown</h2>
@@ -93,11 +93,11 @@ function Sidebar({ isOpen, onClose }: SidebarProps) {
               </Button>
             </div>
             {/* Desktop/Tablet: Collapsed header */}
-            <div className="hidden md:flex w-full items-center justify-center px-1">
+            <div className="hidden md:flex w-full items-center justify-center px-1 h-full">
               <img 
                 src={`${import.meta.env.BASE_URL}poro_logo.png`}
                 alt="Poro Logo" 
-                className="h-8 w-8 object-contain"
+                className="h-8 w-8 object-contain shadow-none"
                 style={{ imageRendering: 'high-quality' }}
               />
             </div>
