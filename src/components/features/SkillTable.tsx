@@ -34,9 +34,10 @@ const SkillIcon = React.memo(function SkillIcon({ src, rule }: SkillIconProps) {
           isLoaded ? "opacity-100" : "opacity-0"
         )}
         src={src}
-        alt={rule || "passive"}
+        alt={rule ? `${rule} skill` : "Passive skill"}
         loading="lazy"
         onLoad={handleLoad}
+        role="img"
       />
       {rule && (
         <div
@@ -105,7 +106,11 @@ function SkillTable({ championInfo, version }: SkillTableProps) {
   );
 
   return (
-    <div className="grid grid-cols-5 flex-1 place-items-center text-muted-foreground text-lg gap-y-1">
+    <div 
+      className="grid grid-cols-5 flex-1 place-items-center text-muted-foreground text-lg gap-y-1"
+      role="grid"
+      aria-label="Champion skills"
+    >
       <SkillIcon src={passiveIconUrl} />
       {championInfo.spells.map((skill, idx) => (
         <SkillIcon

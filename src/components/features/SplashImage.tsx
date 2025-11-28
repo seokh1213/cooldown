@@ -59,30 +59,36 @@ function SplashImage({ src, name, changeHandler, nextSkinSrc, prevSkinSrc }: Spl
       <div className="absolute bottom-0 left-0 right-0 text-xs text-muted-foreground text-right p-0.5 capitalize bg-gradient-to-t from-black/70 to-transparent">
         {name}
       </div>
-      <LeftArrow
-        handler={handlePrevious}
-        style={{
-          width: "20px",
-          height: "40px",
-          position: "absolute",
-          top: "105px",
-          left: "10px",
-          cursor: "pointer",
-          zIndex: 1,
-        }}
-      />
-      <RightArrow
-        handler={handleNext}
-        style={{
-          width: "20px",
-          height: "40px",
-          position: "absolute",
-          top: "105px",
-          right: "10px",
-          cursor: "pointer",
-          zIndex: 1,
-        }}
-      />
+      <button
+        onClick={handlePrevious}
+        className="absolute top-1/2 -translate-y-1/2 left-2 p-2 rounded-md bg-black/50 hover:bg-black/70 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-colors z-20"
+        aria-label="Previous skin"
+      >
+        <LeftArrow
+          handler={() => {}}
+          style={{
+            width: "20px",
+            height: "40px",
+            cursor: "pointer",
+            pointerEvents: "none",
+          }}
+        />
+      </button>
+      <button
+        onClick={handleNext}
+        className="absolute top-1/2 -translate-y-1/2 right-2 p-2 rounded-md bg-black/50 hover:bg-black/70 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-colors z-20"
+        aria-label="Next skin"
+      >
+        <RightArrow
+          handler={() => {}}
+          style={{
+            width: "20px",
+            height: "40px",
+            cursor: "pointer",
+            pointerEvents: "none",
+          }}
+        />
+      </button>
     </div>
   );
 }

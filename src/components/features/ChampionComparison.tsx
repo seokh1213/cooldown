@@ -69,10 +69,13 @@ function StatsSection({
                 <th className="text-left p-2 pl-3 text-xs font-semibold sticky left-0 bg-card z-10 w-[90px] min-w-[90px] border-r border-border/30">
                   스탯
                 </th>
-                {champions.map((champion) => (
+                {champions.map((champion, idx) => (
                   <th
                     key={champion.id}
-                    className="text-center p-2 text-xs font-semibold w-[180px] md:w-[200px] lg:w-[220px] min-w-[160px] md:min-w-[180px] lg:min-w-[200px]"
+                    className={cn(
+                      "text-center p-2 text-xs font-semibold w-[180px] md:w-[200px] lg:w-[220px] min-w-[160px] md:min-w-[180px] lg:min-w-[200px]",
+                      idx < champions.length - 1 && "border-r border-border/30"
+                    )}
                   >
                     <div className="flex flex-row items-center justify-center gap-2 relative">
                       <div className="relative">
@@ -151,6 +154,7 @@ function StatsSection({
                           key={champion.id}
                           className={cn(
                             "p-2 text-xs text-center",
+                            idx < champions.length - 1 && "border-r border-border/30",
                             isMax && "text-primary font-semibold",
                             isMin && "text-muted-foreground"
                           )}
@@ -279,10 +283,13 @@ function SkillsSection({
                 <th className="text-left p-2 pl-3 text-xs font-semibold sticky left-0 bg-card z-10 w-[80px] min-w-[80px] border-r border-border/30">
                   레벨
                 </th>
-                {champions.map((champion) => (
+                {champions.map((champion, idx) => (
                   <th
                     key={champion.id}
-                    className="text-center p-2 text-xs font-semibold w-[200px] md:w-[220px] lg:w-[240px] min-w-[180px] md:min-w-[200px] lg:min-w-[220px]"
+                    className={cn(
+                      "text-center p-2 text-xs font-semibold w-[200px] md:w-[220px] lg:w-[240px] min-w-[180px] md:min-w-[200px] lg:min-w-[220px]",
+                      idx < champions.length - 1 && "border-r border-border/30"
+                    )}
                   >
                     <div className="flex flex-row items-center justify-center gap-2 relative">
                       <div className="relative">
@@ -343,8 +350,14 @@ function SkillsSection({
                 <td className="p-2 pl-3 text-xs font-medium sticky left-0 bg-card z-10 border-r border-border/30">
                   패시브
                 </td>
-                {champions.map((champion) => (
-                  <td key={champion.id} className="p-2 text-center">
+                {champions.map((champion, idx) => (
+                  <td 
+                    key={champion.id} 
+                    className={cn(
+                      "p-2 text-center",
+                      idx < champions.length - 1 && "border-r border-border/30"
+                    )}
+                  >
                     {champion.passive ? (
                       <img
                         src={PASSIVE_ICON_URL(
@@ -371,21 +384,27 @@ function SkillsSection({
                 <td className="p-2 pl-3 text-xs font-medium sticky left-0 bg-muted/30 z-10 border-r border-border/30">
                   스킬
                 </td>
-                {champions.map((champion) => (
-                  <td key={champion.id} className="p-2">
+                {champions.map((champion, idx) => (
+                  <td 
+                    key={champion.id} 
+                    className={cn(
+                      "p-2",
+                      idx < champions.length - 1 && "border-r border-border/30"
+                    )}
+                  >
                     <div className="flex justify-center gap-1.5">
-                      {champion.spells?.map((skill, idx) => (
+                      {champion.spells?.map((skill, skillIdx) => (
                         <div
                           key={skill.id}
                           className="flex flex-col items-center gap-0.5"
                         >
                           <img
                             src={SKILL_ICON_URL(version, skill.id)}
-                            alt={SKILL_LETTERS[idx]}
+                            alt={SKILL_LETTERS[skillIdx]}
                             className="w-8 h-8 rounded"
                           />
                           <span className="text-[9px] font-semibold">
-                            {SKILL_LETTERS[idx]}
+                            {SKILL_LETTERS[skillIdx]}
                           </span>
                         </div>
                       ))}
@@ -409,7 +428,13 @@ function SkillsSection({
                     {row.level}레벨
                   </td>
                   {row.skills.map((championSkills, champIdx) => (
-                    <td key={champions[champIdx].id} className="p-2">
+                    <td 
+                      key={champions[champIdx].id} 
+                      className={cn(
+                        "p-2",
+                        champIdx < champions.length - 1 && "border-r border-border/30"
+                      )}
+                    >
                       {championSkills ? (
                         <div className="flex justify-center gap-1.5">
                           {championSkills.map((skillData, skillIdx) => (
