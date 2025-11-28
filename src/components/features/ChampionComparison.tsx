@@ -3,9 +3,16 @@ import { Champion } from "@/types";
 import { CHAMP_ICON_URL, PASSIVE_ICON_URL, SKILL_ICON_URL } from "@/services/api";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
-import { Skeleton } from "@/components/ui/skeleton";
 import { X, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import ChampionSelector from "./ChampionSelector";
 
 interface ChampionComparisonProps {
@@ -63,113 +70,115 @@ function StatsSection({
       <div className="min-w-full">
         {/* Desktop Table */}
         <div className="hidden md:block relative">
-          <table className="border-collapse border border-border/30 rounded-lg table-fixed w-auto">
-            <thead>
-              <tr className="border-b border-border/30">
-                <th className="text-left p-2 pl-3 text-xs font-semibold sticky left-0 bg-card z-20 w-[90px] min-w-[90px] border-r border-border/30" style={{ left: 0 }}>
-                  스탯
-                </th>
-                {champions.map((champion, idx) => (
-                  <th
-                    key={champion.id}
-                    className={cn(
-                      "text-center p-2 text-xs font-semibold w-[100px] min-w-[100px]",
-                      idx < champions.length - 1 && "border-r border-border/30"
-                    )}
-                  >
-                    <div className="flex flex-col items-center justify-center gap-1.5 relative">
-                      <div className="relative">
-                        <img
-                          src={CHAMP_ICON_URL(version, champion.id)}
-                          alt={champion.name}
-                          className="w-8 h-8 rounded-full"
-                        />
-                        {onRemoveChampion && (
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            className={cn(
-                              "absolute -top-1 -right-1 h-4 w-4 rounded-full",
-                              "bg-destructive/90 hover:bg-destructive text-white",
-                              "hover:scale-110 transition-transform",
-                              "shadow-md"
-                            )}
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              onRemoveChampion(champion.id);
-                            }}
-                            aria-label={`Remove ${champion.name}`}
-                          >
-                            <X className="h-2.5 w-2.5" />
-                          </Button>
-                        )}
-                      </div>
-                      <div className="text-[10px] font-semibold leading-tight text-center break-words">
-                        {champion.name}
-                      </div>
-                    </div>
-                  </th>
-                ))}
-                {onAddChampion && (
-                  <th className="text-center p-2 text-xs font-semibold w-[100px] min-w-[100px] border-l border-border/30">
-                    <button
-                      onClick={() => setShowAddSlot(true)}
-                      className="w-full flex flex-row items-center justify-center gap-2 p-1.5 rounded-lg border-2 border-dashed border-muted-foreground/30 hover:border-primary/50 hover:bg-muted/30 transition-colors group"
+          <div className="border border-border/30 rounded-lg overflow-hidden">
+            <Table className="border-collapse table-fixed w-auto">
+              <TableHeader>
+                <TableRow className="border-b border-border/30">
+                  <TableHead className="text-left p-2 pl-3 text-xs font-semibold sticky left-0 bg-card z-20 w-[90px] min-w-[90px] border-r border-border/30" style={{ left: 0 }}>
+                    스탯
+                  </TableHead>
+                  {champions.map((champion, idx) => (
+                    <TableHead
+                      key={champion.id}
+                      className={cn(
+                        "text-center p-2 text-xs font-semibold w-[100px] min-w-[100px]",
+                        idx < champions.length - 1 && "border-r border-border/30"
+                      )}
                     >
-                      <div className="w-8 h-8 rounded-full bg-muted/30 flex items-center justify-center group-hover:bg-primary/10 transition-colors">
-                        <Plus className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors" />
-                      </div>
-                      <div className="text-[10px] text-muted-foreground group-hover:text-primary transition-colors whitespace-nowrap">
-                        추가
-                      </div>
-                    </button>
-                  </th>
-                )}
-              </tr>
-            </thead>
-            <tbody>
-              {STAT_FIELDS.map((field) => {
-                const values = champions.map((c) => c.stats?.[field.key] ?? 0);
-                const maxValue = Math.max(...values);
-                const minValue = Math.min(...values);
-
-                return (
-                  <tr
-                    key={field.key}
-                    className="border-b border-border/30 hover:bg-muted/30 transition-colors"
-                  >
-                    <td className="p-2 pl-3 text-xs font-medium sticky left-0 bg-card z-20 border-r border-border/30" style={{ wordBreak: 'keep-all', left: 0 }}>
-                      {field.label}
-                    </td>
-                    {champions.map((champion, idx) => {
-                      const value = champion.stats?.[field.key] ?? 0;
-                      const isMax = value === maxValue && maxValue !== minValue;
-                      const isMin = value === minValue && maxValue !== minValue;
-
-                      return (
-                        <td
-                          key={champion.id}
-                          className={cn(
-                            "p-2 text-xs text-center",
-                            idx < champions.length - 1 && "border-r border-border/30",
-                            isMax && "text-primary font-semibold",
-                            isMin && "text-muted-foreground"
+                      <div className="flex flex-col items-center justify-center gap-1.5 relative">
+                        <div className="relative">
+                          <img
+                            src={CHAMP_ICON_URL(version, champion.id)}
+                            alt={champion.name}
+                            className="w-8 h-8 rounded-full"
+                          />
+                          {onRemoveChampion && (
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className={cn(
+                                "absolute -top-1 -right-1 h-4 w-4 rounded-full",
+                                "bg-destructive/90 hover:bg-destructive text-white",
+                                "hover:scale-110 transition-transform",
+                                "shadow-md"
+                              )}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                onRemoveChampion(champion.id);
+                              }}
+                              aria-label={`Remove ${champion.name}`}
+                            >
+                              <X className="h-2.5 w-2.5" />
+                            </Button>
                           )}
-                        >
-                          {field.format(value)}
-                        </td>
-                      );
-                    })}
-                    {onAddChampion && (
-                      <td className="p-2 text-center border-l border-border/30">
-                        <div className="w-full h-full min-h-[32px]" />
-                      </td>
-                    )}
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
+                        </div>
+                        <div className="text-[10px] font-semibold leading-tight text-center break-words">
+                          {champion.name}
+                        </div>
+                      </div>
+                    </TableHead>
+                  ))}
+                  {onAddChampion && (
+                    <TableHead className="text-center p-2 text-xs font-semibold w-[100px] min-w-[100px] border-l border-border/30">
+                      <button
+                        onClick={() => setShowAddSlot(true)}
+                        className="w-full flex flex-row items-center justify-center gap-2 p-1.5 rounded-lg border-2 border-dashed border-muted-foreground/30 hover:border-primary/50 hover:bg-muted/30 transition-colors group"
+                      >
+                        <div className="w-8 h-8 rounded-full bg-muted/30 flex items-center justify-center group-hover:bg-primary/10 transition-colors">
+                          <Plus className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors" />
+                        </div>
+                        <div className="text-[10px] text-muted-foreground group-hover:text-primary transition-colors whitespace-nowrap">
+                          추가
+                        </div>
+                      </button>
+                    </TableHead>
+                  )}
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {STAT_FIELDS.map((field) => {
+                  const values = champions.map((c) => c.stats?.[field.key] ?? 0);
+                  const maxValue = Math.max(...values);
+                  const minValue = Math.min(...values);
+
+                  return (
+                    <TableRow
+                      key={field.key}
+                      className="border-b border-border/30 hover:bg-muted/30 transition-colors"
+                    >
+                      <TableCell className="p-2 pl-3 text-xs font-medium sticky left-0 bg-card z-20 border-r border-border/30" style={{ wordBreak: 'keep-all', left: 0 }}>
+                        {field.label}
+                      </TableCell>
+                      {champions.map((champion, idx) => {
+                        const value = champion.stats?.[field.key] ?? 0;
+                        const isMax = value === maxValue && maxValue !== minValue;
+                        const isMin = value === minValue && maxValue !== minValue;
+
+                        return (
+                          <TableCell
+                            key={champion.id}
+                            className={cn(
+                              "p-2 text-xs text-center",
+                              idx < champions.length - 1 && "border-r border-border/30",
+                              isMax && "text-primary font-semibold",
+                              isMin && "text-muted-foreground"
+                            )}
+                          >
+                            {field.format(value)}
+                          </TableCell>
+                        );
+                      })}
+                      {onAddChampion && (
+                        <TableCell className="p-2 text-center border-l border-border/30">
+                          <div className="w-full h-full min-h-[32px]" />
+                        </TableCell>
+                      )}
+                    </TableRow>
+                  );
+                })}
+              </TableBody>
+            </Table>
+          </div>
           {showAddSlot && onAddChampion && championList && (
             <ChampionSelector
               championList={championList}
@@ -274,196 +283,198 @@ function SkillsSection({
       <div className="min-w-full">
         {/* Desktop Table */}
         <div className="hidden md:block relative">
-          <table className="border-collapse border border-border/30 rounded-lg table-fixed w-auto">
-            <thead>
-              <tr className="border-b border-border/30">
-                <th className="text-left p-2 pl-3 text-xs font-semibold sticky bg-card z-20 w-[80px] min-w-[80px] border-r border-border/30 border-l border-border/30 rounded-tl-lg transition-[left] duration-150 ease-out" style={{ left: '-1px' }}>
-                  레벨
-                </th>
-                {champions.map((champion, idx) => (
-                  <th
-                    key={champion.id}
-                    className={cn(
-                      "text-center p-2 text-xs font-semibold w-[200px] md:w-[220px] lg:w-[240px] min-w-[180px] md:min-w-[200px] lg:min-w-[220px]",
-                      idx < champions.length - 1 && "border-r border-border/30"
-                    )}
-                  >
-                    <div className="flex flex-row items-center justify-center gap-2 relative">
-                      <div className="relative">
-                        <img
-                          src={CHAMP_ICON_URL(version, champion.id)}
-                          alt={champion.name}
-                          className="w-8 h-8 rounded-full"
-                        />
-                        {onRemoveChampion && (
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            className={cn(
-                              "absolute -top-1 -right-1 h-4 w-4 rounded-full",
-                              "bg-destructive/90 hover:bg-destructive text-white",
-                              "hover:scale-110 transition-transform",
-                              "shadow-md"
-                            )}
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              onRemoveChampion(champion.id);
-                            }}
-                            aria-label={`Remove ${champion.name}`}
-                          >
-                            <X className="h-2.5 w-2.5" />
-                          </Button>
-                        )}
-                      </div>
-                      <div className="flex flex-col items-start">
-                        <div className="text-[11px] font-semibold leading-tight">{champion.name}</div>
-                        <div className="text-[9px] text-muted-foreground leading-tight">
-                          {champion.title}
-                        </div>
-                      </div>
-                    </div>
-                  </th>
-                ))}
-                {onAddChampion && (
-                  <th className="text-center p-2 text-xs font-semibold w-[200px] md:w-[220px] lg:w-[240px] min-w-[180px] md:min-w-[200px] lg:min-w-[220px] border-l border-border/30">
-                    <button
-                      onClick={() => setShowAddSlot(true)}
-                      className="w-full flex flex-row items-center justify-center gap-2 p-1.5 rounded-lg border-2 border-dashed border-muted-foreground/30 hover:border-primary/50 hover:bg-muted/30 transition-colors group"
-                    >
-                      <div className="w-8 h-8 rounded-full bg-muted/30 flex items-center justify-center group-hover:bg-primary/10 transition-colors">
-                        <Plus className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors" />
-                      </div>
-                      <div className="text-[10px] text-muted-foreground group-hover:text-primary transition-colors whitespace-nowrap">
-                        추가
-                      </div>
-                    </button>
-                  </th>
-                )}
-              </tr>
-            </thead>
-            <tbody>
-              {/* Passive Row */}
-              <tr className="border-b border-border/30">
-                <td className="p-2 pl-3 text-xs font-medium sticky bg-card z-20 border-r border-border/30 border-l border-border/30 transition-[left] duration-150 ease-out" style={{ left: '-1px' }}>
-                  패시브
-                </td>
-                {champions.map((champion, idx) => (
-                  <td 
-                    key={champion.id} 
-                    className={cn(
-                      "p-2 text-center",
-                      idx < champions.length - 1 && "border-r border-border/30"
-                    )}
-                  >
-                    {champion.passive ? (
-                      <img
-                        src={PASSIVE_ICON_URL(
-                          version,
-                          champion.passive.image.full
-                        )}
-                        alt="Passive"
-                        className="w-8 h-8 mx-auto rounded"
-                      />
-                    ) : (
-                      <span className="text-xs text-muted-foreground">-</span>
-                    )}
-                  </td>
-                ))}
-                {onAddChampion && (
-                  <td className="p-2 text-center border-l border-border/30">
-                    <div className="w-full h-full min-h-[32px]" />
-                  </td>
-                )}
-              </tr>
-
-              {/* Skills Header */}
-              <tr className="border-b-2 border-border/30 bg-muted/30">
-                <td className="p-2 pl-3 text-xs font-medium sticky bg-card z-20 border-r border-border/30 border-l border-border/30 transition-[left] duration-150 ease-out" style={{ left: '-1px' }}>
-                  스킬
-                </td>
-                {champions.map((champion, idx) => (
-                  <td 
-                    key={champion.id} 
-                    className={cn(
-                      "p-2",
-                      idx < champions.length - 1 && "border-r border-border/30"
-                    )}
-                  >
-                    <div className="flex justify-center gap-1.5">
-                      {champion.spells?.map((skill, skillIdx) => (
-                        <div
-                          key={skill.id}
-                          className="flex flex-col items-center gap-0.5"
-                        >
-                          <img
-                            src={SKILL_ICON_URL(version, skill.id)}
-                            alt={SKILL_LETTERS[skillIdx]}
-                            className="w-8 h-8 rounded"
-                          />
-                          <span className="text-[9px] font-semibold">
-                            {SKILL_LETTERS[skillIdx]}
-                          </span>
-                        </div>
-                      ))}
-                    </div>
-                  </td>
-                ))}
-                {onAddChampion && (
-                  <td className="p-2 text-center border-l border-border/30">
-                    <div className="w-full h-full min-h-[32px]" />
-                  </td>
-                )}
-              </tr>
-
-              {/* Skill Cooldowns by Level */}
-              {skillRows.map((row, rowIdx) => (
-                <tr
-                  key={row.level}
-                  className="border-b border-border/30 hover:bg-muted/30 transition-colors"
-                >
-                  <td className={cn(
-                    "p-2 pl-3 text-xs font-medium sticky bg-card z-20 border-r border-border/30 border-l border-border/30 transition-[left] duration-150 ease-out",
-                    rowIdx === skillRows.length - 1 && "rounded-bl-lg"
-                  )} style={{ left: '-1px' }}>
-                    {row.level}레벨
-                  </td>
-                  {row.skills.map((championSkills, champIdx) => (
-                    <td 
-                      key={champions[champIdx].id} 
+          <div className="border border-border/30 rounded-lg overflow-hidden">
+            <Table className="border-collapse table-fixed w-auto">
+              <TableHeader>
+                <TableRow className="border-b border-border/30">
+                  <TableHead className="text-left p-2 pl-3 text-xs font-semibold sticky bg-card z-20 w-[80px] min-w-[80px] border-r border-border/30 border-l border-border/30 rounded-tl-lg transition-[left] duration-150 ease-out" style={{ left: '-1px' }}>
+                    레벨
+                  </TableHead>
+                  {champions.map((champion, idx) => (
+                    <TableHead
+                      key={champion.id}
                       className={cn(
-                        "p-2",
-                        champIdx < champions.length - 1 && "border-r border-border/30"
+                        "text-center p-2 text-xs font-semibold w-[200px] md:w-[220px] lg:w-[240px] min-w-[180px] md:min-w-[200px] lg:min-w-[220px]",
+                        idx < champions.length - 1 && "border-r border-border/30"
                       )}
                     >
-                      {championSkills ? (
-                        <div className="flex justify-center gap-1.5">
-                          {championSkills.map((skillData, skillIdx) => (
-                            <div
-                              key={skillIdx}
-                              className="flex flex-col items-center min-w-[32px]"
+                      <div className="flex flex-row items-center justify-center gap-2 relative">
+                        <div className="relative">
+                          <img
+                            src={CHAMP_ICON_URL(version, champion.id)}
+                            alt={champion.name}
+                            className="w-8 h-8 rounded-full"
+                          />
+                          {onRemoveChampion && (
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className={cn(
+                                "absolute -top-1 -right-1 h-4 w-4 rounded-full",
+                                "bg-destructive/90 hover:bg-destructive text-white",
+                                "hover:scale-110 transition-transform",
+                                "shadow-md"
+                              )}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                onRemoveChampion(champion.id);
+                              }}
+                              aria-label={`Remove ${champion.name}`}
                             >
-                              <span className="text-xs font-semibold">
-                                {skillData.cooldown !== ""
-                                  ? `${skillData.cooldown}s`
-                                  : "-"}
-                              </span>
-                            </div>
-                          ))}
+                              <X className="h-2.5 w-2.5" />
+                            </Button>
+                          )}
                         </div>
+                        <div className="flex flex-col items-start">
+                          <div className="text-[11px] font-semibold leading-tight">{champion.name}</div>
+                          <div className="text-[9px] text-muted-foreground leading-tight">
+                            {champion.title}
+                          </div>
+                        </div>
+                      </div>
+                    </TableHead>
+                  ))}
+                  {onAddChampion && (
+                    <TableHead className="text-center p-2 text-xs font-semibold w-[200px] md:w-[220px] lg:w-[240px] min-w-[180px] md:min-w-[200px] lg:min-w-[220px] border-l border-border/30">
+                      <button
+                        onClick={() => setShowAddSlot(true)}
+                        className="w-full flex flex-row items-center justify-center gap-2 p-1.5 rounded-lg border-2 border-dashed border-muted-foreground/30 hover:border-primary/50 hover:bg-muted/30 transition-colors group"
+                      >
+                        <div className="w-8 h-8 rounded-full bg-muted/30 flex items-center justify-center group-hover:bg-primary/10 transition-colors">
+                          <Plus className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors" />
+                        </div>
+                        <div className="text-[10px] text-muted-foreground group-hover:text-primary transition-colors whitespace-nowrap">
+                          추가
+                        </div>
+                      </button>
+                    </TableHead>
+                  )}
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {/* Passive Row */}
+                <TableRow className="border-b border-border/30">
+                  <TableCell className="p-2 pl-3 text-xs font-medium sticky bg-card z-20 border-r border-border/30 border-l border-border/30 transition-[left] duration-150 ease-out" style={{ left: '-1px' }}>
+                    패시브
+                  </TableCell>
+                  {champions.map((champion, idx) => (
+                    <TableCell 
+                      key={champion.id} 
+                      className={cn(
+                        "p-2 text-center",
+                        idx < champions.length - 1 && "border-r border-border/30"
+                      )}
+                    >
+                      {champion.passive ? (
+                        <img
+                          src={PASSIVE_ICON_URL(
+                            version,
+                            champion.passive.image.full
+                          )}
+                          alt="Passive"
+                          className="w-8 h-8 mx-auto rounded"
+                        />
                       ) : (
                         <span className="text-xs text-muted-foreground">-</span>
                       )}
-                    </td>
+                    </TableCell>
                   ))}
                   {onAddChampion && (
-                    <td className="p-2 text-center border-l border-border/30">
+                    <TableCell className="p-2 text-center border-l border-border/30">
                       <div className="w-full h-full min-h-[32px]" />
-                    </td>
+                    </TableCell>
                   )}
-                </tr>
-              ))}
-            </tbody>
-          </table>
+                </TableRow>
+
+                {/* Skills Header */}
+                <TableRow className="border-b-2 border-border/30 bg-muted/30">
+                  <TableCell className="p-2 pl-3 text-xs font-medium sticky bg-card z-20 border-r border-border/30 border-l border-border/30 transition-[left] duration-150 ease-out" style={{ left: '-1px' }}>
+                    스킬
+                  </TableCell>
+                  {champions.map((champion, idx) => (
+                    <TableCell 
+                      key={champion.id} 
+                      className={cn(
+                        "p-2",
+                        idx < champions.length - 1 && "border-r border-border/30"
+                      )}
+                    >
+                      <div className="flex justify-center gap-1.5">
+                        {champion.spells?.map((skill, skillIdx) => (
+                          <div
+                            key={skill.id}
+                            className="flex flex-col items-center gap-0.5"
+                          >
+                            <img
+                              src={SKILL_ICON_URL(version, skill.id)}
+                              alt={SKILL_LETTERS[skillIdx]}
+                              className="w-8 h-8 rounded"
+                            />
+                            <span className="text-[9px] font-semibold">
+                              {SKILL_LETTERS[skillIdx]}
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+                    </TableCell>
+                  ))}
+                  {onAddChampion && (
+                    <TableCell className="p-2 text-center border-l border-border/30">
+                      <div className="w-full h-full min-h-[32px]" />
+                    </TableCell>
+                  )}
+                </TableRow>
+
+                {/* Skill Cooldowns by Level */}
+                {skillRows.map((row, rowIdx) => (
+                  <TableRow
+                    key={row.level}
+                    className="border-b border-border/30 hover:bg-muted/30 transition-colors"
+                  >
+                    <TableCell className={cn(
+                      "p-2 pl-3 text-xs font-medium sticky bg-card z-20 border-r border-border/30 border-l border-border/30 transition-[left] duration-150 ease-out",
+                      rowIdx === skillRows.length - 1 && "rounded-bl-lg"
+                    )} style={{ left: '-1px' }}>
+                      {row.level}레벨
+                    </TableCell>
+                    {row.skills.map((championSkills, champIdx) => (
+                      <TableCell 
+                        key={champions[champIdx].id} 
+                        className={cn(
+                          "p-2",
+                          champIdx < champions.length - 1 && "border-r border-border/30"
+                        )}
+                      >
+                        {championSkills ? (
+                          <div className="flex justify-center gap-1.5">
+                            {championSkills.map((skillData, skillIdx) => (
+                              <div
+                                key={skillIdx}
+                                className="flex flex-col items-center min-w-[32px]"
+                              >
+                                <span className="text-xs font-semibold">
+                                  {skillData.cooldown !== ""
+                                    ? `${skillData.cooldown}s`
+                                    : "-"}
+                                </span>
+                              </div>
+                            ))}
+                          </div>
+                        ) : (
+                          <span className="text-xs text-muted-foreground">-</span>
+                        )}
+                      </TableCell>
+                    ))}
+                    {onAddChampion && (
+                      <TableCell className="p-2 text-center border-l border-border/30">
+                        <div className="w-full h-full min-h-[32px]" />
+                      </TableCell>
+                    )}
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
           {showAddSlot && onAddChampion && championList && (
             <ChampionSelector
               championList={championList}
