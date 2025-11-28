@@ -325,7 +325,7 @@ function ChampionSelector({
         className="fixed inset-0 z-[101] flex items-center justify-center p-4 md:p-6 pointer-events-none"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="w-full h-full md:w-auto md:h-auto md:max-w-2xl md:max-h-[80vh] bg-card rounded-lg md:rounded-xl border border-border shadow-xl flex flex-col overflow-hidden pointer-events-auto transform transition-transform">
+        <div className="w-full h-full md:w-[600px] md:h-[500px] lg:w-[800px] lg:h-[600px] bg-card rounded-lg md:rounded-xl border border-border shadow-xl flex flex-col overflow-hidden pointer-events-auto transform transition-transform">
           {/* Search Header */}
           <div className="p-4 border-b border-border flex items-center gap-2 shrink-0 bg-card">
             <Search className="h-5 w-5 text-muted-foreground shrink-0" />
@@ -357,10 +357,10 @@ function ChampionSelector({
             </Button>
           </div>
 
-          {/* Champion List */}
+          {/* Champion List - 모바일: 반응형, PC/태블릿: 고정 크기 */}
           <div
             ref={listRef}
-            className="flex-1 overflow-y-auto overflow-x-hidden p-4 min-h-0"
+            className="overflow-y-auto overflow-x-hidden p-4 flex-1 min-h-0 md:flex-none md:w-[600px] md:h-[427px] lg:w-[800px] lg:h-[527px]"
           >
             {championList ? (
               availableChampions.length > 0 ? (
