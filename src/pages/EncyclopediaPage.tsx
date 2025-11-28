@@ -24,7 +24,7 @@ const STORAGE_KEY = "encyclopedia_selected_champions";
 
 function EncyclopediaPage({ lang, championList, version }: EncyclopediaPageProps) {
   const [selectedChampions, setSelectedChampions] = useState<ChampionWithInfo[]>([]);
-  const [activeTab, setActiveTab] = useState<"stats" | "skills">("stats");
+  const [activeTab, setActiveTab] = useState<"stats" | "skills">("skills");
   const [showSelector, setShowSelector] = useState(false);
 
   // Load from localStorage on mount
@@ -159,17 +159,6 @@ function EncyclopediaPage({ lang, championList, version }: EncyclopediaPageProps
               <div className="flex items-center justify-between gap-2 border-b border-border overflow-x-auto -mx-4 md:mx-0 px-4 md:px-0">
                 <div className="flex gap-2">
                   <button
-                    onClick={() => setActiveTab("stats")}
-                    className={cn(
-                      "px-4 py-2 text-sm font-medium transition-colors border-b-2 whitespace-nowrap",
-                      activeTab === "stats"
-                        ? "border-primary text-primary"
-                        : "border-transparent text-muted-foreground hover:text-foreground"
-                    )}
-                  >
-                    기본 스탯
-                  </button>
-                  <button
                     onClick={() => setActiveTab("skills")}
                     className={cn(
                       "px-4 py-2 text-sm font-medium transition-colors border-b-2 whitespace-nowrap",
@@ -179,6 +168,17 @@ function EncyclopediaPage({ lang, championList, version }: EncyclopediaPageProps
                     )}
                   >
                     스킬 쿨타임
+                  </button>
+                  <button
+                    onClick={() => setActiveTab("stats")}
+                    className={cn(
+                      "px-4 py-2 text-sm font-medium transition-colors border-b-2 whitespace-nowrap",
+                      activeTab === "stats"
+                        ? "border-primary text-primary"
+                        : "border-transparent text-muted-foreground hover:text-foreground"
+                    )}
+                  >
+                    기본 스탯
                   </button>
                 </div>
                 <Button
