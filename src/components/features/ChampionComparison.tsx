@@ -13,6 +13,12 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import ChampionSelector from "./ChampionSelector";
 
 interface ChampionComparisonProps {
@@ -280,7 +286,8 @@ function SkillsSection({
   }, [champions, maxLevel]);
 
   return (
-    <div className="overflow-x-auto -mx-4 md:mx-0 px-4 md:px-0">
+    <TooltipProvider delayDuration={100} skipDelayDuration={0}>
+      <div className="overflow-x-auto -mx-4 md:mx-0 px-4 md:px-0">
       <div className="min-w-full">
         {/* Desktop Table */}
         <div className="hidden md:block relative">
@@ -354,40 +361,6 @@ function SkillsSection({
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {/* Passive Row */}
-                <TableRow className="border-b border-border/30">
-                  <TableCell className="p-2 pl-3 text-xs font-medium sticky left-0 bg-card z-20 border-r border-border/30" style={{ left: 0 }}>
-                    패시브
-                  </TableCell>
-                  {champions.map((champion, idx) => (
-                    <TableCell 
-                      key={champion.id} 
-                      className={cn(
-                        "p-2 text-center",
-                        idx < champions.length - 1 && "border-r border-border/30"
-                      )}
-                    >
-                      {champion.passive ? (
-                        <img
-                          src={PASSIVE_ICON_URL(
-                            version,
-                            champion.passive.image.full
-                          )}
-                          alt="Passive"
-                          className="w-8 h-8 mx-auto rounded"
-                        />
-                      ) : (
-                        <span className="text-xs text-muted-foreground">-</span>
-                      )}
-                    </TableCell>
-                  ))}
-                  {onAddChampion && (
-                    <TableCell className="p-2 text-center border-l border-border/30">
-                      <div className="w-full h-full min-h-[32px]" />
-                    </TableCell>
-                  )}
-                </TableRow>
-
                 {/* Skills Header */}
                 <TableRow className="border-b-2 border-border/30 bg-muted/30">
                   <TableCell className="p-2 pl-3 text-xs font-medium sticky left-0 bg-card z-20 border-r border-border/30" style={{ left: 0 }}>
@@ -402,20 +375,93 @@ function SkillsSection({
                       )}
                     >
                       <div className="flex justify-center gap-1.5">
+                        {/* Passive */}
+                        {champion.passive && (
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <div className="flex flex-col items-center gap-0.5 cursor-help">
+                                <img
+                                  src={PASSIVE_ICON_URL(
+                                    version,
+                                    champion.passive.image.full
+                                  )}
+                                  alt="Passive"
+                                  className="w-8 h-8 rounded"
+                                />
+                                <span className="text-[9px] font-semibold">
+                                  P
+                                </span>
+                              </div>
+                            </TooltipTrigger>
+                            <TooltipContent
+                              side="top"
+                              align="center"
+                              sideOffset={8}
+                              className="max-w-xs p-3 space-y-2"
+                            >
+                              {champion.passive.name && (
+                                <div className="font-semibold text-sm">
+                                  {champion.passive.name}
+                                </div>
+                              )}
+                              {champion.passive.description && (
+                                <div className="text-xs leading-relaxed">
+                                  <div
+                                    dangerouslySetInnerHTML={{
+                                      __html: champion.passive.description
+                                        .replace(/<[^>]*>/g, "")
+                                        .replace(/\{\{[^}]+\}\}/g, ""),
+                                    }}
+                                  />
+                                </div>
+                              )}
+                            </TooltipContent>
+                          </Tooltip>
+                        )}
+                        {/* Skills */}
                         {champion.spells?.map((skill, skillIdx) => (
-                          <div
-                            key={skill.id}
-                            className="flex flex-col items-center gap-0.5"
-                          >
-                            <img
-                              src={SKILL_ICON_URL(version, skill.id)}
-                              alt={SKILL_LETTERS[skillIdx]}
-                              className="w-8 h-8 rounded"
-                            />
-                            <span className="text-[9px] font-semibold">
-                              {SKILL_LETTERS[skillIdx]}
-                            </span>
-                          </div>
+                          <Tooltip key={skill.id}>
+                            <TooltipTrigger asChild>
+                              <div className="flex flex-col items-center gap-0.5 cursor-help">
+                                <img
+                                  src={SKILL_ICON_URL(version, skill.id)}
+                                  alt={SKILL_LETTERS[skillIdx]}
+                                  className="w-8 h-8 rounded"
+                                />
+                                <span className="text-[9px] font-semibold">
+                                  {SKILL_LETTERS[skillIdx]}
+                                </span>
+                              </div>
+                            </TooltipTrigger>
+                            <TooltipContent
+                              side="top"
+                              align="center"
+                              sideOffset={8}
+                              className="max-w-xs p-3 space-y-2"
+                            >
+                              {skill.name && (
+                                <div className="font-semibold text-sm">
+                                  {skill.name}
+                                </div>
+                              )}
+                              {skill.description && (
+                                <div className="text-xs leading-relaxed">
+                                  {skill.description}
+                                </div>
+                              )}
+                              {skill.tooltip && (
+                                <div className="text-xs text-muted-foreground leading-relaxed border-t pt-2 mt-2">
+                                  <div
+                                    dangerouslySetInnerHTML={{
+                                      __html: skill.tooltip
+                                        .replace(/<[^>]*>/g, "")
+                                        .replace(/\{\{[^}]+\}\}/g, ""),
+                                    }}
+                                  />
+                                </div>
+                              )}
+                            </TooltipContent>
+                          </Tooltip>
                         ))}
                       </div>
                     </TableCell>
@@ -449,6 +495,11 @@ function SkillsSection({
                       >
                         {championSkills ? (
                           <div className="flex justify-center gap-1.5">
+                            {/* Passive dummy slot */}
+                            <div className="flex flex-col items-center min-w-[32px]">
+                              <span className="text-xs text-muted-foreground">-</span>
+                            </div>
+                            {/* Skills */}
                             {championSkills.map((skillData, skillIdx) => (
                               <div
                                 key={skillIdx}
@@ -475,23 +526,23 @@ function SkillsSection({
                   </TableRow>
                 ))}
               </TableBody>
-            </Table>
+              </Table>
+            </div>
+            {showAddSlot && onAddChampion && championList && (
+              <ChampionSelector
+                championList={championList}
+                selectedChampions={champions}
+                onSelect={(champion) => {
+                  onAddChampion(champion);
+                  // 모달을 닫지 않고 계속 열어둠 (여러 명 선택 가능하도록)
+                }}
+                onClose={() => setShowAddSlot(false)}
+              />
+            )}
           </div>
-          {showAddSlot && onAddChampion && championList && (
-            <ChampionSelector
-              championList={championList}
-              selectedChampions={champions}
-              onSelect={(champion) => {
-                onAddChampion(champion);
-                // 모달을 닫지 않고 계속 열어둠 (여러 명 선택 가능하도록)
-              }}
-              onClose={() => setShowAddSlot(false)}
-            />
-          )}
-        </div>
 
-        {/* Mobile Cards */}
-        <div className="md:hidden space-y-6">
+          {/* Mobile Cards */}
+          <div className="md:hidden space-y-6">
           {champions.map((champion) => (
             <Card key={champion.id}>
               <CardHeader>
@@ -511,40 +562,101 @@ function SkillsSection({
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  {/* Passive */}
-                  {champion.passive && (
-                    <div>
-                      <h4 className="text-sm font-semibold mb-2">패시브</h4>
-                      <img
-                        src={PASSIVE_ICON_URL(
-                          version,
-                          champion.passive.image.full
-                        )}
-                        alt="Passive"
-                        className="w-12 h-12 rounded"
-                      />
-                    </div>
-                  )}
-
                   {/* Skills */}
-                  {champion.spells && (
+                  {(champion.passive || champion.spells) && (
                     <div>
                       <h4 className="text-sm font-semibold mb-3">스킬 쿨타임</h4>
                       <div className="space-y-3">
-                        {champion.spells.map((skill, idx) => {
+                        {/* Passive */}
+                        {champion.passive && (
+                          <div className="space-y-2">
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <div className="flex items-center gap-2 cursor-help">
+                                  <img
+                                    src={PASSIVE_ICON_URL(
+                                      version,
+                                      champion.passive.image.full
+                                    )}
+                                    alt="Passive"
+                                    className="w-10 h-10 rounded"
+                                  />
+                                  <span className="font-semibold">P</span>
+                                </div>
+                              </TooltipTrigger>
+                              <TooltipContent
+                                side="right"
+                                align="center"
+                                sideOffset={8}
+                                className="max-w-xs p-3 space-y-2"
+                              >
+                                {champion.passive.name && (
+                                  <div className="font-semibold text-sm">
+                                    {champion.passive.name}
+                                  </div>
+                                )}
+                                {champion.passive.description && (
+                                  <div className="text-xs leading-relaxed">
+                                    <div
+                                      dangerouslySetInnerHTML={{
+                                        __html: champion.passive.description
+                                          .replace(/<[^>]*>/g, "")
+                                          .replace(/\{\{[^}]+\}\}/g, ""),
+                                      }}
+                                    />
+                                  </div>
+                                )}
+                              </TooltipContent>
+                            </Tooltip>
+                          </div>
+                        )}
+                        {/* Skills */}
+                        {champion.spells?.map((skill, idx) => {
                           const maxRank = skill.maxrank;
                           return (
                             <div key={skill.id} className="space-y-2">
-                              <div className="flex items-center gap-2">
-                                <img
-                                  src={SKILL_ICON_URL(version, skill.id)}
-                                  alt={SKILL_LETTERS[idx]}
-                                  className="w-10 h-10 rounded"
-                                />
-                                <span className="font-semibold">
-                                  {SKILL_LETTERS[idx]}
-                                </span>
-                              </div>
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <div className="flex items-center gap-2 cursor-help">
+                                    <img
+                                      src={SKILL_ICON_URL(version, skill.id)}
+                                      alt={SKILL_LETTERS[idx]}
+                                      className="w-10 h-10 rounded"
+                                    />
+                                    <span className="font-semibold">
+                                      {SKILL_LETTERS[idx]}
+                                    </span>
+                                  </div>
+                                </TooltipTrigger>
+                                <TooltipContent
+                                  side="right"
+                                  align="center"
+                                  sideOffset={8}
+                                  className="max-w-xs p-3 space-y-2"
+                                >
+                                  {skill.name && (
+                                    <div className="font-semibold text-sm">
+                                      {skill.name}
+                                    </div>
+                                  )}
+                                  {skill.description && (
+                                    <div className="text-xs leading-relaxed">
+                                      {skill.description}
+                                    </div>
+                                  )}
+                                  {skill.tooltip && (
+                                    <div className="text-xs text-muted-foreground leading-relaxed border-t pt-2 mt-2">
+                                      <div
+                                        dangerouslySetInnerHTML={{
+                                          __html: skill.tooltip
+                                            .replace(/<[^>]*>/g, "")
+                                            .replace(/\{\{[^}]+\}\}/g, ""),
+                                        }}
+                                      />
+                                    </div>
+                                  )}
+                                </TooltipContent>
+                              </Tooltip>
                               <div className="grid grid-cols-5 gap-2 pl-12">
                                 {Array.from({ length: maxRank }, (_, i) => (
                                   <div
@@ -572,9 +684,10 @@ function SkillsSection({
               </CardContent>
             </Card>
           ))}
+          </div>
         </div>
       </div>
-    </div>
+    </TooltipProvider>
   );
 }
 

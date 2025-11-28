@@ -5,11 +5,16 @@ export interface ChampionSkin {
 
 export interface ChampionSpell {
   id: string;
+  name?: string;
   maxrank: number;
   cooldown: (number | string)[];
+  description?: string;
+  tooltip?: string;
 }
 
 export interface ChampionPassive {
+  name?: string;
+  description?: string;
   image: {
     full: string;
   };
