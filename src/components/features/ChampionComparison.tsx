@@ -1,6 +1,7 @@
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useState, useEffect } from "react";
 import { Champion } from "@/types";
-import { CHAMP_ICON_URL, PASSIVE_ICON_URL, SKILL_ICON_URL } from "@/services/api";
+import { CHAMP_ICON_URL, PASSIVE_ICON_URL, SKILL_ICON_URL, getCommunityDragonSpellData } from "@/services/api";
+import { parseSpellTooltip } from "@/lib/spellTooltipParser";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { X, Plus } from "lucide-react";
@@ -258,6 +259,34 @@ function SkillsSection({
   onRemoveChampion?: (championId: string) => void;
 }) {
   const [showAddSlot, setShowAddSlot] = useState(false);
+  const [communityDragonData, setCommunityDragonData] = useState<
+    Record<string, Record<string, Record<string, (number | string)[]>>>
+  >({});
+  
+  // Community Dragon 데이터 로드
+  useEffect(() => {
+    const loadCommunityDragonData = async () => {
+      const dataMap: Record<string, Record<string, Record<string, (number | string)[]>>> = {};
+      
+      for (const champion of champions) {
+        if (!dataMap[champion.id]) {
+          try {
+            const spellData = await getCommunityDragonSpellData(champion.id, version);
+            dataMap[champion.id] = spellData;
+          } catch (error) {
+            console.warn(`Failed to load Community Dragon data for ${champion.id}:`, error);
+            dataMap[champion.id] = {};
+          }
+        }
+      }
+      
+      setCommunityDragonData(dataMap);
+    };
+    
+    if (champions.length > 0) {
+      loadCommunityDragonData();
+    }
+  }, [champions, version]);
   
   const maxLevel = useMemo(() => {
     return Math.max(
@@ -268,6 +297,41 @@ function SkillsSection({
       )
     );
   }, [champions]);
+  
+  // 스킬 ID를 Community Dragon 스킬 데이터로 매핑하는 헬퍼 함수
+  const getCommunityDragonSpellDataForSkill = (
+    championId: string,
+    spellId: string,
+    spellIndex: number
+  ): Record<string, (number | string)[]> => {
+    const cdData = communityDragonData[championId];
+    if (!cdData) return {};
+    
+    // 1. 스킬 인덱스로 직접 찾기 (Q=0, W=1, E=2, R=3)
+    if (cdData[spellIndex.toString()]) {
+      return cdData[spellIndex.toString()];
+    }
+    
+    // 2. 스킬 ID로 찾기 시도
+    const spellName = spellId.replace(championId, "");
+    for (const key of Object.keys(cdData)) {
+      if (key.toLowerCase().includes(spellName.toLowerCase()) || 
+          key.toLowerCase().includes(spellId.toLowerCase())) {
+        return cdData[key] || {};
+      }
+    }
+    
+    // 3. 스킬 순서로 찾기 (fallback)
+    const spellKeys = Object.keys(cdData).filter(k => !isNaN(Number(k)));
+    if (spellKeys.length > spellIndex) {
+      const sortedKeys = spellKeys.sort((a, b) => Number(a) - Number(b));
+      if (cdData[sortedKeys[spellIndex]]) {
+        return cdData[sortedKeys[spellIndex]];
+      }
+    }
+    
+    return {};
+  };
 
   const skillRows = useMemo(() => {
     return Array.from({ length: maxLevel }, (_, levelIdx) => {
@@ -408,9 +472,12 @@ function SkillsSection({
                                 <div className="text-xs leading-relaxed">
                                   <div
                                     dangerouslySetInnerHTML={{
-                                      __html: champion.passive.description
-                                        .replace(/<[^>]*>/g, "")
-                                        .replace(/\{\{[^}]+\}\}/g, ""),
+                                      __html: parseSpellTooltip(
+                                        champion.passive.description,
+                                        undefined,
+                                        1,
+                                        true
+                                      ),
                                     }}
                                   />
                                 </div>
@@ -446,16 +513,30 @@ function SkillsSection({
                               )}
                               {skill.description && (
                                 <div className="text-xs leading-relaxed">
-                                  {skill.description}
+                                  <div
+                                    dangerouslySetInnerHTML={{
+                                      __html: parseSpellTooltip(
+                                        skill.description,
+                                        skill,
+                                        1,
+                                        true,
+                                        getCommunityDragonSpellDataForSkill(champion.id, skill.id, skillIdx)
+                                      ),
+                                    }}
+                                  />
                                 </div>
                               )}
                               {skill.tooltip && (
                                 <div className="text-xs text-muted-foreground leading-relaxed border-t pt-2 mt-2">
                                   <div
                                     dangerouslySetInnerHTML={{
-                                      __html: skill.tooltip
-                                        .replace(/<[^>]*>/g, "")
-                                        .replace(/\{\{[^}]+\}\}/g, ""),
+                                      __html: parseSpellTooltip(
+                                        skill.tooltip,
+                                        skill,
+                                        1,
+                                        true,
+                                        getCommunityDragonSpellDataForSkill(champion.id, skill.id, skillIdx)
+                                      ),
                                     }}
                                   />
                                 </div>
@@ -599,9 +680,12 @@ function SkillsSection({
                                   <div className="text-xs leading-relaxed">
                                     <div
                                       dangerouslySetInnerHTML={{
-                                        __html: champion.passive.description
-                                          .replace(/<[^>]*>/g, "")
-                                          .replace(/\{\{[^}]+\}\}/g, ""),
+                                        __html: parseSpellTooltip(
+                                          champion.passive.description,
+                                          undefined,
+                                          1,
+                                          true
+                                        ),
                                       }}
                                     />
                                   </div>
@@ -641,16 +725,30 @@ function SkillsSection({
                                   )}
                                   {skill.description && (
                                     <div className="text-xs leading-relaxed">
-                                      {skill.description}
+                                      <div
+                                        dangerouslySetInnerHTML={{
+                                          __html: parseSpellTooltip(
+                                            skill.description,
+                                            skill,
+                                            1,
+                                            true,
+                                            getCommunityDragonSpellDataForSkill(champion.id, skill.id, idx)
+                                          ),
+                                        }}
+                                      />
                                     </div>
                                   )}
                                   {skill.tooltip && (
                                     <div className="text-xs text-muted-foreground leading-relaxed border-t pt-2 mt-2">
                                       <div
                                         dangerouslySetInnerHTML={{
-                                          __html: skill.tooltip
-                                            .replace(/<[^>]*>/g, "")
-                                            .replace(/\{\{[^}]+\}\}/g, ""),
+                                          __html: parseSpellTooltip(
+                                            skill.tooltip,
+                                            skill,
+                                            1,
+                                            true,
+                                            getCommunityDragonSpellDataForSkill(champion.id, skill.id, idx)
+                                          ),
                                         }}
                                       />
                                     </div>
