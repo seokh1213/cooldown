@@ -1,4 +1,5 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useState, useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import { Select } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { Moon, Sun } from "lucide-react";
@@ -10,6 +11,7 @@ interface NavProps {
   selectHandler: (lang: string) => void;
   theme?: "light" | "dark";
   onThemeToggle?: () => void;
+  sidebarLeft?: string;
 }
 
 function Nav({ 
@@ -17,8 +19,22 @@ function Nav({
   lang, 
   selectHandler,
   theme = "light",
-  onThemeToggle
+  onThemeToggle,
+  sidebarLeft = "0px"
 }: NavProps) {
+  const location = useLocation();
+  const isEncyclopediaPage = location.pathname === "/";
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.matchMedia("(max-width: 768px)").matches);
+    };
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
+
   const handleChange = useCallback(
     (e: React.ChangeEvent<HTMLSelectElement>) => {
       selectHandler(e.target.value);
@@ -26,10 +42,23 @@ function Nav({
     [selectHandler]
   );
 
+  const navLeft = isMobile ? "0px" : sidebarLeft;
+  const navWidth = isMobile ? "100%" : `calc(100% - ${sidebarLeft})`;
+
   return (
     <>
-      <nav className="w-full px-4 md:px-6 py-3 flex items-center gap-3 bg-card/80 backdrop-blur-md border-b border-border/50 sticky top-0 z-20 min-h-[60px]">
-        <div className="flex-1" />
+      <nav 
+        className="px-4 md:px-6 py-3 flex items-center gap-3 bg-card/80 backdrop-blur-md border-b border-border/50 fixed z-30 min-h-[60px]"
+        style={{ 
+          left: navLeft,
+          width: navWidth,
+          top: isMobile ? "60px" : "0px"
+        }}
+      >
+        {isEncyclopediaPage && (
+          <h1 className="text-xl md:text-2xl font-bold flex-1">백과사전</h1>
+        )}
+        {!isEncyclopediaPage && <div className="flex-1" />}
         <div className="text-xs text-muted-foreground/80 hidden sm:block font-medium">v{version}</div>
         {onThemeToggle && (
           <Button

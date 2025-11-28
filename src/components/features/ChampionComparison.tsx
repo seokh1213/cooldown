@@ -66,7 +66,7 @@ function StatsSection({
           <table className="border-collapse border border-border/30 rounded-lg table-fixed w-auto">
             <thead>
               <tr className="border-b border-border/30">
-                <th className="text-left p-2 pl-3 text-xs font-semibold sticky left-0 bg-card z-20 w-[90px] min-w-[90px] border-r border-border/30">
+                <th className="text-left p-2 pl-3 text-xs font-semibold sticky left-0 bg-card z-20 w-[90px] min-w-[90px] border-r border-border/30" style={{ left: 0 }}>
                   스탯
                 </th>
                 {champions.map((champion, idx) => (
@@ -138,7 +138,7 @@ function StatsSection({
                     key={field.key}
                     className="border-b border-border/30 hover:bg-muted/30 transition-colors"
                   >
-                    <td className="p-2 pl-3 text-xs font-medium sticky left-0 bg-card z-20 border-r border-border/30" style={{ wordBreak: 'keep-all' }}>
+                    <td className="p-2 pl-3 text-xs font-medium sticky left-0 bg-card z-20 border-r border-border/30" style={{ wordBreak: 'keep-all', left: 0 }}>
                       {field.label}
                     </td>
                     {champions.map((champion, idx) => {
@@ -277,7 +277,7 @@ function SkillsSection({
           <table className="border-collapse border border-border/30 rounded-lg table-fixed w-auto">
             <thead>
               <tr className="border-b border-border/30">
-                <th className="text-left p-2 pl-3 text-xs font-semibold sticky left-0 bg-card z-20 w-[80px] min-w-[80px] border-r border-border/30">
+                <th className="text-left p-2 pl-3 text-xs font-semibold sticky bg-card z-20 w-[80px] min-w-[80px] border-r border-border/30 border-l border-border/30 rounded-tl-lg transition-[left] duration-150 ease-out" style={{ left: '-1px' }}>
                   레벨
                 </th>
                 {champions.map((champion, idx) => (
@@ -344,7 +344,7 @@ function SkillsSection({
             <tbody>
               {/* Passive Row */}
               <tr className="border-b border-border/30">
-                <td className="p-2 pl-3 text-xs font-medium sticky left-0 bg-card z-20 border-r border-border/30">
+                <td className="p-2 pl-3 text-xs font-medium sticky bg-card z-20 border-r border-border/30 border-l border-border/30 transition-[left] duration-150 ease-out" style={{ left: '-1px' }}>
                   패시브
                 </td>
                 {champions.map((champion, idx) => (
@@ -378,7 +378,7 @@ function SkillsSection({
 
               {/* Skills Header */}
               <tr className="border-b-2 border-border/30 bg-muted/30">
-                <td className="p-2 pl-3 text-xs font-medium sticky left-0 bg-muted/30 z-20 border-r border-border/30">
+                <td className="p-2 pl-3 text-xs font-medium sticky bg-card z-20 border-r border-border/30 border-l border-border/30 transition-[left] duration-150 ease-out" style={{ left: '-1px' }}>
                   스킬
                 </td>
                 {champions.map((champion, idx) => (
@@ -416,12 +416,15 @@ function SkillsSection({
               </tr>
 
               {/* Skill Cooldowns by Level */}
-              {skillRows.map((row) => (
+              {skillRows.map((row, rowIdx) => (
                 <tr
                   key={row.level}
                   className="border-b border-border/30 hover:bg-muted/30 transition-colors"
                 >
-                  <td className="p-2 pl-3 text-xs font-medium sticky left-0 bg-card z-20 border-r border-border/30">
+                  <td className={cn(
+                    "p-2 pl-3 text-xs font-medium sticky bg-card z-20 border-r border-border/30 border-l border-border/30 transition-[left] duration-150 ease-out",
+                    rowIdx === skillRows.length - 1 && "rounded-bl-lg"
+                  )} style={{ left: '-1px' }}>
                     {row.level}레벨
                   </td>
                   {row.skills.map((championSkills, champIdx) => (

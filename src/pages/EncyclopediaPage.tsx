@@ -141,13 +141,6 @@ function EncyclopediaPage({ lang, championList, version }: EncyclopediaPageProps
 
   return (
     <div className="w-full max-w-7xl mx-auto px-4 md:px-6 lg:px-8 py-4 md:py-5">
-      {/* Header */}
-      <div className="mb-4 md:mb-5">
-        <h1 className="text-xl md:text-2xl font-bold mb-1">백과사전</h1>
-        <p className="text-xs md:text-sm text-muted-foreground">
-          챔피언을 선택하여 기본 스탯과 스킬 쿨타임을 비교해보세요.
-        </p>
-      </div>
 
       {/* Champion Selector Modal */}
       {showSelector && (

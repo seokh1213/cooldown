@@ -42,7 +42,7 @@ function Layout({ children, nav }: LayoutProps) {
         }}
       >
         {/* Mobile header */}
-        <header className="md:hidden sticky top-0 z-30 bg-card/90 backdrop-blur-md border-b border-border/50 px-4 py-3 flex items-center gap-4 shadow-sm">
+        <header className="md:hidden fixed top-0 left-0 right-0 z-40 bg-card/90 backdrop-blur-md border-b border-border/50 px-4 py-3 flex items-center gap-4 shadow-sm" style={{ left: isCollapsed ? "4rem" : "16rem" }}>
           <Button
             variant="ghost"
             size="icon"
@@ -56,13 +56,17 @@ function Layout({ children, nav }: LayoutProps) {
 
         {/* Navigation bar */}
         {nav && (
-          <div className="w-full shrink-0">
-            {nav}
-          </div>
+          <>
+            {React.isValidElement(nav) 
+              ? React.cloneElement(nav as React.ReactElement<any>, { 
+                  sidebarLeft: isCollapsed ? "4rem" : "16rem" 
+                })
+              : nav}
+          </>
         )}
 
         {/* Page content */}
-        <main className="flex-1 w-full min-w-0 overflow-x-hidden">
+        <main className="flex-1 w-full min-w-0 overflow-x-hidden pt-[120px] md:pt-[60px]">
           {children}
         </main>
       </SidebarInset>
