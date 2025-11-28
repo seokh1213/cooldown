@@ -263,7 +263,7 @@ function ChampionSelector({
               <Button
                 variant="ghost"
                 size="icon"
-                className="h-8 w-8 shrink-0"
+                className="h-8 w-8 shrink-0 hover:bg-muted hover:text-foreground"
                 onClick={() => {
                   setIsOpen(false);
                   setSearchValue("");

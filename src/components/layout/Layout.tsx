@@ -41,7 +41,7 @@ function Layout({ children, nav }: LayoutProps) {
             size="icon"
             onClick={toggleSidebar}
             aria-label="Open menu"
-            className="h-9 w-9"
+            className="h-9 w-9 hover:bg-muted hover:text-foreground"
           >
             <Menu className="w-5 h-5" />
           </Button>
