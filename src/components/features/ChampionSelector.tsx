@@ -24,7 +24,7 @@ function ChampionSelector({
   selectedChampions,
   onSelect,
   onClose,
-  slotIndex,
+  slotIndex: _slotIndex,
 }: ChampionSelectorProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [searchValue, setSearchValue] = useState("");
@@ -208,22 +208,23 @@ function ChampionSelector({
   if (!isModal) {
     return (
       <div ref={containerRef} className="w-full">
-        <button
+        <Button
           onClick={() => {
             setIsOpen(true);
             setTimeout(() => inputRef.current?.focus(), 0);
           }}
+          variant="ghost"
           className={cn(
             "w-full flex flex-col items-center justify-center space-y-2",
-            "text-muted-foreground hover:text-foreground transition-colors",
-            "py-4"
+            "text-muted-foreground hover:text-foreground",
+            "py-4 h-auto"
           )}
         >
           <div className="w-12 h-12 rounded-full border-2 border-dashed border-muted-foreground/30 flex items-center justify-center">
             <Search className="w-6 h-6" />
           </div>
           <span className="text-sm font-medium">챔피언 선택</span>
-        </button>
+        </Button>
 
         {isOpen && (
           <>

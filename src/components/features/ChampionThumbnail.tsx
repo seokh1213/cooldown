@@ -1,6 +1,8 @@
 import React, { useCallback, useState } from "react";
 import { Champion } from "@/types";
 import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface ChampionThumbnailProps {
   addChampion: (champion: Champion, selected: boolean) => void;
@@ -35,8 +37,9 @@ function ChampionThumbnail({
 
   return (
     <div className="flex flex-col items-center justify-center m-1 h-fit">
-      <button
-        className="cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-1 rounded-full shrink-0"
+      <Button
+        variant="ghost"
+        className="cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-1 rounded-full shrink-0 p-0 h-auto w-auto hover:bg-transparent"
         onClick={handleClick}
         aria-label={selected ? `Deselect ${name}` : `Select ${name}`}
         aria-pressed={selected}
@@ -45,7 +48,7 @@ function ChampionThumbnail({
         <div className="relative w-12 h-12 md:w-14 md:h-14 shrink-0">
           {/* Skeleton placeholder - 고정 크기로 레이아웃 시프트 방지 */}
           {!isLoaded && !hasError && (
-            <div className="absolute inset-0 rounded-full bg-muted animate-pulse" />
+            <Skeleton className="absolute inset-0 rounded-full" />
           )}
           {/* Blur placeholder - 이미지가 로드되기 전까지 */}
           {!isLoaded && !hasError && (
@@ -70,7 +73,7 @@ function ChampionThumbnail({
             onError={handleError}
           />
         </div>
-      </button>
+      </Button>
       <div className="text-xs md:text-sm whitespace-nowrap mt-0.5">{name}</div>
     </div>
   );

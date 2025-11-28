@@ -3,8 +3,8 @@ import { Champion } from "@/types";
 import { getChampionInfo } from "@/services/api";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Plus, Search, RotateCcw } from "lucide-react";
-import { cn } from "@/lib/utils";
 import ChampionComparison from "@/components/features/ChampionComparison";
 import ChampionSelector from "@/components/features/ChampionSelector";
 
@@ -161,30 +161,26 @@ function EncyclopediaPage({ lang, championList, version }: EncyclopediaPageProps
             <div className="space-y-4 md:space-y-6">
               {/* Tab Navigation */}
               <div className="flex items-center justify-between gap-2 border-b border-border overflow-x-auto -mx-4 md:mx-0 px-4 md:px-0">
-                <div className="flex gap-2">
-                  <button
-                    onClick={() => setActiveTab("skills")}
-                    className={cn(
-                      "px-4 py-2 text-sm font-medium transition-colors border-b-2 whitespace-nowrap",
-                      activeTab === "skills"
-                        ? "border-primary text-primary"
-                        : "border-transparent text-muted-foreground hover:text-foreground"
-                    )}
-                  >
-                    스킬 쿨타임
-                  </button>
-                  <button
-                    onClick={() => setActiveTab("stats")}
-                    className={cn(
-                      "px-4 py-2 text-sm font-medium transition-colors border-b-2 whitespace-nowrap",
-                      activeTab === "stats"
-                        ? "border-primary text-primary"
-                        : "border-transparent text-muted-foreground hover:text-foreground"
-                    )}
-                  >
-                    기본 스탯
-                  </button>
-                </div>
+                <Tabs 
+                  value={activeTab} 
+                  onValueChange={(value) => setActiveTab(value as "stats" | "skills")}
+                  className="flex-1"
+                >
+                  <TabsList className="inline-flex h-auto items-center justify-start gap-2 bg-transparent p-0 border-0">
+                    <TabsTrigger 
+                      value="skills" 
+                      className="px-4 py-2 text-sm font-medium transition-colors border-b-2 border-transparent text-muted-foreground hover:text-foreground data-[state=active]:border-primary data-[state=active]:text-primary data-[state=active]:bg-transparent rounded-none shadow-none"
+                    >
+                      스킬 쿨타임
+                    </TabsTrigger>
+                    <TabsTrigger 
+                      value="stats" 
+                      className="px-4 py-2 text-sm font-medium transition-colors border-b-2 border-transparent text-muted-foreground hover:text-foreground data-[state=active]:border-primary data-[state=active]:text-primary data-[state=active]:bg-transparent rounded-none shadow-none"
+                    >
+                      기본 스탯
+                    </TabsTrigger>
+                  </TabsList>
+                </Tabs>
                 <Button
                   variant="ghost"
                   size="sm"
@@ -219,9 +215,10 @@ function EncyclopediaPage({ lang, championList, version }: EncyclopediaPageProps
             <p className="text-muted-foreground text-center max-w-md text-sm mb-4">
               아래 버튼을 클릭하여 챔피언을 추가하고 비교해보세요.
             </p>
-            <button
+            <Button
               onClick={() => setShowSelector(true)}
-              className="flex flex-row items-center justify-center gap-2 px-4 py-2 rounded-lg border-2 border-dashed border-muted-foreground/30 hover:border-primary/50 hover:bg-muted/30 transition-colors group"
+              variant="outline"
+              className="flex flex-row items-center justify-center gap-2 border-2 border-dashed border-muted-foreground/30 hover:border-primary/50 hover:bg-muted/30 group"
             >
               <div className="w-8 h-8 rounded-full bg-muted/30 flex items-center justify-center group-hover:bg-primary/10 transition-colors">
                 <Plus className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors" />
@@ -229,7 +226,7 @@ function EncyclopediaPage({ lang, championList, version }: EncyclopediaPageProps
               <span className="text-sm text-muted-foreground group-hover:text-primary transition-colors">
                 챔피언 추가하기
               </span>
-            </button>
+            </Button>
           </CardContent>
         </Card>
       )}

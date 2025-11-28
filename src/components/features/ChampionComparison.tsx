@@ -120,9 +120,10 @@ function StatsSection({
                   ))}
                   {onAddChampion && (
                     <TableHead className="text-center p-2 text-xs font-semibold w-[100px] min-w-[100px] border-l border-border/30">
-                      <button
+                      <Button
                         onClick={() => setShowAddSlot(true)}
-                        className="w-full flex flex-row items-center justify-center gap-2 p-1.5 rounded-lg border-2 border-dashed border-muted-foreground/30 hover:border-primary/50 hover:bg-muted/30 transition-colors group"
+                        variant="outline"
+                        className="w-full flex flex-row items-center justify-center gap-2 p-1.5 h-auto border-2 border-dashed border-muted-foreground/30 hover:border-primary/50 hover:bg-muted/30 group"
                       >
                         <div className="w-8 h-8 rounded-full bg-muted/30 flex items-center justify-center group-hover:bg-primary/10 transition-colors">
                           <Plus className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors" />
@@ -130,7 +131,7 @@ function StatsSection({
                         <div className="text-[10px] text-muted-foreground group-hover:text-primary transition-colors whitespace-nowrap">
                           추가
                         </div>
-                      </button>
+                      </Button>
                     </TableHead>
                   )}
                 </TableRow>
@@ -336,9 +337,10 @@ function SkillsSection({
                   ))}
                   {onAddChampion && (
                     <TableHead className="text-center p-2 text-xs font-semibold w-[200px] md:w-[220px] lg:w-[240px] min-w-[180px] md:min-w-[200px] lg:min-w-[220px] border-l border-border/30">
-                      <button
+                      <Button
                         onClick={() => setShowAddSlot(true)}
-                        className="w-full flex flex-row items-center justify-center gap-2 p-1.5 rounded-lg border-2 border-dashed border-muted-foreground/30 hover:border-primary/50 hover:bg-muted/30 transition-colors group"
+                        variant="outline"
+                        className="w-full flex flex-row items-center justify-center gap-2 p-1.5 h-auto border-2 border-dashed border-muted-foreground/30 hover:border-primary/50 hover:bg-muted/30 group"
                       >
                         <div className="w-8 h-8 rounded-full bg-muted/30 flex items-center justify-center group-hover:bg-primary/10 transition-colors">
                           <Plus className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors" />
@@ -346,7 +348,7 @@ function SkillsSection({
                         <div className="text-[10px] text-muted-foreground group-hover:text-primary transition-colors whitespace-nowrap">
                           추가
                         </div>
-                      </button>
+                      </Button>
                     </TableHead>
                   )}
                 </TableRow>
