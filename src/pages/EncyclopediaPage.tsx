@@ -140,14 +140,17 @@ function EncyclopediaPage({ lang, championList, version }: EncyclopediaPageProps
             <p className="text-muted-foreground text-center max-w-md text-sm mb-4">
               아래 버튼을 클릭하여 챔피언을 추가하고 비교해보세요.
             </p>
-            <Button
+            <button
               onClick={() => setShowSelector(true)}
-              variant="outline"
-              className="gap-2"
+              className="flex flex-row items-center justify-center gap-2 px-4 py-2 rounded-lg border-2 border-dashed border-muted-foreground/30 hover:border-primary/50 hover:bg-muted/30 transition-colors group"
             >
-              <Plus className="h-4 w-4" />
-              챔피언 추가하기
-            </Button>
+              <div className="w-8 h-8 rounded-full bg-muted/30 flex items-center justify-center group-hover:bg-primary/10 transition-colors">
+                <Plus className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors" />
+              </div>
+              <span className="text-sm text-muted-foreground group-hover:text-primary transition-colors">
+                챔피언 추가하기
+              </span>
+            </button>
           </CardContent>
         </Card>
       )}

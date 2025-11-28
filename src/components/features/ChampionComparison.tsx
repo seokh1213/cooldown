@@ -170,19 +170,15 @@ function StatsSection({
             </tbody>
           </table>
           {showAddSlot && onAddChampion && championList && (
-            <div className="absolute inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm">
-              <div className="relative w-full max-w-md mx-4">
-                <ChampionSelector
-                  championList={championList}
-                  selectedChampions={champions}
-                  onSelect={(champion) => {
-                    onAddChampion(champion);
-                    setShowAddSlot(false);
-                  }}
-                  onClose={() => setShowAddSlot(false)}
-                />
-              </div>
-            </div>
+            <ChampionSelector
+              championList={championList}
+              selectedChampions={champions}
+              onSelect={(champion) => {
+                onAddChampion(champion);
+                setShowAddSlot(false);
+              }}
+              onClose={() => setShowAddSlot(false)}
+            />
           )}
         </div>
 
@@ -444,19 +440,15 @@ function SkillsSection({
             </tbody>
           </table>
           {showAddSlot && onAddChampion && championList && (
-            <div className="absolute inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm">
-              <div className="relative w-full max-w-md mx-4">
-                <ChampionSelector
-                  championList={championList}
-                  selectedChampions={champions}
-                  onSelect={(champion) => {
-                    onAddChampion(champion);
-                    setShowAddSlot(false);
-                  }}
-                  onClose={() => setShowAddSlot(false)}
-                />
-              </div>
-            </div>
+            <ChampionSelector
+              championList={championList}
+              selectedChampions={champions}
+              onSelect={(champion) => {
+                onAddChampion(champion);
+                setShowAddSlot(false);
+              }}
+              onClose={() => setShowAddSlot(false)}
+            />
           )}
         </div>
 
