@@ -6,6 +6,10 @@ import { Button } from "@/components/ui/button";
 import { Search, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import ChampionThumbnail from "./ChampionThumbnail";
+import {
+  Dialog,
+  DialogContent,
+} from "@/components/ui/dialog";
 
 interface ChampionSelectorProps {
   championList: Champion[] | null;
@@ -73,6 +77,17 @@ function ChampionSelector({
     }
   }, [isOpen, handleBlur, isModal]);
 
+  const handleOpenChange = useCallback((open: boolean) => {
+    setIsOpen(open);
+    if (!open) {
+      setSearchValue("");
+      setFocusedIndex(-1);
+      if (onClose) {
+        onClose();
+      }
+    }
+  }, [onClose]);
+
   const handleSelect = useCallback(
     (champion: Champion, isSelected: boolean) => {
       console.log('[ChampionSelector] handleSelect called', { champion: champion.name, isSelected, isModal });
@@ -117,17 +132,10 @@ function ChampionSelector({
           handleSelect(champion, isSelected);
         }
       } else if (e.key === "Escape") {
-        setIsOpen(false);
-        // Don't clear search value - preserve user's search context
-        // setSearchValue("");
-        setFocusedIndex(-1);
-        document.body.style.overflow = "";
-        if (onClose) {
-          onClose();
-        }
+        handleOpenChange(false);
       }
     },
-    [isOpen, isModal, championList, availableChampions, focusedIndex, handleSelect, onClose, selectedChampions]
+    [isOpen, isModal, championList, availableChampions, focusedIndex, handleSelect, handleOpenChange, selectedChampions]
   );
 
   useEffect(() => {
@@ -145,9 +153,6 @@ function ChampionSelector({
   useEffect(() => {
     if (isModal) {
       setIsOpen(true);
-      // Prevent body scroll when modal is open
-      const originalOverflow = document.body.style.overflow;
-      document.body.style.overflow = "hidden";
       
       // Restore scroll position immediately (before images load)
       const restoreScroll = () => {
@@ -174,10 +179,6 @@ function ChampionSelector({
       setTimeout(() => {
         restoreScroll();
       }, 200);
-
-      return () => {
-        document.body.style.overflow = originalOverflow;
-      };
     } else {
       setIsOpen(false);
     }
@@ -320,110 +321,95 @@ function ChampionSelector({
     );
   }
 
-  // Modal style selector
+  // Modal style selector using shadcn-ui Dialog
   return (
-    <>
-      {/* Overlay */}
-      <div
-        className="fixed inset-0 z-[100] bg-black/50 backdrop-blur-sm transition-opacity"
-        onClick={() => {
-          setIsOpen(false);
-          setSearchValue("");
-          document.body.style.overflow = "";
-          onClose?.();
-        }}
-        aria-hidden="true"
-      />
-      
-      {/* Selector Panel - Desktop: centered modal, Mobile: full screen */}
-      <div
+    <Dialog open={isOpen} onOpenChange={handleOpenChange}>
+      <DialogContent
         ref={containerRef}
-        className="fixed inset-0 z-[101] flex items-center justify-center p-4 md:p-6 pointer-events-none"
+        className="w-full h-full md:w-[600px] md:h-[500px] lg:w-[800px] lg:h-[600px] p-0 flex flex-col overflow-hidden max-w-none md:max-w-[600px] lg:max-w-[800px] max-h-none md:max-h-[500px] lg:max-h-[600px] [&>button]:hidden fixed inset-0 md:inset-auto md:left-[50%] md:top-[50%] md:translate-x-[-50%] md:translate-y-[-50%] md:rounded-xl"
+        onInteractOutside={() => {
+          // Allow closing when clicking outside (overlay)
+          handleOpenChange(false);
+        }}
+        onEscapeKeyDown={() => {
+          handleOpenChange(false);
+        }}
       >
-        <div className="w-full h-full md:w-[600px] md:h-[500px] lg:w-[800px] lg:h-[600px] bg-card rounded-lg md:rounded-xl border border-border shadow-xl flex flex-col overflow-hidden pointer-events-auto transform transition-transform">
-          {/* Search Header */}
-          <div className="p-4 border-b border-border flex items-center gap-2 shrink-0 bg-card">
-            <Search className="h-5 w-5 text-muted-foreground shrink-0" />
-            <Input
-              ref={inputRef}
-              type="text"
-              placeholder="챔피언 검색..."
-              value={searchValue}
-              onChange={(e) => {
-                setSearchValue(e.target.value);
-                setFocusedIndex(-1);
-              }}
-              onKeyDown={handleKeyDown}
-              className="flex-1"
-              autoFocus
-            />
-            <Button
-              variant="ghost"
-              size="icon"
-              className="h-8 w-8 shrink-0"
-              onClick={() => {
-                setIsOpen(false);
-                setSearchValue("");
-                document.body.style.overflow = "";
-                if (onClose) {
-                  onClose();
-                }
-              }}
-            >
-              <X className="h-4 w-4" />
-            </Button>
-          </div>
-
-          {/* Champion List - 모바일: 반응형, PC/태블릿: 고정 크기 */}
-          <div
-            ref={listRef}
-            className="overflow-y-auto overflow-x-hidden p-4 flex-1 min-h-0 md:flex-none md:w-[600px] md:h-[427px] lg:w-[800px] lg:h-[527px]"
+        {/* Search Header */}
+        <div className="p-4 border-b border-border flex items-center gap-2 shrink-0 bg-card">
+          <Search className="h-5 w-5 text-muted-foreground shrink-0" />
+          <Input
+            ref={inputRef}
+            type="text"
+            placeholder="챔피언 검색..."
+            value={searchValue}
+            onChange={(e) => {
+              setSearchValue(e.target.value);
+              setFocusedIndex(-1);
+            }}
+            onKeyDown={handleKeyDown}
+            className="flex-1"
+            autoFocus
+          />
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-8 w-8 shrink-0 hover:bg-muted hover:text-foreground"
+            onClick={() => handleOpenChange(false)}
           >
-            {championList ? (
-              availableChampions.length > 0 ? (
-                <div className="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-6 lg:grid-cols-8 xl:grid-cols-10 gap-2">
-                  {availableChampions.map((champion, index) => {
-                    const isFocused = focusedIndex === index;
-                    const isSelected = selectedChampions.some((c) => c.id === champion.id);
-                    return (
-                      <div
-                        key={champion.id}
-                        data-champion-item
-                        className={cn(
-                          isFocused && "ring-2 ring-primary ring-offset-1 rounded-md"
-                        )}
-                      >
-                        <ChampionThumbnail
-                          addChampion={(champ, selected) => handleSelect(champ, selected)}
-                          data={champion}
-                          name={champion.name}
-                          selected={isSelected}
-                          thumbnailSrc={CHAMP_ICON_URL(
-                            champion.version || "",
-                            champion.id
-                          )}
-                        />
-                      </div>
-                    );
-                  })}
-                </div>
-              ) : (
-                <div className="flex flex-col items-center justify-center h-full text-muted-foreground min-h-[200px] space-y-2">
-                  <Search className="h-12 w-12 opacity-50" />
-                    <p className="text-base font-medium">
-                      {searchValue ? "검색 결과가 없습니다" : "챔피언 목록이 비어있습니다"}
-                    </p>
-                </div>
-              )
-            ) : (
-              <div className="flex items-center justify-center h-full text-muted-foreground min-h-[200px]">
-                로딩 중...
-              </div>
-            )}
-          </div>
+            <X className="h-4 w-4" />
+          </Button>
         </div>
-      </div>
-    </>
+
+        {/* Champion List - 모바일: 반응형, PC/태블릿: 고정 크기 */}
+        <div
+          ref={listRef}
+          className="overflow-y-auto overflow-x-hidden p-4 flex-1 min-h-0 md:flex-none md:w-[600px] md:h-[427px] lg:w-[800px] lg:h-[527px]"
+        >
+          {championList ? (
+            availableChampions.length > 0 ? (
+              <div className="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-6 lg:grid-cols-8 xl:grid-cols-10 gap-2">
+                {availableChampions.map((champion, index) => {
+                  const isFocused = focusedIndex === index;
+                  const isSelected = selectedChampions.some((c) => c.id === champion.id);
+                  return (
+                    <div
+                      key={champion.id}
+                      data-champion-item
+                      className={cn(
+                        isFocused && "ring-2 ring-primary ring-offset-1 rounded-md"
+                      )}
+                    >
+                      <ChampionThumbnail
+                        addChampion={(champ, selected) => handleSelect(champ, selected)}
+                        data={champion}
+                        name={champion.name}
+                        selected={isSelected}
+                        thumbnailSrc={CHAMP_ICON_URL(
+                          champion.version || "",
+                          champion.id
+                        )}
+                      />
+                    </div>
+                  );
+                })}
+              </div>
+            ) : (
+              <div className="flex flex-col items-center justify-center h-full text-muted-foreground min-h-[200px] space-y-2">
+                <Search className="h-12 w-12 opacity-50" />
+                  <p className="text-base font-medium">
+                    {searchValue ? "검색 결과가 없습니다" : "챔피언 목록이 비어있습니다"}
+                  </p>
+              </div>
+            )
+          ) : (
+            <div className="flex items-center justify-center h-full text-muted-foreground min-h-[200px]">
+              로딩 중...
+            </div>
+          )}
+        </div>
+      </DialogContent>
+    </Dialog>
   );
 }
 
