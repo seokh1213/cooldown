@@ -79,11 +79,40 @@ export function getChampionList(version: string, lang: string): Promise<Champion
 }
 
 export function getChampionInfo(version: string, lang: string, name: string): Promise<Champion> {
+  // 캐시 키 생성: 버전과 언어를 포함하여 버전별 캐싱
+  const cacheKey = `champion_info_${version}_${lang}_${name}`;
+  
+  // localStorage에서 캐시 확인
+  try {
+    const cached = localStorage.getItem(cacheKey);
+    if (cached) {
+      const parsed = JSON.parse(cached);
+      // 캐시된 데이터가 유효한지 확인
+      if (parsed && typeof parsed === "object" && parsed.id) {
+        return Promise.resolve(parsed);
+      }
+    }
+  } catch (error) {
+    // 캐시 파싱 실패 시 무시하고 API 호출
+    console.warn("Failed to parse cached champion info:", error);
+  }
+
+  // 캐시가 없거나 유효하지 않으면 API 호출
   return fetchData<ChampionData>(
     CHAMP_INFO_URL(version, lang, name),
     (res) => {
       if (res && typeof res === "object" && "data" in res && name in res.data) {
-        return res.data[name];
+        const championInfo = res.data[name];
+        
+        // API 응답을 localStorage에 캐싱
+        try {
+          localStorage.setItem(cacheKey, JSON.stringify(championInfo));
+        } catch (error) {
+          // localStorage 저장 실패 시 무시 (quota exceeded 등)
+          console.warn("Failed to cache champion info:", error);
+        }
+        
+        return championInfo;
       }
       throw new Error(`Champion ${name} not found`);
     }
