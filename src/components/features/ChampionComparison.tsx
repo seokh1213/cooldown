@@ -72,21 +72,21 @@ function StatsSection({
                 {champions.map((champion) => (
                   <th
                     key={champion.id}
-                    className="text-center p-3 text-xs font-semibold w-[140px] md:w-[140px] lg:w-[160px] min-w-[120px] md:min-w-[140px] lg:min-w-[160px]"
+                    className="text-center p-2 text-xs font-semibold w-[180px] md:w-[200px] lg:w-[220px] min-w-[160px] md:min-w-[180px] lg:min-w-[200px]"
                   >
-                    <div className="flex flex-col items-center gap-2 relative">
+                    <div className="flex flex-row items-center justify-center gap-2 relative">
                       <div className="relative">
                         <img
                           src={CHAMP_ICON_URL(version, champion.id)}
                           alt={champion.name}
-                          className="w-12 h-12 rounded-full"
+                          className="w-8 h-8 rounded-full"
                         />
                         {onRemoveChampion && (
                           <Button
                             variant="ghost"
                             size="icon"
                             className={cn(
-                              "absolute -top-1 -right-1 h-5 w-5 rounded-full",
+                              "absolute -top-1 -right-1 h-4 w-4 rounded-full",
                               "bg-destructive/90 hover:bg-destructive text-white",
                               "hover:scale-110 transition-transform",
                               "shadow-md"
@@ -97,19 +97,34 @@ function StatsSection({
                             }}
                             aria-label={`Remove ${champion.name}`}
                           >
-                            <X className="h-3 w-3" />
+                            <X className="h-2.5 w-2.5" />
                           </Button>
                         )}
                       </div>
-                      <div>
-                        <div className="text-xs font-semibold">{champion.name}</div>
-                        <div className="text-[10px] text-muted-foreground">
+                      <div className="flex flex-col items-start">
+                        <div className="text-[11px] font-semibold leading-tight">{champion.name}</div>
+                        <div className="text-[9px] text-muted-foreground leading-tight">
                           {champion.title}
                         </div>
                       </div>
                     </div>
                   </th>
                 ))}
+                {onAddChampion && (
+                  <th className="text-center p-2 text-xs font-semibold w-[180px] md:w-[200px] lg:w-[220px] min-w-[160px] md:min-w-[180px] lg:min-w-[200px] border-l border-border/30">
+                    <button
+                      onClick={() => setShowAddSlot(true)}
+                      className="w-full flex flex-row items-center justify-center gap-2 p-1.5 rounded-lg border-2 border-dashed border-muted-foreground/30 hover:border-primary/50 hover:bg-muted/30 transition-colors group"
+                    >
+                      <div className="w-8 h-8 rounded-full bg-muted/30 flex items-center justify-center group-hover:bg-primary/10 transition-colors">
+                        <Plus className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors" />
+                      </div>
+                      <div className="text-[10px] text-muted-foreground group-hover:text-primary transition-colors whitespace-nowrap">
+                        추가
+                      </div>
+                    </button>
+                  </th>
+                )}
               </tr>
             </thead>
             <tbody>
@@ -123,7 +138,7 @@ function StatsSection({
                     key={field.key}
                     className="border-b border-border/30 hover:bg-muted/30 transition-colors"
                   >
-                    <td className="p-2 pl-3 text-xs font-medium sticky left-0 bg-card z-10 border-r border-border/30">
+                    <td className="p-2 pl-3 text-xs font-medium sticky left-0 bg-card z-10 border-r border-border/30" style={{ wordBreak: 'keep-all' }}>
                       {field.label}
                     </td>
                     {champions.map((champion, idx) => {
@@ -135,7 +150,7 @@ function StatsSection({
                         <td
                           key={champion.id}
                           className={cn(
-                            "p-3 text-xs text-center",
+                            "p-2 text-xs text-center",
                             isMax && "text-primary font-semibold",
                             isMin && "text-muted-foreground"
                           )}
@@ -145,8 +160,8 @@ function StatsSection({
                       );
                     })}
                     {onAddChampion && (
-                      <td className="p-3 text-center border-l border-border/30">
-                        <div className="w-full h-full min-h-[40px]" />
+                      <td className="p-2 text-center border-l border-border/30">
+                        <div className="w-full h-full min-h-[32px]" />
                       </td>
                     )}
                   </tr>
@@ -271,21 +286,21 @@ function SkillsSection({
                 {champions.map((champion) => (
                   <th
                     key={champion.id}
-                    className="text-center p-3 text-xs font-semibold w-[200px] md:w-[200px] lg:w-[220px] min-w-[180px] md:min-w-[200px] lg:min-w-[220px]"
+                    className="text-center p-2 text-xs font-semibold w-[200px] md:w-[220px] lg:w-[240px] min-w-[180px] md:min-w-[200px] lg:min-w-[220px]"
                   >
-                    <div className="flex flex-col items-center gap-2 relative">
+                    <div className="flex flex-row items-center justify-center gap-2 relative">
                       <div className="relative">
                         <img
                           src={CHAMP_ICON_URL(version, champion.id)}
                           alt={champion.name}
-                          className="w-12 h-12 rounded-full"
+                          className="w-8 h-8 rounded-full"
                         />
                         {onRemoveChampion && (
                           <Button
                             variant="ghost"
                             size="icon"
                             className={cn(
-                              "absolute -top-1 -right-1 h-5 w-5 rounded-full",
+                              "absolute -top-1 -right-1 h-4 w-4 rounded-full",
                               "bg-destructive/90 hover:bg-destructive text-white",
                               "hover:scale-110 transition-transform",
                               "shadow-md"
@@ -296,13 +311,13 @@ function SkillsSection({
                             }}
                             aria-label={`Remove ${champion.name}`}
                           >
-                            <X className="h-3 w-3" />
+                            <X className="h-2.5 w-2.5" />
                           </Button>
                         )}
                       </div>
-                      <div>
-                        <div className="text-xs font-semibold">{champion.name}</div>
-                        <div className="text-[10px] text-muted-foreground">
+                      <div className="flex flex-col items-start">
+                        <div className="text-[11px] font-semibold leading-tight">{champion.name}</div>
+                        <div className="text-[9px] text-muted-foreground leading-tight">
                           {champion.title}
                         </div>
                       </div>
@@ -310,15 +325,15 @@ function SkillsSection({
                   </th>
                 ))}
                 {onAddChampion && (
-                  <th className="text-center p-3 text-xs font-semibold w-[200px] md:w-[200px] lg:w-[220px] min-w-[180px] md:min-w-[200px] lg:min-w-[220px] border-l border-border/30">
+                  <th className="text-center p-2 text-xs font-semibold w-[200px] md:w-[220px] lg:w-[240px] min-w-[180px] md:min-w-[200px] lg:min-w-[220px] border-l border-border/30">
                     <button
                       onClick={() => setShowAddSlot(true)}
-                      className="w-full flex flex-col items-center justify-center gap-2 p-2 rounded-lg border-2 border-dashed border-muted-foreground/30 hover:border-primary/50 hover:bg-muted/30 transition-colors group"
+                      className="w-full flex flex-row items-center justify-center gap-2 p-1.5 rounded-lg border-2 border-dashed border-muted-foreground/30 hover:border-primary/50 hover:bg-muted/30 transition-colors group"
                     >
-                      <div className="w-12 h-12 rounded-full bg-muted/30 flex items-center justify-center group-hover:bg-primary/10 transition-colors">
-                        <Plus className="w-6 h-6 text-muted-foreground group-hover:text-primary transition-colors" />
+                      <div className="w-8 h-8 rounded-full bg-muted/30 flex items-center justify-center group-hover:bg-primary/10 transition-colors">
+                        <Plus className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors" />
                       </div>
-                      <div className="text-[10px] text-muted-foreground group-hover:text-primary transition-colors">
+                      <div className="text-[10px] text-muted-foreground group-hover:text-primary transition-colors whitespace-nowrap">
                         추가
                       </div>
                     </button>
@@ -333,7 +348,7 @@ function SkillsSection({
                   패시브
                 </td>
                 {champions.map((champion) => (
-                  <td key={champion.id} className="p-3 text-center">
+                  <td key={champion.id} className="p-2 text-center">
                     {champion.passive ? (
                       <img
                         src={PASSIVE_ICON_URL(
@@ -341,7 +356,7 @@ function SkillsSection({
                           champion.passive.image.full
                         )}
                         alt="Passive"
-                        className="w-10 h-10 mx-auto rounded"
+                        className="w-8 h-8 mx-auto rounded"
                       />
                     ) : (
                       <span className="text-xs text-muted-foreground">-</span>
@@ -349,8 +364,8 @@ function SkillsSection({
                   </td>
                 ))}
                 {onAddChampion && (
-                  <td className="p-3 text-center border-l border-border/30">
-                    <div className="w-full h-full min-h-[40px]" />
+                  <td className="p-2 text-center border-l border-border/30">
+                    <div className="w-full h-full min-h-[32px]" />
                   </td>
                 )}
               </tr>
@@ -361,19 +376,19 @@ function SkillsSection({
                   스킬
                 </td>
                 {champions.map((champion) => (
-                  <td key={champion.id} className="p-3">
-                    <div className="flex justify-center gap-2">
+                  <td key={champion.id} className="p-2">
+                    <div className="flex justify-center gap-1.5">
                       {champion.spells?.map((skill, idx) => (
                         <div
                           key={skill.id}
-                          className="flex flex-col items-center gap-1"
+                          className="flex flex-col items-center gap-0.5"
                         >
                           <img
                             src={SKILL_ICON_URL(version, skill.id)}
                             alt={SKILL_LETTERS[idx]}
-                            className="w-10 h-10 rounded"
+                            className="w-8 h-8 rounded"
                           />
-                          <span className="text-[10px] font-semibold">
+                          <span className="text-[9px] font-semibold">
                             {SKILL_LETTERS[idx]}
                           </span>
                         </div>
@@ -382,8 +397,8 @@ function SkillsSection({
                   </td>
                 ))}
                 {onAddChampion && (
-                  <td className="p-3 text-center border-l border-border/30">
-                    <div className="w-full h-full min-h-[40px]" />
+                  <td className="p-2 text-center border-l border-border/30">
+                    <div className="w-full h-full min-h-[32px]" />
                   </td>
                 )}
               </tr>
@@ -398,13 +413,13 @@ function SkillsSection({
                     {row.level}레벨
                   </td>
                   {row.skills.map((championSkills, champIdx) => (
-                    <td key={champions[champIdx].id} className="p-3">
+                    <td key={champions[champIdx].id} className="p-2">
                       {championSkills ? (
-                        <div className="flex justify-center gap-2">
+                        <div className="flex justify-center gap-1.5">
                           {championSkills.map((skillData, skillIdx) => (
                             <div
                               key={skillIdx}
-                              className="flex flex-col items-center min-w-[40px]"
+                              className="flex flex-col items-center min-w-[32px]"
                             >
                               <span className="text-xs font-semibold">
                                 {skillData.cooldown !== ""
@@ -420,8 +435,8 @@ function SkillsSection({
                     </td>
                   ))}
                   {onAddChampion && (
-                    <td className="p-3 text-center border-l border-border/30">
-                      <div className="w-full h-full min-h-[40px]" />
+                    <td className="p-2 text-center border-l border-border/30">
+                      <div className="w-full h-full min-h-[32px]" />
                     </td>
                   )}
                 </tr>

@@ -69,11 +69,11 @@ function EncyclopediaPage({ lang, championList, version }: EncyclopediaPageProps
   }, [selectedChampions]);
 
   return (
-    <div className="w-full max-w-7xl mx-auto px-4 md:px-6 lg:px-8 py-6 md:py-8">
+    <div className="w-full max-w-7xl mx-auto px-4 md:px-6 lg:px-8 py-4 md:py-5">
       {/* Header */}
-      <div className="mb-6 md:mb-8">
-        <h1 className="text-2xl md:text-3xl font-bold mb-2">백과사전</h1>
-        <p className="text-sm md:text-base text-muted-foreground">
+      <div className="mb-4 md:mb-5">
+        <h1 className="text-xl md:text-2xl font-bold mb-1">백과사전</h1>
+        <p className="text-xs md:text-sm text-muted-foreground">
           챔피언을 선택하여 기본 스탯과 스킬 쿨타임을 비교해보세요.
         </p>
       </div>
