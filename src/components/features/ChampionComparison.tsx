@@ -74,14 +74,14 @@ function StatsSection({
             <Table className="border-collapse table-fixed w-auto">
               <TableHeader>
                 <TableRow className="border-b border-border/30">
-                  <TableHead className="text-left p-2 pl-3 text-xs font-semibold sticky left-0 bg-card z-20 w-[90px] min-w-[90px] border-r border-border/30" style={{ left: 0 }}>
+                  <TableHead className="text-left p-2 pl-3 text-xs font-semibold text-foreground sticky left-0 bg-card z-20 w-[90px] min-w-[90px] border-r border-border/30" style={{ left: 0 }}>
                     스탯
                   </TableHead>
                   {champions.map((champion, idx) => (
                     <TableHead
                       key={champion.id}
                       className={cn(
-                        "text-center p-2 text-xs font-semibold w-[100px] min-w-[100px]",
+                        "text-center p-2 text-xs font-semibold text-foreground w-[100px] min-w-[100px]",
                         idx < champions.length - 1 && "border-r border-border/30"
                       )}
                     >
@@ -112,14 +112,14 @@ function StatsSection({
                             </Button>
                           )}
                         </div>
-                        <div className="text-[10px] font-semibold leading-tight text-center break-words">
+                        <div className="text-[10px] font-semibold leading-tight text-center break-words text-foreground">
                           {champion.name}
                         </div>
                       </div>
                     </TableHead>
                   ))}
                   {onAddChampion && (
-                    <TableHead className="text-center p-2 text-xs font-semibold w-[100px] min-w-[100px] border-l border-border/30">
+                    <TableHead className="text-center p-2 text-xs font-semibold text-foreground w-[100px] min-w-[100px] border-l border-border/30">
                       <Button
                         onClick={() => setShowAddSlot(true)}
                         variant="outline"
@@ -288,14 +288,14 @@ function SkillsSection({
             <Table className="border-collapse table-fixed w-auto">
               <TableHeader>
                 <TableRow className="border-b border-border/30">
-                  <TableHead className="text-left p-2 pl-3 text-xs font-semibold sticky left-0 bg-card z-20 w-[80px] min-w-[80px] border-r border-border/30" style={{ left: 0 }}>
+                  <TableHead className="text-left p-2 pl-3 text-xs font-semibold text-foreground sticky left-0 bg-card z-20 w-[80px] min-w-[80px] border-r border-border/30" style={{ left: 0 }}>
                     레벨
                   </TableHead>
                   {champions.map((champion, idx) => (
                     <TableHead
                       key={champion.id}
                       className={cn(
-                        "text-center p-2 text-xs font-semibold w-[200px] md:w-[220px] lg:w-[240px] min-w-[180px] md:min-w-[200px] lg:min-w-[220px]",
+                        "text-center p-2 text-xs font-semibold text-foreground w-[200px] md:w-[220px] lg:w-[240px] min-w-[180px] md:min-w-[200px] lg:min-w-[220px]",
                         idx < champions.length - 1 && "border-r border-border/30"
                       )}
                     >
@@ -327,7 +327,7 @@ function SkillsSection({
                           )}
                         </div>
                         <div className="flex flex-col items-start">
-                          <div className="text-[11px] font-semibold leading-tight">{champion.name}</div>
+                          <div className="text-[11px] font-semibold leading-tight text-foreground">{champion.name}</div>
                           <div className="text-[9px] text-muted-foreground leading-tight">
                             {champion.title}
                           </div>
@@ -336,7 +336,7 @@ function SkillsSection({
                     </TableHead>
                   ))}
                   {onAddChampion && (
-                    <TableHead className="text-center p-2 text-xs font-semibold w-[200px] md:w-[220px] lg:w-[240px] min-w-[180px] md:min-w-[200px] lg:min-w-[220px] border-l border-border/30">
+                    <TableHead className="text-center p-2 text-xs font-semibold text-foreground w-[200px] md:w-[220px] lg:w-[240px] min-w-[180px] md:min-w-[200px] lg:min-w-[220px] border-l border-border/30">
                       <Button
                         onClick={() => setShowAddSlot(true)}
                         variant="outline"
