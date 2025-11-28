@@ -84,7 +84,7 @@ function Nav({
         <Select
           defaultValue={lang}
           onChange={handleChange}
-          className="h-8 w-auto min-w-[90px] border border-border/50 bg-background/50 backdrop-blur-sm px-2 py-1 rounded-md focus-visible:ring-2 focus-visible:ring-primary/20 focus-visible:ring-offset-0 text-sm cursor-pointer hover:bg-accent/50 transition-colors"
+          className="h-6 w-auto min-w-[70px] border border-border/50 bg-background/50 backdrop-blur-sm px-1.5 py-0.5 rounded-md focus-visible:ring-2 focus-visible:ring-primary/20 focus-visible:ring-offset-0 text-xs cursor-pointer hover:border-primary/50 hover:bg-muted/30 transition-colors"
           aria-label="Select language"
         >
           <option value="ko_KR">한국어</option>
