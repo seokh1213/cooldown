@@ -11,7 +11,6 @@ interface LayoutProps {
 
 function Layout({ children, nav }: LayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [isCollapsed, setIsCollapsed] = useState(false);
 
   const toggleSidebar = useCallback(() => {
     setSidebarOpen((prev) => !prev);
@@ -21,28 +20,22 @@ function Layout({ children, nav }: LayoutProps) {
     setSidebarOpen(false);
   }, []);
 
-  const toggleCollapse = useCallback(() => {
-    setIsCollapsed((prev) => !prev);
-  }, []);
-
   return (
     <div className="min-h-screen bg-background flex w-full">
       <Sidebar 
         isOpen={sidebarOpen} 
         onClose={closeSidebar}
-        isCollapsed={isCollapsed}
-        onToggleCollapse={toggleCollapse}
       />
       <SidebarRail />
       
       <SidebarInset 
         className="flex flex-col transition-[margin] duration-300 ease-in-out"
         style={{
-          marginLeft: isCollapsed ? "4rem" : "16rem",
+          marginLeft: "4rem", // PC/태블릿에서 항상 접힌 상태 (16 * 4 = 64px = 4rem)
         }}
       >
         {/* Mobile header */}
-        <header className="md:hidden fixed top-0 left-0 right-0 z-40 bg-card/90 backdrop-blur-md border-b border-border/50 px-4 py-3 flex items-center gap-4 shadow-sm" style={{ left: isCollapsed ? "4rem" : "16rem" }}>
+        <header className="md:hidden fixed top-0 left-0 right-0 z-40 bg-card/90 backdrop-blur-md border-b border-border/50 px-4 py-3 flex items-center gap-4 shadow-sm">
           <Button
             variant="ghost"
             size="icon"
@@ -59,7 +52,7 @@ function Layout({ children, nav }: LayoutProps) {
           <>
             {React.isValidElement(nav) 
               ? React.cloneElement(nav as React.ReactElement<any>, { 
-                  sidebarLeft: isCollapsed ? "4rem" : "16rem" 
+                  sidebarLeft: "4rem" 
                 })
               : nav}
           </>
