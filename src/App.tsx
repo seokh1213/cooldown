@@ -3,7 +3,6 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { getVersion, getChampionList } from "@/services/api";
 import Layout from "@/components/layout/Layout";
 import Nav from "@/components/features/Nav";
-import CooldownPage from "@/pages/CooldownPage";
 import EncyclopediaPage from "@/pages/EncyclopediaPage";
 import LaningTipsPage from "@/pages/LaningTipsPage";
 import KillAnglePage from "@/pages/KillAnglePage";
@@ -43,7 +42,6 @@ function App() {
   const [lang, setLang] = useState<string>("ko_KR");
   const [version, setVersion] = useState<string>("10.8.1");
   const [championList, setChampionList] = useState<Champion[] | null>(null);
-  const [selectedChampions, setSelectedChampions] = useState<Champion[]>([]);
   const [theme, setTheme] = useState<"light" | "dark">(getInitialTheme);
 
   const initData = useCallback(async () => {
@@ -73,11 +71,6 @@ function App() {
 
   const handleLangChange = useCallback((newLang: string) => {
     setLang(newLang);
-    setSelectedChampions([]);
-  }, []);
-
-  const handleSetChampions = useCallback((list: Champion[]) => {
-    setSelectedChampions(list);
   }, []);
 
   const toggleTheme = useCallback(() => {
@@ -105,17 +98,6 @@ function App() {
                 lang={lang}
                 championList={championList}
                 version={version}
-              />
-            }
-          />
-          <Route
-            path="/cooldown"
-            element={
-              <CooldownPage
-                lang={lang}
-                championList={championList}
-                selectedChampions={selectedChampions}
-                setChampions={handleSetChampions}
               />
             }
           />
