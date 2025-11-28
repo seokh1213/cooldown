@@ -135,7 +135,7 @@ function Sidebar({ isOpen, onClose }: SidebarProps) {
                                 )} />
                               </SidebarMenuButton>
                             </TooltipTrigger>
-                            <TooltipContent side="right">
+                            <TooltipContent side="right" className="text-xs text-gray-500 dark:text-gray-400">
                               {item.label}
                             </TooltipContent>
                           </Tooltip>
