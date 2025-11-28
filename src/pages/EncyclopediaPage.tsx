@@ -101,7 +101,7 @@ function EncyclopediaPage({ lang, championList, version }: EncyclopediaPageProps
         skinIndex: 0,
       };
       setSelectedChampions((prev) => [...prev, newChampion]);
-      setShowSelector(false);
+      // 모달을 닫지 않고 계속 열어둠 (여러 명 선택 가능하도록)
 
       // Load full champion info
       getChampionInfo(version, lang, champion.id)

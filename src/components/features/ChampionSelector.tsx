@@ -45,11 +45,10 @@ function ChampionSelector({
     );
   }, [championList, searchValue]);
 
+  // 모든 챔피언을 표시하되, 선택된 챔피언은 강조
   const availableChampions = useMemo(() => {
-    return filteredChampions.filter(
-      (champ) => !selectedChampions.some((c) => c.id === champ.id)
-    );
-  }, [filteredChampions, selectedChampions]);
+    return filteredChampions;
+  }, [filteredChampions]);
 
   const handleBlur = useCallback(
     (e: MouseEvent) => {
@@ -64,25 +63,39 @@ function ChampionSelector({
   );
 
   useEffect(() => {
-    if (isOpen) {
+    // 모달일 때는 handleBlur를 사용하지 않음 (overlay의 onClick으로 처리)
+    if (isOpen && !isModal) {
       document.addEventListener("mousedown", handleBlur);
       return () => {
         document.removeEventListener("mousedown", handleBlur);
       };
     }
-  }, [isOpen, handleBlur]);
+  }, [isOpen, handleBlur, isModal]);
 
   const handleSelect = useCallback(
-    (champion: Champion) => {
-      onSelect(champion);
-      setIsOpen(false);
-      // Don't clear search value to preserve user's search context
-      // setSearchValue("");
-      setFocusedIndex(-1);
-      document.body.style.overflow = "";
-      onClose?.();
+    (champion: Champion, isSelected: boolean) => {
+      console.log('[ChampionSelector] handleSelect called', { champion: champion.name, isSelected, isModal });
+      // 이미 선택된 챔피언이면 선택 해제하지 않고 그냥 무시 (또는 선택 해제 로직 추가 가능)
+      if (!isSelected) {
+        console.log('[ChampionSelector] Calling onSelect');
+        onSelect(champion);
+      }
+      // 모달일 때는 절대 닫지 않고 계속 열어둠
+      if (isModal) {
+        console.log('[ChampionSelector] Modal mode - keeping open');
+        // 모달일 때는 검색어와 포커스만 초기화하지 않음 (계속 선택 가능하도록)
+        setFocusedIndex(-1);
+        // 모달 상태는 유지 (setIsOpen이나 onClose 호출하지 않음)
+      } else {
+        console.log('[ChampionSelector] Non-modal mode - closing');
+        // 모달이 아닐 때만 닫기
+        setIsOpen(false);
+        setFocusedIndex(-1);
+        document.body.style.overflow = "";
+        onClose?.();
+      }
     },
-    [onSelect, onClose]
+    [onSelect, onClose, isModal, selectedChampions]
   );
 
   const handleKeyDown = useCallback(
@@ -101,7 +114,8 @@ function ChampionSelector({
         e.preventDefault();
         const champion = availableChampions[focusedIndex];
         if (champion) {
-          handleSelect(champion);
+          const isSelected = selectedChampions.some((c) => c.id === champion.id);
+          handleSelect(champion, isSelected);
         }
       } else if (e.key === "Escape") {
         setIsOpen(false);
@@ -112,7 +126,7 @@ function ChampionSelector({
         onClose?.();
       }
     },
-    [isOpen, isModal, championList, availableChampions, focusedIndex, handleSelect, onClose]
+    [isOpen, isModal, championList, availableChampions, focusedIndex, handleSelect, onClose, selectedChampions]
   );
 
   useEffect(() => {
@@ -269,6 +283,7 @@ function ChampionSelector({
                 <div className="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-6 lg:grid-cols-8 xl:grid-cols-10 gap-2">
                   {availableChampions.map((champion, index) => {
                     const isFocused = focusedIndex === index;
+                    const isSelected = selectedChampions.some((c) => c.id === champion.id);
                     return (
                       <div
                         key={champion.id}
@@ -278,10 +293,10 @@ function ChampionSelector({
                         )}
                       >
                         <ChampionThumbnail
-                          addChampion={(champ) => handleSelect(champ)}
+                          addChampion={(champ, selected) => handleSelect(champ, selected)}
                           data={champion}
                           name={champion.name}
-                          selected={false}
+                          selected={isSelected}
                           thumbnailSrc={CHAMP_ICON_URL(
                             champion.version || "",
                             champion.id
@@ -323,7 +338,6 @@ function ChampionSelector({
       <div
         ref={containerRef}
         className="fixed inset-0 z-[101] flex items-center justify-center p-4 md:p-6 pointer-events-none"
-        onClick={(e) => e.stopPropagation()}
       >
         <div className="w-full h-full md:w-[600px] md:h-[500px] lg:w-[800px] lg:h-[600px] bg-card rounded-lg md:rounded-xl border border-border shadow-xl flex flex-col overflow-hidden pointer-events-auto transform transition-transform">
           {/* Search Header */}
@@ -347,10 +361,10 @@ function ChampionSelector({
               size="icon"
               className="h-8 w-8 shrink-0"
               onClick={() => {
-                setIsOpen(false);
-                setSearchValue("");
-                document.body.style.overflow = "";
-                onClose?.();
+                // setIsOpen(false);
+                // setSearchValue("");
+                // document.body.style.overflow = "";
+                // onClose?.();
               }}
             >
               <X className="h-4 w-4" />
@@ -367,6 +381,7 @@ function ChampionSelector({
                 <div className="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-6 lg:grid-cols-8 xl:grid-cols-10 gap-2">
                   {availableChampions.map((champion, index) => {
                     const isFocused = focusedIndex === index;
+                    const isSelected = selectedChampions.some((c) => c.id === champion.id);
                     return (
                       <div
                         key={champion.id}
@@ -376,10 +391,10 @@ function ChampionSelector({
                         )}
                       >
                         <ChampionThumbnail
-                          addChampion={(champ) => handleSelect(champ)}
+                          addChampion={(champ, selected) => handleSelect(champ, selected)}
                           data={champion}
                           name={champion.name}
-                          selected={false}
+                          selected={isSelected}
                           thumbnailSrc={CHAMP_ICON_URL(
                             champion.version || "",
                             champion.id
@@ -392,9 +407,9 @@ function ChampionSelector({
               ) : (
                 <div className="flex flex-col items-center justify-center h-full text-muted-foreground min-h-[200px] space-y-2">
                   <Search className="h-12 w-12 opacity-50" />
-                  <p className="text-base font-medium">
-                    {searchValue ? "검색 결과가 없습니다" : "모든 챔피언이 선택되었습니다"}
-                  </p>
+                    <p className="text-base font-medium">
+                      {searchValue ? "검색 결과가 없습니다" : "챔피언 목록이 비어있습니다"}
+                    </p>
                 </div>
               )
             ) : (

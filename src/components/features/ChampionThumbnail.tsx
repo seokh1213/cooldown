@@ -20,7 +20,8 @@ function ChampionThumbnail({
   const [isLoaded, setIsLoaded] = useState(false);
   const [hasError, setHasError] = useState(false);
 
-  const handleClick = useCallback(() => {
+  const handleClick = useCallback((e: React.MouseEvent) => {
+    console.log('[ChampionThumbnail] handleClick called', { name: data.name, selected, target: e.target });
     addChampion(data, selected);
   }, [addChampion, data, selected]);
 
@@ -56,7 +57,7 @@ function ChampionThumbnail({
               "absolute inset-0 w-full h-full rounded-full bg-black/5 border-0 box-border transition-opacity duration-300 ease-out object-cover",
               "hover:shadow-md hover:shadow-primary/20 hover:scale-105",
               "focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-1",
-              selected && "border-2 border-primary ring-1 ring-primary/20",
+              selected && "border-4 border-primary ring-2 ring-primary/40 shadow-lg shadow-primary/30",
               isLoaded ? "opacity-100" : "opacity-0"
             )}
             src={thumbnailSrc}
