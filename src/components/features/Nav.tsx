@@ -66,7 +66,7 @@ function Nav({
             size="icon"
             onClick={onThemeToggle}
             className={cn(
-              "h-9 w-9 transition-all duration-200 text-muted-foreground/60 hover:text-muted-foreground/80 hover:bg-accent/50"
+              "h-9 w-9 transition-all duration-200 text-muted-foreground/60 hover:bg-muted hover:text-muted-foreground"
             )}
             aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
             title={theme === "dark" ? "라이트 모드로 전환" : "다크 모드로 전환"}
