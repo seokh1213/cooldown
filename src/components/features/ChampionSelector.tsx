@@ -30,7 +30,8 @@ function ChampionSelector({
   const listRef = useRef<HTMLDivElement>(null);
 
   // If onClose is provided, this is a modal-style selector
-  const isModal = !!onClose;
+  const isModal = onClose !== undefined;
+  const handleClose = onClose || (() => {});
 
   const filteredChampions = useMemo(() => {
     if (!championList) return [];
@@ -75,11 +76,9 @@ function ChampionSelector({
   const handleSelect = useCallback(
     (champion: Champion, isSelected: boolean) => {
       console.log('[ChampionSelector] handleSelect called', { champion: champion.name, isSelected, isModal });
-      // 이미 선택된 챔피언이면 선택 해제하지 않고 그냥 무시 (또는 선택 해제 로직 추가 가능)
-      if (!isSelected) {
-        console.log('[ChampionSelector] Calling onSelect');
-        onSelect(champion);
-      }
+      // 이미 선택된 챔피언이면 선택 해제, 아니면 선택
+      console.log('[ChampionSelector] Calling onSelect');
+      onSelect(champion);
       // 모달일 때는 절대 닫지 않고 계속 열어둠
       if (isModal) {
         console.log('[ChampionSelector] Modal mode - keeping open');
@@ -92,10 +91,10 @@ function ChampionSelector({
         setIsOpen(false);
         setFocusedIndex(-1);
         document.body.style.overflow = "";
-        onClose?.();
+        handleClose();
       }
     },
-    [onSelect, onClose, isModal, selectedChampions]
+    [onSelect, onClose, isModal]
   );
 
   const handleKeyDown = useCallback(
@@ -123,7 +122,9 @@ function ChampionSelector({
         // setSearchValue("");
         setFocusedIndex(-1);
         document.body.style.overflow = "";
-        onClose?.();
+        if (onClose) {
+          onClose();
+        }
       }
     },
     [isOpen, isModal, championList, availableChampions, focusedIndex, handleSelect, onClose, selectedChampions]
@@ -232,7 +233,7 @@ function ChampionSelector({
                 setIsOpen(false);
                 setSearchValue("");
                 document.body.style.overflow = "";
-                onClose?.();
+                handleClose();
               }}
               aria-hidden="true"
             />
@@ -266,7 +267,7 @@ function ChampionSelector({
                   setIsOpen(false);
                   setSearchValue("");
                   document.body.style.overflow = "";
-                  onClose?.();
+                  handleClose();
                 }}
               >
                 <X className="h-4 w-4" />
@@ -361,10 +362,12 @@ function ChampionSelector({
               size="icon"
               className="h-8 w-8 shrink-0"
               onClick={() => {
-                // setIsOpen(false);
-                // setSearchValue("");
-                // document.body.style.overflow = "";
-                // onClose?.();
+                setIsOpen(false);
+                setSearchValue("");
+                document.body.style.overflow = "";
+                if (onClose) {
+                  onClose();
+                }
               }}
             >
               <X className="h-4 w-4" />

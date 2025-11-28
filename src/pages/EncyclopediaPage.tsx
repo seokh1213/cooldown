@@ -91,9 +91,17 @@ function EncyclopediaPage({ lang, championList, version }: EncyclopediaPageProps
     }
   }, [selectedChampions]);
 
+  const removeChampion = useCallback((championId: string) => {
+    setSelectedChampions((prev) => prev.filter((c) => c.id !== championId));
+  }, []);
+
   const addChampion = useCallback(
     (champion: Champion) => {
-      if (selectedChampions.some((c) => c.id === champion.id)) return;
+      // 이미 선택된 챔피언이면 제거
+      if (selectedChampions.some((c) => c.id === champion.id)) {
+        removeChampion(champion.id);
+        return;
+      }
 
       const newChampion: ChampionWithInfo = {
         ...champion,
@@ -123,12 +131,8 @@ function EncyclopediaPage({ lang, championList, version }: EncyclopediaPageProps
           );
         });
     },
-    [selectedChampions, version, lang]
+    [selectedChampions, version, lang, removeChampion]
   );
-
-  const removeChampion = useCallback((championId: string) => {
-    setSelectedChampions((prev) => prev.filter((c) => c.id !== championId));
-  }, []);
 
   const resetChampions = useCallback(() => {
     setSelectedChampions([]);

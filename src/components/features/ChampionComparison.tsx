@@ -176,7 +176,7 @@ function StatsSection({
               selectedChampions={champions}
               onSelect={(champion) => {
                 onAddChampion(champion);
-                setShowAddSlot(false);
+                // 모달을 닫지 않고 계속 열어둠 (여러 명 선택 가능하도록)
               }}
               onClose={() => setShowAddSlot(false)}
             />
@@ -470,7 +470,7 @@ function SkillsSection({
               selectedChampions={champions}
               onSelect={(champion) => {
                 onAddChampion(champion);
-                setShowAddSlot(false);
+                // 모달을 닫지 않고 계속 열어둠 (여러 명 선택 가능하도록)
               }}
               onClose={() => setShowAddSlot(false)}
             />
