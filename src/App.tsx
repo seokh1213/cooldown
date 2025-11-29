@@ -7,6 +7,7 @@ import SplashScreen from "@/components/layout/SplashScreen";
 import EncyclopediaPage from "@/pages/EncyclopediaPage";
 import LaningTipsPage from "@/pages/LaningTipsPage";
 import KillAnglePage from "@/pages/KillAnglePage";
+import OGPreviewPage from "@/pages/OGPreviewPage";
 import { Champion } from "@/types";
 import { I18nProvider, Language } from "@/i18n";
 
@@ -206,6 +207,13 @@ function AppContent({
             </Layout>
           }
         />
+        {/* OG Preview 페이지는 개발 환경에서만 활성화 */}
+        {import.meta.env.DEV && (
+          <Route
+            path="/og-preview"
+            element={<OGPreviewPage />}
+          />
+        )}
       </Routes>
     </>
   );
