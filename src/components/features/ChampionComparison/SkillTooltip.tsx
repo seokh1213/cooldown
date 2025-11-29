@@ -13,6 +13,7 @@ import {
   Dialog,
   DialogContent,
   DialogTitle,
+  DialogDescription,
 } from "@/components/ui/dialog";
 import { VisuallyHidden } from "@/components/ui/visually-hidden";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -228,6 +229,11 @@ export function SkillTooltip({
                   ? `${passiveName || "패시브"} 스킬 정보`
                   : `[${SKILL_LETTERS[skillIdx]}] ${skill.name || "스킬"} 정보`}
               </DialogTitle>
+              <DialogDescription>
+                {isPassive && passiveImageFull 
+                  ? `${passiveName || "패시브"} 스킬의 상세 정보입니다.`
+                  : `[${SKILL_LETTERS[skillIdx]}] ${skill.name || "스킬"}의 상세 정보입니다.`}
+              </DialogDescription>
             </VisuallyHidden>
             <ScrollArea className="flex-1 min-h-0">
               <div className="p-4 flex flex-col gap-3">
