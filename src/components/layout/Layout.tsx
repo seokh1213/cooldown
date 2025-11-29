@@ -3,6 +3,7 @@ import Sidebar from "./Sidebar";
 import { SidebarRail, SidebarInset } from "@/components/ui/sidebar";
 import { Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useDeviceType } from "@/hooks/useDeviceType";
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -11,6 +12,7 @@ interface LayoutProps {
 
 function Layout({ children, nav }: LayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const deviceType = useDeviceType();
 
   const toggleSidebar = useCallback(() => {
     setSidebarOpen((prev) => !prev);
@@ -31,7 +33,7 @@ function Layout({ children, nav }: LayoutProps) {
       <SidebarInset 
         className="flex flex-col transition-[margin] duration-300 ease-in-out"
         style={{
-          marginLeft: "4rem", // PC/태블릿에서 항상 접힌 상태 (16 * 4 = 64px = 4rem)
+          marginLeft: deviceType === "mobile" ? "0" : "4rem", // 모바일에서는 0, PC/태블릿에서는 64px
         }}
       >
         {/* Mobile header */}

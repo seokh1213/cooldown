@@ -1,10 +1,17 @@
-import React, { useMemo, useState, useEffect } from "react";
+import React from "react";
 import { Champion } from "@/types";
 import { CHAMP_ICON_URL } from "@/services/api";
 import { getIntegratedSpellDataForChampions, SpellData } from "@/services/spellDataService";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { X, Plus } from "lucide-react";
+import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import {
   TooltipProvider,
 } from "@/components/ui/tooltip";
@@ -20,11 +27,10 @@ export function SkillsSectionMobile({
   onAddChampion,
   onRemoveChampion,
 }: SectionProps) {
-  const [showAddSlot, setShowAddSlot] = useState(false);
-  const [spellDataMap, setSpellDataMap] = useState<Record<string, SpellData[]>>({});
+  const [spellDataMap, setSpellDataMap] = React.useState<Record<string, SpellData[]>>({});
 
   // 통합 스킬 데이터 로드
-  useEffect(() => {
+  React.useEffect(() => {
     const loadSpellData = async () => {
       try {
         const data = await getIntegratedSpellDataForChampions(champions, version);
@@ -40,6 +46,14 @@ export function SkillsSectionMobile({
     }
   }, [champions, version]);
 
+  const maxLevel = React.useMemo(() => {
+    return Math.max(
+      ...champions.map((c) =>
+        c.spells ? Math.max(...c.spells.map((s) => s.maxrank)) : 0
+      )
+    );
+  }, [champions]);
+
   // 스킬 데이터 가져오기 헬퍼 함수
   const getSpellData = (championId: string, spellIndex: number): SpellData | null => {
     const spellDataList = spellDataMap[championId];
@@ -49,136 +63,153 @@ export function SkillsSectionMobile({
     return spellDataList[spellIndex];
   };
 
+  const skillRows = React.useMemo(() => {
+    return Array.from({ length: maxLevel }, (_, levelIdx) => {
+      const level = levelIdx + 1;
+      return {
+        level,
+        skills: champions.map((champion) => {
+          if (!champion.spells) return null;
+          return champion.spells.map((skill, skillIdx) => {
+            const spellData = getSpellData(champion.id, skillIdx);
+            const cooldown = getCooldownForLevel(skill, level, spellData);
+            return {
+              skill,
+              cooldown,
+            };
+          });
+        }),
+      };
+    });
+  }, [champions, maxLevel, spellDataMap]);
+
   return (
     <TooltipProvider delayDuration={0} skipDelayDuration={150}>
-      <div className="space-y-6">
-      {champions.map((champion) => (
-        <Card key={champion.id}>
-          <CardHeader>
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <img
-                  src={CHAMP_ICON_URL(version, champion.id)}
-                  alt={champion.name}
-                  className="w-12 h-12 rounded-full"
-                />
-                <div>
-                  <CardTitle className="text-lg">{champion.name}</CardTitle>
-                  <p className="text-sm text-muted-foreground">
-                    {champion.title}
-                  </p>
-                </div>
-              </div>
-              {onRemoveChampion && (
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="h-8 w-8 rounded-full bg-destructive/90 hover:bg-destructive text-white hover:scale-110 transition-transform shadow-md"
-                  onClick={() => onRemoveChampion(champion.id)}
-                  aria-label={`Remove ${champion.name}`}
-                >
-                  <X className="h-4 w-4" />
-                </Button>
-              )}
-            </div>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              {/* Skills */}
-              {(champion.passive || champion.spells) && (
-                <div>
-                  <h4 className="text-sm font-semibold mb-3">스킬 쿨타임</h4>
-                  <div className="space-y-4">
-                    {/* Passive */}
-                    {champion.passive && (
-                      <div className="space-y-2">
-                        <SkillTooltip
-                          isPassive
-                          passiveName={champion.passive.name}
-                          passiveDescription={champion.passive.description}
-                          passiveImageFull={champion.passive.image.full}
-                          skill={{} as any}
-                          skillIdx={0}
-                          version={version}
-                        />
-                      </div>
-                    )}
-                    {/* Skills */}
-                    {champion.spells?.map((skill, idx) => {
-                      const maxRank = skill.maxrank;
-                      const spellData = getSpellData(champion.id, idx);
-
-                      return (
-                        <div key={skill.id} className="space-y-2">
-                          <SkillTooltip
-                            skill={skill}
-                            skillIdx={idx}
-                            version={version}
-                            spellData={spellData}
+      <div className="overflow-x-auto -mx-4 px-4">
+        <div className="min-w-full">
+          <div className="relative">
+            <div className="border border-border/30 rounded-lg overflow-hidden">
+              <Table className="border-collapse table-fixed w-auto min-w-full">
+                <TableHeader>
+                  <TableRow className="border-b border-border/30">
+                    <TableHead className="text-left p-2 pl-3 text-xs font-semibold text-foreground sticky left-0 bg-card z-20 w-[60px] min-w-[60px] border-r border-border/30" style={{ left: 0 }}>
+                      레벨
+                    </TableHead>
+                    {champions.map((champion, idx) => (
+                      <TableHead
+                        key={champion.id}
+                        className="text-center p-2 text-xs font-semibold text-foreground w-full"
+                      >
+                        <div className="flex flex-col items-center justify-center gap-1">
+                          <img
+                            src={CHAMP_ICON_URL(version, champion.id)}
+                            alt={champion.name}
+                            className="w-8 h-8 rounded-full"
                           />
-                          {/* 레벨별 쿨타임을 세로 스택으로 표시 */}
-                          <div className="space-y-2 pl-12">
-                            {Array.from({ length: maxRank }, (_, i) => {
-                              const cooldown = getCooldownForLevel(skill, i + 1, spellData);
-                              const displayValue = cooldown !== "" ? `${cooldown}s` : "-";
-
-                              return (
-                                <div
-                                  key={i}
-                                  className="flex items-center justify-between p-3 bg-muted/50 rounded-lg border border-border/30"
-                                >
-                                  <span className="text-sm font-medium text-muted-foreground">
-                                    {i + 1}레벨
-                                  </span>
-                                  <span className="text-base font-semibold">
-                                    {displayValue}
-                                  </span>
-                                </div>
-                              );
-                            })}
+                          <div className="text-sm font-semibold leading-tight text-center text-foreground">
+                            {champion.name}
                           </div>
                         </div>
-                      );
-                    })}
-                  </div>
-                </div>
-              )}
-            </div>
-          </CardContent>
-        </Card>
-      ))}
-      
-      {/* Add Champion Button */}
-      {onAddChampion && (
-        <Card>
-          <CardContent className="p-6">
-            <Button
-              onClick={() => setShowAddSlot(true)}
-              variant="outline"
-              className="w-full flex flex-row items-center justify-center gap-2 p-4 h-auto border-2 border-dashed border-muted-foreground/30 hover:border-primary/50 hover:bg-muted/30 group"
-            >
-              <div className="w-10 h-10 rounded-full bg-muted/30 flex items-center justify-center group-hover:bg-primary/10 transition-colors">
-                <Plus className="w-5 h-5 text-muted-foreground group-hover:text-primary transition-colors" />
-              </div>
-              <span className="text-sm font-medium text-muted-foreground group-hover:text-primary transition-colors">
-                챔피언 추가하기
-              </span>
-            </Button>
-          </CardContent>
-        </Card>
-      )}
+                      </TableHead>
+                    ))}
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {/* Skills Header */}
+                  <TableRow className="border-b-2 border-border/30 bg-muted/30">
+                    <TableCell className="p-2 pl-3 text-xs font-medium sticky left-0 bg-card z-20 border-r border-border/30" style={{ left: 0 }}>
+                      스킬
+                    </TableCell>
+                    {champions.map((champion) => (
+                      <TableCell
+                        key={champion.id}
+                        className="p-2"
+                      >
+                        <div className="flex justify-center gap-1">
+                          {/* Passive */}
+                          {champion.passive && (
+                            <SkillTooltip
+                              isPassive
+                              passiveName={champion.passive.name}
+                              passiveDescription={champion.passive.description}
+                              passiveImageFull={champion.passive.image.full}
+                              skill={{} as any}
+                              skillIdx={0}
+                              version={version}
+                            />
+                          )}
+                          {/* Skills */}
+                          {champion.spells?.map((skill, skillIdx) => {
+                            const spellData = getSpellData(champion.id, skillIdx);
+                            return (
+                              <SkillTooltip
+                                key={skill.id}
+                                skill={skill}
+                                skillIdx={skillIdx}
+                                version={version}
+                                spellData={spellData}
+                              />
+                            );
+                          })}
+                        </div>
+                      </TableCell>
+                    ))}
+                  </TableRow>
 
-      {showAddSlot && onAddChampion && championList && (
-        <ChampionSelector
-          championList={championList}
-          selectedChampions={champions}
-          onSelect={(champion) => {
-            onAddChampion(champion);
-          }}
-          onClose={() => setShowAddSlot(false)}
-        />
-      )}
+                  {/* Skill Cooldowns by Level */}
+                  {skillRows.map((row, rowIdx) => (
+                    <TableRow
+                      key={row.level}
+                      className="border-b border-border/30 hover:bg-muted/30 transition-colors"
+                    >
+                      <TableCell
+                        className={cn(
+                          "p-2 pl-3 text-xs font-medium sticky left-0 bg-card z-20 border-r border-border/30",
+                          rowIdx === skillRows.length - 1 && "rounded-bl-lg"
+                        )}
+                        style={{ left: 0 }}
+                      >
+                        {row.level}레벨
+                      </TableCell>
+                      {row.skills.map((championSkills, champIdx) => (
+                        <TableCell
+                          key={champions[champIdx].id}
+                          className="p-2"
+                        >
+                          {championSkills ? (
+                            <div className="flex justify-center gap-1">
+                              {/* Passive dummy slot */}
+                              <div className="flex flex-col items-center min-w-[24px]">
+                                <span className="text-[10px] text-muted-foreground">-</span>
+                              </div>
+                              {/* Skills */}
+                              {championSkills.map((skillData, skillIdx) => (
+                                <div
+                                  key={skillIdx}
+                                  className="flex flex-col items-center min-w-[24px]"
+                                >
+                                  <span className="text-[10px] font-semibold">
+                                    {skillData.cooldown !== ""
+                                      ? `${skillData.cooldown}s`
+                                      : "-"}
+                                  </span>
+                                </div>
+                              ))}
+                            </div>
+                          ) : (
+                            <span className="text-[10px] text-muted-foreground">-</span>
+                          )}
+                        </TableCell>
+                      ))}
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+          </div>
+        </div>
       </div>
     </TooltipProvider>
   );
 }
+
