@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { TutorialContent } from "@/components/features/TutorialContent";
@@ -7,11 +7,32 @@ const TUTORIAL_COMPLETED_KEY = "tutorial_completed";
 
 function TutorialPage() {
   const navigate = useNavigate();
+  const touchHandledRef = useRef(false);
 
-  const handleComplete = () => {
+  const handleComplete = useCallback(() => {
     localStorage.setItem(TUTORIAL_COMPLETED_KEY, "true");
     navigate("/");
-  };
+  }, [navigate]);
+
+  // 터치 이벤트 직접 처리 (모바일 터치 지연 문제 해결)
+  const handleTouchStart = useCallback((e: React.TouchEvent) => {
+    e.stopPropagation();
+    touchHandledRef.current = true;
+    handleComplete();
+    // 짧은 딜레이 후 플래그 리셋
+    setTimeout(() => {
+      touchHandledRef.current = false;
+    }, 300);
+  }, [handleComplete]);
+
+  const handleClick = useCallback((e: React.MouseEvent) => {
+    // 터치 이벤트로 이미 처리된 경우 클릭 이벤트 무시
+    if (touchHandledRef.current) {
+      touchHandledRef.current = false;
+      return;
+    }
+    handleComplete();
+  }, [handleComplete]);
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center p-6 bg-background">
@@ -30,10 +51,12 @@ function TutorialPage() {
         <TutorialContent />
 
         {/* 시작하기 버튼 */}
-        <div className="pt-4">
+        <div className="pt-4 pb-4">
           <Button
-            onClick={handleComplete}
-            className="w-full h-12 text-base font-semibold"
+            onClick={handleClick}
+            onTouchStart={handleTouchStart}
+            className="w-full h-12 text-base font-semibold relative z-10"
+            style={{ touchAction: 'manipulation', WebkitTapHighlightColor: 'transparent' }}
             size="lg"
           >
             시작하기
