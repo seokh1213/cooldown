@@ -380,13 +380,23 @@ function EncyclopediaPage({ lang, championList, version }: EncyclopediaPageProps
     if (!tab) return;
 
     if (mode === 'select-second') {
-      // 기존 일반 탭을 VS 탭으로 변환 (기존 탭 삭제 후 VS 탭 생성)
+      // 기존 일반 탭을 VS 탭으로 변환 (기존 탭 위치 유지)
       const newTab: Tab = {
         mode: 'vs',
         champions: [tab.champions[0], champion.id],
         id: generateTabId(),
       };
-      setTabs((prev) => prev.filter((t) => t.id !== tabId).concat(newTab));
+      setTabs((prev) => {
+        const tabIndex = prev.findIndex((t) => t.id === tabId);
+        if (tabIndex === -1) {
+          // 탭을 찾을 수 없으면 맨 뒤에 추가
+          return [...prev, newTab];
+        }
+        // 기존 탭 위치에 새 VS 탭으로 교체
+        const newTabs = [...prev];
+        newTabs[tabIndex] = newTab;
+        return newTabs;
+      });
       setSelectedTabId(newTab.id);
       // 선택한 챔피언이 목록에 없으면 추가 (탭은 생성하지 않음)
       const exists = selectedChampions.some((c) => c.id === champion.id);
