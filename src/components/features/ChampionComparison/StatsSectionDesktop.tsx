@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { CHAMP_ICON_URL } from "@/services/api";
 import { cn } from "@/lib/utils";
-import { X, Plus } from "lucide-react";
+import { X, Plus, GripVertical } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Table,
@@ -14,6 +14,22 @@ import {
 import ChampionSelector from "../ChampionSelector";
 import { STAT_FIELDS } from "./constants";
 import { SectionProps } from "./types";
+import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  DragEndEvent,
+} from "@dnd-kit/core";
+import {
+  SortableContext,
+  sortableKeyboardCoordinates,
+  horizontalListSortingStrategy,
+  useSortable,
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 
 export function StatsSectionDesktop({
   champions,
@@ -21,59 +37,134 @@ export function StatsSectionDesktop({
   championList,
   onAddChampion,
   onRemoveChampion,
+  onReorderChampions,
 }: SectionProps) {
   const [showAddSlot, setShowAddSlot] = useState(false);
 
+  // 드래그 앤 드롭 센서 설정
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 8,
+      },
+    }),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
+
+  // 드래그 종료 핸들러
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+
+    if (over && active.id !== over.id && onReorderChampions) {
+      const oldIndex = champions.findIndex((c) => c.id === active.id);
+      const newIndex = champions.findIndex((c) => c.id === over.id);
+
+      if (oldIndex !== -1 && newIndex !== -1) {
+        onReorderChampions(oldIndex, newIndex);
+      }
+    }
+  };
+
+  // SortableChampionHeader 컴포넌트
+  const SortableChampionHeader = ({ champion, index }: { champion: any; index: number }) => {
+    const {
+      attributes,
+      listeners,
+      setNodeRef,
+      transform,
+      transition,
+      isDragging,
+    } = useSortable({ id: champion.id });
+
+    const style = {
+      transform: CSS.Transform.toString(transform),
+      transition,
+      opacity: isDragging ? 0.5 : 1,
+    };
+
+    return (
+      <TableHead
+        ref={setNodeRef}
+        style={style}
+        className={cn(
+          "text-center p-2 text-xs font-semibold text-foreground w-[100px] min-w-[100px]",
+          index < champions.length - 1 && "border-r border-border/30",
+          isDragging && "z-50"
+        )}
+      >
+        <div className="flex flex-col items-center justify-center gap-1.5 relative">
+          {onReorderChampions && (
+            <button
+              {...attributes}
+              {...listeners}
+              className="cursor-grab active:cursor-grabbing p-1 opacity-60 hover:opacity-100 transition-opacity absolute -left-2 top-1/2 -translate-y-1/2"
+              aria-label="Drag to reorder"
+            >
+              <GripVertical className="h-4 w-4 text-muted-foreground" />
+            </button>
+          )}
+          <div className="relative">
+            <img
+              src={CHAMP_ICON_URL(version, champion.id)}
+              alt={champion.name}
+              className="w-8 h-8 rounded-full"
+            />
+            {onRemoveChampion && (
+              <Button
+                variant="ghost"
+                size="icon"
+                className={cn(
+                  "absolute -top-1 -right-1 h-4 w-4 rounded-full",
+                  "bg-destructive/90 hover:bg-destructive text-white",
+                  "hover:scale-110 transition-transform",
+                  "shadow-md"
+                )}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onRemoveChampion(champion.id);
+                }}
+                aria-label={`Remove ${champion.name}`}
+              >
+                <X className="h-2.5 w-2.5" />
+              </Button>
+            )}
+          </div>
+          <div className="text-[10px] font-semibold leading-tight text-center break-words text-foreground">
+            {champion.name}
+          </div>
+        </div>
+      </TableHead>
+    );
+  };
+
   return (
     <div className="relative">
-      <div className="border border-border/30 rounded-lg overflow-hidden">
-        <Table className="border-collapse table-fixed w-auto">
-          <TableHeader>
-            <TableRow className="border-b border-border/30">
-              <TableHead className="text-left p-2 pl-3 text-xs font-semibold text-foreground sticky left-0 bg-card z-20 w-[90px] min-w-[90px] border-r border-border/30" style={{ left: 0 }}>
-                스탯
-              </TableHead>
-              {champions.map((champion, idx) => (
-                <TableHead
-                  key={champion.id}
-                  className={cn(
-                    "text-center p-2 text-xs font-semibold text-foreground w-[100px] min-w-[100px]",
-                    idx < champions.length - 1 && "border-r border-border/30"
-                  )}
-                >
-                  <div className="flex flex-col items-center justify-center gap-1.5 relative">
-                    <div className="relative">
-                      <img
-                        src={CHAMP_ICON_URL(version, champion.id)}
-                        alt={champion.name}
-                        className="w-8 h-8 rounded-full"
-                      />
-                      {onRemoveChampion && (
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className={cn(
-                            "absolute -top-1 -right-1 h-4 w-4 rounded-full",
-                            "bg-destructive/90 hover:bg-destructive text-white",
-                            "hover:scale-110 transition-transform",
-                            "shadow-md"
-                          )}
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            onRemoveChampion(champion.id);
-                          }}
-                          aria-label={`Remove ${champion.name}`}
-                        >
-                          <X className="h-2.5 w-2.5" />
-                        </Button>
-                      )}
-                    </div>
-                    <div className="text-[10px] font-semibold leading-tight text-center break-words text-foreground">
-                      {champion.name}
-                    </div>
-                  </div>
+      <DndContext
+        sensors={sensors}
+        collisionDetection={closestCenter}
+        onDragEnd={handleDragEnd}
+      >
+        <div className="border border-border/30 rounded-lg overflow-hidden">
+          <Table className="border-collapse table-fixed w-auto">
+            <TableHeader>
+              <TableRow className="border-b border-border/30">
+                <TableHead className="text-left p-2 pl-3 text-xs font-semibold text-foreground sticky left-0 bg-card z-20 w-[90px] min-w-[90px] border-r border-border/30" style={{ left: 0 }}>
+                  스탯
                 </TableHead>
-              ))}
+                <SortableContext
+                  items={champions.map((c) => c.id)}
+                  strategy={horizontalListSortingStrategy}
+                >
+                  {champions.map((champion, idx) => (
+                    <SortableChampionHeader
+                      key={champion.id}
+                      champion={champion}
+                      index={idx}
+                    />
+                  ))}
+                </SortableContext>
               {onAddChampion && (
                 <TableHead className="text-center p-2 text-xs font-semibold text-foreground w-[100px] min-w-[100px] border-l border-border/30">
                   <Button
@@ -135,7 +226,8 @@ export function StatsSectionDesktop({
             })}
           </TableBody>
         </Table>
-      </div>
+        </div>
+      </DndContext>
       {showAddSlot && onAddChampion && championList && (
         <ChampionSelector
           championList={championList}

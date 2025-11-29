@@ -249,7 +249,7 @@ function EncyclopediaPage({ lang, championList, version }: EncyclopediaPageProps
     })
   );
 
-  // 드래그 종료 핸들러
+  // 드래그 종료 핸들러 (모바일 탭용)
   const handleDragEnd = useCallback((event: DragEndEvent) => {
     const { active, over } = event;
 
@@ -261,6 +261,13 @@ function EncyclopediaPage({ lang, championList, version }: EncyclopediaPageProps
         return arrayMove(items, oldIndex, newIndex);
       });
     }
+  }, []);
+
+  // PC 버전 챔피언 순서 변경 핸들러
+  const handleReorderChampions = useCallback((oldIndex: number, newIndex: number) => {
+    setSelectedChampions((prev) => {
+      return arrayMove(prev, oldIndex, newIndex);
+    });
   }, []);
 
   const addChampion = useCallback(
@@ -894,6 +901,7 @@ function EncyclopediaPage({ lang, championList, version }: EncyclopediaPageProps
                 championList={championList}
                 onAddChampion={isMobile ? undefined : addChampion}
                 onRemoveChampion={removeChampion}
+                onReorderChampions={isMobile ? undefined : handleReorderChampions}
                 vsMode={isMobile && selectedTab && selectedTab.mode === 'vs' && currentTabChampions.length === 2
                   ? { championA: currentTabChampions[0], championB: currentTabChampions[1] } 
                   : undefined}

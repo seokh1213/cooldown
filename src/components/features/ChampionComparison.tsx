@@ -14,6 +14,7 @@ function ChampionComparison({
   championList,
   onAddChampion,
   onRemoveChampion,
+  onReorderChampions,
   vsMode,
 }: ChampionComparisonProps) {
   const deviceType = useDeviceType();
@@ -42,6 +43,7 @@ function ChampionComparison({
               championList={championList}
               onAddChampion={onAddChampion}
               onRemoveChampion={onRemoveChampion}
+              onReorderChampions={onReorderChampions}
             />
           )
         ) : (
@@ -61,6 +63,7 @@ function ChampionComparison({
               championList={championList}
               onAddChampion={onAddChampion}
               onRemoveChampion={onRemoveChampion}
+              onReorderChampions={onReorderChampions}
             />
           )
         )}
