@@ -663,12 +663,15 @@ function EncyclopediaPage({ lang, championList, version }: EncyclopediaPageProps
             });
             setShowVsSelector(true);
           }}
-          className="ml-1 p-1 rounded-full hover:bg-destructive/20 hover:text-destructive active:bg-destructive/30 transition-colors touch-none shrink-0 select-none"
+          className="ml-1 p-1 rounded-full hover:bg-destructive/20 active:bg-destructive/30 transition-colors touch-none shrink-0 select-none group"
           aria-label={`${t.encyclopedia.vs} with ${champion.name}`}
           title={t.encyclopedia.vsStart}
           type="button"
         >
-          <Swords className={cn("h-3 w-3", isActive ? "text-primary-foreground" : "text-muted-foreground")} />
+          <Swords className={cn(
+            "h-3 w-3 transition-colors",
+            isActive ? "text-primary-foreground group-hover:text-destructive" : "text-muted-foreground group-hover:text-destructive"
+          )} />
         </button>
         <button
           onClick={(e) => {
@@ -676,11 +679,14 @@ function EncyclopediaPage({ lang, championList, version }: EncyclopediaPageProps
             e.stopPropagation();
             removeTab(tab.id);
           }}
-          className="ml-1 p-0.5 rounded-full hover:bg-destructive/20 hover:text-destructive active:bg-destructive/30 transition-colors touch-none shrink-0 select-none"
+          className="ml-1 p-0.5 rounded-full hover:bg-destructive/20 active:bg-destructive/30 transition-colors touch-none shrink-0 select-none group"
           aria-label={`Remove ${champion.name}`}
           type="button"
         >
-          <X className="h-3 w-3" />
+          <X className={cn(
+            "h-3 w-3 transition-colors",
+            isActive ? "text-primary-foreground group-hover:text-destructive" : "text-muted-foreground group-hover:text-destructive"
+          )} />
         </button>
       </div>
     );
@@ -788,10 +794,13 @@ function EncyclopediaPage({ lang, championList, version }: EncyclopediaPageProps
             e.stopPropagation();
             removeTab(tab.id);
           }}
-          className="ml-1 p-0.5 rounded-full hover:bg-destructive/20 hover:text-destructive active:bg-destructive/30 transition-colors touch-none select-none"
+          className="ml-1 p-0.5 rounded-full hover:bg-destructive/20 active:bg-destructive/30 transition-colors touch-none select-none group"
           aria-label="Remove VS tab"
         >
-          <X className="h-3 w-3" />
+          <X className={cn(
+            "h-3 w-3 transition-colors",
+            isActive ? "text-primary-foreground group-hover:text-destructive" : "text-muted-foreground group-hover:text-destructive"
+          )} />
         </button>
       </div>
     );
