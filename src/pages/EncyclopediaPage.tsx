@@ -217,32 +217,32 @@ function EncyclopediaPage({ lang, championList, version }: EncyclopediaPageProps
   }, []);
 
   const removeChampion = useCallback((championId: string) => {
-    setSelectedChampions((prev) => {
-      const filtered = prev.filter((c) => c.id !== championId);
-      // 해당 챔피언을 포함하는 탭들 제거
-      setTabs((prevTabs) => {
-        const filteredTabs = prevTabs.filter((tab) => !tab.champions.includes(championId));
-        // 선택된 탭이 삭제되면 첫 번째 탭 선택
-        if (selectedTabId && !filteredTabs.find((t) => t.id === selectedTabId)) {
-          setSelectedTabId(filteredTabs.length > 0 ? filteredTabs[0].id : null);
-        }
-        return filteredTabs;
-      });
-      return filtered;
+    setTabs((prevTabs) => {
+      return prevTabs.filter((tab) => !tab.champions.includes(championId));
     });
-  }, [selectedTabId]);
+    setSelectedChampions((prev) => prev.filter((c) => c.id !== championId));
+  }, []);
 
-  // 탭 삭제
-  const removeTab = useCallback((tabId: string) => {
-    setTabs((prev) => {
-      const filtered = prev.filter((t) => t.id !== tabId);
-      // 선택된 탭이 삭제되면 첫 번째 탭 선택
-      if (selectedTabId === tabId) {
-        setSelectedTabId(filtered.length > 0 ? filtered[0].id : null);
+  useEffect(() => {
+    if (selectedTabId && !tabs.find((t) => t.id === selectedTabId)) {
+      setSelectedTabId(tabs.length > 0 ? tabs[0].id : null);
+    }
+    
+    const usedChampionIds = new Set(
+      tabs.flatMap((tab) => tab.champions)
+    );
+    setSelectedChampions((prev) => {
+      const filtered = prev.filter((c) => usedChampionIds.has(c.id));
+      if (filtered.length !== prev.length) {
+        return filtered;
       }
-      return filtered;
+      return prev;
     });
-  }, [selectedTabId]);
+  }, [tabs, selectedTabId]);
+
+  const removeTab = useCallback((tabId: string) => {
+    setTabs((prev) => prev.filter((t) => t.id !== tabId));
+  }, []);
 
   // 드래그 앤 드롭 센서 설정
   const sensors = useSensors(
