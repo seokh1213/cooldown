@@ -5,12 +5,29 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { cn } from "@/lib/utils";
-import { Plus, Search, RotateCcw, X, Swords } from "lucide-react";
+import { Plus, Search, RotateCcw, X, Swords, GripVertical } from "lucide-react";
 import ChampionComparison from "@/components/features/ChampionComparison";
 import ChampionSelector from "@/components/features/ChampionSelector";
 import { useDeviceType } from "@/hooks/useDeviceType";
 import { CHAMP_ICON_URL } from "@/services/api";
 import { useTranslation } from "@/i18n";
+import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  DragEndEvent,
+} from "@dnd-kit/core";
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  horizontalListSortingStrategy,
+  useSortable,
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 
 interface EncyclopediaPageProps {
   lang: string;
@@ -219,6 +236,32 @@ function EncyclopediaPage({ lang, championList, version }: EncyclopediaPageProps
       return filtered;
     });
   }, [selectedTabId]);
+
+  // 드래그 앤 드롭 센서 설정
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 8, // 8px 이동해야 드래그 시작 (실수로 드래그 방지)
+      },
+    }),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
+
+  // 드래그 종료 핸들러
+  const handleDragEnd = useCallback((event: DragEndEvent) => {
+    const { active, over } = event;
+
+    if (over && active.id !== over.id) {
+      setTabs((items) => {
+        const oldIndex = items.findIndex((item) => item.id === active.id);
+        const newIndex = items.findIndex((item) => item.id === over.id);
+
+        return arrayMove(items, oldIndex, newIndex);
+      });
+    }
+  }, []);
 
   const addChampion = useCallback(
     (champion: Champion) => {
@@ -484,6 +527,207 @@ function EncyclopediaPage({ lang, championList, version }: EncyclopediaPageProps
     return null;
   }, [isMobile, selectedTab, currentTabChampions]);
 
+  // SortableTab 컴포넌트 (일반 탭)
+  const SortableNormalTab = ({ tab }: { tab: Tab }) => {
+    const champion = championsWithFullInfo.find((c) => c.id === tab.champions[0]);
+    if (!champion) return null;
+
+    const {
+      attributes,
+      listeners,
+      setNodeRef,
+      transform,
+      transition,
+      isDragging,
+    } = useSortable({ id: tab.id });
+
+    const style = {
+      transform: CSS.Transform.toString(transform),
+      transition,
+      opacity: isDragging ? 0.5 : 1,
+    };
+
+    const isActive = selectedTabId === tab.id;
+
+    return (
+      <div
+        ref={setNodeRef}
+        style={style}
+        className={cn(
+          "flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-colors shrink-0 relative",
+          isActive
+            ? 'bg-primary text-primary-foreground' 
+            : 'bg-muted/50 text-muted-foreground',
+          isDragging && 'z-50'
+        )}
+        onClick={(e) => {
+          const target = e.target as HTMLElement;
+          if (target.tagName === 'BUTTON' || target.closest('button')) {
+            return;
+          }
+          setSelectedTabId(tab.id);
+        }}
+      >
+        {/* 드래그 핸들 */}
+        <button
+          {...attributes}
+          {...listeners}
+          className="touch-manipulation cursor-grab active:cursor-grabbing p-0.5 -ml-1 mr-0.5 opacity-60 hover:opacity-100 transition-opacity"
+          aria-label="Drag to reorder"
+        >
+          <GripVertical className="h-3 w-3" />
+        </button>
+        
+        <div className="flex items-center gap-1.5 flex-1 touch-manipulation cursor-pointer">
+          <img
+            src={CHAMP_ICON_URL(version, champion.id)}
+            alt={champion.name}
+            className="w-5 h-5 rounded-full pointer-events-none"
+          />
+          <span className="pointer-events-none">{champion.name}</span>
+        </div>
+        {/* VS 버튼 */}
+        <button
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            setVsSelectorMode({
+              mode: 'select-second',
+              tabId: tab.id,
+            });
+            setShowVsSelector(true);
+          }}
+          className="ml-1 p-1 rounded-full hover:bg-destructive/20 hover:text-destructive active:bg-destructive/30 transition-colors touch-manipulation shrink-0"
+          aria-label={`${t.encyclopedia.vs} with ${champion.name}`}
+          title={t.encyclopedia.vsStart}
+          type="button"
+        >
+          <Swords className={cn("h-3 w-3", isActive ? "text-primary-foreground" : "text-muted-foreground")} />
+        </button>
+        <button
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            removeTab(tab.id);
+          }}
+          className="ml-1 p-0.5 rounded-full hover:bg-destructive/20 hover:text-destructive active:bg-destructive/30 transition-colors touch-manipulation shrink-0"
+          aria-label={`Remove ${champion.name}`}
+          type="button"
+        >
+          <X className="h-3 w-3" />
+        </button>
+      </div>
+    );
+  };
+
+  // SortableTab 컴포넌트 (VS 탭)
+  const SortableVsTab = ({ tab }: { tab: Tab }) => {
+    const championA = championsWithFullInfo.find((c) => c.id === tab.champions[0]);
+    const championB = championsWithFullInfo.find((c) => c.id === tab.champions[1]);
+    if (!championA || !championB) return null;
+
+    const {
+      attributes,
+      listeners,
+      setNodeRef,
+      transform,
+      transition,
+      isDragging,
+    } = useSortable({ id: tab.id });
+
+    const style = {
+      transform: CSS.Transform.toString(transform),
+      transition,
+      opacity: isDragging ? 0.5 : 1,
+    };
+
+    const isActive = selectedTabId === tab.id;
+
+    return (
+      <div
+        ref={setNodeRef}
+        style={style}
+        className={cn(
+          "flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-colors shrink-0 relative",
+          isActive
+            ? 'bg-primary text-primary-foreground' 
+            : 'bg-muted/50 text-muted-foreground',
+          isDragging && 'z-50'
+        )}
+      >
+        {/* 드래그 핸들 */}
+        <button
+          {...attributes}
+          {...listeners}
+          className="touch-manipulation cursor-grab active:cursor-grabbing p-0.5 -ml-1 mr-0.5 opacity-60 hover:opacity-100 transition-opacity"
+          aria-label="Drag to reorder"
+        >
+          <GripVertical className="h-3 w-3" />
+        </button>
+        
+        <div className="flex items-center gap-1.5 flex-1">
+          <button
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              setVsSelectorMode({
+                mode: 'change-champion-a',
+                tabId: tab.id,
+                championIndex: 0,
+              });
+              setShowVsSelector(true);
+            }}
+            className="flex items-center touch-manipulation hover:opacity-80 transition-opacity"
+          >
+            <img
+              src={CHAMP_ICON_URL(version, championA.id)}
+              alt={championA.name}
+              className="w-5 h-5 rounded-full"
+            />
+          </button>
+          <button
+            onClick={() => {
+              setSelectedTabId(tab.id);
+            }}
+            className="text-[10px] font-semibold touch-manipulation"
+          >
+            {t.encyclopedia.vs}
+          </button>
+          <button
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              setVsSelectorMode({
+                mode: 'change-champion-b',
+                tabId: tab.id,
+                championIndex: 1,
+              });
+              setShowVsSelector(true);
+            }}
+            className="flex items-center touch-manipulation hover:opacity-80 transition-opacity"
+          >
+            <img
+              src={CHAMP_ICON_URL(version, championB.id)}
+              alt={championB.name}
+              className="w-5 h-5 rounded-full"
+            />
+          </button>
+        </div>
+        <button
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            removeTab(tab.id);
+          }}
+          className="ml-1 p-0.5 rounded-full hover:bg-destructive/20 hover:text-destructive active:bg-destructive/30 transition-colors touch-manipulation"
+          aria-label="Remove VS tab"
+        >
+          <X className="h-3 w-3" />
+        </button>
+      </div>
+    );
+  };
+
   return (
     <div className="w-full max-w-7xl mx-auto px-4 md:px-6 lg:px-8 py-4 md:py-5">
 
@@ -590,166 +834,38 @@ function EncyclopediaPage({ lang, championList, version }: EncyclopediaPageProps
                 <div className="border-b border-border overflow-x-auto -mx-4 px-4">
                   <div className="flex items-center gap-2 pb-2">
                     <span className="text-xs font-medium text-muted-foreground shrink-0">{t.encyclopedia.champion}</span>
-                    <div className="flex items-center gap-2 flex-1 overflow-x-auto">
-                      {/* 모든 탭들 */}
-                      {tabs.map((tab) => {
-                        const isActive = selectedTabId === tab.id;
-                        
-                        if (tab.mode === 'vs') {
-                          // VS 탭
-                          const championA = championsWithFullInfo.find((c) => c.id === tab.champions[0]);
-                          const championB = championsWithFullInfo.find((c) => c.id === tab.champions[1]);
-                          if (!championA || !championB) return null;
-                          
-                          return (
-                            <div
-                              key={tab.id}
-                              className={cn(
-                                "flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-colors shrink-0 relative",
-                                isActive
-                                  ? 'bg-primary text-primary-foreground' 
-                                  : 'bg-muted/50 text-muted-foreground'
-                              )}
-                            >
-                              <div className="flex items-center gap-1.5 flex-1">
-                                <button
-                                  onClick={(e) => {
-                                    e.preventDefault();
-                                    e.stopPropagation();
-                                    setVsSelectorMode({
-                                      mode: 'change-champion-a',
-                                      tabId: tab.id,
-                                      championIndex: 0,
-                                    });
-                                    setShowVsSelector(true);
-                                  }}
-                                  className="flex items-center touch-manipulation hover:opacity-80 transition-opacity"
-                                >
-                                  <img
-                                    src={CHAMP_ICON_URL(version, championA.id)}
-                                    alt={championA.name}
-                                    className="w-5 h-5 rounded-full"
-                                  />
-                                </button>
-                                <button
-                                  onClick={() => {
-                                    setSelectedTabId(tab.id);
-                                  }}
-                                  className="text-[10px] font-semibold touch-manipulation"
-                                >
-                                  {t.encyclopedia.vs}
-                                </button>
-                                <button
-                                  onClick={(e) => {
-                                    e.preventDefault();
-                                    e.stopPropagation();
-                                    setVsSelectorMode({
-                                      mode: 'change-champion-b',
-                                      tabId: tab.id,
-                                      championIndex: 1,
-                                    });
-                                    setShowVsSelector(true);
-                                  }}
-                                  className="flex items-center touch-manipulation hover:opacity-80 transition-opacity"
-                                >
-                                  <img
-                                    src={CHAMP_ICON_URL(version, championB.id)}
-                                    alt={championB.name}
-                                    className="w-5 h-5 rounded-full"
-                                  />
-                                </button>
-                              </div>
-                              <button
-                                onClick={(e) => {
-                                  e.preventDefault();
-                                  e.stopPropagation();
-                                  removeTab(tab.id);
-                                }}
-                                className="ml-1 p-0.5 rounded-full hover:bg-destructive/20 hover:text-destructive active:bg-destructive/30 transition-colors touch-manipulation"
-                                aria-label="Remove VS tab"
-                              >
-                                <X className="h-3 w-3" />
-                              </button>
-                            </div>
-                          );
-                        } else {
-                          // 일반 탭
-                          const champion = championsWithFullInfo.find((c) => c.id === tab.champions[0]);
-                          if (!champion) return null;
-                          
-                          return (
-                            <div
-                              key={tab.id}
-                              className={cn(
-                                "flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-colors shrink-0 relative",
-                                isActive
-                                  ? 'bg-primary text-primary-foreground' 
-                                  : 'bg-muted/50 text-muted-foreground'
-                              )}
-                              onClick={(e) => {
-                                // VS 버튼이나 X 버튼 클릭 시 무시
-                                const target = e.target as HTMLElement;
-                                // 버튼 자체를 클릭했거나, 버튼 내부 요소를 클릭한 경우 무시
-                                if (target.tagName === 'BUTTON' || target.closest('button')) {
-                                  return;
-                                }
-                                setSelectedTabId(tab.id);
-                              }}
-                            >
-                              <div className="flex items-center gap-1.5 flex-1 touch-manipulation cursor-pointer">
-                                <img
-                                  src={CHAMP_ICON_URL(version, champion.id)}
-                                  alt={champion.name}
-                                  className="w-5 h-5 rounded-full pointer-events-none"
-                                />
-                                <span className="pointer-events-none">{champion.name}</span>
-                              </div>
-                              {/* VS 버튼 */}
-                              <button
-                                onClick={(e) => {
-                                  e.preventDefault();
-                                  e.stopPropagation();
-                                  setVsSelectorMode({
-                                    mode: 'select-second',
-                                    tabId: tab.id,
-                                  });
-                                  setShowVsSelector(true);
-                                }}
-                                className="ml-1 p-1 rounded-full hover:bg-destructive/20 hover:text-destructive active:bg-destructive/30 transition-colors touch-manipulation shrink-0"
-                                aria-label={`${t.encyclopedia.vs} with ${champion.name}`}
-                                title={t.encyclopedia.vsStart}
-                                type="button"
-                              >
-                                <Swords className={cn("h-3 w-3", isActive ? "text-primary-foreground" : "text-muted-foreground")} />
-                              </button>
-                              <button
-                                onClick={(e) => {
-                                  e.preventDefault();
-                                  e.stopPropagation();
-                                  removeTab(tab.id);
-                                }}
-                                className="ml-1 p-0.5 rounded-full hover:bg-destructive/20 hover:text-destructive active:bg-destructive/30 transition-colors touch-manipulation shrink-0"
-                                aria-label={`Remove ${champion.name}`}
-                                type="button"
-                              >
-                                <X className="h-3 w-3" />
-                              </button>
-                            </div>
-                          );
-                        }
-                      })}
-                      
-                      {/* 추가 버튼 */}
-                      <Button
-                        onClick={() => setShowSelector(true)}
-                        variant="outline"
-                        size="sm"
-                        className="flex items-center gap-1.5 shrink-0 border-2 border-dashed border-muted-foreground/30 hover:border-primary hover:bg-primary/10 hover:text-primary h-auto py-1.5 px-3 transition-colors"
+                    <DndContext
+                      sensors={sensors}
+                      collisionDetection={closestCenter}
+                      onDragEnd={handleDragEnd}
+                    >
+                      <SortableContext
+                        items={tabs.map((tab) => tab.id)}
+                        strategy={horizontalListSortingStrategy}
                       >
-                        <Plus className="w-3 h-3" />
-                        <span className="text-xs">{t.encyclopedia.add}</span>
-                      </Button>
-                    </div>
+                        <div className="flex items-center gap-2 flex-1 overflow-x-auto">
+                          {/* 모든 탭들 */}
+                          {tabs.map((tab) => {
+                            if (tab.mode === 'vs') {
+                              return <SortableVsTab key={tab.id} tab={tab} />;
+                            } else {
+                              return <SortableNormalTab key={tab.id} tab={tab} />;
+                            }
+                          })}
+                          
+                          {/* 추가 버튼 */}
+                          <Button
+                            onClick={() => setShowSelector(true)}
+                            variant="outline"
+                            size="sm"
+                            className="flex items-center gap-1.5 shrink-0 border-2 border-dashed border-muted-foreground/30 hover:border-primary hover:bg-primary/10 hover:text-primary h-auto py-1.5 px-3 transition-colors"
+                          >
+                            <Plus className="w-3 h-3" />
+                            <span className="text-xs">{t.encyclopedia.add}</span>
+                          </Button>
+                        </div>
+                      </SortableContext>
+                    </DndContext>
                   </div>
                 </div>
               )}
