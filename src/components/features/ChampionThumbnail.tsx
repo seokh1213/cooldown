@@ -31,6 +31,16 @@ function ChampionThumbnail({
   }, [selected]);
 
   const handleClick = useCallback((e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    // 즉시 로컬 상태 업데이트 (네트워크 응답 전에 피드백 제공)
+    setIsLocallySelected(!selected);
+    addChampion(data, selected);
+  }, [addChampion, data, selected]);
+
+  const handleTouchStart = useCallback((e: React.TouchEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
     // 즉시 로컬 상태 업데이트 (네트워크 응답 전에 피드백 제공)
     setIsLocallySelected(!selected);
     addChampion(data, selected);
@@ -48,8 +58,9 @@ function ChampionThumbnail({
     <div className="flex flex-col items-center justify-center m-1 h-fit">
       <Button
         variant="ghost"
-        className="cursor-pointer rounded-full shrink-0 p-0 h-auto w-auto hover:bg-transparent relative"
+        className="cursor-pointer rounded-full shrink-0 p-0 h-auto w-auto hover:bg-transparent relative touch-manipulation"
         onClick={handleClick}
+        onTouchStart={handleTouchStart}
         aria-label={selected ? `Deselect ${name}` : `Select ${name}`}
         aria-pressed={selected}
       >

@@ -232,15 +232,19 @@ function EncyclopediaPage({ lang, championList, version }: EncyclopediaPageProps
                         <div
                           key={champion.id}
                           className={cn(
-                            "flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-colors shrink-0 relative group",
+                            "flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-colors shrink-0 relative",
                             selectedChampionIndex === idx 
                               ? 'bg-primary text-primary-foreground' 
-                              : 'bg-muted/50 text-muted-foreground hover:bg-muted'
+                              : 'bg-muted/50 text-muted-foreground'
                           )}
                         >
                           <button
                             onClick={() => setSelectedChampionIndex(idx)}
-                            className="flex items-center gap-1.5 flex-1"
+                            onTouchStart={(e) => {
+                              e.stopPropagation();
+                              setSelectedChampionIndex(idx);
+                            }}
+                            className="flex items-center gap-1.5 flex-1 touch-manipulation"
                           >
                             <img
                               src={CHAMP_ICON_URL(version, champion.id)}
@@ -251,13 +255,22 @@ function EncyclopediaPage({ lang, championList, version }: EncyclopediaPageProps
                           </button>
                           <button
                             onClick={(e) => {
+                              e.preventDefault();
                               e.stopPropagation();
                               removeChampion(champion.id);
                               if (selectedChampionIndex >= championsWithFullInfo.length - 1 && selectedChampionIndex > 0) {
                                 setSelectedChampionIndex(selectedChampionIndex - 1);
                               }
                             }}
-                            className="ml-1 p-0.5 rounded-full hover:bg-destructive/20 hover:text-destructive transition-colors opacity-0 group-hover:opacity-100"
+                            onTouchStart={(e) => {
+                              e.preventDefault();
+                              e.stopPropagation();
+                              removeChampion(champion.id);
+                              if (selectedChampionIndex >= championsWithFullInfo.length - 1 && selectedChampionIndex > 0) {
+                                setSelectedChampionIndex(selectedChampionIndex - 1);
+                              }
+                            }}
+                            className="ml-1 p-0.5 rounded-full hover:bg-destructive/20 hover:text-destructive active:bg-destructive/30 transition-colors touch-manipulation"
                             aria-label={`Remove ${champion.name}`}
                           >
                             <X className="h-3 w-3" />

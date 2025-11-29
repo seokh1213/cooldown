@@ -11,6 +11,7 @@ import {
 import { AlertTriangle } from "lucide-react";
 import { SKILL_LETTERS } from "./constants";
 import { getCooldownText, getCostText } from "./utils";
+import { useDeviceType } from "@/hooks/useDeviceType";
 
 interface SkillTooltipProps {
   skill: ChampionSpell;
@@ -33,11 +34,62 @@ export function SkillTooltip({
   passiveDescription,
   passiveImageFull,
 }: SkillTooltipProps) {
+  const deviceType = useDeviceType();
+  const isMobile = deviceType === "mobile";
+  const [open, setOpen] = React.useState(false);
+
+  // 외부 클릭 감지로 툴팁 닫기
+  const triggerRef = React.useRef<HTMLDivElement>(null);
+  
+  React.useEffect(() => {
+    if (!isMobile || !open) return;
+
+    const handleClickOutside = (event: MouseEvent | TouchEvent) => {
+      const target = event.target as HTMLElement;
+      // 툴팁 트리거나 툴팁 콘텐츠 내부 클릭은 무시
+      if (
+        triggerRef.current?.contains(target) ||
+        target.closest('[role="tooltip"]') ||
+        target.closest('[data-radix-portal]')
+      ) {
+        return;
+      }
+      setOpen(false);
+    };
+
+    // 약간의 지연을 두어 현재 클릭 이벤트가 처리되도록 함
+    const timeoutId = setTimeout(() => {
+      document.addEventListener("mousedown", handleClickOutside, true);
+      document.addEventListener("touchstart", handleClickOutside, true);
+    }, 100);
+
+    return () => {
+      clearTimeout(timeoutId);
+      document.removeEventListener("mousedown", handleClickOutside, true);
+      document.removeEventListener("touchstart", handleClickOutside, true);
+    };
+  }, [isMobile, open]);
+
   if (isPassive && passiveImageFull) {
     return (
-      <Tooltip>
+      <Tooltip open={isMobile ? open : undefined} onOpenChange={isMobile ? setOpen : undefined}>
         <TooltipTrigger asChild>
-          <div className="flex flex-col items-center gap-0.5 cursor-help p-1 -m-1">
+          <div 
+            ref={triggerRef}
+            className="flex flex-col items-center gap-0.5 cursor-help p-1 -m-1 touch-manipulation"
+            onClick={(e) => {
+              if (isMobile) {
+                e.stopPropagation();
+                setOpen((prev) => !prev);
+              }
+            }}
+            onTouchStart={(e) => {
+              if (isMobile) {
+                e.stopPropagation();
+                setOpen((prev) => !prev);
+              }
+            }}
+          >
             <img
               src={PASSIVE_ICON_URL(version, passiveImageFull)}
               alt="Passive"
@@ -47,10 +99,15 @@ export function SkillTooltip({
           </div>
         </TooltipTrigger>
         <TooltipContent
-          side="top"
+          side={isMobile ? "bottom" : "top"}
           align="center"
-          sideOffset={8}
-          className="max-w-xs p-3 space-y-2"
+          sideOffset={isMobile ? 12 : 8}
+          className={isMobile ? "max-w-[calc(100vw-32px)] max-h-[70vh] overflow-y-auto p-3 space-y-2" : "max-w-xs p-3 space-y-2"}
+          onPointerDownOutside={(e) => {
+            if (isMobile) {
+              e.preventDefault();
+            }
+          }}
         >
           {passiveName && (
             <div className="font-semibold text-sm">{passiveName}</div>
@@ -73,9 +130,24 @@ export function SkillTooltip({
   const costText = getCostText(skill);
 
   return (
-    <Tooltip>
+    <Tooltip open={isMobile ? open : undefined} onOpenChange={isMobile ? setOpen : undefined}>
       <TooltipTrigger asChild>
-        <div className="flex flex-col items-center gap-0.5 cursor-help p-1 -m-1">
+        <div 
+          ref={triggerRef}
+          className="flex flex-col items-center gap-0.5 cursor-help p-1 -m-1 touch-manipulation"
+          onClick={(e) => {
+            if (isMobile) {
+              e.stopPropagation();
+              setOpen((prev) => !prev);
+            }
+          }}
+          onTouchStart={(e) => {
+            if (isMobile) {
+              e.stopPropagation();
+              setOpen((prev) => !prev);
+            }
+          }}
+        >
           <img
             src={SKILL_ICON_URL(version, skill.id)}
             alt={SKILL_LETTERS[skillIdx]}
@@ -87,10 +159,15 @@ export function SkillTooltip({
         </div>
       </TooltipTrigger>
       <TooltipContent
-        side="top"
+        side={isMobile ? "bottom" : "top"}
         align="center"
-        sideOffset={8}
-        className="max-w-sm p-4 space-y-3"
+        sideOffset={isMobile ? 12 : 8}
+        className={isMobile ? "max-w-[calc(100vw-32px)] max-h-[70vh] overflow-y-auto p-4 space-y-3" : "max-w-sm p-4 space-y-3"}
+        onPointerDownOutside={(e) => {
+          if (isMobile) {
+            e.preventDefault();
+          }
+        }}
       >
         {/* 헤더: 아이콘 + 스킬명 + 쿨타임/마나 */}
         <div className="flex items-start gap-3 border-b pb-3">
