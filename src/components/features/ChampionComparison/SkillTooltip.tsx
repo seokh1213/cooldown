@@ -3,6 +3,7 @@ import { ChampionSpell } from "@/types";
 import { parseSpellTooltip, formatLeveltipStats } from "@/lib/spellTooltipParser";
 import { SKILL_ICON_URL, PASSIVE_ICON_URL } from "@/services/api";
 import { SpellData } from "@/services/spellDataService";
+import { cn } from "@/lib/utils";
 import {
   Tooltip,
   TooltipContent,
@@ -29,6 +30,7 @@ interface SkillTooltipProps {
   passiveName?: string;
   passiveDescription?: string;
   passiveImageFull?: string;
+  size?: "default" | "small";
 }
 
 export function SkillTooltip({
@@ -40,6 +42,7 @@ export function SkillTooltip({
   passiveName,
   passiveDescription,
   passiveImageFull,
+  size = "default",
 }: SkillTooltipProps) {
   const deviceType = useDeviceType();
   const isMobile = deviceType === "mobile";
@@ -50,6 +53,9 @@ export function SkillTooltip({
   const cooldownText = (isPassive && passiveImageFull) ? null : getCooldownText(skill, spellData);
   const costText = (isPassive && passiveImageFull) ? null : getCostText(skill);
 
+  const isSmall = size === "small";
+  const iconSize = isSmall ? "w-6 h-6" : "w-8 h-8";
+  const textSize = isSmall ? "text-[8px]" : "text-[9px]";
 
   // 공통 트리거 컴포넌트
   const triggerButton = (
@@ -74,18 +80,18 @@ export function SkillTooltip({
           <img
             src={PASSIVE_ICON_URL(version, passiveImageFull)}
             alt="Passive"
-            className="w-8 h-8 rounded"
+            className={cn(iconSize, "rounded")}
           />
-          <span className="text-[9px] font-semibold">P</span>
+          <span className={cn(textSize, "font-semibold")}>P</span>
         </>
       ) : (
         <>
           <img
             src={SKILL_ICON_URL(version, skill.id)}
             alt={SKILL_LETTERS[skillIdx]}
-            className="w-8 h-8 rounded"
+            className={cn(iconSize, "rounded")}
           />
-          <span className="text-[9px] font-semibold">
+          <span className={cn(textSize, "font-semibold")}>
             {SKILL_LETTERS[skillIdx]}
           </span>
         </>

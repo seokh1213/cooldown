@@ -14,6 +14,7 @@ function ChampionComparison({
   championList,
   onAddChampion,
   onRemoveChampion,
+  vsMode,
 }: ChampionComparisonProps) {
   const deviceType = useDeviceType();
   
@@ -32,6 +33,7 @@ function ChampionComparison({
               championList={championList}
               onAddChampion={onAddChampion}
               onRemoveChampion={onRemoveChampion}
+              vsMode={vsMode}
             />
           ) : (
             <StatsSectionDesktop
@@ -50,6 +52,7 @@ function ChampionComparison({
               championList={championList}
               onAddChampion={onAddChampion}
               onRemoveChampion={onRemoveChampion}
+              vsMode={vsMode}
             />
           ) : (
             <SkillsSectionDesktop

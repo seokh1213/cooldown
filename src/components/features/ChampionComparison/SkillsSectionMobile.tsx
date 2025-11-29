@@ -26,6 +26,7 @@ export function SkillsSectionMobile({
   championList,
   onAddChampion,
   onRemoveChampion,
+  vsMode,
 }: SectionProps) {
   const [spellDataMap, setSpellDataMap] = React.useState<Record<string, SpellData[]>>({});
 
@@ -82,6 +83,198 @@ export function SkillsSectionMobile({
       };
     });
   }, [champions, maxLevel, spellDataMap]);
+
+  // VS 모드 레이아웃
+  if (vsMode && champions.length === 2) {
+    const championA = vsMode.championA;
+    const championB = vsMode.championB;
+    
+    return (
+      <TooltipProvider delayDuration={0} skipDelayDuration={150}>
+        <div className="overflow-x-auto -mx-4 px-4">
+          <div className="min-w-full">
+            <div className="relative">
+              <div className="border border-border/30 rounded-lg overflow-hidden">
+                <Table className="border-collapse table-fixed w-auto min-w-full">
+                  <TableHeader>
+                    <TableRow className="border-b border-border/30">
+                      <TableHead className="text-left p-1.5 pl-2 text-[10px] font-semibold text-foreground sticky left-0 bg-card z-20 w-[50px] min-w-[50px] border-r border-border/30" style={{ left: 0 }}>
+                        레벨
+                      </TableHead>
+                      <TableHead className="text-center p-1.5 text-[10px] font-semibold text-foreground w-full border-r border-border/30">
+                        <div className="flex flex-col items-center justify-center gap-0.5">
+                          <img
+                            src={CHAMP_ICON_URL(version, championA.id)}
+                            alt={championA.name}
+                            className="w-6 h-6 rounded-full"
+                          />
+                          <div className="text-xs font-semibold leading-tight text-center text-foreground">
+                            {championA.name}
+                          </div>
+                        </div>
+                      </TableHead>
+                      <TableHead className="text-center p-1.5 text-[10px] font-semibold text-foreground w-[40px] min-w-[40px] border-r border-border/30 bg-muted/20">
+                        <div className="text-[9px] font-bold">VS</div>
+                      </TableHead>
+                      <TableHead className="text-center p-1.5 text-[10px] font-semibold text-foreground w-full">
+                        <div className="flex flex-col items-center justify-center gap-0.5">
+                          <img
+                            src={CHAMP_ICON_URL(version, championB.id)}
+                            alt={championB.name}
+                            className="w-6 h-6 rounded-full"
+                          />
+                          <div className="text-xs font-semibold leading-tight text-center text-foreground">
+                            {championB.name}
+                          </div>
+                        </div>
+                      </TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {/* Skills Header */}
+                    <TableRow className="border-b-2 border-border/30 bg-muted/30">
+                      <TableCell className="p-1.5 pl-2 text-[10px] font-medium sticky left-0 bg-card z-20 border-r border-border/30" style={{ left: 0 }}>
+                        스킬
+                      </TableCell>
+                      <TableCell className="p-1.5">
+                        <div className="flex justify-center gap-0.5">
+                          {championA.passive && (
+                            <SkillTooltip
+                              isPassive
+                              passiveName={championA.passive.name}
+                              passiveDescription={championA.passive.description}
+                              passiveImageFull={championA.passive.image.full}
+                              skill={{} as any}
+                              skillIdx={0}
+                              version={version}
+                              size="small"
+                            />
+                          )}
+                          {championA.spells?.map((skill, skillIdx) => {
+                            const spellData = getSpellData(championA.id, skillIdx);
+                            return (
+                              <SkillTooltip
+                                key={skill.id}
+                                skill={skill}
+                                skillIdx={skillIdx}
+                                version={version}
+                                spellData={spellData}
+                                size="small"
+                              />
+                            );
+                          })}
+                        </div>
+                      </TableCell>
+                      <TableCell className="p-1.5 border-r border-border/30 bg-muted/20"></TableCell>
+                      <TableCell className="p-1.5">
+                        <div className="flex justify-center gap-0.5">
+                          {championB.passive && (
+                            <SkillTooltip
+                              isPassive
+                              passiveName={championB.passive.name}
+                              passiveDescription={championB.passive.description}
+                              passiveImageFull={championB.passive.image.full}
+                              skill={{} as any}
+                              skillIdx={0}
+                              version={version}
+                              size="small"
+                            />
+                          )}
+                          {championB.spells?.map((skill, skillIdx) => {
+                            const spellData = getSpellData(championB.id, skillIdx);
+                            return (
+                              <SkillTooltip
+                                key={skill.id}
+                                skill={skill}
+                                skillIdx={skillIdx}
+                                version={version}
+                                spellData={spellData}
+                                size="small"
+                              />
+                            );
+                          })}
+                        </div>
+                      </TableCell>
+                    </TableRow>
+
+                    {/* Skill Cooldowns by Level */}
+                    {skillRows.map((row, rowIdx) => {
+                      const championASkills = row.skills[0];
+                      const championBSkills = row.skills[1];
+                      
+                      return (
+                        <TableRow
+                          key={row.level}
+                          className="border-b border-border/30 hover:bg-muted/30 transition-colors"
+                        >
+                          <TableCell
+                            className={cn(
+                              "p-1.5 pl-2 text-[10px] font-medium sticky left-0 bg-card z-20 border-r border-border/30",
+                              rowIdx === skillRows.length - 1 && "rounded-bl-lg"
+                            )}
+                            style={{ left: 0 }}
+                          >
+                            {row.level}레벨
+                          </TableCell>
+                          <TableCell className="p-1.5 border-r border-border/30">
+                            {championASkills ? (
+                              <div className="flex justify-center gap-0.5">
+                                <div className="flex flex-col items-center min-w-[20px]">
+                                  <span className="text-[9px] text-muted-foreground">-</span>
+                                </div>
+                                {championASkills.map((skillData, skillIdx) => (
+                                  <div
+                                    key={skillIdx}
+                                    className="flex flex-col items-center min-w-[20px]"
+                                  >
+                                    <span className="text-[9px] font-semibold">
+                                      {skillData.cooldown !== ""
+                                        ? `${skillData.cooldown}s`
+                                        : "-"}
+                                    </span>
+                                  </div>
+                                ))}
+                              </div>
+                            ) : (
+                              <span className="text-[9px] text-muted-foreground">-</span>
+                            )}
+                          </TableCell>
+                          <TableCell className="p-1.5 border-r border-border/30 bg-muted/20"></TableCell>
+                          <TableCell className="p-1.5">
+                            {championBSkills ? (
+                              <div className="flex justify-center gap-0.5">
+                                <div className="flex flex-col items-center min-w-[20px]">
+                                  <span className="text-[9px] text-muted-foreground">-</span>
+                                </div>
+                                {championBSkills.map((skillData, skillIdx) => (
+                                  <div
+                                    key={skillIdx}
+                                    className="flex flex-col items-center min-w-[20px]"
+                                  >
+                                    <span className="text-[9px] font-semibold">
+                                      {skillData.cooldown !== ""
+                                        ? `${skillData.cooldown}s`
+                                        : "-"}
+                                    </span>
+                                  </div>
+                                ))}
+                              </div>
+                            ) : (
+                              <span className="text-[9px] text-muted-foreground">-</span>
+                            )}
+                          </TableCell>
+                        </TableRow>
+                      );
+                    })}
+                  </TableBody>
+                </Table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </TooltipProvider>
+    );
+  }
 
   return (
     <TooltipProvider delayDuration={0} skipDelayDuration={150}>

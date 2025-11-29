@@ -27,6 +27,7 @@ export function SkillsSectionDesktop({
   championList,
   onAddChampion,
   onRemoveChampion,
+  vsMode,
 }: SectionProps) {
   const [showAddSlot, setShowAddSlot] = useState(false);
   const [spellDataMap, setSpellDataMap] = React.useState<Record<string, SpellData[]>>({});

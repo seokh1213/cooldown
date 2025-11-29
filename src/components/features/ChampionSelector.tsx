@@ -3,7 +3,7 @@ import { Champion } from "@/types";
 import { CHAMP_ICON_URL } from "@/services/api";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Search, X } from "lucide-react";
+import { Search, X, Swords } from "lucide-react";
 import { cn } from "@/lib/utils";
 import ChampionThumbnail from "./ChampionThumbnail";
 import * as DialogPrimitive from "@radix-ui/react-dialog";
@@ -24,6 +24,10 @@ interface ChampionSelectorProps {
   slotIndex?: number;
   open?: boolean;
   onOpenChange?: (open: boolean) => void;
+  vsMode?: {
+    currentChampionId: string;
+    title?: string;
+  };
 }
 
 function ChampionSelector({
@@ -34,6 +38,7 @@ function ChampionSelector({
   slotIndex: _slotIndex,
   open: controlledOpen,
   onOpenChange: controlledOnOpenChange,
+  vsMode,
 }: ChampionSelectorProps) {
   const [internalOpen, setInternalOpen] = useState(false);
   const isControlled = controlledOpen !== undefined;
@@ -56,6 +61,19 @@ function ChampionSelector({
   const selectedChampionIds = useMemo(() => {
     return new Set(selectedChampions.map((c) => c.id));
   }, [selectedChampions]);
+
+  // VS 모드일 때 현재 챔피언 정보
+  const currentChampion = useMemo(() => {
+    if (!vsMode) return null;
+    return selectedChampions.find((c) => c.id === vsMode.currentChampionId) || 
+           championList?.find((c) => c.id === vsMode.currentChampionId) || null;
+  }, [vsMode, selectedChampions, championList]);
+
+  // VS 모드일 때 현재 챔피언을 제외한 목록
+  const vsAvailableChampions = useMemo(() => {
+    if (!vsMode) return availableChampions;
+    return availableChampions.filter((c) => c.id !== vsMode.currentChampionId);
+  }, [availableChampions, vsMode]);
 
   const handleBlur = useCallback(
     (e: MouseEvent) => {
@@ -312,16 +330,49 @@ function ChampionSelector({
           }}
         >
         <VisuallyHidden>
-          <DialogTitle>챔피언 선택</DialogTitle>
-          <DialogDescription>비교할 챔피언을 선택하세요</DialogDescription>
+          <DialogTitle>{vsMode ? "VS 상대 선택" : "챔피언 선택"}</DialogTitle>
+          <DialogDescription>{vsMode ? "비교할 상대를 선택하세요" : "비교할 챔피언을 선택하세요"}</DialogDescription>
         </VisuallyHidden>
+        
+        {/* VS 모드일 때 현재 챔피언 표시 */}
+        {vsMode && currentChampion && (
+          <div className="p-4 border-b-2 border-destructive/30 bg-destructive/5 flex items-center gap-3 shrink-0">
+            <div className="flex items-center gap-2 flex-1">
+              <div className="relative">
+                <img
+                  src={CHAMP_ICON_URL(currentChampion.version || "", currentChampion.id)}
+                  alt={currentChampion.name}
+                  className="w-10 h-10 rounded-full border-2 border-destructive/50"
+                />
+                <div className="absolute -top-1 -right-1 bg-destructive rounded-full p-0.5">
+                  <Swords className="h-3 w-3 text-white" />
+                </div>
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className="text-sm font-semibold text-foreground">{currentChampion.name}</div>
+                <div className="text-xs text-muted-foreground">현재 선택된 챔피언</div>
+              </div>
+            </div>
+            <div className="flex items-center gap-1 text-destructive">
+              <Swords className="h-5 w-5" />
+              <span className="text-sm font-semibold">VS</span>
+            </div>
+          </div>
+        )}
+        
         {/* Search Header */}
-        <div className="p-4 border-b border-border flex items-center gap-2 shrink-0 bg-card">
-          <Search className="h-5 w-5 text-muted-foreground shrink-0" />
+        <div className={cn(
+          "p-4 border-b border-border flex items-center gap-2 shrink-0",
+          vsMode ? "bg-muted/30" : "bg-card"
+        )}>
+          <Search className={cn(
+            "h-5 w-5 shrink-0",
+            vsMode ? "text-destructive" : "text-muted-foreground"
+          )} />
           <Input
             ref={inputRef}
             type="text"
-            placeholder="챔피언 검색..."
+            placeholder={vsMode ? "비교할 상대 검색..." : "챔피언 검색..."}
             value={searchValue}
             onChange={(e) => {
               setSearchValue(e.target.value);
@@ -347,33 +398,45 @@ function ChampionSelector({
           className="overflow-y-auto overflow-x-hidden p-4 flex-1 min-h-0 md:flex-none md:w-[600px] md:h-[427px] lg:w-[800px] lg:h-[527px]"
         >
           {championList ? (
-            availableChampions.length > 0 ? (
-              <div className="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-6 lg:grid-cols-8 xl:grid-cols-10 gap-2">
-                {availableChampions.map((champion, index) => {
-                  const isFocused = focusedIndex === index;
-                  const isSelected = selectedChampionIds.has(champion.id);
-                  return (
-                    <div
-                      key={champion.id}
-                      data-champion-item
-                      className={cn(
-                        isFocused && "ring-2 ring-primary ring-offset-1 rounded-md"
-                      )}
-                    >
-                      <ChampionThumbnail
-                        addChampion={(champ, selected) => handleSelect(champ, selected)}
-                        data={champion}
-                        name={champion.name}
-                        selected={isSelected}
-                        thumbnailSrc={CHAMP_ICON_URL(
-                          champion.version || "",
-                          champion.id
-                        )}
-                      />
+            (vsMode ? vsAvailableChampions : availableChampions).length > 0 ? (
+              <>
+                {vsMode && (
+                  <div className="mb-3 pb-2 border-b border-destructive/20">
+                    <div className="flex items-center gap-2 text-destructive">
+                      <Swords className="h-4 w-4" />
+                      <span className="text-sm font-semibold">비교할 상대 선택</span>
                     </div>
-                  );
-                })}
-              </div>
+                  </div>
+                )}
+                <div className="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-6 lg:grid-cols-8 xl:grid-cols-10 gap-2">
+                  {(vsMode ? vsAvailableChampions : availableChampions).map((champion, index) => {
+                    const isFocused = focusedIndex === index;
+                    // VS 모드일 때는 체크 표시 안 함 (기존 목록과 구분)
+                    const isSelected = vsMode ? false : selectedChampionIds.has(champion.id);
+                    return (
+                      <div
+                        key={champion.id}
+                        data-champion-item
+                        className={cn(
+                          isFocused && "ring-2 ring-offset-1 rounded-md",
+                          vsMode ? "ring-destructive" : "ring-primary"
+                        )}
+                      >
+                        <ChampionThumbnail
+                          addChampion={(champ, selected) => handleSelect(champ, selected)}
+                          data={champion}
+                          name={champion.name}
+                          selected={isSelected}
+                          thumbnailSrc={CHAMP_ICON_URL(
+                            champion.version || "",
+                            champion.id
+                          )}
+                        />
+                      </div>
+                    );
+                  })}
+                </div>
+              </>
             ) : (
               <div className="flex flex-col items-center justify-center h-full text-muted-foreground min-h-[200px] space-y-2">
                 <Search className="h-12 w-12 opacity-50" />

@@ -7,6 +7,10 @@ export interface ChampionComparisonProps {
   championList?: Champion[] | null;
   onAddChampion?: (champion: Champion) => void;
   onRemoveChampion?: (championId: string) => void;
+  vsMode?: {
+    championA: Champion;
+    championB: Champion;
+  };
 }
 
 export interface SectionProps {
@@ -15,5 +19,9 @@ export interface SectionProps {
   championList?: Champion[] | null;
   onAddChampion?: (champion: Champion) => void;
   onRemoveChampion?: (championId: string) => void;
+  vsMode?: {
+    championA: Champion;
+    championB: Champion;
+  };
 }
 
