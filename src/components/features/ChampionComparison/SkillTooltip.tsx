@@ -21,6 +21,7 @@ import { AlertTriangle } from "lucide-react";
 import { SKILL_LETTERS } from "./constants";
 import { getCooldownText, getCostText } from "./utils";
 import { useDeviceType } from "@/hooks/useDeviceType";
+import { useTranslation } from "@/i18n";
 
 interface SkillTooltipProps {
   skill: ChampionSpell;
@@ -45,6 +46,7 @@ export function SkillTooltip({
   passiveImageFull,
   size = "default",
 }: SkillTooltipProps) {
+  const { t } = useTranslation();
   const deviceType = useDeviceType();
   const isMobile = deviceType === "mobile";
   const [open, setOpen] = React.useState(false);
@@ -226,13 +228,13 @@ export function SkillTooltip({
             <VisuallyHidden>
               <DialogTitle>
                 {isPassive && passiveImageFull 
-                  ? `${passiveName || "패시브"} 스킬 정보`
-                  : `[${SKILL_LETTERS[skillIdx]}] ${skill.name || "스킬"} 정보`}
+                  ? `${passiveName || t.skillTooltip.passive} ${t.skillTooltip.skillInfo}`
+                  : `[${SKILL_LETTERS[skillIdx]}] ${skill.name || t.skillTooltip.skill} ${t.skillTooltip.skillInfo}`}
               </DialogTitle>
               <DialogDescription>
                 {isPassive && passiveImageFull 
-                  ? `${passiveName || "패시브"} 스킬의 상세 정보입니다.`
-                  : `[${SKILL_LETTERS[skillIdx]}] ${skill.name || "스킬"}의 상세 정보입니다.`}
+                  ? `${passiveName || t.skillTooltip.passive} ${t.skillTooltip.skillDescription}`
+                  : `[${SKILL_LETTERS[skillIdx]}] ${skill.name || t.skillTooltip.skill} ${t.skillTooltip.skillDescription}`}
               </DialogDescription>
             </VisuallyHidden>
             <ScrollArea className="flex-1 min-h-0">

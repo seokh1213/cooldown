@@ -19,6 +19,7 @@ import ChampionSelector from "../ChampionSelector";
 import { SectionProps } from "./types";
 import { SkillTooltip } from "./SkillTooltip";
 import { getCooldownForLevel } from "./utils";
+import { useTranslation } from "@/i18n";
 
 export function SkillsSectionMobile({
   champions,
@@ -28,6 +29,7 @@ export function SkillsSectionMobile({
   onRemoveChampion,
   vsMode,
 }: SectionProps) {
+  const { t } = useTranslation();
   const [spellDataMap, setSpellDataMap] = React.useState<Record<string, SpellData[]>>({});
 
   // 통합 스킬 데이터 로드
@@ -134,7 +136,7 @@ export function SkillsSectionMobile({
                     {/* Skills Header */}
                     <TableRow className="border-b-2 border-border/30 bg-muted/30">
                       <TableCell className="p-1.5 pl-2 text-[10px] font-medium sticky left-0 bg-card z-20 border-r border-border/30" style={{ left: 0 }}>
-                        스킬
+                        {t.skills.label}
                       </TableCell>
                       <TableCell className="p-1.5">
                         <div className="flex justify-center gap-0.5">
@@ -311,7 +313,7 @@ export function SkillsSectionMobile({
                   {/* Skills Header */}
                   <TableRow className="border-b-2 border-border/30 bg-muted/30">
                     <TableCell className="p-2 pl-3 text-xs font-medium sticky left-0 bg-card z-20 border-r border-border/30" style={{ left: 0 }}>
-                      스킬
+                      {t.skills.label}
                     </TableCell>
                     {champions.map((champion) => (
                       <TableCell

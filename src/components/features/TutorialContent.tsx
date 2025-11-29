@@ -1,7 +1,9 @@
 import React from "react";
 import { Hand, MousePointerClick, Swords } from "lucide-react";
+import { useTranslation } from "@/i18n";
 
 export function TutorialContent() {
+  const { t } = useTranslation();
   return (
     <div className="space-y-6">
       {/* 스킬 아이콘 클릭 안내 */}
@@ -12,10 +14,10 @@ export function TutorialContent() {
           </div>
           <div className="flex-1">
             <h2 className="font-semibold text-foreground mb-1">
-              스킬 아이콘을 탭하세요
+              {t.tutorial.skillIcon.title}
             </h2>
             <p className="text-sm text-muted-foreground">
-              챔피언 비교 화면에서 스킬 아이콘을 탭하면 상세한 스킬 정보가 담긴 툴팁이 표시됩니다.
+              {t.tutorial.skillIcon.description}
             </p>
           </div>
         </div>
@@ -33,9 +35,9 @@ export function TutorialContent() {
             </div>
             <div className="text-muted-foreground text-sm">→</div>
             <div className="bg-card border border-border rounded-lg p-3 shadow-lg">
-              <div className="text-xs font-semibold mb-1">스킬 정보</div>
+              <div className="text-xs font-semibold mb-1">{t.tutorial.skillIcon.skillInfo}</div>
               <div className="text-xs text-muted-foreground">
-                쿨타임, 마나 소모량 등
+                {t.tutorial.skillIcon.skillDetails}
               </div>
             </div>
           </div>
@@ -50,10 +52,10 @@ export function TutorialContent() {
           </div>
           <div className="flex-1">
             <h2 className="font-semibold text-foreground mb-1">
-              VS 모드로 챔피언 비교하기
+              {t.tutorial.vsMode.title}
             </h2>
             <p className="text-sm text-muted-foreground">
-              챔피언 탭의 VS 버튼을 탭하면 다른 챔피언과 직접 비교할 수 있습니다. 두 챔피언의 스킬 쿨타임과 기본 스탯을 나란히 비교해보세요.
+              {t.tutorial.vsMode.description}
             </p>
           </div>
         </div>
@@ -73,14 +75,14 @@ export function TutorialContent() {
               </div>
               <div className="text-muted-foreground text-sm">→</div>
               <div className="bg-card border border-border rounded-lg p-3 shadow-lg">
-                <div className="text-xs font-semibold mb-1">VS 비교 모드</div>
+                <div className="text-xs font-semibold mb-1">{t.tutorial.vsMode.vsModeLabel}</div>
                 <div className="text-xs text-muted-foreground">
-                  두 챔피언 나란히 비교
+                  {t.tutorial.vsMode.comparisonDescription}
                 </div>
               </div>
             </div>
             <div className="text-xs text-muted-foreground text-center">
-              VS 버튼을 탭하면 상대 챔피언을 선택할 수 있습니다
+              {t.tutorial.vsMode.vsButtonHint}
             </div>
           </div>
         </div>

@@ -12,6 +12,7 @@ import {
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { VisuallyHidden } from "@/components/ui/visually-hidden";
 import { TutorialContent } from "./TutorialContent";
+import { useTranslation } from "@/i18n";
 
 interface NavProps {
   version?: string;
@@ -32,6 +33,7 @@ function Nav({
   sidebarLeft = "0px",
   onMenuToggle
 }: NavProps) {
+  const { t } = useTranslation();
   const location = useLocation();
   const isEncyclopediaPage = location.pathname === "/";
   const [isMobile, setIsMobile] = useState(false);
@@ -80,7 +82,7 @@ function Nav({
         )}
         
         {isEncyclopediaPage && (
-          <h1 className="text-base md:text-lg font-medium flex-1 text-foreground/70">백과사전</h1>
+          <h1 className="text-base md:text-lg font-medium flex-1 text-foreground/70">{t.nav.encyclopedia}</h1>
         )}
         {!isEncyclopediaPage && <div className="flex-1" />}
         {version && (
@@ -94,8 +96,8 @@ function Nav({
             className={cn(
               "h-9 w-9 transition-all duration-200 text-muted-foreground/60 hover:bg-muted hover:text-muted-foreground"
             )}
-            aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
-            title={theme === "dark" ? "라이트 모드로 전환" : "다크 모드로 전환"}
+            aria-label={theme === "dark" ? t.nav.theme.switchToLight : t.nav.theme.switchToDark}
+            title={theme === "dark" ? t.nav.theme.switchToLight : t.nav.theme.switchToDark}
           >
             {theme === "dark" ? (
               <Sun className="h-4 w-4" />
@@ -114,8 +116,8 @@ function Nav({
               className={cn(
                 "h-9 w-9 transition-all duration-200 text-muted-foreground/60 hover:bg-muted hover:text-muted-foreground"
               )}
-              aria-label="사용 방법 안내"
-              title="사용 방법 안내"
+              aria-label={t.nav.tutorial.title}
+              title={t.nav.tutorial.title}
             >
               <HelpCircle className="h-4 w-4" />
             </Button>
@@ -124,16 +126,16 @@ function Nav({
                 className="w-[calc(100vw-32px)] max-w-lg h-[70vh] max-h-[70vh] p-0 rounded-xl overflow-hidden flex flex-col"
               >
                 <VisuallyHidden>
-                  <DialogTitle>사용 방법 안내</DialogTitle>
+                  <DialogTitle>{t.nav.tutorial.title}</DialogTitle>
                 </VisuallyHidden>
                 <ScrollArea className="flex-1 min-h-0">
                   <div className="p-4 flex flex-col gap-3">
                     <div className="text-center space-y-2 mb-4">
                       <h2 className="text-xl font-bold text-foreground">
-                        사용 방법 안내
+                        {t.nav.tutorial.title}
                       </h2>
                       <p className="text-sm text-muted-foreground">
-                        모바일에서 스킬 정보를 확인하는 방법을 알려드립니다
+                        {t.nav.tutorial.description}
                       </p>
                     </div>
                     <TutorialContent />
@@ -149,8 +151,8 @@ function Nav({
           className="h-7 w-auto min-w-[75px] border border-border/50 bg-background/50 backdrop-blur-sm px-1.5 py-0.5 rounded-md focus-visible:ring-2 focus-visible:ring-primary/20 focus-visible:ring-offset-0 text-xs text-muted-foreground/60 cursor-pointer hover:border-primary/50 transition-colors"
           aria-label="Select language"
         >
-          <option value="ko_KR">한국어</option>
-          <option value="en_US">Eng</option>
+          <option value="ko_KR">{t.nav.language.korean}</option>
+          <option value="en_US">{t.nav.language.english}</option>
         </Select>
       </nav>
     </>

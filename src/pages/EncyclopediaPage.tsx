@@ -10,6 +10,7 @@ import ChampionComparison from "@/components/features/ChampionComparison";
 import ChampionSelector from "@/components/features/ChampionSelector";
 import { useDeviceType } from "@/hooks/useDeviceType";
 import { CHAMP_ICON_URL } from "@/services/api";
+import { useTranslation } from "@/i18n";
 
 interface EncyclopediaPageProps {
   lang: string;
@@ -34,6 +35,7 @@ const TABS_STORAGE_KEY = "encyclopedia_tabs"; // 탭 배열
 const SELECTED_TAB_ID_STORAGE_KEY = "encyclopedia_selected_tab_id";
 
 function EncyclopediaPage({ lang, championList, version }: EncyclopediaPageProps) {
+  const { t } = useTranslation();
   const [selectedChampions, setSelectedChampions] = useState<ChampionWithInfo[]>([]);
   const [activeTab, setActiveTab] = useState<"stats" | "skills">("skills");
   const [showSelector, setShowSelector] = useState(false);
@@ -79,55 +81,77 @@ function EncyclopediaPage({ lang, championList, version }: EncyclopediaPageProps
       const stored = localStorage.getItem(STORAGE_KEY);
       if (stored) {
         const parsed = JSON.parse(stored);
-        if (Array.isArray(parsed) && parsed.length > 0) {
-          // Restore champions (without fullInfo)
-          const restoredChampions = parsed.map((champion: Champion) => ({
-            ...champion,
-            isLoading: false,
-          }));
-          setSelectedChampions(restoredChampions);
-
-          // Reload full info for each champion
-          restoredChampions.forEach((champion: ChampionWithInfo) => {
-            if (champion.id) {
-              setSelectedChampions((prev) =>
-                prev.map((c) =>
-                  c.id === champion.id ? { ...c, isLoading: true } : c
-                )
+        if (Array.isArray(parsed) && parsed.length > 0 && championList) {
+          // Restore champions by matching IDs with current language's championList
+          // This ensures names are always in the current language
+          const restoredChampions = parsed
+            .map((cachedChampion: { id: string; key?: string }) => {
+              // Find the champion in the current language's list
+              const currentLangChampion = championList.find(
+                (champ) => champ.id === cachedChampion.id || champ.key === cachedChampion.key
               );
-              getChampionInfo(version, lang, champion.id)
-                .then((fullInfo) => {
-                  setSelectedChampions((prev) =>
-                    prev.map((c) =>
-                      c.id === champion.id
-                        ? { ...c, fullInfo, isLoading: false }
-                        : c
-                    )
-                  );
-                })
-                .catch((error) => {
-                  console.error("Failed to load champion info:", error);
-                  setSelectedChampions((prev) =>
-                    prev.map((c) =>
-                      c.id === champion.id ? { ...c, isLoading: false } : c
-                    )
-                  );
-                });
-            }
-          });
+              
+              if (currentLangChampion) {
+                return {
+                  ...currentLangChampion,
+                  isLoading: false,
+                };
+              }
+              return null;
+            })
+            .filter((champ): champ is ChampionWithInfo => champ !== null);
+          
+          if (restoredChampions.length > 0) {
+            setSelectedChampions(restoredChampions);
+
+            // Reload full info for each champion
+            restoredChampions.forEach((champion: ChampionWithInfo) => {
+              if (champion.id) {
+                setSelectedChampions((prev) =>
+                  prev.map((c) =>
+                    c.id === champion.id ? { ...c, isLoading: true } : c
+                  )
+                );
+                getChampionInfo(version, lang, champion.id)
+                  .then((fullInfo) => {
+                    setSelectedChampions((prev) =>
+                      prev.map((c) =>
+                        c.id === champion.id
+                          ? { ...c, fullInfo, isLoading: false }
+                          : c
+                      )
+                    );
+                  })
+                  .catch((error) => {
+                    console.error("Failed to load champion info:", error);
+                    setSelectedChampions((prev) =>
+                      prev.map((c) =>
+                        c.id === champion.id ? { ...c, isLoading: false } : c
+                      )
+                    );
+                  });
+              }
+            });
+          }
         }
       }
     } catch (error) {
       console.error("Failed to load stored champions:", error);
     }
-  }, [version, lang]);
+  }, [version, lang, championList]);
 
   // Save to localStorage whenever selectedChampions changes
   useEffect(() => {
     try {
       if (selectedChampions.length > 0) {
-        // Store only essential data (without fullInfo to avoid large storage)
-        const toStore = selectedChampions.map(({ fullInfo, isLoading, ...rest }) => rest);
+        // Store only essential data (without fullInfo and language-specific fields)
+        // Language-specific fields (name, title) are not cached to avoid language mismatch
+        const toStore = selectedChampions.map(({ fullInfo, isLoading, name, title, ...rest }) => ({
+          ...rest,
+          // Keep only ID and key for identification
+          id: rest.id,
+          key: rest.key,
+        }));
         localStorage.setItem(STORAGE_KEY, JSON.stringify(toStore));
       } else {
         localStorage.removeItem(STORAGE_KEY);
@@ -260,6 +284,28 @@ function EncyclopediaPage({ lang, championList, version }: EncyclopediaPageProps
     localStorage.removeItem(TABS_STORAGE_KEY);
     localStorage.removeItem(SELECTED_TAB_ID_STORAGE_KEY);
   }, []);
+
+  // Update champion names when championList changes (language change)
+  useEffect(() => {
+    if (championList && selectedChampions.length > 0) {
+      setSelectedChampions((prev) =>
+        prev.map((champion) => {
+          const updatedChampion = championList.find(
+            (champ) => champ.id === champion.id || champ.key === champion.key
+          );
+          if (updatedChampion) {
+            // Update language-specific fields (name, title) while keeping other data
+            return {
+              ...champion,
+              name: updatedChampion.name,
+              title: updatedChampion.title,
+            };
+          }
+          return champion;
+        })
+      );
+    }
+  }, [championList]);
 
   const championsWithFullInfo = useMemo(() => {
     return selectedChampions.filter((c) => c.fullInfo && !c.isLoading);
@@ -495,7 +541,7 @@ function EncyclopediaPage({ lang, championList, version }: EncyclopediaPageProps
             }}
             vsMode={{
               currentChampionId,
-              title: "비교할 상대 선택",
+              title: t.encyclopedia.selectOpponent,
             }}
           />
         ) : null;
@@ -516,13 +562,13 @@ function EncyclopediaPage({ lang, championList, version }: EncyclopediaPageProps
                       value="skills" 
                       className="px-4 py-2 text-sm font-medium transition-colors border-b-2 border-transparent text-muted-foreground hover:text-foreground data-[state=active]:border-primary data-[state=active]:text-primary data-[state=active]:bg-transparent rounded-none shadow-none"
                     >
-                      스킬 쿨타임
+                      {t.encyclopedia.tabs.skills}
                     </TabsTrigger>
                     <TabsTrigger 
                       value="stats" 
                       className="px-4 py-2 text-sm font-medium transition-colors border-b-2 border-transparent text-muted-foreground hover:text-foreground data-[state=active]:border-primary data-[state=active]:text-primary data-[state=active]:bg-transparent rounded-none shadow-none"
                     >
-                      기본 스탯
+                      {t.encyclopedia.tabs.stats}
                     </TabsTrigger>
                   </TabsList>
                 </Tabs>
@@ -534,7 +580,7 @@ function EncyclopediaPage({ lang, championList, version }: EncyclopediaPageProps
                     className="flex items-center gap-1.5 shrink-0 text-muted-foreground hover:text-primary hover:bg-muted/30 border-0"
                   >
                     <RotateCcw className="h-3 w-3" />
-                    <span className="text-[10px]">초기화</span>
+                    <span className="text-[10px]">{t.encyclopedia.reset}</span>
                   </Button>
                 </div>
               </div>
@@ -543,7 +589,7 @@ function EncyclopediaPage({ lang, championList, version }: EncyclopediaPageProps
               {isMobile && tabs.length > 0 && (
                 <div className="border-b border-border overflow-x-auto -mx-4 px-4">
                   <div className="flex items-center gap-2 pb-2">
-                    <span className="text-xs font-medium text-muted-foreground shrink-0">챔피언</span>
+                    <span className="text-xs font-medium text-muted-foreground shrink-0">{t.encyclopedia.champion}</span>
                     <div className="flex items-center gap-2 flex-1 overflow-x-auto">
                       {/* 모든 탭들 */}
                       {tabs.map((tab) => {
@@ -591,7 +637,7 @@ function EncyclopediaPage({ lang, championList, version }: EncyclopediaPageProps
                                   }}
                                   className="text-[10px] font-semibold touch-manipulation"
                                 >
-                                  VS
+                                  {t.encyclopedia.vs}
                                 </button>
                                 <button
                                   onClick={(e) => {
@@ -670,8 +716,8 @@ function EncyclopediaPage({ lang, championList, version }: EncyclopediaPageProps
                                   setShowVsSelector(true);
                                 }}
                                 className="ml-1 p-1 rounded-full hover:bg-primary/20 hover:text-primary active:bg-primary/30 transition-colors touch-manipulation shrink-0"
-                                aria-label={`VS with ${champion.name}`}
-                                title="VS 비교 시작"
+                                aria-label={`${t.encyclopedia.vs} with ${champion.name}`}
+                                title={t.encyclopedia.vsStart}
                                 type="button"
                               >
                                 <Swords className="h-3 w-3" />
@@ -701,7 +747,7 @@ function EncyclopediaPage({ lang, championList, version }: EncyclopediaPageProps
                         className="flex items-center gap-1.5 shrink-0 border-2 border-dashed border-muted-foreground/30 hover:border-primary hover:bg-primary/10 hover:text-primary h-auto py-1.5 px-3 transition-colors"
                       >
                         <Plus className="w-3 h-3" />
-                        <span className="text-xs">추가</span>
+                        <span className="text-xs">{t.encyclopedia.add}</span>
                       </Button>
                     </div>
                   </div>
@@ -736,9 +782,9 @@ function EncyclopediaPage({ lang, championList, version }: EncyclopediaPageProps
             <div className="w-16 h-16 rounded-full bg-muted/50 flex items-center justify-center mb-4">
               <Search className="w-8 h-8 text-muted-foreground" />
             </div>
-            <h2 className="text-xl font-semibold mb-2">챔피언을 선택하세요</h2>
+            <h2 className="text-xl font-semibold mb-2">{t.encyclopedia.emptyState.title}</h2>
             <p className="text-muted-foreground text-center max-w-md text-sm mb-4">
-              아래 버튼을 클릭하여 챔피언을 추가하고 비교해보세요.
+              {t.encyclopedia.emptyState.description}
             </p>
             <Button
               onClick={() => setShowSelector(true)}
@@ -749,7 +795,7 @@ function EncyclopediaPage({ lang, championList, version }: EncyclopediaPageProps
                 <Plus className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors" />
               </div>
               <span className="text-sm text-muted-foreground group-hover:text-primary transition-colors">
-                챔피언 추가하기
+                {t.encyclopedia.emptyState.addButton}
               </span>
             </Button>
           </CardContent>

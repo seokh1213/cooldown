@@ -8,8 +8,10 @@ import EncyclopediaPage from "@/pages/EncyclopediaPage";
 import LaningTipsPage from "@/pages/LaningTipsPage";
 import KillAnglePage from "@/pages/KillAnglePage";
 import { Champion } from "@/types";
+import { I18nProvider, Language } from "@/i18n";
 
 const THEME_STORAGE_KEY = "theme";
+const LANG_STORAGE_KEY = "language";
 
 function getInitialTheme(): "light" | "dark" {
   if (typeof window === "undefined") return "light";
@@ -27,6 +29,17 @@ function getInitialTheme(): "light" | "dark" {
   return "light";
 }
 
+function getInitialLang(): Language {
+  if (typeof window === "undefined") return "ko_KR";
+  
+  const stored = localStorage.getItem(LANG_STORAGE_KEY);
+  if (stored === "ko_KR" || stored === "en_US") {
+    return stored as Language;
+  }
+  
+  return "ko_KR";
+}
+
 /* Todo: Tip list
 
   Duration
@@ -40,7 +53,7 @@ function getInitialTheme(): "light" | "dark" {
 */
 
 function App() {
-  const [lang, setLang] = useState<string>("ko_KR");
+  const [lang, setLang] = useState<Language>(getInitialLang);
   const [version, setVersion] = useState<string | null>(null);
   const [championList, setChampionList] = useState<Champion[] | null>(null);
   const [theme, setTheme] = useState<"light" | "dark">(getInitialTheme);
@@ -80,8 +93,12 @@ function App() {
     localStorage.setItem(THEME_STORAGE_KEY, theme);
   }, [theme]);
 
+  useEffect(() => {
+    localStorage.setItem(LANG_STORAGE_KEY, lang);
+  }, [lang]);
+
   const handleLangChange = useCallback((newLang: string) => {
-    setLang(newLang);
+    setLang(newLang as Language);
   }, []);
 
   const toggleTheme = useCallback(() => {
@@ -90,15 +107,17 @@ function App() {
 
   return (
     <BrowserRouter basename={import.meta.env.PROD ? "/cooldown" : undefined}>
-      <AppContent
-        isLoading={isLoading}
-        version={version}
-        lang={lang}
-        championList={championList}
-        theme={theme}
-        handleLangChange={handleLangChange}
-        toggleTheme={toggleTheme}
-      />
+      <I18nProvider lang={lang}>
+        <AppContent
+          isLoading={isLoading}
+          version={version}
+          lang={lang}
+          championList={championList}
+          theme={theme}
+          handleLangChange={handleLangChange}
+          toggleTheme={toggleTheme}
+        />
+      </I18nProvider>
     </BrowserRouter>
   );
 }
@@ -114,7 +133,7 @@ function AppContent({
 }: {
   isLoading: boolean;
   version: string | null;
-  lang: string;
+  lang: Language;
   championList: Champion[] | null;
   theme: "light" | "dark";
   handleLangChange: (newLang: string) => void;

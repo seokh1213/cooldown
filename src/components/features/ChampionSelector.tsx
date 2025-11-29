@@ -15,6 +15,7 @@ import {
 import { VisuallyHidden } from "@/components/ui/visually-hidden";
 import { useChampionSearch } from "@/hooks/useChampionSearch";
 import { useScrollPosition } from "@/hooks/useScrollPosition";
+import { useTranslation } from "@/i18n";
 
 interface ChampionSelectorProps {
   championList: Champion[] | null;
@@ -40,6 +41,7 @@ function ChampionSelector({
   onOpenChange: controlledOnOpenChange,
   vsMode,
 }: ChampionSelectorProps) {
+  const { t } = useTranslation();
   const [internalOpen, setInternalOpen] = useState(false);
   const isControlled = controlledOpen !== undefined;
   // Controlled 모드일 때는 controlledOpen을 사용, undefined가 아닌 경우에만 true로 간주
@@ -209,7 +211,7 @@ function ChampionSelector({
           <div className="w-12 h-12 rounded-full border-2 border-dashed border-muted-foreground/30 flex items-center justify-center">
             <Search className="w-6 h-6" />
           </div>
-          <span className="text-sm font-medium">챔피언 선택</span>
+          <span className="text-sm font-medium">{t.championSelector.selectChampion}</span>
         </Button>
 
         {isOpen && (
@@ -237,7 +239,7 @@ function ChampionSelector({
               <Input
                 ref={inputRef}
                 type="text"
-                placeholder="챔피언 검색..."
+                placeholder={t.championSelector.searchPlaceholder}
                 value={searchValue}
                 onChange={(e) => {
                   setSearchValue(e.target.value);
@@ -297,7 +299,7 @@ function ChampionSelector({
                 </div>
               ) : (
                 <div className="flex items-center justify-center h-full text-muted-foreground">
-                  로딩 중...
+                  {t.championSelector.loading}
                 </div>
               )}
             </div>
@@ -330,8 +332,8 @@ function ChampionSelector({
           }}
         >
         <VisuallyHidden>
-          <DialogTitle>{vsMode ? "VS 상대 선택" : "챔피언 선택"}</DialogTitle>
-          <DialogDescription>{vsMode ? "비교할 상대를 선택하세요" : "비교할 챔피언을 선택하세요"}</DialogDescription>
+          <DialogTitle>{vsMode ? t.championSelector.vsSelectOpponent : t.championSelector.selectChampion}</DialogTitle>
+          <DialogDescription>{vsMode ? t.championSelector.vsSelectOpponentDescription : t.championSelector.selectChampionDescription}</DialogDescription>
         </VisuallyHidden>
         
         {/* VS 모드일 때 현재 챔피언 표시 */}
@@ -350,7 +352,7 @@ function ChampionSelector({
               </div>
               <div className="flex-1 min-w-0">
                 <div className="text-sm font-semibold text-foreground">{currentChampion.name}</div>
-                <div className="text-xs text-muted-foreground">현재 선택된 챔피언</div>
+                <div className="text-xs text-muted-foreground">{t.championSelector.currentChampion}</div>
               </div>
             </div>
             <div className="flex items-center gap-1 text-destructive">
@@ -372,7 +374,7 @@ function ChampionSelector({
           <Input
             ref={inputRef}
             type="text"
-            placeholder={vsMode ? "비교할 상대 검색..." : "챔피언 검색..."}
+            placeholder={vsMode ? t.championSelector.vsSearchPlaceholder : t.championSelector.searchPlaceholder}
             value={searchValue}
             onChange={(e) => {
               setSearchValue(e.target.value);
@@ -404,7 +406,7 @@ function ChampionSelector({
                   <div className="mb-3 pb-2 border-b border-destructive/20">
                     <div className="flex items-center gap-2 text-destructive">
                       <Swords className="h-4 w-4" />
-                      <span className="text-sm font-semibold">비교할 상대 선택</span>
+                      <span className="text-sm font-semibold">{t.championSelector.selectOpponentLabel}</span>
                     </div>
                   </div>
                 )}
@@ -441,13 +443,13 @@ function ChampionSelector({
               <div className="flex flex-col items-center justify-center h-full text-muted-foreground min-h-[200px] space-y-2">
                 <Search className="h-12 w-12 opacity-50" />
                   <p className="text-base font-medium">
-                    {searchValue ? "검색 결과가 없습니다" : "챔피언 목록이 비어있습니다"}
+                    {searchValue ? t.championSelector.noResults : t.championSelector.emptyList}
                   </p>
               </div>
             )
           ) : (
             <div className="flex items-center justify-center h-full text-muted-foreground min-h-[200px]">
-              로딩 중...
+              {t.championSelector.loading}
             </div>
           )}
         </div>

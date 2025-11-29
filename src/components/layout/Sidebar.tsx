@@ -14,6 +14,7 @@ import { X, BookOpen, Lightbulb, Calculator } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
+import { useTranslation } from "@/i18n";
 
 interface SidebarProps {
   isOpen: boolean;
@@ -22,19 +23,20 @@ interface SidebarProps {
 
 interface NavItem {
   path: string;
-  label: string;
+  labelKey: "encyclopedia" | "laningTips" | "killAngle";
   icon: React.ComponentType<{ className?: string }>;
 }
 
-const navItems: NavItem[] = [
-  { path: "/", label: "백과사전", icon: BookOpen },
-  { path: "/laning-tips", label: "라인전 팁", icon: Lightbulb },
-  { path: "/kill-angle", label: "킬각 계산기", icon: Calculator },
-];
-
 function Sidebar({ isOpen, onClose }: SidebarProps) {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();
+
+  const navItems: NavItem[] = [
+    { path: "/", labelKey: "encyclopedia", icon: BookOpen },
+    { path: "/laning-tips", labelKey: "laningTips", icon: Lightbulb },
+    { path: "/kill-angle", labelKey: "killAngle", icon: Calculator },
+  ];
 
   const handleNavigate = useCallback(
     (path: string) => {
@@ -136,7 +138,7 @@ function Sidebar({ isOpen, onClose }: SidebarProps) {
                               </SidebarMenuButton>
                             </TooltipTrigger>
                             <TooltipContent side="right" className="text-xs text-gray-500 dark:text-gray-400">
-                              {item.label}
+                              {t.sidebar[item.labelKey]}
                             </TooltipContent>
                           </Tooltip>
                         </div>
@@ -181,7 +183,7 @@ function Sidebar({ isOpen, onClose }: SidebarProps) {
                                 ? "text-sidebar-foreground dark:text-sidebar-foreground font-semibold" 
                                 : "text-sidebar-foreground/70 dark:text-sidebar-foreground/80 group-hover/menu-item:text-sidebar-foreground dark:group-hover/menu-item:text-sidebar-foreground font-normal"
                             )}>
-                              {item.label}
+                              {t.sidebar[item.labelKey]}
                             </span>
                           </SidebarMenuButton>
                         </div>

@@ -20,6 +20,7 @@ import ChampionSelector from "../ChampionSelector";
 import { SectionProps } from "./types";
 import { SkillTooltip } from "./SkillTooltip";
 import { getCooldownForLevel } from "./utils";
+import { useTranslation } from "@/i18n";
 
 export function SkillsSectionDesktop({
   champions,
@@ -29,6 +30,7 @@ export function SkillsSectionDesktop({
   onRemoveChampion,
   vsMode,
 }: SectionProps) {
+  const { t } = useTranslation();
   const [showAddSlot, setShowAddSlot] = useState(false);
   const [spellDataMap, setSpellDataMap] = React.useState<Record<string, SpellData[]>>({});
 
@@ -162,7 +164,7 @@ export function SkillsSectionDesktop({
             {/* Skills Header */}
             <TableRow className="border-b-2 border-border/30 bg-muted/30">
               <TableCell className="p-2 pl-3 text-xs font-medium sticky left-0 bg-card z-20 border-r border-border/30" style={{ left: 0 }}>
-                스킬
+                {t.skills.label}
               </TableCell>
               {champions.map((champion, idx) => (
                 <TableCell
