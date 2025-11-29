@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from "react-router-dom";
 import { getVersion, getChampionList, cleanOldVersionCache } from "@/services/api";
 import Layout from "@/components/layout/Layout";
 import Nav from "@/components/features/Nav";
@@ -92,18 +92,53 @@ function App() {
     setTheme((prev) => (prev === "dark" ? "light" : "dark"));
   }, []);
 
-  // 버전이 로드되기 전까지 스플래시 화면 표시
-  if (isLoading || !version) {
-    return <SplashScreen />;
-  }
-
   // 튜토리얼이 완료되지 않았고 모바일이면 튜토리얼 페이지로 리다이렉트
   const shouldShowTutorial = isMobile && !isTutorialCompleted();
 
   return (
     <BrowserRouter basename={import.meta.env.PROD ? "/cooldown" : undefined}>
+      <AppContent
+        isLoading={isLoading}
+        version={version}
+        shouldShowTutorial={shouldShowTutorial}
+        lang={lang}
+        championList={championList}
+        theme={theme}
+        handleLangChange={handleLangChange}
+        toggleTheme={toggleTheme}
+      />
+    </BrowserRouter>
+  );
+}
+
+function AppContent({
+  isLoading,
+  version,
+  shouldShowTutorial,
+  lang,
+  championList,
+  theme,
+  handleLangChange,
+  toggleTheme,
+}: {
+  isLoading: boolean;
+  version: string | null;
+  shouldShowTutorial: boolean;
+  lang: string;
+  championList: Champion[] | null;
+  theme: "light" | "dark";
+  handleLangChange: (newLang: string) => void;
+  toggleTheme: () => void;
+}) {
+  const location = useLocation();
+  const isTutorialPage = location.pathname === "/tutorial";
+
+  return (
+    <>
+      {/* 버전이 로드되기 전까지 스플래시 화면 표시 (튜토리얼 페이지 제외) */}
+      {(isLoading || !version) && !isTutorialPage && <SplashScreen />}
       <Routes>
-        {/* 튜토리얼 페이지는 레이아웃 없이 표시 */}
+        {/* 튜토리얼 페이지는 레이아웃 없이 표시, 로딩 상태와 관계없이 접근 가능 */}
         <Route
           path="/tutorial"
           element={<TutorialPage />}
@@ -112,7 +147,9 @@ function App() {
         <Route
           path="/"
           element={
-            shouldShowTutorial ? (
+            isLoading || !version ? (
+              <SplashScreen />
+            ) : shouldShowTutorial ? (
               <Navigate to="/tutorial" replace />
             ) : (
               <Layout
@@ -172,7 +209,7 @@ function App() {
           }
         />
       </Routes>
-    </BrowserRouter>
+    </>
   );
 }
 
