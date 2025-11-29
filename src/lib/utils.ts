@@ -85,23 +85,28 @@ export function englishToHangul(text: string): string {
 /**
  * 검색어를 한영 변환하여 모든 가능한 검색어 배열 반환
  * 기존 검색어 + 한글->영어 변환 + 영어->한글 변환
+ * @param searchValue 검색어
+ * @param lang 현재 언어 (한국어일 때만 한영 변환 사용)
  */
-export function getSearchVariants(searchValue: string): string[] {
+export function getSearchVariants(searchValue: string, lang: string = "ko_KR"): string[] {
   const variants = new Set<string>();
   
   // 원본 검색어 추가
   variants.add(searchValue.toLowerCase());
   
-  // 한글을 영어로 변환
-  const englishVariant = hangulToEnglish(searchValue).toLowerCase();
-  if (englishVariant && englishVariant !== searchValue.toLowerCase()) {
-    variants.add(englishVariant);
-  }
-  
-  // 영어를 한글로 변환
-  const hangulVariant = englishToHangul(searchValue.toLowerCase());
-  if (hangulVariant && hangulVariant !== searchValue.toLowerCase()) {
-    variants.add(hangulVariant);
+  // 한국어 버전일 때만 한영 변환 사용
+  if (lang === "ko_KR") {
+    // 한글을 영어로 변환
+    const englishVariant = hangulToEnglish(searchValue).toLowerCase();
+    if (englishVariant && englishVariant !== searchValue.toLowerCase()) {
+      variants.add(englishVariant);
+    }
+    
+    // 영어를 한글로 변환
+    const hangulVariant = englishToHangul(searchValue.toLowerCase());
+    if (hangulVariant && hangulVariant !== searchValue.toLowerCase()) {
+      variants.add(hangulVariant);
+    }
   }
   
   return Array.from(variants);
