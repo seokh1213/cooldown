@@ -100,26 +100,58 @@ function convertXmlTagsToHtml(text: string): string {
 }
 
 /**
- * 레벨별 값을 "/" 형식으로 포맷팅
+ * 숫자를 깔끔하게 포맷팅 (소수점 자릿수 제한, 불필요한 0 제거)
  */
-function formatLevelValues(values: (string | number)[], maxLevel?: number): string {
+function formatNumber(value: string | number): string {
+  if (value === null || value === undefined || value === "") return "";
+  
+  const num = typeof value === "number" ? value : parseFloat(String(value));
+  
+  // 숫자가 아닌 경우 원본 반환
+  if (isNaN(num)) return String(value);
+  
+  // 정수인 경우 소수점 없이 반환
+  if (num % 1 === 0) return num.toString();
+  
+  // 소수점이 있는 경우 최대 2자리까지, 불필요한 0 제거
+  return parseFloat(num.toFixed(2)).toString();
+}
+
+/**
+ * 레벨별 값을 "/" 형식으로 포맷팅
+ * @param values 레벨별 값 배열
+ * @param maxLevel 최대 레벨 (spell.maxrank)
+ * @param skipFirst Community Dragon 데이터인 경우 true (0번째 인덱스가 버퍼)
+ * @returns 포맷팅된 문자열 (예: "1/2/3" 또는 "1" - 모두 같으면)
+ */
+function formatLevelValues(values: (string | number)[], maxLevel?: number, skipFirst: boolean = false): string {
   if (!values || values.length === 0) return "";
   
-  const validValues = values.filter(v => v !== null && v !== undefined && v !== "" && v !== "0");
+  // Community Dragon 데이터인 경우 0번째 인덱스(버퍼) 제외
+  const startIndex = skipFirst && values.length > 1 ? 1 : 0;
+  const processedValues = values.slice(startIndex);
+  
+  const validValues = processedValues.filter(v => v !== null && v !== undefined && v !== "" && v !== "0");
   if (validValues.length === 0) return "";
   
-  // 모든 레벨의 값이 같으면 하나만 표시
-  const allSame = validValues.every(v => v === validValues[0]);
-  if (allSame && validValues[0]) {
-    return String(validValues[0]);
-  }
-  
-  // 레벨별 값 표시 (최대 레벨까지만)
+  // 최대 레벨까지만 사용
   const displayValues = maxLevel 
     ? validValues.slice(0, maxLevel)
     : validValues;
   
-  return displayValues.map(v => String(v)).join("/");
+  if (displayValues.length === 0) return "";
+  
+  // 포맷팅된 값들
+  const formattedValues = displayValues.map(v => formatNumber(v));
+  
+  // 모든 값이 같으면 하나만 표시
+  const firstValue = formattedValues[0];
+  const allSame = formattedValues.every(v => v === firstValue);
+  if (allSame) {
+    return firstValue;
+  }
+  
+  return formattedValues.join("/");
 }
 
 /**
@@ -138,7 +170,17 @@ function replaceVariables(
   if (!spell) return text;
 
   let result = text;
+  
+  // 이미 치환된 변수를 추적하여 중복 방지
+  const replacedVars = new Set<string>();
 
+  // 중첩된 변수 패턴 처리 (예: {{Spell_GangplankQWrapper_Tooltip_{{ gamemodeinteger }}}})
+  // 먼저 중첩된 패턴을 제거하거나 처리
+  result = result.replace(/\{\{([^}]*\{\{[^}]*\}\}[^}]*)\}\}/g, (match) => {
+    // 중첩된 변수 패턴은 제거 (게임 모드별 tooltip 등은 처리 불가)
+    return "";
+  });
+  
   // {{ variable }} 패턴 찾기 (HTML 태그 내부도 포함)
   // 하지만 HTML 태그 자체는 건드리지 않음
   const variableRegex = /\{\{([^}]+)\}\}/g;
@@ -146,21 +188,41 @@ function replaceVariables(
   result = result.replace(variableRegex, (match, variableName) => {
     const trimmedVar = variableName.trim();
     
+    // 이미 치환된 변수는 건너뛰기 (중복 방지)
+    if (replacedVars.has(trimmedVar)) {
+      return "";
+    }
+    
+    // 특수 변수 처리 (spellmodifierdescriptionappend 등)
+    if (trimmedVar === "spellmodifierdescriptionappend" || 
+        trimmedVar.includes("gamemodeinteger") ||
+        trimmedVar.includes("Spell_") && trimmedVar.includes("Tooltip")) {
+      // 이런 변수들은 제거
+      replacedVars.add(trimmedVar);
+      return "";
+    }
+    
     // 쿨타임 변수 처리
     if (trimmedVar.includes("cooldown") && !trimmedVar.includes("decrease")) {
       if (showAllLevels && spell.cooldownBurn) {
-        return spell.cooldownBurn;
+        // "/"로 구분된 값들을 포맷팅
+        const values = spell.cooldownBurn.split("/").map(v => parseFloat(v) || 0);
+        const formatted = formatLevelValues(values, spell.maxrank);
+        replacedVars.add(trimmedVar);
+        return formatted;
       }
       if (spell.cooldown && spell.cooldown.length >= level) {
         const cd = spell.cooldown[level - 1];
         if (cd !== undefined && cd !== null && cd !== "") {
-          return typeof cd === "number" ? cd.toString() : cd;
+          replacedVars.add(trimmedVar);
+          return formatNumber(cd);
         }
       }
       if (spell.cooldownBurn) {
-        const values = spell.cooldownBurn.split("/");
+        const values = spell.cooldownBurn.split("/").map(v => parseFloat(v) || 0);
         if (values.length >= level && values[level - 1]) {
-          return values[level - 1];
+          replacedVars.add(trimmedVar);
+          return formatNumber(values[level - 1]);
         }
       }
     }
@@ -168,21 +230,29 @@ function replaceVariables(
     // range 변수 처리
     if (trimmedVar.includes("range") || trimmedVar.includes("attackrangebonus")) {
       if (showAllLevels && spell.rangeBurn) {
-        return spell.rangeBurn;
+        const values = spell.rangeBurn.split("/").map(v => parseFloat(v) || 0);
+        const formatted = formatLevelValues(values, spell.maxrank);
+        replacedVars.add(trimmedVar);
+        return formatted;
       }
       if (spell.range && spell.range.length >= level) {
         const range = spell.range[level - 1];
         if (range !== undefined && range !== null && range !== "") {
-          return typeof range === "number" ? range.toString() : range;
+          replacedVars.add(trimmedVar);
+          return formatNumber(range);
         }
       }
       if (spell.rangeBurn) {
         if (showAllLevels) {
-          return spell.rangeBurn;
+          const values = spell.rangeBurn.split("/").map(v => parseFloat(v) || 0);
+          const formatted = formatLevelValues(values, spell.maxrank);
+          replacedVars.add(trimmedVar);
+          return formatted;
         }
-        const values = spell.rangeBurn.split("/");
+        const values = spell.rangeBurn.split("/").map(v => parseFloat(v) || 0);
         if (values.length >= level && values[level - 1]) {
-          return values[level - 1];
+          replacedVars.add(trimmedVar);
+          return formatNumber(values[level - 1]);
         }
       }
     }
@@ -190,42 +260,88 @@ function replaceVariables(
     // cost 변수 처리
     if (trimmedVar.includes("cost") || trimmedVar.includes("mana") || trimmedVar.includes("energy")) {
       if (showAllLevels && spell.costBurn && spell.costBurn.includes("/")) {
-        return spell.costBurn;
+        const values = spell.costBurn.split("/").map(v => parseFloat(v) || 0);
+        const formatted = formatLevelValues(values, spell.maxrank);
+        replacedVars.add(trimmedVar);
+        return formatted;
       }
       if (spell.cost && spell.cost.length >= level) {
         const cost = spell.cost[level - 1];
         if (cost !== undefined && cost !== null && cost !== "") {
-          return typeof cost === "number" ? cost.toString() : cost;
+          replacedVars.add(trimmedVar);
+          return formatNumber(cost);
         }
       }
       if (spell.costBurn) {
         if (showAllLevels && spell.costBurn.includes("/")) {
-          return spell.costBurn;
+          const values = spell.costBurn.split("/").map(v => parseFloat(v) || 0);
+          const formatted = formatLevelValues(values, spell.maxrank);
+          replacedVars.add(trimmedVar);
+          return formatted;
         }
-        const values = spell.costBurn.split("/");
+        const values = spell.costBurn.split("/").map(v => parseFloat(v) || 0);
         if (values.length >= level && values[level - 1]) {
-          return values[level - 1];
+          replacedVars.add(trimmedVar);
+          return formatNumber(values[level - 1]);
         }
       }
     }
 
-    // effectBurn 배열에서 값 찾기 시도
-    if (spell.effectBurn && spell.effectBurn.length > 0) {
+    // effectBurn 배열에서 값 찾기 시도 (e1, e2, e3 등 변수명 매칭)
+    // 변수명이 e1, e2, e3 형식인 경우 effectBurn 배열의 인덱스와 매칭
+    const effectMatch = trimmedVar.match(/^e(\d+)$/i);
+    if (effectMatch && spell.effectBurn && spell.effectBurn.length > 0) {
+      const effectIndex = parseInt(effectMatch[1]);
+      if (effectIndex >= 0 && effectIndex < spell.effectBurn.length) {
+        const effectBurnValue = spell.effectBurn[effectIndex];
+        if (effectBurnValue && effectBurnValue !== "0" && effectBurnValue !== null) {
+          // "/"로 구분된 값이 있으면 레벨별 표시
+          if (typeof effectBurnValue === "string" && effectBurnValue.includes("/")) {
+            if (showAllLevels) {
+              const values = effectBurnValue.split("/").map(v => parseFloat(v) || 0);
+              const formatted = formatLevelValues(values, spell.maxrank);
+              replacedVars.add(trimmedVar);
+              return formatted;
+            }
+            const values = effectBurnValue.split("/").map(v => parseFloat(v) || 0);
+            if (values.length >= level && values[level - 1] && values[level - 1] !== 0) {
+              replacedVars.add(trimmedVar);
+              return formatNumber(values[level - 1]);
+            }
+          } else {
+            // 단일 값이면 포맷팅하여 반환
+            if (effectBurnValue !== "0") {
+              replacedVars.add(trimmedVar);
+              return formatNumber(effectBurnValue);
+            }
+          }
+        }
+      }
+    }
+    
+    // effectBurn 배열에서 값 찾기 시도 (일반적인 경우 - 변수명이 명확하지 않을 때)
+    // 이 부분은 마지막에만 실행되어야 함 (명확한 매칭이 없을 때만)
+    if (!effectMatch && spell.effectBurn && spell.effectBurn.length > 0) {
       for (const effectBurnValue of spell.effectBurn) {
         if (effectBurnValue && effectBurnValue !== "0" && effectBurnValue !== null) {
           // "/"로 구분된 값이 있으면 레벨별 표시
-          if (effectBurnValue.includes("/")) {
+          if (typeof effectBurnValue === "string" && effectBurnValue.includes("/")) {
             if (showAllLevels) {
-              return effectBurnValue;
+              const values = effectBurnValue.split("/").map(v => parseFloat(v) || 0);
+              const formatted = formatLevelValues(values, spell.maxrank);
+              replacedVars.add(trimmedVar);
+              return formatted;
             }
-            const values = effectBurnValue.split("/");
-            if (values.length >= level && values[level - 1] && values[level - 1] !== "0") {
-              return values[level - 1];
+            const values = effectBurnValue.split("/").map(v => parseFloat(v) || 0);
+            if (values.length >= level && values[level - 1] && values[level - 1] !== 0) {
+              replacedVars.add(trimmedVar);
+              return formatNumber(values[level - 1]);
             }
           } else {
-            // 단일 값이면 그대로 반환
+            // 단일 값이면 포맷팅하여 반환
             if (effectBurnValue !== "0") {
-              return effectBurnValue;
+              replacedVars.add(trimmedVar);
+              return formatNumber(effectBurnValue);
             }
           }
         }
@@ -280,34 +396,38 @@ function replaceVariables(
         if (communityDragonData[mappedVarName] && Array.isArray(communityDragonData[mappedVarName])) {
           const values = communityDragonData[mappedVarName];
           if (showAllLevels && values.length > 1) {
-            // 레벨별 값 계산하여 "/" 형식으로 표시
-            const calculatedValues = values.map(v => {
+            // 레벨별 값 계산하여 "/" 형식으로 표시 (0번째 인덱스 버퍼 제외)
+            const startIndex = values.length > 1 ? 1 : 0;
+            const calculatedValues = values.slice(startIndex).map(v => {
               const num = typeof v === "number" ? v : parseFloat(String(v));
               if (operator === "*") {
-                const result = num * multiplierNum;
-                // 정수인 경우 소수점 제거
-                return result % 1 === 0 ? result.toString() : result.toFixed(1).replace(/\.0+$/, "");
+                return num * multiplierNum;
               } else if (operator === "+") {
-                return (num + multiplierNum).toFixed(1).replace(/\.0+$/, "");
+                return num + multiplierNum;
               } else if (operator === "-") {
-                return (num - multiplierNum).toFixed(1).replace(/\.0+$/, "");
+                return num - multiplierNum;
               }
-              return String(v);
+              return num;
             });
-            return calculatedValues.join("/");
-          } else if (values.length >= level) {
-            // 특정 레벨의 값 계산
-            const value = values[level - 1];
+            const formatted = formatLevelValues(calculatedValues, spell.maxrank, false);
+            replacedVars.add(trimmedVar);
+            return formatted;
+          } else if (values.length > level) {
+            // 특정 레벨의 값 계산 (0번째 인덱스 버퍼 제외)
+            const value = values[level]; // level은 1부터 시작하므로 level 인덱스 사용
             const num = typeof value === "number" ? value : parseFloat(String(value));
+            let result: number;
             if (operator === "*") {
-              const result = num * multiplierNum;
-              return result % 1 === 0 ? result.toString() : result.toFixed(1).replace(/\.0+$/, "");
+              result = num * multiplierNum;
             } else if (operator === "+") {
-              return (num + multiplierNum).toFixed(1).replace(/\.0+$/, "");
+              result = num + multiplierNum;
             } else if (operator === "-") {
-              return (num - multiplierNum).toFixed(1).replace(/\.0+$/, "");
+              result = num - multiplierNum;
+            } else {
+              result = num;
             }
-            return String(value);
+            replacedVars.add(trimmedVar);
+            return formatNumber(result);
           }
         }
         
@@ -338,29 +458,38 @@ function replaceVariables(
           const values = communityDragonData[key];
           if (Array.isArray(values) && values.length > 0) {
             if (showAllLevels && values.length > 1) {
-              const calculatedValues = values.map(v => {
+              // 0번째 인덱스 버퍼 제외
+              const startIndex = 1;
+              const calculatedValues = values.slice(startIndex).map(v => {
                 const num = typeof v === "number" ? v : parseFloat(String(v));
                 if (operator === "*") {
-                  return (num * multiplierNum).toFixed(1).replace(/\.0+$/, "");
+                  return num * multiplierNum;
                 } else if (operator === "+") {
-                  return (num + multiplierNum).toFixed(1).replace(/\.0+$/, "");
+                  return num + multiplierNum;
                 } else if (operator === "-") {
-                  return (num - multiplierNum).toFixed(1).replace(/\.0+$/, "");
+                  return num - multiplierNum;
                 }
-                return String(v);
+                return num;
               });
-              return calculatedValues.join("/");
-            } else if (values.length >= level) {
-              const value = values[level - 1];
+              const formatted = formatLevelValues(calculatedValues, spell.maxrank, false);
+              replacedVars.add(trimmedVar);
+              return formatted;
+            } else if (values.length > level) {
+              // 특정 레벨의 값 계산 (0번째 인덱스 버퍼 제외)
+              const value = values[level]; // level은 1부터 시작하므로 level 인덱스 사용
               const num = typeof value === "number" ? value : parseFloat(String(value));
+              let result: number;
               if (operator === "*") {
-                return (num * multiplierNum).toFixed(1).replace(/\.0+$/, "");
+                result = num * multiplierNum;
               } else if (operator === "+") {
-                return (num + multiplierNum).toFixed(1).replace(/\.0+$/, "");
+                result = num + multiplierNum;
               } else if (operator === "-") {
-                return (num - multiplierNum).toFixed(1).replace(/\.0+$/, "");
+                result = num - multiplierNum;
+              } else {
+                result = num;
               }
-              return String(value);
+              replacedVars.add(trimmedVar);
+              return formatNumber(result);
             }
           }
         }
@@ -393,21 +522,34 @@ function replaceVariables(
         const values = communityDragonData[mappedVarName];
         if (Array.isArray(values) && values.length > 0) {
           if (showAllLevels && values.length > 1) {
-            // 레벨별 값 포맷팅
-            const formattedValues = values.map(v => {
-              // 퍼센트 값인 경우 100을 곱하고 % 추가
+            // 레벨별 값 포맷팅 (0번째 인덱스 버퍼 제외)
+            const startIndex = 1;
+            const numericValues = values.slice(startIndex).map(v => {
+              // 퍼센트 값인 경우 100을 곱함
               if (mappedVarName === 'ArmorShredPercent') {
-                return `${(Number(v) * 100).toFixed(0)}%`;
+                return Number(v) * 100;
               }
-              return String(v);
+              return typeof v === "number" ? v : parseFloat(String(v));
             });
-            return formattedValues.join("/");
-          } else if (values.length >= level) {
-            const value = values[level - 1];
+            const formatted = formatLevelValues(numericValues, spell.maxrank, false);
+            replacedVars.add(trimmedVar);
+            // 퍼센트 값인 경우 % 추가
             if (mappedVarName === 'ArmorShredPercent') {
-              return `${(Number(value) * 100).toFixed(0)}%`;
+              return `${formatted}%`;
             }
-            return String(value);
+            return formatted;
+          } else if (values.length > level) {
+            // 특정 레벨의 값 (0번째 인덱스 버퍼 제외)
+            const value = values[level]; // level은 1부터 시작하므로 level 인덱스 사용
+            let result: number;
+            if (mappedVarName === 'ArmorShredPercent') {
+              result = Number(value) * 100;
+              replacedVars.add(trimmedVar);
+              return `${formatNumber(result)}%`;
+            }
+            result = typeof value === "number" ? value : parseFloat(String(value));
+            replacedVars.add(trimmedVar);
+            return formatNumber(result);
           }
         }
       }
@@ -460,25 +602,38 @@ function replaceVariables(
           const values = communityDragonData[foundKey];
           if (Array.isArray(values) && values.length > 0) {
             if (showAllLevels && values.length > 1) {
-              // 레벨별 값 포맷팅
-              const formattedValues = values.map(v => {
-                // 퍼센트 관련 변수인 경우 100을 곱하고 % 추가
+              // 레벨별 값 포맷팅 (0번째 인덱스 버퍼 제외)
+              const startIndex = 1;
+              const numericValues = values.slice(startIndex).map(v => {
+                // 퍼센트 관련 변수인 경우 100을 곱함
                 if (foundKey.toLowerCase().includes('percent') || foundKey.toLowerCase().includes('shred')) {
                   const numValue = Number(v);
                   if (numValue < 1 && numValue > 0) {
-                    return `${(numValue * 100).toFixed(0)}%`;
+                    return numValue * 100;
                   }
                 }
-                return String(v);
+                return typeof v === "number" ? v : parseFloat(String(v));
               });
-              return formattedValues.join("/");
-            } else if (values.length >= level) {
-              const value = values[level - 1];
+              const formatted = formatLevelValues(numericValues, spell.maxrank, false);
+              replacedVars.add(trimmedVar);
+              // 퍼센트 관련 변수인 경우 % 추가
+              if (foundKey.toLowerCase().includes('percent') || foundKey.toLowerCase().includes('shred')) {
+                const firstValue = Number(values[startIndex] || values[1]);
+                if (firstValue < 1 && firstValue > 0) {
+                  return `${formatted}%`;
+                }
+              }
+              return formatted;
+            } else if (values.length > level) {
+              // 특정 레벨의 값 (0번째 인덱스 버퍼 제외)
+              const value = values[level]; // level은 1부터 시작하므로 level 인덱스 사용
               const numValue = Number(value);
               if ((foundKey.toLowerCase().includes('percent') || foundKey.toLowerCase().includes('shred')) && numValue < 1 && numValue > 0) {
-                return `${(numValue * 100).toFixed(0)}%`;
+                replacedVars.add(trimmedVar);
+                return `${formatNumber(numValue * 100)}%`;
               }
-              return String(value);
+              replacedVars.add(trimmedVar);
+              return formatNumber(value);
             }
           }
         }
@@ -491,9 +646,16 @@ function replaceVariables(
       if (exactMatch && Array.isArray(communityDragonData[exactMatch])) {
         const values = communityDragonData[exactMatch];
         if (showAllLevels && values.length > 1) {
-          return values.map(v => String(v)).join("/");
-        } else if (values.length >= level) {
-          return String(values[level - 1]);
+          // 0번째 인덱스 버퍼 제외
+          const startIndex = 1;
+          const numericValues = values.slice(startIndex).map(v => typeof v === "number" ? v : parseFloat(String(v)));
+          const formatted = formatLevelValues(numericValues, spell.maxrank, false);
+          replacedVars.add(trimmedVar);
+          return formatted;
+        } else if (values.length > level) {
+          // 특정 레벨의 값 (0번째 인덱스 버퍼 제외)
+          replacedVars.add(trimmedVar);
+          return formatNumber(values[level]); // level은 1부터 시작하므로 level 인덱스 사용
         }
       }
       
@@ -523,9 +685,16 @@ function replaceVariables(
         const values = communityDragonData[key];
         if (Array.isArray(values) && values.length > 0) {
           if (showAllLevels && values.length > 1) {
-            return values.map(v => String(v)).join("/");
-          } else if (values.length >= level) {
-            return String(values[level - 1]);
+            // 0번째 인덱스 버퍼 제외
+            const startIndex = 1;
+            const numericValues = values.slice(startIndex).map(v => typeof v === "number" ? v : parseFloat(String(v)));
+            const formatted = formatLevelValues(numericValues, spell.maxrank, false);
+            replacedVars.add(trimmedVar);
+            return formatted;
+          } else if (values.length > level) {
+            // 특정 레벨의 값 (0번째 인덱스 버퍼 제외)
+            replacedVars.add(trimmedVar);
+            return formatNumber(values[level]); // level은 1부터 시작하므로 level 인덱스 사용
           }
         }
       }
@@ -535,6 +704,11 @@ function replaceVariables(
     return "";
   });
 
+  // 치환 후 남은 불완전한 변수 패턴 제거 ({{ 또는 }}만 남은 경우)
+  result = result.replace(/\{\{\s*\}/g, ""); // {{ }} 패턴 제거
+  result = result.replace(/\}\}/g, ""); // 남은 }} 제거
+  result = result.replace(/\{\{/g, ""); // 남은 {{ 제거
+  
   // 치환 후 남은 "%" 기호가 혼자 있는 경우 제거
   // 예: "{{ armorshredpercent*100 }}%" -> "%" -> ""
   // 하지만 실제 퍼센트 값은 유지해야 하므로, 숫자와 함께 있는 경우는 유지
@@ -542,6 +716,57 @@ function replaceVariables(
   result = result.replace(/(?<!\d)\s*%\s*(?!\d)/g, ""); // 숫자와 함께 있지 않은 % 제거
   result = result.replace(/^\s*%\s*/g, ""); // 시작 부분의 % 제거
   result = result.replace(/\s*%\s*$/g, ""); // 끝 부분의 % 제거
+
+  // 중복된 숫자 패턴 제거 (예: "25/30/35% 0.25/0.3/0.35" -> "25/30/35%")
+  // 같은 값이지만 다른 형식(퍼센트 vs 소수점)으로 표시되는 것을 방지
+  
+  // 텍스트에서 모든 퍼센트 값 찾기
+  const percentMatches: Array<{ value: string; index: number }> = [];
+  const percentRegex = /(\d+(?:\/\d+)+)%/g;
+  let match;
+  while ((match = percentRegex.exec(result)) !== null) {
+    percentMatches.push({ value: match[1], index: match.index });
+  }
+  
+  // 텍스트에서 모든 소수점 패턴 찾기 (0.숫자/0.숫자 형식)
+  const decimalRegex = /(0\.[0-9]+(?:\/0?\.[0-9]+)+)/g;
+  const decimalMatches: Array<{ value: string; index: number }> = [];
+  while ((match = decimalRegex.exec(result)) !== null) {
+    decimalMatches.push({ value: match[1], index: match.index });
+  }
+  
+  // 각 소수점 패턴이 퍼센트 값과 같은지 확인하고 제거
+  for (let i = decimalMatches.length - 1; i >= 0; i--) {
+    const decimalMatch = decimalMatches[i];
+    const decimalValues = decimalMatch.value.split('/').map(v => parseFloat(v));
+    
+    // 앞에 있는 퍼센트 값과 비교
+    for (const percentMatch of percentMatches) {
+      if (percentMatch.index < decimalMatch.index) {
+        const percentValues = percentMatch.value.split('/').map(v => parseFloat(v));
+        
+        // 같은 값인지 확인 (퍼센트 값을 100으로 나눈 값과 소수점 값 비교)
+        if (percentValues.length === decimalValues.length && percentValues.length > 0) {
+          const isSame = percentValues.every((pv, idx) => {
+            if (idx >= decimalValues.length) return false;
+            const expectedDecimal = pv / 100;
+            return Math.abs(expectedDecimal - decimalValues[idx]) < 0.01;
+          });
+          
+          if (isSame) {
+            // 소수점 패턴 제거
+            const before = result.substring(0, decimalMatch.index);
+            const after = result.substring(decimalMatch.index + decimalMatch.value.length);
+            result = (before + after).replace(/\s+/g, ' ').trim();
+            break; // 하나만 제거하고 다음으로
+          }
+        }
+      }
+    }
+  }
+  
+  // 연속된 공백 정리
+  result = result.replace(/\s+/g, ' ').trim();
 
   return result;
 }
@@ -592,6 +817,15 @@ export function parseSpellTooltip(
 
   // 4. 줄바꿈을 <br />로 다시 변환 (렌더링을 위해)
   result = result.replace(/\n/g, "<br />");
+
+  // 5. 결과가 비어있거나 특수 변수만 남은 경우 description 사용
+  const trimmedResult = result.trim();
+  if (!trimmedResult || trimmedResult.length === 0) {
+    // description이 있으면 사용
+    if (spell?.description) {
+      return parseSpellTooltip(spell.description, spell, level, showAllLevels, communityDragonData);
+    }
+  }
 
   return result;
 }

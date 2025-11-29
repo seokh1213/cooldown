@@ -15,7 +15,7 @@ interface NavProps {
 }
 
 function Nav({ 
-  version = "10.8.1", 
+  version, 
   lang, 
   selectHandler,
   theme = "light",
@@ -59,7 +59,9 @@ function Nav({
           <h1 className="text-base md:text-lg font-medium flex-1 text-foreground/70">백과사전</h1>
         )}
         {!isEncyclopediaPage && <div className="flex-1" />}
-        <div className="text-xs text-muted-foreground/60 hidden sm:block font-medium">v{version}</div>
+        {version && (
+          <div className="text-xs text-muted-foreground/60 hidden sm:block font-medium">v{version}</div>
+        )}
         {onThemeToggle && (
           <Button
             variant="ghost"

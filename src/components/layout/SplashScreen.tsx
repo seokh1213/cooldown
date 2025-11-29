@@ -1,0 +1,24 @@
+import React from "react";
+
+interface SplashScreenProps {
+  logo?: string;
+}
+
+function SplashScreen({ logo = "/poro_logo.png" }: SplashScreenProps) {
+  return (
+    <div className="fixed inset-0 flex items-center justify-center bg-background z-50">
+      <div className="flex flex-col items-center gap-4">
+        <div className="animate-pulse">
+          <img
+            src={logo}
+            alt="Loading"
+            className="w-32 h-32 object-contain shadow-none border-none"
+          />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default SplashScreen;
+

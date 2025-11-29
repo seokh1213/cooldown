@@ -29,6 +29,11 @@ function EncyclopediaPage({ lang, championList, version }: EncyclopediaPageProps
 
   // Load from localStorage on mount
   useEffect(() => {
+    // 버전이 없으면 스킵
+    if (!version) {
+      return;
+    }
+
     try {
       const stored = localStorage.getItem(STORAGE_KEY);
       if (stored) {
