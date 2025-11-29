@@ -8,6 +8,12 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import {
+  Dialog,
+  DialogContent,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { VisuallyHidden } from "@/components/ui/visually-hidden";
 import { AlertTriangle } from "lucide-react";
 import { SKILL_LETTERS } from "./constants";
 import { getCooldownText, getCostText } from "./utils";
@@ -37,80 +43,62 @@ export function SkillTooltip({
   const deviceType = useDeviceType();
   const isMobile = deviceType === "mobile";
   const [open, setOpen] = React.useState(false);
-
-  // 외부 클릭 감지로 툴팁 닫기
   const triggerRef = React.useRef<HTMLDivElement>(null);
   
-  React.useEffect(() => {
-    if (!isMobile || !open) return;
+  // passive 스킬이 아닐 때만 cooldown/cost 텍스트 계산
+  const cooldownText = (isPassive && passiveImageFull) ? null : getCooldownText(skill, spellData);
+  const costText = (isPassive && passiveImageFull) ? null : getCostText(skill);
 
-    const handleClickOutside = (event: MouseEvent | TouchEvent) => {
-      const target = event.target as HTMLElement;
-      // 툴팁 트리거나 툴팁 콘텐츠 내부 클릭은 무시
-      if (
-        triggerRef.current?.contains(target) ||
-        target.closest('[role="tooltip"]') ||
-        target.closest('[data-radix-portal]')
-      ) {
-        return;
-      }
-      setOpen(false);
-    };
 
-    // 약간의 지연을 두어 현재 클릭 이벤트가 처리되도록 함
-    const timeoutId = setTimeout(() => {
-      document.addEventListener("mousedown", handleClickOutside, true);
-      document.addEventListener("touchstart", handleClickOutside, true);
-    }, 100);
+  // 공통 트리거 컴포넌트
+  const triggerButton = (
+    <div 
+      ref={triggerRef}
+      className={`flex flex-col items-center gap-0.5 p-1 -m-1 touch-manipulation ${isMobile ? "cursor-pointer" : "cursor-help"}`}
+      onClick={(e) => {
+        if (isMobile) {
+          e.stopPropagation();
+          setOpen((prev) => !prev);
+        }
+      }}
+      onTouchStart={(e) => {
+        if (isMobile) {
+          e.stopPropagation();
+          setOpen((prev) => !prev);
+        }
+      }}
+    >
+      {isPassive && passiveImageFull ? (
+        <>
+          <img
+            src={PASSIVE_ICON_URL(version, passiveImageFull)}
+            alt="Passive"
+            className="w-8 h-8 rounded"
+          />
+          <span className="text-[9px] font-semibold">P</span>
+        </>
+      ) : (
+        <>
+          <img
+            src={SKILL_ICON_URL(version, skill.id)}
+            alt={SKILL_LETTERS[skillIdx]}
+            className="w-8 h-8 rounded"
+          />
+          <span className="text-[9px] font-semibold">
+            {SKILL_LETTERS[skillIdx]}
+          </span>
+        </>
+      )}
+    </div>
+  );
 
-    return () => {
-      clearTimeout(timeoutId);
-      document.removeEventListener("mousedown", handleClickOutside, true);
-      document.removeEventListener("touchstart", handleClickOutside, true);
-    };
-  }, [isMobile, open]);
-
-  if (isPassive && passiveImageFull) {
-    return (
-      <Tooltip open={isMobile ? open : undefined} onOpenChange={isMobile ? setOpen : undefined}>
-        <TooltipTrigger asChild>
-          <div 
-            ref={triggerRef}
-            className="flex flex-col items-center gap-0.5 cursor-help p-1 -m-1 touch-manipulation"
-            onClick={(e) => {
-              if (isMobile) {
-                e.stopPropagation();
-                setOpen((prev) => !prev);
-              }
-            }}
-            onTouchStart={(e) => {
-              if (isMobile) {
-                e.stopPropagation();
-                setOpen((prev) => !prev);
-              }
-            }}
-          >
-            <img
-              src={PASSIVE_ICON_URL(version, passiveImageFull)}
-              alt="Passive"
-              className="w-8 h-8 rounded"
-            />
-            <span className="text-[9px] font-semibold">P</span>
-          </div>
-        </TooltipTrigger>
-        <TooltipContent
-          side={isMobile ? "bottom" : "top"}
-          align="center"
-          sideOffset={isMobile ? 12 : 8}
-          className={isMobile ? "max-w-[calc(100vw-32px)] max-h-[70vh] overflow-y-auto p-3 space-y-2" : "max-w-xs p-3 space-y-2"}
-          onPointerDownOutside={(e) => {
-            if (isMobile) {
-              e.preventDefault();
-            }
-          }}
-        >
+  // 공통 콘텐츠 컴포넌트
+  const renderContent = () => {
+    if (isPassive && passiveImageFull) {
+      return (
+        <>
           {passiveName && (
-            <div className="font-semibold text-sm">{passiveName}</div>
+            <div className={`font-semibold text-sm ${isMobile ? "pr-10" : ""}`}>{passiveName}</div>
           )}
           {passiveDescription && (
             <div className="text-xs leading-relaxed">
@@ -121,56 +109,14 @@ export function SkillTooltip({
               />
             </div>
           )}
-        </TooltipContent>
-      </Tooltip>
-    );
-  }
+        </>
+      );
+    }
 
-  const cooldownText = getCooldownText(skill, spellData);
-  const costText = getCostText(skill);
-
-  return (
-    <Tooltip open={isMobile ? open : undefined} onOpenChange={isMobile ? setOpen : undefined}>
-      <TooltipTrigger asChild>
-        <div 
-          ref={triggerRef}
-          className="flex flex-col items-center gap-0.5 cursor-help p-1 -m-1 touch-manipulation"
-          onClick={(e) => {
-            if (isMobile) {
-              e.stopPropagation();
-              setOpen((prev) => !prev);
-            }
-          }}
-          onTouchStart={(e) => {
-            if (isMobile) {
-              e.stopPropagation();
-              setOpen((prev) => !prev);
-            }
-          }}
-        >
-          <img
-            src={SKILL_ICON_URL(version, skill.id)}
-            alt={SKILL_LETTERS[skillIdx]}
-            className="w-8 h-8 rounded"
-          />
-          <span className="text-[9px] font-semibold">
-            {SKILL_LETTERS[skillIdx]}
-          </span>
-        </div>
-      </TooltipTrigger>
-      <TooltipContent
-        side={isMobile ? "bottom" : "top"}
-        align="center"
-        sideOffset={isMobile ? 12 : 8}
-        className={isMobile ? "max-w-[calc(100vw-32px)] max-h-[70vh] overflow-y-auto p-4 space-y-3" : "max-w-sm p-4 space-y-3"}
-        onPointerDownOutside={(e) => {
-          if (isMobile) {
-            e.preventDefault();
-          }
-        }}
-      >
+    return (
+      <>
         {/* 헤더: 아이콘 + 스킬명 + 쿨타임/마나 */}
-        <div className="flex items-start gap-3 border-b pb-3">
+        <div className={`flex items-start gap-3 border-b pb-3 ${isMobile ? "pr-10" : ""}`}>
           {/* 왼쪽: 아이콘 */}
           <img
             src={SKILL_ICON_URL(version, skill.id)}
@@ -188,8 +134,16 @@ export function SkillTooltip({
           {/* 오른쪽: 쿨타임/마나 */}
           <div className="text-right flex-shrink-0">
             {cooldownText && (
-              <div className="text-xs text-muted-foreground whitespace-nowrap">
-                {cooldownText}
+              <div className="text-xs text-muted-foreground">
+                {cooldownText.includes(" (") ? (
+                  <>
+                    {cooldownText.split(" (")[0]}
+                    <br />
+                    ({cooldownText.split(" (")[1]}
+                  </>
+                ) : (
+                  cooldownText
+                )}
               </div>
             )}
             {costText && (
@@ -248,6 +202,64 @@ export function SkillTooltip({
           <AlertTriangle className="w-3 h-3 mt-0.5 text-yellow-600 dark:text-yellow-500 flex-shrink-0" />
           <span>정확한 수치와 설명은 인게임 툴팁을 확인해 주세요.</span>
         </div>
+      </>
+    );
+  };
+
+  // 모바일: Dialog 사용
+  if (isMobile) {
+    return (
+      <>
+        {triggerButton}
+        <Dialog open={open} onOpenChange={setOpen}>
+          <DialogContent
+            className="w-[calc(100vw-32px)] max-w-lg max-h-[70vh] overflow-y-auto p-4 flex flex-col gap-3"
+          >
+            <VisuallyHidden>
+              <DialogTitle>
+                {isPassive && passiveImageFull 
+                  ? `${passiveName || "패시브"} 스킬 정보`
+                  : `[${SKILL_LETTERS[skillIdx]}] ${skill.name || "스킬"} 정보`}
+              </DialogTitle>
+            </VisuallyHidden>
+            {renderContent()}
+          </DialogContent>
+        </Dialog>
+      </>
+    );
+  }
+
+  // 데스크톱: Tooltip 사용
+  if (isPassive && passiveImageFull) {
+    return (
+      <Tooltip>
+        <TooltipTrigger asChild>
+          {triggerButton}
+        </TooltipTrigger>
+        <TooltipContent
+          side="top"
+          align="center"
+          sideOffset={8}
+          className="max-w-xs p-3 space-y-2"
+        >
+          {renderContent()}
+        </TooltipContent>
+      </Tooltip>
+    );
+  }
+
+  return (
+    <Tooltip>
+      <TooltipTrigger asChild>
+        {triggerButton}
+      </TooltipTrigger>
+      <TooltipContent
+        side="top"
+        align="center"
+        sideOffset={8}
+        className="max-w-sm p-4 space-y-3"
+      >
+        {renderContent()}
       </TooltipContent>
     </Tooltip>
   );

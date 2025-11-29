@@ -8,6 +8,9 @@ export function getCooldownText(
   skill: ChampionSpell,
   spellData?: SpellData | null
 ): string | null {
+  if (!skill || !skill.cooldown || !Array.isArray(skill.cooldown) || skill.cooldown.length === 0) {
+    return null;
+  }
   const ammoRechargeTime = spellData?.communityDragonData["mAmmoRechargeTime"];
   const isAmmoSkill = skill.cooldown[0] === 0 && ammoRechargeTime && Array.isArray(ammoRechargeTime) && ammoRechargeTime.length > 1;
 
@@ -37,6 +40,9 @@ export function getCooldownText(
  * 스킬의 소모값 텍스트를 포맷팅
  */
 export function getCostText(skill: ChampionSpell): string | null {
+  if (!skill) {
+    return null;
+  }
   if (skill.costBurn === "0" || (skill.cost && skill.cost.every(c => c === 0))) {
     return "소모값 없음";
   }
