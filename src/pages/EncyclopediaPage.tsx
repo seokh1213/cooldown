@@ -715,12 +715,12 @@ function EncyclopediaPage({ lang, championList, version }: EncyclopediaPageProps
                                   });
                                   setShowVsSelector(true);
                                 }}
-                                className="ml-1 p-1 rounded-full hover:bg-primary/20 hover:text-primary active:bg-primary/30 transition-colors touch-manipulation shrink-0"
+                                className="ml-1 p-1 rounded-full hover:bg-destructive/20 hover:text-destructive active:bg-destructive/30 transition-colors touch-manipulation shrink-0"
                                 aria-label={`${t.encyclopedia.vs} with ${champion.name}`}
                                 title={t.encyclopedia.vsStart}
                                 type="button"
                               >
-                                <Swords className="h-3 w-3" />
+                                <Swords className="h-3 w-3 text-destructive" />
                               </button>
                               <button
                                 onClick={(e) => {
