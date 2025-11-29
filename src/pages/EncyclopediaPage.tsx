@@ -1,4 +1,4 @@
-import { useState, useCallback, useMemo, useEffect } from "react";
+import { useState, useCallback, useMemo, useEffect, useRef } from "react";
 import { Champion } from "@/types";
 import { getChampionInfo } from "@/services/api";
 import { Card, CardContent } from "@/components/ui/card";
@@ -60,7 +60,13 @@ function EncyclopediaPage({ lang, championList, version }: EncyclopediaPageProps
   const isMobile = deviceType === "mobile";
   // 탭 관리: 모든 탭을 배열로 관리
   const [tabs, setTabs] = useState<Tab[]>([]);
+  const tabsRef = useRef<Tab[]>([]);
   const [selectedTabId, setSelectedTabId] = useState<string | null>(null);
+  
+  // tabs 상태가 변경될 때마다 ref 업데이트
+  useEffect(() => {
+    tabsRef.current = tabs;
+  }, [tabs]);
   const [showVsSelector, setShowVsSelector] = useState(false);
   const [vsSelectorMode, setVsSelectorMode] = useState<{
     mode: 'select-second' | 'change-champion-a' | 'change-champion-b';
@@ -277,7 +283,47 @@ function EncyclopediaPage({ lang, championList, version }: EncyclopediaPageProps
         // Set을 생성하여 빠른 체크
         const prevIds = new Set(prev.map((c) => c.id));
         if (prevIds.has(champion.id)) {
-          // 챔피언 제거 시 해당 챔피언의 일반 탭도 제거
+          // 현재 탭 상태 확인 (ref를 사용하여 최신 상태 확인)
+          const currentTabs = tabsRef.current;
+          const hasNormalTab = currentTabs.some((tab) => 
+            tab.mode === 'normal' && tab.champions.length === 1 && tab.champions[0] === champion.id
+          );
+          const isInVsTab = currentTabs.some((tab) => 
+            tab.mode === 'vs' && tab.champions.includes(champion.id)
+          );
+          
+          // 일반 탭이 이미 있으면 제거 (VS 탭에 포함되어 있어도 일반 탭은 제거)
+          if (hasNormalTab) {
+            // 일반 탭 제거
+            setTabs((prevTabs) => prevTabs.filter((tab) => 
+              !(tab.mode === 'normal' && tab.champions.length === 1 && tab.champions[0] === champion.id)
+            ));
+            
+            // VS 탭에 포함되어 있지 않으면 챔피언도 제거
+            if (!isInVsTab) {
+              return prev.filter((c) => c.id !== champion.id);
+            }
+            
+            // VS 탭에 포함되어 있으면 챔피언 유지
+            return prev;
+          }
+          
+          // 일반 탭이 없고 VS 탭에만 포함되어 있으면 일반 탭만 생성
+          if (isInVsTab) {
+            // 일반 탭 생성
+            const newTab: Tab = {
+              mode: 'normal',
+              champions: [champion.id],
+              id: generateTabId(),
+            };
+            setTabs((prevTabs) => [...prevTabs, newTab]);
+            // 새 탭 선택
+            setSelectedTabId(newTab.id);
+            // 챔피언은 이미 선택되어 있으므로 그대로 반환
+            return prev;
+          }
+          
+          // 일반 탭도 없고 VS 탭에도 없으면 챔피언과 일반 탭 모두 제거
           setTabs((prevTabs) => prevTabs.filter((tab) => 
             !(tab.mode === 'normal' && tab.champions.length === 1 && tab.champions[0] === champion.id)
           ));
