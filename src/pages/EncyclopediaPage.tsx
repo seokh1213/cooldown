@@ -4,9 +4,12 @@ import { getChampionInfo } from "@/services/api";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Plus, Search, RotateCcw } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { Plus, Search, RotateCcw, X } from "lucide-react";
 import ChampionComparison from "@/components/features/ChampionComparison";
 import ChampionSelector from "@/components/features/ChampionSelector";
+import { useDeviceType } from "@/hooks/useDeviceType";
+import { CHAMP_ICON_URL } from "@/services/api";
 
 interface EncyclopediaPageProps {
   lang: string;
@@ -26,6 +29,9 @@ function EncyclopediaPage({ lang, championList, version }: EncyclopediaPageProps
   const [selectedChampions, setSelectedChampions] = useState<ChampionWithInfo[]>([]);
   const [activeTab, setActiveTab] = useState<"stats" | "skills">("skills");
   const [showSelector, setShowSelector] = useState(false);
+  const deviceType = useDeviceType();
+  const isMobile = deviceType === "mobile";
+  const [selectedChampionIndex, setSelectedChampionIndex] = useState(0);
 
   // Load from localStorage on mount
   useEffect(() => {
@@ -148,6 +154,23 @@ function EncyclopediaPage({ lang, championList, version }: EncyclopediaPageProps
     return selectedChampions.filter((c) => c.fullInfo && !c.isLoading);
   }, [selectedChampions]);
 
+  // 모바일에서 보여줄 챔피언 (한 명씩)
+  const mobileChampion = useMemo(() => {
+    if (!isMobile || championsWithFullInfo.length === 0) return null;
+    const index = Math.min(selectedChampionIndex, championsWithFullInfo.length - 1);
+    return championsWithFullInfo[index]?.fullInfo || null;
+  }, [isMobile, championsWithFullInfo, selectedChampionIndex]);
+
+  // 챔피언이 변경되면 인덱스 조정
+  useEffect(() => {
+    if (isMobile && championsWithFullInfo.length > 0) {
+      const maxIndex = championsWithFullInfo.length - 1;
+      if (selectedChampionIndex > maxIndex) {
+        setSelectedChampionIndex(maxIndex);
+      }
+    }
+  }, [isMobile, championsWithFullInfo.length, selectedChampionIndex]);
+
   return (
     <div className="w-full max-w-7xl mx-auto px-4 md:px-6 lg:px-8 py-4 md:py-5">
 
@@ -158,6 +181,8 @@ function EncyclopediaPage({ lang, championList, version }: EncyclopediaPageProps
           selectedChampions={selectedChampions}
           onSelect={addChampion}
           onClose={() => setShowSelector(false)}
+          open={showSelector}
+          onOpenChange={setShowSelector}
         />
       )}
 
@@ -197,13 +222,69 @@ function EncyclopediaPage({ lang, championList, version }: EncyclopediaPageProps
                 </Button>
               </div>
 
+              {/* Mobile: Champion Selection Tab */}
+              {isMobile && championsWithFullInfo.length > 0 && (
+                <div className="border-b border-border overflow-x-auto -mx-4 px-4">
+                  <div className="flex items-center gap-2 pb-2">
+                    <span className="text-xs font-medium text-muted-foreground shrink-0">챔피언</span>
+                    <div className="flex items-center gap-2 flex-1 overflow-x-auto">
+                      {championsWithFullInfo.map((champion, idx) => (
+                        <div
+                          key={champion.id}
+                          className={cn(
+                            "flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-colors shrink-0 relative group",
+                            selectedChampionIndex === idx 
+                              ? 'bg-primary text-primary-foreground' 
+                              : 'bg-muted/50 text-muted-foreground hover:bg-muted'
+                          )}
+                        >
+                          <button
+                            onClick={() => setSelectedChampionIndex(idx)}
+                            className="flex items-center gap-1.5 flex-1"
+                          >
+                            <img
+                              src={CHAMP_ICON_URL(version, champion.id)}
+                              alt={champion.name}
+                              className="w-5 h-5 rounded-full"
+                            />
+                            <span>{champion.name}</span>
+                          </button>
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              removeChampion(champion.id);
+                              if (selectedChampionIndex >= championsWithFullInfo.length - 1 && selectedChampionIndex > 0) {
+                                setSelectedChampionIndex(selectedChampionIndex - 1);
+                              }
+                            }}
+                            className="ml-1 p-0.5 rounded-full hover:bg-destructive/20 hover:text-destructive transition-colors opacity-0 group-hover:opacity-100"
+                            aria-label={`Remove ${champion.name}`}
+                          >
+                            <X className="h-3 w-3" />
+                          </button>
+                        </div>
+                      ))}
+                      <Button
+                        onClick={() => setShowSelector(true)}
+                        variant="outline"
+                        size="sm"
+                        className="flex items-center gap-1.5 shrink-0 border-2 border-dashed border-muted-foreground/30 hover:border-primary hover:bg-primary/10 hover:text-primary h-auto py-1.5 px-3 transition-colors"
+                      >
+                        <Plus className="w-3 h-3" />
+                        <span className="text-xs">추가</span>
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              )}
+
               {/* Comparison Content */}
               <ChampionComparison
-                champions={championsWithFullInfo.map((c) => c.fullInfo!)}
+                champions={isMobile && mobileChampion ? [mobileChampion] : championsWithFullInfo.map((c) => c.fullInfo!)}
                 version={version}
                 activeTab={activeTab}
                 championList={championList}
-                onAddChampion={addChampion}
+                onAddChampion={isMobile ? undefined : addChampion}
                 onRemoveChampion={removeChampion}
               />
             </div>

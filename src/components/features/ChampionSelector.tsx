@@ -6,9 +6,9 @@ import { Button } from "@/components/ui/button";
 import { Search, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import ChampionThumbnail from "./ChampionThumbnail";
+import * as DialogPrimitive from "@radix-ui/react-dialog";
 import {
   Dialog,
-  DialogContent,
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/dialog";
@@ -22,6 +22,8 @@ interface ChampionSelectorProps {
   onSelect: (champion: Champion) => void;
   onClose?: () => void;
   slotIndex?: number;
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
 }
 
 function ChampionSelector({
@@ -30,8 +32,14 @@ function ChampionSelector({
   onSelect,
   onClose,
   slotIndex: _slotIndex,
+  open: controlledOpen,
+  onOpenChange: controlledOnOpenChange,
 }: ChampionSelectorProps) {
-  const [isOpen, setIsOpen] = useState(false);
+  const [internalOpen, setInternalOpen] = useState(false);
+  const isControlled = controlledOpen !== undefined;
+  // Controlled 모드일 때는 controlledOpen을 사용, undefined가 아닌 경우에만 true로 간주
+  const isOpen = isControlled ? Boolean(controlledOpen) : internalOpen;
+  const setIsOpen = isControlled ? (controlledOnOpenChange || (() => {})) : setInternalOpen;
   const [searchValue, setSearchValue] = useState("");
   const [focusedIndex, setFocusedIndex] = useState(-1);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -75,7 +83,10 @@ function ChampionSelector({
         onClose();
       }
     }
-  }, [onClose]);
+    if (controlledOnOpenChange) {
+      controlledOnOpenChange(open);
+    }
+  }, [onClose, controlledOnOpenChange]);
 
   const handleSelect = useCallback(
     (champion: Champion, isSelected: boolean) => {
@@ -137,12 +148,17 @@ function ChampionSelector({
   }, [focusedIndex]);
 
   useEffect(() => {
+    // Controlled 모드일 때는 외부에서 open 상태를 관리하므로 이 effect를 실행하지 않음
+    if (isControlled) {
+      return;
+    }
+    // Uncontrolled 모드일 때만 isModal에 따라 상태 설정
     if (isModal) {
       setIsOpen(true);
     } else {
       setIsOpen(false);
     }
-  }, [isModal]);
+  }, [isModal, isControlled, setIsOpen]);
 
   // 스크롤 위치 관리
   useScrollPosition(listRef, isModal, isOpen);
@@ -274,19 +290,26 @@ function ChampionSelector({
   }
 
   // Modal style selector using shadcn-ui Dialog
+  // Controlled 모드일 때는 open prop이 false면 아무것도 렌더링하지 않음
+  if (isControlled && !isOpen) {
+    return null;
+  }
+  
   return (
     <Dialog open={isOpen} onOpenChange={handleOpenChange}>
-      <DialogContent
-        ref={containerRef}
-        className="w-full h-full md:w-[600px] md:h-[500px] lg:w-[800px] lg:h-[600px] p-0 flex flex-col overflow-hidden max-w-none md:max-w-[600px] lg:max-w-[800px] max-h-none md:max-h-[500px] lg:max-h-[600px] [&>button]:hidden fixed inset-0 md:inset-auto md:left-[50%] md:top-[50%] md:translate-x-[-50%] md:translate-y-[-50%] md:rounded-xl"
-        onInteractOutside={() => {
-          // Allow closing when clicking outside (overlay)
-          handleOpenChange(false);
-        }}
-        onEscapeKeyDown={() => {
-          handleOpenChange(false);
-        }}
-      >
+      <DialogPrimitive.Portal>
+        <DialogPrimitive.Overlay className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm" />
+        <DialogPrimitive.Content
+          ref={containerRef}
+          className="fixed inset-0 left-0 top-0 translate-x-0 translate-y-0 md:inset-auto md:left-[50%] md:top-[50%] md:translate-x-[-50%] md:translate-y-[-50%] w-full h-full md:w-[600px] md:h-[500px] lg:w-[800px] lg:h-[600px] p-0 flex flex-col overflow-hidden max-w-none md:max-w-[600px] lg:max-w-[800px] max-h-none md:max-h-[500px] lg:max-h-[600px] rounded-none md:rounded-xl z-50 border bg-background shadow-lg"
+          onInteractOutside={() => {
+            // Allow closing when clicking outside (overlay)
+            handleOpenChange(false);
+          }}
+          onEscapeKeyDown={() => {
+            handleOpenChange(false);
+          }}
+        >
         <VisuallyHidden>
           <DialogTitle>챔피언 선택</DialogTitle>
           <DialogDescription>비교할 챔피언을 선택하세요</DialogDescription>
@@ -364,7 +387,8 @@ function ChampionSelector({
             </div>
           )}
         </div>
-      </DialogContent>
+        </DialogPrimitive.Content>
+      </DialogPrimitive.Portal>
     </Dialog>
   );
 }
