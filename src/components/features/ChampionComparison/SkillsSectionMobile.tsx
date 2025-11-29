@@ -17,6 +17,7 @@ import { SectionProps } from "./types";
 import { SkillTooltip } from "./SkillTooltip";
 import { getCooldownForLevel } from "./utils";
 import { useTranslation } from "@/i18n";
+import { ChampionSpell } from "@/types";
 
 export function SkillsSectionMobile({
   champions,
@@ -52,13 +53,13 @@ export function SkillsSectionMobile({
   }, [champions]);
 
   // 스킬 데이터 가져오기 헬퍼 함수
-  const getSpellData = (championId: string, spellIndex: number): SpellData | null => {
+  const getSpellData = React.useCallback((championId: string, spellIndex: number): SpellData | null => {
     const spellDataList = spellDataMap[championId];
     if (!spellDataList || spellDataList.length <= spellIndex) {
       return null;
     }
     return spellDataList[spellIndex];
-  };
+  }, [spellDataMap]);
 
   const skillRows = React.useMemo(() => {
     return Array.from({ length: maxLevel }, (_, levelIdx) => {
@@ -78,7 +79,7 @@ export function SkillsSectionMobile({
         }),
       };
     });
-  }, [champions, maxLevel, spellDataMap]);
+  }, [champions, maxLevel, getSpellData]);
 
   // VS 모드 레이아웃
   if (vsMode && champions.length === 2) {
@@ -142,7 +143,7 @@ export function SkillsSectionMobile({
                               passiveName={championA.passive.name}
                               passiveDescription={championA.passive.description}
                               passiveImageFull={championA.passive.image.full}
-                              skill={{} as any}
+                              skill={{} as ChampionSpell}
                               skillIdx={0}
                               version={version}
                               size="small"
@@ -172,7 +173,7 @@ export function SkillsSectionMobile({
                               passiveName={championB.passive.name}
                               passiveDescription={championB.passive.description}
                               passiveImageFull={championB.passive.image.full}
-                              skill={{} as any}
+                              skill={{} as ChampionSpell}
                               skillIdx={0}
                               version={version}
                               size="small"
@@ -325,7 +326,7 @@ export function SkillsSectionMobile({
                               passiveName={champion.passive.name}
                               passiveDescription={champion.passive.description}
                               passiveImageFull={champion.passive.image.full}
-                              skill={{} as any}
+                              skill={{} as ChampionSpell}
                               skillIdx={0}
                               version={version}
                             />

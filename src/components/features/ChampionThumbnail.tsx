@@ -6,7 +6,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Check } from "lucide-react";
 
 interface ChampionThumbnailProps {
-  addChampion: (champion: Champion, selected: boolean) => void;
+  addChampion: (champion: Champion) => void;
   data: Champion;
   name: string;
   thumbnailSrc: string;
@@ -43,7 +43,7 @@ function ChampionThumbnail({
     e.stopPropagation();
     // 즉시 로컬 상태 업데이트 (네트워크 응답 전에 피드백 제공)
     setIsLocallySelected(!selected);
-    addChampion(data, selected);
+    addChampion(data);
   }, [addChampion, data, selected]);
 
   const handleTouchStart = useCallback((e: React.TouchEvent) => {
@@ -52,7 +52,7 @@ function ChampionThumbnail({
     touchHandledRef.current = true;
     // 즉시 로컬 상태 업데이트 (네트워크 응답 전에 피드백 제공)
     setIsLocallySelected(!selected);
-    addChampion(data, selected);
+    addChampion(data);
     // 짧은 딜레이 후 플래그 리셋 (클릭 이벤트가 발생할 시간을 줌)
     setTimeout(() => {
       touchHandledRef.current = false;

@@ -1,6 +1,6 @@
 import ChampionSelector from "@/components/features/ChampionSelector";
-import { Champion, ChampionWithInfo } from "@/types";
-import { Tab, VsSelectorMode } from "./types";
+import { Champion } from "@/types";
+import { Tab, VsSelectorMode, ChampionWithInfo } from "./types";
 import { useTranslation } from "@/i18n";
 
 interface VsSelectorModalProps {

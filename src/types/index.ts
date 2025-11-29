@@ -8,6 +8,7 @@ export interface ChampionSpell {
   name?: string;
   maxrank: number;
   cooldown: (number | string)[];
+  cooldownBurn?: string;
   description?: string;
   tooltip?: string;
   leveltip?: {
@@ -15,9 +16,12 @@ export interface ChampionSpell {
     effect: string[];
   };
   effectBurn?: (string | null)[];
+  cost?: (number | string)[];
   costBurn?: string;
   resource?: string;
   costType?: string;
+  range?: (number | string)[];
+  rangeBurn?: string;
 }
 
 export interface ChampionPassive {

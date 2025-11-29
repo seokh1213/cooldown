@@ -43,7 +43,7 @@ function isValidTabArray(data: unknown): data is Tab[] {
     }
 
     // champions가 모두 문자열인지 확인
-    if (!tab.champions.every((id) => typeof id === 'string')) {
+    if (!tab.champions.every((id: unknown) => typeof id === 'string')) {
       return false;
     }
 

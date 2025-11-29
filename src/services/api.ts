@@ -7,13 +7,6 @@ const CHAMP_LIST_URL = (VERSION: string, LANG: string) =>
 const CHAMP_INFO_URL = (VERSION: string, LANG: string, NAME: string) =>
   `https://ddragon.leagueoflegends.com/cdn/${VERSION}/data/${LANG}/champion/${NAME}.json`;
 
-export const SKILL_IMG_URL = (VERSION: string, NAME: string) =>
-  `https://ddragon.leagueoflegends.com/cdn/${VERSION}/img/spell/${NAME}.png`;
-
-export const SPLASH_IMG_URL = (NAME: string) =>
-  `https://ddragon.leagueoflegends.com/cdn/img/champion/splash/${NAME}.jpg`;
-export const LOADING_IMG_URL = (NAME: string) =>
-  `https://ddragon.leagueoflegends.com/cdn/img/champion/loading/${NAME}.jpg`;
 export const CHAMP_ICON_URL = (VERSION: string, NAME: string) =>
   `https://ddragon.leagueoflegends.com/cdn/${VERSION}/img/champion/${NAME}.png`;
 export const PASSIVE_ICON_URL = (VERSION: string, NAME: string) =>
@@ -27,25 +20,27 @@ interface ChampionData {
   };
 }
 
-interface VersionResponse extends Array<string> {}
 
-function fetchData<T>(URL: string, transform: (res: unknown) => T): Promise<T> {
-  return fetch(URL)
-    .then((res) => {
-      if (!res.ok) {
-        throw new Error(`HTTP error! status: ${res.status}`);
-      }
-      return res.json();
-    })
-    .then((res) => transform(res))
-    .catch((err) => {
-      console.error("API request failed:", err);
-      throw err;
-    });
+async function fetchData<T>(URL: string, transform: (res: unknown) => T): Promise<T> {
+  const res_1 = await fetch(URL);
+  if (!res_1.ok) {
+    const error = new Error(`HTTP error! status: ${res_1.status}`);
+    console.error("API request failed:", error);
+    throw error;
+  }
+  
+  try {
+    const res_2 = await res_1.json();
+    return transform(res_2);
+  } catch (err) {
+    // JSON 파싱 에러만 catch (의도적인 동작)
+    console.error("API request failed:", err);
+    throw err;
+  }
 }
 
 export function getVersion(): Promise<string> {
-  return fetchData<VersionResponse>(VERSION_URL, (res) => {
+  return fetchData<string>(VERSION_URL, (res) => {
     if (Array.isArray(res) && res.length > 0 && typeof res[0] === "string") {
       return res[0];
     }
@@ -128,29 +123,27 @@ export function cleanOldVersionCache(currentVersion: string): void {
   }
 }
 
-export function getChampionList(version: string, lang: string): Promise<Champion[]> {
-  return fetchData<ChampionData>(CHAMP_LIST_URL(version, lang), (res) => {
+export async function getChampionList(version: string, lang: string): Promise<Champion[]> {
+  const data = await fetchData<ChampionData>(CHAMP_LIST_URL(version, lang), (res) => {
     if (res && typeof res === "object" && "data" in res) {
-      return res.data;
+      return res as ChampionData;
     }
     throw new Error("Invalid champion list response format");
-  }).then((data) =>
-    Object.values(data)
-      .sort((a, b) => (a.name < b.name ? -1 : a.name > b.name ? 1 : 0))
-      .map((e) => {
-        const champion: Champion = {
-          ...e,
-          hangul:
-            lang === "ko_KR"
-              ? Hangul.d(e.name, true).reduce(
-                  (acc: string, array: string[]) => acc + array[0],
-                  ""
-                )
-              : "",
-        };
-        return champion;
-      })
-  );
+  });
+  return Object.values(data.data)
+    .sort((a, b) => (a.name < b.name ? -1 : a.name > b.name ? 1 : 0))
+    .map((e) => {
+      const champion: Champion = {
+        ...e,
+        hangul: lang === "ko_KR"
+          ? Hangul.d(e.name, true).reduce(
+            (acc: string, array: string[]) => acc + array[0],
+            ""
+          )
+          : "",
+      };
+      return champion;
+    });
 }
 
 export function getChampionInfo(version: string, lang: string, name: string): Promise<Champion> {
@@ -173,21 +166,24 @@ export function getChampionInfo(version: string, lang: string, name: string): Pr
   }
 
   // 캐시가 없거나 유효하지 않으면 API 호출
-  return fetchData<ChampionData>(
+  return fetchData<Champion>(
     CHAMP_INFO_URL(version, lang, name),
     (res) => {
-      if (res && typeof res === "object" && "data" in res && name in res.data) {
-        const championInfo = res.data[name];
-        
-        // API 응답을 localStorage에 캐싱
-        try {
-          localStorage.setItem(cacheKey, JSON.stringify(championInfo));
-        } catch (error) {
-          // localStorage 저장 실패 시 무시 (quota exceeded 등)
-          console.warn("Failed to cache champion info:", error);
+      if (res && typeof res === "object" && "data" in res) {
+        const data = res as ChampionData;
+        if (name in data.data) {
+          const championInfo = data.data[name];
+          
+          // API 응답을 localStorage에 캐싱
+          try {
+            localStorage.setItem(cacheKey, JSON.stringify(championInfo));
+          } catch (error) {
+            // localStorage 저장 실패 시 무시 (quota exceeded 등)
+            console.warn("Failed to cache champion info:", error);
+          }
+          
+          return championInfo;
         }
-        
-        return championInfo;
       }
       throw new Error(`Champion ${name} not found`);
     }
@@ -303,12 +299,32 @@ export async function getCommunityDragonSpellData(
     console.warn("[CD] Failed to parse cached Community Dragon data:", error);
   }
 
+  let response: Response;
   try {
-    const response = await fetch(url);
+    response = await fetch(url);
     if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+      const error = new Error(`HTTP error! status: ${response.status}`);
+      console.error("Failed to fetch Community Dragon data:", error);
+      // 에러 발생 시 빈 객체 반환 (캐싱하지 않음)
+      try {
+        localStorage.removeItem(cacheKey);
+      } catch (removeError) {
+        console.warn("Failed to remove cache on error:", removeError);
+      }
+      return {};
     }
-    
+  } catch (error) {
+    // 네트워크 에러 등 fetch 자체가 실패한 경우
+    console.error("Failed to fetch Community Dragon data:", error);
+    try {
+      localStorage.removeItem(cacheKey);
+    } catch (removeError) {
+      console.warn("Failed to remove cache on error:", removeError);
+    }
+    return {};
+  }
+
+  try {
     const data = await response.json();
     
     // 원본 데이터 구조 확인
@@ -462,7 +478,8 @@ export async function getCommunityDragonSpellData(
     
     return spellDataMap;
   } catch (error) {
-    console.error("Failed to fetch Community Dragon data:", error);
+    // JSON 파싱 에러만 catch (의도적인 동작)
+    console.error("Failed to parse Community Dragon data:", error);
     // 에러 발생 시 빈 객체 반환 (캐싱하지 않음)
     // 기존 캐시가 있다면 삭제
     try {

@@ -77,7 +77,7 @@ function Sidebar({ isOpen, onClose }: SidebarProps) {
                 src={`${import.meta.env.BASE_URL}poro_logo.png`}
                 alt="Poro Logo" 
                 className="h-12 w-12 object-contain shadow-none"
-                style={{ imageRendering: 'high-quality' }}
+                style={{ imageRendering: 'auto' as const }}
               />
               <h2 className="text-lg font-semibold text-sidebar-foreground">Cooldown</h2>
               <Button
@@ -100,7 +100,7 @@ function Sidebar({ isOpen, onClose }: SidebarProps) {
                 src={`${import.meta.env.BASE_URL}poro_logo.png`}
                 alt="Poro Logo" 
                 className="h-8 w-8 object-contain shadow-none"
-                style={{ imageRendering: 'high-quality' }}
+                style={{ imageRendering: 'auto' as const }}
               />
             </div>
           </SidebarHeader>

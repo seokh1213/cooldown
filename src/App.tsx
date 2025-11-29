@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { getVersion, getChampionList, cleanOldVersionCache } from "@/services/api";
 import Layout from "@/components/layout/Layout";
@@ -182,7 +182,7 @@ function AppContent({
             <Layout
               nav={
                 <Nav
-                  version={version}
+                  version={version || undefined}
                   lang={lang}
                   selectHandler={handleLangChange}
                   theme={theme}
@@ -200,7 +200,7 @@ function AppContent({
             <Layout
               nav={
                 <Nav
-                  version={version}
+                  version={version || undefined}
                   lang={lang}
                   selectHandler={handleLangChange}
                   theme={theme}

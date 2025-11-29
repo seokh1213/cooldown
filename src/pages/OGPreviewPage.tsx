@@ -1,4 +1,3 @@
-import React from "react";
 
 /**
  * OG 이미지 생성을 위한 전용 페이지

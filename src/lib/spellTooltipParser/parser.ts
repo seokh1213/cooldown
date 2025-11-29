@@ -146,7 +146,7 @@ export function formatLeveltipStats(
           resourceName = spell.resource;
         }
 
-        let displayLabel = labelText.replace("@AbilityResourceName@", resourceName);
+        const displayLabel = labelText.replace("@AbilityResourceName@", resourceName);
 
         // 치환되지 않은 변수 패턴이 남아있으면 해당 항목 미노출
         if (displayLabel.includes("{{") || displayLabel.includes("}}")) {

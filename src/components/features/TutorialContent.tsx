@@ -1,4 +1,3 @@
-import React from "react";
 import { Hand, MousePointerClick, Swords } from "lucide-react";
 import { useTranslation } from "@/i18n";
 

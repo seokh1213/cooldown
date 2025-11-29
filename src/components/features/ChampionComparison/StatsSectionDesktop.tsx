@@ -41,7 +41,6 @@ export function StatsSectionDesktop({
   onReorderChampions,
 }: SectionProps) {
   const [showAddSlot, setShowAddSlot] = useState(false);
-  const [activeChampionId, setActiveChampionId] = React.useState<string | null>(null);
 
   // 드래그 앤 드롭 센서 설정
   const sensors = useSensors(
@@ -56,14 +55,13 @@ export function StatsSectionDesktop({
   );
 
   // 드래그 시작 핸들러
-  const handleDragStart = (event: DragStartEvent) => {
-    setActiveChampionId(event.active.id as string);
+  const handleDragStart = (_event: DragStartEvent) => {
+    // 드래그 시작 처리
   };
 
   // 드래그 종료 핸들러
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
-    setActiveChampionId(null);
 
     if (over && active.id !== over.id && onReorderChampions) {
       const oldIndex = champions.findIndex((c) => c.id === active.id);
@@ -76,7 +74,7 @@ export function StatsSectionDesktop({
   };
 
   // SortableCell 컴포넌트 (각 행의 셀용)
-  const SortableCell = ({ champion, children, className }: { champion: any; children: React.ReactNode; className?: string }) => {
+  const SortableCell = ({ champion, children, className }: { champion: Champion; children: React.ReactNode; className?: string }) => {
     const {
       setNodeRef,
       transform,
@@ -104,7 +102,7 @@ export function StatsSectionDesktop({
   };
 
   // SortableChampionHeader 컴포넌트
-  const SortableChampionHeader = ({ champion, index }: { champion: any; index: number }) => {
+  const SortableChampionHeader = ({ champion, index }: { champion: Champion; index: number }) => {
     const {
       attributes,
       listeners,

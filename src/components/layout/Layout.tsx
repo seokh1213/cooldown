@@ -38,7 +38,7 @@ function Layout({ children, nav }: LayoutProps) {
         {nav && (
           <>
             {React.isValidElement(nav) 
-              ? React.cloneElement(nav as React.ReactElement<any>, { 
+              ? React.cloneElement(nav as React.ReactElement<Record<string, unknown>>, { 
                   sidebarLeft: "4rem",
                   onMenuToggle: toggleSidebar
                 })

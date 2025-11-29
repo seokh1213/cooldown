@@ -21,6 +21,7 @@ import { SectionProps } from "./types";
 import { SkillTooltip } from "./SkillTooltip";
 import { getCooldownForLevel } from "./utils";
 import { useTranslation } from "@/i18n";
+import { ChampionSpell } from "@/types";
 import {
   DndContext,
   closestCenter,
@@ -30,7 +31,6 @@ import {
   useSensors,
   DragEndEvent,
   DragStartEvent,
-  useDndMonitor,
 } from "@dnd-kit/core";
 import {
   SortableContext,
@@ -47,12 +47,11 @@ export function SkillsSectionDesktop({
   onAddChampion,
   onRemoveChampion,
   onReorderChampions,
-  vsMode,
+  vsMode: _vsMode,
 }: SectionProps) {
   const { t } = useTranslation();
   const [showAddSlot, setShowAddSlot] = useState(false);
   const [spellDataMap, setSpellDataMap] = React.useState<Record<string, SpellData[]>>({});
-  const [activeChampionId, setActiveChampionId] = React.useState<string | null>(null);
 
   // 드래그 앤 드롭 센서 설정
   const sensors = useSensors(
@@ -67,14 +66,13 @@ export function SkillsSectionDesktop({
   );
 
   // 드래그 시작 핸들러
-  const handleDragStart = (event: DragStartEvent) => {
-    setActiveChampionId(event.active.id as string);
+  const handleDragStart = (_event: DragStartEvent) => {
+    // 드래그 시작 처리
   };
 
   // 드래그 종료 핸들러
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
-    setActiveChampionId(null);
 
     if (over && active.id !== over.id && onReorderChampions) {
       const oldIndex = champions.findIndex((c) => c.id === active.id);
@@ -112,13 +110,13 @@ export function SkillsSectionDesktop({
   }, [champions]);
 
   // 스킬 데이터 가져오기 헬퍼 함수
-  const getSpellData = (championId: string, spellIndex: number): SpellData | null => {
+  const getSpellData = React.useCallback((championId: string, spellIndex: number): SpellData | null => {
     const spellDataList = spellDataMap[championId];
     if (!spellDataList || spellDataList.length <= spellIndex) {
       return null;
     }
     return spellDataList[spellIndex];
-  };
+  }, [spellDataMap]);
 
   const skillRows = React.useMemo(() => {
     return Array.from({ length: maxLevel }, (_, levelIdx) => {
@@ -138,7 +136,7 @@ export function SkillsSectionDesktop({
         }),
       };
     });
-  }, [champions, maxLevel, spellDataMap]);
+  }, [champions, maxLevel, getSpellData]);
 
   // SortableCell 컴포넌트 (각 행의 셀용)
   const SortableCell = ({ champion, children, className }: { champion: Champion; children: React.ReactNode; className?: string }) => {
@@ -314,7 +312,7 @@ export function SkillsSectionDesktop({
                         passiveName={champion.passive.name}
                         passiveDescription={champion.passive.description}
                         passiveImageFull={champion.passive.image.full}
-                        skill={{} as any}
+                        skill={{} as ChampionSpell}
                         skillIdx={0}
                         version={version}
                       />

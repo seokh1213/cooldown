@@ -3,7 +3,7 @@ import { useEffect, RefObject } from "react";
 const SCROLL_POSITION_KEY = "championSelectorScrollPosition";
 
 export function useScrollPosition(
-  listRef: RefObject<HTMLDivElement>,
+  listRef: RefObject<HTMLDivElement | null>,
   isModal: boolean,
   isOpen: boolean
 ) {

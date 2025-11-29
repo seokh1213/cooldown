@@ -86,7 +86,7 @@ function ChampionSelector({
         setFocusedIndex(-1);
       }
     },
-    []
+    [setIsOpen]
   );
 
   useEffect(() => {
@@ -114,7 +114,7 @@ function ChampionSelector({
   }, [onClose, controlledOnOpenChange]);
 
   const handleSelect = useCallback(
-    (champion: Champion, isSelected: boolean) => {
+    (champion: Champion) => {
       // 이미 선택된 챔피언이면 선택 해제, 아니면 선택
       onSelect(champion);
       // 모달일 때는 절대 닫지 않고 계속 열어둠
@@ -149,8 +149,7 @@ function ChampionSelector({
         e.preventDefault();
         const champion = availableChampions[focusedIndex];
         if (champion) {
-          const isSelected = selectedChampionIds.has(champion.id);
-          handleSelect(champion, isSelected);
+          handleSelect(champion);
         }
       } else if (e.key === "Escape") {
         handleOpenChange(false);
@@ -284,7 +283,7 @@ function ChampionSelector({
                         )}
                       >
                         <ChampionThumbnail
-                          addChampion={(champ, selected) => handleSelect(champ, selected)}
+                          addChampion={(champ) => handleSelect(champ)}
                           data={champion}
                           name={champion.name}
                           selected={isSelected}
@@ -425,7 +424,7 @@ function ChampionSelector({
                         )}
                       >
                         <ChampionThumbnail
-                          addChampion={(champ, selected) => handleSelect(champ, selected)}
+                          addChampion={(champ) => handleSelect(champ)}
                           data={champion}
                           name={champion.name}
                           selected={isSelected}

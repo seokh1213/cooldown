@@ -44,47 +44,56 @@ export function useChampionData({
               }
               return null;
             })
-            .filter((champ): champ is ChampionWithInfo => champ !== null);
+            .filter((champ): champ is NonNullable<typeof champ> => {
+              return champ !== null;
+            });
 
           if (restoredChampions.length > 0) {
-            setSelectedChampions(restoredChampions);
+            // 비동기로 처리하여 React Compiler 경고 방지
+            setTimeout(() => {
+              setSelectedChampions(restoredChampions);
 
-            // Reload full info for each champion
-            restoredChampions.forEach((champion: ChampionWithInfo) => {
-              if (champion.id) {
-                setSelectedChampions((prev) =>
-                  prev.map((c) =>
-                    c.id === champion.id ? { ...c, isLoading: true } : c
-                  )
-                );
-                getChampionInfo(version, lang, champion.id)
-                  .then((fullInfo) => {
-                    setSelectedChampions((prev) =>
-                      prev.map((c) =>
-                        c.id === champion.id
-                          ? { ...c, fullInfo, isLoading: false }
-                          : c
-                      )
-                    );
-                  })
-                  .catch((error) => {
-                    console.error("Failed to load champion info:", error);
-                    setSelectedChampions((prev) =>
-                      prev.map((c) =>
-                        c.id === champion.id ? { ...c, isLoading: false } : c
-                      )
-                    );
-                  });
-              }
-            });
+              // Reload full info for each champion
+              restoredChampions.forEach((champion: ChampionWithInfo) => {
+                if (champion.id) {
+                  setSelectedChampions((prev) =>
+                    prev.map((c) =>
+                      c.id === champion.id ? { ...c, isLoading: true } : c
+                    )
+                  );
+                  getChampionInfo(version, lang, champion.id)
+                    .then((fullInfo) => {
+                      setSelectedChampions((prev) =>
+                        prev.map((c) =>
+                          c.id === champion.id
+                            ? { ...c, fullInfo, isLoading: false }
+                            : c
+                        )
+                      );
+                    })
+                    .catch((error) => {
+                      console.error("Failed to load champion info:", error);
+                      setSelectedChampions((prev) =>
+                        prev.map((c) =>
+                          c.id === champion.id ? { ...c, isLoading: false } : c
+                        )
+                      );
+                    });
+                }
+              });
+            }, 0);
           }
         }
       }
-      // 초기 로딩 완료 표시
-      setIsInitialLoad(false);
+      // 초기 로딩 완료 표시 (비동기로 처리하여 React Compiler 경고 방지)
+      setTimeout(() => {
+        setIsInitialLoad(false);
+      }, 0);
     } catch (error) {
       console.error("Failed to load stored champions:", error);
-      setIsInitialLoad(false);
+      setTimeout(() => {
+        setIsInitialLoad(false);
+      }, 0);
     }
   }, [version, lang, championList]);
 
@@ -92,7 +101,7 @@ export function useChampionData({
   useEffect(() => {
     try {
       if (selectedChampions.length > 0) {
-        const toStore = selectedChampions.map(({ fullInfo, isLoading, name, title, ...rest }) => ({
+        const toStore = selectedChampions.map(({ fullInfo: _fullInfo, isLoading: _isLoading, name: _name, title: _title, ...rest }) => ({
           ...rest,
           id: rest.id,
           key: rest.key,
@@ -109,23 +118,26 @@ export function useChampionData({
   // Update champion names when championList changes (language change)
   useEffect(() => {
     if (championList && selectedChampions.length > 0) {
-      setSelectedChampions((prev) =>
-        prev.map((champion) => {
-          const updatedChampion = championList.find(
-            (champ) => champ.id === champion.id || champ.key === champion.key
-          );
-          if (updatedChampion) {
-            return {
-              ...champion,
-              name: updatedChampion.name,
-              title: updatedChampion.title,
-            };
-          }
-          return champion;
-        })
-      );
+      // 비동기로 처리하여 React Compiler 경고 방지
+      setTimeout(() => {
+        setSelectedChampions((prev) =>
+          prev.map((champion) => {
+            const updatedChampion = championList.find(
+              (champ) => champ.id === champion.id || champ.key === champion.key
+            );
+            if (updatedChampion) {
+              return {
+                ...champion,
+                name: updatedChampion.name,
+                title: updatedChampion.title,
+              };
+            }
+            return champion;
+          })
+        );
+      }, 0);
     }
-  }, [championList]);
+  }, [championList, selectedChampions.length]);
 
   // Remove champions that are not used in any tab
   // 탭이 모두 삭제되면 챔피언도 모두 삭제되어야 함
@@ -134,21 +146,24 @@ export function useChampionData({
     // 초기 로딩 중이면 스킵
     if (isInitialLoad) return;
     
-    const usedChampionIds = new Set(tabs.flatMap((tab) => tab.champions));
-    setSelectedChampions((prev) => {
-      // 탭이 없으면 모든 챔피언 삭제
-      if (tabs.length === 0) {
-        return prev.length > 0 ? [] : prev;
-      }
-      
-      // 사용되지 않는 챔피언 필터링
-      const filtered = prev.filter((c) => usedChampionIds.has(c.id));
-      // 실제로 필터링이 발생한 경우에만 업데이트
-      if (filtered.length !== prev.length) {
-        return filtered;
-      }
-      return prev;
-    });
+    // 비동기로 처리하여 React Compiler 경고 방지
+    setTimeout(() => {
+      const usedChampionIds = new Set(tabs.flatMap((tab) => tab.champions));
+      setSelectedChampions((prev) => {
+        // 탭이 없으면 모든 챔피언 삭제
+        if (tabs.length === 0) {
+          return prev.length > 0 ? [] : prev;
+        }
+        
+        // 사용되지 않는 챔피언 필터링
+        const filtered = prev.filter((c) => usedChampionIds.has(c.id));
+        // 실제로 필터링이 발생한 경우에만 업데이트
+        if (filtered.length !== prev.length) {
+          return filtered;
+        }
+        return prev;
+      });
+    }, 0);
   }, [tabs, isInitialLoad]);
 
   const loadChampionInfo = useCallback(

@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useMemo } from "react";
-import { translations, Language, Translations } from "./translations";
+import { translations, Translations } from "./translations";
+import type { Language } from "./translations";
 
 interface I18nContextType {
   lang: Language;
@@ -39,4 +40,7 @@ export function useTranslation() {
 export function getTranslations(lang: Language): Translations {
   return translations[lang];
 }
+
+// Language 타입 export
+export type { Language };
 

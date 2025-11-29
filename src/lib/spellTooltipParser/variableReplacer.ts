@@ -38,7 +38,7 @@ export function replaceVariables(
   // 하지만 HTML 태그 자체는 건드리지 않음
   const variableRegex = /\{\{([^}]+)\}\}/g;
 
-  result = result.replace(variableRegex, (match, variableName) => {
+  result = result.replace(variableRegex, (_match, variableName) => {
     const trimmedVar = variableName.trim();
 
     // 이미 치환된 변수는 건너뛰기 (중복 방지)
@@ -105,7 +105,7 @@ function replaceVariable(
   level: number,
   showAllLevels: boolean,
   communityDragonData?: Record<string, (number | string)[]>,
-  replacedVars?: Set<string>
+  _replacedVars?: Set<string>
 ): string | null {
   // ammo recharge time 변수 처리
   if (
@@ -254,7 +254,7 @@ function findInCommunityDragonData(
   communityDragonData: Record<string, (number | string)[]>
 ): string | null {
   // 수식이 포함된 변수 처리 (예: "armorshredpercent*100")
-  const mathMatch = trimmedVar.match(/^([a-zA-Z_][a-zA-Z0-9_]*)\s*([*+\-])\s*([0-9.]+)$/);
+  const mathMatch = trimmedVar.match(/^([a-zA-Z_][a-zA-Z0-9_]*)\s*([*+-])\s*([0-9.]+)$/);
   if (mathMatch) {
     const [, varName, operator, multiplier] = mathMatch;
     const multiplierNum = parseFloat(multiplier);

@@ -1,4 +1,3 @@
-import React from "react";
 import { CHAMP_ICON_URL } from "@/services/api";
 import { cn } from "@/lib/utils";
 import {
@@ -15,9 +14,6 @@ import { SectionProps } from "./types";
 export function StatsSectionMobile({
   champions,
   version,
-  championList,
-  onAddChampion,
-  onRemoveChampion,
   vsMode,
 }: SectionProps) {
 
