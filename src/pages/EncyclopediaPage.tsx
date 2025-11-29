@@ -720,7 +720,7 @@ function EncyclopediaPage({ lang, championList, version }: EncyclopediaPageProps
                                 title={t.encyclopedia.vsStart}
                                 type="button"
                               >
-                                <Swords className="h-3 w-3 text-destructive" />
+                                <Swords className={cn("h-3 w-3", isActive ? "text-primary-foreground" : "text-muted-foreground")} />
                               </button>
                               <button
                                 onClick={(e) => {
