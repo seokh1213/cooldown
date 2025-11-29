@@ -19,6 +19,7 @@ export function useChampionData({
   tabs,
 }: UseChampionDataProps) {
   const [selectedChampions, setSelectedChampions] = useState<ChampionWithInfo[]>([]);
+  const [isInitialLoad, setIsInitialLoad] = useState(true);
 
   // Load from localStorage on mount
   useEffect(() => {
@@ -79,8 +80,11 @@ export function useChampionData({
           }
         }
       }
+      // 초기 로딩 완료 표시
+      setIsInitialLoad(false);
     } catch (error) {
       console.error("Failed to load stored champions:", error);
+      setIsInitialLoad(false);
     }
   }, [version, lang, championList]);
 
@@ -124,14 +128,20 @@ export function useChampionData({
   }, [championList]);
 
   // Remove champions that are not used in any tab
-  // 이 로직은 탭이 삭제될 때만 실행되어야 하므로, 
-  // 탭이 추가되는 경우를 제외하기 위해 조건을 추가합니다.
+  // 탭이 모두 삭제되면 챔피언도 모두 삭제되어야 함
+  // 단, 초기 로딩 중에는 실행하지 않음 (localStorage 복원 중일 수 있음)
   useEffect(() => {
-    // 탭이 없으면 스킵 (초기 로딩 시)
-    if (tabs.length === 0) return;
+    // 초기 로딩 중이면 스킵
+    if (isInitialLoad) return;
     
     const usedChampionIds = new Set(tabs.flatMap((tab) => tab.champions));
     setSelectedChampions((prev) => {
+      // 탭이 없으면 모든 챔피언 삭제
+      if (tabs.length === 0) {
+        return prev.length > 0 ? [] : prev;
+      }
+      
+      // 사용되지 않는 챔피언 필터링
       const filtered = prev.filter((c) => usedChampionIds.has(c.id));
       // 실제로 필터링이 발생한 경우에만 업데이트
       if (filtered.length !== prev.length) {
@@ -139,7 +149,7 @@ export function useChampionData({
       }
       return prev;
     });
-  }, [tabs]);
+  }, [tabs, isInitialLoad]);
 
   const loadChampionInfo = useCallback(
     (championId: string) => {
