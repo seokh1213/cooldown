@@ -4,7 +4,7 @@ import { CHAMP_ICON_URL } from "@/services/api";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Search, X } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn, getSearchVariants } from "@/lib/utils";
 import ChampionThumbnail from "./ChampionThumbnail";
 import {
   Dialog,
@@ -44,13 +44,44 @@ function ChampionSelector({
     if (!championList) return [];
     if (!searchValue) return championList;
 
-    const lowerValue = searchValue.toLowerCase();
-    return championList.filter(
-      (champ) =>
-        champ.name.toLowerCase().includes(lowerValue) ||
-        (champ.hangul && champ.hangul.includes(lowerValue)) ||
-        champ.id.toLowerCase().includes(lowerValue)
-    );
+    // 한영 변환된 모든 검색어 변형 가져오기
+    const searchVariants = getSearchVariants(searchValue);
+    
+    return championList.filter((champ) => {
+      // 각 검색어 변형에 대해 매칭 확인
+      return searchVariants.some((variant) => {
+        const lowerVariant = variant.toLowerCase();
+        
+        // 기본 검색: 이름, 한글명, ID
+        if (
+          champ.name.toLowerCase().includes(lowerVariant) ||
+          (champ.hangul && champ.hangul.toLowerCase().includes(lowerVariant)) ||
+          champ.id.toLowerCase().includes(lowerVariant)
+        ) {
+          return true;
+        }
+        
+        // 챔피언 이름의 한영 변환 변형들과도 비교
+        const champNameVariants = getSearchVariants(champ.name);
+        if (champNameVariants.some((champVariant) => 
+          champVariant.toLowerCase().includes(lowerVariant)
+        )) {
+          return true;
+        }
+        
+        // 챔피언 한글명의 한영 변환 변형들과도 비교
+        if (champ.hangul) {
+          const champHangulVariants = getSearchVariants(champ.hangul);
+          if (champHangulVariants.some((champVariant) => 
+            champVariant.toLowerCase().includes(lowerVariant)
+          )) {
+            return true;
+          }
+        }
+        
+        return false;
+      });
+    });
   }, [championList, searchValue]);
 
   // 모든 챔피언을 표시하되, 선택된 챔피언은 강조
