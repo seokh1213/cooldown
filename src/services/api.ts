@@ -121,13 +121,56 @@ export function getChampionInfo(version: string, lang: string, name: string): Pr
 
 /**
  * 챔피언 ID를 Community Dragon 형식으로 변환
- * 예: "MonkeyKing" -> "MonkeyKing", "Aatrox" -> "Aatrox"
- * 대부분의 경우 그대로 사용하지만, 특수 케이스 처리 가능
+ * Community Dragon은 챔피언 이름을 소문자로 사용
+ * 예: "MonkeyKing" -> "monkeyking", "Aatrox" -> "aatrox"
  */
 function convertChampionIdToCommunityDragon(championId: string): string {
-  // Community Dragon은 대부분 챔피언 ID를 그대로 사용
-  // 특수 케이스가 있다면 여기에 추가
-  return championId;
+  // Community Dragon은 챔피언 ID를 소문자로 사용
+  return championId.toLowerCase();
+}
+
+/**
+ * Community Dragon 데이터에서 실제 챔피언 경로 찾기 (대소문자 구분)
+ * 데이터 키에서 실제 챔피언 경로를 찾아 반환
+ */
+function findActualChampionPath(
+  data: Record<string, unknown>,
+  championId: string
+): string | null {
+  // 소문자로 변환한 챔피언 ID
+  const lowerChampionId = championId.toLowerCase();
+  
+  // 가능한 경로 패턴들
+  const possiblePaths = [
+    `Characters/${championId}/CharacterRecords/Root`, // 원본 케이스
+    `Characters/${lowerChampionId}/CharacterRecords/Root`, // 소문자
+    `Characters/${championId.charAt(0).toUpperCase() + championId.slice(1).toLowerCase()}/CharacterRecords/Root`, // 첫 글자 대문자
+  ];
+  
+  // 먼저 정확한 경로 확인
+  for (const path of possiblePaths) {
+    if (path in data) {
+      return path.split('/').slice(0, 2).join('/'); // Characters/ChampionName 반환
+    }
+  }
+  
+  // 정확한 경로가 없으면 데이터 키에서 검색
+  const matchingKeys = Object.keys(data).filter(key => {
+    const keyLower = key.toLowerCase();
+    return keyLower.includes(`characters/${lowerChampionId}/`) || 
+           keyLower.includes(`characters/${championId.toLowerCase()}/`);
+  });
+  
+  if (matchingKeys.length > 0) {
+    // 첫 번째 매칭 키에서 챔피언 경로 추출
+    const firstKey = matchingKeys[0];
+    const match = firstKey.match(/Characters\/([^/]+)/i);
+    if (match && match[1]) {
+      return `Characters/${match[1]}`;
+    }
+  }
+  
+  return null;
 }
 
 /**
@@ -137,47 +180,76 @@ function convertChampionIdToCommunityDragon(championId: string): string {
 function extractSpellOrderMapping(
   data: Record<string, unknown>,
   championId: string
-): string[] {
-  const rootPath = `Characters/${championId}/CharacterRecords/Root`;
+): { spellOrder: string[]; actualChampionPath: string | null } {
+  const actualChampionPath = findActualChampionPath(data, championId);
+  
+  if (!actualChampionPath) {
+    return { spellOrder: [], actualChampionPath: null };
+  }
+  
+  const rootPath = `${actualChampionPath}/CharacterRecords/Root`;
   const root = data[rootPath] as Record<string, unknown> | undefined;
   
   if (root && root.spells && Array.isArray(root.spells)) {
     // spells 배열에서 스킬 경로 추출 (전체 경로 반환)
     const spellPaths = root.spells as string[];
-    return spellPaths;
+    return { spellOrder: spellPaths, actualChampionPath };
   }
   
-  return [];
+  return { spellOrder: [], actualChampionPath };
 }
 
 /**
  * Community Dragon에서 챔피언의 스킬 데이터 가져오기
  * @param championId 챔피언 ID (예: "MonkeyKing")
- * @param version 버전 (선택적, 없으면 'latest' 사용)
+ * @param version 버전 (무시됨, 항상 'latest' 사용)
  * @returns 스킬별 DataValues를 포함한 객체
  */
 export async function getCommunityDragonSpellData(
   championId: string,
   version?: string
 ): Promise<Record<string, Record<string, (number | string)[]>>> {
-  const versionPath = version || "latest";
+  // 버전은 항상 'latest'로 고정
+  const versionPath = "latest";
   const cdChampionId = convertChampionIdToCommunityDragon(championId);
   const url = `https://raw.communitydragon.org/${versionPath}/game/data/characters/${cdChampionId}/${cdChampionId}.bin.json`;
   
-  // 캐시 키 생성
-  const cacheKey = `cd_spell_data_${versionPath}_${cdChampionId}`;
+  // 캐시 키 생성 (버전은 항상 latest이므로 키에서 제외)
+  const cacheKey = `cd_spell_data_${cdChampionId}`;
+  
+  // 이전 형식의 캐시 키 정리 (버전이 포함된 구형 키 삭제)
+  try {
+    const oldCacheKeyWithVersion = `cd_spell_data_latest_${cdChampionId}`;
+    localStorage.removeItem(oldCacheKeyWithVersion);
+    // 다른 버전 형식의 키도 정리 (예: cd_spell_data_10.8.1_...)
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i);
+      if (key && key.startsWith(`cd_spell_data_`) && key.includes(`_${cdChampionId}`) && key !== cacheKey) {
+        localStorage.removeItem(key);
+      }
+    }
+  } catch (error) {
+    // 정리 실패 시 무시
+    console.warn("Failed to clean old cache keys:", error);
+  }
   
   // localStorage에서 캐시 확인
   try {
     const cached = localStorage.getItem(cacheKey);
     if (cached) {
       const parsed = JSON.parse(cached);
-      if (parsed && typeof parsed === "object") {
+      // 빈 객체는 유효한 캐시로 간주하지 않음
+      if (parsed && typeof parsed === "object" && Object.keys(parsed).length > 0) {
+        console.log(`[CD] Using cached data for ${cdChampionId}: ${Object.keys(parsed).length} keys`);
         return Promise.resolve(parsed);
+      } else if (parsed && typeof parsed === "object" && Object.keys(parsed).length === 0) {
+        // 빈 객체 캐시는 삭제
+        console.warn(`[CD] Found empty cache for ${cdChampionId}, removing it`);
+        localStorage.removeItem(cacheKey);
       }
     }
   } catch (error) {
-    console.warn("Failed to parse cached Community Dragon data:", error);
+    console.warn("[CD] Failed to parse cached Community Dragon data:", error);
   }
 
   try {
@@ -188,8 +260,37 @@ export async function getCommunityDragonSpellData(
     
     const data = await response.json();
     
-    // 스킬 순서 매핑 추출
-    const spellOrder = extractSpellOrderMapping(data, cdChampionId);
+    // 원본 데이터 구조 확인
+    console.log(`[CD] Raw data for ${cdChampionId}:`, {
+      totalKeys: Object.keys(data).length,
+      sampleKeys: Object.keys(data).slice(0, 20),
+      rootPath: `Characters/${cdChampionId}/CharacterRecords/Root`,
+      rootExists: `Characters/${cdChampionId}/CharacterRecords/Root` in data,
+      spellKeys: Object.keys(data).filter(k => k.includes('Spells')),
+      abilityKeys: Object.keys(data).filter(k => k.includes('Ability'))
+    });
+    
+    // 스킬 순서 매핑 추출 (실제 챔피언 경로도 함께 찾기)
+    const { spellOrder, actualChampionPath } = extractSpellOrderMapping(data, cdChampionId);
+    
+    if (!actualChampionPath) {
+      console.warn(`[CD] Could not find champion path for ${cdChampionId}`);
+      // 대체 경로 시도
+      const altPaths = Object.keys(data).filter(k => 
+        k.toLowerCase().includes('characterrecords') || 
+        k.toLowerCase().includes('root')
+      );
+      console.log(`[CD] Alternative paths found:`, altPaths.slice(0, 10));
+    } else {
+      const rootPath = `${actualChampionPath}/CharacterRecords/Root`;
+      const root = data[rootPath] as Record<string, unknown> | undefined;
+      if (root) {
+        console.log(`[CD] Root object keys for ${cdChampionId}:`, Object.keys(root));
+        console.log(`[CD] Root object:`, root);
+      }
+    }
+    
+    console.log(`[CD] Champion: ${cdChampionId}, Actual path: ${actualChampionPath || 'not found'}, Spell order found: ${spellOrder.length} spells`, spellOrder);
     
     // 스킬별 DataValues 추출
     const spellDataMap: Record<string, Record<string, (number | string)[]>> = {};
@@ -201,6 +302,11 @@ export async function getCommunityDragonSpellData(
       
       // 전체 경로에서 스킬 객체 찾기
       const spellObj = data[spellPath] as Record<string, unknown> | undefined;
+      
+      if (!spellObj) {
+        console.warn(`[CD] Spell path not found: ${spellPath}`);
+        continue;
+      }
       
       if (spellObj && spellObj.mSpell) {
         const mSpell = spellObj.mSpell as Record<string, unknown>;
@@ -221,14 +327,26 @@ export async function getCommunityDragonSpellData(
             if (spellName) {
               spellDataMap[spellName] = dataValues;
             }
+            console.log(`[CD] Found spell ${i} (${spellName}): ${Object.keys(dataValues).length} data values`);
+          } else {
+            console.warn(`[CD] Spell ${i} (${spellPath}) has no data values`);
           }
+        } else {
+          console.warn(`[CD] Spell ${i} (${spellPath}) has no DataValues array`);
         }
+      } else {
+        console.warn(`[CD] Spell ${i} (${spellPath}) has no mSpell`);
       }
     }
     
     // 추가로 모든 AbilityObject를 순회하며 누락된 스킬 찾기
+    let abilityObjectCount = 0;
+    const championPathForSearch = actualChampionPath || `Characters/${cdChampionId}`;
     for (const key in data) {
-      if (key.includes(`Characters/${cdChampionId}/Spells/`) && key.includes("Ability")) {
+      const keyLower = key.toLowerCase();
+      const searchPathLower = championPathForSearch.toLowerCase();
+      if (keyLower.includes(`${searchPathLower}/spells/`) && keyLower.includes("ability")) {
+        abilityObjectCount++;
         const abilityObj = data[key] as Record<string, unknown> | undefined;
         if (abilityObj && abilityObj.mRootSpell) {
           const rootSpellPath = abilityObj.mRootSpell as string;
@@ -250,6 +368,7 @@ export async function getCommunityDragonSpellData(
                 
                 if (Object.keys(dataValues).length > 0) {
                   spellDataMap[spellName] = dataValues;
+                  console.log(`[CD] Found additional spell (${spellName}): ${Object.keys(dataValues).length} data values`);
                 }
               }
             }
@@ -257,18 +376,39 @@ export async function getCommunityDragonSpellData(
         }
       }
     }
+    console.log(`[CD] Scanned ${abilityObjectCount} ability objects`);
     
-    // 캐싱
-    try {
-      localStorage.setItem(cacheKey, JSON.stringify(spellDataMap));
-    } catch (error) {
-      console.warn("Failed to cache Community Dragon data:", error);
+    // 데이터가 있을 때만 캐싱 (빈 객체는 캐싱하지 않음)
+    const spellDataKeys = Object.keys(spellDataMap);
+    console.log(`[CD] Final spell data map for ${cdChampionId}: ${spellDataKeys.length} keys`, spellDataKeys);
+    
+    if (spellDataKeys.length > 0) {
+      try {
+        localStorage.setItem(cacheKey, JSON.stringify(spellDataMap));
+        console.log(`[CD] Successfully cached data for ${cdChampionId}`);
+      } catch (error) {
+        console.warn("[CD] Failed to cache Community Dragon data:", error);
+      }
+    } else {
+      // 빈 객체인 경우 기존 캐시가 있다면 삭제
+      try {
+        localStorage.removeItem(cacheKey);
+      } catch (error) {
+        console.warn("[CD] Failed to remove empty cache:", error);
+      }
+      console.warn(`[CD] No spell data found for champion: ${cdChampionId}. Spell order: ${spellOrder.length}, Ability objects: ${abilityObjectCount}`);
     }
     
     return spellDataMap;
   } catch (error) {
     console.error("Failed to fetch Community Dragon data:", error);
-    // 에러 발생 시 빈 객체 반환 (fallback)
+    // 에러 발생 시 빈 객체 반환 (캐싱하지 않음)
+    // 기존 캐시가 있다면 삭제
+    try {
+      localStorage.removeItem(cacheKey);
+    } catch (removeError) {
+      console.warn("Failed to remove cache on error:", removeError);
+    }
     return {};
   }
 }

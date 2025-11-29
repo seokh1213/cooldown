@@ -9,7 +9,10 @@ import ChampionThumbnail from "./ChampionThumbnail";
 import {
   Dialog,
   DialogContent,
+  DialogTitle,
+  DialogDescription,
 } from "@/components/ui/dialog";
+import { VisuallyHidden } from "@/components/ui/visually-hidden";
 
 interface ChampionSelectorProps {
   championList: Champion[] | null;
@@ -341,6 +344,10 @@ function ChampionSelector({
           handleOpenChange(false);
         }}
       >
+        <VisuallyHidden>
+          <DialogTitle>챔피언 선택</DialogTitle>
+          <DialogDescription>비교할 챔피언을 선택하세요</DialogDescription>
+        </VisuallyHidden>
         {/* Search Header */}
         <div className="p-4 border-b border-border flex items-center gap-2 shrink-0 bg-card">
           <Search className="h-5 w-5 text-muted-foreground shrink-0" />
