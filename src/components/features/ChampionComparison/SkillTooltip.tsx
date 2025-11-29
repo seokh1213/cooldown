@@ -14,6 +14,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { VisuallyHidden } from "@/components/ui/visually-hidden";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { AlertTriangle } from "lucide-react";
 import { SKILL_LETTERS } from "./constants";
 import { getCooldownText, getCostText } from "./utils";
@@ -213,7 +214,7 @@ export function SkillTooltip({
         {triggerButton}
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogContent
-            className="w-[calc(100vw-32px)] max-w-lg max-h-[70vh] overflow-y-auto p-4 flex flex-col gap-3"
+            className="w-[calc(100vw-32px)] max-w-lg h-[70vh] max-h-[70vh] p-0 rounded-xl overflow-hidden flex flex-col"
           >
             <VisuallyHidden>
               <DialogTitle>
@@ -222,7 +223,11 @@ export function SkillTooltip({
                   : `[${SKILL_LETTERS[skillIdx]}] ${skill.name || "스킬"} 정보`}
               </DialogTitle>
             </VisuallyHidden>
-            {renderContent()}
+            <ScrollArea className="flex-1 min-h-0">
+              <div className="p-4 flex flex-col gap-3">
+                {renderContent()}
+              </div>
+            </ScrollArea>
           </DialogContent>
         </Dialog>
       </>
