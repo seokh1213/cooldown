@@ -313,12 +313,12 @@ function EncyclopediaPage({ lang, championList, version }: EncyclopediaPageProps
 
   // 일반 탭에 있는 챔피언들만 필터링 (VS 모드 제외)
   const normalTabChampions = useMemo(() => {
-    const vsChampionIds = new Set(
+    const normalTabChampionIds = new Set(
       tabs
-        .filter((tab) => tab.mode === 'vs')
+        .filter((tab) => tab.mode === 'normal')
         .flatMap((tab) => tab.champions)
     );
-    return selectedChampions.filter((c) => !vsChampionIds.has(c.id));
+    return selectedChampions.filter((c) => normalTabChampionIds.has(c.id));
   }, [tabs, selectedChampions]);
 
   // 챔피언이 로드되면 기본 탭 선택 (탭이 없을 때만)
