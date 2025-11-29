@@ -192,7 +192,7 @@ export function SkillsSectionDesktop({
         ref={setNodeRef}
         style={style}
         className={cn(
-          "text-center p-2 text-xs font-semibold text-foreground w-[220px] lg:w-[240px] min-w-[200px] lg:min-w-[220px]",
+          "text-center p-2 text-xs font-semibold text-foreground w-[220px] lg:w-[240px] min-w-[200px] lg:min-w-[220px] select-none",
           index < champions.length - 1 && "border-r border-border/30",
           isDragging && "z-50"
         )}
@@ -257,8 +257,8 @@ export function SkillsSectionDesktop({
         <div className="border border-border/30 rounded-lg overflow-hidden">
           <Table className="border-collapse table-fixed w-auto">
             <TableHeader>
-              <TableRow className="border-b border-border/30">
-                <TableHead className="text-left p-2 pl-3 text-xs font-semibold text-foreground sticky left-0 bg-card z-20 w-[80px] min-w-[80px] border-r border-border/30" style={{ left: 0 }}>
+              <TableRow className="border-b border-border/30 select-none">
+                <TableHead className="text-left p-2 pl-3 text-xs font-semibold text-foreground sticky left-0 bg-card z-20 w-[80px] min-w-[80px] border-r border-border/30 select-none" style={{ left: 0 }}>
                   레벨
                 </TableHead>
                 <SortableContext
@@ -274,7 +274,7 @@ export function SkillsSectionDesktop({
                   ))}
                 </SortableContext>
               {onAddChampion && (
-                <TableHead className="text-center p-2 text-xs font-semibold text-foreground w-[220px] lg:w-[240px] min-w-[200px] lg:min-w-[220px] border-l border-border/30">
+                <TableHead className="text-center p-2 text-xs font-semibold text-foreground w-[220px] lg:w-[240px] min-w-[200px] lg:min-w-[220px] border-l border-border/30 select-none">
                   <Button
                     onClick={() => setShowAddSlot(true)}
                     variant="outline"
@@ -293,8 +293,8 @@ export function SkillsSectionDesktop({
           </TableHeader>
           <TableBody>
             {/* Skills Header */}
-            <TableRow className="border-b-2 border-border/30 bg-muted/30">
-              <TableCell className="p-2 pl-3 text-xs font-medium sticky left-0 bg-card z-20 border-r border-border/30" style={{ left: 0 }}>
+            <TableRow className="border-b-2 border-border/30 bg-muted/30 select-none">
+              <TableCell className="p-2 pl-3 text-xs font-medium sticky left-0 bg-card z-20 border-r border-border/30 select-none" style={{ left: 0 }}>
                 {t.skills.label}
               </TableCell>
               {champions.map((champion, idx) => (
@@ -350,7 +350,7 @@ export function SkillsSectionDesktop({
               >
                 <TableCell
                   className={cn(
-                    "p-2 pl-3 text-xs font-medium sticky left-0 bg-card z-20 border-r border-border/30",
+                    "p-2 pl-3 text-xs font-medium sticky left-0 bg-card z-20 border-r border-border/30 select-none",
                     rowIdx === skillRows.length - 1 && "rounded-bl-lg"
                   )}
                   style={{ left: 0 }}

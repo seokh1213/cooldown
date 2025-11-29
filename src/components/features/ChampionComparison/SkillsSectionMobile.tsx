@@ -99,31 +99,33 @@ export function SkillsSectionMobile({
               <div className="border border-border/30 rounded-lg overflow-hidden">
                 <Table className="border-collapse table-fixed w-auto min-w-full">
                   <TableHeader>
-                    <TableRow className="border-b border-border/30">
-                      <TableHead className="text-left p-1.5 pl-2 text-[10px] font-semibold text-foreground sticky left-0 bg-card z-20 w-[50px] min-w-[50px] border-r border-border/30" style={{ left: 0 }}>
+                    <TableRow className="border-b border-border/30 select-none">
+                      <TableHead className="text-left p-1.5 pl-2 text-[10px] font-semibold text-foreground sticky left-0 bg-card z-20 w-[50px] min-w-[50px] border-r border-border/30 select-none" style={{ left: 0 }}>
                         레벨
                       </TableHead>
-                      <TableHead className="text-center p-1.5 text-[10px] font-semibold text-foreground w-[calc((100%-90px)/2)] min-w-[100px] border-r border-border/30">
+                      <TableHead className="text-center p-1.5 text-[10px] font-semibold text-foreground w-[calc((100%-90px)/2)] min-w-[100px] border-r border-border/30 select-none">
                         <div className="flex flex-col items-center justify-center gap-0.5">
                           <img
                             src={CHAMP_ICON_URL(version, championA.id)}
                             alt={championA.name}
                             className="w-6 h-6 rounded-full"
+                            draggable="false"
                           />
                           <div className="text-xs font-semibold leading-tight text-center text-foreground">
                             {championA.name}
                           </div>
                         </div>
                       </TableHead>
-                      <TableHead className="text-center p-1.5 text-[10px] font-semibold text-foreground w-[40px] min-w-[40px] border-r border-border/30 bg-muted/20">
+                      <TableHead className="text-center p-1.5 text-[10px] font-semibold text-foreground w-[40px] min-w-[40px] border-r border-border/30 bg-muted/20 select-none">
                         <div className="text-[9px] font-bold">VS</div>
                       </TableHead>
-                      <TableHead className="text-center p-1.5 text-[10px] font-semibold text-foreground w-[calc((100%-90px)/2)] min-w-[100px]">
+                      <TableHead className="text-center p-1.5 text-[10px] font-semibold text-foreground w-[calc((100%-90px)/2)] min-w-[100px] select-none">
                         <div className="flex flex-col items-center justify-center gap-0.5">
                           <img
                             src={CHAMP_ICON_URL(version, championB.id)}
                             alt={championB.name}
                             className="w-6 h-6 rounded-full"
+                            draggable="false"
                           />
                           <div className="text-xs font-semibold leading-tight text-center text-foreground">
                             {championB.name}
@@ -134,8 +136,8 @@ export function SkillsSectionMobile({
                   </TableHeader>
                   <TableBody>
                     {/* Skills Header */}
-                    <TableRow className="border-b-2 border-border/30 bg-muted/30">
-                      <TableCell className="p-1.5 pl-2 text-[10px] font-medium sticky left-0 bg-card z-20 border-r border-border/30" style={{ left: 0 }}>
+                    <TableRow className="border-b-2 border-border/30 bg-muted/30 select-none">
+                      <TableCell className="p-1.5 pl-2 text-[10px] font-medium sticky left-0 bg-card z-20 border-r border-border/30 select-none" style={{ left: 0 }}>
                         {t.skills.label}
                       </TableCell>
                       <TableCell className="p-1.5">
@@ -167,7 +169,7 @@ export function SkillsSectionMobile({
                           })}
                         </div>
                       </TableCell>
-                      <TableCell className="p-1.5 border-r border-border/30 bg-muted/20"></TableCell>
+                      <TableCell className="p-1.5 border-r border-border/30 bg-muted/20 select-none"></TableCell>
                       <TableCell className="p-1.5">
                         <div className="flex justify-center gap-0.5">
                           {championB.passive && (
@@ -211,7 +213,7 @@ export function SkillsSectionMobile({
                         >
                           <TableCell
                             className={cn(
-                              "p-1.5 pl-2 text-[10px] font-medium sticky left-0 bg-card z-20 border-r border-border/30",
+                              "p-1.5 pl-2 text-[10px] font-medium sticky left-0 bg-card z-20 border-r border-border/30 select-none",
                               rowIdx === skillRows.length - 1 && "rounded-bl-lg"
                             )}
                             style={{ left: 0 }}
@@ -241,7 +243,7 @@ export function SkillsSectionMobile({
                               <span className="text-[9px] text-muted-foreground">-</span>
                             )}
                           </TableCell>
-                          <TableCell className="p-1.5 border-r border-border/30 bg-muted/20"></TableCell>
+                          <TableCell className="p-1.5 border-r border-border/30 bg-muted/20 select-none"></TableCell>
                           <TableCell className="p-1.5">
                             {championBSkills ? (
                               <div className="flex justify-center gap-0.5">
@@ -286,20 +288,21 @@ export function SkillsSectionMobile({
             <div className="border border-border/30 rounded-lg overflow-hidden">
               <Table className="border-collapse table-fixed w-auto min-w-full">
                 <TableHeader>
-                  <TableRow className="border-b border-border/30">
-                    <TableHead className="text-left p-2 pl-3 text-xs font-semibold text-foreground sticky left-0 bg-card z-20 w-[60px] min-w-[60px] border-r border-border/30" style={{ left: 0 }}>
+                  <TableRow className="border-b border-border/30 select-none">
+                    <TableHead className="text-left p-2 pl-3 text-xs font-semibold text-foreground sticky left-0 bg-card z-20 w-[60px] min-w-[60px] border-r border-border/30 select-none" style={{ left: 0 }}>
                       레벨
                     </TableHead>
                     {champions.map((champion, idx) => (
                       <TableHead
                         key={champion.id}
-                        className="text-center p-2 text-xs font-semibold text-foreground w-full"
+                        className="text-center p-2 text-xs font-semibold text-foreground w-full select-none"
                       >
                         <div className="flex flex-col items-center justify-center gap-1">
                           <img
                             src={CHAMP_ICON_URL(version, champion.id)}
                             alt={champion.name}
                             className="w-8 h-8 rounded-full"
+                            draggable="false"
                           />
                           <div className="text-sm font-semibold leading-tight text-center text-foreground">
                             {champion.name}
@@ -311,8 +314,8 @@ export function SkillsSectionMobile({
                 </TableHeader>
                 <TableBody>
                   {/* Skills Header */}
-                  <TableRow className="border-b-2 border-border/30 bg-muted/30">
-                    <TableCell className="p-2 pl-3 text-xs font-medium sticky left-0 bg-card z-20 border-r border-border/30" style={{ left: 0 }}>
+                  <TableRow className="border-b-2 border-border/30 bg-muted/30 select-none">
+                    <TableCell className="p-2 pl-3 text-xs font-medium sticky left-0 bg-card z-20 border-r border-border/30 select-none" style={{ left: 0 }}>
                       {t.skills.label}
                     </TableCell>
                     {champions.map((champion) => (
@@ -359,7 +362,7 @@ export function SkillsSectionMobile({
                     >
                       <TableCell
                         className={cn(
-                          "p-2 pl-3 text-xs font-medium sticky left-0 bg-card z-20 border-r border-border/30",
+                          "p-2 pl-3 text-xs font-medium sticky left-0 bg-card z-20 border-r border-border/30 select-none",
                           rowIdx === skillRows.length - 1 && "rounded-bl-lg"
                         )}
                         style={{ left: 0 }}

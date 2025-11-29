@@ -33,31 +33,33 @@ export function StatsSectionMobile({
             <div className="border border-border/30 rounded-lg overflow-hidden">
               <Table className="border-collapse table-fixed w-auto min-w-full">
                 <TableHeader>
-                  <TableRow className="border-b border-border/30">
-                    <TableHead className="text-left p-1.5 pl-2 text-[10px] font-semibold text-foreground sticky left-0 bg-card z-20 w-[50px] min-w-[50px] border-r border-border/30" style={{ left: 0 }}>
+                  <TableRow className="border-b border-border/30 select-none">
+                    <TableHead className="text-left p-1.5 pl-2 text-[10px] font-semibold text-foreground sticky left-0 bg-card z-20 w-[50px] min-w-[50px] border-r border-border/30 select-none" style={{ left: 0 }}>
                       스탯
                     </TableHead>
-                    <TableHead className="text-center p-1.5 text-[10px] font-semibold text-foreground w-1/2 border-r border-border/30">
+                    <TableHead className="text-center p-1.5 text-[10px] font-semibold text-foreground w-1/2 border-r border-border/30 select-none">
                       <div className="flex flex-col items-center justify-center gap-0.5">
                         <img
                           src={CHAMP_ICON_URL(version, championA.id)}
                           alt={championA.name}
                           className="w-6 h-6 rounded-full"
+                          draggable="false"
                         />
                         <div className="text-xs font-semibold leading-tight text-center text-foreground">
                           {championA.name}
                         </div>
                       </div>
                     </TableHead>
-                    <TableHead className="text-center p-1.5 text-[10px] font-semibold text-foreground w-[40px] min-w-[40px] border-r border-border/30 bg-muted/20">
+                    <TableHead className="text-center p-1.5 text-[10px] font-semibold text-foreground w-[40px] min-w-[40px] border-r border-border/30 bg-muted/20 select-none">
                       <div className="text-[9px] font-bold">VS</div>
                     </TableHead>
-                    <TableHead className="text-center p-1.5 text-[10px] font-semibold text-foreground w-1/2">
+                    <TableHead className="text-center p-1.5 text-[10px] font-semibold text-foreground w-1/2 select-none">
                       <div className="flex flex-col items-center justify-center gap-0.5">
                         <img
                           src={CHAMP_ICON_URL(version, championB.id)}
                           alt={championB.name}
                           className="w-6 h-6 rounded-full"
+                          draggable="false"
                         />
                         <div className="text-xs font-semibold leading-tight text-center text-foreground">
                           {championB.name}
@@ -78,7 +80,7 @@ export function StatsSectionMobile({
                         key={field.key}
                         className="border-b border-border/30 hover:bg-muted/30 transition-colors"
                       >
-                        <TableCell className="p-1.5 pl-2 text-[10px] font-medium sticky left-0 bg-card z-20 border-r border-border/30" style={{ wordBreak: 'keep-all', left: 0 }}>
+                        <TableCell className="p-1.5 pl-2 text-[10px] font-medium sticky left-0 bg-card z-20 border-r border-border/30 select-none" style={{ wordBreak: 'keep-all', left: 0 }}>
                           {field.label}
                         </TableCell>
                         <TableCell className={cn(
@@ -88,7 +90,7 @@ export function StatsSectionMobile({
                         )}>
                           {field.format(valueA)}
                         </TableCell>
-                        <TableCell className="p-1.5 border-r border-border/30 bg-muted/20"></TableCell>
+                        <TableCell className="p-1.5 border-r border-border/30 bg-muted/20 select-none"></TableCell>
                         <TableCell className={cn(
                           "p-1.5 text-[10px] text-center",
                           valueB === maxValue && maxValue !== minValue && "text-primary font-semibold",
@@ -115,20 +117,21 @@ export function StatsSectionMobile({
           <div className="border border-border/30 rounded-lg overflow-hidden">
             <Table className="border-collapse table-fixed w-auto min-w-full">
               <TableHeader>
-                <TableRow className="border-b border-border/30">
-                  <TableHead className="text-left p-2 pl-3 text-xs font-semibold text-foreground sticky left-0 bg-card z-20 w-[70px] min-w-[70px] border-r border-border/30" style={{ left: 0 }}>
+                <TableRow className="border-b border-border/30 select-none">
+                  <TableHead className="text-left p-2 pl-3 text-xs font-semibold text-foreground sticky left-0 bg-card z-20 w-[70px] min-w-[70px] border-r border-border/30 select-none" style={{ left: 0 }}>
                     스탯
                   </TableHead>
                   {champions.map((champion) => (
                     <TableHead
                       key={champion.id}
-                      className="text-center p-2 text-xs font-semibold text-foreground w-full"
+                      className="text-center p-2 text-xs font-semibold text-foreground w-full select-none"
                     >
                       <div className="flex flex-col items-center justify-center gap-1">
                         <img
                           src={CHAMP_ICON_URL(version, champion.id)}
                           alt={champion.name}
                           className="w-8 h-8 rounded-full"
+                          draggable="false"
                         />
                         <div className="text-sm font-semibold leading-tight text-center text-foreground">
                           {champion.name}
@@ -149,7 +152,7 @@ export function StatsSectionMobile({
                       key={field.key}
                       className="border-b border-border/30 hover:bg-muted/30 transition-colors"
                     >
-                      <TableCell className="p-2 pl-3 text-xs font-medium sticky left-0 bg-card z-20 border-r border-border/30" style={{ wordBreak: 'keep-all', left: 0 }}>
+                      <TableCell className="p-2 pl-3 text-xs font-medium sticky left-0 bg-card z-20 border-r border-border/30 select-none" style={{ wordBreak: 'keep-all', left: 0 }}>
                         {field.label}
                       </TableCell>
                       {champions.map((champion) => {
