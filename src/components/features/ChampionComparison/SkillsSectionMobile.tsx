@@ -101,7 +101,7 @@ export function SkillsSectionMobile({
                       <TableHead className="text-left p-1.5 pl-2 text-[10px] font-semibold text-foreground sticky left-0 bg-card z-20 w-[50px] min-w-[50px] border-r border-border/30" style={{ left: 0 }}>
                         레벨
                       </TableHead>
-                      <TableHead className="text-center p-1.5 text-[10px] font-semibold text-foreground w-full border-r border-border/30">
+                      <TableHead className="text-center p-1.5 text-[10px] font-semibold text-foreground w-[calc((100%-90px)/2)] min-w-[100px] border-r border-border/30">
                         <div className="flex flex-col items-center justify-center gap-0.5">
                           <img
                             src={CHAMP_ICON_URL(version, championA.id)}
@@ -116,7 +116,7 @@ export function SkillsSectionMobile({
                       <TableHead className="text-center p-1.5 text-[10px] font-semibold text-foreground w-[40px] min-w-[40px] border-r border-border/30 bg-muted/20">
                         <div className="text-[9px] font-bold">VS</div>
                       </TableHead>
-                      <TableHead className="text-center p-1.5 text-[10px] font-semibold text-foreground w-full">
+                      <TableHead className="text-center p-1.5 text-[10px] font-semibold text-foreground w-[calc((100%-90px)/2)] min-w-[100px]">
                         <div className="flex flex-col items-center justify-center gap-0.5">
                           <img
                             src={CHAMP_ICON_URL(version, championB.id)}
