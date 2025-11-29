@@ -30,7 +30,15 @@ function ChampionThumbnail({
     setIsLocallySelected(selected);
   }, [selected]);
 
+  // 터치 이벤트가 발생했는지 추적하여 중복 실행 방지
+  const touchHandledRef = React.useRef(false);
+
   const handleClick = useCallback((e: React.MouseEvent) => {
+    // 터치 이벤트로 이미 처리된 경우 클릭 이벤트 무시
+    if (touchHandledRef.current) {
+      touchHandledRef.current = false;
+      return;
+    }
     e.preventDefault();
     e.stopPropagation();
     // 즉시 로컬 상태 업데이트 (네트워크 응답 전에 피드백 제공)
@@ -39,11 +47,16 @@ function ChampionThumbnail({
   }, [addChampion, data, selected]);
 
   const handleTouchStart = useCallback((e: React.TouchEvent) => {
-    e.preventDefault();
+    // preventDefault를 제거하여 클릭 이벤트가 정상적으로 발생하도록 함
     e.stopPropagation();
+    touchHandledRef.current = true;
     // 즉시 로컬 상태 업데이트 (네트워크 응답 전에 피드백 제공)
     setIsLocallySelected(!selected);
     addChampion(data, selected);
+    // 짧은 딜레이 후 플래그 리셋 (클릭 이벤트가 발생할 시간을 줌)
+    setTimeout(() => {
+      touchHandledRef.current = false;
+    }, 300);
   }, [addChampion, data, selected]);
 
   const handleLoad = useCallback(() => {

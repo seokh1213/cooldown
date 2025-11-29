@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useRef, useEffect } from "react";
+import React, { useState, useCallback, useRef, useEffect, useMemo } from "react";
 import { Champion } from "@/types";
 import { CHAMP_ICON_URL } from "@/services/api";
 import { Input } from "@/components/ui/input";
@@ -52,6 +52,11 @@ function ChampionSelector({
 
   const availableChampions = useChampionSearch(championList, searchValue);
 
+  // 선택된 챔피언 ID Set을 메모이제이션하여 O(1) 체크 가능
+  const selectedChampionIds = useMemo(() => {
+    return new Set(selectedChampions.map((c) => c.id));
+  }, [selectedChampions]);
+
   const handleBlur = useCallback(
     (e: MouseEvent) => {
       const target = e.target as HTMLElement;
@@ -90,18 +95,14 @@ function ChampionSelector({
 
   const handleSelect = useCallback(
     (champion: Champion, isSelected: boolean) => {
-      console.log('[ChampionSelector] handleSelect called', { champion: champion.name, isSelected, isModal });
       // 이미 선택된 챔피언이면 선택 해제, 아니면 선택
-      console.log('[ChampionSelector] Calling onSelect');
       onSelect(champion);
       // 모달일 때는 절대 닫지 않고 계속 열어둠
       if (isModal) {
-        console.log('[ChampionSelector] Modal mode - keeping open');
         // 모달일 때는 검색어와 포커스만 초기화하지 않음 (계속 선택 가능하도록)
         setFocusedIndex(-1);
         // 모달 상태는 유지 (setIsOpen이나 onClose 호출하지 않음)
       } else {
-        console.log('[ChampionSelector] Non-modal mode - closing');
         // 모달이 아닐 때만 닫기
         setIsOpen(false);
         setFocusedIndex(-1);
@@ -128,14 +129,14 @@ function ChampionSelector({
         e.preventDefault();
         const champion = availableChampions[focusedIndex];
         if (champion) {
-          const isSelected = selectedChampions.some((c) => c.id === champion.id);
+          const isSelected = selectedChampionIds.has(champion.id);
           handleSelect(champion, isSelected);
         }
       } else if (e.key === "Escape") {
         handleOpenChange(false);
       }
     },
-    [isOpen, isModal, championList, availableChampions, focusedIndex, handleSelect, handleOpenChange, selectedChampions]
+    [isOpen, isModal, championList, availableChampions, focusedIndex, handleSelect, handleOpenChange, selectedChampionIds]
   );
 
   useEffect(() => {
@@ -253,7 +254,7 @@ function ChampionSelector({
                 <div className="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-6 lg:grid-cols-8 xl:grid-cols-10 gap-2">
                   {availableChampions.map((champion, index) => {
                     const isFocused = focusedIndex === index;
-                    const isSelected = selectedChampions.some((c) => c.id === champion.id);
+                    const isSelected = selectedChampionIds.has(champion.id);
                     return (
                       <div
                         key={champion.id}
@@ -350,7 +351,7 @@ function ChampionSelector({
               <div className="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-6 lg:grid-cols-8 xl:grid-cols-10 gap-2">
                 {availableChampions.map((champion, index) => {
                   const isFocused = focusedIndex === index;
-                  const isSelected = selectedChampions.some((c) => c.id === champion.id);
+                  const isSelected = selectedChampionIds.has(champion.id);
                   return (
                     <div
                       key={champion.id}

@@ -108,41 +108,44 @@ function EncyclopediaPage({ lang, championList, version }: EncyclopediaPageProps
 
   const addChampion = useCallback(
     (champion: Champion) => {
-      // 이미 선택된 챔피언이면 제거
-      if (selectedChampions.some((c) => c.id === champion.id)) {
-        removeChampion(champion.id);
-        return;
-      }
+      // 이미 선택된 챔피언이면 제거 (Set을 사용하여 O(1) 체크)
+      setSelectedChampions((prev) => {
+        // Set을 생성하여 빠른 체크
+        const prevIds = new Set(prev.map((c) => c.id));
+        if (prevIds.has(champion.id)) {
+          return prev.filter((c) => c.id !== champion.id);
+        }
 
-      const newChampion: ChampionWithInfo = {
-        ...champion,
-        isLoading: true,
-        skinIndex: 0,
-      };
-      setSelectedChampions((prev) => [...prev, newChampion]);
-      // 모달을 닫지 않고 계속 열어둠 (여러 명 선택 가능하도록)
-
-      // Load full champion info
-      getChampionInfo(version, lang, champion.id)
-        .then((fullInfo) => {
-          setSelectedChampions((prev) =>
-            prev.map((c) =>
-              c.id === champion.id
-                ? { ...c, fullInfo, isLoading: false, skinIndex: 0 }
-                : c
-            )
-          );
-        })
-        .catch((error) => {
-          console.error("Failed to load champion info:", error);
-          setSelectedChampions((prev) =>
-            prev.map((c) =>
-              c.id === champion.id ? { ...c, isLoading: false } : c
-            )
-          );
-        });
+        const newChampion: ChampionWithInfo = {
+          ...champion,
+          isLoading: true,
+          skinIndex: 0,
+        };
+        
+        // Load full champion info (비동기로 처리하여 UI 블로킹 방지)
+        getChampionInfo(version, lang, champion.id)
+          .then((fullInfo) => {
+            setSelectedChampions((current) =>
+              current.map((c) =>
+                c.id === champion.id
+                  ? { ...c, fullInfo, isLoading: false, skinIndex: 0 }
+                  : c
+              )
+            );
+          })
+          .catch((error) => {
+            console.error("Failed to load champion info:", error);
+            setSelectedChampions((current) =>
+              current.map((c) =>
+                c.id === champion.id ? { ...c, isLoading: false } : c
+              )
+            );
+          });
+        
+        return [...prev, newChampion];
+      });
     },
-    [selectedChampions, version, lang, removeChampion]
+    [version, lang]
   );
 
   const resetChampions = useCallback(() => {
@@ -240,10 +243,6 @@ function EncyclopediaPage({ lang, championList, version }: EncyclopediaPageProps
                         >
                           <button
                             onClick={() => setSelectedChampionIndex(idx)}
-                            onTouchStart={(e) => {
-                              e.stopPropagation();
-                              setSelectedChampionIndex(idx);
-                            }}
                             className="flex items-center gap-1.5 flex-1 touch-manipulation"
                           >
                             <img
@@ -255,14 +254,6 @@ function EncyclopediaPage({ lang, championList, version }: EncyclopediaPageProps
                           </button>
                           <button
                             onClick={(e) => {
-                              e.preventDefault();
-                              e.stopPropagation();
-                              removeChampion(champion.id);
-                              if (selectedChampionIndex >= championsWithFullInfo.length - 1 && selectedChampionIndex > 0) {
-                                setSelectedChampionIndex(selectedChampionIndex - 1);
-                              }
-                            }}
-                            onTouchStart={(e) => {
                               e.preventDefault();
                               e.stopPropagation();
                               removeChampion(champion.id);
