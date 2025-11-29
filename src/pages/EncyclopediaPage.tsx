@@ -571,7 +571,7 @@ function EncyclopediaPage({ lang, championList, version }: EncyclopediaPageProps
         ref={setNodeRef}
         style={style}
         className={cn(
-          "flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-colors shrink-0 relative",
+          "flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-colors shrink-0 relative select-none touch-none",
           isActive
             ? 'bg-primary text-primary-foreground' 
             : 'bg-muted/50 text-muted-foreground',
@@ -589,19 +589,21 @@ function EncyclopediaPage({ lang, championList, version }: EncyclopediaPageProps
         <button
           {...attributes}
           {...listeners}
-          className="touch-manipulation cursor-grab active:cursor-grabbing p-0.5 -ml-1 mr-0.5 opacity-60 hover:opacity-100 transition-opacity"
+          className="touch-none cursor-grab active:cursor-grabbing p-0.5 -ml-1 mr-0.5 opacity-60 hover:opacity-100 transition-opacity select-none"
           aria-label="Drag to reorder"
+          onTouchStart={(e) => e.preventDefault()}
         >
-          <GripVertical className="h-3 w-3" />
+          <GripVertical className="h-3 w-3 pointer-events-none select-none" />
         </button>
         
-        <div className="flex items-center gap-1.5 flex-1 touch-manipulation cursor-pointer">
+        <div className="flex items-center gap-1.5 flex-1 touch-none cursor-pointer select-none">
           <img
             src={CHAMP_ICON_URL(version, champion.id)}
             alt={champion.name}
-            className="w-5 h-5 rounded-full pointer-events-none"
+            className="w-5 h-5 rounded-full pointer-events-none select-none"
+            draggable="false"
           />
-          <span className="pointer-events-none">{champion.name}</span>
+          <span className="pointer-events-none select-none">{champion.name}</span>
         </div>
         {/* VS 버튼 */}
         <button
@@ -614,7 +616,7 @@ function EncyclopediaPage({ lang, championList, version }: EncyclopediaPageProps
             });
             setShowVsSelector(true);
           }}
-          className="ml-1 p-1 rounded-full hover:bg-destructive/20 hover:text-destructive active:bg-destructive/30 transition-colors touch-manipulation shrink-0"
+          className="ml-1 p-1 rounded-full hover:bg-destructive/20 hover:text-destructive active:bg-destructive/30 transition-colors touch-none shrink-0 select-none"
           aria-label={`${t.encyclopedia.vs} with ${champion.name}`}
           title={t.encyclopedia.vsStart}
           type="button"
@@ -627,7 +629,7 @@ function EncyclopediaPage({ lang, championList, version }: EncyclopediaPageProps
             e.stopPropagation();
             removeTab(tab.id);
           }}
-          className="ml-1 p-0.5 rounded-full hover:bg-destructive/20 hover:text-destructive active:bg-destructive/30 transition-colors touch-manipulation shrink-0"
+          className="ml-1 p-0.5 rounded-full hover:bg-destructive/20 hover:text-destructive active:bg-destructive/30 transition-colors touch-none shrink-0 select-none"
           aria-label={`Remove ${champion.name}`}
           type="button"
         >
@@ -665,7 +667,7 @@ function EncyclopediaPage({ lang, championList, version }: EncyclopediaPageProps
         ref={setNodeRef}
         style={style}
         className={cn(
-          "flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-colors shrink-0 relative",
+          "flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-colors shrink-0 relative select-none touch-none",
           isActive
             ? 'bg-primary text-primary-foreground' 
             : 'bg-muted/50 text-muted-foreground',
@@ -676,13 +678,14 @@ function EncyclopediaPage({ lang, championList, version }: EncyclopediaPageProps
         <button
           {...attributes}
           {...listeners}
-          className="touch-manipulation cursor-grab active:cursor-grabbing p-0.5 -ml-1 mr-0.5 opacity-60 hover:opacity-100 transition-opacity"
+          className="touch-none cursor-grab active:cursor-grabbing p-0.5 -ml-1 mr-0.5 opacity-60 hover:opacity-100 transition-opacity select-none"
           aria-label="Drag to reorder"
+          onTouchStart={(e) => e.preventDefault()}
         >
-          <GripVertical className="h-3 w-3" />
+          <GripVertical className="h-3 w-3 pointer-events-none select-none" />
         </button>
         
-        <div className="flex items-center gap-1.5 flex-1">
+        <div className="flex items-center gap-1.5 flex-1 select-none touch-none">
           <button
             onClick={(e) => {
               e.preventDefault();
@@ -694,19 +697,20 @@ function EncyclopediaPage({ lang, championList, version }: EncyclopediaPageProps
               });
               setShowVsSelector(true);
             }}
-            className="flex items-center touch-manipulation hover:opacity-80 transition-opacity"
+            className="flex items-center touch-none hover:opacity-80 transition-opacity select-none"
           >
             <img
               src={CHAMP_ICON_URL(version, championA.id)}
               alt={championA.name}
-              className="w-5 h-5 rounded-full"
+              className="w-5 h-5 rounded-full select-none pointer-events-none"
+              draggable="false"
             />
           </button>
           <button
             onClick={() => {
               setSelectedTabId(tab.id);
             }}
-            className="text-[10px] font-semibold touch-manipulation"
+            className="text-[10px] font-semibold touch-none select-none"
           >
             {t.encyclopedia.vs}
           </button>
@@ -721,12 +725,13 @@ function EncyclopediaPage({ lang, championList, version }: EncyclopediaPageProps
               });
               setShowVsSelector(true);
             }}
-            className="flex items-center touch-manipulation hover:opacity-80 transition-opacity"
+            className="flex items-center touch-none hover:opacity-80 transition-opacity select-none"
           >
             <img
               src={CHAMP_ICON_URL(version, championB.id)}
               alt={championB.name}
-              className="w-5 h-5 rounded-full"
+              className="w-5 h-5 rounded-full select-none pointer-events-none"
+              draggable="false"
             />
           </button>
         </div>
@@ -736,7 +741,7 @@ function EncyclopediaPage({ lang, championList, version }: EncyclopediaPageProps
             e.stopPropagation();
             removeTab(tab.id);
           }}
-          className="ml-1 p-0.5 rounded-full hover:bg-destructive/20 hover:text-destructive active:bg-destructive/30 transition-colors touch-manipulation"
+          className="ml-1 p-0.5 rounded-full hover:bg-destructive/20 hover:text-destructive active:bg-destructive/30 transition-colors touch-none select-none"
           aria-label="Remove VS tab"
         >
           <X className="h-3 w-3" />
@@ -860,7 +865,7 @@ function EncyclopediaPage({ lang, championList, version }: EncyclopediaPageProps
                         items={tabs.map((tab) => tab.id)}
                         strategy={horizontalListSortingStrategy}
                       >
-                        <div className="flex items-center gap-2 flex-1 overflow-x-auto">
+                        <div className="flex items-center gap-2 flex-1 overflow-x-auto select-none touch-none">
                           {/* 모든 탭들 */}
                           {tabs.map((tab) => {
                             if (tab.mode === 'vs') {
