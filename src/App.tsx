@@ -10,6 +10,7 @@ import KillAnglePage from "@/pages/KillAnglePage";
 import OGPreviewPage from "@/pages/OGPreviewPage";
 import { Champion } from "@/types";
 import { I18nProvider, Language } from "@/i18n";
+import { validateAllStorageData } from "@/lib/storageValidator";
 
 const THEME_STORAGE_KEY = "theme";
 const LANG_STORAGE_KEY = "language";
@@ -63,6 +64,10 @@ function App() {
   const initData = useCallback(async () => {
     try {
       setIsLoading(true);
+      
+      // splash 화면이 띄워질 때 localStorage 데이터 구조 유효성 검사
+      validateAllStorageData();
+      
       const latestVersion = await getVersion();
       setVersion(latestVersion);
       

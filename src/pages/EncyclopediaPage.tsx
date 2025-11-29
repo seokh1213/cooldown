@@ -11,6 +11,7 @@ import ChampionSelector from "@/components/features/ChampionSelector";
 import { useDeviceType } from "@/hooks/useDeviceType";
 import { CHAMP_ICON_URL } from "@/services/api";
 import { useTranslation } from "@/i18n";
+import { setStorageWithVersion, removeStorageWithVersion } from "@/lib/storageValidator";
 import {
   DndContext,
   closestCenter,
@@ -175,9 +176,9 @@ function EncyclopediaPage({ lang, championList, version }: EncyclopediaPageProps
           id: rest.id,
           key: rest.key,
         }));
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(toStore));
+        setStorageWithVersion(STORAGE_KEY, JSON.stringify(toStore));
       } else {
-        localStorage.removeItem(STORAGE_KEY);
+        removeStorageWithVersion(STORAGE_KEY);
       }
     } catch (error) {
       console.error("Failed to save champions to storage:", error);
@@ -188,9 +189,9 @@ function EncyclopediaPage({ lang, championList, version }: EncyclopediaPageProps
   useEffect(() => {
     try {
       if (tabs.length > 0) {
-        localStorage.setItem(TABS_STORAGE_KEY, JSON.stringify(tabs));
+        setStorageWithVersion(TABS_STORAGE_KEY, JSON.stringify(tabs));
       } else {
-        localStorage.removeItem(TABS_STORAGE_KEY);
+        removeStorageWithVersion(TABS_STORAGE_KEY);
       }
     } catch (error) {
       console.error("Failed to save tabs to storage:", error);
@@ -201,9 +202,9 @@ function EncyclopediaPage({ lang, championList, version }: EncyclopediaPageProps
   useEffect(() => {
     try {
       if (selectedTabId) {
-        localStorage.setItem(SELECTED_TAB_ID_STORAGE_KEY, selectedTabId);
+        setStorageWithVersion(SELECTED_TAB_ID_STORAGE_KEY, selectedTabId);
       } else {
-        localStorage.removeItem(SELECTED_TAB_ID_STORAGE_KEY);
+        removeStorageWithVersion(SELECTED_TAB_ID_STORAGE_KEY);
       }
     } catch (error) {
       console.error("Failed to save selected tab ID to storage:", error);
@@ -376,9 +377,9 @@ function EncyclopediaPage({ lang, championList, version }: EncyclopediaPageProps
     setSelectedChampions([]);
     setTabs([]);
     setSelectedTabId(null);
-    localStorage.removeItem(STORAGE_KEY);
-    localStorage.removeItem(TABS_STORAGE_KEY);
-    localStorage.removeItem(SELECTED_TAB_ID_STORAGE_KEY);
+    removeStorageWithVersion(STORAGE_KEY);
+    removeStorageWithVersion(TABS_STORAGE_KEY);
+    removeStorageWithVersion(SELECTED_TAB_ID_STORAGE_KEY);
   }, []);
 
   // Update champion names when championList changes (language change)
