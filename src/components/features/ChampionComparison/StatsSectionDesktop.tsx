@@ -22,6 +22,7 @@ import {
   useSensor,
   useSensors,
   DragEndEvent,
+  DragStartEvent,
 } from "@dnd-kit/core";
 import {
   SortableContext,
@@ -40,6 +41,7 @@ export function StatsSectionDesktop({
   onReorderChampions,
 }: SectionProps) {
   const [showAddSlot, setShowAddSlot] = useState(false);
+  const [activeChampionId, setActiveChampionId] = React.useState<string | null>(null);
 
   // 드래그 앤 드롭 센서 설정
   const sensors = useSensors(
@@ -53,9 +55,15 @@ export function StatsSectionDesktop({
     })
   );
 
+  // 드래그 시작 핸들러
+  const handleDragStart = (event: DragStartEvent) => {
+    setActiveChampionId(event.active.id as string);
+  };
+
   // 드래그 종료 핸들러
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
+    setActiveChampionId(null);
 
     if (over && active.id !== over.id && onReorderChampions) {
       const oldIndex = champions.findIndex((c) => c.id === active.id);
@@ -65,6 +73,34 @@ export function StatsSectionDesktop({
         onReorderChampions(oldIndex, newIndex);
       }
     }
+  };
+
+  // SortableCell 컴포넌트 (각 행의 셀용)
+  const SortableCell = ({ champion, children, className }: { champion: any; children: React.ReactNode; className?: string }) => {
+    const {
+      setNodeRef,
+      transform,
+      transition,
+      isDragging,
+    } = useSortable({ id: champion.id, disabled: true }); // disabled로 드래그 불가능하게 설정
+
+    const cellTransform = transform ? CSS.Transform.toString(transform) : undefined;
+
+    const style = {
+      transform: cellTransform,
+      transition: isDragging ? transition : undefined,
+      opacity: isDragging ? 0.5 : 1,
+    };
+
+    return (
+      <TableCell
+        ref={setNodeRef}
+        style={style}
+        className={className}
+      >
+        {children}
+      </TableCell>
+    );
   };
 
   // SortableChampionHeader 컴포넌트
@@ -78,9 +114,11 @@ export function StatsSectionDesktop({
       isDragging,
     } = useSortable({ id: champion.id });
 
+    const columnTransform = transform ? CSS.Transform.toString(transform) : undefined;
+
     const style = {
-      transform: CSS.Transform.toString(transform),
-      transition,
+      transform: columnTransform,
+      transition: isDragging ? transition : undefined,
       opacity: isDragging ? 0.5 : 1,
     };
 
@@ -144,6 +182,7 @@ export function StatsSectionDesktop({
       <DndContext
         sensors={sensors}
         collisionDetection={closestCenter}
+        onDragStart={handleDragStart}
         onDragEnd={handleDragEnd}
       >
         <div className="border border-border/30 rounded-lg overflow-hidden">
@@ -203,8 +242,9 @@ export function StatsSectionDesktop({
                     const isMin = value === minValue && maxValue !== minValue;
 
                     return (
-                      <TableCell
+                      <SortableCell
                         key={champion.id}
+                        champion={champion}
                         className={cn(
                           "p-2 text-xs text-center",
                           idx < champions.length - 1 && "border-r border-border/30",
@@ -213,7 +253,7 @@ export function StatsSectionDesktop({
                         )}
                       >
                         {field.format(value)}
-                      </TableCell>
+                      </SortableCell>
                     );
                   })}
                   {onAddChampion && (

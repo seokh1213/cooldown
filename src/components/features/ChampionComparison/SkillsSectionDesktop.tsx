@@ -29,6 +29,8 @@ import {
   useSensor,
   useSensors,
   DragEndEvent,
+  DragStartEvent,
+  useDndMonitor,
 } from "@dnd-kit/core";
 import {
   SortableContext,
@@ -50,6 +52,7 @@ export function SkillsSectionDesktop({
   const { t } = useTranslation();
   const [showAddSlot, setShowAddSlot] = useState(false);
   const [spellDataMap, setSpellDataMap] = React.useState<Record<string, SpellData[]>>({});
+  const [activeChampionId, setActiveChampionId] = React.useState<string | null>(null);
 
   // 드래그 앤 드롭 센서 설정
   const sensors = useSensors(
@@ -63,9 +66,15 @@ export function SkillsSectionDesktop({
     })
   );
 
+  // 드래그 시작 핸들러
+  const handleDragStart = (event: DragStartEvent) => {
+    setActiveChampionId(event.active.id as string);
+  };
+
   // 드래그 종료 핸들러
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
+    setActiveChampionId(null);
 
     if (over && active.id !== over.id && onReorderChampions) {
       const oldIndex = champions.findIndex((c) => c.id === active.id);
@@ -131,6 +140,34 @@ export function SkillsSectionDesktop({
     });
   }, [champions, maxLevel, spellDataMap]);
 
+  // SortableCell 컴포넌트 (각 행의 셀용)
+  const SortableCell = ({ champion, children, className }: { champion: Champion; children: React.ReactNode; className?: string }) => {
+    const {
+      setNodeRef,
+      transform,
+      transition,
+      isDragging,
+    } = useSortable({ id: champion.id, disabled: true }); // disabled로 드래그 불가능하게 설정
+
+    const cellTransform = transform ? CSS.Transform.toString(transform) : undefined;
+
+    const style = {
+      transform: cellTransform,
+      transition: isDragging ? transition : undefined,
+      opacity: isDragging ? 0.5 : 1,
+    };
+
+    return (
+      <TableCell
+        ref={setNodeRef}
+        style={style}
+        className={className}
+      >
+        {children}
+      </TableCell>
+    );
+  };
+
   // SortableChampionHeader 컴포넌트
   const SortableChampionHeader = ({ champion, index }: { champion: Champion; index: number }) => {
     const {
@@ -142,9 +179,11 @@ export function SkillsSectionDesktop({
       isDragging,
     } = useSortable({ id: champion.id });
 
+    const columnTransform = transform ? CSS.Transform.toString(transform) : undefined;
+
     const style = {
-      transform: CSS.Transform.toString(transform),
-      transition,
+      transform: columnTransform,
+      transition: isDragging ? transition : undefined,
       opacity: isDragging ? 0.5 : 1,
     };
 
@@ -212,6 +251,7 @@ export function SkillsSectionDesktop({
       <DndContext
         sensors={sensors}
         collisionDetection={closestCenter}
+        onDragStart={handleDragStart}
         onDragEnd={handleDragEnd}
       >
         <div className="border border-border/30 rounded-lg overflow-hidden">
@@ -258,8 +298,9 @@ export function SkillsSectionDesktop({
                 {t.skills.label}
               </TableCell>
               {champions.map((champion, idx) => (
-                <TableCell
+                <SortableCell
                   key={champion.id}
+                  champion={champion}
                   className={cn(
                     "p-2",
                     idx < champions.length - 1 && "border-r border-border/30"
@@ -292,7 +333,7 @@ export function SkillsSectionDesktop({
                       );
                     })}
                   </div>
-                </TableCell>
+                </SortableCell>
               ))}
               {onAddChampion && (
                 <TableCell className="p-2 text-center border-l border-border/30">
@@ -316,14 +357,18 @@ export function SkillsSectionDesktop({
                 >
                   {row.level}레벨
                 </TableCell>
-                {row.skills.map((championSkills, champIdx) => (
-                  <TableCell
-                    key={champions[champIdx].id}
-                    className={cn(
-                      "p-2",
-                      champIdx < champions.length - 1 && "border-r border-border/30"
-                    )}
-                  >
+                {row.skills.map((championSkills, champIdx) => {
+                  const champion = champions[champIdx];
+                  
+                  return (
+                    <SortableCell
+                      key={champion.id}
+                      champion={champion}
+                      className={cn(
+                        "p-2",
+                        champIdx < champions.length - 1 && "border-r border-border/30"
+                      )}
+                    >
                     {championSkills ? (
                       <div className="flex justify-center gap-1.5">
                         {/* Passive dummy slot */}
@@ -347,8 +392,9 @@ export function SkillsSectionDesktop({
                     ) : (
                       <span className="text-xs text-muted-foreground">-</span>
                     )}
-                  </TableCell>
-                ))}
+                  </SortableCell>
+                  );
+                })}
                 {onAddChampion && (
                   <TableCell className="p-2 text-center border-l border-border/30">
                     <div className="w-full h-full min-h-[32px]" />
