@@ -53,6 +53,81 @@ export function getVersion(): Promise<string> {
   });
 }
 
+/**
+ * 오래된 버전의 캐시를 제거합니다.
+ * 현재 버전이 아닌 모든 champion_info와 cd_spell_data 캐시를 삭제합니다.
+ * @param currentVersion 현재 버전
+ */
+export function cleanOldVersionCache(currentVersion: string): void {
+  if (typeof window === "undefined" || !window.localStorage) {
+    return;
+  }
+
+  try {
+    const keysToRemove: string[] = [];
+    
+    // localStorage의 모든 키를 순회
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i);
+      if (!key) continue;
+
+      // champion_info_로 시작하는 캐시 키 확인
+      // 형식: champion_info_${version}_${lang}_${name}
+      if (key.startsWith("champion_info_")) {
+        const prefix = "champion_info_";
+        const rest = key.substring(prefix.length);
+        // 버전은 첫 번째 언더스코어 전까지 (예: "15.1.1_ko_KR_Aatrox" -> "15.1.1")
+        const firstUnderscoreIndex = rest.indexOf("_");
+        if (firstUnderscoreIndex > 0) {
+          const version = rest.substring(0, firstUnderscoreIndex);
+          if (version !== currentVersion) {
+            keysToRemove.push(key);
+          }
+        } else {
+          // 형식이 맞지 않으면 제거 (구형 캐시)
+          keysToRemove.push(key);
+        }
+      }
+      
+      // cd_spell_data_로 시작하는 캐시 키 확인
+      // 형식: cd_spell_data_${version}_${championId}
+      if (key.startsWith("cd_spell_data_")) {
+        const prefix = "cd_spell_data_";
+        const rest = key.substring(prefix.length);
+        // 버전은 첫 번째 언더스코어 전까지
+        const firstUnderscoreIndex = rest.indexOf("_");
+        if (firstUnderscoreIndex > 0) {
+          const version = rest.substring(0, firstUnderscoreIndex);
+          // unknown이나 latest는 제외 (버전 정보가 없는 경우)
+          if (version !== currentVersion && version !== "unknown" && version !== "latest") {
+            keysToRemove.push(key);
+          }
+        } else {
+          // 구형 형식: cd_spell_data_${championId} (버전 없음)
+          keysToRemove.push(key);
+        }
+      }
+    }
+
+    // 오래된 캐시 제거
+    let removedCount = 0;
+    for (const key of keysToRemove) {
+      try {
+        localStorage.removeItem(key);
+        removedCount++;
+      } catch (error) {
+        console.warn(`Failed to remove cache key: ${key}`, error);
+      }
+    }
+
+    if (removedCount > 0) {
+      console.log(`[Cache] Removed ${removedCount} old version cache entries (current version: ${currentVersion})`);
+    }
+  } catch (error) {
+    console.warn("[Cache] Failed to clean old version cache:", error);
+  }
+}
+
 export function getChampionList(version: string, lang: string): Promise<Champion[]> {
   return fetchData<ChampionData>(CHAMP_LIST_URL(version, lang), (res) => {
     if (res && typeof res === "object" && "data" in res) {
@@ -209,25 +284,23 @@ export async function getCommunityDragonSpellData(
   championId: string,
   version?: string
 ): Promise<Record<string, Record<string, (number | string)[]>>> {
-  // 버전은 항상 'latest'로 고정
+  // 버전은 항상 'latest'로 고정 (API 요청용)
   const versionPath = "latest";
   const cdChampionId = convertChampionIdToCommunityDragon(championId);
   const url = `https://raw.communitydragon.org/${versionPath}/game/data/characters/${cdChampionId}/${cdChampionId}.bin.json`;
   
-  // 캐시 키 생성 (버전은 항상 latest이므로 키에서 제외)
-  const cacheKey = `cd_spell_data_${cdChampionId}`;
+  // 캐시 키 생성: 조회 시점의 Data Dragon 버전 정보를 키에 포함
+  // 버전이 없으면 'unknown'을 사용 (하위 호환성)
+  const versionForCache = version || 'unknown';
+  const cacheKey = `cd_spell_data_${versionForCache}_${cdChampionId}`;
   
-  // 이전 형식의 캐시 키 정리 (버전이 포함된 구형 키 삭제)
+  // 이전 형식의 캐시 키 정리 (버전이 없는 구형 키 삭제)
   try {
-    const oldCacheKeyWithVersion = `cd_spell_data_latest_${cdChampionId}`;
-    localStorage.removeItem(oldCacheKeyWithVersion);
-    // 다른 버전 형식의 키도 정리 (예: cd_spell_data_10.8.1_...)
-    for (let i = 0; i < localStorage.length; i++) {
-      const key = localStorage.key(i);
-      if (key && key.startsWith(`cd_spell_data_`) && key.includes(`_${cdChampionId}`) && key !== cacheKey) {
-        localStorage.removeItem(key);
-      }
-    }
+    const oldCacheKeyWithoutVersion = `cd_spell_data_${cdChampionId}`;
+    localStorage.removeItem(oldCacheKeyWithoutVersion);
+    // latest가 포함된 구형 키도 정리
+    const oldCacheKeyWithLatest = `cd_spell_data_latest_${cdChampionId}`;
+    localStorage.removeItem(oldCacheKeyWithLatest);
   } catch (error) {
     // 정리 실패 시 무시
     console.warn("Failed to clean old cache keys:", error);

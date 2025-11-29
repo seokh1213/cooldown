@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { getVersion, getChampionList } from "@/services/api";
+import { getVersion, getChampionList, cleanOldVersionCache } from "@/services/api";
 import Layout from "@/components/layout/Layout";
 import Nav from "@/components/features/Nav";
+import SplashScreen from "@/components/layout/SplashScreen";
 import EncyclopediaPage from "@/pages/EncyclopediaPage";
 import LaningTipsPage from "@/pages/LaningTipsPage";
 import KillAnglePage from "@/pages/KillAnglePage";
@@ -40,18 +41,28 @@ function getInitialTheme(): "light" | "dark" {
 
 function App() {
   const [lang, setLang] = useState<string>("ko_KR");
-  const [version, setVersion] = useState<string>("10.8.1");
+  const [version, setVersion] = useState<string | null>(null);
   const [championList, setChampionList] = useState<Champion[] | null>(null);
   const [theme, setTheme] = useState<"light" | "dark">(getInitialTheme);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   const initData = useCallback(async () => {
     try {
+      setIsLoading(true);
       const latestVersion = await getVersion();
       setVersion(latestVersion);
+      
+      // 오래된 버전의 캐시 제거
+      cleanOldVersionCache(latestVersion);
+      
       const champions = await getChampionList(latestVersion, lang);
       setChampionList(champions);
+      // 최소 로딩 시간 보장 (스플래시 화면 표시)
+      await new Promise((resolve) => setTimeout(resolve, 1000));
     } catch (error) {
       console.error("Failed to initialize data:", error);
+    } finally {
+      setIsLoading(false);
     }
   }, [lang]);
 
@@ -76,6 +87,11 @@ function App() {
   const toggleTheme = useCallback(() => {
     setTheme((prev) => (prev === "dark" ? "light" : "dark"));
   }, []);
+
+  // 버전이 로드되기 전까지 스플래시 화면 표시
+  if (isLoading || !version) {
+    return <SplashScreen />;
+  }
 
   return (
     <BrowserRouter basename={import.meta.env.PROD ? "/cooldown" : undefined}>
