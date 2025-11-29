@@ -140,7 +140,7 @@ export function SkillsSectionMobile({
                       <TableCell className="p-1.5 pl-2 text-[10px] font-medium sticky left-0 bg-card z-20 border-r border-border/30 select-none" style={{ left: 0 }}>
                         {t.skills.label}
                       </TableCell>
-                      <TableCell className="p-1.5">
+                      <TableCell className="p-1.5 border-r border-border/30">
                         <div className="flex justify-center gap-0.5">
                           {championA.passive && (
                             <SkillTooltip
