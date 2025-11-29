@@ -2,8 +2,16 @@ import React, { useCallback, useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import { Select } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
-import { Moon, Sun, Menu } from "lucide-react";
+import { Moon, Sun, Menu, HelpCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
+import {
+  Dialog,
+  DialogContent,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { VisuallyHidden } from "@/components/ui/visually-hidden";
+import { TutorialContent } from "./TutorialContent";
 
 interface NavProps {
   version?: string;
@@ -27,6 +35,7 @@ function Nav({
   const location = useLocation();
   const isEncyclopediaPage = location.pathname === "/";
   const [isMobile, setIsMobile] = useState(false);
+  const [tutorialOpen, setTutorialOpen] = useState(false);
 
   useEffect(() => {
     const checkMobile = () => {
@@ -94,6 +103,45 @@ function Nav({
               <Moon className="h-4 w-4" />
             )}
           </Button>
+        )}
+        {/* 튜토리얼 도움말 버튼 (모바일에서만 표시) */}
+        {isMobile && (
+          <>
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => setTutorialOpen(true)}
+              className={cn(
+                "h-9 w-9 transition-all duration-200 text-muted-foreground/60 hover:bg-muted hover:text-muted-foreground"
+              )}
+              aria-label="사용 방법 안내"
+              title="사용 방법 안내"
+            >
+              <HelpCircle className="h-4 w-4" />
+            </Button>
+            <Dialog open={tutorialOpen} onOpenChange={setTutorialOpen}>
+              <DialogContent
+                className="w-[calc(100vw-32px)] max-w-lg h-[70vh] max-h-[70vh] p-0 rounded-xl overflow-hidden flex flex-col"
+              >
+                <VisuallyHidden>
+                  <DialogTitle>사용 방법 안내</DialogTitle>
+                </VisuallyHidden>
+                <ScrollArea className="flex-1 min-h-0">
+                  <div className="p-4 flex flex-col gap-3">
+                    <div className="text-center space-y-2 mb-4">
+                      <h2 className="text-xl font-bold text-foreground">
+                        사용 방법 안내
+                      </h2>
+                      <p className="text-sm text-muted-foreground">
+                        모바일에서 스킬 정보를 확인하는 방법을 알려드립니다
+                      </p>
+                    </div>
+                    <TutorialContent />
+                  </div>
+                </ScrollArea>
+              </DialogContent>
+            </Dialog>
+          </>
         )}
         <Select
           defaultValue={lang}
