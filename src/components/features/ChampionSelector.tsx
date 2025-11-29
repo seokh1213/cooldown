@@ -1,10 +1,10 @@
-import React, { useState, useCallback, useRef, useEffect, useMemo } from "react";
+import React, { useState, useCallback, useRef, useEffect } from "react";
 import { Champion } from "@/types";
 import { CHAMP_ICON_URL } from "@/services/api";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Search, X } from "lucide-react";
-import { cn, getSearchVariants } from "@/lib/utils";
+import { cn } from "@/lib/utils";
 import ChampionThumbnail from "./ChampionThumbnail";
 import {
   Dialog,
@@ -13,6 +13,8 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 import { VisuallyHidden } from "@/components/ui/visually-hidden";
+import { useChampionSearch } from "@/hooks/useChampionSearch";
+import { useScrollPosition } from "@/hooks/useScrollPosition";
 
 interface ChampionSelectorProps {
   championList: Champion[] | null;
@@ -40,54 +42,7 @@ function ChampionSelector({
   const isModal = onClose !== undefined;
   const handleClose = onClose || (() => {});
 
-  const filteredChampions = useMemo(() => {
-    if (!championList) return [];
-    if (!searchValue) return championList;
-
-    // 한영 변환된 모든 검색어 변형 가져오기
-    const searchVariants = getSearchVariants(searchValue);
-    
-    return championList.filter((champ) => {
-      // 각 검색어 변형에 대해 매칭 확인
-      return searchVariants.some((variant) => {
-        const lowerVariant = variant.toLowerCase();
-        
-        // 기본 검색: 이름, 한글명, ID
-        if (
-          champ.name.toLowerCase().includes(lowerVariant) ||
-          (champ.hangul && champ.hangul.toLowerCase().includes(lowerVariant)) ||
-          champ.id.toLowerCase().includes(lowerVariant)
-        ) {
-          return true;
-        }
-        
-        // 챔피언 이름의 한영 변환 변형들과도 비교
-        const champNameVariants = getSearchVariants(champ.name);
-        if (champNameVariants.some((champVariant) => 
-          champVariant.toLowerCase().includes(lowerVariant)
-        )) {
-          return true;
-        }
-        
-        // 챔피언 한글명의 한영 변환 변형들과도 비교
-        if (champ.hangul) {
-          const champHangulVariants = getSearchVariants(champ.hangul);
-          if (champHangulVariants.some((champVariant) => 
-            champVariant.toLowerCase().includes(lowerVariant)
-          )) {
-            return true;
-          }
-        }
-        
-        return false;
-      });
-    });
-  }, [championList, searchValue]);
-
-  // 모든 챔피언을 표시하되, 선택된 챔피언은 강조
-  const availableChampions = useMemo(() => {
-    return filteredChampions;
-  }, [filteredChampions]);
+  const availableChampions = useChampionSearch(championList, searchValue);
 
   const handleBlur = useCallback(
     (e: MouseEvent) => {
@@ -181,9 +136,6 @@ function ChampionSelector({
     }
   }, [focusedIndex]);
 
-  // Save scroll position to sessionStorage
-  const SCROLL_POSITION_KEY = "championSelectorScrollPosition";
-
   useEffect(() => {
     if (isModal) {
       setIsOpen(true);
@@ -192,56 +144,16 @@ function ChampionSelector({
     }
   }, [isModal]);
 
-  // Restore scroll position when dialog opens
+  // 스크롤 위치 관리
+  useScrollPosition(listRef, isModal, isOpen);
+
+  // 모달 열릴 때 input 포커스
   useEffect(() => {
-    if (!isModal || !isOpen) return;
-
-    // Restore scroll position immediately (before images load)
-    const restoreScroll = () => {
-      if (listRef.current) {
-        const savedPosition = sessionStorage.getItem(SCROLL_POSITION_KEY);
-        if (savedPosition) {
-          const position = parseInt(savedPosition, 10);
-          // 즉시 설정 (부드러운 스크롤 없이)
-          listRef.current.scrollTop = position;
-        }
-      }
-    };
-
-    // 즉시 실행
-    restoreScroll();
-    
-    // requestAnimationFrame으로 한 번 더 (DOM이 완전히 준비된 후)
-    requestAnimationFrame(() => {
-      restoreScroll();
-      inputRef.current?.focus();
-    });
-
-    // 이미지 로드 후에도 한 번 더 (레이아웃이 안정된 후)
-    setTimeout(() => {
-      restoreScroll();
-    }, 200);
-  }, [isModal, isOpen]);
-
-  // Save scroll position when scrolling
-  useEffect(() => {
-    const listElement = listRef.current;
-    if (!listElement || !isModal || !isOpen) return;
-
-    let scrollTimeout: NodeJS.Timeout;
-    const handleScroll = () => {
-      // 디바운스: 스크롤이 끝난 후에만 저장
-      clearTimeout(scrollTimeout);
-      scrollTimeout = setTimeout(() => {
-        sessionStorage.setItem(SCROLL_POSITION_KEY, listElement.scrollTop.toString());
-      }, 100);
-    };
-
-    listElement.addEventListener("scroll", handleScroll, { passive: true });
-    return () => {
-      clearTimeout(scrollTimeout);
-      listElement.removeEventListener("scroll", handleScroll);
-    };
+    if (isModal && isOpen) {
+      requestAnimationFrame(() => {
+        inputRef.current?.focus();
+      });
+    }
   }, [isModal, isOpen]);
 
   if (!isModal) {
