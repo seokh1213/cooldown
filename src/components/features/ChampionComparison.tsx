@@ -1,7 +1,8 @@
 import React, { useMemo, useState, useEffect } from "react";
 import { Champion } from "@/types";
-import { CHAMP_ICON_URL, PASSIVE_ICON_URL, SKILL_ICON_URL, getCommunityDragonSpellData } from "@/services/api";
+import { CHAMP_ICON_URL, PASSIVE_ICON_URL, SKILL_ICON_URL } from "@/services/api";
 import { parseSpellTooltip, formatLeveltipStats } from "@/lib/spellTooltipParser";
+import { getIntegratedSpellDataForChampions, SpellData } from "@/services/spellDataService";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { X, Plus, AlertTriangle } from "lucide-react";
@@ -259,32 +260,23 @@ function SkillsSection({
   onRemoveChampion?: (championId: string) => void;
 }) {
   const [showAddSlot, setShowAddSlot] = useState(false);
-  const [communityDragonData, setCommunityDragonData] = useState<
-    Record<string, Record<string, Record<string, (number | string)[]>>>
-  >({});
+  const [spellDataMap, setSpellDataMap] = useState<Record<string, SpellData[]>>({});
   
-  // Community Dragon 데이터 로드
+  // 통합 스킬 데이터 로드
   useEffect(() => {
-    const loadCommunityDragonData = async () => {
-      const dataMap: Record<string, Record<string, Record<string, (number | string)[]>>> = {};
-      
-      for (const champion of champions) {
-        if (!dataMap[champion.id]) {
-          try {
-            const spellData = await getCommunityDragonSpellData(champion.id, version);
-            dataMap[champion.id] = spellData;
-          } catch (error) {
-            console.warn(`Failed to load Community Dragon data for ${champion.id}:`, error);
-            dataMap[champion.id] = {};
-          }
-        }
+    const loadSpellData = async () => {
+      try {
+        const data = await getIntegratedSpellDataForChampions(champions, version);
+        setSpellDataMap(data);
+      } catch (error) {
+        console.warn("Failed to load integrated spell data:", error);
+        // 에러 발생 시 빈 맵 사용
+        setSpellDataMap({});
       }
-      
-      setCommunityDragonData(dataMap);
     };
     
     if (champions.length > 0) {
-      loadCommunityDragonData();
+      loadSpellData();
     }
   }, [champions, version]);
   
@@ -298,39 +290,13 @@ function SkillsSection({
     );
   }, [champions]);
   
-  // 스킬 ID를 Community Dragon 스킬 데이터로 매핑하는 헬퍼 함수
-  const getCommunityDragonSpellDataForSkill = (
-    championId: string,
-    spellId: string,
-    spellIndex: number
-  ): Record<string, (number | string)[]> => {
-    const cdData = communityDragonData[championId];
-    if (!cdData) return {};
-    
-    // 1. 스킬 인덱스로 직접 찾기 (Q=0, W=1, E=2, R=3)
-    if (cdData[spellIndex.toString()]) {
-      return cdData[spellIndex.toString()];
+  // 스킬 데이터 가져오기 헬퍼 함수
+  const getSpellData = (championId: string, spellIndex: number): SpellData | null => {
+    const spellDataList = spellDataMap[championId];
+    if (!spellDataList || spellDataList.length <= spellIndex) {
+      return null;
     }
-    
-    // 2. 스킬 ID로 찾기 시도
-    const spellName = spellId.replace(championId, "");
-    for (const key of Object.keys(cdData)) {
-      if (key.toLowerCase().includes(spellName.toLowerCase()) || 
-          key.toLowerCase().includes(spellId.toLowerCase())) {
-        return cdData[key] || {};
-      }
-    }
-    
-    // 3. 스킬 순서로 찾기 (fallback)
-    const spellKeys = Object.keys(cdData).filter(k => !isNaN(Number(k)));
-    if (spellKeys.length > spellIndex) {
-      const sortedKeys = spellKeys.sort((a, b) => Number(a) - Number(b));
-      if (cdData[sortedKeys[spellIndex]]) {
-        return cdData[sortedKeys[spellIndex]];
-      }
-    }
-    
-    return {};
+    return spellDataList[spellIndex];
   };
 
   const skillRows = useMemo(() => {
@@ -341,8 +307,8 @@ function SkillsSection({
         skills: champions.map((champion) => {
           if (!champion.spells) return null;
           return champion.spells.map((skill, skillIdx) => {
-            const cdData = getCommunityDragonSpellDataForSkill(champion.id, skill.id, skillIdx);
-            const ammoRechargeTime = cdData["mAmmoRechargeTime"];
+            const spellData = getSpellData(champion.id, skillIdx);
+            const ammoRechargeTime = spellData?.communityDragonData["mAmmoRechargeTime"];
             const cooldownValue = skill.cooldown[levelIdx];
             
             // ammo 스킬인지 확인: cooldown이 0이고 mAmmoRechargeTime이 있으면 ammo 스킬
@@ -360,7 +326,7 @@ function SkillsSection({
         }),
       };
     });
-  }, [champions, maxLevel, communityDragonData]);
+  }, [champions, maxLevel, spellDataMap]);
 
   return (
     <TooltipProvider delayDuration={0} skipDelayDuration={150}>
@@ -500,8 +466,8 @@ function SkillsSection({
                         )}
                         {/* Skills */}
                         {champion.spells?.map((skill, skillIdx) => {
-                          const cdData = getCommunityDragonSpellDataForSkill(champion.id, skill.id, skillIdx);
-                          const ammoRechargeTime = cdData["mAmmoRechargeTime"];
+                          const spellData = getSpellData(champion.id, skillIdx);
+                          const ammoRechargeTime = spellData?.communityDragonData["mAmmoRechargeTime"];
                           const isAmmoSkill = skill.cooldown[0] === 0 && ammoRechargeTime && Array.isArray(ammoRechargeTime) && ammoRechargeTime.length > 1;
                           
                           // 쿨타임 정보 포맷팅
@@ -614,7 +580,7 @@ function SkillsSection({
                                           skill,
                                           1,
                                           true,
-                                          getCommunityDragonSpellDataForSkill(champion.id, skill.id, skillIdx)
+                                          spellData?.communityDragonData
                                         ),
                                       }}
                                     />
@@ -629,7 +595,7 @@ function SkillsSection({
                                           skill,
                                           1,
                                           true,
-                                          getCommunityDragonSpellDataForSkill(champion.id, skill.id, skillIdx)
+                                          spellData?.communityDragonData
                                         ),
                                       }}
                                     />
@@ -637,11 +603,11 @@ function SkillsSection({
                                 )}
 
                                 {/* 레벨별 통계 */}
-                                {formatLeveltipStats(skill, getCommunityDragonSpellDataForSkill(champion.id, skill.id, skillIdx)) && (
+                                {spellData && formatLeveltipStats(skill, spellData.communityDragonData) && (
                                   <div className="text-xs leading-relaxed border-t pt-3 mt-3">
                                     <div
                                       dangerouslySetInnerHTML={{
-                                        __html: formatLeveltipStats(skill, getCommunityDragonSpellDataForSkill(champion.id, skill.id, skillIdx)),
+                                        __html: formatLeveltipStats(skill, spellData.communityDragonData),
                                       }}
                                     />
                                   </div>
@@ -809,8 +775,8 @@ function SkillsSection({
                         {/* Skills */}
                         {champion.spells?.map((skill, idx) => {
                           const maxRank = skill.maxrank;
-                          const cdData = getCommunityDragonSpellDataForSkill(champion.id, skill.id, idx);
-                          const ammoRechargeTime = cdData["mAmmoRechargeTime"];
+                          const spellData = getSpellData(champion.id, idx);
+                          const ammoRechargeTime = spellData?.communityDragonData["mAmmoRechargeTime"];
                           const isAmmoSkill = skill.cooldown[0] === 0 && ammoRechargeTime && Array.isArray(ammoRechargeTime) && ammoRechargeTime.length > 1;
                           
                           // 쿨타임 정보 포맷팅
@@ -924,7 +890,7 @@ function SkillsSection({
                                             skill,
                                             1,
                                             true,
-                                            getCommunityDragonSpellDataForSkill(champion.id, skill.id, idx)
+                                            spellData?.communityDragonData
                                           ),
                                         }}
                                       />
@@ -939,7 +905,7 @@ function SkillsSection({
                                             skill,
                                             1,
                                             true,
-                                            getCommunityDragonSpellDataForSkill(champion.id, skill.id, idx)
+                                            spellData?.communityDragonData
                                           ),
                                         }}
                                       />
@@ -947,11 +913,11 @@ function SkillsSection({
                                   )}
 
                                   {/* 레벨별 통계 */}
-                                  {formatLeveltipStats(skill, getCommunityDragonSpellDataForSkill(champion.id, skill.id, idx)) && (
+                                  {spellData && formatLeveltipStats(skill, spellData.communityDragonData) && (
                                     <div className="text-xs leading-relaxed border-t pt-3 mt-3">
                                       <div
                                         dangerouslySetInnerHTML={{
-                                          __html: formatLeveltipStats(skill, getCommunityDragonSpellDataForSkill(champion.id, skill.id, idx)),
+                                          __html: formatLeveltipStats(skill, spellData.communityDragonData),
                                         }}
                                       />
                                     </div>
@@ -966,8 +932,7 @@ function SkillsSection({
                               </Tooltip>
                               <div className="grid grid-cols-5 gap-2 pl-12">
                                 {Array.from({ length: maxRank }, (_, i) => {
-                                  const cdData = getCommunityDragonSpellDataForSkill(champion.id, skill.id, idx);
-                                  const ammoRechargeTime = cdData["mAmmoRechargeTime"];
+                                  const ammoRechargeTime = spellData?.communityDragonData["mAmmoRechargeTime"];
                                   // ammo 스킬인지 확인: cooldown이 0이고 mAmmoRechargeTime이 있으면 ammo 스킬
                                   const isAmmoSkill = skill.cooldown[i] === 0 && ammoRechargeTime && Array.isArray(ammoRechargeTime) && ammoRechargeTime.length > i + 1;
                                   const displayValue = isAmmoSkill 
