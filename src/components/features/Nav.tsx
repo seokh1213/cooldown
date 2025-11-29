@@ -2,7 +2,7 @@ import React, { useCallback, useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import { Select } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
-import { Moon, Sun } from "lucide-react";
+import { Moon, Sun, Menu } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface NavProps {
@@ -12,6 +12,7 @@ interface NavProps {
   theme?: "light" | "dark";
   onThemeToggle?: () => void;
   sidebarLeft?: string;
+  onMenuToggle?: () => void;
 }
 
 function Nav({ 
@@ -20,7 +21,8 @@ function Nav({
   selectHandler,
   theme = "light",
   onThemeToggle,
-  sidebarLeft = "0px"
+  sidebarLeft = "0px",
+  onMenuToggle
 }: NavProps) {
   const location = useLocation();
   const isEncyclopediaPage = location.pathname === "/";
@@ -48,13 +50,26 @@ function Nav({
   return (
     <>
       <nav 
-        className="px-4 md:px-6 flex items-center gap-3 bg-card/80 backdrop-blur-md border-b border-border/50 fixed z-30 h-[60px] box-border"
+        className="px-4 md:px-6 flex items-center gap-3 bg-background border-b border-border/50 fixed z-30 h-[60px] box-border"
         style={{ 
           left: navLeft,
           width: navWidth,
-          top: isMobile ? "60px" : "0px"
+          top: "0px"
         }}
       >
+        {/* Mobile: Menu button */}
+        {isMobile && onMenuToggle && (
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={onMenuToggle}
+            aria-label="Open menu"
+            className="h-9 w-9 hover:bg-muted hover:text-foreground"
+          >
+            <Menu className="w-5 h-5" />
+          </Button>
+        )}
+        
         {isEncyclopediaPage && (
           <h1 className="text-base md:text-lg font-medium flex-1 text-foreground/70">백과사전</h1>
         )}
