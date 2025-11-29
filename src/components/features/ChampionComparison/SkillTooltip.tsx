@@ -123,6 +123,8 @@ export function SkillTooltip({
       );
     }
 
+    console.log(isPassive, version, skill, spellData)
+
     return (
       <>
         {/* 헤더: 아이콘 + 스킬명 + 쿨타임/마나 */}

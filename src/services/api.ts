@@ -1,5 +1,5 @@
 import Hangul from "hangul-js";
-import { Champion } from "./types";
+import { Champion } from "@/types";
 
 const VERSION_URL = "https://ddragon.leagueoflegends.com/api/versions.json";
 const CHAMP_LIST_URL = (VERSION: string, LANG: string) =>
@@ -216,19 +216,12 @@ function findActualChampionPath(
   const lowerChampionId = championId.toLowerCase();
   
   // 가능한 경로 패턴들
-  const possiblePaths = [
-    `Characters/${championId}/CharacterRecords/Root`, // 원본 케이스
-    `Characters/${lowerChampionId}/CharacterRecords/Root`, // 소문자
-    `Characters/${championId.charAt(0).toUpperCase() + championId.slice(1).toLowerCase()}/CharacterRecords/Root`, // 첫 글자 대문자
-  ];
-  
-  // 먼저 정확한 경로 확인
-  for (const path of possiblePaths) {
-    if (path in data) {
-      return path.split('/').slice(0, 2).join('/'); // Characters/ChampionName 반환
-    }
+  const path = `Characters/${championId}/CharacterRecords/Root`;
+
+  if (path in data) {
+    return path.split('/').slice(0, 2).join('/'); // Characters/ChampionName 반환
   }
-  
+
   // 정확한 경로가 없으면 데이터 키에서 검색
   const matchingKeys = Object.keys(data).filter(key => {
     const keyLower = key.toLowerCase();
@@ -284,28 +277,13 @@ export async function getCommunityDragonSpellData(
   championId: string,
   version?: string
 ): Promise<Record<string, Record<string, (number | string)[]>>> {
-  // 버전은 항상 'latest'로 고정 (API 요청용)
-  const versionPath = "latest";
   const cdChampionId = convertChampionIdToCommunityDragon(championId);
-  const url = `https://raw.communitydragon.org/${versionPath}/game/data/characters/${cdChampionId}/${cdChampionId}.bin.json`;
+  const url = `https://raw.communitydragon.org/latest/game/data/characters/${cdChampionId}/${cdChampionId}.bin.json`;
   
   // 캐시 키 생성: 조회 시점의 Data Dragon 버전 정보를 키에 포함
-  // 버전이 없으면 'unknown'을 사용 (하위 호환성)
   const versionForCache = version || 'unknown';
   const cacheKey = `cd_spell_data_${versionForCache}_${cdChampionId}`;
-  
-  // 이전 형식의 캐시 키 정리 (버전이 없는 구형 키 삭제)
-  try {
-    const oldCacheKeyWithoutVersion = `cd_spell_data_${cdChampionId}`;
-    localStorage.removeItem(oldCacheKeyWithoutVersion);
-    // latest가 포함된 구형 키도 정리
-    const oldCacheKeyWithLatest = `cd_spell_data_latest_${cdChampionId}`;
-    localStorage.removeItem(oldCacheKeyWithLatest);
-  } catch (error) {
-    // 정리 실패 시 무시
-    console.warn("Failed to clean old cache keys:", error);
-  }
-  
+
   // localStorage에서 캐시 확인
   try {
     const cached = localStorage.getItem(cacheKey);

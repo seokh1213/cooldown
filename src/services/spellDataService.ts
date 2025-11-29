@@ -1,5 +1,5 @@
-import { ChampionSpell } from "@/types";
-import { getCommunityDragonSpellData } from "./api";
+import {ChampionSpell} from "@/types";
+import {getCommunityDragonSpellData} from "./api";
 
 /**
  * 스킬 데이터 통합 인터페이스
@@ -86,12 +86,11 @@ export async function getIntegratedSpellDataForChampions(
     }
 
     try {
-      const spellData = await getIntegratedSpellData(
+      result[champion.id] = await getIntegratedSpellData(
         champion.id,
         champion.spells,
         version
       );
-      result[champion.id] = spellData;
     } catch (error) {
       console.warn(`Failed to get integrated spell data for ${champion.id}:`, error);
       // 에러 발생 시 빈 배열 반환

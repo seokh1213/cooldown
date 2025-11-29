@@ -1,9 +1,7 @@
 import React from "react";
-import { Champion } from "@/types";
 import { CHAMP_ICON_URL } from "@/services/api";
 import { getIntegratedSpellDataForChampions, SpellData } from "@/services/spellDataService";
 import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
 import {
   Table,
   TableBody,
@@ -15,7 +13,6 @@ import {
 import {
   TooltipProvider,
 } from "@/components/ui/tooltip";
-import ChampionSelector from "../ChampionSelector";
 import { SectionProps } from "./types";
 import { SkillTooltip } from "./SkillTooltip";
 import { getCooldownForLevel } from "./utils";
@@ -24,9 +21,6 @@ import { useTranslation } from "@/i18n";
 export function SkillsSectionMobile({
   champions,
   version,
-  championList,
-  onAddChampion,
-  onRemoveChampion,
   vsMode,
 }: SectionProps) {
   const { t } = useTranslation();
@@ -90,7 +84,7 @@ export function SkillsSectionMobile({
   if (vsMode && champions.length === 2) {
     const championA = vsMode.championA;
     const championB = vsMode.championB;
-    
+
     return (
       <TooltipProvider delayDuration={0} skipDelayDuration={150}>
         <div className="overflow-x-auto -mx-4 px-4">
@@ -292,7 +286,7 @@ export function SkillsSectionMobile({
                     <TableHead className="text-left p-2 pl-3 text-xs font-semibold text-foreground sticky left-0 bg-card z-20 w-[60px] min-w-[60px] border-r border-border/30 select-none" style={{ left: 0 }}>
                       레벨
                     </TableHead>
-                    {champions.map((champion, idx) => (
+                    {champions.map((champion) => (
                       <TableHead
                         key={champion.id}
                         className="text-center p-2 text-xs font-semibold text-foreground w-full select-none"
