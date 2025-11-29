@@ -3,6 +3,7 @@ import { Champion } from "@/types";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Check } from "lucide-react";
 
 interface ChampionThumbnailProps {
   addChampion: (champion: Champion, selected: boolean) => void;
@@ -47,7 +48,7 @@ function ChampionThumbnail({
     <div className="flex flex-col items-center justify-center m-1 h-fit">
       <Button
         variant="ghost"
-        className="cursor-pointer rounded-full shrink-0 p-0 h-auto w-auto hover:bg-transparent"
+        className="cursor-pointer rounded-full shrink-0 p-0 h-auto w-auto hover:bg-transparent relative"
         onClick={handleClick}
         aria-label={selected ? `Deselect ${name}` : `Select ${name}`}
         aria-pressed={selected}
@@ -65,7 +66,9 @@ function ChampionThumbnail({
           {/* Actual image - 고정 크기로 레이아웃 시프트 방지 */}
           <img
             className={cn(
-              "absolute inset-0 w-full h-full rounded-full bg-black/5 border-0 box-border object-cover",
+              "absolute inset-0 w-full h-full rounded-full bg-black/5 border-0 box-border transition-all duration-200 ease-out object-cover",
+              // 선택된 상태가 아닐 때만 hover 효과 적용
+              !selected && !isLocallySelected && "hover:scale-105",
               isLoaded ? "opacity-100" : "opacity-0"
             )}
             src={thumbnailSrc}
@@ -77,16 +80,22 @@ function ChampionThumbnail({
             onLoad={handleLoad}
             onError={handleError}
           />
-          {/* 선택 인디케이터 - 최소한의 강조 */}
+          {/* 선택 인디케이터 - 가시성 향상을 위한 외부 ring */}
           {(isLocallySelected || selected) && (
             <div 
               className="absolute inset-0 rounded-full pointer-events-none z-10"
               style={{
-                boxShadow: 'inset 0 0 0 2px hsl(var(--primary))'
+                boxShadow: 'inset 0 0 0 2px hsl(var(--primary)), 0 0 0 3px hsl(var(--primary) / 0.3)'
               }}
             />
           )}
         </div>
+        {/* 체크마크 아이콘 - 컨테이너 밖에 배치하여 잘리지 않도록 */}
+        {(isLocallySelected || selected) && (
+          <div className="absolute -bottom-0.5 -right-0.5 w-4 h-4 md:w-5 md:h-5 bg-primary rounded-full flex items-center justify-center pointer-events-none z-20 shadow-lg border-2 border-background">
+            <Check className="w-2.5 h-2.5 md:w-3 md:h-3 text-primary-foreground stroke-[3]" />
+          </div>
+        )}
       </Button>
       <div className="text-xs md:text-sm whitespace-nowrap mt-0.5">{name}</div>
     </div>
