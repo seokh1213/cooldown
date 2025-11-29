@@ -10,6 +10,14 @@ export interface ChampionSpell {
   cooldown: (number | string)[];
   description?: string;
   tooltip?: string;
+  leveltip?: {
+    label: string[];
+    effect: string[];
+  };
+  effectBurn?: (string | null)[];
+  costBurn?: string;
+  resource?: string;
+  costType?: string;
 }
 
 export interface ChampionPassive {

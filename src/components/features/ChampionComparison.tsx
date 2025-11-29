@@ -1,10 +1,10 @@
 import React, { useMemo, useState, useEffect } from "react";
 import { Champion } from "@/types";
 import { CHAMP_ICON_URL, PASSIVE_ICON_URL, SKILL_ICON_URL, getCommunityDragonSpellData } from "@/services/api";
-import { parseSpellTooltip } from "@/lib/spellTooltipParser";
+import { parseSpellTooltip, formatLeveltipStats } from "@/lib/spellTooltipParser";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
-import { X, Plus } from "lucide-react";
+import { X, Plus, AlertTriangle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Table,
@@ -499,64 +499,163 @@ function SkillsSection({
                           </Tooltip>
                         )}
                         {/* Skills */}
-                        {champion.spells?.map((skill, skillIdx) => (
-                          <Tooltip key={skill.id}>
-                            <TooltipTrigger asChild>
-                              <div className="flex flex-col items-center gap-0.5 cursor-help p-1 -m-1">
-                                <img
-                                  src={SKILL_ICON_URL(version, skill.id)}
-                                  alt={SKILL_LETTERS[skillIdx]}
-                                  className="w-8 h-8 rounded"
-                                />
-                                <span className="text-[9px] font-semibold">
-                                  {SKILL_LETTERS[skillIdx]}
-                                </span>
-                              </div>
-                            </TooltipTrigger>
-                            <TooltipContent
-                              side="top"
-                              align="center"
-                              sideOffset={8}
-                              className="max-w-xs p-3 space-y-2"
-                            >
-                              {skill.name && (
-                                <div className="font-semibold text-sm">
-                                  {skill.name}
-                                </div>
-                              )}
-                              {skill.description && (
-                                <div className="text-xs leading-relaxed">
-                                  <div
-                                    dangerouslySetInnerHTML={{
-                                      __html: parseSpellTooltip(
-                                        skill.description,
-                                        skill,
-                                        1,
-                                        true,
-                                        getCommunityDragonSpellDataForSkill(champion.id, skill.id, skillIdx)
-                                      ),
-                                    }}
+                        {champion.spells?.map((skill, skillIdx) => {
+                          const cdData = getCommunityDragonSpellDataForSkill(champion.id, skill.id, skillIdx);
+                          const ammoRechargeTime = cdData["mAmmoRechargeTime"];
+                          const isAmmoSkill = skill.cooldown[0] === 0 && ammoRechargeTime && Array.isArray(ammoRechargeTime) && ammoRechargeTime.length > 1;
+                          
+                          // 쿨타임 정보 포맷팅
+                          const getCooldownText = () => {
+                            if (isAmmoSkill && ammoRechargeTime) {
+                              const rechargeTime = ammoRechargeTime[1];
+                              const maxAmmo = skill.effectBurn?.[1] || "3";
+                              return `재충전 대기시간 ${rechargeTime}초 (최대: ${maxAmmo}개)`;
+                            }
+                            if (skill.cooldownBurn) {
+                              const cooldowns = skill.cooldownBurn.split("/");
+                              if (cooldowns.length > 1 && cooldowns.every(cd => cd === cooldowns[0])) {
+                                return `${cooldowns[0]}초`;
+                              }
+                              return `${skill.cooldownBurn}초`;
+                            }
+                            if (skill.cooldown && skill.cooldown.length > 0) {
+                              const cd = skill.cooldown[0];
+                              if (skill.cooldown.every(c => c === cd)) {
+                                return `${cd}초`;
+                              }
+                              return `${skill.cooldown.join("/")}초`;
+                            }
+                            return null;
+                          };
+
+                          // 소모값 정보 포맷팅
+                          const getCostText = () => {
+                            if (skill.costBurn === "0" || (skill.cost && skill.cost.every(c => c === 0))) {
+                              return "소모값 없음";
+                            }
+                            if (skill.costBurn) {
+                              const costs = skill.costBurn.split("/");
+                              if (costs.length > 1 && costs.every(c => c === costs[0])) {
+                                return `마나 ${costs[0]}`;
+                              }
+                              return `마나 ${skill.costBurn}`;
+                            }
+                            if (skill.cost && skill.cost.length > 0) {
+                              const cost = skill.cost[0];
+                              if (skill.cost.every(c => c === cost)) {
+                                return `마나 ${cost}`;
+                              }
+                              return `마나 ${skill.cost.join("/")}`;
+                            }
+                            return null;
+                          };
+
+                          const cooldownText = getCooldownText();
+                          const costText = getCostText();
+
+                          return (
+                            <Tooltip key={skill.id}>
+                              <TooltipTrigger asChild>
+                                <div className="flex flex-col items-center gap-0.5 cursor-help p-1 -m-1">
+                                  <img
+                                    src={SKILL_ICON_URL(version, skill.id)}
+                                    alt={SKILL_LETTERS[skillIdx]}
+                                    className="w-8 h-8 rounded"
                                   />
+                                  <span className="text-[9px] font-semibold">
+                                    {SKILL_LETTERS[skillIdx]}
+                                  </span>
                                 </div>
-                              )}
-                              {skill.tooltip && (
-                                <div className="text-xs text-muted-foreground leading-relaxed border-t pt-2 mt-2">
-                                  <div
-                                    dangerouslySetInnerHTML={{
-                                      __html: parseSpellTooltip(
-                                        skill.tooltip,
-                                        skill,
-                                        1,
-                                        true,
-                                        getCommunityDragonSpellDataForSkill(champion.id, skill.id, skillIdx)
-                                      ),
-                                    }}
+                              </TooltipTrigger>
+                              <TooltipContent
+                                side="top"
+                                align="center"
+                                sideOffset={8}
+                                className="max-w-sm p-4 space-y-3"
+                              >
+                                {/* 헤더: 아이콘 + 스킬명 + 쿨타임/마나 */}
+                                <div className="flex items-start gap-3 border-b pb-3">
+                                  {/* 왼쪽: 아이콘 */}
+                                  <img
+                                    src={SKILL_ICON_URL(version, skill.id)}
+                                    alt={SKILL_LETTERS[skillIdx]}
+                                    className="w-12 h-12 rounded flex-shrink-0"
                                   />
+                                  {/* 중앙: 스킬명 */}
+                                  <div className="flex-1 min-w-0">
+                                    {skill.name && (
+                                      <div className="font-semibold text-sm">
+                                        [{SKILL_LETTERS[skillIdx]}] {skill.name}
+                                      </div>
+                                    )}
+                                  </div>
+                                  {/* 오른쪽: 쿨타임/마나 */}
+                                  <div className="text-right flex-shrink-0">
+                                    {cooldownText && (
+                                      <div className="text-xs text-muted-foreground whitespace-nowrap">
+                                        {cooldownText}
+                                      </div>
+                                    )}
+                                    {costText && (
+                                      <div className="text-xs text-muted-foreground mt-1 whitespace-nowrap">
+                                        {costText}
+                                      </div>
+                                    )}
+                                  </div>
                                 </div>
-                              )}
-                            </TooltipContent>
-                          </Tooltip>
-                        ))}
+
+                                {/* 메인 설명 */}
+                                {skill.description && (
+                                  <div className="text-xs leading-relaxed">
+                                    <div
+                                      dangerouslySetInnerHTML={{
+                                        __html: parseSpellTooltip(
+                                          skill.description,
+                                          skill,
+                                          1,
+                                          true,
+                                          getCommunityDragonSpellDataForSkill(champion.id, skill.id, skillIdx)
+                                        ),
+                                      }}
+                                    />
+                                  </div>
+                                )}
+                                {skill.tooltip && (
+                                  <div className="text-xs text-muted-foreground leading-relaxed">
+                                    <div
+                                      dangerouslySetInnerHTML={{
+                                        __html: parseSpellTooltip(
+                                          skill.tooltip,
+                                          skill,
+                                          1,
+                                          true,
+                                          getCommunityDragonSpellDataForSkill(champion.id, skill.id, skillIdx)
+                                        ),
+                                      }}
+                                    />
+                                  </div>
+                                )}
+
+                                {/* 레벨별 통계 */}
+                                {formatLeveltipStats(skill, getCommunityDragonSpellDataForSkill(champion.id, skill.id, skillIdx)) && (
+                                  <div className="text-xs leading-relaxed border-t pt-3 mt-3">
+                                    <div
+                                      dangerouslySetInnerHTML={{
+                                        __html: formatLeveltipStats(skill, getCommunityDragonSpellDataForSkill(champion.id, skill.id, skillIdx)),
+                                      }}
+                                    />
+                                  </div>
+                                )}
+
+                                {/* 경고 문구 */}
+                                <div className="text-xs text-muted-foreground leading-relaxed border-t pt-3 mt-3 flex items-start gap-1.5">
+                                  <AlertTriangle className="w-3 h-3 mt-0.5 text-yellow-600 dark:text-yellow-500 flex-shrink-0" />
+                                  <span>정확한 수치와 설명은 인게임 툴팁을 확인해 주세요.</span>
+                                </div>
+                              </TooltipContent>
+                            </Tooltip>
+                          );
+                        })}
                       </div>
                     </TableCell>
                   ))}
@@ -710,6 +809,59 @@ function SkillsSection({
                         {/* Skills */}
                         {champion.spells?.map((skill, idx) => {
                           const maxRank = skill.maxrank;
+                          const cdData = getCommunityDragonSpellDataForSkill(champion.id, skill.id, idx);
+                          const ammoRechargeTime = cdData["mAmmoRechargeTime"];
+                          const isAmmoSkill = skill.cooldown[0] === 0 && ammoRechargeTime && Array.isArray(ammoRechargeTime) && ammoRechargeTime.length > 1;
+                          
+                          // 쿨타임 정보 포맷팅
+                          const getCooldownText = () => {
+                            if (isAmmoSkill && ammoRechargeTime) {
+                              const rechargeTime = ammoRechargeTime[1];
+                              const maxAmmo = skill.effectBurn?.[1] || "3";
+                              return `재충전 대기시간 ${rechargeTime}초 (최대: ${maxAmmo}개)`;
+                            }
+                            if (skill.cooldownBurn) {
+                              const cooldowns = skill.cooldownBurn.split("/");
+                              if (cooldowns.length > 1 && cooldowns.every(cd => cd === cooldowns[0])) {
+                                return `${cooldowns[0]}초`;
+                              }
+                              return `${skill.cooldownBurn}초`;
+                            }
+                            if (skill.cooldown && skill.cooldown.length > 0) {
+                              const cd = skill.cooldown[0];
+                              if (skill.cooldown.every(c => c === cd)) {
+                                return `${cd}초`;
+                              }
+                              return `${skill.cooldown.join("/")}초`;
+                            }
+                            return null;
+                          };
+
+                          // 소모값 정보 포맷팅
+                          const getCostText = () => {
+                            if (skill.costBurn === "0" || (skill.cost && skill.cost.every(c => c === 0))) {
+                              return "소모값 없음";
+                            }
+                            if (skill.costBurn) {
+                              const costs = skill.costBurn.split("/");
+                              if (costs.length > 1 && costs.every(c => c === costs[0])) {
+                                return `마나 ${costs[0]}`;
+                              }
+                              return `마나 ${skill.costBurn}`;
+                            }
+                            if (skill.cost && skill.cost.length > 0) {
+                              const cost = skill.cost[0];
+                              if (skill.cost.every(c => c === cost)) {
+                                return `마나 ${cost}`;
+                              }
+                              return `마나 ${skill.cost.join("/")}`;
+                            }
+                            return null;
+                          };
+
+                          const cooldownText = getCooldownText();
+                          const costText = getCostText();
+
                           return (
                             <div key={skill.id} className="space-y-2">
                               <Tooltip>
@@ -729,13 +881,40 @@ function SkillsSection({
                                   side="right"
                                   align="center"
                                   sideOffset={8}
-                                  className="max-w-xs p-3 space-y-2"
+                                  className="max-w-sm p-4 space-y-3"
                                 >
-                                  {skill.name && (
-                                    <div className="font-semibold text-sm">
-                                      {skill.name}
+                                  {/* 헤더: 아이콘 + 스킬명 + 쿨타임/마나 */}
+                                  <div className="flex items-start gap-3 border-b pb-3">
+                                    {/* 왼쪽: 아이콘 */}
+                                    <img
+                                      src={SKILL_ICON_URL(version, skill.id)}
+                                      alt={SKILL_LETTERS[idx]}
+                                      className="w-12 h-12 rounded flex-shrink-0"
+                                    />
+                                    {/* 중앙: 스킬명 */}
+                                    <div className="flex-1 min-w-0">
+                                      {skill.name && (
+                                        <div className="font-semibold text-sm">
+                                          [{SKILL_LETTERS[idx]}] {skill.name}
+                                        </div>
+                                      )}
                                     </div>
-                                  )}
+                                    {/* 오른쪽: 쿨타임/마나 */}
+                                    <div className="text-right flex-shrink-0">
+                                      {cooldownText && (
+                                        <div className="text-xs text-muted-foreground whitespace-nowrap">
+                                          {cooldownText}
+                                        </div>
+                                      )}
+                                      {costText && (
+                                        <div className="text-xs text-muted-foreground mt-1 whitespace-nowrap">
+                                          {costText}
+                                        </div>
+                                      )}
+                                    </div>
+                                  </div>
+
+                                  {/* 메인 설명 */}
                                   {skill.description && (
                                     <div className="text-xs leading-relaxed">
                                       <div
@@ -752,7 +931,7 @@ function SkillsSection({
                                     </div>
                                   )}
                                   {skill.tooltip && (
-                                    <div className="text-xs text-muted-foreground leading-relaxed border-t pt-2 mt-2">
+                                    <div className="text-xs text-muted-foreground leading-relaxed">
                                       <div
                                         dangerouslySetInnerHTML={{
                                           __html: parseSpellTooltip(
@@ -766,6 +945,23 @@ function SkillsSection({
                                       />
                                     </div>
                                   )}
+
+                                  {/* 레벨별 통계 */}
+                                  {formatLeveltipStats(skill, getCommunityDragonSpellDataForSkill(champion.id, skill.id, idx)) && (
+                                    <div className="text-xs leading-relaxed border-t pt-3 mt-3">
+                                      <div
+                                        dangerouslySetInnerHTML={{
+                                          __html: formatLeveltipStats(skill, getCommunityDragonSpellDataForSkill(champion.id, skill.id, idx)),
+                                        }}
+                                      />
+                                    </div>
+                                  )}
+
+                                  {/* 경고 문구 */}
+                                  <div className="text-xs text-muted-foreground leading-relaxed border-t pt-3 mt-3 flex items-start gap-1.5">
+                                    <AlertTriangle className="w-3 h-3 mt-0.5 text-yellow-600 dark:text-yellow-500 flex-shrink-0" />
+                                    <span>정확한 수치와 설명은 인게임 툴팁을 확인해 주세요.</span>
+                                  </div>
                                 </TooltipContent>
                               </Tooltip>
                               <div className="grid grid-cols-5 gap-2 pl-12">

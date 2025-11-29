@@ -181,6 +181,12 @@ function replaceVariables(
     return "";
   });
   
+  // Spell_*_Tooltip 패턴 제거 (Community Dragon에서도 치환이 안되는 값)
+  result = result.replace(/\{\{Spell_[^}]*Tooltip[^}]*\}\}/gi, "");
+  
+  // spellmodifierdescriptionappend 단독 패턴 제거
+  result = result.replace(/\{\{spellmodifierdescriptionappend\}\}/gi, "");
+  
   // {{ variable }} 패턴 찾기 (HTML 태그 내부도 포함)
   // 하지만 HTML 태그 자체는 건드리지 않음
   const variableRegex = /\{\{([^}]+)\}\}/g;
@@ -196,7 +202,7 @@ function replaceVariables(
     // 특수 변수 처리 (spellmodifierdescriptionappend 등)
     if (trimmedVar === "spellmodifierdescriptionappend" || 
         trimmedVar.includes("gamemodeinteger") ||
-        trimmedVar.includes("Spell_") && trimmedVar.includes("Tooltip")) {
+        (trimmedVar.includes("Spell_") && trimmedVar.includes("Tooltip"))) {
       // 이런 변수들은 제거
       replacedVars.add(trimmedVar);
       return "";
@@ -840,15 +846,6 @@ export function parseSpellTooltip(
   // 4. 줄바꿈을 <br />로 다시 변환 (렌더링을 위해)
   result = result.replace(/\n/g, "<br />");
 
-  // 5. 결과가 비어있거나 특수 변수만 남은 경우 description 사용
-  const trimmedResult = result.trim();
-  if (!trimmedResult || trimmedResult.length === 0) {
-    // description이 있으면 사용
-    if (spell?.description) {
-      return parseSpellTooltip(spell.description, spell, level, showAllLevels, communityDragonData);
-    }
-  }
-
   return result;
 }
 
@@ -871,5 +868,125 @@ export function parseSpellDescription(
   result = replaceVariables(result, spell, 1);
 
   return result;
+}
+
+/**
+ * leveltip을 이용한 수치 표시 포맷팅
+ * leveltip.label과 effect를 파싱하여 레벨별 수치를 표시
+ * @param spell 스킬 데이터
+ * @param communityDragonData Community Dragon 데이터 (ammo 스킬용)
+ * @returns 포맷팅된 수치 문자열 (HTML)
+ */
+export function formatLeveltipStats(
+  spell: ChampionSpell,
+  communityDragonData?: Record<string, (number | string)[]>
+): string {
+  if (!spell.leveltip || !spell.leveltip.label || !spell.leveltip.effect) {
+    return "";
+  }
+
+  const { label, effect } = spell.leveltip;
+  const stats: string[] = [];
+
+  for (let i = 0; i < label.length && i < effect.length; i++) {
+    const labelText = label[i];
+    const effectPattern = effect[i];
+
+    // effect 패턴에서 변수명 추출 (예: "{{ e1 }} -> {{ e1NL }}"에서 e1 추출)
+    // 첫 번째 {{ }}에서 변수명 추출 (-> 앞의 변수)
+    const effectMatch = effectPattern.match(/\{\{\s*([^}]+)\s*\}\}/);
+    if (!effectMatch) continue;
+
+    const varName = effectMatch[1].trim();
+    let value: string | null = null;
+
+    // e1, e2, e5 같은 패턴에서 숫자 추출
+    const effectIndexMatch = varName.match(/^e(\d+)$/i);
+    if (effectIndexMatch) {
+      // effectBurn 배열에서 값 찾기
+      const index = parseInt(effectIndexMatch[1]);
+      if (spell.effectBurn && spell.effectBurn.length > index) {
+        const effectValue = spell.effectBurn[index];
+        if (effectValue && effectValue !== null && effectValue !== "0") {
+          value = effectValue;
+        }
+      }
+    } else if (varName.toLowerCase() === "cost" || varName.toLowerCase().includes("cost")) {
+      // cost 변수인 경우 costBurn 사용
+      if (spell.costBurn) {
+        value = spell.costBurn;
+      }
+    } else if (varName.toLowerCase().includes("cooldown")) {
+      // cooldown 변수인 경우 cooldownBurn 사용
+      if (spell.cooldownBurn) {
+        value = spell.cooldownBurn;
+      }
+    } else if (varName.toLowerCase().includes("ammorechargetime") || varName.toLowerCase().includes("ammorecharge")) {
+      // ammo 재충전 시간인 경우 Community Dragon 데이터에서 찾기
+      if (communityDragonData && communityDragonData["mAmmoRechargeTime"]) {
+        const ammoRechargeTime = communityDragonData["mAmmoRechargeTime"];
+        if (Array.isArray(ammoRechargeTime) && ammoRechargeTime.length > 1) {
+          // 0번째 인덱스는 버퍼이므로 제외하고 레벨별 값 포맷팅
+          const startIndex = 1;
+          const numericValues = ammoRechargeTime.slice(startIndex).map(v => typeof v === "number" ? v : parseFloat(String(v)));
+          const formatted = formatLevelValues(numericValues, spell.maxrank, false);
+          if (formatted) {
+            value = formatted;
+          }
+        }
+      }
+    }
+
+    if (value) {
+      // 레벨별 값 포맷팅 (이미 "/"로 구분되어 있을 수 있음)
+      const formattedValue = formatLevelValues(
+        value.includes("/") ? value.split("/") : [value],
+        spell.maxrank
+      );
+
+      if (formattedValue) {
+        // @AbilityResourceName@ 치환
+        // costType이 있으면 사용 (예: "소모값 없음"), 없으면 resource 확인
+        let resourceName = "마나";
+        if (spell.costType) {
+          // costType에서 실제 리소스 이름 추출 (예: "소모값 없음" 또는 " {{ cost }}" 제거)
+          const costType = spell.costType.trim();
+          if (costType && !costType.includes("{{")) {
+            resourceName = costType;
+          } else if (spell.resource && !spell.resource.includes("{{")) {
+            resourceName = spell.resource;
+          }
+        } else if (spell.resource && !spell.resource.includes("{{")) {
+          resourceName = spell.resource;
+        }
+        
+        let displayLabel = labelText.replace("@AbilityResourceName@", resourceName);
+        
+        // 치환되지 않은 변수 패턴이 남아있으면 해당 항목 미노출
+        if (displayLabel.includes("{{") || displayLabel.includes("}}")) {
+          continue;
+        }
+        
+        // 퍼센트 값 처리 (label에 "%" 또는 "둔화" 등이 포함되어 있으면 각 값에 % 추가)
+        let finalValue = formattedValue;
+        if (labelText.includes("%") || labelText.toLowerCase().includes("slow") || labelText.toLowerCase().includes("둔화")) {
+          // 이미 %가 포함되어 있지 않으면 추가
+          if (!formattedValue.includes("%")) {
+            finalValue = formattedValue.split("/").map(v => `${v}%`).join("/");
+          }
+        }
+        
+        // 대괄호 추가하여 이미지와 동일한 형식으로 표시
+        stats.push(`${displayLabel}: [${finalValue}]`);
+      }
+    }
+  }
+
+  if (stats.length === 0) {
+    return "";
+  }
+
+  // HTML 형식으로 반환 (줄바꿈 포함)
+  return stats.join("<br />");
 }
 
