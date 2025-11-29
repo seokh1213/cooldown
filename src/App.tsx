@@ -106,8 +106,8 @@ function App() {
   }, []);
 
   return (
-    <BrowserRouter basename={import.meta.env.PROD ? "/cooldown" : undefined}>
-      <I18nProvider lang={lang}>
+    <I18nProvider lang={lang}>
+      <BrowserRouter basename={import.meta.env.PROD ? "/cooldown" : undefined}>
         <AppContent
           isLoading={isLoading}
           version={version}
@@ -117,8 +117,8 @@ function App() {
           handleLangChange={handleLangChange}
           toggleTheme={toggleTheme}
         />
-      </I18nProvider>
-    </BrowserRouter>
+      </BrowserRouter>
+    </I18nProvider>
   );
 }
 

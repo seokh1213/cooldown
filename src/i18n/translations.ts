@@ -30,13 +30,17 @@ export interface Translations {
       skillInfo: string;
       skillDetails: string;
     };
-    vsMode: {
-      title: string;
-      description: string;
-      vsModeLabel: string;
-      comparisonDescription: string;
-      vsButtonHint: string;
-    };
+      vsMode: {
+        title: string;
+        description: string;
+        vsModeLabel: string;
+        comparisonDescription: string;
+        vsButtonHint: string;
+        changeOpponentHint: string;
+        exampleChampion: string;
+        exampleChampionB: string;
+        clickChampionToChange: string;
+      };
   };
   encyclopedia: {
     tabs: {
@@ -126,6 +130,10 @@ export const translations: Record<Language, Translations> = {
         vsModeLabel: "VS 비교 모드",
         comparisonDescription: "두 챔피언 나란히 비교",
         vsButtonHint: "VS 버튼을 탭하면 상대 챔피언을 선택할 수 있습니다",
+        changeOpponentHint: "VS 모드 탭에서 챔피언 사진을 클릭하면 상대 챔피언을 변경할 수 있습니다",
+        exampleChampion: "갈리오",
+        exampleChampionB: "야스오",
+        clickChampionToChange: "챔피언 사진을 클릭하여 변경",
       },
     },
     encyclopedia: {
@@ -214,6 +222,10 @@ export const translations: Record<Language, Translations> = {
         vsModeLabel: "VS Comparison Mode",
         comparisonDescription: "Compare two champions side by side",
         vsButtonHint: "Tap the VS button to select an opponent champion",
+        changeOpponentHint: "In VS mode tabs, you can click on champion portraits to change the opponent",
+        exampleChampion: "Galio",
+        exampleChampionB: "Yasuo",
+        clickChampionToChange: "Click champion portrait to change",
       },
     },
     encyclopedia: {
