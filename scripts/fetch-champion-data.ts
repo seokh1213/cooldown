@@ -124,6 +124,12 @@ async function main() {
                 dataValues[dv.mName] = dv.mValues;
               }
             });
+            
+            // mAmmoRechargeTime도 추가 (ammo 스킬용)
+            if (spellObj.mSpell.mAmmoRechargeTime && Array.isArray(spellObj.mSpell.mAmmoRechargeTime)) {
+              dataValues["mAmmoRechargeTime"] = spellObj.mSpell.mAmmoRechargeTime;
+            }
+            
             spellDataMap[index.toString()] = dataValues;
             console.log(`Spell ${index}: ${Object.keys(dataValues).length} data values`);
             

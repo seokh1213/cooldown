@@ -392,6 +392,11 @@ export async function getCommunityDragonSpellData(
             }
           }
           
+          // mAmmoRechargeTime도 추가 (ammo 스킬용)
+          if (mSpell.mAmmoRechargeTime && Array.isArray(mSpell.mAmmoRechargeTime)) {
+            dataValues["mAmmoRechargeTime"] = mSpell.mAmmoRechargeTime as (number | string)[];
+          }
+          
           if (Object.keys(dataValues).length > 0) {
             // 스킬 인덱스를 키로 사용 (Q=0, W=1, E=2, R=3)
             spellDataMap[i.toString()] = dataValues;
@@ -437,6 +442,11 @@ export async function getCommunityDragonSpellData(
                   if (dv.mName && dv.mValues && Array.isArray(dv.mValues)) {
                     dataValues[dv.mName] = dv.mValues;
                   }
+                }
+                
+                // mAmmoRechargeTime도 추가 (ammo 스킬용)
+                if (mSpell.mAmmoRechargeTime && Array.isArray(mSpell.mAmmoRechargeTime)) {
+                  dataValues["mAmmoRechargeTime"] = mSpell.mAmmoRechargeTime as (number | string)[];
                 }
                 
                 if (Object.keys(dataValues).length > 0) {

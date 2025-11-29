@@ -202,6 +202,28 @@ function replaceVariables(
       return "";
     }
     
+    // ammo recharge time 변수 처리 (ammo 스킬용)
+    if (trimmedVar.includes("ammorechargetime") || trimmedVar.includes("ammorecharge")) {
+      if (communityDragonData && communityDragonData["mAmmoRechargeTime"]) {
+        const ammoRechargeTime = communityDragonData["mAmmoRechargeTime"];
+        if (Array.isArray(ammoRechargeTime) && ammoRechargeTime.length > 0) {
+          if (showAllLevels && ammoRechargeTime.length > 1) {
+            // 0번째 인덱스는 버퍼이므로 제외하고 레벨별 값 포맷팅
+            const startIndex = 1;
+            const numericValues = ammoRechargeTime.slice(startIndex).map(v => typeof v === "number" ? v : parseFloat(String(v)));
+            const formatted = formatLevelValues(numericValues, spell.maxrank, false);
+            replacedVars.add(trimmedVar);
+            return formatted;
+          } else if (ammoRechargeTime.length > level) {
+            // 특정 레벨의 값 (0번째 인덱스 버퍼 제외)
+            const value = ammoRechargeTime[level]; // level은 1부터 시작하므로 level 인덱스 사용
+            replacedVars.add(trimmedVar);
+            return formatNumber(value);
+          }
+        }
+      }
+    }
+
     // 쿨타임 변수 처리
     if (trimmedVar.includes("cooldown") && !trimmedVar.includes("decrease")) {
       if (showAllLevels && spell.cooldownBurn) {

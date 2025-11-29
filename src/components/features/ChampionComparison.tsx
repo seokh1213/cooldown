@@ -340,14 +340,27 @@ function SkillsSection({
         level,
         skills: champions.map((champion) => {
           if (!champion.spells) return null;
-          return champion.spells.map((skill) => ({
-            skill,
-            cooldown: skill.cooldown[levelIdx] ?? "",
-          }));
+          return champion.spells.map((skill, skillIdx) => {
+            const cdData = getCommunityDragonSpellDataForSkill(champion.id, skill.id, skillIdx);
+            const ammoRechargeTime = cdData["mAmmoRechargeTime"];
+            const cooldownValue = skill.cooldown[levelIdx];
+            
+            // ammo 스킬인지 확인: cooldown이 0이고 mAmmoRechargeTime이 있으면 ammo 스킬
+            const isAmmoSkill = cooldownValue === 0 && ammoRechargeTime && Array.isArray(ammoRechargeTime) && ammoRechargeTime.length > levelIdx + 1;
+            
+            const displayCooldown = isAmmoSkill 
+              ? (ammoRechargeTime[levelIdx + 1] !== undefined ? ammoRechargeTime[levelIdx + 1] : "")
+              : (cooldownValue !== undefined && cooldownValue !== null ? cooldownValue : "");
+            
+            return {
+              skill,
+              cooldown: displayCooldown,
+            };
+          });
         }),
       };
     });
-  }, [champions, maxLevel]);
+  }, [champions, maxLevel, communityDragonData]);
 
   return (
     <TooltipProvider delayDuration={0} skipDelayDuration={150}>
@@ -756,21 +769,29 @@ function SkillsSection({
                                 </TooltipContent>
                               </Tooltip>
                               <div className="grid grid-cols-5 gap-2 pl-12">
-                                {Array.from({ length: maxRank }, (_, i) => (
-                                  <div
-                                    key={i}
-                                    className="text-center p-2 bg-muted/50 rounded"
-                                  >
-                                    <div className="text-xs text-muted-foreground">
-                                      {i + 1}레벨
+                                {Array.from({ length: maxRank }, (_, i) => {
+                                  const cdData = getCommunityDragonSpellDataForSkill(champion.id, skill.id, idx);
+                                  const ammoRechargeTime = cdData["mAmmoRechargeTime"];
+                                  // ammo 스킬인지 확인: cooldown이 0이고 mAmmoRechargeTime이 있으면 ammo 스킬
+                                  const isAmmoSkill = skill.cooldown[i] === 0 && ammoRechargeTime && Array.isArray(ammoRechargeTime) && ammoRechargeTime.length > i + 1;
+                                  const displayValue = isAmmoSkill 
+                                    ? (ammoRechargeTime[i + 1] !== undefined ? `${ammoRechargeTime[i + 1]}s` : "-")
+                                    : (skill.cooldown[i] !== undefined ? `${skill.cooldown[i]}s` : "-");
+                                  
+                                  return (
+                                    <div
+                                      key={i}
+                                      className="text-center p-2 bg-muted/50 rounded"
+                                    >
+                                      <div className="text-xs text-muted-foreground">
+                                        {i + 1}레벨
+                                      </div>
+                                      <div className="text-sm font-semibold">
+                                        {displayValue}
+                                      </div>
                                     </div>
-                                    <div className="text-sm font-semibold">
-                                      {skill.cooldown[i] !== undefined
-                                        ? `${skill.cooldown[i]}s`
-                                        : "-"}
-                                    </div>
-                                  </div>
-                                ))}
+                                  );
+                                })}
                               </div>
                             </div>
                           );
