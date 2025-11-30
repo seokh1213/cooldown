@@ -57,7 +57,7 @@ export function SkillTooltip({
   const costText = (isPassive && passiveImageFull) ? null : getCostText(skill);
 
   const isSmall = size === "small";
-  const iconSize = isSmall ? "w-6 h-6" : "w-8 h-8";
+  const iconSize = isSmall ? "min-w-6 min-h-6 w-6 h-6" : "min-w-8 min-h-8 w-8 h-8";
   const textSize = isSmall ? "text-[8px]" : "text-[9px]";
 
   // 공통 트리거 컴포넌트
@@ -133,7 +133,7 @@ export function SkillTooltip({
           <img
             src={SKILL_ICON_URL(version, skill.id)}
             alt={SKILL_LETTERS[skillIdx]}
-            className="w-12 h-12 rounded flex-shrink-0"
+            className="w-12 h-12 min-w-12 min-h-12 rounded flex-shrink-0"
           />
           {/* 중앙: 스킬명 */}
           <div className="flex-1 min-w-0">
