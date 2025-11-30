@@ -117,6 +117,9 @@ async function main() {
         
         spells.forEach((spellPath: string, index: number) => {
           const spellObj = cdData[spellPath] as any;
+          const spellData: Record<string, any> = {};
+          
+          // 1. DataValues 파싱
           if (spellObj?.mSpell?.DataValues) {
             const dataValues: Record<string, any> = {};
             spellObj.mSpell.DataValues.forEach((dv: any) => {
@@ -130,13 +133,27 @@ async function main() {
               dataValues["mAmmoRechargeTime"] = spellObj.mSpell.mAmmoRechargeTime;
             }
             
-            spellDataMap[index.toString()] = dataValues;
-            console.log(`Spell ${index}: ${Object.keys(dataValues).length} data values`);
-            
-            // mClientData 정보도 저장
-            if (spellObj.mClientData?.mTooltipData) {
-              spellDataMap[index.toString()]._tooltipData = spellObj.mClientData.mTooltipData;
+            if (Object.keys(dataValues).length > 0) {
+              spellData.DataValues = dataValues;
             }
+          }
+          
+          // 2. mSpellCalculations 파싱
+          if (spellObj?.mSpell?.mSpellCalculations) {
+            spellData.mSpellCalculations = spellObj.mSpell.mSpellCalculations;
+          }
+          
+          // 3. mClientData 파싱
+          if (spellObj?.mClientData) {
+            spellData.mClientData = spellObj.mClientData;
+          }
+          
+          if (Object.keys(spellData).length > 0) {
+            spellDataMap[index.toString()] = spellData;
+            const dataValuesCount = spellData.DataValues ? Object.keys(spellData.DataValues).length : 0;
+            const calculationsCount = spellData.mSpellCalculations ? Object.keys(spellData.mSpellCalculations).length : 0;
+            const hasClientData = !!spellData.mClientData;
+            console.log(`Spell ${index}: ${dataValuesCount} data values, ${calculationsCount} calculations, clientData: ${hasClientData}`);
           }
         });
         

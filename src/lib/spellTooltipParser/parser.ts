@@ -111,8 +111,10 @@ export function formatLeveltipStats(
       varName.toLowerCase().includes("ammorechargetime") ||
       varName.toLowerCase().includes("ammorecharge")
     ) {
-      if (communityDragonData && communityDragonData["mAmmoRechargeTime"]) {
-        const ammoRechargeTime = communityDragonData["mAmmoRechargeTime"];
+      // 새로운 구조 지원: DataValues가 있으면 그것을 사용, 없으면 전체 객체 사용 (호환성)
+      const dataValues = (communityDragonData as any)?.DataValues || communityDragonData;
+      if (dataValues && dataValues["mAmmoRechargeTime"]) {
+        const ammoRechargeTime = dataValues["mAmmoRechargeTime"];
         if (Array.isArray(ammoRechargeTime) && ammoRechargeTime.length > 1) {
           const startIndex = 1;
           const numericValues = ammoRechargeTime

@@ -112,8 +112,10 @@ function replaceVariable(
     trimmedVar.includes("ammorechargetime") ||
     trimmedVar.includes("ammorecharge")
   ) {
-    if (communityDragonData && communityDragonData["mAmmoRechargeTime"]) {
-      const ammoRechargeTime = communityDragonData["mAmmoRechargeTime"];
+    // 새로운 구조 지원: DataValues가 있으면 그것을 사용, 없으면 전체 객체 사용 (호환성)
+    const dataValues = (communityDragonData as any)?.DataValues || communityDragonData;
+    if (dataValues && dataValues["mAmmoRechargeTime"]) {
+      const ammoRechargeTime = dataValues["mAmmoRechargeTime"];
       if (Array.isArray(ammoRechargeTime) && ammoRechargeTime.length > 0) {
         if (showAllLevels && ammoRechargeTime.length > 1) {
           const startIndex = 1;
@@ -228,12 +230,15 @@ function replaceVariable(
 
   // Community Dragon 데이터에서 찾기
   if (communityDragonData) {
+    // 새로운 구조 지원: DataValues가 있으면 그것을 사용, 없으면 전체 객체 사용 (호환성)
+    const dataValues = (communityDragonData as any)?.DataValues || communityDragonData;
     const replacement = findInCommunityDragonData(
       trimmedVar,
       spell,
       level,
       showAllLevels,
-      communityDragonData
+      dataValues as Record<string, (number | string)[]>,
+      communityDragonData as any
     );
     if (replacement !== null) {
       return replacement;
@@ -251,8 +256,24 @@ function findInCommunityDragonData(
   spell: ChampionSpell,
   level: number,
   showAllLevels: boolean,
-  communityDragonData: Record<string, (number | string)[]>
+  communityDragonData: Record<string, (number | string)[]>,
+  fullCommunityDragonData?: Record<string, any>
 ): string | null {
+  // 먼저 mSpellCalculations에서 계산 공식 찾기 시도
+  if (fullCommunityDragonData?.mSpellCalculations) {
+    const calculationResult = findInSpellCalculations(
+      trimmedVar,
+      spell,
+      level,
+      showAllLevels,
+      fullCommunityDragonData.mSpellCalculations,
+      communityDragonData
+    );
+    if (calculationResult !== null) {
+      return calculationResult;
+    }
+  }
+
   // 수식이 포함된 변수 처리 (예: "armorshredpercent*100")
   const mathMatch = trimmedVar.match(/^([a-zA-Z_][a-zA-Z0-9_]*)\s*([*+-])\s*([0-9.]+)$/);
   if (mathMatch) {
@@ -452,5 +473,113 @@ function removeDuplicatePercentPatterns(result: string): string {
   }
 
   return result;
+}
+
+/**
+ * mSpellCalculations에서 계산 공식 찾기
+ * 계산 공식의 계수를 추출하여 표시 (예: AD 계수 0.5 -> 50%)
+ */
+function findInSpellCalculations(
+  trimmedVar: string,
+  spell: ChampionSpell,
+  level: number,
+  showAllLevels: boolean,
+  mSpellCalculations: Record<string, any>,
+  dataValues: Record<string, (number | string)[]>
+): string | null {
+  // 변수명을 계산 공식 이름으로 매핑 시도
+  const varLower = trimmedVar.toLowerCase();
+  
+  // 일반적인 계산 공식 이름 패턴 매칭
+  const calculationNameMap: Record<string, string[]> = {
+    "damage": ["TotalDamage", "ShotDamage", "Damage", "BaseDamage"],
+    "totaldamage": ["TotalDamage", "ShotDamage"],
+    "shotdamage": ["ShotDamage"],
+    "basedamage": ["BaseDamage"],
+    "adratio": ["TotalDamage", "ShotDamage", "Damage"],
+    "ad": ["TotalDamage", "ShotDamage", "Damage"],
+    "ratio": ["TotalDamage", "ShotDamage", "Damage"],
+  };
+
+  // 변수명에 따라 계산 공식 이름 후보 찾기
+  let calculationNames: string[] = [];
+  for (const [key, names] of Object.entries(calculationNameMap)) {
+    if (varLower.includes(key)) {
+      calculationNames.push(...names);
+    }
+  }
+
+  // 직접 매칭도 시도
+  if (mSpellCalculations[trimmedVar]) {
+    calculationNames.unshift(trimmedVar);
+  }
+  if (mSpellCalculations[varLower]) {
+    calculationNames.unshift(varLower);
+  }
+
+  // 각 계산 공식 후보를 확인
+  for (const calcName of calculationNames) {
+    const calculation = mSpellCalculations[calcName];
+    if (!calculation || !calculation.mFormulaParts || !Array.isArray(calculation.mFormulaParts)) {
+      continue;
+    }
+
+    // AD 계수 추출 (StatByCoefficientCalculationPart 또는 StatByNamedDataValueCalculationPart)
+    let adCoefficient: number | null = null;
+    let baseDamage: (number | string)[] | null = null;
+
+    for (const part of calculation.mFormulaParts) {
+      const partType = part.__type;
+
+      // StatByCoefficientCalculationPart: 스탯 * 계수 (예: AD * 0.5)
+      if (partType === "StatByCoefficientCalculationPart" && part.mCoefficient !== undefined) {
+        const coeff = typeof part.mCoefficient === "number" ? part.mCoefficient : parseFloat(String(part.mCoefficient));
+        // mStat이 2면 AD (Attack Damage)
+        if (part.mStat === 2 || part.mStat === undefined) {
+          adCoefficient = coeff;
+        }
+      }
+
+      // StatByNamedDataValueCalculationPart: 스탯 * DataValue (예: AD * ADRatio)
+      if (partType === "StatByNamedDataValueCalculationPart" && part.mDataValue && part.mStat === 2) {
+        const ratioName = part.mDataValue;
+        if (dataValues[ratioName] && Array.isArray(dataValues[ratioName])) {
+          // ADRatio 값이 있으면 사용 (보통 1.0이지만 0.5일 수도 있음)
+          const ratioValues = dataValues[ratioName];
+          if (showAllLevels && ratioValues.length > 1) {
+            const startIndex = 1;
+            const numericValues = ratioValues.slice(startIndex).map((v) => {
+              const num = typeof v === "number" ? v : parseFloat(String(v));
+              return num * 100; // 퍼센트로 변환
+            });
+            return formatLevelValues(numericValues, spell.maxrank, false) + "%";
+          } else if (ratioValues.length > level) {
+            const value = ratioValues[level];
+            const num = typeof value === "number" ? value : parseFloat(String(value));
+            return formatNumber(num * 100) + "%";
+          }
+        }
+      }
+
+      // NamedDataValueCalculationPart: 기본 피해량
+      if (partType === "NamedDataValueCalculationPart" && part.mDataValue) {
+        const dataValueName = part.mDataValue;
+        if (dataValues[dataValueName] && Array.isArray(dataValues[dataValueName])) {
+          baseDamage = dataValues[dataValueName];
+        }
+      }
+    }
+
+    // AD 계수가 있으면 퍼센트로 표시
+    if (adCoefficient !== null) {
+      const percentValue = adCoefficient * 100;
+      return formatNumber(percentValue) + "%";
+    }
+
+    // 기본 피해량이 있고 AD 계수도 있으면 함께 표시할 수 있지만, 여기서는 계수만 반환
+    // (기본 피해량은 다른 곳에서 처리됨)
+  }
+
+  return null;
 }
 

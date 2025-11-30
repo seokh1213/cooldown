@@ -11,7 +11,9 @@ export function getCooldownText(
   if (!skill || !skill.cooldown || !Array.isArray(skill.cooldown) || skill.cooldown.length === 0) {
     return null;
   }
-  const ammoRechargeTime = spellData?.communityDragonData["mAmmoRechargeTime"];
+  // 새로운 구조 지원: DataValues가 있으면 그것을 사용, 없으면 전체 객체 사용 (호환성)
+  const dataValues = spellData?.communityDragonData?.DataValues || spellData?.communityDragonData;
+  const ammoRechargeTime = dataValues?.["mAmmoRechargeTime"];
   const isAmmoSkill = skill.cooldown[0] === 0 && ammoRechargeTime && Array.isArray(ammoRechargeTime) && ammoRechargeTime.length > 1;
 
   if (isAmmoSkill && ammoRechargeTime) {
@@ -71,7 +73,9 @@ export function getCooldownForLevel(
   level: number,
   spellData?: SpellData | null
 ): string {
-  const ammoRechargeTime = spellData?.communityDragonData["mAmmoRechargeTime"];
+  // 새로운 구조 지원: DataValues가 있으면 그것을 사용, 없으면 전체 객체 사용 (호환성)
+  const dataValues = spellData?.communityDragonData?.DataValues || spellData?.communityDragonData;
+  const ammoRechargeTime = dataValues?.["mAmmoRechargeTime"];
   const cooldownValue = skill.cooldown[level - 1];
   
   // ammo 스킬인지 확인: cooldown이 0이고 mAmmoRechargeTime이 있으면 ammo 스킬

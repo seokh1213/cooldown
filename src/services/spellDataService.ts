@@ -8,8 +8,8 @@ import {getCommunityDragonSpellData} from "./api";
 export interface SpellData {
   /** Data Dragon 스킬 데이터 */
   spell: ChampionSpell;
-  /** Community Dragon 스킬 데이터 (변수명: 값 배열) */
-  communityDragonData: Record<string, (number | string)[]>;
+  /** Community Dragon 스킬 데이터 (DataValues, mSpellCalculations, mClientData 포함) */
+  communityDragonData: Record<string, any>;
   /** 스킬 인덱스 (Q=0, W=1, E=2, R=3) */
   spellIndex: number;
 }
@@ -27,7 +27,7 @@ export async function getIntegratedSpellData(
   version: string
 ): Promise<SpellData[]> {
   // Community Dragon 데이터 가져오기 (에러 처리 포함)
-  let communityDragonDataMap: Record<string, Record<string, (number | string)[]>> = {};
+  let communityDragonDataMap: Record<string, Record<string, any>> = {};
   
   try {
     communityDragonDataMap = await getCommunityDragonSpellData(championId, version);
@@ -39,7 +39,7 @@ export async function getIntegratedSpellData(
   // 각 스킬에 대해 통합 데이터 생성
   return spells.map((spell, index) => {
     // Community Dragon 데이터 찾기
-    let communityDragonData: Record<string, (number | string)[]> = {};
+    let communityDragonData: Record<string, any> = {};
     
     // 1. 스킬 인덱스로 직접 찾기 (Q=0, W=1, E=2, R=3)
     if (communityDragonDataMap[index.toString()]) {

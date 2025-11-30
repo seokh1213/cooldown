@@ -267,12 +267,12 @@ function extractSpellOrderMapping(
  * Community Dragon에서 챔피언의 스킬 데이터 가져오기
  * @param championId 챔피언 ID (예: "MonkeyKing")
  * @param version 버전 (무시됨, 항상 'latest' 사용)
- * @returns 스킬별 DataValues를 포함한 객체
+ * @returns 스킬별 DataValues, mSpellCalculations, mClientData를 포함한 객체
  */
 export async function getCommunityDragonSpellData(
   championId: string,
   version?: string
-): Promise<Record<string, Record<string, (number | string)[]>>> {
+): Promise<Record<string, Record<string, any>>> {
   const cdChampionId = convertChampionIdToCommunityDragon(championId);
   const url = `https://raw.communitydragon.org/latest/game/data/characters/${cdChampionId}/${cdChampionId}.bin.json`;
   
@@ -359,8 +359,8 @@ export async function getCommunityDragonSpellData(
     
     console.log(`[CD] Champion: ${cdChampionId}, Actual path: ${actualChampionPath || 'not found'}, Spell order found: ${spellOrder.length} spells`, spellOrder);
     
-    // 스킬별 DataValues 추출
-    const spellDataMap: Record<string, Record<string, (number | string)[]>> = {};
+    // 스킬별 DataValues, mSpellCalculations, mClientData 추출
+    const spellDataMap: Record<string, Record<string, any>> = {};
     
     // 스킬 순서에 따라 데이터 추출
     for (let i = 0; i < spellOrder.length; i++) {
@@ -377,8 +377,10 @@ export async function getCommunityDragonSpellData(
       
       if (spellObj && spellObj.mSpell) {
         const mSpell = spellObj.mSpell as Record<string, unknown>;
+        const spellData: Record<string, any> = {};
+        
+        // 1. DataValues 파싱
         if (mSpell.DataValues && Array.isArray(mSpell.DataValues)) {
-          // DataValues를 변수명: 값 배열 형태로 변환
           const dataValues: Record<string, (number | string)[]> = {};
           for (const dv of mSpell.DataValues as Array<{ mName?: string; mValues?: (number | string)[] }>) {
             if (dv.mName && dv.mValues && Array.isArray(dv.mValues)) {
@@ -392,19 +394,34 @@ export async function getCommunityDragonSpellData(
           }
           
           if (Object.keys(dataValues).length > 0) {
-            // 스킬 인덱스를 키로 사용 (Q=0, W=1, E=2, R=3)
-            spellDataMap[i.toString()] = dataValues;
-            // 스킬 이름도 키로 사용 (경로에서 마지막 부분)
-            const spellName = spellPath.split("/").pop() || "";
-            if (spellName) {
-              spellDataMap[spellName] = dataValues;
-            }
-            console.log(`[CD] Found spell ${i} (${spellName}): ${Object.keys(dataValues).length} data values`);
-          } else {
-            console.warn(`[CD] Spell ${i} (${spellPath}) has no data values`);
+            spellData.DataValues = dataValues;
           }
+        }
+        
+        // 2. mSpellCalculations 파싱
+        if (mSpell.mSpellCalculations && typeof mSpell.mSpellCalculations === 'object' && mSpell.mSpellCalculations !== null) {
+          spellData.mSpellCalculations = mSpell.mSpellCalculations;
+        }
+        
+        // 3. mClientData 파싱
+        if (spellObj.mClientData && typeof spellObj.mClientData === 'object' && spellObj.mClientData !== null) {
+          spellData.mClientData = spellObj.mClientData;
+        }
+        
+        if (Object.keys(spellData).length > 0) {
+          // 스킬 인덱스를 키로 사용 (Q=0, W=1, E=2, R=3)
+          spellDataMap[i.toString()] = spellData;
+          // 스킬 이름도 키로 사용 (경로에서 마지막 부분)
+          const spellName = spellPath.split("/").pop() || "";
+          if (spellName) {
+            spellDataMap[spellName] = spellData;
+          }
+          const dataValuesCount = spellData.DataValues ? Object.keys(spellData.DataValues).length : 0;
+          const calculationsCount = spellData.mSpellCalculations ? Object.keys(spellData.mSpellCalculations).length : 0;
+          const hasClientData = !!spellData.mClientData;
+          console.log(`[CD] Found spell ${i} (${spellName}): ${dataValuesCount} data values, ${calculationsCount} calculations, clientData: ${hasClientData}`);
         } else {
-          console.warn(`[CD] Spell ${i} (${spellPath}) has no DataValues array`);
+          console.warn(`[CD] Spell ${i} (${spellPath}) has no extractable data`);
         }
       } else {
         console.warn(`[CD] Spell ${i} (${spellPath}) has no mSpell`);
@@ -426,11 +443,14 @@ export async function getCommunityDragonSpellData(
           
           if (spellObj && spellObj.mSpell) {
             const mSpell = spellObj.mSpell as Record<string, unknown>;
-            if (mSpell.DataValues && Array.isArray(mSpell.DataValues)) {
-              const spellName = rootSpellPath.split("/").pop() || "";
+            const spellName = rootSpellPath.split("/").pop() || "";
+            
+            // 이미 추가된 스킬이 아니면 추가
+            if (!spellDataMap[spellName]) {
+              const spellData: Record<string, any> = {};
               
-              // 이미 추가된 스킬이 아니면 추가
-              if (!spellDataMap[spellName]) {
+              // 1. DataValues 파싱
+              if (mSpell.DataValues && Array.isArray(mSpell.DataValues)) {
                 const dataValues: Record<string, (number | string)[]> = {};
                 for (const dv of mSpell.DataValues as Array<{ mName?: string; mValues?: (number | string)[] }>) {
                   if (dv.mName && dv.mValues && Array.isArray(dv.mValues)) {
@@ -444,9 +464,26 @@ export async function getCommunityDragonSpellData(
                 }
                 
                 if (Object.keys(dataValues).length > 0) {
-                  spellDataMap[spellName] = dataValues;
-                  console.log(`[CD] Found additional spell (${spellName}): ${Object.keys(dataValues).length} data values`);
+                  spellData.DataValues = dataValues;
                 }
+              }
+              
+              // 2. mSpellCalculations 파싱
+              if (mSpell.mSpellCalculations && typeof mSpell.mSpellCalculations === 'object' && mSpell.mSpellCalculations !== null) {
+                spellData.mSpellCalculations = mSpell.mSpellCalculations;
+              }
+              
+              // 3. mClientData 파싱
+              if (spellObj.mClientData && typeof spellObj.mClientData === 'object' && spellObj.mClientData !== null) {
+                spellData.mClientData = spellObj.mClientData;
+              }
+              
+              if (Object.keys(spellData).length > 0) {
+                spellDataMap[spellName] = spellData;
+                const dataValuesCount = spellData.DataValues ? Object.keys(spellData.DataValues).length : 0;
+                const calculationsCount = spellData.mSpellCalculations ? Object.keys(spellData.mSpellCalculations).length : 0;
+                const hasClientData = !!spellData.mClientData;
+                console.log(`[CD] Found additional spell (${spellName}): ${dataValuesCount} data values, ${calculationsCount} calculations, clientData: ${hasClientData}`);
               }
             }
           }
