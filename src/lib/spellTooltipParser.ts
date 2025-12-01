@@ -3,7 +3,7 @@
 export {
   parseSpellTooltip,
   parseSpellDescription,
-  formatLeveltipStats,
 } from "./spellTooltipParser/parser";
+export { formatLeveltipStats } from "./spellTooltipParser/leveltipFormatter";
 export { convertXmlTagsToHtml } from "./spellTooltipParser/xmlTagConverter";
 export { formatNumber, formatLevelValues, sanitizeHtml } from "./spellTooltipParser/formatters";
