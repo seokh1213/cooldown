@@ -114,22 +114,3 @@ export function parseExpression(input: string): ParseResult {
     variable: cleanInput,
   }
 }
-
-function formatNumber(num) {
-  // 정수면 그대로 반환
-  if (Number.isInteger(num)) return num.toString();
-
-  // 소수점 둘째 자리까지 고정 소수점 문자열로 변환
-  let fixed = num.toFixed(2);
-
-  // 소수점 이하가 .X0 형태면 .X만 남김
-  if (fixed[fixed.length - 1] === '0') {
-    fixed = fixed.slice(0, -1);
-  }
-
-  // 만약 여전히 .00이면 정수로
-  if (fixed.endsWith('.0')) {
-    return fixed.slice(0, -2);
-  }
-  return fixed;
-}

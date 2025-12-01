@@ -14,6 +14,7 @@ import {
 import ChampionSelector from "../ChampionSelector";
 import { STAT_FIELDS } from "./constants";
 import { SectionProps } from "./types";
+import { Champion } from "@/types";
 import {
   DndContext,
   closestCenter,

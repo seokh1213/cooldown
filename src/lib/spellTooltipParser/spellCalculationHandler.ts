@@ -4,15 +4,14 @@ import {
   CommunityDragonSpellData,
   CalcResult,
   StatPart,
-  SpellCalculation,
   GameCalculationModified,
   GameCalculation,
-  CalculationPart,
   NamedDataValueCalculationPart,
   StatByNamedDataValueCalculationPart,
   ByCharLevelBreakpointsCalculationPart,
 } from "./types";
 import { getDataValueByName } from "./dataValueUtils";
+import { Value } from "./types";
 import {
   add,
   mul,
@@ -20,7 +19,6 @@ import {
   valueToTooltipString,
   getStatName,
   isVector,
-  Value,
 } from "./valueUtils";
 
 /**
@@ -46,13 +44,15 @@ export function replaceCalculateData(
     if (!name || typeof name !== "string") {
       throw new Error(`DataValue name is invalid: ${name}`);
     }
+    if (!dataValues) throw new Error("dataValues is undefined");
     const v = getDataValueByName(dataValues, name, spell.maxrank);
     if (v == null) throw new Error(`DataValue "${name}" missing`);
     return v;
   }
 
   function evalCalc(key: string, visited: Set<string> = new Set()): CalcResult {
-    const raw = spellCalcs[key];
+    if (!spellCalcs) throw new Error("spellCalcs is undefined");
+    const raw: any = spellCalcs[key];
     if (!raw) throw new Error(`SpellCalculation "${key}" not found`);
 
     if (visited.has(key))
