@@ -88,3 +88,48 @@ export function getCooldownForLevel(
   return cooldownValue !== undefined && cooldownValue !== null ? String(cooldownValue) : "";
 }
 
+
+
+export type ParseResult =
+  | { type: 'formula'; variable: string; operator: string; operand: number }
+  | { type: 'variable'; variable: string }
+
+export function parseExpression(input: string): ParseResult {
+  const cleanInput = input.trim();
+
+  const formulaRegex = /^([a-zA-Z_][a-zA-Z0-9_]*)\s*([*+\/-])\s*(\d+(?:\.\d+)?)$/;
+  const formulaMatch = cleanInput.match(formulaRegex);
+
+  if (formulaMatch) {
+    return {
+      type: 'formula',
+      variable: formulaMatch[1],
+      operator: formulaMatch[2],
+      operand: parseFloat(formulaMatch[3]),
+    };
+  }
+
+  return {
+    type: 'variable',
+    variable: cleanInput,
+  }
+}
+
+function formatNumber(num) {
+  // 정수면 그대로 반환
+  if (Number.isInteger(num)) return num.toString();
+
+  // 소수점 둘째 자리까지 고정 소수점 문자열로 변환
+  let fixed = num.toFixed(2);
+
+  // 소수점 이하가 .X0 형태면 .X만 남김
+  if (fixed[fixed.length - 1] === '0') {
+    fixed = fixed.slice(0, -1);
+  }
+
+  // 만약 여전히 .00이면 정수로
+  if (fixed.endsWith('.0')) {
+    return fixed.slice(0, -2);
+  }
+  return fixed;
+}

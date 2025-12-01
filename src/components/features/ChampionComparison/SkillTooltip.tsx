@@ -114,7 +114,7 @@ export function SkillTooltip({
             <div className="text-xs leading-relaxed">
               <div
                 dangerouslySetInnerHTML={{
-                  __html: parseSpellTooltip(passiveDescription, undefined, 1, true),
+                  __html: parseSpellTooltip(passiveDescription, undefined ),
                 }}
               />
             </div>
@@ -122,8 +122,6 @@ export function SkillTooltip({
         </>
       );
     }
-
-    console.log(isPassive, version, skill, spellData)
 
     return (
       <>
@@ -174,8 +172,6 @@ export function SkillTooltip({
                 __html: parseSpellTooltip(
                   skill.description,
                   skill,
-                  1,
-                  true,
                   spellData?.communityDragonData
                 ),
               }}
@@ -189,8 +185,6 @@ export function SkillTooltip({
                 __html: parseSpellTooltip(
                   skill.tooltip,
                   skill,
-                  1,
-                  true,
                   spellData?.communityDragonData
                 ),
               }}

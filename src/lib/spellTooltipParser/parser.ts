@@ -16,9 +16,7 @@ import { formatLevelValues } from "./formatters";
 export function parseSpellTooltip(
   text: string | undefined,
   spell?: ChampionSpell,
-  level: number = 1,
-  showAllLevels: boolean = true,
-  communityDragonData?: Record<string, (number | string)[]>
+  communityDragonData?: Record<string, number[]>
 ): string {
   if (!text) return "";
 
@@ -28,7 +26,7 @@ export function parseSpellTooltip(
   result = convertXmlTagsToHtml(result);
 
   // 2. 변수 치환 (XML 태그 변환 후 수행)
-  result = replaceVariables(result, spell, level, showAllLevels, communityDragonData);
+  result = replaceVariables(result, spell,  communityDragonData);
 
   // 3. HTML 정리
   result = sanitizeHtml(result);
@@ -55,7 +53,7 @@ export function parseSpellDescription(
   result = convertXmlTagsToHtml(result);
 
   // 변수 치환 (간단한 버전)
-  result = replaceVariables(result, spell, 1);
+  result = replaceVariables(result, spell);
 
   return result;
 }

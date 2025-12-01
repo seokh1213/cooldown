@@ -1,18 +1,21 @@
-import { ChampionSpell } from "@/types";
-import { formatNumber, formatLevelValues } from "./formatters";
+import {ChampionSpell} from "@/types";
+import {formatLevelValues, formatNumber} from "./formatters";
+import {parseExpression, ParseResult} from "@/components/features/ChampionComparison/utils.ts";
 
 /**
  * 변수 치환 ({{ variable }} 형식)
  * 레벨별 값은 "/" 형식으로 표시
  * HTML 태그 내부의 변수도 치환하되, 태그 구조는 보존
+ * @param text
+ * @param spell
+ * @param level
+ * @param showAllLevels
  * @param communityDragonData Community Dragon에서 가져온 스킬 데이터 (선택적)
  */
 export function replaceVariables(
   text: string,
   spell?: ChampionSpell,
-  level: number = 1,
-  showAllLevels: boolean = true,
-  communityDragonData?: Record<string, (number | string)[]>
+  communityDragonData?: Record<string, Record<string, number[]>>
 ): string {
   if (!spell) return text;
 
@@ -21,22 +24,21 @@ export function replaceVariables(
   // 이미 치환된 변수를 추적하여 중복 방지
   const replacedVars = new Set<string>();
 
-  // 중첩된 변수 패턴 처리 (예: {{Spell_GangplankQWrapper_Tooltip_{{ gamemodeinteger }}}})
   // 먼저 중첩된 패턴을 제거하거나 처리
-  result = result.replace(/\{\{([^}]*\{\{[^}]*\}\}[^}]*)\}\}/g, () => {
+  result = result.replace(/\{\{([^}]*\{\{[^}]*}}[^}]*)}}/g, () => {
     // 중첩된 변수 패턴은 제거 (게임 모드별 tooltip 등은 처리 불가)
     return "";
   });
 
   // Spell_*_Tooltip 패턴 제거 (Community Dragon에서도 치환이 안되는 값)
-  result = result.replace(/\{\{Spell_[^}]*Tooltip[^}]*\}\}/gi, "");
+  result = result.replace(/\{\{Spell_[^}]*Tooltip[^}]*}}/gi, "");
 
   // spellmodifierdescriptionappend 단독 패턴 제거
-  result = result.replace(/\{\{spellmodifierdescriptionappend\}\}/gi, "");
+  result = result.replace(/\{\{spellmodifierdescriptionappend}}/gi, "");
 
   // {{ variable }} 패턴 찾기 (HTML 태그 내부도 포함)
   // 하지만 HTML 태그 자체는 건드리지 않음
-  const variableRegex = /\{\{([^}]+)\}\}/g;
+  const variableRegex = /\{\{([^}]+)}}/g;
 
   result = result.replace(variableRegex, (_match, variableName) => {
     const trimmedVar = variableName.trim();
@@ -57,12 +59,12 @@ export function replaceVariables(
       return "";
     }
 
-    // 변수 치환 로직 (기존 코드에서 가져옴)
+    console.log(trimmedVar, spell, communityDragonData)
+
+    // 변수 치환 로직
     const replacement = replaceVariable(
       trimmedVar,
       spell,
-      level,
-      showAllLevels,
       communityDragonData,
       replacedVars
     );
@@ -96,329 +98,336 @@ export function replaceVariables(
   return result;
 }
 
-/**
- * 개별 변수 치환 로직
- */
-function replaceVariable(
+// ====================== 타입 정의 ======================
+
+type Value = number | number[];
+
+interface ChampionSpell {
+  maxrank: number;
+}
+
+interface ParseResult {
+  type: "plain" | "formula";
+  variable: string;
+  operator?: "*" | "+";
+  operand?: number;
+}
+
+interface CommunityDragonSpellData {
+  DataValues?: Record<string, number[]>;
+  mSpellCalculations?: Record<string, any>;
+}
+
+// 프로젝트에 이미 있다고 가정
+declare function parseExpression(raw: string): ParseResult;
+declare function formatNumber(n: number): string;
+
+// ====================== 유틸 함수 ======================
+
+function isVector(v: Value): v is number[] {
+  return Array.isArray(v);
+}
+
+function toVector(v: Value, length: number): number[] {
+  if (Array.isArray(v)) return v;
+  return Array.from({ length }, () => v);
+}
+
+function binaryOp(a: Value, b: Value, op: (x: number, y: number) => number): Value {
+  if (!isVector(a) && !isVector(b)) {
+    return op(a, b);
+  }
+  const aVec = isVector(a) ? a : toVector(a, isVector(b) ? b.length : 1);
+  const bVec = isVector(b) ? b : toVector(b, aVec.length);
+
+  if (aVec.length !== bVec.length) {
+    throw new Error(`Vector length mismatch: ${aVec.length} vs ${bVec.length}`);
+  }
+
+  return aVec.map((x, i) => op(x, bVec[i]));
+}
+
+function add(a: Value, b: Value): Value {
+  return binaryOp(a, b, (x, y) => x + y);
+}
+
+function mul(a: Value, b: Value): Value {
+  return binaryOp(a, b, (x, y) => x * y);
+}
+
+// ---------------------- DataValues 처리 ----------------------
+
+// 0번 인덱스는 버퍼, 1 ~ maxRank 까지만 사용
+// 모든 값이 같으면 스칼라, 아니면 벡터
+function getDataValueByName(
+  dataValues: Record<string, number[]>,
+  key: string,
+  maxRank: number
+): Value | null {
+  if (!key || typeof key !== 'string') return null;
+  const entry = Object.entries(dataValues).find(
+    ([name]) => name != null && name.toLowerCase() === key.toLowerCase()
+  );
+  if (!entry) return null;
+
+  const [, raw] = entry;
+  const levelData = raw.slice(1, maxRank + 1); // 여기서 slice(1, maxRank+1)
+
+  if (levelData.length === 0) return null;
+
+  const first = levelData[0];
+  const isScalar = levelData.every(v => v === first);
+  return isScalar ? first : levelData;
+}
+
+// {{ VAR * 100 }}, {{ VAR + 3 }} 같은 템플릿용 (DataValues 전용으로 쓰는 느낌)
+function applyFormulaToValue(value: Value, parseResult: ParseResult): Value {
+  if (parseResult.type !== "formula" || !parseResult.operator || parseResult.operand == null) {
+    return value;
+  }
+
+  const { operator, operand } = parseResult;
+
+  if (operator === "*") {
+    if (isVector(value)) return value.map(v => v * operand);
+    return value * operand;
+  }
+
+  if (operator === "+") {
+    if (isVector(value)) return value.map(v => v + operand);
+    return value + operand;
+  }
+
+  return value;
+}
+
+function valueToTooltipString(value: Value): string {
+  if (isVector(value)) {
+    const agg = value.every(v => v === value[0]);
+    return agg ? formatNumber(value[0]) : value.map(v => formatNumber(v)).join("/");
+  }
+  return formatNumber(value);
+}
+
+// Value ×100 후 반올림
+function scaleBy100(value: Value): Value {
+  if (isVector(value)) return value.map(v => Math.round(v * 100));
+  return Math.round(value * 100);
+}
+
+// 스탯 코드 → 이름 (필요하면 확장)
+function getStatName(mStat?: number, mStatFormula?: number): string {
+  const s = mStat ?? mStatFormula;
+  if (s === 2) return "AD";
+  if (s === 3) return "AP";
+  return "stat";
+}
+
+// ====================== 메인 엔트리 ======================
+
+export function replaceVariable(
   trimmedVar: string,
   spell: ChampionSpell,
-  level: number,
-  showAllLevels: boolean,
-  communityDragonData?: Record<string, (number | string)[]>,
+  communityDragonData?: CommunityDragonSpellData,
   _replacedVars?: Set<string>
 ): string | null {
-  // ammo recharge time 변수 처리
-  if (
-    trimmedVar.includes("ammorechargetime") ||
-    trimmedVar.includes("ammorecharge")
-  ) {
-    // 새로운 구조 지원: DataValues가 있으면 그것을 사용, 없으면 전체 객체 사용 (호환성)
-    const dataValues = (communityDragonData as any)?.DataValues || communityDragonData;
-    if (dataValues && dataValues["mAmmoRechargeTime"]) {
-      const ammoRechargeTime = dataValues["mAmmoRechargeTime"];
-      if (Array.isArray(ammoRechargeTime) && ammoRechargeTime.length > 0) {
-        if (showAllLevels && ammoRechargeTime.length > 1) {
-          const startIndex = 1;
-          const numericValues = ammoRechargeTime
-            .slice(startIndex)
-            .map((v) => (typeof v === "number" ? v : parseFloat(String(v))));
-          return formatLevelValues(numericValues, spell.maxrank, false);
-        } else if (ammoRechargeTime.length > level) {
-          const value = ammoRechargeTime[level];
-          return formatNumber(value);
-        }
-      }
-    }
-  }
+  const parseResult = parseExpression(trimmedVar);
 
-  // 쿨타임 변수 처리
-  if (trimmedVar.includes("cooldown") && !trimmedVar.includes("decrease")) {
-    if (showAllLevels && spell.cooldownBurn) {
-      const values = spell.cooldownBurn.split("/").map((v) => parseFloat(v) || 0);
-      return formatLevelValues(values, spell.maxrank);
-    }
-    if (spell.cooldown && spell.cooldown.length >= level) {
-      const cd = spell.cooldown[level - 1];
-      if (cd !== undefined && cd !== null && cd !== "") {
-        return formatNumber(cd);
-      }
-    }
-    if (spell.cooldownBurn) {
-      const values = spell.cooldownBurn.split("/").map((v) => parseFloat(v) || 0);
-      if (values.length >= level && values[level - 1]) {
-        return formatNumber(values[level - 1]);
-      }
-    }
-  }
+  // 1. DataValues 먼저 시도
+  const byData = replaceData(parseResult, spell, communityDragonData);
+  if (byData !== null) return byData;
 
-  // range 변수 처리
-  if (trimmedVar.includes("range") || trimmedVar.includes("attackrangebonus")) {
-    if (showAllLevels && spell.rangeBurn) {
-      const values = spell.rangeBurn.split("/").map((v) => parseFloat(v) || 0);
-      return formatLevelValues(values, spell.maxrank);
-    }
-    if (spell.range && spell.range.length >= level) {
-      const range = spell.range[level - 1];
-      if (range !== undefined && range !== null && range !== "") {
-        return formatNumber(range);
-      }
-    }
-    if (spell.rangeBurn) {
-      if (showAllLevels) {
-        const values = spell.rangeBurn.split("/").map((v) => parseFloat(v) || 0);
-        return formatLevelValues(values, spell.maxrank);
-      }
-      const values = spell.rangeBurn.split("/").map((v) => parseFloat(v) || 0);
-      if (values.length >= level && values[level - 1]) {
-        return formatNumber(values[level - 1]);
-      }
-    }
-  }
-
-  // cost 변수 처리
-  if (
-    trimmedVar.includes("cost") ||
-    trimmedVar.includes("mana") ||
-    trimmedVar.includes("energy")
-  ) {
-    if (showAllLevels && spell.costBurn && spell.costBurn.includes("/")) {
-      const values = spell.costBurn.split("/").map((v) => parseFloat(v) || 0);
-      return formatLevelValues(values, spell.maxrank);
-    }
-    if (spell.cost && spell.cost.length >= level) {
-      const cost = spell.cost[level - 1];
-      if (cost !== undefined && cost !== null && cost !== "") {
-        return formatNumber(cost);
-      }
-    }
-    if (spell.costBurn) {
-      if (showAllLevels && spell.costBurn.includes("/")) {
-        const values = spell.costBurn.split("/").map((v) => parseFloat(v) || 0);
-        return formatLevelValues(values, spell.maxrank);
-      }
-      const values = spell.costBurn.split("/").map((v) => parseFloat(v) || 0);
-      if (values.length >= level && values[level - 1]) {
-        return formatNumber(values[level - 1]);
-      }
-    }
-  }
-
-  // effectBurn 배열에서 값 찾기
-  const effectMatch = trimmedVar.match(/^e(\d+)$/i);
-  if (effectMatch && spell.effectBurn && spell.effectBurn.length > 0) {
-    const effectIndex = parseInt(effectMatch[1]);
-    if (effectIndex >= 0 && effectIndex < spell.effectBurn.length) {
-      const effectBurnValue = spell.effectBurn[effectIndex];
-      if (effectBurnValue && effectBurnValue !== "0" && effectBurnValue !== null) {
-        if (typeof effectBurnValue === "string" && effectBurnValue.includes("/")) {
-          if (showAllLevels) {
-            const values = effectBurnValue.split("/").map((v) => parseFloat(v) || 0);
-            return formatLevelValues(values, spell.maxrank);
-          }
-          const values = effectBurnValue.split("/").map((v) => parseFloat(v) || 0);
-          if (values.length >= level && values[level - 1] && values[level - 1] !== 0) {
-            return formatNumber(values[level - 1]);
-          }
-        } else {
-          if (effectBurnValue !== "0") {
-            return formatNumber(effectBurnValue);
-          }
-        }
-      }
-    }
-  }
-
-  // Community Dragon 데이터에서 찾기
-  if (communityDragonData) {
-    // 새로운 구조 지원: DataValues가 있으면 그것을 사용, 없으면 전체 객체 사용 (호환성)
-    const dataValues = (communityDragonData as any)?.DataValues || communityDragonData;
-    const replacement = findInCommunityDragonData(
-      trimmedVar,
-      spell,
-      level,
-      showAllLevels,
-      dataValues as Record<string, (number | string)[]>,
-      communityDragonData as any
-    );
-    if (replacement !== null) {
-      return replacement;
-    }
-  }
-
-  return null;
+  // 2. 안 되면 mSpellCalculations
+  return replaceCalculateData(parseResult, spell, communityDragonData);
 }
 
-/**
- * Community Dragon 데이터에서 변수 찾기
- */
-function findInCommunityDragonData(
-  trimmedVar: string,
+// ====================== DataValues 처리 ======================
+
+function replaceData(
+  parseResult: ParseResult,
   spell: ChampionSpell,
-  level: number,
-  showAllLevels: boolean,
-  communityDragonData: Record<string, (number | string)[]>,
-  fullCommunityDragonData?: Record<string, any>
+  communityDragonData?: CommunityDragonSpellData
 ): string | null {
-  // 먼저 mSpellCalculations에서 계산 공식 찾기 시도
-  if (fullCommunityDragonData?.mSpellCalculations) {
-    const calculationResult = findInSpellCalculations(
-      trimmedVar,
-      spell,
-      level,
-      showAllLevels,
-      fullCommunityDragonData.mSpellCalculations,
-      communityDragonData
-    );
-    if (calculationResult !== null) {
-      return calculationResult;
-    }
-  }
+  const dataValues = communityDragonData?.DataValues;
+  if (!dataValues) return null;
 
-  // 수식이 포함된 변수 처리 (예: "armorshredpercent*100")
-  const mathMatch = trimmedVar.match(/^([a-zA-Z_][a-zA-Z0-9_]*)\s*([*+-])\s*([0-9.]+)$/);
-  if (mathMatch) {
-    const [, varName, operator, multiplier] = mathMatch;
-    const multiplierNum = parseFloat(multiplier);
-    return processMathVariable(
-      varName,
-      operator,
-      multiplierNum,
-      spell,
-      level,
-      showAllLevels,
-      communityDragonData
-    );
-  }
+  const value = getDataValueByName(dataValues, parseResult.variable, spell.maxrank);
+  if (value == null) return null;
 
-  // 단순 변수명만 있는 경우
-  return processSimpleVariable(
-    trimmedVar,
-    spell,
-    level,
-    showAllLevels,
-    communityDragonData
+  const withFormula = applyFormulaToValue(value, parseResult);
+  return valueToTooltipString(withFormula);
+}
+
+// ====================== mSpellCalculations 처리 ======================
+
+interface StatPart {
+  name: string;   // "AD", "AP" 등
+  ratio: Value;   // 0.5 → 나중에 50 (%)
+}
+
+interface CalcResult {
+  base: Value;          // 순수 숫자 (예: 0.02/0.04/0.06, 혹은 2.75 등)
+  statParts: StatPart[]; // + 0.5 AD 같은 비율
+  isPercent?: boolean;   // mDisplayAsPercent
+}
+
+function replaceCalculateData(
+  parseResult: ParseResult,
+  spell: ChampionSpell,
+  communityDragonData?: CommunityDragonSpellData
+): string | null {
+  const spellCalcs = communityDragonData?.mSpellCalculations;
+  const dataValues = communityDragonData?.DataValues;
+  if (!spellCalcs || !dataValues) return null;
+
+  const entry = Object.entries(spellCalcs).find(
+    ([k]) => k != null && k.toLowerCase() === parseResult.variable.toLowerCase()
   );
-}
+  if (!entry) return null;
 
-/**
- * 수식 변수 처리 (예: armorshredpercent*100)
- */
-function processMathVariable(
-  varName: string,
-  operator: string,
-  multiplier: number,
-  spell: ChampionSpell,
-  level: number,
-  showAllLevels: boolean,
-  communityDragonData: Record<string, (number | string)[]>
-): string | null {
-  const variableMapping: Record<string, string> = {
-    armorshredpercent: "ArmorShredPercent",
-    attackrangebonus: "AttackRangeBonus",
-    shredduration: "ShredDuration",
-  };
+  const [calcKey] = entry;
 
-  const mappedVarName = variableMapping[varName.toLowerCase()] || varName;
-
-  if (communityDragonData[mappedVarName] && Array.isArray(communityDragonData[mappedVarName])) {
-    const values = communityDragonData[mappedVarName];
-    if (showAllLevels && values.length > 1) {
-      const startIndex = values.length > 1 ? 1 : 0;
-      const calculatedValues = values.slice(startIndex).map((v) => {
-        const num = typeof v === "number" ? v : parseFloat(String(v));
-        if (operator === "*") return num * multiplier;
-        if (operator === "+") return num + multiplier;
-        if (operator === "-") return num - multiplier;
-        return num;
-      });
-      return formatLevelValues(calculatedValues, spell.maxrank, false);
-    } else if (values.length > level) {
-      const value = values[level];
-      const num = typeof value === "number" ? value : parseFloat(String(value));
-      let result: number;
-      if (operator === "*") result = num * multiplier;
-      else if (operator === "+") result = num + multiplier;
-      else if (operator === "-") result = num - multiplier;
-      else result = num;
-      return formatNumber(result);
+  function evalDataValue(name: string): Value {
+    if (!name || typeof name !== 'string') {
+      throw new Error(`DataValue name is invalid: ${name}`);
     }
+    const v = getDataValueByName(dataValues, name, spell.maxrank);
+    if (v == null) throw new Error(`DataValue "${name}" missing`);
+    return v;
   }
 
-  return null;
-}
+  function evalCalc(
+    key: string,
+    visited: Set<string> = new Set()
+  ): CalcResult {
+    const raw = spellCalcs[key];
+    if (!raw) throw new Error(`SpellCalculation "${key}" not found`);
 
-/**
- * 단순 변수 처리
- */
-function processSimpleVariable(
-  trimmedVar: string,
-  spell: ChampionSpell,
-  level: number,
-  showAllLevels: boolean,
-  communityDragonData: Record<string, (number | string)[]>
-): string | null {
-  const variableMapping: Record<string, string> = {
-    attackrangebonus: "AttackRangeBonus",
-    bonusdamagett: "BaseDamage",
-    shredduration: "ShredDuration",
-    armorshredpercent: "ArmorShredPercent",
-    cooldowndecrease: "CooldownDecrease",
-    stealthduration: "StealthDuration",
-    cloneduration: "CloneDuration",
-    clonedamagemod: "CloneDamageMod",
-    attackrangebonusnl: "AttackRangeBonus",
-    shreddurationnl: "ShredDuration",
-  };
+    if (visited.has(key)) throw new Error(`Circular reference in mSpellCalculations: ${key}`);
+    visited.add(key);
 
-  const mappedVarName = variableMapping[trimmedVar.toLowerCase()];
-  if (mappedVarName && communityDragonData[mappedVarName]) {
-    const values = communityDragonData[mappedVarName];
-    if (Array.isArray(values) && values.length > 0) {
-      if (showAllLevels && values.length > 1) {
-        const startIndex = 1;
-        const numericValues = values.slice(startIndex).map((v) => {
-          if (mappedVarName === "ArmorShredPercent") {
-            return Number(v) * 100;
-          }
-          return typeof v === "number" ? v : parseFloat(String(v));
-        });
-        const formatted = formatLevelValues(numericValues, spell.maxrank, false);
-        if (mappedVarName === "ArmorShredPercent") {
-          return `${formatted}%`;
-        }
-        return formatted;
-      } else if (values.length > level) {
-        const value = values[level];
-        if (mappedVarName === "ArmorShredPercent") {
-          const result = Number(value) * 100;
-          return `${formatNumber(result)}%`;
-        }
-        return formatNumber(value);
+    // GameCalculationModified: 내부 계산 결과(base, statParts)를 multiplier로 스케일
+    if (raw.__type === "GameCalculationModified") {
+      if (!raw.mModifiedGameCalculation) {
+        throw new Error(`mModifiedGameCalculation is missing`);
       }
+      const inner = evalCalc(raw.mModifiedGameCalculation, visited);
+
+      if (!raw.mMultiplier || !raw.mMultiplier.mDataValue) {
+        return inner;
+      }
+
+      const mult = evalDataValue(raw.mMultiplier.mDataValue);
+      const newBase = mul(inner.base, mult);
+      const newStatParts: StatPart[] = inner.statParts.map(sp => ({
+        name: sp.name,
+        ratio: mul(sp.ratio, mult),
+      }));
+
+      return {
+        base: newBase,
+        statParts: newStatParts,
+        isPercent: inner.isPercent,
+      };
     }
+
+    // GameCalculation: mFormulaParts를 숫자 base + 스탯 비율(statParts)로 분리
+    if (raw.__type === "GameCalculation") {
+      const parts = raw.mFormulaParts ?? [];
+      let base: Value = 0;
+      const statParts: StatPart[] = [];
+      const isPercent: boolean = !!raw.mDisplayAsPercent;
+
+      for (const part of parts) {
+        const partType = part.__type as string;
+
+        if (partType === "NamedDataValueCalculationPart") {
+          // BaseDamage, BasePercentMaxHPDmgPerSec 등의 순수 값
+          if (!part.mDataValue) {
+            console.warn(`NamedDataValueCalculationPart missing mDataValue`, part);
+            continue;
+          }
+          const v = evalDataValue(part.mDataValue);
+          base = add(base, v);
+        } else if (partType === "StatByNamedDataValueCalculationPart") {
+          // ADRatioPerSecond, ADRatio 등: 스탯 계수 → 나중에 50% AD 같은 텍스트로 사용
+          if (!part.mDataValue) {
+            console.warn(`StatByNamedDataValueCalculationPart missing mDataValue`, part);
+            continue;
+          }
+          const ratio = evalDataValue(part.mDataValue); // 0.5 or 벡터
+          const name = getStatName(part.mStat, part.mStatFormula);
+          statParts.push({ name, ratio });
+        } else if (partType === "ByCharLevelBreakpointsCalculationPart") {
+          let b = part.mLevel1Value as number;
+          for (const bp of part.mBreakpoints ?? []) {
+            b += bp.mAdditionalBonusAtThisLevel;
+          }
+          base = add(base, b);
+        }
+      }
+
+      return { base, statParts, isPercent };
+    }
+
+    throw new Error(`Unsupported mSpellCalculation type: ${raw.__type}`);
   }
 
-  // 유사한 변수명 찾기
-  const varLower = trimmedVar.toLowerCase();
-  const foundKey = Object.keys(communityDragonData).find(
-    (key) => key.toLowerCase() === varLower
-  );
-
-  if (foundKey && Array.isArray(communityDragonData[foundKey])) {
-    const values = communityDragonData[foundKey];
-    if (showAllLevels && values.length > 1) {
-      const startIndex = 1;
-      const numericValues = values.slice(startIndex).map((v) =>
-        typeof v === "number" ? v : parseFloat(String(v))
-      );
-      return formatLevelValues(numericValues, spell.maxrank, false);
-    } else if (values.length > level) {
-      return formatNumber(values[level]);
-    }
+  let result: CalcResult;
+  try {
+    result = evalCalc(calcKey);
+  } catch (e) {
+    console.error(e);
+    return null;
   }
 
-  return null;
+  // === 1) base 변환 ===
+  let baseScaled: Value;
+
+  if (result.isPercent) {
+    // mDisplayAsPercent == true → 퍼센트 변환 필요
+    baseScaled = scaleBy100(result.base);
+  } else {
+    // 일반 수치는 ×100 하면 안됨
+    baseScaled = result.base;
+  }
+
+  // === 2) 스탯 계수 변환 (항상 percent) ===
+  const statPartsScaled: StatPart[] = result.statParts.map(sp => ({
+    name: sp.name,
+    ratio: scaleBy100(sp.ratio),  // 0.5 → 50%, 0.2 → 20%
+  }));
+
+  // === 2) base 문자열 만들기 (mDisplayAsPercent === true이면 "%" 붙이기) ===
+  let baseStr: string | null = null;
+
+  const isZeroVector =
+    isVector(baseScaled) && baseScaled.length > 0 && baseScaled.every(v => v === 0);
+  const isZeroScalar = !isVector(baseScaled) && baseScaled === 0;
+
+  if (!isZeroVector && !isZeroScalar) {
+    const rawStr = valueToTooltipString(baseScaled); // "4/8/12" 또는 "275"
+    baseStr = result.isPercent ? `${rawStr}%` : rawStr; // 퍼센트면 끝에 % 하나 붙인다
+  }
+
+  // === 3) 스탯 계수 문자열 만들기 (항상 % + 스탯 이름) ===
+  const statStrings: string[] = statPartsScaled.map(sp => {
+    const ratioStr = valueToTooltipString(sp.ratio); // "50" or "50/60/70"
+    return `${ratioStr}% ${sp.name}`;               // "50% AD", "50/60/70% AD"
+  });
+
+  // === 4) 최종 문자열 합치기 ===
+  const parts: string[] = [];
+  if (baseStr) parts.push(baseStr);
+  parts.push(...statStrings);
+
+  if (parts.length === 0) return null;
+
+  // 예: "20/45/70/95/120 + 50% AD"
+  // 예: "4/8/12/16/20/24/28%"
+  return parts.join(" + ");
 }
+
 
 /**
  * 중복된 퍼센트 패턴 제거
@@ -429,14 +438,14 @@ function removeDuplicatePercentPatterns(result: string): string {
   const percentRegex = /(\d+(?:\/\d+)+)%/g;
   let match;
   while ((match = percentRegex.exec(result)) !== null) {
-    percentMatches.push({ value: match[1], index: match.index });
+    percentMatches.push({value: match[1], index: match.index});
   }
 
   // 텍스트에서 모든 소수점 패턴 찾기 (0.숫자/0.숫자 형식)
   const decimalRegex = /(0\.[0-9]+(?:\/0?\.[0-9]+)+)/g;
   const decimalMatches: Array<{ value: string; index: number }> = [];
   while ((match = decimalRegex.exec(result)) !== null) {
-    decimalMatches.push({ value: match[1], index: match.index });
+    decimalMatches.push({value: match[1], index: match.index});
   }
 
   // 각 소수점 패턴이 퍼센트 값과 같은지 확인하고 제거
@@ -473,113 +482,5 @@ function removeDuplicatePercentPatterns(result: string): string {
   }
 
   return result;
-}
-
-/**
- * mSpellCalculations에서 계산 공식 찾기
- * 계산 공식의 계수를 추출하여 표시 (예: AD 계수 0.5 -> 50%)
- */
-function findInSpellCalculations(
-  trimmedVar: string,
-  spell: ChampionSpell,
-  level: number,
-  showAllLevels: boolean,
-  mSpellCalculations: Record<string, any>,
-  dataValues: Record<string, (number | string)[]>
-): string | null {
-  // 변수명을 계산 공식 이름으로 매핑 시도
-  const varLower = trimmedVar.toLowerCase();
-  
-  // 일반적인 계산 공식 이름 패턴 매칭
-  const calculationNameMap: Record<string, string[]> = {
-    "damage": ["TotalDamage", "ShotDamage", "Damage", "BaseDamage"],
-    "totaldamage": ["TotalDamage", "ShotDamage"],
-    "shotdamage": ["ShotDamage"],
-    "basedamage": ["BaseDamage"],
-    "adratio": ["TotalDamage", "ShotDamage", "Damage"],
-    "ad": ["TotalDamage", "ShotDamage", "Damage"],
-    "ratio": ["TotalDamage", "ShotDamage", "Damage"],
-  };
-
-  // 변수명에 따라 계산 공식 이름 후보 찾기
-  let calculationNames: string[] = [];
-  for (const [key, names] of Object.entries(calculationNameMap)) {
-    if (varLower.includes(key)) {
-      calculationNames.push(...names);
-    }
-  }
-
-  // 직접 매칭도 시도
-  if (mSpellCalculations[trimmedVar]) {
-    calculationNames.unshift(trimmedVar);
-  }
-  if (mSpellCalculations[varLower]) {
-    calculationNames.unshift(varLower);
-  }
-
-  // 각 계산 공식 후보를 확인
-  for (const calcName of calculationNames) {
-    const calculation = mSpellCalculations[calcName];
-    if (!calculation || !calculation.mFormulaParts || !Array.isArray(calculation.mFormulaParts)) {
-      continue;
-    }
-
-    // AD 계수 추출 (StatByCoefficientCalculationPart 또는 StatByNamedDataValueCalculationPart)
-    let adCoefficient: number | null = null;
-    let baseDamage: (number | string)[] | null = null;
-
-    for (const part of calculation.mFormulaParts) {
-      const partType = part.__type;
-
-      // StatByCoefficientCalculationPart: 스탯 * 계수 (예: AD * 0.5)
-      if (partType === "StatByCoefficientCalculationPart" && part.mCoefficient !== undefined) {
-        const coeff = typeof part.mCoefficient === "number" ? part.mCoefficient : parseFloat(String(part.mCoefficient));
-        // mStat이 2면 AD (Attack Damage)
-        if (part.mStat === 2 || part.mStat === undefined) {
-          adCoefficient = coeff;
-        }
-      }
-
-      // StatByNamedDataValueCalculationPart: 스탯 * DataValue (예: AD * ADRatio)
-      if (partType === "StatByNamedDataValueCalculationPart" && part.mDataValue && part.mStat === 2) {
-        const ratioName = part.mDataValue;
-        if (dataValues[ratioName] && Array.isArray(dataValues[ratioName])) {
-          // ADRatio 값이 있으면 사용 (보통 1.0이지만 0.5일 수도 있음)
-          const ratioValues = dataValues[ratioName];
-          if (showAllLevels && ratioValues.length > 1) {
-            const startIndex = 1;
-            const numericValues = ratioValues.slice(startIndex).map((v) => {
-              const num = typeof v === "number" ? v : parseFloat(String(v));
-              return num * 100; // 퍼센트로 변환
-            });
-            return formatLevelValues(numericValues, spell.maxrank, false) + "%";
-          } else if (ratioValues.length > level) {
-            const value = ratioValues[level];
-            const num = typeof value === "number" ? value : parseFloat(String(value));
-            return formatNumber(num * 100) + "%";
-          }
-        }
-      }
-
-      // NamedDataValueCalculationPart: 기본 피해량
-      if (partType === "NamedDataValueCalculationPart" && part.mDataValue) {
-        const dataValueName = part.mDataValue;
-        if (dataValues[dataValueName] && Array.isArray(dataValues[dataValueName])) {
-          baseDamage = dataValues[dataValueName];
-        }
-      }
-    }
-
-    // AD 계수가 있으면 퍼센트로 표시
-    if (adCoefficient !== null) {
-      const percentValue = adCoefficient * 100;
-      return formatNumber(percentValue) + "%";
-    }
-
-    // 기본 피해량이 있고 AD 계수도 있으면 함께 표시할 수 있지만, 여기서는 계수만 반환
-    // (기본 피해량은 다른 곳에서 처리됨)
-  }
-
-  return null;
 }
 
