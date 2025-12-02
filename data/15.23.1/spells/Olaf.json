@@ -1,0 +1,756 @@
+{
+  "version": "15.23.1",
+  "championId": "Olaf",
+  "spellData": {
+    "0": {
+      "DataValues": {
+        "MinimumRange": [
+          425,
+          425,
+          425,
+          425,
+          425,
+          425,
+          425
+        ],
+        "SlowAmount": [
+          0.20000000298023224,
+          0.25,
+          0.30000001192092896,
+          0.3499999940395355,
+          0.4000000059604645,
+          0.44999998807907104,
+          0.5
+        ],
+        "ShredAmount": [
+          0.20000000298023224,
+          0.20000000298023224,
+          0.20000000298023224,
+          0.20000000298023224,
+          0.20000000298023224,
+          0.20000000298023224,
+          0.20000000298023224
+        ],
+        "DebuffDuration": [
+          4,
+          4,
+          4,
+          4,
+          4,
+          4,
+          4
+        ],
+        "MinimumCooldown": [
+          2.5,
+          2.5,
+          2.5,
+          2.5,
+          2.5,
+          2.5,
+          2.5
+        ],
+        "BaseDamage": [
+          10,
+          60,
+          110,
+          160,
+          210,
+          260,
+          310
+        ],
+        "MonsterDamage": [
+          -5,
+          10,
+          25,
+          40,
+          55,
+          70,
+          85
+        ]
+      },
+      "mSpellCalculations": {
+        "TotalDamage": {
+          "mFormulaParts": [
+            {
+              "mDataValue": "BaseDamage",
+              "__type": "NamedDataValueCalculationPart"
+            },
+            {
+              "mStat": 2,
+              "mStatFormula": 2,
+              "mCoefficient": 1,
+              "__type": "StatByCoefficientCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        },
+        "TooltipCDRefund": {
+          "mMultiplier": {
+            "__type": "CooldownMultiplierCalculationPart"
+          },
+          "tooltipOnly": true,
+          "mFormulaParts": [
+            {
+              "mDataValue": "MinimumCooldown",
+              "__type": "NamedDataValueCalculationPart"
+            }
+          ],
+          "mPrecision": 1,
+          "__type": "GameCalculation"
+        }
+      }
+    },
+    "1": {
+      "DataValues": {
+        "Attackspeed": [
+          0.30000001192092896,
+          0.4000000059604645,
+          0.5,
+          0.6000000238418579,
+          0.699999988079071,
+          0.800000011920929,
+          0.8999999761581421
+        ],
+        "Duration": [
+          5,
+          5,
+          5,
+          5,
+          5,
+          5,
+          5
+        ],
+        "ShieldPercMissingHP": [
+          0.17499999701976776,
+          0.17499999701976776,
+          0.17499999701976776,
+          0.17499999701976776,
+          0.17499999701976776,
+          0.17499999701976776,
+          0.17499999701976776
+        ],
+        "ShieldDuration": [
+          2.5,
+          2.5,
+          2.5,
+          2.5,
+          2.5,
+          2.5,
+          2.5
+        ],
+        "BaseShield": [
+          -20,
+          10,
+          40,
+          70,
+          100,
+          130,
+          160
+        ],
+        "ThresholdForMax": [
+          0.30000001192092896,
+          0.30000001192092896,
+          0.30000001192092896,
+          0.30000001192092896,
+          0.30000001192092896,
+          0.30000001192092896,
+          0.30000001192092896
+        ]
+      },
+      "mSpellCalculations": {
+        "ShieldCalc": {
+          "mSimpleTooltipCalculationDisplay": 6,
+          "mExpandedTooltipCalculationDisplay": 6,
+          "mFormulaParts": [
+            {
+              "mDataValue": "BaseShield",
+              "__type": "NamedDataValueCalculationPart"
+            },
+            {
+              "mStat": 16,
+              "mSubpart": {
+                "mStat": 12,
+                "mDataValue": "ShieldPercMissingHP",
+                "__type": "StatByNamedDataValueCalculationPart"
+              },
+              "__type": "StatBySubPartCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        },
+        "MaxShieldCalc": {
+          "mSimpleTooltipCalculationDisplay": 5,
+          "mExpandedTooltipCalculationDisplay": 5,
+          "mFormulaParts": [
+            {
+              "mDataValue": "BaseShield",
+              "__type": "NamedDataValueCalculationPart"
+            },
+            {
+              "mStat": 12,
+              "mSubpart": {
+                "mPart1": {
+                  "mDataValue": "ShieldPercMissingHP",
+                  "__type": "NamedDataValueCalculationPart"
+                },
+                "mPart2": {
+                  "mSubparts": [
+                    {
+                      "mNumber": 1,
+                      "__type": "NumberCalculationPart"
+                    },
+                    {
+                      "mPart1": {
+                        "mNumber": -1,
+                        "__type": "NumberCalculationPart"
+                      },
+                      "mPart2": {
+                        "mDataValue": "ThresholdForMax",
+                        "__type": "NamedDataValueCalculationPart"
+                      },
+                      "__type": "ProductOfSubPartsCalculationPart"
+                    }
+                  ],
+                  "__type": "SumOfSubPartsCalculationPart"
+                },
+                "__type": "ProductOfSubPartsCalculationPart"
+              },
+              "__type": "StatBySubPartCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        }
+      }
+    },
+    "2": {
+      "DataValues": {
+        "Cast_Time_Base": [
+          0.25,
+          0.25,
+          0.25,
+          0.25,
+          0.25,
+          0.25,
+          0.25
+        ],
+        "Cast_Time_Min": [
+          0.17499999701976776,
+          0.17499999701976776,
+          0.17499999701976776,
+          0.17499999701976776,
+          0.17499999701976776,
+          0.17499999701976776,
+          0.17499999701976776
+        ],
+        "Cast_Time_Attack_Speed_Cap": [
+          125,
+          125,
+          125,
+          125,
+          125,
+          125,
+          125
+        ]
+      },
+      "mSpellCalculations": {
+        "TotalDamage": {
+          "tooltipOnly": true,
+          "mFormulaParts": [
+            {
+              "mEffectIndex": 1,
+              "__type": "EffectValueCalculationPart"
+            },
+            {
+              "mStat": 2,
+              "mCoefficient": 0.5,
+              "__type": "StatByCoefficientCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        }
+      }
+    },
+    "3": {
+      "DataValues": {
+        "Resists": [
+          5,
+          10,
+          15,
+          20,
+          25,
+          30,
+          35
+        ],
+        "Duration": [
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3
+        ],
+        "FlatAD": [
+          0,
+          10,
+          20,
+          30,
+          40,
+          50,
+          60
+        ],
+        "PercentTotalADAmp": [
+          0.25,
+          0.25,
+          0.25,
+          0.25,
+          0.25,
+          0.25,
+          0.25
+        ],
+        "HasteDuration": [
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        "Haste": [
+          -0.05000000074505806,
+          0.20000000298023224,
+          0.44999998807907104,
+          0.699999988079071,
+          0.949999988079071,
+          1.2000000476837158,
+          1.4500000476837158
+        ],
+        "DurationExtension": [
+          2.5,
+          2.5,
+          2.5,
+          2.5,
+          2.5,
+          2.5,
+          2.5
+        ]
+      },
+      "mSpellCalculations": {
+        "AD": {
+          "mFormulaParts": [
+            {
+              "mDataValue": "FlatAD",
+              "__type": "NamedDataValueCalculationPart"
+            },
+            {
+              "mStat": 2,
+              "mDataValue": "PercentTotalADAmp",
+              "__type": "StatByNamedDataValueCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        }
+      }
+    },
+    "OlafAxeThrowCast": {
+      "DataValues": {
+        "MinimumRange": [
+          425,
+          425,
+          425,
+          425,
+          425,
+          425,
+          425
+        ],
+        "SlowAmount": [
+          0.20000000298023224,
+          0.25,
+          0.30000001192092896,
+          0.3499999940395355,
+          0.4000000059604645,
+          0.44999998807907104,
+          0.5
+        ],
+        "ShredAmount": [
+          0.20000000298023224,
+          0.20000000298023224,
+          0.20000000298023224,
+          0.20000000298023224,
+          0.20000000298023224,
+          0.20000000298023224,
+          0.20000000298023224
+        ],
+        "DebuffDuration": [
+          4,
+          4,
+          4,
+          4,
+          4,
+          4,
+          4
+        ],
+        "MinimumCooldown": [
+          2.5,
+          2.5,
+          2.5,
+          2.5,
+          2.5,
+          2.5,
+          2.5
+        ],
+        "BaseDamage": [
+          10,
+          60,
+          110,
+          160,
+          210,
+          260,
+          310
+        ],
+        "MonsterDamage": [
+          -5,
+          10,
+          25,
+          40,
+          55,
+          70,
+          85
+        ]
+      },
+      "mSpellCalculations": {
+        "TotalDamage": {
+          "mFormulaParts": [
+            {
+              "mDataValue": "BaseDamage",
+              "__type": "NamedDataValueCalculationPart"
+            },
+            {
+              "mStat": 2,
+              "mStatFormula": 2,
+              "mCoefficient": 1,
+              "__type": "StatByCoefficientCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        },
+        "TooltipCDRefund": {
+          "mMultiplier": {
+            "__type": "CooldownMultiplierCalculationPart"
+          },
+          "tooltipOnly": true,
+          "mFormulaParts": [
+            {
+              "mDataValue": "MinimumCooldown",
+              "__type": "NamedDataValueCalculationPart"
+            }
+          ],
+          "mPrecision": 1,
+          "__type": "GameCalculation"
+        }
+      }
+    },
+    "OlafFrenziedStrikes": {
+      "DataValues": {
+        "Attackspeed": [
+          0.30000001192092896,
+          0.4000000059604645,
+          0.5,
+          0.6000000238418579,
+          0.699999988079071,
+          0.800000011920929,
+          0.8999999761581421
+        ],
+        "Duration": [
+          5,
+          5,
+          5,
+          5,
+          5,
+          5,
+          5
+        ],
+        "ShieldPercMissingHP": [
+          0.17499999701976776,
+          0.17499999701976776,
+          0.17499999701976776,
+          0.17499999701976776,
+          0.17499999701976776,
+          0.17499999701976776,
+          0.17499999701976776
+        ],
+        "ShieldDuration": [
+          2.5,
+          2.5,
+          2.5,
+          2.5,
+          2.5,
+          2.5,
+          2.5
+        ],
+        "BaseShield": [
+          -20,
+          10,
+          40,
+          70,
+          100,
+          130,
+          160
+        ],
+        "ThresholdForMax": [
+          0.30000001192092896,
+          0.30000001192092896,
+          0.30000001192092896,
+          0.30000001192092896,
+          0.30000001192092896,
+          0.30000001192092896,
+          0.30000001192092896
+        ]
+      },
+      "mSpellCalculations": {
+        "ShieldCalc": {
+          "mSimpleTooltipCalculationDisplay": 6,
+          "mExpandedTooltipCalculationDisplay": 6,
+          "mFormulaParts": [
+            {
+              "mDataValue": "BaseShield",
+              "__type": "NamedDataValueCalculationPart"
+            },
+            {
+              "mStat": 16,
+              "mSubpart": {
+                "mStat": 12,
+                "mDataValue": "ShieldPercMissingHP",
+                "__type": "StatByNamedDataValueCalculationPart"
+              },
+              "__type": "StatBySubPartCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        },
+        "MaxShieldCalc": {
+          "mSimpleTooltipCalculationDisplay": 5,
+          "mExpandedTooltipCalculationDisplay": 5,
+          "mFormulaParts": [
+            {
+              "mDataValue": "BaseShield",
+              "__type": "NamedDataValueCalculationPart"
+            },
+            {
+              "mStat": 12,
+              "mSubpart": {
+                "mPart1": {
+                  "mDataValue": "ShieldPercMissingHP",
+                  "__type": "NamedDataValueCalculationPart"
+                },
+                "mPart2": {
+                  "mSubparts": [
+                    {
+                      "mNumber": 1,
+                      "__type": "NumberCalculationPart"
+                    },
+                    {
+                      "mPart1": {
+                        "mNumber": -1,
+                        "__type": "NumberCalculationPart"
+                      },
+                      "mPart2": {
+                        "mDataValue": "ThresholdForMax",
+                        "__type": "NamedDataValueCalculationPart"
+                      },
+                      "__type": "ProductOfSubPartsCalculationPart"
+                    }
+                  ],
+                  "__type": "SumOfSubPartsCalculationPart"
+                },
+                "__type": "ProductOfSubPartsCalculationPart"
+              },
+              "__type": "StatBySubPartCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        }
+      }
+    },
+    "OlafRecklessStrike": {
+      "DataValues": {
+        "Cast_Time_Base": [
+          0.25,
+          0.25,
+          0.25,
+          0.25,
+          0.25,
+          0.25,
+          0.25
+        ],
+        "Cast_Time_Min": [
+          0.17499999701976776,
+          0.17499999701976776,
+          0.17499999701976776,
+          0.17499999701976776,
+          0.17499999701976776,
+          0.17499999701976776,
+          0.17499999701976776
+        ],
+        "Cast_Time_Attack_Speed_Cap": [
+          125,
+          125,
+          125,
+          125,
+          125,
+          125,
+          125
+        ]
+      },
+      "mSpellCalculations": {
+        "TotalDamage": {
+          "tooltipOnly": true,
+          "mFormulaParts": [
+            {
+              "mEffectIndex": 1,
+              "__type": "EffectValueCalculationPart"
+            },
+            {
+              "mStat": 2,
+              "mCoefficient": 0.5,
+              "__type": "StatByCoefficientCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        }
+      }
+    },
+    "OlafRagnarok": {
+      "DataValues": {
+        "Resists": [
+          5,
+          10,
+          15,
+          20,
+          25,
+          30,
+          35
+        ],
+        "Duration": [
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3
+        ],
+        "FlatAD": [
+          0,
+          10,
+          20,
+          30,
+          40,
+          50,
+          60
+        ],
+        "PercentTotalADAmp": [
+          0.25,
+          0.25,
+          0.25,
+          0.25,
+          0.25,
+          0.25,
+          0.25
+        ],
+        "HasteDuration": [
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        "Haste": [
+          -0.05000000074505806,
+          0.20000000298023224,
+          0.44999998807907104,
+          0.699999988079071,
+          0.949999988079071,
+          1.2000000476837158,
+          1.4500000476837158
+        ],
+        "DurationExtension": [
+          2.5,
+          2.5,
+          2.5,
+          2.5,
+          2.5,
+          2.5,
+          2.5
+        ]
+      },
+      "mSpellCalculations": {
+        "AD": {
+          "mFormulaParts": [
+            {
+              "mDataValue": "FlatAD",
+              "__type": "NamedDataValueCalculationPart"
+            },
+            {
+              "mStat": 2,
+              "mDataValue": "PercentTotalADAmp",
+              "__type": "StatByNamedDataValueCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        }
+      }
+    },
+    "OlafBerzerkerRage": {
+      "DataValues": {
+        "AttackSpeedPerMissingHPPerc": [
+          0.008999999612569809,
+          0.008999999612569809,
+          0.008999999612569809,
+          0.008999999612569809,
+          0.008999999612569809,
+          0.008999999612569809,
+          0.008999999612569809
+        ],
+        "MaxStatsThreshold": [
+          0.30000001192092896,
+          0.30000001192092896,
+          0.30000001192092896,
+          0.30000001192092896,
+          0.30000001192092896,
+          0.30000001192092896,
+          0.30000001192092896
+        ]
+      },
+      "mSpellCalculations": {
+        "MaxAttackSpeed": {
+          "mFormulaParts": [
+            {
+              "mStartValue": 0.5,
+              "mEndValue": 1,
+              "mScaleByStatProgressionMultiplier": true,
+              "__type": "ByCharLevelInterpolationCalculationPart"
+            }
+          ],
+          "mDisplayAsPercent": true,
+          "__type": "GameCalculation"
+        },
+        "MaxLifeSteal": {
+          "mFormulaParts": [
+            {
+              "mStartValue": 0.07999999821186066,
+              "mEndValue": 0.25,
+              "mScaleByStatProgressionMultiplier": true,
+              "__type": "ByCharLevelInterpolationCalculationPart"
+            }
+          ],
+          "mDisplayAsPercent": true,
+          "__type": "GameCalculation"
+        }
+      }
+    }
+  }
+}
