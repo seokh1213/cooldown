@@ -3,8 +3,14 @@ name: Update Static Data
 on:
   schedule:
     # 30분마다 실행 (UTC 기준)
+    # 한국 시간으로는 매 시간 9분과 39분에 실행 (UTC+9)
     - cron: '*/30 * * * *'
   workflow_dispatch: # 수동 실행 가능
+  push:
+    branches:
+      - master
+    paths:
+      - '.github/workflows/update-static-data.yml'
 
 jobs:
   update-data:
