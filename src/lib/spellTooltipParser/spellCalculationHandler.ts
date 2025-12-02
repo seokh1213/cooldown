@@ -613,6 +613,9 @@ export function replaceCalculateData(
 
   // 예: "20/45/70/95/120 + 50% AD"
   // 예: "4/8/12/16/20/24/28%"
-  return `(${parts.join(" + ")})`;
+  const resultStr = parts.join(" + ");
+  // 단건일 때는 괄호를 추가하지 않음 (이미 각 항목이 괄호로 묶여있을 수 있음)
+  // 여러 항목이 합쳐진 경우에만 괄호로 묶음
+  return parts.length === 1 ? resultStr : `(${resultStr})`;
 }
 
