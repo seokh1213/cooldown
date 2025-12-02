@@ -12,8 +12,8 @@ export function formatNumber(value: string | number): string {
   // 정수인 경우 소수점 없이 반환
   if (num % 1 === 0) return num.toString();
 
-  // 소수점이 있는 경우 최대 2자리까지, 불필요한 0 제거
-  return parseFloat(num.toFixed(2)).toString();
+  // 소수점이 있는 경우 최대 3자리까지, 불필요한 0 제거
+  return parseFloat(num.toFixed(3)).toString();
 }
 
 /**

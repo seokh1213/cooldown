@@ -68,8 +68,11 @@ export function valueToTooltipString(value: Value): string {
  * Value ×100 후 반올림 (퍼센트 변환용)
  */
 export function scaleBy100(value: Value): Value {
-  if (isVector(value)) return value.map((v) => Math.round(v * 100));
-  return Math.round(value * 100);
+  // 기존에는 Math.round(v * 100) 으로 정수 퍼센트로 만들어 소수점이 모두 날아갔음.
+  // 이제는 소수 둘째 자리까지 살릴 수 있도록 "그냥 ×100"만 하고,
+  // 실제 반올림/표기는 formatNumber 쪽(최대 소수 2자리 + 불필요한 0 제거)에 맡긴다.
+  if (isVector(value)) return value.map((v) => v * 100);
+  return value * 100;
 }
 
 /**

@@ -23,6 +23,7 @@ import {
   getStatName,
   isVector,
 } from "./valueUtils";
+import { formatNumber } from "./formatters";
 
 /**
  * mPrecision 이 지정된 경우, 값(Value)을 해당 소수점 자릿수까지 포맷팅
@@ -127,6 +128,49 @@ export function replaceCalculateData(
       const statParts: StatPart[] = [];
       const isPercent: boolean = !!calc.mDisplayAsPercent;
 
+      // === 특수 케이스: 챔피언 레벨당 선형 증가 퍼센트 (예: 40% ~ 100%) ===
+      // mFormulaParts 가 단 하나이고, ByCharLevelBreakpointsCalculationPart 이며
+      // mDisplayAsPercent 가 true 인 경우를 범위 형태 "(A% ~ B%)" 로 표현
+      if (
+        parts.length === 1 &&
+        (parts[0] as any).__type === "ByCharLevelBreakpointsCalculationPart" &&
+        isPercent
+      ) {
+        const breakPart = parts[0] as ByCharLevelBreakpointsCalculationPart & {
+          mInitialBonusPerLevel?: number;
+        };
+
+        const level1Value = breakPart.mLevel1Value ?? 0;
+        const perLevel = breakPart.mInitialBonusPerLevel ?? 0;
+        const firstBreakpoint = (breakPart.mBreakpoints ?? [])[0] as
+          | { mLevel?: number }
+          | undefined;
+
+        if (perLevel !== 0 && firstBreakpoint?.mLevel) {
+          // 예시:
+          // - 1레벨: 0.40 (나중에 ×100 해서 40%)
+          // - perLevel: 0.04 (나중에 ×100 해서 4%)
+          // - breakpoint mLevel: 17 → 16레벨까지 적용
+          const lastLevel = firstBreakpoint.mLevel - 1;
+          const steps = Math.max(lastLevel - 1, 0);
+          const endValue = level1Value + steps * perLevel;
+
+          // 여기서는 "생(raw) 값"만 저장하고, 퍼센트 변환(×100)은
+          // 아래 공통 로직(scaleBy100 / ×100) 에 맡긴다.
+          // → 이 로직에서 100을 한 번 더 곱하지 않도록 하기 위함.
+          const rangeBase: Value = [level1Value, endValue];
+
+          return {
+            base: rangeBase,
+            statParts: [],
+            isPercent: true,
+            isCharLevelRange: true,
+            precision: undefined,
+          };
+        }
+        // perLevel 정보가 없으면 아래 일반 로직으로 폴백
+      }
+
       for (const part of parts) {
         const partType = part.__type as string;
 
@@ -192,7 +236,10 @@ export function replaceCalculateData(
           const breakPart = part as ByCharLevelBreakpointsCalculationPart;
           let b = (breakPart.mLevel1Value as number) || 0;
           for (const bp of breakPart.mBreakpoints ?? []) {
-            b += bp.mAdditionalBonusAtThisLevel;
+            // 일부 데이터에서는 추가 보너스를 mAdditionalBonusAtThisLevel 로 제공
+            if (bp.mAdditionalBonusAtThisLevel != null) {
+              b += bp.mAdditionalBonusAtThisLevel;
+            }
           }
           base = add(base, b);
         }
@@ -289,11 +336,19 @@ export function replaceCalculateData(
   const isZeroScalar = !isVector(baseScaled) && baseScaled === 0;
 
   if (!isZeroVector && !isZeroScalar) {
-    const rawStr =
-      precision != null
-        ? formatValueWithPrecision(baseScaled, precision)
-        : valueToTooltipString(baseScaled); // "4/8/12" 또는 "275"
-    baseStr = result.isPercent ? `${rawStr}%` : rawStr; // 퍼센트면 끝에 % 하나 붙인다
+    // 챔피언 레벨 범위 퍼센트 (예: "(40% ~ 100%)")
+    if (result.isCharLevelRange && isVector(baseScaled) && baseScaled.length === 2) {
+      const [minVal, maxVal] = baseScaled;
+      const minStr = formatNumber(minVal);
+      const maxStr = formatNumber(maxVal);
+      baseStr = `(${minStr}% ~ ${maxStr}%)`;
+    } else {
+      const rawStr =
+        precision != null
+          ? formatValueWithPrecision(baseScaled, precision)
+          : valueToTooltipString(baseScaled); // "4/8/12" 또는 "275"
+      baseStr = result.isPercent ? `${rawStr}%` : rawStr; // 퍼센트면 끝에 % 하나 붙인다
+    }
   }
 
   // === 4) 스탯 계수 문자열 만들기 (항상 % + 스탯 이름) ===

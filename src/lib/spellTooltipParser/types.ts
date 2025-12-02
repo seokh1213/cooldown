@@ -41,6 +41,11 @@ export interface CalcResult {
   statParts: StatPart[]; // + 0.5 AD 같은 비율
   isPercent?: boolean; // mDisplayAsPercent
   /**
+   * 챔피언 레벨에 따라 선형으로 증가하는 퍼센트 범위인지 여부
+   * (예: 1레벨 40% ~ 16레벨 100% → "(40% ~ 100%)")
+   */
+  isCharLevelRange?: boolean;
+  /**
    * 소수점 자릿수 (CommunityDragon GameCalculation.mPrecision)
    * - undefined 이면 기존처럼 정수(또는 formatNumber 기본 규칙)로 처리
    * - 0 이상이면 퍼센트/계수 계산 시 해당 자릿수까지 보존
@@ -140,8 +145,21 @@ export interface ByCharLevelBreakpointsCalculationPart {
   __type: "ByCharLevelBreakpointsCalculationPart";
   mLevel1Value?: number;
   mBreakpoints?: Array<{
-    mAdditionalBonusAtThisLevel: number;
+    /**
+     * 일부 데이터에서는 레벨별 추가 보너스를 이 필드로 제공
+     */
+    mAdditionalBonusAtThisLevel?: number;
+    /**
+     * 다른 데이터(예: 갱플 Q 패시브)에서는 브레이크포인트 레벨만 제공
+     * 예: { mLevel: 17 }
+     */
+    mLevel?: number;
   }>;
+  /**
+   * 1레벨 이후 레벨당 증가량 (예: 0.04 → 4%)
+   * 갱플 Q 패시브의 "1레벨 40% ~ 16레벨 100%" 같은 계산에 사용
+   */
+  mInitialBonusPerLevel?: number;
 }
 
 /**

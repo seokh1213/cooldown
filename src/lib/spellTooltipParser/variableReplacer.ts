@@ -3,7 +3,6 @@ import { CommunityDragonSpellData } from "./types";
 import { parseExpression } from "./expressionParser";
 import { replaceData } from "./dataValueHandler";
 import { replaceCalculateData } from "./spellCalculationHandler";
-import { removeDuplicatePercentPatterns } from "./textCleaner";
 
 /**
  * 변수 치환 ({{ variable }} 형식)
@@ -36,9 +35,6 @@ export function replaceVariables(
     // 물결(~)도 양쪽 공백을 강제: "A~B" → "A ~ B"
     .replace(/(\S)\s*~\s*(\S)/g, "$1 ~ $2");
 
-  // 이미 치환된 변수를 추적하여 중복 방지
-  const replacedVars = new Set<string>();
-
   // 먼저 중첩된 패턴을 제거하거나 처리
   result = result.replace(/\{\{([^}]*\{\{[^}]*}}[^}]*)}}/g, () => {
     // 중첩된 변수 패턴은 제거 (게임 모드별 tooltip 등은 처리 불가)
@@ -58,11 +54,6 @@ export function replaceVariables(
   result = result.replace(variableRegex, (_match, variableName) => {
     const trimmedVar = variableName.trim();
 
-    // 이미 치환된 변수는 건너뛰기 (중복 방지)
-    if (replacedVars.has(trimmedVar)) {
-      return "";
-    }
-
     // 특수 변수 처리 (spellmodifierdescriptionappend 등)
     if (
       trimmedVar === "spellmodifierdescriptionappend" ||
@@ -70,7 +61,6 @@ export function replaceVariables(
       (trimmedVar.includes("Spell_") && trimmedVar.includes("Tooltip"))
     ) {
       // 이런 변수들은 제거
-      replacedVars.add(trimmedVar);
       return "";
     }
 
@@ -78,12 +68,10 @@ export function replaceVariables(
     const replacement = replaceVariable(
       trimmedVar,
       spell,
-      communityDragonData,
-      replacedVars
+      communityDragonData
     );
 
     if (replacement !== null) {
-      replacedVars.add(trimmedVar);
       return replacement;
     }
 
@@ -108,9 +96,6 @@ export function replaceVariables(
   result = result.replace(/^\s*%\s*/g, ""); // 시작 부분의 % 제거
   result = result.replace(/\s*%\s*$/g, ""); // 끝 부분의 % 제거
 
-  // 중복된 숫자 패턴 제거 (예: "25/30/35% 0.25/0.3/0.35" -> "25/30/35%")
-  result = removeDuplicatePercentPatterns(result);
-
   // 연속된 공백 정리 (개행 문자는 유지 → <br /> 줄바꿈 보존)
   result = result.replace(/[^\S\r\n]+/g, " ");
 
@@ -122,14 +107,12 @@ export function replaceVariables(
  * @param trimmedVar 변수명
  * @param spell 스킬 데이터
  * @param communityDragonData Community Dragon 데이터
- * @param _replacedVars 이미 치환된 변수 추적용 (현재 미사용)
  * @returns 치환된 문자열 또는 null
  */
 export function replaceVariable(
   trimmedVar: string,
   spell: ChampionSpell,
-  communityDragonData?: CommunityDragonSpellData,
-  _replacedVars?: Set<string>
+  communityDragonData?: CommunityDragonSpellData
 ): string | null {
   const parseResult = parseExpression(trimmedVar);
 
