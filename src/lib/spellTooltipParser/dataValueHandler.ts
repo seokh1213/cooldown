@@ -14,7 +14,11 @@ export function replaceData(
   const dataValues = communityDragonData?.DataValues;
   if (!dataValues) return null;
 
-  const value = getDataValueByName(dataValues, parseResult.variable, spell.maxrank);
+  const value = getDataValueByName(
+    dataValues,
+    parseResult.variable,
+    spell.maxrank
+  );
   if (value == null) return null;
 
   const withFormula = applyFormulaToValue(value, parseResult);

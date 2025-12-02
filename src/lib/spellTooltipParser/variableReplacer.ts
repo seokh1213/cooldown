@@ -11,6 +11,27 @@ import { applyFormulaToValue } from "./dataValueUtils";
 import { valueToTooltipString } from "./valueUtils";
 
 /**
+ * 문자열 내 숫자들을 지정된 소수점 자릿수로 반올림
+ * 예: precision=0 → 33.333 → 33
+ */
+function applyNumericPrecision(text: string, precision: number): string {
+  if (!Number.isFinite(precision) || precision < 0) return text;
+
+  return text.replace(/-?\d+(?:\.\d+)?/g, (match) => {
+    const num = Number.parseFloat(match);
+    if (!Number.isFinite(num)) return match;
+
+    const fixed = num.toFixed(precision);
+    // precision > 0 인 경우에는 formatNumber 와의 일관성을 위해
+    // 불필요한 0은 제거해 준다.
+    if (precision > 0) {
+      return Number.parseFloat(fixed).toString();
+    }
+    return fixed;
+  });
+}
+
+/**
  * 변수 치환 ({{ variable }} 형식)
  * 레벨별 값은 "/" 형식으로 표시
  * HTML 태그 내부의 변수도 치환하되, 태그 구조는 보존
@@ -70,14 +91,35 @@ export function replaceVariables(
       return "";
     }
 
+    // rcooldownreduction.0*100 처럼 ".소수점자릿수"를 가진 변수 처리
+    // - baseName: rcooldownreduction
+    // - precision: 0
+    // - tail: "*100"
+    let effectiveVar = trimmedVar;
+    let precision: number | undefined;
+
+    const precisionMatch =
+      /^([a-zA-Z_][a-zA-Z0-9_]*)(?:\.(\d+))(.*)$/.exec(trimmedVar);
+    if (precisionMatch) {
+      const [, baseName, precisionStr, tail] = precisionMatch;
+      const parsedPrecision = Number.parseInt(precisionStr, 10);
+      if (Number.isFinite(parsedPrecision)) {
+        precision = parsedPrecision;
+        effectiveVar = `${baseName}${tail}`; // ".0" 를 제거한 표현식으로 치환
+      }
+    }
+
     // 변수 치환 로직
     const replacement = replaceVariable(
-      trimmedVar,
+      effectiveVar,
       spell,
       communityDragonData
     );
 
     if (replacement !== null) {
+      if (precision !== undefined) {
+        return applyNumericPrecision(replacement, precision);
+      }
       return replacement;
     }
 
