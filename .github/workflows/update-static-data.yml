@@ -43,10 +43,15 @@ jobs:
           git commit -m "chore: update static data [skip ci]" || exit 0
           git push
 
-      - name: Deploy to GitHub Pages
+      - name: Build project
         if: steps.git-check.outputs.changed == 'true'
         run: |
-          npm run deploy
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          npm run build
+
+      - name: Deploy to GitHub Pages
+        if: steps.git-check.outputs.changed == 'true'
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./dist
 
