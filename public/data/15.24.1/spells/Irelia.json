@@ -1,0 +1,938 @@
+{
+  "version": "15.24.1",
+  "championId": "Irelia",
+  "spellData": {
+    "0": {
+      "DataValues": {
+        "BaseDamage": [
+          -15,
+          5,
+          25,
+          45,
+          65,
+          85,
+          105
+        ],
+        "DashSpeedBonus": [
+          0,
+          1400,
+          1400,
+          1400,
+          1400,
+          1400,
+          1400
+        ],
+        "HealTADCoefficient": [
+          0.07999999821186066,
+          0.09000000357627869,
+          0.10000000149011612,
+          0.10999999940395355,
+          0.11999999731779099,
+          0.12999999523162842,
+          0.14000000059604645
+        ]
+      },
+      "mSpellCalculations": {
+        "ChampionDamage": {
+          "mSimpleTooltipCalculationDisplay": 6,
+          "mFormulaParts": [
+            {
+              "mDataValue": "BaseDamage",
+              "__type": "NamedDataValueCalculationPart"
+            },
+            {
+              "mStat": 2,
+              "mCoefficient": 0.699999988079071,
+              "__type": "StatByCoefficientCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        },
+        "MinionDamage": {
+          "mSimpleTooltipCalculationDisplay": 6,
+          "mFormulaParts": [
+            {
+              "mDataValue": "BaseDamage",
+              "__type": "NamedDataValueCalculationPart"
+            },
+            {
+              "mLevel1Value": 50,
+              "mInitialBonusPerLevel": 11,
+              "__type": "ByCharLevelBreakpointsCalculationPart"
+            },
+            {
+              "mStat": 2,
+              "mCoefficient": 0.699999988079071,
+              "__type": "StatByCoefficientCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        },
+        "HealAmount": {
+          "mSimpleTooltipCalculationDisplay": 6,
+          "mFormulaParts": [
+            {
+              "mStat": 2,
+              "mDataValue": "HealTADCoefficient",
+              "__type": "StatByNamedDataValueCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        }
+      }
+    },
+    "1": {
+      "DataValues": {
+        "BasePhysicalDR": [
+          0,
+          50,
+          50,
+          50,
+          50,
+          50,
+          50
+        ],
+        "MaxDuration": [
+          0,
+          1.5,
+          1.5,
+          1.5,
+          1.5,
+          1.5,
+          1.5
+        ],
+        "MinDamage": [
+          0,
+          10,
+          20,
+          30,
+          40,
+          50,
+          60
+        ],
+        "MaxDamage": [
+          0,
+          30,
+          60,
+          90,
+          120,
+          150,
+          180
+        ],
+        "MaxBonusRatio": [
+          0,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2
+        ],
+        "ChargeTimeForMax": [
+          0,
+          0.75,
+          0.75,
+          0.75,
+          0.75,
+          0.75,
+          0.75
+        ],
+        "MRReductionAmount": [
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5
+        ]
+      },
+      "mSpellCalculations": {
+        "FinalPhysicalDR": {
+          "mSimpleTooltipCalculationDisplay": 6,
+          "mFormulaParts": [
+            {
+              "mStartValue": 40,
+              "mEndValue": 70,
+              "__type": "ByCharLevelInterpolationCalculationPart"
+            },
+            {
+              "mCoefficient": 0.07000000029802322,
+              "__type": "StatByCoefficientCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        },
+        "MinDamageCalc": {
+          "mSimpleTooltipCalculationDisplay": 6,
+          "mFormulaParts": [
+            {
+              "mDataValue": "MinDamage",
+              "__type": "NamedDataValueCalculationPart"
+            },
+            {
+              "mStat": 2,
+              "mCoefficient": 0.4000000059604645,
+              "__type": "StatByCoefficientCalculationPart"
+            },
+            {
+              "mCoefficient": 0.5,
+              "__type": "StatByCoefficientCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        },
+        "MaxDamageCalc": {
+          "mSimpleTooltipCalculationDisplay": 6,
+          "tooltipOnly": true,
+          "mFormulaParts": [
+            {
+              "mDataValue": "MaxDamage",
+              "__type": "NamedDataValueCalculationPart"
+            },
+            {
+              "mStat": 2,
+              "mCoefficient": 1.2000000476837158,
+              "__type": "StatByCoefficientCalculationPart"
+            },
+            {
+              "mCoefficient": 1.5,
+              "__type": "StatByCoefficientCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        },
+        "FinalMagicDR": {
+          "mMultiplier": {
+            "mDataValue": "{297f7f37}",
+            "__type": "NamedDataValueCalculationPart"
+          },
+          "mModifiedGameCalculation": "FinalPhysicalDR",
+          "__type": "GameCalculationModified"
+        }
+      }
+    },
+    "2": {
+      "DataValues": {
+        "BaseDamage": [
+          30,
+          70,
+          110,
+          150,
+          190,
+          230,
+          270
+        ],
+        "StunDuration": [
+          0.75,
+          0.75,
+          0.75,
+          0.75,
+          0.75,
+          0.75,
+          0.75
+        ],
+        "RevTime": [
+          0,
+          0.3499999940395355,
+          0.3499999940395355,
+          0.3499999940395355,
+          0.3499999940395355,
+          0.3499999940395355,
+          0.3499999940395355
+        ],
+        "BuffDuration": [
+          0,
+          3.5,
+          3.5,
+          3.5,
+          3.5,
+          3.5,
+          3.5
+        ],
+        "CDBetweenCast": [
+          0,
+          0.25,
+          0.25,
+          0.25,
+          0.25,
+          0.25,
+          0.25
+        ],
+        "MaxRange": [
+          0,
+          775,
+          775,
+          775,
+          775,
+          775,
+          775
+        ],
+        "MinRange": [
+          0,
+          50,
+          50,
+          50,
+          50,
+          50,
+          50
+        ],
+        "MarkDuration": [
+          0,
+          5,
+          5,
+          5,
+          5,
+          5,
+          5
+        ],
+        "APRatio": [
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
+        ]
+      },
+      "mSpellCalculations": {
+        "TotalDamage": {
+          "mSimpleTooltipCalculationDisplay": 6,
+          "mFormulaParts": [
+            {
+              "mDataValue": "BaseDamage",
+              "__type": "NamedDataValueCalculationPart"
+            },
+            {
+              "mDataValue": "APRatio",
+              "__type": "StatByNamedDataValueCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        }
+      }
+    },
+    "3": {
+      "DataValues": {
+        "BaseMissileDamage": [
+          50,
+          125,
+          200,
+          275,
+          350,
+          425,
+          500
+        ],
+        "BaseZoneDamage": [
+          50,
+          125,
+          200,
+          275,
+          350,
+          425,
+          500
+        ],
+        "CCDuration": [
+          0,
+          1.5,
+          1.5,
+          1.5,
+          1.5,
+          1.5,
+          1.5
+        ],
+        "SlowAmount": [
+          0,
+          90,
+          90,
+          90,
+          90,
+          90,
+          90
+        ],
+        "MarkDuration": [
+          0,
+          5,
+          5,
+          5,
+          5,
+          5,
+          5
+        ],
+        "ZoneDuration": [
+          2.5,
+          2.5,
+          2.5,
+          2.5,
+          2.5,
+          2.5,
+          2.5
+        ],
+        "CooldownAmount": [
+          0,
+          0.5,
+          1,
+          1.5,
+          2,
+          2.5,
+          3
+        ],
+        "APRatio": [
+          0.699999988079071,
+          0.699999988079071,
+          0.699999988079071,
+          0.699999988079071,
+          0.699999988079071,
+          0.699999988079071,
+          0.699999988079071
+        ],
+        "mAmmoRechargeTime": [
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1
+        ]
+      },
+      "mSpellCalculations": {
+        "MissileDamage": {
+          "mSimpleTooltipCalculationDisplay": 6,
+          "mFormulaParts": [
+            {
+              "mDataValue": "BaseMissileDamage",
+              "__type": "NamedDataValueCalculationPart"
+            },
+            {
+              "mDataValue": "APRatio",
+              "__type": "StatByNamedDataValueCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        },
+        "ZoneDamage": {
+          "mSimpleTooltipCalculationDisplay": 6,
+          "mFormulaParts": [
+            {
+              "mDataValue": "BaseZoneDamage",
+              "__type": "NamedDataValueCalculationPart"
+            },
+            {
+              "mDataValue": "APRatio",
+              "__type": "StatByNamedDataValueCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        }
+      }
+    },
+    "IreliaQ": {
+      "DataValues": {
+        "BaseDamage": [
+          -15,
+          5,
+          25,
+          45,
+          65,
+          85,
+          105
+        ],
+        "DashSpeedBonus": [
+          0,
+          1400,
+          1400,
+          1400,
+          1400,
+          1400,
+          1400
+        ],
+        "HealTADCoefficient": [
+          0.07999999821186066,
+          0.09000000357627869,
+          0.10000000149011612,
+          0.10999999940395355,
+          0.11999999731779099,
+          0.12999999523162842,
+          0.14000000059604645
+        ]
+      },
+      "mSpellCalculations": {
+        "ChampionDamage": {
+          "mSimpleTooltipCalculationDisplay": 6,
+          "mFormulaParts": [
+            {
+              "mDataValue": "BaseDamage",
+              "__type": "NamedDataValueCalculationPart"
+            },
+            {
+              "mStat": 2,
+              "mCoefficient": 0.699999988079071,
+              "__type": "StatByCoefficientCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        },
+        "MinionDamage": {
+          "mSimpleTooltipCalculationDisplay": 6,
+          "mFormulaParts": [
+            {
+              "mDataValue": "BaseDamage",
+              "__type": "NamedDataValueCalculationPart"
+            },
+            {
+              "mLevel1Value": 50,
+              "mInitialBonusPerLevel": 11,
+              "__type": "ByCharLevelBreakpointsCalculationPart"
+            },
+            {
+              "mStat": 2,
+              "mCoefficient": 0.699999988079071,
+              "__type": "StatByCoefficientCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        },
+        "HealAmount": {
+          "mSimpleTooltipCalculationDisplay": 6,
+          "mFormulaParts": [
+            {
+              "mStat": 2,
+              "mDataValue": "HealTADCoefficient",
+              "__type": "StatByNamedDataValueCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        }
+      }
+    },
+    "IreliaW": {
+      "DataValues": {
+        "BasePhysicalDR": [
+          0,
+          50,
+          50,
+          50,
+          50,
+          50,
+          50
+        ],
+        "MaxDuration": [
+          0,
+          1.5,
+          1.5,
+          1.5,
+          1.5,
+          1.5,
+          1.5
+        ],
+        "MinDamage": [
+          0,
+          10,
+          20,
+          30,
+          40,
+          50,
+          60
+        ],
+        "MaxDamage": [
+          0,
+          30,
+          60,
+          90,
+          120,
+          150,
+          180
+        ],
+        "MaxBonusRatio": [
+          0,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2
+        ],
+        "ChargeTimeForMax": [
+          0,
+          0.75,
+          0.75,
+          0.75,
+          0.75,
+          0.75,
+          0.75
+        ],
+        "MRReductionAmount": [
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5
+        ]
+      },
+      "mSpellCalculations": {
+        "FinalPhysicalDR": {
+          "mSimpleTooltipCalculationDisplay": 6,
+          "mFormulaParts": [
+            {
+              "mStartValue": 40,
+              "mEndValue": 70,
+              "__type": "ByCharLevelInterpolationCalculationPart"
+            },
+            {
+              "mCoefficient": 0.07000000029802322,
+              "__type": "StatByCoefficientCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        },
+        "MinDamageCalc": {
+          "mSimpleTooltipCalculationDisplay": 6,
+          "mFormulaParts": [
+            {
+              "mDataValue": "MinDamage",
+              "__type": "NamedDataValueCalculationPart"
+            },
+            {
+              "mStat": 2,
+              "mCoefficient": 0.4000000059604645,
+              "__type": "StatByCoefficientCalculationPart"
+            },
+            {
+              "mCoefficient": 0.5,
+              "__type": "StatByCoefficientCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        },
+        "MaxDamageCalc": {
+          "mSimpleTooltipCalculationDisplay": 6,
+          "tooltipOnly": true,
+          "mFormulaParts": [
+            {
+              "mDataValue": "MaxDamage",
+              "__type": "NamedDataValueCalculationPart"
+            },
+            {
+              "mStat": 2,
+              "mCoefficient": 1.2000000476837158,
+              "__type": "StatByCoefficientCalculationPart"
+            },
+            {
+              "mCoefficient": 1.5,
+              "__type": "StatByCoefficientCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        },
+        "FinalMagicDR": {
+          "mMultiplier": {
+            "mDataValue": "{297f7f37}",
+            "__type": "NamedDataValueCalculationPart"
+          },
+          "mModifiedGameCalculation": "FinalPhysicalDR",
+          "__type": "GameCalculationModified"
+        }
+      }
+    },
+    "IreliaE": {
+      "DataValues": {
+        "BaseDamage": [
+          30,
+          70,
+          110,
+          150,
+          190,
+          230,
+          270
+        ],
+        "StunDuration": [
+          0.75,
+          0.75,
+          0.75,
+          0.75,
+          0.75,
+          0.75,
+          0.75
+        ],
+        "RevTime": [
+          0,
+          0.3499999940395355,
+          0.3499999940395355,
+          0.3499999940395355,
+          0.3499999940395355,
+          0.3499999940395355,
+          0.3499999940395355
+        ],
+        "BuffDuration": [
+          0,
+          3.5,
+          3.5,
+          3.5,
+          3.5,
+          3.5,
+          3.5
+        ],
+        "CDBetweenCast": [
+          0,
+          0.25,
+          0.25,
+          0.25,
+          0.25,
+          0.25,
+          0.25
+        ],
+        "MaxRange": [
+          0,
+          775,
+          775,
+          775,
+          775,
+          775,
+          775
+        ],
+        "MinRange": [
+          0,
+          50,
+          50,
+          50,
+          50,
+          50,
+          50
+        ],
+        "MarkDuration": [
+          0,
+          5,
+          5,
+          5,
+          5,
+          5,
+          5
+        ],
+        "APRatio": [
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
+        ]
+      },
+      "mSpellCalculations": {
+        "TotalDamage": {
+          "mSimpleTooltipCalculationDisplay": 6,
+          "mFormulaParts": [
+            {
+              "mDataValue": "BaseDamage",
+              "__type": "NamedDataValueCalculationPart"
+            },
+            {
+              "mDataValue": "APRatio",
+              "__type": "StatByNamedDataValueCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        }
+      }
+    },
+    "IreliaR": {
+      "DataValues": {
+        "BaseMissileDamage": [
+          50,
+          125,
+          200,
+          275,
+          350,
+          425,
+          500
+        ],
+        "BaseZoneDamage": [
+          50,
+          125,
+          200,
+          275,
+          350,
+          425,
+          500
+        ],
+        "CCDuration": [
+          0,
+          1.5,
+          1.5,
+          1.5,
+          1.5,
+          1.5,
+          1.5
+        ],
+        "SlowAmount": [
+          0,
+          90,
+          90,
+          90,
+          90,
+          90,
+          90
+        ],
+        "MarkDuration": [
+          0,
+          5,
+          5,
+          5,
+          5,
+          5,
+          5
+        ],
+        "ZoneDuration": [
+          2.5,
+          2.5,
+          2.5,
+          2.5,
+          2.5,
+          2.5,
+          2.5
+        ],
+        "CooldownAmount": [
+          0,
+          0.5,
+          1,
+          1.5,
+          2,
+          2.5,
+          3
+        ],
+        "APRatio": [
+          0.699999988079071,
+          0.699999988079071,
+          0.699999988079071,
+          0.699999988079071,
+          0.699999988079071,
+          0.699999988079071,
+          0.699999988079071
+        ],
+        "mAmmoRechargeTime": [
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1
+        ]
+      },
+      "mSpellCalculations": {
+        "MissileDamage": {
+          "mSimpleTooltipCalculationDisplay": 6,
+          "mFormulaParts": [
+            {
+              "mDataValue": "BaseMissileDamage",
+              "__type": "NamedDataValueCalculationPart"
+            },
+            {
+              "mDataValue": "APRatio",
+              "__type": "StatByNamedDataValueCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        },
+        "ZoneDamage": {
+          "mSimpleTooltipCalculationDisplay": 6,
+          "mFormulaParts": [
+            {
+              "mDataValue": "BaseZoneDamage",
+              "__type": "NamedDataValueCalculationPart"
+            },
+            {
+              "mDataValue": "APRatio",
+              "__type": "StatByNamedDataValueCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        }
+      }
+    },
+    "IreliaPassive": {
+      "DataValues": {
+        "BuffDuration": [
+          6,
+          6,
+          6,
+          6,
+          6,
+          6,
+          6
+        ],
+        "MaxStacks": [
+          4,
+          4,
+          4,
+          4,
+          4,
+          4,
+          4
+        ],
+        "OnHitStructureMod": [
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5
+        ],
+        "OnHitBaseDamage": [
+          10,
+          10,
+          10,
+          10,
+          10,
+          10,
+          10
+        ],
+        "OnHitPerLevel": [
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3
+        ]
+      },
+      "mSpellCalculations": {
+        "SingleStackAS": {
+          "mSimpleTooltipCalculationDisplay": 6,
+          "mFormulaParts": [
+            {
+              "mStartValue": 10,
+              "mEndValue": 25,
+              "__type": "ByCharLevelInterpolationCalculationPart"
+            }
+          ],
+          "mPrecision": 1,
+          "__type": "GameCalculation"
+        },
+        "OnHitBonus": {
+          "mSimpleTooltipCalculationDisplay": 6,
+          "mFormulaParts": [
+            {
+              "{91d404a5}": "OnHitBaseDamage",
+              "{b2cd0eb0}": "{73f1945a}",
+              "__type": "{b22609db}"
+            },
+            {
+              "mStat": 2,
+              "mStatFormula": 2,
+              "mCoefficient": 0.20000000298023224,
+              "__type": "StatByCoefficientCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        }
+      }
+    }
+  }
+}
