@@ -1,0 +1,1049 @@
+{
+  "version": "15.24.1",
+  "championId": "Rumble",
+  "spellData": {
+    "0": {
+      "DataValues": {
+        "BaseDamage": [
+          35,
+          60,
+          85,
+          110,
+          135,
+          160,
+          185
+        ],
+        "MinionMod": [
+          0.699999988079071,
+          0.699999988079071,
+          0.699999988079071,
+          0.699999988079071,
+          0.699999988079071,
+          0.699999988079071,
+          0.699999988079071
+        ],
+        "HealthDamage": [
+          0.054999999701976776,
+          0.05999999865889549,
+          0.06499999761581421,
+          0.07000000029802322,
+          0.07500000298023224,
+          0.07999999821186066,
+          0.08500000089406967
+        ],
+        "APRatio": [
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        "OverheatMulti": [
+          1.5,
+          1.5,
+          1.5,
+          1.5,
+          1.5,
+          1.5,
+          1.5
+        ],
+        "FlamespitterDuration": [
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3
+        ],
+        "DebuffTicks": [
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3
+        ],
+        "TickRate": [
+          0.25,
+          0.25,
+          0.25,
+          0.25,
+          0.25,
+          0.25,
+          0.25
+        ],
+        "TotalTicks": [
+          12,
+          12,
+          12,
+          12,
+          12,
+          12,
+          12
+        ],
+        "InitialHeatCost": [
+          20,
+          20,
+          20,
+          20,
+          20,
+          20,
+          20
+        ],
+        "BurnDuration": [
+          0.6000000238418579,
+          0.6000000238418579,
+          0.6000000238418579,
+          0.6000000238418579,
+          0.6000000238418579,
+          0.6000000238418579,
+          0.6000000238418579
+        ]
+      },
+      "mSpellCalculations": {
+        "FlatDamage": {
+          "mFormulaParts": [
+            {
+              "mDataValue": "BaseDamage",
+              "__type": "NamedDataValueCalculationPart"
+            },
+            {
+              "mDataValue": "APRatio",
+              "__type": "StatByNamedDataValueCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        },
+        "MinionDamage": {
+          "mMultiplier": {
+            "mDataValue": "MinionMod",
+            "__type": "NamedDataValueCalculationPart"
+          },
+          "tooltipOnly": true,
+          "mModifiedGameCalculation": "FlatDamage",
+          "__type": "GameCalculationModified"
+        },
+        "EmpoweredDamage": {
+          "mMultiplier": {
+            "mDataValue": "OverheatMulti",
+            "__type": "NamedDataValueCalculationPart"
+          },
+          "mModifiedGameCalculation": "FlatDamage",
+          "__type": "GameCalculationModified"
+        },
+        "EmpoweredHealth": {
+          "mMultiplier": {
+            "mDataValue": "OverheatMulti",
+            "__type": "NamedDataValueCalculationPart"
+          },
+          "mExpandedTooltipCalculationDisplay": 5,
+          "mFormulaParts": [
+            {
+              "mDataValue": "HealthDamage",
+              "__type": "NamedDataValueCalculationPart"
+            }
+          ],
+          "mDisplayAsPercent": true,
+          "mPrecision": 1,
+          "__type": "GameCalculation"
+        },
+        "MonsterCap": {
+          "mFormulaParts": [
+            {
+              "mStartValue": 65,
+              "mEndValue": 300,
+              "mScaleByStatProgressionMultiplier": true,
+              "__type": "ByCharLevelInterpolationCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        }
+      }
+    },
+    "1": {
+      "DataValues": {
+        "HeatCost": [
+          20,
+          20,
+          20,
+          20,
+          20,
+          20,
+          20
+        ],
+        "BaseShield": [
+          -5,
+          25,
+          55,
+          85,
+          115,
+          145,
+          175
+        ],
+        "HealthShield": [
+          0.03999999910593033,
+          0.03999999910593033,
+          0.03999999910593033,
+          0.03999999910593033,
+          0.03999999910593033,
+          0.03999999910593033,
+          0.03999999910593033
+        ],
+        "MoveSpeed": [
+          0.05000000074505806,
+          0.10000000149011612,
+          0.15000000596046448,
+          0.20000000298023224,
+          0.25,
+          0.30000001192092896,
+          0.3499999940395355
+        ],
+        "APRatio": [
+          0.30000001192092896,
+          0.30000001192092896,
+          0.30000001192092896,
+          0.30000001192092896,
+          0.30000001192092896,
+          0.30000001192092896,
+          0.30000001192092896
+        ],
+        "ShieldDuration": [
+          1.5,
+          1.5,
+          1.5,
+          1.5,
+          1.5,
+          1.5,
+          1.5
+        ],
+        "MoveSpeedDuration": [
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
+        ]
+      },
+      "mSpellCalculations": {
+        "TotalShield": {
+          "mFormulaParts": [
+            {
+              "mDataValue": "BaseShield",
+              "__type": "NamedDataValueCalculationPart"
+            },
+            {
+              "mDataValue": "APRatio",
+              "__type": "StatByNamedDataValueCalculationPart"
+            },
+            {
+              "mStat": 12,
+              "mDataValue": "HealthShield",
+              "__type": "StatByNamedDataValueCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        },
+        "EmpoweredShield": {
+          "mMultiplier": {
+            "mNumber": 1.5,
+            "__type": "NumberCalculationPart"
+          },
+          "tooltipOnly": true,
+          "mModifiedGameCalculation": "TotalShield",
+          "__type": "GameCalculationModified"
+        },
+        "EmpoweredMS": {
+          "mMultiplier": {
+            "mNumber": 1.5,
+            "__type": "NumberCalculationPart"
+          },
+          "mExpandedTooltipCalculationDisplay": 5,
+          "tooltipOnly": true,
+          "mFormulaParts": [
+            {
+              "mDataValue": "MoveSpeed",
+              "__type": "NamedDataValueCalculationPart"
+            }
+          ],
+          "mDisplayAsPercent": true,
+          "__type": "GameCalculation"
+        }
+      }
+    },
+    "2": {
+      "DataValues": {
+        "BaseDamage": [
+          30,
+          55,
+          80,
+          105,
+          130,
+          155,
+          180
+        ],
+        "FirstCastHeatCost": [
+          20,
+          20,
+          20,
+          20,
+          20,
+          20,
+          20
+        ],
+        "PercMagicPen": [
+          0.07999999821186066,
+          0.10000000149011612,
+          0.11999999731779099,
+          0.14000000059604645,
+          0.1599999964237213,
+          0.18000000715255737,
+          0.20000000298023224
+        ],
+        "EnhancedMagicPen": [
+          0.1599999964237213,
+          0.20000000298023224,
+          0.23999999463558197,
+          0.2800000011920929,
+          0.3199999928474426,
+          0.36000001430511475,
+          0.4000000059604645
+        ],
+        "ShredDuration": [
+          4,
+          4,
+          4,
+          4,
+          4,
+          4,
+          4
+        ],
+        "SlowDuration": [
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2
+        ],
+        "BaseSlowAmount": [
+          10,
+          15,
+          20,
+          25,
+          30,
+          35,
+          40
+        ],
+        "EmpoweredSlowAmount": [
+          20,
+          30,
+          40,
+          50,
+          60,
+          70,
+          80
+        ],
+        "mAmmoRechargeTime": [
+          6,
+          6,
+          6,
+          6,
+          6,
+          6,
+          6
+        ]
+      },
+      "mSpellCalculations": {
+        "TotalDamage": {
+          "mFormulaParts": [
+            {
+              "mDataValue": "BaseDamage",
+              "__type": "NamedDataValueCalculationPart"
+            },
+            {
+              "mCoefficient": 0.5,
+              "__type": "StatByCoefficientCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        },
+        "EmpDamage": {
+          "mMultiplier": {
+            "mNumber": 1.5,
+            "__type": "NumberCalculationPart"
+          },
+          "mModifiedGameCalculation": "TotalDamage",
+          "__type": "GameCalculationModified"
+        }
+      }
+    },
+    "3": {
+      "DataValues": {
+        "NumMissiles": [
+          6,
+          6,
+          6,
+          6,
+          6,
+          6,
+          6
+        ],
+        "TrailDuration": [
+          4.5,
+          4.5,
+          4.5,
+          4.5,
+          4.5,
+          4.5,
+          4.5
+        ],
+        "TickRate": [
+          0.25,
+          0.25,
+          0.25,
+          0.25,
+          0.25,
+          0.25,
+          0.25
+        ],
+        "SlowAmount": [
+          35,
+          35,
+          35,
+          35,
+          35,
+          35,
+          35
+        ],
+        "BaseDamagePerSecond": [
+          70,
+          140,
+          210,
+          280,
+          350,
+          420,
+          490
+        ],
+        "MaxBurnSeconds": [
+          5,
+          5,
+          5,
+          5,
+          5,
+          5,
+          5
+        ],
+        "BurnLingerTime": [
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
+        ]
+      },
+      "mSpellCalculations": {
+        "DamagePerSecond": {
+          "mFormulaParts": [
+            {
+              "mDataValue": "BaseDamagePerSecond",
+              "__type": "NamedDataValueCalculationPart"
+            },
+            {
+              "mCoefficient": 0.3499999940395355,
+              "__type": "StatByCoefficientCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        },
+        "TotalDamage": {
+          "mMultiplier": {
+            "mDataValue": "TrailDuration",
+            "__type": "NamedDataValueCalculationPart"
+          },
+          "tooltipOnly": true,
+          "mModifiedGameCalculation": "DamagePerSecond",
+          "__type": "GameCalculationModified"
+        }
+      }
+    },
+    "RumbleFlameThrower": {
+      "DataValues": {
+        "BaseDamage": [
+          35,
+          60,
+          85,
+          110,
+          135,
+          160,
+          185
+        ],
+        "MinionMod": [
+          0.699999988079071,
+          0.699999988079071,
+          0.699999988079071,
+          0.699999988079071,
+          0.699999988079071,
+          0.699999988079071,
+          0.699999988079071
+        ],
+        "HealthDamage": [
+          0.054999999701976776,
+          0.05999999865889549,
+          0.06499999761581421,
+          0.07000000029802322,
+          0.07500000298023224,
+          0.07999999821186066,
+          0.08500000089406967
+        ],
+        "APRatio": [
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        "OverheatMulti": [
+          1.5,
+          1.5,
+          1.5,
+          1.5,
+          1.5,
+          1.5,
+          1.5
+        ],
+        "FlamespitterDuration": [
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3
+        ],
+        "DebuffTicks": [
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3
+        ],
+        "TickRate": [
+          0.25,
+          0.25,
+          0.25,
+          0.25,
+          0.25,
+          0.25,
+          0.25
+        ],
+        "TotalTicks": [
+          12,
+          12,
+          12,
+          12,
+          12,
+          12,
+          12
+        ],
+        "InitialHeatCost": [
+          20,
+          20,
+          20,
+          20,
+          20,
+          20,
+          20
+        ],
+        "BurnDuration": [
+          0.6000000238418579,
+          0.6000000238418579,
+          0.6000000238418579,
+          0.6000000238418579,
+          0.6000000238418579,
+          0.6000000238418579,
+          0.6000000238418579
+        ]
+      },
+      "mSpellCalculations": {
+        "FlatDamage": {
+          "mFormulaParts": [
+            {
+              "mDataValue": "BaseDamage",
+              "__type": "NamedDataValueCalculationPart"
+            },
+            {
+              "mDataValue": "APRatio",
+              "__type": "StatByNamedDataValueCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        },
+        "MinionDamage": {
+          "mMultiplier": {
+            "mDataValue": "MinionMod",
+            "__type": "NamedDataValueCalculationPart"
+          },
+          "tooltipOnly": true,
+          "mModifiedGameCalculation": "FlatDamage",
+          "__type": "GameCalculationModified"
+        },
+        "EmpoweredDamage": {
+          "mMultiplier": {
+            "mDataValue": "OverheatMulti",
+            "__type": "NamedDataValueCalculationPart"
+          },
+          "mModifiedGameCalculation": "FlatDamage",
+          "__type": "GameCalculationModified"
+        },
+        "EmpoweredHealth": {
+          "mMultiplier": {
+            "mDataValue": "OverheatMulti",
+            "__type": "NamedDataValueCalculationPart"
+          },
+          "mExpandedTooltipCalculationDisplay": 5,
+          "mFormulaParts": [
+            {
+              "mDataValue": "HealthDamage",
+              "__type": "NamedDataValueCalculationPart"
+            }
+          ],
+          "mDisplayAsPercent": true,
+          "mPrecision": 1,
+          "__type": "GameCalculation"
+        },
+        "MonsterCap": {
+          "mFormulaParts": [
+            {
+              "mStartValue": 65,
+              "mEndValue": 300,
+              "mScaleByStatProgressionMultiplier": true,
+              "__type": "ByCharLevelInterpolationCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        }
+      }
+    },
+    "RumbleShield": {
+      "DataValues": {
+        "HeatCost": [
+          20,
+          20,
+          20,
+          20,
+          20,
+          20,
+          20
+        ],
+        "BaseShield": [
+          -5,
+          25,
+          55,
+          85,
+          115,
+          145,
+          175
+        ],
+        "HealthShield": [
+          0.03999999910593033,
+          0.03999999910593033,
+          0.03999999910593033,
+          0.03999999910593033,
+          0.03999999910593033,
+          0.03999999910593033,
+          0.03999999910593033
+        ],
+        "MoveSpeed": [
+          0.05000000074505806,
+          0.10000000149011612,
+          0.15000000596046448,
+          0.20000000298023224,
+          0.25,
+          0.30000001192092896,
+          0.3499999940395355
+        ],
+        "APRatio": [
+          0.30000001192092896,
+          0.30000001192092896,
+          0.30000001192092896,
+          0.30000001192092896,
+          0.30000001192092896,
+          0.30000001192092896,
+          0.30000001192092896
+        ],
+        "ShieldDuration": [
+          1.5,
+          1.5,
+          1.5,
+          1.5,
+          1.5,
+          1.5,
+          1.5
+        ],
+        "MoveSpeedDuration": [
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
+        ]
+      },
+      "mSpellCalculations": {
+        "TotalShield": {
+          "mFormulaParts": [
+            {
+              "mDataValue": "BaseShield",
+              "__type": "NamedDataValueCalculationPart"
+            },
+            {
+              "mDataValue": "APRatio",
+              "__type": "StatByNamedDataValueCalculationPart"
+            },
+            {
+              "mStat": 12,
+              "mDataValue": "HealthShield",
+              "__type": "StatByNamedDataValueCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        },
+        "EmpoweredShield": {
+          "mMultiplier": {
+            "mNumber": 1.5,
+            "__type": "NumberCalculationPart"
+          },
+          "tooltipOnly": true,
+          "mModifiedGameCalculation": "TotalShield",
+          "__type": "GameCalculationModified"
+        },
+        "EmpoweredMS": {
+          "mMultiplier": {
+            "mNumber": 1.5,
+            "__type": "NumberCalculationPart"
+          },
+          "mExpandedTooltipCalculationDisplay": 5,
+          "tooltipOnly": true,
+          "mFormulaParts": [
+            {
+              "mDataValue": "MoveSpeed",
+              "__type": "NamedDataValueCalculationPart"
+            }
+          ],
+          "mDisplayAsPercent": true,
+          "__type": "GameCalculation"
+        }
+      }
+    },
+    "RumbleGrenade": {
+      "DataValues": {
+        "BaseDamage": [
+          30,
+          55,
+          80,
+          105,
+          130,
+          155,
+          180
+        ],
+        "FirstCastHeatCost": [
+          20,
+          20,
+          20,
+          20,
+          20,
+          20,
+          20
+        ],
+        "PercMagicPen": [
+          0.07999999821186066,
+          0.10000000149011612,
+          0.11999999731779099,
+          0.14000000059604645,
+          0.1599999964237213,
+          0.18000000715255737,
+          0.20000000298023224
+        ],
+        "EnhancedMagicPen": [
+          0.1599999964237213,
+          0.20000000298023224,
+          0.23999999463558197,
+          0.2800000011920929,
+          0.3199999928474426,
+          0.36000001430511475,
+          0.4000000059604645
+        ],
+        "ShredDuration": [
+          4,
+          4,
+          4,
+          4,
+          4,
+          4,
+          4
+        ],
+        "SlowDuration": [
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2
+        ],
+        "BaseSlowAmount": [
+          10,
+          15,
+          20,
+          25,
+          30,
+          35,
+          40
+        ],
+        "EmpoweredSlowAmount": [
+          20,
+          30,
+          40,
+          50,
+          60,
+          70,
+          80
+        ],
+        "mAmmoRechargeTime": [
+          6,
+          6,
+          6,
+          6,
+          6,
+          6,
+          6
+        ]
+      },
+      "mSpellCalculations": {
+        "TotalDamage": {
+          "mFormulaParts": [
+            {
+              "mDataValue": "BaseDamage",
+              "__type": "NamedDataValueCalculationPart"
+            },
+            {
+              "mCoefficient": 0.5,
+              "__type": "StatByCoefficientCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        },
+        "EmpDamage": {
+          "mMultiplier": {
+            "mNumber": 1.5,
+            "__type": "NumberCalculationPart"
+          },
+          "mModifiedGameCalculation": "TotalDamage",
+          "__type": "GameCalculationModified"
+        }
+      }
+    },
+    "RumbleCarpetBomb": {
+      "DataValues": {
+        "NumMissiles": [
+          6,
+          6,
+          6,
+          6,
+          6,
+          6,
+          6
+        ],
+        "TrailDuration": [
+          4.5,
+          4.5,
+          4.5,
+          4.5,
+          4.5,
+          4.5,
+          4.5
+        ],
+        "TickRate": [
+          0.25,
+          0.25,
+          0.25,
+          0.25,
+          0.25,
+          0.25,
+          0.25
+        ],
+        "SlowAmount": [
+          35,
+          35,
+          35,
+          35,
+          35,
+          35,
+          35
+        ],
+        "BaseDamagePerSecond": [
+          70,
+          140,
+          210,
+          280,
+          350,
+          420,
+          490
+        ],
+        "MaxBurnSeconds": [
+          5,
+          5,
+          5,
+          5,
+          5,
+          5,
+          5
+        ],
+        "BurnLingerTime": [
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
+        ]
+      },
+      "mSpellCalculations": {
+        "DamagePerSecond": {
+          "mFormulaParts": [
+            {
+              "mDataValue": "BaseDamagePerSecond",
+              "__type": "NamedDataValueCalculationPart"
+            },
+            {
+              "mCoefficient": 0.3499999940395355,
+              "__type": "StatByCoefficientCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        },
+        "TotalDamage": {
+          "mMultiplier": {
+            "mDataValue": "TrailDuration",
+            "__type": "NamedDataValueCalculationPart"
+          },
+          "tooltipOnly": true,
+          "mModifiedGameCalculation": "DamagePerSecond",
+          "__type": "GameCalculationModified"
+        }
+      }
+    },
+    "RumbleHeatSystem": {
+      "DataValues": {
+        "OverheatDuration": [
+          4,
+          4,
+          4,
+          4,
+          4,
+          4,
+          4
+        ],
+        "DangerZoneHeat": [
+          50,
+          50,
+          50,
+          50,
+          50,
+          50,
+          50
+        ],
+        "OverheatingHeat": [
+          150,
+          150,
+          150,
+          150,
+          150,
+          150,
+          150
+        ],
+        "OverheatPercBonusDamage": [
+          0.03999999910593033,
+          0.03999999910593033,
+          0.03999999910593033,
+          0.03999999910593033,
+          0.03999999910593033,
+          0.03999999910593033,
+          0.03999999910593033
+        ],
+        "MonsterCap": [
+          80,
+          80,
+          80,
+          80,
+          80,
+          80,
+          80
+        ],
+        "HeatDecayPerS": [
+          -10,
+          -10,
+          -10,
+          -10,
+          -10,
+          -10,
+          -10
+        ]
+      },
+      "mSpellCalculations": {
+        "TotalBaseDamage": {
+          "mFormulaParts": [
+            {
+              "mStartValue": 5,
+              "mEndValue": 40,
+              "__type": "ByCharLevelInterpolationCalculationPart"
+            },
+            {
+              "mCoefficient": 0.25,
+              "__type": "StatByCoefficientCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        },
+        "OverheatAS": {
+          "mFormulaParts": [
+            {
+              "mStartValue": 0.5,
+              "mEndValue": 1.2999999523162842,
+              "mScaleByStatProgressionMultiplier": true,
+              "__type": "ByCharLevelInterpolationCalculationPart"
+            }
+          ],
+          "mDisplayAsPercent": true,
+          "__type": "GameCalculation"
+        },
+        "MonsterCapScaling": {
+          "mFormulaParts": [
+            {
+              "mStartValue": 65,
+              "mEndValue": 150,
+              "mScaleByStatProgressionMultiplier": true,
+              "__type": "ByCharLevelInterpolationCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        }
+      }
+    }
+  }
+}
