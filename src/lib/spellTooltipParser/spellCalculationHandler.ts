@@ -71,13 +71,20 @@ export function replaceCalculateData(
 
   const [calcKey] = entry;
 
-  function evalDataValue(name: string): Value {
+  function evalDataValue(name: string): Value | null {
     if (!name || typeof name !== "string") {
-      throw new Error(`DataValue name is invalid: ${name}`);
+      console.warn(`DataValue name is invalid: ${name}`);
+      return null;
     }
-    if (!dataValues) throw new Error("dataValues is undefined");
+    if (!dataValues) {
+      console.warn("dataValues is undefined");
+      return null;
+    }
     const v = getDataValueByName(dataValues, name, spell.maxrank);
-    if (v == null) throw new Error(`DataValue "${name}" missing`);
+    if (v == null) {
+      console.warn(`DataValue "${name}" missing`);
+      return null;
+    }
     return v;
   }
 
@@ -104,6 +111,10 @@ export function replaceCalculateData(
       let mult: Value | null = null;
       if (modified.mMultiplier.mDataValue) {
         mult = evalDataValue(modified.mMultiplier.mDataValue);
+        if (mult == null) {
+          // DataValue가 없으면 multiplier를 무시하고 내부 결과만 반환
+          return inner;
+        }
       } else if (modified.mMultiplier.mNumber != null) {
         mult = modified.mMultiplier.mNumber;
       }
@@ -241,6 +252,10 @@ export function replaceCalculateData(
             continue;
           }
           const v = evalDataValue(namedPart.mDataValue);
+          if (v == null) {
+            // DataValue가 없으면 이 part를 건너뛰고 계속 진행
+            continue;
+          }
           base = add(base, v);
         } else if (partType === "EffectValueCalculationPart") {
           // spell.effectBurn / effect 에서 값 가져오기
@@ -271,6 +286,10 @@ export function replaceCalculateData(
             continue;
           }
           const ratio = evalDataValue(statPart.mDataValue); // 0.5 or 벡터
+          if (ratio == null) {
+            // DataValue가 없으면 이 part를 건너뛰고 계속 진행
+            continue;
+          }
           const name = getStatName(statPart.mStat, statPart.mStatFormula, lang);
           statParts.push({ name, ratio });
         } else if (partType === "StatByCoefficientCalculationPart") {
@@ -350,7 +369,12 @@ export function replaceCalculateData(
                 );
                 return 0;
               }
-              return evalDataValue(named.mDataValue);
+              const v = evalDataValue(named.mDataValue);
+              if (v == null) {
+                // DataValue가 없으면 0 반환
+                return 0;
+              }
+              return v;
             }
 
             if (t === "NumberCalculationPart") {
@@ -420,6 +444,10 @@ export function replaceCalculateData(
         let mult: Value | null = null;
         if (calc.mMultiplier.mDataValue) {
           mult = evalDataValue(calc.mMultiplier.mDataValue);
+          if (mult == null) {
+            // DataValue가 없으면 multiplier를 무시하고 계속 진행
+            mult = null;
+          }
         } else if (calc.mMultiplier.mNumber != null) {
           mult = calc.mMultiplier.mNumber;
         }
@@ -585,6 +613,6 @@ export function replaceCalculateData(
 
   // 예: "20/45/70/95/120 + 50% AD"
   // 예: "4/8/12/16/20/24/28%"
-  return parts.join(" + ");
+  return `(${parts.join(" + ")})`;
 }
 
