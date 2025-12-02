@@ -1,6 +1,8 @@
 import { ChampionSpell } from "@/types";
 import { CommunityDragonSpellData } from "./types";
 import { formatLevelValues } from "./formatters";
+import { parseExpression } from "./expressionParser";
+import { replaceData } from "./dataValueHandler";
 
 /**
  * leveltip을 이용한 수치 표시 포맷팅
@@ -17,6 +19,19 @@ export function formatLeveltipStats(
     return "";
   }
 
+  // Community Dragon 데이터가 DataValues만 넘어오는 경우와
+  // 전체 스킬 객체가 넘어오는 경우 모두 지원
+  let cdragonForData: CommunityDragonSpellData | undefined;
+  if (communityDragonData) {
+    if ((communityDragonData as CommunityDragonSpellData).DataValues) {
+      cdragonForData = communityDragonData as CommunityDragonSpellData;
+    } else {
+      cdragonForData = {
+        DataValues: communityDragonData as any,
+      };
+    }
+  }
+
   const { label, effect } = spell.leveltip;
   const stats: string[] = [];
 
@@ -28,8 +43,64 @@ export function formatLeveltipStats(
     const effectMatch = effectPattern.match(/\{\{\s*([^}]+)\s*\}\}/);
     if (!effectMatch) continue;
 
-    const varName = effectMatch[1].trim();
+    const variableExpr = effectMatch[1].trim();
     let value: string | null = null;
+
+    // 1) Community Dragon DataValues 우선 사용
+    // 예: "{{ basedamage }} -> {{ basedamageNL }}", "{{ armorshredpercent*100.000000 }}% -> ..."
+    if (cdragonForData) {
+      try {
+        const parseResult = parseExpression(variableExpr);
+        const replaced = replaceData(parseResult, spell, cdragonForData);
+
+        if (replaced && replaced.trim() !== "") {
+          let finalValue = replaced;
+
+          // 퍼센트형 label인데 값에 %가 없으면 %를 붙여준다.
+          const labelIndicatesPercent =
+            labelText.includes("%") ||
+            labelText.toLowerCase().includes("percent") ||
+            labelText.toLowerCase().includes("퍼센트") ||
+            labelText.toLowerCase().includes("둔화");
+
+          if (labelIndicatesPercent && !finalValue.includes("%")) {
+            finalValue = finalValue
+              .split("/")
+              .map((v) => (v ? `${v}%` : v))
+              .join("/");
+          }
+
+          // @AbilityResourceName@ 치환
+          let resourceName = "마나";
+          if (spell.costType) {
+            const costType = spell.costType.trim();
+            if (costType && !costType.includes("{{")) {
+              resourceName = costType;
+            } else if (spell.resource && !spell.resource.includes("{{")) {
+              resourceName = spell.resource;
+            }
+          } else if (spell.resource && !spell.resource.includes("{{")) {
+            resourceName = spell.resource;
+          }
+
+          const displayLabel = labelText.replace("@AbilityResourceName@", resourceName);
+
+          // 치환되지 않은 변수 패턴이 남아있으면 해당 항목 미노출
+          if (displayLabel.includes("{{") || displayLabel.includes("}}")) {
+            continue;
+          }
+
+          stats.push(`${displayLabel}: [${finalValue}]`);
+          continue; // 이미 CDragon 데이터로 처리했으므로 다음 항목으로
+        }
+      } catch {
+        // CDragon 파싱 실패 시 Data Dragon 기반 로직으로 폴백
+      }
+    }
+
+    // 2) CDragon에서 값을 찾지 못한 경우 기존 Data Dragon 기반 로직 사용
+    const varName = variableExpr;
+    value = null;
 
     // e1, e2, e5 같은 패턴에서 숫자 추출
     const effectIndexMatch = varName.match(/^e(\d+)$/i);

@@ -192,9 +192,9 @@ export function SkillTooltip({
           </div>
         )}
 
-        {/* 레벨별 통계 */}
+        {/* 레벨별 통계 - 본문보다 덜 강조 (약간 흐린 색상) */}
         {spellData && formatLeveltipStats(skill, spellData.communityDragonData) && (
-          <div className="text-xs leading-relaxed border-t pt-3 mt-3">
+          <div className="text-[11px] leading-relaxed text-muted-foreground border-t pt-3 mt-3">
             <div
               dangerouslySetInnerHTML={{
                 __html: formatLeveltipStats(skill, spellData.communityDragonData),
