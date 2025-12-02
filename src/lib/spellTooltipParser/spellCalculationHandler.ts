@@ -25,6 +25,27 @@ import {
 } from "./valueUtils";
 
 /**
+ * mPrecision 이 지정된 경우, 값(Value)을 해당 소수점 자릿수까지 포맷팅
+ */
+function formatValueWithPrecision(value: Value, precision: number): string {
+  const formatNumberWithPrecision = (num: number): string => {
+    if (!Number.isFinite(num)) return String(num);
+    const fixed = num.toFixed(precision);
+    // 불필요한 0 및 소수점 제거 (예: "0.3000" → "0.3", "1.000" → "1")
+    return fixed.replace(/\.?0+$/, "");
+  };
+
+  if (isVector(value)) {
+    const formatted = value.map((v) => formatNumberWithPrecision(v));
+    const first = formatted[0];
+    const allSame = formatted.every((v) => v === first);
+    return allSame ? first : formatted.join("/");
+  }
+
+  return formatNumberWithPrecision(value as number);
+}
+
+/**
  * mSpellCalculations를 사용하여 변수 치환
  */
 export function replaceCalculateData(
@@ -94,6 +115,7 @@ export function replaceCalculateData(
         base: newBase,
         statParts: newStatParts,
         isPercent: inner.isPercent,
+        precision: inner.precision,
       };
     }
 
@@ -176,7 +198,15 @@ export function replaceCalculateData(
         }
       }
 
-      return { base, statParts, isPercent };
+      return {
+        base,
+        statParts,
+        isPercent,
+        // mPrecision(1,2,...) → 실제 표시 자릿수는 항상 +1 해서 사용
+        // 예: mPrecision=1 → 소수점 2자리, mPrecision=2 → 소수점 3자리
+        precision:
+          calc.mPrecision != null ? calc.mPrecision + 1 : undefined,
+      };
     }
 
     throw new Error(`Unsupported mSpellCalculation type: ${raw.__type}`);
@@ -192,10 +222,21 @@ export function replaceCalculateData(
 
   // === 1) base 변환 ===
   let baseScaled: Value;
+  const precision = result.precision;
 
   if (result.isPercent) {
     // mDisplayAsPercent == true → 퍼센트 변환 필요
-    baseScaled = scaleBy100(result.base);
+    // - mPrecision 이 있으면 소수점까지 보존 (순수 ×100만 수행)
+    // - 없으면 기존처럼 정수 퍼센트로 반올림
+    if (precision != null) {
+      if (isVector(result.base)) {
+        baseScaled = result.base.map((v) => v * 100);
+      } else {
+        baseScaled = (result.base as number) * 100;
+      }
+    } else {
+      baseScaled = scaleBy100(result.base);
+    }
   } else {
     // 일반 수치는 ×100 하면 안됨
     baseScaled = result.base;
@@ -208,7 +249,11 @@ export function replaceCalculateData(
     if (sp.isCoefficient) {
       const ratio =
         isVector(sp.ratio)
-          ? sp.ratio.map((v) => Math.round(v * 100))
+          ? sp.ratio.map((v) =>
+              precision != null ? v * 100 : Math.round(v * 100)
+            )
+          : precision != null
+          ? (sp.ratio as number) * 100
           : Math.round((sp.ratio as number) * 100);
       return {
         ...sp,
@@ -216,7 +261,20 @@ export function replaceCalculateData(
       };
     }
 
-    // 나머지 일반 스탯 비율(AD/AP 등)은 기존 로직 유지: ×100 후 반올림
+    // 나머지 일반 스탯 비율(AD/AP 등)
+    // - mPrecision 이 있으면 소수점까지 보존 (순수 ×100만 수행)
+    // - 없으면 기존 로직 유지: ×100 후 반올림
+    if (precision != null) {
+      const ratio =
+        isVector(sp.ratio)
+          ? sp.ratio.map((v) => v * 100)
+          : (sp.ratio as number) * 100;
+      return {
+        ...sp,
+        ratio,
+      };
+    }
+
     return {
       ...sp,
       ratio: scaleBy100(sp.ratio), // 0.5 → 50%, 0.2 → 20%
@@ -231,18 +289,26 @@ export function replaceCalculateData(
   const isZeroScalar = !isVector(baseScaled) && baseScaled === 0;
 
   if (!isZeroVector && !isZeroScalar) {
-    const rawStr = valueToTooltipString(baseScaled); // "4/8/12" 또는 "275"
+    const rawStr =
+      precision != null
+        ? formatValueWithPrecision(baseScaled, precision)
+        : valueToTooltipString(baseScaled); // "4/8/12" 또는 "275"
     baseStr = result.isPercent ? `${rawStr}%` : rawStr; // 퍼센트면 끝에 % 하나 붙인다
   }
 
   // === 4) 스탯 계수 문자열 만들기 (항상 % + 스탯 이름) ===
   const statStrings: string[] = statPartsScaled.map((sp) => {
-    const ratioStr = valueToTooltipString(sp.ratio); // "50" or "50/60/70"
-    // 스탯 이름이 없으면 순수 퍼센트만 노출 (예: "100%")
+    const ratioStr =
+      precision != null
+        ? formatValueWithPrecision(sp.ratio, precision)
+        : valueToTooltipString(sp.ratio); // "50" or "50/60/70"
+    // 스탯 계수는 가독성을 위해 괄호로 묶어서 표시
+    // 예: "(60% 추가 AD)", "(0.03% 추가 AD)", "(50% AD)"
     if (!sp.name) {
-      return `${ratioStr}%`;
+      // 스탯 이름이 없으면 순수 퍼센트만 괄호로 묶어 노출
+      return `(${ratioStr}%)`;
     }
-    return `${ratioStr}% ${sp.name}`; // "50% AD", "50/60/70% AD"
+    return `(${ratioStr}% ${sp.name})`;
   });
 
   // === 5) 최종 문자열 합치기 ===

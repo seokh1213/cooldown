@@ -65,11 +65,13 @@ export function formatLevelValues(
 export function sanitizeHtml(text: string): string {
   let result = text;
 
-  // <br /> 태그를 줄바꿈으로 변환
-  result = result.replace(/<br\s*\/?>/gi, "\n");
+  // <br> 태그를 일관된 형태로 정규화 (줄바꿈 자체는 유지)
+  // 예: <br>, <br/>, <br /> → <br />
+  result = result.replace(/<br\s*\/?>/gi, "<br />");
 
-  // 연속된 공백 정리
-  result = result.replace(/\s+/g, " ");
+  // 연속된 공백 정리 (개행 문자는 유지)
+  // \s 에는 \n 도 포함되므로, 개행을 제외한 공백만 정리
+  result = result.replace(/[^\S\r\n]+/g, " ");
 
   return result;
 }

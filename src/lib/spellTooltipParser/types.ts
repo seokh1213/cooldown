@@ -40,6 +40,12 @@ export interface CalcResult {
   base: Value; // 순수 숫자 (예: 0.02/0.04/0.06, 혹은 2.75 등)
   statParts: StatPart[]; // + 0.5 AD 같은 비율
   isPercent?: boolean; // mDisplayAsPercent
+  /**
+   * 소수점 자릿수 (CommunityDragon GameCalculation.mPrecision)
+   * - undefined 이면 기존처럼 정수(또는 formatNumber 기본 규칙)로 처리
+   * - 0 이상이면 퍼센트/계수 계산 시 해당 자릿수까지 보존
+   */
+  precision?: number;
 }
 
 /**
@@ -61,6 +67,11 @@ export interface GameCalculation {
   __type: "GameCalculation";
   mFormulaParts?: CalculationPart[];
   mDisplayAsPercent?: boolean;
+   /**
+    * 퍼센트/계산 결과를 몇 자리까지 표시할지에 대한 힌트
+    * (예: 1 → 소수점 1자리, 2 → 소수점 2자리)
+    */
+   mPrecision?: number;
 }
 
 /**

@@ -24,6 +24,18 @@ export function replaceVariables(
 
   let result = text;
 
+  // 0. 연산자(+ / ~) 주변 공백 보정
+  // 예: "{{ calc_damage_1_max }}+최대 체력의 {{ calc_damage_1_percent_max }}"
+  //  → "{{ calc_damage_1_max }} + 최대 체력의 {{ calc_damage_1_percent_max }}"
+  //    "50~100" → "50 ~ 100"
+  result = result
+    // 변수 닫힘 뒤의 "+" 보정: "}}+X" → "}} + X"
+    .replace(/(}})\s*\+\s*(\S)/g, "$1 + $2")
+    // 앞쪽 텍스트와 변수 사이 "+" 보정: "X+{{" → "X + {{"
+    .replace(/(\S)\s*\+\s*({{)/g, "$1 + $2")
+    // 물결(~)도 양쪽 공백을 강제: "A~B" → "A ~ B"
+    .replace(/(\S)\s*~\s*(\S)/g, "$1 ~ $2");
+
   // 이미 치환된 변수를 추적하여 중복 방지
   const replacedVars = new Set<string>();
 
@@ -93,8 +105,8 @@ export function replaceVariables(
   // 중복된 숫자 패턴 제거 (예: "25/30/35% 0.25/0.3/0.35" -> "25/30/35%")
   result = removeDuplicatePercentPatterns(result);
 
-  // 연속된 공백 정리
-  result = result.replace(/\s+/g, " ").trim();
+  // 연속된 공백 정리 (개행 문자는 유지 → <br /> 줄바꿈 보존)
+  result = result.replace(/[^\S\r\n]+/g, " ");
 
   return result;
 }
