@@ -1,5 +1,9 @@
 import { ChampionSpell } from "@/types";
 import { SpellData } from "@/services/spellDataService";
+import {
+  replaceVariables,
+  type CommunityDragonSpellData,
+} from "@/lib/spellTooltipParser";
 
 /**
  * 스킬의 쿨타임 텍스트를 포맷팅
@@ -41,26 +45,78 @@ export function getCooldownText(
 /**
  * 스킬의 소모값 텍스트를 포맷팅
  */
-export function getCostText(skill: ChampionSpell): string | null {
+function sanitizeCostText(text: string | null): string | null {
+  if (!text) return text;
+  // 빈 괄호 "()" 만 남은 경우 제거하고, 공백 정리
+  let result = text.replace(/\(\s*\)/g, "");
+  result = result.replace(/\s{2,}/g, " ").trim();
+  return result;
+}
+
+export function getCostText(
+  skill: ChampionSpell,
+  spellData?: SpellData | null
+): string | null {
   if (!skill) {
     return null;
   }
-  if (skill.costBurn === "0" || (skill.cost && skill.cost.every(c => c === 0))) {
-    return "소모값 없음";
+
+  const hasCostArray =
+    Array.isArray(skill.cost) && skill.cost.length > 0;
+  const isCostArrayAllZero =
+    hasCostArray && skill.cost!.every((c) => c === 0);
+  const isCostBurnZero = skill.costBurn === "0";
+
+  // cost / costBurn 이 모두 0인데 resource 에 템플릿 변수({{ }})가 있는 경우
+  // Community Dragon DataValues 를 사용해 리소스 코스트를 계산한다.
+  if (
+    (isCostBurnZero || isCostArrayAllZero) &&
+    typeof skill.resource === "string" &&
+    skill.resource.includes("{{")
+  ) {
+    const rawResource = skill.resource.trim();
+
+    // DataValues 호환 처리: { DataValues: {...} } 혹은 DataValues 자체가 올 수 있음
+    const dataValues =
+      (spellData?.communityDragonData as any)?.DataValues ||
+      (spellData?.communityDragonData as Record<string, number[]> | undefined);
+
+    if (dataValues) {
+      const cdragonData: CommunityDragonSpellData = {
+        DataValues: dataValues as Record<string, number[]>,
+      };
+
+      const replaced = replaceVariables(
+        rawResource,
+        skill,
+        cdragonData
+      ).trim();
+
+      if (replaced) {
+        return sanitizeCostText(replaced);
+      }
+    }
+
+    // DataValues 기반 치환에 실패하면 기존 동작과 동일하게 "소모값 없음" 처리
+    return sanitizeCostText("소모값 없음");
+  }
+
+  if (isCostBurnZero || isCostArrayAllZero) {
+    return sanitizeCostText("소모값 없음");
   }
   if (skill.costBurn) {
     const costs = skill.costBurn.split("/");
     if (costs.length > 1 && costs.every(c => c === costs[0])) {
-      return `마나 ${costs[0]}`;
+      return sanitizeCostText(`마나 ${costs[0]}`);
     }
-    return `마나 ${skill.costBurn}`;
+    return sanitizeCostText(`마나 ${skill.costBurn}`);
   }
-  if (skill.cost && skill.cost.length > 0) {
+  if (hasCostArray) {
     const cost = skill.cost[0];
     if (skill.cost.every(c => c === cost)) {
-      return `마나 ${cost}`;
+      return sanitizeCostText(`마나 ${cost}`);
     }
-    return `마나 ${skill.cost.join("/")}`;
+    return sanitizeCostText(`마나 ${skill.cost.join("/")}`);
   }
   return null;
 }

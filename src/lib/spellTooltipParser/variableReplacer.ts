@@ -99,8 +99,9 @@ export function replaceVariables(
   // 치환 후 남은 "%" 기호가 혼자 있는 경우 제거
   result = result.replace(/\s+%\s+/g, " "); // 공백으로 둘러싸인 % 제거
   result = result.replace(/(?<!\d)\s*%\s*(?!\d)/g, ""); // 숫자와 함께 있지 않은 % 제거
-  result = result.replace(/^\s*%\s*/g, ""); // 시작 부분의 % 제거
-  result = result.replace(/\s*%\s*$/g, ""); // 끝 부분의 % 제거
+  // 시작/끝 부분의 % 도, 숫자와 붙어있지 않은 경우에만 제거
+  result = result.replace(/^\s*%\s*(?!\d)/g, ""); // 시작 부분의 단독 % 제거
+  result = result.replace(/(?<!\d)\s*%\s*$/g, ""); // 끝 부분의 단독 % 제거
 
   // 연속된 공백 정리 (개행 문자는 유지 → <br /> 줄바꿈 보존)
   result = result.replace(/[^\S\r\n]+/g, " ");

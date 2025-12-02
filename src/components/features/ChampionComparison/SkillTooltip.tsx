@@ -54,7 +54,7 @@ export function SkillTooltip({
   
   // passive 스킬이 아닐 때만 cooldown/cost 텍스트 계산
   const cooldownText = (isPassive && passiveImageFull) ? null : getCooldownText(skill, spellData);
-  const costText = (isPassive && passiveImageFull) ? null : getCostText(skill);
+  const costText = (isPassive && passiveImageFull) ? null : getCostText(skill, spellData);
 
   const isSmall = size === "small";
   const iconSize = isSmall ? "min-w-6 min-h-6 w-6 h-6" : "min-w-8 min-h-8 w-8 h-8";
