@@ -1,6 +1,7 @@
 import Hangul from "hangul-js";
 import { Champion } from "@/types";
 import { logger } from "@/lib/logger";
+import { getStaticDataPath } from "@/lib/staticDataUtils";
 
 const VERSION_URL = "https://ddragon.leagueoflegends.com/api/versions.json";
 const CHAMP_LIST_URL = (VERSION: string, LANG: string) =>
@@ -40,13 +41,40 @@ async function fetchData<T>(URL: string, transform: (res: unknown) => T): Promis
   }
 }
 
-export function getVersion(): Promise<string> {
-  return fetchData<string>(VERSION_URL, (res) => {
+/**
+ * 정적 데이터에서 버전 정보 가져오기 시도, 없으면 API 호출
+ */
+async function tryGetStaticVersion(version: string): Promise<string | null> {
+  try {
+    const versionUrl = getStaticDataPath(version, 'version.json');
+    const response = await fetch(versionUrl);
+    
+    if (response.ok) {
+      const versionInfo = await response.json();
+      if (versionInfo && versionInfo.version) {
+        return versionInfo.version;
+      }
+    }
+  } catch (error) {
+    // 정적 데이터가 없으면 null 반환
+  }
+  return null;
+}
+
+export async function getVersion(): Promise<string> {
+  // 먼저 API에서 최신 버전 가져오기
+  const latestVersion = await fetchData<string>(VERSION_URL, (res) => {
     if (Array.isArray(res) && res.length > 0 && typeof res[0] === "string") {
       return res[0];
     }
     throw new Error("Invalid version response format");
   });
+
+  // 해당 버전의 정적 데이터가 있는지 확인
+  const staticVersion = await tryGetStaticVersion(latestVersion);
+  
+  // 정적 데이터가 있으면 그것을 사용, 없으면 API 버전 사용
+  return staticVersion || latestVersion;
 }
 
 /**
@@ -119,6 +147,34 @@ export function cleanOldVersionCache(currentVersion: string): void {
 }
 
 export async function getChampionList(version: string, lang: string): Promise<Champion[]> {
+  // 정적 데이터에서 먼저 시도
+  try {
+    const staticUrl = getStaticDataPath(version, `champions-${lang}.json`);
+    const response = await fetch(staticUrl);
+    
+    if (response.ok) {
+      const staticData = await response.json();
+      if (staticData && staticData.champions && Array.isArray(staticData.champions)) {
+        return staticData.champions
+          .map((e: Champion) => {
+            const champion: Champion = {
+              ...e,
+              hangul: lang === "ko_KR"
+                ? Hangul.d(e.name, true).reduce(
+                  (acc: string, array: string[]) => acc + array[0],
+                  ""
+                )
+                : "",
+            };
+            return champion;
+          });
+      }
+    }
+  } catch (error) {
+    logger.warn("[StaticData] Failed to load champion list from static data, falling back to API:", error);
+  }
+
+  // 정적 데이터가 없으면 API 호출
   const data = await fetchData<ChampionData>(CHAMP_LIST_URL(version, lang), (res) => {
     if (res && typeof res === "object" && "data" in res) {
       return res as ChampionData;
@@ -141,7 +197,7 @@ export async function getChampionList(version: string, lang: string): Promise<Ch
     });
 }
 
-export function getChampionInfo(version: string, lang: string, name: string): Promise<Champion> {
+export async function getChampionInfo(version: string, lang: string, name: string): Promise<Champion> {
   // 캐시 키 생성: 버전과 언어를 포함하여 버전별 캐싱
   const cacheKey = `champion_info_${version}_${lang}_${name}`;
   
@@ -156,11 +212,35 @@ export function getChampionInfo(version: string, lang: string, name: string): Pr
       }
     }
   } catch (error) {
-    // 캐시 파싱 실패 시 무시하고 API 호출
+    // 캐시 파싱 실패 시 무시하고 계속 진행
     logger.warn("Failed to parse cached champion info:", error);
   }
 
-  // 캐시가 없거나 유효하지 않으면 API 호출
+  // 정적 데이터에서 먼저 시도
+  try {
+    const staticUrl = getStaticDataPath(version, 'champions', `${name}-${lang}.json`);
+    const response = await fetch(staticUrl);
+    
+    if (response.ok) {
+      const staticData = await response.json();
+      if (staticData && staticData.champion) {
+        const championInfo = staticData.champion;
+        
+        // 정적 데이터를 localStorage에 캐싱
+        try {
+          localStorage.setItem(cacheKey, JSON.stringify(championInfo));
+        } catch (error) {
+          logger.warn("Failed to cache champion info:", error);
+        }
+        
+        return championInfo;
+      }
+    }
+  } catch (error) {
+    logger.warn("[StaticData] Failed to load champion info from static data, falling back to API:", error);
+  }
+
+  // 정적 데이터가 없으면 API 호출
   return fetchData<Champion>(
     CHAMP_INFO_URL(version, lang, name),
     (res) => {
@@ -269,9 +349,6 @@ export async function getCommunityDragonSpellData(
   version?: string
 ): Promise<Record<string, Record<string, any>>> {
   const cdChampionId = convertChampionIdToCommunityDragon(championId);
-  const url = `https://raw.communitydragon.org/latest/game/data/characters/${cdChampionId}/${cdChampionId}.bin.json`;
-  
-  // 캐시 키 생성: 조회 시점의 Data Dragon 버전 정보를 키에 포함
   const versionForCache = version || 'unknown';
   const cacheKey = `cd_spell_data_${versionForCache}_${cdChampionId}`;
 
@@ -291,6 +368,56 @@ export async function getCommunityDragonSpellData(
   } catch (error) {
     logger.warn("[CD] Failed to parse cached Community Dragon data:", error);
   }
+
+  // 정적 데이터에서 먼저 시도
+  if (version) {
+    try {
+      const staticUrl = getStaticDataPath(version, 'spells', `${championId}.json`);
+      logger.debug(`[StaticData] Attempting to load CD spell data from: ${staticUrl}`);
+      logger.warn(`[StaticData] Attempting to load CD spell data from: ${staticUrl}`); // 프로덕션 디버깅용
+      const response = await fetch(staticUrl);
+      
+      if (response.ok) {
+        const staticData = await response.json();
+        logger.debug(`[StaticData] Loaded static data for ${championId}:`, staticData);
+        
+        if (staticData && staticData.spellData && typeof staticData.spellData === 'object') {
+          const spellDataMap = staticData.spellData;
+          
+          // 데이터가 있을 때만 사용하고 캐싱
+          if (Object.keys(spellDataMap).length > 0) {
+            logger.debug(`[StaticData] Successfully loaded ${Object.keys(spellDataMap).length} spells for ${championId}`);
+            logger.warn(`[StaticData] Successfully loaded ${Object.keys(spellDataMap).length} spells for ${championId} from static data`); // 프로덕션 디버깅용
+            try {
+              localStorage.setItem(cacheKey, JSON.stringify(spellDataMap));
+            } catch (error) {
+              logger.warn("[CD] Failed to cache Community Dragon data:", error);
+            }
+            
+            return spellDataMap;
+          } else {
+            logger.warn(`[StaticData] Static data for ${championId} has empty spellData, falling back to API`);
+            // 빈 데이터면 API로 폴백하기 위해 계속 진행
+          }
+        } else {
+          logger.warn(`[StaticData] Invalid static data structure for ${championId}, falling back to API. Data keys:`, staticData ? Object.keys(staticData) : 'null');
+          // 잘못된 구조면 API로 폴백하기 위해 계속 진행
+        }
+      } else {
+        logger.warn(`[StaticData] Failed to fetch static data for ${championId}: ${response.status} ${response.statusText} from ${staticUrl}, falling back to API`);
+        // 404 등 실패 시 API로 폴백하기 위해 계속 진행
+      }
+    } catch (error) {
+      logger.warn("[StaticData] Failed to load CD spell data from static data, falling back to API:", error);
+      // 에러 발생 시 API로 폴백하기 위해 계속 진행
+    }
+  } else {
+    logger.warn(`[StaticData] No version provided for ${championId}, skipping static data and using API`);
+  }
+
+  // 정적 데이터가 없으면 API 호출
+  const url = `https://raw.communitydragon.org/latest/game/data/characters/${cdChampionId}/${cdChampionId}.bin.json`;
+  logger.debug(`[CD] Falling back to Community Dragon API: ${url}`);
 
   let response: Response;
   try {

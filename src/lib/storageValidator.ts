@@ -7,6 +7,12 @@ import { logger } from "./logger";
 // 데이터 구조 버전 (구조가 변경되면 이 값을 증가시켜야 함)
 export const DATA_STRUCTURE_VERSION = 1;
 
+// 배포 버전 해시 키 (로컬 스토리지에 저장되는 키)
+const DEPLOYMENT_VERSION_STORAGE_KEY = "app_deployment_version";
+
+// 현재 배포 버전 해시 (빌드 시점에 주입됨)
+const CURRENT_DEPLOYMENT_VERSION = import.meta.env.VITE_DEPLOYMENT_VERSION || "dev";
+
 // localStorage 키와 버전 키 매핑
 const STORAGE_VERSION_KEYS = {
   "encyclopedia_selected_champions": "encyclopedia_selected_champions_version",
@@ -182,6 +188,54 @@ export function removeStorageWithVersion(key: string): void {
   const versionKey = STORAGE_VERSION_KEYS[key as keyof typeof STORAGE_VERSION_KEYS];
   if (versionKey) {
     localStorage.removeItem(versionKey);
+  }
+}
+
+/**
+ * 모든 localStorage 데이터를 초기화
+ */
+function clearAllLocalStorage(): void {
+  try {
+    // 모든 localStorage 키를 가져와서 삭제
+    const keys = Object.keys(localStorage);
+    keys.forEach((key) => {
+      localStorage.removeItem(key);
+    });
+    logger.info("All localStorage data cleared");
+  } catch (error) {
+    logger.error("Error clearing localStorage:", error);
+  }
+}
+
+/**
+ * 배포 버전을 확인하고, 버전이 다르면 모든 로컬 스토리지 데이터를 초기화
+ * 스플래시 로딩 시점에 호출되어야 함
+ */
+export function checkAndClearStorageIfVersionMismatch(): void {
+  try {
+    const storedVersion = localStorage.getItem(DEPLOYMENT_VERSION_STORAGE_KEY);
+    
+    // 저장된 버전이 없거나 현재 버전과 다르면 모든 데이터 초기화
+    if (storedVersion !== CURRENT_DEPLOYMENT_VERSION) {
+      logger.warn(
+        `Deployment version mismatch. Stored: ${storedVersion}, Current: ${CURRENT_DEPLOYMENT_VERSION}. Clearing all localStorage data.`
+      );
+      clearAllLocalStorage();
+      
+      // 새로운 배포 버전 저장
+      localStorage.setItem(DEPLOYMENT_VERSION_STORAGE_KEY, CURRENT_DEPLOYMENT_VERSION);
+    } else {
+      logger.debug(`Deployment version matches: ${CURRENT_DEPLOYMENT_VERSION}`);
+    }
+  } catch (error) {
+    logger.error("Error checking deployment version:", error);
+    // 에러 발생 시 안전을 위해 초기화
+    clearAllLocalStorage();
+    try {
+      localStorage.setItem(DEPLOYMENT_VERSION_STORAGE_KEY, CURRENT_DEPLOYMENT_VERSION);
+    } catch (e) {
+      logger.error("Failed to set deployment version:", e);
+    }
   }
 }
 

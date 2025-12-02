@@ -6,7 +6,7 @@ import Nav from "@/components/features/Nav";
 import SplashScreen from "@/components/layout/SplashScreen";
 import { Champion } from "@/types";
 import { I18nProvider, Language } from "@/i18n";
-import { validateAllStorageData } from "@/lib/storageValidator";
+import { validateAllStorageData, checkAndClearStorageIfVersionMismatch } from "@/lib/storageValidator";
 import { logger } from "@/lib/logger";
 
 // Lazy load pages for code splitting
@@ -67,6 +67,9 @@ function App() {
   const initData = useCallback(async () => {
     try {
       setIsLoading(true);
+      
+      // splash 화면이 띄워질 때 배포 버전 체크 및 초기화 (가장 먼저 실행)
+      checkAndClearStorageIfVersionMismatch();
       
       // splash 화면이 띄워질 때 localStorage 데이터 구조 유효성 검사
       validateAllStorageData();

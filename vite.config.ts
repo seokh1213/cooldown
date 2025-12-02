@@ -1,7 +1,8 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import path from 'path'
-import { copyFileSync, writeFileSync, readFileSync, readdirSync } from 'fs'
+import { copyFileSync, writeFileSync, readFileSync, readdirSync, existsSync, mkdirSync, cpSync } from 'fs'
+import { createHash } from 'crypto'
 
 // GitHub Pages base path
 const BASE_PATH = '/cooldown/'
@@ -60,10 +61,41 @@ function fixDynamicImports() {
   }
 }
 
+// 배포 버전 해시 생성 플러그인
+function generateDeploymentVersion() {
+  return {
+    name: 'generate-deployment-version',
+    config({ mode }) {
+      let deploymentVersion: string;
+      
+      if (mode === 'production') {
+        // 프로덕션 빌드: package.json 버전 + 빌드 타임스탬프를 조합하여 고유한 해시 생성
+        const packageJson = JSON.parse(readFileSync(path.resolve(__dirname, 'package.json'), 'utf-8'));
+        const buildTimestamp = Date.now().toString();
+        const versionString = `${packageJson.version}-${buildTimestamp}`;
+        deploymentVersion = createHash('sha256').update(versionString).digest('hex').substring(0, 16);
+        console.log(`📦 Deployment version hash: ${deploymentVersion}`);
+      } else {
+        // 개발 환경: 고정값 사용 (개발 중에는 초기화되지 않도록)
+        deploymentVersion = 'dev';
+      }
+      
+      // 환경 변수로 주입
+      return {
+        define: {
+          'import.meta.env.VITE_DEPLOYMENT_VERSION': JSON.stringify(deploymentVersion),
+        },
+      };
+    },
+  };
+}
+
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({
   plugins: [
     react(),
+    // 배포 버전 해시 생성 플러그인
+    generateDeploymentVersion(),
     // 동적 import 경로 수정 플러그인
     fixDynamicImports(),
     // HTML의 modulepreload 순서를 수정하는 플러그인 (react-vendor를 먼저 로드)
@@ -102,8 +134,34 @@ export default defineConfig(({ mode }) => ({
         }
       },
     },
+    // 정적 데이터 폴더 복사 보장 플러그인
+    {
+      name: 'ensure-static-data',
+      closeBundle() {
+        if (mode === 'production') {
+          const publicDataPath = path.resolve(__dirname, 'public', 'data')
+          const distDataPath = path.resolve(__dirname, 'dist', 'data')
+          
+          // public/data 폴더가 존재하고 dist/data 폴더가 없거나 비어있으면 복사
+          if (existsSync(publicDataPath)) {
+            if (!existsSync(distDataPath)) {
+              mkdirSync(distDataPath, { recursive: true })
+            }
+            
+            // public/data의 모든 내용을 dist/data로 복사
+            try {
+              cpSync(publicDataPath, distDataPath, { recursive: true, force: true })
+              console.log('✅ Static data files copied to dist/data')
+            } catch (error) {
+              console.warn('⚠️ Failed to copy static data files:', error)
+            }
+          }
+        }
+      },
+    },
   ],
   base: mode === 'production' ? BASE_PATH : '/',
+  publicDir: 'public',
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
