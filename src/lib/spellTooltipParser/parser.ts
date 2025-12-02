@@ -1,4 +1,5 @@
 import { ChampionSpell } from "@/types";
+import type { Language } from "@/i18n";
 import { CommunityDragonSpellData } from "./types";
 import { convertXmlTagsToHtml } from "./xmlTagConverter";
 import { replaceVariables } from "./variableReplacer";
@@ -14,7 +15,8 @@ import { sanitizeHtml } from "./formatters";
 export function parseSpellTooltip(
   text: string | undefined,
   spell?: ChampionSpell,
-  communityDragonData?: CommunityDragonSpellData
+  communityDragonData?: CommunityDragonSpellData,
+  lang: Language = "ko_KR"
 ): string {
   if (!text) return "";
 
@@ -24,7 +26,7 @@ export function parseSpellTooltip(
   result = convertXmlTagsToHtml(result);
 
   // 2. 변수 치환 (XML 태그 변환 후 수행)
-  result = replaceVariables(result, spell, communityDragonData);
+  result = replaceVariables(result, spell, communityDragonData, lang);
 
   // 3. HTML 정리
   result = sanitizeHtml(result);
@@ -41,7 +43,8 @@ export function parseSpellTooltip(
  */
 export function parseSpellDescription(
   text: string | undefined,
-  spell?: ChampionSpell
+  spell?: ChampionSpell,
+  lang: Language = "ko_KR"
 ): string {
   if (!text) return "";
 
@@ -51,7 +54,7 @@ export function parseSpellDescription(
   result = convertXmlTagsToHtml(result);
 
   // 변수 치환 (간단한 버전)
-  result = replaceVariables(result, spell);
+  result = replaceVariables(result, spell, undefined, lang);
 
   return result;
 }

@@ -4,14 +4,18 @@ import {
   replaceVariables,
   type CommunityDragonSpellData,
 } from "@/lib/spellTooltipParser";
+import type { Language } from "@/i18n";
+import { getTranslations } from "@/i18n";
 
 /**
  * 스킬의 쿨타임 텍스트를 포맷팅
  */
 export function getCooldownText(
   skill: ChampionSpell,
-  spellData?: SpellData | null
+  spellData?: SpellData | null,
+  lang: Language = "ko_KR"
 ): string | null {
+  const t = getTranslations(lang);
   if (!skill || !skill.cooldown || !Array.isArray(skill.cooldown) || skill.cooldown.length === 0) {
     return null;
   }
@@ -23,21 +27,21 @@ export function getCooldownText(
   if (isAmmoSkill && ammoRechargeTime) {
     const rechargeTime = ammoRechargeTime[1];
     const maxAmmo = skill.effectBurn?.[1] || "3";
-    return `재충전 대기시간 ${rechargeTime}초 (최대: ${maxAmmo}개)`;
+    return `${t.common.rechargeTime} ${rechargeTime}${t.common.seconds} (${t.common.max}: ${maxAmmo}${t.common.items})`;
   }
   if (skill.cooldownBurn) {
     const cooldowns = skill.cooldownBurn.split("/");
     if (cooldowns.length > 1 && cooldowns.every(cd => cd === cooldowns[0])) {
-      return `${cooldowns[0]}초`;
+      return `${cooldowns[0]}${t.common.seconds}`;
     }
-    return `${skill.cooldownBurn}초`;
+    return `${skill.cooldownBurn}${t.common.seconds}`;
   }
   if (skill.cooldown && skill.cooldown.length > 0) {
     const cd = skill.cooldown[0];
     if (skill.cooldown.every(c => c === cd)) {
-      return `${cd}초`;
+      return `${cd}${t.common.seconds}`;
     }
-    return `${skill.cooldown.join("/")}초`;
+    return `${skill.cooldown.join("/")}${t.common.seconds}`;
   }
   return null;
 }
@@ -55,8 +59,10 @@ function sanitizeCostText(text: string | null): string | null {
 
 export function getCostText(
   skill: ChampionSpell,
-  spellData?: SpellData | null
+  spellData?: SpellData | null,
+  lang: Language = "ko_KR"
 ): string | null {
+  const t = getTranslations(lang);
   if (!skill) {
     return null;
   }
@@ -98,25 +104,25 @@ export function getCostText(
     }
 
     // DataValues 기반 치환에 실패하면 기존 동작과 동일하게 "소모값 없음" 처리
-    return sanitizeCostText("소모값 없음");
+    return sanitizeCostText(t.common.noCost);
   }
 
   if (isCostBurnZero || isCostArrayAllZero) {
-    return sanitizeCostText("소모값 없음");
+    return sanitizeCostText(t.common.noCost);
   }
   if (skill.costBurn) {
     const costs = skill.costBurn.split("/");
     if (costs.length > 1 && costs.every(c => c === costs[0])) {
-      return sanitizeCostText(`마나 ${costs[0]}`);
+      return sanitizeCostText(`${t.common.mana} ${costs[0]}`);
     }
-    return sanitizeCostText(`마나 ${skill.costBurn}`);
+    return sanitizeCostText(`${t.common.mana} ${skill.costBurn}`);
   }
   if (hasCostArray) {
     const cost = skill.cost[0];
     if (skill.cost.every(c => c === cost)) {
-      return sanitizeCostText(`마나 ${cost}`);
+      return sanitizeCostText(`${t.common.mana} ${cost}`);
     }
-    return sanitizeCostText(`마나 ${skill.cost.join("/")}`);
+    return sanitizeCostText(`${t.common.mana} ${skill.cost.join("/")}`);
   }
   return null;
 }

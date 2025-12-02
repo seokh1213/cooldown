@@ -17,6 +17,8 @@ import {
 } from "./types";
 import { getDataValueByName } from "./dataValueUtils";
 import { Value } from "./types";
+import type { Language } from "@/i18n";
+import { getTranslations } from "@/i18n";
 import {
   add,
   mul,
@@ -54,8 +56,10 @@ function formatValueWithPrecision(value: Value, precision: number): string {
 export function replaceCalculateData(
   parseResult: ParseResult,
   spell: ChampionSpell,
-  communityDragonData?: CommunityDragonSpellData
+  communityDragonData?: CommunityDragonSpellData,
+  lang: Language = "ko_KR"
 ): string | null {
+  const t = getTranslations(lang);
   const spellCalcs = communityDragonData?.mSpellCalculations;
   const dataValues = communityDragonData?.DataValues;
   if (!spellCalcs) return null;
@@ -267,7 +271,7 @@ export function replaceCalculateData(
             continue;
           }
           const ratio = evalDataValue(statPart.mDataValue); // 0.5 or 벡터
-          const name = getStatName(statPart.mStat, statPart.mStatFormula);
+          const name = getStatName(statPart.mStat, statPart.mStatFormula, lang);
           statParts.push({ name, ratio });
         } else if (partType === "StatByCoefficientCalculationPart") {
           // mCoefficient 기반 스탯/계수 (예: 1 → 100%)
@@ -277,8 +281,8 @@ export function replaceCalculateData(
             continue;
           }
           // mStat/mStatFormula 규칙에 따라 스탯 이름 결정
-          // (둘 다 생략 시 AP, 2=AD, 12=체력 등)
-          const name = getStatName(coeffPart.mStat, coeffPart.mStatFormula);
+          // (둘 다 생략 시 AP, 2=AD, 12=Health 등)
+          const name = getStatName(coeffPart.mStat, coeffPart.mStatFormula, lang);
           // 계수 자체(0.3, 1 등)를 ratio 로 두고, 나중에 ×100(+버림)해서 %로 표기
           const ratio: Value = coeffPart.mCoefficient;
           statParts.push({ name, ratio, isCoefficient: true });
@@ -294,7 +298,8 @@ export function replaceCalculateData(
           }
 
           // 기본 자원 이름: 마나
-          let resourceName = "마나";
+          const t = getTranslations(lang);
+          let resourceName = t.common.mana;
           if (spell.costType) {
             const costType = spell.costType.trim();
             if (costType && !costType.includes("{{")) {
@@ -306,9 +311,9 @@ export function replaceCalculateData(
             resourceName = spell.resource;
           }
 
-          // mStatFormula: 2 → "추가" 자원
+          // mStatFormula: 2 → bonus 자원
           const isBonus = resPart.mStatFormula === 2;
-          const name = isBonus ? `추가 ${resourceName}` : resourceName;
+          const name = isBonus ? `${t.common.bonus} ${resourceName}` : resourceName;
 
           const ratio: Value = resPart.mCoefficient;
           statParts.push({ name, ratio, isCoefficient: true });
@@ -563,7 +568,7 @@ export function replaceCalculateData(
         ? formatValueWithPrecision(sp.ratio, precision)
         : valueToTooltipString(sp.ratio); // "50" or "50/60/70"
     // 스탯 계수는 가독성을 위해 괄호로 묶어서 표시
-    // 예: "(60% 추가 AD)", "(0.03% 추가 AD)", "(50% AD)"
+    // 예: "(60% bonus AD)", "(0.03% bonus AD)", "(50% AD)"
     if (!sp.name) {
       // 스탯 이름이 없으면 순수 퍼센트만 괄호로 묶어 노출
       return `(${ratioStr}%)`;

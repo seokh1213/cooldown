@@ -96,7 +96,7 @@ export function SkillsSectionMobile({
                   <TableHeader>
                     <TableRow className="border-b border-border/30 select-none">
                       <TableHead className="text-left p-1.5 pl-2 text-[10px] font-semibold text-foreground sticky left-0 bg-card z-20 w-[50px] min-w-[50px] border-r border-border/30 select-none" style={{ left: 0 }}>
-                        레벨
+                        {t.common.level}
                       </TableHead>
                       <TableHead className="text-center p-1.5 text-[10px] font-semibold text-foreground w-[calc((100%-90px)/2)] min-w-[100px] border-r border-border/30 select-none">
                         <div className="flex flex-col items-center justify-center gap-0.5">
@@ -213,7 +213,7 @@ export function SkillsSectionMobile({
                             )}
                             style={{ left: 0 }}
                           >
-                            {row.level}레벨
+                            {row.level}{t.common.level}
                           </TableCell>
                           <TableCell className="p-1.5 border-r border-border/30">
                             {championASkills ? (
@@ -228,7 +228,7 @@ export function SkillsSectionMobile({
                                   >
                                     <span className="text-[9px] font-semibold">
                                       {skillData.cooldown !== ""
-                                        ? `${skillData.cooldown}s`
+                                        ? `${skillData.cooldown}${t.common.seconds}`
                                         : "-"}
                                     </span>
                                   </div>
@@ -252,7 +252,7 @@ export function SkillsSectionMobile({
                                   >
                                     <span className="text-[9px] font-semibold">
                                       {skillData.cooldown !== ""
-                                        ? `${skillData.cooldown}s`
+                                        ? `${skillData.cooldown}${t.common.seconds}`
                                         : "-"}
                                     </span>
                                   </div>
@@ -285,7 +285,7 @@ export function SkillsSectionMobile({
                 <TableHeader>
                   <TableRow className="border-b border-border/30 select-none">
                     <TableHead className="text-left p-2 pl-3 text-xs font-semibold text-foreground sticky left-0 bg-card z-20 w-[60px] min-w-[60px] border-r border-border/30 select-none" style={{ left: 0 }}>
-                      레벨
+                      {t.common.level}
                     </TableHead>
                     {champions.map((champion) => (
                       <TableHead
@@ -362,7 +362,7 @@ export function SkillsSectionMobile({
                         )}
                         style={{ left: 0 }}
                       >
-                        {row.level}레벨
+                        {row.level}{t.common.level}
                       </TableCell>
                       {row.skills.map((championSkills, champIdx) => (
                         <TableCell
@@ -383,7 +383,7 @@ export function SkillsSectionMobile({
                                 >
                                   <span className="text-[10px] font-semibold">
                                     {skillData.cooldown !== ""
-                                      ? `${skillData.cooldown}s`
+                                      ? `${skillData.cooldown}${t.common.seconds}`
                                       : "-"}
                                   </span>
                                 </div>

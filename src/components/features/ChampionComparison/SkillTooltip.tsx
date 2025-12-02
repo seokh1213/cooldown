@@ -46,15 +46,19 @@ export function SkillTooltip({
   passiveImageFull,
   size = "default",
 }: SkillTooltipProps) {
-  const { t } = useTranslation();
+  const { t, lang } = useTranslation();
   const deviceType = useDeviceType();
   const isMobile = deviceType === "mobile";
   const [open, setOpen] = React.useState(false);
   const triggerRef = React.useRef<HTMLDivElement>(null);
   
   // passive 스킬이 아닐 때만 cooldown/cost 텍스트 계산
-  const cooldownText = (isPassive && passiveImageFull) ? null : getCooldownText(skill, spellData);
-  const costText = (isPassive && passiveImageFull) ? null : getCostText(skill, spellData);
+  const cooldownText = (isPassive && passiveImageFull)
+    ? null
+    : getCooldownText(skill, spellData, lang);
+  const costText = (isPassive && passiveImageFull)
+    ? null
+    : getCostText(skill, spellData, lang);
 
   const isSmall = size === "small";
   const iconSize = isSmall ? "min-w-6 min-h-6 w-6 h-6" : "min-w-8 min-h-8 w-8 h-8";
@@ -114,7 +118,7 @@ export function SkillTooltip({
             <div className="text-xs leading-relaxed">
               <div
                 dangerouslySetInnerHTML={{
-                  __html: parseSpellTooltip(passiveDescription, undefined ),
+                  __html: parseSpellTooltip(passiveDescription, undefined, undefined, lang),
                 }}
               />
             </div>
@@ -122,7 +126,7 @@ export function SkillTooltip({
           {/* 경고 문구 */}
           <div className="text-xs text-muted-foreground leading-relaxed border-t pt-3 mt-3 flex items-start gap-1.5">
             <AlertTriangle className="w-3 h-3 mt-0.5 text-yellow-600 dark:text-yellow-500 flex-shrink-0" />
-            <span>패시브 정보는 제공되지 않습니다. 정확한 수치와 설명은 인게임 툴팁을 확인해 주세요.</span>
+            <span>{t.skillTooltip.warningPassive}</span>
           </div>
         </>
       );
@@ -177,7 +181,8 @@ export function SkillTooltip({
                 __html: parseSpellTooltip(
                   skill.description,
                   skill,
-                  spellData?.communityDragonData
+                  spellData?.communityDragonData,
+                  lang
                 ).replace(/<br\s*\/?>/gi, " "),
               }}
             />
@@ -190,7 +195,8 @@ export function SkillTooltip({
                 __html: parseSpellTooltip(
                   skill.tooltip,
                   skill,
-                  spellData?.communityDragonData
+                  spellData?.communityDragonData,
+                  lang
                 ),
               }}
             />
@@ -198,11 +204,11 @@ export function SkillTooltip({
         )}
 
         {/* 레벨별 통계 - 본문보다 덜 강조 (약간 흐린 색상) */}
-        {spellData && formatLeveltipStats(skill, spellData.communityDragonData) && (
+        {spellData && formatLeveltipStats(skill, spellData.communityDragonData, lang) && (
           <div className="text-[11px] leading-relaxed text-muted-foreground border-t pt-3 mt-3">
             <div
               dangerouslySetInnerHTML={{
-                __html: formatLeveltipStats(skill, spellData.communityDragonData),
+                __html: formatLeveltipStats(skill, spellData.communityDragonData, lang),
               }}
             />
           </div>
@@ -211,7 +217,7 @@ export function SkillTooltip({
         {/* 경고 문구 */}
         <div className="text-xs text-muted-foreground leading-relaxed border-t pt-3 mt-3 flex items-start gap-1.5">
           <AlertTriangle className="w-3 h-3 mt-0.5 text-yellow-600 dark:text-yellow-500 flex-shrink-0" />
-          <span>정확한 수치와 설명은 인게임 툴팁을 확인해 주세요.</span>
+          <span>{t.skillTooltip.warningSkill}</span>
         </div>
       </>
     );

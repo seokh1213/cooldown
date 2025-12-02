@@ -1,5 +1,7 @@
 import { Value } from "./types";
 import { formatNumber } from "./formatters";
+import type { Language } from "@/i18n";
+import { getTranslations } from "@/i18n";
 
 /**
  * 값이 벡터인지 확인
@@ -76,66 +78,71 @@ export function scaleBy100(value: Value): Value {
 }
 
 /**
- * 스탯 코드 → 이름 변환
+ * 스탯 코드 → 로컬라이즈된 이름 변환
  */
-export function getStatName(mStat?: number, mStatFormula?: number): string {
+export function getStatName(
+  mStat?: number,
+  mStatFormula?: number,
+  lang: Language = "ko_KR"
+): string {
+  const t = getTranslations(lang);
   const hasStat = mStat !== undefined && mStat !== null;
   const hasFormula = mStatFormula !== undefined && mStatFormula !== null;
 
   // 규칙:
-  // mstat: (2=AD, 12=체력, 1=방어력, 6=마법 저항력, 18=생명력 흡수, 생략=AP)
-  // mStatFormula: (2는 추가, 생략=전체)
+  // mStat: (2=Attack Damage, 12=Health, 1=Armor, 6=Magic Resist, 18=Lifesteal, 생략=Ability Power)
+  // mStatFormula: (2=bonus, 생략=전체)
   //
-  // "mstat:2" → AD
-  // "mstat:2, mStatFormula: 2" → 추가 AD
-  // "mstat:12, mStatFormula: 2"  → 추가 체력
-  // "" (둘 다 생략) → AP
+  // "mStat:2" → Attack Damage
+  // "mStat:2, mStatFormula:2" → bonus Attack Damage
+  // "mStat:12, mStatFormula:2" → bonus Health
+  // "" (둘 다 생략) → Ability Power
 
-  // 둘 다 생략된 경우 → AP 계수
+  // 둘 다 생략된 경우 → Ability Power 계수
   if (!hasStat && !hasFormula) {
-    return "AP";
+    return t.stats.abilityPower;
   }
 
   const statCode = mStat ?? mStatFormula;
 
-  // AD 계수
+  // Attack Damage 계수
   if (statCode === 2) {
     if (mStat === 2 && mStatFormula === 2) {
-      return "추가 AD"; // bonus AD
+      return t.stats.bonusAttackDamage; // bonus AD
     }
-    return "AD";
+    return t.stats.attackDamage;
   }
 
-  // 체력 계수
+  // Health 계수
   if (statCode === 12) {
     if (mStat === 12 && mStatFormula === 2) {
-      return "추가 체력"; // bonus HP
+      return t.stats.bonusHealth; // bonus HP
     }
-    return "체력";
+    return t.stats.health;
   }
 
-  // 방어력 계수
+  // Armor 계수
   if (statCode === 1) {
     if (mStat === 1 && mStatFormula === 2) {
-      return "추가 방어력";
+      return t.stats.bonusArmor;
     }
-    return "방어력";
+    return t.stats.armor;
   }
 
-  // 마법 저항력 계수
+  // Magic Resist 계수
   if (statCode === 6) {
     if (mStat === 6 && mStatFormula === 2) {
-      return "추가 마법 저항력";
+      return t.stats.bonusMagicResist;
     }
-    return "마법 저항력";
+    return t.stats.magicResist;
   }
 
-  // 생명력 흡수 계수
+  // Lifesteal 계수
   if (statCode === 18) {
     if (mStat === 18 && mStatFormula === 2) {
-      return "추가 생명력 흡수";
+      return t.stats.bonusLifesteal;
     }
-    return "생명력 흡수";
+    return t.stats.lifesteal;
   }
 
   // 그 외 알 수 없는 스탯은 표시하지 않는다 (아이콘으로만 처리하거나 무시)

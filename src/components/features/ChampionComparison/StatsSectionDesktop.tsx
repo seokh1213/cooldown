@@ -12,9 +12,10 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import ChampionSelector from "../ChampionSelector";
-import { STAT_FIELDS } from "./constants";
+import { getStatFields } from "./constants";
 import { SectionProps } from "./types";
 import { Champion } from "@/types";
+import { useTranslation } from "@/i18n";
 import {
   DndContext,
   closestCenter,
@@ -41,7 +42,9 @@ export function StatsSectionDesktop({
   onRemoveChampion,
   onReorderChampions,
 }: SectionProps) {
+  const { t, lang } = useTranslation();
   const [showAddSlot, setShowAddSlot] = useState(false);
+  const STAT_FIELDS = getStatFields(lang);
 
   // 드래그 앤 드롭 센서 설정
   const sensors = useSensors(
@@ -189,7 +192,7 @@ export function StatsSectionDesktop({
             <TableHeader>
               <TableRow className="border-b border-border/30 select-none">
                 <TableHead className="text-left p-2 pl-3 text-xs font-semibold text-foreground sticky left-0 bg-card z-20 w-[90px] min-w-[90px] border-r border-border/30 select-none" style={{ left: 0 }}>
-                  스탯
+                  {t.stats.label}
                 </TableHead>
                 <SortableContext
                   items={champions.map((c) => c.id)}

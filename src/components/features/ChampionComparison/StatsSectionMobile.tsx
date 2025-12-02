@@ -8,14 +8,17 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { STAT_FIELDS } from "./constants";
+import { getStatFields } from "./constants";
 import { SectionProps } from "./types";
+import { useTranslation } from "@/i18n";
 
 export function StatsSectionMobile({
   champions,
   version,
   vsMode,
 }: SectionProps) {
+  const { t, lang } = useTranslation();
+  const STAT_FIELDS = getStatFields(lang);
 
   // VS 모드 레이아웃
   if (vsMode && champions.length === 2) {
@@ -31,7 +34,7 @@ export function StatsSectionMobile({
                 <TableHeader>
                   <TableRow className="border-b border-border/30 select-none">
                     <TableHead className="text-left p-1.5 pl-2 text-[10px] font-semibold text-foreground sticky left-0 bg-card z-20 w-[50px] min-w-[50px] border-r border-border/30 select-none" style={{ left: 0 }}>
-                      스탯
+                      {t.stats.label}
                     </TableHead>
                     <TableHead className="text-center p-1.5 text-[10px] font-semibold text-foreground w-1/2 border-r border-border/30 select-none">
                       <div className="flex flex-col items-center justify-center gap-0.5">
@@ -115,7 +118,7 @@ export function StatsSectionMobile({
               <TableHeader>
                 <TableRow className="border-b border-border/30 select-none">
                   <TableHead className="text-left p-2 pl-3 text-xs font-semibold text-foreground sticky left-0 bg-card z-20 w-[70px] min-w-[70px] border-r border-border/30 select-none" style={{ left: 0 }}>
-                    스탯
+                    {t.stats.label}
                   </TableHead>
                   {champions.map((champion) => (
                     <TableHead

@@ -1,4 +1,5 @@
 import { ChampionSpell } from "@/types";
+import type { Language } from "@/i18n";
 import {
   CommunityDragonSpellData,
   ParseResult,
@@ -35,21 +36,23 @@ function applyNumericPrecision(text: string, precision: number): string {
  * @param text 원본 텍스트
  * @param spell 스킬 데이터
  * @param communityDragonData Community Dragon에서 가져온 스킬 데이터 (선택적)
+ * @param lang
  * @returns 치환된 텍스트
  */
 export function replaceVariables(
   text: string,
   spell?: ChampionSpell,
-  communityDragonData?: CommunityDragonSpellData
+  communityDragonData?: CommunityDragonSpellData,
+  lang: Language = "ko_KR"
 ): string {
-  console.log(text, spell, communityDragonData)
   if (!spell) return text;
+  console.log(text, spell, communityDragonData, lang);
 
   let result = text;
 
   // 0. 연산자(+ / ~) 주변 공백 보정
-  // 예: "{{ calc_damage_1_max }}+최대 체력의 {{ calc_damage_1_percent_max }}"
-  //  → "{{ calc_damage_1_max }} + 최대 체력의 {{ calc_damage_1_percent_max }}"
+  // 예: "{{ calc_damage_1_max }}+Max Health의 {{ calc_damage_1_percent_max }}"
+  //  → "{{ calc_damage_1_max }} + Max Health의 {{ calc_damage_1_percent_max }}"
   //    "50~100" → "50 ~ 100"
   result = result
     // 변수 닫힘 뒤의 "+" 보정: "}}+X" → "}} + X"
@@ -110,7 +113,8 @@ export function replaceVariables(
     const replacement = replaceVariable(
       effectiveVar,
       spell,
-      communityDragonData
+      communityDragonData,
+      lang
     );
 
     if (replacement !== null) {
@@ -158,7 +162,8 @@ export function replaceVariables(
 export function replaceVariable(
   trimmedVar: string,
   spell: ChampionSpell,
-  communityDragonData?: CommunityDragonSpellData
+  communityDragonData?: CommunityDragonSpellData,
+  lang: Language = "ko_KR"
 ): string | null {
   const parseResult = parseExpression(trimmedVar);
 
@@ -171,7 +176,7 @@ export function replaceVariable(
   if (byData !== null) return byData;
 
   // 2. 안 되면 mSpellCalculations
-  return replaceCalculateData(parseResult, spell, communityDragonData);
+  return replaceCalculateData(parseResult, spell, communityDragonData, lang);
 }
 
 /**

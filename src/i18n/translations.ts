@@ -87,9 +87,53 @@ export interface Translations {
     skill: string;
     skillInfo: string;
     skillDescription: string;
+    warningPassive: string;
+    warningSkill: string;
   };
   skills: {
     label: string;
+  };
+    stats: {
+      label: string;
+      abilityPower: string;
+      attackDamage: string;
+      bonusAttackDamage: string;
+      health: string;
+      bonusHealth: string;
+      healthPerLevel: string;
+      armor: string;
+      bonusArmor: string;
+      magicResist: string;
+      bonusMagicResist: string;
+      lifesteal: string;
+      bonusLifesteal: string;
+      mana: string;
+      manaPerLevel: string;
+      movespeed: string;
+      armorPerLevel: string;
+      spellblock: string;
+      spellblockPerLevel: string;
+      attackdamage: string;
+      attackdamagePerLevel: string;
+      attackspeed: string;
+      attackspeedPerLevel: string;
+      attackrange: string;
+      crit: string;
+      critPerLevel: string;
+      hpregen: string;
+      hpregenPerLevel: string;
+      mpregen: string;
+      mpregenPerLevel: string;
+    };
+  common: {
+    level: string;
+    seconds: string;
+    noCost: string;
+    mana: string;
+    rechargeTime: string;
+    max: string;
+    items: string;
+    bonus: string;
   };
 }
 
@@ -181,9 +225,53 @@ export const translations: Record<Language, Translations> = {
       skill: "스킬",
       skillInfo: "스킬 정보",
       skillDescription: "스킬의 상세 정보입니다.",
+      warningPassive: "패시브 스킬의 정보는 게임 내 데이터와 다를 수 있습니다.",
+      warningSkill: "스킬 정보는 게임 내 데이터와 다를 수 있습니다.",
     },
     skills: {
       label: "스킬",
+    },
+    stats: {
+      label: "스탯",
+      abilityPower: "주문력",
+      attackDamage: "공격력",
+      bonusAttackDamage: "추가 공격력",
+      health: "체력",
+      bonusHealth: "추가 체력",
+      healthPerLevel: "레벨당 체력",
+      armor: "방어력",
+      bonusArmor: "추가 방어력",
+      magicResist: "마법 저항력",
+      bonusMagicResist: "추가 마법 저항력",
+      lifesteal: "생명력 흡수",
+      bonusLifesteal: "추가 생명력 흡수",
+      mana: "마나",
+      manaPerLevel: "레벨당 마나",
+      movespeed: "이동 속도",
+      armorPerLevel: "레벨당 방어력",
+      spellblock: "마법 저항력",
+      spellblockPerLevel: "레벨당 마법 저항력",
+      attackdamage: "공격력",
+      attackdamagePerLevel: "레벨당 공격력",
+      attackspeed: "공격 속도",
+      attackspeedPerLevel: "레벨당 공격 속도",
+      attackrange: "사거리",
+      crit: "치명타 확률",
+      critPerLevel: "레벨당 치명타 확률",
+      hpregen: "체력 재생",
+      hpregenPerLevel: "레벨당 체력 재생",
+      mpregen: "마나 재생",
+      mpregenPerLevel: "레벨당 마나 재생",
+    },
+    common: {
+      level: "레벨",
+      seconds: "초",
+      noCost: "소모값 없음",
+      mana: "마나",
+      rechargeTime: "재충전 대기시간",
+      max: "최대",
+      items: "개",
+      bonus: "추가",
     },
   },
   en_US: {
@@ -273,9 +361,53 @@ export const translations: Record<Language, Translations> = {
       skill: "Skill",
       skillInfo: "Skill Information",
       skillDescription: "Detailed information about the skill.",
+      warningPassive: "Passive skill information may differ from in-game data.",
+      warningSkill: "Skill information may differ from in-game data.",
     },
     skills: {
       label: "Skills",
+    },
+    stats: {
+      label: "Stats",
+      abilityPower: "Ability Power",
+      attackDamage: "Attack Damage",
+      bonusAttackDamage: "bonus Attack Damage",
+      health: "Health",
+      bonusHealth: "bonus Health",
+      healthPerLevel: "Health per Level",
+      armor: "Armor",
+      bonusArmor: "bonus Armor",
+      magicResist: "Magic Resist",
+      bonusMagicResist: "bonus Magic Resist",
+      lifesteal: "Lifesteal",
+      bonusLifesteal: "bonus Lifesteal",
+      mana: "Mana",
+      manaPerLevel: "Mana per Level",
+      movespeed: "Movement Speed",
+      armorPerLevel: "Armor per Level",
+      spellblock: "Magic Resist",
+      spellblockPerLevel: "Magic Resist per Level",
+      attackdamage: "Attack Damage",
+      attackdamagePerLevel: "Attack Damage per Level",
+      attackspeed: "Attack Speed",
+      attackspeedPerLevel: "Attack Speed per Level",
+      attackrange: "Attack Range",
+      crit: "Critical Strike Chance",
+      critPerLevel: "Critical Strike Chance per Level",
+      hpregen: "Health Regen",
+      hpregenPerLevel: "Health Regen per Level",
+      mpregen: "Mana Regen",
+      mpregenPerLevel: "Mana Regen per Level",
+    },
+    common: {
+      level: "Level",
+      seconds: "s",
+      noCost: "No Cost",
+      mana: "Mana",
+      rechargeTime: "Recharge Time",
+      max: "Max",
+      items: "",
+      bonus: "bonus",
     },
   },
 };

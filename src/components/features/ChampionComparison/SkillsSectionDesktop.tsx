@@ -257,7 +257,7 @@ export function SkillsSectionDesktop({
             <TableHeader>
               <TableRow className="border-b border-border/30 select-none">
                 <TableHead className="text-left p-2 pl-3 text-xs font-semibold text-foreground sticky left-0 bg-card z-20 w-[80px] min-w-[80px] border-r border-border/30 select-none" style={{ left: 0 }}>
-                  레벨
+                  {t.common.level}
                 </TableHead>
                 <SortableContext
                   items={champions.map((c) => c.id)}
@@ -353,7 +353,7 @@ export function SkillsSectionDesktop({
                   )}
                   style={{ left: 0 }}
                 >
-                  {row.level}레벨
+                  {row.level}{t.common.level}
                 </TableCell>
                 {row.skills.map((championSkills, champIdx) => {
                   const champion = champions[champIdx];
@@ -381,7 +381,7 @@ export function SkillsSectionDesktop({
                           >
                             <span className="text-xs font-semibold">
                               {skillData.cooldown !== ""
-                                ? `${skillData.cooldown}s`
+                                ? `${skillData.cooldown}${t.common.seconds}`
                                 : "-"}
                             </span>
                           </div>
