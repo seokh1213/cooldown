@@ -59,15 +59,21 @@ export interface CalcResult {
 }
 
 /**
+ * 공통 multiplier 타입
+ * GameCalculation / GameCalculationModified 둘 다에서 사용된다.
+ */
+export interface CalcMultiplier {
+  mDataValue?: string;
+  mNumber?: number;
+}
+
+/**
  * GameCalculationModified 타입
  */
 export interface GameCalculationModified {
   __type: "GameCalculationModified";
   mModifiedGameCalculation?: string;
-  mMultiplier?: {
-    mDataValue?: string;
-    mNumber?: number;
-  };
+  mMultiplier?: CalcMultiplier;
 }
 
 /**
@@ -77,6 +83,11 @@ export interface GameCalculation {
   __type: "GameCalculation";
   mFormulaParts?: CalculationPart[];
   mDisplayAsPercent?: boolean;
+  /**
+   * 계산식 전체에 곱해지는 multiplier
+   * (예: 0.01 → 나중에 mDisplayAsPercent 에 의해 ×100 되면 최종적으로 1배 효과)
+   */
+  mMultiplier?: CalcMultiplier;
   /**
    * CommunityDragon mSimpleTooltipCalculationDisplay
    * 특정 계산식을 단순 범위 등으로 표현할 때 힌트로 사용

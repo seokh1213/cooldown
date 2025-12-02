@@ -276,9 +276,33 @@ export function replaceCalculateData(
         }
       }
 
+      // === 공통 multiplier 처리 (GameCalculation 전용) ===
+      // 일부 계산식은 mFormulaParts 로 만든 값 전체에 mMultiplier 를 곱한다.
+      // 예: (EffectValue * 0.01) 같은 형태 → 나중에 mDisplayAsPercent 에 의해 ×100 되어
+      // 최종적으로 "EffectValue%" 가 되도록 함.
+      let finalBase: Value = base;
+      let finalStatParts: StatPart[] = statParts;
+
+      if (calc.mMultiplier) {
+        let mult: Value | null = null;
+        if (calc.mMultiplier.mDataValue) {
+          mult = evalDataValue(calc.mMultiplier.mDataValue);
+        } else if (calc.mMultiplier.mNumber != null) {
+          mult = calc.mMultiplier.mNumber;
+        }
+
+        if (mult != null) {
+          finalBase = mul(finalBase, mult);
+          finalStatParts = finalStatParts.map((sp) => ({
+            ...sp,
+            ratio: mul(sp.ratio, mult),
+          }));
+        }
+      }
+
       return {
-        base,
-        statParts,
+        base: finalBase,
+        statParts: finalStatParts,
         isPercent,
         // mPrecision(1,2,...) → 실제 표시 자릿수는 항상 +1 해서 사용
         // 예: mPrecision=1 → 소수점 2자리, mPrecision=2 → 소수점 3자리
@@ -322,17 +346,18 @@ export function replaceCalculateData(
 
   // === 2) 스탯 계수 변환 (항상 percent) ===
   const statPartsScaled: StatPart[] = result.statParts.map((sp) => {
-    // StatByCoefficientCalculationPart 에서 온 계수는
-    // mCoefficient * 100 한 뒤 소수점은 반올림 처리
     if (sp.isCoefficient) {
-      const ratio =
-        isVector(sp.ratio)
-          ? sp.ratio.map((v) =>
-              precision != null ? v * 100 : Math.round(v * 100)
-            )
-          : precision != null
-          ? (sp.ratio as number) * 100
-          : Math.round((sp.ratio as number) * 100);
+      // StatByCoefficientCalculationPart 에서 온 계수는
+      // mCoefficient * 100 으로 퍼센트로 바꾸되,
+      // - mPrecision 이 있으면 그대로 ×100 만 수행
+      // - 없으면 scaleBy100 을 사용해 소수 자릿수를 보존하고,
+      //   반올림/표시는 formatNumber 쪽에 맡긴다.
+      const ratio: Value =
+        precision != null
+          ? isVector(sp.ratio)
+            ? sp.ratio.map((v) => v * 100)
+            : (sp.ratio as number) * 100
+          : scaleBy100(sp.ratio); // 0.004 → 0.4, 0.0001 → 0.01 등 소수 유지
       return {
         ...sp,
         ratio,
