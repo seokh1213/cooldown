@@ -44,26 +44,36 @@ export function formatLeveltipStats(
     if (!effectMatch) continue;
 
     const variableExpr = effectMatch[1].trim();
+    const parseResult = parseExpression(variableExpr);
+
+    // 퍼센트 여부: 라벨 또는 effect 패턴에 "%"가 명시되어 있는지 확인
+    const afterVar = effectPattern.slice(
+      (effectMatch.index ?? 0) + effectMatch[0].length
+    );
+    const effectHasPercentAfterVar = afterVar.trimStart().startsWith("%");
+    const labelIndicatesPercent =
+      labelText.includes("%") ||
+      labelText.toLowerCase().includes("percent") ||
+      labelText.toLowerCase().includes("퍼센트") ||
+      labelText.toLowerCase().includes("둔화");
+
     let value: string | null = null;
 
     // 1) Community Dragon DataValues 우선 사용
     // 예: "{{ basedamage }} -> {{ basedamageNL }}", "{{ armorshredpercent*100.000000 }}% -> ..."
     if (cdragonForData) {
       try {
-        const parseResult = parseExpression(variableExpr);
         const replaced = replaceData(parseResult, spell, cdragonForData);
 
         if (replaced && replaced.trim() !== "") {
           let finalValue = replaced;
 
-          // 퍼센트형 label인데 값에 %가 없으면 %를 붙여준다.
-          const labelIndicatesPercent =
-            labelText.includes("%") ||
-            labelText.toLowerCase().includes("percent") ||
-            labelText.toLowerCase().includes("퍼센트") ||
-            labelText.toLowerCase().includes("둔화");
+          // 퍼센트형(label 또는 effect 패턴에 %)인데 값에 %가 없으면 %를 붙여준다.
+          const shouldDisplayPercent =
+            (labelIndicatesPercent || effectHasPercentAfterVar) &&
+            !finalValue.includes("%");
 
-          if (labelIndicatesPercent && !finalValue.includes("%")) {
+          if (shouldDisplayPercent) {
             finalValue = finalValue
               .split("/")
               .map((v) => (v ? `${v}%` : v))
@@ -99,11 +109,17 @@ export function formatLeveltipStats(
     }
 
     // 2) CDragon에서 값을 찾지 못한 경우 기존 Data Dragon 기반 로직 사용
-    const varName = variableExpr;
+    const baseVarName = parseResult.variable;
+    // effect{N}amount → e{N} 로 매핑 (예: effect1amount → e1)
+    const effectAmountMatch = baseVarName.match(/^effect(\d+)amount$/i);
+    const normalizedVarName = effectAmountMatch
+      ? `e${effectAmountMatch[1]}`
+      : baseVarName;
+
     value = null;
 
     // e1, e2, e5 같은 패턴에서 숫자 추출
-    const effectIndexMatch = varName.match(/^e(\d+)$/i);
+    const effectIndexMatch = normalizedVarName.match(/^e(\d+)$/i);
     if (effectIndexMatch) {
       const index = parseInt(effectIndexMatch[1]);
       if (spell.effectBurn && spell.effectBurn.length > index) {
@@ -112,17 +128,20 @@ export function formatLeveltipStats(
           value = effectValue;
         }
       }
-    } else if (varName.toLowerCase() === "cost" || varName.toLowerCase().includes("cost")) {
+    } else if (
+      normalizedVarName.toLowerCase() === "cost" ||
+      normalizedVarName.toLowerCase().includes("cost")
+    ) {
       if (spell.costBurn) {
         value = spell.costBurn;
       }
-    } else if (varName.toLowerCase().includes("cooldown")) {
+    } else if (normalizedVarName.toLowerCase().includes("cooldown")) {
       if (spell.cooldownBurn) {
         value = spell.cooldownBurn;
       }
     } else if (
-      varName.toLowerCase().includes("ammorechargetime") ||
-      varName.toLowerCase().includes("ammorecharge")
+      normalizedVarName.toLowerCase().includes("ammorechargetime") ||
+      normalizedVarName.toLowerCase().includes("ammorecharge")
     ) {
       // 새로운 구조 지원: DataValues가 있으면 그것을 사용, 없으면 전체 객체 사용 (호환성)
       const dataValues = (communityDragonData as any)?.DataValues || communityDragonData;
@@ -142,10 +161,31 @@ export function formatLeveltipStats(
     }
 
     if (value) {
-      const formattedValue = formatLevelValues(
-        value.includes("/") ? value.split("/") : [value],
-        spell.maxrank
-      );
+      const rawParts = value.includes("/") ? value.split("/") : [value];
+
+      // Data Dragon 기반 값에도 간단한 수식(*, +, -, /)을 적용
+      let processedParts: (string | number)[] = rawParts;
+      if (parseResult.type === "formula") {
+        processedParts = rawParts.map((part) => {
+          const num = parseFloat(String(part));
+          if (!Number.isFinite(num)) return part;
+
+          switch (parseResult.operator) {
+            case "*":
+              return num * parseResult.operand;
+            case "+":
+              return num + parseResult.operand;
+            case "-":
+              return num - parseResult.operand;
+            case "/":
+              return num / parseResult.operand;
+            default:
+              return num;
+          }
+        });
+      }
+
+      const formattedValue = formatLevelValues(processedParts, spell.maxrank);
 
       if (formattedValue) {
         // @AbilityResourceName@ 치환
@@ -168,16 +208,16 @@ export function formatLeveltipStats(
           continue;
         }
 
-        // 퍼센트 값 처리
+        // 퍼센트 값 처리 (label 또는 effect 패턴에 %가 있는 경우)
         let finalValue = formattedValue;
-        if (
-          labelText.includes("%") ||
-          labelText.toLowerCase().includes("slow") ||
-          labelText.toLowerCase().includes("둔화")
-        ) {
-          if (!formattedValue.includes("%")) {
-            finalValue = formattedValue.split("/").map((v) => `${v}%`).join("/");
-          }
+        const shouldDisplayPercent =
+          (labelIndicatesPercent ||
+            labelText.toLowerCase().includes("slow") ||
+            effectHasPercentAfterVar) &&
+          !formattedValue.includes("%");
+
+        if (shouldDisplayPercent) {
+          finalValue = formattedValue.split("/").map((v) => `${v}%`).join("/");
         }
 
         stats.push(`${displayLabel}: [${finalValue}]`);

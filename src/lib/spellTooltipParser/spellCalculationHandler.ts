@@ -9,6 +9,7 @@ import {
   NamedDataValueCalculationPart,
   StatByNamedDataValueCalculationPart,
   StatByCoefficientCalculationPart,
+  AbilityResourceByCoefficientCalculationPart,
   EffectValueCalculationPart,
   NumberCalculationPart,
   ByCharLevelBreakpointsCalculationPart,
@@ -257,6 +258,36 @@ export function replaceCalculateData(
           const name = getStatName(coeffPart.mStat, coeffPart.mStatFormula);
           // 계수 자체(0.3, 1 등)를 ratio 로 두고, 나중에 ×100(+버림)해서 %로 표기
           const ratio: Value = coeffPart.mCoefficient;
+          statParts.push({ name, ratio, isCoefficient: true });
+        } else if (partType === "AbilityResourceByCoefficientCalculationPart") {
+          // 스킬 자원(마나/기력 등)에 비례하는 계수
+          const resPart = part as AbilityResourceByCoefficientCalculationPart;
+          if (resPart.mCoefficient == null) {
+            console.warn(
+              `AbilityResourceByCoefficientCalculationPart missing mCoefficient`,
+              part
+            );
+            continue;
+          }
+
+          // 기본 자원 이름: 마나
+          let resourceName = "마나";
+          if (spell.costType) {
+            const costType = spell.costType.trim();
+            if (costType && !costType.includes("{{")) {
+              resourceName = costType;
+            } else if (spell.resource && !spell.resource.includes("{{")) {
+              resourceName = spell.resource;
+            }
+          } else if (spell.resource && !spell.resource.includes("{{")) {
+            resourceName = spell.resource;
+          }
+
+          // mStatFormula: 2 → "추가" 자원
+          const isBonus = resPart.mStatFormula === 2;
+          const name = isBonus ? `추가 ${resourceName}` : resourceName;
+
+          const ratio: Value = resPart.mCoefficient;
           statParts.push({ name, ratio, isCoefficient: true });
         } else if (partType === "NumberCalculationPart") {
           // 고정 숫자 상수는 base 에 더한다.

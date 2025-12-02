@@ -107,6 +107,7 @@ export type CalculationPart =
   | NamedDataValueCalculationPart
   | StatByNamedDataValueCalculationPart
   | StatByCoefficientCalculationPart
+  | AbilityResourceByCoefficientCalculationPart
   | EffectValueCalculationPart
   | NumberCalculationPart
   | ByCharLevelBreakpointsCalculationPart;
@@ -138,6 +139,18 @@ export interface StatByCoefficientCalculationPart {
   __type: "StatByCoefficientCalculationPart";
   mCoefficient?: number;
   mStat?: number;
+  mStatFormula?: number;
+}
+
+/**
+ * AbilityResourceByCoefficientCalculationPart 타입
+ * 스킬 자원(마나/기력 등)에 비례하는 계수.
+ * - mCoefficient: 자원 비율 (예: 0.02 → 2%)
+ * - mStatFormula: 2인 경우 "추가" 자원으로 취급 (예: "추가 마나")
+ */
+export interface AbilityResourceByCoefficientCalculationPart {
+  __type: "AbilityResourceByCoefficientCalculationPart";
+  mCoefficient?: number;
   mStatFormula?: number;
 }
 

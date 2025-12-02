@@ -83,7 +83,7 @@ export function getStatName(mStat?: number, mStatFormula?: number): string {
   const hasFormula = mStatFormula !== undefined && mStatFormula !== null;
 
   // 규칙:
-  // mstat: (2=AD, 12=체력, 생략=AP)
+  // mstat: (2=AD, 12=체력, 1=방어력, 6=마법 저항력, 18=생명력 흡수, 생략=AP)
   // mStatFormula: (2는 추가, 생략=전체)
   //
   // "mstat:2" → AD
@@ -112,6 +112,30 @@ export function getStatName(mStat?: number, mStatFormula?: number): string {
       return "추가 체력"; // bonus HP
     }
     return "체력";
+  }
+
+  // 방어력 계수
+  if (statCode === 1) {
+    if (mStat === 1 && mStatFormula === 2) {
+      return "추가 방어력";
+    }
+    return "방어력";
+  }
+
+  // 마법 저항력 계수
+  if (statCode === 6) {
+    if (mStat === 6 && mStatFormula === 2) {
+      return "추가 마법 저항력";
+    }
+    return "마법 저항력";
+  }
+
+  // 생명력 흡수 계수
+  if (statCode === 18) {
+    if (mStat === 18 && mStatFormula === 2) {
+      return "추가 생명력 흡수";
+    }
+    return "생명력 흡수";
   }
 
   // 그 외 알 수 없는 스탯은 표시하지 않는다 (아이콘으로만 처리하거나 무시)
