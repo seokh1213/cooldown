@@ -46,6 +46,11 @@ export interface CalcResult {
    */
   isCharLevelRange?: boolean;
   /**
+   * 브레이크포인트 기반 단순 범위인지 여부
+   * (예: 1레벨 12, 6레벨 -1, 11레벨 -3 → "(12 ~ 8)")
+   */
+  isBreakpointRange?: boolean;
+  /**
    * 소수점 자릿수 (CommunityDragon GameCalculation.mPrecision)
    * - undefined 이면 기존처럼 정수(또는 formatNumber 기본 규칙)로 처리
    * - 0 이상이면 퍼센트/계수 계산 시 해당 자릿수까지 보존
@@ -72,6 +77,11 @@ export interface GameCalculation {
   __type: "GameCalculation";
   mFormulaParts?: CalculationPart[];
   mDisplayAsPercent?: boolean;
+  /**
+   * CommunityDragon mSimpleTooltipCalculationDisplay
+   * 특정 계산식을 단순 범위 등으로 표현할 때 힌트로 사용
+   */
+  mSimpleTooltipCalculationDisplay?: number;
    /**
     * 퍼센트/계산 결과를 몇 자리까지 표시할지에 대한 힌트
     * (예: 1 → 소수점 1자리, 2 → 소수점 2자리)

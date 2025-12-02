@@ -128,6 +128,37 @@ export function replaceCalculateData(
       const statParts: StatPart[] = [];
       const isPercent: boolean = !!calc.mDisplayAsPercent;
 
+      // === 특수 케이스: 브레이크포인트 기반 단순 범위 (예: "(12 ~ 8)") ===
+      // mFormulaParts 가 단 하나이고, ByCharLevelBreakpointsCalculationPart 이며
+      // mSimpleTooltipCalculationDisplay 가 6인 경우를 "(시작값 ~ 끝값)" 형태로 표현
+      if (
+        parts.length === 1 &&
+        (parts[0] as any).__type === "ByCharLevelBreakpointsCalculationPart" &&
+        calc.mSimpleTooltipCalculationDisplay === 6
+      ) {
+        const breakPart = parts[0] as ByCharLevelBreakpointsCalculationPart;
+
+        const startValue = breakPart.mLevel1Value ?? 0;
+        let current = startValue;
+
+        for (const bp of breakPart.mBreakpoints ?? []) {
+          if (typeof bp.mAdditionalBonusAtThisLevel === "number") {
+            current += bp.mAdditionalBonusAtThisLevel;
+          }
+        }
+
+        const endValue = current;
+        const rangeBase: Value = [startValue, endValue];
+
+        return {
+          base: rangeBase,
+          statParts: [],
+          isPercent,
+          isBreakpointRange: true,
+          precision: undefined,
+        };
+      }
+
       // === 특수 케이스: 챔피언 레벨당 선형 증가 퍼센트 (예: 40% ~ 100%) ===
       // mFormulaParts 가 단 하나이고, ByCharLevelBreakpointsCalculationPart 이며
       // mDisplayAsPercent 가 true 인 경우를 범위 형태 "(A% ~ B%)" 로 표현
@@ -342,6 +373,17 @@ export function replaceCalculateData(
       const minStr = formatNumber(minVal);
       const maxStr = formatNumber(maxVal);
       baseStr = `(${minStr}% ~ ${maxStr}%)`;
+    } else if (
+      result.isBreakpointRange &&
+      isVector(baseScaled) &&
+      baseScaled.length === 2
+    ) {
+      const [minVal, maxVal] = baseScaled;
+      const minStr = formatNumber(minVal);
+      const maxStr = formatNumber(maxVal);
+      baseStr = result.isPercent
+        ? `(${minStr}% ~ ${maxStr}%)`
+        : `(${minStr} ~ ${maxStr})`;
     } else {
       const rawStr =
         precision != null
