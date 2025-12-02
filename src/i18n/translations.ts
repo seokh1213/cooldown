@@ -225,8 +225,8 @@ export const translations: Record<Language, Translations> = {
       skill: "스킬",
       skillInfo: "스킬 정보",
       skillDescription: "스킬의 상세 정보입니다.",
-      warningPassive: "패시브 스킬의 정보는 게임 내 데이터와 다를 수 있습니다.",
-      warningSkill: "스킬 정보는 게임 내 데이터와 다를 수 있습니다.",
+      warningPassive: "패시브 스킬의 정보는 게임 내 데이터와 다를 수 있습니다. 인게임을 참조해주세요",
+      warningSkill: "스킬 정보는 게임 내 데이터와 다를 수 있습니다. 인게임을 참조해주세요",
     },
     skills: {
       label: "스킬",
@@ -361,8 +361,8 @@ export const translations: Record<Language, Translations> = {
       skill: "Skill",
       skillInfo: "Skill Information",
       skillDescription: "Detailed information about the skill.",
-      warningPassive: "Passive skill information may differ from in-game data.",
-      warningSkill: "Skill information may differ from in-game data.",
+      warningPassive: "Passive skill information may differ from in-game data. Please refer to in-game data",
+      warningSkill: "Skill information may differ from in-game data. Please refer to in-game data",
     },
     skills: {
       label: "Skills",
