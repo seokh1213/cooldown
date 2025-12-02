@@ -117,13 +117,13 @@ export function StatsSectionMobile({
             <Table className="border-collapse table-fixed w-auto min-w-full">
               <TableHeader>
                 <TableRow className="border-b border-border/30 select-none">
-                  <TableHead className="text-left p-2 pl-3 text-xs font-semibold text-foreground sticky left-0 bg-card z-20 w-[70px] min-w-[70px] border-r border-border/30 select-none" style={{ left: 0 }}>
+                  <TableHead className="text-left p-1.5 pl-2 text-[11px] font-semibold text-foreground sticky left-0 bg-card z-20 w-[70px] min-w-[70px] border-r border-border/30 select-none" style={{ left: 0 }}>
                     {t.stats.label}
                   </TableHead>
                   {champions.map((champion) => (
                     <TableHead
                       key={champion.id}
-                      className="text-center p-2 text-xs font-semibold text-foreground w-full select-none"
+                      className="text-center p-1.5 text-[11px] font-semibold text-foreground w-full select-none"
                     >
                       <div className="flex flex-col items-center justify-center gap-1">
                         <img
@@ -151,7 +151,7 @@ export function StatsSectionMobile({
                       key={field.key}
                       className="border-b border-border/30 hover:bg-muted/30 transition-colors"
                     >
-                      <TableCell className="p-2 pl-3 text-xs font-medium sticky left-0 bg-card z-20 border-r border-border/30 select-none" style={{ wordBreak: 'keep-all', left: 0 }}>
+                      <TableCell className="p-1.5 pl-2 text-[11px] font-medium sticky left-0 bg-card z-20 border-r border-border/30 select-none" style={{ wordBreak: 'keep-all', left: 0 }}>
                         {field.label}
                       </TableCell>
                       {champions.map((champion) => {
@@ -163,7 +163,7 @@ export function StatsSectionMobile({
                           <TableCell
                             key={champion.id}
                             className={cn(
-                              "p-2 text-xs text-center",
+                              "p-1.5 text-[11px] text-center",
                               isMax && "text-primary font-semibold",
                               isMin && "text-muted-foreground"
                             )}

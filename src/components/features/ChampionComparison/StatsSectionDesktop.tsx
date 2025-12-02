@@ -129,7 +129,7 @@ export function StatsSectionDesktop({
         ref={setNodeRef}
         style={style}
         className={cn(
-          "text-center p-2 text-xs font-semibold text-foreground w-[100px] min-w-[100px] select-none",
+          "text-center p-1.5 text-[11px] font-semibold text-foreground w-[100px] min-w-[100px] select-none",
           index < champions.length - 1 && "border-r border-border/30",
           isDragging && "z-50"
         )}
@@ -191,7 +191,7 @@ export function StatsSectionDesktop({
           <Table className="border-collapse table-fixed w-auto">
             <TableHeader>
               <TableRow className="border-b border-border/30 select-none">
-                <TableHead className="text-left p-2 pl-3 text-xs font-semibold text-foreground sticky left-0 bg-card z-20 w-[90px] min-w-[90px] border-r border-border/30 select-none" style={{ left: 0 }}>
+                <TableHead className="text-left p-1.5 pl-2 text-[11px] font-semibold text-foreground sticky left-0 bg-card z-20 w-[90px] min-w-[90px] border-r border-border/30 select-none" style={{ left: 0 }}>
                   {t.stats.label}
                 </TableHead>
                 <SortableContext
@@ -207,7 +207,7 @@ export function StatsSectionDesktop({
                   ))}
                 </SortableContext>
               {onAddChampion && (
-                <TableHead className="text-center p-2 text-xs font-semibold text-foreground w-[100px] min-w-[100px] border-l border-border/30 select-none">
+                <TableHead className="text-center p-1.5 text-[11px] font-semibold text-foreground w-[100px] min-w-[100px] border-l border-border/30 select-none">
                   <Button
                     onClick={() => setShowAddSlot(true)}
                     variant="outline"
@@ -235,7 +235,7 @@ export function StatsSectionDesktop({
                   key={field.key}
                   className="border-b border-border/30 hover:bg-muted/30 transition-colors"
                 >
-                  <TableCell className="p-2 pl-3 text-xs font-medium sticky left-0 bg-card z-20 border-r border-border/30 select-none" style={{ wordBreak: 'keep-all', left: 0 }}>
+                  <TableCell className="p-1.5 pl-2 text-[11px] font-medium sticky left-0 bg-card z-20 border-r border-border/30 select-none" style={{ wordBreak: 'keep-all', left: 0 }}>
                     {field.label}
                   </TableCell>
                   {champions.map((champion, idx) => {
@@ -248,7 +248,7 @@ export function StatsSectionDesktop({
                         key={champion.id}
                         champion={champion}
                         className={cn(
-                          "p-2 text-xs text-center",
+                          "p-1.5 text-[11px] text-center",
                           idx < champions.length - 1 && "border-r border-border/30",
                           isMax && "text-primary font-semibold",
                           isMin && "text-muted-foreground"
@@ -259,8 +259,8 @@ export function StatsSectionDesktop({
                     );
                   })}
                   {onAddChampion && (
-                    <TableCell className="p-2 text-center border-l border-border/30">
-                      <div className="w-full h-full min-h-[32px]" />
+                    <TableCell className="p-1.5 text-center border-l border-border/30">
+                      <div className="w-full h-full min-h-[24px]" />
                     </TableCell>
                   )}
                 </TableRow>
