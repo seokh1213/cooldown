@@ -353,6 +353,41 @@ export function replaceCalculateData(
               return num;
             }
 
+            if (t === "EffectValueCalculationPart") {
+              const effect = p as EffectValueCalculationPart;
+              const idx = effect.mEffectIndex ?? 0;
+              const effectBurn = spell.effectBurn?.[idx] ?? null;
+
+              if (!effectBurn) {
+                console.warn(
+                  `ProductOfSubPartsCalculationPart: EffectValueCalculationPart missing effectBurn[${idx}]`,
+                  {
+                    spellId: spell.id,
+                  }
+                );
+                return 0;
+              }
+
+              // "80/100/120" → [80, 100, 120]
+              // "0.5" → 0.5
+              let v: Value;
+              if (effectBurn.includes("/")) {
+                const nums = effectBurn
+                  .split("/")
+                  .map((s) => Number.parseFloat(s))
+                  .filter((n) => !Number.isNaN(n));
+
+                if (nums.length === 0) return 0;
+                v = nums.length === 1 ? nums[0] : nums;
+              } else {
+                const num = Number.parseFloat(effectBurn);
+                if (Number.isNaN(num)) return 0;
+                v = num;
+              }
+
+              return v;
+            }
+
             // 현재는 위 두 타입만 필요해서 지원하고,
             // 그 외 타입이 들어오면 0으로 취급 (경고 로그만 남김)
             console.warn(
