@@ -18,6 +18,12 @@ export type Value = number | number[];
 export interface CommunityDragonSpellData {
   DataValues?: Record<string, number[]>;
   mSpellCalculations?: Record<string, SpellCalculation>;
+  /**
+   * effectBurn 값 (Community Dragon 원본 데이터)
+   * - 0번 인덱스는 사용하지 않고 1번부터 실제 값
+   * - 예: [null, "25/30/35/40/45", "2", "15", "0.5", ...]
+   */
+  effectBurn?: (string | null)[];
 }
 
 /**

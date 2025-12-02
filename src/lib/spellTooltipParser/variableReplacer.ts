@@ -1,8 +1,14 @@
 import { ChampionSpell } from "@/types";
-import { CommunityDragonSpellData } from "./types";
+import {
+  CommunityDragonSpellData,
+  ParseResult,
+  Value,
+} from "./types";
 import { parseExpression } from "./expressionParser";
 import { replaceData } from "./dataValueHandler";
 import { replaceCalculateData } from "./spellCalculationHandler";
+import { applyFormulaToValue } from "./dataValueUtils";
+import { valueToTooltipString } from "./valueUtils";
 
 /**
  * 변수 치환 ({{ variable }} 형식)
@@ -18,7 +24,6 @@ export function replaceVariables(
   spell?: ChampionSpell,
   communityDragonData?: CommunityDragonSpellData
 ): string {
-  console.log(text, spell, communityDragonData)
   if (!spell) return text;
 
   let result = text;
@@ -116,10 +121,60 @@ export function replaceVariable(
 ): string | null {
   const parseResult = parseExpression(trimmedVar);
 
+  // 0. effectBurn 기반 eN 변수(e1, e2, e3, ...) 우선 처리
+  const byEffectBurn = replaceEffectBurn(parseResult, spell, communityDragonData);
+  if (byEffectBurn !== null) return byEffectBurn;
+
   // 1. DataValues 먼저 시도
   const byData = replaceData(parseResult, spell, communityDragonData);
   if (byData !== null) return byData;
 
   // 2. 안 되면 mSpellCalculations
   return replaceCalculateData(parseResult, spell, communityDragonData);
+}
+
+/**
+ * effectBurn 배열(e1, e2, e3, ...)을 이용한 변수 치환
+ * - e1 → effectBurn[1], e4 → effectBurn[4] 등
+ * - effectBurn 은 Community Dragon 데이터가 우선이고, 없으면 Data Dragon(spell.effectBurn) 사용
+ * - "25/30/35/40/45" 같이 "/" 로 구분된 값은 레벨별 값으로 처리
+ */
+function replaceEffectBurn(
+  parseResult: ParseResult,
+  spell: ChampionSpell,
+  communityDragonData?: CommunityDragonSpellData
+): string | null {
+  const varName = parseResult.variable;
+  const match = /^e(\d+)$/i.exec(varName);
+  if (!match) return null;
+
+  const index = Number.parseInt(match[1], 10);
+  if (!Number.isFinite(index) || index <= 0) return null;
+
+  const effectBurnSource =
+    communityDragonData?.effectBurn ?? spell.effectBurn;
+  if (!effectBurnSource) return null;
+
+  const raw = effectBurnSource[index];
+  if (!raw) return null;
+
+  // "80/100/120" → [80, 100, 120]
+  // "0.5" → 0.5
+  let value: Value;
+  if (raw.includes("/")) {
+    const nums = raw
+      .split("/")
+      .map((s) => Number.parseFloat(s))
+      .filter((v) => !Number.isNaN(v));
+
+    if (nums.length === 0) return null;
+    value = nums.length === 1 ? nums[0] : nums;
+  } else {
+    const num = Number.parseFloat(raw);
+    if (Number.isNaN(num)) return null;
+    value = num;
+  }
+
+  const withFormula = applyFormulaToValue(value, parseResult);
+  return valueToTooltipString(withFormula);
 }
