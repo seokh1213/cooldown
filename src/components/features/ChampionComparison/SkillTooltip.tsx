@@ -178,7 +178,7 @@ export function SkillTooltip({
                   skill.description,
                   skill,
                   spellData?.communityDragonData
-                ),
+                ).replace(/<br\s*\/?>/gi, " "),
               }}
             />
           </div>
