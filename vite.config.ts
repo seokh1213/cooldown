@@ -33,6 +33,36 @@ export default defineConfig(({ mode }) => ({
       "@": path.resolve(__dirname, "./src"),
     },
   },
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: (id) => {
+          // node_modules의 패키지들을 청크로 분리
+          if (id.includes('node_modules')) {
+            // React 및 React Router를 별도 청크로
+            if (id.includes('react') || id.includes('react-dom') || id.includes('react-router')) {
+              return 'react-vendor';
+            }
+            // Radix UI 컴포넌트들을 하나의 청크로
+            if (id.includes('@radix-ui')) {
+              return 'radix-ui';
+            }
+            // DnD Kit 라이브러리들을 하나의 청크로
+            if (id.includes('@dnd-kit')) {
+              return 'dnd-kit';
+            }
+            // lucide-react 아이콘 라이브러리
+            if (id.includes('lucide-react')) {
+              return 'lucide-icons';
+            }
+            // 기타 vendor 라이브러리들
+            return 'vendor';
+          }
+        },
+      },
+    },
+    chunkSizeWarningLimit: 600,
+  },
 }))
 
 

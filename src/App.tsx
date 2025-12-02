@@ -1,17 +1,19 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, Suspense, lazy } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { getVersion, getChampionList, cleanOldVersionCache } from "@/services/api";
 import Layout from "@/components/layout/Layout";
 import Nav from "@/components/features/Nav";
 import SplashScreen from "@/components/layout/SplashScreen";
-import EncyclopediaPage from "@/pages/EncyclopediaPage";
-import LaningTipsPage from "@/pages/LaningTipsPage";
-import KillAnglePage from "@/pages/KillAnglePage";
-import OGPreviewPage from "@/pages/OGPreviewPage";
 import { Champion } from "@/types";
 import { I18nProvider, Language } from "@/i18n";
 import { validateAllStorageData } from "@/lib/storageValidator";
 import { logger } from "@/lib/logger";
+
+// Lazy load pages for code splitting
+const EncyclopediaPage = lazy(() => import("@/pages/EncyclopediaPage"));
+const LaningTipsPage = lazy(() => import("@/pages/LaningTipsPage"));
+const KillAnglePage = lazy(() => import("@/pages/KillAnglePage"));
+const OGPreviewPage = lazy(() => import("@/pages/OGPreviewPage"));
 
 const THEME_STORAGE_KEY = "theme";
 const LANG_STORAGE_KEY = "language";
@@ -168,11 +170,13 @@ function AppContent({
                   />
                 }
               >
-                <EncyclopediaPage
-                  lang={lang}
-                  championList={championList}
-                  version={version}
-                />
+                <Suspense fallback={<SplashScreen />}>
+                  <EncyclopediaPage
+                    lang={lang}
+                    championList={championList}
+                    version={version}
+                  />
+                </Suspense>
               </Layout>
             )
           }
@@ -191,7 +195,9 @@ function AppContent({
                 />
               }
             >
-              <LaningTipsPage />
+              <Suspense fallback={<SplashScreen />}>
+                <LaningTipsPage />
+              </Suspense>
             </Layout>
           }
         />
@@ -209,7 +215,9 @@ function AppContent({
                 />
               }
             >
-              <KillAnglePage />
+              <Suspense fallback={<SplashScreen />}>
+                <KillAnglePage />
+              </Suspense>
             </Layout>
           }
         />
@@ -217,7 +225,11 @@ function AppContent({
         {import.meta.env.DEV && (
           <Route
             path="/og-preview"
-            element={<OGPreviewPage />}
+            element={
+              <Suspense fallback={<SplashScreen />}>
+                <OGPreviewPage />
+              </Suspense>
+            }
           />
         )}
       </Routes>
