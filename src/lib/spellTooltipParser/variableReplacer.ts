@@ -13,6 +13,7 @@ import { valueToTooltipString } from "./valueUtils";
 /**
  * 문자열 내 숫자들을 지정된 소수점 자릿수로 반올림
  * 예: precision=0 → 33.333 → 33
+ * precision=1 → 33.0 → 33.0 (명시적으로 지정된 경우 0도 표시)
  */
 function applyNumericPrecision(text: string, precision: number): string {
   if (!Number.isFinite(precision) || precision < 0) return text;
@@ -21,13 +22,9 @@ function applyNumericPrecision(text: string, precision: number): string {
     const num = Number.parseFloat(match);
     if (!Number.isFinite(num)) return match;
 
-    const fixed = num.toFixed(precision);
-    // precision > 0 인 경우에는 formatNumber 와의 일관성을 위해
-    // 불필요한 0은 제거해 준다.
-    if (precision > 0) {
-      return Number.parseFloat(fixed).toString();
-    }
-    return fixed;
+    // 명시적으로 precision이 지정된 경우, 해당 자릿수를 항상 유지
+    // 예: precision=1 → 33.0 (0이어도 표시)
+    return num.toFixed(precision);
   });
 }
 
