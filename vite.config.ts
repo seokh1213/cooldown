@@ -61,41 +61,25 @@ function fixDynamicImports() {
   }
 }
 
-// 배포 버전 해시 생성 플러그인
-function generateDeploymentVersion() {
-  return {
-    name: 'generate-deployment-version',
-    config({ mode }) {
-      let deploymentVersion: string;
-      
-      if (mode === 'production') {
-        // 프로덕션 빌드: package.json 버전 + 빌드 타임스탬프를 조합하여 고유한 해시 생성
-        const packageJson = JSON.parse(readFileSync(path.resolve(__dirname, 'package.json'), 'utf-8'));
-        const buildTimestamp = Date.now().toString();
-        const versionString = `${packageJson.version}-${buildTimestamp}`;
-        deploymentVersion = createHash('sha256').update(versionString).digest('hex').substring(0, 16);
-        console.log(`📦 Deployment version hash: ${deploymentVersion}`);
-      } else {
-        // 개발 환경: 고정값 사용 (개발 중에는 초기화되지 않도록)
-        deploymentVersion = 'dev';
-      }
-      
-      // 환경 변수로 주입
-      return {
-        define: {
-          'import.meta.env.VITE_DEPLOYMENT_VERSION': JSON.stringify(deploymentVersion),
-        },
-      };
-    },
-  };
+function getDeploymentVersion(mode: string): string {
+  if (mode === 'production') {
+    const packageJson = JSON.parse(readFileSync(path.resolve(__dirname, 'package.json'), 'utf-8'));
+    const buildTimestamp = Date.now().toString();
+    const versionString = `${packageJson.version}-${buildTimestamp}`;
+    const deploymentVersion = createHash('sha256').update(versionString).digest('hex').substring(0, 16);
+    console.log(`📦 Deployment version hash: ${deploymentVersion}`);
+    return deploymentVersion;
+  }
+  return 'dev';
 }
 
 // https://vitejs.dev/config/
-export default defineConfig(({ mode }) => ({
+export default defineConfig(({ mode }) => {
+  const deploymentVersion = getDeploymentVersion(mode);
+  
+  return {
   plugins: [
     react(),
-    // 배포 버전 해시 생성 플러그인
-    generateDeploymentVersion(),
     // 동적 import 경로 수정 플러그인
     fixDynamicImports(),
     // HTML의 modulepreload 순서를 수정하는 플러그인 (react-vendor를 먼저 로드)
@@ -190,6 +174,9 @@ export default defineConfig(({ mode }) => ({
     },
     chunkSizeWarningLimit: 600,
   },
-}))
+  define: {
+    'import.meta.env.VITE_DEPLOYMENT_VERSION': JSON.stringify(deploymentVersion),
+  },
+}})
 
 
