@@ -76,9 +76,42 @@ export function scaleBy100(value: Value): Value {
  * 스탯 코드 → 이름 변환
  */
 export function getStatName(mStat?: number, mStatFormula?: number): string {
-  const s = mStat ?? mStatFormula;
-  if (s === 2) return "AD";
-  if (s === 3) return "AP";
-  return "stat";
+  const hasStat = mStat !== undefined && mStat !== null;
+  const hasFormula = mStatFormula !== undefined && mStatFormula !== null;
+
+  // 규칙:
+  // mstat: (2=AD, 12=체력, 생략=AP)
+  // mStatFormula: (2는 추가, 생략=전체)
+  //
+  // "mstat:2" → AD
+  // "mstat:2, mStatFormula: 2" → 추가 AD
+  // "mstat:12, mStatFormula: 2"  → 추가 체력
+  // "" (둘 다 생략) → AP
+
+  // 둘 다 생략된 경우 → AP 계수
+  if (!hasStat && !hasFormula) {
+    return "AP";
+  }
+
+  const statCode = mStat ?? mStatFormula;
+
+  // AD 계수
+  if (statCode === 2) {
+    if (mStat === 2 && mStatFormula === 2) {
+      return "추가 AD"; // bonus AD
+    }
+    return "AD";
+  }
+
+  // 체력 계수
+  if (statCode === 12) {
+    if (mStat === 12 && mStatFormula === 2) {
+      return "추가 체력"; // bonus HP
+    }
+    return "체력";
+  }
+
+  // 그 외 알 수 없는 스탯은 표시하지 않는다 (아이콘으로만 처리하거나 무시)
+  return "";
 }
 

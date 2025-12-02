@@ -8,6 +8,9 @@ import {
   GameCalculation,
   NamedDataValueCalculationPart,
   StatByNamedDataValueCalculationPart,
+  StatByCoefficientCalculationPart,
+  EffectValueCalculationPart,
+  NumberCalculationPart,
   ByCharLevelBreakpointsCalculationPart,
 } from "./types";
 import { getDataValueByName } from "./dataValueUtils";
@@ -31,7 +34,7 @@ export function replaceCalculateData(
 ): string | null {
   const spellCalcs = communityDragonData?.mSpellCalculations;
   const dataValues = communityDragonData?.DataValues;
-  if (!spellCalcs || !dataValues) return null;
+  if (!spellCalcs) return null;
 
   const entry = Object.entries(spellCalcs).find(
     ([k]) => k != null && k.toLowerCase() === parseResult.variable.toLowerCase()
@@ -66,12 +69,21 @@ export function replaceCalculateData(
         throw new Error(`mModifiedGameCalculation is missing`);
       }
       const inner = evalCalc(modified.mModifiedGameCalculation, visited);
-
-      if (!modified.mMultiplier || !modified.mMultiplier.mDataValue) {
+      if (!modified.mMultiplier) {
         return inner;
       }
 
-      const mult = evalDataValue(modified.mMultiplier.mDataValue);
+      let mult: Value | null = null;
+      if (modified.mMultiplier.mDataValue) {
+        mult = evalDataValue(modified.mMultiplier.mDataValue);
+      } else if (modified.mMultiplier.mNumber != null) {
+        mult = modified.mMultiplier.mNumber;
+      }
+
+      if (mult == null) {
+        return inner;
+      }
+
       const newBase = mul(inner.base, mult);
       const newStatParts: StatPart[] = inner.statParts.map((sp) => ({
         name: sp.name,
@@ -105,6 +117,27 @@ export function replaceCalculateData(
           }
           const v = evalDataValue(namedPart.mDataValue);
           base = add(base, v);
+        } else if (partType === "EffectValueCalculationPart") {
+          // spell.effectBurn / effect 에서 값 가져오기
+          const effectPart = part as EffectValueCalculationPart;
+          const idx = effectPart.mEffectIndex ?? 0;
+          const effectBurn = spell.effectBurn?.[idx] ?? null;
+          if (!effectBurn) {
+            console.warn(`EffectValueCalculationPart: effectBurn[${idx}] is missing`, {
+              spellId: spell.id,
+            });
+          } else {
+            // 예: "80/100/120/140/160" → [80,100,120,140,160]
+            const nums = effectBurn
+              .split("/")
+              .map((s) => parseFloat(s))
+              .filter((v) => !Number.isNaN(v));
+            if (nums.length > 0) {
+              const sliced =
+                nums.length > spell.maxrank ? nums.slice(0, spell.maxrank) : nums;
+              base = add(base, sliced);
+            }
+          }
         } else if (partType === "StatByNamedDataValueCalculationPart") {
           // ADRatioPerSecond, ADRatio 등: 스탯 계수 → 나중에 50% AD 같은 텍스트로 사용
           const statPart = part as StatByNamedDataValueCalculationPart;
@@ -115,6 +148,24 @@ export function replaceCalculateData(
           const ratio = evalDataValue(statPart.mDataValue); // 0.5 or 벡터
           const name = getStatName(statPart.mStat, statPart.mStatFormula);
           statParts.push({ name, ratio });
+        } else if (partType === "StatByCoefficientCalculationPart") {
+          // mCoefficient 기반 스탯/계수 (예: 1 → 100%)
+          const coeffPart = part as StatByCoefficientCalculationPart;
+          if (coeffPart.mCoefficient == null) {
+            console.warn(`StatByCoefficientCalculationPart missing mCoefficient`, part);
+            continue;
+          }
+          // mStat/mStatFormula 규칙에 따라 스탯 이름 결정
+          // (둘 다 생략 시 AP, 2=AD, 12=체력 등)
+          const name = getStatName(coeffPart.mStat, coeffPart.mStatFormula);
+          // 계수 자체(0.3, 1 등)를 ratio 로 두고, 나중에 ×100(+버림)해서 %로 표기
+          const ratio: Value = coeffPart.mCoefficient;
+          statParts.push({ name, ratio, isCoefficient: true });
+        } else if (partType === "NumberCalculationPart") {
+          // 고정 숫자 상수는 base 에 더한다.
+          const numPart = part as NumberCalculationPart;
+          const n = numPart.mNumber ?? 0;
+          base = add(base, n);
         } else if (partType === "ByCharLevelBreakpointsCalculationPart") {
           const breakPart = part as ByCharLevelBreakpointsCalculationPart;
           let b = (breakPart.mLevel1Value as number) || 0;
@@ -151,10 +202,26 @@ export function replaceCalculateData(
   }
 
   // === 2) 스탯 계수 변환 (항상 percent) ===
-  const statPartsScaled: StatPart[] = result.statParts.map((sp) => ({
-    name: sp.name,
-    ratio: scaleBy100(sp.ratio), // 0.5 → 50%, 0.2 → 20%
-  }));
+  const statPartsScaled: StatPart[] = result.statParts.map((sp) => {
+    // StatByCoefficientCalculationPart 에서 온 계수는
+    // mCoefficient * 100 한 뒤 소수점은 반올림 처리
+    if (sp.isCoefficient) {
+      const ratio =
+        isVector(sp.ratio)
+          ? sp.ratio.map((v) => Math.round(v * 100))
+          : Math.round((sp.ratio as number) * 100);
+      return {
+        ...sp,
+        ratio,
+      };
+    }
+
+    // 나머지 일반 스탯 비율(AD/AP 등)은 기존 로직 유지: ×100 후 반올림
+    return {
+      ...sp,
+      ratio: scaleBy100(sp.ratio), // 0.5 → 50%, 0.2 → 20%
+    };
+  });
 
   // === 3) base 문자열 만들기 (mDisplayAsPercent === true이면 "%" 붙이기) ===
   let baseStr: string | null = null;
@@ -171,6 +238,10 @@ export function replaceCalculateData(
   // === 4) 스탯 계수 문자열 만들기 (항상 % + 스탯 이름) ===
   const statStrings: string[] = statPartsScaled.map((sp) => {
     const ratioStr = valueToTooltipString(sp.ratio); // "50" or "50/60/70"
+    // 스탯 이름이 없으면 순수 퍼센트만 노출 (예: "100%")
+    if (!sp.name) {
+      return `${ratioStr}%`;
+    }
     return `${ratioStr}% ${sp.name}`; // "50% AD", "50/60/70% AD"
   });
 

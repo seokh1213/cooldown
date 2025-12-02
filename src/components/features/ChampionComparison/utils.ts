@@ -87,30 +87,3 @@ export function getCooldownForLevel(
   
   return cooldownValue !== undefined && cooldownValue !== null ? String(cooldownValue) : "";
 }
-
-
-
-export type ParseResult =
-  | { type: 'formula'; variable: string; operator: string; operand: number }
-  | { type: 'variable'; variable: string }
-
-export function parseExpression(input: string): ParseResult {
-  const cleanInput = input.trim();
-
-  const formulaRegex = /^([a-zA-Z_][a-zA-Z0-9_]*)\s*([*+\/-])\s*(\d+(?:\.\d+)?)$/;
-  const formulaMatch = cleanInput.match(formulaRegex);
-
-  if (formulaMatch) {
-    return {
-      type: 'formula',
-      variable: formulaMatch[1],
-      operator: formulaMatch[2],
-      operand: parseFloat(formulaMatch[3]),
-    };
-  }
-
-  return {
-    type: 'variable',
-    variable: cleanInput,
-  }
-}

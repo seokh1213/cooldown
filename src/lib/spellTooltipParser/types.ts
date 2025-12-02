@@ -26,6 +26,11 @@ export interface CommunityDragonSpellData {
 export interface StatPart {
   name: string; // "AD", "AP" 등
   ratio: Value; // 0.5 → 나중에 50 (%)
+  /**
+   * StatByCoefficientCalculationPart 로부터 온 계수인지 여부
+   * (표시 시에만 특수 처리 – 예: "100%" 처럼 스탯 이름 없이 보여주기)
+   */
+  isCoefficient?: boolean;
 }
 
 /**
@@ -45,6 +50,7 @@ export interface GameCalculationModified {
   mModifiedGameCalculation?: string;
   mMultiplier?: {
     mDataValue?: string;
+    mNumber?: number;
   };
 }
 
@@ -63,6 +69,9 @@ export interface GameCalculation {
 export type CalculationPart =
   | NamedDataValueCalculationPart
   | StatByNamedDataValueCalculationPart
+  | StatByCoefficientCalculationPart
+  | EffectValueCalculationPart
+  | NumberCalculationPart
   | ByCharLevelBreakpointsCalculationPart;
 
 /**
@@ -81,6 +90,36 @@ export interface StatByNamedDataValueCalculationPart {
   mDataValue?: string;
   mStat?: number;
   mStatFormula?: number;
+}
+
+/**
+ * StatByCoefficientCalculationPart 타입
+ * mCoefficient(계수)에 스탯이 붙는 경우(mStat / mStatFormula)도 있고,
+ * 순수 계수만 있는 경우도 있다.
+ */
+export interface StatByCoefficientCalculationPart {
+  __type: "StatByCoefficientCalculationPart";
+  mCoefficient?: number;
+  mStat?: number;
+  mStatFormula?: number;
+}
+
+/**
+ * EffectValueCalculationPart 타입
+ * spell.effectBurn / effect 등을 참조하는 파트
+ */
+export interface EffectValueCalculationPart {
+  __type: "EffectValueCalculationPart";
+  mEffectIndex?: number;
+}
+
+/**
+ * NumberCalculationPart 타입
+ * 고정 숫자 상수(예: 5)를 base 값에 더할 때 사용
+ */
+export interface NumberCalculationPart {
+  __type: "NumberCalculationPart";
+  mNumber?: number;
 }
 
 /**
