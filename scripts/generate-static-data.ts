@@ -234,7 +234,6 @@ async function main() {
     // 2. 버전 정보 저장
     const versionInfo = {
       version,
-      generatedAt: new Date().toISOString(),
     };
     await saveToFile(versionInfo, path.join(versionDir, 'version.json'));
 

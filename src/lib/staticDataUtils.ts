@@ -124,7 +124,7 @@ export function getStaticDataPath(version: string, ...paths: string[]): string {
 /**
  * 버전 정보 가져오기
  */
-export async function getVersionInfo(version: string): Promise<{ version: string; generatedAt: string } | null> {
+export async function getVersionInfo(version: string): Promise<{ version: string } | null> {
   try {
     const versionUrl = getStaticDataPath(version, 'version.json');
     const response = await fetch(versionUrl);
