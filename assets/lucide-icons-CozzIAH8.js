@@ -1,4 +1,4 @@
-import{r as s}from"/cooldown/assets/react-vendor-D5Gsrkl4.js";/**
+import{r as s}from"./react-vendor-D5Gsrkl4.js";/**
  * @license lucide-react v0.555.0 - ISC
  *
  * This source code is licensed under the ISC license.
