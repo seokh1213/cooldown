@@ -96,6 +96,12 @@ export function replaceVariables(
   result = result.replace(/\}\}/g, ""); // 남은 }} 제거
   result = result.replace(/\{\{/g, ""); // 남은 {{ 제거
 
+  // 아이콘/리소스 플레이스홀더 제거
+  // 형식: %{리소스타입}:{이름}%
+  // 예: %i:scaleAPen% → "" (토큰만 삭제, 나머지 문장은 유지)
+  // - %% 안에 공백이 없고, ":" 콜론이 포함된 경우에만 매칭
+  result = result.replace(/%[^\s:%]+:[^\s%]+%/g, "");
+
   // 치환 후 남은 "%" 기호가 혼자 있는 경우 제거
   result = result.replace(/\s+%\s+/g, " "); // 공백으로 둘러싸인 % 제거
   result = result.replace(/(?<!\d)\s*%\s*(?!\d)/g, ""); // 숫자와 함께 있지 않은 % 제거
