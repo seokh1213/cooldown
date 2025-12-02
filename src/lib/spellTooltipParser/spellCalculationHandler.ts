@@ -428,14 +428,24 @@ export function replaceCalculateData(
         }
       }
 
+      // mPrecision 해석:
+      // - 0 이상인 경우에만 유효한 소수 자릿수 힌트로 취급한다.
+      //   (예: 0 → 1자리, 1 → 2자리, ...)
+      // - 음수(-1 등)는 "특별한 정밀도 지정 없음"으로 간주하고 무시한다.
+      let effectivePrecision: number | undefined;
+      if (typeof calc.mPrecision === "number" && calc.mPrecision >= 0) {
+        // 실제 표시 자릿수는 항상 +1 해서 사용
+        // 예: mPrecision=1 → 소수점 2자리, mPrecision=2 → 소수점 3자리
+        effectivePrecision = calc.mPrecision + 1;
+      } else {
+        effectivePrecision = undefined;
+      }
+
       return {
         base: finalBase,
         statParts: finalStatParts,
         isPercent,
-        // mPrecision(1,2,...) → 실제 표시 자릿수는 항상 +1 해서 사용
-        // 예: mPrecision=1 → 소수점 2자리, mPrecision=2 → 소수점 3자리
-        precision:
-          calc.mPrecision != null ? calc.mPrecision + 1 : undefined,
+        precision: effectivePrecision,
       };
     }
 
