@@ -2,6 +2,8 @@
  * localStorage 데이터 구조 버전 관리 및 유효성 검사
  */
 
+import { logger } from "./logger";
+
 // 데이터 구조 버전 (구조가 변경되면 이 값을 증가시켜야 함)
 export const DATA_STRUCTURE_VERSION = 1;
 
@@ -103,7 +105,7 @@ function validateStorageData(
     
     // 유효성 검사
     if (!validator(parsed)) {
-      console.warn(`Invalid data structure for ${key}, clearing...`);
+      logger.warn(`Invalid data structure for ${key}, clearing...`);
       localStorage.removeItem(key);
       // 버전 정보도 삭제
       const versionKey = STORAGE_VERSION_KEYS[key as keyof typeof STORAGE_VERSION_KEYS];
@@ -118,7 +120,7 @@ function validateStorageData(
     if (versionKey) {
       const storedVersion = localStorage.getItem(versionKey);
       if (storedVersion !== String(DATA_STRUCTURE_VERSION)) {
-        console.warn(`Data structure version mismatch for ${key}, clearing...`);
+        logger.warn(`Data structure version mismatch for ${key}, clearing...`);
         localStorage.removeItem(key);
         localStorage.removeItem(versionKey);
         return false;
@@ -127,7 +129,7 @@ function validateStorageData(
 
     return true;
   } catch (error) {
-    console.error(`Error validating ${key}:`, error);
+    logger.error(`Error validating ${key}:`, error);
     // 파싱 실패 시 데이터 삭제
     localStorage.removeItem(key);
     const versionKey = STORAGE_VERSION_KEYS[key as keyof typeof STORAGE_VERSION_KEYS];

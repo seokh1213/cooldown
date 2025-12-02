@@ -1,5 +1,6 @@
 import {ChampionSpell} from "@/types";
 import {getCommunityDragonSpellData} from "./api";
+import { logger } from "@/lib/logger";
 
 /**
  * 스킬 데이터 통합 인터페이스
@@ -32,7 +33,7 @@ export async function getIntegratedSpellData(
   try {
     communityDragonDataMap = await getCommunityDragonSpellData(championId, version);
   } catch (error) {
-    console.warn(`Failed to load Community Dragon data for ${championId}:`, error);
+    logger.warn(`Failed to load Community Dragon data for ${championId}:`, error);
     // 에러 발생 시 빈 객체 사용
   }
 
@@ -92,7 +93,7 @@ export async function getIntegratedSpellDataForChampions(
         version
       );
     } catch (error) {
-      console.warn(`Failed to get integrated spell data for ${champion.id}:`, error);
+      logger.warn(`Failed to get integrated spell data for ${champion.id}:`, error);
       // 에러 발생 시 빈 배열 반환
       result[champion.id] = champion.spells.map((spell, index) => ({
         spell,

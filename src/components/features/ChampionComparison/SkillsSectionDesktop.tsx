@@ -3,6 +3,7 @@ import { Champion } from "@/types";
 import { CHAMP_ICON_URL } from "@/services/api";
 import { getIntegratedSpellDataForChampions, SpellData } from "@/services/spellDataService";
 import { cn } from "@/lib/utils";
+import { logger } from "@/lib/logger";
 import { X, Plus, GripVertical } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -91,7 +92,7 @@ export function SkillsSectionDesktop({
         const data = await getIntegratedSpellDataForChampions(champions, version);
         setSpellDataMap(data);
       } catch (error) {
-        console.warn("Failed to load integrated spell data:", error);
+        logger.warn("Failed to load integrated spell data:", error);
         setSpellDataMap({});
       }
     };

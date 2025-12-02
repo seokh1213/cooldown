@@ -40,7 +40,7 @@ export function useTabManagement(version: string | null) {
         setSelectedTabId(storedTabId);
       }
     } catch (error) {
-      console.error("Failed to load stored tabs:", error);
+      logger.error("Failed to load stored tabs:", error);
     }
   }, [version]);
 
@@ -53,7 +53,7 @@ export function useTabManagement(version: string | null) {
         removeStorageWithVersion(TABS_STORAGE_KEY);
       }
     } catch (error) {
-      console.error("Failed to save tabs to storage:", error);
+      logger.error("Failed to save tabs to storage:", error);
     }
   }, [tabs]);
 
@@ -66,7 +66,7 @@ export function useTabManagement(version: string | null) {
         removeStorageWithVersion(SELECTED_TAB_ID_STORAGE_KEY);
       }
     } catch (error) {
-      console.error("Failed to save selected tab ID to storage:", error);
+      logger.error("Failed to save selected tab ID to storage:", error);
     }
   }, [selectedTabId]);
 

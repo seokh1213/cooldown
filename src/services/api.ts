@@ -1,5 +1,6 @@
 import Hangul from "hangul-js";
 import { Champion } from "@/types";
+import { logger } from "@/lib/logger";
 
 const VERSION_URL = "https://ddragon.leagueoflegends.com/api/versions.json";
 const CHAMP_LIST_URL = (VERSION: string, LANG: string) =>
@@ -25,7 +26,7 @@ async function fetchData<T>(URL: string, transform: (res: unknown) => T): Promis
   const res_1 = await fetch(URL);
   if (!res_1.ok) {
     const error = new Error(`HTTP error! status: ${res_1.status}`);
-    console.error("API request failed:", error);
+    logger.error("API request failed:", error);
     throw error;
   }
   
@@ -34,7 +35,7 @@ async function fetchData<T>(URL: string, transform: (res: unknown) => T): Promis
     return transform(res_2);
   } catch (err) {
     // JSON 파싱 에러만 catch (의도적인 동작)
-    console.error("API request failed:", err);
+    logger.error("API request failed:", err);
     throw err;
   }
 }
@@ -105,21 +106,15 @@ export function cleanOldVersionCache(currentVersion: string): void {
     }
 
     // 오래된 캐시 제거
-    let removedCount = 0;
     for (const key of keysToRemove) {
       try {
         localStorage.removeItem(key);
-        removedCount++;
       } catch (error) {
-        console.warn(`Failed to remove cache key: ${key}`, error);
+        logger.warn(`Failed to remove cache key: ${key}`, error);
       }
     }
-
-    if (removedCount > 0) {
-      console.log(`[Cache] Removed ${removedCount} old version cache entries (current version: ${currentVersion})`);
-    }
   } catch (error) {
-    console.warn("[Cache] Failed to clean old version cache:", error);
+    logger.warn("[Cache] Failed to clean old version cache:", error);
   }
 }
 
@@ -162,7 +157,7 @@ export function getChampionInfo(version: string, lang: string, name: string): Pr
     }
   } catch (error) {
     // 캐시 파싱 실패 시 무시하고 API 호출
-    console.warn("Failed to parse cached champion info:", error);
+    logger.warn("Failed to parse cached champion info:", error);
   }
 
   // 캐시가 없거나 유효하지 않으면 API 호출
@@ -179,7 +174,7 @@ export function getChampionInfo(version: string, lang: string, name: string): Pr
             localStorage.setItem(cacheKey, JSON.stringify(championInfo));
           } catch (error) {
             // localStorage 저장 실패 시 무시 (quota exceeded 등)
-            console.warn("Failed to cache champion info:", error);
+            logger.warn("Failed to cache champion info:", error);
           }
           
           return championInfo;
@@ -287,16 +282,14 @@ export async function getCommunityDragonSpellData(
       const parsed = JSON.parse(cached);
       // 빈 객체는 유효한 캐시로 간주하지 않음
       if (parsed && typeof parsed === "object" && Object.keys(parsed).length > 0) {
-        console.log(`[CD] Using cached data for ${cdChampionId}: ${Object.keys(parsed).length} keys`);
         return Promise.resolve(parsed);
       } else if (parsed && typeof parsed === "object" && Object.keys(parsed).length === 0) {
         // 빈 객체 캐시는 삭제
-        console.warn(`[CD] Found empty cache for ${cdChampionId}, removing it`);
         localStorage.removeItem(cacheKey);
       }
     }
   } catch (error) {
-    console.warn("[CD] Failed to parse cached Community Dragon data:", error);
+    logger.warn("[CD] Failed to parse cached Community Dragon data:", error);
   }
 
   let response: Response;
@@ -304,22 +297,22 @@ export async function getCommunityDragonSpellData(
     response = await fetch(url);
     if (!response.ok) {
       const error = new Error(`HTTP error! status: ${response.status}`);
-      console.error("Failed to fetch Community Dragon data:", error);
+      logger.error("Failed to fetch Community Dragon data:", error);
       // 에러 발생 시 빈 객체 반환 (캐싱하지 않음)
       try {
         localStorage.removeItem(cacheKey);
       } catch (removeError) {
-        console.warn("Failed to remove cache on error:", removeError);
+        logger.warn("Failed to remove cache on error:", removeError);
       }
       return {};
     }
   } catch (error) {
     // 네트워크 에러 등 fetch 자체가 실패한 경우
-    console.error("Failed to fetch Community Dragon data:", error);
+    logger.error("Failed to fetch Community Dragon data:", error);
     try {
       localStorage.removeItem(cacheKey);
     } catch (removeError) {
-      console.warn("Failed to remove cache on error:", removeError);
+      logger.warn("Failed to remove cache on error:", removeError);
     }
     return {};
   }
@@ -327,37 +320,12 @@ export async function getCommunityDragonSpellData(
   try {
     const data = await response.json();
     
-    // 원본 데이터 구조 확인
-    console.log(`[CD] Raw data for ${cdChampionId}:`, {
-      totalKeys: Object.keys(data).length,
-      sampleKeys: Object.keys(data).slice(0, 20),
-      rootPath: `Characters/${cdChampionId}/CharacterRecords/Root`,
-      rootExists: `Characters/${cdChampionId}/CharacterRecords/Root` in data,
-      spellKeys: Object.keys(data).filter(k => k.includes('Spells')),
-      abilityKeys: Object.keys(data).filter(k => k.includes('Ability'))
-    });
-    
     // 스킬 순서 매핑 추출 (실제 챔피언 경로도 함께 찾기)
     const { spellOrder, actualChampionPath } = extractSpellOrderMapping(data, cdChampionId);
     
     if (!actualChampionPath) {
-      console.warn(`[CD] Could not find champion path for ${cdChampionId}`);
-      // 대체 경로 시도
-      const altPaths = Object.keys(data).filter(k => 
-        k.toLowerCase().includes('characterrecords') || 
-        k.toLowerCase().includes('root')
-      );
-      console.log(`[CD] Alternative paths found:`, altPaths.slice(0, 10));
-    } else {
-      const rootPath = `${actualChampionPath}/CharacterRecords/Root`;
-      const root = data[rootPath] as Record<string, unknown> | undefined;
-      if (root) {
-        console.log(`[CD] Root object keys for ${cdChampionId}:`, Object.keys(root));
-        console.log(`[CD] Root object:`, root);
-      }
+      logger.warn(`[CD] Could not find champion path for ${cdChampionId}`);
     }
-    
-    console.log(`[CD] Champion: ${cdChampionId}, Actual path: ${actualChampionPath || 'not found'}, Spell order found: ${spellOrder.length} spells`, spellOrder);
     
     // 스킬별 DataValues, mSpellCalculations, mClientData 추출
     const spellDataMap: Record<string, Record<string, any>> = {};
@@ -371,7 +339,7 @@ export async function getCommunityDragonSpellData(
       const spellObj = data[spellPath] as Record<string, unknown> | undefined;
       
       if (!spellObj) {
-        console.warn(`[CD] Spell path not found: ${spellPath}`);
+        logger.warn(`[CD] Spell path not found: ${spellPath}`);
         continue;
       }
       
@@ -416,15 +384,11 @@ export async function getCommunityDragonSpellData(
           if (spellName) {
             spellDataMap[spellName] = spellData;
           }
-          const dataValuesCount = spellData.DataValues ? Object.keys(spellData.DataValues).length : 0;
-          const calculationsCount = spellData.mSpellCalculations ? Object.keys(spellData.mSpellCalculations).length : 0;
-          const hasClientData = !!spellData.mClientData;
-          console.log(`[CD] Found spell ${i} (${spellName}): ${dataValuesCount} data values, ${calculationsCount} calculations, clientData: ${hasClientData}`);
         } else {
-          console.warn(`[CD] Spell ${i} (${spellPath}) has no extractable data`);
+          logger.warn(`[CD] Spell ${i} (${spellPath}) has no extractable data`);
         }
       } else {
-        console.warn(`[CD] Spell ${i} (${spellPath}) has no mSpell`);
+        logger.warn(`[CD] Spell ${i} (${spellPath}) has no mSpell`);
       }
     }
     
@@ -480,49 +444,42 @@ export async function getCommunityDragonSpellData(
               
               if (Object.keys(spellData).length > 0) {
                 spellDataMap[spellName] = spellData;
-                const dataValuesCount = spellData.DataValues ? Object.keys(spellData.DataValues).length : 0;
-                const calculationsCount = spellData.mSpellCalculations ? Object.keys(spellData.mSpellCalculations).length : 0;
-                const hasClientData = !!spellData.mClientData;
-                console.log(`[CD] Found additional spell (${spellName}): ${dataValuesCount} data values, ${calculationsCount} calculations, clientData: ${hasClientData}`);
               }
             }
           }
         }
       }
     }
-    console.log(`[CD] Scanned ${abilityObjectCount} ability objects`);
     
     // 데이터가 있을 때만 캐싱 (빈 객체는 캐싱하지 않음)
     const spellDataKeys = Object.keys(spellDataMap);
-    console.log(`[CD] Final spell data map for ${cdChampionId}: ${spellDataKeys.length} keys`, spellDataKeys);
     
     if (spellDataKeys.length > 0) {
       try {
         localStorage.setItem(cacheKey, JSON.stringify(spellDataMap));
-        console.log(`[CD] Successfully cached data for ${cdChampionId}`);
       } catch (error) {
-        console.warn("[CD] Failed to cache Community Dragon data:", error);
+        logger.warn("[CD] Failed to cache Community Dragon data:", error);
       }
     } else {
       // 빈 객체인 경우 기존 캐시가 있다면 삭제
       try {
         localStorage.removeItem(cacheKey);
       } catch (error) {
-        console.warn("[CD] Failed to remove empty cache:", error);
+        logger.warn("[CD] Failed to remove empty cache:", error);
       }
-      console.warn(`[CD] No spell data found for champion: ${cdChampionId}. Spell order: ${spellOrder.length}, Ability objects: ${abilityObjectCount}`);
+      logger.warn(`[CD] No spell data found for champion: ${cdChampionId}. Spell order: ${spellOrder.length}, Ability objects: ${abilityObjectCount}`);
     }
     
     return spellDataMap;
   } catch (error) {
     // JSON 파싱 에러만 catch (의도적인 동작)
-    console.error("Failed to parse Community Dragon data:", error);
+    logger.error("Failed to parse Community Dragon data:", error);
     // 에러 발생 시 빈 객체 반환 (캐싱하지 않음)
     // 기존 캐시가 있다면 삭제
     try {
       localStorage.removeItem(cacheKey);
     } catch (removeError) {
-      console.warn("Failed to remove cache on error:", removeError);
+      logger.warn("Failed to remove cache on error:", removeError);
     }
     return {};
   }

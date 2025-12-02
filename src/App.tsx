@@ -11,6 +11,7 @@ import OGPreviewPage from "@/pages/OGPreviewPage";
 import { Champion } from "@/types";
 import { I18nProvider, Language } from "@/i18n";
 import { validateAllStorageData } from "@/lib/storageValidator";
+import { logger } from "@/lib/logger";
 
 const THEME_STORAGE_KEY = "theme";
 const LANG_STORAGE_KEY = "language";
@@ -79,7 +80,7 @@ function App() {
       // 최소 로딩 시간 보장 (스플래시 화면 표시)
       await new Promise((resolve) => setTimeout(resolve, 1000));
     } catch (error) {
-      console.error("Failed to initialize data:", error);
+      logger.error("Failed to initialize data:", error);
     } finally {
       setIsLoading(false);
     }

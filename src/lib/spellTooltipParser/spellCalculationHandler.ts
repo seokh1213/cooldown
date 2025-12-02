@@ -28,6 +28,7 @@ import {
   isVector,
 } from "./valueUtils";
 import { formatNumber } from "./formatters";
+import { logger } from "@/lib/logger";
 
 /**
  * mPrecision 이 지정된 경우, 값(Value)을 해당 소수점 자릿수까지 포맷팅
@@ -59,7 +60,6 @@ export function replaceCalculateData(
   communityDragonData?: CommunityDragonSpellData,
   lang: Language = "ko_KR"
 ): string | null {
-  const t = getTranslations(lang);
   const spellCalcs = communityDragonData?.mSpellCalculations;
   const dataValues = communityDragonData?.DataValues;
   if (!spellCalcs) return null;
@@ -73,16 +73,16 @@ export function replaceCalculateData(
 
   function evalDataValue(name: string): Value | null {
     if (!name || typeof name !== "string") {
-      console.warn(`DataValue name is invalid: ${name}`);
+      logger.debug(`DataValue name is invalid: ${name}`);
       return null;
     }
     if (!dataValues) {
-      console.warn("dataValues is undefined");
+      logger.debug("dataValues is undefined");
       return null;
     }
     const v = getDataValueByName(dataValues, name, spell.maxrank);
     if (v == null) {
-      console.warn(`DataValue "${name}" missing`);
+      logger.debug(`DataValue "${name}" missing`);
       return null;
     }
     return v;
@@ -248,7 +248,7 @@ export function replaceCalculateData(
           // BaseDamage, BasePercentMaxHPDmgPerSec 등의 순수 값
           const namedPart = part as NamedDataValueCalculationPart;
           if (!namedPart.mDataValue) {
-            console.warn(`NamedDataValueCalculationPart missing mDataValue`, part);
+            logger.debug(`NamedDataValueCalculationPart missing mDataValue`, part);
             continue;
           }
           const v = evalDataValue(namedPart.mDataValue);
@@ -263,7 +263,7 @@ export function replaceCalculateData(
           const idx = effectPart.mEffectIndex ?? 0;
           const effectBurn = spell.effectBurn?.[idx] ?? null;
           if (!effectBurn) {
-            console.warn(`EffectValueCalculationPart: effectBurn[${idx}] is missing`, {
+            logger.debug(`EffectValueCalculationPart: effectBurn[${idx}] is missing`, {
               spellId: spell.id,
             });
           } else {
@@ -282,7 +282,7 @@ export function replaceCalculateData(
           // ADRatioPerSecond, ADRatio 등: 스탯 계수 → 나중에 50% AD 같은 텍스트로 사용
           const statPart = part as StatByNamedDataValueCalculationPart;
           if (!statPart.mDataValue) {
-            console.warn(`StatByNamedDataValueCalculationPart missing mDataValue`, part);
+            logger.debug(`StatByNamedDataValueCalculationPart missing mDataValue`, part);
             continue;
           }
           const ratio = evalDataValue(statPart.mDataValue); // 0.5 or 벡터
@@ -296,7 +296,7 @@ export function replaceCalculateData(
           // mCoefficient 기반 스탯/계수 (예: 1 → 100%)
           const coeffPart = part as StatByCoefficientCalculationPart;
           if (coeffPart.mCoefficient == null) {
-            console.warn(`StatByCoefficientCalculationPart missing mCoefficient`, part);
+            logger.debug(`StatByCoefficientCalculationPart missing mCoefficient`, part);
             continue;
           }
           // mStat/mStatFormula 규칙에 따라 스탯 이름 결정
@@ -309,7 +309,7 @@ export function replaceCalculateData(
           // 스킬 자원(마나/기력 등)에 비례하는 계수
           const resPart = part as AbilityResourceByCoefficientCalculationPart;
           if (resPart.mCoefficient == null) {
-            console.warn(
+            logger.debug(
               `AbilityResourceByCoefficientCalculationPart missing mCoefficient`,
               part
             );
@@ -363,7 +363,7 @@ export function replaceCalculateData(
             if (t === "NamedDataValueCalculationPart") {
               const named = p as NamedDataValueCalculationPart;
               if (!named.mDataValue) {
-                console.warn(
+                logger.debug(
                   `ProductOfSubPartsCalculationPart: NamedDataValueCalculationPart missing mDataValue`,
                   p
                 );
@@ -388,7 +388,7 @@ export function replaceCalculateData(
               const effectBurn = spell.effectBurn?.[idx] ?? null;
 
               if (!effectBurn) {
-                console.warn(
+                logger.debug(
                   `ProductOfSubPartsCalculationPart: EffectValueCalculationPart missing effectBurn[${idx}]`,
                   {
                     spellId: spell.id,
@@ -419,7 +419,7 @@ export function replaceCalculateData(
 
             // 현재는 위 두 타입만 필요해서 지원하고,
             // 그 외 타입이 들어오면 0으로 취급 (경고 로그만 남김)
-            console.warn(
+            logger.debug(
               `ProductOfSubPartsCalculationPart: unsupported sub part type "${t}"`,
               p
             );
@@ -489,7 +489,7 @@ export function replaceCalculateData(
   try {
     result = evalCalc(calcKey);
   } catch (e) {
-    console.error(e);
+    logger.error("Failed to evaluate calculation:", e);
     return null;
   }
 

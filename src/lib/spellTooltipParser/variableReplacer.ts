@@ -46,7 +46,6 @@ export function replaceVariables(
   lang: Language = "ko_KR"
 ): string {
   if (!spell) return text;
-  console.log(text, spell, communityDragonData, lang);
 
   let result = text;
 

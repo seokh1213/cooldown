@@ -4,6 +4,7 @@ import { getChampionInfo } from "@/services/api";
 import { ChampionWithInfo, Tab } from "./types";
 import { STORAGE_KEY } from "./constants";
 import { setStorageWithVersion, removeStorageWithVersion } from "@/lib/storageValidator";
+import { logger } from "@/lib/logger";
 
 interface UseChampionDataProps {
   version: string | null;
@@ -72,7 +73,7 @@ export function useChampionData({
                       );
                     })
                     .catch((error) => {
-                      console.error("Failed to load champion info:", error);
+                      logger.error("Failed to load champion info:", error);
                       setSelectedChampions((prev) =>
                         prev.map((c) =>
                           c.id === champion.id ? { ...c, isLoading: false } : c
@@ -90,7 +91,7 @@ export function useChampionData({
         setIsInitialLoad(false);
       }, 0);
     } catch (error) {
-      console.error("Failed to load stored champions:", error);
+      logger.error("Failed to load stored champions:", error);
       setTimeout(() => {
         setIsInitialLoad(false);
       }, 0);
@@ -111,7 +112,7 @@ export function useChampionData({
         removeStorageWithVersion(STORAGE_KEY);
       }
     } catch (error) {
-      console.error("Failed to save champions to storage:", error);
+      logger.error("Failed to save champions to storage:", error);
     }
   }, [selectedChampions]);
 
@@ -185,7 +186,7 @@ export function useChampionData({
           );
         })
         .catch((error) => {
-          console.error("Failed to load champion info:", error);
+          logger.error("Failed to load champion info:", error);
           setSelectedChampions((current) =>
             current.map((c) => (c.id === championId ? { ...c, isLoading: false } : c))
           );
