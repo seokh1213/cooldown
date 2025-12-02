@@ -24,6 +24,7 @@ export function replaceVariables(
   spell?: ChampionSpell,
   communityDragonData?: CommunityDragonSpellData
 ): string {
+  console.log(text, spell, communityDragonData)
   if (!spell) return text;
 
   let result = text;

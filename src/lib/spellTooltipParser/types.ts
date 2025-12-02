@@ -107,6 +107,35 @@ export interface GameCalculation {
 }
 
 /**
+ * 서로 다른 서브 파트(mPart1, mPart2)의 곱을 나타내는 파트
+ * 예: mPart1(HealthRefundOnHitMinionPercent) × mPart2(HealthCost)
+ */
+export interface ProductOfSubPartsCalculationPart {
+  __type: "ProductOfSubPartsCalculationPart";
+  // 서브 파트는 NamedDataValue, Number 등 다양한 타입이 올 수 있으므로 느슨하게 정의
+  mPart1?: {
+    __type?: string;
+    mDataValue?: string;
+    mNumber?: number;
+  };
+  mPart2?: {
+    __type?: string;
+    mDataValue?: string;
+    mNumber?: number;
+  };
+}
+
+/**
+ * 챔피언 레벨에 따라 선형 보간되는 값 (시작값 ~ 끝값)
+ * 예: mStartValue=0.8, mEndValue=0.95 → "(80% ~ 95%)"
+ */
+export interface ByCharLevelInterpolationCalculationPart {
+  __type: "ByCharLevelInterpolationCalculationPart";
+  mStartValue?: number;
+  mEndValue?: number;
+}
+
+/**
  * 계산 파트 타입
  */
 export type CalculationPart =
@@ -116,7 +145,9 @@ export type CalculationPart =
   | AbilityResourceByCoefficientCalculationPart
   | EffectValueCalculationPart
   | NumberCalculationPart
-  | ByCharLevelBreakpointsCalculationPart;
+  | ByCharLevelBreakpointsCalculationPart
+  | ProductOfSubPartsCalculationPart
+  | ByCharLevelInterpolationCalculationPart;
 
 /**
  * NamedDataValueCalculationPart 타입

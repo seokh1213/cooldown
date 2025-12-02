@@ -13,6 +13,7 @@ import {
   EffectValueCalculationPart,
   NumberCalculationPart,
   ByCharLevelBreakpointsCalculationPart,
+  ByCharLevelInterpolationCalculationPart,
 } from "./types";
 import { getDataValueByName } from "./dataValueUtils";
 import { Value } from "./types";
@@ -203,6 +204,28 @@ export function replaceCalculateData(
         // perLevel 정보가 없으면 아래 일반 로직으로 폴백
       }
 
+      // === 특수 케이스: 선형 보간 퍼센트 범위 (ByCharLevelInterpolationCalculationPart) ===
+      // 예: mStartValue=0.8, mEndValue=0.95, mDisplayAsPercent=true
+      //  → "(80% ~ 95%)"
+      if (
+        parts.length === 1 &&
+        (parts[0] as any).__type === "ByCharLevelInterpolationCalculationPart" &&
+        isPercent
+      ) {
+        const interpPart = parts[0] as ByCharLevelInterpolationCalculationPart;
+        const start = interpPart.mStartValue ?? 0;
+        const end = interpPart.mEndValue ?? start;
+        const rangeBase: Value = [start, end];
+
+        return {
+          base: rangeBase,
+          statParts: [],
+          isPercent: true,
+          isCharLevelRange: true,
+          precision: undefined,
+        };
+      }
+
       for (const part of parts) {
         const partType = part.__type as string;
 
@@ -304,6 +327,45 @@ export function replaceCalculateData(
             }
           }
           base = add(base, b);
+        } else if (partType === "ProductOfSubPartsCalculationPart") {
+          // mPart1 × mPart2 형태의 곱 연산
+          // 예: HealthRefundOnHitChampionMonsterPercent × HealthCost
+          const prodPart = part as any;
+
+          const evalSimplePart = (p: any): Value => {
+            if (!p || !p.__type) return 0;
+            const t = p.__type as string;
+
+            if (t === "NamedDataValueCalculationPart") {
+              const named = p as NamedDataValueCalculationPart;
+              if (!named.mDataValue) {
+                console.warn(
+                  `ProductOfSubPartsCalculationPart: NamedDataValueCalculationPart missing mDataValue`,
+                  p
+                );
+                return 0;
+              }
+              return evalDataValue(named.mDataValue);
+            }
+
+            if (t === "NumberCalculationPart") {
+              const num = (p as NumberCalculationPart).mNumber ?? 0;
+              return num;
+            }
+
+            // 현재는 위 두 타입만 필요해서 지원하고,
+            // 그 외 타입이 들어오면 0으로 취급 (경고 로그만 남김)
+            console.warn(
+              `ProductOfSubPartsCalculationPart: unsupported sub part type "${t}"`,
+              p
+            );
+            return 0;
+          };
+
+          const left = evalSimplePart(prodPart.mPart1);
+          const right = evalSimplePart(prodPart.mPart2);
+          const product = mul(left, right);
+          base = add(base, product);
         }
       }
 
