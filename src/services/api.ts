@@ -44,9 +44,11 @@ async function fetchData<T>(URL: string, transform: (res: unknown) => T): Promis
 /**
  * 정적 데이터에서 버전 정보 가져오기 시도, 없으면 API 호출
  */
-async function tryGetStaticVersion(version: string): Promise<string | null> {
+export async function getVersion(): Promise<string> {
   try {
-    const versionUrl = getStaticDataPath(version, 'version.json');
+    const basePath = import.meta.env.BASE_URL || '/';
+    const normalizedBase = basePath.endsWith('/') ? basePath : `${basePath}/`;
+    const versionUrl = `${normalizedBase}data/version.json`;
     const response = await fetch(versionUrl);
     
     if (response.ok) {
@@ -56,25 +58,17 @@ async function tryGetStaticVersion(version: string): Promise<string | null> {
       }
     }
   } catch (error) {
-    // 정적 데이터가 없으면 null 반환
+    logger.warn("[Version] Failed to get version from static data, falling back to API:", error);
   }
-  return null;
-}
 
-export async function getVersion(): Promise<string> {
-  // 먼저 API에서 최신 버전 가져오기
   const latestVersion = await fetchData<string>(VERSION_URL, (res) => {
     if (Array.isArray(res) && res.length > 0 && typeof res[0] === "string") {
       return res[0];
     }
     throw new Error("Invalid version response format");
   });
-
-  // 해당 버전의 정적 데이터가 있는지 확인
-  const staticVersion = await tryGetStaticVersion(latestVersion);
   
-  // 정적 데이터가 있으면 그것을 사용, 없으면 API 버전 사용
-  return staticVersion || latestVersion;
+  return latestVersion;
 }
 
 /**

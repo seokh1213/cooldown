@@ -220,24 +220,32 @@ async function main() {
   console.log('🚀 Starting static data generation...\n');
 
   try {
-    // 1. 버전 가져오기
     console.log('📦 Fetching version information...');
     const versions = await fetchJson(VERSION_URL);
     const version = versions[0];
     console.log(`✅ Latest version: ${version}\n`);
 
-    // 버전별 디렉토리 생성
+    console.log('🗑️  Cleaning up old version directories...');
+    if (fs.existsSync(DATA_DIR)) {
+      const entries = fs.readdirSync(DATA_DIR, { withFileTypes: true });
+      for (const entry of entries) {
+        if (entry.isDirectory() && entry.name !== version) {
+          const oldVersionDir = path.join(DATA_DIR, entry.name);
+          console.log(`   Removing old version: ${entry.name}`);
+          fs.rmSync(oldVersionDir, { recursive: true, force: true });
+        }
+      }
+    }
+
     const versionDir = path.join(DATA_DIR, version);
     const championsDir = path.join(versionDir, 'champions');
     const spellsDir = path.join(versionDir, 'spells');
 
-    // 2. 버전 정보 저장
     const versionInfo = {
       version,
     };
-    await saveToFile(versionInfo, path.join(versionDir, 'version.json'));
+    await saveToFile(versionInfo, path.join(DATA_DIR, 'version.json'));
 
-    // 3. 각 언어별 챔피언 리스트 가져오기
     for (const lang of LANGUAGES) {
       console.log(`📋 Fetching champion list for ${lang}...`);
       const champListData = await fetchJson(CHAMP_LIST_URL(version, lang));
@@ -255,12 +263,10 @@ async function main() {
       console.log(`✅ Fetched ${champions.length} champions for ${lang}\n`);
     }
 
-    // 4. 모든 챔피언 ID 수집 (한국어 기준)
     const koChampListData = await fetchJson(CHAMP_LIST_URL(version, 'ko_KR'));
     const championIds = Object.keys(koChampListData.data || {});
     console.log(`📚 Processing ${championIds.length} champions...\n`);
 
-    // 5. 챔피언 상세 정보 가져오기 (병렬 처리, 배치로 나눠서 처리)
     const BATCH_SIZE = 10;
     for (let i = 0; i < championIds.length; i += BATCH_SIZE) {
       const batch = championIds.slice(i, i + BATCH_SIZE);
@@ -293,9 +299,8 @@ async function main() {
       console.log(`✅ Processed batch: ${successCount}/${results.length} successful\n`);
     }
 
-    // 6. Community Dragon 스킬 데이터 가져오기 (병렬 처리)
     console.log('⚡ Fetching Community Dragon spell data...');
-    const BATCH_SIZE_CD = 5; // Community Dragon은 더 느릴 수 있으므로 작은 배치
+    const BATCH_SIZE_CD = 5;
     let successCount = 0;
     let failCount = 0;
 
