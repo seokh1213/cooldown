@@ -156,7 +156,7 @@ const ItemCell: React.FC<ItemCellProps> = ({
     <button
       type="button"
       onClick={onSelect}
-      className={`flex flex-col items-center gap-0.5 rounded-sm px-1 py-1 text-center transition-colors w-14 md:w-16 ${
+      className={`flex flex-col items-center gap-0.5 rounded-sm px-0.5 py-0.5 text-center transition-colors min-w-8 md:min-w-9 ${
         isSelected
           ? "bg-primary/20 border border-primary/60 shadow-sm"
           : "hover:bg-muted/60 border border-transparent"
@@ -336,14 +336,14 @@ export function ItemsTab({ version, lang }: ItemsTabProps) {
   };
 
   const detailContent = selectedItem && (
-    <div className="flex flex-col gap-3 h-full min-h-0">
+    <div className="flex flex-col gap-2 h-full min-h-0">
       {/* Builds into row */}
-      <div className="space-y-1 text-[11px] pb-2 border-b border-border/60 flex-shrink-0">
+      <div className="space-y-0.5 text-[11px] pb-1 border-b border-border/60 flex-shrink-0">
         <div className="font-semibold">
           {lang === "ko_KR" ? "상위 아이템 (Builds into)" : "Builds into"}
         </div>
-        <div className="overflow-x-auto pb-1">
-          <div className="flex flex-nowrap gap-1.5 min-w-max">
+        <div className="overflow-x-auto pb-0.5">
+          <div className="flex flex-nowrap gap-1 min-w-max">
             {collectUpgradeItems(selectedItem).length > 0 ? (
               collectUpgradeItems(selectedItem).map((upgrade) => (
                 <ItemCell
@@ -365,7 +365,7 @@ export function ItemsTab({ version, lang }: ItemsTabProps) {
       </div>
 
       {/* Item tree */}
-      <div className="space-y-1.5 text-[11px] py-1.5 border-b border-border/60 flex-shrink-0">
+      <div className="space-y-1 text-[11px] py-1 border-b border-border/60 flex-shrink-0">
         <div className="font-semibold">
           {lang === "ko_KR" ? "아이템 트리" : "Item Tree"}
         </div>
@@ -404,7 +404,7 @@ export function ItemsTab({ version, lang }: ItemsTabProps) {
                         strokeLinecap="round"
                       />
                     </svg>
-                    <div className="flex flex-wrap items-start justify-center gap-2">
+                    <div className="flex flex-wrap items-start justify-center gap-1">
                       {node.children.map((child, index) => (
                         <div
                           key={`${child.item.id}-${index}`}
@@ -584,16 +584,16 @@ export function ItemsTab({ version, lang }: ItemsTabProps) {
         </div>
 
         <div className="rounded-md border bg-card/40">
-          <div className="p-2 space-y-2">
+          <div className="p-1 space-y-1">
             {(Object.keys(itemsByTier) as ItemTier[]).map((tier) => {
               const list = itemsByTier[tier];
               if (!list || list.length === 0) return null;
               return (
-                <div key={tier} className="space-y-1.5">
+                <div key={tier} className="space-y-0.5">
                   <div className="text-[11px] font-semibold text-muted-foreground">
                     {tierLabel(tier)}
                   </div>
-                  <div className="flex flex-wrap gap-1.5">
+                  <div className="flex flex-wrap gap-1">
                     {list.map((item) => (
                       <ItemCell
                         key={item.id}
@@ -687,16 +687,16 @@ export function ItemsTab({ version, lang }: ItemsTabProps) {
             </div>
           </div>
           <ScrollArea className="flex-1 min-h-0">
-            <div className="p-1.5 space-y-1.5">
+            <div className="p-1 space-y-1">
               {(Object.keys(itemsByTier) as ItemTier[]).map((tier) => {
                 const list = itemsByTier[tier];
                 if (!list || list.length === 0) return null;
                 return (
-                  <div key={tier} className="space-y-1">
+                  <div key={tier} className="space-y-0.5">
                     <div className="text-[11px] font-semibold text-muted-foreground">
                       {tierLabel(tier)}
                     </div>
-                    <div className="flex flex-wrap gap-1.5">
+                    <div className="flex flex-wrap gap-1">
                       {list.map((item) => (
                         <ItemCell
                           key={item.id}
