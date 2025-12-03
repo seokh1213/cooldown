@@ -1,5 +1,6 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
+import { VitePWA } from 'vite-plugin-pwa'
 import path from 'path'
 import { copyFileSync, writeFileSync, readFileSync, readdirSync, existsSync, mkdirSync, cpSync } from 'fs'
 import { createHash } from 'crypto'
@@ -100,6 +101,60 @@ export default defineConfig(({ mode }) => {
   return {
   plugins: [
     react(),
+    VitePWA({
+      registerType: 'autoUpdate',
+      includeAssets: [
+        'favicon.ico',
+        'favicon-16x16.png',
+        'favicon-32x32.png',
+        'favicon-48x48.png',
+        'apple-touch-icon.png',
+        'poro_logo.png',
+        'og-image.png',
+      ],
+      manifest: {
+        name: 'LoL Champion Cooldown',
+        short_name: 'LoL Cooldown',
+        description:
+          '리그 오브 레전드 챔피언 스킬 쿨타임 비교 도구. 챔피언 간 스킬 쿨타임과 스탯을 비교하고 VS 모드로 대전 분석을 해보세요.',
+        theme_color: '#0b0c0f',
+        background_color: '#0b0c0f',
+        display: 'standalone',
+        start_url: BASE_PATH,
+        scope: BASE_PATH,
+        icons: [
+          {
+            src: 'favicon-16x16.png',
+            sizes: '16x16',
+            type: 'image/png',
+          },
+          {
+            src: 'favicon-32x32.png',
+            sizes: '32x32',
+            type: 'image/png',
+          },
+          {
+            src: 'favicon-48x48.png',
+            sizes: '48x48',
+            type: 'image/png',
+          },
+          {
+            src: 'apple-touch-icon.png',
+            sizes: '180x180',
+            type: 'image/png',
+          },
+          {
+            src: 'poro_logo.png',
+            sizes: '512x512',
+            type: 'image/png',
+            purpose: 'any maskable',
+          },
+        ],
+      },
+      workbox: {
+        globPatterns: ['**/*.{js,css,html,png,svg,ico,json}'],
+      },
+    }),
     // 동적 import 경로 수정 플러그인
     fixDynamicImports(),
     // HTML의 modulepreload 순서를 수정하는 플러그인 (react-vendor를 먼저 로드)
