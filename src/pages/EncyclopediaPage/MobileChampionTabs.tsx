@@ -67,11 +67,11 @@ export function MobileChampionTabs({
   return (
     <div className="border-b border-border -mx-4 px-4">
       <div className="flex items-center gap-2 pb-2">
-        <span className="text-xs font-medium text-muted-foreground shrink-0">
+        <span className="text-xs font-medium text-muted-foreground shrink-0 pl-3">
           {t.encyclopedia.champion}
         </span>
-        {/* 가로 스크롤 영역 + 항상 보이는 스크롤바 (shadcn ScrollArea) */}
-        <ScrollArea ref={scrollAreaRef} type="always" className="flex-1">
+        {/* 가로 스크롤 영역 (필요할 때만 스크롤바 노출) */}
+        <ScrollArea ref={scrollAreaRef} type="scroll" className="flex-1">
           <DndContext
             sensors={sensors}
             collisionDetection={closestCenter}
@@ -85,7 +85,7 @@ export function MobileChampionTabs({
                 가로 스크롤은 ScrollArea 내부에서 처리합니다.
                 콘텐츠 너비를 내용만큼만 잡기 위해 w-max를 사용합니다.
               */}
-              <div className="flex items-center gap-2 w-max select-none pr-2 pb-3">
+              <div className="flex items-center gap-2 w-max select-none pr-2">
                 {tabs.map((tab) => {
                   if (tab.mode === "vs") {
                     const championA = championsWithFullInfo.find(
@@ -144,7 +144,7 @@ export function MobileChampionTabs({
               </div>
             </SortableContext>
           </DndContext>
-          {/* 항상 노출되는 가로 스크롤바 */}
+          {/* 하단 가로 스크롤바 */}
           <ScrollBar orientation="horizontal" />
         </ScrollArea>
       </div>

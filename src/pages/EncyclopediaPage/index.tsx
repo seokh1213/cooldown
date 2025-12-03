@@ -77,7 +77,7 @@ function EncyclopediaPageContent({ lang, championList, version }: EncyclopediaPa
   const sensors = useSensors(
     useSensor(PointerSensor, {
       activationConstraint: {
-        distance: 8, // 8px 이동해야 드래그 시작 (실수로 드래그 방지)
+        distance: 12, // 12px 이상 이동해야 드래그 시작 (모바일에서 스크롤과 구분)
       },
     }),
     useSensor(KeyboardSensor, {
