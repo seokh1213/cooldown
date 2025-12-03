@@ -26,6 +26,7 @@ import {
   valueToTooltipString,
   getStatName,
   isVector,
+  getAbilityResourceName,
 } from "./valueUtils";
 import { formatNumber } from "./formatters";
 import { logger } from "@/lib/logger";
@@ -316,19 +317,8 @@ export function replaceCalculateData(
             continue;
           }
 
-          // 기본 자원 이름: 마나
+          const resourceName = getAbilityResourceName(spell, lang);
           const t = getTranslations(lang);
-          let resourceName = t.common.mana;
-          if (spell.costType) {
-            const costType = spell.costType.trim();
-            if (costType && !costType.includes("{{")) {
-              resourceName = costType;
-            } else if (spell.resource && !spell.resource.includes("{{")) {
-              resourceName = spell.resource;
-            }
-          } else if (spell.resource && !spell.resource.includes("{{")) {
-            resourceName = spell.resource;
-          }
 
           // mStatFormula: 2 → bonus 자원
           const isBonus = resPart.mStatFormula === 2;

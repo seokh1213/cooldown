@@ -30,42 +30,32 @@ function applyNumericPrecision(text: string, precision: number): string {
 }
 
 /**
- * 변수 치환 ({{ variable }} 형식)
- * 레벨별 값은 "/" 형식으로 표시
- * HTML 태그 내부의 변수도 치환하되, 태그 구조는 보존
- * @param text 원본 텍스트
- * @param spell 스킬 데이터
- * @param communityDragonData Community Dragon에서 가져온 스킬 데이터 (선택적)
- * @param lang
- * @returns 치환된 텍스트
+ * 연산자(+ / ~) 주변 공백 보정
+ * - "{{ calc_damage }}+Max Health" → "{{ calc_damage }} + Max Health"
+ * - "50~100" → "50 ~ 100"
  */
-export function replaceVariables(
-  text: string,
-  spell?: ChampionSpell,
-  communityDragonData?: CommunityDragonSpellData,
-  lang: Language = "ko_KR"
-): string {
-  if (!spell) return text;
-
-  let result = text;
-
-  // 0. 연산자(+ / ~) 주변 공백 보정
-  // 예: "{{ calc_damage_1_max }}+Max Health의 {{ calc_damage_1_percent_max }}"
-  //  → "{{ calc_damage_1_max }} + Max Health의 {{ calc_damage_1_percent_max }}"
-  //    "50~100" → "50 ~ 100"
-  result = result
-    // 변수 닫힘 뒤의 "+" 보정: "}}+X" → "}} + X"
+function normalizeOperators(text: string): string {
+  return text
     .replace(/(}})\s*\+\s*(\S)/g, "$1 + $2")
-    // 앞쪽 텍스트와 변수 사이 "+" 보정: "X+{{" → "X + {{"
     .replace(/(\S)\s*\+\s*({{)/g, "$1 + $2")
-    // 물결(~)도 양쪽 공백을 강제: "A~B" → "A ~ B"
     .replace(/(\S)\s*~\s*(\S)/g, "$1 ~ $2");
+}
 
-  // 먼저 중첩된 패턴을 제거하거나 처리
-  result = result.replace(/\{\{([^}]*\{\{[^}]*}}[^}]*)}}/g, () => {
-    // 중첩된 변수 패턴은 제거 (게임 모드별 tooltip 등은 처리 불가)
-    return "";
-  });
+/**
+ * 중첩된 변수 패턴 제거
+ * - {{ ... {{ ... }} ... }} 같은 구조는 통째로 제거
+ *   (게임 모드별 tooltip 등, 현재 파서에서 지원하지 않는 패턴)
+ */
+function removeNestedVariableBlocks(text: string): string {
+  return text.replace(/\{\{([^}]*\{\{[^}]*}}[^}]*)}}/g, () => "");
+}
+
+/**
+ * Spell_*_Tooltip, spellmodifierdescriptionappend 등
+ * 치환 불가능한 특수 패턴 제거
+ */
+function stripUnsupportedSpellPlaceholders(text: string): string {
+  let result = text;
 
   // Spell_*_Tooltip 패턴 제거 (Community Dragon에서도 치환이 안되는 값)
   result = result.replace(/\{\{Spell_[^}]*Tooltip[^}]*}}/gi, "");
@@ -73,20 +63,31 @@ export function replaceVariables(
   // spellmodifierdescriptionappend 단독 패턴 제거
   result = result.replace(/\{\{spellmodifierdescriptionappend}}/gi, "");
 
-  // {{ variable }} 패턴 찾기 (HTML 태그 내부도 포함)
-  // 하지만 HTML 태그 자체는 건드리지 않음
+  return result;
+}
+
+/**
+ * {{ variable }} 토큰을 실제 숫자/텍스트로 치환
+ * - precision 접미사(.0, .1 등) 처리
+ * - 지원하지 않는 변수는 빈 문자열로 삭제
+ */
+function replaceVariableTokens(
+  text: string,
+  spell: ChampionSpell,
+  communityDragonData: CommunityDragonSpellData | undefined,
+  lang: Language
+): string {
   const variableRegex = /\{\{([^}]+)}}/g;
 
-  result = result.replace(variableRegex, (_match, variableName) => {
-    const trimmedVar = variableName.trim();
+  return text.replace(variableRegex, (_match, variableName) => {
+    const trimmedVar = String(variableName).trim();
 
-    // 특수 변수 처리 (spellmodifierdescriptionappend 등)
+    // 특수 변수 처리 (spellmodifierdescriptionappend, Spell_*_Tooltip 등)
     if (
       trimmedVar === "spellmodifierdescriptionappend" ||
       trimmedVar.includes("gamemodeinteger") ||
       (trimmedVar.includes("Spell_") && trimmedVar.includes("Tooltip"))
     ) {
-      // 이런 변수들은 제거
       return "";
     }
 
@@ -108,7 +109,6 @@ export function replaceVariables(
       }
     }
 
-    // 변수 치환 로직
     const replacement = replaceVariable(
       effectiveVar,
       spell,
@@ -117,15 +117,23 @@ export function replaceVariables(
     );
 
     if (replacement !== null) {
-      if (precision !== undefined) {
-        return applyNumericPrecision(replacement, precision);
-      }
-      return replacement;
+      return precision !== undefined
+        ? applyNumericPrecision(replacement, precision)
+        : replacement;
     }
 
     // 값을 찾을 수 없으면 빈 문자열로 제거
     return "";
   });
+}
+
+/**
+ * 변수 치환 이후 남은 플레이스홀더/공백 정리
+ * - 남은 {{ }}, %, 아이콘 토큰 제거
+ * - 연속 공백 정리 (개행은 유지)
+ */
+function cleanupPlaceholdersAndIcons(text: string): string {
+  let result = text;
 
   // 치환 후 남은 불완전한 변수 패턴 제거 ({{ 또는 }}만 남은 경우)
   result = result.replace(/\{\{\s*\}/g, ""); // {{ }} 패턴 제거
@@ -147,6 +155,44 @@ export function replaceVariables(
 
   // 연속된 공백 정리 (개행 문자는 유지 → <br /> 줄바꿈 보존)
   result = result.replace(/[^\S\r\n]+/g, " ");
+
+  return result;
+}
+
+/**
+ * 변수 치환 ({{ variable }} 형식)
+ * 레벨별 값은 "/" 형식으로 표시
+ * HTML 태그 내부의 변수도 치환하되, 태그 구조는 보존
+ * @param text 원본 텍스트
+ * @param spell 스킬 데이터
+ * @param communityDragonData Community Dragon에서 가져온 스킬 데이터 (선택적)
+ * @param lang
+ * @returns 치환된 텍스트
+ */
+export function replaceVariables(
+  text: string,
+  spell?: ChampionSpell,
+  communityDragonData?: CommunityDragonSpellData,
+  lang: Language = "ko_KR"
+): string {
+  if (!spell) return text;
+
+  let result = text;
+
+  // 0. 연산자(+ / ~) 주변 공백 보정
+  result = normalizeOperators(result);
+
+  // 1. 중첩 변수 블록 제거
+  result = removeNestedVariableBlocks(result);
+
+  // 2. 치환 불가능한 특수 패턴 제거
+  result = stripUnsupportedSpellPlaceholders(result);
+
+  // 3. {{ variable }} 토큰 치환
+  result = replaceVariableTokens(result, spell, communityDragonData, lang);
+
+  // 4. 잔여 플레이스홀더/아이콘/공백 정리
+  result = cleanupPlaceholdersAndIcons(result);
 
   return result;
 }

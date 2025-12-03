@@ -5,6 +5,7 @@ import { parseExpression } from "./expressionParser";
 import { replaceData } from "./dataValueHandler";
 import type { Language } from "@/i18n";
 import { getTranslations } from "@/i18n";
+import { getAbilityResourceName } from "./valueUtils";
 
 /**
  * leveltip을 이용한 수치 표시 포맷팅
@@ -76,18 +77,7 @@ export function formatLeveltipStats(
           }
 
           // @AbilityResourceName@ 치환
-          let resourceName = t.common.mana;
-          if (spell.costType) {
-            const costType = spell.costType.trim();
-            if (costType && !costType.includes("{{")) {
-              resourceName = costType;
-            } else if (spell.resource && !spell.resource.includes("{{")) {
-              resourceName = spell.resource;
-            }
-          } else if (spell.resource && !spell.resource.includes("{{")) {
-            resourceName = spell.resource;
-          }
-
+          const resourceName = getAbilityResourceName(spell, lang);
           const displayLabel = labelText.replace("@AbilityResourceName@", resourceName);
 
           // 치환되지 않은 변수 패턴이 남아있으면 해당 항목 미노출
@@ -155,16 +145,7 @@ export function formatLeveltipStats(
       if (formattedValue) {
         // @AbilityResourceName@ 치환
         let resourceName = t.common.mana;
-        if (spell.costType) {
-          const costType = spell.costType.trim();
-          if (costType && !costType.includes("{{")) {
-            resourceName = costType;
-          } else if (spell.resource && !spell.resource.includes("{{")) {
-            resourceName = spell.resource;
-          }
-        } else if (spell.resource && !spell.resource.includes("{{")) {
-          resourceName = spell.resource;
-        }
+        resourceName = getAbilityResourceName(spell, lang);
 
         const displayLabel = labelText.replace("@AbilityResourceName@", resourceName);
 

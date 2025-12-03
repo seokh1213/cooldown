@@ -2,6 +2,7 @@ import { Value } from "./types";
 import { formatNumber } from "./formatters";
 import type { Language } from "@/i18n";
 import { getTranslations } from "@/i18n";
+import type { ChampionSpell } from "@/types";
 
 /**
  * 값이 벡터인지 확인
@@ -147,5 +148,37 @@ export function getStatName(
 
   // 그 외 알 수 없는 스탯은 표시하지 않는다 (아이콘으로만 처리하거나 무시)
   return "";
+}
+
+/**
+ * 스킬 자원 이름 계산
+ * - 기본값: 마나
+ * - costType 이 문자열이고 "{{" 를 포함하지 않으면 그대로 사용
+ * - 그렇지 않고 resource 가 문자열이고 "{{" 를 포함하지 않으면 그대로 사용
+ */
+export function getAbilityResourceName(
+  spell: ChampionSpell,
+  lang: Language = "ko_KR"
+): string {
+  const t = getTranslations(lang);
+
+  let resourceName = t.common.mana;
+
+  if (spell.costType) {
+    const costType = spell.costType.trim();
+    if (costType && !costType.includes("{{")) {
+      return costType;
+    }
+    if (spell.resource && !spell.resource.includes("{{")) {
+      return spell.resource;
+    }
+    return resourceName;
+  }
+
+  if (spell.resource && !spell.resource.includes("{{")) {
+    return spell.resource;
+  }
+
+  return resourceName;
 }
 
