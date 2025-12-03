@@ -6,6 +6,10 @@ const CHAMP_LIST_URL = (VERSION: string, LANG: string) =>
   `https://ddragon.leagueoflegends.com/cdn/${VERSION}/data/${LANG}/champion.json`;
 const CHAMP_INFO_URL = (VERSION: string, LANG: string, NAME: string) =>
   `https://ddragon.leagueoflegends.com/cdn/${VERSION}/data/${LANG}/champion/${NAME}.json`;
+const RUNES_URL = (VERSION: string, LANG: string) =>
+  `https://ddragon.leagueoflegends.com/cdn/${VERSION}/data/${LANG}/runesReforged.json`;
+const ITEMS_URL = (VERSION: string, LANG: string) =>
+  `https://ddragon.leagueoflegends.com/cdn/${VERSION}/data/${LANG}/item.json`;
 const COMMUNITY_DRAGON_URL = (basePath: string, championId: string) =>
   `https://raw.communitydragon.org/${basePath}/game/data/characters/${championId}/${championId}.bin.json`;
 
@@ -331,18 +335,38 @@ async function main() {
     for (const lang of LANGUAGES) {
       console.log(`📋 Fetching champion list for ${lang}...`);
       const champListData = await fetchJson(CHAMP_LIST_URL(version, lang));
-      
-      const champions = Object.values(champListData.data || {})
-        .sort((a: any, b: any) => (a.name < b.name ? -1 : a.name > b.name ? 1 : 0));
+
+      const champions = Object.values(champListData.data || {}).sort(
+        (a: any, b: any) => (a.name < b.name ? -1 : a.name > b.name ? 1 : 0)
+      );
 
       const championList = {
         version,
         lang,
         champions,
       };
-      
-      await saveToFile(championList, path.join(versionDir, `champions-${lang}.json`));
-      console.log(`✅ Fetched ${champions.length} champions for ${lang}\n`);
+
+      await saveToFile(
+        championList,
+        path.join(versionDir, `champions-${lang}.json`)
+      );
+      console.log(`✅ Fetched ${champions.length} champions for ${lang}`);
+
+      console.log(`📜 Fetching runes for ${lang}...`);
+      const runesData = await fetchJson(RUNES_URL(version, lang));
+      await saveToFile(
+        runesData,
+        path.join(versionDir, `runes-${lang}.json`)
+      );
+      console.log(`✅ Saved runes for ${lang}`);
+
+      console.log(`🧱 Fetching items for ${lang}...`);
+      const itemsData = await fetchJson(ITEMS_URL(version, lang));
+      await saveToFile(
+        itemsData,
+        path.join(versionDir, `items-${lang}.json`)
+      );
+      console.log(`✅ Saved items for ${lang}\n`);
     }
 
     const koChampListData = await fetchJson(CHAMP_LIST_URL(version, 'ko_KR'));

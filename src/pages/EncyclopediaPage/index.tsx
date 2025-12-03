@@ -16,6 +16,8 @@ import { useTabManagement } from "./useTabManagement";
 import { useChampionData } from "./useChampionData";
 import { EmptyState } from "./EmptyState";
 import { TabNavigation } from "./TabNavigation";
+import { RunesTab } from "./RunesTab";
+import { ItemsTab } from "./ItemsTab";
 import { MobileChampionTabs } from "./MobileChampionTabs";
 import { VsSelectorModal } from "./VsSelectorModal";
 import { STORAGE_KEY, TABS_STORAGE_KEY, SELECTED_TAB_ID_STORAGE_KEY } from "./constants";
@@ -43,7 +45,7 @@ function EncyclopediaPageContent({
   initialTabs,
   initialSelectedTabId,
 }: EncyclopediaPageProps) {
-  const [activeTab, setActiveTab] = useState<"stats" | "skills">("skills");
+  const [activeTab, setActiveTab] = useState<"skills" | "stats" | "runes" | "items">("skills");
   const [showSelector, setShowSelector] = useState(false);
   const deviceType = useDeviceType();
   const isMobile = deviceType === "mobile";
@@ -408,61 +410,88 @@ function EncyclopediaPageContent({
         }}
       />
 
-      {/* Comparison Sections */}
-      {selectedChampions.length > 0 && championsWithFullInfo.length > 0 && (
-        <div className="space-y-4 md:space-y-6">
-          {/* Tab Navigation */}
-          <TabNavigation
-            activeTab={activeTab}
-            onTabChange={setActiveTab}
-            onReset={resetAll}
-          />
+      {/* Tab navigation for encyclopedia sections */}
+      <div className="mt-3 md:mt-4">
+        <TabNavigation
+          activeTab={activeTab}
+          onTabChange={setActiveTab}
+          onReset={resetAll}
+        />
+      </div>
 
-          {/* Mobile: Champion Selection Tab */}
-          {isMobile && tabs.length > 0 && (
-            <MobileChampionTabs
-              tabs={tabs}
-              championsWithFullInfo={championsWithFullInfo}
-              version={version}
-              selectedTabId={selectedTabId}
-              sensors={sensors}
-              onDragEnd={handleDragEnd}
-              onSelectTab={setSelectedTabId}
-              onRemoveTab={removeTab}
-              onVsClick={handleVsClick}
-              onChangeChampionA={handleChangeChampionA}
-              onChangeChampionB={handleChangeChampionB}
-              onAddClick={() => setShowSelector(true)}
-            />
-          )}
-
-          {/* Comparison Content */}
-          <ChampionComparison
-            champions={
-              isMobile && selectedTab && selectedTab.mode === 'vs' && currentTabChampions.length === 2
-                ? currentTabChampions
-                : isMobile && mobileChampion
-                ? [mobileChampion]
-                : championsWithFullInfo.map((c) => c.fullInfo!)
-            }
-            version={version}
-            activeTab={activeTab}
-            championList={championList}
-            onAddChampion={isMobile ? undefined : addChampion}
-            onRemoveChampion={handleRemoveChampion}
-            onReorderChampions={isMobile ? undefined : handleReorderChampions}
-            vsMode={
-              isMobile && selectedTab && selectedTab.mode === 'vs' && currentTabChampions.length === 2
-                ? { championA: currentTabChampions[0], championB: currentTabChampions[1] }
-                : undefined
-            }
-          />
-        </div>
+      {/* Runes / Items encyclopedia tabs */}
+      {activeTab === "runes" && (
+        <RunesTab version={version} lang={lang} />
+      )}
+      {activeTab === "items" && (
+        <ItemsTab version={version} lang={lang} />
       )}
 
-      {/* Empty State */}
-      {selectedChampions.length === 0 && (
-        <EmptyState onAddClick={() => setShowSelector(true)} />
+      {/* Champion comparison only for skills / stats tabs */}
+      {(activeTab === "skills" || activeTab === "stats") && (
+        <>
+          {selectedChampions.length > 0 && championsWithFullInfo.length > 0 && (
+            <div className="mt-4 md:mt-6 space-y-4 md:space-y-6">
+              {/* Mobile: Champion Selection Tab */}
+              {isMobile && tabs.length > 0 && (
+                <MobileChampionTabs
+                  tabs={tabs}
+                  championsWithFullInfo={championsWithFullInfo}
+                  version={version}
+                  selectedTabId={selectedTabId}
+                  sensors={sensors}
+                  onDragEnd={handleDragEnd}
+                  onSelectTab={setSelectedTabId}
+                  onRemoveTab={removeTab}
+                  onVsClick={handleVsClick}
+                  onChangeChampionA={handleChangeChampionA}
+                  onChangeChampionB={handleChangeChampionB}
+                  onAddClick={() => setShowSelector(true)}
+                />
+              )}
+
+              {/* Comparison Content */}
+              <ChampionComparison
+                champions={
+                  isMobile &&
+                  selectedTab &&
+                  selectedTab.mode === "vs" &&
+                  currentTabChampions.length === 2
+                    ? currentTabChampions
+                    : isMobile && mobileChampion
+                    ? [mobileChampion]
+                    : championsWithFullInfo.map((c) => c.fullInfo!)
+                }
+                version={version}
+                activeTab={activeTab === "skills" ? "skills" : "stats"}
+                championList={championList}
+                onAddChampion={isMobile ? undefined : addChampion}
+                onRemoveChampion={handleRemoveChampion}
+                onReorderChampions={
+                  isMobile ? undefined : handleReorderChampions
+                }
+                vsMode={
+                  isMobile &&
+                  selectedTab &&
+                  selectedTab.mode === "vs" &&
+                  currentTabChampions.length === 2
+                    ? {
+                        championA: currentTabChampions[0],
+                        championB: currentTabChampions[1],
+                      }
+                    : undefined
+                }
+              />
+            </div>
+          )}
+
+          {/* Empty State */}
+          {selectedChampions.length === 0 && (
+            <div className="mt-4">
+              <EmptyState onAddClick={() => setShowSelector(true)} />
+            </div>
+          )}
+        </>
       )}
     </div>
   );

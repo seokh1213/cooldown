@@ -1,5 +1,5 @@
 import Hangul from "hangul-js";
-import { Champion } from "@/types";
+import { Champion, RuneTreeList, ItemList, Item } from "@/types";
 import { logger } from "@/lib/logger";
 import { getStaticDataPath } from "@/lib/staticDataUtils";
 
@@ -365,6 +365,138 @@ export async function getChampionInfo(version: string, lang: string, name: strin
       throw new Error(`Champion ${name} not found`);
     }
   );
+}
+
+// ===== Runes & Items (static data first) =====
+
+export async function getRuneTrees(
+  version: string,
+  lang: string
+): Promise<RuneTreeList> {
+  const cacheKey = `runes_${version}_${lang}`;
+
+  try {
+    const cached = localStorage.getItem(cacheKey);
+    if (cached) {
+      const parsed = JSON.parse(cached);
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        return parsed as RuneTreeList;
+      }
+    }
+  } catch (error) {
+    logger.warn("Failed to parse cached rune trees:", error);
+  }
+
+  try {
+    const staticUrl = getStaticDataPath(version, `runes-${lang}.json`);
+    const response = await fetch(staticUrl);
+
+    if (response.ok) {
+      const data = (await response.json()) as RuneTreeList;
+      if (Array.isArray(data)) {
+        try {
+          localStorage.setItem(cacheKey, JSON.stringify(data));
+        } catch (error) {
+          logger.warn("Failed to cache rune trees:", error);
+        }
+        return data;
+      }
+    }
+  } catch (error) {
+    logger.warn(
+      "[StaticData] Failed to load rune trees from static data:",
+      error
+    );
+  }
+
+  // Fallback: fetch directly from Data Dragon
+  const { ddragonVersion } = await getDataVersions();
+  const url = `https://ddragon.leagueoflegends.com/cdn/${ddragonVersion}/data/${lang}/runesReforged.json`;
+
+  const data = await fetchData<RuneTreeList>(url, (res) => {
+    if (Array.isArray(res)) return res as RuneTreeList;
+    throw new Error("Invalid rune response format");
+  });
+
+  try {
+    localStorage.setItem(cacheKey, JSON.stringify(data));
+  } catch (error) {
+    logger.warn("Failed to cache rune trees:", error);
+  }
+
+  return data;
+}
+
+export async function getItems(
+  version: string,
+  lang: string
+): Promise<Item[]> {
+  const cacheKey = `items_${version}_${lang}`;
+
+  try {
+    const cached = localStorage.getItem(cacheKey);
+    if (cached) {
+      const parsed = JSON.parse(cached);
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        return parsed as Item[];
+      }
+    }
+  } catch (error) {
+    logger.warn("Failed to parse cached items:", error);
+  }
+
+  const mapToItems = (list: ItemList): Item[] => {
+    if (!list || !list.data || typeof list.data !== "object") {
+      return [];
+    }
+    return Object.entries(list.data).map(([id, data]) => ({
+      ...(data as Item),
+      id,
+    }));
+  };
+
+  try {
+    const staticUrl = getStaticDataPath(version, `items-${lang}.json`);
+    const response = await fetch(staticUrl);
+
+    if (response.ok) {
+      const staticData = (await response.json()) as ItemList;
+      const items = mapToItems(staticData);
+      if (items.length > 0) {
+        try {
+          localStorage.setItem(cacheKey, JSON.stringify(items));
+        } catch (error) {
+          logger.warn("Failed to cache items:", error);
+        }
+        return items;
+      }
+    }
+  } catch (error) {
+    logger.warn(
+      "[StaticData] Failed to load items from static data, falling back to API:",
+      error
+    );
+  }
+
+  const { ddragonVersion } = await getDataVersions();
+  const url = `https://ddragon.leagueoflegends.com/cdn/${ddragonVersion}/data/${lang}/item.json`;
+
+  const data = await fetchData<ItemList>(url, (res) => {
+    if (res && typeof res === "object" && "data" in res) {
+      return res as ItemList;
+    }
+    throw new Error("Invalid item response format");
+  });
+
+  const items = mapToItems(data);
+
+  try {
+    localStorage.setItem(cacheKey, JSON.stringify(items));
+  } catch (error) {
+    logger.warn("Failed to cache items:", error);
+  }
+
+  return items;
 }
 
 function convertChampionIdToCommunityDragon(championId: string): string {

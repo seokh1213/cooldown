@@ -22,6 +22,7 @@ const EncyclopediaPage = lazy(() => import("@/pages/EncyclopediaPage"));
 const LaningTipsPage = lazy(() => import("@/pages/LaningTipsPage"));
 const KillAnglePage = lazy(() => import("@/pages/KillAnglePage"));
 const OGPreviewPage = lazy(() => import("@/pages/OGPreviewPage"));
+const SimulationPage = lazy(() => import("@/pages/SimulationPage"));
 
 const THEME_STORAGE_KEY = "theme";
 const LANG_STORAGE_KEY = "language";
@@ -356,6 +357,30 @@ function AppContent({
             >
               <Suspense fallback={<SplashScreen />}>
                 <KillAnglePage />
+              </Suspense>
+            </Layout>
+          }
+        />
+        <Route
+          path="/simulation"
+          element={
+            <Layout
+              nav={
+                <Nav
+                  version={version || undefined}
+                  lang={lang}
+                  selectHandler={handleLangChange}
+                  theme={theme}
+                  onThemeToggle={toggleTheme}
+                />
+              }
+            >
+              <Suspense fallback={<SplashScreen />}>
+                <SimulationPage
+                  lang={lang}
+                  version={version}
+                  championList={championList}
+                />
               </Suspense>
             </Layout>
           }

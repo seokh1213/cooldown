@@ -23,7 +23,7 @@ interface SidebarProps {
 
 interface NavItem {
   path: string;
-  labelKey: "encyclopedia" | "laningTips" | "killAngle";
+  labelKey: "encyclopedia" | "laningTips" | "simulation";
   icon: React.ComponentType<{ className?: string }>;
 }
 
@@ -35,7 +35,7 @@ function Sidebar({ isOpen, onClose }: SidebarProps) {
   const navItems: NavItem[] = [
     { path: "/", labelKey: "encyclopedia", icon: BookOpen },
     { path: "/laning-tips", labelKey: "laningTips", icon: Lightbulb },
-    { path: "/kill-angle", labelKey: "killAngle", icon: Calculator },
+    { path: "/simulation", labelKey: "simulation", icon: Calculator },
   ];
 
   const handleNavigate = useCallback(

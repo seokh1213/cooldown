@@ -1,0 +1,209 @@
+import React, { useEffect, useState } from "react";
+import { getRuneTrees } from "@/services/api";
+import type { RuneTree, Rune } from "@/types";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Card } from "@/components/ui/card";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+  TooltipProvider,
+} from "@/components/ui/tooltip";
+import {
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
+import { VisuallyHidden } from "@/components/ui/visually-hidden";
+import { useTranslation } from "@/i18n";
+import { useDeviceType } from "@/hooks/useDeviceType";
+
+interface RunesTabProps {
+  version: string;
+  lang: string;
+}
+
+export function RunesTab({ version, lang }: RunesTabProps) {
+  const { t } = useTranslation();
+  const [runeTrees, setRuneTrees] = useState<RuneTree[] | null>(null);
+  const [loading, setLoading] = useState<boolean>(false);
+  const deviceType = useDeviceType();
+  const isMobile = deviceType === "mobile";
+  const [selectedRune, setSelectedRune] = useState<Rune | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    setLoading(true);
+
+    getRuneTrees(version, lang)
+      .then((data) => {
+        if (!cancelled) {
+          setRuneTrees(data);
+        }
+      })
+      .finally(() => {
+        if (!cancelled) {
+          setLoading(false);
+        }
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [version, lang]);
+
+  if (loading && !runeTrees) {
+    return (
+      <div className="mt-4 text-sm text-muted-foreground">
+        {t.championSelector.loading}
+      </div>
+    );
+  }
+
+  if (!runeTrees || runeTrees.length === 0) {
+    return (
+      <div className="mt-4 text-sm text-muted-foreground">
+        {t.championSelector.emptyList}
+      </div>
+    );
+  }
+
+  const renderRuneContent = (rune: Rune) => (
+    <div className="space-y-2">
+      <div className="flex items-center gap-3">
+        <img
+          src={`https://ddragon.leagueoflegends.com/cdn/img/${rune.icon}`}
+          alt={rune.name}
+          className="w-8 h-8 rounded-full border border-border/60 bg-transparent"
+        />
+        <div className="flex flex-col">
+          <span className="text-sm font-semibold">{rune.name}</span>
+        </div>
+      </div>
+      <div className="text-xs text-muted-foreground leading-relaxed">
+        <span
+          dangerouslySetInnerHTML={{
+            __html: rune.longDesc || rune.shortDesc,
+          }}
+        />
+      </div>
+    </div>
+  );
+
+  const renderRuneIcon = (rune: Rune) => {
+    if (isMobile) {
+      return (
+        <button
+          type="button"
+          onClick={() => setSelectedRune(rune)}
+          className="flex flex-col items-center gap-1 focus:outline-none w-20 md:w-24"
+        >
+          <img
+            src={`https://ddragon.leagueoflegends.com/cdn/img/${rune.icon}`}
+            alt={rune.name}
+            className="w-10 h-10 rounded-full border border-border/60 bg-transparent"
+          />
+          <span className="text-[10px] text-center leading-tight line-clamp-2">
+            {rune.name}
+          </span>
+        </button>
+      );
+    }
+
+    return (
+      <Tooltip key={rune.id}>
+        <TooltipTrigger asChild>
+          <button
+            type="button"
+            className="flex flex-col items-center gap-1 focus:outline-none cursor-help w-20 md:w-24"
+          >
+            <img
+              src={`https://ddragon.leagueoflegends.com/cdn/img/${rune.icon}`}
+              alt={rune.name}
+              className="w-10 h-10 rounded-full border border-border/60 bg-transparent"
+            />
+            <span className="text-[10px] text-center leading-tight line-clamp-2">
+              {rune.name}
+            </span>
+          </button>
+        </TooltipTrigger>
+        <TooltipContent
+          side="top"
+          align="center"
+          sideOffset={8}
+          className="max-w-xs p-3"
+        >
+          {renderRuneContent(rune)}
+        </TooltipContent>
+      </Tooltip>
+    );
+  };
+
+  return (
+    <TooltipProvider delayDuration={200}>
+      <div className="mt-4">
+        <ScrollArea className="rounded-md border bg-card/40">
+          <div className="p-4 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+            {runeTrees.map((tree) => (
+              <Card
+                key={tree.id}
+                className="p-4 flex flex-col gap-3 bg-background/60 border-border/70"
+              >
+                <div className="flex items-center gap-3">
+                  <img
+                    src={`https://ddragon.leagueoflegends.com/cdn/img/${tree.icon}`}
+                    alt={tree.name}
+                    className="w-8 h-8 rounded-full border border-border/60 bg-transparent"
+                  />
+                  <div className="flex flex-col">
+                    <span className="text-sm font-semibold">{tree.name}</span>
+                    <span className="text-xs text-muted-foreground">
+                      {tree.key}
+                    </span>
+                  </div>
+                </div>
+                <div className="space-y-3">
+                  {tree.slots.map((slot, slotIndex) => (
+                    <div
+                      key={slotIndex}
+                      className="flex flex-wrap md:flex-nowrap justify-between gap-y-2 gap-x-3 md:gap-x-4"
+                    >
+                      {slot.runes.map((rune) => (
+                        <React.Fragment key={rune.id}>
+                          {renderRuneIcon(rune)}
+                        </React.Fragment>
+                      ))}
+                    </div>
+                  ))}
+                </div>
+              </Card>
+            ))}
+          </div>
+        </ScrollArea>
+
+        {/* Mobile: Dialog for rune details */}
+        {isMobile && (
+          <Dialog
+            open={!!selectedRune}
+            onOpenChange={(open) => !open && setSelectedRune(null)}
+          >
+            <DialogContent className="w-[calc(100vw-32px)] max-w-lg max-h-[70vh] h-[70vh] p-0 rounded-xl overflow-hidden flex flex-col">
+              <VisuallyHidden>
+                <DialogTitle>{selectedRune?.name ?? "Rune"}</DialogTitle>
+                <DialogDescription>{selectedRune?.name ?? "Rune"}</DialogDescription>
+              </VisuallyHidden>
+              <ScrollArea className="flex-1 min-h-0">
+                <div className="p-4">
+                  {selectedRune && renderRuneContent(selectedRune)}
+                </div>
+              </ScrollArea>
+            </DialogContent>
+          </Dialog>
+        )}
+      </div>
+    </TooltipProvider>
+  );
+}
+
+

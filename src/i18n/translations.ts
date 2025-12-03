@@ -20,6 +20,7 @@ export interface Translations {
     encyclopedia: string;
     laningTips: string;
     killAngle: string;
+    simulation: string;
   };
   tutorial: {
     title: string;
@@ -46,6 +47,8 @@ export interface Translations {
     tabs: {
       skills: string;
       stats: string;
+      runes: string;
+      items: string;
     };
     reset: string;
     champion: string;
@@ -65,6 +68,10 @@ export interface Translations {
       description: string;
     };
     laningTips: {
+      title: string;
+      description: string;
+    };
+    simulation: {
       title: string;
       description: string;
     };
@@ -164,6 +171,7 @@ export const translations: Record<Language, Translations> = {
       encyclopedia: "백과사전",
       laningTips: "라인전 팁",
       killAngle: "킬각 계산기",
+      simulation: "시뮬레이션",
     },
     tutorial: {
       title: "사용 방법 안내",
@@ -188,8 +196,10 @@ export const translations: Record<Language, Translations> = {
     },
     encyclopedia: {
       tabs: {
-        skills: "스킬 쿨타임",
-        stats: "기본 스탯",
+        skills: "챔피언 스킬",
+        stats: "챔피언 스탯",
+        runes: "룬 백과",
+        items: "아이템 백과",
       },
       reset: "초기화",
       champion: "챔피언",
@@ -211,6 +221,10 @@ export const translations: Record<Language, Translations> = {
       laningTips: {
         title: "라인전 팁",
         description: "챔피언별 라인전 팁과 상대법을 확인할 수 있습니다. (준비 중)",
+      },
+      simulation: {
+        title: "시뮬레이션",
+        description: "챔피언, 룬, 아이템, 레벨을 조합해서 스탯과 스킬 정보를 시뮬레이션합니다.",
       },
     },
     championSelector: {
@@ -307,6 +321,7 @@ export const translations: Record<Language, Translations> = {
       encyclopedia: "Encyclopedia",
       laningTips: "Laning Tips",
       killAngle: "Kill Angle Calculator",
+      simulation: "Simulation",
     },
     tutorial: {
       title: "How to Use",
@@ -331,8 +346,10 @@ export const translations: Record<Language, Translations> = {
     },
     encyclopedia: {
       tabs: {
-        skills: "Skill Cooldowns",
-        stats: "Base Stats",
+        skills: "Champion Skills",
+        stats: "Champion Stats",
+        runes: "Runes Encyclopedia",
+        items: "Items Encyclopedia",
       },
       reset: "Reset",
       champion: "Champion",
@@ -354,6 +371,10 @@ export const translations: Record<Language, Translations> = {
       laningTips: {
         title: "Laning Tips",
         description: "Check champion-specific laning tips and matchups. (Coming soon)",
+      },
+      simulation: {
+        title: "Simulation",
+        description: "Simulate champion stats and skills with different runes, items, and levels.",
       },
     },
     championSelector: {
