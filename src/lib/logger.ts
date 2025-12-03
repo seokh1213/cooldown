@@ -5,7 +5,10 @@
 
 type LogLevel = 'debug' | 'info' | 'warn' | 'error';
 
-const isDevelopment = import.meta.env.DEV;
+// Node.js 환경에서는 import.meta.env가 없을 수 있으므로 안전하게 처리
+const isDevelopment = typeof import.meta !== 'undefined' && import.meta.env?.DEV !== undefined 
+  ? import.meta.env.DEV 
+  : process.env.NODE_ENV !== 'production';
 
 class Logger {
   private shouldLog(level: LogLevel): boolean {
