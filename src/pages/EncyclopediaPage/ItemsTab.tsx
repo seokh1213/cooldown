@@ -336,9 +336,9 @@ export function ItemsTab({ version, lang }: ItemsTabProps) {
   };
 
   const detailContent = selectedItem && (
-    <div className="flex flex-col gap-3 h-full">
+    <div className="flex flex-col gap-3 h-full min-h-0">
       {/* Builds into row */}
-      <div className="space-y-1 text-[11px] pb-2 border-b border-border/60">
+      <div className="space-y-1 text-[11px] pb-2 border-b border-border/60 flex-shrink-0">
         <div className="font-semibold">
           {lang === "ko_KR" ? "상위 아이템 (Builds into)" : "Builds into"}
         </div>
@@ -365,7 +365,7 @@ export function ItemsTab({ version, lang }: ItemsTabProps) {
       </div>
 
       {/* Item tree */}
-      <div className="space-y-1.5 text-[11px] py-1.5 border-b border-border/60">
+      <div className="space-y-1.5 text-[11px] py-1.5 border-b border-border/60 flex-shrink-0">
         <div className="font-semibold">
           {lang === "ko_KR" ? "아이템 트리" : "Item Tree"}
         </div>
@@ -432,44 +432,46 @@ export function ItemsTab({ version, lang }: ItemsTabProps) {
         })()}
       </div>
 
-      {/* 하단 설명 (전체 영역 사용, 스크롤 없음) */}
-      <div className="flex-1 min-h-0 space-y-2 pt-2">
-        <div className="flex items-start gap-3">
-          <img
-            src={`https://ddragon.leagueoflegends.com/cdn/${version}/img/item/${selectedItem.id}.png`}
-            alt={selectedItem.name}
-            className="w-10 h-10 rounded-sm border border-border/60 bg-black/40 flex-shrink-0"
-          />
-          <div className="flex-1 min-w-0">
-            <div className="flex items-center justify-between gap-2">
-              <div className="text-sm font-semibold truncate">
-                {selectedItem.name}
+      {/* 하단 설명 (스크롤 가능) */}
+      <ScrollArea className="flex-1 min-h-0">
+        <div className="space-y-2 pt-2 pr-4">
+          <div className="flex items-start gap-3">
+            <img
+              src={`https://ddragon.leagueoflegends.com/cdn/${version}/img/item/${selectedItem.id}.png`}
+              alt={selectedItem.name}
+              className="w-10 h-10 rounded-sm border border-border/60 bg-black/40 flex-shrink-0"
+            />
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center justify-between gap-2">
+                <div className="text-sm font-semibold truncate">
+                  {selectedItem.name}
+                </div>
+                {shouldShowPrice(selectedItem) && (
+                  <div className="text-xs text-amber-600 dark:text-amber-400 font-semibold whitespace-nowrap">
+                    {selectedItem.gold.total.toLocaleString()}
+                  </div>
+                )}
               </div>
-              {shouldShowPrice(selectedItem) && (
-                <div className="text-xs text-amber-600 dark:text-amber-400 font-semibold whitespace-nowrap">
-                  {selectedItem.gold.total.toLocaleString()}
+              {selectedItem.plaintext && (
+                <div className="text-xs text-muted-foreground mt-0.5">
+                  {selectedItem.plaintext}
                 </div>
               )}
             </div>
-            {selectedItem.plaintext && (
-              <div className="text-xs text-muted-foreground mt-0.5">
-                {selectedItem.plaintext}
-              </div>
-            )}
+          </div>
+
+          <div className="font-semibold text-[11px]">
+            {lang === "ko_KR" ? "설명" : "Description"}
+          </div>
+          <div className="text-[11px] leading-relaxed">
+            <span
+              dangerouslySetInnerHTML={{
+                __html: selectedItem.description,
+              }}
+            />
           </div>
         </div>
-
-        <div className="font-semibold text-[11px]">
-          {lang === "ko_KR" ? "설명" : "Description"}
-        </div>
-        <div className="text-[11px] leading-relaxed">
-          <span
-            dangerouslySetInnerHTML={{
-              __html: selectedItem.description,
-            }}
-          />
-        </div>
-      </div>
+      </ScrollArea>
     </div>
   );
 
@@ -676,15 +678,15 @@ export function ItemsTab({ version, lang }: ItemsTabProps) {
         />
       </div>
 
-      <div className="rounded-md border bg-card/40">
-        <div className="flex flex-col md:flex-row">
-          {/* Items list */}
-          <div className="md:flex-1 md:border-r border-border/60 flex flex-col min-w-0">
-            <div className="px-3 py-2 border-b border-border/60 flex items-center justify-between">
-              <div className="text-[11px] font-semibold text-muted-foreground">
-                {lang === "ko_KR" ? "아이템" : "Items"}
-              </div>
+      <div className="rounded-md border bg-card/40 md:h-[calc(100vh-12rem)] flex flex-col md:flex-row">
+        {/* Items list */}
+        <div className="md:flex-1 md:border-r border-border/60 flex flex-col min-w-0 min-h-0">
+          <div className="px-3 py-2 border-b border-border/60 flex items-center justify-between flex-shrink-0">
+            <div className="text-[11px] font-semibold text-muted-foreground">
+              {lang === "ko_KR" ? "아이템" : "Items"}
             </div>
+          </div>
+          <ScrollArea className="flex-1 min-h-0">
             <div className="p-1.5 space-y-1.5">
               {(Object.keys(itemsByTier) as ItemTier[]).map((tier) => {
                 const list = itemsByTier[tier];
@@ -710,20 +712,20 @@ export function ItemsTab({ version, lang }: ItemsTabProps) {
                 );
               })}
             </div>
-          </div>
+          </ScrollArea>
+        </div>
 
-          {/* Detail panel */}
-          <div className="md:w-[340px] hidden md:flex flex-col p-3 md:sticky md:top-16 self-start">
-            {selectedItem ? (
-              detailContent
-            ) : (
-              <div className="text-xs text-muted-foreground h-full flex items-center justify-center text-center px-4">
-                {lang === "ko_KR"
-                  ? "왼쪽에서 아이템을 선택하면 여기에서 아이템 트리와 설명을 볼 수 있어요."
-                  : "Select an item on the left to see its tree and description here."}
-              </div>
-            )}
-          </div>
+        {/* Detail panel */}
+        <div className="md:w-[340px] hidden md:flex flex-col p-3 min-h-0">
+          {selectedItem ? (
+            detailContent
+          ) : (
+            <div className="text-xs text-muted-foreground h-full flex items-center justify-center text-center px-4">
+              {lang === "ko_KR"
+                ? "왼쪽에서 아이템을 선택하면 여기에서 아이템 트리와 설명을 볼 수 있어요."
+                : "Select an item on the left to see its tree and description here."}
+            </div>
+          )}
         </div>
       </div>
     </div>
