@@ -22,8 +22,23 @@ interface ChampionData {
   };
 }
 
+/**
+ * 정적 데이터(version.json)에서 가져오는 버전 정보
+ * - ddragonVersion: Data Dragon 기준 버전 (기존 version 필드와 동일)
+ * - cdragonVersion: Community Dragon 기준 버전 (없을 수도 있음)
+ */
+export interface DataVersionInfo {
+  ddragonVersion: string;
+  cdragonVersion: string | null;
+}
 
-async function fetchData<T>(URL: string, transform: (res: unknown) => T): Promise<T> {
+let cachedDataVersions: DataVersionInfo | null = null;
+
+
+async function fetchData<T>(
+  URL: string,
+  transform: (res: unknown) => T
+): Promise<T> {
   const res_1 = await fetch(URL);
   if (!res_1.ok) {
     const error = new Error(`HTTP error! status: ${res_1.status}`);
@@ -40,7 +55,12 @@ async function fetchData<T>(URL: string, transform: (res: unknown) => T): Promis
   }
 }
 
-export async function getVersion(): Promise<string> {
+export async function getDataVersions(): Promise<DataVersionInfo> {
+  // 메모이제이션: 한 번 가져온 버전 정보는 재사용
+  if (cachedDataVersions) {
+    return cachedDataVersions;
+  }
+
   try {
     const basePath = import.meta.env.BASE_URL || '/';
     const normalizedBase = basePath.endsWith('/') ? basePath : `${basePath}/`;
@@ -49,8 +69,17 @@ export async function getVersion(): Promise<string> {
     
     if (response.ok) {
       const versionInfo = await response.json();
-      if (versionInfo && versionInfo.version) {
-        return versionInfo.version;
+      if (versionInfo && (versionInfo.version || versionInfo.ddragonVersion)) {
+        const ddragonVersion: string =
+          (versionInfo.ddragonVersion as string | undefined) ??
+          (versionInfo.version as string);
+        const cdragonVersion: string | null =
+          typeof versionInfo.cdragonVersion === "string"
+            ? (versionInfo.cdragonVersion as string)
+            : null;
+
+        cachedDataVersions = { ddragonVersion, cdragonVersion };
+        return cachedDataVersions;
       }
     }
   } catch (error) {
@@ -63,11 +92,24 @@ export async function getVersion(): Promise<string> {
     }
     throw new Error("Invalid version response format");
   });
-  
-  return latestVersion;
+
+  cachedDataVersions = {
+    ddragonVersion: latestVersion,
+    cdragonVersion: null,
+  };
+
+  return cachedDataVersions;
 }
 
-export function cleanOldVersionCache(currentVersion: string): void {
+export async function getVersion(): Promise<string> {
+  const { ddragonVersion } = await getDataVersions();
+  return ddragonVersion;
+}
+
+export function cleanOldVersionCache(
+  currentDdragonVersion: string,
+  currentCdragonVersion?: string | null
+): void {
   if (typeof window === "undefined" || !window.localStorage) {
     return;
   }
@@ -84,7 +126,7 @@ export function cleanOldVersionCache(currentVersion: string): void {
         const firstUnderscoreIndex = rest.indexOf("_");
         if (firstUnderscoreIndex > 0) {
           const version = rest.substring(0, firstUnderscoreIndex);
-          if (version !== currentVersion) {
+          if (version !== currentDdragonVersion) {
             keysToRemove.push(key);
           }
         } else {
@@ -97,7 +139,7 @@ export function cleanOldVersionCache(currentVersion: string): void {
         const firstUnderscoreIndex = rest.indexOf("_");
         if (firstUnderscoreIndex > 0) {
           const version = rest.substring(0, firstUnderscoreIndex);
-          if (version !== currentVersion) {
+          if (version !== currentDdragonVersion) {
             keysToRemove.push(key);
           }
         } else {
@@ -106,14 +148,69 @@ export function cleanOldVersionCache(currentVersion: string): void {
       }
       
       if (key.startsWith("cd_spell_data_")) {
-        const rest = key.substring("cd_spell_data_".length);
-        const firstUnderscoreIndex = rest.indexOf("_");
-        if (firstUnderscoreIndex > 0) {
-          const version = rest.substring(0, firstUnderscoreIndex);
-          if (version !== currentVersion && version !== "latest") {
-            keysToRemove.push(key);
+        let shouldRemove = false;
+
+        try {
+          const raw = localStorage.getItem(key);
+          if (!raw) {
+            shouldRemove = true;
+          } else {
+            const parsed = JSON.parse(raw);
+
+            // 현재 우리가 사용하는 스키마: { spellDataMap, cdragonVersion, ddragonVersion }
+            if (
+              parsed &&
+              typeof parsed === "object" &&
+              "spellDataMap" in parsed
+            ) {
+              const spellDataMap = (parsed as any).spellDataMap;
+              if (
+                !spellDataMap ||
+                typeof spellDataMap !== "object" ||
+                Object.keys(spellDataMap).length === 0
+              ) {
+                // 빈 데이터 또는 잘못된 구조
+                shouldRemove = true;
+              } else {
+                const storedDdragonVersion =
+                  typeof (parsed as any).ddragonVersion === "string"
+                    ? ((parsed as any).ddragonVersion as string)
+                    : null;
+                const storedCdragonVersion =
+                  typeof (parsed as any).cdragonVersion === "string"
+                    ? ((parsed as any).cdragonVersion as string)
+                    : null;
+
+                // DDragon 버전이 현재와 다른 경우 제거
+                if (
+                  storedDdragonVersion &&
+                  storedDdragonVersion !== currentDdragonVersion
+                ) {
+                  shouldRemove = true;
+                }
+
+                // 현재 빌드에서 CDragon 버전을 알고 있을 때:
+                if (currentCdragonVersion) {
+                  // 1) 캐시에 CDragon 버전 정보가 아예 없으면, 현재 스키마와 다른 것으로 보고 제거
+                  if (!storedCdragonVersion) {
+                    shouldRemove = true;
+                  } else if (storedCdragonVersion !== currentCdragonVersion) {
+                    // 2) 존재하지만 현재 버전과 다르면 제거
+                    shouldRemove = true;
+                  }
+                }
+              }
+            } else {
+              // spellDataMap이 없으면 우리가 사용하는 구조가 아님 (레거시 맵 또는 깨진 데이터)
+              shouldRemove = true;
+            }
           }
-        } else {
+        } catch {
+          // 파싱 실패 등 예외 상황은 모두 제거 대상
+          shouldRemove = true;
+        }
+
+        if (shouldRemove) {
           keysToRemove.push(key);
         }
       }
@@ -337,8 +434,21 @@ export async function getCommunityDragonSpellData(
   version?: string
 ): Promise<CommunityDragonSpellResult> {
   const cdChampionId = convertChampionIdToCommunityDragon(championId);
-  const versionForCache = version || 'unknown';
-  const cacheKey = `cd_spell_data_${versionForCache}_${cdChampionId}`;
+  const dataVersions = await getDataVersions().catch((error) => {
+    logger.warn("[CD] Failed to get data versions for cache key, using fallback:", error);
+    return null;
+  });
+
+  const ddragonVersionForCache =
+    version || dataVersions?.ddragonVersion || "unknown";
+  const cdragonVersionForCache = dataVersions?.cdragonVersion || null;
+
+  const baseCacheKey = cdragonVersionForCache
+    ? `cd_spell_data_${ddragonVersionForCache}_${cdragonVersionForCache}_${cdChampionId}`
+    : `cd_spell_data_${ddragonVersionForCache}_${cdChampionId}`;
+
+  // 현재 빌드 기준 "기본" 캐시 키 (읽기 시도에 사용)
+  let cacheKey = baseCacheKey;
 
   try {
     const cached = localStorage.getItem(cacheKey);
@@ -391,7 +501,9 @@ export async function getCommunityDragonSpellData(
           const ddragonVersion =
             typeof staticData.ddragonVersion === "string"
               ? staticData.ddragonVersion
-              : (typeof staticData.version === "string" ? staticData.version : version || null);
+              : (typeof staticData.version === "string"
+                ? staticData.version
+                : version || ddragonVersionForCache || null);
           
           if (Object.keys(spellDataMap).length > 0) {
             const result: CommunityDragonSpellResult = {
@@ -399,8 +511,26 @@ export async function getCommunityDragonSpellData(
               cdragonVersion,
               ddragonVersion,
             };
+
+            // 정적 데이터 안에 명시된 CDragon 버전이 있으면,
+            // 그 값을 기준으로 "실제" 캐시 키를 다시 계산한다.
+            const effectiveDdragonForKey = ddragonVersion || ddragonVersionForCache || "unknown";
+            const effectiveCdragonForKey = cdragonVersion || cdragonVersionForCache;
+            const writeCacheKey = effectiveCdragonForKey
+              ? `cd_spell_data_${effectiveDdragonForKey}_${effectiveCdragonForKey}_${cdChampionId}`
+              : `cd_spell_data_${effectiveDdragonForKey}_${cdChampionId}`;
+
             try {
-              localStorage.setItem(cacheKey, JSON.stringify(result));
+              localStorage.setItem(writeCacheKey, JSON.stringify(result));
+              // 이전에 잘못된 키로 저장되어 있었을 수 있으므로,
+              // 기본 키와 실제 키가 다르면 기본 키는 정리해준다.
+              if (writeCacheKey !== baseCacheKey) {
+                try {
+                  localStorage.removeItem(baseCacheKey);
+                } catch {
+                  // noop
+                }
+              }
             } catch (error) {
               logger.warn("[CD] Failed to cache Community Dragon data:", error);
             }
@@ -429,7 +559,11 @@ export async function getCommunityDragonSpellData(
       } catch (removeError) {
         logger.warn("Failed to remove cache on error:", removeError);
       }
-      return {};
+      return {
+        spellDataMap: {},
+        cdragonVersion: null,
+        ddragonVersion: version || null,
+      };
     }
   } catch (error) {
     logger.error("Failed to fetch Community Dragon data:", error);
@@ -438,7 +572,11 @@ export async function getCommunityDragonSpellData(
     } catch (removeError) {
       logger.warn("Failed to remove cache on error:", removeError);
     }
-    return {};
+    return {
+      spellDataMap: {},
+      cdragonVersion: null,
+      ddragonVersion: version || null,
+    };
   }
 
   try {

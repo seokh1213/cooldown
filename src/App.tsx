@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, Suspense, lazy } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { getVersion, getChampionList, cleanOldVersionCache } from "@/services/api";
+import { getDataVersions, getVersion, getChampionList, cleanOldVersionCache } from "@/services/api";
 import Layout from "@/components/layout/Layout";
 import Nav from "@/components/features/Nav";
 import SplashScreen from "@/components/layout/SplashScreen";
@@ -83,13 +83,13 @@ function App() {
       // splash 화면이 띄워질 때 localStorage 데이터 구조 유효성 검사
       validateAllStorageData();
       
-      const latestVersion = await getVersion();
-      setVersion(latestVersion);
+      const { ddragonVersion, cdragonVersion } = await getDataVersions();
+      setVersion(ddragonVersion);
       
-      // 오래된 버전의 캐시 제거
-      cleanOldVersionCache(latestVersion);
+      // 오래된 버전의 캐시 제거 (DDragon + CDragon 기준)
+      cleanOldVersionCache(ddragonVersion, cdragonVersion);
       
-      const champions = await getChampionList(latestVersion, lang);
+      const champions = await getChampionList(ddragonVersion, lang);
       setChampionList(champions);
       // 최소 로딩 시간 보장 (스플래시 화면 표시)
       await new Promise((resolve) => setTimeout(resolve, 1000));

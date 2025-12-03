@@ -328,11 +328,6 @@ async function main() {
     const championsDir = path.join(versionDir, 'champions');
     const spellsDir = path.join(versionDir, 'spells');
 
-    const versionInfo = {
-      version,
-    };
-    await saveToFile(versionInfo, path.join(DATA_DIR, 'version.json'));
-
     for (const lang of LANGUAGES) {
       console.log(`📋 Fetching champion list for ${lang}...`);
       const champListData = await fetchJson(CHAMP_LIST_URL(version, lang));
@@ -391,6 +386,11 @@ async function main() {
     let successCount = 0;
     let failCount = 0;
 
+    // 이번 정적 빌드에서 실제로 사용된 CDragon 버전을 추적한다.
+    // - 기본값은 "현재 패치" 후보 (예: 15.24)
+    // - 한 명이라도 폴백(15.23, latest 등)을 사용하면, 그 폴백 버전을 version.json에 반영한다.
+    let usedFallbackCdragonVersion: string | null = null;
+
     for (let i = 0; i < championIds.length; i += BATCH_SIZE_CD) {
       const batch = championIds.slice(i, i + BATCH_SIZE_CD);
       console.log(`📥 Processing CD batch ${Math.floor(i / BATCH_SIZE_CD) + 1}/${Math.ceil(championIds.length / BATCH_SIZE_CD)} (${batch.length} champions)...`);
@@ -398,15 +398,28 @@ async function main() {
       const spellPromises = batch.map(async (championId) => {
         try {
           const cdChampionId = convertChampionIdToCommunityDragon(championId);
-          const { data: cdData, cdragonVersion } = await fetchCommunityDragonDataWithFallback(
-            cdChampionId,
-            cdVersionCandidates
-          );
+          const { data: cdData, cdragonVersion } =
+            await fetchCommunityDragonDataWithFallback(
+              cdChampionId,
+              cdVersionCandidates
+            );
 
           if (!cdData) {
             console.log(`❌ Failed to fetch any CommunityDragon data for ${championId}`);
             failCount++;
             return { championId, success: false };
+          }
+
+          // 폴백 버전 사용 여부 기록
+          if (
+            cdragonVersion &&
+            cdVersionCandidates.length > 0 &&
+            cdragonVersion !== cdVersionCandidates[0]
+          ) {
+            // 첫 번째로 발견된 폴백 버전을 채택 (예: 15.23)
+            if (!usedFallbackCdragonVersion) {
+              usedFallbackCdragonVersion = cdragonVersion;
+            }
           }
 
           const spellData = extractSpellData(cdData, championId);
@@ -441,11 +454,28 @@ async function main() {
 
     console.log(`\n✅ Community Dragon data: ${successCount} successful, ${failCount} failed\n`);
 
+    // 최종적으로 version.json 에 반영할 CDragon 버전 결정
+    const finalCdragonVersion =
+      usedFallbackCdragonVersion ??
+      cdVersionCandidates[0] ??
+      toCommunityDragonVersion(version);
+
+    const versionInfo = {
+      // 기존 필드(하위 호환)
+      version,
+      // 명시적인 필드 이름들
+      ddragonVersion: version,
+      // 이번 정적 빌드에서 "실제로" 사용된 CDragon 기준 버전
+      cdragonVersion: finalCdragonVersion,
+    };
+    await saveToFile(versionInfo, path.join(DATA_DIR, "version.json"));
+
     console.log(`\n🎉 Static data generation completed!`);
     console.log(`📁 Data saved to: ${versionDir}`);
     console.log(`📊 DDragon Version: ${version}`);
-    console.log(`🌐 Languages: ${LANGUAGES.join(', ')}`);
+    console.log(`🌐 Languages: ${LANGUAGES.join(", ")}`);
     console.log(`👥 Champions: ${championIds.length}`);
+    console.log(`🐉 CommunityDragon Version (effective): ${finalCdragonVersion}`);
   } catch (error) {
     console.error('❌ Error:', error);
     process.exit(1);
