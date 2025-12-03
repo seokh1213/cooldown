@@ -437,8 +437,21 @@ export async function getItems(
     const cached = localStorage.getItem(cacheKey);
     if (cached) {
       const parsed = JSON.parse(cached);
-      if (Array.isArray(parsed) && parsed.length > 0) {
-        return parsed as Item[];
+      // 새 포맷: { schemaVersion: 1, items: Item[] }
+      if (
+        parsed &&
+        typeof parsed === "object" &&
+        Array.isArray((parsed as any).items)
+      ) {
+        const items = (parsed as any).items as Item[];
+        if (items.length > 0) {
+          return items;
+        }
+      }
+
+      // 예전 포맷: Item[]만 저장되어 있는 경우 → 스키마 변경 이후에는 사용하지 않고 무시
+      if (Array.isArray(parsed)) {
+        // fall through to refetch and overwrite
       }
     }
   } catch (error) {
@@ -464,7 +477,10 @@ export async function getItems(
       const items = mapToItems(staticData);
       if (items.length > 0) {
         try {
-          localStorage.setItem(cacheKey, JSON.stringify(items));
+          localStorage.setItem(
+            cacheKey,
+            JSON.stringify({ schemaVersion: 1, items })
+          );
         } catch (error) {
           logger.warn("Failed to cache items:", error);
         }
@@ -491,7 +507,10 @@ export async function getItems(
   const items = mapToItems(data);
 
   try {
-    localStorage.setItem(cacheKey, JSON.stringify(items));
+    localStorage.setItem(
+      cacheKey,
+      JSON.stringify({ schemaVersion: 1, items })
+    );
   } catch (error) {
     logger.warn("Failed to cache items:", error);
   }

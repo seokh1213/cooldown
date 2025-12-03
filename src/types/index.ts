@@ -95,6 +95,28 @@ export interface ItemStatsMap {
   [statKey: string]: number;
 }
 
+export interface CDragonItemData {
+  id: number;
+  name: string;
+  description: string;
+  active?: boolean;
+  inStore?: boolean;
+  from?: number[];
+  to?: number[];
+  categories?: string[];
+  maxStacks?: number;
+  requiredChampion?: string;
+  requiredAlly?: string;
+  requiredBuffCurrencyName?: string;
+  requiredBuffCurrencyCost?: number;
+  specialRecipe?: number;
+  isEnchantment?: boolean;
+  price?: number;
+  priceTotal?: number;
+  displayInItemSets?: boolean;
+  iconPath?: string;
+}
+
 export interface ItemData {
   name: string;
   description: string;
@@ -108,6 +130,10 @@ export interface ItemData {
   stats: ItemStatsMap;
   // 상점 노출 여부 (true/undefined: 상점에 보임, false: 상점에서 직접 구매 불가인 퀘스트/업그레이드 전용 등)
   inStore?: boolean;
+  // 아이템 티어 (1: 기본, 2: 서사급, 3: 전설)
+  depth?: number;
+  // Community Dragon에서 가져온 추가 메타데이터 (옵셔널)
+  cdragon?: CDragonItemData;
 }
 
 export interface ItemMap {

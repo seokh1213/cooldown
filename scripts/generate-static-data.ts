@@ -12,6 +12,10 @@ const ITEMS_URL = (VERSION: string, LANG: string) =>
   `https://ddragon.leagueoflegends.com/cdn/${VERSION}/data/${LANG}/item.json`;
 const COMMUNITY_DRAGON_URL = (basePath: string, championId: string) =>
   `https://raw.communitydragon.org/${basePath}/game/data/characters/${championId}/${championId}.bin.json`;
+const COMMUNITY_DRAGON_ITEMS_URL = (basePath: string, lang: string) => {
+  const locale = lang === "ko_KR" ? "ko_kr" : "default";
+  return `https://raw.communitydragon.org/${basePath}/plugins/rcp-be-lol-game-data/global/${locale}/v1/items.json`;
+};
 
 const LANGUAGES = ["ko_KR", "en_US"] as const;
 const DATA_DIR = path.join(process.cwd(), "public", "data");
@@ -304,6 +308,79 @@ async function fetchCommunityDragonDataWithFallback(
   return { data: null, cdragonVersion: null };
 }
 
+interface CommunityDragonItem {
+  id: number;
+  name: string;
+  description: string;
+  active?: boolean;
+  inStore?: boolean;
+  from?: number[];
+  to?: number[];
+  categories?: string[];
+  maxStacks?: number;
+  requiredChampion?: string;
+  requiredAlly?: string;
+  requiredBuffCurrencyName?: string;
+  requiredBuffCurrencyCost?: number;
+  specialRecipe?: number;
+  isEnchantment?: boolean;
+  price?: number;
+  priceTotal?: number;
+  displayInItemSets?: boolean;
+  iconPath?: string;
+}
+
+async function fetchCommunityDragonItemsWithFallback(
+  lang: string,
+  versionCandidates: string[]
+): Promise<{ items: CommunityDragonItem[] | null; cdragonVersion: string | null }> {
+  const resultsLocale = lang === "ko_KR" ? "ko_KR" : "default";
+
+  for (const basePath of versionCandidates) {
+    const url = COMMUNITY_DRAGON_ITEMS_URL(basePath, lang);
+    try {
+      console.log(`Fetching CDragon items (${resultsLocale}): ${url}`);
+      const response = await fetch(url);
+
+      if (response.status === 404) {
+        console.warn(
+          `[CD][Items] Not found for ${resultsLocale} at ${basePath} (404), trying next candidate...`
+        );
+        continue;
+      }
+
+      if (!response.ok) {
+        console.warn(
+          `[CD][Items] Failed to fetch ${resultsLocale} at ${basePath}. status=${response.status}. Trying next candidate...`
+        );
+        continue;
+      }
+
+      const json = (await response.json()) as unknown;
+      if (!Array.isArray(json)) {
+        console.warn(
+          `[CD][Items] Unexpected response format for ${resultsLocale} at ${basePath}`
+        );
+        continue;
+      }
+
+      return { items: json as CommunityDragonItem[], cdragonVersion: basePath };
+    } catch (error) {
+      console.warn(
+        `[CD][Items] Error while fetching items for ${resultsLocale} at ${basePath}:`,
+        error
+      );
+      // 네트워크 오류 등도 다음 후보로 계속 시도
+      continue;
+    }
+  }
+
+  console.error(
+    `[CD][Items] All CommunityDragon item candidates failed for ${resultsLocale}`
+  );
+  return { items: null, cdragonVersion: null };
+}
+
 async function main() {
   console.log('🚀 Starting static data generation...\n');
 
@@ -331,6 +408,11 @@ async function main() {
     const versionDir = path.join(DATA_DIR, version);
     const championsDir = path.join(versionDir, 'champions');
     const spellsDir = path.join(versionDir, 'spells');
+
+    // 이번 정적 빌드에서 실제로 사용된 CDragon 버전을 추적한다.
+    // - 기본값은 "현재 패치" 후보 (예: 15.24)
+    // - 한 명이라도 폴백(15.23, latest 등)을 사용하면, 그 폴백 버전을 version.json에 반영한다.
+    let usedFallbackCdragonVersion: string | null = null;
 
     for (const lang of LANGUAGES) {
       console.log(`📋 Fetching champion list for ${lang}...`);
@@ -362,8 +444,97 @@ async function main() {
 
       console.log(`🧱 Fetching items for ${lang}...`);
       const itemsData = await fetchJson(ITEMS_URL(version, lang));
+
+      let combinedItemsData: any = itemsData;
+
+      try {
+        const { items: cdItems, cdragonVersion: itemsCdragonVersion } =
+          await fetchCommunityDragonItemsWithFallback(lang, cdVersionCandidates);
+
+        if (
+          itemsCdragonVersion &&
+          cdVersionCandidates.length > 0 &&
+          itemsCdragonVersion !== cdVersionCandidates[0]
+        ) {
+          // 첫 번째로 발견된 폴백 버전을 채택 (예: 15.23)
+          if (!usedFallbackCdragonVersion) {
+            usedFallbackCdragonVersion = itemsCdragonVersion;
+          }
+        }
+
+        if (
+          cdItems &&
+          Array.isArray(cdItems) &&
+          combinedItemsData &&
+          typeof combinedItemsData === "object" &&
+          (combinedItemsData as any).data &&
+          typeof (combinedItemsData as any).data === "object"
+        ) {
+          const cdItemMap = new Map<string, CommunityDragonItem>();
+          for (const cdItem of cdItems) {
+            if (!cdItem || typeof cdItem.id !== "number") continue;
+            const key = String(cdItem.id);
+            if (!cdItemMap.has(key)) {
+              cdItemMap.set(key, cdItem);
+            }
+          }
+
+          const originalData = (combinedItemsData as any).data as Record<
+            string,
+            Record<string, unknown>
+          >;
+          const mergedData: typeof originalData = { ...originalData };
+
+          for (const [id, item] of Object.entries(mergedData)) {
+            const cdItem = cdItemMap.get(id);
+            if (!cdItem) continue;
+
+            const existing = item as Record<string, unknown>;
+
+            const cdragonPayload = {
+              id: cdItem.id,
+              name: cdItem.name,
+              description: cdItem.description,
+              active: cdItem.active,
+              inStore: cdItem.inStore,
+              from: cdItem.from,
+              to: cdItem.to,
+              categories: cdItem.categories,
+              maxStacks: cdItem.maxStacks,
+              requiredChampion: cdItem.requiredChampion,
+              requiredAlly: cdItem.requiredAlly,
+              requiredBuffCurrencyName: cdItem.requiredBuffCurrencyName,
+              requiredBuffCurrencyCost: cdItem.requiredBuffCurrencyCost,
+              specialRecipe: cdItem.specialRecipe,
+              isEnchantment: cdItem.isEnchantment,
+              price: cdItem.price,
+              priceTotal: cdItem.priceTotal,
+              displayInItemSets: cdItem.displayInItemSets,
+              iconPath: cdItem.iconPath,
+            };
+
+            (existing as any).cdragon = cdragonPayload;
+
+            // CDragon의 inStore 정보가 있으면 우선 사용
+            if (typeof cdItem.inStore === "boolean") {
+              (existing as any).inStore = cdItem.inStore;
+            }
+          }
+
+          combinedItemsData = {
+            ...(combinedItemsData as any),
+            data: mergedData,
+          };
+        }
+      } catch (error) {
+        console.warn(
+          `[CD][Items] Failed to merge CommunityDragon items for ${lang}:`,
+          error
+        );
+      }
+
       await saveToFile(
-        itemsData,
+        combinedItemsData,
         path.join(versionDir, `items-${lang}.json`)
       );
       console.log(`✅ Saved items for ${lang}\n`);
@@ -409,11 +580,6 @@ async function main() {
     const BATCH_SIZE_CD = 5;
     let successCount = 0;
     let failCount = 0;
-
-    // 이번 정적 빌드에서 실제로 사용된 CDragon 버전을 추적한다.
-    // - 기본값은 "현재 패치" 후보 (예: 15.24)
-    // - 한 명이라도 폴백(15.23, latest 등)을 사용하면, 그 폴백 버전을 version.json에 반영한다.
-    let usedFallbackCdragonVersion: string | null = null;
 
     for (let i = 0; i < championIds.length; i += BATCH_SIZE_CD) {
       const batch = championIds.slice(i, i + BATCH_SIZE_CD);

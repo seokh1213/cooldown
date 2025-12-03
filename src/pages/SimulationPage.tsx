@@ -213,6 +213,12 @@ export default function SimulationPage({
               return false;
             }
 
+            if (item.inStore === false) return false;
+            if (item.cdragon) {
+              if (item.cdragon.inStore === false) return false;
+              if (item.cdragon.displayInItemSets === false) return false;
+            }
+
             return true;
           });
 

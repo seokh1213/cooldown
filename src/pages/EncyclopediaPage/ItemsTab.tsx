@@ -5,6 +5,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Input } from "@/components/ui/input";
 import { useTranslation } from "@/i18n";
 import { useDeviceType } from "@/hooks/useDeviceType";
+import { getOfficialLikeItemTier, type ItemTier } from "@/lib/itemTierUtils";
 import {
   Dialog,
   DialogContent,
@@ -17,8 +18,6 @@ interface ItemsTabProps {
   version: string;
   lang: string;
 }
-
-type ItemTier = "starter" | "basic" | "epic" | "legendary";
 
 type ItemRole = "fighter" | "mage" | "assassin" | "support" | "tank";
 
@@ -38,6 +37,13 @@ function shouldShowInStore(item: Item): boolean {
   }
 
   if (item.inStore === false) return false;
+
+  // CDragon 기준 상점 비노출 아이템은 항상 제외
+  if (item.cdragon) {
+    if (item.cdragon.inStore === false) return false;
+    if (item.cdragon.displayInItemSets === false) return false;
+  }
+
   return true;
 }
 
@@ -46,49 +52,45 @@ function isTrinketOrWardOrPotion(item: Item): boolean {
   const nameLower = item.name.toLowerCase();
   const plaintextLower = (item.plaintext || "").toLowerCase();
 
-  if (tags.includes("Trinket")) return true;
-  if (tags.includes("Vision")) return true;
-  if (tags.includes("Consumable")) return true;
-  if (nameLower.includes("ward") || plaintextLower.includes("ward")) return true;
-  if (nameLower.includes("potion") || plaintextLower.includes("potion")) {
+  // 기본 와드(장신구 와드)는 별도 필터로 취급
+  const basicWardIds = new Set(["3340", "3363", "3364"]);
+  const wardstoneIds = new Set(["4638", "4643"]);
+
+  // Wardstone 계열은 일반 아이템으로 취급 (트링켓 아님)
+  if (wardstoneIds.has(item.id)) {
+    return false;
+  }
+
+  if (basicWardIds.has(item.id)) {
     return true;
   }
+
+  // 소비형/장신구
+  if (tags.includes("Trinket") || tags.includes("Consumable")) {
+    return true;
+  }
+
+  // 포션/영약 (영문)
+  if (nameLower.includes("potion") || nameLower.includes("elixir")) {
+    return true;
+  }
+
+  // 포션/영약 (한글)
   if (langIsKoreanNameOrText(item)) return true;
   return false;
 }
 
-// 간단한 한국어 포션/와드 감지 (포션, 와드, 충전형 등)
+// 간단한 한국어 포션/영약 감지
 function langIsKoreanNameOrText(item: Item): boolean {
   const name = item.name;
   const text = item.plaintext || "";
-  return /포션|와드|장신구|와딩|소환사 주문/.test(name + text);
+  return /포션|영약/.test(name + text);
 }
 
 function isBoots(item: Item): boolean {
   const tags = item.tags || [];
   const nameLower = item.name.toLowerCase();
   return tags.includes("Boots") || nameLower.includes("boots");
-}
-
-function getItemTier(item: Item): ItemTier {
-  const total = item.gold?.total ?? 0;
-  const hasFrom = !!item.from && item.from.length > 0;
-  const hasInto = !!item.into && item.into.length > 0;
-  const tags = item.tags || [];
-
-  if (!hasFrom && total <= 500) {
-    return "starter";
-  }
-
-  if (!hasFrom && total <= 1300) {
-    return "basic";
-  }
-
-  if (tags.includes("Mythic") || total >= 2800) {
-    return "legendary";
-  }
-
-  return "epic";
 }
 
 function getItemRole(item: Item): ItemRole | "all" {
@@ -128,6 +130,24 @@ function shouldShowPrice(item: Item): boolean {
   return true;
 }
 
+function getItemPriceLabel(item: Item, lang: string): string {
+  const total = item.gold?.total ?? 0;
+  const base = item.gold?.base ?? 0;
+  const hasFrom = !!item.from && item.from.length > 0;
+
+  // gold.base가 0이면서 하위템이 있는 경우: 업그레이드 전용 아이템 → 구매 불가 표시
+  if (base === 0 && hasFrom) {
+    return lang === "ko_KR" ? "구매 불가" : "Unavailable";
+  }
+
+  const hasPrice = total > 0;
+  if (hasPrice || shouldShowPrice(item)) {
+    return total.toLocaleString();
+  }
+
+  return lang === "ko_KR" ? "무료" : "Free";
+}
+
 interface ItemCellProps {
   item: Item;
   version: string;
@@ -143,14 +163,7 @@ const ItemCell: React.FC<ItemCellProps> = ({
   onSelect,
   lang,
 }) => {
-  const total = item.gold?.total ?? 0;
-  const hasPrice = total > 0;
-  const priceLabel =
-    hasPrice || shouldShowPrice(item)
-      ? total.toLocaleString()
-      : lang === "ko_KR"
-      ? "무료"
-      : "Free";
+  const priceLabel = getItemPriceLabel(item, lang);
 
   return (
     <button
@@ -227,23 +240,32 @@ export function ItemsTab({ version, lang }: ItemsTabProps) {
 
   const term = search.trim().toLowerCase();
 
-  const { itemsByTier } = useMemo(() => {
-    const result = {
+  const { itemsByTier, flatFiltered } = useMemo(() => {
+    const empty = {
       itemsByTier: {
         starter: [] as Item[],
         basic: [] as Item[],
         epic: [] as Item[],
         legendary: [] as Item[],
-      },
+      } as Record<ItemTier, Item[]>,
+      flatFiltered: [] as Item[],
     };
 
-    if (!items) return result;
+    if (!items) return empty;
 
     const searchMatches = (item: Item): boolean => {
       if (!term) return true;
       const haystack = `${item.name} ${item.plaintext ?? ""}`.toLowerCase();
       return haystack.includes(term);
     };
+
+    const resultByTier: Record<ItemTier, Item[]> = {
+      starter: [],
+      basic: [],
+      epic: [],
+      legendary: [],
+    };
+    const flat: Item[] = [];
 
     items.forEach((item) => {
       if (!searchMatches(item)) return;
@@ -260,17 +282,23 @@ export function ItemsTab({ version, lang }: ItemsTabProps) {
         if (role !== "all" && role !== filter) return;
       }
 
-      const tier = getItemTier(item);
-      result.itemsByTier[tier].push(item);
+      const tier = getOfficialLikeItemTier(item);
+      resultByTier[tier].push(item);
+      flat.push(item);
     });
 
-    (Object.keys(result.itemsByTier) as ItemTier[]).forEach((tier) => {
-      result.itemsByTier[tier].sort(
+    (Object.keys(resultByTier) as ItemTier[]).forEach((tier) => {
+      resultByTier[tier].sort(
         (a, b) => (a.gold?.total ?? 0) - (b.gold?.total ?? 0)
       );
     });
 
-    return result;
+    flat.sort((a, b) => (a.gold?.total ?? 0) - (b.gold?.total ?? 0));
+
+    return {
+      itemsByTier: resultByTier,
+      flatFiltered: flat,
+    };
   }, [items, term, filter]);
 
   if (loading && !items) {
@@ -448,7 +476,7 @@ export function ItemsTab({ version, lang }: ItemsTabProps) {
                 </div>
                 {shouldShowPrice(selectedItem) && (
                   <div className="text-xs text-amber-600 dark:text-amber-400 font-semibold whitespace-nowrap">
-                    {selectedItem.gold.total.toLocaleString()}
+                    {getItemPriceLabel(selectedItem, lang)}
                   </div>
                 )}
               </div>
@@ -520,25 +548,25 @@ export function ItemsTab({ version, lang }: ItemsTabProps) {
   const tierLabel = (tier: ItemTier) => {
     if (lang === "ko_KR") {
       switch (tier) {
-        case "starter":
-          return "시작 아이템";
-        case "basic":
-          return "기본 아이템";
-        case "epic":
-          return "서사급 아이템";
         case "legendary":
           return "전설 아이템";
+        case "epic":
+          return "서사급 아이템";
+        case "basic":
+          return "기본 아이템";
+        case "starter":
+          return "시작 아이템";
       }
     }
     switch (tier) {
-      case "starter":
-        return "Starter";
-      case "basic":
-        return "Basic";
-      case "epic":
-        return "Epic";
       case "legendary":
         return "Legendary";
+      case "epic":
+        return "Epic";
+      case "basic":
+        return "Basic";
+      case "starter":
+        return "Starter";
     }
   };
 
