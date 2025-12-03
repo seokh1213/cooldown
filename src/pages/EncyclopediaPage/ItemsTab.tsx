@@ -130,6 +130,71 @@ function shouldShowPrice(item: Item): boolean {
   return true;
 }
 
+function getItemStatLines(item: Item, lang: string): string[] {
+  const stats = item.stats || {};
+  const lines: string[] = [];
+
+  const push = (labelKo: string, labelEn: string, rawValue: number, isPercent = false) => {
+    if (!rawValue) return;
+    const label = lang === "ko_KR" ? labelKo : labelEn;
+    let display = rawValue;
+    if (isPercent && Math.abs(rawValue) <= 1) {
+      display = Math.round(rawValue * 100);
+    }
+    const valueText = isPercent ? `${display}%` : `${display}`;
+    lines.push(`+ ${valueText} ${label}`);
+  };
+
+  // DDragon stats는 키가 고정되어 있으므로 주요 스탯만 간단히 매핑
+  if (typeof (stats as any).FlatPhysicalDamageMod === "number") {
+    push("공격력", "Attack Damage", (stats as any).FlatPhysicalDamageMod);
+  }
+  if (typeof (stats as any).FlatMagicDamageMod === "number") {
+    push("주문력", "Ability Power", (stats as any).FlatMagicDamageMod);
+  }
+  if (typeof (stats as any).FlatCritChanceMod === "number") {
+    push("치명타 확률", "Critical Strike Chance", (stats as any).FlatCritChanceMod * 100, true);
+  }
+  if (typeof (stats as any).PercentAttackSpeedMod === "number") {
+    push("공격 속도", "Attack Speed", (stats as any).PercentAttackSpeedMod, true);
+  }
+  if (typeof (stats as any).FlatHPPoolMod === "number") {
+    push("체력", "Health", (stats as any).FlatHPPoolMod);
+  }
+  if (typeof (stats as any).FlatMPPoolMod === "number") {
+    push("마나", "Mana", (stats as any).FlatMPPoolMod);
+  }
+  if (typeof (stats as any).FlatArmorMod === "number") {
+    push("방어력", "Armor", (stats as any).FlatArmorMod);
+  }
+  if (typeof (stats as any).FlatSpellBlockMod === "number") {
+    push("마법 저항력", "Magic Resist", (stats as any).FlatSpellBlockMod);
+  }
+  if (typeof (stats as any).PercentLifeStealMod === "number") {
+    push("생명력 흡수", "Life Steal", (stats as any).PercentLifeStealMod, true);
+  }
+  if (typeof (stats as any).PercentSpellVampMod === "number") {
+    push("주문 흡혈", "Spell Vamp", (stats as any).PercentSpellVampMod, true);
+  }
+
+  return lines;
+}
+
+function getDescriptionAfterStats(item: Item): string {
+  let html = item.description || "";
+
+  // mainText 래퍼 제거
+  html = html.replace(/<\/?mainText>/gi, "");
+
+  // 스탯 블록(<stats>...</stats>) 제거
+  html = html.replace(/<stats>[\s\S]*?<\/stats>/gi, "");
+
+  // 문자열 맨 앞의 <br>, 공백, &nbsp; 모두 제거 (없어질 때까지)
+  html = html.replace(/^(?:\s|&nbsp;|<br\s*\/?>)+/gi, "");
+
+  return html;
+}
+
 function getItemPriceLabel(item: Item, lang: string): string {
   const total = item.gold?.total ?? 0;
   const base = item.gold?.base ?? 0;
@@ -363,6 +428,85 @@ export function ItemsTab({ version, lang }: ItemsTabProps) {
     return { item: root, children };
   };
 
+  const filterLabel = (value: ItemFilter) => {
+    if (lang === "ko_KR") {
+      switch (value) {
+        case "all":
+          return "전체";
+        case "fighter":
+          return "전사";
+        case "mage":
+          return "마법사";
+        case "assassin":
+          return "암살자";
+        case "support":
+          return "서포터";
+        case "tank":
+          return "탱커";
+        case "trinket":
+          return "장신구/와드/포션";
+        case "boots":
+          return "신발";
+      }
+    }
+
+    switch (value) {
+      case "all":
+        return "All";
+      case "fighter":
+        return "Fighter";
+      case "mage":
+        return "Mage";
+      case "assassin":
+        return "Assassin";
+      case "support":
+        return "Support";
+      case "tank":
+        return "Tank";
+      case "trinket":
+        return "Trinkets";
+      case "boots":
+        return "Boots";
+    }
+  };
+
+  const tierLabel = (tier: ItemTier) => {
+    if (lang === "ko_KR") {
+      switch (tier) {
+        case "legendary":
+          return "전설 아이템";
+        case "epic":
+          return "서사급 아이템";
+        case "basic":
+          return "기본 아이템";
+        case "starter":
+          return "시작 아이템";
+      }
+    }
+    switch (tier) {
+      case "legendary":
+        return "Legendary";
+      case "epic":
+        return "Epic";
+      case "basic":
+        return "Basic";
+      case "starter":
+        return "Starter";
+    }
+  };
+
+  const descriptionHtml = selectedItem
+    ? getDescriptionAfterStats(selectedItem)
+    : "";
+  const descriptionTextOnly = descriptionHtml
+    .replace(/<[^>]*>/g, "")
+    .replace(/&nbsp;|\u00a0/gi, "")
+    .trim();
+  const showDescription = descriptionTextOnly.length > 0;
+
+  const plainText = (selectedItem?.plaintext || "").trim();
+  const showPlaintext = !showDescription && !!plainText;
+
   const detailContent = selectedItem && (
     <div className="flex flex-col gap-2 h-full min-h-0">
       {/* Builds into row */}
@@ -393,14 +537,14 @@ export function ItemsTab({ version, lang }: ItemsTabProps) {
       </div>
 
       {/* Item tree */}
-      <div className="space-y-1 text-[11px] py-1 border-b border-border/60 flex-shrink-0">
+      <div className="space-y-1 text-[11px] py-1 flex-shrink-0">
         <div className="font-semibold">
           {lang === "ko_KR" ? "아이템 트리" : "Item Tree"}
         </div>
         {(() => {
           const tree = buildItemTree(selectedItem);
 
-          const renderTree = (node: ItemTreeNode): JSX.Element => {
+          const renderTree = (node: ItemTreeNode) => {
             const hasChildren = node.children.length > 0;
 
             return (
@@ -475,115 +619,78 @@ export function ItemsTab({ version, lang }: ItemsTabProps) {
         })()}
       </div>
 
-      {/* 하단 설명 (스크롤 가능) */}
+      {/* 하단 설명 (스크롤 가능, ARPG 스타일 카드) */}
       <ScrollArea className="flex-1 min-h-0">
-        <div className="space-y-2 pt-2 pr-4">
-          <div className="flex items-start gap-3">
-            <img
-              src={`https://ddragon.leagueoflegends.com/cdn/${version}/img/item/${selectedItem.id}.png`}
-              alt={selectedItem.name}
-              className="w-10 h-10 rounded-sm border border-border/60 bg-black/40 flex-shrink-0"
-            />
-            <div className="flex-1 min-w-0">
-              <div className="flex items-center justify-between gap-2">
-                <div className="text-sm font-semibold truncate">
-                  {selectedItem.name}
-                </div>
-                {shouldShowPrice(selectedItem) && (
-                  <div className="text-xs text-amber-600 dark:text-amber-400 font-semibold whitespace-nowrap">
-                    {getItemPriceLabel(selectedItem, lang)}
+        <div className="pt-2 pr-3">
+          <div className="rounded-md border border-border/70 dark:border-neutral-700/80 bg-card text-foreground dark:bg-neutral-950 dark:text-slate-50 shadow-md px-3 py-2 text-[11px] space-y-2">
+            {/* 헤더: 아이콘 + 이름 + 가격 */}
+            <div className="flex items-start gap-2">
+              <img
+                src={`https://ddragon.leagueoflegends.com/cdn/${version}/img/item/${selectedItem.id}.png`}
+                alt={selectedItem.name}
+                className="w-9 h-9 rounded-sm border border-border/60 bg-black/40 flex-shrink-0"
+              />
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center justify-between gap-2">
+                  <div className="text-xs font-semibold truncate text-foreground dark:text-amber-200">
+                    {selectedItem.name}
                   </div>
-                )}
-              </div>
-              {selectedItem.plaintext && (
-                <div className="text-xs text-muted-foreground mt-0.5">
-                  {selectedItem.plaintext}
+                  {shouldShowPrice(selectedItem) && (
+                    <div className="text-[11px] text-amber-600 dark:text-amber-300 font-semibold whitespace-nowrap">
+                      {getItemPriceLabel(selectedItem, lang)}
+                    </div>
+                  )}
                 </div>
-              )}
+                <div className="mt-0.5 flex items-center justify-between text-[10px] text-muted-foreground dark:text-slate-300">
+                  <span>
+                    {tierLabel(getOfficialLikeItemTier(selectedItem))}
+                  </span>
+                  {(() => {
+                    const role = getItemRole(selectedItem);
+                    if (role === "all") return null;
+                    const label = filterLabel(role as ItemFilter);
+                    return (
+                      <span className="text-[10px] text-muted-foreground dark:text-slate-400">
+                        {label}
+                      </span>
+                    );
+                  })()}
+                </div>
+              </div>
             </div>
-          </div>
 
-          <div className="font-semibold text-[11px]">
-            {lang === "ko_KR" ? "설명" : "Description"}
-          </div>
-          <div className="text-[11px] leading-relaxed">
-            <span
-              dangerouslySetInnerHTML={{
-                __html: selectedItem.description,
-              }}
-            />
+            <div className="h-px bg-neutral-700/80" />
+
+            {getItemStatLines(selectedItem, lang).length > 0 && (
+              <ul className="space-y-0.5 text-[11px] leading-snug">
+                {getItemStatLines(selectedItem, lang).map((line) => (
+                  <li key={line} className="text-primary">
+                    {line}
+                  </li>
+                ))}
+              </ul>
+            )}
+
+            {showPlaintext && (
+              <p className="text-[11px] leading-snug text-foreground dark:text-slate-100">
+                {plainText}
+              </p>
+            )}
+
+            {showDescription && (
+              <div className="text-[11px] leading-snug text-foreground dark:text-slate-100 [&_br]:block [&_li]:ml-4 [&_li]:list-disc [&_li]:text-[11px] [&_li]:leading-snug">
+                <span
+                  dangerouslySetInnerHTML={{
+                    __html: descriptionHtml,
+                  }}
+                />
+              </div>
+            )}
           </div>
         </div>
       </ScrollArea>
     </div>
   );
-
-  const filterLabel = (value: ItemFilter) => {
-    if (lang === "ko_KR") {
-      switch (value) {
-        case "all":
-          return "전체";
-        case "fighter":
-          return "전사";
-        case "mage":
-          return "마법사";
-        case "assassin":
-          return "암살자";
-        case "support":
-          return "서포터";
-        case "tank":
-          return "탱커";
-        case "trinket":
-          return "장신구/와드/포션";
-        case "boots":
-          return "신발";
-      }
-    }
-
-    switch (value) {
-      case "all":
-        return "All";
-      case "fighter":
-        return "Fighter";
-      case "mage":
-        return "Mage";
-      case "assassin":
-        return "Assassin";
-      case "support":
-        return "Support";
-      case "tank":
-        return "Tank";
-      case "trinket":
-        return "Trinkets";
-      case "boots":
-        return "Boots";
-    }
-  };
-
-  const tierLabel = (tier: ItemTier) => {
-    if (lang === "ko_KR") {
-      switch (tier) {
-        case "legendary":
-          return "전설 아이템";
-        case "epic":
-          return "서사급 아이템";
-        case "basic":
-          return "기본 아이템";
-        case "starter":
-          return "시작 아이템";
-      }
-    }
-    switch (tier) {
-      case "legendary":
-        return "Legendary";
-      case "epic":
-        return "Epic";
-      case "basic":
-        return "Basic";
-      case "starter":
-        return "Starter";
-    }
-  };
 
   if (isMobile) {
     return (

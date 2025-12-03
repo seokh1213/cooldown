@@ -23,6 +23,9 @@ const LaningTipsPage = lazy(() => import("@/pages/LaningTipsPage"));
 const KillAnglePage = lazy(() => import("@/pages/KillAnglePage"));
 const OGPreviewPage = lazy(() => import("@/pages/OGPreviewPage"));
 const SimulationPage = lazy(() => import("@/pages/SimulationPage"));
+const ItemTooltipPreviewPage = lazy(
+  () => import("@/pages/ItemTooltipPreviewPage")
+);
 
 const THEME_STORAGE_KEY = "theme";
 const LANG_STORAGE_KEY = "language";
@@ -386,16 +389,26 @@ function AppContent({
             </Layout>
           }
         />
-        {/* OG Preview 페이지는 개발 환경에서만 활성화 */}
+        {/* 개발 전용 프리뷰 페이지들 */}
         {import.meta.env.DEV && (
-          <Route
-            path="/og-preview"
-            element={
-              <Suspense fallback={<SplashScreen />}>
-                <OGPreviewPage />
-              </Suspense>
-            }
-          />
+          <>
+            <Route
+              path="/og-preview"
+              element={
+                <Suspense fallback={<SplashScreen />}>
+                  <OGPreviewPage />
+                </Suspense>
+              }
+            />
+            <Route
+              path="/item-tooltip-preview"
+              element={
+                <Suspense fallback={<SplashScreen />}>
+                  <ItemTooltipPreviewPage />
+                </Suspense>
+              }
+            />
+          </>
         )}
       </Routes>
     </>
