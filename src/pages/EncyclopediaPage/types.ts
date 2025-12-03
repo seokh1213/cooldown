@@ -22,5 +22,6 @@ export interface EncyclopediaPageProps {
   lang: string;
   championList: Champion[] | null;
   version: string;
+  cdragonVersion: string | null;
 }
 

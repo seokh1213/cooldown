@@ -32,7 +32,7 @@ function getMajorMinor(version: string | null | undefined): string | null {
   return version;
 }
 
-function EncyclopediaPageContent({ lang, championList, version }: EncyclopediaPageProps) {
+function EncyclopediaPageContent({ lang, championList, version, cdragonVersion: initialCDragonVersion }: EncyclopediaPageProps) {
   const [activeTab, setActiveTab] = useState<"stats" | "skills">("skills");
   const [showSelector, setShowSelector] = useState(false);
   const deviceType = useDeviceType();
@@ -410,7 +410,10 @@ function EncyclopediaPageContent({ lang, championList, version }: EncyclopediaPa
 
 export default function EncyclopediaPage(props: EncyclopediaPageProps) {
   return (
-    <VersionProvider initialDDragonVersion={props.version}>
+    <VersionProvider 
+      initialDDragonVersion={props.version}
+      initialCDragonVersion={props.cdragonVersion}
+    >
       <EncyclopediaPageContent {...props} />
     </VersionProvider>
   );

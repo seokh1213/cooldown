@@ -52,7 +52,7 @@ export function SkillsSectionDesktop({
   vsMode: _vsMode,
 }: SectionProps) {
   const { t } = useTranslation();
-  const { setCDragonVersion } = useVersionContext();
+  const { cdragonVersion, setCDragonVersion } = useVersionContext();
   const [showAddSlot, setShowAddSlot] = useState(false);
   const [spellDataMap, setSpellDataMap] = React.useState<Record<string, SpellData[]>>({});
 
@@ -95,20 +95,23 @@ export function SkillsSectionDesktop({
         setSpellDataMap(data);
 
         // CDragon 버전 추출 후 전역 컨텍스트에 저장
-        try {
-          let detectedVersion: string | null = null;
-          for (const championId of Object.keys(data)) {
-            const spells = data[championId];
-            if (spells && spells.length > 0) {
-              detectedVersion = spells[0].cdragonVersion ?? null;
-              if (detectedVersion) break;
+        // 초기 로딩 시 받은 cdragonVersion이 없을 때만 스킬 데이터에서 감지한 버전 사용
+        if (!cdragonVersion) {
+          try {
+            let detectedVersion: string | null = null;
+            for (const championId of Object.keys(data)) {
+              const spells = data[championId];
+              if (spells && spells.length > 0) {
+                detectedVersion = spells[0].cdragonVersion ?? null;
+                if (detectedVersion) break;
+              }
             }
+            if (detectedVersion) {
+              setCDragonVersion(detectedVersion);
+            }
+          } catch (metaError) {
+            logger.warn("Failed to extract CDragon version from integrated spell data:", metaError);
           }
-          if (detectedVersion) {
-            setCDragonVersion(detectedVersion);
-          }
-        } catch (metaError) {
-          logger.warn("Failed to extract CDragon version from integrated spell data:", metaError);
         }
       } catch (error) {
         logger.warn("Failed to load integrated spell data:", error);

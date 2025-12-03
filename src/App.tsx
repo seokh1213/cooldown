@@ -62,6 +62,7 @@ function getInitialLang(): Language {
 function App() {
   const [lang, setLang] = useState<Language>(getInitialLang);
   const [version, setVersion] = useState<string | null>(null);
+  const [cdragonVersion, setCDragonVersion] = useState<string | null>(null);
   const [championList, setChampionList] = useState<Champion[] | null>(null);
   const [theme, setTheme] = useState<"light" | "dark">(getInitialTheme);
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -85,6 +86,7 @@ function App() {
       
       const { ddragonVersion, cdragonVersion } = await getDataVersions();
       setVersion(ddragonVersion);
+      setCDragonVersion(cdragonVersion);
       
       // 오래된 버전의 캐시 제거 (DDragon + CDragon 기준)
       cleanOldVersionCache(ddragonVersion, cdragonVersion);
@@ -195,6 +197,7 @@ function App() {
         <AppContent
           isLoading={isLoading}
           version={version}
+          cdragonVersion={cdragonVersion}
           lang={lang}
           championList={championList}
           theme={theme}
@@ -209,6 +212,7 @@ function App() {
 function AppContent({
   isLoading,
   version,
+  cdragonVersion,
   lang,
   championList,
   theme,
@@ -217,6 +221,7 @@ function AppContent({
 }: {
   isLoading: boolean;
   version: string | null;
+  cdragonVersion: string | null;
   lang: Language;
   championList: Champion[] | null;
   theme: "light" | "dark";
@@ -250,6 +255,7 @@ function AppContent({
                     lang={lang}
                     championList={championList}
                     version={version}
+                    cdragonVersion={cdragonVersion}
                   />
                 </Suspense>
               </Layout>

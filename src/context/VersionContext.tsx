@@ -13,17 +13,21 @@ const VersionContext = createContext<VersionContextValue | undefined>(
 
 interface VersionProviderProps {
   initialDDragonVersion?: string | null;
+  initialCDragonVersion?: string | null;
   children: React.ReactNode;
 }
 
 export function VersionProvider({
   initialDDragonVersion = null,
+  initialCDragonVersion = null,
   children,
 }: VersionProviderProps) {
   const [ddragonVersion, setDDragonVersion] = useState<string | null>(
     initialDDragonVersion ?? null
   );
-  const [cdragonVersion, setCDragonVersion] = useState<string | null>(null);
+  const [cdragonVersion, setCDragonVersion] = useState<string | null>(
+    initialCDragonVersion ?? null
+  );
 
   const value = useMemo(
     () => ({
