@@ -23,6 +23,7 @@ import { SkillTooltip } from "./SkillTooltip";
 import { getCooldownForLevel } from "./utils";
 import { useTranslation } from "@/i18n";
 import { ChampionSpell } from "@/types";
+import { useVersionContext } from "@/context/VersionContext";
 import {
   DndContext,
   closestCenter,
@@ -51,6 +52,7 @@ export function SkillsSectionDesktop({
   vsMode: _vsMode,
 }: SectionProps) {
   const { t } = useTranslation();
+  const { setCDragonVersion } = useVersionContext();
   const [showAddSlot, setShowAddSlot] = useState(false);
   const [spellDataMap, setSpellDataMap] = React.useState<Record<string, SpellData[]>>({});
 
@@ -91,6 +93,23 @@ export function SkillsSectionDesktop({
       try {
         const data = await getIntegratedSpellDataForChampions(champions, version);
         setSpellDataMap(data);
+
+        // CDragon 버전 추출 후 전역 컨텍스트에 저장
+        try {
+          let detectedVersion: string | null = null;
+          for (const championId of Object.keys(data)) {
+            const spells = data[championId];
+            if (spells && spells.length > 0) {
+              detectedVersion = spells[0].cdragonVersion ?? null;
+              if (detectedVersion) break;
+            }
+          }
+          if (detectedVersion) {
+            setCDragonVersion(detectedVersion);
+          }
+        } catch (metaError) {
+          logger.warn("Failed to extract CDragon version from integrated spell data:", metaError);
+        }
       } catch (error) {
         logger.warn("Failed to load integrated spell data:", error);
         setSpellDataMap({});

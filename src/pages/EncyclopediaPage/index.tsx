@@ -20,12 +20,25 @@ import { MobileChampionTabs } from "./MobileChampionTabs";
 import { VsSelectorModal } from "./VsSelectorModal";
 import { STORAGE_KEY, TABS_STORAGE_KEY, SELECTED_TAB_ID_STORAGE_KEY } from "./constants";
 import { removeStorageWithVersion } from "@/lib/storageValidator";
+import { VersionProvider, useVersionContext } from "@/context/VersionContext";
+import { useTranslation } from "@/i18n";
 
-export default function EncyclopediaPage({ lang, championList, version }: EncyclopediaPageProps) {
+function getMajorMinor(version: string | null | undefined): string | null {
+  if (!version) return null;
+  const parts = version.split(".");
+  if (parts.length >= 2) {
+    return `${parts[0]}.${parts[1]}`;
+  }
+  return version;
+}
+
+function EncyclopediaPageContent({ lang, championList, version }: EncyclopediaPageProps) {
   const [activeTab, setActiveTab] = useState<"stats" | "skills">("skills");
   const [showSelector, setShowSelector] = useState(false);
   const deviceType = useDeviceType();
   const isMobile = deviceType === "mobile";
+  const { cdragonVersion } = useVersionContext();
+  const { t } = useTranslation();
 
   const {
     tabs,
@@ -273,8 +286,36 @@ export default function EncyclopediaPage({ lang, championList, version }: Encycl
     []
   );
 
+  const isVersionMismatch = useMemo(() => {
+    const ddragonMajorMinor = getMajorMinor(version);
+    const cdragonMajorMinor = getMajorMinor(cdragonVersion);
+    if (!ddragonMajorMinor || !cdragonMajorMinor) return false;
+    return ddragonMajorMinor !== cdragonMajorMinor;
+  }, [version, cdragonVersion]);
+
   return (
     <div className="w-full max-w-7xl mx-auto px-4 md:px-6 lg:px-8 py-4 md:py-5">
+      {/* Version mismatch banner */}
+      {isVersionMismatch && (
+        <div className="mb-3 md:mb-4 rounded-md border border-amber-400/60 bg-amber-50/90 px-3 py-2 text-xs md:text-sm text-amber-950 shadow-sm">
+          <div className="font-semibold mb-0.5">
+            {t.versionNotice.title}
+          </div>
+          <div className="text-[11px] md:text-xs text-amber-900/90 mb-1.5">
+            {t.versionNotice.description}
+          </div>
+          <div className="flex flex-wrap gap-x-3 gap-y-0.5 text-[10px] md:text-[11px] text-amber-900/80">
+            <span>
+              <span className="font-semibold">{t.versionNotice.cdragonLabel}:</span>{" "}
+              {getMajorMinor(cdragonVersion) ?? "-"}
+            </span>
+            <span>
+              <span className="font-semibold">{t.versionNotice.ddragonLabel}:</span>{" "}
+              {getMajorMinor(version) ?? "-"}
+            </span>
+          </div>
+        </div>
+      )}
       {/* Champion Selector Modal */}
       {showSelector && (
         <ChampionSelector
@@ -364,6 +405,14 @@ export default function EncyclopediaPage({ lang, championList, version }: Encycl
         <EmptyState onAddClick={() => setShowSelector(true)} />
       )}
     </div>
+  );
+}
+
+export default function EncyclopediaPage(props: EncyclopediaPageProps) {
+  return (
+    <VersionProvider initialDDragonVersion={props.version}>
+      <EncyclopediaPageContent {...props} />
+    </VersionProvider>
   );
 }
 

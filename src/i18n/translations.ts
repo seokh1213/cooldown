@@ -93,38 +93,44 @@ export interface Translations {
   skills: {
     label: string;
   };
-    stats: {
-      label: string;
-      abilityPower: string;
-      attackDamage: string;
-      bonusAttackDamage: string;
-      health: string;
-      bonusHealth: string;
-      healthPerLevel: string;
-      armor: string;
-      bonusArmor: string;
-      magicResist: string;
-      bonusMagicResist: string;
-      lifesteal: string;
-      bonusLifesteal: string;
-      mana: string;
-      manaPerLevel: string;
-      movespeed: string;
-      armorPerLevel: string;
-      spellblock: string;
-      spellblockPerLevel: string;
-      attackdamage: string;
-      attackdamagePerLevel: string;
-      attackspeed: string;
-      attackspeedPerLevel: string;
-      attackrange: string;
-      crit: string;
-      critPerLevel: string;
-      hpregen: string;
-      hpregenPerLevel: string;
-      mpregen: string;
-      mpregenPerLevel: string;
-    };
+  stats: {
+    label: string;
+    abilityPower: string;
+    attackDamage: string;
+    bonusAttackDamage: string;
+    health: string;
+    bonusHealth: string;
+    healthPerLevel: string;
+    armor: string;
+    bonusArmor: string;
+    magicResist: string;
+    bonusMagicResist: string;
+    lifesteal: string;
+    bonusLifesteal: string;
+    mana: string;
+    manaPerLevel: string;
+    movespeed: string;
+    armorPerLevel: string;
+    spellblock: string;
+    spellblockPerLevel: string;
+    attackdamage: string;
+    attackdamagePerLevel: string;
+    attackspeed: string;
+    attackspeedPerLevel: string;
+    attackrange: string;
+    crit: string;
+    critPerLevel: string;
+    hpregen: string;
+    hpregenPerLevel: string;
+    mpregen: string;
+    mpregenPerLevel: string;
+  };
+  versionNotice: {
+    title: string;
+    description: string;
+    cdragonLabel: string;
+    ddragonLabel: string;
+  };
   common: {
     level: string;
     seconds: string;
@@ -263,6 +269,13 @@ export const translations: Record<Language, Translations> = {
       mpregen: "마나 재생",
       mpregenPerLevel: "레벨당 마나 재생",
     },
+    versionNotice: {
+      title: "데이터 버전 안내",
+      description:
+        "스킬 수치(CDragon)와 기본 정보(Data Dragon)의 패치 버전이 서로 다를 수 있습니다. 실제 인게임 수치와 일부 차이가 있을 수 있어요.",
+      cdragonLabel: "스킬 수치 기준(CDragon)",
+      ddragonLabel: "기본 정보 기준(Data Dragon)",
+    },
     common: {
       level: "레벨",
       seconds: "초",
@@ -398,6 +411,13 @@ export const translations: Record<Language, Translations> = {
       hpregenPerLevel: "Health Regen per Level",
       mpregen: "Mana Regen",
       mpregenPerLevel: "Mana Regen per Level",
+    },
+    versionNotice: {
+      title: "Data Version Notice",
+      description:
+        "Skill values (CDragon) and base information (Data Dragon) may be based on different patch versions. Some numbers can differ from in-game values.",
+      cdragonLabel: "Skill values (CDragon)",
+      ddragonLabel: "Base info (Data Dragon)",
     },
     common: {
       level: "Level",

@@ -1,5 +1,8 @@
 import {ChampionSpell} from "@/types";
-import {getCommunityDragonSpellData} from "./api";
+import {
+  getCommunityDragonSpellData,
+  CommunityDragonSpellResult,
+} from "./api";
 import { logger } from "@/lib/logger";
 
 /**
@@ -13,6 +16,10 @@ export interface SpellData {
   communityDragonData: Record<string, any>;
   /** 스킬 인덱스 (Q=0, W=1, E=2, R=3) */
   spellIndex: number;
+  /** 기준이 된 DDragon 버전 (옵션) */
+  ddragonVersion?: string | null;
+  /** 실제 사용된 CDragon 버전 (옵션) */
+  cdragonVersion?: string | null;
 }
 
 /**
@@ -29,9 +36,11 @@ export async function getIntegratedSpellData(
 ): Promise<SpellData[]> {
   // Community Dragon 데이터 가져오기 (에러 처리 포함)
   let communityDragonDataMap: Record<string, Record<string, any>> = {};
+  let cdMeta: CommunityDragonSpellResult | null = null;
   
   try {
-    communityDragonDataMap = await getCommunityDragonSpellData(championId, version);
+    cdMeta = await getCommunityDragonSpellData(championId, version);
+    communityDragonDataMap = cdMeta.spellDataMap;
   } catch (error) {
     logger.warn(`Failed to load Community Dragon data for ${championId}:`, error);
     // 에러 발생 시 빈 객체 사용
@@ -63,6 +72,8 @@ export async function getIntegratedSpellData(
       spell,
       communityDragonData,
       spellIndex: index,
+      ddragonVersion: cdMeta?.ddragonVersion ?? version,
+      cdragonVersion: cdMeta?.cdragonVersion ?? null,
     };
   });
 }

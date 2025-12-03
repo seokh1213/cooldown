@@ -6,15 +6,54 @@ const CHAMP_LIST_URL = (VERSION: string, LANG: string) =>
   `https://ddragon.leagueoflegends.com/cdn/${VERSION}/data/${LANG}/champion.json`;
 const CHAMP_INFO_URL = (VERSION: string, LANG: string, NAME: string) =>
   `https://ddragon.leagueoflegends.com/cdn/${VERSION}/data/${LANG}/champion/${NAME}.json`;
-const COMMUNITY_DRAGON_URL = (championId: string) =>
-  `https://raw.communitydragon.org/latest/game/data/characters/${championId}/${championId}.bin.json`;
+const COMMUNITY_DRAGON_URL = (basePath: string, championId: string) =>
+  `https://raw.communitydragon.org/${basePath}/game/data/characters/${championId}/${championId}.bin.json`;
 
-const LANGUAGES = ['ko_KR', 'en_US'] as const;
-const DATA_DIR = path.join(process.cwd(), 'public', 'data');
+const LANGUAGES = ["ko_KR", "en_US"] as const;
+const DATA_DIR = path.join(process.cwd(), "public", "data");
 
 // Community Dragon 챔피언 ID 변환
 function convertChampionIdToCommunityDragon(championId: string): string {
   return championId.toLowerCase();
+}
+
+/**
+ * DDragon 버전(예: 15.24.1)을 CommunityDragon 디렉토리 버전(예: 15.24)으로 변환
+ */
+function toCommunityDragonVersion(version: string): string {
+  const parts = version.split(".");
+  if (parts.length >= 2) {
+    return `${parts[0]}.${parts[1]}`;
+  }
+  return version;
+}
+
+/**
+ * DDragon 버전 목록을 기반으로 CDragon에서 시도할 버전 후보를 생성
+ * 예: [15.24.1, 15.23.1] -> ["15.24", "15.23", "latest"]
+ */
+function getCommunityDragonVersionCandidates(ddragonVersions: string[]): string[] {
+  const candidates: string[] = [];
+
+  if (ddragonVersions.length > 0) {
+    const current = toCommunityDragonVersion(ddragonVersions[0]);
+    if (!candidates.includes(current)) {
+      candidates.push(current);
+    }
+  }
+
+  if (ddragonVersions.length > 1) {
+    const previous = toCommunityDragonVersion(ddragonVersions[1]);
+    if (!candidates.includes(previous)) {
+      candidates.push(previous);
+    }
+  }
+
+  if (!candidates.includes("latest")) {
+    candidates.push("latest");
+  }
+
+  return candidates;
 }
 
 // 실제 챔피언 경로 찾기
@@ -216,14 +255,62 @@ async function saveToFile(data: any, filePath: string): Promise<void> {
   console.log(`Saved: ${filePath}`);
 }
 
+/**
+ * CDragon에서 챔피언 스펠 데이터를 가져올 때,
+ * DDragon 기준 버전 목록을 이용해 다음 순서로 시도:
+ * 1) 현재 패치 버전 (예: 15.24)
+ * 2) 직전 패치 버전 (예: 15.23)
+ * 3) latest
+ */
+async function fetchCommunityDragonDataWithFallback(
+  cdChampionId: string,
+  versionCandidates: string[]
+): Promise<{ data: Record<string, unknown> | null; cdragonVersion: string | null }> {
+  for (const basePath of versionCandidates) {
+    const url = COMMUNITY_DRAGON_URL(basePath, cdChampionId);
+    try {
+      console.log(`Fetching CDragon: ${url}`);
+      const response = await fetch(url);
+
+      if (response.status === 404) {
+        console.warn(`[CD] ${cdChampionId} not found at ${basePath} (404), trying next candidate...`);
+        continue;
+      }
+
+      if (!response.ok) {
+        console.warn(
+          `[CD] Failed to fetch ${cdChampionId} at ${basePath}. status=${response.status}. Trying next candidate...`
+        );
+        continue;
+      }
+
+      const json = (await response.json()) as Record<string, unknown>;
+      return { data: json, cdragonVersion: basePath };
+    } catch (error) {
+      console.warn(
+        `[CD] Error while fetching ${cdChampionId} at ${basePath}:`,
+        error
+      );
+      // 네트워크 오류 등도 다음 후보로 계속 시도
+      continue;
+    }
+  }
+
+  console.error(`[CD] All CommunityDragon candidates failed for ${cdChampionId}`);
+  return { data: null, cdragonVersion: null };
+}
+
 async function main() {
   console.log('🚀 Starting static data generation...\n');
 
   try {
     console.log('📦 Fetching version information...');
-    const versions = await fetchJson(VERSION_URL);
+    const versions: string[] = await fetchJson(VERSION_URL);
     const version = versions[0];
-    console.log(`✅ Latest version: ${version}\n`);
+    console.log(`✅ Latest DDragon version: ${version}`);
+
+    const cdVersionCandidates = getCommunityDragonVersionCandidates(versions);
+    console.log(`✅ CommunityDragon version candidates: ${cdVersionCandidates.join(', ')}\n`);
 
     console.log('🗑️  Cleaning up old version directories...');
     if (fs.existsSync(DATA_DIR)) {
@@ -311,12 +398,26 @@ async function main() {
       const spellPromises = batch.map(async (championId) => {
         try {
           const cdChampionId = convertChampionIdToCommunityDragon(championId);
-          const cdData = await fetchJson(COMMUNITY_DRAGON_URL(cdChampionId));
+          const { data: cdData, cdragonVersion } = await fetchCommunityDragonDataWithFallback(
+            cdChampionId,
+            cdVersionCandidates
+          );
+
+          if (!cdData) {
+            console.log(`❌ Failed to fetch any CommunityDragon data for ${championId}`);
+            failCount++;
+            return { championId, success: false };
+          }
+
           const spellData = extractSpellData(cdData, championId);
           
           if (Object.keys(spellData).length > 0) {
             const spellInfo = {
+              // DDragon 기준 버전 (정적 데이터 디렉터리 버전)
               version,
+              ddragonVersion: version,
+              // 실제로 사용한 CDragon 버전 (예: "15.23" 또는 "latest")
+              cdragonVersion,
               championId,
               spellData,
             };
@@ -342,7 +443,7 @@ async function main() {
 
     console.log(`\n🎉 Static data generation completed!`);
     console.log(`📁 Data saved to: ${versionDir}`);
-    console.log(`📊 Version: ${version}`);
+    console.log(`📊 DDragon Version: ${version}`);
     console.log(`🌐 Languages: ${LANGUAGES.join(', ')}`);
     console.log(`👥 Champions: ${championIds.length}`);
   } catch (error) {

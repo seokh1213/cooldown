@@ -19,6 +19,7 @@ import { SkillTooltip } from "./SkillTooltip";
 import { getCooldownForLevel } from "./utils";
 import { useTranslation } from "@/i18n";
 import { ChampionSpell } from "@/types";
+import { useVersionContext } from "@/context/VersionContext";
 
 export function SkillsSectionMobile({
   champions,
@@ -26,6 +27,7 @@ export function SkillsSectionMobile({
   vsMode,
 }: SectionProps) {
   const { t } = useTranslation();
+  const { setCDragonVersion } = useVersionContext();
   const [spellDataMap, setSpellDataMap] = React.useState<Record<string, SpellData[]>>({});
 
   // 통합 스킬 데이터 로드
@@ -34,6 +36,23 @@ export function SkillsSectionMobile({
       try {
         const data = await getIntegratedSpellDataForChampions(champions, version);
         setSpellDataMap(data);
+
+        // CDragon 버전 추출 후 전역 컨텍스트에 저장
+        try {
+          let detectedVersion: string | null = null;
+          for (const championId of Object.keys(data)) {
+            const spells = data[championId];
+            if (spells && spells.length > 0) {
+              detectedVersion = spells[0].cdragonVersion ?? null;
+              if (detectedVersion) break;
+            }
+          }
+          if (detectedVersion) {
+            setCDragonVersion(detectedVersion);
+          }
+        } catch (metaError) {
+          logger.warn("Failed to extract CDragon version from integrated spell data (mobile):", metaError);
+        }
       } catch (error) {
         logger.warn("Failed to load integrated spell data:", error);
         setSpellDataMap({});

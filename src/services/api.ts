@@ -323,10 +323,19 @@ function extractSpellOrderMapping(
   return { spellOrder: [], actualChampionPath };
 }
 
+export interface CommunityDragonSpellResult {
+  /** 스킬 데이터 맵 (인덱스/이름 -> 데이터) */
+  spellDataMap: Record<string, Record<string, any>>;
+  /** 실제로 사용한 CDragon 버전 (예: 15.23, latest). 정적 데이터에 없으면 null */
+  cdragonVersion: string | null;
+  /** 기준이 된 DDragon 버전 (정적 데이터의 version 또는 인자로 받은 version) */
+  ddragonVersion: string | null;
+}
+
 export async function getCommunityDragonSpellData(
   championId: string,
   version?: string
-): Promise<Record<string, Record<string, any>>> {
+): Promise<CommunityDragonSpellResult> {
   const cdChampionId = convertChampionIdToCommunityDragon(championId);
   const versionForCache = version || 'unknown';
   const cacheKey = `cd_spell_data_${versionForCache}_${cdChampionId}`;
@@ -335,10 +344,32 @@ export async function getCommunityDragonSpellData(
     const cached = localStorage.getItem(cacheKey);
     if (cached) {
       const parsed = JSON.parse(cached);
-      if (parsed && typeof parsed === "object" && Object.keys(parsed).length > 0) {
-        return Promise.resolve(parsed);
-      } else if (parsed && typeof parsed === "object" && Object.keys(parsed).length === 0) {
-        localStorage.removeItem(cacheKey);
+      if (parsed && typeof parsed === "object") {
+        // 새로운 포맷: { spellDataMap, cdragonVersion, ddragonVersion }
+        if ("spellDataMap" in parsed && parsed.spellDataMap && typeof parsed.spellDataMap === "object") {
+          const spellDataMap = parsed.spellDataMap as Record<string, Record<string, any>>;
+          if (Object.keys(spellDataMap).length > 0) {
+            return Promise.resolve({
+              spellDataMap,
+              cdragonVersion: typeof parsed.cdragonVersion === "string" ? parsed.cdragonVersion : null,
+              ddragonVersion: typeof parsed.ddragonVersion === "string"
+                ? parsed.ddragonVersion
+                : (version || null),
+            });
+          }
+        } else {
+          // 이전 포맷: spellDataMap만 저장되어 있는 경우
+          const legacyMap = parsed as Record<string, Record<string, any>>;
+          if (Object.keys(legacyMap).length > 0) {
+            return Promise.resolve({
+              spellDataMap: legacyMap,
+              cdragonVersion: null,
+              ddragonVersion: version || null,
+            });
+          } else {
+            localStorage.removeItem(cacheKey);
+          }
+        }
       }
     }
   } catch (error) {
@@ -354,16 +385,27 @@ export async function getCommunityDragonSpellData(
         const staticData = await response.json();
         
         if (staticData && staticData.spellData && typeof staticData.spellData === 'object') {
-          const spellDataMap = staticData.spellData;
+          const spellDataMap = staticData.spellData as Record<string, Record<string, any>>;
+          const cdragonVersion =
+            typeof staticData.cdragonVersion === "string" ? staticData.cdragonVersion : null;
+          const ddragonVersion =
+            typeof staticData.ddragonVersion === "string"
+              ? staticData.ddragonVersion
+              : (typeof staticData.version === "string" ? staticData.version : version || null);
           
           if (Object.keys(spellDataMap).length > 0) {
+            const result: CommunityDragonSpellResult = {
+              spellDataMap,
+              cdragonVersion,
+              ddragonVersion,
+            };
             try {
-              localStorage.setItem(cacheKey, JSON.stringify(spellDataMap));
+              localStorage.setItem(cacheKey, JSON.stringify(result));
             } catch (error) {
               logger.warn("[CD] Failed to cache Community Dragon data:", error);
             }
             
-            return spellDataMap;
+            return result;
           }
         }
       }
@@ -521,11 +563,17 @@ export async function getCommunityDragonSpellData(
     const spellDataKeys = Object.keys(spellDataMap);
     
     if (spellDataKeys.length > 0) {
+      const result: CommunityDragonSpellResult = {
+        spellDataMap,
+        cdragonVersion: "latest",
+        ddragonVersion: version || null,
+      };
       try {
-        localStorage.setItem(cacheKey, JSON.stringify(spellDataMap));
+        localStorage.setItem(cacheKey, JSON.stringify(result));
       } catch (error) {
         logger.warn("[CD] Failed to cache Community Dragon data:", error);
       }
+      return result;
     } else {
       try {
         localStorage.removeItem(cacheKey);
@@ -533,9 +581,12 @@ export async function getCommunityDragonSpellData(
         logger.warn("[CD] Failed to remove empty cache:", error);
       }
       logger.warn(`[CD] No spell data found for champion: ${cdChampionId}. Spell order: ${spellOrder.length}, Ability objects: ${abilityObjectCount}`);
+      return {
+        spellDataMap: {},
+        cdragonVersion: null,
+        ddragonVersion: version || null,
+      };
     }
-    
-    return spellDataMap;
   } catch (error) {
     logger.error("Failed to parse Community Dragon data:", error);
     try {
@@ -543,6 +594,10 @@ export async function getCommunityDragonSpellData(
     } catch (removeError) {
       logger.warn("Failed to remove cache on error:", removeError);
     }
-    return {};
+    return {
+      spellDataMap: {},
+      cdragonVersion: null,
+      ddragonVersion: version || null,
+    };
   }
 }
