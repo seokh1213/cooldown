@@ -1,4 +1,5 @@
 import { Champion } from "@/types";
+import type { StoredSelectedChampionList } from "@/lib/storageSchema";
 
 export interface ChampionWithInfo extends Champion {
   fullInfo?: Champion;
@@ -23,5 +24,8 @@ export interface EncyclopediaPageProps {
   championList: Champion[] | null;
   version: string;
   cdragonVersion: string | null;
+  initialSelectedChampions: StoredSelectedChampionList | null;
+  initialTabs: Tab[] | null;
+  initialSelectedTabId: string | null;
 }
 

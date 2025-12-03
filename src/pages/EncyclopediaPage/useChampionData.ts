@@ -12,6 +12,7 @@ interface UseChampionDataProps {
   lang: string;
   championList: Champion[] | null;
   tabs: Tab[];
+  initialSelectedChampions: StoredSelectedChampionList | null;
 }
 
 export function useChampionData({
@@ -19,72 +20,72 @@ export function useChampionData({
   lang,
   championList,
   tabs,
+  initialSelectedChampions,
 }: UseChampionDataProps) {
   const [selectedChampions, setSelectedChampions] = useState<ChampionWithInfo[]>([]);
   const [isInitialLoad, setIsInitialLoad] = useState(true);
 
-  // Load from localStorage on mount
+  // 초기 선택 챔피언은 상위(App)에서 splash 시점에 한 번만 복원된 값을 사용
   useEffect(() => {
-    if (!version) return;
+    if (!version || !championList) {
+      setTimeout(() => {
+        setIsInitialLoad(false);
+      }, 0);
+      return;
+    }
 
     try {
-      const stored = localStorage.getItem(STORAGE_KEY);
-      if (stored) {
-        const parsed: unknown = JSON.parse(stored);
-        if (Array.isArray(parsed) && parsed.length > 0 && championList) {
-          const restoredChampions = (parsed as StoredSelectedChampion[])
-            .map((cachedChampion) => {
-              const currentLangChampion = championList.find(
-                (champ) => champ.id === cachedChampion.id || champ.key === cachedChampion.key
-              );
+      if (initialSelectedChampions && initialSelectedChampions.length > 0) {
+        const restoredChampions = (initialSelectedChampions as StoredSelectedChampion[])
+          .map((cachedChampion) => {
+            const currentLangChampion = championList.find(
+              (champ) => champ.id === cachedChampion.id || champ.key === cachedChampion.key
+            );
 
-              if (currentLangChampion) {
-                return {
-                  ...currentLangChampion,
-                  isLoading: false,
-                };
+            if (currentLangChampion) {
+              return {
+                ...currentLangChampion,
+                isLoading: false,
+              };
+            }
+            return null;
+          })
+          .filter((champ): champ is NonNullable<typeof champ> => champ !== null);
+
+        if (restoredChampions.length > 0) {
+          // 비동기로 처리하여 React Compiler 경고 방지
+          setTimeout(() => {
+            setSelectedChampions(restoredChampions);
+
+            // Reload full info for each champion
+            restoredChampions.forEach((champion: ChampionWithInfo) => {
+              if (champion.id) {
+                setSelectedChampions((prev) =>
+                  prev.map((c) =>
+                    c.id === champion.id ? { ...c, isLoading: true } : c
+                  )
+                );
+                getChampionInfo(version, lang, champion.id)
+                  .then((fullInfo) => {
+                    setSelectedChampions((prev) =>
+                      prev.map((c) =>
+                        c.id === champion.id
+                          ? { ...c, fullInfo, isLoading: false }
+                          : c
+                      )
+                    );
+                  })
+                  .catch((error) => {
+                    logger.error("Failed to load champion info:", error);
+                    setSelectedChampions((prev) =>
+                      prev.map((c) =>
+                        c.id === champion.id ? { ...c, isLoading: false } : c
+                      )
+                    );
+                  });
               }
-              return null;
-            })
-            .filter((champ): champ is NonNullable<typeof champ> => {
-              return champ !== null;
             });
-
-          if (restoredChampions.length > 0) {
-            // 비동기로 처리하여 React Compiler 경고 방지
-            setTimeout(() => {
-              setSelectedChampions(restoredChampions);
-
-              // Reload full info for each champion
-              restoredChampions.forEach((champion: ChampionWithInfo) => {
-                if (champion.id) {
-                  setSelectedChampions((prev) =>
-                    prev.map((c) =>
-                      c.id === champion.id ? { ...c, isLoading: true } : c
-                    )
-                  );
-                  getChampionInfo(version, lang, champion.id)
-                    .then((fullInfo) => {
-                      setSelectedChampions((prev) =>
-                        prev.map((c) =>
-                          c.id === champion.id
-                            ? { ...c, fullInfo, isLoading: false }
-                            : c
-                        )
-                      );
-                    })
-                    .catch((error) => {
-                      logger.error("Failed to load champion info:", error);
-                      setSelectedChampions((prev) =>
-                        prev.map((c) =>
-                          c.id === champion.id ? { ...c, isLoading: false } : c
-                        )
-                      );
-                    });
-                }
-              });
-            }, 0);
-          }
+          }, 0);
         }
       }
       // 초기 로딩 완료 표시 (비동기로 처리하여 React Compiler 경고 방지)
@@ -92,12 +93,12 @@ export function useChampionData({
         setIsInitialLoad(false);
       }, 0);
     } catch (error) {
-      logger.error("Failed to load stored champions:", error);
+      logger.error("Failed to load initial selected champions:", error);
       setTimeout(() => {
         setIsInitialLoad(false);
       }, 0);
     }
-  }, [version, lang, championList]);
+  }, [version, lang, championList, initialSelectedChampions]);
 
   // Save to localStorage whenever selectedChampions changes
   useEffect(() => {

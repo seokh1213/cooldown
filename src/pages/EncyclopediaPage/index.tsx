@@ -32,7 +32,15 @@ function getMajorMinor(version: string | null | undefined): string | null {
   return version;
 }
 
-function EncyclopediaPageContent({ lang, championList, version, cdragonVersion: initialCDragonVersion }: EncyclopediaPageProps) {
+function EncyclopediaPageContent({
+  lang,
+  championList,
+  version,
+  cdragonVersion: initialCDragonVersion,
+  initialSelectedChampions,
+  initialTabs,
+  initialSelectedTabId,
+}: EncyclopediaPageProps) {
   const [activeTab, setActiveTab] = useState<"stats" | "skills">("skills");
   const [showSelector, setShowSelector] = useState(false);
   const deviceType = useDeviceType();
@@ -56,7 +64,11 @@ function EncyclopediaPageContent({ lang, championList, version, cdragonVersion: 
     resetTabs,
     handleDragEnd,
     generateTabId,
-  } = useTabManagement(version);
+  } = useTabManagement({
+    version,
+    initialTabs,
+    initialSelectedTabId,
+  });
 
   const {
     selectedChampions,
@@ -71,6 +83,7 @@ function EncyclopediaPageContent({ lang, championList, version, cdragonVersion: 
     lang,
     championList,
     tabs,
+    initialSelectedChampions,
   });
 
   // 드래그 앤 드롭 센서 설정

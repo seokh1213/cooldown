@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, Suspense, lazy } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { getDataVersions, getVersion, getChampionList, cleanOldVersionCache } from "@/services/api";
+import { getDataVersions, getChampionList, cleanOldVersionCache } from "@/services/api";
 import Layout from "@/components/layout/Layout";
 import Nav from "@/components/features/Nav";
 import SplashScreen from "@/components/layout/SplashScreen";
@@ -9,6 +9,13 @@ import { I18nProvider, Language } from "@/i18n";
 import { validateAllStorageData, checkAndClearStorageIfVersionMismatch } from "@/lib/storageValidator";
 import { logger } from "@/lib/logger";
 import { applyPWAUpdate, BUILD_VERSION, subscribeToPWAUpdate } from "@/pwa";
+import type { StoredSelectedChampionList } from "@/lib/storageSchema";
+import type { Tab } from "@/pages/EncyclopediaPage/types";
+import {
+  STORAGE_KEY as ENCYCLOPEDIA_STORAGE_KEY,
+  TABS_STORAGE_KEY,
+  SELECTED_TAB_ID_STORAGE_KEY,
+} from "@/pages/EncyclopediaPage/constants";
 
 // Lazy load pages for code splitting
 const EncyclopediaPage = lazy(() => import("@/pages/EncyclopediaPage"));
@@ -73,6 +80,10 @@ function App() {
     // 저장된 값이 없으면 기본값은 "자동 업데이트 켜짐"
     return stored !== "false";
   });
+  const [initialSelectedChampions, setInitialSelectedChampions] =
+    useState<StoredSelectedChampionList | null>(null);
+  const [initialTabs, setInitialTabs] = useState<Tab[] | null>(null);
+  const [initialSelectedTabId, setInitialSelectedTabId] = useState<string | null>(null);
 
   const initData = useCallback(async () => {
     try {
@@ -83,6 +94,41 @@ function App() {
       
       // splash 화면이 띄워질 때 localStorage 데이터 구조 유효성 검사
       validateAllStorageData();
+      
+      // 백과사전 관련 초기 상태를 splash 타이밍에 한 번만 복원
+      try {
+        const storedSelected = window.localStorage.getItem(ENCYCLOPEDIA_STORAGE_KEY);
+        if (storedSelected) {
+          const parsed = JSON.parse(storedSelected);
+          if (Array.isArray(parsed)) {
+            setInitialSelectedChampions(parsed as StoredSelectedChampionList);
+          }
+        }
+      } catch (error) {
+        logger.warn("Failed to load stored encyclopedia selected champions:", error);
+        setInitialSelectedChampions(null);
+      }
+
+      try {
+        const storedTabs = window.localStorage.getItem(TABS_STORAGE_KEY);
+        if (storedTabs) {
+          const parsedTabs = JSON.parse(storedTabs);
+          if (Array.isArray(parsedTabs)) {
+            setInitialTabs(parsedTabs as Tab[]);
+          }
+        }
+      } catch (error) {
+        logger.warn("Failed to load stored encyclopedia tabs:", error);
+        setInitialTabs(null);
+      }
+
+      try {
+        const storedTabId = window.localStorage.getItem(SELECTED_TAB_ID_STORAGE_KEY);
+        setInitialSelectedTabId(storedTabId);
+      } catch (error) {
+        logger.warn("Failed to load stored encyclopedia selected tab id:", error);
+        setInitialSelectedTabId(null);
+      }
       
       const { ddragonVersion, cdragonVersion } = await getDataVersions();
       setVersion(ddragonVersion);
@@ -201,6 +247,9 @@ function App() {
           lang={lang}
           championList={championList}
           theme={theme}
+          initialSelectedChampions={initialSelectedChampions}
+          initialTabs={initialTabs}
+          initialSelectedTabId={initialSelectedTabId}
           handleLangChange={handleLangChange}
           toggleTheme={toggleTheme}
         />
@@ -216,6 +265,9 @@ function AppContent({
   lang,
   championList,
   theme,
+  initialSelectedChampions,
+  initialTabs,
+  initialSelectedTabId,
   handleLangChange,
   toggleTheme,
 }: {
@@ -225,6 +277,9 @@ function AppContent({
   lang: Language;
   championList: Champion[] | null;
   theme: "light" | "dark";
+  initialSelectedChampions: StoredSelectedChampionList | null;
+  initialTabs: Tab[] | null;
+  initialSelectedTabId: string | null;
   handleLangChange: (newLang: string) => void;
   toggleTheme: () => void;
 }) {
@@ -256,6 +311,9 @@ function AppContent({
                     championList={championList}
                     version={version}
                     cdragonVersion={cdragonVersion}
+                    initialSelectedChampions={initialSelectedChampions}
+                    initialTabs={initialTabs}
+                    initialSelectedTabId={initialSelectedTabId}
                   />
                 </Suspense>
               </Layout>

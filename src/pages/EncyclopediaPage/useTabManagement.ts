@@ -5,8 +5,19 @@ import { Tab, VsSelectorMode } from "./types";
 import { generateTabId } from "./utils";
 import { TABS_STORAGE_KEY, SELECTED_TAB_ID_STORAGE_KEY } from "./constants";
 import { setStorageWithVersion, removeStorageWithVersion } from "@/lib/storageValidator";
+import { logger } from "@/lib/logger";
 
-export function useTabManagement(version: string | null) {
+interface UseTabManagementOptions {
+  version: string | null;
+  initialTabs: Tab[] | null;
+  initialSelectedTabId: string | null;
+}
+
+export function useTabManagement({
+  version,
+  initialTabs,
+  initialSelectedTabId,
+}: UseTabManagementOptions) {
   const [tabs, setTabs] = useState<Tab[]>([]);
   const tabsRef = useRef<Tab[]>([]);
   const [selectedTabId, setSelectedTabId] = useState<string | null>(null);
@@ -18,31 +29,17 @@ export function useTabManagement(version: string | null) {
     tabsRef.current = tabs;
   }, [tabs]);
 
-  // Load tabs from localStorage on mount
+  // 초기 탭/선택 탭 ID는 상위(App)에서 splash 시점에 한 번만 복원된 값을 사용
   useEffect(() => {
     if (!version) return;
 
-    try {
-      const storedTabs = localStorage.getItem(TABS_STORAGE_KEY);
-      if (storedTabs) {
-        try {
-          const parsedTabs = JSON.parse(storedTabs);
-          if (Array.isArray(parsedTabs)) {
-            setTabs(parsedTabs);
-          }
-        } catch (e) {
-          // 탭 파싱 실패 시 무시
-        }
-      }
-
-      const storedTabId = localStorage.getItem(SELECTED_TAB_ID_STORAGE_KEY);
-      if (storedTabId) {
-        setSelectedTabId(storedTabId);
-      }
-    } catch (error) {
-      logger.error("Failed to load stored tabs:", error);
+    if (initialTabs && initialTabs.length > 0) {
+      setTabs(initialTabs);
     }
-  }, [version]);
+    if (initialSelectedTabId) {
+      setSelectedTabId(initialSelectedTabId);
+    }
+  }, [version, initialTabs, initialSelectedTabId]);
 
   // Save tabs to localStorage whenever tabs changes
   useEffect(() => {
