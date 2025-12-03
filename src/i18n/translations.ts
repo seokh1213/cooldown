@@ -97,6 +97,7 @@ export interface Translations {
     skillDescription: string;
     warningPassive: string;
     warningSkill: string;
+  viewDetail: string;
   };
   skills: {
     label: string;
@@ -249,6 +250,7 @@ export const translations: Record<Language, Translations> = {
       skillDescription: "스킬의 상세 정보입니다.",
       warningPassive: "패시브 정보는 제공되지 않습니다. 정확한 수치와 설명은 인게임 툴팁을 확인해 주세요.",
       warningSkill: "정확한 수치와 설명은 인게임 툴팁을 확인해 주세요.",
+      viewDetail: "자세히 보기",
     },
     skills: {
       label: "스킬",
@@ -400,6 +402,7 @@ export const translations: Record<Language, Translations> = {
       skillDescription: "Detailed information about the skill.",
       warningPassive: "Passive information is not provided. Please check the in-game tooltip for accurate values and descriptions.",
       warningSkill: "Please check the in-game tooltip for accurate values and descriptions.",
+      viewDetail: "View details",
     },
     skills: {
       label: "Skills",

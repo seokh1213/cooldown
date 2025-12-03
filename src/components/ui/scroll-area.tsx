@@ -6,9 +6,10 @@ import { cn } from "@/lib/utils"
 const ScrollArea = React.forwardRef<
   React.ElementRef<typeof ScrollAreaPrimitive.Root>,
   React.ComponentPropsWithoutRef<typeof ScrollAreaPrimitive.Root>
->(({ className, children, ...props }, ref) => (
+>(({ className, children, type = "always", ...props }, ref) => (
   <ScrollAreaPrimitive.Root
     ref={ref}
+    type={type}
     className={cn("relative overflow-hidden", className)}
     {...props}
   >

@@ -2,7 +2,6 @@ import React, { useEffect, useMemo, useState } from "react";
 import { getItems } from "@/services/api";
 import type { Item } from "@/types";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { useTranslation } from "@/i18n";
 import { useDeviceType } from "@/hooks/useDeviceType";
@@ -21,7 +20,9 @@ interface ItemsTabProps {
 
 type ItemTier = "starter" | "basic" | "epic" | "legendary";
 
-type ItemRole = "all" | "fighter" | "mage" | "assassin" | "support" | "tank";
+type ItemRole = "fighter" | "mage" | "assassin" | "support" | "tank";
+
+type ItemFilter = "all" | ItemRole | "trinket" | "boots";
 
 function shouldShowInStore(item: Item): boolean {
   if (!item.maps || !item.maps["11"]) return false;
@@ -85,7 +86,7 @@ function getItemTier(item: Item): ItemTier {
   return "epic";
 }
 
-function getItemRole(item: Item): Exclude<ItemRole, "all"> | "all" {
+function getItemRole(item: Item): ItemRole | "all" {
   const tags = item.tags || [];
   const stats = item.stats || {};
   const statKeys = Object.keys(stats);
@@ -127,6 +128,7 @@ interface ItemCellProps {
   version: string;
   isSelected: boolean;
   onSelect: () => void;
+  lang: string;
 }
 
 const ItemCell: React.FC<ItemCellProps> = ({
@@ -134,37 +136,35 @@ const ItemCell: React.FC<ItemCellProps> = ({
   version,
   isSelected,
   onSelect,
+  lang,
 }) => {
+  const total = item.gold?.total ?? 0;
+  const hasPrice = total > 0;
+  const priceLabel =
+    hasPrice || shouldShowPrice(item)
+      ? total.toLocaleString()
+      : lang === "ko_KR"
+      ? "무료"
+      : "Free";
+
   return (
     <button
       type="button"
       onClick={onSelect}
-      className={`flex items-center gap-2 rounded-sm px-1.5 py-1 text-left transition-colors ${
+      className={`flex flex-col items-center gap-0.5 rounded-sm px-1 py-1 text-center transition-colors w-14 md:w-16 ${
         isSelected
-          ? "bg-primary/20 border border-primary/60"
+          ? "bg-primary/20 border border-primary/60 shadow-sm"
           : "hover:bg-muted/60 border border-transparent"
       }`}
     >
       <img
         src={`https://ddragon.leagueoflegends.com/cdn/${version}/img/item/${item.id}.png`}
         alt={item.name}
-        className="w-7 h-7 rounded-sm border border-border/60 bg-black/40 flex-shrink-0"
+        className="w-8 h-8 md:w-9 md:h-9 rounded-sm border border-border/60 bg-black/40 flex-shrink-0"
       />
-      <div className="flex-1 min-w-0">
-        <div className="flex items-center justify-between gap-2">
-          <span className="text-[11px] font-medium truncate">{item.name}</span>
-          {shouldShowPrice(item) && (
-            <span className="text-[11px] text-amber-600 dark:text-amber-400 font-semibold whitespace-nowrap">
-              {item.gold.total.toLocaleString()}
-            </span>
-          )}
-        </div>
-        {item.plaintext && (
-          <div className="text-[10px] text-muted-foreground mt-0.5 line-clamp-1">
-            {item.plaintext}
-          </div>
-        )}
-      </div>
+      <span className="text-[9px] md:text-[10px] text-amber-600 dark:text-amber-400 font-semibold whitespace-nowrap">
+        {priceLabel}
+      </span>
     </button>
   );
 };
@@ -177,7 +177,7 @@ export function ItemsTab({ version, lang }: ItemsTabProps) {
   const [items, setItems] = useState<Item[] | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [search, setSearch] = useState<string>("");
-  const [roleFilter, setRoleFilter] = useState<ItemRole>("all");
+  const [filter, setFilter] = useState<ItemFilter>("all");
   const [selectedItem, setSelectedItem] = useState<Item | null>(null);
 
   useEffect(() => {
@@ -212,11 +212,9 @@ export function ItemsTab({ version, lang }: ItemsTabProps) {
 
   const term = search.trim().toLowerCase();
 
-  const { trinketItems, bootItems, mainItemsByTier } = useMemo(() => {
+  const { itemsByTier } = useMemo(() => {
     const result = {
-      trinketItems: [] as Item[],
-      bootItems: [] as Item[],
-      mainItemsByTier: {
+      itemsByTier: {
         starter: [] as Item[],
         basic: [] as Item[],
         epic: [] as Item[],
@@ -225,13 +223,6 @@ export function ItemsTab({ version, lang }: ItemsTabProps) {
     };
 
     if (!items) return result;
-
-    const roleMatches = (item: Item): boolean => {
-      if (roleFilter === "all") return true;
-      const role = getItemRole(item);
-      if (role === "all") return true;
-      return role === roleFilter;
-    };
 
     const searchMatches = (item: Item): boolean => {
       if (!term) return true;
@@ -242,37 +233,30 @@ export function ItemsTab({ version, lang }: ItemsTabProps) {
     items.forEach((item) => {
       if (!searchMatches(item)) return;
 
-      if (isTrinketOrWardOrPotion(item)) {
-        result.trinketItems.push(item);
-        return;
+      // 필터: 역할군 / 장신구/와드/포션 / 신발
+      if (filter === "trinket") {
+        if (!isTrinketOrWardOrPotion(item)) return;
+      } else if (filter === "boots") {
+        if (!isBoots(item)) return;
+      } else if (filter !== "all") {
+        // 역할군 필터일 때는 장신구/와드/포션, 신발은 별도 탭에서 보도록 제외
+        if (isTrinketOrWardOrPotion(item) || isBoots(item)) return;
+        const role = getItemRole(item);
+        if (role !== "all" && role !== filter) return;
       }
-
-      if (isBoots(item)) {
-        result.bootItems.push(item);
-        return;
-      }
-
-      if (!roleMatches(item)) return;
 
       const tier = getItemTier(item);
-      result.mainItemsByTier[tier].push(item);
+      result.itemsByTier[tier].push(item);
     });
 
-    (Object.keys(result.mainItemsByTier) as ItemTier[]).forEach((tier) => {
-      result.mainItemsByTier[tier].sort(
+    (Object.keys(result.itemsByTier) as ItemTier[]).forEach((tier) => {
+      result.itemsByTier[tier].sort(
         (a, b) => (a.gold?.total ?? 0) - (b.gold?.total ?? 0)
       );
     });
 
-    result.trinketItems.sort(
-      (a, b) => (a.gold?.total ?? 0) - (b.gold?.total ?? 0)
-    );
-    result.bootItems.sort(
-      (a, b) => (a.gold?.total ?? 0) - (b.gold?.total ?? 0)
-    );
-
     return result;
-  }, [items, term, roleFilter]);
+  }, [items, term, filter]);
 
   if (loading && !items) {
     return (
@@ -290,132 +274,187 @@ export function ItemsTab({ version, lang }: ItemsTabProps) {
     );
   }
 
+  const collectUpgradeItems = (root: Item): Item[] => {
+    const result: Item[] = [];
+    const visited = new Set<string>();
+    const queue: string[] = root.into ? [...root.into] : [];
+
+    while (queue.length > 0) {
+      const id = queue.shift() as string;
+      if (visited.has(id)) continue;
+      visited.add(id);
+
+      const upgrade = itemMap.get(id);
+      if (!upgrade) continue;
+      result.push(upgrade);
+
+      if (upgrade.into && upgrade.into.length > 0) {
+        queue.push(...upgrade.into);
+      }
+    }
+
+    result.sort((a, b) => (a.gold?.total ?? 0) - (b.gold?.total ?? 0));
+    return result;
+  };
+
+  const buildComponentLevels = (root: Item): Item[][] => {
+    const levels: Item[][] = [];
+    const visited = new Set<string>();
+
+    let currentIds = root.from ? [...root.from] : [];
+
+    while (currentIds.length > 0) {
+      const levelItems: Item[] = [];
+      const nextIds: string[] = [];
+
+      currentIds.forEach((id) => {
+        if (visited.has(id)) return;
+        visited.add(id);
+        const component = itemMap.get(id);
+        if (!component) return;
+        levelItems.push(component);
+        if (component.from && component.from.length > 0) {
+          nextIds.push(...component.from);
+        }
+      });
+
+      if (levelItems.length > 0) {
+        levels.push(levelItems);
+      }
+      currentIds = nextIds;
+    }
+
+    return levels;
+  };
+
+  const getDirectComponents = (root: Item): Item[] => {
+    if (!root.from || root.from.length === 0) return [];
+    const components: Item[] = [];
+    root.from.forEach((id) => {
+      const comp = itemMap.get(id);
+      if (comp) components.push(comp);
+    });
+    return components;
+  };
+
   const detailContent = selectedItem && (
     <div className="flex flex-col gap-3 h-full">
-      <div className="flex items-start gap-3">
-        <img
-          src={`https://ddragon.leagueoflegends.com/cdn/${version}/img/item/${selectedItem.id}.png`}
-          alt={selectedItem.name}
-          className="w-10 h-10 rounded-sm border border-border/60 bg-black/40 flex-shrink-0"
-        />
-        <div className="flex-1 min-w-0">
-          <div className="flex items-center justify-between gap-2">
-            <div className="text-sm font-semibold truncate">
-              {selectedItem.name}
-            </div>
-            {shouldShowPrice(selectedItem) && (
-              <div className="text-xs text-amber-600 dark:text-amber-400 font-semibold whitespace-nowrap">
-                {selectedItem.gold.total.toLocaleString()}
-              </div>
+      {/* Builds into row */}
+      <div className="space-y-1 text-[11px] pb-2 border-b border-border/60">
+        <div className="font-semibold">
+          {lang === "ko_KR" ? "상위 아이템 (Builds into)" : "Builds into"}
+        </div>
+        <div className="overflow-x-auto pb-1">
+          <div className="flex flex-nowrap gap-1.5 min-w-max">
+            {collectUpgradeItems(selectedItem).length > 0 ? (
+              collectUpgradeItems(selectedItem).map((upgrade) => (
+                <ItemCell
+                  key={upgrade.id}
+                  item={upgrade}
+                  version={version}
+                  isSelected={selectedItem.id === upgrade.id}
+                  onSelect={() => setSelectedItem(upgrade)}
+                  lang={lang}
+                />
+              ))
+            ) : (
+              <span className="text-[10px] text-muted-foreground">
+                {lang === "ko_KR" ? "상위 아이템 없음" : "No higher items"}
+              </span>
             )}
           </div>
-          {selectedItem.plaintext && (
-            <div className="text-xs text-muted-foreground mt-0.5">
-              {selectedItem.plaintext}
-            </div>
-          )}
         </div>
       </div>
 
-      <div className="space-y-2 text-[11px]">
-        <div className="space-y-1">
-          <div className="font-semibold text-[11px]">
-            {lang === "ko_KR" ? "아이템 트리" : "Item Tree"}
+      {/* Item tree */}
+      <div className="space-y-1.5 text-[11px] py-1.5 border-b border-border/60">
+        <div className="font-semibold">
+          {lang === "ko_KR" ? "아이템 트리" : "Item Tree"}
+        </div>
+        {buildComponentLevels(selectedItem).length > 0 ? (
+          <div className="flex flex-col items-center gap-1.5 pt-1">
+            {/* 루트 아이템 */}
+            <ItemCell
+              item={selectedItem}
+              version={version}
+              isSelected
+              onSelect={() => {}}
+              lang={lang}
+            />
+            {buildComponentLevels(selectedItem).map((level, levelIndex) => (
+              <div
+                key={levelIndex}
+                className="flex flex-col items-center gap-1"
+              >
+                <div className="h-3 w-px bg-border/60" />
+                <div className="flex flex-wrap items-start justify-center gap-2">
+                  {level.map((component) => (
+                    <ItemCell
+                      key={component.id}
+                      item={component}
+                      version={version}
+                      isSelected={selectedItem.id === component.id}
+                      onSelect={() => setSelectedItem(component)}
+                      lang={lang}
+                    />
+                  ))}
+                </div>
+              </div>
+            ))}
           </div>
-          <div className="space-y-1">
-            <div className="flex flex-col gap-1">
-              <span className="text-[10px] text-muted-foreground">
-                {lang === "ko_KR" ? "구성 아이템" : "Builds from"}
-              </span>
-              <div className="flex flex-wrap gap-1.5">
-                {selectedItem.from && selectedItem.from.length > 0 ? (
-                  selectedItem.from.map((id) => {
-                    const component = itemMap.get(id);
-                    if (!component) return null;
-                    return (
-                      <button
-                        key={id}
-                        type="button"
-                        onClick={() => setSelectedItem(component)}
-                        className="flex items-center gap-1 rounded-sm px-1 py-0.5 bg-muted/60 hover:bg-muted text-[10px]"
-                      >
-                        <img
-                          src={`https://ddragon.leagueoflegends.com/cdn/${version}/img/item/${component.id}.png`}
-                          alt={component.name}
-                          className="w-5 h-5 rounded-sm border border-border/60 bg-black/40"
-                        />
-                        <span className="max-w-[90px] truncate">
-                          {component.name}
-                        </span>
-                      </button>
-                    );
-                  })
-                ) : (
-                  <span className="text-[10px] text-muted-foreground">
-                    {lang === "ko_KR" ? "구성 아이템 없음" : "No components"}
-                  </span>
-                )}
-              </div>
-            </div>
+        ) : (
+          <span className="text-[10px] text-muted-foreground">
+            {lang === "ko_KR" ? "구성 아이템 없음" : "No components"}
+          </span>
+        )}
+      </div>
 
-            <div className="flex flex-col gap-1">
-              <span className="text-[10px] text-muted-foreground">
-                {lang === "ko_KR" ? "업그레이드" : "Builds into"}
-              </span>
-              <div className="flex flex-wrap gap-1.5">
-                {selectedItem.into && selectedItem.into.length > 0 ? (
-                  selectedItem.into.map((id) => {
-                    const upgrade = itemMap.get(id);
-                    if (!upgrade) return null;
-                    return (
-                      <button
-                        key={id}
-                        type="button"
-                        onClick={() => setSelectedItem(upgrade)}
-                        className="flex items-center gap-1 rounded-sm px-1 py-0.5 bg-muted/60 hover:bg-muted text-[10px]"
-                      >
-                        <img
-                          src={`https://ddragon.leagueoflegends.com/cdn/${version}/img/item/${upgrade.id}.png`}
-                          alt={upgrade.name}
-                          className="w-5 h-5 rounded-sm border border-border/60 bg-black/40"
-                        />
-                        <span className="max-w-[90px] truncate">
-                          {upgrade.name}
-                        </span>
-                      </button>
-                    );
-                  })
-                ) : (
-                  <span className="text-[10px] text-muted-foreground">
-                    {lang === "ko_KR" ? "업그레이드 없음" : "No upgrades"}
-                  </span>
-                )}
+      {/* 하단 설명 */}
+      <div className="flex-1 min-h-0 space-y-2 pt-2">
+        <div className="flex items-start gap-3">
+          <img
+            src={`https://ddragon.leagueoflegends.com/cdn/${version}/img/item/${selectedItem.id}.png`}
+            alt={selectedItem.name}
+            className="w-10 h-10 rounded-sm border border-border/60 bg-black/40 flex-shrink-0"
+          />
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center justify-between gap-2">
+              <div className="text-sm font-semibold truncate">
+                {selectedItem.name}
               </div>
+              {shouldShowPrice(selectedItem) && (
+                <div className="text-xs text-amber-600 dark:text-amber-400 font-semibold whitespace-nowrap">
+                  {selectedItem.gold.total.toLocaleString()}
+                </div>
+              )}
             </div>
+            {selectedItem.plaintext && (
+              <div className="text-xs text-muted-foreground mt-0.5">
+                {selectedItem.plaintext}
+              </div>
+            )}
           </div>
         </div>
 
-        <div className="flex-1 min-h-0">
-          <div className="font-semibold text-[11px] mb-1">
-            {lang === "ko_KR" ? "설명" : "Description"}
-          </div>
-          <ScrollArea className="h-40 rounded-md border bg-background/60">
-            <div className="p-2 text-[11px] leading-relaxed">
-              <span
-                dangerouslySetInnerHTML={{
-                  __html: selectedItem.description,
-                }}
-              />
-            </div>
-          </ScrollArea>
+        <div className="font-semibold text-[11px]">
+          {lang === "ko_KR" ? "설명" : "Description"}
         </div>
+        <ScrollArea className="h-40 rounded-md border bg-background/60">
+          <div className="p-2 text-[11px] leading-relaxed">
+            <span
+              dangerouslySetInnerHTML={{
+                __html: selectedItem.description,
+              }}
+            />
+          </div>
+        </ScrollArea>
       </div>
     </div>
   );
 
-  const roleLabel = (role: ItemRole) => {
+  const filterLabel = (value: ItemFilter) => {
     if (lang === "ko_KR") {
-      switch (role) {
+      switch (value) {
         case "all":
           return "전체";
         case "fighter":
@@ -428,10 +467,14 @@ export function ItemsTab({ version, lang }: ItemsTabProps) {
           return "서포터";
         case "tank":
           return "탱커";
+        case "trinket":
+          return "장신구/와드/포션";
+        case "boots":
+          return "신발";
       }
     }
 
-    switch (role) {
+    switch (value) {
       case "all":
         return "All";
       case "fighter":
@@ -444,6 +487,10 @@ export function ItemsTab({ version, lang }: ItemsTabProps) {
         return "Support";
       case "tank":
         return "Tank";
+      case "trinket":
+        return "Trinkets";
+      case "boots":
+        return "Boots";
     }
   };
 
@@ -485,76 +532,45 @@ export function ItemsTab({ version, lang }: ItemsTabProps) {
             className="h-9 text-xs"
           />
           <div className="flex gap-1 overflow-x-auto pb-1">
-            {(["all", "fighter", "mage", "assassin", "support", "tank"] as ItemRole[]).map(
-              (role) => (
+            {(
+              [
+                "all",
+                "fighter",
+                "mage",
+                "assassin",
+                "support",
+                "tank",
+                "trinket",
+                "boots",
+              ] as ItemFilter[]
+            ).map((value) => (
                 <button
-                  key={role}
-                  type="button"
-                  onClick={() => setRoleFilter(role)}
-                  className={`px-2.5 py-1 rounded-full text-[11px] whitespace-nowrap border ${
-                    roleFilter === role
-                      ? "bg-primary text-primary-foreground border-primary"
-                      : "bg-muted/60 text-muted-foreground border-border/60"
-                  }`}
-                >
-                  {roleLabel(role)}
-                </button>
-              )
-            )}
+                key={value}
+                type="button"
+                onClick={() => setFilter(value)}
+                className={`px-2.5 py-1 rounded-full text-[11px] whitespace-nowrap border ${
+                  filter === value
+                    ? "bg-primary text-primary-foreground border-primary"
+                    : "bg-muted/60 text-muted-foreground border-border/60"
+                }`}
+              >
+                {filterLabel(value)}
+              </button>
+            ))}
           </div>
         </div>
 
         <ScrollArea className="rounded-md border bg-card/40 max-h-[70vh]">
-          <div className="p-3 space-y-4">
-            {trinketItems.length > 0 && (
-              <div className="space-y-1.5">
-                <div className="text-[11px] font-semibold text-muted-foreground">
-                  {lang === "ko_KR"
-                    ? "장신구 / 와드 / 포션"
-                    : "Trinkets / Wards / Potions"}
-                </div>
-                <div className="grid grid-cols-1 gap-1.5">
-                  {trinketItems.map((item) => (
-                    <ItemCell
-                      key={item.id}
-                      item={item}
-                      version={version}
-                      isSelected={selectedItem?.id === item.id}
-                      onSelect={() => setSelectedItem(item)}
-                    />
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {bootItems.length > 0 && (
-              <div className="space-y-1.5">
-                <div className="text-[11px] font-semibold text-muted-foreground">
-                  {lang === "ko_KR" ? "신발" : "Boots"}
-                </div>
-                <div className="grid grid-cols-1 gap-1.5">
-                  {bootItems.map((item) => (
-                    <ItemCell
-                      key={item.id}
-                      item={item}
-                      version={version}
-                      isSelected={selectedItem?.id === item.id}
-                      onSelect={() => setSelectedItem(item)}
-                    />
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {(Object.keys(mainItemsByTier) as ItemTier[]).map((tier) => {
-              const list = mainItemsByTier[tier];
+          <div className="p-2 space-y-2">
+            {(Object.keys(itemsByTier) as ItemTier[]).map((tier) => {
+              const list = itemsByTier[tier];
               if (!list || list.length === 0) return null;
               return (
                 <div key={tier} className="space-y-1.5">
                   <div className="text-[11px] font-semibold text-muted-foreground">
                     {tierLabel(tier)}
                   </div>
-                  <div className="grid grid-cols-1 gap-1.5">
+                  <div className="flex flex-wrap gap-1.5">
                     {list.map((item) => (
                       <ItemCell
                         key={item.id}
@@ -562,6 +578,7 @@ export function ItemsTab({ version, lang }: ItemsTabProps) {
                         version={version}
                         isSelected={selectedItem?.id === item.id}
                         onSelect={() => setSelectedItem(item)}
+                        lang={lang}
                       />
                     ))}
                   </div>
@@ -593,120 +610,82 @@ export function ItemsTab({ version, lang }: ItemsTabProps) {
 
   return (
     <div className="mt-4 space-y-3">
-      <div className="flex items-center gap-2">
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <div className="flex flex-wrap gap-1">
+          {(
+            [
+              "all",
+              "fighter",
+              "mage",
+              "assassin",
+              "support",
+              "tank",
+              "trinket",
+              "boots",
+            ] as ItemFilter[]
+          ).map((value) => (
+            <button
+              key={value}
+              type="button"
+              onClick={() => setFilter(value)}
+              className={`px-2.5 py-1 rounded-full text-[11px] whitespace-nowrap border ${
+                filter === value
+                  ? "bg-primary text-primary-foreground border-primary"
+                  : "bg-muted/60 text-muted-foreground border-border/60"
+              }`}
+            >
+              {filterLabel(value)}
+            </button>
+          ))}
+        </div>
         <Input
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder={
             lang === "ko_KR" ? "아이템 이름 검색..." : "Search item name..."
           }
-          className="h-8 text-xs md:text-sm max-w-xs"
+          className="h-8 text-xs md:text-sm w-full sm:w-52 md:w-64"
         />
-        <div className="flex gap-1">
-          {(["all", "fighter", "mage", "assassin", "support", "tank"] as ItemRole[]).map(
-            (role) => (
-              <button
-                key={role}
-                type="button"
-                onClick={() => setRoleFilter(role)}
-                className={`px-2.5 py-1 rounded-full text-[11px] whitespace-nowrap border ${
-                  roleFilter === role
-                    ? "bg-primary text-primary-foreground border-primary"
-                    : "bg-muted/60 text-muted-foreground border-border/60"
-                }`}
-              >
-                {roleLabel(role)}
-              </button>
-            )
-          )}
-        </div>
       </div>
 
       <div className="rounded-md border bg-card/40">
-        <div className="flex h-[520px] lg:h-[580px]">
-          {/* Trinkets / Wards / Potions */}
-          <div className="w-[220px] border-r border-border/60 flex flex-col">
-            <div className="px-3 py-2 border-b border-border/60">
-              <div className="text-[11px] font-semibold text-muted-foreground">
-                {lang === "ko_KR"
-                  ? "장신구 / 와드 / 포션"
-                  : "Trinkets / Wards / Potions"}
-              </div>
-            </div>
-            <ScrollArea className="flex-1">
-              <div className="p-2 space-y-1.5">
-                {trinketItems.map((item) => (
-                  <ItemCell
-                    key={item.id}
-                    item={item}
-                    version={version}
-                    isSelected={selectedItem?.id === item.id}
-                    onSelect={() => setSelectedItem(item)}
-                  />
-                ))}
-              </div>
-            </ScrollArea>
-          </div>
-
-          {/* Boots */}
-          <div className="w-[220px] border-r border-border/60 flex flex-col">
-            <div className="px-3 py-2 border-b border-border/60">
-              <div className="text-[11px] font-semibold text-muted-foreground">
-                {lang === "ko_KR" ? "신발" : "Boots"}
-              </div>
-            </div>
-            <ScrollArea className="flex-1">
-              <div className="p-2 space-y-1.5">
-                {bootItems.map((item) => (
-                  <ItemCell
-                    key={item.id}
-                    item={item}
-                    version={version}
-                    isSelected={selectedItem?.id === item.id}
-                    onSelect={() => setSelectedItem(item)}
-                  />
-                ))}
-              </div>
-            </ScrollArea>
-          </div>
-
-          {/* Main items by tier */}
-          <div className="flex-1 border-r border-border/60 flex flex-col min-w-0">
+        <div className="flex flex-col md:flex-row">
+          {/* Items list */}
+          <div className="md:flex-1 md:border-r border-border/60 flex flex-col min-w-0">
             <div className="px-3 py-2 border-b border-border/60 flex items-center justify-between">
               <div className="text-[11px] font-semibold text-muted-foreground">
                 {lang === "ko_KR" ? "아이템" : "Items"}
               </div>
             </div>
-            <ScrollArea className="flex-1">
-              <div className="p-2 space-y-3">
-                {(Object.keys(mainItemsByTier) as ItemTier[]).map((tier) => {
-                  const list = mainItemsByTier[tier];
-                  if (!list || list.length === 0) return null;
-                  return (
-                    <div key={tier} className="space-y-1.5">
-                      <div className="text-[11px] font-semibold text-muted-foreground">
-                        {tierLabel(tier)}
-                      </div>
-                      <div className="grid grid-cols-1 xl:grid-cols-2 gap-1.5">
-                        {list.map((item) => (
-                          <ItemCell
-                            key={item.id}
-                            item={item}
-                            version={version}
-                            isSelected={selectedItem?.id === item.id}
-                            onSelect={() => setSelectedItem(item)}
-                          />
-                        ))}
-                      </div>
+            <div className="p-1.5 space-y-1.5">
+              {(Object.keys(itemsByTier) as ItemTier[]).map((tier) => {
+                const list = itemsByTier[tier];
+                if (!list || list.length === 0) return null;
+                return (
+                  <div key={tier} className="space-y-1">
+                    <div className="text-[11px] font-semibold text-muted-foreground">
+                      {tierLabel(tier)}
                     </div>
-                  );
-                })}
-              </div>
-            </ScrollArea>
+                    <div className="flex flex-wrap gap-1.5">
+                      {list.map((item) => (
+                        <ItemCell
+                          key={item.id}
+                          item={item}
+                          version={version}
+                          isSelected={selectedItem?.id === item.id}
+                          onSelect={() => setSelectedItem(item)}
+                          lang={lang}
+                        />
+                      ))}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
           </div>
 
           {/* Detail panel */}
-          <div className="w-[320px] hidden md:flex flex-col p-3">
+          <div className="md:w-[340px] hidden md:flex flex-col p-3 md:sticky md:top-16 self-start">
             {selectedItem ? (
               detailContent
             ) : (
