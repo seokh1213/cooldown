@@ -1,16 +1,14 @@
 import React, { useCallback, useState, useEffect, useMemo } from "react";
 import { useLocation } from "react-router-dom";
-import { Select } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
-import { Moon, Sun, Menu, HelpCircle, AlertTriangle } from "lucide-react";
+import { Moon, Sun, Menu, HelpCircle, AlertTriangle, Globe } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
   Dialog,
   DialogContent,
   DialogTitle,
-  DialogDescription,
-  DialogHeader,
 } from "@/components/ui/dialog";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { VisuallyHidden } from "@/components/ui/visually-hidden";
 import { TutorialContent } from "./TutorialContent";
@@ -51,7 +49,8 @@ function Nav({
   const isEncyclopediaPage = location.pathname === "/";
   const [isMobile, setIsMobile] = useState(false);
   const [tutorialOpen, setTutorialOpen] = useState(false);
-  const [showVersionDialog, setShowVersionDialog] = useState(false);
+  const [versionPopoverOpen, setVersionPopoverOpen] = useState(false);
+  const [languagePopoverOpen, setLanguagePopoverOpen] = useState(false);
 
   const isVersionMismatch = useMemo(() => {
     if (!version || !cdragonVersion) return false;
@@ -70,9 +69,10 @@ function Nav({
     return () => window.removeEventListener("resize", checkMobile);
   }, []);
 
-  const handleChange = useCallback(
-    (e: React.ChangeEvent<HTMLSelectElement>) => {
-      selectHandler(e.target.value);
+  const handleLanguageChange = useCallback(
+    (newLang: string) => {
+      selectHandler(newLang);
+      setLanguagePopoverOpen(false);
     },
     [selectHandler]
   );
@@ -111,31 +111,65 @@ function Nav({
           )}
           {!isEncyclopediaPage && <div className="flex-1" />}
           {/* Version with mismatch icon */}
-          {version && (
-            <div className="hidden sm:flex items-center gap-1.5">
-              {/* Version mismatch icon - placed before version text */}
-              {isVersionMismatch && (
-                <button
-                  onClick={() => setShowVersionDialog(true)}
-                  className="text-red-500 hover:text-red-600 transition-colors"
-                  aria-label={t.versionNotice.title}
-                >
-                  <AlertTriangle className="h-4 w-4" />
-                </button>
-              )}
-              {isVersionMismatch ? (
-                <button
-                  onClick={() => setShowVersionDialog(true)}
-                  className="text-xs font-medium leading-none text-red-500 hover:text-red-600 transition-colors cursor-pointer"
-                  aria-label={t.versionNotice.title}
-                >
-                  v{version}
-                </button>
-              ) : (
-                <div className="text-xs font-medium leading-none text-muted-foreground/60">
-                  v{version}
+          {isVersionMismatch && (
+            <Popover open={versionPopoverOpen} onOpenChange={setVersionPopoverOpen}>
+              <PopoverTrigger asChild>
+                <div className="flex items-center gap-1.5 cursor-pointer">
+                  {/* Mobile: icon only */}
+                  <button
+                    className={cn(
+                      "sm:hidden h-auto w-auto p-1 rounded-md transition-all duration-200 text-red-500 hover:text-red-600 hover:bg-muted flex items-center justify-center -ml-1"
+                    )}
+                    aria-label={t.versionNotice.title}
+                  >
+                    <AlertTriangle className="h-4 w-4" />
+                  </button>
+                  {/* Desktop: icon + version */}
+                  {version && (
+                    <>
+                      <button
+                        className={cn(
+                          "hidden sm:flex h-auto w-auto p-1 rounded-md transition-all duration-200 text-red-500 hover:text-red-600 hover:bg-muted items-center justify-center -ml-1"
+                        )}
+                        aria-label={t.versionNotice.title}
+                      >
+                        <AlertTriangle className="h-4 w-4" />
+                      </button>
+                      <button
+                        className="hidden sm:block text-xs font-medium leading-none text-red-500 hover:text-red-600 transition-colors"
+                        aria-label={t.versionNotice.title}
+                      >
+                        v{version}
+                      </button>
+                    </>
+                  )}
                 </div>
-              )}
+              </PopoverTrigger>
+              <PopoverContent className="w-80 p-4" align="end" sideOffset={8}>
+                <div className="space-y-3">
+                  <div className="flex items-center gap-2">
+                    <AlertTriangle className="h-5 w-5 text-red-500 flex-shrink-0" />
+                    <h4 className="font-semibold text-sm leading-none">{t.versionNotice.title}</h4>
+                  </div>
+                  <p className="text-xs text-muted-foreground">{t.versionNotice.description}</p>
+                  <div className="space-y-1.5 pt-2 border-t border-border">
+                    <div className="text-xs">
+                      <span className="font-semibold">{t.versionNotice.ddragonLabel}:</span>{" "}
+                      {version}
+                    </div>
+                    <div className="text-xs">
+                      <span className="font-semibold">{t.versionNotice.cdragonLabel}:</span>{" "}
+                      {cdragonVersion ?? "-"}
+                    </div>
+                  </div>
+                </div>
+              </PopoverContent>
+            </Popover>
+          )}
+          {/* Version without mismatch - desktop only */}
+          {version && !isVersionMismatch && (
+            <div className="hidden sm:block text-xs font-medium leading-none text-muted-foreground/60">
+              v{version}
             </div>
           )}
           {onThemeToggle && (
@@ -164,7 +198,7 @@ function Nav({
                 size="icon"
                 onClick={() => setTutorialOpen(true)}
                 className={cn(
-                  "h-9 w-9 transition-all duration-200 text-muted-foreground/60 hover:bg-muted hover:text-muted-foreground flex items-center justify-center"
+                  "h-auto w-auto p-1 transition-all duration-200 text-muted-foreground/60 hover:bg-muted hover:text-muted-foreground flex items-center justify-center"
                 )}
                 aria-label={t.nav.tutorial.title}
                 title={t.nav.tutorial.title}
@@ -195,45 +229,55 @@ function Nav({
               </Dialog>
             </>
           )}
-          <Select
-            defaultValue={lang}
-            onChange={handleChange}
-            className="h-9 w-auto min-w-[80px] border border-border/50 bg-background/50 backdrop-blur-sm px-2 rounded-md focus-visible:ring-2 focus-visible:ring-primary/20 focus-visible:ring-offset-0 text-xs text-muted-foreground/70 cursor-pointer hover:border-primary/50 transition-colors flex items-center"
-            aria-label="Select language"
-          >
-            <option value="ko_KR">{t.nav.language.korean}</option>
-            <option value="en_US">{t.nav.language.english}</option>
-          </Select>
+          {/* Language selector */}
+          <Popover open={languagePopoverOpen} onOpenChange={setLanguagePopoverOpen}>
+            <PopoverTrigger asChild>
+              <Button
+                variant="ghost"
+                size="icon"
+                className={cn(
+                  "h-auto w-auto p-1 transition-all duration-200 text-muted-foreground/60 hover:bg-muted hover:text-muted-foreground flex items-center justify-center"
+                )}
+                aria-label="Select language"
+                title="Select language"
+              >
+                <Globe className="h-4 w-4" />
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-64 p-3" align="end" sideOffset={8}>
+              <div className="space-y-2">
+                <h4 className="font-medium text-sm leading-none mb-3">{t.nav.language.selectTitle}</h4>
+                <div className="grid grid-cols-2 gap-2">
+                  <button
+                    onClick={() => handleLanguageChange("ko_KR")}
+                    className={cn(
+                      "flex flex-col items-center justify-center gap-2 p-3 rounded-lg border-2 transition-all",
+                      lang === "ko_KR"
+                        ? "border-primary bg-primary/10"
+                        : "border-border hover:border-primary/50 hover:bg-muted/50"
+                    )}
+                  >
+                    <span className="text-2xl">🇰🇷</span>
+                    <span className="text-xs font-medium">{t.nav.language.korean}</span>
+                  </button>
+                  <button
+                    onClick={() => handleLanguageChange("en_US")}
+                    className={cn(
+                      "flex flex-col items-center justify-center gap-2 p-3 rounded-lg border-2 transition-all",
+                      lang === "en_US"
+                        ? "border-primary bg-primary/10"
+                        : "border-border hover:border-primary/50 hover:bg-muted/50"
+                    )}
+                  >
+                    <span className="text-2xl">🇺🇸</span>
+                    <span className="text-xs font-medium">{t.nav.language.english}</span>
+                  </button>
+                </div>
+              </div>
+            </PopoverContent>
+          </Popover>
         </div>
       </nav>
-      {/* Version mismatch dialog */}
-      {isVersionMismatch && (
-        <Dialog open={showVersionDialog} onOpenChange={setShowVersionDialog}>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle className="flex items-center gap-2">
-                <AlertTriangle className="h-5 w-5 text-red-500" />
-                {t.versionNotice.title}
-              </DialogTitle>
-              <DialogDescription className="pt-2">
-                <div className="space-y-3">
-                  <p>{t.versionNotice.description}</p>
-                  <div className="space-y-1.5 pt-2 border-t border-border">
-                    <div>
-                      <span className="font-semibold">{t.versionNotice.ddragonLabel}:</span>{" "}
-                      {version}
-                    </div>
-                    <div>
-                      <span className="font-semibold">{t.versionNotice.cdragonLabel}:</span>{" "}
-                      {cdragonVersion ?? "-"}
-                    </div>
-                  </div>
-                </div>
-              </DialogDescription>
-            </DialogHeader>
-          </DialogContent>
-        </Dialog>
-      )}
     </>
   );
 }

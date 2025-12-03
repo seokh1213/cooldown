@@ -14,6 +14,7 @@ export interface Translations {
     language: {
       korean: string;
       english: string;
+      selectTitle: string;
     };
   };
   sidebar: {
@@ -165,6 +166,7 @@ export const translations: Record<Language, Translations> = {
       language: {
         korean: "한국어",
         english: "Eng",
+        selectTitle: "언어 선택",
       },
     },
     sidebar: {
@@ -315,6 +317,7 @@ export const translations: Record<Language, Translations> = {
       language: {
         korean: "한국어",
         english: "Eng",
+        selectTitle: "Select Language",
       },
     },
     sidebar: {
