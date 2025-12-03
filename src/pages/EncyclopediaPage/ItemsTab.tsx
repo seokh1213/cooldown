@@ -194,9 +194,18 @@ export function ItemsTab({ version, lang }: ItemsTabProps) {
       .then((data) => {
         if (!cancelled) {
           const valid = data.filter(shouldShowInStore);
-          setItems(valid);
-          if (!selectedItem && valid.length > 0) {
-            setSelectedItem(valid[0]);
+          // 같은 이름의 아이템 중복 제거 (첫 번째 것만 유지)
+          const seenNames = new Set<string>();
+          const uniqueItems = valid.filter((item) => {
+            if (seenNames.has(item.name)) {
+              return false;
+            }
+            seenNames.add(item.name);
+            return true;
+          });
+          setItems(uniqueItems);
+          if (!selectedItem && uniqueItems.length > 0) {
+            setSelectedItem(uniqueItems[0]);
           }
         }
       })
@@ -453,7 +462,7 @@ export function ItemsTab({ version, lang }: ItemsTabProps) {
         <div className="font-semibold text-[11px]">
           {lang === "ko_KR" ? "설명" : "Description"}
         </div>
-        <div className="rounded-md border bg-background/60 p-2 text-[11px] leading-relaxed">
+        <div className="text-[11px] leading-relaxed">
           <span
             dangerouslySetInnerHTML={{
               __html: selectedItem.description,
