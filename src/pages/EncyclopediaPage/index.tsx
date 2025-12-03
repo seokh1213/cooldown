@@ -62,9 +62,8 @@ function EncyclopediaPageContent({
     return isValidTab(tabParam) ? tabParam : null;
   }, [searchParams]);
   
-  // PC에서만 URL 쿼리 파라미터에서 초기 탭 읽기
+  // URL 쿼리 파라미터에서 초기 탭 읽기
   const getInitialTab = (): EncyclopediaTab => {
-    if (isMobile) return "skills";
     return urlTabParam || "skills";
   };
   
@@ -72,10 +71,8 @@ function EncyclopediaPageContent({
   const lastUrlTabRef = useRef<string | null>(urlTabParam);
   const lastActiveTabRef = useRef<EncyclopediaTab>(getInitialTab());
   
-  // PC에서만 URL 파라미터 변경 시 activeTab 동기화 (브라우저 히스토리 네비게이션 대응)
+  // URL 파라미터 변경 시 activeTab 동기화 (브라우저 히스토리 네비게이션 대응)
   useEffect(() => {
-    if (isMobile) return;
-    
     const urlTab = urlTabParam || "skills";
     const lastUrlTab = lastUrlTabRef.current || "skills";
     
@@ -86,12 +83,10 @@ function EncyclopediaPageContent({
     }
     
     lastUrlTabRef.current = urlTabParam;
-  }, [urlTabParam, isMobile, activeTab]);
+  }, [urlTabParam, activeTab]);
   
-  // PC에서만 activeTab 변경 시 URL 업데이트
+  // activeTab 변경 시 URL 업데이트
   useEffect(() => {
-    if (isMobile) return;
-    
     const currentUrlTab = urlTabParam || "skills";
     const lastActiveTab = lastActiveTabRef.current;
     
@@ -109,7 +104,7 @@ function EncyclopediaPageContent({
     }
     
     lastActiveTabRef.current = activeTab;
-  }, [activeTab, isMobile, urlTabParam, searchParams, setSearchParams]);
+  }, [activeTab, urlTabParam, searchParams, setSearchParams]);
   
   const [showSelector, setShowSelector] = useState(false);
   const { cdragonVersion } = useVersionContext();
