@@ -4,11 +4,11 @@
 
 import { logger } from "./logger";
 
-// 배포 버전 해시 키 (로컬 스토리지에 저장되는 키)
-const DEPLOYMENT_VERSION_STORAGE_KEY = "app_deployment_version";
+// 직렬화(스키마) 버전 해시 키 (로컬 스토리지에 저장되는 키)
+const SERIALIZATION_VERSION_STORAGE_KEY = "app_serialization_version";
 
-// 현재 배포 버전 해시 (빌드 시점에 주입됨)
-const CURRENT_DEPLOYMENT_VERSION = import.meta.env.VITE_DEPLOYMENT_VERSION || "dev";
+// 현재 직렬화(스키마) 버전 해시 (빌드 시점에 주입됨)
+const CURRENT_SERIALIZATION_VERSION = import.meta.env.VITE_SERIALIZATION_VERSION || "dev";
 
 // Tab 인터페이스 유효성 검사
 interface Tab {
@@ -129,7 +129,7 @@ export function validateAllStorageData(): void {
 
 /**
  * 데이터를 저장할 때 구조 유효성만 별도로 관리하고,
- * 버전 관리는 배포 해시(VITE_DEPLOYMENT_VERSION)로 일괄 처리한다.
+ * 버전 관리는 직렬화 해시(VITE_SERIALIZATION_VERSION)로 일괄 처리한다.
  */
 export function setStorageWithVersion(key: string, value: string): void {
   localStorage.setItem(key, value);
@@ -164,28 +164,28 @@ function clearAllLocalStorage(): void {
  */
 export function checkAndClearStorageIfVersionMismatch(): void {
   try {
-    const storedVersion = localStorage.getItem(DEPLOYMENT_VERSION_STORAGE_KEY);
+    const storedVersion = localStorage.getItem(SERIALIZATION_VERSION_STORAGE_KEY);
     
-    // 저장된 버전이 없거나 현재 버전과 다르면 모든 데이터 초기화
-    if (storedVersion !== CURRENT_DEPLOYMENT_VERSION) {
+    // 저장된 버전이 없거나 현재 직렬화 버전과 다르면 모든 데이터 초기화
+    if (storedVersion !== CURRENT_SERIALIZATION_VERSION) {
       logger.warn(
-        `Deployment version mismatch. Stored: ${storedVersion}, Current: ${CURRENT_DEPLOYMENT_VERSION}. Clearing all localStorage data.`
+        `Serialization version mismatch. Stored: ${storedVersion}, Current: ${CURRENT_SERIALIZATION_VERSION}. Clearing all localStorage data.`
       );
       clearAllLocalStorage();
       
-      // 새로운 배포 버전 저장
-      localStorage.setItem(DEPLOYMENT_VERSION_STORAGE_KEY, CURRENT_DEPLOYMENT_VERSION);
+      // 새로운 직렬화 버전 저장
+      localStorage.setItem(SERIALIZATION_VERSION_STORAGE_KEY, CURRENT_SERIALIZATION_VERSION);
     } else {
-      logger.debug(`Deployment version matches: ${CURRENT_DEPLOYMENT_VERSION}`);
+      logger.debug(`Serialization version matches: ${CURRENT_SERIALIZATION_VERSION}`);
     }
   } catch (error) {
-    logger.error("Error checking deployment version:", error);
+    logger.error("Error checking serialization version:", error);
     // 에러 발생 시 안전을 위해 초기화
     clearAllLocalStorage();
     try {
-      localStorage.setItem(DEPLOYMENT_VERSION_STORAGE_KEY, CURRENT_DEPLOYMENT_VERSION);
+      localStorage.setItem(SERIALIZATION_VERSION_STORAGE_KEY, CURRENT_SERIALIZATION_VERSION);
     } catch (e) {
-      logger.error("Failed to set deployment version:", e);
+      logger.error("Failed to set serialization version:", e);
     }
   }
 }

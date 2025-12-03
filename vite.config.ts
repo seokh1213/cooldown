@@ -62,7 +62,11 @@ function fixDynamicImports() {
   }
 }
 
-function getDeploymentVersion(mode: string): string {
+/**
+ * 직렬화(스토리지 스키마) 버전 해시를 계산한다.
+ * 이 값은 스키마 관련 파일이 바뀔 때만 변한다.
+ */
+function getSerializationVersion(mode: string): string {
   if (mode === 'production') {
     // localStorage / sessionStorage 직렬화 구조(스키마)가 정의된 파일들만 해싱해서 버전을 만든다.
     // 이 배열에 포함된 파일 내용이 바뀔 때만 해시가 변경되므로,
@@ -87,21 +91,41 @@ function getDeploymentVersion(mode: string): string {
       hash.update(content)
     }
 
-    const deploymentVersion = hash.digest('hex').substring(0, 16)
-    console.log(`📦 Storage schema based deployment version: ${deploymentVersion}`)
-    return deploymentVersion;
+    const serializationVersion = hash.digest('hex').substring(0, 16)
+    console.log(`📦 Storage schema based serialization version: ${serializationVersion}`)
+    return serializationVersion;
   }
   return 'dev';
 }
 
+/**
+ * 실제 배포 빌드마다 달라지는 버전 문자열.
+ * PWA 업데이트 감지나 UI 표시용으로 사용한다.
+ */
+function getDeploymentVersion(mode: string): string {
+  if (mode === 'production') {
+    const hash = createHash('sha256')
+    hash.update(Date.now().toString())
+    hash.update(Math.random().toString())
+    const deploymentVersion = hash.digest('hex').substring(0, 16)
+    console.log(`🚀 Deployment version: ${deploymentVersion}`)
+    return deploymentVersion
+  }
+  return 'dev'
+}
+
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => {
-  const deploymentVersion = getDeploymentVersion(mode);
+  const serializationVersion = getSerializationVersion(mode)
+  const deploymentVersion = getDeploymentVersion(mode)
   
   return {
   plugins: [
     react(),
     VitePWA({
+      // virtual:pwa-register 를 직접 사용하는 방식으로 변경했으므로
+      // HTML에 registerSW 스크립트를 자동 주입하지 않도록 설정
+      injectRegister: null,
       registerType: 'autoUpdate',
       includeAssets: [
         'favicon.ico',
@@ -153,6 +177,10 @@ export default defineConfig(({ mode }) => {
       },
       workbox: {
         globPatterns: ['**/*.{js,css,html,png,svg,ico,json}'],
+      },
+      // 개발 서버에서도 virtual:pwa-register 모듈이 동작하도록 활성화
+      devOptions: {
+        enabled: true,
       },
     }),
     // 동적 import 경로 수정 플러그인
@@ -250,6 +278,7 @@ export default defineConfig(({ mode }) => {
     chunkSizeWarningLimit: 600,
   },
   define: {
+    'import.meta.env.VITE_SERIALIZATION_VERSION': JSON.stringify(serializationVersion),
     'import.meta.env.VITE_DEPLOYMENT_VERSION': JSON.stringify(deploymentVersion),
   },
 }})

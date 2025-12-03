@@ -1,8 +1,8 @@
 /**
  * localStorage / sessionStorage에 실제로 직렬화되어 저장되는 데이터들의 스키마 정의
  *
- * 이 파일은 Vite 빌드 시 해싱되어 `VITE_DEPLOYMENT_VERSION`을 만드는 데 사용된다.
- * 즉, 여기 정의된 타입(= 스키마)을 변경하면 배포 버전 해시가 바뀌고,
+ * 이 파일은 Vite 빌드 시 해싱되어 `VITE_SERIALIZATION_VERSION`을 만드는 데 사용된다.
+ * 즉, 여기 정의된 타입(= 스키마)을 변경하면 직렬화 버전 해시가 바뀌고,
  * `checkAndClearStorageIfVersionMismatch`에 의해 한 번 전체 스토리지가 초기화된다.
  *
  * - "상태(state)" 로직에서 사용하는 스토리지 구조는 반드시 여기 타입으로 표현하고,
