@@ -71,12 +71,16 @@ export function SortableNormalTab({
         {...listeners}
         className={DRAG_HANDLE_CLASSES}
         aria-label="Drag to reorder"
-        onTouchStart={(e) => e.preventDefault()}
       >
         <GripVertical className="h-3 w-3 pointer-events-none select-none" />
       </button>
 
-      <div className="flex items-center gap-1.5 flex-1 touch-none cursor-pointer select-none">
+      {/* 
+        모바일에서 탭을 쥐고 가로 스크롤이 되도록 하기 위해
+        여기의 `touch-none`(touch-action: none)을 제거합니다.
+        드래그는 왼쪽 Grip 아이콘 버튼(드래그 핸들)에서만 처리됩니다.
+      */}
+      <div className="flex items-center gap-1.5 flex-1 cursor-pointer select-none">
         <img
           src={CHAMP_ICON_URL(version, champion.id)}
           alt={champion.name}

@@ -67,12 +67,16 @@ export function SortableVsTab({
         {...listeners}
         className={DRAG_HANDLE_CLASSES}
         aria-label="Drag to reorder"
-        onTouchStart={(e) => e.preventDefault()}
       >
         <GripVertical className="h-3 w-3 pointer-events-none select-none" />
       </button>
 
-      <div className="flex items-center gap-1.5 flex-1 select-none touch-none">
+      {/* 
+        VS 탭도 리스트 영역에서 가로 스크롤이 가능해야 하므로
+        여기의 `touch-none`을 제거합니다.
+        드래그는 Grip 아이콘 버튼에서만 발생합니다.
+      */}
+      <div className="flex items-center gap-1.5 flex-1 select-none">
         <button
           onClick={(e) => {
             e.preventDefault();
