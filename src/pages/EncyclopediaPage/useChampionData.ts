@@ -5,6 +5,7 @@ import { ChampionWithInfo, Tab } from "./types";
 import { STORAGE_KEY } from "./constants";
 import { setStorageWithVersion, removeStorageWithVersion } from "@/lib/storageValidator";
 import { logger } from "@/lib/logger";
+import type { StoredSelectedChampion, StoredSelectedChampionList } from "@/lib/storageSchema";
 
 interface UseChampionDataProps {
   version: string | null;
@@ -29,10 +30,10 @@ export function useChampionData({
     try {
       const stored = localStorage.getItem(STORAGE_KEY);
       if (stored) {
-        const parsed = JSON.parse(stored);
+        const parsed: unknown = JSON.parse(stored);
         if (Array.isArray(parsed) && parsed.length > 0 && championList) {
-          const restoredChampions = parsed
-            .map((cachedChampion: { id: string; key?: string }) => {
+          const restoredChampions = (parsed as StoredSelectedChampion[])
+            .map((cachedChampion) => {
               const currentLangChampion = championList.find(
                 (champ) => champ.id === cachedChampion.id || champ.key === cachedChampion.key
               );
@@ -102,10 +103,9 @@ export function useChampionData({
   useEffect(() => {
     try {
       if (selectedChampions.length > 0) {
-        const toStore = selectedChampions.map(({ fullInfo: _fullInfo, isLoading: _isLoading, name: _name, title: _title, ...rest }) => ({
-          ...rest,
-          id: rest.id,
-          key: rest.key,
+        const toStore: StoredSelectedChampionList = selectedChampions.map(({ id, key }) => ({
+          id,
+          key,
         }));
         setStorageWithVersion(STORAGE_KEY, JSON.stringify(toStore));
       } else {
