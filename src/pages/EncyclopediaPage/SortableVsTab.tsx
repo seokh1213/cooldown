@@ -59,6 +59,7 @@ export function SortableVsTab({
     <div
       ref={setNodeRef}
       style={style}
+      data-tab-id={tab.id}
       className={cn(TAB_BASE_CLASSES, activeClasses, isDragging && 'z-50')}
     >
       {/* 드래그 핸들 */}

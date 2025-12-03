@@ -56,6 +56,7 @@ export function SortableNormalTab({
     <div
       ref={setNodeRef}
       style={style}
+      data-tab-id={tab.id}
       className={cn(TAB_BASE_CLASSES, activeClasses, isDragging && 'z-50')}
       onClick={(e) => {
         const target = e.target as HTMLElement;

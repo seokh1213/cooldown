@@ -47,8 +47,59 @@ export function MobileChampionTabs({
 }: MobileChampionTabsProps) {
   const { t } = useTranslation();
   const scrollAreaRef = useRef<HTMLDivElement | null>(null);
+  const prevTabsLengthRef = useRef<number>(tabs.length);
+  const hasInitializedRef = useRef<boolean>(false);
 
-  // 탭 개수가 변할 때마다(챔피언 추가/삭제) 가로 스크롤을 맨 끝으로 이동
+  // 선택된 탭 위치로 스크롤하는 함수 (애니메이션 옵션)
+  const scrollToSelectedTab = useRef((smooth: boolean = true) => {
+    if (!scrollAreaRef.current || !selectedTabId) return;
+
+    const viewport = scrollAreaRef.current.querySelector(
+      "[data-radix-scroll-area-viewport]"
+    ) as HTMLDivElement | null;
+
+    if (!viewport) return;
+
+    // 선택된 탭의 DOM 요소 찾기
+    const selectedTabElement = viewport.querySelector(
+      `[data-tab-id="${selectedTabId}"]`
+    ) as HTMLElement | null;
+
+    if (selectedTabElement) {
+      const tabLeft = selectedTabElement.offsetLeft;
+      const tabWidth = selectedTabElement.offsetWidth;
+      const viewportWidth = viewport.offsetWidth;
+      
+      // 탭이 뷰포트 중앙에 오도록 스크롤
+      const scrollLeft = tabLeft - (viewportWidth / 2) + (tabWidth / 2);
+      
+      if (smooth) {
+        viewport.scrollTo({
+          left: Math.max(0, scrollLeft),
+          behavior: "smooth",
+        });
+      } else {
+        // 애니메이션 없이 즉시 스크롤
+        viewport.scrollLeft = Math.max(0, scrollLeft);
+      }
+    }
+  });
+
+  // 앱 재부팅 시 선택된 탭 위치로 스크롤 (애니메이션 없이)
+  useEffect(() => {
+    if (!hasInitializedRef.current && selectedTabId && tabs.length > 0) {
+      hasInitializedRef.current = true;
+      
+      // DOM이 렌더링된 후 즉시 스크롤 (애니메이션 없이)
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          scrollToSelectedTab.current(false);
+        });
+      });
+    }
+  }, [selectedTabId, tabs.length]);
+
+  // 탭 개수가 증가하면(챔피언 추가) 맨 끝으로 스크롤
   useEffect(() => {
     if (!scrollAreaRef.current) return;
 
@@ -56,13 +107,30 @@ export function MobileChampionTabs({
       "[data-radix-scroll-area-viewport]"
     ) as HTMLDivElement | null;
 
-    if (viewport) {
+    if (!viewport) return;
+
+    // 탭 개수가 증가한 경우에만 맨 끝으로 스크롤
+    if (tabs.length > prevTabsLengthRef.current) {
       viewport.scrollTo({
         left: viewport.scrollWidth,
         behavior: "smooth",
       });
     }
+
+    prevTabsLengthRef.current = tabs.length;
   }, [tabs.length]);
+
+  // 선택된 탭이 변경되면 해당 위치로 스크롤 (사용자가 탭을 선택했을 때 - 애니메이션 있음)
+  useEffect(() => {
+    if (hasInitializedRef.current && selectedTabId) {
+      // 약간의 지연을 두어 DOM 업데이트가 완료된 후 스크롤
+      const timeoutId = setTimeout(() => {
+        scrollToSelectedTab.current(true);
+      }, 100);
+
+      return () => clearTimeout(timeoutId);
+    }
+  }, [selectedTabId]);
 
   return (
     <div className="border-b border-border -mx-4 px-4">
