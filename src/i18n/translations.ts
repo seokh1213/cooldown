@@ -284,11 +284,11 @@ export const translations: Record<Language, Translations> = {
       mpregenPerLevel: "레벨당 마나 재생",
     },
     versionNotice: {
-      title: "데이터 버전 안내",
+      title: "데이터 불일치 문제 안내",
       description:
-        "스킬 수치(CDragon)와 기본 정보(Data Dragon)의 패치 버전이 서로 다를 수 있습니다. 실제 인게임 수치와 일부 차이가 있을 수 있어요.",
-      cdragonLabel: "스킬 수치 기준(CDragon)",
-      ddragonLabel: "기본 정보 기준(Data Dragon)",
+        "스킬 수치(Community Dragon)와 기본정보 (Data Dragon)의 패치 버전이 서로 달라 실제 인게임 수치와 차이가 있습니다.",
+      ddragonLabel: "인게임 버전 (Data Dragon)",
+      cdragonLabel: "현재 스킬 데이터 버전 (Community Dragon)",
     },
     common: {
       level: "레벨",
@@ -434,11 +434,11 @@ export const translations: Record<Language, Translations> = {
       mpregenPerLevel: "Mana Regen per Level",
     },
     versionNotice: {
-      title: "Data Version Notice",
+      title: "Data Version Mismatch Notice",
       description:
-        "Skill values (CDragon) and base information (Data Dragon) may be based on different patch versions. Some numbers can differ from in-game values.",
-      cdragonLabel: "Skill values (CDragon)",
-      ddragonLabel: "Base info (Data Dragon)",
+        "Skill values (Community Dragon) and base information (Data Dragon) are based on different patch versions, which may differ from actual in-game values.",
+      ddragonLabel: "In-game Version (Data Dragon)",
+      cdragonLabel: "Current Skill Data Version (Community Dragon)",
     },
     common: {
       level: "Level",

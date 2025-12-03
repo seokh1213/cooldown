@@ -299,6 +299,7 @@ function AppContent({
                 nav={
                   <Nav
                     version={version}
+                    cdragonVersion={cdragonVersion}
                     lang={lang}
                     selectHandler={handleLangChange}
                     theme={theme}
