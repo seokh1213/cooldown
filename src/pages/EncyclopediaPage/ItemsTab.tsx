@@ -229,12 +229,15 @@ const ItemCell: React.FC<ItemCellProps> = ({
   lang,
 }) => {
   const priceLabel = getItemPriceLabel(item, lang);
+  const isUnavailableLabel =
+    (lang === "ko_KR" && priceLabel === "구매 불가") ||
+    (lang !== "ko_KR" && priceLabel === "Unavailable");
 
   return (
     <button
       type="button"
       onClick={onSelect}
-      className={`flex flex-col items-center gap-0 rounded-sm px-0.5 py-0 text-center transition-colors min-w-7 md:min-w-8 ${
+      className={`flex flex-col items-center gap-0 rounded-sm px-0.5 py-0 text-center transition-colors w-9 md:w-10 ${
         isSelected
           ? "bg-primary/20 border border-primary/60 shadow-sm"
           : "hover:bg-muted/60 border border-transparent"
@@ -245,7 +248,11 @@ const ItemCell: React.FC<ItemCellProps> = ({
         alt={item.name}
         className="w-7 h-7 md:w-8 md:h-8 aspect-square object-cover rounded-sm border border-border/60 bg-black/40 flex-shrink-0"
       />
-      <span className="text-[9px] md:text-[10px] text-amber-600 dark:text-amber-400 font-semibold whitespace-nowrap">
+      <span
+        className={`${
+          isUnavailableLabel ? "text-[8px] md:text-[9px]" : "text-[9px] md:text-[10px]"
+        } text-amber-600 dark:text-amber-400 font-semibold whitespace-nowrap`}
+      >
         {priceLabel}
       </span>
     </button>
