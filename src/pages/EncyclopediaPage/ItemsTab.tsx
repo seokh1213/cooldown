@@ -786,9 +786,9 @@ export function ItemsTab({ version, lang }: ItemsTabProps) {
                 {selectedItem?.name ?? "Item"}
               </DialogDescription>
             </VisuallyHidden>
-            <ScrollArea className="flex-1 min-h-0">
+            <div className="flex-1 min-h-0 overflow-y-auto">
               <div className="p-4">{detailContent}</div>
-            </ScrollArea>
+            </div>
           </DialogContent>
         </Dialog>
       </div>
