@@ -24,6 +24,11 @@ type ItemRole = "fighter" | "mage" | "assassin" | "support" | "tank";
 
 type ItemFilter = "all" | ItemRole | "trinket" | "boots";
 
+interface ItemTreeNode {
+  item: Item;
+  children: ItemTreeNode[];
+}
+
 function shouldShowInStore(item: Item): boolean {
   if (!item.maps || !item.maps["11"]) return false;
 
@@ -179,6 +184,7 @@ export function ItemsTab({ version, lang }: ItemsTabProps) {
   const [search, setSearch] = useState<string>("");
   const [filter, setFilter] = useState<ItemFilter>("all");
   const [selectedItem, setSelectedItem] = useState<Item | null>(null);
+  const [mobileDetailOpen, setMobileDetailOpen] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -297,44 +303,27 @@ export function ItemsTab({ version, lang }: ItemsTabProps) {
     return result;
   };
 
-  const buildComponentLevels = (root: Item): Item[][] => {
-    const levels: Item[][] = [];
-    const visited = new Set<string>();
-
-    let currentIds = root.from ? [...root.from] : [];
-
-    while (currentIds.length > 0) {
-      const levelItems: Item[] = [];
-      const nextIds: string[] = [];
-
-      currentIds.forEach((id) => {
-        if (visited.has(id)) return;
-        visited.add(id);
-        const component = itemMap.get(id);
-        if (!component) return;
-        levelItems.push(component);
-        if (component.from && component.from.length > 0) {
-          nextIds.push(...component.from);
-        }
-      });
-
-      if (levelItems.length > 0) {
-        levels.push(levelItems);
-      }
-      currentIds = nextIds;
+  const buildItemTree = (
+    root: Item,
+    depth: number = 0,
+    maxDepth: number = 6
+  ): ItemTreeNode => {
+    if (depth >= maxDepth) {
+      return { item: root, children: [] };
     }
 
-    return levels;
-  };
+    const children: ItemTreeNode[] = [];
 
-  const getDirectComponents = (root: Item): Item[] => {
-    if (!root.from || root.from.length === 0) return [];
-    const components: Item[] = [];
-    root.from.forEach((id) => {
-      const comp = itemMap.get(id);
-      if (comp) components.push(comp);
-    });
-    return components;
+    if (root.from && root.from.length > 0) {
+      root.from.forEach((id) => {
+        const childItem = itemMap.get(id);
+        if (childItem) {
+          children.push(buildItemTree(childItem, depth + 1, maxDepth));
+        }
+      });
+    }
+
+    return { item: root, children };
   };
 
   const detailContent = selectedItem && (
@@ -371,57 +360,67 @@ export function ItemsTab({ version, lang }: ItemsTabProps) {
         <div className="font-semibold">
           {lang === "ko_KR" ? "아이템 트리" : "Item Tree"}
         </div>
-        {buildComponentLevels(selectedItem).length > 0 ? (
-          <div className="flex flex-col items-center gap-1.5 pt-1">
-            {/* 루트 아이템 */}
-            <ItemCell
-              item={selectedItem}
-              version={version}
-              isSelected
-              onSelect={() => {}}
-              lang={lang}
-            />
-            {buildComponentLevels(selectedItem).map((level, levelIndex) => (
-              <div key={levelIndex} className="flex flex-col items-center gap-1">
-                {/* 레벨 사이 SVG 구분선 */}
-                <svg
-                  className="h-4 w-10 text-cyan-500 dark:text-cyan-400"
-                  viewBox="0 0 40 16"
-                  aria-hidden="true"
-                >
-                  <path
-                    d="M20 0 L20 8"
-                    stroke="currentColor"
-                    strokeWidth="2.5"
-                    strokeLinecap="round"
-                  />
-                  <path
-                    d="M4 8 L36 8"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                  />
-                </svg>
-                <div className="flex flex-wrap items-start justify-center gap-2">
-                  {level.map((component) => (
-                    <ItemCell
-                      key={component.id}
-                      item={component}
-                      version={version}
-                      isSelected={selectedItem.id === component.id}
-                      onSelect={() => setSelectedItem(component)}
-                      lang={lang}
-                    />
-                  ))}
-                </div>
+        {(() => {
+          const tree = buildItemTree(selectedItem);
+
+          const renderTree = (node: ItemTreeNode): JSX.Element => {
+            const hasChildren = node.children.length > 0;
+
+            return (
+              <div className="flex flex-col items-center gap-1">
+                <ItemCell
+                  item={node.item}
+                  version={version}
+                  isSelected={selectedItem.id === node.item.id}
+                  onSelect={() => setSelectedItem(node.item)}
+                  lang={lang}
+                />
+                {hasChildren && (
+                  <>
+                    <svg
+                      className="h-5 w-12 text-cyan-500 dark:text-cyan-400"
+                      viewBox="0 0 48 20"
+                      aria-hidden="true"
+                    >
+                      <path
+                        d="M24 0 L24 10"
+                        stroke="currentColor"
+                        strokeWidth="3"
+                        strokeLinecap="round"
+                      />
+                      <path
+                        d="M6 10 L42 10"
+                        stroke="currentColor"
+                        strokeWidth="2.5"
+                        strokeLinecap="round"
+                      />
+                    </svg>
+                    <div className="flex flex-wrap items-start justify-center gap-2">
+                      {node.children.map((child, index) => (
+                        <div
+                          key={`${child.item.id}-${index}`}
+                          className="flex flex-col items-center gap-1"
+                        >
+                          {renderTree(child)}
+                        </div>
+                      ))}
+                    </div>
+                  </>
+                )}
               </div>
-            ))}
-          </div>
-        ) : (
-          <span className="text-[10px] text-muted-foreground">
-            {lang === "ko_KR" ? "구성 아이템 없음" : "No components"}
-          </span>
-        )}
+            );
+          };
+
+          if (!tree.children.length && !tree.item.from?.length) {
+            return (
+              <span className="text-[10px] text-muted-foreground">
+                {lang === "ko_KR" ? "구성 아이템 없음" : "No components"}
+              </span>
+            );
+          }
+
+          return <div className="pt-1 flex justify-center">{renderTree(tree)}</div>;
+        })()}
       </div>
 
       {/* 하단 설명 (전체 영역 사용, 스크롤 없음) */}
@@ -573,7 +572,7 @@ export function ItemsTab({ version, lang }: ItemsTabProps) {
           </div>
         </div>
 
-        <ScrollArea className="rounded-md border bg-card/40 max-h-[70vh]">
+        <div className="rounded-md border bg-card/40">
           <div className="p-2 space-y-2">
             {(Object.keys(itemsByTier) as ItemTier[]).map((tier) => {
               const list = itemsByTier[tier];
@@ -590,7 +589,10 @@ export function ItemsTab({ version, lang }: ItemsTabProps) {
                         item={item}
                         version={version}
                         isSelected={selectedItem?.id === item.id}
-                        onSelect={() => setSelectedItem(item)}
+                        onSelect={() => {
+                          setSelectedItem(item);
+                          setMobileDetailOpen(true);
+                        }}
                         lang={lang}
                       />
                     ))}
@@ -599,11 +601,15 @@ export function ItemsTab({ version, lang }: ItemsTabProps) {
               );
             })}
           </div>
-        </ScrollArea>
+        </div>
 
         <Dialog
-          open={!!selectedItem}
-          onOpenChange={(open) => !open && setSelectedItem(null)}
+          open={mobileDetailOpen && !!selectedItem}
+          onOpenChange={(open) => {
+            if (!open) {
+              setMobileDetailOpen(false);
+            }
+          }}
         >
           <DialogContent className="w-[calc(100vw-32px)] max-w-lg max-h-[70vh] h-[70vh] p-0 rounded-xl overflow-hidden flex flex-col">
             <VisuallyHidden>

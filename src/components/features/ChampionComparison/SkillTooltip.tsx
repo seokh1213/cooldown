@@ -23,6 +23,8 @@ import { getCooldownText, getCostText } from "./utils";
 import { useDeviceType } from "@/hooks/useDeviceType";
 import { useTranslation } from "@/i18n";
 
+const ACTIVE_SKILL_TOOLTIP_EVENT = "cooldown:active-skill-tooltip";
+
 interface SkillTooltipProps {
   skill: ChampionSpell;
   skillIdx: number;
@@ -53,6 +55,7 @@ export function SkillTooltip({
   const [tooltipOpen, setTooltipOpen] = React.useState(false);
   const triggerRef = React.useRef<HTMLDivElement>(null);
   const closeTimeoutRef = React.useRef<number | null>(null);
+  const tooltipIdRef = React.useRef<string>("");
   const [desktopSide, setDesktopSide] = React.useState<"top" | "bottom">("bottom");
   const [desktopMaxHeight, setDesktopMaxHeight] = React.useState<number | undefined>(
     undefined
@@ -71,6 +74,17 @@ export function SkillTooltip({
 
   const openTooltip = React.useCallback(() => {
     if (isMobile) return;
+    if (!tooltipIdRef.current) {
+      tooltipIdRef.current = `${skill.id}-${skillIdx}-${version}`;
+    }
+    // 다른 스킬 툴팁들은 모두 닫고 현재 것만 열리도록 글로벌 이벤트 전파
+    if (typeof window !== "undefined") {
+      window.dispatchEvent(
+        new CustomEvent(ACTIVE_SKILL_TOOLTIP_EVENT, {
+          detail: tooltipIdRef.current,
+        })
+      );
+    }
     if (closeTimeoutRef.current !== null) {
       window.clearTimeout(closeTimeoutRef.current);
       closeTimeoutRef.current = null;
@@ -132,10 +146,34 @@ export function SkillTooltip({
   }, [isMobile, tooltipOpen]);
 
   React.useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const handleActiveChange = (event: Event) => {
+      const customEvent = event as CustomEvent<string>;
+      const activeId = customEvent.detail;
+      if (!tooltipIdRef.current) return;
+      if (activeId !== tooltipIdRef.current) {
+        if (closeTimeoutRef.current !== null) {
+          window.clearTimeout(closeTimeoutRef.current);
+          closeTimeoutRef.current = null;
+        }
+        setTooltipOpen(false);
+      }
+    };
+
+    window.addEventListener(
+      ACTIVE_SKILL_TOOLTIP_EVENT,
+      handleActiveChange as EventListener
+    );
+
     return () => {
       if (closeTimeoutRef.current !== null) {
         window.clearTimeout(closeTimeoutRef.current);
       }
+      window.removeEventListener(
+        ACTIVE_SKILL_TOOLTIP_EVENT,
+        handleActiveChange as EventListener
+      );
     };
   }, []);
 
