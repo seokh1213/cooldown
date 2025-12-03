@@ -1,4 +1,5 @@
-import { useState, useCallback, useMemo } from "react";
+import { useState, useCallback, useMemo, useEffect, useRef } from "react";
+import { useSearchParams } from "react-router-dom";
 import { Champion } from "@/types";
 import { arrayMove } from "@dnd-kit/sortable";
 import {
@@ -36,6 +37,12 @@ function getMajorMinor(version: string | null | undefined): string | null {
   return version;
 }
 
+type EncyclopediaTab = "skills" | "stats" | "runes" | "items";
+
+function isValidTab(tab: string | null): tab is EncyclopediaTab {
+  return tab === "skills" || tab === "stats" || tab === "runes" || tab === "items";
+}
+
 function EncyclopediaPageContent({
   lang,
   championList,
@@ -45,10 +52,66 @@ function EncyclopediaPageContent({
   initialTabs,
   initialSelectedTabId,
 }: EncyclopediaPageProps) {
-  const [activeTab, setActiveTab] = useState<"skills" | "stats" | "runes" | "items">("skills");
-  const [showSelector, setShowSelector] = useState(false);
+  const [searchParams, setSearchParams] = useSearchParams();
   const deviceType = useDeviceType();
   const isMobile = deviceType === "mobile";
+  
+  // URL에서 현재 탭 파라미터 읽기
+  const urlTabParam = useMemo(() => {
+    const tabParam = searchParams.get("tab");
+    return isValidTab(tabParam) ? tabParam : null;
+  }, [searchParams]);
+  
+  // PC에서만 URL 쿼리 파라미터에서 초기 탭 읽기
+  const getInitialTab = (): EncyclopediaTab => {
+    if (isMobile) return "skills";
+    return urlTabParam || "skills";
+  };
+  
+  const [activeTab, setActiveTab] = useState<EncyclopediaTab>(getInitialTab);
+  const lastUrlTabRef = useRef<string | null>(urlTabParam);
+  const lastActiveTabRef = useRef<EncyclopediaTab>(getInitialTab());
+  
+  // PC에서만 URL 파라미터 변경 시 activeTab 동기화 (브라우저 히스토리 네비게이션 대응)
+  useEffect(() => {
+    if (isMobile) return;
+    
+    const urlTab = urlTabParam || "skills";
+    const lastUrlTab = lastUrlTabRef.current || "skills";
+    
+    // URL이 실제로 변경되었을 때만 상태 업데이트 (우리가 설정한 변경이 아닌 경우)
+    if (urlTab !== lastUrlTab && urlTab !== activeTab) {
+      setActiveTab(urlTab);
+      lastActiveTabRef.current = urlTab;
+    }
+    
+    lastUrlTabRef.current = urlTabParam;
+  }, [urlTabParam, isMobile, activeTab]);
+  
+  // PC에서만 activeTab 변경 시 URL 업데이트
+  useEffect(() => {
+    if (isMobile) return;
+    
+    const currentUrlTab = urlTabParam || "skills";
+    const lastActiveTab = lastActiveTabRef.current;
+    
+    // activeTab이 실제로 변경되었고, URL과 다를 때만 업데이트
+    if (activeTab !== lastActiveTab && currentUrlTab !== activeTab) {
+      const newSearchParams = new URLSearchParams(searchParams);
+      if (activeTab === "skills") {
+        // 기본값이면 URL에서 제거
+        newSearchParams.delete("tab");
+      } else {
+        newSearchParams.set("tab", activeTab);
+      }
+      setSearchParams(newSearchParams, { replace: true });
+      lastUrlTabRef.current = activeTab === "skills" ? null : activeTab;
+    }
+    
+    lastActiveTabRef.current = activeTab;
+  }, [activeTab, isMobile, urlTabParam, searchParams, setSearchParams]);
+  
+  const [showSelector, setShowSelector] = useState(false);
   const { cdragonVersion } = useVersionContext();
   const { t } = useTranslation();
 
@@ -414,7 +477,9 @@ function EncyclopediaPageContent({
       <div className="mt-3 md:mt-4">
         <TabNavigation
           activeTab={activeTab}
-          onTabChange={setActiveTab}
+          onTabChange={(tab) => {
+            setActiveTab(tab as EncyclopediaTab);
+          }}
           onReset={resetAll}
         />
       </div>
