@@ -169,7 +169,7 @@ const ItemCell: React.FC<ItemCellProps> = ({
     <button
       type="button"
       onClick={onSelect}
-      className={`flex flex-col items-center gap-0.5 rounded-sm px-0.5 py-0.5 text-center transition-colors min-w-8 md:min-w-9 ${
+      className={`flex flex-col items-center gap-0 rounded-sm px-0.5 py-0 text-center transition-colors min-w-7 md:min-w-8 ${
         isSelected
           ? "bg-primary/20 border border-primary/60 shadow-sm"
           : "hover:bg-muted/60 border border-transparent"
@@ -178,7 +178,7 @@ const ItemCell: React.FC<ItemCellProps> = ({
       <img
         src={`https://ddragon.leagueoflegends.com/cdn/${version}/img/item/${item.id}.png`}
         alt={item.name}
-        className="w-8 h-8 md:w-9 md:h-9 rounded-sm border border-border/60 bg-black/40 flex-shrink-0"
+        className="w-7 h-7 md:w-8 md:h-8 aspect-square object-cover rounded-sm border border-border/60 bg-black/40 flex-shrink-0"
       />
       <span className="text-[9px] md:text-[10px] text-amber-600 dark:text-amber-400 font-semibold whitespace-nowrap">
         {priceLabel}
@@ -404,7 +404,7 @@ export function ItemsTab({ version, lang }: ItemsTabProps) {
             const hasChildren = node.children.length > 0;
 
             return (
-              <div className="flex flex-col items-center gap-1">
+              <div className="flex flex-col items-center gap-0">
                 <ItemCell
                   item={node.item}
                   version={version}
@@ -413,36 +413,43 @@ export function ItemsTab({ version, lang }: ItemsTabProps) {
                   lang={lang}
                 />
                 {hasChildren && (
-                  <>
-                    <svg
-                      className="h-5 w-12 text-cyan-500 dark:text-cyan-400"
-                      viewBox="0 0 48 20"
-                      aria-hidden="true"
-                    >
-                      <path
-                        d="M24 0 L24 10"
-                        stroke="currentColor"
-                        strokeWidth="3"
-                        strokeLinecap="round"
-                      />
-                      <path
-                        d="M6 10 L42 10"
-                        stroke="currentColor"
-                        strokeWidth="2.5"
-                        strokeLinecap="round"
-                      />
-                    </svg>
-                    <div className="flex flex-wrap items-start justify-center gap-1">
-                      {node.children.map((child, index) => (
-                        <div
-                          key={`${child.item.id}-${index}`}
-                          className="flex flex-col items-center gap-1"
-                        >
-                          {renderTree(child)}
-                        </div>
-                      ))}
+                  <div className="mt-0 flex flex-col items-stretch">
+                    {/* parent -> connector stem */}
+                    <div className="relative flex justify-center">
+                      <div className="h-1 w-[2px] bg-primary/60" />
                     </div>
-                  </>
+                    {/* tree-style branch row */}
+                    <div className="relative flex flex-nowrap items-start justify-center gap-y-0 pt-0">
+                      {node.children.map((child, index) => {
+                        const childrenCount = node.children.length;
+                        const isFirst = index === 0;
+                        const isLast = index === childrenCount - 1;
+                        const horizontalClass = isFirst
+                          ? "left-1/2 right-0"
+                          : isLast
+                          ? "left-0 right-1/2"
+                          : "left-0 right-0";
+
+                        return (
+                          <div
+                            key={`${child.item.id}-${index}`}
+                            className="relative flex flex-col items-center gap-0 pt-0.5 px-1"
+                          >
+                            {/* horizontal segment (no overhang past first/last child).
+                                For a single child, we skip the horizontal line so it becomes a straight stem. */}
+                            {childrenCount > 1 && (
+                              <div
+                                className={`pointer-events-none absolute top-0 h-[2px] bg-primary/60 ${horizontalClass}`}
+                              />
+                            )}
+                            {/* vertical from horizontal bar to each child (L-shaped cap) */}
+                            <div className="pointer-events-none absolute top-0 left-1/2 -translate-x-1/2 h-2 w-[2px] bg-primary/60" />
+                            {renderTree(child)}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
                 )}
               </div>
             );
@@ -456,7 +463,15 @@ export function ItemsTab({ version, lang }: ItemsTabProps) {
             );
           }
 
-          return <div className="pt-1 flex justify-center">{renderTree(tree)}</div>;
+          return (
+            <div className="pt-0">
+              <div className="w-full rounded-md border border-border/60 bg-muted/40 px-2 py-0.5 overflow-x-auto scrollbar-hide">
+                <div className="min-w-max flex justify-center">
+                  {renderTree(tree)}
+                </div>
+              </div>
+            </div>
+          );
         })()}
       </div>
 
