@@ -84,9 +84,37 @@ export function useTabManagement(version: string | null) {
     }
   }, [tabs, selectedTabId]);
 
-  const removeTab = useCallback((tabId: string) => {
-    setTabs((prev) => prev.filter((t) => t.id !== tabId));
-  }, []);
+  const removeTab = useCallback(
+    (tabId: string) => {
+      setTabs((prevTabs) => {
+        const removedIndex = prevTabs.findIndex((t) => t.id === tabId);
+        const nextTabs = prevTabs.filter((t) => t.id !== tabId);
+
+        setSelectedTabId((currentSelectedId) => {
+          // 현재 선택된 탭이 아니라면 선택 상태 유지 (단, 새 탭 목록에 여전히 존재할 때만)
+          if (currentSelectedId && currentSelectedId !== tabId) {
+            const stillExists = nextTabs.some((t) => t.id === currentSelectedId);
+            if (stillExists) {
+              return currentSelectedId;
+            }
+          }
+
+          // 삭제된 탭이 선택된 탭이었거나, 선택된 탭이 더 이상 존재하지 않는 경우
+          if (nextTabs.length === 0) {
+            return null;
+          }
+
+          // 삭제된 탭의 "왼쪽" 이웃을 우선 선택, 없으면 첫 번째 탭 선택
+          const neighborIndex = removedIndex > 0 ? removedIndex - 1 : 0;
+          const neighborTab = nextTabs[neighborIndex] ?? nextTabs[0];
+          return neighborTab.id;
+        });
+
+        return nextTabs;
+      });
+    },
+    [setSelectedTabId]
+  );
 
   const addTab = useCallback((tab: Tab) => {
     setTabs((prev) => [...prev, tab]);

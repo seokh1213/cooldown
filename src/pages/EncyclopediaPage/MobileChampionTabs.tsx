@@ -1,3 +1,4 @@
+import React, { useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import {
@@ -45,6 +46,23 @@ export function MobileChampionTabs({
   onAddClick,
 }: MobileChampionTabsProps) {
   const { t } = useTranslation();
+  const scrollAreaRef = useRef<HTMLDivElement | null>(null);
+
+  // 탭 개수가 변할 때마다(챔피언 추가/삭제) 가로 스크롤을 맨 끝으로 이동
+  useEffect(() => {
+    if (!scrollAreaRef.current) return;
+
+    const viewport = scrollAreaRef.current.querySelector(
+      "[data-radix-scroll-area-viewport]"
+    ) as HTMLDivElement | null;
+
+    if (viewport) {
+      viewport.scrollTo({
+        left: viewport.scrollWidth,
+        behavior: "smooth",
+      });
+    }
+  }, [tabs.length]);
 
   return (
     <div className="border-b border-border -mx-4 px-4">
@@ -53,7 +71,7 @@ export function MobileChampionTabs({
           {t.encyclopedia.champion}
         </span>
         {/* 가로 스크롤 영역 + 항상 보이는 스크롤바 (shadcn ScrollArea) */}
-        <ScrollArea type="always" className="flex-1">
+        <ScrollArea ref={scrollAreaRef} type="always" className="flex-1">
           <DndContext
             sensors={sensors}
             collisionDetection={closestCenter}
@@ -67,7 +85,7 @@ export function MobileChampionTabs({
                 가로 스크롤은 ScrollArea 내부에서 처리합니다.
                 콘텐츠 너비를 내용만큼만 잡기 위해 w-max를 사용합니다.
               */}
-              <div className="flex items-center gap-2 w-max select-none pr-2">
+              <div className="flex items-center gap-2 w-max select-none pr-2 pb-3">
                 {tabs.map((tab) => {
                   if (tab.mode === "vs") {
                     const championA = championsWithFullInfo.find(
