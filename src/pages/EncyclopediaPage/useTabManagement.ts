@@ -41,32 +41,6 @@ export function useTabManagement({
     }
   }, [version, initialTabs, initialSelectedTabId]);
 
-  // Save tabs to localStorage whenever tabs changes
-  useEffect(() => {
-    try {
-      if (tabs.length > 0) {
-        setStorageWithVersion(TABS_STORAGE_KEY, JSON.stringify(tabs));
-      } else {
-        removeStorageWithVersion(TABS_STORAGE_KEY);
-      }
-    } catch (error) {
-      logger.error("Failed to save tabs to storage:", error);
-    }
-  }, [tabs]);
-
-  // Save selected tab ID to localStorage
-  useEffect(() => {
-    try {
-      if (selectedTabId) {
-        setStorageWithVersion(SELECTED_TAB_ID_STORAGE_KEY, selectedTabId);
-      } else {
-        removeStorageWithVersion(SELECTED_TAB_ID_STORAGE_KEY);
-      }
-    } catch (error) {
-      logger.error("Failed to save selected tab ID to storage:", error);
-    }
-  }, [selectedTabId]);
-
   // 챔피언이 로드되면 기본 탭 선택 (탭이 없을 때만)
   useEffect(() => {
     if (!selectedTabId && tabs.length > 0) {

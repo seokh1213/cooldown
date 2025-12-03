@@ -100,23 +100,6 @@ export function useChampionData({
     }
   }, [version, lang, championList, initialSelectedChampions]);
 
-  // Save to localStorage whenever selectedChampions changes
-  useEffect(() => {
-    try {
-      if (selectedChampions.length > 0) {
-        const toStore: StoredSelectedChampionList = selectedChampions.map(({ id, key }) => ({
-          id,
-          key,
-        }));
-        setStorageWithVersion(STORAGE_KEY, JSON.stringify(toStore));
-      } else {
-        removeStorageWithVersion(STORAGE_KEY);
-      }
-    } catch (error) {
-      logger.error("Failed to save champions to storage:", error);
-    }
-  }, [selectedChampions]);
-
   // Update champion names when championList changes (language change)
   useEffect(() => {
     if (championList && selectedChampions.length > 0) {

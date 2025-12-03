@@ -19,8 +19,10 @@ import { TabNavigation } from "./TabNavigation";
 import { MobileChampionTabs } from "./MobileChampionTabs";
 import { VsSelectorModal } from "./VsSelectorModal";
 import { STORAGE_KEY, TABS_STORAGE_KEY, SELECTED_TAB_ID_STORAGE_KEY } from "./constants";
-import { removeStorageWithVersion } from "@/lib/storageValidator";
+import { setStorageWithVersion, removeStorageWithVersion } from "@/lib/storageValidator";
 import { VersionProvider, useVersionContext } from "@/context/VersionContext";
+import type { StoredSelectedChampionList } from "@/lib/storageSchema";
+import { logger } from "@/lib/logger";
 import { useTranslation } from "@/i18n";
 
 function getMajorMinor(version: string | null | undefined): string | null {
@@ -85,6 +87,38 @@ function EncyclopediaPageContent({
     tabs,
     initialSelectedChampions,
   });
+
+  // localStorage에 상태를 한 번에 저장하는 헬퍼 (메모리 상태는 항상 즉시 업데이트)
+  const persistEncyclopediaState = useCallback(() => {
+    try {
+      // 선택된 챔피언 목록 저장
+      if (selectedChampions.length > 0) {
+        const toStore: StoredSelectedChampionList = selectedChampions.map(({ id, key }) => ({
+          id,
+          key,
+        }));
+        setStorageWithVersion(STORAGE_KEY, JSON.stringify(toStore));
+      } else {
+        removeStorageWithVersion(STORAGE_KEY);
+      }
+
+      // 탭 배열 저장
+      if (tabs.length > 0) {
+        setStorageWithVersion(TABS_STORAGE_KEY, JSON.stringify(tabs));
+      } else {
+        removeStorageWithVersion(TABS_STORAGE_KEY);
+      }
+
+      // 선택된 탭 ID 저장
+      if (selectedTabId) {
+        setStorageWithVersion(SELECTED_TAB_ID_STORAGE_KEY, selectedTabId);
+      } else {
+        removeStorageWithVersion(SELECTED_TAB_ID_STORAGE_KEY);
+      }
+    } catch (error) {
+      logger.error("Failed to persist encyclopedia state to storage:", error);
+    }
+  }, [selectedChampions, tabs, selectedTabId]);
 
   // 드래그 앤 드롭 센서 설정
   const sensors = useSensors(
@@ -335,9 +369,19 @@ function EncyclopediaPageContent({
           championList={championList}
           selectedChampions={normalTabChampions}
           onSelect={addChampion}
-          onClose={() => setShowSelector(false)}
+          onClose={() => {
+            setShowSelector(false);
+            // 한 번의 선택 세션이 끝났을 때 localStorage에 일괄 저장
+            persistEncyclopediaState();
+          }}
           open={showSelector}
-          onOpenChange={setShowSelector}
+          onOpenChange={(open) => {
+            setShowSelector(open);
+            if (!open) {
+              // 모바일/PC 공통: 셀렉터가 닫힐 때 상태를 로컬 스토리지에 저장
+              persistEncyclopediaState();
+            }
+          }}
         />
       )}
 
@@ -352,11 +396,14 @@ function EncyclopediaPageContent({
         onClose={() => {
           setShowVsSelector(false);
           setVsSelectorMode(null);
+          // VS 셀렉터 세션 종료 시 상태 저장
+          persistEncyclopediaState();
         }}
         onOpenChange={(open) => {
           setShowVsSelector(open);
           if (!open) {
             setVsSelectorMode(null);
+            persistEncyclopediaState();
           }
         }}
       />
