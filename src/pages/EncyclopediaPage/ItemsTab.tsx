@@ -382,11 +382,26 @@ export function ItemsTab({ version, lang }: ItemsTabProps) {
               lang={lang}
             />
             {buildComponentLevels(selectedItem).map((level, levelIndex) => (
-              <div
-                key={levelIndex}
-                className="flex flex-col items-center gap-1"
-              >
-                <div className="h-3 w-px bg-border/60" />
+              <div key={levelIndex} className="flex flex-col items-center gap-1">
+                {/* 레벨 사이 SVG 구분선 */}
+                <svg
+                  className="h-4 w-10 text-cyan-500 dark:text-cyan-400"
+                  viewBox="0 0 40 16"
+                  aria-hidden="true"
+                >
+                  <path
+                    d="M20 0 L20 8"
+                    stroke="currentColor"
+                    strokeWidth="2.5"
+                    strokeLinecap="round"
+                  />
+                  <path
+                    d="M4 8 L36 8"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                  />
+                </svg>
                 <div className="flex flex-wrap items-start justify-center gap-2">
                   {level.map((component) => (
                     <ItemCell
@@ -409,7 +424,7 @@ export function ItemsTab({ version, lang }: ItemsTabProps) {
         )}
       </div>
 
-      {/* 하단 설명 */}
+      {/* 하단 설명 (전체 영역 사용, 스크롤 없음) */}
       <div className="flex-1 min-h-0 space-y-2 pt-2">
         <div className="flex items-start gap-3">
           <img
@@ -439,15 +454,13 @@ export function ItemsTab({ version, lang }: ItemsTabProps) {
         <div className="font-semibold text-[11px]">
           {lang === "ko_KR" ? "설명" : "Description"}
         </div>
-        <ScrollArea className="h-40 rounded-md border bg-background/60">
-          <div className="p-2 text-[11px] leading-relaxed">
-            <span
-              dangerouslySetInnerHTML={{
-                __html: selectedItem.description,
-              }}
-            />
-          </div>
-        </ScrollArea>
+        <div className="rounded-md border bg-background/60 p-2 text-[11px] leading-relaxed">
+          <span
+            dangerouslySetInnerHTML={{
+              __html: selectedItem.description,
+            }}
+          />
+        </div>
       </div>
     </div>
   );
