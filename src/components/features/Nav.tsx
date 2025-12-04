@@ -46,7 +46,7 @@ function Nav({
 }: NavProps) {
   const { t } = useTranslation();
   const location = useLocation();
-  const isEncyclopediaPage = location.pathname === "/";
+  const isEncyclopediaPage = location.pathname === "/encyclopedia";
   const [isMobile, setIsMobile] = useState(false);
   const [tutorialOpen, setTutorialOpen] = useState(false);
   const [versionPopoverOpen, setVersionPopoverOpen] = useState(false);

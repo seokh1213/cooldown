@@ -27,9 +27,6 @@ const ChampionCooldownPage = lazy(() => import("@/pages/ChampionCooldownPage"));
 const KillAnglePage = lazy(() => import("@/pages/KillAnglePage"));
 const OGPreviewPage = lazy(() => import("@/pages/OGPreviewPage"));
 const SimulationPage = lazy(() => import("@/pages/SimulationPage"));
-const ItemTooltipPreviewPage = lazy(
-  () => import("@/pages/ItemTooltipPreviewPage")
-);
 
 const THEME_STORAGE_KEY = "theme";
 const LANG_STORAGE_KEY = "language";
@@ -345,7 +342,7 @@ function AppContent({
       {(isLoading || !version) && <SplashScreen />}
       <Routes>
         <Route
-          path="/champion-cooldown"
+          path="/"
           element={
             isLoading || !version ? (
               <SplashScreen />
@@ -378,7 +375,7 @@ function AppContent({
           }
         />
         <Route
-          path="/"
+          path="/encyclopedia"
           element={
             isLoading || !version ? (
               <SplashScreen />
@@ -456,24 +453,14 @@ function AppContent({
         />
         {/* 개발 전용 프리뷰 페이지들 */}
         {import.meta.env.DEV && (
-          <>
-            <Route
-              path="/og-preview"
-              element={
-                <Suspense fallback={<SplashScreen />}>
-                  <OGPreviewPage />
-                </Suspense>
-              }
-            />
-            <Route
-              path="/item-tooltip-preview"
-              element={
-                <Suspense fallback={<SplashScreen />}>
-                  <ItemTooltipPreviewPage />
-                </Suspense>
-              }
-            />
-          </>
+          <Route
+            path="/og-preview"
+            element={
+              <Suspense fallback={<SplashScreen />}>
+                <OGPreviewPage />
+              </Suspense>
+            }
+          />
         )}
       </Routes>
     </>

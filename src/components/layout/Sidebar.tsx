@@ -33,8 +33,8 @@ function Sidebar({ isOpen, onClose }: SidebarProps) {
   const location = useLocation();
 
   const navItems: NavItem[] = [
-    { path: "/champion-cooldown", labelKey: "championCooldown", icon: Clock },
-    { path: "/", labelKey: "encyclopedia", icon: BookOpen },
+    { path: "/", labelKey: "championCooldown", icon: Clock },
+    { path: "/encyclopedia", labelKey: "encyclopedia", icon: BookOpen },
     { path: "/simulation", labelKey: "simulation", icon: Calculator },
   ];
 
