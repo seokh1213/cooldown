@@ -694,10 +694,30 @@ export async function getCommunityDragonSpellData(
       logger.warn("[StaticData] Failed to load CD spell data from static data, falling back to API:", error);
     }
   } else {
-    logger.warn(`[StaticData] No version provided for ${championId}, skipping static data and using API`);
+    logger.warn(
+      `[StaticData] No version provided for ${championId}, skipping static data and using API`
+    );
   }
 
-  const url = `https://raw.communitydragon.org/latest/game/data/characters/${cdChampionId}/${cdChampionId}.bin.json`;
+  // 정적 데이터/버전 정보를 기반으로 CDragon base path 결정
+  // 1) version.json 에서 읽어온 cdragonVersion
+  // 2) ddragonVersion(예: 15.24.1) → 15.24 형태로 변환
+  // 3) 최종 폴백: latest
+  const toCommunityDragonVersion = (v: string): string => {
+    const parts = v.split(".");
+    if (parts.length >= 2) {
+      return `${parts[0]}.${parts[1]}`;
+    }
+    return v;
+  };
+
+  const cdragonBasePath =
+    cdragonVersionForCache ||
+    (ddragonVersionForCache && ddragonVersionForCache !== "unknown"
+      ? toCommunityDragonVersion(ddragonVersionForCache)
+      : "latest");
+
+  const url = `https://raw.communitydragon.org/${cdragonBasePath}/game/data/characters/${cdChampionId}/${cdChampionId}.bin.json`;
 
   let response: Response;
   try {
@@ -854,7 +874,7 @@ export async function getCommunityDragonSpellData(
     if (spellDataKeys.length > 0) {
       const result: CommunityDragonSpellResult = {
         spellDataMap,
-        cdragonVersion: "latest",
+        cdragonVersion: cdragonBasePath,
         ddragonVersion: version || null,
       };
       try {
