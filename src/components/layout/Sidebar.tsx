@@ -10,7 +10,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import { X, BookOpen, Lightbulb, Calculator } from "lucide-react";
+import { X, BookOpen, Clock, Calculator } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
@@ -23,7 +23,7 @@ interface SidebarProps {
 
 interface NavItem {
   path: string;
-  labelKey: "encyclopedia" | "laningTips" | "simulation";
+  labelKey: "championCooldown" | "encyclopedia" | "simulation";
   icon: React.ComponentType<{ className?: string }>;
 }
 
@@ -33,8 +33,8 @@ function Sidebar({ isOpen, onClose }: SidebarProps) {
   const location = useLocation();
 
   const navItems: NavItem[] = [
+    { path: "/champion-cooldown", labelKey: "championCooldown", icon: Clock },
     { path: "/", labelKey: "encyclopedia", icon: BookOpen },
-    { path: "/laning-tips", labelKey: "laningTips", icon: Lightbulb },
     { path: "/simulation", labelKey: "simulation", icon: Calculator },
   ];
 

@@ -18,8 +18,8 @@ export interface Translations {
     };
   };
   sidebar: {
+    championCooldown: string;
     encyclopedia: string;
-    laningTips: string;
     killAngle: string;
     simulation: string;
   };
@@ -171,8 +171,8 @@ export const translations: Record<Language, Translations> = {
       },
     },
     sidebar: {
-      encyclopedia: "백과사전",
-      laningTips: "라인전 팁",
+      championCooldown: "챔피언 쿨타임",
+      encyclopedia: "룬, 아이템 백과",
       killAngle: "킬각 계산기",
       simulation: "시뮬레이션",
     },
@@ -323,8 +323,8 @@ export const translations: Record<Language, Translations> = {
       },
     },
     sidebar: {
-      encyclopedia: "Encyclopedia",
-      laningTips: "Laning Tips",
+      championCooldown: "Champion Cooldown",
+      encyclopedia: "Runes & Items Encyclopedia",
       killAngle: "Kill Angle Calculator",
       simulation: "Simulation",
     },

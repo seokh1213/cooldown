@@ -17,9 +17,13 @@ import {
   SELECTED_TAB_ID_STORAGE_KEY,
 } from "@/pages/EncyclopediaPage/constants";
 
+const COOLDOWN_STORAGE_KEY = "cooldown_selected_champions";
+const COOLDOWN_TABS_STORAGE_KEY = "cooldown_tabs";
+const COOLDOWN_SELECTED_TAB_ID_STORAGE_KEY = "cooldown_selected_tab_id";
+
 // Lazy load pages for code splitting
 const EncyclopediaPage = lazy(() => import("@/pages/EncyclopediaPage"));
-const LaningTipsPage = lazy(() => import("@/pages/LaningTipsPage"));
+const ChampionCooldownPage = lazy(() => import("@/pages/ChampionCooldownPage"));
 const KillAnglePage = lazy(() => import("@/pages/KillAnglePage"));
 const OGPreviewPage = lazy(() => import("@/pages/OGPreviewPage"));
 const SimulationPage = lazy(() => import("@/pages/SimulationPage"));
@@ -88,6 +92,10 @@ function App() {
     useState<StoredSelectedChampionList | null>(null);
   const [initialTabs, setInitialTabs] = useState<Tab[] | null>(null);
   const [initialSelectedTabId, setInitialSelectedTabId] = useState<string | null>(null);
+  const [initialCooldownSelectedChampions, setInitialCooldownSelectedChampions] =
+    useState<StoredSelectedChampionList | null>(null);
+  const [initialCooldownTabs, setInitialCooldownTabs] = useState<Tab[] | null>(null);
+  const [initialCooldownSelectedTabId, setInitialCooldownSelectedTabId] = useState<string | null>(null);
 
   const initData = useCallback(async () => {
     try {
@@ -132,6 +140,41 @@ function App() {
       } catch (error) {
         logger.warn("Failed to load stored encyclopedia selected tab id:", error);
         setInitialSelectedTabId(null);
+      }
+
+      // 챔피언 쿨타임 페이지 관련 초기 상태를 splash 타이밍에 한 번만 복원
+      try {
+        const storedCooldownSelected = window.localStorage.getItem(COOLDOWN_STORAGE_KEY);
+        if (storedCooldownSelected) {
+          const parsed = JSON.parse(storedCooldownSelected);
+          if (Array.isArray(parsed)) {
+            setInitialCooldownSelectedChampions(parsed as StoredSelectedChampionList);
+          }
+        }
+      } catch (error) {
+        logger.warn("Failed to load stored cooldown selected champions:", error);
+        setInitialCooldownSelectedChampions(null);
+      }
+
+      try {
+        const storedCooldownTabs = window.localStorage.getItem(COOLDOWN_TABS_STORAGE_KEY);
+        if (storedCooldownTabs) {
+          const parsedTabs = JSON.parse(storedCooldownTabs);
+          if (Array.isArray(parsedTabs)) {
+            setInitialCooldownTabs(parsedTabs as Tab[]);
+          }
+        }
+      } catch (error) {
+        logger.warn("Failed to load stored cooldown tabs:", error);
+        setInitialCooldownTabs(null);
+      }
+
+      try {
+        const storedCooldownTabId = window.localStorage.getItem(COOLDOWN_SELECTED_TAB_ID_STORAGE_KEY);
+        setInitialCooldownSelectedTabId(storedCooldownTabId);
+      } catch (error) {
+        logger.warn("Failed to load stored cooldown selected tab id:", error);
+        setInitialCooldownSelectedTabId(null);
       }
       
       const { ddragonVersion, cdragonVersion } = await getDataVersions();
@@ -254,6 +297,9 @@ function App() {
           initialSelectedChampions={initialSelectedChampions}
           initialTabs={initialTabs}
           initialSelectedTabId={initialSelectedTabId}
+          initialCooldownSelectedChampions={initialCooldownSelectedChampions}
+          initialCooldownTabs={initialCooldownTabs}
+          initialCooldownSelectedTabId={initialCooldownSelectedTabId}
           handleLangChange={handleLangChange}
           toggleTheme={toggleTheme}
         />
@@ -272,6 +318,9 @@ function AppContent({
   initialSelectedChampions,
   initialTabs,
   initialSelectedTabId,
+  initialCooldownSelectedChampions,
+  initialCooldownTabs,
+  initialCooldownSelectedTabId,
   handleLangChange,
   toggleTheme,
 }: {
@@ -284,6 +333,9 @@ function AppContent({
   initialSelectedChampions: StoredSelectedChampionList | null;
   initialTabs: Tab[] | null;
   initialSelectedTabId: string | null;
+  initialCooldownSelectedChampions: StoredSelectedChampionList | null;
+  initialCooldownTabs: Tab[] | null;
+  initialCooldownSelectedTabId: string | null;
   handleLangChange: (newLang: string) => void;
   toggleTheme: () => void;
 }) {
@@ -292,6 +344,39 @@ function AppContent({
       {/* 버전이 로드되기 전까지 스플래시 화면 표시 */}
       {(isLoading || !version) && <SplashScreen />}
       <Routes>
+        <Route
+          path="/champion-cooldown"
+          element={
+            isLoading || !version ? (
+              <SplashScreen />
+            ) : (
+              <Layout
+                nav={
+                  <Nav
+                    version={version}
+                    cdragonVersion={cdragonVersion}
+                    lang={lang}
+                    selectHandler={handleLangChange}
+                    theme={theme}
+                    onThemeToggle={toggleTheme}
+                  />
+                }
+              >
+                <Suspense fallback={<SplashScreen />}>
+                  <ChampionCooldownPage
+                    lang={lang}
+                    championList={championList}
+                    version={version}
+                    cdragonVersion={cdragonVersion}
+                    initialSelectedChampions={initialCooldownSelectedChampions}
+                    initialTabs={initialCooldownTabs}
+                    initialSelectedTabId={initialCooldownSelectedTabId}
+                  />
+                </Suspense>
+              </Layout>
+            )
+          }
+        />
         <Route
           path="/"
           element={
@@ -323,26 +408,6 @@ function AppContent({
                 </Suspense>
               </Layout>
             )
-          }
-        />
-        <Route
-          path="/laning-tips"
-          element={
-            <Layout
-              nav={
-                <Nav
-                  version={version || undefined}
-                  lang={lang}
-                  selectHandler={handleLangChange}
-                  theme={theme}
-                  onThemeToggle={toggleTheme}
-                />
-              }
-            >
-              <Suspense fallback={<SplashScreen />}>
-                <LaningTipsPage />
-              </Suspense>
-            </Layout>
           }
         />
         <Route
