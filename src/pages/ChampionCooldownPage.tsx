@@ -135,6 +135,8 @@ function ChampionCooldownPageContent({
     version,
     initialTabs,
     initialSelectedTabId,
+    tabsStorageKey: COOLDOWN_TABS_STORAGE_KEY,
+    selectedTabIdStorageKey: COOLDOWN_SELECTED_TAB_ID_STORAGE_KEY,
   });
 
   const {
@@ -151,6 +153,7 @@ function ChampionCooldownPageContent({
     championList,
     tabs,
     initialSelectedChampions,
+    storageKey: COOLDOWN_STORAGE_KEY,
   });
 
   // localStorage에 상태를 한 번에 저장하는 헬퍼 (메모리 상태는 항상 즉시 업데이트)

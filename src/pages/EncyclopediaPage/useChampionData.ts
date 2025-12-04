@@ -13,6 +13,7 @@ interface UseChampionDataProps {
   championList: Champion[] | null;
   tabs: Tab[];
   initialSelectedChampions: StoredSelectedChampionList | null;
+  storageKey: string; // localStorage 키 추가
 }
 
 export function useChampionData({
@@ -21,22 +22,42 @@ export function useChampionData({
   championList,
   tabs,
   initialSelectedChampions,
+  storageKey,
 }: UseChampionDataProps) {
   const [selectedChampions, setSelectedChampions] = useState<ChampionWithInfo[]>([]);
   const [isInitialLoad, setIsInitialLoad] = useState(true);
+  const [hasRestored, setHasRestored] = useState(false);
 
-  // 초기 선택 챔피언은 상위(App)에서 splash 시점에 한 번만 복원된 값을 사용
+  // 컴포넌트가 마운트될 때마다 localStorage에서 직접 읽어오기
   useEffect(() => {
-    if (!version || !championList) {
-      setTimeout(() => {
-        setIsInitialLoad(false);
-      }, 0);
+    if (!version || !championList || hasRestored) {
+      if (!hasRestored && (!version || !championList)) {
+        setTimeout(() => {
+          setIsInitialLoad(false);
+        }, 0);
+      }
       return;
     }
 
     try {
-      if (initialSelectedChampions && initialSelectedChampions.length > 0) {
-        const restoredChampions = (initialSelectedChampions as StoredSelectedChampion[])
+      // localStorage에서 직접 읽기
+      const storedSelected = window.localStorage.getItem(storageKey);
+      let championsToRestore: StoredSelectedChampionList | null = null;
+      
+      if (storedSelected) {
+        const parsed = JSON.parse(storedSelected);
+        if (Array.isArray(parsed)) {
+          championsToRestore = parsed as StoredSelectedChampionList;
+        }
+      }
+      
+      // localStorage에 없으면 initialSelectedChampions 사용 (초기 로드 시)
+      if (!championsToRestore && initialSelectedChampions && initialSelectedChampions.length > 0) {
+        championsToRestore = initialSelectedChampions;
+      }
+
+      if (championsToRestore && championsToRestore.length > 0) {
+        const restoredChampions = (championsToRestore as StoredSelectedChampion[])
           .map((cachedChampion) => {
             const currentLangChampion = championList.find(
               (champ) => champ.id === cachedChampion.id || champ.key === cachedChampion.key
@@ -56,6 +77,7 @@ export function useChampionData({
           // 비동기로 처리하여 React Compiler 경고 방지
           setTimeout(() => {
             setSelectedChampions(restoredChampions);
+            setHasRestored(true);
 
             // Reload full info for each champion
             restoredChampions.forEach((champion: ChampionWithInfo) => {
@@ -86,8 +108,13 @@ export function useChampionData({
               }
             });
           }, 0);
+        } else {
+          setHasRestored(true);
         }
+      } else {
+        setHasRestored(true);
       }
+      
       // 초기 로딩 완료 표시 (비동기로 처리하여 React Compiler 경고 방지)
       setTimeout(() => {
         setIsInitialLoad(false);
@@ -96,9 +123,10 @@ export function useChampionData({
       logger.error("Failed to load initial selected champions:", error);
       setTimeout(() => {
         setIsInitialLoad(false);
+        setHasRestored(true);
       }, 0);
     }
-  }, [version, lang, championList, initialSelectedChampions]);
+  }, [version, lang, championList, storageKey, hasRestored, initialSelectedChampions]);
 
   // Update champion names when championList changes (language change)
   useEffect(() => {
@@ -203,8 +231,8 @@ export function useChampionData({
 
   const resetChampions = useCallback(() => {
     setSelectedChampions([]);
-    removeStorageWithVersion(STORAGE_KEY);
-  }, []);
+    removeStorageWithVersion(storageKey);
+  }, [storageKey]);
 
   const championsWithFullInfo = useMemo(() => {
     return selectedChampions.filter((c) => c.fullInfo && !c.isLoading);

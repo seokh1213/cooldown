@@ -11,35 +11,81 @@ interface UseTabManagementOptions {
   version: string | null;
   initialTabs: Tab[] | null;
   initialSelectedTabId: string | null;
+  tabsStorageKey: string;
+  selectedTabIdStorageKey: string;
 }
 
 export function useTabManagement({
   version,
   initialTabs,
   initialSelectedTabId,
+  tabsStorageKey,
+  selectedTabIdStorageKey,
 }: UseTabManagementOptions) {
   const [tabs, setTabs] = useState<Tab[]>([]);
   const tabsRef = useRef<Tab[]>([]);
   const [selectedTabId, setSelectedTabId] = useState<string | null>(null);
   const [showVsSelector, setShowVsSelector] = useState(false);
   const [vsSelectorMode, setVsSelectorMode] = useState<VsSelectorMode | null>(null);
+  const [hasRestored, setHasRestored] = useState(false);
 
   // tabs 상태가 변경될 때마다 ref 업데이트
   useEffect(() => {
     tabsRef.current = tabs;
   }, [tabs]);
 
-  // 초기 탭/선택 탭 ID는 상위(App)에서 splash 시점에 한 번만 복원된 값을 사용
+  // 컴포넌트가 마운트될 때마다 localStorage에서 직접 읽어오기
   useEffect(() => {
-    if (!version) return;
+    if (!version || hasRestored) return;
 
-    if (initialTabs && initialTabs.length > 0) {
-      setTabs(initialTabs);
+    try {
+      // localStorage에서 직접 읽기
+      const storedTabs = window.localStorage.getItem(tabsStorageKey);
+      let tabsToRestore: Tab[] | null = null;
+      
+      if (storedTabs) {
+        const parsed = JSON.parse(storedTabs);
+        if (Array.isArray(parsed)) {
+          tabsToRestore = parsed as Tab[];
+        }
+      }
+      
+      // localStorage에 없으면 initialTabs 사용 (초기 로드 시)
+      if (!tabsToRestore && initialTabs && initialTabs.length > 0) {
+        tabsToRestore = initialTabs;
+      }
+
+      // 선택된 탭 ID 복원
+      const storedTabId = window.localStorage.getItem(selectedTabIdStorageKey);
+      let tabIdToRestore: string | null = null;
+      
+      if (storedTabId) {
+        tabIdToRestore = storedTabId;
+      } else if (initialSelectedTabId) {
+        tabIdToRestore = initialSelectedTabId;
+      }
+
+      if (tabsToRestore && tabsToRestore.length > 0) {
+        setTabs(tabsToRestore);
+        
+        // 탭 ID 복원 (복원된 탭 목록에 해당 탭이 있는지 확인)
+        if (tabIdToRestore && tabsToRestore.some((t) => t.id === tabIdToRestore)) {
+          setSelectedTabId(tabIdToRestore);
+        } else {
+          // 없으면 첫 번째 탭 선택
+          setSelectedTabId(tabsToRestore[0].id);
+        }
+      } else {
+        // 탭이 없으면 탭 ID도 null
+        setSelectedTabId(null);
+      }
+
+      setHasRestored(true);
+    } catch (error) {
+      logger.error("Failed to load tabs from localStorage:", error);
+      setHasRestored(true);
     }
-    if (initialSelectedTabId) {
-      setSelectedTabId(initialSelectedTabId);
-    }
-  }, [version, initialTabs, initialSelectedTabId]);
+  }, [version, tabsStorageKey, selectedTabIdStorageKey, hasRestored, initialTabs, initialSelectedTabId]);
 
   // 챔피언이 로드되면 기본 탭 선택 (탭이 없을 때만)
   useEffect(() => {
@@ -112,9 +158,9 @@ export function useTabManagement({
   const resetTabs = useCallback(() => {
     setTabs([]);
     setSelectedTabId(null);
-    removeStorageWithVersion(TABS_STORAGE_KEY);
-    removeStorageWithVersion(SELECTED_TAB_ID_STORAGE_KEY);
-  }, []);
+    removeStorageWithVersion(tabsStorageKey);
+    removeStorageWithVersion(selectedTabIdStorageKey);
+  }, [tabsStorageKey, selectedTabIdStorageKey]);
 
   // 드래그 종료 핸들러 (모바일 탭용)
   const handleDragEnd = useCallback((event: DragEndEvent) => {
