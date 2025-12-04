@@ -455,12 +455,13 @@ async function fetchRuneStatShardsWithFallback(
       const stylesJson = (await stylesRes.json()) as any;
       const perksJson = (await perksRes.json()) as any;
 
-      if (
-        !stylesJson ||
-        typeof stylesJson !== "object" ||
-        !Array.isArray(stylesJson.styles) ||
-        !Array.isArray(perksJson)
-      ) {
+      const styles: any[] | null = Array.isArray(stylesJson)
+        ? stylesJson
+        : stylesJson && Array.isArray(stylesJson.styles)
+        ? (stylesJson.styles as any[])
+        : null;
+
+      if (!styles || !Array.isArray(perksJson)) {
         console.warn(
           `[CD][Runes] Unexpected stat shard response format for ${resultsLocale} at ${basePath}`
         );
@@ -473,9 +474,15 @@ async function fetchRuneStatShardsWithFallback(
         perkMap.set(perk.id, perk);
       }
 
-      const kStatModStyles = (stylesJson.styles as any[]).filter(
-        (style) => style && style.type === "kStatMod"
-      );
+      // kStatMod는 보통 슬롯의 type으로 설정되어 있으므로,
+      // 1) style.type === "kStatMod" 이거나
+      // 2) slots 중 하나라도 slot.type === "kStatMod" 인 스타일만 추출
+      const kStatModStyles = styles.filter((style) => {
+        if (!style) return false;
+        if (style.type === "kStatMod") return true;
+        const slots = Array.isArray(style.slots) ? style.slots : [];
+        return slots.some((slot: any) => slot && slot.type === "kStatMod");
+      });
 
       if (kStatModStyles.length === 0) {
         console.warn(
@@ -493,9 +500,18 @@ async function fetchRuneStatShardsWithFallback(
 
         const rows: RuneStatShardRow[] = [];
 
-        for (const slot of slots) {
+        // kStatMod 슬롯만 선택
+        const statModSlots = slots.filter(
+          (slot) => slot && slot.type === "kStatMod"
+        );
+
+        for (const slot of statModSlots) {
           const label: string =
-            slot.name || slot.label || slot.localizedName || "";
+            slot.name ||
+            slot.label ||
+            slot.localizedName ||
+            slot.slotLabel ||
+            "";
           const perkIds: number[] = Array.isArray(slot.perks)
             ? slot.perks
             : [];

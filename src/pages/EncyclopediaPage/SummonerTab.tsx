@@ -12,7 +12,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { VisuallyHidden } from "@/components/ui/visually-hidden";
-import { Search } from "lucide-react";
+import { Search, AlertTriangle } from "lucide-react";
 
 interface SummonerTabProps {
   version: string;
@@ -39,7 +39,10 @@ export function SummonerTab({ version, lang }: SummonerTabProps) {
     getSummonerSpells(version, lang)
       .then((data) => {
         if (!cancelled) {
-          const sorted = [...data].sort((a, b) =>
+          const classicOnly = data.filter(
+            (spell) => Array.isArray(spell.modes) && spell.modes.includes("CLASSIC")
+          );
+          const sorted = [...classicOnly].sort((a, b) =>
             a.name.localeCompare(b.name)
           );
           setSpells(sorted);
@@ -92,11 +95,22 @@ export function SummonerTab({ version, lang }: SummonerTabProps) {
   }
 
   const renderDescriptionHtml = (spell: SummonerSpell) => {
+    /**
+     * 소환사 주문 설명/툴팁 내 {{ 변수 }} 패턴을 물음표로 치환
+     * 예: {{ shieldduration }} → ?
+     */
+    const replaceUnresolvedVariables = (text: string): string => {
+      const errorMarkup =
+        ' <span class="text-destructive dark:text-red-400">?</span> ';
+      return text.replace(/{{\s*[^}]+\s*}}/g, errorMarkup);
+    };
+
     const html = spell.tooltip || spell.description || "";
+    const processedHtml = replaceUnresolvedVariables(html);
     return (
       <span
         className="text-xs leading-relaxed [&_br]:block"
-        dangerouslySetInnerHTML={{ __html: html }}
+        dangerouslySetInnerHTML={{ __html: processedHtml }}
       />
     );
   };
@@ -176,16 +190,6 @@ export function SummonerTab({ version, lang }: SummonerTabProps) {
                 </div>
               )}
             </div>
-            <div className="mt-0.5 text-[11px] text-muted-foreground flex flex-wrap gap-x-2 gap-y-0.5">
-              <span>
-                Lv {selectedSpell.summonerLevel}
-              </span>
-              {selectedSpell.modes && selectedSpell.modes.length > 0 && (
-                <span className="truncate">
-                  {selectedSpell.modes.join(", ")}
-                </span>
-              )}
-            </div>
           </div>
         </div>
 
@@ -193,6 +197,10 @@ export function SummonerTab({ version, lang }: SummonerTabProps) {
           <div className="pr-3">
             <div className="rounded-md border border-border/70 bg-card px-3 py-2 space-y-1.5">
               {renderDescriptionHtml(selectedSpell)}
+              <div className="text-xs text-muted-foreground/80 italic leading-relaxed border-t pt-3 mt-3 flex items-center gap-1.5">
+                <AlertTriangle className="w-2.5 h-2.5 text-yellow-600 dark:text-yellow-500 flex-shrink-0" />
+                <span>{t.encyclopedia.runes.warning}</span>
+              </div>
             </div>
           </div>
         </ScrollArea>

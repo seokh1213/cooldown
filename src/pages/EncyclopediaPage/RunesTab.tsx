@@ -1,6 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { getRuneTrees, getRuneStatShards } from "@/services/api";
-import type { RuneTree, Rune, RuneStatShardStaticData } from "@/types";
+import type {
+  RuneTree,
+  Rune,
+  RuneStatShardStaticData,
+  RuneStatShard,
+} from "@/types";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Card } from "@/components/ui/card";
 import {
@@ -59,6 +64,47 @@ export function RunesTab({ version, lang }: RunesTabProps) {
       cancelled = true;
     };
   }, [version, lang]);
+
+  const statShardRows = useMemo(() => {
+    if (!statShardData || !statShardData.groups.length) return [];
+
+    const rowMap = new Map<
+      string,
+      { label: string; perksMap: Map<number, RuneStatShard> }
+    >();
+
+    for (const group of statShardData.groups) {
+      for (const row of group.rows) {
+        if (!row.perks || row.perks.length === 0) continue;
+        const key = row.label || "";
+        let entry = rowMap.get(key);
+        if (!entry) {
+          entry = { label: row.label, perksMap: new Map<number, RuneStatShard>() };
+          rowMap.set(key, entry);
+        }
+        for (const perk of row.perks) {
+          if (!entry.perksMap.has(perk.id)) {
+            entry.perksMap.set(perk.id, perk);
+          }
+        }
+      }
+    }
+
+    const rows = Array.from(rowMap.values()).map(({ label, perksMap }) => ({
+      label,
+      perks: Array.from(perksMap.values()),
+    }));
+
+    // 라벨이 있는 행을 먼저, 없는 행을 뒤로 정렬 (라벨이 없으면 순서 유지)
+    rows.sort((a, b) => {
+      if (!a.label && b.label) return 1;
+      if (a.label && !b.label) return -1;
+      if (!a.label && !b.label) return 0;
+      return a.label.localeCompare(b.label);
+    });
+
+    return rows;
+  }, [statShardData]);
 
   if (loading && !runeTrees) {
     return (
@@ -145,10 +191,12 @@ export function RunesTab({ version, lang }: RunesTabProps) {
   const renderRuneIcon = (
     rune: Rune,
     style: React.CSSProperties,
+    key?: React.Key
   ) => {
     if (isMobile) {
       return (
         <button
+          key={key}
           type="button"
           onClick={() => setSelectedRune(rune)}
           className="flex flex-col items-center gap-1 focus:outline-none min-w-0"
@@ -171,7 +219,7 @@ export function RunesTab({ version, lang }: RunesTabProps) {
     }
 
     return (
-      <Tooltip key={rune.id}>
+      <Tooltip key={key ?? rune.id}>
         <TooltipTrigger asChild>
           <button
             type="button"
@@ -202,6 +250,22 @@ export function RunesTab({ version, lang }: RunesTabProps) {
         </TooltipContent>
       </Tooltip>
     );
+  };
+
+  const getStatShardIconUrl = (iconPath: string): string => {
+    // 예: /lol-game-data/assets/v1/perk-images/StatMods/StatModsAttackSpeedIcon.png
+    //  -> https://ddragon.leagueoflegends.com/cdn/img/perk-images/StatMods/StatModsAttackSpeedIcon.png
+    const prefix = "/lol-game-data/assets/v1";
+    const trimmed = iconPath.startsWith(prefix)
+      ? iconPath.slice(prefix.length)
+      : iconPath;
+    return `https://ddragon.leagueoflegends.com/cdn/img${trimmed}`;
+  };
+
+  const getStatShardDescriptionHtml = (perk: RuneStatShard): string => {
+    const raw = perk.shortDesc || perk.longDesc || "";
+    // <font color="#48C4B7">적응형 능력치</font> 등 스타일 태그 제거 (내용만 유지)
+    return raw.replace(/<font[^>]*>/gi, "").replace(/<\/font>/gi, "");
   };
 
   return (
@@ -277,9 +341,13 @@ export function RunesTab({ version, lang }: RunesTabProps) {
                             gridColumn = "1 / -1";
                           }
 
-                          return renderRuneIcon(rune, {
-                            gridColumn,
-                          });
+                          return renderRuneIcon(
+                            rune,
+                            {
+                              gridColumn,
+                            },
+                            rune.id
+                          );
                         })}
                       </div>
                     );
@@ -289,18 +357,12 @@ export function RunesTab({ version, lang }: RunesTabProps) {
             ))}
 
             {/* 공통 보조 룬 (스탯 조각) 섹션 */}
-            {statShardData && statShardData.groups.length > 0 && (
+            {statShardRows.length > 0 && (
               <Card className="p-4 flex flex-col gap-3 bg-background/60 border-border/70 md:col-span-2 xl:col-span-3">
-                <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-full border border-border/60 bg-transparent flex items-center justify-center text-xs font-semibold">
-                    +
-                  </div>
+                <div className="flex items-center justify-between gap-3 mb-1.5">
                   <div className="flex flex-col">
                     <span className="text-sm font-semibold">
-                      {t.encyclopedia.runes.warning.replace(
-                        "정확한 수치와 설명은",
-                        "공통 능력치 조각 (보조 룬)"
-                      )}
+                      공통 능력치 조각 (보조 룬)
                     </span>
                     <span className="text-xs text-muted-foreground">
                       {t.encyclopedia.runes.warning}
@@ -308,53 +370,51 @@ export function RunesTab({ version, lang }: RunesTabProps) {
                   </div>
                 </div>
                 <div className="space-y-3 mt-1">
-                  {statShardData.groups.map((group) =>
-                    group.rows.map((row, rowIndex) => {
-                      if (!row.perks || row.perks.length === 0) return null;
-                      return (
-                        <div
-                          key={`${group.styleId}-${rowIndex}`}
-                          className="flex flex-col gap-1"
-                        >
-                          {row.label && (
-                            <div className="text-[11px] font-semibold text-muted-foreground mb-0.5">
-                              {row.label}
-                            </div>
-                          )}
-                          <div className="flex flex-wrap gap-2">
-                            {row.perks.map((perk) => (
-                              <div
-                                key={perk.id}
-                                className="inline-flex items-center gap-2 rounded-md border border-border/60 bg-background/80 px-2 py-1"
-                              >
-                                <img
-                                  src={`https://raw.communitydragon.org/${statShardData.cdragonVersion ?? "latest"}${perk.iconPath}`}
-                                  alt={perk.name}
-                                  loading="lazy"
-                                  decoding="async"
-                                  width={24}
-                                  height={24}
-                                  className="w-6 h-6 rounded-full border border-border/60 bg-transparent flex-shrink-0"
-                                />
-                                <div className="flex flex-col min-w-0">
-                                  <span className="text-[11px] font-semibold leading-tight truncate">
-                                    {perk.name}
-                                  </span>
-                                  <span className="text-[10px] text-muted-foreground leading-snug line-clamp-2">
-                                    <span
-                                      dangerouslySetInnerHTML={{
-                                        __html: perk.shortDesc || perk.longDesc,
-                                      }}
-                                    />
-                                  </span>
-                                </div>
-                              </div>
-                            ))}
+                  {statShardRows.map((row, rowIndex) => {
+                    if (!row.perks || row.perks.length === 0) return null;
+                    return (
+                      <div
+                        key={`${row.label || "row"}-${rowIndex}`}
+                        className="flex flex-col gap-1"
+                      >
+                        {row.label && (
+                          <div className="text-[11px] font-semibold text-muted-foreground mb-0.5">
+                            {row.label}
                           </div>
+                        )}
+                        <div className="flex flex-wrap gap-2">
+                          {row.perks.map((perk) => (
+                            <div
+                              key={perk.id}
+                              className="inline-flex items-center gap-2 rounded-md border border-border/60 bg-background/80 px-2 py-1"
+                            >
+                              <img
+                                src={getStatShardIconUrl(perk.iconPath)}
+                                alt={perk.name}
+                                loading="lazy"
+                                decoding="async"
+                                width={24}
+                                height={24}
+                                className="w-6 h-6 rounded-full border border-border/60 bg-transparent flex-shrink-0"
+                              />
+                              <div className="flex flex-col min-w-0">
+                                <span className="text-[11px] font-semibold leading-tight truncate">
+                                  {perk.name}
+                                </span>
+                                <span className="text-[10px] text-muted-foreground leading-snug line-clamp-2">
+                                  <span
+                                    dangerouslySetInnerHTML={{
+                                      __html: getStatShardDescriptionHtml(perk),
+                                    }}
+                                  />
+                                </span>
+                              </div>
+                            </div>
+                          ))}
                         </div>
-                      );
-                    })
-                  )}
+                      </div>
+                    );
+                  })}
                 </div>
               </Card>
             )}
