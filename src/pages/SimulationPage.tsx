@@ -213,7 +213,9 @@ export default function SimulationPage({
               return false;
             }
 
+            // 실제 상점 노출 여부: inStore && displayInItemSets 를 모두 만족해야 함
             if (item.inStore === false) return false;
+            if (item.displayInItemSets === false) return false;
             if (item.cdragon) {
               if (item.cdragon.inStore === false) return false;
               if (item.cdragon.displayInItemSets === false) return false;

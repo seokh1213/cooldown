@@ -36,9 +36,10 @@ function shouldShowInStore(item: Item): boolean {
     return false;
   }
 
+  // 실제 상점 노출 여부: inStore && displayInItemSets 를 모두 만족해야 함
   if (item.inStore === false) return false;
+  if (item.displayInItemSets === false) return false;
 
-  // CDragon 기준 상점 비노출 아이템은 항상 제외
   if (item.cdragon) {
     if (item.cdragon.inStore === false) return false;
     if (item.cdragon.displayInItemSets === false) return false;
@@ -127,6 +128,11 @@ function shouldShowPrice(item: Item): boolean {
   if (item.gold.total <= 0) return false;
   if (item.gold.purchasable === false) return false;
   if (item.inStore === false) return false;
+  if (item.displayInItemSets === false) return false;
+  if (item.cdragon) {
+    if (item.cdragon.inStore === false) return false;
+    if (item.cdragon.displayInItemSets === false) return false;
+  }
   return true;
 }
 
@@ -264,7 +270,10 @@ export function ItemsTab({ version, lang }: ItemsTabProps) {
   const deviceType = useDeviceType();
   const isMobile = deviceType === "mobile";
 
+  // 전체 아이템 목록 (상점 비노출/구매 불가 아이템 포함)
   const [items, setItems] = useState<Item[] | null>(null);
+  // 실제 상점(좌측 목록)에 노출할 아이템 목록
+  const [storeItems, setStoreItems] = useState<Item[] | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [search, setSearch] = useState<string>("");
   const [filter, setFilter] = useState<ItemFilter>("all");
@@ -278,19 +287,25 @@ export function ItemsTab({ version, lang }: ItemsTabProps) {
     getItems(version, lang)
       .then((data) => {
         if (!cancelled) {
+          // 전체 아이템은 그대로 보관해서 트리/업그레이드 계산에 사용
+          setItems(data);
+
+          // 상점에 노출할 수 있는 아이템만 필터링해서 좌측 리스트에 사용
           const valid = data.filter(shouldShowInStore);
           // 같은 이름의 아이템 중복 제거 (첫 번째 것만 유지)
           const seenNames = new Set<string>();
-          const uniqueItems = valid.filter((item) => {
+          const uniqueStoreItems = valid.filter((item) => {
             if (seenNames.has(item.name)) {
               return false;
             }
             seenNames.add(item.name);
             return true;
           });
-          setItems(uniqueItems);
-          if (!selectedItem && uniqueItems.length > 0) {
-            setSelectedItem(uniqueItems[0]);
+
+          setStoreItems(uniqueStoreItems);
+
+          if (!selectedItem && uniqueStoreItems.length > 0) {
+            setSelectedItem(uniqueStoreItems[0]);
           }
         }
       })
@@ -307,6 +322,7 @@ export function ItemsTab({ version, lang }: ItemsTabProps) {
 
   const itemMap = useMemo(() => {
     if (!items) return new Map<string, Item>();
+    // 트리/업그레이드 계산은 상점 비노출 아이템(예: 변신 단계, 퀘스트 전용)도 포함해서 처리
     return new Map<string, Item>(items.map((i) => [i.id, i]));
   }, [items]);
 
@@ -323,7 +339,7 @@ export function ItemsTab({ version, lang }: ItemsTabProps) {
       flatFiltered: [] as Item[],
     };
 
-    if (!items) return empty;
+    if (!storeItems) return empty;
 
     const searchMatches = (item: Item): boolean => {
       if (!term) return true;
@@ -339,7 +355,7 @@ export function ItemsTab({ version, lang }: ItemsTabProps) {
     };
     const flat: Item[] = [];
 
-    items.forEach((item) => {
+    storeItems.forEach((item) => {
       if (!searchMatches(item)) return;
 
       // 필터: 역할군 / 장신구/와드/포션 / 신발
@@ -371,9 +387,9 @@ export function ItemsTab({ version, lang }: ItemsTabProps) {
       itemsByTier: resultByTier,
       flatFiltered: flat,
     };
-  }, [items, term, filter]);
+  }, [storeItems, term, filter]);
 
-  if (loading && !items) {
+  if (loading && !storeItems) {
     return (
       <div className="mt-4 text-sm text-muted-foreground">
         {t.championSelector.loading}
@@ -381,7 +397,7 @@ export function ItemsTab({ version, lang }: ItemsTabProps) {
     );
   }
 
-  if (!items || items.length === 0) {
+  if (!storeItems || storeItems.length === 0) {
     return (
       <div className="mt-4 text-sm text-muted-foreground">
         {t.championSelector.emptyList}
@@ -389,24 +405,28 @@ export function ItemsTab({ version, lang }: ItemsTabProps) {
     );
   }
 
+  // 선택한 아이템이 어떤 아이템으로 바로 업그레이드되는지만 보여주기 위해
+  // 직계 상위 아이템(1단계 into)만 수집한다.
   const collectUpgradeItems = (root: Item): Item[] => {
+    if (!root.into || root.into.length === 0) return [];
+
     const result: Item[] = [];
-    const visited = new Set<string>();
-    const queue: string[] = root.into ? [...root.into] : [];
 
-    while (queue.length > 0) {
-      const id = queue.shift() as string;
-      if (visited.has(id)) continue;
-      visited.add(id);
-
+    root.into.forEach((id) => {
       const upgrade = itemMap.get(id);
-      if (!upgrade) continue;
-      result.push(upgrade);
+      if (!upgrade) return;
 
-      if (upgrade.into && upgrade.into.length > 0) {
-        queue.push(...upgrade.into);
+      // 부모 아이템 목록에서는 inStore=false 또는 displayInItemSets=false 인 아이템은 노출하지 않는다.
+      // (purchasable=false 는 노출 허용)
+      if (upgrade.inStore === false) return;
+      if (upgrade.displayInItemSets === false) return;
+      if (upgrade.cdragon) {
+        if (upgrade.cdragon.inStore === false) return;
+        if (upgrade.cdragon.displayInItemSets === false) return;
       }
-    }
+
+      result.push(upgrade);
+    });
 
     result.sort((a, b) => (a.gold?.total ?? 0) - (b.gold?.total ?? 0));
     return result;
