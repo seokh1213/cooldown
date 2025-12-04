@@ -89,12 +89,14 @@ export function RunesTab({ version, lang }: RunesTabProps) {
   /**
    * @이름@ 또는 @{이름}@ 패턴을 물음표로 치환
    * 예: @HealAmount@ → ?, @BaseHeal@ → ?, @{이름}@ → ?
+   * 물음표는 오류 표시를 위해 빨간색 스타일이 적용됨
    */
   const replaceUnresolvedVariables = (text: string): string => {
+    const errorMarkup = ' <span class="text-destructive dark:text-red-400">?</span> ';
     // @{이름}@ 형식 (중괄호 포함)
-    let result = text.replace(/@\{[^}]+\}@/g, "?");
+    let result = text.replace(/@\{[^}]+\}@/g, errorMarkup);
     // @이름@ 형식 (중괄호 없음)
-    result = result.replace(/@[^@]+@/g, "?");
+    result = result.replace(/@[^@]+@/g, errorMarkup);
     return result;
   };
 
