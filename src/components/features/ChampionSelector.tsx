@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/dialog";
 import { VisuallyHidden } from "@/components/ui/visually-hidden";
 import { useChampionSearch } from "@/hooks/useChampionSearch";
+import { useDebouncedValue } from "@/hooks/useDebouncedValue";
 import { useScrollPosition } from "@/hooks/useScrollPosition";
 import { useTranslation } from "@/i18n";
 
@@ -57,7 +58,8 @@ function ChampionSelector({
   const isModal = onClose !== undefined;
   const handleClose = onClose || (() => {});
 
-  const availableChampions = useChampionSearch(championList, searchValue);
+  const debouncedSearch = useDebouncedValue(searchValue, 200);
+  const availableChampions = useChampionSearch(championList, debouncedSearch);
 
   // 선택된 챔피언 ID Set을 메모이제이션하여 O(1) 체크 가능
   const selectedChampionIds = useMemo(() => {

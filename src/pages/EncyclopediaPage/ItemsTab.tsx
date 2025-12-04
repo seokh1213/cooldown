@@ -7,6 +7,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Input } from "@/components/ui/input";
 import { useTranslation } from "@/i18n";
 import { useDeviceType } from "@/hooks/useDeviceType";
+import { useDebouncedValue } from "@/hooks/useDebouncedValue";
 import { getOfficialLikeItemTier, type ItemTier } from "@/lib/itemTierUtils";
 import {
   Dialog,
@@ -280,6 +281,10 @@ const ItemCell: React.FC<ItemCellProps> = ({
       <img
         src={`https://ddragon.leagueoflegends.com/cdn/${version}/img/item/${item.id}.png`}
         alt={item.name}
+        loading="lazy"
+        decoding="async"
+        width={32}
+        height={32}
         className="w-7 h-7 md:w-8 md:h-8 aspect-square object-cover rounded-sm border border-border/60 bg-black/40 flex-shrink-0"
       />
       <span
@@ -361,7 +366,8 @@ export function ItemsTab({ version, lang }: ItemsTabProps) {
     return new Map<string, Item>(items.map((i) => [i.id, i]));
   }, [items]);
 
-  const termRaw = search.trim().toLowerCase();
+  const debouncedSearch = useDebouncedValue(search, isMobile ? 220 : 180);
+  const termRaw = debouncedSearch.trim().toLowerCase();
 
   const normalizeForSearch = (value: string): string =>
     value

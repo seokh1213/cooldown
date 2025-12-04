@@ -108,6 +108,10 @@ export function RunesTab({ version, lang }: RunesTabProps) {
           <img
             src={`https://ddragon.leagueoflegends.com/cdn/img/${rune.icon}`}
             alt={rune.name}
+            loading="lazy"
+            decoding="async"
+            width={32}
+            height={32}
             className="w-8 h-8 rounded-full border border-border/60 bg-transparent"
           />
           <div className="flex flex-col">
@@ -143,6 +147,10 @@ export function RunesTab({ version, lang }: RunesTabProps) {
           <img
             src={`https://ddragon.leagueoflegends.com/cdn/img/${rune.icon}`}
             alt={rune.name}
+            loading="lazy"
+            decoding="async"
+            width={40}
+            height={40}
             className="w-10 h-10 rounded-full border border-border/60 bg-transparent flex-shrink-0"
           />
           <span className="text-[10px] text-center leading-tight line-clamp-2 w-full">
@@ -163,6 +171,10 @@ export function RunesTab({ version, lang }: RunesTabProps) {
             <img
               src={`https://ddragon.leagueoflegends.com/cdn/img/${rune.icon}`}
               alt={rune.name}
+              loading="lazy"
+              decoding="async"
+              width={40}
+              height={40}
               className="w-10 h-10 rounded-full border border-border/60 bg-transparent flex-shrink-0"
             />
             <span className="text-[10px] text-center leading-tight line-clamp-2 w-full">
@@ -196,6 +208,10 @@ export function RunesTab({ version, lang }: RunesTabProps) {
                   <img
                     src={`https://ddragon.leagueoflegends.com/cdn/img/${tree.icon}`}
                     alt={tree.name}
+                    loading="lazy"
+                    decoding="async"
+                    width={32}
+                    height={32}
                     className="w-8 h-8 rounded-full border border-border/60 bg-transparent"
                   />
                   <div className="flex flex-col">
