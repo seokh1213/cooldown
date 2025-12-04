@@ -91,14 +91,17 @@ export function RunesTab({ version, lang }: RunesTabProps) {
     </div>
   );
 
-  const renderRuneIcon = (rune: Rune, width: string, isFirst?: boolean, isLast?: boolean, needsSpacing?: boolean) => {
+  const renderRuneIcon = (
+    rune: Rune,
+    style: React.CSSProperties,
+  ) => {
     if (isMobile) {
       return (
         <button
           type="button"
           onClick={() => setSelectedRune(rune)}
           className="flex flex-col items-center gap-1 focus:outline-none min-w-0"
-          style={{ width }}
+          style={style}
         >
           <img
             src={`https://ddragon.leagueoflegends.com/cdn/img/${rune.icon}`}
@@ -118,7 +121,7 @@ export function RunesTab({ version, lang }: RunesTabProps) {
           <button
             type="button"
             className="flex flex-col items-center gap-1 focus:outline-none cursor-help min-w-0"
-            style={{ width }}
+            style={style}
           >
             <img
               src={`https://ddragon.leagueoflegends.com/cdn/img/${rune.icon}`}
@@ -167,29 +170,54 @@ export function RunesTab({ version, lang }: RunesTabProps) {
                 </div>
                 <div className="space-y-3">
                   {tree.slots.map((slot, slotIndex) => {
-                    const maxRunes = Math.max(...tree.slots.map(s => s.runes.length));
-                    const gapSize = 0.5; // 0.5rem = gap-x-2
-                    const totalGapWidth = (maxRunes - 1) * gapSize;
-                    const runeWidth = `calc((100% - ${totalGapWidth}rem) / ${maxRunes})`;
+                    const maxRunes = Math.max(...tree.slots.map((s) => s.runes.length));
+
                     return (
                       <div
                         key={slotIndex}
-                        className="flex flex-nowrap justify-between gap-y-2 gap-x-2 md:gap-x-4"
+                        className="grid gap-y-2 gap-x-2 md:gap-x-4"
+                        style={{
+                          gridTemplateColumns: `repeat(${maxRunes}, minmax(0, 1fr))`,
+                        }}
                       >
                         {slot.runes.map((rune, runeIndex) => {
-                          const isFirst = runeIndex === 0;
-                          const isLast = runeIndex === slot.runes.length - 1;
-                          return (
-                            <React.Fragment key={rune.id}>
-                              {renderRuneIcon(rune, runeWidth, isFirst, isLast, slot.runes.length < maxRunes)}
-                            </React.Fragment>
+                          const runeCount = slot.runes.length;
+
+                          // 기본값: 각 룬을 자기 열에 배치 (1,2,3,4...)
+                          let gridColumn: React.CSSProperties["gridColumn"] = String(
+                            runeIndex + 1,
                           );
+
+                          // 4열 기준에서 3개일 때:
+                          // 2A | 2B(2~3열 span) | 2C 형태가 되도록 조정
+                          if (maxRunes === 4 && runeCount === 3) {
+                            if (runeIndex === 0) {
+                              gridColumn = "1";
+                            } else if (runeIndex === 1) {
+                              gridColumn = "2 / span 2"; // 가운데 룬을 2,3열 전체에 걸쳐 가운데 배치
+                            } else if (runeIndex === 2) {
+                              gridColumn = "4";
+                            }
+                          }
+
+                          // 4열 기준에서 2개일 때: 양 끝 정렬 (1열, 4열)
+                          if (maxRunes === 4 && runeCount === 2) {
+                            if (runeIndex === 0) {
+                              gridColumn = "1";
+                            } else if (runeIndex === 1) {
+                              gridColumn = "4";
+                            }
+                          }
+
+                          // 하나만 있을 때는 전체를 span 해서 정중앙에
+                          if (runeCount === 1) {
+                            gridColumn = "1 / -1";
+                          }
+
+                          return renderRuneIcon(rune, {
+                            gridColumn,
+                          });
                         })}
-                        {slot.runes.length < maxRunes && (
-                          Array.from({ length: maxRunes - slot.runes.length }).map((_, idx) => (
-                            <div key={`spacer-${idx}`} style={{ width: runeWidth }} />
-                          ))
-                        )}
                       </div>
                     );
                   })}
