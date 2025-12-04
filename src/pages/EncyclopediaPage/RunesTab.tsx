@@ -91,20 +91,21 @@ export function RunesTab({ version, lang }: RunesTabProps) {
     </div>
   );
 
-  const renderRuneIcon = (rune: Rune) => {
+  const renderRuneIcon = (rune: Rune, width: string, isFirst?: boolean, isLast?: boolean, needsSpacing?: boolean) => {
     if (isMobile) {
       return (
         <button
           type="button"
           onClick={() => setSelectedRune(rune)}
-          className="flex flex-col items-center gap-1 focus:outline-none w-20 md:w-24"
+          className="flex flex-col items-center gap-1 focus:outline-none min-w-0"
+          style={{ width }}
         >
           <img
             src={`https://ddragon.leagueoflegends.com/cdn/img/${rune.icon}`}
             alt={rune.name}
-            className="w-10 h-10 rounded-full border border-border/60 bg-transparent"
+            className="w-10 h-10 rounded-full border border-border/60 bg-transparent flex-shrink-0"
           />
-          <span className="text-[10px] text-center leading-tight line-clamp-2">
+          <span className="text-[10px] text-center leading-tight line-clamp-2 w-full">
             {rune.name}
           </span>
         </button>
@@ -116,14 +117,15 @@ export function RunesTab({ version, lang }: RunesTabProps) {
         <TooltipTrigger asChild>
           <button
             type="button"
-            className="flex flex-col items-center gap-1 focus:outline-none cursor-help w-20 md:w-24"
+            className="flex flex-col items-center gap-1 focus:outline-none cursor-help min-w-0"
+            style={{ width }}
           >
             <img
               src={`https://ddragon.leagueoflegends.com/cdn/img/${rune.icon}`}
               alt={rune.name}
-              className="w-10 h-10 rounded-full border border-border/60 bg-transparent"
+              className="w-10 h-10 rounded-full border border-border/60 bg-transparent flex-shrink-0"
             />
-            <span className="text-[10px] text-center leading-tight line-clamp-2">
+            <span className="text-[10px] text-center leading-tight line-clamp-2 w-full">
               {rune.name}
             </span>
           </button>
@@ -164,18 +166,33 @@ export function RunesTab({ version, lang }: RunesTabProps) {
                   </div>
                 </div>
                 <div className="space-y-3">
-                  {tree.slots.map((slot, slotIndex) => (
-                    <div
-                      key={slotIndex}
-                      className="flex flex-wrap md:flex-nowrap justify-between gap-y-2 gap-x-3 md:gap-x-4"
-                    >
-                      {slot.runes.map((rune) => (
-                        <React.Fragment key={rune.id}>
-                          {renderRuneIcon(rune)}
-                        </React.Fragment>
-                      ))}
-                    </div>
-                  ))}
+                  {tree.slots.map((slot, slotIndex) => {
+                    const maxRunes = Math.max(...tree.slots.map(s => s.runes.length));
+                    const gapSize = 0.5; // 0.5rem = gap-x-2
+                    const totalGapWidth = (maxRunes - 1) * gapSize;
+                    const runeWidth = `calc((100% - ${totalGapWidth}rem) / ${maxRunes})`;
+                    return (
+                      <div
+                        key={slotIndex}
+                        className="flex flex-nowrap justify-between gap-y-2 gap-x-2 md:gap-x-4"
+                      >
+                        {slot.runes.map((rune, runeIndex) => {
+                          const isFirst = runeIndex === 0;
+                          const isLast = runeIndex === slot.runes.length - 1;
+                          return (
+                            <React.Fragment key={rune.id}>
+                              {renderRuneIcon(rune, runeWidth, isFirst, isLast, slot.runes.length < maxRunes)}
+                            </React.Fragment>
+                          );
+                        })}
+                        {slot.runes.length < maxRunes && (
+                          Array.from({ length: maxRunes - slot.runes.length }).map((_, idx) => (
+                            <div key={`spacer-${idx}`} style={{ width: runeWidth }} />
+                          ))
+                        )}
+                      </div>
+                    );
+                  })}
                 </div>
               </Card>
             ))}
