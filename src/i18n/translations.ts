@@ -62,6 +62,9 @@ export interface Translations {
       description: string;
       addButton: string;
     };
+    runes: {
+      warning: string;
+    };
   };
   pages: {
     killAngle: {
@@ -215,6 +218,9 @@ export const translations: Record<Language, Translations> = {
         description: "아래 버튼을 클릭하여 챔피언을 추가하고 비교해보세요.",
         addButton: "챔피언 추가하기",
       },
+      runes: {
+        warning: "정확한 수치와 설명은 인게임 툴팁을 확인해 주세요.",
+      },
     },
     pages: {
       killAngle: {
@@ -366,6 +372,9 @@ export const translations: Record<Language, Translations> = {
         title: "Select a Champion",
         description: "Click the button below to add champions and compare them.",
         addButton: "Add Champion",
+      },
+      runes: {
+        warning: "Please check the in-game tooltip for accurate values and descriptions.",
       },
     },
     pages: {

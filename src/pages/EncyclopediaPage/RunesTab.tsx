@@ -69,27 +69,47 @@ export function RunesTab({ version, lang }: RunesTabProps) {
     );
   }
 
-  const renderRuneContent = (rune: Rune) => (
-    <div className="space-y-2">
-      <div className="flex items-center gap-3">
-        <img
-          src={`https://ddragon.leagueoflegends.com/cdn/img/${rune.icon}`}
-          alt={rune.name}
-          className="w-8 h-8 rounded-full border border-border/60 bg-transparent"
-        />
-        <div className="flex flex-col">
-          <span className="text-sm font-semibold">{rune.name}</span>
+  /**
+   * @이름@ 또는 @{이름}@ 패턴을 물음표로 치환
+   * 예: @HealAmount@ → ?, @BaseHeal@ → ?, @{이름}@ → ?
+   */
+  const replaceUnresolvedVariables = (text: string): string => {
+    // @{이름}@ 형식 (중괄호 포함)
+    let result = text.replace(/@\{[^}]+\}@/g, "?");
+    // @이름@ 형식 (중괄호 없음)
+    result = result.replace(/@[^@]+@/g, "?");
+    return result;
+  };
+
+  const renderRuneContent = (rune: Rune) => {
+    const description = rune.longDesc || rune.shortDesc || "";
+    const processedDescription = replaceUnresolvedVariables(description);
+
+    return (
+      <div className="space-y-2">
+        <div className="flex items-center gap-3">
+          <img
+            src={`https://ddragon.leagueoflegends.com/cdn/img/${rune.icon}`}
+            alt={rune.name}
+            className="w-8 h-8 rounded-full border border-border/60 bg-transparent"
+          />
+          <div className="flex flex-col">
+            <span className="text-sm font-semibold">{rune.name}</span>
+          </div>
+        </div>
+        <div className="text-xs text-muted-foreground leading-relaxed">
+          <span
+            dangerouslySetInnerHTML={{
+              __html: processedDescription,
+            }}
+          />
+        </div>
+        <div className="text-[10px] text-muted-foreground/80 italic pt-1 border-t border-border/50">
+          {t.encyclopedia.runes.warning}
         </div>
       </div>
-      <div className="text-xs text-muted-foreground leading-relaxed">
-        <span
-          dangerouslySetInnerHTML={{
-            __html: rune.longDesc || rune.shortDesc,
-          }}
-        />
-      </div>
-    </div>
-  );
+    );
+  };
 
   const renderRuneIcon = (
     rune: Rune,
