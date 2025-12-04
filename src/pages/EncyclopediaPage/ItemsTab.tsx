@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import Hangul from "hangul-js";
 import { getItems } from "@/services/api";
 import type { Item } from "@/types";
+import type { Translations } from "@/i18n/translations";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Input } from "@/components/ui/input";
 import { useTranslation } from "@/i18n";
@@ -138,13 +139,12 @@ function shouldShowPrice(item: Item): boolean {
   return true;
 }
 
-function getItemStatLines(item: Item, lang: string): string[] {
+function getItemStatLines(item: Item, t: Translations): string[] {
   const stats = item.stats || {};
   const lines: string[] = [];
 
-  const push = (labelKo: string, labelEn: string, rawValue: number, isPercent = false) => {
+  const push = (label: string, rawValue: number, isPercent = false) => {
     if (!rawValue) return;
-    const label = lang === "ko_KR" ? labelKo : labelEn;
     let display = rawValue;
     if (isPercent && Math.abs(rawValue) <= 1) {
       display = Math.round(rawValue * 100);
@@ -155,34 +155,62 @@ function getItemStatLines(item: Item, lang: string): string[] {
 
   // DDragon stats는 키가 고정되어 있으므로 주요 스탯만 간단히 매핑
   if (typeof (stats as any).FlatPhysicalDamageMod === "number") {
-    push("공격력", "Attack Damage", (stats as any).FlatPhysicalDamageMod);
+    push(
+      t.encyclopedia.items.stats.attackDamage,
+      (stats as any).FlatPhysicalDamageMod,
+    );
   }
   if (typeof (stats as any).FlatMagicDamageMod === "number") {
-    push("주문력", "Ability Power", (stats as any).FlatMagicDamageMod);
+    push(
+      t.encyclopedia.items.stats.abilityPower,
+      (stats as any).FlatMagicDamageMod,
+    );
   }
   if (typeof (stats as any).FlatCritChanceMod === "number") {
-    push("치명타 확률", "Critical Strike Chance", (stats as any).FlatCritChanceMod * 100, true);
+    push(
+      t.encyclopedia.items.stats.critChance,
+      (stats as any).FlatCritChanceMod * 100,
+      true,
+    );
   }
   if (typeof (stats as any).PercentAttackSpeedMod === "number") {
-    push("공격 속도", "Attack Speed", (stats as any).PercentAttackSpeedMod, true);
+    push(
+      t.encyclopedia.items.stats.attackSpeed,
+      (stats as any).PercentAttackSpeedMod,
+      true,
+    );
   }
   if (typeof (stats as any).FlatHPPoolMod === "number") {
-    push("체력", "Health", (stats as any).FlatHPPoolMod);
+    push(
+      t.encyclopedia.items.stats.health,
+      (stats as any).FlatHPPoolMod,
+    );
   }
   if (typeof (stats as any).FlatMPPoolMod === "number") {
-    push("마나", "Mana", (stats as any).FlatMPPoolMod);
+    push(t.encyclopedia.items.stats.mana, (stats as any).FlatMPPoolMod);
   }
   if (typeof (stats as any).FlatArmorMod === "number") {
-    push("방어력", "Armor", (stats as any).FlatArmorMod);
+    push(t.encyclopedia.items.stats.armor, (stats as any).FlatArmorMod);
   }
   if (typeof (stats as any).FlatSpellBlockMod === "number") {
-    push("마법 저항력", "Magic Resist", (stats as any).FlatSpellBlockMod);
+    push(
+      t.encyclopedia.items.stats.magicResist,
+      (stats as any).FlatSpellBlockMod,
+    );
   }
   if (typeof (stats as any).PercentLifeStealMod === "number") {
-    push("생명력 흡수", "Life Steal", (stats as any).PercentLifeStealMod, true);
+    push(
+      t.encyclopedia.items.stats.lifesteal,
+      (stats as any).PercentLifeStealMod,
+      true,
+    );
   }
   if (typeof (stats as any).PercentSpellVampMod === "number") {
-    push("주문 흡혈", "Spell Vamp", (stats as any).PercentSpellVampMod, true);
+    push(
+      t.encyclopedia.items.stats.spellVamp,
+      (stats as any).PercentSpellVampMod,
+      true,
+    );
   }
 
   return lines;
@@ -203,14 +231,14 @@ function getDescriptionAfterStats(item: Item): string {
   return html;
 }
 
-function getItemPriceLabel(item: Item, lang: string): string {
+function getItemPriceLabel(item: Item, t: Translations): string {
   const total = item.gold?.total ?? 0;
   const base = item.gold?.base ?? 0;
   const hasFrom = !!item.from && item.from.length > 0;
 
   // gold.base가 0이면서 하위템이 있는 경우: 업그레이드 전용 아이템 → 구매 불가 표시
   if (base === 0 && hasFrom) {
-    return lang === "ko_KR" ? "구매 불가" : "Unavailable";
+    return t.encyclopedia.items.price.unavailable;
   }
 
   const hasPrice = total > 0;
@@ -218,7 +246,7 @@ function getItemPriceLabel(item: Item, lang: string): string {
     return total.toLocaleString();
   }
 
-  return lang === "ko_KR" ? "무료" : "Free";
+  return t.encyclopedia.items.price.free;
 }
 
 interface ItemCellProps {
@@ -226,7 +254,6 @@ interface ItemCellProps {
   version: string;
   isSelected: boolean;
   onSelect: () => void;
-  lang: string;
 }
 
 const ItemCell: React.FC<ItemCellProps> = ({
@@ -234,12 +261,11 @@ const ItemCell: React.FC<ItemCellProps> = ({
   version,
   isSelected,
   onSelect,
-  lang,
 }) => {
-  const priceLabel = getItemPriceLabel(item, lang);
+  const { t } = useTranslation();
+  const priceLabel = getItemPriceLabel(item, t);
   const isUnavailableLabel =
-    (lang === "ko_KR" && priceLabel === "구매 불가") ||
-    (lang !== "ko_KR" && priceLabel === "Unavailable");
+    priceLabel === t.encyclopedia.items.price.unavailable;
 
   return (
     <button
@@ -523,70 +549,11 @@ export function ItemsTab({ version, lang }: ItemsTabProps) {
   };
 
   const filterLabel = (value: ItemFilter) => {
-    if (lang === "ko_KR") {
-      switch (value) {
-        case "all":
-          return "전체";
-        case "fighter":
-          return "전사";
-        case "mage":
-          return "마법사";
-        case "assassin":
-          return "암살자";
-        case "support":
-          return "서포터";
-        case "tank":
-          return "탱커";
-        case "trinket":
-          return "장신구/와드/포션";
-        case "boots":
-          return "신발";
-      }
-    }
-
-    switch (value) {
-      case "all":
-        return "All";
-      case "fighter":
-        return "Fighter";
-      case "mage":
-        return "Mage";
-      case "assassin":
-        return "Assassin";
-      case "support":
-        return "Support";
-      case "tank":
-        return "Tank";
-      case "trinket":
-        return "Trinkets";
-      case "boots":
-        return "Boots";
-    }
+    return t.encyclopedia.items.filters[value];
   };
 
   const tierLabel = (tier: ItemTier) => {
-    if (lang === "ko_KR") {
-      switch (tier) {
-        case "legendary":
-          return "전설 아이템";
-        case "epic":
-          return "서사급 아이템";
-        case "basic":
-          return "기본 아이템";
-        case "starter":
-          return "시작 아이템";
-      }
-    }
-    switch (tier) {
-      case "legendary":
-        return "Legendary";
-      case "epic":
-        return "Epic";
-      case "basic":
-        return "Basic";
-      case "starter":
-        return "Starter";
-    }
+    return t.encyclopedia.items.tiers[tier];
   };
 
   const descriptionHtml = selectedItem
@@ -606,7 +573,7 @@ export function ItemsTab({ version, lang }: ItemsTabProps) {
       {/* Builds into row */}
       <div className="space-y-0.5 text-[11px] pb-1 border-b border-border/60 flex-shrink-0">
         <div className="font-semibold">
-          {lang === "ko_KR" ? "상위 아이템 (Builds into)" : "Builds into"}
+          {t.encyclopedia.items.buildsIntoTitle}
         </div>
         <div className="overflow-x-auto pb-0.5">
           <div className="flex flex-nowrap gap-1 min-w-max">
@@ -618,12 +585,11 @@ export function ItemsTab({ version, lang }: ItemsTabProps) {
                   version={version}
                   isSelected={selectedItem.id === upgrade.id}
                   onSelect={() => setSelectedItem(upgrade)}
-                  lang={lang}
                 />
               ))
             ) : (
               <span className="text-[10px] text-muted-foreground">
-                {lang === "ko_KR" ? "상위 아이템 없음" : "No higher items"}
+                {t.encyclopedia.items.buildsIntoEmpty}
               </span>
             )}
           </div>
@@ -633,7 +599,7 @@ export function ItemsTab({ version, lang }: ItemsTabProps) {
       {/* Item tree */}
       <div className="space-y-1 text-[11px] py-1 flex-shrink-0">
         <div className="font-semibold">
-          {lang === "ko_KR" ? "아이템 트리" : "Item Tree"}
+          {t.encyclopedia.items.treeTitle}
         </div>
         {(() => {
           const tree = buildItemTree(selectedItem);
@@ -648,7 +614,6 @@ export function ItemsTab({ version, lang }: ItemsTabProps) {
                   version={version}
                   isSelected={selectedItem.id === node.item.id}
                   onSelect={() => setSelectedItem(node.item)}
-                  lang={lang}
                 />
                 {hasChildren && (
                   <div className="mt-0 flex flex-col items-stretch">
@@ -696,7 +661,7 @@ export function ItemsTab({ version, lang }: ItemsTabProps) {
           if (!tree.children.length && !tree.item.from?.length) {
             return (
               <span className="text-[10px] text-muted-foreground">
-                {lang === "ko_KR" ? "구성 아이템 없음" : "No components"}
+                {t.encyclopedia.items.treeEmpty}
               </span>
             );
           }
@@ -731,7 +696,7 @@ export function ItemsTab({ version, lang }: ItemsTabProps) {
                   </div>
                   {shouldShowPrice(selectedItem) && (
                     <div className="text-[11px] text-amber-600 dark:text-amber-300 font-semibold whitespace-nowrap">
-                      {getItemPriceLabel(selectedItem, lang)}
+                      {getItemPriceLabel(selectedItem, t)}
                     </div>
                   )}
                 </div>
@@ -755,9 +720,9 @@ export function ItemsTab({ version, lang }: ItemsTabProps) {
 
             <div className="h-px bg-neutral-700/80" />
 
-            {getItemStatLines(selectedItem, lang).length > 0 && (
+            {getItemStatLines(selectedItem, t).length > 0 && (
               <ul className="space-y-0.5 text-[11px] leading-snug">
-                {getItemStatLines(selectedItem, lang).map((line) => (
+                {getItemStatLines(selectedItem, t).map((line) => (
                   <li key={line} className="text-primary">
                     {line}
                   </li>
@@ -797,9 +762,7 @@ export function ItemsTab({ version, lang }: ItemsTabProps) {
             <Input
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              placeholder={
-                lang === "ko_KR" ? "아이템 이름 검색..." : "Search item name..."
-              }
+              placeholder={t.encyclopedia.items.searchPlaceholder}
               className="h-9 pl-7 text-xs border-neutral-400 focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-primary"
             />
           </div>
@@ -853,7 +816,6 @@ export function ItemsTab({ version, lang }: ItemsTabProps) {
                           setSelectedItem(item);
                           setMobileDetailOpen(true);
                         }}
-                        lang={lang}
                       />
                     ))}
                   </div>
@@ -924,9 +886,7 @@ export function ItemsTab({ version, lang }: ItemsTabProps) {
           <Input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder={
-              lang === "ko_KR" ? "아이템 이름 검색..." : "Search item name..."
-            }
+            placeholder={t.encyclopedia.items.searchPlaceholder}
             className="h-8 pl-8 text-xs md:text-sm w-full border-neutral-400 focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-primary"
           />
         </div>
@@ -937,7 +897,7 @@ export function ItemsTab({ version, lang }: ItemsTabProps) {
         <div className="md:flex-1 md:border-r border-border/60 flex flex-col min-w-0 min-h-0">
           <div className="px-3 py-2 border-b border-border/60 flex items-center justify-between flex-shrink-0">
             <div className="text-[11px] font-semibold text-muted-foreground">
-              {lang === "ko_KR" ? "아이템" : "Items"}
+              {t.encyclopedia.items.listTitle}
             </div>
           </div>
           <ScrollArea className="flex-1 min-h-0">
@@ -957,8 +917,7 @@ export function ItemsTab({ version, lang }: ItemsTabProps) {
                           item={item}
                           version={version}
                           isSelected={selectedItem?.id === item.id}
-                          onSelect={() => setSelectedItem(item)}
-                          lang={lang}
+                        onSelect={() => setSelectedItem(item)}
                         />
                       ))}
                     </div>
@@ -975,9 +934,7 @@ export function ItemsTab({ version, lang }: ItemsTabProps) {
             detailContent
           ) : (
             <div className="text-xs text-muted-foreground h-full flex items-center justify-center text-center px-4">
-              {lang === "ko_KR"
-                ? "왼쪽에서 아이템을 선택하면 여기에서 아이템 트리와 설명을 볼 수 있어요."
-                : "Select an item on the left to see its tree and description here."}
+              {t.encyclopedia.items.detailEmpty}
             </div>
           )}
         </div>

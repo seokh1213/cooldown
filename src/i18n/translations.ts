@@ -65,6 +65,47 @@ export interface Translations {
     runes: {
       warning: string;
     };
+    items: {
+      filters: {
+        all: string;
+        fighter: string;
+        mage: string;
+        assassin: string;
+        support: string;
+        tank: string;
+        trinket: string;
+        boots: string;
+      };
+      tiers: {
+        legendary: string;
+        epic: string;
+        basic: string;
+        starter: string;
+      };
+      buildsIntoTitle: string;
+      buildsIntoEmpty: string;
+      treeTitle: string;
+      treeEmpty: string;
+      searchPlaceholder: string;
+      listTitle: string;
+      detailEmpty: string;
+      price: {
+        unavailable: string;
+        free: string;
+      };
+      stats: {
+        abilityPower: string;
+        attackDamage: string;
+        critChance: string;
+        attackSpeed: string;
+        health: string;
+        mana: string;
+        armor: string;
+        magicResist: string;
+        lifesteal: string;
+        spellVamp: string;
+      };
+    };
   };
   pages: {
     killAngle: {
@@ -221,6 +262,48 @@ export const translations: Record<Language, Translations> = {
       runes: {
         warning: "정확한 수치와 설명은 인게임 툴팁을 확인해 주세요.",
       },
+      items: {
+        filters: {
+          all: "전체",
+          fighter: "전사",
+          mage: "마법사",
+          assassin: "암살자",
+          support: "서포터",
+          tank: "탱커",
+          trinket: "장신구/와드/포션",
+          boots: "신발",
+        },
+        tiers: {
+          legendary: "전설 아이템",
+          epic: "서사급 아이템",
+          basic: "기본 아이템",
+          starter: "시작 아이템",
+        },
+        buildsIntoTitle: "상위 아이템",
+        buildsIntoEmpty: "상위 아이템 없음",
+        treeTitle: "아이템 트리",
+        treeEmpty: "구성 아이템 없음",
+        searchPlaceholder: "아이템 이름 검색...",
+        listTitle: "아이템",
+        detailEmpty:
+          "왼쪽에서 아이템을 선택하면 여기에서 아이템 트리와 설명을 볼 수 있어요.",
+        price: {
+          unavailable: "구매 불가",
+          free: "무료",
+        },
+        stats: {
+          abilityPower: "주문력",
+          attackDamage: "공격력",
+          critChance: "치명타 확률",
+          attackSpeed: "공격 속도",
+          health: "체력",
+          mana: "마나",
+          armor: "방어력",
+          magicResist: "마법 저항력",
+          lifesteal: "생명력 흡수",
+          spellVamp: "주문 흡혈",
+        },
+      },
     },
     pages: {
       killAngle: {
@@ -375,6 +458,48 @@ export const translations: Record<Language, Translations> = {
       },
       runes: {
         warning: "Please check the in-game tooltip for accurate values and descriptions.",
+      },
+      items: {
+        filters: {
+          all: "All",
+          fighter: "Fighter",
+          mage: "Mage",
+          assassin: "Assassin",
+          support: "Support",
+          tank: "Tank",
+          trinket: "Trinkets",
+          boots: "Boots",
+        },
+        tiers: {
+          legendary: "Legendary",
+          epic: "Epic",
+          basic: "Basic",
+          starter: "Starter",
+        },
+        buildsIntoTitle: "Builds into",
+        buildsIntoEmpty: "No higher items",
+        treeTitle: "Item Tree",
+        treeEmpty: "No components",
+        searchPlaceholder: "Search item name...",
+        listTitle: "Items",
+        detailEmpty:
+          "Select an item on the left to see its tree and description here.",
+        price: {
+          unavailable: "Unavailable",
+          free: "Free",
+        },
+        stats: {
+          abilityPower: "Ability Power",
+          attackDamage: "Attack Damage",
+          critChance: "Critical Strike Chance",
+          attackSpeed: "Attack Speed",
+          health: "Health",
+          mana: "Mana",
+          armor: "Armor",
+          magicResist: "Magic Resist",
+          lifesteal: "Life Steal",
+          spellVamp: "Spell Vamp",
+        },
       },
     },
     pages: {
