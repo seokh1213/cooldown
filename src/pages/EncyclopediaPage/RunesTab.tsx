@@ -18,6 +18,7 @@ import {
 import { VisuallyHidden } from "@/components/ui/visually-hidden";
 import { useTranslation } from "@/i18n";
 import { useDeviceType } from "@/hooks/useDeviceType";
+import { AlertTriangle } from "lucide-react";
 
 interface RunesTabProps {
   version: string;
@@ -127,8 +128,9 @@ export function RunesTab({ version, lang }: RunesTabProps) {
             }}
           />
         </div>
-        <div className="text-[10px] text-muted-foreground/80 italic pt-1 border-t border-border/50">
-          {t.encyclopedia.runes.warning}
+        <div className="text-xs text-muted-foreground/80 italic leading-relaxed border-t pt-3 mt-3 flex items-center gap-1.5">
+          <AlertTriangle className="w-2.5 h-2.5 text-yellow-600 dark:text-yellow-500 flex-shrink-0" />
+          <span>{t.encyclopedia.runes.warning}</span>
         </div>
       </div>
     );

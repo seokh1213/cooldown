@@ -246,8 +246,8 @@ export function SkillTooltip({
             </div>
           )}
           {/* 경고 문구 */}
-          <div className="text-xs text-muted-foreground leading-relaxed border-t pt-3 mt-3 flex items-start gap-1.5">
-            <AlertTriangle className="w-3 h-3 mt-0.5 text-yellow-600 dark:text-yellow-500 flex-shrink-0" />
+          <div className="text-xs text-muted-foreground/80 italic leading-relaxed border-t pt-3 mt-3 flex items-center gap-1.5">
+            <AlertTriangle className="w-2.5 h-2.5 text-yellow-600 dark:text-yellow-500 flex-shrink-0" />
             <span>{t.skillTooltip.warningPassive}</span>
           </div>
         </>
@@ -330,8 +330,8 @@ export function SkillTooltip({
           </div>
         )}
 
-        <div className="text-xs text-muted-foreground leading-relaxed border-t pt-3 mt-3 flex items-start gap-1.5">
-          <AlertTriangle className="w-3 h-3 mt-0.5 text-yellow-600 dark:text-yellow-500 flex-shrink-0" />
+        <div className="text-xs text-muted-foreground/80 italic leading-relaxed border-t pt-3 mt-3 flex items-center gap-1.5">
+          <AlertTriangle className="w-2.5 h-2.5 text-yellow-600 dark:text-yellow-500 flex-shrink-0" />
           <span>{t.skillTooltip.warningSkill}</span>
         </div>
       </>
