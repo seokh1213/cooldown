@@ -20,7 +20,6 @@ export interface Translations {
   sidebar: {
     championCooldown: string;
     encyclopedia: string;
-    killAngle: string;
     simulation: string;
   };
   tutorial: {
@@ -108,10 +107,6 @@ export interface Translations {
     };
   };
   pages: {
-    killAngle: {
-      title: string;
-      description: string;
-    };
     laningTips: {
       title: string;
       description: string;
@@ -217,7 +212,6 @@ export const translations: Record<Language, Translations> = {
     sidebar: {
       championCooldown: "챔피언 쿨타임",
       encyclopedia: "룬, 아이템 백과",
-      killAngle: "킬각 계산기",
       simulation: "시뮬레이션",
     },
     tutorial: {
@@ -306,10 +300,6 @@ export const translations: Record<Language, Translations> = {
       },
     },
     pages: {
-      killAngle: {
-        title: "킬각 계산기",
-        description: "챔피언의 스킬 데미지를 계산하여 킬각을 확인할 수 있습니다. (준비 중)",
-      },
       laningTips: {
         title: "라인전 팁",
         description: "챔피언별 라인전 팁과 상대법을 확인할 수 있습니다. (준비 중)",
@@ -414,7 +404,6 @@ export const translations: Record<Language, Translations> = {
     sidebar: {
       championCooldown: "Champion Cooldown",
       encyclopedia: "Runes & Items Encyclopedia",
-      killAngle: "Kill Angle Calculator",
       simulation: "Simulation",
     },
     tutorial: {
@@ -503,10 +492,6 @@ export const translations: Record<Language, Translations> = {
       },
     },
     pages: {
-      killAngle: {
-        title: "Kill Angle Calculator",
-        description: "Calculate champion skill damage to check kill angles. (Coming soon)",
-      },
       laningTips: {
         title: "Laning Tips",
         description: "Check champion-specific laning tips and matchups. (Coming soon)",

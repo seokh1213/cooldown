@@ -24,7 +24,6 @@ const COOLDOWN_SELECTED_TAB_ID_STORAGE_KEY = "cooldown_selected_tab_id";
 // Lazy load pages for code splitting
 const EncyclopediaPage = lazy(() => import("@/pages/EncyclopediaPage"));
 const ChampionCooldownPage = lazy(() => import("@/pages/ChampionCooldownPage"));
-const KillAnglePage = lazy(() => import("@/pages/KillAnglePage"));
 const OGPreviewPage = lazy(() => import("@/pages/OGPreviewPage"));
 const SimulationPage = lazy(() => import("@/pages/SimulationPage"));
 
@@ -174,6 +173,7 @@ function App() {
         setInitialCooldownSelectedTabId(null);
       }
       
+      // 필수 데이터 로딩: 버전 정보와 챔피언 리스트
       const { ddragonVersion, cdragonVersion } = await getDataVersions();
       setVersion(ddragonVersion);
       setCDragonVersion(cdragonVersion);
@@ -183,12 +183,21 @@ function App() {
       
       const champions = await getChampionList(ddragonVersion, lang);
       setChampionList(champions);
+      
       // 최소 로딩 시간 보장 (스플래시 화면 표시)
       await new Promise((resolve) => setTimeout(resolve, 1000));
+      
+      // 필수 데이터가 모두 로드되었는지 확인 후 로딩 완료
+      if (ddragonVersion && champions && champions.length > 0) {
+        setIsLoading(false);
+      } else {
+        logger.error("Required data not loaded properly. Keeping splash screen visible.");
+        // 필수 데이터가 없으면 스플래시 화면 유지 (isLoading을 false로 설정하지 않음)
+      }
     } catch (error) {
       logger.error("Failed to initialize data:", error);
-    } finally {
-      setIsLoading(false);
+      // 에러 발생 시 필수 데이터가 로드되지 않았으므로 스플래시 화면 유지
+      // setIsLoading(false)를 호출하지 않아서 스플래시 화면이 계속 표시됨
     }
   }, [lang]);
 
@@ -336,15 +345,18 @@ function AppContent({
   handleLangChange: (newLang: string) => void;
   toggleTheme: () => void;
 }) {
+  // 필수 데이터가 모두 로드되었는지 확인
+  const isDataReady = !isLoading && version && championList && championList.length > 0;
+
   return (
     <>
-      {/* 버전이 로드되기 전까지 스플래시 화면 표시 */}
-      {(isLoading || !version) && <SplashScreen />}
+      {/* 필수 데이터가 로드되기 전까지 스플래시 화면 표시 */}
+      {!isDataReady && <SplashScreen />}
       <Routes>
         <Route
           path="/"
           element={
-            isLoading || !version ? (
+            !isDataReady ? (
               <SplashScreen />
             ) : (
               <Layout
@@ -377,7 +389,7 @@ function AppContent({
         <Route
           path="/encyclopedia"
           element={
-            isLoading || !version ? (
+            !isDataReady ? (
               <SplashScreen />
             ) : (
               <Layout
@@ -408,47 +420,31 @@ function AppContent({
           }
         />
         <Route
-          path="/kill-angle"
-          element={
-            <Layout
-              nav={
-                <Nav
-                  version={version || undefined}
-                  lang={lang}
-                  selectHandler={handleLangChange}
-                  theme={theme}
-                  onThemeToggle={toggleTheme}
-                />
-              }
-            >
-              <Suspense fallback={<SplashScreen />}>
-                <KillAnglePage />
-              </Suspense>
-            </Layout>
-          }
-        />
-        <Route
           path="/simulation"
           element={
-            <Layout
-              nav={
-                <Nav
-                  version={version || undefined}
-                  lang={lang}
-                  selectHandler={handleLangChange}
-                  theme={theme}
-                  onThemeToggle={toggleTheme}
-                />
-              }
-            >
-              <Suspense fallback={<SplashScreen />}>
-                <SimulationPage
-                  lang={lang}
-                  version={version}
-                  championList={championList}
-                />
-              </Suspense>
-            </Layout>
+            !isDataReady ? (
+              <SplashScreen />
+            ) : (
+              <Layout
+                nav={
+                  <Nav
+                    version={version || undefined}
+                    lang={lang}
+                    selectHandler={handleLangChange}
+                    theme={theme}
+                    onThemeToggle={toggleTheme}
+                  />
+                }
+              >
+                <Suspense fallback={<SplashScreen />}>
+                  <SimulationPage
+                    lang={lang}
+                    version={version}
+                    championList={championList}
+                  />
+                </Suspense>
+              </Layout>
+            )
           }
         />
         {/* 개발 전용 프리뷰 페이지들 */}
