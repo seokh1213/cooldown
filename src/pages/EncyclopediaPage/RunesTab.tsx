@@ -70,6 +70,23 @@ export function RunesTab({ version, lang }: RunesTabProps) {
   }
 
   /**
+   * 룬 트리 정렬 순서: 정밀, 지배, 마법, 결의, 영감
+   */
+  const runeTreeOrder: Record<string, number> = {
+    Precision: 0,
+    Domination: 1,
+    Sorcery: 2,
+    Resolve: 3,
+    Inspiration: 4,
+  };
+
+  const sortedRuneTrees = [...runeTrees].sort((a, b) => {
+    const orderA = runeTreeOrder[a.key] ?? 999;
+    const orderB = runeTreeOrder[b.key] ?? 999;
+    return orderA - orderB;
+  });
+
+  /**
    * @이름@ 또는 @{이름}@ 패턴을 물음표로 치환
    * 예: @HealAmount@ → ?, @BaseHeal@ → ?, @{이름}@ → ?
    */
@@ -170,7 +187,7 @@ export function RunesTab({ version, lang }: RunesTabProps) {
       <div className="mt-4">
         <ScrollArea className="rounded-md border bg-card/40">
           <div className="p-4 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-            {runeTrees.map((tree) => (
+            {sortedRuneTrees.map((tree) => (
               <Card
                 key={tree.id}
                 className="p-4 flex flex-col gap-3 bg-background/60 border-border/70"
