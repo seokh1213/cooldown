@@ -10,11 +10,21 @@ const RUNES_URL = (VERSION: string, LANG: string) =>
   `https://ddragon.leagueoflegends.com/cdn/${VERSION}/data/${LANG}/runesReforged.json`;
 const ITEMS_URL = (VERSION: string, LANG: string) =>
   `https://ddragon.leagueoflegends.com/cdn/${VERSION}/data/${LANG}/item.json`;
+const SUMMONER_URL = (VERSION: string, LANG: string) =>
+  `https://ddragon.leagueoflegends.com/cdn/${VERSION}/data/${LANG}/summoner.json`;
 const COMMUNITY_DRAGON_URL = (basePath: string, championId: string) =>
   `https://raw.communitydragon.org/${basePath}/game/data/characters/${championId}/${championId}.bin.json`;
 const COMMUNITY_DRAGON_ITEMS_URL = (basePath: string, lang: string) => {
   const locale = lang === "ko_KR" ? "ko_kr" : "default";
   return `https://raw.communitydragon.org/${basePath}/plugins/rcp-be-lol-game-data/global/${locale}/v1/items.json`;
+};
+const COMMUNITY_DRAGON_PERKSTYLES_URL = (basePath: string, lang: string) => {
+  const locale = lang === "ko_KR" ? "ko_kr" : "default";
+  return `https://raw.communitydragon.org/${basePath}/plugins/rcp-be-lol-game-data/global/${locale}/v1/perkstyles.json`;
+};
+const COMMUNITY_DRAGON_PERKS_URL = (basePath: string, lang: string) => {
+  const locale = lang === "ko_KR" ? "ko_kr" : "default";
+  return `https://raw.communitydragon.org/${basePath}/plugins/rcp-be-lol-game-data/global/${locale}/v1/perks.json`;
 };
 
 const LANGUAGES = ["ko_KR", "en_US"] as const;
@@ -381,6 +391,174 @@ async function fetchCommunityDragonItemsWithFallback(
   return { items: null, cdragonVersion: null };
 }
 
+interface RuneStatShard {
+  id: number;
+  name: string;
+  iconPath: string;
+  shortDesc: string;
+  longDesc: string;
+}
+
+interface RuneStatShardRow {
+  label: string;
+  perks: RuneStatShard[];
+}
+
+interface RuneStatShardGroup {
+  styleId: number;
+  styleName: string;
+  rows: RuneStatShardRow[];
+}
+
+interface RuneStatShardStaticData {
+  version: string;
+  lang: string;
+  cdragonVersion: string | null;
+  groups: RuneStatShardGroup[];
+}
+
+async function fetchRuneStatShardsWithFallback(
+  lang: string,
+  versionCandidates: string[],
+  ddragonVersion: string
+): Promise<RuneStatShardStaticData | null> {
+  const resultsLocale = lang === "ko_KR" ? "ko_KR" : "default";
+
+  for (const basePath of versionCandidates) {
+    const perkstylesUrl = COMMUNITY_DRAGON_PERKSTYLES_URL(basePath, lang);
+    const perksUrl = COMMUNITY_DRAGON_PERKS_URL(basePath, lang);
+
+    try {
+      console.log(
+        `Fetching CDragon rune stat shards (${resultsLocale}): ${perkstylesUrl} & perks.json`
+      );
+
+      const [stylesRes, perksRes] = await Promise.all([
+        fetch(perkstylesUrl),
+        fetch(perksUrl),
+      ]);
+
+      if (stylesRes.status === 404 || perksRes.status === 404) {
+        console.warn(
+          `[CD][Runes] Stat shard data not found for ${resultsLocale} at ${basePath} (404), trying next candidate...`
+        );
+        continue;
+      }
+
+      if (!stylesRes.ok || !perksRes.ok) {
+        console.warn(
+          `[CD][Runes] Failed to fetch stat shard data for ${resultsLocale} at ${basePath}. status=${stylesRes.status}/${perksRes.status}. Trying next candidate...`
+        );
+        continue;
+      }
+
+      const stylesJson = (await stylesRes.json()) as any;
+      const perksJson = (await perksRes.json()) as any;
+
+      if (
+        !stylesJson ||
+        typeof stylesJson !== "object" ||
+        !Array.isArray(stylesJson.styles) ||
+        !Array.isArray(perksJson)
+      ) {
+        console.warn(
+          `[CD][Runes] Unexpected stat shard response format for ${resultsLocale} at ${basePath}`
+        );
+        continue;
+      }
+
+      const perkMap = new Map<number, any>();
+      for (const perk of perksJson) {
+        if (!perk || typeof perk.id !== "number") continue;
+        perkMap.set(perk.id, perk);
+      }
+
+      const kStatModStyles = (stylesJson.styles as any[]).filter(
+        (style) => style && style.type === "kStatMod"
+      );
+
+      if (kStatModStyles.length === 0) {
+        console.warn(
+          `[CD][Runes] No kStatMod styles found for ${resultsLocale} at ${basePath}`
+        );
+        continue;
+      }
+
+      const groups: RuneStatShardGroup[] = [];
+
+      for (const style of kStatModStyles) {
+        const styleId: number = style.id;
+        const styleName: string = style.name || "";
+        const slots: any[] = Array.isArray(style.slots) ? style.slots : [];
+
+        const rows: RuneStatShardRow[] = [];
+
+        for (const slot of slots) {
+          const label: string =
+            slot.name || slot.label || slot.localizedName || "";
+          const perkIds: number[] = Array.isArray(slot.perks)
+            ? slot.perks
+            : [];
+
+          const perks: RuneStatShard[] = [];
+          for (const perkId of perkIds) {
+            const perk = perkMap.get(perkId);
+            if (!perk) continue;
+
+            perks.push({
+              id: perk.id,
+              name: perk.name,
+              iconPath: perk.iconPath,
+              shortDesc: perk.shortDesc,
+              longDesc: perk.longDesc,
+            });
+          }
+
+          if (perks.length > 0) {
+            rows.push({
+              label,
+              perks,
+            });
+          }
+        }
+
+        if (rows.length > 0) {
+          groups.push({
+            styleId,
+            styleName,
+            rows,
+          });
+        }
+      }
+
+      if (groups.length === 0) {
+        console.warn(
+          `[CD][Runes] No stat shard groups constructed for ${resultsLocale} at ${basePath}`
+        );
+        continue;
+      }
+
+      return {
+        version: ddragonVersion,
+        lang,
+        cdragonVersion: basePath,
+        groups,
+      };
+    } catch (error) {
+      console.warn(
+        `[CD][Runes] Error while fetching stat shard data for ${resultsLocale} at ${basePath}:`,
+        error
+      );
+      continue;
+    }
+  }
+
+  console.error(
+    `[CD][Runes] All CommunityDragon stat shard candidates failed for ${resultsLocale}`
+  );
+  return null;
+}
+
 async function main() {
   console.log('🚀 Starting static data generation...\n');
 
@@ -441,6 +619,43 @@ async function main() {
         path.join(versionDir, `runes-${lang}.json`)
       );
       console.log(`✅ Saved runes for ${lang}`);
+
+      console.log(`✨ Fetching rune stat shards (secondary runes) for ${lang}...`);
+      try {
+        const statShardData = await fetchRuneStatShardsWithFallback(
+          lang,
+          cdVersionCandidates,
+          version
+        );
+
+        if (statShardData && statShardData.groups.length > 0) {
+          // 폴백 버전 사용 여부 기록
+          if (
+            statShardData.cdragonVersion &&
+            cdVersionCandidates.length > 0 &&
+            statShardData.cdragonVersion !== cdVersionCandidates[0]
+          ) {
+            if (!usedFallbackCdragonVersion) {
+              usedFallbackCdragonVersion = statShardData.cdragonVersion;
+            }
+          }
+
+          await saveToFile(
+            statShardData,
+            path.join(versionDir, `rune-statmods-${lang}.json`)
+          );
+          console.log(`✅ Saved rune stat shards for ${lang}`);
+        } else {
+          console.warn(
+            `[CD][Runes] No stat shard data generated for ${lang}`
+          );
+        }
+      } catch (error) {
+        console.warn(
+          `[CD][Runes] Failed to generate rune stat shards for ${lang}:`,
+          error
+        );
+      }
 
       console.log(`🧱 Fetching items for ${lang}...`);
       const itemsData = await fetchJson(ITEMS_URL(version, lang));
@@ -538,6 +753,21 @@ async function main() {
         path.join(versionDir, `items-${lang}.json`)
       );
       console.log(`✅ Saved items for ${lang}\n`);
+
+      console.log(`📘 Fetching summoner spells for ${lang}...`);
+      try {
+        const summonerData = await fetchJson(SUMMONER_URL(version, lang));
+        await saveToFile(
+          summonerData,
+          path.join(versionDir, `summoner-${lang}.json`)
+        );
+        console.log(`✅ Saved summoner spells for ${lang}\n`);
+      } catch (error) {
+        console.warn(
+          `❌ Failed to fetch/save summoner spells for ${lang}:`,
+          error
+        );
+      }
     }
 
     const koChampListData = await fetchJson(CHAMP_LIST_URL(version, 'ko_KR'));

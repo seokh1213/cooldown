@@ -1,5 +1,13 @@
 import Hangul from "hangul-js";
-import { Champion, RuneTreeList, ItemList, Item } from "@/types";
+import {
+  Champion,
+  RuneTreeList,
+  ItemList,
+  Item,
+  SummonerSpellsData,
+  SummonerSpell,
+  RuneStatShardStaticData,
+} from "@/types";
 import { logger } from "@/lib/logger";
 import { getStaticDataPath } from "@/lib/staticDataUtils";
 
@@ -427,6 +435,54 @@ export async function getRuneTrees(
   return data;
 }
 
+// 보조 룬(스탯 조각) - CDragon 기반 정적 데이터
+export async function getRuneStatShards(
+  version: string,
+  lang: string
+): Promise<RuneStatShardStaticData | null> {
+  const cacheKey = `rune_statmods_${version}_${lang}`;
+
+  try {
+    const cached = localStorage.getItem(cacheKey);
+    if (cached) {
+      const parsed = JSON.parse(cached);
+      if (
+        parsed &&
+        typeof parsed === "object" &&
+        Array.isArray((parsed as any).groups)
+      ) {
+        return parsed as RuneStatShardStaticData;
+      }
+    }
+  } catch (error) {
+    logger.warn("Failed to parse cached rune stat shards:", error);
+  }
+
+  try {
+    const staticUrl = getStaticDataPath(version, `rune-statmods-${lang}.json`);
+    const response = await fetch(staticUrl);
+
+    if (response.ok) {
+      const data = (await response.json()) as RuneStatShardStaticData;
+      if (data && Array.isArray(data.groups) && data.groups.length > 0) {
+        try {
+          localStorage.setItem(cacheKey, JSON.stringify(data));
+        } catch (error) {
+          logger.warn("Failed to cache rune stat shards:", error);
+        }
+        return data;
+      }
+    }
+  } catch (error) {
+    logger.warn(
+      "[StaticData] Failed to load rune stat shards from static data:",
+      error
+    );
+  }
+
+  return null;
+}
+
 export async function getItems(
   version: string,
   lang: string
@@ -516,6 +572,79 @@ export async function getItems(
   }
 
   return items;
+}
+
+// ===== Summoner Spells =====
+
+export async function getSummonerSpells(
+  version: string,
+  lang: string
+): Promise<SummonerSpell[]> {
+  const cacheKey = `summoner_${version}_${lang}`;
+
+  try {
+    const cached = localStorage.getItem(cacheKey);
+    if (cached) {
+      const parsed = JSON.parse(cached);
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        return parsed as SummonerSpell[];
+      }
+    }
+  } catch (error) {
+    logger.warn("Failed to parse cached summoner spells:", error);
+  }
+
+  const mapToArray = (data: SummonerSpellsData): SummonerSpell[] => {
+    if (!data || !data.data || typeof data.data !== "object") {
+      return [];
+    }
+    return Object.values(data.data);
+  };
+
+  // 1) 정적 데이터 우선
+  try {
+    const staticUrl = getStaticDataPath(version, `summoner-${lang}.json`);
+    const response = await fetch(staticUrl);
+
+    if (response.ok) {
+      const staticData = (await response.json()) as SummonerSpellsData;
+      const spells = mapToArray(staticData);
+      if (spells.length > 0) {
+        try {
+          localStorage.setItem(cacheKey, JSON.stringify(spells));
+        } catch (error) {
+          logger.warn("Failed to cache summoner spells:", error);
+        }
+        return spells;
+      }
+    }
+  } catch (error) {
+    logger.warn(
+      "[StaticData] Failed to load summoner spells from static data, falling back to API:",
+      error
+    );
+  }
+
+  // 2) Fallback: Data Dragon API
+  const { ddragonVersion } = await getDataVersions();
+  const url = `https://ddragon.leagueoflegends.com/cdn/${ddragonVersion}/data/${lang}/summoner.json`;
+
+  const data = await fetchData<SummonerSpellsData>(url, (res) => {
+    if (res && typeof res === "object" && "data" in res) {
+      return res as SummonerSpellsData;
+    }
+    throw new Error("Invalid summoner spell response format");
+  });
+
+  const spells = mapToArray(data);
+
+  try {
+    localStorage.setItem(cacheKey, JSON.stringify(spells));
+  } catch (error) {
+    logger.warn("Failed to cache summoner spells:", error);
+  }
+
+  return spells;
 }
 
 function convertChampionIdToCommunityDragon(championId: string): string {

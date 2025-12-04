@@ -50,6 +50,7 @@ export interface Translations {
       stats: string;
       runes: string;
       items: string;
+      summoner: string;
     };
     reset: string;
     champion: string;
@@ -105,6 +106,11 @@ export interface Translations {
         lifesteal: string;
         spellVamp: string;
       };
+    };
+    summoner: {
+      searchPlaceholder: string;
+      listTitle: string;
+      detailEmpty: string;
     };
   };
   pages: {
@@ -247,6 +253,7 @@ export const translations: Record<Language, Translations> = {
         stats: "챔피언 스탯",
         runes: "룬 백과",
         items: "아이템 백과",
+        summoner: "소환사 주문",
       },
       reset: "초기화",
       champion: "챔피언",
@@ -303,6 +310,12 @@ export const translations: Record<Language, Translations> = {
           lifesteal: "생명력 흡수",
           spellVamp: "주문 흡혈",
         },
+      },
+      summoner: {
+        searchPlaceholder: "소환사 주문 검색...",
+        listTitle: "소환사 주문",
+        detailEmpty:
+          "왼쪽에서 소환사 주문을 선택하면 여기에서 상세 설명을 볼 수 있어요.",
       },
     },
     pages: {
@@ -444,6 +457,7 @@ export const translations: Record<Language, Translations> = {
         stats: "Champion Stats",
         runes: "Runes Encyclopedia",
         items: "Items Encyclopedia",
+        summoner: "Summoner Spells",
       },
       reset: "Reset",
       champion: "Champion",
@@ -500,6 +514,12 @@ export const translations: Record<Language, Translations> = {
           lifesteal: "Life Steal",
           spellVamp: "Spell Vamp",
         },
+      },
+      summoner: {
+        searchPlaceholder: "Search summoner spells...",
+        listTitle: "Summoner Spells",
+        detailEmpty:
+          "Select a summoner spell on the left to see its detailed description here.",
       },
     },
     pages: {

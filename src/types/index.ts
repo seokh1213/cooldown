@@ -153,3 +153,98 @@ export interface Item extends ItemData {
   id: string;
 }
 
+// ===== Summoner Spells =====
+
+export interface SummonerSpellImage {
+  full: string;
+  sprite: string;
+  group: string;
+  x: number;
+  y: number;
+  w: number;
+  h: number;
+}
+
+export interface SummonerSpellVar {
+  link: string;
+  coeff: number | number[];
+  key: string;
+}
+
+export interface SummonerSpell {
+  id: string;
+  name: string;
+  description: string;
+  tooltip: string;
+  maxrank: number;
+  cooldown: number[];
+  cooldownBurn: string;
+  cost: number[];
+  costBurn: string;
+  datavalues: Record<string, unknown>;
+  effect: Array<number[] | null>;
+  effectBurn: Array<string | null>;
+  vars: SummonerSpellVar[];
+  key: string;
+  summonerLevel: number;
+  modes: string[];
+  costType: string;
+  maxammo: string;
+  range: number[];
+  rangeBurn: string;
+  image: SummonerSpellImage;
+  resource: string;
+}
+
+export interface SummonerSpellMap {
+  [id: string]: SummonerSpell;
+}
+
+export interface SummonerSpellsData {
+  type: string;
+  version: string;
+  data: SummonerSpellMap;
+}
+
+// ===== Rune Stat Shards (secondary runes from CDragon) =====
+
+export interface RuneStatShard {
+  id: number;
+  name: string;
+  iconPath: string;
+  shortDesc: string;
+  longDesc: string;
+}
+
+export interface RuneStatShardRow {
+  /**
+   * 슬롯 이름 (예: 공격, 유연, 방어 등)
+   * CDragon perkstyles 슬롯의 name/label을 그대로 사용
+   */
+  label: string;
+  perks: RuneStatShard[];
+}
+
+export interface RuneStatShardGroup {
+  /** CDragon style id (kStatMod 스타일) */
+  styleId: number;
+  /** CDragon style name (예: Stats) */
+  styleName: string;
+  rows: RuneStatShardRow[];
+}
+
+/**
+ * 정적 데이터로 저장되는 보조 룬(스탯 조각) 데이터 전체 형태
+ */
+export interface RuneStatShardStaticData {
+  /** DDragon 기준 버전 (예: 15.24.1) */
+  version: string;
+  /** 언어 코드 (ko_KR, en_US 등) */
+  lang: string;
+  /** 실제로 사용한 CDragon 기준 버전 (예: 15.24, latest 등) */
+  cdragonVersion: string | null;
+  /** kStatMod 스타일 그룹 목록 */
+  groups: RuneStatShardGroup[];
+}
+
+

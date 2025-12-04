@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { getRuneTrees } from "@/services/api";
-import type { RuneTree, Rune } from "@/types";
+import { getRuneTrees, getRuneStatShards } from "@/services/api";
+import type { RuneTree, Rune, RuneStatShardStaticData } from "@/types";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Card } from "@/components/ui/card";
 import {
@@ -28,6 +28,8 @@ interface RunesTabProps {
 export function RunesTab({ version, lang }: RunesTabProps) {
   const { t } = useTranslation();
   const [runeTrees, setRuneTrees] = useState<RuneTree[] | null>(null);
+  const [statShardData, setStatShardData] =
+    useState<RuneStatShardStaticData | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const deviceType = useDeviceType();
   const isMobile = deviceType === "mobile";
@@ -37,10 +39,14 @@ export function RunesTab({ version, lang }: RunesTabProps) {
     let cancelled = false;
     setLoading(true);
 
-    getRuneTrees(version, lang)
-      .then((data) => {
+    Promise.all([
+      getRuneTrees(version, lang),
+      getRuneStatShards(version, lang),
+    ])
+      .then(([trees, statmods]) => {
         if (!cancelled) {
-          setRuneTrees(data);
+          setRuneTrees(trees);
+          setStatShardData(statmods);
         }
       })
       .finally(() => {
@@ -281,6 +287,77 @@ export function RunesTab({ version, lang }: RunesTabProps) {
                 </div>
               </Card>
             ))}
+
+            {/* 공통 보조 룬 (스탯 조각) 섹션 */}
+            {statShardData && statShardData.groups.length > 0 && (
+              <Card className="p-4 flex flex-col gap-3 bg-background/60 border-border/70 md:col-span-2 xl:col-span-3">
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-full border border-border/60 bg-transparent flex items-center justify-center text-xs font-semibold">
+                    +
+                  </div>
+                  <div className="flex flex-col">
+                    <span className="text-sm font-semibold">
+                      {t.encyclopedia.runes.warning.replace(
+                        "정확한 수치와 설명은",
+                        "공통 능력치 조각 (보조 룬)"
+                      )}
+                    </span>
+                    <span className="text-xs text-muted-foreground">
+                      {t.encyclopedia.runes.warning}
+                    </span>
+                  </div>
+                </div>
+                <div className="space-y-3 mt-1">
+                  {statShardData.groups.map((group) =>
+                    group.rows.map((row, rowIndex) => {
+                      if (!row.perks || row.perks.length === 0) return null;
+                      return (
+                        <div
+                          key={`${group.styleId}-${rowIndex}`}
+                          className="flex flex-col gap-1"
+                        >
+                          {row.label && (
+                            <div className="text-[11px] font-semibold text-muted-foreground mb-0.5">
+                              {row.label}
+                            </div>
+                          )}
+                          <div className="flex flex-wrap gap-2">
+                            {row.perks.map((perk) => (
+                              <div
+                                key={perk.id}
+                                className="inline-flex items-center gap-2 rounded-md border border-border/60 bg-background/80 px-2 py-1"
+                              >
+                                <img
+                                  src={`https://raw.communitydragon.org/${statShardData.cdragonVersion ?? "latest"}${perk.iconPath}`}
+                                  alt={perk.name}
+                                  loading="lazy"
+                                  decoding="async"
+                                  width={24}
+                                  height={24}
+                                  className="w-6 h-6 rounded-full border border-border/60 bg-transparent flex-shrink-0"
+                                />
+                                <div className="flex flex-col min-w-0">
+                                  <span className="text-[11px] font-semibold leading-tight truncate">
+                                    {perk.name}
+                                  </span>
+                                  <span className="text-[10px] text-muted-foreground leading-snug line-clamp-2">
+                                    <span
+                                      dangerouslySetInnerHTML={{
+                                        __html: perk.shortDesc || perk.longDesc,
+                                      }}
+                                    />
+                                  </span>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      );
+                    })
+                  )}
+                </div>
+              </Card>
+            )}
           </div>
         </ScrollArea>
 

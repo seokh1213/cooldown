@@ -1,15 +1,14 @@
 import { useState, useMemo, useEffect, useRef } from "react";
 import { useSearchParams } from "react-router-dom";
 import { EncyclopediaPageProps } from "./types";
-import { TabNavigation } from "./TabNavigation";
+import { TabNavigation, EncyclopediaTab } from "./TabNavigation";
 import { RunesTab } from "./RunesTab";
 import { ItemsTab } from "./ItemsTab";
 import { VersionProvider, useVersionContext } from "@/context/VersionContext";
-
-type EncyclopediaTab = "runes" | "items";
+import { SummonerTab } from "./SummonerTab";
 
 function isValidTab(tab: string | null): tab is EncyclopediaTab {
-  return tab === "runes" || tab === "items";
+  return tab === "runes" || tab === "items" || tab === "summoner";
 }
 
 function EncyclopediaPageContent({
@@ -93,6 +92,9 @@ function EncyclopediaPageContent({
       )}
       {activeTab === "items" && (
         <ItemsTab version={version} lang={lang} />
+      )}
+      {activeTab === "summoner" && (
+        <SummonerTab version={version} lang={lang} />
       )}
     </div>
   );
