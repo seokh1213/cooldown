@@ -47,6 +47,8 @@ function Nav({
   const { t } = useTranslation();
   const location = useLocation();
   const isEncyclopediaPage = location.pathname === "/encyclopedia";
+  const isSimulationPage = location.pathname === "/simulation";
+  const isChampionCooldownPage = location.pathname === "/" || location.pathname === "";
   const [isMobile, setIsMobile] = useState(false);
   const [tutorialOpen, setTutorialOpen] = useState(false);
   const [versionPopoverOpen, setVersionPopoverOpen] = useState(false);
@@ -104,12 +106,15 @@ function Nav({
             </Button>
           )}
           
-          {isEncyclopediaPage && (
+          {/* Page title */}
+          {(isEncyclopediaPage || isSimulationPage || isChampionCooldownPage) && (
             <h1 className="text-base md:text-lg font-medium flex-1 text-foreground/70 leading-none">
-              {t.nav.encyclopedia}
+              {isEncyclopediaPage && t.nav.encyclopedia}
+              {isSimulationPage && t.sidebar.simulation}
+              {isChampionCooldownPage && t.sidebar.championCooldown}
             </h1>
           )}
-          {!isEncyclopediaPage && <div className="flex-1" />}
+          {!(isEncyclopediaPage || isSimulationPage || isChampionCooldownPage) && <div className="flex-1" />}
           {/* Version with mismatch icon */}
           {isVersionMismatch && (
             <Popover open={versionPopoverOpen} onOpenChange={setVersionPopoverOpen}>
