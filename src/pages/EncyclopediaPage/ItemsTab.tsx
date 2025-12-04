@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
+import Hangul from "hangul-js";
 import { getItems } from "@/services/api";
 import type { Item } from "@/types";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -13,6 +14,7 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 import { VisuallyHidden } from "@/components/ui/visually-hidden";
+import { Search } from "lucide-react";
 
 interface ItemsTabProps {
   version: string;
@@ -257,9 +259,16 @@ const ItemCell: React.FC<ItemCellProps> = ({
       <span
         className={`${
           isUnavailableLabel ? "text-[8px] md:text-[9px]" : "text-[9px] md:text-[10px]"
-        } text-amber-600 dark:text-amber-400 font-semibold whitespace-nowrap`}
+        } text-amber-600 dark:text-amber-400 font-semibold whitespace-nowrap leading-tight`}
       >
         {priceLabel}
+      </span>
+      {/* 시각적으로는 보이지 않지만 DOM 상에 존재하는 텍스트로 남겨서
+          브라우저 CMD+F 검색에 걸리도록 한다. (Tailwind의 sr-only 패턴) */}
+      <span
+        className="sr-only absolute"
+      >
+        {item.name}
       </span>
     </button>
   );
@@ -326,7 +335,30 @@ export function ItemsTab({ version, lang }: ItemsTabProps) {
     return new Map<string, Item>(items.map((i) => [i.id, i]));
   }, [items]);
 
-  const term = search.trim().toLowerCase();
+  const termRaw = search.trim().toLowerCase();
+
+  const normalizeForSearch = (value: string): string =>
+    value
+      .toLowerCase()
+      // 한글(완성형), 초성(ㄱ-ㅎ), 숫자, 알파벳만 남기고 모두 제거
+      .replace(/[^0-9a-z\uac00-\ud7a3ㄱ-ㅎ]/g, "");
+
+  const getKoreanInitials = (value: string): string => {
+    if (!value) return "";
+    try {
+      return Hangul.d(value, true)
+        .map((chars: string[]) => chars[0])
+        .join("");
+    } catch {
+      return "";
+    }
+  };
+
+  const term = normalizeForSearch(termRaw);
+  const pureInitialKey = termRaw.replace(/\s+/g, "");
+  const isPureInitialSearch =
+    pureInitialKey.length > 0 && /^[ㄱ-ㅎ]+$/.test(pureInitialKey);
+  const termInitials = isPureInitialSearch ? pureInitialKey : "";
 
   const { itemsByTier, flatFiltered } = useMemo(() => {
     const empty = {
@@ -342,9 +374,44 @@ export function ItemsTab({ version, lang }: ItemsTabProps) {
     if (!storeItems) return empty;
 
     const searchMatches = (item: Item): boolean => {
-      if (!term) return true;
-      const haystack = `${item.name} ${item.plaintext ?? ""}`.toLowerCase();
-      return haystack.includes(term);
+      if (!term && !termInitials) return true;
+
+      const name = item.name || "";
+      const plaintext = item.plaintext || "";
+      const colloq = item.colloq || "";
+
+      const nameNormalized = normalizeForSearch(name);
+      const normalizedFields = [
+        nameNormalized,
+        normalizeForSearch(plaintext),
+        normalizeForSearch(colloq.replace(/;/g, " ")),
+      ];
+
+      // 1) 일반 문자열 검색 (공백/특수문자 제거 기준)
+      if (term && normalizedFields.some((field) => field.includes(term))) {
+        return true;
+      }
+
+      // 2) 한글 초성 검색 (아이템 이름 기준) - 사용자가 순수 초성만 입력했을 때만 동작
+      if (termInitials) {
+        const nameInitials = getKoreanInitials(name);
+        if (nameInitials.includes(termInitials)) {
+          return true;
+        }
+      }
+
+      // 3) 혼합 검색: 첫 글자는 초성, 나머지는 원문 그대로 입력한 경우 (예: "조개" → "ㅈ개")
+      if (term && nameNormalized) {
+        const nameInitials = getKoreanInitials(name);
+        if (nameInitials) {
+          const composite = nameInitials.charAt(0) + nameNormalized.slice(1);
+          if (composite.includes(term)) {
+            return true;
+          }
+        }
+      }
+
+      return false;
     };
 
     const resultByTier: Record<ItemTier, Item[]> = {
@@ -387,7 +454,7 @@ export function ItemsTab({ version, lang }: ItemsTabProps) {
       itemsByTier: resultByTier,
       flatFiltered: flat,
     };
-  }, [storeItems, term, filter]);
+  }, [storeItems, term, termInitials, filter]);
 
   if (loading && !storeItems) {
     return (
@@ -723,14 +790,19 @@ export function ItemsTab({ version, lang }: ItemsTabProps) {
     return (
       <div className="mt-4 space-y-3">
         <div className="flex flex-col gap-2">
-          <Input
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            placeholder={
-              lang === "ko_KR" ? "아이템 이름 검색..." : "Search item name..."
-            }
-            className="h-9 text-xs"
-          />
+          <div className="relative group">
+            <Search
+              className="absolute left-2 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground pointer-events-none transition-colors group-focus-within:text-primary"
+            />
+            <Input
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder={
+                lang === "ko_KR" ? "아이템 이름 검색..." : "Search item name..."
+              }
+              className="h-9 pl-7 text-xs border-neutral-400 focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-primary"
+            />
+          </div>
           <div className="flex gap-1 overflow-x-auto pb-1">
             {(
               [
@@ -845,14 +917,19 @@ export function ItemsTab({ version, lang }: ItemsTabProps) {
             </button>
           ))}
         </div>
-        <Input
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          placeholder={
-            lang === "ko_KR" ? "아이템 이름 검색..." : "Search item name..."
-          }
-          className="h-8 text-xs md:text-sm w-full sm:w-52 md:w-64"
-        />
+        <div className="relative w-full sm:w-52 md:w-64 group">
+          <Search
+            className="absolute left-2 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none transition-colors group-focus-within:text-primary"
+          />
+          <Input
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder={
+              lang === "ko_KR" ? "아이템 이름 검색..." : "Search item name..."
+            }
+            className="h-8 pl-8 text-xs md:text-sm w-full border-neutral-400 focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-primary"
+          />
+        </div>
       </div>
 
       <div className="rounded-md border bg-card/40 md:h-[calc(100vh-12rem)] flex flex-col md:flex-row">

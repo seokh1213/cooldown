@@ -130,6 +130,8 @@ export interface ItemData {
   stats: ItemStatsMap;
   // 상점 노출 여부 (true/undefined: 상점에 보임, false: 상점에서 직접 구매 불가인 퀘스트/업그레이드 전용 등)
   inStore?: boolean;
+  // CDragon displayInItemSets 플래그를 상위로 복사한 필드 (정적 데이터에서 채워짐)
+  displayInItemSets?: boolean;
   // 아이템 티어 (1: 기본, 2: 서사급, 3: 전설)
   depth?: number;
   // Community Dragon에서 가져온 추가 메타데이터 (옵셔널)
