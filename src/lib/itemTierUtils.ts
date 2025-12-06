@@ -1,4 +1,4 @@
-import type { Item } from "@/types";
+import type { NormalizedItem } from "@/types/combatNormalized";
 
 export type ItemTier =
   | "starter"
@@ -6,12 +6,11 @@ export type ItemTier =
   | "epic"
   | "legendary";
 
-function isStarterItem(item: Item): boolean {
+function isStarterItem(item: NormalizedItem): boolean {
   const tags = item.tags || [];
   const name = item.name || "";
-  const plain = item.plaintext || "";
-  const text = `${name} ${plain}`.toLowerCase();
-  const textKo = name + plain;
+  const text = name.toLowerCase();
+  const textKo = name;
 
   const basicWardIds = new Set(["3340", "3363", "3364"]);
   const wardstoneIds = new Set(["4638", "4643"]);
@@ -59,7 +58,7 @@ function isStarterItem(item: Item): boolean {
   }
 
   // 무료 아이템: 총 가격이 0인 경우
-  if ((item.gold?.total ?? 0) === 0) {
+  if ((item.priceTotal ?? 0) === 0) {
     return true;
   }
 
@@ -72,9 +71,9 @@ function isStarterItem(item: Item): boolean {
 // 전설 아이템: 맨 상단
 // 서사 아이템: 그외에 남은 모든 아이템
 // 템트리는 from/to 기준으로 판단
-export function getOfficialLikeItemTier(item: Item): ItemTier {
-  const hasFrom = !!item.from && item.from.length > 0;
-  const hasInto = !!item.into && item.into.length > 0;
+export function getOfficialLikeItemTier(item: NormalizedItem): ItemTier {
+  const hasFrom = !!item.buildsFrom && item.buildsFrom.length > 0;
+  const hasInto = !!item.buildsInto && item.buildsInto.length > 0;
 
   // 1) 시작 아이템
   if (isStarterItem(item)) {

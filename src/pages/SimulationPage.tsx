@@ -13,12 +13,17 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { getChampionInfo, getCommunityDragonSpellData, getItems } from "@/services/api";
-import type { Champion, Item } from "@/types";
+import {
+  getChampionInfo,
+  getCommunityDragonSpellData,
+  getNormalizedItems,
+} from "@/services/api";
+import type { Champion } from "@/types";
+import type { NormalizedItem } from "@/types/combatNormalized";
 import ChampionSelector from "@/components/features/ChampionSelector";
 import {
-  applyItemsToStats,
-  computeAbilityHasteFromItems,
+  applyNormalizedItemsToStats,
+  computeAbilityHasteFromNormalizedItems,
   computeChampionStatsAtLevel,
   computeSimpleComboResult,
   computeSkillSummaries,
@@ -75,7 +80,7 @@ export default function SimulationPage({
   const [selectedChampionId, setSelectedChampionId] = useState<string>("");
   const [championInfo, setChampionInfo] = useState<Champion | null>(null);
   const [level, setLevel] = useState<number>(18);
-  const [availableItems, setAvailableItems] = useState<Item[]>([]);
+  const [availableItems, setAvailableItems] = useState<NormalizedItem[]>([]);
   const [selectedItemIds, setSelectedItemIds] = useState<(string | null)[]>(
     () => Array(6).fill(null)
   );
@@ -132,25 +137,20 @@ export default function SimulationPage({
     if (!version) return;
     let cancelled = false;
 
-    getItems(version, lang)
+    getNormalizedItems(version, lang)
       .then((items) => {
         if (!cancelled) {
-          // 소환사 협곡(맵 ID 11) 기준 + 실제 구매 가능한(또는 장신구) 아이템만 사용
+          // 정규화된 아이템 중 실제 게임에서 사용되는 아이템만 간단히 필터링
           const filtered = items.filter((item) => {
-            if (!item.maps || !item.maps["11"]) return false;
+            const tags = item.tags || [];
+            const total = item.priceTotal ?? 0;
+            const isTrinket =
+              tags.includes("Trinket") || tags.includes("Consumable");
 
-            const isTrinket = item.tags?.includes("Trinket");
-            if (!isTrinket && item.gold && item.gold.purchasable === false) {
-              return false;
-            }
-
-            // 실제 상점 노출 여부: inStore && displayInItemSets 를 모두 만족해야 함
+            if (!isTrinket && total <= 0) return false;
+            if (item.purchasable === false) return false;
             if (item.inStore === false) return false;
             if (item.displayInItemSets === false) return false;
-            if (item.cdragon) {
-              if (item.cdragon.inStore === false) return false;
-              if (item.cdragon.displayInItemSets === false) return false;
-            }
 
             return true;
           });
@@ -183,13 +183,13 @@ export default function SimulationPage({
   );
 
   const selectedItems = useMemo(
-    () => itemsBySlot.filter((i): i is Item => i !== null),
+    () => itemsBySlot.filter((i): i is NormalizedItem => i !== null),
     [itemsBySlot]
   );
 
   const finalStats = useMemo(() => {
     if (!baseStats) return null;
-    return applyItemsToStats(baseStats, selectedItems);
+    return applyNormalizedItemsToStats(baseStats, selectedItems);
   }, [baseStats, selectedItems]);
 
   const aaDps = useMemo(() => {
@@ -211,7 +211,7 @@ export default function SimulationPage({
   );
 
   const abilityHaste = useMemo(
-    () => computeAbilityHasteFromItems(selectedItems),
+    () => computeAbilityHasteFromNormalizedItems(selectedItems),
     [selectedItems]
   );
 
@@ -555,11 +555,7 @@ export default function SimulationPage({
                   const inSlot =
                     activeItemSlotIndex != null &&
                     selectedItemIds[activeItemSlotIndex] === item.id;
-                  const showPrice =
-                    !!item.gold &&
-                    item.gold.total > 0 &&
-                    item.gold.purchasable !== false &&
-                    item.inStore !== false;
+                  const showPrice = (item.priceTotal ?? 0) > 0;
                   return (
                     <button
                       key={item.id}
@@ -582,13 +578,15 @@ export default function SimulationPage({
                     >
                       <img
                         src={`https://ddragon.leagueoflegends.com/cdn/${version}/img/item/${item.id}.png`}
-                        alt={item.name}
+                        alt={item.name || item.id}
                         className="w-6 h-6 rounded-sm border border-border/60 bg-black/40"
                       />
-                      <span className="flex-1 truncate">{item.name}</span>
+                      <span className="flex-1 truncate">
+                        {item.name || item.id}
+                      </span>
                       {showPrice && (
                         <span className="text-[10px] text-amber-600 dark:text-amber-400 font-semibold">
-                          {item.gold.total.toLocaleString()}
+                          {item.priceTotal.toLocaleString()}
                         </span>
                       )}
                     </button>

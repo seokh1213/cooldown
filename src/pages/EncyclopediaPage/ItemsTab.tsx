@@ -1,8 +1,12 @@
 import React, { useEffect, useMemo, useState } from "react";
 import Hangul from "hangul-js";
-import { getItems } from "@/services/api";
-import type { Item } from "@/types";
-import type { Translations } from "@/i18n/translations";
+import { getNormalizedItems } from "@/services/api";
+import type { NormalizedItem } from "@/types/combatNormalized";
+import {
+  STAT_DEFINITIONS,
+  type StatContribution,
+  StatKey,
+} from "@/types/combatStats";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Input } from "@/components/ui/input";
 import { useTranslation } from "@/i18n";
@@ -23,6 +27,8 @@ interface ItemsTabProps {
   lang: string;
 }
 
+type Item = NormalizedItem;
+
 type ItemRole = "fighter" | "mage" | "assassin" | "support" | "tank";
 
 type ItemFilter = "all" | ItemRole | "trinket" | "boots";
@@ -32,30 +38,34 @@ interface ItemTreeNode {
   children: ItemTreeNode[];
 }
 
-function shouldShowInStore(item: Item): boolean {
-  if (!item.maps || !item.maps["11"]) return false;
+function getItemName(item: Item, _lang: string): string {
+  return item.name || item.id;
+}
 
-  const isTrinket = item.tags?.includes("Trinket");
-  if (!isTrinket && item.gold && item.gold.purchasable === false) {
+function shouldShowInStore(item: Item): boolean {
+  const tags = item.tags || [];
+  const isTrinket = tags.includes("Trinket") || tags.includes("Consumable");
+  const total = item.priceTotal ?? 0;
+
+  // 소환사의 협곡에서 사용되지 않는 아이템은 기본적으로 숨김
+  if (item.availableOnMap11 === false) {
     return false;
   }
 
-  // 실제 상점 노출 여부: inStore && displayInItemSets 를 모두 만족해야 함
+  // 트링켓/소비형은 가격이 0이어도 노출
+  if (!isTrinket && total <= 0) return false;
+
+  // 정규화된 상점 메타데이터
+  if (item.purchasable === false) return false;
   if (item.inStore === false) return false;
   if (item.displayInItemSets === false) return false;
-
-  if (item.cdragon) {
-    if (item.cdragon.inStore === false) return false;
-    if (item.cdragon.displayInItemSets === false) return false;
-  }
 
   return true;
 }
 
 function isTrinketOrWardOrPotion(item: Item): boolean {
   const tags = item.tags || [];
-  const nameLower = item.name.toLowerCase();
-  const plaintextLower = (item.plaintext || "").toLowerCase();
+  const nameLower = (item.name || "").toLowerCase();
 
   // 기본 와드(장신구 와드)는 별도 필터로 취급
   const basicWardIds = new Set(["3340", "3363", "3364"]);
@@ -79,36 +89,19 @@ function isTrinketOrWardOrPotion(item: Item): boolean {
   if (nameLower.includes("potion") || nameLower.includes("elixir")) {
     return true;
   }
-
-  // 포션/영약 (한글)
-  if (langIsKoreanNameOrText(item)) return true;
   return false;
-}
-
-// 간단한 한국어 포션/영약 감지
-function langIsKoreanNameOrText(item: Item): boolean {
-  const name = item.name;
-  const text = item.plaintext || "";
-  return /포션|영약/.test(name + text);
 }
 
 function isBoots(item: Item): boolean {
   const tags = item.tags || [];
-  const nameLower = item.name.toLowerCase();
+  const nameLower = (item.name || "").toLowerCase();
   return tags.includes("Boots") || nameLower.includes("boots");
 }
 
 function getItemRole(item: Item): ItemRole | "all" {
   const tags = item.tags || [];
-  const stats = item.stats || {};
-  const statKeys = Object.keys(stats);
-
-  const hasAD =
-    tags.includes("AttackDamage") ||
-    statKeys.some((k) => k.toLowerCase().includes("attackdamage"));
-  const hasAP =
-    tags.includes("SpellDamage") ||
-    statKeys.some((k) => k.toLowerCase().includes("spelldamage"));
+  const hasAD = tags.includes("AttackDamage");
+  const hasAP = tags.includes("SpellDamage");
   const hasTankStat =
     tags.includes("Health") ||
     tags.includes("Armor") ||
@@ -128,116 +121,67 @@ function getItemRole(item: Item): ItemRole | "all" {
 }
 
 function shouldShowPrice(item: Item): boolean {
-  if (!item.gold) return false;
-  if (item.gold.total <= 0) return false;
-  if (item.gold.purchasable === false) return false;
+  const total = item.priceTotal ?? 0;
+  if (total <= 0) return false;
+  if (item.purchasable === false) return false;
   if (item.inStore === false) return false;
   if (item.displayInItemSets === false) return false;
-  if (item.cdragon) {
-    if (item.cdragon.inStore === false) return false;
-    if (item.cdragon.displayInItemSets === false) return false;
-  }
   return true;
 }
 
-function getItemStatLines(item: Item, t: Translations): string[] {
-  const stats = item.stats || {};
-  const lines: string[] = [];
+function getItemStatLines(item: Item, lang: string): string[] {
+  const contributions = (item.stats || []) as StatContribution[];
+  if (contributions.length === 0) return [];
 
-  const push = (label: string, rawValue: number, isPercent = false) => {
-    if (!rawValue) return;
-    let display = rawValue;
-    if (isPercent && Math.abs(rawValue) <= 1) {
-      display = Math.round(rawValue * 100);
+  const isKo = lang.startsWith("ko");
+
+  const aggregated = new Map<
+    StatKey,
+    { value: number; isPercent: boolean }
+  >();
+
+  for (const contrib of contributions) {
+    const def = STAT_DEFINITIONS[contrib.stat];
+    if (!def) continue;
+
+    const current = aggregated.get(contrib.stat) || {
+      value: 0,
+      isPercent: def.isPercent,
+    };
+
+    if (contrib.valueType === "percent") {
+      current.value += contrib.value;
+      current.isPercent = true;
+    } else if (contrib.valueType === "flat") {
+      current.value += contrib.value;
+    } else {
+      // perLevel / perBonus 등은 간단한 표시를 위해 일단 무시
+      continue;
     }
+
+    aggregated.set(contrib.stat, current);
+  }
+
+  const lines: string[] = [];
+  for (const [statKey, { value, isPercent }] of aggregated.entries()) {
+    if (!value) continue;
+    const def = STAT_DEFINITIONS[statKey];
+    const label = isKo ? def.label.ko : def.label.en;
+    const display =
+      isPercent && Math.abs(value) <= 1 ? Math.round(value * 100) : value;
     const valueText = isPercent ? `${display}%` : `${display}`;
     lines.push(`+ ${valueText} ${label}`);
-  };
-
-  // DDragon stats는 키가 고정되어 있으므로 주요 스탯만 간단히 매핑
-  if (typeof (stats as any).FlatPhysicalDamageMod === "number") {
-    push(
-      t.encyclopedia.items.stats.attackDamage,
-      (stats as any).FlatPhysicalDamageMod,
-    );
-  }
-  if (typeof (stats as any).FlatMagicDamageMod === "number") {
-    push(
-      t.encyclopedia.items.stats.abilityPower,
-      (stats as any).FlatMagicDamageMod,
-    );
-  }
-  if (typeof (stats as any).FlatCritChanceMod === "number") {
-    push(
-      t.encyclopedia.items.stats.critChance,
-      (stats as any).FlatCritChanceMod * 100,
-      true,
-    );
-  }
-  if (typeof (stats as any).PercentAttackSpeedMod === "number") {
-    push(
-      t.encyclopedia.items.stats.attackSpeed,
-      (stats as any).PercentAttackSpeedMod,
-      true,
-    );
-  }
-  if (typeof (stats as any).FlatHPPoolMod === "number") {
-    push(
-      t.encyclopedia.items.stats.health,
-      (stats as any).FlatHPPoolMod,
-    );
-  }
-  if (typeof (stats as any).FlatMPPoolMod === "number") {
-    push(t.encyclopedia.items.stats.mana, (stats as any).FlatMPPoolMod);
-  }
-  if (typeof (stats as any).FlatArmorMod === "number") {
-    push(t.encyclopedia.items.stats.armor, (stats as any).FlatArmorMod);
-  }
-  if (typeof (stats as any).FlatSpellBlockMod === "number") {
-    push(
-      t.encyclopedia.items.stats.magicResist,
-      (stats as any).FlatSpellBlockMod,
-    );
-  }
-  if (typeof (stats as any).PercentLifeStealMod === "number") {
-    push(
-      t.encyclopedia.items.stats.lifesteal,
-      (stats as any).PercentLifeStealMod,
-      true,
-    );
-  }
-  if (typeof (stats as any).PercentSpellVampMod === "number") {
-    push(
-      t.encyclopedia.items.stats.spellVamp,
-      (stats as any).PercentSpellVampMod,
-      true,
-    );
   }
 
   return lines;
 }
 
-function getDescriptionAfterStats(item: Item): string {
-  let html = item.description || "";
-
-  // mainText 래퍼 제거
-  html = html.replace(/<\/?mainText>/gi, "");
-
-  // 스탯 블록(<stats>...</stats>) 제거
-  html = html.replace(/<stats>[\s\S]*?<\/stats>/gi, "");
-
-  // 문자열 맨 앞의 <br>, 공백, &nbsp; 모두 제거 (없어질 때까지)
-  html = html.replace(/^(?:\s|&nbsp;|<br\s*\/?>)+/gi, "");
-
-  return html;
-}
-
 function getItemPriceLabel(item: Item, t: Translations): string {
-  const total = item.gold?.total ?? 0;
-  const base = item.gold?.base ?? 0;
-  const hasFrom = !!item.from && item.from.length > 0;
+  const total = item.priceTotal ?? 0;
+  const base = item.price ?? 0;
+  const hasFrom = Array.isArray(item.buildsFrom) && item.buildsFrom.length > 0;
 
-  // gold.base가 0이면서 하위템이 있는 경우: 업그레이드 전용 아이템 → 구매 불가 표시
+  // gold.base(정규화된 price)가 0이면서 하위템이 있는 경우: 업그레이드 전용 아이템 → 구매 불가 표시
   if (base === 0 && hasFrom) {
     return t.encyclopedia.items.price.unavailable;
   }
@@ -280,7 +224,7 @@ const ItemCell: React.FC<ItemCellProps> = ({
     >
       <img
         src={`https://ddragon.leagueoflegends.com/cdn/${version}/img/item/${item.id}.png`}
-        alt={item.name}
+        alt={getItemName(item, "ko_KR")}
         loading="lazy"
         decoding="async"
         width={32}
@@ -299,7 +243,7 @@ const ItemCell: React.FC<ItemCellProps> = ({
       <span
         className="sr-only absolute"
       >
-        {item.name}
+        {getItemName(item, "ko_KR")}
       </span>
     </button>
   );
@@ -324,7 +268,7 @@ export function ItemsTab({ version, lang }: ItemsTabProps) {
     let cancelled = false;
     setLoading(true);
 
-    getItems(version, lang)
+    getNormalizedItems(version, lang)
       .then((data) => {
         if (!cancelled) {
           // 전체 아이템은 그대로 보관해서 트리/업그레이드 계산에 사용
@@ -408,9 +352,9 @@ export function ItemsTab({ version, lang }: ItemsTabProps) {
     const searchMatches = (item: Item): boolean => {
       if (!term && !termInitials) return true;
 
-      const name = item.name || "";
-      const plaintext = item.plaintext || "";
-      const colloq = item.colloq || "";
+      const name = getItemName(item, lang);
+      const plaintext = "";
+      const colloq = "";
 
       const nameNormalized = normalizeForSearch(name);
       const normalizedFields = [
@@ -476,11 +420,11 @@ export function ItemsTab({ version, lang }: ItemsTabProps) {
 
     (Object.keys(resultByTier) as ItemTier[]).forEach((tier) => {
       resultByTier[tier].sort(
-        (a, b) => (a.gold?.total ?? 0) - (b.gold?.total ?? 0)
+        (a, b) => (a.priceTotal ?? 0) - (b.priceTotal ?? 0)
       );
     });
 
-    flat.sort((a, b) => (a.gold?.total ?? 0) - (b.gold?.total ?? 0));
+    flat.sort((a, b) => (a.priceTotal ?? 0) - (b.priceTotal ?? 0));
 
     return {
       itemsByTier: resultByTier,
@@ -507,28 +451,52 @@ export function ItemsTab({ version, lang }: ItemsTabProps) {
   // 선택한 아이템이 어떤 아이템으로 바로 업그레이드되는지만 보여주기 위해
   // 직계 상위 아이템(1단계 into)만 수집한다.
   const collectUpgradeItems = (root: Item): Item[] => {
-    if (!root.into || root.into.length === 0) return [];
+    if (!root.buildsInto || root.buildsInto.length === 0) return [];
 
     const result: Item[] = [];
 
-    root.into.forEach((id) => {
+    root.buildsInto.forEach((id) => {
       const upgrade = itemMap.get(id);
       if (!upgrade) return;
 
-      // 부모 아이템 목록에서는 inStore=false 또는 displayInItemSets=false 인 아이템은 노출하지 않는다.
-      // (purchasable=false 는 노출 허용)
-      if (upgrade.inStore === false) return;
+      // 상위 템트리는 구매 불가(purchasable=false)거나 상점 비노출(inStore=false)이어도
+      // 구조를 이해하기 위해 그대로 노출한다.
+      // 다만 displayInItemSets=false 인 완전한 내부/퀘스트용 아이템만 제외한다.
       if (upgrade.displayInItemSets === false) return;
-      if (upgrade.cdragon) {
-        if (upgrade.cdragon.inStore === false) return;
-        if (upgrade.cdragon.displayInItemSets === false) return;
-      }
 
       result.push(upgrade);
     });
 
-    result.sort((a, b) => (a.gold?.total ?? 0) - (b.gold?.total ?? 0));
-    return result;
+    // 같은 이름(표시용 아이템)이 여러 ID(모드/큐 변형 등)로 존재하는 경우가 있어
+    // 빌드업 라인에서는 이름 기준으로 중복을 제거하되,
+    // 동일 이름일 때는 ID가 더 작은 쪽을 우선 유지한다.
+    const byName = new Map<string, Item>();
+    for (const item of result) {
+      const key = item.name || item.id;
+      const existing = byName.get(key);
+      if (!existing) {
+        byName.set(key, item);
+        continue;
+      }
+
+      const existingIdNum = Number.parseInt(existing.id, 10);
+      const currentIdNum = Number.parseInt(item.id, 10);
+      const bothNumeric =
+        Number.isFinite(existingIdNum) && Number.isFinite(currentIdNum);
+
+      const preferCurrent = bothNumeric
+        ? currentIdNum < existingIdNum
+        : item.id < existing.id;
+
+      if (preferCurrent) {
+        byName.set(key, item);
+      }
+    }
+
+    const uniqueByName = Array.from(byName.values());
+
+    uniqueByName.sort((a, b) => (a.priceTotal ?? 0) - (b.priceTotal ?? 0));
+    return uniqueByName;
   };
 
   const buildItemTree = (
@@ -542,8 +510,8 @@ export function ItemsTab({ version, lang }: ItemsTabProps) {
 
     const children: ItemTreeNode[] = [];
 
-    if (root.from && root.from.length > 0) {
-      root.from.forEach((id) => {
+    if (root.buildsFrom && root.buildsFrom.length > 0) {
+      root.buildsFrom.forEach((id) => {
         const childItem = itemMap.get(id);
         if (childItem) {
           children.push(buildItemTree(childItem, depth + 1, maxDepth));
@@ -561,18 +529,6 @@ export function ItemsTab({ version, lang }: ItemsTabProps) {
   const tierLabel = (tier: ItemTier) => {
     return t.encyclopedia.items.tiers[tier];
   };
-
-  const descriptionHtml = selectedItem
-    ? getDescriptionAfterStats(selectedItem)
-    : "";
-  const descriptionTextOnly = descriptionHtml
-    .replace(/<[^>]*>/g, "")
-    .replace(/&nbsp;|\u00a0/gi, "")
-    .trim();
-  const showDescription = descriptionTextOnly.length > 0;
-
-  const plainText = (selectedItem?.plaintext || "").trim();
-  const showPlaintext = !showDescription && !!plainText;
 
   const detailContent = selectedItem && (
     <div className="flex flex-col gap-2 h-full min-h-0">
@@ -726,30 +682,14 @@ export function ItemsTab({ version, lang }: ItemsTabProps) {
 
             <div className="h-px bg-neutral-700/80" />
 
-            {getItemStatLines(selectedItem, t).length > 0 && (
+            {getItemStatLines(selectedItem, lang).length > 0 && (
               <ul className="space-y-0.5 text-[11px] leading-snug">
-                {getItemStatLines(selectedItem, t).map((line) => (
+                {getItemStatLines(selectedItem, lang).map((line) => (
                   <li key={line} className="text-primary">
                     {line}
                   </li>
                 ))}
               </ul>
-            )}
-
-            {showPlaintext && (
-              <p className="text-[11px] leading-snug text-foreground dark:text-slate-100">
-                {plainText}
-              </p>
-            )}
-
-            {showDescription && (
-              <div className="text-[11px] leading-snug text-foreground dark:text-slate-100 [&_br]:block [&_li]:ml-4 [&_li]:list-disc [&_li]:text-[11px] [&_li]:leading-snug">
-                <span
-                  dangerouslySetInnerHTML={{
-                    __html: descriptionHtml,
-                  }}
-                />
-              </div>
             )}
           </div>
         </div>

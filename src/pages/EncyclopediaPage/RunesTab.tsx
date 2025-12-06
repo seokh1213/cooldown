@@ -154,8 +154,8 @@ export function RunesTab({ version, lang }: RunesTabProps) {
   };
 
   const renderRuneContent = (rune: Rune) => {
-    const description = rune.longDesc || rune.shortDesc || "";
-    const processedDescription = replaceUnresolvedVariables(description);
+    const rawDescription = rune.descriptionHtml || "";
+    const processedDescription = replaceUnresolvedVariables(rawDescription);
 
     return (
       <div className="space-y-2">
@@ -362,7 +362,7 @@ export function RunesTab({ version, lang }: RunesTabProps) {
                 <div className="flex items-center justify-between gap-3 mb-1.5">
                   <div className="flex flex-col">
                     <span className="text-sm font-semibold">
-                      공통 능력치 조각 (보조 룬)
+                      {t.encyclopedia.runes.statShardsTitle}
                     </span>
                     <span className="text-xs text-muted-foreground">
                       {t.encyclopedia.runes.warning}

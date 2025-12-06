@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { getSummonerSpells } from "@/services/api";
-import type { SummonerSpell } from "@/types";
+import { getNormalizedSummonerSpells } from "@/services/api";
+import type { NormalizedSummonerSpell } from "@/types/combatNormalized";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Input } from "@/components/ui/input";
 import { useTranslation } from "@/i18n";
@@ -19,15 +19,23 @@ interface SummonerTabProps {
   lang: string;
 }
 
+function getSpellName(spell: NormalizedSummonerSpell, lang: string): string {
+  return spell.name || spell.id;
+}
+
+function getSpellTooltip(spell: NormalizedSummonerSpell, lang: string): string {
+  return spell.tooltip || "";
+}
+
 export function SummonerTab({ version, lang }: SummonerTabProps) {
   const { t } = useTranslation();
   const deviceType = useDeviceType();
   const isMobile = deviceType === "mobile";
 
-  const [spells, setSpells] = useState<SummonerSpell[] | null>(null);
+  const [spells, setSpells] = useState<NormalizedSummonerSpell[] | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [search, setSearch] = useState<string>("");
-  const [selectedSpell, setSelectedSpell] = useState<SummonerSpell | null>(
+  const [selectedSpell, setSelectedSpell] = useState<NormalizedSummonerSpell | null>(
     null
   );
   const [mobileDetailOpen, setMobileDetailOpen] = useState(false);
@@ -36,7 +44,7 @@ export function SummonerTab({ version, lang }: SummonerTabProps) {
     let cancelled = false;
     setLoading(true);
 
-    getSummonerSpells(version, lang)
+    getNormalizedSummonerSpells(version, lang)
       .then((data) => {
         if (!cancelled) {
           const classicOnly = data.filter(
@@ -69,14 +77,13 @@ export function SummonerTab({ version, lang }: SummonerTabProps) {
     if (!spells) return [];
     if (!term) return spells;
     return spells.filter((spell) => {
-      const name = spell.name.toLowerCase();
-      const desc = (spell.description || "").toLowerCase();
-      const tooltip = (spell.tooltip || "").toLowerCase();
+      const name = getSpellName(spell, lang).toLowerCase();
+      const tooltip = getSpellTooltip(spell, lang).toLowerCase();
       return (
-        name.includes(term) || desc.includes(term) || tooltip.includes(term)
+        name.includes(term) || tooltip.includes(term)
       );
     });
-  }, [spells, term]);
+  }, [spells, term, lang]);
 
   if (loading && !spells) {
     return (
@@ -94,7 +101,7 @@ export function SummonerTab({ version, lang }: SummonerTabProps) {
     );
   }
 
-  const renderDescriptionHtml = (spell: SummonerSpell) => {
+  const renderDescriptionHtml = (spell: NormalizedSummonerSpell) => {
     /**
      * 소환사 주문 설명/툴팁 내 {{ 변수 }} 패턴을 물음표로 치환
      * 예: {{ shieldduration }} → ?
@@ -105,7 +112,7 @@ export function SummonerTab({ version, lang }: SummonerTabProps) {
       return text.replace(/{{\s*[^}]+\s*}}/g, errorMarkup);
     };
 
-    const html = spell.tooltip || spell.description || "";
+    const html = getSpellTooltip(spell, lang);
     const processedHtml = replaceUnresolvedVariables(html);
     return (
       <span
@@ -136,8 +143,8 @@ export function SummonerTab({ version, lang }: SummonerTabProps) {
             }`}
           >
             <img
-              src={`https://ddragon.leagueoflegends.com/cdn/${version}/img/spell/${spell.image.full}`}
-              alt={spell.name}
+              src={`https://ddragon.leagueoflegends.com/cdn/${version}/img/spell/${spell.iconPath}`}
+              alt={getSpellName(spell, lang)}
               loading="lazy"
               decoding="async"
               width={32}
@@ -147,7 +154,7 @@ export function SummonerTab({ version, lang }: SummonerTabProps) {
             <div className="flex-1 min-w-0">
               <div className="flex items-center justify-between gap-2">
                 <span className="text-xs font-semibold truncate">
-                  {spell.name}
+                  {getSpellName(spell, lang)}
                 </span>
                 <span className="text-[11px] text-muted-foreground whitespace-nowrap">
                   {spell.cooldown && spell.cooldown.length > 0
@@ -170,8 +177,8 @@ export function SummonerTab({ version, lang }: SummonerTabProps) {
       <div className="flex flex-col gap-2 h-full min-h-0">
         <div className="flex items-start gap-3">
           <img
-            src={`https://ddragon.leagueoflegends.com/cdn/${version}/img/spell/${selectedSpell.image.full}`}
-            alt={selectedSpell.name}
+            src={`https://ddragon.leagueoflegends.com/cdn/${version}/img/spell/${selectedSpell.iconPath}`}
+            alt={getSpellName(selectedSpell, lang)}
             loading="lazy"
             decoding="async"
             width={40}
@@ -181,7 +188,7 @@ export function SummonerTab({ version, lang }: SummonerTabProps) {
           <div className="flex-1 min-w-0">
             <div className="flex items-center justify-between gap-2">
               <div className="text-sm font-semibold truncate">
-                {selectedSpell.name}
+                {getSpellName(selectedSpell, lang)}
               </div>
               {selectedSpell.cooldown && selectedSpell.cooldown.length > 0 && (
                 <div className="text-xs text-muted-foreground whitespace-nowrap">

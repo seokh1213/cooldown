@@ -55,32 +55,6 @@ export interface Champion {
   };
 }
 
-// ===== Runes (Runes Reforged) =====
-
-export interface Rune {
-  id: number;
-  key: string;
-  icon: string;
-  name: string;
-  shortDesc: string;
-  longDesc: string;
-}
-
-export interface RuneSlot {
-  runes: Rune[];
-}
-
-export interface RuneTree {
-  id: number;
-  key: string;
-  icon: string;
-  name: string;
-  slots: RuneSlot[];
-}
-
-// Data Dragon runesReforged.json 전체는 RuneTree[] 형태
-export type RuneTreeList = RuneTree[];
-
 // ===== Items =====
 
 export interface ItemGold {
@@ -153,60 +127,41 @@ export interface Item extends ItemData {
   id: string;
 }
 
-// ===== Summoner Spells =====
+// ===== Runes =====
 
-export interface SummonerSpellImage {
-  full: string;
-  sprite: string;
-  group: string;
-  x: number;
-  y: number;
-  w: number;
-  h: number;
-}
-
-export interface SummonerSpellVar {
-  link: string;
-  coeff: number | number[];
-  key: string;
-}
-
-export interface SummonerSpell {
-  id: string;
+export interface Rune {
+  id: number;
   name: string;
-  description: string;
-  tooltip: string;
-  maxrank: number;
-  cooldown: number[];
-  cooldownBurn: string;
-  cost: number[];
-  costBurn: string;
-  datavalues: Record<string, unknown>;
-  effect: Array<number[] | null>;
-  effectBurn: Array<string | null>;
-  vars: SummonerSpellVar[];
+  icon: string;
+  /**
+   * 정규화된 데이터의 tooltip(HTML)을 그대로 담는 필드
+   * - ko_KR: tooltipKo
+   * - en_US: tooltipEn
+   */
+  descriptionHtml: string;
+}
+
+export interface RuneTreeSlot {
+  runes: Rune[];
+}
+
+export interface RuneTree {
+  id: number;
+  /**
+   * 영문 트리 키 (예: Precision, Domination ...)
+   * - 정렬 등에 사용
+   */
   key: string;
-  summonerLevel: number;
-  modes: string[];
-  costType: string;
-  maxammo: string;
-  range: number[];
-  rangeBurn: string;
-  image: SummonerSpellImage;
-  resource: string;
+  /**
+   * 표시용 이름 (언어별 이름)
+   */
+  name: string;
+  /**
+   * DDragon 기준 아이콘 경로 (perk-images/... 형식)
+   */
+  icon: string;
+  slots: RuneTreeSlot[];
 }
-
-export interface SummonerSpellMap {
-  [id: string]: SummonerSpell;
-}
-
-export interface SummonerSpellsData {
-  type: string;
-  version: string;
-  data: SummonerSpellMap;
-}
-
-// ===== Rune Stat Shards (secondary runes from CDragon) =====
 
 export interface RuneStatShard {
   id: number;
@@ -217,34 +172,20 @@ export interface RuneStatShard {
 }
 
 export interface RuneStatShardRow {
-  /**
-   * 슬롯 이름 (예: 공격, 유연, 방어 등)
-   * CDragon perkstyles 슬롯의 name/label을 그대로 사용
-   */
   label: string;
   perks: RuneStatShard[];
 }
 
 export interface RuneStatShardGroup {
-  /** CDragon style id (kStatMod 스타일) */
   styleId: number;
-  /** CDragon style name (예: Stats) */
   styleName: string;
   rows: RuneStatShardRow[];
 }
 
-/**
- * 정적 데이터로 저장되는 보조 룬(스탯 조각) 데이터 전체 형태
- */
 export interface RuneStatShardStaticData {
-  /** DDragon 기준 버전 (예: 15.24.1) */
   version: string;
-  /** 언어 코드 (ko_KR, en_US 등) */
   lang: string;
-  /** 실제로 사용한 CDragon 기준 버전 (예: 15.24, latest 등) */
   cdragonVersion: string | null;
-  /** kStatMod 스타일 그룹 목록 */
   groups: RuneStatShardGroup[];
 }
-
 

@@ -1,4 +1,13 @@
-import type { Champion, ChampionSpell, Item } from "@/types";
+import type { Champion, ChampionSpell } from "@/types";
+import type { NormalizedItem } from "@/types/combatNormalized";
+import type {
+  NormalizedChampion,
+  NormalizedItem,
+  NormalizedRune,
+  NormalizedStatShard,
+  ChampionSpellSlot,
+} from "@/types/combatNormalized";
+import { StatKey } from "@/types/combatStats";
 
 export interface SimpleStats {
   level: number;
@@ -8,6 +17,21 @@ export interface SimpleStats {
   magicResist: number;
   attackDamage: number;
   movespeed: number;
+}
+
+export type StatVector = Partial<Record<StatKey, number>>;
+
+export interface NormalizedSimulationSelection {
+  champion: NormalizedChampion;
+  level: number;
+  items: NormalizedItem[];
+  runes: NormalizedRune[];
+  statShards: NormalizedStatShard[];
+}
+
+export interface NormalizedSimulationResult {
+  level: number;
+  stats: StatVector;
 }
 
 export interface SkillSummary {
@@ -22,6 +46,108 @@ export interface SimpleComboResult {
   sequence: string;
   estimatedHits: number;
   estimatedDamage: number | null;
+}
+
+function computeChampionBaseStatsFromNormalized(
+  champion: NormalizedChampion,
+  level: number
+): StatVector {
+  const lvl = Math.min(Math.max(level, 1), 18);
+  const factor = lvl - 1;
+  const bs = champion.baseStats;
+
+  const stats: StatVector = {};
+
+  const apply = (key: StatKey, base: number, perLevel: number) => {
+    stats[key] = (stats[key] ?? 0) + base + perLevel * factor;
+  };
+
+  apply(StatKey.MAX_HEALTH, bs.health.base, bs.health.perLevel);
+  apply(StatKey.HEALTH_REGEN, bs.healthRegen.base, bs.healthRegen.perLevel);
+  if (bs.mana) {
+    apply(StatKey.MAX_MANA, bs.mana.base, bs.mana.perLevel);
+  }
+  if (bs.manaRegen) {
+    apply(
+      StatKey.MANA_REGEN,
+      bs.manaRegen.base,
+      bs.manaRegen.perLevel
+    );
+  }
+  apply(
+    StatKey.ATTACK_DAMAGE,
+    bs.attackDamage.base,
+    bs.attackDamage.perLevel
+  );
+  apply(
+    StatKey.ATTACK_SPEED,
+    bs.attackSpeed.base,
+    bs.attackSpeed.perLevel
+  );
+  apply(StatKey.ARMOR, bs.armor.base, bs.armor.perLevel);
+  apply(
+    StatKey.MAGIC_RESIST,
+    bs.magicResist.base,
+    bs.magicResist.perLevel
+  );
+  apply(StatKey.MOVE_SPEED, bs.moveSpeed.base, bs.moveSpeed.perLevel);
+  apply(
+    StatKey.ATTACK_RANGE,
+    bs.attackRange.base,
+    bs.attackRange.perLevel
+  );
+
+  return stats;
+}
+
+export function computeNormalizedSimulationStats(
+  selection: NormalizedSimulationSelection
+): NormalizedSimulationResult {
+  const { champion, level, items, runes, statShards } = selection;
+
+  const stats: StatVector = computeChampionBaseStatsFromNormalized(
+    champion,
+    level
+  );
+  const percentModifiers: Partial<Record<StatKey, number>> = {};
+
+  const applyContribution = (contrib: import("@/types/combatStats").StatContribution) => {
+    const { stat, value, valueType } = contrib;
+    if (valueType === "percent") {
+      percentModifiers[stat] = (percentModifiers[stat] ?? 0) + value;
+    } else {
+      stats[stat] = (stats[stat] ?? 0) + value;
+    }
+  };
+
+  for (const item of items) {
+    for (const contrib of item.stats) {
+      applyContribution(contrib);
+    }
+  }
+
+  for (const rune of runes) {
+    for (const contrib of rune.stats) {
+      applyContribution(contrib);
+    }
+  }
+
+  for (const shard of statShards) {
+    for (const contrib of shard.stats) {
+      applyContribution(contrib);
+    }
+  }
+
+  for (const [key, percent] of Object.entries(percentModifiers)) {
+    const statKey = key as StatKey;
+    const base = stats[statKey] ?? 0;
+    stats[statKey] = base * (1 + (percent ?? 0) / 100);
+  }
+
+  return {
+    level,
+    stats,
+  };
 }
 
 export function computeChampionStatsAtLevel(
@@ -90,6 +216,88 @@ export function computeAbilityHasteFromItems(items: Item[]): number {
     // Data Dragon 아이템의 AbilityHaste 필드 사용
     if (typeof (stats as any).AbilityHaste === "number") {
       haste += (stats as any).AbilityHaste;
+    }
+  }
+  return haste;
+}
+
+export function applyNormalizedItemsToStats(
+  base: SimpleStats,
+  items: NormalizedItem[]
+): SimpleStats {
+  let result = { ...base };
+
+  for (const item of items) {
+    const stats = item.stats;
+    if (!stats || stats.length === 0) continue;
+
+    for (const contrib of stats) {
+      const { stat, value, valueType } = contrib;
+      if (valueType === "percent") {
+        // 간단한 근사치: 체력/마나/방어/마저/이속/공격력에 대해서만 퍼센트 적용
+        switch (stat) {
+          case StatKey.MAX_HEALTH:
+            result.health *= 1 + value / 100;
+            break;
+          case StatKey.MAX_MANA:
+            result.mana *= 1 + value / 100;
+            break;
+          case StatKey.ARMOR:
+            result.armor *= 1 + value / 100;
+            break;
+          case StatKey.MAGIC_RESIST:
+            result.magicResist *= 1 + value / 100;
+            break;
+          case StatKey.MOVE_SPEED:
+            result.movespeed *= 1 + value / 100;
+            break;
+          case StatKey.ATTACK_DAMAGE:
+            result.attackDamage *= 1 + value / 100;
+            break;
+          default:
+            break;
+        }
+      } else {
+        switch (stat) {
+          case StatKey.MAX_HEALTH:
+            result.health += value;
+            break;
+          case StatKey.MAX_MANA:
+            result.mana += value;
+            break;
+          case StatKey.ARMOR:
+            result.armor += value;
+            break;
+          case StatKey.MAGIC_RESIST:
+            result.magicResist += value;
+            break;
+          case StatKey.ATTACK_DAMAGE:
+            result.attackDamage += value;
+            break;
+          case StatKey.MOVE_SPEED:
+            result.movespeed += value;
+            break;
+          default:
+            break;
+        }
+      }
+    }
+  }
+
+  return result;
+}
+
+export function computeAbilityHasteFromNormalizedItems(
+  items: NormalizedItem[]
+): number {
+  let haste = 0;
+  for (const item of items) {
+    const stats = item.stats;
+    if (!stats) continue;
+    for (const contrib of stats) {
+      if (contrib.stat === StatKey.ABILITY_HASTE && contrib.valueType === "flat") {
+        haste += contrib.value;
+      }
     }
   }
   return haste;
@@ -205,6 +413,46 @@ export function estimateSpellDamageFromCDragon(
       : null;
 
   return { baseDamage, ratio, totalDamage };
+}
+
+export function estimateSpellDamageFromNormalized(
+  selection: NormalizedSimulationSelection,
+  slot: ChampionSpellSlot,
+  abilityRank: number,
+  spellDataMap: Record<string, any> | null
+): SpellDamageEstimate | null {
+  const { champion, level } = selection;
+  const sim = computeNormalizedSimulationStats(selection);
+
+  const simpleStats: SimpleStats = {
+    level,
+    health: sim.stats[StatKey.MAX_HEALTH] ?? 0,
+    mana: sim.stats[StatKey.MAX_MANA] ?? 0,
+    armor: sim.stats[StatKey.ARMOR] ?? 0,
+    magicResist: sim.stats[StatKey.MAGIC_RESIST] ?? 0,
+    attackDamage: sim.stats[StatKey.ATTACK_DAMAGE] ?? 0,
+    movespeed: sim.stats[StatKey.MOVE_SPEED] ?? 0,
+  };
+
+  const indexBySlot: Record<ChampionSpellSlot, number> = {
+    P: -1,
+    Q: 0,
+    W: 1,
+    E: 2,
+    R: 3,
+  };
+
+  const spellIndex = indexBySlot[slot];
+  if (spellIndex < 0) {
+    return null;
+  }
+
+  return estimateSpellDamageFromCDragon(
+    spellDataMap,
+    spellIndex,
+    abilityRank,
+    simpleStats
+  );
 }
 
 export function computeSimpleComboResult(

@@ -65,6 +65,7 @@ export interface Translations {
     };
     runes: {
       warning: string;
+      statShardsTitle: string;
     };
     items: {
       filters: {
@@ -268,6 +269,7 @@ export const translations: Record<Language, Translations> = {
       },
       runes: {
         warning: "정확한 수치와 설명은 인게임 툴팁을 확인해 주세요.",
+        statShardsTitle: "공통 능력치 조각 (보조 룬)",
       },
       items: {
         filters: {
@@ -472,6 +474,7 @@ export const translations: Record<Language, Translations> = {
       },
       runes: {
         warning: "Please check the in-game tooltip for accurate values and descriptions.",
+        statShardsTitle: "Common Stat Shards (Bonus Runes)",
       },
       items: {
         filters: {

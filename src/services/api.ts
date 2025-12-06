@@ -1,13 +1,18 @@
 import Hangul from "hangul-js";
+import { Champion, RuneTree, Rune, RuneStatShardStaticData, RuneStatShard, RuneStatShardRow, RuneStatShardGroup } from "@/types";
+import type {
+  NormalizedChampion,
+  NormalizedChampionDataFile,
+  NormalizedItem,
+  NormalizedItemDataFile,
+  NormalizedRuneDataFile,
+  NormalizedSummonerSpell,
+  NormalizedSummonerDataFile,
+} from "@/types/combatNormalized";
 import {
-  Champion,
-  RuneTreeList,
-  ItemList,
-  Item,
-  SummonerSpellsData,
-  SummonerSpell,
-  RuneStatShardStaticData,
-} from "@/types";
+  STAT_DEFINITIONS,
+  StatKey,
+} from "@/types/combatStats";
 import { logger } from "@/lib/logger";
 import { getStaticDataPath } from "@/lib/staticDataUtils";
 
@@ -236,9 +241,12 @@ export function cleanOldVersionCache(
   }
 }
 
-export async function getChampionList(version: string, lang: string): Promise<Champion[]> {
+export async function getChampionList(
+  version: string,
+  lang: string
+): Promise<Champion[]> {
   const cacheKey = `champion_list_${version}_${lang}`;
-  
+
   try {
     const cached = localStorage.getItem(cacheKey);
     if (cached) {
@@ -251,68 +259,113 @@ export async function getChampionList(version: string, lang: string): Promise<Ch
     logger.warn("Failed to parse cached champion list:", error);
   }
 
+  // 1) 정규화된 챔피언 정적 데이터를 우선 사용
   try {
-    const staticUrl = getStaticDataPath(version, `champions-${lang}.json`);
-    const response = await fetch(staticUrl);
-    
-    if (response.ok) {
-      const staticData = await response.json();
-      if (staticData && staticData.champions && Array.isArray(staticData.champions)) {
-        const champions = staticData.champions
-          .map((e: Champion) => {
-            const champion: Champion = {
-              ...e,
-              hangul: lang === "ko_KR"
-                ? Hangul.d(e.name, true).reduce(
+    const normalized = await getNormalizedChampions(version, lang);
+    const isKo = lang === "ko_KR";
+    if (normalized && normalized.length > 0) {
+      const champions: Champion[] = normalized
+        .map((c) => {
+          const name = c.name;
+          const hangul =
+            isKo && name
+              ? Hangul.d(name, true).reduce(
                   (acc: string, array: string[]) => acc + array[0],
                   ""
                 )
-                : "",
-            };
-            return champion;
-          });
-        
-        try {
-          localStorage.setItem(cacheKey, JSON.stringify(champions));
-        } catch (error) {
-          logger.warn("Failed to cache champion list:", error);
-        }
-        
-        return champions;
+              : "";
+
+          const stats: Record<string, number> = {};
+          const bs = c.baseStats;
+          if (bs) {
+            stats.hp = bs.health.base;
+            stats.hpperlevel = bs.health.perLevel;
+            if (bs.mana) {
+              stats.mp = bs.mana.base;
+              stats.mpperlevel = bs.mana.perLevel;
+            }
+            stats.movespeed = bs.moveSpeed.base;
+            stats.armor = bs.armor.base;
+            stats.armorperlevel = bs.armor.perLevel;
+            stats.spellblock = bs.magicResist.base;
+            stats.spellblockperlevel = bs.magicResist.perLevel;
+            stats.attackdamage = bs.attackDamage.base;
+            stats.attackdamageperlevel = bs.attackDamage.perLevel;
+            stats.attackspeed = bs.attackSpeed.base;
+            stats.attackspeedperlevel = bs.attackSpeed.perLevel;
+            stats.attackrange = bs.attackRange.base;
+            // 치명타/재생 계열은 기본값 0으로 둠
+            stats.crit = 0;
+            stats.critperlevel = 0;
+            stats.hpregen = bs.healthRegen.base;
+            stats.hpregenperlevel = bs.healthRegen.perLevel;
+            if (bs.manaRegen) {
+              stats.mpregen = bs.manaRegen.base;
+              stats.mpregenperlevel = bs.manaRegen.perLevel;
+            }
+          }
+
+          const champion: Champion = {
+            id: c.id,
+            key: c.id, // DDragon numeric key는 없지만, 저장/비교용으로 id를 사용
+            name,
+            title: "",
+            version,
+            hangul,
+            stats,
+          };
+          return champion;
+        })
+        .sort((a, b) => (a.name < b.name ? -1 : a.name > b.name ? 1 : 0));
+
+      try {
+        localStorage.setItem(cacheKey, JSON.stringify(champions));
+      } catch (error) {
+        logger.warn("Failed to cache champion list:", error);
       }
+
+      return champions;
     }
   } catch (error) {
-    logger.warn("[StaticData] Failed to load champion list from static data, falling back to API:", error);
+    logger.warn(
+      "[StaticData] Failed to load normalized champion list, falling back to API:",
+      error
+    );
   }
 
-  const data = await fetchData<ChampionData>(CHAMP_LIST_URL(version, lang), (res) => {
-    if (res && typeof res === "object" && "data" in res) {
-      return res as ChampionData;
+  // 2) 폴백: Data Dragon API에서 직접 가져오기
+  const data = await fetchData<ChampionData>(
+    CHAMP_LIST_URL(version, lang),
+    (res) => {
+      if (res && typeof res === "object" && "data" in res) {
+        return res as ChampionData;
+      }
+      throw new Error("Invalid champion list response format");
     }
-    throw new Error("Invalid champion list response format");
-  });
-  
+  );
+
   const champions = Object.values(data.data)
     .sort((a, b) => (a.name < b.name ? -1 : a.name > b.name ? 1 : 0))
     .map((e) => {
       const champion: Champion = {
         ...e,
-        hangul: lang === "ko_KR"
-          ? Hangul.d(e.name, true).reduce(
-            (acc: string, array: string[]) => acc + array[0],
-            ""
-          )
-          : "",
+        hangul:
+          lang === "ko_KR"
+            ? Hangul.d(e.name, true).reduce(
+                (acc: string, array: string[]) => acc + array[0],
+                ""
+              )
+            : "",
       };
       return champion;
     });
-  
+
   try {
     localStorage.setItem(cacheKey, JSON.stringify(champions));
   } catch (error) {
     logger.warn("Failed to cache champion list:", error);
   }
-  
+
   return champions;
 }
 
@@ -375,72 +428,13 @@ export async function getChampionInfo(version: string, lang: string, name: strin
   );
 }
 
-// ===== Runes & Items (static data first) =====
+// ===== Normalized static data (champions/items/runes) =====
 
-export async function getRuneTrees(
+export async function getNormalizedChampions(
   version: string,
   lang: string
-): Promise<RuneTreeList> {
-  const cacheKey = `runes_${version}_${lang}`;
-
-  try {
-    const cached = localStorage.getItem(cacheKey);
-    if (cached) {
-      const parsed = JSON.parse(cached);
-      if (Array.isArray(parsed) && parsed.length > 0) {
-        return parsed as RuneTreeList;
-      }
-    }
-  } catch (error) {
-    logger.warn("Failed to parse cached rune trees:", error);
-  }
-
-  try {
-    const staticUrl = getStaticDataPath(version, `runes-${lang}.json`);
-    const response = await fetch(staticUrl);
-
-    if (response.ok) {
-      const data = (await response.json()) as RuneTreeList;
-      if (Array.isArray(data)) {
-        try {
-          localStorage.setItem(cacheKey, JSON.stringify(data));
-        } catch (error) {
-          logger.warn("Failed to cache rune trees:", error);
-        }
-        return data;
-      }
-    }
-  } catch (error) {
-    logger.warn(
-      "[StaticData] Failed to load rune trees from static data:",
-      error
-    );
-  }
-
-  // Fallback: fetch directly from Data Dragon
-  const { ddragonVersion } = await getDataVersions();
-  const url = `https://ddragon.leagueoflegends.com/cdn/${ddragonVersion}/data/${lang}/runesReforged.json`;
-
-  const data = await fetchData<RuneTreeList>(url, (res) => {
-    if (Array.isArray(res)) return res as RuneTreeList;
-    throw new Error("Invalid rune response format");
-  });
-
-  try {
-    localStorage.setItem(cacheKey, JSON.stringify(data));
-  } catch (error) {
-    logger.warn("Failed to cache rune trees:", error);
-  }
-
-  return data;
-}
-
-// 보조 룬(스탯 조각) - CDragon 기반 정적 데이터
-export async function getRuneStatShards(
-  version: string,
-  lang: string
-): Promise<RuneStatShardStaticData | null> {
-  const cacheKey = `rune_statmods_${version}_${lang}`;
+): Promise<NormalizedChampion[]> {
+  const cacheKey = `normalized_champions_${version}_${lang}`;
 
   try {
     const cached = localStorage.getItem(cacheKey);
@@ -449,33 +443,97 @@ export async function getRuneStatShards(
       if (
         parsed &&
         typeof parsed === "object" &&
-        Array.isArray((parsed as any).groups)
+        Array.isArray((parsed as any).champions)
       ) {
-        return parsed as RuneStatShardStaticData;
+        return (parsed as any).champions as NormalizedChampion[];
       }
     }
   } catch (error) {
-    logger.warn("Failed to parse cached rune stat shards:", error);
+    logger.warn("Failed to parse cached normalized champions:", error);
   }
 
   try {
-    const staticUrl = getStaticDataPath(version, `rune-statmods-${lang}.json`);
+    const staticUrl = getStaticDataPath(
+      version,
+      `champions-normalized-${lang}.json`
+    );
     const response = await fetch(staticUrl);
 
     if (response.ok) {
-      const data = (await response.json()) as RuneStatShardStaticData;
-      if (data && Array.isArray(data.groups) && data.groups.length > 0) {
+      const data =
+        (await response.json()) as NormalizedChampionDataFile;
+      const champions = Array.isArray(data.champions)
+        ? data.champions
+        : [];
+
+      try {
+        localStorage.setItem(cacheKey, JSON.stringify(data));
+      } catch (error) {
+        logger.warn("Failed to cache normalized champions:", error);
+      }
+
+      return champions;
+    }
+  } catch (error) {
+    logger.warn(
+      "[StaticData] Failed to load normalized champions from static data:",
+      error
+    );
+  }
+
+  return [];
+}
+
+// ===== Runes & Items (static data first) =====
+
+export async function getNormalizedRunes(
+  version: string,
+  lang: string
+): Promise<NormalizedRuneDataFile | null> {
+  const cacheKey = `normalized_runes_${version}_${lang}`;
+
+  try {
+    const cached = localStorage.getItem(cacheKey);
+    if (cached) {
+      const parsed = JSON.parse(cached);
+      if (
+        parsed &&
+        typeof parsed === "object" &&
+        Array.isArray((parsed as any).runes) &&
+        Array.isArray((parsed as any).statShards)
+      ) {
+        return parsed as NormalizedRuneDataFile;
+      }
+    }
+  } catch (error) {
+    logger.warn("Failed to parse cached normalized runes:", error);
+  }
+
+  try {
+    const staticUrl = getStaticDataPath(
+      version,
+      `runes-normalized-${lang}.json`
+    );
+    const response = await fetch(staticUrl);
+
+    if (response.ok) {
+      const data =
+        (await response.json()) as NormalizedRuneDataFile;
+      if (
+        Array.isArray(data.runes) &&
+        Array.isArray(data.statShards)
+      ) {
         try {
           localStorage.setItem(cacheKey, JSON.stringify(data));
         } catch (error) {
-          logger.warn("Failed to cache rune stat shards:", error);
+          logger.warn("Failed to cache normalized runes:", error);
         }
         return data;
       }
     }
   } catch (error) {
     logger.warn(
-      "[StaticData] Failed to load rune stat shards from static data:",
+      "[StaticData] Failed to load normalized runes from static data:",
       error
     );
   }
@@ -483,168 +541,359 @@ export async function getRuneStatShards(
   return null;
 }
 
-export async function getItems(
+// ===== Rune trees & stat shards (for Encyclopedia page) =====
+
+const RUNE_TREE_META: Record<
+  number,
+  {
+    key: string;
+    /**
+     * 영문 이름 (정렬/표시 보조용)
+     */
+    nameEn: string;
+    /**
+     * 한글 이름 (정렬/표시 보조용)
+     */
+    nameKo: string;
+    /**
+     * DDragon 스타일 대표 아이콘 경로
+     * 예)
+     *  - Precision (8000): perk-images/Styles/7201_Precision.png
+     *  - Domination (8100): perk-images/Styles/7200_Domination.png
+     *  - Sorcery (8200): perk-images/Styles/7202_Sorcery.png
+     *  - Resolve (8400): perk-images/Styles/7204_Resolve.png
+     *  - Inspiration (8300): perk-images/Styles/7203_Whimsy.png
+     *
+     * 실제 이미지 URL은
+     * https://ddragon.leagueoflegends.com/cdn/img/${icon}
+     * 형태로 사용한다.
+     */
+    icon: string;
+  }
+> = {
+  8000: {
+    key: "Precision",
+    nameEn: "Precision",
+    nameKo: "정밀",
+    icon: "perk-images/Styles/7201_Precision.png",
+  },
+  8100: {
+    key: "Domination",
+    nameEn: "Domination",
+    nameKo: "지배",
+    icon: "perk-images/Styles/7200_Domination.png",
+  },
+  8200: {
+    key: "Sorcery",
+    nameEn: "Sorcery",
+    nameKo: "마법",
+    icon: "perk-images/Styles/7202_Sorcery.png",
+  },
+  8300: {
+    key: "Inspiration",
+    nameEn: "Inspiration",
+    nameKo: "영감",
+    icon: "perk-images/Styles/7203_Whimsy.png",
+  },
+  8400: {
+    key: "Resolve",
+    nameEn: "Resolve",
+    nameKo: "결의",
+    icon: "perk-images/Styles/7204_Resolve.png",
+  },
+};
+
+function getRuneTreeMeta(pathId: number, lang: string): {
+  key: string;
+  name: string;
+  icon: string;
+} {
+  const meta = RUNE_TREE_META[pathId];
+  if (!meta) {
+    const idStr = String(pathId);
+    return {
+      key: idStr,
+      name: idStr,
+      icon: "",
+    };
+  }
+
+  const isKo = lang === "ko_KR";
+  return {
+    key: meta.key,
+    name: isKo ? meta.nameKo || meta.nameEn : meta.nameEn,
+    icon: meta.icon,
+  };
+}
+
+export async function getRuneTrees(
   version: string,
   lang: string
-): Promise<Item[]> {
-  const cacheKey = `items_${version}_${lang}`;
+): Promise<RuneTree[]> {
+  const normalized = await getNormalizedRunes(version, lang);
+  if (!normalized || !Array.isArray(normalized.runes)) {
+    return [];
+  }
+
+  const treesByPathId = new Map<number, RuneTree>();
+
+  for (const rune of normalized.runes) {
+    const pathId = rune.pathId;
+    const slotIndex = rune.slotIndex ?? 0;
+    if (typeof pathId !== "number") continue;
+
+    let tree = treesByPathId.get(pathId);
+    if (!tree) {
+      const meta = getRuneTreeMeta(pathId, lang);
+      tree = {
+        id: pathId,
+        key: meta.key,
+        name: meta.name,
+        icon: meta.icon,
+        slots: [],
+      };
+      treesByPathId.set(pathId, tree);
+    }
+
+    while (tree.slots.length <= slotIndex) {
+      tree.slots.push({ runes: [] });
+    }
+
+    const displayName = rune.name || String(rune.id);
+
+    const tooltip = rune.tooltip || "";
+
+    const uiRune: Rune = {
+      id: Number(rune.id),
+      name: displayName,
+      icon: rune.iconPath ?? "",
+      // 정규화된 tooltip(tooltipKo/tooltipEn)을 그대로 HTML로 사용
+      descriptionHtml: tooltip,
+    };
+
+    tree.slots[slotIndex].runes.push(uiRune);
+  }
+
+  // 간단 정렬: 각 슬롯 내부 룬을 ID 기준으로 정렬
+  for (const tree of treesByPathId.values()) {
+    for (const slot of tree.slots) {
+      slot.runes.sort((a, b) => a.id - b.id);
+    }
+  }
+
+  return Array.from(treesByPathId.values());
+}
+
+function buildStatShardDescriptionHtml(
+  lang: string,
+  stats: { stat: StatKey; value: number; valueType: string }[]
+): string {
+  if (!stats || stats.length === 0) return "";
+
+  const isKo = lang === "ko_KR";
+
+  const parts = stats.map((contribution) => {
+    const def = STAT_DEFINITIONS[contribution.stat];
+    const label = def ? (isKo ? def.label.ko : def.label.en) : contribution.stat;
+    const isPercent =
+      contribution.valueType === "percent" || (def && def.isPercent);
+    const valueStr = isPercent
+      ? `${contribution.value}%`
+      : `${contribution.value}`;
+    return `+${valueStr} ${label}`;
+  });
+
+  // 간단한 텍스트만 사용 (폰트 태그 등은 RunesTab 쪽에서 제거 처리)
+  return parts.join(" / ");
+}
+
+export async function getRuneStatShards(
+  version: string,
+  lang: string
+): Promise<RuneStatShardStaticData> {
+  const normalized = await getNormalizedRunes(version, lang);
+
+  if (!normalized || !Array.isArray(normalized.statShards)) {
+    return {
+      version,
+      lang,
+      cdragonVersion: null,
+      groups: [],
+    };
+  }
+
+  const isKo = lang === "ko_KR";
+
+  const rowLabelsEn = [
+    "Row 1 (Offense)",
+    "Row 2 (Flex)",
+    "Row 3 (Defense)",
+  ];
+  const rowLabelsKo = [
+    "1열: 공격 능력치",
+    "2열: 유연 능력치",
+    "3열: 방어 능력치",
+  ];
+  const rowLabels = isKo ? rowLabelsKo : rowLabelsEn;
+
+  const rowsByIndex = new Map<number, RuneStatShardRow>();
+
+  const sortedShards = [...normalized.statShards].sort((a, b) => {
+    if (a.rowIndex !== b.rowIndex) {
+      return a.rowIndex - b.rowIndex;
+    }
+    return a.columnIndex - b.columnIndex;
+  });
+
+  for (const shard of sortedShards) {
+    const rowIndex = shard.rowIndex ?? 0;
+
+    let row = rowsByIndex.get(rowIndex);
+    if (!row) {
+      row = {
+        label: rowLabels[rowIndex] ?? "",
+        perks: [],
+      };
+      rowsByIndex.set(rowIndex, row);
+    }
+
+    const name = shard.name || String(shard.id);
+
+    const desc = buildStatShardDescriptionHtml(lang, shard.stats);
+
+    const perk: RuneStatShard = {
+      id: Number(shard.id),
+      name,
+      iconPath: shard.iconPath ?? "",
+      shortDesc: desc,
+      longDesc: desc,
+    };
+
+    row.perks.push(perk);
+  }
+
+  const rows: RuneStatShardRow[] = Array.from(rowsByIndex.entries())
+    .sort(([aIdx], [bIdx]) => aIdx - bIdx)
+    .map(([, row]) => row);
+
+  const groups: RuneStatShardGroup[] = [
+    {
+      styleId: 0,
+      styleName: isKo ? "공통 능력치 조각" : "Common Stat Shards",
+      rows,
+    },
+  ];
+
+  return {
+    version: normalized.version,
+    lang: normalized.lang,
+    cdragonVersion: null,
+    groups,
+  };
+}
+
+export async function getNormalizedItems(
+  version: string,
+  lang: string
+): Promise<NormalizedItem[]> {
+  const cacheKey = `normalized_items_${version}_${lang}`;
 
   try {
     const cached = localStorage.getItem(cacheKey);
     if (cached) {
       const parsed = JSON.parse(cached);
-      // 새 포맷: { schemaVersion: 1, items: Item[] }
       if (
         parsed &&
         typeof parsed === "object" &&
         Array.isArray((parsed as any).items)
       ) {
-        const items = (parsed as any).items as Item[];
-        if (items.length > 0) {
-          return items;
-        }
-      }
-
-      // 예전 포맷: Item[]만 저장되어 있는 경우 → 스키마 변경 이후에는 사용하지 않고 무시
-      if (Array.isArray(parsed)) {
-        // fall through to refetch and overwrite
+        return (parsed as any).items as NormalizedItem[];
       }
     }
   } catch (error) {
-    logger.warn("Failed to parse cached items:", error);
+    logger.warn("Failed to parse cached normalized items:", error);
   }
 
-  const mapToItems = (list: ItemList): Item[] => {
-    if (!list || !list.data || typeof list.data !== "object") {
-      return [];
-    }
-    return Object.entries(list.data).map(([id, data]) => ({
-      ...(data as Item),
-      id,
-    }));
-  };
-
   try {
-    const staticUrl = getStaticDataPath(version, `items-${lang}.json`);
+    const staticUrl = getStaticDataPath(
+      version,
+      `items-normalized-${lang}.json`
+    );
     const response = await fetch(staticUrl);
 
     if (response.ok) {
-      const staticData = (await response.json()) as ItemList;
-      const items = mapToItems(staticData);
-      if (items.length > 0) {
-        try {
-          localStorage.setItem(
-            cacheKey,
-            JSON.stringify({ schemaVersion: 1, items })
-          );
-        } catch (error) {
-          logger.warn("Failed to cache items:", error);
-        }
-        return items;
+      const data =
+        (await response.json()) as NormalizedItemDataFile;
+      const items = Array.isArray(data.items) ? data.items : [];
+
+      try {
+        localStorage.setItem(cacheKey, JSON.stringify(data));
+      } catch (error) {
+        logger.warn("Failed to cache normalized items:", error);
       }
+
+      return items;
     }
   } catch (error) {
     logger.warn(
-      "[StaticData] Failed to load items from static data, falling back to API:",
+      "[StaticData] Failed to load normalized items from static data:",
       error
     );
   }
 
-  const { ddragonVersion } = await getDataVersions();
-  const url = `https://ddragon.leagueoflegends.com/cdn/${ddragonVersion}/data/${lang}/item.json`;
-
-  const data = await fetchData<ItemList>(url, (res) => {
-    if (res && typeof res === "object" && "data" in res) {
-      return res as ItemList;
-    }
-    throw new Error("Invalid item response format");
-  });
-
-  const items = mapToItems(data);
-
-  try {
-    localStorage.setItem(
-      cacheKey,
-      JSON.stringify({ schemaVersion: 1, items })
-    );
-  } catch (error) {
-    logger.warn("Failed to cache items:", error);
-  }
-
-  return items;
+  return [];
 }
 
-// ===== Summoner Spells =====
-
-export async function getSummonerSpells(
+export async function getNormalizedSummonerSpells(
   version: string,
   lang: string
-): Promise<SummonerSpell[]> {
-  const cacheKey = `summoner_${version}_${lang}`;
+): Promise<NormalizedSummonerSpell[]> {
+  const cacheKey = `normalized_summoner_${version}_${lang}`;
 
   try {
     const cached = localStorage.getItem(cacheKey);
     if (cached) {
       const parsed = JSON.parse(cached);
-      if (Array.isArray(parsed) && parsed.length > 0) {
-        return parsed as SummonerSpell[];
+      if (
+        parsed &&
+        typeof parsed === "object" &&
+        Array.isArray((parsed as any).spells)
+      ) {
+        return (parsed as any).spells as NormalizedSummonerSpell[];
       }
     }
   } catch (error) {
-    logger.warn("Failed to parse cached summoner spells:", error);
+    logger.warn("Failed to parse cached normalized summoner spells:", error);
   }
 
-  const mapToArray = (data: SummonerSpellsData): SummonerSpell[] => {
-    if (!data || !data.data || typeof data.data !== "object") {
-      return [];
-    }
-    return Object.values(data.data);
-  };
-
-  // 1) 정적 데이터 우선
   try {
-    const staticUrl = getStaticDataPath(version, `summoner-${lang}.json`);
+    const staticUrl = getStaticDataPath(
+      version,
+      `summoner-normalized-${lang}.json`
+    );
     const response = await fetch(staticUrl);
 
     if (response.ok) {
-      const staticData = (await response.json()) as SummonerSpellsData;
-      const spells = mapToArray(staticData);
-      if (spells.length > 0) {
-        try {
-          localStorage.setItem(cacheKey, JSON.stringify(spells));
-        } catch (error) {
-          logger.warn("Failed to cache summoner spells:", error);
-        }
-        return spells;
+      const data =
+        (await response.json()) as NormalizedSummonerDataFile;
+      const spells = Array.isArray(data.spells) ? data.spells : [];
+
+      try {
+        localStorage.setItem(cacheKey, JSON.stringify(data));
+      } catch (error) {
+        logger.warn("Failed to cache normalized summoner spells:", error);
       }
+
+      return spells;
     }
   } catch (error) {
     logger.warn(
-      "[StaticData] Failed to load summoner spells from static data, falling back to API:",
+      "[StaticData] Failed to load normalized summoner spells from static data:",
       error
     );
   }
 
-  // 2) Fallback: Data Dragon API
-  const { ddragonVersion } = await getDataVersions();
-  const url = `https://ddragon.leagueoflegends.com/cdn/${ddragonVersion}/data/${lang}/summoner.json`;
-
-  const data = await fetchData<SummonerSpellsData>(url, (res) => {
-    if (res && typeof res === "object" && "data" in res) {
-      return res as SummonerSpellsData;
-    }
-    throw new Error("Invalid summoner spell response format");
-  });
-
-  const spells = mapToArray(data);
-
-  try {
-    localStorage.setItem(cacheKey, JSON.stringify(spells));
-  } catch (error) {
-    logger.warn("Failed to cache summoner spells:", error);
-  }
-
-  return spells;
+  return [];
 }
 
 function convertChampionIdToCommunityDragon(championId: string): string {

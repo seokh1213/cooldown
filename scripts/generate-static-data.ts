@@ -1,5 +1,25 @@
-import * as fs from 'fs';
-import * as path from 'path';
+import * as fs from "fs";
+import * as path from "path";
+import type {
+  ChampionBaseStats,
+  ChampionSpellSlot,
+  LevelScaledScalar,
+  NormalizedChampion,
+  NormalizedChampionDataFile,
+  NormalizedItem,
+  NormalizedItemDataFile,
+  NormalizedRune,
+  NormalizedRuneDataFile,
+  NormalizedSpell,
+  NormalizedStatShard,
+  NormalizedSummonerSpell,
+  NormalizedSummonerDataFile,
+} from "../src/types/combatNormalized";
+import type {
+  FormulaPart,
+  StatContribution,
+} from "../src/types/combatStats";
+import { StatKey } from "../src/types/combatStats";
 
 const VERSION_URL = "https://ddragon.leagueoflegends.com/api/versions.json";
 const CHAMP_LIST_URL = (VERSION: string, LANG: string) =>
@@ -72,6 +92,741 @@ function getCommunityDragonVersionCandidates(ddragonVersions: string[]): string[
   }
 
   return candidates;
+}
+
+type NormalizationOverrides = {
+  champions?: Record<string, Record<string, Partial<NormalizedChampion>>>;
+  items?: Record<string, Record<string, Partial<NormalizedItem>>>;
+  runes?: Record<string, Record<string, Partial<NormalizedRune>>>;
+  statShards?: Record<string, Record<string, Partial<NormalizedStatShard>>>;
+};
+
+const NORMALIZATION_OVERRIDES_PATH = path.join(
+  process.cwd(),
+  "scripts",
+  "normalization-overrides.json"
+);
+
+let cachedOverrides: NormalizationOverrides | null | undefined;
+
+function getNormalizationOverrides(): NormalizationOverrides | null {
+  if (cachedOverrides !== undefined) {
+    return cachedOverrides;
+  }
+
+  if (!fs.existsSync(NORMALIZATION_OVERRIDES_PATH)) {
+    cachedOverrides = null;
+    return cachedOverrides;
+  }
+
+  try {
+    const raw = fs.readFileSync(NORMALIZATION_OVERRIDES_PATH, "utf-8");
+    cachedOverrides = JSON.parse(raw) as NormalizationOverrides;
+  } catch (e) {
+    console.warn(
+      "[Overrides] Failed to read normalization-overrides.json:",
+      e
+    );
+    cachedOverrides = null;
+  }
+
+  return cachedOverrides;
+}
+
+function createLevelScaledScalar(
+  stats: Record<string, number | undefined>,
+  baseKey: string,
+  perLevelKey: string
+): LevelScaledScalar {
+  const base = stats[baseKey] ?? 0;
+  const perLevel = stats[perLevelKey] ?? 0;
+  return {
+    base,
+    perLevel,
+  };
+}
+
+function buildChampionBaseStats(stats: Record<string, number | undefined>): ChampionBaseStats {
+  return {
+    health: createLevelScaledScalar(stats, 'hp', 'hpperlevel'),
+    healthRegen: createLevelScaledScalar(stats, 'hpregen', 'hpregenperlevel'),
+    mana: stats.mp !== undefined || stats.mpperlevel !== undefined
+      ? createLevelScaledScalar(stats, 'mp', 'mpperlevel')
+      : undefined,
+    manaRegen: stats.mpregen !== undefined || stats.mpregenperlevel !== undefined
+      ? createLevelScaledScalar(stats, 'mpregen', 'mpregenperlevel')
+      : undefined,
+    // energy 계열 챔피언은 Data Dragon 에 별도 필드가 없을 수 있으므로 우선 비워둔다.
+    energy: undefined,
+    energyRegen: undefined,
+    attackDamage: createLevelScaledScalar(stats, 'attackdamage', 'attackdamageperlevel'),
+    attackSpeed: createLevelScaledScalar(stats, 'attackspeed', 'attackspeedperlevel'),
+    armor: createLevelScaledScalar(stats, 'armor', 'armorperlevel'),
+    magicResist: createLevelScaledScalar(stats, 'spellblock', 'spellblockperlevel'),
+    moveSpeed: { base: stats.movespeed ?? 0, perLevel: 0 },
+    attackRange: { base: stats.attackrange ?? 0, perLevel: 0 },
+  };
+}
+
+function buildBaseStatContributions(baseStats: ChampionBaseStats): StatContribution[] {
+  const result: StatContribution[] = [];
+
+  const push = (stat: StatKey, scalar: LevelScaledScalar | undefined) => {
+    if (!scalar) return;
+    // perLevel 정보가 함께 있으므로 valueType 은 perLevel 로 두고 value 에 perLevel 을 기록한다.
+    result.push({
+      stat,
+      value: scalar.perLevel,
+      valueType: 'perLevel',
+      source: 'base',
+      scope: 'champion-base',
+    });
+  };
+
+  push(StatKey.MAX_HEALTH, baseStats.health);
+  push(StatKey.HEALTH_REGEN, baseStats.healthRegen);
+  push(StatKey.MAX_MANA, baseStats.mana);
+  push(StatKey.MANA_REGEN, baseStats.manaRegen);
+  push(StatKey.ATTACK_DAMAGE, baseStats.attackDamage);
+  push(StatKey.ATTACK_SPEED, baseStats.attackSpeed);
+  push(StatKey.ARMOR, baseStats.armor);
+  push(StatKey.MAGIC_RESIST, baseStats.magicResist);
+
+  return result;
+}
+
+type ItemStatMapping = {
+  stat: StatKey;
+  valueType: "flat" | "percent";
+};
+
+const ITEM_STAT_KEY_MAP: Record<string, ItemStatMapping> = {
+  FlatHPPoolMod: { stat: StatKey.MAX_HEALTH, valueType: "flat" },
+  FlatMPPoolMod: { stat: StatKey.MAX_MANA, valueType: "flat" },
+  FlatPhysicalDamageMod: { stat: StatKey.ATTACK_DAMAGE, valueType: "flat" },
+  FlatMagicDamageMod: { stat: StatKey.ABILITY_POWER, valueType: "flat" },
+  FlatArmorMod: { stat: StatKey.ARMOR, valueType: "flat" },
+  FlatSpellBlockMod: { stat: StatKey.MAGIC_RESIST, valueType: "flat" },
+  FlatMovementSpeedMod: { stat: StatKey.MOVE_SPEED, valueType: "flat" },
+  PercentMovementSpeedMod: { stat: StatKey.MOVE_SPEED, valueType: "percent" },
+  PercentAttackSpeedMod: { stat: StatKey.ATTACK_SPEED, valueType: "percent" },
+  PercentLifeStealMod: { stat: StatKey.LIFE_STEAL, valueType: "percent" },
+  PercentCritChanceMod: { stat: StatKey.CRIT_CHANCE, valueType: "percent" },
+  AbilityHaste: { stat: StatKey.ABILITY_HASTE, valueType: "flat" },
+};
+
+function mapItemStatsToContributions(
+  stats: Record<string, number | undefined>
+): StatContribution[] {
+  const contributions: StatContribution[] = [];
+
+  for (const [rawKey, rawValue] of Object.entries(stats)) {
+    const value = typeof rawValue === "number" ? rawValue : 0;
+    if (!value) continue;
+
+    const mapping = ITEM_STAT_KEY_MAP[rawKey];
+    if (!mapping) continue;
+
+    contributions.push({
+      stat: mapping.stat,
+      value,
+      valueType: mapping.valueType,
+      source: "item",
+      scope: "item-passive",
+    });
+  }
+
+  return contributions;
+}
+
+function inferStatShardContributionsFromText(
+  text: string
+): StatContribution[] {
+  const cleaned = text
+    .replace(/<[^>]+>/g, "")
+    .replace(/\s+/g, " ")
+    .trim();
+
+  const results: StatContribution[] = [];
+
+  const push = (
+    stat: StatKey,
+    value: number,
+    valueType: "flat" | "percent"
+  ) => {
+    results.push({
+      stat,
+      value,
+      valueType,
+      source: "rune",
+      scope: "rune",
+    });
+  };
+
+  // Adaptive Force: "+9 Adaptive Force"
+  {
+    const m = cleaned.match(/([+\-]?\d+(\.\d+)?)\s*Adaptive Force/i);
+    if (m) {
+      push(StatKey.ADAPTIVE_FORCE, parseFloat(m[1]), "flat");
+      return results;
+    }
+  }
+
+  // Attack Speed: "+10% Attack Speed"
+  {
+    const m = cleaned.match(/([+\-]?\d+(\.\d+)?)\s*%?\s*Attack Speed/i);
+    if (m) {
+      push(StatKey.ATTACK_SPEED, parseFloat(m[1]), "percent");
+      return results;
+    }
+  }
+
+  // Ability Haste: "+8 Ability Haste"
+  {
+    const m = cleaned.match(/([+\-]?\d+(\.\d+)?)\s*Ability Haste/i);
+    if (m) {
+      push(StatKey.ABILITY_HASTE, parseFloat(m[1]), "flat");
+      return results;
+    }
+  }
+
+  // Move Speed: "+2.5% Move Speed"
+  {
+    const m = cleaned.match(/([+\-]?\d+(\.\d+)?)\s*%?\s*Move Speed/i);
+    if (m) {
+      push(StatKey.MOVE_SPEED, parseFloat(m[1]), "percent");
+      return results;
+    }
+  }
+
+  // Health (flat): "+65 Health"
+  {
+    const m = cleaned.match(/([+\-]?\d+(\.\d+)?)\s*Health(?!.*based on level)/i);
+    if (m) {
+      push(StatKey.MAX_HEALTH, parseFloat(m[1]), "flat");
+      return results;
+    }
+  }
+
+  // Tenacity and Slow Resist: "+15% Tenacity and Slow Resist"
+  {
+    const m = cleaned.match(
+      /([+\-]?\d+(\.\d+)?)\s*%?\s*Tenacity and Slow Resist/i
+    );
+    if (m) {
+      const v = parseFloat(m[1]);
+      push(StatKey.TENACITY, v, "percent");
+      push(StatKey.SLOW_RESIST, v, "percent");
+      return results;
+    }
+  }
+
+  // Health scaling shard: "+10-180 Health (based on level)" – approximate using mid-value
+  if (/Health.*based on level/i.test(cleaned)) {
+    const rangeMatch = cleaned.match(/([0-9]+)\s*-\s*([0-9]+)/);
+    if (rangeMatch) {
+      const min = parseFloat(rangeMatch[1]);
+      const max = parseFloat(rangeMatch[2]);
+      const mid = (min + max) / 2;
+      push(StatKey.MAX_HEALTH, mid, "flat");
+      return results;
+    }
+  }
+
+  return results;
+}
+
+function ddIndexToSlot(index: number): ChampionSpellSlot {
+  switch (index) {
+    case 0:
+      return 'Q';
+    case 1:
+      return 'W';
+    case 2:
+      return 'E';
+    case 3:
+    default:
+      return 'R';
+  }
+}
+
+function buildSpellScalingFromCDragon(
+  spellIndex: number,
+  spellDataMap: Record<string, any> | null
+): { parts: FormulaPart[] } {
+  if (!spellDataMap) {
+    return { parts: [] };
+  }
+
+  const key = String(spellIndex);
+  const spell = spellDataMap[key];
+  if (!spell || !spell.mSpellCalculations) {
+    return { parts: [] };
+  }
+
+  const calculations = spell.mSpellCalculations as Record<string, any>;
+  const calcKeys = Object.keys(calculations);
+  if (calcKeys.length === 0) {
+    return { parts: [] };
+  }
+
+  const priority = [
+    'TotalDamage',
+    'BaseDamage',
+    'QMissileDamage',
+    'TotalMaxHealthDamage',
+    'HealingCalc',
+    'TotalHeal',
+    'TotalShield',
+  ];
+
+  let chosenKey: string | null = null;
+  for (const name of priority) {
+    if (name in calculations) {
+      chosenKey = name;
+      break;
+    }
+  }
+
+  if (!chosenKey) {
+    chosenKey = calcKeys[0];
+  }
+
+  const rawRef = `${key}:${chosenKey}`;
+
+  const parts: FormulaPart[] = [
+    {
+      stat: null,
+      coefficient: 1,
+      op: 'add',
+      rawRef,
+    },
+  ];
+
+  return { parts };
+}
+
+function buildNormalizedSpell(
+  slot: ChampionSpellSlot,
+  ddSpell: any | null,
+  passive: any | null,
+  lang: string,
+  spellIndex: number,
+  spellDataMap: Record<string, any> | null
+): NormalizedSpell {
+  const isPassive = slot === 'P';
+
+  const name =
+    (isPassive ? passive?.name ?? '' : ddSpell?.name ?? '') || '';
+
+  const tooltip =
+    (isPassive ? passive?.description ?? '' : ddSpell?.tooltip ?? '') || '';
+
+  const cooldowns = Array.isArray(ddSpell?.cooldown)
+    ? ddSpell.cooldown.filter((v: any) => typeof v === 'number')
+    : undefined;
+  const costs = Array.isArray(ddSpell?.cost)
+    ? ddSpell.cost.filter((v: any) => typeof v === 'number')
+    : undefined;
+
+  const scalingFromCd = buildSpellScalingFromCDragon(spellIndex, spellDataMap);
+
+  const scalingId =
+    slot === 'Q' || slot === 'W' || slot === 'E' || slot === 'R'
+      ? 'damage'
+      : 'passive';
+
+  const scalings =
+    scalingFromCd.parts.length > 0
+      ? [
+          {
+            id: scalingId,
+            labelEn: isPassive
+              ? 'Passive'
+              : `${slot} Scaling`,
+            labelKo: isPassive ? '패시브' : `${slot} 계수`,
+            parts: scalingFromCd.parts,
+          },
+        ]
+      : [];
+
+  return {
+    slot,
+    key: ddSpell?.id ?? (isPassive ? `${slot}` : `${slot}`),
+    name,
+    tooltip,
+    cooldowns,
+    costs,
+    scalings,
+  };
+}
+
+function buildNormalizedChampion(
+  version: string,
+  lang: string,
+  championId: string,
+  championDataPath: string,
+  cdragonSpellPath: string
+): NormalizedChampion | null {
+  if (!fs.existsSync(championDataPath)) {
+    return null;
+  }
+
+  const raw = JSON.parse(fs.readFileSync(championDataPath, 'utf-8')) as {
+    champion?: any;
+  };
+  const champion = raw.champion;
+  if (!champion) return null;
+
+  const stats = champion.stats || {};
+  const baseStats = buildChampionBaseStats(stats);
+  const baseStatContributions = buildBaseStatContributions(baseStats);
+
+  let spellDataMap: Record<string, any> | null = null;
+  if (fs.existsSync(cdragonSpellPath)) {
+    const cdRaw = JSON.parse(fs.readFileSync(cdragonSpellPath, 'utf-8')) as {
+      spellData?: Record<string, any>;
+    };
+    spellDataMap = cdRaw.spellData || null;
+  }
+
+  const ddSpells: any[] = Array.isArray(champion.spells)
+    ? champion.spells
+    : [];
+  const passive = champion.passive ?? null;
+
+  const spells: Record<ChampionSpellSlot, NormalizedSpell> = {
+    P: buildNormalizedSpell('P', null, passive, lang, -1, spellDataMap),
+    Q: buildNormalizedSpell('Q', ddSpells[0] ?? null, null, lang, 0, spellDataMap),
+    W: buildNormalizedSpell('W', ddSpells[1] ?? null, null, lang, 1, spellDataMap),
+    E: buildNormalizedSpell('E', ddSpells[2] ?? null, null, lang, 2, spellDataMap),
+    R: buildNormalizedSpell('R', ddSpells[3] ?? null, null, lang, 3, spellDataMap),
+  };
+
+  const name = champion.name ?? championId;
+
+  const iconPath = champion.image?.full
+    ? `/lol/img/champion/${champion.image.full}`
+    : undefined;
+
+  let normalized: NormalizedChampion = {
+    id: championId,
+    type: 'champion',
+    name,
+    iconPath,
+    baseStats,
+    baseStatContributions,
+    spells,
+  };
+
+  const overrides = getNormalizationOverrides();
+  const championOverrides =
+    overrides?.champions?.[lang]?.[championId];
+  if (championOverrides) {
+    normalized = {
+      ...normalized,
+      ...championOverrides,
+    };
+  }
+
+  return normalized;
+}
+
+async function buildAndSaveNormalizedItems(
+  versionDir: string,
+  version: string,
+  itemsDataByLang: Record<string, any>
+): Promise<void> {
+  for (const lang of LANGUAGES) {
+    const raw = itemsDataByLang[lang];
+    if (!raw || typeof raw !== "object") continue;
+    const data = (raw as { data?: Record<string, any> }).data || {};
+
+    const items: NormalizedItem[] = [];
+
+    for (const [id, item] of Object.entries<any>(data)) {
+      const gold = item.gold || {};
+      const rawTags: string[] = [
+        ...(Array.isArray(item.tags) ? item.tags : []),
+        ...(Array.isArray(item.cdragon?.categories)
+          ? item.cdragon.categories
+          : []),
+      ];
+      const tags = Array.from(
+        new Set(
+          rawTags
+            .map((t) => (typeof t === "string" ? t.trim() : ""))
+            .filter((t) => t.length > 0)
+        )
+      );
+
+      const name = item.name ?? id;
+
+      const statsRecord: Record<string, number | undefined> =
+        item.stats || {};
+      const stats = mapItemStatsToContributions(statsRecord);
+
+      // 상점/맵 메타데이터 정규화
+      const purchasable: boolean | undefined =
+        typeof gold.purchasable === "boolean" ? gold.purchasable : undefined;
+
+      // DDragon / CDragon 에서 온 inStore / displayInItemSets 를 단일 boolean 으로 정규화
+      const inStore: boolean | undefined =
+        typeof item.inStore === "boolean"
+          ? (item.inStore as boolean)
+          : typeof item.cdragon?.inStore === "boolean"
+          ? (item.cdragon.inStore as boolean)
+          : undefined;
+
+      const displayInItemSets: boolean | undefined =
+        typeof item.displayInItemSets === "boolean"
+          ? (item.displayInItemSets as boolean)
+          : typeof item.cdragon?.displayInItemSets === "boolean"
+          ? (item.cdragon.displayInItemSets as boolean)
+          : undefined;
+
+      const mapsRecord: Record<string, boolean> | undefined =
+        item.maps && typeof item.maps === "object" ? (item.maps as any) : undefined;
+      const availableOnMap11: boolean | undefined =
+        mapsRecord && typeof mapsRecord["11"] === "boolean"
+          ? (mapsRecord["11"] as boolean)
+          : undefined;
+
+      let normalized: NormalizedItem = {
+        id,
+        type: "item",
+        name,
+        iconPath: item.cdragon?.iconPath,
+        price: typeof gold.base === "number" ? gold.base : 0,
+        priceTotal: typeof gold.total === "number" ? gold.total : 0,
+        tags,
+        buildsFrom: Array.isArray(item.from) ? item.from : [],
+        buildsInto: Array.isArray(item.into) ? item.into : [],
+        requiredChampion:
+          item.cdragon?.requiredChampion ?? item.requiredChampion,
+        requiredAlly: item.cdragon?.requiredAlly ?? item.requiredAlly,
+        stats,
+        effects: [],
+        purchasable,
+        inStore,
+        displayInItemSets,
+        ...(availableOnMap11 !== undefined ? { availableOnMap11 } : {}),
+      };
+
+      const overrides = getNormalizationOverrides();
+      const itemOverrides = overrides?.items?.[lang]?.[id];
+      if (itemOverrides) {
+        normalized = {
+          ...normalized,
+          ...itemOverrides,
+        };
+      }
+
+      items.push(normalized);
+    }
+
+    const file: NormalizedItemDataFile = {
+      version,
+      lang,
+      items,
+    };
+
+    await saveToFile(
+      file,
+      path.join(versionDir, `items-normalized-${lang}.json`)
+    );
+    console.log(
+      `✅ Saved normalized item data for ${lang} (${items.length} items)`
+    );
+  }
+}
+
+async function buildAndSaveNormalizedSummoners(
+  versionDir: string,
+  version: string,
+  summonerDataByLang: Record<string, any>
+): Promise<void> {
+  for (const lang of LANGUAGES) {
+    const raw = summonerDataByLang[lang];
+    if (!raw || typeof raw !== "object") continue;
+
+    const data = (raw as { data?: Record<string, any> }).data || {};
+    const spells: NormalizedSummonerSpell[] = [];
+
+    for (const [id, spell] of Object.entries<any>(data)) {
+      const name =
+        typeof spell.name === "string" ? (spell.name as string) : id;
+      const tooltip =
+        (typeof spell.tooltip === "string" && spell.tooltip) ||
+        (typeof spell.description === "string" && spell.description) ||
+        "";
+      const cooldown: number[] = Array.isArray(spell.cooldown)
+        ? (spell.cooldown as number[])
+        : [];
+      const iconPath: string =
+        (spell.image && typeof spell.image.full === "string"
+          ? spell.image.full
+          : "") || "";
+      const modes: string[] = Array.isArray(spell.modes)
+        ? (spell.modes as string[])
+        : [];
+
+      const normalized: NormalizedSummonerSpell = {
+        id,
+        key: typeof spell.key === "string" ? spell.key : id,
+        name,
+        tooltip,
+        cooldown,
+        iconPath,
+        modes,
+      };
+
+      spells.push(normalized);
+    }
+
+    const file: NormalizedSummonerDataFile = {
+      version,
+      lang,
+      spells,
+    };
+
+    await saveToFile(
+      file,
+      path.join(versionDir, `summoner-normalized-${lang}.json`)
+    );
+    console.log(
+      `✅ Saved normalized summoner spell data for ${lang} (${spells.length} spells)`
+    );
+  }
+}
+
+async function buildAndSaveNormalizedRunesAndStatShards(
+  versionDir: string,
+  version: string,
+  runesDataByLang: Record<string, any>,
+  runeStatmodsDataByLang: Record<string, RuneStatShardStaticData | null>
+): Promise<void> {
+  // 먼저 en_US 스탯 조각에서 id → StatContribution 매핑을 만든다.
+  const shardStatById = new Map<number, StatContribution[]>();
+  const shardEn = runeStatmodsDataByLang["en_US"];
+  if (shardEn && shardEn.groups) {
+    for (const group of shardEn.groups) {
+      const rows = group.rows || [];
+      for (const row of rows) {
+        const perks = row.perks || [];
+        for (const perk of perks) {
+          const text = perk.longDesc || perk.shortDesc || "";
+          const contributions = inferStatShardContributionsFromText(text);
+          shardStatById.set(perk.id, contributions);
+        }
+      }
+    }
+  }
+
+  for (const lang of LANGUAGES) {
+    const rawRunes = runesDataByLang[lang];
+    const rawShard = runeStatmodsDataByLang[lang];
+
+    const runes: NormalizedRune[] = [];
+    const statShards: NormalizedStatShard[] = [];
+
+    if (rawRunes) {
+      const trees: any[] = Array.isArray(rawRunes) ? rawRunes : (rawRunes as any[]);
+
+      for (const tree of trees) {
+        const pathId: number = tree.id;
+        const slots: any[] = Array.isArray(tree.slots) ? tree.slots : [];
+
+        slots.forEach((slot, slotIndex) => {
+          const runesInSlot: any[] = Array.isArray(slot.runes) ? slot.runes : [];
+          for (const rune of runesInSlot) {
+            const name = rune.name ?? String(rune.id);
+            const desc =
+              (typeof rune.longDesc === "string" && rune.longDesc) ||
+              (typeof rune.shortDesc === "string" && rune.shortDesc) ||
+              "";
+
+            let normalized: NormalizedRune = {
+              id: String(rune.id),
+              type: "rune",
+              name,
+              iconPath: rune.icon,
+              pathId,
+              slotIndex,
+              stats: [],
+              effects: [],
+              tooltip: desc,
+            };
+
+            const overrides = getNormalizationOverrides();
+            const runeOverrides =
+              overrides?.runes?.[lang]?.[normalized.id];
+            if (runeOverrides) {
+              normalized = {
+                ...normalized,
+                ...runeOverrides,
+              };
+            }
+
+            runes.push(normalized);
+          }
+        });
+      }
+    }
+
+    if (rawShard && rawShard.groups) {
+      const groups = rawShard.groups || [];
+      for (const group of groups) {
+        const rows = group.rows || [];
+        rows.forEach((row, rowIndex) => {
+          const perks = row.perks || [];
+          perks.forEach((perk, columnIndex) => {
+            const name = perk.name ?? String(perk.id);
+
+            const sharedStats =
+              shardStatById.get(perk.id)?.map((c) => ({ ...c })) || [];
+
+            let shard: NormalizedStatShard = {
+              id: String(perk.id),
+              type: "statShard",
+              name,
+              iconPath: perk.iconPath,
+              rowIndex,
+              columnIndex,
+              stats: sharedStats,
+            };
+
+            const overrides = getNormalizationOverrides();
+            const shardOverrides =
+              overrides?.statShards?.[lang]?.[shard.id];
+            if (shardOverrides) {
+              shard = {
+                ...shard,
+                ...shardOverrides,
+              };
+            }
+
+            statShards.push(shard);
+          });
+        });
+      }
+    }
+
+    const file: NormalizedRuneDataFile = {
+      version,
+      lang,
+      runes,
+      statShards,
+    };
+
+    await saveToFile(
+      file,
+      path.join(versionDir, `runes-normalized-${lang}.json`)
+    );
+    console.log(
+      `✅ Saved normalized rune data for ${lang} (${runes.length} runes, ${statShards.length} stat shards)`
+    );
+  }
 }
 
 // 실제 챔피언 경로 찾기
@@ -608,6 +1363,11 @@ async function main() {
     // - 한 명이라도 폴백(15.23, latest 등)을 사용하면, 그 폴백 버전을 version.json에 반영한다.
     let usedFallbackCdragonVersion: string | null = null;
 
+    const runesDataByLang: Record<string, any> = {};
+    const runeStatmodsDataByLang: Record<string, RuneStatShardStaticData | null> = {};
+    const itemsDataByLang: Record<string, any> = {};
+    const summonerDataByLang: Record<string, any> = {};
+
     for (const lang of LANGUAGES) {
       console.log(`📋 Fetching champion list for ${lang}...`);
       const champListData = await fetchJson(CHAMP_LIST_URL(version, lang));
@@ -616,25 +1376,12 @@ async function main() {
         (a: any, b: any) => (a.name < b.name ? -1 : a.name > b.name ? 1 : 0)
       );
 
-      const championList = {
-        version,
-        lang,
-        champions,
-      };
-
-      await saveToFile(
-        championList,
-        path.join(versionDir, `champions-${lang}.json`)
-      );
       console.log(`✅ Fetched ${champions.length} champions for ${lang}`);
 
       console.log(`📜 Fetching runes for ${lang}...`);
       const runesData = await fetchJson(RUNES_URL(version, lang));
-      await saveToFile(
-        runesData,
-        path.join(versionDir, `runes-${lang}.json`)
-      );
-      console.log(`✅ Saved runes for ${lang}`);
+      runesDataByLang[lang] = runesData;
+      console.log(`✅ Fetched runes for ${lang}`);
 
       console.log(`✨ Fetching rune stat shards (secondary runes) for ${lang}...`);
       try {
@@ -655,12 +1402,8 @@ async function main() {
               usedFallbackCdragonVersion = statShardData.cdragonVersion;
             }
           }
-
-          await saveToFile(
-            statShardData,
-            path.join(versionDir, `rune-statmods-${lang}.json`)
-          );
-          console.log(`✅ Saved rune stat shards for ${lang}`);
+          runeStatmodsDataByLang[lang] = statShardData;
+          console.log(`✅ Generated rune stat shards for ${lang}`);
         } else {
           console.warn(
             `[CD][Runes] No stat shard data generated for ${lang}`
@@ -763,21 +1506,14 @@ async function main() {
           error
         );
       }
-
-      await saveToFile(
-        combinedItemsData,
-        path.join(versionDir, `items-${lang}.json`)
-      );
-      console.log(`✅ Saved items for ${lang}\n`);
+      itemsDataByLang[lang] = combinedItemsData;
+      console.log(`✅ Fetched & merged items for ${lang}\n`);
 
       console.log(`📘 Fetching summoner spells for ${lang}...`);
       try {
         const summonerData = await fetchJson(SUMMONER_URL(version, lang));
-        await saveToFile(
-          summonerData,
-          path.join(versionDir, `summoner-${lang}.json`)
-        );
-        console.log(`✅ Saved summoner spells for ${lang}\n`);
+        summonerDataByLang[lang] = summonerData;
+        console.log(`✅ Fetched summoner spells for ${lang}\n`);
       } catch (error) {
         console.warn(
           `❌ Failed to fetch/save summoner spells for ${lang}:`,
@@ -795,7 +1531,7 @@ async function main() {
       const batch = championIds.slice(i, i + BATCH_SIZE);
       console.log(`📥 Processing batch ${Math.floor(i / BATCH_SIZE) + 1}/${Math.ceil(championIds.length / BATCH_SIZE)} (${batch.length} champions)...`);
       
-      const championPromises = batch.flatMap(championId => 
+      const championPromises = batch.flatMap(championId =>
         LANGUAGES.map(async (lang) => {
           try {
             const champData = await fetchJson(CHAMP_INFO_URL(version, lang, championId));
@@ -821,7 +1557,6 @@ async function main() {
       const successCount = results.filter(r => r.success).length;
       console.log(`✅ Processed batch: ${successCount}/${results.length} successful\n`);
     }
-
     console.log('⚡ Fetching Community Dragon spell data...');
     const BATCH_SIZE_CD = 5;
     let successCount = 0;
@@ -889,6 +1624,63 @@ async function main() {
     }
 
     console.log(`\n✅ Community Dragon data: ${successCount} successful, ${failCount} failed\n`);
+
+    console.log("🧩 Building normalized champion data...");
+    for (const lang of LANGUAGES) {
+      const normalizedChampions: NormalizedChampion[] = [];
+
+      for (const championId of championIds) {
+        const championDataPath = path.join(
+          championsDir,
+          `${championId}-${lang}.json`
+        );
+        const cdragonSpellPath = path.join(spellsDir, `${championId}.json`);
+
+        const normalized = buildNormalizedChampion(
+          version,
+          lang,
+          championId,
+          championDataPath,
+          cdragonSpellPath
+        );
+
+        if (normalized) {
+          normalizedChampions.push(normalized);
+        }
+      }
+
+      const normalizedFile: NormalizedChampionDataFile = {
+        version,
+        lang,
+        champions: normalizedChampions,
+      };
+
+      await saveToFile(
+        normalizedFile,
+        path.join(
+          versionDir,
+          `champions-normalized-${lang}.json`
+        )
+      );
+      console.log(
+        `✅ Saved normalized champion data for ${lang} (${normalizedChampions.length} champions)`
+      );
+    }
+
+    console.log("🧩 Building normalized item and rune data...");
+    await buildAndSaveNormalizedItems(versionDir, version, itemsDataByLang);
+    await buildAndSaveNormalizedRunesAndStatShards(
+      versionDir,
+      version,
+      runesDataByLang,
+      runeStatmodsDataByLang
+    );
+    console.log("🧩 Building normalized summoner spell data...");
+    await buildAndSaveNormalizedSummoners(
+      versionDir,
+      version,
+      summonerDataByLang
+    );
 
     // 최종적으로 version.json 에 반영할 CDragon 버전 결정
     const finalCdragonVersion =
