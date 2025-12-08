@@ -237,13 +237,14 @@ export async function getNormalizedChampions(
   try {
     const cached = sessionStorage.getItem(cacheKey);
     if (cached) {
-      const parsed = JSON.parse(cached);
+      const parsed = JSON.parse(cached) as unknown;
       if (
         parsed &&
         typeof parsed === "object" &&
-        Array.isArray((parsed as any).champions)
+        "champions" in parsed &&
+        Array.isArray((parsed as { champions?: unknown }).champions)
       ) {
-        return (parsed as any).champions as NormalizedChampion[];
+        return (parsed as { champions: NormalizedChampion[] }).champions;
       }
     }
   } catch (error) {
@@ -298,8 +299,10 @@ export async function getNormalizedRunes(
       if (
         parsed &&
         typeof parsed === "object" &&
-        Array.isArray((parsed as any).runes) &&
-        Array.isArray((parsed as any).statShards)
+        "runes" in parsed &&
+        "statShards" in parsed &&
+        Array.isArray((parsed as { runes?: unknown }).runes) &&
+        Array.isArray((parsed as { statShards?: unknown }).statShards)
       ) {
         return parsed as NormalizedRuneDataFile;
       }
@@ -607,11 +610,12 @@ async function getNormalizedItemData(
   try {
     const cached = sessionStorage.getItem(cacheKey);
     if (cached) {
-      const parsed = JSON.parse(cached);
+      const parsed = JSON.parse(cached) as unknown;
       if (
         parsed &&
         typeof parsed === "object" &&
-        Array.isArray((parsed as any).items)
+        "items" in parsed &&
+        Array.isArray((parsed as { items?: unknown }).items)
       ) {
         const data = parsed as NormalizedItemDataFile;
         normalizedItemDataCache.set(memoryKey, data);
@@ -665,9 +669,10 @@ export async function getNormalizedSummonerSpells(
       if (
         parsed &&
         typeof parsed === "object" &&
-        Array.isArray((parsed as any).spells)
+        "spells" in parsed &&
+        Array.isArray((parsed as { spells?: unknown }).spells)
       ) {
-        return (parsed as any).spells as NormalizedSummonerSpell[];
+        return (parsed as { spells: NormalizedSummonerSpell[] }).spells;
       }
     }
   } catch (error) {
@@ -706,7 +711,7 @@ export async function getNormalizedSummonerSpells(
 }
 
 export interface CommunityDragonSpellResult {
-  spellDataMap: Record<string, any>;
+  spellDataMap: Record<string, unknown>;
   ddragonVersion?: string;
   cdragonVersion?: string | null;
 }
@@ -736,12 +741,12 @@ export async function getCommunityDragonSpellData(
       return { spellDataMap: {} };
     }
 
-    const spellDataMap: Record<string, any> = {};
-    spells.forEach((spell: any, index: number) => {
+    const spellDataMap: Record<string, unknown> = {};
+    spells.forEach((spell: unknown, index: number) => {
       // 인덱스 키 (0, 1, 2, 3)
       spellDataMap[index.toString()] = spell;
       // 스킬 ID 키 (AatroxQ 등)
-      if (spell.id) {
+      if (spell && typeof spell === "object" && "id" in spell && typeof spell.id === "string") {
         spellDataMap[spell.id] = spell;
       }
     });

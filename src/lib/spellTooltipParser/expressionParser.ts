@@ -9,8 +9,9 @@ export function parseExpression(input: string): ParseResult {
 
   // VAR * 100, VAR * -100, VAR + 3, VAR - 2.5 같은 포뮬라 파싱
   // 예: "movespeedmod*-100" → variable: "movespeedmod", operator: "*", operand: -100
-  const formulaRegex =
-    /^([a-zA-Z_][a-zA-Z0-9_]*)\s*([*+\/-])\s*(-?\d+(?:\.\d+)?)$/;
+  const formulaRegex = new RegExp(
+    "^([a-zA-Z_][a-zA-Z0-9_]*)\\s*([*+/-])\\s*(-?\\d+(?:\\.\\d+)?)$"
+  );
   const formulaMatch = cleanInput.match(formulaRegex);
 
   if (formulaMatch) {

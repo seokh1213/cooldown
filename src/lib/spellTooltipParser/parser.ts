@@ -65,8 +65,7 @@ export function parseSpellDescription(
  * - 치환이 안 되는 변수들은 빨간색 ?로 표시
  */
 export function parseItemDescription(
-  text: string | undefined,
-  lang: Language = "ko_KR"
+  text: string | undefined
 ): string {
   if (!text) return "";
 

@@ -13,7 +13,7 @@ export interface SpellData {
   /** Data Dragon 스킬 데이터 */
   spell: ChampionSpell;
   /** Community Dragon 스킬 데이터 (DataValues, mSpellCalculations, mClientData 포함) */
-  communityDragonData: Record<string, any>;
+  communityDragonData: Record<string, unknown>;
   /** 스킬 인덱스 (Q=0, W=1, E=2, R=3) */
   spellIndex: number;
   /** 기준이 된 DDragon 버전 (옵션) */
@@ -35,12 +35,18 @@ export async function getIntegratedSpellData(
   version: string
 ): Promise<SpellData[]> {
   // Community Dragon 데이터 가져오기 (에러 처리 포함)
-  let communityDragonDataMap: Record<string, Record<string, any>> = {};
+  const communityDragonDataMap: Record<string, Record<string, unknown>> = {};
   let cdMeta: CommunityDragonSpellResult | null = null;
   
   try {
     cdMeta = await getCommunityDragonSpellData(championId, version);
-    communityDragonDataMap = cdMeta.spellDataMap;
+    // spellDataMap의 값들이 Record<string, unknown> 형태인지 확인하고 변환
+    const spellDataMap = cdMeta.spellDataMap;
+    for (const [key, value] of Object.entries(spellDataMap)) {
+      if (value && typeof value === "object") {
+        communityDragonDataMap[key] = value as Record<string, unknown>;
+      }
+    }
   } catch (error) {
     logger.warn(`Failed to load Community Dragon data for ${championId}:`, error);
     // 에러 발생 시 빈 객체 사용
@@ -49,7 +55,7 @@ export async function getIntegratedSpellData(
   // 각 스킬에 대해 통합 데이터 생성
   return spells.map((spell, index) => {
     // Community Dragon 데이터 찾기
-    let communityDragonData: Record<string, any> = {};
+    let communityDragonData: Record<string, unknown> = {};
     
     // 1. 스킬 인덱스로 직접 찾기 (Q=0, W=1, E=2, R=3)
     if (communityDragonDataMap[index.toString()]) {

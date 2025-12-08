@@ -14,6 +14,8 @@ import {
   NumberCalculationPart,
   ByCharLevelBreakpointsCalculationPart,
   ByCharLevelInterpolationCalculationPart,
+  ProductOfSubPartsCalculationPart,
+  SpellCalculation,
 } from "./types";
 import { getDataValueByName } from "./dataValueUtils";
 import { Value } from "./types";
@@ -91,12 +93,14 @@ export function replaceCalculateData(
 
   function evalCalc(key: string, visited: Set<string> = new Set()): CalcResult {
     if (!spellCalcs) throw new Error("spellCalcs is undefined");
-    const raw: any = spellCalcs[key];
+    const raw = spellCalcs[key] as SpellCalculation | undefined;
     if (!raw) throw new Error(`SpellCalculation "${key}" not found`);
 
     if (visited.has(key))
       throw new Error(`Circular reference in mSpellCalculations: ${key}`);
     visited.add(key);
+
+    const rawType = raw && typeof raw === "object" && "__type" in raw ? raw.__type : "unknown";
 
     // GameCalculationModified: 내부 계산 결과(base, statParts)를 multiplier로 스케일
     if (raw.__type === "GameCalculationModified") {
@@ -151,7 +155,10 @@ export function replaceCalculateData(
       // mSimpleTooltipCalculationDisplay 가 6인 경우를 "(시작값 ~ 끝값)" 형태로 표현
       if (
         parts.length === 1 &&
-        (parts[0] as any).__type === "ByCharLevelBreakpointsCalculationPart" &&
+        parts[0] &&
+        typeof parts[0] === "object" &&
+        "__type" in parts[0] &&
+        parts[0].__type === "ByCharLevelBreakpointsCalculationPart" &&
         calc.mSimpleTooltipCalculationDisplay === 6
       ) {
         const breakPart = parts[0] as ByCharLevelBreakpointsCalculationPart;
@@ -182,7 +189,10 @@ export function replaceCalculateData(
       // mDisplayAsPercent 가 true 인 경우를 범위 형태 "(A% ~ B%)" 로 표현
       if (
         parts.length === 1 &&
-        (parts[0] as any).__type === "ByCharLevelBreakpointsCalculationPart" &&
+        parts[0] &&
+        typeof parts[0] === "object" &&
+        "__type" in parts[0] &&
+        parts[0].__type === "ByCharLevelBreakpointsCalculationPart" &&
         isPercent
       ) {
         const breakPart = parts[0] as ByCharLevelBreakpointsCalculationPart & {
@@ -225,7 +235,10 @@ export function replaceCalculateData(
       //  → "(80% ~ 95%)"
       if (
         parts.length === 1 &&
-        (parts[0] as any).__type === "ByCharLevelInterpolationCalculationPart" &&
+        parts[0] &&
+        typeof parts[0] === "object" &&
+        "__type" in parts[0] &&
+        parts[0].__type === "ByCharLevelInterpolationCalculationPart" &&
         isPercent
       ) {
         const interpPart = parts[0] as ByCharLevelInterpolationCalculationPart;
@@ -344,11 +357,12 @@ export function replaceCalculateData(
         } else if (partType === "ProductOfSubPartsCalculationPart") {
           // mPart1 × mPart2 형태의 곱 연산
           // 예: HealthRefundOnHitChampionMonsterPercent × HealthCost
-          const prodPart = part as any;
+          const prodPart = part as ProductOfSubPartsCalculationPart;
 
-          const evalSimplePart = (p: any): Value => {
-            if (!p || !p.__type) return 0;
-            const t = p.__type as string;
+          const evalSimplePart = (p: unknown): Value => {
+            if (!p || typeof p !== "object" || !("__type" in p)) return 0;
+            const t = (p as { __type?: string }).__type;
+            if (!t) return 0;
 
             if (t === "NamedDataValueCalculationPart") {
               const named = p as NamedDataValueCalculationPart;
@@ -472,7 +486,7 @@ export function replaceCalculateData(
       };
     }
 
-    throw new Error(`Unsupported mSpellCalculation type: ${raw.__type}`);
+    throw new Error(`Unsupported mSpellCalculation type: ${rawType}`);
   }
 
   let result: CalcResult;

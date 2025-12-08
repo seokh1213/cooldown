@@ -21,9 +21,8 @@ import { VsSelectorModal } from "@/pages/EncyclopediaPage/VsSelectorModal";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { RotateCcw } from "lucide-react";
-import { STORAGE_KEY, TABS_STORAGE_KEY, SELECTED_TAB_ID_STORAGE_KEY } from "@/pages/EncyclopediaPage/constants";
 import { setStorageWithVersion, removeStorageWithVersion } from "@/lib/storageValidator";
-import { VersionProvider, useVersionContext } from "@/context/VersionContext";
+import { VersionProvider } from "@/context/VersionContext";
 import type { StoredSelectedChampionList } from "@/lib/storageSchema";
 import { logger } from "@/lib/logger";
 import { useTranslation } from "@/i18n";
@@ -52,7 +51,6 @@ function ChampionCooldownPageContent({
   lang,
   championList,
   version,
-  cdragonVersion: initialCDragonVersion,
   initialSelectedChampions,
   initialTabs,
   initialSelectedTabId,
@@ -112,7 +110,6 @@ function ChampionCooldownPageContent({
   }, [activeTab, urlTabParam, searchParams, setSearchParams]);
   
   const [showSelector, setShowSelector] = useState(false);
-  const { cdragonVersion } = useVersionContext();
   const { t } = useTranslation();
 
   const {
@@ -320,7 +317,7 @@ function ChampionCooldownPageContent({
       setShowVsSelector(false);
       setVsSelectorMode(null);
     },
-    [vsSelectorMode, tabs, selectedChampions, addChampionToList, updateTab, replaceTab, generateTabId]
+    [vsSelectorMode, tabs, selectedChampions, addChampionToList, updateTab, replaceTab, generateTabId, setShowVsSelector, setVsSelectorMode]
   );
 
   // 현재 선택된 탭
@@ -369,36 +366,34 @@ function ChampionCooldownPageContent({
     (tabId: string) => {
       setVsSelectorMode({
         mode: 'select-second',
-        tabId,
-      });
-      setShowVsSelector(true);
-    },
-    []
-  );
-
-  const handleChangeChampionA = useCallback(
-    (tabId: string) => {
-      setVsSelectorMode({
-        mode: 'change-champion-a',
-        tabId,
-        championIndex: 0,
-      });
-      setShowVsSelector(true);
-    },
-    []
-  );
-
-  const handleChangeChampionB = useCallback(
-    (tabId: string) => {
-      setVsSelectorMode({
-        mode: 'change-champion-b',
-        tabId,
-        championIndex: 1,
-      });
-      setShowVsSelector(true);
-    },
-    []
-  );
+              tabId,
+            });
+            setShowVsSelector(true);
+          }, [setShowVsSelector, setVsSelectorMode]);
+        
+          const handleChangeChampionA = useCallback(
+            (tabId: string) => {
+              setVsSelectorMode({
+                mode: 'change-champion-a',
+                tabId,
+                championIndex: 0,
+              });
+              setShowVsSelector(true);
+            },
+            [setShowVsSelector, setVsSelectorMode]
+          );
+        
+          const handleChangeChampionB = useCallback(
+            (tabId: string) => {
+              setVsSelectorMode({
+                mode: 'change-champion-b',
+                tabId,
+                championIndex: 1,
+              });
+              setShowVsSelector(true);
+            },
+            [setShowVsSelector, setVsSelectorMode]
+          );
 
   return (
     <div className="w-full max-w-7xl mx-auto px-4 md:px-6 lg:px-8 pb-4 md:pb-5">

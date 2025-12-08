@@ -4,7 +4,7 @@ import { EncyclopediaPageProps } from "./types";
 import { TabNavigation, EncyclopediaTab } from "./TabNavigation";
 import { RunesTab } from "./RunesTab";
 import { ItemsTab } from "./ItemsTab";
-import { VersionProvider, useVersionContext } from "@/context/VersionContext";
+import { VersionProvider } from "@/context/VersionContext";
 import { SummonerTab } from "./SummonerTab";
 
 function isValidTab(tab: string | null): tab is EncyclopediaTab {
@@ -13,12 +13,7 @@ function isValidTab(tab: string | null): tab is EncyclopediaTab {
 
 function EncyclopediaPageContent({
   lang,
-  championList,
   version,
-  cdragonVersion: initialCDragonVersion,
-  initialSelectedChampions,
-  initialTabs,
-  initialSelectedTabId,
 }: EncyclopediaPageProps) {
   const [searchParams, setSearchParams] = useSearchParams();
   
@@ -66,13 +61,11 @@ function EncyclopediaPageContent({
         newSearchParams.set("tab", activeTab);
       }
       setSearchParams(newSearchParams, { replace: true });
-      lastActiveTabRef.current = activeTab === "runes" ? null : activeTab;
+      lastActiveTabRef.current = activeTab;
     }
     
     lastActiveTabRef.current = activeTab;
   }, [activeTab, urlTabParam, searchParams, setSearchParams]);
-  
-  const { cdragonVersion } = useVersionContext();
 
   return (
     <div className="w-full max-w-7xl mx-auto px-4 md:px-6 lg:px-8 pb-4 md:pb-5">

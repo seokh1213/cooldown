@@ -162,7 +162,7 @@ export function getAbilityResourceName(
 ): string {
   const t = getTranslations(lang);
 
-  let resourceName = t.common.mana;
+  const resourceName = t.common.mana;
 
   if (spell.costType) {
     const costType = spell.costType.trim();

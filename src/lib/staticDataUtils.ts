@@ -56,8 +56,6 @@ export async function getAvailableVersions(): Promise<string[]> {
     // HTML 응답을 파싱하여 디렉토리 목록 추출
     // 실제로는 서버에서 디렉토리 목록을 제공하지 않을 수 있으므로
     // 대안으로 version.json 파일을 직접 확인하는 방식 사용
-    const text = await response.text();
-    
     // 간단한 방법: 정규식으로 버전 디렉토리 찾기
     // 하지만 더 나은 방법은 서버에서 인덱스 파일을 제공하거나
     // 빌드 시점에 버전 목록을 생성하는 것
@@ -104,7 +102,7 @@ export async function versionExists(version: string): Promise<boolean> {
     const versionUrl = getStaticDataPath(version, 'version.json');
     const response = await fetch(versionUrl);
     return response.ok;
-  } catch (error) {
+  } catch {
     return false;
   }
 }

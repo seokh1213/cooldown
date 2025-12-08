@@ -3,8 +3,7 @@ import { DragEndEvent } from "@dnd-kit/core";
 import { arrayMove } from "@dnd-kit/sortable";
 import { Tab, VsSelectorMode } from "./types";
 import { generateTabId } from "./utils";
-import { TABS_STORAGE_KEY, SELECTED_TAB_ID_STORAGE_KEY } from "./constants";
-import { setStorageWithVersion, removeStorageWithVersion } from "@/lib/storageValidator";
+import { removeStorageWithVersion } from "@/lib/storageValidator";
 import { logger } from "@/lib/logger";
 
 interface UseTabManagementOptions {

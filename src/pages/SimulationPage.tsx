@@ -2,7 +2,6 @@ import { useEffect, useMemo, useState } from "react";
 import type { Language } from "@/i18n";
 import { useTranslation } from "@/i18n";
 import { Card } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
 import { Select } from "@/components/ui/select";
@@ -25,11 +24,7 @@ import {
   applyNormalizedItemsToStats,
   computeAbilityHasteFromNormalizedItems,
   computeChampionStatsAtLevel,
-  computeSimpleComboResult,
   computeSkillSummaries,
-  type SimpleComboResult,
-  type SimpleStats,
-  type SkillSummary,
   estimateSpellDamageFromCDragon,
 } from "./SimulationPage.damageUtils";
 
@@ -84,10 +79,8 @@ export default function SimulationPage({
   const [selectedItemIds, setSelectedItemIds] = useState<(string | null)[]>(
     () => Array(6).fill(null)
   );
-  const [spellDataMap, setSpellDataMap] = useState<Record<string, any> | null>(null);
-  const [comboSequence, setComboSequence] = useState<string>("QWER");
+  const [spellDataMap, setSpellDataMap] = useState<Record<string, unknown> | null>(null);
   const [isChampionModalOpen, setIsChampionModalOpen] = useState(false);
-  const [selectedSkillIndex, setSelectedSkillIndex] = useState<number | null>(0);
   const [isItemModalOpen, setIsItemModalOpen] = useState(false);
   const [activeItemSlotIndex, setActiveItemSlotIndex] = useState<number | null>(null);
 
@@ -198,17 +191,6 @@ export default function SimulationPage({
     const attackSpeed = 0.7;
     return finalStats.attackDamage * attackSpeed;
   }, [finalStats]);
-
-  const simpleCombo: SimpleComboResult | null = useMemo(
-    () =>
-      computeSimpleComboResult(
-        championInfo,
-        finalStats,
-        comboSequence,
-        spellDataMap
-      ),
-    [championInfo, finalStats, comboSequence, spellDataMap]
-  );
 
   const abilityHaste = useMemo(
     () => computeAbilityHasteFromNormalizedItems(selectedItems),

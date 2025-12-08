@@ -47,7 +47,13 @@ function ChampionSelector({
   const isControlled = controlledOpen !== undefined;
   // Controlled 모드일 때는 controlledOpen을 사용, undefined가 아닌 경우에만 true로 간주
   const isOpen = isControlled ? Boolean(controlledOpen) : internalOpen;
-  const setIsOpen = isControlled ? (controlledOnOpenChange || (() => {})) : setInternalOpen;
+  const setIsOpen: (open: boolean) => void = useCallback((open: boolean) => {
+    if (isControlled) {
+      controlledOnOpenChange?.(open);
+    } else {
+      setInternalOpen(open);
+    }
+  }, [isControlled, controlledOnOpenChange]);
   const [searchValue, setSearchValue] = useState("");
   const [focusedIndex, setFocusedIndex] = useState(-1);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -56,7 +62,6 @@ function ChampionSelector({
 
   // If onClose is provided, this is a modal-style selector
   const isModal = onClose !== undefined;
-  const handleClose = onClose || (() => {});
 
   const debouncedSearch = useDebouncedValue(searchValue, 200);
   const availableChampions = useChampionSearch(championList, debouncedSearch);
@@ -113,14 +118,14 @@ function ChampionSelector({
     if (controlledOnOpenChange) {
       controlledOnOpenChange(open);
     }
-  }, [onClose, controlledOnOpenChange]);
+  }, [onClose, controlledOnOpenChange, setIsOpen]);
 
   const handleSelect = useCallback(
     (champion: Champion) => {
       // 이미 선택된 챔피언이면 선택 해제, 아니면 선택
       onSelect(champion);
       // 모달일 때는 절대 닫지 않고 계속 열어둠
-      if (isModal) {
+      if (onClose !== undefined) {
         // 모달일 때는 검색어와 포커스만 초기화하지 않음 (계속 선택 가능하도록)
         setFocusedIndex(-1);
         // 모달 상태는 유지 (setIsOpen이나 onClose 호출하지 않음)
@@ -129,10 +134,9 @@ function ChampionSelector({
         setIsOpen(false);
         setFocusedIndex(-1);
         document.body.style.overflow = "";
-        handleClose();
       }
     },
-    [onSelect, onClose, isModal]
+    [onSelect, setIsOpen, onClose]
   );
 
   const handleKeyDown = useCallback(
@@ -157,7 +161,7 @@ function ChampionSelector({
         handleOpenChange(false);
       }
     },
-    [isOpen, isModal, championList, availableChampions, focusedIndex, handleSelect, handleOpenChange, selectedChampionIds]
+    [isOpen, isModal, championList, availableChampions, focusedIndex, handleSelect, handleOpenChange]
   );
 
   useEffect(() => {
@@ -224,7 +228,6 @@ function ChampionSelector({
                 setIsOpen(false);
                 setSearchValue("");
                 document.body.style.overflow = "";
-                handleClose();
               }}
               aria-hidden="true"
             />
@@ -258,7 +261,6 @@ function ChampionSelector({
                   setIsOpen(false);
                   setSearchValue("");
                   document.body.style.overflow = "";
-                  handleClose();
                 }}
               >
                 <X className="h-4 w-4" />

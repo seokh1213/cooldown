@@ -20,8 +20,13 @@ export function getCooldownText(
     return null;
   }
   // 새로운 구조 지원: DataValues가 있으면 그것을 사용, 없으면 전체 객체 사용 (호환성)
-  const dataValues = spellData?.communityDragonData?.DataValues || spellData?.communityDragonData;
-  const ammoRechargeTime = dataValues?.["mAmmoRechargeTime"];
+  const communityDragonData = spellData?.communityDragonData;
+  const dataValues = (communityDragonData && typeof communityDragonData === "object" && "DataValues" in communityDragonData
+    ? (communityDragonData as { DataValues?: Record<string, unknown> }).DataValues
+    : undefined) || (communityDragonData as Record<string, unknown> | undefined);
+  const ammoRechargeTime = dataValues && typeof dataValues === "object" && "mAmmoRechargeTime" in dataValues
+    ? (dataValues as { mAmmoRechargeTime?: unknown }).mAmmoRechargeTime
+    : undefined;
   const isAmmoSkill = skill.cooldown[0] === 0 && ammoRechargeTime && Array.isArray(ammoRechargeTime) && ammoRechargeTime.length > 1;
 
   if (isAmmoSkill && ammoRechargeTime) {
@@ -83,9 +88,12 @@ export function getCostText(
     const rawResource = skill.resource.trim();
 
     // DataValues 호환 처리: { DataValues: {...} } 혹은 DataValues 자체가 올 수 있음
+    const communityDragonData = spellData?.communityDragonData;
     const dataValues =
-      (spellData?.communityDragonData as any)?.DataValues ||
-      (spellData?.communityDragonData as Record<string, number[]> | undefined);
+      (communityDragonData && typeof communityDragonData === "object" && "DataValues" in communityDragonData
+        ? (communityDragonData as { DataValues?: Record<string, number[]> }).DataValues
+        : undefined) ||
+      (communityDragonData as Record<string, number[]> | undefined);
 
     if (dataValues) {
       const cdragonData: CommunityDragonSpellData = {
@@ -117,7 +125,7 @@ export function getCostText(
     }
     return sanitizeCostText(`${t.common.mana} ${skill.costBurn}`);
   }
-  if (hasCostArray) {
+  if (hasCostArray && skill.cost) {
     const cost = skill.cost[0];
     if (skill.cost.every(c => c === cost)) {
       return sanitizeCostText(`${t.common.mana} ${cost}`);
@@ -136,8 +144,13 @@ export function getCooldownForLevel(
   spellData?: SpellData | null
 ): string {
   // 새로운 구조 지원: DataValues가 있으면 그것을 사용, 없으면 전체 객체 사용 (호환성)
-  const dataValues = spellData?.communityDragonData?.DataValues || spellData?.communityDragonData;
-  const ammoRechargeTime = dataValues?.["mAmmoRechargeTime"];
+  const communityDragonData = spellData?.communityDragonData;
+  const dataValues = (communityDragonData && typeof communityDragonData === "object" && "DataValues" in communityDragonData
+    ? (communityDragonData as { DataValues?: Record<string, unknown> }).DataValues
+    : undefined) || (communityDragonData as Record<string, unknown> | undefined);
+  const ammoRechargeTime = dataValues && typeof dataValues === "object" && "mAmmoRechargeTime" in dataValues
+    ? (dataValues as { mAmmoRechargeTime?: unknown }).mAmmoRechargeTime
+    : undefined;
   const cooldownValue = skill.cooldown[level - 1];
   
   // ammo 스킬인지 확인: cooldown이 0이고 mAmmoRechargeTime이 있으면 ammo 스킬

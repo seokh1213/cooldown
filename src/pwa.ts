@@ -9,7 +9,7 @@ let listeners: UpdateListener[] = [];
  * 어디서든 import 해서 현재 실행 중인 빌드 버전을 확인할 수 있다.
  */
 export const BUILD_VERSION: string =
-  (import.meta as any).env?.VITE_DEPLOYMENT_VERSION ?? "dev";
+  import.meta.env.VITE_DEPLOYMENT_VERSION ?? "dev";
 
 /**
  * 새 서비스 워커(새 빌드)가 감지됐을 때 호출될 리스너 등록.
@@ -29,7 +29,6 @@ function notifyUpdateAvailable() {
     try {
       listener();
     } catch (error) {
-      // eslint-disable-next-line no-console
       console.error("[PWA] update listener error:", error);
     }
   }
@@ -53,13 +52,11 @@ if (typeof window !== "undefined" && "serviceWorker" in navigator) {
     },
     onRegisteredSW(swUrl, registration) {
       if (import.meta.env.DEV) {
-        // eslint-disable-next-line no-console
         console.log("[PWA] service worker registered:", swUrl, registration);
       }
     },
     onRegisterError(error) {
       if (import.meta.env.DEV) {
-        // eslint-disable-next-line no-console
         console.error("[PWA] service worker registration error:", error);
       }
     },

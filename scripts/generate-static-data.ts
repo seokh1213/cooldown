@@ -586,8 +586,7 @@ async function buildAndSaveNormalizedItems(
 
       // description 파싱 (XML 처리, 변수 치환 실패 시 ? 표시, 경고문구 추가)
       const description = parseItemDescription(
-        item.description ?? item.cdragon?.description,
-        lang as "ko_KR" | "en_US"
+        item.description ?? item.cdragon?.description
       );
 
       const statsRecord: Record<string, number | undefined> =

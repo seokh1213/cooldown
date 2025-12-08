@@ -17,7 +17,7 @@ import { getAbilityResourceName } from "./valueUtils";
  */
 export function formatLeveltipStats(
   spell: ChampionSpell,
-  communityDragonData?: CommunityDragonSpellData | Record<string, any>,
+  communityDragonData?: CommunityDragonSpellData | Record<string, unknown>,
   lang: Language = "ko_KR"
 ): string {
   const t = getTranslations(lang);
@@ -33,7 +33,7 @@ export function formatLeveltipStats(
       cdragonForData = communityDragonData as CommunityDragonSpellData;
     } else {
       cdragonForData = {
-        DataValues: communityDragonData as any,
+        DataValues: communityDragonData as Record<string, number[]>,
       };
     }
   }
@@ -120,7 +120,9 @@ export function formatLeveltipStats(
       varName.toLowerCase().includes("ammorecharge")
     ) {
       // 새로운 구조 지원: DataValues가 있으면 그것을 사용, 없으면 전체 객체 사용 (호환성)
-      const dataValues = (communityDragonData as any)?.DataValues || communityDragonData;
+      const dataValues = (communityDragonData && typeof communityDragonData === "object" && "DataValues" in communityDragonData
+        ? (communityDragonData as { DataValues?: Record<string, unknown> }).DataValues
+        : undefined) || (communityDragonData as Record<string, unknown> | undefined);
       if (dataValues && dataValues["mAmmoRechargeTime"]) {
         const ammoRechargeTime = dataValues["mAmmoRechargeTime"];
         if (Array.isArray(ammoRechargeTime) && ammoRechargeTime.length > 1) {

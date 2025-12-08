@@ -78,6 +78,8 @@ export interface Translations {
         epic: string;
         basic: string;
         starter: string;
+        boots: string;
+        consumable: string;
       };
       buildsIntoTitle: string;
       buildsIntoEmpty: string;
@@ -121,6 +123,16 @@ export interface Translations {
     simulation: {
       title: string;
       description: string;
+      statsPlaceholderLine1: string;
+      statsPlaceholderLine2: string;
+      aaDpsLabel: string;
+      itemsTitle: string;
+      itemPlaceholderLine1: string;
+      itemPlaceholderLine2: string;
+      itemModalTitle: string;
+      itemModalDescription: string;
+      itemModalHint: string;
+      clearItemSlot: string;
     };
   };
   championSelector: {
@@ -332,6 +344,16 @@ export const translations: Record<Language, Translations> = {
       simulation: {
         title: "시뮬레이션",
         description: "챔피언, 룬, 아이템, 레벨을 조합해서 스탯과 스킬 정보를 시뮬레이션합니다.",
+        statsPlaceholderLine1: "챔피언, 레벨, 아이템, 룬을 선택하면",
+        statsPlaceholderLine2: "상세 스탯과 스킬 정보를 확인할 수 있습니다.",
+        aaDpsLabel: "기본 공격 DPS (근사치)",
+        itemsTitle: "아이템",
+        itemPlaceholderLine1: "아이템 슬롯을 클릭하여",
+        itemPlaceholderLine2: "아이템을 추가하세요",
+        itemModalTitle: "아이템 선택",
+        itemModalDescription: "추가할 아이템을 검색하거나 목록에서 선택하세요.",
+        itemModalHint: "아이템을 클릭하면 슬롯에 추가됩니다.",
+        clearItemSlot: "슬롯 비우기",
       },
     },
     championSelector: {
@@ -542,6 +564,16 @@ export const translations: Record<Language, Translations> = {
       simulation: {
         title: "Simulation",
         description: "Simulate champion stats and skills with different runes, items, and levels.",
+        statsPlaceholderLine1: "Select champion, level, items, and runes",
+        statsPlaceholderLine2: "to see detailed stats and skill info.",
+        aaDpsLabel: "Auto Attack DPS (Approx.)",
+        itemsTitle: "Items",
+        itemPlaceholderLine1: "Click item slot",
+        itemPlaceholderLine2: "to add an item",
+        itemModalTitle: "Select Item",
+        itemModalDescription: "Search or select an item to add.",
+        itemModalHint: "Click an item to add to slot.",
+        clearItemSlot: "Clear Slot",
       },
     },
     championSelector: {

@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { getNormalizedSummonerSpells } from "@/services/api";
 import type { NormalizedSummonerSpell } from "@/types/combatNormalized";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -19,12 +19,16 @@ interface SummonerTabProps {
   lang: string;
 }
 
-function getSpellName(spell: NormalizedSummonerSpell, lang: string): string {
+function getSpellName(spell: NormalizedSummonerSpell): string {
   return spell.name || spell.id;
 }
 
-function getSpellTooltip(spell: NormalizedSummonerSpell, lang: string): string {
+function getSpellTooltip(spell: NormalizedSummonerSpell): string {
   return spell.tooltip || "";
+}
+
+function stripHtml(html: string): string {
+  return html.replace(/<[^>]*>?/gm, "");
 }
 
 export function SummonerTab({ version, lang }: SummonerTabProps) {
@@ -68,8 +72,7 @@ export function SummonerTab({ version, lang }: SummonerTabProps) {
     return () => {
       cancelled = true;
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [version, lang]);
+  }, [version, lang, search, selectedSpell]);
 
   const term = search.trim().toLowerCase();
 
@@ -77,13 +80,13 @@ export function SummonerTab({ version, lang }: SummonerTabProps) {
     if (!spells) return [];
     if (!term) return spells;
     return spells.filter((spell) => {
-      const name = getSpellName(spell, lang).toLowerCase();
-      const tooltip = getSpellTooltip(spell, lang).toLowerCase();
+      const name = getSpellName(spell).toLowerCase();
+      const tooltip = getSpellTooltip(spell).toLowerCase();
       return (
         name.includes(term) || tooltip.includes(term)
       );
     });
-  }, [spells, term, lang]);
+  }, [spells, term]);
 
   if (loading && !spells) {
     return (
@@ -112,7 +115,7 @@ export function SummonerTab({ version, lang }: SummonerTabProps) {
       return text.replace(/{{\s*[^}]+\s*}}/g, errorMarkup);
     };
 
-    const html = getSpellTooltip(spell, lang);
+    const html = getSpellTooltip(spell);
     const processedHtml = replaceUnresolvedVariables(html);
     return (
       <span
@@ -144,7 +147,7 @@ export function SummonerTab({ version, lang }: SummonerTabProps) {
           >
             <img
               src={`https://ddragon.leagueoflegends.com/cdn/${version}/img/spell/${spell.iconPath}`}
-              alt={getSpellName(spell, lang)}
+              alt={getSpellName(spell)}
               loading="lazy"
               decoding="async"
               width={32}
@@ -154,7 +157,7 @@ export function SummonerTab({ version, lang }: SummonerTabProps) {
             <div className="flex-1 min-w-0">
               <div className="flex items-center justify-between gap-2">
                 <span className="text-xs font-semibold truncate">
-                  {getSpellName(spell, lang)}
+                  {getSpellName(spell)}
                 </span>
                 <span className="text-[11px] text-muted-foreground whitespace-nowrap">
                   {spell.cooldown && spell.cooldown.length > 0
@@ -163,7 +166,7 @@ export function SummonerTab({ version, lang }: SummonerTabProps) {
                 </span>
               </div>
               <div className="mt-0.5 text-[11px] text-muted-foreground line-clamp-2">
-                {spell.description}
+                {stripHtml(spell.tooltip || "")}
               </div>
             </div>
           </button>
@@ -178,7 +181,7 @@ export function SummonerTab({ version, lang }: SummonerTabProps) {
         <div className="flex items-start gap-3">
           <img
             src={`https://ddragon.leagueoflegends.com/cdn/${version}/img/spell/${selectedSpell.iconPath}`}
-            alt={getSpellName(selectedSpell, lang)}
+            alt={getSpellName(selectedSpell)}
             loading="lazy"
             decoding="async"
             width={40}
@@ -188,7 +191,7 @@ export function SummonerTab({ version, lang }: SummonerTabProps) {
           <div className="flex-1 min-w-0">
             <div className="flex items-center justify-between gap-2">
               <div className="text-sm font-semibold truncate">
-                {getSpellName(selectedSpell, lang)}
+                {getSpellName(selectedSpell)}
               </div>
               {selectedSpell.cooldown && selectedSpell.cooldown.length > 0 && (
                 <div className="text-xs text-muted-foreground whitespace-nowrap">

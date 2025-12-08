@@ -6,13 +6,11 @@ export type EncyclopediaTab = "runes" | "items" | "summoner";
 interface TabNavigationProps {
   activeTab: EncyclopediaTab;
   onTabChange: (value: EncyclopediaTab) => void;
-  onReset?: () => void;
 }
 
 export function TabNavigation({
   activeTab,
   onTabChange,
-  onReset,
 }: TabNavigationProps) {
   const { t } = useTranslation();
 

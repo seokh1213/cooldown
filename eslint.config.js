@@ -27,6 +27,8 @@ export default tseslint.config(
       'react/react-in-jsx-scope': 'off',
       'react/prop-types': 'off',
       'react-hooks/preserve-manual-memoization': 'off',
+      // setState in effect is often used for data fetching init or sync, suppressing global error
+      'react-hooks/set-state-in-effect': 'off',
       '@typescript-eslint/no-unused-vars': [
         'warn',
         {
@@ -45,6 +47,7 @@ export default tseslint.config(
   {
     ignores: [
       'dist/**',
+      'dev-dist/**',
       'build/**',
       'node_modules/**',
       '*.config.js',

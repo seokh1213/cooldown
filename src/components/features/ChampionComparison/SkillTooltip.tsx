@@ -90,7 +90,7 @@ export function SkillTooltip({
       closeTimeoutRef.current = null;
     }
     setTooltipOpen(true);
-  }, [isMobile]);
+  }, [isMobile, skill.id, skillIdx, version]);
 
   const scheduleCloseTooltip = React.useCallback(() => {
     if (isMobile) return;

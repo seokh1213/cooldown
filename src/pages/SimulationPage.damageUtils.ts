@@ -1,5 +1,4 @@
-import type { Champion, ChampionSpell } from "@/types";
-import type { NormalizedItem } from "@/types/combatNormalized";
+import type { Champion, ChampionSpell, Item } from "@/types";
 import type {
   NormalizedChampion,
   NormalizedItem,
@@ -155,7 +154,7 @@ export function computeChampionStatsAtLevel(
   level: number
 ): SimpleStats | null {
   if (!champion.stats) return null;
-  const s = champion.stats as any;
+  const s = champion.stats;
   const lvl = Math.min(Math.max(level, 1), 18);
   const factor = lvl - 1;
   return {
@@ -173,7 +172,7 @@ export function computeChampionStatsAtLevel(
 
 export function applyItemsToStats(base: SimpleStats, items: Item[]): SimpleStats {
   // 매우 단순한 근사치: 대표 스탯만 더해줌
-  let result = { ...base };
+  const result = { ...base };
 
   for (const item of items) {
     const stats = item.stats;
@@ -214,8 +213,8 @@ export function computeAbilityHasteFromItems(items: Item[]): number {
     const stats = item.stats;
     if (!stats) continue;
     // Data Dragon 아이템의 AbilityHaste 필드 사용
-    if (typeof (stats as any).AbilityHaste === "number") {
-      haste += (stats as any).AbilityHaste;
+    if (typeof stats.AbilityHaste === "number") {
+      haste += stats.AbilityHaste;
     }
   }
   return haste;
@@ -225,7 +224,7 @@ export function applyNormalizedItemsToStats(
   base: SimpleStats,
   items: NormalizedItem[]
 ): SimpleStats {
-  let result = { ...base };
+  const result = { ...base };
 
   for (const item of items) {
     const stats = item.stats;
@@ -305,7 +304,7 @@ export function computeAbilityHasteFromNormalizedItems(
 
 export function computeSkillSummaries(
   champion: Champion,
-  _cdragonSpellData: Record<string, any> | null,
+  _cdragonSpellData: Record<string, unknown> | null,
   abilityHaste: number
 ): SkillSummary[] {
   if (!champion.spells) return [];
@@ -344,7 +343,7 @@ export interface SpellDamageEstimate {
  * - AP/AD 구분 없이 공격력에 모두 더하는 근사치
  */
 export function estimateSpellDamageFromCDragon(
-  spellDataMap: Record<string, any> | null,
+  spellDataMap: Record<string, unknown> | null,
   spellIndex: number,
   abilityRank: number,
   stats: SimpleStats
@@ -355,11 +354,11 @@ export function estimateSpellDamageFromCDragon(
 
   const key = String(spellIndex);
   const spell = spellDataMap[key];
-  if (!spell || !spell.DataValues) {
+  if (!spell || typeof spell !== "object" || !("DataValues" in spell)) {
     return { baseDamage: null, ratio: null, totalDamage: null };
   }
 
-  const dataValues = spell.DataValues as Record<string, any>;
+  const dataValues = spell.DataValues as Record<string, unknown>;
   const baseArray = Array.isArray(dataValues.BaseDamage)
     ? dataValues.BaseDamage
     : null;
@@ -378,17 +377,17 @@ export function estimateSpellDamageFromCDragon(
 
   let ratio: number | null = null;
 
-  const calculations = spell.mSpellCalculations as
-    | Record<string, any>
-    | undefined;
+  const calculations = (spell && typeof spell === "object" && "mSpellCalculations" in spell
+    ? spell.mSpellCalculations as Record<string, unknown> | undefined
+    : undefined);
 
   const preferredCalc =
-    calculations?.TotalDamage ||
-    calculations?.SingleFireDamage ||
-    Object.values(calculations ?? {})[0];
+    (calculations && typeof calculations === "object" && "TotalDamage" in calculations ? calculations.TotalDamage : undefined) ||
+    (calculations && typeof calculations === "object" && "SingleFireDamage" in calculations ? calculations.SingleFireDamage : undefined) ||
+    (calculations ? Object.values(calculations)[0] : undefined);
 
-  if (preferredCalc && Array.isArray(preferredCalc.mFormulaParts)) {
-    for (const part of preferredCalc.mFormulaParts as any[]) {
+  if (preferredCalc && typeof preferredCalc === "object" && preferredCalc !== null && "mFormulaParts" in preferredCalc && Array.isArray(preferredCalc.mFormulaParts)) {
+    for (const part of preferredCalc.mFormulaParts) {
       if (
         part.__type === "StatByCoefficientCalculationPart" &&
         typeof part.mCoefficient === "number"
@@ -419,9 +418,9 @@ export function estimateSpellDamageFromNormalized(
   selection: NormalizedSimulationSelection,
   slot: ChampionSpellSlot,
   abilityRank: number,
-  spellDataMap: Record<string, any> | null
+  spellDataMap: Record<string, unknown> | null
 ): SpellDamageEstimate | null {
-  const { champion, level } = selection;
+  const { level } = selection;
   const sim = computeNormalizedSimulationStats(selection);
 
   const simpleStats: SimpleStats = {
@@ -453,30 +452,6 @@ export function estimateSpellDamageFromNormalized(
     abilityRank,
     simpleStats
   );
-}
-
-export function computeSimpleComboResult(
-  champion: Champion | null,
-  stats: SimpleStats | null,
-  comboSequence: string,
-  spellDataMap: Record<string, any> | null
-): SimpleComboResult | null {
-  if (!champion || !stats) return null;
-
-  const seq = comboSequence.replace(/[^QWERqwer]/g, "").toUpperCase();
-  if (!seq) return null;
-
-  // 이전 버전과 유사한 매우 단순 근사치:
-  // 각 스킬이 현재 공격력의 약 1.2배 피해를 준다고 가정
-  const perSkillDamage = stats.attackDamage * 1.2;
-  const hits = seq.length;
-  const totalDamage = perSkillDamage * hits;
-
-  return {
-    sequence: seq,
-    estimatedHits: hits,
-    estimatedDamage: totalDamage,
-  };
 }
 
 

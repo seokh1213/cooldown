@@ -122,7 +122,7 @@ export function SkillsSectionDesktop({
     if (champions.length > 0) {
       loadSpellData();
     }
-  }, [champions, version]);
+  }, [champions, version, cdragonVersion, setCDragonVersion]);
 
   const maxLevel = React.useMemo(() => {
     return Math.max(

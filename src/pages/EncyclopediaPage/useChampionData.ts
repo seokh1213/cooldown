@@ -2,8 +2,7 @@ import { useState, useCallback, useEffect, useMemo } from "react";
 import { Champion } from "@/types";
 import { getChampionInfo } from "@/services/api";
 import { ChampionWithInfo, Tab } from "./types";
-import { STORAGE_KEY } from "./constants";
-import { setStorageWithVersion, removeStorageWithVersion } from "@/lib/storageValidator";
+import { removeStorageWithVersion } from "@/lib/storageValidator";
 import { logger } from "@/lib/logger";
 import type { StoredSelectedChampion, StoredSelectedChampionList } from "@/lib/storageSchema";
 

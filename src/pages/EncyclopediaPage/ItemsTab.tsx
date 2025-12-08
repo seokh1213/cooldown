@@ -226,9 +226,12 @@ export function ItemsTab({version, lang}: ItemsTabProps) {
 
           setStoreItems(uniqueStoreItems);
 
-          if (!selectedItem && uniqueStoreItems.length > 0) {
-            setSelectedItem(uniqueStoreItems[0]);
-          }
+          setSelectedItem((prev) => {
+            if (!prev && uniqueStoreItems.length > 0) {
+              return uniqueStoreItems[0];
+            }
+            return prev;
+          });
         }
       })
       .finally(() => {
@@ -352,7 +355,7 @@ export function ItemsTab({version, lang}: ItemsTabProps) {
     });
 
     return resultByTier;
-  }, [storeItems, term, termInitials]);
+  }, [storeItems, term, termInitials, lang]);
 
   if (loading && !storeItems) {
     return (
