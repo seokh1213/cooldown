@@ -40,7 +40,7 @@ export function useTabManagement({
 
     try {
       // localStorage에서 직접 읽기
-      const storedTabs = window.localStorage.getItem(tabsStorageKey);
+      const storedTabs = localStorage.getItem(tabsStorageKey);
       let tabsToRestore: Tab[] | null = null;
       
       if (storedTabs) {
@@ -56,7 +56,7 @@ export function useTabManagement({
       }
 
       // 선택된 탭 ID 복원
-      const storedTabId = window.localStorage.getItem(selectedTabIdStorageKey);
+      const storedTabId = localStorage.getItem(selectedTabIdStorageKey);
       let tabIdToRestore: string | null = null;
       
       if (storedTabId) {

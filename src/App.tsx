@@ -80,7 +80,7 @@ function App() {
   const [pwaUpdateAvailable, setPwaUpdateAvailable] = useState(false);
   const [autoUpdateEnabled, setAutoUpdateEnabled] = useState<boolean>(() => {
     if (typeof window === "undefined") return true;
-    const stored = window.localStorage.getItem(PWA_AUTO_UPDATE_KEY);
+    const stored = localStorage.getItem(PWA_AUTO_UPDATE_KEY);
     // 저장된 값이 없으면 기본값은 "자동 업데이트 켜짐"
     return stored !== "false";
   });
@@ -105,7 +105,7 @@ function App() {
       
       // 백과사전 관련 초기 상태를 splash 타이밍에 한 번만 복원
       try {
-        const storedSelected = window.localStorage.getItem(ENCYCLOPEDIA_STORAGE_KEY);
+        const storedSelected = localStorage.getItem(ENCYCLOPEDIA_STORAGE_KEY);
         if (storedSelected) {
           const parsed = JSON.parse(storedSelected);
           if (Array.isArray(parsed)) {
@@ -118,7 +118,7 @@ function App() {
       }
 
       try {
-        const storedTabs = window.localStorage.getItem(TABS_STORAGE_KEY);
+        const storedTabs = localStorage.getItem(TABS_STORAGE_KEY);
         if (storedTabs) {
           const parsedTabs = JSON.parse(storedTabs);
           if (Array.isArray(parsedTabs)) {
@@ -131,7 +131,7 @@ function App() {
       }
 
       try {
-        const storedTabId = window.localStorage.getItem(SELECTED_TAB_ID_STORAGE_KEY);
+        const storedTabId = localStorage.getItem(SELECTED_TAB_ID_STORAGE_KEY);
         setInitialSelectedTabId(storedTabId);
       } catch (error) {
         logger.warn("Failed to load stored encyclopedia selected tab id:", error);
@@ -140,7 +140,7 @@ function App() {
 
       // 챔피언 쿨타임 페이지 관련 초기 상태를 splash 타이밍에 한 번만 복원
       try {
-        const storedCooldownSelected = window.localStorage.getItem(COOLDOWN_STORAGE_KEY);
+        const storedCooldownSelected = localStorage.getItem(COOLDOWN_STORAGE_KEY);
         if (storedCooldownSelected) {
           const parsed = JSON.parse(storedCooldownSelected);
           if (Array.isArray(parsed)) {
@@ -153,7 +153,7 @@ function App() {
       }
 
       try {
-        const storedCooldownTabs = window.localStorage.getItem(COOLDOWN_TABS_STORAGE_KEY);
+        const storedCooldownTabs = localStorage.getItem(COOLDOWN_TABS_STORAGE_KEY);
         if (storedCooldownTabs) {
           const parsedTabs = JSON.parse(storedCooldownTabs);
           if (Array.isArray(parsedTabs)) {
@@ -166,7 +166,7 @@ function App() {
       }
 
       try {
-        const storedCooldownTabId = window.localStorage.getItem(COOLDOWN_SELECTED_TAB_ID_STORAGE_KEY);
+        const storedCooldownTabId = localStorage.getItem(COOLDOWN_SELECTED_TAB_ID_STORAGE_KEY);
         setInitialCooldownSelectedTabId(storedCooldownTabId);
       } catch (error) {
         logger.warn("Failed to load stored cooldown selected tab id:", error);
@@ -179,7 +179,7 @@ function App() {
       setCDragonVersion(cdragonVersion);
       
       // 오래된 버전의 캐시 제거 (DDragon + CDragon 기준)
-      cleanOldVersionCache(ddragonVersion, cdragonVersion);
+      cleanOldVersionCache(ddragonVersion);
       
       const champions = await getChampionList(ddragonVersion, lang);
       setChampionList(champions);
@@ -238,7 +238,7 @@ function App() {
 
   useEffect(() => {
     if (typeof window === "undefined") return;
-    window.localStorage.setItem(PWA_AUTO_UPDATE_KEY, autoUpdateEnabled ? "true" : "false");
+    localStorage.setItem(PWA_AUTO_UPDATE_KEY, autoUpdateEnabled ? "true" : "false");
   }, [autoUpdateEnabled]);
 
   const handleLangChange = useCallback((newLang: string) => {

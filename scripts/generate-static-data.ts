@@ -20,6 +20,7 @@ import type {
   StatContribution,
 } from "../src/types/combatStats";
 import { StatKey } from "../src/types/combatStats";
+import { parseItemDescription } from "../src/lib/spellTooltipParser/index";
 
 const VERSION_URL = "https://ddragon.leagueoflegends.com/api/versions.json";
 const CHAMP_LIST_URL = (VERSION: string, LANG: string) =>
@@ -336,20 +337,6 @@ function inferStatShardContributionsFromText(
   return results;
 }
 
-function ddIndexToSlot(index: number): ChampionSpellSlot {
-  switch (index) {
-    case 0:
-      return 'Q';
-    case 1:
-      return 'W';
-    case 2:
-      return 'E';
-    case 3:
-    default:
-      return 'R';
-  }
-}
-
 function buildSpellScalingFromCDragon(
   spellIndex: number,
   spellDataMap: Record<string, any> | null
@@ -410,7 +397,6 @@ function buildNormalizedSpell(
   slot: ChampionSpellSlot,
   ddSpell: any | null,
   passive: any | null,
-  lang: string,
   spellIndex: number,
   spellDataMap: Record<string, any> | null
 ): NormalizedSpell {
@@ -462,7 +448,6 @@ function buildNormalizedSpell(
 }
 
 function buildNormalizedChampion(
-  version: string,
   lang: string,
   championId: string,
   championDataPath: string,
@@ -496,11 +481,11 @@ function buildNormalizedChampion(
   const passive = champion.passive ?? null;
 
   const spells: Record<ChampionSpellSlot, NormalizedSpell> = {
-    P: buildNormalizedSpell('P', null, passive, lang, -1, spellDataMap),
-    Q: buildNormalizedSpell('Q', ddSpells[0] ?? null, null, lang, 0, spellDataMap),
-    W: buildNormalizedSpell('W', ddSpells[1] ?? null, null, lang, 1, spellDataMap),
-    E: buildNormalizedSpell('E', ddSpells[2] ?? null, null, lang, 2, spellDataMap),
-    R: buildNormalizedSpell('R', ddSpells[3] ?? null, null, lang, 3, spellDataMap),
+    P: buildNormalizedSpell('P', null, passive, -1, spellDataMap),
+    Q: buildNormalizedSpell('Q', ddSpells[0] ?? null, null, 0, spellDataMap),
+    W: buildNormalizedSpell('W', ddSpells[1] ?? null, null, 1, spellDataMap),
+    E: buildNormalizedSpell('E', ddSpells[2] ?? null, null, 2, spellDataMap),
+    R: buildNormalizedSpell('R', ddSpells[3] ?? null, null, 3, spellDataMap),
   };
 
   const name = champion.name ?? championId;
@@ -544,14 +529,51 @@ async function buildAndSaveNormalizedItems(
 
     const items: NormalizedItem[] = [];
 
+    // 아이템의 태그를 수집하되, 하위 아이템(재귀적) 중에 "Boots" 태그가 있다면
+    // 상위 아이템에도 "Boots" 태그를 전파한다. (다른 태그는 전파하지 않음)
+    const getTagsWithBootsPropagation = (itemId: string, currentPath: Set<string>): string[] => {
+      if (currentPath.has(itemId)) return [];
+      
+      const targetItem = data[itemId];
+      if (!targetItem) return [];
+
+      const myTags = [
+        ...(Array.isArray(targetItem.tags) ? targetItem.tags : []),
+        ...(Array.isArray(targetItem.cdragon?.categories) ? targetItem.cdragon.categories : []),
+      ];
+
+      // 이미 내 태그에 Boots가 있다면 더 확인할 필요 없음 (하지만 재귀적으로 다른 로직이 필요할 수도 있으니 유지 가능)
+      // 여기서는 "하위에서 Boots가 발견되면 나에게도 추가"하는 로직이 핵심.
+      
+      let hasBootsInDescendants = false;
+
+      if (Array.isArray(targetItem.from)) {
+        const nextPath = new Set(currentPath);
+        nextPath.add(itemId);
+
+        for (const subId of targetItem.from) {
+          const childTags = getTagsWithBootsPropagation(String(subId), nextPath);
+          if (childTags.includes("Boots")) {
+            hasBootsInDescendants = true;
+            // Boots는 하나만 있어도 전파되므로, 성능상 break 가능하지만
+            // 완전한 탐색이 필요 없다면 break.
+            // 여기서는 단순히 포함 여부만 중요하므로 break.
+            break;
+          }
+        }
+      }
+
+      if (hasBootsInDescendants && !myTags.includes("Boots")) {
+        myTags.push("Boots");
+      }
+
+      return myTags;
+    };
+
     for (const [id, item] of Object.entries<any>(data)) {
       const gold = item.gold || {};
-      const rawTags: string[] = [
-        ...(Array.isArray(item.tags) ? item.tags : []),
-        ...(Array.isArray(item.cdragon?.categories)
-          ? item.cdragon.categories
-          : []),
-      ];
+      
+      const rawTags = getTagsWithBootsPropagation(id, new Set());
       const tags = Array.from(
         new Set(
           rawTags
@@ -561,6 +583,12 @@ async function buildAndSaveNormalizedItems(
       );
 
       const name = item.name ?? id;
+
+      // description 파싱 (XML 처리, 변수 치환 실패 시 ? 표시, 경고문구 추가)
+      const description = parseItemDescription(
+        item.description ?? item.cdragon?.description,
+        lang as "ko_KR" | "en_US"
+      );
 
       const statsRecord: Record<string, number | undefined> =
         item.stats || {};
@@ -596,6 +624,7 @@ async function buildAndSaveNormalizedItems(
         id,
         type: "item",
         name,
+        description,
         iconPath: item.cdragon?.iconPath,
         price: typeof gold.base === "number" ? gold.base : 0,
         priceTotal: typeof gold.total === "number" ? gold.total : 0,
@@ -1637,7 +1666,6 @@ async function main() {
         const cdragonSpellPath = path.join(spellsDir, `${championId}.json`);
 
         const normalized = buildNormalizedChampion(
-          version,
           lang,
           championId,
           championDataPath,

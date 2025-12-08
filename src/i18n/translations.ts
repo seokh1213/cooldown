@@ -68,15 +68,10 @@ export interface Translations {
       statShardsTitle: string;
     };
     items: {
+      warning: string;
       filters: {
         all: string;
-        fighter: string;
-        mage: string;
-        assassin: string;
-        support: string;
-        tank: string;
-        trinket: string;
-        boots: string;
+        treeHeaders: Record<string, string>;
       };
       tiers: {
         legendary: string;
@@ -274,19 +269,23 @@ export const translations: Record<Language, Translations> = {
       items: {
         filters: {
           all: "전체",
-          fighter: "전사",
-          mage: "마법사",
-          assassin: "암살자",
-          support: "서포터",
-          tank: "탱커",
-          trinket: "장신구/와드/포션",
-          boots: "신발",
+          treeHeaders: {
+            START: "시작 아이템",
+            TOOLS: "도구",
+            DEFENSE: "방어",
+            ATTACK: "공격",
+            MAGIC: "마법",
+            MOVEMENT: "이동",
+            UNCATEGORIZED: "기타",
+          },
         },
         tiers: {
           legendary: "전설 아이템",
           epic: "서사급 아이템",
           basic: "기본 아이템",
           starter: "시작 아이템",
+          boots: "장화",
+          consumable: "소모품",
         },
         buildsIntoTitle: "상위 아이템",
         buildsIntoEmpty: "상위 아이템 없음",
@@ -312,6 +311,7 @@ export const translations: Record<Language, Translations> = {
           lifesteal: "생명력 흡수",
           spellVamp: "주문 흡혈",
         },
+        warning: "정확한 아이템의 수치, 설명은 인게임 데이터를 참고해주세요",
       },
       summoner: {
         searchPlaceholder: "소환사 주문 검색...",
@@ -479,19 +479,23 @@ export const translations: Record<Language, Translations> = {
       items: {
         filters: {
           all: "All",
-          fighter: "Fighter",
-          mage: "Mage",
-          assassin: "Assassin",
-          support: "Support",
-          tank: "Tank",
-          trinket: "Trinkets",
-          boots: "Boots",
+          treeHeaders: {
+            START: "Start",
+            TOOLS: "Tools",
+            DEFENSE: "Defense",
+            ATTACK: "Attack",
+            MAGIC: "Magic",
+            MOVEMENT: "Movement",
+            UNCATEGORIZED: "Uncategorized",
+          },
         },
         tiers: {
           legendary: "Legendary",
           epic: "Epic",
           basic: "Basic",
           starter: "Starter",
+          boots: "Boots",
+          consumable: "Consumables",
         },
         buildsIntoTitle: "Builds into",
         buildsIntoEmpty: "No higher items",
@@ -517,6 +521,7 @@ export const translations: Record<Language, Translations> = {
           lifesteal: "Life Steal",
           spellVamp: "Spell Vamp",
         },
+        warning: "Please refer to in-game data for accurate item values and descriptions.",
       },
       summoner: {
         searchPlaceholder: "Search summoner spells...",

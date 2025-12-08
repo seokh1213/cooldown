@@ -58,3 +58,32 @@ export function parseSpellDescription(
 
   return result;
 }
+
+/**
+ * 아이템 description 파싱
+ * - XML 태그를 HTML로 변환
+ * - 치환이 안 되는 변수들은 빨간색 ?로 표시
+ */
+export function parseItemDescription(
+  text: string | undefined,
+  lang: Language = "ko_KR"
+): string {
+  if (!text) return "";
+
+  let result = text;
+
+  // 1. XML 태그를 HTML로 변환
+  result = convertXmlTagsToHtml(result);
+
+  // 2. 치환이 안 되는 변수들을 빨간색 ?로 표시
+  // 아이템 description에서는 스킬 데이터가 없으므로 모든 {{ variable }} 패턴을 빨간색 ?로 변경
+  result = result.replace(/\{\{[^}]+\}\}/g, '<span class="text-red-500 font-bold">?</span>');
+
+  // 3. HTML 정리
+  result = sanitizeHtml(result);
+
+  // 4. 줄바꿈을 <br />로 변환
+  result = result.replace(/\n/g, "<br />");
+
+  return result;
+}

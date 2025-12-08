@@ -1,7 +1,6 @@
 import type {
   FormulaPart,
   StatContribution,
-  StatKey,
 } from "./combatStats";
 
 export type NormalizedEntityType =
@@ -100,6 +99,8 @@ export interface NormalizedItemEffect {
 
 export interface NormalizedItem extends NormalizedEntityBase {
   type: "item";
+  name: string;
+  description?: string;
   price: number;
   priceTotal: number;
   tags: string[];

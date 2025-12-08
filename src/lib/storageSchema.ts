@@ -18,23 +18,6 @@ export type StorageTheme = "light" | "dark";
 export type StorageLanguage = "ko_KR" | "en_US";
 
 /**
- * 챔피언 리스트 캐시 (champion_list_{version}_{lang})
- *
- * 현재는 도메인 타입 `Champion` 그대로를 저장하고 있음.
- * 만약 저장 구조를 슬림하게 바꾸고 싶다면 별도의 타입을 정의하고
- * 직렬화 시 이 타입으로 매핑하도록 리팩터링한다.
- */
-export type StoredChampionListItem = Champion;
-export type StoredChampionList = StoredChampionListItem[];
-
-/**
- * 개별 챔피언 상세 캐시 (champion_info_{version}_{lang}_{name})
- * Data Dragon에서 내려오는 챔피언 상세 구조를 거의 그대로 저장.
- * 필요 시 별도 저장 타입으로 분리 가능.
- */
-export type StoredChampionInfo = Champion;
-
-/**
  * 백과사전에서 "선택된 챔피언 목록"을 직렬화할 때 사용하는 최소 정보
  * (encyclopedia_selected_champions)
  *
@@ -50,41 +33,6 @@ export interface StoredSelectedChampion {
 
 export type StoredSelectedChampionList = StoredSelectedChampion[];
 
-/**
- * Community Dragon 스펠 데이터 캐시 (cd_spell_data_{version}_{championId})
- *
- * V2 스키마부터는 단순 맵이 아니라 메타데이터를 포함한 래퍼 객체를 저장한다:
- *
- * {
- *   spellDataMap: {
- *     "0": { ...CdSpellDataEntry },
- *     "Q": { ...CdSpellDataEntry },
- *     ...
- *   },
- *   cdragonVersion: "15.23" | "15.24" | "latest" | null, // 실제 CDragon 기준 버전
- *   ddragonVersion: "15.24.1" | null                     // 이 데이터가 대응하는 DDragon 버전
- * }
- *
- * 기존 V1 캐시는 CdSpellDataMap 그 자체를 저장하고 있었고,
- * 런타임에서 두 포맷을 모두 읽을 수 있도록 후방 호환 처리가 되어 있다.
- * 스키마 기준으로는 이 V2 형태를 최신으로 간주한다.
- */
-export interface CdSpellDataEntry {
-  DataValues?: Record<string, (number | string)[]>;
-  mSpellCalculations?: Record<string, unknown>;
-  mClientData?: Record<string, unknown>;
-}
-
-export type CdSpellDataMap = Record<string, CdSpellDataEntry>;
-
-/**
- * cd_spell_data_* 키에 저장되는 실제 최상위 스키마 (V2)
- */
-export interface StoredCdSpellCache {
-  spellDataMap: CdSpellDataMap;
-  cdragonVersion: string | null;
-  ddragonVersion: string | null;
-}
 
 /**
  * 백과사전 탭/선택 챔피언 등 "상태" 관련 스키마는

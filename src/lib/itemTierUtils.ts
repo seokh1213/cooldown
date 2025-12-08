@@ -1,6 +1,8 @@
 import type { NormalizedItem } from "@/types/combatNormalized";
 
 export type ItemTier =
+  | "consumable"
+  | "boots"
   | "starter"
   | "basic"
   | "epic"
@@ -12,39 +14,11 @@ function isStarterItem(item: NormalizedItem): boolean {
   const text = name.toLowerCase();
   const textKo = name;
 
-  const basicWardIds = new Set(["3340", "3363", "3364"]);
   const wardstoneIds = new Set(["4638", "4643"]);
 
   // Wardstone 계열은 시작 아이템이 아님
   if (wardstoneIds.has(item.id)) {
     return false;
-  }
-
-  // 기본 와드(장신구 와드)는 시작 아이템으로 취급
-  if (basicWardIds.has(item.id)) {
-    return true;
-  }
-
-  // 포션 / 영약 등 (한글)
-  if (/포션|영약/.test(textKo)) {
-    return true;
-  }
-
-  // Potion / Elixir 등 (영문)
-  if (
-    text.includes("potion") ||
-    text.includes("elixir")
-  ) {
-    return true;
-  }
-
-  // 태그 기반 소비형/장신구
-  if (
-    tags.includes("Consumable") ||
-    tags.includes("Trinket") ||
-    tags.includes("Vision") && basicWardIds.has(item.id)
-  ) {
-    return true;
   }
 
   // 도란 시리즈 (한글/영문)
@@ -57,7 +31,13 @@ function isStarterItem(item: NormalizedItem): boolean {
     return true;
   }
 
-  // 무료 아이템: 총 가격이 0인 경우
+  // 수확의 낫, 여신의 눈물, 암흑의 인장
+  const starterKeywords = ["수확의 낫", "여신의 눈물", "암흑의 인장", "cull", "tear of the goddess", "dark seal"];
+  if (starterKeywords.some(k => textKo.includes(k) || text.includes(k))) {
+    return true;
+  }
+
+  // 무료 아이템: 총 가격이 0인 경우 (와드/장신구는 이미 Consumable로 처리됨)
   if ((item.priceTotal ?? 0) === 0) {
     return true;
   }
@@ -66,31 +46,44 @@ function isStarterItem(item: NormalizedItem): boolean {
 }
 
 // 사용자 정의 규칙:
-// 시작: 포션, 와드, 도란 시리즈, 정글 아이템, 영약, 무료 아이템
+// 소모품: Consumable, Trinket 태그
+// 장화: Boots 태그
+// 시작: 도란, 정글, 서폿, 무료 등
 // 기본 아이템: 맨 말단 (시작은 제외)
 // 전설 아이템: 맨 상단
 // 서사 아이템: 그외에 남은 모든 아이템
 // 템트리는 from/to 기준으로 판단
 export function getOfficialLikeItemTier(item: NormalizedItem): ItemTier {
+  const tags = item.tags || [];
   const hasFrom = !!item.buildsFrom && item.buildsFrom.length > 0;
   const hasInto = !!item.buildsInto && item.buildsInto.length > 0;
 
-  // 1) 시작 아이템
+  // 1) 소모품 (Consumable, Trinket)
+  if (tags.includes("Consumable") || tags.includes("Trinket")) {
+    return "consumable";
+  }
+
+  // 2) 장화 (Boots)
+  if (tags.includes("Boots")) {
+    return "boots";
+  }
+
+  // 3) 시작 아이템
   if (isStarterItem(item)) {
     return "starter";
   }
 
-  // 2) 기본 아이템: 맨 말단 (조합 재료가 없음)
+  // 4) 기본 아이템: 맨 말단 (조합 재료가 없음)
   if (!hasFrom) {
     return "basic";
   }
 
-  // 3) 전설 아이템: 맨 상단 (더 이상 업그레이드가 없음)
+  // 5) 전설 아이템: 맨 상단 (더 이상 업그레이드가 없음)
   if (!hasInto) {
     return "legendary";
   }
 
-  // 4) 그 외 나머지는 서사 아이템
+  // 6) 그 외 나머지는 서사 아이템
   return "epic";
 }
 

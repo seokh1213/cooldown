@@ -41,7 +41,7 @@ export function useChampionData({
 
     try {
       // localStorage에서 직접 읽기
-      const storedSelected = window.localStorage.getItem(storageKey);
+      const storedSelected = localStorage.getItem(storageKey);
       let championsToRestore: StoredSelectedChampionList | null = null;
       
       if (storedSelected) {

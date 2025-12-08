@@ -1,26 +1,27 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, {useEffect, useMemo, useState} from "react";
 import Hangul from "hangul-js";
-import { getNormalizedItems } from "@/services/api";
-import type { NormalizedItem } from "@/types/combatNormalized";
+import {getNormalizedItems} from "@/services/api";
+import type {NormalizedItem} from "@/types/combatNormalized";
 import {
   STAT_DEFINITIONS,
   type StatContribution,
   StatKey,
 } from "@/types/combatStats";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Input } from "@/components/ui/input";
-import { useTranslation } from "@/i18n";
-import { useDeviceType } from "@/hooks/useDeviceType";
-import { useDebouncedValue } from "@/hooks/useDebouncedValue";
-import { getOfficialLikeItemTier, type ItemTier } from "@/lib/itemTierUtils";
+import {ScrollArea} from "@/components/ui/scroll-area";
+import {Input} from "@/components/ui/input";
+import {useTranslation} from "@/i18n";
+import type {Translations} from "@/i18n/translations";
+import {useDeviceType} from "@/hooks/useDeviceType";
+import {useDebouncedValue} from "@/hooks/useDebouncedValue";
+import {getOfficialLikeItemTier, type ItemTier} from "@/lib/itemTierUtils";
 import {
   Dialog,
   DialogContent,
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/dialog";
-import { VisuallyHidden } from "@/components/ui/visually-hidden";
-import { Search } from "lucide-react";
+import {VisuallyHidden} from "@/components/ui/visually-hidden";
+import {Search, AlertTriangle} from "lucide-react";
 
 interface ItemsTabProps {
   version: string;
@@ -29,9 +30,6 @@ interface ItemsTabProps {
 
 type Item = NormalizedItem;
 
-type ItemRole = "fighter" | "mage" | "assassin" | "support" | "tank";
-
-type ItemFilter = "all" | ItemRole | "trinket" | "boots";
 
 interface ItemTreeNode {
   item: Item;
@@ -61,63 +59,6 @@ function shouldShowInStore(item: Item): boolean {
   if (item.displayInItemSets === false) return false;
 
   return true;
-}
-
-function isTrinketOrWardOrPotion(item: Item): boolean {
-  const tags = item.tags || [];
-  const nameLower = (item.name || "").toLowerCase();
-
-  // 기본 와드(장신구 와드)는 별도 필터로 취급
-  const basicWardIds = new Set(["3340", "3363", "3364"]);
-  const wardstoneIds = new Set(["4638", "4643"]);
-
-  // Wardstone 계열은 일반 아이템으로 취급 (트링켓 아님)
-  if (wardstoneIds.has(item.id)) {
-    return false;
-  }
-
-  if (basicWardIds.has(item.id)) {
-    return true;
-  }
-
-  // 소비형/장신구
-  if (tags.includes("Trinket") || tags.includes("Consumable")) {
-    return true;
-  }
-
-  // 포션/영약 (영문)
-  if (nameLower.includes("potion") || nameLower.includes("elixir")) {
-    return true;
-  }
-  return false;
-}
-
-function isBoots(item: Item): boolean {
-  const tags = item.tags || [];
-  const nameLower = (item.name || "").toLowerCase();
-  return tags.includes("Boots") || nameLower.includes("boots");
-}
-
-function getItemRole(item: Item): ItemRole | "all" {
-  const tags = item.tags || [];
-  const hasAD = tags.includes("AttackDamage");
-  const hasAP = tags.includes("SpellDamage");
-  const hasTankStat =
-    tags.includes("Health") ||
-    tags.includes("Armor") ||
-    tags.includes("SpellBlock");
-  const hasUtility =
-    tags.includes("ManaRegen") ||
-    tags.includes("HealthRegen") ||
-    tags.includes("CooldownReduction");
-
-  if (hasAP && hasUtility) return "support";
-  if (hasTankStat && (hasAD || hasAP)) return "tank";
-  if (hasAP) return "mage";
-  if (hasAD && !hasTankStat) return "assassin";
-  if (hasAD || hasTankStat) return "fighter";
-
-  return "all";
 }
 
 function shouldShowPrice(item: Item): boolean {
@@ -163,7 +104,7 @@ function getItemStatLines(item: Item, lang: string): string[] {
   }
 
   const lines: string[] = [];
-  for (const [statKey, { value, isPercent }] of aggregated.entries()) {
+  for (const [statKey, {value, isPercent}] of aggregated.entries()) {
     if (!value) continue;
     const def = STAT_DEFINITIONS[statKey];
     const label = isKo ? def.label.ko : def.label.en;
@@ -202,12 +143,12 @@ interface ItemCellProps {
 }
 
 const ItemCell: React.FC<ItemCellProps> = ({
-  item,
-  version,
-  isSelected,
-  onSelect,
-}) => {
-  const { t } = useTranslation();
+                                             item,
+                                             version,
+                                             isSelected,
+                                             onSelect,
+                                           }) => {
+  const {t} = useTranslation();
   const priceLabel = getItemPriceLabel(item, t);
   const isUnavailableLabel =
     priceLabel === t.encyclopedia.items.price.unavailable;
@@ -216,10 +157,9 @@ const ItemCell: React.FC<ItemCellProps> = ({
     <button
       type="button"
       onClick={onSelect}
-      className={`flex flex-col items-center gap-0 rounded-sm px-0.5 py-0 text-center transition-colors w-9 md:w-10 ${
-        isSelected
-          ? "bg-primary/20 border border-primary/60 shadow-sm"
-          : "hover:bg-muted/60 border border-transparent"
+      className={`flex flex-col items-center gap-0 rounded-sm px-0.5 py-0 text-center transition-colors w-9 md:w-10 ${isSelected
+        ? "bg-primary/20 border border-primary/60 shadow-sm"
+        : "hover:bg-muted/60 border border-transparent"
       }`}
     >
       <img
@@ -232,8 +172,7 @@ const ItemCell: React.FC<ItemCellProps> = ({
         className="w-7 h-7 md:w-8 md:h-8 aspect-square object-cover rounded-sm border border-border/60 bg-black/40 flex-shrink-0"
       />
       <span
-        className={`${
-          isUnavailableLabel ? "text-[8px] md:text-[9px]" : "text-[9px] md:text-[10px]"
+        className={`${isUnavailableLabel ? "text-[8px] md:text-[9px]" : "text-[9px] md:text-[10px]"
         } text-amber-600 dark:text-amber-400 font-semibold whitespace-nowrap leading-tight`}
       >
         {priceLabel}
@@ -249,8 +188,8 @@ const ItemCell: React.FC<ItemCellProps> = ({
   );
 };
 
-export function ItemsTab({ version, lang }: ItemsTabProps) {
-  const { t } = useTranslation();
+export function ItemsTab({version, lang}: ItemsTabProps) {
+  const {t} = useTranslation();
   const deviceType = useDeviceType();
   const isMobile = deviceType === "mobile";
 
@@ -260,7 +199,6 @@ export function ItemsTab({ version, lang }: ItemsTabProps) {
   const [storeItems, setStoreItems] = useState<Item[] | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [search, setSearch] = useState<string>("");
-  const [filter, setFilter] = useState<ItemFilter>("all");
   const [selectedItem, setSelectedItem] = useState<Item | null>(null);
   const [mobileDetailOpen, setMobileDetailOpen] = useState(false);
 
@@ -304,6 +242,7 @@ export function ItemsTab({ version, lang }: ItemsTabProps) {
     };
   }, [version, lang]);
 
+
   const itemMap = useMemo(() => {
     if (!items) return new Map<string, Item>();
     // 트리/업그레이드 계산은 상점 비노출 아이템(예: 변신 단계, 퀘스트 전용)도 포함해서 처리
@@ -336,15 +275,15 @@ export function ItemsTab({ version, lang }: ItemsTabProps) {
     pureInitialKey.length > 0 && /^[ㄱ-ㅎ]+$/.test(pureInitialKey);
   const termInitials = isPureInitialSearch ? pureInitialKey : "";
 
-  const { itemsByTier, flatFiltered } = useMemo(() => {
-    const empty = {
-      itemsByTier: {
-        starter: [] as Item[],
-        basic: [] as Item[],
-        epic: [] as Item[],
-        legendary: [] as Item[],
-      } as Record<ItemTier, Item[]>,
-      flatFiltered: [] as Item[],
+
+  const itemsByTier = useMemo(() => {
+    const empty: Record<ItemTier, Item[]> = {
+      consumable: [],
+      boots: [],
+      starter: [],
+      basic: [],
+      epic: [],
+      legendary: [],
     };
 
     if (!storeItems) return empty;
@@ -391,31 +330,19 @@ export function ItemsTab({ version, lang }: ItemsTabProps) {
     };
 
     const resultByTier: Record<ItemTier, Item[]> = {
+      consumable: [],
+      boots: [],
       starter: [],
       basic: [],
       epic: [],
       legendary: [],
     };
-    const flat: Item[] = [];
 
     storeItems.forEach((item) => {
       if (!searchMatches(item)) return;
 
-      // 필터: 역할군 / 장신구/와드/포션 / 신발
-      if (filter === "trinket") {
-        if (!isTrinketOrWardOrPotion(item)) return;
-      } else if (filter === "boots") {
-        if (!isBoots(item)) return;
-      } else if (filter !== "all") {
-        // 역할군 필터일 때는 장신구/와드/포션, 신발은 별도 탭에서 보도록 제외
-        if (isTrinketOrWardOrPotion(item) || isBoots(item)) return;
-        const role = getItemRole(item);
-        if (role !== "all" && role !== filter) return;
-      }
-
       const tier = getOfficialLikeItemTier(item);
       resultByTier[tier].push(item);
-      flat.push(item);
     });
 
     (Object.keys(resultByTier) as ItemTier[]).forEach((tier) => {
@@ -424,13 +351,8 @@ export function ItemsTab({ version, lang }: ItemsTabProps) {
       );
     });
 
-    flat.sort((a, b) => (a.priceTotal ?? 0) - (b.priceTotal ?? 0));
-
-    return {
-      itemsByTier: resultByTier,
-      flatFiltered: flat,
-    };
-  }, [storeItems, term, termInitials, filter]);
+    return resultByTier;
+  }, [storeItems, term, termInitials]);
 
   if (loading && !storeItems) {
     return (
@@ -461,8 +383,12 @@ export function ItemsTab({ version, lang }: ItemsTabProps) {
 
       // 상위 템트리는 구매 불가(purchasable=false)거나 상점 비노출(inStore=false)이어도
       // 구조를 이해하기 위해 그대로 노출한다.
-      // 다만 displayInItemSets=false 인 완전한 내부/퀘스트용 아이템만 제외한다.
+      if (upgrade.availableOnMap11 === false) return;
       if (upgrade.displayInItemSets === false) return;
+
+      // inStore가 false인 경우, 더 상위 아이템(buildsInto)이 있어야만 노출한다.
+      const hasUpperUpgrade = Array.isArray(upgrade.buildsInto) && upgrade.buildsInto.length > 0;
+      if (upgrade.inStore === false && !hasUpperUpgrade) return;
 
       result.push(upgrade);
     });
@@ -505,7 +431,7 @@ export function ItemsTab({ version, lang }: ItemsTabProps) {
     maxDepth: number = 6
   ): ItemTreeNode => {
     if (depth >= maxDepth) {
-      return { item: root, children: [] };
+      return {item: root, children: []};
     }
 
     const children: ItemTreeNode[] = [];
@@ -519,12 +445,9 @@ export function ItemsTab({ version, lang }: ItemsTabProps) {
       });
     }
 
-    return { item: root, children };
+    return {item: root, children};
   };
 
-  const filterLabel = (value: ItemFilter) => {
-    return t.encyclopedia.items.filters[value];
-  };
 
   const tierLabel = (tier: ItemTier) => {
     return t.encyclopedia.items.tiers[tier];
@@ -581,7 +504,7 @@ export function ItemsTab({ version, lang }: ItemsTabProps) {
                   <div className="mt-0 flex flex-col items-stretch">
                     {/* parent -> connector stem */}
                     <div className="relative flex justify-center">
-                      <div className="h-1 w-[2px] bg-primary/60" />
+                      <div className="h-1 w-[2px] bg-primary/60"/>
                     </div>
                     {/* tree-style branch row */}
                     <div className="relative flex flex-nowrap items-start justify-center gap-y-0 pt-0">
@@ -592,8 +515,8 @@ export function ItemsTab({ version, lang }: ItemsTabProps) {
                         const horizontalClass = isFirst
                           ? "left-1/2 right-0"
                           : isLast
-                          ? "left-0 right-1/2"
-                          : "left-0 right-0";
+                            ? "left-0 right-1/2"
+                            : "left-0 right-0";
 
                         return (
                           <div
@@ -608,7 +531,8 @@ export function ItemsTab({ version, lang }: ItemsTabProps) {
                               />
                             )}
                             {/* vertical from horizontal bar to each child (L-shaped cap) */}
-                            <div className="pointer-events-none absolute top-0 left-1/2 -translate-x-1/2 h-2 w-[2px] bg-primary/60" />
+                            <div
+                              className="pointer-events-none absolute top-0 left-1/2 -translate-x-1/2 h-2 w-[2px] bg-primary/60"/>
                             {renderTree(child)}
                           </div>
                         );
@@ -620,7 +544,7 @@ export function ItemsTab({ version, lang }: ItemsTabProps) {
             );
           };
 
-          if (!tree.children.length && !tree.item.from?.length) {
+          if (!tree.children.length && !tree.item.buildsFrom?.length) {
             return (
               <span className="text-[10px] text-muted-foreground">
                 {t.encyclopedia.items.treeEmpty}
@@ -630,7 +554,8 @@ export function ItemsTab({ version, lang }: ItemsTabProps) {
 
           return (
             <div className="pt-0">
-              <div className="w-full rounded-md border border-border/60 bg-muted/40 px-2 py-0.5 overflow-x-auto scrollbar-hide">
+              <div
+                className="w-full rounded-md border border-border/60 bg-muted/40 px-2 py-0.5 overflow-x-auto scrollbar-hide">
                 <div className="min-w-max flex justify-center">
                   {renderTree(tree)}
                 </div>
@@ -640,10 +565,10 @@ export function ItemsTab({ version, lang }: ItemsTabProps) {
         })()}
       </div>
 
-      {/* 하단 설명 (스크롤 가능, ARPG 스타일 카드) */}
       <ScrollArea className="flex-1 min-h-0">
         <div className="pt-2 pr-3">
-          <div className="rounded-md border border-border/70 dark:border-neutral-700/80 bg-card text-foreground dark:bg-neutral-950 dark:text-slate-50 shadow-md px-3 py-2 text-[11px] space-y-2">
+          <div
+            className="rounded-md border border-border/70 dark:border-neutral-700/80 bg-card text-foreground dark:bg-neutral-950 dark:text-slate-50 shadow-md px-3 py-2 text-[11px] space-y-2">
             {/* 헤더: 아이콘 + 이름 + 가격 */}
             <div className="flex items-start gap-2">
               <img
@@ -662,25 +587,16 @@ export function ItemsTab({ version, lang }: ItemsTabProps) {
                     </div>
                   )}
                 </div>
-                <div className="mt-0.5 flex items-center justify-between text-[10px] text-muted-foreground dark:text-slate-300">
+                <div
+                  className="mt-0.5 flex items-center justify-between text-[10px] text-muted-foreground dark:text-slate-300">
                   <span>
                     {tierLabel(getOfficialLikeItemTier(selectedItem))}
                   </span>
-                  {(() => {
-                    const role = getItemRole(selectedItem);
-                    if (role === "all") return null;
-                    const label = filterLabel(role as ItemFilter);
-                    return (
-                      <span className="text-[10px] text-muted-foreground dark:text-slate-400">
-                        {label}
-                      </span>
-                    );
-                  })()}
                 </div>
               </div>
             </div>
 
-            <div className="h-px bg-neutral-700/80" />
+            <div className="h-px bg-neutral-700/80"/>
 
             {getItemStatLines(selectedItem, lang).length > 0 && (
               <ul className="space-y-0.5 text-[11px] leading-snug">
@@ -690,6 +606,24 @@ export function ItemsTab({ version, lang }: ItemsTabProps) {
                   </li>
                 ))}
               </ul>
+            )}
+
+            {/* Item Description */}
+            {selectedItem.description && (
+              <>
+                <div className="mt-2 text-[11px] leading-snug text-foreground">
+                  <div
+                    dangerouslySetInnerHTML={{
+                      __html: selectedItem.description
+                    }}
+                  />
+                </div>
+                <div
+                  className="text-xs text-muted-foreground/80 italic leading-relaxed border-t pt-3 mt-3 flex items-center gap-1.5">
+                  <AlertTriangle className="w-2.5 h-2.5 text-yellow-600 dark:text-yellow-500 flex-shrink-0"/>
+                  <span>{t.encyclopedia.items.warning}</span>
+                </div>
+              </>
             )}
           </div>
         </div>
@@ -711,33 +645,6 @@ export function ItemsTab({ version, lang }: ItemsTabProps) {
               placeholder={t.encyclopedia.items.searchPlaceholder}
               className="h-9 pl-7 text-xs border-neutral-400 focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-primary"
             />
-          </div>
-          <div className="flex gap-1 overflow-x-auto pb-1">
-            {(
-              [
-                "all",
-                "fighter",
-                "mage",
-                "assassin",
-                "support",
-                "tank",
-                "trinket",
-                "boots",
-              ] as ItemFilter[]
-            ).map((value) => (
-                <button
-                key={value}
-                type="button"
-                onClick={() => setFilter(value)}
-                className={`px-2.5 py-1 rounded-full text-[11px] whitespace-nowrap border ${
-                  filter === value
-                    ? "bg-primary text-primary-foreground border-primary"
-                    : "bg-muted/60 text-muted-foreground border-border/60"
-                }`}
-              >
-                {filterLabel(value)}
-              </button>
-            ))}
           </div>
         </div>
 
@@ -779,7 +686,8 @@ export function ItemsTab({ version, lang }: ItemsTabProps) {
             }
           }}
         >
-          <DialogContent className="w-[calc(100vw-32px)] max-w-lg max-h-[70vh] h-[70vh] p-0 rounded-xl overflow-hidden flex flex-col">
+          <DialogContent
+            className="w-[calc(100vw-32px)] max-w-lg max-h-[70vh] h-[70vh] p-0 rounded-xl overflow-hidden flex flex-col">
             <VisuallyHidden>
               <DialogTitle>{selectedItem?.name ?? "Item"}</DialogTitle>
               <DialogDescription>
@@ -798,33 +706,6 @@ export function ItemsTab({ version, lang }: ItemsTabProps) {
   return (
     <div className="mt-4 space-y-3">
       <div className="flex flex-wrap items-center justify-between gap-2">
-        <div className="flex flex-wrap gap-1">
-          {(
-            [
-              "all",
-              "fighter",
-              "mage",
-              "assassin",
-              "support",
-              "tank",
-              "trinket",
-              "boots",
-            ] as ItemFilter[]
-          ).map((value) => (
-            <button
-              key={value}
-              type="button"
-              onClick={() => setFilter(value)}
-              className={`px-2.5 py-1 rounded-full text-[11px] whitespace-nowrap border ${
-                filter === value
-                  ? "bg-primary text-primary-foreground border-primary"
-                  : "bg-muted/60 text-muted-foreground border-border/60"
-              }`}
-            >
-              {filterLabel(value)}
-            </button>
-          ))}
-        </div>
         <div className="relative w-full sm:w-52 md:w-64 group">
           <Search
             className="absolute left-2 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none transition-colors group-focus-within:text-primary"
@@ -863,7 +744,7 @@ export function ItemsTab({ version, lang }: ItemsTabProps) {
                           item={item}
                           version={version}
                           isSelected={selectedItem?.id === item.id}
-                        onSelect={() => setSelectedItem(item)}
+                          onSelect={() => setSelectedItem(item)}
                         />
                       ))}
                     </div>
