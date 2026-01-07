@@ -1,0 +1,562 @@
+{
+  "version": "16.1.1",
+  "ddragonVersion": "16.1.1",
+  "cdragonVersion": "15.24",
+  "championId": "Xayah",
+  "spellData": {
+    "0": {
+      "DataValues": {
+        "BaseDamage": [
+          30,
+          45,
+          60,
+          75,
+          90,
+          105,
+          120
+        ],
+        "MultiHitRatio": [
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5
+        ],
+        "StartingCastTime": [
+          0.25,
+          0.25,
+          0.25,
+          0.25,
+          0.25,
+          0.25,
+          0.25
+        ],
+        "MinCastTime": [
+          0,
+          0.10000000149011612,
+          0.10000000149011612,
+          0.10000000149011612,
+          0.10000000149011612,
+          0.10000000149011612,
+          0.10000000149011612
+        ],
+        "ASpeedCastTimeScalarPerHundrethSecond": [
+          0,
+          0.07000000029802322,
+          0.07000000029802322,
+          0.07000000029802322,
+          0.07000000029802322,
+          0.07000000029802322,
+          0.07000000029802322
+        ]
+      },
+      "mSpellCalculations": {
+        "TotalDamage": {
+          "mFormulaParts": [
+            {
+              "mDataValue": "BaseDamage",
+              "__type": "NamedDataValueCalculationPart"
+            },
+            {
+              "mStat": 2,
+              "mStatFormula": 2,
+              "mCoefficient": 0.5,
+              "__type": "StatByCoefficientCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        },
+        "MultiHitDamage": {
+          "mMultiplier": {
+            "mDataValue": "MultiHitRatio",
+            "__type": "NamedDataValueCalculationPart"
+          },
+          "mModifiedGameCalculation": "TotalDamage",
+          "__type": "GameCalculationModified"
+        }
+      }
+    },
+    "1": {
+      "DataValues": {
+        "BonusDamagePercent": [
+          25,
+          25,
+          25,
+          25,
+          25,
+          25,
+          25
+        ]
+      }
+    },
+    "2": {
+      "DataValues": {
+        "FeatherFalloff": [
+          0.05000000074505806,
+          0.05000000074505806,
+          0.05000000074505806,
+          0.05000000074505806,
+          0.05000000074505806,
+          0.05000000074505806,
+          0.05000000074505806
+        ],
+        "MinionMultiplier": [
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5
+        ],
+        "FeatherThreshold": [
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3
+        ],
+        "RootDuration": [
+          1.25,
+          1.25,
+          1.25,
+          1.25,
+          1.25,
+          1.25,
+          1.25
+        ],
+        "BaseDamage": [
+          45,
+          55,
+          65,
+          75,
+          85,
+          95,
+          105
+        ],
+        "CritRatio": [
+          0.75,
+          0.75,
+          0.75,
+          0.75,
+          0.75,
+          0.75,
+          0.75
+        ],
+        "FeatherReturnDelay": [
+          0.25,
+          0.25,
+          0.25,
+          0.25,
+          0.25,
+          0.25,
+          0.25
+        ],
+        "bADRatio": [
+          0.6000000238418579,
+          0.6000000238418579,
+          0.6000000238418579,
+          0.6000000238418579,
+          0.6000000238418579,
+          0.6000000238418579,
+          0.6000000238418579
+        ]
+      },
+      "mSpellCalculations": {
+        "FeatherDamage": {
+          "mMultiplier": {
+            "mSubparts": [
+              {
+                "mNumber": 1,
+                "__type": "NumberCalculationPart"
+              },
+              {
+                "mStat": 8,
+                "mDataValue": "CritRatio",
+                "__type": "StatByNamedDataValueCalculationPart"
+              }
+            ],
+            "__type": "SumOfSubPartsCalculationPart"
+          },
+          "mFormulaParts": [
+            {
+              "mDataValue": "BaseDamage",
+              "__type": "NamedDataValueCalculationPart"
+            },
+            {
+              "mStat": 2,
+              "mStatFormula": 2,
+              "mDataValue": "BADRatio",
+              "__type": "StatByNamedDataValueCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        },
+        "MinionDamage": {
+          "mMultiplier": {
+            "mNumber": 0.5,
+            "__type": "NumberCalculationPart"
+          },
+          "mModifiedGameCalculation": "FeatherDamage",
+          "__type": "GameCalculationModified"
+        },
+        "CritPercentIncrease": {
+          "mSimpleTooltipCalculationDisplay": 6,
+          "mFormulaParts": [
+            {
+              "mStat": 8,
+              "mDataValue": "CritRatio",
+              "__type": "StatByNamedDataValueCalculationPart"
+            }
+          ],
+          "mDisplayAsPercent": true,
+          "__type": "GameCalculation"
+        },
+        "FeatherDamagePreCrit": {
+          "mFormulaParts": [
+            {
+              "mDataValue": "BaseDamage",
+              "__type": "NamedDataValueCalculationPart"
+            },
+            {
+              "mStat": 2,
+              "mStatFormula": 2,
+              "mDataValue": "BADRatio",
+              "__type": "StatByNamedDataValueCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        }
+      }
+    },
+    "3": {
+      "DataValues": {
+        "RBaseDamage": [
+          100,
+          200,
+          300,
+          400,
+          500,
+          600,
+          700
+        ],
+        "RAttackDelay": [
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        "RUntargetable": [
+          1.25,
+          1.25,
+          1.25,
+          1.25,
+          1.25,
+          1.25,
+          1.25
+        ]
+      },
+      "mSpellCalculations": {
+        "Damage": {
+          "mFormulaParts": [
+            {
+              "mDataValue": "RBaseDamage",
+              "__type": "NamedDataValueCalculationPart"
+            },
+            {
+              "mStat": 2,
+              "mStatFormula": 2,
+              "mCoefficient": 1,
+              "__type": "StatByCoefficientCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        }
+      }
+    },
+    "XayahQ": {
+      "DataValues": {
+        "BaseDamage": [
+          30,
+          45,
+          60,
+          75,
+          90,
+          105,
+          120
+        ],
+        "MultiHitRatio": [
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5
+        ],
+        "StartingCastTime": [
+          0.25,
+          0.25,
+          0.25,
+          0.25,
+          0.25,
+          0.25,
+          0.25
+        ],
+        "MinCastTime": [
+          0,
+          0.10000000149011612,
+          0.10000000149011612,
+          0.10000000149011612,
+          0.10000000149011612,
+          0.10000000149011612,
+          0.10000000149011612
+        ],
+        "ASpeedCastTimeScalarPerHundrethSecond": [
+          0,
+          0.07000000029802322,
+          0.07000000029802322,
+          0.07000000029802322,
+          0.07000000029802322,
+          0.07000000029802322,
+          0.07000000029802322
+        ]
+      },
+      "mSpellCalculations": {
+        "TotalDamage": {
+          "mFormulaParts": [
+            {
+              "mDataValue": "BaseDamage",
+              "__type": "NamedDataValueCalculationPart"
+            },
+            {
+              "mStat": 2,
+              "mStatFormula": 2,
+              "mCoefficient": 0.5,
+              "__type": "StatByCoefficientCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        },
+        "MultiHitDamage": {
+          "mMultiplier": {
+            "mDataValue": "MultiHitRatio",
+            "__type": "NamedDataValueCalculationPart"
+          },
+          "mModifiedGameCalculation": "TotalDamage",
+          "__type": "GameCalculationModified"
+        }
+      }
+    },
+    "XayahW": {
+      "DataValues": {
+        "BonusDamagePercent": [
+          25,
+          25,
+          25,
+          25,
+          25,
+          25,
+          25
+        ]
+      }
+    },
+    "XayahE": {
+      "DataValues": {
+        "FeatherFalloff": [
+          0.05000000074505806,
+          0.05000000074505806,
+          0.05000000074505806,
+          0.05000000074505806,
+          0.05000000074505806,
+          0.05000000074505806,
+          0.05000000074505806
+        ],
+        "MinionMultiplier": [
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5
+        ],
+        "FeatherThreshold": [
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3
+        ],
+        "RootDuration": [
+          1.25,
+          1.25,
+          1.25,
+          1.25,
+          1.25,
+          1.25,
+          1.25
+        ],
+        "BaseDamage": [
+          45,
+          55,
+          65,
+          75,
+          85,
+          95,
+          105
+        ],
+        "CritRatio": [
+          0.75,
+          0.75,
+          0.75,
+          0.75,
+          0.75,
+          0.75,
+          0.75
+        ],
+        "FeatherReturnDelay": [
+          0.25,
+          0.25,
+          0.25,
+          0.25,
+          0.25,
+          0.25,
+          0.25
+        ],
+        "bADRatio": [
+          0.6000000238418579,
+          0.6000000238418579,
+          0.6000000238418579,
+          0.6000000238418579,
+          0.6000000238418579,
+          0.6000000238418579,
+          0.6000000238418579
+        ]
+      },
+      "mSpellCalculations": {
+        "FeatherDamage": {
+          "mMultiplier": {
+            "mSubparts": [
+              {
+                "mNumber": 1,
+                "__type": "NumberCalculationPart"
+              },
+              {
+                "mStat": 8,
+                "mDataValue": "CritRatio",
+                "__type": "StatByNamedDataValueCalculationPart"
+              }
+            ],
+            "__type": "SumOfSubPartsCalculationPart"
+          },
+          "mFormulaParts": [
+            {
+              "mDataValue": "BaseDamage",
+              "__type": "NamedDataValueCalculationPart"
+            },
+            {
+              "mStat": 2,
+              "mStatFormula": 2,
+              "mDataValue": "BADRatio",
+              "__type": "StatByNamedDataValueCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        },
+        "MinionDamage": {
+          "mMultiplier": {
+            "mNumber": 0.5,
+            "__type": "NumberCalculationPart"
+          },
+          "mModifiedGameCalculation": "FeatherDamage",
+          "__type": "GameCalculationModified"
+        },
+        "CritPercentIncrease": {
+          "mSimpleTooltipCalculationDisplay": 6,
+          "mFormulaParts": [
+            {
+              "mStat": 8,
+              "mDataValue": "CritRatio",
+              "__type": "StatByNamedDataValueCalculationPart"
+            }
+          ],
+          "mDisplayAsPercent": true,
+          "__type": "GameCalculation"
+        },
+        "FeatherDamagePreCrit": {
+          "mFormulaParts": [
+            {
+              "mDataValue": "BaseDamage",
+              "__type": "NamedDataValueCalculationPart"
+            },
+            {
+              "mStat": 2,
+              "mStatFormula": 2,
+              "mDataValue": "BADRatio",
+              "__type": "StatByNamedDataValueCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        }
+      }
+    },
+    "XayahR": {
+      "DataValues": {
+        "RBaseDamage": [
+          100,
+          200,
+          300,
+          400,
+          500,
+          600,
+          700
+        ],
+        "RAttackDelay": [
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        "RUntargetable": [
+          1.25,
+          1.25,
+          1.25,
+          1.25,
+          1.25,
+          1.25,
+          1.25
+        ]
+      },
+      "mSpellCalculations": {
+        "Damage": {
+          "mFormulaParts": [
+            {
+              "mDataValue": "RBaseDamage",
+              "__type": "NamedDataValueCalculationPart"
+            },
+            {
+              "mStat": 2,
+              "mStatFormula": 2,
+              "mCoefficient": 1,
+              "__type": "StatByCoefficientCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        }
+      }
+    }
+  }
+}
