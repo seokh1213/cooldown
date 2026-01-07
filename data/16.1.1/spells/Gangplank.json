@@ -1,0 +1,640 @@
+{
+  "version": "16.1.1",
+  "ddragonVersion": "16.1.1",
+  "cdragonVersion": "15.24",
+  "championId": "Gangplank",
+  "spellData": {
+    "0": {
+      "DataValues": {
+        "CherryRatio": [
+          0.07000000029802322,
+          0.07000000029802322,
+          0.07000000029802322,
+          0.07000000029802322,
+          0.07000000029802322,
+          0.07000000029802322,
+          0.07000000029802322
+        ],
+        "GameModeInteger": [
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        "SpellDamage": [
+          -20,
+          10,
+          40,
+          70,
+          100,
+          130,
+          160
+        ],
+        "ADRatio": [
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
+        ]
+      },
+      "mSpellCalculations": {
+        "ShotDamage": {
+          "mFormulaParts": [
+            {
+              "mDataValue": "SpellDamage",
+              "__type": "NamedDataValueCalculationPart"
+            },
+            {
+              "mStat": 2,
+              "mDataValue": "ADRatio",
+              "__type": "StatByNamedDataValueCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        }
+      }
+    },
+    "1": {
+      "mSpellCalculations": {
+        "BaseHealth": {
+          "tooltipOnly": true,
+          "mFormulaParts": [
+            {
+              "mEffectIndex": 1,
+              "__type": "EffectValueCalculationPart"
+            },
+            {
+              "mCoefficient": 0.8999999761581421,
+              "__type": "StatByCoefficientCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        }
+      }
+    },
+    "2": {
+      "DataValues": {
+        "CritAmpPerc": [
+          1.0499999523162842,
+          1.0499999523162842,
+          1.0499999523162842,
+          1.0499999523162842,
+          1.0499999523162842,
+          1.0499999523162842,
+          1.0499999523162842
+        ],
+        "CritSlowMod": [
+          25,
+          25,
+          25,
+          25,
+          25,
+          25,
+          25
+        ],
+        "BarrelSlow": [
+          30,
+          40,
+          50,
+          60,
+          70,
+          80,
+          90
+        ],
+        "mAmmoRechargeTime": [
+          17,
+          17,
+          16,
+          15,
+          14,
+          13,
+          12
+        ]
+      },
+      "mSpellCalculations": {
+        "FinalSlowAmount": {
+          "mExpandedTooltipCalculationDisplay": 6,
+          "mFormulaParts": [
+            {
+              "mDataValue": "BarrelSlow",
+              "__type": "NamedDataValueCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        }
+      }
+    },
+    "3": {
+      "DataValues": {
+        "DamagePerWave": [
+          10,
+          40,
+          70,
+          100,
+          130,
+          160,
+          190
+        ],
+        "DeathsDaughterBaseDamage": [
+          30,
+          120,
+          210,
+          300,
+          390,
+          480,
+          570
+        ],
+        "RaiseMoraleHaste": [
+          40,
+          40,
+          40,
+          40,
+          40,
+          40,
+          40
+        ],
+        "ZoneDuration": [
+          8,
+          8,
+          8,
+          8,
+          8,
+          8,
+          8
+        ],
+        "CannonDelay": [
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5
+        ],
+        "CannonInterval": [
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2
+        ],
+        "SlowPercent": [
+          30,
+          30,
+          30,
+          30,
+          30,
+          30,
+          30
+        ],
+        "SlowDuration": [
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5
+        ],
+        "DeathsDaughterSlow": [
+          75,
+          75,
+          75,
+          75,
+          75,
+          75,
+          75
+        ],
+        "DeathsDaughterSlowDuration": [
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        "RaiseMoraleHasteDuration": [
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2
+        ],
+        "TotalWavesTooltip": [
+          12,
+          12,
+          12,
+          12,
+          12,
+          12,
+          12
+        ]
+      },
+      "mSpellCalculations": {
+        "OneWaveDamage": {
+          "mFormulaParts": [
+            {
+              "mDataValue": "DamagePerWave",
+              "__type": "NamedDataValueCalculationPart"
+            },
+            {
+              "mCoefficient": 0.10000000149011612,
+              "__type": "StatByCoefficientCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        },
+        "DeathsDaughterDamage": {
+          "mFormulaParts": [
+            {
+              "mDataValue": "DeathsDaughterBaseDamage",
+              "__type": "NamedDataValueCalculationPart"
+            },
+            {
+              "mCoefficient": 0.30000001192092896,
+              "__type": "StatByCoefficientCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        },
+        "TotalDamageTooltip": {
+          "mMultiplier": {
+            "mDataValue": "TotalWavesTooltip",
+            "__type": "NamedDataValueCalculationPart"
+          },
+          "mModifiedGameCalculation": "OneWaveDamage",
+          "__type": "GameCalculationModified"
+        }
+      }
+    },
+    "GangplankQWrapper": {
+      "DataValues": {
+        "CherryRatio": [
+          0.07000000029802322,
+          0.07000000029802322,
+          0.07000000029802322,
+          0.07000000029802322,
+          0.07000000029802322,
+          0.07000000029802322,
+          0.07000000029802322
+        ],
+        "GameModeInteger": [
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        "SpellDamage": [
+          -20,
+          10,
+          40,
+          70,
+          100,
+          130,
+          160
+        ],
+        "ADRatio": [
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
+        ]
+      },
+      "mSpellCalculations": {
+        "ShotDamage": {
+          "mFormulaParts": [
+            {
+              "mDataValue": "SpellDamage",
+              "__type": "NamedDataValueCalculationPart"
+            },
+            {
+              "mStat": 2,
+              "mDataValue": "ADRatio",
+              "__type": "StatByNamedDataValueCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        }
+      }
+    },
+    "GangplankW": {
+      "mSpellCalculations": {
+        "BaseHealth": {
+          "tooltipOnly": true,
+          "mFormulaParts": [
+            {
+              "mEffectIndex": 1,
+              "__type": "EffectValueCalculationPart"
+            },
+            {
+              "mCoefficient": 0.8999999761581421,
+              "__type": "StatByCoefficientCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        }
+      }
+    },
+    "GangplankE": {
+      "DataValues": {
+        "CritAmpPerc": [
+          1.0499999523162842,
+          1.0499999523162842,
+          1.0499999523162842,
+          1.0499999523162842,
+          1.0499999523162842,
+          1.0499999523162842,
+          1.0499999523162842
+        ],
+        "CritSlowMod": [
+          25,
+          25,
+          25,
+          25,
+          25,
+          25,
+          25
+        ],
+        "BarrelSlow": [
+          30,
+          40,
+          50,
+          60,
+          70,
+          80,
+          90
+        ],
+        "mAmmoRechargeTime": [
+          17,
+          17,
+          16,
+          15,
+          14,
+          13,
+          12
+        ]
+      },
+      "mSpellCalculations": {
+        "FinalSlowAmount": {
+          "mExpandedTooltipCalculationDisplay": 6,
+          "mFormulaParts": [
+            {
+              "mDataValue": "BarrelSlow",
+              "__type": "NamedDataValueCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        }
+      }
+    },
+    "GangplankR": {
+      "DataValues": {
+        "DamagePerWave": [
+          10,
+          40,
+          70,
+          100,
+          130,
+          160,
+          190
+        ],
+        "DeathsDaughterBaseDamage": [
+          30,
+          120,
+          210,
+          300,
+          390,
+          480,
+          570
+        ],
+        "RaiseMoraleHaste": [
+          40,
+          40,
+          40,
+          40,
+          40,
+          40,
+          40
+        ],
+        "ZoneDuration": [
+          8,
+          8,
+          8,
+          8,
+          8,
+          8,
+          8
+        ],
+        "CannonDelay": [
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5
+        ],
+        "CannonInterval": [
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2
+        ],
+        "SlowPercent": [
+          30,
+          30,
+          30,
+          30,
+          30,
+          30,
+          30
+        ],
+        "SlowDuration": [
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5
+        ],
+        "DeathsDaughterSlow": [
+          75,
+          75,
+          75,
+          75,
+          75,
+          75,
+          75
+        ],
+        "DeathsDaughterSlowDuration": [
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        "RaiseMoraleHasteDuration": [
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2
+        ],
+        "TotalWavesTooltip": [
+          12,
+          12,
+          12,
+          12,
+          12,
+          12,
+          12
+        ]
+      },
+      "mSpellCalculations": {
+        "OneWaveDamage": {
+          "mFormulaParts": [
+            {
+              "mDataValue": "DamagePerWave",
+              "__type": "NamedDataValueCalculationPart"
+            },
+            {
+              "mCoefficient": 0.10000000149011612,
+              "__type": "StatByCoefficientCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        },
+        "DeathsDaughterDamage": {
+          "mFormulaParts": [
+            {
+              "mDataValue": "DeathsDaughterBaseDamage",
+              "__type": "NamedDataValueCalculationPart"
+            },
+            {
+              "mCoefficient": 0.30000001192092896,
+              "__type": "StatByCoefficientCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        },
+        "TotalDamageTooltip": {
+          "mMultiplier": {
+            "mDataValue": "TotalWavesTooltip",
+            "__type": "NamedDataValueCalculationPart"
+          },
+          "mModifiedGameCalculation": "OneWaveDamage",
+          "__type": "GameCalculationModified"
+        }
+      }
+    },
+    "GangplankPassive": {
+      "DataValues": {
+        "Cooldown": [
+          15,
+          15,
+          15,
+          15,
+          15,
+          15,
+          15
+        ],
+        "OldMoveSpeed": [
+          0.30000001192092896,
+          0.30000001192092896,
+          0.30000001192092896,
+          0.30000001192092896,
+          0.30000001192092896,
+          0.30000001192092896,
+          0.30000001192092896
+        ],
+        "MoveSpeedDuration": [
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2
+        ],
+        "DoTDuration": [
+          2.5,
+          2.5,
+          2.5,
+          2.5,
+          2.5,
+          2.5,
+          2.5
+        ],
+        "TurretDamageMult": [
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5
+        ]
+      },
+      "mSpellCalculations": {
+        "TotalDamage": {
+          "mExpandedTooltipCalculationDisplay": 0,
+          "mFormulaParts": [
+            {
+              "mStat": 2,
+              "mStatFormula": 2,
+              "mCoefficient": 1,
+              "__type": "StatByCoefficientCalculationPart"
+            },
+            {
+              "mStat": 8,
+              "mCoefficient": 200,
+              "__type": "StatByCoefficientCalculationPart"
+            },
+            {
+              "mStartValue": 50,
+              "mEndValue": 250,
+              "__type": "ByCharLevelInterpolationCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        },
+        "MoveSpeed": {
+          "mFormulaParts": [
+            {
+              "mStartValue": 0.15000000596046448,
+              "mEndValue": 0.30000001192092896,
+              "__type": "ByCharLevelInterpolationCalculationPart"
+            }
+          ],
+          "mDisplayAsPercent": true,
+          "__type": "GameCalculation"
+        }
+      }
+    }
+  }
+}
