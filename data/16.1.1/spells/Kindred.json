@@ -1,7 +1,7 @@
 {
   "version": "16.1.1",
   "ddragonVersion": "16.1.1",
-  "cdragonVersion": "15.24",
+  "cdragonVersion": "16.1",
   "championId": "Kindred",
   "spellData": {
     "0": {
@@ -197,13 +197,13 @@
     "2": {
       "DataValues": {
         "MonsterCap": [
-          300,
-          300,
-          300,
-          300,
-          300,
-          300,
-          300
+          200,
+          200,
+          200,
+          200,
+          200,
+          200,
+          200
         ],
         "BaseDamage": [
           50,
@@ -267,10 +267,59 @@
           0.05000000074505806,
           0.05000000074505806,
           0.05000000074505806
+        ],
+        "CritMod": [
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5
+        ],
+        "BonusADRatio": [
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
         ]
       },
       "mSpellCalculations": {
         "BaseBiteDamage": {
+          "mMultiplier": {
+            "mSubparts": [
+              {
+                "mNumber": 1,
+                "__type": "NumberCalculationPart"
+              },
+              {
+                "mPart1": {
+                  "mStat": 8,
+                  "mDataValue": "CritMod",
+                  "__type": "StatByNamedDataValueCalculationPart"
+                },
+                "mPart2": {
+                  "mSubparts": [
+                    {
+                      "mStat": 9,
+                      "mCoefficient": 1,
+                      "__type": "StatByCoefficientCalculationPart"
+                    },
+                    {
+                      "mNumber": -1,
+                      "__type": "NumberCalculationPart"
+                    }
+                  ],
+                  "__type": "SumOfSubPartsCalculationPart"
+                },
+                "__type": "ProductOfSubPartsCalculationPart"
+              }
+            ],
+            "__type": "SumOfSubPartsCalculationPart"
+          },
           "mFormulaParts": [
             {
               "mDataValue": "BaseDamage",
@@ -279,13 +328,44 @@
             {
               "mStat": 2,
               "mStatFormula": 2,
-              "mCoefficient": 1,
-              "__type": "StatByCoefficientCalculationPart"
+              "mDataValue": "BonusADRatio",
+              "__type": "StatByNamedDataValueCalculationPart"
             }
           ],
           "__type": "GameCalculation"
         },
         "PercentBiteDamage": {
+          "mMultiplier": {
+            "mSubparts": [
+              {
+                "mNumber": 1,
+                "__type": "NumberCalculationPart"
+              },
+              {
+                "mPart1": {
+                  "mStat": 8,
+                  "mDataValue": "CritMod",
+                  "__type": "StatByNamedDataValueCalculationPart"
+                },
+                "mPart2": {
+                  "mSubparts": [
+                    {
+                      "mStat": 9,
+                      "mCoefficient": 1,
+                      "__type": "StatByCoefficientCalculationPart"
+                    },
+                    {
+                      "mNumber": -1,
+                      "__type": "NumberCalculationPart"
+                    }
+                  ],
+                  "__type": "SumOfSubPartsCalculationPart"
+                },
+                "__type": "ProductOfSubPartsCalculationPart"
+              }
+            ],
+            "__type": "SumOfSubPartsCalculationPart"
+          },
           "mFormulaParts": [
             {
               "mDataValue": "BasePercentDamage",
@@ -320,21 +400,6 @@
           },
           "mModifiedGameCalculation": "PercentBiteDamage",
           "__type": "GameCalculationModified"
-        },
-        "HealthThreshold": {
-          "mFormulaParts": [
-            {
-              "mNumber": 0.25,
-              "__type": "NumberCalculationPart"
-            },
-            {
-              "mStat": 8,
-              "mCoefficient": 0.5,
-              "__type": "StatByCoefficientCalculationPart"
-            }
-          ],
-          "mDisplayAsPercent": true,
-          "__type": "GameCalculation"
         },
         "TotalSlow": {
           "mFormulaParts": [
@@ -575,13 +640,13 @@
     "KindredEWrapper": {
       "DataValues": {
         "MonsterCap": [
-          300,
-          300,
-          300,
-          300,
-          300,
-          300,
-          300
+          200,
+          200,
+          200,
+          200,
+          200,
+          200,
+          200
         ],
         "BaseDamage": [
           50,
@@ -645,10 +710,59 @@
           0.05000000074505806,
           0.05000000074505806,
           0.05000000074505806
+        ],
+        "CritMod": [
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5
+        ],
+        "BonusADRatio": [
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
         ]
       },
       "mSpellCalculations": {
         "BaseBiteDamage": {
+          "mMultiplier": {
+            "mSubparts": [
+              {
+                "mNumber": 1,
+                "__type": "NumberCalculationPart"
+              },
+              {
+                "mPart1": {
+                  "mStat": 8,
+                  "mDataValue": "CritMod",
+                  "__type": "StatByNamedDataValueCalculationPart"
+                },
+                "mPart2": {
+                  "mSubparts": [
+                    {
+                      "mStat": 9,
+                      "mCoefficient": 1,
+                      "__type": "StatByCoefficientCalculationPart"
+                    },
+                    {
+                      "mNumber": -1,
+                      "__type": "NumberCalculationPart"
+                    }
+                  ],
+                  "__type": "SumOfSubPartsCalculationPart"
+                },
+                "__type": "ProductOfSubPartsCalculationPart"
+              }
+            ],
+            "__type": "SumOfSubPartsCalculationPart"
+          },
           "mFormulaParts": [
             {
               "mDataValue": "BaseDamage",
@@ -657,13 +771,44 @@
             {
               "mStat": 2,
               "mStatFormula": 2,
-              "mCoefficient": 1,
-              "__type": "StatByCoefficientCalculationPart"
+              "mDataValue": "BonusADRatio",
+              "__type": "StatByNamedDataValueCalculationPart"
             }
           ],
           "__type": "GameCalculation"
         },
         "PercentBiteDamage": {
+          "mMultiplier": {
+            "mSubparts": [
+              {
+                "mNumber": 1,
+                "__type": "NumberCalculationPart"
+              },
+              {
+                "mPart1": {
+                  "mStat": 8,
+                  "mDataValue": "CritMod",
+                  "__type": "StatByNamedDataValueCalculationPart"
+                },
+                "mPart2": {
+                  "mSubparts": [
+                    {
+                      "mStat": 9,
+                      "mCoefficient": 1,
+                      "__type": "StatByCoefficientCalculationPart"
+                    },
+                    {
+                      "mNumber": -1,
+                      "__type": "NumberCalculationPart"
+                    }
+                  ],
+                  "__type": "SumOfSubPartsCalculationPart"
+                },
+                "__type": "ProductOfSubPartsCalculationPart"
+              }
+            ],
+            "__type": "SumOfSubPartsCalculationPart"
+          },
           "mFormulaParts": [
             {
               "mDataValue": "BasePercentDamage",
@@ -698,21 +843,6 @@
           },
           "mModifiedGameCalculation": "PercentBiteDamage",
           "__type": "GameCalculationModified"
-        },
-        "HealthThreshold": {
-          "mFormulaParts": [
-            {
-              "mNumber": 0.25,
-              "__type": "NumberCalculationPart"
-            },
-            {
-              "mStat": 8,
-              "mCoefficient": 0.5,
-              "__type": "StatByCoefficientCalculationPart"
-            }
-          ],
-          "mDisplayAsPercent": true,
-          "__type": "GameCalculation"
         },
         "TotalSlow": {
           "mFormulaParts": [

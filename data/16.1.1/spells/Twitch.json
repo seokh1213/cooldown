@@ -1,9 +1,85 @@
 {
   "version": "16.1.1",
   "ddragonVersion": "16.1.1",
-  "cdragonVersion": "15.24",
+  "cdragonVersion": "16.1",
   "championId": "Twitch",
   "spellData": {
+    "0": {
+      "DataValues": {
+        "AttackSpeedMod": [
+          0.3499999940395355,
+          0.4000000059604645,
+          0.44999998807907104,
+          0.5,
+          0.550000011920929,
+          0.6000000238418579,
+          0.6499999761581421
+        ],
+        "AttackSpeedDuration": [
+          6,
+          6,
+          6,
+          6,
+          6,
+          6,
+          6
+        ],
+        "StealthDuration": [
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15
+        ],
+        "MaxFadeTime": [
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        "StealthDetectionRange": [
+          500,
+          500,
+          500,
+          500,
+          500,
+          500,
+          500
+        ],
+        "MoveSpeedMod": [
+          10,
+          10,
+          10,
+          10,
+          10,
+          10,
+          10
+        ],
+        "HiddenSpeed": [
+          30,
+          30,
+          30,
+          30,
+          30,
+          30,
+          30
+        ],
+        "MoveBonusRange": [
+          1000,
+          1000,
+          1000,
+          1000,
+          1000,
+          1000,
+          1000
+        ]
+      }
+    },
     "1": {
       "DataValues": {
         "BaseSlowAmount": [
@@ -133,31 +209,37 @@
           "__type": "GameCalculation"
         },
         "MaxPhysicalDamage": {
-          "mMultiplier": {
-            "mDataValue": "MaxStacks",
-            "__type": "NamedDataValueCalculationPart"
-          },
           "mFormulaParts": [
             {
+              "mDataValue": "BaseDamage",
+              "__type": "NamedDataValueCalculationPart"
+            },
+            {
               "mPart1": {
-                "mDataValue": "BaseDamage",
+                "mDataValue": "MaxStacks",
                 "__type": "NamedDataValueCalculationPart"
               },
               "mPart2": {
-                "mNumber": 0.16699999570846558,
-                "__type": "NumberCalculationPart"
+                "mDataValue": "BasePhysicalDamagePerStack",
+                "__type": "NamedDataValueCalculationPart"
               },
               "__type": "ProductOfSubPartsCalculationPart"
             },
             {
-              "mDataValue": "BasePhysicalDamagePerStack",
-              "__type": "NamedDataValueCalculationPart"
-            },
-            {
               "mStat": 2,
               "mStatFormula": 2,
-              "mDataValue": "bADRatioPerStack",
-              "__type": "StatByNamedDataValueCalculationPart"
+              "mSubpart": {
+                "mPart1": {
+                  "mDataValue": "bADRatioPerStack",
+                  "__type": "NamedDataValueCalculationPart"
+                },
+                "mPart2": {
+                  "mDataValue": "MaxStacks",
+                  "__type": "NamedDataValueCalculationPart"
+                },
+                "__type": "ProductOfSubPartsCalculationPart"
+              },
+              "__type": "StatBySubPartCalculationPart"
             }
           ],
           "__type": "GameCalculation"
@@ -236,6 +318,82 @@
           250,
           250,
           250
+        ]
+      }
+    },
+    "TwitchHideInShadows": {
+      "DataValues": {
+        "AttackSpeedMod": [
+          0.3499999940395355,
+          0.4000000059604645,
+          0.44999998807907104,
+          0.5,
+          0.550000011920929,
+          0.6000000238418579,
+          0.6499999761581421
+        ],
+        "AttackSpeedDuration": [
+          6,
+          6,
+          6,
+          6,
+          6,
+          6,
+          6
+        ],
+        "StealthDuration": [
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15
+        ],
+        "MaxFadeTime": [
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        "StealthDetectionRange": [
+          500,
+          500,
+          500,
+          500,
+          500,
+          500,
+          500
+        ],
+        "MoveSpeedMod": [
+          10,
+          10,
+          10,
+          10,
+          10,
+          10,
+          10
+        ],
+        "HiddenSpeed": [
+          30,
+          30,
+          30,
+          30,
+          30,
+          30,
+          30
+        ],
+        "MoveBonusRange": [
+          1000,
+          1000,
+          1000,
+          1000,
+          1000,
+          1000,
+          1000
         ]
       }
     },
@@ -368,31 +526,37 @@
           "__type": "GameCalculation"
         },
         "MaxPhysicalDamage": {
-          "mMultiplier": {
-            "mDataValue": "MaxStacks",
-            "__type": "NamedDataValueCalculationPart"
-          },
           "mFormulaParts": [
             {
+              "mDataValue": "BaseDamage",
+              "__type": "NamedDataValueCalculationPart"
+            },
+            {
               "mPart1": {
-                "mDataValue": "BaseDamage",
+                "mDataValue": "MaxStacks",
                 "__type": "NamedDataValueCalculationPart"
               },
               "mPart2": {
-                "mNumber": 0.16699999570846558,
-                "__type": "NumberCalculationPart"
+                "mDataValue": "BasePhysicalDamagePerStack",
+                "__type": "NamedDataValueCalculationPart"
               },
               "__type": "ProductOfSubPartsCalculationPart"
             },
             {
-              "mDataValue": "BasePhysicalDamagePerStack",
-              "__type": "NamedDataValueCalculationPart"
-            },
-            {
               "mStat": 2,
               "mStatFormula": 2,
-              "mDataValue": "bADRatioPerStack",
-              "__type": "StatByNamedDataValueCalculationPart"
+              "mSubpart": {
+                "mPart1": {
+                  "mDataValue": "bADRatioPerStack",
+                  "__type": "NamedDataValueCalculationPart"
+                },
+                "mPart2": {
+                  "mDataValue": "MaxStacks",
+                  "__type": "NamedDataValueCalculationPart"
+                },
+                "__type": "ProductOfSubPartsCalculationPart"
+              },
+              "__type": "StatBySubPartCalculationPart"
             }
           ],
           "__type": "GameCalculation"

@@ -1,28 +1,19 @@
 {
   "version": "16.1.1",
   "ddragonVersion": "16.1.1",
-  "cdragonVersion": "15.24",
+  "cdragonVersion": "16.1",
   "championId": "Samira",
   "spellData": {
     "0": {
       "DataValues": {
         "BaseDamage": [
+          -5,
           0,
           5,
           10,
           15,
           20,
-          25,
-          30
-        ],
-        "QMissileBaseDamage": [
-          -10,
-          15,
-          40,
-          65,
-          90,
-          115,
-          140
+          25
         ],
         "CheatingThreshold": [
           20,
@@ -33,14 +24,14 @@
           20,
           20
         ],
-        "CritBonusDamage": [
-          1.25,
-          1.25,
-          1.25,
-          1.25,
-          1.25,
-          1.25,
-          1.25
+        "CritDamageMod": [
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5
         ],
         "LifestealMod": [
           0.800000011920929,
@@ -52,13 +43,13 @@
           0.800000011920929
         ],
         "QADRatio": [
-          0.875,
-          0.949999988079071,
-          1.024999976158142,
           1.100000023841858,
-          1.1749999523162842,
-          1.25,
-          1.3250000476837158
+          1.100000023841858,
+          1.100000023841858,
+          1.100000023841858,
+          1.100000023841858,
+          1.100000023841858,
+          1.100000023841858
         ]
       },
       "mSpellCalculations": {
@@ -75,6 +66,40 @@
             }
           ],
           "__type": "GameCalculation"
+        },
+        "CriticalDamageCalc": {
+          "mMultiplier": {
+            "mSubparts": [
+              {
+                "mNumber": 1,
+                "__type": "NumberCalculationPart"
+              },
+              {
+                "mPart1": {
+                  "mDataValue": "CritDamageMod",
+                  "__type": "NamedDataValueCalculationPart"
+                },
+                "mPart2": {
+                  "mSubparts": [
+                    {
+                      "mStat": 9,
+                      "mCoefficient": 1,
+                      "__type": "StatByCoefficientCalculationPart"
+                    },
+                    {
+                      "mNumber": -1,
+                      "__type": "NumberCalculationPart"
+                    }
+                  ],
+                  "__type": "SumOfSubPartsCalculationPart"
+                },
+                "__type": "ProductOfSubPartsCalculationPart"
+              }
+            ],
+            "__type": "SumOfSubPartsCalculationPart"
+          },
+          "mModifiedGameCalculation": "DamageCalc",
+          "__type": "GameCalculationModified"
         }
       }
     },
@@ -186,13 +211,13 @@
     "3": {
       "DataValues": {
         "BaseDamage": [
-          -5,
-          5,
-          15,
-          25,
-          35,
-          45,
-          55
+          0,
+          20,
+          40,
+          60,
+          80,
+          100,
+          120
         ],
         "BaseMSBonus": [
           0.019999999552965164,
@@ -211,6 +236,24 @@
           0.800000011920929,
           0.800000011920929,
           0.800000011920929
+        ],
+        "MinionDamageMod": [
+          0.25,
+          0.25,
+          0.25,
+          0.25,
+          0.25,
+          0.25,
+          0.25
+        ],
+        "ADRatio": [
+          0.30000001192092896,
+          0.30000001192092896,
+          0.30000001192092896,
+          0.30000001192092896,
+          0.30000001192092896,
+          0.30000001192092896,
+          0.30000001192092896
         ]
       },
       "mSpellCalculations": {
@@ -222,33 +265,33 @@
             },
             {
               "mStat": 2,
-              "mCoefficient": 0.44999998807907104,
-              "__type": "StatByCoefficientCalculationPart"
+              "mDataValue": "ADRatio",
+              "__type": "StatByNamedDataValueCalculationPart"
             }
           ],
           "__type": "GameCalculation"
+        },
+        "CriticalDamageCalc": {
+          "mMultiplier": {
+            "mStat": 9,
+            "mCoefficient": 1,
+            "__type": "StatByCoefficientCalculationPart"
+          },
+          "mModifiedGameCalculation": "DamageCalc",
+          "__type": "GameCalculationModified"
         }
       }
     },
     "SamiraQ": {
       "DataValues": {
         "BaseDamage": [
+          -5,
           0,
           5,
           10,
           15,
           20,
-          25,
-          30
-        ],
-        "QMissileBaseDamage": [
-          -10,
-          15,
-          40,
-          65,
-          90,
-          115,
-          140
+          25
         ],
         "CheatingThreshold": [
           20,
@@ -259,14 +302,14 @@
           20,
           20
         ],
-        "CritBonusDamage": [
-          1.25,
-          1.25,
-          1.25,
-          1.25,
-          1.25,
-          1.25,
-          1.25
+        "CritDamageMod": [
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5
         ],
         "LifestealMod": [
           0.800000011920929,
@@ -278,13 +321,13 @@
           0.800000011920929
         ],
         "QADRatio": [
-          0.875,
-          0.949999988079071,
-          1.024999976158142,
           1.100000023841858,
-          1.1749999523162842,
-          1.25,
-          1.3250000476837158
+          1.100000023841858,
+          1.100000023841858,
+          1.100000023841858,
+          1.100000023841858,
+          1.100000023841858,
+          1.100000023841858
         ]
       },
       "mSpellCalculations": {
@@ -301,6 +344,40 @@
             }
           ],
           "__type": "GameCalculation"
+        },
+        "CriticalDamageCalc": {
+          "mMultiplier": {
+            "mSubparts": [
+              {
+                "mNumber": 1,
+                "__type": "NumberCalculationPart"
+              },
+              {
+                "mPart1": {
+                  "mDataValue": "CritDamageMod",
+                  "__type": "NamedDataValueCalculationPart"
+                },
+                "mPart2": {
+                  "mSubparts": [
+                    {
+                      "mStat": 9,
+                      "mCoefficient": 1,
+                      "__type": "StatByCoefficientCalculationPart"
+                    },
+                    {
+                      "mNumber": -1,
+                      "__type": "NumberCalculationPart"
+                    }
+                  ],
+                  "__type": "SumOfSubPartsCalculationPart"
+                },
+                "__type": "ProductOfSubPartsCalculationPart"
+              }
+            ],
+            "__type": "SumOfSubPartsCalculationPart"
+          },
+          "mModifiedGameCalculation": "DamageCalc",
+          "__type": "GameCalculationModified"
         }
       }
     },
@@ -412,13 +489,13 @@
     "SamiraR": {
       "DataValues": {
         "BaseDamage": [
-          -5,
-          5,
-          15,
-          25,
-          35,
-          45,
-          55
+          0,
+          20,
+          40,
+          60,
+          80,
+          100,
+          120
         ],
         "BaseMSBonus": [
           0.019999999552965164,
@@ -437,6 +514,24 @@
           0.800000011920929,
           0.800000011920929,
           0.800000011920929
+        ],
+        "MinionDamageMod": [
+          0.25,
+          0.25,
+          0.25,
+          0.25,
+          0.25,
+          0.25,
+          0.25
+        ],
+        "ADRatio": [
+          0.30000001192092896,
+          0.30000001192092896,
+          0.30000001192092896,
+          0.30000001192092896,
+          0.30000001192092896,
+          0.30000001192092896,
+          0.30000001192092896
         ]
       },
       "mSpellCalculations": {
@@ -448,11 +543,20 @@
             },
             {
               "mStat": 2,
-              "mCoefficient": 0.44999998807907104,
-              "__type": "StatByCoefficientCalculationPart"
+              "mDataValue": "ADRatio",
+              "__type": "StatByNamedDataValueCalculationPart"
             }
           ],
           "__type": "GameCalculation"
+        },
+        "CriticalDamageCalc": {
+          "mMultiplier": {
+            "mStat": 9,
+            "mCoefficient": 1,
+            "__type": "StatByCoefficientCalculationPart"
+          },
+          "mModifiedGameCalculation": "DamageCalc",
+          "__type": "GameCalculationModified"
         }
       }
     },
