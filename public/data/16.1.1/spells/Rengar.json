@@ -1,7 +1,7 @@
 {
   "version": "16.1.1",
   "ddragonVersion": "16.1.1",
-  "cdragonVersion": "15.24",
+  "cdragonVersion": "16.1",
   "championId": "Rengar",
   "spellData": {
     "0": {
@@ -15,43 +15,16 @@
           150,
           180
         ],
-        "BaseADRatio": [
-          -0.03750000149011612,
-          0,
-          0.03750000149011612,
-          0.07500000298023224,
-          0.11249999701976776,
-          0.15000000596046448,
-          0.1875
-        ],
-        "CritRatio": [
+        "BaseADRatioTooltip": [
+          96.25,
           100,
-          100,
-          100,
-          100,
-          100,
-          100,
-          100
+          103.75,
+          107.5,
+          111.25,
+          115,
+          118.75
         ],
         "EmpoweredADRatio": [
-          0.30000001192092896,
-          0.30000001192092896,
-          0.30000001192092896,
-          0.30000001192092896,
-          0.30000001192092896,
-          0.30000001192092896,
-          0.30000001192092896
-        ],
-        "CritScalingRatio": [
-          0.75,
-          0.75,
-          0.75,
-          0.75,
-          0.75,
-          0.75,
-          0.75
-        ],
-        "TotalEmpoweredADRatio": [
           1.2999999523162842,
           1.2999999523162842,
           1.2999999523162842,
@@ -60,7 +33,43 @@
           1.2999999523162842,
           1.2999999523162842
         ],
-        "TotalADRatio": [
+        "TowerMod": [
+          0.6000000238418579,
+          0.6000000238418579,
+          0.6000000238418579,
+          0.6000000238418579,
+          0.6000000238418579,
+          0.6000000238418579,
+          0.6000000238418579
+        ],
+        "ASDuration": [
+          5,
+          5,
+          5,
+          5,
+          5,
+          5,
+          5
+        ],
+        "ASBonus": [
+          40,
+          40,
+          40,
+          40,
+          40,
+          40,
+          40
+        ],
+        "BuffDuration": [
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3
+        ],
+        "BaseADRatio": [
           0.9624999761581421,
           1,
           1.037500023841858,
@@ -68,24 +77,6 @@
           1.1124999523162842,
           1.149999976158142,
           1.1875
-        ],
-        "TowerMod": [
-          0.4000000059604645,
-          0.4000000059604645,
-          0.4000000059604645,
-          0.4000000059604645,
-          0.4000000059604645,
-          0.4000000059604645,
-          0.4000000059604645
-        ],
-        "QCritDamageScalar": [
-          1,
-          1,
-          1,
-          1,
-          1,
-          1,
-          1
         ],
         "mAmmoRechargeTime": [
           6,
@@ -98,29 +89,6 @@
         ]
       },
       "mSpellCalculations": {
-        "EmpoweredQdamageTT": {
-          "tooltipOnly": true,
-          "mFormulaParts": [
-            {
-              "mLevel1Value": 30,
-              "mInitialBonusPerLevel": 15,
-              "mBreakpoints": [
-                {
-                  "mLevel": 9,
-                  "mBonusPerLevelAtAndAfter": 10,
-                  "__type": "Breakpoint"
-                }
-              ],
-              "__type": "ByCharLevelBreakpointsCalculationPart"
-            },
-            {
-              "mStat": 2,
-              "mDataValue": "TotalEmpoweredADRatio",
-              "__type": "StatByNamedDataValueCalculationPart"
-            }
-          ],
-          "__type": "GameCalculation"
-        },
         "EmpoweredQAS": {
           "mMultiplier": {
             "mNumber": 0.009999999776482582,
@@ -136,8 +104,7 @@
           "mDisplayAsPercent": true,
           "__type": "GameCalculation"
         },
-        "TotalDamageTT": {
-          "tooltipOnly": true,
+        "QDamage": {
           "mFormulaParts": [
             {
               "mDataValue": "BaseDamage",
@@ -145,13 +112,13 @@
             },
             {
               "mStat": 2,
-              "mDataValue": "TotalADRatio",
+              "mDataValue": "BaseADRatio",
               "__type": "StatByNamedDataValueCalculationPart"
             }
           ],
           "__type": "GameCalculation"
         },
-        "{c285d829}": {
+        "EmpoweredQdamage": {
           "mFormulaParts": [
             {
               "mLevel1Value": 30,
@@ -173,29 +140,49 @@
           ],
           "__type": "GameCalculation"
         },
-        "{e29bb654}": {
+        "{95c7ca04}": {
+          "mMultiplier": {
+            "mDataValue": "{2d4374d6}",
+            "__type": "NamedDataValueCalculationPart"
+          },
           "mFormulaParts": [
             {
-              "mDataValue": "BaseDamage",
-              "__type": "NamedDataValueCalculationPart"
-            },
-            {
-              "mStat": 2,
-              "mDataValue": "BaseADRatio",
-              "__type": "StatByNamedDataValueCalculationPart"
+              "mSpellCalculationKey": "QDamage",
+              "__type": "{f3cbe7b2}"
             }
           ],
           "__type": "GameCalculation"
         },
-        "CritDamageScalar": {
+        "{f2ca2500}": {
+          "mMultiplier": {
+            "mDataValue": "{2d4374d6}",
+            "__type": "NamedDataValueCalculationPart"
+          },
+          "mFormulaParts": [
+            {
+              "mSpellCalculationKey": "EmpoweredQdamage",
+              "__type": "{f3cbe7b2}"
+            }
+          ],
+          "__type": "GameCalculation"
+        },
+        "{c6c2d6f4}": {
+          "mMultiplier": {
+            "mStat": 2,
+            "mCoefficient": 1,
+            "__type": "StatByCoefficientCalculationPart"
+          },
           "mFormulaParts": [
             {
               "mStat": 9,
-              "mDataValue": "CritScalingRatio",
-              "__type": "StatByNamedDataValueCalculationPart"
+              "mCoefficient": 1,
+              "__type": "StatByCoefficientCalculationPart"
+            },
+            {
+              "mNumber": -1,
+              "__type": "NumberCalculationPart"
             }
           ],
-          "mDisplayAsPercent": true,
           "__type": "GameCalculation"
         }
       }
@@ -237,6 +224,33 @@
           0.800000011920929,
           0.800000011920929,
           0.800000011920929
+        ],
+        "HealingWindow": [
+          1.5,
+          1.5,
+          1.5,
+          1.5,
+          1.5,
+          1.5,
+          1.5
+        ],
+        "CCImmuneDuration": [
+          1.5,
+          1.5,
+          1.5,
+          1.5,
+          1.5,
+          1.5,
+          1.5
+        ],
+        "MonsterHealingMod": [
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100
         ],
         "mAmmoRechargeTime": [
           22,
@@ -347,6 +361,15 @@
           75,
           90,
           105
+        ],
+        "CCDuration": [
+          1.75,
+          1.75,
+          1.75,
+          1.75,
+          1.75,
+          1.75,
+          1.75
         ],
         "BonusADRatio": [
           0.800000011920929,
@@ -509,43 +532,16 @@
           150,
           180
         ],
-        "BaseADRatio": [
-          -0.03750000149011612,
-          0,
-          0.03750000149011612,
-          0.07500000298023224,
-          0.11249999701976776,
-          0.15000000596046448,
-          0.1875
-        ],
-        "CritRatio": [
+        "BaseADRatioTooltip": [
+          96.25,
           100,
-          100,
-          100,
-          100,
-          100,
-          100,
-          100
+          103.75,
+          107.5,
+          111.25,
+          115,
+          118.75
         ],
         "EmpoweredADRatio": [
-          0.30000001192092896,
-          0.30000001192092896,
-          0.30000001192092896,
-          0.30000001192092896,
-          0.30000001192092896,
-          0.30000001192092896,
-          0.30000001192092896
-        ],
-        "CritScalingRatio": [
-          0.75,
-          0.75,
-          0.75,
-          0.75,
-          0.75,
-          0.75,
-          0.75
-        ],
-        "TotalEmpoweredADRatio": [
           1.2999999523162842,
           1.2999999523162842,
           1.2999999523162842,
@@ -554,7 +550,43 @@
           1.2999999523162842,
           1.2999999523162842
         ],
-        "TotalADRatio": [
+        "TowerMod": [
+          0.6000000238418579,
+          0.6000000238418579,
+          0.6000000238418579,
+          0.6000000238418579,
+          0.6000000238418579,
+          0.6000000238418579,
+          0.6000000238418579
+        ],
+        "ASDuration": [
+          5,
+          5,
+          5,
+          5,
+          5,
+          5,
+          5
+        ],
+        "ASBonus": [
+          40,
+          40,
+          40,
+          40,
+          40,
+          40,
+          40
+        ],
+        "BuffDuration": [
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3
+        ],
+        "BaseADRatio": [
           0.9624999761581421,
           1,
           1.037500023841858,
@@ -562,24 +594,6 @@
           1.1124999523162842,
           1.149999976158142,
           1.1875
-        ],
-        "TowerMod": [
-          0.4000000059604645,
-          0.4000000059604645,
-          0.4000000059604645,
-          0.4000000059604645,
-          0.4000000059604645,
-          0.4000000059604645,
-          0.4000000059604645
-        ],
-        "QCritDamageScalar": [
-          1,
-          1,
-          1,
-          1,
-          1,
-          1,
-          1
         ],
         "mAmmoRechargeTime": [
           6,
@@ -592,29 +606,6 @@
         ]
       },
       "mSpellCalculations": {
-        "EmpoweredQdamageTT": {
-          "tooltipOnly": true,
-          "mFormulaParts": [
-            {
-              "mLevel1Value": 30,
-              "mInitialBonusPerLevel": 15,
-              "mBreakpoints": [
-                {
-                  "mLevel": 9,
-                  "mBonusPerLevelAtAndAfter": 10,
-                  "__type": "Breakpoint"
-                }
-              ],
-              "__type": "ByCharLevelBreakpointsCalculationPart"
-            },
-            {
-              "mStat": 2,
-              "mDataValue": "TotalEmpoweredADRatio",
-              "__type": "StatByNamedDataValueCalculationPart"
-            }
-          ],
-          "__type": "GameCalculation"
-        },
         "EmpoweredQAS": {
           "mMultiplier": {
             "mNumber": 0.009999999776482582,
@@ -630,8 +621,7 @@
           "mDisplayAsPercent": true,
           "__type": "GameCalculation"
         },
-        "TotalDamageTT": {
-          "tooltipOnly": true,
+        "QDamage": {
           "mFormulaParts": [
             {
               "mDataValue": "BaseDamage",
@@ -639,13 +629,13 @@
             },
             {
               "mStat": 2,
-              "mDataValue": "TotalADRatio",
+              "mDataValue": "BaseADRatio",
               "__type": "StatByNamedDataValueCalculationPart"
             }
           ],
           "__type": "GameCalculation"
         },
-        "{c285d829}": {
+        "EmpoweredQdamage": {
           "mFormulaParts": [
             {
               "mLevel1Value": 30,
@@ -667,29 +657,49 @@
           ],
           "__type": "GameCalculation"
         },
-        "{e29bb654}": {
+        "{95c7ca04}": {
+          "mMultiplier": {
+            "mDataValue": "{2d4374d6}",
+            "__type": "NamedDataValueCalculationPart"
+          },
           "mFormulaParts": [
             {
-              "mDataValue": "BaseDamage",
-              "__type": "NamedDataValueCalculationPart"
-            },
-            {
-              "mStat": 2,
-              "mDataValue": "BaseADRatio",
-              "__type": "StatByNamedDataValueCalculationPart"
+              "mSpellCalculationKey": "QDamage",
+              "__type": "{f3cbe7b2}"
             }
           ],
           "__type": "GameCalculation"
         },
-        "CritDamageScalar": {
+        "{f2ca2500}": {
+          "mMultiplier": {
+            "mDataValue": "{2d4374d6}",
+            "__type": "NamedDataValueCalculationPart"
+          },
+          "mFormulaParts": [
+            {
+              "mSpellCalculationKey": "EmpoweredQdamage",
+              "__type": "{f3cbe7b2}"
+            }
+          ],
+          "__type": "GameCalculation"
+        },
+        "{c6c2d6f4}": {
+          "mMultiplier": {
+            "mStat": 2,
+            "mCoefficient": 1,
+            "__type": "StatByCoefficientCalculationPart"
+          },
           "mFormulaParts": [
             {
               "mStat": 9,
-              "mDataValue": "CritScalingRatio",
-              "__type": "StatByNamedDataValueCalculationPart"
+              "mCoefficient": 1,
+              "__type": "StatByCoefficientCalculationPart"
+            },
+            {
+              "mNumber": -1,
+              "__type": "NumberCalculationPart"
             }
           ],
-          "mDisplayAsPercent": true,
           "__type": "GameCalculation"
         }
       }
@@ -731,6 +741,33 @@
           0.800000011920929,
           0.800000011920929,
           0.800000011920929
+        ],
+        "HealingWindow": [
+          1.5,
+          1.5,
+          1.5,
+          1.5,
+          1.5,
+          1.5,
+          1.5
+        ],
+        "CCImmuneDuration": [
+          1.5,
+          1.5,
+          1.5,
+          1.5,
+          1.5,
+          1.5,
+          1.5
+        ],
+        "MonsterHealingMod": [
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100
         ],
         "mAmmoRechargeTime": [
           22,
@@ -841,6 +878,15 @@
           75,
           90,
           105
+        ],
+        "CCDuration": [
+          1.75,
+          1.75,
+          1.75,
+          1.75,
+          1.75,
+          1.75,
+          1.75
         ],
         "BonusADRatio": [
           0.800000011920929,
@@ -1047,6 +1093,15 @@
           1,
           1,
           1
+        ],
+        "BonusLeapRange": [
+          620,
+          620,
+          620,
+          620,
+          620,
+          620,
+          620
         ]
       },
       "mSpellCalculations": {

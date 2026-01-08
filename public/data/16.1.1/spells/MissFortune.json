@@ -1,11 +1,29 @@
 {
   "version": "16.1.1",
   "ddragonVersion": "16.1.1",
-  "cdragonVersion": "15.24",
+  "cdragonVersion": "16.1",
   "championId": "MissFortune",
   "spellData": {
     "0": {
       "DataValues": {
+        "BaseDamage": [
+          -5,
+          20,
+          45,
+          70,
+          95,
+          120,
+          145
+        ],
+        "ADRatio": [
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
         "APRatio": [
           0.3499999940395355,
           0.3499999940395355,
@@ -15,33 +33,76 @@
           0.3499999940395355,
           0.3499999940395355
         ],
-        "BaseDamage": [
-          0,
-          20,
-          45,
-          70,
-          95,
-          120,
-          120
+        "BounceCriticalMod": [
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5
         ]
       },
       "mSpellCalculations": {
         "TotalDamageTooltip": {
           "mSimpleTooltipCalculationDisplay": 6,
-          "tooltipOnly": true,
           "mFormulaParts": [
             {
-              "mEffectIndex": 2,
-              "__type": "EffectValueCalculationPart"
+              "mDataValue": "BaseDamage",
+              "__type": "NamedDataValueCalculationPart"
             },
             {
               "mStat": 2,
-              "mCoefficient": 1,
-              "__type": "StatByCoefficientCalculationPart"
+              "mDataValue": "ADRatio",
+              "__type": "StatByNamedDataValueCalculationPart"
             },
             {
               "mDataValue": "APRatio",
               "__type": "StatByNamedDataValueCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        },
+        "TotalDamageCrit": {
+          "mMultiplier": {
+            "mSubparts": [
+              {
+                "mNumber": 1,
+                "__type": "NumberCalculationPart"
+              },
+              {
+                "mPart1": {
+                  "mDataValue": "{f2018e54}",
+                  "__type": "NamedDataValueCalculationPart"
+                },
+                "mPart2": {
+                  "mSubparts": [
+                    {
+                      "mStat": 9,
+                      "mCoefficient": 1,
+                      "__type": "StatByCoefficientCalculationPart"
+                    },
+                    {
+                      "mNumber": -1,
+                      "__type": "NumberCalculationPart"
+                    }
+                  ],
+                  "__type": "SumOfSubPartsCalculationPart"
+                },
+                "__type": "ProductOfSubPartsCalculationPart"
+              }
+            ],
+            "__type": "SumOfSubPartsCalculationPart"
+          },
+          "mModifiedGameCalculation": "TotalDamageTooltip",
+          "__type": "GameCalculationModified"
+        },
+        "{5a1fd353}": {
+          "mFormulaParts": [
+            {
+              "mStat": 9,
+              "mCoefficient": 1,
+              "__type": "StatByCoefficientCalculationPart"
             }
           ],
           "__type": "GameCalculation"
@@ -246,41 +307,23 @@
           22,
           24
         ],
-        "BaseCritDamageMultiplier": [
-          1.2000000476837158,
-          1.2000000476837158,
-          1.2000000476837158,
-          1.2000000476837158,
-          1.2000000476837158,
-          1.2000000476837158,
-          1.2000000476837158
-        ],
-        "BaseChannelDuration": [
-          3,
-          3,
-          3,
-          3,
-          3,
-          3,
-          3
+        "BaseDamage": [
+          10,
+          20,
+          30,
+          40,
+          50,
+          60,
+          70
         ],
         "tADRatio": [
-          0.800000011920929,
-          0.800000011920929,
-          0.800000011920929,
-          0.800000011920929,
-          0.800000011920929,
-          0.800000011920929,
-          0.800000011920929
-        ],
-        "BonusCritDamageScalar": [
-          0.20000000298023224,
-          0.20000000298023224,
-          0.20000000298023224,
-          0.20000000298023224,
-          0.20000000298023224,
-          0.20000000298023224,
-          0.20000000298023224
+          0.6000000238418579,
+          0.6000000238418579,
+          0.6000000238418579,
+          0.6000000238418579,
+          0.6000000238418579,
+          0.6000000238418579,
+          0.6000000238418579
         ],
         "APRatio": [
           0.25,
@@ -290,12 +333,34 @@
           0.25,
           0.25,
           0.25
+        ],
+        "CritDamageMultiplier": [
+          0.30000001192092896,
+          0.30000001192092896,
+          0.30000001192092896,
+          0.30000001192092896,
+          0.30000001192092896,
+          0.30000001192092896,
+          0.30000001192092896
+        ],
+        "BaseChannelDuration": [
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3
         ]
       },
       "mSpellCalculations": {
         "PhysicalDamagePerWave": {
           "mSimpleTooltipCalculationDisplay": 6,
           "mFormulaParts": [
+            {
+              "mDataValue": "BaseDamage",
+              "__type": "NamedDataValueCalculationPart"
+            },
             {
               "mStat": 2,
               "mDataValue": "tADRatio",
@@ -308,131 +373,71 @@
           ],
           "__type": "GameCalculation"
         },
-        "CritMultiplier": {
-          "mSimpleTooltipCalculationDisplay": 6,
-          "mFormulaParts": [
-            {
-              "mDataValue": "BaseCritDamageMultiplier",
-              "__type": "NamedDataValueCalculationPart"
-            },
-            {
-              "mPart1": {
-                "mDataValue": "BonusCritDamageScalar",
-                "__type": "NamedDataValueCalculationPart"
-              },
-              "mPart2": {
-                "mStat": 9,
-                "mStatFormula": 2,
-                "mCoefficient": 1,
-                "__type": "StatByCoefficientCalculationPart"
-              },
-              "__type": "ProductOfSubPartsCalculationPart"
-            }
-          ],
-          "__type": "GameCalculation"
-        },
-        "TotalWaves": {
-          "mFormulaParts": [
-            {
-              "mDataValue": "BaseWaves",
-              "__type": "NamedDataValueCalculationPart"
-            }
-          ],
-          "__type": "GameCalculation"
-        },
-        "TotalChannelDuration": {
-          "mFormulaParts": [
-            {
-              "mDataValue": "BaseChannelDuration",
-              "__type": "NamedDataValueCalculationPart"
-            }
-          ],
-          "mPrecision": 1,
-          "__type": "GameCalculation"
-        },
-        "PhysicalCritPerWave": {
+        "CritDamagePerWave": {
           "mMultiplier": {
             "mSubparts": [
               {
-                "mStat": 2,
-                "mDataValue": "tADRatio",
-                "__type": "StatByNamedDataValueCalculationPart"
+                "mNumber": 1,
+                "__type": "NumberCalculationPart"
               },
               {
-                "mDataValue": "APRatio",
-                "__type": "StatByNamedDataValueCalculationPart"
+                "mPart1": {
+                  "mDataValue": "{8afc08bf}",
+                  "__type": "NamedDataValueCalculationPart"
+                },
+                "mPart2": {
+                  "mSubparts": [
+                    {
+                      "mStat": 9,
+                      "mCoefficient": 1,
+                      "__type": "StatByCoefficientCalculationPart"
+                    },
+                    {
+                      "mNumber": -1,
+                      "__type": "NumberCalculationPart"
+                    }
+                  ],
+                  "__type": "SumOfSubPartsCalculationPart"
+                },
+                "__type": "ProductOfSubPartsCalculationPart"
               }
             ],
             "__type": "SumOfSubPartsCalculationPart"
           },
-          "mModifiedGameCalculation": "CritMultiplier",
+          "mSimpleTooltipCalculationDisplay": 6,
+          "mModifiedGameCalculation": "PhysicalDamagePerWave",
           "__type": "GameCalculationModified"
         },
         "TotalPhysicalDamage": {
           "mMultiplier": {
-            "mSubparts": [
-              {
-                "mStat": 2,
-                "mDataValue": "tADRatio",
-                "__type": "StatByNamedDataValueCalculationPart"
-              },
-              {
-                "mDataValue": "APRatio",
-                "__type": "StatByNamedDataValueCalculationPart"
-              }
-            ],
-            "__type": "SumOfSubPartsCalculationPart"
+            "mDataValue": "BaseWaves",
+            "__type": "NamedDataValueCalculationPart"
           },
-          "mModifiedGameCalculation": "TotalWaves",
-          "__type": "GameCalculationModified"
-        },
-        "TotalPhysicalCritDamage": {
-          "mMultiplier": {
-            "mPart1": {
-              "mSubparts": [
-                {
-                  "mStat": 2,
-                  "mDataValue": "tADRatio",
-                  "__type": "StatByNamedDataValueCalculationPart"
-                },
-                {
-                  "mDataValue": "APRatio",
-                  "__type": "StatByNamedDataValueCalculationPart"
-                }
-              ],
-              "__type": "SumOfSubPartsCalculationPart"
-            },
-            "mPart2": {
-              "mSubparts": [
-                {
-                  "mDataValue": "BaseCritDamageMultiplier",
-                  "__type": "NamedDataValueCalculationPart"
-                },
-                {
-                  "mPart1": {
-                    "mDataValue": "BonusCritDamageScalar",
-                    "__type": "NamedDataValueCalculationPart"
-                  },
-                  "mPart2": {
-                    "mStat": 9,
-                    "mStatFormula": 2,
-                    "mCoefficient": 1,
-                    "__type": "StatByCoefficientCalculationPart"
-                  },
-                  "__type": "ProductOfSubPartsCalculationPart"
-                }
-              ],
-              "__type": "SumOfSubPartsCalculationPart"
-            },
-            "__type": "ProductOfSubPartsCalculationPart"
-          },
-          "mModifiedGameCalculation": "TotalWaves",
+          "mModifiedGameCalculation": "PhysicalDamagePerWave",
           "__type": "GameCalculationModified"
         }
       }
     },
     "MissFortuneRicochetShot": {
       "DataValues": {
+        "BaseDamage": [
+          -5,
+          20,
+          45,
+          70,
+          95,
+          120,
+          145
+        ],
+        "ADRatio": [
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
         "APRatio": [
           0.3499999940395355,
           0.3499999940395355,
@@ -442,33 +447,76 @@
           0.3499999940395355,
           0.3499999940395355
         ],
-        "BaseDamage": [
-          0,
-          20,
-          45,
-          70,
-          95,
-          120,
-          120
+        "BounceCriticalMod": [
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5
         ]
       },
       "mSpellCalculations": {
         "TotalDamageTooltip": {
           "mSimpleTooltipCalculationDisplay": 6,
-          "tooltipOnly": true,
           "mFormulaParts": [
             {
-              "mEffectIndex": 2,
-              "__type": "EffectValueCalculationPart"
+              "mDataValue": "BaseDamage",
+              "__type": "NamedDataValueCalculationPart"
             },
             {
               "mStat": 2,
-              "mCoefficient": 1,
-              "__type": "StatByCoefficientCalculationPart"
+              "mDataValue": "ADRatio",
+              "__type": "StatByNamedDataValueCalculationPart"
             },
             {
               "mDataValue": "APRatio",
               "__type": "StatByNamedDataValueCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        },
+        "TotalDamageCrit": {
+          "mMultiplier": {
+            "mSubparts": [
+              {
+                "mNumber": 1,
+                "__type": "NumberCalculationPart"
+              },
+              {
+                "mPart1": {
+                  "mDataValue": "{f2018e54}",
+                  "__type": "NamedDataValueCalculationPart"
+                },
+                "mPart2": {
+                  "mSubparts": [
+                    {
+                      "mStat": 9,
+                      "mCoefficient": 1,
+                      "__type": "StatByCoefficientCalculationPart"
+                    },
+                    {
+                      "mNumber": -1,
+                      "__type": "NumberCalculationPart"
+                    }
+                  ],
+                  "__type": "SumOfSubPartsCalculationPart"
+                },
+                "__type": "ProductOfSubPartsCalculationPart"
+              }
+            ],
+            "__type": "SumOfSubPartsCalculationPart"
+          },
+          "mModifiedGameCalculation": "TotalDamageTooltip",
+          "__type": "GameCalculationModified"
+        },
+        "{5a1fd353}": {
+          "mFormulaParts": [
+            {
+              "mStat": 9,
+              "mCoefficient": 1,
+              "__type": "StatByCoefficientCalculationPart"
             }
           ],
           "__type": "GameCalculation"
@@ -673,41 +721,23 @@
           22,
           24
         ],
-        "BaseCritDamageMultiplier": [
-          1.2000000476837158,
-          1.2000000476837158,
-          1.2000000476837158,
-          1.2000000476837158,
-          1.2000000476837158,
-          1.2000000476837158,
-          1.2000000476837158
-        ],
-        "BaseChannelDuration": [
-          3,
-          3,
-          3,
-          3,
-          3,
-          3,
-          3
+        "BaseDamage": [
+          10,
+          20,
+          30,
+          40,
+          50,
+          60,
+          70
         ],
         "tADRatio": [
-          0.800000011920929,
-          0.800000011920929,
-          0.800000011920929,
-          0.800000011920929,
-          0.800000011920929,
-          0.800000011920929,
-          0.800000011920929
-        ],
-        "BonusCritDamageScalar": [
-          0.20000000298023224,
-          0.20000000298023224,
-          0.20000000298023224,
-          0.20000000298023224,
-          0.20000000298023224,
-          0.20000000298023224,
-          0.20000000298023224
+          0.6000000238418579,
+          0.6000000238418579,
+          0.6000000238418579,
+          0.6000000238418579,
+          0.6000000238418579,
+          0.6000000238418579,
+          0.6000000238418579
         ],
         "APRatio": [
           0.25,
@@ -717,12 +747,34 @@
           0.25,
           0.25,
           0.25
+        ],
+        "CritDamageMultiplier": [
+          0.30000001192092896,
+          0.30000001192092896,
+          0.30000001192092896,
+          0.30000001192092896,
+          0.30000001192092896,
+          0.30000001192092896,
+          0.30000001192092896
+        ],
+        "BaseChannelDuration": [
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3
         ]
       },
       "mSpellCalculations": {
         "PhysicalDamagePerWave": {
           "mSimpleTooltipCalculationDisplay": 6,
           "mFormulaParts": [
+            {
+              "mDataValue": "BaseDamage",
+              "__type": "NamedDataValueCalculationPart"
+            },
             {
               "mStat": 2,
               "mDataValue": "tADRatio",
@@ -735,125 +787,47 @@
           ],
           "__type": "GameCalculation"
         },
-        "CritMultiplier": {
-          "mSimpleTooltipCalculationDisplay": 6,
-          "mFormulaParts": [
-            {
-              "mDataValue": "BaseCritDamageMultiplier",
-              "__type": "NamedDataValueCalculationPart"
-            },
-            {
-              "mPart1": {
-                "mDataValue": "BonusCritDamageScalar",
-                "__type": "NamedDataValueCalculationPart"
-              },
-              "mPart2": {
-                "mStat": 9,
-                "mStatFormula": 2,
-                "mCoefficient": 1,
-                "__type": "StatByCoefficientCalculationPart"
-              },
-              "__type": "ProductOfSubPartsCalculationPart"
-            }
-          ],
-          "__type": "GameCalculation"
-        },
-        "TotalWaves": {
-          "mFormulaParts": [
-            {
-              "mDataValue": "BaseWaves",
-              "__type": "NamedDataValueCalculationPart"
-            }
-          ],
-          "__type": "GameCalculation"
-        },
-        "TotalChannelDuration": {
-          "mFormulaParts": [
-            {
-              "mDataValue": "BaseChannelDuration",
-              "__type": "NamedDataValueCalculationPart"
-            }
-          ],
-          "mPrecision": 1,
-          "__type": "GameCalculation"
-        },
-        "PhysicalCritPerWave": {
+        "CritDamagePerWave": {
           "mMultiplier": {
             "mSubparts": [
               {
-                "mStat": 2,
-                "mDataValue": "tADRatio",
-                "__type": "StatByNamedDataValueCalculationPart"
+                "mNumber": 1,
+                "__type": "NumberCalculationPart"
               },
               {
-                "mDataValue": "APRatio",
-                "__type": "StatByNamedDataValueCalculationPart"
+                "mPart1": {
+                  "mDataValue": "{8afc08bf}",
+                  "__type": "NamedDataValueCalculationPart"
+                },
+                "mPart2": {
+                  "mSubparts": [
+                    {
+                      "mStat": 9,
+                      "mCoefficient": 1,
+                      "__type": "StatByCoefficientCalculationPart"
+                    },
+                    {
+                      "mNumber": -1,
+                      "__type": "NumberCalculationPart"
+                    }
+                  ],
+                  "__type": "SumOfSubPartsCalculationPart"
+                },
+                "__type": "ProductOfSubPartsCalculationPart"
               }
             ],
             "__type": "SumOfSubPartsCalculationPart"
           },
-          "mModifiedGameCalculation": "CritMultiplier",
+          "mSimpleTooltipCalculationDisplay": 6,
+          "mModifiedGameCalculation": "PhysicalDamagePerWave",
           "__type": "GameCalculationModified"
         },
         "TotalPhysicalDamage": {
           "mMultiplier": {
-            "mSubparts": [
-              {
-                "mStat": 2,
-                "mDataValue": "tADRatio",
-                "__type": "StatByNamedDataValueCalculationPart"
-              },
-              {
-                "mDataValue": "APRatio",
-                "__type": "StatByNamedDataValueCalculationPart"
-              }
-            ],
-            "__type": "SumOfSubPartsCalculationPart"
+            "mDataValue": "BaseWaves",
+            "__type": "NamedDataValueCalculationPart"
           },
-          "mModifiedGameCalculation": "TotalWaves",
-          "__type": "GameCalculationModified"
-        },
-        "TotalPhysicalCritDamage": {
-          "mMultiplier": {
-            "mPart1": {
-              "mSubparts": [
-                {
-                  "mStat": 2,
-                  "mDataValue": "tADRatio",
-                  "__type": "StatByNamedDataValueCalculationPart"
-                },
-                {
-                  "mDataValue": "APRatio",
-                  "__type": "StatByNamedDataValueCalculationPart"
-                }
-              ],
-              "__type": "SumOfSubPartsCalculationPart"
-            },
-            "mPart2": {
-              "mSubparts": [
-                {
-                  "mDataValue": "BaseCritDamageMultiplier",
-                  "__type": "NamedDataValueCalculationPart"
-                },
-                {
-                  "mPart1": {
-                    "mDataValue": "BonusCritDamageScalar",
-                    "__type": "NamedDataValueCalculationPart"
-                  },
-                  "mPart2": {
-                    "mStat": 9,
-                    "mStatFormula": 2,
-                    "mCoefficient": 1,
-                    "__type": "StatByCoefficientCalculationPart"
-                  },
-                  "__type": "ProductOfSubPartsCalculationPart"
-                }
-              ],
-              "__type": "SumOfSubPartsCalculationPart"
-            },
-            "__type": "ProductOfSubPartsCalculationPart"
-          },
-          "mModifiedGameCalculation": "TotalWaves",
+          "mModifiedGameCalculation": "PhysicalDamagePerWave",
           "__type": "GameCalculationModified"
         }
       }

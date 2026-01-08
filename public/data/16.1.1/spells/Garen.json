@@ -1,7 +1,7 @@
 {
   "version": "16.1.1",
   "ddragonVersion": "16.1.1",
-  "cdragonVersion": "15.24",
+  "cdragonVersion": "16.1",
   "championId": "Garen",
   "spellData": {
     "0": {
@@ -301,23 +301,14 @@
           0.25,
           0.25
         ],
-        "CritBaseMult": [
-          0.800000011920929,
-          0.800000011920929,
-          0.800000011920929,
-          0.800000011920929,
-          0.800000011920929,
-          0.800000011920929,
-          0.800000011920929
-        ],
-        "MonsterMod": [
-          1,
-          1,
-          1,
-          1,
-          1,
-          1,
-          1
+        "CritMod": [
+          0.30000001192092896,
+          0.30000001192092896,
+          0.30000001192092896,
+          0.30000001192092896,
+          0.30000001192092896,
+          0.30000001192092896,
+          0.30000001192092896
         ]
       },
       "mSpellCalculations": {
@@ -335,15 +326,7 @@
           ],
           "__type": "GameCalculation"
         },
-        "{85042ef6}": {
-          "mMultiplier": {
-            "mDataValue": "NearestEnemyBonus",
-            "__type": "NamedDataValueCalculationPart"
-          },
-          "mModifiedGameCalculation": "TotalDamage",
-          "__type": "GameCalculationModified"
-        },
-        "TotalDamageNearest": {
+        "CriticalDamage": {
           "mMultiplier": {
             "mSubparts": [
               {
@@ -351,45 +334,28 @@
                 "__type": "NumberCalculationPart"
               },
               {
-                "mDataValue": "NearestEnemyBonus",
-                "__type": "NamedDataValueCalculationPart"
+                "mPart1": {
+                  "mDataValue": "CritMod",
+                  "__type": "NamedDataValueCalculationPart"
+                },
+                "mPart2": {
+                  "mSubparts": [
+                    {
+                      "mStat": 9,
+                      "mCoefficient": 1,
+                      "__type": "StatByCoefficientCalculationPart"
+                    },
+                    {
+                      "mNumber": -1,
+                      "__type": "NumberCalculationPart"
+                    }
+                  ],
+                  "__type": "SumOfSubPartsCalculationPart"
+                },
+                "__type": "ProductOfSubPartsCalculationPart"
               }
             ],
             "__type": "SumOfSubPartsCalculationPart"
-          },
-          "mModifiedGameCalculation": "TotalDamage",
-          "__type": "GameCalculationModified"
-        },
-        "TotalDamageCrit": {
-          "mMultiplier": {
-            "mStat": 9,
-            "mDataValue": "CritBaseMult",
-            "__type": "StatByNamedDataValueCalculationPart"
-          },
-          "mModifiedGameCalculation": "TotalDamage",
-          "__type": "GameCalculationModified"
-        },
-        "TotalDamageNearestCrit": {
-          "mMultiplier": {
-            "mPart1": {
-              "mSubparts": [
-                {
-                  "mNumber": 1,
-                  "__type": "NumberCalculationPart"
-                },
-                {
-                  "mDataValue": "NearestEnemyBonus",
-                  "__type": "NamedDataValueCalculationPart"
-                }
-              ],
-              "__type": "SumOfSubPartsCalculationPart"
-            },
-            "mPart2": {
-              "mStat": 9,
-              "mDataValue": "CritBaseMult",
-              "__type": "StatByNamedDataValueCalculationPart"
-            },
-            "__type": "ProductOfSubPartsCalculationPart"
           },
           "mModifiedGameCalculation": "TotalDamage",
           "__type": "GameCalculationModified"
@@ -402,22 +368,6 @@
             }
           ],
           "__type": "GameCalculation"
-        },
-        "{733c613a}": {
-          "mMultiplier": {
-            "mPart1": {
-              "mDataValue": "NearestEnemyBonus",
-              "__type": "NamedDataValueCalculationPart"
-            },
-            "mPart2": {
-              "mStat": 9,
-              "mDataValue": "CritBaseMult",
-              "__type": "StatByNamedDataValueCalculationPart"
-            },
-            "__type": "ProductOfSubPartsCalculationPart"
-          },
-          "mModifiedGameCalculation": "TotalDamage",
-          "__type": "GameCalculationModified"
         }
       }
     },
@@ -749,23 +699,14 @@
           0.25,
           0.25
         ],
-        "CritBaseMult": [
-          0.800000011920929,
-          0.800000011920929,
-          0.800000011920929,
-          0.800000011920929,
-          0.800000011920929,
-          0.800000011920929,
-          0.800000011920929
-        ],
-        "MonsterMod": [
-          1,
-          1,
-          1,
-          1,
-          1,
-          1,
-          1
+        "CritMod": [
+          0.30000001192092896,
+          0.30000001192092896,
+          0.30000001192092896,
+          0.30000001192092896,
+          0.30000001192092896,
+          0.30000001192092896,
+          0.30000001192092896
         ]
       },
       "mSpellCalculations": {
@@ -783,15 +724,7 @@
           ],
           "__type": "GameCalculation"
         },
-        "{85042ef6}": {
-          "mMultiplier": {
-            "mDataValue": "NearestEnemyBonus",
-            "__type": "NamedDataValueCalculationPart"
-          },
-          "mModifiedGameCalculation": "TotalDamage",
-          "__type": "GameCalculationModified"
-        },
-        "TotalDamageNearest": {
+        "CriticalDamage": {
           "mMultiplier": {
             "mSubparts": [
               {
@@ -799,45 +732,28 @@
                 "__type": "NumberCalculationPart"
               },
               {
-                "mDataValue": "NearestEnemyBonus",
-                "__type": "NamedDataValueCalculationPart"
+                "mPart1": {
+                  "mDataValue": "CritMod",
+                  "__type": "NamedDataValueCalculationPart"
+                },
+                "mPart2": {
+                  "mSubparts": [
+                    {
+                      "mStat": 9,
+                      "mCoefficient": 1,
+                      "__type": "StatByCoefficientCalculationPart"
+                    },
+                    {
+                      "mNumber": -1,
+                      "__type": "NumberCalculationPart"
+                    }
+                  ],
+                  "__type": "SumOfSubPartsCalculationPart"
+                },
+                "__type": "ProductOfSubPartsCalculationPart"
               }
             ],
             "__type": "SumOfSubPartsCalculationPart"
-          },
-          "mModifiedGameCalculation": "TotalDamage",
-          "__type": "GameCalculationModified"
-        },
-        "TotalDamageCrit": {
-          "mMultiplier": {
-            "mStat": 9,
-            "mDataValue": "CritBaseMult",
-            "__type": "StatByNamedDataValueCalculationPart"
-          },
-          "mModifiedGameCalculation": "TotalDamage",
-          "__type": "GameCalculationModified"
-        },
-        "TotalDamageNearestCrit": {
-          "mMultiplier": {
-            "mPart1": {
-              "mSubparts": [
-                {
-                  "mNumber": 1,
-                  "__type": "NumberCalculationPart"
-                },
-                {
-                  "mDataValue": "NearestEnemyBonus",
-                  "__type": "NamedDataValueCalculationPart"
-                }
-              ],
-              "__type": "SumOfSubPartsCalculationPart"
-            },
-            "mPart2": {
-              "mStat": 9,
-              "mDataValue": "CritBaseMult",
-              "__type": "StatByNamedDataValueCalculationPart"
-            },
-            "__type": "ProductOfSubPartsCalculationPart"
           },
           "mModifiedGameCalculation": "TotalDamage",
           "__type": "GameCalculationModified"
@@ -850,22 +766,6 @@
             }
           ],
           "__type": "GameCalculation"
-        },
-        "{733c613a}": {
-          "mMultiplier": {
-            "mPart1": {
-              "mDataValue": "NearestEnemyBonus",
-              "__type": "NamedDataValueCalculationPart"
-            },
-            "mPart2": {
-              "mStat": 9,
-              "mDataValue": "CritBaseMult",
-              "__type": "StatByNamedDataValueCalculationPart"
-            },
-            "__type": "ProductOfSubPartsCalculationPart"
-          },
-          "mModifiedGameCalculation": "TotalDamage",
-          "__type": "GameCalculationModified"
         }
       }
     },

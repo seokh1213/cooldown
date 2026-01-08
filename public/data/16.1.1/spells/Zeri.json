@@ -1,7 +1,7 @@
 {
   "version": "16.1.1",
   "ddragonVersion": "16.1.1",
-  "cdragonVersion": "15.24",
+  "cdragonVersion": "16.1",
   "championId": "Zeri",
   "spellData": {
     "0": {
@@ -216,14 +216,23 @@
           190,
           230
         ],
-        "CritMult": [
-          1.75,
-          1.75,
-          1.75,
-          1.75,
-          1.75,
-          1.75,
-          1.75
+        "ADRatio": [
+          1.2000000476837158,
+          1.2000000476837158,
+          1.2000000476837158,
+          1.2000000476837158,
+          1.2000000476837158,
+          1.2000000476837158,
+          1.2000000476837158
+        ],
+        "CriticalEffectiveness": [
+          0.75,
+          0.75,
+          0.75,
+          0.75,
+          0.75,
+          0.75,
+          0.75
         ],
         "SlowPercent": [
           0.25,
@@ -307,8 +316,8 @@
             },
             {
               "mStat": 2,
-              "mCoefficient": 1.2999999523162842,
-              "__type": "StatByCoefficientCalculationPart"
+              "mDataValue": "ADRatio",
+              "__type": "StatByNamedDataValueCalculationPart"
             },
             {
               "mCoefficient": 0.25,
@@ -316,6 +325,40 @@
             }
           ],
           "__type": "GameCalculation"
+        },
+        "WallDamage": {
+          "mMultiplier": {
+            "mSubparts": [
+              {
+                "mNumber": 1,
+                "__type": "NumberCalculationPart"
+              },
+              {
+                "mPart1": {
+                  "mDataValue": "CriticalEffectiveness",
+                  "__type": "NamedDataValueCalculationPart"
+                },
+                "mPart2": {
+                  "mSubparts": [
+                    {
+                      "mStat": 9,
+                      "mCoefficient": 1,
+                      "__type": "StatByCoefficientCalculationPart"
+                    },
+                    {
+                      "mNumber": -1,
+                      "__type": "NumberCalculationPart"
+                    }
+                  ],
+                  "__type": "SumOfSubPartsCalculationPart"
+                },
+                "__type": "ProductOfSubPartsCalculationPart"
+              }
+            ],
+            "__type": "SumOfSubPartsCalculationPart"
+          },
+          "mModifiedGameCalculation": "TotalDamage",
+          "__type": "GameCalculationModified"
         }
       }
     },
@@ -403,13 +446,31 @@
           1500
         ],
         "BonusDamageBase": [
-          18,
-          20,
-          22,
-          24,
-          26,
-          28,
-          30
+          15,
+          17,
+          19,
+          21,
+          23,
+          25,
+          27
+        ],
+        "BonusADRatio": [
+          0.10000000149011612,
+          0.10000000149011612,
+          0.10000000149011612,
+          0.10000000149011612,
+          0.10000000149011612,
+          0.10000000149011612,
+          0.10000000149011612
+        ],
+        "BonusAPRatio": [
+          0.20000000298023224,
+          0.20000000298023224,
+          0.20000000298023224,
+          0.20000000298023224,
+          0.20000000298023224,
+          0.20000000298023224,
+          0.20000000298023224
         ],
         "IndicatorRevealTime": [
           0.75,
@@ -420,14 +481,14 @@
           0.75,
           0.75
         ],
-        "CritChanceMaxAmp": [
-          0.8500000238418579,
-          0.8500000238418579,
-          0.8500000238418579,
-          0.8500000238418579,
-          0.8500000238418579,
-          0.8500000238418579,
-          0.8500000238418579
+        "CritScalingMod": [
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
         ],
         "CritCDReductionPerHit": [
           1.5,
@@ -462,18 +523,31 @@
                 "__type": "NumberCalculationPart"
               },
               {
-                "mStat": 8,
-                "mDataValue": "CritChanceMaxAmp",
-                "__type": "StatByNamedDataValueCalculationPart"
+                "mPart1": {
+                  "mStat": 8,
+                  "mDataValue": "CritScalingMod",
+                  "__type": "StatByNamedDataValueCalculationPart"
+                },
+                "mPart2": {
+                  "mSubparts": [
+                    {
+                      "mStat": 9,
+                      "mCoefficient": 1,
+                      "__type": "StatByCoefficientCalculationPart"
+                    },
+                    {
+                      "mNumber": -1,
+                      "__type": "NumberCalculationPart"
+                    }
+                  ],
+                  "__type": "SumOfSubPartsCalculationPart"
+                },
+                "__type": "ProductOfSubPartsCalculationPart"
               }
             ],
             "__type": "SumOfSubPartsCalculationPart"
           },
           "mFormulaParts": [
-            {
-              "mCoefficient": 0.20000000298023224,
-              "__type": "StatByCoefficientCalculationPart"
-            },
             {
               "mDataValue": "BonusDamageBase",
               "__type": "NamedDataValueCalculationPart"
@@ -481,8 +555,12 @@
             {
               "mStat": 2,
               "mStatFormula": 2,
-              "mCoefficient": 0.11999999731779099,
-              "__type": "StatByCoefficientCalculationPart"
+              "mDataValue": "BonusADRatio",
+              "__type": "StatByNamedDataValueCalculationPart"
+            },
+            {
+              "mDataValue": "BonusAPRatio",
+              "__type": "StatByNamedDataValueCalculationPart"
             }
           ],
           "__type": "GameCalculation"
@@ -569,13 +647,13 @@
           30
         ],
         "ActiveDamage": [
-          100,
-          200,
-          300,
-          400,
-          500,
-          600,
-          700
+          50,
+          150,
+          250,
+          350,
+          450,
+          550,
+          650
         ],
         "NovaRange": [
           825,
@@ -880,14 +958,23 @@
           190,
           230
         ],
-        "CritMult": [
-          1.75,
-          1.75,
-          1.75,
-          1.75,
-          1.75,
-          1.75,
-          1.75
+        "ADRatio": [
+          1.2000000476837158,
+          1.2000000476837158,
+          1.2000000476837158,
+          1.2000000476837158,
+          1.2000000476837158,
+          1.2000000476837158,
+          1.2000000476837158
+        ],
+        "CriticalEffectiveness": [
+          0.75,
+          0.75,
+          0.75,
+          0.75,
+          0.75,
+          0.75,
+          0.75
         ],
         "SlowPercent": [
           0.25,
@@ -971,8 +1058,8 @@
             },
             {
               "mStat": 2,
-              "mCoefficient": 1.2999999523162842,
-              "__type": "StatByCoefficientCalculationPart"
+              "mDataValue": "ADRatio",
+              "__type": "StatByNamedDataValueCalculationPart"
             },
             {
               "mCoefficient": 0.25,
@@ -980,6 +1067,40 @@
             }
           ],
           "__type": "GameCalculation"
+        },
+        "WallDamage": {
+          "mMultiplier": {
+            "mSubparts": [
+              {
+                "mNumber": 1,
+                "__type": "NumberCalculationPart"
+              },
+              {
+                "mPart1": {
+                  "mDataValue": "CriticalEffectiveness",
+                  "__type": "NamedDataValueCalculationPart"
+                },
+                "mPart2": {
+                  "mSubparts": [
+                    {
+                      "mStat": 9,
+                      "mCoefficient": 1,
+                      "__type": "StatByCoefficientCalculationPart"
+                    },
+                    {
+                      "mNumber": -1,
+                      "__type": "NumberCalculationPart"
+                    }
+                  ],
+                  "__type": "SumOfSubPartsCalculationPart"
+                },
+                "__type": "ProductOfSubPartsCalculationPart"
+              }
+            ],
+            "__type": "SumOfSubPartsCalculationPart"
+          },
+          "mModifiedGameCalculation": "TotalDamage",
+          "__type": "GameCalculationModified"
         }
       }
     },
@@ -1067,13 +1188,31 @@
           1500
         ],
         "BonusDamageBase": [
-          18,
-          20,
-          22,
-          24,
-          26,
-          28,
-          30
+          15,
+          17,
+          19,
+          21,
+          23,
+          25,
+          27
+        ],
+        "BonusADRatio": [
+          0.10000000149011612,
+          0.10000000149011612,
+          0.10000000149011612,
+          0.10000000149011612,
+          0.10000000149011612,
+          0.10000000149011612,
+          0.10000000149011612
+        ],
+        "BonusAPRatio": [
+          0.20000000298023224,
+          0.20000000298023224,
+          0.20000000298023224,
+          0.20000000298023224,
+          0.20000000298023224,
+          0.20000000298023224,
+          0.20000000298023224
         ],
         "IndicatorRevealTime": [
           0.75,
@@ -1084,14 +1223,14 @@
           0.75,
           0.75
         ],
-        "CritChanceMaxAmp": [
-          0.8500000238418579,
-          0.8500000238418579,
-          0.8500000238418579,
-          0.8500000238418579,
-          0.8500000238418579,
-          0.8500000238418579,
-          0.8500000238418579
+        "CritScalingMod": [
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
         ],
         "CritCDReductionPerHit": [
           1.5,
@@ -1126,18 +1265,31 @@
                 "__type": "NumberCalculationPart"
               },
               {
-                "mStat": 8,
-                "mDataValue": "CritChanceMaxAmp",
-                "__type": "StatByNamedDataValueCalculationPart"
+                "mPart1": {
+                  "mStat": 8,
+                  "mDataValue": "CritScalingMod",
+                  "__type": "StatByNamedDataValueCalculationPart"
+                },
+                "mPart2": {
+                  "mSubparts": [
+                    {
+                      "mStat": 9,
+                      "mCoefficient": 1,
+                      "__type": "StatByCoefficientCalculationPart"
+                    },
+                    {
+                      "mNumber": -1,
+                      "__type": "NumberCalculationPart"
+                    }
+                  ],
+                  "__type": "SumOfSubPartsCalculationPart"
+                },
+                "__type": "ProductOfSubPartsCalculationPart"
               }
             ],
             "__type": "SumOfSubPartsCalculationPart"
           },
           "mFormulaParts": [
-            {
-              "mCoefficient": 0.20000000298023224,
-              "__type": "StatByCoefficientCalculationPart"
-            },
             {
               "mDataValue": "BonusDamageBase",
               "__type": "NamedDataValueCalculationPart"
@@ -1145,8 +1297,12 @@
             {
               "mStat": 2,
               "mStatFormula": 2,
-              "mCoefficient": 0.11999999731779099,
-              "__type": "StatByCoefficientCalculationPart"
+              "mDataValue": "BonusADRatio",
+              "__type": "StatByNamedDataValueCalculationPart"
+            },
+            {
+              "mDataValue": "BonusAPRatio",
+              "__type": "StatByNamedDataValueCalculationPart"
             }
           ],
           "__type": "GameCalculation"
@@ -1233,13 +1389,13 @@
           30
         ],
         "ActiveDamage": [
-          100,
-          200,
-          300,
-          400,
-          500,
-          600,
-          700
+          50,
+          150,
+          250,
+          350,
+          450,
+          550,
+          650
         ],
         "NovaRange": [
           825,
