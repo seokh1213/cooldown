@@ -1,0 +1,790 @@
+{
+  "version": "16.2.1",
+  "ddragonVersion": "16.2.1",
+  "cdragonVersion": "16.1",
+  "championId": "Sylas",
+  "spellData": {
+    "0": {
+      "DataValues": {
+        "BaseDamage": [
+          20,
+          40,
+          60,
+          80,
+          100,
+          120,
+          140
+        ],
+        "APRatio1": [
+          0.4000000059604645,
+          0.4000000059604645,
+          0.4000000059604645,
+          0.4000000059604645,
+          0.4000000059604645,
+          0.4000000059604645,
+          0.4000000059604645
+        ],
+        "ExplosionBaseDamage": [
+          5,
+          60,
+          115,
+          170,
+          225,
+          280,
+          335
+        ],
+        "APRatio2": [
+          0.800000011920929,
+          0.800000011920929,
+          0.800000011920929,
+          0.800000011920929,
+          0.800000011920929,
+          0.800000011920929,
+          0.800000011920929
+        ],
+        "SlowAmount": [
+          0.10000000149011612,
+          0.15000000596046448,
+          0.20000000298023224,
+          0.25,
+          0.30000001192092896,
+          0.3499999940395355,
+          0.4000000059604645
+        ],
+        "MinionMod": [
+          0.4000000059604645,
+          0.4000000059604645,
+          0.4000000059604645,
+          0.4000000059604645,
+          0.4000000059604645,
+          0.4000000059604645,
+          0.4000000059604645
+        ],
+        "Q2AoE": [
+          180,
+          180,
+          180,
+          180,
+          180,
+          180,
+          180
+        ],
+        "DetonationDelay": [
+          0.6000000238418579,
+          0.6000000238418579,
+          0.6000000238418579,
+          0.6000000238418579,
+          0.6000000238418579,
+          0.6000000238418579,
+          0.6000000238418579
+        ],
+        "SlowDuration": [
+          1.5,
+          1.5,
+          1.5,
+          1.5,
+          1.5,
+          1.5,
+          1.5
+        ],
+        "MonsterMod": [
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
+        ]
+      },
+      "mSpellCalculations": {
+        "Damage": {
+          "mFormulaParts": [
+            {
+              "mDataValue": "BaseDamage",
+              "__type": "NamedDataValueCalculationPart"
+            },
+            {
+              "mDataValue": "APRatio1",
+              "__type": "StatByNamedDataValueCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        },
+        "SlowAmountCalc": {
+          "mFormulaParts": [
+            {
+              "mDataValue": "SlowAmount",
+              "__type": "NamedDataValueCalculationPart"
+            }
+          ],
+          "mDisplayAsPercent": true,
+          "__type": "GameCalculation"
+        },
+        "ExplosionDamage": {
+          "mFormulaParts": [
+            {
+              "mDataValue": "ExplosionBaseDamage",
+              "__type": "NamedDataValueCalculationPart"
+            },
+            {
+              "mDataValue": "APRatio2",
+              "__type": "StatByNamedDataValueCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        }
+      }
+    },
+    "1": {
+      "DataValues": {
+        "Damage": [
+          40,
+          75,
+          110,
+          145,
+          180,
+          215,
+          250
+        ],
+        "Healing": [
+          0,
+          20,
+          40,
+          60,
+          80,
+          100,
+          120
+        ],
+        "MaxHealingPercentAmp": [
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2
+        ],
+        "MaxExecuteThreshold": [
+          0.4000000059604645,
+          0.4000000059604645,
+          0.4000000059604645,
+          0.4000000059604645,
+          0.4000000059604645,
+          0.4000000059604645,
+          0.4000000059604645
+        ],
+        "DamageAPRatio": [
+          0.6000000238418579,
+          0.6000000238418579,
+          0.6000000238418579,
+          0.6000000238418579,
+          0.6000000238418579,
+          0.6000000238418579,
+          0.6000000238418579
+        ],
+        "HealMinAPRatio": [
+          0.20000000298023224,
+          0.20000000298023224,
+          0.20000000298023224,
+          0.20000000298023224,
+          0.20000000298023224,
+          0.20000000298023224,
+          0.20000000298023224
+        ],
+        "HealMinHPRatio": [
+          0.05000000074505806,
+          0.05000000074505806,
+          0.05000000074505806,
+          0.05000000074505806,
+          0.05000000074505806,
+          0.05000000074505806,
+          0.05000000074505806
+        ]
+      },
+      "mSpellCalculations": {
+        "MinDamage": {
+          "mFormulaParts": [
+            {
+              "mDataValue": "Damage",
+              "__type": "NamedDataValueCalculationPart"
+            },
+            {
+              "mDataValue": "DamageAPRatio",
+              "__type": "StatByNamedDataValueCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        },
+        "MinHealing": {
+          "mFormulaParts": [
+            {
+              "mDataValue": "Healing",
+              "__type": "NamedDataValueCalculationPart"
+            },
+            {
+              "mDataValue": "HealMinAPRatio",
+              "__type": "StatByNamedDataValueCalculationPart"
+            },
+            {
+              "mStat": 12,
+              "mStatFormula": 2,
+              "mDataValue": "HealMinHPRatio",
+              "__type": "StatByNamedDataValueCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        },
+        "MaxHealing": {
+          "mMultiplier": {
+            "mDataValue": "MaxHealingPercentAmp",
+            "__type": "NamedDataValueCalculationPart"
+          },
+          "mModifiedGameCalculation": "MinHealing",
+          "__type": "GameCalculationModified"
+        }
+      }
+    },
+    "2": {
+      "DataValues": {
+        "PullDamage": [
+          30,
+          80,
+          130,
+          180,
+          230,
+          280,
+          330
+        ],
+        "KnockUpDuration": [
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5
+        ],
+        "APRatio": [
+          0.800000011920929,
+          0.800000011920929,
+          0.800000011920929,
+          0.800000011920929,
+          0.800000011920929,
+          0.800000011920929,
+          0.800000011920929
+        ]
+      },
+      "mSpellCalculations": {
+        "Damage": {
+          "mFormulaParts": [
+            {
+              "mDataValue": "PullDamage",
+              "__type": "NamedDataValueCalculationPart"
+            },
+            {
+              "mDataValue": "APRatio",
+              "__type": "StatByNamedDataValueCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        }
+      }
+    },
+    "3": {
+      "DataValues": {
+        "EnemyCooldownPercent": [
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2
+        ],
+        "EnemyCooldownTooltip": [
+          200,
+          200,
+          200,
+          200,
+          200,
+          200,
+          200
+        ],
+        "MinimumEnemyCooldown": [
+          40,
+          40,
+          40,
+          40,
+          40,
+          40,
+          40
+        ],
+        "UltHoldDuration": [
+          90,
+          90,
+          90,
+          90,
+          90,
+          90,
+          90
+        ]
+      },
+      "mSpellCalculations": {
+        "PerTargetCooldown": {
+          "mSimpleTooltipCalculationDisplay": 5,
+          "mExpandedTooltipCalculationDisplay": 5,
+          "tooltipOnly": true,
+          "mFormulaParts": [
+            {
+              "mPart1": {
+                "__type": "CooldownMultiplierCalculationPart"
+              },
+              "mPart2": {
+                "mNumber": 200,
+                "__type": "NumberCalculationPart"
+              },
+              "__type": "ProductOfSubPartsCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        }
+      }
+    },
+    "SylasQ": {
+      "DataValues": {
+        "BaseDamage": [
+          20,
+          40,
+          60,
+          80,
+          100,
+          120,
+          140
+        ],
+        "APRatio1": [
+          0.4000000059604645,
+          0.4000000059604645,
+          0.4000000059604645,
+          0.4000000059604645,
+          0.4000000059604645,
+          0.4000000059604645,
+          0.4000000059604645
+        ],
+        "ExplosionBaseDamage": [
+          5,
+          60,
+          115,
+          170,
+          225,
+          280,
+          335
+        ],
+        "APRatio2": [
+          0.800000011920929,
+          0.800000011920929,
+          0.800000011920929,
+          0.800000011920929,
+          0.800000011920929,
+          0.800000011920929,
+          0.800000011920929
+        ],
+        "SlowAmount": [
+          0.10000000149011612,
+          0.15000000596046448,
+          0.20000000298023224,
+          0.25,
+          0.30000001192092896,
+          0.3499999940395355,
+          0.4000000059604645
+        ],
+        "MinionMod": [
+          0.4000000059604645,
+          0.4000000059604645,
+          0.4000000059604645,
+          0.4000000059604645,
+          0.4000000059604645,
+          0.4000000059604645,
+          0.4000000059604645
+        ],
+        "Q2AoE": [
+          180,
+          180,
+          180,
+          180,
+          180,
+          180,
+          180
+        ],
+        "DetonationDelay": [
+          0.6000000238418579,
+          0.6000000238418579,
+          0.6000000238418579,
+          0.6000000238418579,
+          0.6000000238418579,
+          0.6000000238418579,
+          0.6000000238418579
+        ],
+        "SlowDuration": [
+          1.5,
+          1.5,
+          1.5,
+          1.5,
+          1.5,
+          1.5,
+          1.5
+        ],
+        "MonsterMod": [
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
+        ]
+      },
+      "mSpellCalculations": {
+        "Damage": {
+          "mFormulaParts": [
+            {
+              "mDataValue": "BaseDamage",
+              "__type": "NamedDataValueCalculationPart"
+            },
+            {
+              "mDataValue": "APRatio1",
+              "__type": "StatByNamedDataValueCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        },
+        "SlowAmountCalc": {
+          "mFormulaParts": [
+            {
+              "mDataValue": "SlowAmount",
+              "__type": "NamedDataValueCalculationPart"
+            }
+          ],
+          "mDisplayAsPercent": true,
+          "__type": "GameCalculation"
+        },
+        "ExplosionDamage": {
+          "mFormulaParts": [
+            {
+              "mDataValue": "ExplosionBaseDamage",
+              "__type": "NamedDataValueCalculationPart"
+            },
+            {
+              "mDataValue": "APRatio2",
+              "__type": "StatByNamedDataValueCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        }
+      }
+    },
+    "SylasW": {
+      "DataValues": {
+        "Damage": [
+          40,
+          75,
+          110,
+          145,
+          180,
+          215,
+          250
+        ],
+        "Healing": [
+          0,
+          20,
+          40,
+          60,
+          80,
+          100,
+          120
+        ],
+        "MaxHealingPercentAmp": [
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2
+        ],
+        "MaxExecuteThreshold": [
+          0.4000000059604645,
+          0.4000000059604645,
+          0.4000000059604645,
+          0.4000000059604645,
+          0.4000000059604645,
+          0.4000000059604645,
+          0.4000000059604645
+        ],
+        "DamageAPRatio": [
+          0.6000000238418579,
+          0.6000000238418579,
+          0.6000000238418579,
+          0.6000000238418579,
+          0.6000000238418579,
+          0.6000000238418579,
+          0.6000000238418579
+        ],
+        "HealMinAPRatio": [
+          0.20000000298023224,
+          0.20000000298023224,
+          0.20000000298023224,
+          0.20000000298023224,
+          0.20000000298023224,
+          0.20000000298023224,
+          0.20000000298023224
+        ],
+        "HealMinHPRatio": [
+          0.05000000074505806,
+          0.05000000074505806,
+          0.05000000074505806,
+          0.05000000074505806,
+          0.05000000074505806,
+          0.05000000074505806,
+          0.05000000074505806
+        ]
+      },
+      "mSpellCalculations": {
+        "MinDamage": {
+          "mFormulaParts": [
+            {
+              "mDataValue": "Damage",
+              "__type": "NamedDataValueCalculationPart"
+            },
+            {
+              "mDataValue": "DamageAPRatio",
+              "__type": "StatByNamedDataValueCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        },
+        "MinHealing": {
+          "mFormulaParts": [
+            {
+              "mDataValue": "Healing",
+              "__type": "NamedDataValueCalculationPart"
+            },
+            {
+              "mDataValue": "HealMinAPRatio",
+              "__type": "StatByNamedDataValueCalculationPart"
+            },
+            {
+              "mStat": 12,
+              "mStatFormula": 2,
+              "mDataValue": "HealMinHPRatio",
+              "__type": "StatByNamedDataValueCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        },
+        "MaxHealing": {
+          "mMultiplier": {
+            "mDataValue": "MaxHealingPercentAmp",
+            "__type": "NamedDataValueCalculationPart"
+          },
+          "mModifiedGameCalculation": "MinHealing",
+          "__type": "GameCalculationModified"
+        }
+      }
+    },
+    "SylasE": {
+      "DataValues": {
+        "PullDamage": [
+          30,
+          80,
+          130,
+          180,
+          230,
+          280,
+          330
+        ],
+        "KnockUpDuration": [
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5
+        ],
+        "APRatio": [
+          0.800000011920929,
+          0.800000011920929,
+          0.800000011920929,
+          0.800000011920929,
+          0.800000011920929,
+          0.800000011920929,
+          0.800000011920929
+        ]
+      },
+      "mSpellCalculations": {
+        "Damage": {
+          "mFormulaParts": [
+            {
+              "mDataValue": "PullDamage",
+              "__type": "NamedDataValueCalculationPart"
+            },
+            {
+              "mDataValue": "APRatio",
+              "__type": "StatByNamedDataValueCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        }
+      }
+    },
+    "SylasR": {
+      "DataValues": {
+        "EnemyCooldownPercent": [
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2
+        ],
+        "EnemyCooldownTooltip": [
+          200,
+          200,
+          200,
+          200,
+          200,
+          200,
+          200
+        ],
+        "MinimumEnemyCooldown": [
+          40,
+          40,
+          40,
+          40,
+          40,
+          40,
+          40
+        ],
+        "UltHoldDuration": [
+          90,
+          90,
+          90,
+          90,
+          90,
+          90,
+          90
+        ]
+      },
+      "mSpellCalculations": {
+        "PerTargetCooldown": {
+          "mSimpleTooltipCalculationDisplay": 5,
+          "mExpandedTooltipCalculationDisplay": 5,
+          "tooltipOnly": true,
+          "mFormulaParts": [
+            {
+              "mPart1": {
+                "__type": "CooldownMultiplierCalculationPart"
+              },
+              "mPart2": {
+                "mNumber": 200,
+                "__type": "NumberCalculationPart"
+              },
+              "__type": "ProductOfSubPartsCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        }
+      }
+    },
+    "SylasPassive": {
+      "DataValues": {
+        "AoE": [
+          300,
+          300,
+          300,
+          300,
+          300,
+          300,
+          300
+        ],
+        "PassiveCharges": [
+          2,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3
+        ],
+        "PassiveDuration": [
+          4,
+          4,
+          4,
+          4,
+          4,
+          4,
+          4
+        ],
+        "CheatingThreshold": [
+          25,
+          25,
+          25,
+          25,
+          25,
+          25,
+          25
+        ],
+        "PassiveAttackSpeed": [
+          1.25,
+          1.25,
+          1.25,
+          1.25,
+          1.25,
+          1.25,
+          1.25
+        ],
+        "MonsterDamageMulti": [
+          1.149999976158142,
+          1.149999976158142,
+          1.149999976158142,
+          1.149999976158142,
+          1.149999976158142,
+          1.149999976158142,
+          1.149999976158142
+        ]
+      },
+      "mSpellCalculations": {
+        "PassiveDamage": {
+          "mFormulaParts": [
+            {
+              "mStat": 2,
+              "mCoefficient": 1.2999999523162842,
+              "__type": "StatByCoefficientCalculationPart"
+            },
+            {
+              "mCoefficient": 0.30000001192092896,
+              "__type": "StatByCoefficientCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        },
+        "PassiveAoEDamage": {
+          "mFormulaParts": [
+            {
+              "mStat": 2,
+              "mCoefficient": 0.4000000059604645,
+              "__type": "StatByCoefficientCalculationPart"
+            },
+            {
+              "mCoefficient": 0.20000000298023224,
+              "__type": "StatByCoefficientCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        }
+      }
+    }
+  }
+}
