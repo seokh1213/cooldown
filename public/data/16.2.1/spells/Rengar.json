@@ -1,7 +1,7 @@
 {
   "version": "16.2.1",
   "ddragonVersion": "16.2.1",
-  "cdragonVersion": "16.1",
+  "cdragonVersion": "16.2",
   "championId": "Rengar",
   "spellData": {
     "0": {
@@ -16,22 +16,22 @@
           180
         ],
         "BaseADRatioTooltip": [
-          96.25,
-          100,
-          103.75,
-          107.5,
-          111.25,
-          115,
-          118.75
+          -3.75,
+          0,
+          3.75,
+          7.5,
+          11.25,
+          15,
+          18.75
         ],
         "EmpoweredADRatio": [
-          1.2999999523162842,
-          1.2999999523162842,
-          1.2999999523162842,
-          1.2999999523162842,
-          1.2999999523162842,
-          1.2999999523162842,
-          1.2999999523162842
+          0.30000001192092896,
+          0.30000001192092896,
+          0.30000001192092896,
+          0.30000001192092896,
+          0.30000001192092896,
+          0.30000001192092896,
+          0.30000001192092896
         ],
         "TowerMod": [
           0.6000000238418579,
@@ -70,13 +70,13 @@
           3
         ],
         "BaseADRatio": [
-          0.9624999761581421,
-          1,
-          1.037500023841858,
-          1.0750000476837158,
-          1.1124999523162842,
-          1.149999976158142,
-          1.1875
+          -0.03750000149011612,
+          0,
+          0.03750000149011612,
+          0.07500000298023224,
+          0.11249999701976776,
+          0.15000000596046448,
+          0.1875
         ],
         "mAmmoRechargeTime": [
           6,
@@ -104,7 +104,7 @@
           "mDisplayAsPercent": true,
           "__type": "GameCalculation"
         },
-        "QDamage": {
+        "QBonusDamage": {
           "mFormulaParts": [
             {
               "mDataValue": "BaseDamage",
@@ -118,7 +118,7 @@
           ],
           "__type": "GameCalculation"
         },
-        "EmpoweredQdamage": {
+        "{d4a43abe}": {
           "mFormulaParts": [
             {
               "mLevel1Value": 30,
@@ -141,27 +141,53 @@
           "__type": "GameCalculation"
         },
         "{95c7ca04}": {
-          "mMultiplier": {
-            "mDataValue": "{2d4374d6}",
-            "__type": "NamedDataValueCalculationPart"
-          },
           "mFormulaParts": [
             {
-              "mSpellCalculationKey": "QDamage",
-              "__type": "{f3cbe7b2}"
+              "mSubparts": [
+                {
+                  "mPart1": {
+                    "mSpellCalculationKey": "QBonusDamage",
+                    "__type": "{f3cbe7b2}"
+                  },
+                  "mPart2": {
+                    "mDataValue": "TowerMod",
+                    "__type": "NamedDataValueCalculationPart"
+                  },
+                  "__type": "ProductOfSubPartsCalculationPart"
+                },
+                {
+                  "mStat": 2,
+                  "mCoefficient": 1,
+                  "__type": "StatByCoefficientCalculationPart"
+                }
+              ],
+              "__type": "SumOfSubPartsCalculationPart"
             }
           ],
           "__type": "GameCalculation"
         },
         "{f2ca2500}": {
-          "mMultiplier": {
-            "mDataValue": "{2d4374d6}",
-            "__type": "NamedDataValueCalculationPart"
-          },
           "mFormulaParts": [
             {
-              "mSpellCalculationKey": "EmpoweredQdamage",
-              "__type": "{f3cbe7b2}"
+              "mSubparts": [
+                {
+                  "mPart1": {
+                    "mSpellCalculationKey": "{d4a43abe}",
+                    "__type": "{f3cbe7b2}"
+                  },
+                  "mPart2": {
+                    "mDataValue": "TowerMod",
+                    "__type": "NamedDataValueCalculationPart"
+                  },
+                  "__type": "ProductOfSubPartsCalculationPart"
+                },
+                {
+                  "mStat": 2,
+                  "mCoefficient": 1,
+                  "__type": "StatByCoefficientCalculationPart"
+                }
+              ],
+              "__type": "SumOfSubPartsCalculationPart"
             }
           ],
           "__type": "GameCalculation"
@@ -181,6 +207,48 @@
             {
               "mNumber": -1,
               "__type": "NumberCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        },
+        "QTotalDamage": {
+          "mSimpleTooltipCalculationDisplay": 6,
+          "mExpandedTooltipCalculationDisplay": 6,
+          "mFormulaParts": [
+            {
+              "mSubparts": [
+                {
+                  "mSpellCalculationKey": "QBonusDamage",
+                  "__type": "{f3cbe7b2}"
+                },
+                {
+                  "mStat": 2,
+                  "mCoefficient": 1,
+                  "__type": "StatByCoefficientCalculationPart"
+                }
+              ],
+              "__type": "SumOfSubPartsCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        },
+        "EmpoweredQTotalDamage": {
+          "mSimpleTooltipCalculationDisplay": 6,
+          "mExpandedTooltipCalculationDisplay": 6,
+          "mFormulaParts": [
+            {
+              "mSubparts": [
+                {
+                  "mSpellCalculationKey": "{d4a43abe}",
+                  "__type": "{f3cbe7b2}"
+                },
+                {
+                  "mStat": 2,
+                  "mCoefficient": 1,
+                  "__type": "StatByCoefficientCalculationPart"
+                }
+              ],
+              "__type": "SumOfSubPartsCalculationPart"
             }
           ],
           "__type": "GameCalculation"
@@ -533,22 +601,22 @@
           180
         ],
         "BaseADRatioTooltip": [
-          96.25,
-          100,
-          103.75,
-          107.5,
-          111.25,
-          115,
-          118.75
+          -3.75,
+          0,
+          3.75,
+          7.5,
+          11.25,
+          15,
+          18.75
         ],
         "EmpoweredADRatio": [
-          1.2999999523162842,
-          1.2999999523162842,
-          1.2999999523162842,
-          1.2999999523162842,
-          1.2999999523162842,
-          1.2999999523162842,
-          1.2999999523162842
+          0.30000001192092896,
+          0.30000001192092896,
+          0.30000001192092896,
+          0.30000001192092896,
+          0.30000001192092896,
+          0.30000001192092896,
+          0.30000001192092896
         ],
         "TowerMod": [
           0.6000000238418579,
@@ -587,13 +655,13 @@
           3
         ],
         "BaseADRatio": [
-          0.9624999761581421,
-          1,
-          1.037500023841858,
-          1.0750000476837158,
-          1.1124999523162842,
-          1.149999976158142,
-          1.1875
+          -0.03750000149011612,
+          0,
+          0.03750000149011612,
+          0.07500000298023224,
+          0.11249999701976776,
+          0.15000000596046448,
+          0.1875
         ],
         "mAmmoRechargeTime": [
           6,
@@ -621,7 +689,7 @@
           "mDisplayAsPercent": true,
           "__type": "GameCalculation"
         },
-        "QDamage": {
+        "QBonusDamage": {
           "mFormulaParts": [
             {
               "mDataValue": "BaseDamage",
@@ -635,7 +703,7 @@
           ],
           "__type": "GameCalculation"
         },
-        "EmpoweredQdamage": {
+        "{d4a43abe}": {
           "mFormulaParts": [
             {
               "mLevel1Value": 30,
@@ -658,27 +726,53 @@
           "__type": "GameCalculation"
         },
         "{95c7ca04}": {
-          "mMultiplier": {
-            "mDataValue": "{2d4374d6}",
-            "__type": "NamedDataValueCalculationPart"
-          },
           "mFormulaParts": [
             {
-              "mSpellCalculationKey": "QDamage",
-              "__type": "{f3cbe7b2}"
+              "mSubparts": [
+                {
+                  "mPart1": {
+                    "mSpellCalculationKey": "QBonusDamage",
+                    "__type": "{f3cbe7b2}"
+                  },
+                  "mPart2": {
+                    "mDataValue": "TowerMod",
+                    "__type": "NamedDataValueCalculationPart"
+                  },
+                  "__type": "ProductOfSubPartsCalculationPart"
+                },
+                {
+                  "mStat": 2,
+                  "mCoefficient": 1,
+                  "__type": "StatByCoefficientCalculationPart"
+                }
+              ],
+              "__type": "SumOfSubPartsCalculationPart"
             }
           ],
           "__type": "GameCalculation"
         },
         "{f2ca2500}": {
-          "mMultiplier": {
-            "mDataValue": "{2d4374d6}",
-            "__type": "NamedDataValueCalculationPart"
-          },
           "mFormulaParts": [
             {
-              "mSpellCalculationKey": "EmpoweredQdamage",
-              "__type": "{f3cbe7b2}"
+              "mSubparts": [
+                {
+                  "mPart1": {
+                    "mSpellCalculationKey": "{d4a43abe}",
+                    "__type": "{f3cbe7b2}"
+                  },
+                  "mPart2": {
+                    "mDataValue": "TowerMod",
+                    "__type": "NamedDataValueCalculationPart"
+                  },
+                  "__type": "ProductOfSubPartsCalculationPart"
+                },
+                {
+                  "mStat": 2,
+                  "mCoefficient": 1,
+                  "__type": "StatByCoefficientCalculationPart"
+                }
+              ],
+              "__type": "SumOfSubPartsCalculationPart"
             }
           ],
           "__type": "GameCalculation"
@@ -698,6 +792,48 @@
             {
               "mNumber": -1,
               "__type": "NumberCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        },
+        "QTotalDamage": {
+          "mSimpleTooltipCalculationDisplay": 6,
+          "mExpandedTooltipCalculationDisplay": 6,
+          "mFormulaParts": [
+            {
+              "mSubparts": [
+                {
+                  "mSpellCalculationKey": "QBonusDamage",
+                  "__type": "{f3cbe7b2}"
+                },
+                {
+                  "mStat": 2,
+                  "mCoefficient": 1,
+                  "__type": "StatByCoefficientCalculationPart"
+                }
+              ],
+              "__type": "SumOfSubPartsCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        },
+        "EmpoweredQTotalDamage": {
+          "mSimpleTooltipCalculationDisplay": 6,
+          "mExpandedTooltipCalculationDisplay": 6,
+          "mFormulaParts": [
+            {
+              "mSubparts": [
+                {
+                  "mSpellCalculationKey": "{d4a43abe}",
+                  "__type": "{f3cbe7b2}"
+                },
+                {
+                  "mStat": 2,
+                  "mCoefficient": 1,
+                  "__type": "StatByCoefficientCalculationPart"
+                }
+              ],
+              "__type": "SumOfSubPartsCalculationPart"
             }
           ],
           "__type": "GameCalculation"
