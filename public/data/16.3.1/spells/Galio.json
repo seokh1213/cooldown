@@ -1,0 +1,733 @@
+{
+  "version": "16.3.1",
+  "ddragonVersion": "16.3.1",
+  "cdragonVersion": "16.2",
+  "championId": "Galio",
+  "spellData": {
+    "0": {
+      "DataValues": {
+        "BaseDamage": [
+          35,
+          70,
+          105,
+          140,
+          175,
+          210,
+          245
+        ],
+        "SuperQDuration": [
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2
+        ],
+        "SuperQMonsterMaxDamage": [
+          50,
+          50,
+          50,
+          50,
+          50,
+          50,
+          50
+        ],
+        "SuperQBasePercentage": [
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2
+        ],
+        "TornadoTicks": [
+          4,
+          4,
+          4,
+          4,
+          4,
+          4,
+          4
+        ]
+      },
+      "mSpellCalculations": {
+        "QMissileDamage": {
+          "mFormulaParts": [
+            {
+              "mDataValue": "BaseDamage",
+              "__type": "NamedDataValueCalculationPart"
+            },
+            {
+              "mCoefficient": 0.699999988079071,
+              "__type": "StatByCoefficientCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        },
+        "{85f4c0e9}": {
+          "mFormulaParts": [
+            {
+              "mDataValue": "SuperQBasePercentage",
+              "__type": "NamedDataValueCalculationPart"
+            },
+            {
+              "mCoefficient": 0.009999999776482582,
+              "__type": "StatByCoefficientCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        },
+        "PercentSuperQDamageTT": {
+          "mMultiplier": {
+            "mDataValue": "TornadoTicks",
+            "__type": "NamedDataValueCalculationPart"
+          },
+          "mModifiedGameCalculation": "{85f4c0e9}",
+          "__type": "GameCalculationModified"
+        },
+        "SuperQMonsterMaxDamageTotal": {
+          "mExpandedTooltipCalculationDisplay": 5,
+          "mFormulaParts": [
+            {
+              "mPart1": {
+                "mDataValue": "SuperQMonsterMaxDamage",
+                "__type": "NamedDataValueCalculationPart"
+              },
+              "mPart2": {
+                "mDataValue": "TornadoTicks",
+                "__type": "NamedDataValueCalculationPart"
+              },
+              "__type": "ProductOfSubPartsCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        }
+      }
+    },
+    "1": {
+      "DataValues": {
+        "MinimumWBaseDamage": [
+          10,
+          20,
+          30,
+          40,
+          50,
+          60,
+          70
+        ],
+        "MaximumWBaseDamage": [
+          30,
+          60,
+          90,
+          120,
+          150,
+          180,
+          210
+        ],
+        "PassiveShieldHealthRatio": [
+          0.05999999865889549,
+          0.07500000298023224,
+          0.09000000357627869,
+          0.10499999672174454,
+          0.11999999731779099,
+          0.13500000536441803,
+          0.15000000596046448
+        ]
+      },
+      "mSpellCalculations": {
+        "TotalPassiveShield": {
+          "mFormulaParts": [
+            {
+              "mStat": 12,
+              "mDataValue": "PassiveShieldHealthRatio",
+              "__type": "StatByNamedDataValueCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        },
+        "MagicDamageReduction": {
+          "mMultiplier": {
+            "mNumber": 0.009999999776482582,
+            "__type": "NumberCalculationPart"
+          },
+          "tooltipOnly": true,
+          "mFormulaParts": [
+            {
+              "mEffectIndex": 1,
+              "__type": "EffectValueCalculationPart"
+            },
+            {
+              "mCoefficient": 0.03999999910593033,
+              "__type": "StatByCoefficientCalculationPart"
+            },
+            {
+              "mStat": 6,
+              "mStatFormula": 2,
+              "mCoefficient": 0.07999999821186066,
+              "__type": "StatByCoefficientCalculationPart"
+            },
+            {
+              "mStat": 12,
+              "mStatFormula": 2,
+              "mCoefficient": 0.009999999776482582,
+              "__type": "StatByCoefficientCalculationPart"
+            }
+          ],
+          "mDisplayAsPercent": true,
+          "__type": "GameCalculation"
+        },
+        "PhysicalDamageReduction": {
+          "mMultiplier": {
+            "mNumber": 0.5,
+            "__type": "NumberCalculationPart"
+          },
+          "tooltipOnly": true,
+          "mModifiedGameCalculation": "MagicDamageReduction",
+          "__type": "GameCalculationModified"
+        },
+        "MinTotalDamage": {
+          "mFormulaParts": [
+            {
+              "mDataValue": "MinimumWBaseDamage",
+              "__type": "NamedDataValueCalculationPart"
+            },
+            {
+              "mCoefficient": 0.30000001192092896,
+              "__type": "StatByCoefficientCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        },
+        "MaxTotalDamage": {
+          "mMultiplier": {
+            "mNumber": 3,
+            "__type": "NumberCalculationPart"
+          },
+          "tooltipOnly": true,
+          "mModifiedGameCalculation": "MinTotalDamage",
+          "__type": "GameCalculationModified"
+        },
+        "PassiveShieldOOCTimer": {
+          "mSimpleTooltipCalculationDisplay": 6,
+          "mFormulaParts": [
+            {
+              "mLevel1Value": 12,
+              "mBreakpoints": [
+                {
+                  "mLevel": 6,
+                  "mAdditionalBonusAtThisLevel": -1,
+                  "__type": "Breakpoint"
+                },
+                {
+                  "mLevel": 11,
+                  "mAdditionalBonusAtThisLevel": -3,
+                  "__type": "Breakpoint"
+                }
+              ],
+              "__type": "ByCharLevelBreakpointsCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        }
+      }
+    },
+    "2": {
+      "DataValues": {
+        "BaseDamage": [
+          50,
+          90,
+          130,
+          170,
+          210,
+          250,
+          290
+        ],
+        "KnockupDuration": [
+          0.75,
+          0.75,
+          0.75,
+          0.75,
+          0.75,
+          0.75,
+          0.75
+        ],
+        "MinRange": [
+          250,
+          250,
+          250,
+          250,
+          250,
+          250,
+          250
+        ]
+      },
+      "mSpellCalculations": {
+        "TotalDamage": {
+          "mFormulaParts": [
+            {
+              "mDataValue": "BaseDamage",
+              "__type": "NamedDataValueCalculationPart"
+            },
+            {
+              "mCoefficient": 0.8999999761581421,
+              "__type": "StatByCoefficientCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        },
+        "PVEDamage": {
+          "mMultiplier": {
+            "mNumber": 0.800000011920929,
+            "__type": "NumberCalculationPart"
+          },
+          "mModifiedGameCalculation": "TotalDamage",
+          "__type": "GameCalculationModified"
+        }
+      }
+    },
+    "3": {
+      "DataValues": {
+        "BaseDamage": [
+          50,
+          150,
+          250,
+          350,
+          450,
+          550,
+          650
+        ],
+        "StunDurationOuter": [
+          0.75,
+          0.75,
+          0.75,
+          0.75,
+          0.75,
+          0.75,
+          0.75
+        ],
+        "TemporaryWShieldDuration": [
+          5,
+          5,
+          5,
+          5,
+          5,
+          5,
+          5
+        ]
+      },
+      "mSpellCalculations": {
+        "TotalDamage": {
+          "mFormulaParts": [
+            {
+              "mDataValue": "BaseDamage",
+              "__type": "NamedDataValueCalculationPart"
+            },
+            {
+              "mCoefficient": 0.699999988079071,
+              "__type": "StatByCoefficientCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        }
+      }
+    },
+    "GalioQ": {
+      "DataValues": {
+        "BaseDamage": [
+          35,
+          70,
+          105,
+          140,
+          175,
+          210,
+          245
+        ],
+        "SuperQDuration": [
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2
+        ],
+        "SuperQMonsterMaxDamage": [
+          50,
+          50,
+          50,
+          50,
+          50,
+          50,
+          50
+        ],
+        "SuperQBasePercentage": [
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2
+        ],
+        "TornadoTicks": [
+          4,
+          4,
+          4,
+          4,
+          4,
+          4,
+          4
+        ]
+      },
+      "mSpellCalculations": {
+        "QMissileDamage": {
+          "mFormulaParts": [
+            {
+              "mDataValue": "BaseDamage",
+              "__type": "NamedDataValueCalculationPart"
+            },
+            {
+              "mCoefficient": 0.699999988079071,
+              "__type": "StatByCoefficientCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        },
+        "{85f4c0e9}": {
+          "mFormulaParts": [
+            {
+              "mDataValue": "SuperQBasePercentage",
+              "__type": "NamedDataValueCalculationPart"
+            },
+            {
+              "mCoefficient": 0.009999999776482582,
+              "__type": "StatByCoefficientCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        },
+        "PercentSuperQDamageTT": {
+          "mMultiplier": {
+            "mDataValue": "TornadoTicks",
+            "__type": "NamedDataValueCalculationPart"
+          },
+          "mModifiedGameCalculation": "{85f4c0e9}",
+          "__type": "GameCalculationModified"
+        },
+        "SuperQMonsterMaxDamageTotal": {
+          "mExpandedTooltipCalculationDisplay": 5,
+          "mFormulaParts": [
+            {
+              "mPart1": {
+                "mDataValue": "SuperQMonsterMaxDamage",
+                "__type": "NamedDataValueCalculationPart"
+              },
+              "mPart2": {
+                "mDataValue": "TornadoTicks",
+                "__type": "NamedDataValueCalculationPart"
+              },
+              "__type": "ProductOfSubPartsCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        }
+      }
+    },
+    "GalioW": {
+      "DataValues": {
+        "MinimumWBaseDamage": [
+          10,
+          20,
+          30,
+          40,
+          50,
+          60,
+          70
+        ],
+        "MaximumWBaseDamage": [
+          30,
+          60,
+          90,
+          120,
+          150,
+          180,
+          210
+        ],
+        "PassiveShieldHealthRatio": [
+          0.05999999865889549,
+          0.07500000298023224,
+          0.09000000357627869,
+          0.10499999672174454,
+          0.11999999731779099,
+          0.13500000536441803,
+          0.15000000596046448
+        ]
+      },
+      "mSpellCalculations": {
+        "TotalPassiveShield": {
+          "mFormulaParts": [
+            {
+              "mStat": 12,
+              "mDataValue": "PassiveShieldHealthRatio",
+              "__type": "StatByNamedDataValueCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        },
+        "MagicDamageReduction": {
+          "mMultiplier": {
+            "mNumber": 0.009999999776482582,
+            "__type": "NumberCalculationPart"
+          },
+          "tooltipOnly": true,
+          "mFormulaParts": [
+            {
+              "mEffectIndex": 1,
+              "__type": "EffectValueCalculationPart"
+            },
+            {
+              "mCoefficient": 0.03999999910593033,
+              "__type": "StatByCoefficientCalculationPart"
+            },
+            {
+              "mStat": 6,
+              "mStatFormula": 2,
+              "mCoefficient": 0.07999999821186066,
+              "__type": "StatByCoefficientCalculationPart"
+            },
+            {
+              "mStat": 12,
+              "mStatFormula": 2,
+              "mCoefficient": 0.009999999776482582,
+              "__type": "StatByCoefficientCalculationPart"
+            }
+          ],
+          "mDisplayAsPercent": true,
+          "__type": "GameCalculation"
+        },
+        "PhysicalDamageReduction": {
+          "mMultiplier": {
+            "mNumber": 0.5,
+            "__type": "NumberCalculationPart"
+          },
+          "tooltipOnly": true,
+          "mModifiedGameCalculation": "MagicDamageReduction",
+          "__type": "GameCalculationModified"
+        },
+        "MinTotalDamage": {
+          "mFormulaParts": [
+            {
+              "mDataValue": "MinimumWBaseDamage",
+              "__type": "NamedDataValueCalculationPart"
+            },
+            {
+              "mCoefficient": 0.30000001192092896,
+              "__type": "StatByCoefficientCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        },
+        "MaxTotalDamage": {
+          "mMultiplier": {
+            "mNumber": 3,
+            "__type": "NumberCalculationPart"
+          },
+          "tooltipOnly": true,
+          "mModifiedGameCalculation": "MinTotalDamage",
+          "__type": "GameCalculationModified"
+        },
+        "PassiveShieldOOCTimer": {
+          "mSimpleTooltipCalculationDisplay": 6,
+          "mFormulaParts": [
+            {
+              "mLevel1Value": 12,
+              "mBreakpoints": [
+                {
+                  "mLevel": 6,
+                  "mAdditionalBonusAtThisLevel": -1,
+                  "__type": "Breakpoint"
+                },
+                {
+                  "mLevel": 11,
+                  "mAdditionalBonusAtThisLevel": -3,
+                  "__type": "Breakpoint"
+                }
+              ],
+              "__type": "ByCharLevelBreakpointsCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        }
+      }
+    },
+    "GalioE": {
+      "DataValues": {
+        "BaseDamage": [
+          50,
+          90,
+          130,
+          170,
+          210,
+          250,
+          290
+        ],
+        "KnockupDuration": [
+          0.75,
+          0.75,
+          0.75,
+          0.75,
+          0.75,
+          0.75,
+          0.75
+        ],
+        "MinRange": [
+          250,
+          250,
+          250,
+          250,
+          250,
+          250,
+          250
+        ]
+      },
+      "mSpellCalculations": {
+        "TotalDamage": {
+          "mFormulaParts": [
+            {
+              "mDataValue": "BaseDamage",
+              "__type": "NamedDataValueCalculationPart"
+            },
+            {
+              "mCoefficient": 0.8999999761581421,
+              "__type": "StatByCoefficientCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        },
+        "PVEDamage": {
+          "mMultiplier": {
+            "mNumber": 0.800000011920929,
+            "__type": "NumberCalculationPart"
+          },
+          "mModifiedGameCalculation": "TotalDamage",
+          "__type": "GameCalculationModified"
+        }
+      }
+    },
+    "GalioR": {
+      "DataValues": {
+        "BaseDamage": [
+          50,
+          150,
+          250,
+          350,
+          450,
+          550,
+          650
+        ],
+        "StunDurationOuter": [
+          0.75,
+          0.75,
+          0.75,
+          0.75,
+          0.75,
+          0.75,
+          0.75
+        ],
+        "TemporaryWShieldDuration": [
+          5,
+          5,
+          5,
+          5,
+          5,
+          5,
+          5
+        ]
+      },
+      "mSpellCalculations": {
+        "TotalDamage": {
+          "mFormulaParts": [
+            {
+              "mDataValue": "BaseDamage",
+              "__type": "NamedDataValueCalculationPart"
+            },
+            {
+              "mCoefficient": 0.699999988079071,
+              "__type": "StatByCoefficientCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        }
+      }
+    },
+    "GalioPassive": {
+      "DataValues": {
+        "ChargeRatePerHit": [
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3
+        ],
+        "PassiveCooldown": [
+          5,
+          5,
+          5,
+          5,
+          5,
+          5,
+          5
+        ]
+      },
+      "mSpellCalculations": {
+        "TotalDamage": {
+          "mFormulaParts": [
+            {
+              "mStartValue": 15,
+              "mEndValue": 115,
+              "__type": "ByCharLevelInterpolationCalculationPart"
+            },
+            {
+              "mStat": 2,
+              "mCoefficient": 1,
+              "__type": "StatByCoefficientCalculationPart"
+            },
+            {
+              "mCoefficient": 0.4000000059604645,
+              "__type": "StatByCoefficientCalculationPart"
+            },
+            {
+              "mStat": 6,
+              "mStatFormula": 2,
+              "mCoefficient": 0.6000000238418579,
+              "__type": "StatByCoefficientCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        },
+        "PassiveCooldownModified": {
+          "mSimpleTooltipCalculationDisplay": 5,
+          "mExpandedTooltipCalculationDisplay": 5,
+          "mFormulaParts": [
+            {
+              "mPart1": {
+                "__type": "CooldownMultiplierCalculationPart"
+              },
+              "mPart2": {
+                "mDataValue": "PassiveCooldown",
+                "__type": "NamedDataValueCalculationPart"
+              },
+              "__type": "ProductOfSubPartsCalculationPart"
+            }
+          ],
+          "mPrecision": -1,
+          "__type": "GameCalculation"
+        }
+      }
+    }
+  }
+}

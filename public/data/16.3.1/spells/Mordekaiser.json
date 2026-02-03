@@ -1,0 +1,870 @@
+{
+  "version": "16.3.1",
+  "ddragonVersion": "16.3.1",
+  "cdragonVersion": "16.2",
+  "championId": "Mordekaiser",
+  "spellData": {
+    "0": {
+      "DataValues": {
+        "QBaseDamage": [
+          45,
+          80,
+          115,
+          150,
+          185,
+          220,
+          255
+        ],
+        "APRatio": [
+          0.699999988079071,
+          0.699999988079071,
+          0.699999988079071,
+          0.699999988079071,
+          0.699999988079071,
+          0.699999988079071,
+          0.699999988079071
+        ],
+        "IsolationScalar": [
+          1.25,
+          1.2999999523162842,
+          1.350000023841858,
+          1.399999976158142,
+          1.4500000476837158,
+          1.5,
+          1.5499999523162842
+        ],
+        "IsolationTooltip": [
+          0.25,
+          0.30000001192092896,
+          0.3499999940395355,
+          0.4000000059604645,
+          0.44999998807907104,
+          0.5,
+          0.550000011920929
+        ],
+        "MaceStartDistance": [
+          400,
+          400,
+          400,
+          400,
+          400,
+          400,
+          400
+        ],
+        "MaceLength": [
+          625,
+          625,
+          625,
+          625,
+          625,
+          625,
+          625
+        ],
+        "RectangleWidth": [
+          160,
+          160,
+          160,
+          160,
+          160,
+          160,
+          160
+        ],
+        "ADRatio": [
+          1.2000000476837158,
+          1.2000000476837158,
+          1.2000000476837158,
+          1.2000000476837158,
+          1.2000000476837158,
+          1.2000000476837158,
+          1.2000000476837158
+        ]
+      },
+      "mSpellCalculations": {
+        "QDamage": {
+          "mSimpleTooltipCalculationDisplay": 6,
+          "mFormulaParts": [
+            {
+              "mDataValue": "QBaseDamage",
+              "__type": "NamedDataValueCalculationPart"
+            },
+            {
+              "mBreakpoints": [
+                {
+                  "mLevel": 10,
+                  "mBonusPerLevelAtAndAfter": 5,
+                  "__type": "Breakpoint"
+                }
+              ],
+              "__type": "ByCharLevelBreakpointsCalculationPart"
+            },
+            {
+              "mStat": 2,
+              "mStatFormula": 2,
+              "mDataValue": "ADRatio",
+              "__type": "StatByNamedDataValueCalculationPart"
+            },
+            {
+              "mDataValue": "APRatio",
+              "__type": "StatByNamedDataValueCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        },
+        "EmpoweredDamageTooltip": {
+          "mMultiplier": {
+            "mDataValue": "IsolationScalar",
+            "__type": "NamedDataValueCalculationPart"
+          },
+          "mSimpleTooltipCalculationDisplay": 6,
+          "mModifiedGameCalculation": "QDamage",
+          "__type": "GameCalculationModified"
+        }
+      }
+    },
+    "1": {
+      "DataValues": {
+        "Duration": [
+          5,
+          5,
+          5,
+          5,
+          5,
+          5,
+          5
+        ],
+        "DamageConversion": [
+          0.44999998807907104,
+          0.44999998807907104,
+          0.44999998807907104,
+          0.44999998807907104,
+          0.44999998807907104,
+          0.44999998807907104,
+          0.44999998807907104
+        ],
+        "BaseShield": [
+          0.05000000074505806,
+          0.05000000074505806,
+          0.05000000074505806,
+          0.05000000074505806,
+          0.05000000074505806,
+          0.05000000074505806,
+          0.05000000074505806
+        ],
+        "HealingPercent": [
+          0.32499998807907104,
+          0.3499999940395355,
+          0.375,
+          0.4000000059604645,
+          0.42500001192092896,
+          0.44999998807907104,
+          0.4749999940395355
+        ],
+        "MinionPenalty": [
+          0.25,
+          0.25,
+          0.25,
+          0.25,
+          0.25,
+          0.25,
+          0.25
+        ],
+        "DamageTakenConversion": [
+          0.07500000298023224,
+          0.07500000298023224,
+          0.07500000298023224,
+          0.07500000298023224,
+          0.07500000298023224,
+          0.07500000298023224,
+          0.07500000298023224
+        ],
+        "MaxHealthCap": [
+          0.30000001192092896,
+          0.30000001192092896,
+          0.30000001192092896,
+          0.30000001192092896,
+          0.30000001192092896,
+          0.30000001192092896,
+          0.30000001192092896
+        ],
+        "TimeBeforeDecay": [
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        "DecayPerSecond": [
+          0.004999999888241291,
+          0.004999999888241291,
+          0.004999999888241291,
+          0.004999999888241291,
+          0.004999999888241291,
+          0.004999999888241291,
+          0.004999999888241291
+        ]
+      },
+      "mSpellCalculations": {
+        "HealthDecay": {
+          "mFormulaParts": [
+            {
+              "mStat": 12,
+              "mStatFormula": 1,
+              "mDataValue": "DecayPerSecond",
+              "__type": "StatByNamedDataValueCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        },
+        "MaxHealthTooltip": {
+          "mSimpleTooltipCalculationDisplay": 6,
+          "mFormulaParts": [
+            {
+              "mStat": 12,
+              "mCoefficient": 0.30000001192092896,
+              "__type": "StatByCoefficientCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        },
+        "MinHealthTooltip": {
+          "mSimpleTooltipCalculationDisplay": 6,
+          "mFormulaParts": [
+            {
+              "mStat": 12,
+              "mCoefficient": 0.05000000074505806,
+              "__type": "StatByCoefficientCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        }
+      }
+    },
+    "2": {
+      "DataValues": {
+        "Damage": [
+          45,
+          60,
+          75,
+          90,
+          105,
+          120,
+          135
+        ],
+        "DelayBeforeMovement": [
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5
+        ],
+        "MaxDistance": [
+          550,
+          550,
+          550,
+          550,
+          550,
+          550,
+          550
+        ],
+        "KnockTowardsDistance": [
+          250,
+          250,
+          250,
+          250,
+          250,
+          250,
+          250
+        ],
+        "StandAsideRange": [
+          900,
+          900,
+          900,
+          900,
+          900,
+          900,
+          900
+        ],
+        "MagicPen": [
+          0.02500000037252903,
+          0.05000000074505806,
+          0.07500000298023224,
+          0.10000000149011612,
+          0.125,
+          0.15000000596046448,
+          0.17499999701976776
+        ]
+      },
+      "mSpellCalculations": {
+        "TotalDamage": {
+          "mSimpleTooltipCalculationDisplay": 6,
+          "mFormulaParts": [
+            {
+              "mDataValue": "Damage",
+              "__type": "NamedDataValueCalculationPart"
+            },
+            {
+              "mCoefficient": 0.4000000059604645,
+              "__type": "StatByCoefficientCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        }
+      }
+    },
+    "3": {
+      "DataValues": {
+        "SpiritRealmDuration": [
+          7,
+          7,
+          7,
+          7,
+          7,
+          7,
+          7
+        ],
+        "StatStealPercentScalar": [
+          0.10000000149011612,
+          0.10000000149011612,
+          0.10000000149011612,
+          0.10000000149011612,
+          0.10000000149011612,
+          0.10000000149011612,
+          0.10000000149011612
+        ],
+        "ZoneRadius": [
+          1200,
+          1200,
+          1200,
+          1200,
+          1200,
+          1200,
+          1200
+        ],
+        "GhostAPRatio": [
+          0.6000000238418579,
+          0.6000000238418579,
+          0.6000000238418579,
+          0.6000000238418579,
+          0.6000000238418579,
+          0.6000000238418579,
+          0.6000000238418579
+        ]
+      }
+    },
+    "MordekaiserQ": {
+      "DataValues": {
+        "QBaseDamage": [
+          45,
+          80,
+          115,
+          150,
+          185,
+          220,
+          255
+        ],
+        "APRatio": [
+          0.699999988079071,
+          0.699999988079071,
+          0.699999988079071,
+          0.699999988079071,
+          0.699999988079071,
+          0.699999988079071,
+          0.699999988079071
+        ],
+        "IsolationScalar": [
+          1.25,
+          1.2999999523162842,
+          1.350000023841858,
+          1.399999976158142,
+          1.4500000476837158,
+          1.5,
+          1.5499999523162842
+        ],
+        "IsolationTooltip": [
+          0.25,
+          0.30000001192092896,
+          0.3499999940395355,
+          0.4000000059604645,
+          0.44999998807907104,
+          0.5,
+          0.550000011920929
+        ],
+        "MaceStartDistance": [
+          400,
+          400,
+          400,
+          400,
+          400,
+          400,
+          400
+        ],
+        "MaceLength": [
+          625,
+          625,
+          625,
+          625,
+          625,
+          625,
+          625
+        ],
+        "RectangleWidth": [
+          160,
+          160,
+          160,
+          160,
+          160,
+          160,
+          160
+        ],
+        "ADRatio": [
+          1.2000000476837158,
+          1.2000000476837158,
+          1.2000000476837158,
+          1.2000000476837158,
+          1.2000000476837158,
+          1.2000000476837158,
+          1.2000000476837158
+        ]
+      },
+      "mSpellCalculations": {
+        "QDamage": {
+          "mSimpleTooltipCalculationDisplay": 6,
+          "mFormulaParts": [
+            {
+              "mDataValue": "QBaseDamage",
+              "__type": "NamedDataValueCalculationPart"
+            },
+            {
+              "mBreakpoints": [
+                {
+                  "mLevel": 10,
+                  "mBonusPerLevelAtAndAfter": 5,
+                  "__type": "Breakpoint"
+                }
+              ],
+              "__type": "ByCharLevelBreakpointsCalculationPart"
+            },
+            {
+              "mStat": 2,
+              "mStatFormula": 2,
+              "mDataValue": "ADRatio",
+              "__type": "StatByNamedDataValueCalculationPart"
+            },
+            {
+              "mDataValue": "APRatio",
+              "__type": "StatByNamedDataValueCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        },
+        "EmpoweredDamageTooltip": {
+          "mMultiplier": {
+            "mDataValue": "IsolationScalar",
+            "__type": "NamedDataValueCalculationPart"
+          },
+          "mSimpleTooltipCalculationDisplay": 6,
+          "mModifiedGameCalculation": "QDamage",
+          "__type": "GameCalculationModified"
+        }
+      }
+    },
+    "MordekaiserW": {
+      "DataValues": {
+        "Duration": [
+          5,
+          5,
+          5,
+          5,
+          5,
+          5,
+          5
+        ],
+        "DamageConversion": [
+          0.44999998807907104,
+          0.44999998807907104,
+          0.44999998807907104,
+          0.44999998807907104,
+          0.44999998807907104,
+          0.44999998807907104,
+          0.44999998807907104
+        ],
+        "BaseShield": [
+          0.05000000074505806,
+          0.05000000074505806,
+          0.05000000074505806,
+          0.05000000074505806,
+          0.05000000074505806,
+          0.05000000074505806,
+          0.05000000074505806
+        ],
+        "HealingPercent": [
+          0.32499998807907104,
+          0.3499999940395355,
+          0.375,
+          0.4000000059604645,
+          0.42500001192092896,
+          0.44999998807907104,
+          0.4749999940395355
+        ],
+        "MinionPenalty": [
+          0.25,
+          0.25,
+          0.25,
+          0.25,
+          0.25,
+          0.25,
+          0.25
+        ],
+        "DamageTakenConversion": [
+          0.07500000298023224,
+          0.07500000298023224,
+          0.07500000298023224,
+          0.07500000298023224,
+          0.07500000298023224,
+          0.07500000298023224,
+          0.07500000298023224
+        ],
+        "MaxHealthCap": [
+          0.30000001192092896,
+          0.30000001192092896,
+          0.30000001192092896,
+          0.30000001192092896,
+          0.30000001192092896,
+          0.30000001192092896,
+          0.30000001192092896
+        ],
+        "TimeBeforeDecay": [
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        "DecayPerSecond": [
+          0.004999999888241291,
+          0.004999999888241291,
+          0.004999999888241291,
+          0.004999999888241291,
+          0.004999999888241291,
+          0.004999999888241291,
+          0.004999999888241291
+        ]
+      },
+      "mSpellCalculations": {
+        "HealthDecay": {
+          "mFormulaParts": [
+            {
+              "mStat": 12,
+              "mStatFormula": 1,
+              "mDataValue": "DecayPerSecond",
+              "__type": "StatByNamedDataValueCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        },
+        "MaxHealthTooltip": {
+          "mSimpleTooltipCalculationDisplay": 6,
+          "mFormulaParts": [
+            {
+              "mStat": 12,
+              "mCoefficient": 0.30000001192092896,
+              "__type": "StatByCoefficientCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        },
+        "MinHealthTooltip": {
+          "mSimpleTooltipCalculationDisplay": 6,
+          "mFormulaParts": [
+            {
+              "mStat": 12,
+              "mCoefficient": 0.05000000074505806,
+              "__type": "StatByCoefficientCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        }
+      }
+    },
+    "MordekaiserE": {
+      "DataValues": {
+        "Damage": [
+          45,
+          60,
+          75,
+          90,
+          105,
+          120,
+          135
+        ],
+        "DelayBeforeMovement": [
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5
+        ],
+        "MaxDistance": [
+          550,
+          550,
+          550,
+          550,
+          550,
+          550,
+          550
+        ],
+        "KnockTowardsDistance": [
+          250,
+          250,
+          250,
+          250,
+          250,
+          250,
+          250
+        ],
+        "StandAsideRange": [
+          900,
+          900,
+          900,
+          900,
+          900,
+          900,
+          900
+        ],
+        "MagicPen": [
+          0.02500000037252903,
+          0.05000000074505806,
+          0.07500000298023224,
+          0.10000000149011612,
+          0.125,
+          0.15000000596046448,
+          0.17499999701976776
+        ]
+      },
+      "mSpellCalculations": {
+        "TotalDamage": {
+          "mSimpleTooltipCalculationDisplay": 6,
+          "mFormulaParts": [
+            {
+              "mDataValue": "Damage",
+              "__type": "NamedDataValueCalculationPart"
+            },
+            {
+              "mCoefficient": 0.4000000059604645,
+              "__type": "StatByCoefficientCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        }
+      }
+    },
+    "MordekaiserR": {
+      "DataValues": {
+        "SpiritRealmDuration": [
+          7,
+          7,
+          7,
+          7,
+          7,
+          7,
+          7
+        ],
+        "StatStealPercentScalar": [
+          0.10000000149011612,
+          0.10000000149011612,
+          0.10000000149011612,
+          0.10000000149011612,
+          0.10000000149011612,
+          0.10000000149011612,
+          0.10000000149011612
+        ],
+        "ZoneRadius": [
+          1200,
+          1200,
+          1200,
+          1200,
+          1200,
+          1200,
+          1200
+        ],
+        "GhostAPRatio": [
+          0.6000000238418579,
+          0.6000000238418579,
+          0.6000000238418579,
+          0.6000000238418579,
+          0.6000000238418579,
+          0.6000000238418579,
+          0.6000000238418579
+        ]
+      }
+    },
+    "MordekaiserPassive": {
+      "DataValues": {
+        "CombatTrackingDuration": [
+          4,
+          4,
+          4,
+          4,
+          4,
+          4,
+          4
+        ],
+        "MaximumStacks": [
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3
+        ],
+        "PercentAPAddedToAutos": [
+          0.4000000059604645,
+          0.4000000059604645,
+          0.4000000059604645,
+          0.4000000059604645,
+          0.4000000059604645,
+          0.4000000059604645,
+          0.4000000059604645
+        ],
+        "FuryForQHit": [
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        "FuryForAutoHit": [
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        "FuryForEHit": [
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        "DoTRadius": [
+          375,
+          375,
+          375,
+          375,
+          375,
+          375,
+          375
+        ],
+        "MovementSpeed": [
+          0.029999999329447746,
+          0.029999999329447746,
+          0.029999999329447746,
+          0.029999999329447746,
+          0.029999999329447746,
+          0.029999999329447746,
+          0.029999999329447746
+        ]
+      },
+      "mSpellCalculations": {
+        "AuraDamagePerStack": {
+          "mSimpleTooltipCalculationDisplay": 6,
+          "mFormulaParts": [
+            {
+              "mNumber": 5,
+              "__type": "NumberCalculationPart"
+            },
+            {
+              "mCoefficient": 0.30000001192092896,
+              "__type": "StatByCoefficientCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        },
+        "PercentHealthForAura": {
+          "mFormulaParts": [
+            {
+              "mStartValue": 1,
+              "mEndValue": 5,
+              "__type": "ByCharLevelInterpolationCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        },
+        "MaxAuraMonsterDamage": {
+          "mExpandedTooltipCalculationDisplay": 5,
+          "mFormulaParts": [
+            {
+              "mStartValue": 40,
+              "mEndValue": 200,
+              "__type": "ByCharLevelInterpolationCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        },
+        "BonusAPAuto": {
+          "mSimpleTooltipCalculationDisplay": 6,
+          "mFormulaParts": [
+            {
+              "mCoefficient": 0.4000000059604645,
+              "__type": "StatByCoefficientCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        },
+        "PassiveMovementSpeed": {
+          "mFormulaParts": [
+            {
+              "mLevel1Value": 0.029999999329447746,
+              "mBreakpoints": [
+                {
+                  "mLevel": 6,
+                  "mAdditionalBonusAtThisLevel": 0.029999999329447746,
+                  "__type": "Breakpoint"
+                },
+                {
+                  "mLevel": 11,
+                  "mAdditionalBonusAtThisLevel": 0.029999999329447746,
+                  "__type": "Breakpoint"
+                },
+                {
+                  "mLevel": 19,
+                  "mAdditionalBonusAtThisLevel": 0.029999999329447746,
+                  "__type": "Breakpoint"
+                },
+                {
+                  "mLevel": 24,
+                  "mAdditionalBonusAtThisLevel": 0.029999999329447746,
+                  "__type": "Breakpoint"
+                },
+                {
+                  "mLevel": 30,
+                  "mAdditionalBonusAtThisLevel": 0.029999999329447746,
+                  "__type": "Breakpoint"
+                }
+              ],
+              "__type": "ByCharLevelBreakpointsCalculationPart"
+            }
+          ],
+          "mDisplayAsPercent": true,
+          "__type": "GameCalculation"
+        }
+      }
+    }
+  }
+}
