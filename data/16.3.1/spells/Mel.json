@@ -1,0 +1,942 @@
+{
+  "version": "16.3.1",
+  "ddragonVersion": "16.3.1",
+  "cdragonVersion": "16.2",
+  "championId": "Mel",
+  "spellData": {
+    "0": {
+      "DataValues": {
+        "ExplosionDamage": [
+          10.5,
+          13,
+          15.5,
+          18,
+          20.5,
+          23,
+          25.5
+        ],
+        "ExplosionCount": [
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ],
+        "Spread": [
+          30,
+          30,
+          30,
+          30,
+          30,
+          30,
+          30
+        ],
+        "ExplosionRadius": [
+          220,
+          220,
+          220,
+          220,
+          220,
+          220,
+          220
+        ],
+        "ChannelDuration": [
+          0.75,
+          0.75,
+          0.75,
+          0.75,
+          0.75,
+          0.75,
+          0.75
+        ],
+        "MinionMod": [
+          0.75,
+          0.75,
+          0.75,
+          0.75,
+          0.75,
+          0.75,
+          0.75
+        ]
+      },
+      "mSpellCalculations": {
+        "TotalExplosionDamage": {
+          "mFormulaParts": [
+            {
+              "mDataValue": "ExplosionDamage",
+              "__type": "NamedDataValueCalculationPart"
+            },
+            {
+              "mCoefficient": 0.08500000089406967,
+              "__type": "StatByCoefficientCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        },
+        "AllDamageHit": {
+          "mMultiplier": {
+            "mDataValue": "ExplosionCount",
+            "__type": "NamedDataValueCalculationPart"
+          },
+          "mModifiedGameCalculation": "TotalExplosionDamage",
+          "__type": "GameCalculationModified"
+        },
+        "MonsterModTooltip": {
+          "mSimpleTooltipCalculationDisplay": 5,
+          "mExpandedTooltipCalculationDisplay": 5,
+          "tooltipOnly": true,
+          "mFormulaParts": [
+            {
+              "mSubparts": [
+                {
+                  "mNumber": 1,
+                  "__type": "NumberCalculationPart"
+                },
+                {
+                  "mPart1": {
+                    "mNumber": -1,
+                    "__type": "NumberCalculationPart"
+                  },
+                  "mPart2": {
+                    "mDataValue": "MinionMod",
+                    "__type": "NamedDataValueCalculationPart"
+                  },
+                  "__type": "ProductOfSubPartsCalculationPart"
+                }
+              ],
+              "__type": "SumOfSubPartsCalculationPart"
+            }
+          ],
+          "mDisplayAsPercent": true,
+          "__type": "GameCalculation"
+        }
+      }
+    },
+    "1": {
+      "DataValues": {
+        "Duration": [
+          0.75,
+          0.75,
+          0.75,
+          0.75,
+          0.75,
+          0.75,
+          0.75
+        ],
+        "ShieldRadius": [
+          175,
+          175,
+          175,
+          175,
+          175,
+          175,
+          175
+        ],
+        "BaseDamagePercent": [
+          0.3499999940395355,
+          0.4000000059604645,
+          0.44999998807907104,
+          0.5,
+          0.550000011920929,
+          0.6000000238418579,
+          0.6499999761581421
+        ],
+        "MoveSpeed": [
+          0.30000001192092896,
+          0.30000001192092896,
+          0.30000001192092896,
+          0.30000001192092896,
+          0.30000001192092896,
+          0.30000001192092896,
+          0.30000001192092896
+        ]
+      },
+      "mSpellCalculations": {
+        "DamagePercent": {
+          "mFormulaParts": [
+            {
+              "mDataValue": "BaseDamagePercent",
+              "__type": "NamedDataValueCalculationPart"
+            },
+            {
+              "mCoefficient": 0.0005000000237487257,
+              "__type": "StatByCoefficientCalculationPart"
+            }
+          ],
+          "mDisplayAsPercent": true,
+          "__type": "GameCalculation"
+        }
+      }
+    },
+    "2": {
+      "DataValues": {
+        "RootDuration": [
+          1.100000023841858,
+          1.2000000476837158,
+          1.2999999523162842,
+          1.399999976158142,
+          1.5,
+          1.600000023841858,
+          1.7000000476837158
+        ],
+        "BaseDamage": [
+          20,
+          60,
+          100,
+          140,
+          180,
+          220,
+          260
+        ],
+        "BaseAreaDamage": [
+          6,
+          16,
+          26,
+          36,
+          46,
+          56,
+          66
+        ],
+        "AreaAPRatio": [
+          0.07999999821186066,
+          0.07999999821186066,
+          0.07999999821186066,
+          0.07999999821186066,
+          0.07999999821186066,
+          0.07999999821186066,
+          0.07999999821186066
+        ],
+        "AreaSlowAmount": [
+          0.30000001192092896,
+          0.30000001192092896,
+          0.30000001192092896,
+          0.30000001192092896,
+          0.30000001192092896,
+          0.30000001192092896,
+          0.30000001192092896
+        ],
+        "AreaSlowDuration": [
+          0.25,
+          0.25,
+          0.25,
+          0.25,
+          0.25,
+          0.25,
+          0.25
+        ],
+        "MinionMod": [
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5
+        ],
+        "MaxAreaRadius": [
+          260,
+          260,
+          260,
+          260,
+          260,
+          260,
+          260
+        ],
+        "TimeToMaxRadius": [
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5
+        ],
+        "AreaTicksPerSecond": [
+          8,
+          8,
+          8,
+          8,
+          8,
+          8,
+          8
+        ],
+        "DoTDuration": [
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5
+        ]
+      },
+      "mSpellCalculations": {
+        "Damage": {
+          "mFormulaParts": [
+            {
+              "mDataValue": "BaseDamage",
+              "__type": "NamedDataValueCalculationPart"
+            },
+            {
+              "mCoefficient": 0.6000000238418579,
+              "__type": "StatByCoefficientCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        },
+        "AreaDamagePerSecond": {
+          "mFormulaParts": [
+            {
+              "mDataValue": "BaseAreaDamage",
+              "__type": "NamedDataValueCalculationPart"
+            },
+            {
+              "mDataValue": "{0b76b34c}",
+              "__type": "StatByNamedDataValueCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        },
+        "MinionModTooltip": {
+          "mSimpleTooltipCalculationDisplay": 5,
+          "mExpandedTooltipCalculationDisplay": 5,
+          "tooltipOnly": true,
+          "mFormulaParts": [
+            {
+              "mSubparts": [
+                {
+                  "mNumber": 1,
+                  "__type": "NumberCalculationPart"
+                },
+                {
+                  "mPart1": {
+                    "mNumber": -1,
+                    "__type": "NumberCalculationPart"
+                  },
+                  "mPart2": {
+                    "mDataValue": "MinionMod",
+                    "__type": "NamedDataValueCalculationPart"
+                  },
+                  "__type": "ProductOfSubPartsCalculationPart"
+                }
+              ],
+              "__type": "SumOfSubPartsCalculationPart"
+            }
+          ],
+          "mDisplayAsPercent": true,
+          "__type": "GameCalculation"
+        }
+      }
+    },
+    "3": {
+      "DataValues": {
+        "BasePassiveStackDamage": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8
+        ],
+        "BasePassiveFlatDamage": [
+          50,
+          60,
+          70,
+          80,
+          90,
+          100,
+          110
+        ],
+        "MinionMod": [
+          0.6000000238418579,
+          0.6000000238418579,
+          0.6000000238418579,
+          0.6000000238418579,
+          0.6000000238418579,
+          0.6000000238418579,
+          0.6000000238418579
+        ],
+        "BaseUltStackDamage": [
+          1,
+          4,
+          7,
+          10,
+          13,
+          16,
+          19
+        ],
+        "BaseUltFlatDamage": [
+          50,
+          100,
+          150,
+          200,
+          250,
+          300,
+          350
+        ],
+        "DisintegrateDelay": [
+          0.8999999761581421,
+          0.8999999761581421,
+          0.8999999761581421,
+          0.8999999761581421,
+          0.8999999761581421,
+          0.8999999761581421,
+          0.8999999761581421
+        ]
+      },
+      "mSpellCalculations": {
+        "PassiveStackDamage": {
+          "mFormulaParts": [
+            {
+              "mDataValue": "BasePassiveStackDamage",
+              "__type": "NamedDataValueCalculationPart"
+            },
+            {
+              "mCoefficient": 0.007499999832361937,
+              "__type": "StatByCoefficientCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        },
+        "PassiveFlatDamage": {
+          "mFormulaParts": [
+            {
+              "mDataValue": "BasePassiveFlatDamage",
+              "__type": "NamedDataValueCalculationPart"
+            },
+            {
+              "mCoefficient": 0.10000000149011612,
+              "__type": "StatByCoefficientCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        },
+        "UltStackDamage": {
+          "mFormulaParts": [
+            {
+              "mDataValue": "BaseUltStackDamage",
+              "__type": "NamedDataValueCalculationPart"
+            },
+            {
+              "mCoefficient": 0.03500000014901161,
+              "__type": "StatByCoefficientCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        },
+        "UltFlatDamage": {
+          "mFormulaParts": [
+            {
+              "mDataValue": "BaseUltFlatDamage",
+              "__type": "NamedDataValueCalculationPart"
+            },
+            {
+              "mCoefficient": 0.30000001192092896,
+              "__type": "StatByCoefficientCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        },
+        "MinionModTooltip": {
+          "mSimpleTooltipCalculationDisplay": 5,
+          "mExpandedTooltipCalculationDisplay": 5,
+          "tooltipOnly": true,
+          "mFormulaParts": [
+            {
+              "mSubparts": [
+                {
+                  "mNumber": 1,
+                  "__type": "NumberCalculationPart"
+                },
+                {
+                  "mPart1": {
+                    "mNumber": -1,
+                    "__type": "NumberCalculationPart"
+                  },
+                  "mPart2": {
+                    "mDataValue": "MinionMod",
+                    "__type": "NamedDataValueCalculationPart"
+                  },
+                  "__type": "ProductOfSubPartsCalculationPart"
+                }
+              ],
+              "__type": "SumOfSubPartsCalculationPart"
+            }
+          ],
+          "mDisplayAsPercent": true,
+          "__type": "GameCalculation"
+        }
+      }
+    },
+    "MelQ": {
+      "DataValues": {
+        "ExplosionDamage": [
+          10.5,
+          13,
+          15.5,
+          18,
+          20.5,
+          23,
+          25.5
+        ],
+        "ExplosionCount": [
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ],
+        "Spread": [
+          30,
+          30,
+          30,
+          30,
+          30,
+          30,
+          30
+        ],
+        "ExplosionRadius": [
+          220,
+          220,
+          220,
+          220,
+          220,
+          220,
+          220
+        ],
+        "ChannelDuration": [
+          0.75,
+          0.75,
+          0.75,
+          0.75,
+          0.75,
+          0.75,
+          0.75
+        ],
+        "MinionMod": [
+          0.75,
+          0.75,
+          0.75,
+          0.75,
+          0.75,
+          0.75,
+          0.75
+        ]
+      },
+      "mSpellCalculations": {
+        "TotalExplosionDamage": {
+          "mFormulaParts": [
+            {
+              "mDataValue": "ExplosionDamage",
+              "__type": "NamedDataValueCalculationPart"
+            },
+            {
+              "mCoefficient": 0.08500000089406967,
+              "__type": "StatByCoefficientCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        },
+        "AllDamageHit": {
+          "mMultiplier": {
+            "mDataValue": "ExplosionCount",
+            "__type": "NamedDataValueCalculationPart"
+          },
+          "mModifiedGameCalculation": "TotalExplosionDamage",
+          "__type": "GameCalculationModified"
+        },
+        "MonsterModTooltip": {
+          "mSimpleTooltipCalculationDisplay": 5,
+          "mExpandedTooltipCalculationDisplay": 5,
+          "tooltipOnly": true,
+          "mFormulaParts": [
+            {
+              "mSubparts": [
+                {
+                  "mNumber": 1,
+                  "__type": "NumberCalculationPart"
+                },
+                {
+                  "mPart1": {
+                    "mNumber": -1,
+                    "__type": "NumberCalculationPart"
+                  },
+                  "mPart2": {
+                    "mDataValue": "MinionMod",
+                    "__type": "NamedDataValueCalculationPart"
+                  },
+                  "__type": "ProductOfSubPartsCalculationPart"
+                }
+              ],
+              "__type": "SumOfSubPartsCalculationPart"
+            }
+          ],
+          "mDisplayAsPercent": true,
+          "__type": "GameCalculation"
+        }
+      }
+    },
+    "MelW": {
+      "DataValues": {
+        "Duration": [
+          0.75,
+          0.75,
+          0.75,
+          0.75,
+          0.75,
+          0.75,
+          0.75
+        ],
+        "ShieldRadius": [
+          175,
+          175,
+          175,
+          175,
+          175,
+          175,
+          175
+        ],
+        "BaseDamagePercent": [
+          0.3499999940395355,
+          0.4000000059604645,
+          0.44999998807907104,
+          0.5,
+          0.550000011920929,
+          0.6000000238418579,
+          0.6499999761581421
+        ],
+        "MoveSpeed": [
+          0.30000001192092896,
+          0.30000001192092896,
+          0.30000001192092896,
+          0.30000001192092896,
+          0.30000001192092896,
+          0.30000001192092896,
+          0.30000001192092896
+        ]
+      },
+      "mSpellCalculations": {
+        "DamagePercent": {
+          "mFormulaParts": [
+            {
+              "mDataValue": "BaseDamagePercent",
+              "__type": "NamedDataValueCalculationPart"
+            },
+            {
+              "mCoefficient": 0.0005000000237487257,
+              "__type": "StatByCoefficientCalculationPart"
+            }
+          ],
+          "mDisplayAsPercent": true,
+          "__type": "GameCalculation"
+        }
+      }
+    },
+    "MelE": {
+      "DataValues": {
+        "RootDuration": [
+          1.100000023841858,
+          1.2000000476837158,
+          1.2999999523162842,
+          1.399999976158142,
+          1.5,
+          1.600000023841858,
+          1.7000000476837158
+        ],
+        "BaseDamage": [
+          20,
+          60,
+          100,
+          140,
+          180,
+          220,
+          260
+        ],
+        "BaseAreaDamage": [
+          6,
+          16,
+          26,
+          36,
+          46,
+          56,
+          66
+        ],
+        "AreaAPRatio": [
+          0.07999999821186066,
+          0.07999999821186066,
+          0.07999999821186066,
+          0.07999999821186066,
+          0.07999999821186066,
+          0.07999999821186066,
+          0.07999999821186066
+        ],
+        "AreaSlowAmount": [
+          0.30000001192092896,
+          0.30000001192092896,
+          0.30000001192092896,
+          0.30000001192092896,
+          0.30000001192092896,
+          0.30000001192092896,
+          0.30000001192092896
+        ],
+        "AreaSlowDuration": [
+          0.25,
+          0.25,
+          0.25,
+          0.25,
+          0.25,
+          0.25,
+          0.25
+        ],
+        "MinionMod": [
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5
+        ],
+        "MaxAreaRadius": [
+          260,
+          260,
+          260,
+          260,
+          260,
+          260,
+          260
+        ],
+        "TimeToMaxRadius": [
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5
+        ],
+        "AreaTicksPerSecond": [
+          8,
+          8,
+          8,
+          8,
+          8,
+          8,
+          8
+        ],
+        "DoTDuration": [
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5
+        ]
+      },
+      "mSpellCalculations": {
+        "Damage": {
+          "mFormulaParts": [
+            {
+              "mDataValue": "BaseDamage",
+              "__type": "NamedDataValueCalculationPart"
+            },
+            {
+              "mCoefficient": 0.6000000238418579,
+              "__type": "StatByCoefficientCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        },
+        "AreaDamagePerSecond": {
+          "mFormulaParts": [
+            {
+              "mDataValue": "BaseAreaDamage",
+              "__type": "NamedDataValueCalculationPart"
+            },
+            {
+              "mDataValue": "{0b76b34c}",
+              "__type": "StatByNamedDataValueCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        },
+        "MinionModTooltip": {
+          "mSimpleTooltipCalculationDisplay": 5,
+          "mExpandedTooltipCalculationDisplay": 5,
+          "tooltipOnly": true,
+          "mFormulaParts": [
+            {
+              "mSubparts": [
+                {
+                  "mNumber": 1,
+                  "__type": "NumberCalculationPart"
+                },
+                {
+                  "mPart1": {
+                    "mNumber": -1,
+                    "__type": "NumberCalculationPart"
+                  },
+                  "mPart2": {
+                    "mDataValue": "MinionMod",
+                    "__type": "NamedDataValueCalculationPart"
+                  },
+                  "__type": "ProductOfSubPartsCalculationPart"
+                }
+              ],
+              "__type": "SumOfSubPartsCalculationPart"
+            }
+          ],
+          "mDisplayAsPercent": true,
+          "__type": "GameCalculation"
+        }
+      }
+    },
+    "MelR": {
+      "DataValues": {
+        "BasePassiveStackDamage": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8
+        ],
+        "BasePassiveFlatDamage": [
+          50,
+          60,
+          70,
+          80,
+          90,
+          100,
+          110
+        ],
+        "MinionMod": [
+          0.6000000238418579,
+          0.6000000238418579,
+          0.6000000238418579,
+          0.6000000238418579,
+          0.6000000238418579,
+          0.6000000238418579,
+          0.6000000238418579
+        ],
+        "BaseUltStackDamage": [
+          1,
+          4,
+          7,
+          10,
+          13,
+          16,
+          19
+        ],
+        "BaseUltFlatDamage": [
+          50,
+          100,
+          150,
+          200,
+          250,
+          300,
+          350
+        ],
+        "DisintegrateDelay": [
+          0.8999999761581421,
+          0.8999999761581421,
+          0.8999999761581421,
+          0.8999999761581421,
+          0.8999999761581421,
+          0.8999999761581421,
+          0.8999999761581421
+        ]
+      },
+      "mSpellCalculations": {
+        "PassiveStackDamage": {
+          "mFormulaParts": [
+            {
+              "mDataValue": "BasePassiveStackDamage",
+              "__type": "NamedDataValueCalculationPart"
+            },
+            {
+              "mCoefficient": 0.007499999832361937,
+              "__type": "StatByCoefficientCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        },
+        "PassiveFlatDamage": {
+          "mFormulaParts": [
+            {
+              "mDataValue": "BasePassiveFlatDamage",
+              "__type": "NamedDataValueCalculationPart"
+            },
+            {
+              "mCoefficient": 0.10000000149011612,
+              "__type": "StatByCoefficientCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        },
+        "UltStackDamage": {
+          "mFormulaParts": [
+            {
+              "mDataValue": "BaseUltStackDamage",
+              "__type": "NamedDataValueCalculationPart"
+            },
+            {
+              "mCoefficient": 0.03500000014901161,
+              "__type": "StatByCoefficientCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        },
+        "UltFlatDamage": {
+          "mFormulaParts": [
+            {
+              "mDataValue": "BaseUltFlatDamage",
+              "__type": "NamedDataValueCalculationPart"
+            },
+            {
+              "mCoefficient": 0.30000001192092896,
+              "__type": "StatByCoefficientCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        },
+        "MinionModTooltip": {
+          "mSimpleTooltipCalculationDisplay": 5,
+          "mExpandedTooltipCalculationDisplay": 5,
+          "tooltipOnly": true,
+          "mFormulaParts": [
+            {
+              "mSubparts": [
+                {
+                  "mNumber": 1,
+                  "__type": "NumberCalculationPart"
+                },
+                {
+                  "mPart1": {
+                    "mNumber": -1,
+                    "__type": "NumberCalculationPart"
+                  },
+                  "mPart2": {
+                    "mDataValue": "MinionMod",
+                    "__type": "NamedDataValueCalculationPart"
+                  },
+                  "__type": "ProductOfSubPartsCalculationPart"
+                }
+              ],
+              "__type": "SumOfSubPartsCalculationPart"
+            }
+          ],
+          "mDisplayAsPercent": true,
+          "__type": "GameCalculation"
+        }
+      }
+    }
+  }
+}

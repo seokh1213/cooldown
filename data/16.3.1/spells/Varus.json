@@ -1,0 +1,1043 @@
+{
+  "version": "16.3.1",
+  "ddragonVersion": "16.3.1",
+  "cdragonVersion": "16.2",
+  "championId": "Varus",
+  "spellData": {
+    "0": {
+      "DataValues": {
+        "BaseDamageMax": [
+          0,
+          80,
+          160,
+          240,
+          320,
+          400,
+          480
+        ],
+        "ChargeMultiplierInverse": [
+          0.666670024394989,
+          0.666670024394989,
+          0.666670024394989,
+          0.666670024394989,
+          0.666670024394989,
+          0.666670024394989,
+          0.666670024394989
+        ],
+        "tADRatioMax": [
+          1.2000000476837158,
+          1.2999999523162842,
+          1.399999976158142,
+          1.5,
+          1.600000023841858,
+          1.7000000476837158,
+          1.7999999523162842
+        ],
+        "MaxChargeAmp": [
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5
+        ]
+      },
+      "mSpellCalculations": {
+        "{b3ef3984}": {
+          "mMultiplier": {
+            "mDataValue": "ChargeMultiplierInverse",
+            "__type": "NamedDataValueCalculationPart"
+          },
+          "mModifiedGameCalculation": "TotalDamageMax",
+          "__type": "GameCalculationModified"
+        },
+        "TotalDamageMax": {
+          "mFormulaParts": [
+            {
+              "mDataValue": "BaseDamageMax",
+              "__type": "NamedDataValueCalculationPart"
+            },
+            {
+              "mStat": 2,
+              "mStatFormula": 2,
+              "mDataValue": "tADRatioMax",
+              "__type": "StatByNamedDataValueCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        },
+        "TotalDamageMinTooltip": {
+          "mMultiplier": {
+            "mDataValue": "ChargeMultiplierInverse",
+            "__type": "NamedDataValueCalculationPart"
+          },
+          "mModifiedGameCalculation": "TotalDamageMax",
+          "__type": "GameCalculationModified"
+        }
+      }
+    },
+    "1": {
+      "DataValues": {
+        "VarusWDebuffDuration": [
+          6,
+          6,
+          6,
+          6,
+          6,
+          6,
+          6
+        ],
+        "VarusWMaxStacks": [
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3
+        ],
+        "MaxMonsterDamage": [
+          120,
+          120,
+          120,
+          120,
+          120,
+          120,
+          120
+        ],
+        "BasePercentHPPerStack": [
+          0.02500000037252903,
+          0.029999999329447746,
+          0.03500000014901161,
+          0.03999999910593033,
+          0.04500000178813934,
+          0.05000000074505806,
+          0.054999999701976776
+        ],
+        "QEmpowerMonsterCap": [
+          360,
+          360,
+          360,
+          360,
+          360,
+          360,
+          360
+        ],
+        "VarusWOnHitDamage": [
+          -1,
+          8,
+          17,
+          26,
+          35,
+          44,
+          53
+        ],
+        "CDRPerBlightStack": [
+          0.12999999523162842,
+          0.12999999523162842,
+          0.12999999523162842,
+          0.12999999523162842,
+          0.12999999523162842,
+          0.12999999523162842,
+          0.12999999523162842
+        ],
+        "VarusWMaxChargeHPDamage": [
+          1.5,
+          1.5,
+          1.5,
+          1.5,
+          1.5,
+          1.5,
+          1.5
+        ],
+        "OnHitRatio": [
+          0.3499999940395355,
+          0.3499999940395355,
+          0.3499999940395355,
+          0.3499999940395355,
+          0.3499999940395355,
+          0.3499999940395355,
+          0.3499999940395355
+        ],
+        "WQHealthDamage": [
+          0.03999999910593033,
+          0.05999999865889549,
+          0.07999999821186066,
+          0.10000000149011612,
+          0.11999999731779099,
+          0.14000000059604645,
+          0.1599999964237213
+        ]
+      },
+      "mSpellCalculations": {
+        "PercentHPPerStack": {
+          "mFormulaParts": [
+            {
+              "mDataValue": "BasePercentHPPerStack",
+              "__type": "NamedDataValueCalculationPart"
+            },
+            {
+              "mSubpart": {
+                "mPart1": {
+                  "mNumber": 0.009999999776482582,
+                  "__type": "NumberCalculationPart"
+                },
+                "mPart2": {
+                  "mNumber": 0.014999999664723873,
+                  "__type": "NumberCalculationPart"
+                },
+                "__type": "ProductOfSubPartsCalculationPart"
+              },
+              "__type": "StatBySubPartCalculationPart"
+            }
+          ],
+          "mDisplayAsPercent": true,
+          "mPrecision": 1,
+          "__type": "GameCalculation"
+        },
+        "QEmpowerPercentHP": {
+          "mFormulaParts": [
+            {
+              "mDataValue": "WQHealthDamage",
+              "__type": "NamedDataValueCalculationPart"
+            }
+          ],
+          "mDisplayAsPercent": true,
+          "__type": "GameCalculation"
+        },
+        "OnHitDamage": {
+          "mFormulaParts": [
+            {
+              "mDataValue": "VarusWOnHitDamage",
+              "__type": "NamedDataValueCalculationPart"
+            },
+            {
+              "mDataValue": "OnHitRatio",
+              "__type": "StatByNamedDataValueCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        },
+        "MaxPercentHPPerStack": {
+          "mMultiplier": {
+            "mNumber": 3,
+            "__type": "NumberCalculationPart"
+          },
+          "tooltipOnly": true,
+          "mModifiedGameCalculation": "PercentHPPerStack",
+          "__type": "GameCalculationModified"
+        },
+        "MaxQEmpowerPercentHP": {
+          "mMultiplier": {
+            "mDataValue": "VarusWMaxChargeHPDamage",
+            "__type": "NamedDataValueCalculationPart"
+          },
+          "mModifiedGameCalculation": "QEmpowerPercentHP",
+          "__type": "GameCalculationModified"
+        }
+      }
+    },
+    "2": {
+      "DataValues": {
+        "GrievousAmount": [
+          0.4000000059604645,
+          0.4000000059604645,
+          0.4000000059604645,
+          0.4000000059604645,
+          0.4000000059604645,
+          0.4000000059604645,
+          0.4000000059604645
+        ],
+        "GrievousDuration": [
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5
+        ],
+        "BonusADRatio": [
+          0.8999999761581421,
+          0.8999999761581421,
+          0.8999999761581421,
+          0.8999999761581421,
+          0.8999999761581421,
+          0.8999999761581421,
+          0.8999999761581421
+        ],
+        "BaseDamage": [
+          30,
+          60,
+          90,
+          120,
+          150,
+          180,
+          210
+        ],
+        "SlowPercent": [
+          -0.25,
+          -0.30000001192092896,
+          -0.3499999940395355,
+          -0.4000000059604645,
+          -0.44999998807907104,
+          -0.5,
+          -0.550000011920929
+        ],
+        "AoERange": [
+          300,
+          300,
+          300,
+          300,
+          300,
+          300,
+          300
+        ],
+        "DebuffDuration": [
+          4,
+          4,
+          4,
+          4,
+          4,
+          4,
+          4
+        ]
+      },
+      "mSpellCalculations": {
+        "TotalDamage": {
+          "mFormulaParts": [
+            {
+              "mDataValue": "BaseDamage",
+              "__type": "NamedDataValueCalculationPart"
+            },
+            {
+              "mStat": 2,
+              "mStatFormula": 2,
+              "mDataValue": "BonusADRatio",
+              "__type": "StatByNamedDataValueCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        }
+      }
+    },
+    "3": {
+      "DataValues": {
+        "BaseDamage": [
+          50,
+          150,
+          250,
+          350,
+          450,
+          550,
+          650
+        ],
+        "RootDuration": [
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2
+        ],
+        "VarusRTargetAcquisitionRange": [
+          650,
+          650,
+          650,
+          650,
+          650,
+          650,
+          650
+        ],
+        "PassiveStacksAdded": [
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3
+        ],
+        "TimeBetweenStackAddition": [
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5
+        ],
+        "VarusRTargetLeashRange": [
+          600,
+          600,
+          600,
+          600,
+          600,
+          600,
+          600
+        ],
+        "VarusRLeashTimer": [
+          1.75,
+          1.75,
+          1.75,
+          1.75,
+          1.75,
+          1.75,
+          1.75
+        ],
+        "VarusWDebuffDuration": [
+          6,
+          6,
+          6,
+          6,
+          6,
+          6,
+          6
+        ],
+        "VarusWMaxStacks": [
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3
+        ]
+      },
+      "mSpellCalculations": {
+        "TotalDamage": {
+          "mFormulaParts": [
+            {
+              "mDataValue": "BaseDamage",
+              "__type": "NamedDataValueCalculationPart"
+            },
+            {
+              "mCoefficient": 1,
+              "__type": "StatByCoefficientCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        }
+      }
+    },
+    "VarusQ": {
+      "DataValues": {
+        "BaseDamageMax": [
+          0,
+          80,
+          160,
+          240,
+          320,
+          400,
+          480
+        ],
+        "ChargeMultiplierInverse": [
+          0.666670024394989,
+          0.666670024394989,
+          0.666670024394989,
+          0.666670024394989,
+          0.666670024394989,
+          0.666670024394989,
+          0.666670024394989
+        ],
+        "tADRatioMax": [
+          1.2000000476837158,
+          1.2999999523162842,
+          1.399999976158142,
+          1.5,
+          1.600000023841858,
+          1.7000000476837158,
+          1.7999999523162842
+        ],
+        "MaxChargeAmp": [
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5
+        ]
+      },
+      "mSpellCalculations": {
+        "{b3ef3984}": {
+          "mMultiplier": {
+            "mDataValue": "ChargeMultiplierInverse",
+            "__type": "NamedDataValueCalculationPart"
+          },
+          "mModifiedGameCalculation": "TotalDamageMax",
+          "__type": "GameCalculationModified"
+        },
+        "TotalDamageMax": {
+          "mFormulaParts": [
+            {
+              "mDataValue": "BaseDamageMax",
+              "__type": "NamedDataValueCalculationPart"
+            },
+            {
+              "mStat": 2,
+              "mStatFormula": 2,
+              "mDataValue": "tADRatioMax",
+              "__type": "StatByNamedDataValueCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        },
+        "TotalDamageMinTooltip": {
+          "mMultiplier": {
+            "mDataValue": "ChargeMultiplierInverse",
+            "__type": "NamedDataValueCalculationPart"
+          },
+          "mModifiedGameCalculation": "TotalDamageMax",
+          "__type": "GameCalculationModified"
+        }
+      }
+    },
+    "VarusW": {
+      "DataValues": {
+        "VarusWDebuffDuration": [
+          6,
+          6,
+          6,
+          6,
+          6,
+          6,
+          6
+        ],
+        "VarusWMaxStacks": [
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3
+        ],
+        "MaxMonsterDamage": [
+          120,
+          120,
+          120,
+          120,
+          120,
+          120,
+          120
+        ],
+        "BasePercentHPPerStack": [
+          0.02500000037252903,
+          0.029999999329447746,
+          0.03500000014901161,
+          0.03999999910593033,
+          0.04500000178813934,
+          0.05000000074505806,
+          0.054999999701976776
+        ],
+        "QEmpowerMonsterCap": [
+          360,
+          360,
+          360,
+          360,
+          360,
+          360,
+          360
+        ],
+        "VarusWOnHitDamage": [
+          -1,
+          8,
+          17,
+          26,
+          35,
+          44,
+          53
+        ],
+        "CDRPerBlightStack": [
+          0.12999999523162842,
+          0.12999999523162842,
+          0.12999999523162842,
+          0.12999999523162842,
+          0.12999999523162842,
+          0.12999999523162842,
+          0.12999999523162842
+        ],
+        "VarusWMaxChargeHPDamage": [
+          1.5,
+          1.5,
+          1.5,
+          1.5,
+          1.5,
+          1.5,
+          1.5
+        ],
+        "OnHitRatio": [
+          0.3499999940395355,
+          0.3499999940395355,
+          0.3499999940395355,
+          0.3499999940395355,
+          0.3499999940395355,
+          0.3499999940395355,
+          0.3499999940395355
+        ],
+        "WQHealthDamage": [
+          0.03999999910593033,
+          0.05999999865889549,
+          0.07999999821186066,
+          0.10000000149011612,
+          0.11999999731779099,
+          0.14000000059604645,
+          0.1599999964237213
+        ]
+      },
+      "mSpellCalculations": {
+        "PercentHPPerStack": {
+          "mFormulaParts": [
+            {
+              "mDataValue": "BasePercentHPPerStack",
+              "__type": "NamedDataValueCalculationPart"
+            },
+            {
+              "mSubpart": {
+                "mPart1": {
+                  "mNumber": 0.009999999776482582,
+                  "__type": "NumberCalculationPart"
+                },
+                "mPart2": {
+                  "mNumber": 0.014999999664723873,
+                  "__type": "NumberCalculationPart"
+                },
+                "__type": "ProductOfSubPartsCalculationPart"
+              },
+              "__type": "StatBySubPartCalculationPart"
+            }
+          ],
+          "mDisplayAsPercent": true,
+          "mPrecision": 1,
+          "__type": "GameCalculation"
+        },
+        "QEmpowerPercentHP": {
+          "mFormulaParts": [
+            {
+              "mDataValue": "WQHealthDamage",
+              "__type": "NamedDataValueCalculationPart"
+            }
+          ],
+          "mDisplayAsPercent": true,
+          "__type": "GameCalculation"
+        },
+        "OnHitDamage": {
+          "mFormulaParts": [
+            {
+              "mDataValue": "VarusWOnHitDamage",
+              "__type": "NamedDataValueCalculationPart"
+            },
+            {
+              "mDataValue": "OnHitRatio",
+              "__type": "StatByNamedDataValueCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        },
+        "MaxPercentHPPerStack": {
+          "mMultiplier": {
+            "mNumber": 3,
+            "__type": "NumberCalculationPart"
+          },
+          "tooltipOnly": true,
+          "mModifiedGameCalculation": "PercentHPPerStack",
+          "__type": "GameCalculationModified"
+        },
+        "MaxQEmpowerPercentHP": {
+          "mMultiplier": {
+            "mDataValue": "VarusWMaxChargeHPDamage",
+            "__type": "NamedDataValueCalculationPart"
+          },
+          "mModifiedGameCalculation": "QEmpowerPercentHP",
+          "__type": "GameCalculationModified"
+        }
+      }
+    },
+    "VarusE": {
+      "DataValues": {
+        "GrievousAmount": [
+          0.4000000059604645,
+          0.4000000059604645,
+          0.4000000059604645,
+          0.4000000059604645,
+          0.4000000059604645,
+          0.4000000059604645,
+          0.4000000059604645
+        ],
+        "GrievousDuration": [
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5
+        ],
+        "BonusADRatio": [
+          0.8999999761581421,
+          0.8999999761581421,
+          0.8999999761581421,
+          0.8999999761581421,
+          0.8999999761581421,
+          0.8999999761581421,
+          0.8999999761581421
+        ],
+        "BaseDamage": [
+          30,
+          60,
+          90,
+          120,
+          150,
+          180,
+          210
+        ],
+        "SlowPercent": [
+          -0.25,
+          -0.30000001192092896,
+          -0.3499999940395355,
+          -0.4000000059604645,
+          -0.44999998807907104,
+          -0.5,
+          -0.550000011920929
+        ],
+        "AoERange": [
+          300,
+          300,
+          300,
+          300,
+          300,
+          300,
+          300
+        ],
+        "DebuffDuration": [
+          4,
+          4,
+          4,
+          4,
+          4,
+          4,
+          4
+        ]
+      },
+      "mSpellCalculations": {
+        "TotalDamage": {
+          "mFormulaParts": [
+            {
+              "mDataValue": "BaseDamage",
+              "__type": "NamedDataValueCalculationPart"
+            },
+            {
+              "mStat": 2,
+              "mStatFormula": 2,
+              "mDataValue": "BonusADRatio",
+              "__type": "StatByNamedDataValueCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        }
+      }
+    },
+    "VarusR": {
+      "DataValues": {
+        "BaseDamage": [
+          50,
+          150,
+          250,
+          350,
+          450,
+          550,
+          650
+        ],
+        "RootDuration": [
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2
+        ],
+        "VarusRTargetAcquisitionRange": [
+          650,
+          650,
+          650,
+          650,
+          650,
+          650,
+          650
+        ],
+        "PassiveStacksAdded": [
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3
+        ],
+        "TimeBetweenStackAddition": [
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5
+        ],
+        "VarusRTargetLeashRange": [
+          600,
+          600,
+          600,
+          600,
+          600,
+          600,
+          600
+        ],
+        "VarusRLeashTimer": [
+          1.75,
+          1.75,
+          1.75,
+          1.75,
+          1.75,
+          1.75,
+          1.75
+        ],
+        "VarusWDebuffDuration": [
+          6,
+          6,
+          6,
+          6,
+          6,
+          6,
+          6
+        ],
+        "VarusWMaxStacks": [
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3
+        ]
+      },
+      "mSpellCalculations": {
+        "TotalDamage": {
+          "mFormulaParts": [
+            {
+              "mDataValue": "BaseDamage",
+              "__type": "NamedDataValueCalculationPart"
+            },
+            {
+              "mCoefficient": 1,
+              "__type": "StatByCoefficientCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        }
+      }
+    },
+    "VarusPassive": {
+      "DataValues": {
+        "PassiveAS": [
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5
+        ],
+        "PassiveASMinion": [
+          0.10000000149011612,
+          0.10000000149011612,
+          0.10000000149011612,
+          0.10000000149011612,
+          0.10000000149011612,
+          0.10000000149011612,
+          0.10000000149011612
+        ],
+        "PassiveASRatio": [
+          0.4000000059604645,
+          0.4000000059604645,
+          0.4000000059604645,
+          0.4000000059604645,
+          0.4000000059604645,
+          0.4000000059604645,
+          0.4000000059604645
+        ],
+        "PassiveASRatioMinion": [
+          0.20000000298023224,
+          0.20000000298023224,
+          0.20000000298023224,
+          0.20000000298023224,
+          0.20000000298023224,
+          0.20000000298023224,
+          0.20000000298023224
+        ],
+        "AStoADMinion": [
+          10,
+          10,
+          10,
+          10,
+          10,
+          10,
+          10
+        ],
+        "AStoAPMinion": [
+          10,
+          10,
+          10,
+          10,
+          10,
+          10,
+          10
+        ],
+        "AStoADChampion": [
+          25,
+          25,
+          25,
+          25,
+          25,
+          25,
+          25
+        ],
+        "AStoAPChampion": [
+          25,
+          25,
+          25,
+          25,
+          25,
+          25,
+          25
+        ],
+        "NewASCap": [
+          3.3299999237060547,
+          3.3299999237060547,
+          3.3299999237060547,
+          3.3299999237060547,
+          3.3299999237060547,
+          3.3299999237060547,
+          3.3299999237060547
+        ]
+      },
+      "mSpellCalculations": {
+        "MinionAS": {
+          "mFormulaParts": [
+            {
+              "mLevel1Value": 0.10000000149011612,
+              "mBreakpoints": [
+                {
+                  "mLevel": 7,
+                  "mAdditionalBonusAtThisLevel": 0.05000000074505806,
+                  "__type": "Breakpoint"
+                },
+                {
+                  "mLevel": 13,
+                  "mAdditionalBonusAtThisLevel": 0.05000000074505806,
+                  "__type": "Breakpoint"
+                }
+              ],
+              "__type": "ByCharLevelBreakpointsCalculationPart"
+            }
+          ],
+          "mDisplayAsPercent": true,
+          "__type": "GameCalculation"
+        },
+        "ChampionAS": {
+          "mFormulaParts": [
+            {
+              "mDataValue": "PassiveAS",
+              "__type": "NamedDataValueCalculationPart"
+            }
+          ],
+          "mDisplayAsPercent": true,
+          "__type": "GameCalculation"
+        },
+        "ASDuration": {
+          "mFormulaParts": [
+            {
+              "mLevel1Value": 5,
+              "mBreakpoints": [
+                {
+                  "mLevel": 6,
+                  "mAdditionalBonusAtThisLevel": 2,
+                  "__type": "Breakpoint"
+                },
+                {
+                  "mLevel": 11,
+                  "mAdditionalBonusAtThisLevel": 2,
+                  "__type": "Breakpoint"
+                },
+                {
+                  "mLevel": 16,
+                  "mAdditionalBonusAtThisLevel": 2,
+                  "__type": "Breakpoint"
+                },
+                {
+                  "mLevel": 21,
+                  "mAdditionalBonusAtThisLevel": 2,
+                  "__type": "Breakpoint"
+                },
+                {
+                  "mLevel": 26,
+                  "mAdditionalBonusAtThisLevel": 2,
+                  "__type": "Breakpoint"
+                }
+              ],
+              "__type": "ByCharLevelBreakpointsCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        },
+        "MinionAD": {
+          "mFormulaParts": [
+            {
+              "mStat": 4,
+              "mStatFormula": 2,
+              "mDataValue": "AStoADMinion",
+              "__type": "StatByNamedDataValueCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        },
+        "MinionAP": {
+          "mFormulaParts": [
+            {
+              "mStat": 4,
+              "mStatFormula": 2,
+              "mDataValue": "AStoAPMinion",
+              "__type": "StatByNamedDataValueCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        },
+        "ChampionAD": {
+          "mFormulaParts": [
+            {
+              "mStat": 4,
+              "mStatFormula": 2,
+              "mDataValue": "AStoADChampion",
+              "__type": "StatByNamedDataValueCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        },
+        "ChampionAP": {
+          "mFormulaParts": [
+            {
+              "mStat": 4,
+              "mStatFormula": 2,
+              "mDataValue": "AStoAPChampion",
+              "__type": "StatByNamedDataValueCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        }
+      }
+    }
+  }
+}
