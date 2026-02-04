@@ -1,19 +1,19 @@
 {
   "version": "16.3.1",
   "ddragonVersion": "16.3.1",
-  "cdragonVersion": "16.2",
+  "cdragonVersion": "16.3",
   "championId": "Mel",
   "spellData": {
     "0": {
       "DataValues": {
         "ExplosionDamage": [
-          10.5,
-          13,
-          15.5,
-          18,
-          20.5,
-          23,
-          25.5
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
         ],
         "ExplosionCount": [
           5,
@@ -25,40 +25,49 @@
           11
         ],
         "Spread": [
-          30,
-          30,
-          30,
-          30,
-          30,
-          30,
-          30
+          25,
+          25,
+          25,
+          25,
+          25,
+          25,
+          25
         ],
         "ExplosionRadius": [
-          220,
-          220,
-          220,
-          220,
-          220,
-          220,
-          220
+          200,
+          200,
+          200,
+          200,
+          200,
+          200,
+          200
         ],
         "ChannelDuration": [
-          0.75,
-          0.75,
-          0.75,
-          0.75,
-          0.75,
-          0.75,
-          0.75
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5
         ],
         "MinionMod": [
-          0.75,
-          0.75,
-          0.75,
-          0.75,
-          0.75,
-          0.75,
-          0.75
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        "InitialDamage": [
+          30,
+          60,
+          90,
+          120,
+          150,
+          180,
+          210
         ]
       },
       "mSpellCalculations": {
@@ -69,19 +78,41 @@
               "__type": "NamedDataValueCalculationPart"
             },
             {
-              "mCoefficient": 0.08500000089406967,
+              "mCoefficient": 0.05000000074505806,
               "__type": "StatByCoefficientCalculationPart"
             }
           ],
           "__type": "GameCalculation"
         },
         "AllDamageHit": {
-          "mMultiplier": {
-            "mDataValue": "ExplosionCount",
-            "__type": "NamedDataValueCalculationPart"
-          },
-          "mModifiedGameCalculation": "TotalExplosionDamage",
-          "__type": "GameCalculationModified"
+          "tooltipOnly": true,
+          "mFormulaParts": [
+            {
+              "mSpellCalculationKey": "{c6579b07}",
+              "__type": "{f3cbe7b2}"
+            },
+            {
+              "mPart1": {
+                "mSpellCalculationKey": "TotalExplosionDamage",
+                "__type": "{f3cbe7b2}"
+              },
+              "mPart2": {
+                "mSubparts": [
+                  {
+                    "mDataValue": "ExplosionCount",
+                    "__type": "NamedDataValueCalculationPart"
+                  },
+                  {
+                    "mNumber": -1,
+                    "__type": "NumberCalculationPart"
+                  }
+                ],
+                "__type": "SumOfSubPartsCalculationPart"
+              },
+              "__type": "ProductOfSubPartsCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
         },
         "MonsterModTooltip": {
           "mSimpleTooltipCalculationDisplay": 5,
@@ -110,6 +141,19 @@
             }
           ],
           "mDisplayAsPercent": true,
+          "__type": "GameCalculation"
+        },
+        "{c6579b07}": {
+          "mFormulaParts": [
+            {
+              "mDataValue": "InitialDamage",
+              "__type": "NamedDataValueCalculationPart"
+            },
+            {
+              "mCoefficient": 0.6000000238418579,
+              "__type": "StatByCoefficientCalculationPart"
+            }
+          ],
           "__type": "GameCalculation"
         }
       }
@@ -144,6 +188,15 @@
           0.6499999761581421
         ],
         "MoveSpeed": [
+          0.4000000059604645,
+          0.4000000059604645,
+          0.4000000059604645,
+          0.4000000059604645,
+          0.4000000059604645,
+          0.4000000059604645,
+          0.4000000059604645
+        ],
+        "PhysDamageMod": [
           0.30000001192092896,
           0.30000001192092896,
           0.30000001192092896,
@@ -151,6 +204,24 @@
           0.30000001192092896,
           0.30000001192092896,
           0.30000001192092896
+        ],
+        "BaseShieldAmount": [
+          50,
+          80,
+          110,
+          140,
+          170,
+          200,
+          230
+        ],
+        "MoveSpeedDuration": [
+          1.5,
+          1.5,
+          1.5,
+          1.5,
+          1.5,
+          1.5,
+          1.5
         ]
       },
       "mSpellCalculations": {
@@ -167,37 +238,50 @@
           ],
           "mDisplayAsPercent": true,
           "__type": "GameCalculation"
+        },
+        "ShieldAmount": {
+          "mFormulaParts": [
+            {
+              "mDataValue": "BaseShieldAmount",
+              "__type": "NamedDataValueCalculationPart"
+            },
+            {
+              "mCoefficient": 0.6000000238418579,
+              "__type": "StatByCoefficientCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
         }
       }
     },
     "2": {
       "DataValues": {
         "RootDuration": [
-          1.100000023841858,
-          1.2000000476837158,
-          1.2999999523162842,
-          1.399999976158142,
           1.5,
-          1.600000023841858,
-          1.7000000476837158
+          1.5,
+          1.5,
+          1.5,
+          1.5,
+          1.5,
+          1.5
         ],
         "BaseDamage": [
-          20,
+          15,
           60,
-          100,
-          140,
-          180,
-          220,
-          260
+          105,
+          150,
+          195,
+          240,
+          285
         ],
         "BaseAreaDamage": [
-          6,
+          4,
           16,
-          26,
-          36,
-          46,
-          56,
-          66
+          28,
+          40,
+          52,
+          64,
+          76
         ],
         "AreaAPRatio": [
           0.07999999821186066,
@@ -236,13 +320,13 @@
           0.5
         ],
         "MaxAreaRadius": [
-          260,
-          260,
-          260,
-          260,
-          260,
-          260,
-          260
+          230,
+          230,
+          230,
+          230,
+          230,
+          230,
+          230
         ],
         "TimeToMaxRadius": [
           0.5,
@@ -421,7 +505,7 @@
               "__type": "NamedDataValueCalculationPart"
             },
             {
-              "mCoefficient": 0.03500000014901161,
+              "mCoefficient": 0.03999999910593033,
               "__type": "StatByCoefficientCalculationPart"
             }
           ],
@@ -474,13 +558,13 @@
     "MelQ": {
       "DataValues": {
         "ExplosionDamage": [
-          10.5,
-          13,
-          15.5,
-          18,
-          20.5,
-          23,
-          25.5
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
         ],
         "ExplosionCount": [
           5,
@@ -492,40 +576,49 @@
           11
         ],
         "Spread": [
-          30,
-          30,
-          30,
-          30,
-          30,
-          30,
-          30
+          25,
+          25,
+          25,
+          25,
+          25,
+          25,
+          25
         ],
         "ExplosionRadius": [
-          220,
-          220,
-          220,
-          220,
-          220,
-          220,
-          220
+          200,
+          200,
+          200,
+          200,
+          200,
+          200,
+          200
         ],
         "ChannelDuration": [
-          0.75,
-          0.75,
-          0.75,
-          0.75,
-          0.75,
-          0.75,
-          0.75
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5
         ],
         "MinionMod": [
-          0.75,
-          0.75,
-          0.75,
-          0.75,
-          0.75,
-          0.75,
-          0.75
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        "InitialDamage": [
+          30,
+          60,
+          90,
+          120,
+          150,
+          180,
+          210
         ]
       },
       "mSpellCalculations": {
@@ -536,19 +629,41 @@
               "__type": "NamedDataValueCalculationPart"
             },
             {
-              "mCoefficient": 0.08500000089406967,
+              "mCoefficient": 0.05000000074505806,
               "__type": "StatByCoefficientCalculationPart"
             }
           ],
           "__type": "GameCalculation"
         },
         "AllDamageHit": {
-          "mMultiplier": {
-            "mDataValue": "ExplosionCount",
-            "__type": "NamedDataValueCalculationPart"
-          },
-          "mModifiedGameCalculation": "TotalExplosionDamage",
-          "__type": "GameCalculationModified"
+          "tooltipOnly": true,
+          "mFormulaParts": [
+            {
+              "mSpellCalculationKey": "{c6579b07}",
+              "__type": "{f3cbe7b2}"
+            },
+            {
+              "mPart1": {
+                "mSpellCalculationKey": "TotalExplosionDamage",
+                "__type": "{f3cbe7b2}"
+              },
+              "mPart2": {
+                "mSubparts": [
+                  {
+                    "mDataValue": "ExplosionCount",
+                    "__type": "NamedDataValueCalculationPart"
+                  },
+                  {
+                    "mNumber": -1,
+                    "__type": "NumberCalculationPart"
+                  }
+                ],
+                "__type": "SumOfSubPartsCalculationPart"
+              },
+              "__type": "ProductOfSubPartsCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
         },
         "MonsterModTooltip": {
           "mSimpleTooltipCalculationDisplay": 5,
@@ -577,6 +692,19 @@
             }
           ],
           "mDisplayAsPercent": true,
+          "__type": "GameCalculation"
+        },
+        "{c6579b07}": {
+          "mFormulaParts": [
+            {
+              "mDataValue": "InitialDamage",
+              "__type": "NamedDataValueCalculationPart"
+            },
+            {
+              "mCoefficient": 0.6000000238418579,
+              "__type": "StatByCoefficientCalculationPart"
+            }
+          ],
           "__type": "GameCalculation"
         }
       }
@@ -611,6 +739,15 @@
           0.6499999761581421
         ],
         "MoveSpeed": [
+          0.4000000059604645,
+          0.4000000059604645,
+          0.4000000059604645,
+          0.4000000059604645,
+          0.4000000059604645,
+          0.4000000059604645,
+          0.4000000059604645
+        ],
+        "PhysDamageMod": [
           0.30000001192092896,
           0.30000001192092896,
           0.30000001192092896,
@@ -618,6 +755,24 @@
           0.30000001192092896,
           0.30000001192092896,
           0.30000001192092896
+        ],
+        "BaseShieldAmount": [
+          50,
+          80,
+          110,
+          140,
+          170,
+          200,
+          230
+        ],
+        "MoveSpeedDuration": [
+          1.5,
+          1.5,
+          1.5,
+          1.5,
+          1.5,
+          1.5,
+          1.5
         ]
       },
       "mSpellCalculations": {
@@ -634,37 +789,50 @@
           ],
           "mDisplayAsPercent": true,
           "__type": "GameCalculation"
+        },
+        "ShieldAmount": {
+          "mFormulaParts": [
+            {
+              "mDataValue": "BaseShieldAmount",
+              "__type": "NamedDataValueCalculationPart"
+            },
+            {
+              "mCoefficient": 0.6000000238418579,
+              "__type": "StatByCoefficientCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
         }
       }
     },
     "MelE": {
       "DataValues": {
         "RootDuration": [
-          1.100000023841858,
-          1.2000000476837158,
-          1.2999999523162842,
-          1.399999976158142,
           1.5,
-          1.600000023841858,
-          1.7000000476837158
+          1.5,
+          1.5,
+          1.5,
+          1.5,
+          1.5,
+          1.5
         ],
         "BaseDamage": [
-          20,
+          15,
           60,
-          100,
-          140,
-          180,
-          220,
-          260
+          105,
+          150,
+          195,
+          240,
+          285
         ],
         "BaseAreaDamage": [
-          6,
+          4,
           16,
-          26,
-          36,
-          46,
-          56,
-          66
+          28,
+          40,
+          52,
+          64,
+          76
         ],
         "AreaAPRatio": [
           0.07999999821186066,
@@ -703,13 +871,13 @@
           0.5
         ],
         "MaxAreaRadius": [
-          260,
-          260,
-          260,
-          260,
-          260,
-          260,
-          260
+          230,
+          230,
+          230,
+          230,
+          230,
+          230,
+          230
         ],
         "TimeToMaxRadius": [
           0.5,
@@ -888,7 +1056,7 @@
               "__type": "NamedDataValueCalculationPart"
             },
             {
-              "mCoefficient": 0.03500000014901161,
+              "mCoefficient": 0.03999999910593033,
               "__type": "StatByCoefficientCalculationPart"
             }
           ],
