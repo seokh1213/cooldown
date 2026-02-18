@@ -1,0 +1,1577 @@
+{
+  "version": "16.4.1",
+  "ddragonVersion": "16.4.1",
+  "cdragonVersion": "16.3",
+  "championId": "Naafiri",
+  "spellData": {
+    "0": {
+      "DataValues": {
+        "BaseDamageFirstCast": [
+          30,
+          35,
+          40,
+          45,
+          50,
+          55,
+          60
+        ],
+        "BaseDamageSecondCast": [
+          15,
+          30,
+          45,
+          60,
+          75,
+          90,
+          105
+        ],
+        "BleedBaseDamage": [
+          10,
+          35,
+          60,
+          85,
+          110,
+          135,
+          160
+        ],
+        "BleedInterval": [
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5
+        ],
+        "RecastWindow": [
+          4,
+          4,
+          4,
+          4,
+          4,
+          4,
+          4
+        ],
+        "RecastLockout": [
+          0.75,
+          0.75,
+          0.75,
+          0.75,
+          0.75,
+          0.75,
+          0.75
+        ],
+        "BaseHealSecondCast": [
+          30,
+          45,
+          60,
+          75,
+          90,
+          105,
+          120
+        ],
+        "BleedDuration": [
+          5,
+          5,
+          5,
+          5,
+          5,
+          5,
+          5
+        ],
+        "ExecuteMultiplier": [
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2
+        ],
+        "MinionMod": [
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        "FirstCastBonusADRatio": [
+          0.20000000298023224,
+          0.20000000298023224,
+          0.20000000298023224,
+          0.20000000298023224,
+          0.20000000298023224,
+          0.20000000298023224,
+          0.20000000298023224
+        ],
+        "SecondCastBonusADRatio": [
+          0.4000000059604645,
+          0.4000000059604645,
+          0.4000000059604645,
+          0.4000000059604645,
+          0.4000000059604645,
+          0.4000000059604645,
+          0.4000000059604645
+        ],
+        "BleedBonusADRatio": [
+          0.800000011920929,
+          0.800000011920929,
+          0.800000011920929,
+          0.800000011920929,
+          0.800000011920929,
+          0.800000011920929,
+          0.800000011920929
+        ],
+        "HealBonusADRatio": [
+          0.4000000059604645,
+          0.4000000059604645,
+          0.4000000059604645,
+          0.4000000059604645,
+          0.4000000059604645,
+          0.4000000059604645,
+          0.4000000059604645
+        ],
+        "SecondCastMaxADRatio": [
+          0.699999988079071,
+          0.699999988079071,
+          0.699999988079071,
+          0.699999988079071,
+          0.699999988079071,
+          0.699999988079071,
+          0.699999988079071
+        ]
+      },
+      "mSpellCalculations": {
+        "TotalDamageFirstCast": {
+          "mFormulaParts": [
+            {
+              "mDataValue": "BaseDamageFirstCast",
+              "__type": "NamedDataValueCalculationPart"
+            },
+            {
+              "mStat": 2,
+              "mStatFormula": 2,
+              "mDataValue": "FirstCastBonusADRatio",
+              "__type": "StatByNamedDataValueCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        },
+        "TotalMinDamageSecondCast": {
+          "mFormulaParts": [
+            {
+              "mDataValue": "BaseDamageSecondCast",
+              "__type": "NamedDataValueCalculationPart"
+            },
+            {
+              "mStat": 2,
+              "mStatFormula": 2,
+              "mDataValue": "SecondCastBonusADRatio",
+              "__type": "StatByNamedDataValueCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        },
+        "TotalHealSecondCast": {
+          "mFormulaParts": [
+            {
+              "mDataValue": "BaseHealSecondCast",
+              "__type": "NamedDataValueCalculationPart"
+            },
+            {
+              "mStat": 2,
+              "mStatFormula": 2,
+              "mDataValue": "HealBonusADRatio",
+              "__type": "StatByNamedDataValueCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        },
+        "TotalBleedDamage": {
+          "mFormulaParts": [
+            {
+              "mDataValue": "BleedBaseDamage",
+              "__type": "NamedDataValueCalculationPart"
+            },
+            {
+              "mStat": 2,
+              "mStatFormula": 2,
+              "mDataValue": "BleedBonusADRatio",
+              "__type": "StatByNamedDataValueCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        },
+        "MinionExecuteThreshold": {
+          "mFormulaParts": [
+            {
+              "mLevel1Value": 30,
+              "mInitialBonusPerLevel": 4,
+              "mBreakpoints": [
+                {
+                  "mLevel": 12,
+                  "__type": "Breakpoint"
+                }
+              ],
+              "__type": "ByCharLevelBreakpointsCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        },
+        "TotalMaxDamageSecondCast": {
+          "mMultiplier": {
+            "mDataValue": "ExecuteMultiplier",
+            "__type": "NamedDataValueCalculationPart"
+          },
+          "mFormulaParts": [
+            {
+              "mDataValue": "BaseDamageSecondCast",
+              "__type": "NamedDataValueCalculationPart"
+            },
+            {
+              "mStat": 2,
+              "mStatFormula": 2,
+              "mDataValue": "SecondCastMaxADRatio",
+              "__type": "StatByNamedDataValueCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        }
+      }
+    },
+    "1": {
+      "DataValues": {
+        "PackmatesToAdd": [
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2
+        ],
+        "Duration": [
+          5,
+          5,
+          5,
+          5,
+          5,
+          5,
+          5
+        ],
+        "MoveSpeedAmount": [
+          0.17499999701976776,
+          0.20000000298023224,
+          0.22499999403953552,
+          0.25,
+          0.2750000059604645,
+          0.30000001192092896,
+          0.32499998807907104
+        ],
+        "MoveSpeedDuration": [
+          5,
+          5,
+          5,
+          5,
+          5,
+          5,
+          5
+        ],
+        "PackmateSpawnRateIncrease": [
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5
+        ],
+        "NaafiriADPercentBoost": [
+          0.20000000298023224,
+          0.20000000298023224,
+          0.20000000298023224,
+          0.20000000298023224,
+          0.20000000298023224,
+          0.20000000298023224,
+          0.20000000298023224
+        ],
+        "UntargetableDuration": [
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
+        ]
+      },
+      "mSpellCalculations": {
+        "BonusAD": {
+          "mFormulaParts": [
+            {
+              "mStat": 2,
+              "mDataValue": "NaafiriADPercentBoost",
+              "__type": "StatByNamedDataValueCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        }
+      }
+    },
+    "2": {
+      "DataValues": {
+        "BaseDamageFirstSlash": [
+          5,
+          15,
+          25,
+          35,
+          45,
+          55,
+          65
+        ],
+        "ADRatioFirstSlash": [
+          0.4000000059604645,
+          0.4000000059604645,
+          0.4000000059604645,
+          0.4000000059604645,
+          0.4000000059604645,
+          0.4000000059604645,
+          0.4000000059604645
+        ],
+        "BaseDamageSecondHit": [
+          35,
+          60,
+          85,
+          110,
+          135,
+          160,
+          185
+        ],
+        "ADRatioSecondHit": [
+          0.800000011920929,
+          0.800000011920929,
+          0.800000011920929,
+          0.800000011920929,
+          0.800000011920929,
+          0.800000011920929,
+          0.800000011920929
+        ],
+        "RadiusSecondSlash": [
+          230,
+          230,
+          230,
+          230,
+          230,
+          230,
+          230
+        ],
+        "DashDistance": [
+          450,
+          450,
+          450,
+          450,
+          450,
+          450,
+          450
+        ],
+        "DashSpeed": [
+          900,
+          900,
+          900,
+          900,
+          900,
+          900,
+          900
+        ],
+        "MaxDashCheatDistance": [
+          650,
+          650,
+          650,
+          650,
+          650,
+          650,
+          650
+        ],
+        "MinDashDistance": [
+          250,
+          250,
+          250,
+          250,
+          250,
+          250,
+          250
+        ]
+      },
+      "mSpellCalculations": {
+        "TotalDamageFirstSlash": {
+          "mFormulaParts": [
+            {
+              "mDataValue": "BaseDamageFirstSlash",
+              "__type": "NamedDataValueCalculationPart"
+            },
+            {
+              "mStat": 2,
+              "mStatFormula": 2,
+              "mDataValue": "ADRatioFirstSlash",
+              "__type": "StatByNamedDataValueCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        },
+        "TotalDamageSecondSlash": {
+          "mFormulaParts": [
+            {
+              "mDataValue": "BaseDamageSecondHit",
+              "__type": "NamedDataValueCalculationPart"
+            },
+            {
+              "mStat": 2,
+              "mStatFormula": 2,
+              "mDataValue": "ADRatioSecondHit",
+              "__type": "StatByNamedDataValueCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        }
+      }
+    },
+    "3": {
+      "DataValues": {
+        "BaseDamage": [
+          50,
+          150,
+          250,
+          350,
+          450,
+          550,
+          650
+        ],
+        "DashSpeed": [
+          1800,
+          1800,
+          1800,
+          1800,
+          1800,
+          1800,
+          1800
+        ],
+        "SlowDuration": [
+          0.25,
+          0.25,
+          0.25,
+          0.25,
+          0.25,
+          0.25,
+          0.25
+        ],
+        "SlowPercent": [
+          -0.9900000095367432,
+          -0.9900000095367432,
+          -0.9900000095367432,
+          -0.9900000095367432,
+          -0.9900000095367432,
+          -0.9900000095367432,
+          -0.9900000095367432
+        ],
+        "PackmateModifier": [
+          0.10000000149011612,
+          0.10000000149011612,
+          0.10000000149011612,
+          0.10000000149011612,
+          0.10000000149011612,
+          0.10000000149011612,
+          0.10000000149011612
+        ],
+        "FailCastCDRefund": [
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5
+        ],
+        "ShredDuration": [
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3
+        ],
+        "TakedownWindow": [
+          7,
+          7,
+          7,
+          7,
+          7,
+          7,
+          7
+        ],
+        "RecastWindow": [
+          12,
+          12,
+          12,
+          12,
+          12,
+          12,
+          12
+        ],
+        "ShieldDuration": [
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3
+        ],
+        "ShieldSize": [
+          50,
+          100,
+          150,
+          200,
+          250,
+          300,
+          350
+        ],
+        "VisionDuration": [
+          4,
+          4,
+          4,
+          4,
+          4,
+          4,
+          4
+        ],
+        "VisionPulseDuration": [
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        "VisionRadius": [
+          2100,
+          2100,
+          2100,
+          2100,
+          2100,
+          2100,
+          2100
+        ],
+        "WRefreshOnCast": [
+          1.75,
+          1.75,
+          1.75,
+          1.75,
+          1.75,
+          1.75,
+          1.75
+        ]
+      },
+      "mSpellCalculations": {
+        "TotalDamage": {
+          "mFormulaParts": [
+            {
+              "mDataValue": "BaseDamage",
+              "__type": "NamedDataValueCalculationPart"
+            },
+            {
+              "mStat": 2,
+              "mStatFormula": 2,
+              "mCoefficient": 1.2000000476837158,
+              "__type": "StatByCoefficientCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        },
+        "PackmateDamage": {
+          "mMultiplier": {
+            "mDataValue": "PackmateModifier",
+            "__type": "NamedDataValueCalculationPart"
+          },
+          "mModifiedGameCalculation": "TotalDamage",
+          "__type": "GameCalculationModified"
+        },
+        "ArmorShred": {
+          "mFormulaParts": [
+            {
+              "mLevel1Value": 6,
+              "mInitialBonusPerLevel": 2,
+              "__type": "ByCharLevelBreakpointsCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        },
+        "ShieldTotal": {
+          "mFormulaParts": [
+            {
+              "mDataValue": "ShieldSize",
+              "__type": "NamedDataValueCalculationPart"
+            },
+            {
+              "mStat": 2,
+              "mStatFormula": 2,
+              "mCoefficient": 1.5,
+              "__type": "StatByCoefficientCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        }
+      }
+    },
+    "NaafiriQ": {
+      "DataValues": {
+        "BaseDamageFirstCast": [
+          30,
+          35,
+          40,
+          45,
+          50,
+          55,
+          60
+        ],
+        "BaseDamageSecondCast": [
+          15,
+          30,
+          45,
+          60,
+          75,
+          90,
+          105
+        ],
+        "BleedBaseDamage": [
+          10,
+          35,
+          60,
+          85,
+          110,
+          135,
+          160
+        ],
+        "BleedInterval": [
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5
+        ],
+        "RecastWindow": [
+          4,
+          4,
+          4,
+          4,
+          4,
+          4,
+          4
+        ],
+        "RecastLockout": [
+          0.75,
+          0.75,
+          0.75,
+          0.75,
+          0.75,
+          0.75,
+          0.75
+        ],
+        "BaseHealSecondCast": [
+          30,
+          45,
+          60,
+          75,
+          90,
+          105,
+          120
+        ],
+        "BleedDuration": [
+          5,
+          5,
+          5,
+          5,
+          5,
+          5,
+          5
+        ],
+        "ExecuteMultiplier": [
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2
+        ],
+        "MinionMod": [
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        "FirstCastBonusADRatio": [
+          0.20000000298023224,
+          0.20000000298023224,
+          0.20000000298023224,
+          0.20000000298023224,
+          0.20000000298023224,
+          0.20000000298023224,
+          0.20000000298023224
+        ],
+        "SecondCastBonusADRatio": [
+          0.4000000059604645,
+          0.4000000059604645,
+          0.4000000059604645,
+          0.4000000059604645,
+          0.4000000059604645,
+          0.4000000059604645,
+          0.4000000059604645
+        ],
+        "BleedBonusADRatio": [
+          0.800000011920929,
+          0.800000011920929,
+          0.800000011920929,
+          0.800000011920929,
+          0.800000011920929,
+          0.800000011920929,
+          0.800000011920929
+        ],
+        "HealBonusADRatio": [
+          0.4000000059604645,
+          0.4000000059604645,
+          0.4000000059604645,
+          0.4000000059604645,
+          0.4000000059604645,
+          0.4000000059604645,
+          0.4000000059604645
+        ],
+        "SecondCastMaxADRatio": [
+          0.699999988079071,
+          0.699999988079071,
+          0.699999988079071,
+          0.699999988079071,
+          0.699999988079071,
+          0.699999988079071,
+          0.699999988079071
+        ]
+      },
+      "mSpellCalculations": {
+        "TotalDamageFirstCast": {
+          "mFormulaParts": [
+            {
+              "mDataValue": "BaseDamageFirstCast",
+              "__type": "NamedDataValueCalculationPart"
+            },
+            {
+              "mStat": 2,
+              "mStatFormula": 2,
+              "mDataValue": "FirstCastBonusADRatio",
+              "__type": "StatByNamedDataValueCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        },
+        "TotalMinDamageSecondCast": {
+          "mFormulaParts": [
+            {
+              "mDataValue": "BaseDamageSecondCast",
+              "__type": "NamedDataValueCalculationPart"
+            },
+            {
+              "mStat": 2,
+              "mStatFormula": 2,
+              "mDataValue": "SecondCastBonusADRatio",
+              "__type": "StatByNamedDataValueCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        },
+        "TotalHealSecondCast": {
+          "mFormulaParts": [
+            {
+              "mDataValue": "BaseHealSecondCast",
+              "__type": "NamedDataValueCalculationPart"
+            },
+            {
+              "mStat": 2,
+              "mStatFormula": 2,
+              "mDataValue": "HealBonusADRatio",
+              "__type": "StatByNamedDataValueCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        },
+        "TotalBleedDamage": {
+          "mFormulaParts": [
+            {
+              "mDataValue": "BleedBaseDamage",
+              "__type": "NamedDataValueCalculationPart"
+            },
+            {
+              "mStat": 2,
+              "mStatFormula": 2,
+              "mDataValue": "BleedBonusADRatio",
+              "__type": "StatByNamedDataValueCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        },
+        "MinionExecuteThreshold": {
+          "mFormulaParts": [
+            {
+              "mLevel1Value": 30,
+              "mInitialBonusPerLevel": 4,
+              "mBreakpoints": [
+                {
+                  "mLevel": 12,
+                  "__type": "Breakpoint"
+                }
+              ],
+              "__type": "ByCharLevelBreakpointsCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        },
+        "TotalMaxDamageSecondCast": {
+          "mMultiplier": {
+            "mDataValue": "ExecuteMultiplier",
+            "__type": "NamedDataValueCalculationPart"
+          },
+          "mFormulaParts": [
+            {
+              "mDataValue": "BaseDamageSecondCast",
+              "__type": "NamedDataValueCalculationPart"
+            },
+            {
+              "mStat": 2,
+              "mStatFormula": 2,
+              "mDataValue": "SecondCastMaxADRatio",
+              "__type": "StatByNamedDataValueCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        }
+      }
+    },
+    "NaafiriR": {
+      "DataValues": {
+        "PackmatesToAdd": [
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2
+        ],
+        "Duration": [
+          5,
+          5,
+          5,
+          5,
+          5,
+          5,
+          5
+        ],
+        "MoveSpeedAmount": [
+          0.17499999701976776,
+          0.20000000298023224,
+          0.22499999403953552,
+          0.25,
+          0.2750000059604645,
+          0.30000001192092896,
+          0.32499998807907104
+        ],
+        "MoveSpeedDuration": [
+          5,
+          5,
+          5,
+          5,
+          5,
+          5,
+          5
+        ],
+        "PackmateSpawnRateIncrease": [
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5
+        ],
+        "NaafiriADPercentBoost": [
+          0.20000000298023224,
+          0.20000000298023224,
+          0.20000000298023224,
+          0.20000000298023224,
+          0.20000000298023224,
+          0.20000000298023224,
+          0.20000000298023224
+        ],
+        "UntargetableDuration": [
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
+        ]
+      },
+      "mSpellCalculations": {
+        "BonusAD": {
+          "mFormulaParts": [
+            {
+              "mStat": 2,
+              "mDataValue": "NaafiriADPercentBoost",
+              "__type": "StatByNamedDataValueCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        }
+      }
+    },
+    "NaafiriE": {
+      "DataValues": {
+        "BaseDamageFirstSlash": [
+          5,
+          15,
+          25,
+          35,
+          45,
+          55,
+          65
+        ],
+        "ADRatioFirstSlash": [
+          0.4000000059604645,
+          0.4000000059604645,
+          0.4000000059604645,
+          0.4000000059604645,
+          0.4000000059604645,
+          0.4000000059604645,
+          0.4000000059604645
+        ],
+        "BaseDamageSecondHit": [
+          35,
+          60,
+          85,
+          110,
+          135,
+          160,
+          185
+        ],
+        "ADRatioSecondHit": [
+          0.800000011920929,
+          0.800000011920929,
+          0.800000011920929,
+          0.800000011920929,
+          0.800000011920929,
+          0.800000011920929,
+          0.800000011920929
+        ],
+        "RadiusSecondSlash": [
+          230,
+          230,
+          230,
+          230,
+          230,
+          230,
+          230
+        ],
+        "DashDistance": [
+          450,
+          450,
+          450,
+          450,
+          450,
+          450,
+          450
+        ],
+        "DashSpeed": [
+          900,
+          900,
+          900,
+          900,
+          900,
+          900,
+          900
+        ],
+        "MaxDashCheatDistance": [
+          650,
+          650,
+          650,
+          650,
+          650,
+          650,
+          650
+        ],
+        "MinDashDistance": [
+          250,
+          250,
+          250,
+          250,
+          250,
+          250,
+          250
+        ]
+      },
+      "mSpellCalculations": {
+        "TotalDamageFirstSlash": {
+          "mFormulaParts": [
+            {
+              "mDataValue": "BaseDamageFirstSlash",
+              "__type": "NamedDataValueCalculationPart"
+            },
+            {
+              "mStat": 2,
+              "mStatFormula": 2,
+              "mDataValue": "ADRatioFirstSlash",
+              "__type": "StatByNamedDataValueCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        },
+        "TotalDamageSecondSlash": {
+          "mFormulaParts": [
+            {
+              "mDataValue": "BaseDamageSecondHit",
+              "__type": "NamedDataValueCalculationPart"
+            },
+            {
+              "mStat": 2,
+              "mStatFormula": 2,
+              "mDataValue": "ADRatioSecondHit",
+              "__type": "StatByNamedDataValueCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        }
+      }
+    },
+    "NaafiriW": {
+      "DataValues": {
+        "BaseDamage": [
+          50,
+          150,
+          250,
+          350,
+          450,
+          550,
+          650
+        ],
+        "DashSpeed": [
+          1800,
+          1800,
+          1800,
+          1800,
+          1800,
+          1800,
+          1800
+        ],
+        "SlowDuration": [
+          0.25,
+          0.25,
+          0.25,
+          0.25,
+          0.25,
+          0.25,
+          0.25
+        ],
+        "SlowPercent": [
+          -0.9900000095367432,
+          -0.9900000095367432,
+          -0.9900000095367432,
+          -0.9900000095367432,
+          -0.9900000095367432,
+          -0.9900000095367432,
+          -0.9900000095367432
+        ],
+        "PackmateModifier": [
+          0.10000000149011612,
+          0.10000000149011612,
+          0.10000000149011612,
+          0.10000000149011612,
+          0.10000000149011612,
+          0.10000000149011612,
+          0.10000000149011612
+        ],
+        "FailCastCDRefund": [
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5
+        ],
+        "ShredDuration": [
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3
+        ],
+        "TakedownWindow": [
+          7,
+          7,
+          7,
+          7,
+          7,
+          7,
+          7
+        ],
+        "RecastWindow": [
+          12,
+          12,
+          12,
+          12,
+          12,
+          12,
+          12
+        ],
+        "ShieldDuration": [
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3
+        ],
+        "ShieldSize": [
+          50,
+          100,
+          150,
+          200,
+          250,
+          300,
+          350
+        ],
+        "VisionDuration": [
+          4,
+          4,
+          4,
+          4,
+          4,
+          4,
+          4
+        ],
+        "VisionPulseDuration": [
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        "VisionRadius": [
+          2100,
+          2100,
+          2100,
+          2100,
+          2100,
+          2100,
+          2100
+        ],
+        "WRefreshOnCast": [
+          1.75,
+          1.75,
+          1.75,
+          1.75,
+          1.75,
+          1.75,
+          1.75
+        ]
+      },
+      "mSpellCalculations": {
+        "TotalDamage": {
+          "mFormulaParts": [
+            {
+              "mDataValue": "BaseDamage",
+              "__type": "NamedDataValueCalculationPart"
+            },
+            {
+              "mStat": 2,
+              "mStatFormula": 2,
+              "mCoefficient": 1.2000000476837158,
+              "__type": "StatByCoefficientCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        },
+        "PackmateDamage": {
+          "mMultiplier": {
+            "mDataValue": "PackmateModifier",
+            "__type": "NamedDataValueCalculationPart"
+          },
+          "mModifiedGameCalculation": "TotalDamage",
+          "__type": "GameCalculationModified"
+        },
+        "ArmorShred": {
+          "mFormulaParts": [
+            {
+              "mLevel1Value": 6,
+              "mInitialBonusPerLevel": 2,
+              "__type": "ByCharLevelBreakpointsCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        },
+        "ShieldTotal": {
+          "mFormulaParts": [
+            {
+              "mDataValue": "ShieldSize",
+              "__type": "NamedDataValueCalculationPart"
+            },
+            {
+              "mStat": 2,
+              "mStatFormula": 2,
+              "mCoefficient": 1.5,
+              "__type": "StatByCoefficientCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        }
+      }
+    },
+    "NaafiriP": {
+      "DataValues": {
+        "CooldownReduceOnKill": [
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        "CooldownReduceOnAbilityHit": [
+          4,
+          4,
+          4,
+          4,
+          4,
+          4,
+          4
+        ],
+        "PackmateBaseAS": [
+          0.6880000233650208,
+          0.6880000233650208,
+          0.6880000233650208,
+          0.6880000233650208,
+          0.6880000233650208,
+          0.6880000233650208,
+          0.6880000233650208
+        ],
+        "PackmateBaseMS": [
+          340,
+          340,
+          340,
+          340,
+          340,
+          340,
+          340
+        ],
+        "PackmateModifierTooltipOnly": [
+          0.07999999821186066,
+          0.07999999821186066,
+          0.07999999821186066,
+          0.07999999821186066,
+          0.07999999821186066,
+          0.07999999821186066,
+          0.07999999821186066
+        ],
+        "LeapSpeed": [
+          1250,
+          1250,
+          1250,
+          1250,
+          1250,
+          1250,
+          1250
+        ],
+        "LeapMin": [
+          75,
+          75,
+          75,
+          75,
+          75,
+          75,
+          75
+        ],
+        "LeapMax": [
+          1200,
+          1200,
+          1200,
+          1200,
+          1200,
+          1200,
+          1200
+        ],
+        "PackmateTowerModifier": [
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5
+        ],
+        "PackmateMonsterMod": [
+          1.5499999523162842,
+          1.5499999523162842,
+          1.5499999523162842,
+          1.5499999523162842,
+          1.5499999523162842,
+          1.5499999523162842,
+          1.5499999523162842
+        ],
+        "PackmateTauntDuration": [
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2
+        ],
+        "PackmateLastHitHelpCD": [
+          10,
+          10,
+          10,
+          10,
+          10,
+          10,
+          10
+        ],
+        "PackmateCSHelpRadiusMax": [
+          800,
+          800,
+          800,
+          800,
+          800,
+          800,
+          800
+        ],
+        "PackmateCSHelpRadiusMin": [
+          300,
+          300,
+          300,
+          300,
+          300,
+          300,
+          300
+        ],
+        "PackmateFrenzyDuration": [
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3
+        ],
+        "PackmateFrenzyMaxCounters": [
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3
+        ],
+        "PackmateFrenzyDamageMult": [
+          1.2999999523162842,
+          1.2999999523162842,
+          1.2999999523162842,
+          1.2999999523162842,
+          1.2999999523162842,
+          1.2999999523162842,
+          1.2999999523162842
+        ],
+        "ProcDamageModifier": [
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5
+        ],
+        "HealthRegenDelay": [
+          5,
+          5,
+          5,
+          5,
+          5,
+          5,
+          5
+        ],
+        "HealthRegenPercent": [
+          0.25,
+          0.25,
+          0.25,
+          0.25,
+          0.25,
+          0.25,
+          0.25
+        ],
+        "NonChampDamageModifier": [
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5
+        ],
+        "MeleeAttackDamageModifier": [
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2
+        ],
+        "PackmateBonusADRatio": [
+          0.03999999910593033,
+          0.03999999910593033,
+          0.03999999910593033,
+          0.03999999910593033,
+          0.03999999910593033,
+          0.03999999910593033,
+          0.03999999910593033
+        ]
+      },
+      "mSpellCalculations": {
+        "PackmateSpawnCooldown": {
+          "mFormulaParts": [
+            {
+              "mLevel1Value": 30,
+              "mBreakpoints": [
+                {
+                  "mLevel": 6,
+                  "mAdditionalBonusAtThisLevel": -5,
+                  "__type": "Breakpoint"
+                },
+                {
+                  "mLevel": 9,
+                  "mAdditionalBonusAtThisLevel": -5,
+                  "__type": "Breakpoint"
+                },
+                {
+                  "mLevel": 12,
+                  "mAdditionalBonusAtThisLevel": -5,
+                  "__type": "Breakpoint"
+                },
+                {
+                  "mLevel": 15,
+                  "mAdditionalBonusAtThisLevel": -5,
+                  "__type": "Breakpoint"
+                }
+              ],
+              "__type": "ByCharLevelBreakpointsCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        },
+        "PackmateCap": {
+          "mFormulaParts": [
+            {
+              "mLevel1Value": 2,
+              "mBreakpoints": [
+                {
+                  "mLevel": 9,
+                  "mAdditionalBonusAtThisLevel": 1,
+                  "__type": "Breakpoint"
+                },
+                {
+                  "mLevel": 12,
+                  "mAdditionalBonusAtThisLevel": 1,
+                  "__type": "Breakpoint"
+                },
+                {
+                  "mLevel": 15,
+                  "mAdditionalBonusAtThisLevel": 1,
+                  "__type": "Breakpoint"
+                }
+              ],
+              "__type": "ByCharLevelBreakpointsCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        },
+        "PackmateTotalDamage": {
+          "mFormulaParts": [
+            {
+              "mStartValue": 10,
+              "mEndValue": 20,
+              "__type": "ByCharLevelInterpolationCalculationPart"
+            },
+            {
+              "mStat": 2,
+              "mStatFormula": 2,
+              "mDataValue": "PackmateBonusADRatio",
+              "__type": "StatByNamedDataValueCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        },
+        "MinionExecuteThreshold": {
+          "mFormulaParts": [
+            {
+              "mLevel1Value": 25,
+              "mInitialBonusPerLevel": 3,
+              "mBreakpoints": [
+                {
+                  "mLevel": 12,
+                  "__type": "Breakpoint"
+                }
+              ],
+              "__type": "ByCharLevelBreakpointsCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        },
+        "FrenzyDamageTooltipOnly": {
+          "mMultiplier": {
+            "mDataValue": "PackmateFrenzyDamageMult",
+            "__type": "NamedDataValueCalculationPart"
+          },
+          "mModifiedGameCalculation": "PackmateTotalDamage",
+          "__type": "GameCalculationModified"
+        },
+        "AOEDamageModifier": {
+          "mFormulaParts": [
+            {
+              "mLevel1Value": 0.7599999904632568,
+              "mInitialBonusPerLevel": -0.014999999664723873,
+              "mBreakpoints": [
+                {
+                  "mLevel": 16,
+                  "__type": "Breakpoint"
+                }
+              ],
+              "__type": "ByCharLevelBreakpointsCalculationPart"
+            }
+          ],
+          "mDisplayAsPercent": true,
+          "__type": "GameCalculation"
+        }
+      }
+    }
+  }
+}

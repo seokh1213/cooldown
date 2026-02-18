@@ -1,0 +1,671 @@
+{
+  "version": "16.4.1",
+  "ddragonVersion": "16.4.1",
+  "cdragonVersion": "16.3",
+  "championId": "Malphite",
+  "spellData": {
+    "0": {
+      "DataValues": {
+        "SpeedSteal": [
+          10,
+          15,
+          20,
+          25,
+          30,
+          35,
+          40
+        ],
+        "SlowDuration": [
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3
+        ],
+        "BaseDamage": [
+          20,
+          70,
+          120,
+          170,
+          220,
+          270,
+          320
+        ]
+      },
+      "mSpellCalculations": {
+        "QDamageCalc": {
+          "tooltipOnly": true,
+          "mFormulaParts": [
+            {
+              "mDataValue": "BaseDamage",
+              "__type": "NamedDataValueCalculationPart"
+            },
+            {
+              "mCoefficient": 0.6000000238418579,
+              "__type": "StatByCoefficientCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        }
+      }
+    },
+    "1": {
+      "DataValues": {
+        "ThunderclapBuffDuration": [
+          5,
+          5,
+          5,
+          5,
+          5,
+          5,
+          5
+        ],
+        "ThunderclapBaseDamage": [
+          20,
+          30,
+          40,
+          50,
+          60,
+          70,
+          80
+        ],
+        "ThunderclapSlowDamage": [
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2
+        ],
+        "ThunderclapSplashAP": [
+          0.30000001192092896,
+          0.30000001192092896,
+          0.30000001192092896,
+          0.30000001192092896,
+          0.30000001192092896,
+          0.30000001192092896,
+          0.30000001192092896
+        ],
+        "ThunderclapSplashArmor": [
+          0.15000000596046448,
+          0.15000000596046448,
+          0.15000000596046448,
+          0.15000000596046448,
+          0.15000000596046448,
+          0.15000000596046448,
+          0.15000000596046448
+        ],
+        "ThunderclapBaseDamageAPRatio": [
+          0.20000000298023224,
+          0.20000000298023224,
+          0.20000000298023224,
+          0.20000000298023224,
+          0.20000000298023224,
+          0.20000000298023224,
+          0.20000000298023224
+        ],
+        "ThunderclapBaseDamageArmorRatio": [
+          0.15000000596046448,
+          0.15000000596046448,
+          0.15000000596046448,
+          0.15000000596046448,
+          0.15000000596046448,
+          0.15000000596046448,
+          0.15000000596046448
+        ],
+        "ThunderclapSplashDamage": [
+          5,
+          15,
+          25,
+          35,
+          45,
+          55,
+          65
+        ],
+        "BonusArmorPassive": [
+          0.05000000074505806,
+          0.10000000149011612,
+          0.15000000596046448,
+          0.20000000298023224,
+          0.25,
+          0.30000001192092896,
+          0.3499999940395355
+        ],
+        "BonusArmorPassiveMultiplier": [
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3
+        ],
+        "ThunderClapSplashRange": [
+          400,
+          400,
+          400,
+          400,
+          400,
+          400,
+          400
+        ],
+        "MonsterDamageMod": [
+          1.7999999523162842,
+          1.7999999523162842,
+          1.7999999523162842,
+          1.7999999523162842,
+          1.7999999523162842,
+          1.7999999523162842,
+          1.7999999523162842
+        ]
+      },
+      "mSpellCalculations": {
+        "TotalBonusDamage": {
+          "mSimpleTooltipCalculationDisplay": 6,
+          "mFormulaParts": [
+            {
+              "mDataValue": "ThunderclapBaseDamage",
+              "__type": "NamedDataValueCalculationPart"
+            },
+            {
+              "mDataValue": "ThunderclapBaseDamageAPRatio",
+              "__type": "StatByNamedDataValueCalculationPart"
+            },
+            {
+              "mStat": 1,
+              "mDataValue": "ThunderclapBaseDamageArmorRatio",
+              "__type": "StatByNamedDataValueCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        },
+        "{185669f9}": {
+          "mMultiplier": {
+            "mDataValue": "ThunderclapSlowDamage",
+            "__type": "NamedDataValueCalculationPart"
+          },
+          "mSimpleTooltipCalculationDisplay": 0,
+          "mModifiedGameCalculation": "TotalBonusDamage",
+          "__type": "GameCalculationModified"
+        },
+        "ThunderclapSplash": {
+          "mSimpleTooltipCalculationDisplay": 6,
+          "mFormulaParts": [
+            {
+              "mDataValue": "ThunderclapSplashDamage",
+              "__type": "NamedDataValueCalculationPart"
+            },
+            {
+              "mDataValue": "ThunderclapSplashAP",
+              "__type": "StatByNamedDataValueCalculationPart"
+            },
+            {
+              "mStat": 1,
+              "mDataValue": "ThunderclapSplashArmor",
+              "__type": "StatByNamedDataValueCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        },
+        "{71941255}": {
+          "tooltipOnly": true,
+          "mFormulaParts": [
+            {
+              "mPart1": {
+                "mDataValue": "BonusArmorPassive",
+                "__type": "NamedDataValueCalculationPart"
+              },
+              "mPart2": {
+                "mDataValue": "BonusArmorPassiveMultiplier",
+                "__type": "NamedDataValueCalculationPart"
+              },
+              "__type": "ProductOfSubPartsCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        }
+      }
+    },
+    "2": {
+      "DataValues": {
+        "BaseDamage": [
+          25,
+          60,
+          95,
+          130,
+          165,
+          200,
+          235
+        ],
+        "ASReduction": [
+          25,
+          30,
+          35,
+          40,
+          45,
+          50,
+          55
+        ],
+        "Duration": [
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3
+        ]
+      },
+      "mSpellCalculations": {
+        "EDamageCalc": {
+          "mFormulaParts": [
+            {
+              "mDataValue": "BaseDamage",
+              "__type": "NamedDataValueCalculationPart"
+            },
+            {
+              "mStat": 1,
+              "mCoefficient": 0.4000000059604645,
+              "__type": "StatByCoefficientCalculationPart"
+            },
+            {
+              "mCoefficient": 0.6000000238418579,
+              "__type": "StatByCoefficientCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        }
+      }
+    },
+    "3": {
+      "DataValues": {
+        "BaseDamage": [
+          100,
+          200,
+          300,
+          400,
+          500,
+          600,
+          700
+        ],
+        "KnockupDuration": [
+          1.5,
+          1.5,
+          1.5,
+          1.5,
+          1.5,
+          1.5,
+          1.5
+        ]
+      },
+      "mSpellCalculations": {
+        "TotalDamage": {
+          "mFormulaParts": [
+            {
+              "mDataValue": "BaseDamage",
+              "__type": "NamedDataValueCalculationPart"
+            },
+            {
+              "mCoefficient": 0.8999999761581421,
+              "__type": "StatByCoefficientCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        }
+      }
+    },
+    "SeismicShard": {
+      "DataValues": {
+        "SpeedSteal": [
+          10,
+          15,
+          20,
+          25,
+          30,
+          35,
+          40
+        ],
+        "SlowDuration": [
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3
+        ],
+        "BaseDamage": [
+          20,
+          70,
+          120,
+          170,
+          220,
+          270,
+          320
+        ]
+      },
+      "mSpellCalculations": {
+        "QDamageCalc": {
+          "tooltipOnly": true,
+          "mFormulaParts": [
+            {
+              "mDataValue": "BaseDamage",
+              "__type": "NamedDataValueCalculationPart"
+            },
+            {
+              "mCoefficient": 0.6000000238418579,
+              "__type": "StatByCoefficientCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        }
+      }
+    },
+    "Obduracy": {
+      "DataValues": {
+        "ThunderclapBuffDuration": [
+          5,
+          5,
+          5,
+          5,
+          5,
+          5,
+          5
+        ],
+        "ThunderclapBaseDamage": [
+          20,
+          30,
+          40,
+          50,
+          60,
+          70,
+          80
+        ],
+        "ThunderclapSlowDamage": [
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2
+        ],
+        "ThunderclapSplashAP": [
+          0.30000001192092896,
+          0.30000001192092896,
+          0.30000001192092896,
+          0.30000001192092896,
+          0.30000001192092896,
+          0.30000001192092896,
+          0.30000001192092896
+        ],
+        "ThunderclapSplashArmor": [
+          0.15000000596046448,
+          0.15000000596046448,
+          0.15000000596046448,
+          0.15000000596046448,
+          0.15000000596046448,
+          0.15000000596046448,
+          0.15000000596046448
+        ],
+        "ThunderclapBaseDamageAPRatio": [
+          0.20000000298023224,
+          0.20000000298023224,
+          0.20000000298023224,
+          0.20000000298023224,
+          0.20000000298023224,
+          0.20000000298023224,
+          0.20000000298023224
+        ],
+        "ThunderclapBaseDamageArmorRatio": [
+          0.15000000596046448,
+          0.15000000596046448,
+          0.15000000596046448,
+          0.15000000596046448,
+          0.15000000596046448,
+          0.15000000596046448,
+          0.15000000596046448
+        ],
+        "ThunderclapSplashDamage": [
+          5,
+          15,
+          25,
+          35,
+          45,
+          55,
+          65
+        ],
+        "BonusArmorPassive": [
+          0.05000000074505806,
+          0.10000000149011612,
+          0.15000000596046448,
+          0.20000000298023224,
+          0.25,
+          0.30000001192092896,
+          0.3499999940395355
+        ],
+        "BonusArmorPassiveMultiplier": [
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3
+        ],
+        "ThunderClapSplashRange": [
+          400,
+          400,
+          400,
+          400,
+          400,
+          400,
+          400
+        ],
+        "MonsterDamageMod": [
+          1.7999999523162842,
+          1.7999999523162842,
+          1.7999999523162842,
+          1.7999999523162842,
+          1.7999999523162842,
+          1.7999999523162842,
+          1.7999999523162842
+        ]
+      },
+      "mSpellCalculations": {
+        "TotalBonusDamage": {
+          "mSimpleTooltipCalculationDisplay": 6,
+          "mFormulaParts": [
+            {
+              "mDataValue": "ThunderclapBaseDamage",
+              "__type": "NamedDataValueCalculationPart"
+            },
+            {
+              "mDataValue": "ThunderclapBaseDamageAPRatio",
+              "__type": "StatByNamedDataValueCalculationPart"
+            },
+            {
+              "mStat": 1,
+              "mDataValue": "ThunderclapBaseDamageArmorRatio",
+              "__type": "StatByNamedDataValueCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        },
+        "{185669f9}": {
+          "mMultiplier": {
+            "mDataValue": "ThunderclapSlowDamage",
+            "__type": "NamedDataValueCalculationPart"
+          },
+          "mSimpleTooltipCalculationDisplay": 0,
+          "mModifiedGameCalculation": "TotalBonusDamage",
+          "__type": "GameCalculationModified"
+        },
+        "ThunderclapSplash": {
+          "mSimpleTooltipCalculationDisplay": 6,
+          "mFormulaParts": [
+            {
+              "mDataValue": "ThunderclapSplashDamage",
+              "__type": "NamedDataValueCalculationPart"
+            },
+            {
+              "mDataValue": "ThunderclapSplashAP",
+              "__type": "StatByNamedDataValueCalculationPart"
+            },
+            {
+              "mStat": 1,
+              "mDataValue": "ThunderclapSplashArmor",
+              "__type": "StatByNamedDataValueCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        },
+        "{71941255}": {
+          "tooltipOnly": true,
+          "mFormulaParts": [
+            {
+              "mPart1": {
+                "mDataValue": "BonusArmorPassive",
+                "__type": "NamedDataValueCalculationPart"
+              },
+              "mPart2": {
+                "mDataValue": "BonusArmorPassiveMultiplier",
+                "__type": "NamedDataValueCalculationPart"
+              },
+              "__type": "ProductOfSubPartsCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        }
+      }
+    },
+    "Landslide": {
+      "DataValues": {
+        "BaseDamage": [
+          25,
+          60,
+          95,
+          130,
+          165,
+          200,
+          235
+        ],
+        "ASReduction": [
+          25,
+          30,
+          35,
+          40,
+          45,
+          50,
+          55
+        ],
+        "Duration": [
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3
+        ]
+      },
+      "mSpellCalculations": {
+        "EDamageCalc": {
+          "mFormulaParts": [
+            {
+              "mDataValue": "BaseDamage",
+              "__type": "NamedDataValueCalculationPart"
+            },
+            {
+              "mStat": 1,
+              "mCoefficient": 0.4000000059604645,
+              "__type": "StatByCoefficientCalculationPart"
+            },
+            {
+              "mCoefficient": 0.6000000238418579,
+              "__type": "StatByCoefficientCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        }
+      }
+    },
+    "UFSlash": {
+      "DataValues": {
+        "BaseDamage": [
+          100,
+          200,
+          300,
+          400,
+          500,
+          600,
+          700
+        ],
+        "KnockupDuration": [
+          1.5,
+          1.5,
+          1.5,
+          1.5,
+          1.5,
+          1.5,
+          1.5
+        ]
+      },
+      "mSpellCalculations": {
+        "TotalDamage": {
+          "mFormulaParts": [
+            {
+              "mDataValue": "BaseDamage",
+              "__type": "NamedDataValueCalculationPart"
+            },
+            {
+              "mCoefficient": 0.8999999761581421,
+              "__type": "StatByCoefficientCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        }
+      }
+    },
+    "MalphiteShield": {
+      "mSpellCalculations": {
+        "PassiveCooldown": {
+          "mSimpleTooltipCalculationDisplay": 6,
+          "mFormulaParts": [
+            {
+              "mLevel1Value": 8,
+              "mBreakpoints": [
+                {
+                  "mLevel": 7,
+                  "mAdditionalBonusAtThisLevel": -1,
+                  "__type": "Breakpoint"
+                },
+                {
+                  "mLevel": 13,
+                  "mAdditionalBonusAtThisLevel": -1,
+                  "__type": "Breakpoint"
+                }
+              ],
+              "__type": "ByCharLevelBreakpointsCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        },
+        "TotalShield": {
+          "mSimpleTooltipCalculationDisplay": 6,
+          "mFormulaParts": [
+            {
+              "mStat": 12,
+              "mCoefficient": 0.10000000149011612,
+              "__type": "StatByCoefficientCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        }
+      }
+    }
+  }
+}
