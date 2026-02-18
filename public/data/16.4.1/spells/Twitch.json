@@ -1,0 +1,748 @@
+{
+  "version": "16.4.1",
+  "ddragonVersion": "16.4.1",
+  "cdragonVersion": "16.3",
+  "championId": "Twitch",
+  "spellData": {
+    "0": {
+      "DataValues": {
+        "AttackSpeedMod": [
+          0.3499999940395355,
+          0.4000000059604645,
+          0.44999998807907104,
+          0.5,
+          0.550000011920929,
+          0.6000000238418579,
+          0.6499999761581421
+        ],
+        "AttackSpeedDuration": [
+          6,
+          6,
+          6,
+          6,
+          6,
+          6,
+          6
+        ],
+        "StealthDuration": [
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15
+        ],
+        "MaxFadeTime": [
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        "StealthDetectionRange": [
+          500,
+          500,
+          500,
+          500,
+          500,
+          500,
+          500
+        ],
+        "MoveSpeedMod": [
+          10,
+          10,
+          10,
+          10,
+          10,
+          10,
+          10
+        ],
+        "HiddenSpeed": [
+          30,
+          30,
+          30,
+          30,
+          30,
+          30,
+          30
+        ],
+        "MoveBonusRange": [
+          1000,
+          1000,
+          1000,
+          1000,
+          1000,
+          1000,
+          1000
+        ]
+      }
+    },
+    "1": {
+      "DataValues": {
+        "BaseSlowAmount": [
+          25,
+          30,
+          35,
+          40,
+          45,
+          50,
+          55
+        ],
+        "Duration": [
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3
+        ],
+        "AoERadius": [
+          300,
+          300,
+          300,
+          300,
+          300,
+          300,
+          300
+        ],
+        "SlowAPRatio": [
+          0.05999999865889549,
+          0.05999999865889549,
+          0.05999999865889549,
+          0.05999999865889549,
+          0.05999999865889549,
+          0.05999999865889549,
+          0.05999999865889549
+        ]
+      },
+      "mSpellCalculations": {
+        "TotalSlowAmount": {
+          "mFormulaParts": [
+            {
+              "mDataValue": "BaseSlowAmount",
+              "__type": "NamedDataValueCalculationPart"
+            },
+            {
+              "mDataValue": "SlowAPRatio",
+              "__type": "StatByNamedDataValueCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        }
+      }
+    },
+    "2": {
+      "DataValues": {
+        "BaseDamage": [
+          10,
+          20,
+          30,
+          40,
+          50,
+          60,
+          70
+        ],
+        "BasePhysicalDamagePerStack": [
+          10,
+          15,
+          20,
+          25,
+          30,
+          35,
+          40
+        ],
+        "bADRatioPerStack": [
+          0.3499999940395355,
+          0.3499999940395355,
+          0.3499999940395355,
+          0.3499999940395355,
+          0.3499999940395355,
+          0.3499999940395355,
+          0.3499999940395355
+        ],
+        "APRatioPerStack": [
+          0.3499999940395355,
+          0.3499999940395355,
+          0.3499999940395355,
+          0.3499999940395355,
+          0.3499999940395355,
+          0.3499999940395355,
+          0.3499999940395355
+        ],
+        "MaxStacks": [
+          6,
+          6,
+          6,
+          6,
+          6,
+          6,
+          6
+        ]
+      },
+      "mSpellCalculations": {
+        "PhysicalDamagePerStack": {
+          "mFormulaParts": [
+            {
+              "mDataValue": "BasePhysicalDamagePerStack",
+              "__type": "NamedDataValueCalculationPart"
+            },
+            {
+              "mStat": 2,
+              "mStatFormula": 2,
+              "mDataValue": "bADRatioPerStack",
+              "__type": "StatByNamedDataValueCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        },
+        "MagicDamagePerStack": {
+          "mFormulaParts": [
+            {
+              "mDataValue": "APRatioPerStack",
+              "__type": "StatByNamedDataValueCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        },
+        "MaxPhysicalDamage": {
+          "mFormulaParts": [
+            {
+              "mDataValue": "BaseDamage",
+              "__type": "NamedDataValueCalculationPart"
+            },
+            {
+              "mPart1": {
+                "mDataValue": "MaxStacks",
+                "__type": "NamedDataValueCalculationPart"
+              },
+              "mPart2": {
+                "mDataValue": "BasePhysicalDamagePerStack",
+                "__type": "NamedDataValueCalculationPart"
+              },
+              "__type": "ProductOfSubPartsCalculationPart"
+            },
+            {
+              "mStat": 2,
+              "mStatFormula": 2,
+              "mSubpart": {
+                "mPart1": {
+                  "mDataValue": "bADRatioPerStack",
+                  "__type": "NamedDataValueCalculationPart"
+                },
+                "mPart2": {
+                  "mDataValue": "MaxStacks",
+                  "__type": "NamedDataValueCalculationPart"
+                },
+                "__type": "ProductOfSubPartsCalculationPart"
+              },
+              "__type": "StatBySubPartCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        },
+        "MaxMagicDamage": {
+          "mMultiplier": {
+            "mDataValue": "MaxStacks",
+            "__type": "NamedDataValueCalculationPart"
+          },
+          "mModifiedGameCalculation": "MagicDamagePerStack",
+          "__type": "GameCalculationModified"
+        }
+      }
+    },
+    "3": {
+      "DataValues": {
+        "BonusRange": [
+          300,
+          300,
+          300,
+          300,
+          300,
+          300,
+          300
+        ],
+        "FallOffDamage": [
+          0.10000000149011612,
+          0.10000000149011612,
+          0.10000000149011612,
+          0.10000000149011612,
+          0.10000000149011612,
+          0.10000000149011612,
+          0.10000000149011612
+        ],
+        "MinimumFallOffDamage": [
+          0.6000000238418579,
+          0.6000000238418579,
+          0.6000000238418579,
+          0.6000000238418579,
+          0.6000000238418579,
+          0.6000000238418579,
+          0.6000000238418579
+        ],
+        "BonusAD": [
+          15,
+          30,
+          45,
+          60,
+          75,
+          90,
+          105
+        ],
+        "Duration": [
+          6,
+          6,
+          6,
+          6,
+          6,
+          6,
+          6
+        ],
+        "OvershootMult": [
+          0.30000001192092896,
+          0.30000001192092896,
+          0.30000001192092896,
+          0.30000001192092896,
+          0.30000001192092896,
+          0.30000001192092896,
+          0.30000001192092896
+        ],
+        "OvershootMin": [
+          250,
+          250,
+          250,
+          250,
+          250,
+          250,
+          250
+        ]
+      }
+    },
+    "TwitchHideInShadows": {
+      "DataValues": {
+        "AttackSpeedMod": [
+          0.3499999940395355,
+          0.4000000059604645,
+          0.44999998807907104,
+          0.5,
+          0.550000011920929,
+          0.6000000238418579,
+          0.6499999761581421
+        ],
+        "AttackSpeedDuration": [
+          6,
+          6,
+          6,
+          6,
+          6,
+          6,
+          6
+        ],
+        "StealthDuration": [
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15
+        ],
+        "MaxFadeTime": [
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        "StealthDetectionRange": [
+          500,
+          500,
+          500,
+          500,
+          500,
+          500,
+          500
+        ],
+        "MoveSpeedMod": [
+          10,
+          10,
+          10,
+          10,
+          10,
+          10,
+          10
+        ],
+        "HiddenSpeed": [
+          30,
+          30,
+          30,
+          30,
+          30,
+          30,
+          30
+        ],
+        "MoveBonusRange": [
+          1000,
+          1000,
+          1000,
+          1000,
+          1000,
+          1000,
+          1000
+        ]
+      }
+    },
+    "TwitchVenomCask": {
+      "DataValues": {
+        "BaseSlowAmount": [
+          25,
+          30,
+          35,
+          40,
+          45,
+          50,
+          55
+        ],
+        "Duration": [
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3
+        ],
+        "AoERadius": [
+          300,
+          300,
+          300,
+          300,
+          300,
+          300,
+          300
+        ],
+        "SlowAPRatio": [
+          0.05999999865889549,
+          0.05999999865889549,
+          0.05999999865889549,
+          0.05999999865889549,
+          0.05999999865889549,
+          0.05999999865889549,
+          0.05999999865889549
+        ]
+      },
+      "mSpellCalculations": {
+        "TotalSlowAmount": {
+          "mFormulaParts": [
+            {
+              "mDataValue": "BaseSlowAmount",
+              "__type": "NamedDataValueCalculationPart"
+            },
+            {
+              "mDataValue": "SlowAPRatio",
+              "__type": "StatByNamedDataValueCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        }
+      }
+    },
+    "TwitchExpunge": {
+      "DataValues": {
+        "BaseDamage": [
+          10,
+          20,
+          30,
+          40,
+          50,
+          60,
+          70
+        ],
+        "BasePhysicalDamagePerStack": [
+          10,
+          15,
+          20,
+          25,
+          30,
+          35,
+          40
+        ],
+        "bADRatioPerStack": [
+          0.3499999940395355,
+          0.3499999940395355,
+          0.3499999940395355,
+          0.3499999940395355,
+          0.3499999940395355,
+          0.3499999940395355,
+          0.3499999940395355
+        ],
+        "APRatioPerStack": [
+          0.3499999940395355,
+          0.3499999940395355,
+          0.3499999940395355,
+          0.3499999940395355,
+          0.3499999940395355,
+          0.3499999940395355,
+          0.3499999940395355
+        ],
+        "MaxStacks": [
+          6,
+          6,
+          6,
+          6,
+          6,
+          6,
+          6
+        ]
+      },
+      "mSpellCalculations": {
+        "PhysicalDamagePerStack": {
+          "mFormulaParts": [
+            {
+              "mDataValue": "BasePhysicalDamagePerStack",
+              "__type": "NamedDataValueCalculationPart"
+            },
+            {
+              "mStat": 2,
+              "mStatFormula": 2,
+              "mDataValue": "bADRatioPerStack",
+              "__type": "StatByNamedDataValueCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        },
+        "MagicDamagePerStack": {
+          "mFormulaParts": [
+            {
+              "mDataValue": "APRatioPerStack",
+              "__type": "StatByNamedDataValueCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        },
+        "MaxPhysicalDamage": {
+          "mFormulaParts": [
+            {
+              "mDataValue": "BaseDamage",
+              "__type": "NamedDataValueCalculationPart"
+            },
+            {
+              "mPart1": {
+                "mDataValue": "MaxStacks",
+                "__type": "NamedDataValueCalculationPart"
+              },
+              "mPart2": {
+                "mDataValue": "BasePhysicalDamagePerStack",
+                "__type": "NamedDataValueCalculationPart"
+              },
+              "__type": "ProductOfSubPartsCalculationPart"
+            },
+            {
+              "mStat": 2,
+              "mStatFormula": 2,
+              "mSubpart": {
+                "mPart1": {
+                  "mDataValue": "bADRatioPerStack",
+                  "__type": "NamedDataValueCalculationPart"
+                },
+                "mPart2": {
+                  "mDataValue": "MaxStacks",
+                  "__type": "NamedDataValueCalculationPart"
+                },
+                "__type": "ProductOfSubPartsCalculationPart"
+              },
+              "__type": "StatBySubPartCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        },
+        "MaxMagicDamage": {
+          "mMultiplier": {
+            "mDataValue": "MaxStacks",
+            "__type": "NamedDataValueCalculationPart"
+          },
+          "mModifiedGameCalculation": "MagicDamagePerStack",
+          "__type": "GameCalculationModified"
+        }
+      }
+    },
+    "TwitchFullAutomatic": {
+      "DataValues": {
+        "BonusRange": [
+          300,
+          300,
+          300,
+          300,
+          300,
+          300,
+          300
+        ],
+        "FallOffDamage": [
+          0.10000000149011612,
+          0.10000000149011612,
+          0.10000000149011612,
+          0.10000000149011612,
+          0.10000000149011612,
+          0.10000000149011612,
+          0.10000000149011612
+        ],
+        "MinimumFallOffDamage": [
+          0.6000000238418579,
+          0.6000000238418579,
+          0.6000000238418579,
+          0.6000000238418579,
+          0.6000000238418579,
+          0.6000000238418579,
+          0.6000000238418579
+        ],
+        "BonusAD": [
+          15,
+          30,
+          45,
+          60,
+          75,
+          90,
+          105
+        ],
+        "Duration": [
+          6,
+          6,
+          6,
+          6,
+          6,
+          6,
+          6
+        ],
+        "OvershootMult": [
+          0.30000001192092896,
+          0.30000001192092896,
+          0.30000001192092896,
+          0.30000001192092896,
+          0.30000001192092896,
+          0.30000001192092896,
+          0.30000001192092896
+        ],
+        "OvershootMin": [
+          250,
+          250,
+          250,
+          250,
+          250,
+          250,
+          250
+        ]
+      }
+    },
+    "TwitchDeadlyVenomMarker": {
+      "DataValues": {
+        "Duration": [
+          6,
+          6,
+          6,
+          6,
+          6,
+          6,
+          6
+        ],
+        "MaxStacks": [
+          6,
+          6,
+          6,
+          6,
+          6,
+          6,
+          6
+        ],
+        "APRatio": [
+          0.029999999329447746,
+          0.029999999329447746,
+          0.029999999329447746,
+          0.029999999329447746,
+          0.029999999329447746,
+          0.029999999329447746,
+          0.029999999329447746
+        ]
+      },
+      "mSpellCalculations": {
+        "DamagePerSecond": {
+          "mFormulaParts": [
+            {
+              "mLevel1Value": 1,
+              "mBreakpoints": [
+                {
+                  "mLevel": 5,
+                  "mAdditionalBonusAtThisLevel": 1,
+                  "__type": "Breakpoint"
+                },
+                {
+                  "mLevel": 9,
+                  "mAdditionalBonusAtThisLevel": 1,
+                  "__type": "Breakpoint"
+                },
+                {
+                  "mLevel": 13,
+                  "mAdditionalBonusAtThisLevel": 1,
+                  "__type": "Breakpoint"
+                },
+                {
+                  "mLevel": 17,
+                  "mAdditionalBonusAtThisLevel": 1,
+                  "__type": "Breakpoint"
+                },
+                {
+                  "mLevel": 21,
+                  "mAdditionalBonusAtThisLevel": 1,
+                  "__type": "Breakpoint"
+                },
+                {
+                  "mLevel": 25,
+                  "mAdditionalBonusAtThisLevel": 1,
+                  "__type": "Breakpoint"
+                },
+                {
+                  "mLevel": 29,
+                  "mAdditionalBonusAtThisLevel": 1,
+                  "__type": "Breakpoint"
+                }
+              ],
+              "__type": "ByCharLevelBreakpointsCalculationPart"
+            },
+            {
+              "mDataValue": "APRatio",
+              "__type": "StatByNamedDataValueCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        },
+        "DamagePerSecondMax": {
+          "mMultiplier": {
+            "mDataValue": "MaxStacks",
+            "__type": "NamedDataValueCalculationPart"
+          },
+          "mModifiedGameCalculation": "DamagePerSecond",
+          "__type": "GameCalculationModified"
+        },
+        "DamageMaxTotal": {
+          "mMultiplier": {
+            "mPart1": {
+              "mDataValue": "Duration",
+              "__type": "NamedDataValueCalculationPart"
+            },
+            "mPart2": {
+              "mDataValue": "MaxStacks",
+              "__type": "NamedDataValueCalculationPart"
+            },
+            "__type": "ProductOfSubPartsCalculationPart"
+          },
+          "mModifiedGameCalculation": "DamagePerSecond",
+          "__type": "GameCalculationModified"
+        }
+      }
+    }
+  }
+}
