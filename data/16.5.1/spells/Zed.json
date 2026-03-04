@@ -1,7 +1,7 @@
 {
   "version": "16.5.1",
   "ddragonVersion": "16.5.1",
-  "cdragonVersion": "16.4",
+  "cdragonVersion": "16.5",
   "championId": "Zed",
   "spellData": {
     "0": {
@@ -618,6 +618,41 @@
             "mBuffName": "{ecbd8e2e}",
             "__type": "HasBuffCastRequirement"
           },
+          "__type": "GameCalculationConditional"
+        },
+        "TotalDamage": {
+          "mFormulaParts": [
+            {
+              "{a8cb9c14}": true,
+              "mStat": 12,
+              "mSubpart": {
+                "mSpellCalculationKey": "MaxHPDamage",
+                "__type": "{f3cbe7b2}"
+              },
+              "__type": "StatBySubPartCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        },
+        "FinalDamage": {
+          "{72c5c2a8}": 1,
+          "mConditionalGameCalculation": "TotalDamage",
+          "mConditionalCalculationRequirements": {
+            "mSubRequirements": [
+              {
+                "mInvertResult": true,
+                "mBuffName": "{0f6b8c16}",
+                "__type": "HasBuffCastRequirement"
+              },
+              {
+                "mInvertResult": true,
+                "{137cf12a}": "CurrentHealthThreshold",
+                "__type": "AboveHealthPercentCastRequirement"
+              }
+            ],
+            "__type": "HasAllSubRequirementsCastRequirement"
+          },
+          "{353099b0}": true,
           "__type": "GameCalculationConditional"
         }
       }
