@@ -1,0 +1,505 @@
+{
+  "version": "16.8.1",
+  "ddragonVersion": "16.8.1",
+  "cdragonVersion": "16.7",
+  "championId": "Yuumi",
+  "spellData": {
+    "0": {
+      "mSpellCalculations": {
+        "TotalMissileDamage": {
+          "mFormulaParts": [
+            {
+              "mDataValue": "MissileDamage",
+              "__type": "NamedDataValueCalculationPart"
+            },
+            {
+              "mDataValue": "APRatio",
+              "__type": "StatByNamedDataValueCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        },
+        "TotalMissileDamageEmpowered": {
+          "mFormulaParts": [
+            {
+              "mDataValue": "EmpoweredMissileDamage",
+              "__type": "NamedDataValueCalculationPart"
+            },
+            {
+              "mDataValue": "EmpoweredAPRatio",
+              "__type": "StatByNamedDataValueCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        },
+        "OnHitDamageCalc": {
+          "mFormulaParts": [
+            {
+              "mCoefficient": 0.05000000074505806,
+              "__type": "StatByCoefficientCalculationPart"
+            },
+            {
+              "mDataValue": "OnHitBase",
+              "__type": "NamedDataValueCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        }
+      }
+    },
+    "1": {
+      "mSpellCalculations": {
+        "AttachCooldown": {
+          "mSimpleTooltipCalculationDisplay": 6,
+          "mFormulaParts": [
+            {
+              "mLevel1Value": 10,
+              "mBreakpoints": [
+                {
+                  "mLevel": 6,
+                  "mAdditionalBonusAtThisLevel": -5,
+                  "__type": "Breakpoint"
+                },
+                {
+                  "mLevel": 11,
+                  "mAdditionalBonusAtThisLevel": -5,
+                  "__type": "Breakpoint"
+                }
+              ],
+              "__type": "ByCharLevelBreakpointsCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        },
+        "CCAttachLockout": {
+          "mSimpleTooltipCalculationDisplay": 6,
+          "mExpandedTooltipCalculationDisplay": 5,
+          "mFormulaParts": [
+            {
+              "mNumber": 5,
+              "__type": "NumberCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        },
+        "HealthOnHit": {
+          "mFormulaParts": [
+            {
+              "mDataValue": "BaseHealthOnHit",
+              "__type": "NamedDataValueCalculationPart"
+            },
+            {
+              "mCoefficient": 0.029999999329447746,
+              "__type": "StatByCoefficientCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        }
+      }
+    },
+    "2": {
+      "DataValues": {
+        "mAmmoRechargeTime": [
+          19,
+          18,
+          17,
+          16,
+          15,
+          14,
+          13
+        ]
+      },
+      "mSpellCalculations": {
+        "TotalShielding": {
+          "mFormulaParts": [
+            {
+              "mDataValue": "BaseShielding",
+              "__type": "NamedDataValueCalculationPart"
+            },
+            {
+              "mDataValue": "APRatio",
+              "__type": "StatByNamedDataValueCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        },
+        "TotalAttackSpeed": {
+          "mFormulaParts": [
+            {
+              "mDataValue": "AttackSpeedAmount",
+              "__type": "NamedDataValueCalculationPart"
+            },
+            {
+              "mCoefficient": 0.07999999821186066,
+              "__type": "StatByCoefficientCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        }
+      }
+    },
+    "3": {
+      "mSpellCalculations": {
+        "TotalMissileDamage": {
+          "mFormulaParts": [
+            {
+              "mDataValue": "BaseMissileDamage",
+              "__type": "NamedDataValueCalculationPart"
+            },
+            {
+              "mCoefficient": 0.25,
+              "__type": "StatByCoefficientCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        },
+        "TotalSingleTargetDamage": {
+          "mMultiplier": {
+            "mSubparts": [
+              {
+                "mNumber": 1,
+                "__type": "NumberCalculationPart"
+              },
+              {
+                "mPart1": {
+                  "mSubparts": [
+                    {
+                      "mDataValue": "NumberOfWaves",
+                      "__type": "NamedDataValueCalculationPart"
+                    },
+                    {
+                      "mNumber": -1,
+                      "__type": "NumberCalculationPart"
+                    }
+                  ],
+                  "__type": "SumOfSubPartsCalculationPart"
+                },
+                "mPart2": {
+                  "mDataValue": "MultiMissileReduction",
+                  "__type": "NamedDataValueCalculationPart"
+                },
+                "__type": "ProductOfSubPartsCalculationPart"
+              }
+            ],
+            "__type": "SumOfSubPartsCalculationPart"
+          },
+          "mModifiedGameCalculation": "TotalMissileDamage",
+          "__type": "GameCalculationModified"
+        },
+        "MultiMissileTotal": {
+          "mMultiplier": {
+            "mDataValue": "MultiMissileReduction",
+            "__type": "NamedDataValueCalculationPart"
+          },
+          "mSimpleTooltipCalculationDisplay": 6,
+          "mModifiedGameCalculation": "TotalMissileDamage",
+          "__type": "GameCalculationModified"
+        },
+        "TotalHealPerWave": {
+          "mFormulaParts": [
+            {
+              "mDataValue": "BaseHealPerWave",
+              "__type": "NamedDataValueCalculationPart"
+            },
+            {
+              "mCoefficient": 0.10000000149011612,
+              "__type": "StatByCoefficientCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        },
+        "EnhancedHealPerWave": {
+          "mMultiplier": {
+            "mDataValue": "AllyHealingPerc",
+            "__type": "NamedDataValueCalculationPart"
+          },
+          "mModifiedGameCalculation": "TotalHealPerWave",
+          "__type": "GameCalculationModified"
+        },
+        "{ea105dd6}": {
+          "mFormulaParts": [
+            {
+              "mDataValue": "BaseBonusResistances",
+              "__type": "NamedDataValueCalculationPart"
+            },
+            {
+              "mCoefficient": 0.10000000149011612,
+              "__type": "StatByCoefficientCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        }
+      }
+    },
+    "YuumiQ": {
+      "mSpellCalculations": {
+        "TotalMissileDamage": {
+          "mFormulaParts": [
+            {
+              "mDataValue": "MissileDamage",
+              "__type": "NamedDataValueCalculationPart"
+            },
+            {
+              "mDataValue": "APRatio",
+              "__type": "StatByNamedDataValueCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        },
+        "TotalMissileDamageEmpowered": {
+          "mFormulaParts": [
+            {
+              "mDataValue": "EmpoweredMissileDamage",
+              "__type": "NamedDataValueCalculationPart"
+            },
+            {
+              "mDataValue": "EmpoweredAPRatio",
+              "__type": "StatByNamedDataValueCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        },
+        "OnHitDamageCalc": {
+          "mFormulaParts": [
+            {
+              "mCoefficient": 0.05000000074505806,
+              "__type": "StatByCoefficientCalculationPart"
+            },
+            {
+              "mDataValue": "OnHitBase",
+              "__type": "NamedDataValueCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        }
+      }
+    },
+    "YuumiW": {
+      "mSpellCalculations": {
+        "AttachCooldown": {
+          "mSimpleTooltipCalculationDisplay": 6,
+          "mFormulaParts": [
+            {
+              "mLevel1Value": 10,
+              "mBreakpoints": [
+                {
+                  "mLevel": 6,
+                  "mAdditionalBonusAtThisLevel": -5,
+                  "__type": "Breakpoint"
+                },
+                {
+                  "mLevel": 11,
+                  "mAdditionalBonusAtThisLevel": -5,
+                  "__type": "Breakpoint"
+                }
+              ],
+              "__type": "ByCharLevelBreakpointsCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        },
+        "CCAttachLockout": {
+          "mSimpleTooltipCalculationDisplay": 6,
+          "mExpandedTooltipCalculationDisplay": 5,
+          "mFormulaParts": [
+            {
+              "mNumber": 5,
+              "__type": "NumberCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        },
+        "HealthOnHit": {
+          "mFormulaParts": [
+            {
+              "mDataValue": "BaseHealthOnHit",
+              "__type": "NamedDataValueCalculationPart"
+            },
+            {
+              "mCoefficient": 0.029999999329447746,
+              "__type": "StatByCoefficientCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        }
+      }
+    },
+    "YuumiE": {
+      "DataValues": {
+        "mAmmoRechargeTime": [
+          19,
+          18,
+          17,
+          16,
+          15,
+          14,
+          13
+        ]
+      },
+      "mSpellCalculations": {
+        "TotalShielding": {
+          "mFormulaParts": [
+            {
+              "mDataValue": "BaseShielding",
+              "__type": "NamedDataValueCalculationPart"
+            },
+            {
+              "mDataValue": "APRatio",
+              "__type": "StatByNamedDataValueCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        },
+        "TotalAttackSpeed": {
+          "mFormulaParts": [
+            {
+              "mDataValue": "AttackSpeedAmount",
+              "__type": "NamedDataValueCalculationPart"
+            },
+            {
+              "mCoefficient": 0.07999999821186066,
+              "__type": "StatByCoefficientCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        }
+      }
+    },
+    "YuumiR": {
+      "mSpellCalculations": {
+        "TotalMissileDamage": {
+          "mFormulaParts": [
+            {
+              "mDataValue": "BaseMissileDamage",
+              "__type": "NamedDataValueCalculationPart"
+            },
+            {
+              "mCoefficient": 0.25,
+              "__type": "StatByCoefficientCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        },
+        "TotalSingleTargetDamage": {
+          "mMultiplier": {
+            "mSubparts": [
+              {
+                "mNumber": 1,
+                "__type": "NumberCalculationPart"
+              },
+              {
+                "mPart1": {
+                  "mSubparts": [
+                    {
+                      "mDataValue": "NumberOfWaves",
+                      "__type": "NamedDataValueCalculationPart"
+                    },
+                    {
+                      "mNumber": -1,
+                      "__type": "NumberCalculationPart"
+                    }
+                  ],
+                  "__type": "SumOfSubPartsCalculationPart"
+                },
+                "mPart2": {
+                  "mDataValue": "MultiMissileReduction",
+                  "__type": "NamedDataValueCalculationPart"
+                },
+                "__type": "ProductOfSubPartsCalculationPart"
+              }
+            ],
+            "__type": "SumOfSubPartsCalculationPart"
+          },
+          "mModifiedGameCalculation": "TotalMissileDamage",
+          "__type": "GameCalculationModified"
+        },
+        "MultiMissileTotal": {
+          "mMultiplier": {
+            "mDataValue": "MultiMissileReduction",
+            "__type": "NamedDataValueCalculationPart"
+          },
+          "mSimpleTooltipCalculationDisplay": 6,
+          "mModifiedGameCalculation": "TotalMissileDamage",
+          "__type": "GameCalculationModified"
+        },
+        "TotalHealPerWave": {
+          "mFormulaParts": [
+            {
+              "mDataValue": "BaseHealPerWave",
+              "__type": "NamedDataValueCalculationPart"
+            },
+            {
+              "mCoefficient": 0.10000000149011612,
+              "__type": "StatByCoefficientCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        },
+        "EnhancedHealPerWave": {
+          "mMultiplier": {
+            "mDataValue": "AllyHealingPerc",
+            "__type": "NamedDataValueCalculationPart"
+          },
+          "mModifiedGameCalculation": "TotalHealPerWave",
+          "__type": "GameCalculationModified"
+        },
+        "{ea105dd6}": {
+          "mFormulaParts": [
+            {
+              "mDataValue": "BaseBonusResistances",
+              "__type": "NamedDataValueCalculationPart"
+            },
+            {
+              "mCoefficient": 0.10000000149011612,
+              "__type": "StatByCoefficientCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        }
+      }
+    },
+    "YuumiP": {
+      "mSpellCalculations": {
+        "PassiveCooldown": {
+          "mFormulaParts": [
+            {
+              "mLevel1Value": 20,
+              "mInitialBonusPerLevel": -1,
+              "mBreakpoints": [
+                {
+                  "mLevel": 14,
+                  "__type": "Breakpoint"
+                }
+              ],
+              "__type": "ByCharLevelBreakpointsCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        },
+        "{656dde8a}": {
+          "mFormulaParts": [
+            {
+              "mLevel1Value": 50,
+              "__type": "ByCharLevelBreakpointsCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        },
+        "HealAmount": {
+          "mFormulaParts": [
+            {
+              "mStartValue": 20,
+              "mEndValue": 110,
+              "__type": "ByCharLevelInterpolationCalculationPart"
+            },
+            {
+              "mCoefficient": 0.25,
+              "__type": "StatByCoefficientCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        }
+      }
+    }
+  }
+}
