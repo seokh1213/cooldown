@@ -1,12 +1,12 @@
 {
   "version": "16.9.1",
   "ddragonVersion": "16.9.1",
-  "cdragonVersion": "16.8",
+  "cdragonVersion": "16.9",
   "championId": "Shyvana",
   "spellData": {
     "0": {
       "mSpellCalculations": {
-        "{a90da5f4}": {
+        "Calc_Max_Health_Damage": {
           "mFormulaParts": [
             {
               "mDataValue": "Max_Health_Damage",
@@ -16,10 +16,6 @@
               "mStat": 2,
               "mStatFormula": 2,
               "mDataValue": "Max_Health_AD_Ratio",
-              "__type": "StatByNamedDataValueCalculationPart"
-            },
-            {
-              "mDataValue": "Max_Health_AP_Ratio",
               "__type": "StatByNamedDataValueCalculationPart"
             }
           ],
@@ -39,13 +35,13 @@
               "__type": "StatByNamedDataValueCalculationPart"
             },
             {
-              "mCoefficient": 0.25,
+              "mCoefficient": 0.30000001192092896,
               "__type": "StatByCoefficientCalculationPart"
             }
           ],
           "__type": "GameCalculation"
         },
-        "{136a56eb}": {
+        "Calc_Dragon_Form_Damage": {
           "mMultiplier": {
             "mNumber": 1.5,
             "__type": "NumberCalculationPart"
@@ -53,7 +49,7 @@
           "mModifiedGameCalculation": "Calc_Damage",
           "__type": "GameCalculationModified"
         },
-        "{57e0cb52}": {
+        "Calc_Max_Health_Monster_Minimum": {
           "mSimpleTooltipCalculationDisplay": 6,
           "mExpandedTooltipCalculationDisplay": 6,
           "mFormulaParts": [
@@ -64,7 +60,7 @@
           ],
           "__type": "GameCalculation"
         },
-        "{389419d8}": {
+        "Calc_Max_Health_Monster_Maximum": {
           "mSimpleTooltipCalculationDisplay": 5,
           "mExpandedTooltipCalculationDisplay": 5,
           "mFormulaParts": [
@@ -75,7 +71,7 @@
           ],
           "__type": "GameCalculation"
         },
-        "{42c9fc79}": {
+        "Calc_Monster_Bonus": {
           "mSimpleTooltipCalculationDisplay": 5,
           "mExpandedTooltipCalculationDisplay": 5,
           "mFormulaParts": [
@@ -107,13 +103,7 @@
               "__type": "NamedDataValueCalculationPart"
             },
             {
-              "mStat": 2,
-              "mStatFormula": 2,
-              "mCoefficient": 0.4000000059604645,
-              "__type": "StatByCoefficientCalculationPart"
-            },
-            {
-              "mCoefficient": 0.20000000298023224,
+              "mCoefficient": 0.6499999761581421,
               "__type": "StatByCoefficientCalculationPart"
             }
           ],
@@ -139,13 +129,14 @@
             },
             {
               "mStat": 12,
-              "mCoefficient": 0.05000000074505806,
-              "__type": "StatByCoefficientCalculationPart"
+              "mStatFormula": 2,
+              "mDataValue": "{1cf2fe1c}",
+              "__type": "StatByNamedDataValueCalculationPart"
             }
           ],
           "__type": "GameCalculation"
         },
-        "{3af62e84}": {
+        "Calc_Shield_Per_Nearby_Champion": {
           "mMultiplier": {
             "mNumber": 0.30000001192092896,
             "__type": "NumberCalculationPart"
@@ -153,7 +144,7 @@
           "mModifiedGameCalculation": "Calc_Shield",
           "__type": "GameCalculationModified"
         },
-        "{0c6d3894}": {
+        "Calc_Heal_Min": {
           "mFormulaParts": [
             {
               "mStartValue": 75,
@@ -173,15 +164,15 @@
           ],
           "__type": "GameCalculation"
         },
-        "{fa8236f6}": {
+        "Calc_Heal_Max": {
           "mMultiplier": {
             "mDataValue": "MissingHealthHealMultiplier",
             "__type": "NamedDataValueCalculationPart"
           },
-          "mModifiedGameCalculation": "{0c6d3894}",
+          "mModifiedGameCalculation": "Calc_Heal_Min",
           "__type": "GameCalculationModified"
         },
-        "{80729703}": {
+        "MoveSpeedTowardsEnemies": {
           "mMultiplier": {
             "mDataValue": "MoveSpeedAmpTowardsEnemies",
             "__type": "NamedDataValueCalculationPart"
@@ -190,6 +181,27 @@
           "mExpandedTooltipCalculationDisplay": 5,
           "mModifiedGameCalculation": "MoveSpeed",
           "__type": "GameCalculationModified"
+        },
+        "{f468ef05}": {
+          "mFormulaParts": [
+            {
+              "mStartValue": 0.03999999910593033,
+              "mEndValue": 0.07999999821186066,
+              "__type": "ByCharLevelInterpolationCalculationPart"
+            }
+          ],
+          "mDisplayAsPercent": true,
+          "__type": "GameCalculation"
+        },
+        "{b35447ff}": {
+          "mFormulaParts": [
+            {
+              "mStartValue": 60,
+              "mEndValue": 100,
+              "__type": "ByCharLevelInterpolationCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
         }
       }
     },
@@ -202,14 +214,8 @@
               "__type": "NamedDataValueCalculationPart"
             },
             {
-              "mStat": 2,
-              "mStatFormula": 2,
-              "mCoefficient": 0.3499999940395355,
-              "__type": "StatByCoefficientCalculationPart"
-            },
-            {
-              "mCoefficient": 0.699999988079071,
-              "__type": "StatByCoefficientCalculationPart"
+              "mDataValue": "DamageAPRatio",
+              "__type": "StatByNamedDataValueCalculationPart"
             }
           ],
           "__type": "GameCalculation"
@@ -239,19 +245,19 @@
           ],
           "__type": "GameCalculation"
         },
-        "{ff31d3c2}": {
+        "Calc_Multihit_Efficacy": {
           "mSimpleTooltipCalculationDisplay": 5,
           "mExpandedTooltipCalculationDisplay": 5,
           "mFormulaParts": [
             {
-              "mNumber": 0.5,
+              "mNumber": 0.4000000059604645,
               "__type": "NumberCalculationPart"
             }
           ],
           "mDisplayAsPercent": true,
           "__type": "GameCalculation"
         },
-        "{93257a1e}": {
+        "Calc_Dragon_Damage": {
           "mMultiplier": {
             "mNumber": 1.25,
             "__type": "NumberCalculationPart"
@@ -271,7 +277,7 @@
           "mDisplayAsPercent": true,
           "__type": "GameCalculation"
         },
-        "{a428c732}": {
+        "Calc_Slow_Dragon": {
           "mMultiplier": {
             "mNumber": 1,
             "__type": "NumberCalculationPart"
@@ -280,6 +286,46 @@
           "mExpandedTooltipCalculationDisplay": 5,
           "mModifiedGameCalculation": "Calc_Slow",
           "__type": "GameCalculationModified"
+        },
+        "Calc_Max_Health_Damage": {
+          "mSimpleTooltipCalculationDisplay": 5,
+          "mExpandedTooltipCalculationDisplay": 5,
+          "mFormulaParts": [
+            {
+              "mDataValue": "MaxHealthDamage",
+              "__type": "NamedDataValueCalculationPart"
+            }
+          ],
+          "mDisplayAsPercent": true,
+          "mPrecision": 1,
+          "__type": "GameCalculation"
+        },
+        "{bb85c3b6}": {
+          "mMultiplier": {
+            "mDataValue": "{fcb67619}",
+            "__type": "NamedDataValueCalculationPart"
+          },
+          "mSimpleTooltipCalculationDisplay": 5,
+          "mExpandedTooltipCalculationDisplay": 6,
+          "mModifiedGameCalculation": "Calc_Max_Health_Damage",
+          "__type": "GameCalculationModified"
+        },
+        "Calc_Max_Health_Monster_Minimum": {
+          "mFormulaParts": [
+            {
+              "__type": "NumberCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        },
+        "Calc_Max_Health_Monster_Maximum": {
+          "mFormulaParts": [
+            {
+              "mNumber": 200,
+              "__type": "NumberCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
         }
       }
     },
@@ -298,7 +344,7 @@
           ],
           "__type": "GameCalculation"
         },
-        "{91d3acc7}": {
+        "Calc_Bonus_Health": {
           "mSimpleTooltipCalculationDisplay": 5,
           "mExpandedTooltipCalculationDisplay": 5,
           "mFormulaParts": [
@@ -318,7 +364,7 @@
           ],
           "__type": "GameCalculation"
         },
-        "{869490c9}": {
+        "TT_Fury_Mult": {
           "mSimpleTooltipCalculationDisplay": 6,
           "mExpandedTooltipCalculationDisplay": 5,
           "tooltipOnly": true,
@@ -335,7 +381,7 @@
           "mDisplayAsPercent": true,
           "__type": "GameCalculation"
         },
-        "{47c9f80c}": {
+        "TT_Fury_AoE_Penalty": {
           "mSimpleTooltipCalculationDisplay": 6,
           "mExpandedTooltipCalculationDisplay": 5,
           "tooltipOnly": true,
@@ -363,7 +409,7 @@
     },
     "ShyvanaQ": {
       "mSpellCalculations": {
-        "{a90da5f4}": {
+        "Calc_Max_Health_Damage": {
           "mFormulaParts": [
             {
               "mDataValue": "Max_Health_Damage",
@@ -373,10 +419,6 @@
               "mStat": 2,
               "mStatFormula": 2,
               "mDataValue": "Max_Health_AD_Ratio",
-              "__type": "StatByNamedDataValueCalculationPart"
-            },
-            {
-              "mDataValue": "Max_Health_AP_Ratio",
               "__type": "StatByNamedDataValueCalculationPart"
             }
           ],
@@ -396,13 +438,13 @@
               "__type": "StatByNamedDataValueCalculationPart"
             },
             {
-              "mCoefficient": 0.25,
+              "mCoefficient": 0.30000001192092896,
               "__type": "StatByCoefficientCalculationPart"
             }
           ],
           "__type": "GameCalculation"
         },
-        "{136a56eb}": {
+        "Calc_Dragon_Form_Damage": {
           "mMultiplier": {
             "mNumber": 1.5,
             "__type": "NumberCalculationPart"
@@ -410,7 +452,7 @@
           "mModifiedGameCalculation": "Calc_Damage",
           "__type": "GameCalculationModified"
         },
-        "{57e0cb52}": {
+        "Calc_Max_Health_Monster_Minimum": {
           "mSimpleTooltipCalculationDisplay": 6,
           "mExpandedTooltipCalculationDisplay": 6,
           "mFormulaParts": [
@@ -421,7 +463,7 @@
           ],
           "__type": "GameCalculation"
         },
-        "{389419d8}": {
+        "Calc_Max_Health_Monster_Maximum": {
           "mSimpleTooltipCalculationDisplay": 5,
           "mExpandedTooltipCalculationDisplay": 5,
           "mFormulaParts": [
@@ -432,7 +474,7 @@
           ],
           "__type": "GameCalculation"
         },
-        "{42c9fc79}": {
+        "Calc_Monster_Bonus": {
           "mSimpleTooltipCalculationDisplay": 5,
           "mExpandedTooltipCalculationDisplay": 5,
           "mFormulaParts": [
@@ -464,13 +506,7 @@
               "__type": "NamedDataValueCalculationPart"
             },
             {
-              "mStat": 2,
-              "mStatFormula": 2,
-              "mCoefficient": 0.4000000059604645,
-              "__type": "StatByCoefficientCalculationPart"
-            },
-            {
-              "mCoefficient": 0.20000000298023224,
+              "mCoefficient": 0.6499999761581421,
               "__type": "StatByCoefficientCalculationPart"
             }
           ],
@@ -496,13 +532,14 @@
             },
             {
               "mStat": 12,
-              "mCoefficient": 0.05000000074505806,
-              "__type": "StatByCoefficientCalculationPart"
+              "mStatFormula": 2,
+              "mDataValue": "{1cf2fe1c}",
+              "__type": "StatByNamedDataValueCalculationPart"
             }
           ],
           "__type": "GameCalculation"
         },
-        "{3af62e84}": {
+        "Calc_Shield_Per_Nearby_Champion": {
           "mMultiplier": {
             "mNumber": 0.30000001192092896,
             "__type": "NumberCalculationPart"
@@ -510,7 +547,7 @@
           "mModifiedGameCalculation": "Calc_Shield",
           "__type": "GameCalculationModified"
         },
-        "{0c6d3894}": {
+        "Calc_Heal_Min": {
           "mFormulaParts": [
             {
               "mStartValue": 75,
@@ -530,15 +567,15 @@
           ],
           "__type": "GameCalculation"
         },
-        "{fa8236f6}": {
+        "Calc_Heal_Max": {
           "mMultiplier": {
             "mDataValue": "MissingHealthHealMultiplier",
             "__type": "NamedDataValueCalculationPart"
           },
-          "mModifiedGameCalculation": "{0c6d3894}",
+          "mModifiedGameCalculation": "Calc_Heal_Min",
           "__type": "GameCalculationModified"
         },
-        "{80729703}": {
+        "MoveSpeedTowardsEnemies": {
           "mMultiplier": {
             "mDataValue": "MoveSpeedAmpTowardsEnemies",
             "__type": "NamedDataValueCalculationPart"
@@ -547,6 +584,27 @@
           "mExpandedTooltipCalculationDisplay": 5,
           "mModifiedGameCalculation": "MoveSpeed",
           "__type": "GameCalculationModified"
+        },
+        "{f468ef05}": {
+          "mFormulaParts": [
+            {
+              "mStartValue": 0.03999999910593033,
+              "mEndValue": 0.07999999821186066,
+              "__type": "ByCharLevelInterpolationCalculationPart"
+            }
+          ],
+          "mDisplayAsPercent": true,
+          "__type": "GameCalculation"
+        },
+        "{b35447ff}": {
+          "mFormulaParts": [
+            {
+              "mStartValue": 60,
+              "mEndValue": 100,
+              "__type": "ByCharLevelInterpolationCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
         }
       }
     },
@@ -559,14 +617,8 @@
               "__type": "NamedDataValueCalculationPart"
             },
             {
-              "mStat": 2,
-              "mStatFormula": 2,
-              "mCoefficient": 0.3499999940395355,
-              "__type": "StatByCoefficientCalculationPart"
-            },
-            {
-              "mCoefficient": 0.699999988079071,
-              "__type": "StatByCoefficientCalculationPart"
+              "mDataValue": "DamageAPRatio",
+              "__type": "StatByNamedDataValueCalculationPart"
             }
           ],
           "__type": "GameCalculation"
@@ -596,19 +648,19 @@
           ],
           "__type": "GameCalculation"
         },
-        "{ff31d3c2}": {
+        "Calc_Multihit_Efficacy": {
           "mSimpleTooltipCalculationDisplay": 5,
           "mExpandedTooltipCalculationDisplay": 5,
           "mFormulaParts": [
             {
-              "mNumber": 0.5,
+              "mNumber": 0.4000000059604645,
               "__type": "NumberCalculationPart"
             }
           ],
           "mDisplayAsPercent": true,
           "__type": "GameCalculation"
         },
-        "{93257a1e}": {
+        "Calc_Dragon_Damage": {
           "mMultiplier": {
             "mNumber": 1.25,
             "__type": "NumberCalculationPart"
@@ -628,7 +680,7 @@
           "mDisplayAsPercent": true,
           "__type": "GameCalculation"
         },
-        "{a428c732}": {
+        "Calc_Slow_Dragon": {
           "mMultiplier": {
             "mNumber": 1,
             "__type": "NumberCalculationPart"
@@ -637,6 +689,46 @@
           "mExpandedTooltipCalculationDisplay": 5,
           "mModifiedGameCalculation": "Calc_Slow",
           "__type": "GameCalculationModified"
+        },
+        "Calc_Max_Health_Damage": {
+          "mSimpleTooltipCalculationDisplay": 5,
+          "mExpandedTooltipCalculationDisplay": 5,
+          "mFormulaParts": [
+            {
+              "mDataValue": "MaxHealthDamage",
+              "__type": "NamedDataValueCalculationPart"
+            }
+          ],
+          "mDisplayAsPercent": true,
+          "mPrecision": 1,
+          "__type": "GameCalculation"
+        },
+        "{bb85c3b6}": {
+          "mMultiplier": {
+            "mDataValue": "{fcb67619}",
+            "__type": "NamedDataValueCalculationPart"
+          },
+          "mSimpleTooltipCalculationDisplay": 5,
+          "mExpandedTooltipCalculationDisplay": 6,
+          "mModifiedGameCalculation": "Calc_Max_Health_Damage",
+          "__type": "GameCalculationModified"
+        },
+        "Calc_Max_Health_Monster_Minimum": {
+          "mFormulaParts": [
+            {
+              "__type": "NumberCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        },
+        "Calc_Max_Health_Monster_Maximum": {
+          "mFormulaParts": [
+            {
+              "mNumber": 200,
+              "__type": "NumberCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
         }
       }
     },
@@ -655,7 +747,7 @@
           ],
           "__type": "GameCalculation"
         },
-        "{91d3acc7}": {
+        "Calc_Bonus_Health": {
           "mSimpleTooltipCalculationDisplay": 5,
           "mExpandedTooltipCalculationDisplay": 5,
           "mFormulaParts": [
@@ -675,7 +767,7 @@
           ],
           "__type": "GameCalculation"
         },
-        "{869490c9}": {
+        "TT_Fury_Mult": {
           "mSimpleTooltipCalculationDisplay": 6,
           "mExpandedTooltipCalculationDisplay": 5,
           "tooltipOnly": true,
@@ -692,7 +784,7 @@
           "mDisplayAsPercent": true,
           "__type": "GameCalculation"
         },
-        "{47c9f80c}": {
+        "TT_Fury_AoE_Penalty": {
           "mSimpleTooltipCalculationDisplay": 6,
           "mExpandedTooltipCalculationDisplay": 5,
           "tooltipOnly": true,
@@ -720,7 +812,7 @@
     },
     "ShyvanaPassive": {
       "mSpellCalculations": {
-        "{85edcc8c}": {
+        "Calc_Bonus_Armor": {
           "mSimpleTooltipCalculationDisplay": 5,
           "mExpandedTooltipCalculationDisplay": 5,
           "mFormulaParts": [
@@ -734,7 +826,7 @@
           "mPrecision": 1,
           "__type": "GameCalculation"
         },
-        "{db8f0776}": {
+        "Calc_Bonus_MR": {
           "mSimpleTooltipCalculationDisplay": 5,
           "mExpandedTooltipCalculationDisplay": 5,
           "mFormulaParts": [

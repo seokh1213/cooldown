@@ -1,7 +1,7 @@
 {
   "version": "16.9.1",
   "ddragonVersion": "16.9.1",
-  "cdragonVersion": "16.8",
+  "cdragonVersion": "16.9",
   "championId": "XinZhao",
   "spellData": {
     "0": {
@@ -91,6 +91,20 @@
             }
           ],
           "__type": "GameCalculation"
+        },
+        "TotalSlowDuration": {
+          "mFormulaParts": [
+            {
+              "mDataValue": "BaseSlowDuration",
+              "__type": "NamedDataValueCalculationPart"
+            },
+            {
+              "mCoefficient": 0.004999999888241291,
+              "__type": "StatByCoefficientCalculationPart"
+            }
+          ],
+          "mPrecision": 1,
+          "__type": "GameCalculation"
         }
       }
     },
@@ -99,8 +113,8 @@
         "ChargeDamage": {
           "mFormulaParts": [
             {
-              "mEffectIndex": 1,
-              "__type": "EffectValueCalculationPart"
+              "mDataValue": "BaseDamage",
+              "__type": "NamedDataValueCalculationPart"
             },
             {
               "mDataValue": "APRatio",
@@ -222,6 +236,20 @@
             }
           ],
           "__type": "GameCalculation"
+        },
+        "TotalSlowDuration": {
+          "mFormulaParts": [
+            {
+              "mDataValue": "BaseSlowDuration",
+              "__type": "NamedDataValueCalculationPart"
+            },
+            {
+              "mCoefficient": 0.004999999888241291,
+              "__type": "StatByCoefficientCalculationPart"
+            }
+          ],
+          "mPrecision": 1,
+          "__type": "GameCalculation"
         }
       }
     },
@@ -230,8 +258,8 @@
         "ChargeDamage": {
           "mFormulaParts": [
             {
-              "mEffectIndex": 1,
-              "__type": "EffectValueCalculationPart"
+              "mDataValue": "BaseDamage",
+              "__type": "NamedDataValueCalculationPart"
             },
             {
               "mDataValue": "APRatio",
@@ -333,8 +361,53 @@
               "__type": "StatBySubPartCalculationPart"
             },
             {
-              "mDataValue": "HealAPRatio",
-              "__type": "StatByNamedDataValueCalculationPart"
+              "mSubpart": {
+                "mSpellCalculationKey": "HealAPRatio",
+                "__type": "{f3cbe7b2}"
+              },
+              "__type": "StatBySubPartCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        },
+        "HealHPRatio": {
+          "mFormulaParts": [
+            {
+              "mLevel1Value": 0.029999999329447746,
+              "mBreakpoints": [
+                {
+                  "mLevel": 6,
+                  "mAdditionalBonusAtThisLevel": 0.009999999776482582,
+                  "__type": "Breakpoint"
+                },
+                {
+                  "mLevel": 11,
+                  "mAdditionalBonusAtThisLevel": 0.009999999776482582,
+                  "__type": "Breakpoint"
+                }
+              ],
+              "__type": "ByCharLevelBreakpointsCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        },
+        "HealAPRatio": {
+          "mFormulaParts": [
+            {
+              "mLevel1Value": 0.5,
+              "mBreakpoints": [
+                {
+                  "mLevel": 6,
+                  "mAdditionalBonusAtThisLevel": 0.15000000596046448,
+                  "__type": "Breakpoint"
+                },
+                {
+                  "mLevel": 11,
+                  "mAdditionalBonusAtThisLevel": 0.25,
+                  "__type": "Breakpoint"
+                }
+              ],
+              "__type": "ByCharLevelBreakpointsCalculationPart"
             }
           ],
           "__type": "GameCalculation"
