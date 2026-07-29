@@ -2,11 +2,22 @@
   "version": "16.15.1",
   "ddragonVersion": "16.15.1",
   "cdragonVersion": "16.15",
-  "championId": "Ezreal",
+  "championId": "Jade_Amumu",
   "spellData": {
     "0": {
+      "DataValues": {
+        "mAmmoRechargeTime": [
+          16,
+          16,
+          15,
+          14,
+          13,
+          12,
+          12
+        ]
+      },
       "mSpellCalculations": {
-        "Damage": {
+        "TotalDamage": {
           "mSimpleTooltipCalculationDisplay": 6,
           "mFormulaParts": [
             {
@@ -14,13 +25,8 @@
               "__type": "NamedDataValueCalculationPart"
             },
             {
-              "mStat": 2,
-              "mDataValue": "BaseDamageADRatio",
-              "__type": "StatByNamedDataValueCalculationPart"
-            },
-            {
-              "mDataValue": "BaseDamageAPRatio",
-              "__type": "StatByNamedDataValueCalculationPart"
+              "mCoefficient": 0.699999988079071,
+              "__type": "StatByCoefficientCalculationPart"
             }
           ],
           "__type": "GameCalculation"
@@ -29,46 +35,68 @@
     },
     "1": {
       "mSpellCalculations": {
-        "Damage": {
-          "mSimpleTooltipCalculationDisplay": 6,
+        "{c8e45bc3}": {
+          "mMultiplier": {
+            "mNumber": 1,
+            "__type": "NumberCalculationPart"
+          },
           "mFormulaParts": [
             {
               "mDataValue": "BaseDamage",
               "__type": "NamedDataValueCalculationPart"
-            },
+            }
+          ],
+          "__type": "GameCalculation"
+        },
+        "TotalHealthDamage": {
+          "mFormulaParts": [
             {
-              "mStat": 2,
-              "mStatFormula": 2,
-              "mCoefficient": 1,
-              "__type": "StatByCoefficientCalculationPart"
+              "mDataValue": "HealthDamage",
+              "__type": "NamedDataValueCalculationPart"
             },
             {
               "mDataValue": "APRatio",
               "__type": "StatByNamedDataValueCalculationPart"
             }
           ],
+          "mPrecision": 2,
           "__type": "GameCalculation"
         }
       }
     },
     "2": {
       "mSpellCalculations": {
-        "Damage": {
+        "DamageReduction": {
           "mSimpleTooltipCalculationDisplay": 6,
+          "mFormulaParts": [
+            {
+              "mEffectIndex": 1,
+              "__type": "EffectValueCalculationPart"
+            },
+            {
+              "mStat": 1,
+              "mStatFormula": 2,
+              "mCoefficient": 0.029999999329447746,
+              "__type": "StatByCoefficientCalculationPart"
+            },
+            {
+              "mStat": 6,
+              "mStatFormula": 2,
+              "mCoefficient": 0.029999999329447746,
+              "__type": "StatByCoefficientCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        },
+        "TantrumDamage": {
           "mFormulaParts": [
             {
               "mDataValue": "BaseDamage",
               "__type": "NamedDataValueCalculationPart"
             },
             {
-              "mStat": 2,
-              "mStatFormula": 2,
-              "mCoefficient": 0.6000000238418579,
+              "mCoefficient": 0.5,
               "__type": "StatByCoefficientCalculationPart"
-            },
-            {
-              "mDataValue": "EAPRatio",
-              "__type": "StatByNamedDataValueCalculationPart"
             }
           ],
           "__type": "GameCalculation"
@@ -77,7 +105,35 @@
     },
     "3": {
       "mSpellCalculations": {
-        "Damage": {
+        "RCalculatedDamage": {
+          "mFormulaParts": [
+            {
+              "mDataValue": "RDamage",
+              "__type": "NamedDataValueCalculationPart"
+            },
+            {
+              "mDataValue": "RCoefficient",
+              "__type": "StatByNamedDataValueCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        }
+      }
+    },
+    "Jade_AmumuBandageToss": {
+      "DataValues": {
+        "mAmmoRechargeTime": [
+          16,
+          16,
+          15,
+          14,
+          13,
+          12,
+          12
+        ]
+      },
+      "mSpellCalculations": {
+        "TotalDamage": {
           "mSimpleTooltipCalculationDisplay": 6,
           "mFormulaParts": [
             {
@@ -85,147 +141,95 @@
               "__type": "NamedDataValueCalculationPart"
             },
             {
-              "mStat": 2,
-              "mStatFormula": 2,
-              "mCoefficient": 1,
+              "mCoefficient": 0.699999988079071,
               "__type": "StatByCoefficientCalculationPart"
-            },
+            }
+          ],
+          "__type": "GameCalculation"
+        }
+      }
+    },
+    "Jade_AmumuAuraofDespair": {
+      "mSpellCalculations": {
+        "{c8e45bc3}": {
+          "mMultiplier": {
+            "mNumber": 1,
+            "__type": "NumberCalculationPart"
+          },
+          "mFormulaParts": [
             {
-              "mDataValue": "RAPRatio",
-              "__type": "StatByNamedDataValueCalculationPart"
+              "mDataValue": "BaseDamage",
+              "__type": "NamedDataValueCalculationPart"
             }
           ],
           "__type": "GameCalculation"
         },
-        "DamageMinionMonster": {
+        "TotalHealthDamage": {
           "mFormulaParts": [
             {
-              "mDataValue": "BaseDamageMinionMonster",
+              "mDataValue": "HealthDamage",
               "__type": "NamedDataValueCalculationPart"
-            },
-            {
-              "mStat": 2,
-              "mStatFormula": 2,
-              "mCoefficient": 1,
-              "__type": "StatByCoefficientCalculationPart"
-            },
-            {
-              "mCoefficient": 1.100000023841858,
-              "__type": "StatByCoefficientCalculationPart"
-            }
-          ],
-          "__type": "GameCalculation"
-        }
-      }
-    },
-    "EzrealQ": {
-      "mSpellCalculations": {
-        "Damage": {
-          "mSimpleTooltipCalculationDisplay": 6,
-          "mFormulaParts": [
-            {
-              "mDataValue": "BaseDamage",
-              "__type": "NamedDataValueCalculationPart"
-            },
-            {
-              "mStat": 2,
-              "mDataValue": "BaseDamageADRatio",
-              "__type": "StatByNamedDataValueCalculationPart"
-            },
-            {
-              "mDataValue": "BaseDamageAPRatio",
-              "__type": "StatByNamedDataValueCalculationPart"
-            }
-          ],
-          "__type": "GameCalculation"
-        }
-      }
-    },
-    "EzrealW": {
-      "mSpellCalculations": {
-        "Damage": {
-          "mSimpleTooltipCalculationDisplay": 6,
-          "mFormulaParts": [
-            {
-              "mDataValue": "BaseDamage",
-              "__type": "NamedDataValueCalculationPart"
-            },
-            {
-              "mStat": 2,
-              "mStatFormula": 2,
-              "mCoefficient": 1,
-              "__type": "StatByCoefficientCalculationPart"
             },
             {
               "mDataValue": "APRatio",
               "__type": "StatByNamedDataValueCalculationPart"
             }
           ],
+          "mPrecision": 2,
           "__type": "GameCalculation"
         }
       }
     },
-    "EzrealE": {
+    "Jade_AmumuTantrum": {
       "mSpellCalculations": {
-        "Damage": {
+        "DamageReduction": {
           "mSimpleTooltipCalculationDisplay": 6,
           "mFormulaParts": [
             {
-              "mDataValue": "BaseDamage",
-              "__type": "NamedDataValueCalculationPart"
+              "mEffectIndex": 1,
+              "__type": "EffectValueCalculationPart"
             },
             {
-              "mStat": 2,
+              "mStat": 1,
               "mStatFormula": 2,
-              "mCoefficient": 0.6000000238418579,
+              "mCoefficient": 0.029999999329447746,
               "__type": "StatByCoefficientCalculationPart"
             },
             {
-              "mDataValue": "EAPRatio",
-              "__type": "StatByNamedDataValueCalculationPart"
-            }
-          ],
-          "__type": "GameCalculation"
-        }
-      }
-    },
-    "EzrealR": {
-      "mSpellCalculations": {
-        "Damage": {
-          "mSimpleTooltipCalculationDisplay": 6,
-          "mFormulaParts": [
-            {
-              "mDataValue": "BaseDamage",
-              "__type": "NamedDataValueCalculationPart"
-            },
-            {
-              "mStat": 2,
+              "mStat": 6,
               "mStatFormula": 2,
-              "mCoefficient": 1,
+              "mCoefficient": 0.029999999329447746,
               "__type": "StatByCoefficientCalculationPart"
-            },
-            {
-              "mDataValue": "RAPRatio",
-              "__type": "StatByNamedDataValueCalculationPart"
             }
           ],
           "__type": "GameCalculation"
         },
-        "DamageMinionMonster": {
+        "TantrumDamage": {
           "mFormulaParts": [
             {
-              "mDataValue": "BaseDamageMinionMonster",
+              "mDataValue": "BaseDamage",
               "__type": "NamedDataValueCalculationPart"
             },
             {
-              "mStat": 2,
-              "mStatFormula": 2,
-              "mCoefficient": 1,
+              "mCoefficient": 0.5,
               "__type": "StatByCoefficientCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        }
+      }
+    },
+    "Jade_AmumuCurseoftheSadMummy": {
+      "mSpellCalculations": {
+        "RCalculatedDamage": {
+          "mFormulaParts": [
+            {
+              "mDataValue": "RDamage",
+              "__type": "NamedDataValueCalculationPart"
             },
             {
-              "mCoefficient": 1.100000023841858,
-              "__type": "StatByCoefficientCalculationPart"
+              "mDataValue": "RCoefficient",
+              "__type": "StatByNamedDataValueCalculationPart"
             }
           ],
           "__type": "GameCalculation"
