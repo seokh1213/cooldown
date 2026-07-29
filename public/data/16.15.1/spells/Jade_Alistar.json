@@ -2,7 +2,7 @@
   "version": "16.15.1",
   "ddragonVersion": "16.15.1",
   "cdragonVersion": "16.15",
-  "championId": "Alistar",
+  "championId": "Jade_Alistar",
   "spellData": {
     "0": {
       "mSpellCalculations": {
@@ -42,12 +42,10 @@
     },
     "2": {
       "mSpellCalculations": {
-        "TotalDamage": {
-          "mSimpleTooltipCalculationDisplay": 6,
-          "tooltipOnly": true,
+        "TotalHeal": {
           "mFormulaParts": [
             {
-              "mDataValue": "TrampleDamage",
+              "mDataValue": "BaseHealAmount",
               "__type": "NamedDataValueCalculationPart"
             },
             {
@@ -57,20 +55,17 @@
           ],
           "__type": "GameCalculation"
         },
-        "AttackBonusDamage": {
-          "mSimpleTooltipCalculationDisplay": 6,
-          "mFormulaParts": [
-            {
-              "mLevel1Value": 20,
-              "mInitialBonusPerLevel": 15,
-              "__type": "ByCharLevelBreakpointsCalculationPart"
-            }
-          ],
-          "__type": "GameCalculation"
+        "AllyHeal": {
+          "mMultiplier": {
+            "mDataValue": "AllyHealMod",
+            "__type": "NamedDataValueCalculationPart"
+          },
+          "mModifiedGameCalculation": "TotalHeal",
+          "__type": "GameCalculationModified"
         }
       }
     },
-    "Pulverize": {
+    "Jade_AlistarQ": {
       "mSpellCalculations": {
         "TotalDamage": {
           "mSimpleTooltipCalculationDisplay": 6,
@@ -88,7 +83,7 @@
         }
       }
     },
-    "Headbutt": {
+    "Jade_AlistarW": {
       "mSpellCalculations": {
         "TotalDamage": {
           "mSimpleTooltipCalculationDisplay": 6,
@@ -106,14 +101,12 @@
         }
       }
     },
-    "AlistarE": {
+    "Jade_AlistarE": {
       "mSpellCalculations": {
-        "TotalDamage": {
-          "mSimpleTooltipCalculationDisplay": 6,
-          "tooltipOnly": true,
+        "TotalHeal": {
           "mFormulaParts": [
             {
-              "mDataValue": "TrampleDamage",
+              "mDataValue": "BaseHealAmount",
               "__type": "NamedDataValueCalculationPart"
             },
             {
@@ -123,39 +116,12 @@
           ],
           "__type": "GameCalculation"
         },
-        "AttackBonusDamage": {
-          "mSimpleTooltipCalculationDisplay": 6,
-          "mFormulaParts": [
-            {
-              "mLevel1Value": 20,
-              "mInitialBonusPerLevel": 15,
-              "__type": "ByCharLevelBreakpointsCalculationPart"
-            }
-          ],
-          "__type": "GameCalculation"
-        }
-      }
-    },
-    "AlistarPassive": {
-      "mSpellCalculations": {
-        "BaseHeal": {
-          "mSimpleTooltipCalculationDisplay": 6,
-          "mFormulaParts": [
-            {
-              "mStat": 12,
-              "mDataValue": "AlistarPassiveHealRatio",
-              "__type": "StatByNamedDataValueCalculationPart"
-            }
-          ],
-          "__type": "GameCalculation"
-        },
         "AllyHeal": {
           "mMultiplier": {
-            "mDataValue": "AlistarPassiveAllyHealRatio",
+            "mDataValue": "AllyHealMod",
             "__type": "NamedDataValueCalculationPart"
           },
-          "mSimpleTooltipCalculationDisplay": 6,
-          "mModifiedGameCalculation": "BaseHeal",
+          "mModifiedGameCalculation": "TotalHeal",
           "__type": "GameCalculationModified"
         }
       }
