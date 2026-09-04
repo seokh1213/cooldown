@@ -1,5 +1,6 @@
 import type { ChampionSpell } from "@/types";
 import { logger } from "@/lib/logger";
+import { binHashKey } from "./binHash";
 import { formatCalculationResult } from "./calculationResultFormatter";
 import { evaluateSpellCalculation } from "./spellCalculationEvaluator";
 import type {
@@ -20,8 +21,10 @@ export function replaceCalculateData(
   const calculations = communityDragonData?.mSpellCalculations;
   if (!communityDragonData || !calculations) return null;
 
+  const wanted = parseResult.variable.toLowerCase();
+  const hashed = binHashKey(parseResult.variable);
   const calculationKey = Object.keys(calculations).find(
-    (key) => key.toLowerCase() === parseResult.variable.toLowerCase(),
+    (key) => key.toLowerCase() === wanted || key === hashed,
   );
   if (!calculationKey) return null;
 

@@ -148,7 +148,10 @@ function formatStatMultiplier(result: CalcResult): string | null {
   }
 
   if (terms.length === 0) return null;
-  return terms.length === 1 ? terms[0] : `(${terms.join(" + ")})`;
+  // 항이 하나라도 "40% 공격력" 처럼 스탯 이름이 붙으면 괄호로 묶는다.
+  // "… × 40% 공격력" 은 40% 가 어디까지 걸리는지 읽히지 않는다.
+  const single = terms.length === 1 && !/\s/.test(terms[0]);
+  return single ? terms[0] : `(${terms.join(" + ")})`;
 }
 
 export function formatCalculationResult(

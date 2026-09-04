@@ -103,7 +103,14 @@ function extractSpell(
   path: string
 ): ExtractedActiveSpellData | null {
   const object = data[path];
-  if (!isRecord(object) || !isRecord(object.mSpell)) return null;
+  return isRecord(object) ? extractSpellObject(object, path) : null;
+}
+
+function extractSpellObject(
+  object: Record<string, unknown>,
+  path: string
+): ExtractedActiveSpellData | null {
+  if (!isRecord(object.mSpell)) return null;
   const spell = object.mSpell;
   const result: ExtractedActiveSpellData = {
     source: {
@@ -167,5 +174,32 @@ export function extractActiveSpells(
     if (spell) aliases[id] = spell;
   }
 
+  registerScriptNameAliases(data, aliases);
+
   return { ordered, aliases };
+}
+
+/**
+ * 경로가 해시로 남은 스킬을 mScriptName 으로 찾을 수 있게 한다.
+ *
+ * 아펠리오스 무기별 Q(ApheliosCalibrumQ 등)는 경로가 `{9501e989}` 같은
+ * 해시라 경로 마지막 조각으로는 이름을 붙일 수 없다. 노드 안에는
+ * mScriptName 이 그대로 남아 있으므로 그것을 alias 로 쓴다.
+ */
+function registerScriptNameAliases(
+  data: Record<string, unknown>,
+  aliases: Record<string, ExtractedActiveSpellData>
+): void {
+  for (const [path, value] of Object.entries(data)) {
+    if (!isRecord(value) || !isRecord(value.mSpell)) continue;
+    const name =
+      typeof value.mScriptName === "string"
+        ? value.mScriptName
+        : typeof value.ObjectName === "string"
+          ? value.ObjectName
+          : undefined;
+    if (!name || aliases[name]) continue;
+    const spell = extractSpellObject(value, path);
+    if (spell) aliases[name] = spell;
+  }
 }

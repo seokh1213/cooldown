@@ -1,4 +1,5 @@
 import { Value, ParseResult } from "./types";
+import { binHashKey } from "./binHash";
 
 /**
  * DataValues에서 이름으로 값 가져오기
@@ -16,9 +17,12 @@ export function getDataValueByName(
   // 일부 값은 BIN 필드명 그대로라 "m" 접두사가 붙어 있다.
   // 예) 툴팁 토큰 ammorechargetime ↔ DataValue mAmmoRechargeTime
   const wantedWithPrefix = `m${wanted}`;
+  // 이름이 지워지고 해시만 남은 항목도 있다.
+  const hashed = binHashKey(key);
 
   const entry = Object.entries(dataValues).find(([name]) => {
     if (name == null) return false;
+    if (name === hashed) return true;
     const lower = name.toLowerCase();
     return lower === wanted || lower === wantedWithPrefix;
   });
