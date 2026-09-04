@@ -10,12 +10,11 @@ const localeDir = path.join(championsDir, "ko_KR");
 fs.mkdirSync(localeDir, { recursive: true });
 fs.writeFileSync(path.join(championsDir, "Test-ko_KR.json"), "{}");
 fs.writeFileSync(path.join(localeDir, "Test.json"), "{}");
-fs.writeFileSync(path.join(versionDir, "champions-normalized-ko_KR.json"), "{}");
 const spellsDir = path.join(versionDir, "spells");
 fs.mkdirSync(spellsDir);
 fs.writeFileSync(path.join(spellsDir, "Test.json"), "{}");
 
-assert.equal(pruneIntermediateData(versionDir, ["ko_KR"]), 3);
+assert.equal(pruneIntermediateData(versionDir), 2);
 assert.equal(fs.existsSync(path.join(championsDir, "Test-ko_KR.json")), false);
 assert.equal(fs.existsSync(path.join(localeDir, "Test.json")), true);
 assert.equal(fs.existsSync(spellsDir), false);
