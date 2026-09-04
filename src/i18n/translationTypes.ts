@@ -188,6 +188,7 @@ export interface Translations {
     bonusMagicResist: string;
     lifesteal: string;
     bonusLifesteal: string;
+    lethality: string;
     mana: string;
     manaPerLevel: string;
     movespeed: string;
@@ -200,6 +201,7 @@ export interface Translations {
     attackspeedPerLevel: string;
     attackrange: string;
     crit: string;
+    critDamage: string;
     critPerLevel: string;
     hpregen: string;
     hpregenPerLevel: string;
