@@ -141,6 +141,8 @@ export const zhCNTranslations: Translations = {
       skillPlaceholderDescription: "选择英雄后可查看技能和预计伤害。",
       summonerSpellsTitle: "召唤师技能",
       summonerSpellsComingSoon: "召唤师技能效果将在后续模拟阶段支持。",
+      selectSummonerSpell: "选择技能",
+      summonerSpellHint: "造成伤害的召唤师技能会自动加入连招。",
       runesTitle: "符文",
       runesComingSoon: "符文效果将在后续模拟阶段支持。",
       combatTitle: "连招伤害与斩杀判断",

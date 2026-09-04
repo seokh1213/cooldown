@@ -1,10 +1,16 @@
 import { useEffect, useMemo, useState } from "react";
 import type { Language } from "@/i18n";
-import type { NormalizedItem } from "@/types/combatNormalized";
+import type {
+  NormalizedItem,
+  NormalizedSummonerSpell,
+} from "@/types/combatNormalized";
 import type { StaticDataSources } from "@/data/contracts/staticData";
 import type { ChampionDetailV2 } from "@/data/contracts/championData";
 import { toChampion } from "@/data/mappers/championMapper";
-import { getNormalizedItems } from "@/data/queries/gameDataQueries";
+import {
+  getNormalizedItems,
+  getNormalizedSummonerSpells,
+} from "@/data/queries/gameDataQueries";
 import { championRepository } from "@/data/repositories/championRepository";
 import {
   applyNormalizedItemsToStats,
@@ -68,6 +74,7 @@ export function useSimulationData(input: {
   const [level, setLevel] = useState(18);
   const [targetLevel, setTargetLevel] = useState(18);
   const [availableItems, setAvailableItems] = useState<NormalizedItem[]>([]);
+  const [availableSummoners, setAvailableSummoners] = useState<NormalizedSummonerSpell[]>([]);
   const [selectedItemIds, setSelectedItemIds] = useState<(string | null)[]>(
     () => Array(6).fill(null),
   );
@@ -80,6 +87,22 @@ export function useSimulationData(input: {
       })
       .catch(() => {
         if (!cancelled) setAvailableItems([]);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [patchVersion, sources, lang]);
+
+  useEffect(() => {
+    let cancelled = false;
+    getNormalizedSummonerSpells({ patchVersion, sources }, lang)
+      .then((spells) => {
+        if (!cancelled) {
+          setAvailableSummoners(spells.filter((spell) => spell.modes.includes("CLASSIC")));
+        }
+      })
+      .catch(() => {
+        if (!cancelled) setAvailableSummoners([]);
       });
     return () => {
       cancelled = true;
@@ -131,6 +154,7 @@ export function useSimulationData(input: {
     targetLevel,
     setTargetLevel,
     availableItems,
+    availableSummoners,
     selectedItemIds,
     setSelectedItemIds,
     itemsBySlot,

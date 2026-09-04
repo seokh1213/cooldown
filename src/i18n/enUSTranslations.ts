@@ -152,6 +152,8 @@ export const enUSTranslations: Translations = {
         skillPlaceholderDescription: "Select a champion to view skills and estimated damage.",
         summonerSpellsTitle: "Summoner spells",
         summonerSpellsComingSoon: "Summoner spell effects will be supported in the next simulation phase.",
+        selectSummonerSpell: "Select spell",
+        summonerSpellHint: "Damaging spells are added to the combo automatically.",
         runesTitle: "Runes",
         runesComingSoon: "Rune effects will be supported in the next simulation phase.",
         combatTitle: "Combo damage and lethal check",

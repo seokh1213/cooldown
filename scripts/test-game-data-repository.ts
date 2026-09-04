@@ -41,6 +41,7 @@ const responses: Record<string, unknown> = {
     spells: [{
       id: "SummonerFlash", key: "4", name: "점멸", tooltip: "이동합니다.",
       cooldown: [300], iconPath: "SummonerFlash.png", modes: ["CLASSIC"],
+      damageEffects: [],
     }],
   },
 };

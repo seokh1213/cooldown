@@ -15,6 +15,14 @@ import {
 type ActiveSlot = Exclude<AbilitySlot, "P">;
 type ActionKey = "AA" | ActiveSlot;
 
+export interface SimulationExternalAction {
+  id: string;
+  name: string;
+  rawDamage: number;
+  damageType: DamageType;
+  iconUrl: string;
+}
+
 interface SimulationCombatPanelProps {
   attacker: Champion | null;
   attackerDetail: ChampionDetailV2 | null;
@@ -25,6 +33,7 @@ interface SimulationCombatPanelProps {
   ddragonVersion: string;
   onOpenTargetSelector: () => void;
   onTargetLevelChange: (level: number) => void;
+  externalActions: SimulationExternalAction[];
 }
 
 interface TargetDefense {
@@ -35,7 +44,7 @@ interface TargetDefense {
 }
 
 interface ComboRow {
-  key: ActionKey;
+  key: string;
   name: string;
   rank: number;
   maxRank: number;
@@ -44,6 +53,8 @@ interface ComboRow {
   appliedDamage: number | null;
   damageType: DamageType;
   iconId?: string;
+  iconUrl?: string;
+  hasRank: boolean;
 }
 
 const ACTIVE_SLOTS: ActiveSlot[] = ["Q", "W", "E", "R"];
@@ -117,7 +128,7 @@ export function SimulationCombatPanel(props: SimulationCombatPanelProps) {
   const { t } = useTranslation();
   const { defense, update } = useTargetDefense(props.targetStats);
   const [ranks, setRanks] = useState(DEFAULT_RANKS);
-  const [counts, setCounts] = useState(DEFAULT_COUNTS);
+  const [counts, setCounts] = useState<Record<string, number>>(DEFAULT_COUNTS);
 
   useEffect(() => {
     if (!props.attackerDetail) return;
@@ -131,8 +142,16 @@ export function SimulationCombatPanel(props: SimulationCombatPanelProps) {
         slot,
         props.attackerDetail!.champion.abilities[slot].simulation.status === "complete" ? 1 : 0,
       ])),
-    } as Record<ActionKey, number>);
+    });
   }, [props.attackerDetail]);
+
+  useEffect(() => {
+    setCounts((current) => {
+      const next = { ...current };
+      for (const action of props.externalActions) next[action.id] ??= 1;
+      return next;
+    });
+  }, [props.externalActions]);
 
   const rows = useMemo<ComboRow[]>(() => {
     if (!props.attackerStats || !props.attackerDetail) return [];
@@ -159,8 +178,21 @@ export function SimulationCombatPanel(props: SimulationCombatPanelProps) {
           : applyDamageMitigation(rawDamage, damageType, target),
         damageType,
         iconId: ability.id,
+        hasRank: true,
       };
     });
+    const externalRows = props.externalActions.map((action): ComboRow => ({
+      key: action.id,
+      name: action.name,
+      rank: 1,
+      maxRank: 1,
+      count: counts[action.id] ?? 1,
+      rawDamage: action.rawDamage,
+      appliedDamage: applyDamageMitigation(action.rawDamage, action.damageType, target),
+      damageType: action.damageType,
+      iconUrl: action.iconUrl,
+      hasRank: false,
+    }));
     return [{
       key: "AA",
       name: t.pages.simulation.basicAttack,
@@ -170,8 +202,9 @@ export function SimulationCombatPanel(props: SimulationCombatPanelProps) {
       rawDamage: basicRaw,
       appliedDamage: basicApplied,
       damageType: "physical",
-    }, ...abilityRows];
-  }, [counts, defense, props.attackerDetail, props.attackerStats, ranks, t]);
+      hasRank: false,
+    }, ...abilityRows, ...externalRows];
+  }, [counts, defense, props.attackerDetail, props.attackerStats, props.externalActions, ranks, t]);
 
   const totalDamage = rows.reduce(
     (total, row) => total + (row.appliedDamage ?? 0) * row.count,
@@ -238,12 +271,12 @@ export function SimulationCombatPanel(props: SimulationCombatPanelProps) {
                   <tr key={row.key} className="border-b border-border/40 last:border-0">
                     <td className="py-2">
                       <span className="flex items-center gap-2">
-                        {row.iconId ? <img src={spellIconUrl(props.ddragonVersion, row.iconId)} alt="" className="size-7 rounded" /> : <span className="flex size-7 items-center justify-center rounded bg-muted font-semibold">AA</span>}
+                        {row.iconId || row.iconUrl ? <img src={row.iconUrl ?? spellIconUrl(props.ddragonVersion, row.iconId!)} alt="" className="size-7 rounded" /> : <span className="flex size-7 items-center justify-center rounded bg-muted font-semibold">AA</span>}
                         <span><strong>{row.key}</strong> {row.name}<small className="ml-1 text-muted-foreground">{damageTypeLabel(row.damageType, t.pages.simulation)}</small></span>
                       </span>
                     </td>
                     <td className="py-2">
-                      {row.key === "AA" ? "—" : (
+                      {!row.hasRank ? "—" : (
                         <Select value={String(row.rank)} onChange={(event) => setRanks((current) => ({ ...current, [row.key]: Number(event.target.value) }))} className="h-8 w-16">
                           {Array.from({ length: row.maxRank }, (_, index) => index + 1).map((value) => <option key={value} value={value}>{value}</option>)}
                         </Select>

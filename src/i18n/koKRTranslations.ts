@@ -152,6 +152,8 @@ export const koKRTranslations: Translations = {
         skillPlaceholderDescription: "챔피언을 선택하면 스킬과 예상 피해를 확인할 수 있습니다.",
         summonerSpellsTitle: "소환사 주문",
         summonerSpellsComingSoon: "소환사 주문 효과는 다음 시뮬레이션 단계에서 지원합니다.",
+        selectSummonerSpell: "주문 선택",
+        summonerSpellHint: "피해를 주는 주문은 콤보 표에 자동으로 추가됩니다.",
         runesTitle: "룬",
         runesComingSoon: "룬 효과는 다음 시뮬레이션 단계에서 지원합니다.",
         combatTitle: "콤보 피해와 킬각",
