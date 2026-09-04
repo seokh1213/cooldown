@@ -252,5 +252,6 @@ export const zhCNTranslations: Translations = {
     max: "最大",
     items: "装备",
     bonus: "额外",
+    perHundredStat: "每100点{stat}{value}%",
   },
 };

@@ -266,5 +266,6 @@ export const enUSTranslations: Translations = {
       max: "Max",
       items: "",
       bonus: "bonus",
+      perHundredStat: "{value}% per 100 {stat}",
     },
   };
