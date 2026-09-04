@@ -164,8 +164,14 @@ function evaluateRange(calc: GameCalculation): CalcResult | null {
   };
 }
 
-function effectValue(spell: ChampionSpell, index: number): Value | null {
-  const source = spell.effectBurn?.[index];
+function effectValue(
+  spell: ChampionSpell,
+  index: number,
+  data?: CommunityDragonSpellData,
+): Value | null {
+  // CDragon 템플릿은 CDragon 단위를 기대한다. DDragon 값과 단위가 다를 수 있어
+  // CDragon 쪽이 있으면 그것을 먼저 쓴다.
+  const source = data?.effectBurn?.[index] ?? spell.effectBurn?.[index];
   if (!source) {
     logger.debug(`EffectValueCalculationPart: effectBurn[${index}] is missing`, {
       spellId: spell.id,
@@ -183,6 +189,7 @@ function effectValue(spell: ChampionSpell, index: number): Value | null {
 
 interface EvaluatorContext {
   spell: ChampionSpell;
+  data: CommunityDragonSpellData;
   lang: TooltipLocale;
   evaluateDataValue: DataValueEvaluator;
   /** 다른 계산식 참조용 */
@@ -229,7 +236,7 @@ function evaluatePart(
 
   if (type === "EffectValueCalculationPart") {
     const index = (part as EffectValueCalculationPart).mEffectIndex ?? 0;
-    const value = effectValue(ctx.spell, index);
+    const value = effectValue(ctx.spell, index, ctx.data);
     return value == null ? null : { base: value, statParts: [] };
   }
 
@@ -523,6 +530,7 @@ export function evaluateSpellCalculation(input: {
 
   const ctx: EvaluatorContext = {
     spell: input.spell,
+    data: input.data,
     lang: input.lang,
     evaluateDataValue,
     evaluateCalculation: (key, visited) => evaluate(key, visited),

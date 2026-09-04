@@ -391,7 +391,10 @@ function replaceEffectBurn(
       .filter((v) => !Number.isNaN(v));
 
     if (nums.length === 0) return null;
-    value = nums.length === 1 ? nums[0] : nums;
+    // CDragon 값은 사용하지 않는 상위 랭크까지 들고 있다. 스킬 랭크 수로 자른다.
+    const ranked =
+      nums.length > spell.maxrank ? nums.slice(0, spell.maxrank) : nums;
+    value = ranked.length === 1 ? ranked[0] : ranked;
   } else {
     const num = Number.parseFloat(raw);
     if (Number.isNaN(num)) return null;
