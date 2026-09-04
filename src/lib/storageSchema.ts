@@ -1,9 +1,7 @@
 /**
  * localStorage / sessionStorage에 실제로 직렬화되어 저장되는 데이터들의 스키마 정의
  *
- * 이 파일은 Vite 빌드 시 해싱되어 `VITE_SERIALIZATION_VERSION`을 만드는 데 사용된다.
- * 즉, 여기 정의된 타입(= 스키마)을 변경하면 직렬화 버전 해시가 바뀌고,
- * `checkAndClearStorageIfVersionMismatch`에 의해 한 번 전체 스토리지가 초기화된다.
+ * 앱 소유 키와 명시적인 스키마 버전은 data/storage/appStorage.ts에서 관리한다.
  *
  * - "상태(state)" 로직에서 사용하는 스토리지 구조는 반드시 여기 타입으로 표현하고,
  * - 구조를 바꿀 때 이 파일의 타입도 함께 수정하는 것을 원칙으로 한다.
@@ -35,9 +33,5 @@ export type StoredSelectedChampionList = StoredSelectedChampion[];
 
 
 /**
- * 백과사전 탭/선택 챔피언 등 "상태" 관련 스키마는
- * 현재 `storageValidator.ts` 안에서 정의/검증하고 있으며,
- * 그 파일 자체도 해싱 대상에 포함된다.
- * 필요하면 해당 타입들을 여기로 옮겨서 일원화할 수 있다.
+ * 저장된 값은 appStorage의 decoder를 통과한 뒤에만 앱 상태로 복원한다.
  */
-

@@ -2,9 +2,13 @@ import { useState, useCallback, useEffect, useMemo } from "react";
 import { Champion } from "@/types";
 import { getChampionInfo } from "@/services/api";
 import { ChampionWithInfo, Tab } from "./types";
-import { removeStorageWithVersion } from "@/lib/storageValidator";
+import {
+  decodeSelectedChampions,
+  readJsonStorage,
+  removeStorage,
+} from "@/data/storage/appStorage";
 import { logger } from "@/lib/logger";
-import type { StoredSelectedChampion, StoredSelectedChampionList } from "@/lib/storageSchema";
+import type { StoredSelectedChampion } from "@/lib/storageSchema";
 import type { Language } from "@/i18n";
 
 interface UseChampionDataProps {
@@ -12,7 +16,6 @@ interface UseChampionDataProps {
   lang: Language;
   championList: Champion[] | null;
   tabs: Tab[];
-  initialSelectedChampions: StoredSelectedChampionList | null;
   storageKey: string; // localStorage 키 추가
 }
 
@@ -21,7 +24,6 @@ export function useChampionData({
   lang,
   championList,
   tabs,
-  initialSelectedChampions,
   storageKey,
 }: UseChampionDataProps) {
   const [selectedChampions, setSelectedChampions] = useState<ChampionWithInfo[]>([]);
@@ -41,21 +43,11 @@ export function useChampionData({
 
     try {
       // localStorage에서 직접 읽기
-      const storedSelected = localStorage.getItem(storageKey);
-      let championsToRestore: StoredSelectedChampionList | null = null;
+      const championsToRestore = readJsonStorage(
+        storageKey,
+        decodeSelectedChampions
+      );
       
-      if (storedSelected) {
-        const parsed = JSON.parse(storedSelected);
-        if (Array.isArray(parsed)) {
-          championsToRestore = parsed as StoredSelectedChampionList;
-        }
-      }
-      
-      // localStorage에 없으면 initialSelectedChampions 사용 (초기 로드 시)
-      if (!championsToRestore && initialSelectedChampions && initialSelectedChampions.length > 0) {
-        championsToRestore = initialSelectedChampions;
-      }
-
       if (championsToRestore && championsToRestore.length > 0) {
         const restoredChampions = (championsToRestore as StoredSelectedChampion[])
           .map((cachedChampion) => {
@@ -126,7 +118,7 @@ export function useChampionData({
         setHasRestored(true);
       }, 0);
     }
-  }, [version, lang, championList, storageKey, hasRestored, initialSelectedChampions]);
+  }, [version, lang, championList, storageKey, hasRestored]);
 
   // Update champion names when championList changes (language change)
   useEffect(() => {
@@ -231,7 +223,7 @@ export function useChampionData({
 
   const resetChampions = useCallback(() => {
     setSelectedChampions([]);
-    removeStorageWithVersion(storageKey);
+    removeStorage(storageKey);
   }, [storageKey]);
 
   const championsWithFullInfo = useMemo(() => {

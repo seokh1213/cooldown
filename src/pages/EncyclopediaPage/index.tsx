@@ -4,7 +4,6 @@ import { EncyclopediaPageProps } from "./types";
 import { TabNavigation, EncyclopediaTab } from "./TabNavigation";
 import { RunesTab } from "./RunesTab";
 import { ItemsTab } from "./ItemsTab";
-import { VersionProvider } from "@/context/VersionContext";
 import { SummonerTab } from "./SummonerTab";
 
 function isValidTab(tab: string | null): tab is EncyclopediaTab {
@@ -95,12 +94,5 @@ function EncyclopediaPageContent({
 }
 
 export default function EncyclopediaPage(props: EncyclopediaPageProps) {
-  return (
-    <VersionProvider
-      initialDDragonVersion={props.ddragonVersion}
-      initialCDragonVersion={props.cdragonVersion}
-    >
-      <EncyclopediaPageContent {...props} />
-    </VersionProvider>
-  );
+  return <EncyclopediaPageContent {...props} />;
 }

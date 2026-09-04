@@ -63,42 +63,6 @@ function fixDynamicImports() {
 }
 
 /**
- * 직렬화(스토리지 스키마) 버전 해시를 계산한다.
- * 이 값은 스키마 관련 파일이 바뀔 때만 변한다.
- */
-function getSerializationVersion(mode: string): string {
-  if (mode === 'production') {
-    // localStorage / sessionStorage 직렬화 구조(스키마)가 정의된 파일들만 해싱해서 버전을 만든다.
-    // 이 배열에 포함된 파일 내용이 바뀔 때만 해시가 변경되므로,
-    // 일반 코드/스타일 변경만으로는 스토리지가 초기화되지 않는다.
-    const SCHEMA_FILES = [
-      path.resolve(__dirname, 'src/lib/storageValidator.ts'),
-      path.resolve(__dirname, 'src/lib/storageSchema.ts'),
-      // 필요하면 나중에 다른 스키마 관련 파일을 여기에 추가
-    ]
-
-    const hash = createHash('sha256')
-
-    for (const schemaFile of SCHEMA_FILES) {
-      if (!existsSync(schemaFile)) {
-        console.warn(`⚠️ Storage schema file not found for hashing: ${schemaFile}`)
-        continue
-      }
-
-      const content = readFileSync(schemaFile, 'utf-8')
-      // 파일 경로와 내용 둘 다 섞어서 해시를 조금 더 안정적으로 만든다
-      hash.update(schemaFile)
-      hash.update(content)
-    }
-
-    const serializationVersion = hash.digest('hex').substring(0, 16)
-    console.log(`📦 Storage schema based serialization version: ${serializationVersion}`)
-    return serializationVersion;
-  }
-  return 'dev';
-}
-
-/**
  * 실제 배포 빌드마다 달라지는 버전 문자열.
  * PWA 업데이트 감지나 UI 표시용으로 사용한다.
  */
@@ -116,7 +80,6 @@ function getDeploymentVersion(mode: string): string {
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => {
-  const serializationVersion = getSerializationVersion(mode)
   const deploymentVersion = getDeploymentVersion(mode)
   
   return {
@@ -278,9 +241,7 @@ export default defineConfig(({ mode }) => {
     chunkSizeWarningLimit: 600,
   },
   define: {
-    'import.meta.env.VITE_SERIALIZATION_VERSION': JSON.stringify(serializationVersion),
     'import.meta.env.VITE_DEPLOYMENT_VERSION': JSON.stringify(deploymentVersion),
   },
 }})
-
 

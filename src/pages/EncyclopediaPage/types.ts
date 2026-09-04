@@ -1,5 +1,4 @@
 import { Champion } from "@/types";
-import type { StoredSelectedChampionList } from "@/lib/storageSchema";
 import type { Language } from "@/i18n";
 
 export interface ChampionWithInfo extends Champion {
@@ -22,13 +21,8 @@ export interface VsSelectorMode {
 
 export interface EncyclopediaPageProps {
   lang: Language;
-  championList: Champion[] | null;
   /** 정적 데이터 경로/캐시 키로 쓰는 Riot 공식 패치 버전 (예: 26.17) */
   version: string;
   /** Data Dragon CDN 요청용 내부 버전 (예: 16.17.1) */
   ddragonVersion: string;
-  cdragonVersion: string | null;
-  initialSelectedChampions: StoredSelectedChampionList | null;
-  initialTabs: Tab[] | null;
-  initialSelectedTabId: string | null;
 }

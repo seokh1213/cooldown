@@ -24,7 +24,7 @@ function getMajorMinor(version: string | null | undefined): string | null {
 }
 
 interface NavProps {
-  version?: string;
+  patchVersion?: string;
   ddragonVersion?: string | null;
   cdragonVersion?: string | null;
   lang: string;
@@ -36,7 +36,7 @@ interface NavProps {
 }
 
 function Nav({ 
-  version, 
+  patchVersion,
   ddragonVersion,
   cdragonVersion,
   lang, 
@@ -132,7 +132,7 @@ function Nav({
                     <AlertTriangle className="h-4 w-4" />
                   </button>
                   {/* Desktop: icon + version */}
-                  {version && (
+                  {patchVersion && (
                     <>
                       <button
                         className={cn(
@@ -146,7 +146,7 @@ function Nav({
                         className="hidden sm:block text-xs font-medium leading-none text-red-500 hover:text-red-600 transition-colors"
                         aria-label={t.versionNotice.title}
                       >
-                        v{version}
+                        v{patchVersion}
                       </button>
                     </>
                   )}
@@ -161,8 +161,12 @@ function Nav({
                   <p className="text-xs text-muted-foreground">{t.versionNotice.description}</p>
                   <div className="space-y-1.5 pt-2 border-t border-border">
                     <div className="text-xs">
+                      <span className="font-semibold">Riot Patch:</span>{" "}
+                      {patchVersion}
+                    </div>
+                    <div className="text-xs">
                       <span className="font-semibold">{t.versionNotice.ddragonLabel}:</span>{" "}
-                      {version}
+                      {ddragonVersion ?? "-"}
                     </div>
                     <div className="text-xs">
                       <span className="font-semibold">{t.versionNotice.cdragonLabel}:</span>{" "}
@@ -174,9 +178,9 @@ function Nav({
             </Popover>
           )}
           {/* Version without mismatch - desktop only */}
-          {version && !isVersionMismatch && (
+          {patchVersion && !isVersionMismatch && (
             <div className="hidden sm:block text-xs font-medium leading-none text-muted-foreground/60">
-              v{version}
+              v{patchVersion}
             </div>
           )}
           {onThemeToggle && (
