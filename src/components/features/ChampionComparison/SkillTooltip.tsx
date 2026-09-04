@@ -1,6 +1,9 @@
 import React from "react";
 import { ChampionSpell } from "@/types";
-import { SKILL_ICON_URL, PASSIVE_ICON_URL } from "@/services/api";
+import {
+  passiveIconUrl,
+  spellIconUrl,
+} from "@/data/assets/riotAssetUrls";
 import { cn } from "@/lib/utils";
 import {
   Tooltip,
@@ -207,7 +210,7 @@ export function SkillTooltip({
       {isPassive && passiveImageFull ? (
         <>
           <img
-            src={PASSIVE_ICON_URL(ddragonVersion, passiveImageFull)}
+            src={passiveIconUrl(ddragonVersion, passiveImageFull)}
             alt="Passive"
             className={cn(iconSize, "rounded")}
           />
@@ -216,7 +219,7 @@ export function SkillTooltip({
       ) : (
         <>
           <img
-            src={SKILL_ICON_URL(ddragonVersion, skill.id)}
+            src={spellIconUrl(ddragonVersion, skill.id)}
             alt={SKILL_LETTERS[skillIdx]}
             className={cn(iconSize, "rounded")}
           />
@@ -258,7 +261,7 @@ export function SkillTooltip({
       <>
         <div className="flex items-start gap-3 border-b pb-3 pr-6">
           <img
-            src={SKILL_ICON_URL(ddragonVersion, skill.id)}
+            src={spellIconUrl(ddragonVersion, skill.id)}
             alt={SKILL_LETTERS[skillIdx]}
             className="w-12 h-12 min-w-12 min-h-12 rounded flex-shrink-0"
           />

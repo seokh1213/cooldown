@@ -6,3 +6,10 @@ export interface StaticDataSources {
   ddragon: string;
   cdragon: string;
 }
+
+export interface StaticDataMetadata {
+  schemaVersion: 2;
+  patchVersion: string;
+  locale: DataLocale;
+  sources: StaticDataSources;
+}

@@ -3,41 +3,12 @@ import type {
   ChampionDetailV2,
   ChampionIndexV2,
 } from "./championData";
-import { DATA_LOCALES, type DataLocale, type StaticDataSources } from "./staticData";
+import {
+  decodeStaticDataMetadata,
+  isRecord,
+} from "./staticDataDecoder";
 
 const ABILITY_SLOTS: AbilitySlot[] = ["P", "Q", "W", "E", "R"];
-
-function isRecord(value: unknown): value is Record<string, unknown> {
-  return typeof value === "object" && value !== null;
-}
-
-function decodeHeader(value: Record<string, unknown>): {
-  patchVersion: string;
-  locale: DataLocale;
-  sources: StaticDataSources;
-} {
-  if (value.schemaVersion !== 2 || typeof value.patchVersion !== "string") {
-    throw new Error("Unsupported champion data schema");
-  }
-  if (!DATA_LOCALES.includes(value.locale as DataLocale)) {
-    throw new Error("Unsupported champion data locale");
-  }
-  if (
-    !isRecord(value.sources) ||
-    typeof value.sources.ddragon !== "string" ||
-    typeof value.sources.cdragon !== "string"
-  ) {
-    throw new Error("Invalid champion data source versions");
-  }
-  return {
-    patchVersion: value.patchVersion,
-    locale: value.locale as DataLocale,
-    sources: {
-      ddragon: value.sources.ddragon,
-      cdragon: value.sources.cdragon,
-    },
-  };
-}
 
 function assertAbility(value: unknown, slot: AbilitySlot): void {
   if (
@@ -57,7 +28,7 @@ function assertAbility(value: unknown, slot: AbilitySlot): void {
 
 export function decodeChampionDetail(value: unknown): ChampionDetailV2 {
   if (!isRecord(value)) throw new Error("Invalid champion detail");
-  decodeHeader(value);
+  decodeStaticDataMetadata(value);
   if (!isRecord(value.champion) || !isRecord(value.champion.abilities)) {
     throw new Error("Invalid champion detail payload");
   }
@@ -76,7 +47,7 @@ export function decodeChampionDetail(value: unknown): ChampionDetailV2 {
 
 export function decodeChampionIndex(value: unknown): ChampionIndexV2 {
   if (!isRecord(value)) throw new Error("Invalid champion index");
-  decodeHeader(value);
+  decodeStaticDataMetadata(value);
   if (!Array.isArray(value.champions)) {
     throw new Error("Invalid champion index payload");
   }

@@ -1,6 +1,8 @@
 import { createZhCNTranslations } from "./zhCNTranslations";
 
-export type Language = "ko_KR" | "en_US" | "zh_CN";
+import type { DataLocale } from "@/data/contracts/staticData";
+
+export type Language = DataLocale;
 
 export interface Translations {
   nav: {

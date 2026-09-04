@@ -8,12 +8,15 @@ import type {
   ChampionIndexV2,
 } from "@/data/contracts/championData";
 import type { DataLocale } from "@/data/contracts/staticData";
+import { assertStaticDataIdentity } from "@/data/contracts/staticDataDecoder";
 import {
   createStaticDataClient,
   type StaticDataClient,
 } from "@/data/http/staticDataClient";
 
 export class ChampionRepository {
+  private readonly inFlight = new Map<string, Promise<unknown>>();
+
   constructor(
     private readonly client: StaticDataClient,
     private readonly cache: VersionedCache
@@ -25,11 +28,17 @@ export class ChampionRepository {
   ): Promise<ChampionIndexV2> {
     const key = `champions:${patchVersion}:${locale}:index`;
     const cached = this.cache.get(key, decodeChampionIndex);
-    if (cached) return cached;
-    const value = await this.client.getJson(
-      `data/${patchVersion}/champions/${locale}/index.json`
+    if (cached) {
+      assertStaticDataIdentity(cached, patchVersion, locale);
+      return cached;
+    }
+    return this.load(
+      key,
+      `data/${patchVersion}/champions/${locale}/index.json`,
+      decodeChampionIndex,
+      patchVersion,
+      locale
     );
-    return this.cache.set(key, decodeChampionIndex(value));
   }
 
   async getDetail(
@@ -39,15 +48,43 @@ export class ChampionRepository {
   ): Promise<ChampionDetailV2> {
     const key = `champions:${patchVersion}:${locale}:${championId}`;
     const cached = this.cache.get(key, decodeChampionDetail);
-    if (cached) return cached;
-    const value = await this.client.getJson(
-      `data/${patchVersion}/champions/${locale}/${championId}.json`
+    if (cached) {
+      assertStaticDataIdentity(cached, patchVersion, locale);
+      return cached;
+    }
+    return this.load(
+      key,
+      `data/${patchVersion}/champions/${locale}/${championId}.json`,
+      decodeChampionDetail,
+      patchVersion,
+      locale
     );
-    return this.cache.set(key, decodeChampionDetail(value));
   }
 
   clearExceptPatch(patchVersion: string): void {
     this.cache.clearExceptPatch(patchVersion);
+  }
+
+  private async load<T extends ChampionIndexV2 | ChampionDetailV2>(
+    key: string,
+    path: string,
+    decode: (value: unknown) => T,
+    patchVersion: string,
+    locale: DataLocale
+  ): Promise<T> {
+    const active = this.inFlight.get(key) as Promise<T> | undefined;
+    if (active) return active;
+    const request = this.client.getJson(path).then((value) => {
+      const decoded = decode(value);
+      assertStaticDataIdentity(decoded, patchVersion, locale);
+      return this.cache.set(key, decoded);
+    });
+    this.inFlight.set(key, request);
+    try {
+      return await request;
+    } finally {
+      this.inFlight.delete(key);
+    }
   }
 }
 

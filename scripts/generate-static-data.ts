@@ -44,6 +44,7 @@ import {
 } from "./data-pipeline/active-tooltip-validation";
 import { localizeActiveTooltip } from "./data-pipeline/active-tooltip-data";
 import type { DataLocale, StringTable } from "./data-pipeline/localization";
+import type { StaticDataSources } from "../src/data/contracts/staticData";
 import { writeChampionV2Dataset } from "./data-pipeline/champion-v2-writer";
 import { pruneIntermediateChampionData } from "./data-pipeline/prune-intermediate-data";
 
@@ -554,7 +555,8 @@ function buildNormalizedChampion(
 
 async function buildAndSaveNormalizedItems(
   versionDir: string,
-  version: string,
+  patchVersion: string,
+  sources: StaticDataSources,
   itemsDataByLang: Record<string, any>
 ): Promise<void> {
   for (const lang of LANGUAGES) {
@@ -689,8 +691,10 @@ async function buildAndSaveNormalizedItems(
     }
 
     const file: NormalizedItemDataFile = {
-      version,
-      lang,
+      schemaVersion: 2,
+      patchVersion,
+      locale: lang,
+      sources,
       items,
     };
 
@@ -706,7 +710,8 @@ async function buildAndSaveNormalizedItems(
 
 async function buildAndSaveNormalizedSummoners(
   versionDir: string,
-  version: string,
+  patchVersion: string,
+  sources: StaticDataSources,
   summonerDataByLang: Record<string, any>
 ): Promise<void> {
   for (const lang of LANGUAGES) {
@@ -748,8 +753,10 @@ async function buildAndSaveNormalizedSummoners(
     }
 
     const file: NormalizedSummonerDataFile = {
-      version,
-      lang,
+      schemaVersion: 2,
+      patchVersion,
+      locale: lang,
+      sources,
       spells,
     };
 
@@ -765,7 +772,8 @@ async function buildAndSaveNormalizedSummoners(
 
 async function buildAndSaveNormalizedRunesAndStatShards(
   versionDir: string,
-  version: string,
+  patchVersion: string,
+  sources: StaticDataSources,
   runesDataByLang: Record<string, any>,
   runeStatmodsDataByLang: Record<string, RuneStatShardStaticData | null>
 ): Promise<void> {
@@ -876,8 +884,10 @@ async function buildAndSaveNormalizedRunesAndStatShards(
     }
 
     const file: NormalizedRuneDataFile = {
-      version,
-      lang,
+      schemaVersion: 2,
+      patchVersion,
+      locale: lang,
+      sources,
       runes,
       statShards,
     };
@@ -1743,8 +1753,10 @@ async function main() {
       }
 
       const normalizedFile: NormalizedChampionDataFile = {
-        version,
-        lang,
+        schemaVersion: 2,
+        patchVersion: version,
+        locale: lang,
+        sources: sourceVersions,
         champions: normalizedChampions,
       };
 
@@ -1769,10 +1781,16 @@ async function main() {
     }
 
     console.log("🧩 Building normalized item and rune data...");
-    await buildAndSaveNormalizedItems(versionDir, version, itemsDataByLang);
+    await buildAndSaveNormalizedItems(
+      versionDir,
+      version,
+      sourceVersions,
+      itemsDataByLang
+    );
     await buildAndSaveNormalizedRunesAndStatShards(
       versionDir,
       version,
+      sourceVersions,
       runesDataByLang,
       runeStatmodsDataByLang
     );
@@ -1780,6 +1798,7 @@ async function main() {
     await buildAndSaveNormalizedSummoners(
       versionDir,
       version,
+      sourceVersions,
       summonerDataByLang
     );
 

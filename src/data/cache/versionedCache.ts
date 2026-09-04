@@ -19,31 +19,48 @@ export class VersionedCache {
   get<T>(key: string, decode: CacheDecoder<T>): T | undefined {
     const memoryValue = this.memory.get(key);
     if (memoryValue !== undefined) return decode(memoryValue);
-    const stored = this.storage?.getItem(this.storageKey(key));
+    let stored: string | null = null;
+    try {
+      stored = this.storage?.getItem(this.storageKey(key)) ?? null;
+    } catch {
+      return undefined;
+    }
     if (!stored) return undefined;
     try {
       const decoded = decode(JSON.parse(stored));
       this.memory.set(key, decoded);
       return decoded;
     } catch {
-      this.storage?.removeItem(this.storageKey(key));
+      try {
+        this.storage?.removeItem(this.storageKey(key));
+      } catch {
+        // Storage may be unavailable in private/restricted browser contexts.
+      }
       return undefined;
     }
   }
 
   set<T>(key: string, value: T): T {
     this.memory.set(key, value);
-    this.storage?.setItem(this.storageKey(key), JSON.stringify(value));
+    try {
+      this.storage?.setItem(this.storageKey(key), JSON.stringify(value));
+    } catch {
+      // The in-memory cache remains usable when storage is unavailable or full.
+    }
     return value;
   }
 
   clearExceptPatch(patchVersion: string): void {
     const prefix = `${this.namespace}:`;
-    for (let index = this.storage?.length ?? 0; index >= 0; index -= 1) {
-      const key = this.storage?.key(index);
-      if (key?.startsWith(prefix) && !key.includes(`:${patchVersion}:`)) {
-        this.storage?.removeItem(key);
+    try {
+      for (let index = (this.storage?.length ?? 0) - 1; index >= 0; index -= 1) {
+        const key = this.storage?.key(index);
+        if (key?.startsWith(prefix) && !key.includes(`:${patchVersion}:`)) {
+          this.storage?.removeItem(key);
+        }
       }
+    } catch {
+      // Memory cleanup below must still run when storage access fails.
     }
     for (const key of this.memory.keys()) {
       if (!key.includes(`:${patchVersion}:`)) this.memory.delete(key);

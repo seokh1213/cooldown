@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { getNormalizedSummonerSpells } from "@/services/api";
+import type { DataLocale } from "@/data/contracts/staticData";
 import type { NormalizedSummonerSpell } from "@/types/combatNormalized";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Input } from "@/components/ui/input";
@@ -19,7 +20,7 @@ interface SummonerTabProps {
   version: string;
   /** Data Dragon CDN 요청용 내부 버전 */
   ddragonVersion: string;
-  lang: string;
+  lang: DataLocale;
 }
 
 function getSpellName(spell: NormalizedSummonerSpell): string {
@@ -305,5 +306,4 @@ export function SummonerTab({ version, ddragonVersion, lang }: SummonerTabProps)
     </div>
   );
 }
-
 

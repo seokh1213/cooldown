@@ -1,6 +1,6 @@
 import React, { useState, useCallback, useRef, useEffect, useMemo } from "react";
 import { Champion } from "@/types";
-import { CHAMP_ICON_URL } from "@/services/api";
+import { championIconUrl } from "@/data/assets/riotAssetUrls";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Search, X, Swords } from "lucide-react";
@@ -291,7 +291,7 @@ function ChampionSelector({
                           data={champion}
                           name={champion.name}
                           selected={isSelected}
-                          thumbnailSrc={CHAMP_ICON_URL(
+                          thumbnailSrc={championIconUrl(
                             champion.version || "",
                             champion.id
                           )}
@@ -345,7 +345,7 @@ function ChampionSelector({
             <div className="flex items-center gap-2 flex-1">
               <div className="relative">
                 <img
-                  src={CHAMP_ICON_URL(currentChampion.version || "", currentChampion.id)}
+                  src={championIconUrl(currentChampion.version || "", currentChampion.id)}
                   alt={currentChampion.name}
                   className="w-10 h-10 rounded-full border-2 border-destructive/50"
                 />
@@ -432,7 +432,7 @@ function ChampionSelector({
                           data={champion}
                           name={champion.name}
                           selected={isSelected}
-                          thumbnailSrc={CHAMP_ICON_URL(
+                          thumbnailSrc={championIconUrl(
                             champion.version || "",
                             champion.id
                           )}

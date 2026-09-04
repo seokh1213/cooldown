@@ -1,5 +1,5 @@
 import React from "react";
-import { CHAMP_ICON_URL } from "@/services/api";
+import { championIconUrl } from "@/data/assets/riotAssetUrls";
 import { cn } from "@/lib/utils";
 import {
   Table,
@@ -72,7 +72,7 @@ export function SkillsSectionMobile({
                       <TableHead className="text-center p-1.5 text-[10px] font-semibold text-foreground w-[calc((100%-90px)/2)] min-w-[100px] border-r border-border/30 select-none">
                         <div className="flex flex-col items-center justify-center gap-0.5">
                           <img
-                            src={CHAMP_ICON_URL(ddragonVersion, championA.id)}
+                            src={championIconUrl(ddragonVersion, championA.id)}
                             alt={championA.name}
                             className="w-6 h-6 rounded-full"
                             draggable="false"
@@ -88,7 +88,7 @@ export function SkillsSectionMobile({
                       <TableHead className="text-center p-1.5 text-[10px] font-semibold text-foreground w-[calc((100%-90px)/2)] min-w-[100px] select-none">
                         <div className="flex flex-col items-center justify-center gap-0.5">
                           <img
-                            src={CHAMP_ICON_URL(ddragonVersion, championB.id)}
+                            src={championIconUrl(ddragonVersion, championB.id)}
                             alt={championB.name}
                             className="w-6 h-6 rounded-full"
                             draggable="false"
@@ -261,7 +261,7 @@ export function SkillsSectionMobile({
                       >
                         <div className="flex flex-col items-center justify-center gap-1">
                           <img
-                            src={CHAMP_ICON_URL(ddragonVersion, champion.id)}
+                            src={championIconUrl(ddragonVersion, champion.id)}
                             alt={champion.name}
                             className="w-8 h-8 rounded-full"
                             draggable="false"
