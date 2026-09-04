@@ -3,6 +3,7 @@ import type { ChampionSpell } from "@/types";
 import { spellIconUrl } from "@/data/assets/riotAssetUrls";
 import { useTranslation } from "@/i18n";
 import { SKILL_LETTERS } from "./constants";
+import { SafeBlockHtml } from "@/components/ui/safe-html";
 
 interface SkillTooltipContentProps {
   skill: ChampionSpell;
@@ -26,9 +27,10 @@ function PassiveContent(props: SkillTooltipContentProps) {
         </div>
       )}
       {props.passiveDescription && (
-        <div className="text-xs leading-relaxed">
-          <div dangerouslySetInnerHTML={{ __html: props.passiveDescription }} />
-        </div>
+        <SafeBlockHtml
+          className="text-xs leading-relaxed"
+          html={props.passiveDescription}
+        />
       )}
       <div className="text-xs text-muted-foreground/80 italic leading-relaxed border-t pt-3 mt-3 flex items-center gap-1.5">
         <AlertTriangle className="w-2.5 h-2.5 text-yellow-600 dark:text-yellow-500 shrink-0" />
@@ -90,14 +92,16 @@ function ActiveSkillContent(props: SkillTooltipContentProps) {
     <>
       <ActiveSkillHeader {...props} />
       {skill.description && (
-        <div className="text-xs leading-relaxed">
-          <div dangerouslySetInnerHTML={{ __html: skill.description }} />
-        </div>
+        <SafeBlockHtml
+          className="text-xs leading-relaxed"
+          html={skill.description}
+        />
       )}
       {skill.tooltip && (
-        <div className="text-xs text-muted-foreground leading-relaxed">
-          <div dangerouslySetInnerHTML={{ __html: skill.tooltip }} />
-        </div>
+        <SafeBlockHtml
+          className="text-xs text-muted-foreground leading-relaxed"
+          html={skill.tooltip}
+        />
       )}
       {skill.rankValues && skill.rankValues.length > 0 && (
         <div className="text-[11px] leading-relaxed text-muted-foreground border-t pt-3 mt-3">

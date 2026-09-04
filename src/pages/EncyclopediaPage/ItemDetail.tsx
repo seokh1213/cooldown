@@ -1,4 +1,5 @@
 import { AlertTriangle } from "lucide-react";
+import { SafeBlockHtml } from "@/components/ui/safe-html";
 import type { DataLocale } from "@/data/contracts/staticData";
 import { itemIconUrl } from "@/data/assets/riotAssetUrls";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -173,7 +174,10 @@ export function ItemDetail(props: {
             )}
             {item.description && (
               <>
-                <div className="mt-2 text-[11px] leading-snug" dangerouslySetInnerHTML={{ __html: item.description }} />
+                <SafeBlockHtml
+                  className="mt-2 text-[11px] leading-snug"
+                  html={item.description}
+                />
                 <div className="text-xs text-muted-foreground/80 italic border-t pt-3 mt-3 flex items-center gap-1.5">
                   <AlertTriangle className="w-2.5 h-2.5 text-yellow-600 dark:text-yellow-500 shrink-0" />
                   <span>{t.encyclopedia.items.warning}</span>

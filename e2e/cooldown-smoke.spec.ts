@@ -110,3 +110,28 @@ test("simulation uses compiled Ability v2 without raw spell requests", async ({ 
     .toBe(true);
   expect(dataRequests.some((url) => url.includes("/spells/"))).toBe(false);
 });
+
+test("sanitizes game data HTML at the render boundary", async ({ page }) => {
+  await page.route("**/champions/ko_KR/MonkeyKing.json", async (route) => {
+    const response = await route.fetch();
+    const detail = await response.json();
+    detail.champion.abilities.Q.bodyHtml = [
+      "안전한 본문",
+      '<img src="x" onerror="window.__unsafeHtml = true">',
+      '<script>window.__unsafeHtml = true</script>',
+      '<span class="text-red-600" onclick="window.__unsafeHtml = true">허용된 강조</span>',
+    ].join("");
+    await route.fulfill({ response, json: detail });
+  });
+
+  await page.goto("./");
+  await selectWukong(page);
+  await page.getByAltText("Q").hover();
+
+  const tooltip = page.getByRole("tooltip");
+  await expect(tooltip).toContainText("안전한 본문");
+  await expect(tooltip).toContainText("허용된 강조");
+  await expect(tooltip.locator('script, img[src="x"]')).toHaveCount(0);
+  await expect(tooltip.locator("span.text-red-600")).not.toHaveAttribute("onclick");
+  expect(await page.evaluate(() => Reflect.get(window, "__unsafeHtml"))).toBeUndefined();
+});
