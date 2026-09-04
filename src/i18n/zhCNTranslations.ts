@@ -55,6 +55,7 @@ export const zhCNTranslations: Translations = {
       runes: "符文百科",
       items: "装备百科",
       summoner: "召唤师技能",
+      formulas: "数值公式",
     },
     reset: "重置",
     champion: "英雄",
@@ -118,6 +119,12 @@ export const zhCNTranslations: Translations = {
       searchPlaceholder: "搜索召唤师技能…",
       listTitle: "召唤师技能",
       detailEmpty: "从左侧选择召唤师技能，即可在此查看详细说明。",
+    },
+    formulas: {
+      intro:
+        "提示框只会告诉你“40 点护甲穿透”，却不会说明它如何影响最终伤害。这里整理了顺序和写法最容易搞错的那些公式。",
+      exampleLabel: "示例：",
+      source: "来源：LoL Fandom 维基。会随版本变动的条目已标注对应版本。",
     },
   },
   pages: {

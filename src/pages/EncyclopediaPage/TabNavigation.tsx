@@ -1,7 +1,7 @@
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useTranslation } from "@/i18n";
 
-export type EncyclopediaTab = "runes" | "items" | "summoner";
+export type EncyclopediaTab = "runes" | "items" | "summoner" | "formulas";
 
 interface TabNavigationProps {
   activeTab: EncyclopediaTab;
@@ -41,6 +41,12 @@ export function TabNavigation({
               className="px-4 py-2 text-sm font-medium transition-colors border-b-2 border-transparent text-muted-foreground hover:text-foreground data-[state=active]:border-primary data-[state=active]:text-primary data-[state=active]:bg-transparent rounded-none shadow-none"
             >
               {t.encyclopedia.tabs.summoner}
+            </TabsTrigger>
+            <TabsTrigger
+              value="formulas"
+              className="px-4 py-2 text-sm font-medium transition-colors border-b-2 border-transparent text-muted-foreground hover:text-foreground data-[state=active]:border-primary data-[state=active]:text-primary data-[state=active]:bg-transparent rounded-none shadow-none"
+            >
+              {t.encyclopedia.tabs.formulas}
             </TabsTrigger>
           </div>
         </TabsList>
