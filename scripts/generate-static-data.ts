@@ -6,6 +6,7 @@ import type {
   NormalizedRuneDataFile,
   NormalizedSummonerDataFile,
 } from "../src/types/combatNormalized";
+import type { Champion } from "../src/types";
 import type { CommunityDragonSpellData } from "../src/lib/spellTooltipParser/types";
 import { resolveStaticDataRelease } from "../src/lib/staticDataRelease";
 import {
@@ -24,16 +25,19 @@ import type {
 import { validateGeneratedAbilities } from "./data-pipeline/ability-validation";
 import {
   assertActiveTooltipReport,
-  validateActiveTooltipFiles,
+  validateActiveTooltips,
   type ActiveTooltipAllowlist,
 } from "./data-pipeline/active-tooltip-validation";
 import { localizeActiveTooltip } from "./data-pipeline/active-tooltip-data";
 import type { DataLocale, StringTable } from "./data-pipeline/localization";
 import type { StaticDataSources } from "../src/data/contracts/staticData";
 import { writeChampionV2Dataset } from "./data-pipeline/champion-v2-writer";
-import { pruneIntermediateData } from "./data-pipeline/prune-intermediate-data";
 import { validateAbilitySimulations } from "./data-pipeline/ability-simulation-validation";
-import { buildNormalizedChampion } from "./data-pipeline/normalization/champion";
+import { normalizeChampion } from "./data-pipeline/normalization/champion";
+import {
+  requireMapValue,
+  type ChampionSpellData,
+} from "./data-pipeline/champion-source";
 import { normalizeItems } from "./data-pipeline/normalization/item";
 import { normalizeSummonerSpells } from "./data-pipeline/normalization/summoner";
 import {
@@ -70,7 +74,7 @@ interface ChampionListResponse {
 }
 
 interface ChampionDetailResponse {
-  data?: Record<string, unknown>;
+  data?: Record<string, Champion>;
 }
 
 
@@ -210,23 +214,22 @@ async function buildLocalizedPassiveTooltips(
 }
 
 async function applyLocalizedActiveTooltips(
-  championsDir: string,
+  championsByLocale: ReadonlyMap<DataLocale, Map<string, Champion>>,
   championId: string,
   cdragonVersion: string,
   activeSpells: ExtractedActiveSpellData[]
 ): Promise<void> {
   await Promise.all(
     LANGUAGES.map(async (lang) => {
-      const championFilePath = path.join(
-        championsDir,
-        `${championId}-${lang}.json`
+      const champion = requireMapValue(
+        requireMapValue(championsByLocale, lang, "champion locale"),
+        championId,
+        `${lang} champion`,
       );
-      if (!fs.existsSync(championFilePath)) return;
 
       try {
         const stringTable = await fetchStringTable(cdragonVersion, lang);
-        const data = JSON.parse(fs.readFileSync(championFilePath, "utf-8"));
-        const spells = data?.champion?.spells;
+        const spells = champion.spells;
         if (!Array.isArray(spells)) return;
 
         spells.forEach((spell, index) => {
@@ -251,11 +254,6 @@ async function applyLocalizedActiveTooltips(
           if (localized.name) spell.name = localized.name;
         });
 
-        fs.writeFileSync(
-          championFilePath,
-          JSON.stringify(data, null, 2),
-          "utf-8"
-        );
       } catch (error) {
         console.warn(
           `[CD][Active] Failed to localize ${championId} for ${lang}; preserving DDragon tooltip`,
@@ -267,14 +265,12 @@ async function applyLocalizedActiveTooltips(
 }
 
 function applyLocalizedPassiveTooltip(
-  championFilePath: string,
+  champion: Champion,
   passiveId: string,
   localized: LocalizedPassiveTooltip
 ): void {
-  if (!localized.tooltip || !fs.existsSync(championFilePath)) return;
-
-  const data = JSON.parse(fs.readFileSync(championFilePath, "utf-8"));
-  const passive = data?.champion?.passive;
+  if (!localized.tooltip) return;
+  const passive = champion.passive;
   if (!passive || typeof passive !== "object") return;
 
   passive.summary = passive.description;
@@ -282,7 +278,6 @@ function applyLocalizedPassiveTooltip(
   passive.spellId = passiveId;
   passive.tooltipSource = "communitydragon";
   if (localized.name) passive.name = localized.name;
-  fs.writeFileSync(championFilePath, JSON.stringify(data, null, 2), "utf-8");
 }
 
 async function fetchRuneStatShards(
@@ -318,10 +313,12 @@ async function main() {
     }
 
     const versionDir = path.join(DATA_DIR, patchVersion);
-    const championsDir = path.join(versionDir, 'champions');
-    const spellsDir = path.join(versionDir, 'spells');
 
     const abilitySourcesByChampion = new Map<string, ActiveSpellSourceData[]>();
+    const championsByLocale = new Map(
+      LANGUAGES.map((locale) => [locale, new Map<string, Champion>()] as const),
+    );
+    const spellDataByChampion = new Map<string, ChampionSpellData>();
 
     const runesDataByLang: Record<string, unknown> = {};
     const runeStatmodsDataByLang: Record<string, RuneStatShardData | null> = {};
@@ -409,13 +406,11 @@ async function main() {
             );
             const champion = champData.data?.[championId];
             if (champion) {
-              const championInfo = {
-                patchVersion,
-                sources: sourceVersions,
-                locale: lang,
-                champion,
-              };
-              await saveToFile(championInfo, path.join(championsDir, `${championId}-${lang}.json`));
+              requireMapValue(
+                championsByLocale,
+                lang,
+                "champion locale",
+              ).set(championId, champion);
               return { championId, lang, success: true };
             }
             return { championId, lang, success: false };
@@ -475,7 +470,7 @@ async function main() {
           );
 
           await applyLocalizedActiveTooltips(
-            championsDir,
+            championsByLocale,
             championId,
             cdragonVersion,
             activeSpells.ordered,
@@ -489,7 +484,11 @@ async function main() {
           if (passive && localizedPassive) {
             for (const lang of PASSIVE_TOOLTIP_LOCALES) {
               applyLocalizedPassiveTooltip(
-                path.join(championsDir, `${championId}-${lang}.json`),
+                requireMapValue(
+                  requireMapValue(championsByLocale, lang, "champion locale"),
+                  championId,
+                  `${lang} champion`,
+                ),
                 passive.id,
                 localizedPassive[lang]
               );
@@ -497,21 +496,7 @@ async function main() {
           }
           
           if (Object.keys(spellData).length > 0) {
-            const spellInfo = {
-              patchVersion,
-              sources: sourceVersions,
-              championId,
-              spellData,
-              passive: passive
-                ? {
-                    id: passive.id,
-                    path: passive.path,
-                    locKeys: passive.locKeys,
-                    localized: localizedPassive,
-                  }
-                : null,
-            };
-            await saveToFile(spellInfo, path.join(spellsDir, `${championId}.json`));
+            spellDataByChampion.set(championId, spellData);
             successCount++;
             return { championId, success: true };
           } else {
@@ -543,12 +528,11 @@ async function main() {
         "utf-8"
       )
     ) as ActiveTooltipAllowlist;
-    const activeTooltipReport = validateActiveTooltipFiles(
-      championsDir,
+    const activeTooltipReport = validateActiveTooltips({
+      championsByLocale,
       patchVersion,
-      LANGUAGES,
-      activeTooltipAllowlist
-    );
+      allowlist: activeTooltipAllowlist,
+    });
     await saveToFile(
       activeTooltipReport,
       path.join(versionDir, "active-tooltip-validation.json")
@@ -562,24 +546,27 @@ async function main() {
     console.log("🧩 Building normalized champion data...");
     for (const lang of LANGUAGES) {
       const normalizedChampions: NormalizedChampion[] = [];
+      const championsById = requireMapValue(
+        championsByLocale,
+        lang,
+        "champion locale",
+      );
 
       for (const championId of championIds) {
-        const championDataPath = path.join(
-          championsDir,
-          `${championId}-${lang}.json`
-        );
-        const cdragonSpellPath = path.join(spellsDir, `${championId}.json`);
-
-        const normalized = buildNormalizedChampion(
-          lang,
+        normalizedChampions.push(normalizeChampion({
+          locale: lang,
           championId,
-          championDataPath,
-          cdragonSpellPath
-        );
-
-        if (normalized) {
-          normalizedChampions.push(normalized);
-        }
+          champion: requireMapValue(
+            championsById,
+            championId,
+            `${lang} champion`,
+          ),
+          spellData: requireMapValue(
+            spellDataByChampion,
+            championId,
+            "champion spell data",
+          ),
+        }));
       }
 
       const v2ChampionCount = writeChampionV2Dataset({
@@ -589,6 +576,8 @@ async function main() {
         sources: sourceVersions,
         championIds,
         normalizedChampions,
+        championsById,
+        spellDataByChampion,
       });
       console.log(
         `✅ Saved v2 champion data for ${lang} (${v2ChampionCount} champions)`
@@ -618,7 +607,6 @@ async function main() {
     );
 
     const abilityValidation = validateGeneratedAbilities({
-      versionDir,
       patchVersion,
       ddragonVersion,
       cdragonVersion,
@@ -626,6 +614,11 @@ async function main() {
         process.cwd(),
         "scripts",
         "ability-validation-allowlist.json"
+      ),
+      championsById: requireMapValue(
+        championsByLocale,
+        "ko_KR",
+        "Korean champion locale",
       ),
       abilitySourcesByChampion,
     });
@@ -658,9 +651,6 @@ async function main() {
       `✅ Compiled ${simulationValidation.summary.complete}/` +
       `${simulationValidation.summary.abilities} safe ability simulations`
     );
-
-    const prunedFileCount = pruneIntermediateData(versionDir);
-    console.log(`✅ Removed ${prunedFileCount} intermediate source files`);
 
     const versionInfo = {
       schemaVersion: 2,

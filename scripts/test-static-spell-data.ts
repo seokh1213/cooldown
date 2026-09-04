@@ -94,6 +94,13 @@ assert.deepEqual(simulationReport.summary, {
   ...simulationCounts,
 });
 await assert.rejects(fs.access(path.join(versionDir, "spells")));
+for (const locale of locales) {
+  await assert.rejects(fs.access(path.join(versionDir, `champions-normalized-${locale}.json`)));
+}
+const championEntries = await fs.readdir(path.join(versionDir, "champions"), {
+  withFileTypes: true,
+});
+assert.equal(championEntries.every((entry) => entry.isDirectory()), true);
 console.log(
   `✅ Ability v2: ${precomputedSpellCount}/${activeAbilityCount} active tooltips, ` +
     `${detailedPassiveCount}/${englishIndex.champions.length} passives, ` +

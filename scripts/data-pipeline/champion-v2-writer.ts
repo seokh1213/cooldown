@@ -1,7 +1,5 @@
 import * as fs from "node:fs";
 import * as path from "node:path";
-import type { Champion } from "../../src/types";
-import type { CommunityDragonSpellData } from "../../src/lib/spellTooltipParser/types";
 import type { NormalizedChampion } from "../../src/types/combatNormalized";
 import type {
   DataLocale,
@@ -11,14 +9,7 @@ import {
   buildChampionDetailV2,
   buildChampionIndexV2,
 } from "./champion-data-v2";
-
-interface ChampionSourceFile {
-  champion: Champion;
-}
-
-interface SpellSourceFile {
-  spellData: Record<string, CommunityDragonSpellData>;
-}
+import type { ChampionById, SpellDataByChampion } from "./champion-source";
 
 export interface ChampionV2WriterOptions {
   versionDir: string;
@@ -27,10 +18,8 @@ export interface ChampionV2WriterOptions {
   sources: StaticDataSources;
   championIds: string[];
   normalizedChampions: NormalizedChampion[];
-}
-
-function readJson<T>(filePath: string): T {
-  return JSON.parse(fs.readFileSync(filePath, "utf-8")) as T;
+  championsById: ChampionById;
+  spellDataByChampion: SpellDataByChampion;
 }
 
 export function writeChampionV2Dataset(
@@ -45,23 +34,17 @@ export function writeChampionV2Dataset(
   const details = options.championIds.map((championId) => {
     const normalized = normalizedById.get(championId);
     if (!normalized) throw new Error(`Missing normalized champion: ${championId}`);
-    const championFile = readJson<ChampionSourceFile>(
-      path.join(
-        options.versionDir,
-        "champions",
-        `${championId}-${options.locale}.json`
-      )
-    );
-    const spellFile = readJson<SpellSourceFile>(
-      path.join(options.versionDir, "spells", `${championId}.json`)
-    );
+    const champion = options.championsById.get(championId);
+    if (!champion) throw new Error(`Missing champion: ${championId}`);
+    const spellData = options.spellDataByChampion.get(championId);
+    if (!spellData) throw new Error(`Missing spell data: ${championId}`);
     const detail = buildChampionDetailV2({
       patchVersion: options.patchVersion,
       locale: options.locale,
       sources: options.sources,
-      champion: championFile.champion,
+      champion,
       normalized,
-      spellData: spellFile.spellData,
+      spellData,
     });
     fs.writeFileSync(
       path.join(outputDir, `${championId}.json`),

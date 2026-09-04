@@ -1,4 +1,4 @@
-import fs from "node:fs";
+import type { Champion, ChampionPassive, ChampionSpell } from "../../../src/types";
 import type {
   ChampionSpellSlot,
   NormalizedChampion,
@@ -7,37 +7,11 @@ import type {
 import type { FormulaPart } from "../../../src/types/combatStats";
 import { buildBaseStatContributions, buildChampionBaseStats } from "./champion-stats";
 import { getNormalizationOverrides } from "./overrides";
-
-interface DDragonSpell {
-  id?: string;
-  name?: string;
-  tooltip?: string;
-  cooldown?: unknown[];
-  cost?: unknown[];
-}
-
-interface DDragonPassive {
-  name?: string;
-  description?: string;
-}
-
-interface DDragonChampion {
-  name?: string;
-  image?: { full?: string };
-  stats?: Record<string, number | undefined>;
-  spells?: DDragonSpell[];
-  passive?: DDragonPassive;
-}
-
-interface CDragonSpell {
-  mSpellCalculations?: Record<string, unknown>;
-}
-
-type CDragonSpellMap = Record<string, CDragonSpell>;
+import type { ChampionSpellData } from "../champion-source";
 
 function buildSpellScaling(
   spellIndex: number,
-  spellDataMap: CDragonSpellMap | null,
+  spellDataMap: ChampionSpellData,
 ): { parts: FormulaPart[] } {
   const calculations = spellDataMap?.[String(spellIndex)]?.mSpellCalculations;
   if (!calculations) return { parts: [] };
@@ -76,10 +50,10 @@ function numbersOnly(values: unknown[] | undefined): number[] | undefined {
 
 function buildNormalizedSpell(
   slot: ChampionSpellSlot,
-  ddragonSpell: DDragonSpell | null,
-  passive: DDragonPassive | null,
+  ddragonSpell: ChampionSpell | null,
+  passive: ChampionPassive | null,
   spellIndex: number,
-  spellDataMap: CDragonSpellMap | null,
+  spellDataMap: ChampionSpellData,
 ): NormalizedSpell {
   const isPassive = slot === "P";
   const name = isPassive ? passive?.name ?? "" : ddragonSpell?.name ?? "";
@@ -109,29 +83,14 @@ function buildNormalizedSpell(
   };
 }
 
-export function buildNormalizedChampion(
-  locale: string,
-  championId: string,
-  championDataPath: string,
-  cdragonSpellPath: string,
-): NormalizedChampion | null {
-  if (!fs.existsSync(championDataPath)) return null;
-
-  const raw = JSON.parse(fs.readFileSync(championDataPath, "utf8")) as {
-    champion?: DDragonChampion;
-  };
-  const champion = raw.champion;
-  if (!champion) return null;
-
+export function normalizeChampion(input: {
+  locale: string;
+  championId: string;
+  champion: Champion;
+  spellData: ChampionSpellData;
+}): NormalizedChampion {
+  const { locale, championId, champion, spellData } = input;
   const baseStats = buildChampionBaseStats(champion.stats ?? {});
-  let spellDataMap: CDragonSpellMap | null = null;
-  if (fs.existsSync(cdragonSpellPath)) {
-    const cdragonRaw = JSON.parse(fs.readFileSync(cdragonSpellPath, "utf8")) as {
-      spellData?: CDragonSpellMap;
-    };
-    spellDataMap = cdragonRaw.spellData ?? null;
-  }
-
   const spells = champion.spells ?? [];
   const normalized: NormalizedChampion = {
     id: championId,
@@ -143,11 +102,11 @@ export function buildNormalizedChampion(
     baseStats,
     baseStatContributions: buildBaseStatContributions(baseStats),
     spells: {
-      P: buildNormalizedSpell("P", null, champion.passive ?? null, -1, spellDataMap),
-      Q: buildNormalizedSpell("Q", spells[0] ?? null, null, 0, spellDataMap),
-      W: buildNormalizedSpell("W", spells[1] ?? null, null, 1, spellDataMap),
-      E: buildNormalizedSpell("E", spells[2] ?? null, null, 2, spellDataMap),
-      R: buildNormalizedSpell("R", spells[3] ?? null, null, 3, spellDataMap),
+      P: buildNormalizedSpell("P", null, champion.passive ?? null, -1, spellData),
+      Q: buildNormalizedSpell("Q", spells[0] ?? null, null, 0, spellData),
+      W: buildNormalizedSpell("W", spells[1] ?? null, null, 1, spellData),
+      E: buildNormalizedSpell("E", spells[2] ?? null, null, 2, spellData),
+      R: buildNormalizedSpell("R", spells[3] ?? null, null, 3, spellData),
     },
   };
   const override = getNormalizationOverrides()?.champions?.[locale]?.[championId];
