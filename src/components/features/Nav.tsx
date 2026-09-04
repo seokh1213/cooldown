@@ -103,9 +103,9 @@ function Nav({
               size="icon"
               onClick={onMenuToggle}
               aria-label="Open menu"
-              className="h-9 w-9 hover:bg-muted hover:text-foreground flex items-center justify-center"
+              className="size-11 transition-colors hover:bg-muted hover:text-foreground sm:size-10"
             >
-              <Menu className="w-5 h-5" />
+              <Menu aria-hidden="true" className="size-5" />
             </Button>
           )}
           
@@ -122,41 +122,22 @@ function Nav({
           {isVersionMismatch && (
             <Popover open={versionPopoverOpen} onOpenChange={setVersionPopoverOpen}>
               <PopoverTrigger asChild>
-                <div className="flex items-center gap-1.5 cursor-pointer">
-                  {/* Mobile: icon only */}
-                  <button
-                    className={cn(
-                      "sm:hidden h-auto w-auto p-1 rounded-md transition-all duration-200 text-red-500 hover:text-red-600 hover:bg-muted flex items-center justify-center -ml-1"
-                    )}
-                    aria-label={t.versionNotice.title}
-                  >
-                    <AlertTriangle className="h-4 w-4" />
-                  </button>
-                  {/* Desktop: icon + version */}
+                <button
+                  className="flex size-11 items-center justify-center gap-1.5 rounded-md text-red-500 transition-colors hover:bg-muted hover:text-red-600 sm:h-8 sm:w-auto sm:px-2"
+                  aria-label={t.versionNotice.title}
+                >
+                  <AlertTriangle aria-hidden="true" className="size-4 shrink-0" />
                   {patchVersion && (
-                    <>
-                      <button
-                        className={cn(
-                          "hidden sm:flex h-auto w-auto p-1 rounded-md transition-all duration-200 text-red-500 hover:text-red-600 hover:bg-muted items-center justify-center -ml-1"
-                        )}
-                        aria-label={t.versionNotice.title}
-                      >
-                        <AlertTriangle className="h-4 w-4" />
-                      </button>
-                      <button
-                        className="hidden sm:block text-xs font-medium leading-none text-red-500 hover:text-red-600 transition-colors"
-                        aria-label={t.versionNotice.title}
-                      >
-                        v{patchVersion}
-                      </button>
-                    </>
+                    <span className="hidden text-xs font-medium leading-none sm:inline">
+                      v{patchVersion}
+                    </span>
                   )}
-                </div>
+                </button>
               </PopoverTrigger>
               <PopoverContent className="w-80 p-4" align="end" sideOffset={8}>
                 <div className="space-y-3">
                   <div className="flex items-center gap-2">
-                    <AlertTriangle className="h-5 w-5 text-red-500 shrink-0" />
+                    <AlertTriangle aria-hidden="true" className="h-5 w-5 text-red-500 shrink-0" />
                     <h4 className="font-semibold text-sm leading-none">{t.versionNotice.title}</h4>
                   </div>
                   <p className="text-xs text-muted-foreground">{t.versionNotice.description}</p>
@@ -190,15 +171,15 @@ function Nav({
               size="icon"
               onClick={onThemeToggle}
               className={cn(
-                "h-auto w-auto p-1 transition-all duration-200 text-muted-foreground/60 hover:bg-muted hover:text-muted-foreground flex items-center justify-center"
+                "size-11 transition-colors text-muted-foreground/60 hover:bg-muted hover:text-muted-foreground sm:size-10"
               )}
               aria-label={theme === "dark" ? t.nav.theme.switchToLight : t.nav.theme.switchToDark}
               title={theme === "dark" ? t.nav.theme.switchToLight : t.nav.theme.switchToDark}
             >
               {theme === "dark" ? (
-                <Sun className="h-4 w-4" />
+                <Sun aria-hidden="true" className="h-4 w-4" />
               ) : (
-                <Moon className="h-4 w-4" />
+                <Moon aria-hidden="true" className="h-4 w-4" />
               )}
             </Button>
           )}
@@ -210,12 +191,12 @@ function Nav({
                 size="icon"
                 onClick={() => setTutorialOpen(true)}
                 className={cn(
-                  "h-auto w-auto p-1 transition-all duration-200 text-muted-foreground/60 hover:bg-muted hover:text-muted-foreground flex items-center justify-center"
+                  "size-11 transition-colors text-muted-foreground/60 hover:bg-muted hover:text-muted-foreground sm:size-10"
                 )}
                 aria-label={t.nav.tutorial.title}
                 title={t.nav.tutorial.title}
               >
-                <HelpCircle className="h-4 w-4" />
+                <HelpCircle aria-hidden="true" className="h-4 w-4" />
               </Button>
               <Dialog open={tutorialOpen} onOpenChange={setTutorialOpen}>
                 <DialogContent
@@ -248,12 +229,12 @@ function Nav({
                 variant="ghost"
                 size="icon"
                 className={cn(
-                  "h-auto w-auto p-1 transition-all duration-200 text-muted-foreground/60 hover:bg-muted hover:text-muted-foreground flex items-center justify-center"
+                  "size-11 transition-colors text-muted-foreground/60 hover:bg-muted hover:text-muted-foreground sm:size-10"
                 )}
-                aria-label="Select language"
-                title="Select language"
+                aria-label={t.nav.language.selectTitle}
+                title={t.nav.language.selectTitle}
               >
-                <Globe className="h-4 w-4" />
+                <Globe aria-hidden="true" className="h-4 w-4" />
               </Button>
             </PopoverTrigger>
             <PopoverContent className="w-64 p-3" align="end" sideOffset={8}>
@@ -262,8 +243,9 @@ function Nav({
                 <div className="grid grid-cols-3 gap-2">
                   <button
                     onClick={() => handleLanguageChange("ko_KR")}
+                    aria-pressed={lang === "ko_KR"}
                     className={cn(
-                      "flex flex-col items-center justify-center gap-2 p-3 rounded-lg border-2 transition-all",
+                      "flex flex-col items-center justify-center gap-2 p-3 rounded-lg border-2 transition-[color,background-color,border-color]",
                       lang === "ko_KR"
                         ? "border-primary bg-primary/10"
                         : "border-border hover:border-primary/50 hover:bg-muted/50"
@@ -274,8 +256,9 @@ function Nav({
                   </button>
                   <button
                     onClick={() => handleLanguageChange("en_US")}
+                    aria-pressed={lang === "en_US"}
                     className={cn(
-                      "flex flex-col items-center justify-center gap-2 p-3 rounded-lg border-2 transition-all",
+                      "flex flex-col items-center justify-center gap-2 p-3 rounded-lg border-2 transition-[color,background-color,border-color]",
                       lang === "en_US"
                         ? "border-primary bg-primary/10"
                         : "border-border hover:border-primary/50 hover:bg-muted/50"
@@ -286,8 +269,9 @@ function Nav({
                   </button>
                   <button
                     onClick={() => handleLanguageChange("zh_CN")}
+                    aria-pressed={lang === "zh_CN"}
                     className={cn(
-                      "flex flex-col items-center justify-center gap-2 p-3 rounded-lg border-2 transition-all",
+                      "flex flex-col items-center justify-center gap-2 p-3 rounded-lg border-2 transition-[color,background-color,border-color]",
                       lang === "zh_CN"
                         ? "border-primary bg-primary/10"
                         : "border-border hover:border-primary/50 hover:bg-muted/50"

@@ -1,6 +1,7 @@
 import { defineConfig, devices } from "@playwright/test";
 
-const baseURL = "http://127.0.0.1:4173/cooldown/";
+const previewPort = process.env.PLAYWRIGHT_PORT ?? "4173";
+const baseURL = `http://127.0.0.1:${previewPort}/cooldown/`;
 
 export default defineConfig({
   testDir: "./e2e",
@@ -13,7 +14,7 @@ export default defineConfig({
     trace: "on-first-retry",
   },
   webServer: {
-    command: "npm run preview -- --host 127.0.0.1 --port 4173",
+    command: `npm run preview -- --host 127.0.0.1 --port ${previewPort}`,
     url: baseURL,
     reuseExistingServer: !process.env.CI,
   },

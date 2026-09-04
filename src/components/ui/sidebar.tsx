@@ -25,7 +25,7 @@ const Sidebar = React.forwardRef<HTMLDivElement, SidebarProps>(
       data-variant={variant}
       data-collapsible={collapsible === "offcanvas" ? collapsible : undefined}
       className={cn(
-        "group peer fixed inset-y-0 z-50 flex h-full w-64 flex-col gap-4 border-r border-border bg-card p-6 transition-all duration-300 ease-in-out data-[side=left]:-translate-x-full data-[side=right]:translate-x-full md:data-[side=left]:translate-x-0 md:data-[side=right]:translate-x-0",
+        "group peer fixed inset-y-0 z-50 flex h-full w-64 flex-col gap-4 border-r border-border bg-card p-6 transition-[transform,width,padding] duration-300 ease-in-out data-[side=left]:-translate-x-full data-[side=right]:translate-x-full md:data-[side=left]:translate-x-0 md:data-[side=right]:translate-x-0",
         className,
       )}
       style={style}
@@ -40,7 +40,7 @@ const SidebarRail = React.forwardRef<HTMLDivElement, React.ComponentProps<"div">
     <div
       ref={ref}
       className={cn(
-        "pointer-events-none fixed inset-y-0 z-50 hidden w-64 transition-all duration-300 ease-in-out peer-data-[side=left]:-left-64 peer-data-[side=right]:-right-64 md:block md:peer-data-[collapsible=offcanvas]:left-0 md:peer-data-[side=right]:peer-data-[collapsible=offcanvas]:right-0",
+        "pointer-events-none fixed inset-y-0 z-50 hidden w-64 transition-[left,right] duration-300 ease-in-out peer-data-[side=left]:-left-64 peer-data-[side=right]:-right-64 md:block md:peer-data-[collapsible=offcanvas]:left-0 md:peer-data-[side=right]:peer-data-[collapsible=offcanvas]:right-0",
         className,
       )}
       {...props}
@@ -49,9 +49,9 @@ const SidebarRail = React.forwardRef<HTMLDivElement, React.ComponentProps<"div">
 );
 SidebarRail.displayName = "SidebarRail";
 
-const SidebarInset = React.forwardRef<HTMLElement, React.ComponentProps<"main">>(
+const SidebarInset = React.forwardRef<HTMLDivElement, React.ComponentProps<"div">>(
   ({ className, ...props }, ref) => (
-    <main
+    <div
       ref={ref}
       className={cn(
         "relative flex h-full w-full flex-1 flex-col gap-4 overflow-hidden transition-[margin] duration-300 ease-in-out md:ml-0 md:peer-data-[side=left]:ml-64 md:peer-data-[side=right]:mr-64",
@@ -125,7 +125,7 @@ const SidebarMenuButton = React.forwardRef<
     data-sidebar="menu-button"
     data-active={isActive}
     className={cn(
-      "peer/menu-button flex h-8 w-full items-center gap-2 overflow-hidden rounded-md p-2 text-left text-sm outline-hidden ring-sidebar-ring transition-all duration-200 focus-visible:ring-2 active:bg-sidebar-accent active:text-sidebar-accent-foreground disabled:pointer-events-none disabled:opacity-50 data-[active=true]:bg-sidebar-accent data-[active=true]:font-medium data-[active=true]:text-sidebar-accent-foreground [&>span:last-child]:truncate [&>svg]:size-4 [&>svg]:shrink-0",
+      "peer/menu-button flex h-8 w-full items-center gap-2 overflow-hidden rounded-md p-2 text-left text-sm outline-hidden ring-sidebar-ring transition-[color,background-color,border-color,box-shadow,transform] duration-200 focus-visible:ring-2 active:bg-sidebar-accent active:text-sidebar-accent-foreground disabled:pointer-events-none disabled:opacity-50 data-[active=true]:bg-sidebar-accent data-[active=true]:font-medium data-[active=true]:text-sidebar-accent-foreground [&>span:last-child]:truncate [&>svg]:size-4 [&>svg]:shrink-0",
       className,
     )}
     {...props}

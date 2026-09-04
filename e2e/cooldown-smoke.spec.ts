@@ -48,12 +48,47 @@ test("keeps the mobile sidebar off-canvas until opened", async ({ page }) => {
   await page.goto("./");
 
   const openMenu = page.getByRole("button", { name: "Open menu" });
-  const closeMenu = page.getByRole("button", { name: "Close menu" });
+  const closeMenu = page.locator('button[aria-label="Close menu"]');
   await expect(openMenu).toBeVisible();
   expect((await closeMenu.boundingBox())?.x).toBeLessThan(0);
 
   await openMenu.click();
   await expect.poll(async () => (await closeMenu.boundingBox())?.x).toBeGreaterThan(0);
+});
+
+test("supports keyboard navigation and accessible mobile controls", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await page.goto("./");
+  await expect(page.getByRole("heading", { name: "챔피언 쿨타임" })).toBeVisible();
+
+  const skipLink = page.getByRole("link", { name: "Skip to main content" });
+  await page.keyboard.press("Tab");
+  await expect(skipLink).toBeFocused();
+  await page.keyboard.press("Enter");
+  await expect(page.locator("#main-content")).toBeFocused();
+  await expect(page.locator("main")).toHaveCount(1);
+
+  const controlNames = [
+    "Open menu",
+    "다크 모드로 전환",
+    "사용 방법 안내",
+    "언어 선택",
+  ];
+  for (const name of controlNames) {
+    const bounds = await page.getByRole("button", { name }).boundingBox();
+    expect(bounds?.width).toBeGreaterThanOrEqual(44);
+    expect(bounds?.height).toBeGreaterThanOrEqual(44);
+  }
+
+  await page.getByRole("button", { name: "Open menu" }).click();
+  await expect(
+    page.getByRole("button", { name: "챔피언 쿨타임" }),
+  ).toHaveAttribute("aria-current", "page");
+  const reducedDuration = await page
+    .getByRole("button", { name: "다크 모드로 전환" })
+    .evaluate((element) => Number.parseFloat(getComputedStyle(element).transitionDuration));
+  expect(reducedDuration).toBeLessThan(0.001);
 });
 
 test("simulation uses compiled Ability v2 without raw spell requests", async ({ page }) => {

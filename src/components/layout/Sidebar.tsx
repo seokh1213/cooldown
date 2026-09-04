@@ -18,6 +18,7 @@ import { useTranslation } from "@/i18n";
 
 interface SidebarProps {
   isOpen: boolean;
+  isMobile: boolean;
   onClose: () => void;
 }
 
@@ -27,7 +28,7 @@ interface NavItem {
   icon: React.ComponentType<{ className?: string }>;
 }
 
-function Sidebar({ isOpen, onClose }: SidebarProps) {
+function Sidebar({ isOpen, isMobile, onClose }: SidebarProps) {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();
@@ -63,17 +64,21 @@ function Sidebar({ isOpen, onClose }: SidebarProps) {
           side="left"
           variant="sidebar"
           collapsible="offcanvas"
+          role="navigation"
+          aria-label="Primary navigation"
+          aria-hidden={isMobile && !isOpen ? true : undefined}
+          inert={isMobile && !isOpen ? true : undefined}
           className={cn(
-            "transition-all duration-300 md:translate-x-0! md:w-16 md:p-2 pt-0 md:pt-0",
+            "transition-[transform,width,padding] duration-300 md:translate-x-0! md:w-16 md:p-2 pt-0 md:pt-0",
             isOpen ? "translate-x-0!" : "-translate-x-full!",
           )}
         >
-          <SidebarHeader className="flex! flex-row! items-center border-b border-border/50 h-[60px] relative transition-all duration-300 px-0 md:px-2 box-border gap-0">
+          <SidebarHeader className="flex! flex-row! items-center border-b border-border/50 h-[60px] relative px-0 md:px-2 box-border gap-0">
             {/* Mobile: Full header */}
             <div className="md:hidden flex items-center gap-3 flex-1 px-4 h-full">
               <img 
                 src={`${import.meta.env.BASE_URL}poro_logo.png`}
-                alt="Poro Logo" 
+                alt=""
                 className="h-12 w-12 object-contain shadow-none"
                 style={{ imageRendering: 'auto' as const }}
               />
@@ -83,13 +88,13 @@ function Sidebar({ isOpen, onClose }: SidebarProps) {
                 size="icon"
                 onClick={onClose}
                 className={cn(
-                  "ml-auto h-8 w-8 transition-all duration-200",
+                  "ml-auto size-11 transition-[color,background-color,transform] duration-200",
                   "hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
                   "active:scale-95"
                 )}
                 aria-label="Close menu"
               >
-                <X className="h-4 w-4" />
+                <X aria-hidden="true" className="h-4 w-4" />
               </Button>
             </div>
             {/* Desktop/Tablet: Collapsed header */}
@@ -120,15 +125,17 @@ function Sidebar({ isOpen, onClose }: SidebarProps) {
                               <SidebarMenuButton
                                 onClick={() => handleNavigate(item.path)}
                                 isActive={isActive}
+                                aria-label={t.sidebar[item.labelKey]}
+                                aria-current={isActive ? "page" : undefined}
                                 className={cn(
-                                  "w-full transition-all duration-200 relative group/menu-item",
+                                  "w-full transition-colors duration-200 relative group/menu-item",
                                   "justify-center px-2 rounded-lg",
                                   "hover:bg-sidebar-accent dark:hover:bg-sidebar-accent",
                                   "hover:text-sidebar-foreground"
                                 )}
                               >
-                                <Icon className={cn(
-                                  "shrink-0 transition-all duration-200 h-5 w-5",
+                                <Icon aria-hidden="true" className={cn(
+                                  "shrink-0 transition-colors duration-200 h-5 w-5",
                                   isActive 
                                     ? "text-sidebar-foreground dark:text-sidebar-foreground"
                                     : "text-sidebar-foreground/60 dark:text-sidebar-foreground/70 group-hover/menu-item:text-sidebar-foreground dark:group-hover/menu-item:text-sidebar-foreground"
@@ -145,8 +152,9 @@ function Sidebar({ isOpen, onClose }: SidebarProps) {
                           <SidebarMenuButton
                             onClick={() => handleNavigate(item.path)}
                             isActive={isActive}
+                            aria-current={isActive ? "page" : undefined}
                             className={cn(
-                              "w-full transition-all duration-200 relative group/menu-item rounded-lg",
+                              "w-full transition-[color,background-color,border-color] duration-200 relative group/menu-item rounded-lg",
                               // 기본 hover 스타일
                               !isActive && [
                                 "hover:bg-sidebar-accent dark:hover:bg-sidebar-accent",
@@ -169,8 +177,8 @@ function Sidebar({ isOpen, onClose }: SidebarProps) {
                               ]
                             )}
                           >
-                            <Icon className={cn(
-                              "shrink-0 transition-all duration-200 h-4 w-4",
+                            <Icon aria-hidden="true" className={cn(
+                              "shrink-0 transition-colors duration-200 h-4 w-4",
                               isActive 
                                 ? "text-sidebar-foreground dark:text-sidebar-foreground"
                                 : "text-sidebar-foreground/60 dark:text-sidebar-foreground/70 group-hover/menu-item:text-sidebar-foreground dark:group-hover/menu-item:text-sidebar-foreground"
