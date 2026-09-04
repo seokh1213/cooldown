@@ -1,0 +1,32 @@
+import { expect, test, type Page } from "@playwright/test";
+
+async function selectWukong(page: Page): Promise<void> {
+  await page.getByRole("button", { name: "챔피언 추가하기" }).click();
+  await page.getByRole("button", { name: "Select 오공", exact: true }).click();
+  await page.keyboard.press("Escape");
+}
+
+test("renders precomputed passive and Q values", async ({ page }) => {
+  await page.goto("./");
+  await expect(page.getByRole("heading", { name: "챔피언 쿨타임" })).toBeVisible();
+
+  await selectWukong(page);
+
+  await page.getByAltText("Passive").hover();
+  const passiveTooltip = page.getByRole("tooltip");
+  await expect(passiveTooltip).toContainText("(6 ~ 10)");
+  await expect(passiveTooltip).toContainText("0.35%");
+  await expect(passiveTooltip).toContainText("최대 5회");
+
+  await page.getByAltText("Q").hover();
+  const qTooltip = page.getByRole("tooltip");
+  await expect(qTooltip).toContainText("135/145/155/165/175");
+  await expect(qTooltip).toContainText("20/45/70/95/120");
+});
+
+test("serves a lazy route directly under the Pages base path", async ({ page }) => {
+  await page.goto("./encyclopedia");
+  await expect(page).toHaveURL(/\/cooldown\/encyclopedia$/);
+  await expect(page.getByRole("heading", { name: "백과사전" })).toBeVisible();
+  await expect(page.locator("#root")).not.toBeEmpty();
+});

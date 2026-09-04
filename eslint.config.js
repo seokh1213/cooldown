@@ -45,6 +45,14 @@ export default tseslint.config(
     },
   },
   {
+    files: ['scripts/**/*.ts'],
+    rules: {
+      // Legacy generator input is decoded incrementally. Ability v2 migration
+      // replaces these escape hatches with explicit unknown decoders.
+      '@typescript-eslint/no-explicit-any': 'off',
+    },
+  },
+  {
     ignores: [
       'dist/**',
       'dev-dist/**',
@@ -53,7 +61,6 @@ export default tseslint.config(
       '.claude/worktrees/**',
       '*.config.js',
       '*.config.ts',
-      'scripts/**',
     ],
   }
 );

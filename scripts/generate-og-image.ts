@@ -1,7 +1,6 @@
 import { chromium } from 'playwright';
 import { join } from 'path';
 import { spawn, ChildProcess } from 'child_process';
-import { promisify } from 'util';
 import { setTimeout } from 'timers/promises';
 
 const OG_IMAGE_WIDTH = 1200;
@@ -84,7 +83,7 @@ async function generateOGImage() {
       try {
         await page.waitForSelector('img[alt="Poro Logo"]', { timeout: 15000 });
         console.log('✅ 로고 이미지 로드 완료');
-      } catch (error) {
+      } catch {
         console.warn('⚠️ 로고 이미지가 로드되지 않았지만 계속 진행합니다.');
         // 페이지 상태 확인을 위한 스크린샷
         const debugPath = join(process.cwd(), 'public', 'og-debug.png');
@@ -107,8 +106,6 @@ async function generateOGImage() {
     const outputPath = join(process.cwd(), 'public', 'og-image.png');
     await page.screenshot({
       path: outputPath,
-      width: OG_IMAGE_WIDTH,
-      height: OG_IMAGE_HEIGHT,
       type: 'png',
       fullPage: false,
     });
@@ -133,4 +130,3 @@ generateOGImage().catch((error) => {
   console.error('❌ 오류 발생:', error);
   process.exit(1);
 });
-

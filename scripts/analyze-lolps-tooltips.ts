@@ -213,16 +213,18 @@ async function main(): Promise<void> {
         const spellData = bin.spellData[spell.id] ?? bin.spellData[String(index)] ?? {};
         const lolpsDescription = String(lolps[`${slot}Desc${config.lolpsSuffix}`] ?? "");
         const lolpsBody = descriptionBody(lolpsDescription, config.locale);
-        const ddragonSkeleton = templateSkeleton(spell.tooltip, config.locale);
+        const tooltip = spell.tooltip ?? "";
+        const spellName = spell.name ?? "";
+        const ddragonSkeleton = templateSkeleton(tooltip, config.locale);
         const cdragonSkeleton = templateSkeleton(
           cdragonSpell.dynamicDescription,
           config.locale
         );
         const parserBody = descriptionBody(
-          parseSpellTooltip(spell.tooltip, spell, spellData, config.parserLocale),
+          parseSpellTooltip(tooltip, spell, spellData, config.parserLocale),
           config.locale
         );
-        const ddragonTokens = tokensFrom(spell.tooltip);
+        const ddragonTokens = tokensFrom(tooltip);
         const cdragonTokens = cdragonTokensFrom(cdragonSpell.dynamicDescription);
         ddragonTokenKeys.push(tokenSetKey(ddragonTokens));
         signatures[config.locale] = numericSignature(lolpsBody).sort();
@@ -234,9 +236,9 @@ async function main(): Promise<void> {
           slot,
           locale: config.locale,
           lolpsName,
-          ddragonName: spell.name,
+          ddragonName: spellName,
           cdragonName: cdragonSpell.name,
-          nameMatchesDDragon: normalizedName(lolpsName) === normalizedName(spell.name),
+          nameMatchesDDragon: normalizedName(lolpsName) === normalizedName(spellName),
           nameMatchesCDragon: normalizedName(lolpsName) === normalizedName(cdragonSpell.name),
           similarity: jaccard(lolpsBody, parserBody),
           ddragonSkeletonSimilarity: jaccard(lolpsBody, ddragonSkeleton),

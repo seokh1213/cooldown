@@ -37,17 +37,20 @@
     "test-static-spell-data": "tsx scripts/test-static-spell-data.ts",
     "test-lolps-research": "tsx scripts/test-lolps-research.ts",
     "test-tooltip": "tsx scripts/test-tooltip-parser.ts",
+    "test:e2e": "playwright test",
     "research-lolps": "NODE_ENV=production tsx scripts/analyze-lolps-tooltips.ts",
     "test-ammo": "tsx scripts/skill-cooltime.ts",
     "find-locale": "tsx scripts/find-localization.ts",
     "generate-og": "tsx scripts/generate-og-image.ts",
     "generate-static-data": "tsx scripts/generate-static-data.ts",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
-    "type-check": "tsc --noEmit"
+    "type-check": "tsc --noEmit && npm run type-check:scripts",
+    "type-check:scripts": "tsc -p tsconfig.scripts.json"
   },
   "homepage": "https://seokh1213.github.io/cooldown",
   "devDependencies": {
     "@eslint/js": "^9.39.1",
+    "@playwright/test": "^1.57.0",
     "@types/node": "^24.10.1",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
