@@ -67,6 +67,7 @@ function main() {
       roleTags: card.roleTags,
       scaling: card.scalingProfile.primary,
       rangeType: card.rangeType,
+      hasPhysicalSpell: card.spells.some((s) => s.damageTypes.includes("물리")),
     });
     console.log(
       `${card.name} — 역할 ${card.roleTags.join("/") || "미상"}, 계수 ${card.scalingProfile.primary}, ${card.rangeType}`,
