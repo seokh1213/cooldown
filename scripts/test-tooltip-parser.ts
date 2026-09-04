@@ -10,7 +10,7 @@ import type { CommunityDragonSpellData } from "../src/lib/spellTooltipParser/typ
 // 테스트 케이스 정의
 interface TestCase {
   name: string;
-  tooltip: string;
+  tooltip: string | undefined;
   spell?: ChampionSpell;
   communityDragonData?: CommunityDragonSpellData;
   lang?: "ko_KR" | "en_US";
@@ -89,7 +89,7 @@ const testCases: TestCase[] = [
   },
   {
     name: "undefined 툴팁 처리",
-    tooltip: undefined as any,
+    tooltip: undefined,
     expectedContains: [""],
   },
 ];
