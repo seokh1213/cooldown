@@ -120,6 +120,7 @@
         "slot": "P",
         "id": "P",
         "name": "暗裔魔镰",
+        "maxRank": 0,
         "summary": "",
         "bodyHtml": "凯隐使用的是一把上古神兵，并且一直都在与附在武器上的暗裔灵体拉亚斯特为了身体的控制权而战斗着。要么<font color='#fe5c50'>暗裔杀手</font>将获胜，要么凯隐将统御拉亚斯特并变为<font color='#8484fb'>影流刺客</font>。<br><hr><font color='#fe5c50'>暗裔杀手：</font>治疗自身，数额相当于一部分对敌方英雄造成的技能伤害值。<br><br><font color='#8484fb'>影流刺客：</font>在与敌方英雄作战的最初几秒里，造成额外伤害。",
         "iconFile": "Kayn_Passive_Primary.png",
@@ -127,6 +128,10 @@
         "range": [],
         "rankValues": [],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "ddragon",
         "diagnostics": {
@@ -137,6 +142,7 @@
         "slot": "Q",
         "id": "KaynQ",
         "name": "巨镰横扫",
+        "maxRank": 5,
         "summary": "凯隐向前冲刺并打击附近的敌人。冲刺和打击都会造成伤害。",
         "bodyHtml": "<span class=\"text-gray-600 dark:text-gray-400 italic\">对小兵和野怪造成额外的<span class=\"text-red-600 dark:text-red-500 font-semibold\">40物理伤害</span>(最大值：200/250/300/350/400)。</span>",
         "iconFile": "KaynQ.png",
@@ -189,6 +195,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "TotalDamage",
+            "kind": "damage",
+            "baseByRank": [
+              75,
+              105,
+              135,
+              165,
+              195
+            ],
+            "terms": [
+              {
+                "stat": "bonusAttackDamage",
+                "coefficientsByRank": [
+                  0.8500000238418579,
+                  0.8500000238418579,
+                  0.8500000238418579,
+                  0.8500000238418579,
+                  0.8500000238418579
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -199,6 +232,7 @@
         "slot": "W",
         "id": "KaynW",
         "name": "利刃纵贯",
+        "maxRank": 5,
         "summary": "凯隐伤害并减速一条直线上的敌人。",
         "bodyHtml": "凯隐向上挥出他的镰刀，造成<physicalDamage>{{ totaldamage }}物理伤害</physicalDamage>和在{{ e5 }}秒里持续衰减的{{ e3 }}%<status>减速</status>。<br /><br /><keywordMajor>影流刺客：</keywordMajor>凯隐可在使用这个技能时移动并提升这个技能的距离。<br /><br /><keywordMajor>暗裔杀手：</keywordMajor>还会<status>击飞</status>命中的敌人{{ e2 }}秒。{{ spellmodifierdescriptionappend }}",
         "iconFile": "KaynW.png",
@@ -255,6 +289,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "TotalDamage",
+            "kind": "damage",
+            "baseByRank": [
+              85,
+              130,
+              175,
+              220,
+              265
+            ],
+            "terms": [
+              {
+                "stat": "bonusAttackDamage",
+                "coefficientsByRank": [
+                  1.100000023841858,
+                  1.100000023841858,
+                  1.100000023841858,
+                  1.100000023841858,
+                  1.100000023841858
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "ddragon",
         "diagnostics": {
@@ -265,6 +326,7 @@
         "slot": "E",
         "id": "KaynE",
         "name": "掠影步",
+        "maxRank": 5,
         "summary": "凯隐可以穿越地形。",
         "bodyHtml": "<span class=\"text-gray-600 dark:text-gray-400 italic\">【幽灵】状态的单位能够无视其它单位的碰撞体积。<br />在与敌方英雄作战时，最大持续时间为1.5秒。<br /></span>",
         "iconFile": "KaynE.png",
@@ -317,6 +379,10 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -327,6 +393,7 @@
         "slot": "R",
         "id": "KaynR",
         "name": "裂舍影",
+        "maxRank": 3,
         "summary": "凯隐隐藏在敌方身体内，在他破膛而出时造成巨量伤害。",
         "bodyHtml": "<span class=\"text-gray-600 dark:text-gray-400 italic\">不可被选取的单位不会受到敌人的攻击或技能的影响，除非在进入此状态前已被它们影响。</span>",
         "iconFile": "KaynR.png",
@@ -382,6 +449,29 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "Damage",
+            "kind": "damage",
+            "baseByRank": [
+              150,
+              250,
+              350
+            ],
+            "terms": [
+              {
+                "stat": "bonusAttackDamage",
+                "coefficientsByRank": [
+                  1.5,
+                  1.5,
+                  1.5
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {

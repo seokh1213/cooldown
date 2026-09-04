@@ -120,6 +120,7 @@
         "slot": "P",
         "id": "SamiraPassive",
         "name": "무모한 충동",
+        "maxRank": 0,
         "summary": "사미라가 마지막으로 맞힌 공격과 다른 기본 공격 또는 스킬을 적중시키면 콤보를 1회 쌓습니다. 근접 공격 사거리 내에 있는 적을 공격하면 추가 마법 피해를 입힙니다. <status>이동 불가</status> 효과에 영향을 받은 적에게 기본 공격을 가하면 최대 사거리까지 돌진합니다. 해당 적이 <status>공중으로 띄워진</status> 상태라면 사미라도 대상을 잠시 동안 <status>공중으로 띄워 올립니다</status>.",
         "bodyHtml": "사미라가 마지막으로 맞힌 공격과 다른 기본 공격 또는 스킬로 적 챔피언에게 피해를 입히면 콤보를 1회 쌓습니다. 각 콤보마다 \"E\"부터 \"S\"까지 총 6단계의 <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">스타일</span> 등급이 올라갑니다. 등급마다 <span class=\"text-cyan-600 dark:text-cyan-500\">이동 속도가 3.5%</span> 증가합니다.<br /><br />사미라가 근접 공격 사거리 내에 있는 적에게 스킬을 사용하거나 기본 공격을 가하면 <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">2의 마법 피해</span>를 입힙니다. 피해량은 대상이 잃은 체력에 비례하여 <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">4</span>까지 증가합니다.<br /><br />사미라가 <span class=\"text-purple-600 dark:text-purple-500\">이동 불가</span> 효과에 영향을 받은 적에게 기본 공격을 가하면 최대 사거리까지 돌진합니다. 해당 적이 <span class=\"text-purple-600 dark:text-purple-500\">공중으로 띄워진</span> 상태라면 사미라도 최소 0.5초간 대상을 <span class=\"text-purple-600 dark:text-purple-500\">공중으로 띄워 올립니다</span>.",
         "iconFile": "SamiraP.png",
@@ -127,6 +128,10 @@
         "range": [],
         "rankValues": [],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -137,6 +142,7 @@
         "slot": "Q",
         "id": "SamiraQ",
         "name": "천부적 재능",
+        "maxRank": 5,
         "summary": "사미라가 총을 쏘거나 검을 휘둘러 피해를 입힙니다. 거침없는 질주 도중 사용하면 돌진이 끝난 후 경로 내에 있는 모든 적을 공격합니다.",
         "bodyHtml": "사미라가 총을 쏴 처음 맞은 적에게 <span class=\"text-red-600 dark:text-red-500 font-semibold\">(0/5/10/15/20 + (110% 공격력))의 물리 피해</span>를 입힙니다.<br /><br />근접 공격 사거리 내에 있는 적에게 이 스킬을 사용하면, 사미라가 검으로 베어 <span class=\"text-red-600 dark:text-red-500 font-semibold\">(0/5/10/15/20 + (110% 공격력))의 물리 피해</span>를 입힙니다.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">두 공격 모두 치명타가 적용되어 <span class=\"text-red-600 dark:text-red-500 font-semibold\">(0/5/10/15/20 + (110% 공격력))</span>의 피해를 입힐 수 있으며 100%의 생명력 흡수 효과가 적용됩니다. </span><br /><span class=\"text-gray-600 dark:text-gray-400 italic\"><span>거침없는 질주</span> 도중 사용하면 돌진이 끝난 후 경로 내에 있는 모든 적을 공격합니다. </span>",
         "iconFile": "SamiraQ.png",
@@ -189,6 +195,12 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "unsupported",
+          "unsupportedPartTypes": [
+            "GameCalculationModified"
+          ]
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -199,6 +211,7 @@
         "slot": "W",
         "id": "SamiraW",
         "name": "원형 검무",
+        "maxRank": 5,
         "summary": "사미라가 주변에 검을 휘두르며 적에게 피해를 입히고 적의 투사체를 파괴합니다.",
         "bodyHtml": "사미라가 0.75초 동안 주변에 검을 휘두르며 적들을 두 번 공격해 각각 <span class=\"text-red-600 dark:text-red-500 font-semibold\">(20/35/50/65/80 + (50% 추가 공격력))의 물리 피해</span>를 입히고 범위 안으로 들어오는 적의 투사체를 모두 파괴합니다.<br /><br />",
         "iconFile": "SamiraW.png",
@@ -251,6 +264,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "DamageCalc",
+            "kind": "damage",
+            "baseByRank": [
+              20,
+              35,
+              50,
+              65,
+              80
+            ],
+            "terms": [
+              {
+                "stat": "bonusAttackDamage",
+                "coefficientsByRank": [
+                  0.5,
+                  0.5,
+                  0.5,
+                  0.5,
+                  0.5
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -261,6 +301,7 @@
         "slot": "E",
         "id": "SamiraE",
         "name": "거침없는 질주",
+        "maxRank": 5,
         "summary": "사미라가 적(구조물 포함)을 통과해 돌진합니다. 돌진 도중 통과하는 모든 적을 베고 공격 속도를 얻습니다. 적 챔피언을 처치하면 이 스킬의 재사용 대기시간이 초기화됩니다.",
         "bodyHtml": "사미라가 적(구조물 포함)을 통과해 돌진합니다. 돌진 도중 통과하는 모든 적을 베어 <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(50/60/70/80/90 + (20% 추가 공격력))의 마법 피해</span>를 입히고 5초 동안 <span>20/25/30/35/40%의 공격 속도</span>를 얻습니다. <br /><br />사미라가 피해를 입힌 적 챔피언이 3초 안에 처치되면 이 스킬의 재사용 대기시간이 초기화됩니다.",
         "iconFile": "SamiraE.png",
@@ -317,6 +358,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "DashDamage",
+            "kind": "damage",
+            "baseByRank": [
+              50,
+              60,
+              70,
+              80,
+              90
+            ],
+            "terms": [
+              {
+                "stat": "bonusAttackDamage",
+                "coefficientsByRank": [
+                  0.20000000298023224,
+                  0.20000000298023224,
+                  0.20000000298023224,
+                  0.20000000298023224,
+                  0.20000000298023224
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -327,6 +395,7 @@
         "slot": "R",
         "id": "SamiraR",
         "name": "지옥불 난사",
+        "maxRank": 3,
         "summary": "사미라가 무기를 난사해 주변의 모든 적에게 공격을 퍼붓습니다.",
         "bodyHtml": "사미라의 <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">스타일</span> 등급이 S등급일 때만 이 스킬을 사용할 수 있습니다. 이 스킬을 사용하면 <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">스타일</span> 등급이 초기화됩니다.<br /><br />사미라가 무기를 난사해 2초 동안 10회에 걸쳐 주변의 모든 적에게 공격을 퍼붓습니다. 각 사격은 <span class=\"text-red-600 dark:text-red-500 font-semibold\">(20/40/60 + (30% 공격력))의 물리 피해</span>를 입히며 100%의 생명력 흡수가 적용됩니다. 또한 치명타가 적용될 수 있습니다.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">미니언에게는 25%의 피해를 입힙니다.</span>",
         "iconFile": "SamiraR.png",
@@ -361,6 +430,12 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "unsupported",
+          "unsupportedPartTypes": [
+            "GameCalculationModified"
+          ]
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {

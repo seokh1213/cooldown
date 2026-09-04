@@ -120,6 +120,7 @@
         "slot": "P",
         "id": "LilliaP",
         "name": "꿈나무 지팡이",
+        "maxRank": 0,
         "summary": "챔피언 또는 몬스터에게 스킬이 적중하면 지속시간 동안 최대 체력에 비례한 피해를 추가로 입힙니다.",
         "bodyHtml": "릴리아의 스킬이 적에게 <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">꿈가루</span>를 묻혀 3초 동안 <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">최대 체력의 (5% + (0.012% 주문력))에 해당하는 마법 피해</span>를 입힙니다. 대상이 대형 정글 몬스터인 경우 릴리아가 지속시간 동안 <span class=\"text-green-600 dark:text-green-400\">(39 + (15% 주문력))의 체력</span>을 회복하며, 대상이 챔피언인 경우 <span class=\"text-green-600 dark:text-green-400\">(30% 주문력)의 체력</span>을 회복합니다.",
         "iconFile": "Lillia_Icon_Passive.png",
@@ -127,6 +128,10 @@
         "range": [],
         "rankValues": [],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -137,6 +142,7 @@
         "slot": "Q",
         "id": "LilliaQ",
         "name": "뾰로롱 강타",
+        "maxRank": 5,
         "summary": "기본 지속 효과로 스킬이 적에게 적중하면 릴리아의 이동 속도가 중첩되어 증가합니다. 사용 시 근처 적에게 마법 피해를 입히고 가장자리에 있는 적에게 추가 고정 피해를 입힙니다.",
         "bodyHtml": "<span class=\"text-gray-600 dark:text-gray-500 italic\">기본 지속 효과:</span> 릴리아의 스킬이 적중하면 6.5초 동안 <span class=\"text-cyan-600 dark:text-cyan-500\">이동 속도가 (3/4/5/6/7% + (0.03% 주문력))</span> 증가합니다. 이 효과는 최대 4회 중첩됩니다.<br /><br /><span class=\"text-gray-900 dark:text-white font-semibold\">사용 시:</span> 릴리아가 지팡이를 휘둘러 <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(35/45/55/65/75 + (35% 주문력))의 마법 피해</span>를 입힙니다. 가장자리에 있는 적에게 <span class=\"text-yellow-600 dark:text-yellow-500 font-semibold\">(35/45/55/65/75 + (35% 주문력))의 고정 피해</span>를 추가로 입힙니다.",
         "iconFile": "LilliaQ.png",
@@ -197,6 +203,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "TotalDamage",
+            "kind": "damage",
+            "baseByRank": [
+              35,
+              45,
+              55,
+              65,
+              75
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.3499999940395355,
+                  0.3499999940395355,
+                  0.3499999940395355,
+                  0.3499999940395355,
+                  0.3499999940395355
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -207,6 +240,7 @@
         "slot": "W",
         "id": "LilliaW",
         "name": "이익! 쿵!",
+        "maxRank": 5,
         "summary": "릴리아가 근처 적에게 피해를 입힙니다. 중심에 있는 적에게는 더 큰 피해를 입힙니다.",
         "bodyHtml": "릴리아가 힘을 모은 후 강력한 일격을 가해 <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(80/100/120/140/160 + (35% 주문력))의 마법 피해</span>를 입힙니다. 중심에 있는 적은 <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(240/300/360/420/480 + (105% 주문력))의 피해</span>를 입습니다.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">릴리아는 이 스킬로 지형을 통과할 수 없습니다.</span><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">미니언에게는 50%의 피해만 입힙니다.</span>",
         "iconFile": "LilliaW.png",
@@ -259,6 +293,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "FlatDamage",
+            "kind": "damage",
+            "baseByRank": [
+              80,
+              100,
+              120,
+              140,
+              160
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.3499999940395355,
+                  0.3499999940395355,
+                  0.3499999940395355,
+                  0.3499999940395355,
+                  0.3499999940395355
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -269,6 +330,7 @@
         "slot": "E",
         "id": "LilliaE",
         "name": "데굴데굴 씨앗",
+        "maxRank": 5,
         "summary": "릴리아가 씨앗을 던져 적중한 적에게 피해를 입히고 둔화시킵니다. 씨앗은 벽 또는 대상에 부딪힐 때까지 굴러갑니다.",
         "bodyHtml": "릴리아가 데굴데굴 씨앗을 날려 적중한 적에게 <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(60/85/110/135/160 + (50% 주문력))의 마법 피해</span>를 입히고 적의 모습을 드러내며 3초 동안 40% <span class=\"text-purple-600 dark:text-purple-500\">둔화</span>시킵니다. 씨앗은 적 또는 지형에 부딪힐 때까지 굴러갑니다.",
         "iconFile": "LilliaE.png",
@@ -321,6 +383,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "ImpactDamageTotal",
+            "kind": "damage",
+            "baseByRank": [
+              60,
+              85,
+              110,
+              135,
+              160
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.5,
+                  0.5,
+                  0.5,
+                  0.5,
+                  0.5
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -331,6 +420,7 @@
         "slot": "R",
         "id": "LilliaR",
         "name": "감미로운 자장가",
+        "maxRank": 3,
         "summary": "릴리아가 꿈가루가 묻은 적을 전부 졸음 상태에 빠뜨린 뒤 잠들게 합니다. 피해를 입어 깨어난 적은 추가 피해를 입습니다.",
         "bodyHtml": "릴리아가 <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">꿈가루</span>가 묻은 적 챔피언을 1.5초 동안 전부 <span class=\"text-purple-600 dark:text-purple-500\">졸음</span> 상태에 빠뜨립니다. 이후 해당 적은 2초 동안 <span class=\"text-purple-600 dark:text-purple-500\">수면</span> 상태에 빠집니다.<br /><br />피해를 입어 깨어나면 <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(100/150/200 + (40% 주문력))의 마법 피해</span>를 추가로 입습니다.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">졸음 상태에 빠진 유닛은 지속시간에 걸쳐 둔화되며 이후 수면 상태에 빠집니다.<br />수면 상태에 빠진 유닛은 적에게서 단발성 피해를 입을 때까지 움직이거나 행동할 수 없습니다.</span>",
         "iconFile": "LilliaR.png",
@@ -377,6 +467,29 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "TotalDamage",
+            "kind": "damage",
+            "baseByRank": [
+              100,
+              150,
+              200
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.4000000059604645,
+                  0.4000000059604645,
+                  0.4000000059604645
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {

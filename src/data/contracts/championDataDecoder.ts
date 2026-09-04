@@ -9,6 +9,55 @@ import {
 } from "./staticDataDecoder";
 
 const ABILITY_SLOTS: AbilitySlot[] = ["P", "Q", "W", "E", "R"];
+const SIMULATION_STATS = new Set([
+  "abilityPower",
+  "totalAttackDamage",
+  "baseAttackDamage",
+  "bonusAttackDamage",
+  "maxHealth",
+  "bonusHealth",
+  "armor",
+  "bonusArmor",
+  "magicResist",
+  "bonusMagicResist",
+  "maxMana",
+  "bonusMana",
+]);
+
+function assertFiniteNumbers(value: unknown, field: string): asserts value is number[] {
+  if (!Array.isArray(value) || !value.every(Number.isFinite)) {
+    throw new Error(`Invalid ability simulation ${field}`);
+  }
+}
+
+function assertSimulation(value: unknown): void {
+  if (
+    !isRecord(value) ||
+    !["complete", "unsupported", "unavailable"].includes(String(value.status)) ||
+    !Array.isArray(value.unsupportedPartTypes)
+  ) {
+    throw new Error("Invalid ability simulation status");
+  }
+  if (value.status !== "complete") return;
+  if (
+    !isRecord(value.primary) ||
+    typeof value.primary.id !== "string" ||
+    value.primary.kind !== "damage" ||
+    !Array.isArray(value.primary.terms)
+  ) {
+    throw new Error("Invalid complete ability simulation");
+  }
+  assertFiniteNumbers(value.primary.baseByRank, "base values");
+  for (const term of value.primary.terms) {
+    if (!isRecord(term) || !SIMULATION_STATS.has(String(term.stat))) {
+      throw new Error("Invalid ability simulation stat");
+    }
+    assertFiniteNumbers(term.coefficientsByRank, "coefficients");
+    if (term.coefficientsByRank.length !== value.primary.baseByRank.length) {
+      throw new Error("Mismatched ability simulation ranks");
+    }
+  }
+}
 
 function assertAbility(value: unknown, slot: AbilitySlot): void {
   if (
@@ -16,6 +65,7 @@ function assertAbility(value: unknown, slot: AbilitySlot): void {
     value.slot !== slot ||
     typeof value.id !== "string" ||
     typeof value.name !== "string" ||
+    typeof value.maxRank !== "number" ||
     typeof value.bodyHtml !== "string" ||
     !Array.isArray(value.cooldownSeconds) ||
     !Array.isArray(value.rankValues) ||
@@ -24,6 +74,7 @@ function assertAbility(value: unknown, slot: AbilitySlot): void {
   ) {
     throw new Error(`Invalid ${slot} ability data`);
   }
+  assertSimulation(value.simulation);
 }
 
 export function decodeChampionDetail(value: unknown): ChampionDetailV2 {

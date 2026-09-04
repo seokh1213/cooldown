@@ -119,6 +119,7 @@
         "slot": "P",
         "id": "AkaliP",
         "name": "Assassin's Mark",
+        "maxRank": 0,
         "summary": "Dealing spell damage to a champion creates a ring of energy around them. Exiting that ring empowers Akali's next Attack with bonus range and damage.",
         "bodyHtml": "When Akali hits an enemy champion with an Ability, she reveals a ring around them for 4 seconds and gains <span class=\"text-cyan-600 dark:text-cyan-500\"> Move Speed</span> towards the ring. Crossing the ring causes Akali's next Attack to have doubled range and deal an additional <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(35 + (60% bonus Attack Damage) + (55% Ability Power)) magic damage</span>.",
         "iconFile": "Akali_P.png",
@@ -126,6 +127,10 @@
         "range": [],
         "rankValues": [],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -136,6 +141,7 @@
         "slot": "Q",
         "id": "AkaliQ",
         "name": "Five Point Strike",
+        "maxRank": 5,
         "summary": "Akali throws out five kunai, dealing damage based on her bonus Attack Damage and Ability Power and slowing.",
         "bodyHtml": "Akali slings kunai in an arc, dealing <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(45/70/95/120/145 + (65% Attack Damage) + (60% Ability Power)) magic damage</span> and <span class=\"text-purple-600 dark:text-purple-500\">Slowing</span> enemies at the tip by 50% for 0.5 seconds.",
         "iconFile": "AkaliQ.png",
@@ -188,6 +194,43 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "Damage",
+            "kind": "damage",
+            "baseByRank": [
+              45,
+              70,
+              95,
+              120,
+              145
+            ],
+            "terms": [
+              {
+                "stat": "totalAttackDamage",
+                "coefficientsByRank": [
+                  0.6499999761581421,
+                  0.6499999761581421,
+                  0.6499999761581421,
+                  0.6499999761581421,
+                  0.6499999761581421
+                ]
+              },
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.6000000238418579,
+                  0.6000000238418579,
+                  0.6000000238418579,
+                  0.6000000238418579,
+                  0.6000000238418579
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -198,6 +241,7 @@
         "slot": "W",
         "id": "AkaliW",
         "name": "Twilight Shroud",
+        "maxRank": 5,
         "summary": "Akali drops a cover of smoke and briefly gains Move Speed. While inside the shroud, Akali becomes invisible and unable to be selected by enemy spells and attacks. Attacking or using abilities will briefly reveal her.  ",
         "bodyHtml": "Akali drops a smoke bomb, unleashing a spreading cover of smoke lasting 5/5.5/6/6.5/7 seconds and granting herself <span class=\"text-cyan-600 dark:text-cyan-500\">30/35/40/45/50% Move Speed</span> decaying over 2 seconds.<br /><br />Akali increases her max Energy by 100 while the shroud is active. <br /><br />While inside the smoke, Akali is <span class=\"text-purple-600 dark:text-purple-400 font-semibold\">Invisible</span>.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\"><span class=\"text-purple-600 dark:text-purple-400 font-semibold\">Invisible</span> units cannot be revealed except by turrets or True Sight.</span>",
         "iconFile": "AkaliW.png",
@@ -244,6 +288,10 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -254,6 +302,7 @@
         "slot": "E",
         "id": "AkaliE",
         "name": "Shuriken Flip",
+        "maxRank": 5,
         "summary": "Flip backward and fire a shuriken forward, dealing magic damage. The first enemy or smoke cloud hit is marked. Re-cast to dash to the marked target, dealing additional damage.",
         "bodyHtml": "Akali flips backwards as she throws a shuriken, dealing <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(21/42/63/84/105 + (30% Attack Damage) + (33% Ability Power)) magic damage</span> and marking the first enemy or smoke cloud hit. Akali can <span class=\"text-yellow-600 dark:text-yellow-300\">Recast</span> this once to dash to the marked target, dealing <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(49/98/147/196/245 + (70% Attack Damage) + (77% Ability Power)) magic damage</span>.",
         "iconFile": "AkaliE.png",
@@ -306,6 +355,43 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "E1Damage",
+            "kind": "damage",
+            "baseByRank": [
+              21.000000834465027,
+              42.000001668930054,
+              63.00000250339508,
+              84.00000333786011,
+              105.00000417232513
+            ],
+            "terms": [
+              {
+                "stat": "totalAttackDamage",
+                "coefficientsByRank": [
+                  0.30000001192092896,
+                  0.30000001192092896,
+                  0.30000001192092896,
+                  0.30000001192092896,
+                  0.30000001192092896
+                ]
+              },
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.3300000202655795,
+                  0.3300000202655795,
+                  0.3300000202655795,
+                  0.3300000202655795,
+                  0.3300000202655795
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -316,6 +402,7 @@
         "slot": "R",
         "id": "AkaliR",
         "name": "Perfect Execution",
+        "maxRank": 3,
         "summary": "Akali leaps in a direction, damaging enemies she strikes. Re-cast: Akali dashes in a direction, executing all enemies she strikes.",
         "bodyHtml": "Akali vaults over an enemy champion, dealing <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(110/220/330 + (50% bonus Attack Damage) + (30% Ability Power)) magic damage</span> to all enemies in her path. <br /><br />Akali can <span class=\"text-yellow-600 dark:text-yellow-300\">Recast</span> after 2.5 seconds to execute a piercing thrust, dashing and dealing <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(70/140/210 + (30% Ability Power))</span> to <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(210/420/630 + (90% Ability Power)) magic damage</span> based on missing Health.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">Deals max damage to targets below 30% Health.</span>",
         "iconFile": "AkaliR.png",
@@ -362,6 +449,37 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "Cast1Damage",
+            "kind": "damage",
+            "baseByRank": [
+              110,
+              220,
+              330
+            ],
+            "terms": [
+              {
+                "stat": "bonusAttackDamage",
+                "coefficientsByRank": [
+                  0.5,
+                  0.5,
+                  0.5
+                ]
+              },
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.30000001192092896,
+                  0.30000001192092896,
+                  0.30000001192092896
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {

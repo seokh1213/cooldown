@@ -119,6 +119,7 @@
         "slot": "P",
         "id": "ZedPassive",
         "name": "影忍法！灭魂劫",
+        "maxRank": 0,
         "summary": "劫的普通攻击会对低生命值的目标造成额外魔法伤害。这个特效在数秒内只能对相同的敌方英雄生效一次。",
         "bodyHtml": "当劫对一名低于50%生命值的敌人进行攻击时，他会造成额外的<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">最大生命值的魔法伤害</span>。敌方英雄在10秒里只会受到一次此效果。",
         "iconFile": "ZedP.png",
@@ -126,6 +127,10 @@
         "range": [],
         "rankValues": [],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -136,6 +141,7 @@
         "slot": "Q",
         "id": "ZedQ",
         "name": "影奥义！诸刃",
+        "maxRank": 5,
         "summary": "劫和他的影分身一起将他们的手里剑向前方掷出。<br><br>每支手里剑都会对命中的每个敌人造成伤害。",
         "bodyHtml": "劫和他的<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">影分身</span>一起将他们的手里剑向前方掷出，每一枚手里剑都会对命中的第一个敌人造成<span class=\"text-red-600 dark:text-red-500 font-semibold\">(80/120/160/200/240 + (100% 额外攻击力))物理伤害</span>，并对之后的每个敌人造成<span class=\"text-red-600 dark:text-red-500 font-semibold\">(48/72/96/120/144 + (60% 额外攻击力))物理伤害</span>。",
         "iconFile": "ZedQ.png",
@@ -188,6 +194,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "TotalDamage",
+            "kind": "damage",
+            "baseByRank": [
+              80,
+              120,
+              160,
+              200,
+              240
+            ],
+            "terms": [
+              {
+                "stat": "bonusAttackDamage",
+                "coefficientsByRank": [
+                  1,
+                  1,
+                  1,
+                  1,
+                  1
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -198,6 +231,7 @@
         "slot": "W",
         "id": "ZedW",
         "name": "影奥义！分身",
+        "maxRank": 5,
         "summary": "<font color='#FF9900'>被动：</font>当劫和他的影分身用相同技能击中一名敌方英雄时，劫会回复能量。每次施放技能只会回复一次能量。<br><br><font color='#FF9900'>主动：</font>劫的影分身向前突进，并在一个地方维持若干秒。再次激活此技能会让劫与这个影分身互换位置。",
         "bodyHtml": "<span class=\"text-gray-600 dark:text-gray-500 italic\">被动：</span>当劫和他的<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">影分身</span>用相同技能击中一名敌方英雄时，劫会回复<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">30/35/40/45/50能量</span>。<br /><br /><span class=\"text-gray-900 dark:text-white font-semibold\">主动：</span>劫的<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">影分身</span>向前冲刺，并在一个地方维持5秒。<span class=\"text-yellow-600 dark:text-yellow-300\">再次施放</span>这个技能会让劫与这个<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">影分身</span>互换位置。<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">每次施放技能只会回复一次<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">能量</span>。</span>",
         "iconFile": "ZedW.png",
@@ -240,6 +274,10 @@
           }
         ],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -250,6 +288,7 @@
         "slot": "E",
         "id": "ZedE",
         "name": "影奥义！鬼斩",
+        "maxRank": 5,
         "summary": "劫和他的影分身进行斩击，对附近的敌人造成伤害。被一个影分身的斩击命中的敌人们会被减速。",
         "bodyHtml": "劫和他的<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">影分身</span>进行斩击，对附近的敌人造成<span class=\"text-red-600 dark:text-red-500 font-semibold\">(70/92.5/115/137.5/160 + (70% 额外攻击力))物理伤害</span>。<br /><br />每个被劫的斩击所命中的敌方英雄都会使<span>影奥义！分身</span>的冷却时间减少3秒。<br /><br />被<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">影分身</span>的斩击所击中的敌人，将会被<span class=\"text-purple-600 dark:text-purple-500\">减速</span>20/25/30/35/40%，持续1.5秒。被多个斩击同时击中的敌人，将会被<span class=\"text-purple-600 dark:text-purple-500\">减速</span>30/37.5/45/52.5/60%，但不会受到额外伤害。",
         "iconFile": "ZedE.png",
@@ -306,6 +345,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "TotalDamage",
+            "kind": "damage",
+            "baseByRank": [
+              70,
+              92.5,
+              115,
+              137.5,
+              160
+            ],
+            "terms": [
+              {
+                "stat": "bonusAttackDamage",
+                "coefficientsByRank": [
+                  0.699999988079071,
+                  0.699999988079071,
+                  0.699999988079071,
+                  0.699999988079071,
+                  0.699999988079071
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -316,6 +382,7 @@
         "slot": "R",
         "id": "ZedR",
         "name": "禁奥义！瞬狱影杀阵",
+        "maxRank": 3,
         "summary": "劫变为不可被选取状态并突进至一名敌方英雄，同时为目标施加死亡印记。在3秒后，印记将会爆炸，同时造成额外伤害，劫在印记激活期间造成的伤害越多，则此额外伤害越高。如果该英雄死于此技能期间，那么劫可以获得该英雄的一部分攻击力。",
         "bodyHtml": "劫变得不可被选取，突进向一位敌方英雄，并将其标记。3秒后，标记会触发，对目标造成<span class=\"text-red-600 dark:text-red-500 font-semibold\">(100% 攻击力)物理伤害</span>，加上印记激活期间劫所造成的伤害总和的25/40/55%。<br /><br />突进会留下一个<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">影分身</span>在身后，持续7.5秒。<span class=\"text-yellow-600 dark:text-yellow-300\">再次施放</span>此技能会使劫与这个<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">影分身</span>互换位置。<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">不可被选取的单位不会受到敌人的攻击或技能的影响，除非在进入此状态前已被它们影响。</span><br /><span class=\"text-gray-600 dark:text-gray-400 italic\"><span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">影分身</span>会在再次施放的时间窗口结束后存留额外的1.5秒。</span>",
         "iconFile": "ZedR.png",
@@ -354,6 +421,29 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "RCalculatedDamage",
+            "kind": "damage",
+            "baseByRank": [
+              0,
+              0,
+              0
+            ],
+            "terms": [
+              {
+                "stat": "totalAttackDamage",
+                "coefficientsByRank": [
+                  1,
+                  1,
+                  1
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {

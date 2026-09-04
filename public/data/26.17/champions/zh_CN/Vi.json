@@ -120,6 +120,7 @@
         "slot": "P",
         "id": "ViPassive",
         "name": "爆裂护盾",
+        "maxRank": 0,
         "summary": "蔚持续为护盾充能。护盾会在蔚的技能命中一名敌人后激活。",
         "bodyHtml": "蔚在用一个已激活的技能命中一名敌人或建筑物后，会获得<span class=\"text-blue-600 dark:text-blue-300\">(12% 生命值)护盾值</span>，持续3秒。",
         "iconFile": "ViPassive.png",
@@ -127,6 +128,10 @@
         "range": [],
         "rankValues": [],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -137,6 +142,7 @@
         "slot": "Q",
         "id": "ViQ",
         "name": "强能冲拳",
+        "maxRank": 5,
         "summary": "蔚对她的拳套进行充能，并且释放一记粉碎性的勾拳，同时带着她前冲。被她命中的敌人会被击退，同时会被施加一层爆弹重拳的效果。",
         "bodyHtml": "<span>开始蓄力：</span>蔚开始积蓄一次强力的冲拳，自身<span class=\"text-purple-600 dark:text-purple-500\">减速</span>15%。<br /><br /><span>释放：</span>蔚向前冲刺，基于蓄力时间造成<span class=\"text-red-600 dark:text-red-500 font-semibold\">(40/60/80/100/120 + (60% 额外攻击力))到(100/150/200/250/300 + (150% 额外攻击力))物理伤害</span>，并对命中的所有敌人施加<span>爆弹重拳</span>。蔚会在与一名敌方英雄碰撞时停下，并将其<span class=\"text-purple-600 dark:text-purple-500\">击</span><span class=\"text-purple-600 dark:text-purple-500\">退</span>。<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">命中的非英雄单位会被拉向蔚。<br />如果蓄力被打断，那么这个技能会进入为期3秒的冷却时间。</span>",
         "iconFile": "ViQ.png",
@@ -197,6 +203,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "TotalDamage",
+            "kind": "damage",
+            "baseByRank": [
+              40,
+              60,
+              80,
+              100,
+              120
+            ],
+            "terms": [
+              {
+                "stat": "bonusAttackDamage",
+                "coefficientsByRank": [
+                  0.6000000238418579,
+                  0.6000000238418579,
+                  0.6000000238418579,
+                  0.6000000238418579,
+                  0.6000000238418579
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -207,6 +240,7 @@
         "slot": "W",
         "id": "ViW",
         "name": "爆弹重拳",
+        "maxRank": 5,
         "summary": "蔚的出拳会打破她对手的护甲，造成额外伤害并为她提供额外攻击速度。",
         "bodyHtml": "<span class=\"text-gray-600 dark:text-gray-500 italic\">被动：</span>对相同目标的每第三次攻击会造成额外<span class=\"text-red-600 dark:text-red-500 font-semibold\">(4/5/6/7/8% + (0.035% 额外攻击力))最大生命值的物理伤害</span>，移除目标<span class=\"text-orange-600 dark:text-orange-400\">20%护甲</span>，并为蔚提供<span>30/35/40/45/50%攻击速度</span>，持续4秒。它还可缩短<span>爆裂护盾</span>秒冷却时间。<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">对抗野怪时最多造成<span class=\"text-red-600 dark:text-red-500 font-semibold\">300伤害</span>。</span>",
         "iconFile": "ViW.png",
@@ -249,6 +283,12 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "unsupported",
+          "unsupportedPartTypes": [
+            "percent-calculation"
+          ]
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -261,6 +301,7 @@
         "slot": "E",
         "id": "ViE",
         "name": "透体之劲",
+        "maxRank": 5,
         "summary": "蔚的下次攻击会爆裂，并透过她的目标，对目标身后的敌人造成伤害。",
         "bodyHtml": "蔚的下次攻击对目标和目标后方的敌人造成<span class=\"text-red-600 dark:text-red-500 font-semibold\">(10/30/50/70/90 + (110% 攻击力) + (100% 法术强度))物理伤害</span>。<br /><br />这个技能有2层充能(12/11/10/9/8秒充能时间)。",
         "iconFile": "ViE.png",
@@ -325,6 +366,43 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "TotalDamageTooltip",
+            "kind": "damage",
+            "baseByRank": [
+              10,
+              30,
+              50,
+              70,
+              90
+            ],
+            "terms": [
+              {
+                "stat": "totalAttackDamage",
+                "coefficientsByRank": [
+                  1.100000023841858,
+                  1.100000023841858,
+                  1.100000023841858,
+                  1.100000023841858,
+                  1.100000023841858
+                ]
+              },
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  1,
+                  1,
+                  1,
+                  1,
+                  1
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -335,6 +413,7 @@
         "slot": "R",
         "id": "ViR",
         "name": "天霸横空烈轰",
+        "maxRank": 3,
         "summary": "蔚撞向一名敌人，将途中的人击退到两边。当她接触到目标时，她会将目标击飞到空中，然后跳上去，将目标轰到地面上。",
         "bodyHtml": "蔚挑出一名敌方英雄，将其显形并不可阻挡地向其冲刺。在触碰到该英雄后，蔚会将其<span class=\"text-purple-600 dark:text-purple-500\">击飞</span>1.3秒，并造成<span class=\"text-red-600 dark:text-red-500 font-semibold\">(150/250/350 + (90% 额外攻击力))物理伤害</span>。<br /><br />任何与蔚产生碰撞的敌人都会受到伤害、被震开并<span class=\"text-purple-600 dark:text-purple-500\">晕眩</span>0.75秒。",
         "iconFile": "ViR.png",
@@ -381,6 +460,29 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "Damage",
+            "kind": "damage",
+            "baseByRank": [
+              150,
+              250,
+              350
+            ],
+            "terms": [
+              {
+                "stat": "bonusAttackDamage",
+                "coefficientsByRank": [
+                  0.8999999761581421,
+                  0.8999999761581421,
+                  0.8999999761581421
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {

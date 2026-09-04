@@ -120,6 +120,7 @@
         "slot": "P",
         "id": "SonaPassive",
         "name": "파워 코드",
+        "maxRank": 0,
         "summary": "<passive>아첼레란도</passive>: 소나가 기본 스킬을 잘 사용하면 최대치가 될 때까지 영구적으로 궁극기를 제외한 스킬 가속 효과를 얻습니다. 최대치에 도달한 후 스킬을 성공적으로 사용하면 중첩이 쌓이는 대신 남은 궁극기 재사용 대기시간이 감소합니다.<br><br><passive>파워 코드</passive>소나가 스킬을 특정 횟수 사용하고 나면 다음 기본 공격이 추가 마법 피해를 입히고, 소나가 마지막으로 사용한 기본 스킬에 따라 그 효과가 더 증폭될 수 있습니다.",
         "bodyHtml": "<span>아첼레란도</span>: 소나가 기본 스킬을 잘 사용하면 아첼레란도 중첩을 얻습니다. 중첩당 기본 스킬 가속이 영구적으로 + 0.5씩, 최대 60까지 증가합니다. 기본 스킬 가속이 60에 도달하면 중첩을 추가로 얻는 대신 현재 <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">궁극기</span>의 재사용 대기시간이 초 감소합니다.<br /><br /><span>파워 코드</span>: 기본 스킬을 3번 사용하고 나면 소나의 다음 기본 공격이 <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(20 + (20% 주문력))의 마법 피해</span>를 추가로 입히며 마지막으로 연주한 곡의 추가 효과를 적용할 수 있습니다.<br /><span><span>용맹의 찬가:</span> 대신 <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">의 마법 피해</span>를 입힙니다.<span><span>인내의 아리아:</span> 초 동안 대상이 주는 피해가 만큼 감소합니다.<span><span>기민함의 노래:</span> 초 동안 대상이 만큼 <span class=\"text-purple-600 dark:text-purple-500\">둔화</span>됩니다.",
         "iconFile": "Sona_Passive_Charged.png",
@@ -127,6 +128,10 @@
         "range": [],
         "rankValues": [],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -137,6 +142,7 @@
         "slot": "Q",
         "id": "SonaQ",
         "name": "용맹의 찬가",
+        "maxRank": 5,
         "summary": "소나가 용맹의 찬가를 연주하여 강렬한 선율을 발사하여 주변에 있는 두 명의 적에게 마법 피해를 입힙니다. 이때 챔피언과 몬스터를 우선 공격합니다. 또한 이 스킬을 사용하면 잠시 동안 오라가 생겨서 효과 범위 안에 있는 아군이 다음번 적 공격 시 추가 피해를 입힙니다.",
         "bodyHtml": "소나가 근처의 적 두 명(챔피언 우선)에게 <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(50/85/120/155/190 + (40% 주문력))의 마법 피해</span>를 입힙니다. 그리고 새로운 <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">멜로디</span>를 연주하기 시작합니다. 이 스킬로 챔피언에게 피해를 입히면 <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">아첼레란도</span> 중첩을 얻습니다.<br /><br /><span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">멜로디:</span> 3초 동안 소나 주위에 오라가 생깁니다. 오라에 닿은 아군 챔피언들은 5초 안에 다음 기본 공격 시 <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(10/15/20/25/30 + (10% 주문력))의 마법 피해</span>를 추가로 입힙니다.<br /><br /><span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">파워 코드 - 스타카토:</span> 파워 코드 추가 피해 (<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">총 (30 + (30% 주문력))의 마법 피해</span>)",
         "iconFile": "SonaQ.png",
@@ -193,6 +199,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "TotalDamage",
+            "kind": "damage",
+            "baseByRank": [
+              50,
+              85,
+              120,
+              155,
+              190
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.4000000059604645,
+                  0.4000000059604645,
+                  0.4000000059604645,
+                  0.4000000059604645,
+                  0.4000000059604645
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -203,6 +236,7 @@
         "slot": "W",
         "id": "SonaW",
         "name": "인내의 아리아",
+        "maxRank": 5,
         "summary": "소나가 인내의 아리아를 연주하여 보호의 음률을 내보내 근처 부상 당한 아군 1명과 자신의 체력을 회복합니다. 또한 이 스킬을 사용하면 잠시 동안 오라가 생겨서 효과 범위 안의 모든 아군에게 일시적으로 보호막을 씌워줍니다.",
         "bodyHtml": "<span class=\"text-gray-600 dark:text-gray-500 italic\">사용 시:</span> 소나가 자신 및 근처 아군 챔피언 한 명(가장 많이 피해를 입은 챔피언)의 <span class=\"text-green-600 dark:text-green-400\">체력을 (30/45/60/75/90 + (30% 주문력))</span> 회복합니다. 그리고 새로운 <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">멜로디</span>를 연주하기 시작합니다.<br /><br /><span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">멜로디:</span> 3초 동안 소나 주위에 오라가 생깁니다. 오라에 닿은 아군 챔피언들은 1.5초 동안 <span class=\"text-blue-600 dark:text-blue-300\">(25/45/65/85/105 + (25% 주문력))의 피해를 흡수하는 보호막</span>을 얻습니다.<br /><br />부상당한 아군의 체력을 회복시키거나 이 보호막으로 다른 아군이 받을 피해를 25/45/65/85/105 이상 흡수할 때마다 <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">아첼레란도</span> 중첩을 얻습니다.<br /><br /><span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">파워 코드 - 디미누엔도:</span> 파워 코드는 대상이 가하는 물리 및 마법 피해 또한 3초 동안 (25% + (0.04% 주문력)) 감소시킵니다.",
         "iconFile": "SonaW.png",
@@ -259,6 +293,10 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -269,6 +307,7 @@
         "slot": "E",
         "id": "SonaE",
         "name": "기민함의 노래",
+        "maxRank": 5,
         "summary": "소나가 기민함의 노래를 연주하여 주변 아군의 이동 속도를 증가시키고 잠시 동안 오라를 생성합니다. 오라에 닿은 아군 챔피언은 추가 이동 속도를 얻습니다.",
         "bodyHtml": "<span class=\"text-gray-600 dark:text-gray-500 italic\">사용 시:</span> 소나가 새 <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">멜로디</span>를 연주하기 시작하여 3초 동안 <span class=\"text-cyan-600 dark:text-cyan-500\">(20% + (0.02% 주문력))의 이동 속도</span>를 얻습니다. 소나가 피해를 입지 않으면 최대 7초까지 연장됩니다. <br /><br /><span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">멜로디:</span> 3초 동안 소나 주위에 오라가 생깁니다. 오라에 닿은 아군 챔피언들은 3초 동안 <span class=\"text-cyan-600 dark:text-cyan-500\">이동 속도가 (10/12/14/16/18% + (0.02% 주문력))</span> 상승합니다.<br /><br /><span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">파워 코드 - 템포:</span> 파워 코드는 대상을 2초 동안 (50% + (0.04% 주문력)) <span class=\"text-purple-600 dark:text-purple-500\">둔화</span>시킵니다.",
         "iconFile": "SonaE.png",
@@ -317,6 +356,10 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -327,6 +370,7 @@
         "slot": "R",
         "id": "SonaR",
         "name": "크레센도",
+        "maxRank": 3,
         "summary": "소나가 궁극의 선율을 연주하여 적 챔피언들을 기절시키며 춤을 추게 만들고, 마법 피해를 입힙니다.",
         "bodyHtml": "소나가 저항할 수 없는 선율을 연주하여 적을 1.5초 동안 <span class=\"text-purple-600 dark:text-purple-500\">기절</span>시키고 <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(150/250/350 + (50% 주문력))의 마법 피해</span>를 입힙니다.<br /><br />춤을 출 줄 아는 적들은 기절한 상태에서 춤을 춥니다.",
         "iconFile": "SonaR.png",
@@ -373,6 +417,29 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "TotalDamage",
+            "kind": "damage",
+            "baseByRank": [
+              150,
+              250,
+              350
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.5,
+                  0.5,
+                  0.5
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {

@@ -120,6 +120,7 @@
         "slot": "P",
         "id": "ZacPassiveChunkDrop",
         "name": "Cell Division",
+        "maxRank": 0,
         "summary": "Each time Zac hits an enemy with an ability, he sheds a chunk of himself that can be reabsorbed to restore Health. Upon taking fatal damage, Zac splits into 4 bloblets that attempt to recombine. If any bloblets remain, he will revive with an amount of Health depending on the Health of the surviving bloblets. Each bloblet has a percentage of Zac's maximum Health, Armor and Magic Resistance. This ability has a 5 minute cooldown.",
         "bodyHtml": "Each time Zac hits an enemy with an Ability, he sheds a chunk of <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Goo</span> that can be reabsorbed to restore <span class=\"text-green-600 dark:text-green-400\">(4% ~ 8%) Max Health</span>.<br /><br />Upon dying, Zac splits into 4 bloblets that attempt to recombine. If any bloblets remain after <span class=\"text-gray-600 dark:text-gray-400\">4</span> seconds, he will revive with 10-50% Health based on the surviving bloblet's Health. This has a 300 second Cooldown.",
         "iconFile": "ZacPassive.png",
@@ -127,6 +128,10 @@
         "range": [],
         "rankValues": [],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -137,6 +142,7 @@
         "slot": "Q",
         "id": "ZacQ",
         "name": "Stretching Strikes",
+        "maxRank": 5,
         "summary": "Zac stretches an arm, grabbing an enemy. Attacking a different enemy will cause him to throw both targets towards each other.",
         "bodyHtml": "Zac stretches his arm out, attaching it to the first enemy hit to deal <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(60/90/120/150/180 + (30% Ability Power) + (3% bonus Health)) magic damage</span> and briefly <span class=\"text-purple-600 dark:text-purple-500\">Slow</span> them. Zac's next Attack gains increased range and applies the same damage and <span class=\"text-purple-600 dark:text-purple-500\">Slow</span>. <br /><br />If Zac hits a <span>different</span> enemy with this Attack, he <span class=\"text-purple-600 dark:text-purple-500\">Knocks Up</span> both towards each other. If they collide, they and surrounding enemies take <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(60/90/120/150/180 + (30% Ability Power) + (3% bonus Health)) magic damage</span> and are briefly <span class=\"text-purple-600 dark:text-purple-500\">Slowed</span>.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\"><span class=\"text-purple-600 dark:text-purple-500\">Slows</span> by 40%. <br />Maximum magic damage: <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">.</span></span>",
         "iconFile": "ZacQ.png",
@@ -179,6 +185,43 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "TotalDamage",
+            "kind": "damage",
+            "baseByRank": [
+              60,
+              90,
+              120,
+              150,
+              180
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.30000001192092896,
+                  0.30000001192092896,
+                  0.30000001192092896,
+                  0.30000001192092896,
+                  0.30000001192092896
+                ]
+              },
+              {
+                "stat": "bonusHealth",
+                "coefficientsByRank": [
+                  0.029999999329447746,
+                  0.029999999329447746,
+                  0.029999999329447746,
+                  0.029999999329447746,
+                  0.029999999329447746
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -191,6 +234,7 @@
         "slot": "W",
         "id": "ZacW",
         "name": "Unstable Matter",
+        "maxRank": 5,
         "summary": "Zac explodes outward towards nearby enemies, dealing a percentage of their maximum health as magic damage.",
         "bodyHtml": "Zac's body erupts, dealing <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">40/50/60/70/80 + (4/5/6/7/8% + (0.03% Ability Power)) max Health magic damage</span> to nearby enemies.<br /><br />Absorbing <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Goo</span> reduces this Ability's Cooldown by 1 second.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">Percent Health damage against minions and jungle monsters is capped at 200.</span>",
         "iconFile": "ZacW.png",
@@ -233,6 +277,10 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -243,6 +291,7 @@
         "slot": "E",
         "id": "ZacE",
         "name": "Elastic Slingshot",
+        "maxRank": 5,
         "summary": "Zac attaches his arms to the ground and stretches back, launching himself forward.",
         "bodyHtml": "<span>Begin Charging:</span> Zac pulls himself taut, charging up a dash over 0.9/1/1.1/1.2/1.3 seconds.<br /><br /><span>Release:</span> Zac launches himself and <span class=\"text-purple-600 dark:text-purple-500\">Knocks Up</span> enemies where he lands for up to 1 second (based on charge time), dealing them <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(60/105/150/195/240 + (80% Ability Power)) magic damage</span>. Zac spawns an extra chunk of <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Goo</span> for each enemy champion hit.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">Can be cancelled by moving.<br />If cancelled, refunds half of the Ability's Cooldown and cost.</span>",
         "iconFile": "ZacE.png",
@@ -289,6 +338,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "Damage",
+            "kind": "damage",
+            "baseByRank": [
+              60,
+              105,
+              150,
+              195,
+              240
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.800000011920929,
+                  0.800000011920929,
+                  0.800000011920929,
+                  0.800000011920929,
+                  0.800000011920929
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -299,6 +375,7 @@
         "slot": "R",
         "id": "ZacR",
         "name": "Let's Bounce!",
+        "maxRank": 3,
         "summary": "Zac bounces four times, knocking up enemies hit and slowing them.",
         "bodyHtml": "Zac bounces 4 times. The first bounce to hit each enemy <span class=\"text-purple-600 dark:text-purple-500\">Knocks</span> them back and deals <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(120/190/260 + (40% Ability Power)) magic damage</span>. Subsequent bounces deal <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(60/95/130 + (20% Ability Power)) magic damage</span> and <span class=\"text-purple-600 dark:text-purple-500\">Slow</span> by 20% for 1 second.<br /><br />Zac gains up to <span class=\"text-cyan-600 dark:text-cyan-500\">50% Move Speed</span> over time and can cast <span>Unstable Matter</span> while bouncing.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">Total Damage: <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(120/190/260 + (40% Ability Power)) magic damage</span><br /><span class=\"text-cyan-600 dark:text-cyan-500\">Move Speed</span> increases from <span class=\"text-cyan-600 dark:text-cyan-500\">20%</span> to <span class=\"text-cyan-600 dark:text-cyan-500\">50%</span> over the duration.<br />During Let's Bounce!, Zac is Ghosted. Ghosted units ignore collision with other units.</span>",
         "iconFile": "ZacR.png",
@@ -337,6 +414,29 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "DamagePerBounce",
+            "kind": "damage",
+            "baseByRank": [
+              120,
+              190,
+              260
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.4000000059604645,
+                  0.4000000059604645,
+                  0.4000000059604645
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {

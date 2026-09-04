@@ -120,6 +120,7 @@
         "slot": "P",
         "id": "YasuoPassive",
         "name": "浪客之道",
+        "maxRank": 0,
         "summary": "亚索的暴击几率提升。此外，亚索在移动时会为一层护盾攒能。护盾会在他受到来自英雄或野怪的伤害时触发。",
         "bodyHtml": "<span class=\"text-gray-600 dark:text-gray-500 italic\">百折不屈：</span>亚索在移动的同时会积攒<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">剑意</span>——移动得越快，<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">剑意</span>的获取就越多。当<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">剑意</span>槽被充满时，在受到来自英雄或野怪的伤害的同时，亚索暂时获得<span class=\"text-blue-600 dark:text-blue-300\">(125 ~ 600)护盾值</span>。<br /><br /><span class=\"text-gray-600 dark:text-gray-500 italic\">向死而生：</span>亚索的暴击几率提升100%但他的暴击伤害降低至(100%)。100%以上的暴击几率，会每1%转化为<span class=\"text-red-600 dark:text-red-500 font-semibold\">额外攻击力</span>。",
         "iconFile": "Yasuo_Passive.png",
@@ -127,6 +128,10 @@
         "range": [],
         "rankValues": [],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -137,6 +142,7 @@
         "slot": "Q",
         "id": "YasuoQ1Wrapper",
         "name": "斩钢闪",
+        "maxRank": 5,
         "summary": "向前出剑，呈直线造成伤害。<br><br>在命中时，斩钢闪会获得一层旋风烈斩效果，持续数秒。在积攒2层旋风烈斩效果后，斩钢闪会形成一阵能够<font color='#6655CC'>击飞</font>敌人的旋风。<br><br>斩钢闪被视为普通攻击，并且可以从所有作用于普攻的东西上获得收益。",
         "bodyHtml": "亚索进行戳刺，造成<span class=\"text-red-600 dark:text-red-500 font-semibold\">(20/45/70/95/120 + (105% 攻击力))物理伤害</span>。如果他命中了，那么他会获得一层持续6秒的层数。当他拥有2层时，这个技能的下次施放将会发射出一道远程龙卷风，造成等值伤害和1秒<span class=\"text-purple-600 dark:text-purple-500\">击飞</span>。<br /><br />如果在冲刺期间施放，那么这个技能会呈环状进行打击而非直接戳刺。<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">这个技能和攻击类似：它可以暴击以造成<span class=\"text-red-600 dark:text-red-500 font-semibold\">20/45/70/95/120物理伤害</span>，它会对击中的首个敌人施加 <span>攻击特效</span>，可被控制效果打断，并且它的冷却时间和施放时间可通过<span>攻击速度</span>来缩短。</span>",
         "iconFile": "YasuoQ1Wrapper.png",
@@ -175,6 +181,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "TotalDamage",
+            "kind": "damage",
+            "baseByRank": [
+              20,
+              45,
+              70,
+              95,
+              120
+            ],
+            "terms": [
+              {
+                "stat": "totalAttackDamage",
+                "coefficientsByRank": [
+                  1.0499999523162842,
+                  1.0499999523162842,
+                  1.0499999523162842,
+                  1.0499999523162842,
+                  1.0499999523162842
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -185,6 +218,7 @@
         "slot": "W",
         "id": "YasuoW",
         "name": "风之障壁",
+        "maxRank": 5,
         "summary": "形成一个持续4秒的气流之墙，来阻挡敌方的飞行道具。",
         "bodyHtml": "亚索形成一个持续4秒的气流浮墙，来阻挡敌方的飞行道具。<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">无法阻挡防御塔的子弹与光束。</span>",
         "iconFile": "YasuoW.png",
@@ -213,6 +247,10 @@
           }
         ],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -223,6 +261,7 @@
         "slot": "E",
         "id": "YasuoE",
         "name": "踏前斩",
+        "maxRank": 5,
         "summary": "向目标敌人突进，造成魔法伤害。每次施法都会提升你的后续突进的伤害，直到抵达上限。<br><br>在若干秒内无法对相同敌人重复施放。<br><br><font color='#99FF99'>如果在突进的过程中施放斩钢闪，那么斩钢闪就会呈环状出剑。</font>",
         "bodyHtml": "亚索冲刺并穿过一个目标，造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(70/85/100/115/130 + (20% 额外攻击力) + (60% 法术强度))魔法伤害</span>。这个技能每次施放后都会为5秒内的后续施放提供<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(17.5/21.25/25/28.75/32.5 + (5% 额外攻击力) + (15% 法术强度))</span>额外伤害，至多可叠加4次。<br /><br />这个技能对每个目标有10/9/8/7/6秒冷却时间。",
         "iconFile": "YasuoE.png",
@@ -269,6 +308,43 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "TotalDamage",
+            "kind": "damage",
+            "baseByRank": [
+              70,
+              85,
+              100,
+              115,
+              130
+            ],
+            "terms": [
+              {
+                "stat": "bonusAttackDamage",
+                "coefficientsByRank": [
+                  0.20000000298023224,
+                  0.20000000298023224,
+                  0.20000000298023224,
+                  0.20000000298023224,
+                  0.20000000298023224
+                ]
+              },
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.6000000238418579,
+                  0.6000000238418579,
+                  0.6000000238418579,
+                  0.6000000238418579,
+                  0.6000000238418579
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -279,6 +355,7 @@
         "slot": "R",
         "id": "YasuoR",
         "name": "狂风绝息斩",
+        "maxRank": 3,
         "summary": "闪烁到一个<factionIonia1>浮空</factionIonia1>的敌方英雄身边，造成物理伤害，并使范围内的所有<factionIonia1>浮空</factionIonia1>的敌人滞留在空中。获得满额的剑意值，但会重置旋风烈斩的层数。<br><br>在接下来的若干秒里，亚索的暴击会获得显著的额外护甲穿透加成值。",
         "bodyHtml": "亚索传送到一名<span class=\"text-purple-600 dark:text-purple-500\">浮空</span>的敌方英雄身边，造成<span class=\"text-red-600 dark:text-red-500 font-semibold\">(200/350/500 + (150% 额外攻击力))物理伤害</span>并使所有附近<span class=\"text-purple-600 dark:text-purple-500\">浮空</span>的敌人们维持此状态至多1秒。亚索还会获得满额<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">剑意</span>，但会失去所有所有<span>斩钢闪</span>层数。<br /><br />之后，亚索的暴击会无视<span class=\"text-orange-600 dark:text-orange-400\">60%额外护甲</span>，持续15秒。",
         "iconFile": "YasuoR.png",
@@ -317,6 +394,29 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "Damage",
+            "kind": "damage",
+            "baseByRank": [
+              200,
+              350,
+              500
+            ],
+            "terms": [
+              {
+                "stat": "bonusAttackDamage",
+                "coefficientsByRank": [
+                  1.5,
+                  1.5,
+                  1.5
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {

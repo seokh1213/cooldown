@@ -120,6 +120,7 @@
         "slot": "P",
         "id": "AhriPassive",
         "name": "Essence Theft",
+        "maxRank": 0,
         "summary": "After killing 9 minions or monsters, Ahri heals.<br>After taking down an enemy champion, Ahri heals for a greater amount.",
         "bodyHtml": "Killing minions or monsters grants Ahri an Essence Fragment. After obtaining 9 Fragments, Ahri consumes them to <span class=\"text-green-600 dark:text-green-400\">restore (20% Ability Power) Health</span>.<br /><br />When Ahri scores a takedown against an enemy champion within 3 seconds of damaging them, she feasts upon their Essence, <span class=\"text-green-600 dark:text-green-400\">restoring (30% Ability Power) Health</span>.",
         "iconFile": "Ahri_SoulEater2.png",
@@ -127,6 +128,10 @@
         "range": [],
         "rankValues": [],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -137,6 +142,7 @@
         "slot": "Q",
         "id": "AhriQ",
         "name": "Orb of Deception",
+        "maxRank": 5,
         "summary": "Ahri sends out and pulls back her orb, dealing magic damage on the way out and true damage on the way back. ",
         "bodyHtml": "Ahri throws then pulls back her orb, dealing <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(35/60/85/110/135 + (50% Ability Power)) magic damage</span> on the way out and <span class=\"text-yellow-600 dark:text-yellow-500 font-semibold\">(35/60/85/110/135 + (50% Ability Power)) true damage</span> on the way back.",
         "iconFile": "AhriQ.png",
@@ -189,6 +195,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "TotalDamage",
+            "kind": "damage",
+            "baseByRank": [
+              35,
+              60,
+              85,
+              110,
+              135
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.5,
+                  0.5,
+                  0.5,
+                  0.5,
+                  0.5
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -199,6 +232,7 @@
         "slot": "W",
         "id": "AhriW",
         "name": "Fox-Fire",
+        "maxRank": 5,
         "summary": "Ahri gains a brief burst of Move Speed and releases three fox-fires, that lock onto and attack nearby enemies.",
         "bodyHtml": "Ahri releases 3 fox-fires that seek nearby enemies and deal <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(40/60/80/100/120 + (40% Ability Power)) magic damage</span>, reduced to <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(16/24/32/40/48 + (16% Ability Power)) damage</span> beyond the first. She also gains <span class=\"text-cyan-600 dark:text-cyan-500\">40% Move Speed</span> decaying over 2 seconds.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">Fox-fires prioritize champions hit by <span>Charm</span>, enemies Ahri has attacked, then other champions. Minions below 20% Health take 200% damage.</span><br />",
         "iconFile": "AhriW.png",
@@ -251,6 +285,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "SingleFireDamage",
+            "kind": "damage",
+            "baseByRank": [
+              40,
+              60,
+              80,
+              100,
+              120
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.4000000059604645,
+                  0.4000000059604645,
+                  0.4000000059604645,
+                  0.4000000059604645,
+                  0.4000000059604645
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -261,6 +322,7 @@
         "slot": "E",
         "id": "AhriE",
         "name": "Charm",
+        "maxRank": 5,
         "summary": "Ahri blows a kiss that damages and charms an enemy it encounters, instantly stopping movement abilities and causing them to walk harmlessly towards her.",
         "bodyHtml": "Ahri blows a kiss that <span class=\"text-purple-600 dark:text-purple-500\">Charms</span> the first enemy hit for 1.2/1.35/1.5/1.65/1.8 seconds and deals <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(80/120/160/200/240 + (85% Ability Power)) magic damage</span>.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">This Ability <span class=\"text-purple-600 dark:text-purple-500\">Knocks Down</span> enemies.</span>",
         "iconFile": "AhriE.png",
@@ -313,6 +375,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "TotalDamage",
+            "kind": "damage",
+            "baseByRank": [
+              80,
+              120,
+              160,
+              200,
+              240
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.8500000238418579,
+                  0.8500000238418579,
+                  0.8500000238418579,
+                  0.8500000238418579,
+                  0.8500000238418579
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -323,6 +412,7 @@
         "slot": "R",
         "id": "AhriR",
         "name": "Spirit Rush",
+        "maxRank": 3,
         "summary": "Ahri dashes forward and fires essence bolts, damaging nearby enemies. Spirit Rush can be cast up to three times before going on cooldown, and gains additional recasts when taking down enemy champions.",
         "bodyHtml": "Ahri nimbly dashes, firing 3 essence bolts at nearby enemies, prioritizing champions. These bolts deal <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(75/125/175 + (35% Ability Power)) magic damage</span> each. <span>Spirit Rush</span> can be <span class=\"text-yellow-600 dark:text-yellow-300\">Recast</span> up to 2 more times within 15 seconds.<br /><br />Consuming a champion's Essence with <span>Essence Theft</span> during this period extends the recast window by up to 10 seconds and grants an additional recast of <span>Spirit Rush</span> (up to 3 stored).",
         "iconFile": "AhriR.png",
@@ -369,6 +459,12 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "unsupported",
+          "unsupportedPartTypes": [
+            "StatByNamedDataValueCalculationPart"
+          ]
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {

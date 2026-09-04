@@ -120,6 +120,7 @@
         "slot": "P",
         "id": "KSanteP",
         "name": "Dauntless Instinct",
+        "maxRank": 0,
         "summary": "K'Sante's Abilities mark targets to take more damage on his next Attack.<br><br>When All Out, K'Sante deals more damage with all Attacks and Abilities.",
         "bodyHtml": "K'Sante's damaging Abilities mark enemies hit. Attacking a marked enemy deals <span class=\"text-red-600 dark:text-red-500 font-semibold\">12 plus max Health physical damage</span> and consumes the mark.<br /><br /><span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">All Out</span>: K'Sante's Attacks, Abilities and Passive deal an additional (1% + (0.01% bonus Armor) + (0.01% bonus Magic Resist)) max Health physical damage.",
         "iconFile": "Icons_KSante_P.png",
@@ -127,6 +128,10 @@
         "range": [],
         "rankValues": [],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -137,6 +142,7 @@
         "slot": "Q",
         "id": "KSanteQ",
         "name": "Ntofo Strikes",
+        "maxRank": 5,
         "summary": "K'Sante strikes, damaging and slowing enemies in a short line.<br><br>On hit, grants a stack of Ntofo Strikes. At 2 stacks, K'Sante fires a shockwave that pulls enemies in.<br><br>When All Out, cooldown is reduced.",
         "bodyHtml": "K'Sante slams his weapon, dealing <span class=\"text-red-600 dark:text-red-500 font-semibold\">(70/100/130/160/190 + (40% bonus Armor) + (40% bonus Magic Resist)) physical damage</span> and <span class=\"text-purple-600 dark:text-purple-500\">Slowing</span> enemies by 80% for 0.5s. If he hits, he gains a stack of Ntofo Strikes for 6 seconds. At 2 stacks, he instead fires a shockwave that <span class=\"text-purple-600 dark:text-purple-500\">Stuns</span> and <span class=\"text-purple-600 dark:text-purple-500\">Pulls</span> enemies for 1 second.<br /><br /><span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">All Out</span>: Cooldown is reduced by 33%.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">Cooldown & cast time reduced by Bonus <span class=\"text-orange-600 dark:text-orange-400\">Armor</span> and <span>Magic Resist</span>: / 120.</span>",
         "iconFile": "KSanteQ.png",
@@ -185,6 +191,43 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "BaseDamage",
+            "kind": "damage",
+            "baseByRank": [
+              70,
+              100,
+              130,
+              160,
+              190
+            ],
+            "terms": [
+              {
+                "stat": "bonusArmor",
+                "coefficientsByRank": [
+                  0.4000000059604645,
+                  0.4000000059604645,
+                  0.4000000059604645,
+                  0.4000000059604645,
+                  0.4000000059604645
+                ]
+              },
+              {
+                "stat": "bonusMagicResist",
+                "coefficientsByRank": [
+                  0.4000000059604645,
+                  0.4000000059604645,
+                  0.4000000059604645,
+                  0.4000000059604645,
+                  0.4000000059604645
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -197,6 +240,7 @@
         "slot": "W",
         "id": "KSanteW",
         "name": "Path Maker",
+        "maxRank": 5,
         "summary": "K'Sante charges up, taking reduced damage, then dashes, knocking back and stunning enemies.<br><br>When All Out, deals increased damage and no longer knocks back or stuns.",
         "bodyHtml": "K'Sante raises his weapons defensively for 0.4-1.0s, becoming Unstoppable and reducing incoming damage by 30%. Then, he rams forward, dealing <span class=\"text-red-600 dark:text-red-500 font-semibold\">45/75/105/135/165 + (8% + (0.02% bonus Armor) + (0.02% bonus Magic Resist)) max Health physical damage</span>. Enemies hit are <span class=\"text-purple-600 dark:text-purple-500\">Knocked Back</span> and <span class=\"text-purple-600 dark:text-purple-500\">Stunned</span> for 0.5-1.75s (based on charge time).<br /><br /><span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">All Out:</span> Cooldown is refreshed. Deals an additional 10-80% damage as <span class=\"text-yellow-600 dark:text-yellow-500 font-semibold\">true damage</span> (based on charge time), damage reduction is increased to 75% and dash speed is increased, but no longer <span class=\"text-purple-600 dark:text-purple-500\">Knocks Back</span> or <span class=\"text-purple-600 dark:text-purple-500\">Stuns</span>.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">Maximum effect is reached at 90% charge time.<br />Maximum of 180/260/340/420/500 damage against monsters.</span>",
         "iconFile": "KSanteW.png",
@@ -253,6 +297,10 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -263,6 +311,7 @@
         "slot": "E",
         "id": "KSanteE",
         "name": "Footwork",
+        "maxRank": 5,
         "summary": "K'Sante dashes and gains a shield. If targeting an ally, K'Sante dashes to the ally with increased range and both gain a shield.<br><br>When All Out, cooldown is reduced and speed is increased.",
         "bodyHtml": "K'Sante dashes, gaining <span class=\"text-blue-600 dark:text-blue-300\">(70/112.5/155/197.5/240 + (13.5% bonus Health)) Shield</span> for 2 seconds. If dashing to an ally, the distance of the dash is significantly increased and the ally is also <span class=\"text-blue-600 dark:text-blue-300\">Shielded</span>.<br /><br /><span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">All Out</span>: Cooldown is decreased by 50% and dash speed is increased.",
         "iconFile": "KSanteE.png",
@@ -319,6 +368,10 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -329,6 +382,7 @@
         "slot": "R",
         "id": "KSanteR",
         "name": "All Out",
+        "maxRank": 3,
         "summary": "K'Sante knocks an enemy back, launching them through any wall in their path. Then, K'Sante goes All Out and dashes after them, gaining increased damage, healing, and transformed abilities at the cost of reduced defenses.",
         "bodyHtml": "K'Sante shatters his ntofos to <span class=\"text-purple-600 dark:text-purple-500\">Knock Back</span> an enemy champion, dealing <span class=\"text-red-600 dark:text-red-500 font-semibold\">80/115/150 physical damage</span>, then dashes behind them and goes <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">All Out</span> for 15s. If the enemy would hit a wall, they are <span class=\"text-purple-600 dark:text-purple-500\">Knocked Back</span> through the wall and K'Sante strikes them again for <span class=\"text-red-600 dark:text-red-500 font-semibold\">(80/115/150 + (5% bonus Health)) physical damage</span>.<br /><br />While <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">All Out</span>, K'Sante's Abilities are upgraded and he gains <span>40/60/80% Attack Speed</span>, 50% Bonus Armor Penetration, and <span>20% Omnivamp</span>, but loses <span class=\"text-green-600 dark:text-green-400\">35% max Health</span>, <span class=\"text-orange-600 dark:text-orange-400\">85% Bonus Armor</span>, and <span>85% Bonus Magic Resistance</span>.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">K'Sante is Unstoppable and <span class=\"text-purple-600 dark:text-purple-500\">Roots</span> his target while casting this Ability.</span>",
         "iconFile": "KSanteR.png",
@@ -383,6 +437,29 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "TotalDamageSlamDown",
+            "kind": "damage",
+            "baseByRank": [
+              80,
+              115,
+              150
+            ],
+            "terms": [
+              {
+                "stat": "bonusHealth",
+                "coefficientsByRank": [
+                  0.05000000074505806,
+                  0.05000000074505806,
+                  0.05000000074505806
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {

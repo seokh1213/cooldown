@@ -120,6 +120,7 @@
         "slot": "P",
         "id": "NidaleePassiveHunt",
         "name": "Prowl",
+        "maxRank": 0,
         "summary": "Moving through brush increases Nidalee's Move Speed by 10% for 2 seconds, increased to 30% toward visible enemy champions within 1400 range.<br><br>Hitting champions or monsters with Javelin Toss or Bushwhack triggers a <font color='#FFF673'>Hunt</font>, granting <font color='#ee91d7'>True Sight</font> of them for 4 seconds. During this time, Nidalee gains 10% Move Speed (increased to 30% toward the <font color='#FFF673'>Hunted</font> target) and her Takedown and Pounce are enhanced against them.",
         "bodyHtml": "Nidalee starts with a rank in <span>Aspect of the Cougar</span>. <br /><br />Nidalee gains <span class=\"text-cyan-600 dark:text-cyan-500\">Move Speed</span> for 2 seconds when entering Brush, increased to <span class=\"text-cyan-600 dark:text-cyan-500\">Move Speed</span> while moving toward enemy champions.<br /><br />Hitting champions or jungle monsters with <span>Javelin Toss</span> or <span>Bushwhack</span> marks them as <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Hunted</span> for 4 seconds. While an enemy is <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Hunted</span>, they are revealed with <span class=\"text-purple-600 dark:text-purple-400 font-semibold\">True Sight</span> and Nidalee gains <span class=\"text-cyan-600 dark:text-cyan-500\">Move Speed</span>, increased to <span class=\"text-cyan-600 dark:text-cyan-500\">Move Speed</span> toward the <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Hunted</span> enemy.",
         "iconFile": "Nidalee_Passive.png",
@@ -127,6 +128,10 @@
         "range": [],
         "rankValues": [],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -137,6 +142,7 @@
         "slot": "Q",
         "id": "JavelinToss",
         "name": "Javelin Toss / Takedown",
+        "maxRank": 5,
         "summary": "In human form, Nidalee throws a spiked javelin at her target that gains damage as it flies.  As a cougar, her next attack will attempt to fatally wound her target, dealing more damage the less life they have.",
         "bodyHtml": "<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Human Form:</span> Nidalee throws her javelin, dealing <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(70/90/110/130/150 + (50% Ability Power)) magic damage</span>, increased up to <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(227.5/292.5/357.5/422.5/487.5 + (162.5% Ability Power)) magic damage</span> based on distance flown.",
         "iconFile": "JavelinToss.png",
@@ -193,6 +199,12 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "unsupported",
+          "unsupportedPartTypes": [
+            "GameCalculationModified"
+          ]
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -203,6 +215,7 @@
         "slot": "W",
         "id": "Bushwhack",
         "name": "Bushwhack / Pounce",
+        "maxRank": 5,
         "summary": "In human form, Nidalee lays a trap for unwary opponents that, when sprung, damages and reveals its target. As a cougar, she jumps in a direction, dealing damage in an area where she lands.",
         "bodyHtml": "<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Human Form:</span> Nidalee places an invisible trap for 2 minutes. When an enemy walks over it, they are dealt <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(10/20/30/40/50 + (5% Ability Power)) magic damage</span> per second for 4 seconds.<br /><br />10 traps may be active at once.",
         "iconFile": "Bushwhack.png",
@@ -266,6 +279,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "DamagePerSecond",
+            "kind": "damage",
+            "baseByRank": [
+              10,
+              20,
+              30,
+              40,
+              50
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.05000000074505806,
+                  0.05000000074505806,
+                  0.05000000074505806,
+                  0.05000000074505806,
+                  0.05000000074505806
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -276,6 +316,7 @@
         "slot": "E",
         "id": "PrimalSurge",
         "name": "Primal Surge / Swipe",
+        "maxRank": 5,
         "summary": "In human form, Nidalee channels the spirit of the cougar to heal her allies and imbue them with Attack Speed for a short duration. As a cougar, she claws in a direction, dealing damage to enemies in front of her.",
         "bodyHtml": "<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Human Form:</span> Nidalee restores <span class=\"text-green-600 dark:text-green-400\">(50/75/100/125/150 + (35% Ability Power)) Health</span> increased up to <span class=\"text-green-600 dark:text-green-400\">(50/75/100/125/150 + (35% Ability Power))</span> based on missing Health and grants them <span>30/40/50/60/70% Attack Speed</span> for 7 seconds.",
         "iconFile": "PrimalSurge.png",
@@ -332,6 +373,10 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -342,6 +387,7 @@
         "slot": "R",
         "id": "AspectOfTheCougar",
         "name": "Aspect Of The Cougar",
+        "maxRank": 4,
         "summary": "Nidalee transforms into a cougar, gaining new abilities.",
         "bodyHtml": "<span class=\"text-gray-600 dark:text-gray-500 italic\">Passive:</span> While in <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Human Form</span>, applying <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Hunted</span> refreshes this Ability's Cooldown.<br /><br /><span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Human Form:</span> Nidalee transforms into <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Cougar Form</span>, gaining melee Attacks and replacing her Active Abilities.<br /><br /><span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Cougar Form:</span> Nidalee transforms into <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Human Form</span>, gaining ranged Attacks and replacing her Active Abilities.",
         "iconFile": "AspectOfTheCougar.png",
@@ -394,6 +440,40 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "TotalPounceDamage",
+            "kind": "damage",
+            "baseByRank": [
+              55,
+              100,
+              145,
+              190
+            ],
+            "terms": [
+              {
+                "stat": "bonusAttackDamage",
+                "coefficientsByRank": [
+                  0.5,
+                  0.5,
+                  0.5,
+                  0.5
+                ]
+              },
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.30000001192092896,
+                  0.30000001192092896,
+                  0.30000001192092896,
+                  0.30000001192092896
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {

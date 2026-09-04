@@ -120,6 +120,7 @@
         "slot": "P",
         "id": "VelkozPassive",
         "name": "Organic Deconstruction",
+        "maxRank": 0,
         "summary": "Vel'Koz's abilities apply <keywordName>Organic Deconstruction</keywordName> to enemies on hit. If 3 stacks are accumulated, the enemy will take a burst of true damage.",
         "bodyHtml": "Vel'Koz's Abilities apply a stack of <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Deconstruction</span> for 7 seconds. Enemies with 3 stacks consume them and take <span class=\"text-yellow-600 dark:text-yellow-500 font-semibold\">(60% Ability Power) true damage</span>.<br /><br />Vel'Koz's Attacks refresh the duration of <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Deconstruction</span>, but won't add new stacks.",
         "iconFile": "VelKoz_Passive.png",
@@ -127,6 +128,10 @@
         "range": [],
         "rankValues": [],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -137,6 +142,7 @@
         "slot": "Q",
         "id": "VelkozQ",
         "name": "Plasma Fission",
+        "maxRank": 5,
         "summary": "Vel'Koz shoots a bolt of plasma that splits in two on reactivation or upon hitting an enemy. The bolt slows and damages on hit.",
         "bodyHtml": "Vel'Koz shoots a plasma bolt that deals <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(80/120/160/200/240 + (90% Ability Power)) magic damage</span> and <span class=\"text-purple-600 dark:text-purple-500\">Slows</span> by 70% decaying over 1/1.4/1.8/2.2/2.6 second(s). At the end of its range, on hitting a target, or on <span class=\"text-yellow-600 dark:text-yellow-300\">Recasting</span>, the bolt splits and fires two new bolts at a 90 degree angle.<br /><br />Killing a unit with this restores <span>20/22.5/25/27.5/30 Mana</span>.",
         "iconFile": "VelkozQ.png",
@@ -193,6 +199,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "TotalDamage",
+            "kind": "damage",
+            "baseByRank": [
+              80,
+              120,
+              160,
+              200,
+              240
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.8999999761581421,
+                  0.8999999761581421,
+                  0.8999999761581421,
+                  0.8999999761581421,
+                  0.8999999761581421
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -203,6 +236,7 @@
         "slot": "W",
         "id": "VelkozW",
         "name": "Void Rift",
+        "maxRank": 5,
         "summary": "Vel'Koz opens a rift to the void that deals an initial burst of damage, then explodes for a second burst of damage after a delay.",
         "bodyHtml": "Vel'Koz opens a rift to the void, dealing <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(30/50/70/90/110 + (20% Ability Power)) magic damage</span>. The rift then erupts, dealing <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(45/75/105/135/165 + (25% Ability Power)) magic damage</span>.<br /><br />This Ability has 2 charges (18/17/16/15/14 second refresh).",
         "iconFile": "VelkozW.png",
@@ -271,6 +305,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "InitialDamage",
+            "kind": "damage",
+            "baseByRank": [
+              30,
+              50,
+              70,
+              90,
+              110
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.20000000298023224,
+                  0.20000000298023224,
+                  0.20000000298023224,
+                  0.20000000298023224,
+                  0.20000000298023224
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -281,6 +342,7 @@
         "slot": "E",
         "id": "VelkozE",
         "name": "Tectonic Disruption",
+        "maxRank": 5,
         "summary": "Vel'Koz causes an area to explode, knocking up enemies, and knocking close enemies slightly away.",
         "bodyHtml": "Vel'Koz disrupts a nearby area, causing it to explode, <span class=\"text-purple-600 dark:text-purple-500\">Knocking Up</span> for 0.75 seconds and dealing <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(70/100/130/160/190 + (30% Ability Power)) magic damage</span>. Enemies close to Vel'Koz will be <span class=\"text-purple-600 dark:text-purple-500\">Knocked Back</span> instead of <span class=\"text-purple-600 dark:text-purple-500\">Knocked Up</span>.",
         "iconFile": "VelkozE.png",
@@ -337,6 +399,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "TotalDamage",
+            "kind": "damage",
+            "baseByRank": [
+              70,
+              100,
+              130,
+              160,
+              190
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.30000001192092896,
+                  0.30000001192092896,
+                  0.30000001192092896,
+                  0.30000001192092896,
+                  0.30000001192092896
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -347,6 +436,7 @@
         "slot": "R",
         "id": "VelkozR",
         "name": "Life Form Disintegration Ray",
+        "maxRank": 3,
         "summary": "Vel'Koz unleashes a channelled beam that follows the cursor for 2.5 seconds that deals magic damage. Organic Deconstruction Researches enemy champions causing them to take true damage instead.",
         "bodyHtml": "Vel'Koz channels a ray of energy that follows the cursor, dealing a total of <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(450/700/925 + (125% Ability Power)) magic damage</span> over 2.5 seconds and <span class=\"text-purple-600 dark:text-purple-500\">Slowing</span> by 20%. Deals <span class=\"text-yellow-600 dark:text-yellow-500 font-semibold\">true damage</span> instead to enemies recently damaged by <span>Organic Deconstruction</span>.<br /><br />Enemies gain stacks of <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Deconstruction</span> periodically while in the beam.",
         "iconFile": "VelkozR.png",
@@ -393,6 +483,12 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "unsupported",
+          "unsupportedPartTypes": [
+            "EffectValueCalculationPart"
+          ]
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {

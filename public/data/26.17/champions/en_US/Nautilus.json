@@ -120,6 +120,7 @@
         "slot": "P",
         "id": "NautilusPassive",
         "name": "Staggering Blow",
+        "maxRank": 0,
         "summary": "Nautilus' first Attack against a target deals increased physical damage and roots them briefly.",
         "bodyHtml": "Nautilus' first Attack against a target deals <span class=\"text-red-600 dark:text-red-500 font-semibold\">(100% Attack Damage) physical damage</span> and <span class=\"text-purple-600 dark:text-purple-500\">Roots</span> them for (0.75 ~ 2) seconds.",
         "iconFile": "Nautilus_StaggeringBlow.png",
@@ -127,6 +128,10 @@
         "range": [],
         "rankValues": [],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -137,6 +142,7 @@
         "slot": "Q",
         "id": "NautilusAnchorDrag",
         "name": "Dredge Line",
+        "maxRank": 5,
         "summary": "Nautilus hurls his anchor forward.  Colliding with an enemy pulls them and Nautilus together, dealing magic damage.  Colliding with terrain pulls Nautilus towards it.",
         "bodyHtml": "Nautilus hurls his anchor forward. If it hits an enemy, Nautilus drags himself and the target together, dealing <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(85/130/175/220/265 + (90% Ability Power)) magic damage</span> and <span class=\"text-purple-600 dark:text-purple-500\">Stunning</span> them briefly. If the anchor hits terrain, Nautilus will drag himself towards it.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">If Nautilus's hook hits terrain, this Ability's Cooldown is reduced by 50%, and 50% of the Mana cost is refunded.</span>",
         "iconFile": "NautilusAnchorDrag.png",
@@ -189,6 +195,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "QDamageCalc",
+            "kind": "damage",
+            "baseByRank": [
+              85,
+              130,
+              175,
+              220,
+              265
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.8999999761581421,
+                  0.8999999761581421,
+                  0.8999999761581421,
+                  0.8999999761581421,
+                  0.8999999761581421
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -199,6 +232,7 @@
         "slot": "W",
         "id": "NautilusPiercingGaze",
         "name": "Titan's Wrath",
+        "maxRank": 5,
         "summary": "Nautilus gains a temporary Shield.  While it persists, his Attacks deal damage over time to his target and surrounding enemies.",
         "bodyHtml": "Nautilus gains a <span class=\"text-blue-600 dark:text-blue-300\">(50/60/70/80/90 + (8/9/10/11/12% Health)) Shield</span> for 6 seconds. While the <span class=\"text-blue-600 dark:text-blue-300\">Shield</span> persists, Nautilus' Attacks deal an additional <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(30/40/50/60/70 + (40% Ability Power)) magic damage</span> over 2 seconds to his target and all surrounding enemies.",
         "iconFile": "NautilusPiercingGaze.png",
@@ -255,6 +289,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "DotDamageCalc",
+            "kind": "damage",
+            "baseByRank": [
+              30,
+              40,
+              50,
+              60,
+              70
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.4000000059604645,
+                  0.4000000059604645,
+                  0.4000000059604645,
+                  0.4000000059604645,
+                  0.4000000059604645
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -265,6 +326,7 @@
         "slot": "E",
         "id": "NautilusSplashZone",
         "name": "Riptide",
+        "maxRank": 5,
         "summary": "Nautilus creates three exploding waves around himself. Each explosion damages and slows enemies.",
         "bodyHtml": "Nautilus creates three exploding waves around himself, each dealing <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(55/90/125/160/195 + (50% Ability Power)) magic damage</span> to enemies in the area and <span class=\"text-purple-600 dark:text-purple-500\">Slows</span> them by 30/35/40/45/50% decaying over 1.25 seconds.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">Waves deal 50% less damage after the first.</span><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">This Ability deals (125/165/205/245/285 + (50% Ability Power)) bonus damage to jungle monsters the first time it hits.</span>",
         "iconFile": "NautilusSplashZone.png",
@@ -329,6 +391,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "DamageCalc",
+            "kind": "damage",
+            "baseByRank": [
+              55,
+              90,
+              125,
+              160,
+              195
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.5,
+                  0.5,
+                  0.5,
+                  0.5,
+                  0.5
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -339,6 +428,7 @@
         "slot": "R",
         "id": "NautilusGrandLine",
         "name": "Depth Charge",
+        "maxRank": 3,
         "summary": "Nautilus fires a shockwave into the earth that chases an opponent. This shockwave rips up the earth above it, knocking enemies into the air. When it reaches the opponent, the shockwave erupts, knocking his target into the air and stunning them.",
         "bodyHtml": "Nautilus fires a shockwave that chases an enemy champion, dealing <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(150/275/400 + (80% Ability Power)) magic damage</span>, <span class=\"text-purple-600 dark:text-purple-500\">Knocking</span> them <span class=\"text-purple-600 dark:text-purple-500\">Up</span> and <span class=\"text-purple-600 dark:text-purple-500\">Stunning</span> them for 1/1.5/2 seconds. Other enemies hit by the shockwave are also <span class=\"text-purple-600 dark:text-purple-500\">Knocked Up</span> and <span class=\"text-purple-600 dark:text-purple-500\">Stunned</span> and take <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(125/175/225 + (40% Ability Power)) magic damage</span>.",
         "iconFile": "NautilusGrandLine.png",
@@ -393,6 +483,29 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "PrimaryTargetDamage",
+            "kind": "damage",
+            "baseByRank": [
+              150,
+              275,
+              400
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.800000011920929,
+                  0.800000011920929,
+                  0.800000011920929
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {

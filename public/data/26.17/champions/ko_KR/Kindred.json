@@ -119,6 +119,7 @@
         "slot": "P",
         "id": "KindredPassiveManager",
         "name": "킨드레드의 표식",
+        "maxRank": 0,
         "summary": "킨드레드는 사냥감에게 표식을 남길 수 있습니다. 사냥에 성공하면 영구적으로 킨드레드의 기본 스킬이 강화됩니다. 사냥에 4회 성공하면 킨드레드의 기본 공격 사거리가 증가합니다.",
         "bodyHtml": "킨드레드는 소지품 창 위의 챔피언 초상화를 클릭하여 사냥할 챔피언을 선택할 수 있습니다. 미니맵에서 사냥할 정글 몬스터의 아이콘을 자동으로 지정할 수도 있습니다.<br /><br />킨드레드가 사냥 대상을 처치하는 데 관여하면 <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">표식</span> 중첩이 쌓이고 공격이 강화됩니다. <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">표식</span>이 4만큼 쌓이면 킨드레드의 공격 사거리가 증가합니다. 네 번째로 표식을 얻은 이후 <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">표식</span>이 3회 중첩될 때마다 공격 사거리가 25만큼 증가합니다.<br /><br /><span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">표식</span>이 중첩되면 킨드레드의 기본 스킬이 강화됩니다.<span><span></span> 사용 시 <span>의 공격 속도</span>를 얻습니다.<span><span></span> 사용 시 현재 체력의 <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">에 해당하는 추가 피해</span>를 입힙니다.<span><span></span> 사용 시 잃은 체력의 <span class=\"text-red-600 dark:text-red-500 font-semibold\">에 해당하는 추가 피해</span>를 입힙니다.",
         "iconFile": "Kindred_Passive.png",
@@ -126,6 +127,10 @@
         "range": [],
         "rankValues": [],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -136,6 +141,7 @@
         "slot": "Q",
         "id": "KindredQ",
         "name": "화살 세례",
+        "maxRank": 5,
         "summary": "킨드레드가 구르며 근처의 대상들에게 최대 세 발의 화살을 발사합니다.",
         "bodyHtml": "킨드레드가 뛰어올라 최대 3명의 적에게 화살을 발사하여 <span class=\"text-red-600 dark:text-red-500 font-semibold\">(40/65/90/115/140 + (75% 추가 공격력))의 물리 피해</span>를 입히고 4초 동안 <span>공격 속도가 35%</span>만큼 증가합니다.<br /><br /><span>늑대의 광기</span> 범위 안에 있는 동안 이 스킬의 재사용 대기시간이 4/3.5/3/2.5/2초로 감소합니다.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">공격 속도는 얻은 <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">표식</span> 수에 비례합니다.</span>",
         "iconFile": "KindredQ.png",
@@ -188,6 +194,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "TotalDamage",
+            "kind": "damage",
+            "baseByRank": [
+              40,
+              65,
+              90,
+              115,
+              140
+            ],
+            "terms": [
+              {
+                "stat": "bonusAttackDamage",
+                "coefficientsByRank": [
+                  0.75,
+                  0.75,
+                  0.75,
+                  0.75,
+                  0.75
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -198,6 +231,7 @@
         "slot": "W",
         "id": "KindredW",
         "name": "늑대의 광기",
+        "maxRank": 5,
         "summary": "늑대가 분노하여 주변의 적들을 공격합니다. 양이 기본 지속 효과로 움직이고 공격하여 중첩을 얻습니다. 완전히 충전되면 양이 다음 번 공격할 때 체력을 회복합니다.",
         "bodyHtml": "<span class=\"text-gray-600 dark:text-gray-500 italic\">기본 지속 효과:</span> 킨드레드가 이동하고 공격할 때마다 중첩이 쌓입니다. 100회 중첩 상태에서 다음 기본 공격 시 잃은 체력의 <span class=\"text-green-600 dark:text-green-400\">47에 해당하는 체력</span>을 회복합니다.<br /><br /><span class=\"text-gray-900 dark:text-white font-semibold\">사용 시:</span> 킨드레드가 지대를 지정하고 늑대에게 명령을 내려 양이 마지막으로 공격한 적을 물게 합니다. 늑대의 공격은 <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(25/30/35/40/45 + (20% 추가 공격력) + (20% 주문력))</span>+현재 체력의 <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">1.5%에 해당하는 마법 피해</span>를 입힙니다.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">늑대의 공격 속도는 킨드레드의 <span>공격 속도</span>에 비례합니다. 정글 몬스터 공격 시 늑대가 입히는 피해량이 50% 증가하고 정글 몬스터를 2초 동안 50% <span class=\"text-purple-600 dark:text-purple-500\">둔화</span>시킵니다.</span>",
         "iconFile": "KindredW.png",
@@ -250,6 +284,43 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "BaseWolfDamage",
+            "kind": "damage",
+            "baseByRank": [
+              25,
+              30,
+              35,
+              40,
+              45
+            ],
+            "terms": [
+              {
+                "stat": "bonusAttackDamage",
+                "coefficientsByRank": [
+                  0.20000000298023224,
+                  0.20000000298023224,
+                  0.20000000298023224,
+                  0.20000000298023224,
+                  0.20000000298023224
+                ]
+              },
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.20000000298023224,
+                  0.20000000298023224,
+                  0.20000000298023224,
+                  0.20000000298023224,
+                  0.20000000298023224
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -260,6 +331,7 @@
         "slot": "E",
         "id": "KindredEWrapper",
         "name": "차오르는 공포",
+        "maxRank": 5,
         "summary": "양이 신중하게 화살을 발사해 대상의 속도를 늦춥니다. 양이 대상을 두 번 더 공격하면 세 번째 공격 시 늑대가 적을 덮치게 만들어, 흉포한 공격으로 큰 피해를 입힙니다.",
         "bodyHtml": "킨드레드가 적을 약화시켜 1초 동안 (30 + (5% 주문력))<span class=\"text-purple-600 dark:text-purple-500\">둔화</span>시킵니다.<br /><br />4초 내에 대상을 세 번 공격하면 늑대가 적을 덮쳐 추가로 <span class=\"text-red-600 dark:text-red-500 font-semibold\">(80/110/140/170/200 + (100% 추가 공격력))</span>+<span class=\"text-red-600 dark:text-red-500 font-semibold\">적이 잃은 체력의 5%에 해당하는 물리 피해</span>를 입힙니다.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">피해량은 치명타 확률 및 치명타 피해량에 비례해 50%만큼 증가합니다.<br />정글 몬스터를 상대로는 잃은 체력 비례 피해가 200까지 적용됩니다.</span>",
         "iconFile": "KindredEWrapper.png",
@@ -302,6 +374,12 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "unsupported",
+          "unsupportedPartTypes": [
+            "unsupported-multiplier"
+          ]
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -312,6 +390,7 @@
         "slot": "R",
         "id": "KindredR",
         "name": "양의 안식처",
+        "maxRank": 3,
         "summary": "양은 안식처 영역 안에 있는 모든 생명체를 죽음으로부터 지켜줍니다. 효과가 끝날 때까지는 아무도 죽지 않습니다. 효과가 끝나면 유닛들이 치유됩니다.",
         "bodyHtml": "킨드레드가 4초 동안 땅을 축복하여 해당 영역 안에 있는 아군, 적, 중립 몬스터를 포함한 모든 유닛이 사망하지 않습니다. 체력이 10%로 떨어지면 유닛들이 해당 영역 안에 있는 동안 피해를 받거나 치유되지 않습니다.<br /><br />축복이 끝나면 영역 안에 있는 모든 유닛이 <span class=\"text-green-600 dark:text-green-400\">체력을 225/300/375</span> 회복합니다.",
         "iconFile": "KindredR.png",
@@ -344,6 +423,10 @@
           }
         ],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {

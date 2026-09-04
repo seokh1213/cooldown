@@ -120,6 +120,7 @@
         "slot": "P",
         "id": "AhriPassive",
         "name": "정기 흡수",
+        "maxRank": 0,
         "summary": "아리가 미니언 또는 몬스터를 9마리 처치하면 체력을 회복합니다.<br>아리가 적 챔피언 처치에 관여하면 더 많은 체력을 회복합니다.",
         "bodyHtml": "미니언이나 몬스터를 처치하면 아리가 정기 조각을 얻습니다. 조각을 9개 모으면 전부 소모해 <span class=\"text-green-600 dark:text-green-400\">체력을 (20% 주문력) 회복</span>합니다.<br /><br />아리가 적 챔피언에게 피해를 입힌 후 3초 안에 해당 챔피언 처치에 관여하면 그 정기를 삼켜 <span class=\"text-green-600 dark:text-green-400\">체력을 (30% 주문력) 회복</span>합니다.",
         "iconFile": "Ahri_SoulEater2.png",
@@ -127,6 +128,10 @@
         "range": [],
         "rankValues": [],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -137,6 +142,7 @@
         "slot": "Q",
         "id": "AhriQ",
         "name": "현혹의 구슬",
+        "maxRank": 5,
         "summary": "아리가 구슬을 던지고 다시 받습니다. 던질 때는 마법 피해를 주며 돌아올 때는 고정 피해를 줍니다. ",
         "bodyHtml": "아리가 구슬을 던진 후 다시 받습니다. 던질 때는 <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(35/60/85/110/135 + (50% 주문력))의 마법 피해</span>를 입히며 돌아올 때는 <span class=\"text-yellow-600 dark:text-yellow-500 font-semibold\">(35/60/85/110/135 + (50% 주문력))의 고정 피해</span>를 입힙니다.",
         "iconFile": "AhriQ.png",
@@ -189,6 +195,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "TotalDamage",
+            "kind": "damage",
+            "baseByRank": [
+              35,
+              60,
+              85,
+              110,
+              135
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.5,
+                  0.5,
+                  0.5,
+                  0.5,
+                  0.5
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -199,6 +232,7 @@
         "slot": "W",
         "id": "AhriW",
         "name": "여우불",
+        "maxRank": 5,
         "summary": "아리의 이동 속도가 잠시 동안 크게 증가하며 아리가 여우불 세 개를 생성하면, 각각 자동으로 적을 찾아 공격합니다.",
         "bodyHtml": "아리가 근처 적에게 날아가는 여우불 세 개를 방출하여 <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(40/60/80/100/120 + (40% 주문력))의 마법 피해</span>를 입힙니다. 첫 번째 여우불이 적중한 후에는 <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(16/24/32/40/48 + (16% 주문력))의 피해</span>로 감소합니다. 또한 <span class=\"text-cyan-600 dark:text-cyan-500\">이동 속도가 40%</span> 증가했다가 2초에 걸쳐 원래대로 돌아옵니다.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">여우불은 <span>매혹</span>에 적중한 챔피언, 아리가 공격한 적, 이외 챔피언 순으로 공격합니다. 체력이 20% 이하인 미니언은 200%의 피해를 입습니다.</span><br />",
         "iconFile": "AhriW.png",
@@ -251,6 +285,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "SingleFireDamage",
+            "kind": "damage",
+            "baseByRank": [
+              40,
+              60,
+              80,
+              100,
+              120
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.4000000059604645,
+                  0.4000000059604645,
+                  0.4000000059604645,
+                  0.4000000059604645,
+                  0.4000000059604645
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -261,6 +322,7 @@
         "slot": "E",
         "id": "AhriE",
         "name": "매혹",
+        "maxRank": 5,
         "summary": "아리가 입맞춤을 날려 피해를 주며 맞은 적을 홀립니다. 홀린 적은 즉시 이동 스킬을 멈추고 아리 쪽으로 무작정 다가갑니다.",
         "bodyHtml": "아리가 입맞춤을 날려 첫 번째로 맞는 적을 1.2/1.35/1.5/1.65/1.8초 동안 <span class=\"text-purple-600 dark:text-purple-500\">매혹</span>하고 <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(80/120/160/200/240 + (85% 주문력))의 마법 피해</span>를 입힙니다.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">적을 <span class=\"text-purple-600 dark:text-purple-500\">쓰러뜨리는</span> 스킬입니다.</span>",
         "iconFile": "AhriE.png",
@@ -313,6 +375,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "TotalDamage",
+            "kind": "damage",
+            "baseByRank": [
+              80,
+              120,
+              160,
+              200,
+              240
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.8500000238418579,
+                  0.8500000238418579,
+                  0.8500000238418579,
+                  0.8500000238418579,
+                  0.8500000238418579
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -323,6 +412,7 @@
         "slot": "R",
         "id": "AhriR",
         "name": "혼령 질주",
+        "maxRank": 3,
         "summary": "아리가 전방으로 질주하며 근처 적 챔피언들에게 혼령의 정기를 쏘아냅니다. 재사용 대기시간이 적용되기 전에 최대 세 번까지 사용할 수 있으며, 적 챔피언 처치 관여 시 재사용 가능 횟수가 늘어납니다.",
         "bodyHtml": "아리가 민첩하게 질주하며 근처 적(챔피언 우선)에게 혼령의 정기 3개를 쏘아내 정기 하나당 <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(75/125/175 + (35% 주문력))의 마법 피해</span>를 입힙니다. <span>혼령 질주</span>는 15초 안에 최대 2회까지 <span class=\"text-yellow-600 dark:text-yellow-300\">재사용</span>할 수 있습니다.<br /><br />이 기간에 <span>정기 흡수</span> 효과로 챔피언의 정기를 삼키면 <span>혼령 질주</span> 재사용 가능 횟수가 1회 증가하며 (최대 3회) 지속시간이 최대 10초 늘어납니다.",
         "iconFile": "AhriR.png",
@@ -369,6 +459,12 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "unsupported",
+          "unsupportedPartTypes": [
+            "StatByNamedDataValueCalculationPart"
+          ]
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {

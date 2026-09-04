@@ -120,6 +120,7 @@
         "slot": "P",
         "id": "MorganaPassive",
         "name": "Soul Siphon",
+        "maxRank": 0,
         "summary": "Morgana drains spirit from her enemies, healing as she deals damage to champions, large minions, and medium and larger jungler monsters.",
         "bodyHtml": "Morgana <span class=\"text-green-600 dark:text-green-400\">Heals for 18%</span> of the damage dealt by her Abilities to champions, large minions, and medium and larger jungle monsters.",
         "iconFile": "FallenAngel_Empathize.png",
@@ -127,6 +128,10 @@
         "range": [],
         "rankValues": [],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -137,6 +142,7 @@
         "slot": "Q",
         "id": "MorganaQ",
         "name": "Dark Binding",
+        "maxRank": 5,
         "summary": "Morgana binds an enemy in place with dark magic, forcing them to feel the pain they've caused and dealing magic damage. ",
         "bodyHtml": "Morgana hurls a blast of starfire that <span class=\"text-purple-600 dark:text-purple-500\">Roots</span> the first enemy hit for 2/2.25/2.5/2.75/3 seconds and deals <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(80/135/190/245/300 + (90% Ability Power)) magic damage</span>.",
         "iconFile": "MorganaQ.png",
@@ -193,6 +199,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "TotalDamage",
+            "kind": "damage",
+            "baseByRank": [
+              80,
+              135,
+              190,
+              245,
+              300
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.8999999761581421,
+                  0.8999999761581421,
+                  0.8999999761581421,
+                  0.8999999761581421,
+                  0.8999999761581421
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -203,6 +236,7 @@
         "slot": "W",
         "id": "MorganaW",
         "name": "Tormented Shadow",
+        "maxRank": 5,
         "summary": "Morgana casts a cursed shadow on an area, damaging enemies who dare stand in her dark circle. They receive magic damage over time, which increases the lower health they are.",
         "bodyHtml": "Morgana ignites the ground for 5 seconds, dealing <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(18/31/44/57/70 + (20% Ability Power)) magic damage</span> per second, increased by up to <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(18/31/44/57/70 + (20% Ability Power))</span> based on the targets' missing Health.<br /><br />This Ability's Cooldown is reduced by 5% every time Morgana is healed by <span>Soul Siphon</span>.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">This Ability deals 170% damage to jungle monsters.</span>",
         "iconFile": "MorganaW.png",
@@ -255,6 +289,12 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "unsupported",
+          "unsupportedPartTypes": [
+            "GameCalculationModified"
+          ]
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -265,6 +305,7 @@
         "slot": "E",
         "id": "MorganaE",
         "name": "Black Shield",
+        "maxRank": 5,
         "summary": "Morgana anoints an ally with a protective barrier of starfire, which absorbs magical damage and disabling effects until it is broken.",
         "bodyHtml": "Morgana grants an ally champion <span class=\"text-blue-600 dark:text-blue-300\">(100/155/210/265/320 + (70% Ability Power)) Magic Shield</span> for 5 seconds. The shield prevents <span class=\"text-purple-600 dark:text-purple-500\">Disabling</span> and <span class=\"text-purple-600 dark:text-purple-500\">Immobilizing</span> effects until it breaks.",
         "iconFile": "MorganaE.png",
@@ -317,6 +358,10 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -327,6 +372,7 @@
         "slot": "R",
         "id": "MorganaR",
         "name": "Soul Shackles",
+        "maxRank": 3,
         "summary": "Morgana unleashes the full force of her Celestial power as she unbinds her wings and hovers above the ground. She lashes chains of dark pain onto nearby enemy champions, gaining Move Speed. The chains slow and deal initial damage and, after a delay, stun those who are unable to break them.",
         "bodyHtml": "Morgana chains herself to nearby enemy Champions, dealing <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(200/275/350 + (80% Ability Power)) magic damage</span> and <span class=\"text-purple-600 dark:text-purple-500\">Slowing</span> them by 20%. After 3 seconds, enemies unable to break the chains take an additional <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(200/275/350 + (80% Ability Power)) magic damage</span> and are <span class=\"text-purple-600 dark:text-purple-500\">Stunned</span> for 1.5/1.75/2 seconds.<br /><br />While casting this Ability, Morgana gains <span class=\"text-cyan-600 dark:text-cyan-500\">20/40/60% Move Speed</span>.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">Morgana gains <span class=\"text-purple-600 dark:text-purple-400 font-semibold\">True Sight</span> of all enemies affected by this Ability.</span>",
         "iconFile": "MorganaR.png",
@@ -381,6 +427,29 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "TotalDamage",
+            "kind": "damage",
+            "baseByRank": [
+              200,
+              275,
+              350
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.800000011920929,
+                  0.800000011920929,
+                  0.800000011920929
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {

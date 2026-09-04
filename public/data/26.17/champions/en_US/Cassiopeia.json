@@ -119,6 +119,7 @@
         "slot": "P",
         "id": "CassiopeiaPassive",
         "name": "Serpentine Grace",
+        "maxRank": 0,
         "summary": "All Move Speed bonuses are more effective on Cassiopeia.",
         "bodyHtml": "Cassiopeia increases the effectiveness of all <span class=\"text-cyan-600 dark:text-cyan-500\">Move Speed</span> bonuses by 6%.",
         "iconFile": "Cassiopeia_Passive.png",
@@ -126,6 +127,10 @@
         "range": [],
         "rankValues": [],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -136,6 +141,7 @@
         "slot": "Q",
         "id": "CassiopeiaQ",
         "name": "Noxious Blast",
+        "maxRank": 5,
         "summary": "Cassiopeia blasts an area with Poison after a brief delay, granting her increased Move Speed if she hits an enemy champion.",
         "bodyHtml": "Cassiopeia blasts noxious gas, <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Poisoning</span> enemies and dealing <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(75/110/145/180/215 + (65% Ability Power)) magic damage</span> over 3 seconds. Hitting a champion grants Cassiopeia <span class=\"text-cyan-600 dark:text-cyan-500\">30/35/40/45/50% Move Speed</span> decaying over 3 seconds.",
         "iconFile": "CassiopeiaQ.png",
@@ -192,6 +198,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "TooltipTotalDamage",
+            "kind": "damage",
+            "baseByRank": [
+              75,
+              110,
+              145,
+              180,
+              215
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.6499999761581421,
+                  0.6499999761581421,
+                  0.6499999761581421,
+                  0.6499999761581421,
+                  0.6499999761581421
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -202,6 +235,7 @@
         "slot": "W",
         "id": "CassiopeiaW",
         "name": "Miasma",
+        "maxRank": 5,
         "summary": "Cassiopeia releases several clouds of poison, slowing, grounding, and lightly damaging enemies that pass through them. Grounded enemies cannot use Movement abilities.",
         "bodyHtml": "Cassiopeia spews venom, leaving toxic clouds for 5 seconds. Enemies in the clouds take <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(20/25/30/35/40 + (10% Ability Power)) magic damage</span> per second, are <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Poisoned</span>, <span class=\"text-purple-600 dark:text-purple-500\">Grounded</span>, and <span class=\"text-purple-600 dark:text-purple-500\">Slowed</span> by 40/50/60/70/80%.",
         "iconFile": "CassiopeiaW.png",
@@ -262,6 +296,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "DamagePerSecond",
+            "kind": "damage",
+            "baseByRank": [
+              20,
+              25,
+              30,
+              35,
+              40
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.10000000149011612,
+                  0.10000000149011612,
+                  0.10000000149011612,
+                  0.10000000149011612,
+                  0.10000000149011612
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -272,6 +333,7 @@
         "slot": "E",
         "id": "CassiopeiaE",
         "name": "Twin Fang",
+        "maxRank": 5,
         "summary": "Cassiopeia lets loose an attack that deals increased damage to Poisoned targets and heals her for a percentage of the damage dealt. If the target dies from this attack, Cassiopeia regains Mana.",
         "bodyHtml": "Cassiopeia launches deadly fangs, dealing <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(52 + (10% Ability Power)) magic damage</span>. If the enemy is <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Poisoned</span>, they take an additional <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(20/45/70/95/120 + (55% Ability Power)) magic damage</span> and Cassiopeia restores <span class=\"text-green-600 dark:text-green-400\">(10/11.5/13/14.5/16% Ability Power) Health</span>, reduced to <span class=\"text-green-600 dark:text-green-400\">(2.5/2.875/3.25/3.625/4% Ability Power) Health</span> against lane minions and small monsters.<br /><br />If this kills the target, Cassiopeia restores <span>40 Mana</span>.<br /><br />",
         "iconFile": "CassiopeiaE.png",
@@ -324,6 +386,12 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "unsupported",
+          "unsupportedPartTypes": [
+            "ByCharLevelBreakpointsCalculationPart"
+          ]
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -334,6 +402,7 @@
         "slot": "R",
         "id": "CassiopeiaR",
         "name": "Petrifying Gaze",
+        "maxRank": 3,
         "summary": "Cassiopeia releases a swirl of magical energy from her eyes, stunning any enemies in front of her that are facing her and slowing any others with their back turned.",
         "bodyHtml": "Cassiopeia unleashes a petrifying gaze, dealing <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(150/250/350 + (50% Ability Power)) magic damage</span> and <span class=\"text-purple-600 dark:text-purple-500\">Stunning</span> enemies facing her for 2 seconds. Enemies facing away are <span class=\"text-purple-600 dark:text-purple-500\">Slowed</span> by 40% decaying over the same duration instead.",
         "iconFile": "CassiopeiaR.png",
@@ -380,6 +449,29 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "RDamage",
+            "kind": "damage",
+            "baseByRank": [
+              150,
+              250,
+              350
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.5,
+                  0.5,
+                  0.5
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {

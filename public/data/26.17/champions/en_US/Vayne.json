@@ -120,6 +120,7 @@
         "slot": "P",
         "id": "VaynePassive",
         "name": "Night Hunter",
+        "maxRank": 0,
         "summary": "Vayne ruthlessly hunts evil-doers, gaining Move Speed when moving toward nearby enemy champions.",
         "bodyHtml": "Vayne ruthlessly hunts evil-doers, gaining 30 Move Speed when moving toward nearby enemy champions.",
         "iconFile": "Vayne_NightHunter.png",
@@ -127,6 +128,10 @@
         "range": [],
         "rankValues": [],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -137,6 +142,7 @@
         "slot": "Q",
         "id": "VayneTumble",
         "name": "Tumble",
+        "maxRank": 5,
         "summary": "Vayne tumbles, maneuvering to carefully place her next shot. Her next attack deals bonus damage.",
         "bodyHtml": "Vayne rolls a short distance, and deals an additional <span class=\"text-red-600 dark:text-red-500 font-semibold\">((75/85/95/105/115% Attack Damage) + (50% Ability Power)) physical damage</span> on her next Attack.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">This Ability triggers spell effects upon dealing damage.</span>",
         "iconFile": "VayneTumble.png",
@@ -193,6 +199,10 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -203,6 +213,7 @@
         "slot": "W",
         "id": "VayneSilveredBolts",
         "name": "Silver Bolts",
+        "maxRank": 5,
         "summary": "Vayne tips her bolts with a rare metal, toxic to evil things. The third consecutive attack or ability against the same target deals a percentage of the target's max health as bonus true damage.",
         "bodyHtml": "<span class=\"text-gray-600 dark:text-gray-500 italic\">Passive</span>: Every third consecutive Attack or Ability against an enemy deals an additional <span class=\"text-yellow-600 dark:text-yellow-500 font-semibold\">4/5.5/7/8.5/10% max Health true damage</span>.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">Deals a minimum of 40/55/70/85/100 damage.<br />Deals 140/155/170/185/200 damage against jungle monsters. </span>",
         "iconFile": "VayneSilveredBolts.png",
@@ -249,6 +260,12 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "unsupported",
+          "unsupportedPartTypes": [
+            "percent-calculation"
+          ]
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -259,6 +276,7 @@
         "slot": "E",
         "id": "VayneCondemn",
         "name": "Condemn",
+        "maxRank": 5,
         "summary": "Vayne draws a heavy crossbow from her back, and fires a huge bolt at her target, knocking them back and dealing damage. If they collide with terrain, they are impaled, dealing bonus damage and stunning them.",
         "bodyHtml": "Vayne fires a bolt that <span class=\"text-purple-600 dark:text-purple-500\">Knocks Back</span> and deals <span class=\"text-red-600 dark:text-red-500 font-semibold\">(50/85/120/155/190 + (50% bonus Attack Damage)) physical damage</span>. If the target collides with terrain, they take <span class=\"text-red-600 dark:text-red-500 font-semibold\">(75/127.5/180/232.5/285 + (75% bonus Attack Damage)) bonus physical damage</span> and become <span class=\"text-purple-600 dark:text-purple-500\">Stunned</span> for 1.5 seconds.",
         "iconFile": "VayneCondemn.png",
@@ -311,6 +329,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "TotalDamage",
+            "kind": "damage",
+            "baseByRank": [
+              50,
+              85,
+              120,
+              155,
+              190
+            ],
+            "terms": [
+              {
+                "stat": "bonusAttackDamage",
+                "coefficientsByRank": [
+                  0.5,
+                  0.5,
+                  0.5,
+                  0.5,
+                  0.5
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -321,6 +366,7 @@
         "slot": "R",
         "id": "VayneInquisition",
         "name": "Final Hour",
+        "maxRank": 3,
         "summary": "Readying herself for an epic confrontation, Vayne gains increased Attack Damage, Invisibility during Tumble, reduced Tumble cooldown, and more bonus Move Speed from Night Hunter",
         "bodyHtml": "Vayne gains <span class=\"text-red-600 dark:text-red-500 font-semibold\">35/50/65 Attack Damage</span> for 8/10/12 seconds, extended by 4 seconds whenever a champion damaged by Vayne dies within 3 seconds. Additionally, during the duration:<span><span>Night Hunter</span> instead grants <span class=\"text-cyan-600 dark:text-cyan-500\">90 Move Speed</span>.<span>The Cooldown of <span>Tumble</span> is reduced by 30/40/50%, and grants <span class=\"text-purple-600 dark:text-purple-400 font-semibold\">Invisibility</span> for 1 second.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\"><span class=\"text-purple-600 dark:text-purple-400 font-semibold\">Invisible</span> units cannot be revealed except by turrets or <span style=\"color: #ee91d7\">True Sight</font color>.<br />This Ability's duration can't be increased past its maximum duration</span>",
         "iconFile": "VayneInquisition.png",
@@ -361,6 +407,10 @@
           }
         ],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {

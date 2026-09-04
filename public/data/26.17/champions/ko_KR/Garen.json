@@ -120,6 +120,7 @@
         "slot": "P",
         "id": "GarenPassive",
         "name": "인내심",
+        "maxRank": 0,
         "summary": "가렌이 잠시 적의 기본 공격 및 스킬 공격에 맞지 않으면 1초마다 총 체력의 일정 비율씩 회복됩니다.",
         "bodyHtml": "가렌이 8초 동안 피해를 입지 않거나 적의 스킬에 맞지 않으면 5초마다 <span class=\"text-green-600 dark:text-green-400\">최대 체력의 (150% ~ 250%)</span>만큼 회복합니다.",
         "iconFile": "Garen_Passive.png",
@@ -127,6 +128,10 @@
         "range": [],
         "rankValues": [],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -137,6 +142,7 @@
         "slot": "Q",
         "id": "GarenQ",
         "name": "결정타",
+        "maxRank": 5,
         "summary": "가렌의 이동 속도가 큰 폭으로 증가하고 현재 걸려 있는 모든 둔화 효과가 제거됩니다. 가렌의 다음 공격은 적의 급소를 가격하여 추가 피해를 입히고 침묵시킵니다.",
         "bodyHtml": "가렌에게 적용된 모든 <span class=\"text-purple-600 dark:text-purple-500\">둔화</span> 효과가 제거되고 1.4/1.95/2.5/3.05/3.6초 동안 <span class=\"text-cyan-600 dark:text-cyan-500\">이동 속도가 35%</span> 상승합니다.<br /><br />다음 기본 공격은 1.5초 동안 <span class=\"text-purple-600 dark:text-purple-500\">침묵</span>시키고 <span class=\"text-red-600 dark:text-red-500 font-semibold\">(30/60/90/120/150 + (150% 공격력))의 물리 피해</span>를 입힙니다.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">강화된 기본 공격은 4.5초 후 끝납니다.<br />이 스킬은 피해를 입힐 때 효과가 발동합니다.</span>",
         "iconFile": "GarenQ.png",
@@ -179,6 +185,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "TotalDamage",
+            "kind": "damage",
+            "baseByRank": [
+              30,
+              60,
+              90,
+              120,
+              150
+            ],
+            "terms": [
+              {
+                "stat": "totalAttackDamage",
+                "coefficientsByRank": [
+                  1.5,
+                  1.5,
+                  1.5,
+                  1.5,
+                  1.5
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -189,6 +222,7 @@
         "slot": "W",
         "id": "GarenW",
         "name": "용기",
+        "maxRank": 5,
         "summary": "가렌은 적을 처치하면 기본 지속 효과로 방어력과 마법 저항력이 증가합니다. 또한 효과가 활성화되면 잠시 동안 보호막과 강인함이 부여되며 이후에는 좀 더 긴 시간 동안 받는 피해량 감소 효과가 약하게 적용됩니다.",
         "bodyHtml": "<span class=\"text-gray-600 dark:text-gray-500 italic\">기본 지속 효과:</span> 가렌이 <span class=\"text-orange-600 dark:text-orange-400\">의 추가 방어력</span>과 <span>의 추가 마법 저항력</span>을 얻습니다. 유닛을 처치하면 영구적으로 <span>0.2의 방어력 및 마법 저항력</span>이 부여되어 최대 <span>30</span>까지 증가합니다.<br /><br /><span class=\"text-gray-900 dark:text-white font-semibold\">사용 시:</span> 가렌이 4초 동안 용기백배하여 받는 피해가 25/29/33/37/41% 감소합니다. 또한 0.75초 동안 <span class=\"text-blue-600 dark:text-blue-300\">(65/85/105/125/145 + (18% 추가 체력))의 피해를 흡수하는 보호막</span>과 <span>60%의 강인함</span>을 얻습니다.",
         "iconFile": "GarenW.png",
@@ -235,6 +269,10 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -247,6 +285,7 @@
         "slot": "E",
         "id": "GarenE",
         "name": "심판",
+        "maxRank": 5,
         "summary": "가렌이 검을 들고 빠르게 회전하여 주변 적에게 물리 피해를 입힙니다.",
         "bodyHtml": "가렌이 3초 동안 검을 들고 빠르게 회전하여 <span class=\"text-red-600 dark:text-red-500 font-semibold\">(4/7/10/13/16 + (40/43/46/49/52% 공격력))의 물리 피해</span>를 회 입힙니다. 가장 가까운 적을 대상으로는 <span class=\"text-red-600 dark:text-red-500 font-semibold\">피해량이 25% 증가</span>합니다. 공격에 6번 맞은 챔피언은 6초 동안 <span class=\"text-orange-600 dark:text-orange-400\">방어력이 25%</span> 감소합니다.<br /><br /><span class=\"text-yellow-600 dark:text-yellow-300\">재사용 시</span>: 이 스킬을 일찍 종료합니다.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">아이템 및 레벨로 얻은 <span>공격 속도 25%</span>당 공격 횟수가 1회 증가합니다.<br />치명타가 적용될 수 있고 치명타 적용 시 <span class=\"text-red-600 dark:text-red-500 font-semibold\">(4/7/10/13/16 + (40/43/46/49/52% 공격력))의 물리 피해</span>를 입힙니다.</span>",
         "iconFile": "GarenE.png",
@@ -293,6 +332,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "TotalDamage",
+            "kind": "damage",
+            "baseByRank": [
+              4,
+              7,
+              10,
+              13,
+              16
+            ],
+            "terms": [
+              {
+                "stat": "totalAttackDamage",
+                "coefficientsByRank": [
+                  0.4000000059604645,
+                  0.4300000071525574,
+                  0.46000000834465027,
+                  0.49000000953674316,
+                  0.5199999809265137
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -305,6 +371,7 @@
         "slot": "R",
         "id": "GarenR",
         "name": "데마시아의 정의",
+        "maxRank": 3,
         "summary": "가렌이 적 챔피언을 처단할 데마시아의 힘을 소환합니다.",
         "bodyHtml": "가렌이 적을 처단할 데마시아의 힘을 소환하여 <span class=\"text-yellow-600 dark:text-yellow-500 font-semibold\">125/200/275 + 잃은 체력의 25/30/35%에 해당하는 고정 피해</span>를 입힙니다.",
         "iconFile": "GarenR.png",
@@ -333,6 +400,10 @@
           }
         ],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {

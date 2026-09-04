@@ -120,6 +120,7 @@
         "slot": "P",
         "id": "AkshanPassive",
         "name": "비열한 싸움",
+        "maxRank": 0,
         "summary": "아크샨의 기본 공격 및 스킬이 세 번 적중할 때마다 추가 물리 피해를 입힙니다. 대상이 챔피언인 경우 아크샨이 보호막을 얻습니다.<br><br>아크샨이 기본 공격 후 피해량이 감소한 두 번째 공격을 발사합니다. 추가 공격을 도중에 취소하면 대신 이동 속도가 증가합니다.",
         "bodyHtml": "아크샨이 기본 공격 후 두 번째 공격을 발사해서 <span class=\"text-red-600 dark:text-red-500 font-semibold\">(50% 공격력)의 물리 피해</span>를 입힙니다. 두 번째 공격을 도중에 취소하면 <span class=\"text-cyan-600 dark:text-cyan-500\">이동 속도가 (20 ~ 75)</span> 증가했다가 1초에 걸쳐 원래대로 돌아옵니다.<br /><br />기본 공격 또는 스킬이 세 번째로 적중할 때마다 <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(150 + (60% 주문력))의 마법 피해</span>를 추가로 입힙니다. 대상이 챔피언인 경우, 2초간 <span class=\"text-blue-600 dark:text-blue-300\">(35% 추가 공격력)의 피해</span>를 흡수하는 보호막을 얻습니다. (재사용 대기시간 4초)<br /><br />",
         "iconFile": "akshan_p.png",
@@ -127,6 +128,10 @@
         "range": [],
         "rankValues": [],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -137,6 +142,7 @@
         "slot": "Q",
         "id": "AkshanQ",
         "name": "복수의 부메랑",
+        "maxRank": 5,
         "summary": "아크샨이 날아가고 돌아오며 피해를 입히는 부메랑을 던집니다. 적에게 적중할 때마다 부메랑의 사거리가 증가합니다.",
         "bodyHtml": "아크샨이 부메랑을 던져 <span class=\"text-red-600 dark:text-red-500 font-semibold\">(45/75/105/135/165 + (70% 추가 공격력))의 물리 피해</span>를 입힙니다. 적에게 적중할 때마다 부메랑의 사거리가 증가합니다.<br /><br />부메랑이 챔피언에게 적중하면 아크샨의 <span class=\"text-cyan-600 dark:text-cyan-500\">이동 속도가 (20% + (0.05% 주문력))</span> 증가했다가 1초에 걸쳐 원래대로 돌아옵니다.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">챔피언이 아닌 대상에게는 40/50/60/70/80%의 피해를 입힙니다. 부메랑에 맞은 적의 모습이 잠시 드러납니다.</span>",
         "iconFile": "AkshanQ.png",
@@ -197,6 +203,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "FinalDamage",
+            "kind": "damage",
+            "baseByRank": [
+              45,
+              75,
+              105,
+              135,
+              165
+            ],
+            "terms": [
+              {
+                "stat": "bonusAttackDamage",
+                "coefficientsByRank": [
+                  0.699999988079071,
+                  0.699999988079071,
+                  0.699999988079071,
+                  0.699999988079071,
+                  0.699999988079071
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -207,6 +240,7 @@
         "slot": "W",
         "id": "AkshanW",
         "name": "악당 처단",
+        "maxRank": 5,
         "summary": "아크샨이 아군 챔피언을 처치한 적 챔피언에게 악당 표식을 남깁니다. 아크샨이 악당을 처치하면 해당 적이 처치한 아군들을 부활시키고 추가 골드를 얻으며 모든 악당 표식을 없앱니다.<br><br>활성화 시 아크샨이 위장 상태에 들어가며 악당에게 다가갈 때 이동 속도와 마나 재생량이 증가합니다. 아크샨이 지형 근처나 수풀 안에 있지 않으면 위장 상태가 금방 풀립니다.",
         "bodyHtml": "<span class=\"text-gray-600 dark:text-gray-400 italic\"><span class=\"text-purple-600 dark:text-purple-400 font-semibold\">위장</span> 상태일 때는 적 챔피언의 감지 범위 안에 들어가지 않는 한 시야에 보이지 않습니다.<br />위장 상태에서는 <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">악당</span>에게 향하는 흔적이 생성됩니다.<br />아크샨이 살아 있을 때만 악당 효과로 이득을 볼 수 있습니다.<br />획득한 총 골드: </span>",
         "iconFile": "AkshanW.png",
@@ -263,6 +297,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "SecondAutoDamage",
+            "kind": "damage",
+            "baseByRank": [
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "terms": [
+              {
+                "stat": "totalAttackDamage",
+                "coefficientsByRank": [
+                  0.46000000834465027,
+                  0.5199999809265137,
+                  0.5799999833106995,
+                  0.6399999856948853,
+                  0.699999988079071
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -275,6 +336,7 @@
         "slot": "E",
         "id": "AkshanE",
         "name": "영웅의 비상",
+        "maxRank": 5,
         "summary": "아크샨이 갈고리총을 발사해 지형에 고정시킨 후, 갈고리에 매달린 채 가장 가까운 적을 연속으로 공격하며 이동합니다. 기동 중 챔피언이나 지형에 충돌하면 땅으로 떨어지며, 도중에 스스로 뛰어내릴 수도 있습니다.",
         "bodyHtml": "<span class=\"text-gray-900 dark:text-white font-semibold\">첫 사용 시:</span> 아크샨이 적중한 첫 번째 지형에 고정되는 갈고리총을 발사합니다.<br /><br /><span class=\"text-gray-900 dark:text-white font-semibold\">두 번째 사용 시:</span> 아크샨이 갈고리에 매달려 이동하며 가장 가까운 적에게 연속으로 탄환을 발사해 한 발당 <span class=\"text-red-600 dark:text-red-500 font-semibold\">(8/16/24/32/40 + (25% 공격력))의 물리 피해</span>를 입힙니다.<br /><br /><span class=\"text-gray-900 dark:text-white font-semibold\">세 번째 사용 시:</span> 아크샨이 밧줄을 놓고 뛰어내리며 마지막 탄환을 발사합니다.<br /><br />적 챔피언이나 지형에 부딪히면 영웅의 비상이 일찍 끝납니다.<br /><br />챔피언 처치 관여 시 이 스킬의 재사용 대기시간이 초기화됩니다.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">아크샨이 <span>비열한 싸움</span>으로 표식을 남긴 챔피언을 우선적으로 공격합니다.<br />갈고리에 매달린 채 이동 중에는 적중 시 효과 피해량이 25%로 적용됩니다.<br />피해량이 <span>추가 공격 속도의 30%</span>만큼 증가합니다.<br />기본 공격 시 치명타가 적용될 수 있으며, 적용 시 <span class=\"text-red-600 dark:text-red-500 font-semibold\">(8/16/24/32/40 + (25% 공격력))의 물리 피해</span>를 입힙니다.</span>",
         "iconFile": "AkshanE.png",
@@ -327,6 +389,12 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "unsupported",
+          "unsupportedPartTypes": [
+            "unsupported-multiplier"
+          ]
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -337,6 +405,7 @@
         "slot": "R",
         "id": "AkshanR",
         "name": "인과응보",
+        "maxRank": 3,
         "summary": "아크샨이 적 챔피언을 조준하고 탄환을 저장합니다. 사격을 개시하면 저장한 탄환을 모두 발사해 처음으로 적중하는 챔피언이나 미니언이나 구조물에 잃은 체력에 비례하는 피해를 입힙니다.",
         "bodyHtml": "아크샨이 챔피언을 조준하고 최대 2.5초간 총을 과충전해 탄환을 5/6/7개까지 저장합니다.<br /><br /><span class=\"text-yellow-600 dark:text-yellow-300\">재사용 시:</span> 아크샨이 저장한 탄환을 발사합니다. 각 탄환은 처음으로 적중한 적이나 구조물에 최소 <span class=\"text-red-600 dark:text-red-500 font-semibold\">(25/35/45 + (15% 공격력))의 물리 피해</span>를 입힙니다. 피해량은 대상이 잃은 체력에 비례해 최대 <span class=\"text-red-600 dark:text-red-500 font-semibold\">(75/105/135 + (45% 공격력))의 물리 피해</span>를 입힙니다.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">탄환은 미니언을 즉시 처형하며, 생명력 흡수 효과가 적용됩니다.<br />탄환의 피해량은 치명타 확률과 치명타 피해량에 따라 30%만큼 증가합니다.</span>",
         "iconFile": "AkshanR.png",
@@ -387,6 +456,12 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "unsupported",
+          "unsupportedPartTypes": [
+            "unsupported-multiplier"
+          ]
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {

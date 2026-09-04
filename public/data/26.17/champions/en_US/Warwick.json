@@ -120,6 +120,7 @@
         "slot": "P",
         "id": "WarwickP",
         "name": "Eternal Hunger",
+        "maxRank": 0,
         "summary": "Warwick's basic attacks deal bonus magic damage. If Warwick is below 50% health, he heals the same amount. If Warwick is below 25% health, this healing triples.",
         "bodyHtml": "Warwick's Attacks deal an additional <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">((15% bonus Attack Damage) + (10% Ability Power)) magic damage</span> On-Hit.<br /><br />If Warwick is below 50% Health, he also heals for <span class=\"text-green-600 dark:text-green-400\">100% of the damage dealt by <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Eternal Hunger</span></span>. If Warwick is below 25% health, the healing is increased to <span class=\"text-green-600 dark:text-green-400\">250% of the damage dealt</span>.",
         "iconFile": "WarwickP.png",
@@ -127,6 +128,10 @@
         "range": [],
         "rankValues": [],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -137,6 +142,7 @@
         "slot": "Q",
         "id": "WarwickQ",
         "name": "Jaws of the Beast",
+        "maxRank": 5,
         "summary": "Warwick lunges forward and bites his target, dealing damage based on their maximum health and healing for damage dealt.",
         "bodyHtml": "<span>Tap:</span> Warwick lunges forward and bites, dealing <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">((120% Attack Damage) + (100% Ability Power)) plus 6/7/8/9/10% max Health magic damage</span> and <span class=\"text-green-600 dark:text-green-400\">healing for 25/37.5/50/62.5/75% of the damage dealt</span>.<br /><br /><span>Hold:</span> Warwick lunges and clamps his jaws on the target, leaping behind them. While clamped, Warwick follows all movement of the target. After releasing his hold, he does the same damage and healing.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">This Ability applies On-Hit and On-Attack effects, and does not Critically Strike. <br />While clamped, Warwick is immune to displacement.</span>",
         "iconFile": "WarwickQ.png",
@@ -197,6 +203,43 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "BaseBiteDamage",
+            "kind": "damage",
+            "baseByRank": [
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "terms": [
+              {
+                "stat": "totalAttackDamage",
+                "coefficientsByRank": [
+                  1.2000000476837158,
+                  1.2000000476837158,
+                  1.2000000476837158,
+                  1.2000000476837158,
+                  1.2000000476837158
+                ]
+              },
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  1,
+                  1,
+                  1,
+                  1,
+                  1
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -207,6 +250,7 @@
         "slot": "W",
         "id": "WarwickW",
         "name": "Blood Hunt",
+        "maxRank": 5,
         "summary": "Warwick senses enemies below 50% health, gaining Move Speed toward and attack speed against them. When they fall below 25% health, he frenzies and these bonuses triple.",
         "bodyHtml": "<span class=\"text-gray-600 dark:text-gray-500 italic\">Passive:</span> Warwick can sense champions below 50% Health, gaining <span class=\"text-cyan-600 dark:text-cyan-500\">35/42.5/50/57.5/65% Move Speed</span> towards them. Spells and attacks against enemies below 50% Health grant <span class=\"text-cyan-600 dark:text-cyan-500\">70/80/90/100/110% Attack Speed</span>. These effects are increased by 200% against enemies below 25% Health. <br /><br /><span class=\"text-gray-900 dark:text-white font-semibold\">Active:</span> Warwick can briefly sense all enemies, and gains this Ability's passive effect against the closest champion for 8 seconds, regardless of Health. If no champions are found, this Ability's cooldown is reduced by 30%.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">Warwick can only passively sense enemies who were brought below 50% Health by allies.</span>",
         "iconFile": "WarwickW.png",
@@ -257,6 +301,10 @@
           }
         ],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -267,6 +315,7 @@
         "slot": "E",
         "id": "WarwickE",
         "name": "Primal Howl",
+        "maxRank": 5,
         "summary": "Warwick gains damage reduction for 2.5 seconds. At the end, or if re-activated, he howls, causing nearby enemies to flee for 1 second.",
         "bodyHtml": "Warwick gains 35/40/45/50/55% damage reduction for 2.75 seconds. After it ends, Warwick howls, <span class=\"text-purple-600 dark:text-purple-500\">Fearing</span> nearby enemies for 1 second. Warwick can <span class=\"text-yellow-600 dark:text-yellow-300\">Recast</span> to end the Ability early.",
         "iconFile": "WarwickE.png",
@@ -305,6 +354,10 @@
           }
         ],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -315,6 +368,7 @@
         "slot": "R",
         "id": "WarwickR",
         "name": "Infinite Duress",
+        "maxRank": 3,
         "summary": "Warwick leaps in a direction (scaling with his bonus Move Speed), suppressing the first champion he collides with for 1.5 seconds.",
         "bodyHtml": "Warwick leaps a huge distance that scales with his <span class=\"text-cyan-600 dark:text-cyan-500\">Move Speed</span>, <span class=\"text-purple-600 dark:text-purple-500\">Suppressing</span> the first champion he collides with while he channels for 1.5 seconds. He attacks that champion 3 times over the duration, dealing <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(175/350/525 + (167% bonus Attack Damage)) magic damage</span>. Warwick <span class=\"text-green-600 dark:text-green-400\">heals for 100% of all damage dealt</span> during the channel.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">This Ability applies On-Hit and On-Attack effects 3 distinct times over its duration, and does not Critically Strike.<br />This Ability <span class=\"text-purple-600 dark:text-purple-500\">Knocks Down</span> enemies.</span>",
         "iconFile": "WarwickR.png",
@@ -361,6 +415,29 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "DamageCumulative",
+            "kind": "damage",
+            "baseByRank": [
+              175,
+              350,
+              525
+            ],
+            "terms": [
+              {
+                "stat": "bonusAttackDamage",
+                "coefficientsByRank": [
+                  1.6699999570846558,
+                  1.6699999570846558,
+                  1.6699999570846558
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {

@@ -39,3 +39,21 @@ test("serves a lazy route directly under the Pages base path", async ({ page }) 
   await expect(page.getByRole("heading", { name: "백과사전" })).toBeVisible();
   await expect(page.locator("#root")).not.toBeEmpty();
 });
+
+test("simulation uses compiled Ability v2 without raw spell requests", async ({ page }) => {
+  const dataRequests: string[] = [];
+  page.on("request", (request) => {
+    if (request.url().includes("/data/")) dataRequests.push(request.url());
+  });
+  await page.goto("./simulation");
+  await expect(
+    page.getByRole("heading", { name: "시뮬레이션" }).nth(1)
+  ).toBeVisible();
+  await page.getByRole("button", { name: /Champion Placeholder/i }).click();
+  await page.getByRole("button", { name: "Select 오공", exact: true }).click();
+  await expect(page.getByText("Q: 파쇄격")).toBeVisible();
+  await expect(page.getByText(/예상 피해 \(아이템\/레벨 반영\): 120\.0/)).toBeVisible();
+  expect(dataRequests.some((url) => url.includes("/champions/ko_KR/MonkeyKing.json")))
+    .toBe(true);
+  expect(dataRequests.some((url) => url.includes("/spells/"))).toBe(false);
+});

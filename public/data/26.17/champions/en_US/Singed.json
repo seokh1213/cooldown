@@ -120,6 +120,7 @@
         "slot": "P",
         "id": "SingedP",
         "name": "Noxious Slipstream",
+        "maxRank": 0,
         "summary": "Singed drafts off nearby champions, gaining a burst of Move Speed when passing them.",
         "bodyHtml": "Singed drafts off of nearby allied or enemy champions, gaining <span class=\"text-cyan-600 dark:text-cyan-500\">25% Move Speed</span> for 2 seconds. This effect has an 8 second Cooldown per champion.",
         "iconFile": "Singed_Passive.png",
@@ -127,6 +128,10 @@
         "range": [],
         "rankValues": [],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -137,6 +142,7 @@
         "slot": "Q",
         "id": "PoisonTrail",
         "name": "Poison Trail",
+        "maxRank": 5,
         "summary": "Leaves a trail of poison behind Singed, dealing damage to enemies caught in the path.",
         "bodyHtml": "<span>Toggle:</span> Singed lays a poisonous trail that deals <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(20/30/40/50/60 + (42.5% Ability Power)) magic damage</span> per second.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">Cloud duration: 3.25 seconds.<br />Poison duration: 2 seconds.<br />Approximate total damage: <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(95/142.5/190/237.5/285 + (201.875% Ability Power)) magic damage</span>.<br />If a minion would be killed by minion damage while under the effects of Poison Trail, Singed claims the kill credit instead.</span>",
         "iconFile": "PoisonTrail.png",
@@ -185,6 +191,12 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "unsupported",
+          "unsupportedPartTypes": [
+            "GameCalculationModified"
+          ]
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -195,6 +207,7 @@
         "slot": "W",
         "id": "MegaAdhesive",
         "name": "Mega Adhesive",
+        "maxRank": 5,
         "summary": "Throws a vial of mega adhesive on the ground, slowing and grounding enemies who walk on it.",
         "bodyHtml": "Singed hurls a cask of sticky liquid, <span class=\"text-purple-600 dark:text-purple-500\">Grounding</span> and <span class=\"text-purple-600 dark:text-purple-500\">Slowing</span> enemies in the area by 50/55/60/65/70% for 3 seconds.",
         "iconFile": "MegaAdhesive.png",
@@ -237,6 +250,10 @@
           }
         ],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -247,6 +264,7 @@
         "slot": "E",
         "id": "Fling",
         "name": "Fling",
+        "maxRank": 5,
         "summary": "Damages target enemy unit and flings them into the air behind Singed. If the target Singed flings lands in his Mega Adhesive, they are also rooted.",
         "bodyHtml": "Singed flings an enemy over his shoulder, dealing <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(50/60/70/80/90 + (55% Ability Power)) plus 6/6.5/7/7.5/8% max Health magic damage</span>.<br /><br />If Singed flings a target into his <span>Mega Adhesive</span>, they are <span class=\"text-purple-600 dark:text-purple-500\">Rooted</span> for 1/1.25/1.5/1.75/2 seconds.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">Max Health damage is capped at 300 against minions and jungle monsters.</span>",
         "iconFile": "Fling.png",
@@ -311,6 +329,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "BaseDamage",
+            "kind": "damage",
+            "baseByRank": [
+              50,
+              60,
+              70,
+              80,
+              90
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.550000011920929,
+                  0.550000011920929,
+                  0.550000011920929,
+                  0.550000011920929,
+                  0.550000011920929
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -321,6 +366,7 @@
         "slot": "R",
         "id": "InsanityPotion",
         "name": "Insanity Potion",
+        "maxRank": 3,
         "summary": "Singed drinks a potent brew of chemicals, granting him increased combat stats, and making his Poison Trail apply Grievous Wounds.",
         "bodyHtml": "Singed drinks a potent brew of chemicals, granting him 25/55/85 <span class=\"text-blue-600 dark:text-blue-400\">Ability Power</span>, <span class=\"text-orange-600 dark:text-orange-400\">Armor</span>, <span>Magic Resist</span>, <span class=\"text-cyan-600 dark:text-cyan-500\">Move Speed</span>, <span class=\"text-green-600 dark:text-green-400\">Health Regen</span>, and <span>Mana Regen</span> for 25 seconds. During this effect, Singed's <span>Poison Trail</span> also applies 40% Grievous Wounds for 1 second.",
         "iconFile": "InsanityPotion.png",
@@ -349,6 +395,10 @@
           }
         ],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {

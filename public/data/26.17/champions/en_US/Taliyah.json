@@ -120,6 +120,7 @@
         "slot": "P",
         "id": "TaliyahPassive",
         "name": "Rock Surfing",
+        "maxRank": 0,
         "summary": "Taliyah gains Move Speed near walls.",
         "bodyHtml": "Taliyah gains <span class=\"text-cyan-600 dark:text-cyan-500\">95% Move Speed</span> while out of combat if she has been near a wall within the last 3 seconds.",
         "iconFile": "Taliyah_Passive.png",
@@ -127,6 +128,10 @@
         "range": [],
         "rankValues": [],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -137,6 +142,7 @@
         "slot": "Q",
         "id": "TaliyahQ",
         "name": "Threaded Volley",
+        "maxRank": 5,
         "summary": "Taliyah throws a volley of rocks in a target direction, moving freely as she casts. This creates Worked Ground below her. If Taliyah casts Threaded Volley on Worked Ground, she consumes the ground to throw a stronger boulder that slows enemies.",
         "bodyHtml": "Taliyah hurls 5 rocks, each dealing <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(55/72.5/90/107.5/125 + (50% Ability Power)) magic damage</span> in an area around the first enemy hit while creating Worked Ground at that area. Subsequent hits against the same enemy deal 60% less damage.<br /><br />Casts on worked ground cost 10 Mana and have 50% less Cooldown, consume the Worked Ground, and hurl a boulder that <span class=\"text-purple-600 dark:text-purple-500\">Slows</span> enemies it hits by 20/25/30/35/40% for 1.5 seconds, dealing <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(99/130.5/162/193.5/225 + (90% Ability Power)) magic damage</span> to the primary target. Monsters hit by the boulder are <span class=\"text-purple-600 dark:text-purple-500\">Stunned</span> for 3 seconds.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">Taliyah can move and use other Abilities while hurling rocks.<br />Casting this Ability on Worked Ground cannot reduce its Cooldown to less than 0.75 seconds.<br />Total damage to a single target: <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(143/188.5/234/279.5/325 + (130% Ability Power))</span><br />Each rock deals <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">20/25/30/35/40</span> additional damage to monsters.</span>",
         "iconFile": "TaliyahQ.png",
@@ -201,6 +207,12 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "unsupported",
+          "unsupportedPartTypes": [
+            "GameCalculationModified"
+          ]
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -211,6 +223,7 @@
         "slot": "W",
         "id": "TaliyahWVC",
         "name": "Seismic Shove",
+        "maxRank": 5,
         "summary": "Taliyah causes an area of ground to erupt and throws enemies within it in a direction of her choosing.",
         "bodyHtml": "Taliyah quakes the earth, <span class=\"text-purple-600 dark:text-purple-500\">Knocking</span> enemies in an area in the chosen direction.",
         "iconFile": "TaliyahWVC.png",
@@ -249,6 +262,10 @@
           }
         ],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -259,6 +276,7 @@
         "slot": "E",
         "id": "TaliyahE",
         "name": "Unraveled Earth",
+        "maxRank": 5,
         "summary": "Taliyah creates a slowing minefield. If enemies dash through it or are knocked through it, the mines explode and stun them.",
         "bodyHtml": "Taliyah scatters loose stones in an area, <span class=\"text-purple-600 dark:text-purple-500\">Slowing</span> enemies hit by 20% and dealing <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(60/105/150/195/240 + (60% Ability Power)) magic damage</span>. The stones detonate when enemies dash or are <span class=\"text-purple-600 dark:text-purple-500\">Knocked</span> through them, <span class=\"text-purple-600 dark:text-purple-500\">Stunning</span> for the remaining movement duration + 0.75 seconds and dealing <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(25/40/55/70/85 + (30% Ability Power)) magic damage</span>.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">The stun's duration cannot exceed 2 seconds. Each enemy can only be stunned once per cast. Monsters are always stunned for the maximum duration.<br />Stones beyond the first one deal 25% less damage. <br />Max detonation damage: <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(62.5/100/137.5/175/212.5 + (75% Ability Power))</span><br />This ability deals 225% damage to monsters.</span>",
         "iconFile": "TaliyahE.png",
@@ -311,6 +329,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "DetonationDamage",
+            "kind": "damage",
+            "baseByRank": [
+              25,
+              40,
+              55,
+              70,
+              85
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.30000001192092896,
+                  0.30000001192092896,
+                  0.30000001192092896,
+                  0.30000001192092896,
+                  0.30000001192092896
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -321,6 +366,7 @@
         "slot": "R",
         "id": "TaliyahR",
         "name": "Weaver's Wall",
+        "maxRank": 3,
         "summary": "Taliyah creates a very long wall and then surfs it.",
         "bodyHtml": "Taliyah creates a massive earthen wall for 4 seconds. If she immediately <span class=\"text-yellow-600 dark:text-yellow-300\">Recasts</span>, she will ride along the wall as it unravels. Moving or being immobilized will end the ride.<br /><br />This ability cannot be cast if Taliyah has taken damage from Champions or structures within the last 3 seconds.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">Once the wall is fully formed, Taliyah can <span class=\"text-yellow-600 dark:text-yellow-300\">Recast</span> to destroy it early.</span>",
         "iconFile": "TaliyahR.png",
@@ -353,6 +399,10 @@
           }
         ],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {

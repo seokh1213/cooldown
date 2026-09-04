@@ -120,6 +120,7 @@
         "slot": "P",
         "id": "PoppyPassive",
         "name": "Iron Ambassador",
+        "maxRank": 0,
         "summary": "Poppy throws her buckler that bounces off the target. Poppy can pick it up to gain a temporary shield.",
         "bodyHtml": "Every 6 seconds, Poppy's next Attack throws her buckler, gaining 350 range and dealing an additional <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(20 ~ 180) magic damage</span>. The buckler ricochets off the target, landing nearby. Poppy can pick it up to gain <span class=\"text-blue-600 dark:text-blue-300\"> Shield</span>, and enemies can step on it to destroy it.<br /><br />The buckler automatically returns to Poppy if it kills the target.",
         "iconFile": "Poppy_Passive.png",
@@ -127,6 +128,10 @@
         "range": [],
         "rankValues": [],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -137,6 +142,7 @@
         "slot": "Q",
         "id": "PoppyQ",
         "name": "Hammer Shock",
+        "maxRank": 5,
         "summary": "Poppy swings her hammer, dealing damage and creating a zone that will slow enemies and explode after a delay.",
         "bodyHtml": "Poppy smashes the ground, dealing <span class=\"text-red-600 dark:text-red-500 font-semibold\">(30/55/80/105/130 + (75% bonus Attack Damage))</span> plus <span class=\"text-red-600 dark:text-red-500 font-semibold\">7/7.5/8/8.5/9% max Health physical damage</span> and making the ground unstable. <br /><br />The unstable area <span class=\"text-purple-600 dark:text-purple-500\">Slows</span> enemies by (20/23/26/29/32% + (0.008% bonus Health))and erupts after 1 second, dealing <span class=\"text-red-600 dark:text-red-500 font-semibold\">(30/55/80/105/130 + (75% bonus Attack Damage))</span> plus <span class=\"text-red-600 dark:text-red-500 font-semibold\">7/7.5/8/8.5/9% max Health physical damage</span> again.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">Percent Health damage deals a max of 85/120/155/190/225 damage to minions and jungle monsters per hit.</span>",
         "iconFile": "PoppyQ.png",
@@ -205,6 +211,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "BaseDamage",
+            "kind": "damage",
+            "baseByRank": [
+              30,
+              55,
+              80,
+              105,
+              130
+            ],
+            "terms": [
+              {
+                "stat": "bonusAttackDamage",
+                "coefficientsByRank": [
+                  0.75,
+                  0.75,
+                  0.75,
+                  0.75,
+                  0.75
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -215,6 +248,7 @@
         "slot": "W",
         "id": "PoppyW",
         "name": "Steadfast Presence",
+        "maxRank": 5,
         "summary": "Poppy passively gains Armor and Magic Resist. This bonus increases when she is low on Health. Poppy can activate Steadfast Presence to gain Move Speed and stop enemy dashes around her. If a dash is stopped, the enemy is slowed and grounded.",
         "bodyHtml": "<span class=\"text-gray-600 dark:text-gray-500 italic\">Passive:</span> Poppy gains <span class=\"text-orange-600 dark:text-orange-400\">(16% Armor) Armor</span> and <span>(16% Magic Resist) Magic Resist</span>. This bonus is doubled if Poppy is below 40% Health.<br /><br /><span class=\"text-gray-900 dark:text-white font-semibold\">Active:</span> Poppy gains <span class=\"text-cyan-600 dark:text-cyan-500\">40% Move Speed</span> and projects a field around her for 2 seconds that stops enemy dashes. Enemies who are stopped by the field are <span class=\"text-purple-600 dark:text-purple-500\">Grounded</span> and <span class=\"text-purple-600 dark:text-purple-500\">Slowed</span> by 25% for 2 seconds and take <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(70/110/150/190/230 + (70% Ability Power)) magic damage</span>.",
         "iconFile": "PoppyW.png",
@@ -267,6 +301,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "InterruptDamage",
+            "kind": "damage",
+            "baseByRank": [
+              70,
+              110,
+              150,
+              190,
+              230
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.699999988079071,
+                  0.699999988079071,
+                  0.699999988079071,
+                  0.699999988079071,
+                  0.699999988079071
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -277,6 +338,7 @@
         "slot": "E",
         "id": "PoppyE",
         "name": "Heroic Charge",
+        "maxRank": 5,
         "summary": "Poppy dashes to the target and pushes it back. If the target is pushed into a wall, it is stunned.",
         "bodyHtml": "Poppy tackles an enemy, dealing <span class=\"text-red-600 dark:text-red-500 font-semibold\">(40/60/80/100/120 + (60% bonus Attack Damage)) physical damage</span> and carrying them forward. If Poppy tackles them into terrain, the enemy is <span class=\"text-purple-600 dark:text-purple-500\">Stunned</span> for 1.6/1.7/1.8/1.9/2 seconds and take an additional <span class=\"text-red-600 dark:text-red-500 font-semibold\">(40/60/80/100/120 + (60% bonus Attack Damage)) physical damage</span>.",
         "iconFile": "PoppyE.png",
@@ -337,6 +399,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "TackleDamage",
+            "kind": "damage",
+            "baseByRank": [
+              40,
+              60,
+              80,
+              100,
+              120
+            ],
+            "terms": [
+              {
+                "stat": "bonusAttackDamage",
+                "coefficientsByRank": [
+                  0.6000000238418579,
+                  0.6000000238418579,
+                  0.6000000238418579,
+                  0.6000000238418579,
+                  0.6000000238418579
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -347,6 +436,7 @@
         "slot": "R",
         "id": "PoppyR",
         "name": "Keeper's Verdict",
+        "maxRank": 3,
         "summary": "Poppy channels a hammer strike that knocks enemies very far away.",
         "bodyHtml": "<span>Begin Casting:</span> Poppy begins charging her hammer for up to 4 seconds, <span class=\"text-purple-600 dark:text-purple-500\">Slowing</span> herself by 15%.<br /><br /><span>Release:</span> Poppy smashes the ground, creating a shockwave that deals <span class=\"text-red-600 dark:text-red-500 font-semibold\">(200/300/400 + (90% bonus Attack Damage)) physical damage</span> to the first champion hit and surrounding enemies, <span class=\"text-purple-600 dark:text-purple-500\">Knocks</span> them <span class=\"text-purple-600 dark:text-purple-500\">Back</span> towards their Nexus, and makes them Untargetable while they fly. The range and <span class=\"text-purple-600 dark:text-purple-500\">Knock Back</span> distance increase with charge duration.<br /><br />An uncharged swing deals <span class=\"text-red-600 dark:text-red-500 font-semibold\">(100/150/200 + (45% bonus Attack Damage)) physical damage</span> and <span class=\"text-purple-600 dark:text-purple-500\">Knocks Up</span> for 1 seconds.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">Untargetable units won't be affected by enemy Attacks or Abilities unless they've already been hit by them.</span>",
         "iconFile": "PoppyR.png",
@@ -393,6 +483,29 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "Damage",
+            "kind": "damage",
+            "baseByRank": [
+              200,
+              300,
+              400
+            ],
+            "terms": [
+              {
+                "stat": "bonusAttackDamage",
+                "coefficientsByRank": [
+                  0.8999999761581421,
+                  0.8999999761581421,
+                  0.8999999761581421
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {

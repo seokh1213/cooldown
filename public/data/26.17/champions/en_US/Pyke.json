@@ -120,6 +120,7 @@
         "slot": "P",
         "id": "PykePassive",
         "name": "Gift of the Drowned Ones",
+        "maxRank": 0,
         "summary": "When Pyke is hidden from enemies, he regenerates damage that he has recently taken from champions. Pyke also cannot gain extra Maximum Health from any source, and instead gains Bonus AD.",
         "bodyHtml": "Pyke stores (9% + (0.2%)) of damage taken from champions, increased to (40% + (0.4%)) when there's more than one enemy nearby. Pyke can store up to (80 + (800% bonus Attack Damage)) damage. While <span>unseen</span> by enemies, he rapidly regenerates this stored damage.<br /><br />Additionally, Pyke converts all Maximum Health increases to Attack Damage instead at a rate of <span class=\"text-green-600 dark:text-green-400\">14 Health</span> to <span class=\"text-red-600 dark:text-red-500 font-semibold\">1 Attack Damage</span>.",
         "iconFile": "PykePassive.png",
@@ -127,6 +128,10 @@
         "range": [],
         "rankValues": [],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -137,6 +142,7 @@
         "slot": "Q",
         "id": "PykeQ",
         "name": "Bone Skewer",
+        "maxRank": 5,
         "summary": "Pyke either stabs an enemy in front of him or pulls an enemy towards him.",
         "bodyHtml": "<span>Tap:</span> Pyke stabs, dealing <span class=\"text-red-600 dark:text-red-500 font-semibold\">(100/150/200/250/300 + (75% bonus Attack Damage)) physical damage</span> to the first enemy hit, preferring champions. They are then <span class=\"text-purple-600 dark:text-purple-500\">Slowed</span> by 90% for 1 second.<br /><br /><span>Hold: </span>Pyke throws his harpoon, dealing <span class=\"text-red-600 dark:text-red-500 font-semibold\">(100/150/200/250/300 + (75% bonus Attack Damage)) physical damage</span> to the first enemy hit and <span class=\"text-purple-600 dark:text-purple-500\">Pulling</span> them towards him. They are then <span class=\"text-purple-600 dark:text-purple-500\">Slowed</span> by 90% for 1 second.<br /><br />If Pyke successfully hits an enemy champion or the channel does not complete successfully, 75% of the Mana cost is refunded.",
         "iconFile": "PykeQ.png",
@@ -193,6 +199,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "TotalDamage",
+            "kind": "damage",
+            "baseByRank": [
+              100,
+              150,
+              200,
+              250,
+              300
+            ],
+            "terms": [
+              {
+                "stat": "bonusAttackDamage",
+                "coefficientsByRank": [
+                  0.75,
+                  0.75,
+                  0.75,
+                  0.75,
+                  0.75
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -203,6 +236,7 @@
         "slot": "W",
         "id": "PykeW",
         "name": "Ghostwater Dive",
+        "maxRank": 5,
         "summary": "Pyke enters Camouflage and gains significant Move Speed that decays over time.",
         "bodyHtml": "Pyke gains <span class=\"text-purple-600 dark:text-purple-400 font-semibold\">Camouflage</span> and <span class=\"text-cyan-600 dark:text-cyan-500\">(45 + (200%))Move Speed</span> decaying over 5 seconds.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\"><span class=\"text-cyan-600 dark:text-cyan-500\">Move Speed</span> scales with Lethality.<br /><span class=\"text-purple-600 dark:text-purple-400 font-semibold\">Camouflaged</span> units cannot be seen unless an enemy champion is inside their detection radius.</span>",
         "iconFile": "PykeW.png",
@@ -251,6 +285,10 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -261,6 +299,7 @@
         "slot": "E",
         "id": "PykeE",
         "name": "Phantom Undertow",
+        "maxRank": 5,
         "summary": "Pyke dashes and leaves behind a phantom that will return to him, stunning enemy champions along its path.",
         "bodyHtml": "Pyke dashes, leaving a drowned phantom behind him that returns to him shortly. The phantom <span class=\"text-purple-600 dark:text-purple-500\">Stuns</span> for (1.25 + (1%)) seconds and deals <span class=\"text-red-600 dark:text-red-500 font-semibold\">(100/150/200/250/300 + (100% bonus Attack Damage)) physical damage</span> to champions.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\"><span class=\"text-purple-600 dark:text-purple-500\">Stun</span> duration scales with Lethality.</span>",
         "iconFile": "PykeE.png",
@@ -313,6 +352,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "TotalDamage",
+            "kind": "damage",
+            "baseByRank": [
+              100,
+              150,
+              200,
+              250,
+              300
+            ],
+            "terms": [
+              {
+                "stat": "bonusAttackDamage",
+                "coefficientsByRank": [
+                  1,
+                  1,
+                  1,
+                  1,
+                  1
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -323,6 +389,7 @@
         "slot": "R",
         "id": "PykeR",
         "name": "Death From Below",
+        "maxRank": 3,
         "summary": "Pyke blinks to and executes low health enemies, allowing him to cast this spell again and granting additional gold to an ally who assists.",
         "bodyHtml": "Pyke strikes all enemy champions in an X, teleporting to and <span>executing</span> targets below <span class=\"text-orange-600 dark:text-orange-500\">(250 + (80% bonus Attack Damage) + (150%))</span> Health. Champions above the threshold and non-champions instead take physical damage equal to 50% of that amount (<span class=\"text-red-600 dark:text-red-500 font-semibold\">(125 + (40% bonus Attack Damage) + (75%))</span>). <br /><br />When an enemy champion dies inside the X, Pyke can <span class=\"text-yellow-600 dark:text-yellow-300\">Recast</span> this Ability for free within 20 seconds. If he executed that champion, the last assisting ally will also get kill gold. If he did not, he will still get kill gold as if he did.<br /><br /><br />Total gold shared with allies: <span></span><br />Total gold kept for self: <span></span>",
         "iconFile": "PykeR.png",
@@ -365,6 +432,29 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "RADDamage",
+            "kind": "damage",
+            "baseByRank": [
+              0,
+              0,
+              0
+            ],
+            "terms": [
+              {
+                "stat": "bonusAttackDamage",
+                "coefficientsByRank": [
+                  0.800000011920929,
+                  0.800000011920929,
+                  0.800000011920929
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {

@@ -119,6 +119,7 @@
         "slot": "P",
         "id": "DravenPassive",
         "name": "德莱文联盟",
+        "maxRank": 0,
         "summary": "在接住一把旋转飞斧或者击杀了一个小兵、野怪或防御塔后，德莱文会从他的粉丝那里获得崇拜效果。击杀一名敌方英雄会为德莱文提供额外赏金，赏金的多少取决于他拥有多少层崇拜效果。",
         "bodyHtml": "德莱文在每次击杀一个非英雄单位或防御塔、接住一把<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">旋转飞斧</span>时会获得1层效果。<br /><br />德莱文在击杀一名英雄后，会获得25 + 2x效果层数的金币。德莱文在阵亡时会损失50%的层数。<br /><br />已赚取的金币总和：<span></span><br />数额最高的奖励：<span></span>",
         "iconFile": "Draven_passive.png",
@@ -126,6 +127,10 @@
         "range": [],
         "rankValues": [],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -136,6 +141,7 @@
         "slot": "Q",
         "id": "DravenSpinning",
         "name": "旋转飞斧",
+        "maxRank": 5,
         "summary": "德莱文的下次攻击会造成额外物理伤害。这个斧头将会从目标身上弹到高空。如果德莱文接住了它，那么会立刻准备好下一发旋转飞斧。德莱文可以同时拥有2发旋转飞斧。",
         "bodyHtml": "德莱文准备好一把<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">旋转飞斧</span>，使他的下一次攻击造成额外的<span class=\"text-red-600 dark:text-red-500 font-semibold\">(40/45/50/55/60 + (75/85/95/105/115% 额外攻击力))物理伤害</span>然后弹到空中。如果德莱文接住了它，那么他会准备好另一把<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">旋转飞斧</span>。<br /><br />德莱文可以同时持有2把<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">旋转飞斧</span>。<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">德莱文如果在6秒里不进行攻击的话，就会扔掉任何<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">旋转飞斧</span>。攻击防御塔或建筑物将不会导致德莱文的<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">旋转飞斧</span>回弹。</span>",
         "iconFile": "DravenSpinning.png",
@@ -192,6 +198,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "TotalDamage",
+            "kind": "damage",
+            "baseByRank": [
+              40,
+              45,
+              50,
+              55,
+              60
+            ],
+            "terms": [
+              {
+                "stat": "bonusAttackDamage",
+                "coefficientsByRank": [
+                  0.75,
+                  0.8500000238418579,
+                  0.949999988079071,
+                  1.0499999523162842,
+                  1.149999976158142
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -202,6 +235,7 @@
         "slot": "W",
         "id": "DravenFury",
         "name": "血性冲刺",
+        "maxRank": 5,
         "summary": "德莱文获得移动速度和攻击速度加成。移动速度加成在持续时间过后会急剧下降。在接到一把旋转飞斧后，血性冲刺会立刻冷却完毕。",
         "bodyHtml": "德莱文进入幽灵状态，获得在1.5秒里持续衰减的<span class=\"text-cyan-600 dark:text-cyan-500\">50/55/60/65/70%移动速度</span>和持续3秒的<span>20/25/30/35/40%攻击速度</span>。<br /><br />当德莱文接住一把<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">旋转飞斧</span>时，这个技能的冷却时间就会刷新。<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">【幽灵】状态的单位能够无视其它单位的碰撞体积。</span>",
         "iconFile": "DravenFury.png",
@@ -244,6 +278,10 @@
           }
         ],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -254,6 +292,7 @@
         "slot": "E",
         "id": "DravenDoubleShot",
         "name": "开道利斧",
+        "maxRank": 5,
         "summary": "德莱文扔出他的斧头，对命中的目标造成物理伤害，并将他们击退至一边。被命中的目标会受到减速效果。",
         "bodyHtml": "德莱文抛掷一柄开山斧，造成<span class=\"text-red-600 dark:text-red-500 font-semibold\">(75/110/145/180/215 + (50% 额外攻击力))物理伤害</span>，<span class=\"text-purple-600 dark:text-purple-500\">击退</span>，以及持续2秒的20/25/30/35/40%<span class=\"text-purple-600 dark:text-purple-500\">减速</span>。",
         "iconFile": "DravenDoubleShot.png",
@@ -310,6 +349,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "TotalDamage",
+            "kind": "damage",
+            "baseByRank": [
+              75,
+              110,
+              145,
+              180,
+              215
+            ],
+            "terms": [
+              {
+                "stat": "bonusAttackDamage",
+                "coefficientsByRank": [
+                  0.5,
+                  0.5,
+                  0.5,
+                  0.5,
+                  0.5
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -320,6 +386,7 @@
         "slot": "R",
         "id": "DravenRCast",
         "name": "冷血追命",
+        "maxRank": 3,
         "summary": "德莱文掷出两柄大斧，对命中的每个单位造成物理伤害。在命中一名敌方英雄后，大斧会缓慢地调转方向，并回到德莱文身边。在斧头正在向外飞的时候，德莱文可以激活该技能来让斧头早点飞回来。每命中一个单位，伤害值就会减少。在斧头调转方向时，伤害值会重置。会处决那些生命值低于德莱文崇拜层数的敌人们。",
         "bodyHtml": "德莱文猛掷出两把巨斧来造成<span class=\"text-red-600 dark:text-red-500 font-semibold\">(200/300/400 + (110/130/150% 额外攻击力))物理伤害</span>。在命中一名英雄或<span class=\"text-yellow-600 dark:text-yellow-300\">再次施放</span>之后，巨斧会掉转方向并返回德莱文处。巨斧每命中一个敌人就会降低5%伤害，最低降至50%。<br /><br />如果<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">冷血追命</span>使一名敌方英雄的生命值低于德莱文目前的100%<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">德莱文联盟</span>层数()，那么德莱文会将该英雄处决。<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">伤害衰减会在折返时重置。<br />此技能来自【被动-德莱文联盟】的处决次数：</span>",
         "iconFile": "DravenRCast.png",
@@ -370,6 +437,29 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "RCalculatedDamage",
+            "kind": "damage",
+            "baseByRank": [
+              200,
+              300,
+              400
+            ],
+            "terms": [
+              {
+                "stat": "bonusAttackDamage",
+                "coefficientsByRank": [
+                  1.100000023841858,
+                  1.2999999523162842,
+                  1.5
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {

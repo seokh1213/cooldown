@@ -119,6 +119,7 @@
         "slot": "P",
         "id": "VeigarPassive",
         "name": "超凡邪力",
+        "maxRank": 0,
         "summary": "维迦是最强大的恶魔，甚至能对符文之地之心发起攻击——并且他只会越来越强大！用技能攻击一名敌人、击杀单位或拆毁防御塔都会为维迦永久提升法术强度加成。",
         "bodyHtml": "维迦的技能会在命中敌方英雄时为他提供1层<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">超凡邪力</span>。参与击杀英雄后会提供额外的5层。<br /><br />每层<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">超凡邪力</span>会为维迦提供<span class=\"text-blue-600 dark:text-blue-400\">1法术强度</span>。",
         "iconFile": "VeigarEntropy.png",
@@ -126,6 +127,10 @@
         "range": [],
         "rankValues": [],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -136,6 +141,7 @@
         "slot": "Q",
         "id": "VeigarBalefulStrike",
         "name": "黑暗祭祀",
+        "maxRank": 5,
         "summary": "维迦释放一束黑暗能量，对最先被命中的两个敌人造成魔法伤害。被这个能量束所击杀的单位，会永久地为维迦提供一些法术强度。",
         "bodyHtml": "维迦释放一束黑暗能量，对命中的头2个敌人造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(80/120/160/200/240 + (50/55/60/65/70% 法术强度))魔法伤害</span>。<br /><br />用此技能击杀一个单位，还会为维迦提供层<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">超凡邪恶</span>效果。大型小兵和大型野怪会提供层作为替代。",
         "iconFile": "VeigarBalefulStrike.png",
@@ -196,6 +202,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "TotalDamage",
+            "kind": "damage",
+            "baseByRank": [
+              80,
+              120,
+              160,
+              200,
+              240
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.5,
+                  0.550000011920929,
+                  0.6000000238418579,
+                  0.6499999761581421,
+                  0.699999988079071
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -209,6 +242,7 @@
         "slot": "W",
         "id": "VeigarDarkMatter",
         "name": "黑暗物质",
+        "maxRank": 5,
         "summary": "维迦召唤一大团黑暗物质轰击目标区域，落地造成魔法伤害。【超凡邪力】的层数会缩短这个技能的冷却时间。",
         "bodyHtml": "维迦召唤黑暗物质将从天而降，造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(85/140/195/250/305 + (70/80/90/100/110% 法术强度))魔法伤害</span>。<br /><br />每层<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">超凡邪力</span>会使这个技能的冷却时间减少。",
         "iconFile": "VeigarDarkMatter.png",
@@ -265,6 +299,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "TotalDamage",
+            "kind": "damage",
+            "baseByRank": [
+              85,
+              140,
+              195,
+              250,
+              305
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.699999988079071,
+                  0.800000011920929,
+                  0.8999999761581421,
+                  1,
+                  1.100000023841858
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -278,6 +339,7 @@
         "slot": "E",
         "id": "VeigarEventHorizon",
         "name": "扭曲空间",
+        "maxRank": 5,
         "summary": "维迦扭曲空间的边缘，创造一个牢笼来使途径的敌人晕眩。",
         "bodyHtml": "维迦扭曲空间的边缘，创造一个牢笼来使途经的敌人<span class=\"text-purple-600 dark:text-purple-500\">晕眩</span>1.5/1.75/2/2.25/2.5秒。牢笼持续3秒。<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">这个技能会使敌人<span class=\"text-purple-600 dark:text-purple-500\">中断位移</span>。</span>",
         "iconFile": "VeigarEventHorizon.png",
@@ -320,6 +382,10 @@
           }
         ],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -330,6 +396,7 @@
         "slot": "R",
         "id": "VeigarR",
         "name": "能量爆裂",
+        "maxRank": 3,
         "summary": "引爆目标敌方英雄，造成大量魔法伤害，并基于目标已损失生命值提升伤害。",
         "bodyHtml": "维迦用源力魔法引爆一名敌方英雄，造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(175/250/325 + (65/70/75% 法术强度))到(350/500/650 + (130/140/150% 法术强度))魔法伤害</span>，伤害提升幅度基于目标的已损失生命值。目标生命值在33%以下即可造成最大伤害。",
         "iconFile": "VeigarR.png",
@@ -380,6 +447,12 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "unsupported",
+          "unsupportedPartTypes": [
+            "GameCalculationModified"
+          ]
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {

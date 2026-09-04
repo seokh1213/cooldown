@@ -120,6 +120,7 @@
         "slot": "P",
         "id": "NilahPassive",
         "name": "Joy Unending",
+        "maxRank": 0,
         "summary": "Nilah gains increased experience from last-hitting minions along with the ability to enhance and share nearby healing and shielding from her allies.",
         "bodyHtml": "When Nilah kills a minion, she and her nearest ally gain 50% of the experience they would have normally lost from sharing the kill.<br /><br />Nilah gains <span class=\"text-green-600 dark:text-green-400\">7.5% increased effectiveness from healing</span> and <span class=\"text-blue-600 dark:text-blue-300\">15% from shielding</span> given to her by allied champions abilities. If an ally heals or shields her, they will also gain the increased amount of the shield or heal themselves. If an ally shields or heals themself, Nilah will also gain that additional effect.",
         "iconFile": "NIlahP.png",
@@ -127,6 +128,10 @@
         "range": [],
         "rankValues": [],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -137,6 +142,7 @@
         "slot": "Q",
         "id": "NilahQ",
         "name": "Formless Blade",
+        "maxRank": 5,
         "summary": "With a snap of her whip-blade, Nilah damages any enemies she hits in a straight line in her chosen direction. This action extends her attack range for a short duration.",
         "bodyHtml": "<span class=\"text-gray-600 dark:text-gray-500 italic\">Passive:</span> Nilah gains (30%) Armor Penetration, and her Attacks against champions restore <span class=\"text-green-600 dark:text-green-400\">(20%) damage dealt as Health</span>. Overhealing from this is converted into a <span class=\"text-blue-600 dark:text-blue-300\">Shield</span> for 4 seconds.<br /><br /><span class=\"text-gray-900 dark:text-white font-semibold\">Active:</span> Nilah cracks her whip-blade, dealing <span class=\"text-red-600 dark:text-red-500 font-semibold\">(0/10/20/30/40 + (100% Attack Damage)) physical damage</span>. If an enemy unit or structure is hit, Nilah gains 125 Attack Range and <span>(10 ~ 60)Attack Speed</span>, and her Attacks hit in a cone for 4 seconds.<br /><br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">Damage is increased by her Critical Strike Chance and Critical Strike Damage at 70% effectiveness.<br />If cast during <span>Slipstream</span>, Nilah creates a wave of water striking all enemies along Nilah's path. </span><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">Area attacks deal 33% damage to minions and 100% damage to monsters.</span><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">This ability executes low Health minions.</span>",
         "iconFile": "NilahQ.png",
@@ -185,6 +191,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "AttackTotalDamageTooltip",
+            "kind": "damage",
+            "baseByRank": [
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "terms": [
+              {
+                "stat": "totalAttackDamage",
+                "coefficientsByRank": [
+                  1,
+                  1,
+                  1,
+                  1,
+                  1
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -195,6 +228,7 @@
         "slot": "W",
         "id": "NilahW",
         "name": "Jubilant Veil",
+        "maxRank": 5,
         "summary": "Nilah envelops herself in mist, increasing her movement speed and allowing her to gracefully dodge all incoming attacks. Any allies she touches during the mist's duration will also gain this effect.",
         "bodyHtml": "Nilah envelops herself in mist for 2.25 seconds, becoming Ghosted, gaining <span class=\"text-cyan-600 dark:text-cyan-500\">15/17.5/20/22.5/25% Move Speed</span>, dodging Attacks, and reducing <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">magic damage</span> taken by 25%.<br /><br />While active, touching allied champions envelops them in mist, granting the same benefits for 1.5 seconds.<br /><br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">Ghosted units can pass through other units.</span>",
         "iconFile": "NilahW.png",
@@ -237,6 +271,10 @@
           }
         ],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -247,6 +285,7 @@
         "slot": "E",
         "id": "NilahE",
         "name": "Slipstream",
+        "maxRank": 5,
         "summary": "Nilah enthusiastically dashes toward her target, dealing damage to any enemies she passes through on the way.",
         "bodyHtml": "Nilah dashes through a unit, dealing <span class=\"text-red-600 dark:text-red-500 font-semibold\">(60/70/80/90/100 + (20% bonus Attack Damage)) physical damage</span> to any enemies she passes through.",
         "iconFile": "NilahE.png",
@@ -307,6 +346,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "DashDamage",
+            "kind": "damage",
+            "baseByRank": [
+              60,
+              70,
+              80,
+              90,
+              100
+            ],
+            "terms": [
+              {
+                "stat": "bonusAttackDamage",
+                "coefficientsByRank": [
+                  0.20000000298023224,
+                  0.20000000298023224,
+                  0.20000000298023224,
+                  0.20000000298023224,
+                  0.20000000298023224
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -317,6 +383,7 @@
         "slot": "R",
         "id": "NilahR",
         "name": "Apotheosis",
+        "maxRank": 3,
         "summary": "Twirling her whip-blade in joyful exuberance, Nilah deals damage to enemies around her before pulling them closer with her weapon.",
         "bodyHtml": "Nilah whirls her whip-blade, dealing <span class=\"text-red-600 dark:text-red-500 font-semibold\">(60/100/140 + (40% bonus Attack Damage)) physical damage</span> over 1 second, then finishes with a burst of <span class=\"text-red-600 dark:text-red-500 font-semibold\">(125/225/325 + (100% bonus Attack Damage)) physical damage</span> that also <span class=\"text-purple-600 dark:text-purple-500\">Pulls</span> nearby enemies toward her.<br /><br />Apotheosis heals Nilah and her nearby allies for <span class=\"text-green-600 dark:text-green-400\">(20% + (10%)) ( + Formless Blade) of the damage dealt</span> to enemy champions, converting any overhealing into a <span class=\"text-blue-600 dark:text-blue-300\">Shield</span> for 6 seconds.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">Healing is reduced to 10% against non-champions</span>",
         "iconFile": "NilahR.png",
@@ -367,6 +434,29 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "DamageCalc",
+            "kind": "damage",
+            "baseByRank": [
+              125,
+              225,
+              325
+            ],
+            "terms": [
+              {
+                "stat": "bonusAttackDamage",
+                "coefficientsByRank": [
+                  1,
+                  1,
+                  1
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {

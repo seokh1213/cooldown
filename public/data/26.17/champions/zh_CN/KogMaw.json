@@ -120,6 +120,7 @@
         "slot": "P",
         "id": "KogMawIcathianSurpriseReady",
         "name": "来自艾卡西亚的惊喜",
+        "maxRank": 0,
         "summary": "在死后4秒，克格莫会爆炸，对周围的敌人造成真实伤害。",
         "bodyHtml": "在阵亡后的4秒里，克格莫能够继续移动，能够无视单位碰撞体积，并且获得<span class=\"text-cyan-600 dark:text-cyan-500\">10%移动速度</span>，在此期间持续提升至<span class=\"text-cyan-600 dark:text-cyan-500\">50%移动速度</span>。持续时间结束时，他会爆炸并对附近敌人造成<span class=\"text-yellow-600 dark:text-yellow-500 font-semibold\">(140 ~ 650)真实伤害</span>。",
         "iconFile": "KogMaw_IcathianSurprise.png",
@@ -127,6 +128,10 @@
         "range": [],
         "rankValues": [],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -137,6 +142,7 @@
         "slot": "Q",
         "id": "KogMawQ",
         "name": "腐蚀唾液",
+        "maxRank": 5,
         "summary": "克格莫发射一团腐蚀性物质，对目标造成魔法伤害，并暂时腐蚀目标的护甲和魔法抗性。克格莫还会获得额外攻速。",
         "bodyHtml": "<span class=\"text-gray-600 dark:text-gray-500 italic\">被动：</span>克格莫获得<span>5/10/15/20/25%攻击速度</span>。<br /><br /><span class=\"text-gray-900 dark:text-white font-semibold\">主动：</span>克格莫抛射出一团腐蚀性的唾沫，对命中的第一个敌人造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(80/125/170/215/260 + (90% 法术强度))魔法伤害</span>，以及持续4秒的<span class=\"text-orange-600 dark:text-orange-400\">16/20/24/28/32%护甲</span>和<span>魔法抗性</span>击碎。",
         "iconFile": "KogMawQ.png",
@@ -193,6 +199,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "TotalDamage",
+            "kind": "damage",
+            "baseByRank": [
+              80,
+              125,
+              170,
+              215,
+              260
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.8999999761581421,
+                  0.8999999761581421,
+                  0.8999999761581421,
+                  0.8999999761581421,
+                  0.8999999761581421
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -203,6 +236,7 @@
         "slot": "W",
         "id": "KogMawBioArcaneBarrage",
         "name": "生化弹幕",
+        "maxRank": 5,
         "summary": "克格莫的攻击获得额外距离，并且能够对目标造成额外的魔法伤害，伤害值基于目标的最大生命值%i:OnHit% <OnHit>攻击特效</OnHit>。",
         "bodyHtml": "克格莫获得130/150/170/190/210攻击距离，并且他的攻击附带额外的<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(3/3.75/4.5/5.25/6% + (0.015% 法术强度))最大生命值的魔法伤害</span> <span>攻击特效</span>，持续8秒。<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">至多对野怪造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">100魔法伤害</span>。</span>",
         "iconFile": "KogMawBioArcaneBarrage.png",
@@ -255,6 +289,12 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "unsupported",
+          "unsupportedPartTypes": [
+            "percent-calculation"
+          ]
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -265,6 +305,7 @@
         "slot": "E",
         "id": "KogMawVoidOoze",
         "name": "虚空淤泥",
+        "maxRank": 5,
         "summary": "克格莫抛射出一团特殊的分泌物，对经过或停留在分泌物上的敌人造成伤害和减速效果。",
         "bodyHtml": "克格莫呕出胆汁，造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(70/110/150/190/230 + (65% 法术强度))魔法伤害</span>并留下一条持续3秒的软泥路径。软泥中的敌人们会被<span class=\"text-purple-600 dark:text-purple-500\">减速</span>40/45/50/55/60%。",
         "iconFile": "KogMawVoidOoze.png",
@@ -321,6 +362,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "TotalDamage",
+            "kind": "damage",
+            "baseByRank": [
+              70,
+              110,
+              150,
+              190,
+              230
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.6499999761581421,
+                  0.6499999761581421,
+                  0.6499999761581421,
+                  0.6499999761581421,
+                  0.6499999761581421
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -331,6 +399,7 @@
         "slot": "R",
         "id": "KogMawLivingArtillery",
         "name": "活体大炮",
+        "maxRank": 3,
         "summary": "克格莫发射一枚射程极远的活体炮弹，让被命中的敌人暴露在己方视野中，并对目标造成魔法伤害（对低血量目标的伤害会显著提升）。 在短时间内连续使用活体大炮，将消耗额外的法力值。",
         "bodyHtml": "克格莫朝一个区域发射一团酸液，造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(100/140/180 + (35/40/45% 法术强度) + (75% 额外攻击力))外加0.833%每1%已损失生命值的魔法伤害</span>并使命中的敌人显形2秒。低于<span class=\"text-green-600 dark:text-green-400\">40%生命值</span>的敌人们会转而受到<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(200/280/360 + (70/80/90% 法术强度) + (150% 额外攻击力))魔法伤害</span>。<br /><br />8秒内的后续发射会消耗额外的<span>40法力</span>(最大值：<span>400法力</span>)。",
         "iconFile": "KogMawLivingArtillery.png",
@@ -381,6 +450,37 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "BaseDamageCalc",
+            "kind": "damage",
+            "baseByRank": [
+              100,
+              140,
+              180
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.3499999940395355,
+                  0.4000000059604645,
+                  0.44999998807907104
+                ]
+              },
+              {
+                "stat": "bonusAttackDamage",
+                "coefficientsByRank": [
+                  0.75,
+                  0.75,
+                  0.75
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {

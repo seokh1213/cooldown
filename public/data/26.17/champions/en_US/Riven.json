@@ -120,6 +120,7 @@
         "slot": "P",
         "id": "RivenPassive",
         "name": "Runic Blade",
+        "maxRank": 0,
         "summary": "Riven's abilities charge her blade, and her basic attacks expend charges to deal an additional damage.",
         "bodyHtml": "Using an Ability grants Riven a charge for 6 seconds (max 3). Her Attacks spend a charge to deal an additional <span class=\"text-red-600 dark:text-red-500 font-semibold\"> physical damage</span>.",
         "iconFile": "RivenRunicBlades.png",
@@ -127,6 +128,10 @@
         "range": [],
         "rankValues": [],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -137,6 +142,7 @@
         "slot": "Q",
         "id": "RivenTriCleave",
         "name": "Broken Wings",
+        "maxRank": 5,
         "summary": "Riven lashes out in a series of strikes. This ability can be reactivated three times in a short time frame with the third hit knocking back nearby enemies.",
         "bodyHtml": "Riven dashes forward, dealing <span class=\"text-red-600 dark:text-red-500 font-semibold\">(45/75/105/135/165 + (60/65/70/75/80% bonus Attack Damage)) physical damage</span>. She can <span class=\"text-yellow-600 dark:text-yellow-300\">Recast</span> this Ability twice. The first <span class=\"text-yellow-600 dark:text-yellow-300\">Recast</span> is the same as the original, but the second has a different effect:<br /><br /><span class=\"text-yellow-600 dark:text-yellow-300\">Recast</span>: Riven leaps forward and slams, dealing <span class=\"text-red-600 dark:text-red-500 font-semibold\">(45/75/105/135/165 + (60/65/70/75/80% bonus Attack Damage)) physical damage</span> and <span class=\"text-purple-600 dark:text-purple-500\">Knocks Up</span> nearby enemies for 0.75 seconds.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">Only the last use of this Ability can cross terrain.<br />Riven targets the unit your cursor is on, or dashes forward if there is no target.</span>",
         "iconFile": "RivenTriCleave.png",
@@ -179,6 +185,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "FirstSlashDamage",
+            "kind": "damage",
+            "baseByRank": [
+              45,
+              75,
+              105,
+              135,
+              165
+            ],
+            "terms": [
+              {
+                "stat": "bonusAttackDamage",
+                "coefficientsByRank": [
+                  0.6000000238418579,
+                  0.6499999761581421,
+                  0.699999988079071,
+                  0.75,
+                  0.800000011920929
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -189,6 +222,7 @@
         "slot": "W",
         "id": "RivenMartyr",
         "name": "Ki Burst",
+        "maxRank": 5,
         "summary": "Riven emits a Ki Burst, damaging and stunning nearby enemies.",
         "bodyHtml": "Riven's sword emits a burst of runic energy, dealing <span class=\"text-red-600 dark:text-red-500 font-semibold\">(65/95/125/155/185 + (100% bonus Attack Damage)) physical damage</span> and <span class=\"text-purple-600 dark:text-purple-500\">Stunning</span> for 0.75 seconds.",
         "iconFile": "RivenMartyr.png",
@@ -231,6 +265,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "TotalDamage",
+            "kind": "damage",
+            "baseByRank": [
+              65,
+              95,
+              125,
+              155,
+              185
+            ],
+            "terms": [
+              {
+                "stat": "bonusAttackDamage",
+                "coefficientsByRank": [
+                  1,
+                  1,
+                  1,
+                  1,
+                  1
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -241,6 +302,7 @@
         "slot": "E",
         "id": "RivenFeint",
         "name": "Valor",
+        "maxRank": 5,
         "summary": "Riven steps forward a short distance and blocks incoming damage.",
         "bodyHtml": "Riven quickly dashes and gains <span class=\"text-blue-600 dark:text-blue-300\">(70/95/120/145/170 + (110% bonus Attack Damage)) Shield</span> for 1.5 seconds.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">This dash cannot go over terrain.</span>",
         "iconFile": "RivenFeint.png",
@@ -283,6 +345,10 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -293,6 +359,7 @@
         "slot": "R",
         "id": "RivenFengShuiEngine",
         "name": "Blade of the Exile",
+        "maxRank": 3,
         "summary": "Riven empowers her keepsake weapon with energy, and gains Attack Damage and Range. During this time, she also gains the ability to use Wind Slash, a powerful ranged attack, once.",
         "bodyHtml": "Riven's weapon surges with spiritual energy, granting her <span class=\"text-red-600 dark:text-red-500 font-semibold\">(20% Attack Damage) Attack Damage</span> and increased range on damaging Abilities and Attacks for 15 seconds. While active, she can <span class=\"text-yellow-600 dark:text-yellow-300\">Recast.</span><br /><br /><span class=\"text-yellow-600 dark:text-yellow-300\">Recast:</span> Riven fires a wind slash that deals between <span class=\"text-red-600 dark:text-red-500 font-semibold\">(100/150/200 + (55% bonus Attack Damage))</span> and <span class=\"text-red-600 dark:text-red-500 font-semibold\">(300/450/600 + (165% bonus Attack Damage)) physical damage</span>, based on their missing Health.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">Gains 75 Attack Range</span>",
         "iconFile": "RivenFengShuiEngine.png",
@@ -335,6 +402,29 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "MaxDamage",
+            "kind": "damage",
+            "baseByRank": [
+              300,
+              450,
+              600
+            ],
+            "terms": [
+              {
+                "stat": "bonusAttackDamage",
+                "coefficientsByRank": [
+                  1.649999976158142,
+                  1.649999976158142,
+                  1.649999976158142
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {

@@ -120,6 +120,7 @@
         "slot": "P",
         "id": "SingedP",
         "name": "剧毒冲流",
+        "maxRank": 0,
         "summary": "辛吉德借助附近英雄进行漂移，在经过他们时获得爆发性的移动速度加成。",
         "bodyHtml": "辛吉德将借助附近英雄的冲流，来获得持续2秒的<span class=\"text-cyan-600 dark:text-cyan-500\">25%移动速度</span>。这个效果在每个英雄身上拥有8秒冷却时间。",
         "iconFile": "Singed_Passive.png",
@@ -127,6 +128,10 @@
         "range": [],
         "rankValues": [],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -137,6 +142,7 @@
         "slot": "Q",
         "id": "PoisonTrail",
         "name": "剧毒踪迹",
+        "maxRank": 5,
         "summary": "辛吉德在身后留下剧毒踪迹，对经过上面的敌人造成持续伤害。",
         "bodyHtml": "<span>激活：</span>辛吉德在身后留下一条剧毒踪迹，对经过它的敌人造成每秒<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(20/30/40/50/60 + (42.5% 法术强度))魔法伤害</span>。<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">踪迹持续时长：3.25秒。<br />剧毒持续时长：2秒。<br />大概的总伤害：<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(95/142.5/190/237.5/285 + (201.875% 法术强度))魔法伤害</span>。<br />如果一个处于【剧毒踪迹】状态下的小兵即将死于小兵伤害，则辛吉德会转而获得该小兵的击杀金币。</span>",
         "iconFile": "PoisonTrail.png",
@@ -185,6 +191,12 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "unsupported",
+          "unsupportedPartTypes": [
+            "GameCalculationModified"
+          ]
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -195,6 +207,7 @@
         "slot": "W",
         "id": "MegaAdhesive",
         "name": "强力粘胶",
+        "maxRank": 5,
         "summary": "扔出一瓶强力粘合剂在地上，其中的敌人会被减速和缚地。",
         "bodyHtml": "辛吉德猛掷出一个装满粘性液体的桶，对区域内的敌人造成<span class=\"text-purple-600 dark:text-purple-500\">缚地</span>和50/55/60/65/70%<span class=\"text-purple-600 dark:text-purple-500\">减速</span>，持续3秒。",
         "iconFile": "MegaAdhesive.png",
@@ -237,6 +250,10 @@
           }
         ],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -247,6 +264,7 @@
         "slot": "E",
         "id": "Fling",
         "name": "过肩摔",
+        "maxRank": 5,
         "summary": "伤害目标敌方单位，并将他们投掷到辛吉德身后。如果辛吉德将目标扔到强力粘胶上，目标还会被禁锢。",
         "bodyHtml": "辛吉德对一名敌人进行过肩摔，造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(50/60/70/80/90 + (55% 法术强度))外加6/6.5/7/7.5/8%最大生命值的魔法伤害</span>。<br /><br />如果辛吉德将一名目标摔到他的<span>强力粘胶</span>上，那么该目标还会被<span class=\"text-purple-600 dark:text-purple-500\">禁锢</span>1/1.25/1.5/1.75/2秒。<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">对小兵和野怪的最大生命值伤害的上限为300。</span>",
         "iconFile": "Fling.png",
@@ -311,6 +329,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "BaseDamage",
+            "kind": "damage",
+            "baseByRank": [
+              50,
+              60,
+              70,
+              80,
+              90
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.550000011920929,
+                  0.550000011920929,
+                  0.550000011920929,
+                  0.550000011920929,
+                  0.550000011920929
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -321,6 +366,7 @@
         "slot": "R",
         "id": "InsanityPotion",
         "name": "疯狂药剂",
+        "maxRank": 3,
         "summary": "辛吉德喝下精心炮制的化学药剂，大幅提高战斗属性，并使他的【剧毒踪迹】可以施加重伤效果。",
         "bodyHtml": "辛吉德喝下化学药剂，自身获得25/55/85<span class=\"text-blue-600 dark:text-blue-400\">法术强度</span>、<span class=\"text-orange-600 dark:text-orange-400\">护甲</span>、<span>魔法抗性</span>、<span class=\"text-cyan-600 dark:text-cyan-500\">移动速度</span>、<span class=\"text-green-600 dark:text-green-400\">生命回复</span>和<span>法力回复</span>，持续25秒。在这个效果期间，辛吉德的<span>剧毒踪迹</span>还会施加持续1秒的40%重伤。",
         "iconFile": "InsanityPotion.png",
@@ -349,6 +395,10 @@
           }
         ],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {

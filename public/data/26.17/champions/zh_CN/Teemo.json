@@ -120,6 +120,7 @@
         "slot": "P",
         "id": "TeemoPassive",
         "name": "游击队军备",
+        "maxRank": 0,
         "summary": "如果提莫在短时间内静止站立且不受任何伤害，就会进入无定期的隐形状态。如果提莫在草丛中，他就能在移动的同时进入并保持隐形状态。离开隐形状态后，提莫会获得“出奇制胜”的增益效果，提升攻击速度，持续3秒。",
         "bodyHtml": "如果提莫在1.5秒内静止站立且没有受到伤害，就会进入<span class=\"text-purple-600 dark:text-purple-400 font-semibold\">隐形</span>，直到他移动为止。在草丛中时，他可以在移动时保持<span class=\"text-purple-600 dark:text-purple-400 font-semibold\">隐形</span>。<br /><br />在离开<span class=\"text-purple-600 dark:text-purple-400 font-semibold\">隐形</span>后，提莫会获得持续5秒的<span>80%攻击速度</span>。",
         "iconFile": "TeemoPassive.png",
@@ -127,6 +128,10 @@
         "range": [],
         "rankValues": [],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -137,6 +142,7 @@
         "slot": "Q",
         "id": "TeemoQ",
         "name": "致盲吹箭",
+        "maxRank": 5,
         "summary": "用一团强力的毒液来侵蚀一名敌人的视野，对目标单位造成伤害并使目标致盲一段时间。",
         "bodyHtml": "提莫发射一根吹箭，对目标造成2/2.25/2.5/2.75/3秒<span class=\"text-purple-600 dark:text-purple-500\">致盲</span>和<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(80/125/170/215/260 + (70% 法术强度))魔法伤害</span>。<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">小兵和野怪的<span class=\"text-purple-600 dark:text-purple-500\">致盲</span>时长延长200%。</span>",
         "iconFile": "TeemoQ.png",
@@ -193,6 +199,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "CalculatedDamage",
+            "kind": "damage",
+            "baseByRank": [
+              80,
+              125,
+              170,
+              215,
+              260
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.699999988079071,
+                  0.699999988079071,
+                  0.699999988079071,
+                  0.699999988079071,
+                  0.699999988079071
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -203,6 +236,7 @@
         "slot": "W",
         "id": "TeemoW",
         "name": "小莫快跑",
+        "maxRank": 5,
         "summary": "提莫动如脱兔，提升移动速度，直到被敌方英雄或防御塔击中为止。提莫可以通过冲刺来获得额外移动速度，且短时间内不会因被击中而使加速效果中止。",
         "bodyHtml": "<span class=\"text-gray-600 dark:text-gray-500 italic\">被动：</span>提莫获得<span class=\"text-cyan-600 dark:text-cyan-500\">12/16/20/24/28%移动速度</span>，前提是在最近5秒内未受到来自敌方英雄或防御塔的伤害。<br /><br /><span class=\"text-gray-900 dark:text-white font-semibold\">主动：</span>提莫急速奔跑，获得持续3秒的<span class=\"text-cyan-600 dark:text-cyan-500\">24/32/40/48/56%移动速度</span>，在被攻击时也不会移除。",
         "iconFile": "TeemoW.png",
@@ -241,6 +275,10 @@
           }
         ],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -251,6 +289,7 @@
         "slot": "E",
         "id": "TeemoE",
         "name": "毒性射击",
+        "maxRank": 5,
         "summary": "提莫每次攻击附带毒液伤害%i:OnHit% <OnHit>攻击特效</OnHit>，造成持续性伤害，持续4秒。",
         "bodyHtml": "<span class=\"text-gray-600 dark:text-gray-500 italic\">被动：</span>提莫的攻击会施加剧毒 <span>攻击特效</span>，造成额外的<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(9/23/37/51/65 + (30% 法术强度) + (5% 额外攻击力))魔法伤害</span>外加在4秒里持续造成共<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(24/48/72/96/120 + (40% 法术强度) + (10% 额外攻击力))魔法伤害</span>。<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">这个剧毒效果可对野怪造成160%伤害。</span>",
         "iconFile": "TeemoE.png",
@@ -293,6 +332,43 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "ImpactCalculatedDamage",
+            "kind": "damage",
+            "baseByRank": [
+              9,
+              23,
+              37,
+              51,
+              65
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.30000001192092896,
+                  0.30000001192092896,
+                  0.30000001192092896,
+                  0.30000001192092896,
+                  0.30000001192092896
+                ]
+              },
+              {
+                "stat": "bonusAttackDamage",
+                "coefficientsByRank": [
+                  0.05000000074505806,
+                  0.05000000074505806,
+                  0.05000000074505806,
+                  0.05000000074505806,
+                  0.05000000074505806
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -303,6 +379,7 @@
         "slot": "R",
         "id": "TeemoR",
         "name": "种蘑菇",
+        "maxRank": 3,
         "summary": "提莫投掷一个可爆炸的毒性陷阱，需要消耗提莫背包里的一个蘑菇。陷阱会在被敌方踩中时爆炸，释放出一团毒云，对附近的敌人造成减速效果和持续伤害。如果提莫把一个蘑菇扔到另一个蘑菇上，那么这个蘑菇会进行弹跳，获得额外的距离。",
         "bodyHtml": "提莫投掷一个蘑菇陷阱，它会在被敌方踩中时爆炸。陷阱造成持续4秒的30/40/50%<span class=\"text-purple-600 dark:text-purple-500\">减速</span>并在此期间持续造成共<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(200/325/450 + (50% 法术强度))魔法伤害</span>。敌人会被显形相同的时长 。<br /><br />陷阱持续5分钟并且处于潜行状态。一个蘑菇在被扔到另一个蘑菇上时，会先弹跳然后着陆到它的位置。这个技能有3/4/5层充能(35/30/25秒充能时间)。<br />",
         "iconFile": "TeemoR.png",
@@ -367,6 +444,29 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "TotalDamage",
+            "kind": "damage",
+            "baseByRank": [
+              200,
+              325,
+              450
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.5,
+                  0.5,
+                  0.5
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {

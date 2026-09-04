@@ -120,6 +120,7 @@
         "slot": "P",
         "id": "AlistarPassive",
         "name": "凯旋怒吼",
+        "maxRank": 0,
         "summary": "阿利斯塔在对敌方英雄造成晕眩或强制位移时，或附近有敌人阵亡时，会积攒他的怒吼层数。在层数攒满后，他会治疗他自己和所有附近的友方英雄。",
         "bodyHtml": "阿利斯塔在对一个敌方英雄造成<span class=\"text-purple-600 dark:text-purple-500\">晕眩</span>或<span class=\"text-purple-600 dark:text-purple-500\">震移</span>时，或附近有一名敌人阵亡时，会获得一层效果。在7层时，他会发出怒吼，治疗自身<span class=\"text-green-600 dark:text-green-400\">(5% 生命值)生命值</span>并治疗所有附近的友方英雄<span class=\"text-green-600 dark:text-green-400\">(7% 生命值)生命值</span>。<br /><br />敌方英雄和史诗级野怪的阵亡会完全充能这个技能。",
         "iconFile": "Alistar_E.png",
@@ -127,6 +128,10 @@
         "range": [],
         "rankValues": [],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -137,6 +142,7 @@
         "slot": "Q",
         "id": "Pulverize",
         "name": "大地粉碎",
+        "maxRank": 5,
         "summary": "阿利斯塔锤击地面，对附近的敌人造成魔法伤害并使他们浮空。",
         "bodyHtml": "阿利斯塔使大地破裂，<span class=\"text-purple-600 dark:text-purple-500\">击飞</span>敌人1秒并造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(60/100/140/180/220 + (80% 法术强度))魔法伤害</span>。",
         "iconFile": "Pulverize.png",
@@ -193,6 +199,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "TotalDamage",
+            "kind": "damage",
+            "baseByRank": [
+              60,
+              100,
+              140,
+              180,
+              220
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.800000011920929,
+                  0.800000011920929,
+                  0.800000011920929,
+                  0.800000011920929,
+                  0.800000011920929
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -203,6 +236,7 @@
         "slot": "W",
         "id": "Headbutt",
         "name": "野蛮冲撞",
+        "maxRank": 5,
         "summary": "阿利斯塔冲撞目标，对其造成伤害并击退目标。",
         "bodyHtml": "阿利斯塔顶向一名敌人，将其<span class=\"text-purple-600 dark:text-purple-500\">击退</span>并造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(55/110/165/220/275 + (100% 法术强度))魔法伤害</span>。",
         "iconFile": "Headbutt.png",
@@ -259,6 +293,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "TotalDamage",
+            "kind": "damage",
+            "baseByRank": [
+              55,
+              110,
+              165,
+              220,
+              275
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  1,
+                  1,
+                  1,
+                  1,
+                  1
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -269,6 +330,7 @@
         "slot": "E",
         "id": "AlistarE",
         "name": "践踏",
+        "maxRank": 5,
         "summary": "阿利斯塔践踏附近的敌方单位，无视单位的碰撞体积并在他伤害到一名敌方英雄时获得一层充能。在满层充能时，阿利斯塔的下次对敌方英雄发起的普攻将造成额外魔法伤害和晕眩效果。",
         "bodyHtml": "阿利斯塔践踏地面，变为幽灵状态并在5秒里持续对附近的敌人造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(80/110/140/170/200 + (70% 法术强度))魔法伤害</span>。每段践踏在至少伤害到一名敌方英雄时会为阿利斯塔提供一层效果。<br /><br />在5层效果时，阿利斯塔的下一个对英雄打出的攻击会<span class=\"text-purple-600 dark:text-purple-500\">晕眩</span>目标1秒并造成额外的<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(20 ~ 20)魔法伤害</span>。<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">幽灵状态的单位无视其它单位的碰撞体积。</span>",
         "iconFile": "AlistarE.png",
@@ -325,6 +387,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "TotalDamage",
+            "kind": "damage",
+            "baseByRank": [
+              80,
+              110,
+              140,
+              170,
+              200
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.699999988079071,
+                  0.699999988079071,
+                  0.699999988079071,
+                  0.699999988079071,
+                  0.699999988079071
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -335,6 +424,7 @@
         "slot": "R",
         "id": "FerociousHowl",
         "name": "坚定意志",
+        "maxRank": 3,
         "summary": "阿利斯塔发出野性的咆哮，移除身上所有控制效果，并且持续时间内所受的物理和魔法伤害将减少。",
         "bodyHtml": "阿利斯塔立刻净化掉所有<span class=\"text-purple-600 dark:text-purple-500\">限制</span>效果并获得55/65/75%伤害减免，持续7秒。",
         "iconFile": "FerociousHowl.png",
@@ -367,6 +457,10 @@
           }
         ],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {

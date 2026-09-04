@@ -119,6 +119,7 @@
         "slot": "P",
         "id": "ShacoPassive",
         "name": "背刺",
+        "maxRank": 0,
         "summary": "在目标的背后时，萨科的普攻和【E双面毒刃】会造成额外伤害。",
         "bodyHtml": "在命中一名没有面朝萨科的敌人时：<span>萨科的攻击造成额外的<span class=\"text-red-600 dark:text-red-500 font-semibold\">(20% 额外攻击力)物理伤害</span>且这个伤害可以暴击。<span>并且<span></span>造成额外的<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(10% 法术强度)魔法伤害</span>，并会在目标低于30%生命值时提升至<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(15% 法术强度)魔法伤害</span>。",
         "iconFile": "Jester_CarefulStrikes.png",
@@ -126,6 +127,10 @@
         "range": [],
         "rankValues": [],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -136,6 +141,7 @@
         "slot": "Q",
         "id": "Deceive",
         "name": "欺诈魔术",
+        "maxRank": 5,
         "summary": "萨科进入隐形状态并传送到目标位置。<br><br>他在隐形状态下的第一次普攻将获得增强，造成额外伤害并在目标背后攻击时必定会暴击。",
         "bodyHtml": "萨科传送并变为<span class=\"text-purple-600 dark:text-purple-400 font-semibold\">隐形</span>，持续2.5/2.75/3/3.25/3.5秒。使用<span>惊吓魔盒</span>或<span>幻像</span>不会打破<span class=\"text-purple-600 dark:text-purple-400 font-semibold\">隐形</span>。<br /><br />萨科在<span class=\"text-purple-600 dark:text-purple-400 font-semibold\">隐形</span>时的下次攻击造成额外的<span class=\"text-red-600 dark:text-red-500 font-semibold\">(25/35/45/55/65 + (60% 额外攻击力))物理伤害</span>。如果从背后进行打击，那么这个攻击会暴击，造成伤害。<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">攻击附带的额外伤害可以暴击。<br /><span class=\"text-purple-600 dark:text-purple-400 font-semibold\">隐形</span>单位只会被【防御塔】或<span style=\"color: #ee91d7\">真实视野</font color>显形。</span>",
         "iconFile": "Deceive.png",
@@ -192,6 +198,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "TotalDamage",
+            "kind": "damage",
+            "baseByRank": [
+              25,
+              35,
+              45,
+              55,
+              65
+            ],
+            "terms": [
+              {
+                "stat": "bonusAttackDamage",
+                "coefficientsByRank": [
+                  0.6000000238418579,
+                  0.6000000238418579,
+                  0.6000000238418579,
+                  0.6000000238418579,
+                  0.6000000238418579
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -204,6 +237,7 @@
         "slot": "W",
         "id": "JackInTheBox",
         "name": "惊吓魔盒",
+        "maxRank": 5,
         "summary": "萨科丢出一个隐形且会动的惊吓魔盒。在触发时，盒子会恐惧附近的敌人，然后对其进行攻击。",
         "bodyHtml": "萨科生成一个会在2秒后潜行的陷阱，它持续(40 + (10% 法术强度))秒。它会在有敌人靠近或显形时触发，<span class=\"text-purple-600 dark:text-purple-500\">恐惧</span>附近的敌方英雄们0.5/0.75/1/1.25/1.5秒，或小兵和野怪2秒。<br /><br />一旦激活，陷阱就会在5秒里持续攻击所有附近的敌人们，造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(10/15/20/25/30 + (12% 法术强度))魔法伤害</span>，如果只攻击一个敌人则为<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(25/40/55/70/85 + (18% 法术强度))伤害</span>。<br /><br />惊吓魔盒的攻击对野怪造成额外的<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">20/35/50/65/80</span>伤害。",
         "iconFile": "JackInTheBox.png",
@@ -264,6 +298,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "AoEDamage",
+            "kind": "damage",
+            "baseByRank": [
+              10,
+              15,
+              20,
+              25,
+              30
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.11999999731779099,
+                  0.11999999731779099,
+                  0.11999999731779099,
+                  0.11999999731779099,
+                  0.11999999731779099
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -274,6 +335,7 @@
         "slot": "E",
         "id": "TwoShivPoison",
         "name": "双面毒刃",
+        "maxRank": 5,
         "summary": "萨科的毒刃在命中时会被动地使目标中毒，减少目标的移动速度。他可以将毒刃扔向目标，造成伤害和中毒效果。扔出的毒刃会对生命值低于30%的目标造成额外伤害。",
         "bodyHtml": "<span class=\"text-gray-600 dark:text-gray-500 italic\">被动：</span>当这个技能未进入冷却阶段时，萨科的攻击会对目标造成持续2秒的20/22.5/25/27.5/30%<span class=\"text-purple-600 dark:text-purple-500\">减速</span>。<br /><br /><span class=\"text-gray-900 dark:text-white font-semibold\">主动：</span>萨科扔出一把毒刃，造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(70/95/120/145/170 + (80% 额外攻击力) + (60% 法术强度))魔法伤害</span>和持续3秒的20/22.5/25/27.5/30%<span class=\"text-purple-600 dark:text-purple-500\">减速</span>。如果目标低于30%生命值，毒刃会转而造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(105/142.5/180/217.5/255 + (120% 额外攻击力) + (90% 法术强度))伤害</span>。",
         "iconFile": "TwoShivPoison.png",
@@ -326,6 +388,43 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "TotalDamage",
+            "kind": "damage",
+            "baseByRank": [
+              70,
+              95,
+              120,
+              145,
+              170
+            ],
+            "terms": [
+              {
+                "stat": "bonusAttackDamage",
+                "coefficientsByRank": [
+                  0.800000011920929,
+                  0.800000011920929,
+                  0.800000011920929,
+                  0.800000011920929,
+                  0.800000011920929
+                ]
+              },
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.6000000238418579,
+                  0.6000000238418579,
+                  0.6000000238418579,
+                  0.6000000238418579,
+                  0.6000000238418579
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -336,6 +435,7 @@
         "slot": "R",
         "id": "HallucinateFull",
         "name": "幻像",
+        "maxRank": 3,
         "summary": "萨科在身边制造一个自己的幻像，幻像能够攻击周围的敌人（对防御塔造成较少伤害）。在死亡时爆炸，它会爆炸，生成三个小型惊吓魔盒并对附近的敌人造成伤害。",
         "bodyHtml": "萨科暂时消失，然后重新出现并制造一个持续18秒的幻像，幻像会在死亡时爆炸，对附近的敌人造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(150/225/300 + (70% 法术强度))魔法伤害</span>并生成三个立即触发的小型<span>惊吓魔盒</span>。幻像造成萨科60%的伤害并承受50%额外伤害。<br /><br />小型<span>惊吓魔盒</span>造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(10/20/30 + (10% 法术强度))魔法伤害</span>，如果只攻击一个敌人则为<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(25/50/75 + (15% 法术强度))魔法伤害</span>，并让敌人<span class=\"text-purple-600 dark:text-purple-500\">恐惧</span>1秒。<br /><br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">可以通过按住alt键的同时使用鼠标右键或<span class=\"text-yellow-600 dark:text-yellow-300\">再次施放</span>此技能来控制幻像。</span>",
         "iconFile": "HallucinateFull.png",
@@ -386,6 +486,29 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "AoEDamage",
+            "kind": "damage",
+            "baseByRank": [
+              10,
+              20,
+              30
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.10000000149011612,
+                  0.10000000149011612,
+                  0.10000000149011612
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {

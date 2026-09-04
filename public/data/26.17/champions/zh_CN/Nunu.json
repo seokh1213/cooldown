@@ -120,6 +120,7 @@
         "slot": "P",
         "id": "NunuPassive",
         "name": "弗雷尔卓德的召唤",
+        "maxRank": 0,
         "summary": "努努提升威朗普和一名附近友军的攻击速度和移动速度，并使威朗普的普攻可以伤害目标周围的敌人。",
         "bodyHtml": "当努努和威朗普对英雄、野怪或建筑物造成伤害时，他们和一名附近的友方英雄会获得<span>20%攻击速度</span>和<span class=\"text-cyan-600 dark:text-cyan-500\">10%移动速度</span>，持续4秒。<br /><br />当威朗普有这个增益时，威朗普的攻击会对附近的其他敌人造成额外的<span class=\"text-red-600 dark:text-red-500 font-semibold\">(30% 攻击力)物理伤害</span>。",
         "iconFile": "NunuPassive.png",
@@ -127,6 +128,10 @@
         "range": [],
         "rankValues": [],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -137,6 +142,7 @@
         "slot": "Q",
         "id": "NunuQ",
         "name": "吞噬",
+        "maxRank": 5,
         "summary": "威朗普撕咬一个小兵、野怪或敌方英雄，造成巨大伤害并回复自己的生命值。",
         "bodyHtml": "努努请求威朗普撕咬一名敌人，造成<span class=\"text-yellow-600 dark:text-yellow-500 font-semibold\">400/600/800/1000/1200真实伤害</span>并在用来对抗小兵和野怪时回复<span class=\"text-green-600 dark:text-green-400\">(65/95/125/155/185 + (10% 额外生命值) + (90% 法术强度))生命值</span>。在对抗英雄时，它会转而造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(60/100/140/180/220 + (5% 额外生命值) + (65% 法术强度))魔法伤害</span>并回复<span class=\"text-green-600 dark:text-green-400\">(39/57/75/93/111 + (6% 额外生命值) + (54% 法术强度))生命值</span>。<br /><br /><span class=\"text-green-600 dark:text-green-400\">治疗效果</span>会在努努和威朗普低于50%生命值时提升50%。",
         "iconFile": "NunuQ.png",
@@ -197,6 +203,10 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -207,6 +217,7 @@
         "slot": "W",
         "id": "NunuW",
         "name": "史上最大雪球！",
+        "maxRank": 5,
         "summary": "威朗普滚起一个雪球，它的尺寸和速度将随着滚动时间而增长。雪球会伤害并击飞敌人。",
         "bodyHtml": "努努和威朗普生成一团雪球，雪球会随着他们的滚动而获得体型与速度的增长。在滚雪球时，他们的转向会变慢，但可通过持续转向来提升转向速度。<br /><br />雪球造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(59.94/74.925/89.91/104.895/119.88 + (49.95% 法术强度))</span>至<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(180/225/270/315/360 + (150% 法术强度))魔法伤害</span>，并在碰撞英雄、大型野怪或墙体后造成0.5到1.25秒的<span class=\"text-purple-600 dark:text-purple-500\">击飞</span>。这些数值受益于已滚动的距离。<br /><br />努努和威朗普可以<span class=\"text-yellow-600 dark:text-yellow-300\">再次施放</span>来提前放走雪球。",
         "iconFile": "NunuW.png",
@@ -259,6 +270,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "MaximumSnowballDamage",
+            "kind": "damage",
+            "baseByRank": [
+              180,
+              225,
+              270,
+              315,
+              360
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  1.5,
+                  1.5,
+                  1.5,
+                  1.5,
+                  1.5
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -269,6 +307,7 @@
         "slot": "E",
         "id": "NunuE",
         "name": "雪球飞射",
+        "maxRank": 5,
         "summary": "努努掷出多个雪球以伤害敌人。当他完成后，威朗普就会禁锢被雪球命中过的任何英雄或大型野怪。",
         "bodyHtml": "努努投掷3团雪球，每团雪球造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(15/22.5/30/37.5/45 + (12% 法术强度))魔法伤害</span>，并使被3团雪球都命中的敌人们遭受持续1秒的30/35/40/45/50%<span class=\"text-purple-600 dark:text-purple-500\">减速</span>。努努可以<span class=\"text-yellow-600 dark:text-yellow-300\">再次施放</span>这个技能至多2次。<br /><br />在3秒后，努努会使附近所有已被雪球<span class=\"text-purple-600 dark:text-purple-500\">减速</span>的敌人们<span class=\"text-purple-600 dark:text-purple-500\">禁锢</span>(0.5 ~ 1.5)秒并造成额外的<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(20/30/40/50/60 + (80% 法术强度))魔法伤害</span>。<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">努努只能用这个技能使每个敌人<span class=\"text-purple-600 dark:text-purple-500\">减速</span>一次。</span>",
         "iconFile": "NunuE.png",
@@ -329,6 +368,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "TotalRootDamage",
+            "kind": "damage",
+            "baseByRank": [
+              20,
+              30,
+              40,
+              50,
+              60
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.800000011920929,
+                  0.800000011920929,
+                  0.800000011920929,
+                  0.800000011920929,
+                  0.800000011920929
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -339,6 +405,7 @@
         "slot": "R",
         "id": "NunuR",
         "name": "绝对零度",
+        "maxRank": 3,
         "summary": "努努和威朗普在一个区域内创造一阵强大的暴风雪，来减速敌人并在结束时造成巨额伤害。",
         "bodyHtml": "努努和威朗普引导一阵强力的暴风雪，至多引导3秒。其中的敌人们会被<span class=\"text-purple-600 dark:text-purple-500\">减速</span>50%，在持续期间不断提升至95%。努努和威朗普在引导期间也会获得<span class=\"text-blue-600 dark:text-blue-300\">(65/75/85 + (30/40/50% 额外生命值) + (150% 法术强度))护盾值</span>，在之后的3秒里持续衰减。<br /><br />当暴风雪结束时，它会爆炸，基于引导时间造成至多<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(625/925/1275 + (300% 法术强度))魔法伤害</span>。 努努和威朗普可以<span class=\"text-yellow-600 dark:text-yellow-300\">再次施放</span>来使暴风雪提前结束。",
         "iconFile": "NunuR.png",
@@ -389,6 +456,29 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "MaximumDamage",
+            "kind": "damage",
+            "baseByRank": [
+              625,
+              925,
+              1275
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  3,
+                  3,
+                  3
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {

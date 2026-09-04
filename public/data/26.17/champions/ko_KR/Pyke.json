@@ -120,6 +120,7 @@
         "slot": "P",
         "id": "PykePassive",
         "name": "가라앉은 자들의 축복",
+        "maxRank": 0,
         "summary": "파이크가 적에게 보이지 않는 상태가 되면 최근 적 챔피언에게 잃었던 체력의 일부를 빠르게 회복합니다. 또한, 어떤 방법으로든 파이크가 획득한 추가 최대 체력은 모두 추가 공격력으로 전환됩니다.",
         "bodyHtml": "파이크는 적 챔피언에게 받는 피해량의 (9% + (0.2%)), 주변에 적이 둘 이상 있을 때는 최대 (40% + (0.4%))만큼을 체력으로 비축합니다. 최대 (80 + (800% 추가 공격력))까지 비축되며 적에게 <span>보이지 않는</span> 상태가 되면 비축한 만큼 체력을 빠르게 회복합니다.<br /><br />또한 파이크가 최대 체력을 모두 공격력으로 전환합니다. 전환 비율은 <span class=\"text-green-600 dark:text-green-400\">체력 14</span>당 <span class=\"text-red-600 dark:text-red-500 font-semibold\">공격력 1</span>입니다.",
         "iconFile": "PykePassive.png",
@@ -127,6 +128,10 @@
         "range": [],
         "rankValues": [],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -137,6 +142,7 @@
         "slot": "Q",
         "id": "PykeQ",
         "name": "뼈 작살",
+        "maxRank": 5,
         "summary": "파이크가 앞에 있는 적을 공격하거나 끌어당깁니다.",
         "bodyHtml": "<span>짧게 누를 때:</span> 파이크가 공격해 처음 적중한 적에게 <span class=\"text-red-600 dark:text-red-500 font-semibold\">(100/150/200/250/300 + (75% 추가 공격력))의 물리 피해</span>를 입힙니다. (챔피언 우선) 적중한 적은 1초 동안 90% <span class=\"text-purple-600 dark:text-purple-500\">둔화</span>됩니다.<br /><br /><span>길게 누를 때: </span>파이크가 작살을 던져 처음 적중한 적에게 <span class=\"text-red-600 dark:text-red-500 font-semibold\">(100/150/200/250/300 + (75% 추가 공격력))의 물리 피해</span>를 입히고 자신 앞으로 <span class=\"text-purple-600 dark:text-purple-500\">끌어당깁니다</span>. 적중한 적은 1초 동안 90% <span class=\"text-purple-600 dark:text-purple-500\">둔화</span>됩니다.<br /><br />정신 집중이 성공적으로 끝나지 않거나 스킬이 적 챔피언에게 적중하면 소모한 마나의 75%를 돌려받습니다.",
         "iconFile": "PykeQ.png",
@@ -193,6 +199,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "TotalDamage",
+            "kind": "damage",
+            "baseByRank": [
+              100,
+              150,
+              200,
+              250,
+              300
+            ],
+            "terms": [
+              {
+                "stat": "bonusAttackDamage",
+                "coefficientsByRank": [
+                  0.75,
+                  0.75,
+                  0.75,
+                  0.75,
+                  0.75
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -203,6 +236,7 @@
         "slot": "W",
         "id": "PykeW",
         "name": "유령 잠수",
+        "maxRank": 5,
         "summary": "파이크가 위장 상태가 되며 이동 속도가 크게 증가합니다. 이동 속도는 시간이 지남에 따라 원래대로 감소합니다.",
         "bodyHtml": "파이크가 <span class=\"text-purple-600 dark:text-purple-400 font-semibold\">위장</span> 상태에 돌입하고 <span class=\"text-cyan-600 dark:text-cyan-500\">이동 속도가 (45 + (200%))</span> 증가합니다. 이동 속도는 5초에 걸쳐 원래대로 돌아옵니다.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\"><span class=\"text-cyan-600 dark:text-cyan-500\">이동 속도</span>는 물리 관통력에 비례합니다.<br /><span class=\"text-purple-600 dark:text-purple-400 font-semibold\">위장</span> 상태일 때는 적 챔피언의 감지 범위 안에 들어가지 않는 한 시야에 보이지 않습니다.</span>",
         "iconFile": "PykeW.png",
@@ -251,6 +285,10 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -261,6 +299,7 @@
         "slot": "E",
         "id": "PykeE",
         "name": "망자의 물살",
+        "maxRank": 5,
         "summary": "파이크가 돌진하며 원래 있던 자리에 유령을 남깁니다. 이 유령은 파이크에게 돌아오면서 경로상의 모든 적 챔피언을 기절시킵니다.",
         "bodyHtml": "파이크가 돌진하며, 돌진을 시작했던 지점에 유령이 생성됩니다. 유령은 (1.25 + (1%))초 동안 적 챔피언을 <span class=\"text-purple-600 dark:text-purple-500\">기절</span>시키고 <span class=\"text-red-600 dark:text-red-500 font-semibold\">(100/150/200/250/300 + (100% 추가 공격력))의 물리 피해</span>를 입힙니다.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\"><span class=\"text-purple-600 dark:text-purple-500\">기절</span> 지속시간은 물리 관통력에 비례합니다.</span>",
         "iconFile": "PykeE.png",
@@ -313,6 +352,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "TotalDamage",
+            "kind": "damage",
+            "baseByRank": [
+              100,
+              150,
+              200,
+              250,
+              300
+            ],
+            "terms": [
+              {
+                "stat": "bonusAttackDamage",
+                "coefficientsByRank": [
+                  1,
+                  1,
+                  1,
+                  1,
+                  1
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -323,6 +389,7 @@
         "slot": "R",
         "id": "PykeR",
         "name": "깊은 바다의 처형",
+        "maxRank": 3,
         "summary": "파이크가 체력이 낮은 적에게 순간적으로 이동하여 처형하고 스킬을 다시 사용할 수 있게 됩니다. 또한 처치에 관여한 아군에게 추가 골드를 줍니다.",
         "bodyHtml": "파이크가 X 모양의 영역 내에 있는 모든 적 챔피언에게 피해를 주며, 체력이 <span class=\"text-orange-600 dark:text-orange-500\">(250 + (80% 추가 공격력) + (150%))</span> 미만인 적에게 순간이동하여 <span>처형</span>합니다. 체력이 기준 이상인 챔피언과 챔피언이 아닌 대상의 경우, 해당 수치(<span class=\"text-red-600 dark:text-red-500 font-semibold\">(125 + (40% 추가 공격력) + (75%))</span>)의 50%에 해당하는 물리 피해를 입습니다. <br /><br />적 챔피언이 X 구역 안에서 처치되면 20초 안에 이 스킬을 <span class=\"text-yellow-600 dark:text-yellow-300\">재사용</span>할 수 있습니다. 해당 챔피언을 파이크가 처치했다면 마지막으로 처치를 도운 아군에게도 챔피언 처치 골드가 주어집니다. 파이크가 아니라 아군이 처치했어도 파이크에게 챔피언 처치 골드가 주어집니다.<br /><br /><br />아군에게 나눠준 골드: <span></span><br />혼자 획득한 골드: <span></span>",
         "iconFile": "PykeR.png",
@@ -365,6 +432,29 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "RADDamage",
+            "kind": "damage",
+            "baseByRank": [
+              0,
+              0,
+              0
+            ],
+            "terms": [
+              {
+                "stat": "bonusAttackDamage",
+                "coefficientsByRank": [
+                  0.800000011920929,
+                  0.800000011920929,
+                  0.800000011920929
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {

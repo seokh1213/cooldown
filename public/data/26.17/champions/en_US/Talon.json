@@ -119,6 +119,7 @@
         "slot": "P",
         "id": "TalonPassive",
         "name": "Blade's End",
+        "maxRank": 0,
         "summary": "Talon's spells Wound champions and large monsters, stacking up to 3 times. When Talon attacks a champion with 3 stacks of Wound, they bleed for heavy damage over time.",
         "bodyHtml": "Talon's Abilities apply a stack to champions and large jungle monsters they damage for 6 seconds (max 3 stacks).<br /><br />When Talon Attacks a target with 3 stacks, he deals an additional <span class=\"text-red-600 dark:text-red-500 font-semibold\">(210% bonus Attack Damage) physical damage</span> over 2 seconds.",
         "iconFile": "TalonP.png",
@@ -126,6 +127,10 @@
         "range": [],
         "rankValues": [],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -136,6 +141,7 @@
         "slot": "Q",
         "id": "TalonQ",
         "name": "Noxian Diplomacy",
+        "maxRank": 5,
         "summary": "Talon stabs the target unit. If they are within melee range, this attack deals critical damage. If they are outside melee range, Talon will leap at his target before stabbing them. Talon refunds some health and cooldown if this ability kills the target.",
         "bodyHtml": "Talon leaps to a target and deals <span class=\"text-red-600 dark:text-red-500 font-semibold\">(65/85/105/125/145 + (100% bonus Attack Damage)) physical damage</span>. If used in melee range, this Ability instead critically strikes for <span class=\"text-red-600 dark:text-red-500 font-semibold\">(65/85/105/125/145 + (100% bonus Attack Damage)) physical damage</span>.<br /><br />If this Ability kills the target, Talon restores <span class=\"text-green-600 dark:text-green-400\">(9 ~ 55) Health</span> and refunds 50% of its Cooldown.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">Melee damage is affected by Critical Strike Damage increase.</span>",
         "iconFile": "TalonQ.png",
@@ -188,6 +194,12 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "unsupported",
+          "unsupportedPartTypes": [
+            "GameCalculationModified"
+          ]
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -198,6 +210,7 @@
         "slot": "W",
         "id": "TalonW",
         "name": "Rake",
+        "maxRank": 5,
         "summary": "Talon sends out a volley of daggers that then return back to him, dealing physical damage every time it passes through an enemy. The returning blades deal bonus damage and slow units hit.",
         "bodyHtml": "Talon tosses a volley of blades, dealing <span class=\"text-red-600 dark:text-red-500 font-semibold\">(50/60/70/80/90 + (40% bonus Attack Damage)) physical damage</span>. The blades then return to him, dealing <span class=\"text-red-600 dark:text-red-500 font-semibold\">(60/90/120/150/180 + (90% bonus Attack Damage)) physical damage</span> and <span class=\"text-purple-600 dark:text-purple-500\">Slowing</span> by 40/45/50/55/60% for 1 second.",
         "iconFile": "TalonW.png",
@@ -262,6 +275,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "TotalInitialDamage",
+            "kind": "damage",
+            "baseByRank": [
+              50,
+              60,
+              70,
+              80,
+              90
+            ],
+            "terms": [
+              {
+                "stat": "bonusAttackDamage",
+                "coefficientsByRank": [
+                  0.4000000059604645,
+                  0.4000000059604645,
+                  0.4000000059604645,
+                  0.4000000059604645,
+                  0.4000000059604645
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -272,6 +312,7 @@
         "slot": "E",
         "id": "TalonE",
         "name": "Assassin's Path",
+        "maxRank": 5,
         "summary": "Talon vaults over any terrain or structure, up to a max distance. This ability has a low cooldown, but puts the used terrain on a long cooldown.",
         "bodyHtml": "Talon vaults over the nearest terrain or structure. Talon cannot dash over the same terrain more than once every 160/135/110/85/60 seconds.",
         "iconFile": "TalonE.png",
@@ -296,6 +337,10 @@
           }
         ],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -306,6 +351,7 @@
         "slot": "R",
         "id": "TalonR",
         "name": "Shadow Assault",
+        "maxRank": 3,
         "summary": "Talon disperses a ring of blades and becomes Invisible while gaining additional Move Speed. When Talon emerges from Invisibility, the blades converge on his location. Each time the blades move, Shadow Assault deals physical damage to enemies hit by at least one blade.",
         "bodyHtml": "Talon disperses a ring of blades that deal <span class=\"text-red-600 dark:text-red-500 font-semibold\">(90/135/180 + (100% bonus Attack Damage)) physical damage</span>, gains <span class=\"text-cyan-600 dark:text-cyan-500\">40/55/70% Move Speed</span>, and becomes <span class=\"text-purple-600 dark:text-purple-400 font-semibold\">Invisible</span> for 2.5 seconds. When the <span class=\"text-purple-600 dark:text-purple-400 font-semibold\">Invisibility</span> ends, the blades return to Talon, dealing <span class=\"text-red-600 dark:text-red-500 font-semibold\">(90/135/180 + (100% bonus Attack Damage)) physical damage</span> again.<br /><br />If Talon cancels the <span class=\"text-purple-600 dark:text-purple-400 font-semibold\">Invisibility</span> with an Attack or with <span>Noxian Diplomacy</span>, the blades return to the target instead.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\"><span class=\"text-purple-600 dark:text-purple-400 font-semibold\">Invisible</span> units cannot be revealed except by turrets or <span style=\"color: #ee91d7\">True Sight</font color>.</span>",
         "iconFile": "TalonR.png",
@@ -356,6 +402,29 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "Damage",
+            "kind": "damage",
+            "baseByRank": [
+              90,
+              135,
+              180
+            ],
+            "terms": [
+              {
+                "stat": "bonusAttackDamage",
+                "coefficientsByRank": [
+                  1,
+                  1,
+                  1
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {

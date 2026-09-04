@@ -120,6 +120,7 @@
         "slot": "P",
         "id": "MordekaiserPassive",
         "name": "암흑 탄생",
+        "maxRank": 0,
         "summary": "모데카이저가 적 챔피언이나 몬스터에게 공격 또는 스킬을 3회 적중시키면 강력한 피해를 입히는 오라를 얻고 이동 속도가 증가합니다.",
         "bodyHtml": "모데카이저의 기본 공격이 <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(40% 주문력)의 마법 피해</span>를 추가로 입힙니다.<br /><br />모데카이저가 적 챔피언이나 정글 몬스터에게 기본 스킬 또는 기본 공격을 3회 가하면 사악한 에너지로 자신을 감쌉니다. 이 에너지는 주변에 초당 <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(5 + (30% 주문력)) + 최대 체력의 (1 ~ 5)에 해당하는 마법 피해</span>를 입히고 모데카이저의 <span class=\"text-cyan-600 dark:text-cyan-500\">이동 속도를 18%</span> 증가시킵니다.",
         "iconFile": "MordekaiserPassive.png",
@@ -127,6 +128,10 @@
         "range": [],
         "rankValues": [],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -137,6 +142,7 @@
         "slot": "Q",
         "id": "MordekaiserQ",
         "name": "말살",
+        "maxRank": 5,
         "summary": "모데카이저가 땅에 철퇴를 내리쳐 적중시킨 적에게 각각 피해를 입힙니다. 단일 대상에게 적중 시 피해량이 증가합니다.",
         "bodyHtml": "모데카이저가 몰락의 밤으로 땅을 내리쳐 해당 지역에 있는 모든 적에게 <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(80/115/150/185/220 + (120% 추가 공격력) + (70% 주문력))의 마법 피해</span>를 입히며, 단일 대상 적중 시 피해량이 <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(104/155.25/210/268.25/330 + (156/162/168/174/180% 추가 공격력) + (91/94.5/98/101.5/105% 주문력))</span>까지 증가합니다.",
         "iconFile": "MordekaiserQ.png",
@@ -183,6 +189,12 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "unsupported",
+          "unsupportedPartTypes": [
+            "GameCalculationModified"
+          ]
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -193,6 +205,7 @@
         "slot": "W",
         "id": "MordekaiserW",
         "name": "불멸",
+        "maxRank": 5,
         "summary": "모데카이저가 입히거나 받는 피해를 흡수하여 보호막을 충전합니다. 보호막을 소모하여 체력을 회복할 수 있습니다.",
         "bodyHtml": "<span>기본 지속 효과:</span> 모데카이저가 입히는 피해의 45%, 받는 피해의 7.5%를 축적합니다.<br /><br /><span>사용 시:</span> 모데카이저가 축적한 피해를 <span class=\"text-blue-600 dark:text-blue-300\">보호막</span>으로 전환합니다. 스킬을 <span class=\"text-yellow-600 dark:text-yellow-300\">재사용</span>하면 <span class=\"text-green-600 dark:text-green-400\">남은 보호막의 35/37.5/40/42.5/45%만큼 체력을 회복</span>합니다.<br /><br />최소 보호막 흡수량: <span class=\"text-blue-600 dark:text-blue-300\">(5% 체력)</span><br />최대 보호막 흡수량: <span class=\"text-blue-600 dark:text-blue-300\">(30% 체력)</span><br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">보호막 흡수량은 시간이 지남에 따라 감소합니다.<br />챔피언이 아닌 유닛으로부터 받는 피해는 75% 감소된 양만 흡수합니다.</span>",
         "iconFile": "MordekaiserW.png",
@@ -235,6 +248,10 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -245,6 +262,7 @@
         "slot": "E",
         "id": "MordekaiserE",
         "name": "죽음의 손아귀",
+        "maxRank": 5,
         "summary": "모데카이저가 일정 지역에 있는 모든 적을 끌어당깁니다.",
         "bodyHtml": "<span class=\"text-gray-600 dark:text-gray-500 italic\">기본 지속 효과:</span> 모데카이저가 <span>5/7.5/10/12.5/15%의 마법 관통력</span>을 얻습니다.<br /><br /><span class=\"text-gray-900 dark:text-white font-semibold\">사용 시:</span> 적들을 자신 쪽으로 끌어당겨 <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(60/80/100/120/140 + (45% 주문력))의 마법 피해</span>를 입힙니다.",
         "iconFile": "MordekaiserE.png",
@@ -291,6 +309,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "TotalDamage",
+            "kind": "damage",
+            "baseByRank": [
+              60,
+              80,
+              100,
+              120,
+              140
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.44999998807907104,
+                  0.44999998807907104,
+                  0.44999998807907104,
+                  0.44999998807907104,
+                  0.44999998807907104
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -301,6 +346,7 @@
         "slot": "R",
         "id": "MordekaiserR",
         "name": "죽음의 세계",
+        "maxRank": 3,
         "summary": "모데카이저가 대상을 다른 차원으로 끌고 가 능력치의 일부를 훔칩니다. 처치 시 적이 부활할 때까지 훔친 능력치가 유지됩니다.",
         "bodyHtml": "모데카이저가 챔피언 하나를 7초 동안 죽음의 세계로 추방해 지속시간 동안 대상이 지닌 주요 능력치들의 10%를 훔칩니다.<br /><br />모데카이저가 죽음의 세계에서 적을 처치하면 영혼을 흡수하여 대상이 부활할 때까지 훔친 능력치를 유지합니다.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">훔칠 수 있는 주요 능력치: <span class=\"text-blue-600 dark:text-blue-400\">주문력</span>, <span class=\"text-orange-600 dark:text-orange-500\">공격력</span>, <span>공격 속도</span>, <span class=\"text-orange-600 dark:text-orange-400\">방어력</span>, <span>마법 저항력</span>, <span>최대 체력</span></span>",
         "iconFile": "MordekaiserR.png",
@@ -321,6 +367,10 @@
           }
         ],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {

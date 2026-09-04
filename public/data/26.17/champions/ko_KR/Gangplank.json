@@ -119,6 +119,7 @@
         "slot": "P",
         "id": "GangplankPassive",
         "name": "불의 심판",
+        "maxRank": 0,
         "summary": "몇 초에 한 번씩 갱플랭크의 근접 공격이 적에게 불을 붙입니다.",
         "bodyHtml": "갱플랭크의 근접 공격이 대상을 불태워 2.5초간 <span class=\"text-yellow-600 dark:text-yellow-500 font-semibold\">(100% 추가 공격력)의 고정 피해</span>를 추가로 입히고 2초간 갱플랭크의 <span class=\"text-cyan-600 dark:text-cyan-500\">이동 속도가 (15% ~ 30%)</span> 상승합니다.<br /><br /><span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">화약통</span>을 파괴하면 이 스킬의 재사용 대기시간이 초기화되며 갱플랭크의 <span class=\"text-cyan-600 dark:text-cyan-500\">이동 속도</span>가 동일하게 상승합니다.",
         "iconFile": "Gangplank_Passive.png",
@@ -126,6 +127,10 @@
         "range": [],
         "rankValues": [],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -136,6 +141,7 @@
         "slot": "Q",
         "id": "GangplankQWrapper",
         "name": "혀어어어업상",
+        "maxRank": 5,
         "summary": "대상에게 총을 발사해 처치한 적 유닛마다 골드를 약탈합니다.",
         "bodyHtml": "<span class=\"text-gray-600 dark:text-gray-400 italic\">이 공격은 적중 시 효과(<span>불의 심판</span> 제외)가 적용되며 치명타가 적용될 수 있고 치명타 적용 시 <span class=\"text-red-600 dark:text-red-500 font-semibold\">(10/40/70/100/130 + (100% 공격력))의 물리 피해</span>를 입힙니다.</span>",
         "iconFile": "GangplankQWrapper.png",
@@ -196,6 +202,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "ShotDamage",
+            "kind": "damage",
+            "baseByRank": [
+              10,
+              40,
+              70,
+              100,
+              130
+            ],
+            "terms": [
+              {
+                "stat": "totalAttackDamage",
+                "coefficientsByRank": [
+                  1,
+                  1,
+                  1,
+                  1,
+                  1
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -206,6 +239,7 @@
         "slot": "W",
         "id": "GangplankW",
         "name": "괴혈병 치료",
+        "maxRank": 5,
         "summary": "귤을 먹어서 군중 제어 효과를 제거하고 체력을 회복합니다.",
         "bodyHtml": "갱플랭크가 귤을 많이 먹어서 모든 <span class=\"text-purple-600 dark:text-purple-500\">방해</span> 효과를 제거하고 체력을 <span class=\"text-green-600 dark:text-green-400\">(45/70/95/120/145 + (90% 주문력)) + 잃은 체력의 13%</span>만큼 회복합니다.",
         "iconFile": "GangplankW.png",
@@ -262,6 +296,10 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -272,6 +310,7 @@
         "slot": "E",
         "id": "GangplankE",
         "name": "화약통",
+        "maxRank": 5,
         "summary": "갱플랭크가 대상 위치에 화약통을 비치합니다. 갱플랭크가 이 통을 공격하면 폭발하여 주위 적들에게 피해를 입히며 둔화를 적용합니다.",
         "bodyHtml": "25초 동안 갱플랭크와 적 챔피언이 공격할 수 있는 화약통을 설치합니다. 적이 파괴하는 통은 사라집니다. 갱플랭크가 파괴하는 통은 폭발하여 2초 동안 적을 40/50/60/70/80% <span class=\"text-purple-600 dark:text-purple-500\">둔화</span>시키고 방어력의 40%를 무시하며 <span class=\"text-red-600 dark:text-red-500 font-semibold\">기본 공격의 피해량</span>만큼 피해를 입힙니다. 챔피언은 <span class=\"text-red-600 dark:text-red-500 font-semibold\">75/95/115/135/155의 물리 피해</span>를 추가로 입습니다.<br /><br />통의 체력은 0.5초마다 줄어듭니다. 통이 폭발하면 폭발 지대에 겹쳐 있는 통들이 연쇄 폭발하지만 같은 대상이 여러 번 피해를 입지는 않습니다. <span>혀어어어업상</span> 스킬로 통을 터뜨리면 대상 처치 시 추가 골드를 얻습니다.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">7레벨, 13레벨에는 통이 저절로 사라지는 속도가 빨라집니다.</span>",
         "iconFile": "GangplankE.png",
@@ -330,6 +369,10 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -340,6 +383,7 @@
         "slot": "R",
         "id": "GangplankR",
         "name": "포탄 세례",
+        "maxRank": 3,
         "summary": "갱플랭크가 특정 지역을 포격하도록 배에 신호하여 적의 이동 속도를 늦추며 피해를 입힙니다.",
         "bodyHtml": "갱플랭크가 배에 신호를 보내 맵 어느 위치로든 8초 동안 12차례 포탄을 발사하도록 합니다. 대포 세례마다 0.5초 동안 30%의 <span class=\"text-purple-600 dark:text-purple-500\">둔화</span>를 적용하며 <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(40/70/100 + (10% 주문력))의 마법 피해</span>를 입힙니다. 최대 피해량: (480/840/1200 + (120% 주문력))<br /><br />이 스킬은 <span>혀어어어업상</span> 스킬을 통해 상점에서 업그레이드할 수 있습니다.<br /><br /><span>가차없는 포격</span>: 6차례 추가로 포탄을 발사합니다.<br /><span>죽음의 여신</span>: 대형 포탄을 발사해 <span class=\"text-yellow-600 dark:text-yellow-500 font-semibold\">(120/210/300 + (30% 주문력))의 고정 피해</span>를 입히고 1초 동안 75% <span class=\"text-purple-600 dark:text-purple-500\">둔화</span>를 적용합니다.<br /><span>사기진작</span>: 포탄 세례 범위 안에 있는 아군의 이동 속도가 2초 동안 <span class=\"text-cyan-600 dark:text-cyan-500\">40%</span> 증가합니다.",
         "iconFile": "GangplankR.png",
@@ -386,6 +430,29 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "DeathsDaughterDamage",
+            "kind": "damage",
+            "baseByRank": [
+              120,
+              210,
+              300
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.30000001192092896,
+                  0.30000001192092896,
+                  0.30000001192092896
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {

@@ -119,6 +119,7 @@
         "slot": "P",
         "id": "ZiggsPassiveBuff",
         "name": "一触即发",
+        "maxRank": 0,
         "summary": "每过一段时间，吉格斯的下次普通攻击就会造成额外的魔法伤害。这个冷却时间会在吉格斯每用一次技能时得到减少。",
         "bodyHtml": "每过秒，吉格斯的下次普通攻击就会造成额外的<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(20 + (50% 法术强度))魔法伤害</span>。这个技能会对建筑造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(35 + (87.5% 法术强度))伤害</span>。<br /><br />吉格斯每施放一次技能，这个效果的冷却时间就会缩短(4 ~ 6)秒。",
         "iconFile": "ZiggsPassiveReady.png",
@@ -126,6 +127,10 @@
         "range": [],
         "rankValues": [],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -136,6 +141,7 @@
         "slot": "Q",
         "id": "ZiggsQ",
         "name": "弹跳炸弹",
+        "maxRank": 5,
         "summary": "吉格斯扔出一个会弹跳的炸弹，对敌人造成魔法伤害。",
         "bodyHtml": "吉格斯扔出一个会弹跳的炸弹，对敌人造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(80/130/180/230/280 + (60/65/70/75/80% 法术强度))魔法伤害</span>。",
         "iconFile": "ZiggsQ.png",
@@ -196,6 +202,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "TotalDamage",
+            "kind": "damage",
+            "baseByRank": [
+              80,
+              130,
+              180,
+              230,
+              280
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.6000000238418579,
+                  0.6499999761581421,
+                  0.699999988079071,
+                  0.75,
+                  0.800000011920929
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -206,6 +239,7 @@
         "slot": "W",
         "id": "ZiggsW",
         "name": "定点爆破",
+        "maxRank": 5,
         "summary": "吉格斯扔出一个炸药包，会在一段延迟后爆炸，或者在再次施放该技能后爆炸。爆炸会对敌人造成魔法伤害，并将他们击退。吉格斯也会被击退，但不会受到伤害。<br><br>吉格斯可以用这个技能来爆破敌方摇摇欲坠的防御塔。",
         "bodyHtml": "吉格斯扔出一个炸药包，会在4秒后或者在<span class=\"text-yellow-600 dark:text-yellow-300\">再次施放</span>该技能后爆炸。爆炸会对敌人造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(70/105/140/175/210 + (50% 法术强度))魔法伤害</span>，并将他们<span class=\"text-purple-600 dark:text-purple-500\">击</span><span class=\"text-purple-600 dark:text-purple-500\">退</span>。吉格斯也会被震开，但不会受到伤害。<br /><br />【定点爆破】会自动摧毁生命值低于25/27.5/30/32.5/35%的防御塔。",
         "iconFile": "ZiggsW.png",
@@ -262,6 +296,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "TotalDamage",
+            "kind": "damage",
+            "baseByRank": [
+              70,
+              105,
+              140,
+              175,
+              210
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.5,
+                  0.5,
+                  0.5,
+                  0.5,
+                  0.5
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -272,6 +333,7 @@
         "slot": "E",
         "id": "ZiggsE",
         "name": "海克斯爆破雷区",
+        "maxRank": 5,
         "summary": "吉格斯布下敌人一踩就炸的感应雷区，对踩中地雷的敌人造成魔法伤害和减速效果。对相同目标的后续爆炸将造成较少伤害。",
         "bodyHtml": "吉格斯布下敌人一踩就炸的感应雷区，对踩中地雷的敌人造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(30/70/110/150/190 + (25/30/35/40/45% 法术强度))魔法伤害</span>和持续1.5秒的10/20/30/40/50%<span class=\"text-purple-600 dark:text-purple-500\">减速</span>。地雷持续10秒。<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">第一个之后的地雷造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(12/28/44/60/76 + (10/12/14/16/18% 法术强度))伤害</span>。</span>",
         "iconFile": "ZiggsE.png",
@@ -332,6 +394,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "TotalDamage",
+            "kind": "damage",
+            "baseByRank": [
+              30,
+              70,
+              110,
+              150,
+              190
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.25,
+                  0.30000001192092896,
+                  0.3499999940395355,
+                  0.4000000059604645,
+                  0.44999998807907104
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -342,6 +431,7 @@
         "slot": "R",
         "id": "ZiggsR",
         "name": "科学的地狱火炮",
+        "maxRank": 3,
         "summary": "吉格斯部署他的尖端发明，科学的地狱火炮，将它推送一段极远的距离。在主要爆炸区域里的敌人会比在其它爆炸区域里的敌人受到更多的伤害。",
         "bodyHtml": "吉格斯扔出他的终极造物，在爆炸范围的中心区域造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(300/500/700 + (100% 法术强度))魔法伤害</span>，或在边缘区域造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(195/325/455 + (65% 法术强度))魔法伤害</span>。",
         "iconFile": "ZiggsR.png",
@@ -392,6 +482,12 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "unsupported",
+          "unsupportedPartTypes": [
+            "GameCalculationModified"
+          ]
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {

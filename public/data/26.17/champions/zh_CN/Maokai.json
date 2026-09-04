@@ -120,6 +120,7 @@
         "slot": "P",
         "id": "MaokaiPassive",
         "name": "吸元秘术",
+        "maxRank": 0,
         "summary": "茂凯的普通攻击也会治疗自身并造成额外伤害，此效果拥有一个中等的冷却时间。每当茂凯施放一次技能或被一个敌方技能击中时，这个冷却时间都会缩短。",
         "bodyHtml": "茂凯的下一次攻击会回复自身<span class=\"text-green-600 dark:text-green-400\">生命值</span>。<br /><br />每施放一次技能或被一名敌方英雄的技能命中时，都会使这个冷却时间缩短4秒。被大型野怪或史诗级野怪的攻击或技能命中时，都会使这个冷却时间缩短1.5秒。",
         "iconFile": "Maokai_Passive.png",
@@ -127,6 +128,10 @@
         "range": [],
         "rankValues": [],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -137,6 +142,7 @@
         "slot": "Q",
         "id": "MaokaiQ",
         "name": "荆棘重击",
+        "maxRank": 5,
         "summary": "茂凯用一记冲击波击退附近的敌人，造成魔法伤害和减速效果。",
         "bodyHtml": "茂凯将他的拳头砸入大地中，造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(75/120/165/210/255 + (50% 法术强度))外加2/2.5/3/3.5/4%最大生命值的魔法伤害</span>和短暂的<span class=\"text-purple-600 dark:text-purple-500\">减速</span>。附近的敌人们还会被<span class=\"text-purple-600 dark:text-purple-500\">击退</span>。<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">这个技能对野怪造成额外的<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">150/160/170/180/190魔法伤害</span>。</span>",
         "iconFile": "MaokaiQ.png",
@@ -197,6 +203,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "TotalDamage",
+            "kind": "damage",
+            "baseByRank": [
+              75,
+              120,
+              165,
+              210,
+              255
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.5,
+                  0.5,
+                  0.5,
+                  0.5,
+                  0.5
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -207,6 +240,7 @@
         "slot": "W",
         "id": "MaokaiW",
         "name": "扭曲突刺",
+        "maxRank": 5,
         "summary": "茂凯扭曲为一团移动根须，不可被选取并且向目标突进。在抵达后，他会禁锢住目标。",
         "bodyHtml": "茂凯扭曲为一团移动根须，无法被选取并且向目标突进。在抵达后，他会<span class=\"text-purple-600 dark:text-purple-500\">禁锢</span>该敌人1/1.1/1.2/1.3/1.4秒并造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(60/85/110/135/160 + (40% 法术强度))魔法伤害</span>。",
         "iconFile": "MaokaiW.png",
@@ -263,6 +297,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "TotalDamage",
+            "kind": "damage",
+            "baseByRank": [
+              60,
+              85,
+              110,
+              135,
+              160
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.4000000059604645,
+                  0.4000000059604645,
+                  0.4000000059604645,
+                  0.4000000059604645,
+                  0.4000000059604645
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -273,6 +334,7 @@
         "slot": "E",
         "id": "MaokaiE",
         "name": "树苗投掷",
+        "maxRank": 5,
         "summary": "茂凯投出一颗树苗去目标地区戒备。在草丛中更加有效。",
         "bodyHtml": "茂凯扔出一棵树苗，戒备30秒。树苗会追击附近的敌人，并在抵达后爆炸，对周围的敌人们造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(50/75/100/125/150 + (25% 法术强度) + (5% 额外生命值))魔法伤害</span>和持续2秒的45%<span class=\"text-purple-600 dark:text-purple-500\">减速</span>。如果树苗命中了一名敌方英雄或史诗级野怪，<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">吸元秘术</span>的冷却时间就会缩短额外的4秒。<br /><br />投掷在草丛里的树苗会持续(30 + (1.5% 额外生命值))秒，并引发一次范围更大的爆炸，在2秒的持续时间里共造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(100/150/200/250/300 + (50% 法术强度) + (10% 额外生命值))魔法伤害</span>并且<span class=\"text-purple-600 dark:text-purple-500\">减速</span>幅度变为(45% + (0.01% 法术强度))。<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">树苗以400速度进行奔跑。草丛树苗不会对小兵造成提升过的伤害。</span>",
         "iconFile": "MaokaiE.png",
@@ -333,6 +395,12 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "unsupported",
+          "unsupportedPartTypes": [
+            "StatByNamedDataValueCalculationPart"
+          ]
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -343,6 +411,7 @@
         "slot": "R",
         "id": "MaokaiR",
         "name": "自然之握",
+        "maxRank": 3,
         "summary": "茂凯召唤一道荆棘和尖刺灌木组成的巨墙缓慢向前行进，对沿途的敌人造成伤害和禁锢效果。",
         "bodyHtml": "茂凯召唤出一道由荆棘和带刺灌木组成的巨墙缓慢向前行进，<span class=\"text-purple-600 dark:text-purple-500\">禁锢</span>敌人0.75到2.25秒，时长随着行进距离提升，并造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(150/225/300 + (75% 法术强度))魔法伤害</span>。命中一名英雄时会为茂凯提供在2秒里持续衰减的<span class=\"text-cyan-600 dark:text-cyan-500\">40/50/60%移动速度</span>。",
         "iconFile": "MaokaiR.png",
@@ -393,6 +462,29 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "TotalDamage",
+            "kind": "damage",
+            "baseByRank": [
+              150,
+              225,
+              300
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.75,
+                  0.75,
+                  0.75
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {

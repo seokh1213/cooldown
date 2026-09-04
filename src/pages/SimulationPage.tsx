@@ -13,10 +13,12 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import {
-  getChampionInfo,
-  getCommunityDragonSpellData,
   getNormalizedItems,
 } from "@/services/api";
+import { championRepository } from "@/data/repositories/championRepository";
+import { toChampion } from "@/data/mappers/championMapper";
+import type { ChampionDetailV2 } from "@/data/contracts/championData";
+import { championIconUrl, itemIconUrl } from "@/data/assets/riotAssetUrls";
 import type { Champion } from "@/types";
 import type { NormalizedItem } from "@/types/combatNormalized";
 import ChampionSelector from "@/components/features/ChampionSelector";
@@ -25,7 +27,7 @@ import {
   computeAbilityHasteFromNormalizedItems,
   computeChampionStatsAtLevel,
   computeSkillSummaries,
-  estimateSpellDamageFromCDragon,
+  evaluateAbilitySimulation,
 } from "./SimulationPage.damageUtils";
 
 interface StatRowProps {
@@ -76,12 +78,12 @@ export default function SimulationPage({
   const { t } = useTranslation();
   const [selectedChampionId, setSelectedChampionId] = useState<string>("");
   const [championInfo, setChampionInfo] = useState<Champion | null>(null);
+  const [championDetail, setChampionDetail] = useState<ChampionDetailV2 | null>(null);
   const [level, setLevel] = useState<number>(18);
   const [availableItems, setAvailableItems] = useState<NormalizedItem[]>([]);
   const [selectedItemIds, setSelectedItemIds] = useState<(string | null)[]>(
     () => Array(6).fill(null)
   );
-  const [spellDataMap, setSpellDataMap] = useState<Record<string, unknown> | null>(null);
   const [isChampionModalOpen, setIsChampionModalOpen] = useState(false);
   const [isItemModalOpen, setIsItemModalOpen] = useState(false);
   const [activeItemSlotIndex, setActiveItemSlotIndex] = useState<number | null>(null);
@@ -94,32 +96,22 @@ export default function SimulationPage({
   useEffect(() => {
     if (!version || !selectedChampionId) {
       setChampionInfo(null);
-      setSpellDataMap(null);
+      setChampionDetail(null);
       return;
     }
 
     let cancelled = false;
-    getChampionInfo(version, lang, selectedChampionId)
-      .then((info) => {
+    championRepository.getDetail(version, lang, selectedChampionId)
+      .then((detail) => {
         if (!cancelled) {
-          setChampionInfo(info);
+          setChampionDetail(detail);
+          setChampionInfo(toChampion(detail));
         }
       })
       .catch(() => {
         if (!cancelled) {
           setChampionInfo(null);
-        }
-      });
-
-    getCommunityDragonSpellData(selectedChampionId, version)
-      .then((res) => {
-        if (!cancelled) {
-          setSpellDataMap(res.spellDataMap);
-        }
-      })
-      .catch(() => {
-        if (!cancelled) {
-          setSpellDataMap(null);
+          setChampionDetail(null);
         }
       });
 
@@ -201,12 +193,8 @@ export default function SimulationPage({
 
   const skillSummaries = useMemo(() => {
     if (!championInfo) return [];
-    return computeSkillSummaries(
-      championInfo,
-      spellDataMap,
-      abilityHaste
-    );
-  }, [championInfo, spellDataMap, abilityHaste]);
+    return computeSkillSummaries(championInfo, abilityHaste);
+  }, [championInfo, abilityHaste]);
 
   if (!version) {
     return (
@@ -241,7 +229,7 @@ export default function SimulationPage({
             >
               {championInfo ? (
                 <img
-                  src={`https://ddragon.leagueoflegends.com/cdn/${ddragonVersion}/img/champion/${championInfo.id}.png`}
+                  src={championIconUrl(ddragonVersion ?? "", championInfo.id)}
                   alt={championInfo.name}
                   className="w-full h-full object-cover"
                 />
@@ -366,7 +354,7 @@ export default function SimulationPage({
                     >
                       {item ? (
                         <img
-                          src={`https://ddragon.leagueoflegends.com/cdn/${ddragonVersion}/img/item/${item.id}.png`}
+                          src={itemIconUrl(ddragonVersion ?? "", item.id)}
                           alt={item.name}
                           className="w-full h-full object-cover"
                         />
@@ -397,15 +385,16 @@ export default function SimulationPage({
           {["Q", "W", "E", "R"].map((key, idx) => {
             const spell = championInfo?.spells?.[idx];
             const summary = skillSummaries[idx];
-            const dmg =
-              championInfo && finalStats
-                ? estimateSpellDamageFromCDragon(
-                    spellDataMap,
-                    idx,
-                    summary?.maxrank ?? spell?.maxrank ?? 1,
-                    finalStats
-                  )
-                : null;
+            const ability = championDetail?.champion.abilities[
+              key as "Q" | "W" | "E" | "R"
+            ];
+            const damage = finalStats
+              ? evaluateAbilitySimulation(
+                  ability?.simulation,
+                  summary?.maxrank ?? spell?.maxrank ?? 1,
+                  finalStats
+                )
+              : null;
 
             return (
               <div
@@ -426,10 +415,10 @@ export default function SimulationPage({
                       ? spell.description
                       : "Skill Description Placeholder"}
                   </div>
-                  {dmg && dmg.totalDamage != null && (
+                  {damage != null && (
                     <div className="text-[10px] text-emerald-400 mt-1">
                       예상 피해 (아이템/레벨 반영):{" "}
-                      {dmg.totalDamage.toFixed(1)}
+                      {damage.toFixed(1)}
                     </div>
                   )}
                 </div>
@@ -561,7 +550,7 @@ export default function SimulationPage({
                       }`}
                     >
                       <img
-                        src={`https://ddragon.leagueoflegends.com/cdn/${ddragonVersion}/img/item/${item.id}.png`}
+                        src={itemIconUrl(ddragonVersion ?? "", item.id)}
                         alt={item.name || item.id}
                         className="w-6 h-6 rounded-sm border border-border/60 bg-black/40"
                       />
@@ -584,4 +573,3 @@ export default function SimulationPage({
     </div>
   );
 }
-

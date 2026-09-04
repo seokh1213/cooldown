@@ -119,6 +119,7 @@
         "slot": "P",
         "id": "VexP",
         "name": "终焉暮气",
+        "maxRank": 0,
         "summary": "薇古丝周期性地获得强化，使她的下一个基础技能可以恐惧敌人并打断冲刺。当一名附近的敌人冲刺时，薇古丝会施加一个标记，该标记可被消耗来造成额外伤害，并缩短她强化状态的冷却时间。",
         "bodyHtml": "每过16秒，薇古丝就会被【终焉】所困扰，使她的下一个基础技能可以<span class=\"text-purple-600 dark:text-purple-500\">中断位移</span>并<span class=\"text-purple-600 dark:text-purple-500\">恐惧</span>敌人1.5秒。<br /><br />每当一个附近的敌人冲刺或闪烁时，薇古丝就会为其标记<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">暮气</span>效果，持续6秒。薇古丝对一名带有<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">暮气</span>效果的敌人打出的下一次攻击会造成额外的<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(25% 法术强度)魔法伤害</span>并使这个技能的冷却时间缩短25%。",
         "iconFile": "Icons_Vex_Passive.png",
@@ -126,6 +127,10 @@
         "range": [],
         "rankValues": [],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -136,6 +141,7 @@
         "slot": "Q",
         "id": "VexQ",
         "name": "寒心波云",
+        "maxRank": 5,
         "summary": "发射一个可在飞行途中提速的伤害型飞弹。",
         "bodyHtml": "薇古丝发射一道迷雾波，造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(70/115/160/205/250 + (70% 法术强度))魔法伤害</span>。在短暂的延迟后，迷雾波会变得更小更快。<br /><br />在命中敌人时会消耗其身上的<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">暮气</span>效果。",
         "iconFile": "VexQ.png",
@@ -192,6 +198,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "QDamageCalc",
+            "kind": "damage",
+            "baseByRank": [
+              70,
+              115,
+              160,
+              205,
+              250
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.699999988079071,
+                  0.699999988079071,
+                  0.699999988079071,
+                  0.699999988079071,
+                  0.699999988079071
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -202,6 +235,7 @@
         "slot": "W",
         "id": "VexW",
         "name": "生人勿近",
+        "maxRank": 5,
         "summary": "获得一个护盾并伤害附近的敌人们。",
         "bodyHtml": "薇古丝获得持续2.5秒的<span class=\"text-blue-600 dark:text-blue-300\">(50/75/100/125/150 + (75% 法术强度))护盾值</span>并且放射一道冲击波来造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(80/120/160/200/240 + (30% 法术强度))魔法伤害</span>。<br /><br />在命中敌人时会消耗其身上的<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">暮气</span>效果。",
         "iconFile": "VexW.png",
@@ -258,6 +292,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "WDamageCalc",
+            "kind": "damage",
+            "baseByRank": [
+              80,
+              120,
+              160,
+              200,
+              240
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.30000001192092896,
+                  0.30000001192092896,
+                  0.30000001192092896,
+                  0.30000001192092896,
+                  0.30000001192092896
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -268,6 +329,7 @@
         "slot": "E",
         "id": "VexE",
         "name": "溟濛渐染",
+        "maxRank": 5,
         "summary": "召唤一个伤害性的减速地带，来对敌人们施加【暮气】效果。",
         "bodyHtml": "薇古丝命令【黑影】飞向一个区域，在其飞行时提升其体型。在抵达后，它会造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(50/70/90/110/130 + (40/45/50/55/60% 法术强度))魔法伤害</span>和持续2秒的30/35/40/45/50%<span class=\"text-purple-600 dark:text-purple-500\">减速</span>。<br /><br />用这个技能击杀一个敌人，会使<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">终焉暮气</span>的冷却时间缩短10%。<br /><br />对命中的敌人们施加<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">暮气</span>效果。",
         "iconFile": "VexE.png",
@@ -324,6 +386,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "EDamageCalc",
+            "kind": "damage",
+            "baseByRank": [
+              50,
+              70,
+              90,
+              110,
+              130
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.4000000059604645,
+                  0.44999998807907104,
+                  0.5,
+                  0.550000011920929,
+                  0.6000000238418579
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -334,6 +423,7 @@
         "slot": "R",
         "id": "VexR",
         "name": "愁煞",
+        "maxRank": 3,
         "summary": "射出一个飞弹来标记一名敌方英雄。再次施放可冲刺至该英雄处并造成伤害。",
         "bodyHtml": "黑影激动地向前涌动，造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">魔法伤害</span>并将命中的第一位敌方英雄标记4秒。<br /><br /><span class=\"text-yellow-600 dark:text-yellow-300\">再次施放</span>：冲刺至被标记的英雄，在抵达时造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">魔法伤害</span>。<br /><br />如果被标记的英雄在受到此技能伤害后的秒内阵亡，那么这个技能的冷却时间会暂时重置。",
         "iconFile": "VexR.png",
@@ -384,6 +474,29 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "RDamageCalc",
+            "kind": "damage",
+            "baseByRank": [
+              75,
+              125,
+              175
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.20000000298023224,
+                  0.20000000298023224,
+                  0.20000000298023224
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {

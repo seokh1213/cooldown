@@ -120,6 +120,7 @@
         "slot": "P",
         "id": "VaynePassive",
         "name": "어둠 사냥꾼",
+        "maxRank": 0,
         "summary": "베인이 악당을 무자비하게 사냥합니다. 근처 적 챔피언에게 접근할 때 이동 속도가 증가합니다.",
         "bodyHtml": "베인이 악당을 무자비하게 사냥합니다. 근처 적 챔피언에게 접근할 때 이동 속도가 30만큼 증가합니다.",
         "iconFile": "Vayne_NightHunter.png",
@@ -127,6 +128,10 @@
         "range": [],
         "rankValues": [],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -137,6 +142,7 @@
         "slot": "Q",
         "id": "VayneTumble",
         "name": "구르기",
+        "maxRank": 5,
         "summary": "베인이 구르기를 하며 다음 공격 대상을 신중하게 선택합니다. 베인의 다음 공격은 추가 피해를 입힙니다.",
         "bodyHtml": "베인이 짧은 구르기를 합니다. 이후 기본 공격을 하면 <span class=\"text-red-600 dark:text-red-500 font-semibold\">((75/85/95/105/115% 공격력) + (50% 주문력))의 물리 피해</span>를 추가로 입힙니다.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">이 스킬은 피해를 입힐 때 효과가 발동합니다.</span>",
         "iconFile": "VayneTumble.png",
@@ -193,6 +199,10 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -203,6 +213,7 @@
         "slot": "W",
         "id": "VayneSilveredBolts",
         "name": "은화살",
+        "maxRank": 5,
         "summary": "베인이 사악한 존재에게만 피해를 주는 특수 금속이 달린 볼트를 사용합니다. 같은 대상에게 세 번째 공격 또는 스킬이 명중하면 대상 최대 체력에 비례한 고정 피해를 추가로 입힙니다.",
         "bodyHtml": "<span class=\"text-gray-600 dark:text-gray-500 italic\">기본 지속 효과</span>: 적에게 세 번 기본 공격 또는 스킬이 적중할 때마다 <span class=\"text-yellow-600 dark:text-yellow-500 font-semibold\">대상 최대 체력의 4/5.5/7/8.5/10%에 해당하는 고정 피해</span>를 추가로 입힙니다.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">최소 40/55/70/85/100의 피해를 입힙니다.<br />정글 몬스터 상대로는 140/155/170/185/200의 피해를 입힙니다. </span>",
         "iconFile": "VayneSilveredBolts.png",
@@ -249,6 +260,12 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "unsupported",
+          "unsupportedPartTypes": [
+            "percent-calculation"
+          ]
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -259,6 +276,7 @@
         "slot": "E",
         "id": "VayneCondemn",
         "name": "선고",
+        "maxRank": 5,
         "summary": "베인이 등에서 커다란 석궁을 뽑아 거대한 볼트를 발사하여 대상을 뒤로 날려보내고 대상에게 피해를 줍니다. 지형과 부딪힌 대상은 지형에 꽂힌 채 추가 피해를 받고 기절합니다.",
         "bodyHtml": "베인이 볼트를 발사하여 대상을 <span class=\"text-purple-600 dark:text-purple-500\">뒤로 날려보내고</span> <span class=\"text-red-600 dark:text-red-500 font-semibold\">(50/85/120/155/190 + (50% 추가 공격력))의 물리 피해</span>를 입힙니다. 지형에 부딪힌 대상은 <span class=\"text-red-600 dark:text-red-500 font-semibold\">(75/127.5/180/232.5/285 + (75% 추가 공격력))의 추가 물리 피해</span>를 입고 1.5초 동안 <span class=\"text-purple-600 dark:text-purple-500\">기절</span>합니다.",
         "iconFile": "VayneCondemn.png",
@@ -311,6 +329,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "TotalDamage",
+            "kind": "damage",
+            "baseByRank": [
+              50,
+              85,
+              120,
+              155,
+              190
+            ],
+            "terms": [
+              {
+                "stat": "bonusAttackDamage",
+                "coefficientsByRank": [
+                  0.5,
+                  0.5,
+                  0.5,
+                  0.5,
+                  0.5
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -321,6 +366,7 @@
         "slot": "R",
         "id": "VayneInquisition",
         "name": "결전의 시간",
+        "maxRank": 3,
         "summary": "격렬한 전투에 대비한 베인이 공격력을 높이고 구르기 시 투명 상태가 되며 구르기의 재사용 대기시간이 줄어듭니다. 어둠 사냥꾼의 이동 속도 증가량이 더 늘어납니다.",
         "bodyHtml": "베인이 8/10/12초 동안 <span class=\"text-red-600 dark:text-red-500 font-semibold\">35/50/65의 공격력</span>을 얻습니다. 적 챔피언이 베인에게 피해를 입고 3초 안에 죽으면 지속시간이 4초 늘어납니다. 또한 스킬이 지속되는 동안 <span><span>어둠 사냥꾼</span> 효과가 강화되어 <span class=\"text-cyan-600 dark:text-cyan-500\">이동 속도가 90</span> 증가합니다.<span><span>구르기</span>의 재사용 대기시간이 30/40/50% 감소하며, 구르기를 사용하면 1초 동안 <span class=\"text-purple-600 dark:text-purple-400 font-semibold\">투명</span> 상태가 됩니다.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\"><span class=\"text-purple-600 dark:text-purple-400 font-semibold\">투명</span> 상태의 유닛은 포탑이나 <span style=\"color: #ee91d7\">절대 시야</font color>로만 모습이 드러납니다.<br />이 스킬의 지속시간은 기존 최대 지속시간을 초과해 늘어날 수 없습니다.</span>",
         "iconFile": "VayneInquisition.png",
@@ -361,6 +407,10 @@
           }
         ],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {

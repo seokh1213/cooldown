@@ -119,6 +119,7 @@
         "slot": "P",
         "id": "ViktorPassive",
         "name": "Glorious Evolution",
+        "maxRank": 0,
         "summary": "Viktor gains Hex Fragments whenever he kills an enemy. With every 100 Hex Fragments he obtains, Viktor permanently augments an active ability. After upgrading all of his basic abilities, he can gather 100 Hex Fragments to augment his ultimate ability.",
         "bodyHtml": "Viktor gains <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Hex Fragments</span> whenever he kills an enemy. Every 100 <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Hex Fragments</span> Viktor obtains will permanently upgrade an active Ability. After upgrading all of his basic Abilities, Viktor can upgrade his Ultimate Ability.<br /><br />Killing minions grants 1 <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Hex Fragment</span>.<br />Killing cannon minions grants 10 <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Hex Fragments</span>.<br />Champion takedowns grant 20 <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Hex Fragments</span>.",
         "iconFile": "Viktor_Passive.png",
@@ -126,6 +127,10 @@
         "range": [],
         "rankValues": [],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -136,6 +141,7 @@
         "slot": "Q",
         "id": "ViktorQ",
         "name": "Siphon Power",
+        "maxRank": 5,
         "summary": "Viktor blasts an enemy unit with magic damage, which grants him a shield and empowers his next basic attack.<br><br>Augment: Siphon Power's shield is increased by 60% and Viktor gains bonus move speed after casting the Ability.<br>",
         "bodyHtml": "Viktor blasts an enemy, dealing <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(60/75/90/105/120 + (40% Ability Power)) magic damage</span> and granting Viktor <span class=\"text-blue-600 dark:text-blue-300\">(25% Ability Power) Shield</span> for 2.5 seconds.<br /><br />Viktor's next Attack within 4 seconds deals <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(20/45/70/95/120 + (50% Ability Power) + (100% Attack Damage)) magic damage</span>.<br /><br /><span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Upgraded:</span> Grants <span class=\"text-blue-600 dark:text-blue-300\">(40% Ability Power) Shield</span> and Viktor additionally gains <span class=\"text-cyan-600 dark:text-cyan-500\">30% Move Speed</span> for 2.5 seconds.",
         "iconFile": "ViktorQ.png",
@@ -196,6 +202,43 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "AttackTotalDMG",
+            "kind": "damage",
+            "baseByRank": [
+              20,
+              45,
+              70,
+              95,
+              120
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.5,
+                  0.5,
+                  0.5,
+                  0.5,
+                  0.5
+                ]
+              },
+              {
+                "stat": "totalAttackDamage",
+                "coefficientsByRank": [
+                  1,
+                  1,
+                  1,
+                  1,
+                  1
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -206,6 +249,7 @@
         "slot": "W",
         "id": "ViktorW",
         "name": "Gravity Field",
+        "maxRank": 5,
         "summary": "Viktor conjures a heavy gravitational field that slows enemies caught within its radius. Enemies who stay in the field for too long become stunned.<br><br>Augment: Viktor's spells apply a slow to enemies.<br>",
         "bodyHtml": "Viktor deploys a gravitational imprisonment device for 4 seconds, <span class=\"text-purple-600 dark:text-purple-500\">Slowing</span> enemies inside it by 33/36/39/42/45%. Enemies who remain within its radius for 1.25 seconds are <span class=\"text-purple-600 dark:text-purple-500\">Stunned</span> for 1.5 seconds.<br /><br /><span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Upgraded Passive:</span> Viktor's Abilities <span class=\"text-purple-600 dark:text-purple-500\">Slow</span> by 20% for 1 second.<br /><br /><br /><br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">Enemies that are <span class=\"text-purple-600 dark:text-purple-500\">Stunned</span> by this Ability are also <span class=\"text-purple-600 dark:text-purple-500\">Knocked Down</span>.</span>",
         "iconFile": "ViktorW.png",
@@ -244,6 +288,10 @@
           }
         ],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -254,6 +302,7 @@
         "slot": "E",
         "id": "ViktorE",
         "name": "Hextech Ray",
+        "maxRank": 5,
         "summary": "Viktor uses his biomechanical arm to fire a Hextech Ray that cuts across the field in a line, dealing damage to all enemies in its path.<br><br>Augment: An explosion follows in the Hextech Ray's wake, dealing magic damage.<br>",
         "bodyHtml": "Viktor fires a hextech ray in a chosen direction, dealing <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(70/110/150/190/230 + (50% Ability Power)) magic damage</span> to any enemies it hits.<br /><br /><span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Upgraded:</span> An aftershock follows Hextech Ray, dealing <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(20/50/80/110/140 + (80% Ability Power)) magic damage</span>.<br /><br /><br />",
         "iconFile": "ViktorE.png",
@@ -314,6 +363,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "AftershockDamage",
+            "kind": "damage",
+            "baseByRank": [
+              20,
+              50,
+              80,
+              110,
+              140
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.800000011920929,
+                  0.800000011920929,
+                  0.800000011920929,
+                  0.800000011920929,
+                  0.800000011920929
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -324,6 +400,7 @@
         "slot": "R",
         "id": "ViktorR",
         "name": "Arcane Storm",
+        "maxRank": 3,
         "summary": "Viktor conjures an Arcane Storm on the field, dealing magic damage and interrupting enemy channels. The storm periodically does magic damage to all nearby enemies and can be redirected by Viktor.<br><br>Augment: The Arcane Storm moves 25% faster, and whenever champions die after taking damage from it, the storm grows and increases in its duration.<br><br>",
         "bodyHtml": "Viktor conjures an Arcane Storm in an area for 6.5 seconds, which instantly deals <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(100/175/250 + (50% Ability Power)) magic damage</span> followed by <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(65/105/145 + (35% Ability Power)) magic damage</span> per second to surrounding enemies. The storm automatically follows champions it has recently damaged.<br /><br /><span class=\"text-yellow-600 dark:text-yellow-300\">Recast:</span> Viktor can manually move the storm.<br /><br /><span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Upgraded:</span> The storm moves 25% faster. If a champion that the storm has damaged dies, the storm increases its size and its duration by 3 seconds (up to 6 times).<br /><br /><br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">When the storm appears it interrupts channeled Abilities.<br />The farther the storm is from Viktor, the slower it moves.</span>",
         "iconFile": "ViktorR.png",
@@ -374,6 +451,29 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "InitialBurstDamage",
+            "kind": "damage",
+            "baseByRank": [
+              100,
+              175,
+              250
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.5,
+                  0.5,
+                  0.5
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {

@@ -120,6 +120,7 @@
         "slot": "P",
         "id": "Carnivore",
         "name": "육식",
+        "maxRank": 0,
         "summary": "초가스는 유닛을 죽이면 체력과 마나를 회복합니다. 회복량은 초가스의 레벨이 높아질수록 증가합니다.",
         "bodyHtml": "적 유닛을 처치할 때마다 체력을 <span class=\"text-gray-600 dark:text-gray-400\">18</span>, 마나를 <span class=\"text-gray-600 dark:text-gray-400\">4.72</span> 회복합니다.",
         "iconFile": "GreenTerror_TailSpike.png",
@@ -127,6 +128,10 @@
         "range": [],
         "rankValues": [],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -137,6 +142,7 @@
         "slot": "Q",
         "id": "Rupture",
         "name": "파열",
+        "maxRank": 5,
         "summary": "선택한 지역의 지면을 파열시켜 해당 지역에 있는 적을 공중으로 띄워 피해를 입히고 이동 속도를 늦춥니다.",
         "bodyHtml": "초가스가 땅을 파열시켜 1초 동안 적들을 <span class=\"text-purple-600 dark:text-purple-500\">공중으로 띄워 올리고</span> <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(80/135/190/245/300 + (100% 주문력))의 마법 피해</span>를 입히며 1.5초 동안 60% <span class=\"text-purple-600 dark:text-purple-500\">둔화</span>시킵니다.",
         "iconFile": "Rupture.png",
@@ -185,6 +191,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "TotalDamageTooltip",
+            "kind": "damage",
+            "baseByRank": [
+              80,
+              135,
+              190,
+              245,
+              300
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  1,
+                  1,
+                  1,
+                  1,
+                  1
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -195,6 +228,7 @@
         "slot": "W",
         "id": "FeralScream",
         "name": "흉포한 울부짖음",
+        "maxRank": 5,
         "summary": "초가스가 원뿔 형태의 지역에 무시무시한 비명을 질러 마법 피해를 입히고 몇 초 동안 적을 침묵시킵니다.",
         "bodyHtml": "초가스가 울부짖으며 1.6/1.7/1.8/1.9/2초 동안 적들을 <span class=\"text-purple-600 dark:text-purple-500\">침묵</span>시키고 <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(80/130/180/230/280 + (70% 주문력))의 마법 피해</span>를 입힙니다.",
         "iconFile": "FeralScream.png",
@@ -255,6 +289,12 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "unsupported",
+          "unsupportedPartTypes": [
+            "EffectValueCalculationPart"
+          ]
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -265,6 +305,7 @@
         "slot": "E",
         "id": "VorpalSpikes",
         "name": "날카로운 가시",
+        "maxRank": 5,
         "summary": "초가스가 공격할 때마다 치명적인 가시가 발사되어 정면에 있는 모든 적에게 피해를 입히고 둔화시킵니다.",
         "bodyHtml": "초가스가 다음 세 번의 기본 공격 시 가시를 발사하여 <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(30/50/70/90/110 + (30% 주문력)) + 대상 최대 체력의 2.5/2.85/3.2/3.55/3.9%에 해당하는 마법 피해</span>를 입힙니다. 피해를 입은 적은 30/35/40/45/50% <span class=\"text-purple-600 dark:text-purple-500\">둔화</span>했다가 1.5초에 걸쳐 원래대로 돌아옵니다.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">가시는 <span>포식</span> 중첩에 비례해 커지며 중첩당 최대 체력 비례 피해가 0.5% 상승합니다.<br />몬스터의 경우 체력 비례 피해는 80/110/140/170/200의 피해로 대체됩니다.</span>",
         "iconFile": "VorpalSpikes.png",
@@ -336,6 +377,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "FlatDamageCalc",
+            "kind": "damage",
+            "baseByRank": [
+              30,
+              50,
+              70,
+              90,
+              110
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.30000001192092896,
+                  0.30000001192092896,
+                  0.30000001192092896,
+                  0.30000001192092896,
+                  0.30000001192092896
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -346,6 +414,7 @@
         "slot": "R",
         "id": "Feast",
         "name": "포식",
+        "maxRank": 3,
         "summary": "적 유닛을 먹어치워 적의 방어력을 무시하고 큰 고정 피해를 입힙니다. 대상을 처치하면 초가스가 성장하며 최대 체력이 증가합니다.",
         "bodyHtml": "초가스가 적을 게걸스럽게 먹어치워, 챔피언에게는 <span class=\"text-yellow-600 dark:text-yellow-500 font-semibold\">(300/475/650 + (50% 주문력) + (10% 추가 체력))</span>, 미니언과 정글 몬스터에게는 <span class=\"text-yellow-600 dark:text-yellow-500 font-semibold\">(1200 + (50% 주문력) + (10% 추가 체력))</span>의 고정 피해를 입힙니다. 대상이 처치되면 초가스의 포식 중첩이 1 올라, 몸집이 커지며 <span class=\"text-green-600 dark:text-green-400\">최대 체력이 80/120/160</span> 오릅니다. 에픽 몬스터가 아닌 일반 정글 몬스터와 미니언 처치로는 최대 6중첩까지만 얻을 수 있습니다.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">현재 미니언 및 일반 정글 몬스터 중첩:</span> <span>/6</span><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">중첩에 따라 초가스의 공격 사거리와 <span>포식</span> 사거리가 증가합니다.<br />중첩당 공격 사거리 4.7/6.2/7.7 (최대 75)<br />중첩당 포식 사거리 2.5 (최대 25)</span>",
         "iconFile": "Feast.png",
@@ -400,6 +469,37 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "RDamage",
+            "kind": "damage",
+            "baseByRank": [
+              300,
+              475,
+              650
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.5,
+                  0.5,
+                  0.5
+                ]
+              },
+              {
+                "stat": "bonusHealth",
+                "coefficientsByRank": [
+                  0.10000000149011612,
+                  0.10000000149011612,
+                  0.10000000149011612
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {

@@ -120,6 +120,7 @@
         "slot": "P",
         "id": "AkshanPassive",
         "name": "Dirty Fighting",
+        "maxRank": 0,
         "summary": "Every three hits from Akshan's Attacks and Abilities deals bonus damage and grants him a Shield if the target was a champion.<br><br>When Akshan Attacks, he fires an additional Attack for reduced damage. If he cancels the additional Attack, he instead gains Move Speed.",
         "bodyHtml": "After launching an Attack, Akshan will fire an additional shot for <span class=\"text-red-600 dark:text-red-500 font-semibold\">(50% Attack Damage) physical damage</span>. He can cancel this shot to instead gain <span class=\"text-cyan-600 dark:text-cyan-500\">(20 ~ 75) Move Speed</span> decaying over 1 second.<br /><br />Every three hits from Attacks or Abilities deals an additional <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(150 + (60% Ability Power)) magic damage</span>. Against champions, Akshan also gains <span class=\"text-blue-600 dark:text-blue-300\">(35% bonus Attack Damage) Shield</span> for 2 seconds (4 second Cooldown).<br /><br />",
         "iconFile": "akshan_p.png",
@@ -127,6 +128,10 @@
         "range": [],
         "rankValues": [],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -137,6 +142,7 @@
         "slot": "Q",
         "id": "AkshanQ",
         "name": "Avengerang",
+        "maxRank": 5,
         "summary": "Akshan throws a boomerang that deals damage going out and coming back, extending its range each time it hits an enemy.",
         "bodyHtml": "Akshan throws a boomerang that deals <span class=\"text-red-600 dark:text-red-500 font-semibold\">(45/75/105/135/165 + (70% bonus Attack Damage)) physical damage</span>, extending the range each time an enemy is hit.<br /><br />Champion hits grant Akshan <span class=\"text-cyan-600 dark:text-cyan-500\">(20% + (0.05% Ability Power)) Move Speed</span> decaying over 1 second.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">Deals 40/50/60/70/80% damage to non-champions. Enemies hit are briefly revealed.</span>",
         "iconFile": "AkshanQ.png",
@@ -197,6 +203,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "FinalDamage",
+            "kind": "damage",
+            "baseByRank": [
+              45,
+              75,
+              105,
+              135,
+              165
+            ],
+            "terms": [
+              {
+                "stat": "bonusAttackDamage",
+                "coefficientsByRank": [
+                  0.699999988079071,
+                  0.699999988079071,
+                  0.699999988079071,
+                  0.699999988079071,
+                  0.699999988079071
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -207,6 +240,7 @@
         "slot": "W",
         "id": "AkshanW",
         "name": "Going Rogue",
+        "maxRank": 5,
         "summary": "Akshan passively marks enemy champions as Scoundrels when they kill his ally champions. If Akshan kills a Scoundrel, he resurrects the allies they killed, gains bonus gold, and clears all marks.<br><br>When activated, Akshan enters camouflage and gains Move Speed and Mana Regen while moving towards Scoundrels. Akshan loses the camouflage quickly while he is not in brush or near terrain.",
         "bodyHtml": "<span class=\"text-gray-600 dark:text-gray-400 italic\"><span class=\"text-purple-600 dark:text-purple-400 font-semibold\">Camouflaged</span> units cannot be seen unless an enemy champion is inside their detection radius.<br />While active, Akshan also sees trails leading to <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Scoundrels</span>.<br />Akshan can only claim Scoundrels when he is alive.<br />Total gold earned: </span>",
         "iconFile": "AkshanW.png",
@@ -263,6 +297,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "SecondAutoDamage",
+            "kind": "damage",
+            "baseByRank": [
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "terms": [
+              {
+                "stat": "totalAttackDamage",
+                "coefficientsByRank": [
+                  0.46000000834465027,
+                  0.5199999809265137,
+                  0.5799999833106995,
+                  0.6399999856948853,
+                  0.699999988079071
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -275,6 +336,7 @@
         "slot": "E",
         "id": "AkshanE",
         "name": "Heroic Swing",
+        "maxRank": 5,
         "summary": "Akshan fires a grappling hook into terrain then swings around it, repeatedly firing at the nearest enemy while swinging. He can jump off early or gets knocked off when colliding with champions or terrain.",
         "bodyHtml": "<span class=\"text-gray-900 dark:text-white font-semibold\">First Cast:</span> Akshan fires a grappling hook, attaching to the first terrain hit.<br /><br /><span class=\"text-gray-900 dark:text-white font-semibold\">Second Cast:</span> Akshan swings around the terrain, repeatedly firing at the nearest enemy for <span class=\"text-red-600 dark:text-red-500 font-semibold\">(8/16/24/32/40 + (25% Attack Damage)) physical damage</span> per shot.<br /><br /><span class=\"text-gray-900 dark:text-white font-semibold\">Third Cast:</span> Akshan dives off the rope, firing a final shot.<br /><br />Colliding with an enemy Champion or terrain ends the swing early.<br /><br />Champion takedowns refresh this Ability's Cooldown.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">Akshan prioritizes shooting champions marked by <span>Dirty Fighting</span>.<br />On-hits while swinging are 25% effective.<br />Damage is increased by <span>30% of bonus Attack Speed</span>.<br />Attacks can critically strike for <span class=\"text-red-600 dark:text-red-500 font-semibold\">(8/16/24/32/40 + (25% Attack Damage)) physical damage</span>.</span>",
         "iconFile": "AkshanE.png",
@@ -327,6 +389,12 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "unsupported",
+          "unsupportedPartTypes": [
+            "unsupported-multiplier"
+          ]
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -337,6 +405,7 @@
         "slot": "R",
         "id": "AkshanR",
         "name": "Comeuppance",
+        "maxRank": 3,
         "summary": "Akshan locks onto an enemy champion and starts storing bullets. When released, he fires all stored bullets, dealing damage based on missing health to the first champion, minion, or structure hit.",
         "bodyHtml": "Akshan locks onto a champion and begins overcharging his gun for up to 2.5 seconds, storing up to 5/6/7 bullets.<br /><br /><span class=\"text-yellow-600 dark:text-yellow-300\">Recast:</span> Akshan unleashes the stored bullets, each dealing at least <span class=\"text-red-600 dark:text-red-500 font-semibold\">(25/35/45 + (15% Attack Damage)) physical damage</span> to the first enemy or structure hit, increased up to <span class=\"text-red-600 dark:text-red-500 font-semibold\">(75/105/135 + (45% Attack Damage)) physical damage</span> based on missing Health.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">Bullets execute minions and apply Lifesteal.<br />Bullet damage scales with Critical Strike Chance and Critical Strike Damage at 30% effectiveness.</span>",
         "iconFile": "AkshanR.png",
@@ -387,6 +456,12 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "unsupported",
+          "unsupportedPartTypes": [
+            "unsupported-multiplier"
+          ]
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {

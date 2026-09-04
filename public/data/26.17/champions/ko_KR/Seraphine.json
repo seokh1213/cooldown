@@ -120,6 +120,7 @@
         "slot": "P",
         "id": "SeraphinePassive",
         "name": "무대 장악",
+        "maxRank": 0,
         "summary": "세라핀이 세 번째 기본 스킬을 사용할 때마다 두 번 사용됩니다. 추가로 아군 근처에서 스킬을 사용하면 다음 기본 공격이 추가 마법 피해를 입히고 사거리가 증가합니다.",
         "bodyHtml": "세 번째 기본 스킬을 사용할 때마다 해당 스킬이 메아리쳐 자동으로 두 번 사용됩니다.<br /><br />추가로 세라핀이 주변 아군에게서 음악적 영감을 끌어내어 스킬을 사용할 때마다 주변의 아군 하나당 <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">음표</span> 하나를 생성합니다. 각 <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">음표</span>마다 세라핀의 사거리가 25 증가하고 추가로 <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(4% 주문력)의 마법 피해</span>를 입히며 <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">음표</span>가 소모됩니다.",
         "iconFile": "Seraphine_Passive.png",
@@ -127,6 +128,10 @@
         "range": [],
         "rankValues": [],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -137,6 +142,7 @@
         "slot": "Q",
         "id": "SeraphineQ",
         "name": "고음",
+        "maxRank": 5,
         "summary": "세라핀이 대상 지역에 피해를 입힙니다.",
         "bodyHtml": "세라핀이 맑은 음을 노래해 <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(60/85/110/135/160 + (40% 주문력))의 마법 피해</span>를 입힙니다. 챔피언과 몬스터의 경우 대상 잃은 체력에 비례해 피해량이 증가하며, 대상의 체력이 25% 이하일 때까지 최대 <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(105/148.75/192.5/236.25/280 + (70% 주문력))의 피해</span>를 입힙니다.",
         "iconFile": "SeraphineQ.png",
@@ -193,6 +199,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "ExplosionDamage",
+            "kind": "damage",
+            "baseByRank": [
+              60,
+              85,
+              110,
+              135,
+              160
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.4000000059604645,
+                  0.4000000059604645,
+                  0.4000000059604645,
+                  0.4000000059604645,
+                  0.4000000059604645
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -203,6 +236,7 @@
         "slot": "W",
         "id": "SeraphineW",
         "name": "소리 장막",
+        "maxRank": 5,
         "summary": "세라핀이 주변 아군에게 보호막과 이동 속도를 부여합니다. 세라핀에게 이미 보호막이 있으면 주변 아군의 체력을 회복시킵니다.",
         "bodyHtml": "세라핀이 노래로 주변 아군을 감싸 2.5초 동안 아군의 <span class=\"text-cyan-600 dark:text-cyan-500\">이동 속도가 (8% + (0.01% 주문력))</span> 상승하고, 자신의 <span class=\"text-cyan-600 dark:text-cyan-500\">이동 속도가 (20% + (0.02% 주문력))</span> 상승하며 <span class=\"text-blue-600 dark:text-blue-300\">(60/80/100/120/140 + (20% 주문력))의 피해를 흡수하는 보호막</span>을 얻습니다. 이동 속도는 점차 원래대로 돌아옵니다.<br /><br />세라핀에게 이미 <span class=\"text-blue-600 dark:text-blue-300\">보호막</span>이 있으면 아군을 불러 모아 2.5초 후 <span class=\"text-green-600 dark:text-green-400\">잃은 체력의 8/10/12/14/16%</span>만큼 체력을 회복시킵니다.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">이 스킬은 두 번 사용해도 한 번만 체력을 회복시킵니다.</span>",
         "iconFile": "SeraphineW.png",
@@ -259,6 +293,10 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -269,6 +307,7 @@
         "slot": "E",
         "id": "SeraphineE",
         "name": "비트 발사",
+        "maxRank": 5,
         "summary": "세라핀이 일직선상에 있는 적들에게 피해를 입히고 이동을 방해합니다.",
         "bodyHtml": "세라핀이 묵직한 음파를 발사하여 일직선상에 있는 적들에게 <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(70/100/130/160/190 + (50% 주문력))의 마법 피해</span>를 입히고 1.1/1.2/1.3/1.4/1.5초 동안 99% <span class=\"text-purple-600 dark:text-purple-500\">둔화</span>시킵니다.<br /><br />이미 <span class=\"text-purple-600 dark:text-purple-500\">둔화</span>된 적들은 <span class=\"text-purple-600 dark:text-purple-500\">속박</span>되며, <span class=\"text-purple-600 dark:text-purple-500\">이동 불가</span> 상태인 적들은 <span class=\"text-purple-600 dark:text-purple-500\">기절</span>합니다.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">미니언에게는 70%의 피해를 입힙니다.</span>",
         "iconFile": "SeraphineE.png",
@@ -325,6 +364,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "FinalDamage",
+            "kind": "damage",
+            "baseByRank": [
+              70,
+              100,
+              130,
+              160,
+              190
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.5,
+                  0.5,
+                  0.5,
+                  0.5,
+                  0.5
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -335,6 +401,7 @@
         "slot": "R",
         "id": "SeraphineR",
         "name": "앙코르",
+        "maxRank": 3,
         "summary": "세라핀이 적중한 적에게 피해를 입히고 매혹합니다. 아군 또는 적 챔피언에게 적중하면 사거리가 초기화됩니다.",
         "bodyHtml": "무대를 장악한 세라핀이 사로잡는 힘을 날려 1.25/1.5/1.75초 동안 적을 <span class=\"text-purple-600 dark:text-purple-500\">매혹</span>하고 <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(150/200/250 + (40% 주문력))의 마법 피해</span>를 입힙니다.<br /><br />챔피언(아군, 적 무관)에게 적중 시 이 스킬의 사거리가 늘어나고 아군 챔피언은 <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">음표</span> 중첩을 최대로 얻습니다.",
         "iconFile": "SeraphineR.png",
@@ -385,6 +452,29 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "R1TotalDamage",
+            "kind": "damage",
+            "baseByRank": [
+              150,
+              200,
+              250
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.4000000059604645,
+                  0.4000000059604645,
+                  0.4000000059604645
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {

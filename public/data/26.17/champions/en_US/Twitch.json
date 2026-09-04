@@ -120,6 +120,7 @@
         "slot": "P",
         "id": "TwitchDeadlyVenomMarker",
         "name": "Deadly Venom",
+        "maxRank": 0,
         "summary": "Twitch's basic attacks infect the target %i:OnHit% <OnHit>On-Hit</OnHit>, dealing true damage each second.",
         "bodyHtml": "Twitch's Attacks infect his target <span>On-Hit</span>, dealing <span class=\"text-yellow-600 dark:text-yellow-500 font-semibold\">(8 + (3% Ability Power)) true damage</span> per second for 6 seconds, stacking up to 6 times. <br /><br />Max Damage Per Second: (48 + (18% Ability Power))",
         "iconFile": "Twitch_Passive.png",
@@ -127,6 +128,10 @@
         "range": [],
         "rankValues": [],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -137,6 +142,7 @@
         "slot": "Q",
         "id": "TwitchHideInShadows",
         "name": "Ambush",
+        "maxRank": 5,
         "summary": "Twitch becomes Camouflaged for a short duration and gains Move Speed. When leaving Camouflage, Twitch gains Attack Speed for a short duration.<br><br>When an enemy champion with Deadly Venom dies, Ambush's cooldown is reset.",
         "bodyHtml": "Twitch <span class=\"text-purple-600 dark:text-purple-400 font-semibold\">Camouflages</span> and gains <span class=\"text-cyan-600 dark:text-cyan-500\">10% Move Speed</span> for 10/11/12/13/14 seconds. The Move Speed increases to 30% while near an enemy champion that can't see him. After exiting <span class=\"text-purple-600 dark:text-purple-400 font-semibold\">Camouflage</span>, Twitch gains <span>40/45/50/55/60% Attack Speed</span> for 6 seconds.<br /><br />When an enemy champion dies while afflicted with <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Venom</span>, this Ability's Cooldown is refreshed.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\"><span class=\"text-purple-600 dark:text-purple-400 font-semibold\">Camouflaged</span> units cannot be seen unless an enemy champion is inside their detection radius.</span>",
         "iconFile": "TwitchHideInShadows.png",
@@ -175,6 +181,10 @@
           }
         ],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -185,6 +195,7 @@
         "slot": "W",
         "id": "TwitchVenomCask",
         "name": "Venom Cask",
+        "maxRank": 5,
         "summary": "Twitch hurls a cask of venom that explodes in an area, slowing targets and applying deadly venom to the target.",
         "bodyHtml": "Twitch hurls a cask that adds a stack of <span>Deadly Venom</span> to all enemies struck and leaves behind a toxic cloud that persists for 3 seconds.<br /><br />Enemies that remain within the cloud are <span class=\"text-purple-600 dark:text-purple-500\">Slowed</span> by (30/35/40/45/50 + (6% Ability Power))and receive an additional stack of <span>Deadly Venom</span> each second.",
         "iconFile": "TwitchVenomCask.png",
@@ -237,6 +248,10 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -247,6 +262,7 @@
         "slot": "E",
         "id": "TwitchExpunge",
         "name": "Contaminate",
+        "maxRank": 5,
         "summary": "Twitch wreaks further havoc on poisoned enemies with a blast of his vile diseases.",
         "bodyHtml": "Deals <span class=\"text-red-600 dark:text-red-500 font-semibold\">20/30/40/50/60 physical damage</span> to all nearby enemies affected by <span>Deadly Venom</span>, plus an additional <span class=\"text-red-600 dark:text-red-500 font-semibold\">(15/20/25/30/35 + (35% bonus Attack Damage)) physical damage</span> and <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(35% Ability Power) magical damage</span> per stack of <span>Deadly Venom</span>.<br /><br />Max Damage: <span class=\"text-red-600 dark:text-red-500 font-semibold\">110/150/190/230/270 physical damage</span> and <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(210% Ability Power) magical damage</span>.",
         "iconFile": "TwitchExpunge.png",
@@ -303,6 +319,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "MagicDamagePerStack",
+            "kind": "damage",
+            "baseByRank": [
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.3499999940395355,
+                  0.3499999940395355,
+                  0.3499999940395355,
+                  0.3499999940395355,
+                  0.3499999940395355
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -313,6 +356,7 @@
         "slot": "R",
         "id": "TwitchFullAutomatic",
         "name": "Spray and Pray",
+        "maxRank": 3,
         "summary": "Twitch unleashes the full power of his crossbow, shooting bolts over a great distance that pierce all enemies caught in their path.",
         "bodyHtml": "Twitch unleashes his crossbow, gaining 300 Attack Range and <span class=\"text-orange-600 dark:text-orange-500\">30/45/60 Attack Damage</span>, and causing his Attacks to become piercing bolts for 6 seconds. These bolts hit all enemies they pass through, but deal 10% less damage to subsequent targets, down to a minimum of 60% damage.<br /><br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">Using this Ability does not break <span class=\"text-purple-600 dark:text-purple-400 font-semibold\">Camouflage</span>, but Attacking still does.</span>",
         "iconFile": "TwitchFullAutomatic.png",
@@ -341,6 +385,10 @@
           }
         ],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {

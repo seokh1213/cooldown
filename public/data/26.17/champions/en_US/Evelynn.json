@@ -120,6 +120,7 @@
         "slot": "P",
         "id": "EvelynnPassive",
         "name": "Demon Shade",
+        "maxRank": 0,
         "summary": "When out of combat, Evelynn enters Demon Shade. Demon Shade heals Evelynn when she is low on health and grants Camouflage after level 6.",
         "bodyHtml": "Evelynn enshrouds herself in her <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Demon Shade</span> after 4 seconds of not Attacking or using Abilities. <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Demon Shade</span> restores <span class=\"text-green-600 dark:text-green-400\">(15 ~ 150) Health per second</span> while below <span class=\"text-green-600 dark:text-green-400\">(250 + (250% Ability Power)) Health</span>. From level 6 onward, it also grants <span class=\"text-purple-600 dark:text-purple-400 font-semibold\">Camouflage</span>.<br /><br />Taking damage from champions or towers removes <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Demon Shade</span> for 1.5 seconds.",
         "iconFile": "Evelynn_Passive.png",
@@ -127,6 +128,10 @@
         "range": [],
         "rankValues": [],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -137,6 +142,7 @@
         "slot": "Q",
         "id": "EvelynnQ",
         "name": "Hate Spike",
+        "maxRank": 5,
         "summary": "Evelynn strikes out with her Lasher, dealing damage to the first unit hit. Then, Evelynn can shoot a line of spikes at nearby foes a few times.",
         "bodyHtml": "Evelynn strikes with her Lasher, dealing <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(25/30/35/40/45 + (25% Ability Power)) magic damage</span> to the first enemy hit and causing Evelynn's next 3 Attacks or Abilities on that unit to deal an additional <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(15/25/35/45/55 + (25% Ability Power)) magic damage</span>. Evelynn can <span class=\"text-yellow-600 dark:text-yellow-300\">Recast</span> this Ability up to 3 times.<br /><br /><span class=\"text-yellow-600 dark:text-yellow-300\">Recast:</span> Evelynn fires spikes through the nearest enemy, dealing <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(25/30/35/40/45 + (25% Ability Power)) magic damage</span> to all enemies hit.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">The spikes prioritizes the target Evelynn is attacking.</span>",
         "iconFile": "EvelynnQ.png",
@@ -193,6 +199,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "MissileDamage",
+            "kind": "damage",
+            "baseByRank": [
+              25,
+              30,
+              35,
+              40,
+              45
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.25,
+                  0.25,
+                  0.25,
+                  0.25,
+                  0.25
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -203,6 +236,7 @@
         "slot": "W",
         "id": "EvelynnW",
         "name": "Allure",
+        "maxRank": 5,
         "summary": "Evelynn curses her target, causing her next attack or spell after a delay to charm her target and reduce their magic resist.",
         "bodyHtml": "Evelynn marks a champion or monster for 5 seconds. If Evelynn hits the target with an Attack or Ability, she will expunge the mark, refund its cost, and <span class=\"text-purple-600 dark:text-purple-500\">Slow</span> the target by 45% for 0.75 seconds.<br /><br />If the mark lasts at least 2.5 seconds, expunging it has extra effects:<span>Against champions: <span class=\"text-purple-600 dark:text-purple-500\">Charms</span> them for 1.25/1.5/1.75/2/2.25 second(s) and removes <span>35/37.5/40/42.5/45% Magic Resist</span> for 4 seconds.<span>Against monsters: <span class=\"text-purple-600 dark:text-purple-500\">Charms</span> them for 3/3.25/3.5/3.75/4 seconds and deals <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(250/300/350/400/450 + (60% Ability Power)) magic damage</span>.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">Using this Ability does not remove Evelynn from <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Demon Shade</span>.</span>",
         "iconFile": "EvelynnW.png",
@@ -267,6 +301,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "MonsterDamageTotalTOOLTIP",
+            "kind": "damage",
+            "baseByRank": [
+              250,
+              300,
+              350,
+              400,
+              450
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.6000000238418579,
+                  0.6000000238418579,
+                  0.6000000238418579,
+                  0.6000000238418579,
+                  0.6000000238418579
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -277,6 +338,7 @@
         "slot": "E",
         "id": "EvelynnE",
         "name": "Whiplash",
+        "maxRank": 5,
         "summary": "Evelynn whips her target with her Lasher, dealing damage. She then gains Move Speed for a short duration.",
         "bodyHtml": "Evelynn whips an enemy, dealing <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">60/90/120/150/180 plus (3% + (0.01% Ability Power)) max Health magic damage</span>. Evelynn gains <span class=\"text-cyan-600 dark:text-cyan-500\">30/35/40/45/50% Move Speed</span> for 2 seconds.<br /><br />Entering <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Demon Shade</span> refreshes this Ability's cooldown and empowers it. When this Ability is empowered, Evelynn dashes to the target and deals <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">80/120/160/200/240 plus (4% + (0.02% Ability Power)) max Health magic damage</span> to her target and everyone she passes through instead.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">This Ability applies On-Hit Effects to the targeted enemy.</span>",
         "iconFile": "EvelynnE.png",
@@ -337,6 +399,10 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -347,6 +413,7 @@
         "slot": "R",
         "id": "EvelynnR",
         "name": "Last Caress",
+        "maxRank": 3,
         "summary": "Evelynn briefly goes untargetable and decimates the area in front of her before warping backwards a long distance.",
         "bodyHtml": "Evelynn unleashes her demonic energy, dealing heavy damage, becoming Untargetable and teleporting backwards. She deals <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(125/250/375 + (75% Ability Power)) magic damage</span>, increased to <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(300/600/900 + (180% Ability Power))</span> against enemies below <span class=\"text-green-600 dark:text-green-400\">30% Health</span>. Upon cast, set Demon Shade to a 1.25 second cooldown.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">Untargetable units won't be affected by enemy Attacks or Abilities unless they've already been hit by them.</span>",
         "iconFile": "EvelynnR.png",
@@ -397,6 +464,29 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "Damage",
+            "kind": "damage",
+            "baseByRank": [
+              125,
+              250,
+              375
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.75,
+                  0.75,
+                  0.75
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {

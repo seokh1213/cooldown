@@ -120,6 +120,7 @@
         "slot": "P",
         "id": "EvelynnPassive",
         "name": "恶魔魅影",
+        "maxRank": 0,
         "summary": "在非战斗状态下，伊芙琳进入【恶魔魅影】。【恶魔魅影】会在伊芙琳生命值较低时治疗她，并在6级后为她提供【伪装】。",
         "bodyHtml": "在不攻击或使用技能4秒后，伊芙琳将自身笼罩在<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">恶魔魅影</span>中。当低于<span class=\"text-green-600 dark:text-green-400\">(250 + (250% 法术强度))生命值</span>时，<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">恶魔魅影</span>每秒回复<span class=\"text-green-600 dark:text-green-400\">(15 ~ 150)生命值</span>。从6级开始，它还会提供<span class=\"text-purple-600 dark:text-purple-400 font-semibold\">伪装</span>。<br /><br />受到来自英雄或防御塔的伤害，会使<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">恶魔魅影</span>被移除1.5秒。",
         "iconFile": "Evelynn_Passive.png",
@@ -127,6 +128,10 @@
         "range": [],
         "rankValues": [],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -137,6 +142,7 @@
         "slot": "Q",
         "id": "EvelynnQ",
         "name": "憎恨之刺",
+        "maxRank": 5,
         "summary": "伊芙琳用鞭子进行抽击，对命中的第一个敌方单位造成伤害。随后，伊芙琳可以朝附近的敌人发出一列尖刺，可发射若干次。",
         "bodyHtml": "伊芙琳用她的鞭子进行打击，对命中的第一个敌人造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(25/30/35/40/45 + (25% 法术强度))魔法伤害</span>并使伊芙琳对该敌人发起的下3次攻击或技能造成额外的<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(15/25/35/45/55 + (25% 法术强度))魔法伤害</span>。伊芙琳可以<span class=\"text-yellow-600 dark:text-yellow-300\">再次施放</span>这个技能至多3次。<br /><br /><span class=\"text-yellow-600 dark:text-yellow-300\">再次施放：</span>伊芙琳发射尖刺穿过相距最近的敌人，并对命中的所有敌人造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(25/30/35/40/45 + (25% 法术强度))魔法伤害</span>。<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">尖刺会优先选取伊芙琳正在攻击的目标。</span>",
         "iconFile": "EvelynnQ.png",
@@ -193,6 +199,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "MissileDamage",
+            "kind": "damage",
+            "baseByRank": [
+              25,
+              30,
+              35,
+              40,
+              45
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.25,
+                  0.25,
+                  0.25,
+                  0.25,
+                  0.25
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -203,6 +236,7 @@
         "slot": "W",
         "id": "EvelynnW",
         "name": "引诱",
+        "maxRank": 5,
         "summary": "伊芙琳诅咒她的目标，并使她在一段延时后的下次攻击或技能对目标施加魅惑和魔抗击碎效果。",
         "bodyHtml": "伊芙琳标记一名英雄或野怪5秒。如果伊芙琳用一次攻击或技能命中了该目标，那么她将抹除该印记，返还它的法力消耗，并使目标<span class=\"text-purple-600 dark:text-purple-500\">减速</span>45%，持续0.75秒。<br /><br />如果标记持续了至少2.5秒，那么将它抹除还会有额外效果：<span>对抗英雄时：将其<span class=\"text-purple-600 dark:text-purple-500\">魅惑</span>1.25/1.5/1.75/2/2.25秒并削减<span>35/37.5/40/42.5/45%魔法抗性</span>，持续4秒。<span>对抗野怪时：将其<span class=\"text-purple-600 dark:text-purple-500\">魅惑</span>3/3.25/3.5/3.75/4秒并造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(250/300/350/400/450 + (60% 法术强度))魔法伤害</span>。<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">使用这个技能不会使伊芙琳离开<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">恶魔魅影</span>状态。</span>",
         "iconFile": "EvelynnW.png",
@@ -267,6 +301,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "MonsterDamageTotalTOOLTIP",
+            "kind": "damage",
+            "baseByRank": [
+              250,
+              300,
+              350,
+              400,
+              450
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.6000000238418579,
+                  0.6000000238418579,
+                  0.6000000238418579,
+                  0.6000000238418579,
+                  0.6000000238418579
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -277,6 +338,7 @@
         "slot": "E",
         "id": "EvelynnE",
         "name": "鞭笞",
+        "maxRank": 5,
         "summary": "伊芙琳鞭笞她的目标，并造成伤害。她随后会获得短暂持续的移动速度加成。",
         "bodyHtml": "伊芙琳鞭打一名敌人，造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">60/90/120/150/180加上(3% + (0.01% 法术强度))最大生命值的魔法伤害</span>。伊芙琳获得<span class=\"text-cyan-600 dark:text-cyan-500\">30/35/40/45/50%移动速度</span>，持续2秒。<br /><br />进入<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">恶魔魅影</span>会刷新这个技能的冷却时间并使其获得强化。当这个技能获得强化后，伊芙琳会冲刺向目标并对她的目标和沿途的所有敌人造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">80/120/160/200/240加上(4% + (0.02% 法术强度))最大生命值的魔法伤害</span>。<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">这个技能会对目标敌人施加攻击特效。</span>",
         "iconFile": "EvelynnE.png",
@@ -337,6 +399,10 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -347,6 +413,7 @@
         "slot": "R",
         "id": "EvelynnR",
         "name": "最终抚慰",
+        "maxRank": 3,
         "summary": "伊芙琳短暂进入不可被选取状态并大肆残杀她面前区域内的敌人，然后向后位移一大段距离。",
         "bodyHtml": "伊芙琳释放她的恶魔能量，造成大量伤害、变为不可被选取状态并向后传送。她造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(125/250/375 + (75% 法术强度))魔法伤害</span>，如果敌人低于<span class=\"text-green-600 dark:text-green-400\">30%生命值</span>，则此伤害提升至<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(300/600/900 + (180% 法术强度))</span>。在施放的同时，给【恶魔魅影】设置一个为期1.25秒的冷却时间。<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">不可被选取的单位不会受到敌人的攻击或技能的影响，除非在进入此状态前已被它们影响。</span>",
         "iconFile": "EvelynnR.png",
@@ -397,6 +464,29 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "Damage",
+            "kind": "damage",
+            "baseByRank": [
+              125,
+              250,
+              375
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.75,
+                  0.75,
+                  0.75
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {

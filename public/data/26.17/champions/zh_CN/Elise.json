@@ -120,6 +120,7 @@
         "slot": "P",
         "id": "ElisePassive",
         "name": "蜘蛛女皇",
+        "maxRank": 0,
         "summary": "人类形态：每当伊莉丝的技能命中一名敌人时，就会有一只小蜘蛛准备就绪。<br><br>蜘蛛形态：普攻造成额外魔法伤害并回复自身生命值。",
         "bodyHtml": "伊莉丝在游戏开始时自带1级终极技能，使她可以在<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">人类形态</span>和<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">蜘蛛形态</span>之间变形。<br /><br /><span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">人类形态：</span>伊莉丝的技能在命中时会为她提供一只休眠中的<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">小蜘蛛</span>，至多至只。<br /><br /><span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">蜘蛛形态：</span>攻击造成额外的<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">魔法伤害</span>、并回复<span class=\"text-green-600 dark:text-green-400\">生命值</span>。",
         "iconFile": "ElisePassive.png",
@@ -127,6 +128,10 @@
         "range": [],
         "rankValues": [],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -137,6 +142,7 @@
         "slot": "Q",
         "id": "EliseHumanQ",
         "name": "神经毒素 / 剧毒之蜇",
+        "maxRank": 5,
         "summary": "人类形态：根据目标的当前生命值来造成伤害。<br><br>蜘蛛形态：戳刺目标，并根据目标已损失的生命值来造成伤害。",
         "bodyHtml": "<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">人类形态</span>：伊莉丝注入神经毒素，造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">40/70/100/130/160外加 (4% + (0.03% 法术强度))当前生命值的魔法伤害</span>。<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\"><span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">人类形态</span>和<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">蜘蛛形态</span>的百分比生命值伤害对野怪的封顶值为(65/85/105/125/145 + (90% 法术强度))。</span>",
         "iconFile": "EliseHumanQ.png",
@@ -197,6 +203,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "MonsterDamageCapCalc",
+            "kind": "damage",
+            "baseByRank": [
+              65,
+              85,
+              105,
+              125,
+              145
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.8999999761581421,
+                  0.8999999761581421,
+                  0.8999999761581421,
+                  0.8999999761581421,
+                  0.8999999761581421
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -207,6 +240,7 @@
         "slot": "W",
         "id": "EliseHumanW",
         "name": "自爆蜘蛛 / 掠行狂暴",
+        "maxRank": 5,
         "summary": "人类形态：召唤一个注满毒液的小蜘蛛，并在靠近目标时爆炸。<br><br>蜘蛛形态：伊莉丝和她的小蜘蛛们获得攻击速度加成。",
         "bodyHtml": "<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">人类形态</span>：伊莉丝召唤一个爆炸蜘蛛朝着一个位置移动，并在它接近一名敌人或3秒后爆炸。这个蜘蛛造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">魔法伤害</span>。",
         "iconFile": "EliseHumanW.png",
@@ -259,6 +293,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "TotalDamage",
+            "kind": "damage",
+            "baseByRank": [
+              60,
+              100,
+              140,
+              180,
+              220
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.75,
+                  0.75,
+                  0.75,
+                  0.75,
+                  0.75
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -271,6 +332,7 @@
         "slot": "E",
         "id": "EliseHumanE",
         "name": "结茧 / 盘丝",
+        "maxRank": 5,
         "summary": "人类形态：将命中的第一个敌人晕眩，如敌方未处于潜行状态则将其暴露在己方视野中。<br><br>蜘蛛形态：伊莉丝和她的小蜘蛛们拉升至半空中，随后降落到目标敌人身上。在降落到目标敌方处时，伊莉丝的来自蜘蛛形态的额外伤害和治疗效果都会提升。",
         "bodyHtml": "<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">人类形态</span>：伊莉丝发射一颗蜘蛛茧，<span class=\"text-purple-600 dark:text-purple-500\">晕眩</span>并使命中的第一个敌人显形1.6/1.8/2/2.2/2.4秒。",
         "iconFile": "EliseHumanE.png",
@@ -331,6 +393,10 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -341,6 +407,7 @@
         "slot": "R",
         "id": "EliseR",
         "name": "蜘蛛形态",
+        "maxRank": 4,
         "summary": "变成一只凶恶的蜘蛛，减少攻击距离，但获得移动速度加成、一套全新技能并且会有一群小蜘蛛来攻击她的敌人。",
         "bodyHtml": "<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">人类形态</span>：伊莉丝变形为一只令人生畏的蜘蛛，变成近战，获得一套<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">蜘蛛形态</span>技能的使用权并且还可以召唤出所有休眠中的<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">小蜘蛛</span>。",
         "iconFile": "EliseR.png",
@@ -393,6 +460,31 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "PassiveTotalDamage",
+            "kind": "damage",
+            "baseByRank": [
+              12,
+              22,
+              32,
+              42
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.15000000596046448,
+                  0.15000000596046448,
+                  0.15000000596046448,
+                  0.15000000596046448
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {

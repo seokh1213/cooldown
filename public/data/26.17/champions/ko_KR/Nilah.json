@@ -120,6 +120,7 @@
         "slot": "P",
         "id": "NilahPassive",
         "name": "영원한 기쁨",
+        "maxRank": 0,
         "summary": "미니언에게 최후의 일격을 가하면 경험치를 추가로 획득하며, 주변 아군이 부여하는 체력 회복 및 보호막 효과를 강화하고 공유합니다.",
         "bodyHtml": "미니언에게 최후의 일격을 가하면 가장 가까운 아군과 닐라가 경험치 분배로 잃은 경험치의 50%를 획득합니다.<br /><br />아군 챔피언의 스킬로 받은 <span class=\"text-green-600 dark:text-green-400\">체력 회복 효과가 7.5%만큼</span>, <span class=\"text-blue-600 dark:text-blue-300\">보호막 효과가 15%만큼</span> 증가합니다. 닐라의 체력을 회복시키거나 보호막을 부여한 아군의 체력 회복 및 보호막 효과 역시 증가합니다. 아군이 자신에게 보호막이나 체력 회복 효과를 부여해도 닐라가 추가 효과를 얻습니다.",
         "iconFile": "NIlahP.png",
@@ -127,6 +128,10 @@
         "range": [],
         "rankValues": [],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -137,6 +142,7 @@
         "slot": "Q",
         "id": "NilahQ",
         "name": "무형의 검",
+        "maxRank": 5,
         "summary": "지정한 방향으로 칼날 채찍을 후려쳐 일직선상에 있는 모든 적에게 피해를 입힙니다. 공격 사거리가 잠깐 동안 증가합니다.",
         "bodyHtml": "<span class=\"text-gray-600 dark:text-gray-500 italic\">기본 지속 효과:</span> 방어구 관통력이 (30%) 증가하고, 챔피언에게 기본 공격 시 <span class=\"text-green-600 dark:text-green-400\">입힌 피해의 (20%)만큼 체력</span>을 회복합니다. 최대 체력을 초과한 회복량은 4초 동안 유지되는 <span class=\"text-blue-600 dark:text-blue-300\">보호막</span>으로 전환됩니다.<br /><br /><span class=\"text-gray-900 dark:text-white font-semibold\">사용 시:</span> 칼날 채찍을 휘둘러 <span class=\"text-red-600 dark:text-red-500 font-semibold\">(0/10/20/30/40 + (100% 공격력))의 물리 피해</span>를 입힙니다. 적 유닛이나 구조물에 공격이 적중하면 125의 공격 사거리와 <span>(10 ~ 60)의 공격 속도</span>를 얻으며, 4초 동안 원뿔 범위를 공격합니다.<br /><br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">피해량은 치명타 확률 및 치명타 피해량에 따라 70%만큼 증가합니다.<br /><span>급류</span> 사용 중에 사용하면 파도를 일으켜 경로상의 모든 적을 공격합니다. </span><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">광역 공격 시 미니언에게는 33%의 피해를 입히고 몬스터에게는 100%의 피해를 입힙니다.</span><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">체력이 낮은 미니언을 즉시 처치합니다.</span>",
         "iconFile": "NilahQ.png",
@@ -185,6 +191,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "AttackTotalDamageTooltip",
+            "kind": "damage",
+            "baseByRank": [
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "terms": [
+              {
+                "stat": "totalAttackDamage",
+                "coefficientsByRank": [
+                  1,
+                  1,
+                  1,
+                  1,
+                  1
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -195,6 +228,7 @@
         "slot": "W",
         "id": "NilahW",
         "name": "승리의 장막",
+        "maxRank": 5,
         "summary": "자신을 안개로 감싸 이동 속도를 얻고 우아하게 모든 기본 공격을 회피합니다. 안개 지속시간 중 닐라에게 닿은 아군에게도 이 효과가 적용됩니다.",
         "bodyHtml": "2.25초 동안 자신을 안개로 감싸 유체화 상태가 되어 <span class=\"text-cyan-600 dark:text-cyan-500\">이동 속도가 15/17.5/20/22.5/25%</span> 증가하고 기본 공격을 회피하며, 입는 <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">마법 피해</span>를 25% 감소시킵니다.<br /><br />스킬이 활성화된 동안 닐라와 닿은 아군 챔피언도 안개에 휩싸여 1.5초 동안 같은 효과를 얻습니다.<br /><br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">유체화 상태인 유닛은 다른 유닛을 통과할 수 있습니다.</span>",
         "iconFile": "NilahW.png",
@@ -237,6 +271,10 @@
           }
         ],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -247,6 +285,7 @@
         "slot": "E",
         "id": "NilahE",
         "name": "급류",
+        "maxRank": 5,
         "summary": "대상을 향해 맹렬히 돌진해 경로상의 모든 적에게 피해를 입힙니다.",
         "bodyHtml": "대상 유닛을 뚫고 돌진해 경로상의 모든 적에게 <span class=\"text-red-600 dark:text-red-500 font-semibold\">(60/70/80/90/100 + (20% 추가 공격력))의 물리 피해</span>를 입힙니다.",
         "iconFile": "NilahE.png",
@@ -307,6 +346,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "DashDamage",
+            "kind": "damage",
+            "baseByRank": [
+              60,
+              70,
+              80,
+              90,
+              100
+            ],
+            "terms": [
+              {
+                "stat": "bonusAttackDamage",
+                "coefficientsByRank": [
+                  0.20000000298023224,
+                  0.20000000298023224,
+                  0.20000000298023224,
+                  0.20000000298023224,
+                  0.20000000298023224
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -317,6 +383,7 @@
         "slot": "R",
         "id": "NilahR",
         "name": "환희",
+        "maxRank": 3,
         "summary": "신나게 칼날 채찍을 휘둘러 주변 모든 적에게 피해를 입히고 가까이 끌어당깁니다.",
         "bodyHtml": "칼날 채찍을 휘둘러 1초 동안 <span class=\"text-red-600 dark:text-red-500 font-semibold\">(60/100/140 + (40% 추가 공격력))의 물리 피해</span>를 입힌 다음 마지막 일격으로 <span class=\"text-red-600 dark:text-red-500 font-semibold\">(125/225/325 + (100% 추가 공격력))의 물리 피해</span>를 입히고 적을 자신 쪽으로 <span class=\"text-purple-600 dark:text-purple-500\">끌어당깁니다</span>.<br /><br />적 챔피언에게 <span class=\"text-green-600 dark:text-green-400\">입힌 피해의 (20% + (10%))( + 무형의 검)</span>만큼 자신과 주변 아군을 회복시키며, 최대 체력을 초과한 회복량은 6초 동안 지속되는 <span class=\"text-blue-600 dark:text-blue-300\">보호막</span>으로 전환됩니다.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">챔피언이 아닌 적을 상대로는 회복되는 체력이 10%까지 감소합니다.</span>",
         "iconFile": "NilahR.png",
@@ -367,6 +434,29 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "DamageCalc",
+            "kind": "damage",
+            "baseByRank": [
+              125,
+              225,
+              325
+            ],
+            "terms": [
+              {
+                "stat": "bonusAttackDamage",
+                "coefficientsByRank": [
+                  1,
+                  1,
+                  1
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {

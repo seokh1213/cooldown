@@ -120,6 +120,7 @@
         "slot": "P",
         "id": "RellP",
         "name": "Break the Mold",
+        "maxRank": 0,
         "summary": "Rell's Attacks and Abilities deal additional magic damage and steal Armor and Magic Resist on hit.",
         "bodyHtml": "Rell's Attacks and Abilities steal <span class=\"text-orange-600 dark:text-orange-400\">3% Armor</span> and <span>3% Magic Resist</span> for 5 seconds. Max: 15%. Basic attacks deal <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">((5% Armor) + (5% Magic Resist)) magic damage</span> on-hit.",
         "iconFile": "RellP.png",
@@ -127,6 +128,10 @@
         "range": [],
         "rankValues": [],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -137,6 +142,7 @@
         "slot": "Q",
         "id": "RellQ",
         "name": "Shattering Strike",
+        "maxRank": 5,
         "summary": "Rell deals magic damage to units in a line, breaking their shields and stunning them. ",
         "bodyHtml": "Rell thrusts her lance, <span class=\"text-purple-600 dark:text-purple-500\">Stunning</span> targets for 0.65 seconds, destroying all <span class=\"text-blue-600 dark:text-blue-300\">Shields</span>, and dealing <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(60/100/140/180/220 + (60% Ability Power)) magic damage.</span><br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">Does not break Shields on monsters.</span>",
         "iconFile": "RellQ.png",
@@ -189,6 +195,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "Damage",
+            "kind": "damage",
+            "baseByRank": [
+              60,
+              100,
+              140,
+              180,
+              220
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.6000000238418579,
+                  0.6000000238418579,
+                  0.6000000238418579,
+                  0.6000000238418579,
+                  0.6000000238418579
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -199,6 +232,7 @@
         "slot": "W",
         "id": "RellW_Dismount",
         "name": "Ferromancy: Crash Down",
+        "maxRank": 5,
         "summary": "Mounted: Rell Dismounts, crashing down in her armor, Knocking enemies up and gaining a large Shield. While dismounted, she gains Armor, Magic Resist, Attack Speed, and Attack Range, but is Slowed.<br><br>Dismounted: Rell forms her Mount, gaining a burst of speed and Knocking Up the next enemy she attacks.<br><br>",
         "bodyHtml": "<span class=\"text-gray-600 dark:text-gray-500 italic\">Passive - Mounted Alacrity:</span> Rell gains <span class=\"text-cyan-600 dark:text-cyan-500\"> Move Speed</span> while mounted.<br /><br /><span class=\"text-gray-900 dark:text-white font-semibold\">Active - Ferromancy: Crash Down:</span> Rell leaps off her mount, <span class=\"text-purple-600 dark:text-purple-500\">Knocking Up</span> enemies and dealing <span class=\"text-blue-600 dark:text-blue-500 font-semibold\"> magic damage</span>. Rell gains <span class=\"text-blue-600 dark:text-blue-300\"> Shield</span>, which lasts until she remounts.<br /><br />Rell then enters her armored form, gaining <span class=\"text-orange-600 dark:text-orange-400\">increased Armor</span> and <span>Magic Resist</span>, <span>Attack Speed</span> and Attack Range. In this armored form, she can use <span>Ferromancy: Mount Up</span>.",
         "iconFile": "RellW_Dismount.png",
@@ -259,6 +293,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "DismountDamage",
+            "kind": "damage",
+            "baseByRank": [
+              60,
+              90,
+              120,
+              150,
+              180
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.6000000238418579,
+                  0.6000000238418579,
+                  0.6000000238418579,
+                  0.6000000238418579,
+                  0.6000000238418579
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -276,6 +337,7 @@
         "slot": "E",
         "id": "RellE",
         "name": "Full Tilt",
+        "maxRank": 5,
         "summary": "Passive: Rell gains out of combat Move Speed.<br><br>Active: Rell and an ally gain ramping Move Speed, doubled toward enemies and each other. Her next Attack explodes, dealing magic damage.<br>",
         "bodyHtml": "Rell and an ally charge, gaining <span class=\"text-cyan-600 dark:text-cyan-500\">15% Move Speed</span>, increased to <span class=\"text-cyan-600 dark:text-cyan-500\">30%</span> when facing enemy champions or each other for 3 seconds. Rell's next Attack or <span>Shattering Strike</span> explodes in an area for <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(5/5.5/6/6.5/7% + (0.03% Ability Power)) max Health magic damage</span>.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">Damage capped at (150 ~ 300) against jungle monsters and structures.</span>",
         "iconFile": "RellE.png",
@@ -328,6 +390,10 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -338,6 +404,7 @@
         "slot": "R",
         "id": "RellR",
         "name": "Magnet Storm",
+        "maxRank": 3,
         "summary": "Rell explodes in a magnetic fury, violently Pulling nearby enemies toward herself. Then Rell constantly Drags nearby enemies toward herself for a short while, dealing magic damage over time.",
         "bodyHtml": "Rell explodes in a magnetic fury, violently <span class=\"text-purple-600 dark:text-purple-500\">Pulling</span> nearby enemies towards herself. Then Rell constantly <span class=\"text-purple-600 dark:text-purple-500\">Drags</span> nearby enemies towards herself and deals <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(150/250/350 + (110% Ability Power)) magic damage</span> over the next 2 seconds.",
         "iconFile": "RellR.png",
@@ -384,6 +451,12 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "unsupported",
+          "unsupportedPartTypes": [
+            "GameCalculationModified"
+          ]
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {

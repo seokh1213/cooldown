@@ -119,6 +119,7 @@
         "slot": "P",
         "id": "AkaliP",
         "name": "我流忍法！潜龙印",
+        "maxRank": 0,
         "summary": "对一个英雄造成技能伤害时，会在其周围创造一个能量圆环。穿过该圆环时，会增强阿卡丽的下一个攻击的距离和伤害。",
         "bodyHtml": "当阿卡丽用一个技能命中一名敌方英雄时，她会在其周围显出一个持续4秒的圆环，并在朝着圆环时获得<span class=\"text-cyan-600 dark:text-cyan-500\">移动速度</span>。穿过圆环会使阿卡丽的下次攻击拥有双倍距离并造成额外的<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(35 + (60% 额外攻击力) + (55% 法术强度))魔法伤害</span>。",
         "iconFile": "Akali_P.png",
@@ -126,6 +127,10 @@
         "range": [],
         "rankValues": [],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -136,6 +141,7 @@
         "slot": "Q",
         "id": "AkaliQ",
         "name": "我流奥义！寒影",
+        "maxRank": 5,
         "summary": "阿卡丽掷出五枚苦无，基于她的额外攻击力和法术强度来造成伤害，并造成减速效果。",
         "bodyHtml": "阿卡丽呈弧状掷出苦无，造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(45/70/95/120/145 + (65% 攻击力) + (60% 法术强度))魔法伤害</span>和持续0.5秒的50%<span class=\"text-purple-600 dark:text-purple-500\">减速</span>。",
         "iconFile": "AkaliQ.png",
@@ -188,6 +194,43 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "Damage",
+            "kind": "damage",
+            "baseByRank": [
+              45,
+              70,
+              95,
+              120,
+              145
+            ],
+            "terms": [
+              {
+                "stat": "totalAttackDamage",
+                "coefficientsByRank": [
+                  0.6499999761581421,
+                  0.6499999761581421,
+                  0.6499999761581421,
+                  0.6499999761581421,
+                  0.6499999761581421
+                ]
+              },
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.6000000238418579,
+                  0.6000000238418579,
+                  0.6000000238418579,
+                  0.6000000238418579,
+                  0.6000000238418579
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -198,6 +241,7 @@
         "slot": "W",
         "id": "AkaliW",
         "name": "我流奥义！霞阵",
+        "maxRank": 5,
         "summary": "阿卡丽扔下一颗烟幕弹并暂时提供移动速度。在烟幕中时，阿卡丽会变为隐形状态并且不会被敌方的技能和攻击所选中。进行攻击或使用技能都将使阿卡丽短暂显形。",
         "bodyHtml": "阿卡丽扔出一颗烟雾弹，来释放一团在5/5.5/6/6.5/7秒里不断扩散的烟雾并为她自身提供在2秒里不断衰减的<span class=\"text-cyan-600 dark:text-cyan-500\">30/35/40/45/50%移动速度</span>。<br /><br />在烟雾弹处于激活状态期间，阿卡丽的最大能量值提升100。<br /><br />在处于烟雾之中时，阿卡丽会<span class=\"text-purple-600 dark:text-purple-400 font-semibold\">隐形</span>。<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\"><span class=\"text-purple-600 dark:text-purple-400 font-semibold\">隐形</span>单位只会被【防御塔】或【真实视野】显形。</span>",
         "iconFile": "AkaliW.png",
@@ -244,6 +288,10 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -254,6 +302,7 @@
         "slot": "E",
         "id": "AkaliE",
         "name": "我流奥义！隼舞",
+        "maxRank": 5,
         "summary": "进行后空翻并向前掷出一枚手里剑，造成魔法伤害，并标记命中的第一个敌人或【我流奥义！霞阵】。再次施放可突进至被标记的目标处，并造成额外伤害。",
         "bodyHtml": "阿卡丽后空翻并掷出一枚手里剑，造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(21/42/63/84/105 + (30% 攻击力) + (33% 法术强度))魔法伤害</span>并标记命中的第一个敌人或烟雾弹。阿卡丽可以<span class=\"text-yellow-600 dark:text-yellow-300\">再次施放</span>这个技能来突进至被标记的目标处，并造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(49/98/147/196/245 + (70% 攻击力) + (77% 法术强度))魔法伤害</span>。",
         "iconFile": "AkaliE.png",
@@ -306,6 +355,43 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "E1Damage",
+            "kind": "damage",
+            "baseByRank": [
+              21.000000834465027,
+              42.000001668930054,
+              63.00000250339508,
+              84.00000333786011,
+              105.00000417232513
+            ],
+            "terms": [
+              {
+                "stat": "totalAttackDamage",
+                "coefficientsByRank": [
+                  0.30000001192092896,
+                  0.30000001192092896,
+                  0.30000001192092896,
+                  0.30000001192092896,
+                  0.30000001192092896
+                ]
+              },
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.3300000202655795,
+                  0.3300000202655795,
+                  0.3300000202655795,
+                  0.3300000202655795,
+                  0.3300000202655795
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -316,6 +402,7 @@
         "slot": "R",
         "id": "AkaliR",
         "name": "我流秘奥义！表里杀缭乱",
+        "maxRank": 3,
         "summary": "阿卡丽朝着一个方向跃出，伤害被她击中的敌人。再次施放：阿卡丽朝着一个方向突进，处决所有被她击中的敌人。",
         "bodyHtml": "阿卡丽跃过目标敌方英雄，对沿途的所有敌人造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(110/220/330 + (50% 额外攻击力) + (30% 法术强度))魔法伤害</span>。<br /><br />阿卡丽可以在2.5秒后<span class=\"text-yellow-600 dark:text-yellow-300\">再次施放</span>以施展一次带穿刺效果的突刺，造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(70/140/210 + (30% 法术强度))</span>到<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(210/420/630 + (90% 法术强度))魔法伤害</span>(基于已损失的生命值)。<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">对低于30%生命值的目标造成最大伤害。</span>",
         "iconFile": "AkaliR.png",
@@ -362,6 +449,37 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "Cast1Damage",
+            "kind": "damage",
+            "baseByRank": [
+              110,
+              220,
+              330
+            ],
+            "terms": [
+              {
+                "stat": "bonusAttackDamage",
+                "coefficientsByRank": [
+                  0.5,
+                  0.5,
+                  0.5
+                ]
+              },
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.30000001192092896,
+                  0.30000001192092896,
+                  0.30000001192092896
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {

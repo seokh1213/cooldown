@@ -46,7 +46,8 @@ import { localizeActiveTooltip } from "./data-pipeline/active-tooltip-data";
 import type { DataLocale, StringTable } from "./data-pipeline/localization";
 import type { StaticDataSources } from "../src/data/contracts/staticData";
 import { writeChampionV2Dataset } from "./data-pipeline/champion-v2-writer";
-import { pruneIntermediateChampionData } from "./data-pipeline/prune-intermediate-data";
+import { pruneIntermediateData } from "./data-pipeline/prune-intermediate-data";
+import { validateAbilitySimulations } from "./data-pipeline/ability-simulation-validation";
 
 const VERSION_URL = "https://ddragon.leagueoflegends.com/api/versions.json";
 const CHAMP_LIST_URL = (VERSION: string, LANG: string) =>
@@ -1830,11 +1831,25 @@ async function main() {
       `(${abilityValidation.summary.knownIssues} known source differences)`
     );
 
-    const prunedFileCount = pruneIntermediateChampionData(
+    const simulationValidation = validateAbilitySimulations(
+      versionDir,
+      version,
+      sourceVersions
+    );
+    await saveToFile(
+      simulationValidation,
+      path.join(versionDir, "ability-simulation-validation.json")
+    );
+    console.log(
+      `✅ Compiled ${simulationValidation.summary.complete}/` +
+      `${simulationValidation.summary.abilities} safe ability simulations`
+    );
+
+    const prunedFileCount = pruneIntermediateData(
       versionDir,
       LANGUAGES
     );
-    console.log(`✅ Removed ${prunedFileCount} intermediate champion files`);
+    console.log(`✅ Removed ${prunedFileCount} intermediate source files`);
 
     const versionInfo = {
       schemaVersion: 2,

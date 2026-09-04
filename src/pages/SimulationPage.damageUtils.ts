@@ -1,36 +1,26 @@
-import type { Champion, ChampionSpell, Item } from "@/types";
 import type {
-  NormalizedChampion,
-  NormalizedItem,
-  NormalizedRune,
-  NormalizedStatShard,
-  ChampionSpellSlot,
-} from "@/types/combatNormalized";
+  AbilitySimulation,
+  AbilitySimulationStat,
+} from "@/data/contracts/championData";
+import type { Champion, ChampionSpell } from "@/types";
+import type { NormalizedItem } from "@/types/combatNormalized";
 import { StatKey } from "@/types/combatStats";
 
 export interface SimpleStats {
   level: number;
   health: number;
+  bonusHealth: number;
   mana: number;
+  bonusMana: number;
   armor: number;
+  bonusArmor: number;
   magicResist: number;
+  bonusMagicResist: number;
   attackDamage: number;
+  baseAttackDamage: number;
+  bonusAttackDamage: number;
+  abilityPower: number;
   movespeed: number;
-}
-
-export type StatVector = Partial<Record<StatKey, number>>;
-
-export interface NormalizedSimulationSelection {
-  champion: NormalizedChampion;
-  level: number;
-  items: NormalizedItem[];
-  runes: NormalizedRune[];
-  statShards: NormalizedStatShard[];
-}
-
-export interface NormalizedSimulationResult {
-  level: number;
-  stats: StatVector;
 }
 
 export interface SkillSummary {
@@ -41,183 +31,54 @@ export interface SkillSummary {
   cooldownsWithAbilityHaste: number[];
 }
 
-export interface SimpleComboResult {
-  sequence: string;
-  estimatedHits: number;
-  estimatedDamage: number | null;
-}
-
-function computeChampionBaseStatsFromNormalized(
-  champion: NormalizedChampion,
-  level: number
-): StatVector {
-  const lvl = Math.min(Math.max(level, 1), 18);
-  const factor = lvl - 1;
-  const bs = champion.baseStats;
-
-  const stats: StatVector = {};
-
-  const apply = (key: StatKey, base: number, perLevel: number) => {
-    stats[key] = (stats[key] ?? 0) + base + perLevel * factor;
-  };
-
-  apply(StatKey.MAX_HEALTH, bs.health.base, bs.health.perLevel);
-  apply(StatKey.HEALTH_REGEN, bs.healthRegen.base, bs.healthRegen.perLevel);
-  if (bs.mana) {
-    apply(StatKey.MAX_MANA, bs.mana.base, bs.mana.perLevel);
-  }
-  if (bs.manaRegen) {
-    apply(
-      StatKey.MANA_REGEN,
-      bs.manaRegen.base,
-      bs.manaRegen.perLevel
-    );
-  }
-  apply(
-    StatKey.ATTACK_DAMAGE,
-    bs.attackDamage.base,
-    bs.attackDamage.perLevel
-  );
-  apply(
-    StatKey.ATTACK_SPEED,
-    bs.attackSpeed.base,
-    bs.attackSpeed.perLevel
-  );
-  apply(StatKey.ARMOR, bs.armor.base, bs.armor.perLevel);
-  apply(
-    StatKey.MAGIC_RESIST,
-    bs.magicResist.base,
-    bs.magicResist.perLevel
-  );
-  apply(StatKey.MOVE_SPEED, bs.moveSpeed.base, bs.moveSpeed.perLevel);
-  apply(
-    StatKey.ATTACK_RANGE,
-    bs.attackRange.base,
-    bs.attackRange.perLevel
-  );
-
-  return stats;
-}
-
-export function computeNormalizedSimulationStats(
-  selection: NormalizedSimulationSelection
-): NormalizedSimulationResult {
-  const { champion, level, items, runes, statShards } = selection;
-
-  const stats: StatVector = computeChampionBaseStatsFromNormalized(
-    champion,
-    level
-  );
-  const percentModifiers: Partial<Record<StatKey, number>> = {};
-
-  const applyContribution = (contrib: import("@/types/combatStats").StatContribution) => {
-    const { stat, value, valueType } = contrib;
-    if (valueType === "percent") {
-      percentModifiers[stat] = (percentModifiers[stat] ?? 0) + value;
-    } else {
-      stats[stat] = (stats[stat] ?? 0) + value;
-    }
-  };
-
-  for (const item of items) {
-    for (const contrib of item.stats) {
-      applyContribution(contrib);
-    }
-  }
-
-  for (const rune of runes) {
-    for (const contrib of rune.stats) {
-      applyContribution(contrib);
-    }
-  }
-
-  for (const shard of statShards) {
-    for (const contrib of shard.stats) {
-      applyContribution(contrib);
-    }
-  }
-
-  for (const [key, percent] of Object.entries(percentModifiers)) {
-    const statKey = key as StatKey;
-    const base = stats[statKey] ?? 0;
-    stats[statKey] = base * (1 + (percent ?? 0) / 100);
-  }
-
-  return {
-    level,
-    stats,
-  };
-}
-
 export function computeChampionStatsAtLevel(
   champion: Champion,
   level: number
 ): SimpleStats | null {
   if (!champion.stats) return null;
-  const s = champion.stats;
-  const lvl = Math.min(Math.max(level, 1), 18);
-  const factor = lvl - 1;
+  const stats = champion.stats;
+  const boundedLevel = Math.min(Math.max(level, 1), 18);
+  const factor = boundedLevel - 1;
+  const attackDamage =
+    (stats.attackdamage ?? 0) + (stats.attackdamageperlevel ?? 0) * factor;
   return {
-    level: lvl,
-    health: (s.hp ?? 0) + (s.hpperlevel ?? 0) * factor,
-    mana: (s.mp ?? 0) + (s.mpperlevel ?? 0) * factor,
-    armor: (s.armor ?? 0) + (s.armorperlevel ?? 0) * factor,
+    level: boundedLevel,
+    health: (stats.hp ?? 0) + (stats.hpperlevel ?? 0) * factor,
+    bonusHealth: 0,
+    mana: (stats.mp ?? 0) + (stats.mpperlevel ?? 0) * factor,
+    bonusMana: 0,
+    armor: (stats.armor ?? 0) + (stats.armorperlevel ?? 0) * factor,
+    bonusArmor: 0,
     magicResist:
-      (s.spellblock ?? 0) + (s.spellblockperlevel ?? 0) * factor,
-    attackDamage:
-      (s.attackdamage ?? 0) + (s.attackdamageperlevel ?? 0) * factor,
-    movespeed: s.movespeed ?? 0,
+      (stats.spellblock ?? 0) + (stats.spellblockperlevel ?? 0) * factor,
+    bonusMagicResist: 0,
+    attackDamage,
+    baseAttackDamage: attackDamage,
+    bonusAttackDamage: 0,
+    abilityPower: 0,
+    movespeed: stats.movespeed ?? 0,
   };
 }
 
-export function applyItemsToStats(base: SimpleStats, items: Item[]): SimpleStats {
-  // 매우 단순한 근사치: 대표 스탯만 더해줌
-  const result = { ...base };
-
-  for (const item of items) {
-    const stats = item.stats;
-    if (!stats) continue;
-
-    for (const [key, value] of Object.entries(stats)) {
-      switch (key) {
-        case "FlatHPPoolMod":
-          result.health += value;
-          break;
-        case "FlatMPPoolMod":
-          result.mana += value;
-          break;
-        case "FlatPhysicalDamageMod":
-          result.attackDamage += value;
-          break;
-        case "FlatArmorMod":
-          result.armor += value;
-          break;
-        case "FlatSpellBlockMod":
-          result.magicResist += value;
-          break;
-        case "FlatMovementSpeedMod":
-          result.movespeed += value;
-          break;
-        default:
-          break;
-      }
-    }
-  }
-
-  return result;
+function applyPercentStat(stats: SimpleStats, key: StatKey, value: number): void {
+  const multiplier = 1 + value / 100;
+  if (key === StatKey.MAX_HEALTH) stats.health *= multiplier;
+  else if (key === StatKey.MAX_MANA) stats.mana *= multiplier;
+  else if (key === StatKey.ARMOR) stats.armor *= multiplier;
+  else if (key === StatKey.MAGIC_RESIST) stats.magicResist *= multiplier;
+  else if (key === StatKey.MOVE_SPEED) stats.movespeed *= multiplier;
+  else if (key === StatKey.ATTACK_DAMAGE) stats.attackDamage *= multiplier;
+  else if (key === StatKey.ABILITY_POWER) stats.abilityPower *= multiplier;
 }
 
-export function computeAbilityHasteFromItems(items: Item[]): number {
-  let haste = 0;
-  for (const item of items) {
-    const stats = item.stats;
-    if (!stats) continue;
-    // Data Dragon 아이템의 AbilityHaste 필드 사용
-    if (typeof stats.AbilityHaste === "number") {
-      haste += stats.AbilityHaste;
-    }
-  }
-  return haste;
+function applyFlatStat(stats: SimpleStats, key: StatKey, value: number): void {
+  if (key === StatKey.MAX_HEALTH) stats.health += value;
+  else if (key === StatKey.MAX_MANA) stats.mana += value;
+  else if (key === StatKey.ARMOR) stats.armor += value;
+  else if (key === StatKey.MAGIC_RESIST) stats.magicResist += value;
+  else if (key === StatKey.ATTACK_DAMAGE) stats.attackDamage += value;
+  else if (key === StatKey.ABILITY_POWER) stats.abilityPower += value;
+  else if (key === StatKey.MOVE_SPEED) stats.movespeed += value;
 }
 
 export function applyNormalizedItemsToStats(
@@ -225,233 +86,95 @@ export function applyNormalizedItemsToStats(
   items: NormalizedItem[]
 ): SimpleStats {
   const result = { ...base };
-
   for (const item of items) {
-    const stats = item.stats;
-    if (!stats || stats.length === 0) continue;
-
-    for (const contrib of stats) {
-      const { stat, value, valueType } = contrib;
-      if (valueType === "percent") {
-        // 간단한 근사치: 체력/마나/방어/마저/이속/공격력에 대해서만 퍼센트 적용
-        switch (stat) {
-          case StatKey.MAX_HEALTH:
-            result.health *= 1 + value / 100;
-            break;
-          case StatKey.MAX_MANA:
-            result.mana *= 1 + value / 100;
-            break;
-          case StatKey.ARMOR:
-            result.armor *= 1 + value / 100;
-            break;
-          case StatKey.MAGIC_RESIST:
-            result.magicResist *= 1 + value / 100;
-            break;
-          case StatKey.MOVE_SPEED:
-            result.movespeed *= 1 + value / 100;
-            break;
-          case StatKey.ATTACK_DAMAGE:
-            result.attackDamage *= 1 + value / 100;
-            break;
-          default:
-            break;
-        }
+    for (const contribution of item.stats) {
+      if (contribution.valueType === "percent") {
+        applyPercentStat(result, contribution.stat, contribution.value);
       } else {
-        switch (stat) {
-          case StatKey.MAX_HEALTH:
-            result.health += value;
-            break;
-          case StatKey.MAX_MANA:
-            result.mana += value;
-            break;
-          case StatKey.ARMOR:
-            result.armor += value;
-            break;
-          case StatKey.MAGIC_RESIST:
-            result.magicResist += value;
-            break;
-          case StatKey.ATTACK_DAMAGE:
-            result.attackDamage += value;
-            break;
-          case StatKey.MOVE_SPEED:
-            result.movespeed += value;
-            break;
-          default:
-            break;
-        }
+        applyFlatStat(result, contribution.stat, contribution.value);
       }
     }
   }
-
+  result.bonusHealth = result.health - base.health;
+  result.bonusMana = result.mana - base.mana;
+  result.bonusArmor = result.armor - base.armor;
+  result.bonusMagicResist = result.magicResist - base.magicResist;
+  result.bonusAttackDamage = result.attackDamage - base.attackDamage;
   return result;
 }
 
 export function computeAbilityHasteFromNormalizedItems(
   items: NormalizedItem[]
 ): number {
-  let haste = 0;
-  for (const item of items) {
-    const stats = item.stats;
-    if (!stats) continue;
-    for (const contrib of stats) {
-      if (contrib.stat === StatKey.ABILITY_HASTE && contrib.valueType === "flat") {
-        haste += contrib.value;
-      }
-    }
-  }
-  return haste;
+  return items.reduce(
+    (total, item) =>
+      total + item.stats.reduce(
+        (itemTotal, contribution) =>
+          contribution.stat === StatKey.ABILITY_HASTE &&
+          contribution.valueType === "flat"
+            ? itemTotal + contribution.value
+            : itemTotal,
+        0
+      ),
+    0
+  );
 }
 
 export function computeSkillSummaries(
   champion: Champion,
-  _cdragonSpellData: Record<string, unknown> | null,
   abilityHaste: number
 ): SkillSummary[] {
   if (!champion.spells) return [];
-  const hasteFactor = abilityHaste > 0 ? 1 + abilityHaste / 100 : 1;
-
+  const hasteFactor = 1 + Math.max(abilityHaste, 0) / 100;
   return champion.spells.map((spell: ChampionSpell) => {
-    const baseCd = spell.cooldown ?? [];
-    const cooldownsWithHaste =
-      hasteFactor > 0
-        ? baseCd.map((cd) =>
-            typeof cd === "number" ? cd / hasteFactor : cd
-          )
-        : baseCd.map((cd) =>
-            typeof cd === "number" ? cd : cd
-          );
-
+    const cooldowns = spell.cooldown ?? [];
     return {
       id: spell.id,
       name: spell.name,
       maxrank: spell.maxrank,
-      cooldowns: baseCd,
-      cooldownsWithAbilityHaste: cooldownsWithHaste as number[],
+      cooldowns,
+      cooldownsWithAbilityHaste: cooldowns.map((cooldown) =>
+        typeof cooldown === "number" ? cooldown / hasteFactor : Number(cooldown)
+      ),
     };
   });
 }
 
-export interface SpellDamageEstimate {
-  baseDamage: number | null;
-  ratio: number | null;
-  totalDamage: number | null;
+function simulationStatValue(stat: AbilitySimulationStat, stats: SimpleStats): number {
+  const values: Record<AbilitySimulationStat, number> = {
+    abilityPower: stats.abilityPower,
+    totalAttackDamage: stats.attackDamage,
+    baseAttackDamage: stats.baseAttackDamage,
+    bonusAttackDamage: stats.bonusAttackDamage,
+    maxHealth: stats.health,
+    bonusHealth: stats.bonusHealth,
+    armor: stats.armor,
+    bonusArmor: stats.bonusArmor,
+    magicResist: stats.magicResist,
+    bonusMagicResist: stats.bonusMagicResist,
+    maxMana: stats.mana,
+    bonusMana: stats.bonusMana,
+  };
+  return values[stat];
 }
 
-/**
- * CommunityDragon spellDataMap을 사용해 매우 단순한 피해량 근사를 계산한다.
- * - BaseDamage + (계수 × 현재 공격력)을 사용
- * - AP/AD 구분 없이 공격력에 모두 더하는 근사치
- */
-export function estimateSpellDamageFromCDragon(
-  spellDataMap: Record<string, unknown> | null,
-  spellIndex: number,
+export function evaluateAbilitySimulation(
+  simulation: AbilitySimulation | undefined,
   abilityRank: number,
   stats: SimpleStats
-): SpellDamageEstimate {
-  if (!spellDataMap) {
-    return { baseDamage: null, ratio: null, totalDamage: null };
-  }
-
-  const key = String(spellIndex);
-  const spell = spellDataMap[key];
-  if (!spell || typeof spell !== "object" || !("DataValues" in spell)) {
-    return { baseDamage: null, ratio: null, totalDamage: null };
-  }
-
-  const dataValues = spell.DataValues as Record<string, unknown>;
-  const baseArray = Array.isArray(dataValues.BaseDamage)
-    ? dataValues.BaseDamage
-    : null;
-  const rankIndex = Math.max(
-    0,
-    Math.min(
-      abilityRank - 1,
-      baseArray ? baseArray.length - 1 : abilityRank - 1
-    )
+): number | null {
+  if (simulation?.status !== "complete" || !simulation.primary) return null;
+  const rankIndex = Math.min(
+    Math.max(Math.trunc(abilityRank) - 1, 0),
+    simulation.primary.baseByRank.length - 1
   );
-
-  let baseDamage: number | null = null;
-  if (baseArray && typeof baseArray[rankIndex] === "number") {
-    baseDamage = baseArray[rankIndex];
+  if (rankIndex < 0) return null;
+  let total = simulation.primary.baseByRank[rankIndex];
+  if (!Number.isFinite(total)) return null;
+  for (const term of simulation.primary.terms) {
+    const coefficient = term.coefficientsByRank[rankIndex];
+    if (!Number.isFinite(coefficient)) return null;
+    total += coefficient * simulationStatValue(term.stat, stats);
   }
-
-  let ratio: number | null = null;
-
-  const calculations = (spell && typeof spell === "object" && "mSpellCalculations" in spell
-    ? spell.mSpellCalculations as Record<string, unknown> | undefined
-    : undefined);
-
-  const preferredCalc =
-    (calculations && typeof calculations === "object" && "TotalDamage" in calculations ? calculations.TotalDamage : undefined) ||
-    (calculations && typeof calculations === "object" && "SingleFireDamage" in calculations ? calculations.SingleFireDamage : undefined) ||
-    (calculations ? Object.values(calculations)[0] : undefined);
-
-  if (preferredCalc && typeof preferredCalc === "object" && preferredCalc !== null && "mFormulaParts" in preferredCalc && Array.isArray(preferredCalc.mFormulaParts)) {
-    for (const part of preferredCalc.mFormulaParts) {
-      if (
-        part.__type === "StatByCoefficientCalculationPart" &&
-        typeof part.mCoefficient === "number"
-      ) {
-        ratio = (ratio ?? 0) + part.mCoefficient;
-      } else if (
-        part.__type === "StatByNamedDataValueCalculationPart" &&
-        typeof part.mDataValue === "string"
-      ) {
-        const arr = dataValues[part.mDataValue];
-        if (Array.isArray(arr) && typeof arr[rankIndex] === "number") {
-          ratio = (ratio ?? 0) + arr[rankIndex];
-        }
-      }
-    }
-  }
-
-  const scaling = ratio != null ? ratio * stats.attackDamage : null;
-  const totalDamage =
-    baseDamage != null || scaling != null
-      ? (baseDamage ?? 0) + (scaling ?? 0)
-      : null;
-
-  return { baseDamage, ratio, totalDamage };
+  return Number.isFinite(total) ? total : null;
 }
-
-export function estimateSpellDamageFromNormalized(
-  selection: NormalizedSimulationSelection,
-  slot: ChampionSpellSlot,
-  abilityRank: number,
-  spellDataMap: Record<string, unknown> | null
-): SpellDamageEstimate | null {
-  const { level } = selection;
-  const sim = computeNormalizedSimulationStats(selection);
-
-  const simpleStats: SimpleStats = {
-    level,
-    health: sim.stats[StatKey.MAX_HEALTH] ?? 0,
-    mana: sim.stats[StatKey.MAX_MANA] ?? 0,
-    armor: sim.stats[StatKey.ARMOR] ?? 0,
-    magicResist: sim.stats[StatKey.MAGIC_RESIST] ?? 0,
-    attackDamage: sim.stats[StatKey.ATTACK_DAMAGE] ?? 0,
-    movespeed: sim.stats[StatKey.MOVE_SPEED] ?? 0,
-  };
-
-  const indexBySlot: Record<ChampionSpellSlot, number> = {
-    P: -1,
-    Q: 0,
-    W: 1,
-    E: 2,
-    R: 3,
-  };
-
-  const spellIndex = indexBySlot[slot];
-  if (spellIndex < 0) {
-    return null;
-  }
-
-  return estimateSpellDamageFromCDragon(
-    spellDataMap,
-    spellIndex,
-    abilityRank,
-    simpleStats
-  );
-}
-
-

@@ -120,6 +120,7 @@
         "slot": "P",
         "id": "IreliaPassive",
         "name": "Ionian Fervor",
+        "maxRank": 0,
         "summary": "When Irelia strikes enemies with spells she gains stacking bonus Attack Speed. At maximum stacks she also gains bonus damage on hit.",
         "bodyHtml": "Irelia gains a stack for 6 seconds when she hits an enemy with an Ability (max 4). She gains <span>(10 ~ 25)Attack Speed</span> per stack, and at max stacks her Attacks deal an additional <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(20% bonus Attack Damage) magic damage</span>.<br /><br />Attacking a champion, structure, or large monster refreshes the duration of the stacks. Irelia gains a stack for each champion hit, or if she hits at least one non-champion enemy.",
         "iconFile": "Irelia_Passive.png",
@@ -127,6 +128,10 @@
         "range": [],
         "rankValues": [],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -137,6 +142,7 @@
         "slot": "Q",
         "id": "IreliaQ",
         "name": "Bladesurge",
+        "maxRank": 5,
         "summary": "Irelia dashes forward to strike her target, healing herself. If the target is Marked or dies to Bladesurge, its cooldown refreshes.",
         "bodyHtml": "Irelia dashes to an enemy, dealing <span class=\"text-red-600 dark:text-red-500 font-semibold\">(5/25/45/65/85 + (80% Attack Damage)) physical damage</span> and restoring <span class=\"text-green-600 dark:text-green-400\">(9/10/11/12/13% Attack Damage) Health</span> to herself. If the enemy dies or was <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Unsteady</span>, the Cooldown is refreshed.<br /><br />Deals (55/75/95/115/135 + (80% Attack Damage)) damage to minions.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">This ability applies On-Hit Effects.</span>",
         "iconFile": "IreliaQ.png",
@@ -193,6 +199,12 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "unsupported",
+          "unsupportedPartTypes": [
+            "ByCharLevelBreakpointsCalculationPart"
+          ]
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -203,6 +215,7 @@
         "slot": "W",
         "id": "IreliaW",
         "name": "Defiant Dance",
+        "maxRank": 5,
         "summary": "Irelia charges a strike that deals more damage as she charges. She takes reduced physical damage during the charge.",
         "bodyHtml": "<span>Begin Charging:</span> Irelia enters a defensive stance for up to 1.5 seconds, becoming unable to act but reducing physical damage taken by (8% Ability Power)and magic damage taken by (4% Ability Power).<br /><br /><span>Release:</span> Irelia lashes out with her blades, dealing <span class=\"text-red-600 dark:text-red-500 font-semibold\">(10/20/30/40/50 + (40% Attack Damage) + (50% Ability Power)) physical damage</span> increased up to <span class=\"text-red-600 dark:text-red-500 font-semibold\">(30/60/90/120/150 + (120% Attack Damage) + (150% Ability Power))</span> based on charge time.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">The <span>Release</span> will happen automatically at the end of the <span>Charge</span> and cannot be interrupted. Reaches max damage increase after 0.75 seconds.</span>",
         "iconFile": "IreliaW.png",
@@ -259,6 +272,43 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "MaxDamageCalc",
+            "kind": "damage",
+            "baseByRank": [
+              30,
+              60,
+              90,
+              120,
+              150
+            ],
+            "terms": [
+              {
+                "stat": "totalAttackDamage",
+                "coefficientsByRank": [
+                  1.2000000476837158,
+                  1.2000000476837158,
+                  1.2000000476837158,
+                  1.2000000476837158,
+                  1.2000000476837158
+                ]
+              },
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  1.5,
+                  1.5,
+                  1.5,
+                  1.5,
+                  1.5
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -269,6 +319,7 @@
         "slot": "E",
         "id": "IreliaE",
         "name": "Flawless Duet",
+        "maxRank": 5,
         "summary": "Irelia sends out two blades which converge on each other. Enemies caught in between are damaged, stunned and Marked.",
         "bodyHtml": "Irelia throws a blade into the ground and can <span class=\"text-yellow-600 dark:text-yellow-300\">Recast</span> for up to 3.5 seconds. <br /><br /><span class=\"text-yellow-600 dark:text-yellow-300\">Recast:</span> Irelia throws a second blade, then they fly towards each other <span class=\"text-purple-600 dark:text-purple-500\">Stunning</span> for 0.75 seconds and dealing <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(70/110/150/190/230 + (100% Ability Power)) magic damage</span>. Champions and large jungle monsters become <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Unsteady</span> for 5 seconds.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">Irelia will automatically <span class=\"text-yellow-600 dark:text-yellow-300\">Recast</span> at her location after 3.5 seconds.</span>",
         "iconFile": "IreliaE.png",
@@ -321,6 +372,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "TotalDamage",
+            "kind": "damage",
+            "baseByRank": [
+              70,
+              110,
+              150,
+              190,
+              230
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  1,
+                  1,
+                  1,
+                  1,
+                  1
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -331,6 +409,7 @@
         "slot": "R",
         "id": "IreliaR",
         "name": "Vanguard's Edge",
+        "maxRank": 3,
         "summary": "Irelia fires a massive number of blades that explode outward upon hitting an enemy champion. Enemies hit by the blades are damaged and Marked. Afterwards the blades form a wall that will damage and slow enemies that walk through it.",
         "bodyHtml": "Irelia launches a barrage of blades, dealing <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(125/200/275 + (100% Ability Power)) magic damage</span> and making champions and large jungle monsters <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Unsteady</span> for 5 seconds. The barrage explodes into a cage around the first champion hit for 2.5 seconds. The cage deals <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(125/200/275 + (100% Ability Power)) magic damage</span> and <span class=\"text-purple-600 dark:text-purple-500\">Slows</span> by 90% for 1.5 seconds.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">When the barrage explodes, surrounding enemies are also hit. </span><br />",
         "iconFile": "IreliaR.png",
@@ -386,6 +465,29 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "MissileDamage",
+            "kind": "damage",
+            "baseByRank": [
+              125,
+              200,
+              275
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  1,
+                  1,
+                  1
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {

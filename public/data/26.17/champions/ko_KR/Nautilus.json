@@ -120,6 +120,7 @@
         "slot": "P",
         "id": "NautilusPassive",
         "name": "강력한 일격",
+        "maxRank": 0,
         "summary": "노틸러스가 대상에 대한 첫 기본 공격 시 추가 물리 피해를 입히고 잠시 속박합니다.",
         "bodyHtml": "노틸러스의 첫 공격이 <span class=\"text-red-600 dark:text-red-500 font-semibold\">(100% 공격력)의 물리 피해</span>를 주며 (0.75 ~ 2)초 동안 대상을 <span class=\"text-purple-600 dark:text-purple-500\">속박</span>합니다.",
         "iconFile": "Nautilus_StaggeringBlow.png",
@@ -127,6 +128,10 @@
         "range": [],
         "rankValues": [],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -137,6 +142,7 @@
         "slot": "Q",
         "id": "NautilusAnchorDrag",
         "name": "닻줄 견인",
+        "maxRank": 5,
         "summary": "노틸러스가 전방으로 닻을 던집니다.  닻이 적을 맞히면 노틸러스와 대상이 가까이 당겨지며 대상에게 마법 피해를 입힙니다. 닻이 지형을 맞히면 노틸러스가 지형 쪽으로 끌려갑니다.",
         "bodyHtml": "노틸러스가 전방으로 닻을 던집니다. 닻이 적을 맞히면 노틸러스와 대상이 가까이 당겨지며 대상에게 <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(85/130/175/220/265 + (90% 주문력))의 마법 피해</span>를 입히고 잠시 <span class=\"text-purple-600 dark:text-purple-500\">기절</span>시킵니다. 닻이 지형을 맞히면 노틸러스가 지형 쪽으로 끌려갑니다.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">닻이 지형을 맞히면 이 스킬의 재사용 대기시간이 50% 감소하고, 소모한 마나의 50%가 회복됩니다.</span>",
         "iconFile": "NautilusAnchorDrag.png",
@@ -189,6 +195,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "QDamageCalc",
+            "kind": "damage",
+            "baseByRank": [
+              85,
+              130,
+              175,
+              220,
+              265
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.8999999761581421,
+                  0.8999999761581421,
+                  0.8999999761581421,
+                  0.8999999761581421,
+                  0.8999999761581421
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -199,6 +232,7 @@
         "slot": "W",
         "id": "NautilusPiercingGaze",
         "name": "타이탄의 분노",
+        "maxRank": 5,
         "summary": "노틸러스가 잠시 보호막을 얻습니다. 보호막이 지속되는 동안 노틸러스의 기본 공격은 대상과 대상 주위의 적에게 지속 피해를 입힙니다.",
         "bodyHtml": "노틸러스가 6초 동안 <span class=\"text-blue-600 dark:text-blue-300\">(50/60/70/80/90 + (8/9/10/11/12% 체력))의 피해를 흡수하는 보호막</span>을 얻습니다. <span class=\"text-blue-600 dark:text-blue-300\">보호막</span>이 지속되는 동안 노틸러스의 기본 공격은 2초에 걸쳐 대상과 대상 주위의 모든 적에게 <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(30/40/50/60/70 + (40% 주문력))의 마법 피해</span>를 추가로 입힙니다.",
         "iconFile": "NautilusPiercingGaze.png",
@@ -255,6 +289,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "DotDamageCalc",
+            "kind": "damage",
+            "baseByRank": [
+              30,
+              40,
+              50,
+              60,
+              70
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.4000000059604645,
+                  0.4000000059604645,
+                  0.4000000059604645,
+                  0.4000000059604645,
+                  0.4000000059604645
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -265,6 +326,7 @@
         "slot": "E",
         "id": "NautilusSplashZone",
         "name": "역조",
+        "maxRank": 5,
         "summary": "노틸러스가 주위에 세 번의 폭발을 일으킵니다. 폭발할 때마다 적에게 피해를 입히고 둔화시킵니다.",
         "bodyHtml": "노틸러스가 주위에 세 번의 폭발을 일으킵니다. 폭발할 때마다 범위 내의 모든 적에게 <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(55/90/125/160/195 + (50% 주문력))의 마법 피해</span>를 입히고 1.25초 동안 30/35/40/45/50% <span class=\"text-purple-600 dark:text-purple-500\">둔화</span>시킵니다. 둔화 효과는 시간이 지나면 사라집니다.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">두 번째 폭발부터 피해량이 50% 감소합니다.</span><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">이 스킬이 정글 몬스터에게 처음 적중할 때 (125/165/205/245/285 + (50% 주문력))의 추가 피해를 입힙니다.</span>",
         "iconFile": "NautilusSplashZone.png",
@@ -329,6 +391,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "DamageCalc",
+            "kind": "damage",
+            "baseByRank": [
+              55,
+              90,
+              125,
+              160,
+              195
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.5,
+                  0.5,
+                  0.5,
+                  0.5,
+                  0.5
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -339,6 +428,7 @@
         "slot": "R",
         "id": "NautilusGrandLine",
         "name": "폭뢰",
+        "maxRank": 3,
         "summary": "지면에 충격파를 발사하면 상대방을 추적해 갑니다. 충격파는 위의 지면을 찢으며 적들을 공중으로 띄웁니다. 충격파가 상대방에게 닿으면 폭발하여 대상을 공중으로 띄우고 기절시킵니다.",
         "bodyHtml": "노틸러스가 적 챔피언을 추격하는 충격파를 발사해 <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(150/275/400 + (80% 주문력))의 마법 피해</span>를 입히며, 1/1.5/2초 동안 <span class=\"text-purple-600 dark:text-purple-500\">공중으로</span> <span class=\"text-purple-600 dark:text-purple-500\">띄워 올리고</span> <span class=\"text-purple-600 dark:text-purple-500\">기절</span>시킵니다. 충격파에 맞은 다른 적 또한 <span class=\"text-purple-600 dark:text-purple-500\">공중에 뜨고</span> <span class=\"text-purple-600 dark:text-purple-500\">기절</span>하며 <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(125/175/225 + (40% 주문력))의 마법 피해</span>를 입습니다.",
         "iconFile": "NautilusGrandLine.png",
@@ -393,6 +483,29 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "PrimaryTargetDamage",
+            "kind": "damage",
+            "baseByRank": [
+              150,
+              275,
+              400
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.800000011920929,
+                  0.800000011920929,
+                  0.800000011920929
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {

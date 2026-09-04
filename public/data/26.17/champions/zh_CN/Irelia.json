@@ -120,6 +120,7 @@
         "slot": "P",
         "id": "IreliaPassive",
         "name": "艾欧尼亚热诚",
+        "maxRank": 0,
         "summary": "当艾瑞莉娅用技能命中敌人时，她会获得可叠加的攻击速度加成。这个效果在满层时还会为艾瑞莉娅提供攻击附伤。",
         "bodyHtml": "艾瑞莉娅在用一个技能命中一名敌人时，会获得一层持续6秒的效果(最大4层)。每层效果为她提供<span>(10 ~ 25)攻击速度</span>，并在满层时她的攻击会造成额外的<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(20% 额外攻击力)魔法伤害</span>。<br /><br />攻击一个英雄、建筑或大型野怪，会刷新效果的持续时间。艾瑞莉娅每命中一个英雄都会获得一层效果，或在至少命中一个非英雄的敌人时获得一层效果。",
         "iconFile": "Irelia_Passive.png",
@@ -127,6 +128,10 @@
         "range": [],
         "rankValues": [],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -137,6 +142,7 @@
         "slot": "Q",
         "id": "IreliaQ",
         "name": "利刃冲击",
+        "maxRank": 5,
         "summary": "艾瑞莉娅向前突进以打击她的目标，并治疗自身。如果目标被标记或死于利刃冲击，那么它的冷却时间会刷新。",
         "bodyHtml": "艾瑞莉娅冲向一名敌人，造成<span class=\"text-red-600 dark:text-red-500 font-semibold\">(5/25/45/65/85 + (80% 攻击力))物理伤害</span>并回复自身 <span class=\"text-green-600 dark:text-green-400\">(9/10/11/12/13% 攻击力)生命值</span>。如果敌人阵亡或者<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">重心不稳</span>，那么会刷新冷却时间。<br /><br />对小兵造成(55/75/95/115/135 + (80% 攻击力))伤害。<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">这个技能会施加攻击特效。</span>",
         "iconFile": "IreliaQ.png",
@@ -193,6 +199,12 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "unsupported",
+          "unsupportedPartTypes": [
+            "ByCharLevelBreakpointsCalculationPart"
+          ]
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -203,6 +215,7 @@
         "slot": "W",
         "id": "IreliaW",
         "name": "距破之舞",
+        "maxRank": 5,
         "summary": "艾瑞莉娅开始蓄力以进行一次打击，蓄力越久则打击造成的伤害越多。在蓄力期间她所受的物理伤害降低。",
         "bodyHtml": "<span>开始蓄力：</span>艾瑞莉娅进入防御姿态，至多持续1.5秒，变得无法行动但使所受的物理伤害降低(8% 法术强度)、所受的魔法伤害降低(4% 法术强度)。<br /><br /><span>释放：</span>艾瑞莉娅放出她的刀锋，造成<span class=\"text-red-600 dark:text-red-500 font-semibold\">(10/20/30/40/50 + (40% 攻击力) + (50% 法术强度))物理伤害</span>，基于蓄力时间至多提升至<span class=\"text-red-600 dark:text-red-500 font-semibold\">(30/60/90/120/150 + (120% 攻击力) + (150% 法术强度))</span>。<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\"><span>释放</span>将在<span>蓄力</span>结束时自动发生并且无法被打断。在蓄力0.75秒后达到最大伤害提升。</span>",
         "iconFile": "IreliaW.png",
@@ -259,6 +272,43 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "MaxDamageCalc",
+            "kind": "damage",
+            "baseByRank": [
+              30,
+              60,
+              90,
+              120,
+              150
+            ],
+            "terms": [
+              {
+                "stat": "totalAttackDamage",
+                "coefficientsByRank": [
+                  1.2000000476837158,
+                  1.2000000476837158,
+                  1.2000000476837158,
+                  1.2000000476837158,
+                  1.2000000476837158
+                ]
+              },
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  1.5,
+                  1.5,
+                  1.5,
+                  1.5,
+                  1.5
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -269,6 +319,7 @@
         "slot": "E",
         "id": "IreliaE",
         "name": "比翼双刃",
+        "maxRank": 5,
         "summary": "艾瑞莉娅放出两柄相互聚拢的利刃。利刃之间被击中的敌人会受到伤害、晕眩效果并被标记。",
         "bodyHtml": "艾瑞莉娅扔出一把刀锋至地上，并且至多可在3.5秒里<span class=\"text-yellow-600 dark:text-yellow-300\">再次施放</span>。<br /><br /><span class=\"text-yellow-600 dark:text-yellow-300\">再次施放：</span>艾瑞莉娅扔出第二把刀锋，随后两把刀锋会朝着彼此飞行，对沿途的敌人造成0.75秒<span class=\"text-purple-600 dark:text-purple-500\">晕眩</span>和<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(70/110/150/190/230 + (100% 法术强度))魔法伤害</span>。英雄和大型野怪会进入<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">重心不稳</span>状态，持续5秒。<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">在3.5秒后，艾瑞莉娅将在她自己的位置上<span class=\"text-yellow-600 dark:text-yellow-300\">再次施放</span>这个技能。</span>",
         "iconFile": "IreliaE.png",
@@ -321,6 +372,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "TotalDamage",
+            "kind": "damage",
+            "baseByRank": [
+              70,
+              110,
+              150,
+              190,
+              230
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  1,
+                  1,
+                  1,
+                  1,
+                  1
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -331,6 +409,7 @@
         "slot": "R",
         "id": "IreliaR",
         "name": "先锋之刃",
+        "maxRank": 3,
         "summary": "艾瑞莉娅发射庞大数量的利刃，它们会在命中一名敌方英雄时向外爆开。被利刃命中的敌人会受到伤害并被标记。然后利刃会形成一道刃墙，在敌人穿过时造成伤害、和减速效果。",
         "bodyHtml": "艾瑞莉娅发射出一阵刀锋弹幕，造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(125/200/275 + (100% 法术强度))魔法伤害</span>并对英雄和大型野怪施加持续5秒的<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">重心不稳</span>。刀锋弹幕会在命中第一个英雄后绽放成一个持续2.5秒的牢笼。牢笼造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(125/200/275 + (100% 法术强度))魔法伤害</span>和持续1.5秒的90%<span class=\"text-purple-600 dark:text-purple-500\">减速</span>。<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">当刀锋弹幕绽开时，附近的敌人也会被命中。</span><br />",
         "iconFile": "IreliaR.png",
@@ -386,6 +465,29 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "MissileDamage",
+            "kind": "damage",
+            "baseByRank": [
+              125,
+              200,
+              275
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  1,
+                  1,
+                  1
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {

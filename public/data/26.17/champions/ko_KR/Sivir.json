@@ -119,6 +119,7 @@
         "slot": "P",
         "id": "SivirPassive",
         "name": "재빠른 발놀림",
+        "maxRank": 0,
         "summary": "시비르가 적 챔피언을 공격할 때 짧은 시간 동안 이동 속도가 대폭 상승합니다.",
         "bodyHtml": "시비르가 기본 공격이나 스킬로 적 챔피언을 공격해 피해를 입히면 <span class=\"text-cyan-600 dark:text-cyan-500\">(55 ~ 85)의 이동 속도</span>를 얻습니다. 이 효과는 1.5초에 걸쳐 점차 감소합니다.<br />",
         "iconFile": "Sivir_Passive.png",
@@ -126,6 +127,10 @@
         "range": [],
         "rankValues": [],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -136,6 +141,7 @@
         "slot": "Q",
         "id": "SivirQ",
         "name": "부메랑 검",
+        "maxRank": 5,
         "summary": "시비르가 십자날 검을 부메랑처럼 던져서 두 번 피해를 입힙니다.",
         "bodyHtml": "시비르가 십자날 검을 부메랑처럼 던져서 관통하는 모든 적 챔피언에게 <span class=\"text-red-600 dark:text-red-500 font-semibold\">(60/85/110/135/160 + (70% 추가 공격력) + (60% 주문력))</span>의 피해를 입힙니다. 챔피언이 아닌 대상에게는 순차적으로 감소된 피해를 입힙니다. 피해량은 최소 40%까지 내려갈 수 있습니다.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">십자날 검이 돌아올 때 피해량 감소는 초기화됩니다.<br />피해량은 치명타 확률 및 치명타 피해량에 따라 40%만큼 증가합니다.<br />시전 시간은 공격 속도에 따라 감소합니다.</span>",
         "iconFile": "SivirQ.png",
@@ -192,6 +198,12 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "unsupported",
+          "unsupportedPartTypes": [
+            "unsupported-multiplier"
+          ]
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -202,6 +214,7 @@
         "slot": "W",
         "id": "SivirW",
         "name": "튕기는 부메랑",
+        "maxRank": 5,
         "summary": "시비르의 다음 몇 번의 기본 공격은 공격 속도가 증가하고 첫 번째 목표물에 적중한 후 주위 적들에게 튕기며, 튕겼을 때는 감소된 피해를 입힙니다.",
         "bodyHtml": "4초 동안 시비르가 <span>20/25/30/35/40%의 공격 속도</span>를 획득하고 기본 공격이 강화되어 주위 적들에게 튕길 때마다 <span class=\"text-red-600 dark:text-red-500 font-semibold\">(40/42.5/45/47.5/50% 공격력)의 물리 피해</span>를 입힙니다. 공격은 최대 8회 튕깁니다.<br /><br />공격이 치명타라면 튕긴 공격도 치명타를 가합니다.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">새로운 대상을 우선 공격한 후 이미 공격한 대상에게 돌아갑니다. 각 대상에게 최대 두 번까지만 적중합니다.<br />미니언에게는 65%의 피해를 입힙니다.</span><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">체력이 낮은 미니언을 즉시 처치합니다.</span>",
         "iconFile": "SivirW.png",
@@ -254,6 +267,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "BounceDamage",
+            "kind": "damage",
+            "baseByRank": [
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "terms": [
+              {
+                "stat": "totalAttackDamage",
+                "coefficientsByRank": [
+                  0.4000000059604645,
+                  0.42500001192092896,
+                  0.44999998807907104,
+                  0.4749999940395355,
+                  0.5
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -264,6 +304,7 @@
         "slot": "E",
         "id": "SivirE",
         "name": "주문 방어막",
+        "maxRank": 5,
         "summary": "시비르가 마법 보호막을 만들어 자신을 대상으로 한 적 스킬 1개를 막아냅니다. 성공적으로 방어 시 체력을 얻고 일시적으로 이동 속도가 대폭 증가합니다.",
         "bodyHtml": "시비르가 1.5초간 주문 방어막을 만들어 적의 스킬을 막아냅니다. 적의 스킬을 방어하는 데 성공하면 시비르가 <span class=\"text-green-600 dark:text-green-400\">((60/65/70/75/80% 공격력) + (50% 주문력))의 체력</span>을 회복하고 재빠른 발놀림을 발동합니다.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">이 보호막은 챔피언과 아이템 스킬을 모두 방어합니다.</span>",
         "iconFile": "SivirE.png",
@@ -306,6 +347,10 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -316,6 +361,7 @@
         "slot": "R",
         "id": "SivirR",
         "name": "사냥 개시",
+        "maxRank": 3,
         "summary": "시비르가 전장에서 아군을 이끌며 잠시 동안 이동 속도를 대폭 상승시킵니다. 또한 공격 시 시비르의 스킬 재사용 대기시간이 감소합니다.",
         "bodyHtml": "시비르가 주위 아군을 이끌며 8/10/12초 동안 <span class=\"text-cyan-600 dark:text-cyan-500\">이동 속도를 20/25/30%</span> 상승시킵니다.<br /><br />사냥 개시 활성화 중 챔피언에게 기본 공격을 가하면 시비르의 기본 스킬 재사용 대기시간이 0.5초 감소합니다.<br /><br />최근 피해를 입힌 적 처치에 관여하면 사냥 개시의 지속시간이 초기화됩니다.",
         "iconFile": "SivirR.png",
@@ -352,6 +398,10 @@
           }
         ],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {

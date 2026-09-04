@@ -120,6 +120,7 @@
         "slot": "P",
         "id": "EkkoPassive",
         "name": "Z 드라이브 공진",
+        "maxRank": 0,
         "summary": "같은 대상에 대한 세 번째 기본 공격 및 스킬 공격마다 추가 마법 피해를 입힙니다. 대상이 챔피언일 경우, 에코의 이동 속도가 상승합니다.<br><br>",
         "bodyHtml": "같은 대상에 대한 세 번째 기본 공격 및 스킬 공격마다 <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(30 + (80% 주문력))의 마법 피해</span>를 추가로 입힙니다. 대상이 챔피언인 경우, 3초 동안 에코의 <span class=\"text-cyan-600 dark:text-cyan-500\">이동 속도가 80%</span> 증가합니다. 이 효과는 동일 적에게 4초에 한 번만 발동됩니다.",
         "iconFile": "Ekko_P.png",
@@ -127,6 +128,10 @@
         "range": [],
         "rankValues": [],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -137,6 +142,7 @@
         "slot": "Q",
         "id": "EkkoQ",
         "name": "시간의 톱니바퀴",
+        "maxRank": 5,
         "summary": "에코가 적 챔피언에게 맞으면 펼쳐져서 시간 왜곡 지대를 만들고, 지대 안에 있는 적 모두를 둔화시키며 피해를 입히는 시간 톱니바퀴를 던집니다. 잠시 후 톱니바퀴는 되감겨 에코에게 돌아오며, 경로 상에 있는 적에게 피해를 입힙니다.",
         "bodyHtml": "에코가 장치를 던져 <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(80/95/110/125/140 + (30% 주문력))의 마법 피해</span>를 입힙니다. 장치는 챔피언에게 맞거나 사거리 끝에 도달하면 역장을 펼쳐 안에 있는 적을 40/45/50/55/60% <span class=\"text-purple-600 dark:text-purple-500\">둔화</span>시킵니다. 이후 에코가 장치를 불러들이며 <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(40/65/90/115/140 + (60% 주문력))의 마법 피해</span>를 입힙니다.",
         "iconFile": "EkkoQ.png",
@@ -201,6 +207,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "InitialDamage",
+            "kind": "damage",
+            "baseByRank": [
+              80,
+              95,
+              110,
+              125,
+              140
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.30000001192092896,
+                  0.30000001192092896,
+                  0.30000001192092896,
+                  0.30000001192092896,
+                  0.30000001192092896
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -211,6 +244,7 @@
         "slot": "W",
         "id": "EkkoW",
         "name": "평행 시간 교차",
+        "maxRank": 5,
         "summary": "에코의 기본 공격이 체력이 낮은 적에게 추가 마법 피해를 입힙니다. 에코가 평행 시간 교차를 사용하면 시간의 균열을 열어 몇 초 후에 퍼져나가는 불안정한 특이점을 만들어내며, 이 안에 갇힌 적들을 둔화시킵니다. 에코가 특이점 안에 들어가면 자신은 보호막을 얻으며, 적들의 시간을 멈추며 기절시킵니다.",
         "bodyHtml": "<span class=\"text-gray-600 dark:text-gray-500 italic\">기본 지속 효과:</span> 에코의 기본 공격은 체력이 30% 미만인 적에게 <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">잃은 체력의 (3% + (0.03% 주문력))에 해당하는 마법 피해</span>를 입힙니다.<br /><br /><span class=\"text-gray-900 dark:text-white font-semibold\">사용 시:</span> 에코가 잠시 후 1.5초 동안 유지되는 시간의 구체를 발사하여 안에 있는 적을 40% <span class=\"text-purple-600 dark:text-purple-500\">둔화</span>시킵니다. 에코가 구체 안에 들어가면 구체를 폭발시켜 2.25초 동안 <span class=\"text-purple-600 dark:text-purple-500\">기절</span>시키고 <span class=\"text-blue-600 dark:text-blue-300\">(100/120/140/160/180 + (150% 주문력))의 피해를 흡수하는 보호막</span>을 얻습니다.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">추가 공격력은 미니언과 몬스터에게 최소 <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">15</span>, 최대 <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">150의 피해</span>를 입힙니다.</span>",
         "iconFile": "EkkoW.png",
@@ -267,6 +301,10 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -277,6 +315,7 @@
         "slot": "E",
         "id": "EkkoE",
         "name": "시간 도약",
+        "maxRank": 5,
         "summary": "에코가 회피하며 굴러 Z 드라이브를 충전합니다. 다음 번 공격은 추가 피해를 입히며 시공간을 왜곡하여 에코가 대상 쪽으로 순간이동합니다.",
         "bodyHtml": "에코가 돌진합니다. 다음 기본 공격이 강화되어 사거리가 늘어나고 에코가 대상 쪽으로 순간이동하며 <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(50/75/100/125/150 + (40% 주문력))의 마법 피해</span>를 추가로 입힙니다.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">에코는 돌진 중 다른 스킬을 사용할 수 있습니다.</span>",
         "iconFile": "EkkoE.png",
@@ -333,6 +372,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "TotalDamage",
+            "kind": "damage",
+            "baseByRank": [
+              50,
+              75,
+              100,
+              125,
+              150
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.4000000059604645,
+                  0.4000000059604645,
+                  0.4000000059604645,
+                  0.4000000059604645,
+                  0.4000000059604645
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -343,6 +409,7 @@
         "slot": "R",
         "id": "EkkoR",
         "name": "시공간 붕괴",
+        "maxRank": 3,
         "summary": "에코가 시공간을 붕괴시켜 대상으로 지정할 수 없게 되며 더 유리한 지점으로 시간을 되돌립니다. 몇 초 전 아무 때로나 돌아가며, 이 동안 입은 피해의 일부가 회복됩니다. 에코가 착지하는 지역 부근의 적들은 큰 피해를 입습니다.",
         "bodyHtml": "에코가 시간을 되돌려 경직 상태에 빠지며 4초 전에 있던 지점으로 되돌아가 근처의 적에게 <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(200/350/500 + (175% 주문력))의 마법 피해</span>를 입히고 <span class=\"text-green-600 dark:text-green-400\">체력을 (100/150/200 + (60% 주문력))</span> 회복합니다. 회복량은 이 4초 동안 에코가 잃은 체력에 따라 증가하며, 잃은 체력 1%당 회복량이 3% 증가합니다.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">에코가 [] 평행 시간 교차의 구체를 통과하면 폭발합니다.</span><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">경직 상태에 빠진 유닛은 움직이거나 행동할 수 없으며 대상으로 지정할 수 없는 무적 상태가 됩니다.</span>",
         "iconFile": "EkkoR.png",
@@ -393,6 +460,29 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "TotalDamage",
+            "kind": "damage",
+            "baseByRank": [
+              200,
+              350,
+              500
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  1.75,
+                  1.75,
+                  1.75
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {

@@ -120,6 +120,7 @@
         "slot": "P",
         "id": "NasusPassive",
         "name": "Soul Eater",
+        "maxRank": 0,
         "summary": "Nasus drains his foe's spiritual energy, giving him bonus Life Steal.",
         "bodyHtml": "Nasus has an additional Life Steal.",
         "iconFile": "Nasus_Passive.png",
@@ -127,6 +128,10 @@
         "range": [],
         "rankValues": [],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -137,6 +142,7 @@
         "slot": "Q",
         "id": "NasusQ",
         "name": "Siphoning Strike",
+        "maxRank": 5,
         "summary": "Nasus strikes his foe, dealing damage and increasing the power of his future Siphoning Strikes if he slays his target.",
         "bodyHtml": "Nasus' next Attack deals <span class=\"text-red-600 dark:text-red-500 font-semibold\">(40/60/80/100/120 + (100% Attack Damage)) physical damage</span>. Killing an enemy with this Attack permanently increases its damage by 4, increased to 10 against champions, large minions and large jungle monsters.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">This Ability triggers spell effects upon dealing damage.<br />This Ability can critically strike for <span class=\"text-red-600 dark:text-red-500 font-semibold\"> physical damage</span>.</span>",
         "iconFile": "NasusQ.png",
@@ -189,6 +195,12 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "unsupported",
+          "unsupportedPartTypes": [
+            "BuffCounterByCoefficientCalculationPart"
+          ]
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -201,6 +213,7 @@
         "slot": "W",
         "id": "NasusW",
         "name": "Wither",
+        "maxRank": 5,
         "summary": "Nasus ages an enemy champion, decelerating their Move Speed and Attack Speed over time.",
         "bodyHtml": "Nasus ages a champion, <span class=\"text-purple-600 dark:text-purple-500\">Slowing</span> them by 35%, increasing to 47/59/71/83/95% over 5 seconds. Their <span>Attack Speed</span> is also reduced by 75% of the <span class=\"text-purple-600 dark:text-purple-500\">Slow</span>.",
         "iconFile": "NasusW.png",
@@ -239,6 +252,10 @@
           }
         ],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -249,6 +266,7 @@
         "slot": "E",
         "id": "NasusE",
         "name": "Spirit Fire",
+        "maxRank": 5,
         "summary": "Nasus unleashes a spirit flame at a location, dealing damage and reducing the Armor of enemies who stand on it.",
         "bodyHtml": "Nasus ignites a spirit flame, dealing <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(50/80/110/140/170 + (60% Ability Power)) magic damage</span>. Enemies in the area lose <span class=\"text-orange-600 dark:text-orange-400\">30/35/40/45/50% Armor</span> and take <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(50/80/110/140/170 + (60% Ability Power)) magic damage</span> over 5 seconds.",
         "iconFile": "NasusE.png",
@@ -309,6 +327,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "InitialDamage",
+            "kind": "damage",
+            "baseByRank": [
+              50,
+              80,
+              110,
+              140,
+              170
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.6000000238418579,
+                  0.6000000238418579,
+                  0.6000000238418579,
+                  0.6000000238418579,
+                  0.6000000238418579
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -319,6 +364,7 @@
         "slot": "R",
         "id": "NasusR",
         "name": "Fury of the Sands",
+        "maxRank": 3,
         "summary": "Nasus unleashes a mighty sandstorm that batters nearby enemies. While the storm rages, he gains increased Health, Attack Range, damages nearby enemies, has a reduced cooldown on Siphoning Strike, and gains bonus Armor and Magic Resistance.",
         "bodyHtml": "Nasus becomes empowered in the sandstorm for 15 seconds, increasing his <span class=\"text-green-600 dark:text-green-400\">maximum Health by 300/450/600</span> and <span class=\"text-orange-600 dark:text-orange-400\">Armor</span> and <span>Magic Resistance</span> by 40/55/70.<br /><br />While the storm rages, nearby enemies take <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(3/4/5% + (0.01% Ability Power)) of their maximum Health as magic damage</span> each second and <span>Siphoning Strike</span> has a 50% reduced Cooldown.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">The storm deals a max of 240 damage per second.</span>",
         "iconFile": "NasusR.png",
@@ -373,6 +419,12 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "unsupported",
+          "unsupportedPartTypes": [
+            "percent-calculation"
+          ]
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {

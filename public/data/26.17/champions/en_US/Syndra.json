@@ -119,6 +119,7 @@
         "slot": "P",
         "id": "SyndraPassive",
         "name": "Transcendent",
+        "maxRank": 0,
         "summary": "Syndra collects Splinters of Wrath from gaining levels and damaging enemies which upgrade her abilities.<br><br><font color='#FF9900'>Dark Sphere</font>: Syndra can hold an additional charge<br><font color='#FF9900'>Force of Will</font>: Bonus true damage.<br><font color='#FF9900'>Scatter the Weak</font>: Increased width and slows all targets<br><font color='#FF9900'>Unleashed Power</font>: Executes low health targets",
         "bodyHtml": "Syndra can collect up to 120 <span>Splinters of Wrath</span>. These enhance Syndra's Abilities and restore <span>20 Mana</span> each time she claims one from an enemy. <br /><br />Syndra collects <span>Splinters of Wrath</span> from the following:<span><span>3 Splinter(s)</span> when damaging enemy champions with two Abilities within 4 seconds (8s Cooldown)<span><span>5 Splinters</span> upon spending Ability points<span><span>1 Splinter</span> on killing large minions<br /><br />At 120 <span>Splinters of Wrath</span>, Syndra increases her <span class=\"text-blue-600 dark:text-blue-400\">Ability Power by 15%</span>.<br />",
         "iconFile": "SyndraPassive.png",
@@ -126,6 +127,10 @@
         "range": [],
         "rankValues": [],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -136,6 +141,7 @@
         "slot": "Q",
         "id": "SyndraQ",
         "name": "Dark Sphere",
+        "maxRank": 5,
         "summary": "Syndra conjures a Dark Sphere dealing magic damage. The sphere remains and can be manipulated by her other powers.",
         "bodyHtml": "Syndra conjures a <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Dark Sphere</span>, dealing <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(90/125/160/195/230 + (70% Ability Power)) magic damage</span>. The <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Dark Sphere</span> remains for 6 seconds and can be manipulated by Syndra's other Abilities.<br /><br /><span> Splinters of Wrath</span>: Syndra can store 2 charges of <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Dark Sphere</span>.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">This Ability can be cast while moving.</span>",
         "iconFile": "SyndraQ.png",
@@ -188,6 +194,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "TotalDamage",
+            "kind": "damage",
+            "baseByRank": [
+              90,
+              125,
+              160,
+              195,
+              230
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.699999988079071,
+                  0.699999988079071,
+                  0.699999988079071,
+                  0.699999988079071,
+                  0.699999988079071
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -200,6 +233,7 @@
         "slot": "W",
         "id": "SyndraW",
         "name": "Force of Will",
+        "maxRank": 5,
         "summary": "Syndra picks up and throws a Dark Sphere or enemy minion dealing magic damage and slowing the Move Speed of enemies.",
         "bodyHtml": "Syndra grabs a <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Dark Sphere</span>, enemy minion, or non-epic monster. She drags it with her and can <span class=\"text-yellow-600 dark:text-yellow-300\">Recast</span> for up to 5 seconds.<br /><br /><span class=\"text-yellow-600 dark:text-yellow-300\">Recast</span>: Syndra hurls the object, dealing and <span class=\"text-purple-600 dark:text-purple-500\">Slowing</span> by 25% for seconds.<br /><br /><span> Splinters of Wrath</span>: This Ability deals an additional <span class=\"text-yellow-600 dark:text-yellow-500 font-semibold\">(12% + (0.02% Ability Power)) true damage</span>.<br /><br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">If no target is selected, grabs nearest <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Dark Sphere</span>.<br />This Ability can be cast while moving.</span>",
         "iconFile": "SyndraW.png",
@@ -256,6 +290,12 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "unsupported",
+          "unsupportedPartTypes": [
+            "GameCalculationModified"
+          ]
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -269,6 +309,7 @@
         "slot": "E",
         "id": "SyndraE",
         "name": "Scatter the Weak",
+        "maxRank": 5,
         "summary": "Syndra knocks enemies and Dark Spheres back dealing magic damage. Enemies hit by Dark Spheres become stunned.",
         "bodyHtml": "Syndra projects a wave of force, <span class=\"text-purple-600 dark:text-purple-500\">Knocking Back</span> enemies and <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Dark Spheres</span> and dealing <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(60/95/130/165/200 + (60% Ability Power)) magic damage</span>.<br /><br /><span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Dark Spheres</span> that are pushed <span class=\"text-purple-600 dark:text-purple-500\">Stun</span> enemies for 1.25 seconds and deal <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(60/95/130/165/200 + (60% Ability Power)) magic damage</span>.<br /><br /><span> Splinters of Wrath</span>: This Ability's width is increased and <span class=\"text-purple-600 dark:text-purple-500\">Slows</span> enemies by <span class=\"text-purple-600 dark:text-purple-500\">70%</span> for 1.25 seconds.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">Enemies can only take damage and be Knocked Back from this Ability once per cast.<br /></span>",
         "iconFile": "SyndraE.png",
@@ -317,6 +358,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "TotalDamage",
+            "kind": "damage",
+            "baseByRank": [
+              60,
+              95,
+              130,
+              165,
+              200
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.6000000238418579,
+                  0.6000000238418579,
+                  0.6000000238418579,
+                  0.6000000238418579,
+                  0.6000000238418579
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -329,6 +397,7 @@
         "slot": "R",
         "id": "SyndraR",
         "name": "Unleashed Power",
+        "maxRank": 3,
         "summary": "Syndra bombards an enemy Champion with all of her Dark Spheres.",
         "bodyHtml": "<span class=\"text-gray-600 dark:text-gray-500 italic\">Passive</span>: <span>Dark Sphere</span> gains an additional 10 Ability Haste for each rank of <span>Unleashed Power</span>.<br /><br />Syndra draws on her full cataclysmic power, launching the 3 <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Dark Spheres</span> orbiting her plus up to 4 more nearby at an enemy champion. Each <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Dark Sphere</span> deals <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(80/120/160 + (20% Ability Power)) magic damage</span> (max <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(560/840/1120 + (140% Ability Power)) magic damage</span>).<br /><br /><span> Splinters of Wrath</span>: This Ability <span>executes</span> enemies below 15% Health.",
         "iconFile": "SyndraR.png",
@@ -379,6 +448,29 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "DamageCalc",
+            "kind": "damage",
+            "baseByRank": [
+              80,
+              120,
+              160
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.20000000298023224,
+                  0.20000000298023224,
+                  0.20000000298023224
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {

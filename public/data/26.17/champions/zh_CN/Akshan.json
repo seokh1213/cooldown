@@ -120,6 +120,7 @@
         "slot": "P",
         "id": "AkshanPassive",
         "name": "无所不用",
+        "maxRank": 0,
         "summary": "来自阿克尚攻击或技能的每第三次命中会造成额外伤害，并且如果目标是英雄还会为他提供一层护盾。<br><br>在阿克尚攻击时，他会进行一次额外的射击，来造成较少伤害。如果他取消掉了这次额外射击，那么他会转而获得移动速度。",
         "bodyHtml": "在打出一次攻击后，阿克尚将进行一次额外的射击，造成<span class=\"text-red-600 dark:text-red-500 font-semibold\">(50% 攻击力)物理伤害</span>。阿克尚可以取消这次射击来转而获得在1秒里持续衰减的<span class=\"text-cyan-600 dark:text-cyan-500\">(20 ~ 75)移动速度</span>。<br /><br />来自攻击或技能的每第三次命中会造成额外<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(150 + (60% 法术强度))魔法伤害</span>。如果目标是英雄，阿克尚还会获得<span class=\"text-blue-600 dark:text-blue-300\">(35% 额外攻击力)护盾值</span>，持续2秒(4秒冷却时间)。",
         "iconFile": "akshan_p.png",
@@ -127,6 +128,10 @@
         "range": [],
         "rankValues": [],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -137,6 +142,7 @@
         "slot": "Q",
         "id": "AkshanQ",
         "name": "去而复还",
+        "maxRank": 5,
         "summary": "阿克尚掷出一个回旋镖，在去程和返程时造成伤害，会在它每次命中一名敌人时延长它的距离。",
         "bodyHtml": "阿克尚掷出一个回旋镖，造成<span class=\"text-red-600 dark:text-red-500 font-semibold\">(45/75/105/135/165 + (70% 额外攻击力))物理伤害</span>，每次命中一名敌人时会延长其距离。<br /><br />命中英雄时会为阿克尚提供在1秒里持续衰减的<span class=\"text-cyan-600 dark:text-cyan-500\">(20% + (0.05% 法术强度))移动速度</span>。<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">对非英雄单位造成40/50/60/70/80%伤害。被命中的敌人会被短暂显形。</span>",
         "iconFile": "AkshanQ.png",
@@ -197,6 +203,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "FinalDamage",
+            "kind": "damage",
+            "baseByRank": [
+              45,
+              75,
+              105,
+              135,
+              165
+            ],
+            "terms": [
+              {
+                "stat": "bonusAttackDamage",
+                "coefficientsByRank": [
+                  0.699999988079071,
+                  0.699999988079071,
+                  0.699999988079071,
+                  0.699999988079071,
+                  0.699999988079071
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -207,6 +240,7 @@
         "slot": "W",
         "id": "AkshanW",
         "name": "赴险夺人",
+        "maxRank": 5,
         "summary": "被动效果：敌方英雄在击杀了阿克尚的友方英雄时，会被标记为恶人。如果阿克尚击杀了一名恶人，那么他会复活被该恶人击杀的友方英雄，获得额外金币，并清除所有恶人标记。<br><br>主动施放时，阿克尚会进入伪装状态并在朝着恶人移动时获得移动速度和法力回复。在离开草丛或墙体附近后，阿克尚会失去伪装状态。",
         "bodyHtml": "<span class=\"text-gray-600 dark:text-gray-400 italic\"><span class=\"text-purple-600 dark:text-purple-400 font-semibold\">伪装</span>的单位不会被敌人看见，除非有一名敌方英雄在其侦测半径中。<br />在伪装状态下，阿克尚还会看到通向<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">恶人</span>的踪迹。<br />阿克尚只有在他活着时才能标记恶人。<br />已赚取的金币总额：</span>",
         "iconFile": "AkshanW.png",
@@ -263,6 +297,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "SecondAutoDamage",
+            "kind": "damage",
+            "baseByRank": [
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "terms": [
+              {
+                "stat": "totalAttackDamage",
+                "coefficientsByRank": [
+                  0.46000000834465027,
+                  0.5199999809265137,
+                  0.5799999833106995,
+                  0.6399999856948853,
+                  0.699999988079071
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -275,6 +336,7 @@
         "slot": "E",
         "id": "AkshanE",
         "name": "骄行荡寇",
+        "maxRank": 5,
         "summary": "阿克尚发射一个钩爪来吸附住地形，然后围绕它进行摆荡，在摆荡时快速朝相距最近的敌人开火。他可以提前从绳索上荡下来，或在与一名敌方英雄或地形产生碰撞时落下。",
         "bodyHtml": "<span class=\"text-gray-900 dark:text-white font-semibold\">第一段施放：</span>阿克尚发射一个钩爪，吸附在命中的第一个地形上。<br /><br /><span class=\"text-gray-900 dark:text-white font-semibold\">第二段施放：</span>阿克尚在地形附近摆荡，朝相距最近的敌人进行快速射击，每次射击造成<span class=\"text-red-600 dark:text-red-500 font-semibold\">(8/16/24/32/40 + (25% 攻击力))物理伤害</span>。<br /><br /><span class=\"text-gray-900 dark:text-white font-semibold\">第三段施放：</span>阿克尚从绳索上荡下来，并进行一次终极射击。<br /><br />与一名敌方英雄或地形产生碰撞，会提前结束摆荡。<br /><br />参与击杀敌方英雄后会刷新这个技能的冷却时间。<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">阿克尚会优先射击被<span>无所不用</span>标记的英雄。<br />摆荡时，攻击特效的效能为25%。<br />伤害获得提升，数额相当于<span>30%额外攻击速度</span>。<br />攻击可以暴击，造成<span class=\"text-red-600 dark:text-red-500 font-semibold\">(8/16/24/32/40 + (25% 攻击力))物理伤害</span>。</span>",
         "iconFile": "AkshanE.png",
@@ -327,6 +389,12 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "unsupported",
+          "unsupportedPartTypes": [
+            "unsupported-multiplier"
+          ]
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -337,6 +405,7 @@
         "slot": "R",
         "id": "AkshanR",
         "name": "恩怨相抵",
+        "maxRank": 3,
         "summary": "阿克尚锁定一名敌方英雄并开始储存他的子弹。在释放时，他会发射所有已储存的子弹，对命中的第一个英雄、小兵或建筑物造成基于已损失生命值的伤害。",
         "bodyHtml": "阿克尚锁定一名敌方英雄并开始过载充能他的枪械至多2.5秒，至多可储存5/6/7颗子弹。<br /><br /><span class=\"text-yellow-600 dark:text-yellow-300\">再次施放：</span>阿克尚释放已储存的子弹，每颗子弹对命中的首个敌人或建筑物至少造成<span class=\"text-red-600 dark:text-red-500 font-semibold\">(25/35/45 + (15% 攻击力))物理伤害</span>，基于已损失生命值至多提升至<span class=\"text-red-600 dark:text-red-500 font-semibold\">(75/105/135 + (45% 攻击力))物理伤害</span>。<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">子弹处决小兵并施加生命偷取<br />子弹伤害受益于暴击几率和暴击伤害，效能为30%。</span>",
         "iconFile": "AkshanR.png",
@@ -387,6 +456,12 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "unsupported",
+          "unsupportedPartTypes": [
+            "unsupported-multiplier"
+          ]
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {

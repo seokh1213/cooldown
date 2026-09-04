@@ -119,6 +119,7 @@
         "slot": "P",
         "id": "VeigarPassive",
         "name": "극악무도",
+        "maxRank": 0,
         "summary": "룬테라에서 가장 강력한 악의 원천인 베이가는 점점 더 강해지고 있습니다. 적 챔피언에게 스킬을 적중시키거나 처치에 관여할 때마다 주문력이 영구적으로 증가합니다.",
         "bodyHtml": "베이가는 적 챔피언에게 스킬을 적중시킬 때마다 <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">극악</span> 1중첩을 얻습니다. 챔피언 처치 관여 시 극악 중첩이 5 쌓입니다.<br /><br /><span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">극악</span> 1중첩당 베이가의 <span class=\"text-blue-600 dark:text-blue-400\">주문력이 1</span> 증가합니다.",
         "iconFile": "VeigarEntropy.png",
@@ -126,6 +127,10 @@
         "range": [],
         "rankValues": [],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -136,6 +141,7 @@
         "slot": "Q",
         "id": "VeigarBalefulStrike",
         "name": "사악한 일격",
+        "maxRank": 5,
         "summary": "베이가가 어둠의 에너지를 발사하여 처음 맞은 적 둘에게 마법 피해를 입힙니다. 이 스킬로 적 유닛을 처치하면 베이가의 주문력이 영구적으로 상승합니다.",
         "bodyHtml": "베이가가 암흑의 에너지 줄기를 쏟아내어 처음 맞는 두 명의 적에게 <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(80/120/160/200/240 + (50/55/60/65/70% 주문력))의 마법 피해</span>를 입힙니다.<br /><br />베이가가 이 스킬로 적을 하나 처치할 때마다 <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">극악</span> 중첩이 쌓입니다. 대형 미니언, 대형 몬스터의 경우 중첩이 만큼 추가로 쌓입니다.",
         "iconFile": "VeigarBalefulStrike.png",
@@ -196,6 +202,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "TotalDamage",
+            "kind": "damage",
+            "baseByRank": [
+              80,
+              120,
+              160,
+              200,
+              240
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.5,
+                  0.550000011920929,
+                  0.6000000238418579,
+                  0.6499999761581421,
+                  0.699999988079071
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -209,6 +242,7 @@
         "slot": "W",
         "id": "VeigarDarkMatter",
         "name": "암흑 물질",
+        "maxRank": 5,
         "summary": "베이가가 하늘에서 거대한 암흑 물질을 떨어뜨려 마법 피해를 입힙니다. 극악 중첩이 쌓이면 암흑 물질의 재사용 대기시간이 감소합니다.",
         "bodyHtml": "베이가가 하늘에서 암흑 물질을 소환해 <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(85/140/195/250/305 + (70/80/90/100/110% 주문력))의 마법 피해</span>를 입힙니다.<br /><br /><span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">극악</span>이 번 중첩될 때마다 이 스킬의 재사용 대기시간이씩 감소합니다.",
         "iconFile": "VeigarDarkMatter.png",
@@ -265,6 +299,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "TotalDamage",
+            "kind": "damage",
+            "baseByRank": [
+              85,
+              140,
+              195,
+              250,
+              305
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.699999988079071,
+                  0.800000011920929,
+                  0.8999999761581421,
+                  1,
+                  1.100000023841858
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -278,6 +339,7 @@
         "slot": "E",
         "id": "VeigarEventHorizon",
         "name": "사건의 지평선",
+        "maxRank": 5,
         "summary": "베이가가 공간의 가장자리를 왜곡해 지나가는 적을 기절시키는 감옥을 생성합니다.",
         "bodyHtml": "베이가가 공간의 가장자리를 왜곡해 지나가는 적을 1.5/1.75/2/2.25/2.5초 동안 <span class=\"text-purple-600 dark:text-purple-500\">기절</span>시키는 감옥을 생성합니다. 감옥은 3초 동안 유지됩니다.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">적을 <span class=\"text-purple-600 dark:text-purple-500\">쓰러뜨리는</span> 스킬입니다.</span>",
         "iconFile": "VeigarEventHorizon.png",
@@ -320,6 +382,10 @@
           }
         ],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -330,6 +396,7 @@
         "slot": "R",
         "id": "VeigarR",
         "name": "태초의 폭발",
+        "maxRank": 3,
         "summary": "적 챔피언을 맞춰 매우 큰 마법 피해를 입힙니다. 피해량은 대상의 잃은 체력에 비례해 증가합니다.",
         "bodyHtml": "베이가가 적 챔피언에게 태초의 마법을 날려 <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(175/250/325 + (65/70/75% 주문력)) ~ (350/500/650 + (130/140/150% 주문력))의 마법 피해</span>를 입힙니다. 피해량은 대상이 잃은 체력에 비례합니다. 체력이 33% 밑으로 떨어진 적에게 피해가 극대화됩니다.",
         "iconFile": "VeigarR.png",
@@ -380,6 +447,12 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "unsupported",
+          "unsupportedPartTypes": [
+            "GameCalculationModified"
+          ]
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {

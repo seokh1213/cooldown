@@ -120,6 +120,7 @@
         "slot": "P",
         "id": "YorickPassive",
         "name": "牧魂人",
+        "maxRank": 0,
         "summary": "<font color='#FF9900'>受诅咒的部落：</font>约里克可以召唤雾行者来蜂拥并攻击附近的敌人。",
         "bodyHtml": "附近每阵亡2名敌人，约里克就会升起一座坟墓。英雄和大型野怪在阵亡时总会留下一座坟墓。<br /><br />这些坟墓可以被用来<span>唤醒</span>拥有<span class=\"text-green-600 dark:text-green-400\">(15% 额外生命值)生命值</span>和<span class=\"text-red-600 dark:text-red-500 font-semibold\">(20% 额外攻击力)攻击力</span>的<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">雾行者</span>，在一个区域内至多至4座。",
         "iconFile": "Yorick_P.png",
@@ -127,6 +128,10 @@
         "range": [],
         "rankValues": [],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -137,6 +142,7 @@
         "slot": "Q",
         "id": "YorickQ",
         "name": "临终仪式",
+        "maxRank": 5,
         "summary": "约里克的下次攻击造成额外伤害并治疗自身。如果目标是一个英雄或大型野怪或如果目标死亡，则会留下一个坟墓。",
         "bodyHtml": "你的下一次普通攻击造成额外的<span class=\"text-red-600 dark:text-red-500 font-semibold\">(30/50/70/90/110 + (50% 攻击力))物理伤害</span>并回复<span class=\"text-green-600 dark:text-green-400\">10外加他的6/7/8/9/10%已损失生命值</span>，对抗非英雄单位时会削减50%。如果这个攻击命中了一个英雄或大型野怪或击杀了目标，就会留下一座坟墓。<br /><br />当附近有3个或以上的坟墓时，如果这个技能已被使用，那么约里克就能<span class=\"text-yellow-600 dark:text-yellow-300\">再次施放</span>来从附近的所有坟墓中唤起<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">雾行者</span>。<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">这个技能会在造成伤害时触发技能特效。</span>",
         "iconFile": "YorickQ.png",
@@ -193,6 +199,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "BonusDamage",
+            "kind": "damage",
+            "baseByRank": [
+              30,
+              50,
+              70,
+              90,
+              110
+            ],
+            "terms": [
+              {
+                "stat": "totalAttackDamage",
+                "coefficientsByRank": [
+                  0.5,
+                  0.5,
+                  0.5,
+                  0.5,
+                  0.5
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -203,6 +236,7 @@
         "slot": "W",
         "id": "YorickW",
         "name": "暗灵缠身",
+        "maxRank": 5,
         "summary": "约里克在目标区域召唤一圈可破坏的暗灵之墙来阻挡敌方移动。",
         "bodyHtml": "约里克召唤一道灵墙来阻挡敌人的道路，但不影响友军。灵墙拥有<span class=\"text-green-600 dark:text-green-400\">2/2/3/3/4生命值</span>，并且会在4秒后消失。",
         "iconFile": "YorickW.png",
@@ -241,6 +275,10 @@
           }
         ],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -251,6 +289,7 @@
         "slot": "E",
         "id": "YorickE",
         "name": "哀伤之雾",
+        "maxRank": 5,
         "summary": "约里克扔出一小团黑雾，对敌人造成护甲削减、伤害、减速效果并标记敌人。召唤物在朝着被标记的目标移动时会获得移动速度。 ",
         "bodyHtml": "约里克扔出一小团黑雾，来造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(6/6.5/7/7.5/8% + (0.03% 法术强度))最大生命值的魔法伤害</span>，以及持续1.5秒的30%<span class=\"text-purple-600 dark:text-purple-500\">减速</span>，并标记英雄和野怪4秒。被标记的敌人们会不断<span>唤醒</span>附近的坟墓(但数量上限不会超过)，并受到<span class=\"text-orange-600 dark:text-orange-400\">13/16/19/22/25%护甲削减</span>。<br /><br />约里克和他的召唤单位们在朝着标记移动时会获得<span class=\"text-cyan-600 dark:text-cyan-500\">18/21/24/27/30%移动速度</span>。<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">雾行者</span>将在被标记的敌人远离它们时跳跃一次。<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">对线上小兵最少造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(70/105/140/175/210 + (100% 法术强度))魔法伤害</span>。<br />对野怪最多造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(50/75/100/125/150 + (100% 法术强度))魔法伤害</span>。</span>",
         "iconFile": "YorickE.png",
@@ -315,6 +354,12 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "unsupported",
+          "unsupportedPartTypes": [
+            "percent-calculation"
+          ]
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -327,6 +372,7 @@
         "slot": "R",
         "id": "YorickR",
         "name": "海屿悼词",
+        "maxRank": 3,
         "summary": "约里克召唤迷雾室女，来让约里克的攻击对室女锁定的目标造成额外伤害。室女也会自动从死亡的敌人身上唤起雾行者。",
         "bodyHtml": "约里克召唤拥有<span class=\"text-green-600 dark:text-green-400\">(1050 + (60% 额外生命值))生命值</span>和<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(50/75/100 + (30% 额外攻击力))魔法攻击伤害</span>的<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">迷雾室女</span>外加2/3/4个<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">雾行者</span>。<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">室女</span>会自动从附近阵亡的敌人身上唤起<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">雾行者</span>并且通过她的攻击标记敌方英雄。当约里克对<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">室女</span>的目标造成伤害时，他将造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">2/2.5/3%最大生命值的魔法伤害</span>。<br /><br />10秒后，约里克可以<span class=\"text-yellow-600 dark:text-yellow-300\">再次施放</span>这个技能来放走<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">室女</span>，派她去相距最近的一条战线。<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\"><span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">迷雾室女</span><br /><span class=\"text-orange-600 dark:text-orange-400\">30护甲</span><br /><span>30魔法抗性</span><br />所受的来自线上小兵的伤害为30%</span>",
         "iconFile": "YorickR.png",
@@ -381,6 +427,29 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "YorickBigGhoulDamage",
+            "kind": "damage",
+            "baseByRank": [
+              50,
+              75,
+              100
+            ],
+            "terms": [
+              {
+                "stat": "bonusAttackDamage",
+                "coefficientsByRank": [
+                  0.30000001192092896,
+                  0.30000001192092896,
+                  0.30000001192092896
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {

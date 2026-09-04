@@ -120,6 +120,7 @@
         "slot": "P",
         "id": "AuroraPassive",
         "name": "Spirit Abjuration",
+        "maxRank": 0,
         "summary": "Aurora's spells and attacks exorcise spirits from the enemies she damages. Exorcised spirits follow Aurora around and heal her.",
         "bodyHtml": "Damaging an enemy 3 times with Abilities or Attacks exorcises them, dealing <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(1% + (0.027% Ability Power)) max Health magic damage</span> and, if the enemy is a champion, frees a spirit that follows Aurora for 4 seconds, restoring her Health for <span class=\"text-green-600 dark:text-green-400\">(2% Ability Power)</span> every second.",
         "iconFile": "AuroraPassive.png",
@@ -127,6 +128,10 @@
         "range": [],
         "rankValues": [],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -137,6 +142,7 @@
         "slot": "Q",
         "id": "AuroraQ",
         "name": "Twofold Hex",
+        "maxRank": 5,
         "summary": "Aurora sends out a missile that curses any enemies it hits. She can then recast the ability to draw active curses back toward herself, damaging foes who are hit along the way.",
         "bodyHtml": "Fire cursed energy in a direction, dealing <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(45/70/95/120/145 + (40% Ability Power)) magic damage</span> to enemies and cursing them for 3.5 seconds.<br /><br /><span class=\"text-yellow-600 dark:text-yellow-300\">Recast:</span> End the curse, drawing back part of the enemy's spirit to Aurora, dealing up to <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(67.5/105/142.5/180/217.5 + (60% Ability Power)) magic damage</span> to enemies passed through based on their missing Health. Damage beyond the first hit is reduced to 20%.<br /><br />If the duration runs out, Aurora will automatically <span class=\"text-yellow-600 dark:text-yellow-300\">Recast</span> the Ability.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">Recast deals 40% damage to minions and monsters.</span>",
         "iconFile": "AuroraQ.png",
@@ -189,6 +195,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "Damage",
+            "kind": "damage",
+            "baseByRank": [
+              45,
+              70,
+              95,
+              120,
+              145
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.4000000059604645,
+                  0.4000000059604645,
+                  0.4000000059604645,
+                  0.4000000059604645,
+                  0.4000000059604645
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -199,6 +232,7 @@
         "slot": "W",
         "id": "AuroraW",
         "name": "Across the Veil",
+        "maxRank": 5,
         "summary": "Aurora leaps in a direction of her choosing, entering the spirit realm upon landing, becoming invisible, and gaining Move Speed for a short duration of time.",
         "bodyHtml": "Hop in a direction. Upon landing, enter the spirit realm, becoming <span class=\"text-purple-600 dark:text-purple-400 font-semibold\">Invisible</span> for 1/1.15/1.3/1.45/1.6 seconds and entering <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Realm Hopper</span>, gaining <span class=\"text-cyan-600 dark:text-cyan-500\">20/25/30/35/40% Move Speed</span>.<br /><br />Scoring a takedown on an enemy champion resets this Ability's Cooldown.",
         "iconFile": "AuroraW.png",
@@ -241,6 +275,10 @@
           }
         ],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -251,6 +289,7 @@
         "slot": "E",
         "id": "AuroraE",
         "name": "The Weirding",
+        "maxRank": 5,
         "summary": "Aurora converges the realms, sending out a blast of spirit magic that damages and slows enemies before Aurora hops backward to safety.",
         "bodyHtml": "Converge the realms, sending out a blast of spirit magic dealing <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(70/110/150/190/230 + (70% Ability Power)) magic damage</span> to enemies in the area and <span class=\"text-purple-600 dark:text-purple-500\">Slowing</span> them by 80% decaying over 1 second.<br /><br />Aurora hops backwards a short distance after casting.<br />",
         "iconFile": "AuroraE.png",
@@ -303,6 +342,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "DamageCalc",
+            "kind": "damage",
+            "baseByRank": [
+              70,
+              110,
+              150,
+              190,
+              230
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.699999988079071,
+                  0.699999988079071,
+                  0.699999988079071,
+                  0.699999988079071,
+                  0.699999988079071
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -313,6 +379,7 @@
         "slot": "R",
         "id": "AuroraR",
         "name": "Between Worlds",
+        "maxRank": 3,
         "summary": "Aurora leaps in a direction of her choosing, releasing a shockwave that damages and slows any enemies it hits. Afterward, she creates an area that slows enemies within it and allows Aurora to teleport from one side of the area to the other.",
         "bodyHtml": "Leap in a direction. Upon landing, Aurora converges the realms, sending out a pulse of spirit energy that deals <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(175/275/375 + (70% Ability Power)) magic damage</span> and <span class=\"text-purple-600 dark:text-purple-500\">Slows</span> enemies hit by 30% for 2 seconds.<br /><br />The area of convergence stays active for 2.5/3.25/4 seconds, granting Aurora <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Realm Hopper</span> for 3.5/4.25/5 seconds, allowing her to jump from one edge of the area to another.<br /><br />Enemies attempting to enter or leave the area are <span class=\"text-purple-600 dark:text-purple-500\">Slowed</span> by 50% for 1.5/1.75/2 seconds.<br /><br />Aurora can <span class=\"text-yellow-600 dark:text-yellow-300\">Recast</span> this Ability to end the effect early.",
         "iconFile": "AuroraR.png",
@@ -363,6 +430,29 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "DamageCalc",
+            "kind": "damage",
+            "baseByRank": [
+              175,
+              275,
+              375
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.699999988079071,
+                  0.699999988079071,
+                  0.699999988079071
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {

@@ -120,6 +120,7 @@
         "slot": "P",
         "id": "RekSaiPassive",
         "name": "艾克塞之怒",
+        "maxRank": 0,
         "summary": "雷克塞可通过攻击和命中基础技能来生成怒气。她在位于地下时可消耗怒气来回复生命值。",
         "bodyHtml": "雷克塞的攻击生成<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">25怒气</span>，技能生成<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">25怒气</span>。<br /><br /><span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">位于地下</span>时，她会消耗<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">怒气</span>，3秒内持续最多回复<span class=\"text-green-600 dark:text-green-400\">生命值</span>，随等级提升。",
         "iconFile": "RekSai_Passive.png",
@@ -127,6 +128,10 @@
         "range": [],
         "rankValues": [],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -137,6 +142,7 @@
         "slot": "Q",
         "id": "RekSaiQ",
         "name": "女王之怒 / 猎物搜寻",
+        "maxRank": 5,
         "summary": "雷克塞的下3次普攻会对身边的敌人造成额外物理伤害。<br><br>在地底时，雷克塞发射一道充满虚空能量的冲击波，对命中的敌人造成伤害并使其显形。",
         "bodyHtml": "<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">位于地表：</span>雷克塞在3秒内的下3次普攻会获得<span>35%攻击速度</span>并对附近的敌人造成额外的<span class=\"text-red-600 dark:text-red-500 font-semibold\">(30/35/40/45/50% 攻击力)物理伤害</span>。攻击会刷新这个技能的持续时长。<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">额外伤害可在主要目标上产生暴击。</span>",
         "iconFile": "RekSaiQ.png",
@@ -183,6 +189,43 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "BurrowDamageTooltip",
+            "kind": "damage",
+            "baseByRank": [
+              50,
+              80,
+              110,
+              140,
+              170
+            ],
+            "terms": [
+              {
+                "stat": "bonusAttackDamage",
+                "coefficientsByRank": [
+                  0.25,
+                  0.25,
+                  0.25,
+                  0.25,
+                  0.25
+                ]
+              },
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.699999988079071,
+                  0.699999988079071,
+                  0.699999988079071,
+                  0.699999988079071,
+                  0.699999988079071
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -193,6 +236,7 @@
         "slot": "W",
         "id": "RekSaiW",
         "name": "遁地 / 破土而出",
+        "maxRank": 5,
         "summary": "雷克塞遁入地下，提供新的技能并提升移动速度。她的视野距离会被降低并且无法进行普攻。<br><br>在地底时，雷克塞可以施放破土而出，击飞并伤害身边的敌人。",
         "bodyHtml": "<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">位于地表：</span>雷克塞遁入地下，获得全新的一套技能但不能攻击。她获得<span class=\"text-cyan-600 dark:text-cyan-500\">5/10/15/20/25移动速度</span>，视野距离被降低65%，并且附近不可见的敌人在移动时会将其位置显形给雷克塞和她的友军。",
         "iconFile": "RekSaiW.png",
@@ -239,6 +283,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "UnburrowDamage",
+            "kind": "damage",
+            "baseByRank": [
+              30,
+              55,
+              80,
+              105,
+              130
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.800000011920929,
+                  0.800000011920929,
+                  0.800000011920929,
+                  0.800000011920929,
+                  0.800000011920929
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -249,6 +320,7 @@
         "slot": "E",
         "id": "RekSaiE",
         "name": "狂野之噬 / 挖掘隧道",
+        "maxRank": 5,
         "summary": "雷克塞噬咬她的目标，造成物理伤害，或是在满怒时造成额外真实伤害。<br><br>在地底时，雷克塞挖掘出一个可重复使用、长期存在的隧道。敌人踩在任一入口上即可摧毁整条隧道。",
         "bodyHtml": "<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">位于地表：</span>雷克塞撕咬一个目标，造成<span class=\"text-red-600 dark:text-red-500 font-semibold\">物理伤害</span>。在满额<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">怒气</span>时，这次撕咬会转而造成<span class=\"text-yellow-600 dark:text-yellow-500 font-semibold\">真实伤害</span>。",
         "iconFile": "RekSaiE.png",
@@ -299,6 +371,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "BaseDamageCalculation",
+            "kind": "damage",
+            "baseByRank": [
+              70,
+              95,
+              120,
+              145,
+              170
+            ],
+            "terms": [
+              {
+                "stat": "bonusAttackDamage",
+                "coefficientsByRank": [
+                  0.6000000238418579,
+                  0.6000000238418579,
+                  0.6000000238418579,
+                  0.6000000238418579,
+                  0.6000000238418579
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -312,6 +411,7 @@
         "slot": "R",
         "id": "RekSaiR",
         "name": "虚空猛冲",
+        "maxRank": 3,
         "summary": "雷克塞对目标造成伤害即可将其标记。她可以激活这个技能，暂时变成不可被选取状态，并扑向一个被标记的目标，并基于其最大生命值造成大量伤害。",
         "bodyHtml": "雷克塞将一个之前5秒内被她造成过伤害的敌人选为目标，随后遁入地下，进入不可选取状态。片刻之后，她会不可阻挡地跃向目标，造成<span class=\"text-red-600 dark:text-red-500 font-semibold\">(150/250/350 + (100% 额外攻击力))加上15/20/25%最大生命值的物理伤害</span>并重置<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">遁地 / 破土而出</span>的冷却时间。",
         "iconFile": "RekSaiR.png",
@@ -354,6 +454,29 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "RBaseDamageCalc",
+            "kind": "damage",
+            "baseByRank": [
+              150,
+              250,
+              350
+            ],
+            "terms": [
+              {
+                "stat": "bonusAttackDamage",
+                "coefficientsByRank": [
+                  1,
+                  1,
+                  1
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {

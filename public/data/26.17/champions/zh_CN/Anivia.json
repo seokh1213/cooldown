@@ -119,6 +119,7 @@
         "slot": "P",
         "id": "RebirthMarker",
         "name": "寒霜涅槃",
+        "maxRank": 0,
         "summary": "在受到致命伤害后，艾尼维亚将化身为凤凰蛋，然后满血复活。",
         "bodyHtml": "艾尼维亚受到致命伤害后化身为凤凰蛋，回复满血并获得<span>20</span><span class=\"text-orange-600 dark:text-orange-400\">护甲</span>和<span>魔法抗性</span>。如果她能存活6秒，则获得重生。",
         "iconFile": "Anivia_P.png",
@@ -126,6 +127,10 @@
         "range": [],
         "rankValues": [],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -136,6 +141,7 @@
         "slot": "Q",
         "id": "FlashFrost",
         "name": "寒冰闪耀",
+        "maxRank": 5,
         "summary": "艾尼维亚挥动翅膀聚集空气，制造一枚冰晶向目标区域施放，冰冻并伤害路径上的所有敌人。当冰晶爆裂时，它会晕眩并伤害一定范围内的所有敌人。",
         "bodyHtml": "艾尼维亚发射出一个巨型冰块，造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(50/70/90/110/130 + (25% 法术强度))魔法伤害</span>并<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">冰冻</span>敌人3秒，使其<span class=\"text-purple-600 dark:text-purple-500\">减速</span>。在到达距离终点时，冰块会爆炸，<span class=\"text-purple-600 dark:text-purple-500\">晕眩</span>敌人1.1/1.2/1.3/1.4/1.5秒并造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(60/95/130/165/200 + (45% 法术强度))魔法伤害</span>。<br /><br />艾尼维亚可以在冰块飞行途中<span class=\"text-yellow-600 dark:text-yellow-300\">再次施放</span>这个技能来将其提前引爆。",
         "iconFile": "FlashFrost.png",
@@ -200,6 +206,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "TotalExplosionDamage",
+            "kind": "damage",
+            "baseByRank": [
+              60,
+              95,
+              130,
+              165,
+              200
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.44999998807907104,
+                  0.44999998807907104,
+                  0.44999998807907104,
+                  0.44999998807907104,
+                  0.44999998807907104
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -212,6 +245,7 @@
         "slot": "W",
         "id": "Crystallize",
         "name": "寒冰屏障",
+        "maxRank": 5,
         "summary": "艾尼维亚利用空气中的湿气，召唤出一道不可穿越的冰之墙来阻挡所有移动。该墙持续很短一段时间后就会融化。",
         "bodyHtml": "艾尼维亚召唤出一道宽400/500/600/700/800码的无法通过的冰墙。冰墙会在融化前持续5秒。",
         "iconFile": "Crystallize.png",
@@ -246,6 +280,10 @@
           }
         ],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -256,6 +294,7 @@
         "slot": "E",
         "id": "Frostbite",
         "name": "霜寒刺骨",
+        "maxRank": 5,
         "summary": "艾尼维亚扇动双翅，朝她的目标喷射出一股刺骨的强风，造成伤害。如果目标近期已被【Q寒冰闪耀】所命中或被一个完全形成的【R冰川风暴】所伤害，那么将会受到该技能双倍的伤害。",
         "bodyHtml": "艾尼维亚用一阵刺骨的寒风冲击一名敌人，造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(55/80/105/130/155 + (55% 法术强度))魔法伤害</span>。如果目标身上带有<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">冰冻</span>效果，则艾尼维亚会转而造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(110/160/210/260/310 + (110% 法术强度))魔法伤害</span>。",
         "iconFile": "Frostbite.png",
@@ -304,6 +343,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "TotalDamage",
+            "kind": "damage",
+            "baseByRank": [
+              55,
+              80,
+              105,
+              130,
+              155
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.550000011920929,
+                  0.550000011920929,
+                  0.550000011920929,
+                  0.550000011920929,
+                  0.550000011920929
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -314,6 +380,7 @@
         "slot": "R",
         "id": "GlacialStorm",
         "name": "冰川风暴",
+        "maxRank": 3,
         "summary": "艾尼维亚召唤出一朵夹杂着冰块和冰雹的雨云，对敌人造成伤害，并使其减速。",
         "bodyHtml": "<span>激活：</span>艾尼维亚在目标区域召唤出一阵夹杂着冰与雹的强雨，来使敌人<span class=\"text-purple-600 dark:text-purple-500\">减速</span>20/30/40%并每秒造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(30/45/60 + (12.5% 法术强度))魔法伤害</span>。风暴会在1.5秒里持续提升规模。<br /><br />当风暴完全形成后，它会施加<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">冰冻</span>效果，使敌人<span class=\"text-purple-600 dark:text-purple-500\">减速</span>30/45/60%，并且每秒造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(90/135/180 + (37.5% 法术强度))魔法伤害</span>。<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">如果艾尼维亚过于远离风暴，那么风暴会结束。</span>",
         "iconFile": "GlacialStorm.png",
@@ -372,6 +439,12 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "unsupported",
+          "unsupportedPartTypes": [
+            "GameCalculationModified"
+          ]
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {

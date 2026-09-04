@@ -120,6 +120,7 @@
         "slot": "P",
         "id": "ViPassive",
         "name": "Blast Shield",
+        "maxRank": 0,
         "summary": "Vi charges a shield over time. The shield can be activated by hitting an enemy with an ability.",
         "bodyHtml": "Vi gains <span class=\"text-blue-600 dark:text-blue-300\">(12% Health) Shield</span> for 3 seconds after hitting an enemy or structure with an activated Ability.",
         "iconFile": "ViPassive.png",
@@ -127,6 +128,10 @@
         "range": [],
         "rankValues": [],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -137,6 +142,7 @@
         "slot": "Q",
         "id": "ViQ",
         "name": "Vault Breaker",
+        "maxRank": 5,
         "summary": "Vi charges her gauntlets and unleashes a vault shattering punch, carrying her forward. Enemies she hits are knocked back and receive a stack of Denting Blows.",
         "bodyHtml": "<span>Begin Charging:</span> Vi begins charging a powerful punch, <span class=\"text-purple-600 dark:text-purple-500\">Slowing</span> herself by 15%.<br /><br /><span>Release:</span> Vi dashes forward dealing between <span class=\"text-red-600 dark:text-red-500 font-semibold\">(40/60/80/100/120 + (60% bonus Attack Damage)) and (100/150/200/250/300 + (150% bonus Attack Damage)) physical damage</span> based on charge time and applying <span>Denting Blows</span> to all enemies hit. Vi stops upon colliding with an enemy champion, and <span class=\"text-purple-600 dark:text-purple-500\">Knocks</span> them <span class=\"text-purple-600 dark:text-purple-500\">Back</span>.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">Non-champions hit are pulled towards Vi.<br />If the charge is interrupted, this Ability goes on a 3 second Cooldown.</span>",
         "iconFile": "ViQ.png",
@@ -197,6 +203,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "TotalDamage",
+            "kind": "damage",
+            "baseByRank": [
+              40,
+              60,
+              80,
+              100,
+              120
+            ],
+            "terms": [
+              {
+                "stat": "bonusAttackDamage",
+                "coefficientsByRank": [
+                  0.6000000238418579,
+                  0.6000000238418579,
+                  0.6000000238418579,
+                  0.6000000238418579,
+                  0.6000000238418579
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -207,6 +240,7 @@
         "slot": "W",
         "id": "ViW",
         "name": "Denting Blows",
+        "maxRank": 5,
         "summary": "Vi's punches break her opponent's Armor, dealing bonus damage and granting her Attack Speed.",
         "bodyHtml": "<span class=\"text-gray-600 dark:text-gray-500 italic\">Passive:</span> Every 3rd Attack on the same target deals an additional <span class=\"text-red-600 dark:text-red-500 font-semibold\">(4/5/6/7/8% + (0.035% bonus Attack Damage)) max Health physical damage</span>, removes <span class=\"text-orange-600 dark:text-orange-400\">20% Armor</span> and grants Vi <span>30/35/40/45/50% Attack Speed</span> for 4 seconds. It also reduces the remaining Cooldown of <span>Blast Shield</span> by seconds.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">Deals a maximum of <span class=\"text-red-600 dark:text-red-500 font-semibold\">300 damage</span> against jungle monsters.</span>",
         "iconFile": "ViW.png",
@@ -249,6 +283,12 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "unsupported",
+          "unsupportedPartTypes": [
+            "percent-calculation"
+          ]
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -261,6 +301,7 @@
         "slot": "E",
         "id": "ViE",
         "name": "Relentless Force",
+        "maxRank": 5,
         "summary": "Vi's next attack blasts through her target, dealing damage to enemies behind it.",
         "bodyHtml": "Vi's next Attack deals <span class=\"text-red-600 dark:text-red-500 font-semibold\">(10/30/50/70/90 + (110% Attack Damage) + (100% Ability Power)) physical damage</span> to the target and enemies behind them.<br /><br />This Ability has 2 charges (12/11/10/9/8 second refresh).",
         "iconFile": "ViE.png",
@@ -325,6 +366,43 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "TotalDamageTooltip",
+            "kind": "damage",
+            "baseByRank": [
+              10,
+              30,
+              50,
+              70,
+              90
+            ],
+            "terms": [
+              {
+                "stat": "totalAttackDamage",
+                "coefficientsByRank": [
+                  1.100000023841858,
+                  1.100000023841858,
+                  1.100000023841858,
+                  1.100000023841858,
+                  1.100000023841858
+                ]
+              },
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  1,
+                  1,
+                  1,
+                  1,
+                  1
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -335,6 +413,7 @@
         "slot": "R",
         "id": "ViR",
         "name": "Cease and Desist",
+        "maxRank": 3,
         "summary": "Vi runs down an enemy, knocking aside anyone in the way. When she reaches her target she knocks it into the air, jumps after it, and slams it back into the ground.",
         "bodyHtml": "Vi singles out an enemy champion, revealing them and dashing unstoppably towards them. Upon reaching them, Vi <span class=\"text-purple-600 dark:text-purple-500\">Knocks</span> them <span class=\"text-purple-600 dark:text-purple-500\">Up</span> for 1.3 seconds and deals <span class=\"text-red-600 dark:text-red-500 font-semibold\">(150/250/350 + (90% bonus Attack Damage)) physical damage</span>.<br /><br />Any other enemies Vi collides with are dealt damage, knocked aside, and <span class=\"text-purple-600 dark:text-purple-500\">Stunned</span> for 0.75 seconds.",
         "iconFile": "ViR.png",
@@ -381,6 +460,29 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "Damage",
+            "kind": "damage",
+            "baseByRank": [
+              150,
+              250,
+              350
+            ],
+            "terms": [
+              {
+                "stat": "bonusAttackDamage",
+                "coefficientsByRank": [
+                  0.8999999761581421,
+                  0.8999999761581421,
+                  0.8999999761581421
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {

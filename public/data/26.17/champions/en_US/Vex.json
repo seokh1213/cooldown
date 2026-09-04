@@ -119,6 +119,7 @@
         "slot": "P",
         "id": "VexP",
         "name": "Doom 'n Gloom",
+        "maxRank": 0,
         "summary": "Vex periodically becomes empowered, causing her next basic Ability to fear enemies and interrupt dashes. Whenever a nearby enemy dashes, Vex applies a mark that can be consumed for bonus damage that also reduces the cooldown of her empowered state.",
         "bodyHtml": "Every 16 seconds Vex becomes afflicted with Doom, causing her next basic Ability to <span class=\"text-purple-600 dark:text-purple-500\">Knock Down</span> and <span class=\"text-purple-600 dark:text-purple-500\">Fear</span> enemies for 1.5 seconds.<br /><br />Whenever a nearby enemy dashes or blinks, Vex marks them with <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Gloom</span> for 6 seconds. Vex's next Attack against a <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Gloomed</span> enemy deals an additional <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(25% Ability Power) magic damage</span> and reduces this Ability's Cooldown by 25%.",
         "iconFile": "Icons_Vex_Passive.png",
@@ -126,6 +127,10 @@
         "range": [],
         "rankValues": [],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -136,6 +141,7 @@
         "slot": "Q",
         "id": "VexQ",
         "name": "Mistral Bolt",
+        "maxRank": 5,
         "summary": "Launch a damaging missile that accelerates mid-flight.",
         "bodyHtml": "Vex launches a wave of mist that deals <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(70/115/160/205/250 + (70% Ability Power)) magic damage</span>. After a delay, the wave becomes smaller and faster.<br /><br />Consumes <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Gloom</span> on enemies hit.",
         "iconFile": "VexQ.png",
@@ -192,6 +198,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "QDamageCalc",
+            "kind": "damage",
+            "baseByRank": [
+              70,
+              115,
+              160,
+              205,
+              250
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.699999988079071,
+                  0.699999988079071,
+                  0.699999988079071,
+                  0.699999988079071,
+                  0.699999988079071
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -202,6 +235,7 @@
         "slot": "W",
         "id": "VexW",
         "name": "Personal Space",
+        "maxRank": 5,
         "summary": "Gain a shield and damage nearby enemies.",
         "bodyHtml": "Vex gains <span class=\"text-blue-600 dark:text-blue-300\">(50/75/100/125/150 + (75% Ability Power)) Shield</span> for 2.5 seconds and emits a shockwave that deals <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(80/120/160/200/240 + (30% Ability Power)) magic damage</span>.<br /><br />Consumes <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Gloom</span> on enemies hit.",
         "iconFile": "VexW.png",
@@ -258,6 +292,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "WDamageCalc",
+            "kind": "damage",
+            "baseByRank": [
+              80,
+              120,
+              160,
+              200,
+              240
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.30000001192092896,
+                  0.30000001192092896,
+                  0.30000001192092896,
+                  0.30000001192092896,
+                  0.30000001192092896
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -268,6 +329,7 @@
         "slot": "E",
         "id": "VexE",
         "name": "Looming Darkness",
+        "maxRank": 5,
         "summary": "Summon a damaging and slowing zone that applies Gloom to enemies.",
         "bodyHtml": "Vex commands Shadow to fly to a location, increasing in size as it travels. Upon arriving, it deals <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(50/70/90/110/130 + (40/45/50/55/60% Ability Power)) magic damage</span> and <span class=\"text-purple-600 dark:text-purple-500\">Slows</span> by 30/35/40/45/50% for 2 seconds.<br /><br />Killing an enemy with this ability reduces <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Doom'n Gloom's</span> Cooldown by 10%.<br /><br />Applies <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Gloom</span> to enemies hit.",
         "iconFile": "VexE.png",
@@ -324,6 +386,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "EDamageCalc",
+            "kind": "damage",
+            "baseByRank": [
+              50,
+              70,
+              90,
+              110,
+              130
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.4000000059604645,
+                  0.44999998807907104,
+                  0.5,
+                  0.550000011920929,
+                  0.6000000238418579
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -334,6 +423,7 @@
         "slot": "R",
         "id": "VexR",
         "name": "Shadow Surge",
+        "maxRank": 3,
         "summary": "Fire a missile that marks an enemy champion.  Recast to dash to them and deal damage.",
         "bodyHtml": "Shadow excitedly surges forward, dealing <span class=\"text-blue-600 dark:text-blue-500 font-semibold\"> magic damage</span> and marking the first enemy champion hit for 4 seconds.<br /><br /><span class=\"text-yellow-600 dark:text-yellow-300\">Recast</span>: Dash to the marked champion, dealing <span class=\"text-blue-600 dark:text-blue-500 font-semibold\"> magic damage</span> on arrival.<br /><br />If the marked champion dies within seconds of taking damage from this Ability, its Cooldown is temporarily reset.",
         "iconFile": "VexR.png",
@@ -384,6 +474,29 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "RDamageCalc",
+            "kind": "damage",
+            "baseByRank": [
+              75,
+              125,
+              175
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.20000000298023224,
+                  0.20000000298023224,
+                  0.20000000298023224
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
