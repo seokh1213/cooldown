@@ -1,0 +1,154 @@
+name: LLM Precompute Matchups
+
+# 매치업 조언을 CI 에서 미리 생성한다.
+#
+# 공개 저장소이므로 표준 GitHub 호스팅 러너의 실행 시간은 무료·무제한이다.
+# 다만 러너에 GPU 가 없어 CPU 추론이며 모델 다운로드가 6.7 GB 라, 기본값을 작게 두고
+# 수동 실행(workflow_dispatch)으로만 돌린다. 자동 스케줄은 붙이지 않는다.
+
+on:
+  # workflow_dispatch 는 기본 브랜치에 파일이 있어야 목록에 뜬다.
+  # 그전에 작업 브랜치에서 시험해 볼 수 있도록 push 트리거를 함께 둔다.
+  push:
+    branches:
+      - "worktree-local-llm-advisor"
+      - "llm-precompute-test*"
+    paths:
+      - ".github/workflows/llm-precompute.yml"
+      - "scripts/llm/**"
+      - "knowledge/**"
+  workflow_dispatch:
+    inputs:
+      model:
+        description: "ollama 모델 태그"
+        required: false
+        default: "gemma4:e2b"
+      limit:
+        description: "생성할 매치업 수 (스모크 테스트는 1)"
+        required: false
+        default: "1"
+      shard:
+        description: "매트릭스 분할 (예: 1/4). 비우면 분할 없음"
+        required: false
+        default: ""
+      commit:
+        description: "결과를 브랜치에 커밋할지 여부"
+        type: boolean
+        required: false
+        default: false
+
+permissions:
+  contents: write
+
+concurrency:
+  group: llm-precompute-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  precompute:
+    runs-on: ubuntu-latest
+    # CPU 추론이라 느리다. 폭주를 막기 위한 상한.
+    timeout-minutes: 90
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: "24"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci --no-audit --no-fund
+
+      # 모델이 없어도 통과해야 하는 검증부터 돌린다 (실패를 빠르게 확인)
+      - name: Validate knowledge layer
+        run: npm run llm:validate
+
+      # push 트리거로 들어오면 inputs 가 비어 있으므로 안전한 기본값을 쓴다
+      - name: Resolve run parameters
+        id: params
+        run: |
+          model="${{ inputs.model }}"
+          limit="${{ inputs.limit }}"
+          shard="${{ inputs.shard }}"
+          echo "model=${model:-gemma4:e2b}" >> "$GITHUB_OUTPUT"
+          echo "limit=${limit:-1}" >> "$GITHUB_OUTPUT"
+          echo "shard=${shard}" >> "$GITHUB_OUTPUT"
+
+      - name: Show planned targets
+        run: |
+          npm run llm:batch -- --dry-run \
+            --model "${{ steps.params.outputs.model }}" \
+            --limit "${{ steps.params.outputs.limit }}" \
+            ${{ steps.params.outputs.shard && format('--shard {0}', steps.params.outputs.shard) || '' }}
+
+      - name: Cache ollama models
+        id: ollama-cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.ollama/models
+          # 캐시 한도는 저장소당 10 GB 다. 모델 하나(약 6.7 GB)만 담는다.
+          key: ollama-models-${{ steps.params.outputs.model }}-v1
+
+      - name: Install ollama
+        run: |
+          curl -fsSL https://ollama.com/install.sh | sh
+          ollama --version
+
+      - name: Start ollama server
+        run: |
+          nohup ollama serve > "${RUNNER_TEMP}/ollama.log" 2>&1 &
+          for i in $(seq 1 60); do
+            if curl -fsS http://127.0.0.1:11434/api/tags > /dev/null; then
+              echo "ollama up after ${i}s"; exit 0
+            fi
+            sleep 1
+          done
+          echo "ollama 기동 실패"; cat "${RUNNER_TEMP}/ollama.log"; exit 1
+
+      - name: Pull model
+        run: |
+          start=$(date +%s)
+          ollama pull "${{ steps.params.outputs.model }}"
+          echo "pull 소요 $(( $(date +%s) - start ))s"
+          ollama list
+
+      - name: Report runner specs
+        run: |
+          echo "cpus=$(nproc)"
+          free -h || true
+          cat /proc/cpuinfo | grep -m1 "model name" || true
+
+      - name: Generate matchups
+        run: |
+          start=$(date +%s)
+          npm run llm:batch -- \
+            --model "${{ steps.params.outputs.model }}" \
+            --limit "${{ steps.params.outputs.limit }}" \
+            ${{ steps.params.outputs.shard && format('--shard {0}', steps.params.outputs.shard) || '' }}
+          echo "생성 소요 $(( $(date +%s) - start ))s"
+
+      - name: Show generated files
+        run: |
+          find public/data -path "*/llm/matchups/*" -name "*.json" -print -exec head -c 600 {} \; -exec echo \;
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: llm-matchups${{ steps.params.outputs.shard && format('-{0}', steps.params.outputs.shard) || '' }}
+          path: public/data/*/llm/matchups/**/*.json
+          if-no-files-found: error
+          retention-days: 7
+
+      - name: Commit results
+        if: inputs.commit
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add public/data
+          git diff --cached --quiet && echo "변경 없음" && exit 0
+          git commit -m "chore: 매치업 조언 사전 생성 (${{ steps.params.outputs.model }}) [skip ci]"
+          git push
