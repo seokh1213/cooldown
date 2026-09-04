@@ -263,3 +263,25 @@ test("keeps the main workflow fully localized in Chinese", async ({ page }) => {
   await expect(page.getByRole("heading", { name: "连招伤害与斩杀判断" })).toBeVisible();
   await expect(page.getByRole("button", { name: "选择承受伤害的目标英雄" })).toBeVisible();
 });
+
+test("renders stat icons inside ability tooltips", async ({ page }) => {
+  await page.goto("./");
+  await selectWukong(page);
+
+  await page.getByAltText("Q").hover();
+  const qTooltip = page.getByRole("tooltip");
+  // 계산해 만든 스탯 항 앞에 스탯 아이콘이 붙는다
+  const statIcon = qTooltip.locator('img[src*="statsicon"]').first();
+  await expect(statIcon).toBeVisible();
+  await expect(statIcon).toHaveAttribute("src", /statsicon\/scale[a-z]+\.png$/);
+  // 자리 표시가 그대로 노출되면 안 된다
+  await expect(qTooltip).not.toContainText("[[si:");
+  // 실제로 그려졌는지 (깨진 이미지가 아닌지) 확인
+  await expect
+    .poll(
+      () =>
+        statIcon.evaluate((node) => (node as HTMLImageElement).naturalWidth),
+      { timeout: 15_000 },
+    )
+    .toBeGreaterThan(0);
+});

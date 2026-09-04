@@ -12,6 +12,8 @@ export function htmlToPlainText(value: string): string {
   return value
     .replace(/<br\s*\/?\s*>|<\/p>|<\/li>/gi, " ")
     .replace(/<[^>]*>/g, "")
+    // 스탯 아이콘 자리 표시 (spellTooltipParser/statIcons.ts) 는 평문에서 뺀다
+    .replace(/\[\[si:[a-z]+]]/g, "")
     .replace(/&(amp|gt|lt|nbsp|quot|#39);/g, (entity) =>
       HTML_ENTITIES[entity] ?? entity,
     )

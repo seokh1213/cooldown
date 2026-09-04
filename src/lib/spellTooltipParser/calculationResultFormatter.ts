@@ -2,6 +2,7 @@ import type { CalcResult, StatPart, TooltipLocale, Value } from "./types";
 import { formatNumber } from "./formatters";
 import { getTranslations } from "@/i18n";
 import { logger } from "@/lib/logger";
+import { statIconToken } from "./statIcons";
 import { add, isVector, scaleBy100, valueToTooltipString } from "./valueUtils";
 
 function scalePercent(value: Value, precision?: number): Value {
@@ -120,10 +121,11 @@ function formatStatPart(
     ? valueToTooltipString(ratioValue)
     : formatValueWithPrecision(ratioValue, precision);
 
-  if (!tiny) return `(${ratio}% ${part.name})`;
+  const icon = statIconToken(part.icon);
+  if (!tiny) return `(${icon}${ratio}% ${part.name})`;
 
   const template = getTranslations(lang).common.perHundredStat;
-  return `(${template.replace("{stat}", part.name).replace("{value}", ratio)})`;
+  return `(${icon}${template.replace("{stat}", part.name).replace("{value}", ratio)})`;
 }
 
 /**
@@ -152,7 +154,11 @@ function formatStatMultiplier(result: CalcResult): string | null {
     // 0% 항은 정보가 없고 문장만 늘린다
     if (isZeroValue(scaled)) continue;
     const ratio = valueToTooltipString(scaled);
-    terms.push(part.name ? `${ratio}% ${part.name}` : `${ratio}%`);
+    terms.push(
+      part.name
+        ? `${statIconToken(part.icon)}${ratio}% ${part.name}`
+        : `${ratio}%`,
+    );
   }
 
   if (terms.length === 0) return null;

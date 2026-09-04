@@ -96,35 +96,80 @@ interface StatNameEntry {
   bonus?: StatNameKey;
   /** 확정 근거 (패치 26.17 기준) */
   evidence: string;
+  /** CommunityDragon texticons 의 파일 이름 (statsicon/<icon>.png) */
+  icon: string;
 }
 
 const STAT_NAME_TABLE: Record<number, StatNameEntry> = {
-  1: { base: "armor", bonus: "bonusArmor", evidence: "기존 매핑" },
-  2: { base: "attackDamage", bonus: "bonusAttackDamage", evidence: "기존 매핑" },
+  1: {
+    base: "armor",
+    bonus: "bonusArmor",
+    evidence: "기존 매핑",
+    icon: "scalearmor",
+  },
+  2: {
+    base: "attackDamage",
+    bonus: "bonusAttackDamage",
+    evidence: "기존 매핑",
+    icon: "scalead",
+  },
   4: {
     base: "attackspeed",
     evidence: "AttackSpeedCoefficient / 진 패시브 '추가 공격 속도 30%'",
+    icon: "scaleas",
   },
-  6: { base: "magicResist", bonus: "bonusMagicResist", evidence: "기존 매핑" },
+  6: {
+    base: "magicResist",
+    bonus: "bonusMagicResist",
+    evidence: "기존 매핑",
+    icon: "scalemr",
+  },
   7: {
     base: "movespeed",
     evidence: "DashSpeed / DashSpeedRatio (아우렐리온 솔·코르키·렉사이)",
+    icon: "scalems",
   },
   8: {
     base: "crit",
     evidence: "케이틀린 패시브 '치명타 확률의 85%' / 진 패시브 '치명타 확률 35%'",
+    icon: "scalecrit",
   },
   9: {
     base: "critDamage",
     evidence: "케이틀린 패시브 '치명타 피해량의 100%'",
+    icon: "scalecritmult",
   },
-  12: { base: "health", bonus: "bonusHealth", evidence: "기존 매핑" },
-  18: { base: "lifesteal", bonus: "bonusLifesteal", evidence: "기존 매핑" },
+  12: {
+    base: "health",
+    bonus: "bonusHealth",
+    evidence: "기존 매핑",
+    icon: "scalehealth",
+  },
+  18: {
+    base: "lifesteal",
+    bonus: "bonusLifesteal",
+    evidence: "기존 매핑",
+    icon: "scalels",
+  },
   29: {
     base: "lethality",
     evidence: "파이크 R '물리 관통력 150%' (mStat=29, 계수 1.5)",
+    icon: "scaleapen",
   },
 };
+
+/** 스탯 코드가 없으면 주문력 계수다 */
+const ABILITY_POWER_ICON = "scaleap";
+
+/**
+ * 스탯 코드 → CommunityDragon 아이콘 이름
+ * 이름을 모르는 코드는 아이콘도 붙이지 않는다.
+ */
+export function getStatIcon(mStat?: number, mStatFormula?: number): string | undefined {
+  if (mStat == null && mStatFormula == null) return ABILITY_POWER_ICON;
+  const statCode = mStat ?? mStatFormula;
+  return statCode != null ? STAT_NAME_TABLE[statCode]?.icon : undefined;
+}
 
 /**
  * 스탯 코드 → 로컬라이즈된 이름 변환

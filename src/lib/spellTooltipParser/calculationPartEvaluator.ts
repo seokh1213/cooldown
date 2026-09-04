@@ -30,7 +30,13 @@ import type {
   TooltipLocale,
   Value,
 } from "./types";
-import { add, getAbilityResourceName, getStatName, isVector } from "./valueUtils";
+import {
+  add,
+  getAbilityResourceName,
+  getStatIcon,
+  getStatName,
+  isVector,
+} from "./valueUtils";
 
 export type DataValueEvaluator = (name: string) => Value | null;
 
@@ -310,7 +316,13 @@ export function evaluatePart(
     if (ratio == null) return null;
     return {
       base: 0,
-      statParts: [{ name: getStatName(stat.mStat, stat.mStatFormula, ctx.lang), ratio }],
+      statParts: [
+        {
+          name: getStatName(stat.mStat, stat.mStatFormula, ctx.lang),
+          icon: getStatIcon(stat.mStat, stat.mStatFormula),
+          ratio,
+        },
+      ],
     };
   }
 
@@ -322,6 +334,7 @@ export function evaluatePart(
       statParts: [
         {
           name: getStatName(stat.mStat, stat.mStatFormula, ctx.lang),
+          icon: getStatIcon(stat.mStat, stat.mStatFormula),
           ratio: stat.mCoefficient,
           isCoefficient: true,
         },
@@ -466,6 +479,7 @@ export function evaluatePart(
       statParts: [
         {
           name: getStatName(statSubPart.mStat, statSubPart.mStatFormula, ctx.lang),
+          icon: getStatIcon(statSubPart.mStat, statSubPart.mStatFormula),
           ratio: inner.base,
           isCoefficient: true,
         },

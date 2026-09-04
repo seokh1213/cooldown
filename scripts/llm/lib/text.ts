@@ -9,6 +9,8 @@ export function stripHtml(html: string | undefined): string {
     .replace(/<br\s*\/?>/gi, " ")
     .replace(/<\/(p|div|li|mainText|stats)>/gi, " ")
     .replace(/<[^>]+>/g, "")
+    // 스탯 아이콘 자리 표시 (statIcons.ts) 는 평문에서 의미가 없다
+    .replace(/\[\[si:[a-z]+]]/g, "")
     .replace(/&nbsp;/g, " ")
     .replace(/&amp;/g, "&")
     .replace(/&lt;/g, "<")
