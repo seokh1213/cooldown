@@ -175,22 +175,22 @@ function App() {
       }
       
       // 필수 데이터 로딩: 버전 정보와 챔피언 리스트
-      const { version, ddragonVersion, cdragonVersion } = await getDataVersions();
-      setVersion(version);
+      const { patchVersion, ddragonVersion, cdragonVersion } = await getDataVersions();
+      setVersion(patchVersion);
       setDDragonVersion(ddragonVersion);
       setCDragonVersion(cdragonVersion);
       
       // 오래된 버전의 캐시 제거 (DDragon + CDragon 기준)
-      cleanOldVersionCache(version);
+      cleanOldVersionCache(patchVersion);
       
-      const champions = await getChampionList(version, lang, ddragonVersion);
+      const champions = await getChampionList(patchVersion, lang, ddragonVersion);
       setChampionList(champions);
       
       // 최소 로딩 시간 보장 (스플래시 화면 표시)
       await new Promise((resolve) => setTimeout(resolve, 1000));
       
       // 필수 데이터가 모두 로드되었는지 확인 후 로딩 완료
-      if (version && champions && champions.length > 0) {
+      if (patchVersion && champions && champions.length > 0) {
         setIsLoading(false);
       } else {
         logger.error("Required data not loaded properly. Keeping splash screen visible.");

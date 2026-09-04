@@ -23,6 +23,7 @@ import {
 } from "@/types/combatStats";
 import {logger} from "@/lib/logger";
 import {getRuntimeBasePath, getStaticDataPath} from "@/lib/staticDataUtils";
+import {decodeDataManifest} from "@/data/contracts/dataManifest";
 
 export const CHAMP_ICON_URL = (VERSION: string, NAME: string) =>
   `https://ddragon.leagueoflegends.com/cdn/${VERSION}/img/champion/${NAME}.png`;
@@ -38,9 +39,9 @@ export const SKILL_ICON_URL = (VERSION: string, NAME: string) =>
  * - cdragonVersion: Community Dragon 기준 버전 (없을 수도 있음)
  */
 export interface DataVersionInfo {
-  version: string;
+  patchVersion: string;
   ddragonVersion: string;
-  cdragonVersion: string | null;
+  cdragonVersion: string;
 }
 
 let cachedDataVersions: DataVersionInfo | null = null;
@@ -62,22 +63,13 @@ export async function getDataVersions(): Promise<DataVersionInfo> {
         throw new Error(`Failed to fetch version info: ${response.status} ${response.statusText}`);
     }
 
-    const versionInfo = await response.json();
-    if (versionInfo && (versionInfo.version || versionInfo.ddragonVersion)) {
-        const ddragonVersion: string =
-            (versionInfo.ddragonVersion as string | undefined) ??
-            (versionInfo.version as string);
-        const cdragonVersion: string | null =
-            typeof versionInfo.cdragonVersion === "string"
-            ? (versionInfo.cdragonVersion as string)
-            : null;
-        const version: string = versionInfo.version as string;
-
-        cachedDataVersions = {version, ddragonVersion, cdragonVersion};
-        return cachedDataVersions;
-    } else {
-        throw new Error("Invalid version info structure");
-    }
+    const manifest = decodeDataManifest(await response.json());
+    cachedDataVersions = {
+      patchVersion: manifest.patchVersion,
+      ddragonVersion: manifest.sources.ddragon,
+      cdragonVersion: manifest.sources.cdragon,
+    };
+    return cachedDataVersions;
   } catch (error) {
     logger.warn("[Version] Failed to get version from static data:", error);
     throw error;
@@ -85,8 +77,8 @@ export async function getDataVersions(): Promise<DataVersionInfo> {
 }
 
 export async function getVersion(): Promise<string> {
-  const {version} = await getDataVersions();
-  return version;
+  const {patchVersion} = await getDataVersions();
+  return patchVersion;
 }
 
 export function cleanOldVersionCache(

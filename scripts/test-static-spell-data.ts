@@ -5,10 +5,7 @@ import { fileURLToPath } from "node:url";
 import { parseSpellTooltip } from "../src/lib/spellTooltipParser";
 import type { CommunityDragonSpellData } from "../src/lib/spellTooltipParser/types";
 import type { ChampionSpell } from "../src/types";
-
-interface VersionInfo {
-  version: string;
-}
+import type { DataManifest } from "../src/data/contracts/dataManifest";
 
 interface SpellDataFile {
   spellData: Record<string, CommunityDragonSpellData>;
@@ -36,10 +33,10 @@ const passiveLocales = ["ko_KR", "en_US", "zh_CN"] as const;
 const projectRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const version = JSON.parse(
   await fs.readFile(path.join(projectRoot, "public/data/version.json"), "utf8")
-) as VersionInfo;
+) as DataManifest;
 const corki = JSON.parse(
   await fs.readFile(
-    path.join(projectRoot, "public/data", version.version, "spells/Corki.json"),
+    path.join(projectRoot, "public/data", version.patchVersion, "spells/Corki.json"),
     "utf8"
   )
 ) as SpellDataFile;
@@ -55,7 +52,7 @@ const wukongChampion = JSON.parse(
     path.join(
       projectRoot,
       "public/data",
-      version.version,
+      version.patchVersion,
       "champions/MonkeyKing-ko_KR.json"
     ),
     "utf8"
@@ -63,7 +60,7 @@ const wukongChampion = JSON.parse(
 ) as ChampionFile;
 const wukongData = JSON.parse(
   await fs.readFile(
-    path.join(projectRoot, "public/data", version.version, "spells/MonkeyKing.json"),
+    path.join(projectRoot, "public/data", version.patchVersion, "spells/MonkeyKing.json"),
     "utf8"
   )
 ) as SpellDataFile;
@@ -85,7 +82,7 @@ for (const locale of passiveLocales) {
       path.join(
         projectRoot,
         "public/data",
-        version.version,
+        version.patchVersion,
         `champions/MonkeyKing-${locale}.json`
       ),
       "utf8"
@@ -100,7 +97,7 @@ for (const locale of passiveLocales) {
 const championsDir = path.join(
   projectRoot,
   "public/data",
-  version.version,
+  version.patchVersion,
   "champions"
 );
 const championFiles = (await fs.readdir(championsDir))
@@ -125,7 +122,7 @@ for (const fileName of championFiles) {
   ) as ChampionFile;
   const spellFile = JSON.parse(
     await fs.readFile(
-      path.join(projectRoot, "public/data", version.version, `spells/${championId}.json`),
+      path.join(projectRoot, "public/data", version.patchVersion, `spells/${championId}.json`),
       "utf8"
     )
   ) as SpellDataFile;
