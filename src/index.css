@@ -96,6 +96,7 @@
 
 @layer base {
   :root {
+    color-scheme: light;
     --background: 240 10% 96%;
     --foreground: 240 10% 10%;
     --card: 240 10% 98%;
@@ -132,6 +133,7 @@
   }
 
   .dark {
+    color-scheme: dark;
     --background: 240 10% 6%;
     --foreground: 240 5% 96%;
     --card: 240 10% 8%;
@@ -230,6 +232,14 @@
     transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
     transition-duration: 150ms;
   }
+
+  button,
+  a,
+  select,
+  [role="button"] {
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: hsl(var(--primary) / 0.16);
+  }
   
   /* 드래그 중 텍스트 선택 방지 */
   [data-dragging="true"],
@@ -239,5 +249,16 @@
     -moz-user-select: none !important;
     -ms-user-select: none !important;
     touch-action: none !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  ::before,
+  ::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
   }
 }
