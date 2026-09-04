@@ -9,7 +9,9 @@
   - Community Dragon의 `DataValues`, `mSpellCalculations`, `effectBurn` 등 (정확한 수식/계수 정보)
   - 원본 툴팁 텍스트(tooltip/description), 언어 코드(`ko_KR`, `en_US` 등)
 - **출력**
-  - HTML로 변환된 툴팁: 색상/강조가 들어간 텍스트 + `{{ 변수 }}`가 모두 실제 수치로 치환된 상태
+  - 색상/강조 HTML, 구조형 레벨값·계수·조건, 미해결 토큰 진단
+
+이 파서는 정적 데이터 생성 단계에서만 실행됩니다. 브라우저는 완성된 Ability v2를 읽고 `SafeHtml`의 태그·속성 허용 목록을 거쳐 표시합니다.
 
 외부에서는 보통 다음 경로를 사용합니다.
 
@@ -82,9 +84,8 @@ result = replaceVariables(result, spell, communityDragonData, lang);
 - **연산자 주변 공백 보정**
   - `"{{ calc_damage_1_max }}+Max Health"` → `"{{ calc_damage_1_max }} + Max Health"`
   - `"50~100"` → `"50 ~ 100"`
-- **중첩된 변수 패턴 제거**
-  - `{{ something {{ inner }} something }}` 같은 구조는 복잡해서 **통째로 제거**
-  - 주로 게임 모드별 추가 툴팁 등, 여기서 처리하지 않는 패턴
+- **중첩된 변수 패턴 정리**
+  - 게임 모드 전용 중첩 블록은 본문에서 제외하고 진단 대상으로 집계
 - **치환 불가능한 특수 패턴 제거**
   - `{{Spell_*_Tooltip}}`, `{{ spellmodifierdescriptionappend }}` 등은 실제 수치를 만들 수 없어서 제거
 
@@ -133,7 +134,7 @@ const replacement = replaceVariable(
 2. **Community Dragon `DataValues`** (`replaceData`)
 3. **Community Dragon `mSpellCalculations`** (`replaceCalculateData`)
 
-못 찾으면 `null`을 반환하고, 최종적으로 그 변수는 **빈 문자열로 제거**됩니다.
+못 찾으면 `null`을 반환합니다. 호출자는 토큰을 `?`로 남기고 원본 토큰을 `diagnostics.unresolvedTokens`에 보존하므로 조용히 숫자가 사라지지 않습니다.
 
 ---
 
@@ -254,12 +255,8 @@ const replacement = replaceVariable(
   - 1레벨 값 + 브레이크포인트 누적 → base에 더함
 
 - **`ProductOfSubPartsCalculationPart`**
-  - `mPart1 × mPart2` 형태의 곱
-  - 내부 서브 파트는 현재
-    - `NamedDataValueCalculationPart`
-    - `NumberCalculationPart`
-    - `EffectValueCalculationPart`
-    만 지원, 나머지는 로그만 남기고 0 처리
+  - `mPart1 × mPart2` 형태의 곱을 재귀 평가
+  - 한 항이라도 안전하게 해석할 수 없으면 부분 값을 0으로 꾸미지 않고 해당 계산을 미지원으로 판정
 
 ### 5) multiplier, 퍼센트, 정밀도 반영
 

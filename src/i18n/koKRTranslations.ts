@@ -31,7 +31,6 @@ export const koKRTranslations: Translations = {
     sidebar: {
       championCooldown: "챔피언 쿨타임",
       encyclopedia: "룬, 아이템 백과",
-      killAngle: "킬각 계산기",
       simulation: "시뮬레이션",
     },
     tutorial: {
@@ -133,14 +132,6 @@ export const koKRTranslations: Translations = {
       },
     },
     pages: {
-      killAngle: {
-        title: "킬각 계산기",
-        description: "챔피언의 스킬 데미지를 계산하여 킬각을 확인할 수 있습니다. (준비 중)",
-      },
-      laningTips: {
-        title: "라인전 팁",
-        description: "챔피언별 라인전 팁과 상대법을 확인할 수 있습니다. (준비 중)",
-      },
       simulation: {
         title: "시뮬레이션",
         description: "챔피언, 룬, 아이템, 레벨을 조합해서 스탯과 스킬 정보를 시뮬레이션합니다.",
