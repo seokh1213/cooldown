@@ -1,6 +1,16 @@
 import type { Translations } from "./translationTypes";
 
 export const koKRTranslations: Translations = {
+    app: {
+      updateReady: "새 버전이 준비되었습니다.",
+      updateDescription: "앱을 새로고침하면 최신 버전으로 업데이트됩니다.",
+      currentBuild: "현재 빌드",
+      autoUpdate: "다음부터 자동으로 새 버전 적용",
+      later: "나중에",
+      refreshNow: "지금 새로고침",
+      loadError: "데이터를 불러오지 못했습니다.",
+      retry: "다시 시도",
+    },
     nav: {
       encyclopedia: "백과사전",
       theme: {
@@ -151,11 +161,9 @@ export const koKRTranslations: Translations = {
         skillPlaceholderTitle: "스킬 정보",
         skillPlaceholderDescription: "챔피언을 선택하면 스킬과 예상 피해를 확인할 수 있습니다.",
         summonerSpellsTitle: "소환사 주문",
-        summonerSpellsComingSoon: "소환사 주문 효과는 다음 시뮬레이션 단계에서 지원합니다.",
         selectSummonerSpell: "주문 선택",
         summonerSpellHint: "피해를 주는 주문은 콤보 표에 자동으로 추가됩니다.",
         runesTitle: "룬",
-        runesComingSoon: "룬 효과는 다음 시뮬레이션 단계에서 지원합니다.",
         selectDamageRune: "직접 피해 룬 선택",
         damageRuneHint: "조건이 충족된 것으로 보고 콤보에 1회 추가합니다.",
         combatTitle: "콤보 피해와 킬각",

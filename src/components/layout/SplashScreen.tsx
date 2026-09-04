@@ -12,7 +12,7 @@ function SplashScreen({ logo }: SplashScreenProps) {
         <div className="animate-pulse">
           <img
             src={logoPath}
-            alt="Loading"
+            alt=""
             className="w-32 h-32 object-contain shadow-none border-none"
           />
         </div>
@@ -22,4 +22,3 @@ function SplashScreen({ logo }: SplashScreenProps) {
 }
 
 export default SplashScreen;
-

@@ -1,6 +1,16 @@
 import type { Translations } from "./translationTypes";
 
 export const enUSTranslations: Translations = {
+    app: {
+      updateReady: "A new version is ready.",
+      updateDescription: "Refresh the app to update to the latest version.",
+      currentBuild: "Current build",
+      autoUpdate: "Apply new versions automatically",
+      later: "Later",
+      refreshNow: "Refresh now",
+      loadError: "Unable to load game data.",
+      retry: "Try again",
+    },
     nav: {
       encyclopedia: "Encyclopedia",
       theme: {
@@ -151,11 +161,9 @@ export const enUSTranslations: Translations = {
         skillPlaceholderTitle: "Skill information",
         skillPlaceholderDescription: "Select a champion to view skills and estimated damage.",
         summonerSpellsTitle: "Summoner spells",
-        summonerSpellsComingSoon: "Summoner spell effects will be supported in the next simulation phase.",
         selectSummonerSpell: "Select spell",
         summonerSpellHint: "Damaging spells are added to the combo automatically.",
         runesTitle: "Runes",
-        runesComingSoon: "Rune effects will be supported in the next simulation phase.",
         selectDamageRune: "Select direct-damage rune",
         damageRuneHint: "The combo includes one proc with its condition assumed true.",
         combatTitle: "Combo damage and lethal check",

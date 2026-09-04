@@ -1,6 +1,16 @@
 import type { Translations } from "./translationTypes";
 
 export const zhCNTranslations: Translations = {
+  app: {
+    updateReady: "新版本已准备就绪。",
+    updateDescription: "刷新应用即可更新到最新版本。",
+    currentBuild: "当前版本",
+    autoUpdate: "今后自动应用新版本",
+    later: "稍后",
+    refreshNow: "立即刷新",
+    loadError: "无法加载游戏数据。",
+    retry: "重试",
+  },
   nav: {
     encyclopedia: "百科全书",
     theme: { switchToLight: "切换到浅色模式", switchToDark: "切换到深色模式" },
@@ -140,11 +150,9 @@ export const zhCNTranslations: Translations = {
       skillPlaceholderTitle: "技能信息",
       skillPlaceholderDescription: "选择英雄后可查看技能和预计伤害。",
       summonerSpellsTitle: "召唤师技能",
-      summonerSpellsComingSoon: "召唤师技能效果将在后续模拟阶段支持。",
       selectSummonerSpell: "选择技能",
       summonerSpellHint: "造成伤害的召唤师技能会自动加入连招。",
       runesTitle: "符文",
-      runesComingSoon: "符文效果将在后续模拟阶段支持。",
       selectDamageRune: "选择直接伤害符文",
       damageRuneHint: "假定触发条件已满足，连招中计入一次伤害。",
       combatTitle: "连招伤害与斩杀判断",

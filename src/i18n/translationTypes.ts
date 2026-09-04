@@ -3,6 +3,16 @@ import type { DataLocale } from "@/data/contracts/staticData";
 export type Language = DataLocale;
 
 export interface Translations {
+  app: {
+    updateReady: string;
+    updateDescription: string;
+    currentBuild: string;
+    autoUpdate: string;
+    later: string;
+    refreshNow: string;
+    loadError: string;
+    retry: string;
+  };
   nav: {
     encyclopedia: string;
     theme: {
@@ -143,11 +153,9 @@ export interface Translations {
       skillPlaceholderTitle: string;
       skillPlaceholderDescription: string;
       summonerSpellsTitle: string;
-      summonerSpellsComingSoon: string;
       selectSummonerSpell: string;
       summonerSpellHint: string;
       runesTitle: string;
-      runesComingSoon: string;
       selectDamageRune: string;
       damageRuneHint: string;
       combatTitle: string;
