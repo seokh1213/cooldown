@@ -12,7 +12,7 @@ function isValidTab(tab: string | null): tab is EncyclopediaTab {
 
 function EncyclopediaPageContent({
   lang,
-  version,
+  patchVersion,
   ddragonVersion,
   sources,
 }: EncyclopediaPageProps) {
@@ -82,13 +82,13 @@ function EncyclopediaPageContent({
 
       {/* Runes / Items encyclopedia tabs */}
       {activeTab === "runes" && (
-        <RunesTab version={version} sources={sources} lang={lang} />
+        <RunesTab patchVersion={patchVersion} sources={sources} lang={lang} />
       )}
       {activeTab === "items" && (
-        <ItemsTab version={version} sources={sources} ddragonVersion={ddragonVersion} lang={lang} />
+        <ItemsTab patchVersion={patchVersion} sources={sources} ddragonVersion={ddragonVersion} lang={lang} />
       )}
       {activeTab === "summoner" && (
-        <SummonerTab version={version} sources={sources} ddragonVersion={ddragonVersion} lang={lang} />
+        <SummonerTab patchVersion={patchVersion} sources={sources} ddragonVersion={ddragonVersion} lang={lang} />
       )}
     </div>
   );

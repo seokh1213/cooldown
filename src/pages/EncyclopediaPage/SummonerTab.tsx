@@ -18,7 +18,7 @@ import { summonerSpellIconUrl } from "@/data/assets/riotAssetUrls";
 
 interface SummonerTabProps {
   /** 정적 데이터 경로/캐시 키로 쓰는 Riot 공식 패치 버전 */
-  version: string;
+  patchVersion: string;
   sources: import("@/data/contracts/staticData").StaticDataSources;
   /** Data Dragon CDN 요청용 내부 버전 */
   ddragonVersion: string;
@@ -37,7 +37,7 @@ function stripHtml(html: string): string {
   return html.replace(/<[^>]*>?/gm, "");
 }
 
-export function SummonerTab({ version, sources, ddragonVersion, lang }: SummonerTabProps) {
+export function SummonerTab({ patchVersion, sources, ddragonVersion, lang }: SummonerTabProps) {
   const { t } = useTranslation();
   const deviceType = useDeviceType();
   const isMobile = deviceType === "mobile";
@@ -54,7 +54,7 @@ export function SummonerTab({ version, sources, ddragonVersion, lang }: Summoner
     let cancelled = false;
     setLoading(true);
 
-    getNormalizedSummonerSpells({ patchVersion: version, sources }, lang)
+    getNormalizedSummonerSpells({ patchVersion, sources }, lang)
       .then((data) => {
         if (!cancelled) {
           const classicOnly = data.filter(
@@ -78,7 +78,7 @@ export function SummonerTab({ version, sources, ddragonVersion, lang }: Summoner
     return () => {
       cancelled = true;
     };
-  }, [version, sources, lang]);
+  }, [patchVersion, sources, lang]);
 
   const term = search.trim().toLowerCase();
 

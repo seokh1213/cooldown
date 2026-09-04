@@ -1,6 +1,7 @@
 import type { DataLocale } from "./localization";
 import type { Champion } from "../../src/types";
 import type { ChampionsByLocale } from "./champion-source";
+import type { StaticDataSources } from "../../src/data/contracts/staticData";
 
 const ABILITY_SLOTS = ["Q", "W", "E", "R"] as const;
 
@@ -18,8 +19,9 @@ export interface ActiveTooltipIssue {
 }
 
 export interface ActiveTooltipValidationReport {
-  schemaVersion: 1;
+  schemaVersion: 2;
   patchVersion: string;
+  sources: StaticDataSources;
   totals: {
     abilities: number;
     localized: number;
@@ -43,6 +45,7 @@ interface ChampionLocaleEntry {
 export interface ActiveTooltipValidationInput {
   championsByLocale: ChampionsByLocale;
   patchVersion: string;
+  sources: StaticDataSources;
   allowlist: ActiveTooltipAllowlist;
 }
 
@@ -73,6 +76,7 @@ function sortedChampionLocaleEntries(
 export function validateActiveTooltips({
   championsByLocale,
   patchVersion,
+  sources,
   allowlist,
 }: ActiveTooltipValidationInput): ActiveTooltipValidationReport {
   const issues: ActiveTooltipIssue[] = [];
@@ -106,8 +110,9 @@ export function validateActiveTooltips({
   const allowedTokens = new Set(allowlist.unresolvedTokens);
   const allowedMissing = new Set(allowlist.missingTooltips);
   return {
-    schemaVersion: 1,
+    schemaVersion: 2,
     patchVersion,
+    sources,
     totals: {
       abilities,
       localized,

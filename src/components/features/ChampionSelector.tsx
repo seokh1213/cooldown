@@ -292,7 +292,7 @@ function ChampionSelector({
                           name={champion.name}
                           selected={isSelected}
                           thumbnailSrc={championIconUrl(
-                            champion.version || "",
+                            champion.ddragonVersion || "",
                             champion.id
                           )}
                         />
@@ -345,7 +345,10 @@ function ChampionSelector({
             <div className="flex items-center gap-2 flex-1">
               <div className="relative">
                 <img
-                  src={championIconUrl(currentChampion.version || "", currentChampion.id)}
+                  src={championIconUrl(
+                    currentChampion.ddragonVersion || "",
+                    currentChampion.id,
+                  )}
                   alt={currentChampion.name}
                   className="w-10 h-10 rounded-full border-2 border-destructive/50"
                 />
@@ -433,7 +436,7 @@ function ChampionSelector({
                           name={champion.name}
                           selected={isSelected}
                           thumbnailSrc={championIconUrl(
-                            champion.version || "",
+                            champion.ddragonVersion || "",
                             champion.id
                           )}
                         />

@@ -1,5 +1,6 @@
 import * as fs from "node:fs";
 import type { Champion, ChampionSpell } from "../../src/types";
+import type { StaticDataSources } from "../../src/data/contracts/staticData";
 import type { ActiveSpellSourceData } from "./cdragon-active-spells";
 
 type AbilitySlot = "Q" | "W" | "E" | "R";
@@ -48,12 +49,9 @@ interface AbilityInput {
 }
 
 export interface AbilityValidationReport {
-  schemaVersion: 1;
+  schemaVersion: 2;
   patchVersion: string;
-  sourceVersions: {
-    ddragon: string;
-    cdragon: string;
-  };
+  sources: StaticDataSources;
   summary: {
     champions: number;
     abilities: number;
@@ -153,8 +151,7 @@ function validateAbility(
 export function validateGeneratedAbilities(options: {
   championsById: ChampionById;
   patchVersion: string;
-  ddragonVersion: string;
-  cdragonVersion: string;
+  sources: StaticDataSources;
   allowlistPath: string;
   abilitySourcesByChampion: ReadonlyMap<string, ActiveSpellSourceData[]>;
 }): AbilityValidationReport {
@@ -189,12 +186,9 @@ export function validateGeneratedAbilities(options: {
   const { issues, counters } = context;
 
   return {
-    schemaVersion: 1,
+    schemaVersion: 2,
     patchVersion: options.patchVersion,
-    sourceVersions: {
-      ddragon: options.ddragonVersion,
-      cdragon: options.cdragonVersion,
-    },
+    sources: options.sources,
     summary: {
       champions: championIds.length,
       abilities: championIds.length * SLOTS.length,

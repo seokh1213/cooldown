@@ -27,12 +27,12 @@ import { AlertTriangle } from "lucide-react";
 import type { DataLocale, StaticDataSources } from "@/data/contracts/staticData";
 
 interface RunesTabProps {
-  version: string;
+  patchVersion: string;
   sources: StaticDataSources;
   lang: DataLocale;
 }
 
-export function RunesTab({ version, sources, lang }: RunesTabProps) {
+export function RunesTab({ patchVersion, sources, lang }: RunesTabProps) {
   const { t } = useTranslation();
   const [runeTrees, setRuneTrees] = useState<RuneTree[] | null>(null);
   const [statShardData, setStatShardData] =
@@ -46,7 +46,7 @@ export function RunesTab({ version, sources, lang }: RunesTabProps) {
     let cancelled = false;
     setLoading(true);
 
-    getRunePageData({ patchVersion: version, sources }, lang)
+    getRunePageData({ patchVersion, sources }, lang)
       .then(({ trees, statShards }) => {
         if (!cancelled) {
           setRuneTrees(trees);
@@ -62,7 +62,7 @@ export function RunesTab({ version, sources, lang }: RunesTabProps) {
     return () => {
       cancelled = true;
     };
-  }, [version, sources, lang]);
+  }, [patchVersion, sources, lang]);
 
   const statShardRows = useMemo(() => {
     if (!statShardData || !statShardData.groups.length) return [];

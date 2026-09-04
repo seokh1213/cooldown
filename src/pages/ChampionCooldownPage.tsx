@@ -47,7 +47,7 @@ interface ChampionCooldownPageProps {
   lang: Language;
   championList: Champion[] | null;
   /** 정적 데이터 경로/캐시 키로 쓰는 Riot 공식 패치 버전 (예: 26.17) */
-  version: string;
+  patchVersion: string;
   /** Data Dragon CDN 요청용 내부 버전 (예: 16.17.1) */
   ddragonVersion: string;
   sources: StaticDataSources;
@@ -56,7 +56,7 @@ interface ChampionCooldownPageProps {
 function ChampionCooldownPageContent({
   lang,
   championList,
-  version,
+  patchVersion,
   ddragonVersion,
   sources,
 }: ChampionCooldownPageProps) {
@@ -134,7 +134,7 @@ function ChampionCooldownPageContent({
     handleDragEnd,
     generateTabId,
   } = useTabManagement({
-    version,
+    patchVersion,
     tabsStorageKey: COOLDOWN_TABS_STORAGE_KEY,
     selectedTabIdStorageKey: COOLDOWN_SELECTED_TAB_ID_STORAGE_KEY,
   });
@@ -148,7 +148,7 @@ function ChampionCooldownPageContent({
     removeChampion,
     resetChampions: resetChampionsData,
   } = useChampionData({
-    version,
+    patchVersion,
     sources,
     lang,
     championList,
@@ -508,7 +508,7 @@ function ChampionCooldownPageContent({
                 ? [mobileChampion]
                 : championsWithFullInfo.map((c) => c.fullInfo!)
             }
-            version={version}
+            patchVersion={patchVersion}
             ddragonVersion={ddragonVersion}
             activeTab={activeTab === "skills" ? "skills" : "stats"}
             championList={championList}

@@ -54,7 +54,7 @@ export function AppRouter(props: AppRouterProps) {
             <ChampionCooldownPage
               lang={language}
               championList={runtime.championList}
-              version={runtime.patchVersion}
+              patchVersion={runtime.patchVersion}
               ddragonVersion={runtime.sources.ddragon}
               sources={runtime.sources}
             />
@@ -65,7 +65,7 @@ export function AppRouter(props: AppRouterProps) {
           element={
             <EncyclopediaPage
               lang={language}
-              version={runtime.patchVersion}
+              patchVersion={runtime.patchVersion}
               ddragonVersion={runtime.sources.ddragon}
               sources={runtime.sources}
             />
@@ -76,7 +76,7 @@ export function AppRouter(props: AppRouterProps) {
           element={
             <SimulationPage
               lang={language}
-              version={runtime.patchVersion}
+              patchVersion={runtime.patchVersion}
               ddragonVersion={runtime.sources.ddragon}
               sources={runtime.sources}
               championList={runtime.championList}

@@ -12,13 +12,13 @@ import {
 import { logger } from "@/lib/logger";
 
 interface UseTabManagementOptions {
-  version: string | null;
+  patchVersion: string | null;
   tabsStorageKey: string;
   selectedTabIdStorageKey: string;
 }
 
 export function useTabManagement({
-  version,
+  patchVersion,
   tabsStorageKey,
   selectedTabIdStorageKey,
 }: UseTabManagementOptions) {
@@ -36,7 +36,7 @@ export function useTabManagement({
 
   // 컴포넌트가 마운트될 때마다 localStorage에서 직접 읽어오기
   useEffect(() => {
-    if (!version || hasRestored) return;
+    if (!patchVersion || hasRestored) return;
 
     try {
       // localStorage에서 직접 읽기
@@ -70,7 +70,7 @@ export function useTabManagement({
       logger.error("Failed to load tabs from localStorage:", error);
       setHasRestored(true);
     }
-  }, [version, tabsStorageKey, selectedTabIdStorageKey, hasRestored]);
+  }, [patchVersion, tabsStorageKey, selectedTabIdStorageKey, hasRestored]);
 
   // 챔피언이 로드되면 기본 탭 선택 (탭이 없을 때만)
   useEffect(() => {

@@ -9,7 +9,7 @@ import { ChampionComparisonProps } from "./ChampionComparison/types";
 
 function ChampionComparison({
   champions,
-  version,
+  patchVersion,
   ddragonVersion,
   activeTab,
   championList,
@@ -31,7 +31,7 @@ function ChampionComparison({
           isMobile ? (
             <StatsSectionMobile
               champions={champions}
-              version={version}
+              patchVersion={patchVersion}
               ddragonVersion={ddragonVersion}
               championList={championList}
               onAddChampion={onAddChampion}
@@ -41,7 +41,7 @@ function ChampionComparison({
           ) : (
             <StatsSectionDesktop
               champions={champions}
-              version={version}
+              patchVersion={patchVersion}
               ddragonVersion={ddragonVersion}
               championList={championList}
               onAddChampion={onAddChampion}
@@ -53,7 +53,7 @@ function ChampionComparison({
           isMobile ? (
             <SkillsSectionMobile
               champions={champions}
-              version={version}
+              patchVersion={patchVersion}
               ddragonVersion={ddragonVersion}
               championList={championList}
               onAddChampion={onAddChampion}
@@ -63,7 +63,7 @@ function ChampionComparison({
           ) : (
             <SkillsSectionDesktop
               champions={champions}
-              version={version}
+              patchVersion={patchVersion}
               ddragonVersion={ddragonVersion}
               championList={championList}
               onAddChampion={onAddChampion}
@@ -78,4 +78,3 @@ function ChampionComparison({
 }
 
 export default React.memo(ChampionComparison);
-

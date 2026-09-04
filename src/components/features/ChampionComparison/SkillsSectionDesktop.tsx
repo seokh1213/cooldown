@@ -41,7 +41,7 @@ import { CSS } from "@dnd-kit/utilities";
 
 export function SkillsSectionDesktop({
   champions,
-  version,
+  patchVersion,
   ddragonVersion,
   championList,
   onAddChampion,
@@ -286,7 +286,7 @@ export function SkillsSectionDesktop({
                         passiveImageFull={champion.passive.image.full}
                         skill={{} as ChampionSpell}
                         skillIdx={0}
-                        version={version}
+                        patchVersion={patchVersion}
                         ddragonVersion={ddragonVersion}
                       />
                     )}
@@ -296,7 +296,7 @@ export function SkillsSectionDesktop({
                           key={skill.id}
                           skill={skill}
                           skillIdx={skillIdx}
-                          version={version}
+                          patchVersion={patchVersion}
                           ddragonVersion={ddragonVersion}
                         />
                     ))}

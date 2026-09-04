@@ -20,7 +20,7 @@ import { ChampionSpell } from "@/types";
 
 export function SkillsSectionMobile({
   champions,
-  version,
+  patchVersion,
   ddragonVersion,
   vsMode,
 }: SectionProps) {
@@ -116,7 +116,7 @@ export function SkillsSectionMobile({
                               passiveImageFull={championA.passive.image.full}
                               skill={{} as ChampionSpell}
                               skillIdx={0}
-                              version={version}
+                              patchVersion={patchVersion}
                               ddragonVersion={ddragonVersion}
                               size="small"
                             />
@@ -126,7 +126,7 @@ export function SkillsSectionMobile({
                                 key={skill.id}
                                 skill={skill}
                                 skillIdx={skillIdx}
-                                version={version}
+                                patchVersion={patchVersion}
                                 ddragonVersion={ddragonVersion}
                                 size="small"
                               />
@@ -144,7 +144,7 @@ export function SkillsSectionMobile({
                               passiveImageFull={championB.passive.image.full}
                               skill={{} as ChampionSpell}
                               skillIdx={0}
-                              version={version}
+                              patchVersion={patchVersion}
                               ddragonVersion={ddragonVersion}
                               size="small"
                             />
@@ -154,7 +154,7 @@ export function SkillsSectionMobile({
                                 key={skill.id}
                                 skill={skill}
                                 skillIdx={skillIdx}
-                                version={version}
+                                patchVersion={patchVersion}
                                 ddragonVersion={ddragonVersion}
                                 size="small"
                               />
@@ -295,7 +295,7 @@ export function SkillsSectionMobile({
                               passiveImageFull={champion.passive.image.full}
                               skill={{} as ChampionSpell}
                               skillIdx={0}
-                              version={version}
+                              patchVersion={patchVersion}
                               ddragonVersion={ddragonVersion}
                             />
                           )}
@@ -305,7 +305,7 @@ export function SkillsSectionMobile({
                                 key={skill.id}
                                 skill={skill}
                                 skillIdx={skillIdx}
-                                version={version}
+                                patchVersion={patchVersion}
                                 ddragonVersion={ddragonVersion}
                               />
                           ))}
