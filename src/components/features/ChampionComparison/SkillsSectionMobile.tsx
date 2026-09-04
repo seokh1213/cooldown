@@ -24,6 +24,7 @@ import { useVersionContext } from "@/context/VersionContext";
 export function SkillsSectionMobile({
   champions,
   version,
+  ddragonVersion,
   vsMode,
 }: SectionProps) {
   const { t } = useTranslation();
@@ -124,7 +125,7 @@ export function SkillsSectionMobile({
                       <TableHead className="text-center p-1.5 text-[10px] font-semibold text-foreground w-[calc((100%-90px)/2)] min-w-[100px] border-r border-border/30 select-none">
                         <div className="flex flex-col items-center justify-center gap-0.5">
                           <img
-                            src={CHAMP_ICON_URL(version, championA.id)}
+                            src={CHAMP_ICON_URL(ddragonVersion, championA.id)}
                             alt={championA.name}
                             className="w-6 h-6 rounded-full"
                             draggable="false"
@@ -140,7 +141,7 @@ export function SkillsSectionMobile({
                       <TableHead className="text-center p-1.5 text-[10px] font-semibold text-foreground w-[calc((100%-90px)/2)] min-w-[100px] select-none">
                         <div className="flex flex-col items-center justify-center gap-0.5">
                           <img
-                            src={CHAMP_ICON_URL(version, championB.id)}
+                            src={CHAMP_ICON_URL(ddragonVersion, championB.id)}
                             alt={championB.name}
                             className="w-6 h-6 rounded-full"
                             draggable="false"
@@ -169,6 +170,7 @@ export function SkillsSectionMobile({
                               skill={{} as ChampionSpell}
                               skillIdx={0}
                               version={version}
+                              ddragonVersion={ddragonVersion}
                               size="small"
                             />
                           )}
@@ -180,6 +182,7 @@ export function SkillsSectionMobile({
                                 skill={skill}
                                 skillIdx={skillIdx}
                                 version={version}
+                                ddragonVersion={ddragonVersion}
                                 spellData={spellData}
                                 size="small"
                               />
@@ -199,6 +202,7 @@ export function SkillsSectionMobile({
                               skill={{} as ChampionSpell}
                               skillIdx={0}
                               version={version}
+                              ddragonVersion={ddragonVersion}
                               size="small"
                             />
                           )}
@@ -210,6 +214,7 @@ export function SkillsSectionMobile({
                                 skill={skill}
                                 skillIdx={skillIdx}
                                 version={version}
+                                ddragonVersion={ddragonVersion}
                                 spellData={spellData}
                                 size="small"
                               />
@@ -317,7 +322,7 @@ export function SkillsSectionMobile({
                       >
                         <div className="flex flex-col items-center justify-center gap-1">
                           <img
-                            src={CHAMP_ICON_URL(version, champion.id)}
+                            src={CHAMP_ICON_URL(ddragonVersion, champion.id)}
                             alt={champion.name}
                             className="w-8 h-8 rounded-full"
                             draggable="false"
@@ -352,6 +357,7 @@ export function SkillsSectionMobile({
                               skill={{} as ChampionSpell}
                               skillIdx={0}
                               version={version}
+                              ddragonVersion={ddragonVersion}
                             />
                           )}
                           {/* Skills */}
@@ -363,6 +369,7 @@ export function SkillsSectionMobile({
                                 skill={skill}
                                 skillIdx={skillIdx}
                                 version={version}
+                                ddragonVersion={ddragonVersion}
                                 spellData={spellData}
                               />
                             );

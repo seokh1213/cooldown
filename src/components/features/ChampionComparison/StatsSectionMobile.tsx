@@ -14,7 +14,7 @@ import { useTranslation } from "@/i18n";
 
 export function StatsSectionMobile({
   champions,
-  version,
+  ddragonVersion,
   vsMode,
 }: SectionProps) {
   const { t, lang } = useTranslation();
@@ -39,7 +39,7 @@ export function StatsSectionMobile({
                     <TableHead className="text-center p-1.5 text-[10px] font-semibold text-foreground w-1/2 border-r border-border/30 select-none">
                       <div className="flex flex-col items-center justify-center gap-0.5">
                         <img
-                          src={CHAMP_ICON_URL(version, championA.id)}
+                          src={CHAMP_ICON_URL(ddragonVersion, championA.id)}
                           alt={championA.name}
                           className="w-6 h-6 rounded-full"
                           draggable="false"
@@ -55,7 +55,7 @@ export function StatsSectionMobile({
                     <TableHead className="text-center p-1.5 text-[10px] font-semibold text-foreground w-1/2 select-none">
                       <div className="flex flex-col items-center justify-center gap-0.5">
                         <img
-                          src={CHAMP_ICON_URL(version, championB.id)}
+                          src={CHAMP_ICON_URL(ddragonVersion, championB.id)}
                           alt={championB.name}
                           className="w-6 h-6 rounded-full"
                           draggable="false"
@@ -127,7 +127,7 @@ export function StatsSectionMobile({
                     >
                       <div className="flex flex-col items-center justify-center gap-1">
                         <img
-                          src={CHAMP_ICON_URL(version, champion.id)}
+                          src={CHAMP_ICON_URL(ddragonVersion, champion.id)}
                           alt={champion.name}
                           className="w-8 h-8 rounded-full"
                           draggable="false"

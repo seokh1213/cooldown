@@ -14,6 +14,7 @@ function isValidTab(tab: string | null): tab is EncyclopediaTab {
 function EncyclopediaPageContent({
   lang,
   version,
+  ddragonVersion,
 }: EncyclopediaPageProps) {
   const [searchParams, setSearchParams] = useSearchParams();
   
@@ -84,10 +85,10 @@ function EncyclopediaPageContent({
         <RunesTab version={version} lang={lang} />
       )}
       {activeTab === "items" && (
-        <ItemsTab version={version} lang={lang} />
+        <ItemsTab version={version} ddragonVersion={ddragonVersion} lang={lang} />
       )}
       {activeTab === "summoner" && (
-        <SummonerTab version={version} lang={lang} />
+        <SummonerTab version={version} ddragonVersion={ddragonVersion} lang={lang} />
       )}
     </div>
   );
@@ -95,8 +96,8 @@ function EncyclopediaPageContent({
 
 export default function EncyclopediaPage(props: EncyclopediaPageProps) {
   return (
-    <VersionProvider 
-      initialDDragonVersion={props.version}
+    <VersionProvider
+      initialDDragonVersion={props.ddragonVersion}
       initialCDragonVersion={props.cdragonVersion}
     >
       <EncyclopediaPageContent {...props} />

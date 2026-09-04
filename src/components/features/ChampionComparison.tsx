@@ -10,6 +10,7 @@ import { ChampionComparisonProps } from "./ChampionComparison/types";
 function ChampionComparison({
   champions,
   version,
+  ddragonVersion,
   activeTab,
   championList,
   onAddChampion,
@@ -31,6 +32,7 @@ function ChampionComparison({
             <StatsSectionMobile
               champions={champions}
               version={version}
+              ddragonVersion={ddragonVersion}
               championList={championList}
               onAddChampion={onAddChampion}
               onRemoveChampion={onRemoveChampion}
@@ -40,6 +42,7 @@ function ChampionComparison({
             <StatsSectionDesktop
               champions={champions}
               version={version}
+              ddragonVersion={ddragonVersion}
               championList={championList}
               onAddChampion={onAddChampion}
               onRemoveChampion={onRemoveChampion}
@@ -51,6 +54,7 @@ function ChampionComparison({
             <SkillsSectionMobile
               champions={champions}
               version={version}
+              ddragonVersion={ddragonVersion}
               championList={championList}
               onAddChampion={onAddChampion}
               onRemoveChampion={onRemoveChampion}
@@ -60,6 +64,7 @@ function ChampionComparison({
             <SkillsSectionDesktop
               champions={champions}
               version={version}
+              ddragonVersion={ddragonVersion}
               championList={championList}
               onAddChampion={onAddChampion}
               onRemoveChampion={onRemoveChampion}

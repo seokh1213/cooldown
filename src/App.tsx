@@ -351,7 +351,8 @@ function AppContent({
   toggleTheme: () => void;
 }) {
   // 필수 데이터가 모두 로드되었는지 확인
-  const isDataReady = !isLoading && version && championList && championList.length > 0;
+  const isDataReady =
+    !isLoading && version && ddragonVersion && championList && championList.length > 0;
 
   return (
     <>
@@ -382,6 +383,7 @@ function AppContent({
                     lang={lang}
                     championList={championList}
                     version={version}
+                    ddragonVersion={ddragonVersion}
                     cdragonVersion={cdragonVersion}
                     initialSelectedChampions={initialCooldownSelectedChampions}
                     initialTabs={initialCooldownTabs}
@@ -416,6 +418,7 @@ function AppContent({
                     lang={lang}
                     championList={championList}
                     version={version}
+                    ddragonVersion={ddragonVersion}
                     cdragonVersion={cdragonVersion}
                     initialSelectedChampions={initialSelectedChampions}
                     initialTabs={initialTabs}
