@@ -111,6 +111,7 @@ export interface NormalizedItem extends NormalizedEntityBase {
   requiredAlly?: string;
   stats: StatContribution[];
   effects: NormalizedItemEffect[];
+  damageEffects?: NormalizedDamageEffect[];
   /**
    * 선택적 상점/맵 메타데이터
    * - 기존 Data Dragon/CDragon 필드를 정규화하여 담은 확장 포인트
@@ -186,8 +187,14 @@ export interface NormalizedDamageEffect {
   damageType: "physical" | "magical" | "true";
   target: "champion" | "nonChampion";
   valuesByLevel: number[];
+  scalings?: NormalizedDamageScaling[];
   durationSeconds?: number;
   conditions?: string[];
+}
+
+export interface NormalizedDamageScaling {
+  stat: "baseAttackDamage" | "attackDamage" | "abilityPower" | "targetMaxHealth";
+  coefficient: number;
 }
 
 export interface NormalizedSummonerDataFile extends StaticDataMetadata {

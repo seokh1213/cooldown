@@ -3,6 +3,7 @@ import { normalizeChampion } from "./data-pipeline/normalization/champion";
 import { normalizeItems } from "./data-pipeline/normalization/item";
 import { normalizeSummonerSpells } from "./data-pipeline/normalization/summoner";
 import { normalizeRunesAndStatShards } from "./data-pipeline/normalization/rune";
+import { compileItemDamageEffects } from "./data-pipeline/normalization/item-damage-effects";
 import { StatKey } from "../src/types/combatStats";
 import { fetchCDragonRuneStatShards } from "./data-pipeline/sources/cdragon-runes";
 import { mergeCDragonItems } from "./data-pipeline/sources/cdragon-items";
@@ -23,6 +24,23 @@ const items = normalizeItems("en_US", {
       maps: { "11": true },
       gold: { base: 500, total: 1100, purchasable: true },
     },
+    "3115": {
+      name: "Nashor's Tooth",
+      cdragonCalculation: {
+        mDataValues: [
+          { mName: "NashorsBaseValue", mValue: 15 },
+          { mName: "NashorsAPValue", mValue: 0.15 },
+        ],
+        mItemCalculations: {
+          TotalOnHitDamage: {
+            mFormulaParts: [
+              { mDataValue: "NashorsBaseValue", __type: "NamedDataValueCalculationPart" },
+              { mDataValue: "NashorsAPValue", __type: "StatByNamedDataValueCalculationPart" },
+            ],
+          },
+        },
+      },
+    },
   },
 });
 assert.equal(items[1].tags.includes("Boots"), true);
@@ -34,6 +52,28 @@ assert.deepEqual(items[1].stats[0], {
   source: "item",
   scope: "item-passive",
 });
+assert.equal(items[2].damageEffects![0].valuesByLevel[0], 15);
+assert.deepEqual(items[2].damageEffects![0].scalings, [
+  { stat: "abilityPower", coefficient: 0.15 },
+]);
+assert.deepEqual(compileItemDamageEffects("3057", {
+  mItemCalculations: {
+    SpellbladeDamage: {
+      mFormulaParts: [{
+        mStat: 2,
+        mStatFormula: 1,
+        mCoefficient: 1,
+        __type: "StatByCoefficientCalculationPart",
+      }],
+    },
+  },
+})[0].scalings, [{ stat: "baseAttackDamage", coefficient: 1 }]);
+assert.equal(compileItemDamageEffects("6653", {
+  mDataValues: [
+    { mName: "BurnDuration", mValue: 3 },
+    { mName: "BurnPercentHealthDamage", mValue: 0.02 },
+  ],
+})[0].scalings?.[0].coefficient, 0.06);
 
 const summoners = normalizeSummonerSpells({
   data: {

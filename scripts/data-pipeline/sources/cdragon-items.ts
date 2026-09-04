@@ -20,6 +20,8 @@ export interface CommunityDragonItem {
   iconPath?: string;
 }
 
+export type CommunityDragonItemCalculation = Record<string, unknown>;
+
 function sourceLocale(locale: string): string {
   if (locale === "ko_KR") return "ko_kr";
   if (locale === "zh_CN") return "zh_cn";
@@ -46,6 +48,22 @@ export async function fetchCDragonItems(
   return json as CommunityDragonItem[];
 }
 
+export async function fetchCDragonItemCalculations(
+  cdragonVersion: string,
+): Promise<Record<string, CommunityDragonItemCalculation>> {
+  const url = `https://raw.communitydragon.org/${cdragonVersion}/game/items.cdtb.bin.json`;
+  console.log(`Fetching exact CDragon item calculations: ${url}`);
+  const response = await fetch(url);
+  if (!response.ok) {
+    throw new Error(`[CD][Items] Calculation data missing: HTTP ${response.status}`);
+  }
+  const json = (await response.json()) as unknown;
+  if (!json || typeof json !== "object" || Array.isArray(json)) {
+    throw new Error("[CD][Items] Invalid calculation response");
+  }
+  return json as Record<string, CommunityDragonItemCalculation>;
+}
+
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null;
 }
@@ -53,6 +71,7 @@ function isRecord(value: unknown): value is Record<string, unknown> {
 export function mergeCDragonItems(
   ddragonData: unknown,
   cdragonItems: CommunityDragonItem[],
+  calculations: Record<string, CommunityDragonItemCalculation> = {},
 ): Record<string, unknown> {
   if (!isRecord(ddragonData) || !isRecord(ddragonData.data)) {
     throw new Error("Invalid DDragon item response");
@@ -68,6 +87,7 @@ export function mergeCDragonItems(
       return [id, {
         ...rawItem,
         cdragon: { ...cdragon },
+        cdragonCalculation: calculations[`Items/${id}`],
         ...(typeof cdragon.inStore === "boolean"
           ? { inStore: cdragon.inStore }
           : {}),
