@@ -25,7 +25,6 @@ export const zhCNTranslations: Translations = {
   sidebar: {
     championCooldown: "英雄冷却时间",
     encyclopedia: "符文与装备百科",
-    killAngle: "斩杀线计算器",
     simulation: "模拟器",
   },
   tutorial: {
@@ -122,14 +121,6 @@ export const zhCNTranslations: Translations = {
     },
   },
   pages: {
-    killAngle: {
-      title: "斩杀线计算器",
-      description: "计算英雄技能伤害并判断斩杀线。（开发中）",
-    },
-    laningTips: {
-      title: "对线技巧",
-      description: "查看各英雄的对线技巧和应对方法。（开发中）",
-    },
     simulation: {
       title: "模拟器",
       description: "组合英雄、符文、装备和等级，模拟属性与技能信息。",

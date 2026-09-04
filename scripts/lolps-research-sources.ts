@@ -108,19 +108,7 @@ export async function loadLolps(
   cacheDir: string,
   refresh: boolean
 ): Promise<LolpsResponse> {
-  const legacyPath = path.join(cacheDir, `${championId}.json`);
   const cachePath = path.join(cacheDir, "lolps", `${championId}.json`);
-  if (!refresh) {
-    try {
-      return await readJson<LolpsResponse>(cachePath);
-    } catch {
-      try {
-        return await readJson<LolpsResponse>(legacyPath);
-      } catch {
-        // Neither cache layout exists: fetch below.
-      }
-    }
-  }
   return fetchCachedJson<LolpsResponse>({
     cachePath,
     refresh,

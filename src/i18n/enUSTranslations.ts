@@ -31,7 +31,6 @@ export const enUSTranslations: Translations = {
     sidebar: {
       championCooldown: "Champion Cooldown",
       encyclopedia: "Runes & Items Encyclopedia",
-      killAngle: "Kill Angle Calculator",
       simulation: "Simulation",
     },
     tutorial: {
@@ -133,14 +132,6 @@ export const enUSTranslations: Translations = {
       },
     },
     pages: {
-      killAngle: {
-        title: "Kill Angle Calculator",
-        description: "Calculate champion skill damage to check kill angles. (Coming soon)",
-      },
-      laningTips: {
-        title: "Laning Tips",
-        description: "Check champion-specific laning tips and matchups. (Coming soon)",
-      },
       simulation: {
         title: "Simulation",
         description: "Simulate champion stats and skills with different runes, items, and levels.",

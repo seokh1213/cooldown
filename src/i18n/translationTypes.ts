@@ -33,7 +33,6 @@ export interface Translations {
   sidebar: {
     championCooldown: string;
     encyclopedia: string;
-    killAngle: string;
     simulation: string;
   };
   tutorial: {
@@ -125,14 +124,6 @@ export interface Translations {
     };
   };
   pages: {
-    killAngle: {
-      title: string;
-      description: string;
-    };
-    laningTips: {
-      title: string;
-      description: string;
-    };
     simulation: {
       title: string;
       description: string;
