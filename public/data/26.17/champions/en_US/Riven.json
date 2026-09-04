@@ -1,0 +1,346 @@
+{
+  "schemaVersion": 2,
+  "patchVersion": "26.17",
+  "locale": "en_US",
+  "sources": {
+    "ddragon": "16.17.1",
+    "cdragon": "16.17"
+  },
+  "champion": {
+    "id": "Riven",
+    "key": "92",
+    "name": "Riven",
+    "title": "the Exile",
+    "tags": [
+      "Fighter",
+      "Assassin"
+    ],
+    "baseStats": {
+      "health": {
+        "base": 630,
+        "perLevel": 100
+      },
+      "healthRegen": {
+        "base": 8.5,
+        "perLevel": 0.5
+      },
+      "mana": {
+        "base": 0,
+        "perLevel": 0
+      },
+      "manaRegen": {
+        "base": 0,
+        "perLevel": 0
+      },
+      "attackDamage": {
+        "base": 64,
+        "perLevel": 0
+      },
+      "attackSpeed": {
+        "base": 0.625,
+        "perLevel": 3.5
+      },
+      "armor": {
+        "base": 33,
+        "perLevel": 4.4
+      },
+      "magicResist": {
+        "base": 32,
+        "perLevel": 2.05
+      },
+      "moveSpeed": {
+        "base": 340,
+        "perLevel": 0
+      },
+      "attackRange": {
+        "base": 125,
+        "perLevel": 0
+      }
+    },
+    "baseStatContributions": [
+      {
+        "stat": "MAX_HEALTH",
+        "value": 100,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "HEALTH_REGEN",
+        "value": 0.5,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAX_MANA",
+        "value": 0,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MANA_REGEN",
+        "value": 0,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_DAMAGE",
+        "value": 0,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_SPEED",
+        "value": 3.5,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ARMOR",
+        "value": 4.4,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAGIC_RESIST",
+        "value": 2.05,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      }
+    ],
+    "abilities": {
+      "P": {
+        "slot": "P",
+        "id": "RivenPassive",
+        "name": "Runic Blade",
+        "summary": "Riven's abilities charge her blade, and her basic attacks expend charges to deal an additional damage.",
+        "bodyHtml": "Using an Ability grants Riven a charge for 6 seconds (max 3). Her Attacks spend a charge to deal an additional <span class=\"text-red-600 dark:text-red-500 font-semibold\"> physical damage</span>.",
+        "iconFile": "RivenRunicBlades.png",
+        "cooldownSeconds": [],
+        "range": [],
+        "rankValues": [],
+        "scalings": [],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "Q": {
+        "slot": "Q",
+        "id": "RivenTriCleave",
+        "name": "Broken Wings",
+        "summary": "Riven lashes out in a series of strikes. This ability can be reactivated three times in a short time frame with the third hit knocking back nearby enemies.",
+        "bodyHtml": "Riven dashes forward, dealing <span class=\"text-red-600 dark:text-red-500 font-semibold\">(45/75/105/135/165 + (60/65/70/75/80% bonus Attack Damage)) physical damage</span>. She can <span class=\"text-yellow-600 dark:text-yellow-300\">Recast</span> this Ability twice. The first <span class=\"text-yellow-600 dark:text-yellow-300\">Recast</span> is the same as the original, but the second has a different effect:<br /><br /><span class=\"text-yellow-600 dark:text-yellow-300\">Recast</span>: Riven leaps forward and slams, dealing <span class=\"text-red-600 dark:text-red-500 font-semibold\">(45/75/105/135/165 + (60/65/70/75/80% bonus Attack Damage)) physical damage</span> and <span class=\"text-purple-600 dark:text-purple-500\">Knocks Up</span> nearby enemies for 0.75 seconds.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">Only the last use of this Ability can cross terrain.<br />Riven targets the unit your cursor is on, or dashes forward if there is no target.</span>",
+        "iconFile": "RivenTriCleave.png",
+        "cooldownSeconds": [
+          13,
+          13,
+          13,
+          13,
+          13
+        ],
+        "range": [
+          275,
+          275,
+          275,
+          275,
+          275
+        ],
+        "rankValues": [
+          {
+            "label": "Damage",
+            "values": "45/75/105/135/165"
+          },
+          {
+            "label": "Attack Damage Ratio",
+            "values": "60/65/70/75/80"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "Q Scaling",
+            "labelKo": "Q 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "0:FirstSlashDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "W": {
+        "slot": "W",
+        "id": "RivenMartyr",
+        "name": "Ki Burst",
+        "summary": "Riven emits a Ki Burst, damaging and stunning nearby enemies.",
+        "bodyHtml": "Riven's sword emits a burst of runic energy, dealing <span class=\"text-red-600 dark:text-red-500 font-semibold\">(65/95/125/155/185 + (100% bonus Attack Damage)) physical damage</span> and <span class=\"text-purple-600 dark:text-purple-500\">Stunning</span> for 0.75 seconds.",
+        "iconFile": "RivenMartyr.png",
+        "cooldownSeconds": [
+          11,
+          10,
+          9,
+          8,
+          7
+        ],
+        "range": [
+          260,
+          260,
+          260,
+          260,
+          260
+        ],
+        "rankValues": [
+          {
+            "label": "Damage",
+            "values": "65/95/125/155/185"
+          },
+          {
+            "label": "Cooldown",
+            "values": "11/10/9/8/7"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "W Scaling",
+            "labelKo": "W 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "1:TotalDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "E": {
+        "slot": "E",
+        "id": "RivenFeint",
+        "name": "Valor",
+        "summary": "Riven steps forward a short distance and blocks incoming damage.",
+        "bodyHtml": "Riven quickly dashes and gains <span class=\"text-blue-600 dark:text-blue-300\">(70/95/120/145/170 + (110% bonus Attack Damage)) Shield</span> for 1.5 seconds.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">This dash cannot go over terrain.</span>",
+        "iconFile": "RivenFeint.png",
+        "cooldownSeconds": [
+          10,
+          9,
+          8,
+          7,
+          6
+        ],
+        "range": [
+          250,
+          250,
+          250,
+          250,
+          250
+        ],
+        "rankValues": [
+          {
+            "label": "Shield Amount",
+            "values": "70/95/120/145/170"
+          },
+          {
+            "label": "Cooldown",
+            "values": "10/9/8/7/6"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "E Scaling",
+            "labelKo": "E 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "2:TotalShield"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "R": {
+        "slot": "R",
+        "id": "RivenFengShuiEngine",
+        "name": "Blade of the Exile",
+        "summary": "Riven empowers her keepsake weapon with energy, and gains Attack Damage and Range. During this time, she also gains the ability to use Wind Slash, a powerful ranged attack, once.",
+        "bodyHtml": "Riven's weapon surges with spiritual energy, granting her <span class=\"text-red-600 dark:text-red-500 font-semibold\">(20% Attack Damage) Attack Damage</span> and increased range on damaging Abilities and Attacks for 15 seconds. While active, she can <span class=\"text-yellow-600 dark:text-yellow-300\">Recast.</span><br /><br /><span class=\"text-yellow-600 dark:text-yellow-300\">Recast:</span> Riven fires a wind slash that deals between <span class=\"text-red-600 dark:text-red-500 font-semibold\">(100/150/200 + (55% bonus Attack Damage))</span> and <span class=\"text-red-600 dark:text-red-500 font-semibold\">(300/450/600 + (165% bonus Attack Damage)) physical damage</span>, based on their missing Health.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">Gains 75 Attack Range</span>",
+        "iconFile": "RivenFengShuiEngine.png",
+        "cooldownSeconds": [
+          120,
+          90,
+          60
+        ],
+        "range": [
+          200,
+          200,
+          200
+        ],
+        "rankValues": [
+          {
+            "label": "Minimum Shockwave Damage",
+            "values": "100/150/200"
+          },
+          {
+            "label": "Maximum Shockwave Damage",
+            "values": "300/450/600"
+          },
+          {
+            "label": "Cooldown",
+            "values": "120/90/60"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "R Scaling",
+            "labelKo": "R 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "3:MinDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      }
+    }
+  }
+}

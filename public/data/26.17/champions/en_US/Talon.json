@@ -1,0 +1,367 @@
+{
+  "schemaVersion": 2,
+  "patchVersion": "26.17",
+  "locale": "en_US",
+  "sources": {
+    "ddragon": "16.17.1",
+    "cdragon": "16.17"
+  },
+  "champion": {
+    "id": "Talon",
+    "key": "91",
+    "name": "Talon",
+    "title": "the Blade's Shadow",
+    "tags": [
+      "Assassin"
+    ],
+    "baseStats": {
+      "health": {
+        "base": 658,
+        "perLevel": 109
+      },
+      "healthRegen": {
+        "base": 8.5,
+        "perLevel": 0.75
+      },
+      "mana": {
+        "base": 400,
+        "perLevel": 37
+      },
+      "manaRegen": {
+        "base": 7.6,
+        "perLevel": 0.8
+      },
+      "attackDamage": {
+        "base": 68,
+        "perLevel": 0
+      },
+      "attackSpeed": {
+        "base": 0.625,
+        "perLevel": 2.9
+      },
+      "armor": {
+        "base": 30,
+        "perLevel": 4.7
+      },
+      "magicResist": {
+        "base": 36,
+        "perLevel": 2.05
+      },
+      "moveSpeed": {
+        "base": 335,
+        "perLevel": 0
+      },
+      "attackRange": {
+        "base": 125,
+        "perLevel": 0
+      }
+    },
+    "baseStatContributions": [
+      {
+        "stat": "MAX_HEALTH",
+        "value": 109,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "HEALTH_REGEN",
+        "value": 0.75,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAX_MANA",
+        "value": 37,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MANA_REGEN",
+        "value": 0.8,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_DAMAGE",
+        "value": 0,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_SPEED",
+        "value": 2.9,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ARMOR",
+        "value": 4.7,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAGIC_RESIST",
+        "value": 2.05,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      }
+    ],
+    "abilities": {
+      "P": {
+        "slot": "P",
+        "id": "TalonPassive",
+        "name": "Blade's End",
+        "summary": "Talon's spells Wound champions and large monsters, stacking up to 3 times. When Talon attacks a champion with 3 stacks of Wound, they bleed for heavy damage over time.",
+        "bodyHtml": "Talon's Abilities apply a stack to champions and large jungle monsters they damage for 6 seconds (max 3 stacks).<br /><br />When Talon Attacks a target with 3 stacks, he deals an additional <span class=\"text-red-600 dark:text-red-500 font-semibold\">(210% bonus Attack Damage) physical damage</span> over 2 seconds.",
+        "iconFile": "TalonP.png",
+        "cooldownSeconds": [],
+        "range": [],
+        "rankValues": [],
+        "scalings": [],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "Q": {
+        "slot": "Q",
+        "id": "TalonQ",
+        "name": "Noxian Diplomacy",
+        "summary": "Talon stabs the target unit. If they are within melee range, this attack deals critical damage. If they are outside melee range, Talon will leap at his target before stabbing them. Talon refunds some health and cooldown if this ability kills the target.",
+        "bodyHtml": "Talon leaps to a target and deals <span class=\"text-red-600 dark:text-red-500 font-semibold\">(65/85/105/125/145 + (100% bonus Attack Damage)) physical damage</span>. If used in melee range, this Ability instead critically strikes for <span class=\"text-red-600 dark:text-red-500 font-semibold\">(65/85/105/125/145 + (100% bonus Attack Damage)) physical damage</span>.<br /><br />If this Ability kills the target, Talon restores <span class=\"text-green-600 dark:text-green-400\">(9 ~ 55) Health</span> and refunds 50% of its Cooldown.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">Melee damage is affected by Critical Strike Damage increase.</span>",
+        "iconFile": "TalonQ.png",
+        "cooldownSeconds": [
+          8,
+          7.5,
+          7,
+          6.5,
+          6
+        ],
+        "cost": {
+          "values": [
+            40,
+            40,
+            40,
+            40,
+            40
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          575,
+          575,
+          575,
+          575,
+          575
+        ],
+        "rankValues": [
+          {
+            "label": "Damage",
+            "values": "65/85/105/125/145"
+          },
+          {
+            "label": "Cooldown",
+            "values": "8/7.5/7/6.5/6"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "Q Scaling",
+            "labelKo": "Q 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "0:TotalHealing"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "W": {
+        "slot": "W",
+        "id": "TalonW",
+        "name": "Rake",
+        "summary": "Talon sends out a volley of daggers that then return back to him, dealing physical damage every time it passes through an enemy. The returning blades deal bonus damage and slow units hit.",
+        "bodyHtml": "Talon tosses a volley of blades, dealing <span class=\"text-red-600 dark:text-red-500 font-semibold\">(50/60/70/80/90 + (40% bonus Attack Damage)) physical damage</span>. The blades then return to him, dealing <span class=\"text-red-600 dark:text-red-500 font-semibold\">(60/90/120/150/180 + (90% bonus Attack Damage)) physical damage</span> and <span class=\"text-purple-600 dark:text-purple-500\">Slowing</span> by 40/45/50/55/60% for 1 second.",
+        "iconFile": "TalonW.png",
+        "cooldownSeconds": [
+          9,
+          8.5,
+          8,
+          7.5,
+          7
+        ],
+        "cost": {
+          "values": [
+            50,
+            55,
+            60,
+            65,
+            70
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          650,
+          650,
+          650,
+          650,
+          650
+        ],
+        "rankValues": [
+          {
+            "label": "Mana Cost",
+            "values": "50/55/60/65/70"
+          },
+          {
+            "label": "Initial Damage",
+            "values": "50/60/70/80/90"
+          },
+          {
+            "label": "Return Damage",
+            "values": "60/90/120/150/180"
+          },
+          {
+            "label": "Slow",
+            "values": "40/45/50/55/60"
+          },
+          {
+            "label": "Cooldown",
+            "values": "9/8.5/8/7.5/7"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "W Scaling",
+            "labelKo": "W 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "1:TotalInitialDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "E": {
+        "slot": "E",
+        "id": "TalonE",
+        "name": "Assassin's Path",
+        "summary": "Talon vaults over any terrain or structure, up to a max distance. This ability has a low cooldown, but puts the used terrain on a long cooldown.",
+        "bodyHtml": "Talon vaults over the nearest terrain or structure. Talon cannot dash over the same terrain more than once every 160/135/110/85/60 seconds.",
+        "iconFile": "TalonE.png",
+        "cooldownSeconds": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "range": [
+          725,
+          725,
+          725,
+          725,
+          725
+        ],
+        "rankValues": [
+          {
+            "label": "Terrain Cooldown",
+            "values": "160/135/110/85/60"
+          }
+        ],
+        "scalings": [],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "R": {
+        "slot": "R",
+        "id": "TalonR",
+        "name": "Shadow Assault",
+        "summary": "Talon disperses a ring of blades and becomes Invisible while gaining additional Move Speed. When Talon emerges from Invisibility, the blades converge on his location. Each time the blades move, Shadow Assault deals physical damage to enemies hit by at least one blade.",
+        "bodyHtml": "Talon disperses a ring of blades that deal <span class=\"text-red-600 dark:text-red-500 font-semibold\">(90/135/180 + (100% bonus Attack Damage)) physical damage</span>, gains <span class=\"text-cyan-600 dark:text-cyan-500\">40/55/70% Move Speed</span>, and becomes <span class=\"text-purple-600 dark:text-purple-400 font-semibold\">Invisible</span> for 2.5 seconds. When the <span class=\"text-purple-600 dark:text-purple-400 font-semibold\">Invisibility</span> ends, the blades return to Talon, dealing <span class=\"text-red-600 dark:text-red-500 font-semibold\">(90/135/180 + (100% bonus Attack Damage)) physical damage</span> again.<br /><br />If Talon cancels the <span class=\"text-purple-600 dark:text-purple-400 font-semibold\">Invisibility</span> with an Attack or with <span>Noxian Diplomacy</span>, the blades return to the target instead.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\"><span class=\"text-purple-600 dark:text-purple-400 font-semibold\">Invisible</span> units cannot be revealed except by turrets or <span style=\"color: #ee91d7\">True Sight</font color>.</span>",
+        "iconFile": "TalonR.png",
+        "cooldownSeconds": [
+          100,
+          80,
+          60
+        ],
+        "cost": {
+          "values": [
+            100,
+            100,
+            100
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          550,
+          550,
+          550
+        ],
+        "rankValues": [
+          {
+            "label": "Damage",
+            "values": "90/135/180"
+          },
+          {
+            "label": "Move Speed",
+            "values": "40/55/70"
+          },
+          {
+            "label": "Cooldown",
+            "values": "100/80/60"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "R Scaling",
+            "labelKo": "R 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "3:Damage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      }
+    }
+  }
+}

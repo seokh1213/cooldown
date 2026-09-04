@@ -1,0 +1,369 @@
+{
+  "schemaVersion": 2,
+  "patchVersion": "26.17",
+  "locale": "en_US",
+  "sources": {
+    "ddragon": "16.17.1",
+    "cdragon": "16.17"
+  },
+  "champion": {
+    "id": "Xayah",
+    "key": "498",
+    "name": "Xayah",
+    "title": "the Rebel",
+    "tags": [
+      "Marksman"
+    ],
+    "baseStats": {
+      "health": {
+        "base": 630,
+        "perLevel": 107
+      },
+      "healthRegen": {
+        "base": 3.25,
+        "perLevel": 0.75
+      },
+      "mana": {
+        "base": 340,
+        "perLevel": 40
+      },
+      "manaRegen": {
+        "base": 8.25,
+        "perLevel": 0.8
+      },
+      "attackDamage": {
+        "base": 60,
+        "perLevel": 0
+      },
+      "attackSpeed": {
+        "base": 0.658,
+        "perLevel": 3.9
+      },
+      "armor": {
+        "base": 25,
+        "perLevel": 4.2
+      },
+      "magicResist": {
+        "base": 33,
+        "perLevel": 1.1
+      },
+      "moveSpeed": {
+        "base": 330,
+        "perLevel": 0
+      },
+      "attackRange": {
+        "base": 525,
+        "perLevel": 0
+      }
+    },
+    "baseStatContributions": [
+      {
+        "stat": "MAX_HEALTH",
+        "value": 107,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "HEALTH_REGEN",
+        "value": 0.75,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAX_MANA",
+        "value": 40,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MANA_REGEN",
+        "value": 0.8,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_DAMAGE",
+        "value": 0,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_SPEED",
+        "value": 3.9,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ARMOR",
+        "value": 4.2,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAGIC_RESIST",
+        "value": 1.1,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      }
+    ],
+    "abilities": {
+      "P": {
+        "slot": "P",
+        "id": "XayahPassive",
+        "name": "Clean Cuts",
+        "summary": "After using an ability, Xayah's next basic attacks will hit all targets along their path and leave a <font color='#C200E1'>Feather</font>.",
+        "bodyHtml": "After using an Ability, Xayah's next Attacks will deal damage to all other targets along their path and leave a <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Feather</span> for seconds.<br /><br /><span>Lover's Leap:</span> Xayah and Rakan can recall together.",
+        "iconFile": "XayahPassive.png",
+        "cooldownSeconds": [],
+        "range": [],
+        "rankValues": [],
+        "scalings": [],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "Q": {
+        "slot": "Q",
+        "id": "XayahQ",
+        "name": "Double Daggers",
+        "summary": "Xayah throws two damaging daggers that also drop Feathers she can recall.",
+        "bodyHtml": "Xayah throws two daggers, dealing <span class=\"text-red-600 dark:text-red-500 font-semibold\">(45/60/75/90/105 + (50% bonus Attack Damage)) physical damage</span> each and leaving two <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Feathers</span>. Targets hit after the first take <span class=\"text-red-600 dark:text-red-500 font-semibold\">(22.5/30/37.5/45/52.5 + (25% bonus Attack Damage)) damage</span> from each dagger.",
+        "iconFile": "XayahQ.png",
+        "cooldownSeconds": [
+          10,
+          9.5,
+          9,
+          8.5,
+          8
+        ],
+        "cost": {
+          "values": [
+            35,
+            35,
+            35,
+            35,
+            35
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          400,
+          400,
+          400,
+          400,
+          400
+        ],
+        "rankValues": [
+          {
+            "label": "Damage",
+            "values": "45/60/75/90/105"
+          },
+          {
+            "label": "Cooldown",
+            "values": "10/9.5/9/8.5/8"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "Q Scaling",
+            "labelKo": "Q 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "0:TotalDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "W": {
+        "slot": "W",
+        "id": "XayahW",
+        "name": "Deadly Plumage",
+        "summary": "Xayah creates a storm of blades that increase her Attack Speed and damage while also granting her Move Speed if she attacks a champion.",
+        "bodyHtml": "Xayah creates a storm of blades for 4 seconds that grants her <span>35/40/45/50/55% Attack Speed</span> and cause her Attacks to fire a secondary blade that deals 25% damage.<br /><br />When the secondary blade hits a champion, she grants herself <span class=\"text-cyan-600 dark:text-cyan-500\">30% Move Speed</span> for 1.5 seconds.<br /><br />If Rakan is nearby he will also gain the effects of this Ability, except he gains <span class=\"text-cyan-600 dark:text-cyan-500\">Move Speed</span> when <span>Xayah</span> strikes a target.",
+        "iconFile": "XayahW.png",
+        "cooldownSeconds": [
+          18,
+          17,
+          16,
+          15,
+          14
+        ],
+        "cost": {
+          "values": [
+            60,
+            55,
+            50,
+            45,
+            40
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          1000,
+          1000,
+          1000,
+          1000,
+          1000
+        ],
+        "rankValues": [
+          {
+            "label": "Attack Speed",
+            "values": "35/40/45/50/55"
+          },
+          {
+            "label": "Cooldown",
+            "values": "18/17/16/15/14"
+          },
+          {
+            "label": "Mana Cost",
+            "values": "60/55/50/45/40"
+          }
+        ],
+        "scalings": [],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "E": {
+        "slot": "E",
+        "id": "XayahE",
+        "name": "Bladecaller",
+        "summary": "Xayah calls back all her dropped Feathers dealing damage and rooting enemies.",
+        "bodyHtml": "Xayah calls all <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Feathers</span> back to her, dealing <span class=\"text-red-600 dark:text-red-500 font-semibold\">(50/65/80/95/110 + (40% bonus Attack Damage)) physical damage</span> each. If 3 or more <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Feathers</span> hit an enemy, they are <span class=\"text-purple-600 dark:text-purple-500\">Rooted</span> for 1.25 seconds.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">Damage scales with Critical Strike Chance and Critical Strike Damage at <span class=\"text-red-600 dark:text-red-500 font-semibold\">50%</span> effectiveness.<br />Minions take 50% damage from this Ability.<br />Enemies take 5% less damage per feather hit, to a minimum of 10% damage.</span>",
+        "iconFile": "XayahE.png",
+        "cooldownSeconds": [
+          12,
+          11,
+          10,
+          9,
+          8
+        ],
+        "cost": {
+          "values": [
+            20,
+            20,
+            20,
+            20,
+            20
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          2000,
+          2000,
+          2000,
+          2000,
+          2000
+        ],
+        "rankValues": [
+          {
+            "label": "Damage",
+            "values": "50/65/80/95/110"
+          },
+          {
+            "label": "Cooldown",
+            "values": "12/11/10/9/8"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "E Scaling",
+            "labelKo": "E 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "2:FeatherDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "R": {
+        "slot": "R",
+        "id": "XayahR",
+        "name": "Featherstorm",
+        "summary": "Xayah leaps into the air becoming untargetable and throwing out a fan of daggers, dropping Feathers she can recall.",
+        "bodyHtml": "Xayah leaps into the air becoming Untargetable and Ghosted for 1.5 seconds before raining down daggers that deal <span class=\"text-red-600 dark:text-red-500 font-semibold\">(200/300/400 + (100% bonus Attack Damage)) physical damage</span> and leave behind a line of <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Feathers</span>.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">Untargetable units won't be affected by enemy Attacks or Abilities unless they've already been affected by them.<br />Ghosted units ignore collision with other units.<br />Xayah can move while in the air.</span>",
+        "iconFile": "XayahR.png",
+        "cooldownSeconds": [
+          140,
+          120,
+          100
+        ],
+        "cost": {
+          "values": [
+            100,
+            100,
+            100
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          450,
+          450,
+          450
+        ],
+        "rankValues": [
+          {
+            "label": "Damage",
+            "values": "200/300/400"
+          },
+          {
+            "label": "Cooldown",
+            "values": "140/120/100"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "R Scaling",
+            "labelKo": "R 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "3:Damage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      }
+    }
+  }
+}

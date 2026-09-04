@@ -1,0 +1,369 @@
+{
+  "schemaVersion": 2,
+  "patchVersion": "26.17",
+  "locale": "ko_KR",
+  "sources": {
+    "ddragon": "16.17.1",
+    "cdragon": "16.17"
+  },
+  "champion": {
+    "id": "Taric",
+    "key": "44",
+    "name": "타릭",
+    "title": "발로란의 방패",
+    "tags": [
+      "Support",
+      "Tank"
+    ],
+    "baseStats": {
+      "health": {
+        "base": 645,
+        "perLevel": 99
+      },
+      "healthRegen": {
+        "base": 6,
+        "perLevel": 0.5
+      },
+      "mana": {
+        "base": 300,
+        "perLevel": 60
+      },
+      "manaRegen": {
+        "base": 8.5,
+        "perLevel": 0.8
+      },
+      "attackDamage": {
+        "base": 55,
+        "perLevel": 0
+      },
+      "attackSpeed": {
+        "base": 0.625,
+        "perLevel": 2
+      },
+      "armor": {
+        "base": 40,
+        "perLevel": 4.3
+      },
+      "magicResist": {
+        "base": 28,
+        "perLevel": 2.05
+      },
+      "moveSpeed": {
+        "base": 340,
+        "perLevel": 0
+      },
+      "attackRange": {
+        "base": 150,
+        "perLevel": 0
+      }
+    },
+    "baseStatContributions": [
+      {
+        "stat": "MAX_HEALTH",
+        "value": 99,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "HEALTH_REGEN",
+        "value": 0.5,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAX_MANA",
+        "value": 60,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MANA_REGEN",
+        "value": 0.8,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_DAMAGE",
+        "value": 0,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_SPEED",
+        "value": 2,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ARMOR",
+        "value": 4.3,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAGIC_RESIST",
+        "value": 2.05,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      }
+    ],
+    "abilities": {
+      "P": {
+        "slot": "P",
+        "id": "TaricPassive",
+        "name": "담대함",
+        "summary": "타릭이 스킬을 사용하면 다음 2회의 기본 공격에 추가 마법 피해가 적용되고 공격 속도가 빨라지며 스킬의 재사용 대기시간이 단축됩니다.",
+        "bodyHtml": "스킬을 사용하고 5초 안에 사용하는 다음 2회 기본 공격의 <span>공격 속도가 100%</span> 증가하고 추가로 <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(15% 추가 방어력)의 마법 피해</span>를 입히며 기본 스킬의 재사용 대기시간이 초 감소합니다.",
+        "iconFile": "Taric_Passive.png",
+        "cooldownSeconds": [],
+        "range": [],
+        "rankValues": [],
+        "scalings": [],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "Q": {
+        "slot": "Q",
+        "id": "TaricQ",
+        "name": "별빛 손길",
+        "summary": "충전량을 모두 소모해 근처의 아군 챔피언을 회복시킵니다.<br><br>담대함으로 강화된 기본 공격 시 충전 대기시간이 줄어듭니다.",
+        "bodyHtml": "<span class=\"text-gray-600 dark:text-gray-500 italic\">기본 지속 효과:</span> 15초마다, <span>담대함</span> 기본 공격이 적중할 때마다 중첩을 1 얻습니다. (최대 1/2/3/4/5)<br /><br /><span class=\"text-gray-900 dark:text-white font-semibold\">사용 시:</span> 모든 중첩을 소모해 중첩당 근처 아군 챔피언의 <span class=\"text-green-600 dark:text-green-400\">체력을 (25 + (15% 주문력) + (1% 체력))</span>씩 회복시킵니다. (1/2/3/4/5회 중첩 시 <span class=\"text-green-600 dark:text-green-400\">(25/50/75/100/125 + (15/30/45/60/75% 주문력) + (1/2/3/4/5% 체력))</span>)",
+        "iconFile": "TaricQ.png",
+        "cooldownSeconds": [
+          3,
+          3,
+          3,
+          3,
+          3
+        ],
+        "rechargeSeconds": [
+          15,
+          15,
+          15,
+          15,
+          15
+        ],
+        "cost": {
+          "values": [
+            60,
+            60,
+            60,
+            60,
+            60
+          ],
+          "resource": ", 현재 충전량"
+        },
+        "range": [
+          325,
+          325,
+          325,
+          325,
+          325
+        ],
+        "rankValues": [
+          {
+            "label": "최대 충전량",
+            "values": "1/2/3/4/5"
+          },
+          {
+            "label": "최대 회복량",
+            "values": "25/50/75/100/125"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "Q Scaling",
+            "labelKo": "Q 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "0:StackCooldown"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "W": {
+        "slot": "W",
+        "id": "TaricW",
+        "name": "수호의 고리",
+        "summary": "수호의 고리로 연결된 아군 챔피언과 타릭의 방어력이 상승합니다.<br><br>연결된 아군 챔피언이 타릭 근처에 있는 동안 수호의 고리를 사용하면 연결된 아군에게 보호막을 씌웁니다. 타릭이 스킬을 사용하면 연결된 아군도 같은 스킬을 사용합니다.",
+        "bodyHtml": "<span class=\"text-gray-600 dark:text-gray-500 italic\">기본 지속 효과: </span>타릭이 <span class=\"text-orange-600 dark:text-orange-400\">(6/7/8/9/10% 방어력)의 방어력</span>을 얻고 자신과 이 스킬로 묶인 아군 사이에 끈을 형성합니다. 서로 가까이 있으면 아군이 <span class=\"text-orange-600 dark:text-orange-400\">(6/7/8/9/10% 방어력)의 방어력</span>을 얻으며 타릭과 연결된 아군 둘 다 타릭의 모든 스킬을 사용합니다.<br /><br /><span class=\"text-gray-600 dark:text-gray-500 italic\">사용 시: </span>타릭이 아군 챔피언 하나와 묶이며 2.5초 동안 <span class=\"text-blue-600 dark:text-blue-300\">최대 체력의 7/8/9/10/11%에 해당하는 보호막</span>을 부여합니다.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">모방한 스킬 효과는 중첩되지 않습니다.</span><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">아군은 한 번에 한 명만 묶을 수 있습니다. </span><br /><br />",
+        "iconFile": "TaricW.png",
+        "cooldownSeconds": [
+          15,
+          15,
+          15,
+          15,
+          15
+        ],
+        "cost": {
+          "values": [
+            60,
+            60,
+            60,
+            60,
+            60
+          ],
+          "resource": "마나"
+        },
+        "range": [
+          800,
+          800,
+          800,
+          800,
+          800
+        ],
+        "rankValues": [
+          {
+            "label": "기본 방어력",
+            "values": "6/7/8/9/10"
+          },
+          {
+            "label": "보호막 계수",
+            "values": "7/8/9/10/11"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "W Scaling",
+            "labelKo": "W 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "1:BonusArmor"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "E": {
+        "slot": "E",
+        "id": "TaricE",
+        "name": "황홀한 강타",
+        "summary": "타릭이 천상의 별빛을 준비해 잠시 후 적에게 마법 피해를 입히고 기절시킵니다.",
+        "bodyHtml": "타릭이 별빛 광선을 발사합니다. 광선은 1초 후 터지며 <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(90/130/170/210/250 + (50% 주문력) + (50% 추가 방어력))의 마법 피해</span>를 입히고 적을 1.5초 동안 <span class=\"text-purple-600 dark:text-purple-500\">기절</span>시킵니다.",
+        "iconFile": "TaricE.png",
+        "cooldownSeconds": [
+          16,
+          15,
+          14,
+          13,
+          12
+        ],
+        "cost": {
+          "values": [
+            40,
+            40,
+            40,
+            40,
+            40
+          ],
+          "resource": "마나"
+        },
+        "range": [
+          610,
+          610,
+          610,
+          610,
+          610
+        ],
+        "rankValues": [
+          {
+            "label": "피해량",
+            "values": "90/130/170/210/250"
+          },
+          {
+            "label": "재사용 대기시간",
+            "values": "16/15/14/13/12"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "E Scaling",
+            "labelKo": "E 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "2:TotalDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "R": {
+        "slot": "R",
+        "id": "TaricR",
+        "name": "우주의 광휘",
+        "summary": "잠시 후 근처의 아군 챔피언을 모두 우주의 에너지로 감싸 잠깐 동안 무적 상태로 만듭니다.",
+        "bodyHtml": "타릭이 천상의 보호를 요청합니다. 2.5초 후 근처 아군 챔피언은 2.5초 동안 무적 상태가 됩니다.",
+        "iconFile": "TaricR.png",
+        "cooldownSeconds": [
+          180,
+          150,
+          120
+        ],
+        "cost": {
+          "values": [
+            100,
+            100,
+            100
+          ],
+          "resource": "마나"
+        },
+        "range": [
+          400,
+          400,
+          400
+        ],
+        "rankValues": [
+          {
+            "label": "재사용 대기시간",
+            "values": "180/150/120"
+          }
+        ],
+        "scalings": [],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      }
+    }
+  }
+}

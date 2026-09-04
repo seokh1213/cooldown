@@ -1,0 +1,392 @@
+{
+  "schemaVersion": 2,
+  "patchVersion": "26.17",
+  "locale": "zh_CN",
+  "sources": {
+    "ddragon": "16.17.1",
+    "cdragon": "16.17"
+  },
+  "champion": {
+    "id": "Morgana",
+    "key": "25",
+    "name": "堕落天使",
+    "title": "莫甘娜",
+    "tags": [
+      "Support",
+      "Mage"
+    ],
+    "baseStats": {
+      "health": {
+        "base": 630,
+        "perLevel": 104
+      },
+      "healthRegen": {
+        "base": 5.5,
+        "perLevel": 0.4
+      },
+      "mana": {
+        "base": 340,
+        "perLevel": 60
+      },
+      "manaRegen": {
+        "base": 11,
+        "perLevel": 0.4
+      },
+      "attackDamage": {
+        "base": 56,
+        "perLevel": 0
+      },
+      "attackSpeed": {
+        "base": 0.625,
+        "perLevel": 1.53
+      },
+      "armor": {
+        "base": 25,
+        "perLevel": 4.2
+      },
+      "magicResist": {
+        "base": 30,
+        "perLevel": 1.3
+      },
+      "moveSpeed": {
+        "base": 335,
+        "perLevel": 0
+      },
+      "attackRange": {
+        "base": 450,
+        "perLevel": 0
+      }
+    },
+    "baseStatContributions": [
+      {
+        "stat": "MAX_HEALTH",
+        "value": 104,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "HEALTH_REGEN",
+        "value": 0.4,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAX_MANA",
+        "value": 60,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MANA_REGEN",
+        "value": 0.4,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_DAMAGE",
+        "value": 0,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_SPEED",
+        "value": 1.53,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ARMOR",
+        "value": 4.2,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAGIC_RESIST",
+        "value": 1.3,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      }
+    ],
+    "abilities": {
+      "P": {
+        "slot": "P",
+        "id": "MorganaPassive",
+        "name": "灵魂吸取",
+        "summary": "莫甘娜从她的敌人身上吸取灵魂，在对英雄、大型小兵、中型野怪和大型野怪造成技能伤害时获得治疗效果。",
+        "bodyHtml": "莫甘娜的技能会<span class=\"text-green-600 dark:text-green-400\">治疗</span>自身，数额相当于这些技能对英雄、大型小兵、中型野怪和大型野怪造成的实际伤害的18%。",
+        "iconFile": "FallenAngel_Empathize.png",
+        "cooldownSeconds": [],
+        "range": [],
+        "rankValues": [],
+        "scalings": [],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "Q": {
+        "slot": "Q",
+        "id": "MorganaQ",
+        "name": "暗之禁锢",
+        "summary": "莫甘娜用黑暗魔法将一名敌人禁锢在原地，迫使其感受自己造成的痛苦并对其造成魔法伤害。 ",
+        "bodyHtml": "莫甘娜掷出一团星火来<span class=\"text-purple-600 dark:text-purple-500\">禁锢</span>命中的第一个敌人2/2.25/2.5/2.75/3秒，并造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(80/135/190/245/300 + (90% 法术强度))魔法伤害</span>。",
+        "iconFile": "MorganaQ.png",
+        "cooldownSeconds": [
+          10,
+          10,
+          10,
+          10,
+          10
+        ],
+        "cost": {
+          "values": [
+            50,
+            55,
+            60,
+            65,
+            70
+          ],
+          "resource": "法力值"
+        },
+        "range": [
+          1250,
+          1250,
+          1250,
+          1250,
+          1250
+        ],
+        "rankValues": [
+          {
+            "label": "伤害",
+            "values": "80/135/190/245/300"
+          },
+          {
+            "label": "禁锢时长",
+            "values": "2/2.25/2.5/2.75/3"
+          },
+          {
+            "label": "法力值消耗",
+            "values": "50/55/60/65/70"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "Q Scaling",
+            "labelKo": "Q 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "0:TotalDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "W": {
+        "slot": "W",
+        "id": "MorganaW",
+        "name": "折磨之影",
+        "summary": "莫甘娜在一个区域施放一团诅咒之影，对胆敢站在她黑色环形之中的敌人造成伤害。敌人会持续受到魔法伤害，并且生命值越低受到伤害越高。",
+        "bodyHtml": "莫甘娜点燃一个区域5秒，每秒对区域内的敌人造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(18/31/44/57/70 + (20% 法术强度))魔法伤害</span>，基于目标的已损失生命值，伤害可最多提升<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(18/31/44/57/70 + (20% 法术强度))</span>。<br /><br />每当莫甘娜被<span>灵魂吸取</span>治疗时，这个技能的冷却时间就会减少5%。<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">这个技能对野怪造成170%伤害。</span>",
+        "iconFile": "MorganaW.png",
+        "cooldownSeconds": [
+          12,
+          12,
+          12,
+          12,
+          12
+        ],
+        "cost": {
+          "values": [
+            70,
+            80,
+            90,
+            100,
+            110
+          ],
+          "resource": "法力值"
+        },
+        "range": [
+          900,
+          900,
+          900,
+          900,
+          900
+        ],
+        "rankValues": [
+          {
+            "label": "每秒伤害",
+            "values": "18/31/44/57/70"
+          },
+          {
+            "label": "法力值消耗",
+            "values": "70/80/90/100/110"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "W Scaling",
+            "labelKo": "W 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "1:TotalMinDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "E": {
+        "slot": "E",
+        "id": "MorganaE",
+        "name": "黑暗之盾",
+        "summary": "莫甘娜为一名友方英雄涂上一层保护性的星火屏障，在被打破之前吸收魔法伤害和限制效果。",
+        "bodyHtml": "莫甘娜为一名友方英雄提供<span class=\"text-blue-600 dark:text-blue-300\">(100/155/210/265/320 + (70% 法术强度))魔法护盾</span>，持续5秒。护盾会阻挡<span class=\"text-purple-600 dark:text-purple-500\">限制</span>和<span class=\"text-purple-600 dark:text-purple-500\">定身</span>效果，直至被打破为止。",
+        "iconFile": "MorganaE.png",
+        "cooldownSeconds": [
+          26,
+          23.5,
+          21,
+          18.5,
+          16
+        ],
+        "cost": {
+          "values": [
+            80,
+            80,
+            80,
+            80,
+            80
+          ],
+          "resource": "法力值"
+        },
+        "range": [
+          800,
+          800,
+          800,
+          800,
+          800
+        ],
+        "rankValues": [
+          {
+            "label": "护盾值",
+            "values": "100/155/210/265/320"
+          },
+          {
+            "label": "冷却时间",
+            "values": "26/23.5/21/18.5/16"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "E Scaling",
+            "labelKo": "E 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "2:TotalShieldStrength"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "R": {
+        "slot": "R",
+        "id": "MorganaR",
+        "name": "灵魂镣铐",
+        "summary": "莫甘娜全力释放她的星界能量，与此同时，她的羽翼会解除束缚并且会悬浮在地面上。她将黑暗痛苦组成的锁链抽击到附近的敌方英雄身上，获得移动速度。锁链会减速并造成初段伤害，并在一段延迟后，晕眩那些未能挣脱的敌方英雄。",
+        "bodyHtml": "莫甘娜将她自己与附近的敌方英雄用锁链铐在一起，造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(200/275/350 + (80% 法术强度))魔法伤害</span>和20%<span class=\"text-purple-600 dark:text-purple-500\">减速</span>效果。在3秒后，仍未挣断锁链的敌人会受到<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(200/275/350 + (80% 法术强度))魔法伤害</span>并被<span class=\"text-purple-600 dark:text-purple-500\">晕眩</span>1.5/1.75/2秒。<br /><br />在施放这个技能时，莫甘娜会获得<span class=\"text-cyan-600 dark:text-cyan-500\">20/40/60%移动速度</span>。<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">莫甘娜会获得所有受到这个技能影响的敌人们的<span class=\"text-purple-600 dark:text-purple-400 font-semibold\">真实视野</span>。</span>",
+        "iconFile": "MorganaR.png",
+        "cooldownSeconds": [
+          120,
+          110,
+          100
+        ],
+        "cost": {
+          "values": [
+            100,
+            100,
+            100
+          ],
+          "resource": "法力值"
+        },
+        "range": [
+          625,
+          625,
+          625
+        ],
+        "rankValues": [
+          {
+            "label": "伤害",
+            "values": "200/275/350"
+          },
+          {
+            "label": "移动速度",
+            "values": "20/40/60"
+          },
+          {
+            "label": "晕眩时长：",
+            "values": "1.5/1.75/2"
+          },
+          {
+            "label": "冷却时间",
+            "values": "120/110/100"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "R Scaling",
+            "labelKo": "R 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "3:TotalDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      }
+    }
+  }
+}

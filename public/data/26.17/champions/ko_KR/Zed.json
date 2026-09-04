@@ -1,0 +1,365 @@
+{
+  "schemaVersion": 2,
+  "patchVersion": "26.17",
+  "locale": "ko_KR",
+  "sources": {
+    "ddragon": "16.17.1",
+    "cdragon": "16.17"
+  },
+  "champion": {
+    "id": "Zed",
+    "key": "238",
+    "name": "제드",
+    "title": "그림자의 주인",
+    "tags": [
+      "Assassin"
+    ],
+    "baseStats": {
+      "health": {
+        "base": 654,
+        "perLevel": 99
+      },
+      "healthRegen": {
+        "base": 7,
+        "perLevel": 0.65
+      },
+      "mana": {
+        "base": 200,
+        "perLevel": 0
+      },
+      "manaRegen": {
+        "base": 50,
+        "perLevel": 0
+      },
+      "attackDamage": {
+        "base": 63,
+        "perLevel": 0
+      },
+      "attackSpeed": {
+        "base": 0.651,
+        "perLevel": 3.3
+      },
+      "armor": {
+        "base": 32,
+        "perLevel": 4.7
+      },
+      "magicResist": {
+        "base": 29,
+        "perLevel": 2.05
+      },
+      "moveSpeed": {
+        "base": 345,
+        "perLevel": 0
+      },
+      "attackRange": {
+        "base": 125,
+        "perLevel": 0
+      }
+    },
+    "baseStatContributions": [
+      {
+        "stat": "MAX_HEALTH",
+        "value": 99,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "HEALTH_REGEN",
+        "value": 0.65,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAX_MANA",
+        "value": 0,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MANA_REGEN",
+        "value": 0,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_DAMAGE",
+        "value": 0,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_SPEED",
+        "value": 3.3,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ARMOR",
+        "value": 4.7,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAGIC_RESIST",
+        "value": 2.05,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      }
+    ],
+    "abilities": {
+      "P": {
+        "slot": "P",
+        "id": "ZedPassive",
+        "name": "약자 멸시",
+        "summary": "제드가 체력이 낮은 적을 기본 공격하면 마법 피해를 추가로 입힙니다. 같은 적 챔피언에게는 몇 초가 지나야 이 효과가 다시 적용됩니다.",
+        "bodyHtml": "제드가 체력 50% 이하인 적을 기본 공격하면 <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">대상 최대 체력의 에 해당하는 마법 피해</span>를 추가로 입힙니다. 같은 적 챔피언에게는 이 효과가 10초에 한 번씩만 적용됩니다.",
+        "iconFile": "ZedP.png",
+        "cooldownSeconds": [],
+        "range": [],
+        "rankValues": [],
+        "scalings": [],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "Q": {
+        "slot": "Q",
+        "id": "ZedQ",
+        "name": "예리한 표창",
+        "summary": "제드와 그림자가 표창을 던집니다.<br><br>각 표창은 적에게 명중하면 피해를 입힙니다.",
+        "bodyHtml": "제드와 <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">그림자</span>가 표창을 던져, 각각 처음 맞는 적에게 <span class=\"text-red-600 dark:text-red-500 font-semibold\">(80/120/160/200/240 + (100% 추가 공격력))의 물리 피해</span>를 입히고 이후 추가로 맞히는 적에게는 각각 <span class=\"text-red-600 dark:text-red-500 font-semibold\">(48/72/96/120/144 + (60% 추가 공격력))의 물리 피해</span>를 입힙니다.",
+        "iconFile": "ZedQ.png",
+        "cooldownSeconds": [
+          6,
+          6,
+          6,
+          6,
+          6
+        ],
+        "cost": {
+          "values": [
+            75,
+            70,
+            65,
+            60,
+            55
+          ],
+          "resource": "마나"
+        },
+        "range": [
+          900,
+          900,
+          900,
+          900,
+          900
+        ],
+        "rankValues": [
+          {
+            "label": "피해량",
+            "values": "80/120/160/200/240"
+          },
+          {
+            "label": "소모값 마나",
+            "values": "75/70/65/60/55"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "Q Scaling",
+            "labelKo": "Q 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "0:TotalDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "W": {
+        "slot": "W",
+        "id": "ZedW",
+        "name": "살아있는 그림자",
+        "summary": "<font color='#FF9900'>기본 지속 효과: </font>제드와 그림자가 같은 스킬로 동일한 대상을 공격하면 제드가 기력을 회복합니다. 기력 회복은 스킬 사용 시마다 한 번씩만 가능합니다.<br><br><font color='#FF9900'>사용 시:</font> 제드의 그림자가 전방으로 질주하여, 몇 초간 그 자리에 유지됩니다. 이 스킬을 다시 사용하면 제드가 그림자와 위치를 바꿉니다.",
+        "bodyHtml": "<span class=\"text-gray-600 dark:text-gray-500 italic\">기본 지속 효과:</span> 제드와 <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">그림자</span>가 같은 스킬로 동일한 대상을 공격할 때마다 제드가 <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">30/35/40/45/50의 기력</span>을 얻습니다.<br /><br /><span class=\"text-gray-900 dark:text-white font-semibold\">사용 시:</span> 제드의 <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">그림자</span>가 전방으로 질주하여, 5초간 그 자리에 유지됩니다. 이 스킬을 <span class=\"text-yellow-600 dark:text-yellow-300\">재사용</span>하면 제드가 <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">그림자</span>와 위치를 바꿉니다.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\"><span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">기력</span> 회복은 스킬 사용 시마다 한 번씩만 가능합니다.</span>",
+        "iconFile": "ZedW.png",
+        "cooldownSeconds": [
+          20,
+          19,
+          18,
+          17,
+          16
+        ],
+        "cost": {
+          "values": [
+            40,
+            35,
+            30,
+            25,
+            20
+          ],
+          "resource": "마나"
+        },
+        "range": [
+          650,
+          650,
+          650,
+          650,
+          650
+        ],
+        "rankValues": [
+          {
+            "label": "기력 회복량",
+            "values": "30/35/40/45/50"
+          },
+          {
+            "label": "소모값 마나",
+            "values": "40/35/30/25/20"
+          },
+          {
+            "label": "재사용 대기시간",
+            "values": "20/19/18/17/16"
+          }
+        ],
+        "scalings": [],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "E": {
+        "slot": "E",
+        "id": "ZedE",
+        "name": "그림자 베기",
+        "summary": "제드와 그림자가 각각 주위 적을 베어 피해를 입힙니다. 그림자의 공격에 맞은 적은 둔화됩니다.",
+        "bodyHtml": "제드와 <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">그림자</span>가 각각 주위 적을 베어 <span class=\"text-red-600 dark:text-red-500 font-semibold\">(70/92.5/115/137.5/160 + (70% 추가 공격력))의 물리 피해</span>를 입힙니다.<br /><br />제드가 이 스킬로 적 챔피언을 하나 맞힐 때마다 <span>살아있는 그림자</span>의 재사용 대기시간이 3초씩 감소합니다.<br /><br /><span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">그림자</span>의 스킬에 맞은 적은 1.5초 동안 20/25/30/35/40% <span class=\"text-purple-600 dark:text-purple-500\">둔화</span>됩니다. 그림자 베기로 동일한 대상을 여러 번 맞힐 경우, 추가 피해는 입히지 않지만 30/37.5/45/52.5/60%의 <span class=\"text-purple-600 dark:text-purple-500\">둔화</span> 효과가 적용됩니다.",
+        "iconFile": "ZedE.png",
+        "cooldownSeconds": [
+          5,
+          4.5,
+          4,
+          3.5,
+          3
+        ],
+        "cost": {
+          "values": [
+            40,
+            40,
+            40,
+            40,
+            40
+          ],
+          "resource": "마나"
+        },
+        "range": [
+          290,
+          290,
+          290,
+          290,
+          290
+        ],
+        "rankValues": [
+          {
+            "label": "피해량",
+            "values": "70/92.5/115/137.5/160"
+          },
+          {
+            "label": "둔화",
+            "values": "20%/25%/30%/35%/40%"
+          },
+          {
+            "label": "재사용 대기시간",
+            "values": "5/4.5/4/3.5/3"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "E Scaling",
+            "labelKo": "E 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "2:TotalDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "R": {
+        "slot": "R",
+        "id": "ZedR",
+        "name": "죽음의 표식",
+        "summary": "제드가 잠시 대상으로 지정할 수 없는 상태가 되어 적 챔피언에게 돌진하며 표식을 남깁니다. 3초가 지나면 표식이 발동되며 표식이 적용된 동안 제드가 대상에게 가한 피해의 일부를 입힙니다.",
+        "bodyHtml": "제드가 잠시 대상으로 지정할 수 없는 상태가 되어 적 챔피언에게 돌진하며 표식을 남깁니다. 3초가 지나면 표식이 발동되며 <span class=\"text-red-600 dark:text-red-500 font-semibold\">(100% 공격력)의 물리 피해</span>를 입히고 표식이 적용된 동안 제드가 대상에게 가한 피해의 25/40/55%에 해당하는 피해를 추가로 입힙니다.<br /><br />돌진 시 7.5초 동안 유지되는 <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">그림자</span>가 남습니다. 이 스킬을 <span class=\"text-yellow-600 dark:text-yellow-300\">재사용</span>하면 제드가 이 <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">그림자</span>와 위치를 바꿉니다.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">대상으로 지정할 수 없는 유닛은 이미 적중당한 상태가 아닌 한 적의 기본 공격이나 스킬에 영향을 받지 않습니다.</span><br /><span class=\"text-gray-600 dark:text-gray-400 italic\"><span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">그림자</span>는 재사용 가능 시간이 끝나도 1.5초 동안 더 유지됩니다.</span>",
+        "iconFile": "ZedR.png",
+        "cooldownSeconds": [
+          120,
+          110,
+          100
+        ],
+        "range": [
+          625,
+          625,
+          625
+        ],
+        "rankValues": [
+          {
+            "label": "표식 폭발 피해량",
+            "values": "25/40/55"
+          },
+          {
+            "label": "재사용 대기시간",
+            "values": "120/110/100"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "R Scaling",
+            "labelKo": "R 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "3:{43a019eb}"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      }
+    }
+  }
+}

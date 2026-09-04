@@ -1,0 +1,400 @@
+{
+  "schemaVersion": 2,
+  "patchVersion": "26.17",
+  "locale": "ko_KR",
+  "sources": {
+    "ddragon": "16.17.1",
+    "cdragon": "16.17"
+  },
+  "champion": {
+    "id": "Annie",
+    "key": "1",
+    "name": "애니",
+    "title": "어둠의 아이",
+    "tags": [
+      "Mage",
+      "Support"
+    ],
+    "baseStats": {
+      "health": {
+        "base": 560,
+        "perLevel": 96
+      },
+      "healthRegen": {
+        "base": 5.5,
+        "perLevel": 0.55
+      },
+      "mana": {
+        "base": 418,
+        "perLevel": 25
+      },
+      "manaRegen": {
+        "base": 8,
+        "perLevel": 0.8
+      },
+      "attackDamage": {
+        "base": 50,
+        "perLevel": 0
+      },
+      "attackSpeed": {
+        "base": 0.61,
+        "perLevel": 1.36
+      },
+      "armor": {
+        "base": 23,
+        "perLevel": 4
+      },
+      "magicResist": {
+        "base": 30,
+        "perLevel": 1.3
+      },
+      "moveSpeed": {
+        "base": 335,
+        "perLevel": 0
+      },
+      "attackRange": {
+        "base": 625,
+        "perLevel": 0
+      }
+    },
+    "baseStatContributions": [
+      {
+        "stat": "MAX_HEALTH",
+        "value": 96,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "HEALTH_REGEN",
+        "value": 0.55,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAX_MANA",
+        "value": 25,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MANA_REGEN",
+        "value": 0.8,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_DAMAGE",
+        "value": 0,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_SPEED",
+        "value": 1.36,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ARMOR",
+        "value": 4,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAGIC_RESIST",
+        "value": 1.3,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      }
+    ],
+    "abilities": {
+      "P": {
+        "slot": "P",
+        "id": "AnniePassive",
+        "name": "방화광",
+        "summary": "애니가 스킬을 4번 사용한 후 다음 공격 스킬에 맞은 적은 기절합니다.<br><br>애니가 게임을 시작하고 방화광을 사용할 수 있는 상태로 재생성됩니다.",
+        "bodyHtml": "애니가 스킬을 4회 사용하면 다음 공격 스킬이 1.75초 동안 적을 <span class=\"text-purple-600 dark:text-purple-500\">기절</span>시킵니다.<br /><br />애니가 게임을 시작하고 <span>방화광</span>을 사용할 수 있는 상태로 재생성됩니다.",
+        "iconFile": "Annie_Passive.png",
+        "cooldownSeconds": [],
+        "range": [],
+        "rankValues": [],
+        "scalings": [],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "Q": {
+        "slot": "Q",
+        "id": "AnnieQ",
+        "name": "붕괴",
+        "summary": "애니가 마나로 가득 찬 화염구를 던져 피해를 입히고 결정타를 냈을 때 사용한 마나를 되돌려 받습니다.",
+        "bodyHtml": "애니가 화염구를 던져 <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(80/125/170/215/260 + (80% 주문력))의 마법 피해</span>를 입힙니다. 대상이 사망하면 소모한 마나를 돌려받고 재사용 대기시간이 50% 감소합니다.",
+        "iconFile": "AnnieQ.png",
+        "cooldownSeconds": [
+          4,
+          4,
+          4,
+          4,
+          4
+        ],
+        "cost": {
+          "values": [
+            60,
+            65,
+            70,
+            75,
+            80
+          ],
+          "resource": "마나"
+        },
+        "range": [
+          625,
+          625,
+          625,
+          625,
+          625
+        ],
+        "rankValues": [
+          {
+            "label": "피해량",
+            "values": "80/125/170/215/260"
+          },
+          {
+            "label": "소모값 마나",
+            "values": "60/65/70/75/80"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "Q Scaling",
+            "labelKo": "Q 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "0:TotalDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "W": {
+        "slot": "W",
+        "id": "AnnieW",
+        "name": "소각",
+        "summary": "애니가 원뿔 형태의 화염을 내뿜어 해당 지역에 있는 모든 적에게 피해를 입힙니다.",
+        "bodyHtml": "애니가 화염파를 발사하여 <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(70/110/150/190/230 + (80% 주문력))의 마법 피해</span>를 입힙니다.",
+        "iconFile": "AnnieW.png",
+        "cooldownSeconds": [
+          7,
+          7,
+          7,
+          7,
+          7
+        ],
+        "cost": {
+          "values": [
+            70,
+            75,
+            80,
+            85,
+            90
+          ],
+          "resource": "마나"
+        },
+        "range": [
+          600,
+          600,
+          600,
+          600,
+          600
+        ],
+        "rankValues": [
+          {
+            "label": "피해량",
+            "values": "70/110/150/190/230"
+          },
+          {
+            "label": "소모값 마나",
+            "values": "70/75/80/85/90"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "W Scaling",
+            "labelKo": "W 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "1:TotalDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "E": {
+        "slot": "E",
+        "id": "AnnieE",
+        "name": "용암 방패",
+        "summary": "애니나 아군에게 보호막을 부여하고 이동 속도가 증가하며, 기본 공격이나 스킬로 공격하는 적에게 피해를 입힙니다.",
+        "bodyHtml": "애니가 아군 챔피언에게 3초 동안 <span class=\"text-blue-600 dark:text-blue-300\">(60/95/130/165/200 + (40% 주문력))의 피해를 흡수하는 보호막</span>을 부여합니다. 보호막으로 인해 <span class=\"text-cyan-600 dark:text-cyan-500\">이동 속도가 (20% ~ 50%)</span> 증가했다 1.5초에 걸쳐 원래대로 돌아옵니다. 보호막이 지속되는 동안 해당 아군을 기본 공격이나 스킬로 공격한 적은 보호막당 한 번 <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(25/35/45/55/65 + (40% 주문력))의 마법 피해</span>를 받습니다.<br /><br />소환된 티버는 항상 <span>용암 방패</span>의 효과를 받습니다.",
+        "iconFile": "AnnieE.png",
+        "cooldownSeconds": [
+          10,
+          10,
+          10,
+          10,
+          10
+        ],
+        "cost": {
+          "values": [
+            60,
+            65,
+            70,
+            75,
+            80
+          ],
+          "resource": "마나"
+        },
+        "range": [
+          800,
+          800,
+          800,
+          800,
+          800
+        ],
+        "rankValues": [
+          {
+            "label": "보호막 흡수량",
+            "values": "60/95/130/165/200"
+          },
+          {
+            "label": "피해 반사",
+            "values": "25/35/45/55/65"
+          },
+          {
+            "label": "소모값 마나",
+            "values": "60/65/70/75/80"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "E Scaling",
+            "labelKo": "E 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "2:DamageReturn"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "R": {
+        "slot": "R",
+        "id": "AnnieR",
+        "name": "소환: 티버",
+        "summary": "애니가 자신의 곰 티버를 되살려 지정 구역에 있는 유닛에게 피해를 입힙니다. 티버는 주변의 적을 공격하거나 불태울 수도 있습니다.",
+        "bodyHtml": "<span class=\"text-gray-600 dark:text-gray-500 italic\">기본 지속 효과:</span> 애니가 <span>10/15/20%의 마법 관통력</span>을 얻습니다.<br /><br />애니가 티버를 소환해 <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(150/275/400 + (75% 주문력))의 마법 피해</span>를 입힙니다. 티버는 다음 45초간 주변 적을 불태워 <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">초당 (8/12/16 + (4% 주문력))의 마법 피해</span>를 입힙니다.<br /><br />애니가 적 챔피언을 기절시키거나 사망하면 소환된 티버가 분노합니다. 티버는 분노 시 <span>공격 속도가 275%</span>, <span class=\"text-cyan-600 dark:text-cyan-500\">이동 속도가 100%</span> 증가합니다. 이 효과는 3초에 걸쳐 원래대로 돌아옵니다.<br /><br /><span class=\"text-yellow-600 dark:text-yellow-300\">재사용 시:</span> 티버를 직접 조종할 수 있습니다.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">티버 능력치:<br /><span class=\"text-green-600 dark:text-green-400\">체력 (50% 주문력)</span><br /><span class=\"text-orange-600 dark:text-orange-400\">방어력 30</span><br /><span>마법 저항력 30</span><br /><span class=\"text-orange-600 dark:text-orange-500\">공격력 (30/45/60 + (10% 주문력))</span></span>",
+        "iconFile": "AnnieR.png",
+        "cooldownSeconds": [
+          130,
+          115,
+          100
+        ],
+        "cost": {
+          "values": [
+            100,
+            100,
+            100
+          ],
+          "resource": "마나"
+        },
+        "range": [
+          600,
+          600,
+          600
+        ],
+        "rankValues": [
+          {
+            "label": "최초 피해량",
+            "values": "150/275/400"
+          },
+          {
+            "label": "오라 피해량",
+            "values": "8/12/16"
+          },
+          {
+            "label": "공격력",
+            "values": "30/45/60"
+          },
+          {
+            "label": "추가 이동 속도",
+            "values": "0/25/50"
+          },
+          {
+            "label": "재사용 대기시간",
+            "values": "130/115/100"
+          },
+          {
+            "label": "마법 관통력",
+            "values": "10/15/20"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "R Scaling",
+            "labelKo": "R 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "3:InitialBurstDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      }
+    }
+  }
+}

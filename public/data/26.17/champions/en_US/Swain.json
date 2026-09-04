@@ -1,0 +1,396 @@
+{
+  "schemaVersion": 2,
+  "patchVersion": "26.17",
+  "locale": "en_US",
+  "sources": {
+    "ddragon": "16.17.1",
+    "cdragon": "16.17"
+  },
+  "champion": {
+    "id": "Swain",
+    "key": "50",
+    "name": "Swain",
+    "title": "the Noxian Grand General",
+    "tags": [
+      "Mage",
+      "Support"
+    ],
+    "baseStats": {
+      "health": {
+        "base": 595,
+        "perLevel": 99
+      },
+      "healthRegen": {
+        "base": 3,
+        "perLevel": 0.5
+      },
+      "mana": {
+        "base": 400,
+        "perLevel": 29
+      },
+      "manaRegen": {
+        "base": 10,
+        "perLevel": 0.8
+      },
+      "attackDamage": {
+        "base": 58,
+        "perLevel": 0
+      },
+      "attackSpeed": {
+        "base": 0.625,
+        "perLevel": 2.11
+      },
+      "armor": {
+        "base": 25,
+        "perLevel": 4.7
+      },
+      "magicResist": {
+        "base": 31,
+        "perLevel": 1.55
+      },
+      "moveSpeed": {
+        "base": 330,
+        "perLevel": 0
+      },
+      "attackRange": {
+        "base": 525,
+        "perLevel": 0
+      }
+    },
+    "baseStatContributions": [
+      {
+        "stat": "MAX_HEALTH",
+        "value": 99,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "HEALTH_REGEN",
+        "value": 0.5,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAX_MANA",
+        "value": 29,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MANA_REGEN",
+        "value": 0.8,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_DAMAGE",
+        "value": 0,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_SPEED",
+        "value": 2.11,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ARMOR",
+        "value": 4.7,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAGIC_RESIST",
+        "value": 1.55,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      }
+    ],
+    "abilities": {
+      "P": {
+        "slot": "P",
+        "id": "SwainPassive",
+        "name": "Ravenous Flock",
+        "summary": "Swain's ravens collect <i>Soul Fragments</i> that heal him and permanently increase his maximum health.",
+        "bodyHtml": "Swain collects <font color='#FF3F3F' size='18'>Soul Fragments</span> from <span>Vision of Empire</span>, <span>Nevermove</span>, and enemy champion deaths. <font color='#FF3F3F' size='18'>Soul Fragments</span> restore<span class=\"text-green-600 dark:text-green-400\"> (6% ~ 6%) maximum Health</span> and permanently grant Swain <span class=\"text-green-600 dark:text-green-400\">15 max Health</span>.<br /><br />Soul Fragments collected: <br />Total Health gained: <span></span>",
+        "iconFile": "Swain_P.png",
+        "cooldownSeconds": [],
+        "range": [],
+        "rankValues": [],
+        "scalings": [],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "Q": {
+        "slot": "Q",
+        "id": "SwainQ",
+        "name": "Death's Hand",
+        "summary": "Swain unleashes several bolts of eldritch power that pierce through enemies. Enemies hit take more damage for each bolt they are struck by.",
+        "bodyHtml": "Swain unleashes 5 eldritch bolts, dealing <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(60/90/120/150/180 + (45% Ability Power)) magic damage</span> plus <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(15/22.5/30/37.5/45 + (11.25% Ability Power)) magic damage</span> per bolt past the first (max <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(120/180/240/300/360 + (90% Ability Power)) magic damage</span>).",
+        "iconFile": "SwainQ.png",
+        "cooldownSeconds": [
+          7,
+          6,
+          5,
+          4,
+          3
+        ],
+        "cost": {
+          "values": [
+            40,
+            45,
+            50,
+            55,
+            60
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          750,
+          750,
+          750,
+          750,
+          750
+        ],
+        "rankValues": [
+          {
+            "label": "Bolt Damage",
+            "values": "60/90/120/150/180"
+          },
+          {
+            "label": "Cooldown",
+            "values": "7/6/5/4/3"
+          },
+          {
+            "label": "Mana Cost",
+            "values": "40/45/50/55/60"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "Q Scaling",
+            "labelKo": "Q 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "0:InitialDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "W": {
+        "slot": "W",
+        "id": "SwainW",
+        "name": "Vision of Empire",
+        "summary": "Swain opens a demon eye that deals damage and slows enemies. Champions hit are revealed and also grant Swain a Soul Fragment.",
+        "bodyHtml": "Swain opens a demon eye, revealing a location for 1.5 seconds, then deals <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(70/105/140/175/210 + (60% Ability Power)) magic damage</span> and <span class=\"text-purple-600 dark:text-purple-500\">Slows</span> by 50% for 1.5 seconds.<br /><br />Champions hit grant Swain a <font color='#FF3F3F' size='18'>Soul Fragment</span> and are revealed for 6 seconds.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">Deals <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(35/52.5/70/87.5/105 + (30% Ability Power)) damage</span> instead to minions.</span>",
+        "iconFile": "SwainW.png",
+        "cooldownSeconds": [
+          22,
+          21,
+          20,
+          19,
+          18
+        ],
+        "cost": {
+          "values": [
+            60,
+            65,
+            70,
+            75,
+            80
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          5500,
+          6000,
+          6500,
+          7000,
+          7500
+        ],
+        "rankValues": [
+          {
+            "label": "Damage",
+            "values": "70/105/140/175/210"
+          },
+          {
+            "label": "Cooldown",
+            "values": "22/21/20/19/18"
+          },
+          {
+            "label": "Mana Cost",
+            "values": "60/65/70/75/80"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "W Scaling",
+            "labelKo": "W 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "1:TotalDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "E": {
+        "slot": "E",
+        "id": "SwainE",
+        "name": "Nevermove",
+        "summary": "Swain launches a wave of demonic power forward. It then returns to Swain and roots enemies it hits. Swain can then choose to pull all rooted champions closer. This ability has a shorter cooldown during Demonic Ascension.",
+        "bodyHtml": "Swain launches a wave of demonic power that returns, detonating on the first enemy hit to deal <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(90/130/170/210/250 + (70% Ability Power)) magic damage</span> and <span class=\"text-purple-600 dark:text-purple-500\">Root</span> enemies in the area for 1.5 seconds.<br /><br /><span class=\"text-purple-600 dark:text-purple-500\">Rooting</span> a champion allows Swain to reactivate this ability to pull all champions <span class=\"text-purple-600 dark:text-purple-500\">Rooted</span> by <span>Nevermove</span> toward him, gaining a <font color='#FF3F3F' size='18'>Soul Fragment</span> for each.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\"><span>Nevermove</span> temporarily grants vision of rooted champions.</span>",
+        "iconFile": "SwainE.png",
+        "cooldownSeconds": [
+          12,
+          11.5,
+          11,
+          10.5,
+          10
+        ],
+        "cost": {
+          "values": [
+            50,
+            55,
+            60,
+            65,
+            70
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          850,
+          850,
+          850,
+          850,
+          850
+        ],
+        "rankValues": [
+          {
+            "label": "Damage",
+            "values": "90/130/170/210/250"
+          },
+          {
+            "label": "Cooldown",
+            "values": "12/11.5/11/10.5/10"
+          },
+          {
+            "label": "Mana Cost",
+            "values": "50/55/60/65/70"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "E Scaling",
+            "labelKo": "E 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "2:SecondaryDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "R": {
+        "slot": "R",
+        "id": "SwainR",
+        "name": "Demonic Ascension",
+        "summary": "Swain transforms into a demon and drains health from nearby enemy champions, minions, and neutral monsters. Swain can cast Demonflare to decimate and slow nearby enemies with a nova of soulfire. This form is indefinite as long as Swain drains enemy champions.",
+        "bodyHtml": "Swain frees the demon, which deals <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(15/25/35 + (4% Ability Power)) magic damage</span> and drains <span class=\"text-green-600 dark:text-green-400\">(15/30/45 + (5% Ability Power) + (1.5% bonus Health)) Health</span> per second from nearby enemies. His Demonic Energy depletes over time but can be recharged indefinitely by draining enemy Champions and is fully restored on Champion takedowns.<br /><br />After 2 seconds and every 8 seconds thereafter, Swain can cast <span>Demonflare</span> while transformed, which deals <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(150/250/350 + (40% Ability Power)) magic damage</span> and <span class=\"text-purple-600 dark:text-purple-500\">Slows</span> enemies by 50%, decaying over 1.5s.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">Healing is reduced to <span class=\"text-green-600 dark:text-green-400\">10%</span> against non-champions.<br />Depletes 10 Demonic Energy per second. After 5 seconds, this increases to 15.<br />Regenerates 20 Demonic Energy per second while draining from champions.</span>",
+        "iconFile": "SwainR.png",
+        "cooldownSeconds": [
+          120,
+          120,
+          120
+        ],
+        "cost": {
+          "values": [
+            100,
+            100,
+            100
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          650,
+          650,
+          650
+        ],
+        "rankValues": [
+          {
+            "label": "Drain Damage",
+            "values": "15/25/35"
+          },
+          {
+            "label": "Drain Heal",
+            "values": "15/30/45"
+          },
+          {
+            "label": "Demonflare Damage",
+            "values": "150/250/350"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "R Scaling",
+            "labelKo": "R 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "3:HealingCalc"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      }
+    }
+  }
+}

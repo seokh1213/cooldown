@@ -1,0 +1,404 @@
+{
+  "schemaVersion": 2,
+  "patchVersion": "26.17",
+  "locale": "ko_KR",
+  "sources": {
+    "ddragon": "16.17.1",
+    "cdragon": "16.17"
+  },
+  "champion": {
+    "id": "Volibear",
+    "key": "106",
+    "name": "볼리베어",
+    "title": "무자비한 폭풍",
+    "tags": [
+      "Fighter",
+      "Tank"
+    ],
+    "baseStats": {
+      "health": {
+        "base": 650,
+        "perLevel": 104
+      },
+      "healthRegen": {
+        "base": 9,
+        "perLevel": 0.75
+      },
+      "mana": {
+        "base": 350,
+        "perLevel": 70
+      },
+      "manaRegen": {
+        "base": 6.25,
+        "perLevel": 0.5
+      },
+      "attackDamage": {
+        "base": 65,
+        "perLevel": 0
+      },
+      "attackSpeed": {
+        "base": 0.625,
+        "perLevel": 2
+      },
+      "armor": {
+        "base": 35,
+        "perLevel": 5.2
+      },
+      "magicResist": {
+        "base": 32,
+        "perLevel": 2.05
+      },
+      "moveSpeed": {
+        "base": 340,
+        "perLevel": 0
+      },
+      "attackRange": {
+        "base": 150,
+        "perLevel": 0
+      }
+    },
+    "baseStatContributions": [
+      {
+        "stat": "MAX_HEALTH",
+        "value": 104,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "HEALTH_REGEN",
+        "value": 0.75,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAX_MANA",
+        "value": 70,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MANA_REGEN",
+        "value": 0.5,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_DAMAGE",
+        "value": 0,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_SPEED",
+        "value": 2,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ARMOR",
+        "value": 5.2,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAGIC_RESIST",
+        "value": 2.05,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      }
+    ],
+    "abilities": {
+      "P": {
+        "slot": "P",
+        "id": "VolibearP",
+        "name": "무자비한 폭풍",
+        "summary": "볼리베어가 기본 공격을 하거나 스킬을 사용하면 공격 속도가 증가하며 최대 중첩 상태에서 공격 시 주변 적들에게 추가 마법 피해를 입힙니다.",
+        "bodyHtml": "볼리베어가 스킬이나 기본 공격으로 피해를 입힐 때마다 6초 동안 <span>공격 속도가 (5% + (0.03% 주문력))</span> 증가합니다. 최대 5회까지 중첩됩니다.<br /><br />5회 중첩 시 볼리베어의 발톱에 번개가 감돌며 이때 기본 공격 시 대상 및 가장 가까운 적 넷에게 <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(11 + (45% 주문력))의 마법 피해</span>를 추가로 입힙니다.",
+        "iconFile": "Volibear_Icon_P.png",
+        "cooldownSeconds": [],
+        "range": [],
+        "rankValues": [],
+        "scalings": [],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "Q": {
+        "slot": "Q",
+        "id": "VolibearQ",
+        "name": "번개 강타",
+        "summary": "볼리베어가 적을 향해 이동할 때 이동 속도가 증가하며 처음으로 기본 공격하는 대상을 <status>기절</status>시키고 피해를 입힙니다.",
+        "bodyHtml": "4초 동안 볼리베어의 <span class=\"text-cyan-600 dark:text-cyan-500\">이동 속도가 12/15.5/19/22.5/26%</span> 증가합니다. 적 챔피언을 향해 이동 시에는 이동 속도 증가량이 두 배로 늘어 <span class=\"text-cyan-600 dark:text-cyan-500\">24/31/38/45/52%</span>까지 증가합니다. 스킬이 활성화된 동안 다음 기본 공격 시 <span class=\"text-red-600 dark:text-red-500 font-semibold\">(10/20/30/40/50 + (100% 공격력) + (160% 추가 공격력))의 물리 피해</span>를 입히고 1초 동안 <span class=\"text-purple-600 dark:text-purple-500\">기절</span>시킵니다.<br /><br />볼리베어가 대상을 <span class=\"text-purple-600 dark:text-purple-500\">기절</span>시키기 전에 <span class=\"text-purple-600 dark:text-purple-500\">이동 불가</span> 효과를 받으면 스킬이 끝나지만, 볼리베어가 분노하여 재사용 대기시간이 초기화됩니다.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">볼리베어의 이번 공격 사거리가 25 증가합니다.</span>",
+        "iconFile": "VolibearQ.png",
+        "cooldownSeconds": [
+          12,
+          11.5,
+          11,
+          10.5,
+          10
+        ],
+        "cost": {
+          "values": [
+            50,
+            50,
+            50,
+            50,
+            50
+          ],
+          "resource": "마나"
+        },
+        "range": [
+          300,
+          300,
+          300,
+          300,
+          300
+        ],
+        "rankValues": [
+          {
+            "label": "피해량",
+            "values": "10/20/30/40/50"
+          },
+          {
+            "label": "이동 속도",
+            "values": "12/15.5/19/22.5/26"
+          },
+          {
+            "label": "재사용 대기시간",
+            "values": "12/11.5/11/10.5/10"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "Q Scaling",
+            "labelKo": "Q 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "0:CalculatedDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "W": {
+        "slot": "W",
+        "id": "VolibearW",
+        "name": "광란의 상처",
+        "summary": "볼리베어가 적에게 피해를 입혀 적중 시 효과를 적용하고 표식을 남깁니다. 표식을 남긴 대상에게 다시 이 스킬을 사용하면 추가 피해를 입히고 체력을 회복합니다.",
+        "bodyHtml": "볼리베어가 적을 공격하여 <span class=\"text-red-600 dark:text-red-500 font-semibold\">(5/30/55/80/105 + (110% 공격력) + (6% 추가 체력))의 물리 피해</span>를 입히고 8초 동안 표식을 남깁니다.<br /><br />표식이 남은 대상에게 이 스킬을 사용하면 피해가 <span class=\"text-red-600 dark:text-red-500 font-semibold\">(5/30/55/80/105 + (110% 공격력) + (6% 추가 체력))</span>까지 증가하며 볼리베어가 <span class=\"text-green-600 dark:text-green-400\">20/35/50/65/80 + 잃은 체력의 8/11/14/17/20%만큼 체력</span>을 회복합니다.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">강화된 피해량은 에 비례합니다. (피해량 증가율: 150% + 25%)<br />이 스킬은 적중 시 효과가 적용됩니다.<br />미니언을 대상으로는 체력 회복 효과가 50%로 감소합니다.</span><br />",
+        "iconFile": "VolibearW.png",
+        "cooldownSeconds": [
+          5,
+          5,
+          5,
+          5,
+          5
+        ],
+        "cost": {
+          "values": [
+            20,
+            25,
+            30,
+            35,
+            40
+          ],
+          "resource": "마나"
+        },
+        "range": [
+          325,
+          325,
+          325,
+          325,
+          325
+        ],
+        "rankValues": [
+          {
+            "label": "피해량",
+            "values": "5/30/55/80/105"
+          },
+          {
+            "label": "기본 회복량",
+            "values": "20/35/50/65/80"
+          },
+          {
+            "label": "잃은 체력 비례",
+            "values": "8/11/14/17/20"
+          },
+          {
+            "label": "소모값 마나",
+            "values": "20/25/30/35/40"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "W Scaling",
+            "labelKo": "W 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "1:TotalDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "E": {
+        "slot": "E",
+        "id": "VolibearE",
+        "name": "천공 분열",
+        "summary": "볼리베어가 지정한 위치에 번개를 소환해 적에게 피해를 입히고 둔화시킵니다. 볼리베어가 폭발 반경 안에 있으면 보호막을 얻습니다.",
+        "bodyHtml": "볼리베어가 뇌운을 소환해 번개를 내리쳐 <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(80/110/140/170/200 + (70% 주문력)) + 대상 최대 체력의 11/12/13/14/15%에 해당하는 마법 피해</span>를 입히고 2초 동안 40% <span class=\"text-purple-600 dark:text-purple-500\">둔화</span>시킵니다.<br /><br />볼리베어가 폭발 지역 안에 있으면 3초 동안 <span class=\"text-blue-600 dark:text-blue-300\">(75% 주문력) + 최대 체력의 14%에 해당하는 보호막</span>을 얻습니다.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">챔피언이 아닌 대상에게는 최대 <span>(150/265/380/495/610 + (70% 주문력))</span>의 피해를 입힙니다.</span>",
+        "iconFile": "VolibearE.png",
+        "cooldownSeconds": [
+          16,
+          16,
+          16,
+          16,
+          16
+        ],
+        "cost": {
+          "values": [
+            50,
+            50,
+            50,
+            50,
+            50
+          ],
+          "resource": "마나"
+        },
+        "range": [
+          1200,
+          1200,
+          1200,
+          1200,
+          1200
+        ],
+        "rankValues": [
+          {
+            "label": "피해량",
+            "values": "80/110/140/170/200"
+          },
+          {
+            "label": "비례 피해량",
+            "values": "11/12/13/14/15"
+          },
+          {
+            "label": "몬스터 대상 최대 피해량",
+            "values": "150/265/380/495/610"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "E Scaling",
+            "labelKo": "E 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "2:ShieldValue"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "R": {
+        "slot": "R",
+        "id": "VolibearR",
+        "name": "폭풍을 부르는 자",
+        "summary": "볼리베어가 지정한 위치로 도약하여 아래에 있는 적을 둔화시키고 피해를 입히며 추가 체력을 얻습니다. 볼리베어가 착지한 곳 근처에 있는 포탑은 일시적으로 비활성화됩니다.",
+        "bodyHtml": "볼리베어가 변신 후 지정한 위치로 도약합니다. 12초 동안 <span class=\"text-green-600 dark:text-green-400\">체력이 175/350/525</span>, 공격 사거리가 50 증가합니다.<br /><br />볼리베어가 착지 시 땅에 균열이 생겨 근처 적 포탑이 2/3/4초 동안 <span class=\"text-purple-600 dark:text-purple-500\">비활성화</span>되며 <span class=\"text-red-600 dark:text-red-500 font-semibold\">(300/500/700 + (125% 주문력) + (250% 추가 공격력))의 물리 피해</span>를 입습니다. 근처 적들은 50% <span class=\"text-purple-600 dark:text-purple-500\">둔화</span>했다가 1초에 걸쳐 원래대로 돌아옵니다. 볼리베어 바로 아래에 있는 적들은 <span class=\"text-red-600 dark:text-red-500 font-semibold\">(300/500/700 + (125% 주문력) + (250% 추가 공격력))의 물리 피해</span>를 입습니다.",
+        "iconFile": "VolibearR.png",
+        "cooldownSeconds": [
+          160,
+          135,
+          110
+        ],
+        "cost": {
+          "values": [
+            100,
+            100,
+            100
+          ],
+          "resource": "마나"
+        },
+        "range": [
+          550,
+          550,
+          550
+        ],
+        "rankValues": [
+          {
+            "label": "피해량",
+            "values": "300/500/700"
+          },
+          {
+            "label": "추가 체력",
+            "values": "175/350/525"
+          },
+          {
+            "label": "포탑 비활성화 지속시간",
+            "values": "2/3/4"
+          },
+          {
+            "label": "재사용 대기시간",
+            "values": "160/135/110"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "R Scaling",
+            "labelKo": "R 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "3:ADRatio"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      }
+    }
+  }
+}

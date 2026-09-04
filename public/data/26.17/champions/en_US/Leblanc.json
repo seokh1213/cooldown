@@ -1,0 +1,394 @@
+{
+  "schemaVersion": 2,
+  "patchVersion": "26.17",
+  "locale": "en_US",
+  "sources": {
+    "ddragon": "16.17.1",
+    "cdragon": "16.17"
+  },
+  "champion": {
+    "id": "Leblanc",
+    "key": "7",
+    "name": "LeBlanc",
+    "title": "the Deceiver",
+    "tags": [
+      "Assassin",
+      "Mage"
+    ],
+    "baseStats": {
+      "health": {
+        "base": 598,
+        "perLevel": 108
+      },
+      "healthRegen": {
+        "base": 7.5,
+        "perLevel": 0.55
+      },
+      "mana": {
+        "base": 400,
+        "perLevel": 25
+      },
+      "manaRegen": {
+        "base": 8,
+        "perLevel": 0.8
+      },
+      "attackDamage": {
+        "base": 55,
+        "perLevel": 0
+      },
+      "attackSpeed": {
+        "base": 0.658,
+        "perLevel": 1.5
+      },
+      "armor": {
+        "base": 22,
+        "perLevel": 4.2
+      },
+      "magicResist": {
+        "base": 30,
+        "perLevel": 1.3
+      },
+      "moveSpeed": {
+        "base": 340,
+        "perLevel": 0
+      },
+      "attackRange": {
+        "base": 525,
+        "perLevel": 0
+      }
+    },
+    "baseStatContributions": [
+      {
+        "stat": "MAX_HEALTH",
+        "value": 108,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "HEALTH_REGEN",
+        "value": 0.55,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAX_MANA",
+        "value": 25,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MANA_REGEN",
+        "value": 0.8,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_DAMAGE",
+        "value": 0,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_SPEED",
+        "value": 1.5,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ARMOR",
+        "value": 4.2,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAGIC_RESIST",
+        "value": 1.3,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      }
+    ],
+    "abilities": {
+      "P": {
+        "slot": "P",
+        "id": "LeblancP",
+        "name": "Mirror Image",
+        "summary": "When LeBlanc drops below 40% Health, she becomes invisible for 1 second and creates a Mirror Image that deals no damage and lasts for up to 8 seconds.",
+        "bodyHtml": "When LeBlanc drops below 40% Health, she becomes <span class=\"text-purple-600 dark:text-purple-400 font-semibold\">Invisible</span> for 1 second and creates a harmless clone for 8 seconds. LeBlanc can move the clone with the \"Alt\" key.",
+        "iconFile": "LeblancP.png",
+        "cooldownSeconds": [],
+        "range": [],
+        "rankValues": [],
+        "scalings": [],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "Q": {
+        "slot": "Q",
+        "id": "LeblancQ",
+        "name": "Sigil of Malice",
+        "summary": "LeBlanc projects a sigil, dealing damage and marking the target for 3.5 seconds. Damaging the marked target with an ability detonates the sigil, dealing additional damage. If either part kills the target, Leblanc refunds the Mana cost and part of this spell's remaining Cooldown.",
+        "bodyHtml": "LeBlanc projects a sigil to an enemy, dealing <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(65/90/115/140/165 + (40% Ability Power)) magic damage</span> and marking them for 3.5 seconds.<br /><br />Damaging the marked enemy with an Ability detonates the sigil, dealing <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(65/90/115/140/165 + (40% Ability Power)) magic damage</span>.<br /><br />If either part kills the target, Leblanc refunds 100% of the Mana cost and 30% of this spell's remaining Cooldown.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">The initial sigil deals an additional 10 damage to minions. </span>",
+        "iconFile": "LeblancQ.png",
+        "cooldownSeconds": [
+          6,
+          6,
+          6,
+          6,
+          6
+        ],
+        "cost": {
+          "values": [
+            50,
+            50,
+            50,
+            50,
+            50
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          700,
+          700,
+          700,
+          700,
+          700
+        ],
+        "rankValues": [
+          {
+            "label": "Sigil Damage",
+            "values": "65/90/115/140/165"
+          },
+          {
+            "label": "Detonation Damage",
+            "values": "65/90/115/140/165"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "Q Scaling",
+            "labelKo": "Q 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "0:Damage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "W": {
+        "slot": "W",
+        "id": "LeblancW",
+        "name": "Distortion",
+        "summary": "LeBlanc dashes to a location, dealing damage to enemies near her destination. For the next 4 seconds, activate Distortion again to return LeBlanc to her starting location.",
+        "bodyHtml": "LeBlanc dashes then deals <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(75/115/155/195/235 + (90% Ability Power)) magic damage</span> to nearby enemies. For 4 seconds after dashing, LeBlanc can <span class=\"text-yellow-600 dark:text-yellow-300\">Recast</span>.<br /><br /><span class=\"text-yellow-600 dark:text-yellow-300\">Recast:</span> LeBlanc returns to her starting location.",
+        "iconFile": "LeblancW.png",
+        "cooldownSeconds": [
+          15,
+          13.75,
+          12.5,
+          11.25,
+          10
+        ],
+        "cost": {
+          "values": [
+            60,
+            70,
+            80,
+            90,
+            100
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          600,
+          600,
+          600,
+          600,
+          600
+        ],
+        "rankValues": [
+          {
+            "label": "Damage",
+            "values": "75/115/155/195/235"
+          },
+          {
+            "label": "Cooldown",
+            "values": "15/13.75/12.5/11.25/10"
+          },
+          {
+            "label": "Mana Cost",
+            "values": "60/70/80/90/100"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "W Scaling",
+            "labelKo": "W 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "1:TotalDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "E": {
+        "slot": "E",
+        "id": "LeblancE",
+        "name": "Ethereal Chains",
+        "summary": "LeBlanc launches a chain that shackles the first enemy hit. If the target remains shackled for 1.5 seconds, LeBlanc roots them and deals additional damage.",
+        "bodyHtml": "LeBlanc launches a chain that shackles the first enemy hit, dealing <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(50/70/90/110/130 + (40% Ability Power)) magic damage</span> and granting <span class=\"text-purple-600 dark:text-purple-400 font-semibold\">True Sight</span>.<br /><br />If they remain shackled for 1.5 seconds, LeBlanc <span class=\"text-purple-600 dark:text-purple-500\">Roots</span> them for 1.5 seconds and deals an additional <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(80/120/160/200/240 + (85% Ability Power)) magic damage</span>.",
+        "iconFile": "LeblancE.png",
+        "cooldownSeconds": [
+          14,
+          13.25,
+          12.5,
+          11.75,
+          11
+        ],
+        "cost": {
+          "values": [
+            50,
+            50,
+            50,
+            50,
+            50
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          925,
+          925,
+          925,
+          925,
+          925
+        ],
+        "rankValues": [
+          {
+            "label": "Chain Damage",
+            "values": "50/70/90/110/130"
+          },
+          {
+            "label": "Root Damage",
+            "values": "80/120/160/200/240"
+          },
+          {
+            "label": "Cooldown",
+            "values": "14/13.25/12.5/11.75/11"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "E Scaling",
+            "labelKo": "E 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "2:InitialDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "R": {
+        "slot": "R",
+        "id": "LeblancR",
+        "name": "Mimic",
+        "summary": "LeBlanc casts a mimicked version of one of her basic spells.",
+        "bodyHtml": "LeBlanc mimics her most recent Ability, using it again. The mimicked Ability deals increased damage.<br /><br /><span>Mimicked Sigil of Malice</span> deals <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(70/150/230 + (40% Ability Power)) magic damage</span> when applied, and <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(140/300/460 + (80% Ability Power)) magic damage</span> when consumed.<br /><span>Mimicked Distortion</span> deals <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(150/315/480 + (90% Ability Power)) magic damage</span>.<br /><span>Mimicked Ethereal Chains</span> deals <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(70/150/230 + (40% Ability Power)) magic damage</span> when shackled and <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(140/300/460 + (85% Ability Power)) magic damage</span> when <span class=\"text-purple-600 dark:text-purple-500\">Rooting</span>.",
+        "iconFile": "LeblancR.png",
+        "cooldownSeconds": [
+          45,
+          35,
+          25
+        ],
+        "rechargeSeconds": [
+          5,
+          5,
+          5
+        ],
+        "maxCharges": 2,
+        "range": [
+          25000,
+          25000,
+          25000
+        ],
+        "rankValues": [
+          {
+            "label": "Mimicked Sigil of Malice / Ethereal Chains Damage",
+            "values": "70/150/230"
+          },
+          {
+            "label": "Mimicked Mark / Root Damage",
+            "values": "140/300/460"
+          },
+          {
+            "label": "Mimicked Distortion Damage",
+            "values": "150/315/480"
+          },
+          {
+            "label": "Cooldown",
+            "values": "45/35/25"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "R Scaling",
+            "labelKo": "R 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "3:RQ1Damage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      }
+    }
+  }
+}

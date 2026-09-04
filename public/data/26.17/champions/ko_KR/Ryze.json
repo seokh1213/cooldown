@@ -1,0 +1,379 @@
+{
+  "schemaVersion": 2,
+  "patchVersion": "26.17",
+  "locale": "ko_KR",
+  "sources": {
+    "ddragon": "16.17.1",
+    "cdragon": "16.17"
+  },
+  "champion": {
+    "id": "Ryze",
+    "key": "13",
+    "name": "라이즈",
+    "title": "룬 마법사",
+    "tags": [
+      "Mage"
+    ],
+    "baseStats": {
+      "health": {
+        "base": 620,
+        "perLevel": 124
+      },
+      "healthRegen": {
+        "base": 8,
+        "perLevel": 0.8
+      },
+      "mana": {
+        "base": 300,
+        "perLevel": 70
+      },
+      "manaRegen": {
+        "base": 8,
+        "perLevel": 1
+      },
+      "attackDamage": {
+        "base": 55,
+        "perLevel": 0
+      },
+      "attackSpeed": {
+        "base": 0.658,
+        "perLevel": 2.11
+      },
+      "armor": {
+        "base": 22,
+        "perLevel": 4.2
+      },
+      "magicResist": {
+        "base": 32,
+        "perLevel": 1.3
+      },
+      "moveSpeed": {
+        "base": 340,
+        "perLevel": 0
+      },
+      "attackRange": {
+        "base": 550,
+        "perLevel": 0
+      }
+    },
+    "baseStatContributions": [
+      {
+        "stat": "MAX_HEALTH",
+        "value": 124,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "HEALTH_REGEN",
+        "value": 0.8,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAX_MANA",
+        "value": 70,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MANA_REGEN",
+        "value": 1,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_DAMAGE",
+        "value": 0,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_SPEED",
+        "value": 2.11,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ARMOR",
+        "value": 4.2,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAGIC_RESIST",
+        "value": 1.3,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      }
+    ],
+    "abilities": {
+      "P": {
+        "slot": "P",
+        "id": "RyzePassive",
+        "name": "비전 연마",
+        "summary": "<mainText>라이즈의 스킬이 추가 마나에 따라 추가 피해를 입히고, 최대 마나가 주문력에 비례해 증가합니다.</mainText>",
+        "bodyHtml": "라이즈의 최대 마나량이 <span>(10% 주문력)</span> 증가합니다. 스킬 사용 시 <span>추가 마나</span>에 비례하여 추가 피해를 입힙니다.",
+        "iconFile": "Ryze_P.png",
+        "cooldownSeconds": [],
+        "range": [],
+        "rankValues": [],
+        "scalings": [],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "Q": {
+        "slot": "Q",
+        "id": "RyzeQWrapper",
+        "name": "과부하",
+        "summary": "기본 지속 효과로 라이즈가 다른 스킬을 사용하면 과부하의 재사용 대기시간이 초기화되고 룬 하나를 충전합니다. 룬이 2개 충전된 상태에서 과부하를 사용하면 이동 속도가 잠시 대폭 증가합니다.<br><br>사용 시 라이즈가 순수한 에너지를 일직선으로 발사해 첫 번째 맞는 적에게 피해를 입힙니다. 대상에게 전이 표식이 있으면 과부하가 추가 피해를 입히고 전이 표식이 있는 주변 적에게 튕깁니다.",
+        "bodyHtml": "<span class=\"text-gray-600 dark:text-gray-500 italic\">기본 지속 효과:</span> <span>룬 감옥</span>과 <span>주문 전이</span> 사용 시 이 스킬의 재사용 대기시간이 초기화되고 4초 동안 룬이 충전됩니다. 룬은 최대 2개까지 충전됩니다.<br /><br /><span class=\"text-gray-900 dark:text-white font-semibold\">사용 시:</span> 돌풍을 발사하여 처음으로 맞힌 적에게 <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(75/95/115/135/155 + (55% 주문력) + (2% 추가 마나))의 마법 피해</span>를 입힙니다. 대상에게 <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">전이</span> 표식이 있으면 과부하가 표식을 소모하여 증가한 피해를 입히고 <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">전이</span> 표식이 있는 주변 적에게 튕깁니다.<br /><br />라이즈가 룬을 전부 방출합니다. 룬이 2개 충전되면 2초 동안 이동 속도가 <span class=\"text-cyan-600 dark:text-cyan-500\">28/32/36/40/44%</span>상승합니다.<br />",
+        "iconFile": "RyzeQWrapper.png",
+        "cooldownSeconds": [
+          5,
+          5,
+          5,
+          5,
+          5
+        ],
+        "cost": {
+          "values": [
+            40,
+            38,
+            36,
+            34,
+            32
+          ],
+          "resource": "마나"
+        },
+        "range": [
+          1000,
+          1000,
+          1000,
+          1000,
+          1000
+        ],
+        "rankValues": [
+          {
+            "label": "피해량",
+            "values": "75/95/115/135/155"
+          },
+          {
+            "label": "이동 속도",
+            "values": "28/32/36/40/44"
+          },
+          {
+            "label": "마나 소모량",
+            "values": "40/38/36/34/32"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "Q Scaling",
+            "labelKo": "Q 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "0:QDamageCalc"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": [
+            "Spell.RyzeR:OverloadDamageBonus"
+          ]
+        }
+      },
+      "W": {
+        "slot": "W",
+        "id": "RyzeW",
+        "name": "룬 감옥",
+        "summary": "라이즈가 대상을 룬 감옥에 가두고 피해를 입히며 이동 속도를 늦춥니다. 대상에게 전이 표식이 있으면 이동 속도를 늦추는 대신 속박합니다.",
+        "bodyHtml": "<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(60/90/120/150/180 + (60% 주문력) + (3% 추가 마나))의 마법 피해</span>를 입히고 1.5초 동안 50% <span class=\"text-purple-600 dark:text-purple-500\">둔화</span>시킵니다. <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">전이</span> 표식이 있는 대상에게는 표식을 소모하여 <span class=\"text-purple-600 dark:text-purple-500\">둔화</span>시키는 대신 <span class=\"text-purple-600 dark:text-purple-500\">속박</span>시킵니다.",
+        "iconFile": "RyzeW.png",
+        "cooldownSeconds": [
+          11,
+          10.5,
+          10,
+          9.5,
+          9
+        ],
+        "cost": {
+          "values": [
+            50,
+            60,
+            70,
+            80,
+            90
+          ],
+          "resource": "마나"
+        },
+        "range": [
+          615,
+          615,
+          615,
+          615,
+          615
+        ],
+        "rankValues": [
+          {
+            "label": "피해량",
+            "values": "60/90/120/150/180"
+          },
+          {
+            "label": "재사용 대기시간",
+            "values": "11/10.5/10/9.5/9"
+          },
+          {
+            "label": "마나 소모량",
+            "values": "50/60/70/80/90"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "W Scaling",
+            "labelKo": "W 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "1:WDamageCalc"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "E": {
+        "slot": "E",
+        "id": "RyzeE",
+        "name": "주문 전이",
+        "summary": "라이즈가 순수한 마법의 구체를 던져 적에게 피해를 입히고 주변 모든 적에게 표식을 남깁니다. 표식이 남은 적에게 라이즈가 스킬을 사용하면 추가 효과가 적용됩니다.",
+        "bodyHtml": "라이즈가 구체를 던져 <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(60/90/120/150/180 + (50% 주문력) + (2% 추가 마나))의 마법 피해</span>를 입히고 대상과 주변 적에게 4초 동안 <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">전이</span>를 적용합니다. <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">전이</span> 표식이 남아 있는 적들은 주변에 <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">전이</span> 표식을 퍼뜨립니다.",
+        "iconFile": "RyzeE.png",
+        "cooldownSeconds": [
+          3.5,
+          3.25,
+          3,
+          2.75,
+          2.5
+        ],
+        "cost": {
+          "values": [
+            35,
+            45,
+            55,
+            65,
+            75
+          ],
+          "resource": "마나"
+        },
+        "range": [
+          615,
+          615,
+          615,
+          615,
+          615
+        ],
+        "rankValues": [
+          {
+            "label": "피해량",
+            "values": "60/90/120/150/180"
+          },
+          {
+            "label": "재사용 대기시간",
+            "values": "3.5/3.25/3/2.75/2.5"
+          },
+          {
+            "label": "마나 소모량",
+            "values": "35/45/55/65/75"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "E Scaling",
+            "labelKo": "E 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "2:EDamageCalc"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "R": {
+        "slot": "R",
+        "id": "RyzeR",
+        "name": "공간 왜곡",
+        "summary": "기본 지속 효과로 과부하가 전이 표식이 있는 적에게 더 큰 피해를 입힙니다.<br><br>사용 시 라이즈가 근처에 차원문을 생성합니다. 몇 초 후, 차원문 주변의 모든 아군이 대상 지점으로 순간이동 합니다.",
+        "bodyHtml": "<span class=\"text-gray-600 dark:text-gray-500 italic\">기본 지속 효과:</span> <span>과부하</span> 사용 시 <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">전이</span> 표식이 있는 적에게 50/75/100%의 추가 피해를 입힙니다.<br /><br /><span class=\"text-gray-900 dark:text-white font-semibold\">사용 시:</span> 다른 위치로 이동하는 차원문을 엽니다. 2초 후, 차원문 근처의 모든 아군이 해당 위치로 순간이동합니다.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\"><span class=\"text-purple-600 dark:text-purple-500\">이동 불가</span> 상태나 스킬 <span class=\"text-purple-600 dark:text-purple-500\">사용 불가</span> 상태가 되면 차원문이 취소됩니다.</span>",
+        "iconFile": "RyzeR.png",
+        "cooldownSeconds": [
+          180,
+          160,
+          140
+        ],
+        "cost": {
+          "values": [
+            100,
+            100,
+            100
+          ],
+          "resource": "마나"
+        },
+        "range": [
+          3000,
+          3000,
+          3000
+        ],
+        "rankValues": [
+          {
+            "label": "재사용 대기시간",
+            "values": "180/160/140"
+          },
+          {
+            "label": "과부하 피해량 증가",
+            "values": "50/75/100"
+          }
+        ],
+        "scalings": [],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      }
+    }
+  }
+}

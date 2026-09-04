@@ -1,0 +1,396 @@
+{
+  "schemaVersion": 2,
+  "patchVersion": "26.17",
+  "locale": "en_US",
+  "sources": {
+    "ddragon": "16.17.1",
+    "cdragon": "16.17"
+  },
+  "champion": {
+    "id": "Galio",
+    "key": "3",
+    "name": "Galio",
+    "title": "the Colossus",
+    "tags": [
+      "Tank",
+      "Mage"
+    ],
+    "baseStats": {
+      "health": {
+        "base": 600,
+        "perLevel": 126
+      },
+      "healthRegen": {
+        "base": 8,
+        "perLevel": 0.8
+      },
+      "mana": {
+        "base": 410,
+        "perLevel": 40
+      },
+      "manaRegen": {
+        "base": 9.5,
+        "perLevel": 0.7
+      },
+      "attackDamage": {
+        "base": 59,
+        "perLevel": 0
+      },
+      "attackSpeed": {
+        "base": 0.625,
+        "perLevel": 1.5
+      },
+      "armor": {
+        "base": 24,
+        "perLevel": 4.7
+      },
+      "magicResist": {
+        "base": 32,
+        "perLevel": 2.05
+      },
+      "moveSpeed": {
+        "base": 340,
+        "perLevel": 0
+      },
+      "attackRange": {
+        "base": 150,
+        "perLevel": 0
+      }
+    },
+    "baseStatContributions": [
+      {
+        "stat": "MAX_HEALTH",
+        "value": 126,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "HEALTH_REGEN",
+        "value": 0.8,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAX_MANA",
+        "value": 40,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MANA_REGEN",
+        "value": 0.7,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_DAMAGE",
+        "value": 0,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_SPEED",
+        "value": 1.5,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ARMOR",
+        "value": 4.7,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAGIC_RESIST",
+        "value": 2.05,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      }
+    ],
+    "abilities": {
+      "P": {
+        "slot": "P",
+        "id": "GalioPassive",
+        "name": "Colossal Smash",
+        "summary": "Every few seconds, Galio's next basic attack deals bonus magic damage in an area.",
+        "bodyHtml": "Galio's Attacks have increased attack speed and deal <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">((100% Attack Damage) + (40% Ability Power) + (60% bonus Magic Resist)) magic damage</span> to surrounding enemies. <br /><br />This effect's cooldown is reduced by 3 seconds when Galio hits an enemy champion or epic monster with an ability, once per cast.",
+        "iconFile": "Galio_Passive.png",
+        "cooldownSeconds": [],
+        "range": [],
+        "rankValues": [],
+        "scalings": [],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "Q": {
+        "slot": "Q",
+        "id": "GalioQ",
+        "name": "Winds of War",
+        "summary": "Galio fires two windblasts that converge into a large tornado that deals damage over time.",
+        "bodyHtml": "Galio fires two windblasts that deal <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(70/105/140/175/210 + (70% Ability Power)) magic damage</span> each. When the windblasts meet, they combine into a tornado that deals <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(8 + (4% Ability Power))max Health magic damage</span> over 2 seconds.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">Percent Health damage deals a max of <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">200 damage</span> to jungle monsters.</span>",
+        "iconFile": "GalioQ.png",
+        "cooldownSeconds": [
+          11,
+          10,
+          9,
+          8,
+          7
+        ],
+        "cost": {
+          "values": [
+            60,
+            65,
+            70,
+            75,
+            80
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          825,
+          825,
+          825,
+          825,
+          825
+        ],
+        "rankValues": [
+          {
+            "label": "Windblast Damage",
+            "values": "70/105/140/175/210"
+          },
+          {
+            "label": "Cooldown",
+            "values": "11/10/9/8/7"
+          },
+          {
+            "label": "Mana Cost",
+            "values": "60/65/70/75/80"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "Q Scaling",
+            "labelKo": "Q 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "0:QMissileDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "W": {
+        "slot": "W",
+        "id": "GalioW",
+        "name": "Shield of Durand",
+        "summary": "Galio charges a defensive stance, moving slowly. Upon releasing the charge, Galio will taunt and damage nearby enemies.",
+        "bodyHtml": "<span class=\"text-gray-600 dark:text-gray-500 italic\">Passive:</span> Galio gains a <span class=\"text-blue-600 dark:text-blue-300\">(7.5/9/10.5/12/13.5% Health) Magic Shield</span> after not taking damage for (12 ~ 8) seconds.<br /><br /><span>Begin Charging:</span> Galio reduces incoming magic damage by (25/30/35/40/45% + (0.04% Ability Power) + (0.08% bonus Magic Resist) + (0.01% bonus Health)) and incoming physical damage by (12.5/15/17.5/20/22.5% + (0.02% Ability Power) + (0.04% bonus Magic Resist) + (0.005% bonus Health)) and <span class=\"text-purple-600 dark:text-purple-500\">Slows</span> himself by 15%.<br /><br /><span>Release:</span> Galio <span class=\"text-purple-600 dark:text-purple-500\">Taunts</span> enemy champions for between 0.5 to 1.5 seconds, deals between <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(20/30/40/50/60 + (30% Ability Power))</span> and <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(60/90/120/150/180 + (90% Ability Power)) magic damage</span>, and refreshes the damage reduction for 2 seconds. Taunt duration, damage, and range increase with charge time.",
+        "iconFile": "GalioW.png",
+        "cooldownSeconds": [
+          18,
+          17,
+          16,
+          15,
+          14
+        ],
+        "cost": {
+          "values": [
+            50,
+            50,
+            50,
+            50,
+            50
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          275,
+          275,
+          275,
+          275,
+          275
+        ],
+        "rankValues": [
+          {
+            "label": "Shield Health Ratio",
+            "values": "7.5/9/10.5/12/13.5"
+          },
+          {
+            "label": "Magic Damage Reduction",
+            "values": "25/30/35/40/45"
+          },
+          {
+            "label": "Physical Damage Reduction",
+            "values": "12.5/15/17.5/20/22.5"
+          },
+          {
+            "label": "Maximum Damage",
+            "values": "60/90/120/150/180"
+          },
+          {
+            "label": "Cooldown",
+            "values": "18/17/16/15/14"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "W Scaling",
+            "labelKo": "W 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "1:TotalPassiveShield"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "E": {
+        "slot": "E",
+        "id": "GalioE",
+        "name": "Justice Punch",
+        "summary": "Galio will briefly step back and charge, knocking up the first enemy champion he encounters.",
+        "bodyHtml": "Galio lunges forward with a mighty blow, <span class=\"text-purple-600 dark:text-purple-500\">Knocking Up</span> for 0.75 seconds and dealing <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(100/135/170/205/240 + (100% Ability Power)) magic damage</span> to the first champion hit. Other enemies in the way take <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(80/108/136/164/192 + (80% Ability Power)) magic damage</span>.<br /><br />Galio's dash stops on hitting terrain.",
+        "iconFile": "GalioE.png",
+        "cooldownSeconds": [
+          11,
+          10,
+          9,
+          8,
+          7
+        ],
+        "cost": {
+          "values": [
+            50,
+            50,
+            50,
+            50,
+            50
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          650,
+          650,
+          650,
+          650,
+          650
+        ],
+        "rankValues": [
+          {
+            "label": "Damage",
+            "values": "100/135/170/205/240"
+          },
+          {
+            "label": "Cooldown",
+            "values": "11/10/9/8/7"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "E Scaling",
+            "labelKo": "E 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "2:TotalDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "R": {
+        "slot": "R",
+        "id": "GalioR",
+        "name": "Hero's Entrance",
+        "summary": "Galio designates an ally's position as his landing spot, granting all allies in the area a magic shield. After a delay Galio smashes down location, knocking up nearby enemies.",
+        "bodyHtml": "Galio designates an allied champion's position as his landing spot, granting all allied champions in the area <span>Shield of Durand's</span> passive <span class=\"text-blue-600 dark:text-blue-300\">Shield</span> for 5 seconds. Galio then flies to his landing zone.<br /><br />When Galio lands, he <span class=\"text-purple-600 dark:text-purple-500\">Knocks Up</span> for 0.75 seconds and deals <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(150/250/350 + (70% Ability Power) + (100% bonus Magic Resist)) magic damage</span>.",
+        "iconFile": "GalioR.png",
+        "cooldownSeconds": [
+          180,
+          160,
+          140
+        ],
+        "cost": {
+          "values": [
+            100,
+            100,
+            100
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          4000,
+          4750,
+          5500
+        ],
+        "rankValues": [
+          {
+            "label": "Damage",
+            "values": "150/250/350"
+          },
+          {
+            "label": "Cooldown",
+            "values": "180/160/140"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "R Scaling",
+            "labelKo": "R 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "3:TotalDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      }
+    }
+  }
+}

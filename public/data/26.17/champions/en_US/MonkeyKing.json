@@ -1,0 +1,386 @@
+{
+  "schemaVersion": 2,
+  "patchVersion": "26.17",
+  "locale": "en_US",
+  "sources": {
+    "ddragon": "16.17.1",
+    "cdragon": "16.17"
+  },
+  "champion": {
+    "id": "MonkeyKing",
+    "key": "62",
+    "name": "Wukong",
+    "title": "the Monkey King",
+    "tags": [
+      "Fighter",
+      "Tank"
+    ],
+    "baseStats": {
+      "health": {
+        "base": 610,
+        "perLevel": 99
+      },
+      "healthRegen": {
+        "base": 3.5,
+        "perLevel": 0.65
+      },
+      "mana": {
+        "base": 330,
+        "perLevel": 65
+      },
+      "manaRegen": {
+        "base": 8,
+        "perLevel": 0.8
+      },
+      "attackDamage": {
+        "base": 66,
+        "perLevel": 0
+      },
+      "attackSpeed": {
+        "base": 0.69,
+        "perLevel": 3
+      },
+      "armor": {
+        "base": 31,
+        "perLevel": 4.7
+      },
+      "magicResist": {
+        "base": 28,
+        "perLevel": 2.05
+      },
+      "moveSpeed": {
+        "base": 340,
+        "perLevel": 0
+      },
+      "attackRange": {
+        "base": 175,
+        "perLevel": 0
+      }
+    },
+    "baseStatContributions": [
+      {
+        "stat": "MAX_HEALTH",
+        "value": 99,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "HEALTH_REGEN",
+        "value": 0.65,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAX_MANA",
+        "value": 65,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MANA_REGEN",
+        "value": 0.8,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_DAMAGE",
+        "value": 0,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_SPEED",
+        "value": 3,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ARMOR",
+        "value": 4.7,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAGIC_RESIST",
+        "value": 2.05,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      }
+    ],
+    "abilities": {
+      "P": {
+        "slot": "P",
+        "id": "MonkeyKingPassive",
+        "name": "Stone Skin",
+        "summary": "Wukong gains stacking armor and max health regeneration while fighting champions and monsters.",
+        "bodyHtml": "Wukong gains <span class=\"text-orange-600 dark:text-orange-400\">(6 ~ 10) Armor</span> and regenerates <span class=\"text-green-600 dark:text-green-400\">0.35% max Health per 5 seconds</span>. These bonuses are increased by 100% for 5 seconds every time he or his <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Clone</span> hit an enemy champion or jungle monster with an Attack or Ability, stacking up to 5 times.",
+        "iconFile": "MonkeyKingStoneSkin.png",
+        "cooldownSeconds": [],
+        "range": [],
+        "rankValues": [],
+        "scalings": [],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "Q": {
+        "slot": "Q",
+        "id": "MonkeyKingDoubleAttack",
+        "name": "Crushing Blow",
+        "summary": "Wukong's next attack gains attack range, deals bonus damage, and reduces the target's armor for a few seconds.",
+        "bodyHtml": "Wukong and his <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Clone's</span> next Attack gains 135/145/155/165/175 range, deals an additional <span class=\"text-red-600 dark:text-red-500 font-semibold\">(20/45/70/95/120 + (50% bonus Attack Damage)) physical damage</span>, and removes <span class=\"text-orange-600 dark:text-orange-400\">10/15/20/25/30% Armor</span> for 3 seconds.<br /><br />This Ability's cooldown is reduced by 0.5 seconds every time Wukong or his <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Clone</span> hit an enemy with an Attack or Ability.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">This Ability triggers spell effects upon dealing damage.</span>",
+        "iconFile": "MonkeyKingDoubleAttack.png",
+        "cooldownSeconds": [
+          8,
+          7.5,
+          7,
+          6.5,
+          6
+        ],
+        "cost": {
+          "values": [
+            20,
+            20,
+            20,
+            20,
+            20
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          250,
+          275,
+          300,
+          325,
+          350
+        ],
+        "rankValues": [
+          {
+            "label": "Damage",
+            "values": "20/45/70/95/120"
+          },
+          {
+            "label": "Armor Reduction %",
+            "values": "10%/15%/20%/25%/30%"
+          },
+          {
+            "label": "Range",
+            "values": "135/145/155/165/175"
+          },
+          {
+            "label": "Cooldown",
+            "values": "8/7.5/7/6.5/6"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "Q Scaling",
+            "labelKo": "Q 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "0:TotalDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "W": {
+        "slot": "W",
+        "id": "MonkeyKingDecoy",
+        "name": "Warrior Trickster",
+        "summary": "Wukong becomes <font color='#91d7ee'>Invisible</font> and dashes in a direction, leaving behind a clone that will attack nearby enemies.",
+        "bodyHtml": "Wukong dashes and becomes <span class=\"text-purple-600 dark:text-purple-400 font-semibold\">Invisible</span> for 1 second, leaving behind a stationary <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Clone</span> for 4 seconds.<br /><br />The <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Clone</span> Attacks nearby enemies Wukong has recently damaged and will mimic his ultimate, each dealing 40/45/50/55/60% of normal damage.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\"><span class=\"text-purple-600 dark:text-purple-400 font-semibold\">Invisible</span> units cannot be revealed except by turrets or true sight.</span>",
+        "iconFile": "MonkeyKingDecoy.png",
+        "cooldownSeconds": [
+          22,
+          21,
+          20,
+          19,
+          18
+        ],
+        "cost": {
+          "values": [
+            60,
+            55,
+            50,
+            45,
+            40
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          275,
+          275,
+          275,
+          275,
+          275
+        ],
+        "rankValues": [
+          {
+            "label": "Damage Percent",
+            "values": "40%/45%/50%/55%/60%"
+          },
+          {
+            "label": "Cooldown",
+            "values": "22/21/20/19/18"
+          },
+          {
+            "label": "Mana Cost",
+            "values": "60/55/50/45/40"
+          }
+        ],
+        "scalings": [],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "E": {
+        "slot": "E",
+        "id": "MonkeyKingNimbus",
+        "name": "Nimbus Strike",
+        "summary": "Wukong dashes to a targeted enemy and sends out images to attack enemies near his target, dealing damage to each enemy struck.",
+        "bodyHtml": "Wukong dashes to an enemy, sending out <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Clones</span> that mimic the dash to up to 2 additional enemies nearby. Each enemy struck takes <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(80/120/160/200/240 + (100% Ability Power)) magic damage</span>. He and his <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Clone</span> gain <span>40/45/50/55/60% Attack Speed</span> for 5 seconds.<br /><br />",
+        "iconFile": "MonkeyKingNimbus.png",
+        "cooldownSeconds": [
+          10,
+          9.25,
+          8.5,
+          7.75,
+          7
+        ],
+        "cost": {
+          "values": [
+            30,
+            35,
+            40,
+            45,
+            50
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          650,
+          650,
+          650,
+          650,
+          650
+        ],
+        "rankValues": [
+          {
+            "label": "Damage",
+            "values": "80/120/160/200/240"
+          },
+          {
+            "label": "Attack Speed",
+            "values": "40/45/50/55/60"
+          },
+          {
+            "label": "Cooldown",
+            "values": "10/9.25/8.5/7.75/7"
+          },
+          {
+            "label": "Mana Cost",
+            "values": "30/35/40/45/50"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "E Scaling",
+            "labelKo": "E 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "2:TotalDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "R": {
+        "slot": "R",
+        "id": "MonkeyKingSpinToWin",
+        "name": "Cyclone",
+        "summary": "Wukong's extends his staff and spins it around repeatedly, gaining Move Speed.<br><br>Enemies struck take damage and are knocked up.",
+        "bodyHtml": "Wukong gains <span class=\"text-cyan-600 dark:text-cyan-500\">20% Move Speed</span> and spins his staff, <span class=\"text-purple-600 dark:text-purple-500\">Knocking Up</span> nearby enemies for 0.6 seconds and take <span class=\"text-red-600 dark:text-red-500 font-semibold\">(275% Attack Damage) plus 8/12/16% max Health physical damage</span> over 2 seconds.<br /><br />This Ability can be cast a second time within 8 seconds before going on cooldown.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">Damage to jungle monsters is capped at <span class=\"text-red-600 dark:text-red-500 font-semibold\">1200 damage</span> over 2 seconds.</span>",
+        "iconFile": "MonkeyKingSpinToWin.png",
+        "cooldownSeconds": [
+          130,
+          110,
+          90
+        ],
+        "cost": {
+          "values": [
+            100,
+            100,
+            100
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          315,
+          315,
+          315
+        ],
+        "rankValues": [
+          {
+            "label": "Maximum Health Damage",
+            "values": "8/12/16"
+          },
+          {
+            "label": "Cooldown",
+            "values": "130/110/90"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "R Scaling",
+            "labelKo": "R 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "3:DamagePerSecondTotal"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      }
+    }
+  }
+}

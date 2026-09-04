@@ -1,0 +1,390 @@
+{
+  "schemaVersion": 2,
+  "patchVersion": "26.17",
+  "locale": "en_US",
+  "sources": {
+    "ddragon": "16.17.1",
+    "cdragon": "16.17"
+  },
+  "champion": {
+    "id": "Olaf",
+    "key": "2",
+    "name": "Olaf",
+    "title": "the Berserker",
+    "tags": [
+      "Fighter",
+      "Tank"
+    ],
+    "baseStats": {
+      "health": {
+        "base": 645,
+        "perLevel": 119
+      },
+      "healthRegen": {
+        "base": 6.5,
+        "perLevel": 0.6
+      },
+      "mana": {
+        "base": 316,
+        "perLevel": 50
+      },
+      "manaRegen": {
+        "base": 7.5,
+        "perLevel": 0.6
+      },
+      "attackDamage": {
+        "base": 68,
+        "perLevel": 0
+      },
+      "attackSpeed": {
+        "base": 0.72,
+        "perLevel": 2.7
+      },
+      "armor": {
+        "base": 35,
+        "perLevel": 4.2
+      },
+      "magicResist": {
+        "base": 32,
+        "perLevel": 2.05
+      },
+      "moveSpeed": {
+        "base": 350,
+        "perLevel": 0
+      },
+      "attackRange": {
+        "base": 125,
+        "perLevel": 0
+      }
+    },
+    "baseStatContributions": [
+      {
+        "stat": "MAX_HEALTH",
+        "value": 119,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "HEALTH_REGEN",
+        "value": 0.6,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAX_MANA",
+        "value": 50,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MANA_REGEN",
+        "value": 0.6,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_DAMAGE",
+        "value": 0,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_SPEED",
+        "value": 2.7,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ARMOR",
+        "value": 4.2,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAGIC_RESIST",
+        "value": 2.05,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      }
+    ],
+    "abilities": {
+      "P": {
+        "slot": "P",
+        "id": "OlafBerzerkerRage",
+        "name": "Berserker Rage",
+        "summary": "Olaf gains Attack Speed and Life Steal based on his missing Health.",
+        "bodyHtml": "Olaf gains up to <span>(50% ~ 100%) Attack Speed</span> and (8% ~ 25%) Life Steal, based on his missing Health.",
+        "iconFile": "Olaf_Passive.png",
+        "cooldownSeconds": [],
+        "range": [],
+        "rankValues": [],
+        "scalings": [],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "Q": {
+        "slot": "Q",
+        "id": "OlafAxeThrowCast",
+        "name": "Undertow",
+        "summary": "Olaf throws an axe into the ground at a target location, dealing damage to enemies it passes through and reducing their Armor and Move Speed. If Olaf picks up the axe, the ability's cooldown is reset.",
+        "bodyHtml": "Olaf throws an axe, dealing <span class=\"text-red-600 dark:text-red-500 font-semibold\">(70/120/170/220/270 + (100% bonus Attack Damage)) physical damage</span> and <span class=\"text-purple-600 dark:text-purple-500\">Slowing</span> by 30/35/40/45/50% for up to 3 seconds (based on distance travelled). Champions hit lose <span class=\"text-orange-600 dark:text-orange-400\">20% Armor</span> for 4 seconds.<br /><br />If Olaf picks up the axe, this Ability's Cooldown is reduced to 2.5 seconds, or fully refunded if 2.5 seconds has elapsed.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">Deals 20/45/70/95/120 bonus damage to monsters.</span>",
+        "iconFile": "OlafAxeThrowCast.png",
+        "cooldownSeconds": [
+          9,
+          9,
+          9,
+          9,
+          9
+        ],
+        "cost": {
+          "values": [
+            50,
+            55,
+            60,
+            65,
+            70
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          1000,
+          1000,
+          1000,
+          1000,
+          1000
+        ],
+        "rankValues": [
+          {
+            "label": "Damage",
+            "values": "70/120/170/220/270"
+          },
+          {
+            "label": "Slow",
+            "values": "30/35/40/45/50"
+          },
+          {
+            "label": "Monster Damage",
+            "values": "20/45/70/95/120"
+          },
+          {
+            "label": "Mana Cost",
+            "values": "50/55/60/65/70"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "Q Scaling",
+            "labelKo": "Q 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "0:TotalDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "W": {
+        "slot": "W",
+        "id": "OlafFrenziedStrikes",
+        "name": "Tough It Out",
+        "summary": "Olaf's Attack Speed is increased and he gains a Shield.",
+        "bodyHtml": "Olaf gains <span>40/50/60/70/80% Attack Speed</span> for 5 seconds, and <span class=\"text-blue-600 dark:text-blue-300\">10/40/70/100/130 plus 17.5% missing Health Shield (up to a maximum of 10/40/70/100/130 Shield below 30% Health)</span> for 2.5 seconds.",
+        "iconFile": "OlafFrenziedStrikes.png",
+        "cooldownSeconds": [
+          16,
+          15,
+          14,
+          13,
+          12
+        ],
+        "cost": {
+          "values": [
+            50,
+            50,
+            50,
+            50,
+            50
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          700,
+          700,
+          700,
+          700,
+          700
+        ],
+        "rankValues": [
+          {
+            "label": "Attack Speed",
+            "values": "40/50/60/70/80"
+          },
+          {
+            "label": "Base Shield",
+            "values": "10/40/70/100/130"
+          },
+          {
+            "label": "Cooldown",
+            "values": "16/15/14/13/12"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "W Scaling",
+            "labelKo": "W 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "1:ShieldCalc"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "E": {
+        "slot": "E",
+        "id": "OlafRecklessStrike",
+        "name": "Reckless Swing",
+        "summary": "Olaf attacks with such force that it deals true damage to his target and himself, refunding the Health cost if he destroys the target.",
+        "bodyHtml": "Olaf ferociously swings his axes, dealing <span class=\"text-yellow-600 dark:text-yellow-500 font-semibold\">(70/115/160/205/250 + (50% Attack Damage)) true damage</span>. If the enemy dies, the cost is refunded.<br /><br />Attacks lower the Cooldown of this Ability by 1 second, increased to 2 seconds when attacking monsters.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">Cast time scales based on bonus Attack Speed.</span>",
+        "iconFile": "OlafRecklessStrike.png",
+        "cooldownSeconds": [
+          11,
+          10,
+          9,
+          8,
+          7
+        ],
+        "range": [
+          325,
+          325,
+          325,
+          325,
+          325
+        ],
+        "rankValues": [
+          {
+            "label": "Damage",
+            "values": "70/115/160/205/250"
+          },
+          {
+            "label": "Cooldown",
+            "values": "11/10/9/8/7"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "E Scaling",
+            "labelKo": "E 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "2:TotalDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "R": {
+        "slot": "R",
+        "id": "OlafRagnarok",
+        "name": "Ragnarok",
+        "summary": "Olaf passively gains increased armor and magic resist. He can activate this ability to become immune to disables for as long as he keeps attacking.",
+        "bodyHtml": "<span class=\"text-gray-600 dark:text-gray-500 italic\">Passive:</span> Olaf gains <span class=\"text-orange-600 dark:text-orange-400\">10/15/20 Armor</span> and <span>10/15/20 Magic Resist</span>.<br /><br /><span class=\"text-gray-900 dark:text-white font-semibold\">Active: </span>Olaf cleanses all <span class=\"text-purple-600 dark:text-purple-500\">Immobilizing</span> and <span class=\"text-purple-600 dark:text-purple-500\">Disabling</span> effects on himself and becomes immune to them for 3 seconds. While active, Olaf gains <span class=\"text-orange-600 dark:text-orange-500\">(10/20/30 + (25% Attack Damage)) Attack Damage</span>. Hitting a champion with an Attack or <span>Reckless Swing</span> extends the duration by 2.5 seconds.<br /><br />Additionally, Olaf gains <span class=\"text-cyan-600 dark:text-cyan-500\">20/45/70% Move Speed</span> towards enemy champions for 1 second.",
+        "iconFile": "OlafRagnarok.png",
+        "cooldownSeconds": [
+          100,
+          90,
+          80
+        ],
+        "cost": {
+          "values": [
+            100,
+            100,
+            100
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          400,
+          400,
+          400
+        ],
+        "rankValues": [
+          {
+            "label": "Armor and Magic Resist",
+            "values": "10/15/20"
+          },
+          {
+            "label": "Attack Damage",
+            "values": "10/20/30"
+          },
+          {
+            "label": "Move Speed",
+            "values": "20/45/70"
+          },
+          {
+            "label": "Cooldown",
+            "values": "100/90/80"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "R Scaling",
+            "labelKo": "R 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "3:AD"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      }
+    }
+  }
+}

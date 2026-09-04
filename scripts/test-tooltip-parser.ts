@@ -3,16 +3,9 @@
  * npm run test-tooltip으로 실행
  */
 
-import fs from "node:fs/promises";
-import path from "node:path";
-import type { DataManifest } from "../src/data/contracts/dataManifest";
-import { fileURLToPath } from "node:url";
 import { parseSpellTooltip } from "../src/lib/spellTooltipParser";
 import type { ChampionSpell } from "../src/types";
 import type { CommunityDragonSpellData } from "../src/lib/spellTooltipParser/types";
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 
 // 테스트 케이스 정의
 interface TestCase {
@@ -101,118 +94,13 @@ const testCases: TestCase[] = [
   },
 ];
 
-async function loadDataRootAndVersion(): Promise<{
-  dataRoot: string;
-  dataVersion: string;
-}> {
-  const dataRoot = path.resolve(__dirname, "../public/data");
-  const versionRaw = await fs.readFile(path.join(dataRoot, "version.json"), "utf-8");
-  const versionInfo = JSON.parse(versionRaw) as DataManifest;
-  const dataVersion = versionInfo.patchVersion;
-  return { dataRoot, dataVersion };
-}
-
-async function buildRealDataTestCases(): Promise<TestCase[]> {
-  const champions = ["KSante", "Ryze", "Galio"] as const;
-  const cases: TestCase[] = [];
-
-  let dataRoot: string;
-  let dataVersion: string;
-
-  try {
-    ({ dataRoot, dataVersion } = await loadDataRootAndVersion());
-  } catch (error) {
-    console.warn("⚠️  version.json을 읽지 못해 실데이터 기반 테스트를 건너뜁니다.", error);
-    return cases;
-  }
-
-  for (const championId of champions) {
-    const championPath = path.join(
-      dataRoot,
-      dataVersion,
-      "champions",
-      `${championId}-ko_KR.json`
-    );
-    const spellsPath = path.join(
-      dataRoot,
-      dataVersion,
-      "spells",
-      `${championId}.json`
-    );
-
-    let championRaw: string;
-    let spellsRaw: string;
-
-    try {
-      [championRaw, spellsRaw] = await Promise.all([
-        fs.readFile(championPath, "utf-8"),
-        fs.readFile(spellsPath, "utf-8"),
-      ]);
-    } catch (error) {
-      console.warn(`⚠️  ${championId} 실데이터 파일을 읽지 못해 해당 챔피언 테스트를 건너뜁니다.`, error);
-      continue;
-    }
-
-    const championJson = JSON.parse(championRaw) as {
-      champion: { spells?: ChampionSpell[] };
-    };
-    const spellsJson = JSON.parse(spellsRaw) as {
-      spellData?: Record<string, any>;
-    };
-
-    const spells = championJson.champion.spells ?? [];
-    const spellDataMap = spellsJson.spellData ?? {};
-
-    spells.forEach((spell, index) => {
-      const tooltip = spell.tooltip ?? "";
-      if (!tooltip) return;
-
-      const cdEntry =
-        spellDataMap[String(index)] ??
-        spellDataMap[spell.id] ??
-        undefined;
-
-      const communityDragonData: CommunityDragonSpellData | undefined = cdEntry
-        ? {
-            DataValues: cdEntry.DataValues,
-            mSpellCalculations: cdEntry.mSpellCalculations,
-            // effectBurn은 DDragon에서 가져온 값을 그대로 사용
-            effectBurn: spell.effectBurn,
-          }
-        : undefined;
-
-      cases.push({
-        name: `[실데이터] ${championId} ${spell.id} (${index})`,
-        tooltip,
-        spell,
-        communityDragonData,
-        lang: "ko_KR",
-        expectedNotContains: ["{{", "}}"],
-        assert: (result: string) => {
-          const errors: string[] = [];
-          if (!result || result.trim().length === 0) {
-            errors.push("툴팁 결과가 비어 있습니다.");
-          }
-          if (result.includes("{{") || result.includes("}}")) {
-            errors.push("치환되지 않은 {{ }} 변수가 남아 있습니다.");
-          }
-          return errors;
-        },
-      });
-    });
-  }
-
-  return cases;
-}
-
 async function runTests() {
   console.log("=== Tooltip Parser 테스트 시작 ===\n");
 
   let passed = 0;
   let failed = 0;
 
-  const realDataCases = await buildRealDataTestCases();
-  const allCases: TestCase[] = [...testCases, ...realDataCases];
+  const allCases = testCases;
 
   for (const testCase of allCases) {
     try {

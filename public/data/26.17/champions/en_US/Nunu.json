@@ -1,0 +1,400 @@
+{
+  "schemaVersion": 2,
+  "patchVersion": "26.17",
+  "locale": "en_US",
+  "sources": {
+    "ddragon": "16.17.1",
+    "cdragon": "16.17"
+  },
+  "champion": {
+    "id": "Nunu",
+    "key": "20",
+    "name": "Nunu & Willump",
+    "title": "the Boy and His Yeti",
+    "tags": [
+      "Tank",
+      "Mage"
+    ],
+    "baseStats": {
+      "health": {
+        "base": 610,
+        "perLevel": 90
+      },
+      "healthRegen": {
+        "base": 5,
+        "perLevel": 0.8
+      },
+      "mana": {
+        "base": 280,
+        "perLevel": 42
+      },
+      "manaRegen": {
+        "base": 7,
+        "perLevel": 0.5
+      },
+      "attackDamage": {
+        "base": 61,
+        "perLevel": 0
+      },
+      "attackSpeed": {
+        "base": 0.625,
+        "perLevel": 2.25
+      },
+      "armor": {
+        "base": 29,
+        "perLevel": 4.2
+      },
+      "magicResist": {
+        "base": 32,
+        "perLevel": 2.05
+      },
+      "moveSpeed": {
+        "base": 345,
+        "perLevel": 0
+      },
+      "attackRange": {
+        "base": 125,
+        "perLevel": 0
+      }
+    },
+    "baseStatContributions": [
+      {
+        "stat": "MAX_HEALTH",
+        "value": 90,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "HEALTH_REGEN",
+        "value": 0.8,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAX_MANA",
+        "value": 42,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MANA_REGEN",
+        "value": 0.5,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_DAMAGE",
+        "value": 0,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_SPEED",
+        "value": 2.25,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ARMOR",
+        "value": 4.2,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAGIC_RESIST",
+        "value": 2.05,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      }
+    ],
+    "abilities": {
+      "P": {
+        "slot": "P",
+        "id": "NunuPassive",
+        "name": "Call of the Freljord",
+        "summary": "Nunu increases the attack speed and Move Speed of Willump and a nearby ally, and causes Willump's basic attacks to damage enemies around the target.",
+        "bodyHtml": "When Nunu and Willump deal damage to champions, large jungle monsters, or structures, they and a nearby ally gain <span>20% Attack Speed</span> and <span class=\"text-cyan-600 dark:text-cyan-500\">10% Move Speed</span> for 4 seconds.<br /><br />Willump's Attacks deal an additional <span class=\"text-red-600 dark:text-red-500 font-semibold\">(30% Attack Damage) physical damage</span> to other nearby enemies while he has this buff.",
+        "iconFile": "NunuPassive.png",
+        "cooldownSeconds": [],
+        "range": [],
+        "rankValues": [],
+        "scalings": [],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "Q": {
+        "slot": "Q",
+        "id": "NunuQ",
+        "name": "Consume",
+        "summary": "Willump takes a bite out of a minion, monster, or enemy champion, dealing damage and healing himself.",
+        "bodyHtml": "Nunu asks Willump to take a bite of an enemy, dealing <span class=\"text-yellow-600 dark:text-yellow-500 font-semibold\">400/600/800/1000/1200 true damage</span> and restoring <span class=\"text-green-600 dark:text-green-400\">(65/95/125/155/185 + (10% bonus Health) + (90% Ability Power)) Health</span> when used against a minion or jungle monster. Against a champion, it instead deals <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(60/100/140/180/220 + (5% bonus Health) + (65% Ability Power)) magic damage</span> and restores <span class=\"text-green-600 dark:text-green-400\">(39/57/75/93/111 + (6% bonus Health) + (54% Ability Power)) Health</span>.<br /><br />The <span class=\"text-green-600 dark:text-green-400\">healing</span> is increased by 50% when Nunu and Willump are below 50% Health.",
+        "iconFile": "NunuQ.png",
+        "cooldownSeconds": [
+          13,
+          12,
+          11,
+          10,
+          9
+        ],
+        "cost": {
+          "values": [
+            60,
+            60,
+            60,
+            60,
+            60
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          125,
+          125,
+          125,
+          125,
+          125
+        ],
+        "rankValues": [
+          {
+            "label": "Monster Damage",
+            "values": "400/600/800/1000/1200"
+          },
+          {
+            "label": "Champion Damage",
+            "values": "60/100/140/180/220"
+          },
+          {
+            "label": "Heal",
+            "values": "65/95/125/155/185"
+          },
+          {
+            "label": "Cooldown",
+            "values": "13/12/11/10/9"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "Q Scaling",
+            "labelKo": "Q 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "0:MonsterHealing"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "W": {
+        "slot": "W",
+        "id": "NunuW",
+        "name": "Biggest Snowball Ever!",
+        "summary": "Willump creates a snowball that grows in size and speed as he rolls it.  The snowball damages and knocks up enemies.",
+        "bodyHtml": "Nunu and Willump create a snowball that grows in size and speed as they roll it. They turn slower while rolling it, but can increase turning speed by holding the turn.<br /><br />The snowball does between <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(59.94/74.925/89.91/104.895/119.88 + (49.95% Ability Power))</span> and <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(180/225/270/315/360 + (150% Ability Power)) magic damage</span>, and <span class=\"text-purple-600 dark:text-purple-500\">Knocks Up</span> for between 0.5 and 1.25 seconds when it collides with a champion, large monster or wall. These values scale up with distance rolled.<br /><br />Nunu and Willump can <span class=\"text-yellow-600 dark:text-yellow-300\">Recast</span> to let the snowball go early.",
+        "iconFile": "NunuW.png",
+        "cooldownSeconds": [
+          14,
+          14,
+          14,
+          14,
+          14
+        ],
+        "cost": {
+          "values": [
+            50,
+            55,
+            60,
+            65,
+            70
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          7500,
+          7500,
+          7500,
+          7500,
+          7500
+        ],
+        "rankValues": [
+          {
+            "label": "Base Damage",
+            "values": "180/225/270/315/360"
+          },
+          {
+            "label": "Mana Cost",
+            "values": "50/55/60/65/70"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "W Scaling",
+            "labelKo": "W 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "1:MaximumSnowballDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "E": {
+        "slot": "E",
+        "id": "NunuE",
+        "name": "Snowball Barrage",
+        "summary": "Nunu throws multiple snowballs that damage enemies.  When he's finished, Willump roots any champions or large monsters that were hit by a snowball.",
+        "bodyHtml": "Nunu throws three snowballs, dealing <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(15/22.5/30/37.5/45 + (12% Ability Power)) magic damage</span> per snowball and <span class=\"text-purple-600 dark:text-purple-500\">Slowing</span> enemies hit by all three by 30/35/40/45/50% for 1 second. Nunu can <span class=\"text-yellow-600 dark:text-yellow-300\">Recast</span> this up to twice more.<br /><br />After 3 seconds, Nunu <span class=\"text-purple-600 dark:text-purple-500\">Roots</span> all nearby enemies that had been <span class=\"text-purple-600 dark:text-purple-500\">Slowed</span> by the snowballs for (0.5 ~ 1.5) seconds and deals an additional <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(20/30/40/50/60 + (80% Ability Power)) magic damage</span>.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">Nunu can only <span class=\"text-purple-600 dark:text-purple-500\">Slow</span> each enemy once with this Ability.</span>",
+        "iconFile": "NunuE.png",
+        "cooldownSeconds": [
+          14,
+          13,
+          12,
+          11,
+          10
+        ],
+        "cost": {
+          "values": [
+            50,
+            55,
+            60,
+            65,
+            70
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          625,
+          625,
+          625,
+          625,
+          625
+        ],
+        "rankValues": [
+          {
+            "label": "Damage",
+            "values": "15/22.5/30/37.5/45"
+          },
+          {
+            "label": "Movement Slow",
+            "values": "30/35/40/45/50"
+          },
+          {
+            "label": "Cooldown",
+            "values": "14/13/12/11/10"
+          },
+          {
+            "label": "Mana Cost",
+            "values": "50/55/60/65/70"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "E Scaling",
+            "labelKo": "E 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "2:TotalSnowballDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "R": {
+        "slot": "R",
+        "id": "NunuR",
+        "name": "Absolute Zero",
+        "summary": "Nunu & Willump create a powerful blizzard in an area that slows enemies and deals massive damage at the end.",
+        "bodyHtml": "Nunu and Willump channel a powerful blizzard for up to 3 seconds. Enemies inside are <span class=\"text-purple-600 dark:text-purple-500\">Slowed</span> by 50%, increasing to 95% over the duration. Nunu and Willump also gain <span class=\"text-blue-600 dark:text-blue-300\">(65/75/85 + (30/40/50% bonus Health) + (150% Ability Power)) Shield</span> for the duration before decaying over 3 seconds afterwards.<br /><br />When the blizzard ends, it detonates, dealing up to <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(625/925/1275 + (300% Ability Power)) magic damage</span> based on channel time. Nunu and Willump can <span class=\"text-yellow-600 dark:text-yellow-300\">Recast</span> to end the blizzard early.",
+        "iconFile": "NunuR.png",
+        "cooldownSeconds": [
+          110,
+          100,
+          90
+        ],
+        "cost": {
+          "values": [
+            100,
+            100,
+            100
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          650,
+          650,
+          650
+        ],
+        "rankValues": [
+          {
+            "label": "Damage",
+            "values": "625/925/1275"
+          },
+          {
+            "label": "Shield Amount",
+            "values": "65/75/85"
+          },
+          {
+            "label": "Cooldown",
+            "values": "110/100/90"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "R Scaling",
+            "labelKo": "R 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "3:TotalShieldAmount"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      }
+    }
+  }
+}

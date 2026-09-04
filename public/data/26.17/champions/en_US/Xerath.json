@@ -1,0 +1,411 @@
+{
+  "schemaVersion": 2,
+  "patchVersion": "26.17",
+  "locale": "en_US",
+  "sources": {
+    "ddragon": "16.17.1",
+    "cdragon": "16.17"
+  },
+  "champion": {
+    "id": "Xerath",
+    "key": "101",
+    "name": "Xerath",
+    "title": "the Magus Ascendant",
+    "tags": [
+      "Mage",
+      "Support"
+    ],
+    "baseStats": {
+      "health": {
+        "base": 575,
+        "perLevel": 106
+      },
+      "healthRegen": {
+        "base": 5.5,
+        "perLevel": 0.55
+      },
+      "mana": {
+        "base": 400,
+        "perLevel": 22
+      },
+      "manaRegen": {
+        "base": 6.85,
+        "perLevel": 0.8
+      },
+      "attackDamage": {
+        "base": 55,
+        "perLevel": 0
+      },
+      "attackSpeed": {
+        "base": 0.658,
+        "perLevel": 1.36
+      },
+      "armor": {
+        "base": 22,
+        "perLevel": 4.7
+      },
+      "magicResist": {
+        "base": 30,
+        "perLevel": 1.3
+      },
+      "moveSpeed": {
+        "base": 340,
+        "perLevel": 0
+      },
+      "attackRange": {
+        "base": 525,
+        "perLevel": 0
+      }
+    },
+    "baseStatContributions": [
+      {
+        "stat": "MAX_HEALTH",
+        "value": 106,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "HEALTH_REGEN",
+        "value": 0.55,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAX_MANA",
+        "value": 22,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MANA_REGEN",
+        "value": 0.8,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_DAMAGE",
+        "value": 0,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_SPEED",
+        "value": 1.36,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ARMOR",
+        "value": 4.7,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAGIC_RESIST",
+        "value": 1.3,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      }
+    ],
+    "abilities": {
+      "P": {
+        "slot": "P",
+        "id": "XerathAscended2",
+        "name": "Mana Surge",
+        "summary": "Xerath's basic attacks periodically restore Mana. Whenever Xerath kills a unit, this cooldown is reduced.",
+        "bodyHtml": "Every 16 seconds Xerath's next Attack against a champion restores <span>60 Mana</span>. It restores <span>30 Mana</span> if attacking minions, jungle monsters or structures.<br /><br />Whenever Xerath kills a unit, this cooldown is reduced by 3.5 seconds.",
+        "iconFile": "Xerath_Passive1.png",
+        "cooldownSeconds": [],
+        "range": [],
+        "rankValues": [],
+        "scalings": [],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "Q": {
+        "slot": "Q",
+        "id": "XerathArcanopulseChargeUp",
+        "name": "Arcanopulse",
+        "summary": "Fires a long-range beam of energy, dealing magic damage to all targets hit.",
+        "bodyHtml": "<span>Begin Charging:</span> Xerath begins charging an arcane beam, <span class=\"text-purple-600 dark:text-purple-500\">Slowing</span> himself gradually up to 50%. <br /><br /><span>Release:</span> Xerath fires the beam, dealing <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(70/110/150/190/230 + (90% Ability Power)) magic damage</span>. The range increases with time charged.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">If Xerath does not release the beam, half the cost is refunded.</span>",
+        "iconFile": "XerathArcanopulseChargeUp.png",
+        "cooldownSeconds": [
+          9,
+          8,
+          7,
+          6,
+          5
+        ],
+        "rechargeSeconds": [
+          9,
+          8,
+          7,
+          6,
+          5
+        ],
+        "cost": {
+          "values": [
+            80,
+            90,
+            100,
+            110,
+            120
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          750,
+          750,
+          750,
+          750,
+          750
+        ],
+        "rankValues": [
+          {
+            "label": "Damage",
+            "values": "70/110/150/190/230"
+          },
+          {
+            "label": "Cooldown",
+            "values": "9/8/7/6/5"
+          },
+          {
+            "label": "Mana Cost",
+            "values": "80/90/100/110/120"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "Q Scaling",
+            "labelKo": "Q 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "0:TooltipTotalDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "W": {
+        "slot": "W",
+        "id": "XerathArcaneBarrage2",
+        "name": "Eye of Destruction",
+        "summary": "Calls down a barrage of arcane energy, slowing and dealing magic damage to all enemies in an area. Targets in the middle receive additional damage and a stronger slow.",
+        "bodyHtml": "Xerath calls down a blast of arcane energy, dealing <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(50/85/120/155/190 + (65% Ability Power)) magic damage</span> and <span class=\"text-purple-600 dark:text-purple-500\">Slowing</span> them by 25% for 2.5 seconds. Enemies in the center take <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(83.35/141.695/200.04/258.385/316.73 + (108.355% Ability Power)) magic damage</span> instead and are <span class=\"text-purple-600 dark:text-purple-500\">Slowed</span> by 60/65/70/75/80%, decaying over 2.5 seconds.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">Empowered <span class=\"text-purple-600 dark:text-purple-500\">Slow</span> decays down to 25%.</span>",
+        "iconFile": "XerathArcaneBarrage2.png",
+        "cooldownSeconds": [
+          14,
+          13,
+          12,
+          11,
+          10
+        ],
+        "cost": {
+          "values": [
+            80,
+            90,
+            100,
+            110,
+            120
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          1000,
+          1000,
+          1000,
+          1000,
+          1000
+        ],
+        "rankValues": [
+          {
+            "label": "Damage",
+            "values": "50/85/120/155/190"
+          },
+          {
+            "label": "Max Slow",
+            "values": "60/65/70/75/80"
+          },
+          {
+            "label": "Cooldown",
+            "values": "14/13/12/11/10"
+          },
+          {
+            "label": "Mana Cost",
+            "values": "80/90/100/110/120"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "W Scaling",
+            "labelKo": "W 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "1:TotalDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "E": {
+        "slot": "E",
+        "id": "XerathMageSpear",
+        "name": "Shocking Orb",
+        "summary": "Deals magic damage to an enemy and stuns them.",
+        "bodyHtml": "Xerath fires an orb of raw magic, <span class=\"text-purple-600 dark:text-purple-500\">Stunning</span> the first enemy hit for up to 2.25 seconds based on distance travelled, and dealing <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(70/100/130/160/190 + (45% Ability Power)) magic damage</span>.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">Minimum <span class=\"text-purple-600 dark:text-purple-500\">Stun</span> duration is 0.75 seconds.</span>",
+        "iconFile": "XerathMageSpear.png",
+        "cooldownSeconds": [
+          13,
+          12.5,
+          12,
+          11.5,
+          11
+        ],
+        "cost": {
+          "values": [
+            60,
+            65,
+            70,
+            75,
+            80
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          1050,
+          1050,
+          1050,
+          1050,
+          1050
+        ],
+        "rankValues": [
+          {
+            "label": "Damage",
+            "values": "70/100/130/160/190"
+          },
+          {
+            "label": "Cooldown",
+            "values": "13/12.5/12/11.5/11"
+          },
+          {
+            "label": "Mana Cost",
+            "values": "60/65/70/75/80"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "E Scaling",
+            "labelKo": "E 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "2:TooltipTotalDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "R": {
+        "slot": "R",
+        "id": "XerathLocusOfPower2",
+        "name": "Rite of the Arcane",
+        "summary": "Xerath immobilizes himself and gains numerous long-range barrages.",
+        "bodyHtml": "Xerath ascends to his true form and channels for 10 seconds. During this time he may <span class=\"text-yellow-600 dark:text-yellow-300\">Recast</span> up to 4/5/6 times.<br /><br /><span class=\"text-yellow-600 dark:text-yellow-300\">Recast:</span> Xerath launches a magical artillery, dealing <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(170/220/270 + (45% Ability Power)) magic damage</span>. For each champion hit, the artillery deals an additional <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(20/25/30 + (5% Ability Power)) magic damage</span>.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">If Xerath does not <span class=\"text-yellow-600 dark:text-yellow-300\">Recast</span> at all, this Ability's Cooldown is reduced by 50%.</span>",
+        "iconFile": "XerathLocusOfPower2.png",
+        "cooldownSeconds": [
+          130,
+          115,
+          100
+        ],
+        "cost": {
+          "values": [
+            100,
+            100,
+            100
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          5000,
+          5000,
+          5000
+        ],
+        "rankValues": [
+          {
+            "label": "Damage",
+            "values": "170/220/270"
+          },
+          {
+            "label": "Number of Shots",
+            "values": "4/5/6"
+          },
+          {
+            "label": "Consecutive Bonus Damage",
+            "values": "20/25/30"
+          },
+          {
+            "label": "Cooldown",
+            "values": "130/115/100"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "R Scaling",
+            "labelKo": "R 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "3:TooltipTotalDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      }
+    }
+  }
+}

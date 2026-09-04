@@ -1,0 +1,397 @@
+{
+  "schemaVersion": 2,
+  "patchVersion": "26.17",
+  "locale": "zh_CN",
+  "sources": {
+    "ddragon": "16.17.1",
+    "cdragon": "16.17"
+  },
+  "champion": {
+    "id": "Gangplank",
+    "key": "41",
+    "name": "海洋之灾",
+    "title": "普朗克",
+    "tags": [
+      "Fighter"
+    ],
+    "baseStats": {
+      "health": {
+        "base": 630,
+        "perLevel": 114
+      },
+      "healthRegen": {
+        "base": 6,
+        "perLevel": 0.6
+      },
+      "mana": {
+        "base": 280,
+        "perLevel": 60
+      },
+      "manaRegen": {
+        "base": 8,
+        "perLevel": 0.7
+      },
+      "attackDamage": {
+        "base": 64,
+        "perLevel": 0
+      },
+      "attackSpeed": {
+        "base": 0.658,
+        "perLevel": 3.2
+      },
+      "armor": {
+        "base": 31,
+        "perLevel": 4.7
+      },
+      "magicResist": {
+        "base": 32,
+        "perLevel": 2.05
+      },
+      "moveSpeed": {
+        "base": 345,
+        "perLevel": 0
+      },
+      "attackRange": {
+        "base": 125,
+        "perLevel": 0
+      }
+    },
+    "baseStatContributions": [
+      {
+        "stat": "MAX_HEALTH",
+        "value": 114,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "HEALTH_REGEN",
+        "value": 0.6,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAX_MANA",
+        "value": 60,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MANA_REGEN",
+        "value": 0.7,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_DAMAGE",
+        "value": 0,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_SPEED",
+        "value": 3.2,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ARMOR",
+        "value": 4.7,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAGIC_RESIST",
+        "value": 2.05,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      }
+    ],
+    "abilities": {
+      "P": {
+        "slot": "P",
+        "id": "GangplankPassive",
+        "name": "烈火审讯",
+        "summary": "每过几秒，普朗克的近战攻击就会让他的对手着火。",
+        "bodyHtml": "普朗克的近战攻击会点燃目标，在2.5秒里持续造成额外的共<span class=\"text-yellow-600 dark:text-yellow-500 font-semibold\">(100% 额外攻击力)真实伤害</span>，并为普朗克提供<span class=\"text-cyan-600 dark:text-cyan-500\">(15% ~ 30%)移动速度</span>，持续2秒。<br /><br />摧毁一个<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">火药桶</span>时会刷新这个技能的冷却时间并为普朗克提供相同的<span class=\"text-cyan-600 dark:text-cyan-500\">移动速度</span>。",
+        "iconFile": "Gangplank_Passive.png",
+        "cooldownSeconds": [],
+        "range": [],
+        "rankValues": [],
+        "scalings": [],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "Q": {
+        "slot": "Q",
+        "id": "GangplankQWrapper",
+        "name": "枪火谈判",
+        "summary": "攻击目标，每击杀一个敌方单位时都会掠夺金币。",
+        "bodyHtml": "<span class=\"text-gray-600 dark:text-gray-400 italic\">这颗子弹可以附带攻击特效(<span>烈火审讯</span>除外)并且可以暴击以造成<span class=\"text-red-600 dark:text-red-500 font-semibold\">(10/40/70/100/130 + (100% 攻击力))物理伤害</span>。</span>",
+        "iconFile": "GangplankQWrapper.png",
+        "cooldownSeconds": [
+          4.5,
+          4.5,
+          4.5,
+          4.5,
+          4.5
+        ],
+        "cost": {
+          "values": [
+            50,
+            45,
+            40,
+            35,
+            30
+          ],
+          "resource": "法力值"
+        },
+        "range": [
+          625,
+          625,
+          625,
+          625,
+          625
+        ],
+        "rankValues": [
+          {
+            "label": "伤害",
+            "values": "10/40/70/100/130"
+          },
+          {
+            "label": "掠夺 金币",
+            "values": "3/4/5/6/7"
+          },
+          {
+            "label": "掠夺 银蛇币",
+            "values": "4/5/6/7/8"
+          },
+          {
+            "label": "法力值消耗",
+            "values": "50/45/40/35/30"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "Q Scaling",
+            "labelKo": "Q 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "0:ShotDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "W": {
+        "slot": "W",
+        "id": "GangplankW",
+        "name": "坏血病疗法",
+        "summary": "吃掉柑橘类水果，来移除控制效果并回复生命值。",
+        "bodyHtml": "普朗克吃掉大量柑橘类水果，来移除所有<span class=\"text-purple-600 dark:text-purple-500\">限制</span>效果并回复<span class=\"text-green-600 dark:text-green-400\">(45/70/95/120/145 + (90% 法术强度))外加13%已损失生命值</span>。",
+        "iconFile": "GangplankW.png",
+        "cooldownSeconds": [
+          22,
+          20,
+          18,
+          16,
+          14
+        ],
+        "cost": {
+          "values": [
+            60,
+            70,
+            80,
+            90,
+            100
+          ],
+          "resource": "法力值"
+        },
+        "range": [
+          400,
+          400,
+          400,
+          400,
+          400
+        ],
+        "rankValues": [
+          {
+            "label": "治疗效果",
+            "values": "45/70/95/120/145"
+          },
+          {
+            "label": "冷却时间",
+            "values": "22/20/18/16/14"
+          },
+          {
+            "label": "法力值消耗",
+            "values": "60/70/80/90/100"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "W Scaling",
+            "labelKo": "W 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "1:BaseHealth"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "E": {
+        "slot": "E",
+        "id": "GangplankE",
+        "name": "火药桶",
+        "summary": "普朗克在目标区域为一个火药桶开盖。如果他攻击火药桶，那么火药桶会爆炸，将这次攻击的伤害传播到范围内的敌人身上，并将他们减速。",
+        "bodyHtml": "普朗克放置一个可被普朗克和敌方英雄攻击的火药桶，该火药桶持续25秒。当一名敌人将火药桶摧毁时，该火药桶会哑火。当普朗克将火药桶摧毁时，该火药桶会爆炸，造成持续2秒的40/50/60/70/80%<span class=\"text-purple-600 dark:text-purple-500\">减速</span>和<span class=\"text-red-600 dark:text-red-500 font-semibold\">相当于攻击力的伤害</span>，并无视40%护甲。英雄会受到额外的<span class=\"text-red-600 dark:text-red-500 font-semibold\">75/95/115/135/155物理伤害</span>。<br /><br />火药桶的生命值会每0.5秒衰减一次。火药桶会引爆其它爆炸区域与它有重叠的火药桶，但不会重复对相同目标造成伤害。火药桶的爆炸可通过<span>枪火谈判</span>来触发并在击杀目标们时提供额外金币。<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">火药桶生命值的衰减速率会在7级和13级时提升。</span>",
+        "iconFile": "GangplankE.png",
+        "cooldownSeconds": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "rechargeSeconds": [
+          17,
+          16,
+          15,
+          14,
+          13
+        ],
+        "maxCharges": 3,
+        "range": [
+          1000,
+          1000,
+          1000,
+          1000,
+          1000
+        ],
+        "rankValues": [
+          {
+            "label": "对英雄的额外伤害",
+            "values": "75/95/115/135/155"
+          },
+          {
+            "label": "最大充能",
+            "values": "3/3/4/4/5"
+          },
+          {
+            "label": "减速",
+            "values": "40/50/60/70/80"
+          },
+          {
+            "label": "充能时间",
+            "values": "17/16/15/14/13"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "E Scaling",
+            "labelKo": "E 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "2:FinalSlowAmount"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "R": {
+        "slot": "R",
+        "id": "GangplankR",
+        "name": "加农炮幕",
+        "summary": "普朗克给他的船发信号，来轰炸一个区域，伤害并减速敌人。",
+        "bodyHtml": "普朗克给他的舰船发射信号弹，让它在8秒里朝着目标区域持续发射共12波加农炮弹。每波炮弹造成持续0.5秒的30%<span class=\"text-purple-600 dark:text-purple-500\">减速</span>，并造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(40/70/100 + (10% 法术强度))魔法伤害</span>。最大伤害：(480/840/1200 + (120% 法术强度))<br /><br />这个技能可在商店中用<span>枪火谈判</span>来升级。<br /><br /><span>随意开火</span>：发射6波额外的加农炮弹。<br /><span>死亡之女</span>：发射一颗巨型加农炮弹，造成<span class=\"text-yellow-600 dark:text-yellow-500 font-semibold\">(120/210/300 + (30% 法术强度))真实伤害</span>和持续1秒的75%<span class=\"text-purple-600 dark:text-purple-500\">减速</span>。<br /><span>鼓舞士气</span>：【加农炮幕】内的友军会获得持续2秒的<span class=\"text-cyan-600 dark:text-cyan-500\">40%移动速度</span>。",
+        "iconFile": "GangplankR.png",
+        "cooldownSeconds": [
+          160,
+          140,
+          120
+        ],
+        "cost": {
+          "values": [
+            100,
+            100,
+            100
+          ],
+          "resource": "法力值"
+        },
+        "range": [
+          30000,
+          30000,
+          30000
+        ],
+        "rankValues": [
+          {
+            "label": "每波伤害",
+            "values": "40/70/100"
+          },
+          {
+            "label": "冷却时间",
+            "values": "160/140/120"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "R Scaling",
+            "labelKo": "R 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "3:OneWaveDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      }
+    }
+  }
+}

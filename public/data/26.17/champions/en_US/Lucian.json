@@ -1,0 +1,377 @@
+{
+  "schemaVersion": 2,
+  "patchVersion": "26.17",
+  "locale": "en_US",
+  "sources": {
+    "ddragon": "16.17.1",
+    "cdragon": "16.17"
+  },
+  "champion": {
+    "id": "Lucian",
+    "key": "236",
+    "name": "Lucian",
+    "title": "the Purifier",
+    "tags": [
+      "Marksman",
+      "Assassin"
+    ],
+    "baseStats": {
+      "health": {
+        "base": 641,
+        "perLevel": 100
+      },
+      "healthRegen": {
+        "base": 3.75,
+        "perLevel": 0.65
+      },
+      "mana": {
+        "base": 320,
+        "perLevel": 43
+      },
+      "manaRegen": {
+        "base": 7,
+        "perLevel": 0.8
+      },
+      "attackDamage": {
+        "base": 60,
+        "perLevel": 0
+      },
+      "attackSpeed": {
+        "base": 0.638,
+        "perLevel": 2.5
+      },
+      "armor": {
+        "base": 28,
+        "perLevel": 4.2
+      },
+      "magicResist": {
+        "base": 33,
+        "perLevel": 1.1
+      },
+      "moveSpeed": {
+        "base": 335,
+        "perLevel": 0
+      },
+      "attackRange": {
+        "base": 500,
+        "perLevel": 0
+      }
+    },
+    "baseStatContributions": [
+      {
+        "stat": "MAX_HEALTH",
+        "value": 100,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "HEALTH_REGEN",
+        "value": 0.65,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAX_MANA",
+        "value": 43,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MANA_REGEN",
+        "value": 0.8,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_DAMAGE",
+        "value": 0,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_SPEED",
+        "value": 2.5,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ARMOR",
+        "value": 4.2,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAGIC_RESIST",
+        "value": 1.1,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      }
+    ],
+    "abilities": {
+      "P": {
+        "slot": "P",
+        "id": "LucianPassive",
+        "name": "Lightslinger",
+        "summary": "Whenever Lucian uses an ability, his next attack becomes a double-shot. When Lucian is healed or shielded by an ally, or when a nearby enemy Champion is immobilized, his next 2 basic attacks will deal bonus magic damage.",
+        "bodyHtml": "After using an Ability, Lucian's next Attack within 3.5 seconds will fire two shots. The second shot deals <span class=\"text-red-600 dark:text-red-500 font-semibold\"> physical damage</span> to the target, increased to <span class=\"text-red-600 dark:text-red-500 font-semibold\">(100% Attack Damage)</span> against minions.<br /><br /><span>Vigilance: </span>When Lucian is directly healed or shielded by an ally, or when a nearby enemy Champion is <span class=\"text-purple-600 dark:text-purple-500\">Immobilized</span>, his pistols become <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Overcharged</span> with energy, causing his next 2 basic attacks to deal an additional <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(15 + (20% Attack Damage)) magic damage</span>.",
+        "iconFile": "Lucian_Passive.png",
+        "cooldownSeconds": [],
+        "range": [],
+        "rankValues": [],
+        "scalings": [],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "Q": {
+        "slot": "Q",
+        "id": "LucianQ",
+        "name": "Piercing Light",
+        "summary": "Lucian shoots a bolt of piercing light through a target.",
+        "bodyHtml": "Lucian shoots a bolt of piercing light, dealing <span class=\"text-red-600 dark:text-red-500 font-semibold\">(80/115/150/185/220 + (100% bonus Attack Damage)) physical damage</span>.<br /><br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">This Ability's cast time decreases with Lucian's level.</span>",
+        "iconFile": "LucianQ.png",
+        "cooldownSeconds": [
+          9,
+          8,
+          7,
+          6,
+          5
+        ],
+        "cost": {
+          "values": [
+            48,
+            56,
+            64,
+            72,
+            80
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          500,
+          500,
+          500,
+          500,
+          500
+        ],
+        "rankValues": [
+          {
+            "label": "Damage",
+            "values": "80/115/150/185/220"
+          },
+          {
+            "label": "Cooldown",
+            "values": "9/8/7/6/5"
+          },
+          {
+            "label": "Mana Cost",
+            "values": "48/56/64/72/80"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "Q Scaling",
+            "labelKo": "Q 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "0:TotalDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "W": {
+        "slot": "W",
+        "id": "LucianW",
+        "name": "Ardent Blaze",
+        "summary": "Lucian shoots a missile that explodes in a star shape, marking and briefly revealing enemies. Lucian gains Move Speed for attacking marked enemies.",
+        "bodyHtml": "Lucian fires a shot that explodes at the end of its range or on the first enemy hit, dealing <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(75/110/145/180/215 + (90% Ability Power)) magic damage</span>, briefly revealing enemies and marking them for 6 seconds.<br /><br />When Lucian or an ally damages a marked enemy, Lucian gains <span class=\"text-cyan-600 dark:text-cyan-500\">60/65/70/75/80 Move Speed</span> for 1 second. Allies triggering this effect will also grant Lucian <span>Vigilance</span>.",
+        "iconFile": "LucianW.png",
+        "cooldownSeconds": [
+          14,
+          13,
+          12,
+          11,
+          10
+        ],
+        "cost": {
+          "values": [
+            60,
+            60,
+            60,
+            60,
+            60
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          900,
+          900,
+          900,
+          900,
+          900
+        ],
+        "rankValues": [
+          {
+            "label": "Damage",
+            "values": "75/110/145/180/215"
+          },
+          {
+            "label": "Move Speed",
+            "values": "60/65/70/75/80"
+          },
+          {
+            "label": "Cooldown",
+            "values": "14/13/12/11/10"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "W Scaling",
+            "labelKo": "W 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "1:TotalDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "E": {
+        "slot": "E",
+        "id": "LucianE",
+        "name": "Relentless Pursuit",
+        "summary": "Lucian quickly dashes a short distance. Lightslinger attacks reduce Relentless Pursuit's cooldown.",
+        "bodyHtml": "Lucian dashes.<br /><br />Cooldown is reduced by 1 second whenever Lucian hits an enemy with <span>Lightslinger</span> (2 seconds for champions).<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">Lucian can use other Abilities while dashing.</span>",
+        "iconFile": "LucianE.png",
+        "cooldownSeconds": [
+          16,
+          15.5,
+          15,
+          14.5,
+          14
+        ],
+        "cost": {
+          "values": [
+            32,
+            24,
+            16,
+            8,
+            0
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          445,
+          445,
+          445,
+          445,
+          445
+        ],
+        "rankValues": [
+          {
+            "label": "Cooldown",
+            "values": "16/15.5/15/14.5/14"
+          },
+          {
+            "label": "Mana Cost",
+            "values": "32/24/16/8/0"
+          }
+        ],
+        "scalings": [],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "R": {
+        "slot": "R",
+        "id": "LucianR",
+        "name": "The Culling",
+        "summary": "Lucian unleashes a torrent of shots from his weapons.",
+        "bodyHtml": "Lucian rapidly fires <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\"></span> shots in a direction for 3 seconds or until he <span class=\"text-yellow-600 dark:text-yellow-300\">Recasts</span>. Each shot deals <span class=\"text-red-600 dark:text-red-500 font-semibold\">(15/30/45 + (25% Attack Damage) + (15% Ability Power)) physical damage</span> to the first enemy hit.<br /><br />While firing, Lucian may use <span>Relentless Pursuit</span>.<br /><br />Total Damage: <span class=\"text-red-600 dark:text-red-500 font-semibold\"> physical damage</span><br /><br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">Number of shots scales with Lucian's Critical Strike chance and Critical Strike damage at 100% effectiveness.<br />Deals 200% damage to minions.</span>",
+        "iconFile": "LucianR.png",
+        "cooldownSeconds": [
+          110,
+          100,
+          90
+        ],
+        "cost": {
+          "values": [
+            100,
+            100,
+            100
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          1400,
+          1400,
+          1400
+        ],
+        "rankValues": [
+          {
+            "label": "Damage",
+            "values": "15/30/45"
+          },
+          {
+            "label": "Cooldown",
+            "values": "110/100/90"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "R Scaling",
+            "labelKo": "R 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "3:TotalDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": [
+            "TotalDamage",
+            "TotalNumShots"
+          ]
+        }
+      }
+    }
+  }
+}

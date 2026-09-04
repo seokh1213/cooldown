@@ -9,8 +9,6 @@ import {
   RuneStatShardGroup
 } from "@/types";
 import type {
-  NormalizedChampion,
-  NormalizedChampionDataFile,
   NormalizedItem,
   NormalizedItemDataFile,
   NormalizedRuneDataFile,
@@ -24,6 +22,9 @@ import {
 import {logger} from "@/lib/logger";
 import {getRuntimeBasePath, getStaticDataPath} from "@/lib/staticDataUtils";
 import {decodeDataManifest} from "@/data/contracts/dataManifest";
+import type { DataLocale } from "@/data/contracts/staticData";
+import { championRepository } from "@/data/repositories/championRepository";
+import { toChampion, toChampionSummary } from "@/data/mappers/championMapper";
 
 export const CHAMP_ICON_URL = (VERSION: string, NAME: string) =>
   `https://ddragon.leagueoflegends.com/cdn/${VERSION}/img/champion/${NAME}.png`;
@@ -81,203 +82,23 @@ export async function getVersion(): Promise<string> {
   return patchVersion;
 }
 
-export function cleanOldVersionCache(
-  currentDdragonVersion: string,
-): void {
-  if (typeof window === "undefined" || !window.sessionStorage) {
-    return;
-  }
-
-  try {
-    const keysToRemove: string[] = [];
-
-    for (let i = 0; i < sessionStorage.length; i++) {
-      const key = sessionStorage.key(i);
-      if (!key) continue;
-
-      if (key.startsWith("champion_list_")) {
-        const rest = key.substring("champion_list_".length);
-        const firstUnderscoreIndex = rest.indexOf("_");
-        if (firstUnderscoreIndex > 0) {
-          const version = rest.substring(0, firstUnderscoreIndex);
-          if (version !== currentDdragonVersion) {
-            keysToRemove.push(key);
-          }
-        } else {
-          keysToRemove.push(key);
-        }
-      }
-
-      // champion_info_와 cd_spell_data_ 캐시는 제거됨
-      // 정규화 데이터 캐시는 버전별로 관리되므로 여기서 처리하지 않음
-    }
-
-    for (const key of keysToRemove) {
-      try {
-        sessionStorage.removeItem(key);
-      } catch (error) {
-        logger.warn(`Failed to remove cache key: ${key}`, error);
-      }
-    }
-  } catch (error) {
-    logger.warn("[Cache] Failed to clean old version cache:", error);
-  }
+export function cleanStaticDataCache(patchVersion: string): void {
+  championRepository.clearExceptPatch(patchVersion);
 }
 
 export async function getChampionList(
-  version: string,
-  lang: string,
-  assetVersion: string
+  patchVersion: string,
+  locale: DataLocale
 ): Promise<Champion[]> {
-  const cacheKey = `champion_list_${version}_${assetVersion}_${lang}`;
-
-  try {
-    const cached = sessionStorage.getItem(cacheKey);
-    if (cached) {
-      const parsed = JSON.parse(cached);
-      if (parsed && Array.isArray(parsed) && parsed.length > 0) {
-        return Promise.resolve(parsed);
-      }
-    }
-  } catch (error) {
-    logger.warn("Failed to parse cached champion list:", error);
-  }
-
-  // 1) 정규화된 챔피언 정적 데이터를 우선 사용
-  try {
-    const normalized = await getNormalizedChampions(version, lang);
-    const isKo = lang === "ko_KR";
-    if (normalized && normalized.length > 0) {
-      const champions: Champion[] = normalized
-        .map((c) => {
-          const name = c.name;
-          const hangul =
-            isKo && name
-              ? Hangul.d(name, true).reduce(
-                (acc: string, array: string[]) => acc + array[0],
-                ""
-              )
-              : "";
-
-          const stats: Record<string, number> = {};
-          const bs = c.baseStats;
-          if (bs) {
-            stats.hp = bs.health.base;
-            stats.hpperlevel = bs.health.perLevel;
-            if (bs.mana) {
-              stats.mp = bs.mana.base;
-              stats.mpperlevel = bs.mana.perLevel;
-            }
-            stats.movespeed = bs.moveSpeed.base;
-            stats.armor = bs.armor.base;
-            stats.armorperlevel = bs.armor.perLevel;
-            stats.spellblock = bs.magicResist.base;
-            stats.spellblockperlevel = bs.magicResist.perLevel;
-            stats.attackdamage = bs.attackDamage.base;
-            stats.attackdamageperlevel = bs.attackDamage.perLevel;
-            stats.attackspeed = bs.attackSpeed.base;
-            stats.attackspeedperlevel = bs.attackSpeed.perLevel;
-            stats.attackrange = bs.attackRange.base;
-            // 치명타/재생 계열은 기본값 0으로 둠
-            stats.crit = 0;
-            stats.critperlevel = 0;
-            stats.hpregen = bs.healthRegen.base;
-            stats.hpregenperlevel = bs.healthRegen.perLevel;
-            if (bs.manaRegen) {
-              stats.mpregen = bs.manaRegen.base;
-              stats.mpregenperlevel = bs.manaRegen.perLevel;
-            }
-          }
-
-          const champion: Champion = {
-            id: c.id,
-            key: c.id, // DDragon numeric key는 없지만, 저장/비교용으로 id를 사용
-            name,
-            title: "",
-            version: assetVersion,
-            hangul,
-            stats,
-          };
-          return champion;
-        })
-        .sort((a, b) => (a.name < b.name ? -1 : a.name > b.name ? 1 : 0));
-
-      try {
-        sessionStorage.setItem(cacheKey, JSON.stringify(champions));
-      } catch (error) {
-        logger.warn("Failed to cache champion list:", error);
-      }
-
-      return champions;
-    }
-  } catch (error) {
-    logger.warn(
-      "[StaticData] Failed to load normalized champion list:",
-      error
-    );
-    throw error;
-  }
-  
-  throw new Error("Failed to load champion list: Unknown error");
-}
-
-
-// ===== Normalized static data (champions/items/runes) =====
-
-export async function getNormalizedChampions(
-  version: string,
-  lang: string
-): Promise<NormalizedChampion[]> {
-  const cacheKey = `normalized_champions_${version}_${lang}`;
-
-  try {
-    const cached = sessionStorage.getItem(cacheKey);
-    if (cached) {
-      const parsed = JSON.parse(cached) as unknown;
-      if (
-        parsed &&
-        typeof parsed === "object" &&
-        "champions" in parsed &&
-        Array.isArray((parsed as { champions?: unknown }).champions)
-      ) {
-        return (parsed as { champions: NormalizedChampion[] }).champions;
-      }
-    }
-  } catch (error) {
-    logger.warn("Failed to parse cached normalized champions:", error);
-  }
-
-  try {
-    const staticUrl = getStaticDataPath(
-      version,
-      `champions-normalized-${lang}.json`
-    );
-    const response = await fetch(staticUrl);
-
-    if (response.ok) {
-      const data =
-        (await response.json()) as NormalizedChampionDataFile;
-      const champions = Array.isArray(data.champions)
-        ? data.champions
-        : [];
-
-      try {
-        sessionStorage.setItem(cacheKey, JSON.stringify(data));
-      } catch (error) {
-        logger.warn("Failed to cache normalized champions:", error);
-      }
-
-      return champions;
-    }
-    
-    throw new Error(`Failed to fetch normalized champions: ${response.status}`);
-  } catch (error) {
-    logger.warn(
-      "[StaticData] Failed to load normalized champions from static data:",
-      error
-    );
-    throw error;
-  }
+  const index = await championRepository.getIndex(patchVersion, locale);
+  const isKo = locale === "ko_KR";
+  return index.champions.map((entry) => {
+    const champion = toChampionSummary(entry, index.sources.ddragon);
+    champion.hangul = isKo
+      ? Hangul.d(champion.name, true).map((letters) => letters[0]).join("")
+      : "";
+    return champion;
+  });
 }
 
 // ===== Runes & Items (static data first) =====
@@ -747,21 +568,8 @@ export async function getCommunityDragonSpellData(
 
 export async function getChampionInfo(
   version: string,
-  lang: string,
+  lang: DataLocale,
   championId: string
 ): Promise<Champion> {
-  const staticUrl = getStaticDataPath(version, `champions/${championId}-${lang}.json`);
-
-  try {
-    const response = await fetch(staticUrl);
-    if (!response.ok) {
-      throw new Error(`Failed to fetch champion info for ${championId}`);
-    }
-    const data = await response.json();
-    // 정적 데이터 구조: { version, lang, champion: { ... } }
-    return data.champion as Champion;
-  } catch (error) {
-    logger.warn(`[API] Failed to get champion info for ${championId}:`, error);
-    throw error;
-  }
+  return toChampion(await championRepository.getDetail(version, lang, championId));
 }

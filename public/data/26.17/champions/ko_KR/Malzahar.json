@@ -1,0 +1,395 @@
+{
+  "schemaVersion": 2,
+  "patchVersion": "26.17",
+  "locale": "ko_KR",
+  "sources": {
+    "ddragon": "16.17.1",
+    "cdragon": "16.17"
+  },
+  "champion": {
+    "id": "Malzahar",
+    "key": "90",
+    "name": "말자하",
+    "title": "공허의 예언자",
+    "tags": [
+      "Mage"
+    ],
+    "baseStats": {
+      "health": {
+        "base": 580,
+        "perLevel": 101
+      },
+      "healthRegen": {
+        "base": 6,
+        "perLevel": 0.6
+      },
+      "mana": {
+        "base": 375,
+        "perLevel": 28
+      },
+      "manaRegen": {
+        "base": 8,
+        "perLevel": 0.8
+      },
+      "attackDamage": {
+        "base": 55,
+        "perLevel": 0
+      },
+      "attackSpeed": {
+        "base": 0.625,
+        "perLevel": 1.5
+      },
+      "armor": {
+        "base": 18,
+        "perLevel": 4.7
+      },
+      "magicResist": {
+        "base": 30,
+        "perLevel": 1.3
+      },
+      "moveSpeed": {
+        "base": 335,
+        "perLevel": 0
+      },
+      "attackRange": {
+        "base": 500,
+        "perLevel": 0
+      }
+    },
+    "baseStatContributions": [
+      {
+        "stat": "MAX_HEALTH",
+        "value": 101,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "HEALTH_REGEN",
+        "value": 0.6,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAX_MANA",
+        "value": 28,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MANA_REGEN",
+        "value": 0.8,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_DAMAGE",
+        "value": 0,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_SPEED",
+        "value": 1.5,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ARMOR",
+        "value": 4.7,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAGIC_RESIST",
+        "value": 1.3,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      }
+    ],
+    "abilities": {
+      "P": {
+        "slot": "P",
+        "id": "MalzaharPassive",
+        "name": "공허 태세",
+        "summary": "일정 시간 동안 군중 제어기에 적중당하거나 피해를 입지 않으면 받는 피해량이 큰 폭으로 감소하고 군중 제어기에 면역이 됩니다. 이 효과는 피해를 입거나 군중 제어기에 적중당하면 잠시 후 사라집니다.",
+        "bodyHtml": "피해를 입거나 군중 제어기에 적중당하면 0.25초 동안 받는 피해량이 90% 감소하고, <span class=\"text-purple-600 dark:text-purple-500\">방해</span> 및 <span class=\"text-purple-600 dark:text-purple-500\">이동 불가</span>에 면역됩니다. 이 효과는 12초 후 다시 활성화됩니다.",
+        "iconFile": "Malzahar_Passive.png",
+        "cooldownSeconds": [],
+        "range": [],
+        "rankValues": [],
+        "scalings": [],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "Q": {
+        "slot": "Q",
+        "id": "MalzaharQ",
+        "name": "공허의 부름",
+        "summary": "말자하가 공허로 이어지는 두 개의 문을 엽니다. 얼마 뒤 문에서 투사체가 발사되어 적에게 마법 피해를 입히고 침묵 효과를 부여합니다.",
+        "bodyHtml": "말자하가 공허로 이어지는 두 개의 문을 엽니다. 두 개의 문 사이로 공허의 파동이 발사되어 적에게 <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(70/105/140/175/210 + (55% 주문력))의 마법 피해</span>를 입히고 1/1.25/1.5/1.75/2초 동안 <span class=\"text-purple-600 dark:text-purple-500\">침묵</span>시킵니다.",
+        "iconFile": "MalzaharQ.png",
+        "cooldownSeconds": [
+          6,
+          6,
+          6,
+          6,
+          6
+        ],
+        "cost": {
+          "values": [
+            60,
+            65,
+            70,
+            75,
+            80
+          ],
+          "resource": "마나"
+        },
+        "range": [
+          900,
+          900,
+          900,
+          900,
+          900
+        ],
+        "rankValues": [
+          {
+            "label": "피해량",
+            "values": "70/105/140/175/210"
+          },
+          {
+            "label": "침묵 지속시간",
+            "values": "1/1.25/1.5/1.75/2"
+          },
+          {
+            "label": "소모값 마나",
+            "values": "60/65/70/75/80"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "Q Scaling",
+            "labelKo": "Q 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "0:TotalDamageTooltip"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "W": {
+        "slot": "W",
+        "id": "MalzaharW",
+        "name": "공허의 무리",
+        "summary": "말자하가 공허충을 소환해 주변 적을 공격하게 합니다.",
+        "bodyHtml": "<span class=\"text-gray-600 dark:text-gray-500 italic\">기본 지속 효과:</span> 말자하가 다른 스킬을 사용하면 중첩을 1회 얻습니다. (최대 2)<br /><br /><span class=\"text-gray-900 dark:text-white font-semibold\">사용 시:</span> 말자하가 공허충을 한 마리 소환하며, 중첩당 소환되는 공허충의 수가 늘어납니다. 공허충은 8/8/9/9/10초 동안 유지되며 공격할 때마다 <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(12/14/16/18/20 + (40% 추가 공격력) + (20% 주문력))의 마법 피해</span>를 추가로 입힙니다.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">공허충은 <span>재앙의 환상</span> 효과가 적용된 공격로 미니언에게 300%의 피해를 입힙니다.<br />공허충은 에픽 몬스터에게 50%의 피해를 입힙니다.</span>",
+        "iconFile": "MalzaharW.png",
+        "cooldownSeconds": [
+          8,
+          8,
+          8,
+          8,
+          8
+        ],
+        "cost": {
+          "values": [
+            40,
+            45,
+            50,
+            55,
+            60
+          ],
+          "resource": "마나"
+        },
+        "range": [
+          150,
+          150,
+          150,
+          150,
+          150
+        ],
+        "rankValues": [
+          {
+            "label": "공허충 피해",
+            "values": "12/14/16/18/20"
+          },
+          {
+            "label": "공허충 지속시간",
+            "values": "8/8/9/9/10"
+          },
+          {
+            "label": "소모값 마나",
+            "values": "40/45/50/55/60"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "W Scaling",
+            "labelKo": "W 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "1:{c2505620}"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "E": {
+        "slot": "E",
+        "id": "MalzaharE",
+        "name": "재앙의 환상",
+        "summary": "말자하가 대상의 머릿속에 최후의 광경을 보여주며 지속적으로 피해를 입힙니다. 말자하가 대상에게 다른 스킬을 사용하면 환상의 지속시간이 초기화됩니다.<br><br>이 동안 대상이 쓰러지면 환상은 주변 적에게 옮겨가고, 말자하는 마나를 획득합니다. 말자하의 공허충은 환상으로 오염된 대상에게 몰려갑니다.",
+        "bodyHtml": "말자하가 끔찍한 환각을 통해 4초 동안 <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(80/115/150/185/220 + (80% 주문력))의 마법 피해</span>를 입힙니다. 이 동안 대상에게 <span>공허의 부름</span>이나 <span>황천의 손아귀</span>를 사용하면 환상의 지속시간이 초기화됩니다.<br /><br />대상이 죽으면 말자하는 <span>(2% 마나)의 마나</span>를 얻고 환상은 가장 가까이 있는 적에게 옮겨갑니다.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">재앙의 환상은 체력이 10 밑으로 떨어진 미니언을 처형합니다.</span>",
+        "iconFile": "MalzaharE.png",
+        "cooldownSeconds": [
+          11,
+          10,
+          9,
+          8,
+          7
+        ],
+        "cost": {
+          "values": [
+            60,
+            70,
+            80,
+            90,
+            100
+          ],
+          "resource": "마나"
+        },
+        "range": [
+          650,
+          650,
+          650,
+          650,
+          650
+        ],
+        "rankValues": [
+          {
+            "label": "피해량",
+            "values": "80/115/150/185/220"
+          },
+          {
+            "label": "재사용 대기시간",
+            "values": "11/10/9/8/7"
+          },
+          {
+            "label": "소모값 마나",
+            "values": "60/70/80/90/100"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "E Scaling",
+            "labelKo": "E 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "2:TotalDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "R": {
+        "slot": "R",
+        "id": "MalzaharR",
+        "name": "황천의 손아귀",
+        "summary": "말자하가 공허의 정수를 쏟아부어 적 챔피언을 제압하고 지대를 생성해 내부의 적에게 피해를 입힙니다.",
+        "bodyHtml": "말자하가 적 챔피언을 <span class=\"text-purple-600 dark:text-purple-500\">제압</span>해 2.5초 동안 <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(125/200/275 + (80% 주문력))의 마법 피해</span>를 입힙니다. 대상 주변에는 5초 동안 유지되며 <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">최대 체력의 (10/15/20% + (0.025% 주문력))에 해당하는 마법 피해</span>를 입히는 황천의 지대가 생성됩니다.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">적을 <span class=\"text-purple-600 dark:text-purple-500\">쓰러뜨리는</span> 스킬입니다.</span>",
+        "iconFile": "MalzaharR.png",
+        "cooldownSeconds": [
+          140,
+          110,
+          80
+        ],
+        "cost": {
+          "values": [
+            100,
+            100,
+            100
+          ],
+          "resource": "마나"
+        },
+        "range": [
+          700,
+          700,
+          700
+        ],
+        "rankValues": [
+          {
+            "label": "황천의 손아귀 피해량",
+            "values": "125/200/275"
+          },
+          {
+            "label": "황천의 지대 초당 피해량",
+            "values": "2/3/4"
+          },
+          {
+            "label": "재사용 대기시간",
+            "values": "140/110/80"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "R Scaling",
+            "labelKo": "R 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "3:ZoneDamageTooltip"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      }
+    }
+  }
+}

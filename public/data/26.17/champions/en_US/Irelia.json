@@ -1,0 +1,397 @@
+{
+  "schemaVersion": 2,
+  "patchVersion": "26.17",
+  "locale": "en_US",
+  "sources": {
+    "ddragon": "16.17.1",
+    "cdragon": "16.17"
+  },
+  "champion": {
+    "id": "Irelia",
+    "key": "39",
+    "name": "Irelia",
+    "title": "the Blade Dancer",
+    "tags": [
+      "Fighter",
+      "Assassin"
+    ],
+    "baseStats": {
+      "health": {
+        "base": 630,
+        "perLevel": 115
+      },
+      "healthRegen": {
+        "base": 3.5,
+        "perLevel": 0.85
+      },
+      "mana": {
+        "base": 350,
+        "perLevel": 50
+      },
+      "manaRegen": {
+        "base": 8,
+        "perLevel": 0.8
+      },
+      "attackDamage": {
+        "base": 65,
+        "perLevel": 0
+      },
+      "attackSpeed": {
+        "base": 0.656,
+        "perLevel": 2.5
+      },
+      "armor": {
+        "base": 36,
+        "perLevel": 4.7
+      },
+      "magicResist": {
+        "base": 30,
+        "perLevel": 2.05
+      },
+      "moveSpeed": {
+        "base": 335,
+        "perLevel": 0
+      },
+      "attackRange": {
+        "base": 200,
+        "perLevel": 0
+      }
+    },
+    "baseStatContributions": [
+      {
+        "stat": "MAX_HEALTH",
+        "value": 115,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "HEALTH_REGEN",
+        "value": 0.85,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAX_MANA",
+        "value": 50,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MANA_REGEN",
+        "value": 0.8,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_DAMAGE",
+        "value": 0,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_SPEED",
+        "value": 2.5,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ARMOR",
+        "value": 4.7,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAGIC_RESIST",
+        "value": 2.05,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      }
+    ],
+    "abilities": {
+      "P": {
+        "slot": "P",
+        "id": "IreliaPassive",
+        "name": "Ionian Fervor",
+        "summary": "When Irelia strikes enemies with spells she gains stacking bonus Attack Speed. At maximum stacks she also gains bonus damage on hit.",
+        "bodyHtml": "Irelia gains a stack for 6 seconds when she hits an enemy with an Ability (max 4). She gains <span>(10 ~ 25)Attack Speed</span> per stack, and at max stacks her Attacks deal an additional <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(20% bonus Attack Damage) magic damage</span>.<br /><br />Attacking a champion, structure, or large monster refreshes the duration of the stacks. Irelia gains a stack for each champion hit, or if she hits at least one non-champion enemy.",
+        "iconFile": "Irelia_Passive.png",
+        "cooldownSeconds": [],
+        "range": [],
+        "rankValues": [],
+        "scalings": [],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "Q": {
+        "slot": "Q",
+        "id": "IreliaQ",
+        "name": "Bladesurge",
+        "summary": "Irelia dashes forward to strike her target, healing herself. If the target is Marked or dies to Bladesurge, its cooldown refreshes.",
+        "bodyHtml": "Irelia dashes to an enemy, dealing <span class=\"text-red-600 dark:text-red-500 font-semibold\">(5/25/45/65/85 + (80% Attack Damage)) physical damage</span> and restoring <span class=\"text-green-600 dark:text-green-400\">(9/10/11/12/13% Attack Damage) Health</span> to herself. If the enemy dies or was <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Unsteady</span>, the Cooldown is refreshed.<br /><br />Deals (55/75/95/115/135 + (80% Attack Damage)) damage to minions.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">This ability applies On-Hit Effects.</span>",
+        "iconFile": "IreliaQ.png",
+        "cooldownSeconds": [
+          10,
+          9,
+          8,
+          7,
+          6
+        ],
+        "cost": {
+          "values": [
+            15,
+            15,
+            15,
+            15,
+            15
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          600,
+          600,
+          600,
+          600,
+          600
+        ],
+        "rankValues": [
+          {
+            "label": "Damage",
+            "values": "5/25/45/65/85"
+          },
+          {
+            "label": "Cooldown",
+            "values": "10/9/8/7/6"
+          },
+          {
+            "label": "Heal Ratio",
+            "values": "9/10/11/12/13"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "Q Scaling",
+            "labelKo": "Q 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "0:ChampionDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "W": {
+        "slot": "W",
+        "id": "IreliaW",
+        "name": "Defiant Dance",
+        "summary": "Irelia charges a strike that deals more damage as she charges. She takes reduced physical damage during the charge.",
+        "bodyHtml": "<span>Begin Charging:</span> Irelia enters a defensive stance for up to 1.5 seconds, becoming unable to act but reducing physical damage taken by (8% Ability Power)and magic damage taken by (4% Ability Power).<br /><br /><span>Release:</span> Irelia lashes out with her blades, dealing <span class=\"text-red-600 dark:text-red-500 font-semibold\">(10/20/30/40/50 + (40% Attack Damage) + (50% Ability Power)) physical damage</span> increased up to <span class=\"text-red-600 dark:text-red-500 font-semibold\">(30/60/90/120/150 + (120% Attack Damage) + (150% Ability Power))</span> based on charge time.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">The <span>Release</span> will happen automatically at the end of the <span>Charge</span> and cannot be interrupted. Reaches max damage increase after 0.75 seconds.</span>",
+        "iconFile": "IreliaW.png",
+        "cooldownSeconds": [
+          20,
+          18,
+          16,
+          14,
+          12
+        ],
+        "cost": {
+          "values": [
+            70,
+            75,
+            80,
+            85,
+            90
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          825,
+          825,
+          825,
+          825,
+          825
+        ],
+        "rankValues": [
+          {
+            "label": "Damage",
+            "values": "10/20/30/40/50"
+          },
+          {
+            "label": "Cooldown",
+            "values": "20/18/16/14/12"
+          },
+          {
+            "label": "Mana Cost",
+            "values": "70/75/80/85/90"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "W Scaling",
+            "labelKo": "W 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "1:FinalPhysicalDR"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "E": {
+        "slot": "E",
+        "id": "IreliaE",
+        "name": "Flawless Duet",
+        "summary": "Irelia sends out two blades which converge on each other. Enemies caught in between are damaged, stunned and Marked.",
+        "bodyHtml": "Irelia throws a blade into the ground and can <span class=\"text-yellow-600 dark:text-yellow-300\">Recast</span> for up to 3.5 seconds. <br /><br /><span class=\"text-yellow-600 dark:text-yellow-300\">Recast:</span> Irelia throws a second blade, then they fly towards each other <span class=\"text-purple-600 dark:text-purple-500\">Stunning</span> for 0.75 seconds and dealing <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(70/110/150/190/230 + (100% Ability Power)) magic damage</span>. Champions and large jungle monsters become <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Unsteady</span> for 5 seconds.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">Irelia will automatically <span class=\"text-yellow-600 dark:text-yellow-300\">Recast</span> at her location after 3.5 seconds.</span>",
+        "iconFile": "IreliaE.png",
+        "cooldownSeconds": [
+          16,
+          14.5,
+          13,
+          11.5,
+          10
+        ],
+        "cost": {
+          "values": [
+            50,
+            50,
+            50,
+            50,
+            50
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          850,
+          850,
+          850,
+          850,
+          850
+        ],
+        "rankValues": [
+          {
+            "label": "Damage",
+            "values": "70/110/150/190/230"
+          },
+          {
+            "label": "Cooldown",
+            "values": "16/14.5/13/11.5/10"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "E Scaling",
+            "labelKo": "E 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "2:TotalDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "R": {
+        "slot": "R",
+        "id": "IreliaR",
+        "name": "Vanguard's Edge",
+        "summary": "Irelia fires a massive number of blades that explode outward upon hitting an enemy champion. Enemies hit by the blades are damaged and Marked. Afterwards the blades form a wall that will damage and slow enemies that walk through it.",
+        "bodyHtml": "Irelia launches a barrage of blades, dealing <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(125/200/275 + (100% Ability Power)) magic damage</span> and making champions and large jungle monsters <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Unsteady</span> for 5 seconds. The barrage explodes into a cage around the first champion hit for 2.5 seconds. The cage deals <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(125/200/275 + (100% Ability Power)) magic damage</span> and <span class=\"text-purple-600 dark:text-purple-500\">Slows</span> by 90% for 1.5 seconds.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">When the barrage explodes, surrounding enemies are also hit. </span><br />",
+        "iconFile": "IreliaR.png",
+        "cooldownSeconds": [
+          125,
+          105,
+          85
+        ],
+        "rechargeSeconds": [
+          -1,
+          -1,
+          -1
+        ],
+        "cost": {
+          "values": [
+            100,
+            100,
+            100
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          950,
+          950,
+          950
+        ],
+        "rankValues": [
+          {
+            "label": "Damage",
+            "values": "125/200/275"
+          },
+          {
+            "label": "Wall Damage",
+            "values": "125/200/275"
+          },
+          {
+            "label": "Cooldown",
+            "values": "125/105/85"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "R Scaling",
+            "labelKo": "R 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "3:MissileDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      }
+    }
+  }
+}

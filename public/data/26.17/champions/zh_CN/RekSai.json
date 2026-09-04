@@ -1,0 +1,365 @@
+{
+  "schemaVersion": 2,
+  "patchVersion": "26.17",
+  "locale": "zh_CN",
+  "sources": {
+    "ddragon": "16.17.1",
+    "cdragon": "16.17"
+  },
+  "champion": {
+    "id": "RekSai",
+    "key": "421",
+    "name": "虚空遁地兽",
+    "title": "雷克塞",
+    "tags": [
+      "Fighter",
+      "Tank"
+    ],
+    "baseStats": {
+      "health": {
+        "base": 600,
+        "perLevel": 99
+      },
+      "healthRegen": {
+        "base": 2.5,
+        "perLevel": 0.5
+      },
+      "mana": {
+        "base": 100,
+        "perLevel": 0
+      },
+      "manaRegen": {
+        "base": 0,
+        "perLevel": 0
+      },
+      "attackDamage": {
+        "base": 62,
+        "perLevel": 0
+      },
+      "attackSpeed": {
+        "base": 0.667,
+        "perLevel": 2
+      },
+      "armor": {
+        "base": 35,
+        "perLevel": 4.5
+      },
+      "magicResist": {
+        "base": 32,
+        "perLevel": 2.05
+      },
+      "moveSpeed": {
+        "base": 340,
+        "perLevel": 0
+      },
+      "attackRange": {
+        "base": 175,
+        "perLevel": 0
+      }
+    },
+    "baseStatContributions": [
+      {
+        "stat": "MAX_HEALTH",
+        "value": 99,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "HEALTH_REGEN",
+        "value": 0.5,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAX_MANA",
+        "value": 0,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MANA_REGEN",
+        "value": 0,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_DAMAGE",
+        "value": 0,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_SPEED",
+        "value": 2,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ARMOR",
+        "value": 4.5,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAGIC_RESIST",
+        "value": 2.05,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      }
+    ],
+    "abilities": {
+      "P": {
+        "slot": "P",
+        "id": "RekSaiPassive",
+        "name": "艾克塞之怒",
+        "summary": "雷克塞可通过攻击和命中基础技能来生成怒气。她在位于地下时可消耗怒气来回复生命值。",
+        "bodyHtml": "雷克塞的攻击生成<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">25怒气</span>，技能生成<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">25怒气</span>。<br /><br /><span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">位于地下</span>时，她会消耗<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">怒气</span>，3秒内持续最多回复<span class=\"text-green-600 dark:text-green-400\">生命值</span>，随等级提升。",
+        "iconFile": "RekSai_Passive.png",
+        "cooldownSeconds": [],
+        "range": [],
+        "rankValues": [],
+        "scalings": [],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "Q": {
+        "slot": "Q",
+        "id": "RekSaiQ",
+        "name": "女王之怒 / 猎物搜寻",
+        "summary": "雷克塞的下3次普攻会对身边的敌人造成额外物理伤害。<br><br>在地底时，雷克塞发射一道充满虚空能量的冲击波，对命中的敌人造成伤害并使其显形。",
+        "bodyHtml": "<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">位于地表：</span>雷克塞在3秒内的下3次普攻会获得<span>35%攻击速度</span>并对附近的敌人造成额外的<span class=\"text-red-600 dark:text-red-500 font-semibold\">(30/35/40/45/50% 攻击力)物理伤害</span>。攻击会刷新这个技能的持续时长。<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">额外伤害可在主要目标上产生暴击。</span>",
+        "iconFile": "RekSaiQ.png",
+        "cooldownSeconds": [
+          4,
+          3.5,
+          3,
+          2.5,
+          2
+        ],
+        "range": [
+          325,
+          325,
+          325,
+          325,
+          325
+        ],
+        "rankValues": [
+          {
+            "label": "女王之怒 攻击力收益率",
+            "values": "30/35/40/45/50"
+          },
+          {
+            "label": "女王之怒 冷却时间",
+            "values": "4/3.5/3/2.5/2"
+          },
+          {
+            "label": "猎物搜寻 伤害",
+            "values": "50/80/110/140/170"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "Q Scaling",
+            "labelKo": "Q 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "0:TotalDamageTooltip"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "W": {
+        "slot": "W",
+        "id": "RekSaiW",
+        "name": "遁地 / 破土而出",
+        "summary": "雷克塞遁入地下，提供新的技能并提升移动速度。她的视野距离会被降低并且无法进行普攻。<br><br>在地底时，雷克塞可以施放破土而出，击飞并伤害身边的敌人。",
+        "bodyHtml": "<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">位于地表：</span>雷克塞遁入地下，获得全新的一套技能但不能攻击。她获得<span class=\"text-cyan-600 dark:text-cyan-500\">5/10/15/20/25移动速度</span>，视野距离被降低65%，并且附近不可见的敌人在移动时会将其位置显形给雷克塞和她的友军。",
+        "iconFile": "RekSaiW.png",
+        "cooldownSeconds": [
+          4,
+          4,
+          4,
+          4,
+          4
+        ],
+        "range": [
+          1650,
+          1650,
+          1650,
+          1650,
+          1650
+        ],
+        "rankValues": [
+          {
+            "label": "破土而出 伤害",
+            "values": "30/55/80/105/130"
+          },
+          {
+            "label": "击飞免疫",
+            "values": "10/9/8/7/6"
+          },
+          {
+            "label": "遁地  移动速度",
+            "values": "5/10/15/20/25"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "W Scaling",
+            "labelKo": "W 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "1:UnburrowDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "E": {
+        "slot": "E",
+        "id": "RekSaiE",
+        "name": "狂野之噬 / 挖掘隧道",
+        "summary": "雷克塞噬咬她的目标，造成物理伤害，或是在满怒时造成额外真实伤害。<br><br>在地底时，雷克塞挖掘出一个可重复使用、长期存在的隧道。敌人踩在任一入口上即可摧毁整条隧道。",
+        "bodyHtml": "<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">位于地表：</span>雷克塞撕咬一个目标，造成<span class=\"text-red-600 dark:text-red-500 font-semibold\">物理伤害</span>。在满额<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">怒气</span>时，这次撕咬会转而造成<span class=\"text-yellow-600 dark:text-yellow-500 font-semibold\">真实伤害</span>。",
+        "iconFile": "RekSaiE.png",
+        "cooldownSeconds": [
+          6,
+          6,
+          6,
+          6,
+          6
+        ],
+        "range": [
+          250,
+          250,
+          250,
+          250,
+          250
+        ],
+        "rankValues": [
+          {
+            "label": "基础伤害",
+            "values": "70/95/120/145/170"
+          },
+          {
+            "label": "强化伤害",
+            "values": "84/114/144/174/204"
+          },
+          {
+            "label": "隧道施放 冷却时间",
+            "values": "18/17/16/15/14"
+          },
+          {
+            "label": "隧道使用 冷却时间",
+            "values": "6/5/4/3/2"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "E Scaling",
+            "labelKo": "E 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "2:BaseDamageCalculation"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": [
+            "spell.RekSaiE:BaseDamageCalculation",
+            "spell.RekSaiE:EmpoweredDamageCalculation"
+          ]
+        }
+      },
+      "R": {
+        "slot": "R",
+        "id": "RekSaiR",
+        "name": "虚空猛冲",
+        "summary": "雷克塞对目标造成伤害即可将其标记。她可以激活这个技能，暂时变成不可被选取状态，并扑向一个被标记的目标，并基于其最大生命值造成大量伤害。",
+        "bodyHtml": "雷克塞将一个之前5秒内被她造成过伤害的敌人选为目标，随后遁入地下，进入不可选取状态。片刻之后，她会不可阻挡地跃向目标，造成<span class=\"text-red-600 dark:text-red-500 font-semibold\">(150/250/350 + (100% 额外攻击力))加上15/20/25%最大生命值的物理伤害</span>并重置<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">遁地 / 破土而出</span>的冷却时间。",
+        "iconFile": "RekSaiR.png",
+        "cooldownSeconds": [
+          120,
+          100,
+          80
+        ],
+        "range": [
+          1500,
+          1500,
+          1500
+        ],
+        "rankValues": [
+          {
+            "label": "伤害",
+            "values": "150/250/350"
+          },
+          {
+            "label": "%生命值伤害",
+            "values": "15%/20%/25%"
+          },
+          {
+            "label": "冷却时间",
+            "values": "120/100/80"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "R Scaling",
+            "labelKo": "R 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "3:RBaseDamageCalc"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      }
+    }
+  }
+}

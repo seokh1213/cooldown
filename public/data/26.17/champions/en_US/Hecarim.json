@@ -1,0 +1,392 @@
+{
+  "schemaVersion": 2,
+  "patchVersion": "26.17",
+  "locale": "en_US",
+  "sources": {
+    "ddragon": "16.17.1",
+    "cdragon": "16.17"
+  },
+  "champion": {
+    "id": "Hecarim",
+    "key": "120",
+    "name": "Hecarim",
+    "title": "the Shadow of War",
+    "tags": [
+      "Fighter",
+      "Tank"
+    ],
+    "baseStats": {
+      "health": {
+        "base": 625,
+        "perLevel": 106
+      },
+      "healthRegen": {
+        "base": 7,
+        "perLevel": 0.75
+      },
+      "mana": {
+        "base": 280,
+        "perLevel": 40
+      },
+      "manaRegen": {
+        "base": 7,
+        "perLevel": 0.8
+      },
+      "attackDamage": {
+        "base": 66,
+        "perLevel": 0
+      },
+      "attackSpeed": {
+        "base": 0.67,
+        "perLevel": 2.5
+      },
+      "armor": {
+        "base": 32,
+        "perLevel": 5.45
+      },
+      "magicResist": {
+        "base": 32,
+        "perLevel": 2.05
+      },
+      "moveSpeed": {
+        "base": 345,
+        "perLevel": 0
+      },
+      "attackRange": {
+        "base": 175,
+        "perLevel": 0
+      }
+    },
+    "baseStatContributions": [
+      {
+        "stat": "MAX_HEALTH",
+        "value": 106,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "HEALTH_REGEN",
+        "value": 0.75,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAX_MANA",
+        "value": 40,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MANA_REGEN",
+        "value": 0.8,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_DAMAGE",
+        "value": 0,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_SPEED",
+        "value": 2.5,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ARMOR",
+        "value": 5.45,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAGIC_RESIST",
+        "value": 2.05,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      }
+    ],
+    "abilities": {
+      "P": {
+        "slot": "P",
+        "id": "HecarimPassive",
+        "name": "Warpath",
+        "summary": "Hecarim gains Attack Damage equal to a percentage of his bonus Move Speed.",
+        "bodyHtml": "Hecarim gains <span class=\"text-orange-600 dark:text-orange-500\"> Attack Damage</span>, increasing based on level.",
+        "iconFile": "Hecarim_Passive.png",
+        "cooldownSeconds": [],
+        "range": [],
+        "rankValues": [],
+        "scalings": [],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "Q": {
+        "slot": "Q",
+        "id": "HecarimRapidSlash",
+        "name": "Rampage",
+        "summary": "Hecarim cleaves nearby enemies dealing physical damage. If Hecarim damages at least one enemy, he increases the damage and lowers the cooldown of subsequent Rampages.",
+        "bodyHtml": "Hecarim cleaves nearby enemies for <span class=\"text-red-600 dark:text-red-500 font-semibold\">(60/90/120/150/180 + (90% bonus Attack Damage)) physical damage</span>. If this Ability hits, he gains a stack that decreases its Cooldown by 0.75 seconds and increases its damage by (3 + (3% bonus Attack Damage))for 8 seconds. Stacks up to 3 times.<br /><br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">Deals a base of <span class=\"text-red-600 dark:text-red-500 font-semibold\">(36/54/72/90/108 + (54% bonus Attack Damage)) damage</span> to minions.</span>",
+        "iconFile": "HecarimRapidSlash.png",
+        "cooldownSeconds": [
+          4,
+          4,
+          4,
+          4,
+          4
+        ],
+        "cost": {
+          "values": [
+            28,
+            26,
+            24,
+            22,
+            20
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          350,
+          350,
+          350,
+          350,
+          350
+        ],
+        "rankValues": [
+          {
+            "label": "Damage",
+            "values": "60/90/120/150/180"
+          },
+          {
+            "label": "Mana Cost",
+            "values": "28/26/24/22/20"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "Q Scaling",
+            "labelKo": "Q 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "0:Damage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "W": {
+        "slot": "W",
+        "id": "HecarimW",
+        "name": "Spirit of Dread",
+        "summary": "Hecarim gains Armor and Magic Resist. Hecarim deals magic damage to nearby enemies, and gains Health equal to a percentage of any damage those enemies suffer.",
+        "bodyHtml": "Hecarim deals <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(80/120/160/200/240 + (80% Ability Power)) magic damage</span> over 4 seconds to nearby enemies. <br /><br />Hecarim gains <span>5/10/15/20/25</span> <span class=\"text-orange-600 dark:text-orange-400\">Armor</span> and <span>Magic Resist</span> and heals for <span class=\"text-green-600 dark:text-green-400\">25% of damage</span> nearby enemies take from Hecarim and <span class=\"text-green-600 dark:text-green-400\">12.5% of damage</span> taken from his allies.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">Hecarim cannot heal more than <span class=\"text-green-600 dark:text-green-400\">120/150/180/210/240 Health</span> from minions or jungle monsters.</span>",
+        "iconFile": "HecarimW.png",
+        "cooldownSeconds": [
+          14,
+          14,
+          14,
+          14,
+          14
+        ],
+        "cost": {
+          "values": [
+            50,
+            55,
+            60,
+            65,
+            70
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          525,
+          525,
+          525,
+          525,
+          525
+        ],
+        "rankValues": [
+          {
+            "label": "Damage",
+            "values": "80/120/160/200/240"
+          },
+          {
+            "label": "Bonus Resistances",
+            "values": "5/10/15/20/25"
+          },
+          {
+            "label": "Healing Cap",
+            "values": "120/150/180/210/240"
+          },
+          {
+            "label": "Mana Cost",
+            "values": "50/55/60/65/70"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "W Scaling",
+            "labelKo": "W 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "1:TotalDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "E": {
+        "slot": "E",
+        "id": "HecarimRamp",
+        "name": "Devastating Charge",
+        "summary": "Hecarim gains increasing Move Speed and can move through units for a short duration. His next attack knocks the target back and deals additional physical damage based on the distance he has traveled since activating the ability.",
+        "bodyHtml": "Hecarim becomes Ghosted and gains <span class=\"text-cyan-600 dark:text-cyan-500\">25% Move Speed</span> increasing to <span class=\"text-cyan-600 dark:text-cyan-500\">65%</span> over 4 seconds. His next Attack <span class=\"text-purple-600 dark:text-purple-500\">Knocks Back</span> and deals between <span class=\"text-red-600 dark:text-red-500 font-semibold\">(30/45/60/75/90 + (50% bonus Attack Damage))</span> and <span class=\"text-red-600 dark:text-red-500 font-semibold\">(60/90/120/150/180 + (100% bonus Attack Damage)) physical damage</span>. <span class=\"text-purple-600 dark:text-purple-500\">Knock Back</span> distance and damage scales with distance travelled during this Ability.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">Ghosted units ignore collision with other units.<br />The remaining duration of this Ability is paused during Onslaught of Shadows.<br />This Ability triggers spell effects upon dealing damage.</span>",
+        "iconFile": "HecarimRamp.png",
+        "cooldownSeconds": [
+          20,
+          19,
+          18,
+          17,
+          16
+        ],
+        "cost": {
+          "values": [
+            60,
+            60,
+            60,
+            60,
+            60
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          300,
+          300,
+          300,
+          300,
+          300
+        ],
+        "rankValues": [
+          {
+            "label": "Minimum Damage",
+            "values": "30/45/60/75/90"
+          },
+          {
+            "label": "Maximum Damage",
+            "values": "60/90/120/150/180"
+          },
+          {
+            "label": "Cooldown",
+            "values": "20/19/18/17/16"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "E Scaling",
+            "labelKo": "E 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "2:MinDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "R": {
+        "slot": "R",
+        "id": "HecarimUlt",
+        "name": "Onslaught of Shadows",
+        "summary": "Hecarim summons spectral riders and charges forward, dealing magic damage in a line. Hecarim creates a shockwave when he finishes his charge, causing nearby enemies to flee in terror.",
+        "bodyHtml": "Hecarim summons spectral riders and charges forward, dealing <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(150/250/350 + (100% Ability Power)) magic damage</span>. Hecarim unleashes a shockwave at the end of the charge that <span class=\"text-purple-600 dark:text-purple-500\">Fears</span> for between 0.75 to 1.5 seconds, increased by charge distance.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">Hecarim will move to the targeted location, but the riders always move the full distance.</span>",
+        "iconFile": "HecarimUlt.png",
+        "cooldownSeconds": [
+          140,
+          120,
+          100
+        ],
+        "cost": {
+          "values": [
+            100,
+            100,
+            100
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          50000,
+          50000,
+          50000
+        ],
+        "rankValues": [
+          {
+            "label": "Damage",
+            "values": "150/250/350"
+          },
+          {
+            "label": "Cooldown",
+            "values": "140/120/100"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "R Scaling",
+            "labelKo": "R 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "3:DamageDone"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      }
+    }
+  }
+}

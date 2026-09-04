@@ -1,0 +1,364 @@
+{
+  "schemaVersion": 2,
+  "patchVersion": "26.17",
+  "locale": "ko_KR",
+  "sources": {
+    "ddragon": "16.17.1",
+    "cdragon": "16.17"
+  },
+  "champion": {
+    "id": "Taliyah",
+    "key": "163",
+    "name": "탈리야",
+    "title": "바위술사",
+    "tags": [
+      "Mage",
+      "Support"
+    ],
+    "baseStats": {
+      "health": {
+        "base": 550,
+        "perLevel": 104
+      },
+      "healthRegen": {
+        "base": 6.5,
+        "perLevel": 0.65
+      },
+      "mana": {
+        "base": 470,
+        "perLevel": 30
+      },
+      "manaRegen": {
+        "base": 8,
+        "perLevel": 0.8
+      },
+      "attackDamage": {
+        "base": 58,
+        "perLevel": 0
+      },
+      "attackSpeed": {
+        "base": 0.658,
+        "perLevel": 1.36
+      },
+      "armor": {
+        "base": 18,
+        "perLevel": 4.7
+      },
+      "magicResist": {
+        "base": 28,
+        "perLevel": 1.3
+      },
+      "moveSpeed": {
+        "base": 330,
+        "perLevel": 0
+      },
+      "attackRange": {
+        "base": 525,
+        "perLevel": 0
+      }
+    },
+    "baseStatContributions": [
+      {
+        "stat": "MAX_HEALTH",
+        "value": 104,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "HEALTH_REGEN",
+        "value": 0.65,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAX_MANA",
+        "value": 30,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MANA_REGEN",
+        "value": 0.8,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_DAMAGE",
+        "value": 0,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_SPEED",
+        "value": 1.36,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ARMOR",
+        "value": 4.7,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAGIC_RESIST",
+        "value": 1.3,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      }
+    ],
+    "abilities": {
+      "P": {
+        "slot": "P",
+        "id": "TaliyahPassive",
+        "name": "바위타기",
+        "summary": "벽 근처에서 이동 속도가 상승합니다.",
+        "bodyHtml": "전투 중이 아닐 때 지난 3초 안에 벽 근처에 있었으면 <span class=\"text-cyan-600 dark:text-cyan-500\">이동 속도가 95%</span> 증가합니다.",
+        "iconFile": "Taliyah_Passive.png",
+        "cooldownSeconds": [],
+        "range": [],
+        "rankValues": [],
+        "scalings": [],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "Q": {
+        "slot": "Q",
+        "id": "TaliyahQ",
+        "name": "파편 난사",
+        "summary": "탈리야가 지정한 방향으로 바위 조각을 던집니다. 이 때 탈리야는 자유롭게 이동할 수 있으며 탈리야 아래의 땅이 다져집니다. 다져진 땅 위에서 파편 난사를 사용하면 다져진 땅이 사라지면서 적을 둔화하는 큰 바위를 던집니다.",
+        "bodyHtml": "탈리야가 5개의 바위 조각을 던져 처음으로 맞힌 적 주변 지역에 개당 <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(55/72.5/90/107.5/125 + (50% 주문력))의 마법 피해</span>를 입히고 땅을 다집니다. 동일한 적에게 연달아 바위 조각을 맞힐 경우 피해량이 60% 감소합니다.<br /><br />다져진 땅에서 이 스킬을 사용하면 마나가 10 소모되며 재사용 대기시간이 50% 감소하고 다져진 땅을 소모해 바위를 던집니다. 바위는 적중한 적을 1.5초 동안 20/25/30/35/40% <span class=\"text-purple-600 dark:text-purple-500\">둔화</span>시키고 첫 번째 대상에게 <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(99/130.5/162/193.5/225 + (90% 주문력))의 마법 피해</span>를 입힙니다. 바위에 맞은 몬스터는 3초 동안 <span class=\"text-purple-600 dark:text-purple-500\">기절</span>합니다.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">탈리야는 바위를 던지는 도중에 이동하고 다른 스킬을 사용할 수 있습니다.<br />다져진 땅에서 이 스킬을 사용하면 재사용 대기시간이 0.75초 미만으로 낮아지지 않습니다.<br />단일 대상에 대한 총 피해량: <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(143/188.5/234/279.5/325 + (130% 주문력))</span><br />각 바위는 몬스터에게 <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">20/25/30/35/40</span>의 추가 피해를 입힙니다.</span>",
+        "iconFile": "TaliyahQ.png",
+        "cooldownSeconds": [
+          7,
+          6,
+          5,
+          4,
+          3
+        ],
+        "cost": {
+          "values": [
+            55,
+            60,
+            65,
+            70,
+            75
+          ],
+          "resource": "마나"
+        },
+        "range": [
+          1000,
+          1000,
+          1000,
+          1000,
+          1000
+        ],
+        "rankValues": [
+          {
+            "label": "피해량",
+            "values": "55/72.5/90/107.5/125"
+          },
+          {
+            "label": "둔화",
+            "values": "20%/25%/30%/35%/40%"
+          },
+          {
+            "label": "몬스터 피해량",
+            "values": "20/25/30/35/40"
+          },
+          {
+            "label": "재사용 대기시간",
+            "values": "7/6/5/4/3"
+          },
+          {
+            "label": "소모값 마나",
+            "values": "55/60/65/70/75"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "Q Scaling",
+            "labelKo": "Q 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "0:RockDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "W": {
+        "slot": "W",
+        "id": "TaliyahWVC",
+        "name": "지각변동",
+        "summary": "탈리야가 특정 지점을 솟구치게 만들어 탈리야가 선택한 방향으로 적을 띄워 올립니다.",
+        "bodyHtml": "탈리야가 땅을 흔들어 일정 지역에 있는 적을 선택한 방향으로 <span class=\"text-purple-600 dark:text-purple-500\">밀어냅니다</span>.",
+        "iconFile": "TaliyahWVC.png",
+        "cooldownSeconds": [
+          14,
+          12.5,
+          11,
+          9.5,
+          8
+        ],
+        "cost": {
+          "values": [
+            40,
+            30,
+            20,
+            10,
+            0
+          ],
+          "resource": "마나"
+        },
+        "range": [
+          900,
+          900,
+          900,
+          900,
+          900
+        ],
+        "rankValues": [
+          {
+            "label": "재사용 대기시간",
+            "values": "14/12.5/11/9.5/8"
+          },
+          {
+            "label": "소모값 마나",
+            "values": "40/30/20/10/0"
+          }
+        ],
+        "scalings": [],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "E": {
+        "slot": "E",
+        "id": "TaliyahE",
+        "name": "대지의 파동",
+        "summary": "적을 둔화시키는 바위밭을 만듭니다. 적이 그 위로 돌진하거나 밀려나면 바위가 폭발해 대상을 기절시킵니다.",
+        "bodyHtml": "탈리야가 일정 지역에 돌을 흩뜨려 적중한 적을 20% <span class=\"text-purple-600 dark:text-purple-500\">둔화</span>시키고 <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(60/105/150/195/240 + (60% 주문력))의 마법 피해</span>를 입힙니다. 적이 돌진하거나 <span class=\"text-purple-600 dark:text-purple-500\">밀려나서</span> 돌 위로 지나가게 되면 돌이 폭발하여, 남은 이동 시간 + 0.75초 동안 <span class=\"text-purple-600 dark:text-purple-500\">기절</span>시키고 <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(25/40/55/70/85 + (30% 주문력))의 마법 피해</span>를 입힙니다.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">기절 지속시간은 2초를 초과할 수 없습니다. 각 적은 스킬 사용 한 번당 한 번만 기절합니다. 몬스터에게는 항상 최대 기절 지속시간이 적용됩니다.<br />첫 번째 이후로는 피해량이 25% 감소합니다. <br />최대 폭발 피해량: <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(62.5/100/137.5/175/212.5 + (75% 주문력))</span><br />이 스킬은 몬스터에게 225%의 피해를 입힙니다.</span>",
+        "iconFile": "TaliyahE.png",
+        "cooldownSeconds": [
+          14,
+          14,
+          14,
+          14,
+          14
+        ],
+        "cost": {
+          "values": [
+            90,
+            90,
+            90,
+            90,
+            90
+          ],
+          "resource": "마나"
+        },
+        "range": [
+          950,
+          950,
+          950,
+          950,
+          950
+        ],
+        "rankValues": [
+          {
+            "label": "피해량",
+            "values": "60/105/150/195/240"
+          },
+          {
+            "label": "폭발 피해량",
+            "values": "25/40/55/70/85"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "E Scaling",
+            "labelKo": "E 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "2:ScatterDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "R": {
+        "slot": "R",
+        "id": "TaliyahR",
+        "name": "바위술사의 벽",
+        "summary": "아주 긴 벽을 세웁니다. 탈리야는 이 벽을 타고 이동할 수 있습니다.",
+        "bodyHtml": "탈리야가 4초 동안 거대한 흙벽을 세웁니다. 즉시 <span class=\"text-yellow-600 dark:text-yellow-300\">재사용</span>하면 움직이는 벽에 올라타며, 이동하거나 이동 불가 효과에 걸리면 벽에서 내려옵니다.<br /><br />탈리야가 지난 3초 안에 챔피언 또는 구조물에 의한 피해를 입었으면 이 스킬을 사용할 수 없습니다.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">벽이 완전히 생성되면 <span class=\"text-yellow-600 dark:text-yellow-300\">재사용</span>하여 일찍 파괴할 수 있습니다.</span>",
+        "iconFile": "TaliyahR.png",
+        "cooldownSeconds": [
+          180,
+          150,
+          120
+        ],
+        "cost": {
+          "values": [
+            100,
+            100,
+            100
+          ],
+          "resource": "마나"
+        },
+        "range": [
+          2500,
+          4500,
+          6500
+        ],
+        "rankValues": [
+          {
+            "label": "벽 길이",
+            "values": "2500/4500/6500"
+          },
+          {
+            "label": "재사용 대기시간",
+            "values": "180/150/120"
+          }
+        ],
+        "scalings": [],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      }
+    }
+  }
+}

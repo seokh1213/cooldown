@@ -5,10 +5,11 @@ import { ChampionWithInfo, Tab } from "./types";
 import { removeStorageWithVersion } from "@/lib/storageValidator";
 import { logger } from "@/lib/logger";
 import type { StoredSelectedChampion, StoredSelectedChampionList } from "@/lib/storageSchema";
+import type { Language } from "@/i18n";
 
 interface UseChampionDataProps {
   version: string | null;
-  lang: string;
+  lang: Language;
   championList: Champion[] | null;
   tabs: Tab[];
   initialSelectedChampions: StoredSelectedChampionList | null;
@@ -258,4 +259,3 @@ export function useChampionData({
     loadChampionInfo,
   };
 }
-

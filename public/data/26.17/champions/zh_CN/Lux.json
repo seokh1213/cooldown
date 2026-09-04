@@ -1,0 +1,388 @@
+{
+  "schemaVersion": 2,
+  "patchVersion": "26.17",
+  "locale": "zh_CN",
+  "sources": {
+    "ddragon": "16.17.1",
+    "cdragon": "16.17"
+  },
+  "champion": {
+    "id": "Lux",
+    "key": "99",
+    "name": "光辉女郎",
+    "title": "拉克丝",
+    "tags": [
+      "Mage",
+      "Support"
+    ],
+    "baseStats": {
+      "health": {
+        "base": 580,
+        "perLevel": 99
+      },
+      "healthRegen": {
+        "base": 5.5,
+        "perLevel": 0.55
+      },
+      "mana": {
+        "base": 440,
+        "perLevel": 23.5
+      },
+      "manaRegen": {
+        "base": 9,
+        "perLevel": 0.8
+      },
+      "attackDamage": {
+        "base": 54,
+        "perLevel": 0
+      },
+      "attackSpeed": {
+        "base": 0.669,
+        "perLevel": 3
+      },
+      "armor": {
+        "base": 21,
+        "perLevel": 5.2
+      },
+      "magicResist": {
+        "base": 30,
+        "perLevel": 1.3
+      },
+      "moveSpeed": {
+        "base": 330,
+        "perLevel": 0
+      },
+      "attackRange": {
+        "base": 550,
+        "perLevel": 0
+      }
+    },
+    "baseStatContributions": [
+      {
+        "stat": "MAX_HEALTH",
+        "value": 99,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "HEALTH_REGEN",
+        "value": 0.55,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAX_MANA",
+        "value": 23.5,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MANA_REGEN",
+        "value": 0.8,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_DAMAGE",
+        "value": 0,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_SPEED",
+        "value": 3,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ARMOR",
+        "value": 5.2,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAGIC_RESIST",
+        "value": 1.3,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      }
+    ],
+    "abilities": {
+      "P": {
+        "slot": "P",
+        "id": "LuxIlluminationPassive",
+        "name": "光芒四射",
+        "summary": "拉克丝的伤害类技能会对敌人施加【启明】效果，持续若干秒。拉克丝的下一次攻击将会消耗【启明】效果，来对目标造成额外魔法伤害（基于拉克丝等级）。",
+        "bodyHtml": "拉克丝的伤害型技能会标记目标6秒。拉克丝的攻击会消耗该标记，以造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(35% 法术强度)魔法伤害</span>。<br /><br /><span>终极闪光</span>在命中敌人时将先消耗标记然后刷新标记。",
+        "iconFile": "LuxIlluminatingFraulein.png",
+        "cooldownSeconds": [],
+        "range": [],
+        "rankValues": [],
+        "scalings": [],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "Q": {
+        "slot": "Q",
+        "id": "LuxLightBinding",
+        "name": "光之束缚",
+        "summary": "拉克丝释放一个光球，束缚并伤害最多两个敌方单位。",
+        "bodyHtml": "拉克丝朝目标地点发射一团光球，<span class=\"text-purple-600 dark:text-purple-500\">束缚</span>前2名敌人2秒并对每个敌人造<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(80/120/160/200/240 + (75% 法术强度))魔法伤害</span>。",
+        "iconFile": "LuxLightBinding.png",
+        "cooldownSeconds": [
+          10,
+          10,
+          10,
+          10,
+          10
+        ],
+        "cost": {
+          "values": [
+            50,
+            50,
+            50,
+            50,
+            50
+          ],
+          "resource": "法力值"
+        },
+        "range": [
+          1175,
+          1175,
+          1175,
+          1175,
+          1175
+        ],
+        "rankValues": [
+          {
+            "label": "伤害",
+            "values": "80/120/160/200/240"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "Q Scaling",
+            "labelKo": "Q 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "0:TotalDamageTT"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "W": {
+        "slot": "W",
+        "id": "LuxPrismaticWave",
+        "name": "曲光屏障",
+        "summary": "拉克丝掷出她的魔杖，魔杖所触及的友方单位会有光环环绕，保护他们免受敌方伤害。",
+        "bodyHtml": "拉克丝扔出她的魔杖，为它途经的友军提供持续2.5秒的<span class=\"text-blue-600 dark:text-blue-300\">(40/55/70/85/100 + (40% 法术强度))护盾</span>。随后它会折返，为它途经的友军提供等额的<span class=\"text-blue-600 dark:text-blue-300\">护盾</span>。<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">两段护盾可以叠加。</span>",
+        "iconFile": "LuxPrismaticWave.png",
+        "cooldownSeconds": [
+          12,
+          11.5,
+          11,
+          10.5,
+          10
+        ],
+        "cost": {
+          "values": [
+            60,
+            65,
+            70,
+            75,
+            80
+          ],
+          "resource": "法力值"
+        },
+        "range": [
+          1150,
+          1150,
+          1150,
+          1150,
+          1150
+        ],
+        "rankValues": [
+          {
+            "label": "护盾值",
+            "values": "40/55/70/85/100"
+          },
+          {
+            "label": "冷却时间",
+            "values": "12/11.5/11/10.5/10"
+          },
+          {
+            "label": "法力值消耗",
+            "values": "60/65/70/75/80"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "W Scaling",
+            "labelKo": "W 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "1:TotalShieldTT"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "E": {
+        "slot": "E",
+        "id": "LuxLightStrikeKugel",
+        "name": "透光奇点",
+        "summary": "朝一个区域发射一个不规则的扭曲之光，减速附近敌人。拉克丝可以引爆它，对敌人造成区域性伤害。",
+        "bodyHtml": "拉克丝创造一个光明地带，显形该区域并使区域中的敌人<span class=\"text-purple-600 dark:text-purple-500\">减速</span>25/30/35/40/45%。在5秒后或<span class=\"text-yellow-600 dark:text-yellow-300\">再次施放</span>这个技能后，它会爆炸，造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(65/115/165/215/265 + (80% 法术强度))魔法伤害</span>并<span class=\"text-purple-600 dark:text-purple-500\">减速</span>额外的1秒。",
+        "iconFile": "LuxLightStrikeKugel.png",
+        "cooldownSeconds": [
+          10,
+          9.5,
+          9,
+          8.5,
+          8
+        ],
+        "cost": {
+          "values": [
+            70,
+            80,
+            90,
+            100,
+            110
+          ],
+          "resource": "法力值"
+        },
+        "range": [
+          1100,
+          1100,
+          1100,
+          1100,
+          1100
+        ],
+        "rankValues": [
+          {
+            "label": "伤害",
+            "values": "65/115/165/215/265"
+          },
+          {
+            "label": "移动减速",
+            "values": "25/30/35/40/45"
+          },
+          {
+            "label": "法力值消耗",
+            "values": "70/80/90/100/110"
+          },
+          {
+            "label": "冷却时间",
+            "values": "10/9.5/9/8.5/8"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "E Scaling",
+            "labelKo": "E 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "2:TotalDamageTT"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "R": {
+        "slot": "R",
+        "id": "LuxR",
+        "name": "终极闪光",
+        "summary": "在积蓄能量之后，拉克丝发射一束光波，对该区域所有目标造成伤害。此外，该技能触发拉克丝的被动技能并刷新光芒四射减益的持续时间。",
+        "bodyHtml": "拉克丝发射一束耀目的光能射线，对一条直线上的所有敌人造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(300/400/500 + (120% 法术强度))魔法伤害</span>。",
+        "iconFile": "LuxR.png",
+        "cooldownSeconds": [
+          60,
+          50,
+          40
+        ],
+        "cost": {
+          "values": [
+            100,
+            100,
+            100
+          ],
+          "resource": "法力值"
+        },
+        "range": [
+          3340,
+          3340,
+          3340
+        ],
+        "rankValues": [
+          {
+            "label": "伤害",
+            "values": "300/400/500"
+          },
+          {
+            "label": "冷却时间",
+            "values": "60/50/40"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "R Scaling",
+            "labelKo": "R 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "3:TotalDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      }
+    }
+  }
+}

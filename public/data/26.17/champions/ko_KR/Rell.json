@@ -1,0 +1,395 @@
+{
+  "schemaVersion": 2,
+  "patchVersion": "26.17",
+  "locale": "ko_KR",
+  "sources": {
+    "ddragon": "16.17.1",
+    "cdragon": "16.17"
+  },
+  "champion": {
+    "id": "Rell",
+    "key": "526",
+    "name": "렐",
+    "title": "철의 여인",
+    "tags": [
+      "Tank",
+      "Support"
+    ],
+    "baseStats": {
+      "health": {
+        "base": 620,
+        "perLevel": 104
+      },
+      "healthRegen": {
+        "base": 7.5,
+        "perLevel": 0.85
+      },
+      "mana": {
+        "base": 320,
+        "perLevel": 40
+      },
+      "manaRegen": {
+        "base": 7,
+        "perLevel": 0.7
+      },
+      "attackDamage": {
+        "base": 55,
+        "perLevel": 0
+      },
+      "attackSpeed": {
+        "base": 0.625,
+        "perLevel": 2
+      },
+      "armor": {
+        "base": 30,
+        "perLevel": 4
+      },
+      "magicResist": {
+        "base": 28,
+        "perLevel": 1.8
+      },
+      "moveSpeed": {
+        "base": 315,
+        "perLevel": 0
+      },
+      "attackRange": {
+        "base": 175,
+        "perLevel": 0
+      }
+    },
+    "baseStatContributions": [
+      {
+        "stat": "MAX_HEALTH",
+        "value": 104,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "HEALTH_REGEN",
+        "value": 0.85,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAX_MANA",
+        "value": 40,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MANA_REGEN",
+        "value": 0.7,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_DAMAGE",
+        "value": 0,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_SPEED",
+        "value": 2,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ARMOR",
+        "value": 4,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAGIC_RESIST",
+        "value": 1.8,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      }
+    ],
+    "abilities": {
+      "P": {
+        "slot": "P",
+        "id": "RellP",
+        "name": "갑옷 파쇄",
+        "summary": "렐의 기본 공격과 스킬이 적중 시 추가 마법 피해를 입히고 방어력과 마법 저항력을 훔칩니다.",
+        "bodyHtml": "렐의 기본 공격과 스킬이 5초 동안 <span class=\"text-orange-600 dark:text-orange-400\">3%의 방어력</span>과 <span>3%의 마법 저항력</span>을 훔칩니다(최대 15%). 기본 공격 적중 시 <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">((5% 방어력) + (5% 마법 저항력))의 마법 피해</span>를 입힙니다.",
+        "iconFile": "RellP.png",
+        "cooldownSeconds": [],
+        "range": [],
+        "rankValues": [],
+        "scalings": [],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "Q": {
+        "slot": "Q",
+        "id": "RellQ",
+        "name": "파열의 일격",
+        "summary": "렐이 일직선상의 유닛에게 마법 피해를 입히며 보호막을 파괴하고 대상을 기절시킵니다. ",
+        "bodyHtml": "렐이 전방으로 창을 찔러 대상을 0.65초 동안 <span class=\"text-purple-600 dark:text-purple-500\">기절</span>시키고 모든 <span class=\"text-blue-600 dark:text-blue-300\">보호막</span>을 파괴하며 <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(60/100/140/180/220 + (60% 주문력))의 마법 피해</span>를 입힙니다.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">몬스터를 상대로는 보호막을 파괴하지 않습니다.</span>",
+        "iconFile": "RellQ.png",
+        "cooldownSeconds": [
+          11,
+          10.5,
+          10,
+          9.5,
+          9
+        ],
+        "cost": {
+          "values": [
+            50,
+            50,
+            50,
+            50,
+            50
+          ],
+          "resource": "마나"
+        },
+        "range": [
+          600,
+          600,
+          600,
+          600,
+          600
+        ],
+        "rankValues": [
+          {
+            "label": "피해량",
+            "values": "60/100/140/180/220"
+          },
+          {
+            "label": "재사용 대기시간",
+            "values": "11/10.5/10/9.5/9"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "Q Scaling",
+            "labelKo": "Q 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "0:Damage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "W": {
+        "slot": "W",
+        "id": "RellW_Dismount",
+        "name": "철마술: 붕괴",
+        "summary": "탑승: 렐이 탈것에서 중갑 형태로 뛰어내리며 적들을 공중으로 띄우고 큰 피해를 흡수하는 보호막을 얻습니다. 보행 시 방어력, 마법 저항력, 공격 속도, 공격 사거리가 증가하지만 둔화됩니다.<br><br>보행: 렐이 탈것에 올라타며 이동 속도가 상승하고 다음 기본 공격 시 적을 공중으로 띄워 올립니다.<br><br>",
+        "bodyHtml": "<span class=\"text-gray-600 dark:text-gray-500 italic\">기본 지속 효과 - 탑승 민첩성:</span> 렐이 탑승 상태에서 <span class=\"text-cyan-600 dark:text-cyan-500\">이동 속도가 </span> 증가합니다.<br /><br /><span class=\"text-gray-900 dark:text-white font-semibold\">사용 시 - 철마술: 붕괴:</span> 렐이 탈것에서 뛰어내리며 적들을 <span class=\"text-purple-600 dark:text-purple-500\">공중으로 띄워 올리고</span> <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">의 마법 피해</span>를 입힙니다. 렐이 <span class=\"text-blue-600 dark:text-blue-300\">의 피해를 흡수하는 보호막</span>을 얻습니다. 보호막은 다시 탑승할 때까지 지속됩니다.<br /><br />그런 다음 중갑 상태로 변하며 <span class=\"text-orange-600 dark:text-orange-400\">증가한 방어력</span>과 <span>마법 저항력</span>, <span>의 공격 속도</span>, 의 공격 사거리를 얻습니다. 중갑 상태에서는 <span>철마술: 탑승</span> 스킬을 사용할 수 있습니다.",
+        "iconFile": "RellW_Dismount.png",
+        "cooldownSeconds": [
+          10,
+          10,
+          10,
+          10,
+          10
+        ],
+        "cost": {
+          "values": [
+            40,
+            40,
+            40,
+            40,
+            40
+          ],
+          "resource": "마나"
+        },
+        "range": [
+          450,
+          450,
+          450,
+          450,
+          450
+        ],
+        "rankValues": [
+          {
+            "label": "보행 피해량",
+            "values": "60/90/120/150/180"
+          },
+          {
+            "label": "보호막 흡수량",
+            "values": "20/40/60/80/100"
+          },
+          {
+            "label": "넘기기 피해량",
+            "values": "10/25/40/55/70"
+          },
+          {
+            "label": "기본 지속 효과 이동 속도",
+            "values": "20/25/30/35/40"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "W Scaling",
+            "labelKo": "W 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "1:DismountDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": [
+            "spell.RellW_Dismount:DismountDamage",
+            "spell.RellW_Dismount:DismountedASBoost*100",
+            "spell.RellW_Dismount:DismountedRangeBoost",
+            "spell.RellW_Dismount:MountedMoveSpeed",
+            "spell.RellW_Dismount:ResistanceIncrease*100",
+            "spell.RellW_Dismount:Shield"
+          ]
+        }
+      },
+      "E": {
+        "slot": "E",
+        "id": "RellE",
+        "name": "전속력",
+        "summary": "기본 지속 효과: 비전투 시 이동 속도가 증가합니다.<br><br>사용 시: 렐과 아군 하나의 이동 속도가 서서히 증가합니다. 적이나 서로를 향해 이동하면 두 배로 증가합니다. 렐의 다음 공격은 폭발하며 마법 피해를 입힙니다.<br>",
+        "bodyHtml": "렐과 아군 하나가 돌진하며 3초 동안 <span class=\"text-cyan-600 dark:text-cyan-500\">이동 속도가 15%</span> 증가합니다. 적 챔피언이나 서로를 향해 마주하고 있으면 <span class=\"text-cyan-600 dark:text-cyan-500\">30%</span>까지 증가합니다. 렐의 다음 공격 또는 <span>파열의 일격</span> 스킬이 일정 지역에서 폭발해 <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">최대 체력의 (5/5.5/6/6.5/7% + (0.03% 주문력))에 해당하는 마법 피해</span>를 입힙니다.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">정글 몬스터와 구조물을 상대로는 최대 (150 ~ 300)의 피해를 입힙니다.</span>",
+        "iconFile": "RellE.png",
+        "cooldownSeconds": [
+          14,
+          13,
+          12,
+          11,
+          10
+        ],
+        "cost": {
+          "values": [
+            40,
+            40,
+            40,
+            40,
+            40
+          ],
+          "resource": "마나"
+        },
+        "range": [
+          1200,
+          1200,
+          1200,
+          1200,
+          1200
+        ],
+        "rankValues": [
+          {
+            "label": "피해량",
+            "values": "5/5.5/6/6.5/7"
+          },
+          {
+            "label": "재사용 대기시간",
+            "values": "14/13/12/11/10"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "E Scaling",
+            "labelKo": "E 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "2:MaxHealthDamageCalc"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "R": {
+        "slot": "R",
+        "id": "RellR",
+        "name": "자기 폭풍",
+        "summary": "렐이 자기 폭발을 일으켜 근처 적들을 렐 쪽으로 끌어당깁니다. 그런 다음 잠시 근처 적들을 계속 잡아당기며 마법 피해를 입힙니다.",
+        "bodyHtml": "렐이 자기 폭발을 일으켜 근처 적들을 렐 쪽으로 <span class=\"text-purple-600 dark:text-purple-500\">끌어당깁니다</span>. 그런 다음 2초 동안 근처 적들을 계속 <span class=\"text-purple-600 dark:text-purple-500\">잡아당기며</span> <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(150/250/350 + (110% 주문력))의 마법 피해</span>를 입힙니다.",
+        "iconFile": "RellR.png",
+        "cooldownSeconds": [
+          120,
+          100,
+          80
+        ],
+        "cost": {
+          "values": [
+            100,
+            100,
+            100
+          ],
+          "resource": "마나"
+        },
+        "range": [
+          200,
+          200,
+          200
+        ],
+        "rankValues": [
+          {
+            "label": "재사용 대기시간",
+            "values": "120/100/80"
+          },
+          {
+            "label": "피해량",
+            "values": "150/250/350"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "R Scaling",
+            "labelKo": "R 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "3:TotalDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      }
+    }
+  }
+}

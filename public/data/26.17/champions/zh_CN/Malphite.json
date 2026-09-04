@@ -1,0 +1,403 @@
+{
+  "schemaVersion": 2,
+  "patchVersion": "26.17",
+  "locale": "zh_CN",
+  "sources": {
+    "ddragon": "16.17.1",
+    "cdragon": "16.17"
+  },
+  "champion": {
+    "id": "Malphite",
+    "key": "54",
+    "name": "熔岩巨兽",
+    "title": "墨菲特",
+    "tags": [
+      "Tank",
+      "Mage"
+    ],
+    "baseStats": {
+      "health": {
+        "base": 665,
+        "perLevel": 104
+      },
+      "healthRegen": {
+        "base": 7,
+        "perLevel": 0.55
+      },
+      "mana": {
+        "base": 280,
+        "perLevel": 60
+      },
+      "manaRegen": {
+        "base": 7.3,
+        "perLevel": 0.55
+      },
+      "attackDamage": {
+        "base": 62,
+        "perLevel": 0
+      },
+      "attackSpeed": {
+        "base": 0.736,
+        "perLevel": 3.4
+      },
+      "armor": {
+        "base": 40,
+        "perLevel": 4.95
+      },
+      "magicResist": {
+        "base": 28,
+        "perLevel": 2.05
+      },
+      "moveSpeed": {
+        "base": 335,
+        "perLevel": 0
+      },
+      "attackRange": {
+        "base": 125,
+        "perLevel": 0
+      }
+    },
+    "baseStatContributions": [
+      {
+        "stat": "MAX_HEALTH",
+        "value": 104,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "HEALTH_REGEN",
+        "value": 0.55,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAX_MANA",
+        "value": 60,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MANA_REGEN",
+        "value": 0.55,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_DAMAGE",
+        "value": 0,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_SPEED",
+        "value": 3.4,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ARMOR",
+        "value": 4.95,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAGIC_RESIST",
+        "value": 2.05,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      }
+    ],
+    "abilities": {
+      "P": {
+        "slot": "P",
+        "id": "MalphiteShield",
+        "name": "花岗岩护盾",
+        "summary": "墨菲特被岩石护盾保护，最多吸收10%最大生命值的伤害，若数秒内墨菲特未受到攻击，护盾将重置。",
+        "bodyHtml": "在未受到伤害(8 ~ 6)秒后，墨菲特为自身提供<span class=\"text-blue-600 dark:text-blue-300\">(10% 生命值)护盾值</span>。",
+        "iconFile": "Malphite_GraniteShield.png",
+        "cooldownSeconds": [],
+        "range": [],
+        "rankValues": [],
+        "scalings": [],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "Q": {
+        "slot": "Q",
+        "id": "SeismicShard",
+        "name": "地震碎片",
+        "summary": "墨菲特发出一块大地碎片穿过他敌人处的地面，在碰撞时造成伤害并且偷取移动速度3秒。",
+        "bodyHtml": "墨菲特朝一名敌人发出一块大地碎片，造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(70/120/170/220/270 + (60% 法术强度))魔法伤害</span>和持续3秒的20/25/30/35/40%<span class=\"text-purple-600 dark:text-purple-500\">减速</span>。墨菲特还会窃取该<span class=\"text-purple-600 dark:text-purple-500\">被减速</span>的数额，从而将它作为持续3秒的<span class=\"text-cyan-600 dark:text-cyan-500\">移动速度</span>。",
+        "iconFile": "SeismicShard.png",
+        "cooldownSeconds": [
+          8,
+          8,
+          8,
+          8,
+          8
+        ],
+        "cost": {
+          "values": [
+            70,
+            75,
+            80,
+            85,
+            90
+          ],
+          "resource": "法力值"
+        },
+        "range": [
+          625,
+          625,
+          625,
+          625,
+          625
+        ],
+        "rankValues": [
+          {
+            "label": "法力值消耗",
+            "values": "70/75/80/85/90"
+          },
+          {
+            "label": "伤害",
+            "values": "70/120/170/220/270"
+          },
+          {
+            "label": "减速",
+            "values": "20/25/30/35/40"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "Q Scaling",
+            "labelKo": "Q 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "0:QDamageCalc"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "W": {
+        "slot": "W",
+        "id": "Obduracy",
+        "name": "雷霆拍击",
+        "summary": "墨菲特的攻击蕴含着如此惊人的力道以至于它引发了一次音爆。在接下来的数秒里，他的攻击会在他面前引发余波。",
+        "bodyHtml": "<span class=\"text-gray-600 dark:text-gray-500 italic\">被动：</span>墨菲特获得<span class=\"text-orange-600 dark:text-orange-400\">10/15/20/25/30%护甲()</span>。这个效果会在<span>花岗岩护盾</span>激活时提升至<span class=\"text-orange-600 dark:text-orange-400\">30/45/60/75/90% ()</span>。<br /><br /><span class=\"text-gray-600 dark:text-gray-500 italic\">主动：</span>墨菲特的下次攻击造成额外的<span class=\"text-red-600 dark:text-red-500 font-semibold\">(30/40/50/60/70 + (20% 法术强度) + (15% 护甲))物理伤害</span> <span>攻击特效</span>，并会引发一阵余震，以在其方向造成<span class=\"text-red-600 dark:text-red-500 font-semibold\">(15/25/35/45/55 + (30% 法术强度) + (15% 护甲))物理伤害</span> <span>攻击特效</span>。在接下来的5秒内，他的攻击会继续引发余震 <span>攻击特效</span>。<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">对野怪造成180%伤害。</span>",
+        "iconFile": "Obduracy.png",
+        "cooldownSeconds": [
+          10,
+          9.5,
+          9,
+          8.5,
+          8
+        ],
+        "cost": {
+          "values": [
+            30,
+            35,
+            40,
+            45,
+            50
+          ],
+          "resource": "法力值"
+        },
+        "range": [
+          400,
+          400,
+          400,
+          400,
+          400
+        ],
+        "rankValues": [
+          {
+            "label": "法力值消耗",
+            "values": "30/35/40/45/50"
+          },
+          {
+            "label": "护甲",
+            "values": "10/15/20/25/30"
+          },
+          {
+            "label": "伤害",
+            "values": "30/40/50/60/70"
+          },
+          {
+            "label": "余波溅射伤害",
+            "values": "15/25/35/45/55"
+          },
+          {
+            "label": "冷却时间",
+            "values": "10/9.5/9/8.5/8"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "W Scaling",
+            "labelKo": "W 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "1:TotalBonusDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": [
+            "f1",
+            "f2"
+          ]
+        }
+      },
+      "E": {
+        "slot": "E",
+        "id": "Landslide",
+        "name": "大地震颤",
+        "summary": "墨菲特锤击地面，放射出冲击波对目标造成基于他护甲值的魔法伤害，同时暂时降低目标攻击速度。",
+        "bodyHtml": "墨菲特锤击地面，对周围敌人造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(60/95/130/165/200 + (40% 护甲) + (60% 法术强度))魔法伤害</span>并减少他们30/35/40/45/50%<span>攻击速度</span>，持续3秒。",
+        "iconFile": "Landslide.png",
+        "cooldownSeconds": [
+          7,
+          7,
+          7,
+          7,
+          7
+        ],
+        "cost": {
+          "values": [
+            50,
+            55,
+            60,
+            65,
+            70
+          ],
+          "resource": "法力值"
+        },
+        "range": [
+          400,
+          400,
+          400,
+          400,
+          400
+        ],
+        "rankValues": [
+          {
+            "label": "伤害",
+            "values": "60/95/130/165/200"
+          },
+          {
+            "label": "攻击速度减少",
+            "values": "30/35/40/45/50"
+          },
+          {
+            "label": "法力值消耗",
+            "values": "50/55/60/65/70"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "E Scaling",
+            "labelKo": "E 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "2:EDamageCalc"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "R": {
+        "slot": "R",
+        "id": "UFSlash",
+        "name": "势不可挡",
+        "summary": "墨菲特自身高速冲向一个区域，对区域内的敌人们造成伤害和击飞效果。",
+        "bodyHtml": "墨菲特携着山崩之力冲锋，进行不可阻挡的突进。在突进结束时，墨菲特会<span class=\"text-purple-600 dark:text-purple-500\">击飞</span>1.5秒并造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(200/300/400 + (90% 法术强度))魔法伤害</span>。",
+        "iconFile": "UFSlash.png",
+        "cooldownSeconds": [
+          130,
+          115,
+          100
+        ],
+        "cost": {
+          "values": [
+            100,
+            100,
+            100
+          ],
+          "resource": "法力值"
+        },
+        "range": [
+          1000,
+          1000,
+          1000
+        ],
+        "rankValues": [
+          {
+            "label": "冷却时间",
+            "values": "130/115/100"
+          },
+          {
+            "label": "伤害",
+            "values": "200/300/400"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "R Scaling",
+            "labelKo": "R 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "3:TotalDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      }
+    }
+  }
+}

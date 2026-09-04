@@ -1,0 +1,384 @@
+{
+  "schemaVersion": 2,
+  "patchVersion": "26.17",
+  "locale": "zh_CN",
+  "sources": {
+    "ddragon": "16.17.1",
+    "cdragon": "16.17"
+  },
+  "champion": {
+    "id": "LeeSin",
+    "key": "64",
+    "name": "盲僧",
+    "title": "李青",
+    "tags": [
+      "Fighter",
+      "Assassin"
+    ],
+    "baseStats": {
+      "health": {
+        "base": 645,
+        "perLevel": 108
+      },
+      "healthRegen": {
+        "base": 7.5,
+        "perLevel": 0.7
+      },
+      "mana": {
+        "base": 200,
+        "perLevel": 0
+      },
+      "manaRegen": {
+        "base": 50,
+        "perLevel": 0
+      },
+      "attackDamage": {
+        "base": 66,
+        "perLevel": 0
+      },
+      "attackSpeed": {
+        "base": 0.651,
+        "perLevel": 3
+      },
+      "armor": {
+        "base": 36,
+        "perLevel": 4.5
+      },
+      "magicResist": {
+        "base": 32,
+        "perLevel": 2.05
+      },
+      "moveSpeed": {
+        "base": 345,
+        "perLevel": 0
+      },
+      "attackRange": {
+        "base": 125,
+        "perLevel": 0
+      }
+    },
+    "baseStatContributions": [
+      {
+        "stat": "MAX_HEALTH",
+        "value": 108,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "HEALTH_REGEN",
+        "value": 0.7,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAX_MANA",
+        "value": 0,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MANA_REGEN",
+        "value": 0,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_DAMAGE",
+        "value": 0,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_SPEED",
+        "value": 3,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ARMOR",
+        "value": 4.5,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAGIC_RESIST",
+        "value": 2.05,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      }
+    ],
+    "abilities": {
+      "P": {
+        "slot": "P",
+        "id": "LeeSinPassive",
+        "name": "疾风骤雨",
+        "summary": "在李青使用一次技能后，他的下两次攻击会获得攻速加成，且回复能量。",
+        "bodyHtml": "李青的技能会为他的下两次攻击提供<span>40%攻击速度</span>。第一次攻击回复<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">20/40能量</span>，第二次攻击回复<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">(10 ~ 20)能量</span>。",
+        "iconFile": "LeeSinPassive.png",
+        "cooldownSeconds": [],
+        "range": [],
+        "rankValues": [],
+        "scalings": [],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "Q": {
+        "slot": "Q",
+        "id": "LeeSinQOne",
+        "name": "天音波/回音击",
+        "summary": "天音波：李青发出刺耳的声波定位敌人，对首个敌人造成物理伤害。如果天音波击中敌人，李青在接下来3秒可施放回音击。<br>回音击：李青冲向被天音波击中的敌人，造成基于该目标已损失生命值的物理伤害。",
+        "bodyHtml": "李青发出刺耳的声波定位敌人，对命中的首个敌人造成<span class=\"text-red-600 dark:text-red-500 font-semibold\">(60/90/120/150/180 + (90% 额外攻击力))物理伤害</span>，提供目标的<span class=\"text-purple-600 dark:text-purple-400 font-semibold\">真实视野</span>，并使李青可以在接下来的3秒内<span class=\"text-yellow-600 dark:text-yellow-300\">再次施放</span>。<br /><br /><span class=\"text-yellow-600 dark:text-yellow-300\">再次施放：</span>李青突进向被声波击中的敌人，造成<span class=\"text-red-600 dark:text-red-500 font-semibold\">(60/90/120/150/180 + (90% 额外攻击力))到(120/180/240/300/360 + (180% 额外攻击力))物理伤害</span>（基于目标已损失的生命值）。",
+        "iconFile": "LeeSinQOne.png",
+        "cooldownSeconds": [
+          10,
+          9,
+          8,
+          7,
+          6
+        ],
+        "cost": {
+          "values": [
+            50,
+            50,
+            50,
+            50,
+            50
+          ],
+          "resource": "法力值"
+        },
+        "range": [
+          1100,
+          1100,
+          1100,
+          1100,
+          1100
+        ],
+        "rankValues": [
+          {
+            "label": "天音波伤害",
+            "values": "60/90/120/150/180"
+          },
+          {
+            "label": "回音击 最小伤害",
+            "values": "60/90/120/150/180"
+          },
+          {
+            "label": "回音击 最大伤害",
+            "values": "120/180/240/300/360"
+          },
+          {
+            "label": "冷却时间",
+            "values": "10/9/8/7/6"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "Q Scaling",
+            "labelKo": "Q 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "0:InitialDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "W": {
+        "slot": "W",
+        "id": "LeeSinWOne",
+        "name": "金钟罩/铁布衫",
+        "summary": "金钟罩：李青冲向目标友军，为他自身提供护盾值。如果该友军是一名英雄，则也会获得护盾值。在使用【金钟罩】后，李青可以施放【铁布衫】。<br>铁布衫：李青艰苦卓绝的训练让他能在战斗中激发潜能。李青获得全能吸血。",
+        "bodyHtml": "李青冲刺至一名友军或守卫处。如果目标友军是一名英雄，李青会为自己和目标友军提供持续2秒的<span class=\"text-blue-600 dark:text-blue-300\">(60/105/150/195/240 + (80% 法术强度))护盾值</span>。李青可以在接下来的3秒内<span class=\"text-yellow-600 dark:text-yellow-300\">再次施放</span>此技能。<br /><br /><span class=\"text-yellow-600 dark:text-yellow-300\">再次施放：</span>李青获得持续4秒的10/14/18/22/26%全能吸血。",
+        "iconFile": "LeeSinWOne.png",
+        "cooldownSeconds": [
+          7,
+          7,
+          7,
+          7,
+          7
+        ],
+        "cost": {
+          "values": [
+            50,
+            50,
+            50,
+            50,
+            50
+          ],
+          "resource": "法力值"
+        },
+        "range": [
+          700,
+          700,
+          700,
+          700,
+          700
+        ],
+        "rankValues": [
+          {
+            "label": "金钟罩伤害吸收",
+            "values": "60/105/150/195/240"
+          },
+          {
+            "label": "铁布衫 全能吸血百分比",
+            "values": "10/14/18/22/26"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "W Scaling",
+            "labelKo": "W 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "1:ShieldAmount"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "E": {
+        "slot": "E",
+        "id": "LeeSinEOne",
+        "name": "天雷破/摧筋断骨",
+        "summary": "天雷破：李青猛击地面，施放冲击波，造成魔法伤害并使命中的敌方单位显形。如果天雷破命中了一名敌人，那么李青可以施放【摧筋断骨】。<br>摧筋断骨：李青致残被天雷破给伤害到的敌人，减少其移动速度。持续期间受影响单位的移动速度会逐渐恢复正常。",
+        "bodyHtml": "李青猛击地面，施放冲击波，造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(35/60/85/110/135 + (90% 攻击力))魔法伤害</span>并使命中的敌方单位显形4秒。如果这个技能命中了一名敌人，那么李青可以在接下来的3秒内<span class=\"text-yellow-600 dark:text-yellow-300\">再次施放</span>此技能。<br /><br /><span class=\"text-yellow-600 dark:text-yellow-300\">再次施放：</span>李青使被冲击波击中的敌人造成在4秒里持续衰减的35/45/55/65/75%<span class=\"text-purple-600 dark:text-purple-500\">减速</span>。",
+        "iconFile": "LeeSinEOne.png",
+        "cooldownSeconds": [
+          8,
+          8,
+          8,
+          8,
+          8
+        ],
+        "cost": {
+          "values": [
+            50,
+            50,
+            50,
+            50,
+            50
+          ],
+          "resource": "法力值"
+        },
+        "range": [
+          450,
+          450,
+          450,
+          450,
+          450
+        ],
+        "rankValues": [
+          {
+            "label": "天雷破伤害",
+            "values": "35/60/85/110/135"
+          },
+          {
+            "label": "摧筋断骨减速",
+            "values": "35/45/55/65/75"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "E Scaling",
+            "labelKo": "E 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "2:InitialDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "R": {
+        "slot": "R",
+        "id": "LeeSinR",
+        "name": "猛龙摆尾",
+        "summary": "李青用强力的回旋踢击退敌方英雄，对目标以及被目标撞到的任何敌人造成物理伤害。 被目标撞到的敌人会被短暂击飞。这项技艺是春哥教他的，不过李青不能将玩家的英雄踢到地图外面去。",
+        "bodyHtml": "李青用一记强力的回旋踢<span class=\"text-purple-600 dark:text-purple-500\">击退</span>一名敌方英雄，并造成<span class=\"text-red-600 dark:text-red-500 font-semibold\">(175/400/625 + (200% 额外攻击力))物理伤害</span>。<br /><br />被目标撞到的敌方英雄会被短暂<span class=\"text-purple-600 dark:text-purple-500\">击飞</span>并受到<span class=\"text-red-600 dark:text-red-500 font-semibold\">物理伤害，伤害值相当于(175/400/625 + (200% 额外攻击力))加上初始目标12/15/18%的额外生命值</span>。<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">目标在施法时间内会被 <span class=\"text-purple-600 dark:text-purple-500\">禁锢</span>。</span>",
+        "iconFile": "LeeSinR.png",
+        "cooldownSeconds": [
+          110,
+          85,
+          60
+        ],
+        "range": [
+          375,
+          375,
+          375
+        ],
+        "rankValues": [
+          {
+            "label": "伤害",
+            "values": "175/400/625"
+          },
+          {
+            "label": "来自额外生命值的伤害",
+            "values": "12/15/18"
+          },
+          {
+            "label": "冷却时间",
+            "values": "110/85/60"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "R Scaling",
+            "labelKo": "R 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "3:Damage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      }
+    }
+  }
+}

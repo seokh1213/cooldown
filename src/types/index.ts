@@ -9,6 +9,8 @@ export interface ChampionSpell {
   maxrank: number;
   cooldown: (number | string)[];
   cooldownBurn?: string;
+  recharge?: number[];
+  maxCharges?: number;
   description?: string;
   tooltip?: string;
   summary?: string;
@@ -27,6 +29,9 @@ export interface ChampionSpell {
   costType?: string;
   range?: (number | string)[];
   rangeBurn?: string;
+  image?: { full: string };
+  rankValues?: Array<{ label: string; values: string }>;
+  maxammo?: string;
 }
 
 export interface ChampionPassive {
@@ -62,6 +67,7 @@ export interface Champion {
   stats?: {
     [key: string]: number;
   };
+  image?: { full: string };
 }
 
 // ===== Items =====

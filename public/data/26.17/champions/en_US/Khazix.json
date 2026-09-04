@@ -1,0 +1,382 @@
+{
+  "schemaVersion": 2,
+  "patchVersion": "26.17",
+  "locale": "en_US",
+  "sources": {
+    "ddragon": "16.17.1",
+    "cdragon": "16.17"
+  },
+  "champion": {
+    "id": "Khazix",
+    "key": "121",
+    "name": "Kha'Zix",
+    "title": "the Voidreaver",
+    "tags": [
+      "Assassin"
+    ],
+    "baseStats": {
+      "health": {
+        "base": 643,
+        "perLevel": 99
+      },
+      "healthRegen": {
+        "base": 7.5,
+        "perLevel": 0.75
+      },
+      "mana": {
+        "base": 327,
+        "perLevel": 40
+      },
+      "manaRegen": {
+        "base": 7.59,
+        "perLevel": 0.5
+      },
+      "attackDamage": {
+        "base": 60,
+        "perLevel": 0
+      },
+      "attackSpeed": {
+        "base": 0.668,
+        "perLevel": 2.7
+      },
+      "armor": {
+        "base": 32,
+        "perLevel": 4.2
+      },
+      "magicResist": {
+        "base": 32,
+        "perLevel": 2.05
+      },
+      "moveSpeed": {
+        "base": 345,
+        "perLevel": 0
+      },
+      "attackRange": {
+        "base": 125,
+        "perLevel": 0
+      }
+    },
+    "baseStatContributions": [
+      {
+        "stat": "MAX_HEALTH",
+        "value": 99,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "HEALTH_REGEN",
+        "value": 0.75,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAX_MANA",
+        "value": 40,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MANA_REGEN",
+        "value": 0.5,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_DAMAGE",
+        "value": 0,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_SPEED",
+        "value": 2.7,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ARMOR",
+        "value": 4.2,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAGIC_RESIST",
+        "value": 2.05,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      }
+    ],
+    "abilities": {
+      "P": {
+        "slot": "P",
+        "id": "KhazixPassive",
+        "name": "Unseen Threat",
+        "summary": "Nearby enemies that are <font color='#FFF673'>Isolated</font> from their allies are marked. Kha'Zix's abilities have interactions with <font color='#FFF673'>Isolated</font> targets.<br><br>When Kha'Zix is not visible to the enemy team, he gains Unseen Threat, causing his next basic attack against an enemy champion to deal bonus magic damage and slow them for a few seconds.",
+        "bodyHtml": "When Kha'Zix is not visible to the enemy team, his next Attack against a champion deals an additional <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(50% bonus Attack Damage) magic damage</span> and <span class=\"text-purple-600 dark:text-purple-500\">Slows</span> by 25% for 2 seconds.<br /><br />Enemies with no nearby allies become <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Isolated</span>.",
+        "iconFile": "Khazix_P.png",
+        "cooldownSeconds": [],
+        "range": [],
+        "rankValues": [],
+        "scalings": [],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "Q": {
+        "slot": "Q",
+        "id": "KhazixQ",
+        "name": "Taste Their Fear",
+        "summary": "Deals physical damage to the target. Damage increased on <font color='#FFF673'>Isolated</font> targets. If he chooses to <font color='#00DD33'>Evolve Reaper Claws</font>, this refunds a percent of it's cooldown against <font color='#FFF673'>Isolated</font> targets. Kha'Zix also gains increased range on his basic attacks and Taste Their Fear.",
+        "bodyHtml": "Kha'Zix slashes a nearby enemy, dealing <physicalDamage>{{ spell.khazixq:basedamage }} physical damage</physicalDamage>. This deals <physicalDamage>{{ spell.khazixq:isodamage }} damage</physicalDamage> instead to enemies <keywordMajor>Isolated</keywordMajor> from their allies. {{ spellmodifierdescriptionappend }}",
+        "iconFile": "KhazixQ.png",
+        "cooldownSeconds": [
+          4,
+          4,
+          4,
+          4,
+          4
+        ],
+        "cost": {
+          "values": [
+            20,
+            20,
+            20,
+            20,
+            20
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          325,
+          325,
+          325,
+          325,
+          325
+        ],
+        "rankValues": [
+          {
+            "label": "Damage",
+            "values": "80/105/130/155/180"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "Q Scaling",
+            "labelKo": "Q 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "0:BaseDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "ddragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "W": {
+        "slot": "W",
+        "id": "KhazixW",
+        "name": "Void Spike",
+        "summary": "Kha'Zix fires exploding spikes that deal physical damage to enemies hit. Kha'Zix is healed if he is also within the explosion radius. If he chooses to <font color='#00DD33'>Evolve Spike Racks</font>, Void Spike now fires three spikes in a cone, slow enemies hit, and reveals enemy champions hit for 2 seconds. <font color='#FFF673'>Isolated</font> targets are slowed for extra.",
+        "bodyHtml": "Kha'Zix fires a spike dealing <physicalDamage>{{ basedamage }} physical damage</physicalDamage> to the first enemy hit in a small area. If Kha'Zix is inside the area, he restores <healing>{{ healamount }} Health</healing>{{ spellmodifierdescriptionappend }}",
+        "iconFile": "KhazixW.png",
+        "cooldownSeconds": [
+          9,
+          9,
+          9,
+          9,
+          9
+        ],
+        "cost": {
+          "values": [
+            55,
+            60,
+            65,
+            70,
+            75
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          1000,
+          1000,
+          1000,
+          1000,
+          1000
+        ],
+        "rankValues": [
+          {
+            "label": "Damage",
+            "values": "75/105/135/165/195"
+          },
+          {
+            "label": "Healing",
+            "values": "55/75/95/115/135"
+          },
+          {
+            "label": "Mana Cost",
+            "values": "55/60/65/70/75"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "W Scaling",
+            "labelKo": "W 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "1:BaseDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "ddragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "E": {
+        "slot": "E",
+        "id": "KhazixE",
+        "name": "Leap",
+        "summary": "Kha'Zix leaps to an area, dealing physical damage upon landing. If he chooses to <font color='#00DD33'>Evolve Wings</font>, Leap's range increases by 200 and the cooldown resets on champion kill or assist.",
+        "bodyHtml": "Kha'Zix leaps, dealing <physicalDamage>{{ totaldamage }} physical damage</physicalDamage> upon landing.{{ spellmodifierdescriptionappend }}",
+        "iconFile": "KhazixE.png",
+        "cooldownSeconds": [
+          20,
+          18,
+          16,
+          14,
+          12
+        ],
+        "cost": {
+          "values": [
+            50,
+            50,
+            50,
+            50,
+            50
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          700,
+          700,
+          700,
+          700,
+          700
+        ],
+        "rankValues": [
+          {
+            "label": "Damage",
+            "values": "65/100/135/170/205"
+          },
+          {
+            "label": "Cooldown",
+            "values": "20/18/16/14/12"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "E Scaling",
+            "labelKo": "E 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "2:TotalDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "ddragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "R": {
+        "slot": "R",
+        "id": "KhazixR",
+        "name": "Void Assault",
+        "summary": "Each rank allows Kha'Zix to evolve one of his abilities, giving it a unique additional effect. When activated, Kha'Zix becomes <font color='#91d7ee'>Invisible</font>, triggering Unseen Threat and increasing Move Speed. If he chooses to <font color='#00DD33'>Evolve Adaptive Cloaking</font>, Void Assault gains increased <font color='#91d7ee'>Invisibility</font> duration, and an additional use.",
+        "bodyHtml": "<br /><br /><span class=\"text-gray-600 dark:text-gray-500 italic\">Passive:</span> Leveling up this Ability allows Kha'zix to <span>Evolve</span> one of his Abilities, granting it additional effects.<span><span>Taste Their Fear:</span> Gain Ability range, Attack range, and lowers Cooldown by against <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Isolated</span> targets.<span><span>Void Spike:</span> Fires 3 spikes and <span class=\"text-purple-600 dark:text-purple-500\">Slows</span> by, increased against <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Isolated</span> targets.<span><span>Leap:</span> Increased range and refreshes Cooldown on champion takedown.<span><span>Void Assault:</span> <span class=\"text-purple-600 dark:text-purple-400 font-semibold\">Invisibility</span> duration lasts 2 seconds and gains second <span class=\"text-yellow-600 dark:text-yellow-300\">Recast</span>.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\"><span class=\"text-purple-600 dark:text-purple-400 font-semibold\">Invisible</span> units cannot be revealed except by turrets or <span style=\"color: #ee91d7\">True Sight</font color>.</span>",
+        "iconFile": "KhazixR.png",
+        "cooldownSeconds": [
+          100,
+          85,
+          70
+        ],
+        "cost": {
+          "values": [
+            100,
+            100,
+            100
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          25000,
+          25000,
+          25000
+        ],
+        "rankValues": [
+          {
+            "label": "Evolutions Available",
+            "values": "1/2/3"
+          },
+          {
+            "label": "Cooldown",
+            "values": "100/85/70"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "R Scaling",
+            "labelKo": "R 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "3:{ba2719ef}"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": [
+            "spell.KhazixQ:Effect4Amount",
+            "spell.KhazixW:Effect3Amount"
+          ]
+        }
+      }
+    }
+  }
+}

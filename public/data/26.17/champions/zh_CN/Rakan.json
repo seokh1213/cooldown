@@ -1,0 +1,394 @@
+{
+  "schemaVersion": 2,
+  "patchVersion": "26.17",
+  "locale": "zh_CN",
+  "sources": {
+    "ddragon": "16.17.1",
+    "cdragon": "16.17"
+  },
+  "champion": {
+    "id": "Rakan",
+    "key": "497",
+    "name": "幻翎",
+    "title": "洛",
+    "tags": [
+      "Support"
+    ],
+    "baseStats": {
+      "health": {
+        "base": 610,
+        "perLevel": 99
+      },
+      "healthRegen": {
+        "base": 5,
+        "perLevel": 0.5
+      },
+      "mana": {
+        "base": 315,
+        "perLevel": 50
+      },
+      "manaRegen": {
+        "base": 8.75,
+        "perLevel": 0.5
+      },
+      "attackDamage": {
+        "base": 62,
+        "perLevel": 0
+      },
+      "attackSpeed": {
+        "base": 0.635,
+        "perLevel": 3
+      },
+      "armor": {
+        "base": 30,
+        "perLevel": 4.9
+      },
+      "magicResist": {
+        "base": 32,
+        "perLevel": 2.05
+      },
+      "moveSpeed": {
+        "base": 335,
+        "perLevel": 0
+      },
+      "attackRange": {
+        "base": 300,
+        "perLevel": 0
+      }
+    },
+    "baseStatContributions": [
+      {
+        "stat": "MAX_HEALTH",
+        "value": 99,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "HEALTH_REGEN",
+        "value": 0.5,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAX_MANA",
+        "value": 50,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MANA_REGEN",
+        "value": 0.5,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_DAMAGE",
+        "value": 0,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_SPEED",
+        "value": 3,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ARMOR",
+        "value": 4.9,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAGIC_RESIST",
+        "value": 2.05,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      }
+    ],
+    "abilities": {
+      "P": {
+        "slot": "P",
+        "id": "RakanPassive",
+        "name": "异色羽裳",
+        "summary": "洛会周期性地获得一层护盾。",
+        "bodyHtml": "每40秒，洛会获得<span class=\"text-blue-600 dark:text-blue-300\">(95% 法术强度)护盾值</span>。洛对敌方英雄的攻击和技能会缩减这个技能1秒冷却时间。<br /><br /><span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">情人跃</span> - 洛和霞可以一起回城。",
+        "iconFile": "Rakan_P.png",
+        "cooldownSeconds": [],
+        "range": [],
+        "rankValues": [],
+        "scalings": [],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "Q": {
+        "slot": "Q",
+        "id": "RakanQ",
+        "name": "微光飞翎",
+        "summary": "掷出一片神奇羽毛以造成魔法伤害。用在一名敌方英雄或史诗级野怪上时，会使洛有能力治疗他的友军。",
+        "bodyHtml": "洛掷出一支魔羽，对命中的第一个敌人造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(70/115/160/205/250 + (70% 法术强度))魔法伤害</span>。<br /><br />如果魔羽命中了一个英雄或史诗级野怪，洛会在3秒后或触碰到一名友方英雄后，为自己和附近的友方回复<span class=\"text-green-600 dark:text-green-400\">(55% 法术强度)生命值</span>。",
+        "iconFile": "RakanQ.png",
+        "cooldownSeconds": [
+          11,
+          10,
+          9,
+          8,
+          7
+        ],
+        "cost": {
+          "values": [
+            45,
+            45,
+            45,
+            45,
+            45
+          ],
+          "resource": "法力值"
+        },
+        "range": [
+          850,
+          850,
+          850,
+          850,
+          850
+        ],
+        "rankValues": [
+          {
+            "label": "伤害",
+            "values": "70/115/160/205/250"
+          },
+          {
+            "label": "冷却时间",
+            "values": "11/10/9/8/7"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "Q Scaling",
+            "labelKo": "Q 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "0:TotalDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "W": {
+        "slot": "W",
+        "id": "RakanW",
+        "name": "盛大登场",
+        "summary": "冲到一个位置，在到达时击飞附近的敌人。",
+        "bodyHtml": "洛进行冲刺，然后旋至空中，<span class=\"text-purple-600 dark:text-purple-500\">击飞</span>1秒并造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(70/120/170/220/270 + (80% 法术强度))魔法伤害</span>。",
+        "iconFile": "RakanW.png",
+        "cooldownSeconds": [
+          14,
+          13,
+          12,
+          11,
+          10
+        ],
+        "cost": {
+          "values": [
+            50,
+            60,
+            70,
+            80,
+            90
+          ],
+          "resource": "法力值"
+        },
+        "range": [
+          600,
+          600,
+          600,
+          600,
+          600
+        ],
+        "rankValues": [
+          {
+            "label": "伤害",
+            "values": "70/120/170/220/270"
+          },
+          {
+            "label": "冷却时间",
+            "values": "14/13/12/11/10"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "W Scaling",
+            "labelKo": "W 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "1:TotalDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "E": {
+        "slot": "E",
+        "id": "RakanE",
+        "name": "轻舞成双",
+        "summary": "飞向一名友方英雄，并提供给该英雄一层护盾。能在短时间内再次免费施放。",
+        "bodyHtml": "洛冲向一名友方英雄，为其提供持续3秒的<span class=\"text-blue-600 dark:text-blue-300\">(50/75/100/125/150 + (70% 法术强度))护盾值</span>。<br /><br />洛可以在5秒内<span class=\"text-yellow-600 dark:text-yellow-300\">再次施放</span>一次这个技能。<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">施放距离会在对霞施放时提升。</span>",
+        "iconFile": "RakanE.png",
+        "cooldownSeconds": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "rechargeSeconds": [
+          20,
+          18,
+          16,
+          14,
+          12
+        ],
+        "cost": {
+          "values": [
+            40,
+            45,
+            50,
+            55,
+            60
+          ],
+          "resource": "法力值"
+        },
+        "range": [
+          650,
+          650,
+          650,
+          650,
+          650
+        ],
+        "rankValues": [
+          {
+            "label": "护盾值",
+            "values": "50/75/100/125/150"
+          },
+          {
+            "label": "冷却时间",
+            "values": "0"
+          },
+          {
+            "label": "法力值消耗",
+            "values": "40/45/50/55/60"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "E Scaling",
+            "labelKo": "E 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "2:TotalShield"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "R": {
+        "slot": "R",
+        "id": "RakanR",
+        "name": "惊鸿过隙",
+        "summary": "获得移动速度，对触碰到的敌人造成魅惑和魔法伤害。",
+        "bodyHtml": "洛获得持续4秒的<span class=\"text-cyan-600 dark:text-cyan-500\">75%移动速度</span>。洛触碰到敌人时会造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(100/200/300 + (50% 法术强度))魔法伤害</span>，并对被首次命中的敌人造成持续1/1.25/1.5秒的<span class=\"text-purple-600 dark:text-purple-500\">魅惑</span>效果。被触碰的首个敌方英雄，会为洛提供<span class=\"text-cyan-600 dark:text-cyan-500\">持续衰减的150%移动速度</span>。",
+        "iconFile": "RakanR.png",
+        "cooldownSeconds": [
+          130,
+          110,
+          90
+        ],
+        "cost": {
+          "values": [
+            100,
+            100,
+            100
+          ],
+          "resource": "法力值"
+        },
+        "range": [
+          150,
+          150,
+          150
+        ],
+        "rankValues": [
+          {
+            "label": "魅惑时长",
+            "values": "1/1.25/1.5"
+          },
+          {
+            "label": "伤害",
+            "values": "100/200/300"
+          },
+          {
+            "label": "冷却时间",
+            "values": "130/110/90"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "R Scaling",
+            "labelKo": "R 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "3:TotalDamageTooltip"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,410 @@
+{
+  "schemaVersion": 2,
+  "patchVersion": "26.17",
+  "locale": "en_US",
+  "sources": {
+    "ddragon": "16.17.1",
+    "cdragon": "16.17"
+  },
+  "champion": {
+    "id": "Soraka",
+    "key": "16",
+    "name": "Soraka",
+    "title": "the Starchild",
+    "tags": [
+      "Support",
+      "Mage"
+    ],
+    "baseStats": {
+      "health": {
+        "base": 605,
+        "perLevel": 88
+      },
+      "healthRegen": {
+        "base": 2.5,
+        "perLevel": 0.5
+      },
+      "mana": {
+        "base": 425,
+        "perLevel": 40
+      },
+      "manaRegen": {
+        "base": 11.5,
+        "perLevel": 0.4
+      },
+      "attackDamage": {
+        "base": 50,
+        "perLevel": 0
+      },
+      "attackSpeed": {
+        "base": 0.625,
+        "perLevel": 2.14
+      },
+      "armor": {
+        "base": 32,
+        "perLevel": 5
+      },
+      "magicResist": {
+        "base": 30,
+        "perLevel": 1.3
+      },
+      "moveSpeed": {
+        "base": 325,
+        "perLevel": 0
+      },
+      "attackRange": {
+        "base": 550,
+        "perLevel": 0
+      }
+    },
+    "baseStatContributions": [
+      {
+        "stat": "MAX_HEALTH",
+        "value": 88,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "HEALTH_REGEN",
+        "value": 0.5,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAX_MANA",
+        "value": 40,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MANA_REGEN",
+        "value": 0.4,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_DAMAGE",
+        "value": 0,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_SPEED",
+        "value": 2.14,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ARMOR",
+        "value": 5,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAGIC_RESIST",
+        "value": 1.3,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      }
+    ],
+    "abilities": {
+      "P": {
+        "slot": "P",
+        "id": "Consecration_Self",
+        "name": "Salvation",
+        "summary": "Soraka runs faster towards nearby low health allies.",
+        "bodyHtml": "Soraka gains <span class=\"text-cyan-600 dark:text-cyan-500\">90% Move Speed</span> while moving towards allied champions who are below 40% Health.",
+        "iconFile": "Soraka_Passive.png",
+        "cooldownSeconds": [],
+        "range": [],
+        "rankValues": [],
+        "scalings": [],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "Q": {
+        "slot": "Q",
+        "id": "SorakaQ",
+        "name": "Starcall",
+        "summary": "A star falls from the sky at the target location dealing magic damage and slowing enemies. If an enemy champion is hit by Starcall, Soraka recovers Health.",
+        "bodyHtml": "Soraka calls down a star, dealing <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(85/120/155/190/225 + (35% Ability Power)) magic damage</span> and <span class=\"text-purple-600 dark:text-purple-500\">Slowing</span> by 30% for 1.5 seconds. <br /><br />Hitting an enemy champion grants Soraka <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Rejuvenation</span>, which restores <span class=\"text-green-600 dark:text-green-400\">(60/75/90/105/120 + (30% Ability Power)) Health</span> over 2.5 seconds and grants <span class=\"text-cyan-600 dark:text-cyan-500\">20/22.5/25/27.5/30% Move Speed</span> decaying over the same duration.",
+        "iconFile": "SorakaQ.png",
+        "cooldownSeconds": [
+          8,
+          7,
+          6,
+          5,
+          4
+        ],
+        "cost": {
+          "values": [
+            45,
+            50,
+            55,
+            60,
+            65
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          810,
+          810,
+          810,
+          810,
+          810
+        ],
+        "rankValues": [
+          {
+            "label": "Damage",
+            "values": "85/120/155/190/225"
+          },
+          {
+            "label": "Health Restore (Rejuvenation)",
+            "values": "60/75/90/105/120"
+          },
+          {
+            "label": "Move Speed",
+            "values": "20/22.5/25/27.5/30"
+          },
+          {
+            "label": "Cooldown",
+            "values": "8/7/6/5/4"
+          },
+          {
+            "label": "Mana Cost",
+            "values": "45/50/55/60/65"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "Q Scaling",
+            "labelKo": "Q 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "0:TotalDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "W": {
+        "slot": "W",
+        "id": "SorakaW",
+        "name": "Astral Infusion",
+        "summary": "Soraka sacrifices a portion of her own health to heal another friendly champion.",
+        "bodyHtml": "Soraka restores <span class=\"text-green-600 dark:text-green-400\">(90/110/130/150/170 + (50% Ability Power)) Health</span> to another allied champion.<br /><br />If Soraka is affected by <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Rejuvenation</span>, the Health cost will be reduced by 80/85/90/95/100%, and the target will gain <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Rejuvenation</span> for seconds.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">This Ability cannot be used if Soraka is below (5% Health) Health .</span>",
+        "iconFile": "SorakaW.png",
+        "cooldownSeconds": [
+          6,
+          5,
+          4,
+          3,
+          2
+        ],
+        "cost": {
+          "values": [
+            40,
+            45,
+            50,
+            55,
+            60
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          550,
+          550,
+          550,
+          550,
+          550
+        ],
+        "rankValues": [
+          {
+            "label": "Healing",
+            "values": "90/110/130/150/170"
+          },
+          {
+            "label": "Cooldown",
+            "values": "6/5/4/3/2"
+          },
+          {
+            "label": "Mana Cost",
+            "values": "40/45/50/55/60"
+          },
+          {
+            "label": "Health Cost Reduction",
+            "values": "80/85/90/95/100"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "W Scaling",
+            "labelKo": "W 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "1:TotalHeal"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": [
+            "Spell.SorakaQ:HoTDuration"
+          ]
+        }
+      },
+      "E": {
+        "slot": "E",
+        "id": "SorakaE",
+        "name": "Equinox",
+        "summary": "Creates a zone at a location that silences all enemies inside. When the zone expires, all enemies still inside are rooted.",
+        "bodyHtml": "Soraka creates a starfield that deals <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(70/95/120/145/170 + (40% Ability Power)) magic damage</span> to champions. The field lingers for 1.5 seconds, <span class=\"text-purple-600 dark:text-purple-500\">Silencing</span> enemies inside. When the zone disappears, champions inside the zone are <span class=\"text-purple-600 dark:text-purple-500\">Rooted</span> for 1/1.25/1.5/1.75/2 second(s) and take <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(70/95/120/145/170 + (40% Ability Power)) magic damage</span>.",
+        "iconFile": "SorakaE.png",
+        "cooldownSeconds": [
+          20,
+          19,
+          18,
+          17,
+          16
+        ],
+        "cost": {
+          "values": [
+            70,
+            75,
+            80,
+            85,
+            90
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          925,
+          925,
+          925,
+          925,
+          925
+        ],
+        "rankValues": [
+          {
+            "label": "Damage",
+            "values": "70/95/120/145/170"
+          },
+          {
+            "label": "Cooldown",
+            "values": "20/19/18/17/16"
+          },
+          {
+            "label": "Root Duration",
+            "values": "1/1.25/1.5/1.75/2"
+          },
+          {
+            "label": "Mana Cost",
+            "values": "70/75/80/85/90"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "E Scaling",
+            "labelKo": "E 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "2:TotalDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "R": {
+        "slot": "R",
+        "id": "SorakaR",
+        "name": "Wish",
+        "summary": "Soraka fills her allies with hope, instantly restoring health to herself and all allied champions.",
+        "bodyHtml": "Soraka calls upon divine powers, restoring <span class=\"text-green-600 dark:text-green-400\">(150/250/350 + (50% Ability Power)) Health</span> to all allied champions, regardless of distance. Healing is increased to <span class=\"text-green-600 dark:text-green-400\">(150/250/350 + (50% Ability Power))</span> on targets below 40% Health.",
+        "iconFile": "SorakaR.png",
+        "cooldownSeconds": [
+          150,
+          135,
+          120
+        ],
+        "cost": {
+          "values": [
+            100,
+            100,
+            100
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          25000,
+          25000,
+          25000
+        ],
+        "rankValues": [
+          {
+            "label": "Healing",
+            "values": "150/250/350"
+          },
+          {
+            "label": "Cooldown",
+            "values": "150/135/120"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "R Scaling",
+            "labelKo": "R 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "3:HealingCalc"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      }
+    }
+  }
+}

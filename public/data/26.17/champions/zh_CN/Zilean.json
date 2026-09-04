@@ -1,0 +1,360 @@
+{
+  "schemaVersion": 2,
+  "patchVersion": "26.17",
+  "locale": "zh_CN",
+  "sources": {
+    "ddragon": "16.17.1",
+    "cdragon": "16.17"
+  },
+  "champion": {
+    "id": "Zilean",
+    "key": "26",
+    "name": "时光守护者",
+    "title": "基兰",
+    "tags": [
+      "Support",
+      "Mage"
+    ],
+    "baseStats": {
+      "health": {
+        "base": 574,
+        "perLevel": 96
+      },
+      "healthRegen": {
+        "base": 5.5,
+        "perLevel": 0.5
+      },
+      "mana": {
+        "base": 452,
+        "perLevel": 50
+      },
+      "manaRegen": {
+        "base": 11.35,
+        "perLevel": 0.8
+      },
+      "attackDamage": {
+        "base": 52,
+        "perLevel": 0
+      },
+      "attackSpeed": {
+        "base": 0.658,
+        "perLevel": 2.13
+      },
+      "armor": {
+        "base": 24,
+        "perLevel": 5
+      },
+      "magicResist": {
+        "base": 30,
+        "perLevel": 1.3
+      },
+      "moveSpeed": {
+        "base": 335,
+        "perLevel": 0
+      },
+      "attackRange": {
+        "base": 550,
+        "perLevel": 0
+      }
+    },
+    "baseStatContributions": [
+      {
+        "stat": "MAX_HEALTH",
+        "value": 96,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "HEALTH_REGEN",
+        "value": 0.5,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAX_MANA",
+        "value": 50,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MANA_REGEN",
+        "value": 0.8,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_DAMAGE",
+        "value": 0,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_SPEED",
+        "value": 2.13,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ARMOR",
+        "value": 5,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAGIC_RESIST",
+        "value": 1.3,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      }
+    ],
+    "abilities": {
+      "P": {
+        "slot": "P",
+        "id": "P",
+        "name": "瓶中时光",
+        "summary": "",
+        "bodyHtml": "基兰将时光储存为经验值并能将其提供给他的友军。当他拥有足够的经验值来使一名友方英雄升级时，他就能通过右键点击来传授经验值。基兰自身也会获得等值的经验值。",
+        "iconFile": "Zilean_Passive.png",
+        "cooldownSeconds": [],
+        "range": [],
+        "rankValues": [],
+        "scalings": [],
+        "conditions": [],
+        "source": "ddragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "Q": {
+        "slot": "Q",
+        "id": "ZileanQ",
+        "name": "定时炸弹",
+        "summary": "将一颗炸弹扔向目标区域，炸弹会附着在靠近它的单位身上（英雄优先）。炸弹会在3秒后爆炸，造成范围魔法伤害。如果炸弹被另一颗定时炸弹给提前引爆，那么还会使敌人晕眩。",
+        "bodyHtml": "基兰在目标地点上投掷一个定时炸弹。炸弹会附着在第一个靠近它周围小范围内的单位身上。3秒后炸弹会爆炸，造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(75/115/165/230/300 + (90% 法术强度)) 魔法伤害</span>。<br /><br />对已被附着了一颗炸弹的单位放置第二颗炸弹时，就会立刻引爆第一个炸弹，并使爆炸范围内的所有敌人<span class=\"text-purple-600 dark:text-purple-500\">晕眩</span>1.1/1.2/1.3/1.4/1.5秒。<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">炸弹会优先附着英雄和已被附着了一颗炸弹的敌人。</span>",
+        "iconFile": "ZileanQ.png",
+        "cooldownSeconds": [
+          10,
+          9.5,
+          9,
+          8.5,
+          8
+        ],
+        "cost": {
+          "values": [
+            60,
+            65,
+            70,
+            75,
+            80
+          ],
+          "resource": "法力值"
+        },
+        "range": [
+          900,
+          900,
+          900,
+          900,
+          900
+        ],
+        "rankValues": [
+          {
+            "label": "冷却时间",
+            "values": "10/9.5/9/8.5/8"
+          },
+          {
+            "label": "法力值消耗",
+            "values": "60/65/70/75/80"
+          },
+          {
+            "label": "伤害",
+            "values": "75/115/165/230/300"
+          },
+          {
+            "label": "晕眩时长：",
+            "values": "1.1/1.2/1.3/1.4/1.5"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "Q Scaling",
+            "labelKo": "Q 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "0:TotalDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "W": {
+        "slot": "W",
+        "id": "ZileanW",
+        "name": "穿梭未来",
+        "summary": "基兰为未来的对抗做准备，减少他所有其它基础技能的冷却时间。",
+        "bodyHtml": "基兰倒转时间，使他其它基础技能的冷却时间缩短10秒。",
+        "iconFile": "ZileanW.png",
+        "cooldownSeconds": [
+          14,
+          12,
+          10,
+          8,
+          6
+        ],
+        "cost": {
+          "values": [
+            35,
+            35,
+            35,
+            35,
+            35
+          ],
+          "resource": "法力"
+        },
+        "range": [
+          600,
+          600,
+          600,
+          600,
+          600
+        ],
+        "rankValues": [
+          {
+            "label": "冷却时间",
+            "values": "14/12/10/8/6"
+          }
+        ],
+        "scalings": [],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "E": {
+        "slot": "E",
+        "id": "TimeWarp",
+        "name": "时光发条",
+        "summary": "基兰扭曲任意单位的时光，短时间内提升友方单位移动速度或减少敌方单位移动速度。",
+        "bodyHtml": "基兰使一名敌方英雄<span class=\"text-purple-600 dark:text-purple-500\">减速</span>40/55/70/85/99%或为一名友方英雄提供<span class=\"text-cyan-600 dark:text-cyan-500\">40/55/70/85/99%移动速度</span>，持续2.5秒。",
+        "iconFile": "TimeWarp.png",
+        "cooldownSeconds": [
+          15,
+          15,
+          15,
+          15,
+          15
+        ],
+        "cost": {
+          "values": [
+            50,
+            50,
+            50,
+            50,
+            50
+          ],
+          "resource": "法力值"
+        },
+        "range": [
+          550,
+          550,
+          550,
+          550,
+          550
+        ],
+        "rankValues": [
+          {
+            "label": "减速",
+            "values": "40/55/70/85/99"
+          },
+          {
+            "label": "移动速度",
+            "values": "40/55/70/85/99"
+          }
+        ],
+        "scalings": [],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "R": {
+        "slot": "R",
+        "id": "ChronoShift",
+        "name": "时光倒流",
+        "summary": "基兰对友方英雄施放时光结界，若目标死亡，则时光倒流，救活目标。",
+        "bodyHtml": "基兰提供一个保护性的时间符文给一名友方英雄，持续5秒。如果该目标将要阵亡，那么符文会回溯其时间线，使其凝滞3秒，然后将其复活并回复<span class=\"text-green-600 dark:text-green-400\">(600/850/1100 + (200% 法术强度))生命值</span>。<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">凝滞状态中的单位无法移动或行动，并且免疫伤害和不可被选取。</span>",
+        "iconFile": "ChronoShift.png",
+        "cooldownSeconds": [
+          120,
+          90,
+          60
+        ],
+        "cost": {
+          "values": [
+            125,
+            150,
+            175
+          ],
+          "resource": "法力值"
+        },
+        "range": [
+          900,
+          900,
+          900
+        ],
+        "rankValues": [
+          {
+            "label": "冷却时间",
+            "values": "120/90/60"
+          },
+          {
+            "label": "法力值消耗",
+            "values": "125/150/175"
+          },
+          {
+            "label": "治疗效果",
+            "values": "600/850/1100"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "R Scaling",
+            "labelKo": "R 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "3:RTotalHeal"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      }
+    }
+  }
+}

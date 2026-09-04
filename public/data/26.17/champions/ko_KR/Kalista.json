@@ -1,0 +1,369 @@
+{
+  "schemaVersion": 2,
+  "patchVersion": "26.17",
+  "locale": "ko_KR",
+  "sources": {
+    "ddragon": "16.17.1",
+    "cdragon": "16.17"
+  },
+  "champion": {
+    "id": "Kalista",
+    "key": "429",
+    "name": "칼리스타",
+    "title": "복수의 화신",
+    "tags": [
+      "Marksman"
+    ],
+    "baseStats": {
+      "health": {
+        "base": 560,
+        "perLevel": 114
+      },
+      "healthRegen": {
+        "base": 4,
+        "perLevel": 0.75
+      },
+      "mana": {
+        "base": 300,
+        "perLevel": 45
+      },
+      "manaRegen": {
+        "base": 6.3,
+        "perLevel": 0.8
+      },
+      "attackDamage": {
+        "base": 57,
+        "perLevel": 0
+      },
+      "attackSpeed": {
+        "base": 0.694,
+        "perLevel": 4.5
+      },
+      "armor": {
+        "base": 24,
+        "perLevel": 5.2
+      },
+      "magicResist": {
+        "base": 33,
+        "perLevel": 1.1
+      },
+      "moveSpeed": {
+        "base": 330,
+        "perLevel": 0
+      },
+      "attackRange": {
+        "base": 525,
+        "perLevel": 0
+      }
+    },
+    "baseStatContributions": [
+      {
+        "stat": "MAX_HEALTH",
+        "value": 114,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "HEALTH_REGEN",
+        "value": 0.75,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAX_MANA",
+        "value": 45,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MANA_REGEN",
+        "value": 0.8,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_DAMAGE",
+        "value": 0,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_SPEED",
+        "value": 4.5,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ARMOR",
+        "value": 5.2,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAGIC_RESIST",
+        "value": 1.1,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      }
+    ],
+    "abilities": {
+      "P": {
+        "slot": "P",
+        "id": "P",
+        "name": "전투 태세",
+        "summary": "",
+        "bodyHtml": "칼리스타가 기본 공격이나 꿰뚫는 창의 준비 동작을 하는 동안 이동 명령을 하면, 칼리스타가 기본 공격과 함께 해당 위치로 도약합니다.",
+        "iconFile": "Kalista_Passive.png",
+        "cooldownSeconds": [],
+        "range": [],
+        "rankValues": [],
+        "scalings": [],
+        "conditions": [],
+        "source": "ddragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "Q": {
+        "slot": "Q",
+        "id": "KalistaMysticShot",
+        "name": "꿰뚫는 창",
+        "summary": "칼리스타가 빠르게 날아가는 창을 던집니다. 적이 처치될 경우 관통해 날아갑니다.",
+        "bodyHtml": "칼리스타가 창을 던져 처음 적중한 대상에게 <span class=\"text-red-600 dark:text-red-500 font-semibold\">(10/75/140/205/270 + (105% 공격력))의 물리 피해</span>를 입힙니다. 대상을 처치하면 창이 계속 뻗어나가 다음으로 적중한 대상에게 <span>뽑아 찢기</span>의 중첩을 적용합니다.<br /><br />칼리스타는 이 스킬을 사용한 후 <span>전투 태세</span> 효과로 도약할 수 있습니다.",
+        "iconFile": "KalistaMysticShot.png",
+        "cooldownSeconds": [
+          9,
+          9,
+          9,
+          9,
+          9
+        ],
+        "cost": {
+          "values": [
+            60,
+            65,
+            70,
+            75,
+            80
+          ],
+          "resource": "마나"
+        },
+        "range": [
+          1150,
+          1150,
+          1150,
+          1150,
+          1150
+        ],
+        "rankValues": [
+          {
+            "label": "소모값 마나",
+            "values": "60/65/70/75/80"
+          },
+          {
+            "label": "피해량",
+            "values": "10/75/140/205/270"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "Q Scaling",
+            "labelKo": "Q 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "0:TotalDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "W": {
+        "slot": "W",
+        "id": "KalistaW",
+        "name": "감시하는 혼",
+        "summary": "칼리스타와 계약을 맺은 아군이 같은 대상을 공격하면 추가 피해를 입힙니다. <br><br>사용 시 혼이 일정한 경로를 순찰하며 자기 앞의 지역을 드러냅니다.",
+        "bodyHtml": "<span class=\"text-gray-600 dark:text-gray-500 italic\">기본 지속 효과:</span> 칼리스타와 <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">계약자</span>가 같은 대상을 기본 공격하면 칼리스타가 <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">최대 체력의 10/12/14/16/18%에 해당하는 마법 피해</span>를 입힙니다. 대상 하나당 재사용 대기시간은 10초이며 챔피언이 아닌 대상에게는 최대 100/125/150/175/200의 피해를 입힙니다.<br /><br /><span class=\"text-gray-600 dark:text-gray-500 italic\">사용 시: </span>칼리스타가 혼을 하나 보내 지정 영역을 정찰하게 합니다. 혼은 세 번 왕복하고 사라지며, 발각된 챔피언은 4초 동안 모습이 드러납니다. 충전 횟수는 2회이며 90/80/70/60/50초마다 1회 충전됩니다.",
+        "iconFile": "KalistaW.png",
+        "cooldownSeconds": [
+          30,
+          30,
+          30,
+          30,
+          30
+        ],
+        "rechargeSeconds": [
+          90,
+          80,
+          70,
+          60,
+          50
+        ],
+        "maxCharges": 2,
+        "range": [
+          5000,
+          5000,
+          5000,
+          5000,
+          5000
+        ],
+        "rankValues": [
+          {
+            "label": "적 최대 체력 비례 피해량",
+            "values": "10/12/14/16/18"
+          },
+          {
+            "label": "혼 충전 시간",
+            "values": "90/80/70/60/50"
+          },
+          {
+            "label": "몬스터 대상 최대 피해량",
+            "values": "100/125/150/175/200"
+          }
+        ],
+        "scalings": [],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "E": {
+        "slot": "E",
+        "id": "KalistaExpungeWrapper",
+        "name": "뽑아 찢기",
+        "summary": "공격 시 대상을 창으로 꿰뚫습니다. 재시전하면 대상에 박힌 창을 뜯어내서 둔화시키며, 주는 피해량이 증가합니다.",
+        "bodyHtml": "<span class=\"text-gray-600 dark:text-gray-500 italic\">기본 지속 효과: </span>칼리스타의 창은 대상의 몸에 4초 동안 유지되며 무제한으로 중첩됩니다.<br /><br /><span class=\"text-gray-900 dark:text-white font-semibold\">사용 시:</span> 칼리스타가 근처 적에게 박힌 창을 뜯어내며 <span class=\"text-red-600 dark:text-red-500 font-semibold\">(5/15/25/35/45 + (70% 공격력) + (65% 주문력))</span>+두 번째 창부터 창 하나당 <span class=\"text-red-600 dark:text-red-500 font-semibold\">(7/14/21/28/35 + (20/27.5/35/42.5/50% 공격력) + (50% 주문력))의 물리 피해</span>를 입힙니다. 적중당한 적은 2초 동안 <span>(10/18/26/34/42% + (0.05% 주문력))</span> <span class=\"text-purple-600 dark:text-purple-500\">둔화</span>됩니다.<br /><br />이 스킬로 대상을 처치하면 재사용 대기시간이 초기화되고 <span>마나를 10/15/20/25/30</span> 돌려받습니다.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">이 스킬은 에픽 정글 몬스터에게 50%의 피해를 입힙니다.</span>",
+        "iconFile": "KalistaExpungeWrapper.png",
+        "cooldownSeconds": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "cost": {
+          "values": [
+            30,
+            30,
+            30,
+            30,
+            30
+          ],
+          "resource": "마나"
+        },
+        "range": [
+          1000,
+          1000,
+          1000,
+          1000,
+          1000
+        ],
+        "rankValues": [
+          {
+            "label": "피해량",
+            "values": "5/15/25/35/45"
+          },
+          {
+            "label": "중첩 당 피해량",
+            "values": "7/14/21/28/35"
+          },
+          {
+            "label": "중첩 당 공격력 계수",
+            "values": "20/27.5/35/42.5/50"
+          },
+          {
+            "label": "이동속도 감소량",
+            "values": "10/18/26/34/42"
+          },
+          {
+            "label": "돌려받는 마나",
+            "values": "10/15/20/25/30"
+          },
+          {
+            "label": "재사용 대기시간",
+            "values": "10/9.5/9/8.5/8"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "E Scaling",
+            "labelKo": "E 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "2:NormalDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "R": {
+        "slot": "R",
+        "id": "KalistaRx",
+        "name": "운명의 부름",
+        "summary": "칼리스타가 계약을 맺은 아군을 자신에게로 순간 이동시킵니다. 계약자는 지정한 위치로 돌진하여 적 챔피언을 뒤로 밀어내는 스킬을 사용할 수 있습니다.",
+        "bodyHtml": "칼리스타가 <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">계약자</span>를 옆으로 끌어와 최대 4초간 경직 상태로 만듭니다. <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">계약자</span>는 마우스를 클릭하여 지정한 위치로 날아갈 수 있습니다. 챔피언과 부딪치면 멈추며, 주변 적들을 <span class=\"text-purple-600 dark:text-purple-500\">뒤로 밀어냅니다</span>. <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">계약자</span>는 챔피언과 부딪치면 최대 공격 사거리만큼 밀려납니다.",
+        "iconFile": "KalistaRx.png",
+        "cooldownSeconds": [
+          160,
+          140,
+          120
+        ],
+        "cost": {
+          "values": [
+            100,
+            100,
+            100
+          ],
+          "resource": "마나"
+        },
+        "range": [
+          1000,
+          1000,
+          1000
+        ],
+        "rankValues": [
+          {
+            "label": "재사용 대기시간",
+            "values": "160/140/120"
+          },
+          {
+            "label": "띄워올리기 지속시간",
+            "values": "1/1.5/2"
+          }
+        ],
+        "scalings": [],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      }
+    }
+  }
+}

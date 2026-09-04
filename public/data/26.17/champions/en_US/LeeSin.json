@@ -1,0 +1,384 @@
+{
+  "schemaVersion": 2,
+  "patchVersion": "26.17",
+  "locale": "en_US",
+  "sources": {
+    "ddragon": "16.17.1",
+    "cdragon": "16.17"
+  },
+  "champion": {
+    "id": "LeeSin",
+    "key": "64",
+    "name": "Lee Sin",
+    "title": "the Blind Monk",
+    "tags": [
+      "Fighter",
+      "Assassin"
+    ],
+    "baseStats": {
+      "health": {
+        "base": 645,
+        "perLevel": 108
+      },
+      "healthRegen": {
+        "base": 7.5,
+        "perLevel": 0.7
+      },
+      "mana": {
+        "base": 200,
+        "perLevel": 0
+      },
+      "manaRegen": {
+        "base": 50,
+        "perLevel": 0
+      },
+      "attackDamage": {
+        "base": 66,
+        "perLevel": 0
+      },
+      "attackSpeed": {
+        "base": 0.651,
+        "perLevel": 3
+      },
+      "armor": {
+        "base": 36,
+        "perLevel": 4.5
+      },
+      "magicResist": {
+        "base": 32,
+        "perLevel": 2.05
+      },
+      "moveSpeed": {
+        "base": 345,
+        "perLevel": 0
+      },
+      "attackRange": {
+        "base": 125,
+        "perLevel": 0
+      }
+    },
+    "baseStatContributions": [
+      {
+        "stat": "MAX_HEALTH",
+        "value": 108,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "HEALTH_REGEN",
+        "value": 0.7,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAX_MANA",
+        "value": 0,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MANA_REGEN",
+        "value": 0,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_DAMAGE",
+        "value": 0,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_SPEED",
+        "value": 3,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ARMOR",
+        "value": 4.5,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAGIC_RESIST",
+        "value": 2.05,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      }
+    ],
+    "abilities": {
+      "P": {
+        "slot": "P",
+        "id": "LeeSinPassive",
+        "name": "Flurry",
+        "summary": "After Lee Sin uses an ability, his next 2 basic attacks gain Attack Speed and return Energy.",
+        "bodyHtml": "Lee Sin's Abilities grant him <span>40% Attack Speed</span> for two Attacks. The first Attack restores <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">20/40 Energy</span> and the second restores <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">(10 ~ 20) Energy</span>.",
+        "iconFile": "LeeSinPassive.png",
+        "cooldownSeconds": [],
+        "range": [],
+        "rankValues": [],
+        "scalings": [],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "Q": {
+        "slot": "Q",
+        "id": "LeeSinQOne",
+        "name": "Sonic Wave / Resonating Strike",
+        "summary": "Sonic Wave: Lee Sin projects a discordant wave of sound to locate his enemies, dealing physical damage to the first enemy it encounters. If Sonic Wave hits, Lee Sin can cast Resonating Strike for the next 3 seconds.<br>Resonating Strike: Lee Sin dashes to the enemy hit by Sonic Wave, dealing physical damage based on the target's missing Health.",
+        "bodyHtml": "Lee Sin projects a discordant wave of sound, dealing <span class=\"text-red-600 dark:text-red-500 font-semibold\">(60/90/120/150/180 + (90% bonus Attack Damage)) physical damage</span> to the first enemy hit, granting <span class=\"text-purple-600 dark:text-purple-400 font-semibold\">True Sight</span> of them, and allows Lee Sin to <span class=\"text-yellow-600 dark:text-yellow-300\">Recast</span> for the next 3 seconds.<br /><br /><span class=\"text-yellow-600 dark:text-yellow-300\">Recast:</span> Lee Sin dashes to the enemy hit by the sound wave, dealing between <span class=\"text-red-600 dark:text-red-500 font-semibold\">(60/90/120/150/180 + (90% bonus Attack Damage)) to (120/180/240/300/360 + (180% bonus Attack Damage)) physical damage</span> scaling with the target's missing Health.",
+        "iconFile": "LeeSinQOne.png",
+        "cooldownSeconds": [
+          10,
+          9,
+          8,
+          7,
+          6
+        ],
+        "cost": {
+          "values": [
+            50,
+            50,
+            50,
+            50,
+            50
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          1100,
+          1100,
+          1100,
+          1100,
+          1100
+        ],
+        "rankValues": [
+          {
+            "label": "Sonic Wave Damage",
+            "values": "60/90/120/150/180"
+          },
+          {
+            "label": "Resonating Strike Minimum Base Damage",
+            "values": "60/90/120/150/180"
+          },
+          {
+            "label": "Resonating Strike Maximum Base Damage",
+            "values": "120/180/240/300/360"
+          },
+          {
+            "label": "Cooldown",
+            "values": "10/9/8/7/6"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "Q Scaling",
+            "labelKo": "Q 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "0:InitialDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "W": {
+        "slot": "W",
+        "id": "LeeSinWOne",
+        "name": "Safeguard / Iron Will",
+        "summary": "Safeguard: Lee Sin rushes to target ally, shielding himself from damage. If the ally is a champion, they are also shielded. After using Safeguard, Lee Sin can cast Iron Will.<br>Iron Will: Lee Sin's intense training allows him to thrive in battle. Lee Sin gains Omnivamp.",
+        "bodyHtml": "Lee Sin dashes to an ally or ward. If the target is a champion, Lee Sin grants them and himself <span class=\"text-blue-600 dark:text-blue-300\">(60/105/150/195/240 + (80% Ability Power)) Shield</span> for 2 seconds. Lee Sin may <span class=\"text-yellow-600 dark:text-yellow-300\">Recast</span> for the next 3 seconds.<br /><br /><span class=\"text-yellow-600 dark:text-yellow-300\">Recast:</span> Lee Sin gains 10/14/18/22/26% Omnivamp for 4 seconds.",
+        "iconFile": "LeeSinWOne.png",
+        "cooldownSeconds": [
+          7,
+          7,
+          7,
+          7,
+          7
+        ],
+        "cost": {
+          "values": [
+            50,
+            50,
+            50,
+            50,
+            50
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          700,
+          700,
+          700,
+          700,
+          700
+        ],
+        "rankValues": [
+          {
+            "label": "Safeguard Shield Absorption",
+            "values": "60/105/150/195/240"
+          },
+          {
+            "label": "Iron Will Omnivamp %",
+            "values": "10%/14%/18%/22%/26%"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "W Scaling",
+            "labelKo": "W 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "1:ShieldAmount"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "E": {
+        "slot": "E",
+        "id": "LeeSinEOne",
+        "name": "Tempest / Cripple",
+        "summary": "Tempest: Lee Sin smashes the ground, sending out a shockwave that deals magic damage and reveals enemy units hit. If Tempest hits an enemy, Lee Sin can cast cripple.<br>Cripple: Lee Sin cripples nearby enemies damaged by Tempest, reducing their Move Speed. Move Speed recovers gradually over the duration.",
+        "bodyHtml": "Lee Sin smashes the ground, sending out a shockwave that deals <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(35/60/85/110/135 + (90% Attack Damage)) magic damage</span> and reveals them for 4 seconds. If this hits an enemy, Lee Sin can <span class=\"text-yellow-600 dark:text-yellow-300\">Recast</span> for the next 3 seconds.<br /><br /><span class=\"text-yellow-600 dark:text-yellow-300\">Recast:</span> Lee Sin <span class=\"text-purple-600 dark:text-purple-500\">Slows</span> nearby enemies struck by the shockwave by 35/45/55/65/75% decaying over 4 seconds.",
+        "iconFile": "LeeSinEOne.png",
+        "cooldownSeconds": [
+          8,
+          8,
+          8,
+          8,
+          8
+        ],
+        "cost": {
+          "values": [
+            50,
+            50,
+            50,
+            50,
+            50
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          450,
+          450,
+          450,
+          450,
+          450
+        ],
+        "rankValues": [
+          {
+            "label": "Tempest Damage",
+            "values": "35/60/85/110/135"
+          },
+          {
+            "label": "Cripple Slow",
+            "values": "35/45/55/65/75"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "E Scaling",
+            "labelKo": "E 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "2:InitialDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "R": {
+        "slot": "R",
+        "id": "LeeSinR",
+        "name": "Dragon's Rage",
+        "summary": "Lee Sin performs a powerful roundhouse kick launching his target back, dealing physical damage to the target and any enemies they collide with. Enemies the target collides with are knocked into the air for a short duration. This technique was taught to him by Jesse Perring, although Lee Sin does not kick players off the map.",
+        "bodyHtml": "Lee Sin performs a powerful roundhouse kick <span class=\"text-purple-600 dark:text-purple-500\">Knocking Back</span> an enemy champion and dealing <span class=\"text-red-600 dark:text-red-500 font-semibold\">(175/400/625 + (200% bonus Attack Damage)) physical damage</span>.<br /><br />Enemies the target collides with are briefly <span class=\"text-purple-600 dark:text-purple-500\">Knocked Up</span> and take <span class=\"text-red-600 dark:text-red-500 font-semibold\">(175/400/625 + (200% bonus Attack Damage)) plus 12/15/18% of the kicked enemy's bonus Health as physical damage</span>.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">The target is <span class=\"text-purple-600 dark:text-purple-500\">Rooted</span> during the cast time.</span>",
+        "iconFile": "LeeSinR.png",
+        "cooldownSeconds": [
+          110,
+          85,
+          60
+        ],
+        "range": [
+          375,
+          375,
+          375
+        ],
+        "rankValues": [
+          {
+            "label": "Damage",
+            "values": "175/400/625"
+          },
+          {
+            "label": "Bonus Health Damage",
+            "values": "12/15/18"
+          },
+          {
+            "label": "Cooldown",
+            "values": "110/85/60"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "R Scaling",
+            "labelKo": "R 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "3:Damage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      }
+    }
+  }
+}

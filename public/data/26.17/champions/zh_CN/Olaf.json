@@ -1,0 +1,390 @@
+{
+  "schemaVersion": 2,
+  "patchVersion": "26.17",
+  "locale": "zh_CN",
+  "sources": {
+    "ddragon": "16.17.1",
+    "cdragon": "16.17"
+  },
+  "champion": {
+    "id": "Olaf",
+    "key": "2",
+    "name": "狂战士",
+    "title": "奥拉夫",
+    "tags": [
+      "Fighter",
+      "Tank"
+    ],
+    "baseStats": {
+      "health": {
+        "base": 645,
+        "perLevel": 119
+      },
+      "healthRegen": {
+        "base": 6.5,
+        "perLevel": 0.6
+      },
+      "mana": {
+        "base": 316,
+        "perLevel": 50
+      },
+      "manaRegen": {
+        "base": 7.5,
+        "perLevel": 0.6
+      },
+      "attackDamage": {
+        "base": 68,
+        "perLevel": 0
+      },
+      "attackSpeed": {
+        "base": 0.72,
+        "perLevel": 2.7
+      },
+      "armor": {
+        "base": 35,
+        "perLevel": 4.2
+      },
+      "magicResist": {
+        "base": 32,
+        "perLevel": 2.05
+      },
+      "moveSpeed": {
+        "base": 350,
+        "perLevel": 0
+      },
+      "attackRange": {
+        "base": 125,
+        "perLevel": 0
+      }
+    },
+    "baseStatContributions": [
+      {
+        "stat": "MAX_HEALTH",
+        "value": 119,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "HEALTH_REGEN",
+        "value": 0.6,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAX_MANA",
+        "value": 50,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MANA_REGEN",
+        "value": 0.6,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_DAMAGE",
+        "value": 0,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_SPEED",
+        "value": 2.7,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ARMOR",
+        "value": 4.2,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAGIC_RESIST",
+        "value": 2.05,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      }
+    ],
+    "abilities": {
+      "P": {
+        "slot": "P",
+        "id": "OlafBerzerkerRage",
+        "name": "狂战之怒",
+        "summary": "奥拉夫基于已损失生命值获得攻击速度和生命偷取。",
+        "bodyHtml": "奥拉夫获得至多<span>(50% ~ 100%)攻击速度</span>和(8% ~ 25%)生命偷取，基于他的已损失生命值。",
+        "iconFile": "Olaf_Passive.png",
+        "cooldownSeconds": [],
+        "range": [],
+        "rankValues": [],
+        "scalings": [],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "Q": {
+        "slot": "Q",
+        "id": "OlafAxeThrowCast",
+        "name": "逆流投掷",
+        "summary": "奥拉夫将战斧投至目标区域，对所有被战斧穿过的敌人造成伤害并削减他们的护甲和移动速度。如果奥拉夫捡起斧头，那么该技能冷却时间就会重置。",
+        "bodyHtml": "奥拉夫扔出一把斧头，造成<span class=\"text-red-600 dark:text-red-500 font-semibold\">(70/120/170/220/270 + (100% 额外攻击力))物理伤害</span>和至多持续3秒(基于斧头移动距离)的30/35/40/45/50%<span class=\"text-purple-600 dark:text-purple-500\">减速</span>。被斧头命中的英雄还会损失<span class=\"text-orange-600 dark:text-orange-400\">20%护甲</span>，持续4秒。<br /><br />如果奥拉夫拾起了斧头，那么这个技能的冷却时间会缩短至2.5秒，或在度过2.5秒之后完全返还。<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">对野怪造成20/45/70/95/120额外伤害。</span>",
+        "iconFile": "OlafAxeThrowCast.png",
+        "cooldownSeconds": [
+          9,
+          9,
+          9,
+          9,
+          9
+        ],
+        "cost": {
+          "values": [
+            50,
+            55,
+            60,
+            65,
+            70
+          ],
+          "resource": "法力值"
+        },
+        "range": [
+          1000,
+          1000,
+          1000,
+          1000,
+          1000
+        ],
+        "rankValues": [
+          {
+            "label": "伤害",
+            "values": "70/120/170/220/270"
+          },
+          {
+            "label": "减速",
+            "values": "30/35/40/45/50"
+          },
+          {
+            "label": "野怪伤害",
+            "values": "20/45/70/95/120"
+          },
+          {
+            "label": "法力消耗",
+            "values": "50/55/60/65/70"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "Q Scaling",
+            "labelKo": "Q 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "0:TotalDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "W": {
+        "slot": "W",
+        "id": "OlafFrenziedStrikes",
+        "name": "挺过去",
+        "summary": "奥拉夫的攻击速度得到提升，并获得一层护盾。",
+        "bodyHtml": "奥拉夫获得持续5秒的<span>40/50/60/70/80%攻击速度</span>，以及持续2.5秒的<span class=\"text-blue-600 dark:text-blue-300\">10/40/70/100/130外加17.5%已损失生命值的护盾值(最大值为10/40/70/100/130护盾值，在低于30%时提供)</span>。",
+        "iconFile": "OlafFrenziedStrikes.png",
+        "cooldownSeconds": [
+          16,
+          15,
+          14,
+          13,
+          12
+        ],
+        "cost": {
+          "values": [
+            50,
+            50,
+            50,
+            50,
+            50
+          ],
+          "resource": "法力值"
+        },
+        "range": [
+          700,
+          700,
+          700,
+          700,
+          700
+        ],
+        "rankValues": [
+          {
+            "label": "攻击速度",
+            "values": "40/50/60/70/80"
+          },
+          {
+            "label": "基础护盾",
+            "values": "10/40/70/100/130"
+          },
+          {
+            "label": "冷却时间",
+            "values": "16/15/14/13/12"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "W Scaling",
+            "labelKo": "W 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "1:ShieldCalc"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "E": {
+        "slot": "E",
+        "id": "OlafRecklessStrike",
+        "name": "鲁莽挥击",
+        "summary": "奥拉夫以破釜沉舟之势发动进攻，对目标造成真实伤害（不受护甲与魔抗减免），同时，自身也会根据敌方所受的伤害而受到真实伤害的反噬。",
+        "bodyHtml": "奥拉夫狂野地挥舞他的双斧，造成<span class=\"text-yellow-600 dark:text-yellow-500 font-semibold\">(70/115/160/205/250 + (50% 攻击力))真实伤害</span>。如果该敌人阵亡，那么会返还此技能的消耗。<br /><br />攻击会使这个技能的冷却时间缩短1秒，在攻击野怪时，缩短值提升至2秒。<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">施放时间受益于额外攻速</span>：",
+        "iconFile": "OlafRecklessStrike.png",
+        "cooldownSeconds": [
+          11,
+          10,
+          9,
+          8,
+          7
+        ],
+        "range": [
+          325,
+          325,
+          325,
+          325,
+          325
+        ],
+        "rankValues": [
+          {
+            "label": "伤害",
+            "values": "70/115/160/205/250"
+          },
+          {
+            "label": "冷却时间",
+            "values": "11/10/9/8/7"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "E Scaling",
+            "labelKo": "E 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "2:TotalDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "R": {
+        "slot": "R",
+        "id": "OlafRagnarok",
+        "name": "诸神黄昏",
+        "summary": "奥拉夫被动获得护甲和魔法抗性提升。他可以激活这个技能来变得免疫控制效果，并且会在他保持攻击时一直持续。",
+        "bodyHtml": "<span class=\"text-gray-600 dark:text-gray-500 italic\">被动：</span>奥拉夫获得<span class=\"text-orange-600 dark:text-orange-400\">10/15/20护甲</span>和<span>10/15/20魔法抗性</span>。<br /><br /><span class=\"text-gray-900 dark:text-white font-semibold\">主动：</span>奥拉夫净化掉他身上的所有<span class=\"text-purple-600 dark:text-purple-500\">定身</span>和<span class=\"text-purple-600 dark:text-purple-500\">限制</span>效果并且在接下来的3秒内免疫这些效果。在激活时，奥拉夫获得<span class=\"text-orange-600 dark:text-orange-500\">(10/20/30 + (25% 攻击力))攻击力</span>。用一次攻击或<span>鲁莽挥击</span>命中一名英雄时，会使持续时间延长2.5秒。<br /><br />此外，奥拉夫会在朝着敌方英雄时获得<span class=\"text-cyan-600 dark:text-cyan-500\">20/45/70%移动速度</span>，持续1秒。",
+        "iconFile": "OlafRagnarok.png",
+        "cooldownSeconds": [
+          100,
+          90,
+          80
+        ],
+        "cost": {
+          "values": [
+            100,
+            100,
+            100
+          ],
+          "resource": "法力值"
+        },
+        "range": [
+          400,
+          400,
+          400
+        ],
+        "rankValues": [
+          {
+            "label": "护甲和魔法抗性",
+            "values": "10/15/20"
+          },
+          {
+            "label": "攻击力",
+            "values": "10/20/30"
+          },
+          {
+            "label": "移动速度",
+            "values": "20/45/70"
+          },
+          {
+            "label": "冷却时间",
+            "values": "100/90/80"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "R Scaling",
+            "labelKo": "R 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "3:AD"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      }
+    }
+  }
+}

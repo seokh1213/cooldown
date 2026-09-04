@@ -1,0 +1,390 @@
+{
+  "schemaVersion": 2,
+  "patchVersion": "26.17",
+  "locale": "en_US",
+  "sources": {
+    "ddragon": "16.17.1",
+    "cdragon": "16.17"
+  },
+  "champion": {
+    "id": "Jayce",
+    "key": "126",
+    "name": "Jayce",
+    "title": "the Defender of Tomorrow",
+    "tags": [
+      "Fighter",
+      "Marksman"
+    ],
+    "baseStats": {
+      "health": {
+        "base": 590,
+        "perLevel": 109
+      },
+      "healthRegen": {
+        "base": 6,
+        "perLevel": 0.6
+      },
+      "mana": {
+        "base": 375,
+        "perLevel": 45
+      },
+      "manaRegen": {
+        "base": 6,
+        "perLevel": 0.8
+      },
+      "attackDamage": {
+        "base": 59,
+        "perLevel": 0
+      },
+      "attackSpeed": {
+        "base": 0.658,
+        "perLevel": 3
+      },
+      "armor": {
+        "base": 22,
+        "perLevel": 5
+      },
+      "magicResist": {
+        "base": 30,
+        "perLevel": 1.3
+      },
+      "moveSpeed": {
+        "base": 335,
+        "perLevel": 0
+      },
+      "attackRange": {
+        "base": 125,
+        "perLevel": 0
+      }
+    },
+    "baseStatContributions": [
+      {
+        "stat": "MAX_HEALTH",
+        "value": 109,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "HEALTH_REGEN",
+        "value": 0.6,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAX_MANA",
+        "value": 45,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MANA_REGEN",
+        "value": 0.8,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_DAMAGE",
+        "value": 0,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_SPEED",
+        "value": 3,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ARMOR",
+        "value": 5,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAGIC_RESIST",
+        "value": 1.3,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      }
+    ],
+    "abilities": {
+      "P": {
+        "slot": "P",
+        "id": "JaycePassive",
+        "name": "Hextech Capacitor",
+        "summary": "When Jayce swaps weapons he gains Move Speed for a short duration.",
+        "bodyHtml": "Jayce can swap between melee and ranged weapons using <span>Mercury Cannon / Mercury Hammer</span> starting from level 1. Swapping weapons also swaps all his Abilities and grants him <span class=\"text-cyan-600 dark:text-cyan-500\">30 Move Speed</span> for 0.75 seconds.",
+        "iconFile": "Jayce_Passive.png",
+        "cooldownSeconds": [],
+        "range": [],
+        "rankValues": [],
+        "scalings": [],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "Q": {
+        "slot": "Q",
+        "id": "JayceToTheSkies",
+        "name": "To the Skies! / Shock Blast",
+        "summary": "Hammer Stance: Leaps to an enemy dealing physical damage and slowing enemies.<br><br>Cannon Stance: Fires an orb of electricity that detonates upon hitting an enemy (or reaching the end of its path) dealing physical damage to all enemies hit.",
+        "bodyHtml": "<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Mercury Hammer:</span> Jayce leaps to an enemy, dealing <span class=\"text-red-600 dark:text-red-500 font-semibold\"> physical damage</span> to surrounding enemies and <span class=\"text-purple-600 dark:text-purple-500\">Slowing</span> them by for seconds.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">Deals 10 bonus damage to jungle monsters.</span>",
+        "iconFile": "JayceToTheSkies.png",
+        "cooldownSeconds": [
+          16,
+          14,
+          12,
+          10,
+          8,
+          6
+        ],
+        "cost": {
+          "values": [
+            40,
+            40,
+            40,
+            40,
+            40,
+            40
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          600,
+          600,
+          600,
+          600,
+          600,
+          600
+        ],
+        "rankValues": [
+          {
+            "label": "Damage",
+            "values": "60/110/160/210/260/310"
+          },
+          {
+            "label": "Cooldown",
+            "values": "16/14/12/10/8/6"
+          },
+          {
+            "label": "Slow",
+            "values": "35/40/45/50/55/60"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "Q Scaling",
+            "labelKo": "Q 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "0:Damage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": [
+            "spell.JayceToTheSkies:Damage",
+            "spell.JayceToTheSkies:Slow*-100",
+            "spell.JayceToTheSkies:SlowDuration"
+          ]
+        }
+      },
+      "W": {
+        "slot": "W",
+        "id": "JayceStaticField",
+        "name": "Lightning Field / Hyper Charge",
+        "summary": "Hammer Stance: Passive: Restores Mana per strike. Active: Creates a field of lightning damaging nearby enemies for several seconds.<br><br>Cannon Stance: Gains a burst of energy, increasing Attack Speed to maximum for several attacks.",
+        "bodyHtml": "<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Mercury Hammer - Passive:</span> Jayce's <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Hammer</span> Attacks grant <span> Mana</span>.<br /><br /><span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Mercury Hammer - Active:</span> Jayce creates an electric aura dealing <span class=\"text-blue-600 dark:text-blue-500 font-semibold\"> magic damage</span> over seconds.",
+        "iconFile": "JayceStaticField.png",
+        "cooldownSeconds": [
+          10,
+          10,
+          10,
+          10,
+          10,
+          10
+        ],
+        "cost": {
+          "values": [
+            40,
+            40,
+            40,
+            40,
+            40,
+            40
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          285,
+          285,
+          285,
+          285,
+          285,
+          285
+        ],
+        "rankValues": [
+          {
+            "label": "Damage",
+            "values": "140/200/260/320/380/440"
+          },
+          {
+            "label": "Mana Restore",
+            "values": "15/17/19/21/23/25"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "W Scaling",
+            "labelKo": "W 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "1:Damage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": [
+            "spell.JayceStaticField:Damage",
+            "spell.JayceStaticField:Duration",
+            "spell.JayceStaticField:ManaGain"
+          ]
+        }
+      },
+      "E": {
+        "slot": "E",
+        "id": "JayceThunderingBlow",
+        "name": "Thundering Blow / Acceleration Gate",
+        "summary": "Hammer Stance: Deals magic damage to an enemy and knocks them back a short distance.<br><br>Cannon Stance: Deploys an Acceleration Gate increasing the Move Speed of all allied champions who pass through it. If Shock Blast is fired through the gate the missile speed, range, and damage will increase.",
+        "bodyHtml": "<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Hammer Form</span>: Jayce swings his hammer, <span class=\"text-purple-600 dark:text-purple-500\">Knocking Back</span> his target and dealing <span class=\"text-blue-600 dark:text-blue-500 font-semibold\"> plus max Health magic damage</span>.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\"><span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Hammer</span> swing does a max of <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">200/300/400/500/600/700 magic damage</span> against jungle monsters.</span>",
+        "iconFile": "JayceThunderingBlow.png",
+        "cooldownSeconds": [
+          20,
+          18,
+          16,
+          14,
+          12,
+          10
+        ],
+        "cost": {
+          "values": [
+            55,
+            55,
+            55,
+            55,
+            55,
+            55
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          240,
+          240,
+          240,
+          240,
+          240,
+          240
+        ],
+        "rankValues": [
+          {
+            "label": "Max Health %",
+            "values": "8%/10.8%/13.6%/16.4%/19.2%/22%"
+          },
+          {
+            "label": "Cooldown",
+            "values": "20/18/16/14/12/10"
+          },
+          {
+            "label": "Monster Damage Cap",
+            "values": "200/300/400/500/600/700"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "E Scaling",
+            "labelKo": "E 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "2:FlatDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": [
+            "spell.JayceThunderingBlow:FlatDamage",
+            "spell.JayceThunderingBlow:PercHPDamage*100"
+          ]
+        }
+      },
+      "R": {
+        "slot": "R",
+        "id": "JayceStanceHtG",
+        "name": "Mercury Cannon / Mercury Hammer",
+        "summary": "Hammer Stance: Transforms the Mercury Hammer into the Mercury Cannon gaining new abilities and increased range. The first attack in this form reduces the target's Armor and Magic Resist.<br><br>Cannon Stance: Transforms the Mercury Cannon into the Mercury Hammer gaining new abilities and increasing Armor and Magic Resist. The first attack in this form deals additional magic damage.",
+        "bodyHtml": "<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Mercury Hammer</span>: Jayce transforms his weapon into the <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Mercury Cannon</span>, gaining Attack Range and new Abilities. Jayce's next Attack removes <span class=\"text-orange-600 dark:text-orange-400\"> Armor</span> and <span>Magic Resist</span> for seconds.",
+        "iconFile": "JayceStanceHtG.png",
+        "cooldownSeconds": [
+          6
+        ],
+        "range": [
+          600
+        ],
+        "rankValues": [],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "R Scaling",
+            "labelKo": "R 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "3:RangedFormShred"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": [
+            "spell.JayceStanceHtG:RangedFormShred",
+            "spell.JayceStanceHtG:ShredDuration"
+          ]
+        }
+      }
+    }
+  }
+}

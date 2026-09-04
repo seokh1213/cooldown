@@ -1,0 +1,8 @@
+export const DATA_LOCALES = ["ko_KR", "en_US", "zh_CN"] as const;
+
+export type DataLocale = (typeof DATA_LOCALES)[number];
+
+export interface StaticDataSources {
+  ddragon: string;
+  cdragon: string;
+}

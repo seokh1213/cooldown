@@ -1,10 +1,9 @@
+import type { StaticDataSources } from "./staticData";
+
 export interface DataManifest {
   schemaVersion: 2;
   patchVersion: string;
-  sources: {
-    ddragon: string;
-    cdragon: string;
-  };
+  sources: StaticDataSources;
 }
 
 function isRecord(value: unknown): value is Record<string, unknown> {

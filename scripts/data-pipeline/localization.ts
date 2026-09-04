@@ -1,6 +1,5 @@
-export const DATA_LOCALES = ["ko_KR", "en_US", "zh_CN"] as const;
-
-export type DataLocale = (typeof DATA_LOCALES)[number];
+export { DATA_LOCALES } from "../../src/data/contracts/staticData";
+export type { DataLocale } from "../../src/data/contracts/staticData";
 
 export interface StringTable {
   entries?: Record<string, string>;

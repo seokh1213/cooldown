@@ -1,0 +1,378 @@
+{
+  "schemaVersion": 2,
+  "patchVersion": "26.17",
+  "locale": "zh_CN",
+  "sources": {
+    "ddragon": "16.17.1",
+    "cdragon": "16.17"
+  },
+  "champion": {
+    "id": "Alistar",
+    "key": "12",
+    "name": "牛头酋长",
+    "title": "阿利斯塔",
+    "tags": [
+      "Tank",
+      "Support"
+    ],
+    "baseStats": {
+      "health": {
+        "base": 685,
+        "perLevel": 120
+      },
+      "healthRegen": {
+        "base": 8.5,
+        "perLevel": 0.85
+      },
+      "mana": {
+        "base": 350,
+        "perLevel": 40
+      },
+      "manaRegen": {
+        "base": 8.5,
+        "perLevel": 0.8
+      },
+      "attackDamage": {
+        "base": 62,
+        "perLevel": 0
+      },
+      "attackSpeed": {
+        "base": 0.625,
+        "perLevel": 2.125
+      },
+      "armor": {
+        "base": 40,
+        "perLevel": 4.7
+      },
+      "magicResist": {
+        "base": 32,
+        "perLevel": 2.05
+      },
+      "moveSpeed": {
+        "base": 335,
+        "perLevel": 0
+      },
+      "attackRange": {
+        "base": 125,
+        "perLevel": 0
+      }
+    },
+    "baseStatContributions": [
+      {
+        "stat": "MAX_HEALTH",
+        "value": 120,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "HEALTH_REGEN",
+        "value": 0.85,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAX_MANA",
+        "value": 40,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MANA_REGEN",
+        "value": 0.8,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_DAMAGE",
+        "value": 0,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_SPEED",
+        "value": 2.125,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ARMOR",
+        "value": 4.7,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAGIC_RESIST",
+        "value": 2.05,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      }
+    ],
+    "abilities": {
+      "P": {
+        "slot": "P",
+        "id": "AlistarPassive",
+        "name": "凯旋怒吼",
+        "summary": "阿利斯塔在对敌方英雄造成晕眩或强制位移时，或附近有敌人阵亡时，会积攒他的怒吼层数。在层数攒满后，他会治疗他自己和所有附近的友方英雄。",
+        "bodyHtml": "阿利斯塔在对一个敌方英雄造成<span class=\"text-purple-600 dark:text-purple-500\">晕眩</span>或<span class=\"text-purple-600 dark:text-purple-500\">震移</span>时，或附近有一名敌人阵亡时，会获得一层效果。在7层时，他会发出怒吼，治疗自身<span class=\"text-green-600 dark:text-green-400\">(5% 生命值)生命值</span>并治疗所有附近的友方英雄<span class=\"text-green-600 dark:text-green-400\">(7% 生命值)生命值</span>。<br /><br />敌方英雄和史诗级野怪的阵亡会完全充能这个技能。",
+        "iconFile": "Alistar_E.png",
+        "cooldownSeconds": [],
+        "range": [],
+        "rankValues": [],
+        "scalings": [],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "Q": {
+        "slot": "Q",
+        "id": "Pulverize",
+        "name": "大地粉碎",
+        "summary": "阿利斯塔锤击地面，对附近的敌人造成魔法伤害并使他们浮空。",
+        "bodyHtml": "阿利斯塔使大地破裂，<span class=\"text-purple-600 dark:text-purple-500\">击飞</span>敌人1秒并造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(60/100/140/180/220 + (80% 法术强度))魔法伤害</span>。",
+        "iconFile": "Pulverize.png",
+        "cooldownSeconds": [
+          14,
+          13,
+          12,
+          11,
+          10
+        ],
+        "cost": {
+          "values": [
+            50,
+            55,
+            60,
+            65,
+            70
+          ],
+          "resource": "法力值"
+        },
+        "range": [
+          365,
+          365,
+          365,
+          365,
+          365
+        ],
+        "rankValues": [
+          {
+            "label": "冷却时间",
+            "values": "14/13/12/11/10"
+          },
+          {
+            "label": "法力值消耗",
+            "values": "50/55/60/65/70"
+          },
+          {
+            "label": "伤害",
+            "values": "60/100/140/180/220"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "Q Scaling",
+            "labelKo": "Q 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "0:TotalDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "W": {
+        "slot": "W",
+        "id": "Headbutt",
+        "name": "野蛮冲撞",
+        "summary": "阿利斯塔冲撞目标，对其造成伤害并击退目标。",
+        "bodyHtml": "阿利斯塔顶向一名敌人，将其<span class=\"text-purple-600 dark:text-purple-500\">击退</span>并造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(55/110/165/220/275 + (100% 法术强度))魔法伤害</span>。",
+        "iconFile": "Headbutt.png",
+        "cooldownSeconds": [
+          14,
+          13,
+          12,
+          11,
+          10
+        ],
+        "cost": {
+          "values": [
+            50,
+            55,
+            60,
+            65,
+            70
+          ],
+          "resource": "法力值"
+        },
+        "range": [
+          650,
+          650,
+          650,
+          650,
+          650
+        ],
+        "rankValues": [
+          {
+            "label": "冷却时间",
+            "values": "14/13/12/11/10"
+          },
+          {
+            "label": "法力值消耗",
+            "values": "50/55/60/65/70"
+          },
+          {
+            "label": "伤害",
+            "values": "55/110/165/220/275"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "W Scaling",
+            "labelKo": "W 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "1:TotalDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "E": {
+        "slot": "E",
+        "id": "AlistarE",
+        "name": "践踏",
+        "summary": "阿利斯塔践踏附近的敌方单位，无视单位的碰撞体积并在他伤害到一名敌方英雄时获得一层充能。在满层充能时，阿利斯塔的下次对敌方英雄发起的普攻将造成额外魔法伤害和晕眩效果。",
+        "bodyHtml": "阿利斯塔践踏地面，变为幽灵状态并在5秒里持续对附近的敌人造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(80/110/140/170/200 + (70% 法术强度))魔法伤害</span>。每段践踏在至少伤害到一名敌方英雄时会为阿利斯塔提供一层效果。<br /><br />在5层效果时，阿利斯塔的下一个对英雄打出的攻击会<span class=\"text-purple-600 dark:text-purple-500\">晕眩</span>目标1秒并造成额外的<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(20 ~ 20)魔法伤害</span>。<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">幽灵状态的单位无视其它单位的碰撞体积。</span>",
+        "iconFile": "AlistarE.png",
+        "cooldownSeconds": [
+          12,
+          11.5,
+          11,
+          10.5,
+          10
+        ],
+        "cost": {
+          "values": [
+            50,
+            55,
+            60,
+            65,
+            70
+          ],
+          "resource": "法力值"
+        },
+        "range": [
+          350,
+          350,
+          350,
+          350,
+          350
+        ],
+        "rankValues": [
+          {
+            "label": "冷却时间",
+            "values": "12/11.5/11/10.5/10"
+          },
+          {
+            "label": "法力值消耗",
+            "values": "50/55/60/65/70"
+          },
+          {
+            "label": "伤害",
+            "values": "80/110/140/170/200"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "E Scaling",
+            "labelKo": "E 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "2:TotalDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "R": {
+        "slot": "R",
+        "id": "FerociousHowl",
+        "name": "坚定意志",
+        "summary": "阿利斯塔发出野性的咆哮，移除身上所有控制效果，并且持续时间内所受的物理和魔法伤害将减少。",
+        "bodyHtml": "阿利斯塔立刻净化掉所有<span class=\"text-purple-600 dark:text-purple-500\">限制</span>效果并获得55/65/75%伤害减免，持续7秒。",
+        "iconFile": "FerociousHowl.png",
+        "cooldownSeconds": [
+          120,
+          100,
+          80
+        ],
+        "cost": {
+          "values": [
+            100,
+            100,
+            100
+          ],
+          "resource": "法力值"
+        },
+        "range": [
+          1,
+          1,
+          1
+        ],
+        "rankValues": [
+          {
+            "label": "冷却时间",
+            "values": "120/100/80"
+          },
+          {
+            "label": "伤害减免",
+            "values": "55/65/75"
+          }
+        ],
+        "scalings": [],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      }
+    }
+  }
+}

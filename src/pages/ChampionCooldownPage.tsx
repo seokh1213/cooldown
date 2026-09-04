@@ -25,7 +25,7 @@ import { setStorageWithVersion, removeStorageWithVersion } from "@/lib/storageVa
 import { VersionProvider } from "@/context/VersionContext";
 import type { StoredSelectedChampionList } from "@/lib/storageSchema";
 import { logger } from "@/lib/logger";
-import { useTranslation } from "@/i18n";
+import { useTranslation, type Language } from "@/i18n";
 
 type ChampionCooldownTab = "skills" | "stats";
 
@@ -38,7 +38,7 @@ function isValidTab(tab: string | null): tab is ChampionCooldownTab {
 }
 
 interface ChampionCooldownPageProps {
-  lang: string;
+  lang: Language;
   championList: Champion[] | null;
   /** 정적 데이터 경로/캐시 키로 쓰는 Riot 공식 패치 버전 (예: 26.17) */
   version: string;
@@ -553,4 +553,3 @@ export default function ChampionCooldownPage(props: ChampionCooldownPageProps) {
     </VersionProvider>
   );
 }
-

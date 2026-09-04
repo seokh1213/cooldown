@@ -1,0 +1,392 @@
+{
+  "schemaVersion": 2,
+  "patchVersion": "26.17",
+  "locale": "zh_CN",
+  "sources": {
+    "ddragon": "16.17.1",
+    "cdragon": "16.17"
+  },
+  "champion": {
+    "id": "Leona",
+    "key": "89",
+    "name": "曙光女神",
+    "title": "蕾欧娜",
+    "tags": [
+      "Tank",
+      "Support"
+    ],
+    "baseStats": {
+      "health": {
+        "base": 646,
+        "perLevel": 101
+      },
+      "healthRegen": {
+        "base": 8.5,
+        "perLevel": 0.85
+      },
+      "mana": {
+        "base": 302,
+        "perLevel": 40
+      },
+      "manaRegen": {
+        "base": 6,
+        "perLevel": 0.8
+      },
+      "attackDamage": {
+        "base": 60,
+        "perLevel": 0
+      },
+      "attackSpeed": {
+        "base": 0.625,
+        "perLevel": 2.9
+      },
+      "armor": {
+        "base": 43,
+        "perLevel": 4.8
+      },
+      "magicResist": {
+        "base": 32,
+        "perLevel": 2.05
+      },
+      "moveSpeed": {
+        "base": 335,
+        "perLevel": 0
+      },
+      "attackRange": {
+        "base": 125,
+        "perLevel": 0
+      }
+    },
+    "baseStatContributions": [
+      {
+        "stat": "MAX_HEALTH",
+        "value": 101,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "HEALTH_REGEN",
+        "value": 0.85,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAX_MANA",
+        "value": 40,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MANA_REGEN",
+        "value": 0.8,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_DAMAGE",
+        "value": 0,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_SPEED",
+        "value": 2.9,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ARMOR",
+        "value": 4.8,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAGIC_RESIST",
+        "value": 2.05,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      }
+    ],
+    "abilities": {
+      "P": {
+        "slot": "P",
+        "id": "LeonaSunlightPassive",
+        "name": "日光",
+        "summary": "技能会在敌人身上施加【日光】效果，持续1.5秒。在此期间，蕾欧娜友军对这些目标造成伤害时，会触发【日光】，使目标受到额外的魔法伤害。",
+        "bodyHtml": "蕾欧娜的各个技能会标记敌人2.5秒，其他友方英雄在对被标记的敌人造成伤害时，会消耗该印记以造成额外的<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">魔法伤害</span>。",
+        "iconFile": "LeonaSunlight.png",
+        "cooldownSeconds": [],
+        "range": [],
+        "rankValues": [],
+        "scalings": [],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "Q": {
+        "slot": "Q",
+        "id": "LeonaShieldOfDaybreak",
+        "name": "破晓之盾",
+        "summary": "蕾欧娜用盾进行下次普通攻击，造成额外魔法伤害并晕眩目标。",
+        "bodyHtml": "蕾欧娜的下次攻击会<span class=\"text-purple-600 dark:text-purple-500\">晕眩</span>目标1秒，并造成额外的<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(10/35/60/85/110 + (30% 法术强度))</span>魔法伤害。<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">必须在6秒内打出这次攻击，否则它就会消退。</span>",
+        "iconFile": "LeonaShieldOfDaybreak.png",
+        "cooldownSeconds": [
+          5,
+          5,
+          5,
+          5,
+          5
+        ],
+        "cost": {
+          "values": [
+            30,
+            35,
+            40,
+            45,
+            50
+          ],
+          "resource": "法力值"
+        },
+        "range": [
+          100,
+          100,
+          100,
+          100,
+          100
+        ],
+        "rankValues": [
+          {
+            "label": "伤害",
+            "values": "10/35/60/85/110"
+          },
+          {
+            "label": "法力值消耗",
+            "values": "30/35/40/45/50"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "Q Scaling",
+            "labelKo": "Q 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "0:TotalDamageTooltip"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "W": {
+        "slot": "W",
+        "id": "LeonaSolarBarrier",
+        "name": "日蚀",
+        "summary": "蕾欧娜举起盾牌，提供伤害减免、护甲和魔法抗性。当持续时间首次结束时，如果附近有敌人，那么她会对其造成魔法伤害并延长效果的持续时间。",
+        "bodyHtml": "蕾欧娜举起她的盾牌，使即将到来的伤害降低8/12/16/20/24并获得<span class=\"text-orange-600 dark:text-orange-400\">(20/27.5/35/42.5/50 + (20% 额外护甲))护甲</span>和<span>(20/27.5/35/42.5/50 + (20% 额外魔法抗性))魔法抗性</span>，持续3秒。之后，她的盾牌会爆炸，对附近的敌人造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(55/85/115/145/175 + (40% 法术强度))魔法伤害</span>。如果她命中了至少一名敌人，那么她会将该<span class=\"text-orange-600 dark:text-orange-400\">护甲</span>和<span>魔法抗性</span>加成延续额外的3秒。<br /><br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">伤害降低效果无法将伤害降至50%以下。</span>",
+        "iconFile": "LeonaSolarBarrier.png",
+        "cooldownSeconds": [
+          14,
+          13,
+          12,
+          11,
+          10
+        ],
+        "cost": {
+          "values": [
+            60,
+            60,
+            60,
+            60,
+            60
+          ],
+          "resource": "法力值"
+        },
+        "range": [
+          450,
+          450,
+          450,
+          450,
+          450
+        ],
+        "rankValues": [
+          {
+            "label": "伤害",
+            "values": "55/85/115/145/175"
+          },
+          {
+            "label": "护甲和魔法抗性",
+            "values": "20/27.5/35/42.5/50"
+          },
+          {
+            "label": "伤害减免",
+            "values": "8/12/16/20/24"
+          },
+          {
+            "label": "冷却时间",
+            "values": "14/13/12/11/10"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "W Scaling",
+            "labelKo": "W 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "1:BonusArmorTooltip"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "E": {
+        "slot": "E",
+        "id": "LeonaZenithBlade",
+        "name": "天顶之刃",
+        "summary": "蕾欧娜投掷一束日光，对直线上的所有敌人造成魔法伤害。当效果消失时，蕾欧娜会冲向最后一个被击中的敌人并使其无法移动。",
+        "bodyHtml": "蕾欧娜用光明之剑进行猛刺，造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(50/90/130/170/210 + (40% 法术强度))魔法伤害</span>。最后一个被命中的英雄将会被<span class=\"text-purple-600 dark:text-purple-500\">禁锢</span>0.5秒，并且蕾欧娜将会冲向该英雄。",
+        "iconFile": "LeonaZenithBlade.png",
+        "cooldownSeconds": [
+          12,
+          10.5,
+          9,
+          7.5,
+          6
+        ],
+        "cost": {
+          "values": [
+            40,
+            45,
+            50,
+            55,
+            60
+          ],
+          "resource": "法力值"
+        },
+        "range": [
+          875,
+          875,
+          875,
+          875,
+          875
+        ],
+        "rankValues": [
+          {
+            "label": "伤害",
+            "values": "50/90/130/170/210"
+          },
+          {
+            "label": "冷却时间",
+            "values": "12/10.5/9/7.5/6"
+          },
+          {
+            "label": "法力值消耗",
+            "values": "40/45/50/55/60"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "E Scaling",
+            "labelKo": "E 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "2:TotalDamageTooltip"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "R": {
+        "slot": "R",
+        "id": "LeonaSolarFlare",
+        "name": "日炎耀斑",
+        "summary": "蕾欧娜召唤一道太阳光束，对区域内的敌人造成伤害。区域中心的敌人会被晕眩，并且外围的敌人会被减速。",
+        "bodyHtml": "蕾欧娜召唤一道太阳光束，造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(150/225/300 + (80% 法术强度))魔法伤害</span>并使敌人<span class=\"text-purple-600 dark:text-purple-500\">减速</span>80%，持续1.75秒。处于区域正中的敌人会受到<span class=\"text-purple-600 dark:text-purple-500\">晕眩</span>效果而非<span class=\"text-purple-600 dark:text-purple-500\">减速</span>效果。",
+        "iconFile": "LeonaSolarFlare.png",
+        "cooldownSeconds": [
+          90,
+          75,
+          60
+        ],
+        "cost": {
+          "values": [
+            100,
+            100,
+            100
+          ],
+          "resource": "法力值"
+        },
+        "range": [
+          1200,
+          1200,
+          1200
+        ],
+        "rankValues": [
+          {
+            "label": "伤害",
+            "values": "150/225/300"
+          },
+          {
+            "label": "冷却时间",
+            "values": "90/75/60"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "R Scaling",
+            "labelKo": "R 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "3:{f4c90e5c}"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      }
+    }
+  }
+}

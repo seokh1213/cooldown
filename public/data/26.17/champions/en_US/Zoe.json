@@ -1,0 +1,367 @@
+{
+  "schemaVersion": 2,
+  "patchVersion": "26.17",
+  "locale": "en_US",
+  "sources": {
+    "ddragon": "16.17.1",
+    "cdragon": "16.17"
+  },
+  "champion": {
+    "id": "Zoe",
+    "key": "142",
+    "name": "Zoe",
+    "title": "the Aspect of Twilight",
+    "tags": [
+      "Mage"
+    ],
+    "baseStats": {
+      "health": {
+        "base": 630,
+        "perLevel": 106
+      },
+      "healthRegen": {
+        "base": 7.5,
+        "perLevel": 0.6
+      },
+      "mana": {
+        "base": 425,
+        "perLevel": 25
+      },
+      "manaRegen": {
+        "base": 8,
+        "perLevel": 0.65
+      },
+      "attackDamage": {
+        "base": 58,
+        "perLevel": 0
+      },
+      "attackSpeed": {
+        "base": 0.658,
+        "perLevel": 2.5
+      },
+      "armor": {
+        "base": 21,
+        "perLevel": 4.7
+      },
+      "magicResist": {
+        "base": 30,
+        "perLevel": 1.3
+      },
+      "moveSpeed": {
+        "base": 340,
+        "perLevel": 0
+      },
+      "attackRange": {
+        "base": 550,
+        "perLevel": 0
+      }
+    },
+    "baseStatContributions": [
+      {
+        "stat": "MAX_HEALTH",
+        "value": 106,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "HEALTH_REGEN",
+        "value": 0.6,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAX_MANA",
+        "value": 25,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MANA_REGEN",
+        "value": 0.65,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_DAMAGE",
+        "value": 0,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_SPEED",
+        "value": 2.5,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ARMOR",
+        "value": 4.7,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAGIC_RESIST",
+        "value": 1.3,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      }
+    ],
+    "abilities": {
+      "P": {
+        "slot": "P",
+        "id": "ZoePassive",
+        "name": "More Sparkles!",
+        "summary": "Zoe's next basic attack after casting a spell deals bonus magic damage.",
+        "bodyHtml": "After using an Ability, Zoe's next Attack deals an additional <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(16 + (20% Ability Power)) magic damage</span>.",
+        "iconFile": "Zoe_P.png",
+        "cooldownSeconds": [],
+        "range": [],
+        "rankValues": [],
+        "scalings": [],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "Q": {
+        "slot": "Q",
+        "id": "ZoeQ",
+        "name": "Paddle Star!",
+        "summary": "Zoe fires a missile that she can redirect in flight. Deals more damage the longer it flies in a straight line.",
+        "bodyHtml": "Zoe fires a star that deals increasing damage the further it travels to the first enemy hit and surrounding enemies -- between <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(52/82/112/142/172 + (60% Ability Power)) to (130/205/280/355/430 + (150% Ability Power)) magic damage</span>.<br /><br />Zoe can <span class=\"text-yellow-600 dark:text-yellow-300\">Recast</span> this Ability to redirect the missile to a new position near Zoe.",
+        "iconFile": "ZoeQ.png",
+        "cooldownSeconds": [
+          8.5,
+          8,
+          7.5,
+          7,
+          6.5
+        ],
+        "cost": {
+          "values": [
+            40,
+            45,
+            50,
+            55,
+            60
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          800,
+          800,
+          800,
+          800,
+          800
+        ],
+        "rankValues": [
+          {
+            "label": "Base Damage",
+            "values": "50/80/110/140/170"
+          },
+          {
+            "label": "Cooldown",
+            "values": "8.5/8/7.5/7/6.5"
+          },
+          {
+            "label": "Mana Cost",
+            "values": "40/45/50/55/60"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "Q Scaling",
+            "labelKo": "Q 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "0:TotalDamageTooltip"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "W": {
+        "slot": "W",
+        "id": "ZoeW",
+        "name": "Spell Thief",
+        "summary": "Zoe can pick up the remnants of enemy summoner spell and active item casts and cast them once herself. Whenever she casts a summoner spell, she gains 3 missiles that fire at the nearest target.",
+        "bodyHtml": "<span class=\"text-gray-600 dark:text-gray-500 italic\">Passive:</span> Enemies drop spell shards when casting a Summoner Spell or using an Active Item. Specific minions also drop a spell shard when Zoe or a nearby ally kills them. Zoe can pick up this shard to cast that ability once.<br /><br /><span class=\"text-gray-600 dark:text-gray-500 italic\">Passive:</span> When Zoe casts this Ability or any Summoner Spell, she gains <span class=\"text-cyan-600 dark:text-cyan-500\">30/40/50/60/70% Move Speed</span> for 2/2.25/2.5/2.75/3 seconds and tosses 3 missiles at the target she Attacked most recently. These missiles deal <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(15/25/35/45/55 + (10% Ability Power)) magic damage</span> each.<br /><br /><span class=\"text-gray-900 dark:text-white font-semibold\">Active:</span> Cast the Ability from a spell shard Zoe has picked up.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">Spell shards last on the ground for 40 seconds.<br />Each missile can apply <span>More Sparkles!</span></span>",
+        "iconFile": "ZoeW.png",
+        "cooldownSeconds": [
+          0.25,
+          0.25,
+          0.25,
+          0.25,
+          0.25
+        ],
+        "range": [
+          3000,
+          4500,
+          6000,
+          3000,
+          3000
+        ],
+        "rankValues": [
+          {
+            "label": "Total Damage",
+            "values": "45/75/105/135/165"
+          },
+          {
+            "label": "Move Speed",
+            "values": "30/40/50/60/70"
+          },
+          {
+            "label": "Speed Duration",
+            "values": "2/2.25/2.5/2.75/3"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "W Scaling",
+            "labelKo": "W 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "1:MissileDamageTooltip"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "E": {
+        "slot": "E",
+        "id": "ZoeE",
+        "name": "Sleepy Trouble Bubble",
+        "summary": "Causes the target to become drowsy, then fall asleep. While asleep, the target's Magic Resist is reduced. The first source of damage that breaks the sleep is doubled, up to a cap.",
+        "bodyHtml": "Zoe dropkicks a bubble that deals <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(70/110/150/190/230 + (45% Ability Power)) magic damage</span>, lingering as a trap if it hits nothing. The bubble's range is extended when flying over terrain.<br /><br />If either the bubble or trap hits an enemy champion she refreshes 16/19.5/23/26.5/30% of her cooldown.<br /><br />After a delay, the victim falls <span class=\"text-purple-600 dark:text-purple-500\">Asleep</span> and have their <span>Magic Resist</span> reduced by 30% for 2 seconds. Attacks and Ability hits wake them up but deal double damage, up to <span class=\"text-yellow-600 dark:text-yellow-500 font-semibold\">(70/110/150/190/230 + (45% Ability Power)) true damage</span>.<br /><br /><br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">Before the target falls <span class=\"text-purple-600 dark:text-purple-500\">Asleep</span>, they are <span class=\"text-purple-600 dark:text-purple-500\">Drowsy</span>, becoming increasingly <span class=\"text-purple-600 dark:text-purple-500\">Slowed</span> (up to 10/15/20/25/30%).</span>",
+        "iconFile": "ZoeE.png",
+        "cooldownSeconds": [
+          18,
+          17,
+          16,
+          15,
+          14
+        ],
+        "cost": {
+          "values": [
+            80,
+            80,
+            80,
+            80,
+            80
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          800,
+          800,
+          800,
+          800,
+          800
+        ],
+        "rankValues": [
+          {
+            "label": "Damage",
+            "values": "70/110/150/190/230"
+          },
+          {
+            "label": "Bonus Damage Cap",
+            "values": "70/110/150/190/230"
+          },
+          {
+            "label": "Cooldown",
+            "values": "18/17/16/15/14"
+          },
+          {
+            "label": "Cooldown Refresh",
+            "values": "16/19.5/23/26.5/30"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "E Scaling",
+            "labelKo": "E 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "2:TotalDamageTooltip"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "R": {
+        "slot": "R",
+        "id": "ZoeR",
+        "name": "Portal Jump",
+        "summary": "Blink to a nearby position for 1 second. Then blink back.",
+        "bodyHtml": "Zoe teleports to a nearby position for 1 second. Afterwards, she teleports back. Zoe can use Abilities and Attack, but can't move during this time.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">Zoe can also see over walls during the teleport.</span>",
+        "iconFile": "ZoeR.png",
+        "cooldownSeconds": [
+          11,
+          8,
+          5
+        ],
+        "cost": {
+          "values": [
+            40,
+            40,
+            40
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          575,
+          575,
+          575
+        ],
+        "rankValues": [
+          {
+            "label": "Cooldown",
+            "values": "11/8/5"
+          }
+        ],
+        "scalings": [],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      }
+    }
+  }
+}

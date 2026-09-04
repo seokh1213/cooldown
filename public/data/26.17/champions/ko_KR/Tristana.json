@@ -1,0 +1,386 @@
+{
+  "schemaVersion": 2,
+  "patchVersion": "26.17",
+  "locale": "ko_KR",
+  "sources": {
+    "ddragon": "16.17.1",
+    "cdragon": "16.17"
+  },
+  "champion": {
+    "id": "Tristana",
+    "key": "18",
+    "name": "트리스타나",
+    "title": "요들 사수",
+    "tags": [
+      "Marksman",
+      "Assassin"
+    ],
+    "baseStats": {
+      "health": {
+        "base": 640,
+        "perLevel": 102
+      },
+      "healthRegen": {
+        "base": 4,
+        "perLevel": 0.5
+      },
+      "mana": {
+        "base": 300,
+        "perLevel": 32
+      },
+      "manaRegen": {
+        "base": 7.2,
+        "perLevel": 0.45
+      },
+      "attackDamage": {
+        "base": 60,
+        "perLevel": 0
+      },
+      "attackSpeed": {
+        "base": 0.656,
+        "perLevel": 1.5
+      },
+      "armor": {
+        "base": 30,
+        "perLevel": 4
+      },
+      "magicResist": {
+        "base": 33,
+        "perLevel": 1.1
+      },
+      "moveSpeed": {
+        "base": 325,
+        "perLevel": 0
+      },
+      "attackRange": {
+        "base": 550,
+        "perLevel": 0
+      }
+    },
+    "baseStatContributions": [
+      {
+        "stat": "MAX_HEALTH",
+        "value": 102,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "HEALTH_REGEN",
+        "value": 0.5,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAX_MANA",
+        "value": 32,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MANA_REGEN",
+        "value": 0.45,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_DAMAGE",
+        "value": 0,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_SPEED",
+        "value": 1.5,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ARMOR",
+        "value": 4,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAGIC_RESIST",
+        "value": 1.1,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      }
+    ],
+    "abilities": {
+      "P": {
+        "slot": "P",
+        "id": "TristanaPassive",
+        "name": "정조준",
+        "summary": "레벨이 올라갈수록 공격 사거리도 올라갑니다.",
+        "bodyHtml": "트리스타나의 공격 사거리와 <span></span> 및 <span></span>의 사거리가 (0 ~ 150)만큼 늘어납니다.",
+        "iconFile": "Tristana_Passive.png",
+        "cooldownSeconds": [],
+        "range": [],
+        "rankValues": [],
+        "scalings": [],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "Q": {
+        "slot": "Q",
+        "id": "TristanaQ",
+        "name": "속사",
+        "summary": "트리스타나가 짧은 시간 동안 공격 속도를 높이며 빠르게 탄환을 발사합니다.",
+        "bodyHtml": "트리스타나가 자동 사격을 시작해 7초 동안 <span>공격 속도가 60/75/90/105/120%</span> 증가합니다.",
+        "iconFile": "TristanaQ.png",
+        "cooldownSeconds": [
+          20,
+          19,
+          18,
+          17,
+          16
+        ],
+        "cost": {
+          "values": [
+            15,
+            20,
+            25,
+            30,
+            35
+          ],
+          "resource": "마나"
+        },
+        "range": [
+          20,
+          20,
+          20,
+          20,
+          20
+        ],
+        "rankValues": [
+          {
+            "label": "공격 속도",
+            "values": "60/75/90/105/120"
+          },
+          {
+            "label": "재사용 대기시간",
+            "values": "20/19/18/17/16"
+          },
+          {
+            "label": "소모값 마나",
+            "values": "15/20/25/30/35"
+          }
+        ],
+        "scalings": [],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "W": {
+        "slot": "W",
+        "id": "TristanaW",
+        "name": "로켓 점프",
+        "summary": "트리스타나가 땅에 대포를 쏴 추진력을 얻어 먼 곳으로 이동합니다. 착륙한 지점 근처의 적 유닛에게 피해를 주며 잠깐 동안 이동 속도를 느리게 합니다.",
+        "bodyHtml": "트리스타나가 뛰어오른 후 착지하며 <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(70/105/140/175/210 + (100% 추가 공격력) + (50% 주문력))의 마법 피해</span>를 입히고 2초 동안 40% <span class=\"text-purple-600 dark:text-purple-500\">둔화</span>시킵니다.<br /><br />챔피언 처치에 관여하거나 챔피언에게 쌓인 최대 중첩 <span>폭발 화약</span> 스킬이 터질 경우 이 스킬의 재사용 대기시간이 초기화됩니다.",
+        "iconFile": "TristanaW.png",
+        "cooldownSeconds": [
+          22,
+          20,
+          18,
+          16,
+          14
+        ],
+        "cost": {
+          "values": [
+            30,
+            35,
+            40,
+            45,
+            50
+          ],
+          "resource": "마나"
+        },
+        "range": [
+          900,
+          900,
+          900,
+          900,
+          900
+        ],
+        "rankValues": [
+          {
+            "label": "피해량",
+            "values": "70/105/140/175/210"
+          },
+          {
+            "label": "재사용 대기시간",
+            "values": "22/20/18/16/14"
+          },
+          {
+            "label": "소모값 마나",
+            "values": "30/35/40/45/50"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "W Scaling",
+            "labelKo": "W 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "1:LandingDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "E": {
+        "slot": "E",
+        "id": "TristanaE",
+        "name": "폭발 화약",
+        "summary": "트리스타나가 적을 처치할 때마다 대포알이 조각 조각 터지면서 주변 적에게 피해를 입힙니다. 스킬을 활성화하면 대상 적에게 폭탄을 부착하여, 잠시 후 터지면서 주위 유닛들에게도 피해를 입힙니다.",
+        "bodyHtml": "<span class=\"text-gray-600 dark:text-gray-500 italic\">기본 지속 효과: </span>트리스타나가 기본 공격으로 적을 처치하면 주변 적에게 <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(45/60/75/90/105 + (25% 주문력))의 마법 피해</span>를 입힙니다.<br /><br /><span class=\"text-gray-900 dark:text-white font-semibold\">사용 시:</span> 트리스타나가 적이나 포탑에 폭탄을 부착해 4초 후 주변 적에게 <span class=\"text-red-600 dark:text-red-500 font-semibold\">(60/85/110/135/160 + (50% 주문력))의 물리 피해</span>를 입힙니다. 폭탄이 부착된 대상을 기본 공격이나 스킬로 공격할 때마다 피해량이 25%씩 증가합니다. (이 효과는 최대 4번까지 중첩됩니다.)<br /><br />4번 중첩되면 폭탄이 즉시 폭발합니다. (최대 <span class=\"text-red-600 dark:text-red-500 font-semibold\">(60/85/110/135/160 + (50% 주문력))의 물리 피해</span>)<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">사용 시 피해량은 치명타 확률 및 치명타 피해량에 따라 40%만큼 증가합니다.<br />포탑에 사용할 경우 폭발 반경이 두 배로 늘어납니다.</span>",
+        "iconFile": "TristanaE.png",
+        "cooldownSeconds": [
+          16,
+          15.5,
+          15,
+          14.5,
+          14
+        ],
+        "cost": {
+          "values": [
+            50,
+            55,
+            60,
+            65,
+            70
+          ],
+          "resource": "마나"
+        },
+        "range": [
+          550,
+          550,
+          550,
+          550,
+          550
+        ],
+        "rankValues": [
+          {
+            "label": "기본 지속 효과 폭발 피해량",
+            "values": "45/60/75/90/105"
+          },
+          {
+            "label": "기본 화약 피해량",
+            "values": "60/85/110/135/160"
+          },
+          {
+            "label": "재사용 대기시간",
+            "values": "16/15.5/15/14.5/14"
+          },
+          {
+            "label": "소모값 마나",
+            "values": "50/55/60/65/70"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "E Scaling",
+            "labelKo": "E 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "2:PassiveDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "R": {
+        "slot": "R",
+        "id": "TristanaR",
+        "name": "대구경 탄환",
+        "summary": "트리스타나가 무기에 거대한 대포알을 장착하여 적 유닛에게 발사합니다. 이 스킬은 마법 피해를 입히고 적을 뒤로 밀어냅니다. 대상에게 폭발 화약이 붙어 있을 경우 폭발 범위가 두 배로 늘어납니다.",
+        "bodyHtml": "트리스타나가 거대한 대포를 발사하여 대상에게 <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(225/275/325 + (70% 추가 공격력) + (100% 주문력))의 마법 피해</span>를 입히며 주변 적과 함께 <span class=\"text-purple-600 dark:text-purple-500\">밀어내고</span> 0.4/0.55/0.7초 동안 <span class=\"text-purple-600 dark:text-purple-500\">기절</span>시킵니다.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">이 스킬로 <span>폭발 화약</span> 마지막 중첩이 적용되면 유닛이 <span class=\"text-purple-600 dark:text-purple-500\">뒤로 밀려난</span> 후 폭발합니다.</span>",
+        "iconFile": "TristanaR.png",
+        "cooldownSeconds": [
+          100,
+          100,
+          100
+        ],
+        "cost": {
+          "values": [
+            100,
+            100,
+            100
+          ],
+          "resource": "마나"
+        },
+        "range": [
+          550,
+          550,
+          550
+        ],
+        "rankValues": [
+          {
+            "label": "피해량",
+            "values": "225/275/325"
+          },
+          {
+            "label": "밀려나는 거리",
+            "values": "600/800/1000"
+          },
+          {
+            "label": "기절 지속시간:",
+            "values": "0.4/0.55/0.7"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "R Scaling",
+            "labelKo": "R 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "3:DamageCalc"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      }
+    }
+  }
+}

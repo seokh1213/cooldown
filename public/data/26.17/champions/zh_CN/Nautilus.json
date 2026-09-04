@@ -1,0 +1,404 @@
+{
+  "schemaVersion": 2,
+  "patchVersion": "26.17",
+  "locale": "zh_CN",
+  "sources": {
+    "ddragon": "16.17.1",
+    "cdragon": "16.17"
+  },
+  "champion": {
+    "id": "Nautilus",
+    "key": "111",
+    "name": "深海泰坦",
+    "title": "诺提勒斯",
+    "tags": [
+      "Tank",
+      "Support"
+    ],
+    "baseStats": {
+      "health": {
+        "base": 646,
+        "perLevel": 100
+      },
+      "healthRegen": {
+        "base": 8.5,
+        "perLevel": 0.55
+      },
+      "mana": {
+        "base": 400,
+        "perLevel": 47
+      },
+      "manaRegen": {
+        "base": 8.65,
+        "perLevel": 0.5
+      },
+      "attackDamage": {
+        "base": 61,
+        "perLevel": 0
+      },
+      "attackSpeed": {
+        "base": 0.706,
+        "perLevel": 1
+      },
+      "armor": {
+        "base": 39,
+        "perLevel": 4.95
+      },
+      "magicResist": {
+        "base": 32,
+        "perLevel": 2.05
+      },
+      "moveSpeed": {
+        "base": 325,
+        "perLevel": 0
+      },
+      "attackRange": {
+        "base": 175,
+        "perLevel": 0
+      }
+    },
+    "baseStatContributions": [
+      {
+        "stat": "MAX_HEALTH",
+        "value": 100,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "HEALTH_REGEN",
+        "value": 0.55,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAX_MANA",
+        "value": 47,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MANA_REGEN",
+        "value": 0.5,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_DAMAGE",
+        "value": 0,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_SPEED",
+        "value": 1,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ARMOR",
+        "value": 4.95,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAGIC_RESIST",
+        "value": 2.05,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      }
+    ],
+    "abilities": {
+      "P": {
+        "slot": "P",
+        "id": "NautilusPassive",
+        "name": "排山倒海",
+        "summary": "诺提勒斯对一名目标发起的第一次攻击会造成提升过的物理伤害并将其暂时禁锢。",
+        "bodyHtml": "诺提勒斯对一名目标发起的第一次攻击会造成<span class=\"text-red-600 dark:text-red-500 font-semibold\">(100% 攻击力)物理伤害</span>并将其<span class=\"text-purple-600 dark:text-purple-500\">禁锢</span>(0.75 ~ 2)秒。",
+        "iconFile": "Nautilus_StaggeringBlow.png",
+        "cooldownSeconds": [],
+        "range": [],
+        "rankValues": [],
+        "scalings": [],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "Q": {
+        "slot": "Q",
+        "id": "NautilusAnchorDrag",
+        "name": "疏通航道",
+        "summary": "诺提勒斯向前抛出他的船锚。在与敌人碰撞后，船锚会将目标与诺提勒斯拉到一起，并造成魔法伤害。与地形碰撞时会将诺提勒斯拉向它。",
+        "bodyHtml": "诺提勒斯向前猛掷他的船锚。如果它命中了一个敌方单位，诺提勒斯就会将他自己和目标吸到一起，同时造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(85/130/175/220/265 + (90% 法术强度))魔法伤害</span>，并将目标暂时<span class=\"text-purple-600 dark:text-purple-500\">晕眩</span>。如果它命中了地形，诺提勒斯则会把自己拉到船锚处。<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">如果诺提勒斯勾中了地形，那么这个技能的冷却时间会缩短50%，并且返还50%法力消耗。</span>",
+        "iconFile": "NautilusAnchorDrag.png",
+        "cooldownSeconds": [
+          14,
+          13,
+          12,
+          11,
+          10
+        ],
+        "cost": {
+          "values": [
+            60,
+            60,
+            60,
+            60,
+            60
+          ],
+          "resource": "法力值"
+        },
+        "range": [
+          1150,
+          1150,
+          1150,
+          1150,
+          1150
+        ],
+        "rankValues": [
+          {
+            "label": "冷却时间",
+            "values": "14/13/12/11/10"
+          },
+          {
+            "label": "伤害",
+            "values": "85/130/175/220/265"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "Q Scaling",
+            "labelKo": "Q 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "0:QDamageCalc"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "W": {
+        "slot": "W",
+        "id": "NautilusPiercingGaze",
+        "name": "泰坦之怒",
+        "summary": "诺提勒斯获得一个临时护盾。当护盾存在时，他的攻击会对目标及目标周围的敌人造成持续伤害。",
+        "bodyHtml": "诺提勒斯获得一层持续6秒的<span class=\"text-blue-600 dark:text-blue-300\">(50/60/70/80/90 + (8/9/10/11/12% 生命值))护盾</span>。当<span class=\"text-blue-600 dark:text-blue-300\">护盾</span>存在时，诺提勒斯的攻击会在2秒里对目标及目标周围的敌人持续造成共<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(30/40/50/60/70 + (40% 法术强度))额外魔法伤害</span>。",
+        "iconFile": "NautilusPiercingGaze.png",
+        "cooldownSeconds": [
+          12,
+          12,
+          12,
+          12,
+          12
+        ],
+        "cost": {
+          "values": [
+            60,
+            60,
+            60,
+            60,
+            60
+          ],
+          "resource": "法力值"
+        },
+        "range": [
+          350,
+          350,
+          350,
+          350,
+          350
+        ],
+        "rankValues": [
+          {
+            "label": "护盾值",
+            "values": "50/60/70/80/90"
+          },
+          {
+            "label": "魔法伤害",
+            "values": "30/40/50/60/70"
+          },
+          {
+            "label": "%最大生命值",
+            "values": "8%/9%/10%/11%/12%"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "W Scaling",
+            "labelKo": "W 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "1:DotDamageCalc"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "E": {
+        "slot": "E",
+        "id": "NautilusSplashZone",
+        "name": "暗流涌动",
+        "summary": "诺提勒斯在他身边生成3道爆炸波纹。每道爆炸波纹都会伤害并减速敌人。",
+        "bodyHtml": "诺提勒斯在他身边生成3道爆炸波纹，每道爆炸波纹都会对范围内的敌人们造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(55/90/125/160/195 + (50% 法术强度))魔法伤害</span>并使他们<span class=\"text-purple-600 dark:text-purple-500\">减速</span>30/35/40/45/50%，在1.25秒里持续衰减。<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">后续爆炸波纹造成的伤害减少50%。</span><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">这个技能在首次命中时对野怪造成(125/165/205/245/285 + (50% 法术强度))额外伤害。</span>",
+        "iconFile": "NautilusSplashZone.png",
+        "cooldownSeconds": [
+          7,
+          6.5,
+          6,
+          5.5,
+          5
+        ],
+        "cost": {
+          "values": [
+            50,
+            60,
+            70,
+            80,
+            90
+          ],
+          "resource": "法力值"
+        },
+        "range": [
+          600,
+          600,
+          600,
+          600,
+          600
+        ],
+        "rankValues": [
+          {
+            "label": "冷却时间",
+            "values": "7/6.5/6/5.5/5"
+          },
+          {
+            "label": "法力值消耗",
+            "values": "50/60/70/80/90"
+          },
+          {
+            "label": "伤害",
+            "values": "55/90/125/160/195"
+          },
+          {
+            "label": "野怪伤害",
+            "values": "125/165/205/245/285"
+          },
+          {
+            "label": "减速",
+            "values": "30/35/40/45/50"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "E Scaling",
+            "labelKo": "E 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "2:DamageCalc"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "R": {
+        "slot": "R",
+        "id": "NautilusGrandLine",
+        "name": "深海冲击",
+        "summary": "诺提勒斯将一束冲击波打进土里，来追击敌方目标。这束冲击波会撕裂它上面的地表，将敌人震到半空中。当它命中目标时，冲击波会喷发，将他的目标震到半空中，并使目标晕眩。",
+        "bodyHtml": "诺提勒斯发射一道冲击波来追击一名敌方英雄，造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(150/275/400 + (80% 法术强度))魔法伤害</span>，<span class=\"text-purple-600 dark:text-purple-500\">击飞</span>目标并将其<span class=\"text-purple-600 dark:text-purple-500\">晕眩</span>1/1.5/2秒。冲击波还会<span class=\"text-purple-600 dark:text-purple-500\">击飞</span>和<span class=\"text-purple-600 dark:text-purple-500\">晕眩</span>沿途经过的其它敌人，并造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(125/175/225 + (40% 法术强度))魔法伤害</span>。",
+        "iconFile": "NautilusGrandLine.png",
+        "cooldownSeconds": [
+          120,
+          100,
+          80
+        ],
+        "cost": {
+          "values": [
+            100,
+            100,
+            100
+          ],
+          "resource": "法力值"
+        },
+        "range": [
+          825,
+          825,
+          825
+        ],
+        "rankValues": [
+          {
+            "label": "冷却时间",
+            "values": "120/100/80"
+          },
+          {
+            "label": "沿途伤害",
+            "values": "150/275/400"
+          },
+          {
+            "label": "晕眩时长：",
+            "values": "1/1.5/2"
+          },
+          {
+            "label": "爆炸伤害",
+            "values": "125/175/225"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "R Scaling",
+            "labelKo": "R 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "3:PrimaryTargetDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      }
+    }
+  }
+}

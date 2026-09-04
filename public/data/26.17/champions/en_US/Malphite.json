@@ -1,0 +1,403 @@
+{
+  "schemaVersion": 2,
+  "patchVersion": "26.17",
+  "locale": "en_US",
+  "sources": {
+    "ddragon": "16.17.1",
+    "cdragon": "16.17"
+  },
+  "champion": {
+    "id": "Malphite",
+    "key": "54",
+    "name": "Malphite",
+    "title": "Shard of the Monolith",
+    "tags": [
+      "Tank",
+      "Mage"
+    ],
+    "baseStats": {
+      "health": {
+        "base": 665,
+        "perLevel": 104
+      },
+      "healthRegen": {
+        "base": 7,
+        "perLevel": 0.55
+      },
+      "mana": {
+        "base": 280,
+        "perLevel": 60
+      },
+      "manaRegen": {
+        "base": 7.3,
+        "perLevel": 0.55
+      },
+      "attackDamage": {
+        "base": 62,
+        "perLevel": 0
+      },
+      "attackSpeed": {
+        "base": 0.736,
+        "perLevel": 3.4
+      },
+      "armor": {
+        "base": 40,
+        "perLevel": 4.95
+      },
+      "magicResist": {
+        "base": 28,
+        "perLevel": 2.05
+      },
+      "moveSpeed": {
+        "base": 335,
+        "perLevel": 0
+      },
+      "attackRange": {
+        "base": 125,
+        "perLevel": 0
+      }
+    },
+    "baseStatContributions": [
+      {
+        "stat": "MAX_HEALTH",
+        "value": 104,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "HEALTH_REGEN",
+        "value": 0.55,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAX_MANA",
+        "value": 60,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MANA_REGEN",
+        "value": 0.55,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_DAMAGE",
+        "value": 0,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_SPEED",
+        "value": 3.4,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ARMOR",
+        "value": 4.95,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAGIC_RESIST",
+        "value": 2.05,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      }
+    ],
+    "abilities": {
+      "P": {
+        "slot": "P",
+        "id": "MalphiteShield",
+        "name": "Granite Shield",
+        "summary": "Malphite is shielded by a layer of rock which absorbs damage up to 10% of his maximum Health. If Malphite has not been hit for a few seconds, this effect recharges.",
+        "bodyHtml": "Malphite grants himself <span class=\"text-blue-600 dark:text-blue-300\">(10% Health) Shield</span> after not taking damage for (8 ~ 6) seconds.",
+        "iconFile": "Malphite_GraniteShield.png",
+        "cooldownSeconds": [],
+        "range": [],
+        "rankValues": [],
+        "scalings": [],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "Q": {
+        "slot": "Q",
+        "id": "SeismicShard",
+        "name": "Seismic Shard",
+        "summary": "Malphite sends a shard of the earth through the ground at his foe, dealing damage upon impact and stealing Move Speed for 3 seconds.",
+        "bodyHtml": "Malphite launches a shard of earth at an enemy, dealing <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(70/120/170/220/270 + (60% Ability Power)) magic damage</span> and <span class=\"text-purple-600 dark:text-purple-500\">Slowing</span> them by 20/25/30/35/40% for 3 seconds. Malphite also steals the amount <span class=\"text-purple-600 dark:text-purple-500\">Slowed</span>, gaining it as <span class=\"text-cyan-600 dark:text-cyan-500\">Move Speed</span> for 3 seconds.",
+        "iconFile": "SeismicShard.png",
+        "cooldownSeconds": [
+          8,
+          8,
+          8,
+          8,
+          8
+        ],
+        "cost": {
+          "values": [
+            70,
+            75,
+            80,
+            85,
+            90
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          625,
+          625,
+          625,
+          625,
+          625
+        ],
+        "rankValues": [
+          {
+            "label": "Mana Cost",
+            "values": "70/75/80/85/90"
+          },
+          {
+            "label": "Damage",
+            "values": "70/120/170/220/270"
+          },
+          {
+            "label": "Slow",
+            "values": "20/25/30/35/40"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "Q Scaling",
+            "labelKo": "Q 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "0:QDamageCalc"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "W": {
+        "slot": "W",
+        "id": "Obduracy",
+        "name": "Thunderclap",
+        "summary": "Malphite attacks with such force that it creates a sonic boom. For the next few seconds, his attacks create aftershocks in front of him.",
+        "bodyHtml": "<span class=\"text-gray-600 dark:text-gray-500 italic\">Passive: </span>Malphite gains <span class=\"text-orange-600 dark:text-orange-400\">10/15/20/25/30% Armor ()</span>. This effect is increased to <span class=\"text-orange-600 dark:text-orange-400\">30/45/60/75/90% ()</span> while <span>Granite Shield</span> is active.<br /><br /><span class=\"text-gray-600 dark:text-gray-500 italic\">Active: </span>Malphite's next Attack deals an additional <span class=\"text-red-600 dark:text-red-500 font-semibold\">(30/40/50/60/70 + (20% Ability Power) + (15% Armor)) physical damage</span> and creates an aftershock which deals <span class=\"text-red-600 dark:text-red-500 font-semibold\">(15/25/35/45/55 + (30% Ability Power) + (15% Armor)) physical damage</span> <span>On-Hit</span> in their direction. His Attacks continue to create aftershocks <span>On-Hit</span> for the next 5 seconds.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">Deals 180% damage to jungle monsters.</span>",
+        "iconFile": "Obduracy.png",
+        "cooldownSeconds": [
+          10,
+          9.5,
+          9,
+          8.5,
+          8
+        ],
+        "cost": {
+          "values": [
+            30,
+            35,
+            40,
+            45,
+            50
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          400,
+          400,
+          400,
+          400,
+          400
+        ],
+        "rankValues": [
+          {
+            "label": "Mana Cost",
+            "values": "30/35/40/45/50"
+          },
+          {
+            "label": "Armor",
+            "values": "10/15/20/25/30"
+          },
+          {
+            "label": "Damage",
+            "values": "30/40/50/60/70"
+          },
+          {
+            "label": "Aftershock Splash Damage",
+            "values": "15/25/35/45/55"
+          },
+          {
+            "label": "Cooldown",
+            "values": "10/9.5/9/8.5/8"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "W Scaling",
+            "labelKo": "W 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "1:TotalBonusDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": [
+            "f1",
+            "f2"
+          ]
+        }
+      },
+      "E": {
+        "slot": "E",
+        "id": "Landslide",
+        "name": "Ground Slam",
+        "summary": "Malphite slams the ground, sending out a shockwave that deals magic damage based on his Armor and reduces the Attack Speed of enemies for a short duration.",
+        "bodyHtml": "Malphite slams the ground, dealing <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(60/95/130/165/200 + (40% Armor) + (60% Ability Power)) magic damage</span> and reducing <span>Attack Speed by 30/35/40/45/50%</span> for 3 seconds.",
+        "iconFile": "Landslide.png",
+        "cooldownSeconds": [
+          7,
+          7,
+          7,
+          7,
+          7
+        ],
+        "cost": {
+          "values": [
+            50,
+            55,
+            60,
+            65,
+            70
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          400,
+          400,
+          400,
+          400,
+          400
+        ],
+        "rankValues": [
+          {
+            "label": "Damage",
+            "values": "60/95/130/165/200"
+          },
+          {
+            "label": "Attack Speed Reduction",
+            "values": "30/35/40/45/50"
+          },
+          {
+            "label": "Mana Cost",
+            "values": "50/55/60/65/70"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "E Scaling",
+            "labelKo": "E 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "2:EDamageCalc"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "R": {
+        "slot": "R",
+        "id": "UFSlash",
+        "name": "Unstoppable Force",
+        "summary": "Malphite launches himself to a location at high speed, damaging enemies and knocking them into the air.",
+        "bodyHtml": "Malphite charges with the force of a landslide, dashing Unstoppably. At the end of the dash, Malphite <span class=\"text-purple-600 dark:text-purple-500\">Knocks Up</span> for 1.5 seconds and deals <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(200/300/400 + (90% Ability Power)) magic damage</span>.",
+        "iconFile": "UFSlash.png",
+        "cooldownSeconds": [
+          130,
+          115,
+          100
+        ],
+        "cost": {
+          "values": [
+            100,
+            100,
+            100
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          1000,
+          1000,
+          1000
+        ],
+        "rankValues": [
+          {
+            "label": "Cooldown",
+            "values": "130/115/100"
+          },
+          {
+            "label": "Damage",
+            "values": "200/300/400"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "R Scaling",
+            "labelKo": "R 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "3:TotalDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      }
+    }
+  }
+}

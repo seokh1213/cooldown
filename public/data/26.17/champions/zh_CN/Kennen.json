@@ -1,0 +1,391 @@
+{
+  "schemaVersion": 2,
+  "patchVersion": "26.17",
+  "locale": "zh_CN",
+  "sources": {
+    "ddragon": "16.17.1",
+    "cdragon": "16.17"
+  },
+  "champion": {
+    "id": "Kennen",
+    "key": "85",
+    "name": "狂暴之心",
+    "title": "凯南",
+    "tags": [
+      "Mage"
+    ],
+    "baseStats": {
+      "health": {
+        "base": 580,
+        "perLevel": 98
+      },
+      "healthRegen": {
+        "base": 5.5,
+        "perLevel": 0.65
+      },
+      "mana": {
+        "base": 200,
+        "perLevel": 0
+      },
+      "manaRegen": {
+        "base": 50,
+        "perLevel": 0
+      },
+      "attackDamage": {
+        "base": 48,
+        "perLevel": 0
+      },
+      "attackSpeed": {
+        "base": 0.625,
+        "perLevel": 3.4
+      },
+      "armor": {
+        "base": 29,
+        "perLevel": 4.95
+      },
+      "magicResist": {
+        "base": 30,
+        "perLevel": 1.3
+      },
+      "moveSpeed": {
+        "base": 335,
+        "perLevel": 0
+      },
+      "attackRange": {
+        "base": 550,
+        "perLevel": 0
+      }
+    },
+    "baseStatContributions": [
+      {
+        "stat": "MAX_HEALTH",
+        "value": 98,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "HEALTH_REGEN",
+        "value": 0.65,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAX_MANA",
+        "value": 0,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MANA_REGEN",
+        "value": 0,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_DAMAGE",
+        "value": 0,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_SPEED",
+        "value": 3.4,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ARMOR",
+        "value": 4.95,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAGIC_RESIST",
+        "value": 1.3,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      }
+    ],
+    "abilities": {
+      "P": {
+        "slot": "P",
+        "id": "KennenPassive",
+        "name": "【忍法！雷缚印】",
+        "summary": "凯南在用他的技能命中同一敌方3次后，会将其晕眩。",
+        "bodyHtml": "凯南的技能会施加一层持续6秒的印记。在3层时，敌人会被<span class=\"text-purple-600 dark:text-purple-500\">晕眩</span>1.25秒并且凯南会回复<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">25能量</span>。",
+        "iconFile": "Kennen_Passive.png",
+        "cooldownSeconds": [],
+        "range": [],
+        "rankValues": [],
+        "scalings": [],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "Q": {
+        "slot": "Q",
+        "id": "KennenShurikenHurlMissile1",
+        "name": "奥义！千鸟",
+        "summary": "凯南向目标区域投掷手里剑，对第一个目标造成伤害并附加【忍法！雷缚印】。",
+        "bodyHtml": "凯南投掷一枚手里剑，对命中的第一个敌人造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(75/125/175/225/275 + (75% 法术强度))魔法伤害</span>。",
+        "iconFile": "KennenShurikenHurlMissile1.png",
+        "cooldownSeconds": [
+          7,
+          6.25,
+          5.5,
+          4.75,
+          4
+        ],
+        "cost": {
+          "values": [
+            60,
+            55,
+            50,
+            45,
+            40
+          ],
+          "resource": "法力值"
+        },
+        "range": [
+          950,
+          950,
+          950,
+          950,
+          950
+        ],
+        "rankValues": [
+          {
+            "label": "冷却时间",
+            "values": "7/6.25/5.5/4.75/4"
+          },
+          {
+            "label": "法力值消耗",
+            "values": "60/55/50/45/40"
+          },
+          {
+            "label": "伤害",
+            "values": "75/125/175/225/275"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "Q Scaling",
+            "labelKo": "Q 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "0:TotalDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "W": {
+        "slot": "W",
+        "id": "KennenBringTheLight",
+        "name": "奥义！电刃",
+        "summary": "凯南连续攻击附加额外伤害并对目标造成一层【忍法！雷缚印】，主动释放会对所有带有【忍法！雷缚印】的敌人造成闪电伤害，并额外附加一层【忍法！雷缚印】。",
+        "bodyHtml": "<span class=\"text-gray-600 dark:text-gray-500 italic\">被动：</span>每第5次攻击额外的<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(35/45/55/65/75 + (35% 法术强度))魔法伤害</span><span>攻击特效</span>。<br /><br /><span class=\"text-gray-900 dark:text-white font-semibold\">主动：</span>凯南释放一道电能爆裂，对附近被施加了<span>忍法！雷缚印</span>的敌人们造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(70/95/120/145/170 + (80% 法术强度))魔法伤害</span>。<br /><br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">被动效果会施加<span>忍法！雷缚印</span>，并且可以产生暴击，转而造成(35/45/55/65/75 + (35% 法术强度))伤害。<br />攻击建筑时会叠加被动效果，但不会消耗被动效果。主动效果会自动命中所有处在<span>秘奥义！万雷天牢引</span>中的敌人。</span>",
+        "iconFile": "KennenBringTheLight.png",
+        "cooldownSeconds": [
+          13,
+          11.25,
+          9.5,
+          7.75,
+          6
+        ],
+        "cost": {
+          "values": [
+            40,
+            40,
+            40,
+            40,
+            40
+          ],
+          "resource": "法力值"
+        },
+        "range": [
+          725,
+          725,
+          725,
+          725,
+          725
+        ],
+        "rankValues": [
+          {
+            "label": "冷却时间",
+            "values": "13/11.25/9.5/7.75/6"
+          },
+          {
+            "label": "额外攻击收益率",
+            "values": "80/90/100/110/120"
+          },
+          {
+            "label": "伤害(被动)",
+            "values": "35/45/55/65/75"
+          },
+          {
+            "label": "伤害(主动)",
+            "values": "70/95/120/145/170"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "W Scaling",
+            "labelKo": "W 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "1:TotalDamagePassive"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "E": {
+        "slot": "E",
+        "id": "KennenLightningRush",
+        "name": "奥义！雷铠",
+        "summary": "凯南变身为一个闪电形态，高速移动并可以穿越单位。对碰到的所有敌人造成伤害并施加一层【忍法！雷缚印】。凯南会在进入这个形态时获得移动速度，并在离开时获得攻击速度。",
+        "bodyHtml": "凯南变成一个闪电球，获得<span class=\"text-cyan-600 dark:text-cyan-500\">100%移动速度</span>，在穿过敌人时造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(80/120/160/200/240 + (80% 法术强度))魔法伤害</span>，同时变为幽灵状态，持续2秒。如果凯南对至少一名敌人造成了伤害，那么他会获得40能量。<br /><br />在这个技能结束后，凯南会获得持续4秒的<span>40/50/60/70/80%攻击速度</span>。暴击会将这个时长延长1秒。凯南可以<span class=\"text-yellow-600 dark:text-yellow-300\">再次施放</span>以提前结束这个技能。<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">【幽灵】状态的单位能够无视其它单位的碰撞体积。<br />对小兵和野怪造成65%伤害。<br />延长的时长不能超过其初始时长。</span>",
+        "iconFile": "KennenLightningRush.png",
+        "cooldownSeconds": [
+          10,
+          9,
+          8,
+          7,
+          6
+        ],
+        "cost": {
+          "values": [
+            80,
+            80,
+            80,
+            80,
+            80
+          ],
+          "resource": "法力值"
+        },
+        "range": [
+          170,
+          170,
+          170,
+          170,
+          170
+        ],
+        "rankValues": [
+          {
+            "label": "冷却时间",
+            "values": "10/9/8/7/6"
+          },
+          {
+            "label": "伤害",
+            "values": "80/120/160/200/240"
+          },
+          {
+            "label": "攻击速度",
+            "values": "40/50/60/70/80"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "E Scaling",
+            "labelKo": "E 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "2:TotalDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "R": {
+        "slot": "R",
+        "id": "KennenShurikenStorm",
+        "name": "秘奥义！万雷天牢引",
+        "summary": "凯南召唤出一团风暴，会对周围的所有敌方英雄造成魔法伤害。",
+        "bodyHtml": "凯南释放一阵魔法风暴，每0.5秒对附近的所有敌人造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(40/80/120 + (25% 法术强度))魔法伤害</span>，并且获得<span class=\"text-orange-600 dark:text-orange-400\">25/50/75护甲</span>和<span>25/50/75魔法抗性</span>，持续3秒。后续的每次命中会对已被影响的敌人造成10%提升伤害。<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">敌人只会被这个技能施加3层<span>忍法！雷缚印</span>。</span>",
+        "iconFile": "KennenShurikenStorm.png",
+        "cooldownSeconds": [
+          120,
+          120,
+          120
+        ],
+        "range": [
+          550,
+          550,
+          550
+        ],
+        "rankValues": [
+          {
+            "label": "伤害",
+            "values": "40/80/120"
+          },
+          {
+            "label": "护甲加成",
+            "values": "25/50/75"
+          },
+          {
+            "label": "魔法抗性加成",
+            "values": "25/50/75"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "R Scaling",
+            "labelKo": "R 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "3:PerTickDamageCalculated"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      }
+    }
+  }
+}

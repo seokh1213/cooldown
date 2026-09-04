@@ -1,0 +1,396 @@
+{
+  "schemaVersion": 2,
+  "patchVersion": "26.17",
+  "locale": "zh_CN",
+  "sources": {
+    "ddragon": "16.17.1",
+    "cdragon": "16.17"
+  },
+  "champion": {
+    "id": "Diana",
+    "key": "131",
+    "name": "皎月女神",
+    "title": "黛安娜",
+    "tags": [
+      "Fighter",
+      "Assassin"
+    ],
+    "baseStats": {
+      "health": {
+        "base": 640,
+        "perLevel": 109
+      },
+      "healthRegen": {
+        "base": 6.5,
+        "perLevel": 0.85
+      },
+      "mana": {
+        "base": 375,
+        "perLevel": 25
+      },
+      "manaRegen": {
+        "base": 8,
+        "perLevel": 0.8
+      },
+      "attackDamage": {
+        "base": 57,
+        "perLevel": 0
+      },
+      "attackSpeed": {
+        "base": 0.625,
+        "perLevel": 2
+      },
+      "armor": {
+        "base": 31,
+        "perLevel": 4.3
+      },
+      "magicResist": {
+        "base": 32,
+        "perLevel": 2.05
+      },
+      "moveSpeed": {
+        "base": 345,
+        "perLevel": 0
+      },
+      "attackRange": {
+        "base": 150,
+        "perLevel": 0
+      }
+    },
+    "baseStatContributions": [
+      {
+        "stat": "MAX_HEALTH",
+        "value": 109,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "HEALTH_REGEN",
+        "value": 0.85,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAX_MANA",
+        "value": 25,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MANA_REGEN",
+        "value": 0.8,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_DAMAGE",
+        "value": 0,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_SPEED",
+        "value": 2,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ARMOR",
+        "value": 4.3,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAGIC_RESIST",
+        "value": 2.05,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      }
+    ],
+    "abilities": {
+      "P": {
+        "slot": "P",
+        "id": "DianaPassive",
+        "name": "月银之刃",
+        "summary": "每第三次攻击就会溅射周围的敌人，造成额外的魔法伤害。在施放一个技能后，黛安娜获得持续5秒的攻击速度。",
+        "bodyHtml": "黛安娜获得<span>(15% ~ 35%)攻击速度</span>，在施放一个技能后提升至<span>45/105%</span>，持续5秒。<br /><br />每第三次攻击会顺劈附近的敌人，造成额外的<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(20 + (50% 法术强度))魔法伤害</span>。",
+        "iconFile": "Diana_Passive_LunarBlade.png",
+        "cooldownSeconds": [],
+        "range": [],
+        "rankValues": [],
+        "scalings": [],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "Q": {
+        "slot": "Q",
+        "id": "DianaQ",
+        "name": "新月打击",
+        "summary": "释放一道月能光束，对弧形范围内的敌人造成伤害。<br><br>会对命中的敌人施加月光效果，如果中了月光效果的敌人不在潜行状态下，就会暴露在己方视野中3秒。",
+        "bodyHtml": "黛安娜释放一道月能圆弧，造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(70/105/140/175/210 + (70% 法术强度))魔法伤害</span>并用<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">月光</span>标记3秒。<br /><br /><span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">月光</span>会显形那些不在<span class=\"text-purple-600 dark:text-purple-400 font-semibold\">潜行</span>状态的敌人们。",
+        "iconFile": "DianaQ.png",
+        "cooldownSeconds": [
+          8,
+          7.5,
+          7,
+          6.5,
+          6
+        ],
+        "cost": {
+          "values": [
+            50,
+            50,
+            50,
+            50,
+            50
+          ],
+          "resource": "法力值"
+        },
+        "range": [
+          900,
+          900,
+          900,
+          900,
+          900
+        ],
+        "rankValues": [
+          {
+            "label": "冷却时间",
+            "values": "8/7.5/7/6.5/6"
+          },
+          {
+            "label": "伤害",
+            "values": "70/105/140/175/210"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "Q Scaling",
+            "labelKo": "Q 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "0:TotalDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "W": {
+        "slot": "W",
+        "id": "DianaOrbs",
+        "name": "苍白之瀑",
+        "summary": "黛安娜召出三颗护体法球，在命中敌人后爆炸，对一个区域内的敌人造成范围伤害。她也会获得一层吸收伤害的护盾。护盾的生命值会在她的第三颗法球爆炸后得到提升。",
+        "bodyHtml": "黛安娜生成3颗持续5秒的护体法球，可在接触时爆炸，每颗造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(20/32/44/56/68 + (18% 法术强度))魔法伤害</span>，至多达到<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(60/96/132/168/204 + (54% 法术强度))伤害</span>。<br /><br />黛安娜也会获得相同持续时间的<span class=\"text-blue-600 dark:text-blue-300\">(45/60/75/90/105 + (30% 法术强度) + (11% 额外生命值))护盾值</span>。当最后一颗法球爆炸后，她会获得额外的<span class=\"text-blue-600 dark:text-blue-300\">(45/60/75/90/105 + (30% 法术强度) + (11% 额外生命值))护盾值</span>并刷新持续时间。",
+        "iconFile": "DianaOrbs.png",
+        "cooldownSeconds": [
+          15,
+          13.5,
+          12,
+          10.5,
+          9
+        ],
+        "cost": {
+          "values": [
+            40,
+            45,
+            50,
+            55,
+            60
+          ],
+          "resource": "法力值"
+        },
+        "range": [
+          800,
+          800,
+          800,
+          800,
+          800
+        ],
+        "rankValues": [
+          {
+            "label": "伤害",
+            "values": "20/32/44/56/68"
+          },
+          {
+            "label": "护盾值",
+            "values": "45/60/75/90/105"
+          },
+          {
+            "label": "法力值消耗",
+            "values": "40/45/50/55/60"
+          },
+          {
+            "label": "冷却时间",
+            "values": "15/13.5/12/10.5/9"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "W Scaling",
+            "labelKo": "W 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "1:TotalDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "E": {
+        "slot": "E",
+        "id": "DianaTeleport",
+        "name": "月神冲刺",
+        "summary": "成为复仇之月的活化身，冲向一名敌人并造成魔法伤害。<br>【月神冲刺】在冲达一名被施加了【月光】效果的敌人时，会没有冷却时间。所有其它的敌人都将移除掉身上的【月光】效果，无论他们是否是【月神冲刺】的目标。",
+        "bodyHtml": "黛安娜成为复仇之月的活化身，冲向一名敌人并造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(50/70/90/110/130 + (60% 法术强度))魔法伤害</span>。如果目标被施加了<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">月光</span>，那么这个技能的冷却时间会被刷新。",
+        "iconFile": "DianaTeleport.png",
+        "cooldownSeconds": [
+          22,
+          20,
+          18,
+          16,
+          14
+        ],
+        "cost": {
+          "values": [
+            40,
+            45,
+            50,
+            55,
+            60
+          ],
+          "resource": "法力值"
+        },
+        "range": [
+          825,
+          825,
+          825,
+          825,
+          825
+        ],
+        "rankValues": [
+          {
+            "label": "冷却时间",
+            "values": "22/20/18/16/14"
+          },
+          {
+            "label": "法力值消耗",
+            "values": "40/45/50/55/60"
+          },
+          {
+            "label": "伤害",
+            "values": "50/70/90/110/130"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "E Scaling",
+            "labelKo": "E 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "2:TotalDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "R": {
+        "slot": "R",
+        "id": "DianaR",
+        "name": "月之降临",
+        "summary": "黛安娜将附近所有敌人显形并拉拽到身边，然后使他们减速。<br><br>如果黛安娜将1个或以上的敌方英雄拉拽到身边，那么月光会在短暂延迟后倾注在她身上，在她附近的一个区域内造成魔法伤害，每拉拽一个额外目标就会使这个伤害提升。",
+        "bodyHtml": "黛安娜<span class=\"text-purple-600 dark:text-purple-500\">拽入</span>、<span class=\"text-purple-600 dark:text-purple-500\">减速</span>40/50/60%、并显形附近的敌人 2秒。<br /><br />如果黛安娜命中了至少一名敌方英雄，那么她就会召唤月亮，造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(200/300/400 + (60% 法术强度))魔法伤害</span>外加<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(35/60/85 + (15% 法术强度))</span>x第一个之外的被拖拽英雄数，至多达到<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(175/300/425 + (75% 法术强度))伤害</span>。",
+        "iconFile": "DianaR.png",
+        "cooldownSeconds": [
+          100,
+          90,
+          80
+        ],
+        "cost": {
+          "values": [
+            100,
+            100,
+            100
+          ],
+          "resource": "法力值"
+        },
+        "range": [
+          475,
+          475,
+          475
+        ],
+        "rankValues": [
+          {
+            "label": "冷却时间",
+            "values": "100/90/80"
+          },
+          {
+            "label": "伤害",
+            "values": "200/300/400"
+          },
+          {
+            "label": "减速",
+            "values": "40/50/60"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "R Scaling",
+            "labelKo": "R 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "3:RExplosionDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      }
+    }
+  }
+}

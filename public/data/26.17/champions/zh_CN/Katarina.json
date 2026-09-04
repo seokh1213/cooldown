@@ -1,0 +1,335 @@
+{
+  "schemaVersion": 2,
+  "patchVersion": "26.17",
+  "locale": "zh_CN",
+  "sources": {
+    "ddragon": "16.17.1",
+    "cdragon": "16.17"
+  },
+  "champion": {
+    "id": "Katarina",
+    "key": "55",
+    "name": "不祥之刃",
+    "title": "卡特琳娜",
+    "tags": [
+      "Assassin",
+      "Mage"
+    ],
+    "baseStats": {
+      "health": {
+        "base": 672,
+        "perLevel": 108
+      },
+      "healthRegen": {
+        "base": 7.5,
+        "perLevel": 0.7
+      },
+      "mana": {
+        "base": 0,
+        "perLevel": 0
+      },
+      "manaRegen": {
+        "base": 0,
+        "perLevel": 0
+      },
+      "attackDamage": {
+        "base": 58,
+        "perLevel": 0
+      },
+      "attackSpeed": {
+        "base": 0.658,
+        "perLevel": 2.74
+      },
+      "armor": {
+        "base": 32,
+        "perLevel": 4.7
+      },
+      "magicResist": {
+        "base": 32,
+        "perLevel": 2.05
+      },
+      "moveSpeed": {
+        "base": 335,
+        "perLevel": 0
+      },
+      "attackRange": {
+        "base": 125,
+        "perLevel": 0
+      }
+    },
+    "baseStatContributions": [
+      {
+        "stat": "MAX_HEALTH",
+        "value": 108,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "HEALTH_REGEN",
+        "value": 0.7,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAX_MANA",
+        "value": 0,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MANA_REGEN",
+        "value": 0,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_DAMAGE",
+        "value": 0,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_SPEED",
+        "value": 2.74,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ARMOR",
+        "value": 4.7,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAGIC_RESIST",
+        "value": 2.05,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      }
+    ],
+    "abilities": {
+      "P": {
+        "slot": "P",
+        "id": "KatarinaPassive",
+        "name": "贪婪",
+        "summary": "每当一名在过去3秒被卡特琳娜所伤害的敌方英雄阵亡时，卡特琳娜的技能的冷却时间就会显著减少。<br><br>如果卡特琳娜拾起一把<font color='#FFF673'>匕首</font>，她会用它来斩击附近的所有敌人以造成魔法伤害。",
+        "bodyHtml": "每当一名在过去3秒被卡特琳娜所伤害的敌方英雄阵亡时，卡特琳娜的技能的冷却时间就会减少15秒。<br /><br />如果卡特琳娜拾起一把<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">匕首</span>，她会用它来斩击附近的所有敌人来造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(60% 额外攻击力)魔法伤害</span>。",
+        "iconFile": "Katarina_Passive.png",
+        "cooldownSeconds": [],
+        "range": [],
+        "rankValues": [],
+        "scalings": [],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "Q": {
+        "slot": "Q",
+        "id": "KatarinaQ",
+        "name": "弹射之刃",
+        "summary": "卡特琳娜朝敌人扔出一把<font color='#FFF673'>匕首</font>，<font color='#FFF673'>匕首</font>会弹射到附近敌人身上，然后落到地面上。",
+        "bodyHtml": "卡特琳娜投掷一把<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">匕首</span>，造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(80/115/150/185/220 + (40% 法术强度))魔法伤害</span>给目标及附近的2个敌人。<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">匕首</span>随后会弹落到主要目标身后的地面上。",
+        "iconFile": "KatarinaQ.png",
+        "cooldownSeconds": [
+          11,
+          10,
+          9,
+          8,
+          7
+        ],
+        "range": [
+          625,
+          625,
+          625,
+          625,
+          625
+        ],
+        "rankValues": [
+          {
+            "label": "基础伤害",
+            "values": "80/115/150/185/220"
+          },
+          {
+            "label": "冷却时间",
+            "values": "11/10/9/8/7"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "Q Scaling",
+            "labelKo": "Q 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "0:TotalDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "W": {
+        "slot": "W",
+        "id": "KatarinaW",
+        "name": "伺机待发",
+        "summary": "卡特琳娜获得爆发性的移动速度加成，同时投掷一把<font color='#FFF673'>匕首</font>到她正上方的空中。",
+        "bodyHtml": "卡特琳娜扔出一把<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">匕首</span>至空中并获得在1.25秒里持续衰减的<span class=\"text-cyan-600 dark:text-cyan-500\">50/60/70/80/90%移动速度</span>。",
+        "iconFile": "KatarinaW.png",
+        "cooldownSeconds": [
+          15,
+          14,
+          13,
+          12,
+          11
+        ],
+        "range": [
+          25000,
+          25000,
+          25000,
+          25000,
+          25000
+        ],
+        "rankValues": [
+          {
+            "label": "移动速度",
+            "values": "50/60/70/80/90"
+          },
+          {
+            "label": "冷却时间",
+            "values": "15/14/13/12/11"
+          }
+        ],
+        "scalings": [],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "E": {
+        "slot": "E",
+        "id": "KatarinaEWrapper",
+        "name": "瞬步",
+        "summary": "卡特琳娜立刻闪烁到目标处，如果目标是敌人，则她会对目标造成伤害，否则会对距她最近的敌人造成伤害。",
+        "bodyHtml": "卡特琳娜在眨眼间闪烁到目标友军、敌人、或<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">匕首</span>处。如果目标是敌人，那么卡特琳娜会造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(20/30/40/50/60 + (25% 法术强度) + (40% 攻击力))魔法伤害</span>——如果是其它情况，那么她会对范围内距她最近的敌人造成伤害。<br /><br />拾取一把<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">匕首</span>将使这个技能的冷却时间缩短<span class=\"text-gray-600 dark:text-gray-400\">1</span>秒(<span class=\"text-gray-600 dark:text-gray-400\">100%</span>)。卡特琳娜可以闪烁到目标附近的任一位置。<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">这次打击会施加攻击特效。</span>",
+        "iconFile": "KatarinaEWrapper.png",
+        "cooldownSeconds": [
+          12,
+          11,
+          10,
+          9,
+          8
+        ],
+        "range": [
+          725,
+          725,
+          725,
+          725,
+          725
+        ],
+        "rankValues": [
+          {
+            "label": "伤害",
+            "values": "20/30/40/50/60"
+          },
+          {
+            "label": "冷却时间",
+            "values": "12/11/10/9/8"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "E Scaling",
+            "labelKo": "E 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "2:TotalDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "R": {
+        "slot": "R",
+        "id": "KatarinaR",
+        "name": "死亡莲华",
+        "summary": "卡特琳娜化身为一道剑刃飓风，以无与伦比的速度对周围最多三个敌方英雄造成巨量魔法伤害。",
+        "bodyHtml": "卡特琳娜化身为一道剑刃飓风，快速用一连串匕首攻击相距最近的3名敌方英雄。每把匕首造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(25/37.5/50 + (19% 法术强度))魔法伤害</span>和<span class=\"text-red-600 dark:text-red-500 font-semibold\">物理伤害</span>，并施加持续3秒的40%重伤效果。<br /><br />在2.5秒里持续对每个敌方英雄造成的总伤害：<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(25/37.5/50 + (19% 法术强度))魔法伤害</span>和<span class=\"text-red-600 dark:text-red-500 font-semibold\">物理伤害</span>。<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">这个技能施加25/30/35%伤害的<span>攻击特效和攻击附伤</span>，并且不会暴击或施加任何生命偷取。<br />这个技能的<span class=\"text-red-600 dark:text-red-500 font-semibold\">物理伤害</span>可通过<span>攻击速度</span>来额外提升。</span>",
+        "iconFile": "KatarinaR.png",
+        "cooldownSeconds": [
+          75,
+          60,
+          45
+        ],
+        "range": [
+          550,
+          550,
+          550
+        ],
+        "rankValues": [
+          {
+            "label": "每把匕首的伤害",
+            "values": "25/37.5/50"
+          },
+          {
+            "label": "冷却时间",
+            "values": "75/60/45"
+          },
+          {
+            "label": "攻击特效伤害修正",
+            "values": "25/30/35"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "R Scaling",
+            "labelKo": "R 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "3:DamageCalc"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": [
+            "ADDamageCalc",
+            "TotalADDamageCalc"
+          ]
+        }
+      }
+    }
+  }
+}

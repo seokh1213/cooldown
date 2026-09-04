@@ -1,0 +1,392 @@
+{
+  "schemaVersion": 2,
+  "patchVersion": "26.17",
+  "locale": "en_US",
+  "sources": {
+    "ddragon": "16.17.1",
+    "cdragon": "16.17"
+  },
+  "champion": {
+    "id": "Pantheon",
+    "key": "80",
+    "name": "Pantheon",
+    "title": "the Unbreakable Spear",
+    "tags": [
+      "Fighter",
+      "Assassin"
+    ],
+    "baseStats": {
+      "health": {
+        "base": 650,
+        "perLevel": 109
+      },
+      "healthRegen": {
+        "base": 6,
+        "perLevel": 0.65
+      },
+      "mana": {
+        "base": 317,
+        "perLevel": 31
+      },
+      "manaRegen": {
+        "base": 7.35,
+        "perLevel": 0.45
+      },
+      "attackDamage": {
+        "base": 64,
+        "perLevel": 0
+      },
+      "attackSpeed": {
+        "base": 0.658,
+        "perLevel": 2.95
+      },
+      "armor": {
+        "base": 40,
+        "perLevel": 4.95
+      },
+      "magicResist": {
+        "base": 28,
+        "perLevel": 2.05
+      },
+      "moveSpeed": {
+        "base": 345,
+        "perLevel": 0
+      },
+      "attackRange": {
+        "base": 175,
+        "perLevel": 0
+      }
+    },
+    "baseStatContributions": [
+      {
+        "stat": "MAX_HEALTH",
+        "value": 109,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "HEALTH_REGEN",
+        "value": 0.65,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAX_MANA",
+        "value": 31,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MANA_REGEN",
+        "value": 0.45,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_DAMAGE",
+        "value": 0,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_SPEED",
+        "value": 2.95,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ARMOR",
+        "value": 4.95,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAGIC_RESIST",
+        "value": 2.05,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      }
+    ],
+    "abilities": {
+      "P": {
+        "slot": "P",
+        "id": "PantheonPassive",
+        "name": "Mortal Will",
+        "summary": "Every few spells or attacks, Pantheon's next spell is empowered.",
+        "bodyHtml": "After using 5 Abilities or Attacks, Pantheon empowers his next basic Ability.",
+        "iconFile": "Pantheon_Passive.png",
+        "cooldownSeconds": [],
+        "range": [],
+        "rankValues": [],
+        "scalings": [],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "Q": {
+        "slot": "Q",
+        "id": "PantheonQ",
+        "name": "Comet Spear",
+        "summary": "Pantheon either thrusts his spear or throws his spear in the chosen direction.",
+        "bodyHtml": "<span style=\"color: #FF8C00\">Tap:</span> Pantheon thrusts his spear, dealing <span class=\"text-red-600 dark:text-red-500 font-semibold\">(70/100/130/160/190 + (115% bonus Attack Damage)) physical damage</span> to enemies hit. Refunds 60% of this Ability's Cooldown.<br /><br /><span style=\"color: #FF8C00\">Hold:</span> Pantheon hurls his spear, dealing <span class=\"text-red-600 dark:text-red-500 font-semibold\">(70/100/130/160/190 + (115% bonus Attack Damage) + (50% Ability Power)) physical damage</span> to the first enemy hit and 50% less to further targets. <br /><br />This Ability is enhanced against enemies below 20% Health to deal <span class=\"text-red-600 dark:text-red-500 font-semibold\">(230% bonus Attack Damage) physical damage</span> instead.<br /><br /><span style=\"color: #EDDA74\">Mortal Will Bonus:</span> Deals an additional <span class=\"text-red-600 dark:text-red-500 font-semibold\">(115% bonus Attack Damage) physical damage</span>.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">Deals 80% damage to monsters.</span><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">Deals 70% damage to minions.</span>",
+        "iconFile": "PantheonQ.png",
+        "cooldownSeconds": [
+          11,
+          10.25,
+          9.5,
+          8.75,
+          8
+        ],
+        "cost": {
+          "values": [
+            25,
+            25,
+            25,
+            25,
+            25
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          575,
+          575,
+          575,
+          575,
+          575
+        ],
+        "rankValues": [
+          {
+            "label": "Base Damage",
+            "values": "70/100/130/160/190"
+          },
+          {
+            "label": "Execute Base Damage",
+            "values": "155/230/305/380/455"
+          },
+          {
+            "label": "Cooldown",
+            "values": "11/10.25/9.5/8.75/8"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "Q Scaling",
+            "labelKo": "Q 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "0:HoldDamageCalc"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "W": {
+        "slot": "W",
+        "id": "PantheonW",
+        "name": "Shield Vault",
+        "summary": "Pantheon dashes to a target, damaging and stunning them.",
+        "bodyHtml": "Pantheon leaps on his target, <span class=\"text-purple-600 dark:text-purple-500\">Stunning</span> for 1 second and dealing <span class=\"text-red-600 dark:text-red-500 font-semibold\">(6/6.5/7/7.5/8% + (0.004% bonus Health) + (0.015% Ability Power)) max Health physical damage</span>.<br /><br /><span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Mortal Will Bonus:</span> Pantheon's next Attack strikes 3 times, dealing a total of <span class=\"text-red-600 dark:text-red-500 font-semibold\"> physical damage</span>.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">Deals a minimum of 60 and a maximum of 150 damage to Minions and Monsters.</span>",
+        "iconFile": "PantheonW.png",
+        "cooldownSeconds": [
+          13,
+          12,
+          11,
+          10,
+          9
+        ],
+        "cost": {
+          "values": [
+            55,
+            55,
+            55,
+            55,
+            55
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          600,
+          600,
+          600,
+          600,
+          600
+        ],
+        "rankValues": [
+          {
+            "label": "Max Health %",
+            "values": "6%/6.5%/7%/7.5%/8%"
+          },
+          {
+            "label": "Cooldown",
+            "values": "13/12/11/10/9"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "W Scaling",
+            "labelKo": "W 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "1:DamageCalc"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": [
+            "EmpoweredDamageMultCalcModified"
+          ]
+        }
+      },
+      "E": {
+        "slot": "E",
+        "id": "PantheonE",
+        "name": "Aegis Assault",
+        "summary": "Pantheon sets his shield, becoming invulnerable to damage from the front and striking repeatedly with his spear.",
+        "bodyHtml": "Pantheon braces his shield and engages enemies in a chosen direction for 1.5 seconds, becoming immune to non-tower damage from that direction and dealing <span class=\"text-red-600 dark:text-red-500 font-semibold\">(100% Attack Damage) physical damage</span> over the duration. After channeling Pantheon slams with his shield, dealing <span class=\"text-red-600 dark:text-red-500 font-semibold\">(55/105/155/205/255 + (150% bonus Attack Damage)) physical damage</span>.<br /><br /><span style=\"color: #EDDA74\">Mortal Will Bonus:</span> When Pantheon slams his shield he gains <span class=\"text-orange-600 dark:text-orange-400\">(2.5% bonus Health) Armor</span> and <span>(2.5% bonus Health) Magic Resist</span> for 4 seconds, and <span class=\"text-cyan-600 dark:text-cyan-500\">60% Move Speed</span> for 1.5 seconds. <br /><br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\"><span class=\"text-yellow-600 dark:text-yellow-300\">Recast</span> to end early (Pantheon still slams with his shield as the last hit). <br />Damage to minions is reduced by 50%.</span>",
+        "iconFile": "PantheonE.png",
+        "cooldownSeconds": [
+          22,
+          21,
+          20,
+          19,
+          18
+        ],
+        "cost": {
+          "values": [
+            80,
+            80,
+            80,
+            80,
+            80
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          400,
+          400,
+          400,
+          400,
+          400
+        ],
+        "rankValues": [
+          {
+            "label": "Cooldown",
+            "values": "22/21/20/19/18"
+          },
+          {
+            "label": "Shield Slam Damage",
+            "values": "55/105/155/205/255"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "E Scaling",
+            "labelKo": "E 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "2:DamageCalc"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "R": {
+        "slot": "R",
+        "id": "PantheonR",
+        "name": "Grand Starfall",
+        "summary": "Pantheon composes himself and then leaps into the air, landing at a chosen location as a comet.",
+        "bodyHtml": "<span class=\"text-gray-600 dark:text-gray-500 italic\">Passive:</span> Pantheon gains 10/20/30% Armor Penetration.<br /><br /><span class=\"text-gray-900 dark:text-white font-semibold\">Active:</span> Pantheon gathers his strength to leap high into the air. He throws his spear from above which in a small area deals <span class=\"text-red-600 dark:text-red-500 font-semibold\"> physical damage</span> and <span class=\"text-purple-600 dark:text-purple-500\">Slows</span> by 50% for 2 seconds. <br /><br />Pantheon then crashes down as a meteor at the target area. Deals up to <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(300/500/700 + (100% Ability Power)) magic damage</span> to enemies in a line (decreased by up to 50% at the edges of the area).<br /><br />This Ability instantly readies <span style=\"color: #EDDA74\">Mortal Will</span>.",
+        "iconFile": "PantheonR.png",
+        "cooldownSeconds": [
+          180,
+          165,
+          150
+        ],
+        "cost": {
+          "values": [
+            100,
+            100,
+            100
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          5500,
+          5500,
+          5500
+        ],
+        "rankValues": [
+          {
+            "label": "Damage",
+            "values": "300/500/700"
+          },
+          {
+            "label": "Cooldown",
+            "values": "180/165/150"
+          },
+          {
+            "label": "Armor Penetration",
+            "values": "10/20/30"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "R Scaling",
+            "labelKo": "R 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "3:DamageCalc"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": [
+            "spell.PantheonQ:HoldDamageCalc"
+          ]
+        }
+      }
+    }
+  }
+}

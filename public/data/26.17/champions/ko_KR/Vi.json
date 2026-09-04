@@ -1,0 +1,392 @@
+{
+  "schemaVersion": 2,
+  "patchVersion": "26.17",
+  "locale": "ko_KR",
+  "sources": {
+    "ddragon": "16.17.1",
+    "cdragon": "16.17"
+  },
+  "champion": {
+    "id": "Vi",
+    "key": "254",
+    "name": "바이",
+    "title": "필트오버의 집행자",
+    "tags": [
+      "Fighter",
+      "Assassin"
+    ],
+    "baseStats": {
+      "health": {
+        "base": 655,
+        "perLevel": 105
+      },
+      "healthRegen": {
+        "base": 10,
+        "perLevel": 1
+      },
+      "mana": {
+        "base": 295,
+        "perLevel": 65
+      },
+      "manaRegen": {
+        "base": 8,
+        "perLevel": 0.65
+      },
+      "attackDamage": {
+        "base": 63,
+        "perLevel": 0
+      },
+      "attackSpeed": {
+        "base": 0.644,
+        "perLevel": 2
+      },
+      "armor": {
+        "base": 30,
+        "perLevel": 4.7
+      },
+      "magicResist": {
+        "base": 32,
+        "perLevel": 2.05
+      },
+      "moveSpeed": {
+        "base": 340,
+        "perLevel": 0
+      },
+      "attackRange": {
+        "base": 125,
+        "perLevel": 0
+      }
+    },
+    "baseStatContributions": [
+      {
+        "stat": "MAX_HEALTH",
+        "value": 105,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "HEALTH_REGEN",
+        "value": 1,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAX_MANA",
+        "value": 65,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MANA_REGEN",
+        "value": 0.65,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_DAMAGE",
+        "value": 0,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_SPEED",
+        "value": 2,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ARMOR",
+        "value": 4.7,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAGIC_RESIST",
+        "value": 2.05,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      }
+    ],
+    "abilities": {
+      "P": {
+        "slot": "P",
+        "id": "ViPassive",
+        "name": "폭발 보호막",
+        "summary": "바이는 시간이 흐르면 보호막이 1회 충전됩니다. 이 보호막은 적을 스킬로 적중시키면 활성화됩니다.",
+        "bodyHtml": "바이가 스킬을 적이나 구조물에 맞히면 3초 동안 <span class=\"text-blue-600 dark:text-blue-300\">(12% 체력)의 피해를 흡수하는 보호막</span>을 얻습니다.",
+        "iconFile": "ViPassive.png",
+        "cooldownSeconds": [],
+        "range": [],
+        "rankValues": [],
+        "scalings": [],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "Q": {
+        "slot": "Q",
+        "id": "ViQ",
+        "name": "금고 부수기",
+        "summary": "바이가 건틀릿을 충전하여, 두꺼운 금고도 뚫을 위력의 타격을 가하며 전방으로 돌진합니다. 부딪힌 적들은 뒤로 밀려나고, 찌그러뜨리기가 중첩됩니다.",
+        "bodyHtml": "<span>충전 시작:</span> 바이가 강력한 한 방을 충전하며 15% <span class=\"text-purple-600 dark:text-purple-500\">둔화</span>됩니다.<br /><br /><span>돌진:</span> 바이가 전방으로 돌진하며 부딪친 모든 적에게 충전 시간에 비례해 <span class=\"text-red-600 dark:text-red-500 font-semibold\">(40/60/80/100/120 + (60% 추가 공격력)) ~ (100/150/200/250/300 + (150% 추가 공격력))의 물리 피해</span>를 입히고 <span>찌그러뜨리기</span> 효과를 적용합니다. 적 챔피언과 충돌하면 멈추면서 적을 <span class=\"text-purple-600 dark:text-purple-500\">뒤로</span> <span class=\"text-purple-600 dark:text-purple-500\">밀어냅니다</span>.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">챔피언이 아닌 적은 적중 시 바이 쪽으로 끌어당겨집니다.<br />충전 중에 방해를 받으면 3초의 재사용 대기시간이 적용됩니다.</span>",
+        "iconFile": "ViQ.png",
+        "cooldownSeconds": [
+          12,
+          10.5,
+          9,
+          7.5,
+          6
+        ],
+        "cost": {
+          "values": [
+            50,
+            60,
+            70,
+            80,
+            90
+          ],
+          "resource": "마나"
+        },
+        "range": [
+          250,
+          250,
+          250,
+          250,
+          250
+        ],
+        "rankValues": [
+          {
+            "label": "최소 피해량",
+            "values": "40/60/80/100/120"
+          },
+          {
+            "label": "최대 피해량",
+            "values": "100/150/200/250/300"
+          },
+          {
+            "label": "재사용 대기시간",
+            "values": "12/10.5/9/7.5/6"
+          },
+          {
+            "label": "소모값 마나",
+            "values": "50/60/70/80/90"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "Q Scaling",
+            "labelKo": "Q 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "0:TotalDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "W": {
+        "slot": "W",
+        "id": "ViW",
+        "name": "찌그러뜨리기",
+        "summary": "바이의 주먹이 적의 방어구를 찌그러뜨려 추가 피해를 가하며 공격 속도가 상승합니다.",
+        "bodyHtml": "<span class=\"text-gray-600 dark:text-gray-500 italic\">기본 지속 효과:</span> 같은 대상에게 기본 공격을 3번 가할 때마다 대상 <span class=\"text-red-600 dark:text-red-500 font-semibold\">최대 체력의 (4/5/6/7/8% + (0.035% 추가 공격력))에 해당하는 물리 피해</span>를 추가로 입히고 4초간 대상의 <span class=\"text-orange-600 dark:text-orange-400\">방어력을 20%</span> 낮추며 바이의 <span>공격 속도가 30/35/40/45/50%</span> 상승합니다. 또한 <span>폭발 보호막</span>의 재사용 대기시간이 초 감소합니다.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">정글 몬스터를 대상으로는 최대 <span class=\"text-red-600 dark:text-red-500 font-semibold\">300의 피해</span>를 입힙니다.</span>",
+        "iconFile": "ViW.png",
+        "cooldownSeconds": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "range": [
+          750,
+          750,
+          750,
+          750,
+          750
+        ],
+        "rankValues": [
+          {
+            "label": "적 최대 체력 비례 피해량",
+            "values": "4/5/6/7/8"
+          },
+          {
+            "label": "공격 속도",
+            "values": "30/35/40/45/50"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "W Scaling",
+            "labelKo": "W 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "1:TotalDamageTooltip"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": [
+            "spell.ViPassive:CDReductionOn3Hit"
+          ]
+        }
+      },
+      "E": {
+        "slot": "E",
+        "id": "ViE",
+        "name": "끈질긴 힘",
+        "summary": "바이의 다음 공격이 대상을 관통하여 뒤에 있는 적들에게 피해를 가합니다.",
+        "bodyHtml": "바이의 다음 기본 공격이 대상과 그 뒤의 적들에게 <span class=\"text-red-600 dark:text-red-500 font-semibold\">(10/30/50/70/90 + (110% 공격력) + (100% 주문력))의 물리 피해</span>를 입힙니다.<br /><br />이 스킬은 2회까지 충전됩니다. (12/11/10/9/8초마다 충전)",
+        "iconFile": "ViE.png",
+        "cooldownSeconds": [
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        "rechargeSeconds": [
+          12,
+          11,
+          10,
+          9,
+          8
+        ],
+        "maxCharges": 2,
+        "cost": {
+          "values": [
+            26,
+            32,
+            38,
+            44,
+            50
+          ],
+          "resource": "마나"
+        },
+        "range": [
+          400,
+          400,
+          400,
+          400,
+          400
+        ],
+        "rankValues": [
+          {
+            "label": "기본 피해량",
+            "values": "10/30/50/70/90"
+          },
+          {
+            "label": "충전 시간",
+            "values": "12/11/10/9/8"
+          },
+          {
+            "label": "소모값 마나",
+            "values": "26/32/38/44/50"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "E Scaling",
+            "labelKo": "E 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "2:TotalDamageTooltip"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "R": {
+        "slot": "R",
+        "id": "ViR",
+        "name": "정지 명령",
+        "summary": "바이가 적을 추격하며 중간에 걸리는 유닛들을 옆으로 밀어냅니다. 대상에 다다르면 공중으로 띄워올리고 뒤따라 점프하여, 바닥으로 쿵 찍어누릅니다.",
+        "bodyHtml": "바이가 적 챔피언 한 명을 추격하면서 위치를 드러냅니다. 추격 중인 바이는 멈출 수 없으며, 닿는 순간 1.3초 동안 <span class=\"text-purple-600 dark:text-purple-500\">공중으로</span> <span class=\"text-purple-600 dark:text-purple-500\">띄워 올리고</span> <span class=\"text-red-600 dark:text-red-500 font-semibold\">(150/250/350 + (90% 추가 공격력))의 물리 피해</span>를 입힙니다.<br /><br />중간에 바이와 부딪히는 적들은 옆으로 밀려나며 피해를 입고, 0.75초 동안 <span class=\"text-purple-600 dark:text-purple-500\">기절</span>합니다.",
+        "iconFile": "ViR.png",
+        "cooldownSeconds": [
+          140,
+          115,
+          90
+        ],
+        "cost": {
+          "values": [
+            100,
+            100,
+            100
+          ],
+          "resource": "마나"
+        },
+        "range": [
+          800,
+          800,
+          800
+        ],
+        "rankValues": [
+          {
+            "label": "기본 피해량",
+            "values": "150/250/350"
+          },
+          {
+            "label": "재사용 대기시간",
+            "values": "140/115/90"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "R Scaling",
+            "labelKo": "R 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "3:Damage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      }
+    }
+  }
+}

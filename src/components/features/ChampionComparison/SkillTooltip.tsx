@@ -1,8 +1,6 @@
 import React from "react";
 import { ChampionSpell } from "@/types";
-import { parseSpellTooltip, formatLeveltipStats } from "@/lib/spellTooltipParser";
 import { SKILL_ICON_URL, PASSIVE_ICON_URL } from "@/services/api";
-import { SpellData } from "@/services/spellDataService";
 import { cn } from "@/lib/utils";
 import {
   Tooltip,
@@ -32,7 +30,6 @@ interface SkillTooltipProps {
   version: string;
   /** Data Dragon CDN 요청용 내부 버전 */
   ddragonVersion: string;
-  spellData?: SpellData | null;
   isPassive?: boolean;
   passiveName?: string;
   passiveDescription?: string;
@@ -45,7 +42,6 @@ export function SkillTooltip({
   skillIdx,
   version,
   ddragonVersion,
-  spellData,
   isPassive,
   passiveName,
   passiveDescription,
@@ -67,10 +63,10 @@ export function SkillTooltip({
   
   const cooldownText = (isPassive && passiveImageFull)
     ? null
-    : getCooldownText(skill, spellData, lang);
+    : getCooldownText(skill, lang);
   const costText = (isPassive && passiveImageFull)
     ? null
-    : getCostText(skill, spellData, lang);
+    : getCostText(skill, lang);
 
   const isSmall = size === "small";
   const iconSize = isSmall ? "min-w-6 min-h-6 w-6 h-6" : "min-w-8 min-h-8 w-8 h-8";
@@ -244,7 +240,7 @@ export function SkillTooltip({
             <div className="text-xs leading-relaxed">
               <div
                 dangerouslySetInnerHTML={{
-                  __html: parseSpellTooltip(passiveDescription, undefined, undefined, lang),
+                  __html: passiveDescription,
                 }}
               />
             </div>
@@ -299,12 +295,7 @@ export function SkillTooltip({
           <div className="text-xs leading-relaxed">
             <div
               dangerouslySetInnerHTML={{
-                __html: parseSpellTooltip(
-                  skill.description,
-                  skill,
-                  spellData?.communityDragonData,
-                  lang
-                ).replace(/<br\s*\/?>/gi, " "),
+                __html: skill.description,
               }}
             />
           </div>
@@ -313,24 +304,19 @@ export function SkillTooltip({
           <div className="text-xs text-muted-foreground leading-relaxed">
             <div
               dangerouslySetInnerHTML={{
-                __html: parseSpellTooltip(
-                  skill.tooltip,
-                  skill,
-                  spellData?.communityDragonData,
-                  lang
-                ),
+                __html: skill.tooltip,
               }}
             />
           </div>
         )}
 
-        {spellData && formatLeveltipStats(skill, spellData.communityDragonData, lang) && (
+        {skill.rankValues && skill.rankValues.length > 0 && (
           <div className="text-[11px] leading-relaxed text-muted-foreground border-t pt-3 mt-3">
-            <div
-              dangerouslySetInnerHTML={{
-                __html: formatLeveltipStats(skill, spellData.communityDragonData, lang),
-              }}
-            />
+            {skill.rankValues.map((rankValue) => (
+              <div key={`${rankValue.label}:${rankValue.values}`}>
+                {rankValue.label}: [{rankValue.values}]
+              </div>
+            ))}
           </div>
         )}
 
@@ -464,4 +450,3 @@ export function SkillTooltip({
     </>
   );
 }
-

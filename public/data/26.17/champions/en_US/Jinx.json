@@ -1,0 +1,395 @@
+{
+  "schemaVersion": 2,
+  "patchVersion": "26.17",
+  "locale": "en_US",
+  "sources": {
+    "ddragon": "16.17.1",
+    "cdragon": "16.17"
+  },
+  "champion": {
+    "id": "Jinx",
+    "key": "222",
+    "name": "Jinx",
+    "title": "the Loose Cannon",
+    "tags": [
+      "Marksman"
+    ],
+    "baseStats": {
+      "health": {
+        "base": 630,
+        "perLevel": 105
+      },
+      "healthRegen": {
+        "base": 3.75,
+        "perLevel": 0.5
+      },
+      "mana": {
+        "base": 260,
+        "perLevel": 50
+      },
+      "manaRegen": {
+        "base": 6.7,
+        "perLevel": 1
+      },
+      "attackDamage": {
+        "base": 59,
+        "perLevel": 0
+      },
+      "attackSpeed": {
+        "base": 0.625,
+        "perLevel": 1
+      },
+      "armor": {
+        "base": 26,
+        "perLevel": 4.2
+      },
+      "magicResist": {
+        "base": 33,
+        "perLevel": 1.1
+      },
+      "moveSpeed": {
+        "base": 325,
+        "perLevel": 0
+      },
+      "attackRange": {
+        "base": 525,
+        "perLevel": 0
+      }
+    },
+    "baseStatContributions": [
+      {
+        "stat": "MAX_HEALTH",
+        "value": 105,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "HEALTH_REGEN",
+        "value": 0.5,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAX_MANA",
+        "value": 50,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MANA_REGEN",
+        "value": 1,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_DAMAGE",
+        "value": 0,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_SPEED",
+        "value": 1,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ARMOR",
+        "value": 4.2,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAGIC_RESIST",
+        "value": 1.1,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      }
+    ],
+    "abilities": {
+      "P": {
+        "slot": "P",
+        "id": "JinxPassiveMarker",
+        "name": "Get Excited!",
+        "summary": "Jinx receives massively increased Move Speed and Attack Speed whenever she helps kill or destroy an enemy champions epic jungle monster, or structure.",
+        "bodyHtml": "Whenever a champion, epic monster, or structure that Jinx has dealt damage to within the last 3 seconds is killed or destroyed, she gains <span class=\"text-cyan-600 dark:text-cyan-500\">175% decaying Move Speed</span> and <span>25% Attack Speed</span> for 6 seconds.<br /><br />Champion takedowns stack the <span>Attack Speed</span> up to 5 times.",
+        "iconFile": "Jinx_Passive.png",
+        "cooldownSeconds": [],
+        "range": [],
+        "rankValues": [],
+        "scalings": [],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "Q": {
+        "slot": "Q",
+        "id": "JinxQ",
+        "name": "Switcheroo!",
+        "summary": "Jinx modifies her basic attacks by swapping between Pow-Pow, her minigun and Fishbones, her rocket launcher. Attacks with Pow-Pow grant Attack Speed, while attacks with Fishbones deal area of effect damage, gain increased range, but drain Mana and attack slower.",
+        "bodyHtml": "Jinx swaps weapons between Fishbones the rocket launcher and Pow-Pow the minigun.<br /><br />While using the rocket launcher, Jinx's Attacks deal <span class=\"text-red-600 dark:text-red-500 font-semibold\">(110% Attack Damage) physical damage</span> to the target and nearby enemies, gain 100/125/150/175/200 range, cost Mana, and scale 10% less with bonus Attack Speed.<br /><br />While using the minigun, Jinx's Attacks grant <span>Attack Speed</span> for 2.5 seconds, stacking up to 3 times (<span> + 30/55/80/105/130% max</span>).<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">Minigun stacks fall off one at a time and only benefit Jinx's first Attack after switching to the rocket launcher.</span>",
+        "iconFile": "JinxQ.png",
+        "cooldownSeconds": [
+          0.9,
+          0.9,
+          0.9,
+          0.9,
+          0.9
+        ],
+        "cost": {
+          "values": [
+            20,
+            20,
+            20,
+            20,
+            20
+          ],
+          "resource": "Mana Per Rocket"
+        },
+        "range": [
+          600,
+          600,
+          600,
+          600,
+          600
+        ],
+        "rankValues": [
+          {
+            "label": "Rocket Bonus Range",
+            "values": "100/125/150/175/200"
+          },
+          {
+            "label": "Minigun Total Attack Speed",
+            "values": "30/55/80/105/130"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "Q Scaling",
+            "labelKo": "Q 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "0:RocketDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "W": {
+        "slot": "W",
+        "id": "JinxW",
+        "name": "Zap!",
+        "summary": "Jinx uses Zapper, her shock pistol, to fire a blast that deals damage to the first enemy hit, slowing and revealing it.",
+        "bodyHtml": "Jinx fires a shock blast that deals <span class=\"text-red-600 dark:text-red-500 font-semibold\">(10/60/110/160/210 + (140% Attack Damage)) physical damage</span> to the first enemy hit, <span class=\"text-purple-600 dark:text-purple-500\">Slows</span> them by 40/50/60/70/80%, and reveals them for 2 seconds.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">Zap!'s cast time decreases as Jinx gains <span>Attack Speed</span>.</span>",
+        "iconFile": "JinxW.png",
+        "cooldownSeconds": [
+          8,
+          7,
+          6,
+          5,
+          4
+        ],
+        "cost": {
+          "values": [
+            40,
+            45,
+            50,
+            55,
+            60
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          1450,
+          1450,
+          1450,
+          1450,
+          1450
+        ],
+        "rankValues": [
+          {
+            "label": "Damage",
+            "values": "10/60/110/160/210"
+          },
+          {
+            "label": "Slow",
+            "values": "40/50/60/70/80"
+          },
+          {
+            "label": "Cooldown",
+            "values": "8/7/6/5/4"
+          },
+          {
+            "label": "Mana Cost",
+            "values": "40/45/50/55/60"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "W Scaling",
+            "labelKo": "W 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "1:TotalDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "E": {
+        "slot": "E",
+        "id": "JinxE",
+        "name": "Flame Chompers!",
+        "summary": "Jinx throws out a line of snare grenades that explode after 5 seconds, lighting enemies on fire. Flame Chompers will bite enemy champions who walk over them, rooting them in place.",
+        "bodyHtml": "Jinx tosses out 3 chompers that last for 5 seconds. They explode on contact with enemy champions, <span class=\"text-purple-600 dark:text-purple-500\">Rooting</span> them for 1.5 seconds and dealing <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(90/140/190/240/290 + (100% Ability Power)) magic damage</span> to nearby enemies.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">This Ability <span class=\"text-purple-600 dark:text-purple-500\">Knocks Down</span> enemies.</span>",
+        "iconFile": "JinxE.png",
+        "cooldownSeconds": [
+          24,
+          20.5,
+          17,
+          13.5,
+          10
+        ],
+        "cost": {
+          "values": [
+            90,
+            90,
+            90,
+            90,
+            90
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          925,
+          925,
+          925,
+          925,
+          925
+        ],
+        "rankValues": [
+          {
+            "label": "Damage",
+            "values": "90/140/190/240/290"
+          },
+          {
+            "label": "Cooldown",
+            "values": "24/20.5/17/13.5/10"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "E Scaling",
+            "labelKo": "E 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "2:TotalDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "R": {
+        "slot": "R",
+        "id": "JinxR",
+        "name": "Super Mega Death Rocket!",
+        "summary": "Jinx fires a super rocket across the map that gains damage as it travels. The rocket will explode upon colliding with an enemy champion, dealing damage to it and surrounding enemies based on their missing Health.",
+        "bodyHtml": "Jinx fires a rocket that explodes on the first enemy champion hit, dealing <span class=\"text-red-600 dark:text-red-500 font-semibold\">(20/35/50 + (12% bonus Attack Damage)) to (200/350/500 + (120% bonus Attack Damage)) + 25/30/35% missing Health physical damage</span>, gaining damage over the first second of travel time. Nearby enemies take 80% Damage.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">Missing Health damage cannot exceed 1200 against Monsters.</span>",
+        "iconFile": "JinxR.png",
+        "cooldownSeconds": [
+          85,
+          65,
+          45
+        ],
+        "cost": {
+          "values": [
+            100,
+            100,
+            100
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          25000,
+          25000,
+          25000
+        ],
+        "rankValues": [
+          {
+            "label": "Minimum Damage",
+            "values": "20/35/50"
+          },
+          {
+            "label": "Maximum Damage",
+            "values": "200/350/500"
+          },
+          {
+            "label": "Percent Missing Health Damage",
+            "values": "25%/30%/35%"
+          },
+          {
+            "label": "Cooldown",
+            "values": "85/65/45"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "R Scaling",
+            "labelKo": "R 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "3:DamageFloor"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      }
+    }
+  }
+}

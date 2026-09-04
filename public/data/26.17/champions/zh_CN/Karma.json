@@ -1,0 +1,398 @@
+{
+  "schemaVersion": 2,
+  "patchVersion": "26.17",
+  "locale": "zh_CN",
+  "sources": {
+    "ddragon": "16.17.1",
+    "cdragon": "16.17"
+  },
+  "champion": {
+    "id": "Karma",
+    "key": "43",
+    "name": "天启者",
+    "title": "卡尔玛",
+    "tags": [
+      "Mage",
+      "Support"
+    ],
+    "baseStats": {
+      "health": {
+        "base": 630,
+        "perLevel": 109
+      },
+      "healthRegen": {
+        "base": 5.5,
+        "perLevel": 0.55
+      },
+      "mana": {
+        "base": 374,
+        "perLevel": 40
+      },
+      "manaRegen": {
+        "base": 13,
+        "perLevel": 0.8
+      },
+      "attackDamage": {
+        "base": 49,
+        "perLevel": 0
+      },
+      "attackSpeed": {
+        "base": 0.625,
+        "perLevel": 2.3
+      },
+      "armor": {
+        "base": 28,
+        "perLevel": 5
+      },
+      "magicResist": {
+        "base": 30,
+        "perLevel": 1.3
+      },
+      "moveSpeed": {
+        "base": 335,
+        "perLevel": 0
+      },
+      "attackRange": {
+        "base": 525,
+        "perLevel": 0
+      }
+    },
+    "baseStatContributions": [
+      {
+        "stat": "MAX_HEALTH",
+        "value": 109,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "HEALTH_REGEN",
+        "value": 0.55,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAX_MANA",
+        "value": 40,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MANA_REGEN",
+        "value": 0.8,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_DAMAGE",
+        "value": 0,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_SPEED",
+        "value": 2.3,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ARMOR",
+        "value": 5,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAGIC_RESIST",
+        "value": 1.3,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      }
+    ],
+    "abilities": {
+      "P": {
+        "slot": "P",
+        "id": "KarmaPassive",
+        "name": "聚能之炎",
+        "summary": "卡尔玛的伤害型技能将缩短梵咒的冷却时间。",
+        "bodyHtml": "卡尔玛在游戏开始时就会自带1级<span></span>。<br /><br />她每用一个技能伤害到一名敌方英雄时，<span></span>的冷却时间就会缩短4秒。",
+        "iconFile": "Karma_Passive.png",
+        "cooldownSeconds": [],
+        "range": [],
+        "rankValues": [],
+        "scalings": [],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "Q": {
+        "slot": "Q",
+        "id": "KarmaQ",
+        "name": "心灵烈焰",
+        "summary": "卡尔玛向前方发射一枚灵能法球。这枚法球会在命中第一个敌人时爆炸，并造成伤害。<br><br>梵咒增效：除爆炸之外，梵咒还会提升她的心灵烈焰的破坏力，同时创造出一个火环，火环会在短暂的延时后造成伤害。",
+        "bodyHtml": "卡尔玛发射一团能量，对命中的第一个目标及其周围的敌人们造成<magicDamage>{{ totaldamage }}魔法伤害</magicDamage>，以及持续{{ slowduration }}秒的{{ slowamount*-100 }}%<status>减速</status>。{{ spellmodifierdescriptionappend }}",
+        "iconFile": "KarmaQ.png",
+        "cooldownSeconds": [
+          9,
+          8,
+          7,
+          6,
+          5
+        ],
+        "cost": {
+          "values": [
+            40,
+            50,
+            60,
+            70,
+            80
+          ],
+          "resource": "法力值"
+        },
+        "range": [
+          950,
+          950,
+          950,
+          950,
+          950
+        ],
+        "rankValues": [
+          {
+            "label": "伤害",
+            "values": "60/110/160/210/260"
+          },
+          {
+            "label": "冷却时间",
+            "values": "9/8/7/6/5"
+          },
+          {
+            "label": "法力值消耗",
+            "values": "40/50/60/70/80"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "Q Scaling",
+            "labelKo": "Q 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "0:TotalDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "ddragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "W": {
+        "slot": "W",
+        "id": "KarmaSpiritBind",
+        "name": "坚定不移",
+        "summary": "卡尔玛在她和目标敌人之间产生一条灵链，同时造成伤害，并使目标暴露。如果灵链在一段时间内没有被破坏，那么目标敌人就会被束缚在原地并再次受到伤害。<br><br>梵咒增效：卡尔玛强化灵链，治疗自身并延长禁锢时长。",
+        "bodyHtml": "卡尔玛用灵链来连接她和一名敌方英雄或野怪，造成<magicDamage>{{ initialdamage }}魔法伤害</magicDamage>并使其显形{{ tetherduration }}秒。如果灵链一直未断裂，那么目标会再次受到<magicDamage>{{ initialdamage }}魔法伤害</magicDamage>并被<status>禁锢</status>{{ rootduration }}秒。{{ spellmodifierdescriptionappend }}",
+        "iconFile": "KarmaSpiritBind.png",
+        "cooldownSeconds": [
+          12,
+          12,
+          12,
+          12,
+          12
+        ],
+        "cost": {
+          "values": [
+            50,
+            55,
+            60,
+            65,
+            70
+          ],
+          "resource": "法力值"
+        },
+        "range": [
+          675,
+          675,
+          675,
+          675,
+          675
+        ],
+        "rankValues": [
+          {
+            "label": "伤害",
+            "values": "40/65/90/115/140"
+          },
+          {
+            "label": "禁锢时长",
+            "values": "1.6/1.7/1.8/1.9/2"
+          },
+          {
+            "label": "法力值消耗",
+            "values": "50/55/60/65/70"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "W Scaling",
+            "labelKo": "W 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "1:InitialDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "ddragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "E": {
+        "slot": "E",
+        "id": "KarmaSolKimShield",
+        "name": "鼓舞",
+        "summary": "卡尔玛召唤一个防御性的护盾来吸收即将到来的伤害，并为目标友军提升移动速度。<br><br>梵咒增效：能量从目标处向外辐射，强化初始护盾，并对附近的友方英雄施加鼓舞效果。",
+        "bodyHtml": "卡尔玛为一名友方英雄提供持续{{ shieldduration }}秒的<shield>{{ totalshield }}护盾值</shield>和持续{{ movespeedduration }}秒的<speed>{{ movespeed*100 }}%移动速度</speed>。{{ spellmodifierdescriptionappend }}",
+        "iconFile": "KarmaSolKimShield.png",
+        "cooldownSeconds": [
+          10,
+          9.5,
+          9,
+          8.5,
+          8
+        ],
+        "cost": {
+          "values": [
+            60,
+            65,
+            70,
+            75,
+            80
+          ],
+          "resource": "法力值"
+        },
+        "range": [
+          800,
+          800,
+          800,
+          800,
+          800
+        ],
+        "rankValues": [
+          {
+            "label": "护盾值",
+            "values": "80/130/180/230/280"
+          },
+          {
+            "label": "冷却时间",
+            "values": "10/9.5/9/8.5/8"
+          },
+          {
+            "label": "法力值消耗",
+            "values": "60/65/70/75/80"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "E Scaling",
+            "labelKo": "E 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "2:TotalShield"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "ddragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "R": {
+        "slot": "R",
+        "id": "KarmaMantra",
+        "name": "梵咒",
+        "summary": "卡尔玛的下个技能会获得强化，造成额外特效。梵咒在1级时就可以使用，并且不需要投入技能点。",
+        "bodyHtml": "卡尔玛增强她在8秒内使用的下一个技能。<br /><span><span>心灵烈焰</span>：造成额外的<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(40/100/160/220 + (30% 法术强度))魔法伤害</span>并留下一道烈焰圆环，<span class=\"text-purple-600 dark:text-purple-500\">减速</span>敌人并造成额外的<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(40/130/220/310 + (50% 法术强度))魔法伤害</span>。<span><span>坚定不移</span>：卡尔玛将在灵链的开始和结束时回复<span class=\"text-green-600 dark:text-green-400\">(17% + (0.01% 法术强度))已损失生命值</span>，并且<span class=\"text-purple-600 dark:text-purple-500\">禁锢</span>延长0.5/0.75/1/1.25秒。<span><span>鼓舞</span>：卡尔玛为她的目标提供<span class=\"text-blue-600 dark:text-blue-300\">额外的(45/85/125/165 + (45% 法术强度))护盾值</span>，并且还会对目标附近的友军提供护盾，为他们提供<span class=\"text-blue-600 dark:text-blue-300\">(45/85/125/165 + (45% 法术强度))护盾值</span>和<span class=\"text-cyan-600 dark:text-cyan-500\">15%移动速度</span>。",
+        "iconFile": "KarmaMantra.png",
+        "cooldownSeconds": [
+          40,
+          38,
+          36,
+          34
+        ],
+        "range": [
+          1100,
+          1100,
+          1100,
+          1100
+        ],
+        "rankValues": [
+          {
+            "label": "灵光闪耀 冲击伤害",
+            "values": "40/100/160/220"
+          },
+          {
+            "label": "灵光闪耀 圆环伤害",
+            "values": "40/130/220/310"
+          },
+          {
+            "label": "焕发 禁锢时长",
+            "values": "0.5/0.75/1/1.25"
+          },
+          {
+            "label": "蔑视 护盾值",
+            "values": "45/85/125/165"
+          },
+          {
+            "label": "冷却时间",
+            "values": "40/38/36/34"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "R Scaling",
+            "labelKo": "R 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "3:RQImpactDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      }
+    }
+  }
+}

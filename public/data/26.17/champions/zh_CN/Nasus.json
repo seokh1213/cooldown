@@ -1,0 +1,384 @@
+{
+  "schemaVersion": 2,
+  "patchVersion": "26.17",
+  "locale": "zh_CN",
+  "sources": {
+    "ddragon": "16.17.1",
+    "cdragon": "16.17"
+  },
+  "champion": {
+    "id": "Nasus",
+    "key": "75",
+    "name": "沙漠死神",
+    "title": "内瑟斯",
+    "tags": [
+      "Fighter",
+      "Tank"
+    ],
+    "baseStats": {
+      "health": {
+        "base": 650,
+        "perLevel": 104
+      },
+      "healthRegen": {
+        "base": 9,
+        "perLevel": 0.9
+      },
+      "mana": {
+        "base": 326,
+        "perLevel": 62
+      },
+      "manaRegen": {
+        "base": 7.45,
+        "perLevel": 0.5
+      },
+      "attackDamage": {
+        "base": 67,
+        "perLevel": 0
+      },
+      "attackSpeed": {
+        "base": 0.638,
+        "perLevel": 3.48
+      },
+      "armor": {
+        "base": 34,
+        "perLevel": 4.7
+      },
+      "magicResist": {
+        "base": 32,
+        "perLevel": 2.05
+      },
+      "moveSpeed": {
+        "base": 350,
+        "perLevel": 0
+      },
+      "attackRange": {
+        "base": 125,
+        "perLevel": 0
+      }
+    },
+    "baseStatContributions": [
+      {
+        "stat": "MAX_HEALTH",
+        "value": 104,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "HEALTH_REGEN",
+        "value": 0.9,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAX_MANA",
+        "value": 62,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MANA_REGEN",
+        "value": 0.5,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_DAMAGE",
+        "value": 0,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_SPEED",
+        "value": 3.48,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ARMOR",
+        "value": 4.7,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAGIC_RESIST",
+        "value": 2.05,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      }
+    ],
+    "abilities": {
+      "P": {
+        "slot": "P",
+        "id": "NasusPassive",
+        "name": "吞噬灵魂",
+        "summary": "内瑟斯吸取敌人的生命能量，从而获得生命偷取加成。",
+        "bodyHtml": "内瑟斯拥有额外的生命偷取。",
+        "iconFile": "Nasus_Passive.png",
+        "cooldownSeconds": [],
+        "range": [],
+        "rankValues": [],
+        "scalings": [],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "Q": {
+        "slot": "Q",
+        "id": "NasusQ",
+        "name": "汲魂痛击",
+        "summary": "内瑟斯对敌人施放汲魂痛击造成伤害，如果敌人死于汲魂痛击，则永久增加下次汲魂痛击的伤害。",
+        "bodyHtml": "内瑟斯的下次攻击造成<span class=\"text-red-600 dark:text-red-500 font-semibold\">(40/60/80/100/120 + (100% 攻击力))物理伤害</span>。用这个攻击击杀一名敌人后，会使其伤害永久提升4，击杀英雄、大型小兵和大型野怪的伤害提升为10。<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">这个技能会在造成伤害时触发技能特效。<br />这个技能可以暴击，造成<span class=\"text-red-600 dark:text-red-500 font-semibold\">物理伤害</span>。</span>",
+        "iconFile": "NasusQ.png",
+        "cooldownSeconds": [
+          7.5,
+          6.5,
+          5.5,
+          4.5,
+          3.5
+        ],
+        "cost": {
+          "values": [
+            20,
+            20,
+            20,
+            20,
+            20
+          ],
+          "resource": "法力值"
+        },
+        "range": [
+          255,
+          255,
+          255,
+          255,
+          255
+        ],
+        "rankValues": [
+          {
+            "label": "基础伤害",
+            "values": "40/60/80/100/120"
+          },
+          {
+            "label": "冷却时间",
+            "values": "7.5/6.5/5.5/4.5/3.5"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "Q Scaling",
+            "labelKo": "Q 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "0:TotalDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": [
+            "CritDamage"
+          ]
+        }
+      },
+      "W": {
+        "slot": "W",
+        "id": "NasusW",
+        "name": "枯萎",
+        "summary": "内瑟斯使一名敌方英雄衰老，持续减少其移动速度和攻击速度。",
+        "bodyHtml": "内瑟斯使一名英雄衰老，使其<span class=\"text-purple-600 dark:text-purple-500\">减速</span>35%，并在5秒内持续提升至47/59/71/83/95%。目标的<span>攻击速度</span>也会降低，相当于该<span class=\"text-purple-600 dark:text-purple-500\">减速</span>幅度的75%。",
+        "iconFile": "NasusW.png",
+        "cooldownSeconds": [
+          15,
+          14,
+          13,
+          12,
+          11
+        ],
+        "cost": {
+          "values": [
+            80,
+            80,
+            80,
+            80,
+            80
+          ],
+          "resource": "法力值"
+        },
+        "range": [
+          700,
+          700,
+          700,
+          700,
+          700
+        ],
+        "rankValues": [
+          {
+            "label": "最大减速效果",
+            "values": "47/59/71/83/95"
+          },
+          {
+            "label": "冷却时间",
+            "values": "15/14/13/12/11"
+          }
+        ],
+        "scalings": [],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "E": {
+        "slot": "E",
+        "id": "NasusE",
+        "name": "灵魂烈焰",
+        "summary": "内瑟斯在目标区域施放灵魂烈焰，伤害并削弱敌人。",
+        "bodyHtml": "内瑟斯引发一团灵魂烈焰，造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(50/80/110/140/170 + (60% 法术强度))魔法伤害</span>。区域内的敌人们会失去<span class=\"text-orange-600 dark:text-orange-400\">30/35/40/45/50%护甲</span>并在5秒里持续受到共<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(50/80/110/140/170 + (60% 法术强度))魔法伤害</span>。",
+        "iconFile": "NasusE.png",
+        "cooldownSeconds": [
+          12,
+          12,
+          12,
+          12,
+          12
+        ],
+        "cost": {
+          "values": [
+            60,
+            70,
+            80,
+            90,
+            100
+          ],
+          "resource": "法力值"
+        },
+        "range": [
+          650,
+          650,
+          650,
+          650,
+          650
+        ],
+        "rankValues": [
+          {
+            "label": "初始伤害",
+            "values": "50/80/110/140/170"
+          },
+          {
+            "label": "每秒伤害",
+            "values": "10/16/22/28/34"
+          },
+          {
+            "label": "减少护甲百分比",
+            "values": "30/35/40/45/50"
+          },
+          {
+            "label": "法力值消耗",
+            "values": "60/70/80/90/100"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "E Scaling",
+            "labelKo": "E 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "2:TotalDotDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "R": {
+        "slot": "R",
+        "id": "NasusR",
+        "name": "死神降临",
+        "summary": "内瑟斯释放一个具有强大魔力的沙漠风暴来侵袭身边的敌人。当风暴肆虐期间，他会获得额外生命值、额外攻击距离，伤害附近的敌人，汲魂痛击会拥有较短冷却时间，并获得额外的护甲和魔法抗性。",
+        "bodyHtml": "沙漠风暴赐予内瑟斯力量，使他在15秒的持续时间内获得<span class=\"text-green-600 dark:text-green-400\">300/450/600最大生命值</span>，以及40/55/70<span class=\"text-orange-600 dark:text-orange-400\">护甲</span>与<span>魔法抗性</span>。<br /><br />在风暴肆虐时，他每秒对周围目标造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(3/4/5% + (0.01% 法术强度))最大生命值的魔法伤害</span>，并且<span>汲魂痛击</span>的冷却时间缩短50%。<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">风暴每秒伤害的最大值为240。</span>",
+        "iconFile": "NasusR.png",
+        "cooldownSeconds": [
+          120,
+          100,
+          80
+        ],
+        "cost": {
+          "values": [
+            100,
+            100,
+            100
+          ],
+          "resource": "法力值"
+        },
+        "range": [
+          400,
+          400,
+          400
+        ],
+        "rankValues": [
+          {
+            "label": "额外生命值",
+            "values": "300/450/600"
+          },
+          {
+            "label": "最大生命值百分比",
+            "values": "3/4/5"
+          },
+          {
+            "label": "额外护甲和魔法抗性",
+            "values": "40/55/70"
+          },
+          {
+            "label": "冷却时间",
+            "values": "120/100/80"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "R Scaling",
+            "labelKo": "R 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "3:DamageCalc"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      }
+    }
+  }
+}

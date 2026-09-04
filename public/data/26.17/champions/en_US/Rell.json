@@ -1,0 +1,395 @@
+{
+  "schemaVersion": 2,
+  "patchVersion": "26.17",
+  "locale": "en_US",
+  "sources": {
+    "ddragon": "16.17.1",
+    "cdragon": "16.17"
+  },
+  "champion": {
+    "id": "Rell",
+    "key": "526",
+    "name": "Rell",
+    "title": "the Iron Maiden",
+    "tags": [
+      "Tank",
+      "Support"
+    ],
+    "baseStats": {
+      "health": {
+        "base": 620,
+        "perLevel": 104
+      },
+      "healthRegen": {
+        "base": 7.5,
+        "perLevel": 0.85
+      },
+      "mana": {
+        "base": 320,
+        "perLevel": 40
+      },
+      "manaRegen": {
+        "base": 7,
+        "perLevel": 0.7
+      },
+      "attackDamage": {
+        "base": 55,
+        "perLevel": 0
+      },
+      "attackSpeed": {
+        "base": 0.625,
+        "perLevel": 2
+      },
+      "armor": {
+        "base": 30,
+        "perLevel": 4
+      },
+      "magicResist": {
+        "base": 28,
+        "perLevel": 1.8
+      },
+      "moveSpeed": {
+        "base": 315,
+        "perLevel": 0
+      },
+      "attackRange": {
+        "base": 175,
+        "perLevel": 0
+      }
+    },
+    "baseStatContributions": [
+      {
+        "stat": "MAX_HEALTH",
+        "value": 104,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "HEALTH_REGEN",
+        "value": 0.85,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAX_MANA",
+        "value": 40,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MANA_REGEN",
+        "value": 0.7,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_DAMAGE",
+        "value": 0,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_SPEED",
+        "value": 2,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ARMOR",
+        "value": 4,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAGIC_RESIST",
+        "value": 1.8,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      }
+    ],
+    "abilities": {
+      "P": {
+        "slot": "P",
+        "id": "RellP",
+        "name": "Break the Mold",
+        "summary": "Rell's Attacks and Abilities deal additional magic damage and steal Armor and Magic Resist on hit.",
+        "bodyHtml": "Rell's Attacks and Abilities steal <span class=\"text-orange-600 dark:text-orange-400\">3% Armor</span> and <span>3% Magic Resist</span> for 5 seconds. Max: 15%. Basic attacks deal <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">((5% Armor) + (5% Magic Resist)) magic damage</span> on-hit.",
+        "iconFile": "RellP.png",
+        "cooldownSeconds": [],
+        "range": [],
+        "rankValues": [],
+        "scalings": [],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "Q": {
+        "slot": "Q",
+        "id": "RellQ",
+        "name": "Shattering Strike",
+        "summary": "Rell deals magic damage to units in a line, breaking their shields and stunning them. ",
+        "bodyHtml": "Rell thrusts her lance, <span class=\"text-purple-600 dark:text-purple-500\">Stunning</span> targets for 0.65 seconds, destroying all <span class=\"text-blue-600 dark:text-blue-300\">Shields</span>, and dealing <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(60/100/140/180/220 + (60% Ability Power)) magic damage.</span><br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">Does not break Shields on monsters.</span>",
+        "iconFile": "RellQ.png",
+        "cooldownSeconds": [
+          11,
+          10.5,
+          10,
+          9.5,
+          9
+        ],
+        "cost": {
+          "values": [
+            50,
+            50,
+            50,
+            50,
+            50
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          600,
+          600,
+          600,
+          600,
+          600
+        ],
+        "rankValues": [
+          {
+            "label": "Damage",
+            "values": "60/100/140/180/220"
+          },
+          {
+            "label": "Cooldown",
+            "values": "11/10.5/10/9.5/9"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "Q Scaling",
+            "labelKo": "Q 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "0:Damage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "W": {
+        "slot": "W",
+        "id": "RellW_Dismount",
+        "name": "Ferromancy: Crash Down",
+        "summary": "Mounted: Rell Dismounts, crashing down in her armor, Knocking enemies up and gaining a large Shield. While dismounted, she gains Armor, Magic Resist, Attack Speed, and Attack Range, but is Slowed.<br><br>Dismounted: Rell forms her Mount, gaining a burst of speed and Knocking Up the next enemy she attacks.<br><br>",
+        "bodyHtml": "<span class=\"text-gray-600 dark:text-gray-500 italic\">Passive - Mounted Alacrity:</span> Rell gains <span class=\"text-cyan-600 dark:text-cyan-500\"> Move Speed</span> while mounted.<br /><br /><span class=\"text-gray-900 dark:text-white font-semibold\">Active - Ferromancy: Crash Down:</span> Rell leaps off her mount, <span class=\"text-purple-600 dark:text-purple-500\">Knocking Up</span> enemies and dealing <span class=\"text-blue-600 dark:text-blue-500 font-semibold\"> magic damage</span>. Rell gains <span class=\"text-blue-600 dark:text-blue-300\"> Shield</span>, which lasts until she remounts.<br /><br />Rell then enters her armored form, gaining <span class=\"text-orange-600 dark:text-orange-400\">increased Armor</span> and <span>Magic Resist</span>, <span>Attack Speed</span> and Attack Range. In this armored form, she can use <span>Ferromancy: Mount Up</span>.",
+        "iconFile": "RellW_Dismount.png",
+        "cooldownSeconds": [
+          10,
+          10,
+          10,
+          10,
+          10
+        ],
+        "cost": {
+          "values": [
+            40,
+            40,
+            40,
+            40,
+            40
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          450,
+          450,
+          450,
+          450,
+          450
+        ],
+        "rankValues": [
+          {
+            "label": "Dismount Damage",
+            "values": "60/90/120/150/180"
+          },
+          {
+            "label": "Shield Amount",
+            "values": "20/40/60/80/100"
+          },
+          {
+            "label": "Flip Damage",
+            "values": "10/25/40/55/70"
+          },
+          {
+            "label": "Passive Move Speed",
+            "values": "20/25/30/35/40"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "W Scaling",
+            "labelKo": "W 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "1:DismountDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": [
+            "spell.RellW_Dismount:DismountDamage",
+            "spell.RellW_Dismount:DismountedASBoost*100",
+            "spell.RellW_Dismount:DismountedRangeBoost",
+            "spell.RellW_Dismount:MountedMoveSpeed",
+            "spell.RellW_Dismount:ResistanceIncrease*100",
+            "spell.RellW_Dismount:Shield"
+          ]
+        }
+      },
+      "E": {
+        "slot": "E",
+        "id": "RellE",
+        "name": "Full Tilt",
+        "summary": "Passive: Rell gains out of combat Move Speed.<br><br>Active: Rell and an ally gain ramping Move Speed, doubled toward enemies and each other. Her next Attack explodes, dealing magic damage.<br>",
+        "bodyHtml": "Rell and an ally charge, gaining <span class=\"text-cyan-600 dark:text-cyan-500\">15% Move Speed</span>, increased to <span class=\"text-cyan-600 dark:text-cyan-500\">30%</span> when facing enemy champions or each other for 3 seconds. Rell's next Attack or <span>Shattering Strike</span> explodes in an area for <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(5/5.5/6/6.5/7% + (0.03% Ability Power)) max Health magic damage</span>.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">Damage capped at (150 ~ 300) against jungle monsters and structures.</span>",
+        "iconFile": "RellE.png",
+        "cooldownSeconds": [
+          14,
+          13,
+          12,
+          11,
+          10
+        ],
+        "cost": {
+          "values": [
+            40,
+            40,
+            40,
+            40,
+            40
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          1200,
+          1200,
+          1200,
+          1200,
+          1200
+        ],
+        "rankValues": [
+          {
+            "label": "Damage",
+            "values": "5/5.5/6/6.5/7"
+          },
+          {
+            "label": "Cooldown",
+            "values": "14/13/12/11/10"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "E Scaling",
+            "labelKo": "E 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "2:MaxHealthDamageCalc"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "R": {
+        "slot": "R",
+        "id": "RellR",
+        "name": "Magnet Storm",
+        "summary": "Rell explodes in a magnetic fury, violently Pulling nearby enemies toward herself. Then Rell constantly Drags nearby enemies toward herself for a short while, dealing magic damage over time.",
+        "bodyHtml": "Rell explodes in a magnetic fury, violently <span class=\"text-purple-600 dark:text-purple-500\">Pulling</span> nearby enemies towards herself. Then Rell constantly <span class=\"text-purple-600 dark:text-purple-500\">Drags</span> nearby enemies towards herself and deals <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(150/250/350 + (110% Ability Power)) magic damage</span> over the next 2 seconds.",
+        "iconFile": "RellR.png",
+        "cooldownSeconds": [
+          120,
+          100,
+          80
+        ],
+        "cost": {
+          "values": [
+            100,
+            100,
+            100
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          200,
+          200,
+          200
+        ],
+        "rankValues": [
+          {
+            "label": "Cooldown",
+            "values": "120/100/80"
+          },
+          {
+            "label": "Damage",
+            "values": "150/250/350"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "R Scaling",
+            "labelKo": "R 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "3:TotalDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      }
+    }
+  }
+}

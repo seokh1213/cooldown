@@ -1,0 +1,384 @@
+{
+  "schemaVersion": 2,
+  "patchVersion": "26.17",
+  "locale": "en_US",
+  "sources": {
+    "ddragon": "16.17.1",
+    "cdragon": "16.17"
+  },
+  "champion": {
+    "id": "MissFortune",
+    "key": "21",
+    "name": "Miss Fortune",
+    "title": "the Bounty Hunter",
+    "tags": [
+      "Marksman",
+      "Mage"
+    ],
+    "baseStats": {
+      "health": {
+        "base": 625,
+        "perLevel": 100
+      },
+      "healthRegen": {
+        "base": 3.75,
+        "perLevel": 0.65
+      },
+      "mana": {
+        "base": 300,
+        "perLevel": 40
+      },
+      "manaRegen": {
+        "base": 8,
+        "perLevel": 0.8
+      },
+      "attackDamage": {
+        "base": 55,
+        "perLevel": 0
+      },
+      "attackSpeed": {
+        "base": 0.656,
+        "perLevel": 3
+      },
+      "armor": {
+        "base": 25,
+        "perLevel": 4
+      },
+      "magicResist": {
+        "base": 33,
+        "perLevel": 1.1
+      },
+      "moveSpeed": {
+        "base": 325,
+        "perLevel": 0
+      },
+      "attackRange": {
+        "base": 550,
+        "perLevel": 0
+      }
+    },
+    "baseStatContributions": [
+      {
+        "stat": "MAX_HEALTH",
+        "value": 100,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "HEALTH_REGEN",
+        "value": 0.65,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAX_MANA",
+        "value": 40,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MANA_REGEN",
+        "value": 0.8,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_DAMAGE",
+        "value": 0,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_SPEED",
+        "value": 3,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ARMOR",
+        "value": 4,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAGIC_RESIST",
+        "value": 1.1,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      }
+    ],
+    "abilities": {
+      "P": {
+        "slot": "P",
+        "id": "MissFortunePassive",
+        "name": "Love Tap",
+        "summary": "Miss Fortune deals bonus physical damage whenever she basic attacks a new target.",
+        "bodyHtml": "Miss Fortune's Attacks deal an additional <span class=\"text-red-600 dark:text-red-500 font-semibold\"> physical damage</span> when she attacks a new target. <br /><br />Triggering <span></span> reduces the cooldown of <span></span> by seconds.",
+        "iconFile": "MissFortune_W.png",
+        "cooldownSeconds": [],
+        "range": [],
+        "rankValues": [],
+        "scalings": [],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "Q": {
+        "slot": "Q",
+        "id": "MissFortuneRicochetShot",
+        "name": "Double Up",
+        "summary": "Miss Fortune fires a bullet at an enemy, damaging them and a target behind them. Both strikes can also apply Love Tap.",
+        "bodyHtml": "Miss Fortune fires a bouncing shot, dealing <span class=\"text-red-600 dark:text-red-500 font-semibold\">(20/45/70/95/120 + (100% Attack Damage) + (35% Ability Power)) physical damage</span> to an enemy and to another one behind them. <br /><br />The second shot can critically strike for <span class=\"text-red-600 dark:text-red-500 font-semibold\">(20/45/70/95/120 + (100% Attack Damage) + (35% Ability Power)) physical damage</span>. It always critically strikes if the first shot kills its target.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">Both strikes apply on-hit effects.</span>",
+        "iconFile": "MissFortuneRicochetShot.png",
+        "cooldownSeconds": [
+          7,
+          6,
+          5,
+          4,
+          3
+        ],
+        "cost": {
+          "values": [
+            40,
+            40,
+            40,
+            40,
+            40
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          650,
+          650,
+          650,
+          650,
+          650
+        ],
+        "rankValues": [
+          {
+            "label": "Cooldown",
+            "values": "7/6/5/4/3"
+          },
+          {
+            "label": "Damage",
+            "values": "20/45/70/95/120"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "Q Scaling",
+            "labelKo": "Q 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "0:TotalDamageTooltip"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "W": {
+        "slot": "W",
+        "id": "MissFortuneViciousStrikes",
+        "name": "Strut",
+        "summary": "Miss Fortune passively gains Move Speed when not attacked. This ability can be activated to grant bonus Attack Speed for a short duration. While it's on cooldown, Love Taps reduce the remaining cooldown of Strut.",
+        "bodyHtml": "<span>Passive:</span> After 4 seconds of not taking damage, Miss Fortune gains <span class=\"text-cyan-600 dark:text-cyan-500\">30/35/40/45/50 Move Speed</span>. After another 3 seconds, this increases to <span class=\"text-cyan-600 dark:text-cyan-500\">60/70/80/90/100</span>.<br /><br /><span>Active:</span> Gain the passive effect's full <span class=\"text-cyan-600 dark:text-cyan-500\">Move Speed</span> bonus and <span>40/55/70/85/100% Attack Speed</span> for 4 seconds.<br /><br /><span>Love Taps</span> reduce the Cooldown of this Ability by 2 seconds.",
+        "iconFile": "MissFortuneViciousStrikes.png",
+        "cooldownSeconds": [
+          12,
+          12,
+          12,
+          12,
+          12
+        ],
+        "cost": {
+          "values": [
+            45,
+            45,
+            45,
+            45,
+            45
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          600,
+          600,
+          600,
+          600,
+          600
+        ],
+        "rankValues": [
+          {
+            "label": "Attack Speed",
+            "values": "40/55/70/85/100"
+          },
+          {
+            "label": "Move Speed",
+            "values": "30/35/40/45/50"
+          },
+          {
+            "label": "Max Move Speed",
+            "values": "60/70/80/90/100"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "W Scaling",
+            "labelKo": "W 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "1:LoveTapRefund"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "E": {
+        "slot": "E",
+        "id": "MissFortuneScattershot",
+        "name": "Make It Rain",
+        "summary": "Miss Fortune reveals an area with a flurry of bullets, dealing waves of damage to opponents and slowing them.",
+        "bodyHtml": "Miss Fortune rains bullets, revealing an area, <span class=\"text-purple-600 dark:text-purple-500\">Slowing</span> by (40% + (0.06% Ability Power)) and dealing <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(35/50/65/80/95 + (60% Ability Power)) magic damage</span> per second for 2 seconds (total <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(70/100/130/160/190 + (120% Ability Power)) magic damage</span>).",
+        "iconFile": "MissFortuneScattershot.png",
+        "cooldownSeconds": [
+          18,
+          17,
+          16,
+          15,
+          14
+        ],
+        "cost": {
+          "values": [
+            80,
+            80,
+            80,
+            80,
+            80
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          1000,
+          1000,
+          1000,
+          1000,
+          1000
+        ],
+        "rankValues": [
+          {
+            "label": "Damage Per Second",
+            "values": "35/50/65/80/95"
+          },
+          {
+            "label": "Cooldown",
+            "values": "18/17/16/15/14"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "E Scaling",
+            "labelKo": "E 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "2:TotalDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "R": {
+        "slot": "R",
+        "id": "MissFortuneBulletTime",
+        "name": "Bullet Time",
+        "summary": "Miss Fortune channels a barrage of bullets into a cone in front of her, dealing large amounts of damage to enemies. Each wave of Bullet Time can critically strike",
+        "bodyHtml": "Miss Fortune channels a barrage of bullets, firing 14/16/18 waves over 3 seconds, dealing <span class=\"text-red-600 dark:text-red-500 font-semibold\">(20/30/40 + (60% Attack Damage) + (25% Ability Power)) physical damage</span> per wave (total <span class=\"text-red-600 dark:text-red-500 font-semibold\">(280/480/720 + (840/960/1080% Attack Damage) + (350/400/450% Ability Power)) physical damage</span>).<br /><br />Each wave can critically strike for <span class=\"text-red-600 dark:text-red-500 font-semibold\">(20/30/40 + (60% Attack Damage) + (25% Ability Power)) physical damage</span>.",
+        "iconFile": "MissFortuneBulletTime.png",
+        "cooldownSeconds": [
+          120,
+          110,
+          100
+        ],
+        "cost": {
+          "values": [
+            100,
+            100,
+            100
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          25000,
+          25000,
+          25000
+        ],
+        "rankValues": [
+          {
+            "label": "Bullet Barrages",
+            "values": "14/16/18"
+          },
+          {
+            "label": "Cooldown",
+            "values": "120/110/100"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "R Scaling",
+            "labelKo": "R 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "3:PhysicalDamagePerWave"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      }
+    }
+  }
+}

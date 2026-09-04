@@ -1,0 +1,382 @@
+{
+  "schemaVersion": 2,
+  "patchVersion": "26.17",
+  "locale": "zh_CN",
+  "sources": {
+    "ddragon": "16.17.1",
+    "cdragon": "16.17"
+  },
+  "champion": {
+    "id": "Khazix",
+    "key": "121",
+    "name": "虚空掠夺者",
+    "title": "卡兹克",
+    "tags": [
+      "Assassin"
+    ],
+    "baseStats": {
+      "health": {
+        "base": 643,
+        "perLevel": 99
+      },
+      "healthRegen": {
+        "base": 7.5,
+        "perLevel": 0.75
+      },
+      "mana": {
+        "base": 327,
+        "perLevel": 40
+      },
+      "manaRegen": {
+        "base": 7.59,
+        "perLevel": 0.5
+      },
+      "attackDamage": {
+        "base": 60,
+        "perLevel": 0
+      },
+      "attackSpeed": {
+        "base": 0.668,
+        "perLevel": 2.7
+      },
+      "armor": {
+        "base": 32,
+        "perLevel": 4.2
+      },
+      "magicResist": {
+        "base": 32,
+        "perLevel": 2.05
+      },
+      "moveSpeed": {
+        "base": 345,
+        "perLevel": 0
+      },
+      "attackRange": {
+        "base": 125,
+        "perLevel": 0
+      }
+    },
+    "baseStatContributions": [
+      {
+        "stat": "MAX_HEALTH",
+        "value": 99,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "HEALTH_REGEN",
+        "value": 0.75,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAX_MANA",
+        "value": 40,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MANA_REGEN",
+        "value": 0.5,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_DAMAGE",
+        "value": 0,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_SPEED",
+        "value": 2.7,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ARMOR",
+        "value": 4.2,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAGIC_RESIST",
+        "value": 2.05,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      }
+    ],
+    "abilities": {
+      "P": {
+        "slot": "P",
+        "id": "KhazixPassive",
+        "name": "无形威胁",
+        "summary": "附近陷入<font color='#FFF673'>孤立无援</font>状态的敌人会被标记出来。卡兹克的技能会与<font color='#FFF673'>孤立无援</font>的目标产生交互作用。<br><br>当卡兹克没有被敌方队伍所看见时，他会获得无形威胁，使他的下次对敌方英雄发动的普通攻击造成额外魔法伤害，并使目标减速数秒。",
+        "bodyHtml": "当卡兹克没有在敌方队伍的视野内时，他的下次对敌方英雄发起的攻击会造成额外的<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(50% 额外攻击力)魔法伤害</span>和持续2秒的25%<span class=\"text-purple-600 dark:text-purple-500\">减速</span>。<br /><br />附近没有友军的敌人会处于<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">孤立无援</span>状态。",
+        "iconFile": "Khazix_P.png",
+        "cooldownSeconds": [],
+        "range": [],
+        "rankValues": [],
+        "scalings": [],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "Q": {
+        "slot": "Q",
+        "id": "KhazixQ",
+        "name": "品尝恐惧",
+        "summary": "对目标造成物理伤害。对<font color='#FFF673'>孤立无援</font>的目标造成的伤害会提高。如果他选择<font color='#00DD33'>进化收割利爪</font>的话，这个技能会在对抗<font color='#FFF673'>孤立无援</font>的目标时返还一部分冷却时间。卡兹克也会提升他的普通攻击和品尝恐惧的距离。",
+        "bodyHtml": "卡兹克斩击一名附近的敌人，造成<physicalDamage>{{ spell.khazixq:basedamage }}物理伤害</physicalDamage>。这个技能对<keywordMajor>孤立无援</keywordMajor>的目标造成<physicalDamage>{{ spell.khazixq:isodamage }}伤害</physicalDamage>作为替代。 {{ spellmodifierdescriptionappend }}",
+        "iconFile": "KhazixQ.png",
+        "cooldownSeconds": [
+          4,
+          4,
+          4,
+          4,
+          4
+        ],
+        "cost": {
+          "values": [
+            20,
+            20,
+            20,
+            20,
+            20
+          ],
+          "resource": "法力值"
+        },
+        "range": [
+          325,
+          325,
+          325,
+          325,
+          325
+        ],
+        "rankValues": [
+          {
+            "label": "伤害",
+            "values": "80/105/130/155/180"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "Q Scaling",
+            "labelKo": "Q 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "0:BaseDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "ddragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "W": {
+        "slot": "W",
+        "id": "KhazixW",
+        "name": "虚空突刺",
+        "summary": "卡兹克发射爆炸性的尖刺，对命中的敌人造成物理伤害。卡兹克如果在爆炸范围内，则会回复生命值。如果他选择<font color='#00DD33'>进化刺鞘</font>的话，虚空突刺现在会呈锥形发射三个尖刺，减速被命中的敌人并使被命中的敌方英雄显形2秒。<font color='#FFF673'>孤立无援</font>的目标会被减速额外的幅度。",
+        "bodyHtml": "卡兹克发射一根尖刺，对命中的首个目标及一个小区域内造成<physicalDamage>{{ basedamage }}物理伤害</physicalDamage>。如果卡兹克在该区域内，那么他会回复<healing>{{ healamount }}生命值</healing>。{{ spellmodifierdescriptionappend }}",
+        "iconFile": "KhazixW.png",
+        "cooldownSeconds": [
+          9,
+          9,
+          9,
+          9,
+          9
+        ],
+        "cost": {
+          "values": [
+            55,
+            60,
+            65,
+            70,
+            75
+          ],
+          "resource": "法力值"
+        },
+        "range": [
+          1000,
+          1000,
+          1000,
+          1000,
+          1000
+        ],
+        "rankValues": [
+          {
+            "label": "伤害",
+            "values": "75/105/135/165/195"
+          },
+          {
+            "label": "治疗效果",
+            "values": "55/75/95/115/135"
+          },
+          {
+            "label": "法力值消耗",
+            "values": "55/60/65/70/75"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "W Scaling",
+            "labelKo": "W 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "1:BaseDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "ddragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "E": {
+        "slot": "E",
+        "id": "KhazixE",
+        "name": "跃击",
+        "summary": "卡兹克跳向一个区域，在着陆时造成物理伤害。如果他选择<font color='#00DD33'>进化虫翼</font>的话，跃击的距离会提升200并在击杀和助攻时重置冷却时间。",
+        "bodyHtml": "卡兹克进行跳跃，在着陆时造成<physicalDamage>{{ totaldamage }}物理伤害</physicalDamage>。{{ spellmodifierdescriptionappend }}",
+        "iconFile": "KhazixE.png",
+        "cooldownSeconds": [
+          20,
+          18,
+          16,
+          14,
+          12
+        ],
+        "cost": {
+          "values": [
+            50,
+            50,
+            50,
+            50,
+            50
+          ],
+          "resource": "法力值"
+        },
+        "range": [
+          700,
+          700,
+          700,
+          700,
+          700
+        ],
+        "rankValues": [
+          {
+            "label": "伤害",
+            "values": "65/100/135/170/205"
+          },
+          {
+            "label": "冷却时间",
+            "values": "20/18/16/14/12"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "E Scaling",
+            "labelKo": "E 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "2:TotalDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "ddragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "R": {
+        "slot": "R",
+        "id": "KhazixR",
+        "name": "虚空来袭",
+        "summary": "每升一级此技能都会允许卡兹克进化他的一项技能，给予该技能独特的附加效果。在激活【虚空来袭】时，会使卡兹克变成<font color='#91d7ee'>隐形</font>状态，触发无形威胁并提升移动速度。如果他选择<font color='#00DD33'>进化动态遮蔽</font>的话，【虚空来袭】获得已提升的<font color='#91d7ee'>隐形</font>持续时间，以及一次额外的使用次数。",
+        "bodyHtml": "<br /><br /><span class=\"text-gray-600 dark:text-gray-500 italic\">被动：</span>升级这个技能会允许卡兹克<span>进化</span>他的一个技能，来为该技能提供额外效果。<span><span>品尝恐惧：</span>获得技能距离、攻击距离，并且在对抗<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">孤立无援</span>的目标时会降低冷却时间。<span><span>虚空突刺：</span>发射3个尖刺，造成<span class=\"text-purple-600 dark:text-purple-500\">减速</span>，对抗<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">孤立无援</span>的目标时会提升。<span><span>跃击：</span>提升距离并在参与击杀英雄后刷新冷却时间。<span><span>虚空来袭：</span> <span class=\"text-purple-600 dark:text-purple-400 font-semibold\">隐形</span>持续2秒并获得第二段<span class=\"text-yellow-600 dark:text-yellow-300\">再次施放</span>。<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\"><span class=\"text-purple-600 dark:text-purple-400 font-semibold\">隐形</span>单位只会被【防御塔】或<span style=\"color: #ee91d7\">真实视野</font color>显形。</span>",
+        "iconFile": "KhazixR.png",
+        "cooldownSeconds": [
+          100,
+          85,
+          70
+        ],
+        "cost": {
+          "values": [
+            100,
+            100,
+            100
+          ],
+          "resource": "法力值"
+        },
+        "range": [
+          25000,
+          25000,
+          25000
+        ],
+        "rankValues": [
+          {
+            "label": "进化可用",
+            "values": "1/2/3"
+          },
+          {
+            "label": "冷却时间",
+            "values": "100/85/70"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "R Scaling",
+            "labelKo": "R 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "3:{ba2719ef}"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": [
+            "spell.KhazixQ:Effect4Amount",
+            "spell.KhazixW:Effect3Amount"
+          ]
+        }
+      }
+    }
+  }
+}

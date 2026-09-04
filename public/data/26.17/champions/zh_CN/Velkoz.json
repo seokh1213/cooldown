@@ -1,0 +1,404 @@
+{
+  "schemaVersion": 2,
+  "patchVersion": "26.17",
+  "locale": "zh_CN",
+  "sources": {
+    "ddragon": "16.17.1",
+    "cdragon": "16.17"
+  },
+  "champion": {
+    "id": "Velkoz",
+    "key": "161",
+    "name": "虚空之眼",
+    "title": "维克兹",
+    "tags": [
+      "Mage",
+      "Support"
+    ],
+    "baseStats": {
+      "health": {
+        "base": 590,
+        "perLevel": 102
+      },
+      "healthRegen": {
+        "base": 5.5,
+        "perLevel": 0.55
+      },
+      "mana": {
+        "base": 469,
+        "perLevel": 21
+      },
+      "manaRegen": {
+        "base": 8,
+        "perLevel": 0.8
+      },
+      "attackDamage": {
+        "base": 55,
+        "perLevel": 0
+      },
+      "attackSpeed": {
+        "base": 0.643,
+        "perLevel": 1.59
+      },
+      "armor": {
+        "base": 22,
+        "perLevel": 4.7
+      },
+      "magicResist": {
+        "base": 30,
+        "perLevel": 1.3
+      },
+      "moveSpeed": {
+        "base": 340,
+        "perLevel": 0
+      },
+      "attackRange": {
+        "base": 525,
+        "perLevel": 0
+      }
+    },
+    "baseStatContributions": [
+      {
+        "stat": "MAX_HEALTH",
+        "value": 102,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "HEALTH_REGEN",
+        "value": 0.55,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAX_MANA",
+        "value": 21,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MANA_REGEN",
+        "value": 0.8,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_DAMAGE",
+        "value": 0,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_SPEED",
+        "value": 1.59,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ARMOR",
+        "value": 4.7,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAGIC_RESIST",
+        "value": 1.3,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      }
+    ],
+    "abilities": {
+      "P": {
+        "slot": "P",
+        "id": "VelkozPassive",
+        "name": "有机体解构",
+        "summary": "维克兹的技能会对命中的敌人施加<keywordName>有机体解构</keywordName>效果。如果累积到3层效果，敌人就会受到爆发性的真实伤害。",
+        "bodyHtml": "维克兹的技能会施加一层持续7秒的<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">解构</span>。带有3层效果的敌人会消耗所有层数，受到<span class=\"text-yellow-600 dark:text-yellow-500 font-semibold\">(60% 法术强度)真实伤害</span>。<br /><br />维克兹的攻击会刷新<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">解构</span>的持续时间，但不会添加新的层数。",
+        "iconFile": "VelKoz_Passive.png",
+        "cooldownSeconds": [],
+        "range": [],
+        "rankValues": [],
+        "scalings": [],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "Q": {
+        "slot": "Q",
+        "id": "VelkozQ",
+        "name": "等离子裂变",
+        "summary": "维克兹发射一束等离子，再次施放此技能或在命中一名敌人后，等离子束会一分为二。等离子束在命中时会造成伤害和减速效果。",
+        "bodyHtml": "维克兹发射一束等离子，造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(80/120/160/200/240 + (90% 法术强度))魔法伤害</span>和在1/1.4/1.8/2.2/2.6秒里持续衰减的70%<span class=\"text-purple-600 dark:text-purple-500\">减速</span>。在到达它的距离终点，或是命中一个目标，或是<span class=\"text-yellow-600 dark:text-yellow-300\">再次施放</span>此技能时，等离子束会分裂成新的两束并呈90度角发射出去。<br /><br />用这个技能击杀一个单位，就会回复<span>20/22.5/25/27.5/30法力</span>。",
+        "iconFile": "VelkozQ.png",
+        "cooldownSeconds": [
+          7,
+          7,
+          7,
+          7,
+          7
+        ],
+        "cost": {
+          "values": [
+            40,
+            45,
+            50,
+            55,
+            60
+          ],
+          "resource": "法力值"
+        },
+        "range": [
+          1050,
+          1050,
+          1050,
+          1050,
+          1050
+        ],
+        "rankValues": [
+          {
+            "label": "总伤害",
+            "values": "80/120/160/200/240"
+          },
+          {
+            "label": "减速时长",
+            "values": "1/1.4/1.8/2.2/2.6"
+          },
+          {
+            "label": "法力值消耗",
+            "values": "40/45/50/55/60"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "Q Scaling",
+            "labelKo": "Q 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "0:TotalDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "W": {
+        "slot": "W",
+        "id": "VelkozW",
+        "name": "虚空裂隙",
+        "summary": "维克兹开启一道虚空裂隙，造成初始爆发伤害，并在短暂的延迟后爆炸，造成第二段爆发伤害。",
+        "bodyHtml": "维克兹打开一道虚空裂隙，造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(30/50/70/90/110 + (20% 法术强度))魔法伤害</span>。然后裂隙会喷发，造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(45/75/105/135/165 + (25% 法术强度))魔法伤害</span>。<br /><br />这个技能有2层充能(18/17/16/15/14秒刷新时间)。",
+        "iconFile": "VelkozW.png",
+        "cooldownSeconds": [
+          1.5,
+          1.5,
+          1.5,
+          1.5,
+          1.5
+        ],
+        "rechargeSeconds": [
+          18,
+          17,
+          16,
+          15,
+          14
+        ],
+        "maxCharges": 2,
+        "cost": {
+          "values": [
+            50,
+            55,
+            60,
+            65,
+            70
+          ],
+          "resource": "法力值"
+        },
+        "range": [
+          1050,
+          1050,
+          1050,
+          1050,
+          1050
+        ],
+        "rankValues": [
+          {
+            "label": "初始伤害",
+            "values": "30/50/70/90/110"
+          },
+          {
+            "label": "次要伤害",
+            "values": "45/75/105/135/165"
+          },
+          {
+            "label": "充能时间",
+            "values": "18/17/16/15/14"
+          },
+          {
+            "label": "法力值消耗",
+            "values": "50/55/60/65/70"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "W Scaling",
+            "labelKo": "W 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "1:InitialDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "E": {
+        "slot": "E",
+        "id": "VelkozE",
+        "name": "构造分解",
+        "summary": "维克兹让一个区域爆炸，击飞敌人，并将近处的敌人略微击退。",
+        "bodyHtml": "维克兹瓦解一个附近的区域，导致它爆炸，造成0.75秒<span class=\"text-purple-600 dark:text-purple-500\">击飞</span>和<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(70/100/130/160/190 + (30% 法术强度))魔法伤害</span>。靠近维克兹的敌人们将被<span class=\"text-purple-600 dark:text-purple-500\">击退</span>，而不是<span class=\"text-purple-600 dark:text-purple-500\">击飞</span>。",
+        "iconFile": "VelkozE.png",
+        "cooldownSeconds": [
+          12,
+          11.5,
+          11,
+          10.5,
+          10
+        ],
+        "cost": {
+          "values": [
+            50,
+            55,
+            60,
+            65,
+            70
+          ],
+          "resource": "法力值"
+        },
+        "range": [
+          810,
+          810,
+          810,
+          810,
+          810
+        ],
+        "rankValues": [
+          {
+            "label": "伤害",
+            "values": "70/100/130/160/190"
+          },
+          {
+            "label": "冷却时间",
+            "values": "12/11.5/11/10.5/10"
+          },
+          {
+            "label": "法力值消耗",
+            "values": "50/55/60/65/70"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "E Scaling",
+            "labelKo": "E 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "2:TotalDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "R": {
+        "slot": "R",
+        "id": "VelkozR",
+        "name": "生命形态瓦解射线",
+        "summary": "维克兹释放一束被引导的光线跟随鼠标指针，可造成魔法伤害，持续2.5秒。【有机体解构】效果会研究敌方英雄，从而使他们受到真实伤害。",
+        "bodyHtml": "维克兹引导一道能量射线来跟随鼠标指针，在2.5秒里持续造成共<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(450/700/925 + (125% 法术强度))魔法伤害</span>和20%<span class=\"text-purple-600 dark:text-purple-500\">减速</span>。对近期被<span>有机体解构</span>伤害过的敌人们造成<span class=\"text-yellow-600 dark:text-yellow-500 font-semibold\">真实伤害</span>作为替代。<br /><br />射线内的敌人会周期性地获得<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">解构</span>层数。",
+        "iconFile": "VelkozR.png",
+        "cooldownSeconds": [
+          100,
+          90,
+          80
+        ],
+        "cost": {
+          "values": [
+            100,
+            100,
+            100
+          ],
+          "resource": "法力值"
+        },
+        "range": [
+          1575,
+          1575,
+          1575
+        ],
+        "rankValues": [
+          {
+            "label": "总伤害",
+            "values": "450/700/925"
+          },
+          {
+            "label": "冷却时间",
+            "values": "100/90/80"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "R Scaling",
+            "labelKo": "R 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "3:TotalDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      }
+    }
+  }
+}

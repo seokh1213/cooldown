@@ -1,0 +1,384 @@
+{
+  "schemaVersion": 2,
+  "patchVersion": "26.17",
+  "locale": "ko_KR",
+  "sources": {
+    "ddragon": "16.17.1",
+    "cdragon": "16.17"
+  },
+  "champion": {
+    "id": "Nasus",
+    "key": "75",
+    "name": "나서스",
+    "title": "사막의 관리자",
+    "tags": [
+      "Fighter",
+      "Tank"
+    ],
+    "baseStats": {
+      "health": {
+        "base": 650,
+        "perLevel": 104
+      },
+      "healthRegen": {
+        "base": 9,
+        "perLevel": 0.9
+      },
+      "mana": {
+        "base": 326,
+        "perLevel": 62
+      },
+      "manaRegen": {
+        "base": 7.45,
+        "perLevel": 0.5
+      },
+      "attackDamage": {
+        "base": 67,
+        "perLevel": 0
+      },
+      "attackSpeed": {
+        "base": 0.638,
+        "perLevel": 3.48
+      },
+      "armor": {
+        "base": 34,
+        "perLevel": 4.7
+      },
+      "magicResist": {
+        "base": 32,
+        "perLevel": 2.05
+      },
+      "moveSpeed": {
+        "base": 350,
+        "perLevel": 0
+      },
+      "attackRange": {
+        "base": 125,
+        "perLevel": 0
+      }
+    },
+    "baseStatContributions": [
+      {
+        "stat": "MAX_HEALTH",
+        "value": 104,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "HEALTH_REGEN",
+        "value": 0.9,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAX_MANA",
+        "value": 62,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MANA_REGEN",
+        "value": 0.5,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_DAMAGE",
+        "value": 0,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_SPEED",
+        "value": 3.48,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ARMOR",
+        "value": 4.7,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAGIC_RESIST",
+        "value": 2.05,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      }
+    ],
+    "abilities": {
+      "P": {
+        "slot": "P",
+        "id": "NasusPassive",
+        "name": "영혼의 포식자",
+        "summary": "나서스는 적의 영혼을 흡수하여 추가 생명력 흡수 효과를 얻습니다.",
+        "bodyHtml": "나서스가의 추가 생명력 흡수 효과를 얻습니다.",
+        "iconFile": "Nasus_Passive.png",
+        "cooldownSeconds": [],
+        "range": [],
+        "rankValues": [],
+        "scalings": [],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "Q": {
+        "slot": "Q",
+        "id": "NasusQ",
+        "name": "흡수의 일격",
+        "summary": "나서스가 적을 공격하여 피해를 입힙니다. 흡수의 일격으로 대상을 처치할 경우 흡수의 일격 스킬이 강화됩니다.",
+        "bodyHtml": "나서스의 다음 기본 공격이 <span class=\"text-red-600 dark:text-red-500 font-semibold\">(40/60/80/100/120 + (100% 공격력))의 물리 피해</span>를 입힙니다. 이 스킬로 적을 처치하면 영구적으로 피해량이 4만큼 증가하고 챔피언, 대형 미니언, 대형 정글 몬스터를 대상으로는 10만큼 증가합니다.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">이 스킬은 피해를 입힐 때 효과가 발동합니다.<br />이 스킬에는 치명타가 적용될 수 있으며, 이 경우 <span class=\"text-red-600 dark:text-red-500 font-semibold\">의 물리 피해</span>를 입힙니다.</span>",
+        "iconFile": "NasusQ.png",
+        "cooldownSeconds": [
+          7.5,
+          6.5,
+          5.5,
+          4.5,
+          3.5
+        ],
+        "cost": {
+          "values": [
+            20,
+            20,
+            20,
+            20,
+            20
+          ],
+          "resource": "마나"
+        },
+        "range": [
+          255,
+          255,
+          255,
+          255,
+          255
+        ],
+        "rankValues": [
+          {
+            "label": "기본 피해량",
+            "values": "40/60/80/100/120"
+          },
+          {
+            "label": "재사용 대기시간",
+            "values": "7.5/6.5/5.5/4.5/3.5"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "Q Scaling",
+            "labelKo": "Q 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "0:TotalDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": [
+            "CritDamage"
+          ]
+        }
+      },
+      "W": {
+        "slot": "W",
+        "id": "NasusW",
+        "name": "쇠약",
+        "summary": "나서스가 적 챔피언의 노화를 촉진시켜 이동 속도와 공격 속도를 점진적으로 늦춥니다.",
+        "bodyHtml": "나서스가 챔피언의 노화를 촉진시켜 35% <span class=\"text-purple-600 dark:text-purple-500\">둔화</span>시킵니다. 둔화 효과는 5초 동안 최대 47/59/71/83/95%까지 증가합니다. 대상의 공격 속도는 <span class=\"text-purple-600 dark:text-purple-500\">둔화</span> 효과의 75%만큼 감소합니다.",
+        "iconFile": "NasusW.png",
+        "cooldownSeconds": [
+          15,
+          14,
+          13,
+          12,
+          11
+        ],
+        "cost": {
+          "values": [
+            80,
+            80,
+            80,
+            80,
+            80
+          ],
+          "resource": "마나"
+        },
+        "range": [
+          700,
+          700,
+          700,
+          700,
+          700
+        ],
+        "rankValues": [
+          {
+            "label": "최대 둔화",
+            "values": "47%/59%/71%/83%/95%"
+          },
+          {
+            "label": "재사용 대기시간",
+            "values": "15/14/13/12/11"
+          }
+        ],
+        "scalings": [],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "E": {
+        "slot": "E",
+        "id": "NasusE",
+        "name": "영혼의 불길",
+        "summary": "나서스가 영혼의 불꽃을 일으켜 해당 지역에 서 있는 적에게 피해를 입히고 방어력을 낮춥니다.",
+        "bodyHtml": "나서스가 영혼의 불길로 <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(50/80/110/140/170 + (60% 주문력))의 마법 피해</span>를 입힙니다. 해당 지역 내 적은 <span class=\"text-orange-600 dark:text-orange-400\">방어력이 30/35/40/45/50%</span>만큼 감소하고 5초 동안 <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(50/80/110/140/170 + (60% 주문력))의 마법 피해</span>를 입습니다.",
+        "iconFile": "NasusE.png",
+        "cooldownSeconds": [
+          12,
+          12,
+          12,
+          12,
+          12
+        ],
+        "cost": {
+          "values": [
+            60,
+            70,
+            80,
+            90,
+            100
+          ],
+          "resource": "마나"
+        },
+        "range": [
+          650,
+          650,
+          650,
+          650,
+          650
+        ],
+        "rankValues": [
+          {
+            "label": "최초 피해량",
+            "values": "50/80/110/140/170"
+          },
+          {
+            "label": "초당 피해량",
+            "values": "10/16/22/28/34"
+          },
+          {
+            "label": "방어 감소 %",
+            "values": "30%/35%/40%/45%/50%"
+          },
+          {
+            "label": "소모값 마나",
+            "values": "60/70/80/90/100"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "E Scaling",
+            "labelKo": "E 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "2:TotalDotDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "R": {
+        "slot": "R",
+        "id": "NasusR",
+        "name": "사막의 분노",
+        "summary": "나서스가 강력한 모래 폭풍을 소환하여 주변의 적을 강타합니다. 나서스는 폭풍이 부는 동안 체력과 공격 범위가 증가하며, 주변의 적에게 피해를 입히고, 흡수의 일격 재사용 대기시간이 감소하며, 추가 방어력과 마법 저항력을 얻습니다.",
+        "bodyHtml": "나서스가 15초 동안 모래 폭풍 속에서 힘을 얻어 <span class=\"text-green-600 dark:text-green-400\">최대 체력이 300/450/600</span> 증가하고 <span class=\"text-orange-600 dark:text-orange-400\">방어력</span>과 <span>마법 저항력</span>이 40/55/70 상승합니다.<br /><br />폭풍이 부는 동안 나서스는 매초 <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">주변 적이 보유한 최대 체력의 (3/4/5% + (0.01% 주문력))에 해당하는 마법 피해</span>를 입히며 <span>흡수의 일격</span> 재사용 대기시간이 50% 감소합니다.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">모래 폭풍은 초당 최대 240의 피해를 입힙니다.</span>",
+        "iconFile": "NasusR.png",
+        "cooldownSeconds": [
+          120,
+          100,
+          80
+        ],
+        "cost": {
+          "values": [
+            100,
+            100,
+            100
+          ],
+          "resource": "마나"
+        },
+        "range": [
+          400,
+          400,
+          400
+        ],
+        "rankValues": [
+          {
+            "label": "추가 체력",
+            "values": "300/450/600"
+          },
+          {
+            "label": "최대 체력 %",
+            "values": "3%/4%/5%"
+          },
+          {
+            "label": "추가 방어력 및 마법 저항력",
+            "values": "40/55/70"
+          },
+          {
+            "label": "재사용 대기시간",
+            "values": "120/100/80"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "R Scaling",
+            "labelKo": "R 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "3:DamageCalc"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      }
+    }
+  }
+}

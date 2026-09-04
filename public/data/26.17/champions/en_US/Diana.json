@@ -1,0 +1,396 @@
+{
+  "schemaVersion": 2,
+  "patchVersion": "26.17",
+  "locale": "en_US",
+  "sources": {
+    "ddragon": "16.17.1",
+    "cdragon": "16.17"
+  },
+  "champion": {
+    "id": "Diana",
+    "key": "131",
+    "name": "Diana",
+    "title": "Scorn of the Moon",
+    "tags": [
+      "Fighter",
+      "Assassin"
+    ],
+    "baseStats": {
+      "health": {
+        "base": 640,
+        "perLevel": 109
+      },
+      "healthRegen": {
+        "base": 6.5,
+        "perLevel": 0.85
+      },
+      "mana": {
+        "base": 375,
+        "perLevel": 25
+      },
+      "manaRegen": {
+        "base": 8,
+        "perLevel": 0.8
+      },
+      "attackDamage": {
+        "base": 57,
+        "perLevel": 0
+      },
+      "attackSpeed": {
+        "base": 0.625,
+        "perLevel": 2
+      },
+      "armor": {
+        "base": 31,
+        "perLevel": 4.3
+      },
+      "magicResist": {
+        "base": 32,
+        "perLevel": 2.05
+      },
+      "moveSpeed": {
+        "base": 345,
+        "perLevel": 0
+      },
+      "attackRange": {
+        "base": 150,
+        "perLevel": 0
+      }
+    },
+    "baseStatContributions": [
+      {
+        "stat": "MAX_HEALTH",
+        "value": 109,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "HEALTH_REGEN",
+        "value": 0.85,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAX_MANA",
+        "value": 25,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MANA_REGEN",
+        "value": 0.8,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_DAMAGE",
+        "value": 0,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_SPEED",
+        "value": 2,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ARMOR",
+        "value": 4.3,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAGIC_RESIST",
+        "value": 2.05,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      }
+    ],
+    "abilities": {
+      "P": {
+        "slot": "P",
+        "id": "DianaPassive",
+        "name": "Moonsilver Blade",
+        "summary": "Every third strike cleaves nearby enemies for an additional magic damage. After casting a spell, Diana gains Attack Speed for 5 seconds.",
+        "bodyHtml": "Diana gains <span>(15% ~ 35%) Attack Speed</span>, increased to <span>45/105%</span> for 5 seconds after using an Ability.<br /><br />Every third Attack cleaves nearby enemies for an additional <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(20 + (50% Ability Power)) magic damage</span>.",
+        "iconFile": "Diana_Passive_LunarBlade.png",
+        "cooldownSeconds": [],
+        "range": [],
+        "rankValues": [],
+        "scalings": [],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "Q": {
+        "slot": "Q",
+        "id": "DianaQ",
+        "name": "Crescent Strike",
+        "summary": "Unleashes a bolt of lunar energy in an arc dealing magic damage.<br><br>Afflicts enemies struck with Moonlight, revealing them if they are not stealthed for 3 seconds.",
+        "bodyHtml": "Diana unleashes an arc of lunar energy, dealing <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(70/105/140/175/210 + (70% Ability Power)) magic damage</span> and marking with <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Moonlight</span> for 3 seconds. <br /><br /><span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Moonlight</span> reveals enemies that are not <span class=\"text-purple-600 dark:text-purple-400 font-semibold\">stealthed</span>.",
+        "iconFile": "DianaQ.png",
+        "cooldownSeconds": [
+          8,
+          7.5,
+          7,
+          6.5,
+          6
+        ],
+        "cost": {
+          "values": [
+            50,
+            50,
+            50,
+            50,
+            50
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          900,
+          900,
+          900,
+          900,
+          900
+        ],
+        "rankValues": [
+          {
+            "label": "Cooldown",
+            "values": "8/7.5/7/6.5/6"
+          },
+          {
+            "label": "Damage",
+            "values": "70/105/140/175/210"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "Q Scaling",
+            "labelKo": "Q 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "0:TotalDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "W": {
+        "slot": "W",
+        "id": "DianaOrbs",
+        "name": "Pale Cascade",
+        "summary": "Diana creates three orbiting spheres that detonate on contact with enemies to deal damage in an area. She also gains a temporary shield that absorbs damage. If her third sphere detonates, the shield gains additional strength.",
+        "bodyHtml": "Diana creates three orbiting spheres for 5 seconds that explode on contact, each dealing <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(20/32/44/56/68 + (18% Ability Power)) magic damage</span>, up to a max of <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(60/96/132/168/204 + (54% Ability Power)) damage</span>.<br /><br />Diana also gains <span class=\"text-blue-600 dark:text-blue-300\">(45/60/75/90/105 + (30% Ability Power) + (11% bonus Health)) Shield</span> for the same duration. When the last sphere detonates, she gains an additional <span class=\"text-blue-600 dark:text-blue-300\">(45/60/75/90/105 + (30% Ability Power) + (11% bonus Health)) Shield</span> and refreshes the duration.",
+        "iconFile": "DianaOrbs.png",
+        "cooldownSeconds": [
+          15,
+          13.5,
+          12,
+          10.5,
+          9
+        ],
+        "cost": {
+          "values": [
+            40,
+            45,
+            50,
+            55,
+            60
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          800,
+          800,
+          800,
+          800,
+          800
+        ],
+        "rankValues": [
+          {
+            "label": "Damage",
+            "values": "20/32/44/56/68"
+          },
+          {
+            "label": "Shield Amount",
+            "values": "45/60/75/90/105"
+          },
+          {
+            "label": "Mana Cost",
+            "values": "40/45/50/55/60"
+          },
+          {
+            "label": "Cooldown",
+            "values": "15/13.5/12/10.5/9"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "W Scaling",
+            "labelKo": "W 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "1:TotalDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "E": {
+        "slot": "E",
+        "id": "DianaTeleport",
+        "name": "Lunar Rush",
+        "summary": "Becomes the living embodiment of the vengeful moon, dashing to an enemy and dealing magic damage.<br><br>Lunar Rush has no cooldown when used to dash to an enemy afflicted with Moonlight. All other enemies will have the Moonlight debuff removed regardless of whether they were the target of Lunar Rush.",
+        "bodyHtml": "Diana becomes as the vengeful moon, dashing to an enemy and dealing <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(50/70/90/110/130 + (60% Ability Power)) magic damage</span>. If the target is afflicted with <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Moonlight</span>, this Ability's Cooldown is refreshed.",
+        "iconFile": "DianaTeleport.png",
+        "cooldownSeconds": [
+          22,
+          20,
+          18,
+          16,
+          14
+        ],
+        "cost": {
+          "values": [
+            40,
+            45,
+            50,
+            55,
+            60
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          825,
+          825,
+          825,
+          825,
+          825
+        ],
+        "rankValues": [
+          {
+            "label": "Cooldown",
+            "values": "22/20/18/16/14"
+          },
+          {
+            "label": "Mana Cost",
+            "values": "40/45/50/55/60"
+          },
+          {
+            "label": "Damage",
+            "values": "50/70/90/110/130"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "E Scaling",
+            "labelKo": "E 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "2:TotalDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "R": {
+        "slot": "R",
+        "id": "DianaR",
+        "name": "Moonfall",
+        "summary": "Diana reveals and draws in all nearby enemies and slows them.<br><br>If Diana pulls in one or more enemy champions, the moonlight crashes down onto her after a short delay, dealing magic damage in an area around her, increased for each target beyond the first pulled.",
+        "bodyHtml": "Diana <span class=\"text-purple-600 dark:text-purple-500\">Pulls In</span>, <span class=\"text-purple-600 dark:text-purple-500\">Slows</span> by 40/50/60%, and reveals nearby enemies for 2 seconds.<br /><br />If Diana hits at least one enemy champion, she calls to the moon, dealing <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(200/300/400 + (60% Ability Power)) magic damage</span> plus <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(35/60/85 + (15% Ability Power))</span> for each champion pulled beyond the first, up to a max of an additional <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(175/300/425 + (75% Ability Power)) damage</span>.",
+        "iconFile": "DianaR.png",
+        "cooldownSeconds": [
+          100,
+          90,
+          80
+        ],
+        "cost": {
+          "values": [
+            100,
+            100,
+            100
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          475,
+          475,
+          475
+        ],
+        "rankValues": [
+          {
+            "label": "Cooldown",
+            "values": "100/90/80"
+          },
+          {
+            "label": "Damage",
+            "values": "200/300/400"
+          },
+          {
+            "label": "Slow",
+            "values": "40/50/60"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "R Scaling",
+            "labelKo": "R 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "3:RExplosionDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      }
+    }
+  }
+}
