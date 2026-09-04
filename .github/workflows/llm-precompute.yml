@@ -155,4 +155,9 @@ jobs:
           git add public/data
           git diff --cached --quiet && echo "변경 없음" && exit 0
           git commit -m "chore: 매치업 조언 사전 생성 (${{ steps.params.outputs.model }}) [skip ci]"
-          git push
+          for attempt in 1 2 3; do
+            git pull --rebase --autostash origin "${GITHUB_REF_NAME}" && git push && exit 0
+            echo "push 재시도 ${attempt}"
+            sleep $((attempt * 5))
+          done
+          exit 1

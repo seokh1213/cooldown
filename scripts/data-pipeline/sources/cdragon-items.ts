@@ -1,3 +1,5 @@
+import { fetchJson } from "../io/json";
+
 export interface CommunityDragonItem {
   id: number;
   name: string;
@@ -36,14 +38,15 @@ export async function fetchCDragonItems(
   const url =
     `https://raw.communitydragon.org/${cdragonVersion}/plugins/` +
     `rcp-be-lol-game-data/global/${source}/v1/items.json`;
-  console.log(`Fetching exact CDragon items (${source}): ${url}`);
-  const response = await fetch(url);
-  if (!response.ok) {
+  // 재시도가 있는 공용 헬퍼를 쓴다 (raw fetch 는 일시적 네트워크 오류에 무방비)
+  let json: unknown;
+  try {
+    json = await fetchJson<unknown>(url);
+  } catch (error) {
     throw new Error(
-      `[CD][Items] ${source} missing from ${cdragonVersion}: HTTP ${response.status}`,
+      `[CD][Items] ${source} missing from ${cdragonVersion}: ${(error as Error).message}`,
     );
   }
-  const json = (await response.json()) as unknown;
   if (!Array.isArray(json)) throw new Error(`[CD][Items] Invalid ${source} response`);
   return json as CommunityDragonItem[];
 }
