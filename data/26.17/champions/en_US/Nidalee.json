@@ -122,7 +122,7 @@
         "name": "Prowl",
         "maxRank": 0,
         "summary": "Moving through brush increases Nidalee's Move Speed by 10% for 2 seconds, increased to 30% toward visible enemy champions within 1400 range.<br><br>Hitting champions or monsters with Javelin Toss or Bushwhack triggers a <font color='#FFF673'>Hunt</font>, granting <font color='#ee91d7'>True Sight</font> of them for 4 seconds. During this time, Nidalee gains 10% Move Speed (increased to 30% toward the <font color='#FFF673'>Hunted</font> target) and her Takedown and Pounce are enhanced against them.",
-        "bodyHtml": "Nidalee starts with a rank in <span>Aspect of the Cougar</span>. <br /><br />Nidalee gains <span class=\"text-cyan-600 dark:text-cyan-500\">?% Move Speed</span> for 2 seconds when entering Brush, increased to <span class=\"text-cyan-600 dark:text-cyan-500\">?% Move Speed</span> while moving toward enemy champions.<br /><br />Hitting champions or jungle monsters with <span>Javelin Toss</span> or <span>Bushwhack</span> marks them as <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Hunted</span> for 4 seconds. While an enemy is <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Hunted</span>, they are revealed with <span class=\"text-purple-600 dark:text-purple-400 font-semibold\">True Sight</span> and Nidalee gains <span class=\"text-cyan-600 dark:text-cyan-500\">?% Move Speed</span>, increased to <span class=\"text-cyan-600 dark:text-cyan-500\">?% Move Speed</span> toward the <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Hunted</span> enemy.",
+        "bodyHtml": "<span>Prowl</span><span>Moving through brush increases Nidalee's Move Speed by 10% for 2 seconds, increased to 30% toward visible enemy champions within 1400 range.<br /><br />Damaging champions or monsters with Javelin Toss or Bushwhack causes her to <span style=\"color: #FFF673\">Hunt</span> these targets for 4 seconds, granting <span style=\"color: #ee91d7\">True Sight</span> of them and Prowl's increased Move Speed toward them. Additionally, her next Takedown or Pounce are enhanced against the <span style=\"color: #FFF673\">Hunted</span> target.</span>",
         "iconFile": "Nidalee_Passive.png",
         "cooldownSeconds": [],
         "range": [],
@@ -200,10 +200,32 @@
           }
         ],
         "simulation": {
-          "status": "unsupported",
-          "unsupportedPartTypes": [
-            "GameCalculationModified"
-          ]
+          "status": "complete",
+          "primary": {
+            "id": "HumanMinimumDamage",
+            "kind": "damage",
+            "damageType": "magical",
+            "baseByRank": [
+              70,
+              90,
+              110,
+              130,
+              150
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.5,
+                  0.5,
+                  0.5,
+                  0.5,
+                  0.5
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
         },
         "conditions": [],
         "source": "communitydragon",
@@ -307,7 +329,9 @@
           },
           "unsupportedPartTypes": []
         },
-        "conditions": [],
+        "conditions": [
+          "per-second"
+        ],
         "source": "communitydragon",
         "diagnostics": {
           "unresolvedTokens": []

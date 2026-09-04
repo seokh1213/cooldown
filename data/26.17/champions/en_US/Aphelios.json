@@ -121,7 +121,7 @@
         "name": "The Hitman and the Seer",
         "maxRank": 0,
         "summary": "Aphelios wields 5 Lunari Weapons made by his sister Alune. He has access to two at a time: one main-hand and one off-hand. Each weapon has a unique Basic Attack and Ability. Attacks and abilities consume a weapon's ammo. When out of ammo, Aphelios discards the weapon and Alune summons the next of the 5. ",
-        "bodyHtml": "Aphelios wields 5 Lunari Weapons made by his sister, Alune. He has access to two at a time: one main-hand and one off-hand. Each weapon has a unique Attack and Ability [?]. Attacks and Abilities consume a weapon's ammo. When out of ammo, Aphelios discards the weapon and Alune summons the next one. <br /><br />Aphelios unlocks his weapon's Ability [?] at level 2 and his Ultimate at level 6. Instead of powering up his Abilities, Aphelios' rank-ups grant him permanent stats.<br /><br /><span>Lunari Weapon Order:</span><span></span><span></span><span style=\"color: #424242\"><span></span><span></span><span></span></span>",
+        "bodyHtml": "Aphelios wields 5 Lunari Weapons made by his sister, Alune. He has access to two at a time: one main-hand and one off-hand. Each weapon has a unique Attack and Ability [?]. Attacks and Abilities consume a weapon's ammo. When out of ammo, Aphelios discards the weapon and Alune summons the next one. <br /><br />Aphelios unlocks his weapon's Ability [?] at level 2 and his Ultimate at level 6. Instead of powering up his Abilities, Aphelios' rank-ups grant him permanent stats.<br /><br /><span>Lunari Weapon Order:</span><span><span style=\"color: #00e6b8\">Calibrum</span> (Rifle): Long range Attacks.<br /><br /><span style=\"color: #e6005c\">Severum</span> (Scythe Pistol): Life Steal and <span class=\"text-cyan-600 dark:text-cyan-500\">Move Speed</span>.<br /><br /><span style=\"color: #1a75ff\">Infernum</span> (Flamethrower): Area of effect damage.<br /><br /><span style=\"color: #ffffcc\">Crescendum</span> (Chakram): High damage at close range.<br /><br /><span style=\"color: #a64dff\">Gravitum</span> (Cannon): <span class=\"text-purple-600 dark:text-purple-500\">Slowing</span> + <span class=\"text-purple-600 dark:text-purple-500\">Immobilizing</span> effects.</span><span><span style=\"color: #00e6b8\">Calibrum</span> (Rifle): Long range Attacks.<br /><br /><span style=\"color: #e6005c\">Severum</span> (Scythe Pistol): Life Steal and <span class=\"text-cyan-600 dark:text-cyan-500\">Move Speed</span>.<br /><br /><span style=\"color: #1a75ff\">Infernum</span> (Flamethrower): Area of effect damage.<br /><br /><span style=\"color: #ffffcc\">Crescendum</span> (Chakram): High damage at close range.<br /><br /><span style=\"color: #a64dff\">Gravitum</span> (Cannon): <span class=\"text-purple-600 dark:text-purple-500\">Slowing</span> + <span class=\"text-purple-600 dark:text-purple-500\">Immobilizing</span> effects.</span><span style=\"color: #424242\"><span><span style=\"color: #00e6b8\">Calibrum</span> (Rifle): Long range Attacks.<br /><br /><span style=\"color: #e6005c\">Severum</span> (Scythe Pistol): Life Steal and <span class=\"text-cyan-600 dark:text-cyan-500\">Move Speed</span>.<br /><br /><span style=\"color: #1a75ff\">Infernum</span> (Flamethrower): Area of effect damage.<br /><br /><span style=\"color: #ffffcc\">Crescendum</span> (Chakram): High damage at close range.<br /><br /><span style=\"color: #a64dff\">Gravitum</span> (Cannon): <span class=\"text-purple-600 dark:text-purple-500\">Slowing</span> + <span class=\"text-purple-600 dark:text-purple-500\">Immobilizing</span> effects.</span><span><span style=\"color: #00e6b8\">Calibrum</span> (Rifle): Long range Attacks.<br /><br /><span style=\"color: #e6005c\">Severum</span> (Scythe Pistol): Life Steal and <span class=\"text-cyan-600 dark:text-cyan-500\">Move Speed</span>.<br /><br /><span style=\"color: #1a75ff\">Infernum</span> (Flamethrower): Area of effect damage.<br /><br /><span style=\"color: #ffffcc\">Crescendum</span> (Chakram): High damage at close range.<br /><br /><span style=\"color: #a64dff\">Gravitum</span> (Cannon): <span class=\"text-purple-600 dark:text-purple-500\">Slowing</span> + <span class=\"text-purple-600 dark:text-purple-500\">Immobilizing</span> effects.</span><span><span style=\"color: #00e6b8\">Calibrum</span> (Rifle): Long range Attacks.<br /><br /><span style=\"color: #e6005c\">Severum</span> (Scythe Pistol): Life Steal and <span class=\"text-cyan-600 dark:text-cyan-500\">Move Speed</span>.<br /><br /><span style=\"color: #1a75ff\">Infernum</span> (Flamethrower): Area of effect damage.<br /><br /><span style=\"color: #ffffcc\">Crescendum</span> (Chakram): High damage at close range.<br /><br /><span style=\"color: #a64dff\">Gravitum</span> (Cannon): <span class=\"text-purple-600 dark:text-purple-500\">Slowing</span> + <span class=\"text-purple-600 dark:text-purple-500\">Immobilizing</span> effects.</span></span>",
         "iconFile": "ApheliosP.png",
         "cooldownSeconds": [],
         "range": [],
@@ -330,12 +330,40 @@
           }
         ],
         "simulation": {
-          "status": "unsupported",
-          "unsupportedPartTypes": [
-            "percent-calculation"
-          ]
+          "status": "complete",
+          "primary": {
+            "id": "MaxDamage",
+            "kind": "damage",
+            "damageType": "physical",
+            "baseByRank": [
+              125,
+              175,
+              225
+            ],
+            "terms": [
+              {
+                "stat": "bonusAttackDamage",
+                "coefficientsByRank": [
+                  0.20000000298023224,
+                  0.20000000298023224,
+                  0.20000000298023224
+                ]
+              },
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  1,
+                  1,
+                  1
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
         },
-        "conditions": [],
+        "conditions": [
+          "on-hit"
+        ],
         "source": "communitydragon",
         "diagnostics": {
           "unresolvedTokens": []

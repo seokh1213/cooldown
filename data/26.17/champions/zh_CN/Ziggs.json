@@ -121,7 +121,7 @@
         "name": "一触即发",
         "maxRank": 0,
         "summary": "每过一段时间，吉格斯的下次普通攻击就会造成额外的魔法伤害。这个冷却时间会在吉格斯每用一次技能时得到减少。",
-        "bodyHtml": "每过?秒，吉格斯的下次普通攻击就会造成额外的<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">((20 ~ 140) + (50% 法术强度))魔法伤害</span>。这个技能会对建筑造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">((35 ~ 245) + (87.5% 法术强度))伤害</span>。<br /><br />吉格斯每施放一次技能，这个效果的冷却时间就会缩短(4 ~ 6)秒。",
+        "bodyHtml": "<span>一触即发</span><span>每过12秒，吉格斯的下次普通攻击就会额外造成<span style=\"color: #FFFFFF\">?</span><span style=\"color: #99FF99\">( + ?)</span>魔法伤害。一触即发会对建筑物造成双倍伤害。<br /><br />吉格斯每用一次技能，就会减少这个技能<span style=\"color: #FFFFFF\">?</span>秒冷却时间。</span>",
         "iconFile": "ZiggsPassiveReady.png",
         "cooldownSeconds": [],
         "range": [],
@@ -486,10 +486,28 @@
           }
         ],
         "simulation": {
-          "status": "unsupported",
-          "unsupportedPartTypes": [
-            "GameCalculationModified"
-          ]
+          "status": "complete",
+          "primary": {
+            "id": "EmpoweredDamage",
+            "kind": "damage",
+            "damageType": "magical",
+            "baseByRank": [
+              300,
+              500,
+              700
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  1,
+                  1,
+                  1
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
         },
         "conditions": [],
         "source": "communitydragon",

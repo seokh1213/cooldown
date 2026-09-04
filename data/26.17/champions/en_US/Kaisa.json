@@ -122,7 +122,7 @@
         "name": "Second Skin",
         "maxRank": 0,
         "summary": "Kai'Sa's basic attacks stack Plasma, dealing increasing bonus magic damage. Allies' immobilizing effects help stack Plasma. Additionally, Kai'Sa's item purchases upgrade her basic spells to have more powerful properties.",
-        "bodyHtml": "Kai'Sa's Attacks stack <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Plasma</span> for 4 seconds and deal an additional <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">((4 ~ 30) + (12% Ability Power)) plus ((1 ~ 8) + (3% Ability Power)) per stack magic damage</span>. Attacking an enemy with 4 stacks consumes the <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Plasma</span>, dealing <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(15% + (6% per 100 Ability Power)) missing Health magic damage</span>. Nearby allies apply 1 stack to champions they <span class=\"text-purple-600 dark:text-purple-500\">Immobilize</span>.<br /><br />Kai'Sa's suit evolves her basic Abilities based on her stats.<br /><span>Icathian Rain</span>: <span class=\"text-red-600 dark:text-red-500 font-semibold\">?/? Bonus Attack Damage</span><br /><span>Void Seeker</span>: <span class=\"text-blue-600 dark:text-blue-400\">?/? Ability Power</span><br /><span>Supercharge</span>: <span>?%/?% Bonus Attack Speed</span>",
+        "bodyHtml": "<span>Second Skin</span><span><span style=\"color: #B342F4\">Caustic Wounds</span> - Kai'Sa's basic attacks stack <span style=\"color: #B342F4\">Plasma</span> for ? seconds and deal <span style=\"color: #FFFFFF\">?</span> <span style=\"color: #99FF99\">( + ?)</span> + (<span style=\"color: #FFFFFF\">?</span> <span style=\"color: #99FF99\">( + ?)</span> per stack) bonus magic damage. Kai'Sa's attacks detonate Plasma at ? stacks, dealing bonus damage equal to ? <span style=\"color: #99FF99\">( + ?)</span>of the target's missing health (max: ? against monsters).<br /><br />Allies' immobilizing effects on champions also add ? stack of Plasma.<br /><br /><span>Living Weapon -</span> Kai'Sa's suit adapts to her choices, evolving her abilities based on permanent stats from <span> Items</span> and <span>Champion Levels</span>.</span>",
         "iconFile": "Kaisa_Passive.png",
         "cooldownSeconds": [],
         "range": [],
@@ -196,10 +196,42 @@
           }
         ],
         "simulation": {
-          "status": "unsupported",
-          "unsupportedPartTypes": [
-            "GameCalculationConditional"
-          ]
+          "status": "complete",
+          "primary": {
+            "id": "TotalIndividualMissileDamage",
+            "kind": "damage",
+            "damageType": "physical",
+            "baseByRank": [
+              40,
+              55,
+              70,
+              85,
+              100
+            ],
+            "terms": [
+              {
+                "stat": "bonusAttackDamage",
+                "coefficientsByRank": [
+                  0.550000011920929,
+                  0.550000011920929,
+                  0.550000011920929,
+                  0.550000011920929,
+                  0.550000011920929
+                ]
+              },
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.20000000298023224,
+                  0.20000000298023224,
+                  0.20000000298023224,
+                  0.20000000298023224,
+                  0.20000000298023224
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
         },
         "conditions": [],
         "source": "communitydragon",

@@ -122,7 +122,7 @@
         "name": "정조준",
         "maxRank": 0,
         "summary": "레벨이 올라갈수록 공격 사거리도 올라갑니다.",
-        "bodyHtml": "트리스타나의 공격 사거리와 <span>?</span> 및 <span>?</span>의 사거리가 (0 ~ 150)만큼 늘어납니다.",
+        "bodyHtml": "트리스타나의 공격 사거리와 <span>폭발 화약</span> 및 <span>대구경 탄환</span>의 사거리가 (0 ~ 150)만큼 늘어납니다.",
         "iconFile": "Tristana_Passive.png",
         "cooldownSeconds": [],
         "range": [],
@@ -366,11 +366,32 @@
           }
         ],
         "simulation": {
-          "status": "unsupported",
-          "unsupportedPartTypes": [
-            "StatBySubPartCalculationPart",
-            "unsupported-multiplier"
-          ]
+          "status": "complete",
+          "primary": {
+            "id": "PassiveDamage",
+            "kind": "damage",
+            "damageType": "magical",
+            "baseByRank": [
+              45,
+              60,
+              75,
+              90,
+              105
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.25,
+                  0.25,
+                  0.25,
+                  0.25,
+                  0.25
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
         },
         "conditions": [],
         "source": "communitydragon",

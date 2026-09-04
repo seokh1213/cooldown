@@ -122,7 +122,7 @@
         "name": "Dragon Practice",
         "maxRank": 0,
         "summary": "Hitting champions with Abilities and killing enemies with Super Scorcher Breath grants a stack of Dragon Practice. Stacks increase the damage of Smolders basic Abilities.",
-        "bodyHtml": "Hitting champions with Abilities and killing enemies with <span>?</span> grants a stack of <span>?</span>, which improves Smolder's basic Abilities.<br /><span><span>?</span>: Deal an additional <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">0.25 magic damage</span> and gain new effects at ?, ?, and ? stacks.<span><span>?</span>: Explosions deal an additional <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">0.55 magic damage</span>.<span><span>?</span>: Each hit deals an additional <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">0.08 magic damage</span> and gain an extra bolt every 100 stacks.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">Smolder has acquired <span style=\"color: #c93c3c\">Dragon Practice:</span> <span style=\"color: #c93c3c\">?</span>.</span>",
+        "bodyHtml": "Hitting champions with Abilities and killing enemies with <span>Super Scorcher Breath</span> grants a stack of <span>Dragon Practice</span>, which improves Smolder's basic Abilities.<br /><span><span>Super Scorcher Breath</span>: Deal an additional <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">0.25 magic damage</span> and gain new effects at ?, ?, and ? stacks.<span><span>Achooo!</span>: Explosions deal an additional <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">0.55 magic damage</span>.<span><span>Flap, Flap, Flap</span>: Each hit deals an additional <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">0.08 magic damage</span> and gain an extra bolt every 100 stacks.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">Smolder has acquired <span style=\"color: #c93c3c\">Dragon Practice:</span> <span style=\"color: #c93c3c\">?</span>.</span>",
         "iconFile": "Icons_Smolder_Passive.png",
         "cooldownSeconds": [],
         "range": [],
@@ -198,10 +198,12 @@
         "simulation": {
           "status": "unsupported",
           "unsupportedPartTypes": [
-            "unsupported-multiplier"
+            "nonlinear-product"
           ]
         },
-        "conditions": [],
+        "conditions": [
+          "on-hit"
+        ],
         "source": "communitydragon",
         "diagnostics": {
           "unresolvedTokens": []
@@ -275,42 +277,34 @@
         "simulation": {
           "status": "complete",
           "primary": {
-            "id": "ExplosionDamage",
+            "id": "InitialDamage",
             "kind": "damage",
-            "damageType": "magical",
+            "damageType": "physical",
             "baseByRank": [
-              10,
-              35,
               60,
-              85,
-              110
+              70,
+              80,
+              90,
+              100
             ],
             "terms": [
               {
                 "stat": "bonusAttackDamage",
                 "coefficientsByRank": [
-                  0.5,
-                  0.5,
-                  0.5,
-                  0.5,
-                  0.5
-                ]
-              },
-              {
-                "stat": "abilityPower",
-                "coefficientsByRank": [
-                  0.800000011920929,
-                  0.800000011920929,
-                  0.800000011920929,
-                  0.800000011920929,
-                  0.800000011920929
+                  0.6000000238418579,
+                  0.6000000238418579,
+                  0.6000000238418579,
+                  0.6000000238418579,
+                  0.6000000238418579
                 ]
               }
             ]
           },
           "unsupportedPartTypes": []
         },
-        "conditions": [],
+        "conditions": [
+          "on-hit"
+        ],
         "source": "communitydragon",
         "diagnostics": {
           "unresolvedTokens": []
@@ -378,7 +372,7 @@
           "primary": {
             "id": "DamagePerHit",
             "kind": "damage",
-            "damageType": "magical",
+            "damageType": "physical",
             "baseByRank": [
               10,
               15,
