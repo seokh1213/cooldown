@@ -18,7 +18,7 @@ interface UseChampionDataProps {
   lang: Language;
   championList: Champion[] | null;
   tabs: Tab[];
-  storageKey: string; // localStorage 키 추가
+  storageKey: string;
 }
 
 export function useChampionData({
@@ -33,7 +33,7 @@ export function useChampionData({
   const [isInitialLoad, setIsInitialLoad] = useState(true);
   const [hasRestored, setHasRestored] = useState(false);
 
-  // 컴포넌트가 마운트될 때마다 localStorage에서 직접 읽어오기
+  // 저장소 계약에서 선택 챔피언을 한 번 복원한다.
   useEffect(() => {
     if (!patchVersion || !championList || hasRestored) {
       if (!hasRestored && (!patchVersion || !championList)) {
@@ -45,7 +45,6 @@ export function useChampionData({
     }
 
     try {
-      // localStorage에서 직접 읽기
       const championsToRestore = readJsonStorage(
         storageKey,
         decodeSelectedChampions
@@ -149,7 +148,7 @@ export function useChampionData({
 
   // Remove champions that are not used in any tab
   // 탭이 모두 삭제되면 챔피언도 모두 삭제되어야 함
-  // 단, 초기 로딩 중에는 실행하지 않음 (localStorage 복원 중일 수 있음)
+  // 단, 저장 상태를 복원하는 동안에는 실행하지 않는다.
   useEffect(() => {
     // 초기 로딩 중이면 스킵
     if (isInitialLoad) return;

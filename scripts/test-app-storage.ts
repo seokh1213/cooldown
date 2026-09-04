@@ -5,7 +5,9 @@ import {
   decodeTabs,
   initializeAppStorage,
   readJsonStorage,
+  readSessionStorage,
   type StorageLike,
+  writeSessionStorage,
 } from "../src/data/storage/appStorage";
 
 class MemoryStorage implements StorageLike {
@@ -37,5 +39,11 @@ storage.setItem(APP_STORAGE_KEYS.tabs, JSON.stringify([
 ]));
 assert.equal(readJsonStorage(APP_STORAGE_KEYS.tabs, decodeTabs, storage), null);
 assert.equal(storage.getItem(APP_STORAGE_KEYS.tabs), null);
+
+writeSessionStorage(APP_STORAGE_KEYS.championSelectorScroll, "320", storage);
+assert.equal(
+  readSessionStorage(APP_STORAGE_KEYS.championSelectorScroll, storage),
+  "320",
+);
 
 console.log("✅ App-owned storage migration and decoders passed");

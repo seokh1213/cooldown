@@ -16,6 +16,7 @@ export const APP_STORAGE_KEYS = {
   selectedChampions: "cooldown_selected_champions",
   tabs: "cooldown_tabs",
   selectedTabId: "cooldown_selected_tab_id",
+  championSelectorScroll: "cooldown:champion-selector-scroll",
 } as const;
 
 const STATE_SCHEMA_VERSION = "2";
@@ -36,6 +37,15 @@ function browserStorage(): StorageLike | undefined {
   if (typeof window === "undefined") return undefined;
   try {
     return window.localStorage;
+  } catch {
+    return undefined;
+  }
+}
+
+function browserSessionStorage(): StorageLike | undefined {
+  if (typeof window === "undefined") return undefined;
+  try {
+    return window.sessionStorage;
   } catch {
     return undefined;
   }
@@ -73,6 +83,21 @@ export function removeStorage(
   } catch {
     // Removing persisted state is best-effort.
   }
+}
+
+export function readSessionStorage(
+  key: string,
+  storage: StorageLike | undefined = browserSessionStorage(),
+): string | null {
+  return readStorage(key, storage);
+}
+
+export function writeSessionStorage(
+  key: string,
+  value: string,
+  storage: StorageLike | undefined = browserSessionStorage(),
+): void {
+  writeStorage(key, value, storage);
 }
 
 export function readJsonStorage<T>(

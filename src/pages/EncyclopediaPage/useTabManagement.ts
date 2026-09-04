@@ -34,12 +34,11 @@ export function useTabManagement({
     tabsRef.current = tabs;
   }, [tabs]);
 
-  // 컴포넌트가 마운트될 때마다 localStorage에서 직접 읽어오기
+  // 저장소 계약에서 탭 상태를 한 번 복원한다.
   useEffect(() => {
     if (!patchVersion || hasRestored) return;
 
     try {
-      // localStorage에서 직접 읽기
       const tabsToRestore = readJsonStorage(tabsStorageKey, decodeTabs);
       
       // 선택된 탭 ID 복원
@@ -67,7 +66,7 @@ export function useTabManagement({
 
       setHasRestored(true);
     } catch (error) {
-      logger.error("Failed to load tabs from localStorage:", error);
+      logger.error("Failed to load persisted tabs:", error);
       setHasRestored(true);
     }
   }, [patchVersion, tabsStorageKey, selectedTabIdStorageKey, hasRestored]);
