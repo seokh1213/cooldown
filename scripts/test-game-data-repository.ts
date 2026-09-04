@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import { VersionedCache, type CacheStorage } from "../src/data/cache/versionedCache";
 import { GameDataRepository } from "../src/data/repositories/gameDataRepository";
+import { ManifestRepository } from "../src/data/repositories/manifestRepository";
 import type { StaticDataClient } from "../src/data/http/staticDataClient";
 
 const metadata = {
@@ -91,4 +92,23 @@ assert.deepEqual(resilientCache.set("available", { ok: true }), { ok: true });
 assert.deepEqual(resilientCache.get("available", (value) => value), { ok: true });
 resilientCache.clearExceptPatch("26.17");
 
-console.log("✅ Game data repository, decoder, dedupe, and cache resilience passed");
+let manifestRequests = 0;
+const manifestRepository = new ManifestRepository({
+  async getJson(path) {
+    manifestRequests += 1;
+    assert.equal(path, "data/version.json");
+    return {
+      schemaVersion: 2,
+      patchVersion: "26.17",
+      sources: { ddragon: "16.17.1", cdragon: "16.17" },
+    };
+  },
+});
+const [firstManifest, secondManifest] = await Promise.all([
+  manifestRepository.get(),
+  manifestRepository.get(),
+]);
+assert.equal(firstManifest, secondManifest);
+assert.equal(manifestRequests, 1);
+
+console.log("✅ Game data repositories, decoders, dedupe, and cache resilience passed");

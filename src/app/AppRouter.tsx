@@ -27,8 +27,8 @@ function AppShell(props: AppRouterProps) {
       nav={
         <Nav
           patchVersion={runtime.patchVersion}
-          ddragonVersion={runtime.ddragonVersion}
-          cdragonVersion={runtime.cdragonVersion}
+          ddragonVersion={runtime.sources.ddragon}
+          cdragonVersion={runtime.sources.cdragon}
           lang={language}
           selectHandler={onLanguageChange}
           theme={theme}
@@ -55,7 +55,7 @@ export function AppRouter(props: AppRouterProps) {
               lang={language}
               championList={runtime.championList}
               version={runtime.patchVersion}
-              ddragonVersion={runtime.ddragonVersion}
+              ddragonVersion={runtime.sources.ddragon}
             />
           }
         />
@@ -65,7 +65,7 @@ export function AppRouter(props: AppRouterProps) {
             <EncyclopediaPage
               lang={language}
               version={runtime.patchVersion}
-              ddragonVersion={runtime.ddragonVersion}
+              ddragonVersion={runtime.sources.ddragon}
             />
           }
         />
@@ -75,7 +75,7 @@ export function AppRouter(props: AppRouterProps) {
             <SimulationPage
               lang={language}
               version={runtime.patchVersion}
-              ddragonVersion={runtime.ddragonVersion}
+              ddragonVersion={runtime.sources.ddragon}
               championList={runtime.championList}
             />
           }
