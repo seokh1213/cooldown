@@ -13,7 +13,11 @@ import {
   type RuneStatShardData,
 } from "../normalization/rune";
 import { normalizeSummonerSpells } from "../normalization/summoner";
-import { fetchCDragonItems, mergeCDragonItems } from "../sources/cdragon-items";
+import {
+  fetchCDragonItemCalculations,
+  fetchCDragonItems,
+  mergeCDragonItems,
+} from "../sources/cdragon-items";
 import { fetchCDragonRuneStatShards } from "../sources/cdragon-runes";
 
 interface CatalogSources {
@@ -33,6 +37,7 @@ const ddragonUrl = (
 async function fetchLocaleCatalogs(
   locale: DataLocale,
   release: StaticDataRelease,
+  itemCalculations: Awaited<ReturnType<typeof fetchCDragonItemCalculations>>,
 ): Promise<{
   runes: unknown;
   runeStatShards: RuneStatShardData;
@@ -56,7 +61,7 @@ async function fetchLocaleCatalogs(
   return {
     runes,
     runeStatShards,
-    items: mergeCDragonItems(ddragonItems, cdragonItems),
+    items: mergeCDragonItems(ddragonItems, cdragonItems, itemCalculations),
     summoners,
   };
 }
@@ -71,8 +76,9 @@ export async function fetchCatalogSources(
     items: {},
     summoners: {},
   };
+  const itemCalculations = await fetchCDragonItemCalculations(release.sources.cdragon);
   for (const locale of locales) {
-    const catalog = await fetchLocaleCatalogs(locale, release);
+    const catalog = await fetchLocaleCatalogs(locale, release, itemCalculations);
     sources.runes[locale] = catalog.runes;
     sources.runeStatShards[locale] = catalog.runeStatShards;
     sources.items[locale] = catalog.items;

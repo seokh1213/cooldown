@@ -2,6 +2,7 @@ import { parseItemDescription } from "../../../src/lib/spellTooltipParser/parser
 import type { NormalizedItem } from "../../../src/types/combatNormalized";
 import { StatKey, type StatContribution } from "../../../src/types/combatStats";
 import { getNormalizationOverrides } from "./overrides";
+import { compileItemDamageEffects } from "./item-damage-effects";
 
 interface RawItem {
   name?: string;
@@ -25,6 +26,7 @@ interface RawItem {
     requiredChampion?: string;
     requiredAlly?: string;
   };
+  cdragonCalculation?: Record<string, unknown>;
 }
 
 const STAT_MAPPING: Record<
@@ -96,6 +98,7 @@ function normalizeItem(
 ): NormalizedItem {
   const gold = item.gold ?? {};
   const availableOnMap11 = item.maps?.["11"];
+  const damageEffects = compileItemDamageEffects(id, item.cdragonCalculation);
   const normalized: NormalizedItem = {
     id,
     type: "item",
@@ -114,6 +117,7 @@ function normalizeItem(
     requiredAlly: item.cdragon?.requiredAlly ?? item.requiredAlly,
     stats: mapStats(item.stats),
     effects: [],
+    ...(damageEffects.length > 0 ? { damageEffects } : {}),
     purchasable: gold.purchasable,
     inStore: item.inStore ?? item.cdragon?.inStore,
     displayInItemSets:

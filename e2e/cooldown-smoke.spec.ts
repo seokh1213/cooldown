@@ -176,6 +176,11 @@ test("calculates a ranked combo against target defenses", async ({ page }) => {
   await page.getByLabel("직접 피해 룬 선택").selectOption({ label: "비열한 한 방" });
   await expect(page.getByRole("row", { name: /비열한 한 방/ })).toContainText("45.0");
   await expect(page.getByTestId("combo-total")).toHaveText("475.0");
+
+  await page.getByLabel("피해 감소").fill("0");
+  await page.getByRole("button", { name: /아이템 슬롯을 클릭하여/ }).first().click();
+  await page.getByRole("button", { name: /내셔의 이빨/ }).click();
+  await expect(page.getByRole("row", { name: /내셔의 이빨/ })).toContainText("27.0");
 });
 
 test("keeps the main workflow fully localized in Chinese", async ({ page }) => {

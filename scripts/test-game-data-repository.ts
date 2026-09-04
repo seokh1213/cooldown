@@ -19,7 +19,7 @@ const itemResponse = {
     ...metadata,
     items: [{
       id: "1001", type: "item", name: "장화", price: 300, priceTotal: 300,
-      tags: [], buildsFrom: [], buildsInto: [], stats: [], effects: [],
+      tags: [], buildsFrom: [], buildsInto: [], stats: [], effects: [], damageEffects: [],
     }],
 };
 

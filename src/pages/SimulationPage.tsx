@@ -106,9 +106,12 @@ export default function SimulationPage({
     summoners: availableSummoners,
     selectedSummonerIds,
     rune: availableRunes.find((rune) => rune.id === selectedRuneId) ?? null,
+    items: selectedItems,
+    attackerStats: finalStats,
+    targetStats,
     level,
     ddragonVersion,
-  }), [availableRunes, availableSummoners, ddragonVersion, level, selectedRuneId, selectedSummonerIds]);
+  }), [availableRunes, availableSummoners, ddragonVersion, finalStats, level, selectedItems, selectedRuneId, selectedSummonerIds, targetStats]);
 
   return (
     <div className="w-full max-w-6xl mx-auto px-4 md:px-6 lg:px-8 py-8 md:py-10">

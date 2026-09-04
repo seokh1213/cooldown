@@ -55,6 +55,9 @@ export function decodeNormalizedItems(value: unknown): NormalizedItemDataFile {
       ["tags", "buildsFrom", "buildsInto", "stats", "effects"],
       "normalized item"
     );
+    if (record.damageEffects !== undefined && !Array.isArray(record.damageEffects)) {
+      throw new Error("Invalid normalized item damage effects");
+    }
   }
   return value as unknown as NormalizedItemDataFile;
 }
