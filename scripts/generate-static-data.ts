@@ -1,28 +1,18 @@
 import * as fs from "fs";
 import * as path from "path";
 import type {
-  ChampionBaseStats,
-  ChampionSpellSlot,
-  LevelScaledScalar,
   NormalizedChampion,
   NormalizedChampionDataFile,
-  NormalizedItem,
   NormalizedItemDataFile,
   NormalizedRune,
   NormalizedRuneDataFile,
-  NormalizedSpell,
   NormalizedStatShard,
-  NormalizedSummonerSpell,
   NormalizedSummonerDataFile,
 } from "../src/types/combatNormalized";
-import type {
-  FormulaPart,
-  StatContribution,
-} from "../src/types/combatStats";
+import type { StatContribution } from "../src/types/combatStats";
 import { StatKey } from "../src/types/combatStats";
-import { parseItemDescription } from "../src/lib/spellTooltipParser/index";
 import type { CommunityDragonSpellData } from "../src/lib/spellTooltipParser/types";
-import { toOfficialPatchVersion } from "../src/lib/gamePatchVersion";
+import { resolveStaticDataRelease } from "../src/lib/staticDataRelease";
 import {
   extractPassiveSpell,
   localizePassiveTooltip,
@@ -48,6 +38,10 @@ import type { StaticDataSources } from "../src/data/contracts/staticData";
 import { writeChampionV2Dataset } from "./data-pipeline/champion-v2-writer";
 import { pruneIntermediateData } from "./data-pipeline/prune-intermediate-data";
 import { validateAbilitySimulations } from "./data-pipeline/ability-simulation-validation";
+import { buildNormalizedChampion } from "./data-pipeline/normalization/champion";
+import { getNormalizationOverrides } from "./data-pipeline/normalization/overrides";
+import { normalizeItems } from "./data-pipeline/normalization/item";
+import { normalizeSummonerSpells } from "./data-pipeline/normalization/summoner";
 
 const VERSION_URL = "https://ddragon.leagueoflegends.com/api/versions.json";
 const CHAMP_LIST_URL = (VERSION: string, LANG: string) =>
@@ -91,190 +85,6 @@ const DATA_DIR = path.join(process.cwd(), "public", "data");
 // Community Dragon 챔피언 ID 변환
 function convertChampionIdToCommunityDragon(championId: string): string {
   return championId.toLowerCase();
-}
-
-/**
- * DDragon 버전(예: 15.24.1)을 CommunityDragon 디렉토리 버전(예: 15.24)으로 변환
- */
-function toCommunityDragonVersion(version: string): string {
-  const parts = version.split(".");
-  if (parts.length >= 2) {
-    return `${parts[0]}.${parts[1]}`;
-  }
-  return version;
-}
-
-/**
- * DDragon 버전 목록을 기반으로 CDragon에서 시도할 버전 후보를 생성
- * 예: [15.24.1, 15.23.1] -> ["15.24", "15.23", "latest"]
- */
-function getCommunityDragonVersionCandidates(ddragonVersions: string[]): string[] {
-  const candidates: string[] = [];
-
-  if (ddragonVersions.length > 0) {
-    const current = toCommunityDragonVersion(ddragonVersions[0]);
-    if (!candidates.includes(current)) {
-      candidates.push(current);
-    }
-  }
-
-  if (ddragonVersions.length > 1) {
-    const previous = toCommunityDragonVersion(ddragonVersions[1]);
-    if (!candidates.includes(previous)) {
-      candidates.push(previous);
-    }
-  }
-
-  if (!candidates.includes("latest")) {
-    candidates.push("latest");
-  }
-
-  return candidates;
-}
-
-type NormalizationOverrides = {
-  champions?: Record<string, Record<string, Partial<NormalizedChampion>>>;
-  items?: Record<string, Record<string, Partial<NormalizedItem>>>;
-  runes?: Record<string, Record<string, Partial<NormalizedRune>>>;
-  statShards?: Record<string, Record<string, Partial<NormalizedStatShard>>>;
-};
-
-const NORMALIZATION_OVERRIDES_PATH = path.join(
-  process.cwd(),
-  "scripts",
-  "normalization-overrides.json"
-);
-
-let cachedOverrides: NormalizationOverrides | null | undefined;
-
-function getNormalizationOverrides(): NormalizationOverrides | null {
-  if (cachedOverrides !== undefined) {
-    return cachedOverrides;
-  }
-
-  if (!fs.existsSync(NORMALIZATION_OVERRIDES_PATH)) {
-    cachedOverrides = null;
-    return cachedOverrides;
-  }
-
-  try {
-    const raw = fs.readFileSync(NORMALIZATION_OVERRIDES_PATH, "utf-8");
-    cachedOverrides = JSON.parse(raw) as NormalizationOverrides;
-  } catch (e) {
-    console.warn(
-      "[Overrides] Failed to read normalization-overrides.json:",
-      e
-    );
-    cachedOverrides = null;
-  }
-
-  return cachedOverrides;
-}
-
-function createLevelScaledScalar(
-  stats: Record<string, number | undefined>,
-  baseKey: string,
-  perLevelKey: string
-): LevelScaledScalar {
-  const base = stats[baseKey] ?? 0;
-  const perLevel = stats[perLevelKey] ?? 0;
-  return {
-    base,
-    perLevel,
-  };
-}
-
-function buildChampionBaseStats(stats: Record<string, number | undefined>): ChampionBaseStats {
-  return {
-    health: createLevelScaledScalar(stats, 'hp', 'hpperlevel'),
-    healthRegen: createLevelScaledScalar(stats, 'hpregen', 'hpregenperlevel'),
-    mana: stats.mp !== undefined || stats.mpperlevel !== undefined
-      ? createLevelScaledScalar(stats, 'mp', 'mpperlevel')
-      : undefined,
-    manaRegen: stats.mpregen !== undefined || stats.mpregenperlevel !== undefined
-      ? createLevelScaledScalar(stats, 'mpregen', 'mpregenperlevel')
-      : undefined,
-    // energy 계열 챔피언은 Data Dragon 에 별도 필드가 없을 수 있으므로 우선 비워둔다.
-    energy: undefined,
-    energyRegen: undefined,
-    attackDamage: createLevelScaledScalar(stats, 'attackdamage', 'attackdamageperlevel'),
-    attackSpeed: createLevelScaledScalar(stats, 'attackspeed', 'attackspeedperlevel'),
-    armor: createLevelScaledScalar(stats, 'armor', 'armorperlevel'),
-    magicResist: createLevelScaledScalar(stats, 'spellblock', 'spellblockperlevel'),
-    moveSpeed: { base: stats.movespeed ?? 0, perLevel: 0 },
-    attackRange: { base: stats.attackrange ?? 0, perLevel: 0 },
-  };
-}
-
-function buildBaseStatContributions(baseStats: ChampionBaseStats): StatContribution[] {
-  const result: StatContribution[] = [];
-
-  const push = (stat: StatKey, scalar: LevelScaledScalar | undefined) => {
-    if (!scalar) return;
-    // perLevel 정보가 함께 있으므로 valueType 은 perLevel 로 두고 value 에 perLevel 을 기록한다.
-    result.push({
-      stat,
-      value: scalar.perLevel,
-      valueType: 'perLevel',
-      source: 'base',
-      scope: 'champion-base',
-    });
-  };
-
-  push(StatKey.MAX_HEALTH, baseStats.health);
-  push(StatKey.HEALTH_REGEN, baseStats.healthRegen);
-  push(StatKey.MAX_MANA, baseStats.mana);
-  push(StatKey.MANA_REGEN, baseStats.manaRegen);
-  push(StatKey.ATTACK_DAMAGE, baseStats.attackDamage);
-  push(StatKey.ATTACK_SPEED, baseStats.attackSpeed);
-  push(StatKey.ARMOR, baseStats.armor);
-  push(StatKey.MAGIC_RESIST, baseStats.magicResist);
-
-  return result;
-}
-
-type ItemStatMapping = {
-  stat: StatKey;
-  valueType: "flat" | "percent";
-};
-
-const ITEM_STAT_KEY_MAP: Record<string, ItemStatMapping> = {
-  FlatHPPoolMod: { stat: StatKey.MAX_HEALTH, valueType: "flat" },
-  FlatMPPoolMod: { stat: StatKey.MAX_MANA, valueType: "flat" },
-  FlatPhysicalDamageMod: { stat: StatKey.ATTACK_DAMAGE, valueType: "flat" },
-  FlatMagicDamageMod: { stat: StatKey.ABILITY_POWER, valueType: "flat" },
-  FlatArmorMod: { stat: StatKey.ARMOR, valueType: "flat" },
-  FlatSpellBlockMod: { stat: StatKey.MAGIC_RESIST, valueType: "flat" },
-  FlatMovementSpeedMod: { stat: StatKey.MOVE_SPEED, valueType: "flat" },
-  PercentMovementSpeedMod: { stat: StatKey.MOVE_SPEED, valueType: "percent" },
-  PercentAttackSpeedMod: { stat: StatKey.ATTACK_SPEED, valueType: "percent" },
-  PercentLifeStealMod: { stat: StatKey.LIFE_STEAL, valueType: "percent" },
-  PercentCritChanceMod: { stat: StatKey.CRIT_CHANCE, valueType: "percent" },
-  AbilityHaste: { stat: StatKey.ABILITY_HASTE, valueType: "flat" },
-};
-
-function mapItemStatsToContributions(
-  stats: Record<string, number | undefined>
-): StatContribution[] {
-  const contributions: StatContribution[] = [];
-
-  for (const [rawKey, rawValue] of Object.entries(stats)) {
-    const value = typeof rawValue === "number" ? rawValue : 0;
-    if (!value) continue;
-
-    const mapping = ITEM_STAT_KEY_MAP[rawKey];
-    if (!mapping) continue;
-
-    contributions.push({
-      stat: mapping.stat,
-      value,
-      valueType: mapping.valueType,
-      source: "item",
-      scope: "item-passive",
-    });
-  }
-
-  return contributions;
 }
 
 function inferStatShardContributionsFromText(
@@ -374,322 +184,16 @@ function inferStatShardContributionsFromText(
   return results;
 }
 
-function buildSpellScalingFromCDragon(
-  spellIndex: number,
-  spellDataMap: Record<string, any> | null
-): { parts: FormulaPart[] } {
-  if (!spellDataMap) {
-    return { parts: [] };
-  }
-
-  const key = String(spellIndex);
-  const spell = spellDataMap[key];
-  if (!spell || !spell.mSpellCalculations) {
-    return { parts: [] };
-  }
-
-  const calculations = spell.mSpellCalculations as Record<string, any>;
-  const calcKeys = Object.keys(calculations);
-  if (calcKeys.length === 0) {
-    return { parts: [] };
-  }
-
-  const priority = [
-    'TotalDamage',
-    'BaseDamage',
-    'QMissileDamage',
-    'TotalMaxHealthDamage',
-    'HealingCalc',
-    'TotalHeal',
-    'TotalShield',
-  ];
-
-  let chosenKey: string | null = null;
-  for (const name of priority) {
-    if (name in calculations) {
-      chosenKey = name;
-      break;
-    }
-  }
-
-  if (!chosenKey) {
-    chosenKey = calcKeys[0];
-  }
-
-  const rawRef = `${key}:${chosenKey}`;
-
-  const parts: FormulaPart[] = [
-    {
-      stat: null,
-      coefficient: 1,
-      op: 'add',
-      rawRef,
-    },
-  ];
-
-  return { parts };
-}
-
-function buildNormalizedSpell(
-  slot: ChampionSpellSlot,
-  ddSpell: any | null,
-  passive: any | null,
-  spellIndex: number,
-  spellDataMap: Record<string, any> | null
-): NormalizedSpell {
-  const isPassive = slot === 'P';
-
-  const name =
-    (isPassive ? passive?.name ?? '' : ddSpell?.name ?? '') || '';
-
-  const tooltip =
-    (isPassive ? passive?.description ?? '' : ddSpell?.tooltip ?? '') || '';
-
-  const cooldowns = Array.isArray(ddSpell?.cooldown)
-    ? ddSpell.cooldown.filter((v: any) => typeof v === 'number')
-    : undefined;
-  const costs = Array.isArray(ddSpell?.cost)
-    ? ddSpell.cost.filter((v: any) => typeof v === 'number')
-    : undefined;
-
-  const scalingFromCd = buildSpellScalingFromCDragon(spellIndex, spellDataMap);
-
-  const scalingId =
-    slot === 'Q' || slot === 'W' || slot === 'E' || slot === 'R'
-      ? 'damage'
-      : 'passive';
-
-  const scalings =
-    scalingFromCd.parts.length > 0
-      ? [
-          {
-            id: scalingId,
-            labelEn: isPassive
-              ? 'Passive'
-              : `${slot} Scaling`,
-            labelKo: isPassive ? '패시브' : `${slot} 계수`,
-            parts: scalingFromCd.parts,
-          },
-        ]
-      : [];
-
-  return {
-    slot,
-    key: ddSpell?.id ?? (isPassive ? `${slot}` : `${slot}`),
-    name,
-    tooltip,
-    cooldowns,
-    costs,
-    scalings,
-  };
-}
-
-function buildNormalizedChampion(
-  lang: string,
-  championId: string,
-  championDataPath: string,
-  cdragonSpellPath: string
-): NormalizedChampion | null {
-  if (!fs.existsSync(championDataPath)) {
-    return null;
-  }
-
-  const raw = JSON.parse(fs.readFileSync(championDataPath, 'utf-8')) as {
-    champion?: any;
-  };
-  const champion = raw.champion;
-  if (!champion) return null;
-
-  const stats = champion.stats || {};
-  const baseStats = buildChampionBaseStats(stats);
-  const baseStatContributions = buildBaseStatContributions(baseStats);
-
-  let spellDataMap: Record<string, any> | null = null;
-  if (fs.existsSync(cdragonSpellPath)) {
-    const cdRaw = JSON.parse(fs.readFileSync(cdragonSpellPath, 'utf-8')) as {
-      spellData?: Record<string, any>;
-    };
-    spellDataMap = cdRaw.spellData || null;
-  }
-
-  const ddSpells: any[] = Array.isArray(champion.spells)
-    ? champion.spells
-    : [];
-  const passive = champion.passive ?? null;
-
-  const spells: Record<ChampionSpellSlot, NormalizedSpell> = {
-    P: buildNormalizedSpell('P', null, passive, -1, spellDataMap),
-    Q: buildNormalizedSpell('Q', ddSpells[0] ?? null, null, 0, spellDataMap),
-    W: buildNormalizedSpell('W', ddSpells[1] ?? null, null, 1, spellDataMap),
-    E: buildNormalizedSpell('E', ddSpells[2] ?? null, null, 2, spellDataMap),
-    R: buildNormalizedSpell('R', ddSpells[3] ?? null, null, 3, spellDataMap),
-  };
-
-  const name = champion.name ?? championId;
-
-  const iconPath = champion.image?.full
-    ? `/lol/img/champion/${champion.image.full}`
-    : undefined;
-
-  let normalized: NormalizedChampion = {
-    id: championId,
-    type: 'champion',
-    name,
-    iconPath,
-    baseStats,
-    baseStatContributions,
-    spells,
-  };
-
-  const overrides = getNormalizationOverrides();
-  const championOverrides =
-    overrides?.champions?.[lang]?.[championId];
-  if (championOverrides) {
-    normalized = {
-      ...normalized,
-      ...championOverrides,
-    };
-  }
-
-  return normalized;
-}
-
 async function buildAndSaveNormalizedItems(
   versionDir: string,
   patchVersion: string,
   sources: StaticDataSources,
-  itemsDataByLang: Record<string, any>
+  itemsDataByLang: Record<string, unknown>
 ): Promise<void> {
   for (const lang of LANGUAGES) {
     const raw = itemsDataByLang[lang];
     if (!raw || typeof raw !== "object") continue;
-    const data = (raw as { data?: Record<string, any> }).data || {};
-
-    const items: NormalizedItem[] = [];
-
-    // 아이템의 태그를 수집하되, 하위 아이템(재귀적) 중에 "Boots" 태그가 있다면
-    // 상위 아이템에도 "Boots" 태그를 전파한다. (다른 태그는 전파하지 않음)
-    const getTagsWithBootsPropagation = (itemId: string, currentPath: Set<string>): string[] => {
-      if (currentPath.has(itemId)) return [];
-      
-      const targetItem = data[itemId];
-      if (!targetItem) return [];
-
-      const myTags = [
-        ...(Array.isArray(targetItem.tags) ? targetItem.tags : []),
-        ...(Array.isArray(targetItem.cdragon?.categories) ? targetItem.cdragon.categories : []),
-      ];
-
-      // 이미 내 태그에 Boots가 있다면 더 확인할 필요 없음 (하지만 재귀적으로 다른 로직이 필요할 수도 있으니 유지 가능)
-      // 여기서는 "하위에서 Boots가 발견되면 나에게도 추가"하는 로직이 핵심.
-      
-      let hasBootsInDescendants = false;
-
-      if (Array.isArray(targetItem.from)) {
-        const nextPath = new Set(currentPath);
-        nextPath.add(itemId);
-
-        for (const subId of targetItem.from) {
-          const childTags = getTagsWithBootsPropagation(String(subId), nextPath);
-          if (childTags.includes("Boots")) {
-            hasBootsInDescendants = true;
-            // Boots는 하나만 있어도 전파되므로, 성능상 break 가능하지만
-            // 완전한 탐색이 필요 없다면 break.
-            // 여기서는 단순히 포함 여부만 중요하므로 break.
-            break;
-          }
-        }
-      }
-
-      if (hasBootsInDescendants && !myTags.includes("Boots")) {
-        myTags.push("Boots");
-      }
-
-      return myTags;
-    };
-
-    for (const [id, item] of Object.entries<any>(data)) {
-      const gold = item.gold || {};
-      
-      const rawTags = getTagsWithBootsPropagation(id, new Set());
-      const tags = Array.from(
-        new Set(
-          rawTags
-            .map((t) => (typeof t === "string" ? t.trim() : ""))
-            .filter((t) => t.length > 0)
-        )
-      );
-
-      const name = item.name ?? id;
-
-      // description 파싱 (XML 처리, 변수 치환 실패 시 ? 표시, 경고문구 추가)
-      const description = parseItemDescription(
-        item.description ?? item.cdragon?.description
-      );
-
-      const statsRecord: Record<string, number | undefined> =
-        item.stats || {};
-      const stats = mapItemStatsToContributions(statsRecord);
-
-      // 상점/맵 메타데이터 정규화
-      const purchasable: boolean | undefined =
-        typeof gold.purchasable === "boolean" ? gold.purchasable : undefined;
-
-      // DDragon / CDragon 에서 온 inStore / displayInItemSets 를 단일 boolean 으로 정규화
-      const inStore: boolean | undefined =
-        typeof item.inStore === "boolean"
-          ? (item.inStore as boolean)
-          : typeof item.cdragon?.inStore === "boolean"
-          ? (item.cdragon.inStore as boolean)
-          : undefined;
-
-      const displayInItemSets: boolean | undefined =
-        typeof item.displayInItemSets === "boolean"
-          ? (item.displayInItemSets as boolean)
-          : typeof item.cdragon?.displayInItemSets === "boolean"
-          ? (item.cdragon.displayInItemSets as boolean)
-          : undefined;
-
-      const mapsRecord: Record<string, boolean> | undefined =
-        item.maps && typeof item.maps === "object" ? (item.maps as any) : undefined;
-      const availableOnMap11: boolean | undefined =
-        mapsRecord && typeof mapsRecord["11"] === "boolean"
-          ? (mapsRecord["11"] as boolean)
-          : undefined;
-
-      let normalized: NormalizedItem = {
-        id,
-        type: "item",
-        name,
-        description,
-        iconPath: item.cdragon?.iconPath,
-        price: typeof gold.base === "number" ? gold.base : 0,
-        priceTotal: typeof gold.total === "number" ? gold.total : 0,
-        tags,
-        buildsFrom: Array.isArray(item.from) ? item.from : [],
-        buildsInto: Array.isArray(item.into) ? item.into : [],
-        requiredChampion:
-          item.cdragon?.requiredChampion ?? item.requiredChampion,
-        requiredAlly: item.cdragon?.requiredAlly ?? item.requiredAlly,
-        stats,
-        effects: [],
-        purchasable,
-        inStore,
-        displayInItemSets,
-        ...(availableOnMap11 !== undefined ? { availableOnMap11 } : {}),
-      };
-
-      const overrides = getNormalizationOverrides();
-      const itemOverrides = overrides?.items?.[lang]?.[id];
-      if (itemOverrides) {
-        normalized = {
-          ...normalized,
-          ...itemOverrides,
-        };
-      }
-
-      items.push(normalized);
-    }
+    const items = normalizeItems(lang, raw);
 
     const file: NormalizedItemDataFile = {
       schemaVersion: 2,
@@ -713,45 +217,12 @@ async function buildAndSaveNormalizedSummoners(
   versionDir: string,
   patchVersion: string,
   sources: StaticDataSources,
-  summonerDataByLang: Record<string, any>
+  summonerDataByLang: Record<string, unknown>
 ): Promise<void> {
   for (const lang of LANGUAGES) {
     const raw = summonerDataByLang[lang];
     if (!raw || typeof raw !== "object") continue;
-
-    const data = (raw as { data?: Record<string, any> }).data || {};
-    const spells: NormalizedSummonerSpell[] = [];
-
-    for (const [id, spell] of Object.entries<any>(data)) {
-      const name =
-        typeof spell.name === "string" ? (spell.name as string) : id;
-      const tooltip =
-        (typeof spell.tooltip === "string" && spell.tooltip) ||
-        (typeof spell.description === "string" && spell.description) ||
-        "";
-      const cooldown: number[] = Array.isArray(spell.cooldown)
-        ? (spell.cooldown as number[])
-        : [];
-      const iconPath: string =
-        (spell.image && typeof spell.image.full === "string"
-          ? spell.image.full
-          : "") || "";
-      const modes: string[] = Array.isArray(spell.modes)
-        ? (spell.modes as string[])
-        : [];
-
-      const normalized: NormalizedSummonerSpell = {
-        id,
-        key: typeof spell.key === "string" ? spell.key : id,
-        name,
-        tooltip,
-        cooldown,
-        iconPath,
-        modes,
-      };
-
-      spells.push(normalized);
-    }
+    const spells = normalizeSummonerSpells(raw);
 
     const file: NormalizedSummonerDataFile = {
       schemaVersion: 2,
@@ -1049,49 +520,19 @@ function applyLocalizedPassiveTooltip(
   fs.writeFileSync(championFilePath, JSON.stringify(data, null, 2), "utf-8");
 }
 
-/**
- * CDragon에서 챔피언 스펠 데이터를 가져올 때,
- * DDragon 기준 버전 목록을 이용해 다음 순서로 시도:
- * 1) 현재 패치 버전 (예: 15.24)
- * 2) 직전 패치 버전 (예: 15.23)
- * 3) latest
- */
-async function fetchCommunityDragonDataWithFallback(
+async function fetchCommunityDragonData(
   cdChampionId: string,
-  versionCandidates: string[]
-): Promise<{ data: Record<string, unknown> | null; cdragonVersion: string | null }> {
-  for (const basePath of versionCandidates) {
-    const url = COMMUNITY_DRAGON_URL(basePath, cdChampionId);
-    try {
-      console.log(`Fetching CDragon: ${url}`);
-      const response = await fetch(url);
-
-      if (response.status === 404) {
-        console.warn(`[CD] ${cdChampionId} not found at ${basePath} (404), trying next candidate...`);
-        continue;
-      }
-
-      if (!response.ok) {
-        console.warn(
-          `[CD] Failed to fetch ${cdChampionId} at ${basePath}. status=${response.status}. Trying next candidate...`
-        );
-        continue;
-      }
-
-      const json = (await response.json()) as Record<string, unknown>;
-      return { data: json, cdragonVersion: basePath };
-    } catch (error) {
-      console.warn(
-        `[CD] Error while fetching ${cdChampionId} at ${basePath}:`,
-        error
-      );
-      // 네트워크 오류 등도 다음 후보로 계속 시도
-      continue;
-    }
+  cdragonVersion: string,
+): Promise<Record<string, unknown>> {
+  const url = COMMUNITY_DRAGON_URL(cdragonVersion, cdChampionId);
+  console.log(`Fetching exact CDragon: ${url}`);
+  const response = await fetch(url);
+  if (!response.ok) {
+    throw new Error(
+      `[CD] ${cdChampionId} missing from ${cdragonVersion}: HTTP ${response.status}`,
+    );
   }
-
-  console.error(`[CD] All CommunityDragon candidates failed for ${cdChampionId}`);
-  return { data: null, cdragonVersion: null };
+  return (await response.json()) as Record<string, unknown>;
 }
 
 interface CommunityDragonItem {
@@ -1116,55 +557,24 @@ interface CommunityDragonItem {
   iconPath?: string;
 }
 
-async function fetchCommunityDragonItemsWithFallback(
+async function fetchCommunityDragonItems(
   lang: string,
-  versionCandidates: string[]
-): Promise<{ items: CommunityDragonItem[] | null; cdragonVersion: string | null }> {
+  cdragonVersion: string,
+): Promise<CommunityDragonItem[]> {
   const resultsLocale = toCommunityDragonLocale(lang);
-
-  for (const basePath of versionCandidates) {
-    const url = COMMUNITY_DRAGON_ITEMS_URL(basePath, lang);
-    try {
-      console.log(`Fetching CDragon items (${resultsLocale}): ${url}`);
-      const response = await fetch(url);
-
-      if (response.status === 404) {
-        console.warn(
-          `[CD][Items] Not found for ${resultsLocale} at ${basePath} (404), trying next candidate...`
-        );
-        continue;
-      }
-
-      if (!response.ok) {
-        console.warn(
-          `[CD][Items] Failed to fetch ${resultsLocale} at ${basePath}. status=${response.status}. Trying next candidate...`
-        );
-        continue;
-      }
-
-      const json = (await response.json()) as unknown;
-      if (!Array.isArray(json)) {
-        console.warn(
-          `[CD][Items] Unexpected response format for ${resultsLocale} at ${basePath}`
-        );
-        continue;
-      }
-
-      return { items: json as CommunityDragonItem[], cdragonVersion: basePath };
-    } catch (error) {
-      console.warn(
-        `[CD][Items] Error while fetching items for ${resultsLocale} at ${basePath}:`,
-        error
-      );
-      // 네트워크 오류 등도 다음 후보로 계속 시도
-      continue;
-    }
+  const url = COMMUNITY_DRAGON_ITEMS_URL(cdragonVersion, lang);
+  console.log(`Fetching exact CDragon items (${resultsLocale}): ${url}`);
+  const response = await fetch(url);
+  if (!response.ok) {
+    throw new Error(
+      `[CD][Items] ${resultsLocale} missing from ${cdragonVersion}: HTTP ${response.status}`,
+    );
   }
-
-  console.error(
-    `[CD][Items] All CommunityDragon item candidates failed for ${resultsLocale}`
-  );
-  return { items: null, cdragonVersion: null };
+  const json = (await response.json()) as unknown;
+  if (!Array.isArray(json)) {
+    throw new Error(`[CD][Items] Invalid ${resultsLocale} response format`);
+  }
+  return json as CommunityDragonItem[];
 }
 
 interface RuneStatShard {
@@ -1193,14 +603,14 @@ interface RuneStatShardStaticData {
   groups: RuneStatShardGroup[];
 }
 
-async function fetchRuneStatShardsWithFallback(
+async function fetchRuneStatShards(
   lang: string,
-  versionCandidates: string[],
+  cdragonVersion: string,
   ddragonVersion: string
 ): Promise<RuneStatShardStaticData | null> {
   const resultsLocale = toCommunityDragonLocale(lang);
 
-  for (const basePath of versionCandidates) {
+  for (const basePath of [cdragonVersion]) {
     const perkstylesUrl = COMMUNITY_DRAGON_PERKSTYLES_URL(basePath, lang);
     const perksUrl = COMMUNITY_DRAGON_PERKS_URL(basePath, lang);
 
@@ -1216,14 +626,14 @@ async function fetchRuneStatShardsWithFallback(
 
       if (stylesRes.status === 404 || perksRes.status === 404) {
         console.warn(
-          `[CD][Runes] Stat shard data not found for ${resultsLocale} at ${basePath} (404), trying next candidate...`
+          `[CD][Runes] Stat shard data not found for ${resultsLocale} at exact ${basePath} (404)`
         );
         continue;
       }
 
       if (!stylesRes.ok || !perksRes.ok) {
         console.warn(
-          `[CD][Runes] Failed to fetch stat shard data for ${resultsLocale} at ${basePath}. status=${stylesRes.status}/${perksRes.status}. Trying next candidate...`
+          `[CD][Runes] Failed to fetch stat shard data for ${resultsLocale} at exact ${basePath}. status=${stylesRes.status}/${perksRes.status}`
         );
         continue;
       }
@@ -1346,7 +756,7 @@ async function fetchRuneStatShardsWithFallback(
   }
 
   console.error(
-    `[CD][Runes] All CommunityDragon stat shard candidates failed for ${resultsLocale}`
+    `[CD][Runes] Exact CommunityDragon stat shards failed for ${resultsLocale}`
   );
   return null;
 }
@@ -1357,19 +767,18 @@ async function main() {
   try {
     console.log('📦 Fetching version information...');
     const versions: string[] = await fetchJson(VERSION_URL);
-    const ddragonVersion = versions[0];
-    const version = toOfficialPatchVersion(ddragonVersion);
+    const release = resolveStaticDataRelease(versions[0]);
+    const { patchVersion, sources: sourceVersions } = release;
+    const { ddragon: ddragonVersion, cdragon: cdragonVersion } = sourceVersions;
     console.log(`✅ Latest DDragon version: ${ddragonVersion}`);
-    console.log(`✅ Official patch version: ${version}`);
-
-    const cdVersionCandidates = getCommunityDragonVersionCandidates(versions);
-    console.log(`✅ CommunityDragon version candidates: ${cdVersionCandidates.join(', ')}\n`);
+    console.log(`✅ Official patch version: ${patchVersion}`);
+    console.log(`✅ Exact CommunityDragon version: ${cdragonVersion}\n`);
 
     console.log('🗑️  Cleaning up old version directories...');
     if (fs.existsSync(DATA_DIR)) {
       const entries = fs.readdirSync(DATA_DIR, { withFileTypes: true });
       for (const entry of entries) {
-        if (entry.isDirectory() && entry.name !== version) {
+        if (entry.isDirectory() && entry.name !== patchVersion) {
           const oldVersionDir = path.join(DATA_DIR, entry.name);
           console.log(`   Removing old version: ${entry.name}`);
           fs.rmSync(oldVersionDir, { recursive: true, force: true });
@@ -1377,14 +786,10 @@ async function main() {
       }
     }
 
-    const versionDir = path.join(DATA_DIR, version);
+    const versionDir = path.join(DATA_DIR, patchVersion);
     const championsDir = path.join(versionDir, 'champions');
     const spellsDir = path.join(versionDir, 'spells');
 
-    // 이번 정적 빌드에서 실제로 사용된 CDragon 버전을 추적한다.
-    // - 기본값은 "현재 패치" 후보 (예: 15.24)
-    // - 한 명이라도 폴백(15.23, latest 등)을 사용하면, 그 폴백 버전을 version.json에 반영한다.
-    let usedFallbackCdragonVersion: string | null = null;
     const abilitySourcesByChampion = new Map<string, ActiveSpellSourceData[]>();
 
     const runesDataByLang: Record<string, any> = {};
@@ -1409,23 +814,13 @@ async function main() {
 
       console.log(`✨ Fetching rune stat shards (secondary runes) for ${lang}...`);
       try {
-        const statShardData = await fetchRuneStatShardsWithFallback(
+        const statShardData = await fetchRuneStatShards(
           lang,
-          cdVersionCandidates,
+          cdragonVersion,
           ddragonVersion
         );
 
         if (statShardData && statShardData.groups.length > 0) {
-          // 폴백 버전 사용 여부 기록
-          if (
-            statShardData.cdragonVersion &&
-            cdVersionCandidates.length > 0 &&
-            statShardData.cdragonVersion !== cdVersionCandidates[0]
-          ) {
-            if (!usedFallbackCdragonVersion) {
-              usedFallbackCdragonVersion = statShardData.cdragonVersion;
-            }
-          }
           runeStatmodsDataByLang[lang] = statShardData;
           console.log(`✅ Generated rune stat shards for ${lang}`);
         } else {
@@ -1434,9 +829,9 @@ async function main() {
           );
         }
       } catch (error) {
-        console.warn(
-          `[CD][Runes] Failed to generate rune stat shards for ${lang}:`,
-          error
+        throw new Error(
+          `[CD][Runes] Exact ${cdragonVersion} stat shards failed for ${lang}`,
+          { cause: error },
         );
       }
 
@@ -1446,19 +841,7 @@ async function main() {
       let combinedItemsData: any = itemsData;
 
       try {
-        const { items: cdItems, cdragonVersion: itemsCdragonVersion } =
-          await fetchCommunityDragonItemsWithFallback(lang, cdVersionCandidates);
-
-        if (
-          itemsCdragonVersion &&
-          cdVersionCandidates.length > 0 &&
-          itemsCdragonVersion !== cdVersionCandidates[0]
-        ) {
-          // 첫 번째로 발견된 폴백 버전을 채택 (예: 15.23)
-          if (!usedFallbackCdragonVersion) {
-            usedFallbackCdragonVersion = itemsCdragonVersion;
-          }
-        }
+        const cdItems = await fetchCommunityDragonItems(lang, cdragonVersion);
 
         if (
           cdItems &&
@@ -1525,9 +908,9 @@ async function main() {
           };
         }
       } catch (error) {
-        console.warn(
-          `[CD][Items] Failed to merge CommunityDragon items for ${lang}:`,
-          error
+        throw new Error(
+          `[CD][Items] Exact ${cdragonVersion} item merge failed for ${lang}`,
+          { cause: error },
         );
       }
       itemsDataByLang[lang] = combinedItemsData;
@@ -1539,9 +922,9 @@ async function main() {
         summonerDataByLang[lang] = summonerData;
         console.log(`✅ Fetched summoner spells for ${lang}\n`);
       } catch (error) {
-        console.warn(
-          `❌ Failed to fetch/save summoner spells for ${lang}:`,
-          error
+        throw new Error(
+          `Failed to fetch summoner spells for ${lang}`,
+          { cause: error },
         );
       }
     }
@@ -1562,9 +945,9 @@ async function main() {
             const champion = champData.data?.[championId];
             if (champion) {
               const championInfo = {
-                version,
-                ddragonVersion,
-                lang,
+                patchVersion,
+                sources: sourceVersions,
+                locale: lang,
                 champion,
               };
               await saveToFile(championInfo, path.join(championsDir, `${championId}-${lang}.json`));
@@ -1580,6 +963,13 @@ async function main() {
 
       const results = await Promise.all(championPromises);
       const successCount = results.filter(r => r.success).length;
+      if (successCount !== results.length) {
+        const missing = results
+          .filter((result) => !result.success)
+          .map((result) => `${result.championId}:${result.lang}`)
+          .join(", ");
+        throw new Error(`Incomplete DDragon champion snapshot: ${missing}`);
+      }
       console.log(`✅ Processed batch: ${successCount}/${results.length} successful\n`);
     }
     console.log('⚡ Fetching Community Dragon spell data...');
@@ -1594,29 +984,10 @@ async function main() {
       const spellPromises = batch.map(async (championId) => {
         try {
           const cdChampionId = convertChampionIdToCommunityDragon(championId);
-          const { data: cdData, cdragonVersion } =
-            await fetchCommunityDragonDataWithFallback(
-              cdChampionId,
-              cdVersionCandidates
-            );
-
-          if (!cdData) {
-            console.log(`❌ Failed to fetch any CommunityDragon data for ${championId}`);
-            failCount++;
-            return { championId, success: false };
-          }
-
-          // 폴백 버전 사용 여부 기록
-          if (
-            cdragonVersion &&
-            cdVersionCandidates.length > 0 &&
-            cdragonVersion !== cdVersionCandidates[0]
-          ) {
-            // 첫 번째로 발견된 폴백 버전을 채택 (예: 15.23)
-            if (!usedFallbackCdragonVersion) {
-              usedFallbackCdragonVersion = cdragonVersion;
-            }
-          }
+          const cdData = await fetchCommunityDragonData(
+            cdChampionId,
+            cdragonVersion,
+          );
 
           const activeSpells = extractActiveSpells(cdData, cdChampionId);
           abilitySourcesByChampion.set(
@@ -1633,18 +1004,17 @@ async function main() {
             })
           );
           const passive = extractPassiveSpell(cdData, championId);
-          const localizedPassive = cdragonVersion
-            ? await buildLocalizedPassiveTooltips(cdragonVersion, passive)
-            : null;
+          const localizedPassive = await buildLocalizedPassiveTooltips(
+            cdragonVersion,
+            passive,
+          );
 
-          if (cdragonVersion) {
-            await applyLocalizedActiveTooltips(
-              championsDir,
-              championId,
-              cdragonVersion,
-              activeSpells.ordered
-            );
-          }
+          await applyLocalizedActiveTooltips(
+            championsDir,
+            championId,
+            cdragonVersion,
+            activeSpells.ordered,
+          );
 
           if (passive) {
             spellData.P = passive.spellData;
@@ -1663,11 +1033,8 @@ async function main() {
           
           if (Object.keys(spellData).length > 0) {
             const spellInfo = {
-              // 공식 패치 키 (정적 데이터 디렉터리와 캐시 키)
-              version,
-              ddragonVersion,
-              // 실제로 사용한 CDragon 버전 (예: "15.23" 또는 "latest")
-              cdragonVersion,
+              patchVersion,
+              sources: sourceVersions,
               championId,
               spellData,
               passive: passive
@@ -1698,15 +1065,12 @@ async function main() {
     }
 
     console.log(`\n✅ Community Dragon data: ${successCount} successful, ${failCount} failed\n`);
-
-    const finalCdragonVersion =
-      usedFallbackCdragonVersion ??
-      cdVersionCandidates[0] ??
-      toCommunityDragonVersion(ddragonVersion);
-    const sourceVersions = {
-      ddragon: ddragonVersion,
-      cdragon: finalCdragonVersion,
-    };
+    if (failCount > 0 || successCount !== championIds.length) {
+      throw new Error(
+        `Incomplete CDragon ${cdragonVersion} champion snapshot: ` +
+          `${successCount}/${championIds.length} successful`,
+      );
+    }
 
     const activeTooltipAllowlist = JSON.parse(
       fs.readFileSync(
@@ -1716,7 +1080,7 @@ async function main() {
     ) as ActiveTooltipAllowlist;
     const activeTooltipReport = validateActiveTooltipFiles(
       championsDir,
-      version,
+      patchVersion,
       LANGUAGES,
       activeTooltipAllowlist
     );
@@ -1755,7 +1119,7 @@ async function main() {
 
       const normalizedFile: NormalizedChampionDataFile = {
         schemaVersion: 2,
-        patchVersion: version,
+        patchVersion,
         locale: lang,
         sources: sourceVersions,
         champions: normalizedChampions,
@@ -1770,7 +1134,7 @@ async function main() {
       );
       const v2ChampionCount = writeChampionV2Dataset({
         versionDir,
-        patchVersion: version,
+        patchVersion,
         locale: lang,
         sources: sourceVersions,
         championIds,
@@ -1784,13 +1148,13 @@ async function main() {
     console.log("🧩 Building normalized item and rune data...");
     await buildAndSaveNormalizedItems(
       versionDir,
-      version,
+      patchVersion,
       sourceVersions,
       itemsDataByLang
     );
     await buildAndSaveNormalizedRunesAndStatShards(
       versionDir,
-      version,
+      patchVersion,
       sourceVersions,
       runesDataByLang,
       runeStatmodsDataByLang
@@ -1798,16 +1162,16 @@ async function main() {
     console.log("🧩 Building normalized summoner spell data...");
     await buildAndSaveNormalizedSummoners(
       versionDir,
-      version,
+      patchVersion,
       sourceVersions,
       summonerDataByLang
     );
 
     const abilityValidation = validateGeneratedAbilities({
       versionDir,
-      patchVersion: version,
+      patchVersion,
       ddragonVersion,
-      cdragonVersion: finalCdragonVersion,
+      cdragonVersion,
       allowlistPath: path.join(
         process.cwd(),
         "scripts",
@@ -1833,7 +1197,7 @@ async function main() {
 
     const simulationValidation = validateAbilitySimulations(
       versionDir,
-      version,
+      patchVersion,
       sourceVersions
     );
     await saveToFile(
@@ -1853,7 +1217,7 @@ async function main() {
 
     const versionInfo = {
       schemaVersion: 2,
-      patchVersion: version,
+      patchVersion,
       sources: sourceVersions,
     };
     await saveToFile(versionInfo, path.join(DATA_DIR, "version.json"));
@@ -1861,10 +1225,10 @@ async function main() {
     console.log(`\n🎉 Static data generation completed!`);
     console.log(`📁 Data saved to: ${versionDir}`);
     console.log(`📊 DDragon Version: ${ddragonVersion}`);
-    console.log(`🎮 Official Patch Version: ${version}`);
+    console.log(`🎮 Official Patch Version: ${patchVersion}`);
     console.log(`🌐 Languages: ${LANGUAGES.join(", ")}`);
     console.log(`👥 Champions: ${championIds.length}`);
-    console.log(`🐉 CommunityDragon Version (effective): ${finalCdragonVersion}`);
+    console.log(`🐉 CommunityDragon Version (exact): ${cdragonVersion}`);
   } catch (error) {
     console.error('❌ Error:', error);
     process.exit(1);
