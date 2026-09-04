@@ -2,6 +2,7 @@ import type {
   FormulaPart,
   StatContribution,
 } from "./combatStats";
+import type { StaticDataMetadata } from "@/data/contracts/staticData";
 
 export type NormalizedEntityType =
   | "champion"
@@ -144,21 +145,15 @@ export interface NormalizedStatShard extends NormalizedEntityBase {
   stats: StatContribution[];
 }
 
-export interface NormalizedChampionDataFile {
-  version: string;
-  lang: string;
+export interface NormalizedChampionDataFile extends StaticDataMetadata {
   champions: NormalizedChampion[];
 }
 
-export interface NormalizedItemDataFile {
-  version: string;
-  lang: string;
+export interface NormalizedItemDataFile extends StaticDataMetadata {
   items: NormalizedItem[];
 }
 
-export interface NormalizedRuneDataFile {
-  version: string;
-  lang: string;
+export interface NormalizedRuneDataFile extends StaticDataMetadata {
   runes: NormalizedRune[];
   statShards: NormalizedStatShard[];
 }
@@ -188,10 +183,7 @@ export interface NormalizedSummonerSpell {
   modes: string[];
 }
 
-export interface NormalizedSummonerDataFile {
-  version: string;
-  lang: string;
+export interface NormalizedSummonerDataFile extends StaticDataMetadata {
   spells: NormalizedSummonerSpell[];
 }
-
 

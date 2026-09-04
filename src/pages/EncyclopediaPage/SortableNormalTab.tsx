@@ -2,7 +2,7 @@ import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { X, Swords, GripVertical } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { CHAMP_ICON_URL } from "@/services/api";
+import { championIconUrl } from "@/data/assets/riotAssetUrls";
 import { useTranslation } from "@/i18n";
 import { Tab, ChampionWithInfo } from "./types";
 import {
@@ -83,7 +83,7 @@ export function SortableNormalTab({
       */}
       <div className="flex items-center gap-1.5 flex-1 cursor-pointer select-none">
         <img
-          src={CHAMP_ICON_URL(ddragonVersion, champion.id)}
+          src={championIconUrl(ddragonVersion, champion.id)}
           alt={champion.name}
           className="w-5 h-5 rounded-full pointer-events-none select-none"
           draggable="false"
@@ -136,4 +136,3 @@ export function SortableNormalTab({
     </div>
   );
 }
-

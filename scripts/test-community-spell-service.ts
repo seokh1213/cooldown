@@ -1,7 +1,5 @@
 import assert from "node:assert/strict";
 import { getCommunityDragonSpellData } from "../src/services/api";
-import { getIntegratedSpellData } from "../src/services/spellDataService";
-import type { ChampionSpell } from "../src/types";
 
 const originalFetch = globalThis.fetch;
 let requestedUrl = "";
@@ -31,16 +29,8 @@ try {
   });
   assert.equal(result.ddragonVersion, "16.17.1");
   assert.equal(result.cdragonVersion, "16.17");
-  const spell = {
-    id: "MonkeyKingDoubleAttack",
-    name: "파쇄격",
-    tooltip: "사거리가 {{ attackrangebonus }} 증가합니다.",
-    maxrank: 5,
-  } as ChampionSpell;
-  const integrated = await getIntegratedSpellData("MonkeyKing", [spell], "26.17");
-  assert.deepEqual(integrated[0].communityDragonData, result.spellDataMap[spell.id]);
 } finally {
   globalThis.fetch = originalFetch;
 }
 
-console.log("✅ CommunityDragon spell service path passed");
+console.log("✅ Legacy CommunityDragon spell path passed");

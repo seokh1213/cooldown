@@ -2,7 +2,7 @@ import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { X, GripVertical } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { CHAMP_ICON_URL } from "@/services/api";
+import { championIconUrl } from "@/data/assets/riotAssetUrls";
 import { useTranslation } from "@/i18n";
 import { Tab, ChampionWithInfo } from "./types";
 import {
@@ -87,7 +87,7 @@ export function SortableVsTab({
           className="flex items-center touch-none hover:opacity-80 transition-opacity select-none"
         >
           <img
-            src={CHAMP_ICON_URL(ddragonVersion, championA.id)}
+            src={championIconUrl(ddragonVersion, championA.id)}
             alt={championA.name}
             className="w-5 h-5 rounded-full select-none pointer-events-none"
             draggable="false"
@@ -110,7 +110,7 @@ export function SortableVsTab({
           className="flex items-center touch-none hover:opacity-80 transition-opacity select-none"
         >
           <img
-            src={CHAMP_ICON_URL(ddragonVersion, championB.id)}
+            src={championIconUrl(ddragonVersion, championB.id)}
             alt={championB.name}
             className="w-5 h-5 rounded-full select-none pointer-events-none"
             draggable="false"
@@ -140,4 +140,3 @@ export function SortableVsTab({
     </div>
   );
 }
-

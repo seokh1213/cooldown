@@ -22,13 +22,14 @@ import {
 } from "@/components/ui/dialog";
 import {VisuallyHidden} from "@/components/ui/visually-hidden";
 import {Search, AlertTriangle} from "lucide-react";
+import type {DataLocale} from "@/data/contracts/staticData";
 
 interface ItemsTabProps {
   /** 정적 데이터 경로/캐시 키로 쓰는 Riot 공식 패치 버전 */
   version: string;
   /** Data Dragon CDN 요청용 내부 버전 */
   ddragonVersion: string;
-  lang: string;
+  lang: DataLocale;
 }
 
 type Item = NormalizedItem;
@@ -775,5 +776,4 @@ export function ItemsTab({version, ddragonVersion, lang}: ItemsTabProps) {
     </div>
   );
 }
-
 

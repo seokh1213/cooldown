@@ -89,7 +89,7 @@ assert.equal(decodeChampionDetail(detail).champion.id, "Test");
 assert.equal(decodeChampionIndex(index).champions.length, 1);
 assert.throws(
   () => decodeChampionDetail({ ...detail, schemaVersion: 1 }),
-  /Unsupported champion data schema/
+  /Unsupported static data schema/
 );
 
 console.log("✅ Champion and Ability v2 contract passed");

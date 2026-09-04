@@ -24,10 +24,11 @@ import { VisuallyHidden } from "@/components/ui/visually-hidden";
 import { useTranslation } from "@/i18n";
 import { useDeviceType } from "@/hooks/useDeviceType";
 import { AlertTriangle } from "lucide-react";
+import type { DataLocale } from "@/data/contracts/staticData";
 
 interface RunesTabProps {
   version: string;
-  lang: string;
+  lang: DataLocale;
 }
 
 export function RunesTab({ version, lang }: RunesTabProps) {
@@ -444,5 +445,4 @@ export function RunesTab({ version, lang }: RunesTabProps) {
     </TooltipProvider>
   );
 }
-
 
