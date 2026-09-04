@@ -2,12 +2,9 @@ import fs from "node:fs/promises";
 import path from "node:path";
 import type { ChampionSpell } from "../src/types";
 import { delay, mapConcurrent, readJson, type ResearchLocale } from "./lolps-research-utils";
+import type { DataManifest } from "../src/data/contracts/dataManifest";
 
-export interface VersionInfo {
-  version: string;
-  ddragonVersion: string;
-  cdragonVersion: string | null;
-}
+export type VersionInfo = DataManifest;
 
 export interface DDragonChampion {
   id: string;

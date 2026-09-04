@@ -166,15 +166,14 @@ function localeRows(
 
 async function main(): Promise<void> {
   const version = await readJson<VersionInfo>(path.join(projectRoot, "public/data/version.json"));
-  if (!version.cdragonVersion) throw new Error("CommunityDragon version is required");
-  const versionDir = path.join(projectRoot, "public/data", version.version);
-  const cacheDir = path.join(cacheRoot, version.version);
+  const versionDir = path.join(projectRoot, "public/data", version.patchVersion);
+  const cacheDir = path.join(cacheRoot, version.patchVersion);
   await fs.mkdir(reportRoot, { recursive: true });
 
-  const ddragon = await loadDDragonLocales(version.ddragonVersion, cacheDir, refresh);
+  const ddragon = await loadDDragonLocales(version.sources.ddragon, cacheDir, refresh);
   const champions = Object.values(ddragon.en_US).sort((a, b) => a.id.localeCompare(b.id));
   const cdragon = await loadCDragonLocales(
-    version.cdragonVersion,
+    version.sources.cdragon,
     champions,
     cacheDir,
     refresh
@@ -345,7 +344,7 @@ async function main(): Promise<void> {
     `## 직접 결론\n\n` +
     `lol.ps의 공개 챔피언 응답은 영어(Us), 한국어(Kr), 중국어(Cn) 완성 문장을 함께 제공한다. 세 언어의 DDragon 템플릿과 CDragon 현지화 템플릿을 같은 패치로 대조한 결과, 숫자 계산 규칙은 언어와 분리할 수 있다. 제품의 정답 원천은 언어 공통 Riot BIN 계산 AST로 두고, 각 언어 문장은 그 AST 결과를 삽입하는 렌더링 템플릿으로 취급해야 한다. lol.ps는 오류가 섞인 비교 오라클이지 원천 데이터가 아니다.\n\n` +
     `## 범위와 결과\n\n` +
-    `- 패치: ${version.version} / DDragon ${version.ddragonVersion} / CDragon ${version.cdragonVersion}\n` +
+    `- 패치: ${version.patchVersion} / DDragon ${version.sources.ddragon} / CDragon ${version.sources.cdragon}\n` +
     `- 챔피언: ${champions.length}, 언어: ${aggregate.locales.join(", ")}\n` +
     `- 언어별 Q/W/E/R 표본: ${spells.length}\n` +
     `- 변수 표본: ${tokens.length}, 해석 ${resolved.length}, 미해석 ${unresolved.length}\n` +

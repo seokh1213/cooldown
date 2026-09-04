@@ -1699,11 +1699,12 @@ async function main() {
     );
 
     const versionInfo = {
-      // 공식 패치 키. 정적 데이터 경로와 캐시 키에 사용한다.
-      version,
-      ddragonVersion,
-      // 이번 정적 빌드에서 "실제로" 사용된 CDragon 기준 버전
-      cdragonVersion: finalCdragonVersion,
+      schemaVersion: 2,
+      patchVersion: version,
+      sources: {
+        ddragon: ddragonVersion,
+        cdragon: finalCdragonVersion,
+      },
     };
     await saveToFile(versionInfo, path.join(DATA_DIR, "version.json"));
 

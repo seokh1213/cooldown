@@ -5,6 +5,7 @@
 
 import fs from "node:fs/promises";
 import path from "node:path";
+import type { DataManifest } from "../src/data/contracts/dataManifest";
 import { fileURLToPath } from "node:url";
 import { parseSpellTooltip } from "../src/lib/spellTooltipParser";
 import type { ChampionSpell } from "../src/types";
@@ -100,20 +101,14 @@ const testCases: TestCase[] = [
   },
 ];
 
-interface VersionInfo {
-  version: string;
-  ddragonVersion?: string;
-  cdragonVersion?: string | null;
-}
-
 async function loadDataRootAndVersion(): Promise<{
   dataRoot: string;
   dataVersion: string;
 }> {
   const dataRoot = path.resolve(__dirname, "../public/data");
   const versionRaw = await fs.readFile(path.join(dataRoot, "version.json"), "utf-8");
-  const versionInfo = JSON.parse(versionRaw) as VersionInfo;
-  const dataVersion = versionInfo.version;
+  const versionInfo = JSON.parse(versionRaw) as DataManifest;
+  const dataVersion = versionInfo.patchVersion;
   return { dataRoot, dataVersion };
 }
 
