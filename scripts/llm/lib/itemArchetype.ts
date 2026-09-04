@@ -195,67 +195,102 @@ export interface ChampionBuildProfile {
   label: string;
 }
 
+/**
+ * 챔피언 역할 태그는 데이터에 이미 있고 **순서가 의미를 가진다.**
+ * ddragon 태그의 첫 번째가 주 역할, 두 번째가 부 역할이다.
+ *   피오라 = Fighter/Assassin → 주 역할 전사 (암살자 아이템이 아니라 브루저 아이템)
+ *   말파이트 = Tank/Mage → 주 역할 탱커, 부 역할 마법사 (AP 탱커)
+ *   티모 = Marksman/Mage → 원거리지만 계수가 AP 이므로 메이지 아이템
+ *
+ * 여기에 계수 프로필(AD/AP)을 곱해 최종 아이템 풀을 정한다.
+ * AP 챔피언에게 치명타·물리 관통 아이템을, AD 챔피언에게 주문력 아이템을 권하지 않는다.
+ */
+const COMBAT_ARCHETYPES: ItemArchetype[] = [
+  "bruiser",
+  "tank",
+  "mage",
+  "battlemage",
+  "marksman",
+  "assassin",
+  "enchanter",
+  "utility",
+];
+const NEUTRAL: ItemArchetype[] = ["boots", "starter", "component"];
+
+function profileOf(
+  preferred: ItemArchetype[],
+  label: string,
+  keepUtility = false,
+): ChampionBuildProfile {
+  const allowed = new Set<ItemArchetype>([...preferred, ...NEUTRAL]);
+  if (keepUtility) allowed.add("utility");
+  return {
+    preferred: [...preferred, ...NEUTRAL],
+    excluded: COMBAT_ARCHETYPES.filter((a) => !allowed.has(a)).concat("jungle"),
+    label,
+  };
+}
+
 export function championBuildProfile(input: {
   roleTags: string[];
   scaling: "AD" | "AP" | "혼합" | "체력" | "없음";
   rangeType: "근접" | "원거리";
+  /** 물리 피해 스킬을 갖고 있는지 (계수가 없는 고정 피해 스킬 보정용) */
+  hasPhysicalSpell?: boolean;
 }): ChampionBuildProfile {
-  const { roleTags, scaling, rangeType } = input;
-  const has = (tag: string) => roleTags.includes(tag);
+  const { roleTags, scaling, hasPhysicalSpell } = input;
+  const primary = roleTags[0];
+  const secondary = roleTags[1];
+  const isAp = scaling === "AP";
 
-  if (has("Marksman")) {
-    return {
-      preferred: ["marksman", "assassin", "boots", "starter", "component"],
-      excluded: ["tank", "mage", "battlemage", "enchanter", "jungle"],
-      label: "원거리 딜러",
-    };
+  switch (primary) {
+    case "Marksman":
+      // 원거리 딜러 태그라도 계수가 AP 면 메이지 아이템을 산다 (티모)
+      if (isAp) return profileOf(["mage", "battlemage"], "주문력 원거리 딜러");
+      // 부 역할이 마법사이고 순수 AD 가 아니면 주문력 아이템도 후보다 (케일)
+      if (secondary === "Mage" && scaling !== "AD") {
+        return profileOf(["mage", "marksman", "battlemage"], "혼합 원거리 딜러");
+      }
+      return profileOf(["marksman", "assassin", "bruiser"], "원거리 딜러");
+
+    case "Support":
+      return profileOf(["enchanter", "tank", "battlemage"], "서포터", true);
+
+    case "Mage":
+      return secondary === "Support"
+        ? profileOf(["enchanter", "mage", "battlemage"], "서포터 마법사", true)
+        : profileOf(["mage", "battlemage"], "메이지");
+
+    case "Assassin":
+      return isAp
+        ? profileOf(["mage", "battlemage"], "주문력 암살자")
+        : profileOf(["assassin", "bruiser"], "암살자");
+
+    case "Tank":
+      // 부 역할이 서포터면 아군 보조 아이템도 후보다 (브라움)
+      if (secondary === "Support") {
+        return profileOf(["tank", "enchanter"], "탱커 서포터", true);
+      }
+      // 부 역할이 마법사면 AP 탱커 (말파이트, 신지드)
+      return isAp || secondary === "Mage"
+        ? profileOf(["tank", "battlemage", "mage"], "주문력 탱커", true)
+        : profileOf(["tank", "bruiser"], "탱커", true);
+
+    case "Fighter":
+      if (isAp) {
+        // 계수가 AP 로 읽히지만 물리 피해 스킬이 있으면 AD 아이템도 후보다.
+        // 나서스 Q 처럼 중첩으로 피해가 오르는 스킬은 데이터에 계수가 없어 AP 로 잡힌다.
+        return hasPhysicalSpell
+          ? profileOf(["battlemage", "bruiser", "tank", "mage"], "전사(혼합 계수)")
+          : profileOf(["battlemage", "tank", "mage"], "주문력 전사");
+      }
+      // 부 역할이 암살자면 물리 관통 계열도 후보에 남긴다 (카밀, 다리우스의 세릴다)
+      return secondary === "Assassin"
+        ? profileOf(["bruiser", "tank", "assassin"], "브루저(암살 성향)")
+        : profileOf(["bruiser", "tank"], "브루저");
+
+    default:
+      // 태그가 없으면 계수로만 판단
+      return isAp ? profileOf(["mage", "battlemage"], "메이지") : profileOf(["bruiser", "tank"], "전사");
   }
-  if (has("Support") && !has("Fighter") && !has("Tank")) {
-    return {
-      preferred: ["enchanter", "utility", "tank", "boots", "starter", "component"],
-      excluded: ["marksman", "assassin"],
-      label: "서포터",
-    };
-  }
-  if (has("Assassin") && scaling !== "AP") {
-    return {
-      preferred: ["assassin", "bruiser", "boots", "starter", "component"],
-      excluded: ["tank", "mage", "enchanter", "marksman", "jungle"],
-      label: "암살자",
-    };
-  }
-  if (scaling === "AP" && (has("Mage") || has("Assassin"))) {
-    return {
-      preferred: has("Tank") || has("Fighter") ? ["battlemage", "mage", "boots", "starter", "component"] : ["mage", "battlemage", "boots", "starter", "component"],
-      excluded: ["marksman", "assassin", "enchanter", "jungle"],
-      label: scaling === "AP" && (has("Tank") || has("Fighter")) ? "마법 전사" : "메이지",
-    };
-  }
-  if (has("Tank") && !has("Fighter")) {
-    return {
-      preferred: ["tank", "bruiser", "boots", "starter", "component"],
-      excluded: ["marksman", "assassin", "mage", "enchanter", "jungle"],
-      label: "탱커",
-    };
-  }
-  if (has("Fighter") || has("Tank")) {
-    return {
-      preferred: scaling === "AP" ? ["battlemage", "tank", "bruiser", "boots", "starter", "component"] : ["bruiser", "tank", "boots", "starter", "component"],
-      excluded: ["marksman", "enchanter", "jungle", "mage"],
-      label: rangeType === "근접" ? "브루저" : "원거리 전사",
-    };
-  }
-  // 역할 태그가 없거나 애매하면 계수로만 판단
-  if (scaling === "AP") {
-    return {
-      preferred: ["mage", "battlemage", "boots", "starter", "component"],
-      excluded: ["marksman", "assassin", "enchanter", "jungle"],
-      label: "메이지",
-    };
-  }
-  return {
-    preferred: ["bruiser", "tank", "boots", "starter", "component"],
-    excluded: ["enchanter", "jungle"],
-    label: "전사",
-  };
 }

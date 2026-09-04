@@ -172,6 +172,7 @@ export function selectDefensiveItems(
         roleTags: me.roleTags,
         scaling: me.scalingProfile.primary,
         rangeType: me.rangeType,
+        hasPhysicalSpell: me.spells.some((s) => s.damageTypes.includes("물리")),
       })
     : undefined;
   const fitsProfile = (archetypes: ItemArchetype[]) => {
