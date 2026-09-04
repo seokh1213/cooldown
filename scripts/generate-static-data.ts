@@ -909,6 +909,32 @@ function extractSpellOrderMapping(
   return { spellOrder: [], actualChampionPath };
 }
 
+interface CommunityDragonDataValue {
+  name?: string;
+  values?: (number | string)[];
+}
+
+function extractDataValues(
+  mSpell: Record<string, unknown>
+): Record<string, (number | string)[]> | undefined {
+  const rawDataValues = mSpell.DataValues;
+  const dataValues: Record<string, (number | string)[]> = {};
+
+  if (Array.isArray(rawDataValues)) {
+    for (const dataValue of rawDataValues as CommunityDragonDataValue[]) {
+      if (dataValue.name && Array.isArray(dataValue.values)) {
+        dataValues[dataValue.name] = dataValue.values;
+      }
+    }
+  }
+
+  if (Array.isArray(mSpell.mAmmoRechargeTime)) {
+    dataValues.mAmmoRechargeTime = mSpell.mAmmoRechargeTime as (number | string)[];
+  }
+
+  return Object.keys(dataValues).length > 0 ? dataValues : undefined;
+}
+
 // Community Dragon 스킬 데이터 추출
 function extractSpellData(data: Record<string, unknown>, championId: string): Record<string, Record<string, any>> {
   const cdChampionId = convertChampionIdToCommunityDragon(championId);
@@ -931,24 +957,8 @@ function extractSpellData(data: Record<string, unknown>, championId: string): Re
       const mSpell = spellObj.mSpell as Record<string, unknown>;
       const spellData: Record<string, any> = {};
       
-      // 1. DataValues 파싱
-      if (mSpell.DataValues && Array.isArray(mSpell.DataValues)) {
-        const dataValues: Record<string, (number | string)[]> = {};
-        for (const dv of mSpell.DataValues as Array<{ mName?: string; mValues?: (number | string)[] }>) {
-          if (dv.mName && dv.mValues && Array.isArray(dv.mValues)) {
-            dataValues[dv.mName] = dv.mValues;
-          }
-        }
-        
-        // mAmmoRechargeTime도 추가 (ammo 스킬용)
-        if (mSpell.mAmmoRechargeTime && Array.isArray(mSpell.mAmmoRechargeTime)) {
-          dataValues["mAmmoRechargeTime"] = mSpell.mAmmoRechargeTime as (number | string)[];
-        }
-        
-        if (Object.keys(dataValues).length > 0) {
-          spellData.DataValues = dataValues;
-        }
-      }
+      const dataValues = extractDataValues(mSpell);
+      if (dataValues) spellData.DataValues = dataValues;
       
       // 2. mSpellCalculations 파싱
       if (mSpell.mSpellCalculations && typeof mSpell.mSpellCalculations === 'object' && mSpell.mSpellCalculations !== null) {
@@ -989,24 +999,8 @@ function extractSpellData(data: Record<string, unknown>, championId: string): Re
           if (!spellDataMap[spellName]) {
             const spellData: Record<string, any> = {};
             
-            // 1. DataValues 파싱
-            if (mSpell.DataValues && Array.isArray(mSpell.DataValues)) {
-              const dataValues: Record<string, (number | string)[]> = {};
-              for (const dv of mSpell.DataValues as Array<{ mName?: string; mValues?: (number | string)[] }>) {
-                if (dv.mName && dv.mValues && Array.isArray(dv.mValues)) {
-                  dataValues[dv.mName] = dv.mValues;
-                }
-              }
-              
-              // mAmmoRechargeTime도 추가 (ammo 스킬용)
-              if (mSpell.mAmmoRechargeTime && Array.isArray(mSpell.mAmmoRechargeTime)) {
-                dataValues["mAmmoRechargeTime"] = mSpell.mAmmoRechargeTime as (number | string)[];
-              }
-              
-              if (Object.keys(dataValues).length > 0) {
-                spellData.DataValues = dataValues;
-              }
-            }
+            const dataValues = extractDataValues(mSpell);
+            if (dataValues) spellData.DataValues = dataValues;
             
             // 2. mSpellCalculations 파싱
             if (mSpell.mSpellCalculations && typeof mSpell.mSpellCalculations === 'object' && mSpell.mSpellCalculations !== null) {
