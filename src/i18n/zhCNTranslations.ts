@@ -145,6 +145,8 @@ export const zhCNTranslations: Translations = {
       summonerSpellHint: "造成伤害的召唤师技能会自动加入连招。",
       runesTitle: "符文",
       runesComingSoon: "符文效果将在后续模拟阶段支持。",
+      selectDamageRune: "选择直接伤害符文",
+      damageRuneHint: "假定触发条件已满足，连招中计入一次伤害。",
       combatTitle: "连招伤害与斩杀判断",
       combatDescription: "计算目标防御属性、技能等级和施放次数。",
       selectTargetAria: "选择承受伤害的目标英雄",

@@ -11,17 +11,10 @@ import {
   type DamageType,
   type SimpleStats,
 } from "./SimulationPage.damageUtils";
+import type { SimulationExternalAction } from "./simulationExternalActions";
 
 type ActiveSlot = Exclude<AbilitySlot, "P">;
 type ActionKey = "AA" | ActiveSlot;
-
-export interface SimulationExternalAction {
-  id: string;
-  name: string;
-  rawDamage: number;
-  damageType: DamageType;
-  iconUrl: string;
-}
 
 interface SimulationCombatPanelProps {
   attacker: Champion | null;

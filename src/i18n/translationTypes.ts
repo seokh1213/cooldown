@@ -148,6 +148,8 @@ export interface Translations {
       summonerSpellHint: string;
       runesTitle: string;
       runesComingSoon: string;
+      selectDamageRune: string;
+      damageRuneHint: string;
       combatTitle: string;
       combatDescription: string;
       selectTargetAria: string;

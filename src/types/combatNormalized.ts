@@ -132,6 +132,7 @@ export interface NormalizedRune extends NormalizedEntityBase {
   slotIndex: number;
   stats: StatContribution[];
   effects?: NormalizedItemEffect[];
+  damageEffects: NormalizedDamageEffect[];
   /**
    * 로컬라이즈된 툴팁/설명 (HTML 포함 가능, 현재 lang 기준)
    */

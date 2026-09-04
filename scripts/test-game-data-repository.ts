@@ -30,6 +30,7 @@ const responses: Record<string, unknown> = {
     runes: [{
       id: "8005", type: "rune", name: "집중 공격", pathId: 8000,
       slotIndex: 0, stats: [],
+      damageEffects: [],
     }],
     statShards: [{
       id: "5001", type: "statShard", name: "체력", rowIndex: 0,

@@ -156,6 +156,8 @@ export const koKRTranslations: Translations = {
         summonerSpellHint: "피해를 주는 주문은 콤보 표에 자동으로 추가됩니다.",
         runesTitle: "룬",
         runesComingSoon: "룬 효과는 다음 시뮬레이션 단계에서 지원합니다.",
+        selectDamageRune: "직접 피해 룬 선택",
+        damageRuneHint: "조건이 충족된 것으로 보고 콤보에 1회 추가합니다.",
         combatTitle: "콤보 피해와 킬각",
         combatDescription: "대상 방어 능력치와 스킬 랭크, 사용 횟수를 반영합니다.",
         selectTargetAria: "피해를 받을 대상 챔피언 선택",

@@ -71,7 +71,8 @@ export function decodeNormalizedRunes(value: unknown): NormalizedRuneDataFile {
     if (
       typeof record.pathId !== "number" ||
       typeof record.slotIndex !== "number" ||
-      !Array.isArray(record.stats)
+      !Array.isArray(record.stats) ||
+      !Array.isArray(record.damageEffects)
     ) {
       throw new Error("Invalid normalized rune fields");
     }

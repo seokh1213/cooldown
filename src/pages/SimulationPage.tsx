@@ -3,21 +3,15 @@ import type { Language } from "@/i18n";
 import { useTranslation } from "@/i18n";
 import { Card } from "@/components/ui/card";
 import { Select } from "@/components/ui/select";
-import {
-  championIconUrl,
-  itemIconUrl,
-  summonerSpellIconUrl,
-} from "@/data/assets/riotAssetUrls";
+import { championIconUrl, itemIconUrl } from "@/data/assets/riotAssetUrls";
 import type { Champion } from "@/types";
 import type { StaticDataSources } from "@/data/contracts/staticData";
 import ChampionSelector from "@/components/features/ChampionSelector";
 import { SimulationItemPicker } from "./SimulationItemPicker";
 import { SimulationSkills } from "./SimulationSkills";
-import {
-  SimulationCombatPanel,
-  type SimulationExternalAction,
-} from "./SimulationCombatPanel";
+import { SimulationCombatPanel } from "./SimulationCombatPanel";
 import { SimulationLoadout } from "./SimulationLoadout";
+import { buildExternalActions } from "./simulationExternalActions";
 import { useSimulationData } from "./useSimulationData";
 
 interface StatRowProps {
@@ -81,6 +75,7 @@ export default function SimulationPage({
     setTargetLevel,
     availableItems,
     availableSummoners,
+    availableRunes,
     selectedItemIds,
     setSelectedItemIds,
     itemsBySlot,
@@ -95,6 +90,7 @@ export default function SimulationPage({
   const [isItemModalOpen, setIsItemModalOpen] = useState(false);
   const [activeItemSlotIndex, setActiveItemSlotIndex] = useState<number | null>(null);
   const [selectedSummonerIds, setSelectedSummonerIds] = useState<string[]>(["", ""]);
+  const [selectedRuneId, setSelectedRuneId] = useState("");
 
   const championOptions = useMemo(
     () => championList ?? [],
@@ -106,21 +102,13 @@ export default function SimulationPage({
     return finalStats.attackDamage * finalStats.attackSpeed;
   }, [finalStats]);
 
-  const externalActions = useMemo<SimulationExternalAction[]>(() => {
-    return selectedSummonerIds.flatMap((id) => {
-      const spell = availableSummoners.find((candidate) => candidate.id === id);
-      if (!spell) return [];
-      return spell.damageEffects
-        .filter((effect) => effect.target === "champion")
-        .map((effect) => ({
-          id: `summoner:${spell.id}:${effect.id}`,
-          name: spell.name,
-          rawDamage: effect.valuesByLevel[Math.min(Math.max(level, 1), 18) - 1] ?? 0,
-          damageType: effect.damageType,
-          iconUrl: summonerSpellIconUrl(ddragonVersion, spell.iconPath),
-        }));
-    });
-  }, [availableSummoners, ddragonVersion, level, selectedSummonerIds]);
+  const externalActions = useMemo(() => buildExternalActions({
+    summoners: availableSummoners,
+    selectedSummonerIds,
+    rune: availableRunes.find((rune) => rune.id === selectedRuneId) ?? null,
+    level,
+    ddragonVersion,
+  }), [availableRunes, availableSummoners, ddragonVersion, level, selectedRuneId, selectedSummonerIds]);
 
   return (
     <div className="w-full max-w-6xl mx-auto px-4 md:px-6 lg:px-8 py-8 md:py-10">
@@ -314,6 +302,9 @@ export default function SimulationPage({
         ddragonVersion={ddragonVersion}
         summoners={availableSummoners}
         selectedIds={selectedSummonerIds}
+        runes={availableRunes}
+        selectedRuneId={selectedRuneId}
+        onSelectRune={setSelectedRuneId}
         onSelect={(slot, id) => setSelectedSummonerIds((current) => {
           const next = [...current];
           next[slot] = id;

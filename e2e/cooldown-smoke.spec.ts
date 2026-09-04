@@ -172,6 +172,10 @@ test("calculates a ranked combo against target defenses", async ({ page }) => {
   await expect(page.getByRole("row", { name: /점화/ })).toContainText("430.0");
   await expect(page.getByTestId("combo-total")).toHaveText("430.0");
   await expect(page.getByTestId("combo-outcome")).toHaveText("처치 가능");
+
+  await page.getByLabel("직접 피해 룬 선택").selectOption({ label: "비열한 한 방" });
+  await expect(page.getByRole("row", { name: /비열한 한 방/ })).toContainText("45.0");
+  await expect(page.getByTestId("combo-total")).toHaveText("475.0");
 });
 
 test("keeps the main workflow fully localized in Chinese", async ({ page }) => {

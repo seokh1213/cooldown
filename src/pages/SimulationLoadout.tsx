@@ -1,14 +1,23 @@
 import { Card } from "@/components/ui/card";
 import { Select } from "@/components/ui/select";
-import { summonerSpellIconUrl } from "@/data/assets/riotAssetUrls";
+import {
+  runeIconUrl,
+  summonerSpellIconUrl,
+} from "@/data/assets/riotAssetUrls";
 import { useTranslation } from "@/i18n";
-import type { NormalizedSummonerSpell } from "@/types/combatNormalized";
+import type {
+  NormalizedRune,
+  NormalizedSummonerSpell,
+} from "@/types/combatNormalized";
 
 interface SimulationLoadoutProps {
   ddragonVersion: string;
   summoners: NormalizedSummonerSpell[];
   selectedIds: string[];
   onSelect: (slot: number, id: string) => void;
+  runes: NormalizedRune[];
+  selectedRuneId: string;
+  onSelectRune: (id: string) => void;
 }
 
 export function SimulationLoadout(props: SimulationLoadoutProps) {
@@ -65,13 +74,28 @@ export function SimulationLoadout(props: SimulationLoadoutProps) {
         <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
           {t.pages.simulation.runesTitle}
         </div>
-        <div className="flex items-center gap-2" aria-hidden="true">
-          {Array.from({ length: 6 }, (_, index) => (
-            <div key={index} className="size-8 rounded-full border border-border/70 bg-background/40" />
-          ))}
-        </div>
+        <label className="flex items-center gap-2">
+          {props.selectedRuneId ? (
+            <img
+              src={runeIconUrl(props.runes.find((rune) => rune.id === props.selectedRuneId)?.iconPath ?? "")}
+              alt=""
+              className="size-10 rounded-full"
+            />
+          ) : <span className="size-10 rounded-full border border-dashed border-border" />}
+          <Select
+            aria-label={t.pages.simulation.selectDamageRune}
+            value={props.selectedRuneId}
+            onChange={(event) => props.onSelectRune(event.target.value)}
+            className="h-10 min-w-0 flex-1 text-xs"
+          >
+            <option value="">{t.pages.simulation.selectDamageRune}</option>
+            {props.runes.map((rune) => (
+              <option key={rune.id} value={rune.id}>{rune.name}</option>
+            ))}
+          </Select>
+        </label>
         <p className="text-[11px] text-muted-foreground">
-          {t.pages.simulation.runesComingSoon}
+          {t.pages.simulation.damageRuneHint}
         </p>
       </Card>
     </div>
