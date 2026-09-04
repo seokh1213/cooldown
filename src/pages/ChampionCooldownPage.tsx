@@ -40,7 +40,10 @@ function isValidTab(tab: string | null): tab is ChampionCooldownTab {
 interface ChampionCooldownPageProps {
   lang: string;
   championList: Champion[] | null;
+  /** 정적 데이터 경로/캐시 키로 쓰는 Riot 공식 패치 버전 (예: 26.17) */
   version: string;
+  /** Data Dragon CDN 요청용 내부 버전 (예: 16.17.1) */
+  ddragonVersion: string;
   cdragonVersion: string | null;
   initialSelectedChampions: StoredSelectedChampionList | null;
   initialTabs: Tab[] | null;
@@ -51,6 +54,7 @@ function ChampionCooldownPageContent({
   lang,
   championList,
   version,
+  ddragonVersion,
   initialSelectedChampions,
   initialTabs,
   initialSelectedTabId,
@@ -480,7 +484,7 @@ function ChampionCooldownPageContent({
             <MobileChampionTabs
               tabs={tabs}
               championsWithFullInfo={championsWithFullInfo}
-              version={version}
+              ddragonVersion={ddragonVersion}
               selectedTabId={selectedTabId}
               sensors={sensors}
               onDragEnd={handleDragEnd}
@@ -506,6 +510,7 @@ function ChampionCooldownPageContent({
                 : championsWithFullInfo.map((c) => c.fullInfo!)
             }
             version={version}
+            ddragonVersion={ddragonVersion}
             activeTab={activeTab === "skills" ? "skills" : "stats"}
             championList={championList}
             onAddChampion={isMobile ? undefined : addChampion}
@@ -540,8 +545,8 @@ function ChampionCooldownPageContent({
 
 export default function ChampionCooldownPage(props: ChampionCooldownPageProps) {
   return (
-    <VersionProvider 
-      initialDDragonVersion={props.version}
+    <VersionProvider
+      initialDDragonVersion={props.ddragonVersion}
       initialCDragonVersion={props.cdragonVersion}
     >
       <ChampionCooldownPageContent {...props} />

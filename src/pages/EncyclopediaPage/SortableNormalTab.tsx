@@ -17,7 +17,7 @@ import {
 interface SortableNormalTabProps {
   tab: Tab;
   champion: ChampionWithInfo;
-  version: string;
+  ddragonVersion: string;
   selectedTabId: string | null;
   onSelect: (tabId: string) => void;
   onRemove: (tabId: string) => void;
@@ -27,7 +27,7 @@ interface SortableNormalTabProps {
 export function SortableNormalTab({
   tab,
   champion,
-  version,
+  ddragonVersion,
   selectedTabId,
   onSelect,
   onRemove,
@@ -83,7 +83,7 @@ export function SortableNormalTab({
       */}
       <div className="flex items-center gap-1.5 flex-1 cursor-pointer select-none">
         <img
-          src={CHAMP_ICON_URL(version, champion.id)}
+          src={CHAMP_ICON_URL(ddragonVersion, champion.id)}
           alt={champion.name}
           className="w-5 h-5 rounded-full pointer-events-none select-none"
           draggable="false"

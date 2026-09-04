@@ -45,6 +45,7 @@ import { CSS } from "@dnd-kit/utilities";
 export function SkillsSectionDesktop({
   champions,
   version,
+  ddragonVersion,
   championList,
   onAddChampion,
   onRemoveChampion,
@@ -231,7 +232,7 @@ export function SkillsSectionDesktop({
           )}
           <div className="relative">
             <img
-              src={CHAMP_ICON_URL(version, champion.id)}
+              src={CHAMP_ICON_URL(ddragonVersion, champion.id)}
               alt={champion.name}
               className="w-8 h-8 rounded-full"
             />
@@ -338,6 +339,7 @@ export function SkillsSectionDesktop({
                         skill={{} as ChampionSpell}
                         skillIdx={0}
                         version={version}
+                        ddragonVersion={ddragonVersion}
                       />
                     )}
                     {/* Skills */}
@@ -349,6 +351,7 @@ export function SkillsSectionDesktop({
                           skill={skill}
                           skillIdx={skillIdx}
                           version={version}
+                          ddragonVersion={ddragonVersion}
                           spellData={spellData}
                         />
                       );

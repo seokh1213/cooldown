@@ -28,7 +28,10 @@ const ACTIVE_SKILL_TOOLTIP_EVENT = "cooldown:active-skill-tooltip";
 interface SkillTooltipProps {
   skill: ChampionSpell;
   skillIdx: number;
+  /** 정적 데이터 경로/캐시 키로 쓰는 Riot 공식 패치 버전 */
   version: string;
+  /** Data Dragon CDN 요청용 내부 버전 */
+  ddragonVersion: string;
   spellData?: SpellData | null;
   isPassive?: boolean;
   passiveName?: string;
@@ -41,6 +44,7 @@ export function SkillTooltip({
   skill,
   skillIdx,
   version,
+  ddragonVersion,
   spellData,
   isPassive,
   passiveName,
@@ -207,7 +211,7 @@ export function SkillTooltip({
       {isPassive && passiveImageFull ? (
         <>
           <img
-            src={PASSIVE_ICON_URL(version, passiveImageFull)}
+            src={PASSIVE_ICON_URL(ddragonVersion, passiveImageFull)}
             alt="Passive"
             className={cn(iconSize, "rounded")}
           />
@@ -216,7 +220,7 @@ export function SkillTooltip({
       ) : (
         <>
           <img
-            src={SKILL_ICON_URL(version, skill.id)}
+            src={SKILL_ICON_URL(ddragonVersion, skill.id)}
             alt={SKILL_LETTERS[skillIdx]}
             className={cn(iconSize, "rounded")}
           />
@@ -258,7 +262,7 @@ export function SkillTooltip({
       <>
         <div className="flex items-start gap-3 border-b pb-3 pr-6">
           <img
-            src={SKILL_ICON_URL(version, skill.id)}
+            src={SKILL_ICON_URL(ddragonVersion, skill.id)}
             alt={SKILL_LETTERS[skillIdx]}
             className="w-12 h-12 min-w-12 min-h-12 rounded flex-shrink-0"
           />

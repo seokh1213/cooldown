@@ -19,7 +19,7 @@ import { SortableVsTab } from "./SortableVsTab";
 interface MobileChampionTabsProps {
   tabs: Tab[];
   championsWithFullInfo: ChampionWithInfo[];
-  version: string;
+  ddragonVersion: string;
   selectedTabId: string | null;
   sensors: ReturnType<typeof import("@dnd-kit/core").useSensors>;
   onDragEnd: (event: DragEndEvent) => void;
@@ -34,7 +34,7 @@ interface MobileChampionTabsProps {
 export function MobileChampionTabs({
   tabs,
   championsWithFullInfo,
-  version,
+  ddragonVersion,
   selectedTabId,
   sensors,
   onDragEnd,
@@ -170,7 +170,7 @@ export function MobileChampionTabs({
                         tab={tab}
                         championA={championA}
                         championB={championB}
-                        version={version}
+                        ddragonVersion={ddragonVersion}
                         selectedTabId={selectedTabId}
                         onSelect={onSelectTab}
                         onRemove={onRemoveTab}
@@ -189,7 +189,7 @@ export function MobileChampionTabs({
                         key={tab.id}
                         tab={tab}
                         champion={champion}
-                        version={version}
+                        ddragonVersion={ddragonVersion}
                         selectedTabId={selectedTabId}
                         onSelect={onSelectTab}
                         onRemove={onRemoveTab}

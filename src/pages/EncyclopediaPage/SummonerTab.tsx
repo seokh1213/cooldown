@@ -15,7 +15,10 @@ import { VisuallyHidden } from "@/components/ui/visually-hidden";
 import { Search, AlertTriangle } from "lucide-react";
 
 interface SummonerTabProps {
+  /** 정적 데이터 경로/캐시 키로 쓰는 Riot 공식 패치 버전 */
   version: string;
+  /** Data Dragon CDN 요청용 내부 버전 */
+  ddragonVersion: string;
   lang: string;
 }
 
@@ -31,7 +34,7 @@ function stripHtml(html: string): string {
   return html.replace(/<[^>]*>?/gm, "");
 }
 
-export function SummonerTab({ version, lang }: SummonerTabProps) {
+export function SummonerTab({ version, ddragonVersion, lang }: SummonerTabProps) {
   const { t } = useTranslation();
   const deviceType = useDeviceType();
   const isMobile = deviceType === "mobile";
@@ -146,7 +149,7 @@ export function SummonerTab({ version, lang }: SummonerTabProps) {
             }`}
           >
             <img
-              src={`https://ddragon.leagueoflegends.com/cdn/${version}/img/spell/${spell.iconPath}`}
+              src={`https://ddragon.leagueoflegends.com/cdn/${ddragonVersion}/img/spell/${spell.iconPath}`}
               alt={getSpellName(spell)}
               loading="lazy"
               decoding="async"
@@ -180,7 +183,7 @@ export function SummonerTab({ version, lang }: SummonerTabProps) {
       <div className="flex flex-col gap-2 h-full min-h-0">
         <div className="flex items-start gap-3">
           <img
-            src={`https://ddragon.leagueoflegends.com/cdn/${version}/img/spell/${selectedSpell.iconPath}`}
+            src={`https://ddragon.leagueoflegends.com/cdn/${ddragonVersion}/img/spell/${selectedSpell.iconPath}`}
             alt={getSpellName(selectedSpell)}
             loading="lazy"
             decoding="async"

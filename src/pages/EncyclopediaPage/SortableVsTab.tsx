@@ -17,7 +17,7 @@ interface SortableVsTabProps {
   tab: Tab;
   championA: ChampionWithInfo;
   championB: ChampionWithInfo;
-  version: string;
+  ddragonVersion: string;
   selectedTabId: string | null;
   onSelect: (tabId: string) => void;
   onRemove: (tabId: string) => void;
@@ -29,7 +29,7 @@ export function SortableVsTab({
   tab,
   championA,
   championB,
-  version,
+  ddragonVersion,
   selectedTabId,
   onSelect,
   onRemove,
@@ -87,7 +87,7 @@ export function SortableVsTab({
           className="flex items-center touch-none hover:opacity-80 transition-opacity select-none"
         >
           <img
-            src={CHAMP_ICON_URL(version, championA.id)}
+            src={CHAMP_ICON_URL(ddragonVersion, championA.id)}
             alt={championA.name}
             className="w-5 h-5 rounded-full select-none pointer-events-none"
             draggable="false"
@@ -110,7 +110,7 @@ export function SortableVsTab({
           className="flex items-center touch-none hover:opacity-80 transition-opacity select-none"
         >
           <img
-            src={CHAMP_ICON_URL(version, championB.id)}
+            src={CHAMP_ICON_URL(ddragonVersion, championB.id)}
             alt={championB.name}
             className="w-5 h-5 rounded-full select-none pointer-events-none"
             draggable="false"
