@@ -1,11 +1,9 @@
 import React, { useState, useCallback, useRef, useEffect, useMemo } from "react";
 import { Champion } from "@/types";
 import { championIconUrl } from "@/data/assets/riotAssetUrls";
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Search, X, Swords } from "lucide-react";
+import { Search, Swords } from "lucide-react";
 import { cn } from "@/lib/utils";
-import ChampionThumbnail from "./ChampionThumbnail";
 import * as DialogPrimitive from "@radix-ui/react-dialog";
 import {
   Dialog,
@@ -17,13 +15,16 @@ import { useChampionSearch } from "@/hooks/useChampionSearch";
 import { useDebouncedValue } from "@/hooks/useDebouncedValue";
 import { useScrollPosition } from "@/hooks/useScrollPosition";
 import { useTranslation } from "@/i18n";
+import {
+  ChampionSearchHeader,
+  ChampionSelectorList,
+} from "./ChampionSelectorContent";
 
 interface ChampionSelectorProps {
   championList: Champion[] | null;
   selectedChampions: Champion[];
   onSelect: (champion: Champion) => void;
   onClose?: () => void;
-  slotIndex?: number;
   open?: boolean;
   onOpenChange?: (open: boolean) => void;
   vsMode?: {
@@ -37,7 +38,6 @@ function ChampionSelector({
   selectedChampions,
   onSelect,
   onClose,
-  slotIndex: _slotIndex,
   open: controlledOpen,
   onOpenChange: controlledOnOpenChange,
   vsMode,
@@ -83,6 +83,9 @@ function ChampionSelector({
     if (!vsMode) return availableChampions;
     return availableChampions.filter((c) => c.id !== vsMode.currentChampionId);
   }, [availableChampions, vsMode]);
+  const selectableChampions = vsMode
+    ? vsAvailableChampions
+    : availableChampions;
 
   const handleBlur = useCallback(
     (e: MouseEvent) => {
@@ -115,10 +118,7 @@ function ChampionSelector({
         onClose();
       }
     }
-    if (controlledOnOpenChange) {
-      controlledOnOpenChange(open);
-    }
-  }, [onClose, controlledOnOpenChange, setIsOpen]);
+  }, [onClose, setIsOpen]);
 
   const handleSelect = useCallback(
     (champion: Champion) => {
@@ -146,14 +146,14 @@ function ChampionSelector({
       if (e.key === "ArrowDown") {
         e.preventDefault();
         setFocusedIndex((prev) =>
-          prev < availableChampions.length - 1 ? prev + 1 : prev
+          prev < selectableChampions.length - 1 ? prev + 1 : prev
         );
       } else if (e.key === "ArrowUp") {
         e.preventDefault();
         setFocusedIndex((prev) => (prev > 0 ? prev - 1 : -1));
       } else if (e.key === "Enter" && focusedIndex >= 0) {
         e.preventDefault();
-        const champion = availableChampions[focusedIndex];
+        const champion = selectableChampions[focusedIndex];
         if (champion) {
           handleSelect(champion);
         }
@@ -161,7 +161,7 @@ function ChampionSelector({
         handleOpenChange(false);
       }
     },
-    [isOpen, isModal, championList, availableChampions, focusedIndex, handleSelect, handleOpenChange]
+    [isOpen, isModal, championList, selectableChampions, focusedIndex, handleSelect, handleOpenChange]
   );
 
   useEffect(() => {
@@ -237,75 +237,31 @@ function ChampionSelector({
               "fixed inset-0 z-50 md:absolute md:inset-auto md:top-full md:left-0 md:right-0 md:mt-2 md:z-10 md:rounded-lg md:border md:border-border md:shadow-lg bg-card md:max-h-[60vh] flex flex-col",
               isModal && "md:relative md:inset-0 md:mt-0 md:rounded-lg md:border md:shadow-lg"
             )}>
-            {/* Search Header */}
-            <div className="p-4 border-b border-border flex items-center gap-2 sticky top-0 bg-card z-10">
-              <Search className="h-5 w-5 text-muted-foreground shrink-0" />
-              <Input
-                ref={inputRef}
-                type="text"
-                placeholder={t.championSelector.searchPlaceholder}
-                value={searchValue}
-                onChange={(e) => {
-                  setSearchValue(e.target.value);
-                  setFocusedIndex(-1);
-                }}
-                onKeyDown={handleKeyDown}
-                className="flex-1"
-                autoFocus
-              />
-              <Button
-                variant="ghost"
-                size="icon"
-                className="h-8 w-8 shrink-0 hover:bg-muted hover:text-foreground"
-                onClick={() => {
-                  setIsOpen(false);
-                  setSearchValue("");
-                  document.body.style.overflow = "";
-                }}
-              >
-                <X className="h-4 w-4" />
-              </Button>
-            </div>
-
-            {/* Champion List */}
-            <div
-              ref={listRef}
-              className="flex-1 overflow-auto p-4"
-              style={{ maxHeight: "calc(100vh - 120px)" }}
-            >
-              {championList ? (
-                <div className="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-6 lg:grid-cols-8 xl:grid-cols-10 gap-2">
-                  {availableChampions.map((champion, index) => {
-                    const isFocused = focusedIndex === index;
-                    const isSelected = selectedChampionIds.has(champion.id);
-                    return (
-                      <div
-                        key={champion.id}
-                        data-champion-item
-                        className={cn(
-                          isFocused && "ring-2 ring-primary ring-offset-1 rounded-md"
-                        )}
-                      >
-                        <ChampionThumbnail
-                          addChampion={(champ) => handleSelect(champ)}
-                          data={champion}
-                          name={champion.name}
-                          selected={isSelected}
-                          thumbnailSrc={championIconUrl(
-                            champion.ddragonVersion || "",
-                            champion.id
-                          )}
-                        />
-                      </div>
-                    );
-                  })}
-                </div>
-              ) : (
-                <div className="flex items-center justify-center h-full text-muted-foreground">
-                  {t.championSelector.loading}
-                </div>
-              )}
-            </div>
+            <ChampionSearchHeader
+              inputRef={inputRef}
+              query={searchValue}
+              versus={false}
+              onQueryChange={(value) => {
+                setSearchValue(value);
+                setFocusedIndex(-1);
+              }}
+              onKeyDown={handleKeyDown}
+              onClose={() => {
+                setIsOpen(false);
+                setSearchValue("");
+                document.body.style.overflow = "";
+              }}
+            />
+            <ChampionSelectorList
+              listRef={listRef}
+              champions={championList ? selectableChampions : null}
+              selectedIds={selectedChampionIds}
+              focusedIndex={focusedIndex}
+              query={searchValue}
+              versus={false}
+              onSelect={handleSelect}
+              className="flex-1 overflow-auto p-4 max-h-[calc(100vh-120px)]"
+            />
             </div>
           </>
         )}
@@ -368,97 +324,28 @@ function ChampionSelector({
           </div>
         )}
         
-        {/* Search Header */}
-        <div className={cn(
-          "p-4 border-b border-border flex items-center gap-2 shrink-0",
-          vsMode ? "bg-muted/30" : "bg-card"
-        )}>
-          <Search className={cn(
-            "h-5 w-5 shrink-0",
-            vsMode ? "text-destructive" : "text-muted-foreground"
-          )} />
-          <Input
-            ref={inputRef}
-            type="text"
-            placeholder={vsMode ? t.championSelector.vsSearchPlaceholder : t.championSelector.searchPlaceholder}
-            value={searchValue}
-            onChange={(e) => {
-              setSearchValue(e.target.value);
-              setFocusedIndex(-1);
-            }}
-            onKeyDown={handleKeyDown}
-            className="flex-1"
-            autoFocus
-          />
-          <Button
-            variant="ghost"
-            size="icon"
-            className="h-8 w-8 shrink-0 hover:bg-muted hover:text-foreground"
-            onClick={() => handleOpenChange(false)}
-          >
-            <X className="h-4 w-4" />
-          </Button>
-        </div>
-
-        {/* Champion List - 모바일: 반응형, PC/태블릿: 고정 크기 */}
-        <div
-          ref={listRef}
+        <ChampionSearchHeader
+          inputRef={inputRef}
+          query={searchValue}
+          versus={Boolean(vsMode)}
+          onQueryChange={(value) => {
+            setSearchValue(value);
+            setFocusedIndex(-1);
+          }}
+          onKeyDown={handleKeyDown}
+          onClose={() => handleOpenChange(false)}
+        />
+        <ChampionSelectorList
+          listRef={listRef}
+          champions={championList ? selectableChampions : null}
+          selectedIds={selectedChampionIds}
+          focusedIndex={focusedIndex}
+          query={searchValue}
+          versus={Boolean(vsMode)}
+          showEmptyState
+          onSelect={handleSelect}
           className="overflow-y-auto overflow-x-hidden p-4 flex-1 min-h-0 md:flex-none md:w-[600px] md:h-[427px] lg:w-[800px] lg:h-[527px]"
-        >
-          {championList ? (
-            (vsMode ? vsAvailableChampions : availableChampions).length > 0 ? (
-              <>
-                {vsMode && (
-                  <div className="mb-3 pb-2 border-b border-destructive/20">
-                    <div className="flex items-center gap-2 text-destructive">
-                      <Swords className="h-4 w-4" />
-                      <span className="text-sm font-semibold">{t.championSelector.selectOpponentLabel}</span>
-                    </div>
-                  </div>
-                )}
-                <div className="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-6 lg:grid-cols-8 xl:grid-cols-10 gap-2">
-                  {(vsMode ? vsAvailableChampions : availableChampions).map((champion, index) => {
-                    const isFocused = focusedIndex === index;
-                    // VS 모드일 때는 체크 표시 안 함 (기존 목록과 구분)
-                    const isSelected = vsMode ? false : selectedChampionIds.has(champion.id);
-                    return (
-                      <div
-                        key={champion.id}
-                        data-champion-item
-                        className={cn(
-                          isFocused && "ring-2 ring-offset-1 rounded-md",
-                          vsMode ? "ring-destructive" : "ring-primary"
-                        )}
-                      >
-                        <ChampionThumbnail
-                          addChampion={(champ) => handleSelect(champ)}
-                          data={champion}
-                          name={champion.name}
-                          selected={isSelected}
-                          thumbnailSrc={championIconUrl(
-                            champion.ddragonVersion || "",
-                            champion.id
-                          )}
-                        />
-                      </div>
-                    );
-                  })}
-                </div>
-              </>
-            ) : (
-              <div className="flex flex-col items-center justify-center h-full text-muted-foreground min-h-[200px] space-y-2">
-                <Search className="h-12 w-12 opacity-50" />
-                  <p className="text-base font-medium">
-                    {searchValue ? t.championSelector.noResults : t.championSelector.emptyList}
-                  </p>
-              </div>
-            )
-          ) : (
-            <div className="flex items-center justify-center h-full text-muted-foreground min-h-[200px]">
-              {t.championSelector.loading}
-            </div>
-          )}
-        </div>
+        />
         </DialogPrimitive.Content>
       </DialogPrimitive.Portal>
     </Dialog>
