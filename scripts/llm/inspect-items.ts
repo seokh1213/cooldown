@@ -47,7 +47,7 @@ function main() {
   const nameQuery = get("--name");
   if (nameQuery) {
     for (const item of rift.filter((i) => i.name.includes(nameQuery))) {
-      const c = classifyItem(item);
+      const c = classifyItem(item, data.wikiItemMeta.get(item.id));
       console.log(
         `${item.name} (${item.priceTotal}G) [${c.tier}] → ${c.archetypes.map((a) => ARCHETYPE_LABEL[a]).join(", ") || "미분류"}${c.functions.length ? ` | 기능: ${c.functions.join(", ")}` : ""}`,
       );
@@ -78,7 +78,7 @@ function main() {
     console.log(`선호 역할군: ${profile.preferred.map((a) => ARCHETYPE_LABEL[a]).join(" > ")}`);
     console.log(`제외 역할군: ${profile.excluded.map((a) => ARCHETYPE_LABEL[a]).join(", ")}`);
     const legendary = rift
-      .map((item) => ({ item, c: classifyItem(item) }))
+      .map((item) => ({ item, c: classifyItem(item, data.wikiItemMeta.get(item.id)) }))
       .filter(({ c }) => c.tier === "legendary")
       .filter(({ c }) => c.archetypes.some((a) => profile.preferred.includes(a)))
       .filter(({ c }) => !c.archetypes.some((a) => profile.excluded.includes(a)))
@@ -96,7 +96,7 @@ function main() {
   const byArchetype = new Map<ItemArchetype, string[]>();
   const unclassified: string[] = [];
   for (const item of rift) {
-    const c = classifyItem(item);
+    const c = classifyItem(item, data.wikiItemMeta.get(item.id));
     if (c.archetypes.length === 0) unclassified.push(`${item.name}(${item.priceTotal}G)`);
     for (const a of c.archetypes) {
       if (!byArchetype.has(a)) byArchetype.set(a, []);

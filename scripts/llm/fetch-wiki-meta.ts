@@ -21,6 +21,12 @@
 import * as fs from "fs";
 import * as path from "path";
 import { loadStaticData, PUBLIC_DATA_ROOT } from "./lib/data";
+import {
+  luaNumber,
+  luaString,
+  luaStringArray,
+  splitTopLevelBlocks,
+} from "./lib/luaTable";
 
 const MODULE_URL =
   "https://leagueoflegends.fandom.com/api.php?action=parse&page=Module:ChampionData/data&prop=wikitext&format=json&formatversion=2";
@@ -53,49 +59,6 @@ export interface WikiMetaFile {
   champions: WikiChampionMeta[];
 }
 
-function stringField(body: string, name: string): string | undefined {
-  const re = new RegExp(`\\["${name}"\\]\\s*=\\s*"([^"]*)"`);
-  return body.match(re)?.[1];
-}
-
-function numberField(body: string, name: string): number | undefined {
-  const re = new RegExp(`\\["${name}"\\]\\s*=\\s*(-?[\\d.]+)`);
-  const raw = body.match(re)?.[1];
-  return raw === undefined ? undefined : Number(raw);
-}
-
-function arrayField(body: string, name: string): string[] {
-  const re = new RegExp(`\\["${name}"\\]\\s*=\\s*\\{([^}]*)\\}`);
-  const inner = body.match(re)?.[1];
-  if (!inner) return [];
-  return Array.from(inner.matchAll(/"([^"]+)"/g)).map((m) => m[1]);
-}
-
-/** Lua 테이블에서 챔피언 블록을 추출한다 (중괄호 깊이를 세어 자른다) */
-export function splitChampionBlocks(wikitext: string): Array<{ name: string; body: string }> {
-  const blocks: Array<{ name: string; body: string }> = [];
-  const headerRe = /\["([^"]+)"\]\s*=\s*\{/g;
-  let match: RegExpExecArray | null;
-  while ((match = headerRe.exec(wikitext))) {
-    const start = match.index + match[0].length;
-    // 최상위 챔피언 블록만 취한다 (들여쓰기 두 칸 헤더)
-    const lineStart = wikitext.lastIndexOf("\n", match.index) + 1;
-    const indent = match.index - lineStart;
-    if (indent > 2) continue;
-    let depth = 1;
-    let i = start;
-    while (i < wikitext.length && depth > 0) {
-      const ch = wikitext[i];
-      if (ch === "{") depth += 1;
-      else if (ch === "}") depth -= 1;
-      i += 1;
-    }
-    blocks.push({ name: match[1], body: wikitext.slice(start, i - 1) });
-    headerRe.lastIndex = i;
-  }
-  return blocks;
-}
-
 async function main() {
   const data = loadStaticData("ko_KR");
   console.log(`패치 ${data.patch} / 대상 ${data.champions.length}종`);
@@ -110,24 +73,24 @@ async function main() {
   if (!wikitext) throw new Error("wikitext 부재");
   console.log(`  원문 ${wikitext.length}자`);
 
-  const blocks = splitChampionBlocks(wikitext);
+  const blocks = splitTopLevelBlocks(wikitext);
   console.log(`  블록 ${blocks.length}개`);
 
   const byId = new Map<string, WikiChampionMeta>();
   for (const { name, body } of blocks) {
-    const apiname = stringField(body, "apiname") ?? name.replace(/[^A-Za-z]/g, "");
+    const apiname = luaString(body, "apiname") ?? name.replace(/[^A-Za-z]/g, "");
     if (!apiname) continue;
     byId.set(apiname, {
       id: apiname,
-      key: numberField(body, "id"),
-      heroType: stringField(body, "herotype"),
-      altType: stringField(body, "alttype"),
-      subclasses: arrayField(body, "role"),
-      rangeType: stringField(body, "rangetype"),
-      resource: stringField(body, "resource"),
-      difficulty: numberField(body, "difficulty"),
-      positions: arrayField(body, "client_positions"),
-      externalPositions: arrayField(body, "external_positions"),
+      key: luaNumber(body, "id"),
+      heroType: luaString(body, "herotype"),
+      altType: luaString(body, "alttype"),
+      subclasses: luaStringArray(body, "role"),
+      rangeType: luaString(body, "rangetype"),
+      resource: luaString(body, "resource"),
+      difficulty: luaNumber(body, "difficulty"),
+      positions: luaStringArray(body, "client_positions"),
+      externalPositions: luaStringArray(body, "external_positions"),
     });
   }
 

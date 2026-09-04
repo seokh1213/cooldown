@@ -176,7 +176,11 @@ export function buildMatchupContext(args: {
     lane: args.lane,
     me,
     enemy,
-    items: selectDefensiveItems(data.items.items, enemy, { me, pinnedNames }),
+    items: selectDefensiveItems(data.items.items, enemy, {
+      me,
+      pinnedNames,
+      wikiItems: data.wikiItemMeta,
+    }),
     playbook,
     keystones: selectKeystones(data.runes.runes),
     summoners: selectRiftSummoners(data.summoners.spells),
