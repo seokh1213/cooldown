@@ -284,7 +284,7 @@ function inferStatShardContributionsFromText(
 
   // Adaptive Force: "+9 Adaptive Force"
   {
-    const m = cleaned.match(/([+\-]?\d+(\.\d+)?)\s*Adaptive Force/i);
+    const m = cleaned.match(/([+-]?\d+(\.\d+)?)\s*Adaptive Force/i);
     if (m) {
       push(StatKey.ADAPTIVE_FORCE, parseFloat(m[1]), "flat");
       return results;
@@ -293,7 +293,7 @@ function inferStatShardContributionsFromText(
 
   // Attack Speed: "+10% Attack Speed"
   {
-    const m = cleaned.match(/([+\-]?\d+(\.\d+)?)\s*%?\s*Attack Speed/i);
+    const m = cleaned.match(/([+-]?\d+(\.\d+)?)\s*%?\s*Attack Speed/i);
     if (m) {
       push(StatKey.ATTACK_SPEED, parseFloat(m[1]), "percent");
       return results;
@@ -302,7 +302,7 @@ function inferStatShardContributionsFromText(
 
   // Ability Haste: "+8 Ability Haste"
   {
-    const m = cleaned.match(/([+\-]?\d+(\.\d+)?)\s*Ability Haste/i);
+    const m = cleaned.match(/([+-]?\d+(\.\d+)?)\s*Ability Haste/i);
     if (m) {
       push(StatKey.ABILITY_HASTE, parseFloat(m[1]), "flat");
       return results;
@@ -311,7 +311,7 @@ function inferStatShardContributionsFromText(
 
   // Move Speed: "+2.5% Move Speed"
   {
-    const m = cleaned.match(/([+\-]?\d+(\.\d+)?)\s*%?\s*Move Speed/i);
+    const m = cleaned.match(/([+-]?\d+(\.\d+)?)\s*%?\s*Move Speed/i);
     if (m) {
       push(StatKey.MOVE_SPEED, parseFloat(m[1]), "percent");
       return results;
@@ -320,7 +320,7 @@ function inferStatShardContributionsFromText(
 
   // Health (flat): "+65 Health"
   {
-    const m = cleaned.match(/([+\-]?\d+(\.\d+)?)\s*Health(?!.*based on level)/i);
+    const m = cleaned.match(/([+-]?\d+(\.\d+)?)\s*Health(?!.*based on level)/i);
     if (m) {
       push(StatKey.MAX_HEALTH, parseFloat(m[1]), "flat");
       return results;
@@ -330,7 +330,7 @@ function inferStatShardContributionsFromText(
   // Tenacity and Slow Resist: "+15% Tenacity and Slow Resist"
   {
     const m = cleaned.match(
-      /([+\-]?\d+(\.\d+)?)\s*%?\s*Tenacity and Slow Resist/i
+      /([+-]?\d+(\.\d+)?)\s*%?\s*Tenacity and Slow Resist/i
     );
     if (m) {
       const v = parseFloat(m[1]);

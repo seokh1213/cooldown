@@ -172,7 +172,7 @@ for (const fileName of championFiles) {
     const byIndex = spellFile.spellData[String(index)];
     const byId = spellFile.spellData[spell.id];
     const spellData = byId ?? byIndex;
-    const meaningfulVariables = [...spell.tooltip.matchAll(/\{\{([^}]+)}}/g)]
+    const meaningfulVariables = [...(spell.tooltip ?? "").matchAll(/\{\{([^}]+)}}/g)]
       .map((match) => match[1])
       .filter((token) =>
         !/spellmodifierdescriptionappend|gamemodeinteger|Spell_.*Tooltip/i.test(token)

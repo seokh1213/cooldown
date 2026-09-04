@@ -64,6 +64,14 @@ jobs:
         run: |
           npm run build
 
+      - name: Install Playwright browser
+        if: github.event_name != 'schedule' || steps.git-check.outputs.changed == 'true'
+        run: npx playwright install --with-deps chromium
+
+      - name: Run browser smoke tests
+        if: github.event_name != 'schedule' || steps.git-check.outputs.changed == 'true'
+        run: npm run test:e2e
+
       - name: Deploy to GitHub Pages
         if: github.event_name != 'schedule' || steps.git-check.outputs.changed == 'true'
         uses: peaceiris/actions-gh-pages@v4
