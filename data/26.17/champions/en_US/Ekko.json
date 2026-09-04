@@ -120,6 +120,7 @@
         "slot": "P",
         "id": "EkkoPassive",
         "name": "Z-Drive Resonance",
+        "maxRank": 0,
         "summary": "Every third attack or damaging spell on the same target deals bonus magic damage, and grants Ekko a burst of speed if the target is a champion.<br><br>",
         "bodyHtml": "Every third Attack or damaging Ability on the same target deals an additional <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(30 + (80% Ability Power)) magic damage</span>. If the target is a champion, Ekko gains <span class=\"text-cyan-600 dark:text-cyan-500\">80% Move Speed</span> for 3 seconds. This effect can't trigger on the same enemy more than once every 4 seconds.",
         "iconFile": "Ekko_P.png",
@@ -127,6 +128,10 @@
         "range": [],
         "rankValues": [],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -137,6 +142,7 @@
         "slot": "Q",
         "id": "EkkoQ",
         "name": "Timewinder",
+        "maxRank": 5,
         "summary": "Ekko throws a temporal grenade that expands into a time-distortion field upon hitting an enemy champion, slowing and damaging anyone caught inside. After a delay, the grenade rewinds back to Ekko, dealing damage on its return.",
         "bodyHtml": "Ekko throws a device dealing <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(80/95/110/125/140 + (30% Ability Power)) magic damage</span>. On hitting a champion or reaching the end of its range, it expands into a field that <span class=\"text-purple-600 dark:text-purple-500\">Slows</span> enemies inside by 40/45/50/55/60%. After it expands, Ekko recalls it, dealing <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(40/65/90/115/140 + (60% Ability Power)) magic damage</span>.",
         "iconFile": "EkkoQ.png",
@@ -201,6 +207,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "InitialDamage",
+            "kind": "damage",
+            "baseByRank": [
+              80,
+              95,
+              110,
+              125,
+              140
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.30000001192092896,
+                  0.30000001192092896,
+                  0.30000001192092896,
+                  0.30000001192092896,
+                  0.30000001192092896
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -211,6 +244,7 @@
         "slot": "W",
         "id": "EkkoW",
         "name": "Parallel Convergence",
+        "maxRank": 5,
         "summary": "Ekko's basic attacks deal bonus magic damage to low health enemies. He can cast Parallel Convergence to split the timeline, creating an anomaly after a few seconds that slows enemies caught inside. If Ekko enters the anomaly, he gains shielding and stuns enemies by suspending them in time.",
         "bodyHtml": "<span class=\"text-gray-600 dark:text-gray-500 italic\">Passive:</span> Ekko's Attacks against enemies below 30% Health deal <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(3% + (0.03% Ability Power)) missing Health magic damage</span>.<br /><br /><span class=\"text-gray-900 dark:text-white font-semibold\">Active:</span> Ekko launches a chronosphere lasting 1.5 seconds after a delay that <span class=\"text-purple-600 dark:text-purple-500\">Slows</span> enemies inside by 40%. If Ekko enters the sphere, he detonates it, <span class=\"text-purple-600 dark:text-purple-500\">Stunning</span> for 2.25 seconds and gaining <span class=\"text-blue-600 dark:text-blue-300\">(100/120/140/160/180 + (150% Ability Power)) Shield</span>.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">Bonus Attack damage deals a min of <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">15</span> and a max of <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">150 damage</span> against minions and monsters.</span>",
         "iconFile": "EkkoW.png",
@@ -267,6 +301,10 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -277,6 +315,7 @@
         "slot": "E",
         "id": "EkkoE",
         "name": "Phase Dive",
+        "maxRank": 5,
         "summary": "Ekko rolls evasively while charging up his Z-Drive. His next attack deals bonus damage and warps reality, teleporting him to his target.",
         "bodyHtml": "Ekko dashes and empowers his next Attack to have bonus range, teleport him to his target, and deal an additional <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(50/75/100/125/150 + (40% Ability Power)) magic damage</span>.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">Ekko can use any of his other Abilities during the dash.</span>",
         "iconFile": "EkkoE.png",
@@ -333,6 +372,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "TotalDamage",
+            "kind": "damage",
+            "baseByRank": [
+              50,
+              75,
+              100,
+              125,
+              150
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.4000000059604645,
+                  0.4000000059604645,
+                  0.4000000059604645,
+                  0.4000000059604645,
+                  0.4000000059604645
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -343,6 +409,7 @@
         "slot": "R",
         "id": "EkkoR",
         "name": "Chronobreak",
+        "maxRank": 3,
         "summary": "Ekko shatters his timeline, becoming untargetable and rewinding to a more favorable point in time. He returns to whenever he was a few seconds ago, and heals for a percentage of the damage received in that duration. Enemies near his arrival zone take massive damage.",
         "bodyHtml": "Ekko turns back time, entering Stasis while teleporting to where he was 4 seconds ago and dealing <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(200/350/500 + (175% Ability Power)) magic damage</span> to nearby enemies. In addition, Ekko restores <span class=\"text-green-600 dark:text-green-400\">(100/150/200 + (60% Ability Power)) Health</span>, increased by 3% for each 1% Health he lost in last 4 seconds.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">Will detonate the chronosphere from Parallel Convergence [] if Ekko passed through it.</span><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">Units in Stasis cannot move or act, and are Invulnerable and Untargetable.</span>",
         "iconFile": "EkkoR.png",
@@ -393,6 +460,29 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "TotalDamage",
+            "kind": "damage",
+            "baseByRank": [
+              200,
+              350,
+              500
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  1.75,
+                  1.75,
+                  1.75
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {

@@ -120,6 +120,7 @@
         "slot": "P",
         "id": "TristanaPassive",
         "name": "Draw a Bead",
+        "maxRank": 0,
         "summary": "Increases Tristana's Attack Range as she levels.",
         "bodyHtml": "Tristana's Attack Range and the range of <span></span> and <span></span> are increased by (0 ~ 150).",
         "iconFile": "Tristana_Passive.png",
@@ -127,6 +128,10 @@
         "range": [],
         "rankValues": [],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -137,6 +142,7 @@
         "slot": "Q",
         "id": "TristanaQ",
         "name": "Rapid Fire",
+        "maxRank": 5,
         "summary": "Tristana fires her weapon rapidly, increasing her Attack Speed for a short time.",
         "bodyHtml": "Tristana goes full-auto, gaining <span>60/75/90/105/120% Attack Speed</span> for 7 seconds.",
         "iconFile": "TristanaQ.png",
@@ -179,6 +185,10 @@
           }
         ],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -189,6 +199,7 @@
         "slot": "W",
         "id": "TristanaW",
         "name": "Rocket Jump",
+        "maxRank": 5,
         "summary": "Tristana fires at the ground to propel her to a distant location, dealing damage and slowing surrounding units for a brief period where she lands.",
         "bodyHtml": "Tristana launches herself, dealing <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(70/105/140/175/210 + (100% bonus Attack Damage) + (50% Ability Power)) magic damage</span> and <span class=\"text-purple-600 dark:text-purple-500\">Slowing</span> by 40% for 2 seconds upon landing.<br /><br />Champion takedowns and max stack <span>Explosive Charge</span> detonations on champions refresh this Ability's Cooldown.",
         "iconFile": "TristanaW.png",
@@ -245,6 +256,43 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "LandingDamage",
+            "kind": "damage",
+            "baseByRank": [
+              70,
+              105,
+              140,
+              175,
+              210
+            ],
+            "terms": [
+              {
+                "stat": "bonusAttackDamage",
+                "coefficientsByRank": [
+                  1,
+                  1,
+                  1,
+                  1,
+                  1
+                ]
+              },
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.5,
+                  0.5,
+                  0.5,
+                  0.5,
+                  0.5
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -255,6 +303,7 @@
         "slot": "E",
         "id": "TristanaE",
         "name": "Explosive Charge",
+        "maxRank": 5,
         "summary": "When Tristana kills a unit, her cannonballs burst into shrapnel, dealing damage to surrounding enemies. Can be activated to place a bomb on a target enemy that explodes after a short duration dealing damage to surrounding units.",
         "bodyHtml": "<span class=\"text-gray-600 dark:text-gray-500 italic\">Passive: </span>Tristana's Attacks that kill enemies deal <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(45/60/75/90/105 + (25% Ability Power)) magic damage</span> to surrounding enemies.<br /><br /><span class=\"text-gray-900 dark:text-white font-semibold\">Active:</span> Tristana attaches a bomb to an enemy or turret that deals <span class=\"text-red-600 dark:text-red-500 font-semibold\">(60/85/110/135/160 + (50% Ability Power)) physical damage</span> to surrounding enemies after 4 seconds. The damage is increased by 25% each time Tristana hits an Attack or Ability (max 4 stacks).<br /><br />At 4 stacks, the bomb explodes immediately (max <span class=\"text-red-600 dark:text-red-500 font-semibold\">(60/85/110/135/160 + (50% Ability Power)) physical damage</span>).<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">Active damage is increased by Critical Strike Chance and Critical Strike Damage at 40% effectiveness.<br />The detonation radius is twice as large if used on a turret.</span>",
         "iconFile": "TristanaE.png",
@@ -315,6 +364,13 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "unsupported",
+          "unsupportedPartTypes": [
+            "StatBySubPartCalculationPart",
+            "unsupported-multiplier"
+          ]
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -325,6 +381,7 @@
         "slot": "R",
         "id": "TristanaR",
         "name": "Buster Shot",
+        "maxRank": 3,
         "summary": "Tristana loads a massive cannonball into her weapon and fires it at an enemy unit. This deals Magic Damage and knocks the target back. If the target is carrying the Explosive Charge bomb, the bomb detonation radius is doubled.",
         "bodyHtml": "Tristana fires a massive cannonball, dealing <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(225/275/325 + (70% bonus Attack Damage) + (100% Ability Power)) magic damage</span> to the target, <span class=\"text-purple-600 dark:text-purple-500\">Knocking Back</span> and <span class=\"text-purple-600 dark:text-purple-500\">Stunning</span> them and surrounding enemies for 0.4/0.55/0.7 seconds.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">If this Ability applies the final stack of <span>Explosive Charge</span>, it explodes after the unit is <span class=\"text-purple-600 dark:text-purple-500\">Knocked Back</span>.</span>",
         "iconFile": "TristanaR.png",
@@ -375,6 +432,37 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "DamageCalc",
+            "kind": "damage",
+            "baseByRank": [
+              225,
+              275,
+              325
+            ],
+            "terms": [
+              {
+                "stat": "bonusAttackDamage",
+                "coefficientsByRank": [
+                  0.699999988079071,
+                  0.699999988079071,
+                  0.699999988079071
+                ]
+              },
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  1,
+                  1,
+                  1
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {

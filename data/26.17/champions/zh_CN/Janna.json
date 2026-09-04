@@ -120,6 +120,7 @@
         "slot": "P",
         "id": "TailwindSelf",
         "name": "顺风而行",
+        "maxRank": 0,
         "summary": "迦娜的友军在朝她移动时获得移动速度。<br><br>迦娜的普攻和【和风守护】会附带一部分额外移动速度的额外魔法伤害。",
         "bodyHtml": "迦娜的友军在朝她移动时获得<span class=\"text-cyan-600 dark:text-cyan-500\">6%移动速度</span>。<br /><br />迦娜的普攻和<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">和风守护</span>会附带<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(30%)额外魔法伤害</span> 。",
         "iconFile": "JannaP.png",
@@ -127,6 +128,10 @@
         "range": [],
         "rankValues": [],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -137,6 +142,7 @@
         "slot": "Q",
         "id": "HowlingGale",
         "name": "飓风呼啸",
+        "maxRank": 5,
         "summary": "迦娜改变气压和温度，在目标区域召唤小型风暴，风暴体积随时间增大。她可以再次施放该技能来释放风暴。风暴会朝向施放方向飞行，对沿途的所有单位造成伤害和击飞效果。",
         "bodyHtml": "迦娜召唤一道在3秒里持续聚集的飓风，随后沿路猛刮出去。飓风对目标造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(55/90/125/160/195 + (50% 法术强度)) - (55/90/125/160/195 + (50% 法术强度))魔法伤害</span>和0.5 - 1.25秒<span class=\"text-purple-600 dark:text-purple-500\">击飞</span>。移动距离、伤害和<span class=\"text-purple-600 dark:text-purple-500\">击飞</span>时长都基于飓风聚集的时长。迦娜可以<span class=\"text-yellow-600 dark:text-yellow-300\">再次施放</span>来提前将飓风刮出去。<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">飓风每聚集1秒，就会造成额外的<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(10/15/20/25/30 + (10% 法术强度))魔法伤害</span>、额外0.25秒<span class=\"text-purple-600 dark:text-purple-500\">击飞</span>和20%移动距离，并且飓风总会在1.25秒时到达它的终点。</span>",
         "iconFile": "HowlingGale.png",
@@ -193,6 +199,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "ExtraDamagePerSecondCharged",
+            "kind": "damage",
+            "baseByRank": [
+              10,
+              15,
+              20,
+              25,
+              30
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.10000000149011612,
+                  0.10000000149011612,
+                  0.10000000149011612,
+                  0.10000000149011612,
+                  0.10000000149011612
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -203,6 +236,7 @@
         "slot": "W",
         "id": "SowTheWind",
         "name": "和风守护",
+        "maxRank": 5,
         "summary": "迦娜召唤出一个空气元素灵体，来被动地提升她的移动速度，并使她能够穿越单位。她也可以主动激活这个技能，来对一个敌人造成伤害和减速效果。",
         "bodyHtml": "<span class=\"text-gray-600 dark:text-gray-500 italic\">被动：</span>迦娜获得<span class=\"text-cyan-600 dark:text-cyan-500\">(6/7/8/9/10% + (0.02% 法术强度))移动速度</span>并处在幽灵状态。<br /><br /><span class=\"text-gray-900 dark:text-white font-semibold\">主动：</span>迦娜的风灵打击一名敌人，对其造成持续2秒的(20/24/28/32/36% + (0.06% 法术强度))<span class=\"text-purple-600 dark:text-purple-500\">减速</span>和<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(55/85/115/145/175 + (50% 法术强度)) + 魔法伤害</span>。<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">幽灵状态的单位无视其它单位的碰撞体积。</span><br />",
         "iconFile": "SowTheWind.png",
@@ -267,6 +301,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "TotalDamage",
+            "kind": "damage",
+            "baseByRank": [
+              55,
+              85,
+              115,
+              145,
+              175
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.5,
+                  0.5,
+                  0.5,
+                  0.5,
+                  0.5
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -279,6 +340,7 @@
         "slot": "E",
         "id": "EyeOfTheStorm",
         "name": "风暴之眼",
+        "maxRank": 5,
         "summary": "迦娜制造出一阵防御性的气旋，来为目标友军或防御塔吸收即将到来的伤害，并提高目标的攻击力。",
         "bodyHtml": "迦娜为一个友军或防御塔提供持续4秒的<span class=\"text-blue-600 dark:text-blue-300\">(80/120/160/200/240 + (55% 法术强度))护盾值</span>。在护盾存在时，该友军目标获得<span class=\"text-orange-600 dark:text-orange-500\">(10/15/20/25/30 + (10% 法术强度))攻击力</span>。<br /><br />迦娜在每次用一个技能使一名敌方英雄的移动速度受损时，会使这个冷却时间缩短20%。",
         "iconFile": "EyeOfTheStorm.png",
@@ -339,6 +401,10 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -349,6 +415,7 @@
         "slot": "R",
         "id": "ReapTheWhirlwind",
         "name": "复苏季风",
+        "maxRank": 3,
         "summary": "迦娜召唤魔法风暴围绕自己，将敌人击退。在风暴平息后，当技能仍处在激活状态时，和风将治疗附近的友军。",
         "bodyHtml": "迦娜召唤一阵魔法季风，<span class=\"text-purple-600 dark:text-purple-500\">击退</span>附近的敌人们然后在3秒里持续治疗附近的友军共<span class=\"text-green-600 dark:text-green-400\">(300/450/600 + (150% 法术强度))生命值</span>。移动或使用技能都会提前结束这阵季风。<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\"><span class=\"text-purple-600 dark:text-purple-500\">击退</span>无法将敌人推过墙体。</span>",
         "iconFile": "ReapTheWhirlwind.png",
@@ -395,6 +462,10 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {

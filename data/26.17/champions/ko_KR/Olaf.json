@@ -120,6 +120,7 @@
         "slot": "P",
         "id": "OlafBerzerkerRage",
         "name": "광전사의 분노",
+        "maxRank": 0,
         "summary": "올라프가 잃은 체력에 비례해 공격 속도와 생명력 흡수를 얻습니다.",
         "bodyHtml": "올라프가 잃은 체력에 비례해 최대 <span>(50% ~ 100%)의 공격 속도</span>와 (8% ~ 25%)의 생명력 흡수를 얻습니다.",
         "iconFile": "Olaf_Passive.png",
@@ -127,6 +128,10 @@
         "range": [],
         "rankValues": [],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -137,6 +142,7 @@
         "slot": "Q",
         "id": "OlafAxeThrowCast",
         "name": "역류",
+        "maxRank": 5,
         "summary": "올라프가 지정한 곳에 도끼를 던져 맞은 적에게 피해를 입히고 방어력과 이동 속도를 감소시킵니다. 올라프가 도끼를 다시 집으면 이 스킬의 재사용 대기시간이 초기화됩니다.",
         "bodyHtml": "올라프가 도끼를 던져 <span class=\"text-red-600 dark:text-red-500 font-semibold\">(70/120/170/220/270 + (100% 추가 공격력))의 물리 피해</span>를 입히고 최대 3초 동안 30/35/40/45/50% <span class=\"text-purple-600 dark:text-purple-500\">둔화</span>시킵니다. (지속시간은 도끼가 날아간 거리에 비례합니다.) 도끼에 맞은 적 챔피언은 4초 동안 <span class=\"text-orange-600 dark:text-orange-400\">방어력이 20%</span> 감소합니다.<br /><br />올라프가 도끼를 집으면 이 스킬의 재사용 대기시간이 2.5초로 감소하거나, 2.5초가 지나면 스킬을 바로 재사용할 수 있습니다.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">몬스터에게 20/45/70/95/120의 추가 피해를 입힙니다.</span>",
         "iconFile": "OlafAxeThrowCast.png",
@@ -197,6 +203,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "TotalDamage",
+            "kind": "damage",
+            "baseByRank": [
+              70,
+              120,
+              170,
+              220,
+              270
+            ],
+            "terms": [
+              {
+                "stat": "bonusAttackDamage",
+                "coefficientsByRank": [
+                  1,
+                  1,
+                  1,
+                  1,
+                  1
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -207,6 +240,7 @@
         "slot": "W",
         "id": "OlafFrenziedStrikes",
         "name": "버티기",
+        "maxRank": 5,
         "summary": "올라프의 공격 속도가 증가하고 보호막을 얻습니다.",
         "bodyHtml": "5초 동안 올라프의 <span>공격 속도가 40/50/60/70/80%</span> 증가하고 2.5초 동안 <span class=\"text-blue-600 dark:text-blue-300\">10/40/70/100/130 + 잃은 체력의 17.5%에 해당하는 보호막(체력이 30% 밑으로 떨어지면 최대 10/40/70/100/130)</span>을 얻습니다.",
         "iconFile": "OlafFrenziedStrikes.png",
@@ -263,6 +297,10 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -273,6 +311,7 @@
         "slot": "E",
         "id": "OlafRecklessStrike",
         "name": "무모한 강타",
+        "maxRank": 5,
         "summary": "올라프가 강력한 공격을 가하여 자신과 공격 대상에게 고정 피해를 입힙니다. 대상을 파괴한 경우 소모한 체력이 회복됩니다.",
         "bodyHtml": "올라프가 맹렬한 기세로 도끼를 휘둘러 <span class=\"text-yellow-600 dark:text-yellow-500 font-semibold\">(70/115/160/205/250 + (50% 공격력))의 고정 피해</span>를 입힙니다. 적을 처치하면 소모값을 되돌려받습니다.<br /><br />기본 공격 시 이 스킬의 재사용 대기시간이 1초 감소합니다. 몬스터 공격 시 2초 감소합니다.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">시전 시간은 추가 공격 속도에 비례합니다.</span>",
         "iconFile": "OlafRecklessStrike.png",
@@ -315,6 +354,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "TotalDamage",
+            "kind": "damage",
+            "baseByRank": [
+              70,
+              115,
+              160,
+              205,
+              250
+            ],
+            "terms": [
+              {
+                "stat": "totalAttackDamage",
+                "coefficientsByRank": [
+                  0.5,
+                  0.5,
+                  0.5,
+                  0.5,
+                  0.5
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -325,6 +391,7 @@
         "slot": "R",
         "id": "OlafRagnarok",
         "name": "라그나로크",
+        "maxRank": 3,
         "summary": "기본 지속 효과로 올라프의 방어력과 마법 저항력이 증가합니다. 올라프가 이 스킬을 사용하면 공격을 하는 동안 이동 방해 효과에 면역이 됩니다.",
         "bodyHtml": "<span class=\"text-gray-600 dark:text-gray-500 italic\">기본 지속 효과:</span> 올라프의 <span class=\"text-orange-600 dark:text-orange-400\">방어력이 10/15/20</span>, <span>마법 저항력이 10/15/20</span> 증가합니다.<br /><br /><span class=\"text-gray-900 dark:text-white font-semibold\">사용 시: </span>올라프가 자신에게 걸린 모든 <span class=\"text-purple-600 dark:text-purple-500\">이동 불가</span> 및 <span class=\"text-purple-600 dark:text-purple-500\">방해</span> 효과를 정화하고 3초 동안 해당 효과에 면역 상태가 됩니다. 활성화 중 올라프가 <span class=\"text-orange-600 dark:text-orange-500\">(10/20/30 + (25% 공격력))의 공격력</span>을 얻습니다. 기본 공격이나 <span>무모한 강타</span>로 챔피언을 적중하면 이 스킬의 지속시간을 2.5초 연장합니다.<br /><br />또한 1초 동안 적 챔피언을 향해 이동할 때 <span class=\"text-cyan-600 dark:text-cyan-500\">이동 속도가 20/45/70%</span> 증가합니다.",
         "iconFile": "OlafRagnarok.png",
@@ -379,6 +446,10 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {

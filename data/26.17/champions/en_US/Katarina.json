@@ -120,6 +120,7 @@
         "slot": "P",
         "id": "KatarinaPassive",
         "name": "Voracity",
+        "maxRank": 0,
         "summary": "Whenever an enemy champion dies that Katarina has damaged recently, her remaining ability cooldowns are dramatically reduced.<br><br>If Katarina picks up a <font color='#FFF673'>Dagger</font>, she uses it to slash through all nearby enemies, dealing magic damage.",
         "bodyHtml": "Whenever an enemy champion dies that Katarina has damaged in the last 3 seconds, her Ability Cooldowns are reduced by 15 seconds.<br /><br />If Katarina picks up a <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Dagger</span>, she uses it to slash through all nearby enemies, dealing <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(60% bonus Attack Damage) magic damage</span>.",
         "iconFile": "Katarina_Passive.png",
@@ -127,6 +128,10 @@
         "range": [],
         "rankValues": [],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -137,6 +142,7 @@
         "slot": "Q",
         "id": "KatarinaQ",
         "name": "Bouncing Blade",
+        "maxRank": 5,
         "summary": "Katarina throws a <font color='#FFF673'>Dagger</font> at the target that then bounces to nearby enemies before ricocheting onto the ground.",
         "bodyHtml": "Katarina throws a <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Dagger</span>, dealing <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(80/115/150/185/220 + (40% Ability Power)) magic damage</span> to the target and 2 nearby enemies. The <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Dagger</span> then ricochets onto the ground behind the primary target.",
         "iconFile": "KatarinaQ.png",
@@ -179,6 +185,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "TotalDamage",
+            "kind": "damage",
+            "baseByRank": [
+              80,
+              115,
+              150,
+              185,
+              220
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.4000000059604645,
+                  0.4000000059604645,
+                  0.4000000059604645,
+                  0.4000000059604645,
+                  0.4000000059604645
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -189,6 +222,7 @@
         "slot": "W",
         "id": "KatarinaW",
         "name": "Preparation",
+        "maxRank": 5,
         "summary": "Katarina gains a burst of Move Speed, tossing a <font color='#FFF673'>Dagger</font> into the air directly above herself.",
         "bodyHtml": "Katarina tosses a <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Dagger</span> into the air and gains <span class=\"text-cyan-600 dark:text-cyan-500\">50/60/70/80/90% Move Speed</span> decaying over 1.25 seconds.",
         "iconFile": "KatarinaW.png",
@@ -217,6 +251,10 @@
           }
         ],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -227,6 +265,7 @@
         "slot": "E",
         "id": "KatarinaEWrapper",
         "name": "Shunpo",
+        "maxRank": 5,
         "summary": "Katarina blinks to the target, striking it if its an enemy, or striking the nearest enemy otherwise.",
         "bodyHtml": "Katarina blinks in the wink of an eye to the target ally, enemy, or <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Dagger</span>. If it is an enemy, Katarina strikes for <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(20/30/40/50/60 + (25% Ability Power) + (40% Attack Damage)) magic damage</span> - otherwise she strikes the nearest enemy in range.<br /><br />Picking up a <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Dagger</span> will reduce this Ability's Cooldown by <span class=\"text-gray-600 dark:text-gray-400\">1</span> seconds (<span class=\"text-gray-600 dark:text-gray-400\">100%</span>). Katarina can blink to any location near the target.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">The strike Applies On-Hit Effects.</span>",
         "iconFile": "KatarinaEWrapper.png",
@@ -269,6 +308,43 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "TotalDamage",
+            "kind": "damage",
+            "baseByRank": [
+              20,
+              30,
+              40,
+              50,
+              60
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.25,
+                  0.25,
+                  0.25,
+                  0.25,
+                  0.25
+                ]
+              },
+              {
+                "stat": "totalAttackDamage",
+                "coefficientsByRank": [
+                  0.4000000059604645,
+                  0.4000000059604645,
+                  0.4000000059604645,
+                  0.4000000059604645,
+                  0.4000000059604645
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -279,6 +355,7 @@
         "slot": "R",
         "id": "KatarinaR",
         "name": "Death Lotus",
+        "maxRank": 3,
         "summary": "Katarina becomes a flurry of blades, dealing massive magic damage while she channels to the 3 nearest enemy champions.",
         "bodyHtml": "Katarina becomes a flurry of blades, rapidly attacking the three nearest enemy champions with a flurry of knives. Each knife deals <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(25/37.5/50 + (19% Ability Power)) magic damage</span> and <span class=\"text-red-600 dark:text-red-500 font-semibold\"> physical damage</span>, and applies 40% Grievous Wounds for 3 seconds.<br /><br />Total over 2.5 seconds to each enemy: <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(25/37.5/50 + (19% Ability Power)) magic damage</span> and <span class=\"text-red-600 dark:text-red-500 font-semibold\"> physical damage</span>.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">This Ability applies <span>On-Hit and On-Attack</span> effects at 25/30/35% damage, and does not Critically Strike or apply Life Steal.<br />The <span class=\"text-red-600 dark:text-red-500 font-semibold\">physical damage</span> additionally increases with <span>Attack Speed</span>.</span>",
         "iconFile": "KatarinaR.png",
@@ -321,6 +398,12 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "unsupported",
+          "unsupportedPartTypes": [
+            "StatBySubPartCalculationPart"
+          ]
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {

@@ -120,6 +120,7 @@
         "slot": "P",
         "id": "PoppyPassive",
         "name": "钢铁大使",
+        "maxRank": 0,
         "summary": "波比扔出她的圆盾，圆盾会在命中目标后弹起。波比可以捡起圆盾来获得一个短暂的护盾效果。",
         "bodyHtml": "每过6秒，波比的下次攻击就会将她的圆盾投掷出去，获得350距离并造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(20 ~ 180)魔法伤害</span>。圆盾会从目标处弹开，在附近着陆。波比能够将它拾起来获得<span class=\"text-blue-600 dark:text-blue-300\">护盾值</span>，并且敌人们可以踩在它上面来将它摧毁。<br /><br />如果圆盾击杀了目标，那么它会自动返回至波比处。",
         "iconFile": "Poppy_Passive.png",
@@ -127,6 +128,10 @@
         "range": [],
         "rankValues": [],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -137,6 +142,7 @@
         "slot": "Q",
         "id": "PoppyQ",
         "name": "圣锤猛击",
+        "maxRank": 5,
         "summary": "波比挥舞她的铁锤，造成伤害并创造一个区域，这个区域会减速敌人并在一段时间后爆炸。",
         "bodyHtml": "波比猛砸地面，造成<span class=\"text-red-600 dark:text-red-500 font-semibold\">(30/55/80/105/130 + (75% 额外攻击力))</span>外加<span class=\"text-red-600 dark:text-red-500 font-semibold\">7/7.5/8/8.5/9%最大生命值的物理伤害</span>并使该地面变得不稳定。 <br /><br />不稳定区域会使敌人<span class=\"text-purple-600 dark:text-purple-500\">减速</span>(20/23/26/29/32% + (0.008% 额外生命值))并在1秒后喷发，再次造成<span class=\"text-red-600 dark:text-red-500 font-semibold\">(30/55/80/105/130 + (75% 额外攻击力))</span>外加<span class=\"text-red-600 dark:text-red-500 font-semibold\">7/7.5/8/8.5/9%最大生命值的物理伤害</span>。<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">每一击对小兵和野怪的百分比生命值伤害的上限为85/120/155/190/225。</span>",
         "iconFile": "PoppyQ.png",
@@ -205,6 +211,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "BaseDamage",
+            "kind": "damage",
+            "baseByRank": [
+              30,
+              55,
+              80,
+              105,
+              130
+            ],
+            "terms": [
+              {
+                "stat": "bonusAttackDamage",
+                "coefficientsByRank": [
+                  0.75,
+                  0.75,
+                  0.75,
+                  0.75,
+                  0.75
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -215,6 +248,7 @@
         "slot": "W",
         "id": "PoppyW",
         "name": "坚定风采",
+        "maxRank": 5,
         "summary": "波比被动获得护甲和魔法抗性。这个加成会在她生命值较低时得到提升。波比可以主动施放此技能来获得移动速度加成并中断附近敌人的突进。如果中断了一次突进，那么该敌人还会被减速和缚地。",
         "bodyHtml": "<span class=\"text-gray-600 dark:text-gray-500 italic\">被动：</span>波比获得<span class=\"text-orange-600 dark:text-orange-400\">(16% 护甲)护甲</span>和<span>(16% 魔法抗性)魔法抗性</span>。在波比低于40%生命值时，这个加成会翻倍。<br /><br /><span class=\"text-gray-900 dark:text-white font-semibold\">主动：</span>波比获得<span class=\"text-cyan-600 dark:text-cyan-500\">40%移动速度</span>并投射出一个环绕自身的领域，持续2秒，该领域可中断敌人的冲刺。被领域中断的敌人们会受到持续2秒的<span class=\"text-purple-600 dark:text-purple-500\">缚地</span>和25%<span class=\"text-purple-600 dark:text-purple-500\">减速</span>，以及<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(70/110/150/190/230 + (70% 法术强度))魔法伤害</span>。",
         "iconFile": "PoppyW.png",
@@ -267,6 +301,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "InterruptDamage",
+            "kind": "damage",
+            "baseByRank": [
+              70,
+              110,
+              150,
+              190,
+              230
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.699999988079071,
+                  0.699999988079071,
+                  0.699999988079071,
+                  0.699999988079071,
+                  0.699999988079071
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -277,6 +338,7 @@
         "slot": "E",
         "id": "PoppyE",
         "name": "英勇冲锋",
+        "maxRank": 5,
         "summary": "波比冲向目标并把目标推后。如果目标被推到墙上，就会受到晕眩效果。",
         "bodyHtml": "波比擒抱一名敌人，造成<span class=\"text-red-600 dark:text-red-500 font-semibold\">(40/60/80/100/120 + (60% 额外攻击力))物理伤害</span>并将该敌人带向前方。如果波比将目标擒抱到地形上，那么该敌人会被<span class=\"text-purple-600 dark:text-purple-500\">晕眩</span>1.6/1.7/1.8/1.9/2秒并受到额外的<span class=\"text-red-600 dark:text-red-500 font-semibold\">(40/60/80/100/120 + (60% 额外攻击力))物理伤害</span>。",
         "iconFile": "PoppyE.png",
@@ -337,6 +399,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "TackleDamage",
+            "kind": "damage",
+            "baseByRank": [
+              40,
+              60,
+              80,
+              100,
+              120
+            ],
+            "terms": [
+              {
+                "stat": "bonusAttackDamage",
+                "coefficientsByRank": [
+                  0.6000000238418579,
+                  0.6000000238418579,
+                  0.6000000238418579,
+                  0.6000000238418579,
+                  0.6000000238418579
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -347,6 +436,7 @@
         "slot": "R",
         "id": "PoppyR",
         "name": "持卫的裁决",
+        "maxRank": 3,
         "summary": "波比引导一次能够把敌人击飞到远方的锤击。",
         "bodyHtml": "<span>开始施放：</span>波比开始为她的战锤蓄力，至多4秒，自身<span class=\"text-purple-600 dark:text-purple-500\">减速</span>15%。<br /><br /><span>释放：</span>波比猛砸地面，生成一道冲击波，来对命中的第一个敌方英雄及其身边的敌人们造成<span class=\"text-red-600 dark:text-red-500 font-semibold\">(200/300/400 + (90% 额外攻击力))物理伤害</span>，将他们朝着他们的水晶枢纽处<span class=\"text-purple-600 dark:text-purple-500\">击退</span>，并使他们在飞行时处在不可被选取状态。冲击波距离和<span class=\"text-purple-600 dark:text-purple-500\">击退</span>距离受益于蓄力时长。<br /><br />未蓄力的挥锤造成<span class=\"text-red-600 dark:text-red-500 font-semibold\">(100/150/200 + (45% 额外攻击力))物理伤害</span>和持续1秒的<span class=\"text-purple-600 dark:text-purple-500\">击飞</span>。<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">不可被选取的单位不会受到敌人的攻击或技能的影响，除非在进入此状态前已被它们影响。</span>",
         "iconFile": "PoppyR.png",
@@ -393,6 +483,29 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "Damage",
+            "kind": "damage",
+            "baseByRank": [
+              200,
+              300,
+              400
+            ],
+            "terms": [
+              {
+                "stat": "bonusAttackDamage",
+                "coefficientsByRank": [
+                  0.8999999761581421,
+                  0.8999999761581421,
+                  0.8999999761581421
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {

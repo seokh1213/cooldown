@@ -120,6 +120,7 @@
         "slot": "P",
         "id": "FizzPassive",
         "name": "Nimble Fighter",
+        "maxRank": 0,
         "summary": "Fizz can move through units and takes a flat amount of reduced damage from all sources",
         "bodyHtml": "Fizz is Ghosted and takes (4 + (1% Ability Power)) reduced damage from all sources.",
         "iconFile": "Fizz_P.png",
@@ -127,6 +128,10 @@
         "range": [],
         "rankValues": [],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -137,6 +142,7 @@
         "slot": "Q",
         "id": "FizzQ",
         "name": "Urchin Strike",
+        "maxRank": 5,
         "summary": "Fizz dashes through his target, dealing magic damage and applying on hit effects.",
         "bodyHtml": "Fizz dashes through an enemy, dealing <span class=\"text-red-600 dark:text-red-500 font-semibold\">(100% Attack Damage) physical damage</span> plus <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(10/25/40/55/70 + (55% Ability Power)) magic damage</span>.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">This Ability applies On-Hit effects.</span>",
         "iconFile": "FizzQ.png",
@@ -189,6 +195,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "TotalDamage",
+            "kind": "damage",
+            "baseByRank": [
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "terms": [
+              {
+                "stat": "totalAttackDamage",
+                "coefficientsByRank": [
+                  1,
+                  1,
+                  1,
+                  1,
+                  1
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -199,6 +232,7 @@
         "slot": "W",
         "id": "FizzW",
         "name": "Seastone Trident",
+        "maxRank": 5,
         "summary": "Fizz's attacks bleed his enemies, dealing magic damage over several seconds. Fizz can empower his next attack to deal bonus damage and empower his further attacks for a short time.",
         "bodyHtml": "<span class=\"text-gray-600 dark:text-gray-500 italic\">Passive</span>: Fizz's Attacks cause his enemies to bleed, dealing <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(30/45/60/75/90 + (25% Ability Power)) magic damage</span> over 3 seconds. <br /><br /><span class=\"text-gray-900 dark:text-white font-semibold\">Active</span>: Fizz's next Attack deals an additional <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(50/75/100/125/150 + (45% Ability Power)) magic damage</span>. If this Attack kills its target, Fizz refunds <span>30/40/50/60/70 Mana</span> and reduces the cooldown of this Ability to 1 second. If it does not kill, Fizz's Attacks deal an additional <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(20/25/30/35/40 + (30% Ability Power)) magic damage</span> for 5 seconds.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">Attacks deal 90 bonus damage to jungle monsters.<br />Attacks deal 50% damage to structures.</span>",
         "iconFile": "FizzW.png",
@@ -267,6 +301,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "ActiveDamage",
+            "kind": "damage",
+            "baseByRank": [
+              50,
+              75,
+              100,
+              125,
+              150
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.44999998807907104,
+                  0.44999998807907104,
+                  0.44999998807907104,
+                  0.44999998807907104,
+                  0.44999998807907104
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -277,6 +338,7 @@
         "slot": "E",
         "id": "FizzE",
         "name": "Playful / Trickster",
+        "maxRank": 5,
         "summary": "Fizz hops into the air, landing gracefully upon his spear and becoming untargetable. From this position, Fizz can either slam the ground or choose to jump again before smashing back down.",
         "bodyHtml": "Fizz hops onto his trident, becoming Untargetable for 0.75 seconds, after which he deals <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(80/130/180/230/280 + (95% Ability Power)) magic damage</span> to nearby enemies and <span class=\"text-purple-600 dark:text-purple-500\">Slows</span> them by 40/45/50/55/60% for 2 seconds. <br /><br />Fizz can <span class=\"text-yellow-600 dark:text-yellow-300\">Recast</span> this Ability while Untargetable to dash again, which ends the effect early, deals damage in a smaller area, and doesn't <span class=\"text-purple-600 dark:text-purple-500\">Slow</span>.",
         "iconFile": "FizzE.png",
@@ -337,6 +399,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "EDamage",
+            "kind": "damage",
+            "baseByRank": [
+              80,
+              130,
+              180,
+              230,
+              280
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.949999988079071,
+                  0.949999988079071,
+                  0.949999988079071,
+                  0.949999988079071,
+                  0.949999988079071
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -347,6 +436,7 @@
         "slot": "R",
         "id": "FizzR",
         "name": "Chum the Waters",
+        "maxRank": 3,
         "summary": "Fizz tosses a fish in a direction that attaches to any champion that touches it, slowing the target. After a short delay, a shark erupts from the ground, knocking up the target and knocking any nearby enemies aside. All enemies hit are dealt magic damage and slowed.",
         "bodyHtml": "Fizz launches a fish that attaches to the first champion hit. The victim is afflicted with <span class=\"text-purple-600 dark:text-purple-400 font-semibold\">True Sight</span> and <span class=\"text-purple-600 dark:text-purple-500\">Slowed</span> by between 40% to 80% based on how far the fish travelled before attaching. <br /><br />After 2 seconds a shark erupts on the target, <span class=\"text-purple-600 dark:text-purple-500\">Knocking Up</span> the target with the fish for 1 second, <span class=\"text-purple-600 dark:text-purple-500\">Knocking Back</span> everything else, and dealing between <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(180/300/420 + (60% Ability Power)) to (270/450/630 + (90% Ability Power)) magic damage</span> based on how far the fish travelled before attaching.",
         "iconFile": "FizzR.png",
@@ -401,6 +491,12 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "unsupported",
+          "unsupportedPartTypes": [
+            "GameCalculationModified"
+          ]
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {

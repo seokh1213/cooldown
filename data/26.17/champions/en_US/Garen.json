@@ -120,6 +120,7 @@
         "slot": "P",
         "id": "GarenPassive",
         "name": "Perseverance",
+        "maxRank": 0,
         "summary": "If Garen has not recently been struck by damage or enemy abilities, he regenerates a percentage of his total health each second.",
         "bodyHtml": "Garen regenerates <span class=\"text-green-600 dark:text-green-400\">(150% ~ 250%) max Health</span> every 5 seconds if he has not been damaged or hit with enemy Abilities in the last 8 seconds.",
         "iconFile": "Garen_Passive.png",
@@ -127,6 +128,10 @@
         "range": [],
         "rankValues": [],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -137,6 +142,7 @@
         "slot": "Q",
         "id": "GarenQ",
         "name": "Decisive Strike",
+        "maxRank": 5,
         "summary": "Garen gains a burst of Move Speed, breaking free of all slows affecting him. His next attack strikes a vital area of his foe, dealing bonus damage and silencing them.",
         "bodyHtml": "Garen removes all <span class=\"text-purple-600 dark:text-purple-500\">Slowing</span> effects on him and gains <span class=\"text-cyan-600 dark:text-cyan-500\">35% Move Speed</span> for 1.4/1.95/2.5/3.05/3.6 second(s).<br /><br />His next Attack <span class=\"text-purple-600 dark:text-purple-500\">Silences</span> for 1.5 seconds and does <span class=\"text-red-600 dark:text-red-500 font-semibold\">(30/60/90/120/150 + (150% Attack Damage)) physical damage</span>.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">The empowered Attack expires after 4.5 seconds.<br />This Ability triggers spell effects upon dealing damage.</span>",
         "iconFile": "GarenQ.png",
@@ -179,6 +185,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "TotalDamage",
+            "kind": "damage",
+            "baseByRank": [
+              30,
+              60,
+              90,
+              120,
+              150
+            ],
+            "terms": [
+              {
+                "stat": "totalAttackDamage",
+                "coefficientsByRank": [
+                  1.5,
+                  1.5,
+                  1.5,
+                  1.5,
+                  1.5
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -189,6 +222,7 @@
         "slot": "W",
         "id": "GarenW",
         "name": "Courage",
+        "maxRank": 5,
         "summary": "Garen passively increases his Armor and Magic Resist by killing enemies. He may also activate this ability to give him a shield and tenacity for a brief moment followed by a lesser amount of damage reduction for a longer duration.",
         "bodyHtml": "<span class=\"text-gray-600 dark:text-gray-500 italic\">Passive:</span> Garen has <span class=\"text-orange-600 dark:text-orange-400\"> bonus Armor</span> and <span> bonus Magic Resist</span>. Killing units permanently grants <span>0.2 resists</span>, up to a max of <span>30</span>.<br /><br /><span class=\"text-gray-900 dark:text-white font-semibold\">Active:</span> Garen steels his courage for 4 seconds, reducing incoming damage by 25/29/33/37/41%. He also gains <span class=\"text-blue-600 dark:text-blue-300\">(65/85/105/125/145 + (18% bonus Health)) Shield</span> and <span>60% Tenacity</span> for 0.75 seconds.",
         "iconFile": "GarenW.png",
@@ -235,6 +269,10 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -247,6 +285,7 @@
         "slot": "E",
         "id": "GarenE",
         "name": "Judgment",
+        "maxRank": 5,
         "summary": "Garen rapidly spins his sword around his body, dealing physical damage to nearby enemies.",
         "bodyHtml": "Garen rapidly spins his sword for 3 seconds, dealing <span class=\"text-red-600 dark:text-red-500 font-semibold\">(4/7/10/13/16 + (40/43/46/49/52% Attack Damage)) physical damage</span> times over the duration. The nearest enemy takes <span class=\"text-red-600 dark:text-red-500 font-semibold\">25% increased damage</span>. Champions hit by 6 strikes lose <span class=\"text-orange-600 dark:text-orange-400\">25% Armor</span> for 6 seconds.<br /><br /><span class=\"text-yellow-600 dark:text-yellow-300\">Recast</span>: Garen ends this Ability early.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">Gains one strike from every <span>25% Attack Speed</span> from items and levels.<br />Can critically strike for <span class=\"text-red-600 dark:text-red-500 font-semibold\">(4/7/10/13/16 + (40/43/46/49/52% Attack Damage)) physical damage</span>.</span>",
         "iconFile": "GarenE.png",
@@ -293,6 +332,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "TotalDamage",
+            "kind": "damage",
+            "baseByRank": [
+              4,
+              7,
+              10,
+              13,
+              16
+            ],
+            "terms": [
+              {
+                "stat": "totalAttackDamage",
+                "coefficientsByRank": [
+                  0.4000000059604645,
+                  0.4300000071525574,
+                  0.46000000834465027,
+                  0.49000000953674316,
+                  0.5199999809265137
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -305,6 +371,7 @@
         "slot": "R",
         "id": "GarenR",
         "name": "Demacian Justice",
+        "maxRank": 3,
         "summary": "Garen calls upon the might of Demacia to attempt to execute an enemy champion.",
         "bodyHtml": "Garen calls upon the might of Demacia to slay his enemy, dealing <span class=\"text-yellow-600 dark:text-yellow-500 font-semibold\">125/200/275 plus 25/30/35% missing Health true damage</span>.",
         "iconFile": "GarenR.png",
@@ -333,6 +400,10 @@
           }
         ],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {

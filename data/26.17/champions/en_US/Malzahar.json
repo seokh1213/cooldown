@@ -119,6 +119,7 @@
         "slot": "P",
         "id": "MalzaharPassive",
         "name": "Void Shift",
+        "maxRank": 0,
         "summary": "When he hasn't recently taken damage or been crowd controlled, Malzahar gains massive damage reduction and crowd control immunity, lingering for a short period after taking damage.",
         "bodyHtml": "Malzahar gains 90% damage reduction and immunity from <span class=\"text-purple-600 dark:text-purple-500\">Disabling</span> and <span class=\"text-purple-600 dark:text-purple-500\">Immobilizing</span> effects, lingering for 0.25 seconds after taking damage or blocking one of those effects. This effect has a 12 second Cooldown.",
         "iconFile": "Malzahar_Passive.png",
@@ -126,6 +127,10 @@
         "range": [],
         "rankValues": [],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -136,6 +141,7 @@
         "slot": "Q",
         "id": "MalzaharQ",
         "name": "Call of the Void",
+        "maxRank": 5,
         "summary": "Malzahar opens up two portals to the Void. After a short delay, they fire projectiles that deal Magic Damage and silence enemy champions.",
         "bodyHtml": "Malzahar opens two portals to the Void that fire projectiles inward, dealing <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(70/105/140/175/210 + (55% Ability Power)) magic damage</span> and <span class=\"text-purple-600 dark:text-purple-500\">Silencing</span> for 1/1.25/1.5/1.75/2 second(s).",
         "iconFile": "MalzaharQ.png",
@@ -192,6 +198,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "TotalDamageTooltip",
+            "kind": "damage",
+            "baseByRank": [
+              70,
+              105,
+              140,
+              175,
+              210
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.550000011920929,
+                  0.550000011920929,
+                  0.550000011920929,
+                  0.550000011920929,
+                  0.550000011920929
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -202,6 +235,7 @@
         "slot": "W",
         "id": "MalzaharW",
         "name": "Void Swarm",
+        "maxRank": 5,
         "summary": "Malzahar summons Voidlings to attack nearby enemies.",
         "bodyHtml": "<span class=\"text-gray-600 dark:text-gray-500 italic\">Passive:</span> Malzahar's other Abilities give him a stack when cast (max 2).<br /><br /><span class=\"text-gray-900 dark:text-white font-semibold\">Active:</span> Malzahar summons a Voidling plus an additional Voidling per stack. Voidlings last 8/8/9/9/10 seconds and deal <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(12/14/16/18/20 + (40% bonus Attack Damage) + (20% Ability Power)) magic damage</span> each hit.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">Voidlings deal 300% damage to lane minions affected by <span>Malefic Visions</span>.<br />Voidlings deal 50% damage to epic monsters.</span>",
         "iconFile": "MalzaharW.png",
@@ -258,6 +292,12 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "unsupported",
+          "unsupportedPartTypes": [
+            "ByCharLevelInterpolationCalculationPart"
+          ]
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -268,6 +308,7 @@
         "slot": "E",
         "id": "MalzaharE",
         "name": "Malefic Visions",
+        "maxRank": 5,
         "summary": "Malzahar infects his target's mind with cruel visions of their demise, dealing damage over time. Using Malzahar's other spells on the target will refresh the visions.<br><br>If the target dies while afflicted by the visions, they pass on to a nearby enemy unit and Malzahar gains Mana. Malzahar's Voidlings are attracted to affected units.",
         "bodyHtml": "Malzahar inflicts terrible visions, dealing <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(80/115/150/185/220 + (80% Ability Power)) magic damage</span> over 4 seconds. Applying <span>Call of the Void</span> or <span>Nether Grasp</span> to the victim during this time refreshes the visions.<br /><br />If the victim dies, Malzahar gains <span>(2% Mana) Mana</span> and the visions spread to the nearest enemy.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">Malefic Visions executes minions below 10 Health.</span>",
         "iconFile": "MalzaharE.png",
@@ -324,6 +365,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "TotalDamage",
+            "kind": "damage",
+            "baseByRank": [
+              80,
+              115,
+              150,
+              185,
+              220
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.800000011920929,
+                  0.800000011920929,
+                  0.800000011920929,
+                  0.800000011920929,
+                  0.800000011920929
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -334,6 +402,7 @@
         "slot": "R",
         "id": "MalzaharR",
         "name": "Nether Grasp",
+        "maxRank": 3,
         "summary": "Malzahar channels the essence of the Void to suppress an enemy champion over a zone of damaging negative energy.",
         "bodyHtml": "Malzahar <span class=\"text-purple-600 dark:text-purple-500\">Suppresses</span> an enemy champion and deals <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(125/200/275 + (80% Ability Power)) magic damage</span> over 2.5 seconds. A zone of negative energy is created around his target dealing <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(10/15/20% + (0.025% Ability Power)) max Health magic damage</span> over 5 seconds.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">This Ability <span class=\"text-purple-600 dark:text-purple-500\">Knocks Down</span> enemies.</span>",
         "iconFile": "MalzaharR.png",
@@ -384,6 +453,29 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "TotalDamageTooltip",
+            "kind": "damage",
+            "baseByRank": [
+              125,
+              200,
+              275
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.800000011920929,
+                  0.800000011920929,
+                  0.800000011920929
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {

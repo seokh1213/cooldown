@@ -120,6 +120,7 @@
         "slot": "P",
         "id": "KarmaPassive",
         "name": "열정 응집",
+        "maxRank": 0,
         "summary": "카르마가 스킬로 피해를 입히면 만트라의 재사용 대기시간이 감소합니다.",
         "bodyHtml": "카르마는 <span></span> 스킬을 가지고 게임을 시작합니다.<br /><br />챔피언에게 스킬로 피해를 입히면 <span></span>의 재사용 대기시간이 4초 줄어듭니다.",
         "iconFile": "Karma_Passive.png",
@@ -127,6 +128,10 @@
         "range": [],
         "rankValues": [],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -137,6 +142,7 @@
         "slot": "Q",
         "id": "KarmaQ",
         "name": "내면의 열정",
+        "maxRank": 5,
         "summary": "카르마가 영적인 에너지의 구체를 전방으로 던져, 적 유닛에게 부딪치면 폭발하며 피해를 입힙니다.<br><br>만트라 추가 효과: 만트라가 내면의 열정의 위력을 강화하여, 구체가 폭발한 잠시 후 원형 범위 내에 피해를 가합니다.",
         "bodyHtml": "카르마가 에너지 구체를 발사하여 처음 적중한 대상과 그 주변 적들에게 <magicDamage>{{ totaldamage }}의 마법 피해</magicDamage>를 입히고, {{ slowduration }}초 동안 {{ slowamount*-100 }}% <status>둔화</status>시킵니다.{{ spellmodifierdescriptionappend }}",
         "iconFile": "KarmaQ.png",
@@ -193,6 +199,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "TotalDamage",
+            "kind": "damage",
+            "baseByRank": [
+              60,
+              110,
+              160,
+              210,
+              260
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.699999988079071,
+                  0.699999988079071,
+                  0.699999988079071,
+                  0.699999988079071,
+                  0.699999988079071
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "ddragon",
         "diagnostics": {
@@ -203,6 +236,7 @@
         "slot": "W",
         "id": "KarmaSpiritBind",
         "name": "굳은 결의",
+        "maxRank": 5,
         "summary": "카르마가 자신과 대상 적 사이에 끈을 만들어 피해를 주고 연결된 적의 위치를 드러냅니다. 끈이 끊어지지 않으면 적은 발이 묶이고 피해를 한 번 더 입습니다.<br><br>만트라 추가 효과: 카르마가 결속을 강화하여 체력을 회복하며 속박 지속시간이 증가합니다.",
         "bodyHtml": "카르마가 챔피언이나 정글 몬스터와 자신을 연결하여 <magicDamage>{{ initialdamage }}의 마법 피해</magicDamage>를 입히고 {{ tetherduration }}초 동안 모습을 드러냅니다. 연결이 끊어지지 않으면 대상은 다시 <magicDamage>{{ initialdamage }}의 마법 피해</magicDamage>를 입고 {{ rootduration }}초 동안 <status>속박</status>됩니다.{{ spellmodifierdescriptionappend }}",
         "iconFile": "KarmaSpiritBind.png",
@@ -259,6 +293,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "InitialDamage",
+            "kind": "damage",
+            "baseByRank": [
+              40,
+              65,
+              90,
+              115,
+              140
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.44999998807907104,
+                  0.44999998807907104,
+                  0.44999998807907104,
+                  0.44999998807907104,
+                  0.44999998807907104
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "ddragon",
         "diagnostics": {
@@ -269,6 +330,7 @@
         "slot": "E",
         "id": "KarmaSolKimShield",
         "name": "고무",
+        "maxRank": 5,
         "summary": "카르마가 보호막을 소환하여 적이 가하는 피해를 막아내고, 보호받는 아군은 이동 속도가 상승합니다.<br><br>만트라 추가 효과: 대상에게서 에너지가 흘러나와 보호막을 강화하고 주변 아군 챔피언들에게도 고무 효과를 적용합니다.",
         "bodyHtml": "카르마가 아군 챔피언에게 {{ shieldduration }}초 동안 <shield>{{ totalshield }}의 피해를 흡수하는 보호막</shield>을 씌우고 {{ movespeedduration }}초 동안 <speed>이동 속도를 {{ movespeed*100 }}%</speed> 상승시킵니다.{{ spellmodifierdescriptionappend }}",
         "iconFile": "KarmaSolKimShield.png",
@@ -325,6 +387,10 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "ddragon",
         "diagnostics": {
@@ -335,6 +401,7 @@
         "slot": "R",
         "id": "KarmaMantra",
         "name": "만트라",
+        "maxRank": 4,
         "summary": "카르마가 다음 스킬을 강화하여 추가 효과를 부여합니다. 만트라는 1레벨부터 사용할 수 있으며 스킬 포인트가 필요 없습니다.",
         "bodyHtml": "카르마가 8초 동안 다음 스킬을 강화합니다.<br /><span><span>내면의 열정</span>: <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(40/100/160/220 + (30% 주문력))의 마법 피해</span>를 추가로 입히고 원형의 불꽃을 남깁니다. 불꽃은 적들을 <span class=\"text-purple-600 dark:text-purple-500\">둔화</span>시키고 <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(40/130/220/310 + (50% 주문력))의 마법 피해</span>를 추가로 입힙니다.<span><span>굳은 결의</span>: 카르마가 지속시간 처음과 끝에 <span class=\"text-green-600 dark:text-green-400\">(17% + (0.01% 주문력))의 잃은 체력</span>을 회복하고, 0.5/0.75/1/1.25초 더 <span class=\"text-purple-600 dark:text-purple-500\">속박</span>합니다.<span><span>고무</span>: 카르마가 대상에게 <span class=\"text-blue-600 dark:text-blue-300\">피해를 (45/85/125/165 + (45% 주문력))만큼 더 흡수하는 보호막</span>을 씌웁니다. 주변 아군에게도 <span class=\"text-blue-600 dark:text-blue-300\">(45/85/125/165 + (45% 주문력))의 피해를 흡수하는 보호막</span>을 씌우고 <span class=\"text-cyan-600 dark:text-cyan-500\">이동 속도를15%</span> 상승시킵니다.",
         "iconFile": "KarmaMantra.png",
@@ -387,6 +454,31 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "RQFieldDamage",
+            "kind": "damage",
+            "baseByRank": [
+              40,
+              130,
+              220,
+              310
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.5,
+                  0.5,
+                  0.5,
+                  0.5
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {

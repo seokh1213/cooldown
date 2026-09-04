@@ -119,6 +119,7 @@
         "slot": "P",
         "id": "YunaraPassive",
         "name": "Vow of the First Lands",
+        "maxRank": 0,
         "summary": "Yunara's Critical Strikes deal bonus magic damage.",
         "bodyHtml": "Yunara's Critical Strikes deal an additional <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(10% + (0.1% Ability Power)) magic damage</span>.",
         "iconFile": "Yunara_Passive.png",
@@ -126,6 +127,10 @@
         "range": [],
         "rankValues": [],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -136,6 +141,7 @@
         "slot": "Q",
         "id": "YunaraQ",
         "name": "Cultivation of Spirit",
+        "maxRank": 5,
         "summary": "Yunara gains Attack Speed, bonus damage On-Hit, and her Attacks spread to nearby enemies.",
         "bodyHtml": "<span class=\"text-gray-600 dark:text-gray-500 italic\">Passive</span>: Yunara deal <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(5/10/15/20/25 + (20% Ability Power)) magic damage</span> <span> On-Hit</span> and attacking grants <span>1 Unleash</span> (<span>2 Unleash</span> for champions).<br /><br /><span class=\"text-gray-600 dark:text-gray-500 italic\">Active</span>: Yunara consumes <span>8 Unleash</span> and for 5 seconds gains <span>20/30/40/50/60% Attack Speed</span> and deals an additional <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(5/10/15/20/25 + (20% Ability Power)) magic damage</span> <span> On-Hit</span>. During this time, her Attacks spread to nearby enemies dealing them <span class=\"text-red-600 dark:text-red-500 font-semibold\">(30% Attack Damage) physical damage</span>.<br /><br /><span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Transcendent State</span>: This Ability is instantly activated for seconds.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">Spread Attacks can Strike Critically and apply <span> On-Hit</span> effects at 30% effectiveness. Damage from spread Attacks deal 250% damage to minions below <span>30% Health</span>.</span>",
         "iconFile": "YunaraQ.png",
@@ -192,6 +198,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "Calc_Damage",
+            "kind": "damage",
+            "baseByRank": [
+              5,
+              10,
+              15,
+              20,
+              25
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.20000000298023224,
+                  0.20000000298023224,
+                  0.20000000298023224,
+                  0.20000000298023224,
+                  0.20000000298023224
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -204,6 +237,7 @@
         "slot": "W",
         "id": "YunaraW",
         "name": "Arc of Judgment | Arc of Ruin",
+        "maxRank": 5,
         "summary": "Yunara fires a spinning prayer bead that deals damage and slows enemies. While in her Transcendent State she instead fires off a laser that deals damage and slows enemies.",
         "bodyHtml": "Yunara lets rip a prayer bead that deals <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(55/95/135/175/215 + (85% bonus Attack Damage) + (50% Ability Power)) magic damage</span> and <span class=\"text-purple-600 dark:text-purple-500\">Slows by 99% decaying over 1.5 seconds</span>. It deals an additional <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(33/57/81/105/129 + (51% bonus Attack Damage) + (30% Ability Power)) magic damage</span> per second.<br /><br /><span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Transcendent State - Arc of Ruin</span>: Yunara fires a laser that deals <span class=\"text-blue-600 dark:text-blue-500 font-semibold\"> magic damage</span> and <span class=\"text-purple-600 dark:text-purple-500\">Slows by decaying over second</span>.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">Cast time scales with permanent <span>Attack Speed</span> (/ 100%). Arc of Judgment deals 100% damage to minions and its tick damage executes low health minions. Arc of Ruin gains the benefits of an Ultimate Ability.</span>",
         "iconFile": "YunaraW.png",
@@ -256,6 +290,43 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "Calc_Damage_Initial",
+            "kind": "damage",
+            "baseByRank": [
+              55,
+              95,
+              135,
+              175,
+              215
+            ],
+            "terms": [
+              {
+                "stat": "bonusAttackDamage",
+                "coefficientsByRank": [
+                  0.8500000238418579,
+                  0.8500000238418579,
+                  0.8500000238418579,
+                  0.8500000238418579,
+                  0.8500000238418579
+                ]
+              },
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.5,
+                  0.5,
+                  0.5,
+                  0.5,
+                  0.5
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -271,6 +342,7 @@
         "slot": "E",
         "id": "YunaraE",
         "name": "Kanmei's Steps | Untouchable Shadow",
+        "maxRank": 5,
         "summary": "Yunara gains Move Speed and becomes Ghosted. While in her Transcendent State she instead dashes in a direction.",
         "bodyHtml": "Yunara gains <span class=\"text-cyan-600 dark:text-cyan-500\">30/35/40/45/50% Move Speed</span>, increased to <span class=\"text-cyan-600 dark:text-cyan-500\">45/52.5/60/67.5/75% Move Speed</span> when moving toward an enemy champion, for 1.5 seconds.<br /><br /><span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Transcendent State - Untouchable Shadow</span>: Yunara dashes in a direction.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">Kanmei's Steps causes Yunara to become <span>Ghosted</span>. Untouchable Shadow gains the benefits of an Ultimate Ability.</span>",
         "iconFile": "YunaraE.png",
@@ -323,6 +395,10 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -333,6 +409,7 @@
         "slot": "R",
         "id": "YunaraR",
         "name": "Transcend One's Self",
+        "maxRank": 3,
         "summary": "Yunara enters a Transcendent State that upgrades her basic Abilities.",
         "bodyHtml": "Yunara enters a <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Transcendent State</span> for 15 seconds upgrading her basic Abilities for the duration.",
         "iconFile": "YunaraR.png",
@@ -383,6 +460,37 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "Calc_RW_Damage",
+            "kind": "damage",
+            "baseByRank": [
+              160,
+              320,
+              480
+            ],
+            "terms": [
+              {
+                "stat": "bonusAttackDamage",
+                "coefficientsByRank": [
+                  1.2000000476837158,
+                  1.2000000476837158,
+                  1.2000000476837158
+                ]
+              },
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.75,
+                  0.75,
+                  0.75
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {

@@ -119,6 +119,7 @@
         "slot": "P",
         "id": "JinxPassiveMarker",
         "name": "罪恶快感",
+        "maxRank": 0,
         "summary": "金克丝每当参与击杀或摧毁一名英雄、一个史诗级野怪或一座建筑物后，她的移动速度和攻击速度就会得到显著提升。",
         "bodyHtml": "当一名英雄、一个史诗级野怪或一座建筑物在被金克丝造成伤害后的3秒内被击杀或摧毁的话，金克丝就会获得不断衰减的<span class=\"text-cyan-600 dark:text-cyan-500\">175%移动速度</span>和<span>25%攻击速度</span>，持续6秒。<br /><br />参与击杀英雄会使这个<span>攻击速度</span>叠加至多5次。",
         "iconFile": "Jinx_Passive.png",
@@ -126,6 +127,10 @@
         "range": [],
         "rankValues": [],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -136,6 +141,7 @@
         "slot": "Q",
         "id": "JinxQ",
         "name": "枪炮交响曲！",
+        "maxRank": 5,
         "summary": "金克丝可以通过切换武器来改变普通攻击的方式。在用她的轻机枪“砰砰”攻击时，她的攻击速度会提升。在用她的火箭发射器“鱼骨头”攻击时，她的普通攻击会造成范围伤害，攻击距离提升，但会消耗法力值并且攻击得更慢。",
         "bodyHtml": "金克丝可在【鱼骨头—火箭发射器】和【砰砰枪—轻机枪】之间切换武器。<br /><br />在使用火箭发射器时，金克丝的攻击会对目标和附近的敌人造成<span class=\"text-red-600 dark:text-red-500 font-semibold\">(110% 攻击力)物理伤害</span>，提升100/125/150/175/200距离，消耗法力，但所享的攻速加成减少10%。<br /><br />在使用轻机枪时，金克丝的攻击提供<span>攻击速度</span>，持续2.5秒，可叠加至多3次(<span>最大攻速加成为 + 30/55/80/105/130% </span>)。<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">轻机枪的叠加效果一次只会消散一层，并且在金克丝切换至火箭发射器后，只有第一次攻击会享受攻速加成。</span>",
         "iconFile": "JinxQ.png",
@@ -188,6 +194,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "RocketDamage",
+            "kind": "damage",
+            "baseByRank": [
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "terms": [
+              {
+                "stat": "totalAttackDamage",
+                "coefficientsByRank": [
+                  1.100000023841858,
+                  1.100000023841858,
+                  1.100000023841858,
+                  1.100000023841858,
+                  1.100000023841858
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -198,6 +231,7 @@
         "slot": "W",
         "id": "JinxW",
         "name": "震荡电磁波！",
+        "maxRank": 5,
         "summary": "金克丝使用她的震荡手枪“电磁器”来发射震荡波，让被命中的第一个敌人暴露在己方视野中（可使隐形英雄现形），并对其造成伤害和减速效果。",
         "bodyHtml": "金克丝发射一束震荡波，对命中的第一个目标造成<span class=\"text-red-600 dark:text-red-500 font-semibold\">(10/60/110/160/210 + (140% 攻击力))物理伤害</span>，使其<span class=\"text-purple-600 dark:text-purple-500\">减速</span>40/50/60/70/80%并显形，持续2秒。<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">【震荡电磁波】的施放时间会随着金克丝<span>攻击速度</span>的增加而缩短。</span>",
         "iconFile": "JinxW.png",
@@ -258,6 +292,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "TotalDamage",
+            "kind": "damage",
+            "baseByRank": [
+              10,
+              60,
+              110,
+              160,
+              210
+            ],
+            "terms": [
+              {
+                "stat": "totalAttackDamage",
+                "coefficientsByRank": [
+                  1.399999976158142,
+                  1.399999976158142,
+                  1.399999976158142,
+                  1.399999976158142,
+                  1.399999976158142
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -268,6 +329,7 @@
         "slot": "E",
         "id": "JinxE",
         "name": "嚼火者手雷！",
+        "maxRank": 5,
         "summary": "金克丝扔出一串陷阱手雷。手雷会在5秒后爆炸，让敌人着火。嚼火者手雷将会袭击路过的敌方英雄，并将他们束缚在原地。",
         "bodyHtml": "金克丝扔出3颗持续5秒的嚼火者手雷，手雷会在接触到敌方英雄时爆炸，将其<span class=\"text-purple-600 dark:text-purple-500\">禁锢</span>1.5秒并对附近敌人造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(90/140/190/240/290 + (100% 法术强度))魔法伤害</span>。<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">这个技能会使敌人<span class=\"text-purple-600 dark:text-purple-500\">中断位移</span>。</span>",
         "iconFile": "JinxE.png",
@@ -320,6 +382,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "TotalDamage",
+            "kind": "damage",
+            "baseByRank": [
+              90,
+              140,
+              190,
+              240,
+              290
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  1,
+                  1,
+                  1,
+                  1,
+                  1
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -330,6 +419,7 @@
         "slot": "R",
         "id": "JinxR",
         "name": "超究极死神飞弹！",
+        "maxRank": 3,
         "summary": "金克丝发射一枚能够跨越整个地图的飞弹，并且飞行的时间越长，伤害值越高。飞弹会在命中一名敌方英雄后爆炸，对目标和目标附近的敌人造成伤害，且目标的生命值越低，所受的伤害值越高。",
         "bodyHtml": "金克丝发射一枚飞弹，在首次命中敌方英雄后爆炸，造成<span class=\"text-red-600 dark:text-red-500 font-semibold\">(20/35/50 + (12% 额外攻击力))到(200/350/500 + (120% 额外攻击力)) + 25/30/35%已损失生命值的物理伤害</span>，飞弹在飞行时间超过1秒后会持续提升伤害。目标附近的敌人受到80%伤害。<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">对野怪的已损失生命值伤害无法超过1200。</span>",
         "iconFile": "JinxR.png",
@@ -384,6 +474,29 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "DamageFloor",
+            "kind": "damage",
+            "baseByRank": [
+              20,
+              35,
+              50
+            ],
+            "terms": [
+              {
+                "stat": "bonusAttackDamage",
+                "coefficientsByRank": [
+                  0.11999999731779099,
+                  0.11999999731779099,
+                  0.11999999731779099
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {

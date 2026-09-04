@@ -120,6 +120,7 @@
         "slot": "P",
         "id": "VarusPassive",
         "name": "复仇之欲",
+        "maxRank": 0,
         "summary": "每完成一次击杀或助攻，韦鲁斯就会暂时获得攻击速度、攻击力和法术强度。如果敌人是个英雄，则这个加成的幅度会更大。",
         "bodyHtml": "韦鲁斯在每击杀一名敌人后，就会获得持续15秒的<span>20%攻击速度</span>、<span class=\"text-orange-600 dark:text-orange-500\">(1100%)攻击力</span>、和<span class=\"text-blue-600 dark:text-blue-400\">(1100%)法术强度</span>。<br /><br />参与击杀英雄后会使这个加成转而提供<span>30%攻击速度</span>(能够突破攻速上限)、<span class=\"text-orange-600 dark:text-orange-500\">(3300%)攻击力</span>、和<span class=\"text-blue-600 dark:text-blue-400\">(3300%)法术强度</span>。",
         "iconFile": "VarusPassive.png",
@@ -127,6 +128,10 @@
         "range": [],
         "rankValues": [],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -137,6 +142,7 @@
         "slot": "Q",
         "id": "VarusQ",
         "name": "穿刺之箭",
+        "maxRank": 5,
         "summary": "韦鲁斯开始蓄力，随后进行一次远距离的强力射击，蓄力时间越长，伤害越高。",
         "bodyHtml": "<span>开始蓄力：</span>韦鲁斯为一次强力射击深深挽弓，自我<span class=\"text-purple-600 dark:text-purple-500\">减速</span>20%。在4秒后，如果未将箭射出去，则韦鲁斯会取消这个技能并返还其50%法力消耗。<br /><br /><span>释放：</span>韦鲁斯将箭射出，造成<span class=\"text-red-600 dark:text-red-500 font-semibold\">(53.334/100.001/146.667/193.334/240.001 + (80% 额外攻击力))物理伤害</span>，每命中一个敌人就会降低15%(最低降至33%)。伤害和<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">枯萎</span>的引爆效果会基于蓄力时间至多提升至50%(最大值为<span class=\"text-red-600 dark:text-red-500 font-semibold\">(80/150/220/290/360 + (120% 额外攻击力))</span>) 。",
         "iconFile": "VarusQ.png",
@@ -189,6 +195,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "TotalDamageMax",
+            "kind": "damage",
+            "baseByRank": [
+              80,
+              150,
+              220,
+              290,
+              360
+            ],
+            "terms": [
+              {
+                "stat": "bonusAttackDamage",
+                "coefficientsByRank": [
+                  1.2000000476837158,
+                  1.2000000476837158,
+                  1.2000000476837158,
+                  1.2000000476837158,
+                  1.2000000476837158
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -199,6 +232,7 @@
         "slot": "W",
         "id": "VarusW",
         "name": "枯萎箭袋",
+        "maxRank": 5,
         "summary": "被动：韦鲁斯的普通攻击会造成额外的伤害，并附加枯萎效果。韦鲁斯的其它技能会引爆枯萎效果，造成基于目标最大生命值的魔法伤害。主动：韦鲁斯增强他的下一个【穿刺之箭】。",
         "bodyHtml": "<span class=\"text-gray-600 dark:text-gray-500 italic\">被动：</span>韦鲁斯的攻击造成额外的<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(4/13/22/31/40 + (25% 法术强度) + (15% 额外攻击力))魔法伤害</span>并施加一层持续6秒的<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">枯萎</span>(最多至3层)。<br /><br />韦鲁斯的其它技能会引爆<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">枯萎</span>层数来造成每层<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">3/3.5/4/4.5/5%最大生命值伤害</span>(最大值为<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">9/10.5/12/13.5/15%最大生命值伤害</span>)。引爆英雄和史诗级野怪身上的<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">枯萎</span>时也会使他基础技能的冷却时间缩短，数额为每层13%基础冷却时间。<br /><br /><span class=\"text-gray-900 dark:text-white font-semibold\">主动：</span>韦鲁斯的下一个<span>穿刺之箭</span>会造成额外的<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">6/8/10/12/14%已损失生命值的魔法伤害</span>，并且基于蓄力时间不断提升，至多可达<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">9/12/15/18/21%已损失生命值伤害</span>。<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">来自<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">枯萎</span>爆炸的被动伤害对野怪的封顶值为每层120伤害。</span>",
         "iconFile": "VarusW.png",
@@ -245,6 +279,43 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "OnHitDamage",
+            "kind": "damage",
+            "baseByRank": [
+              4,
+              13,
+              22,
+              31,
+              40
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.25,
+                  0.25,
+                  0.25,
+                  0.25,
+                  0.25
+                ]
+              },
+              {
+                "stat": "bonusAttackDamage",
+                "coefficientsByRank": [
+                  0.15000000596046448,
+                  0.15000000596046448,
+                  0.15000000596046448,
+                  0.15000000596046448,
+                  0.15000000596046448
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -255,6 +326,7 @@
         "slot": "E",
         "id": "VarusE",
         "name": "恶灵箭雨",
+        "maxRank": 5,
         "summary": "韦鲁斯射出一阵箭雨，造成物理伤害并污染地面。被污染的地面将会减慢敌人的移动速度，并降低他们的自我治疗效果和回复效果。",
         "bodyHtml": "韦鲁斯射出一阵箭雨，造成<span class=\"text-red-600 dark:text-red-500 font-semibold\">(60/90/120/150/180 + (90% 额外攻击力))物理伤害</span>，并污染地面4秒，<span class=\"text-purple-600 dark:text-purple-500\">减速</span>敌人30/35/40/45/50%并施加40%重伤。<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">重伤会降低治疗效果和生命回复的效能。</span>",
         "iconFile": "VarusE.png",
@@ -311,6 +383,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "TotalDamage",
+            "kind": "damage",
+            "baseByRank": [
+              60,
+              90,
+              120,
+              150,
+              180
+            ],
+            "terms": [
+              {
+                "stat": "bonusAttackDamage",
+                "coefficientsByRank": [
+                  0.8999999761581421,
+                  0.8999999761581421,
+                  0.8999999761581421,
+                  0.8999999761581421,
+                  0.8999999761581421
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -321,6 +420,7 @@
         "slot": "R",
         "id": "VarusR",
         "name": "腐败锁链",
+        "maxRank": 3,
         "summary": "韦鲁斯投掷出一个腐败藤蔓，来禁锢命中的第一个敌方英雄，随后向附近没有被感染的英雄蔓延，并在碰到后将他们也禁锢。",
         "bodyHtml": "韦鲁斯猛射出一根腐败藤蔓，<span class=\"text-purple-600 dark:text-purple-500\">禁锢</span>命中的第一个敌方英雄2秒并造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(150/250/350 + (100% 法术强度))魔法伤害</span>。被<span class=\"text-purple-600 dark:text-purple-500\">禁锢</span>的敌人们会在此期间持续获得3层<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">枯萎</span>。<br /><br />随后腐败藤蔓会从它的目标处向附近未被感染的英雄蔓延。如果它接触到了未被感染的英雄，就会使其承受相同的伤害和<span class=\"text-purple-600 dark:text-purple-500\">禁锢</span>。",
         "iconFile": "VarusR.png",
@@ -367,6 +467,29 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "TotalDamage",
+            "kind": "damage",
+            "baseByRank": [
+              150,
+              250,
+              350
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  1,
+                  1,
+                  1
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {

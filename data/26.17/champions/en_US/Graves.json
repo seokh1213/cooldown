@@ -119,6 +119,7 @@
         "slot": "P",
         "id": "GravesPassive",
         "name": "New Destiny",
+        "maxRank": 0,
         "summary": "Graves' shotgun has some unique properties. He must reload when he runs out of ammo. Attacks fire 4 bullets, which cannot pass through units. Non-champions struck by multiple bullets are knocked back.",
         "bodyHtml": "Graves' Attacks have unique properties:<br /><span>It can only fire two <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Shells</span> before he must reload. <span>Attack Speed</span> reduces reload time slightly, but reduces time between shots dramatically.<span>Each Attack fires 4 bullets. The first bullet on a target deals <span class=\"text-red-600 dark:text-red-500 font-semibold\"> physical damage</span>, and subsequent bullets deal <span class=\"text-red-600 dark:text-red-500 font-semibold\"></span> each. Instead of normal Critical effects, Critical strikes fire 6 bullets and deal more damage. Structures take 25% reduced damage.<span>Bullets stop on the first unit hit. Non-champions struck by multiple bullets are <span class=\"text-purple-600 dark:text-purple-500\">Knocked Back</span>.",
         "iconFile": "GravesTrueGrit.png",
@@ -126,6 +127,10 @@
         "range": [],
         "rankValues": [],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -136,6 +141,7 @@
         "slot": "Q",
         "id": "GravesQLineSpell",
         "name": "End of the Line",
+        "maxRank": 5,
         "summary": "Graves fires an explosive shell that detonates after 1 second, or after colliding with terrain.",
         "bodyHtml": "Graves fires a powder round dealing <span class=\"text-red-600 dark:text-red-500 font-semibold\">(50/75/100/125/150 + (55% bonus Attack Damage)) physical damage</span>. After 1 second or after colliding with terrain, it detonates, dealing <span class=\"text-red-600 dark:text-red-500 font-semibold\">(80/125/170/215/260 + (45/60/75/90/105% bonus Attack Damage)) physical damage</span> along the travel path again and to enemies near the blast.",
         "iconFile": "GravesQLineSpell.png",
@@ -196,6 +202,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "TotalDamage",
+            "kind": "damage",
+            "baseByRank": [
+              50,
+              75,
+              100,
+              125,
+              150
+            ],
+            "terms": [
+              {
+                "stat": "bonusAttackDamage",
+                "coefficientsByRank": [
+                  0.550000011920929,
+                  0.550000011920929,
+                  0.550000011920929,
+                  0.550000011920929,
+                  0.550000011920929
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -206,6 +239,7 @@
         "slot": "W",
         "id": "GravesSmokeGrenade",
         "name": "Smoke Screen",
+        "maxRank": 5,
         "summary": "Graves fires a smoke canister at the target area creating a cloud of smoke that reduces sight range. Enemies caught in the initial impact are dealt magic damage and have their Move Speed reduced briefly.",
         "bodyHtml": "Graves creates a cloud of black smoke for 4 seconds, <span class=\"text-purple-600 dark:text-purple-500\">Slowing</span> enemies inside by 50% and blocking their vision outside the area. The initial impact deals <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(60/110/160/210/260 + (60% Ability Power)) magic damage</span>.",
         "iconFile": "GravesSmokeGrenade.png",
@@ -262,6 +296,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "ImpactDamage",
+            "kind": "damage",
+            "baseByRank": [
+              60,
+              110,
+              160,
+              210,
+              260
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.6000000238418579,
+                  0.6000000238418579,
+                  0.6000000238418579,
+                  0.6000000238418579,
+                  0.6000000238418579
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -272,6 +333,7 @@
         "slot": "E",
         "id": "GravesMove",
         "name": "Quickdraw",
+        "maxRank": 5,
         "summary": "Graves dashes forward gaining an Armor and Magic Resist boost for several seconds. If Graves dashes towards an enemy champion, gain two stacks of True Grit instead. Hitting enemies with basic attacks lowers the cooldown of this skill and refreshes the resistance boost.",
         "bodyHtml": "Graves dashes and reloads one <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Shell</span> into his shotgun. He also gains a stack for 4 seconds (max 8 stacks) or two stacks if he dashes towards an enemy champion. Stacks grant him <span class=\"text-orange-600 dark:text-orange-400\">7/10/13/16/19 Armor</span> and <span>3.5/5/6.5/8/9.5 Magic Resist</span>. Stacks are refreshed when damaging a non-minion.<br /><br />Each bullet hit from Graves' Attacks reduces this Ability's Cooldown by 0.5 seconds.",
         "iconFile": "GravesMove.png",
@@ -328,6 +390,10 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -338,6 +404,7 @@
         "slot": "R",
         "id": "GravesChargeShot",
         "name": "Collateral Damage",
+        "maxRank": 3,
         "summary": "Graves fires an explosive shell dealing heavy damage to the first champion it hits. After hitting a champion or reaching the end of its range, the shell explodes dealing damage in a cone.",
         "bodyHtml": "Graves fires an explosive cartridge, blasting himself backwards. The cartridge deals <span class=\"text-red-600 dark:text-red-500 font-semibold\">(275/425/575 + (150% bonus Attack Damage)) physical damage</span> to the first enemy hit. After hitting an enemy champion or reaching the end of its range, the cartridge explodes outward, dealing <span class=\"text-red-600 dark:text-red-500 font-semibold\">(200/320/440 + (120% bonus Attack Damage)) physical damage</span>.",
         "iconFile": "GravesChargeShot.png",
@@ -388,6 +455,29 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "Damage",
+            "kind": "damage",
+            "baseByRank": [
+              275,
+              425,
+              575
+            ],
+            "terms": [
+              {
+                "stat": "bonusAttackDamage",
+                "coefficientsByRank": [
+                  1.5,
+                  1.5,
+                  1.5
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {

@@ -119,6 +119,7 @@
         "slot": "P",
         "id": "KarthusDeathDefied",
         "name": "Death Defied",
+        "maxRank": 0,
         "summary": "Upon dying, Karthus enters a spirit form that allows him to continue casting spells.",
         "bodyHtml": "When Karthus dies he can use his Abilities for free for 7 seconds.",
         "iconFile": "Karthus_Passive.png",
@@ -126,6 +127,10 @@
         "range": [],
         "rankValues": [],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -136,6 +141,7 @@
         "slot": "Q",
         "id": "KarthusLayWasteA1",
         "name": "Lay Waste",
+        "maxRank": 5,
         "summary": "Karthus unleashes a delayed blast at a location, dealing damage to nearby enemies. Deals increased damage to isolated enemies. ",
         "bodyHtml": "Karthus creates a blast of magic, dealing <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(40/59/78/97/116 + (35% Ability Power)) magic damage</span>. If the blast hits only one enemy, it instead deals <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(80/118/156/194/232 + (70% Ability Power)) magic damage</span>.",
         "iconFile": "KarthusLayWasteA1.png",
@@ -196,6 +202,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "QDamage",
+            "kind": "damage",
+            "baseByRank": [
+              40,
+              59,
+              78,
+              97,
+              116
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.3499999940395355,
+                  0.3499999940395355,
+                  0.3499999940395355,
+                  0.3499999940395355,
+                  0.3499999940395355
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -206,6 +239,7 @@
         "slot": "W",
         "id": "KarthusWallOfPain",
         "name": "Wall of Pain",
+        "maxRank": 5,
         "summary": "Karthus creates a passable screen of leeching energy. Any enemy units that walk through the screen have their Move Speed and Magic Resist reduced for a period.",
         "bodyHtml": "Karthus creates a wall that lasts for 5 seconds. Enemies that pass through lose <span>25% Magic Resist</span> for 5 seconds and are <span class=\"text-purple-600 dark:text-purple-500\">Slowed</span> by 40/50/60/70/80% decaying over the duration.",
         "iconFile": "KarthusWallOfPain.png",
@@ -244,6 +278,10 @@
           }
         ],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -254,6 +292,7 @@
         "slot": "E",
         "id": "KarthusDefile",
         "name": "Defile",
+        "maxRank": 5,
         "summary": "Karthus passively steals energy from his victims, gaining Mana on each kill. Alternatively, Karthus can surround himself in the souls of his prey, dealing damage to nearby enemies, but quickly draining his own Mana.",
         "bodyHtml": "<span class=\"text-gray-600 dark:text-gray-500 italic\">Passive: </span>When Karthus kills a unit, he restores <span>10/20/30/40/50 Mana</span>.<br /><br /><span>Toggle: </span>Karthus creates a necrotic aura, dealing <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(30/50/70/90/110 + (20% Ability Power)) magic damage</span> per second to nearby enemies.",
         "iconFile": "KarthusDefile.png",
@@ -310,6 +349,10 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -320,6 +363,7 @@
         "slot": "R",
         "id": "KarthusFallenOne",
         "name": "Requiem",
+        "maxRank": 3,
         "summary": "After channeling for 3 seconds, Karthus deals damage to all enemy champions.",
         "bodyHtml": "Karthus channels for 3 seconds, then deals <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(200/350/500 + (70% Ability Power)) magic damage</span> to enemy champions, regardless of distance.",
         "iconFile": "KarthusFallenOne.png",
@@ -366,6 +410,29 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "TotalDamage",
+            "kind": "damage",
+            "baseByRank": [
+              200,
+              350,
+              500
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.699999988079071,
+                  0.699999988079071,
+                  0.699999988079071
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {

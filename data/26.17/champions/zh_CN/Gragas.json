@@ -120,6 +120,7 @@
         "slot": "P",
         "id": "GragasPassive",
         "name": "欢乐时光",
+        "maxRank": 0,
         "summary": "古拉加斯可周期性地使用一个技能来治疗自身。",
         "bodyHtml": "古拉加斯每次使用技能后都会喝一小杯，立即恢复<span class=\"text-green-600 dark:text-green-400\">(5.5% 生命值)生命值</span>。",
         "iconFile": "GragasPassiveHeal.png",
@@ -127,6 +128,10 @@
         "range": [],
         "rankValues": [],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -137,6 +142,7 @@
         "slot": "Q",
         "id": "GragasQ",
         "name": "滚动酒桶",
+        "maxRank": 5,
         "summary": "古拉加斯将酒桶滚到目标地点，酒桶可以被主动引爆或在到达目标地点4秒后自行爆炸。爆炸的威力会随时间持续提升。被酒桶炸到的敌人，移动速度会被降低。",
         "bodyHtml": "古拉加斯滚动出一个酒桶，该酒桶会在4秒后爆炸， 造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(80/120/160/200/240 + (80% 法术强度))魔法伤害</span>到<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(120/180/240/300/360 + (120% 法术强度))魔法伤害</span>和持续2秒的40/45/50/55/60到60/67.5/75/82.5/90%<span class=\"text-purple-600 dark:text-purple-500\">减速</span>。伤害和<span class=\"text-purple-600 dark:text-purple-500\">减速</span>会基于该酒桶在爆炸前的时长来提升。<br /><br />古拉加斯可以<span class=\"text-yellow-600 dark:text-yellow-300\">再次施放</span>这个技能来提前引爆该酒桶。<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">对小兵造成70%伤害。</span>",
         "iconFile": "GragasQ.png",
@@ -193,6 +199,12 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "unsupported",
+          "unsupportedPartTypes": [
+            "GameCalculationModified"
+          ]
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -203,6 +215,7 @@
         "slot": "W",
         "id": "GragasW",
         "name": "醉酒狂暴",
+        "maxRank": 5,
         "summary": "古拉加斯品尝他的最新佳酿，持续1秒。在喝完之后，他会变得喧闹且好斗，下次普通攻击会对附近的所有目标造成更多伤害，并且自身所受的伤害会降低。",
         "bodyHtml": "古拉加斯品尝他的最新佳酿，使即将到来的伤害降低(10/14/18/22/26% + (0.04% 法术强度))，持续2.5秒，此外，他的下次攻击获得强化，对目标及目标身边的敌人们造成额外的<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(20/50/80/110/140 + (70% 法术强度))</span>外加<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">7%最大生命值的魔法伤害</span>。<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">对野怪的最大生命值伤害的上限为300。</span><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">对建筑物造成50%伤害。</span>",
         "iconFile": "GragasW.png",
@@ -255,6 +268,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "TotalDamage",
+            "kind": "damage",
+            "baseByRank": [
+              20,
+              50,
+              80,
+              110,
+              140
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.699999988079071,
+                  0.699999988079071,
+                  0.699999988079071,
+                  0.699999988079071,
+                  0.699999988079071
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -265,6 +305,7 @@
         "slot": "E",
         "id": "GragasE",
         "name": "肉弹冲击",
+        "maxRank": 5,
         "summary": "古拉加斯向目标区域冲锋，在撞上第一个敌人后，对附近的所有敌方单位造成伤害和晕眩效果。",
         "bodyHtml": "古拉加斯向前冲锋，撞击命中的第一名敌人，使附近的敌人<span class=\"text-purple-600 dark:text-purple-500\">击飞</span>1秒并对其造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(80/125/170/215/260 + (60% 法术强度))魔法伤害</span>。<br /><br />当古拉加斯撞到一个敌人时，这个技能的冷却时间会缩短40%。",
         "iconFile": "GragasE.png",
@@ -317,6 +358,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "TotalDamage",
+            "kind": "damage",
+            "baseByRank": [
+              80,
+              125,
+              170,
+              215,
+              260
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.6000000238418579,
+                  0.6000000238418579,
+                  0.6000000238418579,
+                  0.6000000238418579,
+                  0.6000000238418579
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -327,6 +395,7 @@
         "slot": "R",
         "id": "GragasR",
         "name": "爆破酒桶",
+        "maxRank": 3,
         "summary": "古拉加斯向目标区域投掷他的酒桶，对爆炸范围内的所有敌人造成伤害和击退效果。",
         "bodyHtml": "古拉加斯猛抛他的酒桶，造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(200/300/400 + (80% 法术强度))魔法伤害</span>并将敌人们从爆炸中心<span class=\"text-purple-600 dark:text-purple-500\">击退</span>。<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">敌人不可以被这个技能<span class=\"text-purple-600 dark:text-purple-500\">击退</span>得越过墙体。</span>",
         "iconFile": "GragasR.png",
@@ -373,6 +442,29 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "DamageDone",
+            "kind": "damage",
+            "baseByRank": [
+              200,
+              300,
+              400
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.800000011920929,
+                  0.800000011920929,
+                  0.800000011920929
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {

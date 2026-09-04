@@ -119,6 +119,7 @@
         "slot": "P",
         "id": "ZaahenPassive",
         "name": "Cultivation of War",
+        "maxRank": 0,
         "summary": "Zaahen's attacks and abilities against enemy champions  grant him stacks of Determination, gaining bonus Attack Damage per stack. When filled with Determination, Zaahen gains increased Attack Damage and can revive.",
         "bodyHtml": "Zaahen gains a stack of <span>Determination</span> when he hits an enemy champion with an Attack or Ability (max 12). He gains <span class=\"text-red-600 dark:text-red-500 font-semibold\"> increased Attack Damage</span> per stack.<br /><br />When filled with <span>Determination</span>, Zaahen doubles the granted <span class=\"text-red-600 dark:text-red-500 font-semibold\">Attack Damage</span>, and if he would die, he instead enters Stasis for 4 seconds then revives with <span class=\"text-green-600 dark:text-green-400\"> of his max Health</span>.<br /><br />Zaahen's revive has a 120 second Cooldown.<br />",
         "iconFile": "ZaahenP.png",
@@ -126,6 +127,10 @@
         "range": [],
         "rankValues": [],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -136,6 +141,7 @@
         "slot": "Q",
         "id": "ZaahenQ",
         "name": "The Darkin Glaive",
+        "maxRank": 5,
         "summary": "Zaahen slashes twice on his next attack, dealing bonus damage and healing himself. Zaahen can recast this ability to have his next attack deal bonus damage and knock up his target.<br>",
         "bodyHtml": "Zaahen slashes twice on his next Attack, dealing <span class=\"text-red-600 dark:text-red-500 font-semibold\">(15/30/45/60/75 + (20/25/30/35/40% bonus Attack Damage)) bonus physical damage</span> and restoring <span class=\"text-green-600 dark:text-green-400\">5/6/7/8/9% of his max Health</span>.<br /><br /><span class=\"text-yellow-600 dark:text-yellow-300\">Recast:</span> Zaahen's next Attack deals <span class=\"text-red-600 dark:text-red-500 font-semibold\">(25/50/75/100/125 + (20/25/30/35/40% bonus Attack Damage)) bonus physical damage</span> and <span class=\"text-purple-600 dark:text-purple-500\">Knocks</span> the target Up for 0.75 seconds.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">Healing reduced to 50% against non-champions.</span><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">Deals an additional 100% bonus damage to monsters.</span>",
         "iconFile": "ZaahenQ.png",
@@ -200,6 +206,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "InitialDamage",
+            "kind": "damage",
+            "baseByRank": [
+              15,
+              30,
+              45,
+              60,
+              75
+            ],
+            "terms": [
+              {
+                "stat": "bonusAttackDamage",
+                "coefficientsByRank": [
+                  0.20000000298023224,
+                  0.25,
+                  0.30000001192092896,
+                  0.3499999940395355,
+                  0.4000000059604645
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -210,6 +243,7 @@
         "slot": "W",
         "id": "ZaahenW",
         "name": "Dreaded Return",
+        "maxRank": 5,
         "summary": "Zaahen stabs in a direction, damaging enemies hit, then pulls them toward him.",
         "bodyHtml": "Zaahen stabs in a direction, dealing <span class=\"text-red-600 dark:text-red-500 font-semibold\">(40/60/80/100/120 + (50% bonus Attack Damage)) physical damage</span> to enemies hit, then <span class=\"text-purple-600 dark:text-purple-500\">Pulls</span> them toward him, dealing <span class=\"text-red-600 dark:text-red-500 font-semibold\">(30/50/70/90/110 + (30% bonus Attack Damage)) physical damage</span>.",
         "iconFile": "ZaahenW.png",
@@ -266,6 +300,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "InitialDamage",
+            "kind": "damage",
+            "baseByRank": [
+              40,
+              60,
+              80,
+              100,
+              120
+            ],
+            "terms": [
+              {
+                "stat": "bonusAttackDamage",
+                "coefficientsByRank": [
+                  0.5,
+                  0.5,
+                  0.5,
+                  0.5,
+                  0.5
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -276,6 +337,7 @@
         "slot": "E",
         "id": "ZaahenE",
         "name": "Aureate Rush",
+        "maxRank": 5,
         "summary": "Zaahen dashes to a location and slices around himself.",
         "bodyHtml": "Zaahen dashes then slices around himself, dealing <span class=\"text-red-600 dark:text-red-500 font-semibold\">(40/60/80/100/120 + (50% bonus Attack Damage)) physical damage</span> to nearby enemies.<br /><br />Enemies at the edge of the slice take <span class=\"text-red-600 dark:text-red-500 font-semibold\">(60/90/120/150/180 + (75% bonus Attack Damage)) physical damage</span> <span class=\"text-blue-600 dark:text-blue-500 font-semibold\"> + 4/4.5/5/5.5/6% of their maximum Health as magic damage</span> instead.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">Deals an additional <span class=\"text-red-600 dark:text-red-500 font-semibold\">50 bonus physical damage</span> to monsters.</span><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">Additional Maximum Health damage capped to 400 against monsters.</span><br />",
         "iconFile": "ZaahenE.png",
@@ -336,6 +398,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "BaseDamageCalc",
+            "kind": "damage",
+            "baseByRank": [
+              40,
+              60,
+              80,
+              100,
+              120
+            ],
+            "terms": [
+              {
+                "stat": "bonusAttackDamage",
+                "coefficientsByRank": [
+                  0.5,
+                  0.5,
+                  0.5,
+                  0.5,
+                  0.5
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -346,6 +435,7 @@
         "slot": "R",
         "id": "ZaahenR",
         "name": "Grim Deliverance",
+        "maxRank": 3,
         "summary": "Zaahen rises then stabs downward, damaging enemies and healing for a portion of the damage dealt.",
         "bodyHtml": "<span class=\"text-gray-600 dark:text-gray-500 italic\">Passive</span>: Zaahen gains <span>10/20/30% Armor Penetration</span>.<br /><br /><span class=\"text-gray-900 dark:text-white font-semibold\">Active</span>: Zaahen rises, gaining 50% Damage Reduction while casting.<br /><br />Zaahen then stabs downward, dealing <span class=\"text-red-600 dark:text-red-500 font-semibold\">(250/400/550 + (200% bonus Attack Damage)) physical damage</span> and restoring <span class=\"text-green-600 dark:text-green-400\">33% of the damage dealt to enemy champions as Health</span>.",
         "iconFile": "ZaahenR.png",
@@ -396,6 +486,29 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "DamageEndCalc",
+            "kind": "damage",
+            "baseByRank": [
+              250,
+              400,
+              550
+            ],
+            "terms": [
+              {
+                "stat": "bonusAttackDamage",
+                "coefficientsByRank": [
+                  2,
+                  2,
+                  2
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {

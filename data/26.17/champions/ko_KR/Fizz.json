@@ -120,6 +120,7 @@
         "slot": "P",
         "id": "FizzPassive",
         "name": "영리한 싸움꾼",
+        "maxRank": 0,
         "summary": "피즈는 유닛을 통과할 수 있으며 모든 공격으로부터 받는 피해가 고정된 수치만큼 감소합니다.",
         "bodyHtml": "피즈가 유체화 상태가 되고 모든 공격으로부터 받는 피해가 (4 + (1% 주문력)) 감소합니다.",
         "iconFile": "Fizz_P.png",
@@ -127,6 +128,10 @@
         "range": [],
         "rankValues": [],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -137,6 +142,7 @@
         "slot": "Q",
         "id": "FizzQ",
         "name": "성게 찌르기",
+        "maxRank": 5,
         "summary": "피즈가 대상을 뚫고 지나가며 마법 피해를 줍니다. 적중 시 효과도 적용됩니다.",
         "bodyHtml": "피즈가 적을 관통하며 돌진해 <span class=\"text-red-600 dark:text-red-500 font-semibold\">(100% 공격력)의 물리 피해</span>에 <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(10/25/40/55/70 + (55% 주문력))의 마법 피해</span>를 추가로 입힙니다.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">이 스킬은 적중 시 효과가 적용됩니다.</span>",
         "iconFile": "FizzQ.png",
@@ -189,6 +195,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "TotalDamage",
+            "kind": "damage",
+            "baseByRank": [
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "terms": [
+              {
+                "stat": "totalAttackDamage",
+                "coefficientsByRank": [
+                  1,
+                  1,
+                  1,
+                  1,
+                  1
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -199,6 +232,7 @@
         "slot": "W",
         "id": "FizzW",
         "name": "심해석 삼지창",
+        "maxRank": 5,
         "summary": "피즈가 적을 공격하면 출혈 효과가 적용되어 몇 초 동안 마법 피해를 입힙니다. 피즈의 다음 기본 공격이 추가 피해를 입히며, 이후 공격이 잠시 동안 강화됩니다.",
         "bodyHtml": "<span class=\"text-gray-600 dark:text-gray-500 italic\">기본 지속 효과</span>: 피즈가 적에게 기본 공격을 가하면 출혈을 일으켜 3초 동안 <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(30/45/60/75/90 + (25% 주문력))의 마법 피해</span>를 입힙니다. <br /><br /><span class=\"text-gray-900 dark:text-white font-semibold\">사용 시</span>: 피즈의 다음 기본 공격이 <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(50/75/100/125/150 + (45% 주문력))의 마법 피해</span>를 추가로 입힙니다. 이 공격으로 대상을 처치하면 피즈가 <span>30/40/50/60/70의 마나</span>를 돌려받고 이 스킬의 재사용 대기시간이 1초로 감소합니다. 대상을 처치하지 못하면 피즈의 기본 공격이 5초 동안 <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(20/25/30/35/40 + (30% 주문력))의 마법 피해</span>를 추가로 입힙니다.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">기본 공격이 정글 몬스터에게 90의 추가 피해를 입힙니다.<br />기본 공격이 구조물에 50%의 피해를 입힙니다.</span>",
         "iconFile": "FizzW.png",
@@ -267,6 +301,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "ActiveDamage",
+            "kind": "damage",
+            "baseByRank": [
+              50,
+              75,
+              100,
+              125,
+              150
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.44999998807907104,
+                  0.44999998807907104,
+                  0.44999998807907104,
+                  0.44999998807907104,
+                  0.44999998807907104
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -277,6 +338,7 @@
         "slot": "E",
         "id": "FizzE",
         "name": "장난치기 / 재간둥이",
+        "maxRank": 5,
         "summary": "피즈가 자신의 창 위로 뛰어올라 목표로 지정할 수 없게 됩니다. 이 상태에서 피즈는 땅을 내리치거나 다시금 뛰어오를 수 있습니다.",
         "bodyHtml": "피즈가 삼지창 위에 서고 0.75초 동안 대상으로 지정할 수 없는 상태가 됩니다. 이후 근처 적에게 <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(80/130/180/230/280 + (95% 주문력))의 마법 피해</span>를 입히고 2초 동안 40/45/50/55/60% <span class=\"text-purple-600 dark:text-purple-500\">둔화</span>시킵니다. <br /><br />피즈가 대상으로 지정할 수 없는 상태에서 이 스킬을 <span class=\"text-yellow-600 dark:text-yellow-300\">재사용</span>하면 다시 돌진하면서 효과가 일찍 끝나며 보다 작은 지역에 피해를 입히고 <span class=\"text-purple-600 dark:text-purple-500\">둔화</span> 효과를 적용하지 않습니다.",
         "iconFile": "FizzE.png",
@@ -337,6 +399,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "EDamage",
+            "kind": "damage",
+            "baseByRank": [
+              80,
+              130,
+              180,
+              230,
+              280
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.949999988079071,
+                  0.949999988079071,
+                  0.949999988079071,
+                  0.949999988079071,
+                  0.949999988079071
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -347,6 +436,7 @@
         "slot": "R",
         "id": "FizzR",
         "name": "미끼 뿌리기",
+        "maxRank": 3,
         "summary": "피즈가 지정한 방향으로 마법 물고기를 풀어놓으면, 이 물고기를 건드리는 챔피언에게 들러붙어 이동 속도를 늦춥니다. 잠시 후 상어가 땅 밑에서 튀어나와 대상을 띄워올리며 주변에 있는 적은 옆으로 밀어냅니다. 상어에게 맞은 적은 모두 마법 피해를 입으며 속도가 느려집니다.",
         "bodyHtml": "피즈가 물고기를 풀어 처음으로 부딪힌 챔피언에게 붙게 합니다. 대상 챔피언은 <span class=\"text-purple-600 dark:text-purple-400 font-semibold\">절대 시야</span>의 영향을 받으며 물고기가 대상에게 붙기 전 이동한 거리에 비례해 40% ~ 80% <span class=\"text-purple-600 dark:text-purple-500\">둔화</span>됩니다. <br /><br />2초 후 상어가 튀어나와 물고기가 붙은 대상을 1초 동안 <span class=\"text-purple-600 dark:text-purple-500\">공중으로 띄워 올리고</span> 다른 대상을 모두 <span class=\"text-purple-600 dark:text-purple-500\">밀어내며</span> 물고기가 대상에게 붙기 전 이동한 거리에 비례해 <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(180/300/420 + (60% 주문력)) ~ (270/450/630 + (90% 주문력))의 마법 피해</span>를 입힙니다.",
         "iconFile": "FizzR.png",
@@ -401,6 +491,12 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "unsupported",
+          "unsupportedPartTypes": [
+            "GameCalculationModified"
+          ]
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {

@@ -120,6 +120,7 @@
         "slot": "P",
         "id": "NilahPassive",
         "name": "喜色川流",
+        "maxRank": 0,
         "summary": "尼菈在对小兵进行补刀时可获得提升过的经验值，并且能够增强与分享附近的来自她友方的治疗和护盾效果。",
         "bodyHtml": "当尼菈击杀一个小兵时，她和距她最近的那名友方英雄获得50%他们本该因分享击杀而正常损失的经验值。<br /><br />尼菈在获得来自友方英雄技能提供的治疗和护盾时，会将<span class=\"text-green-600 dark:text-green-400\">治疗效能提升7.5%</span>，将<span class=\"text-blue-600 dark:text-blue-300\">护盾效能提升15%</span>。如果一名友方英雄对她提供了治疗或护盾，那么该友方英雄自身也将获得相当于该提升数额的护盾和治疗。如果一名友方英雄对其自身提供了治疗或护盾，那么尼菈也将获得该额外效果。",
         "iconFile": "NIlahP.png",
@@ -127,6 +128,10 @@
         "range": [],
         "rankValues": [],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -137,6 +142,7 @@
         "slot": "Q",
         "id": "NilahQ",
         "name": "游刃万变",
+        "maxRank": 5,
         "summary": "随着她鞭刃的一次抽击，尼菈对她所选方向中一条直线上命中的任何敌人们造成伤害。这个行动会在短时间里延伸她的攻击距离。",
         "bodyHtml": "<span class=\"text-gray-600 dark:text-gray-500 italic\">被动：</span>尼菈获得(30%)护甲穿透，并且她对英雄进行的攻击会回复自身<span class=\"text-green-600 dark:text-green-400\">(20%)造成伤害值的生命值</span>。来自这个效果的过量治疗将转化为一个持续4秒的<span class=\"text-blue-600 dark:text-blue-300\">护盾</span>。<br /><br /><span class=\"text-gray-900 dark:text-white font-semibold\">主动：</span>尼菈甩出她的鞭刃，造成 <span class=\"text-red-600 dark:text-red-500 font-semibold\">(0/10/20/30/40 + (100% 攻击力))物理伤害</span>。如果命中了一个敌方单位或建筑物，尼菈就会获得125攻击距离和<span>(10 ~ 60)攻击速度</span>，并且她的攻击会命中一个锥形范围，这些效果持续4秒。<br /><br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">伤害可通过她的暴击几率和暴击伤害来提升，效能为70%。<br />如果在<span>纵情逐流</span>期间施放，尼菈会生成一道水波来打击她路径上的所有敌人。</span><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">群体攻击对小兵造成造成33%伤害并对野怪造成100%伤害。</span><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">这个技能会处决低生命值的小兵。</span>",
         "iconFile": "NilahQ.png",
@@ -185,6 +191,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "AttackTotalDamageTooltip",
+            "kind": "damage",
+            "baseByRank": [
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "terms": [
+              {
+                "stat": "totalAttackDamage",
+                "coefficientsByRank": [
+                  1,
+                  1,
+                  1,
+                  1,
+                  1
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -195,6 +228,7 @@
         "slot": "W",
         "id": "NilahW",
         "name": "轻纱飞漾",
+        "maxRank": 5,
         "summary": "尼菈将自身裹入迷雾中，提升她的移动速度并使她能够优雅地躲避所有即将到来的攻击。在迷雾期间，她接触到的任何友方英雄也都会获得这个效果。",
         "bodyHtml": "尼菈将自身裹入迷雾中2.25秒，从而变为幽灵状态、获得<span class=\"text-cyan-600 dark:text-cyan-500\">15/17.5/20/22.5/25%移动速度</span>、躲避攻击并使所受的<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">魔法伤害</span>降低25%。<br /><br />在激活期间，她接触到的任何友方英雄也都会裹入迷雾中，获得持续1.5秒的相同增益。<br /><br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">【幽灵】状态的单位能够无视其它单位的碰撞体积。</span>",
         "iconFile": "NilahW.png",
@@ -237,6 +271,10 @@
           }
         ],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -247,6 +285,7 @@
         "slot": "E",
         "id": "NilahE",
         "name": "纵情逐流",
+        "maxRank": 5,
         "summary": "尼菈热情洋溢地朝着她的目标冲刺，对她途经的任何敌人们造成伤害。",
         "bodyHtml": "尼菈冲刺并穿过一个单位，对她途经的任何敌人们造成<span class=\"text-red-600 dark:text-red-500 font-semibold\">(60/70/80/90/100 + (20% 额外攻击力))物理伤害</span>。",
         "iconFile": "NilahE.png",
@@ -307,6 +346,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "DashDamage",
+            "kind": "damage",
+            "baseByRank": [
+              60,
+              70,
+              80,
+              90,
+              100
+            ],
+            "terms": [
+              {
+                "stat": "bonusAttackDamage",
+                "coefficientsByRank": [
+                  0.20000000298023224,
+                  0.20000000298023224,
+                  0.20000000298023224,
+                  0.20000000298023224,
+                  0.20000000298023224
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -317,6 +383,7 @@
         "slot": "R",
         "id": "NilahR",
         "name": "神恩激荡",
+        "maxRank": 3,
         "summary": "尼菈快乐洋溢地挥舞她的鞭刃，对她周围的敌人们造成伤害，然后用她的武器将他们拉得更加靠近。",
         "bodyHtml": "尼菈挥舞她的鞭刃，在1秒里持续造成<span class=\"text-red-600 dark:text-red-500 font-semibold\">(60/100/140 + (40% 额外攻击力))物理伤害</span>，然后用一次<span class=\"text-red-600 dark:text-red-500 font-semibold\">(125/225/325 + (100% 额外攻击力))物理伤害</span>的爆发来完成挥舞，并将附近的敌人们<span class=\"text-purple-600 dark:text-purple-500\">拉拽</span>向她。<br /><br />【神恩激荡】对尼菈和附近的友方英雄们进行治疗，治疗量相当于<span class=\"text-green-600 dark:text-green-400\">她对敌方英雄们的(20% + (10%)) ( + 游刃万变)造成伤害值</span>，并将任何过量治疗转化为一个持续6秒的<span class=\"text-blue-600 dark:text-blue-300\">护盾</span>。<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">对非英雄单位的治疗效果降低至10%。</span>",
         "iconFile": "NilahR.png",
@@ -367,6 +434,29 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "DamageCalc",
+            "kind": "damage",
+            "baseByRank": [
+              125,
+              225,
+              325
+            ],
+            "terms": [
+              {
+                "stat": "bonusAttackDamage",
+                "coefficientsByRank": [
+                  1,
+                  1,
+                  1
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {

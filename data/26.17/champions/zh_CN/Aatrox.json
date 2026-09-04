@@ -119,6 +119,7 @@
         "slot": "P",
         "id": "AatroxPassive",
         "name": "赐死剑气",
+        "maxRank": 0,
         "summary": "每过一段时间，亚托克斯的下次普攻会造成额外<magicDamage>魔法伤害</magicDamage>，并治疗亚托克斯，治疗量基于目标的最大生命值。 ",
         "bodyHtml": "亚托克斯的攻击造成额外的<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(4% ~ 10%)最大生命值魔法伤害</span>并回复<span class=\"text-green-600 dark:text-green-400\">100%实际伤害值的生命值</span>，对小兵时降低至25%。这个效果有(22 ~ 10)秒冷却时间。<br /><br />对英雄和大型野怪进行的攻击和技能会使这个效果的冷却时间缩短2秒。用<span>暗裔利刃</span>的边缘命中时会使这个效果的冷却时间缩短4秒。",
         "iconFile": "Aatrox_Passive.png",
@@ -126,6 +127,10 @@
         "range": [],
         "rankValues": [],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -136,6 +141,7 @@
         "slot": "Q",
         "id": "AatroxQ",
         "name": "暗裔利刃",
+        "maxRank": 5,
         "summary": "亚托克斯向下猛砸他的巨剑，并造成物理伤害。他可以挥击三次，每次都有一个不同的范围效果。",
         "bodyHtml": "亚托克斯猛砸他的巨剑，造成<span class=\"text-red-600 dark:text-red-500 font-semibold\">(10/25/40/55/70 + (60/67.5/75/82.5/90% 攻击力))物理伤害</span>。如果敌人被边缘命中，还会被暂时<span class=\"text-purple-600 dark:text-purple-500\">击飞</span>并转而受到<span class=\"text-red-600 dark:text-red-500 font-semibold\">(10/25/40/55/70 + (60/67.5/75/82.5/90% 攻击力))伤害</span>。这个技能可以<span class=\"text-yellow-600 dark:text-yellow-300\">再次施放</span>两段，每段都会改变形状并比上一段多造成25%伤害。<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">对小兵造成80%伤害。<br />对野怪的<span class=\"text-purple-600 dark:text-purple-500\">击飞</span>时长翻倍并且它造成25额外伤害。</span>",
         "iconFile": "AatroxQ.png",
@@ -182,6 +188,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "QDamage",
+            "kind": "damage",
+            "baseByRank": [
+              10,
+              25,
+              40,
+              55,
+              70
+            ],
+            "terms": [
+              {
+                "stat": "totalAttackDamage",
+                "coefficientsByRank": [
+                  0.6000000238418579,
+                  0.675000011920929,
+                  0.75,
+                  0.824999988079071,
+                  0.8999999761581421
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -192,6 +225,7 @@
         "slot": "W",
         "id": "AatroxW",
         "name": "恶火束链",
+        "maxRank": 5,
         "summary": "亚托克斯猛砸地面，对命中的第一个敌人造成伤害。英雄和大型野怪需要快速离开被影响的区域，否则就会被拖拽到中心并再次受到伤害。",
         "bodyHtml": "亚托克斯发射一道锁链，对命中的第一个敌人造成持续 1.5秒的25/27.5/30/32.5/35%<span class=\"text-purple-600 dark:text-purple-500\">减速</span>和<span class=\"text-red-600 dark:text-red-500 font-semibold\">(30/40/50/60/70 + (40% 攻击力))物理伤害</span>。英雄和大型野怪需要在1.5秒内离开被影响的区域，否则就会被<span class=\"text-purple-600 dark:text-purple-500\">拖拽</span>回中心并再次受到等额伤害。<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">对小兵造成双倍伤害。</span>",
         "iconFile": "AatroxW.png",
@@ -238,6 +272,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "WDamage",
+            "kind": "damage",
+            "baseByRank": [
+              30,
+              40,
+              50,
+              60,
+              70
+            ],
+            "terms": [
+              {
+                "stat": "totalAttackDamage",
+                "coefficientsByRank": [
+                  0.4000000059604645,
+                  0.4000000059604645,
+                  0.4000000059604645,
+                  0.4000000059604645,
+                  0.4000000059604645
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -248,6 +309,7 @@
         "slot": "E",
         "id": "AatroxE",
         "name": "暗影冲决",
+        "maxRank": 5,
         "summary": "被动效果：亚托克斯会在对敌方英雄造成伤害时治疗自身。主动效果：他会朝一个方向突进。",
         "bodyHtml": "<span class=\"text-gray-600 dark:text-gray-500 italic\">被动：</span>亚托克斯获得治疗效果，相当于他对英雄造成的<span class=\"text-green-600 dark:text-green-500\">(16% + (0.01% 额外生命值))</span>伤害。<br /><br /><span class=\"text-gray-900 dark:text-white font-semibold\">主动：</span>亚托克斯突进。他可以在其它技能的前摇阶段使用这个技能。",
         "iconFile": "AatroxE.png",
@@ -286,6 +348,10 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -296,6 +362,7 @@
         "slot": "R",
         "id": "AatroxR",
         "name": "大灭",
+        "maxRank": 3,
         "summary": "亚托克斯现出他的恶魔形态，恐惧附近的敌方小兵，并获得攻击力、治疗效果提升、以及移动速度。如果他参与了一次击杀，这个效果就会延长。",
         "bodyHtml": "亚托克斯显现他真正的恶魔形态，<span class=\"text-purple-600 dark:text-purple-500\">恐惧</span>附近的小兵3秒并获得在 10秒里持续衰减的<span class=\"text-cyan-600 dark:text-cyan-500\">60/80/100%移动速度</span>。在此期间，他还会获得<span class=\"text-orange-600 dark:text-orange-500\">20/30/40%攻击力</span>并提升<span class=\"text-green-600 dark:text-green-400\">50/75/100%自我治疗效果</span>。<br /><br />参与击杀英雄后会使这个效果的持续时间延长5秒并刷新<span class=\"text-cyan-600 dark:text-cyan-500\">移动速度</span>效果。<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">持续时间最多只会提升到10秒。</span>",
         "iconFile": "AatroxR.png",
@@ -328,6 +395,10 @@
           }
         ],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {

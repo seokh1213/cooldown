@@ -120,6 +120,7 @@
         "slot": "P",
         "id": "KarmaPassive",
         "name": "Gathering Fire",
+        "maxRank": 0,
         "summary": "Karma's damaging abilities will reduce the cooldown of Mantra.",
         "bodyHtml": "Karma begins the game with a point in <span></span>.<br /><br />She reduces the Cooldown of <span></span> by 4 seconds when she damages a champion with an Ability.",
         "iconFile": "Karma_Passive.png",
@@ -127,6 +128,10 @@
         "range": [],
         "rankValues": [],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -137,6 +142,7 @@
         "slot": "Q",
         "id": "KarmaQ",
         "name": "Inner Flame",
+        "maxRank": 5,
         "summary": "Karma sends forth a ball of spirit energy that explodes and deals damage upon hitting an enemy unit.<br><br>Mantra Bonus: In addition to the explosion, Mantra increases the destructive power of her Inner Flame, creating a cataclysm which deals damage after a short delay.",
         "bodyHtml": "Karma fires a blast of energy, dealing <magicDamage>{{ totaldamage }} magic damage</magicDamage> to the first target hit and surrounding enemies, and <status>Slowing</status> them by {{ slowamount*-100 }}% for {{ slowduration }} seconds.{{ spellmodifierdescriptionappend }}",
         "iconFile": "KarmaQ.png",
@@ -193,6 +199,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "TotalDamage",
+            "kind": "damage",
+            "baseByRank": [
+              60,
+              110,
+              160,
+              210,
+              260
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.699999988079071,
+                  0.699999988079071,
+                  0.699999988079071,
+                  0.699999988079071,
+                  0.699999988079071
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "ddragon",
         "diagnostics": {
@@ -203,6 +236,7 @@
         "slot": "W",
         "id": "KarmaSpiritBind",
         "name": "Focused Resolve",
+        "maxRank": 5,
         "summary": "Karma creates a tether between herself and a targeted enemy, dealing damage and revealing them. If the tether is not broken, the enemy will be rooted and damaged again.<br><br>Mantra Bonus: Karma strengthens the link, healing herself and extending the root duration.",
         "bodyHtml": "Karma tethers herself to a champion or jungle monster, dealing <magicDamage>{{ initialdamage }} magic damage</magicDamage> and revealing them for {{ tetherduration }}s. If the tether remains unbroken, the target takes <magicDamage>{{ initialdamage }} magic damage</magicDamage> again and is <status>Rooted</status> for {{ rootduration }}s.{{ spellmodifierdescriptionappend }}",
         "iconFile": "KarmaSpiritBind.png",
@@ -259,6 +293,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "InitialDamage",
+            "kind": "damage",
+            "baseByRank": [
+              40,
+              65,
+              90,
+              115,
+              140
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.44999998807907104,
+                  0.44999998807907104,
+                  0.44999998807907104,
+                  0.44999998807907104,
+                  0.44999998807907104
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "ddragon",
         "diagnostics": {
@@ -269,6 +330,7 @@
         "slot": "E",
         "id": "KarmaSolKimShield",
         "name": "Inspire",
+        "maxRank": 5,
         "summary": "Karma summons a protective shield that absorbs incoming damage and increases the Move Speed of the protected ally.<br><br>Mantra Bonus: Energy radiates out from her target, strengthening the initial shield and applying Inspire to nearby allied champions.",
         "bodyHtml": "Karma grants an allied champion <shield>{{ totalshield }} Shield</shield> for {{ shieldduration }}s and <speed>{{ movespeed*100 }}% Move Speed</speed> for {{ movespeedduration }}s.{{ spellmodifierdescriptionappend }}",
         "iconFile": "KarmaSolKimShield.png",
@@ -325,6 +387,10 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "ddragon",
         "diagnostics": {
@@ -335,6 +401,7 @@
         "slot": "R",
         "id": "KarmaMantra",
         "name": "Mantra",
+        "maxRank": 4,
         "summary": "Karma empowers her next ability to do an additional effect. Mantra is available at level 1 and does not require a skill point.",
         "bodyHtml": "Karma empowers her next Ability used within 8 seconds.<br /><span><span>Inner Flame</span>: Deals an additional <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(40/100/160/220 + (30% Ability Power)) magic damage</span> and leaves behind a circle of flame, <span class=\"text-purple-600 dark:text-purple-500\">Slowing</span> enemies and dealing an additional <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(40/130/220/310 + (50% Ability Power)) magic damage</span>.<span><span>Focused Resolve</span>: Karma will restore <span class=\"text-green-600 dark:text-green-400\">(17% + (0.01% Ability Power)) missing Health</span> at the beginning and end of the tether, and <span class=\"text-purple-600 dark:text-purple-500\">Root</span> for 0.5/0.75/1/1.25s longer.<span><span>Inspire</span>: Karma shields her target for <span class=\"text-blue-600 dark:text-blue-300\">(45/85/125/165 + (45% Ability Power)) more Shield</span>, and also shields allies near her target, granting them <span class=\"text-blue-600 dark:text-blue-300\">(45/85/125/165 + (45% Ability Power)) Shield</span> and <span class=\"text-cyan-600 dark:text-cyan-500\">15% Move Speed</span>.",
         "iconFile": "KarmaMantra.png",
@@ -387,6 +454,31 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "RQFieldDamage",
+            "kind": "damage",
+            "baseByRank": [
+              40,
+              130,
+              220,
+              310
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.5,
+                  0.5,
+                  0.5,
+                  0.5
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {

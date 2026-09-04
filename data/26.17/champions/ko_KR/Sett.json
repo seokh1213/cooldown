@@ -120,6 +120,7 @@
         "slot": "P",
         "id": "SettPassive",
         "name": "투기장의 투지",
+        "maxRank": 0,
         "summary": "세트는 기본 공격 시 양 주먹을 번갈아 사용합니다. 오른쪽 주먹이 약간 더 강하고 빠릅니다. 또한 세트는 불굴의 의지로 잃은 체력에 비례해 추가로 체력을 회복합니다.",
         "bodyHtml": "세트는 기본 공격 시 양 주먹을 번갈아 사용합니다. 왼쪽 주먹을 날린 후 곧바로 오른쪽 주먹을 날리며 <span class=\"text-red-600 dark:text-red-500 font-semibold\">(55% 추가 공격력)의 물리 피해</span>를 추가로 입힙니다.<br /><br />세트가 잃은 체력의 5%당 <span class=\"text-green-600 dark:text-green-400\">2의 체력 재생</span> 효과를 얻습니다.",
         "iconFile": "Sett_P.png",
@@ -127,6 +128,10 @@
         "range": [],
         "rankValues": [],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -137,6 +142,7 @@
         "slot": "Q",
         "id": "SettQ",
         "name": "주먹다짐",
+        "maxRank": 5,
         "summary": "세트의 다음 두 번의 공격이 대상 최대 체력에 비례해 추가 피해를 입힙니다. 또한 세트는 적 챔피언을 향해 이동할 때 이동 속도가 올라갑니다.",
         "bodyHtml": "세트가 싸움을 찾아 적 챔피언을 향해 이동할 때 1.5초 동안 <span class=\"text-cyan-600 dark:text-cyan-500\">이동 속도가 30%</span> 증가합니다.<br /><br />또한 세트의 다음 두 번의 기본 공격은 <span class=\"text-red-600 dark:text-red-500 font-semibold\">10/20/30/40/50 + 최대 체력의 (1% + (0.01/0.02/0.02/0.03/0.03% 공격력))에 해당하는 물리 피해</span>를 추가로 입힙니다.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">기본 공격 시 언제나 왼쪽 주먹과 오른쪽 주먹을 날립니다. 몬스터에게는 주먹을 날릴 때마다 최대 <span class=\"text-red-600 dark:text-red-500 font-semibold\">400의 피해</span>를 입힙니다.</span>",
         "iconFile": "SettQ.png",
@@ -183,6 +189,10 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -193,6 +203,7 @@
         "slot": "W",
         "id": "SettW",
         "name": "강펀치",
+        "maxRank": 5,
         "summary": "세트가 받은 피해를 기본 지속 효과를 통해 투지로 저장합니다. 스킬 사용 시 저장한 모든 투지를 소모하여 보호막을 얻고 지정한 방향으로 펀치를 날려 중심선에 있는 적들에게 고정 피해를 입히고 중심선 밖에 있는 적들에게 물리 피해를 입힙니다.",
         "bodyHtml": "<span class=\"text-gray-600 dark:text-gray-500 italic\">기본 지속 효과:</span> 세트가 받은 피해량의 100%를 최대 <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">(50% 체력)</span>까지 <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">투지</span>로 저장합니다. <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">투지</span>는 피해를 입고 4초 후에 빠르게 감소합니다.<br /><br /><span class=\"text-gray-900 dark:text-white font-semibold\">사용 시:</span> 세트가 모든 <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">투지</span>를 소모해 <span class=\"text-blue-600 dark:text-blue-300\">소모한 투지의 100%에 해당하는 보호막</span>을 얻습니다. 보호막은 3초에 걸쳐 사라집니다. 이후 세트가 강력한 펀치를 날려 중심에 있는 적에게 <span class=\"text-yellow-600 dark:text-yellow-500 font-semibold\">80/100/120/140/160 + 소모한 투지의 (25% + (0.25% 추가 공격력))에 해당하는 고정 피해</span>를 입힙니다. (최대 <span class=\"text-yellow-600 dark:text-yellow-500 font-semibold\">의 피해</span>) 중심에 있지 않은 적은 <span class=\"text-red-600 dark:text-red-500 font-semibold\">물리 피해</span>를 입습니다.",
         "iconFile": "SettW.png",
@@ -235,6 +246,22 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "DamageCalc",
+            "kind": "damage",
+            "baseByRank": [
+              80,
+              100,
+              120,
+              140,
+              160
+            ],
+            "terms": []
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -247,6 +274,7 @@
         "slot": "E",
         "id": "SettE",
         "name": "안면 강타",
+        "maxRank": 5,
         "summary": "세트가 양옆에 있는 모든 적을 끌어당겨 피해를 입히고 기절시킵니다. 한쪽에만 적이 있는 경우 기절시키는 대신 둔화시킵니다.",
         "bodyHtml": "세트가 양옆에 있는 적들을 서로 부딪치게 하여 <span class=\"text-red-600 dark:text-red-500 font-semibold\">(50/70/90/110/130 + (60% 공격력))의 물리 피해</span>를 입히고 0.5초 동안 70% <span class=\"text-purple-600 dark:text-purple-500\">둔화</span>시킵니다. 양옆에 최소 한 명씩의 적을 붙잡았다면 부딪힌 모든 적들이 1초 동안 <span class=\"text-purple-600 dark:text-purple-500\">기절</span>합니다.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">몬스터에게 (125 ~ 250)의 추가 피해를 입힙니다.</span>",
         "iconFile": "SettE.png",
@@ -289,6 +317,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "DamageCalc",
+            "kind": "damage",
+            "baseByRank": [
+              50,
+              70,
+              90,
+              110,
+              130
+            ],
+            "terms": [
+              {
+                "stat": "totalAttackDamage",
+                "coefficientsByRank": [
+                  0.6000000238418579,
+                  0.6000000238418579,
+                  0.6000000238418579,
+                  0.6000000238418579,
+                  0.6000000238418579
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -299,6 +354,7 @@
         "slot": "R",
         "id": "SettR",
         "name": "대미 장식",
+        "maxRank": 3,
         "summary": "세트가 적 하나를 붙잡아 공중으로 도약한 후 바닥에 내리꽂아 피해를 입히고 착지 지점 근처에 있는 모든 적을 둔화시킵니다.",
         "bodyHtml": "세트가 적 챔피언을 붙잡고 <span class=\"text-purple-600 dark:text-purple-500\">제압</span>한 후 앞으로 도약해 바닥에 내리꽂습니다. 주변에 있는 적은 <span class=\"text-red-600 dark:text-red-500 font-semibold\">(200/300/400 + (120% 추가 공격력)) + 붙잡은 적 추가 체력의 40/50/60%에 해당하는 물리 피해</span>를 입고 1초 동안 99% <span class=\"text-purple-600 dark:text-purple-500\">둔화</span>됩니다. 세트가 착지하는 지점에서 멀리 떨어질수록 더 적은 피해를 입습니다.",
         "iconFile": "SettR.png",
@@ -341,6 +397,29 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "DamageCalc",
+            "kind": "damage",
+            "baseByRank": [
+              200,
+              300,
+              400
+            ],
+            "terms": [
+              {
+                "stat": "bonusAttackDamage",
+                "coefficientsByRank": [
+                  1.2000000476837158,
+                  1.2000000476837158,
+                  1.2000000476837158
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {

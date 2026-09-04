@@ -119,6 +119,7 @@
         "slot": "P",
         "id": "KindredPassiveManager",
         "name": "Mark of the Kindred",
+        "maxRank": 0,
         "summary": "Kindred can mark targets to Hunt. Successfully completing a Hunt permanently empowers Kindred's basic abilities. Every 4 hunts completed also increases Kindred's basic attack range.",
         "bodyHtml": "Kindred can designate a champion to hunt by clicking their portrait above their inventory. They also designate certain jungle monsters to hunt with an icon on the minimap automatically.<br /><br />Getting a takedown on a hunted target grants Kindred a <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Mark</span>, empowering them. After 4 <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Marks</span>, Kindred gains Attack Range. Every 3 <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Marks</span> after the fourth grants a further 25 Attack Range.<br /><br /><span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Marks</span> empower Kindred's basic Abilities:<span><span></span> grants an additional <span> Attack Speed</span><span><span></span> deal an additional <span class=\"text-blue-600 dark:text-blue-500 font-semibold\"> current Health damage</span>.<span><span></span> deal an additional <span class=\"text-red-600 dark:text-red-500 font-semibold\"> missing Health damage</span>.",
         "iconFile": "Kindred_Passive.png",
@@ -126,6 +127,10 @@
         "range": [],
         "rankValues": [],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -136,6 +141,7 @@
         "slot": "Q",
         "id": "KindredQ",
         "name": "Dance of Arrows",
+        "maxRank": 5,
         "summary": "Kindred tumbles and shoots up to three arrows at nearby targets.",
         "bodyHtml": "Kindred vaults, firing an arrow at up to 3 enemies, dealing <span class=\"text-red-600 dark:text-red-500 font-semibold\">(40/65/90/115/140 + (75% bonus Attack Damage)) physical damage</span> and gaining <span>35% Attack Speed</span> for 4 seconds.<br /><br />While inside of <span>Wolf's Frenzy</span>, this Ability's Cooldown is reduced to 4/3.5/3/2.5/2 seconds.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">Attack Speed scales with <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Marks</span> taken.</span>",
         "iconFile": "KindredQ.png",
@@ -188,6 +194,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "TotalDamage",
+            "kind": "damage",
+            "baseByRank": [
+              40,
+              65,
+              90,
+              115,
+              140
+            ],
+            "terms": [
+              {
+                "stat": "bonusAttackDamage",
+                "coefficientsByRank": [
+                  0.75,
+                  0.75,
+                  0.75,
+                  0.75,
+                  0.75
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -198,6 +231,7 @@
         "slot": "W",
         "id": "KindredW",
         "name": "Wolf's Frenzy",
+        "maxRank": 5,
         "summary": "Wolf enrages and attacks enemies around him.  Lamb passively gains stacks by moving and attacking. When fully charged, Lamb's next attack restores health.",
         "bodyHtml": "<span class=\"text-gray-600 dark:text-gray-500 italic\">Passive:</span> Kindred gains stacks as they move and attack. At 100 stacks, Kindred's next Attack restores up to <span class=\"text-green-600 dark:text-green-400\">47 Health</span> based on their missing Health.<br /><br /><span class=\"text-gray-900 dark:text-white font-semibold\">Active:</span> Kindred claims a territory, ordering Wolf to bite at the last enemy Lamb Attacked. Wolf's bites deal <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(25/30/35/40/45 + (20% bonus Attack Damage) + (20% Ability Power))</span> plus <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">1.5% current Health magic damage</span>.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">Wolf strikes faster based on Kindred's <span>Attack Speed</span>. Against jungle monsters, Wolf deals 50% increased damage and <span class=\"text-purple-600 dark:text-purple-500\">Slows</span> them by 50% for 2 seconds.</span>",
         "iconFile": "KindredW.png",
@@ -250,6 +284,43 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "BaseWolfDamage",
+            "kind": "damage",
+            "baseByRank": [
+              25,
+              30,
+              35,
+              40,
+              45
+            ],
+            "terms": [
+              {
+                "stat": "bonusAttackDamage",
+                "coefficientsByRank": [
+                  0.20000000298023224,
+                  0.20000000298023224,
+                  0.20000000298023224,
+                  0.20000000298023224,
+                  0.20000000298023224
+                ]
+              },
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.20000000298023224,
+                  0.20000000298023224,
+                  0.20000000298023224,
+                  0.20000000298023224,
+                  0.20000000298023224
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -260,6 +331,7 @@
         "slot": "E",
         "id": "KindredEWrapper",
         "name": "Mounting Dread",
+        "maxRank": 5,
         "summary": "Lamb fires a carefully placed shot, slowing the target. If Lamb attacks the target two more times, her third attack instead directs Wolf to pounce on the enemy, savaging them for massive damage.",
         "bodyHtml": "Kindred weakens an enemy, <span class=\"text-purple-600 dark:text-purple-500\">Slowing</span> them by (30 + (5% Ability Power))for 1 second.<br /><br />Kindred's third Attack against the target within 4 seconds of each other directs Wolf to pounce on the enemy, dealing an additional <span class=\"text-red-600 dark:text-red-500 font-semibold\">(80/110/140/170/200 + (100% bonus Attack Damage))</span> plus <span class=\"text-red-600 dark:text-red-500 font-semibold\">5% missing Health physical damage</span>.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">Damage is increased by Critical Strike Chance and Damage at 50% effectiveness.<br />Missing health damage is capped at 200 against jungle monsters.</span>",
         "iconFile": "KindredEWrapper.png",
@@ -302,6 +374,12 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "unsupported",
+          "unsupportedPartTypes": [
+            "unsupported-multiplier"
+          ]
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -312,6 +390,7 @@
         "slot": "R",
         "id": "KindredR",
         "name": "Lamb's Respite",
+        "maxRank": 3,
         "summary": "Lamb grants all living things inside a zone a respite from death. Until the effect ends, nothing can die. At the end, units are healed.",
         "bodyHtml": "Kindred blesses the ground for 4 seconds, allowing no unit, ally, enemy, or neutral to die while inside. Upon reaching 10% Health, units can't be damaged or healed while still inside the zone.<br /><br />When the blessing ends, all units inside heal for <span class=\"text-green-600 dark:text-green-400\">225/300/375 Health</span>.",
         "iconFile": "KindredR.png",
@@ -344,6 +423,10 @@
           }
         ],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {

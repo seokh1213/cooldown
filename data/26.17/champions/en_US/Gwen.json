@@ -119,6 +119,7 @@
         "slot": "P",
         "id": "GwenP",
         "name": "A Thousand Cuts",
+        "maxRank": 0,
         "summary": "Gwen's attacks deal bonus magic damage based on the targets health. She heals for a portion of the damage dealt to champions by this effect. ",
         "bodyHtml": "Gwen's Attacks deal an additional <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(1% + (0.006% Ability Power)) Max Health magic damage</span> on hit. Gwen recovers Health equal to <span class=\"text-green-600 dark:text-green-400\">67% of the damage</span> this Ability deals to champions, up to a maximum of <span class=\"text-green-600 dark:text-green-400\">(7% Ability Power)</span>.<br />",
         "iconFile": "Gwen_Passive.png",
@@ -126,6 +127,10 @@
         "range": [],
         "rankValues": [],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -136,6 +141,7 @@
         "slot": "Q",
         "id": "GwenQ",
         "name": "Snip Snip!",
+        "maxRank": 5,
         "summary": "Gwen snips her scissors in a cone up to 6 times dealing magic damage. Gwen deals true damage to units in the center and applies her passive to them on each snip.",
         "bodyHtml": "<span class=\"text-gray-600 dark:text-gray-500 italic\">Passive</span>: Gwen gains 1 stack when she hits an enemy with an attack (max 4, lasts 6 seconds).<br /><br /><span class=\"text-gray-900 dark:text-white font-semibold\">Active</span>: Consumes stacks. Gwen snips once for <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(10/14/18/22/26 + (5% Ability Power)) magic damage</span>, snips again for each ammo consumed, and then snips a final time for <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(60/85/110/135/160 + (35% Ability Power)) magic damage</span>. <br /><br />The center of each strikes converts 50% of the damage into <span class=\"text-yellow-600 dark:text-yellow-500 font-semibold\">true damage</span> instead and applies <span>A Thousand Cuts</span> to enemies hit.<br /><span class=\"text-gray-600 dark:text-gray-400 italic\"><br />Deals 80% damage to minions.<br />Minions below 20% health take 1000% bonus damage instead of reduced damage.</span><br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">Max damage: , plus percent health from <span>A Thousand Cuts</span></span>.",
         "iconFile": "GwenQ.png",
@@ -192,6 +198,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "FinalSwipeDamage",
+            "kind": "damage",
+            "baseByRank": [
+              60,
+              85,
+              110,
+              135,
+              160
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.3499999940395355,
+                  0.3499999940395355,
+                  0.3499999940395355,
+                  0.3499999940395355,
+                  0.3499999940395355
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -205,6 +238,7 @@
         "slot": "W",
         "id": "GwenW",
         "name": "Hallowed Mist",
+        "maxRank": 5,
         "summary": "Gwen summons mist that protects her from enemies outside of it. She can only be targeted by enemies who enter the mist.",
         "bodyHtml": "Gwen summons the Hallowed Mist, making her Untargetable to all enemies (except towers) outside the zone for 4 seconds or until she leaves it. While in the Mist, Gwen gains (22/24/26/28/30 + (7% Ability Power)) <span class=\"text-orange-600 dark:text-orange-400\">Armor</span> and <span>Magic Resist</span>.<br /><br />Gwen can <span class=\"text-yellow-600 dark:text-yellow-300\">Recast</span> this Ability once to call the Mist to her. This will automatically <span class=\"text-yellow-600 dark:text-yellow-300\">Recast</span> the first time Gwen attempts to leave the zone.",
         "iconFile": "GwenW.png",
@@ -257,6 +291,10 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -267,6 +305,7 @@
         "slot": "E",
         "id": "GwenE",
         "name": "Skip 'n Slash",
+        "maxRank": 5,
         "summary": "Gwen dashes a short distance then gains Attack Speed, attack range, and magic damage <OnHit>On-Hit</OnHit> for a few seconds. If she hits an enemy during that time, this Ability's cooldown is partially refunded. ",
         "bodyHtml": "Gwen dashes and empowers her Attacks for 4 seconds.<br /><br />Empowered Attacks gain <span>30/42.5/55/67.5/80% Attack Speed</span>, <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(15 + (20% Ability Power)) magic damage</span> <span>On-Hit</span>, 75 range, and the first one to hit an enemy refunds 25/35/45/55/65% of this Ability's Cooldown.",
         "iconFile": "GwenE.png",
@@ -323,6 +362,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "OnHitDamage",
+            "kind": "damage",
+            "baseByRank": [
+              15,
+              15,
+              15,
+              15,
+              15
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.20000000298023224,
+                  0.20000000298023224,
+                  0.20000000298023224,
+                  0.20000000298023224,
+                  0.20000000298023224
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -333,6 +399,7 @@
         "slot": "R",
         "id": "GwenR",
         "name": "Needlework",
+        "maxRank": 3,
         "summary": "Gwen hurls a needle that slows enemies hit, deals magic damage, and applies A Thousand Cuts to champions hit. <br><br>This ability can be cast up to two more times, with each cast throwing additional needles and dealing more damage. ",
         "bodyHtml": "<span class=\"text-gray-900 dark:text-white font-semibold\">First Cast:</span> Hurl a needle that deals <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(30/50/70 + (10% Ability Power)) magic damage</span>, <span class=\"text-purple-600 dark:text-purple-500\">Slows</span> by 40/50/60% for 1.5 seconds, and applies <span>A Thousand Cuts</span> to all enemies hit. Gwen can <span class=\"text-yellow-600 dark:text-yellow-300\">Recast</span> this ability up to 2 additional times within 6 seconds (1s cooldown between casts).<br /><br /><span class=\"text-yellow-600 dark:text-yellow-300\">Second Cast:</span> Fire three needles to deal <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(90/150/210 + (30% Ability Power)) magic damage</span><br /><span class=\"text-yellow-600 dark:text-yellow-300\">Third Cast:</span> Fire five needles to deal <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(150/250/350 + (50% Ability Power)) magic damage</span><br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">Subsequent needle hits on the same unit <span class=\"text-purple-600 dark:text-purple-500\">Slow</span> by 15/20/25% instead.<br />Max damage: (270/450/630 + (90% Ability Power)), plus max health damage from <span>A Thousand Cuts</span>.</span>",
         "iconFile": "GwenR.png",
@@ -383,6 +450,29 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "TotalDamage",
+            "kind": "damage",
+            "baseByRank": [
+              30,
+              50,
+              70
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.10000000149011612,
+                  0.10000000149011612,
+                  0.10000000149011612
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {

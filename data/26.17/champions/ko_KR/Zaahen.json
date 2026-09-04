@@ -119,6 +119,7 @@
         "slot": "P",
         "id": "ZaahenPassive",
         "name": "전쟁 단련",
+        "maxRank": 0,
         "summary": "적 챔피언에게 기본 공격 및 스킬 적중 시 결심 중첩이 쌓이며, 자헨이 중첩당 추가 공격력을 얻습니다. 결심이 가득 차면 자헨이 얻는 추가 공격력이 증가하고 부활할 수 있습니다.",
         "bodyHtml": "적 챔피언에게 기본 공격 또는 스킬 적중 시 자헨이 <span>결심</span> 중첩을 1 얻습니다. 최대 12회 중첩되며, 중첩당 <span class=\"text-red-600 dark:text-red-500 font-semibold\">공격력이 </span> 증가합니다.<br /><br /><span>결심</span>이 가득 차면 기본 지속 효과 추가 <span class=\"text-red-600 dark:text-red-500 font-semibold\">공격력</span>이 두 배가 되며, 사망하게 될 경우 대신 4초 동안 경직된 다음 <span class=\"text-green-600 dark:text-green-400\">최대 체력의 </span>에 해당하는 체력과 함께 부활합니다.<br /><br />자헨의 부활에는 120초의 재사용 대기시간이 적용됩니다.<br />",
         "iconFile": "ZaahenP.png",
@@ -126,6 +127,10 @@
         "range": [],
         "rankValues": [],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -136,6 +141,7 @@
         "slot": "Q",
         "id": "ZaahenQ",
         "name": "다르킨의 글레이브",
+        "maxRank": 5,
         "summary": "자헨이 다음 기본 공격 시 두 번 공격하며 추가 피해를 입히고 체력을 회복합니다. 자헨은 이 스킬을 다시 사용해 다음 기본 공격 시 대상에게 추가 피해를 입히고 공중에 띄울 수 있습니다.<br>",
         "bodyHtml": "자헨이 다음 기본 공격 시 두 번 공격하며 <span class=\"text-red-600 dark:text-red-500 font-semibold\">(15/30/45/60/75 + (20/25/30/35/40% 추가 공격력))의 추가 물리 피해</span>를 입히고 <span class=\"text-green-600 dark:text-green-400\">최대 체력의 5/6/7/8/9%</span>만큼 체력을 회복합니다.<br /><br /><span class=\"text-yellow-600 dark:text-yellow-300\">재사용 시:</span> 다음 기본 공격 시 대상에게 <span class=\"text-red-600 dark:text-red-500 font-semibold\">(25/50/75/100/125 + (20/25/30/35/40% 추가 공격력))의 추가 물리 피해</span>를 입히고 0.75초 동안 <span class=\"text-purple-600 dark:text-purple-500\">공중에 띄웁니다</span>.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">대상이 챔피언이 아닐 경우 체력 회복량이 50%로 감소합니다.</span><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">몬스터에게는 100%의 추가 피해를 입힙니다.</span>",
         "iconFile": "ZaahenQ.png",
@@ -200,6 +206,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "InitialDamage",
+            "kind": "damage",
+            "baseByRank": [
+              15,
+              30,
+              45,
+              60,
+              75
+            ],
+            "terms": [
+              {
+                "stat": "bonusAttackDamage",
+                "coefficientsByRank": [
+                  0.20000000298023224,
+                  0.25,
+                  0.30000001192092896,
+                  0.3499999940395355,
+                  0.4000000059604645
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -210,6 +243,7 @@
         "slot": "W",
         "id": "ZaahenW",
         "name": "공포의 귀환",
+        "maxRank": 5,
         "summary": "자헨이 지정한 방향으로 내질러 적중한 적에게 피해를 입히고 끌어당깁니다.",
         "bodyHtml": "자헨이 지정한 방향으로 내질러 적중한 적에게 <span class=\"text-red-600 dark:text-red-500 font-semibold\">(40/60/80/100/120 + (50% 추가 공격력))의 물리 피해</span>를 입히고 <span class=\"text-purple-600 dark:text-purple-500\">끌어당겨</span> <span class=\"text-red-600 dark:text-red-500 font-semibold\">(30/50/70/90/110 + (30% 추가 공격력))의 물리 피해</span>를 입힙니다.",
         "iconFile": "ZaahenW.png",
@@ -266,6 +300,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "InitialDamage",
+            "kind": "damage",
+            "baseByRank": [
+              40,
+              60,
+              80,
+              100,
+              120
+            ],
+            "terms": [
+              {
+                "stat": "bonusAttackDamage",
+                "coefficientsByRank": [
+                  0.5,
+                  0.5,
+                  0.5,
+                  0.5,
+                  0.5
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -276,6 +337,7 @@
         "slot": "E",
         "id": "ZaahenE",
         "name": "찬란한 쇄도",
+        "maxRank": 5,
         "summary": "자헨이 지정한 위치로 돌진하고 주변을 가릅니다.",
         "bodyHtml": "자헨이 돌진한 후 주변을 가르며 근처 적에게 <span class=\"text-red-600 dark:text-red-500 font-semibold\">(40/60/80/100/120 + (50% 추가 공격력))의 물리 피해</span>를 입힙니다.<br /><br />가르기 범위 가장자리에 있는 적은 대신 <span class=\"text-red-600 dark:text-red-500 font-semibold\">(60/90/120/150/180 + (75% 추가 공격력))의 물리 피해</span>와 <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">대상 최대 체력의 4/4.5/5/5.5/6%에 해당하는 마법 피해</span>를 입습니다.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">몬스터에게는 <span class=\"text-red-600 dark:text-red-500 font-semibold\">50의 추가 물리 피해</span>를 입힙니다.</span><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">추가 최대 체력 비례 피해량은 몬스터를 상대로 최대 400입니다.</span><br />",
         "iconFile": "ZaahenE.png",
@@ -336,6 +398,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "BaseDamageCalc",
+            "kind": "damage",
+            "baseByRank": [
+              40,
+              60,
+              80,
+              100,
+              120
+            ],
+            "terms": [
+              {
+                "stat": "bonusAttackDamage",
+                "coefficientsByRank": [
+                  0.5,
+                  0.5,
+                  0.5,
+                  0.5,
+                  0.5
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -346,6 +435,7 @@
         "slot": "R",
         "id": "ZaahenR",
         "name": "단호한 판결",
+        "maxRank": 3,
         "summary": "자헨이 날아오른 후 아래로 내려찍으며 적에게 피해를 입히고 입힌 피해량의 일부만큼 체력을 회복합니다.",
         "bodyHtml": "<span class=\"text-gray-600 dark:text-gray-500 italic\">기본 지속 효과</span>: 자헨의 <span>방어구 관통력이 10/20/30%</span> 증가합니다.<br /><br /><span class=\"text-gray-900 dark:text-white font-semibold\">사용 시</span>: 자헨이 날아오릅니다. 스킬을 사용하는 동안 받는 피해량이 50% 감소합니다.<br /><br />자헨이 아래로 내려찍으며 <span class=\"text-red-600 dark:text-red-500 font-semibold\">(250/400/550 + (200% 추가 공격력))의 물리 피해</span>를 입히고 <span class=\"text-green-600 dark:text-green-400\">적 챔피언에게 입힌 피해량의 33%만큼 체력을 회복</span>합니다.",
         "iconFile": "ZaahenR.png",
@@ -396,6 +486,29 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "DamageEndCalc",
+            "kind": "damage",
+            "baseByRank": [
+              250,
+              400,
+              550
+            ],
+            "terms": [
+              {
+                "stat": "bonusAttackDamage",
+                "coefficientsByRank": [
+                  2,
+                  2,
+                  2
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {

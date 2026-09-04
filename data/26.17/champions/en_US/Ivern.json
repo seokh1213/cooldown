@@ -120,6 +120,7 @@
         "slot": "P",
         "id": "IvernP",
         "name": "Friend of the Forest",
+        "maxRank": 0,
         "summary": "Ivern cannot attack or be attacked by non-epic monsters. Ivern can create magical groves on jungle camps which grow over time. When the grove is fully grown, Ivern may free the monsters to receive gold and experience.",
         "bodyHtml": "Ivern will not hurt non-epic monsters. Instead, Ivern can right click a monster to grow a <span style=\"color: #55FF00\">Grove</span> that costs <span class=\"text-green-600 dark:text-green-400\">15 Health</span> and <span>20 Mana</span>.<br /><br /><span style=\"color: #55FF00\">Groves</span>:<span> Grow over 40 second(s)<span> Once fully grown, Ivern can harvest them, freeing the camp and earning gold and experience<span> Ivern can also <span>Smite</span> the <span style=\"color: #55FF00\">Groves</span> to instantly grow and free the camp, earning gold and experience",
         "iconFile": "IvernP.png",
@@ -127,6 +128,10 @@
         "range": [],
         "rankValues": [],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -137,6 +142,7 @@
         "slot": "Q",
         "id": "IvernQ",
         "name": "Rootcaller",
+        "maxRank": 5,
         "summary": "Ivern conjures a vine, dealing damage and rooting enemy targets hit. Ivern's allies can dash to the rooted target.",
         "bodyHtml": "Ivern conjures a vine dealing <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(80/125/170/215/260 + (70% Ability Power)) magic damage</span> and <span class=\"text-purple-600 dark:text-purple-500\">Rooting</span> the first enemy hit for 1.6/1.7/1.8/1.9/2 seconds. Allies that Attack a <span class=\"text-purple-600 dark:text-purple-500\">Rooted</span> enemy dash into Attack Range. <br /><br /><span class=\"text-yellow-600 dark:text-yellow-300\">Recast:</span> Ivern dashes directly onto the <span class=\"text-purple-600 dark:text-purple-500\">Rooted</span> enemy.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">Hitting non-epic monsters reduces <span>Rootcaller's</span> cooldown by 50%.</span>",
         "iconFile": "IvernQ.png",
@@ -193,6 +199,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "TotalDamage",
+            "kind": "damage",
+            "baseByRank": [
+              80,
+              125,
+              170,
+              215,
+              260
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.699999988079071,
+                  0.699999988079071,
+                  0.699999988079071,
+                  0.699999988079071,
+                  0.699999988079071
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -203,6 +236,7 @@
         "slot": "W",
         "id": "IvernW",
         "name": "Brushmaker",
+        "maxRank": 5,
         "summary": "In brush, Ivern and his nearby allies attacks deal bonus magic damage. Ivern can activate this ability to create a patch of brush.",
         "bodyHtml": "<span class=\"text-gray-600 dark:text-gray-500 italic\">Passive:</span> While in brush and for 3 seconds after leaving, Ivern's Attacks deal an additional <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(20/27.5/35/42.5/50 + (20% Ability Power)) magic damage</span>. Nearby allies will gain this effect for 1.5 seconds and deal <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(10/15/20/25/30 + (10% Ability Power)) magic damage</span>.<br /><br /><span class=\"text-gray-900 dark:text-white font-semibold\">Active:</span> Ivern grows a patch of Brush, revealing the area for 8 seconds. The Brush persists until Ivern's team loses vision within it, or up to 45 seconds.",
         "iconFile": "IvernW.png",
@@ -263,6 +297,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "TotalDamage",
+            "kind": "damage",
+            "baseByRank": [
+              20,
+              27.5,
+              35,
+              42.5,
+              50
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.20000000298023224,
+                  0.20000000298023224,
+                  0.20000000298023224,
+                  0.20000000298023224,
+                  0.20000000298023224
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -273,6 +334,7 @@
         "slot": "E",
         "id": "IvernE",
         "name": "Triggerseed",
+        "maxRank": 5,
         "summary": "Ivern places a shield on an ally which explodes after a short duration slowing and damaging enemies. The shield refreshes if it hits no enemies.",
         "bodyHtml": "Ivern grants <span class=\"text-blue-600 dark:text-blue-300\">(75/115/155/195/235 + (50% Ability Power)) Shield</span> to an ally champion or Daisy. After 2 seconds, it bursts, dealing <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(70/90/110/130/150 + (80% Ability Power)) magic damage</span> and <span class=\"text-purple-600 dark:text-purple-500\">Slowing</span> enemies by 40/45/50/55/60% for 2 seconds.<br /><br />If <span>Triggerseed</span> detonates and no enemy champions are hit while the shield still persists, the ally will be shielded for <span class=\"text-blue-600 dark:text-blue-300\">(75/115/155/195/235 + (50% Ability Power)) </span>for 2 seconds.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">Can also be used on Daisy.</span>",
         "iconFile": "IvernE.png",
@@ -333,6 +395,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "TotalDamage",
+            "kind": "damage",
+            "baseByRank": [
+              70,
+              90,
+              110,
+              130,
+              150
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.800000011920929,
+                  0.800000011920929,
+                  0.800000011920929,
+                  0.800000011920929,
+                  0.800000011920929
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -343,6 +432,7 @@
         "slot": "R",
         "id": "IvernR",
         "name": "Daisy!",
+        "maxRank": 3,
         "summary": "Ivern summons his Sentinel friend Daisy to fight with him. Re-cast command Daisy to attack or move.",
         "bodyHtml": "Ivern summons his sentinel friend Daisy to leap into the fray for 45 seconds.<br /><br /><span class=\"text-gray-900 dark:text-white font-semibold\">Daisy, Slam!:</span> Daisy's 3rd consecutive Attack on the same champion or epic monster will launch a shockwave, dealing<span class=\"text-blue-600 dark:text-blue-500 font-semibold\"> (90/140/190 + (50% Ability Power)) magic damage</span> to all enemies hit as well as <span class=\"text-purple-600 dark:text-purple-500\">Knocking Up</span> for 1 second. This effect can only occur once every 3 seconds.<br /><br /><span class=\"text-yellow-600 dark:text-yellow-300\">Recast:</span> Instruct Daisy to Attack or move.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">Daisy has:<br /><span class=\"text-green-600 dark:text-green-400\">(1000 + (50% Ability Power)) Health</span><br /><span class=\"text-orange-600 dark:text-orange-400\">30 Armor</span><br /><span>30 Magic Resist</span><br /><span class=\"text-orange-600 dark:text-orange-500\">(70/100/130 + (15% Ability Power)) Attack Damage</span></span>",
         "iconFile": "IvernR.png",
@@ -397,6 +487,29 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "TotalShockwaveDamage",
+            "kind": "damage",
+            "baseByRank": [
+              90,
+              140,
+              190
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.5,
+                  0.5,
+                  0.5
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {

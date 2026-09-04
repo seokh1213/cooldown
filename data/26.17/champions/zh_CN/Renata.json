@@ -120,6 +120,7 @@
         "slot": "P",
         "id": "RenataPassive",
         "name": "物尽其用",
+        "maxRank": 0,
         "summary": "烈娜塔的攻击会造成额外伤害并标记敌人。烈娜塔的队友在对被标记的敌人造成伤害时可以造成额外伤害。",
         "bodyHtml": "烈娜塔的攻击会标记敌人6秒，并且会对未被标记的敌人造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(1.13% + (0.02% 法术强度))最大生命值的魔法伤害</span>。<br /><br />友方英雄的攻击或技能会消耗掉这个标记，来造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(1.13% + (0.02% 法术强度))最大生命值的魔法伤害</span>。<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">烈娜塔同一时间只能保留一个目标身上的标记。</span>",
         "iconFile": "Renata_P.png",
@@ -127,6 +128,10 @@
         "range": [],
         "rankValues": [],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -137,6 +142,7 @@
         "slot": "Q",
         "id": "RenataQ",
         "name": "铁腕竞合",
+        "maxRank": 5,
         "summary": "烈娜塔发射一颗飞弹来禁锢命中的第一个敌人，并且可以再次施放这个技能来将该目标朝一个方向投掷。",
         "bodyHtml": "烈娜塔发射一颗飞弹来<span class=\"text-purple-600 dark:text-purple-500\">禁锢</span>命中的第一个敌人1秒，并造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(80/125/170/215/260 + (80% 法术强度))</span><span class=\"text-blue-600 dark:text-blue-500 font-semibold\">魔法伤害</span>。<br /><br /><span class=\"text-yellow-600 dark:text-yellow-300\">再次施放：</span>烈娜塔将敌人朝一个方向<span class=\"text-purple-600 dark:text-purple-500\">拉拽</span>，对被其碰到的敌人们造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(80/125/170/215/260 + (80% 法术强度))魔法伤害</span>，并且如果被拉拽的敌人是一个英雄，那么还会造成0.5秒<span class=\"text-purple-600 dark:text-purple-500\">晕眩</span>。",
         "iconFile": "RenataQ.png",
@@ -185,6 +191,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "TotalDamage",
+            "kind": "damage",
+            "baseByRank": [
+              80,
+              125,
+              170,
+              215,
+              260
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.800000011920929,
+                  0.800000011920929,
+                  0.800000011920929,
+                  0.800000011920929,
+                  0.800000011920929
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -195,6 +228,7 @@
         "slot": "W",
         "id": "RenataW",
         "name": "及时救难",
+        "maxRank": 5,
         "summary": "烈娜塔增益一名友方英雄，让其打得更猛，延缓其死亡并且在其参与一次击杀后将其救活。",
         "bodyHtml": "烈娜塔为一名友方英雄注入药剂，为其提供<span>(10/15/20/25/30% + (0.01% 法术强度))攻击速度</span>和朝敌人时的<span class=\"text-cyan-600 dark:text-cyan-500\">(10/12.5/15/17.5/20% + (0.01% 法术强度))移动速度</span>，这个加成会在5秒里持续提升至<span>(20/30/40/50/60% + (0.02% 法术强度))攻击速度</span>和<span class=\"text-cyan-600 dark:text-cyan-500\">(20/25/30/35/40% + (0.02% 法术强度))移动速度</span>。参与击杀后会刷新这个增益的持续时间。<br /><br />如果该友方英雄阵亡，就会带着满额生命值归来，然后这些生命值会在3秒里持续衰减。<br /><br />如果该友方英雄在衰减期间参与了一次击杀，那么就会回复至<span class=\"text-green-600 dark:text-green-400\">20%最大生命值</span>并停止衰减。<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">该英雄在衰减状态下的死亡，可通过治疗或相似效果来延缓，但无法防止，除非该英雄参与了一次击杀。英雄仅可延缓一次死亡。</span>",
         "iconFile": "RenataW.png",
@@ -251,6 +285,10 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -261,6 +299,7 @@
         "slot": "E",
         "id": "RenataE",
         "name": "忠诚激励",
+        "maxRank": 5,
         "summary": "烈娜塔发射一对炼金科技飞弹，在命中时为友军提供护盾并对敌人造成伤害和减速。",
         "bodyHtml": "烈娜塔发射一对炼金科技飞弹，在命中敌人时对该敌人及周围的敌人们造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(65/95/125/155/185 + (55% 法术强度))魔法伤害</span>和持续2秒的30%<span class=\"text-purple-600 dark:text-purple-500\">减速</span>。在命中友军时提供持续3秒的<span class=\"text-blue-600 dark:text-blue-300\">(50/65/80/95/110 + (50% 法术强度))护盾值</span>。",
         "iconFile": "RenataE.png",
@@ -317,6 +356,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "TotalDamage",
+            "kind": "damage",
+            "baseByRank": [
+              65,
+              95,
+              125,
+              155,
+              185
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.550000011920929,
+                  0.550000011920929,
+                  0.550000011920929,
+                  0.550000011920929,
+                  0.550000011920929
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -327,6 +393,7 @@
         "slot": "R",
         "id": "RenataR",
         "name": "恶意收购",
+        "maxRank": 3,
         "summary": "烈娜塔发射一道炼金波纹，使命中的敌人们都陷入狂暴状态。",
         "bodyHtml": "烈娜塔发射一道炼金波纹，让命中的敌人们<span class=\"text-purple-600 dark:text-purple-500\">狂暴</span>1.25/1.75/2.25秒，来使他们攻击相距最近的单位并优先以他们的友军为目标。<br /><br />在<span class=\"text-purple-600 dark:text-purple-500\">狂暴</span>状态下，敌人们会获得<span>100%攻击速度</span>。",
         "iconFile": "RenataR.png",
@@ -359,6 +426,10 @@
           }
         ],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {

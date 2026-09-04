@@ -120,6 +120,7 @@
         "slot": "P",
         "id": "JaycePassive",
         "name": "海克斯科技电容",
+        "maxRank": 0,
         "summary": "每当杰斯切换武器时，他会获得短暂持续的移动速度加成。",
         "bodyHtml": "杰斯从1级开始就可以使用<span>墨丘利之炮 / 墨丘利之锤</span>来切换近战和远程武器。切换武器的同时也会切换他的所有技能，并为他提供持续0.75秒的<span class=\"text-cyan-600 dark:text-cyan-500\">30移动速度</span>。",
         "iconFile": "Jayce_Passive.png",
@@ -127,6 +128,10 @@
         "range": [],
         "rankValues": [],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -137,6 +142,7 @@
         "slot": "Q",
         "id": "JayceToTheSkies",
         "name": "苍穹之跃 / 电能震荡",
+        "maxRank": 6,
         "summary": "锤形态：跳向一个敌人，对敌人造成物理伤害和减速效果。 <br><br>炮形态：发射一团电球，在命中一名敌人或者到达最大射程后爆炸，对命中的敌人造成物理伤害。",
         "bodyHtml": "<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">墨丘利之锤：</span>杰斯跳向一名敌人，对周围的敌人造成<span class=\"text-red-600 dark:text-red-500 font-semibold\">物理伤害</span>和持续秒的<span class=\"text-purple-600 dark:text-purple-500\">减速</span>。<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">对野怪造成10额外伤害。</span>",
         "iconFile": "JayceToTheSkies.png",
@@ -196,6 +202,35 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "Damage",
+            "kind": "damage",
+            "baseByRank": [
+              60,
+              110,
+              160,
+              210,
+              260,
+              310
+            ],
+            "terms": [
+              {
+                "stat": "bonusAttackDamage",
+                "coefficientsByRank": [
+                  1.350000023841858,
+                  1.350000023841858,
+                  1.350000023841858,
+                  1.350000023841858,
+                  1.350000023841858,
+                  1.350000023841858
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -210,6 +245,7 @@
         "slot": "W",
         "id": "JayceStaticField",
         "name": "闪电领域 / 超能电荷",
+        "maxRank": 6,
         "summary": "锤形态：被动：每次攻击回复法力。主动：创造一个闪电领域，在数秒内对附近的敌人造成伤害。<br><br>炮形态：杰斯的活力暴涨，将攻击速度提升至最大值，此效果在若干次攻击后消失。",
         "bodyHtml": "<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">墨丘利之锤 - 被动：</span>杰斯的<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">战锤</span>攻击会提供<span>法力值</span>。<br /><br /><span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">墨丘利之锤 - 主动：</span>杰斯创造一个电能光环，在秒里持续造成共<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">魔法伤害</span>。",
         "iconFile": "JayceStaticField.png",
@@ -265,6 +301,35 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "Damage",
+            "kind": "damage",
+            "baseByRank": [
+              140,
+              200,
+              260,
+              320,
+              380,
+              440
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -279,6 +344,7 @@
         "slot": "E",
         "id": "JayceThunderingBlow",
         "name": "雷霆一击 / 加速之门",
+        "maxRank": 6,
         "summary": "锤形态：对一个敌人造成魔法伤害，并将目标击退一小段距离。<br><br>炮形态：展开一个加速之门，所有穿过它的友军英雄都会得到移动速度加成。如果电能震荡穿过这个门发射，那么它的弹道速度和射程都会得到提高，并且伤害会提升。",
         "bodyHtml": "<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">战锤形态</span>：杰斯挥舞他的战锤，<span class=\"text-purple-600 dark:text-purple-500\">击退</span>他的目标并造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">外加最大生命值的魔法伤害</span>。<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\"><span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">战锤</span>挥舞对野怪的最大伤害值为<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">200/300/400/500/600/700魔法伤害</span>。</span>",
         "iconFile": "JayceThunderingBlow.png",
@@ -338,6 +404,35 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "FlatDamage",
+            "kind": "damage",
+            "baseByRank": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "terms": [
+              {
+                "stat": "bonusAttackDamage",
+                "coefficientsByRank": [
+                  1,
+                  1,
+                  1,
+                  1,
+                  1,
+                  1
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -351,6 +446,7 @@
         "slot": "R",
         "id": "JayceStanceHtG",
         "name": "墨丘利之炮 / 墨丘利之锤",
+        "maxRank": 1,
         "summary": "锤形态：将墨丘利之锤变成墨丘利之炮，获得新的技能和远程攻击能力。切换至这个形态后的第一下攻击将会减少目标的护甲和魔法抗性。<br><br>炮形态：将墨丘利之炮变成墨丘利之锤，获得新的技能和护甲与魔法抗性加成，切换至这个形态后的第一下攻击将会造成额外的魔法伤害。",
         "bodyHtml": "<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">墨丘利之锤：</span>杰斯将他的武器变形为<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">墨丘利之炮</span>，获得攻击距离和全新的一套技能。杰斯的下一个攻击移除<span class=\"text-orange-600 dark:text-orange-400\">护甲</span>和<span>魔法抗性</span>，持续秒。",
         "iconFile": "JayceStanceHtG.png",
@@ -376,6 +472,12 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "unsupported",
+          "unsupportedPartTypes": [
+            "ByCharLevelBreakpointsCalculationPart"
+          ]
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {

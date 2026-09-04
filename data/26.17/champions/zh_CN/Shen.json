@@ -119,6 +119,7 @@
         "slot": "P",
         "id": "ShenPassive",
         "name": "忍法！气合盾",
+        "maxRank": 0,
         "summary": "在施放一次技能后，慎会获得一层护盾。如果慎的技能对英雄产生作用，那么这个技能的冷却时间就会降低。",
         "bodyHtml": "慎在使用一个技能后，会获得持续2.5秒的<span class=\"text-blue-600 dark:text-blue-300\">护盾值</span>。这个效果有11秒冷却时间，每当慎有一个技能成功影响到一名友军或敌人时，这个冷却时间就会缩短4秒。<br /><br />慎拥有一把<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">魂刃</span>，可供他的其它技能使用。",
         "iconFile": "Shen_Passive.png",
@@ -126,6 +127,10 @@
         "range": [],
         "rankValues": [],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -136,6 +141,7 @@
         "slot": "Q",
         "id": "ShenQ",
         "name": "奥义！暮临",
+        "maxRank": 5,
         "summary": "慎召回他的魂刃并用它进行攻击，造成基于目标最大生命值的额外伤害。如果魂刃在召回途中与一个敌方英雄产生了碰撞，那么慎的魂刃攻击会获得极大强化，并且所有被碰撞的敌人在逃离慎的时候都会被减速。",
         "bodyHtml": "慎召回他的<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">魂刃</span>。被其命中的敌人们在接下来的2秒里，在远离慎的时候会被<span class=\"text-purple-600 dark:text-purple-500\">减速</span>25/30/35/40/45%。<br /><br />此外，慎的下3次攻击造成额外的<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">40</span>外加<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(2/2.5/3/3.5/4% + (0.01% 法术强度))最大生命值的魔法伤害</span>。如果慎用<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">魂刃</span>命中了一名英雄，那么伤害提升至<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">40</span>外加<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(5/5.5/6/6.5/7% + (0.02% 法术强度))最大生命值的魔法伤害</span>并且他的那几次攻击获得<span>50%攻击速度</span>。<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">每次攻击对野怪造成100%伤害提升(最大值为<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">100/125/150/175/200伤害</span>)。<br />对建筑物的攻击造成40伤害。</span>",
         "iconFile": "ShenQ.png",
@@ -204,6 +210,12 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "unsupported",
+          "unsupportedPartTypes": [
+            "ByCharLevelBreakpointsCalculationPart"
+          ]
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -214,6 +226,7 @@
         "slot": "W",
         "id": "ShenW",
         "name": "奥义！魂佑",
+        "maxRank": 5,
         "summary": "当慎或友方英雄在魂刃附近时，魂刃会对原本要命中他们的攻击进行格挡。",
         "bodyHtml": "慎在他的<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">魂刃</span>位置生成一个防御结界，持续1.75秒。对结界内的友方英雄进行的攻击都会被格挡。 <br /><br />如果结界在开启时并没有英雄在其中，那么它会等待至多2秒。",
         "iconFile": "ShenW.png",
@@ -248,6 +261,10 @@
           }
         ],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -258,6 +275,7 @@
         "slot": "E",
         "id": "ShenE",
         "name": "奥义！影缚",
+        "maxRank": 5,
         "summary": "慎朝着一个方向冲刺，嘲讽沿途的敌人。",
         "bodyHtml": "<span class=\"text-gray-600 dark:text-gray-500 italic\">被动：</span>用<span>奥义！暮临</span>或这个技能造成伤害时，会回复<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">50能量</span>。<br /><br /><span class=\"text-gray-900 dark:text-white font-semibold\">主动：</span>慎进行冲刺，<span class=\"text-purple-600 dark:text-purple-500\">嘲讽</span>英雄和野怪1.5秒并造成<span class=\"text-red-600 dark:text-red-500 font-semibold\">(60/85/110/135/160 + (11% 额外生命值))物理伤害</span>。",
         "iconFile": "ShenE.png",
@@ -310,6 +328,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "TauntDamage",
+            "kind": "damage",
+            "baseByRank": [
+              60,
+              85,
+              110,
+              135,
+              160
+            ],
+            "terms": [
+              {
+                "stat": "bonusHealth",
+                "coefficientsByRank": [
+                  0.10999999940395355,
+                  0.10999999940395355,
+                  0.10999999940395355,
+                  0.10999999940395355,
+                  0.10999999940395355
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -320,6 +365,7 @@
         "slot": "R",
         "id": "ShenR",
         "name": "秘奥义！慈悲度魂落",
+        "maxRank": 3,
         "summary": "慎为目标友方英雄提供一层吸收伤害的护盾，然后很快传送到目标身旁。",
         "bodyHtml": "慎为地图任一位置的一名友方英雄提供持续5秒的<span class=\"text-blue-600 dark:text-blue-300\">(120/220/320 + (15% 额外生命值) + (135% 法术强度))</span>到<span class=\"text-blue-600 dark:text-blue-300\">(192/352/512 + (24% 额外生命值) + (216% 法术强度))护盾值</span>，基于目标的已损失生命值(在60%已损失生命值时达到最大值)。在引导3秒后，慎会带着<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">魂刃</span>传送到该友方英雄所在的位置。",
         "iconFile": "ShenR.png",
@@ -362,6 +408,10 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {

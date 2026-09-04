@@ -120,6 +120,7 @@
         "slot": "P",
         "id": "TrundleDiseaseOverseer",
         "name": "国王的贡品",
+        "maxRank": 0,
         "summary": "每当附近有一个敌方单位死亡，特朗德尔都会获得相当于其一部分最大生命值的治疗效果。",
         "bodyHtml": "当一名敌人在特朗德尔附近阵亡时，他会回复<span class=\"text-green-600 dark:text-green-400\">该敌人(1.8% ~ 5.5%)最大生命值</span>。",
         "iconFile": "Trundle_Passive.png",
@@ -127,6 +128,10 @@
         "range": [],
         "rankValues": [],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -137,6 +142,7 @@
         "slot": "Q",
         "id": "TrundleTrollSmash",
         "name": "利齿撕咬",
+        "maxRank": 5,
         "summary": "特朗德尔撕咬敌方，造成伤害，并暂时减少敌人的移动速度，削弱敌人的攻击力。",
         "bodyHtml": "特朗德尔的下次攻击造成<span class=\"text-red-600 dark:text-red-500 font-semibold\">(10/30/50/70/90 + (115/125/135/145/155% 攻击力))物理伤害</span>和短暂的75%<span class=\"text-purple-600 dark:text-purple-500\">减速</span>，然后特朗德尔获得持续5秒的<span class=\"text-red-600 dark:text-red-500 font-semibold\">20/25/30/35/40攻击力</span>并且敌人们在这期间失去<span class=\"text-red-600 dark:text-red-500 font-semibold\">10/12.5/15/17.5/20攻击力</span>。<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">这个技能会在造成伤害时触发技能特效。<br />特朗德尔的这次攻击获得25攻击距离。</span>",
         "iconFile": "TrundleTrollSmash.png",
@@ -197,6 +203,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "TotalDamage",
+            "kind": "damage",
+            "baseByRank": [
+              10,
+              30,
+              50,
+              70,
+              90
+            ],
+            "terms": [
+              {
+                "stat": "totalAttackDamage",
+                "coefficientsByRank": [
+                  1.149999976158142,
+                  1.25,
+                  1.350000023841858,
+                  1.4500000476837158,
+                  1.5499999523162842
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -207,6 +240,7 @@
         "slot": "W",
         "id": "trundledesecrate",
         "name": "冰封领域",
+        "maxRank": 5,
         "summary": "特朗德尔将目标区域变成他的领土，增加自己在该区域的攻击速度、移动速度，并且会从所有治疗手段中获得额外治疗效果。",
         "bodyHtml": "特朗德尔冻结一个区域8秒。在其中时，他会获得<span class=\"text-cyan-600 dark:text-cyan-500\">20/28/36/44/52%移动速度</span>，<span>30/50/70/90/110%攻击速度</span>，和25%治疗效果提升。",
         "iconFile": "trundledesecrate.png",
@@ -249,6 +283,10 @@
           }
         ],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -259,6 +297,7 @@
         "slot": "E",
         "id": "TrundleCircle",
         "name": "寒冰之柱",
+        "maxRank": 5,
         "summary": "特朗德尔在目标地点召唤寒冰之柱，令敌人无法通过，并减缓附近敌方单位的移动速度。",
         "bodyHtml": "特朗德尔生成一个持续6秒的冰柱，短暂<span class=\"text-purple-600 dark:text-purple-500\">击退</span>它上方的敌人们并使附近的敌人们<span class=\"text-purple-600 dark:text-purple-500\">减速</span>34/38/42/46/50%。",
         "iconFile": "TrundleCircle.png",
@@ -297,6 +336,10 @@
           }
         ],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -307,6 +350,7 @@
         "slot": "R",
         "id": "TrundlePain",
         "name": "强权至上",
+        "maxRank": 3,
         "summary": "特朗德尔直接偷取目标的一部分生命值、大量的护甲和魔抗。在接下来的4秒里，特朗德尔将继续偷取双倍的等量的生命值、护甲值和魔抗。",
         "bodyHtml": "特朗德尔吸取一名敌方英雄的生命力，在5秒里持续造成共计<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(20/25/30% + (0.02% 法术强度))最大生命值的魔法伤害</span>并偷取<span class=\"text-orange-600 dark:text-orange-400\">40%护甲</span>和<span>魔法抗性</span>。<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">立刻造成一半的伤害和击碎效果，并在技能期间持续造成另一半伤害和击碎效果。<br />在吸取结束后，击碎效果还会持续4秒。</span>",
         "iconFile": "TrundlePain.png",
@@ -353,6 +397,10 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {

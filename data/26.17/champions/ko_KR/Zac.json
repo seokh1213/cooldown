@@ -120,6 +120,7 @@
         "slot": "P",
         "id": "ZacPassiveChunkDrop",
         "name": "세포 분열",
+        "maxRank": 0,
         "summary": "자크는 스킬로 적을 맞힐 때마다 몸에서 조각이 떨어져 나갑니다. 이 조각들을 다시 흡수하면 체력을 회복할 수 있습니다. 자크는 치명상을 입으면 4조각으로 갈라졌다가 다시 합쳐지려고 모입니다. 몸 조각 중 하나라도 생존할 경우, 살아남은 조각의 체력에 비례한 체력을 가지고 부활합니다. 각각의 조각은 자크의 최대 체력, 방어력과 마법 저항력의 일부를 보유합니다. 이 스킬의 재사용 대기시간은 5분입니다.",
         "bodyHtml": "자크는 스킬로 적을 맞힐 때마다 몸에서 <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">조각</span>이 떨어져 나갑니다. 이 조각들을 다시 흡수하면 <span class=\"text-green-600 dark:text-green-400\">최대 체력의 (4% ~ 8%)</span>를 회복할 수 있습니다.<br /><br />죽으면 자크가 4조각으로 갈라졌다가 다시 합쳐지려고 모입니다. 몸 조각 중 하나라도 <span class=\"text-gray-600 dark:text-gray-400\">4</span>초 동안 생존할 경우, 살아남은 조각의 체력에 따라 10 ~ 50%의 체력을 가지고 부활합니다. 재사용 대기시간은 300초입니다.",
         "iconFile": "ZacPassive.png",
@@ -127,6 +128,10 @@
         "range": [],
         "rankValues": [],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -137,6 +142,7 @@
         "slot": "Q",
         "id": "ZacQ",
         "name": "탄성 주먹",
+        "maxRank": 5,
         "summary": "자크가 팔을 쭉 뻗어 적을 붙잡습니다. 다른 적을 공격하면 둘을 서로에게 던져 충돌하게 합니다.",
         "bodyHtml": "자크가 팔을 뻗어 처음 맞힌 적을 붙잡고 <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(60/90/120/150/180 + (30% 주문력) + (3% 추가 체력))의 마법 피해</span>를 입히며 잠깐 동안 <span class=\"text-purple-600 dark:text-purple-500\">둔화</span>시킵니다. 자크의 다음 기본 공격은 사거리가 증가하며 동일한 피해를 입히고 <span class=\"text-purple-600 dark:text-purple-500\">둔화</span>시킵니다. <br /><br />자크가 <span>다른</span> 적에게 기본 공격을 가하면 둘을 <span class=\"text-purple-600 dark:text-purple-500\">공중으로 띄워 올려</span> 서로에게 던집니다. 충돌 시 해당 적과 주변 적은 <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(60/90/120/150/180 + (30% 주문력) + (3% 추가 체력))의 마법 피해</span>를 입으며 잠깐 동안 <span class=\"text-purple-600 dark:text-purple-500\">둔화</span>합니다.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">40% <span class=\"text-purple-600 dark:text-purple-500\">둔화</span>합니다. <br />최대 마법 피해: <span class=\"text-blue-600 dark:text-blue-500 font-semibold\"></span></span>",
         "iconFile": "ZacQ.png",
@@ -179,6 +185,43 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "TotalDamage",
+            "kind": "damage",
+            "baseByRank": [
+              60,
+              90,
+              120,
+              150,
+              180
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.30000001192092896,
+                  0.30000001192092896,
+                  0.30000001192092896,
+                  0.30000001192092896,
+                  0.30000001192092896
+                ]
+              },
+              {
+                "stat": "bonusHealth",
+                "coefficientsByRank": [
+                  0.029999999329447746,
+                  0.029999999329447746,
+                  0.029999999329447746,
+                  0.029999999329447746,
+                  0.029999999329447746
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -191,6 +234,7 @@
         "slot": "W",
         "id": "ZacW",
         "name": "불안정 물질",
+        "maxRank": 5,
         "summary": "자크의 몸이 폭발하며 주위 적들에게 대상 최대 체력의 일정 비율에 해당하는 마법 피해를 입힙니다.",
         "bodyHtml": "자크의 몸이 터져서 주위에 있는 적 모두에게 <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">40/50/60/70/80 + 최대 체력의 (4/5/6/7/8% + (0.03% 주문력))에 해당하는 마법 피해</span>를 입힙니다.<br /><br /><span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">조각</span>을 흡수하면 이 스킬의 재사용 대기시간이 1초 감소합니다.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">미니언과 정글 몬스터의 경우 체력 비례 피해량은 최대 200까지만 입힐 수 있습니다.</span>",
         "iconFile": "ZacW.png",
@@ -233,6 +277,10 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -243,6 +291,7 @@
         "slot": "E",
         "id": "ZacE",
         "name": "새총 발사",
+        "maxRank": 5,
         "summary": "자크가 지면에 두 팔을 붙이고 뒤로 늘어난 다음, 전방으로 몸을 날립니다.",
         "bodyHtml": "<span>충전 시작:</span> 자크가 0.9/1/1.1/1.2/1.3초 동안 자신의 몸을 팽팽히 당겨 돌진할 준비를 합니다.<br /><br /><span>발사:</span> 자크가 자신의 몸을 날려 착지하는 곳에 있는 적을 충전 시간에 비례해 최대 1초 동안 <span class=\"text-purple-600 dark:text-purple-500\">공중으로 띄워 올리고</span> <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(60/105/150/195/240 + (80% 주문력))의 마법 피해</span>를 입힙니다. 적 챔피언을 하나 맞힐 때마다 <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">조각</span>이 하나씩 생성됩니다.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">이동 시 스킬이 취소됩니다.<br />취소되면 재사용 대기시간과 소모값이 절반만큼 회복됩니다.</span>",
         "iconFile": "ZacE.png",
@@ -289,6 +338,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "Damage",
+            "kind": "damage",
+            "baseByRank": [
+              60,
+              105,
+              150,
+              195,
+              240
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.800000011920929,
+                  0.800000011920929,
+                  0.800000011920929,
+                  0.800000011920929,
+                  0.800000011920929
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -299,6 +375,7 @@
         "slot": "R",
         "id": "ZacR",
         "name": "바운스!",
+        "maxRank": 3,
         "summary": "자크가 4회 튀어 올라 적중당한 적을 공중에 띄우고 둔화시킵니다.",
         "bodyHtml": "자크가 4회 튀어 오릅니다. 자크에게 처음 맞은 적은 뒤로 <span class=\"text-purple-600 dark:text-purple-500\">밀리며</span> <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(120/190/260 + (40% 주문력))의 마법 피해</span>를 입습니다. 이후에는 맞을 때마다 <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(60/95/130 + (20% 주문력))의 마법 피해</span>를 입고 1초 동안 20% <span class=\"text-purple-600 dark:text-purple-500\">둔화</span>합니다.<br /><br />자크는 <span class=\"text-cyan-600 dark:text-cyan-500\">이동 속도가 50%</span>까지 점점 증가하며 튀어 오르는 동안 <span>불안정 물질</span> 스킬을 사용할 수 있습니다.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">피해량: 총 <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(120/190/260 + (40% 주문력))의 마법 피해</span><br />지속시간 동안 <span class=\"text-cyan-600 dark:text-cyan-500\">이동 속도</span>가 <span class=\"text-cyan-600 dark:text-cyan-500\">20%</span>에서 <span class=\"text-cyan-600 dark:text-cyan-500\">50%</span>까지 증가합니다.<br />바운스! 지속시간 동안 자크는 유체화 상태가 됩니다. 유체화 상태인 유닛은 다른 유닛과 충돌하지 않습니다.</span>",
         "iconFile": "ZacR.png",
@@ -337,6 +414,29 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "DamagePerBounce",
+            "kind": "damage",
+            "baseByRank": [
+              120,
+              190,
+              260
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.4000000059604645,
+                  0.4000000059604645,
+                  0.4000000059604645
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {

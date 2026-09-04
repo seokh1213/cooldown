@@ -120,6 +120,7 @@
         "slot": "P",
         "id": "TryndamerePassive",
         "name": "Battle Fury",
+        "maxRank": 0,
         "summary": "Tryndamere gains Fury for each attack, critical strike, and killing blow he makes. Fury passively increases his Critical Strike Chance and can be consumed with his Bloodlust spell.",
         "bodyHtml": "Tryndamere's Attacks grant him <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">5 Fury</span> or <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">10 Fury</span> for a critical strike, and <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">10 Fury</span> for killing a unit. After 8 seconds of being out of combat, Tryndamere loses <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">5 Fury</span> every second.<br /><br />Each point of <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Fury</span> grants 0.5% Critical Strike Chance.",
         "iconFile": "Tryndamere_Passive.png",
@@ -127,6 +128,10 @@
         "range": [],
         "rankValues": [],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -137,6 +142,7 @@
         "slot": "Q",
         "id": "TryndamereQ",
         "name": "Bloodlust",
+        "maxRank": 5,
         "summary": "Tryndamere thrives on the thrills of combat, increasing his Attack Damage as he is more and more wounded. He can cast Bloodlust to consume his Fury and heal himself.",
         "bodyHtml": "<span class=\"text-gray-600 dark:text-gray-500 italic\">Passive:</span> Tryndamere thirsts for blood, gaining up to <span class=\"text-orange-600 dark:text-orange-500\">20/35/50/65/80 Attack Damage</span> based on his missing Health.<br /><br /><span class=\"text-gray-900 dark:text-white font-semibold\">Active:</span> Tryndamere consumes his <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Fury</span>, restoring <span class=\"text-green-600 dark:text-green-400\">(30/40/50/60/70 + (30% Ability Power)) plus (0.5/0.95/1.4/1.85/2.3 + (1.2% Ability Power)) Health per Fury (max: (30/40/50/60/70 + (30% Ability Power)))</span>.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">Maximum Attack Damage gained at 10% remaining Health.</span>",
         "iconFile": "TryndamereQ.png",
@@ -183,6 +189,10 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -193,6 +203,7 @@
         "slot": "W",
         "id": "TryndamereW",
         "name": "Mocking Shout",
+        "maxRank": 5,
         "summary": "Tryndamere lets out an insulting cry, decreasing surrounding champions' Attack Damage. Enemies with their backs turned to Tryndamere also have their Move Speed reduced.",
         "bodyHtml": "Tryndamere hurls insults, reducing champions' Attack Damage by 20/35/50/65/80 for 4 seconds and <span class=\"text-purple-600 dark:text-purple-500\">Slowing</span> by 30/35/40/45/50% while cowering from him for 3.25 seconds.",
         "iconFile": "TryndamereW.png",
@@ -221,6 +232,10 @@
           }
         ],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -231,6 +246,7 @@
         "slot": "E",
         "id": "TryndamereE",
         "name": "Spinning Slash",
+        "maxRank": 5,
         "summary": "Tryndamere slices toward a target unit, dealing damage to enemies in his path.",
         "bodyHtml": "Tryndamere spins through his enemies, dealing <span class=\"text-red-600 dark:text-red-500 font-semibold\">(80/120/160/200/240 + (100% bonus Attack Damage) + (80% Ability Power)) physical damage</span> and generating <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">2 Fury</span> per enemy hit, increased to <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">5 Fury</span> against enemy champions.<br /><br />This Ability's Cooldown is reduced by 0.75 seconds when Tryndamere critically strikes, and reduced by 1.5 seconds when critically striking a champion.",
         "iconFile": "TryndamereE.png",
@@ -273,6 +289,43 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "TotalDamage",
+            "kind": "damage",
+            "baseByRank": [
+              80,
+              120,
+              160,
+              200,
+              240
+            ],
+            "terms": [
+              {
+                "stat": "bonusAttackDamage",
+                "coefficientsByRank": [
+                  1,
+                  1,
+                  1,
+                  1,
+                  1
+                ]
+              },
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.800000011920929,
+                  0.800000011920929,
+                  0.800000011920929,
+                  0.800000011920929,
+                  0.800000011920929
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -283,6 +336,7 @@
         "slot": "R",
         "id": "UndyingRage",
         "name": "Undying Rage",
+        "maxRank": 3,
         "summary": "Tryndamere's lust for battle becomes so strong that he is unable to die, no matter how wounded he becomes.",
         "bodyHtml": "Tryndamere becomes completely immune to death for 5 seconds, refusing to be reduced below 30/50/70 Health, and instantly gains <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">50/75/100 Fury</span>.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">This Ability can be used while <span class=\"text-purple-600 dark:text-purple-500\">Disabled</span>.</span>",
         "iconFile": "UndyingRage.png",
@@ -311,6 +365,10 @@
           }
         ],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {

@@ -120,6 +120,7 @@
         "slot": "P",
         "id": "RenektonPredator",
         "name": "분노의 지배",
+        "maxRank": 0,
         "summary": "레넥톤이 기본 공격 시 분노를 생성합니다. 레넥톤의 체력이 낮으면 생성되는 분노가 증가합니다. 분노는 레넥톤의 스킬을 강화시키며 추가 효과를 줍니다.",
         "bodyHtml": "레넥톤이 기본 공격을 가할 때마다 <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">5의 분노</span>를 얻습니다. <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">분노가 50</span> 이상 쌓이면 다음 스킬 사용 시 소모되어 스킬이 강화됩니다. 전투에서 벗어나면 <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">분노</span>가 서서히 감소합니다.<br /><br />체력이 50% 미만일 경우 <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">분노</span>가 50% 증가합니다.",
         "iconFile": "Renekton_Passive.png",
@@ -127,6 +128,10 @@
         "range": [],
         "rankValues": [],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -137,6 +142,7 @@
         "slot": "Q",
         "id": "RenektonCleave",
         "name": "양떼 도륙",
+        "maxRank": 5,
         "summary": "레넥톤이 검을 휘둘러 주변의 모든 적에게 어느 정도의 물리 피해를 입히고, 해당 피해 수치의 일부를 체력으로 회복합니다. 분노가 50이상 쌓이면 피해량과 치료 능력이 모두 상승합니다.",
         "bodyHtml": "레넥톤이 검을 휘둘러 <span class=\"text-red-600 dark:text-red-500 font-semibold\">(60/90/120/150/180 + (100% 추가 공격력))의 물리 피해</span>를 입힙니다. 챔피언이 아닌 대상을 맞히면 <span class=\"text-green-600 dark:text-green-400\">(2/3/4/5/6 + (2% 추가 공격력))의 체력</span>을, 챔피언을 맞힐 때는<span class=\"text-green-600 dark:text-green-400\">(12/20/28/36/44 + (17% 추가 공격력))</span>의 체력을 회복합니다. 챔피언이 아닌 대상을 맞힐 때는 <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">분노 2.5</span>, 챔피언을 맞힐 때는 <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">분노 10</span>이 생성됩니다.<br /><br /><span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">분노 추가 효과</span>: 물리 피해로 입히는 피해량이 <span class=\"text-red-600 dark:text-red-500 font-semibold\">(90/135/180/225/270 + (140% 추가 공격력))</span>만큼 상승합니다. 챔피언이 아닌 대상에게서 <span class=\"text-green-600 dark:text-green-400\">(6/9/12/15/18 + (6% 추가 공격력))의 체력</span>을, 챔피언에게서 <span class=\"text-green-600 dark:text-green-400\">(36/60/84/108/132 + (51% 추가 공격력))의 체력</span>을 회복합니다. 더 이상 <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">분노</span>가 생성되지 않습니다.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">스킬 사용 1회당 최대 <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">30의 분노</span><br />기본 스킬 사용 시 최대 <span class=\"text-green-600 dark:text-green-400\">50/75/100/125/150의 체력</span>을 회복합니다.<br />강화 스킬 사용 시 최대 <span class=\"text-green-600 dark:text-green-400\">200/300/400/500/600의 체력</span>을 회복합니다.</span>",
         "iconFile": "RenektonCleave.png",
@@ -187,6 +193,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "BasicDamage",
+            "kind": "damage",
+            "baseByRank": [
+              60,
+              90,
+              120,
+              150,
+              180
+            ],
+            "terms": [
+              {
+                "stat": "bonusAttackDamage",
+                "coefficientsByRank": [
+                  1,
+                  1,
+                  1,
+                  1,
+                  1
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -197,6 +230,7 @@
         "slot": "W",
         "id": "RenektonPreExecute",
         "name": "무자비한 포식자",
+        "maxRank": 5,
         "summary": "레넥톤이 적을 두 번 베어 어느 정도의 물리 피해를 입히며, 0.75초 동안 적을 기절시킵니다. 레넥톤의 분노가 50 이상일 경우 적을 세 번 베어 대상의 보호막을 파괴한 후 높은 물리 피해를 입히고 1.5초 동안 적을 기절시킵니다.",
         "bodyHtml": "레넥톤의 다음 기본 공격은 두 번 베어 0.75초 동안 적을 <span class=\"text-purple-600 dark:text-purple-500\">기절</span>시키고 총 <span class=\"text-red-600 dark:text-red-500 font-semibold\">(10/40/70/100/130 + (150% 공격력))의 물리 피해</span>를 입힙니다. 레넥톤이 챔피언을 맞히면 추가로 <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">10의 분노</span>를 얻습니다.<br /><br /><span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">분노 추가 효과</span>: 레넥톤이 세 번 공격하여 대상의 <span class=\"text-blue-600 dark:text-blue-300\">보호막</span>을 파괴한 후 <span class=\"text-red-600 dark:text-red-500 font-semibold\">(15/60/105/150/195 + (225% 공격력))의 물리 피해</span>를 입히고 1.5초 동안 적을 <span class=\"text-purple-600 dark:text-purple-500\">기절</span>시킵니다. <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">분노</span>가 생성되지 않습니다.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">모든 기본 공격에 적중 시 효과가 적용됩니다.</span><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">몬스터를 상대로는 보호막을 파괴하지 않습니다.</span>",
         "iconFile": "RenektonPreExecute.png",
@@ -243,6 +277,12 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "unsupported",
+          "unsupportedPartTypes": [
+            "GameCalculationModified"
+          ]
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -253,6 +293,7 @@
         "slot": "E",
         "id": "RenektonSliceAndDice",
         "name": "자르고 토막내기",
+        "maxRank": 5,
         "summary": "레넥톤이 돌격을 하며 여러 적 유닛에게 피해를 입힙니다. 강화시 레넥톤은 적에게 추가 피해를 입히고 방어력을 낮출 수 있습니다.",
         "bodyHtml": "레넥톤이 돌격하며 <span class=\"text-red-600 dark:text-red-500 font-semibold\">(40/70/100/130/160 + (90% 추가 공격력))의 물리 피해</span>를 입힙니다. 챔피언이 아닌 대상을 맞힐 때는 <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">2의 분노</span>가, 챔피언을 맞힐 때는 <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">10의 분노</span>가 생성됩니다. 한 명 이상의 적에게 피해를 입힐 경우 4초 내에 이 스킬을 한 번 <span class=\"text-yellow-600 dark:text-yellow-300\">재사용</span>할 수 있습니다. <br /><br /><span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">분노 추가 효과</span>: <span class=\"text-yellow-600 dark:text-yellow-300\">재사용</span> 시 레넥톤이 돌격하며 <span class=\"text-red-600 dark:text-red-500 font-semibold\">(70/115/160/205/250 + (135% 추가 공격력))의 물리 피해</span>를 입히고 4초 동안 방어력을 <span class=\"text-orange-600 dark:text-orange-400\">25/27.5/30/32.5/35%</span> 감소시킵니다. 더 이상 <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">분노</span>가 생성되지 않습니다.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">스킬 사용 1회당 최대 <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">30의 분노</span></span>",
         "iconFile": "RenektonSliceAndDice.png",
@@ -303,6 +344,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "BasicDamage",
+            "kind": "damage",
+            "baseByRank": [
+              40,
+              70,
+              100,
+              130,
+              160
+            ],
+            "terms": [
+              {
+                "stat": "bonusAttackDamage",
+                "coefficientsByRank": [
+                  0.8999999761581421,
+                  0.8999999761581421,
+                  0.8999999761581421,
+                  0.8999999761581421,
+                  0.8999999761581421
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -313,6 +381,7 @@
         "slot": "R",
         "id": "RenektonReignOfTheTyrant",
         "name": "강신",
+        "maxRank": 3,
         "summary": "레넥톤이 폭군의 형상을 취하여 추가 체력을 얻고 주변 적에게 피해를 입힙니다. 폭군 형태로 있는 동안에는 레넥톤의 분노가 주기적으로 상승합니다.",
         "bodyHtml": "레넥톤이 15초 동안 어둠의 기운으로 자신을 감싸며 <span class=\"text-green-600 dark:text-green-400\">300/500/700의 최대 체력</span>과 <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">20의 분노</span>를 얻습니다. 스킬이 활성화되어 있는 동안 레넥톤은 <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(60/150/240 + (10% 주문력) + (10% 추가 공격력))의 마법 피해</span>를 입히고 초당 <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">5의 분노</span>를 얻습니다.",
         "iconFile": "RenektonReignOfTheTyrant.png",
@@ -355,6 +424,37 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "TotalDamagePerSecond",
+            "kind": "damage",
+            "baseByRank": [
+              60,
+              150,
+              240
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.10000000149011612,
+                  0.10000000149011612,
+                  0.10000000149011612
+                ]
+              },
+              {
+                "stat": "bonusAttackDamage",
+                "coefficientsByRank": [
+                  0.10000000149011612,
+                  0.10000000149011612,
+                  0.10000000149011612
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {

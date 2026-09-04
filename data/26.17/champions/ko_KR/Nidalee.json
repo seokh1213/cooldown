@@ -120,6 +120,7 @@
         "slot": "P",
         "id": "NidaleePassiveHunt",
         "name": "수풀 배회",
+        "maxRank": 0,
         "summary": "수풀을 통과하면 니달리의 이동 속도가 2초간 10% 상승하며, 1400 범위 안의 눈에 보이는 적 챔피언 쪽으로 갈 때는 30%까지 올라갑니다.<br><br>챔피언이나 몬스터에게 창 투척 또는 매복 덫을 맞히면 <font color='#FFF673'>사냥</font>이 발동되어 4초간 대상에 대한 <font color='#ee91d7'>절대 시야</font>를 얻습니다. 이 동안 니달리는 이동 속도가 10% 상승하고 (<font color='#FFF673'>사냥</font> 당하는 대상을 향해 갈 때 30% 상승) 이들을 사냥할 때 숨통 끊기와 급습이 강화됩니다.",
         "bodyHtml": "니달리는 <span>쿠거의 상</span> 스킬 레벨을 하나 보유한 상태로 시작합니다. <br /><br />수풀에 들어가면 2초 동안 니달리의 <span class=\"text-cyan-600 dark:text-cyan-500\">이동 속도가</span> 증가합니다. 적 챔피언 쪽으로 이동할 때는 <span class=\"text-cyan-600 dark:text-cyan-500\">이동 속도가</span>까지 증가합니다.<br /><br />챔피언이나 정글 몬스터가 <span>창 투척</span>이나 <span>매복 덫</span>에 적중하면 4초 동안 <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">사냥</span> 대상이 됩니다. <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">사냥</span>당하는 적이 있으면 <span class=\"text-purple-600 dark:text-purple-400 font-semibold\">절대 시야</span>로 해당 적의 모습이 드러나며 니달리의 <span class=\"text-cyan-600 dark:text-cyan-500\">이동 속도가</span> 증가합니다. <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">사냥</span>당하는 적 쪽으로 이동할 때는 <span class=\"text-cyan-600 dark:text-cyan-500\">이동 속도가</span>까지 증가합니다.",
         "iconFile": "Nidalee_Passive.png",
@@ -127,6 +128,10 @@
         "range": [],
         "rankValues": [],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -137,6 +142,7 @@
         "slot": "Q",
         "id": "JavelinToss",
         "name": "창 투척 / 숨통 끊기",
+        "maxRank": 5,
         "summary": "인간 모습일 때 - 니달리가 가시 달린 창을 대상에게 던집니다. 창이 날아가는 동안 피해가 더욱 커집니다. 쿠거 모습일 때 - 다음 공격 시 적에게 치명적인 공격을 가합니다. 대상의 체력이 낮을수록 더 큰 피해를 입힙니다.",
         "bodyHtml": "<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">인간 형태:</span> 니달리가 창을 던져 <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(70/90/110/130/150 + (50% 주문력))의 마법 피해</span>를 입힙니다. 피해량은 창이 날아간 거리에 비례해 <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(227.5/292.5/357.5/422.5/487.5 + (162.5% 주문력))의 마법 피해</span>까지 증가합니다.",
         "iconFile": "JavelinToss.png",
@@ -193,6 +199,12 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "unsupported",
+          "unsupportedPartTypes": [
+            "GameCalculationModified"
+          ]
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -203,6 +215,7 @@
         "slot": "W",
         "id": "Bushwhack",
         "name": "매복 덫 / 급습",
+        "maxRank": 5,
         "summary": "인간 모습일 때 - 니달리가 적이 밟으면 피해를 입히며 모습을 드러내는 함정을 깝니다. 쿠거 모습일 때 - 앞으로 살짝 뛰어오르며 착지 시 주위에 피해를 입힙니다.",
         "bodyHtml": "<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">인간 형태:</span> 니달리가 2분 동안 유지되는 투명한 덫을 설치합니다. 적이 덫을 밟으면 4초 동안 초당 <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(10/20/30/40/50 + (5% 주문력))의 마법 피해</span>를 입습니다.<br /><br />한 번에 10개의 덫만 설치할 수 있습니다.",
         "iconFile": "Bushwhack.png",
@@ -266,6 +279,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "DamagePerSecond",
+            "kind": "damage",
+            "baseByRank": [
+              10,
+              20,
+              30,
+              40,
+              50
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.05000000074505806,
+                  0.05000000074505806,
+                  0.05000000074505806,
+                  0.05000000074505806,
+                  0.05000000074505806
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -276,6 +316,7 @@
         "slot": "E",
         "id": "PrimalSurge",
         "name": "태고의 생명력 / 할퀴기",
+        "maxRank": 5,
         "summary": "인간 모습일 때 - 니달리가 쿠거의 영혼과 교신하여 아군을 치료하고 짧은 시간 아군의 공격 속도를 높입니다. 쿠거 모습일 때 - 니달리가 한쪽 방향을 발톱으로 공격하여, 앞에 있는 적들에게 피해를 입힙니다.",
         "bodyHtml": "<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">인간 형태:</span> 니달리가 <span class=\"text-green-600 dark:text-green-400\">체력을 (50/75/100/125/150 + (35% 주문력))</span> 회복합니다. 회복량은 잃은 체력에 비례해 <span class=\"text-green-600 dark:text-green-400\">(50/75/100/125/150 + (35% 주문력))</span>까지 증가합니다. 또한 7초 동안 <span>공격 속도를 30/40/50/60/70%</span> 증가시킵니다.",
         "iconFile": "PrimalSurge.png",
@@ -332,6 +373,10 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -342,6 +387,7 @@
         "slot": "R",
         "id": "AspectOfTheCougar",
         "name": "쿠거의 상",
+        "maxRank": 4,
         "summary": "니달리가 쿠거로 변신하여 새로운 스킬을 사용할 수 있게 됩니다.",
         "bodyHtml": "<span class=\"text-gray-600 dark:text-gray-500 italic\">기본 지속 효과:</span> <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">인간 형태</span>일 때 <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">사냥</span>을 적용하면 이 스킬의 재사용 대기시간이 초기화됩니다.<br /><br /><span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">인간 형태:</span> 니달리가 <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">쿠거 형태</span>로 변하며 기본 공격이 근접으로 바뀌고 사용 스킬이 변경됩니다.<br /><br /><span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">쿠거 형태:</span> 니달리가 <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">인간 형태</span>로 변하며 기본 공격이 원거리로 바뀌고 사용 스킬이 변경됩니다.",
         "iconFile": "AspectOfTheCougar.png",
@@ -394,6 +440,40 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "TotalPounceDamage",
+            "kind": "damage",
+            "baseByRank": [
+              55,
+              100,
+              145,
+              190
+            ],
+            "terms": [
+              {
+                "stat": "bonusAttackDamage",
+                "coefficientsByRank": [
+                  0.5,
+                  0.5,
+                  0.5,
+                  0.5
+                ]
+              },
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.30000001192092896,
+                  0.30000001192092896,
+                  0.30000001192092896,
+                  0.30000001192092896
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {

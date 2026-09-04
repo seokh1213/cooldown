@@ -120,6 +120,7 @@
         "slot": "P",
         "id": "AlistarPassive",
         "name": "승리의 포효",
+        "maxRank": 0,
         "summary": "근처에서 적이 죽거나, 알리스타가 적 챔피언을 기절 혹은 이동시킬 때마다 포효를 중첩시킵니다. 최대치까지 중첩되면 근처의 모든 아군 챔피언과 자신의 체력을 회복시킵니다.",
         "bodyHtml": "알리스타가 적 챔피언을 <span class=\"text-purple-600 dark:text-purple-500\">기절시키거나,</span> <span class=\"text-purple-600 dark:text-purple-500\">공중으로 띄워 올리거나, 뒤로 밀어내거나,</span> 적이 죽을 때마다 중첩을 얻습니다. 7회 중첩되면 알리스타가 포효하며 자신의 <span class=\"text-green-600 dark:text-green-400\">체력을 (5% 체력)</span>만큼 회복하고 근처 아군 챔피언의 <span class=\"text-green-600 dark:text-green-400\">체력을 (7% 체력)</span>만큼 회복시킵니다.<br /><br />적 챔피언이나 에픽 정글 몬스터가 죽으면 이 스킬이 최대로 중첩됩니다.",
         "iconFile": "Alistar_E.png",
@@ -127,6 +128,10 @@
         "range": [],
         "rankValues": [],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -137,6 +142,7 @@
         "slot": "Q",
         "id": "Pulverize",
         "name": "분쇄",
+        "maxRank": 5,
         "summary": "알리스타가 땅을 내리쳐 주변의 적에게 피해를 입히고 공중에 띄웁니다.",
         "bodyHtml": "알리스타가 땅을 내리쳐 1초 동안 적을 <span class=\"text-purple-600 dark:text-purple-500\">공중으로 띄워 올리고</span> <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(60/100/140/180/220 + (80% 주문력))의 마법 피해</span>를 입힙니다.",
         "iconFile": "Pulverize.png",
@@ -193,6 +199,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "TotalDamage",
+            "kind": "damage",
+            "baseByRank": [
+              60,
+              100,
+              140,
+              180,
+              220
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.800000011920929,
+                  0.800000011920929,
+                  0.800000011920929,
+                  0.800000011920929,
+                  0.800000011920929
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -203,6 +236,7 @@
         "slot": "W",
         "id": "Headbutt",
         "name": "박치기",
+        "maxRank": 5,
         "summary": "알리스타가 적에게 박치기를 하여 피해를 입히고 적을 밀어냅니다.",
         "bodyHtml": "알리스타가 적에게 박치기를 하여 <span class=\"text-purple-600 dark:text-purple-500\">뒤로</span> <span class=\"text-purple-600 dark:text-purple-500\">밀어내고</span> <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(55/110/165/220/275 + (100% 주문력))의 마법 피해</span>를 입힙니다.",
         "iconFile": "Headbutt.png",
@@ -259,6 +293,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "TotalDamage",
+            "kind": "damage",
+            "baseByRank": [
+              55,
+              110,
+              165,
+              220,
+              275
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  1,
+                  1,
+                  1,
+                  1,
+                  1
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -269,6 +330,7 @@
         "slot": "E",
         "id": "AlistarE",
         "name": "짓밟기",
+        "maxRank": 5,
         "summary": "알리스타가 근처의 적 유닛을 짓밟아 적 챔피언에게 피해를 입힐 경우 중첩을 얻고, 유닛을 통과해서 다닐 수 있게 됩니다. 최대치까지 중첩되면 알리스타의 적 챔피언에 대한 다음 기본 공격이 강화되어 추가 마법 피해를 입히고 기절시킵니다.",
         "bodyHtml": "알리스타가 땅을 짓밟기 시작하며 유체화 상태가 되고 5초에 걸쳐 근처 적에게 <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(80/110/140/170/200 + (70% 주문력))의 마법 피해</span>를 입힙니다. 이 스킬로 챔피언에게 피해를 입힐 때마다 중첩이 1회 쌓입니다.<br /><br />5회 중첩되면 알리스타가 다음으로 챔피언을 기본 공격할 때 대상을 1초 동안 <span class=\"text-purple-600 dark:text-purple-500\">기절</span>시키고 <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(20 ~ 20)의 마법 피해</span>를 추가로 입힙니다.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">유체화 상태인 유닛은 다른 유닛과 충돌하지 않습니다.</span>",
         "iconFile": "AlistarE.png",
@@ -325,6 +387,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "TotalDamage",
+            "kind": "damage",
+            "baseByRank": [
+              80,
+              110,
+              140,
+              170,
+              200
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.699999988079071,
+                  0.699999988079071,
+                  0.699999988079071,
+                  0.699999988079071,
+                  0.699999988079071
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -335,6 +424,7 @@
         "slot": "R",
         "id": "FerociousHowl",
         "name": "꺾을 수 없는 의지",
+        "maxRank": 3,
         "summary": "알리스타가 거친 함성을 지르며 자신에게 걸린 모든 방해 효과를 제거하고 일정 시간 동안 적의 물리 및 마법 피해를 감소시킵니다.",
         "bodyHtml": "알리스타가 즉시 모든 <span class=\"text-purple-600 dark:text-purple-500\">방해</span> 효과를 없애고 7초 동안 받는 피해가 55/65/75% 감소합니다.",
         "iconFile": "FerociousHowl.png",
@@ -367,6 +457,10 @@
           }
         ],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {

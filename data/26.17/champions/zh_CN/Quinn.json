@@ -120,6 +120,7 @@
         "slot": "P",
         "id": "QuinnPassive",
         "name": "侵扰",
+        "maxRank": 0,
         "summary": "华洛，奎因的德玛西亚鹰，会周期性地用<keywordMajor>侵扰</keywordMajor>标记敌人。奎因对<keywordMajor>侵扰</keywordMajor>目标的第一次普攻将造成额外物理伤害。",
         "bodyHtml": "每过秒，华洛就会用<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">侵扰</span>标记一名附近的敌人，使其显形4秒并使奎因对其进行的下次攻击 <span>攻击特效</span>造成<span class=\"text-red-600 dark:text-red-500 font-semibold\">(40% 额外攻击力)额外物理伤害</span>。",
         "iconFile": "Quinn_Passive.png",
@@ -127,6 +128,10 @@
         "range": [],
         "rankValues": [],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -137,6 +142,7 @@
         "slot": "Q",
         "id": "QuinnQ",
         "name": "炫目攻势",
+        "maxRank": 5,
         "summary": "奎因唤出华洛，来标记一名敌人并遮蔽其视野，然后对目标附近区域内的所有敌人造成伤害。",
         "bodyHtml": "奎因命令华洛进行俯冲，用<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">侵扰</span>标记命中的第一个敌人、降低其视野半径1.75秒并对所有周围的敌人们造成<span class=\"text-red-600 dark:text-red-500 font-semibold\">(65/100/135/170/205 + (80/85/90/95/100% 额外攻击力) + (50% 法术强度))物理伤害</span>。<br /><br />如果命中的第一个敌人不是英雄，那么该敌人会还会被<span class=\"text-purple-600 dark:text-purple-500\">缴械</span>1.75秒。<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">对野怪造成的伤害提升100%((65/100/135/170/205 + (80/85/90/95/100% 额外攻击力) + (50% 法术强度)))。</span>",
         "iconFile": "QuinnQ.png",
@@ -197,6 +203,43 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "TotalDamage",
+            "kind": "damage",
+            "baseByRank": [
+              65,
+              100,
+              135,
+              170,
+              205
+            ],
+            "terms": [
+              {
+                "stat": "bonusAttackDamage",
+                "coefficientsByRank": [
+                  0.800000011920929,
+                  0.8500000238418579,
+                  0.8999999761581421,
+                  0.949999988079071,
+                  1
+                ]
+              },
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.5,
+                  0.5,
+                  0.5,
+                  0.5,
+                  0.5
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -207,6 +250,7 @@
         "slot": "W",
         "id": "QuinnW",
         "name": "敏锐感知",
+        "maxRank": 5,
         "summary": "在奎因攻击了一名<keywordMajor>侵扰</keywordMajor>目标后，被动地为奎因提供攻击速度和移动速度。主动激活可以让华洛显形附近的一大片区域。",
         "bodyHtml": "<span class=\"text-gray-600 dark:text-gray-500 italic\">被动：</span>攻击一名<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">侵扰</span>目标会为奎因提供<span>28/41/54/67/80%攻击速度</span>和<span class=\"text-cyan-600 dark:text-cyan-500\">20/25/30/35/40%移动速度</span>，持续2秒。<br /><br /><span class=\"text-gray-900 dark:text-white font-semibold\">主动：</span>华洛显形附近的一大片区域，持续2秒。",
         "iconFile": "QuinnW.png",
@@ -239,6 +283,10 @@
           }
         ],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -249,6 +297,7 @@
         "slot": "E",
         "id": "QuinnE",
         "name": "旋翔掠杀",
+        "maxRank": 5,
         "summary": "奎因冲向一名敌人，造成物理伤害，并减少目标的移动速度。在接触到目标的同时，她会向后空翻，暂时打断目标的行动，并在接近她最大攻击距离的地方着陆。",
         "bodyHtml": "奎因冲刺向一名敌人，造成<span class=\"text-red-600 dark:text-red-500 font-semibold\">(40/65/90/115/140 + (20% 额外攻击力))物理伤害</span>并用<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">侵扰</span>将其标记。奎因随后会从目标处向后跳开，将其<span class=\"text-purple-600 dark:text-purple-500\">击</span><span class=\"text-purple-600 dark:text-purple-500\">退</span>并对其造成在1.5秒里持续衰减的50%<span class=\"text-purple-600 dark:text-purple-500\">减速</span>。",
         "iconFile": "QuinnE.png",
@@ -301,6 +350,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "TotalDamage",
+            "kind": "damage",
+            "baseByRank": [
+              40,
+              65,
+              90,
+              115,
+              140
+            ],
+            "terms": [
+              {
+                "stat": "bonusAttackDamage",
+                "coefficientsByRank": [
+                  0.20000000298023224,
+                  0.20000000298023224,
+                  0.20000000298023224,
+                  0.20000000298023224,
+                  0.20000000298023224
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -311,6 +387,7 @@
         "slot": "R",
         "id": "QuinnR",
         "name": "深入敌后",
+        "maxRank": 3,
         "summary": "奎因和华洛联成一体并以极高的速度进行移动。在结束此技能时会施放【鹰翼天翔】，对附近的敌人造成伤害并用侵扰标记英雄们。",
         "bodyHtml": "奎因召唤华洛，在引导2秒后进行合体，获得<span class=\"text-cyan-600 dark:text-cyan-500\">70/100/130%移动速度</span>并允许她<span class=\"text-yellow-600 dark:text-yellow-300\">再次施放</span>这个技能。攻击或使用<span>炫目攻势</span>或<span>旋翔掠杀</span>都会自动地<span class=\"text-yellow-600 dark:text-yellow-300\">再次施放</span>这个技能。<br /><br /><span class=\"text-yellow-600 dark:text-yellow-300\">再次施放</span>：奎因和华洛表演一次空中特技，造成<span class=\"text-red-600 dark:text-red-500 font-semibold\">(60/90/120 + (35% 额外攻击力))物理伤害</span>、用<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">侵扰</span>标记英雄们并结束这个技能。<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">受到来自非小兵的伤害时会将移动速度加成移除3秒。</span>",
         "iconFile": "QuinnR.png",
@@ -357,6 +434,29 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "Damage",
+            "kind": "damage",
+            "baseByRank": [
+              60,
+              90,
+              120
+            ],
+            "terms": [
+              {
+                "stat": "bonusAttackDamage",
+                "coefficientsByRank": [
+                  0.3499999940395355,
+                  0.3499999940395355,
+                  0.3499999940395355
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {

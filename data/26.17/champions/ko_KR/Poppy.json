@@ -120,6 +120,7 @@
         "slot": "P",
         "id": "PoppyPassive",
         "name": "강철의 외교관",
+        "maxRank": 0,
         "summary": "뽀삐가 던진 방패가 대상을 맞히고 튕겨나갑니다. 뽀삐는 방패를 다시 주워 일시적인 보호막 효과를 얻을 수 있습니다.",
         "bodyHtml": "6초마다 뽀삐가 다음 기본 공격 시 방패를 던집니다. 이때 사거리가 350 증가하고 <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(20 ~ 180)의 추가 마법 피해</span>를 입힙니다. 방패는 대상을 맞힌 후 근처 바닥에 떨어집니다. 떨어진 방패를 주우면 <span class=\"text-blue-600 dark:text-blue-300\">의 피해를 흡수하는 보호막</span>을 얻습니다. 방패는 적이 밟으면 파괴됩니다.<br /><br />대상을 처치할 경우 방패가 바로 뽀삐에게 되돌아옵니다.",
         "iconFile": "Poppy_Passive.png",
@@ -127,6 +128,10 @@
         "range": [],
         "rankValues": [],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -137,6 +142,7 @@
         "slot": "Q",
         "id": "PoppyQ",
         "name": "망치 강타",
+        "maxRank": 5,
         "summary": "뽀삐가 망치를 휘둘러 피해를 입히고 적의 움직임을 느리게 만드는 지대를 생성합니다. 지대는 잠시 후 폭발합니다.",
         "bodyHtml": "뽀삐가 땅을 힘껏 내려쳐 <span class=\"text-red-600 dark:text-red-500 font-semibold\">(30/55/80/105/130 + (75% 추가 공격력))</span>+<span class=\"text-red-600 dark:text-red-500 font-semibold\">최대 체력의 7/7.5/8/8.5/9%에 해당하는 물리 피해</span>를 입히고 지대를 불안정하게 만듭니다. <br /><br />불안정한 지대는 적을 (20/23/26/29/32% + (0.008% 추가 체력)) <span class=\"text-purple-600 dark:text-purple-500\">둔화</span>시키고 1초 뒤 폭발하여 <span class=\"text-red-600 dark:text-red-500 font-semibold\">(30/55/80/105/130 + (75% 추가 공격력))</span>+<span class=\"text-red-600 dark:text-red-500 font-semibold\">최대 체력의 7/7.5/8/8.5/9%에 해당하는 물리 피해</span>를 입힙니다.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">미니언 및 정글 몬스터가 대상일 때 공격당 최대 85/120/155/190/225의 피해를 체력 비례 피해로 입힙니다.</span>",
         "iconFile": "PoppyQ.png",
@@ -205,6 +211,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "BaseDamage",
+            "kind": "damage",
+            "baseByRank": [
+              30,
+              55,
+              80,
+              105,
+              130
+            ],
+            "terms": [
+              {
+                "stat": "bonusAttackDamage",
+                "coefficientsByRank": [
+                  0.75,
+                  0.75,
+                  0.75,
+                  0.75,
+                  0.75
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -215,6 +248,7 @@
         "slot": "W",
         "id": "PoppyW",
         "name": "굳건한 태세",
+        "maxRank": 5,
         "summary": "기본 지속 효과로 뽀삐가 추가 방어력과 마법 저항력을 얻습니다. 뽀삐의 체력이 낮아지면 이 효과가 더 커집니다. 사용 시에는 뽀삐의 이동 속도가 증가하며 주변에서 돌진하는 적을 막습니다. 뽀삐에게 막힌 적은 느려지고 이동 스킬을 사용할 수 없습니다.",
         "bodyHtml": "<span class=\"text-gray-600 dark:text-gray-500 italic\">기본 지속 효과:</span> 뽀삐가 <span class=\"text-orange-600 dark:text-orange-400\">(16% 방어력)의 방어력</span>과 <span>(16% 마법 저항력)의 마법 저항력</span>을 추가로 얻습니다. 뽀삐의 체력이 40% 미만일 때는 효과가 두 배로 늘어납니다.<br /><br /><span class=\"text-gray-900 dark:text-white font-semibold\">사용 시:</span> 뽀삐의 <span class=\"text-cyan-600 dark:text-cyan-500\">이동 속도가 40%</span> 증가하고 역장을 둘러 2초 동안 주변에서 돌진하는 적을 막습니다. 가로막힌 적은 2초 동안 <span class=\"text-purple-600 dark:text-purple-500\">이동 스킬을 사용할 수 없고</span> 25% <span class=\"text-purple-600 dark:text-purple-500\">둔화</span>되며 <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(70/110/150/190/230 + (70% 주문력))의 마법 피해</span>를 입습니다.",
         "iconFile": "PoppyW.png",
@@ -267,6 +301,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "InterruptDamage",
+            "kind": "damage",
+            "baseByRank": [
+              70,
+              110,
+              150,
+              190,
+              230
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.699999988079071,
+                  0.699999988079071,
+                  0.699999988079071,
+                  0.699999988079071,
+                  0.699999988079071
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -277,6 +338,7 @@
         "slot": "E",
         "id": "PoppyE",
         "name": "용감한 돌진",
+        "maxRank": 5,
         "summary": "뽀삐가 돌진해 대상을 밀어냅니다. 대상이 지형에 부딪힐 경우 기절합니다.",
         "bodyHtml": "뽀삐가 하나의 적에게 돌진해 <span class=\"text-red-600 dark:text-red-500 font-semibold\">(40/60/80/100/120 + (60% 추가 공격력))의 물리 피해</span>를 입히고 앞으로 밀어냅니다. 적이 지형에 부딪히면 적이 1.6/1.7/1.8/1.9/2초 동안 <span class=\"text-purple-600 dark:text-purple-500\">기절</span>하고 <span class=\"text-red-600 dark:text-red-500 font-semibold\">(40/60/80/100/120 + (60% 추가 공격력))의 추가 물리 피해</span>를 입습니다.",
         "iconFile": "PoppyE.png",
@@ -337,6 +399,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "TackleDamage",
+            "kind": "damage",
+            "baseByRank": [
+              40,
+              60,
+              80,
+              100,
+              120
+            ],
+            "terms": [
+              {
+                "stat": "bonusAttackDamage",
+                "coefficientsByRank": [
+                  0.6000000238418579,
+                  0.6000000238418579,
+                  0.6000000238418579,
+                  0.6000000238418579,
+                  0.6000000238418579
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -347,6 +436,7 @@
         "slot": "R",
         "id": "PoppyR",
         "name": "수호자의 심판",
+        "maxRank": 3,
         "summary": "뽀삐가 잠시 정신을 집중한 뒤 망치를 휘둘러 피해를 입히고 적을 굉장히 멀리 날려버립니다.",
         "bodyHtml": "<span>충전 시작 시:</span> 뽀삐가 최대 4초 동안 망치를 충전하고 15% <span class=\"text-purple-600 dark:text-purple-500\">둔화</span>됩니다.<br /><br /><span>사용 시:</span> 뽀삐가 지면에 강력한 일격을 날려 균열을 일으킵니다. 처음 적중한 적 챔피언과 주변 적은 <span class=\"text-red-600 dark:text-red-500 font-semibold\">(200/300/400 + (90% 추가 공격력))의 물리 피해</span>를 입고 모두 <span class=\"text-purple-600 dark:text-purple-500\">넥서스 쪽으로</span> <span class=\"text-purple-600 dark:text-purple-500\">밀려나고</span> 공중에 떠오른 적은 대상으로 지정할 수 없게 됩니다. 균열의 길이와 적을 <span class=\"text-purple-600 dark:text-purple-500\">밀어내는</span> 거리는 정신을 충전 시간에 비례합니다.<br /><br />충전하지 않고 바로 사용할 경우 <span class=\"text-red-600 dark:text-red-500 font-semibold\">(100/150/200 + (45% 추가 공격력))의 물리 피해</span>를 입히고 적을 1초 동안 <span class=\"text-purple-600 dark:text-purple-500\">공중으로 띄워 올립니다</span>.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">대상으로 지정할 수 없는 유닛은 이미 적중당한 상태가 아닌 한 적의 기본 공격이나 스킬에 영향을 받지 않습니다.</span>",
         "iconFile": "PoppyR.png",
@@ -393,6 +483,29 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "Damage",
+            "kind": "damage",
+            "baseByRank": [
+              200,
+              300,
+              400
+            ],
+            "terms": [
+              {
+                "stat": "bonusAttackDamage",
+                "coefficientsByRank": [
+                  0.8999999761581421,
+                  0.8999999761581421,
+                  0.8999999761581421
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {

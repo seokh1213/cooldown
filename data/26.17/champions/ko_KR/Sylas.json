@@ -120,6 +120,7 @@
         "slot": "P",
         "id": "SylasPassive",
         "name": "페트리사이트 폭발",
+        "maxRank": 0,
         "summary": "스킬 사용 후 사일러스가 페트리사이트 폭발을 1회 충전합니다. 다음 기본 공격 시 충전량을 하나 소모하여 사슬을 세차게 휘두르며 적중한 적들에게 추가 마법 피해를 입힙니다. 페트리사이트 폭발이 충전되어 있으면 사일러스의 공격 속도가 증가합니다. ",
         "bodyHtml": "스킬 사용 후 사일러스가 1회 충전합니다. (최대 충전량 3회) 다음 기본 공격 시 충전량을 하나 소모하여 사슬을 휘두르며 적중당한 대상에게 <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">((130% 공격력) + (30% 주문력))의 마법 피해</span>를 입히고 대상 주변의 모든 적에게 <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">((40% 공격력) + (20% 주문력))의 마법 피해</span>를 입힙니다.<br /><br />충전이 하나라도 되어 있으면 사일러스의 <span>공격 속도가 125%</span> 증가합니다.",
         "iconFile": "SylasP.png",
@@ -127,6 +128,10 @@
         "range": [],
         "rankValues": [],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -137,6 +142,7 @@
         "slot": "Q",
         "id": "SylasQ",
         "name": "사슬 후려치기",
+        "maxRank": 5,
         "summary": "사일러스가 사슬을 후려쳐 교차시키며 대상 지점에 있는 적에게 피해를 입히고 이동 속도를 늦춥니다. <br><br>잠시 후 사슬이 교차한 지점에서 마력이 폭발해 피해를 입힙니다.",
         "bodyHtml": "사일러스가 사슬을 후려쳐 <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(40/60/80/100/120 + (40% 주문력))의 마법 피해</span>를 입히고 1.5초 동안 15/20/25/30/35% <span class=\"text-purple-600 dark:text-purple-500\">둔화</span>시킵니다. 사슬이 교차하는 지점은 폭발해 <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(60/115/170/225/280 + (80% 주문력))의 마법 피해</span>를 추가로 입힙니다.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">폭발 범위 안에 있는 미니언은 40%의 피해를 입습니다.</span>",
         "iconFile": "SylasQ.png",
@@ -197,6 +203,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "Damage",
+            "kind": "damage",
+            "baseByRank": [
+              40,
+              60,
+              80,
+              100,
+              120
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.4000000059604645,
+                  0.4000000059604645,
+                  0.4000000059604645,
+                  0.4000000059604645,
+                  0.4000000059604645
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -207,6 +240,7 @@
         "slot": "W",
         "id": "SylasW",
         "name": "국왕시해자",
+        "maxRank": 5,
         "summary": "사일러스가 마법의 힘으로 적에게 돌진해 피해를 입히며 적 챔피언을 공격하면 체력을 회복합니다.",
         "bodyHtml": "사일러스가 마법의 힘으로 적에게 돌진해 <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(75/110/145/180/215 + (60% 주문력))의 마법 피해</span>를 입힙니다. 챔피언에게 사용하면 사일러스가 잃은 체력에 비례해 <span class=\"text-green-600 dark:text-green-400\">(20/40/60/80/100 + (30% 주문력) + (5% 추가 체력))</span> ~ <span class=\"text-green-600 dark:text-green-400\">(40/80/120/160/200 + (60% 주문력) + (10% 추가 체력))의 체력</span>을 회복합니다. (체력이 40% 이하일 때 최대 회복량 적용)",
         "iconFile": "SylasW.png",
@@ -267,6 +301,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "MinDamage",
+            "kind": "damage",
+            "baseByRank": [
+              75,
+              110,
+              145,
+              180,
+              215
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.6000000238418579,
+                  0.6000000238418579,
+                  0.6000000238418579,
+                  0.6000000238418579,
+                  0.6000000238418579
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -277,6 +338,7 @@
         "slot": "E",
         "id": "SylasE",
         "name": "도주 / 억압",
+        "maxRank": 5,
         "summary": "사일러스가 지정한 위치로 돌진합니다. 스킬을 다시 사용하면 사슬을 던져 적중한 적 방향으로 이동합니다.",
         "bodyHtml": "사일러스가 재빨리 돌진한 후 3.5초 동안 <span class=\"text-yellow-600 dark:text-yellow-300\">재사용</span>을 준비합니다.<br /><br /><span class=\"text-yellow-600 dark:text-yellow-300\">재사용 시:</span> 사일러스가 사슬을 던져 적에게 적중하면 사슬을 끌어당겨 적 방향으로 이동하며 <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(80/130/180/230/280 + (80% 주문력))의 마법 피해</span>를 입히고 0.5초 동안 <span class=\"text-purple-600 dark:text-purple-500\">공중으로 띄워 올립니다</span>.",
         "iconFile": "SylasE.png",
@@ -329,6 +391,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "Damage",
+            "kind": "damage",
+            "baseByRank": [
+              80,
+              130,
+              180,
+              230,
+              280
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.800000011920929,
+                  0.800000011920929,
+                  0.800000011920929,
+                  0.800000011920929,
+                  0.800000011920929
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -339,6 +428,7 @@
         "slot": "R",
         "id": "SylasR",
         "name": "강탈",
+        "maxRank": 3,
         "summary": "사일러스가 적의 궁극기를 강탈해 자유롭게 사용합니다.",
         "bodyHtml": "사일러스가 적 챔피언의 궁극기를 강탈해 적과 똑같이 사용합니다. 효과는 사일러스의 궁극기 레벨과 능력치에 비례합니다.<br /><br />적의 궁극기를 강탈하면 해당 궁극기 재사용 대기시간의(사일러스의 스킬 가속 적용)만큼 재사용 대기시간이 적용되어 사일러스가 그동안 해당 적의 궁극기를 다시 강탈할 수 없습니다. (최소 40초)<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">사일러스가 순수한 공격력 계수를 주문력 계수로 전환해 추가 공격력 1당 주문력 0.4, 총 공격력당 주문력 0.6씩을 얻습니다.</span>",
         "iconFile": "SylasR.png",
@@ -381,6 +471,10 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {

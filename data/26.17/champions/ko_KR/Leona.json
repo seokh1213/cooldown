@@ -120,6 +120,7 @@
         "slot": "P",
         "id": "LeonaSunlightPassive",
         "name": "햇빛",
+        "maxRank": 0,
         "summary": "공격 스킬은 대상에게 1.5초 동안 햇빛 효과를 부여합니다. 아군 챔피언이 햇빛에 걸린 적을 공격하면 햇빛 효과가 사라지며 추가 마법 피해를 줍니다.",
         "bodyHtml": "레오나의 스킬은 적에게 2.5초 동안 표식을 남깁니다. 아군 챔피언이 공격할 경우 표식을 터트리면서 적에게 <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">의 마법 피해</span>를 추가로 입힙니다.",
         "iconFile": "LeonaSunlight.png",
@@ -127,6 +128,10 @@
         "range": [],
         "rankValues": [],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -137,6 +142,7 @@
         "slot": "Q",
         "id": "LeonaShieldOfDaybreak",
         "name": "여명의 방패",
+        "maxRank": 5,
         "summary": "레오나가 다음 기본 공격에서 방패를 사용하여 대상에게 추가 마법 피해를 입히고 기절시킵니다.",
         "bodyHtml": "레오나가 다음 기본 공격 시 1초 동안 적을 <span class=\"text-purple-600 dark:text-purple-500\">기절</span>시키고 <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(10/35/60/85/110 + (30% 주문력))</span>의 마법 피해를 추가로 입힙니다.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">6초 안에 공격하지 않으면 스킬 효과가 사라집니다.</span>",
         "iconFile": "LeonaShieldOfDaybreak.png",
@@ -189,6 +195,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "TotalDamageTooltip",
+            "kind": "damage",
+            "baseByRank": [
+              10,
+              35,
+              60,
+              85,
+              110
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.30000001192092896,
+                  0.30000001192092896,
+                  0.30000001192092896,
+                  0.30000001192092896,
+                  0.30000001192092896
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -199,6 +232,7 @@
         "slot": "W",
         "id": "LeonaSolarBarrier",
         "name": "일식",
+        "maxRank": 5,
         "summary": "레오나가 방패를 들어 피해량 감소 효과를 얻고 방어력과 마법 저항력을 높입니다. 지속시간이 끝날 때 근처에 적이 있으면 마법 피해를 주며 스킬의 지속시간이 늘어납니다.",
         "bodyHtml": "레오나가 방패를 들어 받는 피해량을 8/12/16/20/24 감소시키고, 3초 동안 <span class=\"text-orange-600 dark:text-orange-400\">(20/27.5/35/42.5/50 + (20% 추가 방어력))의 방어력</span>과 <span>(20/27.5/35/42.5/50 + (20% 추가 마법 저항력))의 마법 저항력</span>을 얻습니다. 잠시 후, 방패가 폭발하며 주변 적들에게 <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(55/85/115/145/175 + (40% 주문력))의 마법 피해</span>를 입힙니다. 적이 한 명이라도 공격에 적중당한 경우, <span class=\"text-orange-600 dark:text-orange-400\">방어력</span>과 <span>마법 저항력</span>의 증가 효과가 3초 더 유지됩니다.<br /><br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">50% 아래의 공격에는 피해량 감소 효과가 적용되지 않습니다.</span>",
         "iconFile": "LeonaSolarBarrier.png",
@@ -259,6 +293,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "TotalDamageTooltip",
+            "kind": "damage",
+            "baseByRank": [
+              55,
+              85,
+              115,
+              145,
+              175
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.4000000059604645,
+                  0.4000000059604645,
+                  0.4000000059604645,
+                  0.4000000059604645,
+                  0.4000000059604645
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -269,6 +330,7 @@
         "slot": "E",
         "id": "LeonaZenithBlade",
         "name": "천공의 검",
+        "maxRank": 5,
         "summary": "레오나가 검으로 태양의 형상을 쏘아 일직선에 있는 적에게 마법 피해를 줍니다. 이 형상이 사라지면 마지막으로 공격 당한 챔피언이 일시적으로 이동 불능 상태가 되며 레오나가 그쪽으로 돌격하게 됩니다.",
         "bodyHtml": "레오나가 빛의 검을 날려 <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(50/90/130/170/210 + (40% 주문력))의 마법 피해</span>를 입힙니다. 마지막으로 맞은 챔피언은 0.5초 동안 <span class=\"text-purple-600 dark:text-purple-500\">속박</span>되며 레오나가 그쪽으로 돌격합니다.",
         "iconFile": "LeonaZenithBlade.png",
@@ -325,6 +387,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "TotalDamageTooltip",
+            "kind": "damage",
+            "baseByRank": [
+              50,
+              90,
+              130,
+              170,
+              210
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.4000000059604645,
+                  0.4000000059604645,
+                  0.4000000059604645,
+                  0.4000000059604645,
+                  0.4000000059604645
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -335,6 +424,7 @@
         "slot": "R",
         "id": "LeonaSolarFlare",
         "name": "흑점 폭발",
+        "maxRank": 3,
         "summary": "레오나가 태양 에너지를 소환하여 일정 범위 내 적에게 피해를 줍니다. 이 범위 한가운데 있는 적은 기절하며 외곽에 있는 적은 이동 속도가 느려집니다.",
         "bodyHtml": "태양 에너지를 소환하여 눈부신 광선으로 적에게 <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(150/225/300 + (80% 주문력))의 마법 피해</span>를 입히고 1.75초 동안 80%만큼 <span class=\"text-purple-600 dark:text-purple-500\">둔화</span>시킵니다. 폭발의 중앙에 있는 적들은 <span class=\"text-purple-600 dark:text-purple-500\">둔화</span>되지 않고 <span class=\"text-purple-600 dark:text-purple-500\">기절</span>합니다.",
         "iconFile": "LeonaSolarFlare.png",
@@ -381,6 +471,29 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "ExplosionCalculatedDamage",
+            "kind": "damage",
+            "baseByRank": [
+              150,
+              225,
+              300
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.800000011920929,
+                  0.800000011920929,
+                  0.800000011920929
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {

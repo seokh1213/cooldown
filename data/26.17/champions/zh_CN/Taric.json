@@ -120,6 +120,7 @@
         "slot": "P",
         "id": "TaricPassive",
         "name": "正气凌人",
+        "maxRank": 0,
         "summary": "每次施放技能会强化塔里克的下2次普攻，以造成额外魔法伤害，使他的基础技能的冷却时间减少，并且可以快速地连续攻击。",
         "bodyHtml": "在使用一次技能后，塔里克在5秒内的下2次攻击获得<span>100%攻击速度</span>，造成额外的<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(15% 额外护甲)魔法伤害</span>，并使他的基础技能的冷却时间缩短秒。",
         "iconFile": "Taric_Passive.png",
@@ -127,6 +128,10 @@
         "range": [],
         "rankValues": [],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -137,6 +142,7 @@
         "slot": "Q",
         "id": "TaricQ",
         "name": "星光之触",
+        "maxRank": 5,
         "summary": "基于已储存的充能来治疗附近的友方英雄。【正气凌人】的强化普攻会为这个技能提供一层充能。",
         "bodyHtml": "<span class=\"text-gray-600 dark:text-gray-500 italic\">被动：</span>每15秒和打出一次<span>正气凌人</span>攻击时获得一层效果(最多1/2/3/4/5)。<br /><br /><span class=\"text-gray-900 dark:text-white font-semibold\">主动：</span>消耗所有层数来为附近的友方英雄们回复<span class=\"text-green-600 dark:text-green-400\">(25 + (15% 法术强度) + (1% 生命值))x层数的生命值</span>(在1/2/3/4/5层时回复<span class=\"text-green-600 dark:text-green-400\">(25/50/75/100/125 + (15/30/45/60/75% 法术强度) + (1/2/3/4/5% 生命值))生命值</span>)。",
         "iconFile": "TaricQ.png",
@@ -196,6 +202,10 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -206,6 +216,7 @@
         "slot": "W",
         "id": "TaricW",
         "name": "坚毅壁垒",
+        "maxRank": 5,
         "summary": "被动提升塔里克和带有【坚毅壁垒】效果的友方英雄的护甲。<br><br>主动施放会为一名友方英雄提供护盾和【坚毅壁垒】效果，只要该英雄呆在塔里克身边，【坚毅壁垒】效果会一直持续。塔里克的技能也会从带有【坚毅壁垒】效果的友方英雄身上施放。",
         "bodyHtml": "<span class=\"text-gray-600 dark:text-gray-500 italic\">被动：</span>塔里克获得<span class=\"text-orange-600 dark:text-orange-400\">(6/7/8/9/10% 护甲)护甲</span>并在他和被此技能绑定过的友方英雄之间形成一条灵链。只要他们在彼此附近，该友方英雄就会获得<span class=\"text-orange-600 dark:text-orange-400\">(6/7/8/9/10% 护甲)护甲</span>并且塔里克的各个技能也会从他自己和该友方英雄处施放。<br /><br /><span class=\"text-gray-600 dark:text-gray-500 italic\">主动：</span>塔里克与一名友方英雄进行绑定，提供持续2.5秒的<span class=\"text-blue-600 dark:text-blue-300\">7/8/9/10/11%最大生命值的护盾值</span>。<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">模仿的技能效果不会叠加。</span><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">同一时间仅能绑定一名友方英雄。</span><br /><br />",
         "iconFile": "TaricW.png",
@@ -258,6 +269,10 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -268,6 +283,7 @@
         "slot": "E",
         "id": "TaricE",
         "name": "炫光",
+        "maxRank": 5,
         "summary": "塔里克准备施放一束星光，在短暂的延迟后，会对敌人造成魔法伤害和晕眩效果。",
         "bodyHtml": "塔里克投射一束星光，在1秒后爆裂，以造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(90/130/170/210/250 + (50% 法术强度) + (50% 额外护甲))魔法伤害</span>并使敌人们<span class=\"text-purple-600 dark:text-purple-500\">晕眩</span>1.5秒。",
         "iconFile": "TaricE.png",
@@ -320,6 +336,43 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "TotalDamage",
+            "kind": "damage",
+            "baseByRank": [
+              90,
+              130,
+              170,
+              210,
+              250
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.5,
+                  0.5,
+                  0.5,
+                  0.5,
+                  0.5
+                ]
+              },
+              {
+                "stat": "bonusArmor",
+                "coefficientsByRank": [
+                  0.5,
+                  0.5,
+                  0.5,
+                  0.5,
+                  0.5
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -330,6 +383,7 @@
         "slot": "R",
         "id": "TaricR",
         "name": "宇宙之辉",
+        "maxRank": 3,
         "summary": "在短暂的延迟后，放射一道宇宙能量到附近的友方英雄身上，让他们免疫伤害一段时间。",
         "bodyHtml": "塔里克召唤来自天堂的保护。在2.5秒后，附近的所有友方英雄都会免疫伤害2.5秒。",
         "iconFile": "TaricR.png",
@@ -358,6 +412,10 @@
           }
         ],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
