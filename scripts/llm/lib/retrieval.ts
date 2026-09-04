@@ -9,8 +9,14 @@ import type {
   NormalizedRune,
   NormalizedSummonerSpell,
 } from "../../../src/types/combatNormalized";
-import { getOfficialLikeItemTier, type ItemTier } from "../../../src/lib/itemTierUtils";
+import type { ItemTier } from "../../../src/lib/itemTierUtils";
 import type { ChampionCard } from "./facts";
+import {
+  ARCHETYPE_LABEL,
+  championBuildProfile,
+  classifyItem,
+  type ItemArchetype,
+} from "./itemArchetype";
 import { stripHtml, truncate } from "./text";
 
 const STAT_LABEL: Record<string, string> = {
@@ -44,6 +50,10 @@ export interface ItemBrief {
   priceTotal: number;
   stats: string;
   effects?: string;
+  /** 역할군 라벨 (브루저, 탱커 …) */
+  archetypes?: string;
+  /** 특수 기능 (치유 감소, 강인함 …) */
+  functions?: string;
 }
 
 export interface ItemSelection {
@@ -59,6 +69,8 @@ export interface ItemSelection {
   offensive: ItemBrief[];
   /** 지식 카드/팁이 이름으로 지목한 아이템 — 가격 절단으로 누락되지 않게 항상 포함 */
   pinned: ItemBrief[];
+  /** 내 챔피언 빌드 성향 (브루저/탱커/메이지/원거리 딜러/암살자/서포터) */
+  buildLabel?: string;
 }
 
 function describeStats(item: NormalizedItem): string {
@@ -79,13 +91,17 @@ function toBrief(item: NormalizedItem): ItemBrief {
   const effects = item.effects
     .map((e) => `${e.name}: ${truncate(stripHtml(e.description), 140)}`)
     .join(" | ");
+  const classification = classifyItem(item);
   return {
     id: item.id,
     name: item.name,
-    tier: getOfficialLikeItemTier(item),
+    tier: classification.tier,
     priceTotal: item.priceTotal,
     stats: describeStats(item),
     effects: effects || undefined,
+    archetypes:
+      classification.archetypes.map((a) => ARCHETYPE_LABEL[a]).join(",") || undefined,
+    functions: classification.functions.join(",") || undefined,
   };
 }
 
@@ -144,52 +160,91 @@ export function selectDefensiveItems(
   const rift = dedupeByName(items.filter(isRiftItem));
   const matchesFocus = (item: NormalizedItem) => focus.some((stat) => hasStat(item, stat));
 
-  const tiered = rift.map((item) => ({ item, tier: getOfficialLikeItemTier(item) }));
+  const classified = rift.map((item) => ({ item, c: classifyItem(item) }));
 
-  const starters = tiered
-    .filter(({ tier }) => tier === "starter")
+  /**
+   * 내 챔피언 빌드 성향으로 아이템 역할군을 좁힌다.
+   * 이 단계가 없으면 브루저 조언에 원거리 딜러 아이템이나 서포터 아이템이 섞인다.
+   * 근거는 docs/lol-fundamentals.md 8~9장.
+   */
+  const profile = me
+    ? championBuildProfile({
+        roleTags: me.roleTags,
+        scaling: me.scalingProfile.primary,
+        rangeType: me.rangeType,
+      })
+    : undefined;
+  const fitsProfile = (archetypes: ItemArchetype[]) => {
+    if (!profile) return true;
+    if (archetypes.some((a) => profile.excluded.includes(a))) return false;
+    // 장화·시작·하위 아이템은 역할군 판정 대상이 아니다
+    const combat = archetypes.filter(
+      (a) => !["boots", "starter", "component", "consumable", "trinket", "jungle"].includes(a),
+    );
+    if (combat.length === 0) return true;
+    return combat.some((a) => profile.preferred.includes(a));
+  };
+
+  // 시작 아이템은 역할군 태그가 없으므로 내 계수와 맞는 공격 스탯인지로 걸러낸다.
+  // (AD 브루저에게 도란의 반지·암흑의 인장을 권하면 안 된다)
+  const myScalingPrimary = me?.scalingProfile.primary;
+  const starterFitsScaling = (item: NormalizedItem) => {
+    const givesAp = hasStat(item, "ABILITY_POWER");
+    const givesAd = hasStat(item, "ATTACK_DAMAGE");
+    if (!givesAp && !givesAd) return true; // 방어·마나 계열은 누구나 산다
+    if (myScalingPrimary === "AD") return !givesAp;
+    if (myScalingPrimary === "AP") return !givesAd;
+    return true;
+  };
+
+  const starters = classified
+    .filter(({ c }) => c.tier === "starter")
     .filter(({ item }) => !item.tags.includes("Jungle") && !item.tags.includes("GoldPer"))
+    .filter(({ item }) => starterFitsScaling(item))
     .map(({ item }) => item)
     .sort((a, b) => a.priceTotal - b.priceTotal);
 
-  const components = tiered
-    .filter(({ tier, item }) => (tier === "basic" || tier === "epic") && matchesFocus(item))
+  const components = classified
+    .filter(({ c, item }) => (c.tier === "basic" || c.tier === "epic") && matchesFocus(item))
+    .filter(({ c }) => fitsProfile(c.archetypes))
     .map(({ item }) => item)
     .sort((a, b) => a.priceTotal - b.priceTotal)
     .slice(0, maxComponents);
 
-  const boots = tiered
-    .filter(({ tier, item }) => tier === "boots" && matchesFocus(item))
+  const boots = classified
+    .filter(({ c, item }) => c.tier === "boots" && matchesFocus(item))
     .map(({ item }) => item);
 
-  // 아군 대상 보조 아이템(오라/희생 계열)은 1대1 상성 조언에 부적합하므로 제외
-  const isSupportItem = (item: NormalizedItem) =>
-    item.tags.includes("Aura") || item.tags.includes("GoldPer");
-
-  const legendaries = tiered
-    .filter(({ tier, item }) => tier === "legendary" && matchesFocus(item) && !isSupportItem(item))
+  const legendaries = classified
+    .filter(({ c, item }) => c.tier === "legendary" && matchesFocus(item))
+    .filter(({ c }) => fitsProfile(c.archetypes))
     .map(({ item }) => item)
     .sort((a, b) => a.priceTotal - b.priceTotal)
     .slice(0, maxLegendaries);
 
+  // 치유 감소 아이템도 계수에 맞는 것만 남긴다.
+  // (AD 브루저에게 망각의 구·모렐로노미콘을 권하면 안 된다)
   const antiHeal = enemy.mechanics.includes("회복")
     ? rift
         .filter((item) => {
           const text = `${stripHtml(item.description)} ${item.effects.map((e) => stripHtml(e.description)).join(" ")}`;
           return ANTI_HEAL_RE.test(text);
         })
+        .filter((item) => starterFitsScaling(item))
         .sort((a, b) => a.priceTotal - b.priceTotal)
     : [];
 
   // 내 계수 프로필에 맞는 공격 전설 아이템
-  const myScaling = me?.scalingProfile.primary;
   const offensiveStat =
-    myScaling === "AP" ? "ABILITY_POWER" : myScaling === "AD" ? "ATTACK_DAMAGE" : undefined;
+    myScalingPrimary === "AP"
+      ? "ABILITY_POWER"
+      : myScalingPrimary === "AD"
+        ? "ATTACK_DAMAGE"
+        : undefined;
   const offensive = offensiveStat
-    ? tiered
-        .filter(
-          ({ tier, item }) => tier === "legendary" && hasStat(item, offensiveStat) && !isSupportItem(item),
-        )
+    ? classified
+        .filter(({ c, item }) => c.tier === "legendary" && hasStat(item, offensiveStat))
+        .filter(({ c }) => fitsProfile(c.archetypes))
         .map(({ item }) => item)
         .sort((a, b) => a.priceTotal - b.priceTotal)
         .slice(0, maxOffensive)
@@ -207,6 +262,7 @@ export function selectDefensiveItems(
     antiHeal: antiHeal.map(toBrief),
     offensive: offensive.map(toBrief),
     pinned: pinned.map(toBrief),
+    buildLabel: profile?.label,
   };
 }
 
@@ -214,10 +270,14 @@ export function itemSelectionToText(sel: ItemSelection): string {
   const focusLabel = sel.focus.map((f) => STAT_LABEL[f]).join("+");
   const fmt = (list: ItemBrief[]) =>
     list
-      .map((i) => `  - ${i.name} (${i.priceTotal}G; ${i.stats}${i.effects ? `; ${i.effects}` : ""})`)
+      .map(
+        (i) =>
+          `  - ${i.name} (${i.priceTotal}G; ${i.stats}${i.archetypes ? `; 역할군 ${i.archetypes}` : ""}${i.functions ? `; ${i.functions}` : ""}${i.effects ? `; ${i.effects}` : ""})`,
+      )
       .join("\n");
   const sections = [
     `방어 기준 스탯: ${focusLabel} (상대 주 피해 유형에서 도출)`,
+    ...(sel.buildLabel ? [`내 빌드 성향: ${sel.buildLabel} — 이 역할군 아이템만 고릅니다`] : []),
   ];
   if (sel.pinned.length) {
     sections.push(`지식 카드가 지목한 아이템(우선 고려):\n${fmt(sel.pinned)}`);
