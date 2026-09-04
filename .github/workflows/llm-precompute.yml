@@ -49,6 +49,9 @@ jobs:
     runs-on: ubuntu-latest
     # CPU 추론이라 느리다. 폭주를 막기 위한 상한.
     timeout-minutes: 90
+    env:
+      # 러너 사용자가 쓰기 가능한 경로에 모델을 둔다
+      OLLAMA_MODELS: /home/runner/.ollama/models
 
     steps:
       - name: Checkout repository
@@ -86,24 +89,27 @@ jobs:
             ${{ steps.params.outputs.shard && format('--shard {0}', steps.params.outputs.shard) || '' }}
 
       # 모델 캐시는 두지 않는다.
-      # 실측(2026-09-04): ollama pull 이 25초였다. 반면 캐시로 담으면 6.7 GB 로
-      # 저장소 캐시 한도(10 GB)의 대부분을 잡아먹고 복원이 25초보다 빠르지도 않다.
-      # 설치 스크립트가 systemd 서비스로 서버를 띄우므로 모델은 /usr/share/ollama 아래에 놓인다.
+      # 실측(2026-09-04): ollama pull 이 25초였다. 캐시로 담으면 6.7 GB 로 저장소
+      # 캐시 한도(10 GB)의 대부분을 잡아먹고 복원이 25초보다 빠르지도 않다.
       - name: Install ollama
         run: |
           curl -fsSL https://ollama.com/install.sh | sh
           ollama --version || true
 
-      - name: Wait for ollama server
+      # GitHub 호스팅 러너에는 systemd 가 없다("WARNING: systemd is not running").
+      # 설치 스크립트가 서비스를 띄우지 못하므로 서버를 직접 실행해야 한다.
+      - name: Start ollama server
         run: |
-          for i in $(seq 1 60); do
+          mkdir -p "${OLLAMA_MODELS}"
+          nohup ollama serve > "${RUNNER_TEMP}/ollama.log" 2>&1 &
+          for i in $(seq 1 90); do
             if curl -fsS http://127.0.0.1:11434/api/tags > /dev/null; then
               echo "ollama up after ${i}s"; exit 0
             fi
             sleep 1
           done
           echo "ollama 기동 실패"
-          sudo journalctl -u ollama --no-pager -n 50 || true
+          cat "${RUNNER_TEMP}/ollama.log" || true
           exit 1
 
       - name: Pull model
@@ -118,6 +124,7 @@ jobs:
           echo "cpus=$(nproc)"
           free -h || true
           cat /proc/cpuinfo | grep -m1 "model name" || true
+          du -sh "${OLLAMA_MODELS}" || true
 
       - name: Generate matchups
         run: |
