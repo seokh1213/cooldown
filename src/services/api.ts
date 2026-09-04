@@ -33,10 +33,12 @@ export const SKILL_ICON_URL = (VERSION: string, NAME: string) =>
 
 /**
  * 정적 데이터(version.json)에서 가져오는 버전 정보
- * - ddragonVersion: Data Dragon 기준 버전 (기존 version 필드와 동일)
+ * - version: Riot 공식 패치 표기이자 정적 데이터 경로 키
+ * - ddragonVersion: Data Dragon CDN 요청용 내부 버전
  * - cdragonVersion: Community Dragon 기준 버전 (없을 수도 있음)
  */
 export interface DataVersionInfo {
+  version: string;
   ddragonVersion: string;
   cdragonVersion: string | null;
 }
@@ -69,8 +71,9 @@ export async function getDataVersions(): Promise<DataVersionInfo> {
             typeof versionInfo.cdragonVersion === "string"
             ? (versionInfo.cdragonVersion as string)
             : null;
+        const version: string = versionInfo.version as string;
 
-        cachedDataVersions = {ddragonVersion, cdragonVersion};
+        cachedDataVersions = {version, ddragonVersion, cdragonVersion};
         return cachedDataVersions;
     } else {
         throw new Error("Invalid version info structure");
@@ -82,8 +85,8 @@ export async function getDataVersions(): Promise<DataVersionInfo> {
 }
 
 export async function getVersion(): Promise<string> {
-  const {ddragonVersion} = await getDataVersions();
-  return ddragonVersion;
+  const {version} = await getDataVersions();
+  return version;
 }
 
 export function cleanOldVersionCache(
@@ -131,9 +134,10 @@ export function cleanOldVersionCache(
 
 export async function getChampionList(
   version: string,
-  lang: string
+  lang: string,
+  assetVersion: string
 ): Promise<Champion[]> {
-  const cacheKey = `champion_list_${version}_${lang}`;
+  const cacheKey = `champion_list_${version}_${assetVersion}_${lang}`;
 
   try {
     const cached = sessionStorage.getItem(cacheKey);
@@ -198,7 +202,7 @@ export async function getChampionList(
             key: c.id, // DDragon numeric key는 없지만, 저장/비교용으로 id를 사용
             name,
             title: "",
-            version,
+            version: assetVersion,
             hangul,
             stats,
           };
@@ -753,7 +757,7 @@ export async function getCommunityDragonSpellData(
 
     return {
       spellDataMap,
-      ddragonVersion: data.version,
+      ddragonVersion: data.ddragonVersion ?? data.version,
       cdragonVersion: null,
     };
   } catch (error) {
@@ -782,7 +786,4 @@ export async function getChampionInfo(
     throw error;
   }
 }
-
-
-
 

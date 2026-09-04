@@ -73,6 +73,7 @@ function getInitialLang(): Language {
 function App() {
   const [lang, setLang] = useState<Language>(getInitialLang);
   const [version, setVersion] = useState<string | null>(null);
+  const [ddragonVersion, setDDragonVersion] = useState<string | null>(null);
   const [cdragonVersion, setCDragonVersion] = useState<string | null>(null);
   const [championList, setChampionList] = useState<Champion[] | null>(null);
   const [theme, setTheme] = useState<"light" | "dark">(getInitialTheme);
@@ -174,21 +175,22 @@ function App() {
       }
       
       // 필수 데이터 로딩: 버전 정보와 챔피언 리스트
-      const { ddragonVersion, cdragonVersion } = await getDataVersions();
-      setVersion(ddragonVersion);
+      const { version, ddragonVersion, cdragonVersion } = await getDataVersions();
+      setVersion(version);
+      setDDragonVersion(ddragonVersion);
       setCDragonVersion(cdragonVersion);
       
       // 오래된 버전의 캐시 제거 (DDragon + CDragon 기준)
-      cleanOldVersionCache(ddragonVersion);
+      cleanOldVersionCache(version);
       
-      const champions = await getChampionList(ddragonVersion, lang);
+      const champions = await getChampionList(version, lang, ddragonVersion);
       setChampionList(champions);
       
       // 최소 로딩 시간 보장 (스플래시 화면 표시)
       await new Promise((resolve) => setTimeout(resolve, 1000));
       
       // 필수 데이터가 모두 로드되었는지 확인 후 로딩 완료
-      if (ddragonVersion && champions && champions.length > 0) {
+      if (version && champions && champions.length > 0) {
         setIsLoading(false);
       } else {
         logger.error("Required data not loaded properly. Keeping splash screen visible.");
@@ -296,6 +298,7 @@ function App() {
         <AppContent
           isLoading={isLoading}
           version={version}
+          ddragonVersion={ddragonVersion}
           cdragonVersion={cdragonVersion}
           lang={lang}
           championList={championList}
@@ -317,6 +320,7 @@ function App() {
 function AppContent({
   isLoading,
   version,
+  ddragonVersion,
   cdragonVersion,
   lang,
   championList,
@@ -332,6 +336,7 @@ function AppContent({
 }: {
   isLoading: boolean;
   version: string | null;
+  ddragonVersion: string | null;
   cdragonVersion: string | null;
   lang: Language;
   championList: Champion[] | null;
@@ -363,6 +368,7 @@ function AppContent({
                 nav={
                   <Nav
                     version={version}
+                    ddragonVersion={ddragonVersion}
                     cdragonVersion={cdragonVersion}
                     lang={lang}
                     selectHandler={handleLangChange}
@@ -396,6 +402,7 @@ function AppContent({
                 nav={
                   <Nav
                     version={version}
+                    ddragonVersion={ddragonVersion}
                     cdragonVersion={cdragonVersion}
                     lang={lang}
                     selectHandler={handleLangChange}
@@ -429,6 +436,8 @@ function AppContent({
                 nav={
                   <Nav
                     version={version || undefined}
+                    ddragonVersion={ddragonVersion || undefined}
+                    cdragonVersion={cdragonVersion}
                     lang={lang}
                     selectHandler={handleLangChange}
                     theme={theme}
@@ -440,6 +449,7 @@ function AppContent({
                   <SimulationPage
                     lang={lang}
                     version={version}
+                    ddragonVersion={ddragonVersion}
                     championList={championList}
                   />
                 </Suspense>

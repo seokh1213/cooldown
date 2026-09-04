@@ -21,6 +21,7 @@ import type {
 } from "../src/types/combatStats";
 import { StatKey } from "../src/types/combatStats";
 import { parseItemDescription } from "../src/lib/spellTooltipParser/index";
+import { toOfficialPatchVersion } from "../src/lib/gamePatchVersion";
 
 const VERSION_URL = "https://ddragon.leagueoflegends.com/api/versions.json";
 const CHAMP_LIST_URL = (VERSION: string, LANG: string) =>
@@ -1364,8 +1365,10 @@ async function main() {
   try {
     console.log('📦 Fetching version information...');
     const versions: string[] = await fetchJson(VERSION_URL);
-    const version = versions[0];
-    console.log(`✅ Latest DDragon version: ${version}`);
+    const ddragonVersion = versions[0];
+    const version = toOfficialPatchVersion(ddragonVersion);
+    console.log(`✅ Latest DDragon version: ${ddragonVersion}`);
+    console.log(`✅ Official patch version: ${version}`);
 
     const cdVersionCandidates = getCommunityDragonVersionCandidates(versions);
     console.log(`✅ CommunityDragon version candidates: ${cdVersionCandidates.join(', ')}\n`);
@@ -1398,7 +1401,7 @@ async function main() {
 
     for (const lang of LANGUAGES) {
       console.log(`📋 Fetching champion list for ${lang}...`);
-      const champListData = await fetchJson(CHAMP_LIST_URL(version, lang));
+      const champListData = await fetchJson(CHAMP_LIST_URL(ddragonVersion, lang));
 
       const champions = Object.values(champListData.data || {}).sort(
         (a: any, b: any) => (a.name < b.name ? -1 : a.name > b.name ? 1 : 0)
@@ -1407,7 +1410,7 @@ async function main() {
       console.log(`✅ Fetched ${champions.length} champions for ${lang}`);
 
       console.log(`📜 Fetching runes for ${lang}...`);
-      const runesData = await fetchJson(RUNES_URL(version, lang));
+      const runesData = await fetchJson(RUNES_URL(ddragonVersion, lang));
       runesDataByLang[lang] = runesData;
       console.log(`✅ Fetched runes for ${lang}`);
 
@@ -1416,7 +1419,7 @@ async function main() {
         const statShardData = await fetchRuneStatShardsWithFallback(
           lang,
           cdVersionCandidates,
-          version
+          ddragonVersion
         );
 
         if (statShardData && statShardData.groups.length > 0) {
@@ -1445,7 +1448,7 @@ async function main() {
       }
 
       console.log(`🧱 Fetching items for ${lang}...`);
-      const itemsData = await fetchJson(ITEMS_URL(version, lang));
+      const itemsData = await fetchJson(ITEMS_URL(ddragonVersion, lang));
 
       let combinedItemsData: any = itemsData;
 
@@ -1539,7 +1542,7 @@ async function main() {
 
       console.log(`📘 Fetching summoner spells for ${lang}...`);
       try {
-        const summonerData = await fetchJson(SUMMONER_URL(version, lang));
+        const summonerData = await fetchJson(SUMMONER_URL(ddragonVersion, lang));
         summonerDataByLang[lang] = summonerData;
         console.log(`✅ Fetched summoner spells for ${lang}\n`);
       } catch (error) {
@@ -1550,7 +1553,7 @@ async function main() {
       }
     }
 
-    const koChampListData = await fetchJson(CHAMP_LIST_URL(version, 'ko_KR'));
+    const koChampListData = await fetchJson(CHAMP_LIST_URL(ddragonVersion, 'ko_KR'));
     const championIds = Object.keys(koChampListData.data || {});
     console.log(`📚 Processing ${championIds.length} champions...\n`);
 
@@ -1562,11 +1565,12 @@ async function main() {
       const championPromises = batch.flatMap(championId =>
         LANGUAGES.map(async (lang) => {
           try {
-            const champData = await fetchJson(CHAMP_INFO_URL(version, lang, championId));
+            const champData = await fetchJson(CHAMP_INFO_URL(ddragonVersion, lang, championId));
             const champion = champData.data?.[championId];
             if (champion) {
               const championInfo = {
                 version,
+                ddragonVersion,
                 lang,
                 champion,
               };
@@ -1625,9 +1629,9 @@ async function main() {
           
           if (Object.keys(spellData).length > 0) {
             const spellInfo = {
-              // DDragon 기준 버전 (정적 데이터 디렉터리 버전)
+              // 공식 패치 키 (정적 데이터 디렉터리와 캐시 키)
               version,
-              ddragonVersion: version,
+              ddragonVersion,
               // 실제로 사용한 CDragon 버전 (예: "15.23" 또는 "latest")
               cdragonVersion,
               championId,
@@ -1713,13 +1717,12 @@ async function main() {
     const finalCdragonVersion =
       usedFallbackCdragonVersion ??
       cdVersionCandidates[0] ??
-      toCommunityDragonVersion(version);
+      toCommunityDragonVersion(ddragonVersion);
 
     const versionInfo = {
-      // 기존 필드(하위 호환)
+      // 공식 패치 키. 정적 데이터 경로와 캐시 키에 사용한다.
       version,
-      // 명시적인 필드 이름들
-      ddragonVersion: version,
+      ddragonVersion,
       // 이번 정적 빌드에서 "실제로" 사용된 CDragon 기준 버전
       cdragonVersion: finalCdragonVersion,
     };
@@ -1727,7 +1730,8 @@ async function main() {
 
     console.log(`\n🎉 Static data generation completed!`);
     console.log(`📁 Data saved to: ${versionDir}`);
-    console.log(`📊 DDragon Version: ${version}`);
+    console.log(`📊 DDragon Version: ${ddragonVersion}`);
+    console.log(`🎮 Official Patch Version: ${version}`);
     console.log(`🌐 Languages: ${LANGUAGES.join(", ")}`);
     console.log(`👥 Champions: ${championIds.length}`);
     console.log(`🐉 CommunityDragon Version (effective): ${finalCdragonVersion}`);
@@ -1738,4 +1742,3 @@ async function main() {
 }
 
 main();
-

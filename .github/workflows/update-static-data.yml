@@ -11,6 +11,13 @@ on:
     paths:
       - '.github/workflows/update-static-data.yml'
 
+permissions:
+  contents: write
+
+concurrency:
+  group: update-static-data
+  cancel-in-progress: false
+
 jobs:
   update-data:
     runs-on: ubuntu-latest
@@ -34,6 +41,12 @@ jobs:
       - name: Generate static data
         run: npm run generate-static-data
 
+      - name: Validate project
+        run: |
+          npm run type-check
+          npm run lint
+          npm test
+
       - name: Check for changes
         id: git-check
         run: |
@@ -49,14 +62,13 @@ jobs:
           git push
 
       - name: Build project
-        if: steps.git-check.outputs.changed == 'true'
+        if: github.event_name != 'schedule' || steps.git-check.outputs.changed == 'true'
         run: |
           npm run build
 
       - name: Deploy to GitHub Pages
-        if: steps.git-check.outputs.changed == 'true'
+        if: github.event_name != 'schedule' || steps.git-check.outputs.changed == 'true'
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./dist
-

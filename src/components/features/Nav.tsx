@@ -25,6 +25,7 @@ function getMajorMinor(version: string | null | undefined): string | null {
 
 interface NavProps {
   version?: string;
+  ddragonVersion?: string | null;
   cdragonVersion?: string | null;
   lang: string;
   selectHandler: (lang: string) => void;
@@ -36,6 +37,7 @@ interface NavProps {
 
 function Nav({ 
   version, 
+  ddragonVersion,
   cdragonVersion,
   lang, 
   selectHandler,
@@ -55,12 +57,12 @@ function Nav({
   const [languagePopoverOpen, setLanguagePopoverOpen] = useState(false);
 
   const isVersionMismatch = useMemo(() => {
-    if (!version || !cdragonVersion) return false;
-    const ddragonMajorMinor = getMajorMinor(version);
+    if (!ddragonVersion || !cdragonVersion) return false;
+    const ddragonMajorMinor = getMajorMinor(ddragonVersion);
     const cdragonMajorMinor = getMajorMinor(cdragonVersion);
     if (!ddragonMajorMinor || !cdragonMajorMinor) return false;
     return ddragonMajorMinor !== cdragonMajorMinor;
-  }, [version, cdragonVersion]);
+  }, [ddragonVersion, cdragonVersion]);
 
   useEffect(() => {
     const checkMobile = () => {

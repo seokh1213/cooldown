@@ -63,12 +63,14 @@ function StatRow({ label, value, base, precision = 0 }: StatRowProps) {
 interface SimulationPageProps {
   lang: Language;
   version: string | null;
+  ddragonVersion: string | null;
   championList: Champion[] | null;
 }
 
 export default function SimulationPage({
   lang,
   version,
+  ddragonVersion,
   championList,
 }: SimulationPageProps) {
   const { t } = useTranslation();
@@ -239,7 +241,7 @@ export default function SimulationPage({
             >
               {championInfo ? (
                 <img
-                  src={`https://ddragon.leagueoflegends.com/cdn/${version}/img/champion/${championInfo.id}.png`}
+                  src={`https://ddragon.leagueoflegends.com/cdn/${ddragonVersion}/img/champion/${championInfo.id}.png`}
                   alt={championInfo.name}
                   className="w-full h-full object-cover"
                 />
@@ -364,7 +366,7 @@ export default function SimulationPage({
                     >
                       {item ? (
                         <img
-                          src={`https://ddragon.leagueoflegends.com/cdn/${version}/img/item/${item.id}.png`}
+                          src={`https://ddragon.leagueoflegends.com/cdn/${ddragonVersion}/img/item/${item.id}.png`}
                           alt={item.name}
                           className="w-full h-full object-cover"
                         />
@@ -559,7 +561,7 @@ export default function SimulationPage({
                       }`}
                     >
                       <img
-                        src={`https://ddragon.leagueoflegends.com/cdn/${version}/img/item/${item.id}.png`}
+                        src={`https://ddragon.leagueoflegends.com/cdn/${ddragonVersion}/img/item/${item.id}.png`}
                         alt={item.name || item.id}
                         className="w-6 h-6 rounded-sm border border-border/60 bg-black/40"
                       />
@@ -582,5 +584,4 @@ export default function SimulationPage({
     </div>
   );
 }
-
 

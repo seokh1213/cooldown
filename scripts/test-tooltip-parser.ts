@@ -113,7 +113,7 @@ async function loadDataRootAndVersion(): Promise<{
   const dataRoot = path.resolve(__dirname, "../public/data");
   const versionRaw = await fs.readFile(path.join(dataRoot, "version.json"), "utf-8");
   const versionInfo = JSON.parse(versionRaw) as VersionInfo;
-  const dataVersion = versionInfo.ddragonVersion ?? versionInfo.version;
+  const dataVersion = versionInfo.version;
   return { dataRoot, dataVersion };
 }
 
@@ -291,4 +291,3 @@ runTests().catch((error) => {
   console.error("❌ 테스트 실행 중 예기치 못한 에러가 발생했습니다.", error);
   process.exit(1);
 });
-
