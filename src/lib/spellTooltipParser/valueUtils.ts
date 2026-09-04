@@ -2,6 +2,7 @@ import { Value } from "./types";
 import type { TooltipLocale } from "./types";
 import { formatNumber } from "./formatters";
 import { getTranslations } from "@/i18n";
+import type { Translations } from "@/i18n/translations";
 import type { ChampionSpell } from "@/types";
 
 /**
@@ -14,7 +15,7 @@ export function isVector(v: Value): v is number[] {
 /**
  * 값을 벡터로 변환
  */
-function toVector(v: Value, length: number): number[] {
+export function toVector(v: Value, length: number): number[] {
   if (Array.isArray(v)) return v;
   return Array.from({ length }, () => v);
 }
@@ -22,7 +23,7 @@ function toVector(v: Value, length: number): number[] {
 /**
  * 이진 연산 수행
  */
-function binaryOp(
+export function binaryOp(
   a: Value,
   b: Value,
   op: (x: number, y: number) => number
@@ -79,7 +80,58 @@ export function scaleBy100(value: Value): Value {
 }
 
 /**
+ * CommunityDragon mStat 코드 → 번역 키 표
+ *
+ * 코드값은 Riot 이 공개하지 않으므로, CommunityDragon 계산 데이터와
+ * lol.ps 의 완성 문장을 같은 패치에서 대조해 확정한 것만 싣는다.
+ * (근거 없는 코드는 넣지 않는다. 틀린 스탯 이름은 값이 없는 것보다 나쁘다)
+ *
+ * - base:  기본 이름 번역 키
+ * - bonus: "추가 ~" 전용 번역 키. 없으면 common.bonus 를 앞에 붙여 조립한다.
+ */
+type StatNameKey = keyof Translations["stats"];
+
+interface StatNameEntry {
+  base: StatNameKey;
+  bonus?: StatNameKey;
+  /** 확정 근거 (패치 26.17 기준) */
+  evidence: string;
+}
+
+const STAT_NAME_TABLE: Record<number, StatNameEntry> = {
+  1: { base: "armor", bonus: "bonusArmor", evidence: "기존 매핑" },
+  2: { base: "attackDamage", bonus: "bonusAttackDamage", evidence: "기존 매핑" },
+  4: {
+    base: "attackspeed",
+    evidence: "AttackSpeedCoefficient / 진 패시브 '추가 공격 속도 30%'",
+  },
+  6: { base: "magicResist", bonus: "bonusMagicResist", evidence: "기존 매핑" },
+  7: {
+    base: "movespeed",
+    evidence: "DashSpeed / DashSpeedRatio (아우렐리온 솔·코르키·렉사이)",
+  },
+  8: {
+    base: "crit",
+    evidence: "케이틀린 패시브 '치명타 확률의 85%' / 진 패시브 '치명타 확률 35%'",
+  },
+  9: {
+    base: "critDamage",
+    evidence: "케이틀린 패시브 '치명타 피해량의 100%'",
+  },
+  12: { base: "health", bonus: "bonusHealth", evidence: "기존 매핑" },
+  18: { base: "lifesteal", bonus: "bonusLifesteal", evidence: "기존 매핑" },
+  29: {
+    base: "lethality",
+    evidence: "파이크 R '물리 관통력 150%' (mStat=29, 계수 1.5)",
+  },
+};
+
+/**
  * 스탯 코드 → 로컬라이즈된 이름 변환
+ *
+ * mStatFormula 2 는 "추가(bonus)" 를 뜻한다.
+ * 표에 없는 코드는 잘못된 이름을 붙이는 대신 빈 문자열을 돌려주고,
+ * 호출부에서 "(240%)" 처럼 수치만 노출한다.
  */
 export function getStatName(
   mStat?: number,
@@ -90,64 +142,27 @@ export function getStatName(
   const hasStat = mStat !== undefined && mStat !== null;
   const hasFormula = mStatFormula !== undefined && mStatFormula !== null;
 
-  // 규칙:
-  // mStat: (2=Attack Damage, 12=Health, 1=Armor, 6=Magic Resist, 18=Lifesteal, 생략=Ability Power)
-  // mStatFormula: (2=bonus, 생략=전체)
-  //
-  // "mStat:2" → Attack Damage
-  // "mStat:2, mStatFormula:2" → bonus Attack Damage
-  // "mStat:12, mStatFormula:2" → bonus Health
-  // "" (둘 다 생략) → Ability Power
-
   // 둘 다 생략된 경우 → Ability Power 계수
   if (!hasStat && !hasFormula) {
     return stats.abilityPower;
   }
 
   const statCode = mStat ?? mStatFormula;
-
-  // Attack Damage 계수
-  if (statCode === 2) {
-    if (mStat === 2 && mStatFormula === 2) {
-      return stats.bonusAttackDamage; // bonus AD
-    }
-    return stats.attackDamage;
+  const entry = statCode != null ? STAT_NAME_TABLE[statCode] : undefined;
+  if (!entry) {
+    return "";
   }
 
-  // Health 계수
-  if (statCode === 12) {
-    if (mStat === 12 && mStatFormula === 2) {
-      return stats.bonusHealth; // bonus HP
-    }
-    return stats.health;
+  // mStat 이 실제로 주어졌을 때만 "추가" 로 본다.
+  // (mStatFormula 만 있는 경우 그 값 자체가 스탯 코드로 쓰인다)
+  const isBonus = hasStat && mStatFormula === 2;
+  if (!isBonus) {
+    return stats[entry.base];
   }
 
-  // Armor 계수
-  if (statCode === 1) {
-    if (mStat === 1 && mStatFormula === 2) {
-      return stats.bonusArmor;
-    }
-    return stats.armor;
-  }
-
-  // Magic Resist 계수
-  if (statCode === 6) {
-    if (mStat === 6 && mStatFormula === 2) {
-      return stats.bonusMagicResist;
-    }
-    return stats.magicResist;
-  }
-
-  // Lifesteal 계수
-  if (statCode === 18) {
-    if (mStat === 18 && mStatFormula === 2) {
-      return stats.bonusLifesteal;
-    }
-    return stats.lifesteal;
-  }
-
-  // 그 외 알 수 없는 스탯은 표시하지 않는다 (아이콘으로만 처리하거나 무시)
-  return "";
+  return entry.bonus
+    ? stats[entry.bonus]
+    : `${getTranslations(lang).common.bonus} ${stats[entry.base]}`;
 }
 
 /**
