@@ -16,7 +16,6 @@ import { SectionProps } from "./types";
 import { SkillTooltip } from "./SkillTooltip";
 import { getCooldownForLevel } from "./utils";
 import { useTranslation } from "@/i18n";
-import { ChampionSpell } from "@/types";
 
 export function SkillsSectionMobile({
   champions,
@@ -110,11 +109,7 @@ export function SkillsSectionMobile({
                         <div className="flex justify-center gap-0.5">
                           {championA.passive && (
                             <SkillTooltip
-                              isPassive
-                              passiveName={championA.passive.name}
-                              passiveDescription={championA.passive.description}
-                              passiveImageFull={championA.passive.image.full}
-                              skill={{} as ChampionSpell}
+                              passive={championA.passive}
                               skillIdx={0}
                               patchVersion={patchVersion}
                               ddragonVersion={ddragonVersion}
@@ -138,11 +133,7 @@ export function SkillsSectionMobile({
                         <div className="flex justify-center gap-0.5">
                           {championB.passive && (
                             <SkillTooltip
-                              isPassive
-                              passiveName={championB.passive.name}
-                              passiveDescription={championB.passive.description}
-                              passiveImageFull={championB.passive.image.full}
-                              skill={{} as ChampionSpell}
+                              passive={championB.passive}
                               skillIdx={0}
                               patchVersion={patchVersion}
                               ddragonVersion={ddragonVersion}
@@ -289,11 +280,7 @@ export function SkillsSectionMobile({
                           {/* Passive */}
                           {champion.passive && (
                             <SkillTooltip
-                              isPassive
-                              passiveName={champion.passive.name}
-                              passiveDescription={champion.passive.description}
-                              passiveImageFull={champion.passive.image.full}
-                              skill={{} as ChampionSpell}
+                              passive={champion.passive}
                               skillIdx={0}
                               patchVersion={patchVersion}
                               ddragonVersion={ddragonVersion}

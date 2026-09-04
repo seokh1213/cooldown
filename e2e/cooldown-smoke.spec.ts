@@ -28,6 +28,9 @@ test("renders precomputed passive and Q values", async ({ page }) => {
   await expect(qTooltip).toContainText("20/45/70/95/120");
   await expect(qTooltip).toContainText("방어력이 10/15/20/25/30%");
   await expect(qTooltip).toContainText("피해를 입힐 때 효과가 발동합니다");
+  await expect(qTooltip.getByLabel("레벨별 수치")).toContainText("20/45/70/95/120");
+  await expect(qTooltip.getByLabel("계수")).toContainText("추가 공격력");
+  await expect(qTooltip.getByLabel("계수")).toContainText("50%");
   expect(dataRequests.some((url) => url.includes("/champions/ko_KR/MonkeyKing.json")))
     .toBe(true);
   expect(dataRequests.some((url) => url.includes("/spells/"))).toBe(false);
@@ -134,4 +137,16 @@ test("sanitizes game data HTML at the render boundary", async ({ page }) => {
   await expect(tooltip.locator('script, img[src="x"]')).toHaveCount(0);
   await expect(tooltip.locator("span.text-red-600")).not.toHaveAttribute("onclick");
   expect(await page.evaluate(() => Reflect.get(window, "__unsafeHtml"))).toBeUndefined();
+});
+
+test("exposes unresolved Ability v2 diagnostics without hiding the tooltip", async ({ page }) => {
+  await page.goto("./");
+  await page.getByRole("button", { name: "챔피언 추가하기" }).click();
+  await page.getByRole("button", { name: "Select 아크샨", exact: true }).click();
+  await page.keyboard.press("Escape");
+  await page.getByAltText("W").hover();
+
+  const tooltip = page.getByRole("tooltip");
+  await expect(tooltip.getByText(/확인 필요한 수치 \(1\)/)).toBeVisible();
+  await expect(tooltip).toContainText("원본 데이터에서 완전히 해석되지 않은 수치가 있습니다.");
 });

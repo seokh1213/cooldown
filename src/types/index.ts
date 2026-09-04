@@ -1,3 +1,6 @@
+import type { NormalizedSpellScaling } from "./combatNormalized";
+import type { AbilitySimulation } from "@/data/contracts/championData";
+
 export interface ChampionSkin {
   num: number;
   name: string;
@@ -31,6 +34,9 @@ export interface ChampionSpell {
   rangeBurn?: string;
   image?: { full: string };
   rankValues?: Array<{ label: string; values: string }>;
+  scalings?: NormalizedSpellScaling[];
+  conditions?: string[];
+  simulation?: AbilitySimulation;
   maxammo?: string;
 }
 
@@ -41,6 +47,13 @@ export interface ChampionPassive {
   summary?: string;
   spellId?: string;
   tooltipSource?: "communitydragon";
+  rankValues?: Array<{ label: string; values: string }>;
+  scalings?: NormalizedSpellScaling[];
+  conditions?: string[];
+  simulation?: AbilitySimulation;
+  tooltipDiagnostics?: {
+    unresolvedTokens: string[];
+  };
   image: {
     full: string;
   };
