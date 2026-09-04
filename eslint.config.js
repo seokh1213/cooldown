@@ -45,10 +45,9 @@ export default tseslint.config(
     },
   },
   {
-    files: ['scripts/**/*.ts'],
+    files: ['scripts/find-localization.ts'],
     rules: {
-      // Legacy generator input is decoded incrementally. Ability v2 migration
-      // replaces these escape hatches with explicit unknown decoders.
+      // One-off recursive JSON exploration utility; production data code stays strict.
       '@typescript-eslint/no-explicit-any': 'off',
     },
   },
