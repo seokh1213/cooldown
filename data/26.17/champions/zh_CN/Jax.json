@@ -1,0 +1,403 @@
+{
+  "schemaVersion": 2,
+  "patchVersion": "26.17",
+  "locale": "zh_CN",
+  "sources": {
+    "ddragon": "16.17.1",
+    "cdragon": "16.17"
+  },
+  "champion": {
+    "id": "Jax",
+    "key": "24",
+    "name": "武器大师",
+    "title": "贾克斯",
+    "tags": [
+      "Fighter"
+    ],
+    "baseStats": {
+      "health": {
+        "base": 650,
+        "perLevel": 103
+      },
+      "healthRegen": {
+        "base": 8.5,
+        "perLevel": 0.55
+      },
+      "mana": {
+        "base": 339,
+        "perLevel": 52
+      },
+      "manaRegen": {
+        "base": 8.2,
+        "perLevel": 0.7
+      },
+      "attackDamage": {
+        "base": 68,
+        "perLevel": 0
+      },
+      "attackSpeed": {
+        "base": 0.638,
+        "perLevel": 3.4
+      },
+      "armor": {
+        "base": 36,
+        "perLevel": 4.2
+      },
+      "magicResist": {
+        "base": 32,
+        "perLevel": 2.05
+      },
+      "moveSpeed": {
+        "base": 350,
+        "perLevel": 0
+      },
+      "attackRange": {
+        "base": 125,
+        "perLevel": 0
+      }
+    },
+    "baseStatContributions": [
+      {
+        "stat": "MAX_HEALTH",
+        "value": 103,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "HEALTH_REGEN",
+        "value": 0.55,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAX_MANA",
+        "value": 52,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MANA_REGEN",
+        "value": 0.7,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_DAMAGE",
+        "value": 0,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_SPEED",
+        "value": 3.4,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ARMOR",
+        "value": 4.2,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAGIC_RESIST",
+        "value": 2.05,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      }
+    ],
+    "abilities": {
+      "P": {
+        "slot": "P",
+        "id": "JaxPassive",
+        "name": "无情连打",
+        "summary": "贾克斯连续的普通攻击，会持续地提高他的攻击速度。",
+        "bodyHtml": "贾克斯的攻击会提供一层持续2.5秒的效果，来提供给他<span>14%攻击速度</span> (最大值为<span>112%攻击速度</span>)。",
+        "iconFile": "Armsmaster_MasterOfArms.png",
+        "cooldownSeconds": [],
+        "range": [],
+        "rankValues": [],
+        "scalings": [],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "Q": {
+        "slot": "Q",
+        "id": "JaxQ",
+        "name": "跳斩",
+        "summary": "贾克斯跳向一个单位。如果目标是敌人，贾克斯会用他的武器狠狠地抽打敌人的脸，造成额外伤害。",
+        "bodyHtml": "贾克斯跳向一个友方或敌方单位或守卫，如果目标是敌人则会造成<span class=\"text-red-600 dark:text-red-500 font-semibold\">(65/105/145/185/225 + (100% 额外攻击力))物理伤害</span>。",
+        "iconFile": "JaxQ.png",
+        "cooldownSeconds": [
+          8,
+          7.5,
+          7,
+          6.5,
+          6
+        ],
+        "cost": {
+          "values": [
+            50,
+            50,
+            50,
+            50,
+            50
+          ],
+          "resource": "法力值"
+        },
+        "range": [
+          700,
+          700,
+          700,
+          700,
+          700
+        ],
+        "rankValues": [
+          {
+            "label": "伤害",
+            "values": "65/105/145/185/225"
+          },
+          {
+            "label": "冷却时间",
+            "values": "8/7.5/7/6.5/6"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "Q Scaling",
+            "labelKo": "Q 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "0:TotalDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "W": {
+        "slot": "W",
+        "id": "JaxW",
+        "name": "蓄力一击",
+        "summary": "贾克斯为武器充能，使他的下次攻击能造成额外伤害。",
+        "bodyHtml": "贾克斯给他的武器充能，使他的下次攻击或<span>跳斩</span>造成额外的<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(50/85/120/155/190 + (60% 法术强度))魔法伤害</span>。<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">这个技能会在造成伤害时触发技能特效。<br />对建筑物造成50%伤害。</span>",
+        "iconFile": "JaxW.png",
+        "cooldownSeconds": [
+          7,
+          6,
+          5,
+          4,
+          3
+        ],
+        "cost": {
+          "values": [
+            30,
+            30,
+            30,
+            30,
+            30
+          ],
+          "resource": "法力值"
+        },
+        "range": [
+          300,
+          300,
+          300,
+          300,
+          300
+        ],
+        "rankValues": [
+          {
+            "label": "伤害",
+            "values": "50/85/120/155/190"
+          },
+          {
+            "label": "冷却时间",
+            "values": "7/6/5/4/3"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "W Scaling",
+            "labelKo": "W 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "1:TotalDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "E": {
+        "slot": "E",
+        "id": "JaxE",
+        "name": "反击风暴",
+        "summary": "贾克斯的武艺让他能够在短时间里躲闪掉所有即将到来的普通攻击，随后对所有周围的敌人快速发起反击，并将他们击晕。",
+        "bodyHtml": "贾克斯进入一个最多持续2秒的防御姿态，能够躲闪掉一切即将到来的攻击，并且减少25%来自群体技能的伤害。在2秒后，或<span class=\"text-yellow-600 dark:text-yellow-300\">再次施放</span>后，贾克斯会造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(40/70/100/130/160 + (70% 攻击力)) + 4%最大生命值的魔法伤害</span>并使附近的敌人<span class=\"text-purple-600 dark:text-purple-500\">晕眩</span>1秒。<br /><br />贾克斯每躲掉一次攻击，这个伤害值就会提升20%，最多可提升至最大值<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(80/140/200/260/320 + (140% 攻击力)) + 8%最大生命值</span>。",
+        "iconFile": "JaxE.png",
+        "cooldownSeconds": [
+          17,
+          15,
+          13,
+          11,
+          9
+        ],
+        "cost": {
+          "values": [
+            50,
+            60,
+            70,
+            80,
+            90
+          ],
+          "resource": "法力值"
+        },
+        "range": [
+          300,
+          300,
+          300,
+          300,
+          300
+        ],
+        "rankValues": [
+          {
+            "label": "伤害",
+            "values": "40/70/100/130/160"
+          },
+          {
+            "label": "冷却时间",
+            "values": "17/15/13/11/9"
+          },
+          {
+            "label": "法力值消耗",
+            "values": "50/60/70/80/90"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "E Scaling",
+            "labelKo": "E 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "2:TotalDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "R": {
+        "slot": "R",
+        "id": "JaxR",
+        "name": "武器大师",
+        "summary": "每连续攻击2次，第3次攻击就会造成额外的魔法伤害。另外，贾克斯可以激活这个技能来在他周围造成伤害并增强他的决心，从而暂时性地提升他的护甲和魔法抗性。",
+        "bodyHtml": "<span class=\"text-gray-600 dark:text-gray-500 italic\">被动：</span>2.5秒内的每第三次攻击造成额外的<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(75/130/185 + (60% 法术强度))魔法伤害</span>。<br /><br /><span class=\"text-gray-900 dark:text-white font-semibold\">主动：</span>贾克斯将他的灯柱砸落，对附近的敌人们造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(100/175/250 + (100% 攻击力))魔法伤害</span>。如果他命中了一名英雄，那么他会获得<span class=\"text-orange-600 dark:text-orange-400\">(45/60/75 + (40% 额外攻击力))护甲</span>和<span>(27/36/45 + (24% 额外攻击力))魔法抗性</span>，并且每额外命中一个英雄就会获得额外的<span class=\"text-orange-600 dark:text-orange-400\">(20/25/30 + (10% 额外攻击力))护甲</span>和<span>(12/15/18 + (6% 额外攻击力))魔法抗性</span>，持续8秒。在此期间，他每第二次攻击（而非每第三次攻击）造成额外的<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">魔法伤害</span>。<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">对建筑物造成50%伤害。</span>",
+        "iconFile": "JaxR.png",
+        "cooldownSeconds": [
+          110,
+          100,
+          90
+        ],
+        "cost": {
+          "values": [
+            100,
+            100,
+            100
+          ],
+          "resource": "法力值"
+        },
+        "range": [
+          260,
+          260,
+          260
+        ],
+        "rankValues": [
+          {
+            "label": "被动伤害",
+            "values": "75/130/185"
+          },
+          {
+            "label": "主动伤害",
+            "values": "100/175/250"
+          },
+          {
+            "label": "基础护甲",
+            "values": "45/60/75"
+          },
+          {
+            "label": "基础魔法抗性",
+            "values": "27/36/45"
+          },
+          {
+            "label": "每个额外英雄的护甲",
+            "values": "20/25/30"
+          },
+          {
+            "label": "每个额外英雄的魔法抗性",
+            "values": "12/15/18"
+          },
+          {
+            "label": "冷却时间",
+            "values": "110/100/90"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "R Scaling",
+            "labelKo": "R 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "3:OnHitDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      }
+    }
+  }
+}

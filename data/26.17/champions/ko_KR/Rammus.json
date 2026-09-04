@@ -1,0 +1,397 @@
+{
+  "schemaVersion": 2,
+  "patchVersion": "26.17",
+  "locale": "ko_KR",
+  "sources": {
+    "ddragon": "16.17.1",
+    "cdragon": "16.17"
+  },
+  "champion": {
+    "id": "Rammus",
+    "key": "33",
+    "name": "람머스",
+    "title": "중무장 아르마딜로",
+    "tags": [
+      "Tank"
+    ],
+    "baseStats": {
+      "health": {
+        "base": 645,
+        "perLevel": 100
+      },
+      "healthRegen": {
+        "base": 8,
+        "perLevel": 0.55
+      },
+      "mana": {
+        "base": 310,
+        "perLevel": 33
+      },
+      "manaRegen": {
+        "base": 7.85,
+        "perLevel": 0.5
+      },
+      "attackDamage": {
+        "base": 65,
+        "perLevel": 0
+      },
+      "attackSpeed": {
+        "base": 0.7,
+        "perLevel": 2.215
+      },
+      "armor": {
+        "base": 35,
+        "perLevel": 4.5
+      },
+      "magicResist": {
+        "base": 32,
+        "perLevel": 2.05
+      },
+      "moveSpeed": {
+        "base": 335,
+        "perLevel": 0
+      },
+      "attackRange": {
+        "base": 125,
+        "perLevel": 0
+      }
+    },
+    "baseStatContributions": [
+      {
+        "stat": "MAX_HEALTH",
+        "value": 100,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "HEALTH_REGEN",
+        "value": 0.55,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAX_MANA",
+        "value": 33,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MANA_REGEN",
+        "value": 0.5,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_DAMAGE",
+        "value": 0,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_SPEED",
+        "value": 2.215,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ARMOR",
+        "value": 4.5,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAGIC_RESIST",
+        "value": 2.05,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      }
+    ],
+    "abilities": {
+      "P": {
+        "slot": "P",
+        "id": "RammusP",
+        "name": "가시박힌 껍질",
+        "summary": "람머스가 방어력 및 마법 저항력에 비례해 추가 공격력을 얻습니다.",
+        "bodyHtml": "람머스의 <span class=\"text-orange-600 dark:text-orange-500\">공격력이 ((15% 방어력) + (15% 마법 저항력))</span> 증가합니다.",
+        "iconFile": "Armordillo_ScavengeArmor.png",
+        "cooldownSeconds": [],
+        "range": [],
+        "rankValues": [],
+        "scalings": [],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "Q": {
+        "slot": "Q",
+        "id": "PowerBall",
+        "name": "대회전",
+        "summary": "람머스가 공 모양으로 적을 향해 굴러가며 충돌 시 피해를 입히고 적의 이동 속도를 늦춥니다.",
+        "bodyHtml": "람머스가 공 모양으로 몸을 말아 <span class=\"text-cyan-600 dark:text-cyan-500\">이동 속도가 (25% ~ 39.1%)</span> 증가하고, 6초 동안 <span class=\"text-cyan-600 dark:text-cyan-500\">이동 속도가 150/234.6%</span>까지 증가합니다. 람머스가 적과 충돌하면 멈추며, <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(80/120/160/200/240 + (100% 주문력))의 마법 피해</span>를 입히고, <span class=\"text-purple-600 dark:text-purple-500\">뒤로 밀어내며</span>, 1초 동안 주변 적들을 40/50/60/70/80% <span class=\"text-purple-600 dark:text-purple-500\">둔화</span>시킵니다.<br /><br /><span class=\"text-yellow-600 dark:text-yellow-300\">재사용 시</span>: 이 스킬을 일찍 종료합니다.",
+        "iconFile": "PowerBall.png",
+        "cooldownSeconds": [
+          12,
+          10.5,
+          9,
+          7.5,
+          6
+        ],
+        "cost": {
+          "values": [
+            60,
+            60,
+            60,
+            60,
+            60
+          ],
+          "resource": "마나"
+        },
+        "range": [
+          300,
+          300,
+          300,
+          300,
+          300
+        ],
+        "rankValues": [
+          {
+            "label": "피해량",
+            "values": "80/120/160/200/240"
+          },
+          {
+            "label": "둔화",
+            "values": "40%/50%/60%/70%/80%"
+          },
+          {
+            "label": "재사용 대기시간",
+            "values": "12/10.5/9/7.5/6"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "Q Scaling",
+            "labelKo": "Q 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "0:PowerBallDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "W": {
+        "slot": "W",
+        "id": "DefensiveBallCurl",
+        "name": "몸 말아 웅크리기",
+        "summary": "람머스가 방어 자세로 들어가 방어력 및 마법 저항력이 증가하고, 적의 공격을 반사합니다.",
+        "bodyHtml": "람머스가 7초 동안 방어 태세에 들어가 <span class=\"text-orange-600 dark:text-orange-400\">방어력을 (30/37.5/45/52.5/60% 방어력)</span>, <span>마법 저항력을 (30/37.5/45/52.5/60% 마법 저항력)</span> 얻고 람머스를 공격하는 적에게 <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(15 + (10% 방어력) + (10% 마법 저항력))의 마법 피해</span>를 입힙니다.<br /><br /><span class=\"text-yellow-600 dark:text-yellow-300\">재사용 시</span>: 이 스킬을 일찍 종료합니다.",
+        "iconFile": "DefensiveBallCurl.png",
+        "cooldownSeconds": [
+          7,
+          7,
+          7,
+          7,
+          7
+        ],
+        "cost": {
+          "values": [
+            40,
+            40,
+            40,
+            40,
+            40
+          ],
+          "resource": "마나"
+        },
+        "range": [
+          300,
+          300,
+          300,
+          300,
+          300
+        ],
+        "rankValues": [
+          {
+            "label": "추가 방어력",
+            "values": "27/32/37/42/47"
+          },
+          {
+            "label": "추가 마법 저항력",
+            "values": "20/25/30/35/40"
+          },
+          {
+            "label": "추가 방어력 %",
+            "values": "30%/37.5%/45%/52.5%/60%"
+          },
+          {
+            "label": "추가 마법 저항력 %",
+            "values": "30%/37.5%/45%/52.5%/60%"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "W Scaling",
+            "labelKo": "W 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "1:ReturnDamageCalc"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "E": {
+        "slot": "E",
+        "id": "PuncturingTaunt",
+        "name": "광란의 도발",
+        "summary": "람머스가 적 챔피언이나 몬스터를 도발하여 자신을 향해 무모하게 덤벼들도록 합니다.",
+        "bodyHtml": "람머스가 적 챔피언이나 몬스터를 1.2/1.4/1.6/1.8/2초 동안 <span class=\"text-purple-600 dark:text-purple-500\">도발</span>합니다. 몬스터는 <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(80/100/120/140/160 + (70% 주문력))의 마법 피해</span>를 입습니다.",
+        "iconFile": "PuncturingTaunt.png",
+        "cooldownSeconds": [
+          12,
+          12,
+          12,
+          12,
+          12
+        ],
+        "cost": {
+          "values": [
+            50,
+            50,
+            50,
+            50,
+            50
+          ],
+          "resource": "마나"
+        },
+        "range": [
+          325,
+          325,
+          325,
+          325,
+          325
+        ],
+        "rankValues": [
+          {
+            "label": "지속시간",
+            "values": "1.2/1.4/1.6/1.8/2"
+          },
+          {
+            "label": "몬스터 피해량",
+            "values": "80/100/120/140/160"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "E Scaling",
+            "labelKo": "E 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "2:MonsterDamageCalc"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "R": {
+        "slot": "R",
+        "id": "Tremors2",
+        "name": "지진 폭격",
+        "summary": "람머스가 공중으로 뛰어오른 후 대상 지점에 착지하여 마법 피해를 입히고 적을 둔화시킵니다. 대회전 상태에서 사용하면 범위 중앙 근처에 있는 적을 공중으로 띄워 올립니다.",
+        "bodyHtml": "람머스가 공중으로 뛰어오른 후 지점에 착지하여 <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(150/250/350 + (60% 주문력))의 마법 피해</span>를 입히고 1.5초 동안 30/40/50% <span class=\"text-purple-600 dark:text-purple-500\">둔화</span>시킵니다. <span>대회전</span> 중에 사용했다면 중앙에 있는 적들은 추가로 <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">의 마법 피해</span>를 입고 0.75초 동안 <span class=\"text-purple-600 dark:text-purple-500\">공중에 뜹니다</span>.<br /><br />이후 3.5초 동안 해당 지점에 여진이 3회 발생하며 <span class=\"text-purple-600 dark:text-purple-500\">둔화</span> 효과를 중첩합니다.<br /><br />이 스킬의 범위는 람머스의 <span class=\"text-cyan-600 dark:text-cyan-500\">이동 속도</span>에 따라 증가합니다.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">이 스킬은 포탑에 200%의 피해를 입힙니다.</span>",
+        "iconFile": "Tremors2.png",
+        "cooldownSeconds": [
+          120,
+          105,
+          90
+        ],
+        "cost": {
+          "values": [
+            100,
+            100,
+            100
+          ],
+          "resource": "마나"
+        },
+        "range": [
+          25000,
+          25000,
+          25000
+        ],
+        "rankValues": [
+          {
+            "label": "피해량",
+            "values": "150/250/350"
+          },
+          {
+            "label": "둔화",
+            "values": "30%/40%/50%"
+          },
+          {
+            "label": "재사용 대기시간",
+            "values": "120/105/90"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "R Scaling",
+            "labelKo": "R 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "3:InitialDamageCalc"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": [
+            "spell.PowerBall:PowerBallDamage"
+          ]
+        }
+      }
+    }
+  }
+}

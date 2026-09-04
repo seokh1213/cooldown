@@ -1,0 +1,392 @@
+{
+  "schemaVersion": 2,
+  "patchVersion": "26.17",
+  "locale": "en_US",
+  "sources": {
+    "ddragon": "16.17.1",
+    "cdragon": "16.17"
+  },
+  "champion": {
+    "id": "Amumu",
+    "key": "32",
+    "name": "Amumu",
+    "title": "the Sad Mummy",
+    "tags": [
+      "Tank",
+      "Support"
+    ],
+    "baseStats": {
+      "health": {
+        "base": 685,
+        "perLevel": 94
+      },
+      "healthRegen": {
+        "base": 9,
+        "perLevel": 0.85
+      },
+      "mana": {
+        "base": 285,
+        "perLevel": 40
+      },
+      "manaRegen": {
+        "base": 7.4,
+        "perLevel": 0.55
+      },
+      "attackDamage": {
+        "base": 57,
+        "perLevel": 0
+      },
+      "attackSpeed": {
+        "base": 0.736,
+        "perLevel": 2.18
+      },
+      "armor": {
+        "base": 33,
+        "perLevel": 4
+      },
+      "magicResist": {
+        "base": 32,
+        "perLevel": 2.05
+      },
+      "moveSpeed": {
+        "base": 335,
+        "perLevel": 0
+      },
+      "attackRange": {
+        "base": 125,
+        "perLevel": 0
+      }
+    },
+    "baseStatContributions": [
+      {
+        "stat": "MAX_HEALTH",
+        "value": 94,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "HEALTH_REGEN",
+        "value": 0.85,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAX_MANA",
+        "value": 40,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MANA_REGEN",
+        "value": 0.55,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_DAMAGE",
+        "value": 0,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_SPEED",
+        "value": 2.18,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ARMOR",
+        "value": 4,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAGIC_RESIST",
+        "value": 2.05,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      }
+    ],
+    "abilities": {
+      "P": {
+        "slot": "P",
+        "id": "AmumuP",
+        "name": "Cursed Touch",
+        "summary": "Amumu's basic attacks <font color='#9b0f5f'>Curse</font> his enemies, causing them to take bonus true damage from incoming magic damage.",
+        "bodyHtml": "Amumu's Attacks <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Curse</span> his enemies for 3 seconds, causing them to take an additional <span class=\"text-yellow-600 dark:text-yellow-500 font-semibold\">10% true damage</span> from all magic damage they take.",
+        "iconFile": "Amumu_Passive.png",
+        "cooldownSeconds": [],
+        "range": [],
+        "rankValues": [],
+        "scalings": [],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "Q": {
+        "slot": "Q",
+        "id": "BandageToss",
+        "name": "Bandage Toss",
+        "summary": "Amumu tosses a sticky bandage at a target, stunning and damaging the target while he pulls himself to them.",
+        "bodyHtml": "Amumu launches a bandage, pulling himself to the first enemy hit, <span class=\"text-purple-600 dark:text-purple-500\">Stunning</span> them for 1 second, and dealing <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(70/95/120/145/170 + (85% Ability Power)) magic damage</span>.<br /><br />This Ability has 2 charges.",
+        "iconFile": "BandageToss.png",
+        "cooldownSeconds": [
+          3,
+          3,
+          3,
+          3,
+          3
+        ],
+        "rechargeSeconds": [
+          16,
+          15,
+          14,
+          13,
+          12
+        ],
+        "maxCharges": 2,
+        "cost": {
+          "values": [
+            50,
+            50,
+            50,
+            50,
+            50
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          1100,
+          1100,
+          1100,
+          1100,
+          1100
+        ],
+        "rankValues": [
+          {
+            "label": "Damage",
+            "values": "70/95/120/145/170"
+          },
+          {
+            "label": "Recharge Time",
+            "values": "16/15/14/13/12"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "Q Scaling",
+            "labelKo": "Q 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "0:TotalDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "W": {
+        "slot": "W",
+        "id": "AuraofDespair",
+        "name": "Despair",
+        "summary": "Overcome by anguish, nearby enemies lose a percentage of their maximum Health each second and have their <font color='#9b0f5f'>Curses</font> refreshed.",
+        "bodyHtml": "<span>Toggle:</span> Amumu begins crying, dealing <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">10 plus (1/1.25/1.5/1.75/2 + (0.5% Ability Power))max Health magic damage</span> to nearby enemies every second and refreshing <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Curse</span>.",
+        "iconFile": "AuraofDespair.png",
+        "cooldownSeconds": [
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        "cost": {
+          "values": [
+            8,
+            8,
+            8,
+            8,
+            8
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          300,
+          300,
+          300,
+          300,
+          300
+        ],
+        "rankValues": [
+          {
+            "label": "% Health damage",
+            "values": "1%/1.25%/1.5%/1.75%/2%"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "W Scaling",
+            "labelKo": "W 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "1:{c8e45bc3}"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "E": {
+        "slot": "E",
+        "id": "Tantrum",
+        "name": "Tantrum",
+        "summary": "Permanently reduces the physical damage Amumu would take. Amumu can unleash his rage, dealing damage to surrounding enemies. Each time Amumu is hit, the cooldown on Tantrum is reduced.",
+        "bodyHtml": "<span class=\"text-gray-600 dark:text-gray-500 italic\">Passive:</span> Amumu takes (5/7/9/11/13 + (3% bonus Armor) + (3% bonus Magic Resist)) reduced physical damage. Additionally, when Amumu is hit by an Attack, this Ability's Cooldown is reduced by 0.75 seconds.<br /><br /><span class=\"text-gray-900 dark:text-white font-semibold\">Active:</span> Amumu throws a tantrum, dealing <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(65/95/125/155/185 + (50% Ability Power)) magic damage</span> to nearby enemies.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">Damage reduction effect can't reduce the damage below 50%.</span>",
+        "iconFile": "Tantrum.png",
+        "cooldownSeconds": [
+          9,
+          8,
+          7,
+          6,
+          5
+        ],
+        "cost": {
+          "values": [
+            35,
+            35,
+            35,
+            35,
+            35
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          350,
+          350,
+          350,
+          350,
+          350
+        ],
+        "rankValues": [
+          {
+            "label": "Damage Reduced",
+            "values": "5/7/9/11/13"
+          },
+          {
+            "label": "Cooldown",
+            "values": "9/8/7/6/5"
+          },
+          {
+            "label": "Damage",
+            "values": "65/95/125/155/185"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "E Scaling",
+            "labelKo": "E 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "2:DamageReduction"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "R": {
+        "slot": "R",
+        "id": "CurseoftheSadMummy",
+        "name": "Curse of the Sad Mummy",
+        "summary": "Amumu entangles surrounding enemy units in bandages, applying his <keywordMajor>Curse</keywordMajor>, damaging and stunning them.",
+        "bodyHtml": "Amumu flares out his bandages, <span class=\"text-purple-600 dark:text-purple-500\">Stunning</span> for 1.5 seconds, dealing <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(200/300/400 + (80% Ability Power)) magic damage</span> and applying <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Curse</span>.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">This Ability <span class=\"text-purple-600 dark:text-purple-500\">Knocks Down</span> enemies.</span>",
+        "iconFile": "CurseoftheSadMummy.png",
+        "cooldownSeconds": [
+          150,
+          125,
+          100
+        ],
+        "cost": {
+          "values": [
+            100,
+            150,
+            200
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          550,
+          550,
+          550
+        ],
+        "rankValues": [
+          {
+            "label": "Mana Cost",
+            "values": "100/150/200"
+          },
+          {
+            "label": "Cooldown",
+            "values": "150/125/100"
+          },
+          {
+            "label": "Damage",
+            "values": "200/300/400"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "R Scaling",
+            "labelKo": "R 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "3:RCalculatedDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      }
+    }
+  }
+}

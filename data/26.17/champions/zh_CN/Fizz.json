@@ -1,0 +1,412 @@
+{
+  "schemaVersion": 2,
+  "patchVersion": "26.17",
+  "locale": "zh_CN",
+  "sources": {
+    "ddragon": "16.17.1",
+    "cdragon": "16.17"
+  },
+  "champion": {
+    "id": "Fizz",
+    "key": "105",
+    "name": "潮汐海灵",
+    "title": "菲兹",
+    "tags": [
+      "Assassin",
+      "Fighter"
+    ],
+    "baseStats": {
+      "health": {
+        "base": 640,
+        "perLevel": 106
+      },
+      "healthRegen": {
+        "base": 8,
+        "perLevel": 0.7
+      },
+      "mana": {
+        "base": 317,
+        "perLevel": 52
+      },
+      "manaRegen": {
+        "base": 6,
+        "perLevel": 0.8
+      },
+      "attackDamage": {
+        "base": 58,
+        "perLevel": 0
+      },
+      "attackSpeed": {
+        "base": 0.658,
+        "perLevel": 3.1
+      },
+      "armor": {
+        "base": 26,
+        "perLevel": 4.6
+      },
+      "magicResist": {
+        "base": 32,
+        "perLevel": 2.05
+      },
+      "moveSpeed": {
+        "base": 335,
+        "perLevel": 0
+      },
+      "attackRange": {
+        "base": 175,
+        "perLevel": 0
+      }
+    },
+    "baseStatContributions": [
+      {
+        "stat": "MAX_HEALTH",
+        "value": 106,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "HEALTH_REGEN",
+        "value": 0.7,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAX_MANA",
+        "value": 52,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MANA_REGEN",
+        "value": 0.8,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_DAMAGE",
+        "value": 0,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_SPEED",
+        "value": 3.1,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ARMOR",
+        "value": 4.6,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAGIC_RESIST",
+        "value": 2.05,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      }
+    ],
+    "abilities": {
+      "P": {
+        "slot": "P",
+        "id": "FizzPassive",
+        "name": "伶俐斗士",
+        "summary": "菲兹在移动时可以穿过单位并且从所有来源处受到的伤害都会减少一个固定的数额。",
+        "bodyHtml": "菲兹处于【幽灵】状态并且减少(4 + (1% 法术强度))所受伤害(来自所有来源)。",
+        "iconFile": "Fizz_P.png",
+        "cooldownSeconds": [],
+        "range": [],
+        "rankValues": [],
+        "scalings": [],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "Q": {
+        "slot": "Q",
+        "id": "FizzQ",
+        "name": "淘气打击",
+        "summary": "菲兹穿过他的目标，造成魔法伤害，并施加攻击特效。",
+        "bodyHtml": "菲兹冲刺并穿过一名敌人，同时造成<span class=\"text-red-600 dark:text-red-500 font-semibold\">(100% 攻击力)物理伤害</span>加上<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(10/25/40/55/70 + (55% 法术强度))魔法伤害</span>。<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">这个技能会施加攻击特效。</span>",
+        "iconFile": "FizzQ.png",
+        "cooldownSeconds": [
+          8,
+          7.5,
+          7,
+          6.5,
+          6
+        ],
+        "cost": {
+          "values": [
+            50,
+            50,
+            50,
+            50,
+            50
+          ],
+          "resource": "法力值"
+        },
+        "range": [
+          550,
+          550,
+          550,
+          550,
+          550
+        ],
+        "rankValues": [
+          {
+            "label": "伤害",
+            "values": "10/25/40/55/70"
+          },
+          {
+            "label": "冷却时间",
+            "values": "8/7.5/7/6.5/6"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "Q Scaling",
+            "labelKo": "Q 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "0:TotalDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "W": {
+        "slot": "W",
+        "id": "FizzW",
+        "name": "海石三叉戟",
+        "summary": "菲兹的攻击会让他的敌人们流血，同时造成持续数秒的魔法伤害。菲兹可以强化他的下次普攻来造成额外伤害，并在短时间内强化他的后续普攻。",
+        "bodyHtml": "<span class=\"text-gray-600 dark:text-gray-500 italic\">被动</span>：菲兹的攻击会使他的敌人们流血，在3秒里持续造成共<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(30/45/60/75/90 + (25% 法术强度))魔法伤害</span>。<br /><br /><span class=\"text-gray-900 dark:text-white font-semibold\">主动</span>：菲兹的下次攻击造成额外的<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(50/75/100/125/150 + (45% 法术强度))魔法伤害</span>。如果这次攻击将目标击杀，那么菲兹会返还<span>30/40/50/60/70法力</span>并使这个技能的冷却时间缩短至1秒。如果这次攻击未能造成击杀，那么菲兹的攻击会造成额外的<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(20/25/30/35/40 + (30% 法术强度))魔法伤害</span>，持续5秒。<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">攻击对野怪造成90额外伤害。<br />攻击对建筑物造成50%伤害。</span>",
+        "iconFile": "FizzW.png",
+        "cooldownSeconds": [
+          7,
+          6,
+          5,
+          4,
+          3
+        ],
+        "cost": {
+          "values": [
+            30,
+            40,
+            50,
+            60,
+            70
+          ],
+          "resource": "法力值"
+        },
+        "range": [
+          600,
+          600,
+          600,
+          600,
+          600
+        ],
+        "rankValues": [
+          {
+            "label": "被动伤害",
+            "values": "30/45/60/75/90"
+          },
+          {
+            "label": "主动伤害",
+            "values": "50/75/100/125/150"
+          },
+          {
+            "label": "命中附伤",
+            "values": "20/25/30/35/40"
+          },
+          {
+            "label": "法力返还",
+            "values": "30/40/50/60/70"
+          },
+          {
+            "label": "法力值消耗",
+            "values": "30/40/50/60/70"
+          },
+          {
+            "label": "冷却时间",
+            "values": "7/6/5/4/3"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "W Scaling",
+            "labelKo": "W 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "1:DoTDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "E": {
+        "slot": "E",
+        "id": "FizzE",
+        "name": "古灵/精怪",
+        "summary": "菲兹跳到空中，同时优雅地落在他的长矛上，变得不可被选取。在这个姿态下，菲兹可以选择立原地着陆，也可以选择在着陆之前再跳一段距离。",
+        "bodyHtml": "菲兹跳到他的三叉戟上，变为【不可被选取】状态0.75秒，随后对附近敌人造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(80/130/180/230/280 + (95% 法术强度))魔法伤害</span>和持续2秒的40/45/50/55/60%<span class=\"text-purple-600 dark:text-purple-500\">减速</span>。<br /><br />菲兹可以在【不可被选取】状态中<span class=\"text-yellow-600 dark:text-yellow-300\">再次施放</span>这个技能，以再次位移，并提前结束该状态，在一个较小的区域内造成伤害，并且不会造成<span class=\"text-purple-600 dark:text-purple-500\">减速</span>。",
+        "iconFile": "FizzE.png",
+        "cooldownSeconds": [
+          16,
+          14,
+          12,
+          10,
+          8
+        ],
+        "cost": {
+          "values": [
+            75,
+            80,
+            85,
+            90,
+            95
+          ],
+          "resource": "法力值"
+        },
+        "range": [
+          400,
+          400,
+          400,
+          400,
+          400
+        ],
+        "rankValues": [
+          {
+            "label": "冷却时间",
+            "values": "16/14/12/10/8"
+          },
+          {
+            "label": "法力值消耗",
+            "values": "75/80/85/90/95"
+          },
+          {
+            "label": "伤害",
+            "values": "80/130/180/230/280"
+          },
+          {
+            "label": "减速",
+            "values": "40/45/50/55/60"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "E Scaling",
+            "labelKo": "E 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "2:EDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "R": {
+        "slot": "R",
+        "id": "FizzR",
+        "name": "巨鲨强袭",
+        "summary": "菲兹朝一个方向放出一条小鱼，小鱼会附身在第一个与它接触的敌方英雄身上，同时减速目标。在短暂的延迟之后，一条巨鲨就会破土而出，击飞目标并将目标附近的敌人震开。被命中的所有敌人都会受到魔法伤害和减速效果。",
+        "bodyHtml": "菲兹掷出一只小鱼来吸附到命中的第一个敌方英雄身上。这个英雄会被施加<span class=\"text-purple-600 dark:text-purple-400 font-semibold\">真实视野</span>和<span class=\"text-purple-600 dark:text-purple-500\">减速</span>，减速幅度为40%到80%，基于小鱼在吸附前的位移距离。<br /><br />在2秒后，一头巨鲨会从目标脚下出现，<span class=\"text-purple-600 dark:text-purple-500\">击飞</span>带着小鱼的目标1秒，<span class=\"text-purple-600 dark:text-purple-500\">击退</span>其它单位，并基于小鱼在吸附前的位移距离造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(180/300/420 + (60% 法术强度))到(270/450/630 + (90% 法术强度))魔法伤害</span>。",
+        "iconFile": "FizzR.png",
+        "cooldownSeconds": [
+          120,
+          100,
+          80
+        ],
+        "cost": {
+          "values": [
+            100,
+            100,
+            100
+          ],
+          "resource": "法力值"
+        },
+        "range": [
+          1300,
+          1300,
+          1300
+        ],
+        "rankValues": [
+          {
+            "label": "冷却时间",
+            "values": "120/100/80"
+          },
+          {
+            "label": "小鲨鱼伤害",
+            "values": "180/300/420"
+          },
+          {
+            "label": "中鲨鱼伤害",
+            "values": "225/375/525"
+          },
+          {
+            "label": "大鲨鱼伤害",
+            "values": "270/450/630"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "R Scaling",
+            "labelKo": "R 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "3:SmallSharkDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      }
+    }
+  }
+}

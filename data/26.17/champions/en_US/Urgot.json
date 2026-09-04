@@ -1,0 +1,396 @@
+{
+  "schemaVersion": 2,
+  "patchVersion": "26.17",
+  "locale": "en_US",
+  "sources": {
+    "ddragon": "16.17.1",
+    "cdragon": "16.17"
+  },
+  "champion": {
+    "id": "Urgot",
+    "key": "6",
+    "name": "Urgot",
+    "title": "the Dreadnought",
+    "tags": [
+      "Fighter",
+      "Tank"
+    ],
+    "baseStats": {
+      "health": {
+        "base": 655,
+        "perLevel": 102
+      },
+      "healthRegen": {
+        "base": 7.5,
+        "perLevel": 0.7
+      },
+      "mana": {
+        "base": 340,
+        "perLevel": 45
+      },
+      "manaRegen": {
+        "base": 7.25,
+        "perLevel": 0.8
+      },
+      "attackDamage": {
+        "base": 63,
+        "perLevel": 0
+      },
+      "attackSpeed": {
+        "base": 0.625,
+        "perLevel": 3.75
+      },
+      "armor": {
+        "base": 36,
+        "perLevel": 5
+      },
+      "magicResist": {
+        "base": 32,
+        "perLevel": 2.05
+      },
+      "moveSpeed": {
+        "base": 330,
+        "perLevel": 0
+      },
+      "attackRange": {
+        "base": 350,
+        "perLevel": 0
+      }
+    },
+    "baseStatContributions": [
+      {
+        "stat": "MAX_HEALTH",
+        "value": 102,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "HEALTH_REGEN",
+        "value": 0.7,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAX_MANA",
+        "value": 45,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MANA_REGEN",
+        "value": 0.8,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_DAMAGE",
+        "value": 0,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_SPEED",
+        "value": 3.75,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ARMOR",
+        "value": 5,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAGIC_RESIST",
+        "value": 2.05,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      }
+    ],
+    "abilities": {
+      "P": {
+        "slot": "P",
+        "id": "UrgotPassive",
+        "name": "Echoing Flames",
+        "summary": "Urgot's basic attacks and Purge periodically trigger blasts of flame from his legs, dealing physical damage.",
+        "bodyHtml": "Urgot has a cannon on each of his 6 legs. Attacks and <span></span> will fire the leg cannon that is facing his target for <span class=\"text-red-600 dark:text-red-500 font-semibold\"> plus 6% max Health physical damage</span>. This effect has a 2.5 second Cooldown per leg.",
+        "iconFile": "Urgot_Passive.png",
+        "cooldownSeconds": [],
+        "range": [],
+        "rankValues": [],
+        "scalings": [],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "Q": {
+        "slot": "Q",
+        "id": "UrgotQ",
+        "name": "Corrosive Charge",
+        "summary": "Fires an explosive charge at the target location, dealing physical damage and slowing enemies caught in the explosion.",
+        "bodyHtml": "Urgot fires an explosive charge, dealing <span class=\"text-red-600 dark:text-red-500 font-semibold\">(25/70/115/160/205 + (70% Attack Damage)) physical damage</span> and <span class=\"text-purple-600 dark:text-purple-500\">Slowing</span> by 45/50/55/60/65% for 1.25 seconds.",
+        "iconFile": "UrgotQ.png",
+        "cooldownSeconds": [
+          10,
+          9.5,
+          9,
+          8.5,
+          8
+        ],
+        "cost": {
+          "values": [
+            70,
+            70,
+            70,
+            70,
+            70
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          800,
+          800,
+          800,
+          800,
+          800
+        ],
+        "rankValues": [
+          {
+            "label": "Cooldown",
+            "values": "10/9.5/9/8.5/8"
+          },
+          {
+            "label": "Damage",
+            "values": "25/70/115/160/205"
+          },
+          {
+            "label": "Slow",
+            "values": "45/50/55/60/65"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "Q Scaling",
+            "labelKo": "Q 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "0:TotalDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "W": {
+        "slot": "W",
+        "id": "UrgotW",
+        "name": "Purge",
+        "summary": "Urgot slows himself while he unloads his weapon on nearby enemies. Prioritizes enemy champions Urgot has recently struck with other abilities and triggers Echoing Flames.",
+        "bodyHtml": "<span class=\"text-gray-600 dark:text-gray-500 italic\">Passive:</span> Urgot's other Abilities mark the last champion hit for 5 seconds.<br /><br /><span class=\"text-gray-900 dark:text-white font-semibold\">Active:</span> Urgot begins firing his chain gun at the closest enemy, prioritizing marked enemies. He Attacks them 3 times a second dealing <span class=\"text-red-600 dark:text-red-500 font-semibold\">(12 + (20/23.5/27/30.5/34% Attack Damage)) physical damage</span> per shot. Urgot can move while firing and has 40% <span class=\"text-purple-600 dark:text-purple-500\">Slow</span> resistance, but loses <span class=\"text-cyan-600 dark:text-cyan-500\">125 Move Speed</span>.<br /><br />At max rank, this Ability lasts indefinitely and can be <span>Toggled</span> on and off.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">The shots apply On-Hit effects at 50% damage. They cannot critically strike.<br />Shots deal a minimum of 50 damage to minions and jungle monsters.<br />Urgot can move through minions and non-epic jungle monsters while firing.</span>",
+        "iconFile": "UrgotW.png",
+        "cooldownSeconds": [
+          12,
+          9,
+          6,
+          3,
+          0
+        ],
+        "cost": {
+          "values": [
+            40,
+            30,
+            20,
+            10,
+            0
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          490,
+          490,
+          490,
+          490,
+          490
+        ],
+        "rankValues": [
+          {
+            "label": "Cooldown",
+            "values": "12/9/6/3/0"
+          },
+          {
+            "label": "Attack Damage Per Shot",
+            "values": "0.2/0.235/0.27/0.305/0.34"
+          },
+          {
+            "label": "Mana Cost",
+            "values": "40/30/20/10/0"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "W Scaling",
+            "labelKo": "W 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "1:DamagePerShot"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "E": {
+        "slot": "E",
+        "id": "UrgotE",
+        "name": "Disdain",
+        "summary": "Urgot charges in a direction, shielding himself and trampling non-champion enemies. If he catches an enemy champion, he will stop and hurl them out of his way.",
+        "bodyHtml": "Urgot charges forward, gaining <span class=\"text-blue-600 dark:text-blue-300\">(55/75/95/115/135 + (135% bonus Attack Damage) + (13.5% bonus Health)) Shield</span> for 4 seconds. The first champion hit is <span class=\"text-purple-600 dark:text-purple-500\">Stunned</span> for 1.5 seconds and thrown behind Urgot. All enemies Urgot collides with take <span class=\"text-red-600 dark:text-red-500 font-semibold\">(90/120/150/180/210 + (100% bonus Attack Damage)) physical damage</span>.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">Cannot cross terrain.</span>",
+        "iconFile": "UrgotE.png",
+        "cooldownSeconds": [
+          16,
+          15.5,
+          15,
+          14.5,
+          14
+        ],
+        "cost": {
+          "values": [
+            60,
+            70,
+            80,
+            90,
+            100
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          475,
+          475,
+          475,
+          475,
+          475
+        ],
+        "rankValues": [
+          {
+            "label": "Damage",
+            "values": "90/120/150/180/210"
+          },
+          {
+            "label": "Shield Amount",
+            "values": "55/75/95/115/135"
+          },
+          {
+            "label": "Mana Cost",
+            "values": "60/70/80/90/100"
+          },
+          {
+            "label": "Cooldown",
+            "values": "16/15.5/15/14.5/14"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "E Scaling",
+            "labelKo": "E 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "2:ETotalShieldHealth"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "R": {
+        "slot": "R",
+        "id": "UrgotR",
+        "name": "Fear Beyond Death",
+        "summary": "Urgot fires a chem-drill that impales the first enemy champion hit. If that champion falls below a health threshold, Urgot judges them weak and can execute them.",
+        "bodyHtml": "Urgot fires a chem-drill, impaling the first champion hit, dealing <span class=\"text-red-600 dark:text-red-500 font-semibold\">(100/225/350 + (50% bonus Attack Damage)) physical damage</span> and <span class=\"text-purple-600 dark:text-purple-500\">Slowing</span> for 4 seconds by 1% per 1% missing Health, up to 75%.<br /><br />If the impaled victim falls below 25% Health, Urgot can <span class=\"text-yellow-600 dark:text-yellow-300\">Recast</span> this Ability, <span class=\"text-purple-600 dark:text-purple-500\">Suppressing</span> the victim and dragging them to himself. On reaching Urgot, they are killed and nearby enemies are <span class=\"text-purple-600 dark:text-purple-500\">Feared</span> for 1.5 seconds.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">This Ability will automatically <span class=\"text-yellow-600 dark:text-yellow-300\">Recast</span> at the end of the duration if the victim is under the execution threshold.</span>",
+        "iconFile": "UrgotR.png",
+        "cooldownSeconds": [
+          100,
+          85,
+          70
+        ],
+        "cost": {
+          "values": [
+            100,
+            100,
+            100
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          2500,
+          2500,
+          2500
+        ],
+        "rankValues": [
+          {
+            "label": "Damage",
+            "values": "100/225/350"
+          },
+          {
+            "label": "Cooldown",
+            "values": "100/85/70"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "R Scaling",
+            "labelKo": "R 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "3:RCalculatedDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      }
+    }
+  }
+}

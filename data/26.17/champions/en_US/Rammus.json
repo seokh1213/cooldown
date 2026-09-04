@@ -1,0 +1,397 @@
+{
+  "schemaVersion": 2,
+  "patchVersion": "26.17",
+  "locale": "en_US",
+  "sources": {
+    "ddragon": "16.17.1",
+    "cdragon": "16.17"
+  },
+  "champion": {
+    "id": "Rammus",
+    "key": "33",
+    "name": "Rammus",
+    "title": "the Armordillo",
+    "tags": [
+      "Tank"
+    ],
+    "baseStats": {
+      "health": {
+        "base": 645,
+        "perLevel": 100
+      },
+      "healthRegen": {
+        "base": 8,
+        "perLevel": 0.55
+      },
+      "mana": {
+        "base": 310,
+        "perLevel": 33
+      },
+      "manaRegen": {
+        "base": 7.85,
+        "perLevel": 0.5
+      },
+      "attackDamage": {
+        "base": 65,
+        "perLevel": 0
+      },
+      "attackSpeed": {
+        "base": 0.7,
+        "perLevel": 2.215
+      },
+      "armor": {
+        "base": 35,
+        "perLevel": 4.5
+      },
+      "magicResist": {
+        "base": 32,
+        "perLevel": 2.05
+      },
+      "moveSpeed": {
+        "base": 335,
+        "perLevel": 0
+      },
+      "attackRange": {
+        "base": 125,
+        "perLevel": 0
+      }
+    },
+    "baseStatContributions": [
+      {
+        "stat": "MAX_HEALTH",
+        "value": 100,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "HEALTH_REGEN",
+        "value": 0.55,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAX_MANA",
+        "value": 33,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MANA_REGEN",
+        "value": 0.5,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_DAMAGE",
+        "value": 0,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_SPEED",
+        "value": 2.215,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ARMOR",
+        "value": 4.5,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAGIC_RESIST",
+        "value": 2.05,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      }
+    ],
+    "abilities": {
+      "P": {
+        "slot": "P",
+        "id": "RammusP",
+        "name": "Spiked Shell",
+        "summary": "Rammus gains bonus Attack Damage scaling with his Armor and Magic Resistance.",
+        "bodyHtml": "Rammus gains <span class=\"text-orange-600 dark:text-orange-500\">((15% Armor) + (15% Magic Resist)) Attack Damage</span>.",
+        "iconFile": "Armordillo_ScavengeArmor.png",
+        "cooldownSeconds": [],
+        "range": [],
+        "rankValues": [],
+        "scalings": [],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "Q": {
+        "slot": "Q",
+        "id": "PowerBall",
+        "name": "Powerball",
+        "summary": "Rammus accelerates in a ball towards his enemies, dealing damage and slowing targets affected by the impact.",
+        "bodyHtml": "Rammus curls into a ball, gaining <span class=\"text-cyan-600 dark:text-cyan-500\">(25% ~ 39.1%) Move Speed</span>, accelerating up to <span class=\"text-cyan-600 dark:text-cyan-500\">150/234.6% Move Speed</span> over 6 seconds. Rammus stops after colliding with an enemy, dealing <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(80/120/160/200/240 + (100% Ability Power)) magic damage</span>, <span class=\"text-purple-600 dark:text-purple-500\">Knocking Back</span>, and <span class=\"text-purple-600 dark:text-purple-500\">Slowing</span> nearby enemies by 40/50/60/70/80% for 1 second.<br /><br /><span class=\"text-yellow-600 dark:text-yellow-300\">Recast</span>: Rammus ends this Ability early.",
+        "iconFile": "PowerBall.png",
+        "cooldownSeconds": [
+          12,
+          10.5,
+          9,
+          7.5,
+          6
+        ],
+        "cost": {
+          "values": [
+            60,
+            60,
+            60,
+            60,
+            60
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          300,
+          300,
+          300,
+          300,
+          300
+        ],
+        "rankValues": [
+          {
+            "label": "Damage",
+            "values": "80/120/160/200/240"
+          },
+          {
+            "label": "Slow",
+            "values": "40/50/60/70/80"
+          },
+          {
+            "label": "Cooldown",
+            "values": "12/10.5/9/7.5/6"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "Q Scaling",
+            "labelKo": "Q 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "0:PowerBallDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "W": {
+        "slot": "W",
+        "id": "DefensiveBallCurl",
+        "name": "Defensive Ball Curl",
+        "summary": "Rammus goes into a defensive formation, vastly increasing his Armor and Magic Resistance, and returning damage to enemies that attack him.",
+        "bodyHtml": "Rammus enters a defensive formation for 7 seconds, gaining <span class=\"text-orange-600 dark:text-orange-400\">(30/37.5/45/52.5/60% Armor) Armor</span> and <span>(30/37.5/45/52.5/60% Magic Resist) Magic Resist</span> and dealing <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(15 + (10% Armor) + (10% Magic Resist)) magic damage</span> to enemies that Attack him.<br /><br /><span class=\"text-yellow-600 dark:text-yellow-300\">Recast</span>: Rammus ends this Ability early.",
+        "iconFile": "DefensiveBallCurl.png",
+        "cooldownSeconds": [
+          7,
+          7,
+          7,
+          7,
+          7
+        ],
+        "cost": {
+          "values": [
+            40,
+            40,
+            40,
+            40,
+            40
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          300,
+          300,
+          300,
+          300,
+          300
+        ],
+        "rankValues": [
+          {
+            "label": "Armor Bonus",
+            "values": "27/32/37/42/47"
+          },
+          {
+            "label": "Magic Resist Bonus",
+            "values": "20/25/30/35/40"
+          },
+          {
+            "label": "Percent Armor Bonus",
+            "values": "30%/37.5%/45%/52.5%/60%"
+          },
+          {
+            "label": "Percent Magic Resist Bonus",
+            "values": "30%/37.5%/45%/52.5%/60%"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "W Scaling",
+            "labelKo": "W 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "1:ReturnDamageCalc"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "E": {
+        "slot": "E",
+        "id": "PuncturingTaunt",
+        "name": "Frenzying Taunt",
+        "summary": "Rammus taunts an enemy champion or monster into a reckless assault against him.",
+        "bodyHtml": "Rammus <span class=\"text-purple-600 dark:text-purple-500\">Taunts</span> an enemy champion or monster for 1.2/1.4/1.6/1.8/2 seconds. Monsters are dealt <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(80/100/120/140/160 + (70% Ability Power)) magic damage</span>.",
+        "iconFile": "PuncturingTaunt.png",
+        "cooldownSeconds": [
+          12,
+          12,
+          12,
+          12,
+          12
+        ],
+        "cost": {
+          "values": [
+            50,
+            50,
+            50,
+            50,
+            50
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          325,
+          325,
+          325,
+          325,
+          325
+        ],
+        "rankValues": [
+          {
+            "label": "Duration",
+            "values": "1.2/1.4/1.6/1.8/2"
+          },
+          {
+            "label": "Monster Damage",
+            "values": "80/100/120/140/160"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "E Scaling",
+            "labelKo": "E 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "2:MonsterDamageCalc"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "R": {
+        "slot": "R",
+        "id": "Tremors2",
+        "name": "Soaring Slam",
+        "summary": "Rammus hops into the air and slams down at a target area, dealing magic damage and slowing enemies. If cast while Rammus is in Powerball, Rammus knocks up enemies near the center as well.",
+        "bodyHtml": "Rammus hops into the air and slams down in an area, dealing <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(150/250/350 + (60% Ability Power)) magic damage</span> and <span class=\"text-purple-600 dark:text-purple-500\">Slowing</span> by 30/40/50% for 1.5 seconds. If used during <span>Powerball</span>, enemies in the center take an additional <span class=\"text-blue-600 dark:text-blue-500 font-semibold\"> magic damage</span> and are <span class=\"text-purple-600 dark:text-purple-500\">Knocked Up</span> for 0.75 seconds.<br /><br />Rammus then creates 3 aftershocks in the area over 3.5 seconds, repeating the <span class=\"text-purple-600 dark:text-purple-500\">Slow</span>.<br /><br />The range of this Ability is increased by Rammus's <span class=\"text-cyan-600 dark:text-cyan-500\">Move Speed</span>.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">This Ability deals 200% damage to turrets.</span>",
+        "iconFile": "Tremors2.png",
+        "cooldownSeconds": [
+          120,
+          105,
+          90
+        ],
+        "cost": {
+          "values": [
+            100,
+            100,
+            100
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          25000,
+          25000,
+          25000
+        ],
+        "rankValues": [
+          {
+            "label": "Damage",
+            "values": "150/250/350"
+          },
+          {
+            "label": "Slow",
+            "values": "30/40/50"
+          },
+          {
+            "label": "Cooldown",
+            "values": "120/105/90"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "R Scaling",
+            "labelKo": "R 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "3:InitialDamageCalc"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": [
+            "spell.PowerBall:PowerBallDamage"
+          ]
+        }
+      }
+    }
+  }
+}

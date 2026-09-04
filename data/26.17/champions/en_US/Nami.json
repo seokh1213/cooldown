@@ -1,0 +1,388 @@
+{
+  "schemaVersion": 2,
+  "patchVersion": "26.17",
+  "locale": "en_US",
+  "sources": {
+    "ddragon": "16.17.1",
+    "cdragon": "16.17"
+  },
+  "champion": {
+    "id": "Nami",
+    "key": "267",
+    "name": "Nami",
+    "title": "the Tidecaller",
+    "tags": [
+      "Support",
+      "Mage"
+    ],
+    "baseStats": {
+      "health": {
+        "base": 560,
+        "perLevel": 88
+      },
+      "healthRegen": {
+        "base": 5.5,
+        "perLevel": 0.55
+      },
+      "mana": {
+        "base": 365,
+        "perLevel": 43
+      },
+      "manaRegen": {
+        "base": 11.5,
+        "perLevel": 0.4
+      },
+      "attackDamage": {
+        "base": 54,
+        "perLevel": 0
+      },
+      "attackSpeed": {
+        "base": 0.644,
+        "perLevel": 2.61
+      },
+      "armor": {
+        "base": 29,
+        "perLevel": 5.2
+      },
+      "magicResist": {
+        "base": 30,
+        "perLevel": 1.3
+      },
+      "moveSpeed": {
+        "base": 335,
+        "perLevel": 0
+      },
+      "attackRange": {
+        "base": 550,
+        "perLevel": 0
+      }
+    },
+    "baseStatContributions": [
+      {
+        "stat": "MAX_HEALTH",
+        "value": 88,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "HEALTH_REGEN",
+        "value": 0.55,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAX_MANA",
+        "value": 43,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MANA_REGEN",
+        "value": 0.4,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_DAMAGE",
+        "value": 0,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_SPEED",
+        "value": 2.61,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ARMOR",
+        "value": 5.2,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAGIC_RESIST",
+        "value": 1.3,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      }
+    ],
+    "abilities": {
+      "P": {
+        "slot": "P",
+        "id": "NamiPassive",
+        "name": "Surging Tides",
+        "summary": "When Nami's Abilities hit allied champions they gain Move Speed for a short duration.",
+        "bodyHtml": "When Nami's Abilities hit allied champions, they gain <span class=\"text-cyan-600 dark:text-cyan-500\">(100 + (25% Ability Power)) Move Speed</span>, decaying over 1.5 seconds.",
+        "iconFile": "NamiPassive.png",
+        "cooldownSeconds": [],
+        "range": [],
+        "rankValues": [],
+        "scalings": [],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "Q": {
+        "slot": "Q",
+        "id": "NamiQ",
+        "name": "Aqua Prison",
+        "summary": "Sends a bubble to a target area, dealing damage and stunning all enemies on impact.",
+        "bodyHtml": "Nami hurls a bubble, <span class=\"text-purple-600 dark:text-purple-500\">Stunning</span> for 1.5 seconds and dealing <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(90/145/200/255/310 + (50% Ability Power)) magic damage</span>.",
+        "iconFile": "NamiQ.png",
+        "cooldownSeconds": [
+          12,
+          11,
+          10,
+          9,
+          8
+        ],
+        "cost": {
+          "values": [
+            60,
+            60,
+            60,
+            60,
+            60
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          875,
+          875,
+          875,
+          875,
+          875
+        ],
+        "rankValues": [
+          {
+            "label": "Damage",
+            "values": "90/145/200/255/310"
+          },
+          {
+            "label": "Cooldown",
+            "values": "12/11/10/9/8"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "Q Scaling",
+            "labelKo": "Q 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "0:TotalDamageTT"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "W": {
+        "slot": "W",
+        "id": "NamiW",
+        "name": "Ebb and Flow",
+        "summary": "Unleashes a stream of water that bounces back and forth between allied and enemy champions, healing allies and damaging enemies.",
+        "bodyHtml": "Nami unleashes a stream of water that bounces between allied and enemy champions. Each champion can only be hit once, and it hits up to 3 targets.<span>Restores <span class=\"text-green-600 dark:text-green-400\">(55/80/105/130/155 + (40% Ability Power)) Health</span> to allies and will bounce to a nearby enemy champion. <span>Deals <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(60/95/130/165/200 + (50% Ability Power)) magic damage</span> to enemies and will bounce to a nearby allied champion.<br />The damage and healing value is modified by (-20% + (0.15% Ability Power)) each bounce.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">Can only bounce to visible enemies.</span>",
+        "iconFile": "NamiW.png",
+        "cooldownSeconds": [
+          10,
+          10,
+          10,
+          10,
+          10
+        ],
+        "cost": {
+          "values": [
+            70,
+            75,
+            80,
+            85,
+            90
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          725,
+          725,
+          725,
+          725,
+          725
+        ],
+        "rankValues": [
+          {
+            "label": "Healing",
+            "values": "55/80/105/130/155"
+          },
+          {
+            "label": "Damage",
+            "values": "60/95/130/165/200"
+          },
+          {
+            "label": "Mana Cost",
+            "values": "70/75/80/85/90"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "W Scaling",
+            "labelKo": "W 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "1:TotalDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "E": {
+        "slot": "E",
+        "id": "NamiE",
+        "name": "Tidecaller's Blessing",
+        "summary": "Empowers an allied champion for a short duration. The ally's basic attacks and spells deal bonus magic damage and slow the target.",
+        "bodyHtml": "Nami empowers an allied champion's next 3 Attacks and Abilities for 6 seconds, causing them to <span class=\"text-purple-600 dark:text-purple-500\">Slow</span> their targets by (15/20/25/30/35% + (0.05% Ability Power)) for 1s and deal an additional <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(20/35/50/65/80 + (20% Ability Power)) magic damage</span>.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">Deals (33% ~ 66%) damage to non-champions when empowering area of effect Abilities.</span>",
+        "iconFile": "NamiE.png",
+        "cooldownSeconds": [
+          11,
+          11,
+          11,
+          11,
+          11
+        ],
+        "cost": {
+          "values": [
+            55,
+            60,
+            65,
+            70,
+            75
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          800,
+          800,
+          800,
+          800,
+          800
+        ],
+        "rankValues": [
+          {
+            "label": "Damage",
+            "values": "20/35/50/65/80"
+          },
+          {
+            "label": "Slow",
+            "values": "15/20/25/30/35"
+          },
+          {
+            "label": "Mana Cost",
+            "values": "55/60/65/70/75"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "E Scaling",
+            "labelKo": "E 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "2:TotalDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "R": {
+        "slot": "R",
+        "id": "NamiR",
+        "name": "Tidal Wave",
+        "summary": "Summons a massive Tidal Wave that knocks up, slows, and damages enemies. Allies hit gain double the effect of Surging Tides.",
+        "bodyHtml": "Nami summons a tidal wave, <span class=\"text-purple-600 dark:text-purple-500\">Knocking Up</span> for 0.5 seconds, <span class=\"text-purple-600 dark:text-purple-500\">Slowing</span> by 70%, and dealing <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(150/250/350 + (60% Ability Power)) magic damage</span>. The duration of the <span class=\"text-purple-600 dark:text-purple-500\">Slow</span> increases based on distance the wave traveled, up to 4 seconds.<br /><br />Allies hit by the wave gain double the effect of <span>Surging Tides</span>.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">The <span class=\"text-purple-600 dark:text-purple-500\">Slow</span> has a minimum duration of 2 seconds.</span>",
+        "iconFile": "NamiR.png",
+        "cooldownSeconds": [
+          120,
+          110,
+          100
+        ],
+        "cost": {
+          "values": [
+            100,
+            100,
+            100
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          2550,
+          2550,
+          2550
+        ],
+        "rankValues": [
+          {
+            "label": "Damage",
+            "values": "150/250/350"
+          },
+          {
+            "label": "Cooldown",
+            "values": "120/110/100"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "R Scaling",
+            "labelKo": "R 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "3:TotalDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      }
+    }
+  }
+}

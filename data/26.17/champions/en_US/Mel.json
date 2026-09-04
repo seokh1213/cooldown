@@ -1,0 +1,424 @@
+{
+  "schemaVersion": 2,
+  "patchVersion": "26.17",
+  "locale": "en_US",
+  "sources": {
+    "ddragon": "16.17.1",
+    "cdragon": "16.17"
+  },
+  "champion": {
+    "id": "Mel",
+    "key": "800",
+    "name": "Mel",
+    "title": "the Soul's Reflection",
+    "tags": [
+      "Mage",
+      "Support"
+    ],
+    "baseStats": {
+      "health": {
+        "base": 630,
+        "perLevel": 99
+      },
+      "healthRegen": {
+        "base": 6,
+        "perLevel": 0.55
+      },
+      "mana": {
+        "base": 480,
+        "perLevel": 28
+      },
+      "manaRegen": {
+        "base": 9,
+        "perLevel": 0.9
+      },
+      "attackDamage": {
+        "base": 54,
+        "perLevel": 0
+      },
+      "attackSpeed": {
+        "base": 0.625,
+        "perLevel": 2.5
+      },
+      "armor": {
+        "base": 21,
+        "perLevel": 5.2
+      },
+      "magicResist": {
+        "base": 30,
+        "perLevel": 1.3
+      },
+      "moveSpeed": {
+        "base": 330,
+        "perLevel": 0
+      },
+      "attackRange": {
+        "base": 550,
+        "perLevel": 0
+      }
+    },
+    "baseStatContributions": [
+      {
+        "stat": "MAX_HEALTH",
+        "value": 99,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "HEALTH_REGEN",
+        "value": 0.55,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAX_MANA",
+        "value": 28,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MANA_REGEN",
+        "value": 0.9,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_DAMAGE",
+        "value": 0,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_SPEED",
+        "value": 2.5,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ARMOR",
+        "value": 5.2,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAGIC_RESIST",
+        "value": 1.3,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      }
+    ],
+    "abilities": {
+      "P": {
+        "slot": "P",
+        "id": "MelPassive",
+        "name": "Searing Brilliance",
+        "summary": "Whenever Mel uses an ability, she gains three bonus projectiles (up to nine maximum) on her next attack.<br><br>When Mel deals damage through an ability or attack, she applies Overwhelm, which can stack infinitely. If the enemy is hit by Mel with enough Overwhelm damage, the stacks are consumed to execute the target.",
+        "bodyHtml": "Mel's Attacks and Abilities apply and refresh stacks of <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Overwhelm</span> for 5 seconds each time they deal damage, storing <span class=\"text-blue-600 dark:text-blue-500 font-semibold\"> plus damage per stack of magic damage</span>. When applied, if the stored amount exceeds the enemy's combined shields and Health, they are executed.<br /><br />When an Ability is cast, Mel's next Attack fires 3 extra projectiles, each dealing <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(4% Ability Power) magic damage</span>. This effect can stack up to 9 extra projectiles.",
+        "iconFile": "Mel_Passive.png",
+        "cooldownSeconds": [],
+        "range": [],
+        "rankValues": [],
+        "scalings": [],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "Q": {
+        "slot": "Q",
+        "id": "MelQ",
+        "name": "Radiant Volley",
+        "summary": "Mel fires a barrage of projectiles that explode around a target location, dealing damage repeatedly to enemies within the area.",
+        "bodyHtml": "Mel unleashes a barrage of 6/7/8/9/10 projectiles that explode in the area around a target location.<br /><br />The first explosion hit deals <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(60/85/110/135/160 + (55% Ability Power)) magic damage</span> and each subsequent explosion deals <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(5/7/9/11/13 + (5% Ability Power)) magic damage</span>, adding up to <span class=\"text-blue-600 dark:text-blue-500 font-semibold\"> magic damage</span> total.",
+        "iconFile": "MelQ.png",
+        "cooldownSeconds": [
+          10,
+          9,
+          8,
+          7,
+          6
+        ],
+        "cost": {
+          "values": [
+            70,
+            75,
+            80,
+            85,
+            90
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          950,
+          950,
+          950,
+          950,
+          950
+        ],
+        "rankValues": [
+          {
+            "label": "Initial Damage",
+            "values": "60/85/110/135/160"
+          },
+          {
+            "label": "Explosion Damage",
+            "values": "5/7/9/11/13"
+          },
+          {
+            "label": "Explosion Count",
+            "values": "6/7/8/9/10"
+          },
+          {
+            "label": "Cooldown",
+            "values": "10/9/8/7/6"
+          },
+          {
+            "label": "Mana Cost",
+            "values": "70/75/80/85/90"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "Q Scaling",
+            "labelKo": "Q 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "0:TotalExplosionDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": [
+            "AllDamageHit"
+          ]
+        }
+      },
+      "W": {
+        "slot": "W",
+        "id": "MelW",
+        "name": "Rebuttal",
+        "summary": "Mel forms a barrier around herself that reflects enemy projectiles back at the attacker, prevents her from taking damage, and grants her movement speed.",
+        "bodyHtml": "Mel forms a barrier around herself that reflects projectiles from enemy champions, gaining <span class=\"text-blue-600 dark:text-blue-300\">(80/110/140/170/200 + (70% Ability Power)) Shields</span> for 0.75 seconds and <span class=\"text-cyan-600 dark:text-cyan-500\">40% decaying Move Speed</span> for 0.75 seconds.<br /><br />Reflected projectiles deal <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(40/45/50/55/60% + (0.05% Ability Power)) original damage as magic damage</span>.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">Reflected projectile damage is calculated using the original caster's attributes before damage adjustments and magic penetration.<br /><span class=\"text-red-600 dark:text-red-500 font-semibold\">Physical damage</span> is reduced by 30% when converted to magic damage.<br />Does not apply item effects from the original caster.<br />Projectiles targeting each enemy in an area are destroyed instead of reflected.</span>",
+        "iconFile": "MelW.png",
+        "cooldownSeconds": [
+          38,
+          35,
+          33,
+          29,
+          26
+        ],
+        "cost": {
+          "values": [
+            80,
+            60,
+            40,
+            20,
+            0
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          250,
+          250,
+          250,
+          250,
+          250
+        ],
+        "rankValues": [
+          {
+            "label": "Reflected Damage",
+            "values": "40/45/50/55/60"
+          },
+          {
+            "label": "Shield Amount",
+            "values": "80/110/140/170/200"
+          },
+          {
+            "label": "Cooldown",
+            "values": "38/35/33/29/26"
+          },
+          {
+            "label": "Mana Cost",
+            "values": "80/60/40/20/0"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "W Scaling",
+            "labelKo": "W 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "1:DamagePercent"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "E": {
+        "slot": "E",
+        "id": "MelE",
+        "name": "Solar Snare",
+        "summary": "Mel fires a radiant orb forward, rooting those at its center while the area around it slows enemies and deals damage over time.",
+        "bodyHtml": "Mel fires a radiating orb, <span class=\"text-purple-600 dark:text-purple-500\">Rooting</span> enemies at its center for 1.5 seconds and dealing <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(60/105/150/195/240 + (70% Ability Power)) magic damage</span>.<br /><br />The orb builds up a hostile area around it that <span class=\"text-purple-600 dark:text-purple-500\">Slows</span> enemies by 30% and deals <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(16/28/40/52/64 + (8% Ability Power)) magic damage per second</span>.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">The Slow and damage-over-time effects linger on enemies for a short duration after they've left the area created by the orb.<br />Deals reduced damage when used against minions.</span>",
+        "iconFile": "MelE.png",
+        "cooldownSeconds": [
+          11,
+          10.5,
+          10,
+          9.5,
+          9
+        ],
+        "cost": {
+          "values": [
+            50,
+            60,
+            70,
+            80,
+            90
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          1000,
+          1000,
+          1000,
+          1000,
+          1000
+        ],
+        "rankValues": [
+          {
+            "label": "Damage",
+            "values": "60/105/150/195/240"
+          },
+          {
+            "label": "Damage Per Second",
+            "values": "16/28/40/52/64"
+          },
+          {
+            "label": "Cooldown",
+            "values": "11/10.5/10/9.5/9"
+          },
+          {
+            "label": "Mana Cost",
+            "values": "50/60/70/80/90"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "E Scaling",
+            "labelKo": "E 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "2:Damage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": [
+            "MinionModTooltip"
+          ]
+        }
+      },
+      "R": {
+        "slot": "R",
+        "id": "MelR",
+        "name": "Golden Eclipse",
+        "summary": "Mel strikes all enemies marked with Overwhelm regardless of their distance from her, dealing additional damage for each stack of Overwhelm.<br><br>Ranks of Golden Eclipse increase Overwhelm's damage.",
+        "bodyHtml": "<span class=\"text-gray-600 dark:text-gray-500 italic\">Passive</span>: <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Overwhelm</span> damage is increased to <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(60/70/80 + (10% Ability Power)) magic damage plus (3/4/5 + (0.75% Ability Power)) magic damage per stack</span>.<br /><br /><span class=\"text-gray-900 dark:text-white font-semibold\">Active</span>: Mel unleashes her power on all enemies affected by <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Overwhelm</span>, dealing <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(125/200/275 + (30% Ability Power)) magic damage plus (4/7/10 + (4% Ability Power)) magic damage per <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Overwhelm</span> stack</span>.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">Can only be cast when an enemy champion is affected by <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Overwhelm</span>.</span>",
+        "iconFile": "MelR.png",
+        "cooldownSeconds": [
+          120,
+          100,
+          80
+        ],
+        "cost": {
+          "values": [
+            100,
+            100,
+            100
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          25000,
+          25000,
+          25000
+        ],
+        "rankValues": [
+          {
+            "label": "<spellName>Golden Eclipse</spellName> Flat Damage",
+            "values": "125/200/275"
+          },
+          {
+            "label": "<spellName>Golden Eclipse</spellName> Stack Damage",
+            "values": "4/7/10"
+          },
+          {
+            "label": "Cooldown",
+            "values": "120/100/80"
+          },
+          {
+            "label": "<keywordMajor>Overwhelm</keywordMajor> Flat Damage",
+            "values": "60/70/80"
+          },
+          {
+            "label": "<keywordMajor>Overwhelm</keywordMajor> Stack Damage",
+            "values": "3/4/5"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "R Scaling",
+            "labelKo": "R 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "3:PassiveStackDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      }
+    }
+  }
+}

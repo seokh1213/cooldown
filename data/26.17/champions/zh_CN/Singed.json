@@ -1,0 +1,360 @@
+{
+  "schemaVersion": 2,
+  "patchVersion": "26.17",
+  "locale": "zh_CN",
+  "sources": {
+    "ddragon": "16.17.1",
+    "cdragon": "16.17"
+  },
+  "champion": {
+    "id": "Singed",
+    "key": "27",
+    "name": "炼金术士",
+    "title": "辛吉德",
+    "tags": [
+      "Tank",
+      "Mage"
+    ],
+    "baseStats": {
+      "health": {
+        "base": 650,
+        "perLevel": 96
+      },
+      "healthRegen": {
+        "base": 9.5,
+        "perLevel": 0.55
+      },
+      "mana": {
+        "base": 330,
+        "perLevel": 45
+      },
+      "manaRegen": {
+        "base": 7.5,
+        "perLevel": 0.55
+      },
+      "attackDamage": {
+        "base": 63,
+        "perLevel": 0
+      },
+      "attackSpeed": {
+        "base": 0.7,
+        "perLevel": 1.9
+      },
+      "armor": {
+        "base": 34,
+        "perLevel": 4.2
+      },
+      "magicResist": {
+        "base": 32,
+        "perLevel": 2.05
+      },
+      "moveSpeed": {
+        "base": 345,
+        "perLevel": 0
+      },
+      "attackRange": {
+        "base": 125,
+        "perLevel": 0
+      }
+    },
+    "baseStatContributions": [
+      {
+        "stat": "MAX_HEALTH",
+        "value": 96,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "HEALTH_REGEN",
+        "value": 0.55,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAX_MANA",
+        "value": 45,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MANA_REGEN",
+        "value": 0.55,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_DAMAGE",
+        "value": 0,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_SPEED",
+        "value": 1.9,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ARMOR",
+        "value": 4.2,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAGIC_RESIST",
+        "value": 2.05,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      }
+    ],
+    "abilities": {
+      "P": {
+        "slot": "P",
+        "id": "SingedP",
+        "name": "剧毒冲流",
+        "summary": "辛吉德借助附近英雄进行漂移，在经过他们时获得爆发性的移动速度加成。",
+        "bodyHtml": "辛吉德将借助附近英雄的冲流，来获得持续2秒的<span class=\"text-cyan-600 dark:text-cyan-500\">25%移动速度</span>。这个效果在每个英雄身上拥有8秒冷却时间。",
+        "iconFile": "Singed_Passive.png",
+        "cooldownSeconds": [],
+        "range": [],
+        "rankValues": [],
+        "scalings": [],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "Q": {
+        "slot": "Q",
+        "id": "PoisonTrail",
+        "name": "剧毒踪迹",
+        "summary": "辛吉德在身后留下剧毒踪迹，对经过上面的敌人造成持续伤害。",
+        "bodyHtml": "<span>激活：</span>辛吉德在身后留下一条剧毒踪迹，对经过它的敌人造成每秒<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(20/30/40/50/60 + (42.5% 法术强度))魔法伤害</span>。<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">踪迹持续时长：3.25秒。<br />剧毒持续时长：2秒。<br />大概的总伤害：<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(95/142.5/190/237.5/285 + (201.875% 法术强度))魔法伤害</span>。<br />如果一个处于【剧毒踪迹】状态下的小兵即将死于小兵伤害，则辛吉德会转而获得该小兵的击杀金币。</span>",
+        "iconFile": "PoisonTrail.png",
+        "cooldownSeconds": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "cost": {
+          "values": [
+            13,
+            13,
+            13,
+            13,
+            13
+          ],
+          "resource": "法力"
+        },
+        "range": [
+          20,
+          20,
+          20,
+          20,
+          20
+        ],
+        "rankValues": [
+          {
+            "label": "伤害",
+            "values": "20/30/40/50/60"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "Q Scaling",
+            "labelKo": "Q 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "0:DamagePerSecond"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "W": {
+        "slot": "W",
+        "id": "MegaAdhesive",
+        "name": "强力粘胶",
+        "summary": "扔出一瓶强力粘合剂在地上，其中的敌人会被减速和缚地。",
+        "bodyHtml": "辛吉德猛掷出一个装满粘性液体的桶，对区域内的敌人造成<span class=\"text-purple-600 dark:text-purple-500\">缚地</span>和50/55/60/65/70%<span class=\"text-purple-600 dark:text-purple-500\">减速</span>，持续3秒。",
+        "iconFile": "MegaAdhesive.png",
+        "cooldownSeconds": [
+          17,
+          16,
+          15,
+          14,
+          13
+        ],
+        "cost": {
+          "values": [
+            60,
+            70,
+            80,
+            90,
+            100
+          ],
+          "resource": "法力值"
+        },
+        "range": [
+          1000,
+          1000,
+          1000,
+          1000,
+          1000
+        ],
+        "rankValues": [
+          {
+            "label": "减速",
+            "values": "50/55/60/65/70"
+          },
+          {
+            "label": "冷却时间",
+            "values": "17/16/15/14/13"
+          },
+          {
+            "label": "法力值消耗",
+            "values": "60/70/80/90/100"
+          }
+        ],
+        "scalings": [],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "E": {
+        "slot": "E",
+        "id": "Fling",
+        "name": "过肩摔",
+        "summary": "伤害目标敌方单位，并将他们投掷到辛吉德身后。如果辛吉德将目标扔到强力粘胶上，目标还会被禁锢。",
+        "bodyHtml": "辛吉德对一名敌人进行过肩摔，造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(50/60/70/80/90 + (55% 法术强度))外加6/6.5/7/7.5/8%最大生命值的魔法伤害</span>。<br /><br />如果辛吉德将一名目标摔到他的<span>强力粘胶</span>上，那么该目标还会被<span class=\"text-purple-600 dark:text-purple-500\">禁锢</span>1/1.25/1.5/1.75/2秒。<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">对小兵和野怪的最大生命值伤害的上限为300。</span>",
+        "iconFile": "Fling.png",
+        "cooldownSeconds": [
+          10,
+          9.5,
+          9,
+          8.5,
+          8
+        ],
+        "cost": {
+          "values": [
+            60,
+            70,
+            80,
+            90,
+            100
+          ],
+          "resource": "法力值"
+        },
+        "range": [
+          125,
+          125,
+          125,
+          125,
+          125
+        ],
+        "rankValues": [
+          {
+            "label": "伤害",
+            "values": "50/60/70/80/90"
+          },
+          {
+            "label": "最大生命值伤害",
+            "values": "6/6.5/7/7.5/8"
+          },
+          {
+            "label": "禁锢时长",
+            "values": "1/1.25/1.5/1.75/2"
+          },
+          {
+            "label": "冷却时间",
+            "values": "10/9.5/9/8.5/8"
+          },
+          {
+            "label": "法力值消耗",
+            "values": "60/70/80/90/100"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "E Scaling",
+            "labelKo": "E 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "2:BaseDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "R": {
+        "slot": "R",
+        "id": "InsanityPotion",
+        "name": "疯狂药剂",
+        "summary": "辛吉德喝下精心炮制的化学药剂，大幅提高战斗属性，并使他的【剧毒踪迹】可以施加重伤效果。",
+        "bodyHtml": "辛吉德喝下化学药剂，自身获得25/55/85<span class=\"text-blue-600 dark:text-blue-400\">法术强度</span>、<span class=\"text-orange-600 dark:text-orange-400\">护甲</span>、<span>魔法抗性</span>、<span class=\"text-cyan-600 dark:text-cyan-500\">移动速度</span>、<span class=\"text-green-600 dark:text-green-400\">生命回复</span>和<span>法力回复</span>，持续25秒。在这个效果期间，辛吉德的<span>剧毒踪迹</span>还会施加持续1秒的40%重伤。",
+        "iconFile": "InsanityPotion.png",
+        "cooldownSeconds": [
+          100,
+          100,
+          100
+        ],
+        "cost": {
+          "values": [
+            100,
+            100,
+            100
+          ],
+          "resource": "法力值"
+        },
+        "range": [
+          20,
+          20,
+          20
+        ],
+        "rankValues": [
+          {
+            "label": "额外属性",
+            "values": "25/55/85"
+          }
+        ],
+        "scalings": [],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      }
+    }
+  }
+}

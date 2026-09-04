@@ -1,0 +1,369 @@
+{
+  "schemaVersion": 2,
+  "patchVersion": "26.17",
+  "locale": "en_US",
+  "sources": {
+    "ddragon": "16.17.1",
+    "cdragon": "16.17"
+  },
+  "champion": {
+    "id": "Taric",
+    "key": "44",
+    "name": "Taric",
+    "title": "the Shield of Valoran",
+    "tags": [
+      "Support",
+      "Tank"
+    ],
+    "baseStats": {
+      "health": {
+        "base": 645,
+        "perLevel": 99
+      },
+      "healthRegen": {
+        "base": 6,
+        "perLevel": 0.5
+      },
+      "mana": {
+        "base": 300,
+        "perLevel": 60
+      },
+      "manaRegen": {
+        "base": 8.5,
+        "perLevel": 0.8
+      },
+      "attackDamage": {
+        "base": 55,
+        "perLevel": 0
+      },
+      "attackSpeed": {
+        "base": 0.625,
+        "perLevel": 2
+      },
+      "armor": {
+        "base": 40,
+        "perLevel": 4.3
+      },
+      "magicResist": {
+        "base": 28,
+        "perLevel": 2.05
+      },
+      "moveSpeed": {
+        "base": 340,
+        "perLevel": 0
+      },
+      "attackRange": {
+        "base": 150,
+        "perLevel": 0
+      }
+    },
+    "baseStatContributions": [
+      {
+        "stat": "MAX_HEALTH",
+        "value": 99,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "HEALTH_REGEN",
+        "value": 0.5,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAX_MANA",
+        "value": 60,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MANA_REGEN",
+        "value": 0.8,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_DAMAGE",
+        "value": 0,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_SPEED",
+        "value": 2,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ARMOR",
+        "value": 4.3,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAGIC_RESIST",
+        "value": 2.05,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      }
+    ],
+    "abilities": {
+      "P": {
+        "slot": "P",
+        "id": "TaricPassive",
+        "name": "Bravado",
+        "summary": "Spellcasts empower Taric's next 2 basic attacks to deal bonus magic damage, reduce his spell cooldowns, and attack in quick succession.",
+        "bodyHtml": "After using an Ability, Taric's next 2 Attacks within 5 seconds gain <span>100% Attack Speed</span>, deal an additional <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(15% bonus Armor) magic damage</span>, and reduce his basic Ability Cooldowns by second.",
+        "iconFile": "Taric_Passive.png",
+        "cooldownSeconds": [],
+        "range": [],
+        "rankValues": [],
+        "scalings": [],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "Q": {
+        "slot": "Q",
+        "id": "TaricQ",
+        "name": "Starlight's Touch",
+        "summary": "Heals nearby allied champions based on charges stored. Bravado-empowered attacks grant a charge of Starlight's Touch.",
+        "bodyHtml": "<span class=\"text-gray-600 dark:text-gray-500 italic\">Passive:</span> Gain a stack (max 1/2/3/4/5) every 15 seconds and when hitting a <span>Bravado</span> Attack.<br /><br /><span class=\"text-gray-900 dark:text-white font-semibold\">Active:</span> Consume all stacks to restore <span class=\"text-green-600 dark:text-green-400\">(25 + (15% Ability Power) + (1% Health)) Health</span> per stack to nearby ally champions (<span class=\"text-green-600 dark:text-green-400\">(25/50/75/100/125 + (15/30/45/60/75% Ability Power) + (1/2/3/4/5% Health))</span> at 1/2/3/4/5 stacks).",
+        "iconFile": "TaricQ.png",
+        "cooldownSeconds": [
+          3,
+          3,
+          3,
+          3,
+          3
+        ],
+        "rechargeSeconds": [
+          15,
+          15,
+          15,
+          15,
+          15
+        ],
+        "cost": {
+          "values": [
+            60,
+            60,
+            60,
+            60,
+            60
+          ],
+          "resource": "Mana, all Charges"
+        },
+        "range": [
+          325,
+          325,
+          325,
+          325,
+          325
+        ],
+        "rankValues": [
+          {
+            "label": "Max Charges",
+            "values": "1/2/3/4/5"
+          },
+          {
+            "label": "Max Healing",
+            "values": "25/50/75/100/125"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "Q Scaling",
+            "labelKo": "Q 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "0:StackCooldown"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "W": {
+        "slot": "W",
+        "id": "TaricW",
+        "name": "Bastion",
+        "summary": "Passively increase the Armor of Taric and any allied champion with Bastion.<br><br>Actively shields an ally and grants them Bastion for as long as they remain near Taric. Taric's spells also cast off the ally with Bastion.",
+        "bodyHtml": "<span class=\"text-gray-600 dark:text-gray-500 italic\">Passive: </span>Taric gains <span class=\"text-orange-600 dark:text-orange-400\">(6/7/8/9/10% Armor) Armor</span> and forms a tether between him and the ally bound by this Ability. As long as they are near each other, the ally gains <span class=\"text-orange-600 dark:text-orange-400\">(6/7/8/9/10% Armor) Armor</span> and Taric casts all his Abilities from both himself and his linked ally.<br /><br /><span class=\"text-gray-600 dark:text-gray-500 italic\">Active: </span>Taric binds to an ally champion, granting a <span class=\"text-blue-600 dark:text-blue-300\">7/8/9/10/11% max Health Shield</span> for 2.5 seconds.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">Mimicked spell effects do not stack.</span><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">Only one ally can be bound at a time. </span><br /><br />",
+        "iconFile": "TaricW.png",
+        "cooldownSeconds": [
+          15,
+          15,
+          15,
+          15,
+          15
+        ],
+        "cost": {
+          "values": [
+            60,
+            60,
+            60,
+            60,
+            60
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          800,
+          800,
+          800,
+          800,
+          800
+        ],
+        "rankValues": [
+          {
+            "label": "Passive Armor",
+            "values": "6/7/8/9/10"
+          },
+          {
+            "label": "Shield Ratio",
+            "values": "7/8/9/10/11"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "W Scaling",
+            "labelKo": "W 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "1:BonusArmor"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "E": {
+        "slot": "E",
+        "id": "TaricE",
+        "name": "Dazzle",
+        "summary": "Taric readies a beam of starlight that, after a brief delay, deals magic damage and stuns enemies.",
+        "bodyHtml": "Taric projects a beam of starlight, bursting after 1 second to deal <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(90/130/170/210/250 + (50% Ability Power) + (50% bonus Armor)) magic damage</span> and <span class=\"text-purple-600 dark:text-purple-500\">Stun</span> enemies for 1.5 seconds.",
+        "iconFile": "TaricE.png",
+        "cooldownSeconds": [
+          16,
+          15,
+          14,
+          13,
+          12
+        ],
+        "cost": {
+          "values": [
+            40,
+            40,
+            40,
+            40,
+            40
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          610,
+          610,
+          610,
+          610,
+          610
+        ],
+        "rankValues": [
+          {
+            "label": "Damage",
+            "values": "90/130/170/210/250"
+          },
+          {
+            "label": "Cooldown",
+            "values": "16/15/14/13/12"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "E Scaling",
+            "labelKo": "E 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "2:TotalDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "R": {
+        "slot": "R",
+        "id": "TaricR",
+        "name": "Cosmic Radiance",
+        "summary": "Pulses cosmic energy onto nearby allied champions after a delay, making them invulnerable for a short duration.",
+        "bodyHtml": "Taric calls down protection from the heavens. After 2.5 seconds, nearby ally champions become invulnerable for 2.5 seconds.",
+        "iconFile": "TaricR.png",
+        "cooldownSeconds": [
+          180,
+          150,
+          120
+        ],
+        "cost": {
+          "values": [
+            100,
+            100,
+            100
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          400,
+          400,
+          400
+        ],
+        "rankValues": [
+          {
+            "label": "Cooldown",
+            "values": "180/150/120"
+          }
+        ],
+        "scalings": [],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      }
+    }
+  }
+}

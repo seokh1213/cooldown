@@ -1,0 +1,404 @@
+{
+  "schemaVersion": 2,
+  "patchVersion": "26.17",
+  "locale": "zh_CN",
+  "sources": {
+    "ddragon": "16.17.1",
+    "cdragon": "16.17"
+  },
+  "champion": {
+    "id": "Kassadin",
+    "key": "38",
+    "name": "虚空行者",
+    "title": "卡萨丁",
+    "tags": [
+      "Assassin",
+      "Mage"
+    ],
+    "baseStats": {
+      "health": {
+        "base": 646,
+        "perLevel": 113
+      },
+      "healthRegen": {
+        "base": 6,
+        "perLevel": 0.5
+      },
+      "mana": {
+        "base": 400,
+        "perLevel": 87
+      },
+      "manaRegen": {
+        "base": 6,
+        "perLevel": 0.8
+      },
+      "attackDamage": {
+        "base": 59,
+        "perLevel": 0
+      },
+      "attackSpeed": {
+        "base": 0.64,
+        "perLevel": 3.7
+      },
+      "armor": {
+        "base": 21,
+        "perLevel": 4
+      },
+      "magicResist": {
+        "base": 30,
+        "perLevel": 1.3
+      },
+      "moveSpeed": {
+        "base": 335,
+        "perLevel": 0
+      },
+      "attackRange": {
+        "base": 150,
+        "perLevel": 0
+      }
+    },
+    "baseStatContributions": [
+      {
+        "stat": "MAX_HEALTH",
+        "value": 113,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "HEALTH_REGEN",
+        "value": 0.5,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAX_MANA",
+        "value": 87,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MANA_REGEN",
+        "value": 0.8,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_DAMAGE",
+        "value": 0,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_SPEED",
+        "value": 3.7,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ARMOR",
+        "value": 4,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAGIC_RESIST",
+        "value": 1.3,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      }
+    ],
+    "abilities": {
+      "P": {
+        "slot": "P",
+        "id": "VoidStone",
+        "name": "虚空之石",
+        "summary": "卡萨丁所受的魔法伤害减少，并无视单位的碰撞体积。",
+        "bodyHtml": "卡萨丁所受的魔法伤害减少10%，并处于幽灵状态。",
+        "iconFile": "Kassadin_Passive.png",
+        "cooldownSeconds": [],
+        "range": [],
+        "rankValues": [],
+        "scalings": [],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "Q": {
+        "slot": "Q",
+        "id": "NullLance",
+        "name": "虚无法球",
+        "summary": "卡萨丁向目标发射虚空能量法球，造成伤害并打断目标的技能引导。满溢的能量会在他身边环绕，提供一个可吸收魔法伤害的临时护盾。",
+        "bodyHtml": "卡萨丁发射一颗虚无能量法球，造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(65/95/125/155/185 + (70% 法术强度))魔法伤害</span>并打断引导技能。卡萨丁还会获得<span class=\"text-blue-600 dark:text-blue-300\">(80/110/140/170/200 + (30% 法术强度))魔法护盾</span>，持续1.5秒。",
+        "iconFile": "NullLance.png",
+        "cooldownSeconds": [
+          9,
+          8.5,
+          8,
+          7.5,
+          7
+        ],
+        "cost": {
+          "values": [
+            60,
+            65,
+            70,
+            75,
+            80
+          ],
+          "resource": "法力值"
+        },
+        "range": [
+          650,
+          650,
+          650,
+          650,
+          650
+        ],
+        "rankValues": [
+          {
+            "label": "伤害",
+            "values": "65/95/125/155/185"
+          },
+          {
+            "label": "护盾值",
+            "values": "80/110/140/170/200"
+          },
+          {
+            "label": "法力值消耗",
+            "values": "60/65/70/75/80"
+          },
+          {
+            "label": "冷却时间",
+            "values": "9/8.5/8/7.5/7"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "Q Scaling",
+            "labelKo": "Q 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "0:TotalDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "W": {
+        "slot": "W",
+        "id": "NetherBlade",
+        "name": "虚空之刃",
+        "summary": "被动：卡萨丁的普通攻击会造成额外魔法伤害。主动：卡萨丁的下次普通攻击会造成显著的额外魔法伤害并回复法力值。",
+        "bodyHtml": "<span class=\"text-gray-600 dark:text-gray-500 italic\">被动：</span>卡萨丁的攻击造成额外的<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(25 + (10% 法术强度))魔法伤害</span>。<br /><br /><span class=\"text-gray-900 dark:text-white font-semibold\">主动：</span>卡萨丁给他的剑刃充能，使他的下次攻击造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(50/75/100/125/150 + (80% 法术强度))魔法伤害</span>并回复<span>4/4.5/5/5.5/6%已损失法力值</span>，对抗英雄时提升至<span>20/22.5/25/27.5/30%</span>。",
+        "iconFile": "NetherBlade.png",
+        "cooldownSeconds": [
+          7,
+          7,
+          7,
+          7,
+          7
+        ],
+        "cost": {
+          "values": [
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          "resource": "法力值"
+        },
+        "range": [
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        "rankValues": [
+          {
+            "label": "主动伤害",
+            "values": "50/75/100/125/150"
+          },
+          {
+            "label": "基础法力回复",
+            "values": "4/4.5/5/5.5/6"
+          },
+          {
+            "label": "英雄法力回复",
+            "values": "20/22.5/25/27.5/30"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "W Scaling",
+            "labelKo": "W 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "1:ActiveDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "E": {
+        "slot": "E",
+        "id": "ForcePulse",
+        "name": "能量脉冲",
+        "summary": "附近有单位施放法术技能时，卡萨丁将吸收能量，当充能完毕后，吸收的能量可转化为脉冲，对面前锥形区域内敌人造成伤害并减速。",
+        "bodyHtml": "<span class=\"text-gray-600 dark:text-gray-500 italic\">被动：</span>卡萨丁附近每有任一个技能施放，<span>能量脉冲</span>的冷却时间就会缩短0.75秒。<br /><br /><span class=\"text-gray-900 dark:text-white font-semibold\">主动：</span>卡萨丁释放一道虚空脉冲，造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(70/100/130/160/190 + (70% 法术强度))魔法伤害</span>和持续1秒的50/55/60/65/70%<span class=\"text-purple-600 dark:text-purple-500\">减速</span>。",
+        "iconFile": "ForcePulse.png",
+        "cooldownSeconds": [
+          21,
+          20,
+          19,
+          18,
+          17
+        ],
+        "cost": {
+          "values": [
+            60,
+            65,
+            70,
+            75,
+            80
+          ],
+          "resource": "法力值"
+        },
+        "range": [
+          400,
+          400,
+          400,
+          400,
+          400
+        ],
+        "rankValues": [
+          {
+            "label": "伤害",
+            "values": "70/100/130/160/190"
+          },
+          {
+            "label": "减速",
+            "values": "50/55/60/65/70"
+          },
+          {
+            "label": "冷却时间",
+            "values": "21/20/19/18/17"
+          },
+          {
+            "label": "法力值消耗",
+            "values": "60/65/70/75/80"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "E Scaling",
+            "labelKo": "E 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "2:TotalDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "R": {
+        "slot": "R",
+        "id": "RiftWalk",
+        "name": "虚空行走",
+        "summary": "卡萨丁传送到附近区域，对区域内的敌方单位造成伤害。 在一段时间内连续施放虚空行走技能会消耗更多的法力值，但也会造成额外伤害。",
+        "bodyHtml": "卡萨丁传送到附近的目标区域，着陆时对身边的所有敌方单位造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(70/90/110 + (50% 法术强度) + (2% 法力值))魔法伤害</span>。<br /><br />每在15秒内连续施放一次虚空行走，法力消耗就会翻倍，并造成额外的<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(35/45/55 + (7% 法术强度) + (1% 法力值))魔法伤害</span>。消耗和伤害提升最多可叠加4次。",
+        "iconFile": "RiftWalk.png",
+        "cooldownSeconds": [
+          5,
+          3.5,
+          2
+        ],
+        "cost": {
+          "values": [
+            40,
+            40,
+            40
+          ],
+          "resource": "法力值"
+        },
+        "range": [
+          500,
+          500,
+          500
+        ],
+        "rankValues": [
+          {
+            "label": "伤害",
+            "values": "70/90/110"
+          },
+          {
+            "label": "每层伤害",
+            "values": "35/45/55"
+          },
+          {
+            "label": "冷却时间",
+            "values": "5/3.5/2"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "R Scaling",
+            "labelKo": "R 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "3:BaseDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      }
+    }
+  }
+}

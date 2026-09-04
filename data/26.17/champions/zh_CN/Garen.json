@@ -1,0 +1,344 @@
+{
+  "schemaVersion": 2,
+  "patchVersion": "26.17",
+  "locale": "zh_CN",
+  "sources": {
+    "ddragon": "16.17.1",
+    "cdragon": "16.17"
+  },
+  "champion": {
+    "id": "Garen",
+    "key": "86",
+    "name": "德玛西亚之力",
+    "title": "盖伦",
+    "tags": [
+      "Fighter",
+      "Tank"
+    ],
+    "baseStats": {
+      "health": {
+        "base": 690,
+        "perLevel": 98
+      },
+      "healthRegen": {
+        "base": 8,
+        "perLevel": 0.5
+      },
+      "mana": {
+        "base": 0,
+        "perLevel": 0
+      },
+      "manaRegen": {
+        "base": 0,
+        "perLevel": 0
+      },
+      "attackDamage": {
+        "base": 69,
+        "perLevel": 0
+      },
+      "attackSpeed": {
+        "base": 0.625,
+        "perLevel": 3.65
+      },
+      "armor": {
+        "base": 38,
+        "perLevel": 4.2
+      },
+      "magicResist": {
+        "base": 32,
+        "perLevel": 1.55
+      },
+      "moveSpeed": {
+        "base": 340,
+        "perLevel": 0
+      },
+      "attackRange": {
+        "base": 175,
+        "perLevel": 0
+      }
+    },
+    "baseStatContributions": [
+      {
+        "stat": "MAX_HEALTH",
+        "value": 98,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "HEALTH_REGEN",
+        "value": 0.5,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAX_MANA",
+        "value": 0,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MANA_REGEN",
+        "value": 0,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_DAMAGE",
+        "value": 0,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_SPEED",
+        "value": 3.65,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ARMOR",
+        "value": 4.2,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAGIC_RESIST",
+        "value": 1.55,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      }
+    ],
+    "abilities": {
+      "P": {
+        "slot": "P",
+        "id": "GarenPassive",
+        "name": "坚韧",
+        "summary": "如果盖伦近期没有受到伤害或者被敌方技能命中，那么他会每秒回复若干百分比的总生命值。",
+        "bodyHtml": "盖伦每5秒回复<span class=\"text-green-600 dark:text-green-400\">(150% ~ 250%)最大生命值</span>，前提是他在之前的8秒内未受到伤害或被敌方技能命中。",
+        "iconFile": "Garen_Passive.png",
+        "cooldownSeconds": [],
+        "range": [],
+        "rankValues": [],
+        "scalings": [],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "Q": {
+        "slot": "Q",
+        "id": "GarenQ",
+        "name": "致命打击",
+        "summary": "盖伦的移动速度获得爆发性提升，同时移除身上的所有减速效果。他的下次攻击将打击敌人的要害部位，造成额外伤害并将目标沉默。",
+        "bodyHtml": "盖伦移除身上的所有<span class=\"text-purple-600 dark:text-purple-500\">减速</span>效果并获得<span class=\"text-cyan-600 dark:text-cyan-500\">35%移动速度</span>，持续1.4/1.95/2.5/3.05/3.6秒。<br /><br />他的下次攻击会使目标<span class=\"text-purple-600 dark:text-purple-500\">沉默</span>1.5秒并造成<span class=\"text-red-600 dark:text-red-500 font-semibold\">(30/60/90/120/150 + (150% 攻击力))物理伤害</span>。<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">强化攻击会在4.5秒后消散。<br />这个技能会在造成伤害时触发技能特效。</span>",
+        "iconFile": "GarenQ.png",
+        "cooldownSeconds": [
+          8,
+          8,
+          8,
+          8,
+          8
+        ],
+        "range": [
+          300,
+          300,
+          300,
+          300,
+          300
+        ],
+        "rankValues": [
+          {
+            "label": "伤害",
+            "values": "30/60/90/120/150"
+          },
+          {
+            "label": "移动速度时长",
+            "values": "1.4/1.95/2.5/3.05/3.6"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "Q Scaling",
+            "labelKo": "Q 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "0:TotalDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "W": {
+        "slot": "W",
+        "id": "GarenW",
+        "name": "勇气",
+        "summary": "盖伦被动地通过击杀敌人来提升护甲和魔法抗性。他也可以激活这个技能来暂时获得一层护盾和韧性，并在接下来的较长持续时间里获得较弱的伤害减免效果。",
+        "bodyHtml": "<span class=\"text-gray-600 dark:text-gray-500 italic\">被动：</span>盖伦获得<span class=\"text-orange-600 dark:text-orange-400\">额外护甲</span>和<span>额外魔法抗性</span>。击杀单位时会永久提供<span>0.2双抗</span>，至多至最大值<span>30</span>。<br /><br /><span class=\"text-gray-900 dark:text-white font-semibold\">主动：</span>盖伦加固他的勇气4秒，使即将到来的伤害降低25/29/33/37/41%。他还会获得持续0.75秒的<span class=\"text-blue-600 dark:text-blue-300\">(65/85/105/125/145 + (18% 额外生命值))护盾值</span>和<span>60%韧性</span>。",
+        "iconFile": "GarenW.png",
+        "cooldownSeconds": [
+          22,
+          19.5,
+          17,
+          14.5,
+          12
+        ],
+        "range": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "rankValues": [
+          {
+            "label": "护盾值",
+            "values": "65/85/105/125/145"
+          },
+          {
+            "label": "伤害减免",
+            "values": "25/29/33/37/41"
+          },
+          {
+            "label": "冷却时间",
+            "values": "22/19.5/17/14.5/12"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "W Scaling",
+            "labelKo": "W 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "1:TotalShield"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": [
+            "ResistsForTooltip"
+          ]
+        }
+      },
+      "E": {
+        "slot": "E",
+        "id": "GarenE",
+        "name": "审判",
+        "summary": "盖伦快速地旋转身体挥舞大剑，并对邻近敌人造成物理伤害。",
+        "bodyHtml": "盖伦快速地旋舞大剑，持续3秒，每旋转一圈造成<span class=\"text-red-600 dark:text-red-500 font-semibold\">(4/7/10/13/16 + (40/43/46/49/52% 攻击力))物理伤害</span>，共旋转圈。相距最近的敌人受到<span class=\"text-red-600 dark:text-red-500 font-semibold\">25%提升伤害</span>。被6圈旋转命中的敌方英雄会损失<span class=\"text-orange-600 dark:text-orange-400\">25%护甲</span>，持续6秒。<br /><br /><span class=\"text-yellow-600 dark:text-yellow-300\">再次施放</span>：盖伦提前结束这个技能。<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">来自装备和等级的每<span>25%攻击速度</span>获得额外的一圈旋转。<br />能够暴击以造成<span class=\"text-red-600 dark:text-red-500 font-semibold\">(4/7/10/13/16 + (40/43/46/49/52% 攻击力))物理伤害</span>。</span>",
+        "iconFile": "GarenE.png",
+        "cooldownSeconds": [
+          9,
+          8.25,
+          7.5,
+          6.75,
+          6
+        ],
+        "range": [
+          325,
+          325,
+          325,
+          325,
+          325
+        ],
+        "rankValues": [
+          {
+            "label": "每圈旋转的基础伤害",
+            "values": "4/7/10/13/16"
+          },
+          {
+            "label": "每一圈的攻击力收益",
+            "values": "40/43/46/49/52"
+          },
+          {
+            "label": "冷却时间",
+            "values": "9/8.25/7.5/6.75/6"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "E Scaling",
+            "labelKo": "E 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "2:TotalDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": [
+            "f1"
+          ]
+        }
+      },
+      "R": {
+        "slot": "R",
+        "id": "GarenR",
+        "name": "德玛西亚正义",
+        "summary": "盖伦召唤德玛西亚之力，试图处决一名敌方英雄。",
+        "bodyHtml": "盖伦召唤德玛西亚之力来击杀他的敌人，造成<span class=\"text-yellow-600 dark:text-yellow-500 font-semibold\">125/200/275外加25/30/35%已损失生命值的真实伤害</span>。",
+        "iconFile": "GarenR.png",
+        "cooldownSeconds": [
+          120,
+          100,
+          80
+        ],
+        "range": [
+          400,
+          400,
+          400
+        ],
+        "rankValues": [
+          {
+            "label": "冷却时间",
+            "values": "120/100/80"
+          },
+          {
+            "label": "伤害",
+            "values": "125/200/275"
+          },
+          {
+            "label": "百分比已损失生命值伤害",
+            "values": "25/30/35"
+          }
+        ],
+        "scalings": [],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,396 @@
+{
+  "schemaVersion": 2,
+  "patchVersion": "26.17",
+  "locale": "zh_CN",
+  "sources": {
+    "ddragon": "16.17.1",
+    "cdragon": "16.17"
+  },
+  "champion": {
+    "id": "Urgot",
+    "key": "6",
+    "name": "无畏战车",
+    "title": "厄加特",
+    "tags": [
+      "Fighter",
+      "Tank"
+    ],
+    "baseStats": {
+      "health": {
+        "base": 655,
+        "perLevel": 102
+      },
+      "healthRegen": {
+        "base": 7.5,
+        "perLevel": 0.7
+      },
+      "mana": {
+        "base": 340,
+        "perLevel": 45
+      },
+      "manaRegen": {
+        "base": 7.25,
+        "perLevel": 0.8
+      },
+      "attackDamage": {
+        "base": 63,
+        "perLevel": 0
+      },
+      "attackSpeed": {
+        "base": 0.625,
+        "perLevel": 3.75
+      },
+      "armor": {
+        "base": 36,
+        "perLevel": 5
+      },
+      "magicResist": {
+        "base": 32,
+        "perLevel": 2.05
+      },
+      "moveSpeed": {
+        "base": 330,
+        "perLevel": 0
+      },
+      "attackRange": {
+        "base": 350,
+        "perLevel": 0
+      }
+    },
+    "baseStatContributions": [
+      {
+        "stat": "MAX_HEALTH",
+        "value": 102,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "HEALTH_REGEN",
+        "value": 0.7,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAX_MANA",
+        "value": 45,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MANA_REGEN",
+        "value": 0.8,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_DAMAGE",
+        "value": 0,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_SPEED",
+        "value": 3.75,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ARMOR",
+        "value": 5,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAGIC_RESIST",
+        "value": 2.05,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      }
+    ],
+    "abilities": {
+      "P": {
+        "slot": "P",
+        "id": "UrgotPassive",
+        "name": "回响烈焰",
+        "summary": "厄加特的普攻和【净除】会周期性地触发他腿上的烈焰喷射，造成物理伤害。",
+        "bodyHtml": "厄加特的6条腿上各有一门加农炮。攻击和<span></span>时将会发射面对着他目标的那门腿炮，造成<span class=\"text-red-600 dark:text-red-500 font-semibold\">外加6%最大生命值的物理伤害</span>。每条腿的这个效果各有2.5秒冷却时间。",
+        "iconFile": "Urgot_Passive.png",
+        "cooldownSeconds": [],
+        "range": [],
+        "rankValues": [],
+        "scalings": [],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "Q": {
+        "slot": "Q",
+        "id": "UrgotQ",
+        "name": "腐蚀电荷",
+        "summary": "发射一个可爆炸的电荷至目标位置，对爆炸波及到的敌人造成物理伤害和减速效果。",
+        "bodyHtml": "厄加特发射一个爆炸性的电荷，对爆炸波及到的敌人造成<span class=\"text-red-600 dark:text-red-500 font-semibold\">(25/70/115/160/205 + (70% 攻击力))物理伤害</span>和持续1.25秒的45/50/55/60/65%<span class=\"text-purple-600 dark:text-purple-500\">减速</span>。",
+        "iconFile": "UrgotQ.png",
+        "cooldownSeconds": [
+          10,
+          9.5,
+          9,
+          8.5,
+          8
+        ],
+        "cost": {
+          "values": [
+            70,
+            70,
+            70,
+            70,
+            70
+          ],
+          "resource": "法力值"
+        },
+        "range": [
+          800,
+          800,
+          800,
+          800,
+          800
+        ],
+        "rankValues": [
+          {
+            "label": "冷却时间",
+            "values": "10/9.5/9/8.5/8"
+          },
+          {
+            "label": "伤害",
+            "values": "25/70/115/160/205"
+          },
+          {
+            "label": "减速",
+            "values": "45/50/55/60/65"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "Q Scaling",
+            "labelKo": "Q 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "0:TotalDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "W": {
+        "slot": "W",
+        "id": "UrgotW",
+        "name": "净除",
+        "summary": "厄加特减速自身的同时对附近的敌人们火力全开。优先攻击被厄加特近期用其它技能命中过的敌方英雄，并触发回响烈焰。",
+        "bodyHtml": "<span class=\"text-gray-600 dark:text-gray-500 italic\">被动：</span>厄加特的其它技能会将命中的最后一名敌方英雄标记5秒。<br /><br /><span class=\"text-gray-900 dark:text-white font-semibold\">主动：</span>厄加特开始用他的链枪朝着相距最近的敌人开火，优先选择被标记的敌人。他每秒攻击目标3次并且每次射击造成<span class=\"text-red-600 dark:text-red-500 font-semibold\">(12 + (20/23.5/27/30.5/34% 攻击力))物理伤害</span>。厄加特可以在开火时移动，并且拥有40%<span class=\"text-purple-600 dark:text-purple-500\">减速抗性</span>，但会失去<span class=\"text-cyan-600 dark:text-cyan-500\">125移动速度</span>。<br /><br />这个技能在点满技能等级后，可无限持续并且能<span>切换</span>开启状态和关闭状态。<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">这些射击附带50%伤害的攻击特效。它们无法造成暴击。<br />这些射击对小兵和野怪至少造成50伤害。<br />厄加特在开火时可以无视小兵和非史诗级野怪的碰撞体积。</span>",
+        "iconFile": "UrgotW.png",
+        "cooldownSeconds": [
+          12,
+          9,
+          6,
+          3,
+          0
+        ],
+        "cost": {
+          "values": [
+            40,
+            30,
+            20,
+            10,
+            0
+          ],
+          "resource": "法力值"
+        },
+        "range": [
+          490,
+          490,
+          490,
+          490,
+          490
+        ],
+        "rankValues": [
+          {
+            "label": "冷却时间",
+            "values": "12/9/6/3/0"
+          },
+          {
+            "label": "每次攻击的伤害",
+            "values": "0.2/0.235/0.27/0.305/0.34"
+          },
+          {
+            "label": "法力值消耗",
+            "values": "40/30/20/10/0"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "W Scaling",
+            "labelKo": "W 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "1:DamagePerShot"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "E": {
+        "slot": "E",
+        "id": "UrgotE",
+        "name": "鄙弃",
+        "summary": "厄加特向一个方向冲锋，为自身提供护盾并践踏非英雄的敌人。如果他捕捉到一个敌方英雄，他将会停下并将该英雄抛到他的另一侧。",
+        "bodyHtml": "厄加特向前冲锋，获得持续4秒的<span class=\"text-blue-600 dark:text-blue-300\">(55/75/95/115/135 + (135% 额外攻击力) + (13.5% 额外生命值))护盾值</span>。命中的第一个英雄会被<span class=\"text-purple-600 dark:text-purple-500\">晕眩</span>1.5秒并被投向厄加特的身后。厄加特碰撞到的所有敌人都会受到<span class=\"text-red-600 dark:text-red-500 font-semibold\">(90/120/150/180/210 + (100% 额外攻击力))物理伤害</span>。<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">无法穿过地形。</span>",
+        "iconFile": "UrgotE.png",
+        "cooldownSeconds": [
+          16,
+          15.5,
+          15,
+          14.5,
+          14
+        ],
+        "cost": {
+          "values": [
+            60,
+            70,
+            80,
+            90,
+            100
+          ],
+          "resource": "法力值"
+        },
+        "range": [
+          475,
+          475,
+          475,
+          475,
+          475
+        ],
+        "rankValues": [
+          {
+            "label": "伤害",
+            "values": "90/120/150/180/210"
+          },
+          {
+            "label": "护盾值",
+            "values": "55/75/95/115/135"
+          },
+          {
+            "label": "法力值消耗",
+            "values": "60/70/80/90/100"
+          },
+          {
+            "label": "冷却时间",
+            "values": "16/15.5/15/14.5/14"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "E Scaling",
+            "labelKo": "E 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "2:ETotalShieldHealth"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "R": {
+        "slot": "R",
+        "id": "UrgotR",
+        "name": "超越死亡的恐惧",
+        "summary": "厄加特发射一个化学钻头，刺穿命中的第一个敌方英雄。如果该英雄的生命值低于一定阈值，那么厄加特就会将该英雄评判为弱者并将其处决。",
+        "bodyHtml": "厄加特发射一个炼金钻头来刺穿命中的第一个敌方英雄。造成<span class=\"text-red-600 dark:text-red-500 font-semibold\">(100/225/350 + (50% 额外攻击力))物理伤害</span>和持续4秒的<span class=\"text-purple-600 dark:text-purple-500\">减速</span>，幅度为每1%已损失生命值提供1%，至多为75%。<br /><br />如果目标的生命值在被刺穿状态下跌至25%生命值以下，厄加特就可以<span class=\"text-yellow-600 dark:text-yellow-300\">再次施放</span>这个技能，来<span class=\"text-purple-600 dark:text-purple-500\">压制</span>目标并将其拖过来。在接触到厄加特后，目标会被击杀并且附近敌人会被<span class=\"text-purple-600 dark:text-purple-500\">恐惧</span>1.5秒。<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">如果目标生命值低于处决阈值，那么这个技能会在持续时间结束时自动<span class=\"text-yellow-600 dark:text-yellow-300\">再次施放</span>。</span>",
+        "iconFile": "UrgotR.png",
+        "cooldownSeconds": [
+          100,
+          85,
+          70
+        ],
+        "cost": {
+          "values": [
+            100,
+            100,
+            100
+          ],
+          "resource": "法力值"
+        },
+        "range": [
+          2500,
+          2500,
+          2500
+        ],
+        "rankValues": [
+          {
+            "label": "伤害",
+            "values": "100/225/350"
+          },
+          {
+            "label": "冷却时间",
+            "values": "100/85/70"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "R Scaling",
+            "labelKo": "R 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "3:RCalculatedDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      }
+    }
+  }
+}

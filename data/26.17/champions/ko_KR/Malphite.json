@@ -1,0 +1,403 @@
+{
+  "schemaVersion": 2,
+  "patchVersion": "26.17",
+  "locale": "ko_KR",
+  "sources": {
+    "ddragon": "16.17.1",
+    "cdragon": "16.17"
+  },
+  "champion": {
+    "id": "Malphite",
+    "key": "54",
+    "name": "말파이트",
+    "title": "거석의 파편",
+    "tags": [
+      "Tank",
+      "Mage"
+    ],
+    "baseStats": {
+      "health": {
+        "base": 665,
+        "perLevel": 104
+      },
+      "healthRegen": {
+        "base": 7,
+        "perLevel": 0.55
+      },
+      "mana": {
+        "base": 280,
+        "perLevel": 60
+      },
+      "manaRegen": {
+        "base": 7.3,
+        "perLevel": 0.55
+      },
+      "attackDamage": {
+        "base": 62,
+        "perLevel": 0
+      },
+      "attackSpeed": {
+        "base": 0.736,
+        "perLevel": 3.4
+      },
+      "armor": {
+        "base": 40,
+        "perLevel": 4.95
+      },
+      "magicResist": {
+        "base": 28,
+        "perLevel": 2.05
+      },
+      "moveSpeed": {
+        "base": 335,
+        "perLevel": 0
+      },
+      "attackRange": {
+        "base": 125,
+        "perLevel": 0
+      }
+    },
+    "baseStatContributions": [
+      {
+        "stat": "MAX_HEALTH",
+        "value": 104,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "HEALTH_REGEN",
+        "value": 0.55,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAX_MANA",
+        "value": 60,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MANA_REGEN",
+        "value": 0.55,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_DAMAGE",
+        "value": 0,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_SPEED",
+        "value": 3.4,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ARMOR",
+        "value": 4.95,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAGIC_RESIST",
+        "value": 2.05,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      }
+    ],
+    "abilities": {
+      "P": {
+        "slot": "P",
+        "id": "MalphiteShield",
+        "name": "화강암 방패",
+        "summary": "말파이트는 여러 겹의 돌로 감싸여 있어 자신의 최대 체력 10%만큼의 피해를 흡수할 수 있습니다. 말파이트가 몇 초 동안 공격 받지 않으면 보호막이 재생성됩니다.",
+        "bodyHtml": "말파이트가 (8 ~ 6)초 동안 피해를 입지 않으면 <span class=\"text-blue-600 dark:text-blue-300\">(10% 체력)의 피해를 흡수하는 보호막</span>을 얻습니다.",
+        "iconFile": "Malphite_GraniteShield.png",
+        "cooldownSeconds": [],
+        "range": [],
+        "rankValues": [],
+        "scalings": [],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "Q": {
+        "slot": "Q",
+        "id": "SeismicShard",
+        "name": "지진의 파편",
+        "summary": "말파이트가 땅을 통해 대지의 조각을 날려 피해를 입히며 3초 동안 이동 속도를 훔칩니다.",
+        "bodyHtml": "말파이트가 대지의 조각을 날려 <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(70/120/170/220/270 + (60% 주문력))의 마법 피해</span>를 입히며 3초 동안 20/25/30/35/40% <span class=\"text-purple-600 dark:text-purple-500\">둔화</span>시킵니다. 말파이트는 3초 동안 대상의 <span class=\"text-cyan-600 dark:text-cyan-500\">이동 속도</span>도 <span class=\"text-purple-600 dark:text-purple-500\">둔화</span>된 만큼 훔칩니다.",
+        "iconFile": "SeismicShard.png",
+        "cooldownSeconds": [
+          8,
+          8,
+          8,
+          8,
+          8
+        ],
+        "cost": {
+          "values": [
+            70,
+            75,
+            80,
+            85,
+            90
+          ],
+          "resource": "마나"
+        },
+        "range": [
+          625,
+          625,
+          625,
+          625,
+          625
+        ],
+        "rankValues": [
+          {
+            "label": "소모값 마나",
+            "values": "70/75/80/85/90"
+          },
+          {
+            "label": "피해량",
+            "values": "70/120/170/220/270"
+          },
+          {
+            "label": "둔화",
+            "values": "20%/25%/30%/35%/40%"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "Q Scaling",
+            "labelKo": "Q 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "0:QDamageCalc"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "W": {
+        "slot": "W",
+        "id": "Obduracy",
+        "name": "천둥소리",
+        "summary": "말파이트가 굉음을 내며 공격합니다. 이후 수 초 동안 말파이트의 공격이 전방에 여진을 일으킵니다.",
+        "bodyHtml": "<span class=\"text-gray-600 dark:text-gray-500 italic\">기본 지속 효과: </span>말파이트가 <span class=\"text-orange-600 dark:text-orange-400\">10/15/20/25/30%의 방어력()</span>을 얻습니다. 이 효과는 <span>화강암 방패</span>가 활성화된 동안 <span class=\"text-orange-600 dark:text-orange-400\">30/45/60/75/90%()</span>까지 증가합니다.<br /><br /><span class=\"text-gray-600 dark:text-gray-500 italic\">사용 시: </span>말파이트의 다음 기본 공격 <span>적중 시</span> 추가로 <span class=\"text-red-600 dark:text-red-500 font-semibold\">(30/40/50/60/70 + (20% 주문력) + (15% 방어력))의 물리 피해</span>를 입히고 여진을 생성해 해당 방향에 <span class=\"text-red-600 dark:text-red-500 font-semibold\">(15/25/35/45/55 + (30% 주문력) + (15% 방어력))의 물리 피해</span>를 입힙니다. 다음 5초 동안 기본 공격 <span>적중 시</span> 여진이 생성됩니다.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">정글 몬스터에게는 180%의 피해를 입힙니다.</span>",
+        "iconFile": "Obduracy.png",
+        "cooldownSeconds": [
+          10,
+          9.5,
+          9,
+          8.5,
+          8
+        ],
+        "cost": {
+          "values": [
+            30,
+            35,
+            40,
+            45,
+            50
+          ],
+          "resource": "마나"
+        },
+        "range": [
+          400,
+          400,
+          400,
+          400,
+          400
+        ],
+        "rankValues": [
+          {
+            "label": "소모값 마나",
+            "values": "30/35/40/45/50"
+          },
+          {
+            "label": "방어력",
+            "values": "10/15/20/25/30"
+          },
+          {
+            "label": "피해량",
+            "values": "30/40/50/60/70"
+          },
+          {
+            "label": "여진 광역 피해량",
+            "values": "15/25/35/45/55"
+          },
+          {
+            "label": "재사용 대기시간",
+            "values": "10/9.5/9/8.5/8"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "W Scaling",
+            "labelKo": "W 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "1:TotalBonusDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": [
+            "f1",
+            "f2"
+          ]
+        }
+      },
+      "E": {
+        "slot": "E",
+        "id": "Landslide",
+        "name": "지면 강타",
+        "summary": "말파이트가 땅을 내리쳐 충격파를 만들어 냅니다. 충격파는 말파이트 방어력의 일부에 해당하는 마법 피해를 입히며, 이에 맞은 적은 잠시 동안 공격 속도가 감소합니다.",
+        "bodyHtml": "말파이트가 바닥을 내려쳐 주변 적에게 <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(60/95/130/165/200 + (40% 방어력) + (60% 주문력))의 마법 피해</span>를 입히고 3초 동안 적들의 <span>공격 속도를 30/35/40/45/50%</span> 감소시킵니다.",
+        "iconFile": "Landslide.png",
+        "cooldownSeconds": [
+          7,
+          7,
+          7,
+          7,
+          7
+        ],
+        "cost": {
+          "values": [
+            50,
+            55,
+            60,
+            65,
+            70
+          ],
+          "resource": "마나"
+        },
+        "range": [
+          400,
+          400,
+          400,
+          400,
+          400
+        ],
+        "rankValues": [
+          {
+            "label": "피해량",
+            "values": "60/95/130/165/200"
+          },
+          {
+            "label": "공격 속도 감소량",
+            "values": "30/35/40/45/50"
+          },
+          {
+            "label": "소모값 마나",
+            "values": "50/55/60/65/70"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "E Scaling",
+            "labelKo": "E 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "2:EDamageCalc"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "R": {
+        "slot": "R",
+        "id": "UFSlash",
+        "name": "멈출 수 없는 힘",
+        "summary": "말파이트가 목표 위치로 돌진하여 적에게 피해를 입히고 공중으로 띄워 올립니다.",
+        "bodyHtml": "말파이트가 산사태와 같은 힘으로 돌진하며 저지 불가 상태가 됩니다. 돌진이 끝나면 말파이트가 1.5초 동안 대상을 <span class=\"text-purple-600 dark:text-purple-500\">공중으로 띄워 올리고</span> <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(200/300/400 + (90% 주문력))의 마법 피해</span>를 입힙니다.",
+        "iconFile": "UFSlash.png",
+        "cooldownSeconds": [
+          130,
+          115,
+          100
+        ],
+        "cost": {
+          "values": [
+            100,
+            100,
+            100
+          ],
+          "resource": "마나"
+        },
+        "range": [
+          1000,
+          1000,
+          1000
+        ],
+        "rankValues": [
+          {
+            "label": "재사용 대기시간",
+            "values": "130/115/100"
+          },
+          {
+            "label": "피해량",
+            "values": "200/300/400"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "R Scaling",
+            "labelKo": "R 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "3:TotalDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      }
+    }
+  }
+}

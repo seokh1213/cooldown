@@ -1,0 +1,391 @@
+{
+  "schemaVersion": 2,
+  "patchVersion": "26.17",
+  "locale": "zh_CN",
+  "sources": {
+    "ddragon": "16.17.1",
+    "cdragon": "16.17"
+  },
+  "champion": {
+    "id": "Cassiopeia",
+    "key": "69",
+    "name": "魔蛇之拥",
+    "title": "卡西奥佩娅",
+    "tags": [
+      "Mage"
+    ],
+    "baseStats": {
+      "health": {
+        "base": 630,
+        "perLevel": 98
+      },
+      "healthRegen": {
+        "base": 5.5,
+        "perLevel": 0.5
+      },
+      "mana": {
+        "base": 480,
+        "perLevel": 40
+      },
+      "manaRegen": {
+        "base": 8,
+        "perLevel": 0.8
+      },
+      "attackDamage": {
+        "base": 53,
+        "perLevel": 0
+      },
+      "attackSpeed": {
+        "base": 0.647,
+        "perLevel": 1.5
+      },
+      "armor": {
+        "base": 18,
+        "perLevel": 4.7
+      },
+      "magicResist": {
+        "base": 32,
+        "perLevel": 1.3
+      },
+      "moveSpeed": {
+        "base": 335,
+        "perLevel": 0
+      },
+      "attackRange": {
+        "base": 550,
+        "perLevel": 0
+      }
+    },
+    "baseStatContributions": [
+      {
+        "stat": "MAX_HEALTH",
+        "value": 98,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "HEALTH_REGEN",
+        "value": 0.5,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAX_MANA",
+        "value": 40,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MANA_REGEN",
+        "value": 0.8,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_DAMAGE",
+        "value": 0,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_SPEED",
+        "value": 1.5,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ARMOR",
+        "value": 4.7,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAGIC_RESIST",
+        "value": 1.3,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      }
+    ],
+    "abilities": {
+      "P": {
+        "slot": "P",
+        "id": "CassiopeiaPassive",
+        "name": "优雅蛇行",
+        "summary": "卡西奥佩娅身上的所有移动速度加成效率变得更多。",
+        "bodyHtml": "卡西奥佩娅的所有<span class=\"text-cyan-600 dark:text-cyan-500\">移动速度</span>加成的效率提升6%。",
+        "iconFile": "Cassiopeia_Passive.png",
+        "cooldownSeconds": [],
+        "range": [],
+        "rankValues": [],
+        "scalings": [],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "Q": {
+        "slot": "Q",
+        "id": "CassiopeiaQ",
+        "name": "瘟毒爆炸",
+        "summary": "在短暂的延迟后，卡西奥佩娅用毒素引爆一片区域，并且如果命中了一名敌方英雄，就会获得移动速度加成。",
+        "bodyHtml": "卡西奥佩娅引爆毒性气体，使敌人<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">中毒</span>并且在3秒内造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(75/110/145/180/215 + (65% 法术强度))魔法伤害</span>。命中一名英雄会为卡西奥佩娅提供在3秒里持续衰减的<span class=\"text-cyan-600 dark:text-cyan-500\">30/35/40/45/50%移动速度</span>。",
+        "iconFile": "CassiopeiaQ.png",
+        "cooldownSeconds": [
+          3.5,
+          3.5,
+          3.5,
+          3.5,
+          3.5
+        ],
+        "cost": {
+          "values": [
+            50,
+            55,
+            60,
+            65,
+            70
+          ],
+          "resource": "法力值"
+        },
+        "range": [
+          850,
+          850,
+          850,
+          850,
+          850
+        ],
+        "rankValues": [
+          {
+            "label": "伤害",
+            "values": "75/110/145/180/215"
+          },
+          {
+            "label": "移动速度",
+            "values": "30/35/40/45/50"
+          },
+          {
+            "label": "法力值消耗",
+            "values": "50/55/60/65/70"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "Q Scaling",
+            "labelKo": "Q 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "0:TooltipTotalDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "W": {
+        "slot": "W",
+        "id": "CassiopeiaW",
+        "name": "剧毒迷雾",
+        "summary": "卡西奥佩娅释放出若干团毒云，对经过毒云的敌人造成减速效果、缚地效果和轻量伤害。被缚地的敌人无法使用位移技能。",
+        "bodyHtml": "卡西奥佩娅吐出毒液，留下一团持续5秒的毒云。对毒云内的敌人们造成每秒<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(20/25/30/35/40 + (10% 法术强度))魔法伤害</span>、<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">中毒</span>、<span class=\"text-purple-600 dark:text-purple-500\">缚地</span>、以及40/50/60/70/80%<span class=\"text-purple-600 dark:text-purple-500\">减速</span>。",
+        "iconFile": "CassiopeiaW.png",
+        "cooldownSeconds": [
+          24,
+          22,
+          20,
+          18,
+          16
+        ],
+        "cost": {
+          "values": [
+            70,
+            75,
+            80,
+            85,
+            90
+          ],
+          "resource": "法力值"
+        },
+        "range": [
+          700,
+          700,
+          700,
+          700,
+          700
+        ],
+        "rankValues": [
+          {
+            "label": "伤害",
+            "values": "20/25/30/35/40"
+          },
+          {
+            "label": "减速",
+            "values": "40/50/60/70/80"
+          },
+          {
+            "label": "冷却时间",
+            "values": "24/22/20/18/16"
+          },
+          {
+            "label": "法力值消耗",
+            "values": "70/75/80/85/90"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "W Scaling",
+            "labelKo": "W 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "1:DamagePerSecond"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "E": {
+        "slot": "E",
+        "id": "CassiopeiaE",
+        "name": "双生毒牙",
+        "summary": "卡西奥佩娅释放一次攻击，可对中毒的目标造成额外伤害并且基于实际伤害值为她提供治疗效果。如果目标死于这次攻击，卡西奥佩娅会回复法力值。",
+        "bodyHtml": "卡西奥佩娅发射致命的毒牙，造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(52 + (10% 法术强度))魔法伤害</span>。如果敌人已经<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">中毒</span>，那么还会受到额外的<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(20/45/70/95/120 + (55% 法术强度))魔法伤害</span>并且卡西奥佩娅回复<span class=\"text-green-600 dark:text-green-400\">(10/11.5/13/14.5/16% 法术强度)生命值</span>，对抗小兵和小型野怪降低至<span class=\"text-green-600 dark:text-green-400\">(2.5/2.875/3.25/3.625/4% 法术强度)生命值</span>。<br /><br />如果这个技能击杀了目标，那么卡西奥佩娅回复<span>40法力值</span>。<br /><br />",
+        "iconFile": "CassiopeiaE.png",
+        "cooldownSeconds": [
+          0.75,
+          0.75,
+          0.75,
+          0.75,
+          0.75
+        ],
+        "cost": {
+          "values": [
+            40,
+            40,
+            40,
+            40,
+            40
+          ],
+          "resource": "法力值"
+        },
+        "range": [
+          700,
+          700,
+          700,
+          700,
+          700
+        ],
+        "rankValues": [
+          {
+            "label": "额外毒性伤害",
+            "values": "20/45/70/95/120"
+          },
+          {
+            "label": "来自法术强度的治疗效果",
+            "values": "10/11.5/13/14.5/16"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "E Scaling",
+            "labelKo": "E 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "2:HealCalc"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "R": {
+        "slot": "R",
+        "id": "CassiopeiaR",
+        "name": "石化凝视",
+        "summary": "卡西奥佩娅从眼中放出一团魔法能量，对她前方的任何面对她的敌人造成晕眩效果并对其它背对她的敌人造成减速效果。",
+        "bodyHtml": "卡西奥佩娅释放一道震慑敌人的凝视，造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(150/250/350 + (50% 法术强度))魔法伤害</span>并将面朝她的敌人们<span class=\"text-purple-600 dark:text-purple-500\">晕眩</span>2秒。作为替代，未面朝她的敌人们会被<span class=\"text-purple-600 dark:text-purple-500\">减速</span>40%，在相同时长内持续衰减。",
+        "iconFile": "CassiopeiaR.png",
+        "cooldownSeconds": [
+          120,
+          100,
+          80
+        ],
+        "cost": {
+          "values": [
+            100,
+            100,
+            100
+          ],
+          "resource": "法力值"
+        },
+        "range": [
+          825,
+          825,
+          825
+        ],
+        "rankValues": [
+          {
+            "label": "伤害",
+            "values": "150/250/350"
+          },
+          {
+            "label": "冷却时间",
+            "values": "120/100/80"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "R Scaling",
+            "labelKo": "R 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "3:RDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      }
+    }
+  }
+}

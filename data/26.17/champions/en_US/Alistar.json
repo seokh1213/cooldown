@@ -1,0 +1,378 @@
+{
+  "schemaVersion": 2,
+  "patchVersion": "26.17",
+  "locale": "en_US",
+  "sources": {
+    "ddragon": "16.17.1",
+    "cdragon": "16.17"
+  },
+  "champion": {
+    "id": "Alistar",
+    "key": "12",
+    "name": "Alistar",
+    "title": "the Minotaur",
+    "tags": [
+      "Tank",
+      "Support"
+    ],
+    "baseStats": {
+      "health": {
+        "base": 685,
+        "perLevel": 120
+      },
+      "healthRegen": {
+        "base": 8.5,
+        "perLevel": 0.85
+      },
+      "mana": {
+        "base": 350,
+        "perLevel": 40
+      },
+      "manaRegen": {
+        "base": 8.5,
+        "perLevel": 0.8
+      },
+      "attackDamage": {
+        "base": 62,
+        "perLevel": 0
+      },
+      "attackSpeed": {
+        "base": 0.625,
+        "perLevel": 2.125
+      },
+      "armor": {
+        "base": 40,
+        "perLevel": 4.7
+      },
+      "magicResist": {
+        "base": 32,
+        "perLevel": 2.05
+      },
+      "moveSpeed": {
+        "base": 335,
+        "perLevel": 0
+      },
+      "attackRange": {
+        "base": 125,
+        "perLevel": 0
+      }
+    },
+    "baseStatContributions": [
+      {
+        "stat": "MAX_HEALTH",
+        "value": 120,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "HEALTH_REGEN",
+        "value": 0.85,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAX_MANA",
+        "value": 40,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MANA_REGEN",
+        "value": 0.8,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_DAMAGE",
+        "value": 0,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_SPEED",
+        "value": 2.125,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ARMOR",
+        "value": 4.7,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAGIC_RESIST",
+        "value": 2.05,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      }
+    ],
+    "abilities": {
+      "P": {
+        "slot": "P",
+        "id": "AlistarPassive",
+        "name": "Triumphant Roar",
+        "summary": "Alistar charges his roar by stunning or displacing enemy champions or when nearby enemies die. When fully charged he heals himself all nearby allied champions.",
+        "bodyHtml": "Alistar gains a stack whenever he <span class=\"text-purple-600 dark:text-purple-500\">Stuns</span> or <span class=\"text-purple-600 dark:text-purple-500\">Knocks</span> an enemy champion, or whenever an enemy dies. At 7 stacks, Alistar roars, restoring <span class=\"text-green-600 dark:text-green-400\">(5% Health) Health</span> to himself and <span class=\"text-green-600 dark:text-green-400\">(7% Health) Health</span> to nearby allied champions.<br /><br />Enemy champion and epic jungle monster deaths fully charge this Ability.",
+        "iconFile": "Alistar_E.png",
+        "cooldownSeconds": [],
+        "range": [],
+        "rankValues": [],
+        "scalings": [],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "Q": {
+        "slot": "Q",
+        "id": "Pulverize",
+        "name": "Pulverize",
+        "summary": "Alistar smashes the ground, dealing damage to nearby enemies and tossing them into the air.",
+        "bodyHtml": "Alistar smashes the ground, <span class=\"text-purple-600 dark:text-purple-500\">Knocking Up</span> enemies for 1 second and dealing <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(60/100/140/180/220 + (80% Ability Power)) magic damage</span>.",
+        "iconFile": "Pulverize.png",
+        "cooldownSeconds": [
+          14,
+          13,
+          12,
+          11,
+          10
+        ],
+        "cost": {
+          "values": [
+            50,
+            55,
+            60,
+            65,
+            70
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          365,
+          365,
+          365,
+          365,
+          365
+        ],
+        "rankValues": [
+          {
+            "label": "Cooldown",
+            "values": "14/13/12/11/10"
+          },
+          {
+            "label": "Mana Cost",
+            "values": "50/55/60/65/70"
+          },
+          {
+            "label": "Damage",
+            "values": "60/100/140/180/220"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "Q Scaling",
+            "labelKo": "Q 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "0:TotalDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "W": {
+        "slot": "W",
+        "id": "Headbutt",
+        "name": "Headbutt",
+        "summary": "Alistar rams a target with his head, dealing damage and knocking the target back.",
+        "bodyHtml": "Alistar rams into an enemy, <span class=\"text-purple-600 dark:text-purple-500\">Knocking</span> them <span class=\"text-purple-600 dark:text-purple-500\">Back</span> and dealing <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(55/110/165/220/275 + (100% Ability Power)) magic damage</span>.",
+        "iconFile": "Headbutt.png",
+        "cooldownSeconds": [
+          14,
+          13,
+          12,
+          11,
+          10
+        ],
+        "cost": {
+          "values": [
+            50,
+            55,
+            60,
+            65,
+            70
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          650,
+          650,
+          650,
+          650,
+          650
+        ],
+        "rankValues": [
+          {
+            "label": "Cooldown",
+            "values": "14/13/12/11/10"
+          },
+          {
+            "label": "Mana Cost",
+            "values": "50/55/60/65/70"
+          },
+          {
+            "label": "Damage",
+            "values": "55/110/165/220/275"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "W Scaling",
+            "labelKo": "W 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "1:TotalDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "E": {
+        "slot": "E",
+        "id": "AlistarE",
+        "name": "Trample",
+        "summary": "Alistar tramples nearby enemy units, ignoring unit collision and gaining stacks if he damages an enemy champion. At full stacks Alistar's next basic attack against an enemy champion deals additional magic damage and stuns them.",
+        "bodyHtml": "Alistar begins trampling the ground, becoming Ghosted and dealing <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(80/110/140/170/200 + (70% Ability Power)) magic damage</span> over 5 seconds to nearby enemies. Each pulse that damages a champion grants a stack.<br /><br />At 5 stacks, Alistar's next Attack against champions <span class=\"text-purple-600 dark:text-purple-500\">Stuns</span> for 1 second and deals an additional <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(20 ~ 20) magic damage</span>.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">Ghosted units ignore collision with other units.</span>",
+        "iconFile": "AlistarE.png",
+        "cooldownSeconds": [
+          12,
+          11.5,
+          11,
+          10.5,
+          10
+        ],
+        "cost": {
+          "values": [
+            50,
+            55,
+            60,
+            65,
+            70
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          350,
+          350,
+          350,
+          350,
+          350
+        ],
+        "rankValues": [
+          {
+            "label": "Cooldown",
+            "values": "12/11.5/11/10.5/10"
+          },
+          {
+            "label": "Mana Cost",
+            "values": "50/55/60/65/70"
+          },
+          {
+            "label": "Damage",
+            "values": "80/110/140/170/200"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "E Scaling",
+            "labelKo": "E 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "2:TotalDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "R": {
+        "slot": "R",
+        "id": "FerociousHowl",
+        "name": "Unbreakable Will",
+        "summary": "Alistar lets out a wild roar, removing all crowd control effects on himself, and reducing incoming physical and magical damage for the duration.",
+        "bodyHtml": "Alistar immediately cleanses all <span class=\"text-purple-600 dark:text-purple-500\">Disabling</span> effects and takes 55/65/75% reduced damage for 7 seconds.",
+        "iconFile": "FerociousHowl.png",
+        "cooldownSeconds": [
+          120,
+          100,
+          80
+        ],
+        "cost": {
+          "values": [
+            100,
+            100,
+            100
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          1,
+          1,
+          1
+        ],
+        "rankValues": [
+          {
+            "label": "Cooldown",
+            "values": "120/100/80"
+          },
+          {
+            "label": "Damage Reduction",
+            "values": "55/65/75"
+          }
+        ],
+        "scalings": [],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      }
+    }
+  }
+}

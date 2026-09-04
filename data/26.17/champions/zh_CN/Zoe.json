@@ -1,0 +1,367 @@
+{
+  "schemaVersion": 2,
+  "patchVersion": "26.17",
+  "locale": "zh_CN",
+  "sources": {
+    "ddragon": "16.17.1",
+    "cdragon": "16.17"
+  },
+  "champion": {
+    "id": "Zoe",
+    "key": "142",
+    "name": "暮光星灵",
+    "title": "佐伊",
+    "tags": [
+      "Mage"
+    ],
+    "baseStats": {
+      "health": {
+        "base": 630,
+        "perLevel": 106
+      },
+      "healthRegen": {
+        "base": 7.5,
+        "perLevel": 0.6
+      },
+      "mana": {
+        "base": 425,
+        "perLevel": 25
+      },
+      "manaRegen": {
+        "base": 8,
+        "perLevel": 0.65
+      },
+      "attackDamage": {
+        "base": 58,
+        "perLevel": 0
+      },
+      "attackSpeed": {
+        "base": 0.658,
+        "perLevel": 2.5
+      },
+      "armor": {
+        "base": 21,
+        "perLevel": 4.7
+      },
+      "magicResist": {
+        "base": 30,
+        "perLevel": 1.3
+      },
+      "moveSpeed": {
+        "base": 340,
+        "perLevel": 0
+      },
+      "attackRange": {
+        "base": 550,
+        "perLevel": 0
+      }
+    },
+    "baseStatContributions": [
+      {
+        "stat": "MAX_HEALTH",
+        "value": 106,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "HEALTH_REGEN",
+        "value": 0.6,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAX_MANA",
+        "value": 25,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MANA_REGEN",
+        "value": 0.65,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_DAMAGE",
+        "value": 0,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_SPEED",
+        "value": 2.5,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ARMOR",
+        "value": 4.7,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAGIC_RESIST",
+        "value": 1.3,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      }
+    ],
+    "abilities": {
+      "P": {
+        "slot": "P",
+        "id": "ZoePassive",
+        "name": "烟火四射！",
+        "summary": "佐伊在施放一次技能后的下次普攻会造成额外魔法伤害。",
+        "bodyHtml": "在施放一次技能后，佐伊的下次普攻将造成额外的<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(16 + (20% 法术强度))魔法伤害</span>。",
+        "iconFile": "Zoe_P.png",
+        "cooldownSeconds": [],
+        "range": [],
+        "rankValues": [],
+        "scalings": [],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "Q": {
+        "slot": "Q",
+        "id": "ZoeQ",
+        "name": "飞星乱入！",
+        "summary": "佐伊发射一个可在飞行途中由她重新导向的飞弹。飞弹在直线上飞行的路程越远，造成的伤害就会越高。",
+        "bodyHtml": "佐伊发射一颗飞星，基于它的飞行距离来对命中的第一个敌人造成不断提升的伤害 -- <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(52/82/112/142/172 + (60% 法术强度))到(130/205/280/355/430 + (150% 法术强度))魔法伤害</span>。<br /><br />佐伊可以<span class=\"text-yellow-600 dark:text-yellow-300\">再次施放</span>这个技能来将这个飞弹重新导向到佐伊附近的一个新位置。",
+        "iconFile": "ZoeQ.png",
+        "cooldownSeconds": [
+          8.5,
+          8,
+          7.5,
+          7,
+          6.5
+        ],
+        "cost": {
+          "values": [
+            40,
+            45,
+            50,
+            55,
+            60
+          ],
+          "resource": "法力值"
+        },
+        "range": [
+          800,
+          800,
+          800,
+          800,
+          800
+        ],
+        "rankValues": [
+          {
+            "label": "基础伤害",
+            "values": "50/80/110/140/170"
+          },
+          {
+            "label": "冷却时间",
+            "values": "8.5/8/7.5/7/6.5"
+          },
+          {
+            "label": "法力值消耗",
+            "values": "40/45/50/55/60"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "Q Scaling",
+            "labelKo": "Q 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "0:TotalDamageTooltip"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "W": {
+        "slot": "W",
+        "id": "ZoeW",
+        "name": "窃法巧手",
+        "summary": "佐伊可以拾取敌方在施放召唤师技能和主动型装备时产生的法术碎片，从而让她自己能够施放一次性的相应技能或效果。在她施放一次召唤师技能的同时，她会获得3颗飞弹来射向距她最近的目标。",
+        "bodyHtml": "<span class=\"text-gray-600 dark:text-gray-500 italic\">被动：</span>敌人在使用【召唤师技能】或【主动型装备】时会掉落一个技能碎片。特定小兵也会在被佐伊或一名附近的友方英雄击杀后掉落一个技能碎片。佐伊可以拾取这些碎片来使用一次相应技能。<br /><br /><span class=\"text-gray-600 dark:text-gray-500 italic\">被动：</span>当佐伊施放这个技能或任一召唤师技能时，她会获得<span class=\"text-cyan-600 dark:text-cyan-500\">30/40/50/60/70%移动速度</span>，持续2/2.25/2.5/2.75/3秒，并对她近期刚攻击过的目标投出3个飞弹。每颗飞弹造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(15/25/35/45/55 + (10% 法术强度))魔法伤害</span>。<br /><br /><span class=\"text-gray-900 dark:text-white font-semibold\">主动：</span>施放一次来自佐伊已拾取的技能碎片的技能。<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">技能碎片会在地上持续40秒。<br />每颗飞弹都会施加<span>烟火四射！</span></span>",
+        "iconFile": "ZoeW.png",
+        "cooldownSeconds": [
+          0.25,
+          0.25,
+          0.25,
+          0.25,
+          0.25
+        ],
+        "range": [
+          3000,
+          4500,
+          6000,
+          3000,
+          3000
+        ],
+        "rankValues": [
+          {
+            "label": "总伤害",
+            "values": "45/75/105/135/165"
+          },
+          {
+            "label": "移动速度",
+            "values": "30/40/50/60/70"
+          },
+          {
+            "label": "加速时长",
+            "values": "2/2.25/2.5/2.75/3"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "W Scaling",
+            "labelKo": "W 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "1:MissileDamageTooltip"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "E": {
+        "slot": "E",
+        "id": "ZoeE",
+        "name": "催眠气泡",
+        "summary": "困倦使目标进入困倦状态，然后陷入昏睡。在昏睡状态下，目标的魔抗会被降低。打醒目标的第一个伤害来源会造成双倍伤害，但有封顶值。",
+        "bodyHtml": "佐伊踢出一个气泡，可造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(70/110/150/190/230 + (45% 法术强度))魔法伤害</span>，并会在未命中任何单位时如陷阱一般停留。在飞越墙体后，气泡的距离会得到延长。<br /><br />如果气泡或陷阱命中了一个敌方英雄，那么她会刷新此技能16/19.5/23/26.5/30%冷却时间。<br /><br />在一段延迟后，被气泡命中的目标会陷入<span class=\"text-purple-600 dark:text-purple-500\">昏睡</span>状态并降低30%<span>魔法抗性</span>，持续2秒。攻击和技能在命中目标时都会将其惊醒并造成双倍伤害，最多造成<span class=\"text-yellow-600 dark:text-yellow-500 font-semibold\">(70/110/150/190/230 + (45% 法术强度))真实伤害</span>。<br /><br /><br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">在目标陷入<span class=\"text-purple-600 dark:text-purple-500\">昏睡</span>状态之前，会进入<span class=\"text-purple-600 dark:text-purple-500\">困倦</span>状态，被施加不断提升的<span class=\"text-purple-600 dark:text-purple-500\">减速</span>效果(至多可达10/15/20/25/30%)。</span>",
+        "iconFile": "ZoeE.png",
+        "cooldownSeconds": [
+          18,
+          17,
+          16,
+          15,
+          14
+        ],
+        "cost": {
+          "values": [
+            80,
+            80,
+            80,
+            80,
+            80
+          ],
+          "resource": "法力值"
+        },
+        "range": [
+          800,
+          800,
+          800,
+          800,
+          800
+        ],
+        "rankValues": [
+          {
+            "label": "伤害",
+            "values": "70/110/150/190/230"
+          },
+          {
+            "label": "额外伤害上限",
+            "values": "70/110/150/190/230"
+          },
+          {
+            "label": "冷却时间",
+            "values": "18/17/16/15/14"
+          },
+          {
+            "label": "冷却时间刷新",
+            "values": "16/19.5/23/26.5/30"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "E Scaling",
+            "labelKo": "E 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "2:TotalDamageTooltip"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "R": {
+        "slot": "R",
+        "id": "ZoeR",
+        "name": "折返跃迁",
+        "summary": "闪烁到附近的一个位置1秒。然后闪烁回去。",
+        "bodyHtml": "佐伊传送到附近的一个位置1秒。然后，佐伊会传送回原来的位置。在此期间，佐伊可以攻击和使用技能，但无法移动。<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">在传送期间，佐伊的视线还可以越过墙体。</span>",
+        "iconFile": "ZoeR.png",
+        "cooldownSeconds": [
+          11,
+          8,
+          5
+        ],
+        "cost": {
+          "values": [
+            40,
+            40,
+            40
+          ],
+          "resource": "法力值"
+        },
+        "range": [
+          575,
+          575,
+          575
+        ],
+        "rankValues": [
+          {
+            "label": "冷却时间",
+            "values": "11/8/5"
+          }
+        ],
+        "scalings": [],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      }
+    }
+  }
+}

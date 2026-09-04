@@ -1,0 +1,379 @@
+{
+  "schemaVersion": 2,
+  "patchVersion": "26.17",
+  "locale": "en_US",
+  "sources": {
+    "ddragon": "16.17.1",
+    "cdragon": "16.17"
+  },
+  "champion": {
+    "id": "Pyke",
+    "key": "555",
+    "name": "Pyke",
+    "title": "the Bloodharbor Ripper",
+    "tags": [
+      "Support",
+      "Assassin"
+    ],
+    "baseStats": {
+      "health": {
+        "base": 670,
+        "perLevel": 110
+      },
+      "healthRegen": {
+        "base": 7,
+        "perLevel": 0.5
+      },
+      "mana": {
+        "base": 415,
+        "perLevel": 50
+      },
+      "manaRegen": {
+        "base": 8,
+        "perLevel": 1
+      },
+      "attackDamage": {
+        "base": 62,
+        "perLevel": 0
+      },
+      "attackSpeed": {
+        "base": 0.667,
+        "perLevel": 2.5
+      },
+      "armor": {
+        "base": 37,
+        "perLevel": 4.7
+      },
+      "magicResist": {
+        "base": 32,
+        "perLevel": 2.05
+      },
+      "moveSpeed": {
+        "base": 330,
+        "perLevel": 0
+      },
+      "attackRange": {
+        "base": 150,
+        "perLevel": 0
+      }
+    },
+    "baseStatContributions": [
+      {
+        "stat": "MAX_HEALTH",
+        "value": 110,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "HEALTH_REGEN",
+        "value": 0.5,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAX_MANA",
+        "value": 50,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MANA_REGEN",
+        "value": 1,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_DAMAGE",
+        "value": 0,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_SPEED",
+        "value": 2.5,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ARMOR",
+        "value": 4.7,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAGIC_RESIST",
+        "value": 2.05,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      }
+    ],
+    "abilities": {
+      "P": {
+        "slot": "P",
+        "id": "PykePassive",
+        "name": "Gift of the Drowned Ones",
+        "summary": "When Pyke is hidden from enemies, he regenerates damage that he has recently taken from champions. Pyke also cannot gain extra Maximum Health from any source, and instead gains Bonus AD.",
+        "bodyHtml": "Pyke stores (9% + (0.2%)) of damage taken from champions, increased to (40% + (0.4%)) when there's more than one enemy nearby. Pyke can store up to (80 + (800% bonus Attack Damage)) damage. While <span>unseen</span> by enemies, he rapidly regenerates this stored damage.<br /><br />Additionally, Pyke converts all Maximum Health increases to Attack Damage instead at a rate of <span class=\"text-green-600 dark:text-green-400\">14 Health</span> to <span class=\"text-red-600 dark:text-red-500 font-semibold\">1 Attack Damage</span>.",
+        "iconFile": "PykePassive.png",
+        "cooldownSeconds": [],
+        "range": [],
+        "rankValues": [],
+        "scalings": [],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "Q": {
+        "slot": "Q",
+        "id": "PykeQ",
+        "name": "Bone Skewer",
+        "summary": "Pyke either stabs an enemy in front of him or pulls an enemy towards him.",
+        "bodyHtml": "<span>Tap:</span> Pyke stabs, dealing <span class=\"text-red-600 dark:text-red-500 font-semibold\">(100/150/200/250/300 + (75% bonus Attack Damage)) physical damage</span> to the first enemy hit, preferring champions. They are then <span class=\"text-purple-600 dark:text-purple-500\">Slowed</span> by 90% for 1 second.<br /><br /><span>Hold: </span>Pyke throws his harpoon, dealing <span class=\"text-red-600 dark:text-red-500 font-semibold\">(100/150/200/250/300 + (75% bonus Attack Damage)) physical damage</span> to the first enemy hit and <span class=\"text-purple-600 dark:text-purple-500\">Pulling</span> them towards him. They are then <span class=\"text-purple-600 dark:text-purple-500\">Slowed</span> by 90% for 1 second.<br /><br />If Pyke successfully hits an enemy champion or the channel does not complete successfully, 75% of the Mana cost is refunded.",
+        "iconFile": "PykeQ.png",
+        "cooldownSeconds": [
+          10,
+          9.5,
+          9,
+          8.5,
+          8
+        ],
+        "cost": {
+          "values": [
+            70,
+            75,
+            80,
+            85,
+            90
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          400,
+          400,
+          400,
+          400,
+          400
+        ],
+        "rankValues": [
+          {
+            "label": "Damage",
+            "values": "100/150/200/250/300"
+          },
+          {
+            "label": "Cooldown",
+            "values": "10/9.5/9/8.5/8"
+          },
+          {
+            "label": "Mana Cost",
+            "values": "70/75/80/85/90"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "Q Scaling",
+            "labelKo": "Q 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "0:TotalDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "W": {
+        "slot": "W",
+        "id": "PykeW",
+        "name": "Ghostwater Dive",
+        "summary": "Pyke enters Camouflage and gains significant Move Speed that decays over time.",
+        "bodyHtml": "Pyke gains <span class=\"text-purple-600 dark:text-purple-400 font-semibold\">Camouflage</span> and <span class=\"text-cyan-600 dark:text-cyan-500\">(45 + (200%))Move Speed</span> decaying over 5 seconds.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\"><span class=\"text-cyan-600 dark:text-cyan-500\">Move Speed</span> scales with Lethality.<br /><span class=\"text-purple-600 dark:text-purple-400 font-semibold\">Camouflaged</span> units cannot be seen unless an enemy champion is inside their detection radius.</span>",
+        "iconFile": "PykeW.png",
+        "cooldownSeconds": [
+          14,
+          13,
+          12,
+          11,
+          10
+        ],
+        "cost": {
+          "values": [
+            65,
+            65,
+            65,
+            65,
+            65
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          600,
+          600,
+          600,
+          600,
+          600
+        ],
+        "rankValues": [
+          {
+            "label": "Cooldown",
+            "values": "14/13/12/11/10"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "W Scaling",
+            "labelKo": "W 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "1:{601654a1}"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "E": {
+        "slot": "E",
+        "id": "PykeE",
+        "name": "Phantom Undertow",
+        "summary": "Pyke dashes and leaves behind a phantom that will return to him, stunning enemy champions along its path.",
+        "bodyHtml": "Pyke dashes, leaving a drowned phantom behind him that returns to him shortly. The phantom <span class=\"text-purple-600 dark:text-purple-500\">Stuns</span> for (1.25 + (1%)) seconds and deals <span class=\"text-red-600 dark:text-red-500 font-semibold\">(100/150/200/250/300 + (100% bonus Attack Damage)) physical damage</span> to champions.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\"><span class=\"text-purple-600 dark:text-purple-500\">Stun</span> duration scales with Lethality.</span>",
+        "iconFile": "PykeE.png",
+        "cooldownSeconds": [
+          15,
+          14,
+          13,
+          12,
+          11
+        ],
+        "cost": {
+          "values": [
+            40,
+            40,
+            40,
+            40,
+            40
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          550,
+          550,
+          550,
+          550,
+          550
+        ],
+        "rankValues": [
+          {
+            "label": "Damage",
+            "values": "100/150/200/250/300"
+          },
+          {
+            "label": "Cooldown",
+            "values": "15/14/13/12/11"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "E Scaling",
+            "labelKo": "E 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "2:TotalDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "R": {
+        "slot": "R",
+        "id": "PykeR",
+        "name": "Death From Below",
+        "summary": "Pyke blinks to and executes low health enemies, allowing him to cast this spell again and granting additional gold to an ally who assists.",
+        "bodyHtml": "Pyke strikes all enemy champions in an X, teleporting to and <span>executing</span> targets below <span class=\"text-orange-600 dark:text-orange-500\">(250 + (80% bonus Attack Damage) + (150%))</span> Health. Champions above the threshold and non-champions instead take physical damage equal to 50% of that amount (<span class=\"text-red-600 dark:text-red-500 font-semibold\">(125 + (40% bonus Attack Damage) + (75%))</span>). <br /><br />When an enemy champion dies inside the X, Pyke can <span class=\"text-yellow-600 dark:text-yellow-300\">Recast</span> this Ability for free within 20 seconds. If he executed that champion, the last assisting ally will also get kill gold. If he did not, he will still get kill gold as if he did.<br /><br /><br />Total gold shared with allies: <span></span><br />Total gold kept for self: <span></span>",
+        "iconFile": "PykeR.png",
+        "cooldownSeconds": [
+          100,
+          85,
+          70
+        ],
+        "cost": {
+          "values": [
+            100,
+            100,
+            100
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          750,
+          750,
+          750
+        ],
+        "rankValues": [
+          {
+            "label": "Cooldown",
+            "values": "100/85/70"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "R Scaling",
+            "labelKo": "R 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "3:RDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": [
+            "f10",
+            "f9"
+          ]
+        }
+      }
+    }
+  }
+}

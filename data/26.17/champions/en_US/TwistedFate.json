@@ -1,0 +1,380 @@
+{
+  "schemaVersion": 2,
+  "patchVersion": "26.17",
+  "locale": "en_US",
+  "sources": {
+    "ddragon": "16.17.1",
+    "cdragon": "16.17"
+  },
+  "champion": {
+    "id": "TwistedFate",
+    "key": "4",
+    "name": "Twisted Fate",
+    "title": "the Card Master",
+    "tags": [
+      "Mage",
+      "Marksman"
+    ],
+    "baseStats": {
+      "health": {
+        "base": 604,
+        "perLevel": 108
+      },
+      "healthRegen": {
+        "base": 5.5,
+        "perLevel": 0.6
+      },
+      "mana": {
+        "base": 333,
+        "perLevel": 39
+      },
+      "manaRegen": {
+        "base": 8,
+        "perLevel": 0.8
+      },
+      "attackDamage": {
+        "base": 52,
+        "perLevel": 0
+      },
+      "attackSpeed": {
+        "base": 0.625,
+        "perLevel": 2.5
+      },
+      "armor": {
+        "base": 24,
+        "perLevel": 4.35
+      },
+      "magicResist": {
+        "base": 30,
+        "perLevel": 1.3
+      },
+      "moveSpeed": {
+        "base": 330,
+        "perLevel": 0
+      },
+      "attackRange": {
+        "base": 525,
+        "perLevel": 0
+      }
+    },
+    "baseStatContributions": [
+      {
+        "stat": "MAX_HEALTH",
+        "value": 108,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "HEALTH_REGEN",
+        "value": 0.6,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAX_MANA",
+        "value": 39,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MANA_REGEN",
+        "value": 0.8,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_DAMAGE",
+        "value": 0,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_SPEED",
+        "value": 2.5,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ARMOR",
+        "value": 4.35,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAGIC_RESIST",
+        "value": 1.3,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      }
+    ],
+    "abilities": {
+      "P": {
+        "slot": "P",
+        "id": "P",
+        "name": "Loaded Dice",
+        "summary": "",
+        "bodyHtml": "Upon killing a unit, Twisted Fate rolls his 'lucky' dice receiving 1 to 6 bonus gold.",
+        "iconFile": "Cardmaster_SealFate.png",
+        "cooldownSeconds": [],
+        "range": [],
+        "rankValues": [],
+        "scalings": [],
+        "conditions": [],
+        "source": "ddragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "Q": {
+        "slot": "Q",
+        "id": "WildCards",
+        "name": "Wild Cards",
+        "summary": "Twisted Fate throws three cards, dealing damage to each enemy unit they pass through.",
+        "bodyHtml": "Twisted Fate throws three cards that deal <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(60/105/150/195/240 + (50% bonus Attack Damage) + (85% Ability Power)) magic damage</span> each.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">Enemies can only be damaged by one of the cards.</span>",
+        "iconFile": "WildCards.png",
+        "cooldownSeconds": [
+          6,
+          5.75,
+          5.5,
+          5.25,
+          5
+        ],
+        "cost": {
+          "values": [
+            60,
+            70,
+            80,
+            90,
+            100
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          10000,
+          10000,
+          10000,
+          10000,
+          10000
+        ],
+        "rankValues": [
+          {
+            "label": "Damage",
+            "values": "60/105/150/195/240"
+          },
+          {
+            "label": "Cooldown",
+            "values": "6/5.75/5.5/5.25/5"
+          },
+          {
+            "label": "Mana Cost",
+            "values": "60/70/80/90/100"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "Q Scaling",
+            "labelKo": "Q 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "0:TotalDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "W": {
+        "slot": "W",
+        "id": "PickACard",
+        "name": "Pick a Card",
+        "summary": "Twisted Fate chooses a magic card from his deck, and uses that for his next attack, causing bonus effects.",
+        "bodyHtml": "Twisted Fate begins shuffling his deck, allowing him to <span class=\"text-yellow-600 dark:text-yellow-300\">Recast</span> to lock in one of three cards and enhance his next Attack.<br /><span>The Blue Card deals <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(40/60/80/100/120 + (100% Attack Damage) + (100% Ability Power)) magic damage</span> and restores <span>70/90/110/130/150 Mana</span>.<span>The Red Card deals <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(30/45/60/75/90 + (100% Attack Damage) + (70% Ability Power))</span> to nearby enemies and <span class=\"text-purple-600 dark:text-purple-500\">Slows</span> by 30/35/40/45/50% for 2.5 seconds.<span>The Gold Card deals <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(15/22.5/30/37.5/45 + (100% Attack Damage) + (50% Ability Power))</span> and <span class=\"text-purple-600 dark:text-purple-500\">Stuns</span> for 1/1.25/1.5/1.75/2 seconds.",
+        "iconFile": "PickACard.png",
+        "cooldownSeconds": [
+          6,
+          6,
+          6,
+          6,
+          6
+        ],
+        "cost": {
+          "values": [
+            50,
+            55,
+            60,
+            65,
+            70
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          200,
+          200,
+          200,
+          200,
+          200
+        ],
+        "rankValues": [
+          {
+            "label": "Blue Card Damage",
+            "values": "40/60/80/100/120"
+          },
+          {
+            "label": "Blue Card Mana Restore",
+            "values": "70/90/110/130/150"
+          },
+          {
+            "label": "Red Card Damage",
+            "values": "30/45/60/75/90"
+          },
+          {
+            "label": "Red Card Slow %",
+            "values": "30%/35%/40%/45%/50%"
+          },
+          {
+            "label": "Gold Card Damage",
+            "values": "15/22.5/30/37.5/45"
+          },
+          {
+            "label": "Gold Card Stun Duration",
+            "values": "1/1.25/1.5/1.75/2"
+          },
+          {
+            "label": "Mana Cost",
+            "values": "50/55/60/65/70"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "W Scaling",
+            "labelKo": "W 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "1:BlueDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "E": {
+        "slot": "E",
+        "id": "CardmasterStack",
+        "name": "Stacked Deck",
+        "summary": "Every 4 attacks, Twisted Fate deals bonus damage. In addition, his Attack Speed is increased.",
+        "bodyHtml": "<span class=\"text-gray-600 dark:text-gray-500 italic\">Passive:</span> Twisted Fate gains <span>15/25/35/45/55% Attack Speed</span> and every 4th Attack deals an additional <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(65/90/115/140/165 + (20% bonus Attack Damage) + (40% Ability Power)) magic damage</span>.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">50% effective against structures.</span>",
+        "iconFile": "CardmasterStack.png",
+        "cooldownSeconds": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "range": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "rankValues": [
+          {
+            "label": "Bonus Damage",
+            "values": "65/90/115/140/165"
+          },
+          {
+            "label": "Attack Speed",
+            "values": "15/25/35/45/55"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "E Scaling",
+            "labelKo": "E 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "2:BonusDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "R": {
+        "slot": "R",
+        "id": "Destiny",
+        "name": "Destiny",
+        "summary": "Twisted Fate predicts the fortunes of his foes, revealing all enemy champions and enabling the use of Gate, which teleports Twisted Fate to any target location in 1.5 seconds.",
+        "bodyHtml": "Twisted Fate focuses on his cards, granting <span class=\"text-purple-600 dark:text-purple-400 font-semibold\">True Sight</span> of all enemy champions on the map for 6/8/10 seconds and allowing him to <span class=\"text-yellow-600 dark:text-yellow-300\">Recast</span>.<br /><br /><span class=\"text-yellow-600 dark:text-yellow-300\">Recast</span>: Twisted Fate teleports up to 5500 units away.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\"><span class=\"text-purple-600 dark:text-purple-500\">Disabling</span> effects will interrupt the teleport.</span>",
+        "iconFile": "Destiny.png",
+        "cooldownSeconds": [
+          170,
+          140,
+          110
+        ],
+        "cost": {
+          "values": [
+            100,
+            100,
+            100
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          5500,
+          5500,
+          5500
+        ],
+        "rankValues": [
+          {
+            "label": "Duration",
+            "values": "6/8/10"
+          },
+          {
+            "label": "Cooldown",
+            "values": "170/140/110"
+          }
+        ],
+        "scalings": [],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,360 @@
+{
+  "schemaVersion": 2,
+  "patchVersion": "26.17",
+  "locale": "ko_KR",
+  "sources": {
+    "ddragon": "16.17.1",
+    "cdragon": "16.17"
+  },
+  "champion": {
+    "id": "Singed",
+    "key": "27",
+    "name": "신지드",
+    "title": "미친 화학자",
+    "tags": [
+      "Tank",
+      "Mage"
+    ],
+    "baseStats": {
+      "health": {
+        "base": 650,
+        "perLevel": 96
+      },
+      "healthRegen": {
+        "base": 9.5,
+        "perLevel": 0.55
+      },
+      "mana": {
+        "base": 330,
+        "perLevel": 45
+      },
+      "manaRegen": {
+        "base": 7.5,
+        "perLevel": 0.55
+      },
+      "attackDamage": {
+        "base": 63,
+        "perLevel": 0
+      },
+      "attackSpeed": {
+        "base": 0.7,
+        "perLevel": 1.9
+      },
+      "armor": {
+        "base": 34,
+        "perLevel": 4.2
+      },
+      "magicResist": {
+        "base": 32,
+        "perLevel": 2.05
+      },
+      "moveSpeed": {
+        "base": 345,
+        "perLevel": 0
+      },
+      "attackRange": {
+        "base": 125,
+        "perLevel": 0
+      }
+    },
+    "baseStatContributions": [
+      {
+        "stat": "MAX_HEALTH",
+        "value": 96,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "HEALTH_REGEN",
+        "value": 0.55,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAX_MANA",
+        "value": 45,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MANA_REGEN",
+        "value": 0.55,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_DAMAGE",
+        "value": 0,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_SPEED",
+        "value": 1.9,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ARMOR",
+        "value": 4.2,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAGIC_RESIST",
+        "value": 2.05,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      }
+    ],
+    "abilities": {
+      "P": {
+        "slot": "P",
+        "id": "SingedP",
+        "name": "독성 급류",
+        "summary": "신지드가 근처 챔피언을 회피하며 일시적으로 이동 속도가 증가합니다.",
+        "bodyHtml": "신지드가 근처 아군 챔피언이나 적 챔피언을 회피하며 2초 동안 <span class=\"text-cyan-600 dark:text-cyan-500\">이동 속도가 25%</span> 증가합니다. 이 효과에는 챔피언당 8초의 재사용 대기시간이 적용됩니다.",
+        "iconFile": "Singed_Passive.png",
+        "cooldownSeconds": [],
+        "range": [],
+        "rankValues": [],
+        "scalings": [],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "Q": {
+        "slot": "Q",
+        "id": "PoisonTrail",
+        "name": "맹독의 자취",
+        "summary": "신지드 뒤로 독구름을 남겨 구름에 들어가는 적에게 피해를 입힙니다.",
+        "bodyHtml": "<span>활성화/비활성화:</span> 신지드가 초당 <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(20/30/40/50/60 + (42.5% 주문력))의 마법 피해</span>를 입히는 맹독의 자취를 남깁니다.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">바람 지속시간: 3.25초.<br />맹독 지속시간: 2초.<br />예상 총 피해량: <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(95/142.5/190/237.5/285 + (201.875% 주문력))의 마법 피해</span><br />맹독의 자취 영향을 받는 동안 미니언이 미니언 피해로 죽으면 신지드가 처치한 것으로 간주됩니다.</span>",
+        "iconFile": "PoisonTrail.png",
+        "cooldownSeconds": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "cost": {
+          "values": [
+            13,
+            13,
+            13,
+            13,
+            13
+          ],
+          "resource": "마나"
+        },
+        "range": [
+          20,
+          20,
+          20,
+          20,
+          20
+        ],
+        "rankValues": [
+          {
+            "label": "피해량",
+            "values": "20/30/40/50/60"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "Q Scaling",
+            "labelKo": "Q 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "0:DamagePerSecond"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "W": {
+        "slot": "W",
+        "id": "MegaAdhesive",
+        "name": "초강력 접착제",
+        "summary": "초강력 접착제가 든 시험관을 바닥에 던져 그 위를 지나가는 적을 둔화시키고 이동 스킬을 사용할 수 없게 합니다.",
+        "bodyHtml": "신지드가 끈적한 액체가 든 통을 던져 해당 지역에 있는 적을 3초 동안 50/55/60/65/70% <span class=\"text-purple-600 dark:text-purple-500\">둔화</span>시키고 <span class=\"text-purple-600 dark:text-purple-500\">이동 스킬을 사용할 수 없게</span> 합니다.",
+        "iconFile": "MegaAdhesive.png",
+        "cooldownSeconds": [
+          17,
+          16,
+          15,
+          14,
+          13
+        ],
+        "cost": {
+          "values": [
+            60,
+            70,
+            80,
+            90,
+            100
+          ],
+          "resource": "마나"
+        },
+        "range": [
+          1000,
+          1000,
+          1000,
+          1000,
+          1000
+        ],
+        "rankValues": [
+          {
+            "label": "둔화",
+            "values": "50%/55%/60%/65%/70%"
+          },
+          {
+            "label": "재사용 대기시간",
+            "values": "17/16/15/14/13"
+          },
+          {
+            "label": "소모값 마나",
+            "values": "60/70/80/90/100"
+          }
+        ],
+        "scalings": [],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "E": {
+        "slot": "E",
+        "id": "Fling",
+        "name": "던져넘기기",
+        "summary": "적을 신지드 뒤편으로 높이 던지며 피해를 줍니다. 신지드가 뒤로 던진 대상이 초강력 접착제 위에 착지하면 속박 효과가 적용됩니다.",
+        "bodyHtml": "신지드가 어깨 너머로 적을 던져 <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(50/60/70/80/90 + (55% 주문력)) + 최대 체력의 6/6.5/7/7.5/8%에 해당하는 마법 피해</span>를 입힙니다.<br /><br />신지드가 <span>초강력 접착제</span> 안으로 대상을 던져 넘기면 대상이 1/1.25/1.5/1.75/2초 동안 <span class=\"text-purple-600 dark:text-purple-500\">속박</span>됩니다.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">미니언과 정글 몬스터가 대상일 때 최대 체력 비례 피해는 최대 300까지 입힐 수 있습니다.</span>",
+        "iconFile": "Fling.png",
+        "cooldownSeconds": [
+          10,
+          9.5,
+          9,
+          8.5,
+          8
+        ],
+        "cost": {
+          "values": [
+            60,
+            70,
+            80,
+            90,
+            100
+          ],
+          "resource": "마나"
+        },
+        "range": [
+          125,
+          125,
+          125,
+          125,
+          125
+        ],
+        "rankValues": [
+          {
+            "label": "피해량",
+            "values": "50/60/70/80/90"
+          },
+          {
+            "label": "적 최대 체력 비례 피해량",
+            "values": "6/6.5/7/7.5/8"
+          },
+          {
+            "label": "속박 지속시간",
+            "values": "1/1.25/1.5/1.75/2"
+          },
+          {
+            "label": "재사용 대기시간",
+            "values": "10/9.5/9/8.5/8"
+          },
+          {
+            "label": "소모값 마나",
+            "values": "60/70/80/90/100"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "E Scaling",
+            "labelKo": "E 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "2:BaseDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "R": {
+        "slot": "R",
+        "id": "InsanityPotion",
+        "name": "광기의 물약",
+        "summary": "신지드가 조합된 화학 물질을 마시고 향상된 전투 능력을 얻으며 맹독의 자취로 고통스러운 상처를 남깁니다.",
+        "bodyHtml": "신지드가 화학 약품을 마셔 25초 동안 <span class=\"text-blue-600 dark:text-blue-400\">주문력</span>, <span class=\"text-orange-600 dark:text-orange-400\">방어력</span>, <span>마법 저항력</span>, <span class=\"text-cyan-600 dark:text-cyan-500\">이동 속도</span>, <span class=\"text-green-600 dark:text-green-400\">체력 재생력</span>, <span>마나 재생력</span>이 25/55/85 증가합니다. 지속시간 동안 <span>맹독의 자취</span>가 1초 동안 40%의 고통스러운 상처를 남깁니다.",
+        "iconFile": "InsanityPotion.png",
+        "cooldownSeconds": [
+          100,
+          100,
+          100
+        ],
+        "cost": {
+          "values": [
+            100,
+            100,
+            100
+          ],
+          "resource": "마나"
+        },
+        "range": [
+          20,
+          20,
+          20
+        ],
+        "rankValues": [
+          {
+            "label": "추가 능력치",
+            "values": "25/55/85"
+          }
+        ],
+        "scalings": [],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      }
+    }
+  }
+}

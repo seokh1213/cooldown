@@ -1,0 +1,372 @@
+{
+  "schemaVersion": 2,
+  "patchVersion": "26.17",
+  "locale": "zh_CN",
+  "sources": {
+    "ddragon": "16.17.1",
+    "cdragon": "16.17"
+  },
+  "champion": {
+    "id": "Vayne",
+    "key": "67",
+    "name": "暗夜猎手",
+    "title": "薇恩",
+    "tags": [
+      "Marksman",
+      "Assassin"
+    ],
+    "baseStats": {
+      "health": {
+        "base": 580,
+        "perLevel": 98
+      },
+      "healthRegen": {
+        "base": 4,
+        "perLevel": 0.5
+      },
+      "mana": {
+        "base": 232,
+        "perLevel": 35
+      },
+      "manaRegen": {
+        "base": 7,
+        "perLevel": 0.4
+      },
+      "attackDamage": {
+        "base": 60,
+        "perLevel": 0
+      },
+      "attackSpeed": {
+        "base": 0.658,
+        "perLevel": 2.8
+      },
+      "armor": {
+        "base": 23,
+        "perLevel": 4.6
+      },
+      "magicResist": {
+        "base": 33,
+        "perLevel": 1.1
+      },
+      "moveSpeed": {
+        "base": 330,
+        "perLevel": 0
+      },
+      "attackRange": {
+        "base": 550,
+        "perLevel": 0
+      }
+    },
+    "baseStatContributions": [
+      {
+        "stat": "MAX_HEALTH",
+        "value": 98,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "HEALTH_REGEN",
+        "value": 0.5,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAX_MANA",
+        "value": 35,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MANA_REGEN",
+        "value": 0.4,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_DAMAGE",
+        "value": 0,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_SPEED",
+        "value": 2.8,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ARMOR",
+        "value": 4.6,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAGIC_RESIST",
+        "value": 1.1,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      }
+    ],
+    "abilities": {
+      "P": {
+        "slot": "P",
+        "id": "VaynePassive",
+        "name": "暗夜猎手",
+        "summary": "薇恩毫不留情的猎杀世间邪恶，向附近敌方英雄移动时会获得移动速度。",
+        "bodyHtml": "薇恩毫不留情的猎杀世间邪恶，向附近敌方英雄移动时会获得30移动速度。",
+        "iconFile": "Vayne_NightHunter.png",
+        "cooldownSeconds": [],
+        "range": [],
+        "rankValues": [],
+        "scalings": [],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "Q": {
+        "slot": "Q",
+        "id": "VayneTumble",
+        "name": "闪避突袭",
+        "summary": "薇恩进行翻滚，并小心地填充她的下一发射击。她的下次攻击造成额外伤害。",
+        "bodyHtml": "薇恩翻滚一小段距离，并且她的下次普通攻击造成额外的<span class=\"text-red-600 dark:text-red-500 font-semibold\">((75/85/95/105/115% 攻击力) + (50% 法术强度))物理伤害</span>。<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">这个技能会在造成伤害时触发技能特效。</span>",
+        "iconFile": "VayneTumble.png",
+        "cooldownSeconds": [
+          6,
+          5,
+          4,
+          3,
+          2
+        ],
+        "cost": {
+          "values": [
+            46,
+            42,
+            38,
+            34,
+            30
+          ],
+          "resource": "法力值"
+        },
+        "range": [
+          300,
+          300,
+          300,
+          300,
+          300
+        ],
+        "rankValues": [
+          {
+            "label": "冷却时间",
+            "values": "6/5/4/3/2"
+          },
+          {
+            "label": "攻击力收益率",
+            "values": "75/85/95/105/115"
+          },
+          {
+            "label": "法力值消耗",
+            "values": "46/42/38/34/30"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "Q Scaling",
+            "labelKo": "Q 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "0:ADRatioBonus"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "W": {
+        "slot": "W",
+        "id": "VayneSilveredBolts",
+        "name": "圣银弩箭",
+        "summary": "薇恩用稀有金属制作弩箭，让邪恶敌人中毒。对同一目标的第3次攻击或技能施放会对其造成额外真实伤害，数值相当于目标最大生命值的一定百分比。",
+        "bodyHtml": "<span class=\"text-gray-600 dark:text-gray-500 italic\">被动：</span>对一名敌人的每第三次连续的攻击或技能造成额外的<span class=\"text-yellow-600 dark:text-yellow-500 font-semibold\">4/5.5/7/8.5/10%最大生命值的真实伤害</span>。<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">最少造成40/55/70/85/100伤害。<br />对抗野怪时造成140/155/170/185/200伤害。</span>",
+        "iconFile": "VayneSilveredBolts.png",
+        "cooldownSeconds": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "range": [
+          750,
+          750,
+          750,
+          750,
+          750
+        ],
+        "rankValues": [
+          {
+            "label": "真实伤害百分比",
+            "values": "4/5.5/7/8.5/10"
+          },
+          {
+            "label": "最小伤害",
+            "values": "40/55/70/85/100"
+          },
+          {
+            "label": "野怪伤害",
+            "values": "140/155/170/185/200"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "W Scaling",
+            "labelKo": "W 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "1:TotalDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "E": {
+        "slot": "E",
+        "id": "VayneCondemn",
+        "name": "恶魔审判",
+        "summary": "薇恩从背部展开一张重弩，并且朝她的目标发射一根巨型弩箭，将目标击退并造成伤害。如果目标与地形产生碰撞，那么目标会被贯穿，对其造成额外伤害和晕眩效果。",
+        "bodyHtml": "薇恩发射一根弩箭来<span class=\"text-purple-600 dark:text-purple-500\">击退</span>一个目标并造成<span class=\"text-red-600 dark:text-red-500 font-semibold\">(50/85/120/155/190 + (50% 额外攻击力))物理伤害</span>。如果目标与地形产生碰撞，那么会受到<span class=\"text-red-600 dark:text-red-500 font-semibold\">(75/127.5/180/232.5/285 + (75% 额外攻击力))额外物理伤害</span>，并且会被<span class=\"text-purple-600 dark:text-purple-500\">晕眩</span>1.5秒。",
+        "iconFile": "VayneCondemn.png",
+        "cooldownSeconds": [
+          20,
+          18,
+          16,
+          14,
+          12
+        ],
+        "cost": {
+          "values": [
+            90,
+            90,
+            90,
+            90,
+            90
+          ],
+          "resource": "法力值"
+        },
+        "range": [
+          550,
+          550,
+          550,
+          550,
+          550
+        ],
+        "rankValues": [
+          {
+            "label": "冷却时间",
+            "values": "20/18/16/14/12"
+          },
+          {
+            "label": "伤害",
+            "values": "50/85/120/155/190"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "E Scaling",
+            "labelKo": "E 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "2:TotalDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "R": {
+        "slot": "R",
+        "id": "VayneInquisition",
+        "name": "终极时刻",
+        "summary": "薇恩准备进行史诗般的对决，她的攻击力得到提高，能在闪避突袭期间进入隐形状态，闪避突袭的冷却时间缩短，并且暗夜猎手（被动）提供更多移动速度。",
+        "bodyHtml": "薇恩获得<span class=\"text-red-600 dark:text-red-500 font-semibold\">35/50/65攻击力</span>，持续8/10/12秒，并且如果一个被薇恩所伤害的敌方英雄在3秒内死亡，那么持续时间会延长4秒。此外，在这段持续时间里：<span><span>暗夜猎手</span>会转而提供<span class=\"text-cyan-600 dark:text-cyan-500\">90移动速度</span>。<span><span>闪避突袭</span>的冷却时间缩短30/40/50%，并提供持续1秒的<span class=\"text-purple-600 dark:text-purple-400 font-semibold\">隐形</span>。<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\"><span class=\"text-purple-600 dark:text-purple-400 font-semibold\">隐形</span>单位只会被【防御塔】或<span style=\"color: #ee91d7\">真实视野</font color>显形。<br />这个技能的持续时间无法被提升至超过它的最大持续时间。</span>",
+        "iconFile": "VayneInquisition.png",
+        "cooldownSeconds": [
+          100,
+          85,
+          70
+        ],
+        "cost": {
+          "values": [
+            80,
+            80,
+            80
+          ],
+          "resource": "法力值"
+        },
+        "range": [
+          1,
+          1,
+          1
+        ],
+        "rankValues": [
+          {
+            "label": "冷却时间",
+            "values": "100/85/70"
+          },
+          {
+            "label": "持续时长",
+            "values": "8/10/12"
+          },
+          {
+            "label": "额外攻击力",
+            "values": "35/50/65"
+          },
+          {
+            "label": "闪避突袭冷却缩减",
+            "values": "30/40/50"
+          }
+        ],
+        "scalings": [],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      }
+    }
+  }
+}

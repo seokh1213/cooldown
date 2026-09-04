@@ -1,0 +1,392 @@
+{
+  "schemaVersion": 2,
+  "patchVersion": "26.17",
+  "locale": "zh_CN",
+  "sources": {
+    "ddragon": "16.17.1",
+    "cdragon": "16.17"
+  },
+  "champion": {
+    "id": "Amumu",
+    "key": "32",
+    "name": "殇之木乃伊",
+    "title": "阿木木",
+    "tags": [
+      "Tank",
+      "Support"
+    ],
+    "baseStats": {
+      "health": {
+        "base": 685,
+        "perLevel": 94
+      },
+      "healthRegen": {
+        "base": 9,
+        "perLevel": 0.85
+      },
+      "mana": {
+        "base": 285,
+        "perLevel": 40
+      },
+      "manaRegen": {
+        "base": 7.4,
+        "perLevel": 0.55
+      },
+      "attackDamage": {
+        "base": 57,
+        "perLevel": 0
+      },
+      "attackSpeed": {
+        "base": 0.736,
+        "perLevel": 2.18
+      },
+      "armor": {
+        "base": 33,
+        "perLevel": 4
+      },
+      "magicResist": {
+        "base": 32,
+        "perLevel": 2.05
+      },
+      "moveSpeed": {
+        "base": 335,
+        "perLevel": 0
+      },
+      "attackRange": {
+        "base": 125,
+        "perLevel": 0
+      }
+    },
+    "baseStatContributions": [
+      {
+        "stat": "MAX_HEALTH",
+        "value": 94,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "HEALTH_REGEN",
+        "value": 0.85,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAX_MANA",
+        "value": 40,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MANA_REGEN",
+        "value": 0.55,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_DAMAGE",
+        "value": 0,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_SPEED",
+        "value": 2.18,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ARMOR",
+        "value": 4,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAGIC_RESIST",
+        "value": 2.05,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      }
+    ],
+    "abilities": {
+      "P": {
+        "slot": "P",
+        "id": "AmumuP",
+        "name": "诅咒之触",
+        "summary": "阿木木的普通攻击会<font color='#9b0f5f'>诅咒</font>他的敌人，使敌人会从即将到来的魔法伤害中承受额外真实伤害。",
+        "bodyHtml": "阿木木的攻击会<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">诅咒</span>他的敌人3秒，使其从所有来源的魔法伤害中多承受额外的<span class=\"text-yellow-600 dark:text-yellow-500 font-semibold\">10%真实伤害</span>。",
+        "iconFile": "Amumu_Passive.png",
+        "cooldownSeconds": [],
+        "range": [],
+        "rankValues": [],
+        "scalings": [],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "Q": {
+        "slot": "Q",
+        "id": "BandageToss",
+        "name": "绷带牵引",
+        "summary": "阿木木向目标投掷粘稠的绷带，将自己拉向目标，并对目标造成伤害和眩晕效果。",
+        "bodyHtml": "阿木木掷出一条绷带，然后将他拉向命中的第一个敌人，使其<span class=\"text-purple-600 dark:text-purple-500\">晕眩</span>1秒，并造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(70/95/120/145/170 + (85% 法术强度))魔法伤害</span>。<br /><br />这个技能有2层充能。",
+        "iconFile": "BandageToss.png",
+        "cooldownSeconds": [
+          3,
+          3,
+          3,
+          3,
+          3
+        ],
+        "rechargeSeconds": [
+          16,
+          15,
+          14,
+          13,
+          12
+        ],
+        "maxCharges": 2,
+        "cost": {
+          "values": [
+            50,
+            50,
+            50,
+            50,
+            50
+          ],
+          "resource": "法力值"
+        },
+        "range": [
+          1100,
+          1100,
+          1100,
+          1100,
+          1100
+        ],
+        "rankValues": [
+          {
+            "label": "伤害",
+            "values": "70/95/120/145/170"
+          },
+          {
+            "label": "充能时间",
+            "values": "16/15/14/13/12"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "Q Scaling",
+            "labelKo": "Q 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "0:TotalDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "W": {
+        "slot": "W",
+        "id": "AuraofDespair",
+        "name": "绝望光环",
+        "summary": "附近的敌人陷入绝望，每秒损失一定百分比的最大生命值并刷新身上的<font color='#9b0f5f'>诅咒</font>效果。",
+        "bodyHtml": "<span>开启：</span>阿木木开始哭泣，每秒对附近的敌人们造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">10外加(1/1.25/1.5/1.75/2 + (0.5% 法术强度))最大生命值的魔法伤害</span>并刷新<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">诅咒</span>。",
+        "iconFile": "AuraofDespair.png",
+        "cooldownSeconds": [
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        "cost": {
+          "values": [
+            8,
+            8,
+            8,
+            8,
+            8
+          ],
+          "resource": "法力值"
+        },
+        "range": [
+          300,
+          300,
+          300,
+          300,
+          300
+        ],
+        "rankValues": [
+          {
+            "label": "%生命值伤害",
+            "values": "1%/1.25%/1.5%/1.75%/2%"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "W Scaling",
+            "labelKo": "W 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "1:{c8e45bc3}"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "E": {
+        "slot": "E",
+        "id": "Tantrum",
+        "name": "阿木木的愤怒",
+        "summary": "永久减少阿木木所受的物理伤害。主动施放时，阿木木可以发泄他的怒火，对周围的敌人造成伤害。阿木木每被攻击一次，该技能的冷却时间就会缩短。",
+        "bodyHtml": "<span class=\"text-gray-600 dark:text-gray-500 italic\">被动：</span>阿木木受到的物理伤害降低(5/7/9/11/13 + (3% 额外护甲) + (3% 额外魔法抗性))。此外，当阿木木被一次攻击命中时，这个技能的冷却时间会缩短0.75秒。<br /><br /><span class=\"text-gray-900 dark:text-white font-semibold\">主动：</span>阿木木大发脾气，对附近的敌人们造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(65/95/125/155/185 + (50% 法术强度))魔法伤害</span>。<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">伤害降低效果无法将伤害降至50%以下。</span>",
+        "iconFile": "Tantrum.png",
+        "cooldownSeconds": [
+          9,
+          8,
+          7,
+          6,
+          5
+        ],
+        "cost": {
+          "values": [
+            35,
+            35,
+            35,
+            35,
+            35
+          ],
+          "resource": "法力值"
+        },
+        "range": [
+          350,
+          350,
+          350,
+          350,
+          350
+        ],
+        "rankValues": [
+          {
+            "label": "伤害减免",
+            "values": "5/7/9/11/13"
+          },
+          {
+            "label": "冷却时间",
+            "values": "9/8/7/6/5"
+          },
+          {
+            "label": "伤害",
+            "values": "65/95/125/155/185"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "E Scaling",
+            "labelKo": "E 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "2:DamageReduction"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "R": {
+        "slot": "R",
+        "id": "CurseoftheSadMummy",
+        "name": "木乃伊之咒",
+        "summary": "阿木木用绷带将附近敌方单位通通缠住，对他们施加<keywordMajor>诅咒</keywordMajor>效果，并造成伤害和晕眩效果。",
+        "bodyHtml": "阿木木用绷带将周围敌方单位通通缠住，将其<span class=\"text-purple-600 dark:text-purple-500\">晕眩</span>1.5秒，造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(200/300/400 + (80% 法术强度))魔法伤害</span>并施加<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">诅咒</span>效果。<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">这个技能会使敌人<span class=\"text-purple-600 dark:text-purple-500\">中断位移</span>。</span>",
+        "iconFile": "CurseoftheSadMummy.png",
+        "cooldownSeconds": [
+          150,
+          125,
+          100
+        ],
+        "cost": {
+          "values": [
+            100,
+            150,
+            200
+          ],
+          "resource": "法力值"
+        },
+        "range": [
+          550,
+          550,
+          550
+        ],
+        "rankValues": [
+          {
+            "label": "法力值消耗",
+            "values": "100/150/200"
+          },
+          {
+            "label": "冷却时间",
+            "values": "150/125/100"
+          },
+          {
+            "label": "伤害",
+            "values": "200/300/400"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "R Scaling",
+            "labelKo": "R 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "3:RCalculatedDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      }
+    }
+  }
+}

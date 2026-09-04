@@ -1,0 +1,395 @@
+{
+  "schemaVersion": 2,
+  "patchVersion": "26.17",
+  "locale": "zh_CN",
+  "sources": {
+    "ddragon": "16.17.1",
+    "cdragon": "16.17"
+  },
+  "champion": {
+    "id": "Malzahar",
+    "key": "90",
+    "name": "虚空先知",
+    "title": "玛尔扎哈",
+    "tags": [
+      "Mage"
+    ],
+    "baseStats": {
+      "health": {
+        "base": 580,
+        "perLevel": 101
+      },
+      "healthRegen": {
+        "base": 6,
+        "perLevel": 0.6
+      },
+      "mana": {
+        "base": 375,
+        "perLevel": 28
+      },
+      "manaRegen": {
+        "base": 8,
+        "perLevel": 0.8
+      },
+      "attackDamage": {
+        "base": 55,
+        "perLevel": 0
+      },
+      "attackSpeed": {
+        "base": 0.625,
+        "perLevel": 1.5
+      },
+      "armor": {
+        "base": 18,
+        "perLevel": 4.7
+      },
+      "magicResist": {
+        "base": 30,
+        "perLevel": 1.3
+      },
+      "moveSpeed": {
+        "base": 335,
+        "perLevel": 0
+      },
+      "attackRange": {
+        "base": 500,
+        "perLevel": 0
+      }
+    },
+    "baseStatContributions": [
+      {
+        "stat": "MAX_HEALTH",
+        "value": 101,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "HEALTH_REGEN",
+        "value": 0.6,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAX_MANA",
+        "value": 28,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MANA_REGEN",
+        "value": 0.8,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_DAMAGE",
+        "value": 0,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_SPEED",
+        "value": 1.5,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ARMOR",
+        "value": 4.7,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAGIC_RESIST",
+        "value": 1.3,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      }
+    ],
+    "abilities": {
+      "P": {
+        "slot": "P",
+        "id": "MalzaharPassive",
+        "name": "虚空穿越",
+        "summary": "玛尔扎哈如果近期没有受到伤害或控制效果，就会获得巨幅伤害减免和免疫控制的效果，并且这个效果在受到伤害后还会残留一小段时间。",
+        "bodyHtml": "玛尔扎哈获得90%伤害减免并免疫<span class=\"text-purple-600 dark:text-purple-500\">限制</span>和<span class=\"text-purple-600 dark:text-purple-500\">定身</span>效果，并且在受到或格挡了一次那些效果后，会存留0.25秒。这个效果有12秒的冷却时间。",
+        "iconFile": "Malzahar_Passive.png",
+        "cooldownSeconds": [],
+        "range": [],
+        "rankValues": [],
+        "scalings": [],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "Q": {
+        "slot": "Q",
+        "id": "MalzaharQ",
+        "name": "虚空召唤",
+        "summary": "玛尔扎哈开启两扇通向虚空的传送门。在短暂的延迟后，两扇门之间会有虚空能量对流而过，造成魔法伤害并沉默敌方英雄。",
+        "bodyHtml": "玛尔扎哈开启两扇通往虚空的传送门，在短暂的延迟后，能量就会从虚空之中喷发，并且在两道传送门之间对流，对击中的敌人造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(70/105/140/175/210 + (55% 法术强度))魔法伤害</span>并使其<span class=\"text-purple-600 dark:text-purple-500\">沉默</span>1/1.25/1.5/1.75/2秒。",
+        "iconFile": "MalzaharQ.png",
+        "cooldownSeconds": [
+          6,
+          6,
+          6,
+          6,
+          6
+        ],
+        "cost": {
+          "values": [
+            60,
+            65,
+            70,
+            75,
+            80
+          ],
+          "resource": "法力值"
+        },
+        "range": [
+          900,
+          900,
+          900,
+          900,
+          900
+        ],
+        "rankValues": [
+          {
+            "label": "伤害",
+            "values": "70/105/140/175/210"
+          },
+          {
+            "label": "沉默时长",
+            "values": "1/1.25/1.5/1.75/2"
+          },
+          {
+            "label": "法力值消耗",
+            "values": "60/65/70/75/80"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "Q Scaling",
+            "labelKo": "Q 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "0:TotalDamageTooltip"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "W": {
+        "slot": "W",
+        "id": "MalzaharW",
+        "name": "虚空虫群",
+        "summary": "玛尔扎哈召唤虚灵去攻击附近的敌人。",
+        "bodyHtml": "<span class=\"text-gray-600 dark:text-gray-500 italic\">被动：</span>玛尔扎哈的其它技能在施放时会为他提供一层效果(最多可叠到2层)。<br /><br /><span class=\"text-gray-900 dark:text-white font-semibold\">主动：</span>玛尔扎哈召唤一个虚灵，并且每层效果会额外召唤一个虚灵。虚灵持续8/8/9/9/10秒并且每次命中造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(12/14/16/18/20 + (40% 额外攻击力) + (20% 法术强度))魔法伤害</span>。<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">虚灵对中了<span>煞星幻象</span>的线上小兵造成300%伤害。<br />虚灵对史诗级野怪造成50%伤害。</span>",
+        "iconFile": "MalzaharW.png",
+        "cooldownSeconds": [
+          8,
+          8,
+          8,
+          8,
+          8
+        ],
+        "cost": {
+          "values": [
+            40,
+            45,
+            50,
+            55,
+            60
+          ],
+          "resource": "法力值"
+        },
+        "range": [
+          150,
+          150,
+          150,
+          150,
+          150
+        ],
+        "rankValues": [
+          {
+            "label": "虚灵 伤害",
+            "values": "12/14/16/18/20"
+          },
+          {
+            "label": "虚灵 持续时长",
+            "values": "8/8/9/9/10"
+          },
+          {
+            "label": "法力值消耗",
+            "values": "40/45/50/55/60"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "W Scaling",
+            "labelKo": "W 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "1:{c2505620}"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "E": {
+        "slot": "E",
+        "id": "MalzaharE",
+        "name": "煞星幻象",
+        "summary": "玛尔扎哈将目标的惨死幻象侵入目标的意识中，造成持续伤害。玛尔扎哈对目标使用其它技能时会刷新幻象的持续时间。<br><br>如果目标在感染幻象期间死亡，那么幻象会传到附近的一个敌人身上，并且玛尔扎哈会回复法力值。玛尔扎哈的虚灵会优先攻击感染了幻象的单位。",
+        "bodyHtml": "玛尔扎哈给目标造成可怕的幻象，在4秒里对一名敌人持续造成共<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(80/115/150/185/220 + (80% 法术强度))魔法伤害</span>。在此期间，对目标使用<span>虚空召唤</span>或<span>冥府之握</span>会刷新幻象的持续时间。<br /><br />如果目标被击杀，玛尔扎哈会获得<span>(2% 法力值)法力</span>并且幻象会传播给相距最近的敌人。<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">煞星幻象会处决低于10生命值的小兵。</span>",
+        "iconFile": "MalzaharE.png",
+        "cooldownSeconds": [
+          11,
+          10,
+          9,
+          8,
+          7
+        ],
+        "cost": {
+          "values": [
+            60,
+            70,
+            80,
+            90,
+            100
+          ],
+          "resource": "法力值"
+        },
+        "range": [
+          650,
+          650,
+          650,
+          650,
+          650
+        ],
+        "rankValues": [
+          {
+            "label": "伤害",
+            "values": "80/115/150/185/220"
+          },
+          {
+            "label": "冷却时间",
+            "values": "11/10/9/8/7"
+          },
+          {
+            "label": "法力值消耗",
+            "values": "60/70/80/90/100"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "E Scaling",
+            "labelKo": "E 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "2:TotalDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "R": {
+        "slot": "R",
+        "id": "MalzaharR",
+        "name": "冥府之握",
+        "summary": "玛尔扎哈引导虚空的精萃来把一名敌方英雄压制在一个充满伤害的负能量地带上。",
+        "bodyHtml": "玛尔扎哈<span class=\"text-purple-600 dark:text-purple-500\">压制</span>一名敌方英雄并在2.5秒里持续造成共<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(125/200/275 + (80% 法术强度))魔法伤害</span>。一个负能量地带会在他目标周围生成，在5秒里持续造成共<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(10/15/20% + (0.025% 法术强度))最大生命值的魔法伤害</span>。<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">这个技能会使敌人<span class=\"text-purple-600 dark:text-purple-500\">中断位移</span>。</span>",
+        "iconFile": "MalzaharR.png",
+        "cooldownSeconds": [
+          140,
+          110,
+          80
+        ],
+        "cost": {
+          "values": [
+            100,
+            100,
+            100
+          ],
+          "resource": "法力值"
+        },
+        "range": [
+          700,
+          700,
+          700
+        ],
+        "rankValues": [
+          {
+            "label": "冥府之握 伤害",
+            "values": "125/200/275"
+          },
+          {
+            "label": "虚无地带每秒伤害",
+            "values": "2/3/4"
+          },
+          {
+            "label": "冷却时间",
+            "values": "140/110/80"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "R Scaling",
+            "labelKo": "R 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "3:ZoneDamageTooltip"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      }
+    }
+  }
+}

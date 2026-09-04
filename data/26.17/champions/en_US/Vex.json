@@ -1,0 +1,399 @@
+{
+  "schemaVersion": 2,
+  "patchVersion": "26.17",
+  "locale": "en_US",
+  "sources": {
+    "ddragon": "16.17.1",
+    "cdragon": "16.17"
+  },
+  "champion": {
+    "id": "Vex",
+    "key": "711",
+    "name": "Vex",
+    "title": "the Gloomist",
+    "tags": [
+      "Mage"
+    ],
+    "baseStats": {
+      "health": {
+        "base": 590,
+        "perLevel": 104
+      },
+      "healthRegen": {
+        "base": 6.5,
+        "perLevel": 0.6
+      },
+      "mana": {
+        "base": 490,
+        "perLevel": 32
+      },
+      "manaRegen": {
+        "base": 6,
+        "perLevel": 0.8
+      },
+      "attackDamage": {
+        "base": 54,
+        "perLevel": 0
+      },
+      "attackSpeed": {
+        "base": 0.669,
+        "perLevel": 1
+      },
+      "armor": {
+        "base": 23,
+        "perLevel": 4.45
+      },
+      "magicResist": {
+        "base": 28,
+        "perLevel": 1.3
+      },
+      "moveSpeed": {
+        "base": 335,
+        "perLevel": 0
+      },
+      "attackRange": {
+        "base": 550,
+        "perLevel": 0
+      }
+    },
+    "baseStatContributions": [
+      {
+        "stat": "MAX_HEALTH",
+        "value": 104,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "HEALTH_REGEN",
+        "value": 0.6,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAX_MANA",
+        "value": 32,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MANA_REGEN",
+        "value": 0.8,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_DAMAGE",
+        "value": 0,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_SPEED",
+        "value": 1,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ARMOR",
+        "value": 4.45,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAGIC_RESIST",
+        "value": 1.3,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      }
+    ],
+    "abilities": {
+      "P": {
+        "slot": "P",
+        "id": "VexP",
+        "name": "Doom 'n Gloom",
+        "summary": "Vex periodically becomes empowered, causing her next basic Ability to fear enemies and interrupt dashes. Whenever a nearby enemy dashes, Vex applies a mark that can be consumed for bonus damage that also reduces the cooldown of her empowered state.",
+        "bodyHtml": "Every 16 seconds Vex becomes afflicted with Doom, causing her next basic Ability to <span class=\"text-purple-600 dark:text-purple-500\">Knock Down</span> and <span class=\"text-purple-600 dark:text-purple-500\">Fear</span> enemies for 1.5 seconds.<br /><br />Whenever a nearby enemy dashes or blinks, Vex marks them with <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Gloom</span> for 6 seconds. Vex's next Attack against a <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Gloomed</span> enemy deals an additional <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(25% Ability Power) magic damage</span> and reduces this Ability's Cooldown by 25%.",
+        "iconFile": "Icons_Vex_Passive.png",
+        "cooldownSeconds": [],
+        "range": [],
+        "rankValues": [],
+        "scalings": [],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "Q": {
+        "slot": "Q",
+        "id": "VexQ",
+        "name": "Mistral Bolt",
+        "summary": "Launch a damaging missile that accelerates mid-flight.",
+        "bodyHtml": "Vex launches a wave of mist that deals <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(70/115/160/205/250 + (70% Ability Power)) magic damage</span>. After a delay, the wave becomes smaller and faster.<br /><br />Consumes <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Gloom</span> on enemies hit.",
+        "iconFile": "VexQ.png",
+        "cooldownSeconds": [
+          8,
+          7,
+          6,
+          5,
+          4
+        ],
+        "cost": {
+          "values": [
+            45,
+            50,
+            55,
+            60,
+            65
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          1200,
+          1200,
+          1200,
+          1200,
+          1200
+        ],
+        "rankValues": [
+          {
+            "label": "Mana Cost",
+            "values": "45/50/55/60/65"
+          },
+          {
+            "label": "Cooldown",
+            "values": "8/7/6/5/4"
+          },
+          {
+            "label": "Damage",
+            "values": "70/115/160/205/250"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "Q Scaling",
+            "labelKo": "Q 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "0:QDamageCalc"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "W": {
+        "slot": "W",
+        "id": "VexW",
+        "name": "Personal Space",
+        "summary": "Gain a shield and damage nearby enemies.",
+        "bodyHtml": "Vex gains <span class=\"text-blue-600 dark:text-blue-300\">(50/75/100/125/150 + (75% Ability Power)) Shield</span> for 2.5 seconds and emits a shockwave that deals <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(80/120/160/200/240 + (30% Ability Power)) magic damage</span>.<br /><br />Consumes <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Gloom</span> on enemies hit.",
+        "iconFile": "VexW.png",
+        "cooldownSeconds": [
+          16,
+          15,
+          14,
+          13,
+          12
+        ],
+        "cost": {
+          "values": [
+            75,
+            75,
+            75,
+            75,
+            75
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          475,
+          475,
+          475,
+          475,
+          475
+        ],
+        "rankValues": [
+          {
+            "label": "Damage",
+            "values": "80/120/160/200/240"
+          },
+          {
+            "label": "Shield Amount",
+            "values": "50/75/100/125/150"
+          },
+          {
+            "label": "Cooldown",
+            "values": "16/15/14/13/12"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "W Scaling",
+            "labelKo": "W 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "1:ShieldCalc"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "E": {
+        "slot": "E",
+        "id": "VexE",
+        "name": "Looming Darkness",
+        "summary": "Summon a damaging and slowing zone that applies Gloom to enemies.",
+        "bodyHtml": "Vex commands Shadow to fly to a location, increasing in size as it travels. Upon arriving, it deals <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(50/70/90/110/130 + (40/45/50/55/60% Ability Power)) magic damage</span> and <span class=\"text-purple-600 dark:text-purple-500\">Slows</span> by 30/35/40/45/50% for 2 seconds.<br /><br />Killing an enemy with this ability reduces <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Doom'n Gloom's</span> Cooldown by 10%.<br /><br />Applies <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Gloom</span> to enemies hit.",
+        "iconFile": "VexE.png",
+        "cooldownSeconds": [
+          12,
+          12,
+          12,
+          12,
+          12
+        ],
+        "cost": {
+          "values": [
+            70,
+            80,
+            90,
+            100,
+            110
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          800,
+          800,
+          800,
+          800,
+          800
+        ],
+        "rankValues": [
+          {
+            "label": "Damage",
+            "values": "50/70/90/110/130"
+          },
+          {
+            "label": "Slow",
+            "values": "30/35/40/45/50"
+          },
+          {
+            "label": "Total AP Ratio",
+            "values": "40/45/50/55/60"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "E Scaling",
+            "labelKo": "E 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "2:EDamageCalc"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "R": {
+        "slot": "R",
+        "id": "VexR",
+        "name": "Shadow Surge",
+        "summary": "Fire a missile that marks an enemy champion.  Recast to dash to them and deal damage.",
+        "bodyHtml": "Shadow excitedly surges forward, dealing <span class=\"text-blue-600 dark:text-blue-500 font-semibold\"> magic damage</span> and marking the first enemy champion hit for 4 seconds.<br /><br /><span class=\"text-yellow-600 dark:text-yellow-300\">Recast</span>: Dash to the marked champion, dealing <span class=\"text-blue-600 dark:text-blue-500 font-semibold\"> magic damage</span> on arrival.<br /><br />If the marked champion dies within seconds of taking damage from this Ability, its Cooldown is temporarily reset.",
+        "iconFile": "VexR.png",
+        "cooldownSeconds": [
+          140,
+          120,
+          100
+        ],
+        "cost": {
+          "values": [
+            100,
+            100,
+            100
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          2000,
+          2500,
+          3000
+        ],
+        "rankValues": [
+          {
+            "label": "Cooldown",
+            "values": "140/120/100"
+          },
+          {
+            "label": "Damage",
+            "values": "75/125/175"
+          },
+          {
+            "label": "Recast Damage",
+            "values": "150/250/350"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "R Scaling",
+            "labelKo": "R 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "3:RDamageCalc"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": [
+            "spell.VexR:RDamageCalc",
+            "spell.VexR:RecastDamageCalc",
+            "spell.VexR:TakedownWindow"
+          ]
+        }
+      }
+    }
+  }
+}

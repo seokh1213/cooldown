@@ -1,0 +1,399 @@
+{
+  "schemaVersion": 2,
+  "patchVersion": "26.17",
+  "locale": "zh_CN",
+  "sources": {
+    "ddragon": "16.17.1",
+    "cdragon": "16.17"
+  },
+  "champion": {
+    "id": "Ornn",
+    "key": "516",
+    "name": "山隐之焰",
+    "title": "奥恩",
+    "tags": [
+      "Tank"
+    ],
+    "baseStats": {
+      "health": {
+        "base": 660,
+        "perLevel": 109
+      },
+      "healthRegen": {
+        "base": 9,
+        "perLevel": 0.9
+      },
+      "mana": {
+        "base": 341,
+        "perLevel": 65
+      },
+      "manaRegen": {
+        "base": 8,
+        "perLevel": 0.6
+      },
+      "attackDamage": {
+        "base": 69,
+        "perLevel": 0
+      },
+      "attackSpeed": {
+        "base": 0.625,
+        "perLevel": 2
+      },
+      "armor": {
+        "base": 33,
+        "perLevel": 5.2
+      },
+      "magicResist": {
+        "base": 32,
+        "perLevel": 2.05
+      },
+      "moveSpeed": {
+        "base": 335,
+        "perLevel": 0
+      },
+      "attackRange": {
+        "base": 175,
+        "perLevel": 0
+      }
+    },
+    "baseStatContributions": [
+      {
+        "stat": "MAX_HEALTH",
+        "value": 109,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "HEALTH_REGEN",
+        "value": 0.9,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAX_MANA",
+        "value": 65,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MANA_REGEN",
+        "value": 0.6,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_DAMAGE",
+        "value": 0,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_SPEED",
+        "value": 2,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ARMOR",
+        "value": 5.2,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAGIC_RESIST",
+        "value": 2.05,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      }
+    ],
+    "abilities": {
+      "P": {
+        "slot": "P",
+        "id": "P",
+        "name": "活体锻炉",
+        "summary": "",
+        "bodyHtml": "奥恩可使所有来源的护甲和魔抗加成获得额外提升。<br><br>奥恩可在地图的任意位置上花费金钱来锻造非消耗品的装备。<br><br>此外，他能为他自己和友方英雄打造杰作武器。",
+        "iconFile": "OrnnP.png",
+        "cooldownSeconds": [],
+        "range": [],
+        "rankValues": [],
+        "scalings": [],
+        "conditions": [],
+        "source": "ddragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "Q": {
+        "slot": "Q",
+        "id": "OrnnQ",
+        "name": "火山突堑",
+        "summary": "奥恩猛砸地面，形成一道裂隙来伤害并减速被击中的敌人们。在一阵短暂的延迟后，一个熔岩之柱会在裂隙的终点处形成。",
+        "bodyHtml": "奥恩猛砸地面，创造一道裂隙来造成<span class=\"text-red-600 dark:text-red-500 font-semibold\">(20/45/70/95/120 + (110% 攻击力))物理伤害</span>，以及持续2秒的40%<span class=\"text-purple-600 dark:text-purple-500\">减速</span>。一根熔岩之柱会在裂隙的终点处形成，持续4秒。<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">裂隙在命中一名敌方英雄后会短暂地停滞。</span><br />",
+        "iconFile": "OrnnQ.png",
+        "cooldownSeconds": [
+          9,
+          8.5,
+          8,
+          7.5,
+          7
+        ],
+        "cost": {
+          "values": [
+            45,
+            45,
+            45,
+            45,
+            45
+          ],
+          "resource": "法力值"
+        },
+        "range": [
+          800,
+          800,
+          800,
+          800,
+          800
+        ],
+        "rankValues": [
+          {
+            "label": "伤害",
+            "values": "20/45/70/95/120"
+          },
+          {
+            "label": "冷却时间",
+            "values": "9/8.5/8/7.5/7"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "Q Scaling",
+            "labelKo": "Q 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "0:TotalDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "W": {
+        "slot": "W",
+        "id": "OrnnW",
+        "name": "风箱炎息",
+        "summary": "奥恩向前进发，喷出炎息。被最后一阵炎息命中的敌人将变为易碎状态。",
+        "bodyHtml": "奥恩向前不可阻挡地重踏，同时喷吐炎息，在0.75秒里持续造成共<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">12/13/14/15/16%最大生命值的魔法伤害</span>。被最后一道炎息命中的敌人，会变成<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">易碎</span>效果，持续3秒。<br /><br />对<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">易碎</span>状态的敌人施加的下一个<span class=\"text-purple-600 dark:text-purple-500\">定身</span>效果将使该效果的持续时间提升30%并对目标造成额外的<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(9% ~ 17%)最大生命值的魔法伤害</span>。奥恩的普攻会<span class=\"text-purple-600 dark:text-purple-500\">击退</span><span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">易碎</span>状态下的目标，并造成额外伤害。<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">对英雄和小兵最少造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">80/130/180/230/280魔法伤害</span>，对野怪最多造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">260/320/380/440/500魔法伤害</span>。</span>",
+        "iconFile": "OrnnW.png",
+        "cooldownSeconds": [
+          12,
+          11.5,
+          11,
+          10.5,
+          10
+        ],
+        "cost": {
+          "values": [
+            45,
+            50,
+            55,
+            60,
+            65
+          ],
+          "resource": "法力值"
+        },
+        "range": [
+          25000,
+          25000,
+          25000,
+          25000,
+          25000
+        ],
+        "rankValues": [
+          {
+            "label": "%生命值伤害",
+            "values": "12%/13%/14%/15%/16%"
+          },
+          {
+            "label": "最小伤害",
+            "values": "80/130/180/230/280"
+          },
+          {
+            "label": "最大伤害",
+            "values": "260/320/380/440/500"
+          },
+          {
+            "label": "法力值消耗",
+            "values": "45/50/55/60/65"
+          },
+          {
+            "label": "冷却时间",
+            "values": "12/11.5/11/10.5/10"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "W Scaling",
+            "labelKo": "W 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "1:BrittlePercentMaxHPCalc"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "E": {
+        "slot": "E",
+        "id": "OrnnE",
+        "name": "炽烈冲锋",
+        "summary": "奥恩冲锋，对他途经的敌人造成伤害。如果奥恩在冲锋状态下与地形产生碰撞，那么这次碰撞就会在他四周生成一道冲击波，来对敌人造成伤害和击飞效果。",
+        "bodyHtml": "奥恩冲锋，造成<span class=\"text-red-600 dark:text-red-500 font-semibold\">(80/125/170/215/260 + (40% 额外护甲) + (40% 额外魔法抗性))物理伤害</span>。如果奥恩撞到了地形，则会引发冲击波，<span class=\"text-purple-600 dark:text-purple-500\">击飞</span>敌人1.25秒并将此技能的伤害施加给那些未被冲锋命中的敌人们。<br /><br />奥恩的冲锋会摧毁熔岩之柱和由敌方英雄创造的地形。",
+        "iconFile": "OrnnE.png",
+        "cooldownSeconds": [
+          14,
+          13.5,
+          13,
+          12.5,
+          12
+        ],
+        "cost": {
+          "values": [
+            35,
+            40,
+            45,
+            50,
+            55
+          ],
+          "resource": "法力值"
+        },
+        "range": [
+          450,
+          450,
+          450,
+          450,
+          450
+        ],
+        "rankValues": [
+          {
+            "label": "冲刺伤害",
+            "values": "80/125/170/215/260"
+          },
+          {
+            "label": "冷却时间",
+            "values": "14/13.5/13/12.5/12"
+          },
+          {
+            "label": "法力值消耗",
+            "values": "35/40/45/50/55"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "E Scaling",
+            "labelKo": "E 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "2:TotalDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "R": {
+        "slot": "R",
+        "id": "OrnnR",
+        "name": "熔铸之神的召唤",
+        "summary": "奥恩在目标位置召唤一个巨大的岩浆元素，岩浆元素会以逐渐提升的速度跑向奥恩。被岩浆元素途经的敌人会受到伤害、减速效果并被施加易碎效果。奥恩可以再次施放这个技能，以冲向岩浆元素，并在命中岩浆元素时重新导向岩浆元素，使岩浆元素可将途经的任何敌人击飞，造成等额的伤害并再次施加易碎效果。",
+        "bodyHtml": "奥恩召唤一个巨大的岩浆元素来疾奔向他，造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(125/175/225 + (20% 法术强度))魔法伤害</span>，对命中的敌人们施加持续3秒的<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">易碎</span>和40/50/60%<span class=\"text-purple-600 dark:text-purple-500\">减速</span>。<br /><br />奥恩可以<span class=\"text-yellow-600 dark:text-yellow-300\">再次施放</span>这个技能来用头槌进行冲刺。如果他冲刺到了岩浆元素，那么他可以使它重新导向并强化它，使它<span class=\"text-purple-600 dark:text-purple-500\">击飞</span>首个命中的敌方英雄1秒和后续的英雄们0.5秒。岩浆元素还会造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(125/175/225 + (20% 法术强度))魔法伤害</span>并施加<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">易碎</span>。",
+        "iconFile": "OrnnR.png",
+        "cooldownSeconds": [
+          140,
+          120,
+          100
+        ],
+        "cost": {
+          "values": [
+            100,
+            100,
+            100
+          ],
+          "resource": "法力值"
+        },
+        "range": [
+          2500,
+          2500,
+          2500
+        ],
+        "rankValues": [
+          {
+            "label": "伤害",
+            "values": "125/175/225"
+          },
+          {
+            "label": "减速",
+            "values": "40/50/60"
+          },
+          {
+            "label": "冷却时间",
+            "values": "140/120/100"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "R Scaling",
+            "labelKo": "R 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "3:RDamageCalc"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      }
+    }
+  }
+}

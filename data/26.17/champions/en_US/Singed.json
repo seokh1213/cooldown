@@ -1,0 +1,360 @@
+{
+  "schemaVersion": 2,
+  "patchVersion": "26.17",
+  "locale": "en_US",
+  "sources": {
+    "ddragon": "16.17.1",
+    "cdragon": "16.17"
+  },
+  "champion": {
+    "id": "Singed",
+    "key": "27",
+    "name": "Singed",
+    "title": "the Mad Chemist",
+    "tags": [
+      "Tank",
+      "Mage"
+    ],
+    "baseStats": {
+      "health": {
+        "base": 650,
+        "perLevel": 96
+      },
+      "healthRegen": {
+        "base": 9.5,
+        "perLevel": 0.55
+      },
+      "mana": {
+        "base": 330,
+        "perLevel": 45
+      },
+      "manaRegen": {
+        "base": 7.5,
+        "perLevel": 0.55
+      },
+      "attackDamage": {
+        "base": 63,
+        "perLevel": 0
+      },
+      "attackSpeed": {
+        "base": 0.7,
+        "perLevel": 1.9
+      },
+      "armor": {
+        "base": 34,
+        "perLevel": 4.2
+      },
+      "magicResist": {
+        "base": 32,
+        "perLevel": 2.05
+      },
+      "moveSpeed": {
+        "base": 345,
+        "perLevel": 0
+      },
+      "attackRange": {
+        "base": 125,
+        "perLevel": 0
+      }
+    },
+    "baseStatContributions": [
+      {
+        "stat": "MAX_HEALTH",
+        "value": 96,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "HEALTH_REGEN",
+        "value": 0.55,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAX_MANA",
+        "value": 45,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MANA_REGEN",
+        "value": 0.55,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_DAMAGE",
+        "value": 0,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_SPEED",
+        "value": 1.9,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ARMOR",
+        "value": 4.2,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAGIC_RESIST",
+        "value": 2.05,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      }
+    ],
+    "abilities": {
+      "P": {
+        "slot": "P",
+        "id": "SingedP",
+        "name": "Noxious Slipstream",
+        "summary": "Singed drafts off nearby champions, gaining a burst of Move Speed when passing them.",
+        "bodyHtml": "Singed drafts off of nearby allied or enemy champions, gaining <span class=\"text-cyan-600 dark:text-cyan-500\">25% Move Speed</span> for 2 seconds. This effect has an 8 second Cooldown per champion.",
+        "iconFile": "Singed_Passive.png",
+        "cooldownSeconds": [],
+        "range": [],
+        "rankValues": [],
+        "scalings": [],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "Q": {
+        "slot": "Q",
+        "id": "PoisonTrail",
+        "name": "Poison Trail",
+        "summary": "Leaves a trail of poison behind Singed, dealing damage to enemies caught in the path.",
+        "bodyHtml": "<span>Toggle:</span> Singed lays a poisonous trail that deals <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(20/30/40/50/60 + (42.5% Ability Power)) magic damage</span> per second.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">Cloud duration: 3.25 seconds.<br />Poison duration: 2 seconds.<br />Approximate total damage: <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(95/142.5/190/237.5/285 + (201.875% Ability Power)) magic damage</span>.<br />If a minion would be killed by minion damage while under the effects of Poison Trail, Singed claims the kill credit instead.</span>",
+        "iconFile": "PoisonTrail.png",
+        "cooldownSeconds": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "cost": {
+          "values": [
+            13,
+            13,
+            13,
+            13,
+            13
+          ],
+          "resource": "Mana per Second"
+        },
+        "range": [
+          20,
+          20,
+          20,
+          20,
+          20
+        ],
+        "rankValues": [
+          {
+            "label": "Damage",
+            "values": "20/30/40/50/60"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "Q Scaling",
+            "labelKo": "Q 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "0:DamagePerSecond"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "W": {
+        "slot": "W",
+        "id": "MegaAdhesive",
+        "name": "Mega Adhesive",
+        "summary": "Throws a vial of mega adhesive on the ground, slowing and grounding enemies who walk on it.",
+        "bodyHtml": "Singed hurls a cask of sticky liquid, <span class=\"text-purple-600 dark:text-purple-500\">Grounding</span> and <span class=\"text-purple-600 dark:text-purple-500\">Slowing</span> enemies in the area by 50/55/60/65/70% for 3 seconds.",
+        "iconFile": "MegaAdhesive.png",
+        "cooldownSeconds": [
+          17,
+          16,
+          15,
+          14,
+          13
+        ],
+        "cost": {
+          "values": [
+            60,
+            70,
+            80,
+            90,
+            100
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          1000,
+          1000,
+          1000,
+          1000,
+          1000
+        ],
+        "rankValues": [
+          {
+            "label": "Slow",
+            "values": "50/55/60/65/70"
+          },
+          {
+            "label": "Cooldown",
+            "values": "17/16/15/14/13"
+          },
+          {
+            "label": "Mana Cost",
+            "values": "60/70/80/90/100"
+          }
+        ],
+        "scalings": [],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "E": {
+        "slot": "E",
+        "id": "Fling",
+        "name": "Fling",
+        "summary": "Damages target enemy unit and flings them into the air behind Singed. If the target Singed flings lands in his Mega Adhesive, they are also rooted.",
+        "bodyHtml": "Singed flings an enemy over his shoulder, dealing <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(50/60/70/80/90 + (55% Ability Power)) plus 6/6.5/7/7.5/8% max Health magic damage</span>.<br /><br />If Singed flings a target into his <span>Mega Adhesive</span>, they are <span class=\"text-purple-600 dark:text-purple-500\">Rooted</span> for 1/1.25/1.5/1.75/2 seconds.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">Max Health damage is capped at 300 against minions and jungle monsters.</span>",
+        "iconFile": "Fling.png",
+        "cooldownSeconds": [
+          10,
+          9.5,
+          9,
+          8.5,
+          8
+        ],
+        "cost": {
+          "values": [
+            60,
+            70,
+            80,
+            90,
+            100
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          125,
+          125,
+          125,
+          125,
+          125
+        ],
+        "rankValues": [
+          {
+            "label": "Damage",
+            "values": "50/60/70/80/90"
+          },
+          {
+            "label": "Maximum Health Damage",
+            "values": "6/6.5/7/7.5/8"
+          },
+          {
+            "label": "Root Duration",
+            "values": "1/1.25/1.5/1.75/2"
+          },
+          {
+            "label": "Cooldown",
+            "values": "10/9.5/9/8.5/8"
+          },
+          {
+            "label": "Mana Cost",
+            "values": "60/70/80/90/100"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "E Scaling",
+            "labelKo": "E 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "2:BaseDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "R": {
+        "slot": "R",
+        "id": "InsanityPotion",
+        "name": "Insanity Potion",
+        "summary": "Singed drinks a potent brew of chemicals, granting him increased combat stats, and making his Poison Trail apply Grievous Wounds.",
+        "bodyHtml": "Singed drinks a potent brew of chemicals, granting him 25/55/85 <span class=\"text-blue-600 dark:text-blue-400\">Ability Power</span>, <span class=\"text-orange-600 dark:text-orange-400\">Armor</span>, <span>Magic Resist</span>, <span class=\"text-cyan-600 dark:text-cyan-500\">Move Speed</span>, <span class=\"text-green-600 dark:text-green-400\">Health Regen</span>, and <span>Mana Regen</span> for 25 seconds. During this effect, Singed's <span>Poison Trail</span> also applies 40% Grievous Wounds for 1 second.",
+        "iconFile": "InsanityPotion.png",
+        "cooldownSeconds": [
+          100,
+          100,
+          100
+        ],
+        "cost": {
+          "values": [
+            100,
+            100,
+            100
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          20,
+          20,
+          20
+        ],
+        "rankValues": [
+          {
+            "label": "Bonus Stats",
+            "values": "25/55/85"
+          }
+        ],
+        "scalings": [],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,352 @@
+{
+  "schemaVersion": 2,
+  "patchVersion": "26.17",
+  "locale": "en_US",
+  "sources": {
+    "ddragon": "16.17.1",
+    "cdragon": "16.17"
+  },
+  "champion": {
+    "id": "Sett",
+    "key": "875",
+    "name": "Sett",
+    "title": "the Boss",
+    "tags": [
+      "Fighter",
+      "Tank"
+    ],
+    "baseStats": {
+      "health": {
+        "base": 670,
+        "perLevel": 114
+      },
+      "healthRegen": {
+        "base": 7,
+        "perLevel": 0.5
+      },
+      "mana": {
+        "base": 0,
+        "perLevel": 0
+      },
+      "manaRegen": {
+        "base": 0,
+        "perLevel": 0
+      },
+      "attackDamage": {
+        "base": 60,
+        "perLevel": 0
+      },
+      "attackSpeed": {
+        "base": 0.625,
+        "perLevel": 1.75
+      },
+      "armor": {
+        "base": 33,
+        "perLevel": 4.7
+      },
+      "magicResist": {
+        "base": 28,
+        "perLevel": 2.05
+      },
+      "moveSpeed": {
+        "base": 340,
+        "perLevel": 0
+      },
+      "attackRange": {
+        "base": 125,
+        "perLevel": 0
+      }
+    },
+    "baseStatContributions": [
+      {
+        "stat": "MAX_HEALTH",
+        "value": 114,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "HEALTH_REGEN",
+        "value": 0.5,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAX_MANA",
+        "value": 0,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MANA_REGEN",
+        "value": 0,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_DAMAGE",
+        "value": 0,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_SPEED",
+        "value": 1.75,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ARMOR",
+        "value": 4.7,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAGIC_RESIST",
+        "value": 2.05,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      }
+    ],
+    "abilities": {
+      "P": {
+        "slot": "P",
+        "id": "SettPassive",
+        "name": "Pit Grit",
+        "summary": "Sett's basic attacks alternate between left and right punch. Right punch is slightly stronger and faster. Sett also hates losing, gaining additional health regeneration based off of his missing health.",
+        "bodyHtml": "Sett's Attacks alternate between left and right punches. Right punches follow the left quickly and deal an additional <span class=\"text-red-600 dark:text-red-500 font-semibold\">(55% bonus Attack Damage) physical damage</span>.<br /><br />Sett gains <span class=\"text-green-600 dark:text-green-400\">2 Health Regeneration</span> for each 5% missing Health.",
+        "iconFile": "Sett_P.png",
+        "cooldownSeconds": [],
+        "range": [],
+        "rankValues": [],
+        "scalings": [],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "Q": {
+        "slot": "Q",
+        "id": "SettQ",
+        "name": "Knuckle Down",
+        "summary": "Sett's next two attacks deal additional damage based off of the target's max health. Sett also gains Move Speed while moving towards enemy champions.",
+        "bodyHtml": "Sett itches for a fight, gaining <span class=\"text-cyan-600 dark:text-cyan-500\">30% Move Speed</span> towards enemy champions for 1.5 seconds.<br /><br />Additionally Sett's next two Attacks deal an additional <span class=\"text-red-600 dark:text-red-500 font-semibold\">10/20/30/40/50 plus (1% + (0.01/0.02/0.02/0.03/0.03% Attack Damage)) max Health physical damage</span>.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">The Attacks are always a left and right punch. Deals a max of <span class=\"text-red-600 dark:text-red-500 font-semibold\">400 damage</span> to monsters per punch.</span>",
+        "iconFile": "SettQ.png",
+        "cooldownSeconds": [
+          9,
+          8,
+          7,
+          6,
+          5
+        ],
+        "range": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "rankValues": [
+          {
+            "label": "Cooldown",
+            "values": "9/8/7/6/5"
+          },
+          {
+            "label": "Base Damage",
+            "values": "10/20/30/40/50"
+          },
+          {
+            "label": "% Max Health Per 100 AD",
+            "values": "1%/1.5%/2%/2.5%/3%"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "Q Scaling",
+            "labelKo": "Q 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "0:MaxHealthDamageCalc"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "W": {
+        "slot": "W",
+        "id": "SettW",
+        "name": "Haymaker",
+        "summary": "Sett passively stores damage he takes as Grit. On cast, Sett expends all stored Grit to gain a shield and punch an area, dealing true damage in the center and physical damage on the sides.",
+        "bodyHtml": "<span class=\"text-gray-600 dark:text-gray-500 italic\">Passive:</span> Sett stores 100% of damage taken as <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Grit</span>, up to <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">(50% Health)</span>. <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Grit</span> decays quickly 4 seconds after the damage was taken.<br /><br /><span class=\"text-gray-900 dark:text-white font-semibold\">Active:</span> Sett consumes all <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Grit</span>, gaining a <span class=\"text-blue-600 dark:text-blue-300\">100% Grit consumed Shield</span> decaying over 3 seconds. Sett then delivers a massive punch, dealing <span class=\"text-yellow-600 dark:text-yellow-500 font-semibold\">80/100/120/140/160 plus (25% + (0.25% bonus Attack Damage)) Grit consumed true damage</span> to enemies in the center (max <span class=\"text-yellow-600 dark:text-yellow-500 font-semibold\"> damage</span>). Enemies not in the center instead take <span class=\"text-red-600 dark:text-red-500 font-semibold\">physical damage</span>.",
+        "iconFile": "SettW.png",
+        "cooldownSeconds": [
+          18,
+          16.5,
+          15,
+          13.5,
+          12
+        ],
+        "range": [
+          25000,
+          25000,
+          25000,
+          25000,
+          25000
+        ],
+        "rankValues": [
+          {
+            "label": "Cooldown",
+            "values": "18/16.5/15/13.5/12"
+          },
+          {
+            "label": "Base Damage",
+            "values": "80/100/120/140/160"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "W Scaling",
+            "labelKo": "W 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "1:DamageCalc"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": [
+            "f1"
+          ]
+        }
+      },
+      "E": {
+        "slot": "E",
+        "id": "SettE",
+        "name": "Facebreaker",
+        "summary": "Sett pulls in all enemies on opposite sides of him, dealing damage and stunning them. If enemies were only on one side, they are slowed instead of stunned.",
+        "bodyHtml": "Sett smashes enemies on either side of him into each other, dealing <span class=\"text-red-600 dark:text-red-500 font-semibold\">(50/70/90/110/130 + (60% Attack Damage)) physical damage</span> and <span class=\"text-purple-600 dark:text-purple-500\">Slowing</span> them by 70% for 0.5 seconds. If Sett grabbed at least one enemy on each side, all enemies are <span class=\"text-purple-600 dark:text-purple-500\">Stunned</span> for 1 second.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">Deals (125 ~ 250) bonus damage against monsters.</span>",
+        "iconFile": "SettE.png",
+        "cooldownSeconds": [
+          16,
+          14.5,
+          13,
+          11.5,
+          10
+        ],
+        "range": [
+          490,
+          490,
+          490,
+          490,
+          490
+        ],
+        "rankValues": [
+          {
+            "label": "Cooldown",
+            "values": "16/14.5/13/11.5/10"
+          },
+          {
+            "label": "Base Damage",
+            "values": "50/70/90/110/130"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "E Scaling",
+            "labelKo": "E 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "2:DamageCalc"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "R": {
+        "slot": "R",
+        "id": "SettR",
+        "name": "The Show Stopper",
+        "summary": "Sett carries an enemy champion through the air and slams them into the ground, dealing damage and slowing all enemies near where they land.",
+        "bodyHtml": "Sett grabs an enemy champion and <span class=\"text-purple-600 dark:text-purple-500\">Suppresses</span> them as he carries them forward, then slams them into the ground, dealing <span class=\"text-red-600 dark:text-red-500 font-semibold\">(200/300/400 + (120% bonus Attack Damage)) plus 40/50/60% of the grabbed enemy's bonus Health physical damage</span> to surrounding enemies and <span class=\"text-purple-600 dark:text-purple-500\">Slowing</span> them by 99% for 1 second. Enemies take less damage the further they are from where Sett lands.",
+        "iconFile": "SettR.png",
+        "cooldownSeconds": [
+          120,
+          100,
+          80
+        ],
+        "range": [
+          400,
+          400,
+          400
+        ],
+        "rankValues": [
+          {
+            "label": "Cooldown",
+            "values": "120/100/80"
+          },
+          {
+            "label": "Bonus Health Damage",
+            "values": "40/50/60"
+          },
+          {
+            "label": "Base Damage",
+            "values": "200/300/400"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "R Scaling",
+            "labelKo": "R 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "3:DamageCalc"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      }
+    }
+  }
+}

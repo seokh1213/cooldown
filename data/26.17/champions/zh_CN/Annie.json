@@ -1,0 +1,400 @@
+{
+  "schemaVersion": 2,
+  "patchVersion": "26.17",
+  "locale": "zh_CN",
+  "sources": {
+    "ddragon": "16.17.1",
+    "cdragon": "16.17"
+  },
+  "champion": {
+    "id": "Annie",
+    "key": "1",
+    "name": "黑暗之女",
+    "title": "安妮",
+    "tags": [
+      "Mage",
+      "Support"
+    ],
+    "baseStats": {
+      "health": {
+        "base": 560,
+        "perLevel": 96
+      },
+      "healthRegen": {
+        "base": 5.5,
+        "perLevel": 0.55
+      },
+      "mana": {
+        "base": 418,
+        "perLevel": 25
+      },
+      "manaRegen": {
+        "base": 8,
+        "perLevel": 0.8
+      },
+      "attackDamage": {
+        "base": 50,
+        "perLevel": 0
+      },
+      "attackSpeed": {
+        "base": 0.61,
+        "perLevel": 1.36
+      },
+      "armor": {
+        "base": 23,
+        "perLevel": 4
+      },
+      "magicResist": {
+        "base": 30,
+        "perLevel": 1.3
+      },
+      "moveSpeed": {
+        "base": 335,
+        "perLevel": 0
+      },
+      "attackRange": {
+        "base": 625,
+        "perLevel": 0
+      }
+    },
+    "baseStatContributions": [
+      {
+        "stat": "MAX_HEALTH",
+        "value": 96,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "HEALTH_REGEN",
+        "value": 0.55,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAX_MANA",
+        "value": 25,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MANA_REGEN",
+        "value": 0.8,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_DAMAGE",
+        "value": 0,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_SPEED",
+        "value": 1.36,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ARMOR",
+        "value": 4,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAGIC_RESIST",
+        "value": 1.3,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      }
+    ],
+    "abilities": {
+      "P": {
+        "slot": "P",
+        "id": "AnniePassive",
+        "name": "嗜火",
+        "summary": "在施放4个技能后，安妮的下一次伤害类技能就会对目标造成短暂的晕眩效果。<br><br>安妮在游戏开始时和重生时，会带着满层的【嗜火】。",
+        "bodyHtml": "在使用4次技能后，安妮的下一个伤害技能会造成1.75秒<span class=\"text-purple-600 dark:text-purple-500\">晕眩</span>。<br /><br />安妮在游戏开始时和重生时，会带着满层的<span>嗜火</span>。",
+        "iconFile": "Annie_Passive.png",
+        "cooldownSeconds": [],
+        "range": [],
+        "rankValues": [],
+        "scalings": [],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "Q": {
+        "slot": "Q",
+        "id": "AnnieQ",
+        "name": "碎裂之火",
+        "summary": "安妮向目标投出注入了法力值的火球，对目标造成魔法伤害。如果目标死于碎裂之火，则碎裂之火消耗的法力值会返还给安妮，且碎裂之火的冷却时间减半。",
+        "bodyHtml": "安妮投出一团火球，造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(80/125/170/215/260 + (80% 法术强度))魔法伤害</span>。如果目标阵亡，那么安妮会返还法力值并缩短50%冷却时间。",
+        "iconFile": "AnnieQ.png",
+        "cooldownSeconds": [
+          4,
+          4,
+          4,
+          4,
+          4
+        ],
+        "cost": {
+          "values": [
+            60,
+            65,
+            70,
+            75,
+            80
+          ],
+          "resource": "法力值"
+        },
+        "range": [
+          625,
+          625,
+          625,
+          625,
+          625
+        ],
+        "rankValues": [
+          {
+            "label": "伤害",
+            "values": "80/125/170/215/260"
+          },
+          {
+            "label": "法力值消耗",
+            "values": "60/65/70/75/80"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "Q Scaling",
+            "labelKo": "Q 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "0:TotalDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "W": {
+        "slot": "W",
+        "id": "AnnieW",
+        "name": "焚烧",
+        "summary": "安妮向锥形区域施放一道烈焰，对区域内的所有敌人造成伤害。",
+        "bodyHtml": "安妮投射出一阵火焰波，造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(70/110/150/190/230 + (80% 法术强度))魔法伤害</span>。",
+        "iconFile": "AnnieW.png",
+        "cooldownSeconds": [
+          7,
+          7,
+          7,
+          7,
+          7
+        ],
+        "cost": {
+          "values": [
+            70,
+            75,
+            80,
+            85,
+            90
+          ],
+          "resource": "法力值"
+        },
+        "range": [
+          600,
+          600,
+          600,
+          600,
+          600
+        ],
+        "rankValues": [
+          {
+            "label": "伤害",
+            "values": "70/110/150/190/230"
+          },
+          {
+            "label": "法力值消耗",
+            "values": "70/75/80/85/90"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "W Scaling",
+            "labelKo": "W 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "1:TotalDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "E": {
+        "slot": "E",
+        "id": "AnnieE",
+        "name": "熔岩护盾",
+        "summary": "为安妮或一名友军提供一层护盾、一个爆发性的移动速度加成并且对任何用攻击或技能袭击她的敌人造成伤害。",
+        "bodyHtml": "安妮为一名友方英雄提供持续3秒的<span class=\"text-blue-600 dark:text-blue-300\">(60/95/130/165/200 + (40% 法术强度))护盾值</span>，以及在1.5秒里持续衰减的<span class=\"text-cyan-600 dark:text-cyan-500\">(20% ~ 50%)移动速度</span>。当护盾处于激活状态时，敌人用攻击或技能对护盾造成伤害时会受到<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(25/35/45/55/65 + (40% 法术强度))魔法伤害</span>，每个护盾受到一次伤害。<br /><br />提伯斯在被召唤出来时总会获得<span>熔岩护盾</span>的效果。",
+        "iconFile": "AnnieE.png",
+        "cooldownSeconds": [
+          10,
+          10,
+          10,
+          10,
+          10
+        ],
+        "cost": {
+          "values": [
+            60,
+            65,
+            70,
+            75,
+            80
+          ],
+          "resource": "法力值"
+        },
+        "range": [
+          800,
+          800,
+          800,
+          800,
+          800
+        ],
+        "rankValues": [
+          {
+            "label": "护盾值",
+            "values": "60/95/130/165/200"
+          },
+          {
+            "label": "伤害回敬",
+            "values": "25/35/45/55/65"
+          },
+          {
+            "label": "法力值消耗",
+            "values": "60/65/70/75/80"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "E Scaling",
+            "labelKo": "E 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "2:DamageReturn"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "R": {
+        "slot": "R",
+        "id": "AnnieR",
+        "name": "提伯斯之怒",
+        "summary": "安妮召唤地狱火泰迪：提伯斯为其作战，对目标区域造成伤害，提伯斯也会攻击和烧伤站在它周围的敌人。",
+        "bodyHtml": "<span class=\"text-gray-600 dark:text-gray-500 italic\">被动：</span>安妮获得<span>10/15/20%法术穿透</span>。<br /><br />安妮召唤提伯斯，造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(150/275/400 + (75% 法术强度))魔法伤害</span>。在接下来的45秒里，提伯斯会灼烧附近的敌人，<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">每秒造成(8/12/16 + (4% 法术强度))魔法伤害</span>。<br /><br />提伯斯在以下情况下会变得暴怒：在被召唤出来时、在安妮晕眩一名敌方英雄时、以及在安妮阵亡时。在暴怒状态下，提伯斯获得<span>275%攻击速度</span>和在3秒里持续衰减的<span class=\"text-cyan-600 dark:text-cyan-500\">100%移动速度</span>。<br /><br /><span class=\"text-yellow-600 dark:text-yellow-300\">再次施放：</span>手动给提伯斯下达指令。<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">提伯斯拥有：<br /><span class=\"text-green-600 dark:text-green-400\">(50% 法术强度)生命值</span><br /><span class=\"text-orange-600 dark:text-orange-400\">30护甲</span><br /><span>30魔法抗性</span><br /><span class=\"text-orange-600 dark:text-orange-500\">(30/45/60 + (10% 法术强度))攻击力</span></span>",
+        "iconFile": "AnnieR.png",
+        "cooldownSeconds": [
+          130,
+          115,
+          100
+        ],
+        "cost": {
+          "values": [
+            100,
+            100,
+            100
+          ],
+          "resource": "法力值"
+        },
+        "range": [
+          600,
+          600,
+          600
+        ],
+        "rankValues": [
+          {
+            "label": "初始伤害",
+            "values": "150/275/400"
+          },
+          {
+            "label": "光环伤害",
+            "values": "8/12/16"
+          },
+          {
+            "label": "攻击力",
+            "values": "30/45/60"
+          },
+          {
+            "label": "额外移动速度",
+            "values": "0/25/50"
+          },
+          {
+            "label": "技能冷却时间",
+            "values": "130/115/100"
+          },
+          {
+            "label": "法术穿透",
+            "values": "10/15/20"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "R Scaling",
+            "labelKo": "R 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "3:InitialBurstDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,350 @@
+{
+  "schemaVersion": 2,
+  "patchVersion": "26.17",
+  "locale": "en_US",
+  "sources": {
+    "ddragon": "16.17.1",
+    "cdragon": "16.17"
+  },
+  "champion": {
+    "id": "Vladimir",
+    "key": "8",
+    "name": "Vladimir",
+    "title": "the Crimson Reaper",
+    "tags": [
+      "Mage",
+      "Fighter"
+    ],
+    "baseStats": {
+      "health": {
+        "base": 600,
+        "perLevel": 110
+      },
+      "healthRegen": {
+        "base": 7,
+        "perLevel": 0.6
+      },
+      "mana": {
+        "base": 2,
+        "perLevel": 0
+      },
+      "manaRegen": {
+        "base": 0,
+        "perLevel": 0
+      },
+      "attackDamage": {
+        "base": 55,
+        "perLevel": 0
+      },
+      "attackSpeed": {
+        "base": 0.658,
+        "perLevel": 2
+      },
+      "armor": {
+        "base": 24,
+        "perLevel": 4.5
+      },
+      "magicResist": {
+        "base": 30,
+        "perLevel": 1.3
+      },
+      "moveSpeed": {
+        "base": 330,
+        "perLevel": 0
+      },
+      "attackRange": {
+        "base": 450,
+        "perLevel": 0
+      }
+    },
+    "baseStatContributions": [
+      {
+        "stat": "MAX_HEALTH",
+        "value": 110,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "HEALTH_REGEN",
+        "value": 0.6,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAX_MANA",
+        "value": 0,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MANA_REGEN",
+        "value": 0,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_DAMAGE",
+        "value": 0,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_SPEED",
+        "value": 2,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ARMOR",
+        "value": 4.5,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAGIC_RESIST",
+        "value": 1.3,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      }
+    ],
+    "abilities": {
+      "P": {
+        "slot": "P",
+        "id": "VladimirBloodGorged",
+        "name": "Crimson Pact",
+        "summary": "Every 30 points of bonus Health gives Vladimir 1 Ability Power and every 1 point of Ability Power gives Vladimir 1.6 bonus Health (does not stack with itself).",
+        "bodyHtml": "Vladimir gains <span class=\"text-blue-600 dark:text-blue-400\">1 Ability Power</span> for every <span>30 bonus Health</span>. He also gains <span>1.6 max Health</span> per <span class=\"text-blue-600 dark:text-blue-400\">1 Ability Power</span>.<br /><br /><span class=\"text-blue-600 dark:text-blue-400\">Bonus Ability Power: </span><br /><span>Bonus Health: </span>",
+        "iconFile": "VladimirP.png",
+        "cooldownSeconds": [],
+        "range": [],
+        "rankValues": [],
+        "scalings": [],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "Q": {
+        "slot": "Q",
+        "id": "VladimirQ",
+        "name": "Transfusion",
+        "summary": "Vladimir steals life from the target enemy. When Vladimir's resource is full, Transfusion will benefit from massively increased damage and healing for a brief time.",
+        "bodyHtml": "Vladimir drains his target's lifeforce, dealing <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(80/100/120/140/160 + (60% Ability Power)) magic damage</span> and restoring <span class=\"text-green-600 dark:text-green-400\">(20/25/30/35/40 + (35% Ability Power)) Health</span>. After using this Ability twice, Vladimir gains <span class=\"text-cyan-600 dark:text-cyan-500\">60% Move Speed</span> for 0.5 seconds and empowers the next use of this Ability for 2.5 seconds.<br /><br />The empowered version of this Ability deals <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(148/185/222/259/296 + (111% Ability Power)) magic damage</span> instead and restores an additional <span class=\"text-green-600 dark:text-green-400\">30/200 plus (5% + (0.04% Ability Power)) missing Health</span>.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">Empowered healing reduced to 30% against minions.</span>",
+        "iconFile": "VladimirQ.png",
+        "cooldownSeconds": [
+          9,
+          7.9,
+          6.8,
+          5.7,
+          4.6
+        ],
+        "range": [
+          600,
+          600,
+          600,
+          600,
+          600
+        ],
+        "rankValues": [
+          {
+            "label": "Damage",
+            "values": "80/100/120/140/160"
+          },
+          {
+            "label": "Healing",
+            "values": "20/25/30/35/40"
+          },
+          {
+            "label": "Cooldown",
+            "values": "9/7.9/6.8/5.7/4.6"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "Q Scaling",
+            "labelKo": "Q 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "0:BaseDamageTooltip"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "W": {
+        "slot": "W",
+        "id": "VladimirSanguinePool",
+        "name": "Sanguine Pool",
+        "summary": "Vladimir sinks into a pool of blood, becoming untargetable for 2 seconds. Additionally, enemies on the pool are slowed and Vladimir siphons life from them.",
+        "bodyHtml": "Vladimir sinks into a pool of blood for 2 seconds, gaining <span class=\"text-cyan-600 dark:text-cyan-500\">37.5% decaying Move Speed</span> for 1 second and becoming <span>Untargetable</span> and <span>Ghosted</span> while <span class=\"text-purple-600 dark:text-purple-500\">Slowing</span> enemies in the pool by 40%.<br /><br />Vladimir deals <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(80/135/190/245/300 + (15% bonus Health)) magic damage</span> and restores <span class=\"text-green-600 dark:text-green-400\">(24/40.5/57/73.5/90 + (4.5% bonus Health)) Health</span> per enemy over the duration.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">This Ability can be used while charging <span>Tides of Blood</span>.<br />Vladimir can't Attack or use other Abilities while inside the pool.<br /><span class=\"text-green-600 dark:text-green-400\">Healing</span> is 60% effective against minions.<br />Untargetable units won't be affected by enemy Attacks or Abilities unless they've already been hit by them.<br />Ghosted units can pass through other units.</span>",
+        "iconFile": "VladimirSanguinePool.png",
+        "cooldownSeconds": [
+          28,
+          25,
+          22,
+          19,
+          16
+        ],
+        "range": [
+          350,
+          350,
+          350,
+          350,
+          350
+        ],
+        "rankValues": [
+          {
+            "label": "Damage",
+            "values": "80/135/190/245/300"
+          },
+          {
+            "label": "Cooldown",
+            "values": "28/25/22/19/16"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "W Scaling",
+            "labelKo": "W 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "1:TotalDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "E": {
+        "slot": "E",
+        "id": "VladimirE",
+        "name": "Tides of Blood",
+        "summary": "Vladimir pays his own health to charge up a reservoir of blood which, when released, deals damage in the area around him but can be blocked by enemy units.",
+        "bodyHtml": "<span>Begin Charging: </span>Vladimir charges up a reservoir of blood, spending up to <span style=\"color: #CC3300\">(8% Health) Health</span>. While at full charge, Vladimir is <span class=\"text-purple-600 dark:text-purple-500\">Slowed</span> by 20%.<br /><br /><span>Release: </span>Vladimir unleashes a torrent of blood missiles at surrounding enemies, dealing between <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(30/45/60/75/90 + (1.5% Health) + (35% Ability Power))</span> and <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(60/90/120/150/180 + (6% Health) + (80% Ability Power)) magic damage</span> based on charge time. If this Ability was charged for at least 1 second, it also <span class=\"text-purple-600 dark:text-purple-500\">Slows</span> targets by 40/45/50/55/60% for 0.5 seconds.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">This Ability releases automatically after 1.5 seconds.<br />Enemies can be hit by multiple blood missiles, but take no damage after the first.<br /></span>",
+        "iconFile": "VladimirE.png",
+        "cooldownSeconds": [
+          13,
+          11,
+          9,
+          7,
+          5
+        ],
+        "range": [
+          600,
+          600,
+          600,
+          600,
+          600
+        ],
+        "rankValues": [
+          {
+            "label": "Minimum Damage",
+            "values": "30/45/60/75/90"
+          },
+          {
+            "label": "Maximum Damage",
+            "values": "60/90/120/150/180"
+          },
+          {
+            "label": "Slow",
+            "values": "40/45/50/55/60"
+          },
+          {
+            "label": "Cooldown",
+            "values": "13/11/9/7/5"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "E Scaling",
+            "labelKo": "E 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "2:MinDamageTooltip"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "R": {
+        "slot": "R",
+        "id": "VladimirHemoplague",
+        "name": "Hemoplague",
+        "summary": "Vladimir infects an area with a virulent plague. Affected enemies take increased damage for the duration. After a few seconds, Hemoplague deals magic damage to infected enemies and heals Vladimir for each enemy Champion hit.",
+        "bodyHtml": "Vladimir creates a virulent plague, causing its victims to take 10% increased damage from all sources for 4 seconds. After it expires, Vladimir deals <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(150/250/350 + (70% Ability Power)) magic damage</span> to all infected targets. Vladimir restores <span class=\"text-green-600 dark:text-green-400\">(150/250/350 + (70% Ability Power)) Health</span> if he hits a champion, and restores an additional <span class=\"text-green-600 dark:text-green-400\">(60/100/140 + (28% Ability Power)) Health</span> for each champion beyond the first.",
+        "iconFile": "VladimirHemoplague.png",
+        "cooldownSeconds": [
+          120,
+          120,
+          120
+        ],
+        "range": [
+          625,
+          625,
+          625
+        ],
+        "rankValues": [
+          {
+            "label": "Damage",
+            "values": "150/250/350"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "R Scaling",
+            "labelKo": "R 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "3:Damage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      }
+    }
+  }
+}

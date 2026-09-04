@@ -1,0 +1,378 @@
+{
+  "schemaVersion": 2,
+  "patchVersion": "26.17",
+  "locale": "en_US",
+  "sources": {
+    "ddragon": "16.17.1",
+    "cdragon": "16.17"
+  },
+  "champion": {
+    "id": "Teemo",
+    "key": "17",
+    "name": "Teemo",
+    "title": "the Swift Scout",
+    "tags": [
+      "Marksman",
+      "Mage"
+    ],
+    "baseStats": {
+      "health": {
+        "base": 615,
+        "perLevel": 104
+      },
+      "healthRegen": {
+        "base": 5.5,
+        "perLevel": 0.65
+      },
+      "mana": {
+        "base": 334,
+        "perLevel": 25
+      },
+      "manaRegen": {
+        "base": 9.6,
+        "perLevel": 0.45
+      },
+      "attackDamage": {
+        "base": 54,
+        "perLevel": 0
+      },
+      "attackSpeed": {
+        "base": 0.69,
+        "perLevel": 3.38
+      },
+      "armor": {
+        "base": 24,
+        "perLevel": 4.5
+      },
+      "magicResist": {
+        "base": 30,
+        "perLevel": 1.3
+      },
+      "moveSpeed": {
+        "base": 330,
+        "perLevel": 0
+      },
+      "attackRange": {
+        "base": 500,
+        "perLevel": 0
+      }
+    },
+    "baseStatContributions": [
+      {
+        "stat": "MAX_HEALTH",
+        "value": 104,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "HEALTH_REGEN",
+        "value": 0.65,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAX_MANA",
+        "value": 25,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MANA_REGEN",
+        "value": 0.45,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_DAMAGE",
+        "value": 0,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_SPEED",
+        "value": 3.38,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ARMOR",
+        "value": 4.5,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAGIC_RESIST",
+        "value": 1.3,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      }
+    ],
+    "abilities": {
+      "P": {
+        "slot": "P",
+        "id": "TeemoPassive",
+        "name": "Guerrilla Warfare",
+        "summary": "If Teemo stands still and takes no actions for a short duration, he becomes Invisible indefinitely. If he's in brush, Teemo can enter and maintain his Invisibility while moving. After leaving Invisibility, Teemo gains the Element of Surprise, increasing his Attack Speed for a few seconds.",
+        "bodyHtml": "If Teemo stands still for 1.5 seconds without being damaged, he becomes <span class=\"text-purple-600 dark:text-purple-400 font-semibold\">Invisible</span> until he moves. While in a brush, he can maintain <span class=\"text-purple-600 dark:text-purple-400 font-semibold\">Invisibility</span> while moving.<br /><br />Upon exiting this <span class=\"text-purple-600 dark:text-purple-400 font-semibold\">Invisibility</span>, Teemo gains <span>80% Attack Speed</span> for 5 seconds.",
+        "iconFile": "TeemoPassive.png",
+        "cooldownSeconds": [],
+        "range": [],
+        "rankValues": [],
+        "scalings": [],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "Q": {
+        "slot": "Q",
+        "id": "TeemoQ",
+        "name": "Blinding Dart",
+        "summary": "Obscures an enemy's vision with a powerful venom, dealing damage to the target unit and blinding it for the duration.",
+        "bodyHtml": "Teemo fires a dart, <span class=\"text-purple-600 dark:text-purple-500\">Blinding</span> the target for 2/2.25/2.5/2.75/3 seconds and dealing <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(80/125/170/215/260 + (70% Ability Power)) magic damage</span>.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">Minions and jungle monsters are <span class=\"text-purple-600 dark:text-purple-500\">Blinded</span> for 200% longer.</span>",
+        "iconFile": "TeemoQ.png",
+        "cooldownSeconds": [
+          7,
+          7,
+          7,
+          7,
+          7
+        ],
+        "cost": {
+          "values": [
+            70,
+            75,
+            80,
+            85,
+            90
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          680,
+          680,
+          680,
+          680,
+          680
+        ],
+        "rankValues": [
+          {
+            "label": "Mana Cost",
+            "values": "70/75/80/85/90"
+          },
+          {
+            "label": "Duration",
+            "values": "2/2.25/2.5/2.75/3"
+          },
+          {
+            "label": "Damage",
+            "values": "80/125/170/215/260"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "Q Scaling",
+            "labelKo": "Q 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "0:CalculatedDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "W": {
+        "slot": "W",
+        "id": "TeemoW",
+        "name": "Move Quick",
+        "summary": "Teemo scampers around, passively increasing his Move Speed until he is struck by an enemy champion or turret. Teemo can sprint to gain bonus Move Speed that isn't stopped by being struck for a short time.",
+        "bodyHtml": "<span class=\"text-gray-600 dark:text-gray-500 italic\">Passive:</span> Teemo gains <span class=\"text-cyan-600 dark:text-cyan-500\">12/16/20/24/28% Move Speed</span> while he hasn't been damaged by a champion or turret in the last 5 seconds.<br /><br /><span class=\"text-gray-900 dark:text-white font-semibold\">Active:</span> Teemo sprints, gaining <span class=\"text-cyan-600 dark:text-cyan-500\">24/32/40/48/56% Move Speed</span> that is not lost when struck for 3 seconds.",
+        "iconFile": "TeemoW.png",
+        "cooldownSeconds": [
+          14,
+          14,
+          14,
+          14,
+          14
+        ],
+        "cost": {
+          "values": [
+            40,
+            40,
+            40,
+            40,
+            40
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          20,
+          20,
+          20,
+          20,
+          20
+        ],
+        "rankValues": [
+          {
+            "label": "Passive Move Speed",
+            "values": "12/16/20/24/28"
+          },
+          {
+            "label": "Active Move Speed",
+            "values": "24/32/40/48/56"
+          }
+        ],
+        "scalings": [],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "E": {
+        "slot": "E",
+        "id": "TeemoE",
+        "name": "Toxic Shot",
+        "summary": "Each of Teemo's attacks will poison the target %i:OnHit% <OnHit>On-Hit</OnHit>, dealing damage on impact and each second after for 4 seconds.",
+        "bodyHtml": "<span class=\"text-gray-600 dark:text-gray-500 italic\">Passive:</span> Teemo's Attacks apply poison <span>On-Hit</span>, dealing an additional <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(9/23/37/51/65 + (30% Ability Power) + (5% bonus Attack Damage)) magic damage</span> plus <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(24/48/72/96/120 + (40% Ability Power) + (10% bonus Attack Damage)) magic damage</span> over 4 seconds.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">This poison deals 160% damage to jungle monsters.</span>",
+        "iconFile": "TeemoE.png",
+        "cooldownSeconds": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "range": [
+          680,
+          680,
+          680,
+          680,
+          680
+        ],
+        "rankValues": [
+          {
+            "label": "Impact Damage",
+            "values": "9/23/37/51/65"
+          },
+          {
+            "label": "Damage Per Second",
+            "values": "6/12/18/24/30"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "E Scaling",
+            "labelKo": "E 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "2:TickCalculatedDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "R": {
+        "slot": "R",
+        "id": "TeemoR",
+        "name": "Noxious Trap",
+        "summary": "Teemo throws an explosive poisonous trap using one of the mushrooms stored in his pack. If an enemy steps on the trap, it will release a poisonous cloud, slowing enemies and damaging them over time. If Teemo throws a mushroom onto another mushroom it will bounce, gaining additional range.",
+        "bodyHtml": "Teemo tosses a mushroom trap that detonates when stepped on. The traps <span class=\"text-purple-600 dark:text-purple-500\">Slow</span> by 30/40/50% and deal <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(200/325/450 + (50% Ability Power)) magic damage</span> over 4 seconds. Enemies are revealed for the same duration.<br /><br />Traps last 5 minutes and are stealthed. A mushroom tossed onto another mushroom bounces before landing at its position. This Ability has 3/4/5 charges (35/30/25 second refresh).<br />",
+        "iconFile": "TeemoR.png",
+        "cooldownSeconds": [
+          0.25,
+          0.25,
+          0.25
+        ],
+        "rechargeSeconds": [
+          35,
+          30,
+          25
+        ],
+        "maxCharges": 3,
+        "cost": {
+          "values": [
+            75,
+            55,
+            35
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          600,
+          750,
+          900
+        ],
+        "rankValues": [
+          {
+            "label": "Damage",
+            "values": "200/325/450"
+          },
+          {
+            "label": "Slow",
+            "values": "30/40/50"
+          },
+          {
+            "label": "Maximum Bounce Distance",
+            "values": "360/440/550"
+          },
+          {
+            "label": "Maximum Traps",
+            "values": "3/4/5"
+          },
+          {
+            "label": "Mana Cost",
+            "values": "75/55/35"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "R Scaling",
+            "labelKo": "R 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "3:TotalDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      }
+    }
+  }
+}

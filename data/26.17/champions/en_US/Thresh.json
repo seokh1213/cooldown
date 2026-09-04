@@ -1,0 +1,398 @@
+{
+  "schemaVersion": 2,
+  "patchVersion": "26.17",
+  "locale": "en_US",
+  "sources": {
+    "ddragon": "16.17.1",
+    "cdragon": "16.17"
+  },
+  "champion": {
+    "id": "Thresh",
+    "key": "412",
+    "name": "Thresh",
+    "title": "the Chain Warden",
+    "tags": [
+      "Support",
+      "Tank"
+    ],
+    "baseStats": {
+      "health": {
+        "base": 620,
+        "perLevel": 120
+      },
+      "healthRegen": {
+        "base": 7,
+        "perLevel": 0.55
+      },
+      "mana": {
+        "base": 274,
+        "perLevel": 44
+      },
+      "manaRegen": {
+        "base": 6,
+        "perLevel": 0.8
+      },
+      "attackDamage": {
+        "base": 56,
+        "perLevel": 0
+      },
+      "attackSpeed": {
+        "base": 0.625,
+        "perLevel": 3.5
+      },
+      "armor": {
+        "base": 33,
+        "perLevel": 0
+      },
+      "magicResist": {
+        "base": 30,
+        "perLevel": 1.55
+      },
+      "moveSpeed": {
+        "base": 330,
+        "perLevel": 0
+      },
+      "attackRange": {
+        "base": 450,
+        "perLevel": 0
+      }
+    },
+    "baseStatContributions": [
+      {
+        "stat": "MAX_HEALTH",
+        "value": 120,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "HEALTH_REGEN",
+        "value": 0.55,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAX_MANA",
+        "value": 44,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MANA_REGEN",
+        "value": 0.8,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_DAMAGE",
+        "value": 0,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_SPEED",
+        "value": 3.5,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ARMOR",
+        "value": 0,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAGIC_RESIST",
+        "value": 1.55,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      }
+    ],
+    "abilities": {
+      "P": {
+        "slot": "P",
+        "id": "ThreshPassiveSouls",
+        "name": "Damnation",
+        "summary": "Thresh can harvest the souls of enemies that die near him, permanently granting him Armor and Ability Power.",
+        "bodyHtml": "Thresh collects the <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Souls</span> of dead enemies by walking near them. Each <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Soul</span> grants him <span class=\"text-orange-600 dark:text-orange-400\">1 Armor</span> and <span class=\"text-blue-600 dark:text-blue-400\">1 Ability Power</span>.",
+        "iconFile": "Thresh_Passive.png",
+        "cooldownSeconds": [],
+        "range": [],
+        "rankValues": [],
+        "scalings": [],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "Q": {
+        "slot": "Q",
+        "id": "ThreshQ",
+        "name": "Death Sentence",
+        "summary": "Thresh binds an enemy in chains and pulls them toward him. Activating this ability a second time pulls Thresh to the enemy.",
+        "bodyHtml": "Thresh throws out his scythe, <span class=\"text-purple-600 dark:text-purple-500\">Stunning</span> the first unit hit and <span class=\"text-purple-600 dark:text-purple-500\">Pulling</span> them towards Thresh for 1.5 seconds. The scythe does <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(100/150/200/250/300 + (90% Ability Power)) magic damage</span> and also grants <span class=\"text-purple-600 dark:text-purple-400 font-semibold\">True Sight</span> for the duration.<br /><br />Thresh can <span class=\"text-yellow-600 dark:text-yellow-300\">Recast</span> this Ability to pull himself to the enemy.<br /><br />If this Ability hits, its Cooldown is reduced by 2 seconds.",
+        "iconFile": "ThreshQ.png",
+        "cooldownSeconds": [
+          19,
+          16.5,
+          14,
+          11.5,
+          9
+        ],
+        "cost": {
+          "values": [
+            70,
+            70,
+            70,
+            70,
+            70
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          1075,
+          1075,
+          1075,
+          1075,
+          1075
+        ],
+        "rankValues": [
+          {
+            "label": "Damage",
+            "values": "100/150/200/250/300"
+          },
+          {
+            "label": "Cooldown",
+            "values": "19/16.5/14/11.5/9"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "Q Scaling",
+            "labelKo": "Q 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "0:TotalDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "W": {
+        "slot": "W",
+        "id": "ThreshW",
+        "name": "Dark Passage",
+        "summary": "Thresh throws out a lantern that shields nearby allied Champions from damage. Allies can click the lantern to dash to Thresh.",
+        "bodyHtml": "Thresh throws his lantern, allowing an ally to click on it to dash to Thresh.<br /><br />The lantern also grants <span class=\"text-blue-600 dark:text-blue-300\">50/70/90/110/130 Shield</span> for 4 seconds to Thresh and the first ally champion to come in contact with it.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">The <span class=\"text-blue-600 dark:text-blue-300\">Shield</span> scales with number of <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Souls</span> collected. Thresh can use his lantern to pick up <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Souls</span>.</span>",
+        "iconFile": "ThreshW.png",
+        "cooldownSeconds": [
+          21,
+          20,
+          19,
+          18,
+          17
+        ],
+        "cost": {
+          "values": [
+            50,
+            55,
+            60,
+            65,
+            70
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          950,
+          950,
+          950,
+          950,
+          950
+        ],
+        "rankValues": [
+          {
+            "label": "Shield Amount",
+            "values": "50/70/90/110/130"
+          },
+          {
+            "label": "Cooldown",
+            "values": "21/20/19/18/17"
+          },
+          {
+            "label": "Mana Cost",
+            "values": "50/55/60/65/70"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "W Scaling",
+            "labelKo": "W 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "1:TotalShield"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "E": {
+        "slot": "E",
+        "id": "ThreshE",
+        "name": "Flay",
+        "summary": "Thresh's attacks wind up, dealing more damage the longer he waits between attacks. When activated, Thresh sweeps his chain, knocking all enemies hit in the direction of the blow.",
+        "bodyHtml": "<span class=\"text-gray-600 dark:text-gray-500 italic\">Passive:</span> Thresh's Attacks deal additional damage based on how long since he last Attacked. They deal between <span class=\"text-blue-600 dark:text-blue-500 font-semibold\"></span> and <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(90/120/150/180/210% Attack Damage) magic damage</span>.<br /><br /><span class=\"text-gray-900 dark:text-white font-semibold\">Active:</span> Thresh whips his chains, <span class=\"text-purple-600 dark:text-purple-500\">Pulling</span> or <span class=\"text-purple-600 dark:text-purple-500\">Pushing</span> enemies in the direction of the swing. Enemies hit are also <span class=\"text-purple-600 dark:text-purple-500\">Slowed</span> by 20/25/30/35/40% for 1 second and take <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(65/110/155/200/245 + (60% Ability Power)) magic damage</span>.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">Passive damage scales with number of <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Souls</span> collected.</span>",
+        "iconFile": "ThreshE.png",
+        "cooldownSeconds": [
+          13,
+          12.25,
+          11.5,
+          10.75,
+          10
+        ],
+        "cost": {
+          "values": [
+            60,
+            65,
+            70,
+            75,
+            80
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          500,
+          500,
+          500,
+          500,
+          500
+        ],
+        "rankValues": [
+          {
+            "label": "Passive Damage",
+            "values": "90/120/150/180/210"
+          },
+          {
+            "label": "Active Damage",
+            "values": "65/110/155/200/245"
+          },
+          {
+            "label": "Slow",
+            "values": "20/25/30/35/40"
+          },
+          {
+            "label": "Mana Cost",
+            "values": "60/65/70/75/80"
+          },
+          {
+            "label": "Cooldown",
+            "values": "13/12.25/11.5/10.75/10"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "E Scaling",
+            "labelKo": "E 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "2:TotalDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": [
+            "PAttackDamageMin"
+          ]
+        }
+      },
+      "R": {
+        "slot": "R",
+        "id": "ThreshRPenta",
+        "name": "The Box",
+        "summary": "A prison of walls that slow and deal damage if broken.",
+        "bodyHtml": "Thresh creates a prison of spectral walls, <span class=\"text-purple-600 dark:text-purple-500\">Slowing</span> champions by 99% for 2 seconds and dealing <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(250/400/550 + (100% Ability Power)) magic damage</span>. Walls break after one collision, and after one is broken, the rest deal no damage and <span class=\"text-purple-600 dark:text-purple-500\">Slow</span> for half duration.",
+        "iconFile": "ThreshRPenta.png",
+        "cooldownSeconds": [
+          120,
+          100,
+          80
+        ],
+        "cost": {
+          "values": [
+            100,
+            100,
+            100
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          450,
+          450,
+          450
+        ],
+        "rankValues": [
+          {
+            "label": "Damage",
+            "values": "250/400/550"
+          },
+          {
+            "label": "Cooldown",
+            "values": "120/100/80"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "R Scaling",
+            "labelKo": "R 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "3:TotalDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,384 @@
+{
+  "schemaVersion": 2,
+  "patchVersion": "26.17",
+  "locale": "en_US",
+  "sources": {
+    "ddragon": "16.17.1",
+    "cdragon": "16.17"
+  },
+  "champion": {
+    "id": "Ashe",
+    "key": "22",
+    "name": "Ashe",
+    "title": "the Frost Archer",
+    "tags": [
+      "Marksman",
+      "Support"
+    ],
+    "baseStats": {
+      "health": {
+        "base": 610,
+        "perLevel": 101
+      },
+      "healthRegen": {
+        "base": 3.5,
+        "perLevel": 0.55
+      },
+      "mana": {
+        "base": 280,
+        "perLevel": 35
+      },
+      "manaRegen": {
+        "base": 7,
+        "perLevel": 0.65
+      },
+      "attackDamage": {
+        "base": 59,
+        "perLevel": 0
+      },
+      "attackSpeed": {
+        "base": 0.658,
+        "perLevel": 3
+      },
+      "armor": {
+        "base": 26,
+        "perLevel": 4.6
+      },
+      "magicResist": {
+        "base": 33,
+        "perLevel": 1.1
+      },
+      "moveSpeed": {
+        "base": 325,
+        "perLevel": 0
+      },
+      "attackRange": {
+        "base": 600,
+        "perLevel": 0
+      }
+    },
+    "baseStatContributions": [
+      {
+        "stat": "MAX_HEALTH",
+        "value": 101,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "HEALTH_REGEN",
+        "value": 0.55,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAX_MANA",
+        "value": 35,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MANA_REGEN",
+        "value": 0.65,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_DAMAGE",
+        "value": 0,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_SPEED",
+        "value": 3,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ARMOR",
+        "value": 4.6,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAGIC_RESIST",
+        "value": 1.1,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      }
+    ],
+    "abilities": {
+      "P": {
+        "slot": "P",
+        "id": "AshePassive",
+        "name": "Frost Shot",
+        "summary": "Ashe's attacks slow their target, causing her to deal increased damage to these targets.<br><br>Ashe's critical strikes deal no bonus damage but apply an empowered slow to the target.",
+        "bodyHtml": "Ashe's Attacks and Abilities <span class=\"text-purple-600 dark:text-purple-500\">Slow</span> by (20% ~ 30%) for 2 seconds. Attacks deal 100% damage.<br /><br />Ashe's critical strikes deal no extra damage, instead increasing the <span class=\"text-purple-600 dark:text-purple-500\">Slow</span> to (40% ~ 60%) decaying.",
+        "iconFile": "Ashe_P.png",
+        "cooldownSeconds": [],
+        "range": [],
+        "rankValues": [],
+        "scalings": [],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "Q": {
+        "slot": "Q",
+        "id": "AsheQ",
+        "name": "Ranger's Focus",
+        "summary": "Ashe builds up Focus by attacking. At maximum Focus, Ashe can cast Ranger's Focus to consume all stacks of Focus, temporarily increasing her Attack Speed and transforming her basic attack into a powerful flurry attack for the duration.",
+        "bodyHtml": "<span class=\"text-gray-600 dark:text-gray-500 italic\">Passive: </span>Ashe's Attacks grant a stack for 4 seconds. At 4 stacks, she may activate this Ability.<br /><br /><span class=\"text-gray-600 dark:text-gray-500 italic\">Active:</span> Ashe gains <span>20/30/40/50/60% Attack Speed</span> and her Attacks deal <span class=\"text-red-600 dark:text-red-500 font-semibold\">(110/115/120/125/130% Attack Damage) damage</span> instead for 6 seconds.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">The empowered Attacks are comprised of a flurry of 5 small strikes. They only apply on-hit effects once per Attack.</span>",
+        "iconFile": "AsheQ.png",
+        "cooldownSeconds": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "cost": {
+          "values": [
+            30,
+            30,
+            30,
+            30,
+            30
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          400,
+          400,
+          400,
+          400,
+          400
+        ],
+        "rankValues": [
+          {
+            "label": "Attack Speed",
+            "values": "20/30/40/50/60"
+          },
+          {
+            "label": "Flurry Attack Damage ratio",
+            "values": "110/115/120/125/130"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "Q Scaling",
+            "labelKo": "Q 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "0:EmpoweredDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "W": {
+        "slot": "W",
+        "id": "Volley",
+        "name": "Volley",
+        "summary": "Ashe fires arrows in a cone for increased damage. Also applies Frost Shot.",
+        "bodyHtml": "Ashe fires a volley of 7/8/9/10/11 arrows, each dealing <span class=\"text-red-600 dark:text-red-500 font-semibold\">(60/95/130/165/200 + (100% bonus Attack Damage)) physical damage</span>. Enemies can be hit by multiple arrows, but only take damage from the first.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">Champion hits count as critical strikes for the purposes of <span>Frost Shot</span>.</span>",
+        "iconFile": "Volley.png",
+        "cooldownSeconds": [
+          18,
+          14.5,
+          11,
+          7.5,
+          4
+        ],
+        "cost": {
+          "values": [
+            75,
+            70,
+            65,
+            60,
+            55
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          1200,
+          1200,
+          1200,
+          1200,
+          1200
+        ],
+        "rankValues": [
+          {
+            "label": "Arrows Fired",
+            "values": "7/8/9/10/11"
+          },
+          {
+            "label": "Damage",
+            "values": "60/95/130/165/200"
+          },
+          {
+            "label": "Cooldown",
+            "values": "18/14.5/11/7.5/4"
+          },
+          {
+            "label": "Mana Cost",
+            "values": "75/70/65/60/55"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "W Scaling",
+            "labelKo": "W 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "1:TotalDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "E": {
+        "slot": "E",
+        "id": "AsheSpiritOfTheHawk",
+        "name": "Hawkshot",
+        "summary": "Ashe sends her Hawk Spirit on a scouting mission anywhere on the map.",
+        "bodyHtml": "Ashe sends forth a hawk to grant vision for 5 seconds anywhere on the map. It also reveals the area around it as it flies.<br /><br />This Ability has 2 charges ( second recharge).",
+        "iconFile": "AsheSpiritOfTheHawk.png",
+        "cooldownSeconds": [
+          5,
+          5,
+          5,
+          5,
+          5
+        ],
+        "rechargeSeconds": [
+          90,
+          80,
+          70,
+          60,
+          50
+        ],
+        "maxCharges": 2,
+        "range": [
+          25000,
+          25000,
+          25000,
+          25000,
+          25000
+        ],
+        "rankValues": [
+          {
+            "label": "Recharge Time",
+            "values": "90/80/70/60/50"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "E Scaling",
+            "labelKo": "E 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "2:ChargeCooldown"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": [
+            "ChargeCooldown"
+          ]
+        }
+      },
+      "R": {
+        "slot": "R",
+        "id": "EnchantedCrystalArrow",
+        "name": "Enchanted Crystal Arrow",
+        "summary": "Ashe fires a missile of ice in a straight line. If the arrow collides with an enemy Champion, it deals damage and stuns the Champion, stunning for longer the farther arrow has traveled. In addition, surrounding enemy units take damage and are slowed.",
+        "bodyHtml": "Ashe launches a crystal arrow of ice that <span class=\"text-purple-600 dark:text-purple-500\">Stuns</span> the first champion hit and deals <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(200/400/600 + (120% Ability Power)) magic damage</span>. The <span class=\"text-purple-600 dark:text-purple-500\">Stun</span> duration increases with distance travelled, up to 3.5 seconds. Surrounding enemies are <span class=\"text-purple-600 dark:text-purple-500\">Slowed</span> by <span>Frost Shot</span>.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">Minimum <span class=\"text-purple-600 dark:text-purple-500\">Stun</span> duration is 1 second.</span>",
+        "iconFile": "EnchantedCrystalArrow.png",
+        "cooldownSeconds": [
+          100,
+          80,
+          60
+        ],
+        "cost": {
+          "values": [
+            100,
+            100,
+            100
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          25000,
+          25000,
+          25000
+        ],
+        "rankValues": [
+          {
+            "label": "Damage",
+            "values": "200/400/600"
+          },
+          {
+            "label": "Cooldown",
+            "values": "100/80/60"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "R Scaling",
+            "labelKo": "R 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "3:RMainDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      }
+    }
+  }
+}

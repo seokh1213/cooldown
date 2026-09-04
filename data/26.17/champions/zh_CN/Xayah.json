@@ -1,0 +1,369 @@
+{
+  "schemaVersion": 2,
+  "patchVersion": "26.17",
+  "locale": "zh_CN",
+  "sources": {
+    "ddragon": "16.17.1",
+    "cdragon": "16.17"
+  },
+  "champion": {
+    "id": "Xayah",
+    "key": "498",
+    "name": "逆羽",
+    "title": "霞",
+    "tags": [
+      "Marksman"
+    ],
+    "baseStats": {
+      "health": {
+        "base": 630,
+        "perLevel": 107
+      },
+      "healthRegen": {
+        "base": 3.25,
+        "perLevel": 0.75
+      },
+      "mana": {
+        "base": 340,
+        "perLevel": 40
+      },
+      "manaRegen": {
+        "base": 8.25,
+        "perLevel": 0.8
+      },
+      "attackDamage": {
+        "base": 60,
+        "perLevel": 0
+      },
+      "attackSpeed": {
+        "base": 0.658,
+        "perLevel": 3.9
+      },
+      "armor": {
+        "base": 25,
+        "perLevel": 4.2
+      },
+      "magicResist": {
+        "base": 33,
+        "perLevel": 1.1
+      },
+      "moveSpeed": {
+        "base": 330,
+        "perLevel": 0
+      },
+      "attackRange": {
+        "base": 525,
+        "perLevel": 0
+      }
+    },
+    "baseStatContributions": [
+      {
+        "stat": "MAX_HEALTH",
+        "value": 107,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "HEALTH_REGEN",
+        "value": 0.75,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAX_MANA",
+        "value": 40,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MANA_REGEN",
+        "value": 0.8,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_DAMAGE",
+        "value": 0,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_SPEED",
+        "value": 3.9,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ARMOR",
+        "value": 4.2,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAGIC_RESIST",
+        "value": 1.1,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      }
+    ],
+    "abilities": {
+      "P": {
+        "slot": "P",
+        "id": "XayahPassive",
+        "name": "锐切",
+        "summary": "在使用一次技能后，霞的下几次普攻将命中沿途的所有敌人，并各落下一根<font color='#C200E1'>羽毛</font>。",
+        "bodyHtml": "在使用一个技能后，霞的下次攻击将对沿途的所有目标造成伤害并留下一支持续秒的<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">羽毛</span>。<br /><br /><span>情人跃：</span>洛和霞可以一起回城。",
+        "iconFile": "XayahPassive.png",
+        "cooldownSeconds": [],
+        "range": [],
+        "rankValues": [],
+        "scalings": [],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "Q": {
+        "slot": "Q",
+        "id": "XayahQ",
+        "name": "双刃",
+        "summary": "霞扔出两把具有伤害的匕首，并掉落可供她召回的羽毛。",
+        "bodyHtml": "霞扔出两把匕首，每把造成<span class=\"text-red-600 dark:text-red-500 font-semibold\">(45/60/75/90/105 + (50% 额外攻击力))物理伤害</span>，然后留下两支<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">羽毛</span>。每把匕首对首个目标之后的后续目标造成<span class=\"text-red-600 dark:text-red-500 font-semibold\">(22.5/30/37.5/45/52.5 + (25% 额外攻击力))伤害</span>。",
+        "iconFile": "XayahQ.png",
+        "cooldownSeconds": [
+          10,
+          9.5,
+          9,
+          8.5,
+          8
+        ],
+        "cost": {
+          "values": [
+            35,
+            35,
+            35,
+            35,
+            35
+          ],
+          "resource": "法力值"
+        },
+        "range": [
+          400,
+          400,
+          400,
+          400,
+          400
+        ],
+        "rankValues": [
+          {
+            "label": "伤害",
+            "values": "45/60/75/90/105"
+          },
+          {
+            "label": "冷却时间",
+            "values": "10/9.5/9/8.5/8"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "Q Scaling",
+            "labelKo": "Q 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "0:TotalDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "W": {
+        "slot": "W",
+        "id": "XayahW",
+        "name": "致死羽衣",
+        "summary": "霞创造一道刀刃风暴，来提升她的攻击速度和伤害，并且如果她的攻击命中了敌人，还会提升她的移动速度。",
+        "bodyHtml": "霞创造一道持续4秒的羽刃风暴，来为她提供<span>35/40/45/50/55%攻击速度</span>并使她的攻击发射一支造成25%伤害的次级羽刃。<br /><br />如果次级羽刃命中了一名敌方英雄，那么她自身会获得<span class=\"text-cyan-600 dark:text-cyan-500\">30%移动速度</span>，持续1.5秒。<br /><br />如果洛在附近，那么他也会获得这个技能的效果，但他只会在<span>霞</span>命中了一个目标时获得<span class=\"text-cyan-600 dark:text-cyan-500\">移动速度</span>。",
+        "iconFile": "XayahW.png",
+        "cooldownSeconds": [
+          18,
+          17,
+          16,
+          15,
+          14
+        ],
+        "cost": {
+          "values": [
+            60,
+            55,
+            50,
+            45,
+            40
+          ],
+          "resource": "法力值"
+        },
+        "range": [
+          1000,
+          1000,
+          1000,
+          1000,
+          1000
+        ],
+        "rankValues": [
+          {
+            "label": "攻击速度",
+            "values": "35/40/45/50/55"
+          },
+          {
+            "label": "冷却时间",
+            "values": "18/17/16/15/14"
+          },
+          {
+            "label": "法力值消耗",
+            "values": "60/55/50/45/40"
+          }
+        ],
+        "scalings": [],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "E": {
+        "slot": "E",
+        "id": "XayahE",
+        "name": "倒钩",
+        "summary": "霞唤回她之前掉落的所有羽毛，对敌人造成伤害和禁锢效果。",
+        "bodyHtml": "霞将所有<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">羽毛</span>召回至她的位置，每支造成<span class=\"text-red-600 dark:text-red-500 font-semibold\">(50/65/80/95/110 + (40% 额外攻击力))物理伤害</span>提升。如果有3支或以上的<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">羽毛</span>命中了一名敌人，那么该敌人就会被<span class=\"text-purple-600 dark:text-purple-500\">禁锢</span>1.25秒。<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">伤害受益于暴击几率和暴击伤害，效能为<span class=\"text-red-600 dark:text-red-500 font-semibold\">50%</span>。<br />这个技能对小兵造成50%伤害。<br />敌人每被一支额外的羽毛命中，所受的后续羽毛伤害就会降低5%，最低降至10%。</span>",
+        "iconFile": "XayahE.png",
+        "cooldownSeconds": [
+          12,
+          11,
+          10,
+          9,
+          8
+        ],
+        "cost": {
+          "values": [
+            20,
+            20,
+            20,
+            20,
+            20
+          ],
+          "resource": "法力值"
+        },
+        "range": [
+          2000,
+          2000,
+          2000,
+          2000,
+          2000
+        ],
+        "rankValues": [
+          {
+            "label": "伤害",
+            "values": "50/65/80/95/110"
+          },
+          {
+            "label": "冷却时间",
+            "values": "12/11/10/9/8"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "E Scaling",
+            "labelKo": "E 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "2:FeatherDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "R": {
+        "slot": "R",
+        "id": "XayahR",
+        "name": "暴风羽刃",
+        "summary": "霞跳向空中，变为不可被选取状态，然后扔出一排匕首，同时掉落可供她召回的羽毛。",
+        "bodyHtml": "霞跃向空中，变为不可被选取状态，持续1.5秒。然后她会从天降下匕首雨，造成<span class=\"text-red-600 dark:text-red-500 font-semibold\">(200/300/400 + (100% 额外攻击力))物理伤害</span>并留下一连串的<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">羽毛</span>。<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">不可被选取的单位不会受到敌人的攻击或技能的影响，除非在进入此状态前已被它们影响。<br />幽灵状态的单位无视其它单位的碰撞体积。<br />霞在空中时可以移动。</span>",
+        "iconFile": "XayahR.png",
+        "cooldownSeconds": [
+          140,
+          120,
+          100
+        ],
+        "cost": {
+          "values": [
+            100,
+            100,
+            100
+          ],
+          "resource": "法力值"
+        },
+        "range": [
+          450,
+          450,
+          450
+        ],
+        "rankValues": [
+          {
+            "label": "伤害",
+            "values": "200/300/400"
+          },
+          {
+            "label": "冷却时间",
+            "values": "140/120/100"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "R Scaling",
+            "labelKo": "R 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "3:Damage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,384 @@
+{
+  "schemaVersion": 2,
+  "patchVersion": "26.17",
+  "locale": "en_US",
+  "sources": {
+    "ddragon": "16.17.1",
+    "cdragon": "16.17"
+  },
+  "champion": {
+    "id": "Blitzcrank",
+    "key": "53",
+    "name": "Blitzcrank",
+    "title": "the Great Steam Golem",
+    "tags": [
+      "Tank",
+      "Support"
+    ],
+    "baseStats": {
+      "health": {
+        "base": 600,
+        "perLevel": 109
+      },
+      "healthRegen": {
+        "base": 7.5,
+        "perLevel": 0.75
+      },
+      "mana": {
+        "base": 267,
+        "perLevel": 40
+      },
+      "manaRegen": {
+        "base": 8.5,
+        "perLevel": 0.8
+      },
+      "attackDamage": {
+        "base": 62,
+        "perLevel": 0
+      },
+      "attackSpeed": {
+        "base": 0.625,
+        "perLevel": 1.13
+      },
+      "armor": {
+        "base": 37,
+        "perLevel": 4.7
+      },
+      "magicResist": {
+        "base": 32,
+        "perLevel": 2.05
+      },
+      "moveSpeed": {
+        "base": 325,
+        "perLevel": 0
+      },
+      "attackRange": {
+        "base": 125,
+        "perLevel": 0
+      }
+    },
+    "baseStatContributions": [
+      {
+        "stat": "MAX_HEALTH",
+        "value": 109,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "HEALTH_REGEN",
+        "value": 0.75,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAX_MANA",
+        "value": 40,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MANA_REGEN",
+        "value": 0.8,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_DAMAGE",
+        "value": 0,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_SPEED",
+        "value": 1.13,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ARMOR",
+        "value": 4.7,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAGIC_RESIST",
+        "value": 2.05,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      }
+    ],
+    "abilities": {
+      "P": {
+        "slot": "P",
+        "id": "ManaBarrierIcon",
+        "name": "Mana Barrier",
+        "summary": "Blitzcrank gains a shield based on their mana when dropping to low health.",
+        "bodyHtml": "When Blitzcrank falls below 30% Health, they gain <span class=\"text-blue-600 dark:text-blue-300\">(35% Mana) Shield</span> for 10 seconds.",
+        "iconFile": "Blitzcrank_ManaBarrier.png",
+        "cooldownSeconds": [],
+        "range": [],
+        "rankValues": [],
+        "scalings": [],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "Q": {
+        "slot": "Q",
+        "id": "RocketGrab",
+        "name": "Rocket Grab",
+        "summary": "Blitzcrank fires their right hand to grab an opponent on its path, dealing damage and dragging it back to them.",
+        "bodyHtml": "Blitzcrank fires their right hand, <span class=\"text-purple-600 dark:text-purple-500\">Pulling</span> the first enemy hit towards them and dealing <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(110/160/210/260/310 + (120% Ability Power)) magic damage</span>.",
+        "iconFile": "RocketGrab.png",
+        "cooldownSeconds": [
+          20,
+          19,
+          18,
+          17,
+          16
+        ],
+        "cost": {
+          "values": [
+            100,
+            100,
+            100,
+            100,
+            100
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          1079,
+          1079,
+          1079,
+          1079,
+          1079
+        ],
+        "rankValues": [
+          {
+            "label": "Damage",
+            "values": "110/160/210/260/310"
+          },
+          {
+            "label": "Cooldown",
+            "values": "20/19/18/17/16"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "Q Scaling",
+            "labelKo": "Q 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "0:TotalDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "W": {
+        "slot": "W",
+        "id": "Overdrive",
+        "name": "Overdrive",
+        "summary": "Blitzcrank super charges themself to get dramatically increased Move and Attack Speed. They are temporarily slowed after the effect ends.",
+        "bodyHtml": "Blitzcrank supercharges themself, gaining <span class=\"text-cyan-600 dark:text-cyan-500\">60/65/70/75/80% decaying Move Speed</span> and <span>30/40/50/60/70% Attack Speed</span> for 5 seconds.<br /><br />Afterwards, Blitzcrank is <span class=\"text-purple-600 dark:text-purple-500\">Slowed</span> by 30% for 1.5 seconds.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">Move Speed decays to 10% over 2.5 seconds</span>",
+        "iconFile": "Overdrive.png",
+        "cooldownSeconds": [
+          15,
+          15,
+          15,
+          15,
+          15
+        ],
+        "cost": {
+          "values": [
+            75,
+            75,
+            75,
+            75,
+            75
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        "rankValues": [
+          {
+            "label": "Move Speed",
+            "values": "60/65/70/75/80"
+          },
+          {
+            "label": "Attack Speed",
+            "values": "30/40/50/60/70"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "W Scaling",
+            "labelKo": "W 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "1:{c01903c1}"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "E": {
+        "slot": "E",
+        "id": "PowerFist",
+        "name": "Power Fist",
+        "summary": "Blitzcrank charges up their fist to make the next attack deal double damage and pop their target up in the air.",
+        "bodyHtml": "Blitzcrank charges up their fist, causing their next Attack to <span class=\"text-purple-600 dark:text-purple-500\">Knock Up</span> for 1 second(s) and deal <span class=\"text-red-600 dark:text-red-500 font-semibold\">((200% Attack Damage) + (25% Ability Power)) physical damage</span>.",
+        "iconFile": "PowerFist.png",
+        "cooldownSeconds": [
+          7,
+          6.5,
+          6,
+          5.5,
+          5
+        ],
+        "cost": {
+          "values": [
+            25,
+            25,
+            25,
+            25,
+            25
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          300,
+          300,
+          300,
+          300,
+          300
+        ],
+        "rankValues": [
+          {
+            "label": "Cooldown",
+            "values": "7/6.5/6/5.5/5"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "E Scaling",
+            "labelKo": "E 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "2:TotalDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "R": {
+        "slot": "R",
+        "id": "StaticField",
+        "name": "Static Field",
+        "summary": "Enemies attacked by Blitzcrank are marked and take lightning damage after 1 second. Additionally, Blitzcrank can activate this ability to remove nearby enemies' shields, damage them, and silence them briefly.",
+        "bodyHtml": "<span class=\"text-gray-600 dark:text-gray-500 italic\">Passive: </span>While this ability is available, lightning charges Blitzcrank's fists, marking those Attacked. After 1 second, they are shocked for <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(50/100/150 + (30/40/50% Ability Power) + (2% Mana)) magic damage</span>.<br /><br /><span class=\"text-gray-900 dark:text-white font-semibold\">Active: </span>Blitzcrank overcharges, dealing <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(275/400/525 + (100% Ability Power)) magic damage</span> and <span class=\"text-purple-600 dark:text-purple-500\">Silencing</span> nearby enemies for 0.5 seconds. Their shields are also destroyed.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">Does not break shields on monsters.</span>",
+        "iconFile": "StaticField.png",
+        "cooldownSeconds": [
+          60,
+          40,
+          20
+        ],
+        "cost": {
+          "values": [
+            100,
+            100,
+            100
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          600,
+          600,
+          600
+        ],
+        "rankValues": [
+          {
+            "label": "Passive Base Damage",
+            "values": "50/100/150"
+          },
+          {
+            "label": "Passive AP Ratio",
+            "values": "30/40/50"
+          },
+          {
+            "label": "Active Base Damage",
+            "values": "275/400/525"
+          },
+          {
+            "label": "Active Cooldown",
+            "values": "60/40/20"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "R Scaling",
+            "labelKo": "R 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "3:ActiveDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      }
+    }
+  }
+}
