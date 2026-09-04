@@ -21,6 +21,7 @@ test("renders precomputed passive and Q values", async ({ page }) => {
   await expect(passiveTooltip).toContainText("(6 ~ 10)");
   await expect(passiveTooltip).toContainText("0.35%");
   await expect(passiveTooltip).toContainText("최대 5회");
+  await expect(passiveTooltip).not.toContainText("인게임 툴팁");
 
   await page.getByAltText("Q").hover();
   const qTooltip = page.getByRole("tooltip");
@@ -31,6 +32,7 @@ test("renders precomputed passive and Q values", async ({ page }) => {
   await expect(qTooltip.getByLabel("레벨별 수치")).toContainText("20/45/70/95/120");
   await expect(qTooltip.getByLabel("계수")).toContainText("추가 공격력");
   await expect(qTooltip.getByLabel("계수")).toContainText("50%");
+  await expect(qTooltip).not.toContainText("인게임 툴팁");
   expect(dataRequests.some((url) => url.includes("/champions/ko_KR/MonkeyKing.json")))
     .toBe(true);
   expect(dataRequests.some((url) => url.includes("/spells/"))).toBe(false);
@@ -46,15 +48,27 @@ test("serves a lazy route directly under the Pages base path", async ({ page }) 
   await expect(page.locator("#root")).not.toBeEmpty();
 });
 
-test("installs the PWA and serves a direct route offline", async ({ page, context }) => {
+test("installs the PWA and serves a direct route offline", async ({ page, context, baseURL }) => {
   await page.goto("./simulation");
+  const workerSource = await (await page.request.get("./sw.js")).text();
+  expect(workerSource).toContain("cooldown-game-data");
+  expect(workerSource).toContain("cooldown-version");
+  expect(workerSource).not.toContain("champions/ko_KR/MonkeyKing.json");
   await page.evaluate(() => navigator.serviceWorker.ready);
   await page.reload();
   await expect.poll(() => page.evaluate(() => Boolean(navigator.serviceWorker.controller)))
     .toBe(true);
+  const cachedChampionUrl = new URL(
+    "data/26.17/champions/ko_KR/MonkeyKing.json",
+    baseURL,
+  ).href;
+  await expect.poll(() => page.evaluate(async (url) => (await fetch(url)).status, cachedChampionUrl))
+    .toBe(200);
 
   await context.setOffline(true);
   try {
+    await expect.poll(() => page.evaluate(async (url) => (await fetch(url)).status, cachedChampionUrl))
+      .toBe(200);
     await page.reload({ waitUntil: "domcontentloaded" });
     await expect(page.getByRole("heading", { name: "시뮬레이션" }).nth(1)).toBeVisible();
   } finally {
@@ -149,6 +163,8 @@ test("simulation uses compiled Ability v2 without raw spell requests", async ({ 
   await expect(
     page.getByRole("heading", { name: "시뮬레이션" }).nth(1)
   ).toBeVisible();
+  await expect(page.getByText("공격 챔피언과 대상을 선택하면 콤보 결과를 계산합니다.")).toBeVisible();
+  await expect(page.getByTestId("combo-outcome")).toHaveCount(0);
   await page.getByRole("button", { name: "시뮬레이션할 챔피언 선택" }).click();
   await page.getByRole("button", { name: "Select 오공", exact: true }).click();
   await expect(page.getByRole("dialog")).toBeHidden();
@@ -160,7 +176,9 @@ test("simulation uses compiled Ability v2 without raw spell requests", async ({ 
   expect(dataRequests.some((url) => url.includes("/spells/"))).toBe(false);
 });
 
-test("sanitizes game data HTML at the render boundary", async ({ page }) => {
+test("sanitizes game data HTML at the render boundary", async ({ browser, baseURL }) => {
+  const context = await browser.newContext({ baseURL, serviceWorkers: "block" });
+  const page = await context.newPage();
   await page.route("**/champions/ko_KR/MonkeyKing.json", async (route) => {
     const response = await route.fetch();
     const detail = await response.json();
@@ -183,6 +201,7 @@ test("sanitizes game data HTML at the render boundary", async ({ page }) => {
   await expect(tooltip.locator('script, img[src="x"]')).toHaveCount(0);
   await expect(tooltip.locator("span.text-red-600")).not.toHaveAttribute("onclick");
   expect(await page.evaluate(() => Reflect.get(window, "__unsafeHtml"))).toBeUndefined();
+  await context.close();
 });
 
 test("exposes unresolved Ability v2 diagnostics without hiding the tooltip", async ({ page }) => {

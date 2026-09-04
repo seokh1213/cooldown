@@ -39,6 +39,8 @@ export function SimulationLoadout(props: SimulationLoadoutProps) {
                   <img
                     src={summonerSpellIconUrl(props.ddragonVersion, selected.iconPath)}
                     alt=""
+                    width={40}
+                    height={40}
                     className="size-10 rounded-md"
                   />
                 ) : <span className="size-10 rounded-md border border-dashed border-border" />}
@@ -79,6 +81,8 @@ export function SimulationLoadout(props: SimulationLoadoutProps) {
             <img
               src={runeIconUrl(props.runes.find((rune) => rune.id === props.selectedRuneId)?.iconPath ?? "")}
               alt=""
+              width={40}
+              height={40}
               className="size-10 rounded-full"
             />
           ) : <span className="size-10 rounded-full border border-dashed border-border" />}

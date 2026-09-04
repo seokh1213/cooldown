@@ -1,7 +1,5 @@
-import { AlertTriangle } from "lucide-react";
 import type { ChampionPassive, ChampionSpell } from "@/types";
 import { spellIconUrl } from "@/data/assets/riotAssetUrls";
-import { useTranslation } from "@/i18n";
 import { SKILL_LETTERS } from "./constants";
 import { SafeBlockHtml } from "@/components/ui/safe-html";
 import { AbilityStructuredDetails } from "./AbilityStructuredDetails";
@@ -17,7 +15,6 @@ interface SkillTooltipContentProps {
 }
 
 function PassiveContent(props: SkillTooltipContentProps) {
-  const { t } = useTranslation();
   const { passive } = props;
   if (!passive) return null;
   return (
@@ -40,10 +37,6 @@ function PassiveContent(props: SkillTooltipContentProps) {
         diagnostics={passive.tooltipDiagnostics}
         simulation={passive.simulation}
       />
-      <div className="text-xs text-muted-foreground/80 italic leading-relaxed border-t pt-3 mt-3 flex items-center gap-1.5">
-        <AlertTriangle className="w-2.5 h-2.5 text-yellow-600 dark:text-yellow-500 shrink-0" />
-        <span>{t.skillTooltip.warningPassive}</span>
-      </div>
     </>
   );
 }
@@ -68,6 +61,8 @@ function ActiveSkillHeader(props: SkillTooltipContentProps & { skill: ChampionSp
       <img
         src={spellIconUrl(props.ddragonVersion, props.skill.id)}
         alt={letter}
+        width={48}
+        height={48}
         className="w-12 h-12 min-w-12 min-h-12 rounded shrink-0"
       />
       <div className="flex-1 min-w-0">
@@ -94,7 +89,6 @@ function ActiveSkillHeader(props: SkillTooltipContentProps & { skill: ChampionSp
 }
 
 function ActiveSkillContent(props: SkillTooltipContentProps) {
-  const { t } = useTranslation();
   const { skill } = props;
   if (!skill) return null;
   return (
@@ -119,10 +113,6 @@ function ActiveSkillContent(props: SkillTooltipContentProps) {
         diagnostics={skill.tooltipDiagnostics}
         simulation={skill.simulation}
       />
-      <div className="text-xs text-muted-foreground/80 italic leading-relaxed border-t pt-3 mt-3 flex items-center gap-1.5">
-        <AlertTriangle className="w-2.5 h-2.5 text-yellow-600 dark:text-yellow-500 shrink-0" />
-        <span>{t.skillTooltip.warningSkill}</span>
-      </div>
     </>
   );
 }
