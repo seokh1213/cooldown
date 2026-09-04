@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { getRuneTrees, getRuneStatShards } from "@/services/api";
+import { getRunePageData } from "@/data/queries/gameDataQueries";
 import type {
   RuneTree,
   Rune,
@@ -45,14 +45,11 @@ export function RunesTab({ version, lang }: RunesTabProps) {
     let cancelled = false;
     setLoading(true);
 
-    Promise.all([
-      getRuneTrees(version, lang),
-      getRuneStatShards(version, lang),
-    ])
-      .then(([trees, statmods]) => {
+    getRunePageData(version, lang)
+      .then(({ trees, statShards }) => {
         if (!cancelled) {
           setRuneTrees(trees);
-          setStatShardData(statmods);
+          setStatShardData(statShards);
         }
       })
       .finally(() => {
@@ -445,4 +442,3 @@ export function RunesTab({ version, lang }: RunesTabProps) {
     </TooltipProvider>
   );
 }
-

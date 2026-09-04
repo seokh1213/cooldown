@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { getNormalizedSummonerSpells } from "@/services/api";
+import { getNormalizedSummonerSpells } from "@/data/queries/gameDataQueries";
 import type { DataLocale } from "@/data/contracts/staticData";
 import type { NormalizedSummonerSpell } from "@/types/combatNormalized";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/dialog";
 import { VisuallyHidden } from "@/components/ui/visually-hidden";
 import { Search, AlertTriangle } from "lucide-react";
+import { summonerSpellIconUrl } from "@/data/assets/riotAssetUrls";
 
 interface SummonerTabProps {
   /** 정적 데이터 경로/캐시 키로 쓰는 Riot 공식 패치 버전 */
@@ -62,9 +63,9 @@ export function SummonerTab({ version, ddragonVersion, lang }: SummonerTabProps)
             a.name.localeCompare(b.name)
           );
           setSpells(sorted);
-          if (!selectedSpell && sorted.length > 0) {
-            setSelectedSpell(sorted[0]);
-          }
+          setSelectedSpell((current) =>
+            sorted.find((spell) => spell.id === current?.id) ?? sorted[0] ?? null
+          );
         }
       })
       .finally(() => {
@@ -76,7 +77,7 @@ export function SummonerTab({ version, ddragonVersion, lang }: SummonerTabProps)
     return () => {
       cancelled = true;
     };
-  }, [version, lang, search, selectedSpell]);
+  }, [version, lang]);
 
   const term = search.trim().toLowerCase();
 
@@ -150,7 +151,7 @@ export function SummonerTab({ version, ddragonVersion, lang }: SummonerTabProps)
             }`}
           >
             <img
-              src={`https://ddragon.leagueoflegends.com/cdn/${ddragonVersion}/img/spell/${spell.iconPath}`}
+              src={summonerSpellIconUrl(ddragonVersion, spell.iconPath)}
               alt={getSpellName(spell)}
               loading="lazy"
               decoding="async"
@@ -184,7 +185,7 @@ export function SummonerTab({ version, ddragonVersion, lang }: SummonerTabProps)
       <div className="flex flex-col gap-2 h-full min-h-0">
         <div className="flex items-start gap-3">
           <img
-            src={`https://ddragon.leagueoflegends.com/cdn/${ddragonVersion}/img/spell/${selectedSpell.iconPath}`}
+            src={summonerSpellIconUrl(ddragonVersion, selectedSpell.iconPath)}
             alt={getSpellName(selectedSpell)}
             loading="lazy"
             decoding="async"
@@ -306,4 +307,3 @@ export function SummonerTab({ version, ddragonVersion, lang }: SummonerTabProps)
     </div>
   );
 }
-

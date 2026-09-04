@@ -1,6 +1,6 @@
 import React, {useEffect, useMemo, useState} from "react";
 import Hangul from "hangul-js";
-import {getNormalizedItems} from "@/services/api";
+import {getNormalizedItems} from "@/data/queries/gameDataQueries";
 import type {NormalizedItem} from "@/types/combatNormalized";
 import {
   STAT_DEFINITIONS,
@@ -23,6 +23,7 @@ import {
 import {VisuallyHidden} from "@/components/ui/visually-hidden";
 import {Search, AlertTriangle} from "lucide-react";
 import type {DataLocale} from "@/data/contracts/staticData";
+import {itemIconUrl} from "@/data/assets/riotAssetUrls";
 
 interface ItemsTabProps {
   /** 정적 데이터 경로/캐시 키로 쓰는 Riot 공식 패치 버전 */
@@ -167,7 +168,7 @@ const ItemCell: React.FC<ItemCellProps> = ({
       }`}
     >
       <img
-        src={`https://ddragon.leagueoflegends.com/cdn/${ddragonVersion}/img/item/${item.id}.png`}
+        src={itemIconUrl(ddragonVersion, item.id)}
         alt={getItemName(item, "ko_KR")}
         loading="lazy"
         decoding="async"
@@ -579,7 +580,7 @@ export function ItemsTab({version, ddragonVersion, lang}: ItemsTabProps) {
             {/* 헤더: 아이콘 + 이름 + 가격 */}
             <div className="flex items-start gap-2">
               <img
-                src={`https://ddragon.leagueoflegends.com/cdn/${ddragonVersion}/img/item/${selectedItem.id}.png`}
+                src={itemIconUrl(ddragonVersion, selectedItem.id)}
                 alt={selectedItem.name}
                 className="w-9 h-9 rounded-sm border border-border/60 bg-black/40 flex-shrink-0"
               />
@@ -776,4 +777,3 @@ export function ItemsTab({version, ddragonVersion, lang}: ItemsTabProps) {
     </div>
   );
 }
-

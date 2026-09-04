@@ -12,9 +12,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import {
-  getNormalizedItems,
-} from "@/services/api";
+import { getNormalizedItems } from "@/data/queries/gameDataQueries";
 import { championRepository } from "@/data/repositories/championRepository";
 import { toChampion } from "@/data/mappers/championMapper";
 import type { ChampionDetailV2 } from "@/data/contracts/championData";

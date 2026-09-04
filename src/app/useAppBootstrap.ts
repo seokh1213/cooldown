@@ -1,16 +1,15 @@
 import { useCallback, useEffect, useState } from "react";
 import type { Language } from "@/i18n";
 import type { Champion } from "@/types";
-import {
-  cleanStaticDataCache,
-  getChampionList,
-  getDataVersions,
-} from "@/services/api";
+import { getChampionList } from "@/data/queries/championQueries";
+import { championRepository } from "@/data/repositories/championRepository";
+import { gameDataRepository } from "@/data/repositories/gameDataRepository";
+import { manifestRepository } from "@/data/repositories/manifestRepository";
+import type { StaticDataSources } from "@/data/contracts/staticData";
 
 export interface AppRuntimeData {
   patchVersion: string;
-  ddragonVersion: string;
-  cdragonVersion: string;
+  sources: StaticDataSources;
   championList: Champion[];
 }
 
@@ -31,17 +30,18 @@ export function useAppBootstrap(language: Language): {
     setState({ status: "loading" });
     void (async () => {
       try {
-        const versions = await getDataVersions();
-        cleanStaticDataCache(versions.patchVersion);
+        const manifest = await manifestRepository.get();
+        championRepository.clearExceptPatch(manifest.patchVersion);
+        gameDataRepository.clearExceptPatch(manifest.patchVersion);
         const championList = await getChampionList(
-          versions.patchVersion,
+          manifest.patchVersion,
           language
         );
         if (!active) return;
         if (championList.length === 0) {
           throw new Error("Champion data is empty");
         }
-        setState({ status: "ready", data: { ...versions, championList } });
+        setState({ status: "ready", data: { ...manifest, championList } });
       } catch (value) {
         if (!active) return;
         const error = value instanceof Error ? value : new Error(String(value));

@@ -1,6 +1,6 @@
 import { useState, useCallback, useEffect, useMemo } from "react";
 import { Champion } from "@/types";
-import { getChampionInfo } from "@/services/api";
+import { getChampionInfo } from "@/data/queries/championQueries";
 import { ChampionWithInfo, Tab } from "./types";
 import {
   decodeSelectedChampions,
