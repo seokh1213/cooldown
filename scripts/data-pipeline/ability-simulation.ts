@@ -7,6 +7,7 @@ import type {
 import type { CommunityDragonSpellData } from "../../src/lib/spellTooltipParser/types";
 
 type RawPart = Record<string, unknown>;
+type DamageType = AbilitySimulationCalculation["damageType"];
 
 const DAMAGE_KEY_PRIORITY = [
   "TotalDamage",
@@ -102,7 +103,8 @@ function compileCalculation(
   id: string,
   raw: Record<string, unknown>,
   source: CommunityDragonSpellData,
-  maxRank: number
+  maxRank: number,
+  damageType: DamageType,
 ): { calculation?: AbilitySimulationCalculation; unsupported: string[] } {
   const unsupported = new Set<string>();
   if (raw.__type !== "GameCalculation" || !Array.isArray(raw.mFormulaParts)) {
@@ -164,7 +166,13 @@ function compileCalculation(
     })
   );
   return {
-    calculation: { id, kind: "damage", baseByRank: base, terms: compiledTerms },
+    calculation: {
+      id,
+      kind: "damage",
+      damageType,
+      baseByRank: base,
+      terms: compiledTerms,
+    },
     unsupported: [],
   };
 }
@@ -176,7 +184,8 @@ function isDamageKey(key: string): boolean {
 
 export function compileAbilitySimulation(
   source: CommunityDragonSpellData | undefined,
-  maxRank: number
+  maxRank: number,
+  damageType: DamageType = "unknown",
 ): AbilitySimulation {
   const calculations = source?.mSpellCalculations;
   if (!source || !calculations || maxRank <= 0) {
@@ -192,7 +201,7 @@ export function compileAbilitySimulation(
   if (!isRecord(raw)) {
     return { status: "unsupported", unsupportedPartTypes: ["invalid-calculation"] };
   }
-  const compiled = compileCalculation(selected, raw, source, maxRank);
+  const compiled = compileCalculation(selected, raw, source, maxRank, damageType);
   return compiled.calculation
     ? { status: "complete", primary: compiled.calculation, unsupportedPartTypes: [] }
     : { status: "unsupported", unsupportedPartTypes: compiled.unsupported };

@@ -1,5 +1,6 @@
 import type {
   AbilitySimulation,
+  AbilitySimulationCalculation,
   AbilitySimulationStat,
 } from "@/data/contracts/championData";
 import type { Champion, ChampionSpell } from "@/types";
@@ -20,6 +21,7 @@ export interface SimpleStats {
   baseAttackDamage: number;
   bonusAttackDamage: number;
   abilityPower: number;
+  attackSpeed: number;
   movespeed: number;
 }
 
@@ -31,6 +33,28 @@ export interface SkillSummary {
   cooldownsWithAbilityHaste: number[];
 }
 
+export type DamageType = AbilitySimulationCalculation["damageType"];
+
+export function resistanceMultiplier(resistance: number): number {
+  return resistance >= 0
+    ? 100 / (100 + resistance)
+    : 2 - 100 / (100 - resistance);
+}
+
+export function applyDamageMitigation(
+  rawDamage: number,
+  damageType: DamageType,
+  target: { armor: number; magicResist: number; damageReductionPercent: number },
+): number | null {
+  if (!Number.isFinite(rawDamage) || rawDamage < 0 || damageType === "unknown") {
+    return null;
+  }
+  if (damageType === "true") return rawDamage;
+  const resistance = damageType === "physical" ? target.armor : target.magicResist;
+  const reduction = Math.min(Math.max(target.damageReductionPercent, 0), 100) / 100;
+  return rawDamage * resistanceMultiplier(resistance) * (1 - reduction);
+}
+
 export function computeChampionStatsAtLevel(
   champion: Champion,
   level: number
@@ -38,7 +62,8 @@ export function computeChampionStatsAtLevel(
   if (!champion.stats) return null;
   const stats = champion.stats;
   const boundedLevel = Math.min(Math.max(level, 1), 18);
-  const factor = boundedLevel - 1;
+  const levelsGained = boundedLevel - 1;
+  const factor = levelsGained * (0.7025 + 0.0175 * levelsGained);
   const attackDamage =
     (stats.attackdamage ?? 0) + (stats.attackdamageperlevel ?? 0) * factor;
   return {
@@ -56,12 +81,15 @@ export function computeChampionStatsAtLevel(
     baseAttackDamage: attackDamage,
     bonusAttackDamage: 0,
     abilityPower: 0,
+    attackSpeed:
+      (stats.attackspeed ?? 0) *
+      (1 + ((stats.attackspeedperlevel ?? 0) * factor) / 100),
     movespeed: stats.movespeed ?? 0,
   };
 }
 
 function applyPercentStat(stats: SimpleStats, key: StatKey, value: number): void {
-  const multiplier = 1 + value / 100;
+  const multiplier = 1 + value;
   if (key === StatKey.MAX_HEALTH) stats.health *= multiplier;
   else if (key === StatKey.MAX_MANA) stats.mana *= multiplier;
   else if (key === StatKey.ARMOR) stats.armor *= multiplier;
@@ -69,6 +97,7 @@ function applyPercentStat(stats: SimpleStats, key: StatKey, value: number): void
   else if (key === StatKey.MOVE_SPEED) stats.movespeed *= multiplier;
   else if (key === StatKey.ATTACK_DAMAGE) stats.attackDamage *= multiplier;
   else if (key === StatKey.ABILITY_POWER) stats.abilityPower *= multiplier;
+  else if (key === StatKey.ATTACK_SPEED) stats.attackSpeed *= multiplier;
 }
 
 function applyFlatStat(stats: SimpleStats, key: StatKey, value: number): void {
@@ -86,15 +115,20 @@ export function applyNormalizedItemsToStats(
   items: NormalizedItem[]
 ): SimpleStats {
   const result = { ...base };
+  const percentStats = new Map<StatKey, number>();
   for (const item of items) {
     for (const contribution of item.stats) {
       if (contribution.valueType === "percent") {
-        applyPercentStat(result, contribution.stat, contribution.value);
+        percentStats.set(
+          contribution.stat,
+          (percentStats.get(contribution.stat) ?? 0) + contribution.value,
+        );
       } else {
         applyFlatStat(result, contribution.stat, contribution.value);
       }
     }
   }
+  for (const [stat, value] of percentStats) applyPercentStat(result, stat, value);
   result.bonusHealth = result.health - base.health;
   result.bonusMana = result.mana - base.mana;
   result.bonusArmor = result.armor - base.armor;

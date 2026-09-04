@@ -43,6 +43,7 @@ function assertSimulation(value: unknown): void {
     !isRecord(value.primary) ||
     typeof value.primary.id !== "string" ||
     value.primary.kind !== "damage" ||
+    !["physical", "magical", "true", "unknown"].includes(String(value.primary.damageType)) ||
     !Array.isArray(value.primary.terms)
   ) {
     throw new Error("Invalid complete ability simulation");

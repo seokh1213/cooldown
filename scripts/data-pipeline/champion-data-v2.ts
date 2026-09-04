@@ -35,6 +35,16 @@ function isPercentLabel(label: string): boolean {
   return label.includes("%") || lower.includes("percent") || lower.includes("둔화");
 }
 
+export function inferDamageType(
+  tooltip: string,
+): "physical" | "magical" | "true" | "unknown" {
+  const plainText = tooltip.replace(/<[^>]*>/g, " ").toLowerCase();
+  if (/(고정 피해|true damage|真实伤害)/i.test(plainText)) return "true";
+  if (/(마법 피해|magic damage|魔法伤害)/i.test(plainText)) return "magical";
+  if (/(물리 피해|physical damage|物理伤害)/i.test(plainText)) return "physical";
+  return "unknown";
+}
+
 function buildRankValues(
   spell: ChampionSpell,
   source: CommunityDragonSpellData | undefined,
@@ -121,7 +131,11 @@ function buildActiveAbility(
     range: numericValues(spell.range),
     rankValues: buildRankValues(spell, source, locale),
     scalings: normalized.spells[slot].scalings,
-    simulation: compileAbilitySimulation(source, spell.maxrank),
+    simulation: compileAbilitySimulation(
+      source,
+      spell.maxrank,
+      inferDamageType(spell.tooltip ?? ""),
+    ),
     conditions: [],
     source: spell.tooltipSource ?? "ddragon",
     diagnostics: {

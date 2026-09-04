@@ -4,6 +4,7 @@ import type { NormalizedChampion } from "../src/types/combatNormalized";
 import {
   buildChampionDetailV2,
   buildChampionIndexV2,
+  inferDamageType,
 } from "./data-pipeline/champion-data-v2";
 import {
   decodeChampionDetail,
@@ -91,5 +92,10 @@ assert.throws(
   () => decodeChampionDetail({ ...detail, schemaVersion: 1 }),
   /Unsupported static data schema/
 );
+
+assert.equal(inferDamageType("<physicalDamage>물리 피해</physicalDamage>"), "physical");
+assert.equal(inferDamageType("Deals magic damage"), "magical");
+assert.equal(inferDamageType("造成真实伤害"), "true");
+assert.equal(inferDamageType("적에게 피해를 줍니다."), "unknown");
 
 console.log("✅ Champion and Ability v2 contract passed");
