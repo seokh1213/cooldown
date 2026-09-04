@@ -42,6 +42,9 @@ import {
   type RuneStatShardData,
 } from "./data-pipeline/normalization/rune";
 import { fetchCDragonRuneStatShards } from "./data-pipeline/sources/cdragon-runes";
+import { fetchCDragonChampion } from "./data-pipeline/sources/cdragon-champion";
+import { fetchCDragonItems, mergeCDragonItems } from "./data-pipeline/sources/cdragon-items";
+import { fetchJson, writeJson as saveToFile } from "./data-pipeline/io/json";
 
 const VERSION_URL = "https://ddragon.leagueoflegends.com/api/versions.json";
 const CHAMP_LIST_URL = (VERSION: string, LANG: string) =>
@@ -54,17 +57,6 @@ const ITEMS_URL = (VERSION: string, LANG: string) =>
   `https://ddragon.leagueoflegends.com/cdn/${VERSION}/data/${LANG}/item.json`;
 const SUMMONER_URL = (VERSION: string, LANG: string) =>
   `https://ddragon.leagueoflegends.com/cdn/${VERSION}/data/${LANG}/summoner.json`;
-const COMMUNITY_DRAGON_URL = (basePath: string, championId: string) =>
-  `https://raw.communitydragon.org/${basePath}/game/data/characters/${championId}/${championId}.bin.json`;
-const toCommunityDragonLocale = (lang: string) => {
-  if (lang === "ko_KR") return "ko_kr";
-  if (lang === "zh_CN") return "zh_cn";
-  return "default";
-};
-const COMMUNITY_DRAGON_ITEMS_URL = (basePath: string, lang: string) => {
-  const locale = toCommunityDragonLocale(lang);
-  return `https://raw.communitydragon.org/${basePath}/plugins/rcp-be-lol-game-data/global/${locale}/v1/items.json`;
-};
 const COMMUNITY_DRAGON_STRINGTABLE_URL = (
   basePath: string,
   lang: PassiveTooltipLocale
@@ -74,10 +66,14 @@ const COMMUNITY_DRAGON_STRINGTABLE_URL = (
 const LANGUAGES = PASSIVE_TOOLTIP_LOCALES;
 const DATA_DIR = path.join(process.cwd(), "public", "data");
 
-// Community Dragon 챔피언 ID 변환
-function convertChampionIdToCommunityDragon(championId: string): string {
-  return championId.toLowerCase();
+interface ChampionListResponse {
+  data?: Record<string, { name?: string }>;
 }
+
+interface ChampionDetailResponse {
+  data?: Record<string, unknown>;
+}
+
 
 async function buildAndSaveNormalizedItems(
   versionDir: string,
@@ -169,33 +165,6 @@ async function buildAndSaveNormalizedRunesAndStatShards(
       `✅ Saved normalized rune data for ${lang} (${runes.length} runes, ${statShards.length} stat shards)`
     );
   }
-}
-
-async function fetchJson(url: string, retries = 3): Promise<any> {
-  for (let i = 0; i < retries; i++) {
-    try {
-      console.log(`Fetching: ${url}${i > 0 ? ` (retry ${i})` : ''}`);
-      const response = await fetch(url);
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      return response.json();
-    } catch (error) {
-      if (i === retries - 1) {
-        throw error;
-      }
-      await new Promise(resolve => setTimeout(resolve, 1000 * (i + 1)));
-    }
-  }
-}
-
-async function saveToFile(data: any, filePath: string): Promise<void> {
-  const dir = path.dirname(filePath);
-  if (!fs.existsSync(dir)) {
-    fs.mkdirSync(dir, { recursive: true });
-  }
-  fs.writeFileSync(filePath, JSON.stringify(data, null, 2), 'utf-8');
-  console.log(`Saved: ${filePath}`);
 }
 
 const stringTableCache = new Map<string, Promise<StringTable>>();
@@ -317,63 +286,6 @@ function applyLocalizedPassiveTooltip(
   fs.writeFileSync(championFilePath, JSON.stringify(data, null, 2), "utf-8");
 }
 
-async function fetchCommunityDragonData(
-  cdChampionId: string,
-  cdragonVersion: string,
-): Promise<Record<string, unknown>> {
-  const url = COMMUNITY_DRAGON_URL(cdragonVersion, cdChampionId);
-  console.log(`Fetching exact CDragon: ${url}`);
-  const response = await fetch(url);
-  if (!response.ok) {
-    throw new Error(
-      `[CD] ${cdChampionId} missing from ${cdragonVersion}: HTTP ${response.status}`,
-    );
-  }
-  return (await response.json()) as Record<string, unknown>;
-}
-
-interface CommunityDragonItem {
-  id: number;
-  name: string;
-  description: string;
-  active?: boolean;
-  inStore?: boolean;
-  from?: number[];
-  to?: number[];
-  categories?: string[];
-  maxStacks?: number;
-  requiredChampion?: string;
-  requiredAlly?: string;
-  requiredBuffCurrencyName?: string;
-  requiredBuffCurrencyCost?: number;
-  specialRecipe?: number;
-  isEnchantment?: boolean;
-  price?: number;
-  priceTotal?: number;
-  displayInItemSets?: boolean;
-  iconPath?: string;
-}
-
-async function fetchCommunityDragonItems(
-  lang: string,
-  cdragonVersion: string,
-): Promise<CommunityDragonItem[]> {
-  const resultsLocale = toCommunityDragonLocale(lang);
-  const url = COMMUNITY_DRAGON_ITEMS_URL(cdragonVersion, lang);
-  console.log(`Fetching exact CDragon items (${resultsLocale}): ${url}`);
-  const response = await fetch(url);
-  if (!response.ok) {
-    throw new Error(
-      `[CD][Items] ${resultsLocale} missing from ${cdragonVersion}: HTTP ${response.status}`,
-    );
-  }
-  const json = (await response.json()) as unknown;
-  if (!Array.isArray(json)) {
-    throw new Error(`[CD][Items] Invalid ${resultsLocale} response format`);
-  }
-  return json as CommunityDragonItem[];
-}
-
 async function fetchRuneStatShards(
   locale: string,
   cdragonVersion: string,
@@ -412,17 +324,19 @@ async function main() {
 
     const abilitySourcesByChampion = new Map<string, ActiveSpellSourceData[]>();
 
-    const runesDataByLang: Record<string, any> = {};
+    const runesDataByLang: Record<string, unknown> = {};
     const runeStatmodsDataByLang: Record<string, RuneStatShardData | null> = {};
-    const itemsDataByLang: Record<string, any> = {};
-    const summonerDataByLang: Record<string, any> = {};
+    const itemsDataByLang: Record<string, unknown> = {};
+    const summonerDataByLang: Record<string, unknown> = {};
 
     for (const lang of LANGUAGES) {
       console.log(`📋 Fetching champion list for ${lang}...`);
-      const champListData = await fetchJson(CHAMP_LIST_URL(ddragonVersion, lang));
+      const champListData = await fetchJson<ChampionListResponse>(
+        CHAMP_LIST_URL(ddragonVersion, lang),
+      );
 
       const champions = Object.values(champListData.data || {}).sort(
-        (a: any, b: any) => (a.name < b.name ? -1 : a.name > b.name ? 1 : 0)
+        (a, b) => (String(a.name) < String(b.name) ? -1 : String(a.name) > String(b.name) ? 1 : 0)
       );
 
       console.log(`✅ Fetched ${champions.length} champions for ${lang}`);
@@ -457,81 +371,10 @@ async function main() {
       console.log(`🧱 Fetching items for ${lang}...`);
       const itemsData = await fetchJson(ITEMS_URL(ddragonVersion, lang));
 
-      let combinedItemsData: any = itemsData;
-
-      try {
-        const cdItems = await fetchCommunityDragonItems(lang, cdragonVersion);
-
-        if (
-          cdItems &&
-          Array.isArray(cdItems) &&
-          combinedItemsData &&
-          typeof combinedItemsData === "object" &&
-          (combinedItemsData as any).data &&
-          typeof (combinedItemsData as any).data === "object"
-        ) {
-          const cdItemMap = new Map<string, CommunityDragonItem>();
-          for (const cdItem of cdItems) {
-            if (!cdItem || typeof cdItem.id !== "number") continue;
-            const key = String(cdItem.id);
-            if (!cdItemMap.has(key)) {
-              cdItemMap.set(key, cdItem);
-            }
-          }
-
-          const originalData = (combinedItemsData as any).data as Record<
-            string,
-            Record<string, unknown>
-          >;
-          const mergedData: typeof originalData = { ...originalData };
-
-          for (const [id, item] of Object.entries(mergedData)) {
-            const cdItem = cdItemMap.get(id);
-            if (!cdItem) continue;
-
-            const existing = item as Record<string, unknown>;
-
-            const cdragonPayload = {
-              id: cdItem.id,
-              name: cdItem.name,
-              description: cdItem.description,
-              active: cdItem.active,
-              inStore: cdItem.inStore,
-              from: cdItem.from,
-              to: cdItem.to,
-              categories: cdItem.categories,
-              maxStacks: cdItem.maxStacks,
-              requiredChampion: cdItem.requiredChampion,
-              requiredAlly: cdItem.requiredAlly,
-              requiredBuffCurrencyName: cdItem.requiredBuffCurrencyName,
-              requiredBuffCurrencyCost: cdItem.requiredBuffCurrencyCost,
-              specialRecipe: cdItem.specialRecipe,
-              isEnchantment: cdItem.isEnchantment,
-              price: cdItem.price,
-              priceTotal: cdItem.priceTotal,
-              displayInItemSets: cdItem.displayInItemSets,
-              iconPath: cdItem.iconPath,
-            };
-
-            (existing as any).cdragon = cdragonPayload;
-
-            // CDragon의 inStore 정보가 있으면 우선 사용
-            if (typeof cdItem.inStore === "boolean") {
-              (existing as any).inStore = cdItem.inStore;
-            }
-          }
-
-          combinedItemsData = {
-            ...(combinedItemsData as any),
-            data: mergedData,
-          };
-        }
-      } catch (error) {
-        throw new Error(
-          `[CD][Items] Exact ${cdragonVersion} item merge failed for ${lang}`,
-          { cause: error },
-        );
-      }
+      const combinedItemsData = mergeCDragonItems(
+        itemsData,
+        await fetchCDragonItems(lang, cdragonVersion),
+      );
       itemsDataByLang[lang] = combinedItemsData;
       console.log(`✅ Fetched & merged items for ${lang}\n`);
 
@@ -548,7 +391,9 @@ async function main() {
       }
     }
 
-    const koChampListData = await fetchJson(CHAMP_LIST_URL(ddragonVersion, 'ko_KR'));
+    const koChampListData = await fetchJson<ChampionListResponse>(
+      CHAMP_LIST_URL(ddragonVersion, "ko_KR"),
+    );
     const championIds = Object.keys(koChampListData.data || {});
     console.log(`📚 Processing ${championIds.length} champions...\n`);
 
@@ -560,7 +405,9 @@ async function main() {
       const championPromises = batch.flatMap(championId =>
         LANGUAGES.map(async (lang) => {
           try {
-            const champData = await fetchJson(CHAMP_INFO_URL(ddragonVersion, lang, championId));
+            const champData = await fetchJson<ChampionDetailResponse>(
+              CHAMP_INFO_URL(ddragonVersion, lang, championId),
+            );
             const champion = champData.data?.[championId];
             if (champion) {
               const championInfo = {
@@ -602,9 +449,9 @@ async function main() {
       
       const spellPromises = batch.map(async (championId) => {
         try {
-          const cdChampionId = convertChampionIdToCommunityDragon(championId);
-          const cdData = await fetchCommunityDragonData(
-            cdChampionId,
+          const cdChampionId = championId.toLowerCase();
+          const cdData = await fetchCDragonChampion(
+            championId,
             cdragonVersion,
           );
 
