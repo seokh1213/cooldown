@@ -1,6 +1,6 @@
 import fs from "node:fs/promises";
 
-export type ResearchLocale = "en_US" | "ko_KR";
+export type ResearchLocale = "en_US" | "ko_KR" | "zh_CN";
 
 export function delay(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -40,7 +40,9 @@ function stripHtml(value: string): string {
 export function descriptionBody(value: string, locale: ResearchLocale): string {
   const metadataPattern = locale === "ko_KR"
     ? /^\s*(소모값|마나|비용|재사용 대기시간|스킬 소모|스킬 재사용)/i
-    : /^\s*(cost|mana|cooldown|resource)/i;
+    : locale === "zh_CN"
+      ? /^\s*(技能消耗|技能冷却|法力消耗|冷却时间)/i
+      : /^\s*(cost|mana|cooldown|resource)/i;
   return stripHtml(value)
     .split("\n")
     .filter((line) => !metadataPattern.test(line))
@@ -54,7 +56,22 @@ function normalizedWords(value: string): Set<string> {
     .toLocaleLowerCase()
     .replace(/[^\p{L}\p{N}%]+/gu, " ")
     .trim();
-  return new Set(normalized ? normalized.split(/\s+/) : []);
+  if (!normalized) return new Set();
+  const tokens: string[] = [];
+  for (const segment of normalized.match(/[\p{Script=Han}]+|[^\p{Script=Han}\s]+/gu) ?? []) {
+    if (/^\p{Script=Han}+$/u.test(segment)) {
+      const characters = [...segment];
+      if (characters.length === 1) tokens.push(segment);
+      else {
+        for (let index = 0; index < characters.length - 1; index += 1) {
+          tokens.push(`${characters[index]}${characters[index + 1]}`);
+        }
+      }
+    } else {
+      tokens.push(segment);
+    }
+  }
+  return new Set(tokens);
 }
 
 export function jaccard(left: string, right: string): number {
@@ -65,7 +82,7 @@ export function jaccard(left: string, right: string): number {
   return union === 0 ? 1 : intersection / union;
 }
 
-function numericSignature(value: string): string[] {
+export function numericSignature(value: string): string[] {
   return [...value.matchAll(/-?\d+(?:\.\d+)?%?/g)].map((match) => {
     const numeric = Number.parseFloat(match[0]);
     return String(Number.isFinite(numeric) ? numeric : match[0]);
