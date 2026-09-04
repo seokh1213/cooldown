@@ -20,7 +20,6 @@ import { SectionProps } from "./types";
 import { SkillTooltip } from "./SkillTooltip";
 import { getCooldownForLevel } from "./utils";
 import { useTranslation } from "@/i18n";
-import { ChampionSpell } from "@/types";
 import {
   DndContext,
   closestCenter,
@@ -280,11 +279,7 @@ export function SkillsSectionDesktop({
                     {/* Passive */}
                     {champion.passive && (
                       <SkillTooltip
-                        isPassive
-                        passiveName={champion.passive.name}
-                        passiveDescription={champion.passive.description}
-                        passiveImageFull={champion.passive.image.full}
-                        skill={{} as ChampionSpell}
+                        passive={champion.passive}
                         skillIdx={0}
                         patchVersion={patchVersion}
                         ddragonVersion={ddragonVersion}

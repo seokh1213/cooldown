@@ -169,7 +169,12 @@ export interface Translations {
     skillDescription: string;
     warningPassive: string;
     warningSkill: string;
-  viewDetail: string;
+    viewDetail: string;
+    rankValuesTitle: string;
+    scalingsTitle: string;
+    conditionsTitle: string;
+    diagnosticsTitle: string;
+    diagnosticsDescription: string;
   };
   skills: {
     label: string;

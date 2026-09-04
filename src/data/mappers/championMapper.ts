@@ -57,6 +57,9 @@ function toSpell(ability: AbilityV2): ChampionSpell {
     rangeBurn: ability.range.join("/"),
     image: { full: ability.iconFile },
     rankValues: ability.rankValues,
+    scalings: ability.scalings,
+    conditions: ability.conditions,
+    simulation: ability.simulation,
   };
 }
 
@@ -93,6 +96,14 @@ export function toChampion(detail: ChampionDetailV2): Champion {
       spellId: passive.id,
       tooltipSource:
         passive.source === "communitydragon" ? "communitydragon" : undefined,
+      rankValues: passive.rankValues,
+      scalings: passive.scalings,
+      conditions: passive.conditions,
+      simulation: passive.simulation,
+      tooltipDiagnostics:
+        passive.diagnostics.unresolvedTokens.length > 0
+          ? passive.diagnostics
+          : undefined,
       image: { full: passive.iconFile },
     },
     spells: (["Q", "W", "E", "R"] as const).map((slot) =>

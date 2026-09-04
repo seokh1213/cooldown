@@ -20,6 +20,7 @@ export function createZhCNTranslations(english: Translations): Translations {
       simulation: "模拟",
     },
     skillTooltip: {
+      ...english.skillTooltip,
       passive: "被动",
       skill: "技能",
       skillInfo: "技能信息",

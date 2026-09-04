@@ -178,6 +178,11 @@ export const enUSTranslations: Translations = {
       warningPassive: "Please check the in-game tooltip for accurate values and descriptions.",
       warningSkill: "Please check the in-game tooltip for accurate values and descriptions.",
       viewDetail: "View details",
+      rankValuesTitle: "Values by rank",
+      scalingsTitle: "Scaling",
+      conditionsTitle: "Conditions",
+      diagnosticsTitle: "Values to verify",
+      diagnosticsDescription: "Some values could not be fully resolved from the source data.",
     },
     skills: {
       label: "Skills",

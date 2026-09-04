@@ -1,17 +1,16 @@
 import { AlertTriangle } from "lucide-react";
-import type { ChampionSpell } from "@/types";
+import type { ChampionPassive, ChampionSpell } from "@/types";
 import { spellIconUrl } from "@/data/assets/riotAssetUrls";
 import { useTranslation } from "@/i18n";
 import { SKILL_LETTERS } from "./constants";
 import { SafeBlockHtml } from "@/components/ui/safe-html";
+import { AbilityStructuredDetails } from "./AbilityStructuredDetails";
 
 interface SkillTooltipContentProps {
-  skill: ChampionSpell;
+  skill?: ChampionSpell;
   skillIdx: number;
   ddragonVersion: string;
-  passive: boolean;
-  passiveName?: string;
-  passiveDescription?: string;
+  passive?: ChampionPassive;
   cooldownText: string | null;
   costText: string | null;
   mobile: boolean;
@@ -19,19 +18,28 @@ interface SkillTooltipContentProps {
 
 function PassiveContent(props: SkillTooltipContentProps) {
   const { t } = useTranslation();
+  const { passive } = props;
+  if (!passive) return null;
   return (
     <>
-      {props.passiveName && (
+      {passive.name && (
         <div className={`font-semibold text-sm ${props.mobile ? "pr-10" : ""}`}>
-          {props.passiveName}
+          {passive.name}
         </div>
       )}
-      {props.passiveDescription && (
+      {passive.description && (
         <SafeBlockHtml
           className="text-xs leading-relaxed"
-          html={props.passiveDescription}
+          html={passive.description}
         />
       )}
+      <AbilityStructuredDetails
+        rankValues={passive.rankValues}
+        scalings={passive.scalings}
+        conditions={passive.conditions}
+        diagnostics={passive.tooltipDiagnostics}
+        simulation={passive.simulation}
+      />
       <div className="text-xs text-muted-foreground/80 italic leading-relaxed border-t pt-3 mt-3 flex items-center gap-1.5">
         <AlertTriangle className="w-2.5 h-2.5 text-yellow-600 dark:text-yellow-500 shrink-0" />
         <span>{t.skillTooltip.warningPassive}</span>
@@ -53,7 +61,7 @@ function CooldownText({ value }: { value: string }) {
   );
 }
 
-function ActiveSkillHeader(props: SkillTooltipContentProps) {
+function ActiveSkillHeader(props: SkillTooltipContentProps & { skill: ChampionSpell }) {
   const letter = SKILL_LETTERS[props.skillIdx];
   return (
     <div className="flex items-start gap-3 border-b pb-3 pr-6">
@@ -88,9 +96,10 @@ function ActiveSkillHeader(props: SkillTooltipContentProps) {
 function ActiveSkillContent(props: SkillTooltipContentProps) {
   const { t } = useTranslation();
   const { skill } = props;
+  if (!skill) return null;
   return (
     <>
-      <ActiveSkillHeader {...props} />
+      <ActiveSkillHeader {...props} skill={skill} />
       {skill.description && (
         <SafeBlockHtml
           className="text-xs leading-relaxed"
@@ -103,15 +112,13 @@ function ActiveSkillContent(props: SkillTooltipContentProps) {
           html={skill.tooltip}
         />
       )}
-      {skill.rankValues && skill.rankValues.length > 0 && (
-        <div className="text-[11px] leading-relaxed text-muted-foreground border-t pt-3 mt-3">
-          {skill.rankValues.map((rankValue) => (
-            <div key={`${rankValue.label}:${rankValue.values}`}>
-              {rankValue.label}: [{rankValue.values}]
-            </div>
-          ))}
-        </div>
-      )}
+      <AbilityStructuredDetails
+        rankValues={skill.rankValues}
+        scalings={skill.scalings}
+        conditions={skill.conditions}
+        diagnostics={skill.tooltipDiagnostics}
+        simulation={skill.simulation}
+      />
       <div className="text-xs text-muted-foreground/80 italic leading-relaxed border-t pt-3 mt-3 flex items-center gap-1.5">
         <AlertTriangle className="w-2.5 h-2.5 text-yellow-600 dark:text-yellow-500 shrink-0" />
         <span>{t.skillTooltip.warningSkill}</span>

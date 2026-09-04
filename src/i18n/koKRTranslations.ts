@@ -178,6 +178,11 @@ export const koKRTranslations: Translations = {
       warningPassive: "정확한 수치와 설명은 인게임 툴팁을 확인해 주세요.",
       warningSkill: "정확한 수치와 설명은 인게임 툴팁을 확인해 주세요.",
       viewDetail: "자세히 보기",
+      rankValuesTitle: "레벨별 수치",
+      scalingsTitle: "계수",
+      conditionsTitle: "발동 조건",
+      diagnosticsTitle: "확인 필요한 수치",
+      diagnosticsDescription: "원본 데이터에서 완전히 해석되지 않은 수치가 있습니다.",
     },
     skills: {
       label: "스킬",

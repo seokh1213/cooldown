@@ -1,5 +1,5 @@
 import React from "react";
-import { ChampionSpell } from "@/types";
+import type { ChampionPassive, ChampionSpell } from "@/types";
 import {
   passiveIconUrl,
   spellIconUrl,
@@ -27,16 +27,13 @@ import { useTranslation } from "@/i18n";
 const ACTIVE_SKILL_TOOLTIP_EVENT = "cooldown:active-skill-tooltip";
 
 interface SkillTooltipProps {
-  skill: ChampionSpell;
+  skill?: ChampionSpell;
   skillIdx: number;
   /** 정적 데이터 경로/캐시 키로 쓰는 Riot 공식 패치 버전 */
   patchVersion: string;
   /** Data Dragon CDN 요청용 내부 버전 */
   ddragonVersion: string;
-  isPassive?: boolean;
-  passiveName?: string;
-  passiveDescription?: string;
-  passiveImageFull?: string;
+  passive?: ChampionPassive;
   size?: "default" | "small";
 }
 
@@ -45,10 +42,7 @@ export function SkillTooltip({
   skillIdx,
   patchVersion,
   ddragonVersion,
-  isPassive,
-  passiveName,
-  passiveDescription,
-  passiveImageFull,
+  passive,
   size = "default",
 }: SkillTooltipProps) {
   const { t, lang } = useTranslation();
@@ -64,12 +58,9 @@ export function SkillTooltip({
     undefined
   );
   
-  const cooldownText = (isPassive && passiveImageFull)
-    ? null
-    : getCooldownText(skill, lang);
-  const costText = (isPassive && passiveImageFull)
-    ? null
-    : getCostText(skill, lang);
+  const cooldownText = skill ? getCooldownText(skill, lang) : null;
+  const costText = skill ? getCostText(skill, lang) : null;
+  const abilityId = passive?.spellId ?? skill?.id ?? "unknown";
 
   const isSmall = size === "small";
   const iconSize = isSmall ? "min-w-6 min-h-6 w-6 h-6" : "min-w-8 min-h-8 w-8 h-8";
@@ -78,7 +69,7 @@ export function SkillTooltip({
   const openTooltip = React.useCallback(() => {
     if (isMobile) return;
     if (!tooltipIdRef.current) {
-      tooltipIdRef.current = `${skill.id}-${skillIdx}-${patchVersion}`;
+      tooltipIdRef.current = `${abilityId}-${skillIdx}-${patchVersion}`;
     }
     // 다른 스킬 툴팁들은 모두 닫고 현재 것만 열리도록 글로벌 이벤트 전파
     if (typeof window !== "undefined") {
@@ -93,7 +84,7 @@ export function SkillTooltip({
       closeTimeoutRef.current = null;
     }
     setTooltipOpen(true);
-  }, [isMobile, skill.id, skillIdx, patchVersion]);
+  }, [abilityId, isMobile, skillIdx, patchVersion]);
 
   const scheduleCloseTooltip = React.useCallback(() => {
     if (isMobile) return;
@@ -207,16 +198,16 @@ export function SkillTooltip({
         }
       }}
     >
-      {isPassive && passiveImageFull ? (
+      {passive ? (
         <>
           <img
-            src={passiveIconUrl(ddragonVersion, passiveImageFull)}
+            src={passiveIconUrl(ddragonVersion, passive.image.full)}
             alt="Passive"
             className={cn(iconSize, "rounded")}
           />
           <span className={cn(textSize, "font-semibold")}>P</span>
         </>
-      ) : (
+      ) : skill ? (
         <>
           <img
             src={spellIconUrl(ddragonVersion, skill.id)}
@@ -227,7 +218,7 @@ export function SkillTooltip({
             {SKILL_LETTERS[skillIdx]}
           </span>
         </>
-      )}
+      ) : null}
     </div>
   );
 
@@ -236,9 +227,7 @@ export function SkillTooltip({
       skill={skill}
       skillIdx={skillIdx}
       ddragonVersion={ddragonVersion}
-      passive={Boolean(isPassive && passiveImageFull)}
-      passiveName={passiveName}
-      passiveDescription={passiveDescription}
+      passive={passive}
       cooldownText={cooldownText}
       costText={costText}
       mobile={isMobile}
@@ -257,21 +246,21 @@ export function SkillTooltip({
       >
         <VisuallyHidden>
           <DialogTitle>
-            {isPassive && passiveImageFull
-              ? `${passiveName || t.skillTooltip.passive} ${
+            {passive
+              ? `${passive.name || t.skillTooltip.passive} ${
                   t.skillTooltip.skillInfo
                 }`
               : `[${SKILL_LETTERS[skillIdx]}] ${
-                  skill.name || t.skillTooltip.skill
+                  skill?.name || t.skillTooltip.skill
                 } ${t.skillTooltip.skillInfo}`}
           </DialogTitle>
           <DialogDescription>
-            {isPassive && passiveImageFull
-              ? `${passiveName || t.skillTooltip.passive} ${
+            {passive
+              ? `${passive.name || t.skillTooltip.passive} ${
                   t.skillTooltip.skillDescription
                 }`
               : `[${SKILL_LETTERS[skillIdx]}] ${
-                  skill.name || t.skillTooltip.skill
+                  skill?.name || t.skillTooltip.skill
                 } ${t.skillTooltip.skillDescription}`}
           </DialogDescription>
         </VisuallyHidden>
@@ -313,7 +302,7 @@ export function SkillTooltip({
     </div>
   );
 
-  if (isPassive && passiveImageFull) {
+  if (passive) {
     return (
       <>
         {/* open 상태를 우리가 직접 제어해서 Radix의 grace area 영향을 최소화 */}
