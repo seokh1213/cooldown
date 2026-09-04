@@ -122,7 +122,7 @@
         "name": "狂食鸦群",
         "maxRank": 0,
         "summary": "斯维因的鸦群会收集<i>魂屑</i>来治疗斯维因并永久提升他的最大生命值。",
-        "bodyHtml": "斯维因可从<span>帝国视界</span>、<span>永不复行</span>和敌方英雄的阵亡之中收集<font color='#FF3F3F' size='18'>魂屑</span>。<font color='#FF3F3F' size='18'>魂屑</span>回复<span class=\"text-green-600 dark:text-green-400\">(6% ~ 6%)最大生命值</span>并且为斯维因永久提供<span class=\"text-green-600 dark:text-green-400\">15最大生命值</span>。<br /><br />已收集的魂屑数量：?<br />已获得的生命值总和：<span>15</span>",
+        "bodyHtml": "<br /><br /><span>狂食鸦群</span><span><font color='#FF9900' size='18'>狂食：</span>斯维因可以右键点击一名被定身的敌方英雄来将其拉向他，同时抽取一层<font color='#FF3F3F' size='18'>魂屑</span>并造成<span class=\"text-gray-600 dark:text-gray-400\">?</span><span style=\"color: #99FF99\">( + ?)</span>魔法伤害(<span class=\"text-gray-600 dark:text-gray-400\">?</span>秒冷却时间)。<br /><br /><font color='#FF9900' size='18'>鸦群：</span>敌方英雄在死亡时会释放一片<font color='#FF3F3F' size='18'>魂屑</span>，斯维因可收集它们来恢复<span style=\"color: #CC3300\">?</span>生命值。每收集1层<font color='#FF3F3F' size='18'>魂屑</span>可使斯维因的最大生命值永久提升5。</span>",
         "iconFile": "Swain_P.png",
         "cooldownSeconds": [],
         "range": [],
@@ -200,10 +200,32 @@
           }
         ],
         "simulation": {
-          "status": "unsupported",
-          "unsupportedPartTypes": [
-            "GameCalculationModified"
-          ]
+          "status": "complete",
+          "primary": {
+            "id": "InitialDamage",
+            "kind": "damage",
+            "damageType": "magical",
+            "baseByRank": [
+              60,
+              90,
+              120,
+              150,
+              180
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.44999998807907104,
+                  0.44999998807907104,
+                  0.44999998807907104,
+                  0.44999998807907104,
+                  0.44999998807907104
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
         },
         "conditions": [],
         "source": "communitydragon",
@@ -480,7 +502,9 @@
           },
           "unsupportedPartTypes": []
         },
-        "conditions": [],
+        "conditions": [
+          "per-second"
+        ],
         "source": "communitydragon",
         "diagnostics": {
           "unresolvedTokens": []

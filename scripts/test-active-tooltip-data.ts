@@ -54,4 +54,23 @@ assert.equal(
 assert.doesNotMatch(localized.tooltip ?? "", /[@{}]/);
 assert.deepEqual(localized.unresolvedTokens, ["UnknownValue"]);
 
+const calculationSource: ExtractedActiveSpellData = {
+  ...source,
+  mSpellCalculations: {
+    TotalDamage: {
+      __type: "GameCalculation",
+      mFormulaParts: [
+        { __type: "NamedDataValueCalculationPart", mDataValue: "Damage" },
+      ],
+    },
+  },
+};
+const calculated = localizeActiveTooltip(spell, calculationSource, {
+  entries: {
+    spell_test_tooltip: "<magicDamage>@TotalDamage@ magic damage</magicDamage>",
+  },
+}, "en_US");
+assert.deepEqual(calculated.calculationKeys, ["TotalDamage"]);
+assert.deepEqual(calculated.calculationDamageTypes, { TotalDamage: "magical" });
+
 console.log("✅ Active SpellObject localization pipeline passed");

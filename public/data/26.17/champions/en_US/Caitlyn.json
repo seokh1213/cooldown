@@ -121,7 +121,7 @@
         "name": "Headshot",
         "maxRank": 0,
         "summary": "Every few basic attacks, or against a target she has trapped or netted, Caitlyn will fire a headshot dealing bonus damage that scales with her critical strike chance. On trapped or netted targets, Caitlyn's Headshot attack range is doubled.",
-        "bodyHtml": "Every 5 Attacks, Caitlyn fires a <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Headshot</span>. Attacks while in brush count as 2 for building towards a <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Headshot</span>.<br /><br /><span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Headshots</span> deal an additional <span class=\"text-red-600 dark:text-red-500 font-semibold\">? physical damage</span>. They have double range against enemies affected by <span>?</span> and <span>?</span>. <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Headshots</span> against enemies hit by <span>?</span> deal a further <span class=\"text-red-600 dark:text-red-500 font-semibold\">? physical damage</span>.",
+        "bodyHtml": "Every 5 Attacks, Caitlyn fires a <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Headshot</span>. Attacks while in brush count as 2 for building towards a <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Headshot</span>.<br /><br /><span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Headshots</span> deal an additional <span class=\"text-red-600 dark:text-red-500 font-semibold\">? physical damage</span>. They have double range against enemies affected by <span>90 Caliber Net</span> and <span>Yordle Snap Trap</span>. <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Headshots</span> against enemies hit by <span>Yordle Snap Trap</span> deal a further <span class=\"text-red-600 dark:text-red-500 font-semibold\">? physical damage</span>.",
         "iconFile": "Caitlyn_Headshot.png",
         "cooldownSeconds": [],
         "range": [],
@@ -203,10 +203,32 @@
           }
         ],
         "simulation": {
-          "status": "unsupported",
-          "unsupportedPartTypes": [
-            "StatBySubPartCalculationPart"
-          ]
+          "status": "complete",
+          "primary": {
+            "id": "InitialDamage",
+            "kind": "damage",
+            "damageType": "physical",
+            "baseByRank": [
+              50,
+              90,
+              130,
+              170,
+              210
+            ],
+            "terms": [
+              {
+                "stat": "totalAttackDamage",
+                "coefficientsByRank": [
+                  1.25,
+                  1.4500000476837158,
+                  1.649999976158142,
+                  1.850000023841858,
+                  2.049999952316284
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
         },
         "conditions": [],
         "source": "communitydragon",
@@ -462,7 +484,7 @@
         "simulation": {
           "status": "unsupported",
           "unsupportedPartTypes": [
-            "unsupported-multiplier"
+            "nonlinear-product"
           ]
         },
         "conditions": [],

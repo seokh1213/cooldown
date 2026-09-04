@@ -59,6 +59,15 @@ function applyActiveTooltip(
       siblings,
     );
     if (!localized.tooltip) return;
+    source.preferredSimulationCalculationKeys?.splice(
+      0,
+      source.preferredSimulationCalculationKeys.length,
+      ...localized.calculationKeys,
+    );
+    Object.assign(
+      source.simulationCalculationDamageTypes ?? {},
+      localized.calculationDamageTypes,
+    );
     spell.summary = localized.summary ?? spell.description;
     spell.tooltip = localized.tooltip;
     spell.tooltipSource = "communitydragon";

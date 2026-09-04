@@ -122,7 +122,7 @@
         "name": "厄运的眷顾",
         "maxRank": 0,
         "summary": "在对一个新目标进行普攻时，厄运小姐会造成额外物理伤害。",
-        "bodyHtml": "在攻击一个新目标时，厄运小姐的攻击会造成额外的<span class=\"text-red-600 dark:text-red-500 font-semibold\">(100% 攻击力)物理伤害</span>。<br /><br />触发<span>?</span>时会使<span>?</span>的冷却时间缩短?秒。",
+        "bodyHtml": "<span>厄运的眷顾</span><span>在攻击一个新目标时，厄运小姐的普攻造成<span style=\"color: #FF8C00\">?</span>额外物理伤害。对小兵的额外伤害减半。</span>",
         "iconFile": "MissFortune_W.png",
         "cooldownSeconds": [],
         "range": [],
@@ -196,10 +196,42 @@
           }
         ],
         "simulation": {
-          "status": "unsupported",
-          "unsupportedPartTypes": [
-            "GameCalculationModified"
-          ]
+          "status": "complete",
+          "primary": {
+            "id": "TotalDamageTooltip",
+            "kind": "damage",
+            "damageType": "physical",
+            "baseByRank": [
+              20,
+              45,
+              70,
+              95,
+              120
+            ],
+            "terms": [
+              {
+                "stat": "totalAttackDamage",
+                "coefficientsByRank": [
+                  1,
+                  1,
+                  1,
+                  1,
+                  1
+                ]
+              },
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.3499999940395355,
+                  0.3499999940395355,
+                  0.3499999940395355,
+                  0.3499999940395355,
+                  0.3499999940395355
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
         },
         "conditions": [],
         "source": "communitydragon",
@@ -336,12 +368,36 @@
           }
         ],
         "simulation": {
-          "status": "unsupported",
-          "unsupportedPartTypes": [
-            "GameCalculationModified"
-          ]
+          "status": "complete",
+          "primary": {
+            "id": "TotalDamage",
+            "kind": "damage",
+            "damageType": "magical",
+            "baseByRank": [
+              70,
+              100,
+              130,
+              160,
+              190
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  1.2000000476837158,
+                  1.2000000476837158,
+                  1.2000000476837158,
+                  1.2000000476837158,
+                  1.2000000476837158
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
         },
-        "conditions": [],
+        "conditions": [
+          "per-second"
+        ],
         "source": "communitydragon",
         "diagnostics": {
           "unresolvedTokens": []
@@ -399,10 +455,36 @@
           }
         ],
         "simulation": {
-          "status": "unsupported",
-          "unsupportedPartTypes": [
-            "GameCalculationModified"
-          ]
+          "status": "complete",
+          "primary": {
+            "id": "PhysicalDamagePerWave",
+            "kind": "damage",
+            "damageType": "physical",
+            "baseByRank": [
+              20,
+              30,
+              40
+            ],
+            "terms": [
+              {
+                "stat": "totalAttackDamage",
+                "coefficientsByRank": [
+                  0.6000000238418579,
+                  0.6000000238418579,
+                  0.6000000238418579
+                ]
+              },
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.25,
+                  0.25,
+                  0.25
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
         },
         "conditions": [],
         "source": "communitydragon",

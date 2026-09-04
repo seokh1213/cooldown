@@ -112,6 +112,8 @@ function extractSpell(
       costs: numericArray(spell.mana),
       locKeys: extractLocKeys(spell),
     },
+    preferredSimulationCalculationKeys: [],
+    simulationCalculationDamageTypes: {},
   };
   const dataValues = extractDataValues(spell);
   if (dataValues) result.DataValues = dataValues;

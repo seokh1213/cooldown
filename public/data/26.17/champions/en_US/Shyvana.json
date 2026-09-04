@@ -122,7 +122,7 @@
         "name": "Scalemail",
         "maxRank": 0,
         "summary": "Takedowns on enemy champions, large minions, and large monsters grant Shyvana Scalemail stacks, improving her defenses.",
-        "bodyHtml": "Takedowns on champions, large minions, and monsters earn Shyvana stacks of <span>?</span>, each stack grants Shyvana permanent <span class=\"text-orange-600 dark:text-orange-400\">0.3 Armor</span> and <span>0.3 Magic Resist</span>.<br /><br /><span class=\"text-orange-600 dark:text-orange-400\">Bonus Armor: 0.3</span><br /><span>Bonus Magic Resist: 0.3</span>",
+        "bodyHtml": "Takedowns on champions, large minions, and monsters earn Shyvana stacks of <span>Scalemail</span>, each stack grants Shyvana permanent <span class=\"text-orange-600 dark:text-orange-400\">0.3 Armor</span> and <span>0.3 Magic Resist</span>.<br /><br /><span class=\"text-orange-600 dark:text-orange-400\">Bonus Armor: 0.3</span><br /><span>Bonus Magic Resist: 0.3</span>",
         "iconFile": "Shyvana_Passive.png",
         "cooldownSeconds": [],
         "range": [],
@@ -186,12 +186,46 @@
           }
         ],
         "simulation": {
-          "status": "unsupported",
-          "unsupportedPartTypes": [
-            "NamedDataValueCalculationPart"
-          ]
+          "status": "complete",
+          "primary": {
+            "id": "Calc_Damage",
+            "kind": "damage",
+            "damageType": "physical",
+            "baseByRank": [
+              10,
+              15,
+              20,
+              25,
+              30
+            ],
+            "terms": [
+              {
+                "stat": "totalAttackDamage",
+                "coefficientsByRank": [
+                  1.100000023841858,
+                  1.100000023841858,
+                  1.100000023841858,
+                  1.100000023841858,
+                  1.100000023841858
+                ]
+              },
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.30000001192092896,
+                  0.30000001192092896,
+                  0.30000001192092896,
+                  0.30000001192092896,
+                  0.30000001192092896
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
         },
-        "conditions": [],
+        "conditions": [
+          "on-hit"
+        ],
         "source": "communitydragon",
         "diagnostics": {
           "unresolvedTokens": []
@@ -276,7 +310,9 @@
           },
           "unsupportedPartTypes": []
         },
-        "conditions": [],
+        "conditions": [
+          "on-hit"
+        ],
         "source": "communitydragon",
         "diagnostics": {
           "unresolvedTokens": []
@@ -361,7 +397,9 @@
           },
           "unsupportedPartTypes": []
         },
-        "conditions": [],
+        "conditions": [
+          "per-second"
+        ],
         "source": "communitydragon",
         "diagnostics": {
           "unresolvedTokens": []

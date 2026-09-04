@@ -121,7 +121,7 @@
         "name": "内能迁转",
         "maxRank": 0,
         "summary": "泽丽的攻击造成魔法伤害并被视为技能。移动和施放【电火迸射】会将能量储存至泽丽的【火花背包】。在完全充能后，她的下次攻击将造成额外伤害。",
-        "bodyHtml": "泽丽的攻击会被视为技能而非攻击，并且能够通过移动和施放<span>?</span>来充能。未充能的攻击会消耗少量充能，造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">?魔法伤害</span> 并<span>处决</span>低于<span>?生命值</span>的敌人。一次完全充能的攻击造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">? + ?最大生命值魔法伤害</span>并消耗所有充能。",
+        "bodyHtml": "泽丽的攻击会被视为技能而非攻击，并且能够通过移动和施放<span>电火迸射</span>来充能。未充能的攻击会消耗少量充能，造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">?魔法伤害</span> 并<span>处决</span>低于<span>?生命值</span>的敌人。一次完全充能的攻击造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">? + ?最大生命值魔法伤害</span>并消耗所有充能。",
         "iconFile": "ZeriP.png",
         "cooldownSeconds": [],
         "range": [],
@@ -212,7 +212,9 @@
           },
           "unsupportedPartTypes": []
         },
-        "conditions": [],
+        "conditions": [
+          "per-second"
+        ],
         "source": "communitydragon",
         "diagnostics": {
           "unresolvedTokens": []
@@ -395,7 +397,7 @@
         "simulation": {
           "status": "unsupported",
           "unsupportedPartTypes": [
-            "unsupported-multiplier"
+            "nonlinear-product"
           ]
         },
         "conditions": [],
@@ -462,21 +464,29 @@
         "simulation": {
           "status": "complete",
           "primary": {
-            "id": "ChainPhysicalDamage",
+            "id": "TotalActiveDamage",
             "kind": "damage",
             "damageType": "magical",
             "baseByRank": [
-              0,
-              0,
-              0
+              150,
+              250,
+              350
             ],
             "terms": [
               {
-                "stat": "totalAttackDamage",
+                "stat": "abilityPower",
                 "coefficientsByRank": [
-                  0.4000000059604645,
-                  0.4000000059604645,
-                  0.4000000059604645
+                  1.100000023841858,
+                  1.100000023841858,
+                  1.100000023841858
+                ]
+              },
+              {
+                "stat": "bonusAttackDamage",
+                "coefficientsByRank": [
+                  0.6000000238418579,
+                  0.6000000238418579,
+                  0.6000000238418579
                 ]
               }
             ]

@@ -46,6 +46,13 @@ export interface CommunityDragonSpellData {
    * 제이스·나피리같이 다른 스킬을 가리킬 때도 있어서 형제 스킬 맵이 필요하다.
    */
   siblings?: Record<string, CommunityDragonSpellData>;
+  /** CDragon 원문 툴팁이 실제로 참조한 계산식 키 (등장 순서). */
+  preferredSimulationCalculationKeys?: string[];
+  /** 원문 피해 태그에서 확인한 계산식별 피해 유형. */
+  simulationCalculationDamageTypes?: Record<
+    string,
+    "physical" | "magical" | "true"
+  >;
 }
 
 /**

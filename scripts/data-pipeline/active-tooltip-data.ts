@@ -1,5 +1,6 @@
 import type { ChampionSpell } from "../../src/types";
 import { parseSpellTooltipWithDiagnostics } from "../../src/lib/spellTooltipParser/parser";
+import { parseExpression } from "../../src/lib/spellTooltipParser/expressionParser";
 import type {
   CommunityDragonSpellData,
   TooltipLocale,
@@ -18,11 +19,52 @@ export interface LocalizedActiveTooltip {
   summary?: string;
   tooltip?: string;
   unresolvedTokens: string[];
+  calculationKeys: string[];
+  calculationDamageTypes: Record<string, "physical" | "magical" | "true">;
 }
 
 interface RenderedFragment {
   html?: string;
   unresolvedTokens: string[];
+  calculationKeys: string[];
+  calculationDamageTypes: Record<string, "physical" | "magical" | "true">;
+}
+
+function damageTypeAt(
+  template: string,
+  index: number,
+): "physical" | "magical" | "true" | undefined {
+  const tags = [
+    ["physicalDamage", "physical"],
+    ["magicDamage", "magical"],
+    ["trueDamage", "true"],
+  ] as const;
+  for (const [tag, type] of tags) {
+    const opening = template.toLowerCase().lastIndexOf(`<${tag.toLowerCase()}`, index);
+    const closing = template.toLowerCase().lastIndexOf(`</${tag.toLowerCase()}>`, index);
+    if (opening > closing) return type;
+  }
+  return undefined;
+}
+
+function referencedCalculations(
+  template: string,
+  source: ExtractedActiveSpellData,
+): { keys: string[]; damageTypes: Record<string, "physical" | "magical" | "true"> } {
+  const available = Object.keys(source.mSpellCalculations ?? {});
+  const keys: string[] = [];
+  const damageTypes: Record<string, "physical" | "magical" | "true"> = {};
+  for (const match of template.matchAll(/\{\{([^}]+)}}/g)) {
+    const parsed = parseExpression(match[1].trim());
+    const key = available.find(
+      (candidate) => candidate.toLowerCase() === parsed.variable.toLowerCase(),
+    );
+    if (!key) continue;
+    keys.push(key);
+    const type = damageTypeAt(template, match.index);
+    if (type) damageTypes[key] = type;
+  }
+  return { keys, damageTypes };
 }
 
 function render(
@@ -33,14 +75,18 @@ function render(
   locale: TooltipLocale,
   siblings?: Record<string, CommunityDragonSpellData>
 ): RenderedFragment {
-  if (!template) return { unresolvedTokens: [] };
+  if (!template) {
+    return { unresolvedTokens: [], calculationKeys: [], calculationDamageTypes: {} };
+  }
+  const parserTemplate = toParserTemplate(expandStringReferences(template, stringTable));
+  const references = referencedCalculations(parserTemplate, source);
   const effectiveSpell: ChampionSpell = {
     ...spell,
     cooldown: source.source.cooldowns ?? spell.cooldown,
     cost: source.source.costs ?? spell.cost,
   };
   const rendered = parseSpellTooltipWithDiagnostics(
-    toParserTemplate(expandStringReferences(template, stringTable)),
+    parserTemplate,
     effectiveSpell,
     siblings ? { ...source, siblings } : source,
     locale
@@ -49,6 +95,8 @@ function render(
   return {
     html: html || undefined,
     unresolvedTokens: rendered.unresolvedTokens,
+    calculationKeys: references.keys,
+    calculationDamageTypes: references.damageTypes,
   };
 }
 
@@ -115,5 +163,12 @@ export function localizeActiveTooltip(
     unresolvedTokens: [
       ...new Set([...tooltip.unresolvedTokens, ...extended.unresolvedTokens]),
     ].sort(),
+    calculationKeys: [
+      ...new Set([...tooltip.calculationKeys, ...extended.calculationKeys]),
+    ],
+    calculationDamageTypes: {
+      ...tooltip.calculationDamageTypes,
+      ...extended.calculationDamageTypes,
+    },
   };
 }

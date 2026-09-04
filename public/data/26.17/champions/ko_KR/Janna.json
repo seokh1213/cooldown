@@ -122,7 +122,7 @@
         "name": "순풍",
         "maxRank": 0,
         "summary": "아군이 잔나를 향해 움직일 때 이동 속도가 증가합니다.<br><br>잔나가 적중 시 및 서풍으로 추가 이동 속도의 일정 비율만큼 추가 마법 피해를 입힙니다.",
-        "bodyHtml": "아군 챔피언이 잔나를 향해 움직일 때 <span class=\"text-cyan-600 dark:text-cyan-500\">이동 속도가 6%</span> 증가합니다.<br /><br />잔나가 <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">서풍</span>으로 <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(30% 추가 이동 속도)의 추가 마법 피해</span>(?)를 입힙니다.",
+        "bodyHtml": "아군 챔피언이 잔나를 향해 움직일 때 <span class=\"text-cyan-600 dark:text-cyan-500\">이동 속도가 6%</span> 증가합니다.<br /><br />잔나가 <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">서풍</span>으로 <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(30% 추가 이동 속도)의 추가 마법 피해</span>(<span>적중 시</span>)를 입힙니다.",
         "iconFile": "JannaP.png",
         "cooldownSeconds": [],
         "range": [],
@@ -202,32 +202,34 @@
         "simulation": {
           "status": "complete",
           "primary": {
-            "id": "ExtraDamagePerSecondCharged",
+            "id": "MinimumDamage",
             "kind": "damage",
             "damageType": "magical",
             "baseByRank": [
-              10,
-              15,
-              20,
-              25,
-              30
+              55,
+              90,
+              125,
+              160,
+              195
             ],
             "terms": [
               {
                 "stat": "abilityPower",
                 "coefficientsByRank": [
-                  0.10000000149011612,
-                  0.10000000149011612,
-                  0.10000000149011612,
-                  0.10000000149011612,
-                  0.10000000149011612
+                  0.5,
+                  0.5,
+                  0.5,
+                  0.5,
+                  0.5
                 ]
               }
             ]
           },
           "unsupportedPartTypes": []
         },
-        "conditions": [],
+        "conditions": [
+          "per-second"
+        ],
         "source": "communitydragon",
         "diagnostics": {
           "unresolvedTokens": []

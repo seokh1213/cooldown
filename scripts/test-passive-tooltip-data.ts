@@ -77,4 +77,24 @@ for (const [locale, template] of Object.entries(templates)) {
   assert.doesNotMatch(localized.tooltip ?? "", /[@{}]/);
 }
 
+const modePassive = extractPassiveSpell({
+  "Characters/Test/CharacterRecords/Root": {
+    mCharacterPassiveSpell: "Characters/Test/Spells/TestPassive",
+  },
+  "Characters/Test/Spells/TestPassive": {
+    mScriptName: "TestPassive",
+    mSpell: {
+      DataValues: [{ name: "GameModeInteger", values: Array(7).fill(1) }],
+      mClientData: { mTooltipData: { mLocKeys: { keyTooltip: "Test_Tooltip" } } },
+    },
+  },
+}, "Test");
+assert.ok(modePassive);
+assert.equal(localizePassiveTooltip(modePassive, {
+  entries: {
+    test_tooltip: "{{Test_Tooltip_@GameModeInteger@}}",
+    test_tooltip_1: "Summoner's Rift passive",
+  },
+}, "en_US").tooltip, "Summoner's Rift passive");
+
 console.log("✅ Passive SpellObject localization pipeline passed");

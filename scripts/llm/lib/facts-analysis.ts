@@ -91,7 +91,11 @@ export function ratiosFromSimulation(ability: ChampionAbility): Record<string, n
   for (const term of terms) {
     const label = SIM_STAT_LABEL[term.stat];
     if (!label) continue;
-    const max = Math.max(...term.coefficientsByRank.filter((n) => Number.isFinite(n)), 0);
+    const values = term.coefficientsByRankAndLevel?.flat() ??
+      term.coefficientsByLevel ??
+      term.coefficientsByRank ??
+      [];
+    const max = Math.max(...values.filter((n) => Number.isFinite(n)), 0);
     if (max <= 0) continue;
     out[label] = Math.max(out[label] ?? 0, round(max * 100, 1));
   }
@@ -164,4 +168,3 @@ export function detectEffects(text: string): string[] {
   }
   return found;
 }
-

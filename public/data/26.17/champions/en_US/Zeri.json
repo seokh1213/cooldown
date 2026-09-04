@@ -121,7 +121,7 @@
         "name": "Living Battery",
         "maxRank": 0,
         "summary": "Zeri's Attacks deal magic damage and are treated as Abilities. Moving and casting Burst Fire stores up energy in Zeri's Sparkpack. When fully charged her next Attack deals bonus damage.",
-        "bodyHtml": "Zeri's Attacks are treated as Abilities instead of Attacks and can be charged up by moving and casting <span>?</span>. Uncharged Attacks consume a small amount of charge, deal <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">? magic damage</span> and <span>execute</span> enemies below <span>? Health</span>. A fully charged Attack deals <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">? + ? max Health magic damage</span> and consumes all charge.",
+        "bodyHtml": "Zeri's Attacks are treated as Abilities instead of Attacks and can be charged up by moving and casting <span>Burst Fire</span>. Uncharged Attacks consume a small amount of charge, deal <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">? magic damage</span> and <span>execute</span> enemies below <span>? Health</span>. A fully charged Attack deals <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">? + ? max Health magic damage</span> and consumes all charge.",
         "iconFile": "ZeriP.png",
         "cooldownSeconds": [],
         "range": [],
@@ -212,7 +212,10 @@
           },
           "unsupportedPartTypes": []
         },
-        "conditions": [],
+        "conditions": [
+          "per-second",
+          "on-hit"
+        ],
         "source": "communitydragon",
         "diagnostics": {
           "unresolvedTokens": []
@@ -395,10 +398,12 @@
         "simulation": {
           "status": "unsupported",
           "unsupportedPartTypes": [
-            "unsupported-multiplier"
+            "nonlinear-product"
           ]
         },
-        "conditions": [],
+        "conditions": [
+          "on-hit"
+        ],
         "source": "communitydragon",
         "diagnostics": {
           "unresolvedTokens": []
@@ -462,28 +467,38 @@
         "simulation": {
           "status": "complete",
           "primary": {
-            "id": "ChainPhysicalDamage",
+            "id": "TotalActiveDamage",
             "kind": "damage",
             "damageType": "magical",
             "baseByRank": [
-              0,
-              0,
-              0
+              150,
+              250,
+              350
             ],
             "terms": [
               {
-                "stat": "totalAttackDamage",
+                "stat": "abilityPower",
                 "coefficientsByRank": [
-                  0.4000000059604645,
-                  0.4000000059604645,
-                  0.4000000059604645
+                  1.100000023841858,
+                  1.100000023841858,
+                  1.100000023841858
+                ]
+              },
+              {
+                "stat": "bonusAttackDamage",
+                "coefficientsByRank": [
+                  0.6000000238418579,
+                  0.6000000238418579,
+                  0.6000000238418579
                 ]
               }
             ]
           },
           "unsupportedPartTypes": []
         },
-        "conditions": [],
+        "conditions": [
+          "on-hit"
+        ],
         "source": "communitydragon",
         "diagnostics": {
           "unresolvedTokens": []

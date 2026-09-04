@@ -17,6 +17,8 @@ export interface SimulationExternalAction {
   rawDamage: number;
   damageType: DamageType;
   iconUrl: string;
+  conditions: string[];
+  category: "summoner" | "rune" | "item";
 }
 
 function effectDamage(
@@ -54,6 +56,8 @@ export function buildExternalActions(input: {
         rawDamage: effectDamage(effect, input.level, input.attackerStats, input.targetStats),
         damageType: effect.damageType,
         iconUrl: summonerSpellIconUrl(input.ddragonVersion, spell.iconPath),
+        conditions: effect.conditions ?? [],
+        category: "summoner" as const,
       }));
   });
   const runeActions = input.rune?.damageEffects.map((effect) => ({
@@ -62,6 +66,8 @@ export function buildExternalActions(input: {
     rawDamage: effectDamage(effect, input.level, input.attackerStats, input.targetStats),
     damageType: effect.damageType,
     iconUrl: runeIconUrl(input.rune!.iconPath ?? ""),
+    conditions: effect.conditions ?? [],
+    category: "rune" as const,
   })) ?? [];
   const itemActions = input.items.flatMap((item) => (item.damageEffects ?? []).map((effect) => ({
     id: `item:${item.id}:${effect.id}`,
@@ -69,6 +75,8 @@ export function buildExternalActions(input: {
     rawDamage: effectDamage(effect, input.level, input.attackerStats, input.targetStats),
     damageType: effect.damageType,
     iconUrl: itemIconUrl(input.ddragonVersion, item.id),
+    conditions: effect.conditions ?? [],
+    category: "item" as const,
   })));
   return [...summonerActions, ...runeActions, ...itemActions];
 }

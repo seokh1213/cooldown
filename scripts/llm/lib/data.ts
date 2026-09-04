@@ -25,7 +25,9 @@ export interface AbilityCostInfo {
 
 export interface AbilitySimulationTerm {
   stat: string;
-  coefficientsByRank: number[];
+  coefficientsByRank?: number[];
+  coefficientsByLevel?: number[];
+  coefficientsByRankAndLevel?: number[][];
 }
 
 export interface AbilitySimulation {
@@ -34,6 +36,8 @@ export interface AbilitySimulation {
     id: string;
     kind: string;
     baseByRank?: number[];
+    baseByLevel?: number[];
+    baseByRankAndLevel?: number[][];
     terms?: AbilitySimulationTerm[];
   };
 }

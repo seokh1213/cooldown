@@ -121,7 +121,7 @@
         "name": "왕가의 특권",
         "maxRank": 0,
         "summary": "키아나의 첫 기본 공격이나 스킬은 적에게 적중하면 추가 피해를 입힙니다.",
-        "bodyHtml": "키아나가 기본 공격을 하거나 스킬을 사용하면 <span class=\"text-red-600 dark:text-red-500 font-semibold\">((15 ~ 67) + (25% 추가 공격력) + (30% 주문력))의 추가 물리 피해</span>를 입힙니다. 공격 대상별로 25초의 재사용 대기시간이 적용됩니다.<br /><br /><span>?</span> 스킬을 사용해 무기에 다른 <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">원소의 힘</span>을 부여하면 모든 대상에 대한 이 스킬의 재사용 대기시간이 초기화됩니다.",
+        "bodyHtml": "키아나가 기본 공격을 하거나 스킬을 사용하면 <span class=\"text-red-600 dark:text-red-500 font-semibold\">((15 ~ 67) + (25% 추가 공격력) + (30% 주문력))의 추가 물리 피해</span>를 입힙니다. 공격 대상별로 25초의 재사용 대기시간이 적용됩니다.<br /><br /><span>대지창조</span> 스킬을 사용해 무기에 다른 <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">원소의 힘</span>을 부여하면 모든 대상에 대한 이 스킬의 재사용 대기시간이 초기화됩니다.",
         "iconFile": "Qiyana_Passive.png",
         "cooldownSeconds": [],
         "range": [],
@@ -193,7 +193,7 @@
         "simulation": {
           "status": "complete",
           "primary": {
-            "id": "EnchantedDamage",
+            "id": "VanillaDamage",
             "kind": "damage",
             "damageType": "physical",
             "baseByRank": [
@@ -292,7 +292,7 @@
         "simulation": {
           "status": "complete",
           "primary": {
-            "id": "CleaveDamage",
+            "id": "OnHitDamage",
             "kind": "damage",
             "damageType": "magical",
             "baseByRank": [
@@ -304,13 +304,23 @@
             ],
             "terms": [
               {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.44999998807907104,
+                  0.44999998807907104,
+                  0.44999998807907104,
+                  0.44999998807907104,
+                  0.44999998807907104
+                ]
+              },
+              {
                 "stat": "bonusAttackDamage",
                 "coefficientsByRank": [
-                  1,
-                  1,
-                  1,
-                  1,
-                  1
+                  0.20000000298023224,
+                  0.20000000298023224,
+                  0.20000000298023224,
+                  0.20000000298023224,
+                  0.20000000298023224
                 ]
               }
             ]
@@ -489,7 +499,9 @@
           },
           "unsupportedPartTypes": []
         },
-        "conditions": [],
+        "conditions": [
+          "on-hit"
+        ],
         "source": "communitydragon",
         "diagnostics": {
           "unresolvedTokens": []

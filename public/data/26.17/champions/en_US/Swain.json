@@ -122,7 +122,7 @@
         "name": "Ravenous Flock",
         "maxRank": 0,
         "summary": "Swain's ravens collect <i>Soul Fragments</i> that heal him and permanently increase his maximum health.",
-        "bodyHtml": "Swain collects <font color='#FF3F3F' size='18'>Soul Fragments</span> from <span>Vision of Empire</span>, <span>Nevermove</span>, and enemy champion deaths. <font color='#FF3F3F' size='18'>Soul Fragments</span> restore<span class=\"text-green-600 dark:text-green-400\"> (6% ~ 6%) maximum Health</span> and permanently grant Swain <span class=\"text-green-600 dark:text-green-400\">15 max Health</span>.<br /><br />Soul Fragments collected: ?<br />Total Health gained: <span>15</span>",
+        "bodyHtml": "<br /><br /><span>Ravenous Flock</span><span><font color='#FF9900' size='18'>Ravenous:</span> Swain can right-click an immobilized enemy champion to pull them towards him, ripping out a <font color='#FF3F3F' size='18'>Soul Fragment</span> and dealing <span class=\"text-gray-600 dark:text-gray-400\">?</span> <span style=\"color: #99FF99\">( + ?)</span> magic damage (<span class=\"text-gray-600 dark:text-gray-400\">?</span> second cooldown).<br /><br /><font color='#FF9900' size='18'>Flock:</span> Enemy champion deaths release a <font color='#FF3F3F' size='18'>Soul Fragment</span> that Swain can collect to restore <span style=\"color: #CC3300\">?</span> health. Collecting a <font color='#FF3F3F' size='18'>Soul Fragment</span> permanently increases Swain's maximum health by 5.</span>",
         "iconFile": "Swain_P.png",
         "cooldownSeconds": [],
         "range": [],
@@ -200,10 +200,32 @@
           }
         ],
         "simulation": {
-          "status": "unsupported",
-          "unsupportedPartTypes": [
-            "GameCalculationModified"
-          ]
+          "status": "complete",
+          "primary": {
+            "id": "InitialDamage",
+            "kind": "damage",
+            "damageType": "magical",
+            "baseByRank": [
+              60,
+              90,
+              120,
+              150,
+              180
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.44999998807907104,
+                  0.44999998807907104,
+                  0.44999998807907104,
+                  0.44999998807907104,
+                  0.44999998807907104
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
         },
         "conditions": [],
         "source": "communitydragon",
@@ -480,7 +502,9 @@
           },
           "unsupportedPartTypes": []
         },
-        "conditions": [],
+        "conditions": [
+          "per-second"
+        ],
         "source": "communitydragon",
         "diagnostics": {
           "unresolvedTokens": []

@@ -1,4 +1,5 @@
 import type {
+  AbilitySimulation,
   AbilityRankValue,
   AbilitySlot,
   AbilityV2,
@@ -124,6 +125,28 @@ function buildPassive(
   };
 }
 
+function inferSimulationConditions(
+  tooltip: string,
+  simulation: AbilitySimulation,
+): string[] {
+  const text = tooltip.replace(/<[^>]*>/g, " ").toLowerCase();
+  const conditions: string[] = [];
+  if (simulation.primary?.targetHealthScaling === "max") {
+    conditions.push("target-max-health");
+  }
+  if (/(per second|초당|매초|每秒)/i.test(text)) conditions.push("per-second");
+  if (/(every (?:third|3rd)|세 번째|3번째|第3次)/i.test(text)) {
+    conditions.push("third-hit");
+  }
+  if (/(on-hit|on hit|적중 시|命中时)/i.test(text)) conditions.push("on-hit");
+  if (/maximumcharge|max(?:imum)? charge|최대 충전|最大蓄力/i.test(
+    `${simulation.primary?.id ?? ""} ${text}`,
+  )) {
+    conditions.push("maximum-charge");
+  }
+  return [...new Set(conditions)];
+}
+
 function buildActiveAbility(
   slot: Exclude<AbilitySlot, "P">,
   spell: ChampionSpell,
@@ -132,6 +155,12 @@ function buildActiveAbility(
   locale: DataLocale
 ): AbilityV2 {
   const costs = numericValues(spell.cost);
+  const simulation = compileAbilitySimulation(
+    source,
+    spell.maxrank,
+    inferDamageType(spell.tooltip ?? ""),
+    spell.tooltip ?? "",
+  );
   const rechargeSeconds = source?.DataValues?.mAmmoRechargeTime?.slice(
     1,
     spell.maxrank + 1
@@ -159,12 +188,8 @@ function buildActiveAbility(
     range: numericValues(spell.range),
     rankValues: buildRankValues(spell, source, locale),
     scalings: normalized.spells[slot].scalings,
-    simulation: compileAbilitySimulation(
-      source,
-      spell.maxrank,
-      inferDamageType(spell.tooltip ?? ""),
-    ),
-    conditions: [],
+    simulation,
+    conditions: inferSimulationConditions(spell.tooltip ?? "", simulation),
     source: spell.tooltipSource ?? "ddragon",
     diagnostics: {
       unresolvedTokens: spell.tooltipDiagnostics?.unresolvedTokens ?? [],

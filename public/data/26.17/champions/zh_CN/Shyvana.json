@@ -122,7 +122,7 @@
         "name": "龙鳞铁衣",
         "maxRank": 0,
         "summary": "参与击杀敌方英雄、大型小兵和大型野怪后，希瓦娜会获得【龙鳞铁衣】层数，从而改进她的防御属性。",
-        "bodyHtml": "参与击杀敌方英雄、大型小兵和大型野怪后，希瓦娜会获得<span>?</span>层数， 每层为希瓦娜提供永久的<span class=\"text-orange-600 dark:text-orange-400\">0.3护甲</span>和<span>0.3魔法抗性</span>。<br /><br /><span class=\"text-orange-600 dark:text-orange-400\">额外护甲：0.3</span><br /><span>额外魔法抗性：0.3</span>",
+        "bodyHtml": "参与击杀敌方英雄、大型小兵和大型野怪后，希瓦娜会获得<span>龙鳞铁衣</span>层数， 每层为希瓦娜提供永久的<span class=\"text-orange-600 dark:text-orange-400\">0.3护甲</span>和<span>0.3魔法抗性</span>。<br /><br /><span class=\"text-orange-600 dark:text-orange-400\">额外护甲：0.3</span><br /><span>额外魔法抗性：0.3</span>",
         "iconFile": "Shyvana_Passive.png",
         "cooldownSeconds": [],
         "range": [],
@@ -186,10 +186,42 @@
           }
         ],
         "simulation": {
-          "status": "unsupported",
-          "unsupportedPartTypes": [
-            "NamedDataValueCalculationPart"
-          ]
+          "status": "complete",
+          "primary": {
+            "id": "Calc_Damage",
+            "kind": "damage",
+            "damageType": "physical",
+            "baseByRank": [
+              10,
+              15,
+              20,
+              25,
+              30
+            ],
+            "terms": [
+              {
+                "stat": "totalAttackDamage",
+                "coefficientsByRank": [
+                  1.100000023841858,
+                  1.100000023841858,
+                  1.100000023841858,
+                  1.100000023841858,
+                  1.100000023841858
+                ]
+              },
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.30000001192092896,
+                  0.30000001192092896,
+                  0.30000001192092896,
+                  0.30000001192092896,
+                  0.30000001192092896
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
         },
         "conditions": [],
         "source": "communitydragon",
@@ -361,7 +393,9 @@
           },
           "unsupportedPartTypes": []
         },
-        "conditions": [],
+        "conditions": [
+          "per-second"
+        ],
         "source": "communitydragon",
         "diagnostics": {
           "unresolvedTokens": []

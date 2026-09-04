@@ -48,6 +48,8 @@ interface ComboRow {
   iconId?: string;
   iconUrl?: string;
   hasRank: boolean;
+  conditions: string[];
+  displayKey: string;
 }
 
 const ACTIVE_SLOTS: ActiveSlot[] = ["Q", "W", "E", "R"];
@@ -157,6 +159,10 @@ export function SimulationCombatPanel(props: SimulationCombatPanelProps) {
         ability.simulation,
         ranks[slot],
         props.attackerStats!,
+        {
+          currentHealth: defense.health,
+          maxHealth: props.targetStats?.health ?? defense.health,
+        },
       );
       const damageType = ability.simulation.primary?.damageType ?? "unknown";
       return {
@@ -172,6 +178,8 @@ export function SimulationCombatPanel(props: SimulationCombatPanelProps) {
         damageType,
         iconId: ability.id,
         hasRank: true,
+        conditions: ability.conditions,
+        displayKey: slot,
       };
     });
     const externalRows = props.externalActions.map((action): ComboRow => ({
@@ -185,6 +193,12 @@ export function SimulationCombatPanel(props: SimulationCombatPanelProps) {
       damageType: action.damageType,
       iconUrl: action.iconUrl,
       hasRank: false,
+      conditions: action.conditions,
+      displayKey: action.category === "rune"
+        ? t.pages.simulation.runesTitle
+        : action.category === "item"
+          ? t.pages.simulation.itemsTitle
+          : t.pages.simulation.summonerSpellsTitle,
     }));
     return [{
       key: "AA",
@@ -196,8 +210,10 @@ export function SimulationCombatPanel(props: SimulationCombatPanelProps) {
       appliedDamage: basicApplied,
       damageType: "physical",
       hasRank: false,
+      conditions: [],
+      displayKey: "AA",
     }, ...abilityRows, ...externalRows];
-  }, [counts, defense, props.attackerDetail, props.attackerStats, props.externalActions, ranks, t]);
+  }, [counts, defense, props.attackerDetail, props.attackerStats, props.externalActions, props.targetStats, ranks, t]);
 
   const totalDamage = rows.reduce(
     (total, row) => total + (row.appliedDamage ?? 0) * row.count,
@@ -207,6 +223,9 @@ export function SimulationCombatPanel(props: SimulationCombatPanelProps) {
   const hasUnknownSelected = rows.some(
     (row) => row.count > 0 && row.rawDamage !== null && row.appliedDamage === null,
   );
+  const conditionText = (conditions: string[]) => conditions.map((condition) =>
+    t.pages.simulation.conditionLabels[condition] ?? condition
+  ).join(" · ");
 
   return (
     <Card className="mt-6 border-border/70 bg-card/60">
@@ -248,7 +267,45 @@ export function SimulationCombatPanel(props: SimulationCombatPanelProps) {
         </section>
 
         <section className="min-w-0 space-y-3" aria-label={t.pages.simulation.comboTitle}>
-          <div className="overflow-x-auto">
+          <div className="space-y-2 md:hidden">
+            {rows.map((row) => (
+              <article key={row.key} className="rounded-md border border-border/60 bg-background/40 p-3">
+                <div className="flex items-start gap-2">
+                  {row.iconId || row.iconUrl ? (
+                    <img src={row.iconUrl ?? spellIconUrl(props.ddragonVersion, row.iconId!)} alt="" className="size-8 rounded" />
+                  ) : (
+                    <span className="flex size-8 items-center justify-center rounded bg-muted font-semibold">AA</span>
+                  )}
+                  <div className="min-w-0 flex-1">
+                    <div className="text-xs"><strong>{row.displayKey}</strong> {row.name}</div>
+                    <div className="text-[9px] text-muted-foreground">{damageTypeLabel(row.damageType, t.pages.simulation)}</div>
+                    {row.conditions.length > 0 && (
+                      <div className="mt-0.5 text-[9px] leading-tight text-amber-700 dark:text-amber-300">
+                        {conditionText(row.conditions)}
+                      </div>
+                    )}
+                  </div>
+                </div>
+                <div className="mt-3 grid grid-cols-2 gap-2">
+                  <label className="text-[9px] text-muted-foreground">
+                    <span className="mb-1 block">{t.pages.simulation.rankLabel}</span>
+                    {!row.hasRank ? <span className="block h-8 pt-2">—</span> : (
+                      <Select value={String(row.rank)} onChange={(event) => setRanks((current) => ({ ...current, [row.key]: Number(event.target.value) }))} className="h-8 w-full">
+                        {Array.from({ length: row.maxRank }, (_, index) => index + 1).map((value) => <option key={value} value={value}>{value}</option>)}
+                      </Select>
+                    )}
+                  </label>
+                  <label className="text-[9px] text-muted-foreground">
+                    <span className="mb-1 block">{t.pages.simulation.castCountLabel}</span>
+                    <input aria-label={`${row.name} ${t.pages.simulation.castCountLabel}`} type="number" min={0} max={10} value={row.count} onChange={(event) => setCounts((current) => ({ ...current, [row.key]: Math.min(Math.max(Number(event.target.value) || 0, 0), 10) }))} className="h-8 w-full rounded-md border border-border bg-background px-2 text-foreground" />
+                  </label>
+                  <div className="text-[9px] text-muted-foreground"><span>{t.pages.simulation.rawDamageLabel}</span><strong className="block text-xs font-medium text-foreground tabular-nums">{formatDamage(row.rawDamage)}</strong></div>
+                  <div className="text-right text-[9px] text-muted-foreground"><span>{t.pages.simulation.mitigatedDamageLabel}</span><strong className="block text-xs font-medium text-foreground tabular-nums">{formatDamage(row.appliedDamage === null ? null : row.appliedDamage * row.count)}</strong></div>
+                </div>
+              </article>
+            ))}
+          </div>
+          <div className="hidden overflow-x-auto md:block">
             <table className="w-full min-w-[540px] text-[11px]">
               <thead className="text-muted-foreground">
                 <tr className="border-b border-border/60 text-left">
@@ -265,7 +322,14 @@ export function SimulationCombatPanel(props: SimulationCombatPanelProps) {
                     <td className="py-2">
                       <span className="flex items-center gap-2">
                         {row.iconId || row.iconUrl ? <img src={row.iconUrl ?? spellIconUrl(props.ddragonVersion, row.iconId!)} alt="" className="size-7 rounded" /> : <span className="flex size-7 items-center justify-center rounded bg-muted font-semibold">AA</span>}
-                        <span><strong>{row.key}</strong> {row.name}<small className="ml-1 text-muted-foreground">{damageTypeLabel(row.damageType, t.pages.simulation)}</small></span>
+                        <span className="min-w-0">
+                          <span><strong>{row.displayKey}</strong> {row.name}<small className="ml-1 text-muted-foreground">{damageTypeLabel(row.damageType, t.pages.simulation)}</small></span>
+                          {row.conditions.length > 0 && (
+                            <small className="mt-0.5 block text-[9px] leading-tight text-amber-700 dark:text-amber-300">
+                              {conditionText(row.conditions)}
+                            </small>
+                          )}
+                        </span>
                       </span>
                     </td>
                     <td className="py-2">

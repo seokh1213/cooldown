@@ -11,10 +11,6 @@ import type { DataManifest } from "../src/data/contracts/dataManifest";
 const locales = ["ko_KR", "en_US", "zh_CN"] as const;
 const slots = ["Q", "W", "E", "R"] as const;
 const allowedPassiveFallbacks = new Set([
-  "Kalista",
-  "Kayn",
-  "Ornn",
-  "TwistedFate",
   "Zilean",
 ]);
 const projectRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
@@ -74,9 +70,18 @@ for (const entry of englishIndex.champions) {
     if (ability.source === "communitydragon") precomputedSpellCount += 1;
     simulationCounts[ability.simulation.status] += 1;
     if (ability.simulation.status === "complete") {
-      assert.equal(ability.simulation.primary?.baseByRank.length, ability.maxRank);
+      const primary = ability.simulation.primary!;
+      if (primary.baseByRank) assert.equal(primary.baseByRank.length, ability.maxRank);
+      if (primary.baseByRankAndLevel) {
+        assert.equal(primary.baseByRankAndLevel.length, ability.maxRank);
+      }
       for (const term of ability.simulation.primary?.terms ?? []) {
-        assert.equal(term.coefficientsByRank.length, ability.maxRank);
+        if (term.coefficientsByRank) {
+          assert.equal(term.coefficientsByRank.length, ability.maxRank);
+        }
+        if (term.coefficientsByRankAndLevel) {
+          assert.equal(term.coefficientsByRankAndLevel.length, ability.maxRank);
+        }
       }
     }
   }
@@ -85,7 +90,7 @@ for (const entry of englishIndex.champions) {
 assert.equal(activeAbilityCount, englishIndex.champions.length * 4);
 // 모든 Q/W/E/R 이 CDragon 원문으로 렌더된다 (allowlist.missingTooltips 가 비어 있음)
 assert.equal(precomputedSpellCount, activeAbilityCount);
-assert.equal(detailedPassiveCount, englishIndex.champions.length - 5);
+assert.equal(detailedPassiveCount, englishIndex.champions.length - allowedPassiveFallbacks.size);
 assert.equal(
   simulationCounts.complete + simulationCounts.unsupported + simulationCounts.unavailable,
   activeAbilityCount

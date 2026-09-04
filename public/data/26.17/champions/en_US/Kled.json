@@ -121,7 +121,7 @@
         "name": "Skaarl, the Cowardly Lizard",
         "maxRank": 0,
         "summary": "Kled rides his trusty steed, Skaarl, who takes damage for him. When Skaarl's health depletes, Kled dismounts.<br><br>While dismounted, Kled's abilities change and he deals less damage to champions. Kled can restore Skaarl's courage by fighting enemies. At maximum courage, Kled remounts with a portion of Skaarl's health.",
-        "bodyHtml": "<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Mounted:</span> Kled's mount Skaarl takes damage instead of Kled. When his Health depletes, Kled dismounts.<br /><br /><span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Dismounted:</span> Kled replaces <span>?</span>, gains <span class=\"text-cyan-600 dark:text-cyan-500\">70 Move Speed</span> toward enemy champions, and he gains (4 + (1% bonus Health)) bonus <span class=\"text-orange-600 dark:text-orange-400\">Armor</span> and <span>Magic Resist</span>, increased by 30% for each nearby enemy Champion, up to (10 + (2.5% bonus Health)). While dismounted, Kled's attacks deal 0% reduced damage to Champions. <br /><br />Kled gains <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">15 Courage</span> by Attacking champions, <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">5 Courage</span> by Attacking epic monsters and structures, and <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">5 Courage</span> by killing minions. At max <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Courage</span> Kled remounts with 70% of Skaarl's Health, once every 30 seconds.",
+        "bodyHtml": "<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Mounted:</span> Kled's mount Skaarl takes damage instead of Kled. When his Health depletes, Kled dismounts.<br /><br /><span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Dismounted:</span> Kled replaces <span>Bear Trap on a Rope</span>, gains <span class=\"text-cyan-600 dark:text-cyan-500\">70 Move Speed</span> toward enemy champions, and he gains (4 + (1% bonus Health)) bonus <span class=\"text-orange-600 dark:text-orange-400\">Armor</span> and <span>Magic Resist</span>, increased by 30% for each nearby enemy Champion, up to (10 + (2.5% bonus Health)). While dismounted, Kled's attacks deal 0% reduced damage to Champions. <br /><br />Kled gains <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">15 Courage</span> by Attacking champions, <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">5 Courage</span> by Attacking epic monsters and structures, and <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">5 Courage</span> by killing minions. At max <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Courage</span> Kled remounts with 70% of Skaarl's Health, once every 30 seconds.",
         "iconFile": "Kled_P.png",
         "cooldownSeconds": [],
         "range": [],
@@ -420,12 +420,33 @@
           }
         ],
         "simulation": {
-          "status": "unsupported",
-          "unsupportedPartTypes": [
-            "percent-calculation"
-          ]
+          "status": "complete",
+          "primary": {
+            "id": "MinimumDamageTooltip",
+            "kind": "damage",
+            "damageType": "magical",
+            "targetHealthScaling": "max",
+            "baseByRank": [
+              0.03999999910593033,
+              0.05999999865889549,
+              0.07999999821186066
+            ],
+            "terms": [
+              {
+                "stat": "bonusAttackDamage",
+                "coefficientsByRank": [
+                  0.0002999999865889551,
+                  0.0002999999865889551,
+                  0.0002999999865889551
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
         },
-        "conditions": [],
+        "conditions": [
+          "target-max-health"
+        ],
         "source": "communitydragon",
         "diagnostics": {
           "unresolvedTokens": []

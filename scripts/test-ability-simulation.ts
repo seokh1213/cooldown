@@ -73,7 +73,13 @@ const stats = {
   bonusAttackDamage: 40,
   abilityPower: 100,
   attackSpeed: 0.8,
+  bonusAttackSpeed: 0.3,
   movespeed: 350,
+  critChance: 0.25,
+  critDamage: 1.75,
+  bonusCritDamage: 0,
+  lifeSteal: 0,
+  lethality: 0,
 };
 
 const wukongSimulation = compileAbilitySimulation(wukong, 5, "physical");
@@ -148,7 +154,91 @@ const unsupported = compileAbilitySimulation({
   },
 } as CommunityDragonSpellData, 5);
 assert.equal(unsupported.status, "unsupported");
-assert.deepEqual(unsupported.unsupportedPartTypes, ["ProductOfSubPartsCalculationPart"]);
+assert.deepEqual(unsupported.unsupportedPartTypes, ["invalid-part"]);
 assert.equal(evaluateAbilitySimulation(unsupported, 5, stats), null);
+
+const recursive = compileAbilitySimulation({
+  DataValues: {
+    Base: [0, 10, 20, 30, 40, 50],
+    Ratio: [0, 0.5, 0.5, 0.5, 0.5, 0.5],
+    Multiplier: [0, 2, 2, 2, 2, 2],
+  },
+  mSpellCalculations: {
+    Damage: {
+      __type: "GameCalculationModified",
+      mModifiedGameCalculation: "InnerDamage",
+      mMultiplier: { __type: "NamedDataValueCalculationPart", mDataValue: "Multiplier" },
+    },
+    InnerDamage: {
+      __type: "GameCalculation",
+      mFormulaParts: [
+        { __type: "NamedDataValueCalculationPart", mDataValue: "Base" },
+        {
+          __type: "StatBySubPartCalculationPart",
+          mStat: 2,
+          mStatFormula: 2,
+          mSubpart: { __type: "NamedDataValueCalculationPart", mDataValue: "Ratio" },
+        },
+      ],
+    },
+  },
+} as CommunityDragonSpellData, 5, "physical");
+assert.equal(recursive.status, "complete");
+assert.equal(evaluateAbilitySimulation(recursive, 3, stats), 100);
+
+const championLevel = compileAbilitySimulation({
+  DataValues: { Base: [0, 10] },
+  mSpellCalculations: {
+    Damage: {
+      __type: "GameCalculation",
+      mFormulaParts: [
+        { __type: "NamedDataValueCalculationPart", mDataValue: "Base" },
+        {
+          __type: "ByCharLevelBreakpointsCalculationPart",
+          mLevel1Value: 1,
+          mBreakpoints: [{ mLevel: 10, mBonusPerLevelAtAndAfter: 2 }],
+        },
+      ],
+    },
+  },
+} as CommunityDragonSpellData, 1);
+assert.equal(evaluateAbilitySimulation(championLevel, 1, { ...stats, level: 9 }), 11);
+assert.equal(evaluateAbilitySimulation(championLevel, 1, { ...stats, level: 10 }), 13);
+
+const percentHealth = compileAbilitySimulation({
+  DataValues: { DamagePercent: [0, 0.04, 0.05] },
+  mSpellCalculations: {
+    Damage: {
+      __type: "GameCalculation",
+      mDisplayAsPercent: true,
+      mFormulaParts: [
+        { __type: "NamedDataValueCalculationPart", mDataValue: "DamagePercent" },
+      ],
+    },
+  },
+} as CommunityDragonSpellData, 2, "true", "Deals max Health true damage");
+assert.equal(percentHealth.primary?.targetHealthScaling, "max");
+assert.equal(
+  evaluateAbilitySimulation(percentHealth, 2, stats, {
+    currentHealth: 1200,
+    maxHealth: 2000,
+  }),
+  100,
+);
+
+const preferred = compileAbilitySimulation({
+  preferredSimulationCalculationKeys: ["ChampionDamage"],
+  mSpellCalculations: {
+    MonsterDamageCap: {
+      __type: "GameCalculation",
+      mFormulaParts: [{ __type: "NumberCalculationPart", mNumber: 9999 }],
+    },
+    ChampionDamage: {
+      __type: "GameCalculation",
+      mFormulaParts: [{ __type: "NumberCalculationPart", mNumber: 80 }],
+    },
+  },
+} as CommunityDragonSpellData, 1, "magical");
+assert.equal(evaluateAbilitySimulation(preferred, 1, stats), 80);
 
 console.log("✅ Ability simulation compiler and evaluator passed");

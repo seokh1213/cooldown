@@ -121,7 +121,7 @@
         "name": "Short Fuse",
         "maxRank": 0,
         "summary": "Periodically, Ziggs' next basic attack deals bonus magic damage. This cooldown is reduced whenever Ziggs uses an ability.",
-        "bodyHtml": "Every ? seconds, Ziggs' next Attack deals an additional <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">((20 ~ 140) + (50% Ability Power)) magic damage</span>. It deals <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">((35 ~ 245) + (87.5% Ability Power)) damage</span> instead to structures. <br /><br />Ziggs' abilities reduce this Cooldown by (4 ~ 6) seconds.",
+        "bodyHtml": "<span>Short Fuse</span><span>Every 12 seconds, Ziggs' next basic attack deals <span style=\"color: #FFFFFF\">?</span> <span style=\"color: #99FF99\">( + ?)</span> bonus magic damage. Short Fuse deals double damage to structures. <br /><br />Ziggs' abilities reduce this cooldown by <span style=\"color: #FFFFFF\">?</span> seconds.</span>",
         "iconFile": "ZiggsPassiveReady.png",
         "cooldownSeconds": [],
         "range": [],
@@ -486,10 +486,28 @@
           }
         ],
         "simulation": {
-          "status": "unsupported",
-          "unsupportedPartTypes": [
-            "GameCalculationModified"
-          ]
+          "status": "complete",
+          "primary": {
+            "id": "EmpoweredDamage",
+            "kind": "damage",
+            "damageType": "magical",
+            "baseByRank": [
+              300,
+              500,
+              700
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  1,
+                  1,
+                  1
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
         },
         "conditions": [],
         "source": "communitydragon",

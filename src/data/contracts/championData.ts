@@ -29,18 +29,31 @@ export type AbilitySimulationStat =
   | "magicResist"
   | "bonusMagicResist"
   | "maxMana"
-  | "bonusMana";
+  | "bonusMana"
+  | "attackSpeed"
+  | "bonusAttackSpeed"
+  | "moveSpeed"
+  | "critChance"
+  | "critDamage"
+  | "bonusCritDamage"
+  | "lifeSteal"
+  | "lethality";
 
 export interface AbilitySimulationTerm {
   stat: AbilitySimulationStat;
-  coefficientsByRank: number[];
+  coefficientsByRank?: number[];
+  coefficientsByLevel?: number[];
+  coefficientsByRankAndLevel?: number[][];
 }
 
 export interface AbilitySimulationCalculation {
   id: string;
   kind: "damage";
   damageType: "physical" | "magical" | "true" | "unknown";
-  baseByRank: number[];
+  targetHealthScaling?: "max" | "current" | "missing";
+  baseByRank?: number[];
+  baseByLevel?: number[];
+  baseByRankAndLevel?: number[][];
   terms: AbilitySimulationTerm[];
 }
 
