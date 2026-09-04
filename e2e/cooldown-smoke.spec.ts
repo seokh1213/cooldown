@@ -38,6 +38,8 @@ test("serves a lazy route directly under the Pages base path", async ({ page }) 
   await expect(page).toHaveURL(/\/cooldown\/encyclopedia$/);
   await expect(page.getByRole("heading", { name: "백과사전" })).toBeVisible();
   await expect(page.getByText("집중 공격", { exact: true }).first()).toBeVisible();
+  await page.getByRole("tab", { name: "아이템 백과" }).click();
+  await expect(page.getByAltText("롱소드").first()).toBeVisible();
   await expect(page.locator("#root")).not.toBeEmpty();
 });
 
