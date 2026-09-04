@@ -30,6 +30,10 @@ function compareVersions(v1: string, v2: string): number {
   return 0;
 }
 
+export function getRuntimeBasePath(): string {
+  return import.meta.env?.BASE_URL || "/";
+}
+
 /**
  * 버전 배열을 정렬 (최신 버전이 먼저)
  */
@@ -44,7 +48,7 @@ export function sortVersions(versions: string[]): string[] {
 export async function getAvailableVersions(): Promise<string[]> {
   try {
     // public/data/ 디렉토리에서 버전 목록 가져오기
-    const basePath = import.meta.env.BASE_URL || '/';
+    const basePath = getRuntimeBasePath();
     const normalizedBase = basePath.endsWith('/') ? basePath : `${basePath}/`;
     const dataDir = `${normalizedBase}data`;
     const response = await fetch(dataDir);
@@ -113,7 +117,7 @@ export async function versionExists(version: string): Promise<boolean> {
  */
 export function getStaticDataPath(version: string, ...paths: string[]): string {
   // Vite의 base path 가져오기 (프로덕션에서는 /cooldown/, 개발에서는 /)
-  const basePath = import.meta.env.BASE_URL || '/';
+  const basePath = getRuntimeBasePath();
   // base path가 /로 끝나지 않으면 / 추가
   const normalizedBase = basePath.endsWith('/') ? basePath : `${basePath}/`;
   return `${normalizedBase}data/${version}/${paths.join('/')}`;
@@ -137,4 +141,3 @@ export async function getVersionInfo(version: string): Promise<{ version: string
     return null;
   }
 }
-
