@@ -134,21 +134,53 @@ export function validateActiveTooltips({
   };
 }
 
+/**
+ * 기준선 위반만 실패로 본다.
+ *
+ * 새로 생긴 미해석 토큰·툴팁 누락은 회귀라 막아야 한다.
+ * 반대로 해소된 항목은 개선이므로 막을 이유가 없다. 예전에는 이것도 실패로
+ * 처리해서, 패치로 토큰 하나가 사라지기만 해도 CI 가 30분마다 죽고 데이터
+ * 갱신이 멈췄다. 해소분은 허용 목록에서 자동으로 걷어낸다.
+ */
 export function assertActiveTooltipReport(
   report: ActiveTooltipValidationReport,
 ): void {
   if (
     report.unexpectedTokens.length === 0 &&
-    report.unexpectedMissingTooltips.length === 0 &&
-    report.staleAllowedTokens.length === 0 &&
-    report.staleAllowedMissingTooltips.length === 0
+    report.unexpectedMissingTooltips.length === 0
   ) {
     return;
   }
   throw new Error(
-    `Active tooltip baseline changed: ${report.unexpectedTokens.length} new tokens, ` +
-      `${report.unexpectedMissingTooltips.length} new missing tooltips, ` +
-      `${report.staleAllowedTokens.length} resolved tokens, ` +
-      `${report.staleAllowedMissingTooltips.length} resolved missing tooltips`,
+    `Active tooltip baseline regressed: ${report.unexpectedTokens.length} new tokens ` +
+      `[${report.unexpectedTokens.slice(0, 5).join(", ")}], ` +
+      `${report.unexpectedMissingTooltips.length} new missing tooltips ` +
+      `[${report.unexpectedMissingTooltips.slice(0, 5).join(", ")}]`,
   );
+}
+
+/**
+ * 해소된 항목을 허용 목록에서 걷어낸다.
+ * 목록이 실제와 어긋난 채 굳으면 다음 회귀를 못 잡는다.
+ */
+export function pruneAllowlist(
+  allowlist: ActiveTooltipAllowlist,
+  report: ActiveTooltipValidationReport,
+): { allowlist: ActiveTooltipAllowlist; changed: boolean } {
+  const staleTokens = new Set(report.staleAllowedTokens);
+  const staleMissing = new Set(report.staleAllowedMissingTooltips);
+  if (staleTokens.size === 0 && staleMissing.size === 0) {
+    return { allowlist, changed: false };
+  }
+  return {
+    allowlist: {
+      unresolvedTokens: allowlist.unresolvedTokens.filter(
+        (token) => !staleTokens.has(token),
+      ),
+      missingTooltips: allowlist.missingTooltips.filter(
+        (key) => !staleMissing.has(key),
+      ),
+    },
+    changed: true,
+  };
 }
