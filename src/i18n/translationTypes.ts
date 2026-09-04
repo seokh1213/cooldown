@@ -257,5 +257,10 @@ export interface Translations {
     max: string;
     items: string;
     bonus: string;
+    /**
+     * 스탯 1당 계수가 너무 작아 읽히지 않을 때 쓰는 "100당" 표기.
+     * {stat} 과 {value} 를 치환한다.
+     */
+    perHundredStat: string;
   };
 }

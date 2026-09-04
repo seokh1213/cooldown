@@ -266,5 +266,6 @@ export const koKRTranslations: Translations = {
       max: "최대",
       items: "개",
       bonus: "추가",
+      perHundredStat: "{stat} 100당 {value}%",
     },
   };

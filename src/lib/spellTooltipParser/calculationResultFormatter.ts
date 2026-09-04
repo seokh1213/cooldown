@@ -1,5 +1,6 @@
-import type { CalcResult, StatPart, Value } from "./types";
+import type { CalcResult, StatPart, TooltipLocale, Value } from "./types";
 import { formatNumber } from "./formatters";
+import { getTranslations } from "@/i18n";
 import { logger } from "@/lib/logger";
 import { add, isVector, scaleBy100, valueToTooltipString } from "./valueUtils";
 
@@ -85,11 +86,44 @@ function formatBase(result: CalcResult, base: Value): string | null {
   return result.isPercent ? `${raw}%` : raw;
 }
 
-function formatStatPart(part: StatPart, precision?: number): string {
+/**
+ * 스탯 1당 계수가 0.1% 미만이면 "100당" 으로 바꿔 적는다.
+ *
+ * 아트록스 E 의 흡혈 계수는 추가 체력 1당 0.011% 다. 그대로 적으면
+ * 소수점에서 뭉개져 "0.01%" 가 되고 읽는 사람에게 아무 정보도 주지 못한다.
+ * "추가 체력 100당 1.1%" 로 적으면 자릿수도 살고 뜻도 통한다.
+ */
+const TINY_RATIO_LIMIT = 0.1;
+
+function isTinyRatio(ratio: Value): boolean {
+  const entries = isVector(ratio) ? ratio : [ratio];
+  return (
+    entries.length > 0 &&
+    entries.every((entry) => entry !== 0 && Math.abs(entry) < TINY_RATIO_LIMIT)
+  );
+}
+
+function scaleRatio(ratio: Value, factor: number): Value {
+  return isVector(ratio)
+    ? ratio.map((entry) => entry * factor)
+    : ratio * factor;
+}
+
+function formatStatPart(
+  part: StatPart,
+  lang: TooltipLocale,
+  precision?: number,
+): string {
+  const tiny = Boolean(part.name) && isTinyRatio(part.ratio);
+  const ratioValue = tiny ? scaleRatio(part.ratio, 100) : part.ratio;
   const ratio = precision == null
-    ? valueToTooltipString(part.ratio)
-    : formatValueWithPrecision(part.ratio, precision);
-  return `(${ratio}% ${part.name})`;
+    ? valueToTooltipString(ratioValue)
+    : formatValueWithPrecision(ratioValue, precision);
+
+  if (!tiny) return `(${ratio}% ${part.name})`;
+
+  const template = getTranslations(lang).common.perHundredStat;
+  return `(${template.replace("{stat}", part.name).replace("{value}", ratio)})`;
 }
 
 /**
@@ -117,7 +151,10 @@ function formatStatMultiplier(result: CalcResult): string | null {
   return terms.length === 1 ? terms[0] : `(${terms.join(" + ")})`;
 }
 
-export function formatCalculationResult(result: CalcResult): string | null {
+export function formatCalculationResult(
+  result: CalcResult,
+  lang: TooltipLocale = "ko_KR",
+): string | null {
   const base = result.isPercent
     ? scalePercent(result.base, result.precision)
     : result.base;
@@ -131,7 +168,7 @@ export function formatCalculationResult(result: CalcResult): string | null {
 
   const parts = [
     formatBase(result, base),
-    ...statParts.map((part) => formatStatPart(part, result.precision)),
+    ...statParts.map((part) => formatStatPart(part, lang, result.precision)),
   ].filter((part): part is string => part !== null);
 
   const multiplier = formatStatMultiplier(result);

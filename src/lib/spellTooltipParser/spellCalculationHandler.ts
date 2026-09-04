@@ -32,7 +32,7 @@ export function replaceCalculateData(
       data: communityDragonData,
       lang,
     });
-    return formatCalculationResult(result);
+    return formatCalculationResult(result, lang);
   } catch (error) {
     logger.error("Failed to evaluate calculation:", error);
     return null;
