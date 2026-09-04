@@ -7,6 +7,7 @@ import { normalizeItems } from "./data-pipeline/normalization/item";
 import { normalizeSummonerSpells } from "./data-pipeline/normalization/summoner";
 import { StatKey } from "../src/types/combatStats";
 import { fetchCDragonRuneStatShards } from "./data-pipeline/sources/cdragon-runes";
+import { mergeCDragonItems } from "./data-pipeline/sources/cdragon-items";
 
 const items = normalizeItems("en_US", {
   data: {
@@ -61,6 +62,15 @@ assert.equal(shards.groups[0].rows[0].perks[0].id, 5001);
 assert.equal(runeRequests.length, 2);
 assert.equal(runeRequests.every((url) => url.includes("/16.17/")), true);
 assert.equal(runeRequests.some((url) => url.includes("latest")), false);
+
+const mergedItems = mergeCDragonItems(
+  { data: { "1001": { name: "Boots", inStore: false } } },
+  [{ id: 1001, name: "Boots", description: "", inStore: true }],
+);
+assert.deepEqual(
+  (mergedItems.data as Record<string, Record<string, unknown>>)["1001"].inStore,
+  true,
+);
 
 const directory = await mkdtemp(path.join(os.tmpdir(), "cooldown-normalize-"));
 try {
