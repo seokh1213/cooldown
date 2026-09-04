@@ -134,6 +134,9 @@ export const enUSTranslations: Translations = {
       simulation: {
         title: "Simulation",
         description: "Simulate champion stats and skills with different runes, items, and levels.",
+        selectChampionAria: "Select a champion to simulate",
+        championPlaceholder: "Select champion",
+        statsTitle: "Champion stats",
         statsPlaceholderLine1: "Select champion, level, items, and runes",
         statsPlaceholderLine2: "to see detailed stats and skill info.",
         aaDpsLabel: "Auto Attack DPS (Approx.)",
@@ -144,6 +147,13 @@ export const enUSTranslations: Translations = {
         itemModalDescription: "Search or select an item to add.",
         itemModalHint: "Click an item to add to slot.",
         clearItemSlot: "Clear Slot",
+        skillsTitle: "Skills",
+        skillPlaceholderTitle: "Skill information",
+        skillPlaceholderDescription: "Select a champion to view skills and estimated damage.",
+        summonerSpellsTitle: "Summoner spells",
+        summonerSpellsComingSoon: "Summoner spell effects will be supported in the next simulation phase.",
+        runesTitle: "Runes",
+        runesComingSoon: "Rune effects will be supported in the next simulation phase.",
       },
     },
     championSelector: {
@@ -158,6 +168,7 @@ export const enUSTranslations: Translations = {
       noResults: "No search results",
       emptyList: "Champion list is empty",
       loading: "Loading...",
+      closeButton: "Close champion selector",
     },
     skillTooltip: {
       passive: "Passive",

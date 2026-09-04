@@ -5,6 +5,12 @@ import { normalizeSummonerSpells } from "./data-pipeline/normalization/summoner"
 import { StatKey } from "../src/types/combatStats";
 import { fetchCDragonRuneStatShards } from "./data-pipeline/sources/cdragon-runes";
 import { mergeCDragonItems } from "./data-pipeline/sources/cdragon-items";
+import { htmlToPlainText } from "../src/lib/htmlText";
+
+assert.equal(
+  htmlToPlainText("투명 <font color='#fff'>상태</font><br><br>다음 줄 &amp; 값"),
+  "투명 상태 다음 줄 & 값",
+);
 
 const items = normalizeItems("en_US", {
   data: {

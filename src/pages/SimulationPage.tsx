@@ -7,8 +7,8 @@ import { championIconUrl, itemIconUrl } from "@/data/assets/riotAssetUrls";
 import type { Champion } from "@/types";
 import type { StaticDataSources } from "@/data/contracts/staticData";
 import ChampionSelector from "@/components/features/ChampionSelector";
-import { evaluateAbilitySimulation } from "./SimulationPage.damageUtils";
 import { SimulationItemPicker } from "./SimulationItemPicker";
+import { SimulationSkills } from "./SimulationSkills";
 import { useSimulationData } from "./useSimulationData";
 
 interface StatRowProps {
@@ -110,6 +110,7 @@ export default function SimulationPage({
             <button
               type="button"
               onClick={() => setIsChampionModalOpen(true)}
+              aria-label={t.pages.simulation.selectChampionAria}
               className="relative mx-auto md:mx-0 w-32 h-32 sm:w-36 sm:h-36 rounded-full border-4 border-border/80 bg-linear-to-br from-slate-800 via-slate-900 to-slate-700 flex items-center justify-center overflow-hidden shadow-lg"
             >
               {championInfo ? (
@@ -120,9 +121,7 @@ export default function SimulationPage({
                 />
               ) : (
                 <span className="text-[11px] sm:text-xs font-semibold tracking-[0.08em] text-muted-foreground uppercase text-center px-4">
-                  Champion
-                  <br />
-                  Placeholder
+                  {t.pages.simulation.championPlaceholder}
                 </span>
               )}
             </button>
@@ -131,7 +130,7 @@ export default function SimulationPage({
               <div className="flex items-center justify-between">
                 <div>
                   <div className="text-[11px] font-semibold tracking-[0.18em] text-muted-foreground uppercase">
-                    {championInfo ? "Stats" : "Champion Stats"}
+                    {t.pages.simulation.statsTitle}
                   </div>
                   {championInfo && (
                     <div className="mt-1 text-sm font-semibold">
@@ -259,78 +258,32 @@ export default function SimulationPage({
         </div>
       </Card>
 
-      {/* 스킬 설명 박스 (Q/W/E/R) */}
-      <Card className="mt-6 bg-card/60 border-border/70">
-        <div className="border-b border-border/70 px-4 py-3">
-          <div className="text-[11px] font-semibold tracking-[0.18em] text-muted-foreground uppercase">
-            Skills
-          </div>
-        </div>
-        <div className="px-4 py-4 space-y-3">
-          {["Q", "W", "E", "R"].map((key, idx) => {
-            const spell = championInfo?.spells?.[idx];
-            const summary = skillSummaries[idx];
-            const ability = championDetail?.champion.abilities[
-              key as "Q" | "W" | "E" | "R"
-            ];
-            const damage = finalStats
-              ? evaluateAbilitySimulation(
-                  ability?.simulation,
-                  summary?.maxrank ?? spell?.maxrank ?? 1,
-                  finalStats
-                )
-              : null;
-
-            return (
-              <div
-                key={key}
-                className="flex items-start gap-3 border border-border/50 rounded-md px-3 py-2 bg-background/40"
-              >
-                <div className="w-8 h-8 rounded-sm border border-border/70 bg-slate-900 flex items-center justify-center text-xs font-bold text-amber-300">
-                  {key}
-                </div>
-                <div className="flex-1 space-y-1">
-                  <div className="text-[11px] font-semibold">
-                    {spell
-                      ? `${key}: ${spell.name}`
-                      : `${key}: Skill Description Placeholder`}
-                  </div>
-                  <div className="text-[11px] text-muted-foreground leading-snug">
-                    {spell
-                      ? spell.description
-                      : "Skill Description Placeholder"}
-                  </div>
-                  {damage != null && (
-                    <div className="text-[10px] text-emerald-400 mt-1">
-                      예상 피해 (아이템/레벨 반영):{" "}
-                      {damage.toFixed(1)}
-                    </div>
-                  )}
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      </Card>
+      <SimulationSkills
+        champion={championInfo}
+        detail={championDetail}
+        ddragonVersion={ddragonVersion}
+        finalStats={finalStats}
+        skillSummaries={skillSummaries}
+      />
 
       {/* 하단: 소환사 주문 / 룬 영역 */}
       <div className="mt-6 grid gap-4 md:grid-cols-[minmax(0,1.1fr)_minmax(0,1.1fr)]">
         <Card className="p-4 bg-card/60 border-border/70 space-y-3">
           <div className="text-[11px] font-semibold tracking-[0.18em] text-muted-foreground uppercase">
-            Summoner Spells
+            {t.pages.simulation.summonerSpellsTitle}
           </div>
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-md border border-border/70 bg-background/40" />
             <div className="w-10 h-10 rounded-md border border-border/70 bg-background/40" />
           </div>
           <div className="text-[11px] text-muted-foreground">
-            추후 소환사 주문 시뮬레이션을 여기에 추가할 수 있습니다.
+            {t.pages.simulation.summonerSpellsComingSoon}
           </div>
         </Card>
 
         <Card className="p-4 bg-card/60 border-border/70 space-y-3">
           <div className="text-[11px] font-semibold tracking-[0.18em] text-muted-foreground uppercase">
-            Runes
+            {t.pages.simulation.runesTitle}
           </div>
           <div className="flex items-center gap-2">
             {Array.from({ length: 6 }).map((_, idx) => (
@@ -341,7 +294,7 @@ export default function SimulationPage({
             ))}
           </div>
           <div className="text-[11px] text-muted-foreground">
-            룬 시뮬레이션을 추가할 때 이 영역을 재사용할 수 있습니다.
+            {t.pages.simulation.runesComingSoon}
           </div>
         </Card>
       </div>
@@ -359,6 +312,7 @@ export default function SimulationPage({
         onSelect={(champion) => {
           setSelectedChampionId(champion.id);
         }}
+        selectionMode="single"
         onClose={() => setIsChampionModalOpen(false)}
         open={isChampionModalOpen}
         onOpenChange={setIsChampionModalOpen}

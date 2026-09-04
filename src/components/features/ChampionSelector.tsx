@@ -27,6 +27,7 @@ interface ChampionSelectorProps {
   onClose?: () => void;
   open?: boolean;
   onOpenChange?: (open: boolean) => void;
+  selectionMode?: "multiple" | "single";
   vsMode?: {
     currentChampionId: string;
     title?: string;
@@ -40,6 +41,7 @@ function ChampionSelector({
   onClose,
   open: controlledOpen,
   onOpenChange: controlledOnOpenChange,
+  selectionMode = "multiple",
   vsMode,
 }: ChampionSelectorProps) {
   const { t } = useTranslation();
@@ -124,6 +126,10 @@ function ChampionSelector({
     (champion: Champion) => {
       // 이미 선택된 챔피언이면 선택 해제, 아니면 선택
       onSelect(champion);
+      if (selectionMode === "single") {
+        handleOpenChange(false);
+        return;
+      }
       // 모달일 때는 절대 닫지 않고 계속 열어둠
       if (onClose !== undefined) {
         // 모달일 때는 검색어와 포커스만 초기화하지 않음 (계속 선택 가능하도록)
@@ -136,7 +142,7 @@ function ChampionSelector({
         document.body.style.overflow = "";
       }
     },
-    [onSelect, setIsOpen, onClose]
+    [onSelect, selectionMode, handleOpenChange, setIsOpen, onClose]
   );
 
   const handleKeyDown = useCallback(

@@ -33,6 +33,7 @@ export function ChampionSearchHeader(props: {
       )}
     >
       <Search
+        aria-hidden="true"
         className={cn(
           "h-5 w-5 shrink-0",
           versus ? "text-destructive" : "text-muted-foreground",
@@ -41,6 +42,13 @@ export function ChampionSearchHeader(props: {
       <Input
         ref={inputRef}
         type="text"
+        name="champion-search"
+        aria-label={
+          versus
+            ? t.championSelector.vsSearchPlaceholder
+            : t.championSelector.searchPlaceholder
+        }
+        autoComplete="off"
         placeholder={
           versus
             ? t.championSelector.vsSearchPlaceholder
@@ -50,15 +58,15 @@ export function ChampionSearchHeader(props: {
         onChange={(event) => onQueryChange(event.target.value)}
         onKeyDown={onKeyDown}
         className="flex-1"
-        autoFocus
       />
       <Button
         variant="ghost"
         size="icon"
         className="h-8 w-8 shrink-0 hover:bg-muted hover:text-foreground"
         onClick={onClose}
+        aria-label={t.championSelector.closeButton}
       >
-        <X className="h-4 w-4" />
+        <X aria-hidden="true" className="h-4 w-4" />
       </Button>
     </div>
   );

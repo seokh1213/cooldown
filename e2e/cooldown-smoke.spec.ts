@@ -65,9 +65,11 @@ test("simulation uses compiled Ability v2 without raw spell requests", async ({ 
   await expect(
     page.getByRole("heading", { name: "시뮬레이션" }).nth(1)
   ).toBeVisible();
-  await page.getByRole("button", { name: /Champion Placeholder/i }).click();
+  await page.getByRole("button", { name: "시뮬레이션할 챔피언 선택" }).click();
   await page.getByRole("button", { name: "Select 오공", exact: true }).click();
+  await expect(page.getByRole("dialog")).toBeHidden();
   await expect(page.getByText("Q: 파쇄격")).toBeVisible();
+  await expect(page.getByText("Skill Description Placeholder")).toHaveCount(0);
   await expect(page.getByText(/예상 피해 \(아이템\/레벨 반영\): 120\.0/)).toBeVisible();
   expect(dataRequests.some((url) => url.includes("/champions/ko_KR/MonkeyKing.json")))
     .toBe(true);
