@@ -15,3 +15,6 @@ export const summonerSpellIconUrl = (
   fileName: string
 ) =>
   `https://ddragon.leagueoflegends.com/cdn/${ddragonVersion}/img/spell/${fileName}`;
+
+export const runeIconUrl = (iconPath: string) =>
+  `https://ddragon.leagueoflegends.com/cdn/img/${iconPath}`;

@@ -156,6 +156,8 @@ export const enUSTranslations: Translations = {
         summonerSpellHint: "Damaging spells are added to the combo automatically.",
         runesTitle: "Runes",
         runesComingSoon: "Rune effects will be supported in the next simulation phase.",
+        selectDamageRune: "Select direct-damage rune",
+        damageRuneHint: "The combo includes one proc with its condition assumed true.",
         combatTitle: "Combo damage and lethal check",
         combatDescription: "Uses target defenses, ability ranks, and cast counts.",
         selectTargetAria: "Select the target champion",

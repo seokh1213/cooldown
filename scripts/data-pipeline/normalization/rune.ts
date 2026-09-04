@@ -1,5 +1,6 @@
 import type {
   NormalizedRune,
+  NormalizedDamageEffect,
   NormalizedStatShard,
 } from "../../../src/types/combatNormalized";
 import { StatKey, type StatContribution } from "../../../src/types/combatStats";
@@ -33,6 +34,35 @@ interface RawRune {
 interface RawRuneTree {
   id: number;
   slots?: Array<{ runes?: RawRune[] }>;
+}
+
+function interpolatedValues(start: number, end: number): number[] {
+  return Array.from(
+    { length: 18 },
+    (_, index) => start + ((end - start) * index) / 17,
+  );
+}
+
+function damageEffects(runeId: number): NormalizedDamageEffect[] {
+  if (runeId === 8126) {
+    return [{
+      id: "cheap-shot-damage",
+      damageType: "true",
+      target: "champion",
+      valuesByLevel: interpolatedValues(10, 45),
+      conditions: ["movement-or-action-impaired"],
+    }];
+  }
+  if (runeId === 8237) {
+    return [{
+      id: "scorch-damage",
+      damageType: "magical",
+      target: "champion",
+      valuesByLevel: interpolatedValues(20, 40),
+      conditions: ["damaging-ability-hit"],
+    }];
+  }
+  return [];
 }
 
 function inferShardStats(text: string): StatContribution[] {
@@ -109,6 +139,7 @@ function normalizeRunes(locale: string, raw: unknown): NormalizedRune[] {
           slotIndex,
           stats: [],
           effects: [],
+          damageEffects: damageEffects(rune.id),
           tooltip: rune.longDesc || rune.shortDesc || "",
         };
         return overrides?.[normalized.id]

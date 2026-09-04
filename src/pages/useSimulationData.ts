@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import type { Language } from "@/i18n";
 import type {
   NormalizedItem,
+  NormalizedRune,
   NormalizedSummonerSpell,
 } from "@/types/combatNormalized";
 import type { StaticDataSources } from "@/data/contracts/staticData";
@@ -9,6 +10,7 @@ import type { ChampionDetailV2 } from "@/data/contracts/championData";
 import { toChampion } from "@/data/mappers/championMapper";
 import {
   getNormalizedItems,
+  getNormalizedRunes,
   getNormalizedSummonerSpells,
 } from "@/data/queries/gameDataQueries";
 import { championRepository } from "@/data/repositories/championRepository";
@@ -75,6 +77,7 @@ export function useSimulationData(input: {
   const [targetLevel, setTargetLevel] = useState(18);
   const [availableItems, setAvailableItems] = useState<NormalizedItem[]>([]);
   const [availableSummoners, setAvailableSummoners] = useState<NormalizedSummonerSpell[]>([]);
+  const [availableRunes, setAvailableRunes] = useState<NormalizedRune[]>([]);
   const [selectedItemIds, setSelectedItemIds] = useState<(string | null)[]>(
     () => Array(6).fill(null),
   );
@@ -87,6 +90,22 @@ export function useSimulationData(input: {
       })
       .catch(() => {
         if (!cancelled) setAvailableItems([]);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [patchVersion, sources, lang]);
+
+  useEffect(() => {
+    let cancelled = false;
+    getNormalizedRunes({ patchVersion, sources }, lang)
+      .then((runes) => {
+        if (!cancelled) {
+          setAvailableRunes(runes.filter((rune) => rune.damageEffects.length > 0));
+        }
+      })
+      .catch(() => {
+        if (!cancelled) setAvailableRunes([]);
       });
     return () => {
       cancelled = true;
@@ -155,6 +174,7 @@ export function useSimulationData(input: {
     setTargetLevel,
     availableItems,
     availableSummoners,
+    availableRunes,
     selectedItemIds,
     setSelectedItemIds,
     itemsBySlot,

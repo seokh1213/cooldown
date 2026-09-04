@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import { normalizeChampion } from "./data-pipeline/normalization/champion";
 import { normalizeItems } from "./data-pipeline/normalization/item";
 import { normalizeSummonerSpells } from "./data-pipeline/normalization/summoner";
+import { normalizeRunesAndStatShards } from "./data-pipeline/normalization/rune";
 import { StatKey } from "../src/types/combatStats";
 import { fetchCDragonRuneStatShards } from "./data-pipeline/sources/cdragon-runes";
 import { mergeCDragonItems } from "./data-pipeline/sources/cdragon-items";
@@ -59,6 +60,17 @@ assert.deepEqual(summoners[1].damageEffects[0].valuesByLevel, [
   90, 110, 130, 150, 170, 190, 210, 230, 250,
   270, 290, 310, 330, 350, 370, 390, 410, 430,
 ]);
+
+const normalizedRunes = normalizeRunesAndStatShards("en_US", [{
+  id: 8100,
+  slots: [{ runes: [
+    { id: 8126, name: "Cheap Shot" },
+    { id: 8237, name: "Scorch" },
+  ] }],
+}], null, null).runes;
+assert.equal(normalizedRunes[0].damageEffects[0].valuesByLevel[0], 10);
+assert.equal(normalizedRunes[0].damageEffects[0].valuesByLevel[17], 45);
+assert.equal(normalizedRunes[1].damageEffects[0].damageType, "magical");
 
 const runeRequests: string[] = [];
 const shards = await fetchCDragonRuneStatShards(
