@@ -77,6 +77,7 @@ function evaluateGameCalculation(
 
   let base: Value = 0;
   const statParts: StatPart[] = [];
+  const extraRanges: Value[] = [];
   let hasLevelRange = false;
 
   for (const part of calc.mFormulaParts ?? []) {
@@ -86,10 +87,16 @@ function evaluateGameCalculation(
       logger.debug("GameCalculation: 해석 못 한 항 생략", (part as { __type?: string }).__type);
       continue;
     }
-    if (evaluated.isLevelRange) hasLevelRange = true;
     try {
       base = add(base, evaluated.base);
+      if (evaluated.isLevelRange) hasLevelRange = true;
     } catch (error) {
+      // 랭크 벡터와 레벨 범위는 길이가 달라 못 더한다. 버리지 말고 옆에 붙인다.
+      if (evaluated.isLevelRange) {
+        extraRanges.push(evaluated.base);
+        statParts.push(...evaluated.statParts);
+        continue;
+      }
       logger.debug("GameCalculation: 항 합산 실패", error);
       continue;
     }
@@ -118,6 +125,7 @@ function evaluateGameCalculation(
     statParts,
     isPercent: Boolean(calc.mDisplayAsPercent),
     isBreakpointRange: hasLevelRange || undefined,
+    extraRanges: extraRanges.length > 0 ? extraRanges : undefined,
     statMultiplier,
     precision:
       typeof calc.mPrecision === "number" && calc.mPrecision >= 0

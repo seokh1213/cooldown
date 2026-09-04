@@ -166,8 +166,19 @@ export function formatCalculationResult(
     return false;
   });
 
+  // 랭크 값과 길이가 달라 합치지 못한 레벨 범위는 옆에 별도 항으로 붙인다
+  const rangeParts = (result.extraRanges ?? []).map((range) => {
+    if (!isVector(range) || range.length !== 2) return valueToTooltipString(range);
+    const scaled = result.isPercent ? scalePercent(range, result.precision) : range;
+    const [minimum, maximum] = (scaled as number[]).map(formatNumber);
+    return result.isPercent
+      ? `(${minimum}% ~ ${maximum}%)`
+      : `(${minimum} ~ ${maximum})`;
+  });
+
   const parts = [
     formatBase(result, base),
+    ...rangeParts,
     ...statParts.map((part) => formatStatPart(part, lang, result.precision)),
   ].filter((part): part is string => part !== null);
 
