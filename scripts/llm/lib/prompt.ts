@@ -138,15 +138,17 @@ export function threatOrderToText(ranks: ThreatRank[]): string {
 export function deriveConclusions(ctx: MatchupContext): string[] {
   const out: string[] = [];
   const { me, enemy, items } = ctx;
-  const primary = enemy.damageProfile.primary;
+  // 피해 유형은 라이엇 분류를 우선한다 (툴팁 집계는 계수 없는 스킬 때문에 틀릴 수 있다)
+  const primary = enemy.riot?.damageType ?? enemy.damageProfile.primary;
   const focusLabel = items.focus
     .map((f) => (f === "MAGIC_RESIST" ? "마법 저항력" : "방어력"))
     .join("과 ");
 
+  const classLabel = enemy.wiki?.subclass ? `${enemy.wiki.subclass} 성향의 ` : "";
   out.push(
     primary === "혼합"
-      ? `상대 ${enemy.name}의 피해 유형은 혼합이지만 계수 프로필이 ${enemy.scalingProfile.primary}이므로 내가 우선 올릴 방어 스탯은 ${focusLabel}이다.`
-      : `상대 ${enemy.name}의 주 피해 유형은 ${primary}이므로 내가 우선 올릴 방어 스탯은 ${focusLabel}이다.`,
+      ? `상대 ${enemy.name}은(는) ${classLabel}챔피언이고 피해 유형이 혼합이므로 내가 우선 올릴 방어 스탯은 ${focusLabel}이다.`
+      : `상대 ${enemy.name}은(는) ${classLabel}챔피언이고 주 피해 유형이 ${primary}이므로 내가 우선 올릴 방어 스탯은 ${focusLabel}이다.`,
   );
   const trueDamageSpells = enemy.spells.filter((s) => s.damageTypes.includes("고정"));
   if (trueDamageSpells.length) {

@@ -144,18 +144,24 @@ export function selectDefensiveItems(
   } = {},
 ): ItemSelection {
   const { maxLegendaries = 8, maxComponents = 5, me, maxOffensive = 8, pinnedNames = [] } = options;
-  // 피해 유형이 혼합이면 계수 프로필로 동점을 깬다.
-  // 예: 피오라는 물리·마법·고정이 섞이지만 계수가 AD 이므로 방어력이 답이다.
+  // 방어 기준 스탯은 라이엇 damageType 을 우선한다.
+  // 툴팁 집계는 나서스처럼 계수 없는 스킬 때문에 틀릴 수 있다(라이엇: 물리, 집계: 마법).
+  // 라이엇 값이 없거나 혼합이면 툴팁 집계와 계수 프로필로 판정한다.
+  const riotDamage = enemy.riot?.damageType;
   const focus: ItemSelection["focus"] =
-    enemy.damageProfile.primary === "마법"
+    riotDamage === "마법"
       ? ["MAGIC_RESIST"]
-      : enemy.damageProfile.primary === "물리"
+      : riotDamage === "물리"
         ? ["ARMOR"]
-        : enemy.scalingProfile.primary === "AD"
-          ? ["ARMOR"]
-          : enemy.scalingProfile.primary === "AP"
-            ? ["MAGIC_RESIST"]
-            : ["MAGIC_RESIST", "ARMOR"];
+        : enemy.damageProfile.primary === "마법"
+          ? ["MAGIC_RESIST"]
+          : enemy.damageProfile.primary === "물리"
+            ? ["ARMOR"]
+            : enemy.scalingProfile.primary === "AD"
+              ? ["ARMOR"]
+              : enemy.scalingProfile.primary === "AP"
+                ? ["MAGIC_RESIST"]
+                : ["MAGIC_RESIST", "ARMOR"];
 
   const rift = dedupeByName(items.filter(isRiftItem));
   const matchesFocus = (item: NormalizedItem) => focus.some((stat) => hasStat(item, stat));
@@ -174,6 +180,7 @@ export function selectDefensiveItems(
         rangeType: me.rangeType,
         hasPhysicalSpell: me.spells.some((s) => s.damageTypes.includes("물리")),
         riot: me.riot,
+        wikiSubclass: me.wiki?.subclass,
       })
     : undefined;
   const fitsProfile = (archetypes: ItemArchetype[]) => {

@@ -36,11 +36,11 @@ const SAMPLE = [
 function main() {
   const showAll = process.argv.includes("--all");
   const data = loadStaticData("ko_KR");
-  const builder = createChampionCardBuilder(data.champions, data.riotMeta);
+  const builder = createChampionCardBuilder(data.champions, data.riotMeta, data.wikiMeta);
   const ids = showAll ? data.champions.map((c) => c.id) : SAMPLE;
 
   console.log(
-    `${"챔피언".padEnd(10)}${"역할(라이엇)".padEnd(20)}${"피해".padEnd(6)}${"주 특성".padEnd(12)}${"내구".padEnd(5)}빌드 성향 → 선호 역할군`,
+    `${"챔피언".padEnd(10)}${"클래스(위키)".padEnd(20)}${"하위 클래스".padEnd(14)}${"피해".padEnd(6)}${"포지션".padEnd(14)}빌드 성향 → 선호 역할군`,
   );
   for (const id of ids) {
     const card = builder.build(id);
@@ -51,12 +51,13 @@ function main() {
       rangeType: card.rangeType,
       hasPhysicalSpell: card.spells.some((s) => s.damageTypes.includes("물리")),
       riot: card.riot,
+      wikiSubclass: card.wiki?.subclass,
     });
     const combat = profile.preferred.filter(
       (a) => !["boots", "starter", "component"].includes(a),
     );
     console.log(
-      `${card.name.padEnd(10)}${card.roleTags.join("/").padEnd(20)}${(card.riot?.damageType ?? card.scalingProfile.primary).padEnd(6)}${(card.riot?.tagPrimary ?? "-").padEnd(12)}${String(card.riot?.playstyle?.durability ?? "-").padEnd(5)}${profile.label} → ${combat.map((a) => ARCHETYPE_LABEL[a]).join(" > ")}`,
+      `${card.name.padEnd(10)}${`${card.wiki?.heroType ?? "?"}/${card.wiki?.altType ?? "-"}`.padEnd(20)}${(card.wiki?.subclass ?? "-").padEnd(14)}${(card.riot?.damageType ?? card.scalingProfile.primary).padEnd(6)}${(card.wiki?.positions.join(",") ?? "-").padEnd(14)}${profile.label} → ${combat.map((a) => ARCHETYPE_LABEL[a]).join(" > ")}`,
     );
   }
 }

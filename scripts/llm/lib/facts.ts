@@ -12,7 +12,12 @@ import type {
   ChampionSpellSlot,
   LevelScaledScalar,
 } from "../../../src/types/combatNormalized";
-import type { ChampionAbility, ChampionRecord, RiotChampionMeta } from "./data";
+import type {
+  ChampionAbility,
+  ChampionRecord,
+  RiotChampionMeta,
+  WikiChampionMeta,
+} from "./data";
 import { formatLevels, round, stripHtml } from "./text";
 
 export type StatName =
@@ -81,6 +86,15 @@ export interface ChampionCard {
     damageType?: "물리" | "마법" | "혼합";
     attackType?: "근접" | "원거리";
     playstyle?: RiotChampionMeta["playstyle"];
+  };
+  /** LoL Wiki 분류 (하위 클래스와 포지션) */
+  wiki?: {
+    heroType?: string;
+    altType?: string;
+    /** Juggernaut, Diver, Skirmisher, Vanguard, Warden, Battlemage, Burst, Artillery, Assassin, Enchanter, Catcher, Marksman, Specialist */
+    subclass?: string;
+    subclasses: string[];
+    positions: string[];
   };
   resource?: string;
   rangeType: "근접" | "원거리";
@@ -329,6 +343,7 @@ const RIOT_DAMAGE_LABEL: Record<string, "물리" | "마법" | "혼합"> = {
 export function createChampionCardBuilder(
   champions: ChampionRecord[],
   riotMeta: Map<string, RiotChampionMeta> = new Map(),
+  wikiMeta: Map<string, WikiChampionMeta> = new Map(),
 ): ChampionCardBuilder {
   // 스탯별 전체 분포를 미리 계산 (백분위용)
   const distributions = new Map<string, number[]>();
@@ -394,6 +409,7 @@ export function createChampionCardBuilder(
       if (s.damageTypes.includes("고정")) trueDamage += 1;
     }
     const meta = riotMeta.get(champ.id);
+    const wiki = wikiMeta.get(champ.id);
     // 역할 태그는 라이엇 메타(순서 있는 roles)를 우선한다
     const roleTags = (meta?.roles?.length ? meta.roles : champ.tags ?? []).map(
       (r) => r.charAt(0).toUpperCase() + r.slice(1),
@@ -414,6 +430,15 @@ export function createChampionCardBuilder(
       roleTags,
       // 자원 이름은 스킬 비용 표기에서 얻는다 (예: 마나, 기력, 열기)
       resource: SLOTS.map((slot) => champ.abilities?.[slot]?.cost?.resource).find(Boolean),
+      wiki: wiki
+        ? {
+            heroType: wiki.heroType,
+            altType: wiki.altType,
+            subclass: wiki.subclasses[0],
+            subclasses: wiki.subclasses,
+            positions: wiki.positions,
+          }
+        : undefined,
       riot: meta
         ? {
             tagPrimary: meta.tagPrimary,
@@ -492,11 +517,22 @@ export function championCardToText(card: ChampionCard, opts: CardTextOptions = {
     spellDetail = includeSpellText ? "full" : "summary",
   } = opts;
   const lines: string[] = [];
+  const classLine = card.wiki
+    ? `${card.wiki.heroType ?? "?"}${card.wiki.altType ? `/${card.wiki.altType}` : ""}${card.wiki.subclass ? ` · ${card.wiki.subclass}` : ""}`
+    : card.roleTags.join("/") || "미상";
   lines.push(
-    `${card.name}${card.title ? ` (${card.title})` : ""} — 역할: ${card.roleTags.join("/") || "미상"}, ${card.rangeType}(사거리 ${card.attackRange}), 자원: ${card.resource ?? "없음"}`,
+    `${card.name}${card.title ? ` (${card.title})` : ""} — 클래스: ${classLine}, ${card.rangeType}(사거리 ${card.attackRange}), 자원: ${card.resource ?? "없음"}${card.wiki?.positions.length ? `, 주 포지션: ${card.wiki.positions.join("/")}` : ""}`,
   );
+  if (card.riot?.tagPrimary) {
+    lines.push(
+      `라이엇 특성: ${card.riot.tagPrimary}${card.riot.tagSecondary ? `, ${card.riot.tagSecondary}` : ""}${card.riot.playstyle ? ` (피해 ${card.riot.playstyle.damage}, 내구도 ${card.riot.playstyle.durability}, 군중 제어 ${card.riot.playstyle.crowdControl}, 기동력 ${card.riot.playstyle.mobility}, 유틸 ${card.riot.playstyle.utility} — 각 0~3)` : ""}`,
+    );
+  }
+  // 피해 유형은 라이엇 분류를 우선한다. 툴팁 집계는 참고 수치로만 남긴다.
   lines.push(
-    `주 피해 유형: ${card.damageProfile.primary} (물리 스킬 ${card.damageProfile.physical}, 마법 스킬 ${card.damageProfile.magical}, 고정 ${card.damageProfile.trueDamage})`,
+    card.riot?.damageType
+      ? `주 피해 유형: ${card.riot.damageType} (라이엇 분류; 툴팁 집계는 물리 스킬 ${card.damageProfile.physical}, 마법 스킬 ${card.damageProfile.magical}, 고정 ${card.damageProfile.trueDamage})`
+      : `주 피해 유형: ${card.damageProfile.primary} (물리 스킬 ${card.damageProfile.physical}, 마법 스킬 ${card.damageProfile.magical}, 고정 ${card.damageProfile.trueDamage})`,
   );
   const sp = card.scalingProfile;
   lines.push(
