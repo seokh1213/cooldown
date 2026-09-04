@@ -93,9 +93,17 @@ jobs:
           path: playwright-report
           retention-days: 14
 
+      # 작업 시간이 10분 가까이 걸려 그사이 master 가 움직일 수 있다.
+      # 리베이스 없이 밀면 non-fast-forward 로 실패하고 데이터 갱신이 통째로 날아간다.
       - name: Push validated generated data
         if: steps.git-check.outputs.changed == 'true'
-        run: git push
+        run: |
+          for attempt in 1 2 3; do
+            git pull --rebase --autostash origin master && git push && exit 0
+            echo "push 재시도 ${attempt}"
+            sleep $((attempt * 5))
+          done
+          exit 1
 
       - name: Deploy to GitHub Pages
         if: github.event_name != 'schedule' || steps.git-check.outputs.changed == 'true'
