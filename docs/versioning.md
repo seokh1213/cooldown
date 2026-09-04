@@ -22,6 +22,11 @@ League of Legends가 2025년부터 공식 패치 표기를 연도 기반으로 �
   `cdragonVersion`, `locale`로 이름을 구분한다.
 - 앱은 `public/data/version.json`을 유일한 런타임 버전 진입점으로 사용한다.
 - 저장소는 요청한 패치/언어와 응답 메타데이터가 다르면 데이터를 거부한다.
+- 생성기는 선택한 DDragon 릴리스에서 CDragon 버전을 한 번만 계산하고 모든
+  CDragon 요청에 같은 `sources.cdragon`을 사용한다. 이전 패치나 `latest`로
+  폴백하지 않으며 exact snapshot이 준비되지 않았으면 새 배포를 중단한다.
+- 툴팁 검증 보고서의 DDragon fallback은 같은 릴리스의 설명 문자열 보완을
+  뜻하며, 이전 CDragon 버전으로의 폴백을 뜻하지 않는다.
 
 `schemaVersion`은 파일 형식의 버전이며 게임 패치 버전과 무관하다. 계약을 깨는
 변경에서는 이 값만 올리고, 과거 형식을 런타임에서 호환하지 않는다.
