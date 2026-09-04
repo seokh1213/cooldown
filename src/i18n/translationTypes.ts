@@ -63,6 +63,7 @@ export interface Translations {
       runes: string;
       items: string;
       summoner: string;
+      formulas: string;
     };
     reset: string;
     champion: string;
@@ -121,6 +122,11 @@ export interface Translations {
       searchPlaceholder: string;
       listTitle: string;
       detailEmpty: string;
+    };
+    formulas: {
+      intro: string;
+      exampleLabel: string;
+      source: string;
     };
   };
   pages: {

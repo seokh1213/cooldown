@@ -61,6 +61,7 @@ export const enUSTranslations: Translations = {
         runes: "Runes Encyclopedia",
         items: "Items Encyclopedia",
         summoner: "Summoner Spells",
+        formulas: "Formulas",
       },
       reset: "Reset",
       champion: "Champion",
@@ -129,6 +130,13 @@ export const enUSTranslations: Translations = {
         listTitle: "Summoner Spells",
         detailEmpty:
           "Select a summoner spell on the left to see its detailed description here.",
+      },
+      formulas: {
+        intro:
+          "Tooltips tell you \"40 armor penetration\" but never how that reaches the damage number. These are the formulas whose order and shape are easy to get wrong.",
+        exampleLabel: "Example:",
+        source:
+          "Source: LoL Fandom Wiki. Entries that patches have changed note the patch.",
       },
     },
     pages: {

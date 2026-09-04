@@ -285,3 +285,24 @@ test("renders stat icons inside ability tooltips", async ({ page }) => {
     )
     .toBeGreaterThan(0);
 });
+
+test("documents game formulas in the encyclopedia", async ({ page }) => {
+  await page.goto("./encyclopedia?tab=formulas");
+
+  // 관통은 순서가 결과를 바꾸므로 순서 자체가 핵심 내용이다
+  await expect(page.getByRole("heading", { name: "관통과 감소" })).toBeVisible();
+  await expect(page.getByText("① 방어력 감소(고정)", { exact: false })).toBeVisible();
+  await expect(page.getByText("100 / (100 + 방어력)", { exact: false }).first()).toBeVisible();
+
+  // 스탯 아이콘은 여기서도 CommunityDragon 이미지로 그려진다
+  await expect(page.locator('img[src*="statsicon"]').first()).toBeVisible();
+
+  await page.setViewportSize({ width: 390, height: 844 });
+  await expect
+    .poll(() =>
+      page.evaluate(
+        () => document.documentElement.scrollWidth <= window.innerWidth,
+      ),
+    )
+    .toBe(true);
+});

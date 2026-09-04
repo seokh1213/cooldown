@@ -4,9 +4,15 @@ import { TabNavigation, EncyclopediaTab } from "./TabNavigation";
 import { RunesTab } from "./RunesTab";
 import { ItemsTab } from "./ItemsTab";
 import { SummonerTab } from "./SummonerTab";
+import { FormulasTab } from "./FormulasTab";
 
 function isValidTab(tab: string | null): tab is EncyclopediaTab {
-  return tab === "runes" || tab === "items" || tab === "summoner";
+  return (
+    tab === "runes" ||
+    tab === "items" ||
+    tab === "summoner" ||
+    tab === "formulas"
+  );
 }
 
 function EncyclopediaPageContent({
@@ -48,6 +54,7 @@ function EncyclopediaPageContent({
       {activeTab === "summoner" && (
         <SummonerTab patchVersion={patchVersion} sources={sources} ddragonVersion={ddragonVersion} lang={lang} />
       )}
+      {activeTab === "formulas" && <FormulasTab />}
     </div>
   );
 }
