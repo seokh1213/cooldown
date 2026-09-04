@@ -10,6 +10,8 @@
  * 대상 이름이 사라지면 값을 못 찾고 다시 `?` 가 되며,
  * 허용 목록 검사가 회귀로 잡아낸다. 틀린 숫자가 조용히 남지는 않는다.
  */
+import type { SpellCalculation } from "./types";
+
 interface RuntimeTokenAlias {
   /** BIN 의 DataValue 또는 mSpellCalculations 이름. `이름*100` 처럼 배율도 쓸 수 있다 */
   target: string;
@@ -36,9 +38,12 @@ const RUNTIME_TOKEN_ALIASES: Record<string, Record<string, RuntimeTokenAlias>> =
       evidence: "3초 동안 검을 들고 빠르게 회전하여 … {{ f1 }}회 입힙니다",
     },
   },
-  // 세트 W 의 f1 (최대 피해)은 MaxDamage 계산식이 있지만 추가 공격력 계수가
-  // 0.1 로, 같은 스킬의 DamageConversion(0.0025)과 40배 어긋난다.
-  // 어느 쪽이 맞는지 데이터만으로 판단할 수 없어 매핑하지 않는다.
+  SettW: {
+    f1: {
+      target: "MaxDamage",
+      evidence: "소모한 투지에 해당하는 고정 피해를 입힙니다. (최대 {{ f1 }}의 피해)",
+    },
+  },
   SyndraW: {
     f2: {
       target: "SlowDuration",
@@ -54,6 +59,44 @@ const RUNTIME_TOKEN_ALIASES: Record<string, Record<string, RuntimeTokenAlias>> =
     },
   },
 };
+
+/**
+ * BIN 의 계산식이 명백히 어긋날 때 쓰는 교체본.
+ *
+ * 같은 스킬 안에 같은 값을 두 번 적어 둔 곳이 있는데, 한쪽만 갱신되고
+ * 다른 쪽이 낡은 채로 남아 있는 경우가 있다. 살아 있는 쪽을 조합해 쓴다.
+ */
+const CALCULATION_OVERRIDES: Record<
+  string,
+  Record<string, { calculation: SpellCalculation; evidence: string }>
+> = {
+  SettW: {
+    MaxDamage: {
+      // BIN 의 MaxDamage 는 MaxGrit × (0.25 + 추가 공격력 0.1) 인데,
+      // 같은 스킬의 DamageConversion 은 0.25 + 추가 공격력 0.0025 다.
+      // 추가 공격력 100 이면 전자는 최대 체력의 10 배가 되어 성립하지 않는다.
+      // 바로 앞 문장이 쓰는 DamageConversion 쪽을 배율로 삼는다.
+      calculation: {
+        __type: "GameCalculationModified",
+        mModifiedGameCalculation: "MaxGrit",
+        mMultiplier: {
+          __type: "SpellCalculationSubPart",
+          mSpellCalculationKey: "DamageConversion",
+        },
+      } as unknown as SpellCalculation,
+      evidence: "소모한 투지의 @DamageConversion@에 해당하는 고정 피해 … (최대 @f1@의 피해)",
+    },
+  },
+};
+
+export function resolveCalculationOverride(
+  spellId: string | undefined,
+  calculationName: string,
+): SpellCalculation | null {
+  if (!spellId) return null;
+  const entry = CALCULATION_OVERRIDES[spellId]?.[calculationName];
+  return entry ? entry.calculation : null;
+}
 
 /**
  * `f2.0` 처럼 뒤에 붙는 숫자는 소수점 자릿수 지정이라 이름에서 떼어낸다.

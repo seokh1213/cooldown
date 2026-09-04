@@ -102,6 +102,8 @@ export interface CalcResult {
   statMultiplier?: {
     base: Value;
     statParts: StatPart[];
+    /** base 를 퍼센트로 적어야 하는지 여부 */
+    isPercent?: boolean;
   };
   /**
    * 소수점 자릿수 (CommunityDragon GameCalculation.mPrecision)

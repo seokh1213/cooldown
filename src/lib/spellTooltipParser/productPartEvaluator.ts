@@ -8,6 +8,8 @@ export interface PartResult {
   statParts: StatPart[];
   /** base 가 [1레벨값, 18레벨값] 범위인지 여부 */
   isLevelRange?: boolean;
+  /** base 를 퍼센트로 적어야 하는지 여부 (참조한 계산식의 mDisplayAsPercent) */
+  isPercent?: boolean;
 }
 
 export type PartEvaluator = (part: unknown) => PartResult | null;

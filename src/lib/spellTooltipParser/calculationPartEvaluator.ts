@@ -273,7 +273,11 @@ export function evaluatePart(
   if (typeof referenceKey === "string" && referenceKey.length > 0) {
     try {
       const inner = ctx.evaluateCalculation(referenceKey, new Set(visited));
-      return { base: inner.base, statParts: inner.statParts };
+      return {
+        base: inner.base,
+        statParts: inner.statParts,
+        isPercent: inner.isPercent,
+      };
     } catch (error) {
       logger.debug(`SpellCalculation reference "${referenceKey}" failed`, error);
       return null;

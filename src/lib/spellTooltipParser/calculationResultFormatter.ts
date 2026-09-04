@@ -134,10 +134,18 @@ function formatStatPart(
  */
 function formatStatMultiplier(result: CalcResult): string | null {
   if (!result.statMultiplier) return null;
-  const { base, statParts } = result.statMultiplier;
+  const { base, statParts, isPercent } = result.statMultiplier;
   const terms: string[] = [];
 
-  if (!isZeroValue(base)) terms.push(valueToTooltipString(base));
+  if (!isZeroValue(base)) {
+    // 퍼센트로 적는 계산식을 배율로 쓰면 base 도 퍼센트여야 한다.
+    // 세트 W 의 투지 전환율이 "0.25" 가 아니라 "25%" 로 나와야 하는 경우.
+    terms.push(
+      isPercent
+        ? `${valueToTooltipString(scaleBy100(base))}%`
+        : valueToTooltipString(base),
+    );
+  }
 
   for (const part of statParts) {
     const scaled = scaleBy100(part.ratio);
