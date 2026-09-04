@@ -209,7 +209,9 @@
           },
           "unsupportedPartTypes": []
         },
-        "conditions": [],
+        "conditions": [
+          "on-hit"
+        ],
         "source": "communitydragon",
         "diagnostics": {
           "unresolvedTokens": []
@@ -263,10 +265,32 @@
           }
         ],
         "simulation": {
-          "status": "unsupported",
-          "unsupportedPartTypes": [
-            "ByCharLevelBreakpointsCalculationPart"
-          ]
+          "status": "complete",
+          "primary": {
+            "id": "WDamage",
+            "kind": "damage",
+            "damageType": "magical",
+            "baseByRank": [
+              10,
+              20,
+              30,
+              40,
+              50
+            ],
+            "terms": [
+              {
+                "stat": "totalAttackDamage",
+                "coefficientsByRank": [
+                  1,
+                  1,
+                  1,
+                  1,
+                  1
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
         },
         "conditions": [],
         "source": "communitydragon",
@@ -377,21 +401,21 @@
         "simulation": {
           "status": "complete",
           "primary": {
-            "id": "Damage",
+            "id": "TooltipDamage",
             "kind": "damage",
             "damageType": "magical",
             "baseByRank": [
+              100,
               200,
-              400,
-              600
+              300
             ],
             "terms": [
               {
                 "stat": "bonusAttackDamage",
                 "coefficientsByRank": [
-                  0.800000011920929,
-                  0.800000011920929,
-                  0.800000011920929
+                  0.4000000059604645,
+                  0.4000000059604645,
+                  0.4000000059604645
                 ]
               }
             ]

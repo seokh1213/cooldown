@@ -1,12 +1,20 @@
 import type {
   AbilitySimulation,
   AbilitySimulationCalculation,
-  AbilitySimulationStat,
-  AbilitySimulationTerm,
 } from "../../src/data/contracts/championData";
 import type { CommunityDragonSpellData } from "../../src/lib/spellTooltipParser/types";
+import {
+  compileMultiplier,
+  compilePart,
+  compressMatrix,
+  multiplyFormula,
+  UnsupportedFormulaError,
+  type FormulaContext,
+  type LinearFormula,
+  type CompressedMatrix,
+} from "./ability-simulation-formula";
 
-type RawPart = Record<string, unknown>;
+type RawCalculation = Record<string, unknown>;
 type DamageType = AbilitySimulationCalculation["damageType"];
 
 const DAMAGE_KEY_PRIORITY = [
@@ -17,192 +25,189 @@ const DAMAGE_KEY_PRIORITY = [
   "QMissileDamage",
 ];
 
-function isRecord(value: unknown): value is Record<string, unknown> {
+function isRecord(value: unknown): value is RawCalculation {
   return typeof value === "object" && value !== null;
-}
-
-function rankValues(value: unknown, maxRank: number): number[] | null {
-  if (typeof value === "number" && Number.isFinite(value)) {
-    return Array(maxRank).fill(value);
-  }
-  if (!Array.isArray(value)) return null;
-  const numeric = value.map(Number);
-  if (!numeric.every(Number.isFinite)) return null;
-  if (numeric.length === maxRank) return numeric;
-  if (numeric.length > maxRank) return numeric.slice(1, maxRank + 1);
-  if (numeric.length === 1) return Array(maxRank).fill(numeric[0]);
-  return null;
-}
-
-function addValues(target: number[], values: number[]): void {
-  for (let index = 0; index < target.length; index += 1) {
-    target[index] += values[index] ?? 0;
-  }
-}
-
-function statForPart(part: RawPart): AbilitySimulationStat | null {
-  const stat = part.mStat;
-  const formula = part.mStatFormula;
-  if (stat === undefined && formula === undefined) return "abilityPower";
-  if (stat === 2) {
-    if (formula === 1) return "baseAttackDamage";
-    return formula === 2 ? "bonusAttackDamage" : "totalAttackDamage";
-  }
-  if (formula === 1) return null;
-  if (stat === 12) return formula === 2 ? "bonusHealth" : "maxHealth";
-  if (stat === 1) return formula === 2 ? "bonusArmor" : "armor";
-  if (stat === 6) return formula === 2 ? "bonusMagicResist" : "magicResist";
-  return null;
-}
-
-function dataValue(
-  source: CommunityDragonSpellData,
-  name: unknown,
-  maxRank: number
-): number[] | null {
-  return typeof name === "string"
-    ? rankValues(source.DataValues?.[name], maxRank)
-    : null;
-}
-
-function effectValue(
-  source: CommunityDragonSpellData,
-  index: unknown,
-  maxRank: number
-): number[] | null {
-  if (typeof index !== "number") return null;
-  const raw = source.effectBurn?.[index];
-  if (typeof raw !== "string") return null;
-  return rankValues(raw.split("/").map(Number), maxRank);
-}
-
-function multiplierValues(
-  source: CommunityDragonSpellData,
-  multiplier: unknown,
-  maxRank: number
-): number[] | null {
-  if (multiplier === undefined) return Array(maxRank).fill(1);
-  if (!isRecord(multiplier)) return null;
-  if (typeof multiplier.mNumber === "number") {
-    return rankValues(multiplier.mNumber, maxRank);
-  }
-  return dataValue(source, multiplier.mDataValue, maxRank);
-}
-
-function addTerm(
-  terms: Map<AbilitySimulationStat, number[]>,
-  stat: AbilitySimulationStat,
-  values: number[]
-): void {
-  const current = terms.get(stat) ?? Array(values.length).fill(0);
-  addValues(current, values);
-  terms.set(stat, current);
-}
-
-function compileCalculation(
-  id: string,
-  raw: Record<string, unknown>,
-  source: CommunityDragonSpellData,
-  maxRank: number,
-  damageType: DamageType,
-): { calculation?: AbilitySimulationCalculation; unsupported: string[] } {
-  const unsupported = new Set<string>();
-  if (raw.__type !== "GameCalculation" || !Array.isArray(raw.mFormulaParts)) {
-    return { unsupported: [String(raw.__type ?? "missing-calculation-type")] };
-  }
-  if (raw.mDisplayAsPercent === true) {
-    return { unsupported: ["percent-calculation"] };
-  }
-  const base = Array(maxRank).fill(0) as number[];
-  const terms = new Map<AbilitySimulationStat, number[]>();
-  for (const value of raw.mFormulaParts) {
-    if (!isRecord(value)) {
-      unsupported.add("invalid-part");
-      continue;
-    }
-    const part = value as RawPart;
-    const type = String(part.__type ?? "missing-part-type");
-    if (type === "NamedDataValueCalculationPart") {
-      const values = dataValue(source, part.mDataValue, maxRank);
-      if (values) addValues(base, values);
-      else unsupported.add(type);
-    } else if (type === "NumberCalculationPart") {
-      const values = rankValues(part.mNumber, maxRank);
-      if (values) addValues(base, values);
-      else unsupported.add(type);
-    } else if (type === "EffectValueCalculationPart") {
-      const values = effectValue(source, part.mEffectIndex, maxRank);
-      if (values) addValues(base, values);
-      else unsupported.add(type);
-    } else if (
-      type === "StatByNamedDataValueCalculationPart" ||
-      type === "StatByCoefficientCalculationPart"
-    ) {
-      const stat = statForPart(part);
-      const values = type === "StatByNamedDataValueCalculationPart"
-        ? dataValue(source, part.mDataValue, maxRank)
-        : rankValues(part.mCoefficient, maxRank);
-      if (stat && values) addTerm(terms, stat, values);
-      else unsupported.add(type);
-    } else if (type === "AbilityResourceByCoefficientCalculationPart") {
-      unsupported.add(type);
-    } else {
-      unsupported.add(type);
-    }
-  }
-
-  const multiplier = multiplierValues(source, raw.mMultiplier, maxRank);
-  if (!multiplier) unsupported.add("unsupported-multiplier");
-  if (unsupported.size > 0 || !multiplier) {
-    return { unsupported: [...unsupported].sort() };
-  }
-  for (let index = 0; index < maxRank; index += 1) base[index] *= multiplier[index];
-  const compiledTerms: AbilitySimulationTerm[] = [...terms.entries()].map(
-    ([stat, coefficientsByRank]) => ({
-      stat,
-      coefficientsByRank: coefficientsByRank.map(
-        (coefficient, index) => coefficient * multiplier[index]
-      ),
-    })
-  );
-  return {
-    calculation: {
-      id,
-      kind: "damage",
-      damageType,
-      baseByRank: base,
-      terms: compiledTerms,
-    },
-    unsupported: [],
-  };
 }
 
 function isDamageKey(key: string): boolean {
   return /(damage|dmg)/i.test(key) &&
-    !/(reduction|taken|amp|percent|maxhealth|currenthealth|missinghealth|execute)/i.test(key);
+    !/(reduction|taken|amplification|damageamp|dmgamp|percent|maxhealth|currenthealth|missinghealth|execute|minion|monster)/i.test(key);
+}
+
+function damageKeys(
+  calculations: Record<string, unknown>,
+  preferred: readonly string[] = [],
+): string[] {
+  const keys = Object.keys(calculations).filter(isDamageKey);
+  const isPrimaryName = (key: string) => [
+    "damage",
+    "totaldamage",
+    "dmg",
+    "totaldmg",
+  ].includes(key.toLowerCase().replace(/^calc_/, ""));
+  return [
+    ...preferred.filter((key) => keys.includes(key) && isPrimaryName(key)),
+    ...preferred.filter((key) => keys.includes(key)),
+    ...DAMAGE_KEY_PRIORITY.filter((key) => keys.includes(key)),
+    ...keys.filter((key) => !DAMAGE_KEY_PRIORITY.includes(key)).sort(),
+  ].filter((key, index, all) => all.indexOf(key) === index);
+}
+
+interface CompiledFormula {
+  formula: LinearFormula;
+  isPercent: boolean;
+}
+
+function addFormula(left: LinearFormula, right: LinearFormula): LinearFormula {
+  const addMatrix = (a: number[][], b: number[][]) => a.map((row, rank) =>
+    row.map((value, level) => value + b[rank][level]));
+  const terms = new Map(left.terms);
+  for (const [stat, values] of right.terms) {
+    terms.set(stat, terms.has(stat) ? addMatrix(terms.get(stat)!, values) : values);
+  }
+  return { base: addMatrix(left.base, right.base), terms };
+}
+
+function serializeBase(curve: CompressedMatrix): Pick<
+  AbilitySimulationCalculation,
+  "baseByRank" | "baseByLevel" | "baseByRankAndLevel"
+> {
+  if (curve.axis === "rank") return { baseByRank: curve.values };
+  if (curve.axis === "level") return { baseByLevel: curve.values };
+  return { baseByRankAndLevel: curve.values };
+}
+
+function serializeCoefficients(curve: CompressedMatrix) {
+  if (curve.axis === "rank") return { coefficientsByRank: curve.values };
+  if (curve.axis === "level") return { coefficientsByLevel: curve.values };
+  return { coefficientsByRankAndLevel: curve.values };
+}
+
+function compileFormula(
+  calculations: Record<string, unknown>,
+  source: CommunityDragonSpellData,
+  maxRank: number,
+  key: string,
+  visited = new Set<string>(),
+): CompiledFormula {
+  if (visited.has(key)) throw new UnsupportedFormulaError("circular-calculation-reference");
+  const raw = calculations[key];
+  if (!isRecord(raw)) throw new UnsupportedFormulaError("invalid-calculation");
+  const nextVisited = new Set(visited).add(key);
+  const ctx: FormulaContext = {
+    source,
+    maxRank,
+    compileCalculation: (reference, references) =>
+      compileFormula(calculations, source, maxRank, reference, references).formula,
+  };
+
+  if (raw.__type === "GameCalculationConditional") {
+    const target = raw.mDefaultGameCalculation ?? raw.mConditionalGameCalculation;
+    if (typeof target !== "string") throw new UnsupportedFormulaError("GameCalculationConditional");
+    return compileFormula(calculations, source, maxRank, target, nextVisited);
+  }
+  if (raw.__type === "GameCalculationModified") {
+    if (typeof raw.mModifiedGameCalculation !== "string") {
+      throw new UnsupportedFormulaError("GameCalculationModified");
+    }
+    const inner = compileFormula(
+      calculations,
+      source,
+      maxRank,
+      raw.mModifiedGameCalculation,
+      nextVisited,
+    );
+    return {
+      formula: multiplyFormula(
+        inner.formula,
+        compileMultiplier(raw.mMultiplier, ctx, nextVisited),
+      ),
+      isPercent: inner.isPercent,
+    };
+  }
+  if (raw.__type !== "GameCalculation" || !Array.isArray(raw.mFormulaParts)) {
+    throw new UnsupportedFormulaError(String(raw.__type ?? "missing-calculation-type"));
+  }
+  let formula: LinearFormula = {
+    base: Array.from({ length: maxRank }, () => Array(18).fill(0)),
+    terms: new Map(),
+  };
+  for (const part of raw.mFormulaParts) {
+    formula = addFormula(formula, compilePart(part, ctx, nextVisited));
+  }
+  return {
+    formula: multiplyFormula(formula, compileMultiplier(raw.mMultiplier, ctx, nextVisited)),
+    isPercent: raw.mDisplayAsPercent === true,
+  };
+}
+
+function targetHealthScaling(
+  tooltip: string,
+): AbilitySimulationCalculation["targetHealthScaling"] | null {
+  const text = tooltip.replace(/<[^>]*>/g, " ").toLowerCase();
+  if (/(missing health|잃은 체력|已损失生命值)/i.test(text)) return "missing";
+  if (/(current health|현재 체력|当前生命值)/i.test(text)) return "current";
+  if (/(max(?:imum)? health|최대 체력|最大生命值)/i.test(text)) return "max";
+  return null;
+}
+
+function buildCalculation(
+  id: string,
+  compiled: CompiledFormula,
+  damageType: DamageType,
+  healthScaling: AbilitySimulationCalculation["targetHealthScaling"] | null,
+): AbilitySimulationCalculation {
+  if (compiled.isPercent && !healthScaling) {
+    throw new UnsupportedFormulaError("percent-calculation");
+  }
+  return {
+    id,
+    kind: "damage",
+    damageType,
+    ...(compiled.isPercent ? { targetHealthScaling: healthScaling! } : {}),
+    ...serializeBase(compressMatrix(compiled.formula.base)),
+    terms: [...compiled.formula.terms].map(([stat, coefficients]) => ({
+      stat,
+      ...serializeCoefficients(compressMatrix(coefficients)),
+    })),
+  };
 }
 
 export function compileAbilitySimulation(
   source: CommunityDragonSpellData | undefined,
   maxRank: number,
   damageType: DamageType = "unknown",
+  tooltip = "",
 ): AbilitySimulation {
   const calculations = source?.mSpellCalculations;
   if (!source || !calculations || maxRank <= 0) {
     return { status: "unavailable", unsupportedPartTypes: [] };
   }
-  const keys = Object.keys(calculations).filter(isDamageKey);
-  const selected = [
-    ...DAMAGE_KEY_PRIORITY.filter((key) => keys.includes(key)),
-    ...keys.filter((key) => !DAMAGE_KEY_PRIORITY.includes(key)).sort(),
-  ][0];
-  if (!selected) return { status: "unavailable", unsupportedPartTypes: [] };
-  const raw = calculations[selected];
-  if (!isRecord(raw)) {
-    return { status: "unsupported", unsupportedPartTypes: ["invalid-calculation"] };
+  const candidates = damageKeys(
+    calculations,
+    source.preferredSimulationCalculationKeys,
+  );
+  if (candidates.length === 0) return { status: "unavailable", unsupportedPartTypes: [] };
+  const unsupported = new Set<string>();
+  const healthScaling = targetHealthScaling(tooltip);
+  for (const candidate of candidates) {
+    try {
+      const compiled = compileFormula(calculations, source, maxRank, candidate);
+      return {
+        status: "complete",
+        primary: buildCalculation(
+          candidate,
+          compiled,
+          source.simulationCalculationDamageTypes?.[candidate] ?? damageType,
+          healthScaling,
+        ),
+        unsupportedPartTypes: [],
+      };
+    } catch (error) {
+      unsupported.add(error instanceof UnsupportedFormulaError
+        ? error.reason
+        : "invalid-calculation");
+    }
   }
-  const compiled = compileCalculation(selected, raw, source, maxRank, damageType);
-  return compiled.calculation
-    ? { status: "complete", primary: compiled.calculation, unsupportedPartTypes: [] }
-    : { status: "unsupported", unsupportedPartTypes: compiled.unsupported };
+  return { status: "unsupported", unsupportedPartTypes: [...unsupported].sort() };
 }

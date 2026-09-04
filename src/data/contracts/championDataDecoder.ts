@@ -22,11 +22,37 @@ const SIMULATION_STATS = new Set([
   "bonusMagicResist",
   "maxMana",
   "bonusMana",
+  "attackSpeed",
+  "bonusAttackSpeed",
+  "moveSpeed",
+  "critChance",
+  "critDamage",
+  "bonusCritDamage",
+  "lifeSteal",
+  "lethality",
 ]);
 
 function assertFiniteNumbers(value: unknown, field: string): asserts value is number[] {
   if (!Array.isArray(value) || !value.every(Number.isFinite)) {
     throw new Error(`Invalid ability simulation ${field}`);
+  }
+}
+
+function assertSimulationSeries(
+  value: Record<string, unknown>,
+  fields: readonly string[],
+  label: string,
+): void {
+  const present = fields.filter((field) => value[field] !== undefined);
+  if (present.length !== 1) throw new Error(`Invalid ability simulation ${label}`);
+  const series = value[present[0]];
+  if (present[0].endsWith("AndLevel")) {
+    if (!Array.isArray(series) || series.length === 0) {
+      throw new Error(`Invalid ability simulation ${label}`);
+    }
+    for (const row of series) assertFiniteNumbers(row, label);
+  } else {
+    assertFiniteNumbers(series, label);
   }
 }
 
@@ -44,19 +70,26 @@ function assertSimulation(value: unknown): void {
     typeof value.primary.id !== "string" ||
     value.primary.kind !== "damage" ||
     !["physical", "magical", "true", "unknown"].includes(String(value.primary.damageType)) ||
+    (value.primary.targetHealthScaling !== undefined &&
+      !["max", "current", "missing"].includes(String(value.primary.targetHealthScaling))) ||
     !Array.isArray(value.primary.terms)
   ) {
     throw new Error("Invalid complete ability simulation");
   }
-  assertFiniteNumbers(value.primary.baseByRank, "base values");
+  assertSimulationSeries(
+    value.primary,
+    ["baseByRank", "baseByLevel", "baseByRankAndLevel"],
+    "base values",
+  );
   for (const term of value.primary.terms) {
     if (!isRecord(term) || !SIMULATION_STATS.has(String(term.stat))) {
       throw new Error("Invalid ability simulation stat");
     }
-    assertFiniteNumbers(term.coefficientsByRank, "coefficients");
-    if (term.coefficientsByRank.length !== value.primary.baseByRank.length) {
-      throw new Error("Mismatched ability simulation ranks");
-    }
+    assertSimulationSeries(
+      term,
+      ["coefficientsByRank", "coefficientsByLevel", "coefficientsByRankAndLevel"],
+      "coefficients",
+    );
   }
 }
 

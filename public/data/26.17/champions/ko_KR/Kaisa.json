@@ -122,7 +122,7 @@
         "name": "두 번째 피부",
         "maxRank": 0,
         "summary": "카이사는 기본 공격으로 플라즈마 중첩을 쌓아 그에 따른 추가 마법 피해를 입힙니다. 아군의 이동 불가 효과가 적에게 적용됐을 때에도 플라즈마 중첩이 쌓입니다. 살아있는 무기 효과는 카이사가 구입하는 아이템에 따라 스킬을 강화시킵니다.",
-        "bodyHtml": "기본 공격 시 4초 동안 <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">플라즈마</span> 중첩을 쌓고 <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">중첩당 ((4 ~ 30) + (12% 주문력)) + ((1 ~ 8) + (3% 주문력))의 마법 피해</span>를 추가로 입힙니다. 4회 중첩이 쌓인 적을 공격하면 <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">플라즈마</span>를 소모하며, <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">대상이 잃은 체력의 (15% + (주문력 100당 6%))에 해당하는 마법 피해</span>를 입힙니다. 주변 아군이 적 챔피언을 <span class=\"text-purple-600 dark:text-purple-500\">이동 불가</span> 상태로 만들면 중첩을 1회 적용합니다.<br /><br />카이사의 피부가 능력치에 따라 기본 스킬을 진화시킵니다.<br /><span>이케시아 폭우</span>: <span class=\"text-red-600 dark:text-red-500 font-semibold\">추가 공격력 ?/?</span><br /><span>공허추적자</span>: <span class=\"text-blue-600 dark:text-blue-400\">주문력 ?/?</span><br /><span>고속 충전</span>: <span>추가 공격 속도 ?%/?%</span>",
+        "bodyHtml": "<span>두 번째 피부</span><span><span style=\"color: #B342F4\">부식성 흉터</span> - 카이사의 기본 공격이 ?초 동안 <span style=\"color: #B342F4\">플라즈마</span> 중첩을 남기며 <span style=\"color: #FFFFFF\">?</span> <span style=\"color: #99FF99\">( + ?)</span> + (중첩당 <span style=\"color: #FFFFFF\">?</span> <span style=\"color: #99FF99\">( + ?)</span>)의 추가 마법 피해를 입힙니다. ?중첩에 도달하면 카이사가 공격했을 때 플라즈마가 폭발하며 대상이 잃은 체력의 ?<span style=\"color: #99FF99\">( + ?)</span>만큼 추가 피해를 입힙니다. (몬스터 대상 최대 피해량: ?)<br /><br />아군의 이동 불가 효과가 적용된 적에게도 플라즈마 ?중첩이 쌓입니다.<br /><br /><span>살아있는 무기</span> - 카이사의 피부는 카이사의 공격 스타일에 적응해 <span> 아이템</span>과 <span>챔피언 레벨업</span>으로 얻는 영구 능력치를 기반으로 스킬을 진화시킵니다.</span>",
         "iconFile": "Kaisa_Passive.png",
         "cooldownSeconds": [],
         "range": [],
@@ -196,10 +196,42 @@
           }
         ],
         "simulation": {
-          "status": "unsupported",
-          "unsupportedPartTypes": [
-            "GameCalculationConditional"
-          ]
+          "status": "complete",
+          "primary": {
+            "id": "TotalIndividualMissileDamage",
+            "kind": "damage",
+            "damageType": "physical",
+            "baseByRank": [
+              40,
+              55,
+              70,
+              85,
+              100
+            ],
+            "terms": [
+              {
+                "stat": "bonusAttackDamage",
+                "coefficientsByRank": [
+                  0.550000011920929,
+                  0.550000011920929,
+                  0.550000011920929,
+                  0.550000011920929,
+                  0.550000011920929
+                ]
+              },
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.20000000298023224,
+                  0.20000000298023224,
+                  0.20000000298023224,
+                  0.20000000298023224,
+                  0.20000000298023224
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
         },
         "conditions": [],
         "source": "communitydragon",
@@ -308,7 +340,9 @@
           },
           "unsupportedPartTypes": []
         },
-        "conditions": [],
+        "conditions": [
+          "on-hit"
+        ],
         "source": "communitydragon",
         "diagnostics": {
           "unresolvedTokens": [

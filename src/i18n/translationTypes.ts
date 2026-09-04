@@ -160,6 +160,7 @@ export interface Translations {
       targetDamageReduction: string;
       comboTitle: string;
       comboHint: string;
+      conditionLabels: Record<string, string>;
       basicAttack: string;
       rankLabel: string;
       castCountLabel: string;

@@ -2,6 +2,7 @@ import type { NormalizedSpellScaling } from "@/types/combatNormalized";
 import type {
   AbilitySimulation,
   AbilitySimulationStat,
+  AbilitySimulationTerm,
 } from "@/data/contracts/championData";
 import { StatKey, type FormulaPart } from "@/types/combatStats";
 import { useTranslation } from "@/i18n";
@@ -62,6 +63,14 @@ function simulationStatLabel(
     bonusMagicResist: labels.bonusMagicResist,
     maxMana: labels.mana,
     bonusMana: labels.mana,
+    attackSpeed: labels.attackspeed,
+    bonusAttackSpeed: labels.attackspeed,
+    moveSpeed: labels.movespeed,
+    critChance: labels.crit,
+    critDamage: labels.critDamage,
+    bonusCritDamage: labels.critDamage,
+    lifeSteal: labels.lifesteal,
+    lethality: labels.lethality,
   };
   return names[stat];
 }
@@ -71,9 +80,16 @@ function simulationScalingRows(
   labels: ReturnType<typeof useTranslation>["t"]["stats"],
 ) {
   if (simulation?.status !== "complete" || !simulation.primary) return [];
+  const coefficientValues = (term: AbilitySimulationTerm): number[] =>
+    term.coefficientsByRankAndLevel?.flat() ??
+    term.coefficientsByLevel ??
+    term.coefficientsByRank ??
+    [];
   return simulation.primary.terms.map((term) => ({
     label: simulationStatLabel(term.stat, labels),
-    value: Array.from(new Set(term.coefficientsByRank.map(coefficientText))).join("/"),
+    value: Array.from(
+      new Set(coefficientValues(term).map(coefficientText)),
+    ).join("/"),
   }));
 }
 

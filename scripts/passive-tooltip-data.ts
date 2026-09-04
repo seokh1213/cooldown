@@ -6,6 +6,7 @@ import type {
 } from "../src/lib/spellTooltipParser/types";
 import {
   DATA_LOCALES,
+  expandStringReferences,
   lookupString,
   toParserTemplate,
   type DataLocale,
@@ -129,7 +130,8 @@ export function extractPassiveSpell(
 function renderTemplate(
   template: string | undefined,
   passive: ExtractedPassiveSpell,
-  locale: TooltipLocale
+  locale: TooltipLocale,
+  stringTable: StringTable,
 ): string | undefined {
   if (!template) return undefined;
   const spell: ChampionSpell = {
@@ -137,8 +139,25 @@ function renderTemplate(
     maxrank: 1,
     cooldown: [],
   };
+  const dynamic = /\{\{\s*([A-Za-z0-9_]*)@([^@{}]+)@([A-Za-z0-9_]*)\s*}}/g;
+  const resolvedTemplate = template.replace(
+    dynamic,
+    (token, prefix: string, variable: string, suffix: string) => {
+      const dataValue = Object.entries(passive.spellData.DataValues ?? {}).find(
+        ([key]) => key.toLowerCase() === variable.toLowerCase(),
+      )?.[1]?.[0];
+      const variant = Number.isFinite(dataValue)
+        ? String(dataValue)
+        : passive.id === "KaynPassive" && /^f\d+$/i.test(variable)
+          ? "0"
+          : null;
+      return variant === null
+        ? token
+        : lookupString(stringTable, `${prefix}${variant}${suffix}`) ?? token;
+    },
+  );
   const rendered = parseSpellTooltip(
-    toParserTemplate(template),
+    toParserTemplate(expandStringReferences(resolvedTemplate, stringTable)),
     spell,
     passive.spellData,
     locale
@@ -151,13 +170,20 @@ export function localizePassiveTooltip(
   stringTable: StringTable,
   locale: PassiveTooltipLocale
 ): LocalizedPassiveTooltip {
+  const primary = renderTemplate(
+    lookupString(stringTable, passive.locKeys.keyTooltip),
+    passive,
+    locale,
+    stringTable,
+  );
+  const buffTooltip = lookupString(
+    stringTable,
+    `game_buff_tooltip_${passive.id}`,
+  );
+  const alternate = renderTemplate(buffTooltip, passive, locale, stringTable);
   return {
     name: lookupString(stringTable, passive.locKeys.keyName),
     summary: lookupString(stringTable, passive.locKeys.keySummary),
-    tooltip: renderTemplate(
-      lookupString(stringTable, passive.locKeys.keyTooltip),
-      passive,
-      locale
-    ),
+    tooltip: primary && !primary.includes("?") ? primary : alternate ?? primary,
   };
 }
