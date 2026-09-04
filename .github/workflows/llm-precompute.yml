@@ -85,29 +85,26 @@ jobs:
             --limit "${{ steps.params.outputs.limit }}" \
             ${{ steps.params.outputs.shard && format('--shard {0}', steps.params.outputs.shard) || '' }}
 
-      - name: Cache ollama models
-        id: ollama-cache
-        uses: actions/cache@v4
-        with:
-          path: ~/.ollama/models
-          # 캐시 한도는 저장소당 10 GB 다. 모델 하나(약 6.7 GB)만 담는다.
-          key: ollama-models-${{ steps.params.outputs.model }}-v1
-
+      # 모델 캐시는 두지 않는다.
+      # 실측(2026-09-04): ollama pull 이 25초였다. 반면 캐시로 담으면 6.7 GB 로
+      # 저장소 캐시 한도(10 GB)의 대부분을 잡아먹고 복원이 25초보다 빠르지도 않다.
+      # 설치 스크립트가 systemd 서비스로 서버를 띄우므로 모델은 /usr/share/ollama 아래에 놓인다.
       - name: Install ollama
         run: |
           curl -fsSL https://ollama.com/install.sh | sh
-          ollama --version
+          ollama --version || true
 
-      - name: Start ollama server
+      - name: Wait for ollama server
         run: |
-          nohup ollama serve > "${RUNNER_TEMP}/ollama.log" 2>&1 &
           for i in $(seq 1 60); do
             if curl -fsS http://127.0.0.1:11434/api/tags > /dev/null; then
               echo "ollama up after ${i}s"; exit 0
             fi
             sleep 1
           done
-          echo "ollama 기동 실패"; cat "${RUNNER_TEMP}/ollama.log"; exit 1
+          echo "ollama 기동 실패"
+          sudo journalctl -u ollama --no-pager -n 50 || true
+          exit 1
 
       - name: Pull model
         run: |
