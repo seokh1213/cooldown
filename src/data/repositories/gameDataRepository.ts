@@ -4,9 +4,13 @@ import {
   decodeNormalizedRunes,
   decodeNormalizedSummoners,
 } from "@/data/contracts/normalizedDataDecoder";
-import { assertStaticDataIdentity } from "@/data/contracts/staticDataDecoder";
+import {
+  assertStaticDataIdentity,
+  staticDataIdentityKey,
+} from "@/data/contracts/staticDataDecoder";
 import type {
   DataLocale,
+  StaticDataIdentity,
   StaticDataMetadata,
 } from "@/data/contracts/staticData";
 import {
@@ -28,65 +32,69 @@ export class GameDataRepository {
   ) {}
 
   getItems(
-    patchVersion: string,
+    identity: StaticDataIdentity,
     locale: DataLocale
   ): Promise<NormalizedItemDataFile> {
     return this.getFile(
-      `items:${patchVersion}:${locale}`,
-      `data/${patchVersion}/items-normalized-${locale}.json`,
+      `items:${staticDataIdentityKey(identity)}:${locale}`,
+      `data/${identity.patchVersion}/items-normalized-${locale}.json`,
       decodeNormalizedItems,
-      patchVersion,
+      identity,
       locale
     );
   }
 
   getRunes(
-    patchVersion: string,
+    identity: StaticDataIdentity,
     locale: DataLocale
   ): Promise<NormalizedRuneDataFile> {
     return this.getFile(
-      `runes:${patchVersion}:${locale}`,
-      `data/${patchVersion}/runes-normalized-${locale}.json`,
+      `runes:${staticDataIdentityKey(identity)}:${locale}`,
+      `data/${identity.patchVersion}/runes-normalized-${locale}.json`,
       decodeNormalizedRunes,
-      patchVersion,
+      identity,
       locale
     );
   }
 
   getSummoners(
-    patchVersion: string,
+    identity: StaticDataIdentity,
     locale: DataLocale
   ): Promise<NormalizedSummonerDataFile> {
     return this.getFile(
-      `summoners:${patchVersion}:${locale}`,
-      `data/${patchVersion}/summoner-normalized-${locale}.json`,
+      `summoners:${staticDataIdentityKey(identity)}:${locale}`,
+      `data/${identity.patchVersion}/summoner-normalized-${locale}.json`,
       decodeNormalizedSummoners,
-      patchVersion,
+      identity,
       locale
     );
   }
 
-  clearExceptPatch(patchVersion: string): void {
-    this.cache.clearExceptPatch(patchVersion);
+  clearExceptRelease(identity: StaticDataIdentity): void {
+    this.cache.clearExceptIdentity(staticDataIdentityKey(identity));
   }
 
   private async getFile<T extends StaticDataMetadata>(
     key: string,
     path: string,
     decode: (value: unknown) => T,
-    patchVersion: string,
+    identity: StaticDataIdentity,
     locale: DataLocale
   ): Promise<T> {
     const cached = this.cache.get(key, decode);
     if (cached) {
-      assertStaticDataIdentity(cached, patchVersion, locale);
-      return cached;
+      try {
+        assertStaticDataIdentity(cached, identity, locale);
+        return cached;
+      } catch {
+        this.cache.remove(key);
+      }
     }
     const active = this.inFlight.get(key) as Promise<T> | undefined;
     if (active) return active;
     const request = this.client.getJson(path).then((value) => {
       const decoded = decode(value);
-      assertStaticDataIdentity(decoded, patchVersion, locale);
+      assertStaticDataIdentity(decoded, identity, locale);
       return this.cache.set(key, decoded);
     });
     this.inFlight.set(key, request);

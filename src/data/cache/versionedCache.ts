@@ -50,12 +50,21 @@ export class VersionedCache {
     return value;
   }
 
-  clearExceptPatch(patchVersion: string): void {
+  remove(key: string): void {
+    this.memory.delete(key);
+    try {
+      this.storage?.removeItem(this.storageKey(key));
+    } catch {
+      // The memory entry is still removed when storage is unavailable.
+    }
+  }
+
+  clearExceptIdentity(identityKey: string): void {
     const prefix = `${this.namespace}:`;
     try {
       for (let index = (this.storage?.length ?? 0) - 1; index >= 0; index -= 1) {
         const key = this.storage?.key(index);
-        if (key?.startsWith(prefix) && !key.includes(`:${patchVersion}:`)) {
+        if (key?.startsWith(prefix) && !key.includes(`:${identityKey}:`)) {
           this.storage?.removeItem(key);
         }
       }
@@ -63,7 +72,7 @@ export class VersionedCache {
       // Memory cleanup below must still run when storage access fails.
     }
     for (const key of this.memory.keys()) {
-      if (!key.includes(`:${patchVersion}:`)) this.memory.delete(key);
+      if (!key.includes(`:${identityKey}:`)) this.memory.delete(key);
     }
   }
 

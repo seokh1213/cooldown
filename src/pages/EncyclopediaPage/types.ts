@@ -1,5 +1,6 @@
 import { Champion } from "@/types";
 import type { Language } from "@/i18n";
+import type { StaticDataSources } from "@/data/contracts/staticData";
 
 export interface ChampionWithInfo extends Champion {
   fullInfo?: Champion;
@@ -25,4 +26,5 @@ export interface EncyclopediaPageProps {
   version: string;
   /** Data Dragon CDN 요청용 내부 버전 (예: 16.17.1) */
   ddragonVersion: string;
+  sources: StaticDataSources;
 }

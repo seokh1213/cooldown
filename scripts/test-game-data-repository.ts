@@ -10,6 +10,10 @@ const metadata = {
   locale: "ko_KR",
   sources: { ddragon: "16.17.1", cdragon: "16.17" },
 } as const;
+const identity = {
+  patchVersion: metadata.patchVersion,
+  sources: metadata.sources,
+};
 
 const itemResponse = {
     ...metadata,
@@ -55,27 +59,30 @@ const repository = new GameDataRepository(
 );
 
 const [firstRunes, secondRunes] = await Promise.all([
-  repository.getRunes("26.17", "ko_KR"),
-  repository.getRunes("26.17", "ko_KR"),
+  repository.getRunes(identity, "ko_KR"),
+  repository.getRunes(identity, "ko_KR"),
 ]);
 assert.equal(firstRunes, secondRunes);
 assert.equal(requests.filter((path) => path.includes("runes-")).length, 1);
-assert.equal((await repository.getItems("26.17", "ko_KR")).items[0].name, "장화");
+assert.equal((await repository.getItems(identity, "ko_KR")).items[0].name, "장화");
 assert.equal(
-  (await repository.getSummoners("26.17", "ko_KR")).spells[0].name,
+  (await repository.getSummoners(identity, "ko_KR")).spells[0].name,
   "점멸"
 );
 
 const mismatchClient: StaticDataClient = {
   async getJson() {
-    return { ...itemResponse, locale: "en_US" };
+    return {
+      ...itemResponse,
+      sources: { ddragon: "16.16.1", cdragon: "16.16" },
+    };
   },
 };
 await assert.rejects(
   new GameDataRepository(
     mismatchClient,
     new VersionedCache("test:mismatch")
-  ).getItems("26.17", "ko_KR"),
+  ).getItems(identity, "ko_KR"),
   /identity mismatch/
 );
 
@@ -90,7 +97,7 @@ const resilientCache = new VersionedCache("test:resilient", failingStorage);
 assert.equal(resilientCache.get("missing", (value) => value), undefined);
 assert.deepEqual(resilientCache.set("available", { ok: true }), { ok: true });
 assert.deepEqual(resilientCache.get("available", (value) => value), { ok: true });
-resilientCache.clearExceptPatch("26.17");
+resilientCache.clearExceptIdentity("26.17:16.17.1:16.17");
 
 let manifestRequests = 0;
 const manifestRepository = new ManifestRepository({
@@ -110,5 +117,17 @@ const [firstManifest, secondManifest] = await Promise.all([
 ]);
 assert.equal(firstManifest, secondManifest);
 assert.equal(manifestRequests, 1);
+
+let retryRequests = 0;
+const retryingManifestRepository = new ManifestRepository({
+  async getJson() {
+    retryRequests += 1;
+    if (retryRequests === 1) throw new Error("temporary failure");
+    return metadata;
+  },
+});
+await assert.rejects(retryingManifestRepository.get(), /temporary failure/);
+assert.equal((await retryingManifestRepository.get()).patchVersion, "26.17");
+assert.equal(retryRequests, 2);
 
 console.log("✅ Game data repositories, decoders, dedupe, and cache resilience passed");

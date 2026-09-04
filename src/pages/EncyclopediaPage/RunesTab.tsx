@@ -24,14 +24,15 @@ import { VisuallyHidden } from "@/components/ui/visually-hidden";
 import { useTranslation } from "@/i18n";
 import { useDeviceType } from "@/hooks/useDeviceType";
 import { AlertTriangle } from "lucide-react";
-import type { DataLocale } from "@/data/contracts/staticData";
+import type { DataLocale, StaticDataSources } from "@/data/contracts/staticData";
 
 interface RunesTabProps {
   version: string;
+  sources: StaticDataSources;
   lang: DataLocale;
 }
 
-export function RunesTab({ version, lang }: RunesTabProps) {
+export function RunesTab({ version, sources, lang }: RunesTabProps) {
   const { t } = useTranslation();
   const [runeTrees, setRuneTrees] = useState<RuneTree[] | null>(null);
   const [statShardData, setStatShardData] =
@@ -45,7 +46,7 @@ export function RunesTab({ version, lang }: RunesTabProps) {
     let cancelled = false;
     setLoading(true);
 
-    getRunePageData(version, lang)
+    getRunePageData({ patchVersion: version, sources }, lang)
       .then(({ trees, statShards }) => {
         if (!cancelled) {
           setRuneTrees(trees);
@@ -61,7 +62,7 @@ export function RunesTab({ version, lang }: RunesTabProps) {
     return () => {
       cancelled = true;
     };
-  }, [version, lang]);
+  }, [version, sources, lang]);
 
   const statShardRows = useMemo(() => {
     if (!statShardData || !statShardData.groups.length) return [];

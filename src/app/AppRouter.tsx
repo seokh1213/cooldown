@@ -56,6 +56,7 @@ export function AppRouter(props: AppRouterProps) {
               championList={runtime.championList}
               version={runtime.patchVersion}
               ddragonVersion={runtime.sources.ddragon}
+              sources={runtime.sources}
             />
           }
         />
@@ -66,6 +67,7 @@ export function AppRouter(props: AppRouterProps) {
               lang={language}
               version={runtime.patchVersion}
               ddragonVersion={runtime.sources.ddragon}
+              sources={runtime.sources}
             />
           }
         />
@@ -76,6 +78,7 @@ export function AppRouter(props: AppRouterProps) {
               lang={language}
               version={runtime.patchVersion}
               ddragonVersion={runtime.sources.ddragon}
+              sources={runtime.sources}
               championList={runtime.championList}
             />
           }

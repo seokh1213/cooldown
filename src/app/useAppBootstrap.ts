@@ -31,10 +31,10 @@ export function useAppBootstrap(language: Language): {
     void (async () => {
       try {
         const manifest = await manifestRepository.get();
-        championRepository.clearExceptPatch(manifest.patchVersion);
-        gameDataRepository.clearExceptPatch(manifest.patchVersion);
+        championRepository.clearExceptRelease(manifest);
+        gameDataRepository.clearExceptRelease(manifest);
         const championList = await getChampionList(
-          manifest.patchVersion,
+          manifest,
           language
         );
         if (!active) return;

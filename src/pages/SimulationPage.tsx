@@ -19,6 +19,7 @@ import type { ChampionDetailV2 } from "@/data/contracts/championData";
 import { championIconUrl, itemIconUrl } from "@/data/assets/riotAssetUrls";
 import type { Champion } from "@/types";
 import type { NormalizedItem } from "@/types/combatNormalized";
+import type { StaticDataSources } from "@/data/contracts/staticData";
 import ChampionSelector from "@/components/features/ChampionSelector";
 import {
   applyNormalizedItemsToStats,
@@ -64,6 +65,7 @@ interface SimulationPageProps {
   lang: Language;
   version: string | null;
   ddragonVersion: string | null;
+  sources: StaticDataSources;
   championList: Champion[] | null;
 }
 
@@ -71,6 +73,7 @@ export default function SimulationPage({
   lang,
   version,
   ddragonVersion,
+  sources,
   championList,
 }: SimulationPageProps) {
   const { t } = useTranslation();
@@ -99,7 +102,11 @@ export default function SimulationPage({
     }
 
     let cancelled = false;
-    championRepository.getDetail(version, lang, selectedChampionId)
+    championRepository.getDetail(
+      { patchVersion: version, sources },
+      lang,
+      selectedChampionId,
+    )
       .then((detail) => {
         if (!cancelled) {
           setChampionDetail(detail);
@@ -116,13 +123,13 @@ export default function SimulationPage({
     return () => {
       cancelled = true;
     };
-  }, [version, lang, selectedChampionId]);
+  }, [version, sources, lang, selectedChampionId]);
 
   useEffect(() => {
     if (!version) return;
     let cancelled = false;
 
-    getNormalizedItems(version, lang)
+    getNormalizedItems({ patchVersion: version, sources }, lang)
       .then((items) => {
         if (!cancelled) {
           // 정규화된 아이템 중 실제 게임에서 사용되는 아이템만 간단히 필터링
@@ -152,7 +159,7 @@ export default function SimulationPage({
     return () => {
       cancelled = true;
     };
-  }, [version, lang]);
+  }, [version, sources, lang]);
 
   const baseStats = useMemo(() => {
     if (!championInfo) return null;

@@ -10,9 +10,11 @@ import {
 import { logger } from "@/lib/logger";
 import type { StoredSelectedChampion } from "@/lib/storageSchema";
 import type { Language } from "@/i18n";
+import type { StaticDataSources } from "@/data/contracts/staticData";
 
 interface UseChampionDataProps {
   version: string | null;
+  sources: StaticDataSources;
   lang: Language;
   championList: Champion[] | null;
   tabs: Tab[];
@@ -21,6 +23,7 @@ interface UseChampionDataProps {
 
 export function useChampionData({
   version,
+  sources,
   lang,
   championList,
   tabs,
@@ -79,7 +82,7 @@ export function useChampionData({
                     c.id === champion.id ? { ...c, isLoading: true } : c
                   )
                 );
-                getChampionInfo(version, lang, champion.id)
+                getChampionInfo({ patchVersion: version, sources }, lang, champion.id)
                   .then((fullInfo) => {
                     setSelectedChampions((prev) =>
                       prev.map((c) =>
@@ -118,7 +121,7 @@ export function useChampionData({
         setHasRestored(true);
       }, 0);
     }
-  }, [version, lang, championList, storageKey, hasRestored]);
+  }, [version, sources, lang, championList, storageKey, hasRestored]);
 
   // Update champion names when championList changes (language change)
   useEffect(() => {
@@ -179,7 +182,7 @@ export function useChampionData({
         prev.map((c) => (c.id === championId ? { ...c, isLoading: true } : c))
       );
 
-      getChampionInfo(version, lang, championId)
+      getChampionInfo({ patchVersion: version, sources }, lang, championId)
         .then((fullInfo) => {
           setSelectedChampions((current) =>
             current.map((c) =>
@@ -196,7 +199,7 @@ export function useChampionData({
           );
         });
     },
-    [version, lang]
+    [version, sources, lang]
   );
 
   const addChampionToList = useCallback((champion: Champion) => {
