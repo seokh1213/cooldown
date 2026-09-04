@@ -226,6 +226,10 @@ export function replaceVariable(
   }
   const data = targetData ?? communityDragonData;
 
+  // 0. 다른 스킬의 단축키를 가리키는 토큰 (에코 R 의 spell.EkkoW:HotKey)
+  const byHotKey = replaceHotKey(parseResult);
+  if (byHotKey !== null) return byHotKey;
+
   // 0. effectBurn 기반 eN 변수(e1, e2, e3, ...) 우선 처리
   const byEffectBurn = replaceEffectBurn(parseResult, spell, data);
   if (byEffectBurn !== null) return byEffectBurn;
@@ -240,6 +244,18 @@ export function replaceVariable(
 
   // 2. 안 되면 mSpellCalculations
   return replaceCalculateData(parseResult, spell, data, lang);
+}
+
+/**
+ * 스킬 단축키를 가리키는 토큰.
+ *
+ * 게임 안에서는 실제 키 설정을 읽어 표시하지만 정적 데이터에는 없다.
+ * 기본 스킬 스크립트 이름은 슬롯 문자로 끝나므로(EkkoW) 거기서 가져온다.
+ */
+function replaceHotKey(parseResult: ParseResult): string | null {
+  if (parseResult.variable.toLowerCase() !== "hotkey") return null;
+  const match = /[qwer]$/i.exec(parseResult.spellRef ?? "");
+  return match ? match[0].toUpperCase() : null;
 }
 
 /**
@@ -290,7 +306,15 @@ function resolveSpellRefData(
   if (spell.id && spell.id.toLowerCase() === spellRef) {
     return communityDragonData;
   }
-  return communityDragonData?.siblings?.[spellRef];
+  const siblings = communityDragonData?.siblings;
+  if (!siblings) return undefined;
+  if (siblings[spellRef]) return siblings[spellRef];
+  // 형제 맵의 키는 BIN 에 적힌 대소문자를 그대로 쓴다 (ApheliosCalibrumQ).
+  // 참조 토큰은 소문자로 정규화되어 오므로 대소문자를 무시하고 다시 찾는다.
+  const key = Object.keys(siblings).find(
+    (candidate) => candidate.toLowerCase() === spellRef
+  );
+  return key ? siblings[key] : undefined;
 }
 
 function replaceSpellMetadata(
@@ -324,7 +348,9 @@ function replaceEffectBurn(
   communityDragonData?: CommunityDragonSpellData
 ): string | null {
   const varName = parseResult.variable;
-  const match = /^e(\d+)$/i.exec(varName);
+  // 같은 스킬을 가리킬 때는 e4 로 줄여 쓰지만, 다른 스킬을 가리키는
+  // `{{ spell.KhazixQ:Effect4Amount }}` 는 원래 이름을 그대로 쓴다.
+  const match = /^(?:e|effect)(\d+)(?:amount)?$/i.exec(varName);
   if (!match) return null;
 
   const index = Number.parseInt(match[1], 10);

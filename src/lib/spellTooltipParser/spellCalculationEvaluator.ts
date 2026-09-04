@@ -1,5 +1,6 @@
 import type { ChampionSpell } from "@/types";
 import { logger } from "@/lib/logger";
+import { binHashKey } from "./binHash";
 import { getDataValueByName } from "./dataValueUtils";
 import type { PartResult } from "./productPartEvaluator";
 import type {
@@ -158,7 +159,10 @@ export function evaluateSpellCalculation(input: {
   };
 
   function evaluate(key: string, visited = new Set<string>()): CalcResult {
-    const raw = calculations[key] as SpellCalculation | undefined;
+    // 이름이 지워지고 해시만 남은 계산식도 있다 (로크 R 의 ExecuteTooltipCalc)
+    const raw = (calculations[key] ?? calculations[binHashKey(key)]) as
+      | SpellCalculation
+      | undefined;
     if (!raw) throw new Error(`SpellCalculation "${key}" not found`);
     const rawType: string = raw.__type;
     if (visited.has(key)) {
