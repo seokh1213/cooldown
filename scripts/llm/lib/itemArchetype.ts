@@ -231,12 +231,43 @@ function profileOf(
   };
 }
 
+/**
+ * LoL Wiki 하위 클래스 → 아이템 역할군.
+ *
+ * 라이엇 roles 는 큰 분류(Fighter/Tank)까지만 알려주지만, 위키의 하위 클래스는
+ * 같은 전사 안에서 저거너트(나서스·다리우스)와 스커미셔(피오라·잭스)와 다이버(카밀)를 가른다.
+ * 실제 빌드가 갈리는 지점이 바로 이 층이다.
+ */
+const SUBCLASS_POOLS: Record<string, { ad: ItemArchetype[]; ap: ItemArchetype[]; label: string }> = {
+  // 전사 계열
+  Juggernaut: { ad: ["bruiser", "tank"], ap: ["battlemage", "tank"], label: "저거너트(브루저·탱커)" },
+  Diver: { ad: ["bruiser", "tank", "assassin"], ap: ["battlemage", "tank"], label: "다이버(돌진 브루저)" },
+  Skirmisher: { ad: ["bruiser", "marksman", "tank"], ap: ["battlemage", "tank"], label: "스커미셔(결투가)" },
+  // 탱커 계열
+  Vanguard: { ad: ["tank", "bruiser"], ap: ["tank", "battlemage", "mage"], label: "뱅가드(돌진 탱커)" },
+  Warden: { ad: ["tank", "enchanter"], ap: ["tank", "enchanter", "battlemage"], label: "와든(수호 탱커)" },
+  // 암살자 계열
+  Assassin: { ad: ["assassin", "bruiser"], ap: ["mage", "battlemage"], label: "암살자" },
+  // 마법사 계열
+  Burst: { ad: ["assassin", "mage"], ap: ["mage", "battlemage"], label: "버스트 메이지" },
+  Battlemage: { ad: ["bruiser", "battlemage"], ap: ["battlemage", "mage", "tank"], label: "배틀메이지" },
+  Artillery: { ad: ["mage"], ap: ["mage"], label: "아틸러리(장거리 포격)" },
+  Mage: { ad: ["mage"], ap: ["mage", "battlemage"], label: "메이지" },
+  // 원거리 딜러
+  Marksman: { ad: ["marksman", "assassin", "bruiser"], ap: ["mage", "battlemage"], label: "원거리 딜러" },
+  // 서포터 계열
+  Enchanter: { ad: ["enchanter", "tank"], ap: ["enchanter", "mage", "battlemage"], label: "인챈터" },
+  Catcher: { ad: ["enchanter", "tank"], ap: ["enchanter", "battlemage", "tank"], label: "캐처(구속형 서포터)" },
+};
+
 export function championBuildProfile(input: {
   roleTags: string[];
   scaling: "AD" | "AP" | "혼합" | "체력" | "없음";
   rangeType: "근접" | "원거리";
   /** 물리 피해 스킬을 갖고 있는지 (계수가 없는 고정 피해 스킬 보정용) */
   hasPhysicalSpell?: boolean;
+  /** LoL Wiki 하위 클래스 (Juggernaut, Skirmisher …). Specialist 는 판정에 쓰지 않는다 */
+  wikiSubclass?: string;
   /**
    * 라이엇 공식 분류. 있으면 스킬 툴팁 추정보다 이쪽을 신뢰한다.
    * damageType 은 나서스 Q 처럼 계수가 없는 스킬 때문에 생기는 오판을 막아 준다.
@@ -248,7 +279,7 @@ export function championBuildProfile(input: {
     playstyle?: { damage: number; durability: number };
   };
 }): ChampionBuildProfile {
-  const { roleTags, scaling, hasPhysicalSpell, riot } = input;
+  const { roleTags, scaling, hasPhysicalSpell, riot, wikiSubclass } = input;
   const primary = roleTags[0];
   const secondary = roleTags[1];
   // 라이엇 damageType 이 있으면 그것이 기준이다
@@ -256,6 +287,15 @@ export function championBuildProfile(input: {
   const isMixedDamage = riot?.damageType === "혼합";
   // 주 특성이 "내구성" 이거나 내구도 지표가 최고면 탱커 성향이 강하다
   const tanky = riot?.tagPrimary === "내구성" || (riot?.playstyle?.durability ?? 0) >= 3;
+
+  // 1순위: 위키 하위 클래스. 실제 빌드가 갈리는 층이다.
+  // Specialist 는 정의상 분류 불가 챔피언이므로 아래의 역할 태그 규칙으로 넘긴다.
+  const pool = wikiSubclass ? SUBCLASS_POOLS[wikiSubclass] : undefined;
+  if (pool) {
+    const archetypes = isAp ? pool.ap : pool.ad;
+    const withTank = tanky && !archetypes.includes("tank") ? [...archetypes, "tank" as const] : archetypes;
+    return profileOf(withTank, pool.label, withTank.includes("enchanter"));
+  }
 
   switch (primary) {
     case "Marksman":
