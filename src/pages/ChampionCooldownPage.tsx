@@ -1,14 +1,6 @@
-import { useState, useCallback, useMemo, useEffect, useRef } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useState, useCallback } from "react";
 import { Champion } from "@/types";
 import { arrayMove } from "@dnd-kit/sortable";
-import {
-  KeyboardSensor,
-  PointerSensor,
-  useSensor,
-  useSensors,
-} from "@dnd-kit/core";
-import { sortableKeyboardCoordinates } from "@dnd-kit/sortable";
 import ChampionComparison from "@/components/features/ChampionComparison";
 import ChampionSelector from "@/components/features/ChampionSelector";
 import { useDeviceType } from "@/hooks/useDeviceType";
@@ -18,30 +10,25 @@ import { useChampionData } from "@/pages/EncyclopediaPage/useChampionData";
 import { EmptyState } from "@/pages/EncyclopediaPage/EmptyState";
 import { MobileChampionTabs } from "@/pages/EncyclopediaPage/MobileChampionTabs";
 import { VsSelectorModal } from "@/pages/EncyclopediaPage/VsSelectorModal";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Button } from "@/components/ui/button";
-import { RotateCcw } from "lucide-react";
-import {
-  APP_STORAGE_KEYS,
-  removeStorage,
-  writeStorage,
-} from "@/data/storage/appStorage";
-import type { StoredSelectedChampionList } from "@/lib/storageSchema";
-import { logger } from "@/lib/logger";
-import { useTranslation, type Language } from "@/i18n";
+import { APP_STORAGE_KEYS } from "@/data/storage/appStorage";
+import type { Language } from "@/i18n";
 import type { StaticDataSources } from "@/data/contracts/staticData";
-
-type ChampionCooldownTab = "skills" | "stats";
+import { CooldownPageToolbar } from "./CooldownPageToolbar";
+import { useCooldownViewTab } from "./useCooldownViewTab";
+import { useSelectedCooldownTab } from "./useSelectedCooldownTab";
+import { useCooldownPersistence } from "./useCooldownPersistence";
+import { useChampionDragSensors } from "./useChampionDragSensors";
 
 const {
   selectedChampions: COOLDOWN_STORAGE_KEY,
   tabs: COOLDOWN_TABS_STORAGE_KEY,
   selectedTabId: COOLDOWN_SELECTED_TAB_ID_STORAGE_KEY,
 } = APP_STORAGE_KEYS;
-
-function isValidTab(tab: string | null): tab is ChampionCooldownTab {
-  return tab === "skills" || tab === "stats";
-}
+const COOLDOWN_STORAGE_KEYS = {
+  selectedChampions: COOLDOWN_STORAGE_KEY,
+  tabs: COOLDOWN_TABS_STORAGE_KEY,
+  selectedTabId: COOLDOWN_SELECTED_TAB_ID_STORAGE_KEY,
+} as const;
 
 interface ChampionCooldownPageProps {
   lang: Language;
@@ -53,69 +40,18 @@ interface ChampionCooldownPageProps {
   sources: StaticDataSources;
 }
 
-function ChampionCooldownPageContent({
+export default function ChampionCooldownPage({
   lang,
   championList,
   patchVersion,
   ddragonVersion,
   sources,
 }: ChampionCooldownPageProps) {
-  const [searchParams, setSearchParams] = useSearchParams();
   const deviceType = useDeviceType();
   const isMobile = deviceType === "mobile";
-  
-  // URL에서 현재 탭 파라미터 읽기
-  const urlTabParam = useMemo(() => {
-    const tabParam = searchParams.get("tab");
-    return isValidTab(tabParam) ? tabParam : null;
-  }, [searchParams]);
-  
-  // URL 쿼리 파라미터에서 초기 탭 읽기
-  const getInitialTab = (): ChampionCooldownTab => {
-    return urlTabParam || "skills";
-  };
-  
-  const [activeTab, setActiveTab] = useState<ChampionCooldownTab>(getInitialTab);
-  const lastUrlTabRef = useRef<string | null>(urlTabParam);
-  const lastActiveTabRef = useRef<ChampionCooldownTab>(getInitialTab());
-  
-  // URL 파라미터 변경 시 activeTab 동기화 (브라우저 히스토리 네비게이션 대응)
-  useEffect(() => {
-    const urlTab = urlTabParam || "skills";
-    const lastUrlTab = lastUrlTabRef.current || "skills";
-    
-    // URL이 실제로 변경되었을 때만 상태 업데이트 (우리가 설정한 변경이 아닌 경우)
-    if (urlTab !== lastUrlTab && urlTab !== activeTab) {
-      setActiveTab(urlTab);
-      lastActiveTabRef.current = urlTab;
-    }
-    
-    lastUrlTabRef.current = urlTabParam;
-  }, [urlTabParam, activeTab]);
-  
-  // activeTab 변경 시 URL 업데이트
-  useEffect(() => {
-    const currentUrlTab = urlTabParam || "skills";
-    const lastActiveTab = lastActiveTabRef.current;
-    
-    // activeTab이 실제로 변경되었고, URL과 다를 때만 업데이트
-    if (activeTab !== lastActiveTab && currentUrlTab !== activeTab) {
-      const newSearchParams = new URLSearchParams(searchParams);
-      if (activeTab === "skills") {
-        // 기본값이면 URL에서 제거
-        newSearchParams.delete("tab");
-      } else {
-        newSearchParams.set("tab", activeTab);
-      }
-      setSearchParams(newSearchParams, { replace: true });
-      lastUrlTabRef.current = activeTab === "skills" ? null : activeTab;
-    }
-    
-    lastActiveTabRef.current = activeTab;
-  }, [activeTab, urlTabParam, searchParams, setSearchParams]);
+  const { activeTab, selectTab } = useCooldownViewTab();
   
   const [showSelector, setShowSelector] = useState(false);
-  const { t } = useTranslation();
 
   const {
     tabs,
@@ -156,49 +92,17 @@ function ChampionCooldownPageContent({
     storageKey: COOLDOWN_STORAGE_KEY,
   });
 
-  // localStorage에 상태를 한 번에 저장하는 헬퍼 (메모리 상태는 항상 즉시 업데이트)
-  const persistCooldownState = useCallback(() => {
-    try {
-      // 선택된 챔피언 목록 저장
-      if (selectedChampions.length > 0) {
-        const toStore: StoredSelectedChampionList = selectedChampions.map(({ id, key }) => ({
-          id,
-          key,
-        }));
-        writeStorage(COOLDOWN_STORAGE_KEY, JSON.stringify(toStore));
-      } else {
-        removeStorage(COOLDOWN_STORAGE_KEY);
-      }
+  const {
+    persist: persistCooldownState,
+    clear: clearCooldownState,
+  } = useCooldownPersistence({
+    champions: selectedChampions,
+    tabs,
+    selectedTabId,
+    keys: COOLDOWN_STORAGE_KEYS,
+  });
 
-      // 탭 배열 저장
-      if (tabs.length > 0) {
-        writeStorage(COOLDOWN_TABS_STORAGE_KEY, JSON.stringify(tabs));
-      } else {
-        removeStorage(COOLDOWN_TABS_STORAGE_KEY);
-      }
-
-      // 선택된 탭 ID 저장
-      if (selectedTabId) {
-        writeStorage(COOLDOWN_SELECTED_TAB_ID_STORAGE_KEY, selectedTabId);
-      } else {
-        removeStorage(COOLDOWN_SELECTED_TAB_ID_STORAGE_KEY);
-      }
-    } catch (error) {
-      logger.error("Failed to persist cooldown state to storage:", error);
-    }
-  }, [selectedChampions, tabs, selectedTabId]);
-
-  // 드래그 앤 드롭 센서 설정
-  const sensors = useSensors(
-    useSensor(PointerSensor, {
-      activationConstraint: {
-        distance: 12, // 12px 이상 이동해야 드래그 시작 (모바일에서 스크롤과 구분)
-      },
-    }),
-    useSensor(KeyboardSensor, {
-      coordinateGetter: sortableKeyboardCoordinates,
-    })
-  );
+  const sensors = useChampionDragSensors();
 
   // PC 버전 챔피언 순서 변경 핸들러
   const handleReorderChampions = useCallback((oldIndex: number, newIndex: number) => {
@@ -274,10 +178,8 @@ function ChampionCooldownPageContent({
   const resetAll = useCallback(() => {
     resetChampionsData();
     resetTabs();
-    removeStorage(COOLDOWN_STORAGE_KEY);
-    removeStorage(COOLDOWN_TABS_STORAGE_KEY);
-    removeStorage(COOLDOWN_SELECTED_TAB_ID_STORAGE_KEY);
-  }, [resetChampionsData, resetTabs]);
+    clearCooldownState();
+  }, [resetChampionsData, resetTabs, clearCooldownState]);
 
   // VS 모드용 챔피언 선택 핸들러
   const handleVsChampionSelect = useCallback(
@@ -323,34 +225,16 @@ function ChampionCooldownPageContent({
     [vsSelectorMode, tabs, selectedChampions, addChampionToList, updateTab, replaceTab, generateTabId, setShowVsSelector, setVsSelectorMode]
   );
 
-  // 현재 선택된 탭
-  const selectedTab = useMemo(() => {
-    if (!selectedTabId) return null;
-    return tabs.find((t) => t.id === selectedTabId) || null;
-  }, [selectedTabId, tabs]);
-
-  // 현재 선택된 탭의 챔피언들
-  const currentTabChampions = useMemo(() => {
-    if (!selectedTab) return [];
-    return selectedTab.champions
-      .map((championId) => championsWithFullInfo.find((c) => c.id === championId)?.fullInfo)
-      .filter((c): c is NonNullable<typeof c> => c !== undefined);
-  }, [selectedTab, championsWithFullInfo]);
-
-  // 모바일에서 보여줄 챔피언 (한 명씩 또는 VS 모드)
-  const mobileChampion = useMemo(() => {
-    if (!isMobile) return null;
-
-    if (selectedTab && selectedTab.mode === 'vs') {
-      return null;
-    }
-
-    if (selectedTab && selectedTab.mode === 'normal' && currentTabChampions.length > 0) {
-      return currentTabChampions[0];
-    }
-
-    return null;
-  }, [isMobile, selectedTab, currentTabChampions]);
+  const {
+    selectedTab,
+    currentChampions: currentTabChampions,
+    mobileChampion,
+  } = useSelectedCooldownTab({
+    tabs,
+    selectedTabId,
+    champions: championsWithFullInfo,
+    mobile: isMobile,
+  });
 
   const handleRemoveChampion = useCallback(
     (championId: string) => {
@@ -442,38 +326,11 @@ function ChampionCooldownPageContent({
         }}
       />
 
-      {/* Tab navigation for skills / stats */}
-      <div className="mt-3 md:mt-4">
-        <div className="flex items-center justify-between gap-2 border-b border-border overflow-x-auto -mx-4 md:mx-0 px-4 md:px-0">
-          <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as ChampionCooldownTab)} className="flex-1">
-            <TabsList className="inline-flex h-auto items-center justify-start gap-2 bg-transparent p-0 border-0">
-              <TabsTrigger
-                value="skills"
-                className="px-4 py-2 text-sm font-medium transition-colors border-b-2 border-transparent text-muted-foreground hover:text-foreground data-[state=active]:border-primary data-[state=active]:text-primary data-[state=active]:bg-transparent rounded-none shadow-none"
-              >
-                {t.encyclopedia.tabs.skills}
-              </TabsTrigger>
-              <TabsTrigger
-                value="stats"
-                className="px-4 py-2 text-sm font-medium transition-colors border-b-2 border-transparent text-muted-foreground hover:text-foreground data-[state=active]:border-primary data-[state=active]:text-primary data-[state=active]:bg-transparent rounded-none shadow-none"
-              >
-                {t.encyclopedia.tabs.stats}
-              </TabsTrigger>
-            </TabsList>
-          </Tabs>
-          <div className="flex items-center gap-2 shrink-0">
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={resetAll}
-              className="flex items-center gap-1.5 shrink-0 text-muted-foreground hover:text-primary hover:bg-muted/30 border-0"
-            >
-              <RotateCcw className="h-3 w-3" />
-              <span className="text-[10px]">{t.encyclopedia.reset}</span>
-            </Button>
-          </div>
-        </div>
-      </div>
+      <CooldownPageToolbar
+        activeTab={activeTab}
+        onSelectTab={selectTab}
+        onReset={resetAll}
+      />
 
       {/* Champion comparison */}
       {selectedChampions.length > 0 && championsWithFullInfo.length > 0 && (
@@ -540,8 +397,4 @@ function ChampionCooldownPageContent({
       )}
     </div>
   );
-}
-
-export default function ChampionCooldownPage(props: ChampionCooldownPageProps) {
-  return <ChampionCooldownPageContent {...props} />;
 }
