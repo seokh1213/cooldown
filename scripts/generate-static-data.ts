@@ -531,6 +531,7 @@ async function main() {
     const activeTooltipReport = validateActiveTooltips({
       championsByLocale,
       patchVersion,
+      sources: sourceVersions,
       allowlist: activeTooltipAllowlist,
     });
     await saveToFile(
@@ -608,8 +609,7 @@ async function main() {
 
     const abilityValidation = validateGeneratedAbilities({
       patchVersion,
-      ddragonVersion,
-      cdragonVersion,
+      sources: sourceVersions,
       allowlistPath: path.join(
         process.cwd(),
         "scripts",

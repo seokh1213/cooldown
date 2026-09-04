@@ -109,9 +109,9 @@ export function toRuneStatShards(
     rows: [...rows.entries()].sort(([a], [b]) => a - b).map(([, row]) => row),
   }];
   return {
-    version: data.patchVersion,
-    lang: data.locale,
-    cdragonVersion: data.sources.cdragon,
+    patchVersion: data.patchVersion,
+    locale: data.locale,
+    sources: data.sources,
     groups,
   };
 }

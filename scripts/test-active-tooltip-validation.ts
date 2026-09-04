@@ -59,6 +59,7 @@ const championsByLocale: ChampionsByLocale = new Map([
 const report = validateActiveTooltips({
   championsByLocale,
   patchVersion: "26.17",
+  sources: { ddragon: "16.17.1", cdragon: "16.17" },
   allowlist: {
     unresolvedTokens: ["EnglishToken", "KnownToken", "ZedToken"],
     missingTooltips: ["Test:Q", "Test:W"],

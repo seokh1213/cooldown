@@ -27,7 +27,7 @@ import {itemIconUrl} from "@/data/assets/riotAssetUrls";
 
 interface ItemsTabProps {
   /** 정적 데이터 경로/캐시 키로 쓰는 Riot 공식 패치 버전 */
-  version: string;
+  patchVersion: string;
   sources: import("@/data/contracts/staticData").StaticDataSources;
   /** Data Dragon CDN 요청용 내부 버전 */
   ddragonVersion: string;
@@ -194,7 +194,7 @@ const ItemCell: React.FC<ItemCellProps> = ({
   );
 };
 
-export function ItemsTab({version, sources, ddragonVersion, lang}: ItemsTabProps) {
+export function ItemsTab({patchVersion, sources, ddragonVersion, lang}: ItemsTabProps) {
   const {t} = useTranslation();
   const deviceType = useDeviceType();
   const isMobile = deviceType === "mobile";
@@ -212,7 +212,7 @@ export function ItemsTab({version, sources, ddragonVersion, lang}: ItemsTabProps
     let cancelled = false;
     setLoading(true);
 
-    getNormalizedItems({ patchVersion: version, sources }, lang)
+    getNormalizedItems({ patchVersion, sources }, lang)
       .then((data) => {
         if (!cancelled) {
           // 전체 아이템은 그대로 보관해서 트리/업그레이드 계산에 사용
@@ -249,7 +249,7 @@ export function ItemsTab({version, sources, ddragonVersion, lang}: ItemsTabProps
     return () => {
       cancelled = true;
     };
-  }, [version, sources, lang]);
+  }, [patchVersion, sources, lang]);
 
 
   const itemMap = useMemo(() => {

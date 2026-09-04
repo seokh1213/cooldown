@@ -30,7 +30,7 @@ interface SkillTooltipProps {
   skill: ChampionSpell;
   skillIdx: number;
   /** 정적 데이터 경로/캐시 키로 쓰는 Riot 공식 패치 버전 */
-  version: string;
+  patchVersion: string;
   /** Data Dragon CDN 요청용 내부 버전 */
   ddragonVersion: string;
   isPassive?: boolean;
@@ -43,7 +43,7 @@ interface SkillTooltipProps {
 export function SkillTooltip({
   skill,
   skillIdx,
-  version,
+  patchVersion,
   ddragonVersion,
   isPassive,
   passiveName,
@@ -78,7 +78,7 @@ export function SkillTooltip({
   const openTooltip = React.useCallback(() => {
     if (isMobile) return;
     if (!tooltipIdRef.current) {
-      tooltipIdRef.current = `${skill.id}-${skillIdx}-${version}`;
+      tooltipIdRef.current = `${skill.id}-${skillIdx}-${patchVersion}`;
     }
     // 다른 스킬 툴팁들은 모두 닫고 현재 것만 열리도록 글로벌 이벤트 전파
     if (typeof window !== "undefined") {
@@ -93,7 +93,7 @@ export function SkillTooltip({
       closeTimeoutRef.current = null;
     }
     setTooltipOpen(true);
-  }, [isMobile, skill.id, skillIdx, version]);
+  }, [isMobile, skill.id, skillIdx, patchVersion]);
 
   const scheduleCloseTooltip = React.useCallback(() => {
     if (isMobile) return;

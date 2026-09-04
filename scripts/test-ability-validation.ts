@@ -58,8 +58,7 @@ const report = validateGeneratedAbilities({
     ["Alpha", createChampion("Alpha")],
   ]),
   patchVersion: "26.17",
-  ddragonVersion: "16.17.1",
-  cdragonVersion: "16.17",
+  sources: { ddragon: "16.17.1", cdragon: "16.17" },
   allowlistPath,
   abilitySourcesByChampion: new Map([
     ["Beta", betaSources],

@@ -13,7 +13,7 @@ import type { Language } from "@/i18n";
 import type { StaticDataSources } from "@/data/contracts/staticData";
 
 interface UseChampionDataProps {
-  version: string | null;
+  patchVersion: string | null;
   sources: StaticDataSources;
   lang: Language;
   championList: Champion[] | null;
@@ -22,7 +22,7 @@ interface UseChampionDataProps {
 }
 
 export function useChampionData({
-  version,
+  patchVersion,
   sources,
   lang,
   championList,
@@ -35,8 +35,8 @@ export function useChampionData({
 
   // 컴포넌트가 마운트될 때마다 localStorage에서 직접 읽어오기
   useEffect(() => {
-    if (!version || !championList || hasRestored) {
-      if (!hasRestored && (!version || !championList)) {
+    if (!patchVersion || !championList || hasRestored) {
+      if (!hasRestored && (!patchVersion || !championList)) {
         setTimeout(() => {
           setIsInitialLoad(false);
         }, 0);
@@ -82,7 +82,7 @@ export function useChampionData({
                     c.id === champion.id ? { ...c, isLoading: true } : c
                   )
                 );
-                getChampionInfo({ patchVersion: version, sources }, lang, champion.id)
+                getChampionInfo({ patchVersion, sources }, lang, champion.id)
                   .then((fullInfo) => {
                     setSelectedChampions((prev) =>
                       prev.map((c) =>
@@ -121,7 +121,7 @@ export function useChampionData({
         setHasRestored(true);
       }, 0);
     }
-  }, [version, sources, lang, championList, storageKey, hasRestored]);
+  }, [patchVersion, sources, lang, championList, storageKey, hasRestored]);
 
   // Update champion names when championList changes (language change)
   useEffect(() => {
@@ -176,13 +176,13 @@ export function useChampionData({
 
   const loadChampionInfo = useCallback(
     (championId: string) => {
-      if (!version) return;
+      if (!patchVersion) return;
 
       setSelectedChampions((prev) =>
         prev.map((c) => (c.id === championId ? { ...c, isLoading: true } : c))
       );
 
-      getChampionInfo({ patchVersion: version, sources }, lang, championId)
+      getChampionInfo({ patchVersion, sources }, lang, championId)
         .then((fullInfo) => {
           setSelectedChampions((current) =>
             current.map((c) =>
@@ -199,7 +199,7 @@ export function useChampionData({
           );
         });
     },
-    [version, sources, lang]
+    [patchVersion, sources, lang]
   );
 
   const addChampionToList = useCallback((champion: Champion) => {

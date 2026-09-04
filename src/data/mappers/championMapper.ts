@@ -69,7 +69,7 @@ export function toChampionSummary(
     key: entry.key,
     name: entry.name,
     title: entry.title,
-    version: ddragonVersion,
+    ddragonVersion,
     image: { full: entry.iconFile },
   };
 }
@@ -82,7 +82,7 @@ export function toChampion(detail: ChampionDetailV2): Champion {
     key: champion.key,
     name: champion.name,
     title: champion.title,
-    version: detail.sources.ddragon,
+    ddragonVersion: detail.sources.ddragon,
     tags: champion.tags,
     stats: toStats(detail),
     image: { full: `${champion.id}.png` },

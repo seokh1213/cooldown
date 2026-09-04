@@ -63,7 +63,7 @@ function StatRow({ label, value, base, precision = 0 }: StatRowProps) {
 
 interface SimulationPageProps {
   lang: Language;
-  version: string | null;
+  patchVersion: string | null;
   ddragonVersion: string | null;
   sources: StaticDataSources;
   championList: Champion[] | null;
@@ -71,7 +71,7 @@ interface SimulationPageProps {
 
 export default function SimulationPage({
   lang,
-  version,
+  patchVersion,
   ddragonVersion,
   sources,
   championList,
@@ -95,7 +95,7 @@ export default function SimulationPage({
   );
 
   useEffect(() => {
-    if (!version || !selectedChampionId) {
+    if (!patchVersion || !selectedChampionId) {
       setChampionInfo(null);
       setChampionDetail(null);
       return;
@@ -103,7 +103,7 @@ export default function SimulationPage({
 
     let cancelled = false;
     championRepository.getDetail(
-      { patchVersion: version, sources },
+      { patchVersion, sources },
       lang,
       selectedChampionId,
     )
@@ -123,13 +123,13 @@ export default function SimulationPage({
     return () => {
       cancelled = true;
     };
-  }, [version, sources, lang, selectedChampionId]);
+  }, [patchVersion, sources, lang, selectedChampionId]);
 
   useEffect(() => {
-    if (!version) return;
+    if (!patchVersion) return;
     let cancelled = false;
 
-    getNormalizedItems({ patchVersion: version, sources }, lang)
+    getNormalizedItems({ patchVersion, sources }, lang)
       .then((items) => {
         if (!cancelled) {
           // 정규화된 아이템 중 실제 게임에서 사용되는 아이템만 간단히 필터링
@@ -159,7 +159,7 @@ export default function SimulationPage({
     return () => {
       cancelled = true;
     };
-  }, [version, sources, lang]);
+  }, [patchVersion, sources, lang]);
 
   const baseStats = useMemo(() => {
     if (!championInfo) return null;
@@ -201,7 +201,7 @@ export default function SimulationPage({
     return computeSkillSummaries(championInfo, abilityHaste);
   }, [championInfo, abilityHaste]);
 
-  if (!version) {
+  if (!patchVersion) {
     return (
       <div className="w-full max-w-5xl mx-auto px-4 md:px-6 lg:px-8 py-8 md:py-10">
         <div className="text-sm text-muted-foreground">
