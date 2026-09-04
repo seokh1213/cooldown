@@ -9,6 +9,7 @@ import { parseExpression } from "./expressionParser";
 import { replaceData } from "./dataValueHandler";
 import { replaceCalculateData } from "./spellCalculationHandler";
 import { applyFormulaToValue } from "./dataValueUtils";
+import { resolveRuntimeTokenAlias } from "./runtimeTokenAliases";
 import { valueToTooltipString } from "./valueUtils";
 import {
   applyNumericPrecision,
@@ -208,11 +209,14 @@ export function replaceVariable(
   lang: TooltipLocale = "ko_KR"
 ): string | null {
   const effectAlias = /^Effect(\d+)Amount(.*)$/i.exec(trimmedVar);
-  const normalizedVariable = effectAlias
-    ? `e${effectAlias[1]}${effectAlias[2]}`
-    : /^AmmoRechargeTime(.*)$/i.test(trimmedVar)
-      ? trimmedVar.replace(/^AmmoRechargeTime/i, "mAmmoRechargeTime")
-      : trimmedVar;
+  const runtimeAlias = resolveRuntimeTokenAlias(spell.id, trimmedVar);
+  const normalizedVariable = runtimeAlias
+    ? runtimeAlias
+    : effectAlias
+      ? `e${effectAlias[1]}${effectAlias[2]}`
+      : /^AmmoRechargeTime(.*)$/i.test(trimmedVar)
+        ? trimmedVar.replace(/^AmmoRechargeTime/i, "mAmmoRechargeTime")
+        : trimmedVar;
   const parseResult = parseExpression(normalizedVariable);
 
   const bySpellMetadata = replaceSpellMetadata(parseResult, spell);
