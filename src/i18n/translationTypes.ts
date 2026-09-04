@@ -126,6 +126,9 @@ export interface Translations {
     simulation: {
       title: string;
       description: string;
+      selectChampionAria: string;
+      championPlaceholder: string;
+      statsTitle: string;
       statsPlaceholderLine1: string;
       statsPlaceholderLine2: string;
       aaDpsLabel: string;
@@ -136,6 +139,13 @@ export interface Translations {
       itemModalDescription: string;
       itemModalHint: string;
       clearItemSlot: string;
+      skillsTitle: string;
+      skillPlaceholderTitle: string;
+      skillPlaceholderDescription: string;
+      summonerSpellsTitle: string;
+      summonerSpellsComingSoon: string;
+      runesTitle: string;
+      runesComingSoon: string;
     };
   };
   championSelector: {
@@ -150,6 +160,7 @@ export interface Translations {
     noResults: string;
     emptyList: string;
     loading: string;
+    closeButton: string;
   };
   skillTooltip: {
     passive: string;

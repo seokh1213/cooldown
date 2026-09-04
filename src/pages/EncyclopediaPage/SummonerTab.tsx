@@ -15,6 +15,7 @@ import {
 import { VisuallyHidden } from "@/components/ui/visually-hidden";
 import { Search, AlertTriangle } from "lucide-react";
 import { summonerSpellIconUrl } from "@/data/assets/riotAssetUrls";
+import { htmlToPlainText } from "@/lib/htmlText";
 
 interface SummonerTabProps {
   /** 정적 데이터 경로/캐시 키로 쓰는 Riot 공식 패치 버전 */
@@ -31,10 +32,6 @@ function getSpellName(spell: NormalizedSummonerSpell): string {
 
 function getSpellTooltip(spell: NormalizedSummonerSpell): string {
   return spell.tooltip || "";
-}
-
-function stripHtml(html: string): string {
-  return html.replace(/<[^>]*>?/gm, "");
 }
 
 export function SummonerTab({ patchVersion, sources, ddragonVersion, lang }: SummonerTabProps) {
@@ -172,7 +169,7 @@ export function SummonerTab({ patchVersion, sources, ddragonVersion, lang }: Sum
                 </span>
               </div>
               <div className="mt-0.5 text-[11px] text-muted-foreground line-clamp-2">
-                {stripHtml(spell.tooltip || "")}
+                {htmlToPlainText(spell.tooltip || "")}
               </div>
             </div>
           </button>

@@ -134,6 +134,9 @@ export const koKRTranslations: Translations = {
       simulation: {
         title: "시뮬레이션",
         description: "챔피언, 룬, 아이템, 레벨을 조합해서 스탯과 스킬 정보를 시뮬레이션합니다.",
+        selectChampionAria: "시뮬레이션할 챔피언 선택",
+        championPlaceholder: "챔피언 선택",
+        statsTitle: "챔피언 능력치",
         statsPlaceholderLine1: "챔피언, 레벨, 아이템, 룬을 선택하면",
         statsPlaceholderLine2: "상세 스탯과 스킬 정보를 확인할 수 있습니다.",
         aaDpsLabel: "기본 공격 DPS (근사치)",
@@ -144,6 +147,13 @@ export const koKRTranslations: Translations = {
         itemModalDescription: "추가할 아이템을 검색하거나 목록에서 선택하세요.",
         itemModalHint: "아이템을 클릭하면 슬롯에 추가됩니다.",
         clearItemSlot: "슬롯 비우기",
+        skillsTitle: "스킬",
+        skillPlaceholderTitle: "스킬 정보",
+        skillPlaceholderDescription: "챔피언을 선택하면 스킬과 예상 피해를 확인할 수 있습니다.",
+        summonerSpellsTitle: "소환사 주문",
+        summonerSpellsComingSoon: "소환사 주문 효과는 다음 시뮬레이션 단계에서 지원합니다.",
+        runesTitle: "룬",
+        runesComingSoon: "룬 효과는 다음 시뮬레이션 단계에서 지원합니다.",
       },
     },
     championSelector: {
@@ -158,6 +168,7 @@ export const koKRTranslations: Translations = {
       noResults: "검색 결과가 없습니다",
       emptyList: "챔피언 목록이 비어있습니다",
       loading: "로딩 중...",
+      closeButton: "챔피언 선택기 닫기",
     },
     skillTooltip: {
       passive: "패시브",
