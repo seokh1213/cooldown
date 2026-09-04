@@ -110,7 +110,7 @@ export default function SimulationPage({
             <button
               type="button"
               onClick={() => setIsChampionModalOpen(true)}
-              className="relative mx-auto md:mx-0 w-32 h-32 sm:w-36 sm:h-36 rounded-full border-4 border-border/80 bg-gradient-to-br from-slate-800 via-slate-900 to-slate-700 flex items-center justify-center overflow-hidden shadow-lg"
+              className="relative mx-auto md:mx-0 w-32 h-32 sm:w-36 sm:h-36 rounded-full border-4 border-border/80 bg-linear-to-br from-slate-800 via-slate-900 to-slate-700 flex items-center justify-center overflow-hidden shadow-lg"
             >
               {championInfo ? (
                 <img
@@ -231,7 +231,7 @@ export default function SimulationPage({
                   >
                     <button
                       type="button"
-                      className="w-16 h-16 sm:w-18 sm:h-18 rounded-md border border-border/70 bg-background/40 flex items-center justify-center overflow-hidden shadow-sm"
+                      className="w-16 h-16 sm:w-18 sm:h-18 rounded-md border border-border/70 bg-background/40 flex items-center justify-center overflow-hidden shadow-xs"
                       onClick={() => {
                         setActiveItemSlotIndex(idx);
                         setIsItemModalOpen(true);

@@ -12,7 +12,7 @@ export default function OGPreviewPage() {
       }}
     >
       <div className="flex flex-col items-center gap-6">
-        <div className="w-80 h-80 rounded-3xl bg-white/10 backdrop-blur-sm flex items-center justify-center shadow-2xl border-4 border-white/20">
+        <div className="w-80 h-80 rounded-3xl bg-white/10 backdrop-blur-xs flex items-center justify-center shadow-2xl border-4 border-white/20">
           <img
             src="/poro_logo.png"
             alt="Poro Logo"

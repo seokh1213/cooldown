@@ -40,7 +40,7 @@ const TooltipContent = React.forwardRef<
           // 최대 높이를 제한하고 내부 스크롤을 허용하여 긴 툴팁이 화면 밖으로 나가지 않도록 처리
           // 모바일은 화면을 더 많이 쓰고, 데스크톱은 약간 더 여유를 둔다.
           // 잔상처럼 보이는 효과를 줄이기 위해 애니메이션/트랜지션은 제거한다.
-          "z-[100] overflow-y-auto overflow-x-hidden rounded-lg border bg-popover px-3 py-1.5 text-sm text-popover-foreground shadow-md",
+          "z-100 overflow-y-auto overflow-x-hidden rounded-lg border bg-popover px-3 py-1.5 text-sm text-popover-foreground shadow-md",
           isMobile ? "max-h-[80vh]" : "max-h-[60vh]",
           className
         )}

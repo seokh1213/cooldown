@@ -171,7 +171,7 @@ export function StatsSectionDesktop({
               </Button>
             )}
           </div>
-          <div className="text-[10px] font-semibold leading-tight text-center break-words text-foreground">
+          <div className="text-[10px] font-semibold leading-tight text-center wrap-break-word text-foreground">
             {champion.name}
           </div>
         </div>

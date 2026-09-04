@@ -250,7 +250,7 @@ export function SkillTooltip({
           )}
           {/* 경고 문구 */}
           <div className="text-xs text-muted-foreground/80 italic leading-relaxed border-t pt-3 mt-3 flex items-center gap-1.5">
-            <AlertTriangle className="w-2.5 h-2.5 text-yellow-600 dark:text-yellow-500 flex-shrink-0" />
+            <AlertTriangle className="w-2.5 h-2.5 text-yellow-600 dark:text-yellow-500 shrink-0" />
             <span>{t.skillTooltip.warningPassive}</span>
           </div>
         </>
@@ -263,7 +263,7 @@ export function SkillTooltip({
           <img
             src={spellIconUrl(ddragonVersion, skill.id)}
             alt={SKILL_LETTERS[skillIdx]}
-            className="w-12 h-12 min-w-12 min-h-12 rounded flex-shrink-0"
+            className="w-12 h-12 min-w-12 min-h-12 rounded shrink-0"
           />
           <div className="flex-1 min-w-0">
             {skill.name && (
@@ -272,7 +272,7 @@ export function SkillTooltip({
               </div>
             )}
           </div>
-          <div className="text-right flex-shrink-0">
+          <div className="text-right shrink-0">
             {cooldownText && (
               <div className="text-xs text-muted-foreground">
                 {cooldownText.includes(" (") ? (
@@ -324,7 +324,7 @@ export function SkillTooltip({
         )}
 
         <div className="text-xs text-muted-foreground/80 italic leading-relaxed border-t pt-3 mt-3 flex items-center gap-1.5">
-          <AlertTriangle className="w-2.5 h-2.5 text-yellow-600 dark:text-yellow-500 flex-shrink-0" />
+          <AlertTriangle className="w-2.5 h-2.5 text-yellow-600 dark:text-yellow-500 shrink-0" />
           <span>{t.skillTooltip.warningSkill}</span>
         </div>
       </>

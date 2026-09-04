@@ -89,7 +89,7 @@ function RuneIcon(props: RuneIconProps) {
     <button
       type="button"
       onClick={isMobile ? () => onSelect(rune) : undefined}
-      className={`flex flex-col items-center gap-1 focus:outline-none min-w-0 ${
+      className={`flex flex-col items-center gap-1 focus:outline-hidden min-w-0 ${
         isMobile ? "" : "cursor-help"
       }`}
       style={style}

@@ -43,6 +43,19 @@ test("serves a lazy route directly under the Pages base path", async ({ page }) 
   await expect(page.locator("#root")).not.toBeEmpty();
 });
 
+test("keeps the mobile sidebar off-canvas until opened", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto("./");
+
+  const openMenu = page.getByRole("button", { name: "Open menu" });
+  const closeMenu = page.getByRole("button", { name: "Close menu" });
+  await expect(openMenu).toBeVisible();
+  expect((await closeMenu.boundingBox())?.x).toBeLessThan(0);
+
+  await openMenu.click();
+  await expect.poll(async () => (await closeMenu.boundingBox())?.x).toBeGreaterThan(0);
+});
+
 test("simulation uses compiled Ability v2 without raw spell requests", async ({ page }) => {
   const dataRequests: string[] = [];
   page.on("request", (request) => {

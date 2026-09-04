@@ -31,7 +31,7 @@ export function ItemCell(props: {
       onClick={onSelect}
       className={`flex flex-col items-center gap-0 rounded-sm px-0.5 w-9 md:w-10 transition-colors ${
         isSelected
-          ? "bg-primary/20 border border-primary/60 shadow-sm"
+          ? "bg-primary/20 border border-primary/60 shadow-xs"
           : "hover:bg-muted/60 border border-transparent"
       }`}
     >

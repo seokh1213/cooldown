@@ -1,4 +1,5 @@
 import react from "@vitejs/plugin-react";
+import tailwindcss from "@tailwindcss/vite";
 import { defineConfig } from "vite";
 import { VitePWA } from "vite-plugin-pwa";
 
@@ -7,6 +8,7 @@ const BASE_PATH = "/cooldown/";
 export default defineConfig(({ mode }) => ({
   base: mode === "production" ? BASE_PATH : "/",
   plugins: [
+    tailwindcss(),
     react(),
     VitePWA({
       injectRegister: null,
