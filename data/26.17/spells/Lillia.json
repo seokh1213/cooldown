@@ -1088,6 +1088,234 @@
           "mModifiedGameCalculation": "DotPercentTotal",
           "__type": "GameCalculationModified"
         }
+      },
+      "mClientData": {
+        "mTooltipData": {
+          "mLocKeys": {
+            "keyName": "Spell_LilliaP_Name",
+            "keySummary": "Spell_LilliaP_Summary",
+            "keyTooltip": "Spell_LilliaP_Tooltip"
+          }
+        }
+      }
+    },
+    "P": {
+      "DataValues": {
+        "Duration": [
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3
+        ],
+        "DotDamagePercent": [
+          5,
+          5,
+          5,
+          5,
+          5,
+          5,
+          5
+        ],
+        "DotTicks": [
+          6,
+          6,
+          6,
+          6,
+          6,
+          6,
+          6
+        ],
+        "MonsterHealingPercent": [
+          0.25,
+          0.25,
+          0.25,
+          0.25,
+          0.25,
+          0.25,
+          0.25
+        ],
+        "ChampionHealingPercent": [
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        "LargeMonsterHealMod": [
+          1.5,
+          1.5,
+          1.5,
+          1.5,
+          1.5,
+          1.5,
+          1.5
+        ],
+        "SmallMonsterHealMod": [
+          0.25,
+          0.25,
+          0.25,
+          0.25,
+          0.25,
+          0.25,
+          0.25
+        ],
+        "MultiHealMod": [
+          0.15000000596046448,
+          0.15000000596046448,
+          0.15000000596046448,
+          0.15000000596046448,
+          0.15000000596046448,
+          0.15000000596046448,
+          0.15000000596046448
+        ]
+      },
+      "mSpellCalculations": {
+        "DotPercentTotal": {
+          "mSimpleTooltipCalculationDisplay": 6,
+          "mFormulaParts": [
+            {
+              "mDataValue": "DotDamagePercent",
+              "__type": "NamedDataValueCalculationPart"
+            },
+            {
+              "mCoefficient": 0.012500000186264515,
+              "__type": "StatByCoefficientCalculationPart"
+            }
+          ],
+          "mDisplayAsPercent": true,
+          "mPrecision": -1,
+          "__type": "GameCalculation"
+        },
+        "MonsterDamageCap": {
+          "mExpandedTooltipCalculationDisplay": 5,
+          "mFormulaParts": [
+            {
+              "mStartValue": 70,
+              "mEndValue": 180,
+              "__type": "ByCharLevelInterpolationCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        },
+        "{b5d0316f}": {
+          "mFormulaParts": [
+            {
+              "mNumber": 6.5,
+              "__type": "NumberCalculationPart"
+            },
+            {
+              "mCoefficient": 0.02500000037252903,
+              "__type": "StatByCoefficientCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        },
+        "{395ffd44}": {
+          "mMultiplier": {
+            "mDataValue": "SmallMonsterHealMod",
+            "__type": "NamedDataValueCalculationPart"
+          },
+          "mModifiedGameCalculation": "{b5d0316f}",
+          "__type": "GameCalculationModified"
+        },
+        "ChampionHeal": {
+          "mFormulaParts": [
+            {
+              "mStartValue": 1,
+              "mEndValue": 15,
+              "mScaleByStatProgressionMultiplier": true,
+              "__type": "ByCharLevelInterpolationCalculationPart"
+            },
+            {
+              "mCoefficient": 0.05000000074505806,
+              "__type": "StatByCoefficientCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        },
+        "ChampionHealTT": {
+          "mMultiplier": {
+            "mDataValue": "DotTicks",
+            "__type": "NamedDataValueCalculationPart"
+          },
+          "tooltipOnly": true,
+          "mModifiedGameCalculation": "ChampionHeal",
+          "__type": "GameCalculationModified"
+        },
+        "MonsterHealTT": {
+          "mMultiplier": {
+            "mDataValue": "DotTicks",
+            "__type": "NamedDataValueCalculationPart"
+          },
+          "tooltipOnly": true,
+          "mModifiedGameCalculation": "{b5d0316f}",
+          "__type": "GameCalculationModified"
+        },
+        "{7969ffc2}": {
+          "mMultiplier": {
+            "mPart1": {
+              "mDataValue": "DotTicks",
+              "__type": "NamedDataValueCalculationPart"
+            },
+            "mPart2": {
+              "mDataValue": "SmallMonsterHealMod",
+              "__type": "NamedDataValueCalculationPart"
+            },
+            "__type": "ProductOfSubPartsCalculationPart"
+          },
+          "tooltipOnly": true,
+          "mModifiedGameCalculation": "{b5d0316f}",
+          "__type": "GameCalculationModified"
+        },
+        "DotPercentTooltip": {
+          "mMultiplier": {
+            "mNumber": 0.009999999776482582,
+            "__type": "NumberCalculationPart"
+          },
+          "tooltipOnly": true,
+          "mModifiedGameCalculation": "DotPercentTotal",
+          "__type": "GameCalculationModified"
+        }
+      },
+      "mClientData": {
+        "mTooltipData": {
+          "mLocKeys": {
+            "keyName": "Spell_LilliaP_Name",
+            "keySummary": "Spell_LilliaP_Summary",
+            "keyTooltip": "Spell_LilliaP_Tooltip"
+          }
+        }
+      }
+    }
+  },
+  "passive": {
+    "id": "LilliaP",
+    "path": "Characters/Lillia/Spells/LilliaPAbility/LilliaP",
+    "locKeys": {
+      "keyName": "Spell_LilliaP_Name",
+      "keySummary": "Spell_LilliaP_Summary",
+      "keyTooltip": "Spell_LilliaP_Tooltip"
+    },
+    "localized": {
+      "ko_KR": {
+        "name": "꿈나무 지팡이",
+        "summary": "챔피언 또는 몬스터에게 스킬이 적중하면 지속시간 동안 최대 체력에 비례한 피해를 추가로 입힙니다.",
+        "tooltip": "릴리아의 스킬이 적에게 <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">꿈가루</span>를 묻혀 3초 동안 <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">최대 체력의 (5% + (0.012% 주문력))에 해당하는 마법 피해</span>를 입힙니다. 대상이 대형 정글 몬스터인 경우 릴리아가 지속시간 동안 <span class=\"text-green-600 dark:text-green-400\">(39 + (15% 주문력))의 체력</span>을 회복하며, 대상이 챔피언인 경우 <span class=\"text-green-600 dark:text-green-400\">(30% 주문력)의 체력</span>을 회복합니다."
+      },
+      "en_US": {
+        "name": "Dream-Laden Bough",
+        "summary": "Hitting a champion or monster with a skill will deal additional max Health damage over time.",
+        "tooltip": "Lillia's Abilities apply <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Dream Dust</span>, dealing <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(5% + (0.012% Ability Power)) max Health magic damage</span> over 3 seconds. Lillia restores <span class=\"text-green-600 dark:text-green-400\">(39 + (15% Ability Power)) Health</span> over the duration against large jungle monsters, and restores <span class=\"text-green-600 dark:text-green-400\">(30% Ability Power) Health</span> against champions."
+      },
+      "zh_CN": {
+        "name": "梦满枝",
+        "summary": "用一个技能命中一位英雄或野怪，将持续造成额外的最大生命值伤害。",
+        "tooltip": "莉莉娅的技能会施加<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">梦尘</span>，在3秒里持续造成共<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(5% + (0.012% 法术强度))最大生命值的魔法伤害</span>。在此期间，莉莉娅在对抗大型野怪时会持续回复共<span class=\"text-green-600 dark:text-green-400\">(39 + (15% 法术强度))生命值</span>，在对抗英雄时持续回复共<span class=\"text-green-600 dark:text-green-400\">(30% 法术强度)生命值</span>。"
       }
     }
   }

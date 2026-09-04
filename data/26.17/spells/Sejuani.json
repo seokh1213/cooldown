@@ -849,6 +849,169 @@
           ],
           "__type": "GameCalculation"
         }
+      },
+      "mClientData": {
+        "mTooltipData": {
+          "mLocKeys": {
+            "keyName": "Spell_SejuaniPassive_Name",
+            "keySummary": "Spell_SejuaniPassive_Summary",
+            "keyTooltip": "Spell_SejuaniPassive_Tooltip"
+          }
+        }
+      }
+    },
+    "P": {
+      "DataValues": {
+        "FrostArmorDuration": [
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3
+        ],
+        "EpicMonsterCap": [
+          250,
+          250,
+          250,
+          250,
+          250,
+          250,
+          250
+        ],
+        "BonusArmorRatio": [
+          0.75,
+          0.75,
+          0.75,
+          0.75,
+          0.75,
+          0.75,
+          0.75
+        ],
+        "BonusMRRatio": [
+          0.75,
+          0.75,
+          0.75,
+          0.75,
+          0.75,
+          0.75,
+          0.75
+        ],
+        "BonusArmorBase": [
+          10,
+          10,
+          10,
+          10,
+          10,
+          10,
+          10
+        ],
+        "BonusMRBase": [
+          10,
+          10,
+          10,
+          10,
+          10,
+          10,
+          10
+        ],
+        "PercentHPDamageBase": [
+          0.10000000149011612,
+          0.10000000149011612,
+          0.10000000149011612,
+          0.10000000149011612,
+          0.10000000149011612,
+          0.10000000149011612,
+          0.10000000149011612
+        ]
+      },
+      "mSpellCalculations": {
+        "PercentHPDamage": {
+          "mFormulaParts": [
+            {
+              "mDataValue": "PercentHPDamageBase",
+              "__type": "NamedDataValueCalculationPart"
+            }
+          ],
+          "mDisplayAsPercent": true,
+          "__type": "GameCalculation"
+        },
+        "TotalArmorTooltip": {
+          "mFormulaParts": [
+            {
+              "mDataValue": "BonusArmorBase",
+              "__type": "NamedDataValueCalculationPart"
+            },
+            {
+              "mStat": 1,
+              "mStatFormula": 2,
+              "mDataValue": "BonusArmorRatio",
+              "__type": "StatByNamedDataValueCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        },
+        "TotalMRTooltip": {
+          "mFormulaParts": [
+            {
+              "mDataValue": "BonusMRBase",
+              "__type": "NamedDataValueCalculationPart"
+            },
+            {
+              "mStat": 6,
+              "mStatFormula": 2,
+              "mDataValue": "BonusMRRatio",
+              "__type": "StatByNamedDataValueCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        },
+        "FrostArmorOOC": {
+          "mFormulaParts": [
+            {
+              "mStartValue": 12,
+              "mEndValue": 6,
+              "__type": "ByCharLevelInterpolationCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        }
+      },
+      "mClientData": {
+        "mTooltipData": {
+          "mLocKeys": {
+            "keyName": "Spell_SejuaniPassive_Name",
+            "keySummary": "Spell_SejuaniPassive_Summary",
+            "keyTooltip": "Spell_SejuaniPassive_Tooltip"
+          }
+        }
+      }
+    }
+  },
+  "passive": {
+    "id": "SejuaniPassive",
+    "path": "Characters/Sejuani/Spells/SejuaniPassiveAbility/SejuaniPassive",
+    "locKeys": {
+      "keyName": "Spell_SejuaniPassive_Name",
+      "keySummary": "Spell_SejuaniPassive_Summary",
+      "keyTooltip": "Spell_SejuaniPassive_Tooltip"
+    },
+    "localized": {
+      "ko_KR": {
+        "name": "혹한의 분노",
+        "summary": "세주아니는 일정 시간 동안 피해를 입지 않으면 서리 갑옷이 생겨 추가 방어력과 마법 저항력을 얻고 둔화 효과에 면역됩니다. 서리 갑옷은 세주아니가 피해를 입은 후에도 잠깐 동안 유지됩니다. 기절한 적을 공격하면 막대한 마법 피해를 입힐 수 있습니다.",
+        "tooltip": "(12 ~ 6)초 동안 챔피언 또는 대형 정글 몬스터로부터 피해를 입지 않으면 <span class=\"text-purple-600 dark:text-purple-500\">둔화</span>에 면역되고 <span class=\"text-orange-600 dark:text-orange-400\">(10 + (75% 추가 방어력))의 방어력</span>과 <span>(10 + (75% 추가 마법 저항력))의 마법 저항력</span>을 얻습니다.<br /><br />세주아니에게 <span class=\"text-purple-600 dark:text-purple-500\">기절</span>당한 적을 처음으로 기본 공격하면 <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">최대 체력의 10%에 해당하는 마법 피해</span>를 입힙니다."
+      },
+      "en_US": {
+        "name": "Fury of the North",
+        "summary": "After being out of combat, Sejuani gains Frost Armor which grants Armor and Magic Resist and immunity to slows. Frost Armor persists for a short time after Sejuani takes damage.  Sejuani can damage a stunned enemy to shatter it, dealing massive magic damage.",
+        "tooltip": "Sejuani becomes immune to <span class=\"text-purple-600 dark:text-purple-500\">Slows</span> and gains <span class=\"text-orange-600 dark:text-orange-400\">(10 + (75% bonus Armor)) Armor</span> and <span>(10 + (75% bonus Magic Resist)) Magic Resist</span> after not taking damage from champions or large jungle monsters for (12 ~ 6) seconds.<br /><br />Sejuani's first Attack against enemies she has <span class=\"text-purple-600 dark:text-purple-500\">Stunned</span> deals an additional <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">10% max Health magic damage</span>."
+      },
+      "zh_CN": {
+        "name": "北地之怒",
+        "summary": "在脱离战斗后，瑟庄妮会获得冰霜护甲，冰川护甲可提供护甲、魔法抗性和免疫减速。当瑟庄妮受到伤害后，冰霜护甲会存留一小段时间。瑟庄妮可以伤害一名被晕眩的敌人来击碎它，从而造成巨量魔法伤害。",
+        "tooltip": "在不承受来自英雄或大型野怪的伤害(12 ~ 6)秒后，瑟庄妮会免疫<span class=\"text-purple-600 dark:text-purple-500\">减速</span>效果并获得<span class=\"text-orange-600 dark:text-orange-400\">(10 + (75% 额外护甲))护甲</span>和<span>(10 + (75% 额外魔法抗性))魔法抗性</span>。<br /><br />瑟庄妮对被她<span class=\"text-purple-600 dark:text-purple-500\">晕眩</span>的敌人进行的第一次攻击会造成额外的<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">10%最大生命值的魔法伤害</span>。"
       }
     }
   }

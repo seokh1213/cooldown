@@ -742,6 +742,156 @@
           "mModifiedGameCalculation": "DamagePerSecond",
           "__type": "GameCalculationModified"
         }
+      },
+      "mClientData": {
+        "mTooltipData": {
+          "mLocKeys": {
+            "keyName": "Spell_TwitchDeadlyVenomMarker_Name",
+            "keySummary": "Spell_TwitchDeadlyVenomMarker_Summary",
+            "keyTooltip": "Spell_TwitchDeadlyVenomMarker_Tooltip"
+          }
+        }
+      }
+    },
+    "P": {
+      "DataValues": {
+        "Duration": [
+          6,
+          6,
+          6,
+          6,
+          6,
+          6,
+          6
+        ],
+        "MaxStacks": [
+          6,
+          6,
+          6,
+          6,
+          6,
+          6,
+          6
+        ],
+        "APRatio": [
+          0.029999999329447746,
+          0.029999999329447746,
+          0.029999999329447746,
+          0.029999999329447746,
+          0.029999999329447746,
+          0.029999999329447746,
+          0.029999999329447746
+        ]
+      },
+      "mSpellCalculations": {
+        "DamagePerSecond": {
+          "mFormulaParts": [
+            {
+              "mLevel1Value": 1,
+              "mBreakpoints": [
+                {
+                  "mLevel": 5,
+                  "mAdditionalBonusAtThisLevel": 1,
+                  "__type": "Breakpoint"
+                },
+                {
+                  "mLevel": 9,
+                  "mAdditionalBonusAtThisLevel": 1,
+                  "__type": "Breakpoint"
+                },
+                {
+                  "mLevel": 13,
+                  "mAdditionalBonusAtThisLevel": 1,
+                  "__type": "Breakpoint"
+                },
+                {
+                  "mLevel": 17,
+                  "mAdditionalBonusAtThisLevel": 1,
+                  "__type": "Breakpoint"
+                },
+                {
+                  "mLevel": 21,
+                  "mAdditionalBonusAtThisLevel": 1,
+                  "__type": "Breakpoint"
+                },
+                {
+                  "mLevel": 25,
+                  "mAdditionalBonusAtThisLevel": 1,
+                  "__type": "Breakpoint"
+                },
+                {
+                  "mLevel": 29,
+                  "mAdditionalBonusAtThisLevel": 1,
+                  "__type": "Breakpoint"
+                }
+              ],
+              "__type": "ByCharLevelBreakpointsCalculationPart"
+            },
+            {
+              "mDataValue": "APRatio",
+              "__type": "StatByNamedDataValueCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        },
+        "DamagePerSecondMax": {
+          "mMultiplier": {
+            "mDataValue": "MaxStacks",
+            "__type": "NamedDataValueCalculationPart"
+          },
+          "mModifiedGameCalculation": "DamagePerSecond",
+          "__type": "GameCalculationModified"
+        },
+        "DamageMaxTotal": {
+          "mMultiplier": {
+            "mPart1": {
+              "mDataValue": "Duration",
+              "__type": "NamedDataValueCalculationPart"
+            },
+            "mPart2": {
+              "mDataValue": "MaxStacks",
+              "__type": "NamedDataValueCalculationPart"
+            },
+            "__type": "ProductOfSubPartsCalculationPart"
+          },
+          "mModifiedGameCalculation": "DamagePerSecond",
+          "__type": "GameCalculationModified"
+        }
+      },
+      "mClientData": {
+        "mTooltipData": {
+          "mLocKeys": {
+            "keyName": "Spell_TwitchDeadlyVenomMarker_Name",
+            "keySummary": "Spell_TwitchDeadlyVenomMarker_Summary",
+            "keyTooltip": "Spell_TwitchDeadlyVenomMarker_Tooltip"
+          }
+        }
+      }
+    }
+  },
+  "passive": {
+    "id": "TwitchDeadlyVenomMarker",
+    "path": "Characters/Twitch/Spells/TwitchDeadlyVenomMarkerAbility/TwitchDeadlyVenomMarker",
+    "locKeys": {
+      "keyName": "Spell_TwitchDeadlyVenomMarker_Name",
+      "keySummary": "Spell_TwitchDeadlyVenomMarker_Summary",
+      "keyTooltip": "Spell_TwitchDeadlyVenomMarker_Tooltip"
+    },
+    "localized": {
+      "ko_KR": {
+        "name": "맹독",
+        "summary": "트위치의 기본 공격 %i:OnHit% <OnHit>적중 시</OnHit> 대상을 중독시켜 초당 고정 피해를 입힙니다.",
+        "tooltip": "트위치의 기본 공격 <span>적중 시</span> 대상은 중독되어 6초간 초당 <span class=\"text-yellow-600 dark:text-yellow-500 font-semibold\">(8 + (3% 주문력))의 고정 피해</span>를 입습니다. 맹독은 6회까지 중첩됩니다. <br /><br />초당 최대 피해량: (48 + (18% 주문력))"
+      },
+      "en_US": {
+        "name": "Deadly Venom",
+        "summary": "Twitch's basic attacks infect the target %i:OnHit% <OnHit>On-Hit</OnHit>, dealing true damage each second.",
+        "tooltip": "Twitch's Attacks infect his target <span>On-Hit</span>, dealing <span class=\"text-yellow-600 dark:text-yellow-500 font-semibold\">(8 + (3% Ability Power)) true damage</span> per second for 6 seconds, stacking up to 6 times. <br /><br />Max Damage Per Second: (48 + (18% Ability Power))"
+      },
+      "zh_CN": {
+        "name": "死亡毒液",
+        "summary": "图奇的攻击会使目标感染死亡毒液%i:OnHit% <OnHit>攻击特效</OnHit>，每秒造成真实伤害。",
+        "tooltip": "图奇的攻击会使目标感染毒液 <span>攻击特效</span>，每秒造成<span class=\"text-yellow-600 dark:text-yellow-500 font-semibold\">(8 + (3% 法术强度))真实伤害</span>，持续6秒，最多可叠加6层。<br /><br />每秒最大伤害：(48 + (18% 法术强度))"
       }
     }
   }
