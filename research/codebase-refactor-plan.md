@@ -32,6 +32,7 @@ Riot sources
 - `@radix-ui/react-select`, `react-content-loader`는 코드와 설정 어디에서도 참조되지 않는다.
 - 소스 모듈 순환 의존은 없다. 이 점은 개편 중 유지해야 한다.
 - 현재 테스트는 파서, 패치 버전, 정적 spell 매핑, lol.ps 연구 분석 중심이다. React 화면, 저장 상태, 라우팅, PWA, 공개 정적 데이터 계약에 대한 자동 회귀 테스트가 없다.
+- 현재 `sanitizeHtml`은 이름과 달리 공백만 정규화하며, 툴팁은 `dangerouslySetInnerHTML`로 렌더링된다. Riot 원문을 신뢰하는 암묵적 경계라서 입력 출처가 늘어나면 실제 HTML 허용 목록 검증이 필요하다.
 
 ## 주요 문제와 변경 방향
 
@@ -60,6 +61,7 @@ Riot sources
 - locale별 완성 텍스트와 언어 중립 계산 AST를 구분하되, 브라우저 기본 경로는 CI가 렌더한 결과만 사용한다.
 - 미해결 토큰을 삭제하지 않고 diagnostics와 CI 허용 목록으로 관리한다.
 - ko_KR/en_US/zh_CN을 상수 분기 대신 locale registry로 다룬다.
+- HTML 문자열은 생성 단계에서 허용 태그·속성만 통과시키거나 구조 노드로 변환한다. 프론트는 검증된 구조만 렌더링하고 임의 원문 HTML을 직접 주입하지 않는다.
 
 ### 3. 데이터 접근 계층의 책임이 너무 많다
 
