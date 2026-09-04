@@ -1,14 +1,8 @@
-import * as fs from "node:fs";
-import * as path from "node:path";
 import type { DataLocale } from "./localization";
+import type { Champion } from "../../src/types";
+import type { ChampionsByLocale } from "./champion-source";
 
 const ABILITY_SLOTS = ["Q", "W", "E", "R"] as const;
-
-interface GeneratedSpell {
-  id?: string;
-  tooltipSource?: string;
-  tooltipDiagnostics?: { unresolvedTokens?: string[] };
-}
 
 export interface ActiveTooltipAllowlist {
   unresolvedTokens: string[];
@@ -40,27 +34,56 @@ export interface ActiveTooltipValidationReport {
   staleAllowedMissingTooltips: string[];
 }
 
-function readSpells(filePath: string): GeneratedSpell[] {
-  const data = JSON.parse(fs.readFileSync(filePath, "utf-8"));
-  return Array.isArray(data?.champion?.spells) ? data.champion.spells : [];
+interface ChampionLocaleEntry {
+  championId: string;
+  locale: DataLocale;
+  champion: Champion;
 }
 
-export function validateActiveTooltipFiles(
-  championsDir: string,
-  patchVersion: string,
-  locales: readonly DataLocale[],
-  allowlist: ActiveTooltipAllowlist
-): ActiveTooltipValidationReport {
+export interface ActiveTooltipValidationInput {
+  championsByLocale: ChampionsByLocale;
+  patchVersion: string;
+  allowlist: ActiveTooltipAllowlist;
+}
+
+function compareStrings(left: string, right: string): number {
+  if (left < right) return -1;
+  if (left > right) return 1;
+  return 0;
+}
+
+function sortedChampionLocaleEntries(
+  championsByLocale: ChampionsByLocale,
+): ChampionLocaleEntry[] {
+  return [...championsByLocale.entries()]
+    .flatMap(([locale, champions]) =>
+      [...champions.entries()].map(([championId, champion]) => ({
+        championId,
+        locale,
+        champion,
+      })),
+    )
+    .sort(
+      (left, right) =>
+        compareStrings(left.championId, right.championId) ||
+        compareStrings(left.locale, right.locale),
+    );
+}
+
+export function validateActiveTooltips({
+  championsByLocale,
+  patchVersion,
+  allowlist,
+}: ActiveTooltipValidationInput): ActiveTooltipValidationReport {
   const issues: ActiveTooltipIssue[] = [];
   const missing = new Set<string>();
   let abilities = 0;
   let localized = 0;
 
-  for (const fileName of fs.readdirSync(championsDir).sort()) {
-    const locale = locales.find((entry) => fileName.endsWith(`-${entry}.json`));
-    if (!locale) continue;
-    const championId = fileName.slice(0, -`-${locale}.json`.length);
-    readSpells(path.join(championsDir, fileName)).forEach((spell, index) => {
+  for (const { championId, locale, champion } of sortedChampionLocaleEntries(
+    championsByLocale,
+  )) {
+    (champion.spells ?? []).forEach((spell, index) => {
       const slot = ABILITY_SLOTS[index];
       if (!slot) return;
       abilities += 1;
@@ -107,7 +130,7 @@ export function validateActiveTooltipFiles(
 }
 
 export function assertActiveTooltipReport(
-  report: ActiveTooltipValidationReport
+  report: ActiveTooltipValidationReport,
 ): void {
   if (
     report.unexpectedTokens.length === 0 &&
@@ -121,6 +144,6 @@ export function assertActiveTooltipReport(
     `Active tooltip baseline changed: ${report.unexpectedTokens.length} new tokens, ` +
       `${report.unexpectedMissingTooltips.length} new missing tooltips, ` +
       `${report.staleAllowedTokens.length} resolved tokens, ` +
-      `${report.staleAllowedMissingTooltips.length} resolved missing tooltips`
+      `${report.staleAllowedMissingTooltips.length} resolved missing tooltips`,
   );
 }

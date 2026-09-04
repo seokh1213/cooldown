@@ -145,10 +145,6 @@ export interface NormalizedStatShard extends NormalizedEntityBase {
   stats: StatContribution[];
 }
 
-export interface NormalizedChampionDataFile extends StaticDataMetadata {
-  champions: NormalizedChampion[];
-}
-
 export interface NormalizedItemDataFile extends StaticDataMetadata {
   items: NormalizedItem[];
 }
@@ -186,4 +182,3 @@ export interface NormalizedSummonerSpell {
 export interface NormalizedSummonerDataFile extends StaticDataMetadata {
   spells: NormalizedSummonerSpell[];
 }
-

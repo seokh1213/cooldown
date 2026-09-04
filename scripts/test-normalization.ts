@@ -1,8 +1,5 @@
 import assert from "node:assert/strict";
-import { mkdtemp, rm, writeFile } from "node:fs/promises";
-import os from "node:os";
-import path from "node:path";
-import { buildNormalizedChampion } from "./data-pipeline/normalization/champion";
+import { normalizeChampion } from "./data-pipeline/normalization/champion";
 import { normalizeItems } from "./data-pipeline/normalization/item";
 import { normalizeSummonerSpells } from "./data-pipeline/normalization/summoner";
 import { StatKey } from "../src/types/combatStats";
@@ -72,31 +69,28 @@ assert.deepEqual(
   true,
 );
 
-const directory = await mkdtemp(path.join(os.tmpdir(), "cooldown-normalize-"));
-try {
-  const championPath = path.join(directory, "champion.json");
-  await writeFile(
-    championPath,
-    JSON.stringify({
-      champion: {
-        name: "Test Champion",
-        stats: { hp: 600, hpperlevel: 100, attackdamage: 60 },
-        spells: [{ id: "TestQ", name: "Q", cooldown: [8, "invalid"] }],
-        passive: { name: "Passive", description: "Passive text" },
-      },
-    }),
-  );
-  const champion = buildNormalizedChampion(
-    "en_US",
-    "Test",
-    championPath,
-    path.join(directory, "missing-cdragon.json"),
-  );
-  assert.equal(champion?.baseStats.health.base, 600);
-  assert.deepEqual(champion?.spells.Q.cooldowns, [8]);
-  assert.equal(champion?.spells.P.name, "Passive");
-} finally {
-  await rm(directory, { recursive: true, force: true });
-}
+const champion = normalizeChampion({
+  locale: "en_US",
+  championId: "Test",
+  champion: {
+    id: "Test",
+    key: "1",
+    title: "the Test",
+    name: "Test Champion",
+    stats: { hp: 600, hpperlevel: 100, attackdamage: 60 },
+    spells: [
+      { id: "TestQ", name: "Q", maxrank: 5, cooldown: [8, "invalid"] },
+    ],
+    passive: {
+      name: "Passive",
+      description: "Passive text",
+      image: { full: "Passive.png" },
+    },
+  },
+  spellData: {},
+});
+assert.equal(champion.baseStats.health.base, 600);
+assert.deepEqual(champion.spells.Q.cooldowns, [8]);
+assert.equal(champion.spells.P.name, "Passive");
 
 console.log("Champion, item, and summoner normalization tests passed.");
