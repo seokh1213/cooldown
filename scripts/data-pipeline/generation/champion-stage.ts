@@ -126,12 +126,23 @@ async function fetchCDragonChampionData(
   const source = await fetchCDragonChampion(championId, cdragonVersion);
   const activeSpells = extractActiveSpells(source, championId.toLowerCase());
   const passive = extractPassiveSpell(source, championId);
+  const spellData = buildSpellData(activeSpells, passive);
+
+  // `{{ spell.<이름>:<변수> }}` 가 이름으로 찾을 수 있게 모은다.
+  // 인덱스 키("0"~"3")는 이름 참조 대상이 아니라 제외한다.
+  const siblings: Record<string, CommunityDragonSpellData> = {};
+  for (const [key, value] of Object.entries(spellData)) {
+    if (/^\d+$/.test(key)) continue;
+    siblings[key.toLowerCase()] = value;
+  }
+
   await Promise.all([
     localizeActiveTooltips(
       championsByLocale,
       championId,
       cdragonVersion,
       activeSpells.ordered,
+      siblings,
     ),
     localizePassiveTooltips(
       championsByLocale,
@@ -141,7 +152,7 @@ async function fetchCDragonChampionData(
     ),
   ]);
   return {
-    spellData: buildSpellData(activeSpells, passive),
+    spellData,
     abilitySources: activeSpells.ordered.map(({ source: ability }) => ability),
   };
 }

@@ -1,6 +1,9 @@
 import type { ChampionSpell } from "../../src/types";
 import { parseSpellTooltipWithDiagnostics } from "../../src/lib/spellTooltipParser/parser";
-import type { TooltipLocale } from "../../src/lib/spellTooltipParser/types";
+import type {
+  CommunityDragonSpellData,
+  TooltipLocale,
+} from "../../src/lib/spellTooltipParser/types";
 import type { ExtractedActiveSpellData } from "./cdragon-active-spells";
 import {
   expandStringReferences,
@@ -27,7 +30,8 @@ function render(
   spell: ChampionSpell,
   source: ExtractedActiveSpellData,
   stringTable: StringTable,
-  locale: TooltipLocale
+  locale: TooltipLocale,
+  siblings?: Record<string, CommunityDragonSpellData>
 ): RenderedFragment {
   if (!template) return { unresolvedTokens: [] };
   const effectiveSpell: ChampionSpell = {
@@ -38,7 +42,7 @@ function render(
   const rendered = parseSpellTooltipWithDiagnostics(
     toParserTemplate(expandStringReferences(template, stringTable)),
     effectiveSpell,
-    source,
+    siblings ? { ...source, siblings } : source,
     locale
   );
   const html = rendered.html.trim();
@@ -52,7 +56,13 @@ export function localizeActiveTooltip(
   spell: ChampionSpell,
   source: ExtractedActiveSpellData,
   stringTable: StringTable,
-  locale: DataLocale
+  locale: DataLocale,
+  /**
+   * 같은 챔피언의 다른 스킬 데이터 (스킬 이름 소문자 → 데이터).
+   * `{{ spell.zyrap:plantdamage }}` 처럼 패시브·서브 스킬 값을 참조하는
+   * 툴팁이 있어 형제 맵이 필요하다.
+   */
+  siblings?: Record<string, CommunityDragonSpellData>
 ): LocalizedActiveTooltip {
   const { locKeys } = source.source;
   const tooltip = render(
@@ -60,14 +70,16 @@ export function localizeActiveTooltip(
     spell,
     source,
     stringTable,
-    locale
+    locale,
+    siblings
   );
   const extended = render(
     lookupString(stringTable, locKeys.keyTooltipExtendedBelowLine),
     spell,
     source,
     stringTable,
-    locale
+    locale,
+    siblings
   );
   return {
     name: lookupString(stringTable, locKeys.keyName),
