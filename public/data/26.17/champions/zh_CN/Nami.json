@@ -120,6 +120,7 @@
         "slot": "P",
         "id": "NamiPassive",
         "name": "踏浪之行",
+        "maxRank": 0,
         "summary": "每当娜美的技能命中友方英雄时，他们都会暂时获得移动速度加成。",
         "bodyHtml": "每当娜美的技能命中友方英雄时，他们都会获得<span class=\"text-cyan-600 dark:text-cyan-500\">(100 + (25% 法术强度))移动速度</span>，在1.5秒里持续衰减。",
         "iconFile": "NamiPassive.png",
@@ -127,6 +128,10 @@
         "range": [],
         "rankValues": [],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -137,6 +142,7 @@
         "slot": "Q",
         "id": "NamiQ",
         "name": "碧波之牢",
+        "maxRank": 5,
         "summary": "朝着目标区域放出一个泡泡，对命中的所有敌人造成伤害和晕眩效果。",
         "bodyHtml": "娜美掷出一个泡泡，<span class=\"text-purple-600 dark:text-purple-500\">晕眩</span>敌人1.5秒并造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(90/145/200/255/310 + (50% 法术强度))魔法伤害</span>。",
         "iconFile": "NamiQ.png",
@@ -189,6 +195,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "TotalDamageTT",
+            "kind": "damage",
+            "baseByRank": [
+              90,
+              145,
+              200,
+              255,
+              310
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.5,
+                  0.5,
+                  0.5,
+                  0.5,
+                  0.5
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -199,6 +232,7 @@
         "slot": "W",
         "id": "NamiW",
         "name": "冲击之潮",
+        "maxRank": 5,
         "summary": "释放一股在友方英雄和敌方英雄之间交替流动的水流，治疗友军并伤害敌军。",
         "bodyHtml": "娜美释放一股在友方英雄和敌方英雄之间交替弹跳的水流。每个目标只会被弹到一次，并且水流至多可弹3个目标。<span>为友方英雄回复<span class=\"text-green-600 dark:text-green-400\">(55/80/105/130/155 + (40% 法术强度))生命值</span>并弹向附近的一名敌方英雄身上。<span>对敌方英雄造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(60/95/130/165/200 + (50% 法术强度))魔法伤害</span>并弹向附近的一名友方英雄身上。<br />每次弹跳会使伤害和治疗数额修正(-20% + (0.15% 法术强度))。<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">只会弹向可见的敌人。</span>",
         "iconFile": "NamiW.png",
@@ -255,6 +289,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "TotalDamage",
+            "kind": "damage",
+            "baseByRank": [
+              60,
+              95,
+              130,
+              165,
+              200
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.5,
+                  0.5,
+                  0.5,
+                  0.5,
+                  0.5
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -265,6 +326,7 @@
         "slot": "E",
         "id": "NamiE",
         "name": "唤潮之佑",
+        "maxRank": 5,
         "summary": "短时间里强化一个友军英雄。友军的普通攻击和技能会对其目标造成额外伤害和减速效果。",
         "bodyHtml": "娜美强化一位友方英雄的下3次普通攻击和技能，持续6秒，使其可以对目标造成持续1秒的(15/20/25/30/35% + (0.05% 法术强度))<span class=\"text-purple-600 dark:text-purple-500\">减速</span>，并造成额外的<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(20/35/50/65/80 + (20% 法术强度))魔法伤害</span>。<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">在强化群体技能时会对非英雄单位造成(33% ~ 66%)伤害。</span>",
         "iconFile": "NamiE.png",
@@ -321,6 +383,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "TotalDamage",
+            "kind": "damage",
+            "baseByRank": [
+              20,
+              35,
+              50,
+              65,
+              80
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.20000000298023224,
+                  0.20000000298023224,
+                  0.20000000298023224,
+                  0.20000000298023224,
+                  0.20000000298023224
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -331,6 +420,7 @@
         "slot": "R",
         "id": "NamiR",
         "name": "怒涛之啸",
+        "maxRank": 3,
         "summary": "召唤一阵巨大的怒涛，击飞、减速并伤害沿途的所有敌人。被怒涛命中的友方英雄会获得【踏浪之行】的双倍加速效果。",
         "bodyHtml": "娜美召唤一阵怒涛，造成0.5秒<span class=\"text-purple-600 dark:text-purple-500\">击飞</span>，70%<span class=\"text-purple-600 dark:text-purple-500\">减速</span>并造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(150/250/350 + (60% 法术强度))魔法伤害</span>。<span class=\"text-purple-600 dark:text-purple-500\">减速</span>的持续时间会基于怒涛的行进距离而提升，至多持续4秒。<br /><br />被怒涛命中的友方英雄会获得<span>踏浪之行</span>的双倍效果。<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\"><span class=\"text-purple-600 dark:text-purple-500\">减速</span>的最小时长为2秒。</span>",
         "iconFile": "NamiR.png",
@@ -377,6 +467,29 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "TotalDamage",
+            "kind": "damage",
+            "baseByRank": [
+              150,
+              250,
+              350
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.6000000238418579,
+                  0.6000000238418579,
+                  0.6000000238418579
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {

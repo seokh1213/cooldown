@@ -120,6 +120,7 @@
         "slot": "P",
         "id": "SionPassive",
         "name": "死亡荣耀",
+        "maxRank": 0,
         "summary": "在被击杀后，赛恩会回光返照一段时间并且生命值会快速衰减。在此期间，他的攻击会变得超快，获得生命偷取，并且每次攻击会额外造成基于目标最大生命值的额外伤害。",
         "bodyHtml": "在被击杀后，赛恩会回光返照一段时间，可以移动并攻击，但在回光返照时，他的生命值会急速衰减。他还会获得100%生命偷取，攻击得超快，并且每次攻击会额外造成相当于目标<span class=\"text-red-600 dark:text-red-500 font-semibold\">10%最大生命值的物理伤害</span>。<br /><br />他的所有技能都会被替换为【死亡冲动】，能为他提供爆发性的移动速度加成。",
         "iconFile": "Sion_Passive1.png",
@@ -127,6 +128,10 @@
         "range": [],
         "rankValues": [],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -137,6 +142,7 @@
         "slot": "Q",
         "id": "SionQ",
         "name": "残虐猛击",
+        "maxRank": 5,
         "summary": "赛恩开始蓄力，并在释放时对他前方的一个区域进行一次强劲的猛击，对区域内的敌人造成伤害。如果他蓄力时间足够久，那么被命中的敌人还会受到击飞和晕眩效果。",
         "bodyHtml": "<span>开始蓄力</span>：赛恩开始为一次重型猛击蓄力，最多2秒。<br /><br /><span>释放</span>：赛恩将斧头重重砸下，暂时<span class=\"text-purple-600 dark:text-purple-500\">减速</span>并基于蓄力时间造成<span class=\"text-red-600 dark:text-red-500 font-semibold\">(30/45/60/75/90 + (40/50/60/70/80% 攻击力))到(90/155/220/285/350 + (120/150/180/210/240% 攻击力))物理伤害</span>。如果赛恩蓄力了至少1秒，那么敌人还会被<span class=\"text-purple-600 dark:text-purple-500\">击飞</span>，并基于蓄力时间被<span class=\"text-purple-600 dark:text-purple-500\">晕眩</span>1.25到2.25秒。<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">对野怪造成165%伤害并对小兵造成60%伤害。</span>",
         "iconFile": "SionQ.png",
@@ -201,6 +207,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "MaxDamageTotal",
+            "kind": "damage",
+            "baseByRank": [
+              90,
+              155,
+              220,
+              285,
+              350
+            ],
+            "terms": [
+              {
+                "stat": "totalAttackDamage",
+                "coefficientsByRank": [
+                  1.2000000476837158,
+                  1.5,
+                  1.7999999523162842,
+                  2.0999999046325684,
+                  2.4000000953674316
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -211,6 +244,7 @@
         "slot": "W",
         "id": "SionW",
         "name": "灵魂熔炉",
+        "maxRank": 5,
         "summary": "赛恩为自己套上护盾，并能在3秒后再次激活这个技能来对身边的敌人造成魔法伤害。在赛恩击杀敌人时，他会被动获得最大生命值。",
         "bodyHtml": "<span class=\"text-gray-600 dark:text-gray-500 italic\">被动</span>：赛恩每击杀一个单位就会获得<span>4最大生命值</span>，或在参与击杀英雄、击杀大型小兵或大型野怪后获得<span>15最大生命值</span>。<br /><br /><span class=\"text-gray-900 dark:text-white font-semibold\">主动</span>：赛恩获得<span class=\"text-blue-600 dark:text-blue-300\">(60/75/90/105/120 + (40% 法术强度) + (8/10/12/14/16% 生命值))护盾值</span>，持续6秒。在3秒后，如果护盾仍然存在，那么赛恩就能<span class=\"text-yellow-600 dark:text-yellow-300\">再次施放</span>来引爆护盾，造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(40/65/90/115/140 + (40% 法术强度))外加14%最大生命值的魔法伤害</span>。<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">对小兵和野怪最多造成400额外伤害。</span>",
         "iconFile": "SionW.png",
@@ -275,6 +309,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "TotalDamage",
+            "kind": "damage",
+            "baseByRank": [
+              40,
+              65,
+              90,
+              115,
+              140
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.4000000059604645,
+                  0.4000000059604645,
+                  0.4000000059604645,
+                  0.4000000059604645,
+                  0.4000000059604645
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -285,6 +346,7 @@
         "slot": "E",
         "id": "SionE",
         "name": "杀手怒吼",
+        "maxRank": 5,
         "summary": "赛恩发射一个短程冲击波，来对命中的第一个敌人造成伤害、减速效果和破甲效果。如果冲击波命中的是小兵或者野怪，那么目标敌方单位还会被击退，对沿途的所有敌方单位造成伤害、减速和护甲击碎效果。",
         "bodyHtml": "赛恩发射一道冲击波，造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(65/100/135/170/205 + (55% 法术强度))魔法伤害</span>和持续2.5秒的40/45/50/55/60%<span class=\"text-purple-600 dark:text-purple-500\">减速</span>，并移除<span class=\"text-orange-600 dark:text-orange-400\">25%护甲</span>，持续4秒。被命中的非英雄单位会被<span class=\"text-purple-600 dark:text-purple-500\">击退</span>。被<span class=\"text-purple-600 dark:text-purple-500\">击退</span>的单位会在击中其他敌人时造成等额伤害和效果。",
         "iconFile": "SionE.png",
@@ -345,6 +407,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "TotalDamage",
+            "kind": "damage",
+            "baseByRank": [
+              65,
+              100,
+              135,
+              170,
+              205
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.550000011920929,
+                  0.550000011920929,
+                  0.550000011920929,
+                  0.550000011920929,
+                  0.550000011920929
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -355,6 +444,7 @@
         "slot": "R",
         "id": "SionR",
         "name": "蛮横冲撞",
+        "maxRank": 3,
         "summary": "赛恩朝着一个方向冲锋，持续提升移动速度。他可以朝着鼠标悬停处进行微小的转向。当他与一名敌人产生碰撞时，他会基于敌人们与碰撞点之间的距离造成伤害和击飞效果。",
         "bodyHtml": "赛恩朝着一个方向不可阻挡地冲锋8秒，可用鼠标指针来调整方向。赛恩会在碰撞到一名敌方英雄或墙体后、或是<span class=\"text-yellow-600 dark:text-yellow-300\">再次施放</span>此技能后停下。 <br /><br />在冲锋结束时，赛恩基于行进距离造成<span class=\"text-red-600 dark:text-red-500 font-semibold\">(150/300/450 + (60% 额外攻击力))到(400/800/1200 + (120% 额外攻击力))物理伤害</span>。紧靠着赛恩的敌人们会基于赛恩的行进距离被<span class=\"text-purple-600 dark:text-purple-500\">晕眩</span>0.75到1.75秒。更大范围内的敌人们会被<span class=\"text-purple-600 dark:text-purple-500\">减速</span>40/45/50%，持续3秒。",
         "iconFile": "SionR.png",
@@ -409,6 +499,29 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "MaxDamageTotal",
+            "kind": "damage",
+            "baseByRank": [
+              400,
+              800,
+              1200
+            ],
+            "terms": [
+              {
+                "stat": "bonusAttackDamage",
+                "coefficientsByRank": [
+                  1.2000000476837158,
+                  1.2000000476837158,
+                  1.2000000476837158
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {

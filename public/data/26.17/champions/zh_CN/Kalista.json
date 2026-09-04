@@ -119,6 +119,7 @@
         "slot": "P",
         "id": "P",
         "name": "武术姿态",
+        "maxRank": 0,
         "summary": "",
         "bodyHtml": "如果卡莉丝塔在进行普攻或穿刺的同时被下达了移动指令，那么她会在发起进攻的同时朝着这个移动指令的方向位移小段距离。",
         "iconFile": "Kalista_Passive.png",
@@ -126,6 +127,10 @@
         "range": [],
         "rankValues": [],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "ddragon",
         "diagnostics": {
@@ -136,6 +141,7 @@
         "slot": "Q",
         "id": "KalistaMysticShot",
         "name": "穿刺",
+        "maxRank": 5,
         "summary": "扔出一个快速移动的长矛。长矛在击杀敌人后会继续飞行。",
         "bodyHtml": "卡莉丝塔掷出一支长矛，对命中的第一个目标造成<span class=\"text-red-600 dark:text-red-500 font-semibold\">(10/75/140/205/270 + (105% 攻击力))物理伤害</span>。如果这个技能击杀了目标，那么长矛会继续前行，将<span>撕裂</span>的层数带给命中的下一个目标。<br /><br />卡莉丝塔可以在使用这个技能后使用<span>武术姿态</span>的冲刺。",
         "iconFile": "KalistaMysticShot.png",
@@ -188,6 +194,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "TotalDamage",
+            "kind": "damage",
+            "baseByRank": [
+              10,
+              75,
+              140,
+              205,
+              270
+            ],
+            "terms": [
+              {
+                "stat": "totalAttackDamage",
+                "coefficientsByRank": [
+                  1.0499999523162842,
+                  1.0499999523162842,
+                  1.0499999523162842,
+                  1.0499999523162842,
+                  1.0499999523162842
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -198,6 +231,7 @@
         "slot": "W",
         "id": "KalistaW",
         "name": "哨兵",
+        "maxRank": 5,
         "summary": "在卡莉丝塔与誓约者一起攻击相同目标时提供额外伤害。<br><br>激活此技能可以派出一个灵魂来侦查道路，将它面前的区域显示在玩家的视野内。",
         "bodyHtml": "<span class=\"text-gray-600 dark:text-gray-500 italic\">被动：</span>当卡莉丝塔和她的<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">誓约者</span>都攻击相同的目标时，她会造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">10/12/14/16/18%最大生命值的魔法伤害</span>。这个效果对每个目标有10秒冷却时间并且对非英雄单位有100/125/150/175/200的伤害上限。<br /><br /><span class=\"text-gray-600 dark:text-gray-500 italic\">主动：</span>卡莉丝塔派出一个幽灵去巡视一个地区，持续3个来回。被发现的敌方英雄会被显形4秒。这个技能有2层充能(90/80/70/60/50秒充能时间)。",
         "iconFile": "KalistaW.png",
@@ -238,6 +272,10 @@
           }
         ],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -248,6 +286,7 @@
         "slot": "E",
         "id": "KalistaExpungeWrapper",
         "name": "撕裂",
+        "maxRank": 5,
         "summary": "攻击时用长矛来刺穿目标。主动激活可以将长矛扯出，造成减速和逐步上升的伤害。",
         "bodyHtml": "<span class=\"text-gray-600 dark:text-gray-500 italic\">被动：</span>卡莉丝塔的长矛会在目标身上存留4秒，可叠加任意次数。<br /><br /><span class=\"text-gray-900 dark:text-white font-semibold\">主动：</span>卡莉丝塔从附近的敌人们身上拔出长矛，造成<span class=\"text-red-600 dark:text-red-500 font-semibold\">(5/15/25/35/45 + (70% 攻击力) + (65% 法术强度))</span>外加每根后续长矛<span class=\"text-red-600 dark:text-red-500 font-semibold\">(7/14/21/28/35 + (20/27.5/35/42.5/50% 攻击力) + (50% 法术强度))物理伤害</span>。对命中的敌人们造成持续2秒的<span>(10/18/26/34/42% + (0.05% 法术强度))</span><span class=\"text-purple-600 dark:text-purple-500\">减速</span>。<br /><br />如果这个技能击杀了至少一个目标，那么它的冷却时间会刷新并且它会返还<span>10/15/20/25/30法力值</span>。<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">这个技能对史诗级野怪造成50%伤害。</span>",
         "iconFile": "KalistaExpungeWrapper.png",
@@ -316,6 +355,43 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "AdditionalDamage",
+            "kind": "damage",
+            "baseByRank": [
+              7,
+              14,
+              21,
+              28,
+              35
+            ],
+            "terms": [
+              {
+                "stat": "totalAttackDamage",
+                "coefficientsByRank": [
+                  0.20000000298023224,
+                  0.2750000059604645,
+                  0.3499999940395355,
+                  0.42500001192092896,
+                  0.5
+                ]
+              },
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.5,
+                  0.5,
+                  0.5,
+                  0.5,
+                  0.5
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -326,6 +402,7 @@
         "slot": "R",
         "id": "KalistaRx",
         "name": "命运的召唤",
+        "maxRank": 3,
         "summary": "卡莉丝塔传送一位友军到自己身边。该友军随后可以冲向一个地点，并击退命中的敌人。",
         "bodyHtml": "卡莉丝塔将她的<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">誓约者</span>置入凝滞状态并将其拖拽到她的身边，至多持续4秒。<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">誓约者</span>可以点击来将自己投放出去，在命中第一个英雄时停止并<span class=\"text-purple-600 dark:text-purple-500\">击退</span>所有附近的敌人。如果<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">誓约者</span>命中了一名英雄，则会被放置在与目标相距其最大攻击距离的位置。",
         "iconFile": "KalistaRx.png",
@@ -358,6 +435,10 @@
           }
         ],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {

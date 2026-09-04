@@ -119,6 +119,7 @@
         "slot": "P",
         "id": "MalzaharPassive",
         "name": "虚空穿越",
+        "maxRank": 0,
         "summary": "玛尔扎哈如果近期没有受到伤害或控制效果，就会获得巨幅伤害减免和免疫控制的效果，并且这个效果在受到伤害后还会残留一小段时间。",
         "bodyHtml": "玛尔扎哈获得90%伤害减免并免疫<span class=\"text-purple-600 dark:text-purple-500\">限制</span>和<span class=\"text-purple-600 dark:text-purple-500\">定身</span>效果，并且在受到或格挡了一次那些效果后，会存留0.25秒。这个效果有12秒的冷却时间。",
         "iconFile": "Malzahar_Passive.png",
@@ -126,6 +127,10 @@
         "range": [],
         "rankValues": [],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -136,6 +141,7 @@
         "slot": "Q",
         "id": "MalzaharQ",
         "name": "虚空召唤",
+        "maxRank": 5,
         "summary": "玛尔扎哈开启两扇通向虚空的传送门。在短暂的延迟后，两扇门之间会有虚空能量对流而过，造成魔法伤害并沉默敌方英雄。",
         "bodyHtml": "玛尔扎哈开启两扇通往虚空的传送门，在短暂的延迟后，能量就会从虚空之中喷发，并且在两道传送门之间对流，对击中的敌人造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(70/105/140/175/210 + (55% 法术强度))魔法伤害</span>并使其<span class=\"text-purple-600 dark:text-purple-500\">沉默</span>1/1.25/1.5/1.75/2秒。",
         "iconFile": "MalzaharQ.png",
@@ -192,6 +198,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "TotalDamageTooltip",
+            "kind": "damage",
+            "baseByRank": [
+              70,
+              105,
+              140,
+              175,
+              210
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.550000011920929,
+                  0.550000011920929,
+                  0.550000011920929,
+                  0.550000011920929,
+                  0.550000011920929
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -202,6 +235,7 @@
         "slot": "W",
         "id": "MalzaharW",
         "name": "虚空虫群",
+        "maxRank": 5,
         "summary": "玛尔扎哈召唤虚灵去攻击附近的敌人。",
         "bodyHtml": "<span class=\"text-gray-600 dark:text-gray-500 italic\">被动：</span>玛尔扎哈的其它技能在施放时会为他提供一层效果(最多可叠到2层)。<br /><br /><span class=\"text-gray-900 dark:text-white font-semibold\">主动：</span>玛尔扎哈召唤一个虚灵，并且每层效果会额外召唤一个虚灵。虚灵持续8/8/9/9/10秒并且每次命中造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(12/14/16/18/20 + (40% 额外攻击力) + (20% 法术强度))魔法伤害</span>。<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">虚灵对中了<span>煞星幻象</span>的线上小兵造成300%伤害。<br />虚灵对史诗级野怪造成50%伤害。</span>",
         "iconFile": "MalzaharW.png",
@@ -258,6 +292,12 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "unsupported",
+          "unsupportedPartTypes": [
+            "ByCharLevelInterpolationCalculationPart"
+          ]
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -268,6 +308,7 @@
         "slot": "E",
         "id": "MalzaharE",
         "name": "煞星幻象",
+        "maxRank": 5,
         "summary": "玛尔扎哈将目标的惨死幻象侵入目标的意识中，造成持续伤害。玛尔扎哈对目标使用其它技能时会刷新幻象的持续时间。<br><br>如果目标在感染幻象期间死亡，那么幻象会传到附近的一个敌人身上，并且玛尔扎哈会回复法力值。玛尔扎哈的虚灵会优先攻击感染了幻象的单位。",
         "bodyHtml": "玛尔扎哈给目标造成可怕的幻象，在4秒里对一名敌人持续造成共<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(80/115/150/185/220 + (80% 法术强度))魔法伤害</span>。在此期间，对目标使用<span>虚空召唤</span>或<span>冥府之握</span>会刷新幻象的持续时间。<br /><br />如果目标被击杀，玛尔扎哈会获得<span>(2% 法力值)法力</span>并且幻象会传播给相距最近的敌人。<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">煞星幻象会处决低于10生命值的小兵。</span>",
         "iconFile": "MalzaharE.png",
@@ -324,6 +365,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "TotalDamage",
+            "kind": "damage",
+            "baseByRank": [
+              80,
+              115,
+              150,
+              185,
+              220
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.800000011920929,
+                  0.800000011920929,
+                  0.800000011920929,
+                  0.800000011920929,
+                  0.800000011920929
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -334,6 +402,7 @@
         "slot": "R",
         "id": "MalzaharR",
         "name": "冥府之握",
+        "maxRank": 3,
         "summary": "玛尔扎哈引导虚空的精萃来把一名敌方英雄压制在一个充满伤害的负能量地带上。",
         "bodyHtml": "玛尔扎哈<span class=\"text-purple-600 dark:text-purple-500\">压制</span>一名敌方英雄并在2.5秒里持续造成共<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(125/200/275 + (80% 法术强度))魔法伤害</span>。一个负能量地带会在他目标周围生成，在5秒里持续造成共<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(10/15/20% + (0.025% 法术强度))最大生命值的魔法伤害</span>。<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">这个技能会使敌人<span class=\"text-purple-600 dark:text-purple-500\">中断位移</span>。</span>",
         "iconFile": "MalzaharR.png",
@@ -384,6 +453,29 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "TotalDamageTooltip",
+            "kind": "damage",
+            "baseByRank": [
+              125,
+              200,
+              275
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.800000011920929,
+                  0.800000011920929,
+                  0.800000011920929
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {

@@ -120,6 +120,7 @@
         "slot": "P",
         "id": "UrgotPassive",
         "name": "화염의 메아리",
+        "maxRank": 0,
         "summary": "우르곳은 기본 공격과 심판의 원으로 다리에서 불꽃을 발사해 물리 피해를 입힙니다.",
         "bodyHtml": "우르곳은 6개의 다리에 대포가 하나씩 달려 있습니다. 기본 공격과 <span></span> 스킬로 대상을 향해 있는 다리 대포를 발사해 <span class=\"text-red-600 dark:text-red-500 font-semibold\"> + 최대 체력의 6%에 해당하는 물리 피해</span>를 입힙니다. 이 효과에는 다리당 2.5초의 재사용 대기시간이 있습니다.",
         "iconFile": "Urgot_Passive.png",
@@ -127,6 +128,10 @@
         "range": [],
         "rankValues": [],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -137,6 +142,7 @@
         "slot": "Q",
         "id": "UrgotQ",
         "name": "부식성 폭약",
+        "maxRank": 5,
         "summary": "부식성 폭약을 지정한 위치에 발사하여 물리 피해를 입히고 적중당한 적을 둔화시킵니다.",
         "bodyHtml": "우르곳이 부식성 폭약을 발사하여 <span class=\"text-red-600 dark:text-red-500 font-semibold\">(25/70/115/160/205 + (70% 공격력))의 물리 피해</span>를 입히고 1.25초 동안 45/50/55/60/65% <span class=\"text-purple-600 dark:text-purple-500\">둔화</span>시킵니다.",
         "iconFile": "UrgotQ.png",
@@ -193,6 +199,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "TotalDamage",
+            "kind": "damage",
+            "baseByRank": [
+              25,
+              70,
+              115,
+              160,
+              205
+            ],
+            "terms": [
+              {
+                "stat": "totalAttackDamage",
+                "coefficientsByRank": [
+                  0.699999988079071,
+                  0.699999988079071,
+                  0.699999988079071,
+                  0.699999988079071,
+                  0.699999988079071
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -203,6 +236,7 @@
         "slot": "W",
         "id": "UrgotW",
         "name": "심판의 원",
+        "maxRank": 5,
         "summary": "우르곳이 둔화된 상태로 주변 적을 사격합니다. 우르곳은 최근 다른 스킬을 적중시킨 적 챔피언을 우선 공격하며, 화염의 메아리를 발동시킬 수 있습니다.",
         "bodyHtml": "<span class=\"text-gray-600 dark:text-gray-500 italic\">기본 지속 효과:</span> 우르곳의 다른 스킬이 마지막으로 적중한 챔피언에게 5초 동안 표식을 남깁니다.<br /><br /><span class=\"text-gray-900 dark:text-white font-semibold\">사용 시:</span> 우르곳이 표식이 남은 적을 우선으로 가장 가까운 적에게 기관총을 발사합니다. 초당 3회 공격하여 사격 1회당 <span class=\"text-red-600 dark:text-red-500 font-semibold\">(12 + (20/23.5/27/30.5/34% 공격력))의 물리 피해</span>를 입힙니다. 우르곳은 사격 시 이동할 수 있으며 <span class=\"text-purple-600 dark:text-purple-500\">둔화</span> 저항이 40% 증가하지만 <span class=\"text-cyan-600 dark:text-cyan-500\">이동 속도가 125</span> 감소합니다.<br /><br />스킬 레벨을 끝까지 올리면 스킬이 무한히 지속되며 활성화 상태를 <span>전환</span>할 수 있습니다.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">사격의 적중 시 효과는 피해량의 50%로 적용되며 치명타는 적용되지 않습니다.<br />미니언과 정글 몬스터에게는 최소 50의 피해를 입힙니다.<br />우르곳은 사격 시 에픽 몬스터를 제외한 정글 몬스터 및 미니언을 통과할 수 있습니다.</span>",
         "iconFile": "UrgotW.png",
@@ -259,6 +293,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "DamagePerShot",
+            "kind": "damage",
+            "baseByRank": [
+              12,
+              12,
+              12,
+              12,
+              12
+            ],
+            "terms": [
+              {
+                "stat": "totalAttackDamage",
+                "coefficientsByRank": [
+                  0.20000000298023224,
+                  0.23499999940395355,
+                  0.27000001072883606,
+                  0.3050000071525574,
+                  0.3400000035762787
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -269,6 +330,7 @@
         "slot": "E",
         "id": "UrgotE",
         "name": "경멸",
+        "maxRank": 5,
         "summary": "우르곳이 한 방향으로 돌진하며 자신에게 보호막을 씌우고 챔피언이 아닌 대상을 밀어냅니다. 적 챔피언과 충돌하면 우르곳이 멈추고 적 챔피언을 자신의 뒤로 던집니다.",
         "bodyHtml": "우르곳이 전방으로 돌진하며 4초 동안 <span class=\"text-blue-600 dark:text-blue-300\">(55/75/95/115/135 + (135% 추가 공격력) + (13.5% 추가 체력))의 피해를 흡수하는 보호막</span>을 얻습니다. 처음 적중한 챔피언은 1.5초 동안 <span class=\"text-purple-600 dark:text-purple-500\">기절</span>하며 우르곳이 뒤로 던집니다. 우르곳과 충돌하는 모든 적은 <span class=\"text-red-600 dark:text-red-500 font-semibold\">(90/120/150/180/210 + (100% 추가 공격력))의 물리 피해</span>를 입습니다.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">지형은 가로지를 수 없습니다.</span>",
         "iconFile": "UrgotE.png",
@@ -329,6 +391,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "EDamage",
+            "kind": "damage",
+            "baseByRank": [
+              90,
+              120,
+              150,
+              180,
+              210
+            ],
+            "terms": [
+              {
+                "stat": "bonusAttackDamage",
+                "coefficientsByRank": [
+                  1,
+                  1,
+                  1,
+                  1,
+                  1
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -339,6 +428,7 @@
         "slot": "R",
         "id": "UrgotR",
         "name": "불사의 공포",
+        "maxRank": 3,
         "summary": "우르곳이 마공학 송곳 섬광탄을 발사하여 섬광탄이 처음 적중한 적 챔피언에게 꽂힙니다. 해당 챔피언의 체력이 일정 수준 이하로 떨어지면 우르곳이 그를 약자라고 판단하여 처형할 수 있습니다.",
         "bodyHtml": "우르곳이 마공학 송곳 섬광탄을 발사하여 섬광탄이 처음 적중한 챔피언에게 꽂힙니다. 섬광탄은 <span class=\"text-red-600 dark:text-red-500 font-semibold\">(100/225/350 + (50% 추가 공격력))의 물리 피해</span>를 입히며, 4초 동안 잃은 체력 1%당 1%씩 최대 75% <span class=\"text-purple-600 dark:text-purple-500\">둔화</span>시킵니다.<br /><br />대상의 체력이 25% 이하로 떨어지면 우르곳이 스킬을 <span class=\"text-yellow-600 dark:text-yellow-300\">재사용</span>하여 대상을 <span class=\"text-purple-600 dark:text-purple-500\">제압</span>하고 자신에게 끌어당깁니다. 우르곳 앞에 도착한 대상은 처치되며 주변 적은 1.5초 동안 <span class=\"text-purple-600 dark:text-purple-500\">공포</span>에 빠집니다.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">이 스킬은 대상의 체력이 처형의 기준치 아래로 떨어지면 지속시간이 끝날 때 자동으로 <span class=\"text-yellow-600 dark:text-yellow-300\">재사용</span>됩니다.</span>",
         "iconFile": "UrgotR.png",
@@ -385,6 +475,29 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "RCalculatedDamage",
+            "kind": "damage",
+            "baseByRank": [
+              100,
+              225,
+              350
+            ],
+            "terms": [
+              {
+                "stat": "bonusAttackDamage",
+                "coefficientsByRank": [
+                  0.5,
+                  0.5,
+                  0.5
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {

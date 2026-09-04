@@ -120,6 +120,7 @@
         "slot": "P",
         "id": "LeblancP",
         "name": "Mirror Image",
+        "maxRank": 0,
         "summary": "When LeBlanc drops below 40% Health, she becomes invisible for 1 second and creates a Mirror Image that deals no damage and lasts for up to 8 seconds.",
         "bodyHtml": "When LeBlanc drops below 40% Health, she becomes <span class=\"text-purple-600 dark:text-purple-400 font-semibold\">Invisible</span> for 1 second and creates a harmless clone for 8 seconds. LeBlanc can move the clone with the \"Alt\" key.",
         "iconFile": "LeblancP.png",
@@ -127,6 +128,10 @@
         "range": [],
         "rankValues": [],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -137,6 +142,7 @@
         "slot": "Q",
         "id": "LeblancQ",
         "name": "Sigil of Malice",
+        "maxRank": 5,
         "summary": "LeBlanc projects a sigil, dealing damage and marking the target for 3.5 seconds. Damaging the marked target with an ability detonates the sigil, dealing additional damage. If either part kills the target, Leblanc refunds the Mana cost and part of this spell's remaining Cooldown.",
         "bodyHtml": "LeBlanc projects a sigil to an enemy, dealing <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(65/90/115/140/165 + (40% Ability Power)) magic damage</span> and marking them for 3.5 seconds.<br /><br />Damaging the marked enemy with an Ability detonates the sigil, dealing <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(65/90/115/140/165 + (40% Ability Power)) magic damage</span>.<br /><br />If either part kills the target, Leblanc refunds 100% of the Mana cost and 30% of this spell's remaining Cooldown.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">The initial sigil deals an additional 10 damage to minions. </span>",
         "iconFile": "LeblancQ.png",
@@ -189,6 +195,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "Damage",
+            "kind": "damage",
+            "baseByRank": [
+              65,
+              90,
+              115,
+              140,
+              165
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.4000000059604645,
+                  0.4000000059604645,
+                  0.4000000059604645,
+                  0.4000000059604645,
+                  0.4000000059604645
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -199,6 +232,7 @@
         "slot": "W",
         "id": "LeblancW",
         "name": "Distortion",
+        "maxRank": 5,
         "summary": "LeBlanc dashes to a location, dealing damage to enemies near her destination. For the next 4 seconds, activate Distortion again to return LeBlanc to her starting location.",
         "bodyHtml": "LeBlanc dashes then deals <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(75/115/155/195/235 + (90% Ability Power)) magic damage</span> to nearby enemies. For 4 seconds after dashing, LeBlanc can <span class=\"text-yellow-600 dark:text-yellow-300\">Recast</span>.<br /><br /><span class=\"text-yellow-600 dark:text-yellow-300\">Recast:</span> LeBlanc returns to her starting location.",
         "iconFile": "LeblancW.png",
@@ -255,6 +289,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "TotalDamage",
+            "kind": "damage",
+            "baseByRank": [
+              75,
+              115,
+              155,
+              195,
+              235
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.8999999761581421,
+                  0.8999999761581421,
+                  0.8999999761581421,
+                  0.8999999761581421,
+                  0.8999999761581421
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -265,6 +326,7 @@
         "slot": "E",
         "id": "LeblancE",
         "name": "Ethereal Chains",
+        "maxRank": 5,
         "summary": "LeBlanc launches a chain that shackles the first enemy hit. If the target remains shackled for 1.5 seconds, LeBlanc roots them and deals additional damage.",
         "bodyHtml": "LeBlanc launches a chain that shackles the first enemy hit, dealing <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(50/70/90/110/130 + (40% Ability Power)) magic damage</span> and granting <span class=\"text-purple-600 dark:text-purple-400 font-semibold\">True Sight</span>.<br /><br />If they remain shackled for 1.5 seconds, LeBlanc <span class=\"text-purple-600 dark:text-purple-500\">Roots</span> them for 1.5 seconds and deals an additional <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(80/120/160/200/240 + (85% Ability Power)) magic damage</span>.",
         "iconFile": "LeblancE.png",
@@ -321,6 +383,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "DelayedDamage",
+            "kind": "damage",
+            "baseByRank": [
+              80,
+              120,
+              160,
+              200,
+              240
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.8500000238418579,
+                  0.8500000238418579,
+                  0.8500000238418579,
+                  0.8500000238418579,
+                  0.8500000238418579
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -331,6 +420,7 @@
         "slot": "R",
         "id": "LeblancR",
         "name": "Mimic",
+        "maxRank": 3,
         "summary": "LeBlanc casts a mimicked version of one of her basic spells.",
         "bodyHtml": "LeBlanc mimics her most recent Ability, using it again. The mimicked Ability deals increased damage.<br /><br /><span>Mimicked Sigil of Malice</span> deals <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(70/150/230 + (40% Ability Power)) magic damage</span> when applied, and <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(140/300/460 + (80% Ability Power)) magic damage</span> when consumed.<br /><span>Mimicked Distortion</span> deals <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(150/315/480 + (90% Ability Power)) magic damage</span>.<br /><span>Mimicked Ethereal Chains</span> deals <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(70/150/230 + (40% Ability Power)) magic damage</span> when shackled and <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(140/300/460 + (85% Ability Power)) magic damage</span> when <span class=\"text-purple-600 dark:text-purple-500\">Rooting</span>.",
         "iconFile": "LeblancR.png",
@@ -383,6 +473,29 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "RE1Damage",
+            "kind": "damage",
+            "baseByRank": [
+              70,
+              150,
+              230
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.4000000059604645,
+                  0.4000000059604645,
+                  0.4000000059604645
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {

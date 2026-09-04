@@ -120,6 +120,7 @@
         "slot": "P",
         "id": "ManaBarrierIcon",
         "name": "法力屏障",
+        "maxRank": 0,
         "summary": "布里茨在血量过低时会获得一层基于它法力值的护盾。",
         "bodyHtml": "当布里茨跌到30%生命值以下时，它会获得持续10秒的<span class=\"text-blue-600 dark:text-blue-300\">(35% 法力值)护盾值</span>。",
         "iconFile": "Blitzcrank_ManaBarrier.png",
@@ -127,6 +128,10 @@
         "range": [],
         "rankValues": [],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -137,6 +142,7 @@
         "slot": "Q",
         "id": "RocketGrab",
         "name": "机械飞爪",
+        "maxRank": 5,
         "summary": "布里茨发射它的右手，来抓取碰到的第一个敌人，在对敌人造成伤害的同时，还会将这名敌人拉到它的面前。",
         "bodyHtml": "布里茨射出它的右拳，将命中的第一个敌人<span class=\"text-purple-600 dark:text-purple-500\">拉拽</span>向它并造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(110/160/210/260/310 + (120% 法术强度))魔法伤害</span>。",
         "iconFile": "RocketGrab.png",
@@ -189,6 +195,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "TotalDamage",
+            "kind": "damage",
+            "baseByRank": [
+              110,
+              160,
+              210,
+              260,
+              310
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  1.2000000476837158,
+                  1.2000000476837158,
+                  1.2000000476837158,
+                  1.2000000476837158,
+                  1.2000000476837158
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -199,6 +232,7 @@
         "slot": "W",
         "id": "Overdrive",
         "name": "过载运转",
+        "maxRank": 5,
         "summary": "布里茨对自己进行了超级充电，它的攻击速度和移动速度得到了显著提升。它会在效果结束后暂时减速。",
         "bodyHtml": "布里茨进行超级充能，获得<span class=\"text-cyan-600 dark:text-cyan-500\">持续衰减的60/65/70/75/80%移动速度</span>和<span>30/40/50/60/70%攻击速度</span>，持续5秒。<br /><br />持续期间过后，布里茨会<span class=\"text-purple-600 dark:text-purple-500\">减速</span>30%，持续1.5秒。<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">移动速度会在2.5秒里持续衰减至10%</span>",
         "iconFile": "Overdrive.png",
@@ -251,6 +285,10 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -261,6 +299,7 @@
         "slot": "E",
         "id": "PowerFist",
         "name": "能量铁拳",
+        "maxRank": 5,
         "summary": "布里茨为机械手臂充能，下次攻击造成双倍伤害并击飞目标。",
         "bodyHtml": "布里茨给它的拳头充能，使它的下次攻击可以<span class=\"text-purple-600 dark:text-purple-500\">击飞</span>1秒并造成<span class=\"text-red-600 dark:text-red-500 font-semibold\">((200% 攻击力) + (25% 法术强度))物理伤害</span>。",
         "iconFile": "PowerFist.png",
@@ -309,6 +348,43 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "TotalDamage",
+            "kind": "damage",
+            "baseByRank": [
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "terms": [
+              {
+                "stat": "totalAttackDamage",
+                "coefficientsByRank": [
+                  2,
+                  2,
+                  2,
+                  2,
+                  2
+                ]
+              },
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.25,
+                  0.25,
+                  0.25,
+                  0.25,
+                  0.25
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -319,6 +395,7 @@
         "slot": "R",
         "id": "StaticField",
         "name": "静电力场",
+        "maxRank": 3,
         "summary": "被布里茨攻击过的敌人会被标记并在1秒后受到闪电伤害。此外，布里茨可以主动激活这个技能来移除附近敌人们的护盾、对他们造成伤害并暂时沉默他们。",
         "bodyHtml": "<span class=\"text-gray-600 dark:text-gray-500 italic\">被动：</span>在这个技能可以使用时，闪电会充盈着布里茨的双拳，标记它攻击的敌人。在1秒后，被标记的敌人会被震击，受到<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(50/100/150 + (30/40/50% 法术强度) + (2% 法力值))魔法伤害</span>。<br /><br /><span class=\"text-gray-900 dark:text-white font-semibold\">主动：</span>布里茨进行过度充能，对附近的敌人造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(275/400/525 + (100% 法术强度))魔法伤害</span>和0.5秒<span class=\"text-purple-600 dark:text-purple-500\">沉默</span>效果。敌人的护盾也会被摧毁。<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">不会打破野怪身上的护盾。</span>",
         "iconFile": "StaticField.png",
@@ -373,6 +450,29 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "ActiveDamage",
+            "kind": "damage",
+            "baseByRank": [
+              275,
+              400,
+              525
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  1,
+                  1,
+                  1
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {

@@ -120,6 +120,7 @@
         "slot": "P",
         "id": "VolibearP",
         "name": "狂雷渐起",
+        "maxRank": 0,
         "summary": "沃利贝尔的攻击和技能会提供攻击速度，并且最终使他的攻击对附近的敌人们造成额外魔法伤害。",
         "bodyHtml": "沃利贝尔在每次用攻击或技能造成伤害时都会获得<span>(5% + (0.03% 法术强度))攻击速度</span>，持续6秒，至多可叠加5层。<br /><br />叠满5层时，沃利贝尔的双爪会激荡闪电，使他的攻击对目标和相距最近的4名敌人造成额外的<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(11 + (45% 法术强度))魔法伤害</span>。",
         "iconFile": "Volibear_Icon_P.png",
@@ -127,6 +128,10 @@
         "range": [],
         "rankValues": [],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -137,6 +142,7 @@
         "slot": "Q",
         "id": "VolibearQ",
         "name": "擂首一击",
+        "maxRank": 5,
         "summary": "沃利贝尔在朝着敌人时会获得移动速度，并且会对他攻击的第一个敌人造成<status>晕眩</status>和伤害。",
         "bodyHtml": "沃利贝尔获得<span class=\"text-cyan-600 dark:text-cyan-500\">12/15.5/19/22.5/26%移动速度</span>，在朝着敌方英雄时翻倍至<span class=\"text-cyan-600 dark:text-cyan-500\">24/31/38/45/52%</span>，持续4秒。在激活时，沃利贝尔的下次攻击会造成<span class=\"text-red-600 dark:text-red-500 font-semibold\">(10/20/30/40/50 + (100% 攻击力) + (160% 额外攻击力))物理伤害</span>并使目标<span class=\"text-purple-600 dark:text-purple-500\">晕眩</span>1秒。<br /><br />如果在沃利贝尔对一个目标造成<span class=\"text-purple-600 dark:text-purple-500\">晕眩</span>效果前被敌人<span class=\"text-purple-600 dark:text-purple-500\">定身</span>的话，那么他会因发怒而提前结束这个技能但刷新它的冷却时间。<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">沃利贝尔的这次攻击获得25攻击距离。</span>",
         "iconFile": "VolibearQ.png",
@@ -193,6 +199,43 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "CalculatedDamage",
+            "kind": "damage",
+            "baseByRank": [
+              10,
+              20,
+              30,
+              40,
+              50
+            ],
+            "terms": [
+              {
+                "stat": "totalAttackDamage",
+                "coefficientsByRank": [
+                  1,
+                  1,
+                  1,
+                  1,
+                  1
+                ]
+              },
+              {
+                "stat": "bonusAttackDamage",
+                "coefficientsByRank": [
+                  1.600000023841858,
+                  1.600000023841858,
+                  1.600000023841858,
+                  1.600000023841858,
+                  1.600000023841858
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -203,6 +246,7 @@
         "slot": "W",
         "id": "VolibearW",
         "name": "暴怒撕咬",
+        "maxRank": 5,
         "summary": "沃利贝尔伤害一名敌人，施加攻击特效并将其标记。对相同目标再次施放这个技能，会造成额外伤害并治疗沃利贝尔。",
         "bodyHtml": "沃利贝尔猛拍一名敌人，造成<span class=\"text-red-600 dark:text-red-500 font-semibold\">(5/30/55/80/105 + (110% 攻击力) + (6% 额外生命值))物理伤害</span>，并标记目标8秒。<br /><br />如果这个技能施放在一个被标记的目标身上，那么这个技能的伤害会提升至<span class=\"text-red-600 dark:text-red-500 font-semibold\">(5/30/55/80/105 + (110% 攻击力) + (6% 额外生命值))</span>，并且沃利贝尔会回复<span class=\"text-green-600 dark:text-green-400\">20/35/50/65/80生命值+他8/11/14/17/20%的已损失生命值</span>。<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">强化版伤害受益于 (伤害乘数：150% + 25%)<br />这个技能可施加攻击特效。对抗小兵的治疗效果为50%效能。</span><br />",
         "iconFile": "VolibearW.png",
@@ -263,6 +307,43 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "TotalDamage",
+            "kind": "damage",
+            "baseByRank": [
+              5,
+              30,
+              55,
+              80,
+              105
+            ],
+            "terms": [
+              {
+                "stat": "totalAttackDamage",
+                "coefficientsByRank": [
+                  1.100000023841858,
+                  1.100000023841858,
+                  1.100000023841858,
+                  1.100000023841858,
+                  1.100000023841858
+                ]
+              },
+              {
+                "stat": "bonusHealth",
+                "coefficientsByRank": [
+                  0.05999999865889549,
+                  0.05999999865889549,
+                  0.05999999865889549,
+                  0.05999999865889549,
+                  0.05999999865889549
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -273,6 +354,7 @@
         "slot": "E",
         "id": "VolibearE",
         "name": "霹天雳地",
+        "maxRank": 5,
         "summary": "沃利贝尔在目标区域召唤一道闪电箭，对其中的敌人造成魔法伤害和减速效果，并且如果沃利贝尔在闪电落点区域内，他还会获得一层护盾。",
         "bodyHtml": "沃利贝尔在目标区域召唤一道闪电箭，造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(80/110/140/170/200 + (70% 法术强度))加上11/12/13/14/15%最大生命值的魔法伤害</span>并使敌人<span class=\"text-purple-600 dark:text-purple-500\">减速</span>40%，持续2秒。<br /><br />如果沃利贝尔在闪电落点区域内，他还会获得一层<span class=\"text-blue-600 dark:text-blue-300\">(75% 法术强度)加上14%最大生命值的护盾</span>，持续3秒。<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">对抗非英雄单位的伤害封顶值为<span>(150/265/380/495/610 + (70% 法术强度))</span>。</span>",
         "iconFile": "VolibearE.png",
@@ -329,6 +411,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "CalculatedDamage",
+            "kind": "damage",
+            "baseByRank": [
+              80,
+              110,
+              140,
+              170,
+              200
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.699999988079071,
+                  0.699999988079071,
+                  0.699999988079071,
+                  0.699999988079071,
+                  0.699999988079071
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -339,6 +448,7 @@
         "slot": "R",
         "id": "VolibearR",
         "name": "天声震落",
+        "maxRank": 3,
         "summary": "沃利贝尔跃向一个目标区域，对他身下的敌人们造成伤害和减速效果，同时获得额外生命值。在他着陆时，附近的敌方防御塔也会暂时失效。",
         "bodyHtml": "沃利贝尔变换形态并跃向一个目标区域，获得<span class=\"text-green-600 dark:text-green-400\">175/350/525生命值</span>和50攻击距离，持续12秒。<br /><br />在着陆时，附近的敌方防御塔会<span class=\"text-purple-600 dark:text-purple-500\">失效</span>2/3/4秒，并受到<span class=\"text-red-600 dark:text-red-500 font-semibold\">(300/500/700 + (125% 法术强度) + (250% 额外攻击力))物理伤害</span>。附近的敌人会被<span class=\"text-purple-600 dark:text-purple-500\">减速</span>50%，减速效果会在1秒里持续衰减。被沃利贝尔直接压住的敌人们会受到<span class=\"text-red-600 dark:text-red-500 font-semibold\">(300/500/700 + (125% 法术强度) + (250% 额外攻击力))物理伤害</span>。",
         "iconFile": "VolibearR.png",
@@ -393,6 +503,37 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "SweetSpotDamageTooltip",
+            "kind": "damage",
+            "baseByRank": [
+              300,
+              500,
+              700
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  1.25,
+                  1.25,
+                  1.25
+                ]
+              },
+              {
+                "stat": "bonusAttackDamage",
+                "coefficientsByRank": [
+                  2.5,
+                  2.5,
+                  2.5
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {

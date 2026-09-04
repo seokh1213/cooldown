@@ -119,6 +119,7 @@
         "slot": "P",
         "id": "ZaahenPassive",
         "name": "不落之志",
+        "maxRank": 0,
         "summary": "亚恒对敌方英雄打出的攻击和技能会为他提供【果决】层数，每层获得额外攻击力。当叠满【果决】时，亚恒获得攻击力提升并且能够复活。",
         "bodyHtml": "亚恒在用一次攻击或技能命中一个敌方英雄时，会获得一层<span>果决</span>(最大12层)。他每层获得<span class=\"text-red-600 dark:text-red-500 font-semibold\">攻击力提升</span>。<br /><br />当叠满<span>果决</span>时，亚恒使已提供的<span class=\"text-red-600 dark:text-red-500 font-semibold\">攻击力</span>翻倍，并且如果他即将阵亡，那么他会转而进入持续4秒的凝滞状态然后带着<span class=\"text-green-600 dark:text-green-400\">他的最大生命值</span>复活。<br /><br />亚恒的复活有120秒冷却时间。<br />",
         "iconFile": "ZaahenP.png",
@@ -126,6 +127,10 @@
         "range": [],
         "rankValues": [],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -136,6 +141,7 @@
         "slot": "Q",
         "id": "ZaahenQ",
         "name": "暗裔长刀",
+        "maxRank": 5,
         "summary": "亚恒的下一次攻击进行两次斩击，造成额外伤害并治疗他自身。亚恒可以再次施放这个技能来让他的下一次攻击造成额外伤害并击飞他的目标。<br>",
         "bodyHtml": "亚恒的下一次攻击进行两次斩击，造成 <span class=\"text-red-600 dark:text-red-500 font-semibold\">(15/30/45/60/75 + (20/25/30/35/40% 额外攻击力))额外物理伤害</span>并回复<span class=\"text-green-600 dark:text-green-400\">他的5/6/7/8/9%最大生命值</span>。<br /><br /><span class=\"text-yellow-600 dark:text-yellow-300\">再次施放：</span>亚恒的下一次攻击造成<span class=\"text-red-600 dark:text-red-500 font-semibold\">(25/50/75/100/125 + (20/25/30/35/40% 额外攻击力))额外物理伤害</span>并且将目标<span class=\"text-purple-600 dark:text-purple-500\">击飞</span>0.75秒。<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">对非英雄单位的治疗效果降低至50%。</span><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">对野怪造成额外的100%额外伤害。</span>",
         "iconFile": "ZaahenQ.png",
@@ -200,6 +206,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "InitialDamage",
+            "kind": "damage",
+            "baseByRank": [
+              15,
+              30,
+              45,
+              60,
+              75
+            ],
+            "terms": [
+              {
+                "stat": "bonusAttackDamage",
+                "coefficientsByRank": [
+                  0.20000000298023224,
+                  0.25,
+                  0.30000001192092896,
+                  0.3499999940395355,
+                  0.4000000059604645
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -210,6 +243,7 @@
         "slot": "W",
         "id": "ZaahenW",
         "name": "厄影回锋",
+        "maxRank": 5,
         "summary": "亚恒对一个方向进行戳刺，对命中的敌人们造成伤害，然后将他们拉拽向他。",
         "bodyHtml": "亚恒对一个方向进行戳刺，对命中的敌人们造成<span class=\"text-red-600 dark:text-red-500 font-semibold\">(40/60/80/100/120 + (50% 额外攻击力))物理伤害</span>，然后将他们<span class=\"text-purple-600 dark:text-purple-500\">拉拽</span>向他，造成<span class=\"text-red-600 dark:text-red-500 font-semibold\">(30/50/70/90/110 + (30% 额外攻击力))物理伤害</span>。",
         "iconFile": "ZaahenW.png",
@@ -266,6 +300,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "InitialDamage",
+            "kind": "damage",
+            "baseByRank": [
+              40,
+              60,
+              80,
+              100,
+              120
+            ],
+            "terms": [
+              {
+                "stat": "bonusAttackDamage",
+                "coefficientsByRank": [
+                  0.5,
+                  0.5,
+                  0.5,
+                  0.5,
+                  0.5
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -276,6 +337,7 @@
         "slot": "E",
         "id": "ZaahenE",
         "name": "赤金突袭",
+        "maxRank": 5,
         "summary": "亚恒冲刺至一个位置然后切击他的周围。",
         "bodyHtml": "亚恒冲刺然后切击他的周围，对附近的敌人们造成<span class=\"text-red-600 dark:text-red-500 font-semibold\">(40/60/80/100/120 + (50% 额外攻击力))物理伤害</span>。<br /><br />对切击边缘的敌人们转而造成<span class=\"text-red-600 dark:text-red-500 font-semibold\">(60/90/120/150/180 + (75% 额外攻击力))物理伤害</span> <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">+其4/4.5/5/5.5/6%最大生命值的魔法伤害</span>。<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">对野怪造成额外的<span class=\"text-red-600 dark:text-red-500 font-semibold\">50额外物理伤害</span>。</span><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">对野怪的额外的最大生命值伤害封顶值为400。</span><br />",
         "iconFile": "ZaahenE.png",
@@ -336,6 +398,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "BaseDamageCalc",
+            "kind": "damage",
+            "baseByRank": [
+              40,
+              60,
+              80,
+              100,
+              120
+            ],
+            "terms": [
+              {
+                "stat": "bonusAttackDamage",
+                "coefficientsByRank": [
+                  0.5,
+                  0.5,
+                  0.5,
+                  0.5,
+                  0.5
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -346,6 +435,7 @@
         "slot": "R",
         "id": "ZaahenR",
         "name": "大赦",
+        "maxRank": 3,
         "summary": "亚恒升空然后向下戳刺，对敌人造成伤害并治疗自身相当于一部分该造成伤害值的生命值。",
         "bodyHtml": "<span class=\"text-gray-600 dark:text-gray-500 italic\">被动</span>：亚恒获得<span>10/20/30% 护甲穿透</span>。<br /><br /><span class=\"text-gray-900 dark:text-white font-semibold\">主动</span>：亚恒升空，在施放状态下获得50%伤害减免。<br /><br />随后亚恒向下戳刺，造成<span class=\"text-red-600 dark:text-red-500 font-semibold\">(250/400/550 + (200% 额外攻击力))物理伤害</span>并回复相当于<span class=\"text-green-600 dark:text-green-400\">33%对敌方英雄们造成伤害值的生命值</span>。",
         "iconFile": "ZaahenR.png",
@@ -396,6 +486,29 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "DamageEndCalc",
+            "kind": "damage",
+            "baseByRank": [
+              250,
+              400,
+              550
+            ],
+            "terms": [
+              {
+                "stat": "bonusAttackDamage",
+                "coefficientsByRank": [
+                  2,
+                  2,
+                  2
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {

@@ -119,6 +119,7 @@
         "slot": "P",
         "id": "VeigarPassive",
         "name": "Phenomenal Evil Power",
+        "maxRank": 0,
         "summary": "Veigar is the greatest Evil to ever strike at the hearts of Runeterra - and he's only getting bigger! Striking an enemy Champion with a spell or scoring a takedown grants Veigar permanently increased Ability Power.",
         "bodyHtml": "Veigar's Abilities grant him 1 stack of <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Phenomenal Evil</span> when they strike enemy champions. Takedowns on champions grant an additional 5 stacks.<br /><br />Each stack of <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Phenomenal Evil</span> grants Veigar <span class=\"text-blue-600 dark:text-blue-400\">1 Ability Power</span>.",
         "iconFile": "VeigarEntropy.png",
@@ -126,6 +127,10 @@
         "range": [],
         "rankValues": [],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -136,6 +141,7 @@
         "slot": "Q",
         "id": "VeigarBalefulStrike",
         "name": "Baleful Strike",
+        "maxRank": 5,
         "summary": "Veigar unleashes a bolt of dark energy that deals magic damage to the first two enemies hit. Units killed by this bolt grant Veigar some ability power permanently.",
         "bodyHtml": "Veigar unleashes a bolt of dark energy, dealing <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(80/120/160/200/240 + (50/55/60/65/70% Ability Power)) magic damage</span> to the first two enemies hit.<br /><br />If Veigar kills an enemy with this Ability, he gains stack of <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Phenomenal Evil</span>. Large minions and large monsters grant stacks instead.",
         "iconFile": "VeigarBalefulStrike.png",
@@ -196,6 +202,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "TotalDamage",
+            "kind": "damage",
+            "baseByRank": [
+              80,
+              120,
+              160,
+              200,
+              240
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.5,
+                  0.550000011920929,
+                  0.6000000238418579,
+                  0.6499999761581421,
+                  0.699999988079071
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -209,6 +242,7 @@
         "slot": "W",
         "id": "VeigarDarkMatter",
         "name": "Dark Matter",
+        "maxRank": 5,
         "summary": "Veigar calls a great mass of dark matter to fall from the sky to the target location, dealing magic damage when it lands. Stacks of Phenomenal Evil reduce Dark Matter's cooldown.",
         "bodyHtml": "Veigar summons dark matter from the sky, dealing <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(85/140/195/250/305 + (70/80/90/100/110% Ability Power)) magic damage</span>.<br /><br />Every stacks of <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Phenomenal Evil</span> reduce this Ability's Cooldown by.",
         "iconFile": "VeigarDarkMatter.png",
@@ -265,6 +299,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "TotalDamage",
+            "kind": "damage",
+            "baseByRank": [
+              85,
+              140,
+              195,
+              250,
+              305
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.699999988079071,
+                  0.800000011920929,
+                  0.8999999761581421,
+                  1,
+                  1.100000023841858
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -278,6 +339,7 @@
         "slot": "E",
         "id": "VeigarEventHorizon",
         "name": "Event Horizon",
+        "maxRank": 5,
         "summary": "Veigar twists the edges of space, creating a cage that Stuns enemies that pass through.",
         "bodyHtml": "Veigar twists the edges of space, creating a cage that <span class=\"text-purple-600 dark:text-purple-500\">Stuns</span> enemies that pass through for 1.5/1.75/2/2.25/2.5 seconds. The cage lasts for 3 seconds.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">This Ability <span class=\"text-purple-600 dark:text-purple-500\">Knocks Down</span> enemies.</span>",
         "iconFile": "VeigarEventHorizon.png",
@@ -320,6 +382,10 @@
           }
         ],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -330,6 +396,7 @@
         "slot": "R",
         "id": "VeigarR",
         "name": "Primordial Burst",
+        "maxRank": 3,
         "summary": "Blasts target enemy champion, dealing a large amount of magic damage, increasing based on the target's missing health.",
         "bodyHtml": "Veigar blasts an enemy champion with primal magic to deal between <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(175/250/325 + (65/70/75% Ability Power)) and (350/500/650 + (130/140/150% Ability Power)) magic damage</span>, increasing with the target's missing Health. Damage is maximized against enemies below 33% Health.",
         "iconFile": "VeigarR.png",
@@ -380,6 +447,12 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "unsupported",
+          "unsupportedPartTypes": [
+            "GameCalculationModified"
+          ]
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {

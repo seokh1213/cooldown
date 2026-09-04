@@ -120,6 +120,7 @@
         "slot": "P",
         "id": "RekSaiPassive",
         "name": "제르사이의 분노",
+        "maxRank": 0,
         "summary": "렉사이의 기본 공격과 기본 스킬이 적중할 때마다 분노가 생성됩니다. 생성된 분노는 매복 상태일 때 체력 회복에 사용됩니다.",
         "bodyHtml": "렉사이는 기본 공격 시 <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">25의 분노</span>를, 기본 스킬 사용 시 <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">25의 분노</span>를 생성합니다.<br /><br /><span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">매복 상태</span>에서 렉사이가 <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">분노</span>를 소모해 3초 동안 최대 <span class=\"text-green-600 dark:text-green-400\">의 체력</span>을 회복합니다. 체력 회복량은 레벨에 따라 증가합니다.",
         "iconFile": "RekSai_Passive.png",
@@ -127,6 +128,10 @@
         "range": [],
         "rankValues": [],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -137,6 +142,7 @@
         "slot": "Q",
         "id": "RekSaiQ",
         "name": "여왕의 진노 / 먹잇감 추적",
+        "maxRank": 5,
         "summary": "렉사이의 다음 3번의 기본 공격은 주변 적들에게 추가 물리 피해를 입힙니다.<br><br>매복 상태일 때는 렉사이가 공허 에너지가 주입된 흙을 발사하여, 여기 맞는 적들은 피해를 입고 위치가 드러납니다.",
         "bodyHtml": "<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">돌출 상태:</span> 렉사이가 3초 안에 가하는 3회의 기본 공격이 <span>35%의 공격 속도</span>를 얻고 주변 적들에게 <span class=\"text-red-600 dark:text-red-500 font-semibold\">(30/35/40/45/50% 공격력)의 물리 피해</span>를 추가로 입힙니다. 기본 공격이 이 스킬의 지속시간을 초기화합니다.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">기본 공격 대상에게는 추가 피해량에 치명타가 적용될 수 있습니다.</span>",
         "iconFile": "RekSaiQ.png",
@@ -183,6 +189,43 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "BurrowDamageTooltip",
+            "kind": "damage",
+            "baseByRank": [
+              50,
+              80,
+              110,
+              140,
+              170
+            ],
+            "terms": [
+              {
+                "stat": "bonusAttackDamage",
+                "coefficientsByRank": [
+                  0.25,
+                  0.25,
+                  0.25,
+                  0.25,
+                  0.25
+                ]
+              },
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.699999988079071,
+                  0.699999988079071,
+                  0.699999988079071,
+                  0.699999988079071,
+                  0.699999988079071
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -193,6 +236,7 @@
         "slot": "W",
         "id": "RekSaiW",
         "name": "매복 / 돌출",
+        "maxRank": 5,
         "summary": "렉사이가 지면을 파고들어가 새로운 스킬을 사용하게 되며 이동 속도가 상승합니다. 시야 범위가 좁아지며 기본 공격을 할 수 없게 됩니다.<br><br>매복 상태일 때는 렉사이가 돌출 스킬을 사용하여 튀어 올라, 주위 적들을 공중으로 띄우고 피해를 입힐 수 있습니다.",
         "bodyHtml": "<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">돌출 상태:</span> 렉사이가 땅속으로 매복해 새로운 스킬을 사용할 수 있게 되지만, 기본 공격은 할 수 없는 상태가 됩니다. 이 상태에서 렉사이는 <span class=\"text-cyan-600 dark:text-cyan-500\">5/10/15/20/25의 이동 속도</span>를 얻고 시야 범위가 65% 축소됩니다. 그러나 보이지 않지만 이동하고 있는 근처 적들의 위치를 파악해 자신 및 아군에게 표시합니다.",
         "iconFile": "RekSaiW.png",
@@ -239,6 +283,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "UnburrowDamage",
+            "kind": "damage",
+            "baseByRank": [
+              30,
+              55,
+              80,
+              105,
+              130
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.800000011920929,
+                  0.800000011920929,
+                  0.800000011920929,
+                  0.800000011920929,
+                  0.800000011920929
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -249,6 +320,7 @@
         "slot": "E",
         "id": "RekSaiE",
         "name": "성난 이빨 / 땅굴 파기",
+        "maxRank": 5,
         "summary": "렉사이가 대상을 물어뜯어 물리 피해를 입힙니다. 분노가 최대치일 때는 추가 고정 피해를 입힙니다.<br><br>매복 상태일 때 렉사이가 재사용 가능하며 오래 지속되는 땅굴을 만듭니다. 적이 이 땅굴 입구에 올라서면 파괴됩니다.",
         "bodyHtml": "<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">돌출 상태:</span> 렉사이가 대상을 물어뜯어 <span class=\"text-red-600 dark:text-red-500 font-semibold\">의 물리 피해</span>를 입힙니다. <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">분노</span>가 최대치일 경우 대신 <span class=\"text-yellow-600 dark:text-yellow-500 font-semibold\">의 고정 피해</span>를 입힙니다.",
         "iconFile": "RekSaiE.png",
@@ -299,6 +371,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "BaseDamageCalculation",
+            "kind": "damage",
+            "baseByRank": [
+              70,
+              95,
+              120,
+              145,
+              170
+            ],
+            "terms": [
+              {
+                "stat": "bonusAttackDamage",
+                "coefficientsByRank": [
+                  0.6000000238418579,
+                  0.6000000238418579,
+                  0.6000000238418579,
+                  0.6000000238418579,
+                  0.6000000238418579
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -312,6 +411,7 @@
         "slot": "R",
         "id": "RekSaiR",
         "name": "공허의 돌진",
+        "maxRank": 3,
         "summary": "기본 지속 효과로 렉사이가 피해를 입힌 대상에게 표식을 남깁니다. 스킬을 사용하면 잠시 대상으로 지정될 수 없는 상태가 되며, 표식이 있는 대상에게 도약하여 최대 체력에 비례해 큰 피해를 입힙니다.",
         "bodyHtml": "렉사이가 5초 내에 피해를 입힌 적을 표적으로 삼은 후, 땅속으로 들어가 대상으로 지정할 수 없는 상태가 됩니다. 잠시 후, 대상에게 도약해 <span class=\"text-red-600 dark:text-red-500 font-semibold\">(150/250/350 + (100% 추가 공격력)) + 최대 체력의 15/20/25%에 해당하는 물리 피해</span>를 입히고 <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">매복 / 돌출</span>의 재사용 대기시간이 초기화됩니다. 도약 중인 렉사이는 멈출 수 없습니다.",
         "iconFile": "RekSaiR.png",
@@ -354,6 +454,29 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "RBaseDamageCalc",
+            "kind": "damage",
+            "baseByRank": [
+              150,
+              250,
+              350
+            ],
+            "terms": [
+              {
+                "stat": "bonusAttackDamage",
+                "coefficientsByRank": [
+                  1,
+                  1,
+                  1
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {

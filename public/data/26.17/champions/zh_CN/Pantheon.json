@@ -120,6 +120,7 @@
         "slot": "P",
         "id": "PantheonPassive",
         "name": "矢志不退",
+        "maxRank": 0,
         "summary": "在数次技能或攻击后，潘森的下一个技能会得到强化。",
         "bodyHtml": "在使用5次技能或攻击后，潘森会强化他的下一个基础技能。",
         "iconFile": "Pantheon_Passive.png",
@@ -127,6 +128,10 @@
         "range": [],
         "rankValues": [],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -137,6 +142,7 @@
         "slot": "Q",
         "id": "PantheonQ",
         "name": "贯星长枪",
+        "maxRank": 5,
         "summary": "潘森朝着选定方向刺出或投掷他的长枪。",
         "bodyHtml": "<span style=\"color: #FF8C00\">秒放：</span>潘森刺出他的长枪，对命中的敌人们造成<span class=\"text-red-600 dark:text-red-500 font-semibold\">(70/100/130/160/190 + (115% 额外攻击力))物理伤害</span>。返还这个技能60%的冷却时间。<br /><br /><span style=\"color: #FF8C00\">蓄力：</span>潘森挥出他的长枪，对命中的首个敌人造成<span class=\"text-red-600 dark:text-red-500 font-semibold\">(70/100/130/160/190 + (115% 额外攻击力) + (50% 法术强度))物理伤害</span>并对后续目标造成的伤害减少50%。<br /><br />这个技能在对抗低于20%生命值的敌人时会获得强化，造成<span class=\"text-red-600 dark:text-red-500 font-semibold\">(230% 额外攻击力)物理伤害</span>作为替代。<br /><br /><span style=\"color: #EDDA74\">矢志不退加成：</span>造成额外的<span class=\"text-red-600 dark:text-red-500 font-semibold\">(115% 额外攻击力)物理伤害</span>。<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">对野怪造成80%伤害。</span><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">对小兵造成70%伤害。</span>",
         "iconFile": "PantheonQ.png",
@@ -193,6 +199,12 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "unsupported",
+          "unsupportedPartTypes": [
+            "ByCharLevelInterpolationCalculationPart"
+          ]
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -203,6 +215,7 @@
         "slot": "W",
         "id": "PantheonW",
         "name": "斗盾跃击",
+        "maxRank": 5,
         "summary": "潘森跃向一个目标，对其造成伤害和晕眩。",
         "bodyHtml": "潘森跃向他的目标，<span class=\"text-purple-600 dark:text-purple-500\">晕眩</span>1秒并造成<span class=\"text-red-600 dark:text-red-500 font-semibold\">(6/6.5/7/7.5/8% + (0.004% 额外生命值) + (0.015% 法术强度))最大生命值物理伤害</span>。<br /><br /><span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">矢志不退加成：</span>潘森的下一次攻击会打击3次，总共造成<span class=\"text-red-600 dark:text-red-500 font-semibold\">物理伤害</span>。<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">对小兵和野怪的最小伤害为60，最大伤害为150。</span>",
         "iconFile": "PantheonW.png",
@@ -255,6 +268,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "DamageCalc",
+            "kind": "damage",
+            "baseByRank": [
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  1,
+                  1,
+                  1,
+                  1,
+                  1
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -267,6 +307,7 @@
         "slot": "E",
         "id": "PantheonE",
         "name": "神佑枪阵",
+        "maxRank": 5,
         "summary": "潘森架起他的圣盾，变得免疫来自前方的伤害，并快速地用他的长枪戳刺。",
         "bodyHtml": "潘森架起他的圣盾并与选定方向上的敌人交战1.5秒，变得免疫来自所选方向的伤害(防御塔除外)并在持续期间造成<span class=\"text-red-600 dark:text-red-500 font-semibold\">(100% 攻击力)物理伤害</span>。在引导之后，潘森会用他的圣盾进行猛击，造成<span class=\"text-red-600 dark:text-red-500 font-semibold\">(55/105/155/205/255 + (150% 额外攻击力))物理伤害</span>。<br /><br /><span style=\"color: #EDDA74\">矢志不退加成：</span>当潘森猛击他的圣盾时，获得持续4秒的<span class=\"text-orange-600 dark:text-orange-400\">(2.5% 额外生命值)护甲</span>和<span>(2.5% 额外生命值)魔法抗性</span>，以及持续1.5秒的<span class=\"text-cyan-600 dark:text-cyan-500\">60%移动速度</span>。<br /><br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\"><span class=\"text-yellow-600 dark:text-yellow-300\">再次施放</span>以提前结束(潘森仍然会用他的圣盾猛击来作为最后一击)。<br />对小兵的伤害降低50%。</span>",
         "iconFile": "PantheonE.png",
@@ -319,6 +360,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "DamageCalc",
+            "kind": "damage",
+            "baseByRank": [
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "terms": [
+              {
+                "stat": "totalAttackDamage",
+                "coefficientsByRank": [
+                  1,
+                  1,
+                  1,
+                  1,
+                  1
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -329,6 +397,7 @@
         "slot": "R",
         "id": "PantheonR",
         "name": "大荒星陨",
+        "maxRank": 3,
         "summary": "潘森屏气凝神然后跃至空中， 随后如流星一般落到选定的位置上。",
         "bodyHtml": "<span class=\"text-gray-600 dark:text-gray-500 italic\">被动：</span>潘森获得10/20/30%护甲穿透。<br /><br /><span class=\"text-gray-900 dark:text-white font-semibold\">主动：</span>潘森聚集他的力量以跃至空中。他会从天上掷出他的长枪，在小范围内造成<span class=\"text-red-600 dark:text-red-500 font-semibold\">物理伤害</span>和持续2秒的50%<span class=\"text-purple-600 dark:text-purple-500\">减速</span>。<br /><br />潘森随后会如陨石一般落向目标区域。对一条直线上的敌人最多造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(300/500/700 + (100% 法术强度))魔法伤害</span>(最多降低至50%伤害，极小值出现于区域的边缘)。<br /><br />这个技能会立刻使<span style=\"color: #EDDA74\">矢志不退</span>准备就绪。",
         "iconFile": "PantheonR.png",
@@ -379,6 +448,29 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "DamageCalc",
+            "kind": "damage",
+            "baseByRank": [
+              300,
+              500,
+              700
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  1,
+                  1,
+                  1
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {

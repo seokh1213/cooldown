@@ -120,6 +120,7 @@
         "slot": "P",
         "id": "YorickPassive",
         "name": "Shepherd of Souls",
+        "maxRank": 0,
         "summary": "<font color='#FF9900'>The Cursed Horde:</font> Yorick can summon Mist Walkers to swarm and attack nearby enemies.",
         "bodyHtml": "Yorick raises a grave for every 2 enemies that die near him. Champions and large monsters always leave a grave.<br /><br />These graves can be used to <span>Awaken</span> <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Mist Walkers</span> with <span class=\"text-green-600 dark:text-green-400\">(15% bonus Health) Health</span> and <span class=\"text-red-600 dark:text-red-500 font-semibold\">(20% bonus Attack Damage) Attack Damage</span>, up to 4 in an area.",
         "iconFile": "Yorick_P.png",
@@ -127,6 +128,10 @@
         "range": [],
         "rankValues": [],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -137,6 +142,7 @@
         "slot": "Q",
         "id": "YorickQ",
         "name": "Last Rites",
+        "maxRank": 5,
         "summary": "Yorick deals bonus damage on his next attack and heals himself. If the target is a champion or large monster or if the target dies, a grave will be dug.",
         "bodyHtml": "Yorick's next Attack deals an additional <span class=\"text-red-600 dark:text-red-500 font-semibold\">(30/50/70/90/110 + (50% Attack Damage)) physical damage</span> and restores <span class=\"text-green-600 dark:text-green-400\">10 plus 6/7/8/9/10% of his missing Health</span>, reduced by 50% against non-Champions. If this Attack hits a Champion or large Monster or kills the target, it leaves a grave.<br /><br />When there are 3 or more graves nearby and this Ability has already been used, Yorick can <span class=\"text-yellow-600 dark:text-yellow-300\">Recast</span> to raise <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Mist Walkers</span> from all nearby graves.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">This Ability triggers spell effects upon dealing damage.</span>",
         "iconFile": "YorickQ.png",
@@ -193,6 +199,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "BonusDamage",
+            "kind": "damage",
+            "baseByRank": [
+              30,
+              50,
+              70,
+              90,
+              110
+            ],
+            "terms": [
+              {
+                "stat": "totalAttackDamage",
+                "coefficientsByRank": [
+                  0.5,
+                  0.5,
+                  0.5,
+                  0.5,
+                  0.5
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -203,6 +236,7 @@
         "slot": "W",
         "id": "YorickW",
         "name": "Dark Procession",
+        "maxRank": 5,
         "summary": "Yorick summons a destructible wall at target location that will block enemy movement.",
         "bodyHtml": "Yorick summons a wall of spirits blocking enemies' path, but not allies'. The wall has <span class=\"text-green-600 dark:text-green-400\">2/2/3/3/4 Health</span> and disappears after 4 seconds.",
         "iconFile": "YorickW.png",
@@ -241,6 +275,10 @@
           }
         ],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -251,6 +289,7 @@
         "slot": "E",
         "id": "YorickE",
         "name": "Mourning Mist",
+        "maxRank": 5,
         "summary": "Yorick throws a globule of Black Mist that reduces armor, damages, slows and marks enemies. Summoned units gain move speed when moving towards marked targets. ",
         "bodyHtml": "Yorick throws a globule of Black Mist that deals <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(6/6.5/7/7.5/8% + (0.03% Ability Power)) max Health magic damage</span>, <span class=\"text-purple-600 dark:text-purple-500\">Slows</span> by 30% for 1.5 seconds and marks champions and monsters for 4 seconds. Marked enemies continuously <span>Awaken</span> nearby graves (but not exceeding the maximum of ) and suffer <span class=\"text-orange-600 dark:text-orange-400\">13/16/19/22/25% reduced Armor</span>.<br /><br />Yorick and his summoned units gain <span class=\"text-cyan-600 dark:text-cyan-500\">18/21/24/27/30% Move Speed</span> toward the mark. <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Mist Walkers</span> will leap once at marked enemies that get away from them.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">Deals a minimum of <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(70/105/140/175/210 + (100% Ability Power)) magic damage</span> to lane Minions.<br />Deals a maximum of <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(50/75/100/125/150 + (100% Ability Power)) magic damage</span> to jungle Monsters.</span>",
         "iconFile": "YorickE.png",
@@ -315,6 +354,12 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "unsupported",
+          "unsupportedPartTypes": [
+            "percent-calculation"
+          ]
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -327,6 +372,7 @@
         "slot": "R",
         "id": "YorickR",
         "name": "Eulogy of the Isles",
+        "maxRank": 3,
         "summary": "Yorick summons the Maiden of the Mist that causes Yorick's attacks against the Maiden's target to deal bonus damage. The Maiden will also automatically raise Walkers from dead enemies.",
         "bodyHtml": "Yorick summons the <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Maiden of the Mist</span> with <span class=\"text-green-600 dark:text-green-400\">(1050 + (60% bonus Health)) Health</span> and <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(50/75/100 + (30% bonus Attack Damage)) Magic Attack Damage</span> plus 2/3/4 <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Mist Walkers</span>. The <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Maiden</span> automatically raises <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Mist Walkers</span> from nearby enemy deaths and marks enemy Champions with her attacks. When Yorick damages the <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Maiden's</span> target, he deals <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">2/2.5/3% max Health magic damage</span>.<br /><br />After 10 seconds, Yorick can <span class=\"text-yellow-600 dark:text-yellow-300\">Recast</span> this Ability to free the <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Maiden</span>, sending her down the nearest lane.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\"><span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Maiden of the Mist</span><br /><span class=\"text-orange-600 dark:text-orange-400\">30 Armor</span><br /><span>30 Magic Resist</span><br />Takes 30% damage from lane minions</span>",
         "iconFile": "YorickR.png",
@@ -381,6 +427,29 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "YorickBigGhoulDamage",
+            "kind": "damage",
+            "baseByRank": [
+              50,
+              75,
+              100
+            ],
+            "terms": [
+              {
+                "stat": "bonusAttackDamage",
+                "coefficientsByRank": [
+                  0.30000001192092896,
+                  0.30000001192092896,
+                  0.30000001192092896
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {

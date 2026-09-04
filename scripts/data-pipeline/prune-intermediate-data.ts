@@ -2,7 +2,7 @@ import * as fs from "node:fs";
 import * as path from "node:path";
 import type { DataLocale } from "../../src/data/contracts/staticData";
 
-export function pruneIntermediateChampionData(
+export function pruneIntermediateData(
   versionDir: string,
   locales: readonly DataLocale[]
 ): number {
@@ -25,6 +25,11 @@ export function pruneIntermediateChampionData(
       fs.unlinkSync(filePath);
       removed += 1;
     }
+  }
+  const spellsDir = path.join(versionDir, "spells");
+  if (fs.existsSync(spellsDir)) {
+    removed += fs.readdirSync(spellsDir).filter((name) => name.endsWith(".json")).length;
+    fs.rmSync(spellsDir, { recursive: true });
   }
   return removed;
 }

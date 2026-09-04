@@ -120,6 +120,7 @@
         "slot": "P",
         "id": "RenektonPredator",
         "name": "Reign of Anger",
+        "maxRank": 0,
         "summary": "Renekton's attacks generate Fury, increased when he is low on life. This Fury can empower his abilities with bonus effects.",
         "bodyHtml": "Renekton gains <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">5 Fury</span> per Attack. While above <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">50 Fury</span>, his next Ability spends it to become empowered. <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Fury</span> decays while out of combat.<br /><br />While below 50% Health, Renekton gains 50% increased <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Fury</span>.",
         "iconFile": "Renekton_Passive.png",
@@ -127,6 +128,10 @@
         "range": [],
         "rankValues": [],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -137,6 +142,7 @@
         "slot": "Q",
         "id": "RenektonCleave",
         "name": "Cull the Meek",
+        "maxRank": 5,
         "summary": "Renekton swings his blade, dealing moderate physical damage to all targets around him, and heals for a small portion of the damage dealt. If he has more than 50 Fury, his damage and heal are increased.",
         "bodyHtml": "Renekton swings his blade, dealing <span class=\"text-red-600 dark:text-red-500 font-semibold\">(60/90/120/150/180 + (100% bonus Attack Damage)) physical damage</span> and restoring <span class=\"text-green-600 dark:text-green-400\">(2/3/4/5/6 + (2% bonus Attack Damage)) Health</span> per non-champion and <span class=\"text-green-600 dark:text-green-400\">(12/20/28/36/44 + (17% bonus Attack Damage))</span> per champion hit. He also generates <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">2.5 Fury</span> per non-champion and <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">10 Fury</span> per champion.<br /><br /><span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Fury Bonus</span>: Damage is increased to <span class=\"text-red-600 dark:text-red-500 font-semibold\">(90/135/180/225/270 + (140% bonus Attack Damage)) physical damage</span> and healing is increased to <span class=\"text-green-600 dark:text-green-400\">(6/9/12/15/18 + (6% bonus Attack Damage)) Health</span> against non-champions and <span class=\"text-green-600 dark:text-green-400\">(36/60/84/108/132 + (51% bonus Attack Damage)) Health</span> against champions. Does not generate any <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Fury</span>.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">Max <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">30 Fury</span> per cast.<br />Restores up to <span class=\"text-green-600 dark:text-green-400\">50/75/100/125/150 Health</span> on basic casts.<br />Restores up to <span class=\"text-green-600 dark:text-green-400\">200/300/400/500/600 Health</span> on empowered casts.</span>",
         "iconFile": "RenektonCleave.png",
@@ -187,6 +193,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "BasicDamage",
+            "kind": "damage",
+            "baseByRank": [
+              60,
+              90,
+              120,
+              150,
+              180
+            ],
+            "terms": [
+              {
+                "stat": "bonusAttackDamage",
+                "coefficientsByRank": [
+                  1,
+                  1,
+                  1,
+                  1,
+                  1
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -197,6 +230,7 @@
         "slot": "W",
         "id": "RenektonPreExecute",
         "name": "Ruthless Predator",
+        "maxRank": 5,
         "summary": "Renekton slashes his target twice, dealing moderate physical damage and stuns them for 0.75 seconds. If Renekton has more than 50 Fury, he slashes his target three times, destroying damage shields on the target, dealing high physical damage, and stunning them for 1.5 seconds.",
         "bodyHtml": "Renekton's next Attack strikes twice, <span class=\"text-purple-600 dark:text-purple-500\">Stunning</span> for 0.75 seconds and dealing a total of <span class=\"text-red-600 dark:text-red-500 font-semibold\">(10/40/70/100/130 + (150% Attack Damage)) physical damage</span>. Hitting a champion generates an additional <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">10 Fury</span>.<br /><br /><span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Fury Bonus</span>: Renekton Attacks 3 times instead, destroying <span class=\"text-blue-600 dark:text-blue-300\">Shields</span> before dealing <span class=\"text-red-600 dark:text-red-500 font-semibold\">(15/60/105/150/195 + (225% Attack Damage)) physical damage</span> and <span class=\"text-purple-600 dark:text-purple-500\">Stunning</span> for 1.5 seconds. Does not generate any <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Fury</span>.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">All Attacks apply On-hit effects separately.</span><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">Does not break shields on monsters.</span>",
         "iconFile": "RenektonPreExecute.png",
@@ -243,6 +277,12 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "unsupported",
+          "unsupportedPartTypes": [
+            "GameCalculationModified"
+          ]
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -253,6 +293,7 @@
         "slot": "E",
         "id": "RenektonSliceAndDice",
         "name": "Slice and Dice",
+        "maxRank": 5,
         "summary": "Renekton dashes, dealing damage to units along the way. Empowered, Renekton deals bonus damage and reduces the Armor of units hit.",
         "bodyHtml": "Renekton dashes, dealing <span class=\"text-red-600 dark:text-red-500 font-semibold\">(40/70/100/130/160 + (90% bonus Attack Damage)) physical damage</span>. He generates <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">2 Fury</span> per non-champion and <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">10 Fury</span> per champion hit. Hitting at least one enemy allows Renekton to <span class=\"text-yellow-600 dark:text-yellow-300\">Recast</span> this Ability once for 4 seconds. <br /><br /><span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Fury Bonus</span>: The <span class=\"text-yellow-600 dark:text-yellow-300\">Recast</span> dash deals <span class=\"text-red-600 dark:text-red-500 font-semibold\">(70/115/160/205/250 + (135% bonus Attack Damage)) physical damage</span> instead and removes <span class=\"text-orange-600 dark:text-orange-400\">25/27.5/30/32.5/35% Armor</span> for 4 seconds. Does not generate <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Fury</span>.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">Max <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">30 Fury</span> per cast.</span>",
         "iconFile": "RenektonSliceAndDice.png",
@@ -303,6 +344,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "BasicDamage",
+            "kind": "damage",
+            "baseByRank": [
+              40,
+              70,
+              100,
+              130,
+              160
+            ],
+            "terms": [
+              {
+                "stat": "bonusAttackDamage",
+                "coefficientsByRank": [
+                  0.8999999761581421,
+                  0.8999999761581421,
+                  0.8999999761581421,
+                  0.8999999761581421,
+                  0.8999999761581421
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -313,6 +381,7 @@
         "slot": "R",
         "id": "RenektonReignOfTheTyrant",
         "name": "Dominus",
+        "maxRank": 3,
         "summary": "Renekton transforms into the Tyrant form, gaining bonus Health and dealing damage to enemies around him. While in this form, Renekton gains Fury periodically.",
         "bodyHtml": "Renekton surrounds himself with dark energies for 15 seconds, gaining <span class=\"text-green-600 dark:text-green-400\">300/500/700 max Health</span> and <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">20 Fury</span>. While active, he deals <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(60/150/240 + (10% Ability Power) + (10% bonus Attack Damage)) magic damage</span> and gains <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">5 Fury</span> per second.",
         "iconFile": "RenektonReignOfTheTyrant.png",
@@ -355,6 +424,37 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "TotalDamagePerSecond",
+            "kind": "damage",
+            "baseByRank": [
+              60,
+              150,
+              240
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.10000000149011612,
+                  0.10000000149011612,
+                  0.10000000149011612
+                ]
+              },
+              {
+                "stat": "bonusAttackDamage",
+                "coefficientsByRank": [
+                  0.10000000149011612,
+                  0.10000000149011612,
+                  0.10000000149011612
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {

@@ -119,6 +119,7 @@
         "slot": "P",
         "id": "BelvethPassive",
         "name": "溶烛化紫 ",
+        "maxRank": 0,
         "summary": "每当卑尔维斯击杀大型小兵和野怪和英雄时，都会获得永久的额外攻速加成。她还会在使用一个技能后获得暂时的攻击速度加成。",
         "bodyHtml": "在使用一个技能后，卑尔维斯会变为幽灵状态并且获得持续3秒的<span>(20% ~ 20%)攻击速度</span>。<br /><br />卑尔维斯在参与击杀大型小兵和野怪后获得<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">1层溶烛化紫</span>，在参与击杀英雄和史诗级野怪后获得<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">2层溶烛化紫</span>。每层都会永久提供<span>攻击速度</span>。<br /><br />总额外<span>攻击速度</span>：<span></span>",
         "iconFile": "Belveth_Passive.png",
@@ -126,6 +127,10 @@
         "range": [],
         "rankValues": [],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -136,6 +141,7 @@
         "slot": "Q",
         "id": "BelvethQ",
         "name": "虚空激流",
+        "maxRank": 5,
         "summary": "卑尔维斯朝选定方向进行突进，对途经的所有敌人造成伤害。",
         "bodyHtml": "卑尔维斯进行冲刺，对她途经的敌人们造成<span class=\"text-red-600 dark:text-red-500 font-semibold\">(12/14/16/18/20 + (105% 攻击力))物理伤害</span>。<br /><br />每个方向都有为期秒的独立冷却时间 ，这些冷却时间随她的<span>攻击速度</span>的提升而缩短。<br /><br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">对命中的第一个目标附带攻击特效。<br />对这个技能每个方向的独立冷却时间来说，每<span>1%攻击速度</span>相当于0.2技能急速。<br />卑尔维斯对野怪造成额外的<span class=\"text-red-600 dark:text-red-500 font-semibold\">70物理伤害</span>。</span>",
         "iconFile": "BelvethQ.png",
@@ -182,6 +188,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "BaseDamage",
+            "kind": "damage",
+            "baseByRank": [
+              12,
+              14,
+              16,
+              18,
+              20
+            ],
+            "terms": [
+              {
+                "stat": "totalAttackDamage",
+                "coefficientsByRank": [
+                  1.0499999523162842,
+                  1.0499999523162842,
+                  1.0499999523162842,
+                  1.0499999523162842,
+                  1.0499999523162842
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -194,6 +227,7 @@
         "slot": "W",
         "id": "BelvethW",
         "name": "上觐沉渊",
+        "maxRank": 5,
         "summary": "卑尔维斯甩尾重击，对命中的敌人造成伤害、击飞和减速。",
         "bodyHtml": "卑尔维斯甩尾重击，对敌人们造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(80/140/200/260/320 + (150% 攻击力))魔法伤害</span>、0.6/0.7/0.8/0.9/1秒<span class=\"text-purple-600 dark:text-purple-500\">击飞</span>和持续2秒的30%<span class=\"text-purple-600 dark:text-purple-500\">减速</span>。如果这个技能击中了一名敌方英雄，则刷新该英雄所在方向的<span>虚空激流</span>的冷却时间。",
         "iconFile": "BelvethW.png",
@@ -240,6 +274,12 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "unsupported",
+          "unsupportedPartTypes": [
+            "StatByCoefficientCalculationPart"
+          ]
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -250,6 +290,7 @@
         "slot": "E",
         "id": "BelvethE",
         "name": "搠面皇锋",
+        "maxRank": 5,
         "summary": "卑尔维斯将她自身禁锢在原地，引导一阵切割风暴环绕自身，这个风暴会以生命值最低的敌人为目标并为她提供生命偷取和伤害减免。",
         "bodyHtml": "卑尔维斯引导并斩击她自身的周围区域，获得20/30/40/50/60%伤害减免、20/25/30/35/40%生命偷取、并在1.5秒持续攻击次，攻击次数可通过<span>攻击速度</span>来提升。每次攻击都会打击生命值最低的敌人，基于目标的已损失生命值造成<span class=\"text-red-600 dark:text-red-500 font-semibold\">(10/12/14/16/18 + (12% 攻击力))</span>至<span class=\"text-red-600 dark:text-red-500 font-semibold\">(20/24/28/32/36 + (24% 攻击力))物理伤害</span>。<br /><br />使用另一个技能或<span class=\"text-yellow-600 dark:text-yellow-300\">再次施放</span>这个技能会使这个技能提前结束。<br /><br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">来自这个技能的这些攻击对野怪造成200%伤害，并基于目标的已损失生命值施加12%至24%效能的攻击特效。</span><br />",
         "iconFile": "BelvethE.png",
@@ -300,6 +341,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "DamagePerStrike",
+            "kind": "damage",
+            "baseByRank": [
+              10,
+              12,
+              14,
+              16,
+              18
+            ],
+            "terms": [
+              {
+                "stat": "totalAttackDamage",
+                "coefficientsByRank": [
+                  0.11999999731779099,
+                  0.11999999731779099,
+                  0.11999999731779099,
+                  0.11999999731779099,
+                  0.11999999731779099
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -312,6 +380,7 @@
         "slot": "R",
         "id": "BelvethR",
         "name": "万载豪筵",
+        "maxRank": 3,
         "summary": "卑尔维斯消耗【虚空珊瑚残片】，转化为她的真实形态并提升她的最大生命值、攻击距离、和攻击速度。消耗来自虚空史诗级野怪的【虚空珊瑚残片】将为她提供召唤【虚空鱼】的能量。",
         "bodyHtml": "<span class=\"text-gray-600 dark:text-gray-500 italic\">被动：</span>攻击造成额外的<span class=\"text-yellow-600 dark:text-yellow-500 font-semibold\">(2/4/6 + (3% 额外攻击力))真实伤害</span>，可无限叠加。参与击杀英雄和野怪之后会留下一块【虚空珊瑚】。<br /><br /><span class=\"text-gray-900 dark:text-white font-semibold\">主动：</span>卑尔维斯消耗一块【虚空珊瑚】，从而获得<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">1层溶烛化紫</span>并激活她的真正形态。来自虚空史诗级野怪的【虚空珊瑚】会使附近阵亡的小兵们变为【虚空鱼】。在施放时，卑尔维斯<span class=\"text-purple-600 dark:text-purple-500\">减速</span>附近的敌人们然后爆炸，造成<span class=\"text-yellow-600 dark:text-yellow-500 font-semibold\">(150/200/250 + (150% 法术强度)) + 20%已损失生命值的真实伤害</span>。<br /><br />在她的真实形态下，卑尔维斯获得<span class=\"text-green-600 dark:text-green-400\">(100/250/400 + (150% 额外攻击力) + (150% 法术强度))最大生命值</span>、25/75/125移动距离、<span>6/13/20%总攻击速度</span>、并且<span>虚空激流</span>可以穿过墙体。<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">真实形态持续45秒，在<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">40层溶烛化紫</span>时提升至90秒。在<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">80层溶烛化紫</span>时，真实伤害持续至阵亡为止。</span><br /><br /><br /><br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">【虚空鱼】会被视作拥有<span class=\"text-green-600 dark:text-green-400\">20/45/70%生命值</span>和<span class=\"text-red-600 dark:text-red-500 font-semibold\">110%攻击力</span>的线上小兵。<br />在卑尔维斯消耗【虚空珊瑚】时施加的<span class=\"text-purple-600 dark:text-purple-500\">减速</span>会不断提升至99%。<br />被动部分对史诗级野怪最大造成<span class=\"text-yellow-600 dark:text-yellow-500 font-semibold\">(16/32/48 + (24% 额外攻击力))真实伤害</span>。<br />在真实形态下，消耗【虚空珊瑚】会重新开始这个形态的持续时间并回复<span class=\"text-green-600 dark:text-green-400\">100/250/400生命值</span>。</span><br />",
         "iconFile": "BelvethR.png",
@@ -366,6 +435,29 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "FinalOnHitDamage",
+            "kind": "damage",
+            "baseByRank": [
+              2,
+              4,
+              6
+            ],
+            "terms": [
+              {
+                "stat": "bonusAttackDamage",
+                "coefficientsByRank": [
+                  0.029999999329447746,
+                  0.029999999329447746,
+                  0.029999999329447746
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {

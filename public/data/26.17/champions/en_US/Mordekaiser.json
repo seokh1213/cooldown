@@ -120,6 +120,7 @@
         "slot": "P",
         "id": "MordekaiserPassive",
         "name": "Darkness Rise",
+        "maxRank": 0,
         "summary": "Mordekaiser gains a powerful damage aura and Move Speed after landing 3 attacks or spells against champions or monsters.",
         "bodyHtml": "Mordekaiser's Attacks deal an additional <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(40% Ability Power) magic damage</span>.<br /><br />Mordekaiser cloaks himself in negative energy after hitting 3 basic Abilities or Attacks against champions or jungle monsters. This cloak deals <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(5 + (30% Ability Power)) plus (1 ~ 5)max Health magic damage per second</span> and grants him <span class=\"text-cyan-600 dark:text-cyan-500\">18% Move Speed</span>.",
         "iconFile": "MordekaiserPassive.png",
@@ -127,6 +128,10 @@
         "range": [],
         "rankValues": [],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -137,6 +142,7 @@
         "slot": "Q",
         "id": "MordekaiserQ",
         "name": "Obliterate",
+        "maxRank": 5,
         "summary": "Mordekaiser smashes the ground with his mace dealing damage to each enemy struck. Damage is increased when hitting a single enemy.",
         "bodyHtml": "Mordekaiser smashes the ground with Nightfall dealing <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(80/115/150/185/220 + (120% bonus Attack Damage) + (70% Ability Power)) magic damage</span>, increased to <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(104/155.25/210/268.25/330 + (156/162/168/174/180% bonus Attack Damage) + (91/94.5/98/101.5/105% Ability Power))</span> if it hits only a single enemy.",
         "iconFile": "MordekaiserQ.png",
@@ -183,6 +189,12 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "unsupported",
+          "unsupportedPartTypes": [
+            "GameCalculationModified"
+          ]
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -193,6 +205,7 @@
         "slot": "W",
         "id": "MordekaiserW",
         "name": "Indestructible",
+        "maxRank": 5,
         "summary": "Mordekaiser stores damage he deals and takes to create a shield. He may consume the shield to heal.",
         "bodyHtml": "<span>Passive:</span> Mordekaiser stores 45% of the damage he deals and 7.5% of the damage he takes.<br /><br /><span>Active:</span> Mordekaiser gains the stored damage as <span class=\"text-blue-600 dark:text-blue-300\">Shield</span>. He may <span class=\"text-yellow-600 dark:text-yellow-300\">Recast</span> this Ability to restore <span class=\"text-green-600 dark:text-green-400\">35/37.5/40/42.5/45% of the remaining Shield as Health</span>.<br /><br />Minimum Shield: <span class=\"text-blue-600 dark:text-blue-300\">(5% Health)</span><br />Maximum Shield: <span class=\"text-blue-600 dark:text-blue-300\">(30% Health)</span><br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">Shield decays over time.<br />Damage stored from non-champion sources reduced by 75%.</span>",
         "iconFile": "MordekaiserW.png",
@@ -235,6 +248,10 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -245,6 +262,7 @@
         "slot": "E",
         "id": "MordekaiserE",
         "name": "Death's Grasp",
+        "maxRank": 5,
         "summary": "Mordekaiser pulls all enemies in an area.",
         "bodyHtml": "<span class=\"text-gray-600 dark:text-gray-500 italic\">Passive:</span> Mordekaiser gains <span>5/7.5/10/12.5/15% Magic Penetration</span>.<br /><br /><span class=\"text-gray-900 dark:text-white font-semibold\">Active:</span> Pulls enemies in his direction, dealing <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(60/80/100/120/140 + (45% Ability Power)) magic damage.</span>",
         "iconFile": "MordekaiserE.png",
@@ -291,6 +309,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "TotalDamage",
+            "kind": "damage",
+            "baseByRank": [
+              60,
+              80,
+              100,
+              120,
+              140
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.44999998807907104,
+                  0.44999998807907104,
+                  0.44999998807907104,
+                  0.44999998807907104,
+                  0.44999998807907104
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -301,6 +346,7 @@
         "slot": "R",
         "id": "MordekaiserR",
         "name": "Realm of Death",
+        "maxRank": 3,
         "summary": "Mordekaiser drags his victim to a different dimension with him and steals a portion of their stats. If he kills them, he keeps the stats until the victim respawns.",
         "bodyHtml": "Mordekaiser banishes a champion to the Death Realm with him for 7s, stealing 10% of their core stats for the duration.<br /><br />If Mordekaiser kills that enemy in the Death Realm he consumes their soul, keeping the stats he stole until the target respawns.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">Core stats stolen include: <span class=\"text-blue-600 dark:text-blue-400\">Ability Power</span>, <span class=\"text-orange-600 dark:text-orange-500\">Attack Damage</span>, <span>Attack Speed</span>, <span class=\"text-orange-600 dark:text-orange-400\">Armor</span>, <span>Magic Resist</span>, and <span>Maximum Health</span>.</span>",
         "iconFile": "MordekaiserR.png",
@@ -321,6 +367,10 @@
           }
         ],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {

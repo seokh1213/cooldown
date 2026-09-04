@@ -120,6 +120,7 @@
         "slot": "P",
         "id": "CamillePassive",
         "name": "Adaptive Defenses",
+        "maxRank": 0,
         "summary": "Basic attacks on champions grant a shield equal to a percentage of Camille's maximum health against their damage type (Physical or Magic) for a brief duration.",
         "bodyHtml": "Camille's Attacks on champions grant <span class=\"text-blue-600 dark:text-blue-300\"> Shield</span> against their damage type (<span class=\"text-red-600 dark:text-red-500 font-semibold\">Physical</span> or <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">Magic</span>) for 2 seconds. This effect has a 8 second Cooldown.",
         "iconFile": "Camille_Passive.png",
@@ -127,6 +128,10 @@
         "range": [],
         "rankValues": [],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -137,6 +142,7 @@
         "slot": "Q",
         "id": "CamilleQ",
         "name": "Precision Protocol",
+        "maxRank": 5,
         "summary": "Camille's next attack deals bonus damage and grants bonus Move Speed. This spell can be recast for a short period of time, doing significantly increased bonus damage if Camille delays a period of time between the two attacks.",
         "bodyHtml": "Camille's next Attack deals an additional <span class=\"text-red-600 dark:text-red-500 font-semibold\">(20/25/30/35/40% Attack Damage) physical damage</span> and grants her <span class=\"text-cyan-600 dark:text-cyan-500\">25/30/35/40/45% Move Speed</span> for 1 second. This ability can be <span class=\"text-yellow-600 dark:text-yellow-300\">Recast</span> in the next 3.5 seconds.<br /><br />If the <span class=\"text-yellow-600 dark:text-yellow-300\">Recast</span> Attack hits at least 1.5 seconds after the first, the bonus damage is increased to <span class=\"text-red-600 dark:text-red-500 font-semibold\">(40/50/60/70/80% Attack Damage)</span> and (40% ~ 100%) of the Attack's damage is converted into <span class=\"text-yellow-600 dark:text-yellow-500 font-semibold\">true damage</span>.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">This Ability triggers spell effects upon dealing damage.</span>",
         "iconFile": "CamilleQ.png",
@@ -193,6 +199,12 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "unsupported",
+          "unsupportedPartTypes": [
+            "StatByNamedDataValueCalculationPart"
+          ]
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -203,6 +215,7 @@
         "slot": "W",
         "id": "CamilleW",
         "name": "Tactical Sweep",
+        "maxRank": 5,
         "summary": "Camille blasts in a cone after a delay, dealing damage. Enemies in the outer half are slowed and take extra damage, while also healing Camille.",
         "bodyHtml": "Camille winds up and slices, dealing <span class=\"text-red-600 dark:text-red-500 font-semibold\">(60/85/110/135/160 + (60% bonus Attack Damage)) physical damage</span>.<br /><br />Enemies hit by the outer half are <span class=\"text-purple-600 dark:text-purple-500\">Slowed</span> by 80% decaying over 2 seconds, and they take an additional <span class=\"text-red-600 dark:text-red-500 font-semibold\">(7/7.5/8/8.5/9% + (0.025% bonus Attack Damage)) max Health physical damage</span>. Camille restores <span class=\"text-green-600 dark:text-green-400\">100% of the bonus damage dealt to champions as Health</span>.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">This Ability does 50% less damage to non-epic jungle monsters.<br />Max health damage is capped at 300 against jungle monsters.</span>",
         "iconFile": "CamilleW.png",
@@ -263,6 +276,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "BaseDamageTotal",
+            "kind": "damage",
+            "baseByRank": [
+              60,
+              85,
+              110,
+              135,
+              160
+            ],
+            "terms": [
+              {
+                "stat": "bonusAttackDamage",
+                "coefficientsByRank": [
+                  0.6000000238418579,
+                  0.6000000238418579,
+                  0.6000000238418579,
+                  0.6000000238418579,
+                  0.6000000238418579
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -273,6 +313,7 @@
         "slot": "E",
         "id": "CamilleE",
         "name": "Hookshot",
+        "maxRank": 5,
         "summary": "Camille pulls herself to a wall, leaping off and knocking up enemy champions upon landing.",
         "bodyHtml": "Camille fires a hookshot that attaches to terrain, pulling her to it for 1 second and allowing this Ability to be <span class=\"text-yellow-600 dark:text-yellow-300\">Recast</span>.<br /><br /><span class=\"text-yellow-600 dark:text-yellow-300\">Recast:</span> Camille dashes from the wall, colliding with the first enemy champion hit. Upon landing, she gains <span>40/45/50/55/60% Attack Speed</span> for 5 seconds, deals <span class=\"text-red-600 dark:text-red-500 font-semibold\">(60/90/120/150/180 + (75% bonus Attack Damage)) physical damage</span> to nearby enemies, and <span class=\"text-purple-600 dark:text-purple-500\">Stuns</span> enemy champions for 0.75 seconds. Dashes towards enemy champions travel twice as far.",
         "iconFile": "CamilleE.png",
@@ -329,6 +370,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "TotalDamage",
+            "kind": "damage",
+            "baseByRank": [
+              60,
+              90,
+              120,
+              150,
+              180
+            ],
+            "terms": [
+              {
+                "stat": "bonusAttackDamage",
+                "coefficientsByRank": [
+                  0.75,
+                  0.75,
+                  0.75,
+                  0.75,
+                  0.75
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -339,6 +407,7 @@
         "slot": "R",
         "id": "CamilleR",
         "name": "The Hextech Ultimatum",
+        "maxRank": 3,
         "summary": "Camille dashes to target champion, anchoring them to the area. She also deals bonus magic damage to the target with her basic attacks.",
         "bodyHtml": "Camille briefly becomes Untargetable and leaps onto an enemy champion, interrupting channels and locking them into an area they cannot escape by any means for 2.5/3.25/4 seconds. Other nearby enemies are <span class=\"text-purple-600 dark:text-purple-500\">Knocked Away</span>. Her Attacks against the trapped enemy deal an additional <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">4/6/8% current Health magic damage</span>.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">This Ability ends if Camille leaves the area.</span>",
         "iconFile": "CamilleR.png",
@@ -375,6 +444,10 @@
           }
         ],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {

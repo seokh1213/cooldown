@@ -119,6 +119,7 @@
         "slot": "P",
         "id": "JinxPassiveMarker",
         "name": "Get Excited!",
+        "maxRank": 0,
         "summary": "Jinx receives massively increased Move Speed and Attack Speed whenever she helps kill or destroy an enemy champions epic jungle monster, or structure.",
         "bodyHtml": "Whenever a champion, epic monster, or structure that Jinx has dealt damage to within the last 3 seconds is killed or destroyed, she gains <span class=\"text-cyan-600 dark:text-cyan-500\">175% decaying Move Speed</span> and <span>25% Attack Speed</span> for 6 seconds.<br /><br />Champion takedowns stack the <span>Attack Speed</span> up to 5 times.",
         "iconFile": "Jinx_Passive.png",
@@ -126,6 +127,10 @@
         "range": [],
         "rankValues": [],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -136,6 +141,7 @@
         "slot": "Q",
         "id": "JinxQ",
         "name": "Switcheroo!",
+        "maxRank": 5,
         "summary": "Jinx modifies her basic attacks by swapping between Pow-Pow, her minigun and Fishbones, her rocket launcher. Attacks with Pow-Pow grant Attack Speed, while attacks with Fishbones deal area of effect damage, gain increased range, but drain Mana and attack slower.",
         "bodyHtml": "Jinx swaps weapons between Fishbones the rocket launcher and Pow-Pow the minigun.<br /><br />While using the rocket launcher, Jinx's Attacks deal <span class=\"text-red-600 dark:text-red-500 font-semibold\">(110% Attack Damage) physical damage</span> to the target and nearby enemies, gain 100/125/150/175/200 range, cost Mana, and scale 10% less with bonus Attack Speed.<br /><br />While using the minigun, Jinx's Attacks grant <span>Attack Speed</span> for 2.5 seconds, stacking up to 3 times (<span> + 30/55/80/105/130% max</span>).<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">Minigun stacks fall off one at a time and only benefit Jinx's first Attack after switching to the rocket launcher.</span>",
         "iconFile": "JinxQ.png",
@@ -188,6 +194,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "RocketDamage",
+            "kind": "damage",
+            "baseByRank": [
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "terms": [
+              {
+                "stat": "totalAttackDamage",
+                "coefficientsByRank": [
+                  1.100000023841858,
+                  1.100000023841858,
+                  1.100000023841858,
+                  1.100000023841858,
+                  1.100000023841858
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -198,6 +231,7 @@
         "slot": "W",
         "id": "JinxW",
         "name": "Zap!",
+        "maxRank": 5,
         "summary": "Jinx uses Zapper, her shock pistol, to fire a blast that deals damage to the first enemy hit, slowing and revealing it.",
         "bodyHtml": "Jinx fires a shock blast that deals <span class=\"text-red-600 dark:text-red-500 font-semibold\">(10/60/110/160/210 + (140% Attack Damage)) physical damage</span> to the first enemy hit, <span class=\"text-purple-600 dark:text-purple-500\">Slows</span> them by 40/50/60/70/80%, and reveals them for 2 seconds.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">Zap!'s cast time decreases as Jinx gains <span>Attack Speed</span>.</span>",
         "iconFile": "JinxW.png",
@@ -258,6 +292,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "TotalDamage",
+            "kind": "damage",
+            "baseByRank": [
+              10,
+              60,
+              110,
+              160,
+              210
+            ],
+            "terms": [
+              {
+                "stat": "totalAttackDamage",
+                "coefficientsByRank": [
+                  1.399999976158142,
+                  1.399999976158142,
+                  1.399999976158142,
+                  1.399999976158142,
+                  1.399999976158142
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -268,6 +329,7 @@
         "slot": "E",
         "id": "JinxE",
         "name": "Flame Chompers!",
+        "maxRank": 5,
         "summary": "Jinx throws out a line of snare grenades that explode after 5 seconds, lighting enemies on fire. Flame Chompers will bite enemy champions who walk over them, rooting them in place.",
         "bodyHtml": "Jinx tosses out 3 chompers that last for 5 seconds. They explode on contact with enemy champions, <span class=\"text-purple-600 dark:text-purple-500\">Rooting</span> them for 1.5 seconds and dealing <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(90/140/190/240/290 + (100% Ability Power)) magic damage</span> to nearby enemies.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">This Ability <span class=\"text-purple-600 dark:text-purple-500\">Knocks Down</span> enemies.</span>",
         "iconFile": "JinxE.png",
@@ -320,6 +382,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "TotalDamage",
+            "kind": "damage",
+            "baseByRank": [
+              90,
+              140,
+              190,
+              240,
+              290
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  1,
+                  1,
+                  1,
+                  1,
+                  1
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -330,6 +419,7 @@
         "slot": "R",
         "id": "JinxR",
         "name": "Super Mega Death Rocket!",
+        "maxRank": 3,
         "summary": "Jinx fires a super rocket across the map that gains damage as it travels. The rocket will explode upon colliding with an enemy champion, dealing damage to it and surrounding enemies based on their missing Health.",
         "bodyHtml": "Jinx fires a rocket that explodes on the first enemy champion hit, dealing <span class=\"text-red-600 dark:text-red-500 font-semibold\">(20/35/50 + (12% bonus Attack Damage)) to (200/350/500 + (120% bonus Attack Damage)) + 25/30/35% missing Health physical damage</span>, gaining damage over the first second of travel time. Nearby enemies take 80% Damage.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">Missing Health damage cannot exceed 1200 against Monsters.</span>",
         "iconFile": "JinxR.png",
@@ -384,6 +474,29 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "DamageFloor",
+            "kind": "damage",
+            "baseByRank": [
+              20,
+              35,
+              50
+            ],
+            "terms": [
+              {
+                "stat": "bonusAttackDamage",
+                "coefficientsByRank": [
+                  0.11999999731779099,
+                  0.11999999731779099,
+                  0.11999999731779099
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {

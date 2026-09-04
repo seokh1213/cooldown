@@ -120,6 +120,7 @@
         "slot": "P",
         "id": "XerathAscended2",
         "name": "法力澎湃",
+        "maxRank": 0,
         "summary": "泽拉斯的普通攻击会周期性地恢复法力值。每当泽拉斯击杀了一个单位时，这个冷却时间就会缩短。",
         "bodyHtml": "每过16秒，泽拉斯的下次对英雄发起的攻击就会回复<span>60法力</span>。如果攻击小兵、野怪或建筑物，那么会回复<span>30法力</span>。<br /><br />每当泽拉斯击杀了一个单位时，这个冷却时间就会缩短3.5秒。",
         "iconFile": "Xerath_Passive1.png",
@@ -127,6 +128,10 @@
         "range": [],
         "rankValues": [],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -137,6 +142,7 @@
         "slot": "Q",
         "id": "XerathArcanopulseChargeUp",
         "name": "奥能脉冲",
+        "maxRank": 5,
         "summary": "泽拉斯聚集能量，随后发射出一道射程很远的能量光束，对所有命中的目标造成魔法伤害。",
         "bodyHtml": "<span>开始蓄力：</span>泽拉斯开始积蓄一次奥术光束，自身逐步<span class=\"text-purple-600 dark:text-purple-500\">减速</span>，至多可达50%。<br /><br /><span>释放：</span>泽拉斯发射光束，造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(70/110/150/190/230 + (90% 法术强度))魔法伤害</span>。距离随蓄力时间提升。<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">如果泽拉斯没有将光束释放，那么会返还一半的消耗。</span>",
         "iconFile": "XerathArcanopulseChargeUp.png",
@@ -200,6 +206,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "TooltipTotalDamage",
+            "kind": "damage",
+            "baseByRank": [
+              70,
+              110,
+              150,
+              190,
+              230
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.8999999761581421,
+                  0.8999999761581421,
+                  0.8999999761581421,
+                  0.8999999761581421,
+                  0.8999999761581421
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -210,6 +243,7 @@
         "slot": "W",
         "id": "XerathArcaneBarrage2",
         "name": "毁灭之眼",
+        "maxRank": 5,
         "summary": "在目标区域降下奥术能量的弹幕，对一个区域内的所有敌人造成减速效果和魔法伤害。区域中心的目标会受到额外伤害和一个更强大的减速效果。",
         "bodyHtml": "泽拉斯引爆目标区域的奥术能量，造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(50/85/120/155/190 + (65% 法术强度))魔法伤害</span>并使敌人<span class=\"text-purple-600 dark:text-purple-500\">减速</span>25%，持续2.5秒。区域中心的敌人会受到<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(83.35/141.695/200.04/258.385/316.73 + (108.355% 法术强度))魔法伤害</span>，并被<span class=\"text-purple-600 dark:text-purple-500\">减速</span>60/65/70/75/80%，减速效果会在2.5秒里持续衰减。<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">强化版<span class=\"text-purple-600 dark:text-purple-500\">减速</span>效果会持续衰减至25%。</span>",
         "iconFile": "XerathArcaneBarrage2.png",
@@ -270,6 +304,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "TotalDamage",
+            "kind": "damage",
+            "baseByRank": [
+              50,
+              85,
+              120,
+              155,
+              190
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.6499999761581421,
+                  0.6499999761581421,
+                  0.6499999761581421,
+                  0.6499999761581421,
+                  0.6499999761581421
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -280,6 +341,7 @@
         "slot": "E",
         "id": "XerathMageSpear",
         "name": "冲击法球",
+        "maxRank": 5,
         "summary": "对单个敌人造成魔法伤害和晕眩效果。",
         "bodyHtml": "泽拉斯发射一颗原生魔法之球，基于飞行距离使命中第一个的敌人<span class=\"text-purple-600 dark:text-purple-500\">晕眩</span>至多2.25秒，并造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(70/100/130/160/190 + (45% 法术强度))魔法伤害</span>。<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">最小<span class=\"text-purple-600 dark:text-purple-500\">晕眩</span>时长为0.75秒。</span>",
         "iconFile": "XerathMageSpear.png",
@@ -336,6 +398,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "TooltipTotalDamage",
+            "kind": "damage",
+            "baseByRank": [
+              70,
+              100,
+              130,
+              160,
+              190
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.44999998807907104,
+                  0.44999998807907104,
+                  0.44999998807907104,
+                  0.44999998807907104,
+                  0.44999998807907104
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -346,6 +435,7 @@
         "slot": "R",
         "id": "XerathLocusOfPower2",
         "name": "奥术仪式",
+        "maxRank": 3,
         "summary": "泽拉斯将自己固定在一处魔力之源上，并获得数次远程施法的机会。",
         "bodyHtml": "泽拉斯飞升至他的真正形态并引导10秒。在此期间，他可以<span class=\"text-yellow-600 dark:text-yellow-300\">再次施放</span>此技能至多4/5/6次。<br /><br /><span class=\"text-yellow-600 dark:text-yellow-300\">再次施放：</span>泽拉斯施放一道魔法炮击，造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(170/220/270 + (45% 法术强度))魔法伤害</span>。每次命中英雄时，炮击都会造成额外的<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(20/25/30 + (5% 法术强度))魔法伤害</span>。<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">如果泽拉斯根本没有<span class=\"text-yellow-600 dark:text-yellow-300\">再次施放</span>，那么这技能的冷却时间会降低50%。</span>",
         "iconFile": "XerathLocusOfPower2.png",
@@ -400,6 +490,29 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "TooltipTotalDamage",
+            "kind": "damage",
+            "baseByRank": [
+              170,
+              220,
+              270
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.44999998807907104,
+                  0.44999998807907104,
+                  0.44999998807907104
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {

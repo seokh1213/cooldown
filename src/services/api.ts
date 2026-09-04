@@ -6,7 +6,7 @@ import { toRuneStatShards, toRuneTrees } from "@/data/mappers/runeMapper";
 import { championRepository } from "@/data/repositories/championRepository";
 import { gameDataRepository } from "@/data/repositories/gameDataRepository";
 import { logger } from "@/lib/logger";
-import { getRuntimeBasePath, getStaticDataPath } from "@/lib/staticDataUtils";
+import { getRuntimeBasePath } from "@/lib/staticDataUtils";
 import type { Champion, RuneStatShardStaticData, RuneTree } from "@/types";
 import type {
   NormalizedItem,
@@ -103,41 +103,6 @@ export async function getNormalizedSummonerSpells(
   locale: DataLocale
 ): Promise<NormalizedSummonerSpell[]> {
   return (await gameDataRepository.getSummoners(patchVersion, locale)).spells;
-}
-
-export interface CommunityDragonSpellResult {
-  spellDataMap: Record<string, unknown>;
-  ddragonVersion?: string;
-  cdragonVersion?: string | null;
-}
-
-/** @deprecated Simulation's typed Ability v2 migration will remove this endpoint. */
-export async function getCommunityDragonSpellData(
-  championId: string,
-  patchVersion: string
-): Promise<CommunityDragonSpellResult> {
-  try {
-    const response = await fetch(
-      getStaticDataPath(patchVersion, `spells/${championId}.json`)
-    );
-    if (!response.ok) return { spellDataMap: {} };
-    const data = (await response.json()) as {
-      spellData?: unknown;
-      ddragonVersion?: string;
-      cdragonVersion?: string | null;
-    };
-    if (!data.spellData || typeof data.spellData !== "object") {
-      return { spellDataMap: {} };
-    }
-    return {
-      spellDataMap: data.spellData as Record<string, unknown>,
-      ddragonVersion: data.ddragonVersion,
-      cdragonVersion: data.cdragonVersion ?? null,
-    };
-  } catch (error) {
-    logger.warn(`[API] Failed to fetch Community Dragon data for ${championId}`, error);
-    throw error;
-  }
 }
 
 export async function getChampionInfo(

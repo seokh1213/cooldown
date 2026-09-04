@@ -119,6 +119,7 @@
         "slot": "P",
         "id": "SejuaniPassive",
         "name": "Fury of the North",
+        "maxRank": 0,
         "summary": "After being out of combat, Sejuani gains Frost Armor which grants Armor and Magic Resist and immunity to slows. Frost Armor persists for a short time after Sejuani takes damage.  Sejuani can damage a stunned enemy to shatter it, dealing massive magic damage.",
         "bodyHtml": "Sejuani becomes immune to <span class=\"text-purple-600 dark:text-purple-500\">Slows</span> and gains <span class=\"text-orange-600 dark:text-orange-400\">(10 + (75% bonus Armor)) Armor</span> and <span>(10 + (75% bonus Magic Resist)) Magic Resist</span> after not taking damage from champions or large jungle monsters for (12 ~ 6) seconds.<br /><br />Sejuani's first Attack against enemies she has <span class=\"text-purple-600 dark:text-purple-500\">Stunned</span> deals an additional <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">10% max Health magic damage</span>.",
         "iconFile": "Sejuani_passive.png",
@@ -126,6 +127,10 @@
         "range": [],
         "rankValues": [],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -136,6 +141,7 @@
         "slot": "Q",
         "id": "SejuaniQ",
         "name": "Arctic Assault",
+        "maxRank": 5,
         "summary": "Sejuani charges forward, knocking enemies into the air. The charge stops after hitting an enemy champion.",
         "bodyHtml": "Sejuani charges, dealing <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(90/140/190/240/290 + (75% Ability Power)) magic damage</span> to enemies and <span class=\"text-purple-600 dark:text-purple-500\">Knocking</span> them <span class=\"text-purple-600 dark:text-purple-500\">Up</span> for 0.5 seconds. The charge ends after hitting an enemy champion.",
         "iconFile": "SejuaniQ.png",
@@ -192,6 +198,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "TotalDamageTooltip",
+            "kind": "damage",
+            "baseByRank": [
+              90,
+              140,
+              190,
+              240,
+              290
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.75,
+                  0.75,
+                  0.75,
+                  0.75,
+                  0.75
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -202,6 +235,7 @@
         "slot": "W",
         "id": "SejuaniW",
         "name": "Winter's Wrath",
+        "maxRank": 5,
         "summary": "Sejuani swings her mace twice, dealing damage, slowing enemies and applying Frost stacks.",
         "bodyHtml": "Sejuani swings her flail, dealing <span class=\"text-red-600 dark:text-red-500 font-semibold\">(5/15/25/35/45 + (30% Ability Power) + (4% Health)) physical damage</span> and <span class=\"text-purple-600 dark:text-purple-500\">Knocking Back</span> minions and jungle monsters. She then lashes out again, dealing <span class=\"text-red-600 dark:text-red-500 font-semibold\">(5/25/45/65/85 + (60% Ability Power) + (8% Health)) physical damage</span> and briefly <span class=\"text-purple-600 dark:text-purple-500\">Slowing</span> targets.<br /><br />Both swings apply stacks of <span>Permafrost</span>.",
         "iconFile": "SejuaniW.png",
@@ -258,6 +292,43 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "FirstHitDamageTooltip",
+            "kind": "damage",
+            "baseByRank": [
+              5,
+              15,
+              25,
+              35,
+              45
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.30000001192092896,
+                  0.30000001192092896,
+                  0.30000001192092896,
+                  0.30000001192092896,
+                  0.30000001192092896
+                ]
+              },
+              {
+                "stat": "maxHealth",
+                "coefficientsByRank": [
+                  0.03999999910593033,
+                  0.03999999910593033,
+                  0.03999999910593033,
+                  0.03999999910593033,
+                  0.03999999910593033
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -268,6 +339,7 @@
         "slot": "E",
         "id": "SejuaniE",
         "name": "Permafrost",
+        "maxRank": 5,
         "summary": "Sejuani freezes and stuns an enemy champion that has maximum Frost stacks.",
         "bodyHtml": "<span class=\"text-gray-600 dark:text-gray-500 italic\">Passive:</span> Nearby melee allied champions' Attacks apply a stack to champions and jungle monsters.<br /><br /><span class=\"text-gray-600 dark:text-gray-500 italic\">Active:</span> Sejuani deals <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(55/105/155/205/255 + (70% Ability Power)) magic damage</span> to target enemy with 4 stacks and <span class=\"text-purple-600 dark:text-purple-500\">Stuns</span> them for 1 second.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">Champions <span class=\"text-purple-600 dark:text-purple-500\">Stunned</span> by Sejuani can't gain stacks for 8 seconds.<br />Enemies <span class=\"text-purple-600 dark:text-purple-500\">Stunned</span> by this Ability are slightly <span class=\"text-purple-600 dark:text-purple-500\">Knocked Back</span>.<br />Permafrost will target the closest valid enemy to your cursor (prioritizing champions).<br />This Ability <span class=\"text-purple-600 dark:text-purple-500\">Knocks Down</span> enemies.</span>",
         "iconFile": "SejuaniE.png",
@@ -316,6 +388,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "TotalDamage",
+            "kind": "damage",
+            "baseByRank": [
+              55,
+              105,
+              155,
+              205,
+              255
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.699999988079071,
+                  0.699999988079071,
+                  0.699999988079071,
+                  0.699999988079071,
+                  0.699999988079071
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -326,6 +425,7 @@
         "slot": "R",
         "id": "SejuaniR",
         "name": "Glacial Prison",
+        "maxRank": 3,
         "summary": "Sejuani throws her bola that freezes and stuns the first champion hit and creates an ice storm that slows other enemies.",
         "bodyHtml": "Sejuani throws her True Ice bola, <span class=\"text-purple-600 dark:text-purple-500\">Stunning</span> and revealing the first enemy champion hit for 1 second and dealing <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(125/150/175 + (40% Ability Power)) magic damage</span>.<br /><br />If the bola travels at least 25% of its range, it <span class=\"text-purple-600 dark:text-purple-500\">Stuns</span> and reveals for 1.5 seconds instead. It then also creates an ice storm that <span class=\"text-purple-600 dark:text-purple-500\">Slows</span> surrounding enemies by 80% for 2 seconds. All affected enemies take <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(200/300/400 + (80% Ability Power)) magic damage</span>.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">The <span class=\"text-purple-600 dark:text-purple-500\">Stunned</span> enemy takes damage immediately, while enemies inside the storm take damage after it ends. Enemies in the storm are also <span class=\"text-purple-600 dark:text-purple-500\">Slowed</span> for an additional 1 second.</span>",
         "iconFile": "SejuaniR.png",
@@ -376,6 +476,29 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "MinorDamageTooltip",
+            "kind": "damage",
+            "baseByRank": [
+              125,
+              150,
+              175
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.4000000059604645,
+                  0.4000000059604645,
+                  0.4000000059604645
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {

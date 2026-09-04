@@ -119,6 +119,7 @@
         "slot": "P",
         "id": "KarthusDeathDefied",
         "name": "死亡契约",
+        "maxRank": 0,
         "summary": "在死亡时，卡尔萨斯会化为一个灵体，能够继续施放技能。",
         "bodyHtml": "当卡尔萨斯阵亡时，他能够无消耗地使用技能，持续7秒。",
         "iconFile": "Karthus_Passive.png",
@@ -126,6 +127,10 @@
         "range": [],
         "rankValues": [],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -136,6 +141,7 @@
         "slot": "Q",
         "id": "KarthusLayWasteA1",
         "name": "荒芜",
+        "maxRank": 5,
         "summary": "卡尔萨斯在目标区域释放一次有延迟的爆炸魔法，对区域内的所有敌人造成伤害。对孤立无援的敌人造成提升过的伤害。",
         "bodyHtml": "卡尔萨斯生成一道魔法爆裂，造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(40/59/78/97/116 + (35% 法术强度))魔法伤害</span>。如果爆裂仅命中了一名敌人，它会转而造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(80/118/156/194/232 + (70% 法术强度))魔法伤害</span>。",
         "iconFile": "KarthusLayWasteA1.png",
@@ -196,6 +202,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "QDamage",
+            "kind": "damage",
+            "baseByRank": [
+              40,
+              59,
+              78,
+              97,
+              116
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.3499999940395355,
+                  0.3499999940395355,
+                  0.3499999940395355,
+                  0.3499999940395355,
+                  0.3499999940395355
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -206,6 +239,7 @@
         "slot": "W",
         "id": "KarthusWallOfPain",
         "name": "痛苦之墙",
+        "maxRank": 5,
         "summary": "卡尔萨斯创造一道可通过的魔能之墙。所有穿过墙体的敌方单位都会被暂时降低移动速度和魔法抗性。",
         "bodyHtml": "卡尔萨斯生成一个持续5秒的墙体。穿过它的敌人们会受到持续5秒的<span>25%魔法抗性</span>削减，以及在此期间持续衰减的40/50/60/70/80%<span class=\"text-purple-600 dark:text-purple-500\">减速</span>。",
         "iconFile": "KarthusWallOfPain.png",
@@ -244,6 +278,10 @@
           }
         ],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -254,6 +292,7 @@
         "slot": "E",
         "id": "KarthusDefile",
         "name": "亵渎",
+        "maxRank": 5,
         "summary": "卡尔萨斯被动地从他的猎物那里窃取法力，每杀死一个敌人就会获得法力。卡尔萨斯也可以转化这种力量，用猎物的灵魂环绕自身，对附近的敌人造成伤害，但会急速消耗他自己的法力。",
         "bodyHtml": "<span class=\"text-gray-600 dark:text-gray-500 italic\">被动：</span>卡尔萨斯击杀一个单位时，回复<span>10/20/30/40/50法力值</span>。<br /><br /><span>激活：</span>卡尔萨斯生成一个死灵光环，每秒对附近敌人造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(30/50/70/90/110 + (20% 法术强度))魔法伤害</span>。",
         "iconFile": "KarthusDefile.png",
@@ -310,6 +349,10 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -320,6 +363,7 @@
         "slot": "R",
         "id": "KarthusFallenOne",
         "name": "安魂曲",
+        "maxRank": 3,
         "summary": "在引导3秒后，卡尔萨斯就会对所有敌方英雄造成伤害。",
         "bodyHtml": "卡尔萨斯引导3秒，然后对敌方英雄们造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(200/350/500 + (70% 法术强度))魔法伤害</span>，无视距离。",
         "iconFile": "KarthusFallenOne.png",
@@ -366,6 +410,29 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "TotalDamage",
+            "kind": "damage",
+            "baseByRank": [
+              200,
+              350,
+              500
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.699999988079071,
+                  0.699999988079071,
+                  0.699999988079071
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {

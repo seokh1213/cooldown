@@ -120,6 +120,7 @@
         "slot": "P",
         "id": "LeeSinPassive",
         "name": "疾风骤雨",
+        "maxRank": 0,
         "summary": "在李青使用一次技能后，他的下两次攻击会获得攻速加成，且回复能量。",
         "bodyHtml": "李青的技能会为他的下两次攻击提供<span>40%攻击速度</span>。第一次攻击回复<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">20/40能量</span>，第二次攻击回复<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">(10 ~ 20)能量</span>。",
         "iconFile": "LeeSinPassive.png",
@@ -127,6 +128,10 @@
         "range": [],
         "rankValues": [],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -137,6 +142,7 @@
         "slot": "Q",
         "id": "LeeSinQOne",
         "name": "天音波/回音击",
+        "maxRank": 5,
         "summary": "天音波：李青发出刺耳的声波定位敌人，对首个敌人造成物理伤害。如果天音波击中敌人，李青在接下来3秒可施放回音击。<br>回音击：李青冲向被天音波击中的敌人，造成基于该目标已损失生命值的物理伤害。",
         "bodyHtml": "李青发出刺耳的声波定位敌人，对命中的首个敌人造成<span class=\"text-red-600 dark:text-red-500 font-semibold\">(60/90/120/150/180 + (90% 额外攻击力))物理伤害</span>，提供目标的<span class=\"text-purple-600 dark:text-purple-400 font-semibold\">真实视野</span>，并使李青可以在接下来的3秒内<span class=\"text-yellow-600 dark:text-yellow-300\">再次施放</span>。<br /><br /><span class=\"text-yellow-600 dark:text-yellow-300\">再次施放：</span>李青突进向被声波击中的敌人，造成<span class=\"text-red-600 dark:text-red-500 font-semibold\">(60/90/120/150/180 + (90% 额外攻击力))到(120/180/240/300/360 + (180% 额外攻击力))物理伤害</span>（基于目标已损失的生命值）。",
         "iconFile": "LeeSinQOne.png",
@@ -197,6 +203,12 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "unsupported",
+          "unsupportedPartTypes": [
+            "GameCalculationModified"
+          ]
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -207,6 +219,7 @@
         "slot": "W",
         "id": "LeeSinWOne",
         "name": "金钟罩/铁布衫",
+        "maxRank": 5,
         "summary": "金钟罩：李青冲向目标友军，为他自身提供护盾值。如果该友军是一名英雄，则也会获得护盾值。在使用【金钟罩】后，李青可以施放【铁布衫】。<br>铁布衫：李青艰苦卓绝的训练让他能在战斗中激发潜能。李青获得全能吸血。",
         "bodyHtml": "李青冲刺至一名友军或守卫处。如果目标友军是一名英雄，李青会为自己和目标友军提供持续2秒的<span class=\"text-blue-600 dark:text-blue-300\">(60/105/150/195/240 + (80% 法术强度))护盾值</span>。李青可以在接下来的3秒内<span class=\"text-yellow-600 dark:text-yellow-300\">再次施放</span>此技能。<br /><br /><span class=\"text-yellow-600 dark:text-yellow-300\">再次施放：</span>李青获得持续4秒的10/14/18/22/26%全能吸血。",
         "iconFile": "LeeSinWOne.png",
@@ -259,6 +272,10 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -269,6 +286,7 @@
         "slot": "E",
         "id": "LeeSinEOne",
         "name": "天雷破/摧筋断骨",
+        "maxRank": 5,
         "summary": "天雷破：李青猛击地面，施放冲击波，造成魔法伤害并使命中的敌方单位显形。如果天雷破命中了一名敌人，那么李青可以施放【摧筋断骨】。<br>摧筋断骨：李青致残被天雷破给伤害到的敌人，减少其移动速度。持续期间受影响单位的移动速度会逐渐恢复正常。",
         "bodyHtml": "李青猛击地面，施放冲击波，造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(35/60/85/110/135 + (90% 攻击力))魔法伤害</span>并使命中的敌方单位显形4秒。如果这个技能命中了一名敌人，那么李青可以在接下来的3秒内<span class=\"text-yellow-600 dark:text-yellow-300\">再次施放</span>此技能。<br /><br /><span class=\"text-yellow-600 dark:text-yellow-300\">再次施放：</span>李青使被冲击波击中的敌人造成在4秒里持续衰减的35/45/55/65/75%<span class=\"text-purple-600 dark:text-purple-500\">减速</span>。",
         "iconFile": "LeeSinEOne.png",
@@ -321,6 +339,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "InitialDamage",
+            "kind": "damage",
+            "baseByRank": [
+              35,
+              60,
+              85,
+              110,
+              135
+            ],
+            "terms": [
+              {
+                "stat": "totalAttackDamage",
+                "coefficientsByRank": [
+                  0.8999999761581421,
+                  0.8999999761581421,
+                  0.8999999761581421,
+                  0.8999999761581421,
+                  0.8999999761581421
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -331,6 +376,7 @@
         "slot": "R",
         "id": "LeeSinR",
         "name": "猛龙摆尾",
+        "maxRank": 3,
         "summary": "李青用强力的回旋踢击退敌方英雄，对目标以及被目标撞到的任何敌人造成物理伤害。 被目标撞到的敌人会被短暂击飞。这项技艺是春哥教他的，不过李青不能将玩家的英雄踢到地图外面去。",
         "bodyHtml": "李青用一记强力的回旋踢<span class=\"text-purple-600 dark:text-purple-500\">击退</span>一名敌方英雄，并造成<span class=\"text-red-600 dark:text-red-500 font-semibold\">(175/400/625 + (200% 额外攻击力))物理伤害</span>。<br /><br />被目标撞到的敌方英雄会被短暂<span class=\"text-purple-600 dark:text-purple-500\">击飞</span>并受到<span class=\"text-red-600 dark:text-red-500 font-semibold\">物理伤害，伤害值相当于(175/400/625 + (200% 额外攻击力))加上初始目标12/15/18%的额外生命值</span>。<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">目标在施法时间内会被 <span class=\"text-purple-600 dark:text-purple-500\">禁锢</span>。</span>",
         "iconFile": "LeeSinR.png",
@@ -373,6 +419,29 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "Damage",
+            "kind": "damage",
+            "baseByRank": [
+              175,
+              400,
+              625
+            ],
+            "terms": [
+              {
+                "stat": "bonusAttackDamage",
+                "coefficientsByRank": [
+                  2,
+                  2,
+                  2
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {

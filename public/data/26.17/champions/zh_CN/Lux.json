@@ -120,6 +120,7 @@
         "slot": "P",
         "id": "LuxIlluminationPassive",
         "name": "光芒四射",
+        "maxRank": 0,
         "summary": "拉克丝的伤害类技能会对敌人施加【启明】效果，持续若干秒。拉克丝的下一次攻击将会消耗【启明】效果，来对目标造成额外魔法伤害（基于拉克丝等级）。",
         "bodyHtml": "拉克丝的伤害型技能会标记目标6秒。拉克丝的攻击会消耗该标记，以造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(35% 法术强度)魔法伤害</span>。<br /><br /><span>终极闪光</span>在命中敌人时将先消耗标记然后刷新标记。",
         "iconFile": "LuxIlluminatingFraulein.png",
@@ -127,6 +128,10 @@
         "range": [],
         "rankValues": [],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -137,6 +142,7 @@
         "slot": "Q",
         "id": "LuxLightBinding",
         "name": "光之束缚",
+        "maxRank": 5,
         "summary": "拉克丝释放一个光球，束缚并伤害最多两个敌方单位。",
         "bodyHtml": "拉克丝朝目标地点发射一团光球，<span class=\"text-purple-600 dark:text-purple-500\">束缚</span>前2名敌人2秒并对每个敌人造<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(80/120/160/200/240 + (75% 法术强度))魔法伤害</span>。",
         "iconFile": "LuxLightBinding.png",
@@ -185,6 +191,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "TotalDamageTT",
+            "kind": "damage",
+            "baseByRank": [
+              80,
+              120,
+              160,
+              200,
+              240
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.75,
+                  0.75,
+                  0.75,
+                  0.75,
+                  0.75
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -195,6 +228,7 @@
         "slot": "W",
         "id": "LuxPrismaticWave",
         "name": "曲光屏障",
+        "maxRank": 5,
         "summary": "拉克丝掷出她的魔杖，魔杖所触及的友方单位会有光环环绕，保护他们免受敌方伤害。",
         "bodyHtml": "拉克丝扔出她的魔杖，为它途经的友军提供持续2.5秒的<span class=\"text-blue-600 dark:text-blue-300\">(40/55/70/85/100 + (40% 法术强度))护盾</span>。随后它会折返，为它途经的友军提供等额的<span class=\"text-blue-600 dark:text-blue-300\">护盾</span>。<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">两段护盾可以叠加。</span>",
         "iconFile": "LuxPrismaticWave.png",
@@ -251,6 +285,10 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -261,6 +299,7 @@
         "slot": "E",
         "id": "LuxLightStrikeKugel",
         "name": "透光奇点",
+        "maxRank": 5,
         "summary": "朝一个区域发射一个不规则的扭曲之光，减速附近敌人。拉克丝可以引爆它，对敌人造成区域性伤害。",
         "bodyHtml": "拉克丝创造一个光明地带，显形该区域并使区域中的敌人<span class=\"text-purple-600 dark:text-purple-500\">减速</span>25/30/35/40/45%。在5秒后或<span class=\"text-yellow-600 dark:text-yellow-300\">再次施放</span>这个技能后，它会爆炸，造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(65/115/165/215/265 + (80% 法术强度))魔法伤害</span>并<span class=\"text-purple-600 dark:text-purple-500\">减速</span>额外的1秒。",
         "iconFile": "LuxLightStrikeKugel.png",
@@ -321,6 +360,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "TotalDamageTT",
+            "kind": "damage",
+            "baseByRank": [
+              65,
+              115,
+              165,
+              215,
+              265
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.800000011920929,
+                  0.800000011920929,
+                  0.800000011920929,
+                  0.800000011920929,
+                  0.800000011920929
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -331,6 +397,7 @@
         "slot": "R",
         "id": "LuxR",
         "name": "终极闪光",
+        "maxRank": 3,
         "summary": "在积蓄能量之后，拉克丝发射一束光波，对该区域所有目标造成伤害。此外，该技能触发拉克丝的被动技能并刷新光芒四射减益的持续时间。",
         "bodyHtml": "拉克丝发射一束耀目的光能射线，对一条直线上的所有敌人造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(300/400/500 + (120% 法术强度))魔法伤害</span>。",
         "iconFile": "LuxR.png",
@@ -377,6 +444,29 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "TotalDamage",
+            "kind": "damage",
+            "baseByRank": [
+              300,
+              400,
+              500
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  1.2000000476837158,
+                  1.2000000476837158,
+                  1.2000000476837158
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {

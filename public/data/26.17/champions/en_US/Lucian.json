@@ -120,6 +120,7 @@
         "slot": "P",
         "id": "LucianPassive",
         "name": "Lightslinger",
+        "maxRank": 0,
         "summary": "Whenever Lucian uses an ability, his next attack becomes a double-shot. When Lucian is healed or shielded by an ally, or when a nearby enemy Champion is immobilized, his next 2 basic attacks will deal bonus magic damage.",
         "bodyHtml": "After using an Ability, Lucian's next Attack within 3.5 seconds will fire two shots. The second shot deals <span class=\"text-red-600 dark:text-red-500 font-semibold\"> physical damage</span> to the target, increased to <span class=\"text-red-600 dark:text-red-500 font-semibold\">(100% Attack Damage)</span> against minions.<br /><br /><span>Vigilance: </span>When Lucian is directly healed or shielded by an ally, or when a nearby enemy Champion is <span class=\"text-purple-600 dark:text-purple-500\">Immobilized</span>, his pistols become <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Overcharged</span> with energy, causing his next 2 basic attacks to deal an additional <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(15 + (20% Attack Damage)) magic damage</span>.",
         "iconFile": "Lucian_Passive.png",
@@ -127,6 +128,10 @@
         "range": [],
         "rankValues": [],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -137,6 +142,7 @@
         "slot": "Q",
         "id": "LucianQ",
         "name": "Piercing Light",
+        "maxRank": 5,
         "summary": "Lucian shoots a bolt of piercing light through a target.",
         "bodyHtml": "Lucian shoots a bolt of piercing light, dealing <span class=\"text-red-600 dark:text-red-500 font-semibold\">(80/115/150/185/220 + (100% bonus Attack Damage)) physical damage</span>.<br /><br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">This Ability's cast time decreases with Lucian's level.</span>",
         "iconFile": "LucianQ.png",
@@ -193,6 +199,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "TotalDamage",
+            "kind": "damage",
+            "baseByRank": [
+              80,
+              115,
+              150,
+              185,
+              220
+            ],
+            "terms": [
+              {
+                "stat": "bonusAttackDamage",
+                "coefficientsByRank": [
+                  1,
+                  1,
+                  1,
+                  1,
+                  1
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -203,6 +236,7 @@
         "slot": "W",
         "id": "LucianW",
         "name": "Ardent Blaze",
+        "maxRank": 5,
         "summary": "Lucian shoots a missile that explodes in a star shape, marking and briefly revealing enemies. Lucian gains Move Speed for attacking marked enemies.",
         "bodyHtml": "Lucian fires a shot that explodes at the end of its range or on the first enemy hit, dealing <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(75/110/145/180/215 + (90% Ability Power)) magic damage</span>, briefly revealing enemies and marking them for 6 seconds.<br /><br />When Lucian or an ally damages a marked enemy, Lucian gains <span class=\"text-cyan-600 dark:text-cyan-500\">60/65/70/75/80 Move Speed</span> for 1 second. Allies triggering this effect will also grant Lucian <span>Vigilance</span>.",
         "iconFile": "LucianW.png",
@@ -259,6 +293,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "TotalDamage",
+            "kind": "damage",
+            "baseByRank": [
+              75,
+              110,
+              145,
+              180,
+              215
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.8999999761581421,
+                  0.8999999761581421,
+                  0.8999999761581421,
+                  0.8999999761581421,
+                  0.8999999761581421
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -269,6 +330,7 @@
         "slot": "E",
         "id": "LucianE",
         "name": "Relentless Pursuit",
+        "maxRank": 5,
         "summary": "Lucian quickly dashes a short distance. Lightslinger attacks reduce Relentless Pursuit's cooldown.",
         "bodyHtml": "Lucian dashes.<br /><br />Cooldown is reduced by 1 second whenever Lucian hits an enemy with <span>Lightslinger</span> (2 seconds for champions).<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">Lucian can use other Abilities while dashing.</span>",
         "iconFile": "LucianE.png",
@@ -307,6 +369,10 @@
           }
         ],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -317,6 +383,7 @@
         "slot": "R",
         "id": "LucianR",
         "name": "The Culling",
+        "maxRank": 3,
         "summary": "Lucian unleashes a torrent of shots from his weapons.",
         "bodyHtml": "Lucian rapidly fires <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\"></span> shots in a direction for 3 seconds or until he <span class=\"text-yellow-600 dark:text-yellow-300\">Recasts</span>. Each shot deals <span class=\"text-red-600 dark:text-red-500 font-semibold\">(15/30/45 + (25% Attack Damage) + (15% Ability Power)) physical damage</span> to the first enemy hit.<br /><br />While firing, Lucian may use <span>Relentless Pursuit</span>.<br /><br />Total Damage: <span class=\"text-red-600 dark:text-red-500 font-semibold\"> physical damage</span><br /><br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">Number of shots scales with Lucian's Critical Strike chance and Critical Strike damage at 100% effectiveness.<br />Deals 200% damage to minions.</span>",
         "iconFile": "LucianR.png",
@@ -363,6 +430,12 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "unsupported",
+          "unsupportedPartTypes": [
+            "GameCalculationModified"
+          ]
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {

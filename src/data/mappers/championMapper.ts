@@ -35,7 +35,7 @@ function toSpell(ability: AbilityV2): ChampionSpell {
   return {
     id: ability.id,
     name: ability.name,
-    maxrank: Math.max(ability.cooldownSeconds.length, 1),
+    maxrank: ability.maxRank,
     cooldown: ability.cooldownSeconds,
     cooldownBurn: ability.cooldownSeconds.join("/"),
     recharge: ability.rechargeSeconds,

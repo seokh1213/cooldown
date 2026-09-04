@@ -120,6 +120,7 @@
         "slot": "P",
         "id": "NaafiriP",
         "name": "늘어나는 무리",
+        "maxRank": 0,
         "summary": "나피리가 자신이 공격하거나 스킬을 사용하는 대상을 함께 공격하는 무리를 소환합니다.",
         "bodyHtml": "나피리가 자신이 지정한 적을 공격해 <span class=\"text-red-600 dark:text-red-500 font-semibold\">(4% 추가 공격력)의 물리 피해</span>를 입히는 <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">무리</span>를 10초마다 한 마리씩 생성합니다. 나피리가 스킬을 사용한 후에는 피해량이 <span class=\"text-red-600 dark:text-red-500 font-semibold\">(5.2% 추가 공격력)</span>까지 증가합니다. <br /><br />챔피언과 대형 몬스터에게 스킬이 적중하면 이 스킬의 재사용 대기시간이 4초 감소합니다. 적을 처치하면 1초 감소합니다.<br /><br />최대 <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">무리</span> 수: 5",
         "iconFile": "Icons_Naafiri_P.png",
@@ -127,6 +128,10 @@
         "range": [],
         "rankValues": [],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -137,6 +142,7 @@
         "slot": "Q",
         "id": "NaafiriQ",
         "name": "다르킨 단검",
+        "maxRank": 5,
         "summary": "나피리가 최대 두 개의 단검을 던져 각 단검으로 출혈을 일으킵니다. 대상이 이미 출혈 상태라면 그 대신 추가 피해를 입힙니다.<br><br>무리가 이 스킬에 처음 적중당한 챔피언 또는 몬스터를 향해 도약해 공격합니다.<br>",
         "bodyHtml": "나피리가 다르킨의 저주를 받은 칼날을 던져 <span class=\"text-red-600 dark:text-red-500 font-semibold\">의 물리 피해</span>를 입히고 출혈을 일으켜 초에 걸쳐 <span class=\"text-red-600 dark:text-red-500 font-semibold\">의 물리 피해</span>를 입힙니다.<br /><br />나피리는 이 스킬을 <span class=\"text-yellow-600 dark:text-yellow-300\">재사용</span>할 수 있습니다. 적중한 적이 이미 이 스킬로 인한 출혈 상태라면 남은 출혈 피해+잃은 체력에 비례한 <span class=\"text-red-600 dark:text-red-500 font-semibold\"></span> ~ <span class=\"text-red-600 dark:text-red-500 font-semibold\">의 물리 피해</span>를 입힙니다. 해당 대상이 챔피언 또는 대형 몬스터면 나피리가 <span class=\"text-green-600 dark:text-green-400\">의 체력</span>을 회복합니다.<br /><br /><span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">무리</span>가 처음 적중한 챔피언 또는 몬스터에게 도약해 초 동안 공격합니다. <br /><br /><br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">체력이 30 미만인 에픽 몬스터를 제외한 몬스터 및 공격로 미니언을 처형합니다.</span>",
         "iconFile": "NaafiriQ.png",
@@ -205,6 +211,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "TotalBleedDamage",
+            "kind": "damage",
+            "baseByRank": [
+              35,
+              60,
+              85,
+              110,
+              135
+            ],
+            "terms": [
+              {
+                "stat": "bonusAttackDamage",
+                "coefficientsByRank": [
+                  0.800000011920929,
+                  0.800000011920929,
+                  0.800000011920929,
+                  0.800000011920929,
+                  0.800000011920929
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -223,6 +256,7 @@
         "slot": "W",
         "id": "NaafiriR",
         "name": "무리의 부름",
+        "maxRank": 5,
         "summary": "나피리가 대상으로 지정할 수 없는 상태가 되고 무리를 강화하며 추가로 무리를 소환하고 이동 속도와 공격력이 증가합니다.<br>",
         "bodyHtml": "나피리가 1초 동안 대상으로 지정할 수 없는 상태가 되고 사냥을 준비하며 <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">추가 무리를 2마리</span> 소환하고 5초 동안 <span class=\"text-red-600 dark:text-red-500 font-semibold\">공격력이 (20% 공격력)</span>, <span class=\"text-cyan-600 dark:text-cyan-500\">이동 속도가 20/22.5/25/27.5/30%</span> 증가합니다.<br /><br /><span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">무리</span>가 대상으로 지정할 수 없는 상태가 되며 나피리에게 돌아갑니다.<br /><br />",
         "iconFile": "NaafiriR.png",
@@ -275,6 +309,10 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -285,6 +323,7 @@
         "slot": "E",
         "id": "NaafiriE",
         "name": "적출",
+        "maxRank": 5,
         "summary": "나피리가 돌진해 주변 적에게 피해를 입히고 무리를 다시 불러 체력을 최대로 회복시킵니다.",
         "bodyHtml": "나피리가 전방으로 돌진해 <span class=\"text-red-600 dark:text-red-500 font-semibold\">(15/25/35/45/55 + (40% 추가 공격력))의 물리 피해</span>를 입힌 후 칼날 폭발을 일으켜 <span class=\"text-red-600 dark:text-red-500 font-semibold\">(60/85/110/135/160 + (80% 추가 공격력))의 물리 피해</span>를 입힙니다.<br /><br /><span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">무리</span>가 대상으로 지정할 수 없는 상태가 되며 나피리에게 돌아가 <span class=\"text-green-600 dark:text-green-400\">100%의 체력을 회복</span>합니다.<br />",
         "iconFile": "NaafiriE.png",
@@ -341,6 +380,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "TotalDamageFirstSlash",
+            "kind": "damage",
+            "baseByRank": [
+              15,
+              25,
+              35,
+              45,
+              55
+            ],
+            "terms": [
+              {
+                "stat": "bonusAttackDamage",
+                "coefficientsByRank": [
+                  0.4000000059604645,
+                  0.4000000059604645,
+                  0.4000000059604645,
+                  0.4000000059604645,
+                  0.4000000059604645
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -351,6 +417,7 @@
         "slot": "R",
         "id": "NaafiriW",
         "name": "사냥개의 추적",
+        "maxRank": 3,
         "summary": "나피리와 무리가 챔피언에게 돌진해 피해를 입힙니다. 나피리가 처치 관여를 달성하면 주위 적들을 드러내고 이 스킬을 한 번 재사용할 수 있습니다. 두 번째 사용 시 보호막을 얻습니다.",
         "bodyHtml": "나피리가 적 챔피언에게 돌진해 <span class=\"text-red-600 dark:text-red-500 font-semibold\">(125/200/275 + (100% 추가 공격력))의 물리 피해</span>를 입히고 잠시 <span class=\"text-purple-600 dark:text-purple-500\">둔화</span>시킵니다. <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">무리</span>가 대상으로 지정할 수 없는 상태가 되어 나피리와 함께 돌진하며 <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">한 마리</span>당 <span class=\"text-red-600 dark:text-red-500 font-semibold\">(12.5/20/27.5 + (10% 추가 공격력))의 물리 피해</span>를 입힙니다.<br /><br />나피리가 7초 안에 처치 관여를 달성하면 주위 적들을 드러내고 이 스킬을 한 번 재사용할 수 있습니다. 두 번째 사용 시 3초 동안 <span class=\"text-blue-600 dark:text-blue-300\">(100/150/200 + (150% 추가 공격력))의 피해를 흡수하는 보호막</span>을 얻습니다.<br /><br /><br /><br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\"><span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">무리의 부름</span>이 짧은 시간 연장됩니다.</span>",
         "iconFile": "NaafiriW.png",
@@ -401,6 +468,29 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "TotalDamage",
+            "kind": "damage",
+            "baseByRank": [
+              125,
+              200,
+              275
+            ],
+            "terms": [
+              {
+                "stat": "bonusAttackDamage",
+                "coefficientsByRank": [
+                  1,
+                  1,
+                  1
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {

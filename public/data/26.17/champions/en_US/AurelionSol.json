@@ -119,6 +119,7 @@
         "slot": "P",
         "id": "AurelionSolPassive",
         "name": "Cosmic Creator",
+        "maxRank": 0,
         "summary": "Aurelion Sol's damaging Abilities break down enemies into stacks of <font color='#3458eb'>Stardust</font>, which permanently improves each of his abilities. ",
         "bodyHtml": "Aurelion Sol's damaging Abilities break down enemies into <span style=\"color: #3458eb\">Stardust</span>, which improves his Abilities.<span><span></span>: Bursts deal an additional <span class=\"text-blue-600 dark:text-blue-500 font-semibold\"> max Health magic damage</span></span><span><span></span>: increased distance.</span><span><span></span>: increased area and <span></span> bonus execute threshold.</span><span><span> and </span>: increased area.</span><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">Aurelion Sol has acquired <span style=\"color: #3458eb\">Stardust</span>: <span style=\"color: #3458eb\"></span></span>",
         "iconFile": "AurelionSolP.png",
@@ -126,6 +127,10 @@
         "range": [],
         "rankValues": [],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -136,6 +141,7 @@
         "slot": "Q",
         "id": "AurelionSolQ",
         "name": "Breath of Light",
+        "maxRank": 5,
         "summary": "Aurelion Sol channels his dragon breath for a few seconds, damaging the first enemy hit and splashing reduced damage onto nearby enemies. Each second the breath is channeled directly at an enemy will deal bonus damage, which is improved by the amount of Stardust that's been collected. This ability collects Stardust if the target is a champion.",
         "bodyHtml": "Aurelion Sol breathes starfire for up to 3.25/3.25/3.25/3.25/9999 seconds, dealing <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(45/60/75/90/105 + (55% Ability Power)) magic damage</span> per second to the first enemy hit and 50% of the damage to surrounding enemies.<br /><br />Each full second of breath on the same enemy deals a burst of <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(60/70/80/90/100 + (30% Ability Power)) magic damage</span> plus <span class=\"text-blue-600 dark:text-blue-500 font-semibold\"> max Health magic damage</span> and absorbs <span style=\"color: #3458eb\">2 Stardust</span> if they are a champion.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">This Ability's range is 750.<br />Canceling this Ability within 0.25 seconds of casting it will lock the Ability for 1 second.<br />Minimum mana cost of 30/35/40/45/50 per cast.<br />Percent damage deals a max of <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">300 magic damage</span> against jungle monsters.</span>",
         "iconFile": "AurelionSolQ.png",
@@ -196,6 +202,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "BurstDamage",
+            "kind": "damage",
+            "baseByRank": [
+              60,
+              70,
+              80,
+              90,
+              100
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.30000001192092896,
+                  0.30000001192092896,
+                  0.30000001192092896,
+                  0.30000001192092896,
+                  0.30000001192092896
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -208,6 +241,7 @@
         "slot": "W",
         "id": "AurelionSolW",
         "name": "Astral Flight",
+        "maxRank": 5,
         "summary": "Aurelion Sol flies over terrain in a targeted direction. While in this state, he can cast other abilities. Breath of Light no longer has a cooldown or maximum channel duration and deals increased damage while flying.<br><br>Astral Flight's remaining cooldown is reduced whenever an enemy champion dies after being recently damaged by Aurelion Sol.<br><br>Stardust increases Astral Flight's maximum range.",
         "bodyHtml": "Aurelion Sol flies in a direction. While flying, <span>Breath of Light</span> has no Cooldown, no max channel duration, and its flat damage is increased by 8/9/10/11/12%.<br /><br />Takedowns on champions within 3 seconds of damaging them refunds 90% of this Ability's Cooldown.<br /><br /><span class=\"text-yellow-600 dark:text-yellow-300\">Recast:</span> End flight early.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">Casting <span>Breath of Light</span> while flying reduces flight speed by 50%.<br />Flight speed is (340 + (100%)).</span>",
         "iconFile": "AurelionSolW.png",
@@ -264,6 +298,10 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -274,6 +312,7 @@
         "slot": "E",
         "id": "AurelionSolE",
         "name": "Singularity",
+        "maxRank": 5,
         "summary": "Aurelion Sol summons a black hole, damaging enemies and slowly pulling them toward its center. This ability grants Stardust each time an enemy dies within the black hole and for each second an enemy champion is caught inside it. The center of the black hole executes enemies who are below a certain percentage of their maximum health. Stardust increases Singularity's area as well as the execution threshold.",
         "bodyHtml": "Aurelion Sol summons a black hole, dealing <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(10/15/20/25/30 + (12% Ability Power)) magic damage</span> per second and <span class=\"text-purple-600 dark:text-purple-500\">Dragging</span> enemies towards the center for 5 seconds. Enemies in the center below <span>5% max Health</span> die instantly.<br /><br />The black hole absorbs <span style=\"color: #3458eb\">Stardust</span> when enemies die within it and each second an enemy champion is inside.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">This Ability's cast range is 750.<br />Lane minions and jungle monsters inside have <span class=\"text-cyan-600 dark:text-cyan-500\">0 Movement Speed</span>.<br />Epic monsters cannot be executed.<br />Absorbs <span style=\"color: #3458eb\">1 Stardust</span> per second from Champions.<br />Absorbs <span style=\"color: #3458eb\">Stardust</span> from units that die in the black hole:<span>Champions: <span style=\"color: #3458eb\">2 Stardust</span></span><span>Epic monsters: <span style=\"color: #3458eb\">2 Stardust</span></span><span>Large monsters: <span style=\"color: #3458eb\">2 Stardust</span></span><span>Siege minions: <span style=\"color: #3458eb\">2 Stardust</span></span><span>Minions and small monsters: <span style=\"color: #3458eb\">1 Stardust</span></span></span>",
         "iconFile": "AurelionSolE.png",
@@ -322,6 +361,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "DamagePerSecond",
+            "kind": "damage",
+            "baseByRank": [
+              10,
+              15,
+              20,
+              25,
+              30
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.11999999731779099,
+                  0.11999999731779099,
+                  0.11999999731779099,
+                  0.11999999731779099,
+                  0.11999999731779099
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -332,6 +398,7 @@
         "slot": "R",
         "id": "AurelionSolR",
         "name": "Falling Star / The Skies Descend",
+        "maxRank": 3,
         "summary": "Falling Star: Aurelion Sol crashes a star into the earth. This impact deals magic damage and stuns enemies while also granting Stardust for each enemy champion it hits. Gathering enough Stardust transforms Aurelion Sol's next Falling Star into The Skies Descend.<br><br>The Skies Descend: Aurelion Sol drags a giant star down from the heavens with an increased impact zone and increased damage, knocking up enemies rather than stunning them. A shockwave then spreads from the edge of the impact zone, which damages and slows the enemies it hits. Stardust increases the impact area of both Falling Star and The Skies Descend.",
         "bodyHtml": "Aurelion Sol plucks a star from the heavens and crashes it into the earth, dealing <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(150/250/350 + (75% Ability Power)) magic damage</span>, <span class=\"text-purple-600 dark:text-purple-500\">Stunning</span> enemies 1 second, and absorbing <span style=\"color: #3458eb\">5 Stardust</span> for each champion hit.<br /><br />Gathering <span style=\"color: #3458eb\">75 Stardust</span> transforms the next <span>Falling Star</span> into <span>The Skies Descend</span>.<br /><br /><span>The Skies Descend</span>: Aurelion Sol drags a constellation's worth of fury down from the cosmos, dealing <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(187.5/312.5/437.5 + (93.75% Ability Power)) magic damage</span> in a larger area, <span class=\"text-purple-600 dark:text-purple-500\">Knocking Up</span> enemies hit for 1 second, and unleashing a massive shockwave that deals <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(135/225/315 + (67.5% Ability Power)) magic damage</span> to champions and Epic Monsters and <span class=\"text-purple-600 dark:text-purple-500\">Slows</span> all enemies hit by 50% for 1 second.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\"><span style=\"color: #3458eb\">Stardust</span> collected towards <span>The Skies Descend</span>: <span style=\"color: #3458eb\">/75.</span></span>",
         "iconFile": "AurelionSolR.png",
@@ -386,6 +453,29 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "MaxDamageTooltip",
+            "kind": "damage",
+            "baseByRank": [
+              150,
+              250,
+              350
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.75,
+                  0.75,
+                  0.75
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {

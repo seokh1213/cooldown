@@ -119,6 +119,7 @@
         "slot": "P",
         "id": "SivirPassive",
         "name": "Fleet of Foot",
+        "maxRank": 0,
         "summary": "Sivir gains a short burst of Move Speed when she attacks an enemy champion.",
         "bodyHtml": "Sivir's Attacks and Abilities grant her a burst of <span class=\"text-cyan-600 dark:text-cyan-500\">(55 ~ 85) Decaying Move Speed</span> for 1.5 seconds when they damage enemy champions.<br />",
         "iconFile": "Sivir_Passive.png",
@@ -126,6 +127,10 @@
         "range": [],
         "rankValues": [],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -136,6 +141,7 @@
         "slot": "Q",
         "id": "SivirQ",
         "name": "Boomerang Blade",
+        "maxRank": 5,
         "summary": "Sivir hurls her crossblade like a boomerang, dealing damage each way.",
         "bodyHtml": "Sivir hurls her crossblade like a boomerang, dealing <span class=\"text-red-600 dark:text-red-500 font-semibold\">(60/85/110/135/160 + (70% bonus Attack Damage) + (60% Ability Power))</span> to all enemies it cuts through. Hitting non-champions reduces the damage to subsequent targets, down to a minimum of 40%.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">The damage falloff resets upon beginning its return.<br />Damage scales with Critical Strike Chance and Critical Strike Damage at 40% effectiveness.<br />Cast time scales down with Attack Speed</span>",
         "iconFile": "SivirQ.png",
@@ -192,6 +198,12 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "unsupported",
+          "unsupportedPartTypes": [
+            "unsupported-multiplier"
+          ]
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -202,6 +214,7 @@
         "slot": "W",
         "id": "SivirW",
         "name": "Ricochet",
+        "maxRank": 5,
         "summary": "Sivir's next few basic attacks gain additional attack speed and bounce to nearby targets, dealing reduced damage while bouncing.",
         "bodyHtml": "For the next 4 seconds, Sivir gains <span>20/25/30/35/40% Attack Speed</span> and her auto attacks are empowered to bounce to additional surrounding enemies dealing <span class=\"text-red-600 dark:text-red-500 font-semibold\">(40/42.5/45/47.5/50% Attack Damage) physical damage</span> each bounce for up to 8 bounces.<br /><br />These bounces critically strike if the attack generating them does.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">Bounces will prioritize new targets before returning to targets that have already been struck. Can only hit each target a maximum of two times.<br />Bounces deal 65% damage to minions.</span><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">This ability executes low Health minions.</span>",
         "iconFile": "SivirW.png",
@@ -254,6 +267,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "BounceDamage",
+            "kind": "damage",
+            "baseByRank": [
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "terms": [
+              {
+                "stat": "totalAttackDamage",
+                "coefficientsByRank": [
+                  0.4000000059604645,
+                  0.42500001192092896,
+                  0.44999998807907104,
+                  0.4749999940395355,
+                  0.5
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -264,6 +304,7 @@
         "slot": "E",
         "id": "SivirE",
         "name": "Spell Shield",
+        "maxRank": 5,
         "summary": "Creates a magical barrier that blocks a single enemy ability cast on Sivir. She receives health and a burst of movement speed if a spell is blocked.",
         "bodyHtml": "Sivir creates a magical barrier for 1.5 seconds that blocks the next incoming enemy Ability. If an ability is blocked, Sivir restores <span class=\"text-green-600 dark:text-green-400\">((60/65/70/75/80% Attack Damage) + (50% Ability Power)) health</span> and triggers Fleet of Foot.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">This shield blocks both champion and item Abilities.</span>",
         "iconFile": "SivirE.png",
@@ -306,6 +347,10 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -316,6 +361,7 @@
         "slot": "R",
         "id": "SivirR",
         "name": "On The Hunt",
+        "maxRank": 3,
         "summary": "Sivir leads her allies in battle, granting them a surge of Move Speed for a period of time. In addition, Sivir's attacks reduce her spell cooldowns.",
         "bodyHtml": "Sivir rallies her nearby allies, granting them <span class=\"text-cyan-600 dark:text-cyan-500\">20/25/30% Move Speed</span> for 8/10/12 seconds.<br /><br />Sivir's attacks against champions while On The Hunt reduce the cooldown of her basic abilities by 0.5 seconds.<br /><br />Takedowns on recently damaged enemies refreshes the duration of the hunt.",
         "iconFile": "SivirR.png",
@@ -352,6 +398,10 @@
           }
         ],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {

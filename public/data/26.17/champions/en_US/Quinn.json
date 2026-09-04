@@ -120,6 +120,7 @@
         "slot": "P",
         "id": "QuinnPassive",
         "name": "Harrier",
+        "maxRank": 0,
         "summary": "Valor, Quinn's Demacian eagle, periodically marks enemies with <keywordMajor>Harrier</keywordMajor>. Quinn's first basic attack against <keywordMajor>Harrier</keywordMajor> targets will deal bonus physical damage.",
         "bodyHtml": "Every seconds, Valor marks a nearby enemy with <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Harrier</span>, revealing it for 4 seconds and causing Quinn's next Attack <span>On-Hit</span> against them to deal <span class=\"text-red-600 dark:text-red-500 font-semibold\">(40% bonus Attack Damage) bonus physical damage</span>.",
         "iconFile": "Quinn_Passive.png",
@@ -127,6 +128,10 @@
         "range": [],
         "rankValues": [],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -137,6 +142,7 @@
         "slot": "Q",
         "id": "QuinnQ",
         "name": "Blinding Assault",
+        "maxRank": 5,
         "summary": "Quinn calls Valor to mark an enemy and hinder its vision before damaging all enemies in the immediate area.",
         "bodyHtml": "Quinn orders Valor to dive, making the first enemy hit with <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Harrier</span>, reducing their vision radius for 1.75 seconds and dealing <span class=\"text-red-600 dark:text-red-500 font-semibold\">(65/100/135/170/205 + (80/85/90/95/100% bonus Attack Damage) + (50% Ability Power)) physical damage</span> to all surrounding enemies.<br /><br />If the first enemy struck is not a champion, it is <span class=\"text-purple-600 dark:text-purple-500\">Disarmed</span> for 1.75 seconds.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">Deals 100% increased damage to Monsters ((65/100/135/170/205 + (80/85/90/95/100% bonus Attack Damage) + (50% Ability Power))).</span>",
         "iconFile": "QuinnQ.png",
@@ -197,6 +203,43 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "TotalDamage",
+            "kind": "damage",
+            "baseByRank": [
+              65,
+              100,
+              135,
+              170,
+              205
+            ],
+            "terms": [
+              {
+                "stat": "bonusAttackDamage",
+                "coefficientsByRank": [
+                  0.800000011920929,
+                  0.8500000238418579,
+                  0.8999999761581421,
+                  0.949999988079071,
+                  1
+                ]
+              },
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.5,
+                  0.5,
+                  0.5,
+                  0.5,
+                  0.5
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -207,6 +250,7 @@
         "slot": "W",
         "id": "QuinnW",
         "name": "Heightened Senses",
+        "maxRank": 5,
         "summary": "Passively grants Quinn Attack Speed and Move Speed after she attacks a <keywordMajor>Harrier</keywordMajor> target. Activate to have Valor reveal a large area nearby.",
         "bodyHtml": "<span class=\"text-gray-600 dark:text-gray-500 italic\">Passive:</span> Attacking a <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Harrier</span> target grants Quinn <span>28/41/54/67/80% Attack Speed</span> and <span class=\"text-cyan-600 dark:text-cyan-500\">20/25/30/35/40% Move Speed</span> for 2 seconds.<br /><br /><span class=\"text-gray-900 dark:text-white font-semibold\">Active:</span> Valor reveals a large area nearby for 2 seconds.",
         "iconFile": "QuinnW.png",
@@ -239,6 +283,10 @@
           }
         ],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -249,6 +297,7 @@
         "slot": "E",
         "id": "QuinnE",
         "name": "Vault",
+        "maxRank": 5,
         "summary": "Quinn dashes to an enemy, dealing physical damage and slowing the target's Move Speed. Upon reaching the target, she leaps off the target, briefly interrupting it, and lands near her maximum Attack Range away from the target.",
         "bodyHtml": "Quinn dashes to an enemy, dealing <span class=\"text-red-600 dark:text-red-500 font-semibold\">(40/65/90/115/140 + (20% bonus Attack Damage)) physical damage</span> and marking them with <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Harrier</span>. Quinn then leaps backwards from the target, slightly <span class=\"text-purple-600 dark:text-purple-500\">Knocking</span> them <span class=\"text-purple-600 dark:text-purple-500\">Back</span> and <span class=\"text-purple-600 dark:text-purple-500\">Slowing</span> them by 50%, decaying over 1.5 seconds.",
         "iconFile": "QuinnE.png",
@@ -301,6 +350,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "TotalDamage",
+            "kind": "damage",
+            "baseByRank": [
+              40,
+              65,
+              90,
+              115,
+              140
+            ],
+            "terms": [
+              {
+                "stat": "bonusAttackDamage",
+                "coefficientsByRank": [
+                  0.20000000298023224,
+                  0.20000000298023224,
+                  0.20000000298023224,
+                  0.20000000298023224,
+                  0.20000000298023224
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -311,6 +387,7 @@
         "slot": "R",
         "id": "QuinnR",
         "name": "Behind Enemy Lines",
+        "maxRank": 3,
         "summary": "Quinn and Valor team up to fly around at great speed.  Ending the ability casts Skystrike, which deals damage to nearby enemies and marks champions with Harrier.",
         "bodyHtml": "Quinn calls to Valor, pairing up after channeling for 2 seconds gaining <span class=\"text-cyan-600 dark:text-cyan-500\">70/100/130% Move Speed</span> and allowing her to <span class=\"text-yellow-600 dark:text-yellow-300\">Recast</span> this Ability. Attacking or using <span>Blinding Assault</span> or <span>Vault</span> automatically <span class=\"text-yellow-600 dark:text-yellow-300\">Recasts</span> this Ability.<br /><br /><span class=\"text-yellow-600 dark:text-yellow-300\">Recast</span>: Quinn and Valor perform an aerial maneuver, dealing <span class=\"text-red-600 dark:text-red-500 font-semibold\">(60/90/120 + (35% bonus Attack Damage)) physical damage</span>, marking champions with <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Harrier</span>, and ending this Ability.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">Being damaged by non-minions removes the Move Speed bonus for 3 seconds.</span>",
         "iconFile": "QuinnR.png",
@@ -357,6 +434,29 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "Damage",
+            "kind": "damage",
+            "baseByRank": [
+              60,
+              90,
+              120
+            ],
+            "terms": [
+              {
+                "stat": "bonusAttackDamage",
+                "coefficientsByRank": [
+                  0.3499999940395355,
+                  0.3499999940395355,
+                  0.3499999940395355
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {

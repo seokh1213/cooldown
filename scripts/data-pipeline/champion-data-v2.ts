@@ -14,6 +14,7 @@ import type { CommunityDragonSpellData } from "../../src/lib/spellTooltipParser/
 import { getAbilityResourceName } from "../../src/lib/spellTooltipParser/valueUtils";
 import type { Champion, ChampionPassive, ChampionSpell } from "../../src/types";
 import type { NormalizedChampion } from "../../src/types/combatNormalized";
+import { compileAbilitySimulation } from "./ability-simulation";
 
 export interface ChampionDataV2Input {
   patchVersion: string;
@@ -70,6 +71,7 @@ function buildPassive(
     slot: "P",
     id: passive?.spellId ?? "P",
     name: passive?.name ?? normalized.spells.P.name,
+    maxRank: 0,
     summary: passive?.summary ?? "",
     bodyHtml: passive?.description ?? normalized.spells.P.tooltip,
     iconFile: passive?.image.full ?? "",
@@ -77,6 +79,7 @@ function buildPassive(
     range: [],
     rankValues: [],
     scalings: normalized.spells.P.scalings,
+    simulation: { status: "unavailable", unsupportedPartTypes: [] },
     conditions: [],
     source: passive?.tooltipSource ?? "ddragon",
     diagnostics: { unresolvedTokens: [] },
@@ -99,6 +102,7 @@ function buildActiveAbility(
     slot,
     id: spell.id,
     name: spell.name ?? normalized.spells[slot].name,
+    maxRank: spell.maxrank,
     summary: spell.summary ?? spell.description ?? "",
     bodyHtml: spell.tooltip ?? "",
     iconFile: spell.image?.full ?? `${spell.id}.png`,
@@ -117,6 +121,7 @@ function buildActiveAbility(
     range: numericValues(spell.range),
     rankValues: buildRankValues(spell, source, locale),
     scalings: normalized.spells[slot].scalings,
+    simulation: compileAbilitySimulation(source, spell.maxrank),
     conditions: [],
     source: spell.tooltipSource ?? "ddragon",
     diagnostics: {

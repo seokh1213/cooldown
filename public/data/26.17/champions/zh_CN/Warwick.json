@@ -120,6 +120,7 @@
         "slot": "P",
         "id": "WarwickP",
         "name": "血之饥渴",
+        "maxRank": 0,
         "summary": "沃里克的普攻造成额外魔法伤害。如果沃里克的生命值低于50%，那么他会获得等额的治疗效果。如果他的生命值低于25%，则治疗效果提升至三倍。",
         "bodyHtml": "沃里克的攻击在命中时附带额外的<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">((15% 额外攻击力) + (10% 法术强度))魔法伤害</span>。<br /><br />如果沃里克的生命值低于50%，那么还会回复<span class=\"text-green-600 dark:text-green-400\"><span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">血之饥渴</span>100%实际伤害值的生命值</span>。如果沃里克的生命值低于25%，那么治疗效果提升至<span class=\"text-green-600 dark:text-green-400\">250%实际伤害值</span>。",
         "iconFile": "WarwickP.png",
@@ -127,6 +128,10 @@
         "range": [],
         "rankValues": [],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -137,6 +142,7 @@
         "slot": "Q",
         "id": "WarwickQ",
         "name": "野兽之口",
+        "maxRank": 5,
         "summary": "沃里克向前猛扑并撕咬他的目标，造成基于目标最大生命值的伤害，并造成基于实际伤害值的治疗效果。",
         "bodyHtml": "<span>秒放：</span>沃里克向前猛扑并撕咬，造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">((120% 攻击力) + (100% 法术强度))外加6/7/8/9/10%最大生命值的魔法伤害</span>和<span class=\"text-green-600 dark:text-green-400\">25/37.5/50/62.5/75%实际伤害值的治疗效果</span>。<br /><br /><span>蓄力：</span>沃里克猛扑并用它的狼嘴紧咬目标，并跃到目标身后。在紧咬目标时，沃里克会跟随目标的所有移动。在释放他的蓄力后，他会造成等额伤害和治疗效果。<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">这个技能施加攻击特效和攻击附伤，并且不会暴击。<br />在紧咬目标时，沃里克免疫强制位移效果。</span>",
         "iconFile": "WarwickQ.png",
@@ -197,6 +203,43 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "BaseBiteDamage",
+            "kind": "damage",
+            "baseByRank": [
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "terms": [
+              {
+                "stat": "totalAttackDamage",
+                "coefficientsByRank": [
+                  1.2000000476837158,
+                  1.2000000476837158,
+                  1.2000000476837158,
+                  1.2000000476837158,
+                  1.2000000476837158
+                ]
+              },
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  1,
+                  1,
+                  1,
+                  1,
+                  1
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -207,6 +250,7 @@
         "slot": "W",
         "id": "WarwickW",
         "name": "鲜血追猎",
+        "maxRank": 5,
         "summary": "沃里克感知生命值在50%以下的敌人，在朝着这些敌人移动时会获得移动速度加成，并在攻击这些敌人时会获得攻速加成。当这些敌人的生命值在25%以下时，他会狂暴并让这些加成提升至三倍。",
         "bodyHtml": "<span class=\"text-gray-600 dark:text-gray-500 italic\">被动：</span>沃里克可以感知生命值低于50%的英雄，朝着其移动时获得<span class=\"text-cyan-600 dark:text-cyan-500\">35/42.5/50/57.5/65%移动速度</span>。对生命值低于50%的敌人施放技能和攻击可获得<span class=\"text-cyan-600 dark:text-cyan-500\">70/80/90/100/110%攻击速度</span>。这些加成在对抗低于25%生命值的敌人们时会提升200%。<br /><br /><span class=\"text-gray-900 dark:text-white font-semibold\">主动：</span>沃里克可以暂时感知到所有敌人，并在对抗相距最近的那个英雄时获得这个技能的被动效果，持续8秒，无论该目标有多少生命值。如果没有感知到任何英雄，该技能的冷却时间缩短30%。<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">沃里克只能被动感知到被友军攻击到生命值降至50%以下的敌人。</span>",
         "iconFile": "WarwickW.png",
@@ -257,6 +301,10 @@
           }
         ],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -267,6 +315,7 @@
         "slot": "E",
         "id": "WarwickE",
         "name": "远祖嗥叫",
+        "maxRank": 5,
         "summary": "沃里克获得持续2.5秒的伤害减免效果。在效果结束时，或者重新激活技能时，沃里克会嗥叫，使附近的敌人因恐惧而逃跑1秒。",
         "bodyHtml": "沃里克获得35/40/45/50/55%伤害减免，持续2.75秒。在它结束后，沃里克会发出嗥叫，<span class=\"text-purple-600 dark:text-purple-500\">恐惧</span>附近的敌人1秒。沃里克可以<span class=\"text-yellow-600 dark:text-yellow-300\">再次施放</span>来提前结束这个技能。",
         "iconFile": "WarwickE.png",
@@ -305,6 +354,10 @@
           }
         ],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -315,6 +368,7 @@
         "slot": "R",
         "id": "WarwickR",
         "name": "无尽束缚",
+        "maxRank": 3,
         "summary": "沃里克朝一个方向跳跃（跳跃距离可从他的移动速度加成中获益），将他所碰撞到的第一个敌方英雄压制1.5秒。",
         "bodyHtml": "沃里克跳跃一大段距离(随他的<span class=\"text-cyan-600 dark:text-cyan-500\">移动速度</span>增长)，并<span class=\"text-purple-600 dark:text-purple-500\">压制</span>碰撞到的第一个敌方英雄1.5秒并且自身处在引导状态。在此期间他持续攻击该英雄3次，造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(175/350/525 + (167% 额外攻击力))魔法伤害</span>。沃里克在引导期间会获得<span class=\"text-green-600 dark:text-green-400\">100%实际伤害值的治疗效果</span>。<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">这个技能在持续期间分别施加3次攻击特效和攻击附伤，并且不会暴击。<br />这个技能会使敌人<span class=\"text-purple-600 dark:text-purple-500\">中断位移</span>。</span>",
         "iconFile": "WarwickR.png",
@@ -361,6 +415,29 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "DamageCumulative",
+            "kind": "damage",
+            "baseByRank": [
+              175,
+              350,
+              525
+            ],
+            "terms": [
+              {
+                "stat": "bonusAttackDamage",
+                "coefficientsByRank": [
+                  1.6699999570846558,
+                  1.6699999570846558,
+                  1.6699999570846558
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {

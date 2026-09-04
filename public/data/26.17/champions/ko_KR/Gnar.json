@@ -120,6 +120,7 @@
         "slot": "P",
         "id": "GnarPassive",
         "name": "분노 유전자",
+        "maxRank": 0,
         "summary": "나르는 전투 중 분노가 생성됩니다. 분노가 최고치에 도달하면 다음번 스킬을 사용할 때 메가 나르로 변신하여 생존력이 커지고 스킬이 바뀝니다.",
         "bodyHtml": "나르가 피해를 입거나 입힐 때 <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">분노</span>를 생성합니다. <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">분노</span>가 최고치에 도달하면 다음번 스킬을 사용할 때 15초 동안 <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">메가 나르</span>로 변신합니다.<br /><br /><span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">미니 나르:</span> <span class=\"text-cyan-600 dark:text-cyan-500\">이동 속도가 </span>, <span>공격 속도가 (5.5% ~ 99%)</span>, 사거리가 (0 ~ 100) 증가합니다.<br /><br /><span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">메가 나르:</span> <span class=\"text-green-600 dark:text-green-400\">최대 체력이 </span>, <span class=\"text-orange-600 dark:text-orange-400\">방어력이 (3.5 ~ 54.5)</span>, <span>마법 저항력이 (3.5 ~ 63)</span>, <span class=\"text-red-600 dark:text-red-500 font-semibold\">공격력이 (6 ~ 48.5)</span> 증가합니다.",
         "iconFile": "Gnar_Passive.png",
@@ -127,6 +128,10 @@
         "range": [],
         "rankValues": [],
         "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -137,6 +142,7 @@
         "slot": "Q",
         "id": "GnarQ",
         "name": "부메랑 던지기 / 돌덩이 던지기",
+        "maxRank": 5,
         "summary": "나르가 부메랑을 던지면 맞힌 적에게 피해를 입히고 속도를 늦춘 다음 나르에게 돌아옵니다. 나르가 부메랑을 받으면 재사용 대기시간이 감소합니다.<br><br>메가 나르는 돌덩어리를 던져 주위 모두에게 피해를 입히고 속도를 늦춥니다. 던져진 돌덩어리는 적에게 맞으면 그 자리에 멈추며, 메가 나르가 다시 집어들면 재사용 대기시간이 감소합니다.",
         "bodyHtml": "<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">미니 나르:</span> 나르가 부메랑을 던져 <span class=\"text-red-600 dark:text-red-500 font-semibold\">의 물리 피해</span>를 입히고 초 동안 <span class=\"text-purple-600 dark:text-purple-500\">둔화</span>시킵니다. 부메랑은 적 하나를 맞힌 다음 돌아오며, 이후 맞히는 적들은 받는 피해량이 감소합니다. 적 하나당 부메랑에 한 번만 맞습니다. 부메랑을 받으면 재사용 대기시간이 감소합니다.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">첫 번째 적에게 적중한 후에 적중당한 적은 50%의 피해를 입습니다.</span>",
         "iconFile": "GnarQ.png",
@@ -191,6 +197,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "MegaTotalDamage",
+            "kind": "damage",
+            "baseByRank": [
+              45,
+              90,
+              135,
+              180,
+              225
+            ],
+            "terms": [
+              {
+                "stat": "totalAttackDamage",
+                "coefficientsByRank": [
+                  1.399999976158142,
+                  1.399999976158142,
+                  1.399999976158142,
+                  1.399999976158142,
+                  1.399999976158142
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -206,6 +239,7 @@
         "slot": "W",
         "id": "GnarW",
         "name": "슝슝 / 쿵쾅",
+        "maxRank": 5,
         "summary": "나르는 기본 공격과 스킬 공격을 하면 신이 나서 추가 피해를 입히며 이동 속도가 상승합니다.<br><br>메가 나르는 너무 분노해 있어서, 뒷발로 일어나서 전방을 꽝 내리치며 일정 범위 안의 적들을 기절시킵니다.",
         "bodyHtml": "<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">미니 나르 기본 지속 효과:</span> 같은 적에게 세 번째 기본 공격이나 스킬을 가할 때마다 <span class=\"text-blue-600 dark:text-blue-500 font-semibold\"> + 최대 체력의에 해당하는 마법 피해</span>를 추가로 입히며 <span class=\"text-cyan-600 dark:text-cyan-500\">이동 속도가</span> 증가한 뒤 초에 걸쳐 원래대로 돌아옵니다.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">나르가 <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">메가 나르</span> 형태에서 돌아올 때는 <span class=\"text-cyan-600 dark:text-cyan-500\">이동 속도</span> 역시 증가합니다.<br />정글 몬스터를 상대로는 최대 <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">300의 마법 피해</span>를 입힙니다.</span>",
         "iconFile": "GnarW.png",
@@ -252,6 +286,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "MegaTotalDamage",
+            "kind": "damage",
+            "baseByRank": [
+              45,
+              75,
+              105,
+              135,
+              165
+            ],
+            "terms": [
+              {
+                "stat": "totalAttackDamage",
+                "coefficientsByRank": [
+                  1,
+                  1,
+                  1,
+                  1,
+                  1
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -267,6 +328,7 @@
         "slot": "E",
         "id": "GnarE",
         "name": "폴짝 / 우지끈",
+        "maxRank": 5,
         "summary": "나르가 대상 지점으로 폴짝 뛰며, 유닛의 머리 위에 착지하는 경우에는 튕겨서 더 멀리 날아갑니다.<br><br>메가 나르는 튕겨가기에는 너무 커서, 대신 착지한 지면에 균열을 일으키고 주위 일정 반경에 피해를 입힙니다.",
         "bodyHtml": "<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">미니 나르:</span> 나르가 폴짝 뛰어 초 동안 <span>공격 속도가</span> 상승합니다. 유닛 위에 착지하면 튕겨서 더 멀리 날아갑니다. 적에게 착지하여 튕기면 <span class=\"text-red-600 dark:text-red-500 font-semibold\">의 물리 피해</span>를 입히며 잠시 <span class=\"text-purple-600 dark:text-purple-500\">둔화</span>시킵니다.",
         "iconFile": "GnarE.png",
@@ -317,6 +379,33 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "MegaTotalDamage",
+            "kind": "damage",
+            "baseByRank": [
+              80,
+              115,
+              150,
+              185,
+              220
+            ],
+            "terms": [
+              {
+                "stat": "maxHealth",
+                "coefficientsByRank": [
+                  0.05999999865889549,
+                  0.05999999865889549,
+                  0.05999999865889549,
+                  0.05999999865889549,
+                  0.05999999865889549
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
@@ -332,6 +421,7 @@
         "slot": "R",
         "id": "GnarR",
         "name": "나르!",
+        "maxRank": 3,
         "summary": "메가 나르가 선택한 방향으로 주위 모두를 집어던져 피해를 입히고 속도를 늦춥니다. 벽에 부딪힌 적은 기절하며 추가 피해를 입습니다.",
         "bodyHtml": "<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">미니 나르 기본 지속 효과:</span> <span>슝슝</span>의 <span class=\"text-cyan-600 dark:text-cyan-500\">이동 속도</span>가 증가합니다.<br /><br /><span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">메가 나르:</span> 근처 적을 던져 <span class=\"text-red-600 dark:text-red-500 font-semibold\">(200/300/400 + (100% 주문력) + (50% 추가 공격력))의 물리 피해</span>를 입히고 <span class=\"text-purple-600 dark:text-purple-500\">뒤로 밀어내며</span> 1.25/1.5/1.75초 동안 45% <span class=\"text-purple-600 dark:text-purple-500\">둔화</span>시킵니다. 벽에 부딪히는 적은 <span class=\"text-red-600 dark:text-red-500 font-semibold\">(200/300/400 + (100% 주문력) + (50% 추가 공격력))의 물리 피해</span>를 입고 <span class=\"text-purple-600 dark:text-purple-500\">기절</span>합니다.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\"><span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">미니 나르</span>로 변신한 후에는 15초 동안 <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">분노</span>가 쌓이지 않습니다.</span>",
         "iconFile": "GnarR.png",
@@ -378,6 +468,37 @@
             ]
           }
         ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "Damage",
+            "kind": "damage",
+            "baseByRank": [
+              200,
+              300,
+              400
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  1,
+                  1,
+                  1
+                ]
+              },
+              {
+                "stat": "bonusAttackDamage",
+                "coefficientsByRank": [
+                  0.5,
+                  0.5,
+                  0.5
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
         "conditions": [],
         "source": "communitydragon",
         "diagnostics": {
