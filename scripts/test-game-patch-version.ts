@@ -1,8 +1,8 @@
 import assert from "node:assert/strict";
-import { toOfficialPatchVersion } from "../src/lib/gamePatchVersion";
 import {
   resolveStaticDataRelease,
   toCommunityDragonVersion,
+  toOfficialPatchVersion,
 } from "../src/lib/staticDataRelease";
 
 assert.equal(toOfficialPatchVersion("15.17.1"), "25.17");
