@@ -16,6 +16,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { VisuallyHidden } from "@/components/ui/visually-hidden";
+import { SafeBlockHtml, SafeInlineHtml } from "@/components/ui/safe-html";
 
 export interface StatShardRow {
   label: string;
@@ -39,12 +40,6 @@ function statShardIconUrl(iconPath: string): string {
   return `https://ddragon.leagueoflegends.com/cdn/img${trimmed}`;
 }
 
-function sanitizeStatShardDescription(perk: RuneStatShard): string {
-  return (perk.shortDesc || perk.longDesc || "")
-    .replace(/<font[^>]*>/gi, "")
-    .replace(/<\/font>/gi, "");
-}
-
 function RuneDetail({ rune, warning }: RuneDetailProps) {
   const description = (rune.descriptionHtml || "")
     .replace(/@\{[^}]+\}@/g, ' <span class="text-destructive dark:text-red-400">?</span> ')
@@ -63,9 +58,9 @@ function RuneDetail({ rune, warning }: RuneDetailProps) {
         />
         <span className="text-sm font-semibold">{rune.name}</span>
       </div>
-      <div
+      <SafeBlockHtml
         className="text-xs text-muted-foreground leading-relaxed"
-        dangerouslySetInnerHTML={{ __html: description }}
+        html={description}
       />
       <div className="text-xs text-muted-foreground/80 italic border-t pt-3 mt-3 flex items-center gap-1.5">
         <AlertTriangle className="w-2.5 h-2.5 text-yellow-600 dark:text-yellow-500 shrink-0" />
@@ -202,7 +197,10 @@ function StatShardCard({ rows, title, warning }: {
                   <img src={statShardIconUrl(perk.iconPath)} alt={perk.name} width={24} height={24} className="w-6 h-6 rounded-full border border-border/60 shrink-0" />
                   <div className="flex flex-col min-w-0">
                     <span className="text-[11px] font-semibold truncate">{perk.name}</span>
-                    <span className="text-[10px] text-muted-foreground line-clamp-2" dangerouslySetInnerHTML={{ __html: sanitizeStatShardDescription(perk) }} />
+                    <SafeInlineHtml
+                      className="text-[10px] text-muted-foreground line-clamp-2"
+                      html={perk.shortDesc || perk.longDesc || ""}
+                    />
                   </div>
                 </div>
               ))}

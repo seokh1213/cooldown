@@ -16,6 +16,7 @@ import { VisuallyHidden } from "@/components/ui/visually-hidden";
 import { Search, AlertTriangle } from "lucide-react";
 import { summonerSpellIconUrl } from "@/data/assets/riotAssetUrls";
 import { htmlToPlainText } from "@/lib/htmlText";
+import { SafeInlineHtml } from "@/components/ui/safe-html";
 
 interface SummonerTabProps {
   /** 정적 데이터 경로/캐시 키로 쓰는 Riot 공식 패치 버전 */
@@ -121,9 +122,9 @@ export function SummonerTab({ patchVersion, sources, ddragonVersion, lang }: Sum
     const html = getSpellTooltip(spell);
     const processedHtml = replaceUnresolvedVariables(html);
     return (
-      <span
+      <SafeInlineHtml
         className="text-xs leading-relaxed [&_br]:block"
-        dangerouslySetInnerHTML={{ __html: processedHtml }}
+        html={processedHtml}
       />
     );
   };
