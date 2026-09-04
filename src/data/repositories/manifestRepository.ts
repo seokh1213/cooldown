@@ -10,7 +10,15 @@ export class ManifestRepository {
   constructor(private readonly client: StaticDataClient) {}
 
   get(): Promise<DataManifest> {
-    this.current ??= this.client.getJson("data/version.json").then(decodeDataManifest);
+    if (this.current) return this.current;
+    const request = this.client
+      .getJson("data/version.json")
+      .then(decodeDataManifest)
+      .catch((error) => {
+        if (this.current === request) this.current = undefined;
+        throw error;
+      });
+    this.current = request;
     return this.current;
   }
 }

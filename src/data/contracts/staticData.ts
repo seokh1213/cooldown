@@ -7,6 +7,11 @@ export interface StaticDataSources {
   cdragon: string;
 }
 
+export interface StaticDataIdentity {
+  patchVersion: string;
+  sources: StaticDataSources;
+}
+
 export interface StaticDataMetadata {
   schemaVersion: 2;
   patchVersion: string;

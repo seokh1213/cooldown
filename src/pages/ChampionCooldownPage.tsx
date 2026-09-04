@@ -29,6 +29,7 @@ import {
 import type { StoredSelectedChampionList } from "@/lib/storageSchema";
 import { logger } from "@/lib/logger";
 import { useTranslation, type Language } from "@/i18n";
+import type { StaticDataSources } from "@/data/contracts/staticData";
 
 type ChampionCooldownTab = "skills" | "stats";
 
@@ -49,6 +50,7 @@ interface ChampionCooldownPageProps {
   version: string;
   /** Data Dragon CDN 요청용 내부 버전 (예: 16.17.1) */
   ddragonVersion: string;
+  sources: StaticDataSources;
 }
 
 function ChampionCooldownPageContent({
@@ -56,6 +58,7 @@ function ChampionCooldownPageContent({
   championList,
   version,
   ddragonVersion,
+  sources,
 }: ChampionCooldownPageProps) {
   const [searchParams, setSearchParams] = useSearchParams();
   const deviceType = useDeviceType();
@@ -146,6 +149,7 @@ function ChampionCooldownPageContent({
     resetChampions: resetChampionsData,
   } = useChampionData({
     version,
+    sources,
     lang,
     championList,
     tabs,

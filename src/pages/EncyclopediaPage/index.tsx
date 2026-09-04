@@ -14,6 +14,7 @@ function EncyclopediaPageContent({
   lang,
   version,
   ddragonVersion,
+  sources,
 }: EncyclopediaPageProps) {
   const [searchParams, setSearchParams] = useSearchParams();
   
@@ -81,13 +82,13 @@ function EncyclopediaPageContent({
 
       {/* Runes / Items encyclopedia tabs */}
       {activeTab === "runes" && (
-        <RunesTab version={version} lang={lang} />
+        <RunesTab version={version} sources={sources} lang={lang} />
       )}
       {activeTab === "items" && (
-        <ItemsTab version={version} ddragonVersion={ddragonVersion} lang={lang} />
+        <ItemsTab version={version} sources={sources} ddragonVersion={ddragonVersion} lang={lang} />
       )}
       {activeTab === "summoner" && (
-        <SummonerTab version={version} ddragonVersion={ddragonVersion} lang={lang} />
+        <SummonerTab version={version} sources={sources} ddragonVersion={ddragonVersion} lang={lang} />
       )}
     </div>
   );

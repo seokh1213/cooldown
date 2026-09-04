@@ -1,6 +1,7 @@
 import {
   DATA_LOCALES,
   type DataLocale,
+  type StaticDataIdentity,
   type StaticDataMetadata,
 } from "./staticData";
 
@@ -37,12 +38,35 @@ export function decodeStaticDataMetadata(
 
 export function assertStaticDataIdentity(
   metadata: StaticDataMetadata,
-  patchVersion: string,
+  expected: StaticDataIdentity,
   locale: DataLocale
 ): void {
-  if (metadata.patchVersion !== patchVersion || metadata.locale !== locale) {
+  const matches =
+    metadata.patchVersion === expected.patchVersion &&
+    metadata.locale === locale &&
+    metadata.sources.ddragon === expected.sources.ddragon &&
+    metadata.sources.cdragon === expected.sources.cdragon;
+  if (!matches) {
     throw new Error(
-      `Static data identity mismatch: expected ${patchVersion}/${locale}, received ${metadata.patchVersion}/${metadata.locale}`
+      "Static data identity mismatch: " +
+        `expected ${formatIdentity(expected)}/${locale}, ` +
+        `received ${formatIdentity(metadata)}/${metadata.locale}`,
     );
   }
+}
+
+export function formatIdentity(identity: StaticDataIdentity): string {
+  return [
+    identity.patchVersion,
+    identity.sources.ddragon,
+    identity.sources.cdragon,
+  ].join("/");
+}
+
+export function staticDataIdentityKey(identity: StaticDataIdentity): string {
+  return [
+    identity.patchVersion,
+    identity.sources.ddragon,
+    identity.sources.cdragon,
+  ].join(":");
 }
