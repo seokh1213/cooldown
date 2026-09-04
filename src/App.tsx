@@ -21,7 +21,7 @@ export default function App() {
 
   return (
     <I18nProvider lang={preferences.language}>
-      <BrowserRouter basename={import.meta.env.PROD ? "/cooldown" : undefined}>
+      <BrowserRouter basename={import.meta.env.BASE_URL}>
         <UpdateBanner
           visible={pwaUpdateAvailable}
           autoUpdateEnabled={preferences.autoUpdateEnabled}

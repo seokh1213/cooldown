@@ -48,9 +48,10 @@ function Nav({
 }: NavProps) {
   const { t } = useTranslation();
   const location = useLocation();
-  const isEncyclopediaPage = location.pathname === "/encyclopedia";
-  const isSimulationPage = location.pathname === "/simulation";
-  const isChampionCooldownPage = location.pathname === "/" || location.pathname === "";
+  const currentPath = location.pathname.replace(/\/+$/, "") || "/";
+  const isEncyclopediaPage = currentPath === "/encyclopedia";
+  const isSimulationPage = currentPath === "/simulation";
+  const isChampionCooldownPage = currentPath === "/";
   const [isMobile, setIsMobile] = useState(false);
   const [tutorialOpen, setTutorialOpen] = useState(false);
   const [versionPopoverOpen, setVersionPopoverOpen] = useState(false);
