@@ -6,6 +6,7 @@ import { buildNormalizedChampion } from "./data-pipeline/normalization/champion"
 import { normalizeItems } from "./data-pipeline/normalization/item";
 import { normalizeSummonerSpells } from "./data-pipeline/normalization/summoner";
 import { StatKey } from "../src/types/combatStats";
+import { fetchCDragonRuneStatShards } from "./data-pipeline/sources/cdragon-runes";
 
 const items = normalizeItems("en_US", {
   data: {
@@ -42,6 +43,24 @@ const summoners = normalizeSummonerSpells({
 });
 assert.deepEqual(summoners[0].cooldown, [300]);
 assert.deepEqual(summoners[0].modes, ["CLASSIC"]);
+
+const runeRequests: string[] = [];
+const shards = await fetchCDragonRuneStatShards(
+  "ko_KR",
+  "16.17",
+  async (input) => {
+    const url = String(input);
+    runeRequests.push(url);
+    const body = url.endsWith("perkstyles.json")
+      ? [{ id: 5000, name: "Stat", slots: [{ type: "kStatMod", perks: [5001] }] }]
+      : [{ id: 5001, name: "Health", iconPath: "health.png", shortDesc: "+65 Health" }];
+    return new Response(JSON.stringify(body), { status: 200 });
+  },
+);
+assert.equal(shards.groups[0].rows[0].perks[0].id, 5001);
+assert.equal(runeRequests.length, 2);
+assert.equal(runeRequests.every((url) => url.includes("/16.17/")), true);
+assert.equal(runeRequests.some((url) => url.includes("latest")), false);
 
 const directory = await mkdtemp(path.join(os.tmpdir(), "cooldown-normalize-"));
 try {
