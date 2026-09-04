@@ -679,7 +679,7 @@
         "id": "AlphaStrike",
         "name": "阿尔法突袭",
         "description": "易以肉眼难以发觉的速度穿梭于战场，对多个敌人造成物理伤害，同时处于不可被选取的状态下。阿尔法突袭可以暴击，并对野怪造成额外物理伤害。普通攻击可以减少阿尔法突袭的冷却时间。",
-        "tooltip": "易变得【不可被选取】并对他目标附近的敌人发起快速打击，对命中的所有敌人造成<physicalDamage>{{ totaldamage }}物理伤害</physicalDamage>，至多命中{{ alphastrikebounces }}名敌人。<br /><br />如果没有其他目标，那么这个技能可以重复打击相同敌人，每次后续打击造成{{ subsequenthitmultiplier*100 }}%物理伤害(<physicalDamage>{{ subesquentdamage }}</physicalDamage>)，对单个目标的最大伤害值为<physicalDamage>{{ singletotaldamage }}物理伤害</physicalDamage>。{{ spellmodifierdescriptionappend }}",
+        "tooltip": "易变得【不可被选取】并对他目标附近的敌人发起快速打击，对命中的所有敌人造成<span class=\"text-red-600 dark:text-red-500 font-semibold\">(20/40/60/80/100 + (70% 攻击力))物理伤害</span>，至多命中4名敌人。<br /><br />如果没有其他目标，那么这个技能可以重复打击相同敌人，每次后续打击造成25%物理伤害(<span class=\"text-red-600 dark:text-red-500 font-semibold\"></span>)，对单个目标的最大伤害值为<span class=\"text-red-600 dark:text-red-500 font-semibold\">(20/40/60/80/100 + (70% 攻击力))物理伤害</span>。<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">施加75%伤害的 <span>攻击附伤</span>。后续命中的伤害降低至这个伤害的25%。<br />可以暴击，造成额外的<span class=\"text-red-600 dark:text-red-500 font-semibold\">(20/40/60/80/100 + (70% 攻击力))物理伤害</span>。后续命中的伤害降低至这个伤害的25%，对单个目标的最大总暴击伤害为<span class=\"text-red-600 dark:text-red-500 font-semibold\"></span>。<br />每次打击会对野怪造成60/85/110/135/160额外伤害。<br />攻击可使这个技能的冷却时间缩短秒。<br /><span>阿尔法突袭</span>不会缩短它自己的冷却时间或叠加<span>双重打击</span>的 <span>攻击附伤</span>层数。<br />易将出现在初始目标旁边。</span><br />",
         "leveltip": {
           "label": [
             "伤害",
@@ -818,13 +818,22 @@
           "w": 48,
           "h": 48
         },
-        "resource": "{{ cost }} {{ abilityresourcename }}"
+        "resource": "{{ cost }} {{ abilityresourcename }}",
+        "summary": "易以肉眼难以发觉的速度穿梭于战场，对多个敌人造成物理伤害，同时处于不可被选取的状态下。阿尔法突袭可以暴击，并对野怪造成额外物理伤害。普通攻击可以减少阿尔法突袭的冷却时间。",
+        "tooltipSource": "communitydragon",
+        "tooltipDiagnostics": {
+          "unresolvedTokens": [
+            "BasicAttackCDR",
+            "SingleCritTotalDamage",
+            "SubesquentDamage"
+          ]
+        }
       },
       {
         "id": "Meditate",
         "name": "冥想",
         "description": "易通过集中念力来活化他的身体，从而回复生命值，并暂时减少所受的伤害。此外，易还会为双重打击充能，并暂停无极剑道和高原血统的持续时长。",
-        "tooltip": "易开始引导，并在{{ healduration }}秒里持续回复共<healing>{{ totalheal }}生命值</healing>。这个治疗效果可基于易大师的已损失生命值而提升，最多可提升至{{ maxmissinghealthpercent*100 }}%。<br /><br />在引导时和随后的{{ drlinger }}秒里，他还会获得{{ initialdr }}伤害减免，这个效果会在最初的{{ initialextradrduration }}秒后降低至{{ damagereduction*100 }}%。{{ spellmodifierdescriptionappend }}",
+        "tooltip": "易开始引导，并在4秒里持续回复共<span class=\"text-green-600 dark:text-green-400\">(120/200/280/360/440 + (100% 法术强度))生命值</span>。这个治疗效果可基于易大师的已损失生命值而提升，最多可提升至100%。<br /><br />在引导时和随后的0.5秒里，他还会获得伤害减免，这个效果会在最初的0.5秒后降低至45/47.5/50/52.5/55%。<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">易在引导时将获得<span>双重打击</span>的层数。<br />伤害减免效果在作用于来自防御塔的伤害时会减半。</span>",
         "leveltip": {
           "label": [
             "生命值已回复",
@@ -959,13 +968,20 @@
           "w": 48,
           "h": 48
         },
-        "resource": "{{ basemanacost }}法力 (+{{ percentmanacostpersecond*100 }}%最大法力值每秒)"
+        "resource": "{{ basemanacost }}法力 (+{{ percentmanacostpersecond*100 }}%最大法力值每秒)",
+        "summary": "易通过集中念力来活化他的身体，从而回复生命值，并暂时减少所受的伤害。此外，易还会为双重打击充能，并暂停无极剑道和高原血统的持续时长。",
+        "tooltipSource": "communitydragon",
+        "tooltipDiagnostics": {
+          "unresolvedTokens": [
+            "InitialDR"
+          ]
+        }
       },
       {
         "id": "WujuStyle",
         "name": "无极剑道",
         "description": "提供额外真实伤害至普攻",
-        "tooltip": "易的攻击造成额外的<trueDamage>{{ totaldamage }}真实伤害</trueDamage>，持续{{ duration }}秒。{{ spellmodifierdescriptionappend }}",
+        "tooltip": "易的攻击造成额外的<span class=\"text-yellow-600 dark:text-yellow-500 font-semibold\">(20/25/30/35/40 + (35% 额外攻击力))真实伤害</span>，持续5秒。<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\"><span>无极剑道</span>的持续时间会在<span>阿尔法突袭</span>和<span>冥想</span>期间暂停</span>",
         "leveltip": {
           "label": [
             "伤害"
@@ -1098,13 +1114,15 @@
           "w": 48,
           "h": 48
         },
-        "resource": "无消耗"
+        "resource": "无消耗",
+        "summary": "提供额外真实伤害至普攻",
+        "tooltipSource": "communitydragon"
       },
       {
         "id": "Highlander",
         "name": "高原血统",
         "description": "易以超乎想象的身法进行移动，短时间内提升移动速度和攻击速度，并免疫减速效果。该技能激活期间，易在参与击杀一名敌方英雄的同时，会延长该技能的持续时间。在击杀和助攻后，也会被动地减少易其它技能的冷却时间。",
-        "tooltip": "<spellPassive>被动：</spellPassive>在参与击杀后，易大师的普通技能的剩余冷却时间会减少{{ rcooldownrefund*100 }}%。<br /><br /><spellActive>主动：</spellActive>获得<speed>{{ rmsbonus }}%移动速度</speed>，<attackSpeed>{{ rasbonus }}%攻击速度</attackSpeed>，并且免疫<status>减速</status>效果，持续{{ rduration }}秒。每次参与击杀后都会使此技能的持续时间延长{{ rkillassistextension }}秒。{{ spellmodifierdescriptionappend }}",
+        "tooltip": "<span class=\"text-gray-600 dark:text-gray-500 italic\">被动：</span>在参与击杀后，易大师的普通技能的剩余冷却时间会减少70%。<br /><br /><span class=\"text-gray-900 dark:text-white font-semibold\">主动：</span>获得<span class=\"text-cyan-600 dark:text-cyan-500\">35/45/55%移动速度</span>，<span>25/45/65%攻击速度</span>，并且免疫<span class=\"text-purple-600 dark:text-purple-500\">减速</span>效果，持续7秒。每次参与击杀后都会使此技能的持续时间延长7秒。<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\"><span>高原血统</span>的持续时间会在<span>阿尔法突袭</span>和<span>冥想</span>期间暂停</span>",
         "leveltip": {
           "label": [
             "攻击速度",
@@ -1213,7 +1231,9 @@
           "w": 48,
           "h": 48
         },
-        "resource": "{{ cost }} {{ abilityresourcename }}"
+        "resource": "{{ cost }} {{ abilityresourcename }}",
+        "summary": "易以超乎想象的身法进行移动，短时间内提升移动速度和攻击速度，并免疫减速效果。该技能激活期间，易在参与击杀一名敌方英雄的同时，会延长该技能的持续时间。在击杀和助攻后，也会被动地减少易其它技能的冷却时间。",
+        "tooltipSource": "communitydragon"
       }
     ],
     "passive": {

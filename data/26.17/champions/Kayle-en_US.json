@@ -672,7 +672,7 @@
         "id": "KayleQ",
         "name": "Radiant Blast",
         "description": "Kayle conjures a portal, summoning a celestial sword that pierces through enemies, slowing, damaging, and reducing the resistances of all hit.",
-        "tooltip": "Kayle fires a celestial sword that stops on the first enemy hit, dealing <magicDamage>{{ totaldamage }} magic damage</magicDamage>, <status>Slowing</status> by {{ slowpercent }}% for {{ slowduration }} seconds, and removing <scaleArmor>{{ shredpercent }}% Armor</scaleArmor> and <scaleMR>Magic Resist</scaleMR> for {{ shredduration }} seconds from the target and enemies behind them.{{ spellmodifierdescriptionappend }}",
+        "tooltip": "Kayle fires a celestial sword that stops on the first enemy hit, dealing <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(60/90/120/150/180 + (50% Ability Power) + (60% bonus Attack Damage)) magic damage</span>, <span class=\"text-purple-600 dark:text-purple-500\">Slowing</span> by 25/30/35/40/45% for 2 seconds, and removing <span class=\"text-orange-600 dark:text-orange-400\">15% Armor</span> and <span>Magic Resist</span> for 4 seconds from the target and enemies behind them.",
         "leveltip": {
           "label": [
             "Damage",
@@ -811,13 +811,15 @@
           "w": 48,
           "h": 48
         },
-        "resource": "{{ cost }} {{ abilityresourcename }}"
+        "resource": "{{ cost }} {{ abilityresourcename }}",
+        "summary": "Kayle conjures a portal, summoning a celestial sword that pierces through enemies, slowing, damaging, and reducing the resistances of all hit.",
+        "tooltipSource": "communitydragon"
       },
       {
         "id": "KayleW",
         "name": "Celestial Blessing",
         "description": "Blessed by the divine, Kayle heals and grants Move Speed to herself and the nearest ally.",
-        "tooltip": "Kayle infuses herself and an allied champion with light, restoring <healing>{{ totalheal }} Health</healing> and granting <speed>{{ totalhaste }} Move Speed</speed> for {{ hasteduration }} seconds.{{ spellmodifierdescriptionappend }}",
+        "tooltip": "Kayle infuses herself and an allied champion with light, restoring <span class=\"text-green-600 dark:text-green-400\">(55/80/105/130/155 + (25% Ability Power)) Health</span> and granting <span class=\"text-cyan-600 dark:text-cyan-500\">(24/28/32/36/40% + (0.08% Ability Power)) Move Speed</span> for 2 seconds.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">If cast without a target, this Ability will heal the most wounded ally in range.</span>",
         "leveltip": {
           "label": [
             "Healing",
@@ -954,13 +956,15 @@
           "w": 48,
           "h": 48
         },
-        "resource": "{{ cost }} {{ abilityresourcename }}"
+        "resource": "{{ cost }} {{ abilityresourcename }}",
+        "summary": "Blessed by the divine, Kayle heals and grants Move Speed to herself and the nearest ally.",
+        "tooltipSource": "communitydragon"
       },
       {
         "id": "KayleE",
         "name": "Starfire Spellblade",
         "description": "Passive: Kayle's celestial sword, Virtue, deals bonus magic damage to enemies she attacks.<br><br>Active: Kayle's next attack smites her target with celestial fire, dealing bonus damage proportionate to their missing health.",
-        "tooltip": "<spellPassive>Passive:</spellPassive> Attacks deal an additional <magicDamage>{{ epassivetotaldamage }} magic damage</magicDamage>.<br /><br /><spellActive>Active:</spellActive> Kayle's next attack becomes ranged and deals an additional <magicDamage>{{ activetotalexecutedamage }} missing Health magic damage</magicDamage>. This attack upgrades when Kayle reaches <scaleLevel>Level {{ spell.kaylepassive:levelforpassiverank2 }}</scaleLevel>, causing it to explode when it hits the target, dealing damage to nearby enemies.{{ spellmodifierdescriptionappend }}",
+        "tooltip": "<span class=\"text-gray-600 dark:text-gray-500 italic\">Passive:</span> Attacks deal an additional <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(15/20/25/30/35 + (20% Ability Power) + (10% bonus Attack Damage)) magic damage</span>.<br /><br /><span class=\"text-gray-900 dark:text-white font-semibold\">Active:</span> Kayle's next attack becomes ranged and deals an additional <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(8/8.5/9/9.5/10% + (0.015% Ability Power)) missing Health magic damage</span>. This attack upgrades when Kayle reaches <span class=\"text-gray-600 dark:text-gray-400\">Level </span>, causing it to explode when it hits the target, dealing damage to nearby enemies.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">This Ability applies on-hit and spell effects. Max 400 bonus damage vs. jungle monsters.</span>",
         "leveltip": {
           "label": [
             "Passive Damage",
@@ -1097,13 +1101,20 @@
           "w": 48,
           "h": 48
         },
-        "resource": "No Cost"
+        "resource": "No Cost",
+        "summary": "Passive: Kayle's celestial sword, Virtue, deals bonus magic damage to enemies she attacks.<br><br>Active: Kayle's next attack smites her target with celestial fire, dealing bonus damage proportionate to their missing health.",
+        "tooltipSource": "communitydragon",
+        "tooltipDiagnostics": {
+          "unresolvedTokens": [
+            "Spell.KaylePassive:LevelForPassiveRank2"
+          ]
+        }
       },
       {
         "id": "KayleR",
         "name": "Divine Judgment",
         "description": "Kayle makes an ally invulnerable and calls upon former Aspects of Justice to purify the area around her target with a holy rain of swords.",
-        "tooltip": "Kayle makes an allied champion Invulnerable for {{ invulnduration }} seconds and then purifies the area around them, dealing <magicDamage>{{ totaldamage }} magic damage</magicDamage> to nearby enemies.{{ spellmodifierdescriptionappend }}",
+        "tooltip": "Kayle makes an allied champion Invulnerable for 2.5 seconds and then purifies the area around them, dealing <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(200/300/400 + (70% Ability Power) + (100% bonus Attack Damage)) magic damage</span> to nearby enemies.",
         "leveltip": {
           "label": [
             "Damage",
@@ -1216,7 +1227,9 @@
           "w": 48,
           "h": 48
         },
-        "resource": "{{ cost }} {{ abilityresourcename }}"
+        "resource": "{{ cost }} {{ abilityresourcename }}",
+        "summary": "Kayle makes an ally invulnerable and calls upon former Aspects of Justice to purify the area around her target with a holy rain of swords.",
+        "tooltipSource": "communitydragon"
       }
     ],
     "passive": {

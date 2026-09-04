@@ -520,7 +520,7 @@
         "id": "HowlingGale",
         "name": "Howling Gale",
         "description": "By creating a localized change in pressure and temperature, Janna is able to create a small storm that grows in size with time. She can activate the spell again to release the storm. On release this storm will fly towards the direction it was cast in, dealing damage and knocking away any enemies in its path.",
-        "tooltip": "Janna summons a tornado that grows stronger over {{ maxduration }} seconds then blows along its path. It deals <magicDamage>{{ minimumdamage }} - {{ maxdamage }} magic damage</magicDamage> and <status>Knocks Up</status> for {{ baseknockup }} - {{ maxknockup }} seconds. The distance, damage, and <status>Knock Up</status> duration increase based on how much the tornado grew. Janna can <recast>Recast</recast> to send the tornado early.{{ spellmodifierdescriptionappend }}",
+        "tooltip": "Janna summons a tornado that grows stronger over 3 seconds then blows along its path. It deals <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(55/90/125/160/195 + (50% Ability Power)) - (55/90/125/160/195 + (50% Ability Power)) magic damage</span> and <span class=\"text-purple-600 dark:text-purple-500\">Knocks Up</span> for 0.5 - 1.25 seconds. The distance, damage, and <span class=\"text-purple-600 dark:text-purple-500\">Knock Up</span> duration increase based on how much the tornado grew. Janna can <span class=\"text-yellow-600 dark:text-yellow-300\">Recast</span> to send the tornado early.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">Deals an additional <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(10/15/20/25/30 + (10% Ability Power)) magic damage</span>, <span class=\"text-purple-600 dark:text-purple-500\">Knocks Up</span> for an additional 0.25 seconds, and travels 20% farther for each second it grew, and always reaches its destination in 1.25 seconds.</span>",
         "leveltip": {
           "label": [
             "Damage",
@@ -657,13 +657,15 @@
           "w": 48,
           "h": 48
         },
-        "resource": "{{ cost }} {{ abilityresourcename }}"
+        "resource": "{{ cost }} {{ abilityresourcename }}",
+        "summary": "By creating a localized change in pressure and temperature, Janna is able to create a small storm that grows in size with time. She can activate the spell again to release the storm. On release this storm will fly towards the direction it was cast in, dealing damage and knocking away any enemies in its path.",
+        "tooltipSource": "communitydragon"
       },
       {
         "id": "SowTheWind",
         "name": "Zephyr",
         "description": "Janna summons an air elemental that passively increases her Move Speed and enables her to pass through units. She may also activate this ability to deal damage and slow an enemy's Move Speed.",
-        "tooltip": "<spellPassive>Passive:</spellPassive> Janna gains <speed>{{ totalms }} Move Speed</speed> and is Ghosted.<br /><br /><spellActive>Active:</spellActive> Janna's elemental strikes an enemy, <status>Slowing</status> them by {{ totalslow }} for {{ slowduration }} seconds, and dealing <magicDamage>{{ totaldamage }} + {{ spell.tailwindself:bonusdamage }} magic damage</magicDamage>.{{ spellmodifierdescriptionappend }}",
+        "tooltip": "<span class=\"text-gray-600 dark:text-gray-500 italic\">Passive:</span> Janna gains <span class=\"text-cyan-600 dark:text-cyan-500\">(6/7/8/9/10% + (0.02% Ability Power)) Move Speed</span> and is Ghosted.<br /><br /><span class=\"text-gray-900 dark:text-white font-semibold\">Active:</span> Janna's elemental strikes an enemy, <span class=\"text-purple-600 dark:text-purple-500\">Slowing</span> them by (20/24/28/32/36% + (0.06% Ability Power)) for 2 seconds, and dealing <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(55/85/115/145/175 + (50% Ability Power)) + magic damage</span>.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">Ghosted units ignore collision with other units.</span><br />",
         "leveltip": {
           "label": [
             "Damage",
@@ -804,13 +806,20 @@
           "w": 48,
           "h": 48
         },
-        "resource": "{{ cost }} {{ abilityresourcename }}"
+        "resource": "{{ cost }} {{ abilityresourcename }}",
+        "summary": "Janna summons an air elemental that passively increases her Move Speed and enables her to pass through units. She may also activate this ability to deal damage and slow an enemy's Move Speed.",
+        "tooltipSource": "communitydragon",
+        "tooltipDiagnostics": {
+          "unresolvedTokens": [
+            "spell.TailwindSelf:BonusDamage"
+          ]
+        }
       },
       {
         "id": "EyeOfTheStorm",
         "name": "Eye Of The Storm",
         "description": "Janna conjures a defensive gale that shields an ally champion or turret from incoming damage and increases their Attack Damage.",
-        "tooltip": "Janna grants an ally champion or turret <shield>{{ totalshield }} Shield</shield> for {{ shieldduration }} seconds. While shielded, they gain <scaleAD>{{ totalad }} Attack Damage</scaleAD>.<br /><br />Janna refunds {{ ecdrefundforcc*100 }}% of the cooldown whenever she impairs an enemy champion's movement with an Ability.{{ spellmodifierdescriptionappend }}",
+        "tooltip": "Janna grants an ally champion or turret <span class=\"text-blue-600 dark:text-blue-300\">(80/120/160/200/240 + (55% Ability Power)) Shield</span> for 4 seconds. While shielded, they gain <span class=\"text-orange-600 dark:text-orange-500\">(10/15/20/25/30 + (10% Ability Power)) Attack Damage</span>.<br /><br />Janna refunds 20% of the cooldown whenever she impairs an enemy champion's movement with an Ability.",
         "leveltip": {
           "label": [
             "Shield Health",
@@ -949,13 +958,15 @@
           "w": 48,
           "h": 48
         },
-        "resource": "{{ cost }} {{ abilityresourcename }}"
+        "resource": "{{ cost }} {{ abilityresourcename }}",
+        "summary": "Janna conjures a defensive gale that shields an ally champion or turret from incoming damage and increases their Attack Damage.",
+        "tooltipSource": "communitydragon"
       },
       {
         "id": "ReapTheWhirlwind",
         "name": "Monsoon",
         "description": "Janna surrounds herself in a magical storm, throwing enemies back. After the storm has settled, soothing winds heal nearby allies while the ability is active.",
-        "tooltip": "Janna summons a magical monsoon, <status>Knocking Back</status> nearby enemies then healing nearby allies for <healing>{{ totalheal }} Health</healing> over {{ duration }} seconds. Moving or using an Ability ends the monsoon early.{{ spellmodifierdescriptionappend }}",
+        "tooltip": "Janna summons a magical monsoon, <span class=\"text-purple-600 dark:text-purple-500\">Knocking Back</span> nearby enemies then healing nearby allies for <span class=\"text-green-600 dark:text-green-400\">(300/450/600 + (150% Ability Power)) Health</span> over 3 seconds. Moving or using an Ability ends the monsoon early.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">The <span class=\"text-purple-600 dark:text-purple-500\">Knock Back</span> cannot push enemies over walls.</span>",
         "leveltip": {
           "label": [
             "Heal Per Second",
@@ -1064,7 +1075,9 @@
           "w": 48,
           "h": 48
         },
-        "resource": "{{ cost }} {{ abilityresourcename }}"
+        "resource": "{{ cost }} {{ abilityresourcename }}",
+        "summary": "Janna surrounds herself in a magical storm, throwing enemies back. After the storm has settled, soothing winds heal nearby allies while the ability is active.",
+        "tooltipSource": "communitydragon"
       }
     ],
     "passive": {

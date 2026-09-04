@@ -325,7 +325,7 @@
         "id": "RyzeQWrapper",
         "name": "과부하",
         "description": "기본 지속 효과로 라이즈가 다른 스킬을 사용하면 과부하의 재사용 대기시간이 초기화되고 룬 하나를 충전합니다. 룬이 2개 충전된 상태에서 과부하를 사용하면 이동 속도가 잠시 대폭 증가합니다.<br><br>사용 시 라이즈가 순수한 에너지를 일직선으로 발사해 첫 번째 맞는 적에게 피해를 입힙니다. 대상에게 전이 표식이 있으면 과부하가 추가 피해를 입히고 전이 표식이 있는 주변 적에게 튕깁니다.",
-        "tooltip": "<spellPassive>기본 지속 효과:</spellPassive> <spellName>룬 감옥</spellName>과 <spellName>주문 전이</spellName> 사용 시 이 스킬의 재사용 대기시간이 초기화되고 {{ runeduration }}초 동안 룬이 충전됩니다. 룬은 최대 {{ maximumrunes }}개까지 충전됩니다.<br /><br /><spellActive>사용 시:</spellActive> 돌풍을 발사하여 처음으로 맞힌 적에게 <magicDamage>{{ qdamagecalc }}의 마법 피해</magicDamage>를 입힙니다. 대상에게 <keywordMajor>전이</keywordMajor> 표식이 있으면 과부하가 표식을 소모하여 {{ spell.ryzer:overloaddamagebonus }}% 증가한 피해를 입히고 <keywordMajor>전이</keywordMajor> 표식이 있는 주변 적에게 튕깁니다.<br /><br />라이즈가 룬을 전부 방출합니다. 룬이 {{ maximumrunes }}개 충전되면 {{ movementspeedduration }}초 동안 이동 속도가 <speed>{{ movementspeedamount }}%</speed>상승합니다.<br />{{ spellmodifierdescriptionappend }}",
+        "tooltip": "<span class=\"text-gray-600 dark:text-gray-500 italic\">기본 지속 효과:</span> <span>룬 감옥</span>과 <span>주문 전이</span> 사용 시 이 스킬의 재사용 대기시간이 초기화되고 4초 동안 룬이 충전됩니다. 룬은 최대 2개까지 충전됩니다.<br /><br /><span class=\"text-gray-900 dark:text-white font-semibold\">사용 시:</span> 돌풍을 발사하여 처음으로 맞힌 적에게 <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(75/95/115/135/155 + (55% 주문력) + (2% 추가 마나))의 마법 피해</span>를 입힙니다. 대상에게 <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">전이</span> 표식이 있으면 과부하가 표식을 소모하여 증가한 피해를 입히고 <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">전이</span> 표식이 있는 주변 적에게 튕깁니다.<br /><br />라이즈가 룬을 전부 방출합니다. 룬이 2개 충전되면 2초 동안 이동 속도가 <span class=\"text-cyan-600 dark:text-cyan-500\">28/32/36/40/44%</span>상승합니다.<br />",
         "leveltip": {
           "label": [
             "피해량",
@@ -462,13 +462,20 @@
           "w": 48,
           "h": 48
         },
-        "resource": "{{ abilityresourcename }} {{ cost }}"
+        "resource": "{{ abilityresourcename }} {{ cost }}",
+        "summary": "기본 지속 효과로 라이즈가 다른 스킬을 사용하면 과부하의 재사용 대기시간이 초기화되고 룬 하나를 충전합니다. 룬이 2개 충전된 상태에서 과부하를 사용하면 이동 속도가 잠시 대폭 증가합니다.<br><br>사용 시 라이즈가 순수한 에너지를 일직선으로 발사해 첫 번째 맞는 적에게 피해를 입힙니다. 대상에게 전이 표식이 있으면 과부하가 추가 피해를 입히고 전이 표식이 있는 주변 적에게 튕깁니다.",
+        "tooltipSource": "communitydragon",
+        "tooltipDiagnostics": {
+          "unresolvedTokens": [
+            "Spell.RyzeR:OverloadDamageBonus"
+          ]
+        }
       },
       {
         "id": "RyzeW",
         "name": "룬 감옥",
         "description": "라이즈가 대상을 룬 감옥에 가두고 피해를 입히며 이동 속도를 늦춥니다. 대상에게 전이 표식이 있으면 이동 속도를 늦추는 대신 속박합니다.",
-        "tooltip": "<magicDamage>{{ wdamagecalc }}의 마법 피해</magicDamage>를 입히고 {{ ccduration }}초 동안 {{ slowamount*100 }}% <status>둔화</status>시킵니다. <keywordMajor>전이</keywordMajor> 표식이 있는 대상에게는 표식을 소모하여 <status>둔화</status>시키는 대신 <status>속박</status>시킵니다.{{ spellmodifierdescriptionappend }}",
+        "tooltip": "<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(60/90/120/150/180 + (60% 주문력) + (3% 추가 마나))의 마법 피해</span>를 입히고 1.5초 동안 50% <span class=\"text-purple-600 dark:text-purple-500\">둔화</span>시킵니다. <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">전이</span> 표식이 있는 대상에게는 표식을 소모하여 <span class=\"text-purple-600 dark:text-purple-500\">둔화</span>시키는 대신 <span class=\"text-purple-600 dark:text-purple-500\">속박</span>시킵니다.",
         "leveltip": {
           "label": [
             "피해량",
@@ -605,13 +612,15 @@
           "w": 48,
           "h": 48
         },
-        "resource": "{{ abilityresourcename }} {{ cost }}"
+        "resource": "{{ abilityresourcename }} {{ cost }}",
+        "summary": "라이즈가 대상을 룬 감옥에 가두고 피해를 입히며 이동 속도를 늦춥니다. 대상에게 전이 표식이 있으면 이동 속도를 늦추는 대신 속박합니다.",
+        "tooltipSource": "communitydragon"
       },
       {
         "id": "RyzeE",
         "name": "주문 전이",
         "description": "라이즈가 순수한 마법의 구체를 던져 적에게 피해를 입히고 주변 모든 적에게 표식을 남깁니다. 표식이 남은 적에게 라이즈가 스킬을 사용하면 추가 효과가 적용됩니다.",
-        "tooltip": "라이즈가 구체를 던져 <magicDamage>{{ edamagecalc }}의 마법 피해</magicDamage>를 입히고 대상과 주변 적에게 {{ debuffduration }}초 동안 <keywordMajor>전이</keywordMajor>를 적용합니다. <keywordMajor>전이</keywordMajor> 표식이 남아 있는 적들은 주변에 <keywordMajor>전이</keywordMajor> 표식을 퍼뜨립니다.{{ spellmodifierdescriptionappend }}",
+        "tooltip": "라이즈가 구체를 던져 <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(60/90/120/150/180 + (50% 주문력) + (2% 추가 마나))의 마법 피해</span>를 입히고 대상과 주변 적에게 4초 동안 <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">전이</span>를 적용합니다. <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">전이</span> 표식이 남아 있는 적들은 주변에 <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">전이</span> 표식을 퍼뜨립니다.",
         "leveltip": {
           "label": [
             "피해량",
@@ -748,13 +757,15 @@
           "w": 48,
           "h": 48
         },
-        "resource": "{{ abilityresourcename }} {{ cost }}"
+        "resource": "{{ abilityresourcename }} {{ cost }}",
+        "summary": "라이즈가 순수한 마법의 구체를 던져 적에게 피해를 입히고 주변 모든 적에게 표식을 남깁니다. 표식이 남은 적에게 라이즈가 스킬을 사용하면 추가 효과가 적용됩니다.",
+        "tooltipSource": "communitydragon"
       },
       {
         "id": "RyzeR",
         "name": "공간 왜곡",
         "description": "기본 지속 효과로 과부하가 전이 표식이 있는 적에게 더 큰 피해를 입힙니다.<br><br>사용 시 라이즈가 근처에 차원문을 생성합니다. 몇 초 후, 차원문 주변의 모든 아군이 대상 지점으로 순간이동 합니다.",
-        "tooltip": "<spellPassive>기본 지속 효과:</spellPassive> <spellName>과부하</spellName> 사용 시 <keywordMajor>전이</keywordMajor> 표식이 있는 적에게 {{ overloaddamagebonus }}%의 추가 피해를 입힙니다.<br /><br /><spellActive>사용 시:</spellActive> 다른 위치로 이동하는 차원문을 엽니다. {{ chargetimetooltip }}초 후, 차원문 근처의 모든 아군이 해당 위치로 순간이동합니다.{{ spellmodifierdescriptionappend }}",
+        "tooltip": "<span class=\"text-gray-600 dark:text-gray-500 italic\">기본 지속 효과:</span> <span>과부하</span> 사용 시 <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">전이</span> 표식이 있는 적에게 50/75/100%의 추가 피해를 입힙니다.<br /><br /><span class=\"text-gray-900 dark:text-white font-semibold\">사용 시:</span> 다른 위치로 이동하는 차원문을 엽니다. 2초 후, 차원문 근처의 모든 아군이 해당 위치로 순간이동합니다.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\"><span class=\"text-purple-600 dark:text-purple-500\">이동 불가</span> 상태나 스킬 <span class=\"text-purple-600 dark:text-purple-500\">사용 불가</span> 상태가 되면 차원문이 취소됩니다.</span>",
         "leveltip": {
           "label": [
             "재사용 대기시간",
@@ -863,7 +874,9 @@
           "w": 48,
           "h": 48
         },
-        "resource": "{{ abilityresourcename }} {{ cost }}"
+        "resource": "{{ abilityresourcename }} {{ cost }}",
+        "summary": "기본 지속 효과로 과부하가 전이 표식이 있는 적에게 더 큰 피해를 입힙니다.<br><br>사용 시 라이즈가 근처에 차원문을 생성합니다. 몇 초 후, 차원문 주변의 모든 아군이 대상 지점으로 순간이동 합니다.",
+        "tooltipSource": "communitydragon"
       }
     ],
     "passive": {

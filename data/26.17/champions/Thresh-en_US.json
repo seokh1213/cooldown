@@ -527,7 +527,7 @@
         "id": "ThreshQ",
         "name": "Death Sentence",
         "description": "Thresh binds an enemy in chains and pulls them toward him. Activating this ability a second time pulls Thresh to the enemy.",
-        "tooltip": "Thresh throws out his scythe, <status>Stunning</status> the first unit hit and <status>Pulling</status> them towards Thresh for {{ tauntlength }} seconds. The scythe does <magicDamage>{{ totaldamage }} magic damage</magicDamage> and also grants <keywordStealth>True Sight</keywordStealth> for the duration.<br /><br />Thresh can <recast>Recast</recast> this Ability to pull himself to the enemy.<br /><br />If this Ability hits, its Cooldown is reduced by {{ hitbonuscooldown }} seconds.{{ spellmodifierdescriptionappend }}",
+        "tooltip": "Thresh throws out his scythe, <span class=\"text-purple-600 dark:text-purple-500\">Stunning</span> the first unit hit and <span class=\"text-purple-600 dark:text-purple-500\">Pulling</span> them towards Thresh for 1.5 seconds. The scythe does <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(100/150/200/250/300 + (90% Ability Power)) magic damage</span> and also grants <span class=\"text-purple-600 dark:text-purple-400 font-semibold\">True Sight</span> for the duration.<br /><br />Thresh can <span class=\"text-yellow-600 dark:text-yellow-300\">Recast</span> this Ability to pull himself to the enemy.<br /><br />If this Ability hits, its Cooldown is reduced by 2 seconds.",
         "leveltip": {
           "label": [
             "Damage",
@@ -662,13 +662,15 @@
           "w": 48,
           "h": 48
         },
-        "resource": "{{ cost }} {{ abilityresourcename }}"
+        "resource": "{{ cost }} {{ abilityresourcename }}",
+        "summary": "Thresh binds an enemy in chains and pulls them toward him. Activating this ability a second time pulls Thresh to the enemy.",
+        "tooltipSource": "communitydragon"
       },
       {
         "id": "ThreshW",
         "name": "Dark Passage",
         "description": "Thresh throws out a lantern that shields nearby allied Champions from damage. Allies can click the lantern to dash to Thresh.",
-        "tooltip": "Thresh throws his lantern, allowing an ally to click on it to dash to Thresh.<br /><br />The lantern also grants <shield>{{ totalshield }} Shield</shield> for {{ shieldduration }} seconds to Thresh and the first ally champion to come in contact with it.{{ spellmodifierdescriptionappend }}",
+        "tooltip": "Thresh throws his lantern, allowing an ally to click on it to dash to Thresh.<br /><br />The lantern also grants <span class=\"text-blue-600 dark:text-blue-300\">50/70/90/110/130 Shield</span> for 4 seconds to Thresh and the first ally champion to come in contact with it.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">The <span class=\"text-blue-600 dark:text-blue-300\">Shield</span> scales with number of <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Souls</span> collected. Thresh can use his lantern to pick up <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Souls</span>.</span>",
         "leveltip": {
           "label": [
             "Shield Amount",
@@ -805,13 +807,15 @@
           "w": 48,
           "h": 48
         },
-        "resource": "{{ cost }} {{ abilityresourcename }}"
+        "resource": "{{ cost }} {{ abilityresourcename }}",
+        "summary": "Thresh throws out a lantern that shields nearby allied Champions from damage. Allies can click the lantern to dash to Thresh.",
+        "tooltipSource": "communitydragon"
       },
       {
         "id": "ThreshE",
         "name": "Flay",
         "description": "Thresh's attacks wind up, dealing more damage the longer he waits between attacks. When activated, Thresh sweeps his chain, knocking all enemies hit in the direction of the blow.",
-        "tooltip": "<spellPassive>Passive:</spellPassive> Thresh's Attacks deal additional damage based on how long since he last Attacked. They deal between <magicDamage>{{ pattackdamagemin }}</magicDamage> and <magicDamage>{{ pattackdamagemax }} magic damage</magicDamage>.<br /><br /><spellActive>Active:</spellActive> Thresh whips his chains, <status>Pulling</status> or <status>Pushing</status> enemies in the direction of the swing. Enemies hit are also <status>Slowed</status> by {{ activeslowpercentage }}% for {{ slowduration }} second and take <magicDamage>{{ totaldamage }} magic damage</magicDamage>.{{ spellmodifierdescriptionappend }}",
+        "tooltip": "<span class=\"text-gray-600 dark:text-gray-500 italic\">Passive:</span> Thresh's Attacks deal additional damage based on how long since he last Attacked. They deal between <span class=\"text-blue-600 dark:text-blue-500 font-semibold\"></span> and <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(90/120/150/180/210% Attack Damage) magic damage</span>.<br /><br /><span class=\"text-gray-900 dark:text-white font-semibold\">Active:</span> Thresh whips his chains, <span class=\"text-purple-600 dark:text-purple-500\">Pulling</span> or <span class=\"text-purple-600 dark:text-purple-500\">Pushing</span> enemies in the direction of the swing. Enemies hit are also <span class=\"text-purple-600 dark:text-purple-500\">Slowed</span> by 20/25/30/35/40% for 1 second and take <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(65/110/155/200/245 + (60% Ability Power)) magic damage</span>.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">Passive damage scales with number of <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Souls</span> collected.</span>",
         "leveltip": {
           "label": [
             "Passive Damage",
@@ -952,13 +956,20 @@
           "w": 48,
           "h": 48
         },
-        "resource": "{{ cost }} {{ abilityresourcename }}"
+        "resource": "{{ cost }} {{ abilityresourcename }}",
+        "summary": "Thresh's attacks wind up, dealing more damage the longer he waits between attacks. When activated, Thresh sweeps his chain, knocking all enemies hit in the direction of the blow.",
+        "tooltipSource": "communitydragon",
+        "tooltipDiagnostics": {
+          "unresolvedTokens": [
+            "PAttackDamageMin"
+          ]
+        }
       },
       {
         "id": "ThreshRPenta",
         "name": "The Box",
         "description": "A prison of walls that slow and deal damage if broken.",
-        "tooltip": "Thresh creates a prison of spectral walls, <status>Slowing</status> champions by {{ slowamount }}% for {{ slowduration }} seconds and dealing <magicDamage>{{ totaldamage }} magic damage</magicDamage>. Walls break after one collision, and after one is broken, the rest deal no damage and <status>Slow</status> for half duration.{{ spellmodifierdescriptionappend }}",
+        "tooltip": "Thresh creates a prison of spectral walls, <span class=\"text-purple-600 dark:text-purple-500\">Slowing</span> champions by 99% for 2 seconds and dealing <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(250/400/550 + (100% Ability Power)) magic damage</span>. Walls break after one collision, and after one is broken, the rest deal no damage and <span class=\"text-purple-600 dark:text-purple-500\">Slow</span> for half duration.",
         "leveltip": {
           "label": [
             "Damage",
@@ -1067,7 +1078,9 @@
           "w": 48,
           "h": 48
         },
-        "resource": "{{ cost }} {{ abilityresourcename }}"
+        "resource": "{{ cost }} {{ abilityresourcename }}",
+        "summary": "A prison of walls that slow and deal damage if broken.",
+        "tooltipSource": "communitydragon"
       }
     ],
     "passive": {

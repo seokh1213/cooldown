@@ -410,7 +410,7 @@
         "id": "PoppyQ",
         "name": "圣锤猛击",
         "description": "波比挥舞她的铁锤，造成伤害并创造一个区域，这个区域会减速敌人并在一段时间后爆炸。",
-        "tooltip": "波比猛砸地面，造成<physicalDamage>{{ basedamage }}</physicalDamage>外加<physicalDamage>{{ healthdamagepercent }}%最大生命值的物理伤害</physicalDamage>并使该地面变得不稳定。 <br /><br />不稳定区域会使敌人<status>减速</status>{{ movespeedmod }}%并在{{ delaybetweentwohits }}秒后喷发，再次造成<physicalDamage>{{ basedamage }}</physicalDamage>外加<physicalDamage>{{ healthdamagepercent }}%最大生命值的物理伤害</physicalDamage>。{{ spellmodifierdescriptionappend }}",
+        "tooltip": "波比猛砸地面，造成<span class=\"text-red-600 dark:text-red-500 font-semibold\">(30/55/80/105/130 + (75% 额外攻击力))</span>外加<span class=\"text-red-600 dark:text-red-500 font-semibold\">7/7.5/8/8.5/9%最大生命值的物理伤害</span>并使该地面变得不稳定。 <br /><br />不稳定区域会使敌人<span class=\"text-purple-600 dark:text-purple-500\">减速</span>(20/23/26/29/32% + (0.008% 额外生命值))并在1秒后喷发，再次造成<span class=\"text-red-600 dark:text-red-500 font-semibold\">(30/55/80/105/130 + (75% 额外攻击力))</span>外加<span class=\"text-red-600 dark:text-red-500 font-semibold\">7/7.5/8/8.5/9%最大生命值的物理伤害</span>。<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">每一击对小兵和野怪的百分比生命值伤害的上限为85/120/155/190/225。</span>",
         "leveltip": {
           "label": [
             "伤害",
@@ -553,13 +553,15 @@
           "w": 48,
           "h": 48
         },
-        "resource": "{{ cost }} {{ abilityresourcename }}"
+        "resource": "{{ cost }} {{ abilityresourcename }}",
+        "summary": "波比挥舞她的铁锤，造成伤害并创造一个区域，这个区域会减速敌人并在一段时间后爆炸。",
+        "tooltipSource": "communitydragon"
       },
       {
         "id": "PoppyW",
         "name": "坚定风采",
         "description": "波比被动获得护甲和魔法抗性。这个加成会在她生命值较低时得到提升。波比可以主动施放此技能来获得移动速度加成并中断附近敌人的突进。如果中断了一次突进，那么该敌人还会被减速和缚地。",
-        "tooltip": "<spellPassive>被动：</spellPassive>波比获得<scaleArmor>{{ bonusarmor }}护甲</scaleArmor>和<scaleMR>{{ bonusmr }}魔法抗性</scaleMR>。在波比低于{{ passiveempoweredhealthpercent*100 }}%生命值时，这个加成会翻倍。<br /><br /><spellActive>主动：</spellActive>波比获得<speed>{{ haste }}%移动速度</speed>并投射出一个环绕自身的领域，持续{{ duration }}秒，该领域可中断敌人的冲刺。被领域中断的敌人们会受到持续{{ groundingduration }}秒的<status>缚地</status>和{{ slowamount*-100 }}%<status>减速</status>，以及<magicDamage>{{ interruptdamage }}魔法伤害</magicDamage>。{{ spellmodifierdescriptionappend }}",
+        "tooltip": "<span class=\"text-gray-600 dark:text-gray-500 italic\">被动：</span>波比获得<span class=\"text-orange-600 dark:text-orange-400\">(16% 护甲)护甲</span>和<span>(16% 魔法抗性)魔法抗性</span>。在波比低于40%生命值时，这个加成会翻倍。<br /><br /><span class=\"text-gray-900 dark:text-white font-semibold\">主动：</span>波比获得<span class=\"text-cyan-600 dark:text-cyan-500\">40%移动速度</span>并投射出一个环绕自身的领域，持续2秒，该领域可中断敌人的冲刺。被领域中断的敌人们会受到持续2秒的<span class=\"text-purple-600 dark:text-purple-500\">缚地</span>和25%<span class=\"text-purple-600 dark:text-purple-500\">减速</span>，以及<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(70/110/150/190/230 + (70% 法术强度))魔法伤害</span>。",
         "leveltip": {
           "label": [
             "冷却时间",
@@ -694,13 +696,15 @@
           "w": 48,
           "h": 48
         },
-        "resource": "{{ cost }} {{ abilityresourcename }}"
+        "resource": "{{ cost }} {{ abilityresourcename }}",
+        "summary": "波比被动获得护甲和魔法抗性。这个加成会在她生命值较低时得到提升。波比可以主动施放此技能来获得移动速度加成并中断附近敌人的突进。如果中断了一次突进，那么该敌人还会被减速和缚地。",
+        "tooltipSource": "communitydragon"
       },
       {
         "id": "PoppyE",
         "name": "英勇冲锋",
         "description": "波比冲向目标并把目标推后。如果目标被推到墙上，就会受到晕眩效果。",
-        "tooltip": "波比擒抱一名敌人，造成<physicalDamage>{{ tackledamage }}物理伤害</physicalDamage>并将该敌人带向前方。如果波比将目标擒抱到地形上，那么该敌人会被<status>晕眩</status>{{ stunduration }}秒并受到额外的<physicalDamage>{{ tackledamage }}物理伤害</physicalDamage>。{{ spellmodifierdescriptionappend }}",
+        "tooltip": "波比擒抱一名敌人，造成<span class=\"text-red-600 dark:text-red-500 font-semibold\">(40/60/80/100/120 + (60% 额外攻击力))物理伤害</span>并将该敌人带向前方。如果波比将目标擒抱到地形上，那么该敌人会被<span class=\"text-purple-600 dark:text-purple-500\">晕眩</span>1.6/1.7/1.8/1.9/2秒并受到额外的<span class=\"text-red-600 dark:text-red-500 font-semibold\">(40/60/80/100/120 + (60% 额外攻击力))物理伤害</span>。",
         "leveltip": {
           "label": [
             "初始伤害",
@@ -839,13 +843,15 @@
           "w": 48,
           "h": 48
         },
-        "resource": "{{ cost }} {{ abilityresourcename }}"
+        "resource": "{{ cost }} {{ abilityresourcename }}",
+        "summary": "波比冲向目标并把目标推后。如果目标被推到墙上，就会受到晕眩效果。",
+        "tooltipSource": "communitydragon"
       },
       {
         "id": "PoppyR",
         "name": "持卫的裁决",
         "description": "波比引导一次能够把敌人击飞到远方的锤击。",
-        "tooltip": "<charge>开始施放：</charge>波比开始为她的战锤蓄力，至多{{ channelmaxduration }}秒，自身<status>减速</status>{{ selfslow }}%。<br /><br /><release>释放：</release>波比猛砸地面，生成一道冲击波，来对命中的第一个敌方英雄及其身边的敌人们造成<physicalDamage>{{ damage }}物理伤害</physicalDamage>，将他们朝着他们的水晶枢纽处<status>击退</status>，并使他们在飞行时处在不可被选取状态。冲击波距离和<status>击退</status>距离受益于蓄力时长。<br /><br />未蓄力的挥锤造成<physicalDamage>{{ halfdamage }}物理伤害</physicalDamage>和持续{{ knockupdurationsnap }}秒的<status>击飞</status>。{{ spellmodifierdescriptionappend }}",
+        "tooltip": "<span>开始施放：</span>波比开始为她的战锤蓄力，至多4秒，自身<span class=\"text-purple-600 dark:text-purple-500\">减速</span>15%。<br /><br /><span>释放：</span>波比猛砸地面，生成一道冲击波，来对命中的第一个敌方英雄及其身边的敌人们造成<span class=\"text-red-600 dark:text-red-500 font-semibold\">(200/300/400 + (90% 额外攻击力))物理伤害</span>，将他们朝着他们的水晶枢纽处<span class=\"text-purple-600 dark:text-purple-500\">击退</span>，并使他们在飞行时处在不可被选取状态。冲击波距离和<span class=\"text-purple-600 dark:text-purple-500\">击退</span>距离受益于蓄力时长。<br /><br />未蓄力的挥锤造成<span class=\"text-red-600 dark:text-red-500 font-semibold\">(100/150/200 + (45% 额外攻击力))物理伤害</span>和持续1秒的<span class=\"text-purple-600 dark:text-purple-500\">击飞</span>。<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">不可被选取的单位不会受到敌人的攻击或技能的影响，除非在进入此状态前已被它们影响。</span>",
         "leveltip": {
           "label": [
             "伤害",
@@ -954,7 +960,9 @@
           "w": 48,
           "h": 48
         },
-        "resource": "{{ cost }} {{ abilityresourcename }}"
+        "resource": "{{ cost }} {{ abilityresourcename }}",
+        "summary": "波比引导一次能够把敌人击飞到远方的锤击。",
+        "tooltipSource": "communitydragon"
       }
     ],
     "passive": {

@@ -430,7 +430,7 @@
         "id": "GarenQ",
         "name": "致命打击",
         "description": "盖伦的移动速度获得爆发性提升，同时移除身上的所有减速效果。他的下次攻击将打击敌人的要害部位，造成额外伤害并将目标沉默。",
-        "tooltip": "盖伦移除身上的所有<status>减速</status>效果并获得<speed>{{ movementspeedamount*100 }}%移动速度</speed>，持续{{ movementspeedduration }}秒。<br /><br />他的下次攻击会使目标<status>沉默</status>{{ silenceduration }}秒并造成<physicalDamage>{{ totaldamage }}物理伤害</physicalDamage>。{{ spellmodifierdescriptionappend }}",
+        "tooltip": "盖伦移除身上的所有<span class=\"text-purple-600 dark:text-purple-500\">减速</span>效果并获得<span class=\"text-cyan-600 dark:text-cyan-500\">35%移动速度</span>，持续1.4/1.95/2.5/3.05/3.6秒。<br /><br />他的下次攻击会使目标<span class=\"text-purple-600 dark:text-purple-500\">沉默</span>1.5秒并造成<span class=\"text-red-600 dark:text-red-500 font-semibold\">(30/60/90/120/150 + (150% 攻击力))物理伤害</span>。<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">强化攻击会在4.5秒后消散。<br />这个技能会在造成伤害时触发技能特效。</span>",
         "leveltip": {
           "label": [
             "伤害",
@@ -565,13 +565,15 @@
           "w": 48,
           "h": 48
         },
-        "resource": "无消耗"
+        "resource": "无消耗",
+        "summary": "盖伦的移动速度获得爆发性提升，同时移除身上的所有减速效果。他的下次攻击将打击敌人的要害部位，造成额外伤害并将目标沉默。",
+        "tooltipSource": "communitydragon"
       },
       {
         "id": "GarenW",
         "name": "勇气",
         "description": "盖伦被动地通过击杀敌人来提升护甲和魔法抗性。他也可以激活这个技能来暂时获得一层护盾和韧性，并在接下来的较长持续时间里获得较弱的伤害减免效果。",
-        "tooltip": "<spellPassive>被动：</spellPassive>盖伦获得<scaleArmor>{{ resistsfortooltip }}额外护甲</scaleArmor>和<scaleMR>{{ resistsfortooltip }}额外魔法抗性</scaleMR>。击杀单位时会永久提供<attention>{{ resistgainonkilltooltip }}双抗</attention>，至多至最大值<attention>{{ resistmax }}</attention>。<br /><br /><spellActive>主动：</spellActive>盖伦加固他的勇气{{ drduration }}秒，使即将到来的伤害降低{{ drpercent*100 }}%。他还会获得持续{{ upfrontduration }}秒的<shield>{{ totalshield }}护盾值</shield>和<slow>{{ upfronttenacity*100 }}%韧性</slow>。{{ spellmodifierdescriptionappend }}",
+        "tooltip": "<span class=\"text-gray-600 dark:text-gray-500 italic\">被动：</span>盖伦获得<span class=\"text-orange-600 dark:text-orange-400\">额外护甲</span>和<span>额外魔法抗性</span>。击杀单位时会永久提供<span>0.2双抗</span>，至多至最大值<span>30</span>。<br /><br /><span class=\"text-gray-900 dark:text-white font-semibold\">主动：</span>盖伦加固他的勇气4秒，使即将到来的伤害降低25/29/33/37/41%。他还会获得持续0.75秒的<span class=\"text-blue-600 dark:text-blue-300\">(65/85/105/125/145 + (18% 额外生命值))护盾值</span>和<span>60%韧性</span>。",
         "leveltip": {
           "label": [
             "护盾值",
@@ -708,13 +710,20 @@
           "w": 48,
           "h": 48
         },
-        "resource": "无消耗"
+        "resource": "无消耗",
+        "summary": "盖伦被动地通过击杀敌人来提升护甲和魔法抗性。他也可以激活这个技能来暂时获得一层护盾和韧性，并在接下来的较长持续时间里获得较弱的伤害减免效果。",
+        "tooltipSource": "communitydragon",
+        "tooltipDiagnostics": {
+          "unresolvedTokens": [
+            "ResistsForTooltip"
+          ]
+        }
       },
       {
         "id": "GarenE",
         "name": "审判",
         "description": "盖伦快速地旋转身体挥舞大剑，并对邻近敌人造成物理伤害。",
-        "tooltip": "盖伦快速地旋舞大剑，持续{{ duration }}秒，每旋转一圈造成<physicalDamage>{{ totaldamage }}物理伤害</physicalDamage>，共旋转{{ f1 }}圈。相距最近的敌人受到<physicalDamage>{{ nearestenemybonus*100 }}%提升伤害</physicalDamage>。被{{ stackstoshred }}圈旋转命中的敌方英雄会损失<scaleArmor>{{ shredamount*100 }}%护甲</scaleArmor>，持续{{ shredduration }}秒。<br /><br /><recast>再次施放</recast>：盖伦提前结束这个技能。{{ spellmodifierdescriptionappend }}",
+        "tooltip": "盖伦快速地旋舞大剑，持续3秒，每旋转一圈造成<span class=\"text-red-600 dark:text-red-500 font-semibold\">(4/7/10/13/16 + (40/43/46/49/52% 攻击力))物理伤害</span>，共旋转圈。相距最近的敌人受到<span class=\"text-red-600 dark:text-red-500 font-semibold\">25%提升伤害</span>。被6圈旋转命中的敌方英雄会损失<span class=\"text-orange-600 dark:text-orange-400\">25%护甲</span>，持续6秒。<br /><br /><span class=\"text-yellow-600 dark:text-yellow-300\">再次施放</span>：盖伦提前结束这个技能。<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">来自装备和等级的每<span>25%攻击速度</span>获得额外的一圈旋转。<br />能够暴击以造成<span class=\"text-red-600 dark:text-red-500 font-semibold\">(4/7/10/13/16 + (40/43/46/49/52% 攻击力))物理伤害</span>。</span>",
         "leveltip": {
           "label": [
             "每圈旋转的基础伤害",
@@ -851,13 +860,20 @@
           "w": 48,
           "h": 48
         },
-        "resource": "无消耗"
+        "resource": "无消耗",
+        "summary": "盖伦快速地旋转身体挥舞大剑，并对邻近敌人造成物理伤害。",
+        "tooltipSource": "communitydragon",
+        "tooltipDiagnostics": {
+          "unresolvedTokens": [
+            "f1"
+          ]
+        }
       },
       {
         "id": "GarenR",
         "name": "德玛西亚正义",
         "description": "盖伦召唤德玛西亚之力，试图处决一名敌方英雄。",
-        "tooltip": "盖伦召唤德玛西亚之力来击杀他的敌人，造成<trueDamage>{{ basedamage }}外加{{ executedamage*100 }}%已损失生命值的真实伤害</trueDamage>。{{ spellmodifierdescriptionappend }}",
+        "tooltip": "盖伦召唤德玛西亚之力来击杀他的敌人，造成<span class=\"text-yellow-600 dark:text-yellow-500 font-semibold\">125/200/275外加25/30/35%已损失生命值的真实伤害</span>。",
         "leveltip": {
           "label": [
             "冷却时间",
@@ -968,7 +984,9 @@
           "w": 48,
           "h": 48
         },
-        "resource": "无消耗"
+        "resource": "无消耗",
+        "summary": "盖伦召唤德玛西亚之力，试图处决一名敌方英雄。",
+        "tooltipSource": "communitydragon"
       }
     ],
     "passive": {

@@ -466,7 +466,7 @@
         "id": "XinZhaoQ",
         "name": "Three Talon Strike",
         "description": "Xin Zhao's next 3 standard attacks deal increased damage with the third attack knocking an opponent into the air.",
-        "tooltip": "Xin Zhao's next 3 Attacks deal an additional <physicalDamage>{{ bonusdamage }} physical damage</physicalDamage> and reduces his other Ability's Cooldowns by 1 second. The third Attack also <status>Knocks Up</status> for {{ knockupduration }} seconds.<br />{{ spellmodifierdescriptionappend }}",
+        "tooltip": "Xin Zhao's next 3 Attacks deal an additional <span class=\"text-red-600 dark:text-red-500 font-semibold\">(15/30/45/60/75 + (40% bonus Attack Damage)) physical damage</span> and reduces his other Ability's Cooldowns by 1 second. The third Attack also <span class=\"text-purple-600 dark:text-purple-500\">Knocks Up</span> for 0.75 seconds.<br />",
         "leveltip": {
           "label": [
             "Bonus Damage",
@@ -601,13 +601,15 @@
           "w": 48,
           "h": 48
         },
-        "resource": "{{ cost }} {{ abilityresourcename }}"
+        "resource": "{{ cost }} {{ abilityresourcename }}",
+        "summary": "Xin Zhao's next 3 standard attacks deal increased damage with the third attack knocking an opponent into the air.",
+        "tooltipSource": "communitydragon"
       },
       {
         "id": "XinZhaoW",
         "name": "Wind Becomes Lightning",
         "description": "Xin Zhao slashes in front of himself with his spear, then thrusts it forward, slowing affected enemies and marking them as Challenged.",
-        "tooltip": "Xin Zhao slashes, dealing <physicalDamage>{{ slashdamage }} physical damage</physicalDamage>, then thrusts, dealing <physicalDamage>{{ thrustdamage }}</physicalDamage>. Enemies hit by the thrust are <status>Slowed</status> by {{ e6 }}% for {{ totalslowduration }} seconds. <br /><br />Champions and Large Monsters hit by the thrust are marked as <keywordMajor>Challenged</keywordMajor> for {{ markduration }} seconds and revealed unless <keywordStealth>Stealthed</keywordStealth>.{{ spellmodifierdescriptionappend }}",
+        "tooltip": "Xin Zhao slashes, dealing <span class=\"text-red-600 dark:text-red-500 font-semibold\">(30/40/50/60/70 + (30% Attack Damage)) physical damage</span>, then thrusts, dealing <span class=\"text-red-600 dark:text-red-500 font-semibold\">(50/85/120/155/190 + (90% Attack Damage) + (65% Ability Power))</span>. Enemies hit by the thrust are <span class=\"text-purple-600 dark:text-purple-500\">Slowed</span> by -5000% for (1.5 + (0.5% Ability Power)) seconds. <br /><br />Champions and Large Monsters hit by the thrust are marked as <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Challenged</span> for 3 seconds and revealed unless <span class=\"text-purple-600 dark:text-purple-400 font-semibold\">Stealthed</span>.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">The thrust's damage is increased by up to 33.3% based on Xin Zhao's Critical Strike Chance.<br />Deals 53.34% damage to minions.<br />Applies Lifesteal at 33% effectiveness on both attacks.</span>",
         "leveltip": {
           "label": [
             "Slash Damage",
@@ -744,13 +746,15 @@
           "w": 48,
           "h": 48
         },
-        "resource": "{{ cost }} {{ abilityresourcename }}"
+        "resource": "{{ cost }} {{ abilityresourcename }}",
+        "summary": "Xin Zhao slashes in front of himself with his spear, then thrusts it forward, slowing affected enemies and marking them as Challenged.",
+        "tooltipSource": "communitydragon"
       },
       {
         "id": "XinZhaoE",
         "name": "Audacious Charge",
         "description": "Xin Zhao charges to an enemy, gaining increased Attack Speed and dealing damage to all enemies in the area, slowing them briefly. This Ability gains increased range against Challenged targets.",
-        "tooltip": "Xin Zhao charges an enemy, dealing <magicDamage>{{ chargedamage }} magic damage</magicDamage> to nearby enemies and <status>Slowing</status> them by {{ slowamount }}% for {{ slowduration }} seconds.<br /><br />Xin Zhao grants himself <attackSpeed>{{ f1 }}% (%i:scaleAS%%i:scaleAP%) Attack Speed</attackSpeed> for {{ asduration }} seconds.<br /><br />This Ability's range is increased on enemies that are <keywordMajor>Challenged</keywordMajor>.<br />{{ spellmodifierdescriptionappend }}",
+        "tooltip": "Xin Zhao charges an enemy, dealing <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(50/75/100/125/150 + (120% Ability Power)) magic damage</span> to nearby enemies and <span class=\"text-purple-600 dark:text-purple-500\">Slowing</span> them by 30% for 0.5 seconds.<br /><br />Xin Zhao grants himself <span>() Attack Speed</span> for 5 seconds.<br /><br />This Ability's range is increased on enemies that are <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Challenged</span>.<br />",
         "leveltip": {
           "label": [
             "Damage",
@@ -885,13 +889,20 @@
           "w": 48,
           "h": 48
         },
-        "resource": "{{ cost }} {{ abilityresourcename }}"
+        "resource": "{{ cost }} {{ abilityresourcename }}",
+        "summary": "Xin Zhao charges to an enemy, gaining increased Attack Speed and dealing damage to all enemies in the area, slowing them briefly. This Ability gains increased range against Challenged targets.",
+        "tooltipSource": "communitydragon",
+        "tooltipDiagnostics": {
+          "unresolvedTokens": [
+            "f1"
+          ]
+        }
       },
       {
         "id": "XinZhaoR",
         "name": "Crescent Guard",
         "description": "Xin Zhao passively challenges an enemy he damaged recently. When activated, Xin Zhao deals damage to nearby enemies based on their current Health and knocks non-challenged targets back, becoming impervious to damage dealt by champions outside of the circle created.",
-        "tooltip": "<spellPassive>Passive:</spellPassive> The last champion Xin Zhao damaged with an Attack or <spellName>Audacious Charge</spellName> is <keywordMajor>Challenged</keywordMajor> for {{ markduration }} seconds.<br /><br /><spellActive>Active:</spellActive> Xin Zhao unleashes a sweep around him that deals <physicalDamage>{{ totaldamage }} plus {{ percentcurrenthealthdamage*100 }}% current Health physical damage</physicalDamage> and <status>Knocks Back</status> all <keywordMajor>non-Challenged</keywordMajor> enemies. <br />  <br />Afterwards, Xin Zhao becomes immune to damage from enemies outside the sweep range for {{ missiledefensebaseduration }} seconds. {{ spellmodifierdescriptionappend }}",
+        "tooltip": "<span class=\"text-gray-600 dark:text-gray-500 italic\">Passive:</span> The last champion Xin Zhao damaged with an Attack or <span>Audacious Charge</span> is <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Challenged</span> for 3 seconds.<br /><br /><span class=\"text-gray-900 dark:text-white font-semibold\">Active:</span> Xin Zhao unleashes a sweep around him that deals <span class=\"text-red-600 dark:text-red-500 font-semibold\">(75/175/275 + (100% bonus Attack Damage) + (110% Ability Power)) plus 15% current Health physical damage</span> and <span class=\"text-purple-600 dark:text-purple-500\">Knocks Back</span> all <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">non-Challenged</span> enemies. <br /> <br />Afterwards, Xin Zhao becomes immune to damage from enemies outside the sweep range for 4 seconds.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">Deals a max of <span class=\"text-red-600 dark:text-red-500 font-semibold\">600 damage</span> to jungle monsters and minions.</span>",
         "leveltip": {
           "label": [
             "Damage",
@@ -1000,7 +1011,9 @@
           "w": 48,
           "h": 48
         },
-        "resource": "{{ cost }} {{ abilityresourcename }}"
+        "resource": "{{ cost }} {{ abilityresourcename }}",
+        "summary": "Xin Zhao passively challenges an enemy he damaged recently. When activated, Xin Zhao deals damage to nearby enemies based on their current Health and knocks non-challenged targets back, becoming impervious to damage dealt by champions outside of the circle created.",
+        "tooltipSource": "communitydragon"
       }
     ],
     "passive": {

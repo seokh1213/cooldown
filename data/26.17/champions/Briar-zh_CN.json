@@ -259,7 +259,7 @@
         "id": "BriarQ",
         "name": "冲头",
         "description": "贝蕾亚跃向一个单位并用她的（痛苦之）脚镣命中敌人们，将他们晕眩并削减他们的护甲。",
-        "tooltip": "贝蕾亚跃向一个单位，将其<status>晕眩</status>{{ stunduration }}秒，造成<physicalDamage>{{ totaldamage }}物理伤害</physicalDamage>和持续{{ shredduration }}秒的{{ shredpercent*100 }}%<scaleArmor>护甲削减</scaleArmor>与<scaleMR>魔抗削减</scaleMR>。<br /><br /><rules>如果贝蕾亚在<keywordMajor>血莽</keywordMajor>期间对一个小兵或野怪施放这个技能，那么她会停止将英雄作为优先目标。</rules>{{ spellmodifierdescriptionappend }}",
+        "tooltip": "贝蕾亚跃向一个单位，将其<span class=\"text-purple-600 dark:text-purple-500\">晕眩</span>0.85秒，造成<span class=\"text-red-600 dark:text-red-500 font-semibold\">(60/85/110/135/160 + (60% 法术强度) + (80% 额外攻击力))物理伤害</span>和持续5秒的10/12.5/15/17.5/20%<span class=\"text-orange-600 dark:text-orange-400\">护甲削减</span>与<span>魔抗削减</span>。<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">如果贝蕾亚在<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">血莽</span>期间对一个小兵或野怪施放这个技能，那么她会停止将英雄作为优先目标。</span><br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">这个技能会施加<span>攻击特效</span>。</span>",
         "leveltip": {
           "label": [
             "伤害",
@@ -396,13 +396,15 @@
           "w": 48,
           "h": 48
         },
-        "resource": "消耗{{ spell.briarp:currenthealthpercentcost*100 }}%当前生命值"
+        "resource": "消耗{{ spell.briarp:currenthealthpercentcost*100 }}%当前生命值",
+        "summary": "贝蕾亚跃向一个单位并用她的（痛苦之）脚镣命中敌人们，将他们晕眩并削减他们的护甲。",
+        "tooltipSource": "communitydragon"
       },
       {
         "id": "BriarW",
         "name": "血莽 / 噬击",
         "description": "贝蕾亚向前跳跃并击碎她的囚枷，进入一种【血莽】状态来使她无休止地追击相距最近的那个敌人（优先以英雄为目标）。在【血莽】状态下，她的攻击速度和移动速度获得提升，并且她的攻击会在她目标四周的一个区域内造成伤害。<br><br>贝蕾亚可以在【血莽】状态下再次激活这个技能，来让她的下一次攻击噬咬她的目标，造成基于目标已损失生命值的额外伤害，并且基于她造成的伤害来为她提供治疗效果。",
-        "tooltip": "贝蕾亚跳跃并进入一种<keywordMajor>血莽</keywordMajor>状态，自我嘲讽至相距最近的那个敌人，持续{{ berserkduration }}秒，优先以英雄为目标。在<keywordMajor>血莽</keywordMajor>状态下，她获得<attackSpeed>{{ berserkas*100 }}%攻击速度</attackSpeed>和<speed>{{ berserkms*100 }}%移动速度</speed>，并且她的攻击会对目标四周的敌人们造成<physicalDamage>{{ totalaoedamage }}物理伤害</physicalDamage>。<br /><br />贝蕾亚可以<recast>再次施放</recast>这个技能来强化她的下一次攻击。这次攻击造成<physicalDamage>{{ totalattackbonusdamage }} + {{ totalattackpercentmissinghealth }}%已损失生命值的物理伤害</physicalDamage>并<healing>为贝蕾亚提供{{ attackmaxhpheal }}+{{ attackhealpercent*100 }}%已造成伤害值的治疗效果</healing>。<br />{{ spellmodifierdescriptionappend }}",
+        "tooltip": "贝蕾亚跳跃并进入一种<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">血莽</span>状态，自我嘲讽至相距最近的那个敌人，持续5秒，优先以英雄为目标。在<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">血莽</span>状态下，她获得<span>55/65/75/85/95%攻击速度</span>和<span class=\"text-cyan-600 dark:text-cyan-500\">24/33/42/51/60%移动速度</span>，并且她的攻击会对目标四周的敌人们造成<span class=\"text-red-600 dark:text-red-500 font-semibold\">(60/70/80/90/100% 攻击力)物理伤害</span>。<br /><br />贝蕾亚可以<span class=\"text-yellow-600 dark:text-yellow-300\">再次施放</span>这个技能来强化她的下一次攻击。这次攻击造成<span class=\"text-red-600 dark:text-red-500 font-semibold\">(5/20/35/50/65 + (105% 攻击力)) + (9 + (2.5% 额外攻击力))已损失生命值的物理伤害</span>并<span class=\"text-green-600 dark:text-green-400\">为贝蕾亚提供(5% 生命值) + 24/28/32/36/40%已造成伤害值的治疗效果</span>。<br /><br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">噬咬会对小兵和野怪造成10%提升伤害(至多为400已损失生命值伤害)。<br />这个技能不会移除或替代<span>毙除</span>的强化版<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">血莽</span>。</span>",
         "leveltip": {
           "label": [
             "攻击速度",
@@ -545,13 +547,15 @@
           "w": 48,
           "h": 48
         },
-        "resource": "消耗{{ spell.briarp:currenthealthpercentcost*100 }}%当前生命值"
+        "resource": "消耗{{ spell.briarp:currenthealthpercentcost*100 }}%当前生命值",
+        "summary": "贝蕾亚向前跳跃并击碎她的囚枷，进入一种【血莽】状态来使她无休止地追击相距最近的那个敌人（优先以英雄为目标）。在【血莽】状态下，她的攻击速度和移动速度获得提升，并且她的攻击会在她目标四周的一个区域内造成伤害。<br><br>贝蕾亚可以在【血莽】状态下再次激活这个技能，来让她的下一次攻击噬咬她的目标，造成基于目标已损失生命值的额外伤害，并且基于她造成的伤害来为她提供治疗效果。",
+        "tooltipSource": "communitydragon"
       },
       {
         "id": "BriarE",
         "name": "惊吼",
         "description": "贝蕾亚重新集中她的意志，移除【血莽】并将能量引导为一次强力吼叫，对敌人造成伤害和减速。在蓄力时，她获得伤害减免并回复一部分最大生命值。一次完全蓄力的吼叫会将敌人们击退，对那些与墙体碰撞的敌人造成额外伤害和晕眩。",
-        "tooltip": "<charge>开始蓄力</charge>：贝蕾亚移除<keywordMajor>血莽</keywordMajor>并聚集能量，获得{{ drpercent }}%伤害减免并在1秒里持续获得共<healing>{{ percentmaxhpheal }}治疗效果</healing>。<br /><br /><release>释放：</release>贝蕾亚释放一次吼叫，基于蓄力时间造成至多<magicDamage>{{ damage }}魔法伤害</magicDamage>，以及持续{{ slowduration }}秒的{{ slowpercent*100 }}%<status>减速</status>。在完全蓄力后，吼叫会<status>击退</status>敌人们，对那些与墙体碰撞的敌人造成<magicDamage>{{ wallhitdamage }}魔法伤害</magicDamage>和{{ wallstunduration }}秒<status>晕眩</status>。{{ spellmodifierdescriptionappend }}",
+        "tooltip": "<span>开始蓄力</span>：贝蕾亚移除<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">血莽</span>并聚集能量，获得35%伤害减免并在1秒里持续获得共<span class=\"text-green-600 dark:text-green-400\">(10/11.5/13/14.5/16% 生命值)治疗效果</span>。<br /><br /><span>释放：</span>贝蕾亚释放一次吼叫，基于蓄力时间造成至多<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(80/115/150/185/220 + (100% 额外攻击力) + (100% 法术强度))魔法伤害</span>，以及持续0.5秒的80%<span class=\"text-purple-600 dark:text-purple-500\">减速</span>。在完全蓄力后，吼叫会<span class=\"text-purple-600 dark:text-purple-500\">击退</span>敌人们，对那些与墙体碰撞的敌人造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(140/215/290/365/440 + (240% 额外攻击力) + (240% 法术强度))魔法伤害</span>和1.5秒<span class=\"text-purple-600 dark:text-purple-500\">晕眩</span>。",
         "leveltip": {
           "label": [
             "伤害",
@@ -688,13 +692,15 @@
           "w": 48,
           "h": 48
         },
-        "resource": "消耗{{ spell.briarp:currenthealthpercentcost*100 }}%当前生命值"
+        "resource": "消耗{{ spell.briarp:currenthealthpercentcost*100 }}%当前生命值",
+        "summary": "贝蕾亚重新集中她的意志，移除【血莽】并将能量引导为一次强力吼叫，对敌人造成伤害和减速。在蓄力时，她获得伤害减免并回复一部分最大生命值。一次完全蓄力的吼叫会将敌人们击退，对那些与墙体碰撞的敌人造成额外伤害和晕眩。",
+        "tooltipSource": "communitydragon"
       },
       {
         "id": "BriarR",
         "name": "毙除",
         "description": "贝蕾亚踢出她的囚枷中的血石，让被它命中的第一个英雄成为她的猎物。她随后会径直走向该目标，在抵达目标处时恐惧周围的其它敌人们，并进入一个彻底血狂的状态。她将追击她的猎物直至阵亡才罢休，获得【血莽】的助益以及额外的护甲、魔抗、生命偷取和移动速度。",
-        "tooltip": "贝蕾亚踢出她的囚枷中的血石并飞到被它命中的第一个英雄的位置，将这个英雄标记为她的猎物。在着陆时，她对附近的一切造成<magicDamage>{{ damage }}魔法伤害</magicDamage>并使那些并非她猎物的敌人们<status>逃跑</status>{{ fearduration }}秒。她随后会进入一个强化版<keywordMajor>血莽</keywordMajor>状态并将追击她的猎物直至阵亡才罢休。在此期间，她获得{{ totalresists }}<scaleArmor>护甲</scaleArmor> 和<scaleMR>魔法抗性</scaleMR>、{{ lifestealpercent*100 }}%生命偷取和额外的<speed>{{ extramovespeedpercent*100 }}%移动速度</speed>。{{ spellmodifierdescriptionappend }}",
+        "tooltip": "贝蕾亚踢出她的囚枷中的血石并飞到被它命中的第一个英雄的位置，将这个英雄标记为她的猎物。在着陆时，她对附近的一切造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(150/250/350 + (130% 法术强度))魔法伤害</span>并使那些并非她猎物的敌人们<span class=\"text-purple-600 dark:text-purple-500\">逃跑</span>1.5秒。她随后会进入一个强化版<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">血莽</span>状态并将追击她的猎物直至阵亡才罢休。在此期间，她获得(20% 攻击力)<span class=\"text-orange-600 dark:text-orange-400\">护甲</span> 和<span>魔法抗性</span>、10/15/20%生命偷取和额外的<span class=\"text-cyan-600 dark:text-cyan-500\">10/20/30%移动速度</span>。<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">血石在命中时会打断引导型技能。贝蕾亚拥有她猎物的<span style=\"color: #ee91d7\">真实视野</font color>。</span>",
         "leveltip": {
           "label": [
             "伤害",
@@ -807,7 +813,9 @@
           "w": 48,
           "h": 48
         },
-        "resource": "消耗{{ spell.briarp:currenthealthpercentcost*100 }}%当前生命值"
+        "resource": "消耗{{ spell.briarp:currenthealthpercentcost*100 }}%当前生命值",
+        "summary": "贝蕾亚踢出她的囚枷中的血石，让被它命中的第一个英雄成为她的猎物。她随后会径直走向该目标，在抵达目标处时恐惧周围的其它敌人们，并进入一个彻底血狂的状态。她将追击她的猎物直至阵亡才罢休，获得【血莽】的助益以及额外的护甲、魔抗、生命偷取和移动速度。",
+        "tooltipSource": "communitydragon"
       }
     ],
     "passive": {
