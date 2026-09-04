@@ -69,17 +69,23 @@ function stripUnsupportedSpellPlaceholders(text: string): string {
 /**
  * {{ variable }} 토큰을 실제 숫자/텍스트로 치환
  * - precision 접미사(.0, .1 등) 처리
- * - 지원하지 않는 변수는 빈 문자열로 삭제
+ * - 지원하지 않는 변수는 출력에서 제거하되 진단 목록에 보존
  */
+interface VariableReplacementResult {
+  text: string;
+  unresolvedTokens: string[];
+}
+
 function replaceVariableTokens(
   text: string,
   spell: ChampionSpell,
   communityDragonData: CommunityDragonSpellData | undefined,
   lang: TooltipLocale
-): string {
+): VariableReplacementResult {
   const variableRegex = /\{\{([^}]+)}}/g;
+  const unresolvedTokens = new Set<string>();
 
-  return text.replace(variableRegex, (_match, variableName) => {
+  const replaced = text.replace(variableRegex, (_match, variableName) => {
     const trimmedVar = String(variableName).trim();
 
     // 특수 변수 처리 (spellmodifierdescriptionappend, Spell_*_Tooltip 등)
@@ -122,9 +128,14 @@ function replaceVariableTokens(
         : replacement;
     }
 
-    // 값을 찾을 수 없으면 빈 문자열로 제거
+    unresolvedTokens.add(trimmedVar);
     return "";
   });
+
+  return {
+    text: replaced,
+    unresolvedTokens: [...unresolvedTokens].sort(),
+  };
 }
 
 /**
@@ -175,7 +186,21 @@ export function replaceVariables(
   communityDragonData?: CommunityDragonSpellData,
   lang: TooltipLocale = "ko_KR"
 ): string {
-  if (!spell) return text;
+  return replaceVariablesWithDiagnostics(
+    text,
+    spell,
+    communityDragonData,
+    lang
+  ).text;
+}
+
+export function replaceVariablesWithDiagnostics(
+  text: string,
+  spell?: ChampionSpell,
+  communityDragonData?: CommunityDragonSpellData,
+  lang: TooltipLocale = "ko_KR"
+): VariableReplacementResult {
+  if (!spell) return { text, unresolvedTokens: [] };
 
   let result = text;
 
@@ -189,12 +214,18 @@ export function replaceVariables(
   result = stripUnsupportedSpellPlaceholders(result);
 
   // 3. {{ variable }} 토큰 치환
-  result = replaceVariableTokens(result, spell, communityDragonData, lang);
+  const replacement = replaceVariableTokens(
+    result,
+    spell,
+    communityDragonData,
+    lang
+  );
+  result = replacement.text;
 
   // 4. 잔여 플레이스홀더/아이콘/공백 정리
   result = cleanupPlaceholdersAndIcons(result);
 
-  return result;
+  return { text: result, unresolvedTokens: replacement.unresolvedTokens };
 }
 
 /**
@@ -210,7 +241,16 @@ export function replaceVariable(
   communityDragonData?: CommunityDragonSpellData,
   lang: TooltipLocale = "ko_KR"
 ): string | null {
-  const parseResult = parseExpression(trimmedVar);
+  const effectAlias = /^Effect(\d+)Amount(.*)$/i.exec(trimmedVar);
+  const normalizedVariable = effectAlias
+    ? `e${effectAlias[1]}${effectAlias[2]}`
+    : /^AmmoRechargeTime(.*)$/i.test(trimmedVar)
+      ? trimmedVar.replace(/^AmmoRechargeTime/i, "mAmmoRechargeTime")
+      : trimmedVar;
+  const parseResult = parseExpression(normalizedVariable);
+
+  const bySpellMetadata = replaceSpellMetadata(parseResult, spell);
+  if (bySpellMetadata !== null) return bySpellMetadata;
 
   // 0. effectBurn 기반 eN 변수(e1, e2, e3, ...) 우선 처리
   const byEffectBurn = replaceEffectBurn(parseResult, spell, communityDragonData);
@@ -222,6 +262,25 @@ export function replaceVariable(
 
   // 2. 안 되면 mSpellCalculations
   return replaceCalculateData(parseResult, spell, communityDragonData, lang);
+}
+
+function replaceSpellMetadata(
+  parseResult: ParseResult,
+  spell: ChampionSpell
+): string | null {
+  const field = parseResult.variable.toLowerCase();
+  const rawValues = field === "cooldown"
+    ? spell.cooldown
+    : field === "cost"
+      ? spell.cost
+      : undefined;
+  if (!rawValues) return null;
+
+  const values = rawValues.map(Number).filter(Number.isFinite);
+  if (values.length === 0) return null;
+
+  const value: Value = values.length === 1 ? values[0] : values;
+  return valueToTooltipString(applyFormulaToValue(value, parseResult));
 }
 
 /**

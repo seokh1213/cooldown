@@ -320,7 +320,7 @@
         "id": "BelvethQ",
         "name": "Void Surge",
         "description": "Bel'Veth dashes in a chosen direction and damages all enemies she passes through.",
-        "tooltip": "Bel'Veth dashes, dealing <physicalDamage>{{ basedamage }} physical damage</physicalDamage> to enemies she passes through.<br /><br />Each direction has an unique Cooldown of {{ f1 }} seconds that scales down based on her <attackSpeed>Attack Speed</attackSpeed>.<br />{{ spellmodifierdescriptionappend }}",
+        "tooltip": "Bel'Veth dashes, dealing <span class=\"text-red-600 dark:text-red-500 font-semibold\">(12/14/16/18/20 + (105% Attack Damage)) physical damage</span> to enemies she passes through.<br /><br />Each direction has an unique Cooldown of seconds that scales down based on her <span>Attack Speed</span>.<br /><br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">Applies On-Hit Effects to the first target hit.<br />Each <span>1% Attack Speed</span> is equivalent to 0.2 Ability Haste for this Ability's per-direction Cooldown.<br />Bel'Veth does an additional <span class=\"text-red-600 dark:text-red-500 font-semibold\">70 physical damage</span> to monsters.</span>",
         "leveltip": {
           "label": [
             "Damage",
@@ -457,13 +457,20 @@
           "w": 48,
           "h": 48
         },
-        "resource": "No Cost"
+        "resource": "No Cost",
+        "summary": "Bel'Veth dashes in a chosen direction and damages all enemies she passes through.",
+        "tooltipSource": "communitydragon",
+        "tooltipDiagnostics": {
+          "unresolvedTokens": [
+            "f1"
+          ]
+        }
       },
       {
         "id": "BelvethW",
         "name": "Above and Below",
         "description": "Bel'Veth slams her tail to the ground, damaging, knocking up, and slowing her enemies.",
-        "tooltip": "Bel'Veth slams her tail, dealing <magicDamage>{{ damage }} magic damage</magicDamage>, <status>Knocking Up</status> foes for {{ duration }} seconds, and <status>Slowing</status> them by {{ slowpercent*100 }}% for {{ slowduration }} seconds. If a champion is hit, this refreshes the Cooldown of <spellName>Void Surge</spellName> in that direction.{{ spellmodifierdescriptionappend }}",
+        "tooltip": "Bel'Veth slams her tail, dealing <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(80/140/200/260/320 + (150% Attack Damage)) magic damage</span>, <span class=\"text-purple-600 dark:text-purple-500\">Knocking Up</span> foes for 0.6/0.7/0.8/0.9/1 seconds, and <span class=\"text-purple-600 dark:text-purple-500\">Slowing</span> them by 30% for 2 seconds. If a champion is hit, this refreshes the Cooldown of <span>Void Surge</span> in that direction.",
         "leveltip": {
           "label": [
             "Damage",
@@ -600,13 +607,15 @@
           "w": 48,
           "h": 48
         },
-        "resource": "No Cost"
+        "resource": "No Cost",
+        "summary": "Bel'Veth slams her tail to the ground, damaging, knocking up, and slowing her enemies.",
+        "tooltipSource": "communitydragon"
       },
       {
         "id": "BelvethE",
         "name": "Royal Maelstrom",
         "description": "Bel'Veth roots herself in place, channeling a storm of slashes around her that targets the lowest-health enemy and grants her lifesteal and damage reduction.",
-        "tooltip": "Bel'Veth channels and slashes around herself, gaining {{ drpercent*100 }}% Damage Reduction, {{ totallifesteal }} Life Steal, and Attacking {{ f2.0 }} times over {{ totalduration }} seconds with the number of Attacks increasing based on her <attackSpeed>Attack Speed</attackSpeed>. Each Attack strikes the lowest-health enemy, dealing <physicalDamage>{{ damageperstrike }}</physicalDamage> to <physicalDamage>{{ maxdamageperstriketooltip }} physical damage</physicalDamage> based on the target's missing Health.<br /><br />Using another Ability or <recast>Recasting</recast> ends this Ability early.<br />{{ spellmodifierdescriptionappend }}",
+        "tooltip": "Bel'Veth channels and slashes around herself, gaining 20/30/40/50/60% Damage Reduction, 20/25/30/35/40% Life Steal, and Attacking times over 1.5 seconds with the number of Attacks increasing based on her <span>Attack Speed</span>. Each Attack strikes the lowest-health enemy, dealing <span class=\"text-red-600 dark:text-red-500 font-semibold\">(10/12/14/16/18 + (12% Attack Damage))</span> to <span class=\"text-red-600 dark:text-red-500 font-semibold\">(20/24/28/32/36 + (24% Attack Damage)) physical damage</span> based on the target's missing Health.<br /><br />Using another Ability or <span class=\"text-yellow-600 dark:text-yellow-300\">Recasting</span> ends this Ability early.<br /><br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">Attacks from this Ability deal 200% damage to monsters and apply On-Hit Effects at 12% to 24% effectiveness based on the target's missing Health.</span><br />",
         "leveltip": {
           "label": [
             "Damage",
@@ -745,13 +754,20 @@
           "w": 48,
           "h": 48
         },
-        "resource": "No Cost"
+        "resource": "No Cost",
+        "summary": "Bel'Veth roots herself in place, channeling a storm of slashes around her that targets the lowest-health enemy and grants her lifesteal and damage reduction.",
+        "tooltipSource": "communitydragon",
+        "tooltipDiagnostics": {
+          "unresolvedTokens": [
+            "f2.0"
+          ]
+        }
       },
       {
         "id": "BelvethR",
         "name": "Endless Banquet",
         "description": "Bel'Veth consumes Void coral remnants, transforming into her true form and increasing her max health, attack range, and attack speed. Consuming the Void coral remnants of a Void epic monster will grant her the power to summon Void remora.",
-        "tooltip": "<spellPassive>Passive:</spellPassive> Attacks deal an additional <trueDamage>{{ finalonhitdamage }} true damage</trueDamage>, stacking infinitely. Takedowns against champions and epic monsters leave behind a piece of Void Coral.<br /><br /><spellActive>Active:</spellActive> Bel'Veth consumes a Void Coral, gaining <keywordMajor>{{ passivestacksondevour }} Lavender</keywordMajor> stack and activating her true form. Void Coral from void epic monsters causes minions that die nearby to become Void Remora. While casting, Bel'Veth <status>Slows</status> nearby enemies before exploding, dealing <trueDamage>{{ totalexplosiondamage }} + {{ missinghealthdamage*100 }}% missing-Health true damage</trueDamage>.<br /><br />In her true form, Bel'Veth gains <healing>{{ maxhealthondevour }} max Health</healing>, {{ bonusaarange }} Attack range, <attackSpeed>{{ totalasmod*100 }}% Total Attack Speed</attackSpeed>, and <spellName>Void Surge</spellName> can pass through walls.<br /><br /><rules>True form lasts {{ steroidduration }} seconds, increased to {{ steroiddurationupgrade }} seconds at <keywordMajor>{{ stackthresholdforupgrade }} Lavender</keywordMajor> stacks. At <keywordMajor>{{ stackthresholdforpermanent }} Lavender</keywordMajor> stacks, true form lasts until death.</rules><br /><br /><br />{{ spellmodifierdescriptionappend }}",
+        "tooltip": "<span class=\"text-gray-600 dark:text-gray-500 italic\">Passive:</span> Attacks deal an additional <span class=\"text-yellow-600 dark:text-yellow-500 font-semibold\">(2/4/6 + (3% bonus Attack Damage)) true damage</span>, stacking infinitely. Takedowns against champions and epic monsters leave behind a piece of Void Coral.<br /><br /><span class=\"text-gray-900 dark:text-white font-semibold\">Active:</span> Bel'Veth consumes a Void Coral, gaining <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">1 Lavender</span> stack and activating her true form. Void Coral from void epic monsters causes minions that die nearby to become Void Remora. While casting, Bel'Veth <span class=\"text-purple-600 dark:text-purple-500\">Slows</span> nearby enemies before exploding, dealing <span class=\"text-yellow-600 dark:text-yellow-500 font-semibold\">(150/200/250 + (150% Ability Power)) + 20% missing-Health true damage</span>.<br /><br />In her true form, Bel'Veth gains <span class=\"text-green-600 dark:text-green-400\">(100/250/400 + (150% bonus Attack Damage) + (150% Ability Power)) max Health</span>, 25/75/125 Attack range, <span>6/13/20% Total Attack Speed</span>, and <span>Void Surge</span> can pass through walls.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">True form lasts 45 seconds, increased to 90 seconds at <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">40 Lavender</span> stacks. At <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">80 Lavender</span> stacks, true form lasts until death.</span><br /><br /><br /><br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">Void Remora count as lane minions with <span class=\"text-green-600 dark:text-green-400\">20/45/70% Health</span> and <span class=\"text-red-600 dark:text-red-500 font-semibold\">110% Attack Damage</span>.<br />The applied <span class=\"text-purple-600 dark:text-purple-500\">Slow</span> ramps up to 99% while Bel'Veth consumes Void Coral. <br />The passive deals a maximum of <span class=\"text-yellow-600 dark:text-yellow-500 font-semibold\">(16/32/48 + (24% bonus Attack Damage)) true damage</span> to epic monsters.<br />While in true form, consuming Void Coral renews the form's duration and restores <span class=\"text-green-600 dark:text-green-400\">100/250/400 Health</span>.</span><br />",
         "leveltip": {
           "label": [
             "On-Hit Damage",
@@ -868,7 +884,9 @@
           "w": 48,
           "h": 48
         },
-        "resource": "No Cost"
+        "resource": "No Cost",
+        "summary": "Bel'Veth consumes Void coral remnants, transforming into her true form and increasing her max health, attack range, and attack speed. Consuming the Void coral remnants of a Void epic monster will grant her the power to summon Void remora.",
+        "tooltipSource": "communitydragon"
       }
     ],
     "passive": {

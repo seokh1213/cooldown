@@ -325,7 +325,7 @@
         "id": "RyzeQWrapper",
         "name": "超负荷",
         "description": "被动部分：瑞兹的其它基础技能会重置【超负荷】的冷却时间并且充能一层符文。当瑞兹带着2层符文施放【超负荷】时，他会获得短暂的爆发性移动速度加成。<br><br>施放时，瑞兹会沿直线扔出一团纯粹能量，来对命中的第一个敌人造成伤害。如果目标身上有【涌动】效果，那么【超负荷】会造成额外伤害并弹射至附近带有【涌动】效果的敌人身上。",
-        "tooltip": "<spellPassive>被动：</spellPassive><spellName>符文禁锢</spellName>和<spellName>法术涌动</spellName>会刷新这个技能的冷却时间并充能一枚符文，持续{{ runeduration }}秒(最多{{ maximumrunes }}枚符文)。<br /><br /><spellActive>主动：</spellActive>瑞兹释放一次魔爆，对命中的第一个敌人造成<magicDamage>{{ qdamagecalc }}魔法伤害</magicDamage>。如果目标带有<keywordMajor>涌动</keywordMajor>，则它会将其消耗，使这个技能造成{{ spell.ryzer:overloaddamagebonus }}%伤害提升并弹射至附近带有<keywordMajor>涌动</keywordMajor>的敌人们。<br /><br />如果{{ maximumrunes }}枚符文已被充能，瑞兹就会释放所有符文的能量，来为瑞兹提供持续{{ movementspeedduration }}秒的<speed>{{ movementspeedamount }}%移动速度</speed>。<br />{{ spellmodifierdescriptionappend }}",
+        "tooltip": "<span class=\"text-gray-600 dark:text-gray-500 italic\">被动：</span><span>符文禁锢</span>和<span>法术涌动</span>会刷新这个技能的冷却时间并充能一枚符文，持续4秒(最多2枚符文)。<br /><br /><span class=\"text-gray-900 dark:text-white font-semibold\">主动：</span>瑞兹释放一次魔爆，对命中的第一个敌人造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(75/95/115/135/155 + (55% 法术强度) + (2% 额外 法力值))魔法伤害</span>。如果目标带有<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">涌动</span>，则它会将其消耗，使这个技能造成伤害提升并弹射至附近带有<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">涌动</span>的敌人们。<br /><br />如果2枚符文已被充能，瑞兹就会释放所有符文的能量，来为瑞兹提供持续2秒的<span class=\"text-cyan-600 dark:text-cyan-500\">28/32/36/40/44%移动速度</span>。<br />",
         "leveltip": {
           "label": [
             "伤害",
@@ -462,13 +462,20 @@
           "w": 48,
           "h": 48
         },
-        "resource": "{{ cost }} {{ abilityresourcename }}"
+        "resource": "{{ cost }} {{ abilityresourcename }}",
+        "summary": "被动部分：瑞兹的其它基础技能会重置【超负荷】的冷却时间并且充能一层符文。当瑞兹带着2层符文施放【超负荷】时，他会获得短暂的爆发性移动速度加成。<br><br>施放时，瑞兹会沿直线扔出一团纯粹能量，来对命中的第一个敌人造成伤害。如果目标身上有【涌动】效果，那么【超负荷】会造成额外伤害并弹射至附近带有【涌动】效果的敌人身上。",
+        "tooltipSource": "communitydragon",
+        "tooltipDiagnostics": {
+          "unresolvedTokens": [
+            "Spell.RyzeR:OverloadDamageBonus"
+          ]
+        }
       },
       {
         "id": "RyzeW",
         "name": "符文禁锢",
         "description": "瑞兹将一个目标陷入一个符文牢笼中，来对其造成伤害和减速效果。如果目标身上带有【涌动】效果，那么减速效果会替换为禁锢效果。",
-        "tooltip": "瑞兹造成<magicDamage>{{ wdamagecalc }}魔法伤害</magicDamage>和持续{{ ccduration }}秒的{{ slowamount*100 }}%<status>减速</status>。如果目标带有<keywordMajor>涌动</keywordMajor>，则它会将其消耗，使这个技能造成<status>禁锢</status>而非<status>减速</status>。{{ spellmodifierdescriptionappend }}",
+        "tooltip": "瑞兹造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(60/90/120/150/180 + (60% 法术强度) + (3% 额外 法力值))魔法伤害</span>和持续1.5秒的50%<span class=\"text-purple-600 dark:text-purple-500\">减速</span>。如果目标带有<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">涌动</span>，则它会将其消耗，使这个技能造成<span class=\"text-purple-600 dark:text-purple-500\">禁锢</span>而非<span class=\"text-purple-600 dark:text-purple-500\">减速</span>。",
         "leveltip": {
           "label": [
             "伤害",
@@ -605,13 +612,15 @@
           "w": 48,
           "h": 48
         },
-        "resource": "{{ cost }} {{ abilityresourcename }}"
+        "resource": "{{ cost }} {{ abilityresourcename }}",
+        "summary": "瑞兹将一个目标陷入一个符文牢笼中，来对其造成伤害和减速效果。如果目标身上带有【涌动】效果，那么减速效果会替换为禁锢效果。",
+        "tooltipSource": "communitydragon"
       },
       {
         "id": "RyzeE",
         "name": "法术涌动",
         "description": "瑞兹放出一颗纯净魔法能量球，对一名敌人造成伤害并对附近的敌人造成减益效果。瑞兹的技能可以对带有该减益的敌人造成额外效果。",
-        "tooltip": "瑞兹发射一颗法球，造成<magicDamage>{{ edamagecalc }}魔法伤害</magicDamage>并施加持续{{ debuffduration }}秒的<keywordMajor>涌动</keywordMajor>给目标和附近的敌人们。已被<keywordMajor>涌动</keywordMajor>影响的敌人们将使其进一步扩散。{{ spellmodifierdescriptionappend }}",
+        "tooltip": "瑞兹发射一颗法球，造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(60/90/120/150/180 + (50% 法术强度) + (2% 额外 法力值))魔法伤害</span>并施加持续4秒的<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">涌动</span>给目标和附近的敌人们。已被<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">涌动</span>影响的敌人们将使其进一步扩散。",
         "leveltip": {
           "label": [
             "伤害",
@@ -748,13 +757,15 @@
           "w": 48,
           "h": 48
         },
-        "resource": "{{ cost }} {{ abilityresourcename }}"
+        "resource": "{{ cost }} {{ abilityresourcename }}",
+        "summary": "瑞兹放出一颗纯净魔法能量球，对一名敌人造成伤害并对附近的敌人造成减益效果。瑞兹的技能可以对带有该减益的敌人造成额外效果。",
+        "tooltipSource": "communitydragon"
       },
       {
         "id": "RyzeR",
         "name": "曲境折跃",
         "description": "被动部分：【超负荷】对带有【涌动】效果的目标造成更多伤害。<br><br>施放时，瑞兹会创造一个传送门来通向一个附近的位置。在若干秒后，站在传送门附近的友军会被传送至目标位置。",
-        "tooltip": "<spellPassive>被动：</spellPassive> <spellName>超负荷</spellName>对带有<keywordMajor>涌动</keywordMajor>的目标的伤害加成提升至{{ overloaddamagebonus }}%。<br /><br /><spellActive>主动：</spellActive>瑞兹开启一个前往另一个位置的传送门。在{{ chargetimetooltip }}秒后，传送门附近的所有友军都会被传送到该位置。{{ spellmodifierdescriptionappend }}",
+        "tooltip": "<span class=\"text-gray-600 dark:text-gray-500 italic\">被动：</span> <span>超负荷</span>对带有<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">涌动</span>的目标的伤害加成提升至50/75/100%。<br /><br /><span class=\"text-gray-900 dark:text-white font-semibold\">主动：</span>瑞兹开启一个前往另一个位置的传送门。在2秒后，传送门附近的所有友军都会被传送到该位置。<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">如果瑞兹被<span class=\"text-purple-600 dark:text-purple-500\">定身</span>或<span class=\"text-purple-600 dark:text-purple-500\">限制</span>，那么传送门就会被取消。</span>",
         "leveltip": {
           "label": [
             "冷却时间",
@@ -863,7 +874,9 @@
           "w": 48,
           "h": 48
         },
-        "resource": "{{ cost }} {{ abilityresourcename }}"
+        "resource": "{{ cost }} {{ abilityresourcename }}",
+        "summary": "被动部分：【超负荷】对带有【涌动】效果的目标造成更多伤害。<br><br>施放时，瑞兹会创造一个传送门来通向一个附近的位置。在若干秒后，站在传送门附近的友军会被传送至目标位置。",
+        "tooltipSource": "communitydragon"
       }
     ],
     "passive": {

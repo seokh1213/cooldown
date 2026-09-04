@@ -272,7 +272,7 @@
         "id": "RellQ",
         "name": "Shattering Strike",
         "description": "Rell deals magic damage to units in a line, breaking their shields and stunning them. ",
-        "tooltip": "Rell thrusts her lance, <status>Stunning</status> targets for {{ stunduration }} seconds, destroying all <shield>Shields</shield>, and dealing <magicDamage>{{ damage }} magic damage.</magicDamage>{{ spellmodifierdescriptionappend }}",
+        "tooltip": "Rell thrusts her lance, <span class=\"text-purple-600 dark:text-purple-500\">Stunning</span> targets for 0.65 seconds, destroying all <span class=\"text-blue-600 dark:text-blue-300\">Shields</span>, and dealing <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(60/100/140/180/220 + (60% Ability Power)) magic damage.</span><br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">Does not break Shields on monsters.</span>",
         "leveltip": {
           "label": [
             "Damage",
@@ -407,13 +407,15 @@
           "w": 48,
           "h": 48
         },
-        "resource": "{{ cost }} {{ abilityresourcename }}"
+        "resource": "{{ cost }} {{ abilityresourcename }}",
+        "summary": "Rell deals magic damage to units in a line, breaking their shields and stunning them. ",
+        "tooltipSource": "communitydragon"
       },
       {
         "id": "RellW_Dismount",
         "name": "Ferromancy: Crash Down",
         "description": "Mounted: Rell Dismounts, crashing down in her armor, Knocking enemies up and gaining a large Shield. While dismounted, she gains Armor, Magic Resist, Attack Speed, and Attack Range, but is Slowed.<br><br>Dismounted: Rell forms her Mount, gaining a burst of speed and Knocking Up the next enemy she attacks.<br><br>",
-        "tooltip": "<spellPassive>Passive - Mounted Alacrity:</spellPassive> Rell gains <speed>{{ spell.rellw_dismount:mountedmovespeed }} Move Speed</speed> while mounted.<br /><br /><spellActive>Active - Ferromancy: Crash Down:</spellActive> Rell leaps off her mount, <status>Knocking Up</status> enemies and dealing <magicDamage>{{ spell.rellw_dismount:dismountdamage }} magic damage</magicDamage>. Rell gains <shield>{{ spell.rellw_dismount:shield }} Shield</shield>, which lasts until she remounts.<br /><br />Rell then enters her armored form, gaining <scaleArmor>{{ spell.rellw_dismount:resistanceincrease*100 }}% increased Armor</scaleArmor> and <scaleMR>Magic Resist</scaleMR>, <attackSpeed>{{ spell.rellw_dismount:dismountedasboost*100 }}% Attack Speed</attackSpeed> and {{ spell.rellw_dismount:dismountedrangeboost }} Attack Range. In this armored form, she can use <spellName>Ferromancy: Mount Up</spellName>.{{ spellmodifierdescriptionappend }}",
+        "tooltip": "<span class=\"text-gray-600 dark:text-gray-500 italic\">Passive - Mounted Alacrity:</span> Rell gains <span class=\"text-cyan-600 dark:text-cyan-500\"> Move Speed</span> while mounted.<br /><br /><span class=\"text-gray-900 dark:text-white font-semibold\">Active - Ferromancy: Crash Down:</span> Rell leaps off her mount, <span class=\"text-purple-600 dark:text-purple-500\">Knocking Up</span> enemies and dealing <span class=\"text-blue-600 dark:text-blue-500 font-semibold\"> magic damage</span>. Rell gains <span class=\"text-blue-600 dark:text-blue-300\"> Shield</span>, which lasts until she remounts.<br /><br />Rell then enters her armored form, gaining <span class=\"text-orange-600 dark:text-orange-400\">increased Armor</span> and <span>Magic Resist</span>, <span>Attack Speed</span> and Attack Range. In this armored form, she can use <span>Ferromancy: Mount Up</span>.",
         "leveltip": {
           "label": [
             "Dismount Damage",
@@ -552,13 +554,25 @@
           "w": 48,
           "h": 48
         },
-        "resource": "{{ cost }} {{ abilityresourcename }}"
+        "resource": "{{ cost }} {{ abilityresourcename }}",
+        "summary": "Mounted: Rell Dismounts, crashing down in her armor, Knocking enemies up and gaining a large Shield. While dismounted, she gains Armor, Magic Resist, Attack Speed, and Attack Range, but is Slowed.<br><br>Dismounted: Rell forms her Mount, gaining a burst of speed and Knocking Up the next enemy she attacks.<br><br>",
+        "tooltipSource": "communitydragon",
+        "tooltipDiagnostics": {
+          "unresolvedTokens": [
+            "spell.RellW_Dismount:DismountDamage",
+            "spell.RellW_Dismount:DismountedASBoost*100",
+            "spell.RellW_Dismount:DismountedRangeBoost",
+            "spell.RellW_Dismount:MountedMoveSpeed",
+            "spell.RellW_Dismount:ResistanceIncrease*100",
+            "spell.RellW_Dismount:Shield"
+          ]
+        }
       },
       {
         "id": "RellE",
         "name": "Full Tilt",
         "description": "Passive: Rell gains out of combat Move Speed.<br><br>Active: Rell and an ally gain ramping Move Speed, doubled toward enemies and each other. Her next Attack explodes, dealing magic damage.<br>",
-        "tooltip": "Rell and an ally charge, gaining <speed>{{ minms*100 }}% Move Speed</speed>, increased to <speed>{{ maxms*100 }}%</speed> when facing enemy champions or each other for {{ duration }} seconds. Rell's next Attack or <spellName>Shattering Strike</spellName> explodes in an area for <magicDamage>{{ maxhealthdamagecalc }} max Health magic damage</magicDamage>.{{ spellmodifierdescriptionappend }}",
+        "tooltip": "Rell and an ally charge, gaining <span class=\"text-cyan-600 dark:text-cyan-500\">15% Move Speed</span>, increased to <span class=\"text-cyan-600 dark:text-cyan-500\">30%</span> when facing enemy champions or each other for 3 seconds. Rell's next Attack or <span>Shattering Strike</span> explodes in an area for <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(5/5.5/6/6.5/7% + (0.03% Ability Power)) max Health magic damage</span>.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">Damage capped at (150 ~ 300) against jungle monsters and structures.</span>",
         "leveltip": {
           "label": [
             "Damage",
@@ -693,13 +707,15 @@
           "w": 48,
           "h": 48
         },
-        "resource": "{{ cost }} {{ abilityresourcename }}"
+        "resource": "{{ cost }} {{ abilityresourcename }}",
+        "summary": "Passive: Rell gains out of combat Move Speed.<br><br>Active: Rell and an ally gain ramping Move Speed, doubled toward enemies and each other. Her next Attack explodes, dealing magic damage.<br>",
+        "tooltipSource": "communitydragon"
       },
       {
         "id": "RellR",
         "name": "Magnet Storm",
         "description": "Rell explodes in a magnetic fury, violently Pulling nearby enemies toward herself. Then Rell constantly Drags nearby enemies toward herself for a short while, dealing magic damage over time.",
-        "tooltip": "Rell explodes in a magnetic fury, violently <status>Pulling</status> nearby enemies towards herself. Then Rell constantly <status>Drags</status> nearby enemies towards herself and deals <magicDamage>{{ totaldamage }} magic damage</magicDamage> over the next {{ duration }} seconds.{{ spellmodifierdescriptionappend }}",
+        "tooltip": "Rell explodes in a magnetic fury, violently <span class=\"text-purple-600 dark:text-purple-500\">Pulling</span> nearby enemies towards herself. Then Rell constantly <span class=\"text-purple-600 dark:text-purple-500\">Drags</span> nearby enemies towards herself and deals <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(150/250/350 + (110% Ability Power)) magic damage</span> over the next 2 seconds.",
         "leveltip": {
           "label": [
             "Cooldown",
@@ -808,7 +824,9 @@
           "w": 48,
           "h": 48
         },
-        "resource": "{{ cost }} {{ abilityresourcename }}"
+        "resource": "{{ cost }} {{ abilityresourcename }}",
+        "summary": "Rell explodes in a magnetic fury, violently Pulling nearby enemies toward herself. Then Rell constantly Drags nearby enemies toward herself for a short while, dealing magic damage over time.",
+        "tooltipSource": "communitydragon"
       }
     ],
     "passive": {

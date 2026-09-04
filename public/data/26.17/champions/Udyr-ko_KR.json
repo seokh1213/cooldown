@@ -143,7 +143,7 @@
         "id": "UdyrQ",
         "name": "야생 발톱",
         "description": "공격 속도가 증가하고 다음 두 차례 기본 공격으로 추가 물리 피해를 입힙니다. 재사용 시: 공격 속도가 더 많이 증가하고 다음 두 차례 기본 공격으로 번개를 일으켜 대상을 타격합니다.",
-        "tooltip": "<spellActive>발톱 태세:</spellActive> {{ attackspeeddurationbase }}초 동안 <attackSpeed>공격 속도가 {{ attackspeedbase*100 }}%</attackSpeed> 상승하고 기본 공격으로 <OnHit>적중 시</OnHit> %i:OnHit% <physicalDamage>{{ onhitdamage }}의 물리 피해</physicalDamage>를 입힙니다. 이 태세에서 가하는 다음 두 차례 기본 공격으로 <physicalDamage>최대 체력의 {{ maxhponhit1 }}에 해당하는 물리 피해</physicalDamage>를 추가로 입히고 사거리가 {{ attackrange }} 증가합니다.<br /><br /><keywordMajor>각성:</keywordMajor> 추가 <attackSpeed>공격 속도</attackSpeed>가 <attackSpeed>{{ empoweredtotalas }}</attackSpeed>까지 상승하고 최대 체력 비례 피해량이 <physicalDamage>{{ q2totalonhithpdamage }}</physicalDamage>까지 상승합니다. 추가로 다음 두 차례 기본 공격으로 번개를 여섯 번 일으켜 <magicDamage>최대 체력의 {{ empoweredlightningbonusmax }}에 해당하는 마법 피해</magicDamage>를 입힙니다. (고립된 적은 이 피해를 혼자 전부 받지만, 주변에 다른 적이 있으면 번개가 그쪽으로 튑니다.)<br />{{ spellmodifierdescriptionappend }}",
+        "tooltip": "<span class=\"text-gray-900 dark:text-white font-semibold\">발톱 태세:</span> 4초 동안 <span>공격 속도가 20/32/44/56/68/80%</span> 상승하고 기본 공격으로 <span>적중 시</span> <span class=\"text-red-600 dark:text-red-500 font-semibold\">(6/12/18/24/30/36 + (20% 추가 공격력) + (1/1.2/1.4/1.6/1.8/2% 추가 체력))의 물리 피해</span>를 입힙니다. 이 태세에서 가하는 다음 두 차례 기본 공격으로 <span class=\"text-red-600 dark:text-red-500 font-semibold\">최대 체력의 (3/4/5/6/7/8% + (0.03% 추가 공격력))에 해당하는 물리 피해</span>를 추가로 입히고 사거리가 50 증가합니다.<br /><br /><span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">각성:</span> 추가 <span>공격 속도</span>가 <span>20/32/44/56/68/80%</span>까지 상승하고 최대 체력 비례 피해량이 <span class=\"text-red-600 dark:text-red-500 font-semibold\">(3/4/5/6/7/8% + (0.05% 추가 공격력) + (0.001% 추가 체력))</span>까지 상승합니다. 추가로 다음 두 차례 기본 공격으로 번개를 여섯 번 일으켜 <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">최대 체력의 에 해당하는 마법 피해</span>를 입힙니다. (고립된 적은 이 피해를 혼자 전부 받지만, 주변에 다른 적이 있으면 번개가 그쪽으로 튑니다.)<br /><br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">몬스터의 경우 발톱 태세 최대 체력 비례 피해는 (15 + (50% 주문력) + (100% 추가 공격력))까지만 입힐 수 있습니다. 각 번개 공격은 <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">최대 체력의 (0.01% 주문력)에 해당하는 마법 피해</span>를 입힙니다. 미니언 대상 최소 피해량: (40 ~ 160))</span>",
         "leveltip": {
           "label": [
             "공격 속도",
@@ -295,13 +295,20 @@
           "w": 48,
           "h": 48
         },
-        "resource": "{{ abilityresourcename }} {{ cost }}"
+        "resource": "{{ abilityresourcename }} {{ cost }}",
+        "summary": "공격 속도가 증가하고 다음 두 차례 기본 공격으로 추가 물리 피해를 입힙니다. 재사용 시: 공격 속도가 더 많이 증가하고 다음 두 차례 기본 공격으로 번개를 일으켜 대상을 타격합니다.",
+        "tooltipSource": "communitydragon",
+        "tooltipDiagnostics": {
+          "unresolvedTokens": [
+            "EmpoweredLightningBonusMax"
+          ]
+        }
       },
       {
         "id": "UdyrW",
         "name": "강철 갑옷",
         "description": "보호막을 얻고 다음 두 차례의 기본 공격을 통해 체력을 회복합니다. 재사용 시: 강화된 보호막을 얻은 후 몇 초에 걸쳐 최대 체력에 비례해 체력을 회복합니다.",
-        "tooltip": "<spellPassive>갑옷 태세:</spellPassive> {{ shieldduration }}초 동안 <shield>{{ totalshield }}의 보호막</shield>을 얻습니다. 다음 두 차례 기본 공격에 생명력 흡수 {{ lifesteal*100 }}% 효과가 부여되고 적중 시 <healing>{{ lifeonhit }}의 체력</healing>을 회복합니다.<br /><br /><keywordMajor>각성:</keywordMajor> {{ shieldduration }}초 동안 <shield>{{ recastshield }}의 보호막</shield>을 얻고 <healing>{{ recastheal }}의 체력</healing>을 회복합니다. 다음 두 차례 기본 공격에 생명력 흡수 {{ lifesteal*200 }}% 효과가 부여되고 적중 시 <healing>{{ lifeonhitawakened }}의 체력</healing>을 회복합니다.<br />{{ spellmodifierdescriptionappend }}",
+        "tooltip": "<span class=\"text-gray-600 dark:text-gray-500 italic\">갑옷 태세:</span> 4초 동안 <span class=\"text-blue-600 dark:text-blue-300\">(45/65/85/105/125/145 + (2/2.3/2.6/2.9/3.2/3.5% 체력) + (40% 주문력) + (50% 추가 공격력))의 보호막</span>을 얻습니다. 다음 두 차례 기본 공격에 생명력 흡수 15/16/17/18/19/20% 효과가 부여되고 적중 시 <span class=\"text-green-600 dark:text-green-400\">((1.2% 체력) + (8% 주문력))의 체력</span>을 회복합니다.<br /><br /><span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">각성:</span> 4초 동안 <span class=\"text-blue-600 dark:text-blue-300\">(45/65/85/105/125/145 + (65% 주문력) + (8% 체력) + (100% 추가 공격력))의 보호막</span>을 얻고 <span class=\"text-green-600 dark:text-green-400\">(22.5/32.5/42.5/52.5/62.5/72.5 + (32.5% 주문력) + (4% 체력) + (50% 추가 공격력))의 체력</span>을 회복합니다. 다음 두 차례 기본 공격에 생명력 흡수 30/32/34/36/38/40% 효과가 부여되고 적중 시 <span class=\"text-green-600 dark:text-green-400\">((2.4% 체력) + (16% 주문력))의 체력</span>을 회복합니다.<br /><br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">각성된 스킬 사용 시, 기본 스킬로 얻은 보호막이 남아있다면 새로운 보호막과 합쳐집니다. 미니언을 상대로는 적중 시 생명력 흡수 효과가 40%만큼 감소합니다.</span>",
         "leveltip": {
           "label": [
             "보호막 흡수량",
@@ -451,13 +458,15 @@
           "w": 48,
           "h": 48
         },
-        "resource": "{{ abilityresourcename }} {{ cost }}"
+        "resource": "{{ abilityresourcename }} {{ cost }}",
+        "summary": "보호막을 얻고 다음 두 차례의 기본 공격을 통해 체력을 회복합니다. 재사용 시: 강화된 보호막을 얻은 후 몇 초에 걸쳐 최대 체력에 비례해 체력을 회복합니다.",
+        "tooltipSource": "communitydragon"
       },
       {
         "id": "UdyrE",
         "name": "불길 쇄도",
         "description": "이동 속도가 증가합니다. 이 태세를 취한 후 적에게 처음 기본 공격을 가할 때마다 대상을 기절시킵니다. 재사용 시: 몇 초간 이동 속도가 더 많이 증가하고 이동 불가 효과에 면역이 됩니다. ",
-        "tooltip": "<spellActive>쇄도 태세:</spellActive> <speed>이동 속도가 {{ movespeed }}</speed> 증가했다 {{ movespeedduration }}초에 걸쳐 원래대로 돌아갑니다. 기본 공격 시 대상에게 돌진해 {{ stunduration }}초간 <status>기절</status>시킵니다. (대상별 재사용 대기시간 {{ icd }}초)<br /><br /><keywordMajor>각성:</keywordMajor> {{ unstoppableduration }}초간 <status>이동 불가</status> 및 <status>방해</status> 효과에 면역이 되고 <speed>이동 속도가 {{ movespeedbonus }}</speed> 추가로 증가합니다.{{ spellmodifierdescriptionappend }}",
+        "tooltip": "<span class=\"text-gray-900 dark:text-white font-semibold\">쇄도 태세:</span> <span class=\"text-cyan-600 dark:text-cyan-500\">이동 속도가 (25/31/37/43/49/55% + (0.05% 추가 공격력))</span> 증가했다 4초에 걸쳐 원래대로 돌아갑니다. 기본 공격 시 대상에게 돌진해 0.75초간 <span class=\"text-purple-600 dark:text-purple-500\">기절</span>시킵니다. (대상별 재사용 대기시간 6/5.6/5.2/4.8/4.4/4초)<br /><br /><span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">각성:</span> 1.5초간 <span class=\"text-purple-600 dark:text-purple-500\">이동 불가</span> 및 <span class=\"text-purple-600 dark:text-purple-500\">방해</span> 효과에 면역이 되고 <span class=\"text-cyan-600 dark:text-cyan-500\">이동 속도가 (0.1% 추가 공격력)</span> 추가로 증가합니다.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">이동 속도가 증가한 동안 우디르가 유닛과 충돌하지 않습니다. 이 <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">태세</span>에서 우디르가 가하는 기본 공격은 취소될 수 없습니다.</span>",
         "leveltip": {
           "label": [
             "이동 속도",
@@ -605,13 +614,15 @@
           "w": 48,
           "h": 48
         },
-        "resource": "{{ abilityresourcename }} {{ cost }}"
+        "resource": "{{ abilityresourcename }} {{ cost }}",
+        "summary": "이동 속도가 증가합니다. 이 태세를 취한 후 적에게 처음 기본 공격을 가할 때마다 대상을 기절시킵니다. 재사용 시: 몇 초간 이동 속도가 더 많이 증가하고 이동 불가 효과에 면역이 됩니다. ",
+        "tooltipSource": "communitydragon"
       },
       {
         "id": "UdyrR",
         "name": "날개 돋친 폭풍",
         "description": "얼음 폭풍으로 자신을 감싸 주변 적들에게 피해를 입히고 둔화시킵니다. 재사용 시: 적을 쫓아가며 추가 피해를 입히는 폭풍을 풀어놓습니다.",
-        "tooltip": "<spellActive>폭풍 태세:</spellActive> {{ buffduration }}초 동안 얼음 폭풍으로 자신을 감싸 주변 적들에게 매초 <magicDamage>{{ stormdamage }}의 마법 피해</magicDamage>를 입히고 {{ slowpotency*100 }}% <status>둔화</status>시킵니다. 이 태세에서 가하는 다음 두 차례 기본 공격으로 폭풍 안에 있는 적에게 <magicDamage>{{ pulsedamage }}의 마법 피해</magicDamage>를 입힙니다.<br /><br /><keywordMajor>각성:</keywordMajor> 우디르가 마지막으로 기본 공격한 적을 따라가며 지속시간에 걸쳐 <magicDamage>최대 체력의 {{ percenthpblast }}에 해당하는 마법 피해</magicDamage>를 추가로 입히고, {{ empoweredslow }}만큼 추가로 <status>둔화</status>시키는 폭풍을 풀어놓습니다.{{ spellmodifierdescriptionappend }}",
+        "tooltip": "<span class=\"text-gray-900 dark:text-white font-semibold\">폭풍 태세:</span> 4초 동안 얼음 폭풍으로 자신을 감싸 주변 적들에게 매초 <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(20/36/52/68/84/100 + (35% 주문력))의 마법 피해</span>를 입히고 15/18/21/24/27/30% <span class=\"text-purple-600 dark:text-purple-500\">둔화</span>시킵니다. 이 태세에서 가하는 다음 두 차례 기본 공격으로 폭풍 안에 있는 적에게 <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(35% 주문력)의 마법 피해</span>를 입힙니다.<br /><br /><span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">각성:</span> 우디르가 마지막으로 기본 공격한 적을 따라가며 지속시간에 걸쳐 <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">최대 체력의 (0.03% 주문력)에 해당하는 마법 피해</span>를 추가로 입히고, 5%만큼 추가로 <span class=\"text-purple-600 dark:text-purple-500\">둔화</span>시키는 폭풍을 풀어놓습니다.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">폭풍은 미니언에게 100%의 피해를 입힙니다. 각성된 폭풍은 몬스터에게 최소 의 피해를 입힙니다.</span>",
         "leveltip": {
           "label": [
             "초당 피해량",
@@ -759,7 +770,14 @@
           "w": 48,
           "h": 48
         },
-        "resource": "{{ abilityresourcename }} {{ cost }}"
+        "resource": "{{ abilityresourcename }} {{ cost }}",
+        "summary": "얼음 폭풍으로 자신을 감싸 주변 적들에게 피해를 입히고 둔화시킵니다. 재사용 시: 적을 쫓아가며 추가 피해를 입히는 폭풍을 풀어놓습니다.",
+        "tooltipSource": "communitydragon",
+        "tooltipDiagnostics": {
+          "unresolvedTokens": [
+            "spell.UdyrQ:MonsterNukeMinRCalc"
+          ]
+        }
       }
     ],
     "passive": {

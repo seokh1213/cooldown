@@ -1,7 +1,14 @@
 import { ChampionSpell } from "@/types";
-import type { CommunityDragonSpellData, TooltipLocale } from "./types";
+import type {
+  CommunityDragonSpellData,
+  TooltipLocale,
+  TooltipRenderResult,
+} from "./types";
 import { convertXmlTagsToHtml } from "./xmlTagConverter";
-import { replaceVariables } from "./variableReplacer";
+import {
+  replaceVariables,
+  replaceVariablesWithDiagnostics,
+} from "./variableReplacer";
 import { sanitizeHtml } from "./formatters";
 
 /**
@@ -17,23 +24,33 @@ export function parseSpellTooltip(
   communityDragonData?: CommunityDragonSpellData,
   lang: TooltipLocale = "ko_KR"
 ): string {
-  if (!text) return "";
+  return parseSpellTooltipWithDiagnostics(
+    text,
+    spell,
+    communityDragonData,
+    lang
+  ).html;
+}
 
-  let result = text;
+export function parseSpellTooltipWithDiagnostics(
+  text: string | undefined,
+  spell?: ChampionSpell,
+  communityDragonData?: CommunityDragonSpellData,
+  lang: TooltipLocale = "ko_KR"
+): TooltipRenderResult {
+  if (!text) return { html: "", unresolvedTokens: [] };
 
-  // 1. XML 태그를 먼저 HTML로 변환 (변수 치환 전에 수행하여 태그 범위 보존)
-  result = convertXmlTagsToHtml(result);
-
-  // 2. 변수 치환 (XML 태그 변환 후 수행)
-  result = replaceVariables(result, spell, communityDragonData, lang);
-
-  // 3. HTML 정리
-  result = sanitizeHtml(result);
-
-  // 4. 줄바꿈을 <br />로 다시 변환 (렌더링을 위해)
-  result = result.replace(/\n/g, "<br />");
-
-  return result;
+  const converted = convertXmlTagsToHtml(text);
+  const replaced = replaceVariablesWithDiagnostics(
+    converted,
+    spell,
+    communityDragonData,
+    lang
+  );
+  return {
+    html: sanitizeHtml(replaced.text).replace(/\n/g, "<br />"),
+    unresolvedTokens: replaced.unresolvedTokens,
+  };
 }
 
 /**

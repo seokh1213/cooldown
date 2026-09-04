@@ -411,7 +411,7 @@
         "id": "ViQ",
         "name": "Vault Breaker",
         "description": "Vi charges her gauntlets and unleashes a vault shattering punch, carrying her forward. Enemies she hits are knocked back and receive a stack of Denting Blows.",
-        "tooltip": "<charge>Begin Charging:</charge> Vi begins charging a powerful punch, <status>Slowing</status> herself by {{ selfslow }}%.<br /><br /><release>Release:</release> Vi dashes forward dealing between <physicalDamage>{{ totaldamage }} and {{ maxdamagetooltip }} physical damage</physicalDamage> based on charge time and applying <spellName>Denting Blows</spellName> to all enemies hit. Vi stops upon colliding with an enemy champion, and <status>Knocks</status> them <status>Back</status>.{{ spellmodifierdescriptionappend }}",
+        "tooltip": "<span>Begin Charging:</span> Vi begins charging a powerful punch, <span class=\"text-purple-600 dark:text-purple-500\">Slowing</span> herself by 15%.<br /><br /><span>Release:</span> Vi dashes forward dealing between <span class=\"text-red-600 dark:text-red-500 font-semibold\">(40/60/80/100/120 + (60% bonus Attack Damage)) and (100/150/200/250/300 + (150% bonus Attack Damage)) physical damage</span> based on charge time and applying <span>Denting Blows</span> to all enemies hit. Vi stops upon colliding with an enemy champion, and <span class=\"text-purple-600 dark:text-purple-500\">Knocks</span> them <span class=\"text-purple-600 dark:text-purple-500\">Back</span>.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">Non-champions hit are pulled towards Vi.<br />If the charge is interrupted, this Ability goes on a 3 second Cooldown.</span>",
         "leveltip": {
           "label": [
             "Minimum Damage",
@@ -550,13 +550,15 @@
           "w": 48,
           "h": 48
         },
-        "resource": "{{ cost }} {{ abilityresourcename }}"
+        "resource": "{{ cost }} {{ abilityresourcename }}",
+        "summary": "Vi charges her gauntlets and unleashes a vault shattering punch, carrying her forward. Enemies she hits are knocked back and receive a stack of Denting Blows.",
+        "tooltipSource": "communitydragon"
       },
       {
         "id": "ViW",
         "name": "Denting Blows",
         "description": "Vi's punches break her opponent's Armor, dealing bonus damage and granting her Attack Speed.",
-        "tooltip": "<spellPassive>Passive:</spellPassive> Every 3rd Attack on the same target deals an additional <physicalDamage>{{ totaldamagetooltip }} max Health physical damage</physicalDamage>, removes <scaleArmor>{{ shredamount }}% Armor</scaleArmor> and grants Vi <attackSpeed>{{ attackspeed }}% Attack Speed</attackSpeed> for {{ sharedbuffsduration }} seconds. It also reduces the remaining Cooldown of <spellName>Blast Shield</spellName> by {{ spell.vipassive:cdreductionon3hit }} seconds.{{ spellmodifierdescriptionappend }}",
+        "tooltip": "<span class=\"text-gray-600 dark:text-gray-500 italic\">Passive:</span> Every 3rd Attack on the same target deals an additional <span class=\"text-red-600 dark:text-red-500 font-semibold\">(4/5/6/7/8% + (0.035% bonus Attack Damage)) max Health physical damage</span>, removes <span class=\"text-orange-600 dark:text-orange-400\">20% Armor</span> and grants Vi <span>30/35/40/45/50% Attack Speed</span> for 4 seconds. It also reduces the remaining Cooldown of <span>Blast Shield</span> by seconds.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">Deals a maximum of <span class=\"text-red-600 dark:text-red-500 font-semibold\">300 damage</span> against jungle monsters.</span>",
         "leveltip": {
           "label": [
             "Maximum Health Damage",
@@ -691,13 +693,20 @@
           "w": 48,
           "h": 48
         },
-        "resource": "Passive"
+        "resource": "Passive",
+        "summary": "Vi's punches break her opponent's Armor, dealing bonus damage and granting her Attack Speed.",
+        "tooltipSource": "communitydragon",
+        "tooltipDiagnostics": {
+          "unresolvedTokens": [
+            "spell.ViPassive:CDReductionOn3Hit"
+          ]
+        }
       },
       {
         "id": "ViE",
         "name": "Relentless Force",
         "description": "Vi's next attack blasts through her target, dealing damage to enemies behind it.",
-        "tooltip": "Vi's next Attack deals <physicalDamage>{{ totaldamagetooltip }} physical damage</physicalDamage> to the target and enemies behind them.<br /><br />This Ability has 2 charges ({{ ammorechargetime }} second refresh).{{ spellmodifierdescriptionappend }}",
+        "tooltip": "Vi's next Attack deals <span class=\"text-red-600 dark:text-red-500 font-semibold\">(10/30/50/70/90 + (110% Attack Damage) + (100% Ability Power)) physical damage</span> to the target and enemies behind them.<br /><br />This Ability has 2 charges (12/11/10/9/8 second refresh).",
         "leveltip": {
           "label": [
             "Base Damage",
@@ -834,13 +843,15 @@
           "w": 48,
           "h": 48
         },
-        "resource": "{{ cost }} {{ abilityresourcename }}"
+        "resource": "{{ cost }} {{ abilityresourcename }}",
+        "summary": "Vi's next attack blasts through her target, dealing damage to enemies behind it.",
+        "tooltipSource": "communitydragon"
       },
       {
         "id": "ViR",
         "name": "Cease and Desist",
         "description": "Vi runs down an enemy, knocking aside anyone in the way. When she reaches her target she knocks it into the air, jumps after it, and slams it back into the ground.",
-        "tooltip": "Vi singles out an enemy champion, revealing them and dashing unstoppably towards them. Upon reaching them, Vi <status>Knocks</status> them <status>Up</status> for {{ rstunduration }} seconds and deals <physicalDamage>{{ damage }} physical damage</physicalDamage>.<br /><br />Any other enemies Vi collides with are dealt damage, knocked aside, and <status>Stunned</status> for {{ secondarytargetstunduration }} seconds.{{ spellmodifierdescriptionappend }}",
+        "tooltip": "Vi singles out an enemy champion, revealing them and dashing unstoppably towards them. Upon reaching them, Vi <span class=\"text-purple-600 dark:text-purple-500\">Knocks</span> them <span class=\"text-purple-600 dark:text-purple-500\">Up</span> for 1.3 seconds and deals <span class=\"text-red-600 dark:text-red-500 font-semibold\">(150/250/350 + (90% bonus Attack Damage)) physical damage</span>.<br /><br />Any other enemies Vi collides with are dealt damage, knocked aside, and <span class=\"text-purple-600 dark:text-purple-500\">Stunned</span> for 0.75 seconds.",
         "leveltip": {
           "label": [
             "Base Damage",
@@ -949,7 +960,9 @@
           "w": 48,
           "h": 48
         },
-        "resource": "{{ cost }} {{ abilityresourcename }}"
+        "resource": "{{ cost }} {{ abilityresourcename }}",
+        "summary": "Vi runs down an enemy, knocking aside anyone in the way. When she reaches her target she knocks it into the air, jumps after it, and slams it back into the ground.",
+        "tooltipSource": "communitydragon"
       }
     ],
     "passive": {

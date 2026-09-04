@@ -381,7 +381,7 @@
         "id": "BardQ",
         "name": "星界束缚",
         "description": "巴德发射一束能量弹，减速命中的第一个敌人，并继续向前。如果能量弹命中墙体，它还会使首个目标晕眩；如果它命中了另一个敌人，那么它会让这两个敌人都晕眩。",
-        "tooltip": "巴德发射一束能量弹，对命中的头两个敌人造成<magicDamage>{{ totaldamage }}魔法伤害</magicDamage>。第一个被命中的敌人会被施加持续{{ slowduration }}秒的{{ slowamountpercentage }}%<status>减速</status>。<br /><br />如果该能量弹命中了第二个敌人或一个墙体，那么被命中的敌人都会被<status>晕眩</status>{{ stunduration }}秒。<br />{{ spellmodifierdescriptionappend }}",
+        "tooltip": "巴德发射一束能量弹，对命中的头两个敌人造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(80/120/160/200/240 + (80% 法术强度))魔法伤害</span>。第一个被命中的敌人会被施加持续1/1.2/1.4/1.6/1.8秒的60%<span class=\"text-purple-600 dark:text-purple-500\">减速</span>。<br /><br />如果该能量弹命中了第二个敌人或一个墙体，那么被命中的敌人都会被<span class=\"text-purple-600 dark:text-purple-500\">晕眩</span>1/1.2/1.4/1.6/1.8秒。<br />",
         "leveltip": {
           "label": [
             "伤害",
@@ -520,13 +520,15 @@
           "w": 48,
           "h": 48
         },
-        "resource": "{{ cost }} {{ abilityresourcename }}"
+        "resource": "{{ cost }} {{ abilityresourcename }}",
+        "summary": "巴德发射一束能量弹，减速命中的第一个敌人，并继续向前。如果能量弹命中墙体，它还会使首个目标晕眩；如果它命中了另一个敌人，那么它会让这两个敌人都晕眩。",
+        "tooltipSource": "communitydragon"
       },
       {
         "id": "BardW",
         "name": "游神圣坛",
         "description": "升起一座生命圣坛，圣坛会在短时间内持续充能，并在治疗和加速第一个接触它的友军后消失。",
-        "tooltip": "巴德升起一座生命圣坛，圣坛会为第一个进入的友方英雄提供在{{ movespeed_duration }}秒里持续衰减的<speed>{{ calc_movespeed }}移动速度</speed>并为其回复至少<healing>{{ initialheal }}生命值</healing>。圣坛会不断成长，在存在{{ chargeuptime }}秒后即可满额回复<healing>{{ maxheal }}生命值</healing>。<br /><br />巴德最多可同时拥有{{ maxpacks }}座圣坛。如果有一名敌方英雄进入圣坛，那么该圣坛就会被摧毁。<br /><br />这个技能有{{ ammo_limit }}层充能。<br /><br />当前已激活的圣坛数：{{ f1 }} / {{ f2 }}{{ spellmodifierdescriptionappend }}",
+        "tooltip": "巴德升起一座生命圣坛，圣坛会为第一个进入的友方英雄提供在1.5秒里持续衰减的<span class=\"text-cyan-600 dark:text-cyan-500\">(20/22.5/25/27.5/30% + (0.06% 法术强度))移动速度</span>并为其回复至少<span class=\"text-green-600 dark:text-green-400\">(25/50/75/100/125 + (40% 法术强度))生命值</span>。圣坛会不断成长，在存在5秒后即可满额回复<span class=\"text-green-600 dark:text-green-400\">(50/87.5/125/162.5/200 + (70% 法术强度))生命值</span>。<br /><br />巴德最多可同时拥有3座圣坛。如果有一名敌方英雄进入圣坛，那么该圣坛就会被摧毁。<br /><br />这个技能有2层充能。<br /><br />当前已激活的圣坛数： /",
         "leveltip": {
           "label": [
             "基础治疗",
@@ -663,13 +665,21 @@
           "w": 48,
           "h": 48
         },
-        "resource": "{{ cost }} {{ abilityresourcename }}"
+        "resource": "{{ cost }} {{ abilityresourcename }}",
+        "summary": "升起一座生命圣坛，圣坛会在短时间内持续充能，并在治疗和加速第一个接触它的友军后消失。",
+        "tooltipSource": "communitydragon",
+        "tooltipDiagnostics": {
+          "unresolvedTokens": [
+            "f1",
+            "f2"
+          ]
+        }
       },
       {
         "id": "BardE",
         "name": "神奇旅程",
         "description": "巴德在附近的地形上开启一道单向传送门。友军和敌军都可以使用传送门来穿过该地形。",
-        "tooltip": "巴德在附近的地形上开启一道单向传送门，持续{{ doorduration }}秒。传送门附近的任何英雄都可以通过移动到它上面来进入传送门。{{ spellmodifierdescriptionappend }}",
+        "tooltip": "巴德在附近的地形上开启一道单向传送门，持续10秒。传送门附近的任何英雄都可以通过移动到它上面来进入传送门。<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">友军的传送速度比敌人快33%。</span>",
         "leveltip": {
           "label": [
             "冷却时间"
@@ -802,13 +812,15 @@
           "w": 48,
           "h": 48
         },
-        "resource": "{{ cost }} {{ abilityresourcename }}"
+        "resource": "{{ cost }} {{ abilityresourcename }}",
+        "summary": "巴德在附近的地形上开启一道单向传送门。友军和敌军都可以使用传送门来穿过该地形。",
+        "tooltipSource": "communitydragon"
       },
       {
         "id": "BardR",
         "name": "调和命运",
         "description": "巴德朝目标区域发射能量弧光，使区域内的所有单位、小兵、野怪和防御塔都暂时进入凝滞状态。",
-        "tooltip": "巴德朝一个区域投出神奇的防护能量，使命中的所有单位和建筑物都进入凝滞状态{{ rstasisduration }}秒。{{ spellmodifierdescriptionappend }}",
+        "tooltip": "巴德朝一个区域投出神奇的防护能量，使命中的所有单位和建筑物都进入凝滞状态2.5秒。<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">凝滞状态中的单位无法移动或行动，并且免疫伤害和不可被选取。</span>",
         "leveltip": {
           "label": [
             "冷却时间"
@@ -915,7 +927,9 @@
           "w": 48,
           "h": 48
         },
-        "resource": "{{ cost }} {{ abilityresourcename }}"
+        "resource": "{{ cost }} {{ abilityresourcename }}",
+        "summary": "巴德朝目标区域发射能量弧光，使区域内的所有单位、小兵、野怪和防御塔都暂时进入凝滞状态。",
+        "tooltipSource": "communitydragon"
       }
     ],
     "passive": {

@@ -560,7 +560,7 @@
         "id": "Deceive",
         "name": "欺诈魔术",
         "description": "萨科进入隐形状态并传送到目标位置。<br><br>他在隐形状态下的第一次普攻将获得增强，造成额外伤害并在目标背后攻击时必定会暴击。",
-        "tooltip": "萨科传送并变为<keywordStealth>隐形</keywordStealth>，持续{{ stealthduration }}秒。使用<spellName>惊吓魔盒</spellName>或<spellName>幻像</spellName>不会打破<keywordStealth>隐形</keywordStealth>。<br /><br />萨科在<keywordStealth>隐形</keywordStealth>时的下次攻击造成额外的<physicalDamage>{{ totaldamage }}物理伤害</physicalDamage>。如果从背后进行打击，那么这个攻击会暴击，造成{{ qcritdamagemod }}伤害。{{ spellmodifierdescriptionappend }}",
+        "tooltip": "萨科传送并变为<span class=\"text-purple-600 dark:text-purple-400 font-semibold\">隐形</span>，持续2.5/2.75/3/3.25/3.5秒。使用<span>惊吓魔盒</span>或<span>幻像</span>不会打破<span class=\"text-purple-600 dark:text-purple-400 font-semibold\">隐形</span>。<br /><br />萨科在<span class=\"text-purple-600 dark:text-purple-400 font-semibold\">隐形</span>时的下次攻击造成额外的<span class=\"text-red-600 dark:text-red-500 font-semibold\">(25/35/45/55/65 + (60% 额外攻击力))物理伤害</span>。如果从背后进行打击，那么这个攻击会暴击，造成伤害。<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">攻击附带的额外伤害可以暴击。<br /><span class=\"text-purple-600 dark:text-purple-400 font-semibold\">隐形</span>单位只会被【防御塔】或<span style=\"color: #ee91d7\">真实视野</font color>显形。</span>",
         "leveltip": {
           "label": [
             "伤害",
@@ -697,13 +697,20 @@
           "w": 48,
           "h": 48
         },
-        "resource": "{{ cost }} {{ abilityresourcename }}"
+        "resource": "{{ cost }} {{ abilityresourcename }}",
+        "summary": "萨科进入隐形状态并传送到目标位置。<br><br>他在隐形状态下的第一次普攻将获得增强，造成额外伤害并在目标背后攻击时必定会暴击。",
+        "tooltipSource": "communitydragon",
+        "tooltipDiagnostics": {
+          "unresolvedTokens": [
+            "QCritDamageMod"
+          ]
+        }
       },
       {
         "id": "JackInTheBox",
         "name": "惊吓魔盒",
         "description": "萨科丢出一个隐形且会动的惊吓魔盒。在触发时，盒子会恐惧附近的敌人，然后对其进行攻击。",
-        "tooltip": "萨科生成一个会在{{ armtime }}秒后潜行的陷阱，它持续{{ trapduration }}秒。它会在有敌人靠近或显形时触发，<status>恐惧</status>附近的敌方英雄们{{ fearduration }}秒，或小兵和野怪{{ minionfearduration }}秒。<br /><br />一旦激活，陷阱就会在5秒里持续攻击所有附近的敌人们，造成<magicDamage>{{ aoedamage }}魔法伤害</magicDamage>，如果只攻击一个敌人则为<magicDamage>{{ stdamage }}伤害</magicDamage>。<br /><br />惊吓魔盒的攻击对野怪造成额外的<magicDamage>{{ monsterbonusdamage }}</magicDamage>伤害。{{ spellmodifierdescriptionappend }}",
+        "tooltip": "萨科生成一个会在2秒后潜行的陷阱，它持续(40 + (10% 法术强度))秒。它会在有敌人靠近或显形时触发，<span class=\"text-purple-600 dark:text-purple-500\">恐惧</span>附近的敌方英雄们0.5/0.75/1/1.25/1.5秒，或小兵和野怪2秒。<br /><br />一旦激活，陷阱就会在5秒里持续攻击所有附近的敌人们，造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(10/15/20/25/30 + (12% 法术强度))魔法伤害</span>，如果只攻击一个敌人则为<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(25/40/55/70/85 + (18% 法术强度))伤害</span>。<br /><br />惊吓魔盒的攻击对野怪造成额外的<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">20/35/50/65/80</span>伤害。",
         "leveltip": {
           "label": [
             "伤害",
@@ -842,13 +849,15 @@
           "w": 48,
           "h": 48
         },
-        "resource": "{{ cost }} {{ abilityresourcename }}"
+        "resource": "{{ cost }} {{ abilityresourcename }}",
+        "summary": "萨科丢出一个隐形且会动的惊吓魔盒。在触发时，盒子会恐惧附近的敌人，然后对其进行攻击。",
+        "tooltipSource": "communitydragon"
       },
       {
         "id": "TwoShivPoison",
         "name": "双面毒刃",
         "description": "萨科的毒刃在命中时会被动地使目标中毒，减少目标的移动速度。他可以将毒刃扔向目标，造成伤害和中毒效果。扔出的毒刃会对生命值低于30%的目标造成额外伤害。",
-        "tooltip": "<spellPassive>被动：</spellPassive>当这个技能未进入冷却阶段时，萨科的攻击会对目标造成持续{{ slowdurationpassive }}秒的{{ slowamount*-100 }}%<status>减速</status>。<br /><br /><spellActive>主动：</spellActive>萨科扔出一把毒刃，造成<magicDamage>{{ totaldamage }}魔法伤害</magicDamage>和持续{{ slowdurationactive }}秒的{{ slowamount*-100 }}%<status>减速</status>。如果目标低于{{ executehealththreshold*100 }}%生命值，毒刃会转而造成<magicDamage>{{ totalexecutedamage }}伤害</magicDamage>。{{ spellmodifierdescriptionappend }}",
+        "tooltip": "<span class=\"text-gray-600 dark:text-gray-500 italic\">被动：</span>当这个技能未进入冷却阶段时，萨科的攻击会对目标造成持续2秒的20/22.5/25/27.5/30%<span class=\"text-purple-600 dark:text-purple-500\">减速</span>。<br /><br /><span class=\"text-gray-900 dark:text-white font-semibold\">主动：</span>萨科扔出一把毒刃，造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(70/95/120/145/170 + (80% 额外攻击力) + (60% 法术强度))魔法伤害</span>和持续3秒的20/22.5/25/27.5/30%<span class=\"text-purple-600 dark:text-purple-500\">减速</span>。如果目标低于30%生命值，毒刃会转而造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(105/142.5/180/217.5/255 + (120% 额外攻击力) + (90% 法术强度))伤害</span>。",
         "leveltip": {
           "label": [
             "伤害",
@@ -983,13 +992,15 @@
           "w": 48,
           "h": 48
         },
-        "resource": "{{ cost }} {{ abilityresourcename }}"
+        "resource": "{{ cost }} {{ abilityresourcename }}",
+        "summary": "萨科的毒刃在命中时会被动地使目标中毒，减少目标的移动速度。他可以将毒刃扔向目标，造成伤害和中毒效果。扔出的毒刃会对生命值低于30%的目标造成额外伤害。",
+        "tooltipSource": "communitydragon"
       },
       {
         "id": "HallucinateFull",
         "name": "幻像",
         "description": "萨科在身边制造一个自己的幻像，幻像能够攻击周围的敌人（对防御塔造成较少伤害）。在死亡时爆炸，它会爆炸，生成三个小型惊吓魔盒并对附近的敌人造成伤害。",
-        "tooltip": "萨科暂时消失，然后重新出现并制造一个持续{{ clonelifetime }}秒的幻像，幻像会在死亡时爆炸，对附近的敌人造成<magicDamage>{{ explosiontotaldamage }}魔法伤害</magicDamage>并生成三个立即触发的小型<spellName>惊吓魔盒</spellName>。幻像造成萨科{{ cloneaadamagepercent*100 }}%的伤害并承受{{ cloneincomingdamagepercent*100 }}%额外伤害。<br /><br />小型<spellName>惊吓魔盒</spellName>造成<magicDamage>{{ aoedamage }}魔法伤害</magicDamage>，如果只攻击一个敌人则为<magicDamage>{{ stdamage }}魔法伤害</magicDamage>，并让敌人<status>恐惧</status>{{ boxfearduration }}秒。<br />{{ spellmodifierdescriptionappend }}",
+        "tooltip": "萨科暂时消失，然后重新出现并制造一个持续18秒的幻像，幻像会在死亡时爆炸，对附近的敌人造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(150/225/300 + (70% 法术强度))魔法伤害</span>并生成三个立即触发的小型<span>惊吓魔盒</span>。幻像造成萨科60%的伤害并承受50%额外伤害。<br /><br />小型<span>惊吓魔盒</span>造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(10/20/30 + (10% 法术强度))魔法伤害</span>，如果只攻击一个敌人则为<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(25/50/75 + (15% 法术强度))魔法伤害</span>，并让敌人<span class=\"text-purple-600 dark:text-purple-500\">恐惧</span>1秒。<br /><br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">可以通过按住alt键的同时使用鼠标右键或<span class=\"text-yellow-600 dark:text-yellow-300\">再次施放</span>此技能来控制幻像。</span>",
         "leveltip": {
           "label": [
             "死亡时伤害",
@@ -1100,7 +1111,9 @@
           "w": 48,
           "h": 48
         },
-        "resource": "{{ cost }} {{ abilityresourcename }}"
+        "resource": "{{ cost }} {{ abilityresourcename }}",
+        "summary": "萨科在身边制造一个自己的幻像，幻像能够攻击周围的敌人（对防御塔造成较少伤害）。在死亡时爆炸，它会爆炸，生成三个小型惊吓魔盒并对附近的敌人造成伤害。",
+        "tooltipSource": "communitydragon"
       }
     ],
     "passive": {

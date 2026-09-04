@@ -383,7 +383,7 @@
         "id": "PantheonQ",
         "name": "혜성의 창",
         "description": "판테온이 지정 방향으로 창을 찌르거나 던집니다.",
-        "tooltip": "<span class=\"colorFF8C00\">짧게 누를 때:</span> 판테온이 창을 찔러 적중한 적들에게 <physicalDamage>{{ tapdamagecalc }}의 물리 피해</physicalDamage>를 입힙니다. 혜성의 창 재사용 대기시간이 {{ tapcooldownrefund*100 }}% 감소합니다.<br /><br /><span class=\"colorFF8C00\">길게 누를 때:</span> 판테온이 창을 던져 처음 적중한 적에게 <physicalDamage>{{ holddamagecalc }}의 물리 피해</physicalDamage>를 입히고 뒤에 있는 적들에게 {{ damagefalloff*100 }}% 감소된 피해를 입힙니다. <br /><br />체력이 {{ crithealththreshold*100 }}% 아래인 적들에게는 스킬이 강화되어 <physicalDamage>{{ executedamagecalcmodified }}의 물리 피해</physicalDamage>를 입힙니다.<br /><br /><span class=\"colorEDDA74\">필멸자의 의지 추가 효과:</span> <physicalDamage>{{ empowereddamagecalc }}의 물리 피해</physicalDamage>를 추가로 입힙니다.{{ spellmodifierdescriptionappend }}",
+        "tooltip": "<span style=\"color: #FF8C00\">짧게 누를 때:</span> 판테온이 창을 찔러 적중한 적들에게 <span class=\"text-red-600 dark:text-red-500 font-semibold\">(70/100/130/160/190 + (115% 추가 공격력))의 물리 피해</span>를 입힙니다. 혜성의 창 재사용 대기시간이 60% 감소합니다.<br /><br /><span style=\"color: #FF8C00\">길게 누를 때:</span> 판테온이 창을 던져 처음 적중한 적에게 <span class=\"text-red-600 dark:text-red-500 font-semibold\">(70/100/130/160/190 + (115% 추가 공격력) + (50% 주문력))의 물리 피해</span>를 입히고 뒤에 있는 적들에게 50% 감소된 피해를 입힙니다. <br /><br />체력이 20% 아래인 적들에게는 스킬이 강화되어 <span class=\"text-red-600 dark:text-red-500 font-semibold\">(230% 추가 공격력)의 물리 피해</span>를 입힙니다.<br /><br /><span style=\"color: #EDDA74\">필멸자의 의지 추가 효과:</span> <span class=\"text-red-600 dark:text-red-500 font-semibold\">(115% 추가 공격력)의 물리 피해</span>를 추가로 입힙니다.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">몬스터에게는 80%의 피해를 입힙니다.</span><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">미니언에게는 70%의 피해를 입힙니다.</span>",
         "leveltip": {
           "label": [
             "기본 피해량",
@@ -520,13 +520,15 @@
           "w": 48,
           "h": 48
         },
-        "resource": "{{ abilityresourcename }} {{ cost }}"
+        "resource": "{{ abilityresourcename }} {{ cost }}",
+        "summary": "판테온이 지정 방향으로 창을 찌르거나 던집니다.",
+        "tooltipSource": "communitydragon"
       },
       {
         "id": "PantheonW",
         "name": "방호의 도약",
         "description": "판테온이 대상에게 돌진해 피해를 입히고 기절시킵니다.",
-        "tooltip": "판테온이 대상에게 도약한 뒤 {{ stunduration }}초 동안 대상을 <status>기절</status>시키고 <physicalDamage>최대 체력의 {{ maxhealthdamagecalc }}에 해당하는 물리 피해</physicalDamage>를 입힙니다.<br /><br /><keywordMajor>필멸자의 의지 추가 효과:</keywordMajor> 판테온의 다음 기본 공격이 {{ empowerednumhits }}회 타격하여 총 <physicalDamage>{{ empowereddamagemultcalcmodified }}의 물리 피해</physicalDamage>를 입힙니다.{{ spellmodifierdescriptionappend }}",
+        "tooltip": "판테온이 대상에게 도약한 뒤 1초 동안 대상을 <span class=\"text-purple-600 dark:text-purple-500\">기절</span>시키고 <span class=\"text-red-600 dark:text-red-500 font-semibold\">최대 체력의 (6/6.5/7/7.5/8% + (0.004% 추가 체력) + (0.015% 주문력))에 해당하는 물리 피해</span>를 입힙니다.<br /><br /><span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">필멸자의 의지 추가 효과:</span> 판테온의 다음 기본 공격이 3회 타격하여 총 <span class=\"text-red-600 dark:text-red-500 font-semibold\">의 물리 피해</span>를 입힙니다.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">미니언과 몬스터에게는 60 ~ 150의 피해를 입힙니다.</span>",
         "leveltip": {
           "label": [
             "최대 체력 %",
@@ -661,13 +663,20 @@
           "w": 48,
           "h": 48
         },
-        "resource": "{{ abilityresourcename }} {{ cost }}"
+        "resource": "{{ abilityresourcename }} {{ cost }}",
+        "summary": "판테온이 대상에게 돌진해 피해를 입히고 기절시킵니다.",
+        "tooltipSource": "communitydragon",
+        "tooltipDiagnostics": {
+          "unresolvedTokens": [
+            "EmpoweredDamageMultCalcModified"
+          ]
+        }
       },
       {
         "id": "PantheonE",
         "name": "방패 돌격",
         "description": "판테온이 방패를 들어 정면의 공격으로부터 무적이 되고 창으로 빠르게 공격합니다.",
-        "tooltip": "판테온이 방패를 들어 지정한 방향의 적들과 전투를 시작합니다. {{ shieldduration }}초 동안 포탑을 제외한 해당 방향의 피해로부터 면역이 되고 <physicalDamage>{{ damagecalc }}의 물리 피해</physicalDamage>를 입힙니다. 지속시간이 끝나면 판테온이 방패로 타격하며 <physicalDamage>{{ shielddamagecalc }}의 물리 피해</physicalDamage>를 입힙니다.<br /><br /><span class=\"colorEDDA74\">필멸자의 의지 추가 효과:</span> 방패로 타격할 때 {{ resistsduration }}초 동안 <scaleArmor>방어력이 {{ resistscalc }}</scaleArmor>, <scaleMR>마법 저항력이 {{ resistscalc }}</scaleMR> 상승하고 {{ speedduration }}초 동안 <speed>이동 속도가 {{ speedamount*100 }}%</speed> 상승합니다. <br />{{ spellmodifierdescriptionappend }}",
+        "tooltip": "판테온이 방패를 들어 지정한 방향의 적들과 전투를 시작합니다. 1.5초 동안 포탑을 제외한 해당 방향의 피해로부터 면역이 되고 <span class=\"text-red-600 dark:text-red-500 font-semibold\">(100% 공격력)의 물리 피해</span>를 입힙니다. 지속시간이 끝나면 판테온이 방패로 타격하며 <span class=\"text-red-600 dark:text-red-500 font-semibold\">(55/105/155/205/255 + (150% 추가 공격력))의 물리 피해</span>를 입힙니다.<br /><br /><span style=\"color: #EDDA74\">필멸자의 의지 추가 효과:</span> 방패로 타격할 때 4초 동안 <span class=\"text-orange-600 dark:text-orange-400\">방어력이 (2.5% 추가 체력)</span>, <span>마법 저항력이 (2.5% 추가 체력)</span> 상승하고 1.5초 동안 <span class=\"text-cyan-600 dark:text-cyan-500\">이동 속도가 60%</span> 상승합니다. <br /><br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\"><span class=\"text-yellow-600 dark:text-yellow-300\">재사용</span> 시 스킬이 더 빨리 종료됩니다. (빨리 종료해도 마지막에 방패로 타격합니다.) <br />미니언에게는 50% 감소된 피해를 입힙니다.</span>",
         "leveltip": {
           "label": [
             "재사용 대기시간",
@@ -802,13 +811,15 @@
           "w": 48,
           "h": 48
         },
-        "resource": "{{ abilityresourcename }} {{ cost }}"
+        "resource": "{{ abilityresourcename }} {{ cost }}",
+        "summary": "판테온이 방패를 들어 정면의 공격으로부터 무적이 되고 창으로 빠르게 공격합니다.",
+        "tooltipSource": "communitydragon"
       },
       {
         "id": "PantheonR",
         "name": "거대 유성",
         "description": "판테온이 태세를 갖추고 공중으로 뛰어올랐다가 지정한 위치에 유성이 되어 떨어집니다.",
-        "tooltip": "<spellPassive>기본 지속 효과:</spellPassive> 판테온의 방어구 관통력이 {{ armorpenetration*100 }}% 증가합니다.<br /><br /><spellActive>사용 시:</spellActive> 판테온이 힘을 모아 높이 도약했다가 창을 던져 좁은 영역에 <physicalDamage>{{ spell.pantheonq:holddamagecalc }}의 물리 피해</physicalDamage>를 입히고 {{ spearslowduration }}초 동안 {{ spearslow*100 }}% <status>둔화</status>시킵니다. <br /><br />그런 다음 지정한 위치에 유성이 되어 떨어집니다. 일직선상에 있는 적들에게 최대 <magicDamage>{{ damagecalc }}의 마법 피해</magicDamage>를 입힙니다. (피해량은 범위 가장자리로 갈수록 감소하여 가장 바깥쪽은 {{ edgedamagereduction*100 }}% 감소된 피해를 입힙니다.)<br /><br />이 스킬을 사용하면 <span class=\"colorEDDA74\">필멸자의 의지</span>가 즉시 활성화됩니다.{{ spellmodifierdescriptionappend }}",
+        "tooltip": "<span class=\"text-gray-600 dark:text-gray-500 italic\">기본 지속 효과:</span> 판테온의 방어구 관통력이 10/20/30% 증가합니다.<br /><br /><span class=\"text-gray-900 dark:text-white font-semibold\">사용 시:</span> 판테온이 힘을 모아 높이 도약했다가 창을 던져 좁은 영역에 <span class=\"text-red-600 dark:text-red-500 font-semibold\">의 물리 피해</span>를 입히고 2초 동안 50% <span class=\"text-purple-600 dark:text-purple-500\">둔화</span>시킵니다. <br /><br />그런 다음 지정한 위치에 유성이 되어 떨어집니다. 일직선상에 있는 적들에게 최대 <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(300/500/700 + (100% 주문력))의 마법 피해</span>를 입힙니다. (피해량은 범위 가장자리로 갈수록 감소하여 가장 바깥쪽은 50% 감소된 피해를 입힙니다.)<br /><br />이 스킬을 사용하면 <span style=\"color: #EDDA74\">필멸자의 의지</span>가 즉시 활성화됩니다.",
         "leveltip": {
           "label": [
             "피해량",
@@ -919,7 +930,14 @@
           "w": 48,
           "h": 48
         },
-        "resource": "{{ abilityresourcename }} {{ cost }}"
+        "resource": "{{ abilityresourcename }} {{ cost }}",
+        "summary": "판테온이 태세를 갖추고 공중으로 뛰어올랐다가 지정한 위치에 유성이 되어 떨어집니다.",
+        "tooltipSource": "communitydragon",
+        "tooltipDiagnostics": {
+          "unresolvedTokens": [
+            "spell.PantheonQ:HoldDamageCalc"
+          ]
+        }
       }
     ],
     "passive": {

@@ -14,6 +14,11 @@ export type ParseResult =
  */
 export type Value = number | number[];
 
+export interface TooltipRenderResult {
+  html: string;
+  unresolvedTokens: string[];
+}
+
 /**
  * Community Dragon 스킬 데이터 구조
  */

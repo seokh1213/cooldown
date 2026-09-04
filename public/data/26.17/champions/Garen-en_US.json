@@ -430,7 +430,7 @@
         "id": "GarenQ",
         "name": "Decisive Strike",
         "description": "Garen gains a burst of Move Speed, breaking free of all slows affecting him. His next attack strikes a vital area of his foe, dealing bonus damage and silencing them.",
-        "tooltip": "Garen removes all <status>Slowing</status> effects on him and gains <speed>{{ movementspeedamount*100 }}% Move Speed</speed> for {{ movementspeedduration }} second(s).<br /><br />His next Attack <status>Silences</status> for {{ silenceduration }} seconds and does <physicalDamage>{{ totaldamage }} physical damage</physicalDamage>.{{ spellmodifierdescriptionappend }}",
+        "tooltip": "Garen removes all <span class=\"text-purple-600 dark:text-purple-500\">Slowing</span> effects on him and gains <span class=\"text-cyan-600 dark:text-cyan-500\">35% Move Speed</span> for 1.4/1.95/2.5/3.05/3.6 second(s).<br /><br />His next Attack <span class=\"text-purple-600 dark:text-purple-500\">Silences</span> for 1.5 seconds and does <span class=\"text-red-600 dark:text-red-500 font-semibold\">(30/60/90/120/150 + (150% Attack Damage)) physical damage</span>.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">The empowered Attack expires after 4.5 seconds.<br />This Ability triggers spell effects upon dealing damage.</span>",
         "leveltip": {
           "label": [
             "Damage",
@@ -565,13 +565,15 @@
           "w": 48,
           "h": 48
         },
-        "resource": "No Cost"
+        "resource": "No Cost",
+        "summary": "Garen gains a burst of Move Speed, breaking free of all slows affecting him. His next attack strikes a vital area of his foe, dealing bonus damage and silencing them.",
+        "tooltipSource": "communitydragon"
       },
       {
         "id": "GarenW",
         "name": "Courage",
         "description": "Garen passively increases his Armor and Magic Resist by killing enemies. He may also activate this ability to give him a shield and tenacity for a brief moment followed by a lesser amount of damage reduction for a longer duration.",
-        "tooltip": "<spellPassive>Passive:</spellPassive> Garen has <scaleArmor>{{ resistsfortooltip }} bonus Armor</scaleArmor> and <scaleMR>{{ resistsfortooltip }} bonus Magic Resist</scaleMR>. Killing units permanently grants <attention>{{ resistgainonkilltooltip }} resists</attention>, up to a max of <attention>{{ resistmax }}</attention>.<br /><br /><spellActive>Active:</spellActive> Garen steels his courage for {{ drduration }} seconds, reducing incoming damage by {{ drpercent*100 }}%. He also gains <shield>{{ totalshield }} Shield</shield> and <slow>{{ upfronttenacity*100 }}% Tenacity</slow> for {{ upfrontduration }} seconds.{{ spellmodifierdescriptionappend }}",
+        "tooltip": "<span class=\"text-gray-600 dark:text-gray-500 italic\">Passive:</span> Garen has <span class=\"text-orange-600 dark:text-orange-400\"> bonus Armor</span> and <span> bonus Magic Resist</span>. Killing units permanently grants <span>0.2 resists</span>, up to a max of <span>30</span>.<br /><br /><span class=\"text-gray-900 dark:text-white font-semibold\">Active:</span> Garen steels his courage for 4 seconds, reducing incoming damage by 25/29/33/37/41%. He also gains <span class=\"text-blue-600 dark:text-blue-300\">(65/85/105/125/145 + (18% bonus Health)) Shield</span> and <span>60% Tenacity</span> for 0.75 seconds.",
         "leveltip": {
           "label": [
             "Shield Amount",
@@ -708,13 +710,20 @@
           "w": 48,
           "h": 48
         },
-        "resource": "No Cost"
+        "resource": "No Cost",
+        "summary": "Garen passively increases his Armor and Magic Resist by killing enemies. He may also activate this ability to give him a shield and tenacity for a brief moment followed by a lesser amount of damage reduction for a longer duration.",
+        "tooltipSource": "communitydragon",
+        "tooltipDiagnostics": {
+          "unresolvedTokens": [
+            "ResistsForTooltip"
+          ]
+        }
       },
       {
         "id": "GarenE",
         "name": "Judgment",
         "description": "Garen rapidly spins his sword around his body, dealing physical damage to nearby enemies.",
-        "tooltip": "Garen rapidly spins his sword for {{ duration }} seconds, dealing <physicalDamage>{{ totaldamage }} physical damage</physicalDamage> {{ f1 }} times over the duration. The nearest enemy takes <physicalDamage>{{ nearestenemybonus*100 }}% increased damage</physicalDamage>. Champions hit by {{ stackstoshred }} strikes lose <scaleArmor>{{ shredamount*100 }}% Armor</scaleArmor> for {{ shredduration }} seconds.<br /><br /><recast>Recast</recast>: Garen ends this Ability early.{{ spellmodifierdescriptionappend }}",
+        "tooltip": "Garen rapidly spins his sword for 3 seconds, dealing <span class=\"text-red-600 dark:text-red-500 font-semibold\">(4/7/10/13/16 + (40/43/46/49/52% Attack Damage)) physical damage</span> times over the duration. The nearest enemy takes <span class=\"text-red-600 dark:text-red-500 font-semibold\">25% increased damage</span>. Champions hit by 6 strikes lose <span class=\"text-orange-600 dark:text-orange-400\">25% Armor</span> for 6 seconds.<br /><br /><span class=\"text-yellow-600 dark:text-yellow-300\">Recast</span>: Garen ends this Ability early.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">Gains one strike from every <span>25% Attack Speed</span> from items and levels.<br />Can critically strike for <span class=\"text-red-600 dark:text-red-500 font-semibold\">(4/7/10/13/16 + (40/43/46/49/52% Attack Damage)) physical damage</span>.</span>",
         "leveltip": {
           "label": [
             "Base Damage Per Spin",
@@ -851,13 +860,20 @@
           "w": 48,
           "h": 48
         },
-        "resource": "No Cost"
+        "resource": "No Cost",
+        "summary": "Garen rapidly spins his sword around his body, dealing physical damage to nearby enemies.",
+        "tooltipSource": "communitydragon",
+        "tooltipDiagnostics": {
+          "unresolvedTokens": [
+            "f1"
+          ]
+        }
       },
       {
         "id": "GarenR",
         "name": "Demacian Justice",
         "description": "Garen calls upon the might of Demacia to attempt to execute an enemy champion.",
-        "tooltip": "Garen calls upon the might of Demacia to slay his enemy, dealing <trueDamage>{{ basedamage }} plus {{ executedamage*100 }}% missing Health true damage</trueDamage>.{{ spellmodifierdescriptionappend }}",
+        "tooltip": "Garen calls upon the might of Demacia to slay his enemy, dealing <span class=\"text-yellow-600 dark:text-yellow-500 font-semibold\">125/200/275 plus 25/30/35% missing Health true damage</span>.",
         "leveltip": {
           "label": [
             "Cooldown",
@@ -968,7 +984,9 @@
           "w": 48,
           "h": 48
         },
-        "resource": "No Cost"
+        "resource": "No Cost",
+        "summary": "Garen calls upon the might of Demacia to attempt to execute an enemy champion.",
+        "tooltipSource": "communitydragon"
       }
     ],
     "passive": {

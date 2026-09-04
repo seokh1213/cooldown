@@ -560,7 +560,7 @@
         "id": "Deceive",
         "name": "Deceive",
         "description": "Shaco becomes Invisible and teleports to target location.<br><br>His first attack while Invisible is empowered, dealing bonus damage and critically striking if he attacks from behind.",
-        "tooltip": "Shaco teleports and becomes <keywordStealth>Invisible</keywordStealth> for {{ stealthduration }} seconds. Using <spellName>Jack In The Box</spellName> or <spellName>Hallucinate</spellName> does not break <keywordStealth>Invisibility</keywordStealth>.<br /><br />Shaco's next Attack while <keywordStealth>Invisible</keywordStealth> deals an additional <physicalDamage>{{ totaldamage }} physical damage</physicalDamage>. If striking from behind, this Attack critically strikes for {{ qcritdamagemod }} damage.{{ spellmodifierdescriptionappend }}",
+        "tooltip": "Shaco teleports and becomes <span class=\"text-purple-600 dark:text-purple-400 font-semibold\">Invisible</span> for 2.5/2.75/3/3.25/3.5 seconds. Using <span>Jack In The Box</span> or <span>Hallucinate</span> does not break <span class=\"text-purple-600 dark:text-purple-400 font-semibold\">Invisibility</span>.<br /><br />Shaco's next Attack while <span class=\"text-purple-600 dark:text-purple-400 font-semibold\">Invisible</span> deals an additional <span class=\"text-red-600 dark:text-red-500 font-semibold\">(25/35/45/55/65 + (60% bonus Attack Damage)) physical damage</span>. If striking from behind, this Attack critically strikes for damage.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">The bonus damage on Attack can critically strike.<br /><span class=\"text-purple-600 dark:text-purple-400 font-semibold\">Invisible</span> units cannot be revealed except by turrets or <span style=\"color: #ee91d7\">True Sight</font color>.</span>",
         "leveltip": {
           "label": [
             "Damage",
@@ -697,13 +697,20 @@
           "w": 48,
           "h": 48
         },
-        "resource": "{{ cost }} {{ abilityresourcename }}"
+        "resource": "{{ cost }} {{ abilityresourcename }}",
+        "summary": "Shaco becomes Invisible and teleports to target location.<br><br>His first attack while Invisible is empowered, dealing bonus damage and critically striking if he attacks from behind.",
+        "tooltipSource": "communitydragon",
+        "tooltipDiagnostics": {
+          "unresolvedTokens": [
+            "QCritDamageMod"
+          ]
+        }
       },
       {
         "id": "JackInTheBox",
         "name": "Jack In The Box",
         "description": "Shaco creates a hidden animated Jack-in-the-Box. When triggered, it will fear and attack nearby enemies.",
-        "tooltip": "Shaco creates a trap that stealths itself after {{ armtime }} seconds and lasts for {{ trapduration }} seconds. It activates when an enemy comes near or when revealed, <status>Fearing</status> nearby enemy Champions for {{ fearduration }} seconds, or {{ minionfearduration }} seconds for minions and jungle monsters.<br /><br />Once activated, the trap fires at all nearby enemies for 5 seconds, dealing <magicDamage>{{ aoedamage }} magic damage</magicDamage>, or <magicDamage>{{ stdamage }} damage</magicDamage> if focused on a single target.<br /><br />Jack in the Box's attacks deal an additional <magicDamage>{{ monsterbonusdamage }}</magicDamage> damage to monsters.{{ spellmodifierdescriptionappend }}",
+        "tooltip": "Shaco creates a trap that stealths itself after 2 seconds and lasts for (40 + (10% Ability Power)) seconds. It activates when an enemy comes near or when revealed, <span class=\"text-purple-600 dark:text-purple-500\">Fearing</span> nearby enemy Champions for 0.5/0.75/1/1.25/1.5 seconds, or 2 seconds for minions and jungle monsters.<br /><br />Once activated, the trap fires at all nearby enemies for 5 seconds, dealing <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(10/15/20/25/30 + (12% Ability Power)) magic damage</span>, or <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(25/40/55/70/85 + (18% Ability Power)) damage</span> if focused on a single target.<br /><br />Jack in the Box's attacks deal an additional <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">20/35/50/65/80</span> damage to monsters.",
         "leveltip": {
           "label": [
             "Damage",
@@ -842,13 +849,15 @@
           "w": 48,
           "h": 48
         },
-        "resource": "{{ cost }} {{ abilityresourcename }}"
+        "resource": "{{ cost }} {{ abilityresourcename }}",
+        "summary": "Shaco creates a hidden animated Jack-in-the-Box. When triggered, it will fear and attack nearby enemies.",
+        "tooltipSource": "communitydragon"
       },
       {
         "id": "TwoShivPoison",
         "name": "Two-Shiv Poison",
         "description": "Shaco's Shivs passively poison targets on hit, slowing their Move Speed. He can throw his Shivs to deal damage and poison the target. The thrown Shiv deals bonus damage if the target is below 30% health.",
-        "tooltip": "<spellPassive>Passive:</spellPassive> While this Ability is off Cooldown, Shaco's Attacks <status>Slow</status> the target by {{ slowamount*-100 }}% for {{ slowdurationpassive }} seconds.<br /><br /><spellActive>Active:</spellActive> Shaco throws a shiv, dealing <magicDamage>{{ totaldamage }} magic damage</magicDamage> and <status>Slowing</status> by {{ slowamount*-100 }}% for {{ slowdurationactive }} seconds. If the target has less than {{ executehealththreshold*100 }}% Health, the shiv deals <magicDamage>{{ totalexecutedamage }} damage</magicDamage> instead.{{ spellmodifierdescriptionappend }}",
+        "tooltip": "<span class=\"text-gray-600 dark:text-gray-500 italic\">Passive:</span> While this Ability is off Cooldown, Shaco's Attacks <span class=\"text-purple-600 dark:text-purple-500\">Slow</span> the target by 20/22.5/25/27.5/30% for 2 seconds.<br /><br /><span class=\"text-gray-900 dark:text-white font-semibold\">Active:</span> Shaco throws a shiv, dealing <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(70/95/120/145/170 + (80% bonus Attack Damage) + (60% Ability Power)) magic damage</span> and <span class=\"text-purple-600 dark:text-purple-500\">Slowing</span> by 20/22.5/25/27.5/30% for 3 seconds. If the target has less than 30% Health, the shiv deals <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(105/142.5/180/217.5/255 + (120% bonus Attack Damage) + (90% Ability Power)) damage</span> instead.",
         "leveltip": {
           "label": [
             "Damage",
@@ -983,13 +992,15 @@
           "w": 48,
           "h": 48
         },
-        "resource": "{{ cost }} {{ abilityresourcename }}"
+        "resource": "{{ cost }} {{ abilityresourcename }}",
+        "summary": "Shaco's Shivs passively poison targets on hit, slowing their Move Speed. He can throw his Shivs to deal damage and poison the target. The thrown Shiv deals bonus damage if the target is below 30% health.",
+        "tooltipSource": "communitydragon"
       },
       {
         "id": "HallucinateFull",
         "name": "Hallucinate",
         "description": "Shaco creates an illusion of himself near him, which can attack nearby enemies (Deals reduced damage to turrets).  Upon death, it explodes, spawning three mini Jack in the Boxes and dealing damage to nearby enemies.",
-        "tooltip": "Shaco briefly disappears, then reappears with a clone that lasts {{ clonelifetime }} seconds and detonates when it dies, dealing <magicDamage>{{ explosiontotaldamage }} magic damage</magicDamage> and spawning three mini <spellName>Jack in the Boxes</spellName> that trigger immediately. The clone deals {{ cloneaadamagepercent*100 }}% of Shaco's damage and receives {{ cloneincomingdamagepercent*100 }}% increased damage.<br /><br />Mini <spellName>Jack in the Boxes</spellName> deal <magicDamage>{{ aoedamage }} magic damage</magicDamage>, or <magicDamage>{{ stdamage }} magic damage</magicDamage> if firing at only one enemy, and <status>Fear</status> for {{ boxfearduration }} second.<br />{{ spellmodifierdescriptionappend }}",
+        "tooltip": "Shaco briefly disappears, then reappears with a clone that lasts 18 seconds and detonates when it dies, dealing <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(150/225/300 + (70% Ability Power)) magic damage</span> and spawning three mini <span>Jack in the Boxes</span> that trigger immediately. The clone deals 60% of Shaco's damage and receives 50% increased damage.<br /><br />Mini <span>Jack in the Boxes</span> deal <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(10/20/30 + (10% Ability Power)) magic damage</span>, or <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(25/50/75 + (15% Ability Power)) magic damage</span> if firing at only one enemy, and <span class=\"text-purple-600 dark:text-purple-500\">Fear</span> for 1 second.<br /><br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">The clone can be controlled using the Alt key and right click, or by <span class=\"text-yellow-600 dark:text-yellow-300\">Recasting</span> this Ability.</span>",
         "leveltip": {
           "label": [
             "On Death Damage",
@@ -1100,7 +1111,9 @@
           "w": 48,
           "h": 48
         },
-        "resource": "{{ cost }} {{ abilityresourcename }}"
+        "resource": "{{ cost }} {{ abilityresourcename }}",
+        "summary": "Shaco creates an illusion of himself near him, which can attack nearby enemies (Deals reduced damage to turrets).  Upon death, it explodes, spawning three mini Jack in the Boxes and dealing damage to nearby enemies.",
+        "tooltipSource": "communitydragon"
       }
     ],
     "passive": {

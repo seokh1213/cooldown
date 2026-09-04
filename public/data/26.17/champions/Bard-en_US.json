@@ -381,7 +381,7 @@
         "id": "BardQ",
         "name": "Cosmic Binding",
         "description": "Bard fires a missile which will slow the first enemy struck, and continue onward. If it strikes a wall, it will stun the initial target; if it strikes another enemy, it will stun them both.",
-        "tooltip": "Bard fires an energy bolt, dealing <magicDamage>{{ totaldamage }} magic damage</magicDamage> to the first two enemies hit. The first target hit is <status>Slowed</status> by {{ slowamountpercentage }}% for {{ slowduration }}s.<br /><br />If the bolt hits a second enemy or a wall, any enemies hit are <status>Stunned</status> for {{ stunduration }}s.<br />{{ spellmodifierdescriptionappend }}",
+        "tooltip": "Bard fires an energy bolt, dealing <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(80/120/160/200/240 + (80% Ability Power)) magic damage</span> to the first two enemies hit. The first target hit is <span class=\"text-purple-600 dark:text-purple-500\">Slowed</span> by 60% for 1/1.2/1.4/1.6/1.8s.<br /><br />If the bolt hits a second enemy or a wall, any enemies hit are <span class=\"text-purple-600 dark:text-purple-500\">Stunned</span> for 1/1.2/1.4/1.6/1.8s.<br />",
         "leveltip": {
           "label": [
             "Damage",
@@ -520,13 +520,15 @@
           "w": 48,
           "h": 48
         },
-        "resource": "{{ cost }} {{ abilityresourcename }}"
+        "resource": "{{ cost }} {{ abilityresourcename }}",
+        "summary": "Bard fires a missile which will slow the first enemy struck, and continue onward. If it strikes a wall, it will stun the initial target; if it strikes another enemy, it will stun them both.",
+        "tooltipSource": "communitydragon"
       },
       {
         "id": "BardW",
         "name": "Caretaker's Shrine",
         "description": "Reveals a Health shrine which powers up over a short time, disappearing after healing and speeding up the first ally that touches it.",
-        "tooltip": "Bard creates a Health shrine that grants <speed>{{ calc_movespeed }} Move Speed</speed> decaying over {{ movespeed_duration }} seconds and restores at least <healing>{{ initialheal }} Health</healing> to the first ally to enter. The shrine grows to restore <healing>{{ maxheal }} Health</healing> after existing for {{ chargeuptime }} seconds.<br /><br />Bard can have up to {{ maxpacks }} shrines at once. If an enemy champion enters a shrine, it is destroyed.<br /><br />This ability has {{ ammo_limit }} charges.<br /><br />Current Active Shrines: {{ f1 }} / {{ f2 }}{{ spellmodifierdescriptionappend }}",
+        "tooltip": "Bard creates a Health shrine that grants <span class=\"text-cyan-600 dark:text-cyan-500\">(20/22.5/25/27.5/30% + (0.06% Ability Power)) Move Speed</span> decaying over 1.5 seconds and restores at least <span class=\"text-green-600 dark:text-green-400\">(25/50/75/100/125 + (40% Ability Power)) Health</span> to the first ally to enter. The shrine grows to restore <span class=\"text-green-600 dark:text-green-400\">(50/87.5/125/162.5/200 + (70% Ability Power)) Health</span> after existing for 5 seconds.<br /><br />Bard can have up to 3 shrines at once. If an enemy champion enters a shrine, it is destroyed.<br /><br />This ability has 2 charges.<br /><br />Current Active Shrines: /",
         "leveltip": {
           "label": [
             "Base Heal",
@@ -663,13 +665,21 @@
           "w": 48,
           "h": 48
         },
-        "resource": "{{ cost }} {{ abilityresourcename }}"
+        "resource": "{{ cost }} {{ abilityresourcename }}",
+        "summary": "Reveals a Health shrine which powers up over a short time, disappearing after healing and speeding up the first ally that touches it.",
+        "tooltipSource": "communitydragon",
+        "tooltipDiagnostics": {
+          "unresolvedTokens": [
+            "f1",
+            "f2"
+          ]
+        }
       },
       {
         "id": "BardE",
         "name": "Magical Journey",
         "description": "Bard opens a portal in nearby terrain. Allies and enemies alike can take a one-way trip through that terrain by moving into the portal.",
-        "tooltip": "Bard opens a one-way portal through Terrain for {{ doorduration }} seconds. Any champion can enter the portal by moving onto it while near the entrance.{{ spellmodifierdescriptionappend }}",
+        "tooltip": "Bard opens a one-way portal through Terrain for 10 seconds. Any champion can enter the portal by moving onto it while near the entrance.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">Allies travel 33% faster than enemies.</span>",
         "leveltip": {
           "label": [
             "Cooldown"
@@ -802,13 +812,15 @@
           "w": 48,
           "h": 48
         },
-        "resource": "{{ cost }} {{ abilityresourcename }}"
+        "resource": "{{ cost }} {{ abilityresourcename }}",
+        "summary": "Bard opens a portal in nearby terrain. Allies and enemies alike can take a one-way trip through that terrain by moving into the portal.",
+        "tooltipSource": "communitydragon"
       },
       {
         "id": "BardR",
         "name": "Tempered Fate",
         "description": "Bard sends spirit energy arcing to a location, putting all champions, minions, monsters, and turrets hit into stasis for a brief time.",
-        "tooltip": "Bard hurls magical protective energy to an area, placing all units and structures hit into Stasis for {{ rstasisduration }} seconds.{{ spellmodifierdescriptionappend }}",
+        "tooltip": "Bard hurls magical protective energy to an area, placing all units and structures hit into Stasis for 2.5 seconds.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">Units in Stasis cannot move or act, and are invulnerable and Untargetable.</span>",
         "leveltip": {
           "label": [
             "Cooldown"
@@ -915,7 +927,9 @@
           "w": 48,
           "h": 48
         },
-        "resource": "{{ cost }} {{ abilityresourcename }}"
+        "resource": "{{ cost }} {{ abilityresourcename }}",
+        "summary": "Bard sends spirit energy arcing to a location, putting all champions, minions, monsters, and turrets hit into stasis for a brief time.",
+        "tooltipSource": "communitydragon"
       }
     ],
     "passive": {

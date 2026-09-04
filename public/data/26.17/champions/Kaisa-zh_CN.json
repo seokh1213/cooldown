@@ -605,7 +605,7 @@
         "id": "KaisaQ",
         "name": "艾卡西亚暴雨",
         "description": "卡莎发射一大堆弹体来搜寻附近的目标。<br><br>活体武器：这个技能得到升级，可发射更多弹体。",
-        "tooltip": "卡莎发射{{ e2 }}发弹体并在附近的敌人中间四散，每一发造成<physicalDamage>{{ totalindividualmissiledamage }}物理伤害</physicalDamage>，至多至最大值{{ maxdamagedisplay }}伤害。对英雄或野怪的每发额外弹体造成{{ extrahitreduction*100 }}%伤害。<br /><br /><keywordMajor>进化版</keywordMajor>：卡莎转而发射{{ e7 }}发弹体。<br />当前：<physicalDamage>{{ f11.1 }}/{{ e6 }}额外攻击力</physicalDamage>{{ spellmodifierdescriptionappend }}",
+        "tooltip": "卡莎发射6发弹体并在附近的敌人中间四散，每一发造成<span class=\"text-red-600 dark:text-red-500 font-semibold\">(40/55/70/85/100 + (55% 额外攻击力) + (20% 法术强度))物理伤害</span>，至多至最大值伤害。对英雄或野怪的每发额外弹体造成25%伤害。<br /><br /><span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">进化版</span>：卡莎转而发射12发弹体。<br />当前：<span class=\"text-red-600 dark:text-red-500 font-semibold\">/100额外攻击力</span><br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">低于<span>35%生命值</span>的小兵受到200%伤害。</span>",
         "leveltip": {
           "label": [
             "冷却时间",
@@ -740,13 +740,21 @@
           "w": 48,
           "h": 48
         },
-        "resource": "{{ cost }} {{ abilityresourcename }}"
+        "resource": "{{ cost }} {{ abilityresourcename }}",
+        "summary": "卡莎发射一大堆弹体来搜寻附近的目标。<br><br>活体武器：这个技能得到升级，可发射更多弹体。",
+        "tooltipSource": "communitydragon",
+        "tooltipDiagnostics": {
+          "unresolvedTokens": [
+            "MaxDamageDisplay",
+            "f11.1"
+          ]
+        }
       },
       {
         "id": "KaisaW",
         "name": "虚空索敌",
         "description": "卡莎发射一束长程弹体，并用她的被动来标记敌人。<br><br>活体武器：这个技能得到升级，可施加更多被动标记并在命中英雄时减少冷却时间。",
-        "tooltip": "卡莎发射一道虚空震波来对命中的第一个敌人造成<magicDamage>{{ totaldamage }}魔法伤害</magicDamage>、施加{{ e4 }}层<keywordMajor>电浆</keywordMajor>效果并提供其<keywordStealth>真实视野</keywordStealth>，持续{{ spell.kaisapassive:pduration }}秒。<br /><br /><keywordMajor>进化版</keywordMajor>：卡莎转而施加{{ e5 }}层<keywordMajor>电浆</keywordMajor>效果并在命中一名英雄时使冷却时间缩短{{ e3 }}%。<br />当前：<scaleAP>{{ f2.1 }}/{{ e2 }}法术强度</scaleAP>{{ spellmodifierdescriptionappend }}",
+        "tooltip": "卡莎发射一道虚空震波来对命中的第一个敌人造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(30/55/80/105/130 + (130% 攻击力) + (45% 法术强度))魔法伤害</span>、施加2层<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">电浆</span>效果并提供其<span class=\"text-purple-600 dark:text-purple-400 font-semibold\">真实视野</span>，持续秒。<br /><br /><span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">进化版</span>：卡莎转而施加3层<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">电浆</span>效果并在命中一名英雄时使冷却时间缩短75%。<br />当前：<span class=\"text-blue-600 dark:text-blue-400\">/100法术强度</span><br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">通过这个技能施加的<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">电浆</span>效果会造成来自<span>体表活肤</span>的伤害。</span>",
         "leveltip": {
           "label": [
             "冷却时间",
@@ -883,13 +891,21 @@
           "w": 48,
           "h": 48
         },
-        "resource": "{{ cost }} {{ abilityresourcename }}"
+        "resource": "{{ cost }} {{ abilityresourcename }}",
+        "summary": "卡莎发射一束长程弹体，并用她的被动来标记敌人。<br><br>活体武器：这个技能得到升级，可施加更多被动标记并在命中英雄时减少冷却时间。",
+        "tooltipSource": "communitydragon",
+        "tooltipDiagnostics": {
+          "unresolvedTokens": [
+            "f2.1",
+            "spell.KaisaPassive:PDuration"
+          ]
+        }
       },
       {
         "id": "KaisaE",
         "name": "极限超载",
         "description": "卡莎暂时提升移动速度，随后提升攻击速度。<br><br>活体武器：这个技能得到升级，可短暂提供隐形效果。",
-        "tooltip": "卡莎极限超载她的虚空能量，获得<speed>{{ totalmovespeed }}移动速度</speed>并且在超载时变为幽灵状态，随后获得持续{{ e2 }}秒的<attackSpeed>{{ e5 }}%攻击速度</attackSpeed>。<br /><br />每次攻击还会使此技能的冷却时间缩短{{ e4 }}秒。<br /><br /><keywordMajor>进化版</keywordMajor>：卡莎还会<keywordStealth>隐形</keywordStealth>{{ e7 }}秒。<br />当前：<attackSpeed>{{ f10.1 }}%/{{ e6 }}%额外攻击速度</attackSpeed>{{ spellmodifierdescriptionappend }}",
+        "tooltip": "卡莎极限超载她的虚空能量，获得<span class=\"text-cyan-600 dark:text-cyan-500\">移动速度</span>并且在超载时变为幽灵状态，随后获得持续4秒的<span>4000/5000/6000/7000/8000%攻击速度</span>。<br /><br />每次攻击还会使此技能的冷却时间缩短0.5秒。<br /><br /><span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">进化版</span>：卡莎还会<span class=\"text-purple-600 dark:text-purple-400 font-semibold\">隐形</span>0.5秒。<br />当前：<span>/100%额外攻击速度</span><br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">【幽灵】状态的单位能够无视其它单位的碰撞体积。<br /><span class=\"text-purple-600 dark:text-purple-400 font-semibold\">隐形</span>单位只会被【防御塔】或<span style=\"color: #ee91d7\">真实视野</font color>显形。<br />极限超载时间随<span>攻击速度</span>的提升而降低 (当前：)</span>",
         "leveltip": {
           "label": [
             "冷却时间",
@@ -1026,13 +1042,22 @@
           "w": 48,
           "h": 48
         },
-        "resource": "{{ cost }} {{ abilityresourcename }}"
+        "resource": "{{ cost }} {{ abilityresourcename }}",
+        "summary": "卡莎暂时提升移动速度，随后提升攻击速度。<br><br>活体武器：这个技能得到升级，可短暂提供隐形效果。",
+        "tooltipSource": "communitydragon",
+        "tooltipDiagnostics": {
+          "unresolvedTokens": [
+            "TotalCastTime",
+            "TotalMoveSpeed",
+            "f10.1"
+          ]
+        }
       },
       {
         "id": "KaisaR",
         "name": "猎手本能",
         "description": "卡莎突进到一个敌方英雄身边。",
-        "tooltip": "卡莎跃迁到一个位置上，该位置处于一名身上带有<keywordMajor>电浆</keywordMajor>效果的敌方英雄的附近，并获得持续{{ rshieldduration }}秒的<shield>{{ rcalculatedshieldvalue }}护盾值</shield>。{{ spellmodifierdescriptionappend }}",
+        "tooltip": "卡莎跃迁到一个位置上，该位置处于一名身上带有<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">电浆</span>效果的敌方英雄的附近，并获得持续2秒的<span class=\"text-blue-600 dark:text-blue-300\">(100/150/200 + (90/135/180% 攻击力) + (120% 法术强度))护盾值</span>。",
         "leveltip": {
           "label": [
             "距离",
@@ -1145,7 +1170,9 @@
           "w": 48,
           "h": 48
         },
-        "resource": "{{ cost }} {{ abilityresourcename }}"
+        "resource": "{{ cost }} {{ abilityresourcename }}",
+        "summary": "卡莎突进到一个敌方英雄身边。",
+        "tooltipSource": "communitydragon"
       }
     ],
     "passive": {

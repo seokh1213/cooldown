@@ -17,3 +17,27 @@ export function lookupString(
 export function toParserTemplate(template: string): string {
   return template.replace(/@([^@]+)@/g, "{{ $1 }}");
 }
+
+export function expandStringReferences(
+  template: string,
+  table: StringTable
+): string {
+  let result = template;
+
+  for (let depth = 0; depth < 5; depth += 1) {
+    let changed = false;
+    result = result.replace(
+      /@([^@]+)@|\{\{([^}]+)}}/g,
+      (token, atKey: string | undefined, braceKey: string | undefined) => {
+      const key = atKey ?? braceKey;
+      const replacement = lookupString(table, key?.trim());
+      if (!replacement || replacement === token) return token;
+      changed = true;
+      return replacement;
+      }
+    );
+    if (!changed) break;
+  }
+
+  return result;
+}

@@ -147,7 +147,7 @@
         "id": "MelQ",
         "name": "耀光齐射",
         "description": "梅尔发射一连串耀光飞弹，飞弹会在目标位置周围爆炸，对范围内的敌人造成多段伤害。",
-        "tooltip": "梅尔释放一道由{{ explosioncount }}个耀光飞弹组成的弹幕，飞弹会在目标位置周围爆炸。<br /><br />命中的第一次爆炸造成<magicDamage>{{ initialexplosiondamage }}魔法伤害</magicDamage>并且每次后续爆炸造成<magicDamage>{{ totalexplosiondamage }}魔法伤害</magicDamage>，至多增加至<magicDamage>{{ alldamagehit }}魔法伤害</magicDamage>总和。{{ spellmodifierdescriptionappend }}",
+        "tooltip": "梅尔释放一道由6/7/8/9/10个耀光飞弹组成的弹幕，飞弹会在目标位置周围爆炸。<br /><br />命中的第一次爆炸造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(60/85/110/135/160 + (55% 法术强度))魔法伤害</span>并且每次后续爆炸造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(5/7/9/11/13 + (5% 法术强度))魔法伤害</span>，至多增加至<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">魔法伤害</span>总和。",
         "leveltip": {
           "label": [
             "初始伤害",
@@ -288,13 +288,20 @@
           "w": 48,
           "h": 48
         },
-        "resource": "{{ cost }} {{ abilityresourcename }}"
+        "resource": "{{ cost }} {{ abilityresourcename }}",
+        "summary": "梅尔发射一连串耀光飞弹，飞弹会在目标位置周围爆炸，对范围内的敌人造成多段伤害。",
+        "tooltipSource": "communitydragon",
+        "tooltipDiagnostics": {
+          "unresolvedTokens": [
+            "AllDamageHit"
+          ]
+        }
       },
       {
         "id": "MelW",
         "name": "灵魂折镜",
         "description": "梅尔生成一道屏障围绕自身，这道屏障会将敌方弹体反弹给攻击者，使她免受伤害，并为她提供移动速度。",
-        "tooltip": "梅尔生成一道屏障围绕自身，这道屏障会将敌方英雄弹体反弹给攻击者，使她免受伤害，并获得持续{{ duration }}秒的<shield>{{ shieldamount }}护盾值</shield>和在{{ movespeedduration }}秒里<speed>持续衰减的{{ movespeed*100 }}%移动速度</speed>。<br /><br />被反弹的弹体会造成<magicDamage>{{ damagepercent }}原伤害值的魔法伤害</magicDamage>。{{ spellmodifierdescriptionappend }}",
+        "tooltip": "梅尔生成一道屏障围绕自身，这道屏障会将敌方英雄弹体反弹给攻击者，使她免受伤害，并获得持续0.75秒的<span class=\"text-blue-600 dark:text-blue-300\">(80/110/140/170/200 + (70% 法术强度))护盾值</span>和在0.75秒里<span class=\"text-cyan-600 dark:text-cyan-500\">持续衰减的40%移动速度</span>。<br /><br />被反弹的弹体会造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(40/45/50/55/60% + (0.05% 法术强度))原伤害值的魔法伤害</span>。<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">被反弹的弹体伤害计算会使用原施放者在进行伤害调整和法术穿透之前的属性。<br /><span class=\"text-red-600 dark:text-red-500 font-semibold\">物理伤害</span>在转换成魔法伤害时会降低30%。<br />不会施加来自原施放者的装备效果。<br />那些以一个范围内的每个敌人为目标的弹体会被摧毁而非被反弹。</span>",
         "leveltip": {
           "label": [
             "反弹伤害",
@@ -433,13 +440,15 @@
           "w": 48,
           "h": 48
         },
-        "resource": "{{ cost }} {{ abilityresourcename }}"
+        "resource": "{{ cost }} {{ abilityresourcename }}",
+        "summary": "梅尔生成一道屏障围绕自身，这道屏障会将敌方弹体反弹给攻击者，使她免受伤害，并为她提供移动速度。",
+        "tooltipSource": "communitydragon"
       },
       {
         "id": "MelE",
         "name": "阳炎涡旋",
         "description": "梅尔发射一颗阳炎法球，禁锢中心区域的敌人并减速周围区域的敌人并造成持续伤害。",
-        "tooltip": "梅尔发射一颗阳炎法球，<status>禁锢</status>中心区域的敌人{{ rootduration }}秒并造成<magicDamage>{{ damage }}魔法伤害</magicDamage>。<br /><br />法球会在其周围逐渐形成一个妨害区域，这个区域会对敌人们造成{{ areaslowamount*100 }}%<status>减速</status>以及<magicDamage>每秒{{ areadamagepersecond }}魔法伤害</magicDamage>。{{ spellmodifierdescriptionappend }}",
+        "tooltip": "梅尔发射一颗阳炎法球，<span class=\"text-purple-600 dark:text-purple-500\">禁锢</span>中心区域的敌人1.5秒并造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(60/105/150/195/240 + (70% 法术强度))魔法伤害</span>。<br /><br />法球会在其周围逐渐形成一个妨害区域，这个区域会对敌人们造成30%<span class=\"text-purple-600 dark:text-purple-500\">减速</span>以及<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">每秒(16/28/40/52/64 + (8% 法术强度))魔法伤害</span>。<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">在敌人离开由法球创造的区域之后，这个减速和持续伤害效果还会短暂存留。<br />在对小兵使用时，造成削减过的伤害。</span>",
         "leveltip": {
           "label": [
             "伤害",
@@ -578,13 +587,20 @@
           "w": 48,
           "h": 48
         },
-        "resource": "{{ cost }} {{ abilityresourcename }}"
+        "resource": "{{ cost }} {{ abilityresourcename }}",
+        "summary": "梅尔发射一颗阳炎法球，禁锢中心区域的敌人并减速周围区域的敌人并造成持续伤害。",
+        "tooltipSource": "communitydragon",
+        "tooltipDiagnostics": {
+          "unresolvedTokens": [
+            "MinionModTooltip"
+          ]
+        }
       },
       {
         "id": "MelR",
         "name": "鎏金蚀日",
         "description": "梅尔无视距离，对所有带有【夺命残影】层数的敌人进行打击，造成基于【夺命残影】层数的额外伤害。<br><br>【鎏金蚀日】的技能等级会提升【夺命残影】的伤害。",
-        "tooltip": "<spellPassive>被动</spellPassive>：<keywordMajor>夺命残影</keywordMajor>伤害提升至<magicDamage>{{ passiveflatdamage }}魔法伤害外加每层{{ passivestackdamage }}魔法伤害</magicDamage>。<br /><br /><spellActive>主动</spellActive>：梅尔对所有身上带有<keywordMajor>夺命残影</keywordMajor>的敌人释放她的能量，造成<magicDamage>{{ ultflatdamage }}魔法伤害外加每层<keywordMajor>夺命残影</keywordMajor>{{ ultstackdamage }}魔法伤害</magicDamage>。<br /><br /><rules>仅可在有一名敌方英雄被施加了<keywordMajor>夺命残影</keywordMajor>时施放。</rules>{{ spellmodifierdescriptionappend }}",
+        "tooltip": "<span class=\"text-gray-600 dark:text-gray-500 italic\">被动</span>：<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">夺命残影</span>伤害提升至<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(60/70/80 + (10% 法术强度))魔法伤害外加每层(3/4/5 + (0.75% 法术强度))魔法伤害</span>。<br /><br /><span class=\"text-gray-900 dark:text-white font-semibold\">主动</span>：梅尔对所有身上带有<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">夺命残影</span>的敌人释放她的能量，造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(125/200/275 + (30% 法术强度))魔法伤害外加每层<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">夺命残影</span>(4/7/10 + (4% 法术强度))魔法伤害</span>。<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">仅可在有一名敌方英雄被施加了<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">夺命残影</span>时施放。</span>",
         "leveltip": {
           "label": [
             "<spellName>鎏金蚀日</spellName>固定伤害",
@@ -699,7 +715,9 @@
           "w": 48,
           "h": 48
         },
-        "resource": "{{ cost }} {{ abilityresourcename }}"
+        "resource": "{{ cost }} {{ abilityresourcename }}",
+        "summary": "梅尔无视距离，对所有带有【夺命残影】层数的敌人进行打击，造成基于【夺命残影】层数的额外伤害。<br><br>【鎏金蚀日】的技能等级会提升【夺命残影】的伤害。",
+        "tooltipSource": "communitydragon"
       }
     ],
     "passive": {

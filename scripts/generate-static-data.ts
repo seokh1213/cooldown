@@ -32,8 +32,18 @@ import {
   type ExtractedPassiveSpell,
 } from "./passive-tooltip-data";
 import { extractActiveSpells } from "./data-pipeline/cdragon-active-spells";
-import type { ActiveSpellSourceData } from "./data-pipeline/cdragon-active-spells";
+import type {
+  ActiveSpellSourceData,
+  ExtractedActiveSpellData,
+} from "./data-pipeline/cdragon-active-spells";
 import { validateGeneratedAbilities } from "./data-pipeline/ability-validation";
+import {
+  assertActiveTooltipReport,
+  validateActiveTooltipFiles,
+  type ActiveTooltipAllowlist,
+} from "./data-pipeline/active-tooltip-validation";
+import { localizeActiveTooltip } from "./data-pipeline/active-tooltip-data";
+import type { DataLocale, StringTable } from "./data-pipeline/localization";
 
 const VERSION_URL = "https://ddragon.leagueoflegends.com/api/versions.json";
 const CHAMP_LIST_URL = (VERSION: string, LANG: string) =>
@@ -907,17 +917,19 @@ async function saveToFile(data: any, filePath: string): Promise<void> {
   console.log(`Saved: ${filePath}`);
 }
 
-const stringTableCache = new Map<string, Promise<Record<string, unknown>>>();
+const stringTableCache = new Map<string, Promise<StringTable>>();
 
-function fetchPassiveStringTable(
+function fetchStringTable(
   basePath: string,
   lang: PassiveTooltipLocale
-): Promise<Record<string, unknown>> {
+): Promise<StringTable> {
   const cacheKey = `${basePath}:${lang}`;
   const cached = stringTableCache.get(cacheKey);
   if (cached) return cached;
 
-  const request = fetchJson(COMMUNITY_DRAGON_STRINGTABLE_URL(basePath, lang));
+  const request = fetchJson(
+    COMMUNITY_DRAGON_STRINGTABLE_URL(basePath, lang)
+  ) as Promise<StringTable>;
   stringTableCache.set(cacheKey, request);
   return request;
 }
@@ -931,7 +943,7 @@ async function buildLocalizedPassiveTooltips(
   const entries = await Promise.all(
     PASSIVE_TOOLTIP_LOCALES.map(async (lang) => {
       try {
-        const stringTable = await fetchPassiveStringTable(basePath, lang);
+        const stringTable = await fetchStringTable(basePath, lang);
         return [lang, localizePassiveTooltip(passive, stringTable, lang)] as const;
       } catch (error) {
         console.warn(
@@ -946,6 +958,63 @@ async function buildLocalizedPassiveTooltips(
     PassiveTooltipLocale,
     LocalizedPassiveTooltip
   >;
+}
+
+async function applyLocalizedActiveTooltips(
+  championsDir: string,
+  championId: string,
+  cdragonVersion: string,
+  activeSpells: ExtractedActiveSpellData[]
+): Promise<void> {
+  await Promise.all(
+    LANGUAGES.map(async (lang) => {
+      const championFilePath = path.join(
+        championsDir,
+        `${championId}-${lang}.json`
+      );
+      if (!fs.existsSync(championFilePath)) return;
+
+      try {
+        const stringTable = await fetchStringTable(cdragonVersion, lang);
+        const data = JSON.parse(fs.readFileSync(championFilePath, "utf-8"));
+        const spells = data?.champion?.spells;
+        if (!Array.isArray(spells)) return;
+
+        spells.forEach((spell, index) => {
+          const source = activeSpells[index];
+          if (!source || !spell || typeof spell !== "object") return;
+          const localized = localizeActiveTooltip(
+            spell,
+            source,
+            stringTable,
+            lang as DataLocale
+          );
+          if (!localized.tooltip) return;
+
+          spell.summary = localized.summary ?? spell.description;
+          spell.tooltip = localized.tooltip;
+          spell.tooltipSource = "communitydragon";
+          if (localized.unresolvedTokens.length > 0) {
+            spell.tooltipDiagnostics = {
+              unresolvedTokens: localized.unresolvedTokens,
+            };
+          }
+          if (localized.name) spell.name = localized.name;
+        });
+
+        fs.writeFileSync(
+          championFilePath,
+          JSON.stringify(data, null, 2),
+          "utf-8"
+        );
+      } catch (error) {
+        console.warn(
+          `[CD][Active] Failed to localize ${championId} for ${lang}; preserving DDragon tooltip`,
+          error
+        );
+      }
+    })
+  );
 }
 
 function applyLocalizedPassiveTooltip(
@@ -1555,6 +1624,15 @@ async function main() {
             ? await buildLocalizedPassiveTooltips(cdragonVersion, passive)
             : null;
 
+          if (cdragonVersion) {
+            await applyLocalizedActiveTooltips(
+              championsDir,
+              championId,
+              cdragonVersion,
+              activeSpells.ordered
+            );
+          }
+
           if (passive) {
             spellData.P = passive.spellData;
             spellData[passive.id] = passive.spellData;
@@ -1607,6 +1685,28 @@ async function main() {
     }
 
     console.log(`\n✅ Community Dragon data: ${successCount} successful, ${failCount} failed\n`);
+
+    const activeTooltipAllowlist = JSON.parse(
+      fs.readFileSync(
+        path.join(process.cwd(), "scripts", "active-tooltip-allowlist.json"),
+        "utf-8"
+      )
+    ) as ActiveTooltipAllowlist;
+    const activeTooltipReport = validateActiveTooltipFiles(
+      championsDir,
+      version,
+      LANGUAGES,
+      activeTooltipAllowlist
+    );
+    await saveToFile(
+      activeTooltipReport,
+      path.join(versionDir, "active-tooltip-validation.json")
+    );
+    assertActiveTooltipReport(activeTooltipReport);
+    console.log(
+      `✅ Precomputed ${activeTooltipReport.totals.localized}/${activeTooltipReport.totals.abilities} ` +
+        `localized Q/W/E/R tooltips (${activeTooltipReport.totals.withDiagnostics} with known diagnostics)`
+    );
 
     console.log("🧩 Building normalized champion data...");
     for (const lang of LANGUAGES) {

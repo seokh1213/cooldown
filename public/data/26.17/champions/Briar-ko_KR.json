@@ -259,7 +259,7 @@
         "id": "BriarQ",
         "name": "짜릿한 돌격",
         "description": "브라이어가 대상에게 도약 후 (고통의) 뒤꿈치로 적을 가격해 기절시키고 방어구를 깨부숩니다.",
-        "tooltip": "브라이어가 대상에게 도약해 <physicalDamage>{{ totaldamage }}의 물리 피해</physicalDamage>를 입히고 {{ stunduration }}초간 <status>기절</status>시키며 {{ shredduration }}초간 <scaleArmor>방어력</scaleArmor> 및 <scaleMR>마법 저항력</scaleMR>을 {{ shredpercent*100 }}% 감소시킵니다.<br /><br /><rules><keywordMajor>핏빛 광분</keywordMajor> 상태에서 이 스킬을 미니언이나 몬스터에게 사용하면 더 이상 챔피언을 우선적으로 공격하지 않습니다.</rules>{{ spellmodifierdescriptionappend }}",
+        "tooltip": "브라이어가 대상에게 도약해 <span class=\"text-red-600 dark:text-red-500 font-semibold\">(60/85/110/135/160 + (60% 주문력) + (80% 추가 공격력))의 물리 피해</span>를 입히고 0.85초간 <span class=\"text-purple-600 dark:text-purple-500\">기절</span>시키며 5초간 <span class=\"text-orange-600 dark:text-orange-400\">방어력</span> 및 <span>마법 저항력</span>을 10/12.5/15/17.5/20% 감소시킵니다.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\"><span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">핏빛 광분</span> 상태에서 이 스킬을 미니언이나 몬스터에게 사용하면 더 이상 챔피언을 우선적으로 공격하지 않습니다.</span><br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">이 스킬은 <span>적중 시</span> 효과가 적용됩니다.</span>",
         "leveltip": {
           "label": [
             "피해량",
@@ -396,13 +396,15 @@
           "w": 48,
           "h": 48
         },
-        "resource": "현재 체력의 {{ spell.briarp:currenthealthpercentcost*100 }}% 소모"
+        "resource": "현재 체력의 {{ spell.briarp:currenthealthpercentcost*100 }}% 소모",
+        "summary": "브라이어가 대상에게 도약 후 (고통의) 뒤꿈치로 적을 가격해 기절시키고 방어구를 깨부숩니다.",
+        "tooltipSource": "communitydragon"
       },
       {
         "id": "BriarW",
         "name": "핏빛 광분 / 식욕 폭발",
         "description": "브라이어가 앞으로 도약해 족쇄를 깨부수고 핏빛 광분 상태에 들어가 가장 가까운 적을 가차 없이 추격합니다. (챔피언 우선) 핏빛 광분 상태에서 공격 속도와 이동 속도가 상승하며 기본 공격으로 대상 주변에 피해를 입힙니다.<br><br>이 스킬을 핏빛 광분 상태에서 재사용하면 다음 기본 공격 시 적을 베어 먹어 대상이 잃은 체력에 비례해 추가 피해를 입히고 피해량에 비례해 체력을 회복합니다.",
-        "tooltip": "브라이어가 도약해 <keywordMajor>핏빛 광분</keywordMajor> 상태에 들어가고 {{ berserkduration }}초간 가장 가까운 적에게 도발됩니다. (챔피언 우선) <keywordMajor>핏빛 광분</keywordMajor> 상태에서 <attackSpeed>공격 속도가 {{ berserkas*100 }}%</attackSpeed>, <speed>이동 속도가 {{ berserkms*100 }}%</speed> 상승하며 기본 공격으로 대상 주변 적에게 <physicalDamage>{{ totalaoedamage }}의 물리 피해</physicalDamage>를 입힙니다.<br /><br />이 스킬을 <recast>재사용</recast>해 다음 기본 공격을 강화할 수 있습니다. 강화된 기본 공격으로 <physicalDamage>{{ totalattackbonusdamage }}+잃은 체력의 {{ totalattackpercentmissinghealth }}%에 해당하는 물리 피해</physicalDamage>를 입히며, <healing>피해량의 {{ attackmaxhpheal }}+{{ attackhealpercent*100 }}%만큼 체력을 회복</healing>합니다.<br />{{ spellmodifierdescriptionappend }}",
+        "tooltip": "브라이어가 도약해 <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">핏빛 광분</span> 상태에 들어가고 5초간 가장 가까운 적에게 도발됩니다. (챔피언 우선) <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">핏빛 광분</span> 상태에서 <span>공격 속도가 55/65/75/85/95%</span>, <span class=\"text-cyan-600 dark:text-cyan-500\">이동 속도가 24/33/42/51/60%</span> 상승하며 기본 공격으로 대상 주변 적에게 <span class=\"text-red-600 dark:text-red-500 font-semibold\">(60/70/80/90/100% 공격력)의 물리 피해</span>를 입힙니다.<br /><br />이 스킬을 <span class=\"text-yellow-600 dark:text-yellow-300\">재사용</span>해 다음 기본 공격을 강화할 수 있습니다. 강화된 기본 공격으로 <span class=\"text-red-600 dark:text-red-500 font-semibold\">(5/20/35/50/65 + (105% 공격력)) + 잃은 체력의 (9 + (2.5% 추가 공격력))에 해당하는 물리 피해</span>를 입히며, <span class=\"text-green-600 dark:text-green-400\">피해량의 (5% 체력) + 24/28/32/36/40%만큼 체력을 회복</span>합니다.<br /><br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">베어 먹기 공격은 미니언과 몬스터 상대로 피해량이 10% 증가합니다. (잃은 체력 비례 피해 최대 400)<br />이 스킬을 사용해도 <span>불가항력적 죽음</span>의 강화된 <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">핏빛 광분</span> 효과는 없어지지 않습니다.</span>",
         "leveltip": {
           "label": [
             "공격 속도",
@@ -545,13 +547,15 @@
           "w": 48,
           "h": 48
         },
-        "resource": "현재 체력의 {{ spell.briarp:currenthealthpercentcost*100 }}% 소모"
+        "resource": "현재 체력의 {{ spell.briarp:currenthealthpercentcost*100 }}% 소모",
+        "summary": "브라이어가 앞으로 도약해 족쇄를 깨부수고 핏빛 광분 상태에 들어가 가장 가까운 적을 가차 없이 추격합니다. (챔피언 우선) 핏빛 광분 상태에서 공격 속도와 이동 속도가 상승하며 기본 공격으로 대상 주변에 피해를 입힙니다.<br><br>이 스킬을 핏빛 광분 상태에서 재사용하면 다음 기본 공격 시 적을 베어 먹어 대상이 잃은 체력에 비례해 추가 피해를 입히고 피해량에 비례해 체력을 회복합니다.",
+        "tooltipSource": "communitydragon"
       },
       {
         "id": "BriarE",
         "name": "오싹한 비명",
         "description": "브라이어가 마음을 다잡아 핏빛 광분 상태에서 벗어나고, 힘을 모아 강력한 비명을 내질러 적에게 피해를 입히고 둔화시킵니다. 충전 중에는 받는 피해가 감소하고 최대 체력의 일정 비율만큼 회복합니다. 완전히 충전된 비명은 적을 뒤로 밀치고, 벽에 부딪히는 적에게 추가 피해를 입히며 기절시킵니다.",
-        "tooltip": "<charge>충전 시작:</charge> 브라이어가 <keywordMajor>핏빛 광분</keywordMajor> 상태에서 벗어나 힘을 모읍니다. 1초 동안 <healing>체력을 {{ percentmaxhpheal }}</healing> 회복하고, 입는 피해가 {{ drpercent }}% 감소합니다.<br /><br /><release>발사:</release> 브라이어가 비명을 내질러 충전 시간에 따라 최대 <magicDamage>{{ damage }}의 마법 피해</magicDamage>를 입히고, {{ slowduration }}초 동안 {{ slowpercent*100 }}% <status>둔화</status>시킵니다. 완전히 충전된 비명은 적을 <status>뒤로 밀치며</status>, 벽에 부딪히는 적에게 <magicDamage>{{ wallhitdamage }}의 마법 피해</magicDamage>를 입히고 {{ wallstunduration }}초 동안 <status>기절</status>시킵니다.{{ spellmodifierdescriptionappend }}",
+        "tooltip": "<span>충전 시작:</span> 브라이어가 <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">핏빛 광분</span> 상태에서 벗어나 힘을 모읍니다. 1초 동안 <span class=\"text-green-600 dark:text-green-400\">체력을 (10/11.5/13/14.5/16% 체력)</span> 회복하고, 입는 피해가 35% 감소합니다.<br /><br /><span>발사:</span> 브라이어가 비명을 내질러 충전 시간에 따라 최대 <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(80/115/150/185/220 + (100% 추가 공격력) + (100% 주문력))의 마법 피해</span>를 입히고, 0.5초 동안 80% <span class=\"text-purple-600 dark:text-purple-500\">둔화</span>시킵니다. 완전히 충전된 비명은 적을 <span class=\"text-purple-600 dark:text-purple-500\">뒤로 밀치며</span>, 벽에 부딪히는 적에게 <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(140/215/290/365/440 + (240% 추가 공격력) + (240% 주문력))의 마법 피해</span>를 입히고 1.5초 동안 <span class=\"text-purple-600 dark:text-purple-500\">기절</span>시킵니다.",
         "leveltip": {
           "label": [
             "피해량",
@@ -688,13 +692,15 @@
           "w": 48,
           "h": 48
         },
-        "resource": "현재 체력의 {{ spell.briarp:currenthealthpercentcost*100 }}% 소모"
+        "resource": "현재 체력의 {{ spell.briarp:currenthealthpercentcost*100 }}% 소모",
+        "summary": "브라이어가 마음을 다잡아 핏빛 광분 상태에서 벗어나고, 힘을 모아 강력한 비명을 내질러 적에게 피해를 입히고 둔화시킵니다. 충전 중에는 받는 피해가 감소하고 최대 체력의 일정 비율만큼 회복합니다. 완전히 충전된 비명은 적을 뒤로 밀치고, 벽에 부딪히는 적에게 추가 피해를 입히며 기절시킵니다.",
+        "tooltipSource": "communitydragon"
       },
       {
         "id": "BriarR",
         "name": "불가항력적 죽음",
         "description": "브라이어가 족쇄의 혈석을 발로 찬 다음, 혈석이 첫 번째로 적중한 챔피언을 먹잇감으로 지정하고 대상을 향해 날아갑니다. 착지 시 다른 주변 적을 공포에 빠트리고 피의 갈증에 완전히 사로잡힙니다. 이후 먹잇감을 죽을 때까지 쫓으며, 핏빛 광분 효과와 방어력, 마법 저항력, 생명력 흡수, 이동 속도를 추가로 얻습니다.",
-        "tooltip": "브라이어가 족쇄의 혈석을 발로 찬 다음, 혈석이 첫 번째로 적중한 챔피언을 먹잇감으로 지정하고 대상을 향해 날아갑니다. 착지 시 모든 주변 적에게 <magicDamage>{{ damage }}의 마법 피해</magicDamage>를 입히고 먹잇감을 제외한 적을 {{ fearduration }}초간 <status>공포</status>에 빠트립니다. 이후 강화된 <keywordMajor>핏빛 광분</keywordMajor> 상태에 들어가 죽을 때까지 먹잇감을 쫓습니다. 지속시간 동안 <scaleArmor>방어력</scaleArmor> 및 <scaleMR>마법 저항력</scaleMR> {{ totalresists }}, 생명력 흡수 {{ lifestealpercent*100 }}%, <speed>이동 속도 {{ extramovespeedpercent*100 }}%</speed>를 얻습니다.{{ spellmodifierdescriptionappend }}",
+        "tooltip": "브라이어가 족쇄의 혈석을 발로 찬 다음, 혈석이 첫 번째로 적중한 챔피언을 먹잇감으로 지정하고 대상을 향해 날아갑니다. 착지 시 모든 주변 적에게 <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(150/250/350 + (130% 주문력))의 마법 피해</span>를 입히고 먹잇감을 제외한 적을 1.5초간 <span class=\"text-purple-600 dark:text-purple-500\">공포</span>에 빠트립니다. 이후 강화된 <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">핏빛 광분</span> 상태에 들어가 죽을 때까지 먹잇감을 쫓습니다. 지속시간 동안 <span class=\"text-orange-600 dark:text-orange-400\">방어력</span> 및 <span>마법 저항력</span> (20% 공격력), 생명력 흡수 10/15/20%, <span class=\"text-cyan-600 dark:text-cyan-500\">이동 속도 10/20/30%</span>를 얻습니다.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">혈석은 적중 시 대상의 정신 집중을 방해합니다. 브라이어는 먹잇감에 대한 <span style=\"color: #ee91d7\">절대 시야</font color>를 얻습니다.</span>",
         "leveltip": {
           "label": [
             "피해량",
@@ -807,7 +813,9 @@
           "w": 48,
           "h": 48
         },
-        "resource": "현재 체력의 {{ spell.briarp:currenthealthpercentcost*100 }}% 소모"
+        "resource": "현재 체력의 {{ spell.briarp:currenthealthpercentcost*100 }}% 소모",
+        "summary": "브라이어가 족쇄의 혈석을 발로 찬 다음, 혈석이 첫 번째로 적중한 챔피언을 먹잇감으로 지정하고 대상을 향해 날아갑니다. 착지 시 다른 주변 적을 공포에 빠트리고 피의 갈증에 완전히 사로잡힙니다. 이후 먹잇감을 죽을 때까지 쫓으며, 핏빛 광분 효과와 방어력, 마법 저항력, 생명력 흡수, 이동 속도를 추가로 얻습니다.",
+        "tooltipSource": "communitydragon"
       }
     ],
     "passive": {

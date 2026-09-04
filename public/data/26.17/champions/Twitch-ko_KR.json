@@ -466,7 +466,7 @@
         "id": "TwitchHideInShadows",
         "name": "매복",
         "description": "트위치의 이동 속도가 빨라지고 짧은 시간 동안 위장 상태가 됩니다. 위장 효과가 끝나면 잠시 공격 속도가 증가합니다.<br><br>맹독에 걸린 적 챔피언이 죽으면 매복의 재사용 대기시간이 초기화됩니다.",
-        "tooltip": "트위치가 <keywordStealth>위장</keywordStealth> 상태에 돌입해 {{ stealthduration }}초 동안 <speed>이동 속도가 {{ movespeedmod }}%</speed> 증가합니다. 트위치를 볼 수 없는 적 챔피언 근처에서는 이동 속도가 {{ hiddenspeed }}%까지 증가합니다. <keywordStealth>위장</keywordStealth>이 끝나면 {{ attackspeedduration }}초 동안 트위치의 <attackSpeed>공격 속도가 {{ attackspeedmod*100 }}%</attackSpeed> 증가합니다.<br /><br /><keywordMajor>독</keywordMajor>에 중독된 적 챔피언이 죽으면 이 스킬의 재사용 대기시간이 초기화됩니다.{{ spellmodifierdescriptionappend }}",
+        "tooltip": "트위치가 <span class=\"text-purple-600 dark:text-purple-400 font-semibold\">위장</span> 상태에 돌입해 10/11/12/13/14초 동안 <span class=\"text-cyan-600 dark:text-cyan-500\">이동 속도가 10%</span> 증가합니다. 트위치를 볼 수 없는 적 챔피언 근처에서는 이동 속도가 30%까지 증가합니다. <span class=\"text-purple-600 dark:text-purple-400 font-semibold\">위장</span>이 끝나면 6초 동안 트위치의 <span>공격 속도가 40/45/50/55/60%</span> 증가합니다.<br /><br /><span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">독</span>에 중독된 적 챔피언이 죽으면 이 스킬의 재사용 대기시간이 초기화됩니다.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\"><span class=\"text-purple-600 dark:text-purple-400 font-semibold\">위장</span> 상태일 때는 적 챔피언의 감지 범위 안에 들어가지 않는 한 시야에 보이지 않습니다.</span>",
         "leveltip": {
           "label": [
             "위장 지속시간",
@@ -601,13 +601,15 @@
           "w": 48,
           "h": 48
         },
-        "resource": "{{ abilityresourcename }} {{ cost }}"
+        "resource": "{{ abilityresourcename }} {{ cost }}",
+        "summary": "트위치의 이동 속도가 빨라지고 짧은 시간 동안 위장 상태가 됩니다. 위장 효과가 끝나면 잠시 공격 속도가 증가합니다.<br><br>맹독에 걸린 적 챔피언이 죽으면 매복의 재사용 대기시간이 초기화됩니다.",
+        "tooltipSource": "communitydragon"
       },
       {
         "id": "TwitchVenomCask",
         "name": "독약 병",
         "description": "트위치가 명중하면 폭발하는 독약 병을 던져, 범위 내 대상들에게 둔화 효과를 부여하고 맹독을 적용합니다.",
-        "tooltip": "트위치가 독약 병을 던져 맞힌 모든 적에게 <spellName>맹독</spellName>을 중첩시키고 {{ duration }}초 동안 지속되는 독구름을 남깁니다.<br /><br />독구름 안의 적은 이동 속도가 {{ totalslowamount }}% <status>감소</status>하고 매초 <spellName>맹독</spellName> 중첩이 쌓입니다.{{ spellmodifierdescriptionappend }}",
+        "tooltip": "트위치가 독약 병을 던져 맞힌 모든 적에게 <span>맹독</span>을 중첩시키고 3초 동안 지속되는 독구름을 남깁니다.<br /><br />독구름 안의 적은 이동 속도가 (30/35/40/45/50 + (6% 주문력))<span class=\"text-purple-600 dark:text-purple-500\">감소</span>하고 매초 <span>맹독</span> 중첩이 쌓입니다.",
         "leveltip": {
           "label": [
             "이동속도 감소량",
@@ -742,13 +744,15 @@
           "w": 48,
           "h": 48
         },
-        "resource": "{{ abilityresourcename }} {{ cost }}"
+        "resource": "{{ abilityresourcename }} {{ cost }}",
+        "summary": "트위치가 명중하면 폭발하는 독약 병을 던져, 범위 내 대상들에게 둔화 효과를 부여하고 맹독을 적용합니다.",
+        "tooltipSource": "communitydragon"
       },
       {
         "id": "TwitchExpunge",
         "name": "오염",
         "description": "트위치가 역병을 퍼뜨려 중독된 적들에게 더 큰 피해를 줍니다.",
-        "tooltip": "<spellName>맹독</spellName>에 감염된 주위 적 모두에게 <physicalDamage>{{ basedamage }}의 물리 피해</physicalDamage>를 입히고 추가적으로 중첩된 <spellName>맹독</spellName> 하나당 <physicalDamage>{{ physicaldamageperstack }}의 물리 피해</physicalDamage>와 <magicDamage>{{ magicdamageperstack }}의 마법 피해</magicDamage>를 입힙니다.<br /><br />최대 피해량: <physicalDamage>{{ maxphysicaldamage }}의 물리 피해</physicalDamage>와 <magicDamage>{{ maxmagicdamage }}의 마법 피해</magicDamage>{{ spellmodifierdescriptionappend }}",
+        "tooltip": "<span>맹독</span>에 감염된 주위 적 모두에게 <span class=\"text-red-600 dark:text-red-500 font-semibold\">20/30/40/50/60의 물리 피해</span>를 입히고 추가적으로 중첩된 <span>맹독</span> 하나당 <span class=\"text-red-600 dark:text-red-500 font-semibold\">(15/20/25/30/35 + (35% 추가 공격력))의 물리 피해</span>와 <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(35% 주문력)의 마법 피해</span>를 입힙니다.<br /><br />최대 피해량: <span class=\"text-red-600 dark:text-red-500 font-semibold\">110/150/190/230/270의 물리 피해</span>와 <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(210% 주문력)의 마법 피해</span>",
         "leveltip": {
           "label": [
             "피해량",
@@ -885,13 +889,15 @@
           "w": 48,
           "h": 48
         },
-        "resource": "{{ abilityresourcename }} {{ cost }}"
+        "resource": "{{ abilityresourcename }} {{ cost }}",
+        "summary": "트위치가 역병을 퍼뜨려 중독된 적들에게 더 큰 피해를 줍니다.",
+        "tooltipSource": "communitydragon"
       },
       {
         "id": "TwitchFullAutomatic",
         "name": "무차별 난사",
         "description": "트위치가 석궁의 위력을 최대한으로 끌어올려 멀리로 관통 화살들을 발사하며, 경로상의 모든 적을 꿰뚫습니다.",
-        "tooltip": "트위치가 석궁을 꺼내 {{ duration }}초 동안 공격 사거리가 {{ bonusrange }}, <scaleAD>공격력이 {{ bonusad }}</scaleAD> 증가하며 기본 공격은 적을 관통합니다. 이 공격은 통과하는 모든 적에게 적중하지만 한 번 관통할 때마다 피해량이 {{ falloffdamage*100 }}%씩 감소됩니다. 피해량은 최소 {{ minimumfalloffdamage*100 }}%까지 내려갑니다.<br />{{ spellmodifierdescriptionappend }}",
+        "tooltip": "트위치가 석궁을 꺼내 6초 동안 공격 사거리가 300, <span class=\"text-orange-600 dark:text-orange-500\">공격력이 30/45/60</span> 증가하며 기본 공격은 적을 관통합니다. 이 공격은 통과하는 모든 적에게 적중하지만 한 번 관통할 때마다 피해량이 10%씩 감소됩니다. 피해량은 최소 60%까지 내려갑니다.<br /><br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">이 스킬을 사용해도 <span class=\"text-purple-600 dark:text-purple-400 font-semibold\">위장</span> 상태가 해제되지 않지만 기본 공격을 하면 해제됩니다.</span>",
         "leveltip": {
           "label": [
             "공격력"
@@ -998,7 +1004,9 @@
           "w": 48,
           "h": 48
         },
-        "resource": "{{ abilityresourcename }} {{ cost }}"
+        "resource": "{{ abilityresourcename }} {{ cost }}",
+        "summary": "트위치가 석궁의 위력을 최대한으로 끌어올려 멀리로 관통 화살들을 발사하며, 경로상의 모든 적을 꿰뚫습니다.",
+        "tooltipSource": "communitydragon"
       }
     ],
     "passive": {

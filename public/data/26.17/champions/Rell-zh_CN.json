@@ -272,7 +272,7 @@
         "id": "RellQ",
         "name": "裂阵",
         "description": "芮尔对一条直线上的单位们造成魔法伤害，打破他们的护盾并造成晕眩效果。 ",
-        "tooltip": "芮尔戳刺她的骑枪，使目标们<status>晕眩</status>{{ stunduration }}秒、摧毁所有<shield>护盾</shield>，并造成<magicDamage>{{ damage }}魔法伤害</magicDamage>。{{ spellmodifierdescriptionappend }}",
+        "tooltip": "芮尔戳刺她的骑枪，使目标们<span class=\"text-purple-600 dark:text-purple-500\">晕眩</span>0.65秒、摧毁所有<span class=\"text-blue-600 dark:text-blue-300\">护盾</span>，并造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(60/100/140/180/220 + (60% 法术强度))魔法伤害</span>。<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">不会打破野怪身上的护盾。</span>",
         "leveltip": {
           "label": [
             "伤害",
@@ -407,13 +407,15 @@
           "w": 48,
           "h": 48
         },
-        "resource": "{{ cost }} {{ abilityresourcename }}"
+        "resource": "{{ cost }} {{ abilityresourcename }}",
+        "summary": "芮尔对一条直线上的单位们造成魔法伤害，打破他们的护盾并造成晕眩效果。 ",
+        "tooltipSource": "communitydragon"
       },
       {
         "id": "RellW_Dismount",
         "name": "驭铁术：轰落",
         "description": "骑乘状态：芮尔化马为甲，以披甲状态向下轰落，击飞敌人们并获得高额护盾值。在披甲状态下，她获得护甲、魔法抗性、攻击速度和攻击距离，但移动速度缓慢。<br><br>披甲状态：芮尔化甲为马，提供爆发性的移动速度并且她的下一次攻击会对敌人造成击飞效果。<br><br>",
-        "tooltip": "<spellPassive>被动 - 铁骑疾行：</spellPassive>芮尔在骑乘状态时获得<speed>{{ spell.rellw_dismount:mountedmovespeed }}移动速度</speed>。<br /><br /><spellActive>主动 - 驭铁术：轰落：</spellActive>芮尔化马为甲，<status>击飞</status>敌人并造成<magicDamage>{{ spell.rellw_dismount:dismountdamage }}魔法伤害</magicDamage>。芮尔获得<shield>{{ spell.rellw_dismount:shield }}护盾值</shield>，持续到她再次上马为止。<br /><br />芮尔随后进入披甲形态，获得<scaleArmor>{{ spell.rellw_dismount:resistanceincrease*100 }}%提升护甲</scaleArmor>和<scaleMR>魔法抗性</scaleMR>、<attackSpeed>{{ spell.rellw_dismount:dismountedasboost*100 }}%攻击速度</attackSpeed>和{{ spell.rellw_dismount:dismountedrangeboost }}攻击距离。在披甲形态中，她可以使用<spellName>驭铁术：驾临</spellName>。{{ spellmodifierdescriptionappend }}",
+        "tooltip": "<span class=\"text-gray-600 dark:text-gray-500 italic\">被动 - 铁骑疾行：</span>芮尔在骑乘状态时获得<span class=\"text-cyan-600 dark:text-cyan-500\">移动速度</span>。<br /><br /><span class=\"text-gray-900 dark:text-white font-semibold\">主动 - 驭铁术：轰落：</span>芮尔化马为甲，<span class=\"text-purple-600 dark:text-purple-500\">击飞</span>敌人并造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">魔法伤害</span>。芮尔获得<span class=\"text-blue-600 dark:text-blue-300\">护盾值</span>，持续到她再次上马为止。<br /><br />芮尔随后进入披甲形态，获得<span class=\"text-orange-600 dark:text-orange-400\">提升护甲</span>和<span>魔法抗性</span>、<span>攻击速度</span>和攻击距离。在披甲形态中，她可以使用<span>驭铁术：驾临</span>。",
         "leveltip": {
           "label": [
             "下马伤害",
@@ -552,13 +554,25 @@
           "w": 48,
           "h": 48
         },
-        "resource": "{{ cost }} {{ abilityresourcename }}"
+        "resource": "{{ cost }} {{ abilityresourcename }}",
+        "summary": "骑乘状态：芮尔化马为甲，以披甲状态向下轰落，击飞敌人们并获得高额护盾值。在披甲状态下，她获得护甲、魔法抗性、攻击速度和攻击距离，但移动速度缓慢。<br><br>披甲状态：芮尔化甲为马，提供爆发性的移动速度并且她的下一次攻击会对敌人造成击飞效果。<br><br>",
+        "tooltipSource": "communitydragon",
+        "tooltipDiagnostics": {
+          "unresolvedTokens": [
+            "spell.RellW_Dismount:DismountDamage",
+            "spell.RellW_Dismount:DismountedASBoost*100",
+            "spell.RellW_Dismount:DismountedRangeBoost",
+            "spell.RellW_Dismount:MountedMoveSpeed",
+            "spell.RellW_Dismount:ResistanceIncrease*100",
+            "spell.RellW_Dismount:Shield"
+          ]
+        }
       },
       {
         "id": "RellE",
         "name": "全速冲锋",
         "description": "被动：芮尔获得非战斗状态下的移动速度。<br><br>主动：芮尔和一名友军获得不断升温的移动速度，这个加成会在朝着敌人们和彼此移动时提升至双倍。她的下次攻击会爆炸，造成魔法伤害。<br>",
-        "tooltip": "芮尔和一名友军进行冲锋，获得<speed>{{ minms*100 }}%移动速度</speed>，这个加成会在面向敌方英雄或彼此时提升至<speed>{{ maxms*100 }}%</speed>，持续{{ duration }}秒。芮尔的下一次攻击或<spellName>裂阵</spellName>会引爆一个区域，造成<magicDamage>{{ maxhealthdamagecalc }}最大生命值魔法伤害</magicDamage>。{{ spellmodifierdescriptionappend }}",
+        "tooltip": "芮尔和一名友军进行冲锋，获得<span class=\"text-cyan-600 dark:text-cyan-500\">15%移动速度</span>，这个加成会在面向敌方英雄或彼此时提升至<span class=\"text-cyan-600 dark:text-cyan-500\">30%</span>，持续3秒。芮尔的下一次攻击或<span>裂阵</span>会引爆一个区域，造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(5/5.5/6/6.5/7% + (0.03% 法术强度))最大生命值魔法伤害</span>。<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">对野怪和建筑物的伤害封顶值为(150 ~ 300)。</span>",
         "leveltip": {
           "label": [
             "伤害",
@@ -693,13 +707,15 @@
           "w": 48,
           "h": 48
         },
-        "resource": "{{ cost }} {{ abilityresourcename }}"
+        "resource": "{{ cost }} {{ abilityresourcename }}",
+        "summary": "被动：芮尔获得非战斗状态下的移动速度。<br><br>主动：芮尔和一名友军获得不断升温的移动速度，这个加成会在朝着敌人们和彼此移动时提升至双倍。她的下次攻击会爆炸，造成魔法伤害。<br>",
+        "tooltipSource": "communitydragon"
       },
       {
         "id": "RellR",
         "name": "极涌",
         "description": "芮尔喷发出有磁性的怒火，粗暴地将附近敌方英雄向她拉拽。随后芮尔会持续将附近敌人向她拖曳一小段时间，并持续造成魔法伤害。",
-        "tooltip": "芮尔喷发出有磁性的怒火，粗暴地将附近敌方英雄向她<status>拉拽</status>。随后芮尔会持续将附近敌人向她<status>拖曳</status>并在接来的{{ duration }}秒里持续造成共<magicDamage>{{ totaldamage }}魔法伤害</magicDamage>。{{ spellmodifierdescriptionappend }}",
+        "tooltip": "芮尔喷发出有磁性的怒火，粗暴地将附近敌方英雄向她<span class=\"text-purple-600 dark:text-purple-500\">拉拽</span>。随后芮尔会持续将附近敌人向她<span class=\"text-purple-600 dark:text-purple-500\">拖曳</span>并在接来的2秒里持续造成共<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(150/250/350 + (110% 法术强度))魔法伤害</span>。",
         "leveltip": {
           "label": [
             "冷却时间",
@@ -808,7 +824,9 @@
           "w": 48,
           "h": 48
         },
-        "resource": "{{ cost }} {{ abilityresourcename }}"
+        "resource": "{{ cost }} {{ abilityresourcename }}",
+        "summary": "芮尔喷发出有磁性的怒火，粗暴地将附近敌方英雄向她拉拽。随后芮尔会持续将附近敌人向她拖曳一小段时间，并持续造成魔法伤害。",
+        "tooltipSource": "communitydragon"
       }
     ],
     "passive": {

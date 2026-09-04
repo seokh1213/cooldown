@@ -553,7 +553,7 @@
         "id": "SorakaQ",
         "name": "Starcall",
         "description": "A star falls from the sky at the target location dealing magic damage and slowing enemies. If an enemy champion is hit by Starcall, Soraka recovers Health.",
-        "tooltip": "Soraka calls down a star, dealing <magicDamage>{{ totaldamage }} magic damage</magicDamage> and <status>Slowing</status> by {{ movespeedslow*100 }}% for {{ slowduration }} seconds. <br /><br />Hitting an enemy champion grants Soraka <keywordMajor>Rejuvenation</keywordMajor>, which restores <healing>{{ totalhot }} Health</healing> over {{ hotduration }} seconds and grants <speed>{{ movespeedhaste*100 }}% Move Speed</speed> decaying over the same duration.{{ spellmodifierdescriptionappend }}",
+        "tooltip": "Soraka calls down a star, dealing <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(85/120/155/190/225 + (35% Ability Power)) magic damage</span> and <span class=\"text-purple-600 dark:text-purple-500\">Slowing</span> by 30% for 1.5 seconds. <br /><br />Hitting an enemy champion grants Soraka <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Rejuvenation</span>, which restores <span class=\"text-green-600 dark:text-green-400\">(60/75/90/105/120 + (30% Ability Power)) Health</span> over 2.5 seconds and grants <span class=\"text-cyan-600 dark:text-cyan-500\">20/22.5/25/27.5/30% Move Speed</span> decaying over the same duration.",
         "leveltip": {
           "label": [
             "Damage",
@@ -694,13 +694,15 @@
           "w": 48,
           "h": 48
         },
-        "resource": "{{ cost }} {{ abilityresourcename }}"
+        "resource": "{{ cost }} {{ abilityresourcename }}",
+        "summary": "A star falls from the sky at the target location dealing magic damage and slowing enemies. If an enemy champion is hit by Starcall, Soraka recovers Health.",
+        "tooltipSource": "communitydragon"
       },
       {
         "id": "SorakaW",
         "name": "Astral Infusion",
         "description": "Soraka sacrifices a portion of her own health to heal another friendly champion.",
-        "tooltip": "Soraka restores <healing>{{ totalheal }} Health</healing> to another allied champion.<br /><br />If Soraka is affected by <keywordMajor>Rejuvenation</keywordMajor>, the Health cost will be reduced by {{ percenthealthcostrefund*100 }}%, and the target will gain <keywordMajor>Rejuvenation</keywordMajor> for {{ spell.sorakaq:hotduration }} seconds.{{ spellmodifierdescriptionappend }}",
+        "tooltip": "Soraka restores <span class=\"text-green-600 dark:text-green-400\">(90/110/130/150/170 + (50% Ability Power)) Health</span> to another allied champion.<br /><br />If Soraka is affected by <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Rejuvenation</span>, the Health cost will be reduced by 80/85/90/95/100%, and the target will gain <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Rejuvenation</span> for seconds.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">This Ability cannot be used if Soraka is below (5% Health) Health .</span>",
         "leveltip": {
           "label": [
             "Healing",
@@ -839,13 +841,20 @@
           "w": 48,
           "h": 48
         },
-        "resource": "{{ percenthealthcost*100 }}% Max Health, {{ cost }} Mana"
+        "resource": "{{ percenthealthcost*100 }}% Max Health, {{ cost }} Mana",
+        "summary": "Soraka sacrifices a portion of her own health to heal another friendly champion.",
+        "tooltipSource": "communitydragon",
+        "tooltipDiagnostics": {
+          "unresolvedTokens": [
+            "Spell.SorakaQ:HoTDuration"
+          ]
+        }
       },
       {
         "id": "SorakaE",
         "name": "Equinox",
         "description": "Creates a zone at a location that silences all enemies inside. When the zone expires, all enemies still inside are rooted.",
-        "tooltip": "Soraka creates a starfield that deals <magicDamage>{{ totaldamage }} magic damage</magicDamage> to champions. The field lingers for {{ rootdelay }} seconds, <status>Silencing</status> enemies inside. When the zone disappears, champions inside the zone are <status>Rooted</status> for {{ rootduration }} second(s) and take <magicDamage>{{ totaldamage }} magic damage</magicDamage>.{{ spellmodifierdescriptionappend }}",
+        "tooltip": "Soraka creates a starfield that deals <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(70/95/120/145/170 + (40% Ability Power)) magic damage</span> to champions. The field lingers for 1.5 seconds, <span class=\"text-purple-600 dark:text-purple-500\">Silencing</span> enemies inside. When the zone disappears, champions inside the zone are <span class=\"text-purple-600 dark:text-purple-500\">Rooted</span> for 1/1.25/1.5/1.75/2 second(s) and take <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(70/95/120/145/170 + (40% Ability Power)) magic damage</span>.",
         "leveltip": {
           "label": [
             "Damage",
@@ -984,13 +993,15 @@
           "w": 48,
           "h": 48
         },
-        "resource": "{{ cost }} {{ abilityresourcename }}"
+        "resource": "{{ cost }} {{ abilityresourcename }}",
+        "summary": "Creates a zone at a location that silences all enemies inside. When the zone expires, all enemies still inside are rooted.",
+        "tooltipSource": "communitydragon"
       },
       {
         "id": "SorakaR",
         "name": "Wish",
         "description": "Soraka fills her allies with hope, instantly restoring health to herself and all allied champions.",
-        "tooltip": "Soraka calls upon divine powers, restoring <healing>{{ healingcalc }} Health</healing> to all allied champions, regardless of distance. Healing is increased to <healing>{{ ampedhealing }}</healing> on targets below 40% Health.{{ spellmodifierdescriptionappend }}",
+        "tooltip": "Soraka calls upon divine powers, restoring <span class=\"text-green-600 dark:text-green-400\">(150/250/350 + (50% Ability Power)) Health</span> to all allied champions, regardless of distance. Healing is increased to <span class=\"text-green-600 dark:text-green-400\">(150/250/350 + (50% Ability Power))</span> on targets below 40% Health.",
         "leveltip": {
           "label": [
             "Healing",
@@ -1099,7 +1110,9 @@
           "w": 48,
           "h": 48
         },
-        "resource": "{{ cost }} {{ abilityresourcename }}"
+        "resource": "{{ cost }} {{ abilityresourcename }}",
+        "summary": "Soraka fills her allies with hope, instantly restoring health to herself and all allied champions.",
+        "tooltipSource": "communitydragon"
       }
     ],
     "passive": {

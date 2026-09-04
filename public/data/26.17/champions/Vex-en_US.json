@@ -320,7 +320,7 @@
         "id": "VexQ",
         "name": "Mistral Bolt",
         "description": "Launch a damaging missile that accelerates mid-flight.",
-        "tooltip": "Vex launches a wave of mist that deals <magicDamage>{{ qdamagecalc }} magic damage</magicDamage>. After a delay, the wave becomes smaller and faster.<br /><br />Consumes <keywordMajor>Gloom</keywordMajor> on enemies hit.{{ spellmodifierdescriptionappend }}",
+        "tooltip": "Vex launches a wave of mist that deals <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(70/115/160/205/250 + (70% Ability Power)) magic damage</span>. After a delay, the wave becomes smaller and faster.<br /><br />Consumes <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Gloom</span> on enemies hit.",
         "leveltip": {
           "label": [
             "@AbilityResourceName@ Cost",
@@ -457,13 +457,15 @@
           "w": 48,
           "h": 48
         },
-        "resource": "{{ cost }} {{ abilityresourcename }}"
+        "resource": "{{ cost }} {{ abilityresourcename }}",
+        "summary": "Launch a damaging missile that accelerates mid-flight.",
+        "tooltipSource": "communitydragon"
       },
       {
         "id": "VexW",
         "name": "Personal Space",
         "description": "Gain a shield and damage nearby enemies.",
-        "tooltip": "Vex gains <shield>{{ shieldcalc }} Shield</shield> for {{ shieldduration }} seconds and emits a shockwave that deals <magicDamage>{{ wdamagecalc }} magic damage</magicDamage>.<br /><br />Consumes <keywordMajor>Gloom</keywordMajor> on enemies hit.{{ spellmodifierdescriptionappend }}",
+        "tooltip": "Vex gains <span class=\"text-blue-600 dark:text-blue-300\">(50/75/100/125/150 + (75% Ability Power)) Shield</span> for 2.5 seconds and emits a shockwave that deals <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(80/120/160/200/240 + (30% Ability Power)) magic damage</span>.<br /><br />Consumes <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Gloom</span> on enemies hit.",
         "leveltip": {
           "label": [
             "Damage",
@@ -600,13 +602,15 @@
           "w": 48,
           "h": 48
         },
-        "resource": "{{ cost }} {{ abilityresourcename }}"
+        "resource": "{{ cost }} {{ abilityresourcename }}",
+        "summary": "Gain a shield and damage nearby enemies.",
+        "tooltipSource": "communitydragon"
       },
       {
         "id": "VexE",
         "name": "Looming Darkness",
         "description": "Summon a damaging and slowing zone that applies Gloom to enemies.",
-        "tooltip": "Vex commands Shadow to fly to a location, increasing in size as it travels. Upon arriving, it deals <magicDamage>{{ edamagecalc }} magic damage</magicDamage> and <status>Slows</status> by {{ slowamount*100 }}% for {{ slowduration }} seconds.<br /><br />Killing an enemy with this ability reduces <keywordMajor>Doom'n Gloom's</keywordMajor> Cooldown by {{ gloomcdnonchamptooltip*100 }}%.<br /><br />Applies <keywordMajor>Gloom</keywordMajor> to enemies hit.{{ spellmodifierdescriptionappend }}",
+        "tooltip": "Vex commands Shadow to fly to a location, increasing in size as it travels. Upon arriving, it deals <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(50/70/90/110/130 + (40/45/50/55/60% Ability Power)) magic damage</span> and <span class=\"text-purple-600 dark:text-purple-500\">Slows</span> by 30/35/40/45/50% for 2 seconds.<br /><br />Killing an enemy with this ability reduces <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Doom'n Gloom's</span> Cooldown by 10%.<br /><br />Applies <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Gloom</span> to enemies hit.",
         "leveltip": {
           "label": [
             "Damage",
@@ -743,13 +747,15 @@
           "w": 48,
           "h": 48
         },
-        "resource": "{{ cost }} {{ abilityresourcename }}"
+        "resource": "{{ cost }} {{ abilityresourcename }}",
+        "summary": "Summon a damaging and slowing zone that applies Gloom to enemies.",
+        "tooltipSource": "communitydragon"
       },
       {
         "id": "VexR",
         "name": "Shadow Surge",
         "description": "Fire a missile that marks an enemy champion.  Recast to dash to them and deal damage.",
-        "tooltip": "Shadow excitedly surges forward, dealing <magicDamage>{{ spell.vexr:rdamagecalc }} magic damage</magicDamage> and marking the first enemy champion hit for 4 seconds.<br /><br /><recast>Recast</recast>: Dash to the marked champion, dealing <magicDamage>{{ spell.vexr:recastdamagecalc }} magic damage</magicDamage> on arrival.<br /><br />If the marked champion dies within {{ spell.vexr:takedownwindow }} seconds of taking damage from this Ability, its Cooldown is temporarily reset.{{ spellmodifierdescriptionappend }}",
+        "tooltip": "Shadow excitedly surges forward, dealing <span class=\"text-blue-600 dark:text-blue-500 font-semibold\"> magic damage</span> and marking the first enemy champion hit for 4 seconds.<br /><br /><span class=\"text-yellow-600 dark:text-yellow-300\">Recast</span>: Dash to the marked champion, dealing <span class=\"text-blue-600 dark:text-blue-500 font-semibold\"> magic damage</span> on arrival.<br /><br />If the marked champion dies within seconds of taking damage from this Ability, its Cooldown is temporarily reset.",
         "leveltip": {
           "label": [
             "Cooldown",
@@ -862,7 +868,16 @@
           "w": 48,
           "h": 48
         },
-        "resource": "{{ cost }} {{ abilityresourcename }}"
+        "resource": "{{ cost }} {{ abilityresourcename }}",
+        "summary": "Fire a missile that marks an enemy champion.  Recast to dash to them and deal damage.",
+        "tooltipSource": "communitydragon",
+        "tooltipDiagnostics": {
+          "unresolvedTokens": [
+            "spell.VexR:RDamageCalc",
+            "spell.VexR:RecastDamageCalc",
+            "spell.VexR:TakedownWindow"
+          ]
+        }
       }
     ],
     "passive": {

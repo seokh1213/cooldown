@@ -314,7 +314,7 @@
         "id": "RekSaiQ",
         "name": "Queen's Wrath / Prey Seeker",
         "description": "Rek'Sai's next 3 basic attacks deal bonus Physical Damage to nearby enemies.<br><br>While Burrowed, Rek'Sai launches a burst of void-charged earth that damages and reveals enemies hit.",
-        "tooltip": "<keywordMajor>Unburrowed:</keywordMajor> Rek'Sai's next 3 Attacks within {{ buffduration }} seconds gain <attackSpeed>{{ attackspeed*100 }}% Attack Speed</attackSpeed> and deal an additional <physicalDamage>{{ totaldamagetooltip }} physical damage</physicalDamage> to nearby enemies. Attacks refresh the duration of this Ability.{{ spellmodifierdescriptionappend }}",
+        "tooltip": "<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Unburrowed:</span> Rek'Sai's next 3 Attacks within 3 seconds gain <span>35% Attack Speed</span> and deal an additional <span class=\"text-red-600 dark:text-red-500 font-semibold\">(30/35/40/45/50% Attack Damage) physical damage</span> to nearby enemies. Attacks refresh the duration of this Ability.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">The bonus damage can critically strike the primary target.</span>",
         "leveltip": {
           "label": [
             "Queen's Wrath AD Ratio",
@@ -451,13 +451,15 @@
           "w": 48,
           "h": 48
         },
-        "resource": "No Cost"
+        "resource": "No Cost",
+        "summary": "Rek'Sai's next 3 basic attacks deal bonus Physical Damage to nearby enemies.<br><br>While Burrowed, Rek'Sai launches a burst of void-charged earth that damages and reveals enemies hit.",
+        "tooltipSource": "communitydragon"
       },
       {
         "id": "RekSaiW",
         "name": "Burrow / Un-burrow",
         "description": "Rek'Sai burrows into the ground, gaining new abilities and increased Move Speed. Her vision range is reduced and she cannot use basic attacks.<br><br>While Burrowed, Rek'Sai may cast Unburrow to knock up and damage nearby enemies.",
-        "tooltip": "<keywordMajor>Unburrowed:</keywordMajor> Rek'Sai burrows into the ground, gaining access to new Abilities but cannot Attack. She gains <speed>{{ burrowedmovespeed }} Move Speed</speed>, {{ visionradiusmod*-100 }}% reduced vision range, and nearby enemies that move and are otherwise unseen will have their positions revealed to Rek'sai and her allies.{{ spellmodifierdescriptionappend }}",
+        "tooltip": "<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Unburrowed:</span> Rek'Sai burrows into the ground, gaining access to new Abilities but cannot Attack. She gains <span class=\"text-cyan-600 dark:text-cyan-500\">5/10/15/20/25 Move Speed</span>, 65% reduced vision range, and nearby enemies that move and are otherwise unseen will have their positions revealed to Rek'sai and her allies.",
         "leveltip": {
           "label": [
             "Unburrow Damage",
@@ -594,13 +596,15 @@
           "w": 48,
           "h": 48
         },
-        "resource": "No Cost"
+        "resource": "No Cost",
+        "summary": "Rek'Sai burrows into the ground, gaining new abilities and increased Move Speed. Her vision range is reduced and she cannot use basic attacks.<br><br>While Burrowed, Rek'Sai may cast Unburrow to knock up and damage nearby enemies.",
+        "tooltipSource": "communitydragon"
       },
       {
         "id": "RekSaiE",
         "name": "Furious Bite / Tunnel",
         "description": "Rek'Sai bites her target, dealing physical damage, or bonus true damage if she has max Fury.<br><br>While Burrowed, Rek'Sai creates a re-usable, long lasting tunnel. Enemies can destroy it by standing on top of either entrance.",
-        "tooltip": "<keywordMajor>Unburrowed:</keywordMajor> Rek'Sai bites a target, dealing <physicalDamage>{{ spell.reksaie:basedamagecalculation }} physical damage</physicalDamage>. At max <keywordMajor>Fury</keywordMajor>, the bite deals <trueDamage>{{ spell.reksaie:empowereddamagecalculation }} true damage</trueDamage> instead.{{ spellmodifierdescriptionappend }}",
+        "tooltip": "<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Unburrowed:</span> Rek'Sai bites a target, dealing <span class=\"text-red-600 dark:text-red-500 font-semibold\"> physical damage</span>. At max <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Fury</span>, the bite deals <span class=\"text-yellow-600 dark:text-yellow-500 font-semibold\"> true damage</span> instead.",
         "leveltip": {
           "label": [
             "Base Damage",
@@ -739,13 +743,21 @@
           "w": 48,
           "h": 48
         },
-        "resource": "No Cost"
+        "resource": "No Cost",
+        "summary": "Rek'Sai bites her target, dealing physical damage, or bonus true damage if she has max Fury.<br><br>While Burrowed, Rek'Sai creates a re-usable, long lasting tunnel. Enemies can destroy it by standing on top of either entrance.",
+        "tooltipSource": "communitydragon",
+        "tooltipDiagnostics": {
+          "unresolvedTokens": [
+            "spell.RekSaiE:BaseDamageCalculation",
+            "spell.RekSaiE:EmpoweredDamageCalculation"
+          ]
+        }
       },
       {
         "id": "RekSaiR",
         "name": "Void Rush",
         "description": "Rek'Sai passively marks targets by damaging them. She can activate this ability to become briefly untargetable and lunge at a marked target for heavy damage based on their maximum health.",
-        "tooltip": "Rek'Sai targets an enemy damaged by her in the last {{ preymarkduration }} seconds and then dives underground, becoming Untargetable. Moments later, she leaps unstoppably at her target, dealing <physicalDamage>{{ rbasedamagecalc }} plus {{ percenthealthdamage }}% max Health physical damage</physicalDamage> and resets the cooldown of <keywordMajor>Burrow / Un-burrow</keywordMajor>.{{ spellmodifierdescriptionappend }}",
+        "tooltip": "Rek'Sai targets an enemy damaged by her in the last 5 seconds and then dives underground, becoming Untargetable. Moments later, she leaps unstoppably at her target, dealing <span class=\"text-red-600 dark:text-red-500 font-semibold\">(150/250/350 + (100% bonus Attack Damage)) plus 15/20/25% max Health physical damage</span> and resets the cooldown of <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Burrow / Un-burrow</span>.",
         "leveltip": {
           "label": [
             "Damage",
@@ -856,7 +868,9 @@
           "w": 48,
           "h": 48
         },
-        "resource": "No Cost"
+        "resource": "No Cost",
+        "summary": "Rek'Sai passively marks targets by damaging them. She can activate this ability to become briefly untargetable and lunge at a marked target for heavy damage based on their maximum health.",
+        "tooltipSource": "communitydragon"
       }
     ],
     "passive": {

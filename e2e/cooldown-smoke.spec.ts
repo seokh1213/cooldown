@@ -22,6 +22,8 @@ test("renders precomputed passive and Q values", async ({ page }) => {
   const qTooltip = page.getByRole("tooltip");
   await expect(qTooltip).toContainText("135/145/155/165/175");
   await expect(qTooltip).toContainText("20/45/70/95/120");
+  await expect(qTooltip).toContainText("방어력이 10/15/20/25/30%");
+  await expect(qTooltip).toContainText("피해를 입힐 때 효과가 발동합니다");
 });
 
 test("serves a lazy route directly under the Pages base path", async ({ page }) => {

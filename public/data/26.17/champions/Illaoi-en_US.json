@@ -385,7 +385,7 @@
         "id": "IllaoiQ",
         "name": "Tentacle Smash",
         "description": "Increases the damage dealt by Tentacles. When activated, Illaoi smashes down a Tentacle that deals physical damage.",
-        "tooltip": "<passive>Passive:</passive> <keywordMajor>Slam</keywordMajor> damage is increased by <physicalDamage>{{ spell.illaoiq:tentacledamageamp*100 }}%</physicalDamage> (currently <physicalDamage>{{ spell.illaoiq:tentacledamagetotal }} physical damage</physicalDamage>).<br /><br /><active>Active:</active> Illaoi swings her idol, causing a Tentacle to <keywordMajor>Slam</keywordMajor> forward.{{ spellmodifierdescriptionappend }}",
+        "tooltip": "<span>Passive:</span> <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Slam</span> damage is increased by <span class=\"text-red-600 dark:text-red-500 font-semibold\"></span> (currently <span class=\"text-red-600 dark:text-red-500 font-semibold\"> physical damage</span>).<br /><br /><span>Active:</span> Illaoi swings her idol, causing a Tentacle to <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Slam</span> forward.",
         "leveltip": {
           "label": [
             "Slam Bonus",
@@ -522,13 +522,21 @@
           "w": 48,
           "h": 48
         },
-        "resource": "{{ cost }} {{ abilityresourcename }}"
+        "resource": "{{ cost }} {{ abilityresourcename }}",
+        "summary": "Increases the damage dealt by Tentacles. When activated, Illaoi smashes down a Tentacle that deals physical damage.",
+        "tooltipSource": "communitydragon",
+        "tooltipDiagnostics": {
+          "unresolvedTokens": [
+            "spell.IllaoiQ:TentacleDamageAmp*100",
+            "spell.IllaoiQ:TentacleDamageTotal"
+          ]
+        }
       },
       {
         "id": "IllaoiW",
         "name": "Harsh Lesson",
         "description": "Illaoi leaps to her target, dealing physical damage and causing nearby Tentacles to also swing at the target.",
-        "tooltip": "Illaoi's next Attack causes her to leap at the target, dealing an additional <physicalDamage>{{ healthpercenttotal }} max Health physical damage</physicalDamage>. When she strikes, nearby Tentacles will <keywordMajor>Slam</keywordMajor> at the target.{{ spellmodifierdescriptionappend }}",
+        "tooltip": "Illaoi's next Attack causes her to leap at the target, dealing an additional <span class=\"text-red-600 dark:text-red-500 font-semibold\">(3/3.5/4/4.5/5% + (0.035% Attack Damage)) max Health physical damage</span>. When she strikes, nearby Tentacles will <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Slam</span> at the target.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">The percent Health damage does a minimum of 20/30/40/50/60. Against jungle monsters the damage is capped at 300.<br />This Ability triggers spell effects upon dealing damage.</span>",
         "leveltip": {
           "label": [
             "Maximum Health Damage",
@@ -663,13 +671,15 @@
           "w": 48,
           "h": 48
         },
-        "resource": "{{ cost }} {{ abilityresourcename }}"
+        "resource": "{{ cost }} {{ abilityresourcename }}",
+        "summary": "Illaoi leaps to her target, dealing physical damage and causing nearby Tentacles to also swing at the target.",
+        "tooltipSource": "communitydragon"
       },
       {
         "id": "IllaoiE",
         "name": "Test of Spirit",
         "description": "Illaoi rips the spirit from a foe's body, forcing it to stand before her. Spirits echo a percentage of the damage they take to the original target. If killed, or if the target gets too far from the spirit, the target will become a <font color='#669900'>Vessel</font> and begin spawning Tentacles.",
-        "tooltip": "Illaoi pulls the spirit from an enemy champion for {{ spiritduration }} seconds. The spirit can be damaged like a champion, with {{ echopercent }} of that damage echoing to its owner.<br /><br />If the spirit dies or the target leaves its range, the target becomes marked for {{ vesselduration }} seconds and is <status>Slowed</status> by {{ slowamount*100 }}% for {{ slowduration }} seconds. Marked enemies spawn Tentacles if possible.<br /><br />Tentacles will automatically <keywordMajor>Slam</keywordMajor> at spirits and marked enemies once every {{ timebetweenvesseltentacleslams }} seconds.{{ spellmodifierdescriptionappend }}",
+        "tooltip": "Illaoi pulls the spirit from an enemy champion for 7 seconds. The spirit can be damaged like a champion, with (25/30/35/40/45% + (0.08% Attack Damage)) of that damage echoing to its owner.<br /><br />If the spirit dies or the target leaves its range, the target becomes marked for 4 seconds and is <span class=\"text-purple-600 dark:text-purple-500\">Slowed</span> by 80% for 1.5 seconds. Marked enemies spawn Tentacles if possible.<br /><br />Tentacles will automatically <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Slam</span> at spirits and marked enemies once every 3 seconds.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">Marked enemies are revealed for a short time.</span>",
         "leveltip": {
           "label": [
             "Damage Echo",
@@ -806,13 +816,15 @@
           "w": 48,
           "h": 48
         },
-        "resource": "{{ cost }} {{ abilityresourcename }}"
+        "resource": "{{ cost }} {{ abilityresourcename }}",
+        "summary": "Illaoi rips the spirit from a foe's body, forcing it to stand before her. Spirits echo a percentage of the damage they take to the original target. If killed, or if the target gets too far from the spirit, the target will become a <font color='#669900'>Vessel</font> and begin spawning Tentacles.",
+        "tooltipSource": "communitydragon"
       },
       {
         "id": "IllaoiR",
         "name": "Leap of Faith",
         "description": "Illaoi smashes her idol into the ground, dealing physical damage to nearby enemies. A Tentacle spawns for each enemy champion hit.",
-        "tooltip": "Illaoi smashes her idol into the ground, dealing <physicalDamage>{{ damagecalc }} physical damage</physicalDamage> to nearby enemies and spawning a Tentacle for each enemy champion hit.<br /><br />For the next {{ duration }} seconds, Tentacles are untargetable and <keywordMajor>Slam</keywordMajor> 50% faster, and <spellName>Harsh Lesson</spellName> has a {{ spell.illaoiw:cooldownduringr }} second cooldown.{{ spellmodifierdescriptionappend }}",
+        "tooltip": "Illaoi smashes her idol into the ground, dealing <span class=\"text-red-600 dark:text-red-500 font-semibold\">(150/250/350 + (50% bonus Attack Damage)) physical damage</span> to nearby enemies and spawning a Tentacle for each enemy champion hit.<br /><br />For the next 8 seconds, Tentacles are untargetable and <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Slam</span> 50% faster, and <span>Harsh Lesson</span> has a second cooldown.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">Spirits from <span>Test Of Spirit</span> also generate a Tentacle if hit by this ability.</span>",
         "leveltip": {
           "label": [
             "Damage",
@@ -921,7 +933,14 @@
           "w": 48,
           "h": 48
         },
-        "resource": "{{ cost }} {{ abilityresourcename }}"
+        "resource": "{{ cost }} {{ abilityresourcename }}",
+        "summary": "Illaoi smashes her idol into the ground, dealing physical damage to nearby enemies. A Tentacle spawns for each enemy champion hit.",
+        "tooltipSource": "communitydragon",
+        "tooltipDiagnostics": {
+          "unresolvedTokens": [
+            "spell.IllaoiW:CooldownDuringR"
+          ]
+        }
       }
     ],
     "passive": {

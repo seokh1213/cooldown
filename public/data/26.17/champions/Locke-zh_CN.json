@@ -128,7 +128,7 @@
         "id": "LockeQ",
         "name": "伏魔三钉",
         "description": "洛克依次击出三颗驱魔大钉，对命中的敌人们造成伤害，并附上一层印记。洛克的攻击可以引爆印记，造成额外伤害。",
-        "tooltip": "洛克依次击出三颗<keywordMajor>驱魔大钉</keywordMajor>，对命中的敌人造成<magicDamage>{{ missiledamage }}魔法伤害</magicDamage>，并附上一层印记。大钉会造成持续{{ slowduration1 }}/{{ slowduration2 }}/{{ slowduration3 }}秒的{{ slowamount1*100 }}/{{ slowamount2*100 }}/{{ slowamount3*100 }}%的<status>减速</status>效果，随命中数量叠加。<br /><br />洛克的攻击会引爆敌人身上的<keywordMajor>驱魔大钉</keywordMajor>印记，每层造成<magicDamage>{{ naildamage }}魔法伤害</magicDamage>，并在2层和3层印记时分别造成{{ twomarkbonuspercent }}/{{ threemarkbonuspercent }}%的额外伤害。{{ spellmodifierdescriptionappend }}",
+        "tooltip": "洛克依次击出三颗<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">驱魔大钉</span>，对命中的敌人造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(40/48/56/64/72 + (20% 法术强度))魔法伤害</span>，并附上一层印记。大钉会造成持续1/1/2秒的25/25/60%的<span class=\"text-purple-600 dark:text-purple-500\">减速</span>效果，随命中数量叠加。<br /><br />洛克的攻击会引爆敌人身上的<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">驱魔大钉</span>印记，每层造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(18/26/34/42/50 + (25/27.5/30/32.5/35% 法术强度))魔法伤害</span>，并在2层和3层印记时分别造成20/40%的额外伤害。<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">这个效果结束时，每一枚未使用的大钉都会返还此技能(20% ~ 35%)冷却时间并回复法力值。</span>",
         "leveltip": {
           "label": [
             "伤害",
@@ -265,13 +265,15 @@
           "w": 48,
           "h": 48
         },
-        "resource": "{{ cost }} {{ abilityresourcename }}"
+        "resource": "{{ cost }} {{ abilityresourcename }}",
+        "summary": "洛克依次击出三颗驱魔大钉，对命中的敌人们造成伤害，并附上一层印记。洛克的攻击可以引爆印记，造成额外伤害。",
+        "tooltipSource": "communitydragon"
       },
       {
         "id": "LockeW",
         "name": "灵焰仪式",
         "description": "洛克点燃自己的灵魂，从而获得攻击速度和移动速度，但会不断对自身造成伤害。技能结束时，洛克将回复一部分在技能持续期间受到的伤害。",
-        "tooltip": "洛克点燃自己的灵魂，获得<attackSpeed>{{ attackspeed }}攻击速度</attackSpeed>和在{{ decaytimehelper }}秒里持续衰减的<speed>{{ movespeed }}移动速度</speed>。<br />在接下来的{{ baseduration }}秒内，洛克会受到每秒<trueDamage>{{ healthcost*100 }}%当前生命值的真实伤害</trueDamage>，但在技能结束时，他会<healing>治疗自身</healing>相当于之前<healing>所受的{{ damagerestoreamount }}伤害</healing>，以及额外<healing>{{ additionalheal }}生命值</healing>(基于他的已损失生命值和技能持续时间，至多回复至<healing>{{ maxhealingthreshold }}剩余生命值</healing>）。<br /><br />可以<recast>再次施放</recast>以提前结束该技能。{{ spellmodifierdescriptionappend }}",
+        "tooltip": "洛克点燃自己的灵魂，获得<span>(40% ~ 70%)攻击速度</span>和在2秒里持续衰减的<span class=\"text-cyan-600 dark:text-cyan-500\">(40% + (0.02% 法术强度))移动速度</span>。<br />在接下来的6秒内，洛克会受到每秒<span class=\"text-yellow-600 dark:text-yellow-500 font-semibold\">2%当前生命值的真实伤害</span>，但在技能结束时，他会<span class=\"text-green-600 dark:text-green-400\">治疗自身</span>相当于之前<span class=\"text-green-600 dark:text-green-400\">所受的(40/60/80/100/120 + (100% 法术强度))伤害</span>，以及额外<span class=\"text-green-600 dark:text-green-400\">(20% 法术强度)生命值</span>(基于他的已损失生命值和技能持续时间，至多回复至<span class=\"text-green-600 dark:text-green-400\">(60% 法术强度)剩余生命值</span>）。<br /><br />可以<span class=\"text-yellow-600 dark:text-yellow-300\">再次施放</span>以提前结束该技能。<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">这个技能可以在被<span class=\"text-purple-600 dark:text-purple-500\">限制</span>时施放。</span><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">洛克在此期间处于<span>幽灵</span>状态。【幽灵】状态的单位能够无视其它单位的碰撞体积。</span>",
         "leveltip": {
           "label": [
             "冷却时间",
@@ -408,13 +410,15 @@
           "w": 48,
           "h": 48
         },
-        "resource": "{{ cost }}法力值和每秒{{ healthcost*100 }}%当前生命值"
+        "resource": "{{ cost }}法力值和每秒{{ healthcost*100 }}%当前生命值",
+        "summary": "洛克点燃自己的灵魂，从而获得攻击速度和移动速度，但会不断对自身造成伤害。技能结束时，洛克将回复一部分在技能持续期间受到的伤害。",
+        "tooltipSource": "communitydragon"
       },
       {
         "id": "LockeE",
         "name": "灰猎无影",
         "description": "洛克传送至目标位置，并在下一次攻击时朝目标冲刺，对途经的敌人们造成伤害。",
-        "tooltip": "洛克传送至一个位置，在抵达时对他附近的敌人们造成<magicDamage>{{ onhitdamage }}魔法伤害</magicDamage>。<br /><br />洛克的下一次攻击将朝目标冲刺，对他途经的所有敌人造成<magicDamage>{{ dashdamage }}魔法伤害</magicDamage>。每次命中均可消耗<keywordMajor>伏魔三钉</keywordMajor>的印记。<br /><br />如果洛克参与了击杀，该技能将立刻冷却完毕。{{ spellmodifierdescriptionappend }}",
+        "tooltip": "洛克传送至一个位置，在抵达时对他附近的敌人们造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(40/50/60/70/80 + (40% 法术强度))魔法伤害</span>。<br /><br />洛克的下一次攻击将朝目标冲刺，对他途经的所有敌人造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(40/60/80/100/120 + (40% 法术强度))魔法伤害</span>。每次命中均可消耗<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">伏魔三钉</span>的印记。<br /><br />如果洛克参与了击杀，该技能将立刻冷却完毕。",
         "leveltip": {
           "label": [
             "@AbilityResourceName@消耗",
@@ -551,13 +555,15 @@
           "w": 48,
           "h": 48
         },
-        "resource": "{{ cost }} {{ abilityresourcename }}"
+        "resource": "{{ cost }} {{ abilityresourcename }}",
+        "summary": "洛克传送至目标位置，并在下一次攻击时朝目标冲刺，对途经的敌人们造成伤害。",
+        "tooltipSource": "communitydragon"
       },
       {
         "id": "LockeR",
         "name": "万魔狱",
         "description": "洛克扔出封印法器来对命中的敌人们造成伤害并且有可能将其处决。成功处决敌人会为洛克提供增益效果。",
-        "tooltip": "洛克朝目标位置扔出封印法器，对落点范围内的敌人造成<magicDamage>{{ damage }}魔法伤害</magicDamage>和在{{ slowduration }}秒内持续衰减的{{ slowamount*100 }}%的<status>减速</status>。这个法器会将命中的敌人们标记{{ duration }}秒，从而在被标记的敌方英雄们低于<spellName>{{ executetooltipcalc }}</spellName>生命值时立刻将其处决并封印，并重置其他受影响的敌方英雄身上的标记持续时间。<br /><br />时长结束后，若法器封印了至少一个英雄，就会着陆在地面上。洛克可以主动拾取该法器，基于每个被封印的英雄，获得{{ executethresholdperstack*100 }}%的永久处决阈值提升，并返还他的{{ cooldownreduction }}%的总冷却时间。{{ spellmodifierdescriptionappend }}",
+        "tooltip": "洛克朝目标位置扔出封印法器，对落点范围内的敌人造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(150/225/300 + (60% 法术强度))魔法伤害</span>和在2秒内持续衰减的99%的<span class=\"text-purple-600 dark:text-purple-500\">减速</span>。这个法器会将命中的敌人们标记5秒，从而在被标记的敌方英雄们低于<span></span>生命值时立刻将其处决并封印，并重置其他受影响的敌方英雄身上的标记持续时间。<br /><br />时长结束后，若法器封印了至少一个英雄，就会着陆在地面上。洛克可以主动拾取该法器，基于每个被封印的英雄，获得0.5%的永久处决阈值提升，并返还他的20%的总冷却时间。<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">该法器将在地面上存留，存留时长相当于这个技能在封印发生时的当前冷却时间。</span>",
         "leveltip": {
           "label": [
             "冷却时间",
@@ -668,7 +674,14 @@
           "w": 48,
           "h": 48
         },
-        "resource": "{{ cost }} {{ abilityresourcename }}"
+        "resource": "{{ cost }} {{ abilityresourcename }}",
+        "summary": "洛克扔出封印法器来对命中的敌人们造成伤害并且有可能将其处决。成功处决敌人会为洛克提供增益效果。",
+        "tooltipSource": "communitydragon",
+        "tooltipDiagnostics": {
+          "unresolvedTokens": [
+            "ExecuteTooltipCalc"
+          ]
+        }
       }
     ],
     "passive": {

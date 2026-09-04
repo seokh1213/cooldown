@@ -450,7 +450,7 @@
         "id": "SeismicShard",
         "name": "Seismic Shard",
         "description": "Malphite sends a shard of the earth through the ground at his foe, dealing damage upon impact and stealing Move Speed for 3 seconds.",
-        "tooltip": "Malphite launches a shard of earth at an enemy, dealing <magicDamage>{{ qdamagecalc }} magic damage</magicDamage> and <status>Slowing</status> them by {{ speedsteal }}% for {{ slowduration }} seconds. Malphite also steals the amount <status>Slowed</status>, gaining it as <speed>Move Speed</speed> for {{ slowduration }} seconds.{{ spellmodifierdescriptionappend }}",
+        "tooltip": "Malphite launches a shard of earth at an enemy, dealing <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(70/120/170/220/270 + (60% Ability Power)) magic damage</span> and <span class=\"text-purple-600 dark:text-purple-500\">Slowing</span> them by 20/25/30/35/40% for 3 seconds. Malphite also steals the amount <span class=\"text-purple-600 dark:text-purple-500\">Slowed</span>, gaining it as <span class=\"text-cyan-600 dark:text-cyan-500\">Move Speed</span> for 3 seconds.",
         "leveltip": {
           "label": [
             "@AbilityResourceName@ Cost",
@@ -587,13 +587,15 @@
           "w": 48,
           "h": 48
         },
-        "resource": "{{ cost }} {{ abilityresourcename }}"
+        "resource": "{{ cost }} {{ abilityresourcename }}",
+        "summary": "Malphite sends a shard of the earth through the ground at his foe, dealing damage upon impact and stealing Move Speed for 3 seconds.",
+        "tooltipSource": "communitydragon"
       },
       {
         "id": "Obduracy",
         "name": "Thunderclap",
         "description": "Malphite attacks with such force that it creates a sonic boom. For the next few seconds, his attacks create aftershocks in front of him.",
-        "tooltip": "<spellPassive>Passive: </spellPassive>Malphite gains <scaleArmor>{{ bonusarmorpassive*100 }}% Armor (%i:scaleArmor%{{ f1 }})</scaleArmor>. This effect is increased to <scaleArmor>{{ bonusarmorpassive*300 }}% (%i:scaleArmor%{{ f2 }})</scaleArmor> while <spellName>Granite Shield</spellName> is active.<br /><br /><spellPassive>Active: </spellPassive>Malphite's next Attack deals an additional <physicalDamage>{{ totalbonusdamage }} physical damage</physicalDamage> and creates an aftershock which deals <physicalDamage>{{ thunderclapsplash }} physical damage</physicalDamage> %i:OnHit% <OnHit>On-Hit</OnHit> in their direction. His Attacks continue to create aftershocks %i:OnHit% <OnHit>On-Hit</OnHit> for the next {{ thunderclapbuffduration }} seconds.{{ spellmodifierdescriptionappend }}",
+        "tooltip": "<span class=\"text-gray-600 dark:text-gray-500 italic\">Passive: </span>Malphite gains <span class=\"text-orange-600 dark:text-orange-400\">10/15/20/25/30% Armor ()</span>. This effect is increased to <span class=\"text-orange-600 dark:text-orange-400\">30/45/60/75/90% ()</span> while <span>Granite Shield</span> is active.<br /><br /><span class=\"text-gray-600 dark:text-gray-500 italic\">Active: </span>Malphite's next Attack deals an additional <span class=\"text-red-600 dark:text-red-500 font-semibold\">(30/40/50/60/70 + (20% Ability Power) + (15% Armor)) physical damage</span> and creates an aftershock which deals <span class=\"text-red-600 dark:text-red-500 font-semibold\">(15/25/35/45/55 + (30% Ability Power) + (15% Armor)) physical damage</span> <span>On-Hit</span> in their direction. His Attacks continue to create aftershocks <span>On-Hit</span> for the next 5 seconds.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">Deals 180% damage to jungle monsters.</span>",
         "leveltip": {
           "label": [
             "@AbilityResourceName@ Cost",
@@ -734,13 +736,21 @@
           "w": 48,
           "h": 48
         },
-        "resource": "{{ cost }} {{ abilityresourcename }}"
+        "resource": "{{ cost }} {{ abilityresourcename }}",
+        "summary": "Malphite attacks with such force that it creates a sonic boom. For the next few seconds, his attacks create aftershocks in front of him.",
+        "tooltipSource": "communitydragon",
+        "tooltipDiagnostics": {
+          "unresolvedTokens": [
+            "f1",
+            "f2"
+          ]
+        }
       },
       {
         "id": "Landslide",
         "name": "Ground Slam",
         "description": "Malphite slams the ground, sending out a shockwave that deals magic damage based on his Armor and reduces the Attack Speed of enemies for a short duration.",
-        "tooltip": "Malphite slams the ground, dealing <magicDamage>{{ edamagecalc }} magic damage</magicDamage> and reducing <attackSpeed>Attack Speed by {{ asreduction }}%</attackSpeed> for {{ duration }} seconds.{{ spellmodifierdescriptionappend }}",
+        "tooltip": "Malphite slams the ground, dealing <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(60/95/130/165/200 + (40% Armor) + (60% Ability Power)) magic damage</span> and reducing <span>Attack Speed by 30/35/40/45/50%</span> for 3 seconds.",
         "leveltip": {
           "label": [
             "Damage",
@@ -877,13 +887,15 @@
           "w": 48,
           "h": 48
         },
-        "resource": "{{ cost }} {{ abilityresourcename }}"
+        "resource": "{{ cost }} {{ abilityresourcename }}",
+        "summary": "Malphite slams the ground, sending out a shockwave that deals magic damage based on his Armor and reduces the Attack Speed of enemies for a short duration.",
+        "tooltipSource": "communitydragon"
       },
       {
         "id": "UFSlash",
         "name": "Unstoppable Force",
         "description": "Malphite launches himself to a location at high speed, damaging enemies and knocking them into the air.",
-        "tooltip": "Malphite charges with the force of a landslide, dashing Unstoppably. At the end of the dash, Malphite <status>Knocks Up</status> for {{ knockupduration }} seconds and deals <magicDamage>{{ totaldamage }} magic damage</magicDamage>.{{ spellmodifierdescriptionappend }}",
+        "tooltip": "Malphite charges with the force of a landslide, dashing Unstoppably. At the end of the dash, Malphite <span class=\"text-purple-600 dark:text-purple-500\">Knocks Up</span> for 1.5 seconds and deals <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(200/300/400 + (90% Ability Power)) magic damage</span>.",
         "leveltip": {
           "label": [
             "Cooldown",
@@ -992,7 +1004,9 @@
           "w": 48,
           "h": 48
         },
-        "resource": "{{ cost }} {{ abilityresourcename }}"
+        "resource": "{{ cost }} {{ abilityresourcename }}",
+        "summary": "Malphite launches himself to a location at high speed, damaging enemies and knocking them into the air.",
+        "tooltipSource": "communitydragon"
       }
     ],
     "passive": {

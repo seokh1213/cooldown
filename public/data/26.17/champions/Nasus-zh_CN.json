@@ -495,7 +495,7 @@
         "id": "NasusQ",
         "name": "汲魂痛击",
         "description": "内瑟斯对敌人施放汲魂痛击造成伤害，如果敌人死于汲魂痛击，则永久增加下次汲魂痛击的伤害。",
-        "tooltip": "内瑟斯的下次攻击造成<physicalDamage>{{ totaldamage }}物理伤害</physicalDamage>。用这个攻击击杀一名敌人后，会使其伤害永久提升{{ basicstacks }}，击杀英雄、大型小兵和大型野怪的伤害提升为{{ bigstacks }}。{{ spellmodifierdescriptionappend }}",
+        "tooltip": "内瑟斯的下次攻击造成<span class=\"text-red-600 dark:text-red-500 font-semibold\">(40/60/80/100/120 + (100% 攻击力))物理伤害</span>。用这个攻击击杀一名敌人后，会使其伤害永久提升4，击杀英雄、大型小兵和大型野怪的伤害提升为10。<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">这个技能会在造成伤害时触发技能特效。<br />这个技能可以暴击，造成<span class=\"text-red-600 dark:text-red-500 font-semibold\">物理伤害</span>。</span>",
         "leveltip": {
           "label": [
             "基础伤害",
@@ -630,13 +630,20 @@
           "w": 48,
           "h": 48
         },
-        "resource": "{{ cost }} {{ abilityresourcename }}"
+        "resource": "{{ cost }} {{ abilityresourcename }}",
+        "summary": "内瑟斯对敌人施放汲魂痛击造成伤害，如果敌人死于汲魂痛击，则永久增加下次汲魂痛击的伤害。",
+        "tooltipSource": "communitydragon",
+        "tooltipDiagnostics": {
+          "unresolvedTokens": [
+            "CritDamage"
+          ]
+        }
       },
       {
         "id": "NasusW",
         "name": "枯萎",
         "description": "内瑟斯使一名敌方英雄衰老，持续减少其移动速度和攻击速度。",
-        "tooltip": "内瑟斯使一名英雄衰老，使其<status>减速</status>{{ slowbase }}%，并在{{ duration }}秒内持续提升至{{ maxslowtooltiponly }}%。目标的<attackSpeed>攻击速度</attackSpeed>也会降低，相当于该<status>减速</status>幅度的{{ attackspeedslowmult*100 }}%。{{ spellmodifierdescriptionappend }}",
+        "tooltip": "内瑟斯使一名英雄衰老，使其<span class=\"text-purple-600 dark:text-purple-500\">减速</span>35%，并在5秒内持续提升至47/59/71/83/95%。目标的<span>攻击速度</span>也会降低，相当于该<span class=\"text-purple-600 dark:text-purple-500\">减速</span>幅度的75%。",
         "leveltip": {
           "label": [
             "最大减速效果",
@@ -771,13 +778,15 @@
           "w": 48,
           "h": 48
         },
-        "resource": "{{ cost }} {{ abilityresourcename }}"
+        "resource": "{{ cost }} {{ abilityresourcename }}",
+        "summary": "内瑟斯使一名敌方英雄衰老，持续减少其移动速度和攻击速度。",
+        "tooltipSource": "communitydragon"
       },
       {
         "id": "NasusE",
         "name": "灵魂烈焰",
         "description": "内瑟斯在目标区域施放灵魂烈焰，伤害并削弱敌人。",
-        "tooltip": "内瑟斯引发一团灵魂烈焰，造成<magicDamage>{{ initialdamage }}魔法伤害</magicDamage>。区域内的敌人们会失去<scaleArmor>{{ armorshredpercent*-100 }}%护甲</scaleArmor>并在{{ duration }}秒里持续受到共<magicDamage>{{ totaldotdamage }}魔法伤害</magicDamage>。{{ spellmodifierdescriptionappend }}",
+        "tooltip": "内瑟斯引发一团灵魂烈焰，造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(50/80/110/140/170 + (60% 法术强度))魔法伤害</span>。区域内的敌人们会失去<span class=\"text-orange-600 dark:text-orange-400\">30/35/40/45/50%护甲</span>并在5秒里持续受到共<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(50/80/110/140/170 + (60% 法术强度))魔法伤害</span>。",
         "leveltip": {
           "label": [
             "初始伤害",
@@ -916,13 +925,15 @@
           "w": 48,
           "h": 48
         },
-        "resource": "{{ cost }} {{ abilityresourcename }}"
+        "resource": "{{ cost }} {{ abilityresourcename }}",
+        "summary": "内瑟斯在目标区域施放灵魂烈焰，伤害并削弱敌人。",
+        "tooltipSource": "communitydragon"
       },
       {
         "id": "NasusR",
         "name": "死神降临",
         "description": "内瑟斯释放一个具有强大魔力的沙漠风暴来侵袭身边的敌人。当风暴肆虐期间，他会获得额外生命值、额外攻击距离，伤害附近的敌人，汲魂痛击会拥有较短冷却时间，并获得额外的护甲和魔法抗性。",
-        "tooltip": "沙漠风暴赐予内瑟斯力量，使他在15秒的持续时间内获得<healing>{{ bonushealth }}最大生命值</healing>，以及{{ initialresistgain }}<scaleArmor>护甲</scaleArmor>与<scaleMR>魔法抗性</scaleMR>。<br /><br />在风暴肆虐时，他每秒对周围目标造成<magicDamage>{{ damagecalc }}最大生命值的魔法伤害</magicDamage>，并且<spellName>汲魂痛击</spellName>的冷却时间缩短{{ qcdr*100 }}%。{{ spellmodifierdescriptionappend }}",
+        "tooltip": "沙漠风暴赐予内瑟斯力量，使他在15秒的持续时间内获得<span class=\"text-green-600 dark:text-green-400\">300/450/600最大生命值</span>，以及40/55/70<span class=\"text-orange-600 dark:text-orange-400\">护甲</span>与<span>魔法抗性</span>。<br /><br />在风暴肆虐时，他每秒对周围目标造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(3/4/5% + (0.01% 法术强度))最大生命值的魔法伤害</span>，并且<span>汲魂痛击</span>的冷却时间缩短50%。<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">风暴每秒伤害的最大值为240。</span>",
         "leveltip": {
           "label": [
             "额外生命值",
@@ -1035,7 +1046,9 @@
           "w": 48,
           "h": 48
         },
-        "resource": "{{ cost }} {{ abilityresourcename }}"
+        "resource": "{{ cost }} {{ abilityresourcename }}",
+        "summary": "内瑟斯释放一个具有强大魔力的沙漠风暴来侵袭身边的敌人。当风暴肆虐期间，他会获得额外生命值、额外攻击距离，伤害附近的敌人，汲魂痛击会拥有较短冷却时间，并获得额外的护甲和魔法抗性。",
+        "tooltipSource": "communitydragon"
       }
     ],
     "passive": {
