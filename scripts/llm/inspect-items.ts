@@ -58,7 +58,7 @@ function main() {
 
   const championQuery = get("--champion");
   if (championQuery) {
-    const builder = createChampionCardBuilder(data.champions);
+    const builder = createChampionCardBuilder(data.champions, data.riotMeta);
     const found = builder.find(championQuery);
     if (!found) throw new Error(`챔피언 부재: ${championQuery}`);
     const card = builder.build(found.id);
@@ -68,6 +68,7 @@ function main() {
       scaling: card.scalingProfile.primary,
       rangeType: card.rangeType,
       hasPhysicalSpell: card.spells.some((s) => s.damageTypes.includes("물리")),
+      riot: card.riot,
     });
     console.log(
       `${card.name} — 역할 ${card.roleTags.join("/") || "미상"}, 계수 ${card.scalingProfile.primary}, ${card.rangeType}`,

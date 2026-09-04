@@ -65,10 +65,34 @@ export interface ChampionRecord {
   abilities: Partial<Record<ChampionSpellSlot, ChampionAbility>>;
 }
 
+/** 라이엇 공식 챔피언 분류 (scripts/llm/fetch-riot-meta.ts 로 수집) */
+export interface RiotChampionMeta {
+  id: string;
+  key: number;
+  name: string;
+  roles: string[];
+  tagPrimary?: string;
+  tagSecondary?: string;
+  /** kPhysical | kMagic | kMixed | kTrue */
+  damageType?: string;
+  /** melee | ranged */
+  attackType?: string;
+  difficulty?: number;
+  playstyle?: {
+    damage: number;
+    durability: number;
+    crowdControl: number;
+    mobility: number;
+    utility: number;
+  };
+}
+
 export interface StaticDataBundle {
   patch: string;
   lang: LlmLocale;
   champions: ChampionRecord[];
+  /** 라이엇 분류 메타데이터. 아직 수집하지 않았으면 빈 Map */
+  riotMeta: Map<string, RiotChampionMeta>;
   items: NormalizedItemDataFile;
   runes: NormalizedRuneDataFile;
   summoners: NormalizedSummonerDataFile;
@@ -111,6 +135,15 @@ function loadChampions(base: string, lang: LlmLocale): ChampionRecord[] {
   return champions;
 }
 
+function loadRiotMeta(base: string, lang: LlmLocale): Map<string, RiotChampionMeta> {
+  const file = path.join(base, "llm", `champion-riot-meta-${lang}.json`);
+  const map = new Map<string, RiotChampionMeta>();
+  if (!fs.existsSync(file)) return map;
+  const parsed = readJson<{ champions?: RiotChampionMeta[] }>(file);
+  for (const meta of parsed.champions ?? []) map.set(meta.id, meta);
+  return map;
+}
+
 export function loadStaticData(lang: LlmLocale = "ko_KR", patch?: string): StaticDataBundle {
   const resolvedPatch = resolvePatchVersion(patch);
   const base = path.join(PUBLIC_DATA_ROOT, resolvedPatch);
@@ -118,6 +151,7 @@ export function loadStaticData(lang: LlmLocale = "ko_KR", patch?: string): Stati
     patch: resolvedPatch,
     lang,
     champions: loadChampions(base, lang),
+    riotMeta: loadRiotMeta(base, lang),
     items: readJson<NormalizedItemDataFile>(path.join(base, `items-normalized-${lang}.json`)),
     runes: readJson<NormalizedRuneDataFile>(path.join(base, `runes-normalized-${lang}.json`)),
     summoners: readJson<NormalizedSummonerDataFile>(

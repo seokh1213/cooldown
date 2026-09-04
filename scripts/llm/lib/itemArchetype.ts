@@ -237,11 +237,25 @@ export function championBuildProfile(input: {
   rangeType: "근접" | "원거리";
   /** 물리 피해 스킬을 갖고 있는지 (계수가 없는 고정 피해 스킬 보정용) */
   hasPhysicalSpell?: boolean;
+  /**
+   * 라이엇 공식 분류. 있으면 스킬 툴팁 추정보다 이쪽을 신뢰한다.
+   * damageType 은 나서스 Q 처럼 계수가 없는 스킬 때문에 생기는 오판을 막아 준다.
+   * durability 는 같은 전사 태그 안에서 브루저와 탱커를 가른다.
+   */
+  riot?: {
+    damageType?: "물리" | "마법" | "혼합";
+    tagPrimary?: string;
+    playstyle?: { damage: number; durability: number };
+  };
 }): ChampionBuildProfile {
-  const { roleTags, scaling, hasPhysicalSpell } = input;
+  const { roleTags, scaling, hasPhysicalSpell, riot } = input;
   const primary = roleTags[0];
   const secondary = roleTags[1];
-  const isAp = scaling === "AP";
+  // 라이엇 damageType 이 있으면 그것이 기준이다
+  const isAp = riot?.damageType ? riot.damageType === "마법" : scaling === "AP";
+  const isMixedDamage = riot?.damageType === "혼합";
+  // 주 특성이 "내구성" 이거나 내구도 지표가 최고면 탱커 성향이 강하다
+  const tanky = riot?.tagPrimary === "내구성" || (riot?.playstyle?.durability ?? 0) >= 3;
 
   switch (primary) {
     case "Marksman":
@@ -278,12 +292,16 @@ export function championBuildProfile(input: {
 
     case "Fighter":
       if (isAp) {
-        // 계수가 AP 로 읽히지만 물리 피해 스킬이 있으면 AD 아이템도 후보다.
-        // 나서스 Q 처럼 중첩으로 피해가 오르는 스킬은 데이터에 계수가 없어 AP 로 잡힌다.
-        return hasPhysicalSpell
+        // 라이엇 damageType 이 없을 때만 스킬 계수 추정을 보정한다
+        return hasPhysicalSpell && !riot?.damageType
           ? profileOf(["battlemage", "bruiser", "tank", "mage"], "전사(혼합 계수)")
           : profileOf(["battlemage", "tank", "mage"], "주문력 전사");
       }
+      if (isMixedDamage) {
+        return profileOf(["bruiser", "tank", "battlemage"], "혼합 피해 전사");
+      }
+      // 내구도가 높은 전사는 탱커 아이템이 먼저다 (나서스, 세트)
+      if (tanky) return profileOf(["tank", "bruiser"], "브루저·탱커", true);
       // 부 역할이 암살자면 물리 관통 계열도 후보에 남긴다 (카밀, 다리우스의 세릴다)
       return secondary === "Assassin"
         ? profileOf(["bruiser", "tank", "assassin"], "브루저(암살 성향)")

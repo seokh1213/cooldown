@@ -12,7 +12,7 @@ import type {
   ChampionSpellSlot,
   LevelScaledScalar,
 } from "../../../src/types/combatNormalized";
-import type { ChampionAbility, ChampionRecord } from "./data";
+import type { ChampionAbility, ChampionRecord, RiotChampionMeta } from "./data";
 import { formatLevels, round, stripHtml } from "./text";
 
 export type StatName =
@@ -72,6 +72,16 @@ export interface ChampionCard {
   name: string;
   title?: string;
   roleTags: string[];
+  /** 라이엇 공식 분류 (수집돼 있으면) */
+  riot?: {
+    /** 주 특성 (내구성, 결투가, 전투 개시 …) */
+    tagPrimary?: string;
+    tagSecondary?: string;
+    /** 물리 | 마법 | 혼합 */
+    damageType?: "물리" | "마법" | "혼합";
+    attackType?: "근접" | "원거리";
+    playstyle?: RiotChampionMeta["playstyle"];
+  };
   resource?: string;
   rangeType: "근접" | "원거리";
   attackRange: number;
@@ -310,7 +320,16 @@ export interface ChampionCardBuilder {
   find(query: string): ChampionRecord | undefined;
 }
 
-export function createChampionCardBuilder(champions: ChampionRecord[]): ChampionCardBuilder {
+const RIOT_DAMAGE_LABEL: Record<string, "물리" | "마법" | "혼합"> = {
+  kPhysical: "물리",
+  kMagic: "마법",
+  kMixed: "혼합",
+};
+
+export function createChampionCardBuilder(
+  champions: ChampionRecord[],
+  riotMeta: Map<string, RiotChampionMeta> = new Map(),
+): ChampionCardBuilder {
   // 스탯별 전체 분포를 미리 계산 (백분위용)
   const distributions = new Map<string, number[]>();
   for (const stat of STAT_NAMES) {
@@ -374,7 +393,11 @@ export function createChampionCardBuilder(champions: ChampionRecord[]): Champion
       if (s.damageTypes.includes("마법")) magical += 1;
       if (s.damageTypes.includes("고정")) trueDamage += 1;
     }
-    const roleTags = champ.tags ?? [];
+    const meta = riotMeta.get(champ.id);
+    // 역할 태그는 라이엇 메타(순서 있는 roles)를 우선한다
+    const roleTags = (meta?.roles?.length ? meta.roles : champ.tags ?? []).map(
+      (r) => r.charAt(0).toUpperCase() + r.slice(1),
+    );
     // 기본 공격 의존 역할은 물리 가중
     if (roleTags.includes("Marksman")) physical += 2;
     if (roleTags.includes("Mage")) magical += 1;
@@ -391,7 +414,24 @@ export function createChampionCardBuilder(champions: ChampionRecord[]): Champion
       roleTags,
       // 자원 이름은 스킬 비용 표기에서 얻는다 (예: 마나, 기력, 열기)
       resource: SLOTS.map((slot) => champ.abilities?.[slot]?.cost?.resource).find(Boolean),
-      rangeType: champ.baseStats.attackRange.base >= 300 ? "원거리" : "근접",
+      riot: meta
+        ? {
+            tagPrimary: meta.tagPrimary,
+            tagSecondary: meta.tagSecondary,
+            damageType: meta.damageType ? RIOT_DAMAGE_LABEL[meta.damageType] : undefined,
+            attackType: meta.attackType === "ranged" ? "원거리" : meta.attackType === "melee" ? "근접" : undefined,
+            playstyle: meta.playstyle,
+          }
+        : undefined,
+      // 사거리 판정은 라이엇 attackType 을 우선하고, 없으면 사거리 수치로 본다
+      rangeType:
+        meta?.attackType === "ranged"
+          ? "원거리"
+          : meta?.attackType === "melee"
+            ? "근접"
+            : champ.baseStats.attackRange.base >= 300
+              ? "원거리"
+              : "근접",
       attackRange: champ.baseStats.attackRange.base,
       stats: buildStats(champ),
       damageProfile: { physical, magical, trueDamage, primary },
