@@ -21,6 +21,7 @@ import type {
 } from "../src/types/combatStats";
 import { StatKey } from "../src/types/combatStats";
 import { parseItemDescription } from "../src/lib/spellTooltipParser/index";
+import type { CommunityDragonSpellData } from "../src/lib/spellTooltipParser/types";
 import { toOfficialPatchVersion } from "../src/lib/gamePatchVersion";
 import {
   extractPassiveSpell,
@@ -28,7 +29,11 @@ import {
   PASSIVE_TOOLTIP_LOCALES,
   type LocalizedPassiveTooltip,
   type PassiveTooltipLocale,
+  type ExtractedPassiveSpell,
 } from "./passive-tooltip-data";
+import { extractActiveSpells } from "./data-pipeline/cdragon-active-spells";
+import type { ActiveSpellSourceData } from "./data-pipeline/cdragon-active-spells";
+import { validateGeneratedAbilities } from "./data-pipeline/ability-validation";
 
 const VERSION_URL = "https://ddragon.leagueoflegends.com/api/versions.json";
 const CHAMP_LIST_URL = (VERSION: string, LANG: string) =>
@@ -875,172 +880,6 @@ async function buildAndSaveNormalizedRunesAndStatShards(
   }
 }
 
-// 실제 챔피언 경로 찾기
-function findActualChampionPath(
-  data: Record<string, unknown>,
-  championId: string
-): string | null {
-  const lowerChampionId = championId.toLowerCase();
-  const path = `Characters/${championId}/CharacterRecords/Root`;
-
-  if (path in data) {
-    return path.split('/').slice(0, 2).join('/');
-  }
-
-  const matchingKeys = Object.keys(data).filter(key => {
-    const keyLower = key.toLowerCase();
-    return keyLower.includes(`characters/${lowerChampionId}/`) || 
-           keyLower.includes(`characters/${championId.toLowerCase()}/`);
-  });
-  
-  if (matchingKeys.length > 0) {
-    const firstKey = matchingKeys[0];
-    const match = firstKey.match(/Characters\/([^/]+)/i);
-    if (match && match[1]) {
-      return `Characters/${match[1]}`;
-    }
-  }
-  
-  return null;
-}
-
-// 스킬 순서 매핑 추출
-function extractSpellOrderMapping(
-  data: Record<string, unknown>,
-  championId: string
-): { spellOrder: string[]; actualChampionPath: string | null } {
-  const actualChampionPath = findActualChampionPath(data, championId);
-  
-  if (!actualChampionPath) {
-    return { spellOrder: [], actualChampionPath: null };
-  }
-  
-  const rootPath = `${actualChampionPath}/CharacterRecords/Root`;
-  const root = data[rootPath] as Record<string, unknown> | undefined;
-  
-  if (root && root.spells && Array.isArray(root.spells)) {
-    const spellPaths = root.spells as string[];
-    return { spellOrder: spellPaths, actualChampionPath };
-  }
-  
-  return { spellOrder: [], actualChampionPath };
-}
-
-interface CommunityDragonDataValue {
-  name?: string;
-  values?: (number | string)[];
-}
-
-function extractDataValues(
-  mSpell: Record<string, unknown>
-): Record<string, (number | string)[]> | undefined {
-  const rawDataValues = mSpell.DataValues;
-  const dataValues: Record<string, (number | string)[]> = {};
-
-  if (Array.isArray(rawDataValues)) {
-    for (const dataValue of rawDataValues as CommunityDragonDataValue[]) {
-      if (dataValue.name && Array.isArray(dataValue.values)) {
-        dataValues[dataValue.name] = dataValue.values;
-      }
-    }
-  }
-
-  if (Array.isArray(mSpell.mAmmoRechargeTime)) {
-    dataValues.mAmmoRechargeTime = mSpell.mAmmoRechargeTime as (number | string)[];
-  }
-
-  return Object.keys(dataValues).length > 0 ? dataValues : undefined;
-}
-
-// Community Dragon 스킬 데이터 추출
-function extractSpellData(data: Record<string, unknown>, championId: string): Record<string, Record<string, any>> {
-  const cdChampionId = convertChampionIdToCommunityDragon(championId);
-  const { spellOrder, actualChampionPath } = extractSpellOrderMapping(data, cdChampionId);
-  
-  const spellDataMap: Record<string, Record<string, any>> = {};
-  
-  // 스킬 순서에 따라 데이터 추출
-  for (let i = 0; i < spellOrder.length; i++) {
-    const spellPath = spellOrder[i];
-    if (!spellPath) continue;
-    
-    const spellObj = data[spellPath] as Record<string, unknown> | undefined;
-    
-    if (!spellObj) {
-      continue;
-    }
-    
-    if (spellObj && spellObj.mSpell) {
-      const mSpell = spellObj.mSpell as Record<string, unknown>;
-      const spellData: Record<string, any> = {};
-      
-      const dataValues = extractDataValues(mSpell);
-      if (dataValues) spellData.DataValues = dataValues;
-      
-      // 2. mSpellCalculations 파싱
-      if (mSpell.mSpellCalculations && typeof mSpell.mSpellCalculations === 'object' && mSpell.mSpellCalculations !== null) {
-        spellData.mSpellCalculations = mSpell.mSpellCalculations;
-      }
-      
-      // 3. mClientData 파싱
-      if (spellObj.mClientData && typeof spellObj.mClientData === 'object' && spellObj.mClientData !== null) {
-        spellData.mClientData = spellObj.mClientData;
-      }
-      
-      if (Object.keys(spellData).length > 0) {
-        spellDataMap[i.toString()] = spellData;
-        const spellName = spellPath.split("/").pop() || "";
-        if (spellName) {
-          spellDataMap[spellName] = spellData;
-        }
-      }
-    }
-  }
-  
-  // 추가로 모든 AbilityObject를 순회하며 누락된 스킬 찾기
-  const championPathForSearch = actualChampionPath || `Characters/${cdChampionId}`;
-  for (const key in data) {
-    const keyLower = key.toLowerCase();
-    const searchPathLower = championPathForSearch.toLowerCase();
-    if (keyLower.includes(`${searchPathLower}/spells/`) && keyLower.includes("ability")) {
-      const abilityObj = data[key] as Record<string, unknown> | undefined;
-      if (abilityObj && abilityObj.mRootSpell) {
-        const rootSpellPath = abilityObj.mRootSpell as string;
-        const spellObj = data[rootSpellPath] as Record<string, unknown> | undefined;
-        
-        if (spellObj && spellObj.mSpell) {
-          const mSpell = spellObj.mSpell as Record<string, unknown>;
-          const spellName = rootSpellPath.split("/").pop() || "";
-          
-          // 이미 추가된 스킬이 아니면 추가
-          if (!spellDataMap[spellName]) {
-            const spellData: Record<string, any> = {};
-            
-            const dataValues = extractDataValues(mSpell);
-            if (dataValues) spellData.DataValues = dataValues;
-            
-            // 2. mSpellCalculations 파싱
-            if (mSpell.mSpellCalculations && typeof mSpell.mSpellCalculations === 'object' && mSpell.mSpellCalculations !== null) {
-              spellData.mSpellCalculations = mSpell.mSpellCalculations;
-            }
-            
-            // 3. mClientData 파싱
-            if (spellObj.mClientData && typeof spellObj.mClientData === 'object' && spellObj.mClientData !== null) {
-              spellData.mClientData = spellObj.mClientData;
-            }
-            
-            if (Object.keys(spellData).length > 0) {
-              spellDataMap[spellName] = spellData;
-            }
-          }
-        }
-      }
-    }
-  }
-  
-  return spellDataMap;
-}
-
 async function fetchJson(url: string, retries = 3): Promise<any> {
   for (let i = 0; i < retries; i++) {
     try {
@@ -1464,6 +1303,7 @@ async function main() {
     // - 기본값은 "현재 패치" 후보 (예: 15.24)
     // - 한 명이라도 폴백(15.23, latest 등)을 사용하면, 그 폴백 버전을 version.json에 반영한다.
     let usedFallbackCdragonVersion: string | null = null;
+    const abilitySourcesByChampion = new Map<string, ActiveSpellSourceData[]>();
 
     const runesDataByLang: Record<string, any> = {};
     const runeStatmodsDataByLang: Record<string, RuneStatShardStaticData | null> = {};
@@ -1696,7 +1536,20 @@ async function main() {
             }
           }
 
-          const spellData = extractSpellData(cdData, championId);
+          const activeSpells = extractActiveSpells(cdData, cdChampionId);
+          abilitySourcesByChampion.set(
+            championId,
+            activeSpells.ordered.map(({ source }) => source)
+          );
+          const spellData: Record<
+            string,
+            CommunityDragonSpellData | ExtractedPassiveSpell["spellData"]
+          > = Object.fromEntries(
+            Object.entries(activeSpells.aliases).map(([key, activeSpell]) => {
+              const { source: _source, ...calculationData } = activeSpell;
+              return [key, calculationData];
+            })
+          );
           const passive = extractPassiveSpell(cdData, championId);
           const localizedPassive = cdragonVersion
             ? await buildLocalizedPassiveTooltips(cdragonVersion, passive)
@@ -1816,6 +1669,34 @@ async function main() {
       usedFallbackCdragonVersion ??
       cdVersionCandidates[0] ??
       toCommunityDragonVersion(ddragonVersion);
+
+    const abilityValidation = validateGeneratedAbilities({
+      versionDir,
+      patchVersion: version,
+      ddragonVersion,
+      cdragonVersion: finalCdragonVersion,
+      allowlistPath: path.join(
+        process.cwd(),
+        "scripts",
+        "ability-validation-allowlist.json"
+      ),
+      abilitySourcesByChampion,
+    });
+    await saveToFile(
+      abilityValidation,
+      path.join(versionDir, "ability-validation.json")
+    );
+    if (abilityValidation.summary.unexpectedIssues > 0) {
+      const unexpected = abilityValidation.issues
+        .filter((issue) => !issue.allowlisted)
+        .map((issue) => issue.key)
+        .join(", ");
+      throw new Error(`Unexpected ability source mismatches: ${unexpected}`);
+    }
+    console.log(
+      `✅ Validated ${abilityValidation.summary.abilities} Q/W/E/R abilities ` +
+      `(${abilityValidation.summary.knownIssues} known source differences)`
+    );
 
     const versionInfo = {
       // 공식 패치 키. 정적 데이터 경로와 캐시 키에 사용한다.

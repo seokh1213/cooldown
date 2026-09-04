@@ -4,10 +4,17 @@ import type {
   CommunityDragonSpellData,
   TooltipLocale,
 } from "../src/lib/spellTooltipParser/types";
+import {
+  DATA_LOCALES,
+  lookupString,
+  toParserTemplate,
+  type DataLocale,
+  type StringTable,
+} from "./data-pipeline/localization";
 
-export const PASSIVE_TOOLTIP_LOCALES = ["ko_KR", "en_US", "zh_CN"] as const;
+export const PASSIVE_TOOLTIP_LOCALES = DATA_LOCALES;
 
-export type PassiveTooltipLocale = (typeof PASSIVE_TOOLTIP_LOCALES)[number];
+export type PassiveTooltipLocale = DataLocale;
 
 export interface PassiveLocKeys {
   keyName?: string;
@@ -33,10 +40,6 @@ export interface LocalizedPassiveTooltip {
 interface CommunityDragonDataValue {
   name?: string;
   values?: (number | string)[];
-}
-
-interface StringTable {
-  entries?: Record<string, string>;
 }
 
 function isRecord(value: unknown): value is Record<string, unknown> {
@@ -121,15 +124,6 @@ export function extractPassiveSpell(
     locKeys,
     spellData,
   };
-}
-
-function lookupString(table: StringTable, key: string | undefined): string | undefined {
-  if (!key || !table.entries) return undefined;
-  return table.entries[key.toLowerCase()] ?? table.entries[key];
-}
-
-function toParserTemplate(template: string): string {
-  return template.replace(/@([^@]+)@/g, "{{ $1 }}");
 }
 
 function renderTemplate(
