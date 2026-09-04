@@ -105,6 +105,18 @@ export interface WikiChampionMeta {
   externalPositions: string[];
 }
 
+/** LoL Wiki(Fandom) 아이템 상점 분류 (scripts/llm/fetch-wiki-items.ts 로 수집) */
+export interface WikiItemMeta {
+  id: string;
+  englishName: string;
+  /** 상점 역할군 탭: fighter, tank, mage, marksman, assassin, support, movement … */
+  menu: string[];
+  /** Legendary | Epic | Basic | Starter | Boots | Consumable | Trinket … */
+  types: string[];
+  itemLimit?: string;
+  nicknames: string[];
+}
+
 export interface StaticDataBundle {
   patch: string;
   lang: LlmLocale;
@@ -113,6 +125,8 @@ export interface StaticDataBundle {
   riotMeta: Map<string, RiotChampionMeta>;
   /** LoL Wiki 분류 메타데이터. 아직 수집하지 않았으면 빈 Map */
   wikiMeta: Map<string, WikiChampionMeta>;
+  /** LoL Wiki 아이템 상점 분류. 아직 수집하지 않았으면 빈 Map */
+  wikiItemMeta: Map<string, WikiItemMeta>;
   items: NormalizedItemDataFile;
   runes: NormalizedRuneDataFile;
   summoners: NormalizedSummonerDataFile;
@@ -173,6 +187,15 @@ function loadWikiMeta(base: string): Map<string, WikiChampionMeta> {
   return map;
 }
 
+function loadWikiItemMeta(base: string): Map<string, WikiItemMeta> {
+  const file = path.join(base, "llm", "item-wiki-meta.json");
+  const map = new Map<string, WikiItemMeta>();
+  if (!fs.existsSync(file)) return map;
+  const parsed = readJson<{ items?: WikiItemMeta[] }>(file);
+  for (const meta of parsed.items ?? []) map.set(meta.id, meta);
+  return map;
+}
+
 export function loadStaticData(lang: LlmLocale = "ko_KR", patch?: string): StaticDataBundle {
   const resolvedPatch = resolvePatchVersion(patch);
   const base = path.join(PUBLIC_DATA_ROOT, resolvedPatch);
@@ -182,6 +205,7 @@ export function loadStaticData(lang: LlmLocale = "ko_KR", patch?: string): Stati
     champions: loadChampions(base, lang),
     riotMeta: loadRiotMeta(base, lang),
     wikiMeta: loadWikiMeta(base),
+    wikiItemMeta: loadWikiItemMeta(base),
     items: readJson<NormalizedItemDataFile>(path.join(base, `items-normalized-${lang}.json`)),
     runes: readJson<NormalizedRuneDataFile>(path.join(base, `runes-normalized-${lang}.json`)),
     summoners: readJson<NormalizedSummonerDataFile>(

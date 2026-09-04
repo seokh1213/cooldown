@@ -16,6 +16,7 @@ import {
   championBuildProfile,
   classifyItem,
   type ItemArchetype,
+  type WikiItemInfo,
 } from "./itemArchetype";
 import { stripHtml, truncate } from "./text";
 
@@ -87,11 +88,11 @@ function describeStats(item: NormalizedItem): string {
     .join(", ");
 }
 
-function toBrief(item: NormalizedItem): ItemBrief {
+function toBrief(item: NormalizedItem, wikiItems?: Map<string, WikiItemInfo>): ItemBrief {
   const effects = item.effects
     .map((e) => `${e.name}: ${truncate(stripHtml(e.description), 140)}`)
     .join(" | ");
-  const classification = classifyItem(item);
+  const classification = classifyItem(item, wikiItems?.get(item.id));
   return {
     id: item.id,
     name: item.name,
@@ -141,9 +142,18 @@ export function selectDefensiveItems(
     maxOffensive?: number;
     /** 지식 카드가 지목한 아이템 이름 */
     pinnedNames?: string[];
+    /** LoL Wiki 아이템 상점 분류 (있으면 스탯 추정보다 우선) */
+    wikiItems?: Map<string, WikiItemInfo>;
   } = {},
 ): ItemSelection {
-  const { maxLegendaries = 8, maxComponents = 5, me, maxOffensive = 8, pinnedNames = [] } = options;
+  const {
+    maxLegendaries = 8,
+    maxComponents = 5,
+    me,
+    maxOffensive = 8,
+    pinnedNames = [],
+    wikiItems,
+  } = options;
   // 방어 기준 스탯은 라이엇 damageType 을 우선한다.
   // 툴팁 집계는 나서스처럼 계수 없는 스킬 때문에 틀릴 수 있다(라이엇: 물리, 집계: 마법).
   // 라이엇 값이 없거나 혼합이면 툴팁 집계와 계수 프로필로 판정한다.
@@ -166,7 +176,7 @@ export function selectDefensiveItems(
   const rift = dedupeByName(items.filter(isRiftItem));
   const matchesFocus = (item: NormalizedItem) => focus.some((stat) => hasStat(item, stat));
 
-  const classified = rift.map((item) => ({ item, c: classifyItem(item) }));
+  const classified = rift.map((item) => ({ item, c: classifyItem(item, wikiItems?.get(item.id)) }));
 
   /**
    * 내 챔피언 빌드 성향으로 아이템 역할군을 좁힌다.
@@ -183,15 +193,23 @@ export function selectDefensiveItems(
         wikiSubclass: me.wiki?.subclass,
       })
     : undefined;
+  /**
+   * 상점 역할군 탭은 한 아이템이 여러 개에 걸린다(칠흑의 양날 도끼 = 브루저·암살자).
+   * 그래서 "제외 역할군이 하나라도 있으면 배제" 하면 정상 아이템까지 빠진다.
+   * 선호 역할군에 하나라도 걸리면 통과시키고, 걸리는 것이 없을 때만 제외를 본다.
+   */
   const fitsProfile = (archetypes: ItemArchetype[]) => {
     if (!profile) return true;
-    if (archetypes.some((a) => profile.excluded.includes(a))) return false;
     // 장화·시작·하위 아이템은 역할군 판정 대상이 아니다
     const combat = archetypes.filter(
       (a) => !["boots", "starter", "component", "consumable", "trinket", "jungle"].includes(a),
     );
     if (combat.length === 0) return true;
-    return combat.some((a) => profile.preferred.includes(a));
+    // 아군 보조 아이템은 예외다. 상점이 탱커 탭에도 올려 두지만(기사의 맹세)
+    // 서포터가 아닌 챔피언에게는 값을 하지 못하므로 무조건 제외한다.
+    if (combat.includes("enchanter") && profile.excluded.includes("enchanter")) return false;
+    if (combat.some((a) => profile.preferred.includes(a))) return true;
+    return !combat.some((a) => profile.excluded.includes(a));
   };
 
   // 시작 아이템은 역할군 태그가 없으므로 내 계수와 맞는 공격 스탯인지로 걸러낸다.
@@ -264,13 +282,13 @@ export function selectDefensiveItems(
 
   return {
     focus,
-    starters: starters.map(toBrief),
-    components: components.map(toBrief),
-    boots: boots.map(toBrief),
-    legendaries: legendaries.map(toBrief),
-    antiHeal: antiHeal.map(toBrief),
-    offensive: offensive.map(toBrief),
-    pinned: pinned.map(toBrief),
+    starters: starters.map((item) => toBrief(item, wikiItems)),
+    components: components.map((item) => toBrief(item, wikiItems)),
+    boots: boots.map((item) => toBrief(item, wikiItems)),
+    legendaries: legendaries.map((item) => toBrief(item, wikiItems)),
+    antiHeal: antiHeal.map((item) => toBrief(item, wikiItems)),
+    offensive: offensive.map((item) => toBrief(item, wikiItems)),
+    pinned: pinned.map((item) => toBrief(item, wikiItems)),
     buildLabel: profile?.label,
   };
 }

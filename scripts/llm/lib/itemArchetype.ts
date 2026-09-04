@@ -87,8 +87,53 @@ const ATTACK_SPEED_SLOW_RE = /공격 속도[^.]{0,20}감소/;
 const TENACITY_RE = /강인함/;
 const SHIELD_SELF_RE = /보호막을 얻|피해를 흡수하는 보호막/;
 
-export function classifyItem(item: NormalizedItem): ItemClassification {
-  const tier = getOfficialLikeItemTier(item);
+/**
+ * LoL Wiki 상점 역할군 탭 → 우리 역할군.
+ * 상점 분류가 정답이므로 스탯 추정보다 우선한다.
+ */
+const MENU_TO_ARCHETYPE: Record<string, ItemArchetype[]> = {
+  fighter: ["bruiser"],
+  tank: ["tank"],
+  mage: ["mage"],
+  marksman: ["marksman"],
+  assassin: ["assassin"],
+  support: ["enchanter"],
+  // "movement" 은 이동 속도 아이템 탭이다. 장화 등급은 tier 로 따로 판정한다.
+};
+
+/** 상점 탭 중 역할군이 아니라 기능을 뜻하는 것 */
+const MENU_TO_FUNCTION: Record<string, string> = {
+  movement: "이동 속도",
+  "onhit effects": "적중 시 효과",
+  "lifesteal vamp": "생명력 흡수",
+  "armor pen": "물리 관통",
+  "magic pen": "마법 관통",
+  "health and reg": "체력·재생",
+  "mana and reg": "마나·재생",
+  "ability power": "주문력",
+  "attack damage": "공격력",
+  "attack speed": "공격 속도",
+};
+
+const WIKI_TYPE_TO_TIER: Record<string, ItemTier> = {
+  Legendary: "legendary",
+  Epic: "epic",
+  Basic: "basic",
+  Starter: "starter",
+  Boots: "boots",
+  Consumable: "consumable",
+  Trinket: "consumable",
+};
+
+export interface WikiItemInfo {
+  menu: string[];
+  types: string[];
+}
+
+export function classifyItem(item: NormalizedItem, wiki?: WikiItemInfo): ItemClassification {
+  // 등급도 위키 type 을 우선한다 (우리 휴리스틱은 신규 아이템에서 자주 어긋난다)
+  const wikiTier = wiki?.types.map((t) => WIKI_TYPE_TO_TIER[t]).find(Boolean);
+  const tier = wikiTier ?? getOfficialLikeItemTier(item);
   const tags = item.tags ?? [];
   const text = fullText(item);
 
@@ -124,7 +169,33 @@ export function classifyItem(item: NormalizedItem): ItemClassification {
   if (tags.includes("Vision")) functions.push("시야");
   if (MELEE_TEXT_RE.test(text)) functions.push("근접 성향(광역 평타)");
 
-  // 등급이 곧 분류인 것들 먼저 처리
+  // 위키 상점 탭이 있으면 그것이 정답이다
+  if (wiki?.menu.length) {
+    for (const menu of wiki.menu) {
+      const fn = MENU_TO_FUNCTION[menu];
+      if (fn && !functions.includes(fn)) functions.push(fn);
+    }
+    const fromMenu = wiki.menu.flatMap((m) => MENU_TO_ARCHETYPE[m] ?? []);
+    if (fromMenu.length) {
+      // 주문력 + 체력 조합은 마법 전사로 세분화한다 (상점은 mage 로만 표기)
+      if (fromMenu.includes("mage") && health) fromMenu.push("battlemage");
+      // 서포터 탭이면서 주문력이 없으면 유틸리티 (기사의 맹세 등)
+      if (fromMenu.includes("enchanter") && !ap) fromMenu.push("utility");
+      const tierOnly: ItemArchetype[] = [];
+      if (tier === "starter") tierOnly.push("starter");
+      if (tier === "basic") tierOnly.push("component");
+      if (tier === "boots") tierOnly.push("boots");
+      if (tier === "consumable") tierOnly.push(tags.includes("Trinket") ? "trinket" : "consumable");
+      return {
+        tier,
+        archetypes: Array.from(new Set([...fromMenu, ...tierOnly])),
+        resists,
+        functions,
+      };
+    }
+  }
+
+  // 등급이 곧 분류인 것들 먼저 처리 (위키에 없는 신규 아이템은 스탯으로 추정한다)
   const archetypes: ItemArchetype[] = [];
   if (tier === "consumable") {
     archetypes.push(tags.includes("Trinket") ? "trinket" : "consumable");
