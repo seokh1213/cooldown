@@ -5,6 +5,7 @@ import { validateAbilitySimulations } from "../ability-simulation-validation";
 import { validateGeneratedAbilities } from "../ability-validation";
 import {
   assertActiveTooltipReport,
+  pruneAllowlist,
   validateActiveTooltips,
   type ActiveTooltipAllowlist,
 } from "../active-tooltip-validation";
@@ -23,15 +24,36 @@ async function validateActiveAbilities(
   release: StaticDataRelease,
   source: ChampionSources,
 ): Promise<void> {
+  const allowlistPath = path.join(
+    process.cwd(),
+    "scripts",
+    "active-tooltip-allowlist.json",
+  );
+  const allowlist = readConfig<ActiveTooltipAllowlist>(
+    "active-tooltip-allowlist.json",
+  );
   const report = validateActiveTooltips({
     championsByLocale: source.championsByLocale,
     patchVersion: release.patchVersion,
     sources: release.sources,
-    allowlist: readConfig<ActiveTooltipAllowlist>(
-      "active-tooltip-allowlist.json",
-    ),
+    allowlist,
   });
   await writeJson(report, path.join(versionDir, "active-tooltip-validation.json"));
+
+  // 해소분은 개선이므로 목록에서 걷어내고 계속 진행한다. 회귀만 막는다.
+  const pruned = pruneAllowlist(allowlist, report);
+  if (pruned.changed) {
+    fs.writeFileSync(
+      allowlistPath,
+      `${JSON.stringify(pruned.allowlist, null, 2)}\n`,
+      "utf8",
+    );
+    console.log(
+      `🧹 해소된 항목을 허용 목록에서 제거: 토큰 ${report.staleAllowedTokens.length}종, ` +
+        `툴팁 누락 ${report.staleAllowedMissingTooltips.length}건`,
+    );
+  }
+
   assertActiveTooltipReport(report);
   console.log(
     `✅ Precomputed ${report.totals.localized}/${report.totals.abilities} ` +
