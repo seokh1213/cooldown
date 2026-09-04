@@ -165,16 +165,21 @@ const ABILITY_POWER_ICON = "scaleap";
  * 스탯 코드 → CommunityDragon 아이콘 이름
  * 이름을 모르는 코드는 아이콘도 붙이지 않는다.
  */
-export function getStatIcon(mStat?: number, mStatFormula?: number): string | undefined {
-  if (mStat == null && mStatFormula == null) return ABILITY_POWER_ICON;
-  const statCode = mStat ?? mStatFormula;
-  return statCode != null ? STAT_NAME_TABLE[statCode]?.icon : undefined;
+export function getStatIcon(mStat?: number): string | undefined {
+  // mStat 이 없으면 주문력 계수다 (총합·추가 구분은 아이콘이 같다)
+  if (mStat == null) return ABILITY_POWER_ICON;
+  return STAT_NAME_TABLE[mStat]?.icon;
 }
 
 /**
  * 스탯 코드 → 로컬라이즈된 이름 변환
  *
- * mStatFormula 2 는 "추가(bonus)" 를 뜻한다.
+ * mStat 이 어떤 스탯인지, mStatFormula 가 총합인지 추가분인지(2 = 추가)를
+ * 각각 정한다. mStat 이 없으면 주문력 계수이며, 이때 mStatFormula 는
+ * 스탯 코드가 아니라 총합/추가 구분으로만 쓰인다.
+ * (블라디미르 패시브·잭스 E/R·벨베스 W 의 "추가 주문력" 항.
+ *  lol.ps 도 같은 자리를 "추가 주문력" 으로 적는다)
+ *
  * 표에 없는 코드는 잘못된 이름을 붙이는 대신 빈 문자열을 돌려주고,
  * 호출부에서 "(240%)" 처럼 수치만 노출한다.
  */
@@ -184,30 +189,19 @@ export function getStatName(
   lang: TooltipLocale = "ko_KR"
 ): string {
   const stats = getTranslations(lang).stats;
-  const hasStat = mStat !== undefined && mStat !== null;
-  const hasFormula = mStatFormula !== undefined && mStatFormula !== null;
+  const isBonus = mStatFormula === 2;
+  const withBonus = (name: string): string =>
+    `${getTranslations(lang).common.bonus} ${name}`;
 
-  // 둘 다 생략된 경우 → Ability Power 계수
-  if (!hasStat && !hasFormula) {
-    return stats.abilityPower;
+  if (mStat == null) {
+    return isBonus ? withBonus(stats.abilityPower) : stats.abilityPower;
   }
 
-  const statCode = mStat ?? mStatFormula;
-  const entry = statCode != null ? STAT_NAME_TABLE[statCode] : undefined;
-  if (!entry) {
-    return "";
-  }
+  const entry = STAT_NAME_TABLE[mStat];
+  if (!entry) return "";
+  if (!isBonus) return stats[entry.base];
 
-  // mStat 이 실제로 주어졌을 때만 "추가" 로 본다.
-  // (mStatFormula 만 있는 경우 그 값 자체가 스탯 코드로 쓰인다)
-  const isBonus = hasStat && mStatFormula === 2;
-  if (!isBonus) {
-    return stats[entry.base];
-  }
-
-  return entry.bonus
-    ? stats[entry.bonus]
-    : `${getTranslations(lang).common.bonus} ${stats[entry.base]}`;
+  return entry.bonus ? stats[entry.bonus] : withBonus(stats[entry.base]);
 }
 
 /**

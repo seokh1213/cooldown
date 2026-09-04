@@ -319,7 +319,7 @@ export function evaluatePart(
       statParts: [
         {
           name: getStatName(stat.mStat, stat.mStatFormula, ctx.lang),
-          icon: getStatIcon(stat.mStat, stat.mStatFormula),
+          icon: getStatIcon(stat.mStat),
           ratio,
         },
       ],
@@ -334,7 +334,7 @@ export function evaluatePart(
       statParts: [
         {
           name: getStatName(stat.mStat, stat.mStatFormula, ctx.lang),
-          icon: getStatIcon(stat.mStat, stat.mStatFormula),
+          icon: getStatIcon(stat.mStat),
           ratio: stat.mCoefficient,
           isCoefficient: true,
         },
@@ -479,7 +479,7 @@ export function evaluatePart(
       statParts: [
         {
           name: getStatName(statSubPart.mStat, statSubPart.mStatFormula, ctx.lang),
-          icon: getStatIcon(statSubPart.mStat, statSubPart.mStatFormula),
+          icon: getStatIcon(statSubPart.mStat),
           ratio: inner.base,
           isCoefficient: true,
         },
