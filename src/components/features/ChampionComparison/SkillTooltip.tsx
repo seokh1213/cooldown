@@ -18,8 +18,8 @@ import {
 } from "@/components/ui/dialog";
 import { VisuallyHidden } from "@/components/ui/visually-hidden";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { AlertTriangle } from "lucide-react";
 import { SKILL_LETTERS } from "./constants";
+import { SkillTooltipContent } from "./SkillTooltipContent";
 import { getCooldownText, getCostText } from "./utils";
 import { useDeviceType } from "@/hooks/useDeviceType";
 import { useTranslation } from "@/i18n";
@@ -231,105 +231,19 @@ export function SkillTooltip({
     </div>
   );
 
-  // 공통 콘텐츠 컴포넌트
-  const renderContent = () => {
-    if (isPassive && passiveImageFull) {
-      return (
-        <>
-          {passiveName && (
-            <div className={`font-semibold text-sm ${isMobile ? "pr-10" : ""}`}>{passiveName}</div>
-          )}
-          {passiveDescription && (
-            <div className="text-xs leading-relaxed">
-              <div
-                dangerouslySetInnerHTML={{
-                  __html: passiveDescription,
-                }}
-              />
-            </div>
-          )}
-          {/* 경고 문구 */}
-          <div className="text-xs text-muted-foreground/80 italic leading-relaxed border-t pt-3 mt-3 flex items-center gap-1.5">
-            <AlertTriangle className="w-2.5 h-2.5 text-yellow-600 dark:text-yellow-500 shrink-0" />
-            <span>{t.skillTooltip.warningPassive}</span>
-          </div>
-        </>
-      );
-    }
-
-    return (
-      <>
-        <div className="flex items-start gap-3 border-b pb-3 pr-6">
-          <img
-            src={spellIconUrl(ddragonVersion, skill.id)}
-            alt={SKILL_LETTERS[skillIdx]}
-            className="w-12 h-12 min-w-12 min-h-12 rounded shrink-0"
-          />
-          <div className="flex-1 min-w-0">
-            {skill.name && (
-              <div className="font-semibold text-sm">
-                [{SKILL_LETTERS[skillIdx]}] {skill.name}
-              </div>
-            )}
-          </div>
-          <div className="text-right shrink-0">
-            {cooldownText && (
-              <div className="text-xs text-muted-foreground">
-                {cooldownText.includes(" (") ? (
-                  <>
-                    {cooldownText.split(" (")[0]}
-                    <br />
-                    ({cooldownText.split(" (")[1]}
-                  </>
-                ) : (
-                  cooldownText
-                )}
-              </div>
-            )}
-            {costText && (
-              <div className="text-xs text-muted-foreground mt-1 whitespace-nowrap">
-                {costText}
-              </div>
-            )}
-          </div>
-        </div>
-
-        {skill.description && (
-          <div className="text-xs leading-relaxed">
-            <div
-              dangerouslySetInnerHTML={{
-                __html: skill.description,
-              }}
-            />
-          </div>
-        )}
-        {skill.tooltip && (
-          <div className="text-xs text-muted-foreground leading-relaxed">
-            <div
-              dangerouslySetInnerHTML={{
-                __html: skill.tooltip,
-              }}
-            />
-          </div>
-        )}
-
-        {skill.rankValues && skill.rankValues.length > 0 && (
-          <div className="text-[11px] leading-relaxed text-muted-foreground border-t pt-3 mt-3">
-            {skill.rankValues.map((rankValue) => (
-              <div key={`${rankValue.label}:${rankValue.values}`}>
-                {rankValue.label}: [{rankValue.values}]
-              </div>
-            ))}
-          </div>
-        )}
-
-        <div className="text-xs text-muted-foreground/80 italic leading-relaxed border-t pt-3 mt-3 flex items-center gap-1.5">
-          <AlertTriangle className="w-2.5 h-2.5 text-yellow-600 dark:text-yellow-500 shrink-0" />
-          <span>{t.skillTooltip.warningSkill}</span>
-        </div>
-      </>
-    );
-  };
+  const content = (
+    <SkillTooltipContent
+      skill={skill}
+      skillIdx={skillIdx}
+      ddragonVersion={ddragonVersion}
+      passive={Boolean(isPassive && passiveImageFull)}
+      passiveName={passiveName}
+      passiveDescription={passiveDescription}
+      cooldownText={cooldownText}
+      costText={costText}
+      mobile={isMobile}
+    />
+  );
   
   const skillDialog = (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -363,7 +277,7 @@ export function SkillTooltip({
         </VisuallyHidden>
         <ScrollArea className="flex-1 min-h-0">
           <div className="p-4 flex flex-col gap-3">
-            {renderContent()}
+            {content}
           </div>
         </ScrollArea>
       </DialogContent>
@@ -381,7 +295,7 @@ export function SkillTooltip({
 
   const tooltipInner = (
     <div className="space-y-3">
-      {renderContent()}
+      {content}
       <div className="pt-1 flex justify-end">
         <button
           type="button"
