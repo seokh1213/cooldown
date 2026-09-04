@@ -168,3 +168,15 @@ test("calculates a ranked combo against target defenses", async ({ page }) => {
   await expect(page.getByTestId("combo-remaining-health")).toHaveText("100.0");
   await expect(page.getByTestId("combo-outcome")).toHaveText("생존");
 });
+
+test("keeps the main workflow fully localized in Chinese", async ({ page }) => {
+  await page.goto("./");
+  await page.getByRole("button", { name: "언어 선택" }).click();
+  await page.getByRole("button", { name: /简体中文/ }).click();
+  await expect(page.getByRole("heading", { name: "英雄冷却时间" })).toBeVisible();
+
+  await page.goto("./simulation");
+  await expect(page.getByRole("heading", { name: "模拟器" }).nth(1)).toBeVisible();
+  await expect(page.getByRole("heading", { name: "连招伤害与斩杀判断" })).toBeVisible();
+  await expect(page.getByRole("button", { name: "选择承受伤害的目标英雄" })).toBeVisible();
+});
