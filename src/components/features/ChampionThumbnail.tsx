@@ -68,7 +68,7 @@ function ChampionThumbnail({
           {/* Actual image - 고정 크기로 레이아웃 시프트 방지 */}
           <img
             className={cn(
-              "absolute inset-0 w-full h-full rounded-full bg-black/5 border-0 box-border transition-all duration-200 ease-out object-cover",
+              "absolute inset-0 w-full h-full rounded-full bg-black/5 border-0 box-border transition-[transform,opacity] duration-200 ease-out object-cover",
               // 선택된 상태가 아닐 때만 hover 효과 적용
               !selected && !isLocallySelected && "hover:scale-105",
               isLoaded ? "opacity-100" : "opacity-0"

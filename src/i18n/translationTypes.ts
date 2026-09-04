@@ -151,6 +151,7 @@ export interface Translations {
       damageRuneHint: string;
       combatTitle: string;
       combatDescription: string;
+      combatEmptyHint: string;
       selectTargetAria: string;
       targetPlaceholder: string;
       targetTitle: string;
@@ -196,8 +197,6 @@ export interface Translations {
     skill: string;
     skillInfo: string;
     skillDescription: string;
-    warningPassive: string;
-    warningSkill: string;
     viewDetail: string;
     rankValuesTitle: string;
     scalingsTitle: string;

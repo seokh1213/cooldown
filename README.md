@@ -57,6 +57,7 @@ npm run generate-static-data
 `Update Static Data` 워크플로는 30분마다 원본 버전을 확인합니다. 데이터가 바뀌었거나 `master`가 갱신되면 타입 검사, 린트, 전체 데이터 테스트, 프로덕션 빌드, Playwright를 통과한 산출물만 GitHub Pages에 배포합니다. 브라우저 테스트는 세 언어의 데스크톱·모바일 화면과 PWA 오프라인 직접 진입도 검사합니다.
 
 로컬 LLM 매치업 생성기는 별도의 수동 워크플로입니다. 사용법과 지식 계층 계약은 `docs/local-llm-advisor.md`와 `knowledge/README.md`를 참고하세요.
+제품 우선순위와 완료 기준은 `docs/product-roadmap.md`에 정리되어 있습니다.
 
 ## 라이선스
 

@@ -46,7 +46,31 @@ export default defineConfig(({ mode }) => ({
         ],
       },
       workbox: {
-        globPatterns: ["**/*.{js,css,html,png,svg,ico,json}"],
+        cleanupOutdatedCaches: true,
+        globPatterns: ["**/*.{js,css,html,png,svg,ico}"],
+        runtimeCaching: [
+          {
+            urlPattern: /\/cooldown\/data\/version\.json$/,
+            handler: "NetworkFirst",
+            options: {
+              cacheName: "cooldown-version",
+              networkTimeoutSeconds: 3,
+              cacheableResponse: { statuses: [0, 200] },
+            },
+          },
+          {
+            urlPattern: /\/cooldown\/data\/(?!version\.json$).+/,
+            handler: "CacheFirst",
+            options: {
+              cacheName: "cooldown-game-data",
+              cacheableResponse: { statuses: [0, 200] },
+              expiration: {
+                maxEntries: 600,
+                maxAgeSeconds: 60 * 60 * 24 * 60,
+              },
+            },
+          },
+        ],
       },
       devOptions: { enabled: true },
     }),

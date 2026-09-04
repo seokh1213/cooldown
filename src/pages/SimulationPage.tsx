@@ -139,6 +139,8 @@ export default function SimulationPage({
                 <img
                   src={championIconUrl(ddragonVersion, championInfo.id)}
                   alt={championInfo.name}
+                  width={144}
+                  height={144}
                   className="w-full h-full object-cover"
                 />
               ) : (
@@ -262,6 +264,8 @@ export default function SimulationPage({
                         <img
                           src={itemIconUrl(ddragonVersion ?? "", item.id)}
                           alt={item.name}
+                          width={72}
+                          height={72}
                           className="w-full h-full object-cover"
                         />
                       ) : (
@@ -288,19 +292,6 @@ export default function SimulationPage({
         skillSummaries={skillSummaries}
       />
 
-      <SimulationCombatPanel
-        attacker={championInfo}
-        attackerDetail={championDetail}
-        attackerStats={finalStats}
-        target={targetChampionInfo}
-        targetStats={targetStats}
-        targetLevel={targetLevel}
-        ddragonVersion={ddragonVersion}
-        onOpenTargetSelector={() => setIsTargetModalOpen(true)}
-        onTargetLevelChange={setTargetLevel}
-        externalActions={externalActions}
-      />
-
       <SimulationLoadout
         ddragonVersion={ddragonVersion}
         summoners={availableSummoners}
@@ -313,6 +304,19 @@ export default function SimulationPage({
           next[slot] = id;
           return next;
         })}
+      />
+
+      <SimulationCombatPanel
+        attacker={championInfo}
+        attackerDetail={championDetail}
+        attackerStats={finalStats}
+        target={targetChampionInfo}
+        targetStats={targetStats}
+        targetLevel={targetLevel}
+        ddragonVersion={ddragonVersion}
+        onOpenTargetSelector={() => setIsTargetModalOpen(true)}
+        onTargetLevelChange={setTargetLevel}
+        externalActions={externalActions}
       />
 
       {/* INFO 영역은 디자인상 제거 */}

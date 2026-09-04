@@ -62,6 +62,7 @@ function NumberField(props: {
   min: number;
   max: number;
   suffix?: string;
+  disabled?: boolean;
   onChange: (value: number) => void;
 }) {
   return (
@@ -72,6 +73,8 @@ function NumberField(props: {
           type="number"
           min={props.min}
           max={props.max}
+          disabled={props.disabled}
+          autoComplete="off"
           value={Number.isFinite(props.value) ? props.value : 0}
           onChange={(event) => {
             const value = Number(event.target.value);
@@ -79,7 +82,7 @@ function NumberField(props: {
               props.onChange(Math.min(Math.max(value, props.min), props.max));
             }
           }}
-          className="h-9 w-full rounded-md border border-border bg-background px-2 text-sm text-foreground"
+          className="h-9 w-full rounded-md border border-border bg-background px-2 text-sm text-foreground disabled:cursor-not-allowed disabled:opacity-50"
         />
         {props.suffix && <span>{props.suffix}</span>}
       </span>
@@ -223,6 +226,9 @@ export function SimulationCombatPanel(props: SimulationCombatPanelProps) {
   const hasUnknownSelected = rows.some(
     (row) => row.count > 0 && row.rawDamage !== null && row.appliedDamage === null,
   );
+  const calculationReady = Boolean(
+    props.attacker && props.attackerStats && props.target && props.targetStats,
+  );
   const conditionText = (conditions: string[]) => conditions.map((condition) =>
     t.pages.simulation.conditionLabels[condition] ?? condition
   ).join(" · ");
@@ -242,13 +248,14 @@ export function SimulationCombatPanel(props: SimulationCombatPanelProps) {
             className="flex min-h-14 w-full items-center gap-3 rounded-md border border-border/70 bg-background/50 p-2 text-left transition-colors hover:bg-muted/60"
           >
             {props.target ? (
-              <img src={championIconUrl(props.ddragonVersion, props.target.id)} alt="" className="size-10 rounded-full" />
+              <img src={championIconUrl(props.ddragonVersion, props.target.id)} alt="" width={40} height={40} className="size-10 rounded-full" />
             ) : <span className="size-10 rounded-full border border-dashed border-border" />}
             <span className="font-medium">{props.target?.name ?? t.pages.simulation.targetPlaceholder}</span>
           </button>
           <label className="flex items-center justify-between gap-2 text-[11px] text-muted-foreground">
             <span>{t.common.level}</span>
             <Select
+              disabled={!props.targetStats}
               value={String(props.targetLevel)}
               onChange={(event) => props.onTargetLevelChange(Number(event.target.value))}
               className="h-9 w-20"
@@ -259,10 +266,10 @@ export function SimulationCombatPanel(props: SimulationCombatPanelProps) {
             </Select>
           </label>
           <div className="grid grid-cols-2 gap-2">
-            <NumberField label={t.pages.simulation.targetHealth} value={defense.health} min={0} max={20000} onChange={(value) => update("health", value)} />
-            <NumberField label={t.pages.simulation.targetArmor} value={defense.armor} min={-100} max={1000} onChange={(value) => update("armor", value)} />
-            <NumberField label={t.pages.simulation.targetMagicResist} value={defense.magicResist} min={-100} max={1000} onChange={(value) => update("magicResist", value)} />
-            <NumberField label={t.pages.simulation.targetDamageReduction} value={defense.damageReductionPercent} min={0} max={100} suffix="%" onChange={(value) => update("damageReductionPercent", value)} />
+            <NumberField disabled={!props.targetStats} label={t.pages.simulation.targetHealth} value={defense.health} min={0} max={20000} onChange={(value) => update("health", value)} />
+            <NumberField disabled={!props.targetStats} label={t.pages.simulation.targetArmor} value={defense.armor} min={-100} max={1000} onChange={(value) => update("armor", value)} />
+            <NumberField disabled={!props.targetStats} label={t.pages.simulation.targetMagicResist} value={defense.magicResist} min={-100} max={1000} onChange={(value) => update("magicResist", value)} />
+            <NumberField disabled={!props.targetStats} label={t.pages.simulation.targetDamageReduction} value={defense.damageReductionPercent} min={0} max={100} suffix="%" onChange={(value) => update("damageReductionPercent", value)} />
           </div>
         </section>
 
@@ -272,7 +279,7 @@ export function SimulationCombatPanel(props: SimulationCombatPanelProps) {
               <article key={row.key} className="rounded-md border border-border/60 bg-background/40 p-3">
                 <div className="flex items-start gap-2">
                   {row.iconId || row.iconUrl ? (
-                    <img src={row.iconUrl ?? spellIconUrl(props.ddragonVersion, row.iconId!)} alt="" className="size-8 rounded" />
+                    <img src={row.iconUrl ?? spellIconUrl(props.ddragonVersion, row.iconId!)} alt="" width={32} height={32} className="size-8 rounded" />
                   ) : (
                     <span className="flex size-8 items-center justify-center rounded bg-muted font-semibold">AA</span>
                   )}
@@ -321,7 +328,7 @@ export function SimulationCombatPanel(props: SimulationCombatPanelProps) {
                   <tr key={row.key} className="border-b border-border/40 last:border-0">
                     <td className="py-2">
                       <span className="flex items-center gap-2">
-                        {row.iconId || row.iconUrl ? <img src={row.iconUrl ?? spellIconUrl(props.ddragonVersion, row.iconId!)} alt="" className="size-7 rounded" /> : <span className="flex size-7 items-center justify-center rounded bg-muted font-semibold">AA</span>}
+                        {row.iconId || row.iconUrl ? <img src={row.iconUrl ?? spellIconUrl(props.ddragonVersion, row.iconId!)} alt="" width={28} height={28} className="size-7 rounded" /> : <span className="flex size-7 items-center justify-center rounded bg-muted font-semibold">AA</span>}
                         <span className="min-w-0">
                           <span><strong>{row.displayKey}</strong> {row.name}<small className="ml-1 text-muted-foreground">{damageTypeLabel(row.damageType, t.pages.simulation)}</small></span>
                           {row.conditions.length > 0 && (
@@ -349,11 +356,15 @@ export function SimulationCombatPanel(props: SimulationCombatPanelProps) {
           </div>
           <p className="text-[10px] text-muted-foreground">{t.pages.simulation.comboHint}</p>
           {hasUnknownSelected && <p className="text-[10px] text-amber-700 dark:text-amber-300">{t.pages.simulation.unknownDamageWarning}</p>}
-          <div className="grid grid-cols-3 gap-2 rounded-md border border-border/70 bg-background/60 p-3 text-center">
+          {calculationReady ? <div className="grid grid-cols-3 gap-2 rounded-md border border-border/70 bg-background/60 p-3 text-center">
             <div><div className="text-[10px] text-muted-foreground">{t.pages.simulation.totalDamageLabel}</div><div data-testid="combo-total" className="text-lg font-semibold tabular-nums">{totalDamage.toFixed(1)}</div></div>
             <div><div className="text-[10px] text-muted-foreground">{t.pages.simulation.remainingHealthLabel}</div><div data-testid="combo-remaining-health" className="text-lg font-semibold tabular-nums">{remainingHealth.toFixed(1)}</div></div>
             <div><div className="text-[10px] text-muted-foreground">{t.pages.simulation.combatTitle}</div><div data-testid="combo-outcome" className={`text-lg font-semibold ${defense.health > 0 && totalDamage >= defense.health ? "text-rose-500" : "text-emerald-500"}`}>{defense.health > 0 && totalDamage >= defense.health ? t.pages.simulation.lethalLabel : t.pages.simulation.survivesLabel}</div></div>
-          </div>
+          </div> : (
+            <div className="rounded-md border border-dashed border-border/70 bg-background/30 px-4 py-6 text-center text-xs text-muted-foreground">
+              {t.pages.simulation.combatEmptyHint}
+            </div>
+          )}
         </section>
       </div>
     </Card>
