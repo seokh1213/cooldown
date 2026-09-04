@@ -158,7 +158,7 @@ export function SummonerTab({ patchVersion, sources, ddragonVersion, lang }: Sum
               decoding="async"
               width={32}
               height={32}
-              className="w-8 h-8 rounded-md border border-border/60 bg-black/40 flex-shrink-0"
+              className="w-8 h-8 rounded-md border border-border/60 bg-black/40 shrink-0"
             />
             <div className="flex-1 min-w-0">
               <div className="flex items-center justify-between gap-2">
@@ -192,7 +192,7 @@ export function SummonerTab({ patchVersion, sources, ddragonVersion, lang }: Sum
             decoding="async"
             width={40}
             height={40}
-            className="w-10 h-10 rounded-md border border-border/60 bg-black/40 flex-shrink-0"
+            className="w-10 h-10 rounded-md border border-border/60 bg-black/40 shrink-0"
           />
           <div className="flex-1 min-w-0">
             <div className="flex items-center justify-between gap-2">
@@ -214,7 +214,7 @@ export function SummonerTab({ patchVersion, sources, ddragonVersion, lang }: Sum
             <div className="rounded-md border border-border/70 bg-card px-3 py-2 space-y-1.5">
               {renderDescriptionHtml(selectedSpell)}
               <div className="text-xs text-muted-foreground/80 italic leading-relaxed border-t pt-3 mt-3 flex items-center gap-1.5">
-                <AlertTriangle className="w-2.5 h-2.5 text-yellow-600 dark:text-yellow-500 flex-shrink-0" />
+                <AlertTriangle className="w-2.5 h-2.5 text-yellow-600 dark:text-yellow-500 shrink-0" />
                 <span>{t.encyclopedia.runes.warning}</span>
               </div>
             </div>
@@ -287,7 +287,7 @@ export function SummonerTab({ patchVersion, sources, ddragonVersion, lang }: Sum
 
       <div className="rounded-md border bg-card/40 md:h-[calc(100vh-12rem)] flex flex-col md:flex-row">
         <div className="md:flex-1 md:border-r border-border/60 flex flex-col min-w-0 min-h-0">
-          <div className="px-3 py-2 border-b border-border/60 flex items-center justify-between flex-shrink-0">
+          <div className="px-3 py-2 border-b border-border/60 flex items-center justify-between shrink-0">
             <div className="text-[11px] font-semibold text-muted-foreground">
               {t.encyclopedia.summoner.listTitle}
             </div>

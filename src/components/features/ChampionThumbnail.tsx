@@ -63,7 +63,7 @@ function ChampionThumbnail({
           )}
           {/* Blur placeholder - 이미지가 로드되기 전까지 */}
           {!isLoaded && !hasError && (
-            <div className="absolute inset-0 rounded-full bg-gradient-to-br from-muted via-muted/80 to-muted/60 blur-sm" />
+            <div className="absolute inset-0 rounded-full bg-linear-to-br from-muted via-muted/80 to-muted/60 blur-xs" />
           )}
           {/* Actual image - 고정 크기로 레이아웃 시프트 방지 */}
           <img
@@ -95,7 +95,7 @@ function ChampionThumbnail({
         {/* 체크마크 아이콘 - 컨테이너 밖에 배치하여 잘리지 않도록 */}
         {(isLocallySelected || selected) && (
           <div className="absolute -bottom-0.5 -right-0.5 w-4 h-4 md:w-5 md:h-5 bg-primary rounded-full flex items-center justify-center pointer-events-none z-20 shadow-lg border-2 border-background">
-            <Check className="w-2.5 h-2.5 md:w-3 md:h-3 text-primary-foreground stroke-[3]" />
+            <Check className="w-2.5 h-2.5 md:w-3 md:h-3 text-primary-foreground stroke-3" />
           </div>
         )}
       </Button>

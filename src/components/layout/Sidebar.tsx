@@ -63,14 +63,12 @@ function Sidebar({ isOpen, onClose }: SidebarProps) {
           side="left"
           variant="sidebar"
           collapsible="offcanvas"
-          style={{
-            transform: isOpen ? "translateX(0)" : "translateX(-100%)",
-          }}
           className={cn(
-            "md:!translate-x-0 transition-all duration-300 md:w-16 md:p-2 pt-0 md:pt-0"
+            "transition-all duration-300 md:translate-x-0! md:w-16 md:p-2 pt-0 md:pt-0",
+            isOpen ? "translate-x-0!" : "-translate-x-full!",
           )}
         >
-          <SidebarHeader className="!flex !flex-row items-center border-b border-border/50 h-[60px] relative transition-all duration-300 px-0 md:px-2 box-border gap-0">
+          <SidebarHeader className="flex! flex-row! items-center border-b border-border/50 h-[60px] relative transition-all duration-300 px-0 md:px-2 box-border gap-0">
             {/* Mobile: Full header */}
             <div className="md:hidden flex items-center gap-3 flex-1 px-4 h-full">
               <img 
@@ -201,4 +199,3 @@ function Sidebar({ isOpen, onClose }: SidebarProps) {
 }
 
 export default React.memo(Sidebar);
-

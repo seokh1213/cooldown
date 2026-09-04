@@ -8,7 +8,7 @@ export function TutorialContent() {
       {/* 스킬 아이콘 클릭 안내 */}
       <div className="bg-card border border-border rounded-lg p-6 space-y-4">
         <div className="flex items-center gap-3">
-          <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
+          <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
             <MousePointerClick className="w-6 h-6 text-primary" />
           </div>
           <div className="flex-1">
@@ -46,7 +46,7 @@ export function TutorialContent() {
       {/* VS 모드 안내 */}
       <div className="bg-card border border-border rounded-lg p-6 space-y-4">
         <div className="flex items-center gap-3">
-          <div className="w-12 h-12 rounded-lg bg-destructive/10 flex items-center justify-center flex-shrink-0">
+          <div className="w-12 h-12 rounded-lg bg-destructive/10 flex items-center justify-center shrink-0">
             <Swords className="w-6 h-6 text-destructive" />
           </div>
           <div className="flex-1">
