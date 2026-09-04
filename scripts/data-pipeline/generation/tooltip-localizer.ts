@@ -8,6 +8,7 @@ import {
   type ChampionsByLocale,
 } from "../champion-source";
 import type { DataLocale, StringTable } from "../localization";
+import type { CommunityDragonSpellData } from "../../../src/lib/spellTooltipParser/types";
 import { fetchJson } from "../io/json";
 import {
   localizePassiveTooltip,
@@ -45,11 +46,18 @@ function applyActiveTooltip(
   activeSpells: readonly ExtractedActiveSpellData[],
   stringTable: StringTable,
   locale: DataLocale,
+  siblings: Record<string, CommunityDragonSpellData>,
 ): void {
   champion.spells?.forEach((spell, index) => {
     const source = activeSpells[index];
     if (!source) return;
-    const localized = localizeActiveTooltip(spell, source, stringTable, locale);
+    const localized = localizeActiveTooltip(
+      spell,
+      source,
+      stringTable,
+      locale,
+      siblings,
+    );
     if (!localized.tooltip) return;
     spell.summary = localized.summary ?? spell.description;
     spell.tooltip = localized.tooltip;
@@ -66,6 +74,8 @@ export async function localizeActiveTooltips(
   championId: string,
   cdragonVersion: string,
   activeSpells: readonly ExtractedActiveSpellData[],
+  /** `{{ spell.<이름>:<변수> }}` 참조용 형제 스킬 맵 */
+  siblings: Record<string, CommunityDragonSpellData>,
 ): Promise<void> {
   await Promise.all(
     PASSIVE_TOOLTIP_LOCALES.map(async (locale) => {
@@ -80,6 +90,7 @@ export async function localizeActiveTooltips(
           activeSpells,
           await fetchStringTable(cdragonVersion, locale),
           locale,
+          siblings,
         );
       } catch (error) {
         console.warn(
