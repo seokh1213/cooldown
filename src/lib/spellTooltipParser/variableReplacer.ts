@@ -164,7 +164,17 @@ function cleanupPlaceholdersAndIcons(text: string): string {
   // 형식: %{리소스타입}:{이름}%
   // 예: %i:scaleAPen% → "" (토큰만 삭제, 나머지 문장은 유지)
   // - %% 안에 공백이 없고, ":" 콜론이 포함된 경우에만 매칭
-  result = result.replace(/%[^\s:%]+:[^\s%]+%/g, "");
+  //
+  // 토큰만 지우면 앞뒤 공백이 남아 "방어구 관통력 을" 처럼 조사가 떨어진다.
+  // 원문이 "관통력 %i:scaleAPen%</armorPen>을" 이라 앞쪽 공백이 아이콘 몫이다.
+  // 양쪽이 모두 공백이면 하나만 남기고, 한쪽뿐이면 공백까지 함께 지운다.
+  result = result.replace(
+    /(\s*)%[^\s:%]+:[^\s%]+%(\s*)/g,
+    (_match, before: string, after: string) => (before && after ? " " : "")
+  );
+
+  // 아이콘만 들어 있던 괄호는 빈 껍데기로 남는다 ("공격 속도가 12% ()")
+  result = result.replace(/\s*\(\s*\)/g, "");
 
   // 치환 후 남은 "%" 기호가 혼자 있는 경우 제거
   result = result.replace(/\s+%\s+/g, " "); // 공백으로 둘러싸인 % 제거

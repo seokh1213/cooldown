@@ -407,24 +407,10 @@ function evaluatePart(
     return { base: coefficient, statParts: [] };
   }
 
-  // 스킬 쿨다운 자체가 값이 된다 (주로 mMultiplier 자리)
+  // 쿨다운 배율. 런타임 스킬 가속이 반영되는 자리라 기본값은 1 이다.
+  // 쿨다운 "초" 로 해석하면 사일러스 R 이 200% 대신 16000% 로 나온다.
   if (type === "CooldownMultiplierCalculationPart") {
-    const cooldown = ctx.spell.cooldown;
-    if (!Array.isArray(cooldown) || cooldown.length === 0) {
-      logger.debug("CooldownMultiplierCalculationPart: cooldown 배열 없음", {
-        spellId: ctx.spell.id,
-      });
-      return null;
-    }
-    const values = cooldown
-      .map((entry) => (typeof entry === "number" ? entry : Number.parseFloat(String(entry))))
-      .filter((value) => !Number.isNaN(value));
-    if (values.length === 0) return null;
-    return {
-      base:
-        values.length > ctx.spell.maxrank ? values.slice(0, ctx.spell.maxrank) : values,
-      statParts: [],
-    };
+    return { base: 1, statParts: [] };
   }
 
   logger.debug(`Unsupported calculation part type "${type}"`, part);
