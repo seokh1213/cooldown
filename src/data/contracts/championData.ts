@@ -39,6 +39,7 @@ export interface AbilitySimulationTerm {
 export interface AbilitySimulationCalculation {
   id: string;
   kind: "damage";
+  damageType: "physical" | "magical" | "true" | "unknown";
   baseByRank: number[];
   terms: AbilitySimulationTerm[];
 }

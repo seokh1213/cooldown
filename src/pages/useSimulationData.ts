@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
 import type { Language } from "@/i18n";
-import type { Champion } from "@/types";
 import type { NormalizedItem } from "@/types/combatNormalized";
 import type { StaticDataSources } from "@/data/contracts/staticData";
 import type { ChampionDetailV2 } from "@/data/contracts/championData";
@@ -23,6 +22,36 @@ function availableInSimulation(item: NormalizedItem): boolean {
     item.displayInItemSets !== false;
 }
 
+interface ChampionDataInput {
+  patchVersion: string;
+  sources: StaticDataSources;
+  lang: Language;
+}
+
+function useChampionData(input: ChampionDataInput, championId: string) {
+  const [detail, setDetail] = useState<ChampionDetailV2 | null>(null);
+  useEffect(() => {
+    if (!championId) {
+      setDetail(null);
+      return;
+    }
+    let cancelled = false;
+    championRepository
+      .getDetail({ patchVersion: input.patchVersion, sources: input.sources }, input.lang, championId)
+      .then((nextDetail) => {
+        if (!cancelled) setDetail(nextDetail);
+      })
+      .catch(() => {
+        if (!cancelled) setDetail(null);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [championId, input.lang, input.patchVersion, input.sources]);
+  const champion = useMemo(() => detail ? toChampion(detail) : null, [detail]);
+  return { champion, detail };
+}
+
 export function useSimulationData(input: {
   patchVersion: string;
   sources: StaticDataSources;
@@ -30,38 +59,18 @@ export function useSimulationData(input: {
 }) {
   const { patchVersion, sources, lang } = input;
   const [selectedChampionId, setSelectedChampionId] = useState("");
-  const [championInfo, setChampionInfo] = useState<Champion | null>(null);
-  const [championDetail, setChampionDetail] = useState<ChampionDetailV2 | null>(null);
+  const [targetChampionId, setTargetChampionId] = useState("");
+  const { champion: championInfo, detail: championDetail } = useChampionData(
+    input,
+    selectedChampionId,
+  );
+  const { champion: targetChampionInfo } = useChampionData(input, targetChampionId);
   const [level, setLevel] = useState(18);
+  const [targetLevel, setTargetLevel] = useState(18);
   const [availableItems, setAvailableItems] = useState<NormalizedItem[]>([]);
   const [selectedItemIds, setSelectedItemIds] = useState<(string | null)[]>(
     () => Array(6).fill(null),
   );
-
-  useEffect(() => {
-    if (!selectedChampionId) {
-      setChampionInfo(null);
-      setChampionDetail(null);
-      return;
-    }
-    let cancelled = false;
-    championRepository
-      .getDetail({ patchVersion, sources }, lang, selectedChampionId)
-      .then((detail) => {
-        if (cancelled) return;
-        setChampionDetail(detail);
-        setChampionInfo(toChampion(detail));
-      })
-      .catch(() => {
-        if (!cancelled) {
-          setChampionInfo(null);
-          setChampionDetail(null);
-        }
-      });
-    return () => {
-      cancelled = true;
-    };
-  }, [patchVersion, sources, lang, selectedChampionId]);
 
   useEffect(() => {
     let cancelled = false;
@@ -94,6 +103,12 @@ export function useSimulationData(input: {
     () => baseStats ? applyNormalizedItemsToStats(baseStats, selectedItems) : null,
     [baseStats, selectedItems],
   );
+  const targetStats = useMemo(
+    () => targetChampionInfo
+      ? computeChampionStatsAtLevel(targetChampionInfo, targetLevel)
+      : null,
+    [targetChampionInfo, targetLevel],
+  );
   const abilityHaste = useMemo(
     () => computeAbilityHasteFromNormalizedItems(selectedItems),
     [selectedItems],
@@ -106,10 +121,15 @@ export function useSimulationData(input: {
   return {
     selectedChampionId,
     setSelectedChampionId,
+    targetChampionId,
+    setTargetChampionId,
     championInfo,
     championDetail,
+    targetChampionInfo,
     level,
     setLevel,
+    targetLevel,
+    setTargetLevel,
     availableItems,
     selectedItemIds,
     setSelectedItemIds,
@@ -117,6 +137,7 @@ export function useSimulationData(input: {
     selectedItems,
     baseStats,
     finalStats,
+    targetStats,
     skillSummaries,
   };
 }

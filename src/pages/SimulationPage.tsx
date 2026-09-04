@@ -9,6 +9,7 @@ import type { StaticDataSources } from "@/data/contracts/staticData";
 import ChampionSelector from "@/components/features/ChampionSelector";
 import { SimulationItemPicker } from "./SimulationItemPicker";
 import { SimulationSkills } from "./SimulationSkills";
+import { SimulationCombatPanel } from "./SimulationCombatPanel";
 import { useSimulationData } from "./useSimulationData";
 
 interface StatRowProps {
@@ -62,10 +63,14 @@ export default function SimulationPage({
   const simulation = useSimulationData({ patchVersion, sources, lang });
   const {
     setSelectedChampionId,
+    setTargetChampionId,
     championInfo,
     championDetail,
+    targetChampionInfo,
     level,
     setLevel,
+    targetLevel,
+    setTargetLevel,
     availableItems,
     selectedItemIds,
     setSelectedItemIds,
@@ -73,9 +78,11 @@ export default function SimulationPage({
     selectedItems,
     baseStats,
     finalStats,
+    targetStats,
     skillSummaries,
   } = simulation;
   const [isChampionModalOpen, setIsChampionModalOpen] = useState(false);
+  const [isTargetModalOpen, setIsTargetModalOpen] = useState(false);
   const [isItemModalOpen, setIsItemModalOpen] = useState(false);
   const [activeItemSlotIndex, setActiveItemSlotIndex] = useState<number | null>(null);
 
@@ -86,9 +93,7 @@ export default function SimulationPage({
 
   const aaDps = useMemo(() => {
     if (!finalStats) return null;
-    // 단순화: 공격 속도 0.7 고정 근사치
-    const attackSpeed = 0.7;
-    return finalStats.attackDamage * attackSpeed;
+    return finalStats.attackDamage * finalStats.attackSpeed;
   }, [finalStats]);
 
   return (
@@ -266,6 +271,18 @@ export default function SimulationPage({
         skillSummaries={skillSummaries}
       />
 
+      <SimulationCombatPanel
+        attacker={championInfo}
+        attackerDetail={championDetail}
+        attackerStats={finalStats}
+        target={targetChampionInfo}
+        targetStats={targetStats}
+        targetLevel={targetLevel}
+        ddragonVersion={ddragonVersion}
+        onOpenTargetSelector={() => setIsTargetModalOpen(true)}
+        onTargetLevelChange={setTargetLevel}
+      />
+
       {/* 하단: 소환사 주문 / 룬 영역 */}
       <div className="mt-6 grid gap-4 md:grid-cols-[minmax(0,1.1fr)_minmax(0,1.1fr)]">
         <Card className="p-4 bg-card/60 border-border/70 space-y-3">
@@ -316,6 +333,20 @@ export default function SimulationPage({
         onClose={() => setIsChampionModalOpen(false)}
         open={isChampionModalOpen}
         onOpenChange={setIsChampionModalOpen}
+      />
+
+      <ChampionSelector
+        championList={championOptions}
+        selectedChampions={
+          targetChampionInfo && championList
+            ? championList.filter((champion) => champion.id === targetChampionInfo.id)
+            : []
+        }
+        onSelect={(champion) => setTargetChampionId(champion.id)}
+        selectionMode="single"
+        onClose={() => setIsTargetModalOpen(false)}
+        open={isTargetModalOpen}
+        onOpenChange={setIsTargetModalOpen}
       />
 
       <SimulationItemPicker

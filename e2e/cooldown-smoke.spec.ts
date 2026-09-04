@@ -150,3 +150,21 @@ test("exposes unresolved Ability v2 diagnostics without hiding the tooltip", asy
   await expect(tooltip.getByText(/확인 필요한 수치 \(1\)/)).toBeVisible();
   await expect(tooltip).toContainText("원본 데이터에서 완전히 해석되지 않은 수치가 있습니다.");
 });
+
+test("calculates a ranked combo against target defenses", async ({ page }) => {
+  await page.goto("./simulation");
+  await page.getByRole("button", { name: "시뮬레이션할 챔피언 선택" }).click();
+  await page.getByRole("button", { name: "Select 오공", exact: true }).click();
+  await page.getByRole("button", { name: "피해를 받을 대상 챔피언 선택" }).click();
+  await page.getByRole("button", { name: "Select 가렌", exact: true }).click();
+
+  await expect(page.getByRole("button", { name: "피해를 받을 대상 챔피언 선택" })).toContainText("가렌");
+  await page.getByLabel("현재 체력").fill("100");
+  await expect(page.getByTestId("combo-outcome")).toHaveText("처치 가능");
+  expect(Number(await page.getByTestId("combo-total").innerText())).toBeGreaterThan(100);
+
+  await page.getByLabel("피해 감소").fill("100");
+  await expect(page.getByTestId("combo-total")).toHaveText("0.0");
+  await expect(page.getByTestId("combo-remaining-health")).toHaveText("100.0");
+  await expect(page.getByTestId("combo-outcome")).toHaveText("생존");
+});
