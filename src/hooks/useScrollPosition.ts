@@ -42,7 +42,7 @@ export function useScrollPosition(
     const listElement = listRef.current;
     if (!listElement || !isModal || !isOpen) return;
 
-    let scrollTimeout: NodeJS.Timeout;
+    let scrollTimeout: ReturnType<typeof setTimeout>;
     const handleScroll = () => {
       // 디바운스: 스크롤이 끝난 후에만 저장
       clearTimeout(scrollTimeout);
@@ -58,4 +58,3 @@ export function useScrollPosition(
     };
   }, [isModal, isOpen, listRef]);
 }
-
