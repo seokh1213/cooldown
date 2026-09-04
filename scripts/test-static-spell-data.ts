@@ -110,6 +110,14 @@ let mappedSpellCount = 0;
 let totalSpellCount = 0;
 let variableSpellCount = 0;
 let detailedPassiveCount = 0;
+const passiveFallbacks: string[] = [];
+const allowedPassiveFallbacks = new Set([
+  "Kalista",
+  "Kayn",
+  "Ornn",
+  "TwistedFate",
+  "Zilean",
+]);
 for (const fileName of championFiles) {
   const championId = fileName.replace("-en_US.json", "");
   const championFile = JSON.parse(
@@ -154,7 +162,11 @@ for (const fileName of championFiles) {
       hasDetailedPassiveInEveryLocale = false;
     }
   }
-  if (hasDetailedPassiveInEveryLocale) detailedPassiveCount += 1;
+  if (hasDetailedPassiveInEveryLocale) {
+    detailedPassiveCount += 1;
+  } else {
+    passiveFallbacks.push(championId);
+  }
   championFile.champion.spells.forEach((spell, index) => {
     totalSpellCount += 1;
     const byIndex = spellFile.spellData[String(index)];
@@ -182,10 +194,12 @@ for (const fileName of championFiles) {
 assert.ok(championFiles.length > 0);
 assert.ok(variableSpellCount > 0);
 assert.ok(mappedSpellCount >= variableSpellCount);
-assert.ok(
-  detailedPassiveCount >= 160,
-  `expected broad detailed-passive coverage, got ${detailedPassiveCount}/${championFiles.length}`
+assert.deepEqual(
+  passiveFallbacks.filter((championId) => !allowedPassiveFallbacks.has(championId)),
+  [],
+  `unexpected passive fallbacks: ${passiveFallbacks.join(", ")}`
 );
+assert.ok(detailedPassiveCount >= championFiles.length - allowedPassiveFallbacks.size);
 
 console.log(
   `✅ CommunityDragon schema: ${variableSpellCount} variable spells mapped ` +

@@ -125,11 +125,7 @@ export function extractPassiveSpell(
 
 function lookupString(table: StringTable, key: string | undefined): string | undefined {
   if (!key || !table.entries) return undefined;
-  const normalizedKey = key.toLowerCase();
-  const entry = Object.entries(table.entries).find(
-    ([candidate]) => candidate.toLowerCase() === normalizedKey
-  );
-  return entry?.[1];
+  return table.entries[key.toLowerCase()] ?? table.entries[key];
 }
 
 function toParserTemplate(template: string): string {
