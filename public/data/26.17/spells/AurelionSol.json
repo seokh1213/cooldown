@@ -1813,6 +1813,145 @@
           ],
           "__type": "GameCalculation"
         }
+      },
+      "mClientData": {
+        "mTooltipData": {
+          "mLocKeys": {
+            "keyName": "Spell_AurelionSolPassive_Name",
+            "keySummary": "Spell_AurelionSolPassive_Summary",
+            "keyTooltip": "Spell_AurelionSolPassive_Tooltip"
+          }
+        }
+      }
+    },
+    "P": {
+      "DataValues": {
+        "QMaxHealthTrueDamagePerStack": [
+          0.0003100000030826777,
+          0.0003100000030826777,
+          0.0003100000030826777,
+          0.0003100000030826777,
+          0.0003100000030826777,
+          0.0003100000030826777,
+          0.0003100000030826777
+        ],
+        "BaseExecutionThreshold": [
+          5,
+          5,
+          5,
+          5,
+          5,
+          5,
+          5
+        ],
+        "ExecutionGrowthPerBreakpoint": [
+          0.026000000536441803,
+          0.026000000536441803,
+          0.026000000536441803,
+          0.026000000536441803,
+          0.026000000536441803,
+          0.026000000536441803,
+          0.026000000536441803
+        ]
+      },
+      "mSpellCalculations": {
+        "QPassiveScaling": {
+          "mFormulaParts": [
+            {
+              "mBuffName": "{c9372c6b}",
+              "mIconKey": "%i:asolStackIcon%",
+              "mDataValue": "QMaxHealthTrueDamagePerStack",
+              "__type": "BuffCounterByNamedDataValueCalculationPart"
+            }
+          ],
+          "mDisplayAsPercent": true,
+          "mPrecision": 1,
+          "__type": "GameCalculation"
+        },
+        "EPassiveScalingExecute": {
+          "mFormulaParts": [
+            {
+              "mBuffName": "{c9372c6b}",
+              "mIconKey": "%i:asolStackIcon%",
+              "mDataValue": "ExecutionGrowthPerBreakpoint",
+              "__type": "BuffCounterByNamedDataValueCalculationPart"
+            }
+          ],
+          "mPrecision": 1,
+          "__type": "GameCalculation"
+        },
+        "ExecuteHealthThreshold": {
+          "mFormulaParts": [
+            {
+              "{a8cb9c14}": true,
+              "mStat": 12,
+              "mSubpart": {
+                "mSubparts": [
+                  {
+                    "mPart1": {
+                      "mDataValue": "BaseExecutionThreshold",
+                      "__type": "NamedDataValueCalculationPart"
+                    },
+                    "mPart2": {
+                      "mNumber": 0.009999999776482582,
+                      "__type": "NumberCalculationPart"
+                    },
+                    "__type": "ProductOfSubPartsCalculationPart"
+                  },
+                  {
+                    "mPart1": {
+                      "mSpellCalculationKey": "EPassiveScalingExecute",
+                      "__type": "{f3cbe7b2}"
+                    },
+                    "mPart2": {
+                      "mNumber": 0.009999999776482582,
+                      "__type": "NumberCalculationPart"
+                    },
+                    "__type": "ProductOfSubPartsCalculationPart"
+                  }
+                ],
+                "__type": "SumOfSubPartsCalculationPart"
+              },
+              "__type": "StatBySubPartCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        }
+      },
+      "mClientData": {
+        "mTooltipData": {
+          "mLocKeys": {
+            "keyName": "Spell_AurelionSolPassive_Name",
+            "keySummary": "Spell_AurelionSolPassive_Summary",
+            "keyTooltip": "Spell_AurelionSolPassive_Tooltip"
+          }
+        }
+      }
+    }
+  },
+  "passive": {
+    "id": "AurelionSolPassive",
+    "path": "Characters/AurelionSol/Spells/AurelionSolPassiveAbility/AurelionSolPassive",
+    "locKeys": {
+      "keyName": "Spell_AurelionSolPassive_Name",
+      "keySummary": "Spell_AurelionSolPassive_Summary",
+      "keyTooltip": "Spell_AurelionSolPassive_Tooltip"
+    },
+    "localized": {
+      "ko_KR": {
+        "name": "우주의 창조자",
+        "summary": "아우렐리온 솔이 스킬로 피해를 입히면 각 스킬을 영구히 강화하는 <font color='#3458eb'>별가루</font>를 획득합니다. ",
+        "tooltip": "아우렐리온 솔이 스킬로 피해를 입히면 스킬을 강화하는 <span style=\"color: #3458eb\">별가루</span>를 획득합니다.<span><span></span>: 폭발 시 <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">최대 체력의 에 해당하는 마법 피해</span>를 추가로 입힙니다.</span><span><span></span>: 거리가 증가합니다.</span><span><span></span>: 범위가 증가하고 처형 기준값이 <span></span> 증가됩니다.</span><span><span> 및 </span>: 범위가 증가합니다.</span><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">아우렐리온 솔이 획득한 <span style=\"color: #3458eb\">별가루</span>: <span style=\"color: #3458eb\"></span></span>"
+      },
+      "en_US": {
+        "name": "Cosmic Creator",
+        "summary": "Aurelion Sol's damaging Abilities break down enemies into stacks of <font color='#3458eb'>Stardust</font>, which permanently improves each of his abilities. ",
+        "tooltip": "Aurelion Sol's damaging Abilities break down enemies into <span style=\"color: #3458eb\">Stardust</span>, which improves his Abilities.<span><span></span>: Bursts deal an additional <span class=\"text-blue-600 dark:text-blue-500 font-semibold\"> max Health magic damage</span></span><span><span></span>: increased distance.</span><span><span></span>: increased area and <span></span> bonus execute threshold.</span><span><span> and </span>: increased area.</span><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">Aurelion Sol has acquired <span style=\"color: #3458eb\">Stardust</span>: <span style=\"color: #3458eb\"></span></span>"
+      },
+      "zh_CN": {
+        "name": "星海焕然",
+        "summary": "奥瑞利安·索尔的伤害型技能会将敌人们化为<font color='#3458eb'>星尘</font>，星尘可用来永久增强他的每个技能。 ",
+        "tooltip": "奥瑞利安·索尔的伤害型技能会将敌人们化为<span style=\"color: #3458eb\">星尘</span>，星尘可用来永久增强他的每个技能。<span><span></span>：爆发造成额外的<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">最大生命值的魔法伤害</span></span><span><span></span>：距离提升。</span><span><span></span>：区域提升和<span></span>额外处决阈值。</span><span><span>和</span>：区域提升。</span><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">奥瑞利安·索尔已获取的<span style=\"color: #3458eb\">星尘</span>数量：<span style=\"color: #3458eb\"></span></span>"
       }
     }
   }

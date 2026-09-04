@@ -1,4 +1,6 @@
-export type Language = "ko_KR" | "en_US";
+import { createZhCNTranslations } from "./zhCNTranslations";
+
+export type Language = "ko_KR" | "en_US" | "zh_CN";
 
 export interface Translations {
   nav: {
@@ -14,6 +16,7 @@ export interface Translations {
     language: {
       korean: string;
       english: string;
+      chinese: string;
       selectTitle: string;
     };
   };
@@ -210,7 +213,7 @@ export interface Translations {
   };
 }
 
-export const translations: Record<Language, Translations> = {
+const baseTranslations: Record<Exclude<Language, "zh_CN">, Translations> = {
   ko_KR: {
     nav: {
       encyclopedia: "백과사전",
@@ -225,6 +228,7 @@ export const translations: Record<Language, Translations> = {
       language: {
         korean: "한국어",
         english: "Eng",
+        chinese: "简体中文",
         selectTitle: "언어 선택",
       },
     },
@@ -374,7 +378,7 @@ export const translations: Record<Language, Translations> = {
       skill: "스킬",
       skillInfo: "스킬 정보",
       skillDescription: "스킬의 상세 정보입니다.",
-      warningPassive: "패시브 정보는 제공되지 않습니다. 정확한 수치와 설명은 인게임 툴팁을 확인해 주세요.",
+      warningPassive: "정확한 수치와 설명은 인게임 툴팁을 확인해 주세요.",
       warningSkill: "정확한 수치와 설명은 인게임 툴팁을 확인해 주세요.",
       viewDetail: "자세히 보기",
     },
@@ -445,6 +449,7 @@ export const translations: Record<Language, Translations> = {
       language: {
         korean: "한국어",
         english: "Eng",
+        chinese: "简体中文",
         selectTitle: "Select Language",
       },
     },
@@ -594,7 +599,7 @@ export const translations: Record<Language, Translations> = {
       skill: "Skill",
       skillInfo: "Skill Information",
       skillDescription: "Detailed information about the skill.",
-      warningPassive: "Passive information is not provided. Please check the in-game tooltip for accurate values and descriptions.",
+      warningPassive: "Please check the in-game tooltip for accurate values and descriptions.",
       warningSkill: "Please check the in-game tooltip for accurate values and descriptions.",
       viewDetail: "View details",
     },
@@ -653,3 +658,7 @@ export const translations: Record<Language, Translations> = {
   },
 };
 
+export const translations: Record<Language, Translations> = {
+  ...baseTranslations,
+  zh_CN: createZhCNTranslations(baseTranslations.en_US),
+};

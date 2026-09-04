@@ -12,13 +12,26 @@ interface VersionInfo {
 
 interface SpellDataFile {
   spellData: Record<string, CommunityDragonSpellData>;
+  passive?: {
+    id: string;
+    locKeys: { keyTooltip?: string };
+    localized: Record<string, { tooltip?: string }> | null;
+  } | null;
 }
 
 interface ChampionFile {
   champion: {
     spells: ChampionSpell[];
+    passive?: {
+      description?: string;
+      summary?: string;
+      spellId?: string;
+      tooltipSource?: string;
+    };
   };
 }
+
+const passiveLocales = ["ko_KR", "en_US", "zh_CN"] as const;
 
 const projectRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const version = JSON.parse(
@@ -66,6 +79,24 @@ assert.match(wukongTooltip, /20\/45\/70\/95\/120/);
 assert.match(wukongTooltip, /방어력이 10\/15\/20\/25\/30%/);
 assert.match(wukongTooltip, /재사용 대기시간이 0\.5초 감소/);
 
+for (const locale of passiveLocales) {
+  const localizedWukong = JSON.parse(
+    await fs.readFile(
+      path.join(
+        projectRoot,
+        "public/data",
+        version.version,
+        `champions/MonkeyKing-${locale}.json`
+      ),
+      "utf8"
+    )
+  ) as ChampionFile;
+  const description = localizedWukong.champion.passive?.description ?? "";
+  assert.match(description, /\(6 ~ 10\)/, `Wukong passive range (${locale})`);
+  assert.match(description, /0\.35%/, `Wukong passive regen (${locale})`);
+  assert.match(description, /5/, `Wukong passive stack values (${locale})`);
+}
+
 const championsDir = path.join(
   projectRoot,
   "public/data",
@@ -78,6 +109,7 @@ const championFiles = (await fs.readdir(championsDir))
 let mappedSpellCount = 0;
 let totalSpellCount = 0;
 let variableSpellCount = 0;
+let detailedPassiveCount = 0;
 for (const fileName of championFiles) {
   const championId = fileName.replace("-en_US.json", "");
   const championFile = JSON.parse(
@@ -89,6 +121,40 @@ for (const fileName of championFiles) {
       "utf8"
     )
   ) as SpellDataFile;
+  const passiveData = spellFile.spellData.P;
+  assert.ok(passiveData, `${championId} must expose its passive as the P alias`);
+  if (spellFile.passive) {
+    assert.deepEqual(
+      spellFile.spellData[spellFile.passive.id],
+      passiveData,
+      `${championId} passive id and P aliases must match`
+    );
+    assert.ok(
+      spellFile.passive.locKeys.keyTooltip,
+      `${championId} passive must preserve keyTooltip`
+    );
+  }
+
+  let hasDetailedPassiveInEveryLocale = true;
+  for (const locale of passiveLocales) {
+    const localizedFile = JSON.parse(
+      await fs.readFile(
+        path.join(championsDir, `${championId}-${locale}.json`),
+        "utf8"
+      )
+    ) as ChampionFile;
+    const passive = localizedFile.champion.passive;
+    assert.ok(passive?.description, `${championId} passive description (${locale})`);
+    assert.doesNotMatch(
+      passive.description,
+      /@[^@]+@|\{\{[^}]+}}/,
+      `${championId} passive must not contain unresolved template tokens (${locale})`
+    );
+    if (passive.tooltipSource !== "communitydragon") {
+      hasDetailedPassiveInEveryLocale = false;
+    }
+  }
+  if (hasDetailedPassiveInEveryLocale) detailedPassiveCount += 1;
   championFile.champion.spells.forEach((spell, index) => {
     totalSpellCount += 1;
     const byIndex = spellFile.spellData[String(index)];
@@ -116,8 +182,13 @@ for (const fileName of championFiles) {
 assert.ok(championFiles.length > 0);
 assert.ok(variableSpellCount > 0);
 assert.ok(mappedSpellCount >= variableSpellCount);
+assert.ok(
+  detailedPassiveCount >= 160,
+  `expected broad detailed-passive coverage, got ${detailedPassiveCount}/${championFiles.length}`
+);
 
 console.log(
   `✅ CommunityDragon schema: ${variableSpellCount} variable spells mapped ` +
-    `(${mappedSpellCount}/${totalSpellCount} total spells have calculation data)`
+    `(${mappedSpellCount}/${totalSpellCount} total spells have calculation data); ` +
+    `${detailedPassiveCount}/${championFiles.length} passives localized in all three locales`
 );

@@ -1,6 +1,6 @@
 import { Value } from "./types";
+import type { TooltipLocale } from "./types";
 import { formatNumber } from "./formatters";
-import type { Language } from "@/i18n";
 import { getTranslations } from "@/i18n";
 import type { ChampionSpell } from "@/types";
 
@@ -84,9 +84,23 @@ export function scaleBy100(value: Value): Value {
 export function getStatName(
   mStat?: number,
   mStatFormula?: number,
-  lang: Language = "ko_KR"
+  lang: TooltipLocale = "ko_KR"
 ): string {
-  const t = getTranslations(lang);
+  const t = lang === "zh_CN" ? null : getTranslations(lang);
+  const zhStats = {
+    abilityPower: "法术强度",
+    attackDamage: "攻击力",
+    bonusAttackDamage: "额外攻击力",
+    health: "生命值",
+    bonusHealth: "额外生命值",
+    armor: "护甲",
+    bonusArmor: "额外护甲",
+    magicResist: "魔法抗性",
+    bonusMagicResist: "额外魔法抗性",
+    lifesteal: "生命偷取",
+    bonusLifesteal: "额外生命偷取",
+  };
+  const stats = t?.stats ?? zhStats;
   const hasStat = mStat !== undefined && mStat !== null;
   const hasFormula = mStatFormula !== undefined && mStatFormula !== null;
 
@@ -101,7 +115,7 @@ export function getStatName(
 
   // 둘 다 생략된 경우 → Ability Power 계수
   if (!hasStat && !hasFormula) {
-    return t.stats.abilityPower;
+    return stats.abilityPower;
   }
 
   const statCode = mStat ?? mStatFormula;
@@ -109,41 +123,41 @@ export function getStatName(
   // Attack Damage 계수
   if (statCode === 2) {
     if (mStat === 2 && mStatFormula === 2) {
-      return t.stats.bonusAttackDamage; // bonus AD
+      return stats.bonusAttackDamage; // bonus AD
     }
-    return t.stats.attackDamage;
+    return stats.attackDamage;
   }
 
   // Health 계수
   if (statCode === 12) {
     if (mStat === 12 && mStatFormula === 2) {
-      return t.stats.bonusHealth; // bonus HP
+      return stats.bonusHealth; // bonus HP
     }
-    return t.stats.health;
+    return stats.health;
   }
 
   // Armor 계수
   if (statCode === 1) {
     if (mStat === 1 && mStatFormula === 2) {
-      return t.stats.bonusArmor;
+      return stats.bonusArmor;
     }
-    return t.stats.armor;
+    return stats.armor;
   }
 
   // Magic Resist 계수
   if (statCode === 6) {
     if (mStat === 6 && mStatFormula === 2) {
-      return t.stats.bonusMagicResist;
+      return stats.bonusMagicResist;
     }
-    return t.stats.magicResist;
+    return stats.magicResist;
   }
 
   // Lifesteal 계수
   if (statCode === 18) {
     if (mStat === 18 && mStatFormula === 2) {
-      return t.stats.bonusLifesteal;
+      return stats.bonusLifesteal;
     }
-    return t.stats.lifesteal;
+    return stats.lifesteal;
   }
 
   // 그 외 알 수 없는 스탯은 표시하지 않는다 (아이콘으로만 처리하거나 무시)
@@ -158,11 +172,10 @@ export function getStatName(
  */
 export function getAbilityResourceName(
   spell: ChampionSpell,
-  lang: Language = "ko_KR"
+  lang: TooltipLocale = "ko_KR"
 ): string {
-  const t = getTranslations(lang);
-
-  const resourceName = t.common.mana;
+  const resourceName =
+    lang === "zh_CN" ? "法力值" : getTranslations(lang).common.mana;
 
   if (spell.costType) {
     const costType = spell.costType.trim();
@@ -181,4 +194,3 @@ export function getAbilityResourceName(
 
   return resourceName;
 }
-

@@ -15,7 +15,7 @@
  * 앱 전역 설정
  */
 export type StorageTheme = "light" | "dark";
-export type StorageLanguage = "ko_KR" | "en_US";
+export type StorageLanguage = "ko_KR" | "en_US" | "zh_CN";
 
 /**
  * 백과사전에서 "선택된 챔피언 목록"을 직렬화할 때 사용하는 최소 정보
@@ -40,5 +40,4 @@ export type StoredSelectedChampionList = StoredSelectedChampion[];
  * 그 파일 자체도 해싱 대상에 포함된다.
  * 필요하면 해당 타입들을 여기로 옮겨서 일원화할 수 있다.
  */
-
 

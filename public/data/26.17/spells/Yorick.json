@@ -1158,6 +1158,294 @@
           ],
           "__type": "GameCalculation"
         }
+      },
+      "mClientData": {
+        "mTooltipData": {
+          "mLocKeys": {
+            "keyName": "Spell_YorickPassive_Name",
+            "keySummary": "Spell_YorickPassive_Summary",
+            "keyTooltip": "Spell_YorickPassive_Tooltip"
+          }
+        }
+      }
+    },
+    "P": {
+      "DataValues": {
+        "YorickPassiveGhoulMax": [
+          4,
+          4,
+          4,
+          4,
+          4,
+          4,
+          4
+        ],
+        "YorickGhoulDamageReductionVsTowers": [
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5
+        ],
+        "YorickGhoulLeashRange": [
+          1600,
+          1600,
+          1600,
+          1600,
+          1600,
+          1600,
+          1600
+        ],
+        "YorickGhoulSpawnDelay": [
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        "CherryGhoulHPMod": [
+          0.699999988079071,
+          0.699999988079071,
+          0.699999988079071,
+          0.699999988079071,
+          0.699999988079071,
+          0.699999988079071,
+          0.699999988079071
+        ],
+        "GhoulADRatio": [
+          0.20000000298023224,
+          0.20000000298023224,
+          0.20000000298023224,
+          0.20000000298023224,
+          0.20000000298023224,
+          0.20000000298023224,
+          0.20000000298023224
+        ],
+        "GraveDuration": [
+          300,
+          300,
+          300,
+          300,
+          300,
+          300,
+          300
+        ],
+        "MinionMoveBonus": [
+          40,
+          40,
+          40,
+          40,
+          40,
+          40,
+          40
+        ],
+        "MeleeAttackDamageModifier": [
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2
+        ],
+        "MinionDamageTakenMod": [
+          0.6000000238418579,
+          0.6000000238418579,
+          0.6000000238418579,
+          0.6000000238418579,
+          0.6000000238418579,
+          0.6000000238418579,
+          0.6000000238418579
+        ],
+        "ProcDamageModifier": [
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5
+        ],
+        "ARAMPassiveSpawnThreshold": [
+          5,
+          5,
+          5,
+          5,
+          5,
+          5,
+          5
+        ],
+        "GhoulMonsterDamageMod": [
+          0.6000000238418579,
+          0.6000000238418579,
+          0.6000000238418579,
+          0.6000000238418579,
+          0.6000000238418579,
+          0.6000000238418579,
+          0.6000000238418579
+        ],
+        "GhoulHealthRatio": [
+          0.15000000596046448,
+          0.15000000596046448,
+          0.15000000596046448,
+          0.15000000596046448,
+          0.15000000596046448,
+          0.15000000596046448,
+          0.15000000596046448
+        ],
+        "MonsterDamageTakenMod": [
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
+        ]
+      },
+      "mSpellCalculations": {
+        "YorickPassiveGhoulHealth": {
+          "mFormulaParts": [
+            {
+              "mStartValue": 100,
+              "mEndValue": 300,
+              "mScaleByStatProgressionMultiplier": true,
+              "__type": "ByCharLevelInterpolationCalculationPart"
+            },
+            {
+              "mStat": 12,
+              "mStatFormula": 2,
+              "mDataValue": "GhoulHealthRatio",
+              "__type": "StatByNamedDataValueCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        },
+        "YorickPassiveGhoulDamage": {
+          "mFormulaParts": [
+            {
+              "mStartValue": 15,
+              "mEndValue": 100,
+              "mScaleByStatProgressionMultiplier": true,
+              "__type": "ByCharLevelInterpolationCalculationPart"
+            },
+            {
+              "mStat": 2,
+              "mStatFormula": 2,
+              "mDataValue": "GhoulADRatio",
+              "__type": "StatByNamedDataValueCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        },
+        "YorickPassiveSpawnThreshold": {
+          "mFormulaParts": [
+            {
+              "mLevel1Value": 8,
+              "mBreakpoints": [
+                {
+                  "mLevel": 3,
+                  "mAdditionalBonusAtThisLevel": -1,
+                  "__type": "Breakpoint"
+                },
+                {
+                  "mLevel": 5,
+                  "mAdditionalBonusAtThisLevel": -1,
+                  "__type": "Breakpoint"
+                },
+                {
+                  "mLevel": 7,
+                  "mAdditionalBonusAtThisLevel": -1,
+                  "__type": "Breakpoint"
+                },
+                {
+                  "mLevel": 9,
+                  "mAdditionalBonusAtThisLevel": -1,
+                  "__type": "Breakpoint"
+                },
+                {
+                  "mLevel": 11,
+                  "mAdditionalBonusAtThisLevel": -1,
+                  "__type": "Breakpoint"
+                },
+                {
+                  "mLevel": 13,
+                  "mAdditionalBonusAtThisLevel": -1,
+                  "__type": "Breakpoint"
+                }
+              ],
+              "__type": "ByCharLevelBreakpointsCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        },
+        "AOEDamageModifier": {
+          "mFormulaParts": [
+            {
+              "mLevel1Value": 0.6600000262260437,
+              "mInitialBonusPerLevel": -0.019999999552965164,
+              "mBreakpoints": [
+                {
+                  "mLevel": 15,
+                  "__type": "Breakpoint"
+                }
+              ],
+              "__type": "ByCharLevelBreakpointsCalculationPart"
+            }
+          ],
+          "mDisplayAsPercent": true,
+          "__type": "GameCalculation"
+        },
+        "BonusAttackSpeed": {
+          "mFormulaParts": [
+            {
+              "mStartValue": 0.07999999821186066,
+              "mEndValue": 0.800000011920929,
+              "mScaleByStatProgressionMultiplier": true,
+              "__type": "ByCharLevelInterpolationCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        }
+      },
+      "mClientData": {
+        "mTooltipData": {
+          "mLocKeys": {
+            "keyName": "Spell_YorickPassive_Name",
+            "keySummary": "Spell_YorickPassive_Summary",
+            "keyTooltip": "Spell_YorickPassive_Tooltip"
+          }
+        }
+      }
+    }
+  },
+  "passive": {
+    "id": "YorickPassive",
+    "path": "Characters/Yorick/Spells/YorickPassiveAbility/YorickPassive",
+    "locKeys": {
+      "keyName": "Spell_YorickPassive_Name",
+      "keySummary": "Spell_YorickPassive_Summary",
+      "keyTooltip": "Spell_YorickPassive_Tooltip"
+    },
+    "localized": {
+      "ko_KR": {
+        "name": "영혼의 길잡이",
+        "summary": "<font color='#FF9900'>저주받은 무리:</font> 요릭이 안개 망령 무리를 소환해 주변 적을 공격합니다.",
+        "tooltip": "요릭 근처에서 적 2명이 죽을 때마다 무덤이 생성됩니다. 챔피언 및 대형 몬스터가 죽으면 항상 무덤이 생성됩니다.<br /><br />이 무덤을 사용하여 범위 내에서 <span class=\"text-green-600 dark:text-green-400\">(15% 추가 체력)의 체력</span>과 <span class=\"text-red-600 dark:text-red-500 font-semibold\">(20% 추가 공격력)의 공격력</span>을 지닌 <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">안개 망령</span>을 최대 4명 <span>각성</span>시킬 수 있습니다."
+      },
+      "en_US": {
+        "name": "Shepherd of Souls",
+        "summary": "<font color='#FF9900'>The Cursed Horde:</font> Yorick can summon Mist Walkers to swarm and attack nearby enemies.",
+        "tooltip": "Yorick raises a grave for every 2 enemies that die near him. Champions and large monsters always leave a grave.<br /><br />These graves can be used to <span>Awaken</span> <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Mist Walkers</span> with <span class=\"text-green-600 dark:text-green-400\">(15% bonus Health) Health</span> and <span class=\"text-red-600 dark:text-red-500 font-semibold\">(20% bonus Attack Damage) Attack Damage</span>, up to 4 in an area."
+      },
+      "zh_CN": {
+        "name": "牧魂人",
+        "summary": "<font color='#FF9900'>受诅咒的部落：</font>约里克可以召唤雾行者来蜂拥并攻击附近的敌人。",
+        "tooltip": "附近每阵亡2名敌人，约里克就会升起一座坟墓。英雄和大型野怪在阵亡时总会留下一座坟墓。<br /><br />这些坟墓可以被用来<span>唤醒</span>拥有<span class=\"text-green-600 dark:text-green-400\">(15% 额外生命值)生命值</span>和<span class=\"text-red-600 dark:text-red-500 font-semibold\">(20% 额外攻击力)攻击力</span>的<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">雾行者</span>，在一个区域内至多至4座。"
       }
     }
   }

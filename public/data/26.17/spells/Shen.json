@@ -1115,6 +1115,213 @@
           },
           "__type": "GameCalculationConditional"
         }
+      },
+      "mClientData": {
+        "mTooltipData": {
+          "mLocKeys": {
+            "keyName": "Spell_ShenPassive_Name",
+            "keySummary": "Spell_ShenPassive_Summary",
+            "keyTooltip": "Spell_ShenPassive_Tooltip"
+          }
+        }
+      }
+    },
+    "P": {
+      "DataValues": {
+        "ShieldDuration": [
+          2.5,
+          2.5,
+          2.5,
+          2.5,
+          2.5,
+          2.5,
+          2.5
+        ],
+        "LeashDistanceThreshold": [
+          3500,
+          3500,
+          3500,
+          3500,
+          3500,
+          3500,
+          3500
+        ],
+        "LeashPreferredResultDistance": [
+          2250,
+          2250,
+          2250,
+          2250,
+          2250,
+          2250,
+          2250
+        ],
+        "DirectionIndicatorMinimumDistance": [
+          150,
+          150,
+          150,
+          150,
+          150,
+          150,
+          150
+        ],
+        "PassiveCDFlexAmount": [
+          0.125,
+          0.125,
+          0.125,
+          0.125,
+          0.125,
+          0.125,
+          0.125
+        ],
+        "ShieldCooldown": [
+          11,
+          11,
+          11,
+          11,
+          11,
+          11,
+          11
+        ],
+        "ShenZedQuestShieldMultiplier": [
+          1.2999999523162842,
+          1.2999999523162842,
+          1.2999999523162842,
+          1.2999999523162842,
+          1.2999999523162842,
+          1.2999999523162842,
+          1.2999999523162842
+        ]
+      },
+      "mSpellCalculations": {
+        "{58a09e24}": {
+          "mFormulaParts": [
+            {
+              "mStartValue": 47,
+              "mEndValue": 120,
+              "__type": "ByCharLevelInterpolationCalculationPart"
+            },
+            {
+              "mStat": 12,
+              "mStatFormula": 2,
+              "mCoefficient": 0.12999999523162842,
+              "__type": "StatByCoefficientCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        },
+        "ShieldCooldownReduction": {
+          "mFormulaParts": [
+            {
+              "mLevel1Value": 4,
+              "mInitialBonusPerLevel": 0.23499999940395355,
+              "mBreakpoints": [
+                {
+                  "mLevel": 19,
+                  "mBonusPerLevelAtAndAfter": 0.125,
+                  "__type": "Breakpoint"
+                }
+              ],
+              "__type": "ByCharLevelBreakpointsCalculationPart"
+            }
+          ],
+          "mPrecision": 1,
+          "__type": "GameCalculation"
+        },
+        "{87290189}": {
+          "mFormulaParts": [
+            {
+              "mStartValue": 47,
+              "mEndValue": 101,
+              "__type": "ByCharLevelInterpolationCalculationPart"
+            },
+            {
+              "mStat": 12,
+              "mStatFormula": 2,
+              "mCoefficient": 0.07000000029802322,
+              "__type": "StatByCoefficientCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        },
+        "{7e912bc4}": {
+          "mMultiplier": {
+            "mDataValue": "ShenZedQuestShieldMultiplier",
+            "__type": "NamedDataValueCalculationPart"
+          },
+          "mFormulaParts": [
+            {
+              "mSpellCalculationKey": "{58a09e24}",
+              "__type": "{f3cbe7b2}"
+            }
+          ],
+          "__type": "GameCalculation"
+        },
+        "ShieldValue": {
+          "mDefaultGameCalculation": "{58a09e24}",
+          "mConditionalGameCalculation": "{7e912bc4}",
+          "mConditionalCalculationRequirements": {
+            "mBuffName": "{7dfdcd99}",
+            "__type": "HasBuffCastRequirement"
+          },
+          "__type": "GameCalculationConditional"
+        },
+        "{a7305d7f}": {
+          "mMultiplier": {
+            "mDataValue": "ShenZedQuestShieldMultiplier",
+            "__type": "NamedDataValueCalculationPart"
+          },
+          "mFormulaParts": [
+            {
+              "mSpellCalculationKey": "{87290189}",
+              "__type": "{f3cbe7b2}"
+            }
+          ],
+          "__type": "GameCalculation"
+        },
+        "{ff986284}": {
+          "mDefaultGameCalculation": "{87290189}",
+          "mConditionalGameCalculation": "{a7305d7f}",
+          "mConditionalCalculationRequirements": {
+            "mBuffName": "{7dfdcd99}",
+            "__type": "HasBuffCastRequirement"
+          },
+          "__type": "GameCalculationConditional"
+        }
+      },
+      "mClientData": {
+        "mTooltipData": {
+          "mLocKeys": {
+            "keyName": "Spell_ShenPassive_Name",
+            "keySummary": "Spell_ShenPassive_Summary",
+            "keyTooltip": "Spell_ShenPassive_Tooltip"
+          }
+        }
+      }
+    }
+  },
+  "passive": {
+    "id": "ShenPassive",
+    "path": "Characters/Shen/Spells/ShenPassiveAbility/ShenPassive",
+    "locKeys": {
+      "keyName": "Spell_ShenPassive_Name",
+      "keySummary": "Spell_ShenPassive_Summary",
+      "keyTooltip": "Spell_ShenPassive_Tooltip"
+    },
+    "localized": {
+      "ko_KR": {
+        "name": "기 보호막",
+        "summary": "스킬을 사용하면 쉔이 보호막을 얻습니다. 다른 챔피언에게 스킬로 영향을 주면 이 효과의 재사용 대기시간이 감소합니다.",
+        "tooltip": "스킬을 시전하면 쉔이 2.5초 동안 <span class=\"text-blue-600 dark:text-blue-300\">의 피해를 흡수하는 보호막</span>을 얻습니다. 재사용 대기시간은 11초이며 아군 또는 적 챔피언에게 스킬이 적중할 때마다 재사용 대기시간이 4초 줄어듭니다.<br /><br /><span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">기의 검</span>은 다른 스킬로 조종할 수 있습니다."
+      },
+      "en_US": {
+        "name": "Ki Barrier",
+        "summary": "After casting a spell, Shen gets a shield. Affecting other champions reduces the cooldown of this effect.",
+        "tooltip": "Shen gains <span class=\"text-blue-600 dark:text-blue-300\"> Shield</span> for 2.5 seconds after using an Ability. This effect has a 11 second Cooldown, reduced by 4 seconds when one of Shen's Abilities successfully affects an ally or enemy.<br /><br />Shen has a <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Spirit Blade</span> that his other Abilities use."
+      },
+      "zh_CN": {
+        "name": "忍法！气合盾",
+        "summary": "在施放一次技能后，慎会获得一层护盾。如果慎的技能对英雄产生作用，那么这个技能的冷却时间就会降低。",
+        "tooltip": "慎在使用一个技能后，会获得持续2.5秒的<span class=\"text-blue-600 dark:text-blue-300\">护盾值</span>。这个效果有11秒冷却时间，每当慎有一个技能成功影响到一名友军或敌人时，这个冷却时间就会缩短4秒。<br /><br />慎拥有一把<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">魂刃</span>，可供他的其它技能使用。"
       }
     }
   }

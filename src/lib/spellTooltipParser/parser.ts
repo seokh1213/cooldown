@@ -1,6 +1,5 @@
 import { ChampionSpell } from "@/types";
-import type { Language } from "@/i18n";
-import { CommunityDragonSpellData } from "./types";
+import type { CommunityDragonSpellData, TooltipLocale } from "./types";
 import { convertXmlTagsToHtml } from "./xmlTagConverter";
 import { replaceVariables } from "./variableReplacer";
 import { sanitizeHtml } from "./formatters";
@@ -16,7 +15,7 @@ export function parseSpellTooltip(
   text: string | undefined,
   spell?: ChampionSpell,
   communityDragonData?: CommunityDragonSpellData,
-  lang: Language = "ko_KR"
+  lang: TooltipLocale = "ko_KR"
 ): string {
   if (!text) return "";
 
@@ -44,7 +43,7 @@ export function parseSpellTooltip(
 export function parseSpellDescription(
   text: string | undefined,
   spell?: ChampionSpell,
-  lang: Language = "ko_KR"
+  lang: TooltipLocale = "ko_KR"
 ): string {
   if (!text) return "";
 

@@ -51,7 +51,7 @@ function getInitialLang(): Language {
   if (typeof window === "undefined") return "ko_KR";
   
   const stored = localStorage.getItem(LANG_STORAGE_KEY);
-  if (stored === "ko_KR" || stored === "en_US") {
+  if (stored === "ko_KR" || stored === "en_US" || stored === "zh_CN") {
     return stored as Language;
   }
   

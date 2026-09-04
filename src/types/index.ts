@@ -27,6 +27,10 @@ export interface ChampionSpell {
 export interface ChampionPassive {
   name?: string;
   description?: string;
+  /** Data Dragon의 축약 설명. description이 CDragon 상세 툴팁이면 함께 보존한다. */
+  summary?: string;
+  spellId?: string;
+  tooltipSource?: "communitydragon";
   image: {
     full: string;
   };
@@ -188,4 +192,3 @@ export interface RuneStatShardStaticData {
   cdragonVersion: string | null;
   groups: RuneStatShardGroup[];
 }
-

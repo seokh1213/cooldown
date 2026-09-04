@@ -1,5 +1,7 @@
 import { ChampionSpell } from "@/types";
 
+export type TooltipLocale = "ko_KR" | "en_US" | "zh_CN";
+
 /**
  * 변수 파싱 결과
  */
@@ -247,4 +249,3 @@ export type VariableReplacer = (
   communityDragonData?: CommunityDragonSpellData,
   replacedVars?: Set<string>
 ) => string | null;
-

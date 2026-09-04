@@ -254,7 +254,7 @@ function Nav({
             <PopoverContent className="w-64 p-3" align="end" sideOffset={8}>
               <div className="space-y-2">
                 <h4 className="font-medium text-sm leading-none mb-3">{t.nav.language.selectTitle}</h4>
-                <div className="grid grid-cols-2 gap-2">
+                <div className="grid grid-cols-3 gap-2">
                   <button
                     onClick={() => handleLanguageChange("ko_KR")}
                     className={cn(
@@ -278,6 +278,18 @@ function Nav({
                   >
                     <span className="text-2xl">🇺🇸</span>
                     <span className="text-xs font-medium">{t.nav.language.english}</span>
+                  </button>
+                  <button
+                    onClick={() => handleLanguageChange("zh_CN")}
+                    className={cn(
+                      "flex flex-col items-center justify-center gap-2 p-3 rounded-lg border-2 transition-all",
+                      lang === "zh_CN"
+                        ? "border-primary bg-primary/10"
+                        : "border-border hover:border-primary/50 hover:bg-muted/50"
+                    )}
+                  >
+                    <span className="text-2xl">🇨🇳</span>
+                    <span className="text-xs font-medium">{t.nav.language.chinese}</span>
                   </button>
                 </div>
               </div>

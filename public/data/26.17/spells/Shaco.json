@@ -1136,6 +1136,194 @@
           "mModifiedGameCalculation": "ShivDamage",
           "__type": "GameCalculationModified"
         }
+      },
+      "mClientData": {
+        "mTooltipData": {
+          "mLocKeys": {
+            "keyName": "Spell_ShacoPassive_Name",
+            "keySummary": "Spell_ShacoPassive_Summary",
+            "keyTooltip": "Spell_ShacoPassive_Tooltip"
+          }
+        }
+      }
+    },
+    "P": {
+      "DataValues": {
+        "PerUnitCD": [
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3
+        ],
+        "MonsterCritMod": [
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2
+        ],
+        "APRatio": [
+          0.4000000059604645,
+          0.4000000059604645,
+          0.4000000059604645,
+          0.4000000059604645,
+          0.4000000059604645,
+          0.4000000059604645,
+          0.4000000059604645
+        ],
+        "CloneMult": [
+          0.75,
+          0.75,
+          0.75,
+          0.75,
+          0.75,
+          0.75,
+          0.75
+        ],
+        "ShivSlowAmount": [
+          -0.4000000059604645,
+          -0.4000000059604645,
+          -0.4000000059604645,
+          -0.4000000059604645,
+          -0.4000000059604645,
+          -0.4000000059604645,
+          -0.4000000059604645
+        ],
+        "ShredDuration": [
+          4,
+          4,
+          4,
+          4,
+          4,
+          4,
+          4
+        ],
+        "ShivExecuteDamagePercent": [
+          1.5,
+          1.5,
+          1.5,
+          1.5,
+          1.5,
+          1.5,
+          1.5
+        ],
+        "AttackBonusADRatio": [
+          0.20000000298023224,
+          0.20000000298023224,
+          0.20000000298023224,
+          0.20000000298023224,
+          0.20000000298023224,
+          0.20000000298023224,
+          0.20000000298023224
+        ]
+      },
+      "mSpellCalculations": {
+        "MonsterDamageTooltip": {
+          "mFormulaParts": [
+            {
+              "mStat": 2,
+              "mSubpart": {
+                "mSubparts": [
+                  {
+                    "mDataValue": "MonsterCritMod",
+                    "__type": "NamedDataValueCalculationPart"
+                  },
+                  {
+                    "mStat": 9,
+                    "mStatFormula": 2,
+                    "mCoefficient": 1,
+                    "__type": "StatByCoefficientCalculationPart"
+                  }
+                ],
+                "__type": "SumOfSubPartsCalculationPart"
+              },
+              "__type": "StatBySubPartCalculationPart"
+            },
+            {
+              "mDataValue": "APRatio",
+              "__type": "StatByNamedDataValueCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        },
+        "BasicAttackDamage": {
+          "mFormulaParts": [
+            {
+              "mStartValue": 20,
+              "mEndValue": 35,
+              "__type": "ByCharLevelInterpolationCalculationPart"
+            },
+            {
+              "mStat": 2,
+              "mStatFormula": 2,
+              "mDataValue": "AttackBonusADRatio",
+              "__type": "StatByNamedDataValueCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        },
+        "ShivDamage": {
+          "mFormulaParts": [
+            {
+              "mStartValue": 15,
+              "mEndValue": 50,
+              "__type": "ByCharLevelInterpolationCalculationPart"
+            },
+            {
+              "mCoefficient": 0.10000000149011612,
+              "__type": "StatByCoefficientCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        },
+        "ShivDamageExecute": {
+          "mMultiplier": {
+            "mDataValue": "ShivExecuteDamagePercent",
+            "__type": "NamedDataValueCalculationPart"
+          },
+          "mModifiedGameCalculation": "ShivDamage",
+          "__type": "GameCalculationModified"
+        }
+      },
+      "mClientData": {
+        "mTooltipData": {
+          "mLocKeys": {
+            "keyName": "Spell_ShacoPassive_Name",
+            "keySummary": "Spell_ShacoPassive_Summary",
+            "keyTooltip": "Spell_ShacoPassive_Tooltip"
+          }
+        }
+      }
+    }
+  },
+  "passive": {
+    "id": "ShacoPassive",
+    "path": "Characters/Shaco/Spells/ShacoPassiveAbility/ShacoPassive",
+    "locKeys": {
+      "keyName": "Spell_ShacoPassive_Name",
+      "keySummary": "Spell_ShacoPassive_Summary",
+      "keyTooltip": "Spell_ShacoPassive_Tooltip"
+    },
+    "localized": {
+      "ko_KR": {
+        "name": "암습",
+        "summary": "샤코의 기본 공격과 양날 독을 뒤에서 사용하면 추가 피해를 입힙니다.",
+        "tooltip": "샤코가 대상의 뒤에서 공격 시:<span>기본 공격 시 <span class=\"text-red-600 dark:text-red-500 font-semibold\">(20% 추가 공격력)의 추가 물리 피해</span>를 입히며 치명타가 적용될 수 있습니다.<span><span></span> 사용 시 <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(10% 주문력)의 추가 마법 피해</span>를 입힙니다. 대상의 체력이 30%보다 낮은 경우 <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(15% 주문력)의 추가 마법 피해</span>까지 증가합니다."
+      },
+      "en_US": {
+        "name": "Backstab",
+        "summary": "Shaco's basic attacks and Two-Shiv Poison deal additional damage when striking from behind.",
+        "tooltip": "When striking enemies that are facing away from him:<span>Shaco's Attacks deal an additional <span class=\"text-red-600 dark:text-red-500 font-semibold\">(20% bonus Attack Damage) physical damage</span> that can critically strike.<span><span></span> deals an additional <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(10% Ability Power) magic damage</span>, increased to <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(15% Ability Power) magic damage</span> if the target is below 30% Health."
+      },
+      "zh_CN": {
+        "name": "背刺",
+        "summary": "在目标的背后时，萨科的普攻和【E双面毒刃】会造成额外伤害。",
+        "tooltip": "在命中一名没有面朝萨科的敌人时：<span>萨科的攻击造成额外的<span class=\"text-red-600 dark:text-red-500 font-semibold\">(20% 额外攻击力)物理伤害</span>且这个伤害可以暴击。<span>并且<span></span>造成额外的<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(10% 法术强度)魔法伤害</span>，并会在目标低于30%生命值时提升至<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(15% 法术强度)魔法伤害</span>。"
       }
     }
   }

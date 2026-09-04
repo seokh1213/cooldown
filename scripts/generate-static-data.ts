@@ -22,6 +22,13 @@ import type {
 import { StatKey } from "../src/types/combatStats";
 import { parseItemDescription } from "../src/lib/spellTooltipParser/index";
 import { toOfficialPatchVersion } from "../src/lib/gamePatchVersion";
+import {
+  extractPassiveSpell,
+  localizePassiveTooltip,
+  PASSIVE_TOOLTIP_LOCALES,
+  type LocalizedPassiveTooltip,
+  type PassiveTooltipLocale,
+} from "./passive-tooltip-data";
 
 const VERSION_URL = "https://ddragon.leagueoflegends.com/api/versions.json";
 const CHAMP_LIST_URL = (VERSION: string, LANG: string) =>
@@ -36,20 +43,30 @@ const SUMMONER_URL = (VERSION: string, LANG: string) =>
   `https://ddragon.leagueoflegends.com/cdn/${VERSION}/data/${LANG}/summoner.json`;
 const COMMUNITY_DRAGON_URL = (basePath: string, championId: string) =>
   `https://raw.communitydragon.org/${basePath}/game/data/characters/${championId}/${championId}.bin.json`;
+const toCommunityDragonLocale = (lang: string) => {
+  if (lang === "ko_KR") return "ko_kr";
+  if (lang === "zh_CN") return "zh_cn";
+  return "default";
+};
 const COMMUNITY_DRAGON_ITEMS_URL = (basePath: string, lang: string) => {
-  const locale = lang === "ko_KR" ? "ko_kr" : "default";
+  const locale = toCommunityDragonLocale(lang);
   return `https://raw.communitydragon.org/${basePath}/plugins/rcp-be-lol-game-data/global/${locale}/v1/items.json`;
 };
 const COMMUNITY_DRAGON_PERKSTYLES_URL = (basePath: string, lang: string) => {
-  const locale = lang === "ko_KR" ? "ko_kr" : "default";
+  const locale = toCommunityDragonLocale(lang);
   return `https://raw.communitydragon.org/${basePath}/plugins/rcp-be-lol-game-data/global/${locale}/v1/perkstyles.json`;
 };
 const COMMUNITY_DRAGON_PERKS_URL = (basePath: string, lang: string) => {
-  const locale = lang === "ko_KR" ? "ko_kr" : "default";
+  const locale = toCommunityDragonLocale(lang);
   return `https://raw.communitydragon.org/${basePath}/plugins/rcp-be-lol-game-data/global/${locale}/v1/perks.json`;
 };
+const COMMUNITY_DRAGON_STRINGTABLE_URL = (
+  basePath: string,
+  lang: PassiveTooltipLocale
+) =>
+  `https://raw.communitydragon.org/${basePath}/game/${lang.toLowerCase()}/data/menu/en_us/lol.stringtable.json`;
 
-const LANGUAGES = ["ko_KR", "en_US"] as const;
+const LANGUAGES = PASSIVE_TOOLTIP_LOCALES;
 const DATA_DIR = path.join(process.cwd(), "public", "data");
 
 // Community Dragon 챔피언 ID 변환
@@ -1051,6 +1068,58 @@ async function saveToFile(data: any, filePath: string): Promise<void> {
   console.log(`Saved: ${filePath}`);
 }
 
+const stringTableCache = new Map<string, Promise<Record<string, unknown>>>();
+
+function fetchPassiveStringTable(
+  basePath: string,
+  lang: PassiveTooltipLocale
+): Promise<Record<string, unknown>> {
+  const cacheKey = `${basePath}:${lang}`;
+  const cached = stringTableCache.get(cacheKey);
+  if (cached) return cached;
+
+  const request = fetchJson(COMMUNITY_DRAGON_STRINGTABLE_URL(basePath, lang));
+  stringTableCache.set(cacheKey, request);
+  return request;
+}
+
+async function buildLocalizedPassiveTooltips(
+  basePath: string,
+  passive: ReturnType<typeof extractPassiveSpell>
+): Promise<Record<PassiveTooltipLocale, LocalizedPassiveTooltip> | null> {
+  if (!passive) return null;
+
+  const entries = await Promise.all(
+    PASSIVE_TOOLTIP_LOCALES.map(async (lang) => {
+      const stringTable = await fetchPassiveStringTable(basePath, lang);
+      return [lang, localizePassiveTooltip(passive, stringTable, lang)] as const;
+    })
+  );
+  return Object.fromEntries(entries) as Record<
+    PassiveTooltipLocale,
+    LocalizedPassiveTooltip
+  >;
+}
+
+function applyLocalizedPassiveTooltip(
+  championFilePath: string,
+  passiveId: string,
+  localized: LocalizedPassiveTooltip
+): void {
+  if (!localized.tooltip || !fs.existsSync(championFilePath)) return;
+
+  const data = JSON.parse(fs.readFileSync(championFilePath, "utf-8"));
+  const passive = data?.champion?.passive;
+  if (!passive || typeof passive !== "object") return;
+
+  passive.summary = passive.description;
+  passive.description = localized.tooltip;
+  passive.spellId = passiveId;
+  passive.tooltipSource = "communitydragon";
+  if (localized.name) passive.name = localized.name;
+  fs.writeFileSync(championFilePath, JSON.stringify(data, null, 2), "utf-8");
+}
+
 /**
  * CDragon에서 챔피언 스펠 데이터를 가져올 때,
  * DDragon 기준 버전 목록을 이용해 다음 순서로 시도:
@@ -1122,7 +1191,7 @@ async function fetchCommunityDragonItemsWithFallback(
   lang: string,
   versionCandidates: string[]
 ): Promise<{ items: CommunityDragonItem[] | null; cdragonVersion: string | null }> {
-  const resultsLocale = lang === "ko_KR" ? "ko_KR" : "default";
+  const resultsLocale = toCommunityDragonLocale(lang);
 
   for (const basePath of versionCandidates) {
     const url = COMMUNITY_DRAGON_ITEMS_URL(basePath, lang);
@@ -1200,7 +1269,7 @@ async function fetchRuneStatShardsWithFallback(
   versionCandidates: string[],
   ddragonVersion: string
 ): Promise<RuneStatShardStaticData | null> {
-  const resultsLocale = lang === "ko_KR" ? "ko_KR" : "default";
+  const resultsLocale = toCommunityDragonLocale(lang);
 
   for (const basePath of versionCandidates) {
     const perkstylesUrl = COMMUNITY_DRAGON_PERKSTYLES_URL(basePath, lang);
@@ -1620,6 +1689,25 @@ async function main() {
           }
 
           const spellData = extractSpellData(cdData, championId);
+          const passive = extractPassiveSpell(cdData, championId);
+          const localizedPassive = cdragonVersion
+            ? await buildLocalizedPassiveTooltips(cdragonVersion, passive)
+            : null;
+
+          if (passive) {
+            spellData.P = passive.spellData;
+            spellData[passive.id] = passive.spellData;
+          }
+
+          if (passive && localizedPassive) {
+            for (const lang of PASSIVE_TOOLTIP_LOCALES) {
+              applyLocalizedPassiveTooltip(
+                path.join(championsDir, `${championId}-${lang}.json`),
+                passive.id,
+                localizedPassive[lang]
+              );
+            }
+          }
           
           if (Object.keys(spellData).length > 0) {
             const spellInfo = {
@@ -1630,6 +1718,14 @@ async function main() {
               cdragonVersion,
               championId,
               spellData,
+              passive: passive
+                ? {
+                    id: passive.id,
+                    path: passive.path,
+                    locKeys: passive.locKeys,
+                    localized: localizedPassive,
+                  }
+                : null,
             };
             await saveToFile(spellInfo, path.join(spellsDir, `${championId}.json`));
             successCount++;
