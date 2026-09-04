@@ -66,6 +66,8 @@ export interface StatPart {
    * (표시 시에만 특수 처리 – 예: "100%" 처럼 스탯 이름 없이 보여주기)
    */
   isCoefficient?: boolean;
+  /** 어떤 스탯인지 한눈에 보이도록 앞에 붙이는 아이콘 이름 */
+  icon?: string;
 }
 
 /**

@@ -11,6 +11,7 @@ import type {
   StaticDataSources,
 } from "../../src/data/contracts/staticData";
 import { replaceVariable } from "../../src/lib/spellTooltipParser/variableReplacer";
+import { stripStatIconTokens } from "../../src/lib/spellTooltipParser/statIcons";
 import { parseSpellTooltip } from "../../src/lib/spellTooltipParser/parser";
 import type { CommunityDragonSpellData } from "../../src/lib/spellTooltipParser/types";
 import { getAbilityResourceName } from "../../src/lib/spellTooltipParser/valueUtils";
@@ -87,7 +88,10 @@ function buildRankValues(
     const effect = leveltip.effect[index];
     const match = effect.match(/\{\{\s*([^}]+)\s*}}/);
     if (!match) continue;
-    const rendered = replaceVariable(match[1].trim(), spell, source, locale);
+    // 레벨별 수치 목록은 텍스트로만 쓰므로 스탯 아이콘 자리 표시는 지운다
+    const rendered = stripStatIconTokens(
+      replaceVariable(match[1].trim(), spell, source, locale) ?? "",
+    );
     if (!rendered) continue;
 
     const label = leveltip.label[index].replace(
