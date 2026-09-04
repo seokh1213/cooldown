@@ -1045,6 +1045,147 @@
           ],
           "__type": "GameCalculation"
         }
+      },
+      "mClientData": {
+        "mTooltipData": {
+          "mLocKeys": {
+            "keyName": "Spell_RumbleHeatSystem_Name",
+            "keySummary": "Spell_RumbleHeatSystem_Summary",
+            "keyTooltip": "Spell_RumbleHeatSystem_Tooltip"
+          }
+        }
+      }
+    },
+    "P": {
+      "DataValues": {
+        "OverheatDuration": [
+          4,
+          4,
+          4,
+          4,
+          4,
+          4,
+          4
+        ],
+        "DangerZoneHeat": [
+          50,
+          50,
+          50,
+          50,
+          50,
+          50,
+          50
+        ],
+        "OverheatingHeat": [
+          150,
+          150,
+          150,
+          150,
+          150,
+          150,
+          150
+        ],
+        "OverheatPercBonusDamage": [
+          0.03999999910593033,
+          0.03999999910593033,
+          0.03999999910593033,
+          0.03999999910593033,
+          0.03999999910593033,
+          0.03999999910593033,
+          0.03999999910593033
+        ],
+        "MonsterCap": [
+          80,
+          80,
+          80,
+          80,
+          80,
+          80,
+          80
+        ],
+        "HeatDecayPerS": [
+          -10,
+          -10,
+          -10,
+          -10,
+          -10,
+          -10,
+          -10
+        ]
+      },
+      "mSpellCalculations": {
+        "TotalBaseDamage": {
+          "mFormulaParts": [
+            {
+              "mStartValue": 5,
+              "mEndValue": 40,
+              "__type": "ByCharLevelInterpolationCalculationPart"
+            },
+            {
+              "mCoefficient": 0.25,
+              "__type": "StatByCoefficientCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        },
+        "OverheatAS": {
+          "mFormulaParts": [
+            {
+              "mStartValue": 0.5,
+              "mEndValue": 1.2999999523162842,
+              "mScaleByStatProgressionMultiplier": true,
+              "__type": "ByCharLevelInterpolationCalculationPart"
+            }
+          ],
+          "mDisplayAsPercent": true,
+          "__type": "GameCalculation"
+        },
+        "MonsterCapScaling": {
+          "mFormulaParts": [
+            {
+              "mStartValue": 65,
+              "mEndValue": 150,
+              "mScaleByStatProgressionMultiplier": true,
+              "__type": "ByCharLevelInterpolationCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        }
+      },
+      "mClientData": {
+        "mTooltipData": {
+          "mLocKeys": {
+            "keyName": "Spell_RumbleHeatSystem_Name",
+            "keySummary": "Spell_RumbleHeatSystem_Summary",
+            "keyTooltip": "Spell_RumbleHeatSystem_Tooltip"
+          }
+        }
+      }
+    }
+  },
+  "passive": {
+    "id": "RumbleHeatSystem",
+    "path": "Characters/Rumble/Spells/RumbleHeatSystemAbility/RumbleHeatSystem",
+    "locKeys": {
+      "keyName": "Spell_RumbleHeatSystem_Name",
+      "keySummary": "Spell_RumbleHeatSystem_Summary",
+      "keyTooltip": "Spell_RumbleHeatSystem_Tooltip"
+    },
+    "localized": {
+      "ko_KR": {
+        "name": "고철장 거인",
+        "summary": "럼블은 스킬을 사용할 때마다 열기를 얻습니다. 열기가 50%에 달하면 럼블은 위험 상태에 들어갑니다. 위험 상태가 되면 럼블의 모든 스킬은 추가 효과를 얻습니다. 열기가 100%에 달하면 과열 상태가 되어 공격 속도가 증가하고 기본 공격에 마법 피해가 추가되며 몇 초간 스킬을 사용할 수 없게 됩니다.",
+        "tooltip": "럼블은 스킬을 사용할 때마다 <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">열기</span>를 얻습니다. <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">열기가 50</span>에 도달하면 럼블이 <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">위험 상태</span>가 되어 모든 기본 스킬이 추가 효과를 얻습니다. <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">열기가 150</span>에 도달하면 4초 동안 과열 상태가 됩니다. <br /><br />과열되면 <span class=\"text-purple-600 dark:text-purple-500\">침묵</span> 상태가 되지만 <span>공격 속도가 (50% ~ 130%)</span> 증가하며 기본 공격 시 <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(25% 주문력) + 최대 체력의 4%에 해당하는 마법 피해</span>를 추가로 입힙니다.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">체력 비례 피해량은 몬스터에게 최대 (65 ~ 150)의 피해를 입힙니다. </span>"
+      },
+      "en_US": {
+        "name": "Junkyard Titan",
+        "summary": "Every spell Rumble casts gives him Heat. When he reaches 50% Heat he reaches Danger Zone, granting all his basic abilities bonus effects. When he reaches 100% Heat, he starts Overheating, gaining bonus Attack Speed and granting his basic attacks bonus damage, but making him unable to cast spells for a few seconds.",
+        "tooltip": "Rumble's Abilities generate <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Heat</span>. While above <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">50 Heat</span>, he enters the <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Danger Zone</span>, causing his basic Abilities to gain bonus effects. When he reaches <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">150 Heat</span>, he overheats for 4 seconds. <br /><br />While overheated, Rumble <span class=\"text-purple-600 dark:text-purple-500\">Silences</span> himself, but gains <span>(50% ~ 130%) Attack Speed</span> and causes his Attacks to deal an additional <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(25% Ability Power) plus 4% max Health magic damage</span>.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">Percent damage is limited to (65 ~ 150) damage on Monsters. </span>"
+      },
+      "zh_CN": {
+        "name": "机械重组",
+        "summary": "兰博的技能都能使其获得热量。当兰博的热量达到50%时，他会处于危险温度状态，所有基础技能都会获得额外效果。当热量达到100%时，他会进入过热状态，获得额外的攻击速度并让他的普通攻击造成额外伤害，但也会让他在数秒内无法施放技能。",
+        "tooltip": "兰博的技能生成<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">热量</span>。在<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">50热量</span>以上时，他会进入<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">危险温度</span>，使他的基础技能可以获得额外效果。当他到达<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">150热量</span>时，他会进入持续4秒的过热状态。<br /><br />在过热状态下，兰博会<span class=\"text-purple-600 dark:text-purple-500\">沉默</span>自身，但会获得<span>(50% ~ 130%)攻击速度</span>并使他的攻击造成额外的<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(25% 法术强度)外加4%最大生命值的魔法伤害</span>。<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">对野怪的百分比伤害的上限为(65 ~ 150)。</span>"
       }
     }
   }

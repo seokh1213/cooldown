@@ -16,10 +16,10 @@ import {
   ByCharLevelInterpolationCalculationPart,
   ProductOfSubPartsCalculationPart,
   SpellCalculation,
+  TooltipLocale,
 } from "./types";
 import { getDataValueByName } from "./dataValueUtils";
 import { Value } from "./types";
-import type { Language } from "@/i18n";
 import { getTranslations } from "@/i18n";
 import {
   add,
@@ -61,7 +61,7 @@ export function replaceCalculateData(
   parseResult: ParseResult,
   spell: ChampionSpell,
   communityDragonData?: CommunityDragonSpellData,
-  lang: Language = "ko_KR"
+  lang: TooltipLocale = "ko_KR"
 ): string | null {
   const spellCalcs = communityDragonData?.mSpellCalculations;
   const dataValues = communityDragonData?.DataValues;
@@ -230,16 +230,14 @@ export function replaceCalculateData(
         // perLevel 정보가 없으면 아래 일반 로직으로 폴백
       }
 
-      // === 특수 케이스: 선형 보간 퍼센트 범위 (ByCharLevelInterpolationCalculationPart) ===
-      // 예: mStartValue=0.8, mEndValue=0.95, mDisplayAsPercent=true
-      //  → "(80% ~ 95%)"
+      // === 특수 케이스: 챔피언 레벨 선형 보간 범위 ===
+      // 예: 방어력 6~10, 또는 mDisplayAsPercent=true인 80%~95%
       if (
         parts.length === 1 &&
         parts[0] &&
         typeof parts[0] === "object" &&
         "__type" in parts[0] &&
-        parts[0].__type === "ByCharLevelInterpolationCalculationPart" &&
-        isPercent
+        parts[0].__type === "ByCharLevelInterpolationCalculationPart"
       ) {
         const interpPart = parts[0] as ByCharLevelInterpolationCalculationPart;
         const start = interpPart.mStartValue ?? 0;
@@ -249,7 +247,7 @@ export function replaceCalculateData(
         return {
           base: rangeBase,
           statParts: [],
-          isPercent: true,
+          isPercent,
           isCharLevelRange: true,
           precision: undefined,
         };
@@ -331,11 +329,11 @@ export function replaceCalculateData(
           }
 
           const resourceName = getAbilityResourceName(spell, lang);
-          const t = getTranslations(lang);
-
           // mStatFormula: 2 → bonus 자원
           const isBonus = resPart.mStatFormula === 2;
-          const name = isBonus ? `${t.common.bonus} ${resourceName}` : resourceName;
+          const bonus =
+            lang === "zh_CN" ? "额外" : getTranslations(lang).common.bonus;
+          const name = isBonus ? `${bonus} ${resourceName}` : resourceName;
 
           const ratio: Value = resPart.mCoefficient;
           statParts.push({ name, ratio, isCoefficient: true });
@@ -572,7 +570,9 @@ export function replaceCalculateData(
       const [minVal, maxVal] = baseScaled;
       const minStr = formatNumber(minVal);
       const maxStr = formatNumber(maxVal);
-      baseStr = `(${minStr}% ~ ${maxStr}%)`;
+      baseStr = result.isPercent
+        ? `(${minStr}% ~ ${maxStr}%)`
+        : `(${minStr} ~ ${maxStr})`;
     } else if (
       result.isBreakpointRange &&
       isVector(baseScaled) &&
@@ -622,4 +622,3 @@ export function replaceCalculateData(
   // 여러 항목이 합쳐진 경우에만 괄호로 묶음
   return parts.length === 1 ? resultStr : `(${resultStr})`;
 }
-

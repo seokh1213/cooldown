@@ -742,6 +742,166 @@
           ],
           "__type": "GameCalculation"
         }
+      },
+      "mClientData": {
+        "mTooltipData": {
+          "mLocKeys": {
+            "keyName": "Spell_GravesPassive_Name",
+            "keySummary": "Spell_GravesPassive_Summary",
+            "keyTooltip": "Spell_GravesPassive_Tooltip"
+          }
+        }
+      }
+    },
+    "P": {
+      "DataValues": {
+        "CritDamageRatio": [
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5
+        ],
+        "StructureDamageReduction": [
+          0.25,
+          0.25,
+          0.25,
+          0.25,
+          0.25,
+          0.25,
+          0.25
+        ]
+      },
+      "mSpellCalculations": {
+        "SingleBulletDamage": {
+          "mSimpleTooltipCalculationDisplay": 6,
+          "mFormulaParts": [
+            {
+              "mStat": 2,
+              "mSubpart": {
+                "values": [
+                  0,
+                  0.7000017762184143,
+                  0.7112977504730225,
+                  0.7233880162239075,
+                  0.7362725138664246,
+                  0.7499512434005737,
+                  0.7644242644309998,
+                  0.7796915173530579,
+                  0.795753002166748,
+                  0.8126087784767151,
+                  0.8302587270736694,
+                  0.8487030267715454,
+                  0.8679414987564087,
+                  0.8879742622375488,
+                  0.908801257610321,
+                  0.9304224848747253,
+                  0.9528380036354065,
+                  0.9760477542877197,
+                  1.000051736831665,
+                  1.0248500108718872,
+                  1.0504424571990967,
+                  1.076829195022583,
+                  1.1040102243423462,
+                  1.1319855451583862,
+                  1.1607550382614136,
+                  1.1903187036514282,
+                  1.2206767797470093,
+                  1.2518290281295776,
+                  1.2837754487991333,
+                  1.3165162801742554,
+                  1.3500512838363647
+                ],
+                "__type": "ByCharLevelFormulaCalculationPart"
+              },
+              "__type": "StatBySubPartCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        },
+        "MultiBulletDamage": {
+          "mMultiplier": {
+            "mNumber": 0.3330000042915344,
+            "__type": "NumberCalculationPart"
+          },
+          "mSimpleTooltipCalculationDisplay": 6,
+          "mModifiedGameCalculation": "SingleBulletDamage",
+          "__type": "GameCalculationModified"
+        },
+        "CritDamageMult": {
+          "mFormulaParts": [
+            {
+              "mPart1": {
+                "mDataValue": "CritDamageRatio",
+                "__type": "NamedDataValueCalculationPart"
+              },
+              "mPart2": {
+                "mSubparts": [
+                  {
+                    "mNumber": -1,
+                    "__type": "NumberCalculationPart"
+                  },
+                  {
+                    "mStat": 9,
+                    "mCoefficient": 1,
+                    "__type": "StatByCoefficientCalculationPart"
+                  }
+                ],
+                "__type": "SumOfSubPartsCalculationPart"
+              },
+              "__type": "ProductOfSubPartsCalculationPart"
+            }
+          ],
+          "mDisplayAsPercent": true,
+          "__type": "GameCalculation"
+        },
+        "{549cda4d}": {
+          "mFormulaParts": [
+            {
+              "mStat": 9,
+              "mCoefficient": 1,
+              "__type": "StatByCoefficientCalculationPart"
+            }
+          ],
+          "__type": "GameCalculation"
+        }
+      },
+      "mClientData": {
+        "mTooltipData": {
+          "mLocKeys": {
+            "keyName": "Spell_GravesPassive_Name",
+            "keySummary": "Spell_GravesPassive_Summary",
+            "keyTooltip": "Spell_GravesPassive_Tooltip"
+          }
+        }
+      }
+    }
+  },
+  "passive": {
+    "id": "GravesPassive",
+    "path": "Characters/Graves/Spells/GravesPassiveAbility/GravesPassive",
+    "locKeys": {
+      "keyName": "Spell_GravesPassive_Name",
+      "keySummary": "Spell_GravesPassive_Summary",
+      "keyTooltip": "Spell_GravesPassive_Tooltip"
+    },
+    "localized": {
+      "ko_KR": {
+        "name": "새로운 운명",
+        "summary": "그레이브즈의 산탄총에는 몇 가지 특징이 있습니다. 총탄이 떨어지면 총을 새로 장전해야 합니다. 공격 시 4개의 탄환이 발사되며 유닛을 관통해서 공격할 수 없습니다. 챔피언이 아닌 유닛이 탄환을 여러 개 맞으면 뒤로 밀려납니다.",
+        "tooltip": "그레이브즈의 기본 공격에는 몇 가지 특징이 있습니다.<br /><span><span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">탄환</span> 두 발을 발사하면 재장전해야 합니다. <span>공격 속도</span>가 재장전 시간은 약간 줄이지만, 공격 후 다음 공격까지 걸리는 시간은 대폭 감소시킵니다.<span>공격 시 4개의 탄환을 발사합니다. 대상에 적중한 첫 번째 탄환은 <span class=\"text-red-600 dark:text-red-500 font-semibold\">의 물리 피해</span>를 입히고 이후의 탄환은 각각 <span class=\"text-red-600 dark:text-red-500 font-semibold\">의 물리 피해</span>를 입힙니다. 치명타 공격 시 일반 치명타 효과 대신 6발의 탄환을 발사하고 의 추가 피해를 입힙니다. 구조물의 경우 피해량이 25% 감소합니다.<span>탄환은 적중한 첫 번째 유닛을 관통할 수 없습니다. 챔피언이 아닌 유닛이 탄환을 여러 개 맞으면 <span class=\"text-purple-600 dark:text-purple-500\">뒤로 밀려납니다</span>."
+      },
+      "en_US": {
+        "name": "New Destiny",
+        "summary": "Graves' shotgun has some unique properties. He must reload when he runs out of ammo. Attacks fire 4 bullets, which cannot pass through units. Non-champions struck by multiple bullets are knocked back.",
+        "tooltip": "Graves' Attacks have unique properties:<br /><span>It can only fire two <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Shells</span> before he must reload. <span>Attack Speed</span> reduces reload time slightly, but reduces time between shots dramatically.<span>Each Attack fires 4 bullets. The first bullet on a target deals <span class=\"text-red-600 dark:text-red-500 font-semibold\"> physical damage</span>, and subsequent bullets deal <span class=\"text-red-600 dark:text-red-500 font-semibold\"></span> each. Instead of normal Critical effects, Critical strikes fire 6 bullets and deal more damage. Structures take 25% reduced damage.<span>Bullets stop on the first unit hit. Non-champions struck by multiple bullets are <span class=\"text-purple-600 dark:text-purple-500\">Knocked Back</span>."
+      },
+      "zh_CN": {
+        "name": "新命运",
+        "summary": "格雷福斯的散弹枪拥有一些独特性能。他的弹药打光后就必须重新装弹。每次攻击会发射4颗弹丸，弹丸无法穿透单位。会击退被多颗弹丸命中的非英雄单位。",
+        "tooltip": "格雷福斯的霰弹枪拥有一些独特性能：<br /><span>它只有2颗<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">子弹</span>并且打完后就必须得重新装填。<span>攻击速度</span>会略微缩短装填时间，但会显著缩短开火间隔。<span>每次攻击会发射4颗弹丸。对同一目标的第一颗弹丸会造成<span class=\"text-red-600 dark:text-red-500 font-semibold\">物理伤害</span>，并且每颗后续弹丸造成<span class=\"text-red-600 dark:text-red-500 font-semibold\">物理伤害</span>。作为常规暴击效果的替代，暴击会将弹丸的数量提升至6颗并让每颗弹丸造成的伤害提高。对建筑造成的伤害减少25%。<span>弹丸在命中第一个单位后就会停下。会<span class=\"text-purple-600 dark:text-purple-500\">击退</span>被多颗弹丸命中的非英雄单位。"
       }
     }
   }

@@ -1,8 +1,8 @@
 import { ChampionSpell } from "@/types";
-import type { Language } from "@/i18n";
 import {
   CommunityDragonSpellData,
   ParseResult,
+  TooltipLocale,
   Value,
 } from "./types";
 import { parseExpression } from "./expressionParser";
@@ -75,7 +75,7 @@ function replaceVariableTokens(
   text: string,
   spell: ChampionSpell,
   communityDragonData: CommunityDragonSpellData | undefined,
-  lang: Language
+  lang: TooltipLocale
 ): string {
   const variableRegex = /\{\{([^}]+)}}/g;
 
@@ -173,7 +173,7 @@ export function replaceVariables(
   text: string,
   spell?: ChampionSpell,
   communityDragonData?: CommunityDragonSpellData,
-  lang: Language = "ko_KR"
+  lang: TooltipLocale = "ko_KR"
 ): string {
   if (!spell) return text;
 
@@ -208,7 +208,7 @@ export function replaceVariable(
   trimmedVar: string,
   spell: ChampionSpell,
   communityDragonData?: CommunityDragonSpellData,
-  lang: Language = "ko_KR"
+  lang: TooltipLocale = "ko_KR"
 ): string | null {
   const parseResult = parseExpression(trimmedVar);
 
