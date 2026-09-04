@@ -1,0 +1,392 @@
+{
+  "schemaVersion": 2,
+  "patchVersion": "26.17",
+  "locale": "en_US",
+  "sources": {
+    "ddragon": "16.17.1",
+    "cdragon": "16.17"
+  },
+  "champion": {
+    "id": "Yorick",
+    "key": "83",
+    "name": "Yorick",
+    "title": "Shepherd of Souls",
+    "tags": [
+      "Fighter",
+      "Tank"
+    ],
+    "baseStats": {
+      "health": {
+        "base": 650,
+        "perLevel": 114
+      },
+      "healthRegen": {
+        "base": 8,
+        "perLevel": 0.8
+      },
+      "mana": {
+        "base": 300,
+        "perLevel": 60
+      },
+      "manaRegen": {
+        "base": 7.5,
+        "perLevel": 0.75
+      },
+      "attackDamage": {
+        "base": 62,
+        "perLevel": 0
+      },
+      "attackSpeed": {
+        "base": 0.625,
+        "perLevel": 2
+      },
+      "armor": {
+        "base": 36,
+        "perLevel": 4.5
+      },
+      "magicResist": {
+        "base": 32,
+        "perLevel": 2.05
+      },
+      "moveSpeed": {
+        "base": 340,
+        "perLevel": 0
+      },
+      "attackRange": {
+        "base": 175,
+        "perLevel": 0
+      }
+    },
+    "baseStatContributions": [
+      {
+        "stat": "MAX_HEALTH",
+        "value": 114,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "HEALTH_REGEN",
+        "value": 0.8,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAX_MANA",
+        "value": 60,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MANA_REGEN",
+        "value": 0.75,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_DAMAGE",
+        "value": 0,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_SPEED",
+        "value": 2,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ARMOR",
+        "value": 4.5,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAGIC_RESIST",
+        "value": 2.05,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      }
+    ],
+    "abilities": {
+      "P": {
+        "slot": "P",
+        "id": "YorickPassive",
+        "name": "Shepherd of Souls",
+        "summary": "<font color='#FF9900'>The Cursed Horde:</font> Yorick can summon Mist Walkers to swarm and attack nearby enemies.",
+        "bodyHtml": "Yorick raises a grave for every 2 enemies that die near him. Champions and large monsters always leave a grave.<br /><br />These graves can be used to <span>Awaken</span> <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Mist Walkers</span> with <span class=\"text-green-600 dark:text-green-400\">(15% bonus Health) Health</span> and <span class=\"text-red-600 dark:text-red-500 font-semibold\">(20% bonus Attack Damage) Attack Damage</span>, up to 4 in an area.",
+        "iconFile": "Yorick_P.png",
+        "cooldownSeconds": [],
+        "range": [],
+        "rankValues": [],
+        "scalings": [],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "Q": {
+        "slot": "Q",
+        "id": "YorickQ",
+        "name": "Last Rites",
+        "summary": "Yorick deals bonus damage on his next attack and heals himself. If the target is a champion or large monster or if the target dies, a grave will be dug.",
+        "bodyHtml": "Yorick's next Attack deals an additional <span class=\"text-red-600 dark:text-red-500 font-semibold\">(30/50/70/90/110 + (50% Attack Damage)) physical damage</span> and restores <span class=\"text-green-600 dark:text-green-400\">10 plus 6/7/8/9/10% of his missing Health</span>, reduced by 50% against non-Champions. If this Attack hits a Champion or large Monster or kills the target, it leaves a grave.<br /><br />When there are 3 or more graves nearby and this Ability has already been used, Yorick can <span class=\"text-yellow-600 dark:text-yellow-300\">Recast</span> to raise <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Mist Walkers</span> from all nearby graves.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">This Ability triggers spell effects upon dealing damage.</span>",
+        "iconFile": "YorickQ.png",
+        "cooldownSeconds": [
+          6,
+          5.5,
+          5,
+          4.5,
+          4
+        ],
+        "cost": {
+          "values": [
+            20,
+            20,
+            20,
+            20,
+            20
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "rankValues": [
+          {
+            "label": "Bonus Damage",
+            "values": "30/50/70/90/110"
+          },
+          {
+            "label": "Healing",
+            "values": "6/7/8/9/10"
+          },
+          {
+            "label": "Cooldown",
+            "values": "6/5.5/5/4.5/4"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "Q Scaling",
+            "labelKo": "Q 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "0:QHeal"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "W": {
+        "slot": "W",
+        "id": "YorickW",
+        "name": "Dark Procession",
+        "summary": "Yorick summons a destructible wall at target location that will block enemy movement.",
+        "bodyHtml": "Yorick summons a wall of spirits blocking enemies' path, but not allies'. The wall has <span class=\"text-green-600 dark:text-green-400\">2/2/3/3/4 Health</span> and disappears after 4 seconds.",
+        "iconFile": "YorickW.png",
+        "cooldownSeconds": [
+          20,
+          18,
+          16,
+          14,
+          12
+        ],
+        "cost": {
+          "values": [
+            70,
+            70,
+            70,
+            70,
+            70
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          600,
+          600,
+          600,
+          600,
+          600
+        ],
+        "rankValues": [
+          {
+            "label": "Cooldown",
+            "values": "20/18/16/14/12"
+          },
+          {
+            "label": "Health",
+            "values": "2/2/3/3/4"
+          }
+        ],
+        "scalings": [],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "E": {
+        "slot": "E",
+        "id": "YorickE",
+        "name": "Mourning Mist",
+        "summary": "Yorick throws a globule of Black Mist that reduces armor, damages, slows and marks enemies. Summoned units gain move speed when moving towards marked targets. ",
+        "bodyHtml": "Yorick throws a globule of Black Mist that deals <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(6/6.5/7/7.5/8% + (0.03% Ability Power)) max Health magic damage</span>, <span class=\"text-purple-600 dark:text-purple-500\">Slows</span> by 30% for 1.5 seconds and marks champions and monsters for 4 seconds. Marked enemies continuously <span>Awaken</span> nearby graves (but not exceeding the maximum of ) and suffer <span class=\"text-orange-600 dark:text-orange-400\">13/16/19/22/25% reduced Armor</span>.<br /><br />Yorick and his summoned units gain <span class=\"text-cyan-600 dark:text-cyan-500\">18/21/24/27/30% Move Speed</span> toward the mark. <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Mist Walkers</span> will leap once at marked enemies that get away from them.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">Deals a minimum of <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(70/105/140/175/210 + (100% Ability Power)) magic damage</span> to lane Minions.<br />Deals a maximum of <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(50/75/100/125/150 + (100% Ability Power)) magic damage</span> to jungle Monsters.</span>",
+        "iconFile": "YorickE.png",
+        "cooldownSeconds": [
+          12,
+          11,
+          10,
+          9,
+          8
+        ],
+        "cost": {
+          "values": [
+            50,
+            55,
+            60,
+            65,
+            70
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          700,
+          700,
+          700,
+          700,
+          700
+        ],
+        "rankValues": [
+          {
+            "label": "Armor Reduction %",
+            "values": "13%/16%/19%/22%/25%"
+          },
+          {
+            "label": "Move Speed",
+            "values": "18/21/24/27/30"
+          },
+          {
+            "label": "Cooldown",
+            "values": "12/11/10/9/8"
+          },
+          {
+            "label": "Mana Cost",
+            "values": "50/55/60/65/70"
+          },
+          {
+            "label": "Maximum Health Damage",
+            "values": "6/6.5/7/7.5/8"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "E Scaling",
+            "labelKo": "E 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "2:Calc_MinimumDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": [
+            "Spell.YorickPassive:YorickPassiveGhoulMax"
+          ]
+        }
+      },
+      "R": {
+        "slot": "R",
+        "id": "YorickR",
+        "name": "Eulogy of the Isles",
+        "summary": "Yorick summons the Maiden of the Mist that causes Yorick's attacks against the Maiden's target to deal bonus damage. The Maiden will also automatically raise Walkers from dead enemies.",
+        "bodyHtml": "Yorick summons the <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Maiden of the Mist</span> with <span class=\"text-green-600 dark:text-green-400\">(1050 + (60% bonus Health)) Health</span> and <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(50/75/100 + (30% bonus Attack Damage)) Magic Attack Damage</span> plus 2/3/4 <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Mist Walkers</span>. The <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Maiden</span> automatically raises <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Mist Walkers</span> from nearby enemy deaths and marks enemy Champions with her attacks. When Yorick damages the <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Maiden's</span> target, he deals <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">2/2.5/3% max Health magic damage</span>.<br /><br />After 10 seconds, Yorick can <span class=\"text-yellow-600 dark:text-yellow-300\">Recast</span> this Ability to free the <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Maiden</span>, sending her down the nearest lane.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\"><span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Maiden of the Mist</span><br /><span class=\"text-orange-600 dark:text-orange-400\">30 Armor</span><br /><span>30 Magic Resist</span><br />Takes 30% damage from lane minions</span>",
+        "iconFile": "YorickR.png",
+        "cooldownSeconds": [
+          160,
+          130,
+          100
+        ],
+        "cost": {
+          "values": [
+            100,
+            100,
+            100
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          600,
+          600,
+          600
+        ],
+        "rankValues": [
+          {
+            "label": "Attack Damage",
+            "values": "50/75/100"
+          },
+          {
+            "label": "Mark Damage",
+            "values": "2/2.5/3"
+          },
+          {
+            "label": "Mist Walkers",
+            "values": "2/3/4"
+          },
+          {
+            "label": "Cooldown",
+            "values": "160/130/100"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "R Scaling",
+            "labelKo": "R 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "3:YorickBigGhoulHealth"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      }
+    }
+  }
+}

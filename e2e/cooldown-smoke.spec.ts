@@ -7,6 +7,10 @@ async function selectWukong(page: Page): Promise<void> {
 }
 
 test("renders precomputed passive and Q values", async ({ page }) => {
+  const dataRequests: string[] = [];
+  page.on("request", (request) => {
+    if (request.url().includes("/data/")) dataRequests.push(request.url());
+  });
   await page.goto("./");
   await expect(page.getByRole("heading", { name: "챔피언 쿨타임" })).toBeVisible();
 
@@ -24,6 +28,9 @@ test("renders precomputed passive and Q values", async ({ page }) => {
   await expect(qTooltip).toContainText("20/45/70/95/120");
   await expect(qTooltip).toContainText("방어력이 10/15/20/25/30%");
   await expect(qTooltip).toContainText("피해를 입힐 때 효과가 발동합니다");
+  expect(dataRequests.some((url) => url.includes("/champions/ko_KR/MonkeyKing.json")))
+    .toBe(true);
+  expect(dataRequests.some((url) => url.includes("/spells/"))).toBe(false);
 });
 
 test("serves a lazy route directly under the Pages base path", async ({ page }) => {

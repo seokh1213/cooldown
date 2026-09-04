@@ -1,0 +1,393 @@
+{
+  "schemaVersion": 2,
+  "patchVersion": "26.17",
+  "locale": "zh_CN",
+  "sources": {
+    "ddragon": "16.17.1",
+    "cdragon": "16.17"
+  },
+  "champion": {
+    "id": "Kayn",
+    "key": "141",
+    "name": "影流之镰",
+    "title": "凯隐",
+    "tags": [
+      "Fighter",
+      "Assassin"
+    ],
+    "baseStats": {
+      "health": {
+        "base": 655,
+        "perLevel": 103
+      },
+      "healthRegen": {
+        "base": 8,
+        "perLevel": 0.75
+      },
+      "mana": {
+        "base": 410,
+        "perLevel": 50
+      },
+      "manaRegen": {
+        "base": 11.5,
+        "perLevel": 0.95
+      },
+      "attackDamage": {
+        "base": 68,
+        "perLevel": 0
+      },
+      "attackSpeed": {
+        "base": 0.669,
+        "perLevel": 2.7
+      },
+      "armor": {
+        "base": 38,
+        "perLevel": 4.5
+      },
+      "magicResist": {
+        "base": 32,
+        "perLevel": 2.05
+      },
+      "moveSpeed": {
+        "base": 340,
+        "perLevel": 0
+      },
+      "attackRange": {
+        "base": 175,
+        "perLevel": 0
+      }
+    },
+    "baseStatContributions": [
+      {
+        "stat": "MAX_HEALTH",
+        "value": 103,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "HEALTH_REGEN",
+        "value": 0.75,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAX_MANA",
+        "value": 50,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MANA_REGEN",
+        "value": 0.95,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_DAMAGE",
+        "value": 0,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_SPEED",
+        "value": 2.7,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ARMOR",
+        "value": 4.5,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAGIC_RESIST",
+        "value": 2.05,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      }
+    ],
+    "abilities": {
+      "P": {
+        "slot": "P",
+        "id": "P",
+        "name": "暗裔魔镰",
+        "summary": "",
+        "bodyHtml": "凯隐使用的是一把上古神兵，并且一直都在与附在武器上的暗裔灵体拉亚斯特为了身体的控制权而战斗着。要么<font color='#fe5c50'>暗裔杀手</font>将获胜，要么凯隐将统御拉亚斯特并变为<font color='#8484fb'>影流刺客</font>。<br><hr><font color='#fe5c50'>暗裔杀手：</font>治疗自身，数额相当于一部分对敌方英雄造成的技能伤害值。<br><br><font color='#8484fb'>影流刺客：</font>在与敌方英雄作战的最初几秒里，造成额外伤害。",
+        "iconFile": "Kayn_Passive_Primary.png",
+        "cooldownSeconds": [],
+        "range": [],
+        "rankValues": [],
+        "scalings": [],
+        "conditions": [],
+        "source": "ddragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "Q": {
+        "slot": "Q",
+        "id": "KaynQ",
+        "name": "巨镰横扫",
+        "summary": "凯隐向前冲刺并打击附近的敌人。冲刺和打击都会造成伤害。",
+        "bodyHtml": "<span class=\"text-gray-600 dark:text-gray-400 italic\">对小兵和野怪造成额外的<span class=\"text-red-600 dark:text-red-500 font-semibold\">40物理伤害</span>(最大值：200/250/300/350/400)。</span>",
+        "iconFile": "KaynQ.png",
+        "cooldownSeconds": [
+          7,
+          6.5,
+          6,
+          5.5,
+          5
+        ],
+        "cost": {
+          "values": [
+            40,
+            40,
+            40,
+            40,
+            40
+          ],
+          "resource": "法力值"
+        },
+        "range": [
+          350,
+          350,
+          350,
+          350,
+          350
+        ],
+        "rankValues": [
+          {
+            "label": "冷却时间",
+            "values": "7/6.5/6/5.5/5"
+          },
+          {
+            "label": "基础伤害",
+            "values": "75/105/135/165/195"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "Q Scaling",
+            "labelKo": "Q 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "0:TotalDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "W": {
+        "slot": "W",
+        "id": "KaynW",
+        "name": "利刃纵贯",
+        "summary": "凯隐伤害并减速一条直线上的敌人。",
+        "bodyHtml": "凯隐向上挥出他的镰刀，造成<physicalDamage>{{ totaldamage }}物理伤害</physicalDamage>和在{{ e5 }}秒里持续衰减的{{ e3 }}%<status>减速</status>。<br /><br /><keywordMajor>影流刺客：</keywordMajor>凯隐可在使用这个技能时移动并提升这个技能的距离。<br /><br /><keywordMajor>暗裔杀手：</keywordMajor>还会<status>击飞</status>命中的敌人{{ e2 }}秒。{{ spellmodifierdescriptionappend }}",
+        "iconFile": "KaynW.png",
+        "cooldownSeconds": [
+          13,
+          12,
+          11,
+          10,
+          9
+        ],
+        "cost": {
+          "values": [
+            40,
+            45,
+            50,
+            55,
+            60
+          ],
+          "resource": "法力值"
+        },
+        "range": [
+          700,
+          700,
+          700,
+          700,
+          700
+        ],
+        "rankValues": [
+          {
+            "label": "伤害",
+            "values": "85/130/175/220/265"
+          },
+          {
+            "label": "冷却时间",
+            "values": "13/12/11/10/9"
+          },
+          {
+            "label": "法力值消耗",
+            "values": "40/45/50/55/60"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "W Scaling",
+            "labelKo": "W 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "1:TotalDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "ddragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "E": {
+        "slot": "E",
+        "id": "KaynE",
+        "name": "掠影步",
+        "summary": "凯隐可以穿越地形。",
+        "bodyHtml": "<span class=\"text-gray-600 dark:text-gray-400 italic\">【幽灵】状态的单位能够无视其它单位的碰撞体积。<br />在与敌方英雄作战时，最大持续时间为1.5秒。<br /></span>",
+        "iconFile": "KaynE.png",
+        "cooldownSeconds": [
+          21,
+          19,
+          17,
+          15,
+          13
+        ],
+        "cost": {
+          "values": [
+            90,
+            90,
+            90,
+            90,
+            90
+          ],
+          "resource": "法力值"
+        },
+        "range": [
+          400,
+          400,
+          400,
+          400,
+          400
+        ],
+        "rankValues": [
+          {
+            "label": "持续时间",
+            "values": "7/7.5/8/8.5/9"
+          },
+          {
+            "label": "治疗效果",
+            "values": "90/100/110/120/130"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "E Scaling",
+            "labelKo": "E 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "2:TotalHealing"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "R": {
+        "slot": "R",
+        "id": "KaynR",
+        "name": "裂舍影",
+        "summary": "凯隐隐藏在敌方身体内，在他破膛而出时造成巨量伤害。",
+        "bodyHtml": "<span class=\"text-gray-600 dark:text-gray-400 italic\">不可被选取的单位不会受到敌人的攻击或技能的影响，除非在进入此状态前已被它们影响。</span>",
+        "iconFile": "KaynR.png",
+        "cooldownSeconds": [
+          120,
+          100,
+          80
+        ],
+        "rechargeSeconds": [
+          12,
+          11,
+          10
+        ],
+        "cost": {
+          "values": [
+            100,
+            100,
+            100
+          ],
+          "resource": "法力值"
+        },
+        "range": [
+          550,
+          550,
+          550
+        ],
+        "rankValues": [
+          {
+            "label": "伤害",
+            "values": "0"
+          },
+          {
+            "label": "伤害",
+            "values": "150/250/350"
+          },
+          {
+            "label": "冷却时间",
+            "values": "120/100/80"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "R Scaling",
+            "labelKo": "R 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "3:Damage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      }
+    }
+  }
+}

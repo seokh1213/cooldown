@@ -1,0 +1,406 @@
+{
+  "schemaVersion": 2,
+  "patchVersion": "26.17",
+  "locale": "en_US",
+  "sources": {
+    "ddragon": "16.17.1",
+    "cdragon": "16.17"
+  },
+  "champion": {
+    "id": "Ekko",
+    "key": "245",
+    "name": "Ekko",
+    "title": "the Boy Who Shattered Time",
+    "tags": [
+      "Assassin",
+      "Mage"
+    ],
+    "baseStats": {
+      "health": {
+        "base": 655,
+        "perLevel": 99
+      },
+      "healthRegen": {
+        "base": 9,
+        "perLevel": 0.9
+      },
+      "mana": {
+        "base": 280,
+        "perLevel": 70
+      },
+      "manaRegen": {
+        "base": 7,
+        "perLevel": 0.8
+      },
+      "attackDamage": {
+        "base": 58,
+        "perLevel": 0
+      },
+      "attackSpeed": {
+        "base": 0.688,
+        "perLevel": 3.3
+      },
+      "armor": {
+        "base": 32,
+        "perLevel": 4.2
+      },
+      "magicResist": {
+        "base": 32,
+        "perLevel": 2.05
+      },
+      "moveSpeed": {
+        "base": 340,
+        "perLevel": 0
+      },
+      "attackRange": {
+        "base": 125,
+        "perLevel": 0
+      }
+    },
+    "baseStatContributions": [
+      {
+        "stat": "MAX_HEALTH",
+        "value": 99,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "HEALTH_REGEN",
+        "value": 0.9,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAX_MANA",
+        "value": 70,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MANA_REGEN",
+        "value": 0.8,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_DAMAGE",
+        "value": 0,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_SPEED",
+        "value": 3.3,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ARMOR",
+        "value": 4.2,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAGIC_RESIST",
+        "value": 2.05,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      }
+    ],
+    "abilities": {
+      "P": {
+        "slot": "P",
+        "id": "EkkoPassive",
+        "name": "Z-Drive Resonance",
+        "summary": "Every third attack or damaging spell on the same target deals bonus magic damage, and grants Ekko a burst of speed if the target is a champion.<br><br>",
+        "bodyHtml": "Every third Attack or damaging Ability on the same target deals an additional <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(30 + (80% Ability Power)) magic damage</span>. If the target is a champion, Ekko gains <span class=\"text-cyan-600 dark:text-cyan-500\">80% Move Speed</span> for 3 seconds. This effect can't trigger on the same enemy more than once every 4 seconds.",
+        "iconFile": "Ekko_P.png",
+        "cooldownSeconds": [],
+        "range": [],
+        "rankValues": [],
+        "scalings": [],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "Q": {
+        "slot": "Q",
+        "id": "EkkoQ",
+        "name": "Timewinder",
+        "summary": "Ekko throws a temporal grenade that expands into a time-distortion field upon hitting an enemy champion, slowing and damaging anyone caught inside. After a delay, the grenade rewinds back to Ekko, dealing damage on its return.",
+        "bodyHtml": "Ekko throws a device dealing <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(80/95/110/125/140 + (30% Ability Power)) magic damage</span>. On hitting a champion or reaching the end of its range, it expands into a field that <span class=\"text-purple-600 dark:text-purple-500\">Slows</span> enemies inside by 40/45/50/55/60%. After it expands, Ekko recalls it, dealing <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(40/65/90/115/140 + (60% Ability Power)) magic damage</span>.",
+        "iconFile": "EkkoQ.png",
+        "cooldownSeconds": [
+          9,
+          8.5,
+          8,
+          7.5,
+          7
+        ],
+        "cost": {
+          "values": [
+            50,
+            60,
+            70,
+            80,
+            90
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          1075,
+          1075,
+          1075,
+          1075,
+          1075
+        ],
+        "rankValues": [
+          {
+            "label": "Cooldown",
+            "values": "9/8.5/8/7.5/7"
+          },
+          {
+            "label": "Mana Cost",
+            "values": "50/60/70/80/90"
+          },
+          {
+            "label": "Outgoing Damage",
+            "values": "80/95/110/125/140"
+          },
+          {
+            "label": "Slow",
+            "values": "40/45/50/55/60"
+          },
+          {
+            "label": "Return Damage",
+            "values": "40/65/90/115/140"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "Q Scaling",
+            "labelKo": "Q 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "0:InitialDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "W": {
+        "slot": "W",
+        "id": "EkkoW",
+        "name": "Parallel Convergence",
+        "summary": "Ekko's basic attacks deal bonus magic damage to low health enemies. He can cast Parallel Convergence to split the timeline, creating an anomaly after a few seconds that slows enemies caught inside. If Ekko enters the anomaly, he gains shielding and stuns enemies by suspending them in time.",
+        "bodyHtml": "<span class=\"text-gray-600 dark:text-gray-500 italic\">Passive:</span> Ekko's Attacks against enemies below 30% Health deal <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(3% + (0.03% Ability Power)) missing Health magic damage</span>.<br /><br /><span class=\"text-gray-900 dark:text-white font-semibold\">Active:</span> Ekko launches a chronosphere lasting 1.5 seconds after a delay that <span class=\"text-purple-600 dark:text-purple-500\">Slows</span> enemies inside by 40%. If Ekko enters the sphere, he detonates it, <span class=\"text-purple-600 dark:text-purple-500\">Stunning</span> for 2.25 seconds and gaining <span class=\"text-blue-600 dark:text-blue-300\">(100/120/140/160/180 + (150% Ability Power)) Shield</span>.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">Bonus Attack damage deals a min of <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">15</span> and a max of <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">150 damage</span> against minions and monsters.</span>",
+        "iconFile": "EkkoW.png",
+        "cooldownSeconds": [
+          22,
+          20,
+          18,
+          16,
+          14
+        ],
+        "cost": {
+          "values": [
+            30,
+            35,
+            40,
+            45,
+            50
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          1600,
+          1600,
+          1600,
+          1600,
+          1600
+        ],
+        "rankValues": [
+          {
+            "label": "Shield Amount",
+            "values": "100/120/140/160/180"
+          },
+          {
+            "label": "Cooldown",
+            "values": "22/20/18/16/14"
+          },
+          {
+            "label": "Mana Cost",
+            "values": "30/35/40/45/50"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "W Scaling",
+            "labelKo": "W 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "1:TotalShield"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "E": {
+        "slot": "E",
+        "id": "EkkoE",
+        "name": "Phase Dive",
+        "summary": "Ekko rolls evasively while charging up his Z-Drive. His next attack deals bonus damage and warps reality, teleporting him to his target.",
+        "bodyHtml": "Ekko dashes and empowers his next Attack to have bonus range, teleport him to his target, and deal an additional <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(50/75/100/125/150 + (40% Ability Power)) magic damage</span>.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">Ekko can use any of his other Abilities during the dash.</span>",
+        "iconFile": "EkkoE.png",
+        "cooldownSeconds": [
+          9,
+          8.5,
+          8,
+          7.5,
+          7
+        ],
+        "cost": {
+          "values": [
+            40,
+            45,
+            50,
+            55,
+            60
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          325,
+          325,
+          325,
+          325,
+          325
+        ],
+        "rankValues": [
+          {
+            "label": "Damage",
+            "values": "50/75/100/125/150"
+          },
+          {
+            "label": "Cooldown",
+            "values": "9/8.5/8/7.5/7"
+          },
+          {
+            "label": "Mana Cost",
+            "values": "40/45/50/55/60"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "E Scaling",
+            "labelKo": "E 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "2:TotalDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "R": {
+        "slot": "R",
+        "id": "EkkoR",
+        "name": "Chronobreak",
+        "summary": "Ekko shatters his timeline, becoming untargetable and rewinding to a more favorable point in time. He returns to whenever he was a few seconds ago, and heals for a percentage of the damage received in that duration. Enemies near his arrival zone take massive damage.",
+        "bodyHtml": "Ekko turns back time, entering Stasis while teleporting to where he was 4 seconds ago and dealing <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(200/350/500 + (175% Ability Power)) magic damage</span> to nearby enemies. In addition, Ekko restores <span class=\"text-green-600 dark:text-green-400\">(100/150/200 + (60% Ability Power)) Health</span>, increased by 3% for each 1% Health he lost in last 4 seconds.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">Will detonate the chronosphere from Parallel Convergence [] if Ekko passed through it.</span><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">Units in Stasis cannot move or act, and are Invulnerable and Untargetable.</span>",
+        "iconFile": "EkkoR.png",
+        "cooldownSeconds": [
+          110,
+          80,
+          50
+        ],
+        "cost": {
+          "values": [
+            100,
+            100,
+            100
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          850,
+          850,
+          850
+        ],
+        "rankValues": [
+          {
+            "label": "Damage",
+            "values": "200/350/500"
+          },
+          {
+            "label": "Healing",
+            "values": "100/150/200"
+          },
+          {
+            "label": "Cooldown",
+            "values": "110/80/50"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "R Scaling",
+            "labelKo": "R 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "3:TotalDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": [
+            "spell.EkkoW:HotKey"
+          ]
+        }
+      }
+    }
+  }
+}

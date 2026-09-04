@@ -1,0 +1,394 @@
+{
+  "schemaVersion": 2,
+  "patchVersion": "26.17",
+  "locale": "zh_CN",
+  "sources": {
+    "ddragon": "16.17.1",
+    "cdragon": "16.17"
+  },
+  "champion": {
+    "id": "Corki",
+    "key": "42",
+    "name": "英勇投弹手",
+    "title": "库奇",
+    "tags": [
+      "Marksman",
+      "Mage"
+    ],
+    "baseStats": {
+      "health": {
+        "base": 610,
+        "perLevel": 100
+      },
+      "healthRegen": {
+        "base": 5.5,
+        "perLevel": 0.55
+      },
+      "mana": {
+        "base": 350,
+        "perLevel": 40
+      },
+      "manaRegen": {
+        "base": 7.4,
+        "perLevel": 0.7
+      },
+      "attackDamage": {
+        "base": 52,
+        "perLevel": 0
+      },
+      "attackSpeed": {
+        "base": 0.644,
+        "perLevel": 2.8
+      },
+      "armor": {
+        "base": 27,
+        "perLevel": 4.5
+      },
+      "magicResist": {
+        "base": 33,
+        "perLevel": 1.1
+      },
+      "moveSpeed": {
+        "base": 325,
+        "perLevel": 0
+      },
+      "attackRange": {
+        "base": 550,
+        "perLevel": 0
+      }
+    },
+    "baseStatContributions": [
+      {
+        "stat": "MAX_HEALTH",
+        "value": 100,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "HEALTH_REGEN",
+        "value": 0.55,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAX_MANA",
+        "value": 40,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MANA_REGEN",
+        "value": 0.7,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_DAMAGE",
+        "value": 0,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_SPEED",
+        "value": 2.8,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ARMOR",
+        "value": 4.5,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAGIC_RESIST",
+        "value": 1.1,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      }
+    ],
+    "abilities": {
+      "P": {
+        "slot": "P",
+        "id": "RapidReload",
+        "name": "海克斯科技军备",
+        "summary": "库奇普通攻击的一部分伤害会转化为<trueDamage>真实伤害</trueDamage>。",
+        "bodyHtml": "库奇的攻击和<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">咒刃</span>造成<span class=\"text-yellow-600 dark:text-yellow-500 font-semibold\">20%额外真实伤害</span>。<br />攻击次数：<span class=\"text-yellow-600 dark:text-yellow-500 font-semibold\">(20% 攻击力)</span>。<br />暴击次数：<span class=\"text-yellow-600 dark:text-yellow-500 font-semibold\">(20% 攻击力)</span>。",
+        "iconFile": "Corki_RapidReload.png",
+        "cooldownSeconds": [],
+        "range": [],
+        "rankValues": [],
+        "scalings": [],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "Q": {
+        "slot": "Q",
+        "id": "PhosphorusBomb",
+        "name": "磷光炸弹",
+        "summary": "库奇向目标区域发射一枚闪光弹，对范围内的敌人造成魔法伤害。这个技能还会暂时让目标区域附近的非隐形的单位和英雄现形。",
+        "bodyHtml": "库奇抛射一颗炸弹，造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(60/105/150/195/240 + (125% 额外攻击力) + (100% 法术强度))魔法伤害</span>。该区域及命中的敌方英雄会被显形6秒。",
+        "iconFile": "PhosphorusBomb.png",
+        "cooldownSeconds": [
+          9,
+          8.5,
+          8,
+          7.5,
+          7
+        ],
+        "cost": {
+          "values": [
+            60,
+            65,
+            70,
+            75,
+            80
+          ],
+          "resource": "法力值"
+        },
+        "range": [
+          825,
+          825,
+          825,
+          825,
+          825
+        ],
+        "rankValues": [
+          {
+            "label": "伤害",
+            "values": "60/105/150/195/240"
+          },
+          {
+            "label": "冷却时间",
+            "values": "9/8.5/8/7.5/7"
+          },
+          {
+            "label": "法力值消耗",
+            "values": "60/65/70/75/80"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "Q Scaling",
+            "labelKo": "Q 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "0:TotalDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "W": {
+        "slot": "W",
+        "id": "CarpetBomb",
+        "name": "瓦尔基里俯冲",
+        "summary": "库奇飞行一小段距离，同时投下炸弹。炸弹会制造出一条毁灭与死亡的路径，对留在路径中的敌人造成伤害。",
+        "bodyHtml": "库奇飞越并烧焦一条路径，使其灼烧2.5秒。火焰中的敌人们在此期间至多受到<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(150/225/300/375/450 + (150% 法术强度) + (200% 额外攻击力))魔法伤害</span>。",
+        "iconFile": "CarpetBomb.png",
+        "cooldownSeconds": [
+          20,
+          18,
+          16,
+          14,
+          12
+        ],
+        "cost": {
+          "values": [
+            80,
+            85,
+            90,
+            95,
+            100
+          ],
+          "resource": "法力值"
+        },
+        "range": [
+          600,
+          600,
+          600,
+          600,
+          600
+        ],
+        "rankValues": [
+          {
+            "label": "持续伤害",
+            "values": "150/225/300/375/450"
+          },
+          {
+            "label": "冷却时间",
+            "values": "20/18/16/14/12"
+          },
+          {
+            "label": "法力值消耗",
+            "values": "80/85/90/95/100"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "W Scaling",
+            "labelKo": "W 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "1:MaximumDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "E": {
+        "slot": "E",
+        "id": "GGun",
+        "name": "格林机枪",
+        "summary": "库奇使用格林机枪扫射他面前锥形范围内的敌人，造成伤害并降低敌人护甲和魔法抗性。",
+        "bodyHtml": "库奇朝他的前方发射加特林机枪，在4秒里持续造成共<span class=\"text-red-600 dark:text-red-500 font-semibold\">(80/130/180/230/280 + (240% 额外攻击力))物理伤害</span>并至多击碎<span class=\"text-orange-600 dark:text-orange-400\">12/14/16/18/20护甲</span>和<span>魔法抗性</span>。<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">击碎效果会在命中后存留2秒。</span>",
+        "iconFile": "GGun.png",
+        "cooldownSeconds": [
+          12,
+          12,
+          12,
+          12,
+          12
+        ],
+        "cost": {
+          "values": [
+            50,
+            55,
+            60,
+            65,
+            70
+          ],
+          "resource": "法力值"
+        },
+        "range": [
+          600,
+          600,
+          600,
+          600,
+          600
+        ],
+        "rankValues": [
+          {
+            "label": "伤害",
+            "values": "80/130/180/230/280"
+          },
+          {
+            "label": "防御削减",
+            "values": "12/14/16/18/20"
+          },
+          {
+            "label": "法力值消耗",
+            "values": "50/55/60/65/70"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "E Scaling",
+            "labelKo": "E 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "2:TotalDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "R": {
+        "slot": "R",
+        "id": "MissileBarrage",
+        "name": "火箭轰击",
+        "summary": "库奇朝着他的目标地点发射一枚导弹。导弹会在命中第一个敌人后爆炸，并对目标周围单位造成伤害。库奇每隔一段时间就会挂载一枚导弹，最多挂载7枚。每发射2枚导弹后，下一次就会发射超级导弹，造成额外伤害。",
+        "bodyHtml": "库奇发射一颗导弹，导弹会在命中第一个敌人时爆炸，对周围的敌人们造成<span class=\"text-red-600 dark:text-red-500 font-semibold\">(90/170/250 + (85% 额外攻击力))物理伤害</span>。每第三颗导弹会转而造成<span class=\"text-red-600 dark:text-red-500 font-semibold\">(180/340/500 + (170% 额外攻击力))物理伤害</span>。<br /><br />这个技能至多有4层充能。每次对英雄的普攻在命中时会使充能时间缩短<span>(2 + (400%))</span>秒。",
+        "iconFile": "MissileBarrage.png",
+        "cooldownSeconds": [
+          2,
+          2,
+          2
+        ],
+        "rechargeSeconds": [
+          20,
+          20,
+          20
+        ],
+        "maxCharges": 4,
+        "cost": {
+          "values": [
+            35,
+            35,
+            35
+          ],
+          "resource": "法力值"
+        },
+        "range": [
+          1225,
+          1225,
+          1225
+        ],
+        "rankValues": [
+          {
+            "label": "伤害",
+            "values": "90/170/250"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "R Scaling",
+            "labelKo": "R 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "3:RSmallMissileDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,392 @@
+{
+  "schemaVersion": 2,
+  "patchVersion": "26.17",
+  "locale": "en_US",
+  "sources": {
+    "ddragon": "16.17.1",
+    "cdragon": "16.17"
+  },
+  "champion": {
+    "id": "Leona",
+    "key": "89",
+    "name": "Leona",
+    "title": "the Radiant Dawn",
+    "tags": [
+      "Tank",
+      "Support"
+    ],
+    "baseStats": {
+      "health": {
+        "base": 646,
+        "perLevel": 101
+      },
+      "healthRegen": {
+        "base": 8.5,
+        "perLevel": 0.85
+      },
+      "mana": {
+        "base": 302,
+        "perLevel": 40
+      },
+      "manaRegen": {
+        "base": 6,
+        "perLevel": 0.8
+      },
+      "attackDamage": {
+        "base": 60,
+        "perLevel": 0
+      },
+      "attackSpeed": {
+        "base": 0.625,
+        "perLevel": 2.9
+      },
+      "armor": {
+        "base": 43,
+        "perLevel": 4.8
+      },
+      "magicResist": {
+        "base": 32,
+        "perLevel": 2.05
+      },
+      "moveSpeed": {
+        "base": 335,
+        "perLevel": 0
+      },
+      "attackRange": {
+        "base": 125,
+        "perLevel": 0
+      }
+    },
+    "baseStatContributions": [
+      {
+        "stat": "MAX_HEALTH",
+        "value": 101,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "HEALTH_REGEN",
+        "value": 0.85,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAX_MANA",
+        "value": 40,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MANA_REGEN",
+        "value": 0.8,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_DAMAGE",
+        "value": 0,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_SPEED",
+        "value": 2.9,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ARMOR",
+        "value": 4.8,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAGIC_RESIST",
+        "value": 2.05,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      }
+    ],
+    "abilities": {
+      "P": {
+        "slot": "P",
+        "id": "LeonaSunlightPassive",
+        "name": "Sunlight",
+        "summary": "Damaging spells afflict enemies with Sunlight for 1.5 seconds. When allied Champions deal damage to those targets, they consume the Sunlight to deal additional magic damage.",
+        "bodyHtml": "Leona's abilities mark enemies for 2.5 seconds. Other allied champions consume the mark when they damage the marked enemy, dealing an additional <span class=\"text-blue-600 dark:text-blue-500 font-semibold\"> magic damage</span>.",
+        "iconFile": "LeonaSunlight.png",
+        "cooldownSeconds": [],
+        "range": [],
+        "rankValues": [],
+        "scalings": [],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "Q": {
+        "slot": "Q",
+        "id": "LeonaShieldOfDaybreak",
+        "name": "Shield of Daybreak",
+        "summary": "Leona uses her shield to perform her next basic attack, dealing bonus magic damage and stunning the target.",
+        "bodyHtml": "Leona's next Attack <span class=\"text-purple-600 dark:text-purple-500\">Stuns</span> for 1 seconds and deals an additional <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(10/35/60/85/110 + (30% Ability Power))</span> magic damage.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">The Attack must be used within 6 seconds or it is lost.</span>",
+        "iconFile": "LeonaShieldOfDaybreak.png",
+        "cooldownSeconds": [
+          5,
+          5,
+          5,
+          5,
+          5
+        ],
+        "cost": {
+          "values": [
+            30,
+            35,
+            40,
+            45,
+            50
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          100,
+          100,
+          100,
+          100,
+          100
+        ],
+        "rankValues": [
+          {
+            "label": "Damage",
+            "values": "10/35/60/85/110"
+          },
+          {
+            "label": "Mana Cost",
+            "values": "30/35/40/45/50"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "Q Scaling",
+            "labelKo": "Q 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "0:TotalDamageTooltip"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "W": {
+        "slot": "W",
+        "id": "LeonaSolarBarrier",
+        "name": "Eclipse",
+        "summary": "Leona raises her shield to gain Damage Reduction, Armor, and Magic Resist. When the duration first ends, if there are nearby enemies, she will deal magic damage to them and prolong the duration of the effect.",
+        "bodyHtml": "Leona raises her shield, reducing incoming damage by 8/12/16/20/24 and gaining <span class=\"text-orange-600 dark:text-orange-400\">(20/27.5/35/42.5/50 + (20% bonus Armor)) Armor</span> and <span>(20/27.5/35/42.5/50 + (20% bonus Magic Resist)) Magic Resist</span> for 3 seconds. Afterwards, her shield detonates, dealing <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(55/85/115/145/175 + (40% Ability Power)) magic damage</span> to nearby enemies. If she hits at least one, she retains the <span class=\"text-orange-600 dark:text-orange-400\">Armor</span> and <span>Magic Resist</span> bonuses for an additional 3 seconds.<br /><br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">Damage reduction effect can't reduce the damage below 50%.</span>",
+        "iconFile": "LeonaSolarBarrier.png",
+        "cooldownSeconds": [
+          14,
+          13,
+          12,
+          11,
+          10
+        ],
+        "cost": {
+          "values": [
+            60,
+            60,
+            60,
+            60,
+            60
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          450,
+          450,
+          450,
+          450,
+          450
+        ],
+        "rankValues": [
+          {
+            "label": "Damage",
+            "values": "55/85/115/145/175"
+          },
+          {
+            "label": "Armor and Magic Resist",
+            "values": "20/27.5/35/42.5/50"
+          },
+          {
+            "label": "Damage Reduction",
+            "values": "8/12/16/20/24"
+          },
+          {
+            "label": "Cooldown",
+            "values": "14/13/12/11/10"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "W Scaling",
+            "labelKo": "W 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "1:BonusArmorTooltip"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "E": {
+        "slot": "E",
+        "id": "LeonaZenithBlade",
+        "name": "Zenith Blade",
+        "summary": "Leona projects a solar image of her sword, dealing magic damage to all enemies in a line. When the image fades, the last enemy champion struck will be briefly immobilized and Leona will dash to them.",
+        "bodyHtml": "Leona thrusts with a sword of light, dealing <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(50/90/130/170/210 + (40% Ability Power)) magic damage</span>. The last champion struck will be <span class=\"text-purple-600 dark:text-purple-500\">Rooted</span> for 0.5 seconds and Leona will dash to them.",
+        "iconFile": "LeonaZenithBlade.png",
+        "cooldownSeconds": [
+          12,
+          10.5,
+          9,
+          7.5,
+          6
+        ],
+        "cost": {
+          "values": [
+            40,
+            45,
+            50,
+            55,
+            60
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          875,
+          875,
+          875,
+          875,
+          875
+        ],
+        "rankValues": [
+          {
+            "label": "Damage",
+            "values": "50/90/130/170/210"
+          },
+          {
+            "label": "Cooldown",
+            "values": "12/10.5/9/7.5/6"
+          },
+          {
+            "label": "Mana Cost",
+            "values": "40/45/50/55/60"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "E Scaling",
+            "labelKo": "E 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "2:TotalDamageTooltip"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "R": {
+        "slot": "R",
+        "id": "LeonaSolarFlare",
+        "name": "Solar Flare",
+        "summary": "Leona calls down a beam of solar energy, dealing damage to enemies in an area. Enemies in the center of the area are stunned, while enemies on the outside are slowed.",
+        "bodyHtml": "Leona calls down a radiant beam of solar energy dealing <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(150/225/300 + (80% Ability Power)) magic damage</span> and <span class=\"text-purple-600 dark:text-purple-500\">Slowing</span> by 80% for 1.75 seconds. Enemies in the center of the flare are <span class=\"text-purple-600 dark:text-purple-500\">Stunned</span> instead of <span class=\"text-purple-600 dark:text-purple-500\">Slowed</span>.",
+        "iconFile": "LeonaSolarFlare.png",
+        "cooldownSeconds": [
+          90,
+          75,
+          60
+        ],
+        "cost": {
+          "values": [
+            100,
+            100,
+            100
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          1200,
+          1200,
+          1200
+        ],
+        "rankValues": [
+          {
+            "label": "Damage",
+            "values": "150/225/300"
+          },
+          {
+            "label": "Cooldown",
+            "values": "90/75/60"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "R Scaling",
+            "labelKo": "R 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "3:{f4c90e5c}"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,360 @@
+{
+  "schemaVersion": 2,
+  "patchVersion": "26.17",
+  "locale": "en_US",
+  "sources": {
+    "ddragon": "16.17.1",
+    "cdragon": "16.17"
+  },
+  "champion": {
+    "id": "Zilean",
+    "key": "26",
+    "name": "Zilean",
+    "title": "the Chronokeeper",
+    "tags": [
+      "Support",
+      "Mage"
+    ],
+    "baseStats": {
+      "health": {
+        "base": 574,
+        "perLevel": 96
+      },
+      "healthRegen": {
+        "base": 5.5,
+        "perLevel": 0.5
+      },
+      "mana": {
+        "base": 452,
+        "perLevel": 50
+      },
+      "manaRegen": {
+        "base": 11.35,
+        "perLevel": 0.8
+      },
+      "attackDamage": {
+        "base": 52,
+        "perLevel": 0
+      },
+      "attackSpeed": {
+        "base": 0.658,
+        "perLevel": 2.13
+      },
+      "armor": {
+        "base": 24,
+        "perLevel": 5
+      },
+      "magicResist": {
+        "base": 30,
+        "perLevel": 1.3
+      },
+      "moveSpeed": {
+        "base": 335,
+        "perLevel": 0
+      },
+      "attackRange": {
+        "base": 550,
+        "perLevel": 0
+      }
+    },
+    "baseStatContributions": [
+      {
+        "stat": "MAX_HEALTH",
+        "value": 96,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "HEALTH_REGEN",
+        "value": 0.5,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAX_MANA",
+        "value": 50,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MANA_REGEN",
+        "value": 0.8,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_DAMAGE",
+        "value": 0,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_SPEED",
+        "value": 2.13,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ARMOR",
+        "value": 5,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAGIC_RESIST",
+        "value": 1.3,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      }
+    ],
+    "abilities": {
+      "P": {
+        "slot": "P",
+        "id": "P",
+        "name": "Time In A Bottle",
+        "summary": "",
+        "bodyHtml": "Zilean stores time as Experience and can grant it to his allies. When he has enough Experience to finish an ally's level up, he can right-click them to impart it. Zilean receives as much Experience as he gives.",
+        "iconFile": "Zilean_Passive.png",
+        "cooldownSeconds": [],
+        "range": [],
+        "rankValues": [],
+        "scalings": [],
+        "conditions": [],
+        "source": "ddragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "Q": {
+        "slot": "Q",
+        "id": "ZileanQ",
+        "name": "Time Bomb",
+        "summary": "Tosses a bomb to target area that sticks to units that come near it (prioritizes Champions). It detonates after 3 seconds, dealing area of effect damage. If a Time Bomb is detonated early by another Time Bomb, it also stuns enemies.",
+        "bodyHtml": "Zilean tosses a time-delayed bomb that sticks to the first unit which comes within a small area around it. After 3 seconds it detonates, dealing <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(75/115/165/230/300 + (90% Ability Power)) magic damage</span>.<br /><br />Placing a second bomb on a unit that already has one detonates the first bomb immediately and <span class=\"text-purple-600 dark:text-purple-500\">Stuns</span> enemies in the blast for 1.1/1.2/1.3/1.4/1.5 seconds.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">The bomb will prioritize attaching to champions and units that already have a bomb.</span>",
+        "iconFile": "ZileanQ.png",
+        "cooldownSeconds": [
+          10,
+          9.5,
+          9,
+          8.5,
+          8
+        ],
+        "cost": {
+          "values": [
+            60,
+            65,
+            70,
+            75,
+            80
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          900,
+          900,
+          900,
+          900,
+          900
+        ],
+        "rankValues": [
+          {
+            "label": "Cooldown",
+            "values": "10/9.5/9/8.5/8"
+          },
+          {
+            "label": "Mana Cost",
+            "values": "60/65/70/75/80"
+          },
+          {
+            "label": "Damage",
+            "values": "75/115/165/230/300"
+          },
+          {
+            "label": "Stun Duration:",
+            "values": "1.1/1.2/1.3/1.4/1.5"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "Q Scaling",
+            "labelKo": "Q 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "0:TotalDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "W": {
+        "slot": "W",
+        "id": "ZileanW",
+        "name": "Rewind",
+        "summary": "Zilean can prepare himself for future confrontations, reducing the cooldowns of his other basic abilities.",
+        "bodyHtml": "Zilean turns time, reducing his other basic Ability Cooldowns by 10 seconds.",
+        "iconFile": "ZileanW.png",
+        "cooldownSeconds": [
+          14,
+          12,
+          10,
+          8,
+          6
+        ],
+        "cost": {
+          "values": [
+            35,
+            35,
+            35,
+            35,
+            35
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          600,
+          600,
+          600,
+          600,
+          600
+        ],
+        "rankValues": [
+          {
+            "label": "Cooldown",
+            "values": "14/12/10/8/6"
+          }
+        ],
+        "scalings": [],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "E": {
+        "slot": "E",
+        "id": "TimeWarp",
+        "name": "Time Warp",
+        "summary": "Zilean bends time around any unit, decreasing an enemy's Move Speed or increasing an ally's Move Speed for a short time.",
+        "bodyHtml": "Zilean <span class=\"text-purple-600 dark:text-purple-500\">Slows</span> an enemy champion by 40/55/70/85/99% or grants an allied champion <span class=\"text-cyan-600 dark:text-cyan-500\">40/55/70/85/99% Move Speed</span> for 2.5 seconds.",
+        "iconFile": "TimeWarp.png",
+        "cooldownSeconds": [
+          15,
+          15,
+          15,
+          15,
+          15
+        ],
+        "cost": {
+          "values": [
+            50,
+            50,
+            50,
+            50,
+            50
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          550,
+          550,
+          550,
+          550,
+          550
+        ],
+        "rankValues": [
+          {
+            "label": "Slow",
+            "values": "40/55/70/85/99"
+          },
+          {
+            "label": "Move Speed",
+            "values": "40/55/70/85/99"
+          }
+        ],
+        "scalings": [],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "R": {
+        "slot": "R",
+        "id": "ChronoShift",
+        "name": "Chronoshift",
+        "summary": "Zilean places a protective time rune on an allied champion, teleporting the champion back in time if they take lethal damage.",
+        "bodyHtml": "Zilean grants a protective time rune to an allied champion for 5 seconds. If the target would die, the rune rewinds their timeline, putting them into Stasis for 3 seconds, then reviving them and restoring <span class=\"text-green-600 dark:text-green-400\">(600/850/1100 + (200% Ability Power)) Health</span>.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">Units in Stasis cannot move or act, and are invulnerable and Untargetable.</span>",
+        "iconFile": "ChronoShift.png",
+        "cooldownSeconds": [
+          120,
+          90,
+          60
+        ],
+        "cost": {
+          "values": [
+            125,
+            150,
+            175
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          900,
+          900,
+          900
+        ],
+        "rankValues": [
+          {
+            "label": "Cooldown",
+            "values": "120/90/60"
+          },
+          {
+            "label": "Mana Cost",
+            "values": "125/150/175"
+          },
+          {
+            "label": "Healing",
+            "values": "600/850/1100"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "R Scaling",
+            "labelKo": "R 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "3:RTotalHeal"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      }
+    }
+  }
+}

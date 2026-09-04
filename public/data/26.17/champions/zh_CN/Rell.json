@@ -1,0 +1,395 @@
+{
+  "schemaVersion": 2,
+  "patchVersion": "26.17",
+  "locale": "zh_CN",
+  "sources": {
+    "ddragon": "16.17.1",
+    "cdragon": "16.17"
+  },
+  "champion": {
+    "id": "Rell",
+    "key": "526",
+    "name": "镕铁少女",
+    "title": "芮尔",
+    "tags": [
+      "Tank",
+      "Support"
+    ],
+    "baseStats": {
+      "health": {
+        "base": 620,
+        "perLevel": 104
+      },
+      "healthRegen": {
+        "base": 7.5,
+        "perLevel": 0.85
+      },
+      "mana": {
+        "base": 320,
+        "perLevel": 40
+      },
+      "manaRegen": {
+        "base": 7,
+        "perLevel": 0.7
+      },
+      "attackDamage": {
+        "base": 55,
+        "perLevel": 0
+      },
+      "attackSpeed": {
+        "base": 0.625,
+        "perLevel": 2
+      },
+      "armor": {
+        "base": 30,
+        "perLevel": 4
+      },
+      "magicResist": {
+        "base": 28,
+        "perLevel": 1.8
+      },
+      "moveSpeed": {
+        "base": 315,
+        "perLevel": 0
+      },
+      "attackRange": {
+        "base": 175,
+        "perLevel": 0
+      }
+    },
+    "baseStatContributions": [
+      {
+        "stat": "MAX_HEALTH",
+        "value": 104,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "HEALTH_REGEN",
+        "value": 0.85,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAX_MANA",
+        "value": 40,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MANA_REGEN",
+        "value": 0.7,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_DAMAGE",
+        "value": 0,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_SPEED",
+        "value": 2,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ARMOR",
+        "value": 4,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAGIC_RESIST",
+        "value": 1.8,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      }
+    ],
+    "abilities": {
+      "P": {
+        "slot": "P",
+        "id": "RellP",
+        "name": "溃敌沉力",
+        "summary": "芮尔的攻击和技能在命中时会造成额外魔法伤害并窃取护甲和魔法抗性。",
+        "bodyHtml": "芮尔的攻击和技能会窃取<span class=\"text-orange-600 dark:text-orange-400\">3%护甲</span>和<span>3%魔法抗性</span>，持续5秒。最大值：15%。普攻附带<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">((5% 护甲) + (5% 魔法抗性))魔法伤害</span>。",
+        "iconFile": "RellP.png",
+        "cooldownSeconds": [],
+        "range": [],
+        "rankValues": [],
+        "scalings": [],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "Q": {
+        "slot": "Q",
+        "id": "RellQ",
+        "name": "裂阵",
+        "summary": "芮尔对一条直线上的单位们造成魔法伤害，打破他们的护盾并造成晕眩效果。 ",
+        "bodyHtml": "芮尔戳刺她的骑枪，使目标们<span class=\"text-purple-600 dark:text-purple-500\">晕眩</span>0.65秒、摧毁所有<span class=\"text-blue-600 dark:text-blue-300\">护盾</span>，并造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(60/100/140/180/220 + (60% 法术强度))魔法伤害</span>。<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">不会打破野怪身上的护盾。</span>",
+        "iconFile": "RellQ.png",
+        "cooldownSeconds": [
+          11,
+          10.5,
+          10,
+          9.5,
+          9
+        ],
+        "cost": {
+          "values": [
+            50,
+            50,
+            50,
+            50,
+            50
+          ],
+          "resource": "法力值"
+        },
+        "range": [
+          600,
+          600,
+          600,
+          600,
+          600
+        ],
+        "rankValues": [
+          {
+            "label": "伤害",
+            "values": "60/100/140/180/220"
+          },
+          {
+            "label": "冷却时间",
+            "values": "11/10.5/10/9.5/9"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "Q Scaling",
+            "labelKo": "Q 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "0:Damage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "W": {
+        "slot": "W",
+        "id": "RellW_Dismount",
+        "name": "驭铁术：轰落",
+        "summary": "骑乘状态：芮尔化马为甲，以披甲状态向下轰落，击飞敌人们并获得高额护盾值。在披甲状态下，她获得护甲、魔法抗性、攻击速度和攻击距离，但移动速度缓慢。<br><br>披甲状态：芮尔化甲为马，提供爆发性的移动速度并且她的下一次攻击会对敌人造成击飞效果。<br><br>",
+        "bodyHtml": "<span class=\"text-gray-600 dark:text-gray-500 italic\">被动 - 铁骑疾行：</span>芮尔在骑乘状态时获得<span class=\"text-cyan-600 dark:text-cyan-500\">移动速度</span>。<br /><br /><span class=\"text-gray-900 dark:text-white font-semibold\">主动 - 驭铁术：轰落：</span>芮尔化马为甲，<span class=\"text-purple-600 dark:text-purple-500\">击飞</span>敌人并造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">魔法伤害</span>。芮尔获得<span class=\"text-blue-600 dark:text-blue-300\">护盾值</span>，持续到她再次上马为止。<br /><br />芮尔随后进入披甲形态，获得<span class=\"text-orange-600 dark:text-orange-400\">提升护甲</span>和<span>魔法抗性</span>、<span>攻击速度</span>和攻击距离。在披甲形态中，她可以使用<span>驭铁术：驾临</span>。",
+        "iconFile": "RellW_Dismount.png",
+        "cooldownSeconds": [
+          10,
+          10,
+          10,
+          10,
+          10
+        ],
+        "cost": {
+          "values": [
+            40,
+            40,
+            40,
+            40,
+            40
+          ],
+          "resource": "法力值"
+        },
+        "range": [
+          450,
+          450,
+          450,
+          450,
+          450
+        ],
+        "rankValues": [
+          {
+            "label": "下马伤害",
+            "values": "60/90/120/150/180"
+          },
+          {
+            "label": "护盾值",
+            "values": "20/40/60/80/100"
+          },
+          {
+            "label": "挑翻伤害",
+            "values": "10/25/40/55/70"
+          },
+          {
+            "label": "被动移动速度",
+            "values": "20/25/30/35/40"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "W Scaling",
+            "labelKo": "W 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "1:DismountDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": [
+            "spell.RellW_Dismount:DismountDamage",
+            "spell.RellW_Dismount:DismountedASBoost*100",
+            "spell.RellW_Dismount:DismountedRangeBoost",
+            "spell.RellW_Dismount:MountedMoveSpeed",
+            "spell.RellW_Dismount:ResistanceIncrease*100",
+            "spell.RellW_Dismount:Shield"
+          ]
+        }
+      },
+      "E": {
+        "slot": "E",
+        "id": "RellE",
+        "name": "全速冲锋",
+        "summary": "被动：芮尔获得非战斗状态下的移动速度。<br><br>主动：芮尔和一名友军获得不断升温的移动速度，这个加成会在朝着敌人们和彼此移动时提升至双倍。她的下次攻击会爆炸，造成魔法伤害。<br>",
+        "bodyHtml": "芮尔和一名友军进行冲锋，获得<span class=\"text-cyan-600 dark:text-cyan-500\">15%移动速度</span>，这个加成会在面向敌方英雄或彼此时提升至<span class=\"text-cyan-600 dark:text-cyan-500\">30%</span>，持续3秒。芮尔的下一次攻击或<span>裂阵</span>会引爆一个区域，造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(5/5.5/6/6.5/7% + (0.03% 法术强度))最大生命值魔法伤害</span>。<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">对野怪和建筑物的伤害封顶值为(150 ~ 300)。</span>",
+        "iconFile": "RellE.png",
+        "cooldownSeconds": [
+          14,
+          13,
+          12,
+          11,
+          10
+        ],
+        "cost": {
+          "values": [
+            40,
+            40,
+            40,
+            40,
+            40
+          ],
+          "resource": "法力值"
+        },
+        "range": [
+          1200,
+          1200,
+          1200,
+          1200,
+          1200
+        ],
+        "rankValues": [
+          {
+            "label": "伤害",
+            "values": "5/5.5/6/6.5/7"
+          },
+          {
+            "label": "冷却时间",
+            "values": "14/13/12/11/10"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "E Scaling",
+            "labelKo": "E 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "2:MaxHealthDamageCalc"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "R": {
+        "slot": "R",
+        "id": "RellR",
+        "name": "极涌",
+        "summary": "芮尔喷发出有磁性的怒火，粗暴地将附近敌方英雄向她拉拽。随后芮尔会持续将附近敌人向她拖曳一小段时间，并持续造成魔法伤害。",
+        "bodyHtml": "芮尔喷发出有磁性的怒火，粗暴地将附近敌方英雄向她<span class=\"text-purple-600 dark:text-purple-500\">拉拽</span>。随后芮尔会持续将附近敌人向她<span class=\"text-purple-600 dark:text-purple-500\">拖曳</span>并在接来的2秒里持续造成共<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(150/250/350 + (110% 法术强度))魔法伤害</span>。",
+        "iconFile": "RellR.png",
+        "cooldownSeconds": [
+          120,
+          100,
+          80
+        ],
+        "cost": {
+          "values": [
+            100,
+            100,
+            100
+          ],
+          "resource": "法力值"
+        },
+        "range": [
+          200,
+          200,
+          200
+        ],
+        "rankValues": [
+          {
+            "label": "冷却时间",
+            "values": "120/100/80"
+          },
+          {
+            "label": "伤害",
+            "values": "150/250/350"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "R Scaling",
+            "labelKo": "R 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "3:TotalDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      }
+    }
+  }
+}

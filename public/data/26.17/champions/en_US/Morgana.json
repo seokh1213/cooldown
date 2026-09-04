@@ -1,0 +1,392 @@
+{
+  "schemaVersion": 2,
+  "patchVersion": "26.17",
+  "locale": "en_US",
+  "sources": {
+    "ddragon": "16.17.1",
+    "cdragon": "16.17"
+  },
+  "champion": {
+    "id": "Morgana",
+    "key": "25",
+    "name": "Morgana",
+    "title": "the Fallen",
+    "tags": [
+      "Support",
+      "Mage"
+    ],
+    "baseStats": {
+      "health": {
+        "base": 630,
+        "perLevel": 104
+      },
+      "healthRegen": {
+        "base": 5.5,
+        "perLevel": 0.4
+      },
+      "mana": {
+        "base": 340,
+        "perLevel": 60
+      },
+      "manaRegen": {
+        "base": 11,
+        "perLevel": 0.4
+      },
+      "attackDamage": {
+        "base": 56,
+        "perLevel": 0
+      },
+      "attackSpeed": {
+        "base": 0.625,
+        "perLevel": 1.53
+      },
+      "armor": {
+        "base": 25,
+        "perLevel": 4.2
+      },
+      "magicResist": {
+        "base": 30,
+        "perLevel": 1.3
+      },
+      "moveSpeed": {
+        "base": 335,
+        "perLevel": 0
+      },
+      "attackRange": {
+        "base": 450,
+        "perLevel": 0
+      }
+    },
+    "baseStatContributions": [
+      {
+        "stat": "MAX_HEALTH",
+        "value": 104,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "HEALTH_REGEN",
+        "value": 0.4,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAX_MANA",
+        "value": 60,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MANA_REGEN",
+        "value": 0.4,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_DAMAGE",
+        "value": 0,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_SPEED",
+        "value": 1.53,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ARMOR",
+        "value": 4.2,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAGIC_RESIST",
+        "value": 1.3,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      }
+    ],
+    "abilities": {
+      "P": {
+        "slot": "P",
+        "id": "MorganaPassive",
+        "name": "Soul Siphon",
+        "summary": "Morgana drains spirit from her enemies, healing as she deals damage to champions, large minions, and medium and larger jungler monsters.",
+        "bodyHtml": "Morgana <span class=\"text-green-600 dark:text-green-400\">Heals for 18%</span> of the damage dealt by her Abilities to champions, large minions, and medium and larger jungle monsters.",
+        "iconFile": "FallenAngel_Empathize.png",
+        "cooldownSeconds": [],
+        "range": [],
+        "rankValues": [],
+        "scalings": [],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "Q": {
+        "slot": "Q",
+        "id": "MorganaQ",
+        "name": "Dark Binding",
+        "summary": "Morgana binds an enemy in place with dark magic, forcing them to feel the pain they've caused and dealing magic damage. ",
+        "bodyHtml": "Morgana hurls a blast of starfire that <span class=\"text-purple-600 dark:text-purple-500\">Roots</span> the first enemy hit for 2/2.25/2.5/2.75/3 seconds and deals <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(80/135/190/245/300 + (90% Ability Power)) magic damage</span>.",
+        "iconFile": "MorganaQ.png",
+        "cooldownSeconds": [
+          10,
+          10,
+          10,
+          10,
+          10
+        ],
+        "cost": {
+          "values": [
+            50,
+            55,
+            60,
+            65,
+            70
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          1250,
+          1250,
+          1250,
+          1250,
+          1250
+        ],
+        "rankValues": [
+          {
+            "label": "Damage",
+            "values": "80/135/190/245/300"
+          },
+          {
+            "label": "Root Duration",
+            "values": "2/2.25/2.5/2.75/3"
+          },
+          {
+            "label": "Mana Cost",
+            "values": "50/55/60/65/70"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "Q Scaling",
+            "labelKo": "Q 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "0:TotalDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "W": {
+        "slot": "W",
+        "id": "MorganaW",
+        "name": "Tormented Shadow",
+        "summary": "Morgana casts a cursed shadow on an area, damaging enemies who dare stand in her dark circle. They receive magic damage over time, which increases the lower health they are.",
+        "bodyHtml": "Morgana ignites the ground for 5 seconds, dealing <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(18/31/44/57/70 + (20% Ability Power)) magic damage</span> per second, increased by up to <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(18/31/44/57/70 + (20% Ability Power))</span> based on the targets' missing Health.<br /><br />This Ability's Cooldown is reduced by 5% every time Morgana is healed by <span>Soul Siphon</span>.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">This Ability deals 170% damage to jungle monsters.</span>",
+        "iconFile": "MorganaW.png",
+        "cooldownSeconds": [
+          12,
+          12,
+          12,
+          12,
+          12
+        ],
+        "cost": {
+          "values": [
+            70,
+            80,
+            90,
+            100,
+            110
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          900,
+          900,
+          900,
+          900,
+          900
+        ],
+        "rankValues": [
+          {
+            "label": "Damage Per Second",
+            "values": "18/31/44/57/70"
+          },
+          {
+            "label": "Mana Cost",
+            "values": "70/80/90/100/110"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "W Scaling",
+            "labelKo": "W 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "1:TotalMinDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "E": {
+        "slot": "E",
+        "id": "MorganaE",
+        "name": "Black Shield",
+        "summary": "Morgana anoints an ally with a protective barrier of starfire, which absorbs magical damage and disabling effects until it is broken.",
+        "bodyHtml": "Morgana grants an ally champion <span class=\"text-blue-600 dark:text-blue-300\">(100/155/210/265/320 + (70% Ability Power)) Magic Shield</span> for 5 seconds. The shield prevents <span class=\"text-purple-600 dark:text-purple-500\">Disabling</span> and <span class=\"text-purple-600 dark:text-purple-500\">Immobilizing</span> effects until it breaks.",
+        "iconFile": "MorganaE.png",
+        "cooldownSeconds": [
+          26,
+          23.5,
+          21,
+          18.5,
+          16
+        ],
+        "cost": {
+          "values": [
+            80,
+            80,
+            80,
+            80,
+            80
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          800,
+          800,
+          800,
+          800,
+          800
+        ],
+        "rankValues": [
+          {
+            "label": "Shield Amount",
+            "values": "100/155/210/265/320"
+          },
+          {
+            "label": "Cooldown",
+            "values": "26/23.5/21/18.5/16"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "E Scaling",
+            "labelKo": "E 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "2:TotalShieldStrength"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "R": {
+        "slot": "R",
+        "id": "MorganaR",
+        "name": "Soul Shackles",
+        "summary": "Morgana unleashes the full force of her Celestial power as she unbinds her wings and hovers above the ground. She lashes chains of dark pain onto nearby enemy champions, gaining Move Speed. The chains slow and deal initial damage and, after a delay, stun those who are unable to break them.",
+        "bodyHtml": "Morgana chains herself to nearby enemy Champions, dealing <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(200/275/350 + (80% Ability Power)) magic damage</span> and <span class=\"text-purple-600 dark:text-purple-500\">Slowing</span> them by 20%. After 3 seconds, enemies unable to break the chains take an additional <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(200/275/350 + (80% Ability Power)) magic damage</span> and are <span class=\"text-purple-600 dark:text-purple-500\">Stunned</span> for 1.5/1.75/2 seconds.<br /><br />While casting this Ability, Morgana gains <span class=\"text-cyan-600 dark:text-cyan-500\">20/40/60% Move Speed</span>.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">Morgana gains <span class=\"text-purple-600 dark:text-purple-400 font-semibold\">True Sight</span> of all enemies affected by this Ability.</span>",
+        "iconFile": "MorganaR.png",
+        "cooldownSeconds": [
+          120,
+          110,
+          100
+        ],
+        "cost": {
+          "values": [
+            100,
+            100,
+            100
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          625,
+          625,
+          625
+        ],
+        "rankValues": [
+          {
+            "label": "Damage",
+            "values": "200/275/350"
+          },
+          {
+            "label": "Move Speed",
+            "values": "20/40/60"
+          },
+          {
+            "label": "Stun Duration:",
+            "values": "1.5/1.75/2"
+          },
+          {
+            "label": "Cooldown",
+            "values": "120/110/100"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "R Scaling",
+            "labelKo": "R 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "3:TotalDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,396 @@
+{
+  "schemaVersion": 2,
+  "patchVersion": "26.17",
+  "locale": "en_US",
+  "sources": {
+    "ddragon": "16.17.1",
+    "cdragon": "16.17"
+  },
+  "champion": {
+    "id": "Orianna",
+    "key": "61",
+    "name": "Orianna",
+    "title": "the Lady of Clockwork",
+    "tags": [
+      "Mage",
+      "Support"
+    ],
+    "baseStats": {
+      "health": {
+        "base": 565,
+        "perLevel": 110
+      },
+      "healthRegen": {
+        "base": 7,
+        "perLevel": 0.55
+      },
+      "mana": {
+        "base": 418,
+        "perLevel": 25
+      },
+      "manaRegen": {
+        "base": 8,
+        "perLevel": 0.8
+      },
+      "attackDamage": {
+        "base": 44,
+        "perLevel": 0
+      },
+      "attackSpeed": {
+        "base": 0.658,
+        "perLevel": 3.5
+      },
+      "armor": {
+        "base": 20,
+        "perLevel": 4.2
+      },
+      "magicResist": {
+        "base": 26,
+        "perLevel": 1.3
+      },
+      "moveSpeed": {
+        "base": 325,
+        "perLevel": 0
+      },
+      "attackRange": {
+        "base": 525,
+        "perLevel": 0
+      }
+    },
+    "baseStatContributions": [
+      {
+        "stat": "MAX_HEALTH",
+        "value": 110,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "HEALTH_REGEN",
+        "value": 0.55,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAX_MANA",
+        "value": 25,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MANA_REGEN",
+        "value": 0.8,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_DAMAGE",
+        "value": 0,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_SPEED",
+        "value": 3.5,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ARMOR",
+        "value": 4.2,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAGIC_RESIST",
+        "value": 1.3,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      }
+    ],
+    "abilities": {
+      "P": {
+        "slot": "P",
+        "id": "OriannaP",
+        "name": "Clockwork Windup",
+        "summary": "Orianna's Attacks deal additional magic damage. This damage increases the more Orianna Attacks the same target.",
+        "bodyHtml": "Orianna's Abilities originate from her <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Ball</span>. Orianna's <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Ball</span> automatically returns to her if she is too far away from it.<br /><br />Orianna's Attacks deal an additional <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(15% Ability Power) magic damage</span>. Subsequent Attacks against the same target within 4 seconds deal an additional <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(2.25% Ability Power) magic damage</span> (max of <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(15% Ability Power) damage</span>).",
+        "iconFile": "OriannaPassive.png",
+        "cooldownSeconds": [],
+        "range": [],
+        "rankValues": [],
+        "scalings": [],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "Q": {
+        "slot": "Q",
+        "id": "OrianaIzunaCommand",
+        "name": "Command: Attack",
+        "summary": "Orianna commands her Ball to fire toward a target location, dealing magic damage to targets along the way (deals less damage to subsequent targets). Her Ball remains at the target location after.",
+        "bodyHtml": "Orianna commands her <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Ball</span> to move to an area, dealing <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(60/90/120/150/180 + (55% Ability Power)) magic damage</span> to surrounding enemies and to enemies it passes through. Deals 30% less damage to all enemies after the first.",
+        "iconFile": "OrianaIzunaCommand.png",
+        "cooldownSeconds": [
+          7,
+          6,
+          5,
+          4,
+          3
+        ],
+        "cost": {
+          "values": [
+            35,
+            35,
+            35,
+            35,
+            35
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          815,
+          815,
+          815,
+          815,
+          815
+        ],
+        "rankValues": [
+          {
+            "label": "Damage",
+            "values": "60/90/120/150/180"
+          },
+          {
+            "label": "Cooldown",
+            "values": "7/6/5/4/3"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "Q Scaling",
+            "labelKo": "Q 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "0:TotalDamageTooltip"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "W": {
+        "slot": "W",
+        "id": "OrianaDissonanceCommand",
+        "name": "Command: Dissonance",
+        "summary": "Orianna commands her Ball to release a pulse of energy, dealing magic damage around it. This leaves a field behind that speeds up allies and slows enemies.",
+        "bodyHtml": "Orianna commands her <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Ball</span> to release an electric pulse, dealing <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(70/110/150/190/230 + (80% Ability Power)) magic damage</span> to surrounding enemies.<br /><br />The pulse leaves behind an energy field for 3 seconds, <span class=\"text-purple-600 dark:text-purple-500\">Slowing</span> enemies by 20/25/30/35/40% and granting allies <span class=\"text-cyan-600 dark:text-cyan-500\">20/25/30/35/40% Move Speed</span>, decaying over 2 seconds.",
+        "iconFile": "OrianaDissonanceCommand.png",
+        "cooldownSeconds": [
+          7,
+          7,
+          7,
+          7,
+          7
+        ],
+        "cost": {
+          "values": [
+            60,
+            65,
+            70,
+            75,
+            80
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          225,
+          225,
+          225,
+          225,
+          225
+        ],
+        "rankValues": [
+          {
+            "label": "Damage",
+            "values": "70/110/150/190/230"
+          },
+          {
+            "label": "Slow",
+            "values": "20/25/30/35/40"
+          },
+          {
+            "label": "Move Speed",
+            "values": "20/25/30/35/40"
+          },
+          {
+            "label": "Mana Cost",
+            "values": "60/65/70/75/80"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "W Scaling",
+            "labelKo": "W 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "1:TotalDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "E": {
+        "slot": "E",
+        "id": "OrianaRedactCommand",
+        "name": "Command: Protect",
+        "summary": "Orianna commands her Ball to attach to an allied champion, Shielding them and dealing magic damage to any enemies it passes through on the way. Additionally, the Ball grants additional Armor and Magic Resist to the champion it is attached to.",
+        "bodyHtml": "<span class=\"text-gray-600 dark:text-gray-500 italic\">Passive: </span>The <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Ball</span> adds <span class=\"text-orange-600 dark:text-orange-400\">6/12/18/24/30 Armor</span> and <span>6/12/18/24/30 Magic Resist</span> to the allied champion it is attached to.<br /><br /><span class=\"text-gray-900 dark:text-white font-semibold\">Active: </span>Orianna commands her <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Ball</span> to attach to an allied champion, granting them <span class=\"text-blue-600 dark:text-blue-300\">(55/90/125/160/195 + (45% Ability Power)) Shield</span> for 2.5 seconds. Enemies the <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Ball</span> passes through take <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(60/90/120/150/180 + (30% Ability Power)) magic damage</span>.",
+        "iconFile": "OrianaRedactCommand.png",
+        "cooldownSeconds": [
+          9,
+          9,
+          9,
+          9,
+          9
+        ],
+        "cost": {
+          "values": [
+            60,
+            60,
+            60,
+            60,
+            60
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          1095,
+          1095,
+          1095,
+          1095,
+          1095
+        ],
+        "rankValues": [
+          {
+            "label": "Damage",
+            "values": "60/90/120/150/180"
+          },
+          {
+            "label": "Armor Bonus",
+            "values": "6/12/18/24/30"
+          },
+          {
+            "label": "Magic Resist Bonus",
+            "values": "6/12/18/24/30"
+          },
+          {
+            "label": "Shield Amount",
+            "values": "55/90/125/160/195"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "E Scaling",
+            "labelKo": "E 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "2:TotalDamageTooltip"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "R": {
+        "slot": "R",
+        "id": "OrianaDetonateCommand",
+        "name": "Command: Shockwave",
+        "summary": "Orianna commands her Ball to unleash a shockwave, dealing magic damage and launching nearby enemies towards the Ball after a short delay.",
+        "bodyHtml": "Orianna commands her <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Ball</span> to unleash a shockwave, dealing <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(225/350/475 + (110% Ability Power)) magic damage</span> to nearby enemies and <span class=\"text-purple-600 dark:text-purple-500\">Knocking</span> them in the direction of the <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Ball</span>.",
+        "iconFile": "OrianaDetonateCommand.png",
+        "cooldownSeconds": [
+          110,
+          95,
+          80
+        ],
+        "cost": {
+          "values": [
+            100,
+            100,
+            100
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          410,
+          410,
+          410
+        ],
+        "rankValues": [
+          {
+            "label": "Damage",
+            "values": "225/350/475"
+          },
+          {
+            "label": "Cooldown",
+            "values": "110/95/80"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "R Scaling",
+            "labelKo": "R 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "3:TotalDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      }
+    }
+  }
+}

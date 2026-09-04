@@ -1,0 +1,393 @@
+{
+  "schemaVersion": 2,
+  "patchVersion": "26.17",
+  "locale": "ko_KR",
+  "sources": {
+    "ddragon": "16.17.1",
+    "cdragon": "16.17"
+  },
+  "champion": {
+    "id": "Kayn",
+    "key": "141",
+    "name": "케인",
+    "title": "그림자 사신",
+    "tags": [
+      "Fighter",
+      "Assassin"
+    ],
+    "baseStats": {
+      "health": {
+        "base": 655,
+        "perLevel": 103
+      },
+      "healthRegen": {
+        "base": 8,
+        "perLevel": 0.75
+      },
+      "mana": {
+        "base": 410,
+        "perLevel": 50
+      },
+      "manaRegen": {
+        "base": 11.5,
+        "perLevel": 0.95
+      },
+      "attackDamage": {
+        "base": 68,
+        "perLevel": 0
+      },
+      "attackSpeed": {
+        "base": 0.669,
+        "perLevel": 2.7
+      },
+      "armor": {
+        "base": 38,
+        "perLevel": 4.5
+      },
+      "magicResist": {
+        "base": 32,
+        "perLevel": 2.05
+      },
+      "moveSpeed": {
+        "base": 340,
+        "perLevel": 0
+      },
+      "attackRange": {
+        "base": 175,
+        "perLevel": 0
+      }
+    },
+    "baseStatContributions": [
+      {
+        "stat": "MAX_HEALTH",
+        "value": 103,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "HEALTH_REGEN",
+        "value": 0.75,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAX_MANA",
+        "value": 50,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MANA_REGEN",
+        "value": 0.95,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_DAMAGE",
+        "value": 0,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_SPEED",
+        "value": 2.7,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ARMOR",
+        "value": 4.5,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAGIC_RESIST",
+        "value": 2.05,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      }
+    ],
+    "abilities": {
+      "P": {
+        "slot": "P",
+        "id": "P",
+        "name": "다르킨의 낫",
+        "summary": "",
+        "bodyHtml": "케인은 다르킨 무기 라아스트를 휘두르는 한편 제압하려고 하고, 라아스트는 케인을 잠식하려 합니다. <font color='#fe5c50'>다르킨</font>이 승리하거나, 아니면 케인이 라아스트를 제압해 <font color='#8484fb'>그림자 암살자</font>가 될 수도 있습니다.<br><br><font color='#fe5c50'>다르킨:</font> 챔피언에게 가한 스킬 피해에 비례해 체력을 회복합니다.<br><br><font color='#8484fb'>그림자 암살자:</font> 적 챔피언과 전투 시작 후 첫 몇 초 동안 추가 피해를 입힙니다.",
+        "iconFile": "Kayn_Passive_Primary.png",
+        "cooldownSeconds": [],
+        "range": [],
+        "rankValues": [],
+        "scalings": [],
+        "conditions": [],
+        "source": "ddragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "Q": {
+        "slot": "Q",
+        "id": "KaynQ",
+        "name": "살상돌격",
+        "summary": "케인이 앞으로 돌진하며 적을 공격합니다. 돌진 및 공격 시 모두 피해를 입힙니다.",
+        "bodyHtml": "<span class=\"text-gray-600 dark:text-gray-400 italic\">미니언과 정글 몬스터에게 <span class=\"text-red-600 dark:text-red-500 font-semibold\">40의 물리 피해</span>를 추가로 입힙니다. (최대 200/250/300/350/400)</span>",
+        "iconFile": "KaynQ.png",
+        "cooldownSeconds": [
+          7,
+          6.5,
+          6,
+          5.5,
+          5
+        ],
+        "cost": {
+          "values": [
+            40,
+            40,
+            40,
+            40,
+            40
+          ],
+          "resource": "마나"
+        },
+        "range": [
+          350,
+          350,
+          350,
+          350,
+          350
+        ],
+        "rankValues": [
+          {
+            "label": "재사용 대기시간",
+            "values": "7/6.5/6/5.5/5"
+          },
+          {
+            "label": "기본 피해량",
+            "values": "75/105/135/165/195"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "Q Scaling",
+            "labelKo": "Q 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "0:TotalDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "W": {
+        "slot": "W",
+        "id": "KaynW",
+        "name": "몰아치는 낫",
+        "summary": "케인이 직선상의 대상 모두에게 피해를 입히고 둔화시킵니다.",
+        "bodyHtml": "케인이 낫을 위로 휘둘러 적에게 <physicalDamage>{{ totaldamage }}의 물리 피해</physicalDamage>를 입히고 {{ e3 }}% <status>둔화</status>시킵니다. 둔화 효과는 {{ e5 }}초에 걸쳐 사라집니다.<br /><br /><keywordMajor>그림자 암살자:</keywordMajor> 케인이 이 스킬을 사용하면서 이동하여 사거리를 늘릴 수 있습니다.<br /><br /><keywordMajor>다르킨 학살자:</keywordMajor> 또한 적중한 적을 {{ e2 }}초 동안 <status>공중으로 띄워 올립니다</status>.{{ spellmodifierdescriptionappend }}",
+        "iconFile": "KaynW.png",
+        "cooldownSeconds": [
+          13,
+          12,
+          11,
+          10,
+          9
+        ],
+        "cost": {
+          "values": [
+            40,
+            45,
+            50,
+            55,
+            60
+          ],
+          "resource": "마나"
+        },
+        "range": [
+          700,
+          700,
+          700,
+          700,
+          700
+        ],
+        "rankValues": [
+          {
+            "label": "피해량",
+            "values": "85/130/175/220/265"
+          },
+          {
+            "label": "재사용 대기시간",
+            "values": "13/12/11/10/9"
+          },
+          {
+            "label": "소모값 마나",
+            "values": "40/45/50/55/60"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "W Scaling",
+            "labelKo": "W 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "1:TotalDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "ddragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "E": {
+        "slot": "E",
+        "id": "KaynE",
+        "name": "그림자의 길",
+        "summary": "케인이 지형을 통과해 이동할 수 있습니다.",
+        "bodyHtml": "<span class=\"text-gray-600 dark:text-gray-400 italic\">유체화 상태인 유닛은 다른 유닛을 통과할 수 있습니다.<br />적 챔피언과 전투 중 최대 지속시간은 1.5초입니다.<br /></span>",
+        "iconFile": "KaynE.png",
+        "cooldownSeconds": [
+          21,
+          19,
+          17,
+          15,
+          13
+        ],
+        "cost": {
+          "values": [
+            90,
+            90,
+            90,
+            90,
+            90
+          ],
+          "resource": "마나"
+        },
+        "range": [
+          400,
+          400,
+          400,
+          400,
+          400
+        ],
+        "rankValues": [
+          {
+            "label": "지속시간",
+            "values": "7/7.5/8/8.5/9"
+          },
+          {
+            "label": "회복량",
+            "values": "90/100/110/120/130"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "E Scaling",
+            "labelKo": "E 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "2:TotalHealing"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "R": {
+        "slot": "R",
+        "id": "KaynR",
+        "name": "그림자의 지배",
+        "summary": "케인이 적에게 파고들었다가 빠져나오면서 큰 피해를 입힙니다.",
+        "bodyHtml": "<span class=\"text-gray-600 dark:text-gray-400 italic\">대상으로 지정할 수 없는 유닛은 이미 적중당한 상태가 아닌 한 적의 기본 공격이나 스킬에 영향을 받지 않습니다.</span>",
+        "iconFile": "KaynR.png",
+        "cooldownSeconds": [
+          120,
+          100,
+          80
+        ],
+        "rechargeSeconds": [
+          12,
+          11,
+          10
+        ],
+        "cost": {
+          "values": [
+            100,
+            100,
+            100
+          ],
+          "resource": "마나"
+        },
+        "range": [
+          550,
+          550,
+          550
+        ],
+        "rankValues": [
+          {
+            "label": "피해량",
+            "values": "0"
+          },
+          {
+            "label": "피해량",
+            "values": "150/250/350"
+          },
+          {
+            "label": "재사용 대기시간",
+            "values": "120/100/80"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "R Scaling",
+            "labelKo": "R 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "3:Damage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      }
+    }
+  }
+}

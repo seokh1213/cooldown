@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, Suspense, lazy } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { getDataVersions, getChampionList, cleanOldVersionCache } from "@/services/api";
+import { getDataVersions, getChampionList, cleanStaticDataCache } from "@/services/api";
 import Layout from "@/components/layout/Layout";
 import Nav from "@/components/features/Nav";
 import SplashScreen from "@/components/layout/SplashScreen";
@@ -181,9 +181,9 @@ function App() {
       setCDragonVersion(cdragonVersion);
       
       // 오래된 버전의 캐시 제거 (DDragon + CDragon 기준)
-      cleanOldVersionCache(patchVersion);
+      cleanStaticDataCache(patchVersion);
       
-      const champions = await getChampionList(patchVersion, lang, ddragonVersion);
+      const champions = await getChampionList(patchVersion, lang);
       setChampionList(champions);
       
       // 최소 로딩 시간 보장 (스플래시 화면 표시)

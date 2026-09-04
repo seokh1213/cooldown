@@ -1,0 +1,404 @@
+{
+  "schemaVersion": 2,
+  "patchVersion": "26.17",
+  "locale": "en_US",
+  "sources": {
+    "ddragon": "16.17.1",
+    "cdragon": "16.17"
+  },
+  "champion": {
+    "id": "Nautilus",
+    "key": "111",
+    "name": "Nautilus",
+    "title": "the Titan of the Depths",
+    "tags": [
+      "Tank",
+      "Support"
+    ],
+    "baseStats": {
+      "health": {
+        "base": 646,
+        "perLevel": 100
+      },
+      "healthRegen": {
+        "base": 8.5,
+        "perLevel": 0.55
+      },
+      "mana": {
+        "base": 400,
+        "perLevel": 47
+      },
+      "manaRegen": {
+        "base": 8.65,
+        "perLevel": 0.5
+      },
+      "attackDamage": {
+        "base": 61,
+        "perLevel": 0
+      },
+      "attackSpeed": {
+        "base": 0.706,
+        "perLevel": 1
+      },
+      "armor": {
+        "base": 39,
+        "perLevel": 4.95
+      },
+      "magicResist": {
+        "base": 32,
+        "perLevel": 2.05
+      },
+      "moveSpeed": {
+        "base": 325,
+        "perLevel": 0
+      },
+      "attackRange": {
+        "base": 175,
+        "perLevel": 0
+      }
+    },
+    "baseStatContributions": [
+      {
+        "stat": "MAX_HEALTH",
+        "value": 100,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "HEALTH_REGEN",
+        "value": 0.55,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAX_MANA",
+        "value": 47,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MANA_REGEN",
+        "value": 0.5,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_DAMAGE",
+        "value": 0,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_SPEED",
+        "value": 1,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ARMOR",
+        "value": 4.95,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAGIC_RESIST",
+        "value": 2.05,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      }
+    ],
+    "abilities": {
+      "P": {
+        "slot": "P",
+        "id": "NautilusPassive",
+        "name": "Staggering Blow",
+        "summary": "Nautilus' first Attack against a target deals increased physical damage and roots them briefly.",
+        "bodyHtml": "Nautilus' first Attack against a target deals <span class=\"text-red-600 dark:text-red-500 font-semibold\">(100% Attack Damage) physical damage</span> and <span class=\"text-purple-600 dark:text-purple-500\">Roots</span> them for (0.75 ~ 2) seconds.",
+        "iconFile": "Nautilus_StaggeringBlow.png",
+        "cooldownSeconds": [],
+        "range": [],
+        "rankValues": [],
+        "scalings": [],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "Q": {
+        "slot": "Q",
+        "id": "NautilusAnchorDrag",
+        "name": "Dredge Line",
+        "summary": "Nautilus hurls his anchor forward.  Colliding with an enemy pulls them and Nautilus together, dealing magic damage.  Colliding with terrain pulls Nautilus towards it.",
+        "bodyHtml": "Nautilus hurls his anchor forward. If it hits an enemy, Nautilus drags himself and the target together, dealing <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(85/130/175/220/265 + (90% Ability Power)) magic damage</span> and <span class=\"text-purple-600 dark:text-purple-500\">Stunning</span> them briefly. If the anchor hits terrain, Nautilus will drag himself towards it.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">If Nautilus's hook hits terrain, this Ability's Cooldown is reduced by 50%, and 50% of the Mana cost is refunded.</span>",
+        "iconFile": "NautilusAnchorDrag.png",
+        "cooldownSeconds": [
+          14,
+          13,
+          12,
+          11,
+          10
+        ],
+        "cost": {
+          "values": [
+            60,
+            60,
+            60,
+            60,
+            60
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          1150,
+          1150,
+          1150,
+          1150,
+          1150
+        ],
+        "rankValues": [
+          {
+            "label": "Cooldown",
+            "values": "14/13/12/11/10"
+          },
+          {
+            "label": "Damage",
+            "values": "85/130/175/220/265"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "Q Scaling",
+            "labelKo": "Q 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "0:QDamageCalc"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "W": {
+        "slot": "W",
+        "id": "NautilusPiercingGaze",
+        "name": "Titan's Wrath",
+        "summary": "Nautilus gains a temporary Shield.  While it persists, his Attacks deal damage over time to his target and surrounding enemies.",
+        "bodyHtml": "Nautilus gains a <span class=\"text-blue-600 dark:text-blue-300\">(50/60/70/80/90 + (8/9/10/11/12% Health)) Shield</span> for 6 seconds. While the <span class=\"text-blue-600 dark:text-blue-300\">Shield</span> persists, Nautilus' Attacks deal an additional <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(30/40/50/60/70 + (40% Ability Power)) magic damage</span> over 2 seconds to his target and all surrounding enemies.",
+        "iconFile": "NautilusPiercingGaze.png",
+        "cooldownSeconds": [
+          12,
+          12,
+          12,
+          12,
+          12
+        ],
+        "cost": {
+          "values": [
+            60,
+            60,
+            60,
+            60,
+            60
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          350,
+          350,
+          350,
+          350,
+          350
+        ],
+        "rankValues": [
+          {
+            "label": "Shield Amount",
+            "values": "50/60/70/80/90"
+          },
+          {
+            "label": "Magic Damage",
+            "values": "30/40/50/60/70"
+          },
+          {
+            "label": "% Max Health",
+            "values": "8%/9%/10%/11%/12%"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "W Scaling",
+            "labelKo": "W 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "1:DotDamageCalc"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "E": {
+        "slot": "E",
+        "id": "NautilusSplashZone",
+        "name": "Riptide",
+        "summary": "Nautilus creates three exploding waves around himself. Each explosion damages and slows enemies.",
+        "bodyHtml": "Nautilus creates three exploding waves around himself, each dealing <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(55/90/125/160/195 + (50% Ability Power)) magic damage</span> to enemies in the area and <span class=\"text-purple-600 dark:text-purple-500\">Slows</span> them by 30/35/40/45/50% decaying over 1.25 seconds.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">Waves deal 50% less damage after the first.</span><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">This Ability deals (125/165/205/245/285 + (50% Ability Power)) bonus damage to jungle monsters the first time it hits.</span>",
+        "iconFile": "NautilusSplashZone.png",
+        "cooldownSeconds": [
+          7,
+          6.5,
+          6,
+          5.5,
+          5
+        ],
+        "cost": {
+          "values": [
+            50,
+            60,
+            70,
+            80,
+            90
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          600,
+          600,
+          600,
+          600,
+          600
+        ],
+        "rankValues": [
+          {
+            "label": "Cooldown",
+            "values": "7/6.5/6/5.5/5"
+          },
+          {
+            "label": "Mana Cost",
+            "values": "50/60/70/80/90"
+          },
+          {
+            "label": "Damage",
+            "values": "55/90/125/160/195"
+          },
+          {
+            "label": "Monster Damage",
+            "values": "125/165/205/245/285"
+          },
+          {
+            "label": "Slow",
+            "values": "30/35/40/45/50"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "E Scaling",
+            "labelKo": "E 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "2:DamageCalc"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "R": {
+        "slot": "R",
+        "id": "NautilusGrandLine",
+        "name": "Depth Charge",
+        "summary": "Nautilus fires a shockwave into the earth that chases an opponent. This shockwave rips up the earth above it, knocking enemies into the air. When it reaches the opponent, the shockwave erupts, knocking his target into the air and stunning them.",
+        "bodyHtml": "Nautilus fires a shockwave that chases an enemy champion, dealing <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(150/275/400 + (80% Ability Power)) magic damage</span>, <span class=\"text-purple-600 dark:text-purple-500\">Knocking</span> them <span class=\"text-purple-600 dark:text-purple-500\">Up</span> and <span class=\"text-purple-600 dark:text-purple-500\">Stunning</span> them for 1/1.5/2 seconds. Other enemies hit by the shockwave are also <span class=\"text-purple-600 dark:text-purple-500\">Knocked Up</span> and <span class=\"text-purple-600 dark:text-purple-500\">Stunned</span> and take <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(125/175/225 + (40% Ability Power)) magic damage</span>.",
+        "iconFile": "NautilusGrandLine.png",
+        "cooldownSeconds": [
+          120,
+          100,
+          80
+        ],
+        "cost": {
+          "values": [
+            100,
+            100,
+            100
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          825,
+          825,
+          825
+        ],
+        "rankValues": [
+          {
+            "label": "Cooldown",
+            "values": "120/100/80"
+          },
+          {
+            "label": "Pass Through Damage",
+            "values": "150/275/400"
+          },
+          {
+            "label": "Stun Duration:",
+            "values": "1/1.5/2"
+          },
+          {
+            "label": "Explosion Damage",
+            "values": "125/175/225"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "R Scaling",
+            "labelKo": "R 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "3:PrimaryTargetDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,386 @@
+{
+  "schemaVersion": 2,
+  "patchVersion": "26.17",
+  "locale": "zh_CN",
+  "sources": {
+    "ddragon": "16.17.1",
+    "cdragon": "16.17"
+  },
+  "champion": {
+    "id": "XinZhao",
+    "key": "5",
+    "name": "德邦总管",
+    "title": "赵信",
+    "tags": [
+      "Fighter",
+      "Tank"
+    ],
+    "baseStats": {
+      "health": {
+        "base": 620,
+        "perLevel": 106
+      },
+      "healthRegen": {
+        "base": 8,
+        "perLevel": 0.7
+      },
+      "mana": {
+        "base": 274,
+        "perLevel": 55
+      },
+      "manaRegen": {
+        "base": 7.25,
+        "perLevel": 0.45
+      },
+      "attackDamage": {
+        "base": 63,
+        "perLevel": 0
+      },
+      "attackSpeed": {
+        "base": 0.645,
+        "perLevel": 3.5
+      },
+      "armor": {
+        "base": 35,
+        "perLevel": 4.4
+      },
+      "magicResist": {
+        "base": 32,
+        "perLevel": 2.05
+      },
+      "moveSpeed": {
+        "base": 345,
+        "perLevel": 0
+      },
+      "attackRange": {
+        "base": 175,
+        "perLevel": 0
+      }
+    },
+    "baseStatContributions": [
+      {
+        "stat": "MAX_HEALTH",
+        "value": 106,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "HEALTH_REGEN",
+        "value": 0.7,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAX_MANA",
+        "value": 55,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MANA_REGEN",
+        "value": 0.45,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_DAMAGE",
+        "value": 0,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_SPEED",
+        "value": 3.5,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ARMOR",
+        "value": 4.4,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAGIC_RESIST",
+        "value": 2.05,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      }
+    ],
+    "abilities": {
+      "P": {
+        "slot": "P",
+        "id": "XinZhaoP",
+        "name": "果决",
+        "summary": "每第三次攻击造成额外伤害并治疗赵信自身。",
+        "bodyHtml": "每第三次攻击或用<span>风斩电刺</span>命中敌人时，都会造成额外的<span class=\"text-red-600 dark:text-red-500 font-semibold\">物理伤害</span>并回复<span class=\"text-green-600 dark:text-green-400\">生命值</span>。",
+        "iconFile": "XinZhaoReworkP.png",
+        "cooldownSeconds": [],
+        "range": [],
+        "rankValues": [],
+        "scalings": [],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "Q": {
+        "slot": "Q",
+        "id": "XinZhaoQ",
+        "name": "三重爪击",
+        "summary": "赵信的下3次普攻将造成额外伤害并且第三次攻击将击飞目标。",
+        "bodyHtml": "赵信的下3次普攻造成额外的<span class=\"text-red-600 dark:text-red-500 font-semibold\">(15/30/45/60/75 + (40% 额外攻击力))物理伤害</span>并使他的其它技能的冷却时间缩短1秒。第3次普攻还会<span class=\"text-purple-600 dark:text-purple-500\">击飞</span>目标0.75秒。<br />",
+        "iconFile": "XinZhaoQ.png",
+        "cooldownSeconds": [
+          7,
+          6.5,
+          6,
+          5.5,
+          5
+        ],
+        "cost": {
+          "values": [
+            30,
+            30,
+            30,
+            30,
+            30
+          ],
+          "resource": "法力值"
+        },
+        "range": [
+          375,
+          375,
+          375,
+          375,
+          375
+        ],
+        "rankValues": [
+          {
+            "label": "额外伤害",
+            "values": "15/30/45/60/75"
+          },
+          {
+            "label": "冷却时间",
+            "values": "7/6.5/6/5.5/5"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "Q Scaling",
+            "labelKo": "Q 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "0:BonusDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "W": {
+        "slot": "W",
+        "id": "XinZhaoW",
+        "name": "风斩电刺",
+        "summary": "赵信用他的长枪斩击他的前方，之后将长枪向前刺击，并使被击中的敌人减速并对其施加被挑战印记。",
+        "bodyHtml": "赵信进行斩击，造成<span class=\"text-red-600 dark:text-red-500 font-semibold\">(30/40/50/60/70 + (30% 攻击力))物理伤害</span>，随后进行刺击，造成<span class=\"text-red-600 dark:text-red-500 font-semibold\">(50/85/120/155/190 + (90% 攻击力) + (65% 法术强度))</span>物理伤害。被这次刺击命中的敌人们会受到持续(1.5 + (0.5% 法术强度))秒的-5000%<span class=\"text-purple-600 dark:text-purple-500\">减速</span>。<br /><br />被这次刺击命中的英雄和大型野怪会被施加持续3秒的<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">被挑战</span>标记并且如果不在<span class=\"text-purple-600 dark:text-purple-400 font-semibold\">潜行</span>状态还会被显形。<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">基于赵信的暴击几率，刺击伤害至多提升33.3%。<br />对小兵造成53.34%伤害。<br />两段攻击都会施加33%效能的生命偷取。</span>",
+        "iconFile": "XinZhaoW.png",
+        "cooldownSeconds": [
+          12,
+          11,
+          10,
+          9,
+          8
+        ],
+        "cost": {
+          "values": [
+            60,
+            60,
+            60,
+            60,
+            60
+          ],
+          "resource": "法力值"
+        },
+        "range": [
+          1000,
+          1000,
+          1000,
+          1000,
+          1000
+        ],
+        "rankValues": [
+          {
+            "label": "斩击伤害",
+            "values": "30/40/50/60/70"
+          },
+          {
+            "label": "刺击伤害",
+            "values": "50/85/120/155/190"
+          },
+          {
+            "label": "冷却时间",
+            "values": "12/11/10/9/8"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "W Scaling",
+            "labelKo": "W 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "1:SlashDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "E": {
+        "slot": "E",
+        "id": "XinZhaoE",
+        "name": "无畏冲锋",
+        "summary": "赵信对一名敌人发起冲锋，获得攻击速度并对范围内的所有敌人造成伤害，并使他们暂时减速。以被挑战的敌人为目标时，这个技能的施放距离会获得提升。",
+        "bodyHtml": "赵信对一名敌人发起冲锋，对附近的敌人们造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(50/75/100/125/150 + (120% 法术强度))魔法伤害</span>和持续0.5秒的30%<span class=\"text-purple-600 dark:text-purple-500\">减速</span>。<br /><br />赵信自身获得<span>()攻击速度</span>，持续5秒。<br /><br />以<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">被挑战</span>的敌人为目标时，这个技能的施放距离会获得提升。<br />",
+        "iconFile": "XinZhaoE.png",
+        "cooldownSeconds": [
+          11,
+          11,
+          11,
+          11,
+          11
+        ],
+        "cost": {
+          "values": [
+            60,
+            60,
+            60,
+            60,
+            60
+          ],
+          "resource": "法力值"
+        },
+        "range": [
+          650,
+          650,
+          650,
+          650,
+          650
+        ],
+        "rankValues": [
+          {
+            "label": "伤害",
+            "values": "50/75/100/125/150"
+          },
+          {
+            "label": "攻击速度",
+            "values": "38/46/54/62/70"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "E Scaling",
+            "labelKo": "E 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "2:ChargeDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": [
+            "f1"
+          ]
+        }
+      },
+      "R": {
+        "slot": "R",
+        "id": "XinZhaoR",
+        "name": "新月护卫",
+        "summary": "赵信被动地挑战一名近期被他造成过伤害的敌人。在主动施放时，赵信对附近的敌人们造成基于其当前生命值的伤害，并击退未被挑战的目标们，且自身变得不会受到来自圆环之外的敌人所造成的伤害。",
+        "bodyHtml": "<span class=\"text-gray-600 dark:text-gray-500 italic\">被动：</span>赵信会给他用攻击或<span>无畏冲锋</span>造成过伤害的最后一个英雄施加持续3秒的<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">被挑战</span>标记。<br /><br /><span class=\"text-gray-900 dark:text-white font-semibold\">主动：</span>赵信环绕自身释放一次横扫，造成<span class=\"text-red-600 dark:text-red-500 font-semibold\">(75/175/275 + (100% 额外攻击力) + (110% 法术强度))外加15%当前生命值的物理伤害</span>并<span class=\"text-purple-600 dark:text-purple-500\">击退</span>所有<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">未被挑战</span>的敌人们。<br /> <br />随后，赵信会免疫来自横扫范围外侧敌人的伤害，持续4秒。<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">对野怪和小兵最多造成<span class=\"text-red-600 dark:text-red-500 font-semibold\">600伤害</span>。</span>",
+        "iconFile": "XinZhaoR.png",
+        "cooldownSeconds": [
+          120,
+          110,
+          100
+        ],
+        "cost": {
+          "values": [
+            100,
+            100,
+            100
+          ],
+          "resource": "法力值"
+        },
+        "range": [
+          500,
+          500,
+          500
+        ],
+        "rankValues": [
+          {
+            "label": "伤害",
+            "values": "75/175/275"
+          },
+          {
+            "label": "冷却时间",
+            "values": "120/110/100"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "R Scaling",
+            "labelKo": "R 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "3:TotalDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      }
+    }
+  }
+}

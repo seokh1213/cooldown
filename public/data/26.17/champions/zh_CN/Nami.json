@@ -1,0 +1,388 @@
+{
+  "schemaVersion": 2,
+  "patchVersion": "26.17",
+  "locale": "zh_CN",
+  "sources": {
+    "ddragon": "16.17.1",
+    "cdragon": "16.17"
+  },
+  "champion": {
+    "id": "Nami",
+    "key": "267",
+    "name": "唤潮鲛姬",
+    "title": "娜美",
+    "tags": [
+      "Support",
+      "Mage"
+    ],
+    "baseStats": {
+      "health": {
+        "base": 560,
+        "perLevel": 88
+      },
+      "healthRegen": {
+        "base": 5.5,
+        "perLevel": 0.55
+      },
+      "mana": {
+        "base": 365,
+        "perLevel": 43
+      },
+      "manaRegen": {
+        "base": 11.5,
+        "perLevel": 0.4
+      },
+      "attackDamage": {
+        "base": 54,
+        "perLevel": 0
+      },
+      "attackSpeed": {
+        "base": 0.644,
+        "perLevel": 2.61
+      },
+      "armor": {
+        "base": 29,
+        "perLevel": 5.2
+      },
+      "magicResist": {
+        "base": 30,
+        "perLevel": 1.3
+      },
+      "moveSpeed": {
+        "base": 335,
+        "perLevel": 0
+      },
+      "attackRange": {
+        "base": 550,
+        "perLevel": 0
+      }
+    },
+    "baseStatContributions": [
+      {
+        "stat": "MAX_HEALTH",
+        "value": 88,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "HEALTH_REGEN",
+        "value": 0.55,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAX_MANA",
+        "value": 43,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MANA_REGEN",
+        "value": 0.4,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_DAMAGE",
+        "value": 0,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_SPEED",
+        "value": 2.61,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ARMOR",
+        "value": 5.2,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAGIC_RESIST",
+        "value": 1.3,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      }
+    ],
+    "abilities": {
+      "P": {
+        "slot": "P",
+        "id": "NamiPassive",
+        "name": "踏浪之行",
+        "summary": "每当娜美的技能命中友方英雄时，他们都会暂时获得移动速度加成。",
+        "bodyHtml": "每当娜美的技能命中友方英雄时，他们都会获得<span class=\"text-cyan-600 dark:text-cyan-500\">(100 + (25% 法术强度))移动速度</span>，在1.5秒里持续衰减。",
+        "iconFile": "NamiPassive.png",
+        "cooldownSeconds": [],
+        "range": [],
+        "rankValues": [],
+        "scalings": [],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "Q": {
+        "slot": "Q",
+        "id": "NamiQ",
+        "name": "碧波之牢",
+        "summary": "朝着目标区域放出一个泡泡，对命中的所有敌人造成伤害和晕眩效果。",
+        "bodyHtml": "娜美掷出一个泡泡，<span class=\"text-purple-600 dark:text-purple-500\">晕眩</span>敌人1.5秒并造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(90/145/200/255/310 + (50% 法术强度))魔法伤害</span>。",
+        "iconFile": "NamiQ.png",
+        "cooldownSeconds": [
+          12,
+          11,
+          10,
+          9,
+          8
+        ],
+        "cost": {
+          "values": [
+            60,
+            60,
+            60,
+            60,
+            60
+          ],
+          "resource": "法力值"
+        },
+        "range": [
+          875,
+          875,
+          875,
+          875,
+          875
+        ],
+        "rankValues": [
+          {
+            "label": "伤害",
+            "values": "90/145/200/255/310"
+          },
+          {
+            "label": "冷却时间",
+            "values": "12/11/10/9/8"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "Q Scaling",
+            "labelKo": "Q 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "0:TotalDamageTT"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "W": {
+        "slot": "W",
+        "id": "NamiW",
+        "name": "冲击之潮",
+        "summary": "释放一股在友方英雄和敌方英雄之间交替流动的水流，治疗友军并伤害敌军。",
+        "bodyHtml": "娜美释放一股在友方英雄和敌方英雄之间交替弹跳的水流。每个目标只会被弹到一次，并且水流至多可弹3个目标。<span>为友方英雄回复<span class=\"text-green-600 dark:text-green-400\">(55/80/105/130/155 + (40% 法术强度))生命值</span>并弹向附近的一名敌方英雄身上。<span>对敌方英雄造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(60/95/130/165/200 + (50% 法术强度))魔法伤害</span>并弹向附近的一名友方英雄身上。<br />每次弹跳会使伤害和治疗数额修正(-20% + (0.15% 法术强度))。<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">只会弹向可见的敌人。</span>",
+        "iconFile": "NamiW.png",
+        "cooldownSeconds": [
+          10,
+          10,
+          10,
+          10,
+          10
+        ],
+        "cost": {
+          "values": [
+            70,
+            75,
+            80,
+            85,
+            90
+          ],
+          "resource": "法力值"
+        },
+        "range": [
+          725,
+          725,
+          725,
+          725,
+          725
+        ],
+        "rankValues": [
+          {
+            "label": "治疗效果",
+            "values": "55/80/105/130/155"
+          },
+          {
+            "label": "伤害",
+            "values": "60/95/130/165/200"
+          },
+          {
+            "label": "法力值消耗",
+            "values": "70/75/80/85/90"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "W Scaling",
+            "labelKo": "W 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "1:TotalDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "E": {
+        "slot": "E",
+        "id": "NamiE",
+        "name": "唤潮之佑",
+        "summary": "短时间里强化一个友军英雄。友军的普通攻击和技能会对其目标造成额外伤害和减速效果。",
+        "bodyHtml": "娜美强化一位友方英雄的下3次普通攻击和技能，持续6秒，使其可以对目标造成持续1秒的(15/20/25/30/35% + (0.05% 法术强度))<span class=\"text-purple-600 dark:text-purple-500\">减速</span>，并造成额外的<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(20/35/50/65/80 + (20% 法术强度))魔法伤害</span>。<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">在强化群体技能时会对非英雄单位造成(33% ~ 66%)伤害。</span>",
+        "iconFile": "NamiE.png",
+        "cooldownSeconds": [
+          11,
+          11,
+          11,
+          11,
+          11
+        ],
+        "cost": {
+          "values": [
+            55,
+            60,
+            65,
+            70,
+            75
+          ],
+          "resource": "法力值"
+        },
+        "range": [
+          800,
+          800,
+          800,
+          800,
+          800
+        ],
+        "rankValues": [
+          {
+            "label": "伤害",
+            "values": "20/35/50/65/80"
+          },
+          {
+            "label": "减速",
+            "values": "15/20/25/30/35"
+          },
+          {
+            "label": "法力值消耗",
+            "values": "55/60/65/70/75"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "E Scaling",
+            "labelKo": "E 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "2:TotalDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "R": {
+        "slot": "R",
+        "id": "NamiR",
+        "name": "怒涛之啸",
+        "summary": "召唤一阵巨大的怒涛，击飞、减速并伤害沿途的所有敌人。被怒涛命中的友方英雄会获得【踏浪之行】的双倍加速效果。",
+        "bodyHtml": "娜美召唤一阵怒涛，造成0.5秒<span class=\"text-purple-600 dark:text-purple-500\">击飞</span>，70%<span class=\"text-purple-600 dark:text-purple-500\">减速</span>并造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(150/250/350 + (60% 法术强度))魔法伤害</span>。<span class=\"text-purple-600 dark:text-purple-500\">减速</span>的持续时间会基于怒涛的行进距离而提升，至多持续4秒。<br /><br />被怒涛命中的友方英雄会获得<span>踏浪之行</span>的双倍效果。<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\"><span class=\"text-purple-600 dark:text-purple-500\">减速</span>的最小时长为2秒。</span>",
+        "iconFile": "NamiR.png",
+        "cooldownSeconds": [
+          120,
+          110,
+          100
+        ],
+        "cost": {
+          "values": [
+            100,
+            100,
+            100
+          ],
+          "resource": "法力值"
+        },
+        "range": [
+          2550,
+          2550,
+          2550
+        ],
+        "rankValues": [
+          {
+            "label": "伤害",
+            "values": "150/250/350"
+          },
+          {
+            "label": "冷却时间",
+            "values": "120/110/100"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "R Scaling",
+            "labelKo": "R 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "3:TotalDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      }
+    }
+  }
+}

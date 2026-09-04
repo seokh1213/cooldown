@@ -1,0 +1,377 @@
+{
+  "schemaVersion": 2,
+  "patchVersion": "26.17",
+  "locale": "en_US",
+  "sources": {
+    "ddragon": "16.17.1",
+    "cdragon": "16.17"
+  },
+  "champion": {
+    "id": "Karthus",
+    "key": "30",
+    "name": "Karthus",
+    "title": "the Deathsinger",
+    "tags": [
+      "Mage"
+    ],
+    "baseStats": {
+      "health": {
+        "base": 620,
+        "perLevel": 110
+      },
+      "healthRegen": {
+        "base": 6.5,
+        "perLevel": 0.55
+      },
+      "mana": {
+        "base": 467,
+        "perLevel": 31
+      },
+      "manaRegen": {
+        "base": 8,
+        "perLevel": 0.8
+      },
+      "attackDamage": {
+        "base": 46,
+        "perLevel": 0
+      },
+      "attackSpeed": {
+        "base": 0.625,
+        "perLevel": 2.11
+      },
+      "armor": {
+        "base": 21,
+        "perLevel": 4.7
+      },
+      "magicResist": {
+        "base": 30,
+        "perLevel": 1.3
+      },
+      "moveSpeed": {
+        "base": 335,
+        "perLevel": 0
+      },
+      "attackRange": {
+        "base": 450,
+        "perLevel": 0
+      }
+    },
+    "baseStatContributions": [
+      {
+        "stat": "MAX_HEALTH",
+        "value": 110,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "HEALTH_REGEN",
+        "value": 0.55,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAX_MANA",
+        "value": 31,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MANA_REGEN",
+        "value": 0.8,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_DAMAGE",
+        "value": 0,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_SPEED",
+        "value": 2.11,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ARMOR",
+        "value": 4.7,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAGIC_RESIST",
+        "value": 1.3,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      }
+    ],
+    "abilities": {
+      "P": {
+        "slot": "P",
+        "id": "KarthusDeathDefied",
+        "name": "Death Defied",
+        "summary": "Upon dying, Karthus enters a spirit form that allows him to continue casting spells.",
+        "bodyHtml": "When Karthus dies he can use his Abilities for free for 7 seconds.",
+        "iconFile": "Karthus_Passive.png",
+        "cooldownSeconds": [],
+        "range": [],
+        "rankValues": [],
+        "scalings": [],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "Q": {
+        "slot": "Q",
+        "id": "KarthusLayWasteA1",
+        "name": "Lay Waste",
+        "summary": "Karthus unleashes a delayed blast at a location, dealing damage to nearby enemies. Deals increased damage to isolated enemies. ",
+        "bodyHtml": "Karthus creates a blast of magic, dealing <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(40/59/78/97/116 + (35% Ability Power)) magic damage</span>. If the blast hits only one enemy, it instead deals <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(80/118/156/194/232 + (70% Ability Power)) magic damage</span>.",
+        "iconFile": "KarthusLayWasteA1.png",
+        "cooldownSeconds": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "rechargeSeconds": [
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        "maxCharges": 2,
+        "cost": {
+          "values": [
+            20,
+            25,
+            30,
+            35,
+            40
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          875,
+          875,
+          875,
+          875,
+          875
+        ],
+        "rankValues": [
+          {
+            "label": "Damage",
+            "values": "40/59/78/97/116"
+          },
+          {
+            "label": "Mana Cost",
+            "values": "20/25/30/35/40"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "Q Scaling",
+            "labelKo": "Q 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "0:QDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "W": {
+        "slot": "W",
+        "id": "KarthusWallOfPain",
+        "name": "Wall of Pain",
+        "summary": "Karthus creates a passable screen of leeching energy. Any enemy units that walk through the screen have their Move Speed and Magic Resist reduced for a period.",
+        "bodyHtml": "Karthus creates a wall that lasts for 5 seconds. Enemies that pass through lose <span>25% Magic Resist</span> for 5 seconds and are <span class=\"text-purple-600 dark:text-purple-500\">Slowed</span> by 40/50/60/70/80% decaying over the duration.",
+        "iconFile": "KarthusWallOfPain.png",
+        "cooldownSeconds": [
+          15,
+          15,
+          15,
+          15,
+          15
+        ],
+        "cost": {
+          "values": [
+            70,
+            70,
+            70,
+            70,
+            70
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          1000,
+          1000,
+          1000,
+          1000,
+          1000
+        ],
+        "rankValues": [
+          {
+            "label": "Wall Width",
+            "values": "800/900/1000/1100/1200"
+          },
+          {
+            "label": "Move Speed Slow",
+            "values": "40/50/60/70/80"
+          }
+        ],
+        "scalings": [],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "E": {
+        "slot": "E",
+        "id": "KarthusDefile",
+        "name": "Defile",
+        "summary": "Karthus passively steals energy from his victims, gaining Mana on each kill. Alternatively, Karthus can surround himself in the souls of his prey, dealing damage to nearby enemies, but quickly draining his own Mana.",
+        "bodyHtml": "<span class=\"text-gray-600 dark:text-gray-500 italic\">Passive: </span>When Karthus kills a unit, he restores <span>10/20/30/40/50 Mana</span>.<br /><br /><span>Toggle: </span>Karthus creates a necrotic aura, dealing <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(30/50/70/90/110 + (20% Ability Power)) magic damage</span> per second to nearby enemies.",
+        "iconFile": "KarthusDefile.png",
+        "cooldownSeconds": [
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5
+        ],
+        "cost": {
+          "values": [
+            30,
+            42,
+            54,
+            66,
+            78
+          ],
+          "resource": "Mana per Second"
+        },
+        "range": [
+          550,
+          550,
+          550,
+          550,
+          550
+        ],
+        "rankValues": [
+          {
+            "label": "Damage Per Second",
+            "values": "30/50/70/90/110"
+          },
+          {
+            "label": "Mana Restore",
+            "values": "10/20/30/40/50"
+          },
+          {
+            "label": "Mana per Second Cost",
+            "values": "30/42/54/66/78"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "E Scaling",
+            "labelKo": "E 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "2:TotalDPS"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "R": {
+        "slot": "R",
+        "id": "KarthusFallenOne",
+        "name": "Requiem",
+        "summary": "After channeling for 3 seconds, Karthus deals damage to all enemy champions.",
+        "bodyHtml": "Karthus channels for 3 seconds, then deals <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(200/350/500 + (70% Ability Power)) magic damage</span> to enemy champions, regardless of distance.",
+        "iconFile": "KarthusFallenOne.png",
+        "cooldownSeconds": [
+          200,
+          180,
+          160
+        ],
+        "cost": {
+          "values": [
+            100,
+            100,
+            100
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          10000,
+          10000,
+          10000
+        ],
+        "rankValues": [
+          {
+            "label": "Damage",
+            "values": "200/350/500"
+          },
+          {
+            "label": "Cooldown",
+            "values": "200/180/160"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "R Scaling",
+            "labelKo": "R 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "3:TotalDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      }
+    }
+  }
+}

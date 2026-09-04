@@ -1,0 +1,392 @@
+{
+  "schemaVersion": 2,
+  "patchVersion": "26.17",
+  "locale": "ko_KR",
+  "sources": {
+    "ddragon": "16.17.1",
+    "cdragon": "16.17"
+  },
+  "champion": {
+    "id": "Morgana",
+    "key": "25",
+    "name": "모르가나",
+    "title": "타락한 자",
+    "tags": [
+      "Support",
+      "Mage"
+    ],
+    "baseStats": {
+      "health": {
+        "base": 630,
+        "perLevel": 104
+      },
+      "healthRegen": {
+        "base": 5.5,
+        "perLevel": 0.4
+      },
+      "mana": {
+        "base": 340,
+        "perLevel": 60
+      },
+      "manaRegen": {
+        "base": 11,
+        "perLevel": 0.4
+      },
+      "attackDamage": {
+        "base": 56,
+        "perLevel": 0
+      },
+      "attackSpeed": {
+        "base": 0.625,
+        "perLevel": 1.53
+      },
+      "armor": {
+        "base": 25,
+        "perLevel": 4.2
+      },
+      "magicResist": {
+        "base": 30,
+        "perLevel": 1.3
+      },
+      "moveSpeed": {
+        "base": 335,
+        "perLevel": 0
+      },
+      "attackRange": {
+        "base": 450,
+        "perLevel": 0
+      }
+    },
+    "baseStatContributions": [
+      {
+        "stat": "MAX_HEALTH",
+        "value": 104,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "HEALTH_REGEN",
+        "value": 0.4,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAX_MANA",
+        "value": 60,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MANA_REGEN",
+        "value": 0.4,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_DAMAGE",
+        "value": 0,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_SPEED",
+        "value": 1.53,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ARMOR",
+        "value": 4.2,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAGIC_RESIST",
+        "value": 1.3,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      }
+    ],
+    "abilities": {
+      "P": {
+        "slot": "P",
+        "id": "MorganaPassive",
+        "name": "영혼 흡수",
+        "summary": "모르가나가 적의 영혼을 흡수하여 챔피언, 대형 미니언, 중형 및 대형 정글 몬스터에게 피해를 입힐 때 체력을 회복합니다.",
+        "bodyHtml": "모르가나가 스킬로 챔피언, 대형 미니언, 중형 및 대형 정글 몬스터에게 피해를 입히면 피해량의 <span class=\"text-green-600 dark:text-green-400\">18%만큼 체력을 회복</span>합니다.",
+        "iconFile": "FallenAngel_Empathize.png",
+        "cooldownSeconds": [],
+        "range": [],
+        "rankValues": [],
+        "scalings": [],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "Q": {
+        "slot": "Q",
+        "id": "MorganaQ",
+        "name": "어둠의 속박",
+        "summary": "모르가나가 흑마법으로 적을 제자리에 속박하고 적이 유발한 고통을 스스로 느끼게 하여 마법 피해를 입힙니다. ",
+        "bodyHtml": "모르가나가 별의 화염이 깃든 에너지를 발사하여 첫 번째로 명중한 대상을 2/2.25/2.5/2.75/3초 동안 <span class=\"text-purple-600 dark:text-purple-500\">속박</span>하고 <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(80/135/190/245/300 + (90% 주문력))의 마법 피해</span>를 입힙니다.",
+        "iconFile": "MorganaQ.png",
+        "cooldownSeconds": [
+          10,
+          10,
+          10,
+          10,
+          10
+        ],
+        "cost": {
+          "values": [
+            50,
+            55,
+            60,
+            65,
+            70
+          ],
+          "resource": "마나"
+        },
+        "range": [
+          1250,
+          1250,
+          1250,
+          1250,
+          1250
+        ],
+        "rankValues": [
+          {
+            "label": "피해량",
+            "values": "80/135/190/245/300"
+          },
+          {
+            "label": "속박 지속시간",
+            "values": "2/2.25/2.5/2.75/3"
+          },
+          {
+            "label": "소모값 마나",
+            "values": "50/55/60/65/70"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "Q Scaling",
+            "labelKo": "Q 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "0:TotalDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "W": {
+        "slot": "W",
+        "id": "MorganaW",
+        "name": "고통의 그림자",
+        "summary": "모르가나가 대상 지역에 저주받은 그림자를 펼쳐 검은 원 안에 서 있는 적에게 피해를 입힙니다. 대상은 자신이 잃은 체력에 비례하는 마법 피해를 지속적으로 입습니다.",
+        "bodyHtml": "모르가나가 5초 동안 대상 지역을 불태워 매초 <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(18/31/44/57/70 + (20% 주문력))의 마법 피해</span>를 입힙니다. 피해는 대상이 잃은 체력에 비례해 최대 <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(18/31/44/57/70 + (20% 주문력))</span>까지 증가합니다.<br /><br />이 스킬의 재사용 대기시간은 모르가나가 <span>영혼 흡수</span>로 체력을 회복할 때마다 5%씩 감소합니다.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">이 스킬은 정글 몬스터에게 170%의 피해를 입힙니다.</span>",
+        "iconFile": "MorganaW.png",
+        "cooldownSeconds": [
+          12,
+          12,
+          12,
+          12,
+          12
+        ],
+        "cost": {
+          "values": [
+            70,
+            80,
+            90,
+            100,
+            110
+          ],
+          "resource": "마나"
+        },
+        "range": [
+          900,
+          900,
+          900,
+          900,
+          900
+        ],
+        "rankValues": [
+          {
+            "label": "초당 피해량",
+            "values": "18/31/44/57/70"
+          },
+          {
+            "label": "소모값 마나",
+            "values": "70/80/90/100/110"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "W Scaling",
+            "labelKo": "W 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "1:TotalMinDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "E": {
+        "slot": "E",
+        "id": "MorganaE",
+        "name": "칠흑의 방패",
+        "summary": "모르가나가 아군에게 별의 화염이 깃든 보호막을 칩니다. 보호막은 깨질 때까지 마법 피해와 방해 효과를 흡수합니다.",
+        "bodyHtml": "모르가나가 아군 챔피언에게 5초 동안 <span class=\"text-blue-600 dark:text-blue-300\">(100/155/210/265/320 + (70% 주문력))의 마법 피해를 흡수하는 보호막</span>을 씌웁니다. 보호막이 유지되는 동안 <span class=\"text-purple-600 dark:text-purple-500\">방해</span> 및 <span class=\"text-purple-600 dark:text-purple-500\">이동 불가</span> 효과에 면역됩니다.",
+        "iconFile": "MorganaE.png",
+        "cooldownSeconds": [
+          26,
+          23.5,
+          21,
+          18.5,
+          16
+        ],
+        "cost": {
+          "values": [
+            80,
+            80,
+            80,
+            80,
+            80
+          ],
+          "resource": "마나"
+        },
+        "range": [
+          800,
+          800,
+          800,
+          800,
+          800
+        ],
+        "rankValues": [
+          {
+            "label": "보호막 흡수량",
+            "values": "100/155/210/265/320"
+          },
+          {
+            "label": "재사용 대기시간",
+            "values": "26/23.5/21/18.5/16"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "E Scaling",
+            "labelKo": "E 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "2:TotalShieldStrength"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "R": {
+        "slot": "R",
+        "id": "MorganaR",
+        "name": "영혼의 족쇄",
+        "summary": "모르가나가 날개를 펼치며 천상의 힘을 완전히 해방하여 땅 위로 날아오르고 주변 적 챔피언에게 검은 고통의 사슬을 날립니다. 모르가나의 이동 속도가 증가합니다. 사슬은 이동 속도를 늦추고 처음에 피해를 입히며 시간이 지난 후에도 사슬을 벗어나지 못하는 적을 기절시킵니다.",
+        "bodyHtml": "모르가나가 자신과 주변 적 챔피언을 사슬로 묶어 대상에게 <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(200/275/350 + (80% 주문력))의 마법 피해</span>를 입히고 20% <span class=\"text-purple-600 dark:text-purple-500\">둔화</span>시킵니다. 3초가 지난 후 사슬을 벗어나지 못한 적은 추가로 <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(200/275/350 + (80% 주문력))의 마법 피해</span>를 입고 1.5/1.75/2초 동안 <span class=\"text-purple-600 dark:text-purple-500\">기절</span>합니다.<br /><br />이 스킬을 사용하는 동안 모르가나의 이동 속도가 <span class=\"text-cyan-600 dark:text-cyan-500\">20/40/60%</span> 증가합니다.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">모르가나는 이 스킬에 걸린 모든 적에 대해 <span class=\"text-purple-600 dark:text-purple-400 font-semibold\">절대 시야</span>를 얻습니다.</span>",
+        "iconFile": "MorganaR.png",
+        "cooldownSeconds": [
+          120,
+          110,
+          100
+        ],
+        "cost": {
+          "values": [
+            100,
+            100,
+            100
+          ],
+          "resource": "마나"
+        },
+        "range": [
+          625,
+          625,
+          625
+        ],
+        "rankValues": [
+          {
+            "label": "피해량",
+            "values": "200/275/350"
+          },
+          {
+            "label": "이동 속도",
+            "values": "20/40/60"
+          },
+          {
+            "label": "기절 지속시간:",
+            "values": "1.5/1.75/2"
+          },
+          {
+            "label": "재사용 대기시간",
+            "values": "120/110/100"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "R Scaling",
+            "labelKo": "R 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "3:TotalDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      }
+    }
+  }
+}

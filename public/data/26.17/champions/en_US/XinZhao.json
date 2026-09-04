@@ -1,0 +1,386 @@
+{
+  "schemaVersion": 2,
+  "patchVersion": "26.17",
+  "locale": "en_US",
+  "sources": {
+    "ddragon": "16.17.1",
+    "cdragon": "16.17"
+  },
+  "champion": {
+    "id": "XinZhao",
+    "key": "5",
+    "name": "Xin Zhao",
+    "title": "the Seneschal of Demacia",
+    "tags": [
+      "Fighter",
+      "Tank"
+    ],
+    "baseStats": {
+      "health": {
+        "base": 620,
+        "perLevel": 106
+      },
+      "healthRegen": {
+        "base": 8,
+        "perLevel": 0.7
+      },
+      "mana": {
+        "base": 274,
+        "perLevel": 55
+      },
+      "manaRegen": {
+        "base": 7.25,
+        "perLevel": 0.45
+      },
+      "attackDamage": {
+        "base": 63,
+        "perLevel": 0
+      },
+      "attackSpeed": {
+        "base": 0.645,
+        "perLevel": 3.5
+      },
+      "armor": {
+        "base": 35,
+        "perLevel": 4.4
+      },
+      "magicResist": {
+        "base": 32,
+        "perLevel": 2.05
+      },
+      "moveSpeed": {
+        "base": 345,
+        "perLevel": 0
+      },
+      "attackRange": {
+        "base": 175,
+        "perLevel": 0
+      }
+    },
+    "baseStatContributions": [
+      {
+        "stat": "MAX_HEALTH",
+        "value": 106,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "HEALTH_REGEN",
+        "value": 0.7,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAX_MANA",
+        "value": 55,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MANA_REGEN",
+        "value": 0.45,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_DAMAGE",
+        "value": 0,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_SPEED",
+        "value": 3.5,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ARMOR",
+        "value": 4.4,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAGIC_RESIST",
+        "value": 2.05,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      }
+    ],
+    "abilities": {
+      "P": {
+        "slot": "P",
+        "id": "XinZhaoP",
+        "name": "Determination",
+        "summary": "Every third attack deals bonus damage and heals Xin Zhao.",
+        "bodyHtml": "Every third Attack or strike with <span>Wind Becomes Lightning</span> deals an additional <span class=\"text-red-600 dark:text-red-500 font-semibold\"> physical damage</span> and restores <span class=\"text-green-600 dark:text-green-400\"> Health</span>.",
+        "iconFile": "XinZhaoReworkP.png",
+        "cooldownSeconds": [],
+        "range": [],
+        "rankValues": [],
+        "scalings": [],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "Q": {
+        "slot": "Q",
+        "id": "XinZhaoQ",
+        "name": "Three Talon Strike",
+        "summary": "Xin Zhao's next 3 standard attacks deal increased damage with the third attack knocking an opponent into the air.",
+        "bodyHtml": "Xin Zhao's next 3 Attacks deal an additional <span class=\"text-red-600 dark:text-red-500 font-semibold\">(15/30/45/60/75 + (40% bonus Attack Damage)) physical damage</span> and reduces his other Ability's Cooldowns by 1 second. The third Attack also <span class=\"text-purple-600 dark:text-purple-500\">Knocks Up</span> for 0.75 seconds.<br />",
+        "iconFile": "XinZhaoQ.png",
+        "cooldownSeconds": [
+          7,
+          6.5,
+          6,
+          5.5,
+          5
+        ],
+        "cost": {
+          "values": [
+            30,
+            30,
+            30,
+            30,
+            30
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          375,
+          375,
+          375,
+          375,
+          375
+        ],
+        "rankValues": [
+          {
+            "label": "Bonus Damage",
+            "values": "15/30/45/60/75"
+          },
+          {
+            "label": "Cooldown",
+            "values": "7/6.5/6/5.5/5"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "Q Scaling",
+            "labelKo": "Q 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "0:BonusDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "W": {
+        "slot": "W",
+        "id": "XinZhaoW",
+        "name": "Wind Becomes Lightning",
+        "summary": "Xin Zhao slashes in front of himself with his spear, then thrusts it forward, slowing affected enemies and marking them as Challenged.",
+        "bodyHtml": "Xin Zhao slashes, dealing <span class=\"text-red-600 dark:text-red-500 font-semibold\">(30/40/50/60/70 + (30% Attack Damage)) physical damage</span>, then thrusts, dealing <span class=\"text-red-600 dark:text-red-500 font-semibold\">(50/85/120/155/190 + (90% Attack Damage) + (65% Ability Power))</span>. Enemies hit by the thrust are <span class=\"text-purple-600 dark:text-purple-500\">Slowed</span> by -5000% for (1.5 + (0.5% Ability Power)) seconds. <br /><br />Champions and Large Monsters hit by the thrust are marked as <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Challenged</span> for 3 seconds and revealed unless <span class=\"text-purple-600 dark:text-purple-400 font-semibold\">Stealthed</span>.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">The thrust's damage is increased by up to 33.3% based on Xin Zhao's Critical Strike Chance.<br />Deals 53.34% damage to minions.<br />Applies Lifesteal at 33% effectiveness on both attacks.</span>",
+        "iconFile": "XinZhaoW.png",
+        "cooldownSeconds": [
+          12,
+          11,
+          10,
+          9,
+          8
+        ],
+        "cost": {
+          "values": [
+            60,
+            60,
+            60,
+            60,
+            60
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          1000,
+          1000,
+          1000,
+          1000,
+          1000
+        ],
+        "rankValues": [
+          {
+            "label": "Slash Damage",
+            "values": "30/40/50/60/70"
+          },
+          {
+            "label": "Thrust Damage",
+            "values": "50/85/120/155/190"
+          },
+          {
+            "label": "Cooldown",
+            "values": "12/11/10/9/8"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "W Scaling",
+            "labelKo": "W 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "1:SlashDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "E": {
+        "slot": "E",
+        "id": "XinZhaoE",
+        "name": "Audacious Charge",
+        "summary": "Xin Zhao charges to an enemy, gaining increased Attack Speed and dealing damage to all enemies in the area, slowing them briefly. This Ability gains increased range against Challenged targets.",
+        "bodyHtml": "Xin Zhao charges an enemy, dealing <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(50/75/100/125/150 + (120% Ability Power)) magic damage</span> to nearby enemies and <span class=\"text-purple-600 dark:text-purple-500\">Slowing</span> them by 30% for 0.5 seconds.<br /><br />Xin Zhao grants himself <span>() Attack Speed</span> for 5 seconds.<br /><br />This Ability's range is increased on enemies that are <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Challenged</span>.<br />",
+        "iconFile": "XinZhaoE.png",
+        "cooldownSeconds": [
+          11,
+          11,
+          11,
+          11,
+          11
+        ],
+        "cost": {
+          "values": [
+            60,
+            60,
+            60,
+            60,
+            60
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          650,
+          650,
+          650,
+          650,
+          650
+        ],
+        "rankValues": [
+          {
+            "label": "Damage",
+            "values": "50/75/100/125/150"
+          },
+          {
+            "label": "Attack Speed",
+            "values": "38/46/54/62/70"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "E Scaling",
+            "labelKo": "E 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "2:ChargeDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": [
+            "f1"
+          ]
+        }
+      },
+      "R": {
+        "slot": "R",
+        "id": "XinZhaoR",
+        "name": "Crescent Guard",
+        "summary": "Xin Zhao passively challenges an enemy he damaged recently. When activated, Xin Zhao deals damage to nearby enemies based on their current Health and knocks non-challenged targets back, becoming impervious to damage dealt by champions outside of the circle created.",
+        "bodyHtml": "<span class=\"text-gray-600 dark:text-gray-500 italic\">Passive:</span> The last champion Xin Zhao damaged with an Attack or <span>Audacious Charge</span> is <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Challenged</span> for 3 seconds.<br /><br /><span class=\"text-gray-900 dark:text-white font-semibold\">Active:</span> Xin Zhao unleashes a sweep around him that deals <span class=\"text-red-600 dark:text-red-500 font-semibold\">(75/175/275 + (100% bonus Attack Damage) + (110% Ability Power)) plus 15% current Health physical damage</span> and <span class=\"text-purple-600 dark:text-purple-500\">Knocks Back</span> all <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">non-Challenged</span> enemies. <br /> <br />Afterwards, Xin Zhao becomes immune to damage from enemies outside the sweep range for 4 seconds.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">Deals a max of <span class=\"text-red-600 dark:text-red-500 font-semibold\">600 damage</span> to jungle monsters and minions.</span>",
+        "iconFile": "XinZhaoR.png",
+        "cooldownSeconds": [
+          120,
+          110,
+          100
+        ],
+        "cost": {
+          "values": [
+            100,
+            100,
+            100
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          500,
+          500,
+          500
+        ],
+        "rankValues": [
+          {
+            "label": "Damage",
+            "values": "75/175/275"
+          },
+          {
+            "label": "Cooldown",
+            "values": "120/110/100"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "R Scaling",
+            "labelKo": "R 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "3:TotalDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      }
+    }
+  }
+}

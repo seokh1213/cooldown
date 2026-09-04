@@ -1,0 +1,394 @@
+{
+  "schemaVersion": 2,
+  "patchVersion": "26.17",
+  "locale": "en_US",
+  "sources": {
+    "ddragon": "16.17.1",
+    "cdragon": "16.17"
+  },
+  "champion": {
+    "id": "Rakan",
+    "key": "497",
+    "name": "Rakan",
+    "title": "The Charmer",
+    "tags": [
+      "Support"
+    ],
+    "baseStats": {
+      "health": {
+        "base": 610,
+        "perLevel": 99
+      },
+      "healthRegen": {
+        "base": 5,
+        "perLevel": 0.5
+      },
+      "mana": {
+        "base": 315,
+        "perLevel": 50
+      },
+      "manaRegen": {
+        "base": 8.75,
+        "perLevel": 0.5
+      },
+      "attackDamage": {
+        "base": 62,
+        "perLevel": 0
+      },
+      "attackSpeed": {
+        "base": 0.635,
+        "perLevel": 3
+      },
+      "armor": {
+        "base": 30,
+        "perLevel": 4.9
+      },
+      "magicResist": {
+        "base": 32,
+        "perLevel": 2.05
+      },
+      "moveSpeed": {
+        "base": 335,
+        "perLevel": 0
+      },
+      "attackRange": {
+        "base": 300,
+        "perLevel": 0
+      }
+    },
+    "baseStatContributions": [
+      {
+        "stat": "MAX_HEALTH",
+        "value": 99,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "HEALTH_REGEN",
+        "value": 0.5,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAX_MANA",
+        "value": 50,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MANA_REGEN",
+        "value": 0.5,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_DAMAGE",
+        "value": 0,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_SPEED",
+        "value": 3,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ARMOR",
+        "value": 4.9,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAGIC_RESIST",
+        "value": 2.05,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      }
+    ],
+    "abilities": {
+      "P": {
+        "slot": "P",
+        "id": "RakanPassive",
+        "name": "Fey Feathers",
+        "summary": "Rakan periodically gains a shield.",
+        "bodyHtml": "Every 40 seconds, Rakan gains <span class=\"text-blue-600 dark:text-blue-300\">(95% Ability Power) Shield</span>. Rakan's Attacks and Abilities against enemy champions reduce this Cooldown by 1 second.<br /><br /><span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Lover's Leap</span> - Xayah and Rakan can recall together.",
+        "iconFile": "Rakan_P.png",
+        "cooldownSeconds": [],
+        "range": [],
+        "rankValues": [],
+        "scalings": [],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "Q": {
+        "slot": "Q",
+        "id": "RakanQ",
+        "name": "Gleaming Quill",
+        "summary": "Flings a magical feather that deals magic damage. Striking a champion or epic monster enables Rakan to heal his allies.",
+        "bodyHtml": "Rakan flings a magical feather that deals <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(70/115/160/205/250 + (70% Ability Power)) magic damage</span> to the first enemy hit.<br /><br />If the feather hits a champion or epic jungle monster, Rakan restores <span class=\"text-green-600 dark:text-green-400\">(55% Ability Power) Health</span> to himself and nearby allies after 3 seconds or when he touches an allied champion.",
+        "iconFile": "RakanQ.png",
+        "cooldownSeconds": [
+          11,
+          10,
+          9,
+          8,
+          7
+        ],
+        "cost": {
+          "values": [
+            45,
+            45,
+            45,
+            45,
+            45
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          850,
+          850,
+          850,
+          850,
+          850
+        ],
+        "rankValues": [
+          {
+            "label": "Damage",
+            "values": "70/115/160/205/250"
+          },
+          {
+            "label": "Cooldown",
+            "values": "11/10/9/8/7"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "Q Scaling",
+            "labelKo": "Q 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "0:TotalDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "W": {
+        "slot": "W",
+        "id": "RakanW",
+        "name": "Grand Entrance",
+        "summary": "Dashes to a location, knocking up nearby enemies on arrival.",
+        "bodyHtml": "Rakan dashes, then spirals into the air, <span class=\"text-purple-600 dark:text-purple-500\">Knocking Up</span> for 1 second and dealing <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(70/120/170/220/270 + (80% Ability Power)) magic damage</span>.",
+        "iconFile": "RakanW.png",
+        "cooldownSeconds": [
+          14,
+          13,
+          12,
+          11,
+          10
+        ],
+        "cost": {
+          "values": [
+            50,
+            60,
+            70,
+            80,
+            90
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          600,
+          600,
+          600,
+          600,
+          600
+        ],
+        "rankValues": [
+          {
+            "label": "Damage",
+            "values": "70/120/170/220/270"
+          },
+          {
+            "label": "Cooldown",
+            "values": "14/13/12/11/10"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "W Scaling",
+            "labelKo": "W 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "1:TotalDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "E": {
+        "slot": "E",
+        "id": "RakanE",
+        "name": "Battle Dance",
+        "summary": "Flies to an allied champion granting them a shield. Can be re-cast for free for a short duration.",
+        "bodyHtml": "Rakan dashes to an allied champion, granting them <span class=\"text-blue-600 dark:text-blue-300\">(50/75/100/125/150 + (70% Ability Power)) Shield</span> for 3 seconds.<br /><br />Rakan can <span class=\"text-yellow-600 dark:text-yellow-300\">Recast</span> this Ability once within 5 seconds.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">Cast range is increased when cast on Xayah.</span>",
+        "iconFile": "RakanE.png",
+        "cooldownSeconds": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "rechargeSeconds": [
+          20,
+          18,
+          16,
+          14,
+          12
+        ],
+        "cost": {
+          "values": [
+            40,
+            45,
+            50,
+            55,
+            60
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          650,
+          650,
+          650,
+          650,
+          650
+        ],
+        "rankValues": [
+          {
+            "label": "Shield Health",
+            "values": "50/75/100/125/150"
+          },
+          {
+            "label": "Cooldown",
+            "values": "0"
+          },
+          {
+            "label": "Mana Cost",
+            "values": "40/45/50/55/60"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "E Scaling",
+            "labelKo": "E 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "2:TotalShield"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "R": {
+        "slot": "R",
+        "id": "RakanR",
+        "name": "The Quickness",
+        "summary": "Gains Move Speed, charming and dealing magic damage to enemies touched.",
+        "bodyHtml": "Rakan gains <span class=\"text-cyan-600 dark:text-cyan-500\">75% Move Speed</span> for 4 seconds. Rakan deals <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(100/200/300 + (50% Ability Power)) magic damage</span> and <span class=\"text-purple-600 dark:text-purple-500\">Charms</span> enemies for 1/1.25/1.5 second(s) the first time he touches them. The first champion touched grants Rakan <span class=\"text-cyan-600 dark:text-cyan-500\">150% decaying Move Speed</span>.",
+        "iconFile": "RakanR.png",
+        "cooldownSeconds": [
+          130,
+          110,
+          90
+        ],
+        "cost": {
+          "values": [
+            100,
+            100,
+            100
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          150,
+          150,
+          150
+        ],
+        "rankValues": [
+          {
+            "label": "Charm Duration",
+            "values": "1/1.25/1.5"
+          },
+          {
+            "label": "Damage",
+            "values": "100/200/300"
+          },
+          {
+            "label": "Cooldown",
+            "values": "130/110/90"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "R Scaling",
+            "labelKo": "R 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "3:TotalDamageTooltip"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      }
+    }
+  }
+}

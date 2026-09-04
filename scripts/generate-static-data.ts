@@ -44,6 +44,8 @@ import {
 } from "./data-pipeline/active-tooltip-validation";
 import { localizeActiveTooltip } from "./data-pipeline/active-tooltip-data";
 import type { DataLocale, StringTable } from "./data-pipeline/localization";
+import { writeChampionV2Dataset } from "./data-pipeline/champion-v2-writer";
+import { pruneIntermediateChampionData } from "./data-pipeline/prune-intermediate-data";
 
 const VERSION_URL = "https://ddragon.leagueoflegends.com/api/versions.json";
 const CHAMP_LIST_URL = (VERSION: string, LANG: string) =>
@@ -1686,6 +1688,15 @@ async function main() {
 
     console.log(`\n✅ Community Dragon data: ${successCount} successful, ${failCount} failed\n`);
 
+    const finalCdragonVersion =
+      usedFallbackCdragonVersion ??
+      cdVersionCandidates[0] ??
+      toCommunityDragonVersion(ddragonVersion);
+    const sourceVersions = {
+      ddragon: ddragonVersion,
+      cdragon: finalCdragonVersion,
+    };
+
     const activeTooltipAllowlist = JSON.parse(
       fs.readFileSync(
         path.join(process.cwd(), "scripts", "active-tooltip-allowlist.json"),
@@ -1744,8 +1755,16 @@ async function main() {
           `champions-normalized-${lang}.json`
         )
       );
+      const v2ChampionCount = writeChampionV2Dataset({
+        versionDir,
+        patchVersion: version,
+        locale: lang,
+        sources: sourceVersions,
+        championIds,
+        normalizedChampions,
+      });
       console.log(
-        `✅ Saved normalized champion data for ${lang} (${normalizedChampions.length} champions)`
+        `✅ Saved normalized and v2 champion data for ${lang} (${v2ChampionCount} champions)`
       );
     }
 
@@ -1763,12 +1782,6 @@ async function main() {
       version,
       summonerDataByLang
     );
-
-    // 최종적으로 version.json 에 반영할 CDragon 버전 결정
-    const finalCdragonVersion =
-      usedFallbackCdragonVersion ??
-      cdVersionCandidates[0] ??
-      toCommunityDragonVersion(ddragonVersion);
 
     const abilityValidation = validateGeneratedAbilities({
       versionDir,
@@ -1798,13 +1811,16 @@ async function main() {
       `(${abilityValidation.summary.knownIssues} known source differences)`
     );
 
+    const prunedFileCount = pruneIntermediateChampionData(
+      versionDir,
+      LANGUAGES
+    );
+    console.log(`✅ Removed ${prunedFileCount} intermediate champion files`);
+
     const versionInfo = {
       schemaVersion: 2,
       patchVersion: version,
-      sources: {
-        ddragon: ddragonVersion,
-        cdragon: finalCdragonVersion,
-      },
+      sources: sourceVersions,
     };
     await saveToFile(versionInfo, path.join(DATA_DIR, "version.json"));
 

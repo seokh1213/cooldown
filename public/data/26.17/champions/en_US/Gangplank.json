@@ -1,0 +1,397 @@
+{
+  "schemaVersion": 2,
+  "patchVersion": "26.17",
+  "locale": "en_US",
+  "sources": {
+    "ddragon": "16.17.1",
+    "cdragon": "16.17"
+  },
+  "champion": {
+    "id": "Gangplank",
+    "key": "41",
+    "name": "Gangplank",
+    "title": "the Saltwater Scourge",
+    "tags": [
+      "Fighter"
+    ],
+    "baseStats": {
+      "health": {
+        "base": 630,
+        "perLevel": 114
+      },
+      "healthRegen": {
+        "base": 6,
+        "perLevel": 0.6
+      },
+      "mana": {
+        "base": 280,
+        "perLevel": 60
+      },
+      "manaRegen": {
+        "base": 8,
+        "perLevel": 0.7
+      },
+      "attackDamage": {
+        "base": 64,
+        "perLevel": 0
+      },
+      "attackSpeed": {
+        "base": 0.658,
+        "perLevel": 3.2
+      },
+      "armor": {
+        "base": 31,
+        "perLevel": 4.7
+      },
+      "magicResist": {
+        "base": 32,
+        "perLevel": 2.05
+      },
+      "moveSpeed": {
+        "base": 345,
+        "perLevel": 0
+      },
+      "attackRange": {
+        "base": 125,
+        "perLevel": 0
+      }
+    },
+    "baseStatContributions": [
+      {
+        "stat": "MAX_HEALTH",
+        "value": 114,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "HEALTH_REGEN",
+        "value": 0.6,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAX_MANA",
+        "value": 60,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MANA_REGEN",
+        "value": 0.7,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_DAMAGE",
+        "value": 0,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_SPEED",
+        "value": 3.2,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ARMOR",
+        "value": 4.7,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAGIC_RESIST",
+        "value": 2.05,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      }
+    ],
+    "abilities": {
+      "P": {
+        "slot": "P",
+        "id": "GangplankPassive",
+        "name": "Trial by Fire",
+        "summary": "Every few seconds, Gangplank's melee strike will set his opponent on fire.",
+        "bodyHtml": "Gangplank's melee Attacks ignite the target, dealing an additional <span class=\"text-yellow-600 dark:text-yellow-500 font-semibold\">(100% bonus Attack Damage) true damage</span> over 2.5 seconds and granting Gangplank <span class=\"text-cyan-600 dark:text-cyan-500\">(15% ~ 30%) Move Speed</span> for 2 seconds.<br /><br />Destroying a <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Powder Keg</span> refreshes this Cooldown and grants Gangplank the same <span class=\"text-cyan-600 dark:text-cyan-500\">Move Speed</span>.",
+        "iconFile": "Gangplank_Passive.png",
+        "cooldownSeconds": [],
+        "range": [],
+        "rankValues": [],
+        "scalings": [],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "Q": {
+        "slot": "Q",
+        "id": "GangplankQWrapper",
+        "name": "Parrrley",
+        "summary": "Shoots target, plundering Gold for each enemy unit killed.",
+        "bodyHtml": "<span class=\"text-gray-600 dark:text-gray-400 italic\">The shot applies On-Hit effects (other than <span>Trial by Fire</span>) and can critically strike for <span class=\"text-red-600 dark:text-red-500 font-semibold\">(10/40/70/100/130 + (100% Attack Damage)) physical damage</span>.</span>",
+        "iconFile": "GangplankQWrapper.png",
+        "cooldownSeconds": [
+          4.5,
+          4.5,
+          4.5,
+          4.5,
+          4.5
+        ],
+        "cost": {
+          "values": [
+            50,
+            45,
+            40,
+            35,
+            30
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          625,
+          625,
+          625,
+          625,
+          625
+        ],
+        "rankValues": [
+          {
+            "label": "Damage",
+            "values": "10/40/70/100/130"
+          },
+          {
+            "label": "Plunder Gold",
+            "values": "3/4/5/6/7"
+          },
+          {
+            "label": "Plunder Silver Serpents",
+            "values": "4/5/6/7/8"
+          },
+          {
+            "label": "Mana Cost",
+            "values": "50/45/40/35/30"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "Q Scaling",
+            "labelKo": "Q 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "0:ShotDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "W": {
+        "slot": "W",
+        "id": "GangplankW",
+        "name": "Remove Scurvy",
+        "summary": "Eats citrus to cure crowd control effects and restore Health.",
+        "bodyHtml": "Gangplank consumes a large amount of citrus fruit, removing all <span class=\"text-purple-600 dark:text-purple-500\">Disabling</span> effects and restoring <span class=\"text-green-600 dark:text-green-400\">(45/70/95/120/145 + (90% Ability Power)) plus 13% missing Health</span>.",
+        "iconFile": "GangplankW.png",
+        "cooldownSeconds": [
+          22,
+          20,
+          18,
+          16,
+          14
+        ],
+        "cost": {
+          "values": [
+            60,
+            70,
+            80,
+            90,
+            100
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          400,
+          400,
+          400,
+          400,
+          400
+        ],
+        "rankValues": [
+          {
+            "label": "Healing",
+            "values": "45/70/95/120/145"
+          },
+          {
+            "label": "Cooldown",
+            "values": "22/20/18/16/14"
+          },
+          {
+            "label": "Mana Cost",
+            "values": "60/70/80/90/100"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "W Scaling",
+            "labelKo": "W 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "1:BaseHealth"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "E": {
+        "slot": "E",
+        "id": "GangplankE",
+        "name": "Powder Keg",
+        "summary": "Gangplank uncovers a powder keg at target location. If he attacks it, it explodes, spreading the attack's damage to enemies in the area, slowing them.",
+        "bodyHtml": "Gangplank places a powder keg that can be attacked by Gangplank and enemy champions for 25 seconds. When an enemy destroys it, the keg is defused. When Gangplank destroys it, it explodes, <span class=\"text-purple-600 dark:text-purple-500\">Slowing</span> by 40/50/60/70/80% for 2 seconds and dealing the <span class=\"text-red-600 dark:text-red-500 font-semibold\">Attack's damage</span>, ignoring 40% Armor. Champions take an additional <span class=\"text-red-600 dark:text-red-500 font-semibold\">75/95/115/135/155 physical damage</span>.<br /><br />Keg health decays every 0.5 seconds. Keg explosions detonate other kegs with overlapping blast zones, but don't deal damage to the same target more than once. Keg explosions triggered by <span>Parrrley</span> will grant the bonus gold for targets killed.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">Keg decay rate increases at level 7 and 13.</span>",
+        "iconFile": "GangplankE.png",
+        "cooldownSeconds": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "rechargeSeconds": [
+          17,
+          16,
+          15,
+          14,
+          13
+        ],
+        "maxCharges": 3,
+        "range": [
+          1000,
+          1000,
+          1000,
+          1000,
+          1000
+        ],
+        "rankValues": [
+          {
+            "label": "Bonus Damage Against Champions",
+            "values": "75/95/115/135/155"
+          },
+          {
+            "label": "Max Charges",
+            "values": "3/3/4/4/5"
+          },
+          {
+            "label": "Slow",
+            "values": "40/50/60/70/80"
+          },
+          {
+            "label": "Recharge Time",
+            "values": "17/16/15/14/13"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "E Scaling",
+            "labelKo": "E 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "2:FinalSlowAmount"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "R": {
+        "slot": "R",
+        "id": "GangplankR",
+        "name": "Cannon Barrage",
+        "summary": "Gangplank signals his ship to bombard an area, slowing and damaging enemies.",
+        "bodyHtml": "Gangplank signals his ship to fire 12 waves of cannonballs anywhere on the map over 8 seconds. Each wave <span class=\"text-purple-600 dark:text-purple-500\">Slows</span> by 30% for 0.5 seconds and deals <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(40/70/100 + (10% Ability Power)) magic damage</span>. Maximum damage: (480/840/1200 + (120% Ability Power))<br /><br />This Ability can be upgraded in the shop via <span>Parrrley</span>.<br /><br /><span>Fire at Will</span>: Fires 6 additional waves of cannonballs.<br /><span>Death's Daughter</span>: Fires a Mega-Cannonball that deals <span class=\"text-yellow-600 dark:text-yellow-500 font-semibold\">(120/210/300 + (30% Ability Power)) true damage</span> and <span class=\"text-purple-600 dark:text-purple-500\">Slows</span> by 75% for 1 second.<br /><span>Raise Morale</span>: Allies inside Cannon Barrage gain <span class=\"text-cyan-600 dark:text-cyan-500\">40% Move Speed</span> for 2 seconds.",
+        "iconFile": "GangplankR.png",
+        "cooldownSeconds": [
+          160,
+          140,
+          120
+        ],
+        "cost": {
+          "values": [
+            100,
+            100,
+            100
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          30000,
+          30000,
+          30000
+        ],
+        "rankValues": [
+          {
+            "label": "Damage Per Wave",
+            "values": "40/70/100"
+          },
+          {
+            "label": "Cooldown",
+            "values": "160/140/120"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "R Scaling",
+            "labelKo": "R 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "3:OneWaveDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      }
+    }
+  }
+}

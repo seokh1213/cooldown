@@ -1,0 +1,332 @@
+{
+  "schemaVersion": 2,
+  "patchVersion": "26.17",
+  "locale": "en_US",
+  "sources": {
+    "ddragon": "16.17.1",
+    "cdragon": "16.17"
+  },
+  "champion": {
+    "id": "Mordekaiser",
+    "key": "82",
+    "name": "Mordekaiser",
+    "title": "the Iron Revenant",
+    "tags": [
+      "Fighter",
+      "Mage"
+    ],
+    "baseStats": {
+      "health": {
+        "base": 645,
+        "perLevel": 104
+      },
+      "healthRegen": {
+        "base": 5,
+        "perLevel": 0.75
+      },
+      "mana": {
+        "base": 100,
+        "perLevel": 0
+      },
+      "manaRegen": {
+        "base": 0,
+        "perLevel": 0
+      },
+      "attackDamage": {
+        "base": 61,
+        "perLevel": 0
+      },
+      "attackSpeed": {
+        "base": 0.625,
+        "perLevel": 1
+      },
+      "armor": {
+        "base": 37,
+        "perLevel": 4.2
+      },
+      "magicResist": {
+        "base": 32,
+        "perLevel": 2.05
+      },
+      "moveSpeed": {
+        "base": 335,
+        "perLevel": 0
+      },
+      "attackRange": {
+        "base": 175,
+        "perLevel": 0
+      }
+    },
+    "baseStatContributions": [
+      {
+        "stat": "MAX_HEALTH",
+        "value": 104,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "HEALTH_REGEN",
+        "value": 0.75,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAX_MANA",
+        "value": 0,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MANA_REGEN",
+        "value": 0,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_DAMAGE",
+        "value": 0,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_SPEED",
+        "value": 1,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ARMOR",
+        "value": 4.2,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAGIC_RESIST",
+        "value": 2.05,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      }
+    ],
+    "abilities": {
+      "P": {
+        "slot": "P",
+        "id": "MordekaiserPassive",
+        "name": "Darkness Rise",
+        "summary": "Mordekaiser gains a powerful damage aura and Move Speed after landing 3 attacks or spells against champions or monsters.",
+        "bodyHtml": "Mordekaiser's Attacks deal an additional <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(40% Ability Power) magic damage</span>.<br /><br />Mordekaiser cloaks himself in negative energy after hitting 3 basic Abilities or Attacks against champions or jungle monsters. This cloak deals <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(5 + (30% Ability Power)) plus (1 ~ 5)max Health magic damage per second</span> and grants him <span class=\"text-cyan-600 dark:text-cyan-500\">18% Move Speed</span>.",
+        "iconFile": "MordekaiserPassive.png",
+        "cooldownSeconds": [],
+        "range": [],
+        "rankValues": [],
+        "scalings": [],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "Q": {
+        "slot": "Q",
+        "id": "MordekaiserQ",
+        "name": "Obliterate",
+        "summary": "Mordekaiser smashes the ground with his mace dealing damage to each enemy struck. Damage is increased when hitting a single enemy.",
+        "bodyHtml": "Mordekaiser smashes the ground with Nightfall dealing <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(80/115/150/185/220 + (120% bonus Attack Damage) + (70% Ability Power)) magic damage</span>, increased to <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(104/155.25/210/268.25/330 + (156/162/168/174/180% bonus Attack Damage) + (91/94.5/98/101.5/105% Ability Power))</span> if it hits only a single enemy.",
+        "iconFile": "MordekaiserQ.png",
+        "cooldownSeconds": [
+          8,
+          7,
+          6,
+          5,
+          4
+        ],
+        "range": [
+          675,
+          675,
+          675,
+          675,
+          675
+        ],
+        "rankValues": [
+          {
+            "label": "Damage",
+            "values": "80/115/150/185/220"
+          },
+          {
+            "label": "Isolation Damage",
+            "values": "130/135/140/145/150"
+          },
+          {
+            "label": "Cooldown",
+            "values": "8/7/6/5/4"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "Q Scaling",
+            "labelKo": "Q 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "0:QDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "W": {
+        "slot": "W",
+        "id": "MordekaiserW",
+        "name": "Indestructible",
+        "summary": "Mordekaiser stores damage he deals and takes to create a shield. He may consume the shield to heal.",
+        "bodyHtml": "<span>Passive:</span> Mordekaiser stores 45% of the damage he deals and 7.5% of the damage he takes.<br /><br /><span>Active:</span> Mordekaiser gains the stored damage as <span class=\"text-blue-600 dark:text-blue-300\">Shield</span>. He may <span class=\"text-yellow-600 dark:text-yellow-300\">Recast</span> this Ability to restore <span class=\"text-green-600 dark:text-green-400\">35/37.5/40/42.5/45% of the remaining Shield as Health</span>.<br /><br />Minimum Shield: <span class=\"text-blue-600 dark:text-blue-300\">(5% Health)</span><br />Maximum Shield: <span class=\"text-blue-600 dark:text-blue-300\">(30% Health)</span><br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">Shield decays over time.<br />Damage stored from non-champion sources reduced by 75%.</span>",
+        "iconFile": "MordekaiserW.png",
+        "cooldownSeconds": [
+          12,
+          11,
+          10,
+          9,
+          8
+        ],
+        "range": [
+          25000,
+          25000,
+          25000,
+          25000,
+          25000
+        ],
+        "rankValues": [
+          {
+            "label": "Healing Percent",
+            "values": "35%/37.5%/40%/42.5%/45%"
+          },
+          {
+            "label": "Cooldown",
+            "values": "12/11/10/9/8"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "W Scaling",
+            "labelKo": "W 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "1:HealthDecay"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "E": {
+        "slot": "E",
+        "id": "MordekaiserE",
+        "name": "Death's Grasp",
+        "summary": "Mordekaiser pulls all enemies in an area.",
+        "bodyHtml": "<span class=\"text-gray-600 dark:text-gray-500 italic\">Passive:</span> Mordekaiser gains <span>5/7.5/10/12.5/15% Magic Penetration</span>.<br /><br /><span class=\"text-gray-900 dark:text-white font-semibold\">Active:</span> Pulls enemies in his direction, dealing <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(60/80/100/120/140 + (45% Ability Power)) magic damage.</span>",
+        "iconFile": "MordekaiserE.png",
+        "cooldownSeconds": [
+          16,
+          14,
+          12,
+          10,
+          8
+        ],
+        "range": [
+          700,
+          700,
+          700,
+          700,
+          700
+        ],
+        "rankValues": [
+          {
+            "label": "Percent Magic Penetration",
+            "values": "5%/7.5%/10%/12.5%/15%"
+          },
+          {
+            "label": "Damage",
+            "values": "60/80/100/120/140"
+          },
+          {
+            "label": "Cooldown",
+            "values": "16/14/12/10/8"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "E Scaling",
+            "labelKo": "E 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "2:TotalDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "R": {
+        "slot": "R",
+        "id": "MordekaiserR",
+        "name": "Realm of Death",
+        "summary": "Mordekaiser drags his victim to a different dimension with him and steals a portion of their stats. If he kills them, he keeps the stats until the victim respawns.",
+        "bodyHtml": "Mordekaiser banishes a champion to the Death Realm with him for 7s, stealing 10% of their core stats for the duration.<br /><br />If Mordekaiser kills that enemy in the Death Realm he consumes their soul, keeping the stats he stole until the target respawns.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">Core stats stolen include: <span class=\"text-blue-600 dark:text-blue-400\">Ability Power</span>, <span class=\"text-orange-600 dark:text-orange-500\">Attack Damage</span>, <span>Attack Speed</span>, <span class=\"text-orange-600 dark:text-orange-400\">Armor</span>, <span>Magic Resist</span>, and <span>Maximum Health</span>.</span>",
+        "iconFile": "MordekaiserR.png",
+        "cooldownSeconds": [
+          140,
+          120,
+          100
+        ],
+        "range": [
+          650,
+          650,
+          650
+        ],
+        "rankValues": [
+          {
+            "label": "Cooldown",
+            "values": "140/120/100"
+          }
+        ],
+        "scalings": [],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      }
+    }
+  }
+}

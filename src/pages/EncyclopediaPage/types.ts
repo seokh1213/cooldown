@@ -1,5 +1,6 @@
 import { Champion } from "@/types";
 import type { StoredSelectedChampionList } from "@/lib/storageSchema";
+import type { Language } from "@/i18n";
 
 export interface ChampionWithInfo extends Champion {
   fullInfo?: Champion;
@@ -20,7 +21,7 @@ export interface VsSelectorMode {
 }
 
 export interface EncyclopediaPageProps {
-  lang: string;
+  lang: Language;
   championList: Champion[] | null;
   /** 정적 데이터 경로/캐시 키로 쓰는 Riot 공식 패치 버전 (예: 26.17) */
   version: string;
@@ -31,4 +32,3 @@ export interface EncyclopediaPageProps {
   initialTabs: Tab[] | null;
   initialSelectedTabId: string | null;
 }
-

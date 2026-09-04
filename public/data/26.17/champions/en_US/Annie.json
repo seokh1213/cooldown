@@ -1,0 +1,400 @@
+{
+  "schemaVersion": 2,
+  "patchVersion": "26.17",
+  "locale": "en_US",
+  "sources": {
+    "ddragon": "16.17.1",
+    "cdragon": "16.17"
+  },
+  "champion": {
+    "id": "Annie",
+    "key": "1",
+    "name": "Annie",
+    "title": "the Dark Child",
+    "tags": [
+      "Mage",
+      "Support"
+    ],
+    "baseStats": {
+      "health": {
+        "base": 560,
+        "perLevel": 96
+      },
+      "healthRegen": {
+        "base": 5.5,
+        "perLevel": 0.55
+      },
+      "mana": {
+        "base": 418,
+        "perLevel": 25
+      },
+      "manaRegen": {
+        "base": 8,
+        "perLevel": 0.8
+      },
+      "attackDamage": {
+        "base": 50,
+        "perLevel": 0
+      },
+      "attackSpeed": {
+        "base": 0.61,
+        "perLevel": 1.36
+      },
+      "armor": {
+        "base": 23,
+        "perLevel": 4
+      },
+      "magicResist": {
+        "base": 30,
+        "perLevel": 1.3
+      },
+      "moveSpeed": {
+        "base": 335,
+        "perLevel": 0
+      },
+      "attackRange": {
+        "base": 625,
+        "perLevel": 0
+      }
+    },
+    "baseStatContributions": [
+      {
+        "stat": "MAX_HEALTH",
+        "value": 96,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "HEALTH_REGEN",
+        "value": 0.55,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAX_MANA",
+        "value": 25,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MANA_REGEN",
+        "value": 0.8,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_DAMAGE",
+        "value": 0,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_SPEED",
+        "value": 1.36,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ARMOR",
+        "value": 4,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAGIC_RESIST",
+        "value": 1.3,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      }
+    ],
+    "abilities": {
+      "P": {
+        "slot": "P",
+        "id": "AnniePassive",
+        "name": "Pyromania",
+        "summary": "After casting 4 spells, Annie's next offensive spell will stun the target.<br><br>Annie begins the game and respawns with Pyromania available.",
+        "bodyHtml": "After using 4 Abilities, Annie's next damaging Ability <span class=\"text-purple-600 dark:text-purple-500\">Stuns</span> for 1.75 seconds.<br /><br />Annie begins the game and respawns with <span>Pyromania</span> available.",
+        "iconFile": "Annie_Passive.png",
+        "cooldownSeconds": [],
+        "range": [],
+        "rankValues": [],
+        "scalings": [],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "Q": {
+        "slot": "Q",
+        "id": "AnnieQ",
+        "name": "Disintegrate",
+        "summary": "Annie hurls a Mana infused fireball, dealing damage and refunding the Mana cost if it destroys the target.",
+        "bodyHtml": "Annie hurls a fireball, dealing <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(80/125/170/215/260 + (80% Ability Power)) magic damage</span>. If the target dies, Annie refunds the Mana cost and reduces the Cooldown by 50%.",
+        "iconFile": "AnnieQ.png",
+        "cooldownSeconds": [
+          4,
+          4,
+          4,
+          4,
+          4
+        ],
+        "cost": {
+          "values": [
+            60,
+            65,
+            70,
+            75,
+            80
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          625,
+          625,
+          625,
+          625,
+          625
+        ],
+        "rankValues": [
+          {
+            "label": "Damage",
+            "values": "80/125/170/215/260"
+          },
+          {
+            "label": "Mana Cost",
+            "values": "60/65/70/75/80"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "Q Scaling",
+            "labelKo": "Q 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "0:TotalDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "W": {
+        "slot": "W",
+        "id": "AnnieW",
+        "name": "Incinerate",
+        "summary": "Annie casts a blazing cone of fire, dealing damage to all enemies in the area.",
+        "bodyHtml": "Annie projects a wave of fire, dealing <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(70/110/150/190/230 + (80% Ability Power)) magic damage</span>.",
+        "iconFile": "AnnieW.png",
+        "cooldownSeconds": [
+          7,
+          7,
+          7,
+          7,
+          7
+        ],
+        "cost": {
+          "values": [
+            70,
+            75,
+            80,
+            85,
+            90
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          600,
+          600,
+          600,
+          600,
+          600
+        ],
+        "rankValues": [
+          {
+            "label": "Damage",
+            "values": "70/110/150/190/230"
+          },
+          {
+            "label": "Mana Cost",
+            "values": "70/75/80/85/90"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "W Scaling",
+            "labelKo": "W 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "1:TotalDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "E": {
+        "slot": "E",
+        "id": "AnnieE",
+        "name": "Molten Shield",
+        "summary": "Grants Annie or an ally a shield, a burst of Move Speed, and damages enemies who strike her with attacks or spells.",
+        "bodyHtml": "Annie grants an ally champion <span class=\"text-blue-600 dark:text-blue-300\">(60/95/130/165/200 + (40% Ability Power)) Shield</span> for 3 seconds and <span class=\"text-cyan-600 dark:text-cyan-500\">(20% ~ 50%) Decaying Move Speed</span> for 1.5 seconds. While the shield holds, enemies who hit the shielded ally with an Attack or Ability receive <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(25/35/45/55/65 + (40% Ability Power)) magic damage</span> once per shield.<br /><br />Tibbers always gains the effects of <span>Molten Shield</span> when summoned.",
+        "iconFile": "AnnieE.png",
+        "cooldownSeconds": [
+          10,
+          10,
+          10,
+          10,
+          10
+        ],
+        "cost": {
+          "values": [
+            60,
+            65,
+            70,
+            75,
+            80
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          800,
+          800,
+          800,
+          800,
+          800
+        ],
+        "rankValues": [
+          {
+            "label": "Shield Health",
+            "values": "60/95/130/165/200"
+          },
+          {
+            "label": "Damage Reflection",
+            "values": "25/35/45/55/65"
+          },
+          {
+            "label": "Mana Cost",
+            "values": "60/65/70/75/80"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "E Scaling",
+            "labelKo": "E 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "2:DamageReturn"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "R": {
+        "slot": "R",
+        "id": "AnnieR",
+        "name": "Summon: Tibbers",
+        "summary": "Annie wills her bear Tibbers to life, dealing damage to units in the area. Tibbers can attack and also burns enemies that stand near him.",
+        "bodyHtml": "<span class=\"text-gray-600 dark:text-gray-500 italic\">Passive:</span> Annie gains <span>10/15/20% Magic Penetration</span>.<br /><br />Annie summons her bear Tibbers, dealing <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(150/275/400 + (75% Ability Power)) magic damage</span>. For the next 45 seconds, Tibbers burns nearby enemies for <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(8/12/16 + (4% Ability Power)) magic damage per second</span>.<br /><br />Tibbers becomes enraged when summoned, if Annie stuns an enemy champion, and if Annie dies. When enraged, Tibbers gains <span>275% Attack Speed</span> and <span class=\"text-cyan-600 dark:text-cyan-500\">100% Move Speed</span> decaying over 3 seconds.<br /><br /><span class=\"text-yellow-600 dark:text-yellow-300\">Recast:</span> Manually issue orders to Tibbers.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">Tibbers has:<br /><span class=\"text-green-600 dark:text-green-400\">(50% Ability Power) Health</span><br /><span class=\"text-orange-600 dark:text-orange-400\">30 Armor</span><br /><span>30 Magic Resist</span><br /><span class=\"text-orange-600 dark:text-orange-500\">(30/45/60 + (10% Ability Power)) Attack Damage</span></span>",
+        "iconFile": "AnnieR.png",
+        "cooldownSeconds": [
+          130,
+          115,
+          100
+        ],
+        "cost": {
+          "values": [
+            100,
+            100,
+            100
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          600,
+          600,
+          600
+        ],
+        "rankValues": [
+          {
+            "label": "Initial Damage",
+            "values": "150/275/400"
+          },
+          {
+            "label": "Aura Damage",
+            "values": "8/12/16"
+          },
+          {
+            "label": "Attack Damage",
+            "values": "30/45/60"
+          },
+          {
+            "label": "Bonus Move Speed",
+            "values": "0/25/50"
+          },
+          {
+            "label": "Cooldown",
+            "values": "130/115/100"
+          },
+          {
+            "label": "Magic Penetration",
+            "values": "10/15/20"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "R Scaling",
+            "labelKo": "R 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "3:InitialBurstDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      }
+    }
+  }
+}

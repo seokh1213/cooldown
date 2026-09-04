@@ -1,8 +1,6 @@
 import React from "react";
 import { CHAMP_ICON_URL } from "@/services/api";
-import { getIntegratedSpellDataForChampions, SpellData } from "@/services/spellDataService";
 import { cn } from "@/lib/utils";
-import { logger } from "@/lib/logger";
 import {
   Table,
   TableBody,
@@ -19,7 +17,6 @@ import { SkillTooltip } from "./SkillTooltip";
 import { getCooldownForLevel } from "./utils";
 import { useTranslation } from "@/i18n";
 import { ChampionSpell } from "@/types";
-import { useVersionContext } from "@/context/VersionContext";
 
 export function SkillsSectionMobile({
   champions,
@@ -28,46 +25,6 @@ export function SkillsSectionMobile({
   vsMode,
 }: SectionProps) {
   const { t } = useTranslation();
-  const { cdragonVersion, setCDragonVersion } = useVersionContext();
-  const [spellDataMap, setSpellDataMap] = React.useState<Record<string, SpellData[]>>({});
-
-  // 통합 스킬 데이터 로드
-  React.useEffect(() => {
-    const loadSpellData = async () => {
-      try {
-        const data = await getIntegratedSpellDataForChampions(champions, version);
-        setSpellDataMap(data);
-
-        // CDragon 버전 추출 후 전역 컨텍스트에 저장
-        // 초기 로딩 시 받은 cdragonVersion이 없을 때만 스킬 데이터에서 감지한 버전 사용
-        if (!cdragonVersion) {
-          try {
-            let detectedVersion: string | null = null;
-            for (const championId of Object.keys(data)) {
-              const spells = data[championId];
-              if (spells && spells.length > 0) {
-                detectedVersion = spells[0].cdragonVersion ?? null;
-                if (detectedVersion) break;
-              }
-            }
-            if (detectedVersion) {
-              setCDragonVersion(detectedVersion);
-            }
-          } catch (metaError) {
-            logger.warn("Failed to extract CDragon version from integrated spell data (mobile):", metaError);
-          }
-        }
-      } catch (error) {
-        logger.warn("Failed to load integrated spell data:", error);
-        setSpellDataMap({});
-      }
-    };
-
-    if (champions.length > 0) {
-      loadSpellData();
-    }
-  }, [champions, version, cdragonVersion, setCDragonVersion]);
-
   const maxLevel = React.useMemo(() => {
     return Math.max(
       ...champions.map((c) =>
@@ -76,15 +33,6 @@ export function SkillsSectionMobile({
     );
   }, [champions]);
 
-  // 스킬 데이터 가져오기 헬퍼 함수
-  const getSpellData = React.useCallback((championId: string, spellIndex: number): SpellData | null => {
-    const spellDataList = spellDataMap[championId];
-    if (!spellDataList || spellDataList.length <= spellIndex) {
-      return null;
-    }
-    return spellDataList[spellIndex];
-  }, [spellDataMap]);
-
   const skillRows = React.useMemo(() => {
     return Array.from({ length: maxLevel }, (_, levelIdx) => {
       const level = levelIdx + 1;
@@ -92,9 +40,8 @@ export function SkillsSectionMobile({
         level,
         skills: champions.map((champion) => {
           if (!champion.spells) return null;
-          return champion.spells.map((skill, skillIdx) => {
-            const spellData = getSpellData(champion.id, skillIdx);
-            const cooldown = getCooldownForLevel(skill, level, spellData);
+          return champion.spells.map((skill) => {
+            const cooldown = getCooldownForLevel(skill, level);
             return {
               skill,
               cooldown,
@@ -103,7 +50,7 @@ export function SkillsSectionMobile({
         }),
       };
     });
-  }, [champions, maxLevel, getSpellData]);
+  }, [champions, maxLevel]);
 
   // VS 모드 레이아웃
   if (vsMode && champions.length === 2) {
@@ -174,20 +121,16 @@ export function SkillsSectionMobile({
                               size="small"
                             />
                           )}
-                          {championA.spells?.map((skill, skillIdx) => {
-                            const spellData = getSpellData(championA.id, skillIdx);
-                            return (
+                          {championA.spells?.map((skill, skillIdx) => (
                               <SkillTooltip
                                 key={skill.id}
                                 skill={skill}
                                 skillIdx={skillIdx}
                                 version={version}
                                 ddragonVersion={ddragonVersion}
-                                spellData={spellData}
                                 size="small"
                               />
-                            );
-                          })}
+                          ))}
                         </div>
                       </TableCell>
                       <TableCell className="p-1.5 border-r border-border/30 bg-muted/20 select-none"></TableCell>
@@ -206,20 +149,16 @@ export function SkillsSectionMobile({
                               size="small"
                             />
                           )}
-                          {championB.spells?.map((skill, skillIdx) => {
-                            const spellData = getSpellData(championB.id, skillIdx);
-                            return (
+                          {championB.spells?.map((skill, skillIdx) => (
                               <SkillTooltip
                                 key={skill.id}
                                 skill={skill}
                                 skillIdx={skillIdx}
                                 version={version}
                                 ddragonVersion={ddragonVersion}
-                                spellData={spellData}
                                 size="small"
                               />
-                            );
-                          })}
+                          ))}
                         </div>
                       </TableCell>
                     </TableRow>
@@ -361,19 +300,15 @@ export function SkillsSectionMobile({
                             />
                           )}
                           {/* Skills */}
-                          {champion.spells?.map((skill, skillIdx) => {
-                            const spellData = getSpellData(champion.id, skillIdx);
-                            return (
+                          {champion.spells?.map((skill, skillIdx) => (
                               <SkillTooltip
                                 key={skill.id}
                                 skill={skill}
                                 skillIdx={skillIdx}
                                 version={version}
                                 ddragonVersion={ddragonVersion}
-                                spellData={spellData}
                               />
-                            );
-                          })}
+                          ))}
                         </div>
                       </TableCell>
                     ))}
@@ -435,4 +370,3 @@ export function SkillsSectionMobile({
     </TooltipProvider>
   );
 }
-

@@ -1,0 +1,408 @@
+{
+  "schemaVersion": 2,
+  "patchVersion": "26.17",
+  "locale": "en_US",
+  "sources": {
+    "ddragon": "16.17.1",
+    "cdragon": "16.17"
+  },
+  "champion": {
+    "id": "Milio",
+    "key": "902",
+    "name": "Milio",
+    "title": "The Gentle Flame",
+    "tags": [
+      "Support",
+      "Mage"
+    ],
+    "baseStats": {
+      "health": {
+        "base": 560,
+        "perLevel": 88
+      },
+      "healthRegen": {
+        "base": 5,
+        "perLevel": 0.5
+      },
+      "mana": {
+        "base": 365,
+        "perLevel": 43
+      },
+      "manaRegen": {
+        "base": 11.5,
+        "perLevel": 0.4
+      },
+      "attackDamage": {
+        "base": 48,
+        "perLevel": 0
+      },
+      "attackSpeed": {
+        "base": 0.625,
+        "perLevel": 3
+      },
+      "armor": {
+        "base": 26,
+        "perLevel": 4.6
+      },
+      "magicResist": {
+        "base": 30,
+        "perLevel": 1.3
+      },
+      "moveSpeed": {
+        "base": 330,
+        "perLevel": 0
+      },
+      "attackRange": {
+        "base": 525,
+        "perLevel": 0
+      }
+    },
+    "baseStatContributions": [
+      {
+        "stat": "MAX_HEALTH",
+        "value": 88,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "HEALTH_REGEN",
+        "value": 0.5,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAX_MANA",
+        "value": 43,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MANA_REGEN",
+        "value": 0.4,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_DAMAGE",
+        "value": 0,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_SPEED",
+        "value": 3,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ARMOR",
+        "value": 4.6,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAGIC_RESIST",
+        "value": 1.3,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      }
+    ],
+    "abilities": {
+      "P": {
+        "slot": "P",
+        "id": "MilioPassive",
+        "name": "Fired Up!",
+        "summary": "Milio's abilities enchant allies on touch, making their next damage deal a burst of extra damage and burn the target.",
+        "bodyHtml": "When Milio's Abilities touch ally champions, their next Attack or Ability deals <span class=\"text-red-600 dark:text-red-500 font-semibold\">15% ally Attack Damage</span> as additional <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">magic damage</span>, plus <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(20% Ability Power) magic damage</span> over 1.5 seconds.",
+        "iconFile": "Milio_P.png",
+        "cooldownSeconds": [],
+        "range": [],
+        "rankValues": [],
+        "scalings": [],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "Q": {
+        "slot": "Q",
+        "id": "MilioQ",
+        "name": "Ultra Mega Fire Kick",
+        "summary": "Kick a ball that knocks back an enemy. The ball launches upward on hit and falls toward the enemy, damaging and slowing enemies in the area upon impact.",
+        "bodyHtml": "Milio kicks a fireball, <span class=\"text-purple-600 dark:text-purple-500\">Knocking Back</span> the first enemy hit. If it hits, the ball bounces past them and explodes, dealing <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(80/140/200/260/320 + (120% Ability Power)) magic damage</span> to surrounding enemies and <span class=\"text-purple-600 dark:text-purple-500\">Slowing</span> them by (40/45/50/55/60% + (0.05% Ability Power)) for 1.5 seconds.<br /><br />Hitting at least one enemy champion with <span>Ultra Mega Fire Kick</span> refunds 50% of it's Mana cost.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">Minions and monsters are knocked further and create a larger explosion.</span>",
+        "iconFile": "MilioQ.png",
+        "cooldownSeconds": [
+          10,
+          10,
+          10,
+          10,
+          10
+        ],
+        "cost": {
+          "values": [
+            50,
+            55,
+            60,
+            65,
+            70
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          1200,
+          1200,
+          1200,
+          1200,
+          1200
+        ],
+        "rankValues": [
+          {
+            "label": "Damage",
+            "values": "80/140/200/260/320"
+          },
+          {
+            "label": "Slow",
+            "values": "40/45/50/55/60"
+          },
+          {
+            "label": "Mana Cost",
+            "values": "50/55/60/65/70"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "Q Scaling",
+            "labelKo": "Q 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "0:Damage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "W": {
+        "slot": "W",
+        "id": "MilioW",
+        "name": "Cozy Campfire",
+        "summary": "Create an empowering zone that heals allies and increases attack range to those inside. The zone follows the ally nearest to the cast point.",
+        "bodyHtml": "Milio creates a hearth that follows ally champions for 6 seconds. Ally champions nearby gain 10/12.5/15/17.5/20% Attack Range and restore <span class=\"text-green-600 dark:text-green-400\">(70/90/110/130/150 + (15% Ability Power)) Health</span> over the duration. The hearth also applies <span>Fired Up!</span> every 3 seconds.<br /><br /><span class=\"text-yellow-600 dark:text-yellow-300\">Recast:</span> Change the hearth's follow ally.",
+        "iconFile": "MilioW.png",
+        "cooldownSeconds": [
+          29,
+          27,
+          25,
+          23,
+          21
+        ],
+        "cost": {
+          "values": [
+            90,
+            100,
+            110,
+            120,
+            130
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          350,
+          350,
+          350,
+          350,
+          350
+        ],
+        "rankValues": [
+          {
+            "label": "Range",
+            "values": "10/12.5/15/17.5/20"
+          },
+          {
+            "label": "Healing",
+            "values": "70/90/110/130/150"
+          },
+          {
+            "label": "Cooldown",
+            "values": "29/27/25/23/21"
+          },
+          {
+            "label": "Mana Cost",
+            "values": "90/100/110/120/130"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "W Scaling",
+            "labelKo": "W 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "1:RangePercent"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "E": {
+        "slot": "E",
+        "id": "MilioE",
+        "name": "Warm Hugs",
+        "summary": "Milio tosses a shield to an ally, temporarily increasing their movement speed. This ability has 2 charges.",
+        "bodyHtml": "Milio wraps an ally champion in protective flames, granting <span class=\"text-blue-600 dark:text-blue-300\">(45/75/105/135/165 + (45% Ability Power)) Shield</span> and <span class=\"text-cyan-600 dark:text-cyan-500\">12/14/16/18/20% Move Speed</span> for 2.5 seconds.<br /><br />This ability has 2 charges and the effects stack on repeat targets.",
+        "iconFile": "MilioE.png",
+        "cooldownSeconds": [
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5
+        ],
+        "rechargeSeconds": [
+          17,
+          16,
+          15,
+          14,
+          13
+        ],
+        "maxCharges": 2,
+        "cost": {
+          "values": [
+            50,
+            60,
+            70,
+            80,
+            90
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          650,
+          650,
+          650,
+          650,
+          650
+        ],
+        "rankValues": [
+          {
+            "label": "Shield Amount",
+            "values": "45/75/105/135/165"
+          },
+          {
+            "label": "Move Speed",
+            "values": "12/14/16/18/20"
+          },
+          {
+            "label": "Mana Cost",
+            "values": "50/60/70/80/90"
+          },
+          {
+            "label": "Recharge Time",
+            "values": "17/16/15/14/13"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "E Scaling",
+            "labelKo": "E 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "2:ShieldCalc"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "R": {
+        "slot": "R",
+        "id": "MilioR",
+        "name": "Breath of Life",
+        "summary": "Milio unleashes a wave of soothing flames that heal and remove crowd control effects from allies in range.",
+        "bodyHtml": "Milio unleashes a wave of soothing flames on nearby ally champions, cleansing <span class=\"text-purple-600 dark:text-purple-500\">Disabling</span> and <span class=\"text-purple-600 dark:text-purple-500\">Immobilizing</span> effects, restoring <span class=\"text-green-600 dark:text-green-400\">(150/250/350 + (50% Ability Power)) Health</span>, and granting 65% Tenacity for 3 seconds.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">Does not cleanse <span class=\"text-purple-600 dark:text-purple-500\">Airborne</span>.</span>",
+        "iconFile": "MilioR.png",
+        "cooldownSeconds": [
+          160,
+          145,
+          130
+        ],
+        "cost": {
+          "values": [
+            100,
+            100,
+            100
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          700,
+          700,
+          700
+        ],
+        "rankValues": [
+          {
+            "label": "Healing",
+            "values": "150/250/350"
+          },
+          {
+            "label": "Cooldown",
+            "values": "160/145/130"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "R Scaling",
+            "labelKo": "R 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "3:HealCalc"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      }
+    }
+  }
+}

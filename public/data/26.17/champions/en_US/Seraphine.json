@@ -1,0 +1,396 @@
+{
+  "schemaVersion": 2,
+  "patchVersion": "26.17",
+  "locale": "en_US",
+  "sources": {
+    "ddragon": "16.17.1",
+    "cdragon": "16.17"
+  },
+  "champion": {
+    "id": "Seraphine",
+    "key": "147",
+    "name": "Seraphine",
+    "title": "the Starry-Eyed Songstress",
+    "tags": [
+      "Support",
+      "Mage"
+    ],
+    "baseStats": {
+      "health": {
+        "base": 570,
+        "perLevel": 95
+      },
+      "healthRegen": {
+        "base": 6.5,
+        "perLevel": 0.6
+      },
+      "mana": {
+        "base": 360,
+        "perLevel": 40
+      },
+      "manaRegen": {
+        "base": 11.5,
+        "perLevel": 0.95
+      },
+      "attackDamage": {
+        "base": 50,
+        "perLevel": 0
+      },
+      "attackSpeed": {
+        "base": 0.669,
+        "perLevel": 2
+      },
+      "armor": {
+        "base": 26,
+        "perLevel": 4.2
+      },
+      "magicResist": {
+        "base": 30,
+        "perLevel": 1.3
+      },
+      "moveSpeed": {
+        "base": 330,
+        "perLevel": 0
+      },
+      "attackRange": {
+        "base": 525,
+        "perLevel": 0
+      }
+    },
+    "baseStatContributions": [
+      {
+        "stat": "MAX_HEALTH",
+        "value": 95,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "HEALTH_REGEN",
+        "value": 0.6,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAX_MANA",
+        "value": 40,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MANA_REGEN",
+        "value": 0.95,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_DAMAGE",
+        "value": 0,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_SPEED",
+        "value": 2,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ARMOR",
+        "value": 4.2,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAGIC_RESIST",
+        "value": 1.3,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      }
+    ],
+    "abilities": {
+      "P": {
+        "slot": "P",
+        "id": "SeraphinePassive",
+        "name": "Stage Presence",
+        "summary": "Every third basic spell will cast twice from Seraphine. Additionally, casting spells near allies grants her bonus magic damage and range on her next basic attack.",
+        "bodyHtml": "Every third basic Ability Seraphine casts will echo, automatically casting a second time.<br /><br />Additionally, Seraphine draws inspiration from the music within her allies, creating a <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Note</span> for each nearby ally whenever she casts an Ability. For each <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Note</span>, Seraphine's Attacks gain 25 Attack Range and deal an additional <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(4% Ability Power) magic damage</span> and consume the <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Notes</span>.",
+        "iconFile": "Seraphine_Passive.png",
+        "cooldownSeconds": [],
+        "range": [],
+        "rankValues": [],
+        "scalings": [],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "Q": {
+        "slot": "Q",
+        "id": "SeraphineQ",
+        "name": "High Note",
+        "summary": "Seraphine deals damage in an area.",
+        "bodyHtml": "Seraphine projects a pure note, dealing <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(60/85/110/135/160 + (40% Ability Power)) magic damage</span>, increased against champions and monsters by the target's missing Health percentage up to <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(105/148.75/192.5/236.25/280 + (70% Ability Power)) damage</span> below 25% Health.",
+        "iconFile": "SeraphineQ.png",
+        "cooldownSeconds": [
+          8,
+          7.5,
+          7,
+          6.5,
+          6
+        ],
+        "cost": {
+          "values": [
+            60,
+            70,
+            80,
+            90,
+            100
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          900,
+          900,
+          900,
+          900,
+          900
+        ],
+        "rankValues": [
+          {
+            "label": "Initial Damage",
+            "values": "60/85/110/135/160"
+          },
+          {
+            "label": "Cooldown",
+            "values": "8/7.5/7/6.5/6"
+          },
+          {
+            "label": "Mana Cost",
+            "values": "60/70/80/90/100"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "Q Scaling",
+            "labelKo": "Q 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "0:ExplosionDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "W": {
+        "slot": "W",
+        "id": "SeraphineW",
+        "name": "Surround Sound",
+        "summary": "Seraphine Shields and Hastes nearby allies. If she is already Shielded she will Heal nearby allies as well.",
+        "bodyHtml": "Seraphine spurs her nearby allied champions in song, granting them <span class=\"text-cyan-600 dark:text-cyan-500\">(8% + (0.01% Ability Power)) Move Speed</span>, herself <span class=\"text-cyan-600 dark:text-cyan-500\">(20% + (0.02% Ability Power)) decaying Move Speed</span> and both <span class=\"text-blue-600 dark:text-blue-300\">(60/80/100/120/140 + (20% Ability Power)) Shield</span> for 2.5 seconds.<br /><br />If Seraphine is already <span class=\"text-blue-600 dark:text-blue-300\">Shielded</span>, she calls out to her allies to join her, restoring <span class=\"text-green-600 dark:text-green-400\">8/10/12/14/16% missing Health</span> to them after a 2.5 second delay.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">This Ability only heals once, even if cast twice.</span>",
+        "iconFile": "SeraphineW.png",
+        "cooldownSeconds": [
+          22,
+          22,
+          22,
+          22,
+          22
+        ],
+        "cost": {
+          "values": [
+            70,
+            75,
+            80,
+            85,
+            90
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          800,
+          800,
+          800,
+          800,
+          800
+        ],
+        "rankValues": [
+          {
+            "label": "Shield Amount",
+            "values": "60/80/100/120/140"
+          },
+          {
+            "label": "Percent Healed",
+            "values": "8%/10%/12%/14%/16%"
+          },
+          {
+            "label": "Mana Cost",
+            "values": "70/75/80/85/90"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "W Scaling",
+            "labelKo": "W 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "1:TotalShieldStrength"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "E": {
+        "slot": "E",
+        "id": "SeraphineE",
+        "name": "Beat Drop",
+        "summary": "Seraphine deals damage and impairs the movement of enemies in a line.",
+        "bodyHtml": "Seraphine unleashes a heavy soundwave, dealing <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(70/100/130/160/190 + (50% Ability Power)) magic damage</span> to enemies in a line and <span class=\"text-purple-600 dark:text-purple-500\">Slowing</span> them by 99% for 1.1/1.2/1.3/1.4/1.5 seconds.<br /><br />Enemies that are already <span class=\"text-purple-600 dark:text-purple-500\">Slowed</span> are <span class=\"text-purple-600 dark:text-purple-500\">Rooted</span> instead, and <span class=\"text-purple-600 dark:text-purple-500\">Immobilized</span> enemies are <span class=\"text-purple-600 dark:text-purple-500\">Stunned</span>.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">Deals 70% damage against minions.</span>",
+        "iconFile": "SeraphineE.png",
+        "cooldownSeconds": [
+          11,
+          10.5,
+          10,
+          9.5,
+          9
+        ],
+        "cost": {
+          "values": [
+            60,
+            60,
+            60,
+            60,
+            60
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          1300,
+          1300,
+          1300,
+          1300,
+          1300
+        ],
+        "rankValues": [
+          {
+            "label": "Damage",
+            "values": "70/100/130/160/190"
+          },
+          {
+            "label": "Slow Duration",
+            "values": "1.1/1.2/1.3/1.4/1.5"
+          },
+          {
+            "label": "Cooldown",
+            "values": "11/10.5/10/9.5/9"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "E Scaling",
+            "labelKo": "E 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "2:FinalDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "R": {
+        "slot": "R",
+        "id": "SeraphineR",
+        "name": "Encore",
+        "summary": "Seraphine deals damage and charms enemies hit, refreshing the range with every allied or enemy champion hit.",
+        "bodyHtml": "Seraphine takes the stage, projecting a captivating force that <span class=\"text-purple-600 dark:text-purple-500\">Charms</span> for 1.25/1.5/1.75 seconds and deals <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(150/200/250 + (40% Ability Power)) magic damage</span>.<br /><br />Any champions struck (including allies) become part of the performance, extending the range of this Ability. Allied champions gain maximum <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Notes</span>.",
+        "iconFile": "SeraphineR.png",
+        "cooldownSeconds": [
+          160,
+          140,
+          120
+        ],
+        "cost": {
+          "values": [
+            100,
+            100,
+            100
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          25000,
+          25000,
+          25000
+        ],
+        "rankValues": [
+          {
+            "label": "Initial Damage",
+            "values": "150/200/250"
+          },
+          {
+            "label": "Charm Duration",
+            "values": "1.25/1.5/1.75"
+          },
+          {
+            "label": "Cooldown",
+            "values": "160/140/120"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "R Scaling",
+            "labelKo": "R 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "3:R1TotalDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      }
+    }
+  }
+}

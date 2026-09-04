@@ -1,0 +1,393 @@
+{
+  "schemaVersion": 2,
+  "patchVersion": "26.17",
+  "locale": "en_US",
+  "sources": {
+    "ddragon": "16.17.1",
+    "cdragon": "16.17"
+  },
+  "champion": {
+    "id": "Kayn",
+    "key": "141",
+    "name": "Kayn",
+    "title": "the Shadow Reaper",
+    "tags": [
+      "Fighter",
+      "Assassin"
+    ],
+    "baseStats": {
+      "health": {
+        "base": 655,
+        "perLevel": 103
+      },
+      "healthRegen": {
+        "base": 8,
+        "perLevel": 0.75
+      },
+      "mana": {
+        "base": 410,
+        "perLevel": 50
+      },
+      "manaRegen": {
+        "base": 11.5,
+        "perLevel": 0.95
+      },
+      "attackDamage": {
+        "base": 68,
+        "perLevel": 0
+      },
+      "attackSpeed": {
+        "base": 0.669,
+        "perLevel": 2.7
+      },
+      "armor": {
+        "base": 38,
+        "perLevel": 4.5
+      },
+      "magicResist": {
+        "base": 32,
+        "perLevel": 2.05
+      },
+      "moveSpeed": {
+        "base": 340,
+        "perLevel": 0
+      },
+      "attackRange": {
+        "base": 175,
+        "perLevel": 0
+      }
+    },
+    "baseStatContributions": [
+      {
+        "stat": "MAX_HEALTH",
+        "value": 103,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "HEALTH_REGEN",
+        "value": 0.75,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAX_MANA",
+        "value": 50,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MANA_REGEN",
+        "value": 0.95,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_DAMAGE",
+        "value": 0,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_SPEED",
+        "value": 2.7,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ARMOR",
+        "value": 4.5,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAGIC_RESIST",
+        "value": 2.05,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      }
+    ],
+    "abilities": {
+      "P": {
+        "slot": "P",
+        "id": "P",
+        "name": "The Darkin Scythe",
+        "summary": "",
+        "bodyHtml": "Kayn wields an ancient weapon and fights Rhaast, the darkin within it, for control. Either the <font color='#fe5c50'>Darkin</font> will triumph, or Kayn will master Rhaast and become the <font color='#8484fb'>Shadow Assassin</font>.<br><br><font color='#fe5c50'>Darkin:</font> Heal for a percentage of spell damage dealt to champions.<br><br><font color='#8484fb'>Shadow Assassin:</font> For the first few seconds in combat with enemy champions, deal bonus damage.",
+        "iconFile": "Kayn_Passive_Primary.png",
+        "cooldownSeconds": [],
+        "range": [],
+        "rankValues": [],
+        "scalings": [],
+        "conditions": [],
+        "source": "ddragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "Q": {
+        "slot": "Q",
+        "id": "KaynQ",
+        "name": "Reaping Slash",
+        "summary": "Kayn dashes, then slashes. Both deal damage.",
+        "bodyHtml": "<span class=\"text-gray-600 dark:text-gray-400 italic\">Deals an additional <span class=\"text-red-600 dark:text-red-500 font-semibold\">40 physical damage</span> to minions and jungle monsters (max: 200/250/300/350/400).</span>",
+        "iconFile": "KaynQ.png",
+        "cooldownSeconds": [
+          7,
+          6.5,
+          6,
+          5.5,
+          5
+        ],
+        "cost": {
+          "values": [
+            40,
+            40,
+            40,
+            40,
+            40
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          350,
+          350,
+          350,
+          350,
+          350
+        ],
+        "rankValues": [
+          {
+            "label": "Cooldown",
+            "values": "7/6.5/6/5.5/5"
+          },
+          {
+            "label": "Base Damage",
+            "values": "75/105/135/165/195"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "Q Scaling",
+            "labelKo": "Q 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "0:TotalDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "W": {
+        "slot": "W",
+        "id": "KaynW",
+        "name": "Blade's Reach",
+        "summary": "Kayn damages and slows targets in a line.",
+        "bodyHtml": "Kayn swipes his scythe upward, dealing <physicalDamage>{{ totaldamage }} physical damage</physicalDamage> and <status>Slowing</status> enemies hit by {{ e3 }}%, decaying over {{ e5 }} seconds.<br /><br /><keywordMajor>Shadow Assassin:</keywordMajor> Kayn can move while using this Ability and increases its range.<br /><br /><keywordMajor>Darkin Slayer:</keywordMajor> Additionally <status>Knocks Up</status> enemies hit for {{ e2 }} second.{{ spellmodifierdescriptionappend }}",
+        "iconFile": "KaynW.png",
+        "cooldownSeconds": [
+          13,
+          12,
+          11,
+          10,
+          9
+        ],
+        "cost": {
+          "values": [
+            40,
+            45,
+            50,
+            55,
+            60
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          700,
+          700,
+          700,
+          700,
+          700
+        ],
+        "rankValues": [
+          {
+            "label": "Damage",
+            "values": "85/130/175/220/265"
+          },
+          {
+            "label": "Cooldown",
+            "values": "13/12/11/10/9"
+          },
+          {
+            "label": "Mana Cost",
+            "values": "40/45/50/55/60"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "W Scaling",
+            "labelKo": "W 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "1:TotalDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "ddragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "E": {
+        "slot": "E",
+        "id": "KaynE",
+        "name": "Shadow Step",
+        "summary": "Kayn can walk through terrain.",
+        "bodyHtml": "<span class=\"text-gray-600 dark:text-gray-400 italic\">Ghosted units can pass through other units.<br />Maximum duration in combat with enemy champions is 1.5 seconds.<br /></span>",
+        "iconFile": "KaynE.png",
+        "cooldownSeconds": [
+          21,
+          19,
+          17,
+          15,
+          13
+        ],
+        "cost": {
+          "values": [
+            90,
+            90,
+            90,
+            90,
+            90
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          400,
+          400,
+          400,
+          400,
+          400
+        ],
+        "rankValues": [
+          {
+            "label": "Duration",
+            "values": "7/7.5/8/8.5/9"
+          },
+          {
+            "label": "Healing",
+            "values": "90/100/110/120/130"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "E Scaling",
+            "labelKo": "E 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "2:TotalHealing"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "R": {
+        "slot": "R",
+        "id": "KaynR",
+        "name": "Umbral Trespass",
+        "summary": "Kayn hides in an enemy's body, dealing massive damage when he bursts out.",
+        "bodyHtml": "<span class=\"text-gray-600 dark:text-gray-400 italic\">Untargetable units won't be affected by enemy Attacks or Abilities unless they've already been hit by them.</span>",
+        "iconFile": "KaynR.png",
+        "cooldownSeconds": [
+          120,
+          100,
+          80
+        ],
+        "rechargeSeconds": [
+          12,
+          11,
+          10
+        ],
+        "cost": {
+          "values": [
+            100,
+            100,
+            100
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          550,
+          550,
+          550
+        ],
+        "rankValues": [
+          {
+            "label": "Damage",
+            "values": "0"
+          },
+          {
+            "label": "Damage",
+            "values": "150/250/350"
+          },
+          {
+            "label": "Cooldown",
+            "values": "120/100/80"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "R Scaling",
+            "labelKo": "R 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "3:Damage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,394 @@
+{
+  "schemaVersion": 2,
+  "patchVersion": "26.17",
+  "locale": "ko_KR",
+  "sources": {
+    "ddragon": "16.17.1",
+    "cdragon": "16.17"
+  },
+  "champion": {
+    "id": "Corki",
+    "key": "42",
+    "name": "코르키",
+    "title": "대담한 폭격수",
+    "tags": [
+      "Marksman",
+      "Mage"
+    ],
+    "baseStats": {
+      "health": {
+        "base": 610,
+        "perLevel": 100
+      },
+      "healthRegen": {
+        "base": 5.5,
+        "perLevel": 0.55
+      },
+      "mana": {
+        "base": 350,
+        "perLevel": 40
+      },
+      "manaRegen": {
+        "base": 7.4,
+        "perLevel": 0.7
+      },
+      "attackDamage": {
+        "base": 52,
+        "perLevel": 0
+      },
+      "attackSpeed": {
+        "base": 0.644,
+        "perLevel": 2.8
+      },
+      "armor": {
+        "base": 27,
+        "perLevel": 4.5
+      },
+      "magicResist": {
+        "base": 33,
+        "perLevel": 1.1
+      },
+      "moveSpeed": {
+        "base": 325,
+        "perLevel": 0
+      },
+      "attackRange": {
+        "base": 550,
+        "perLevel": 0
+      }
+    },
+    "baseStatContributions": [
+      {
+        "stat": "MAX_HEALTH",
+        "value": 100,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "HEALTH_REGEN",
+        "value": 0.55,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAX_MANA",
+        "value": 40,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MANA_REGEN",
+        "value": 0.7,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_DAMAGE",
+        "value": 0,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_SPEED",
+        "value": 2.8,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ARMOR",
+        "value": 4.5,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAGIC_RESIST",
+        "value": 1.1,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      }
+    ],
+    "abilities": {
+      "P": {
+        "slot": "P",
+        "id": "RapidReload",
+        "name": "마법공학 탄약",
+        "summary": "코르키의 기본 공격 피해량의 일부가 추가 <trueDamage>고정 피해</trueDamage>로 전환됩니다.",
+        "bodyHtml": "코르키의 기본 공격과 <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">주문 검</span>이 <span class=\"text-yellow-600 dark:text-yellow-500 font-semibold\">20%의 추가 고정 피해</span>를 입힙니다.<br />기본 공격: <span class=\"text-yellow-600 dark:text-yellow-500 font-semibold\">(20% 공격력)</span><br />치명타: <span class=\"text-yellow-600 dark:text-yellow-500 font-semibold\">(20% 공격력)</span>",
+        "iconFile": "Corki_RapidReload.png",
+        "cooldownSeconds": [],
+        "range": [],
+        "rankValues": [],
+        "scalings": [],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "Q": {
+        "slot": "Q",
+        "id": "PhosphorusBomb",
+        "name": "인광탄",
+        "summary": "코르키가 지정한 위치에 인광탄을 던져, 해당 지역 안의 적들에게 마법 피해를 입힙니다. 또한, 이 공격은 지속시간 동안 해당 지역의 유닛들을 드러내 줍니다.",
+        "bodyHtml": "코르키가 폭탄을 던져 <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(60/105/150/195/240 + (125% 추가 공격력) + (100% 주문력))의 마법 피해</span>를 입힙니다. 6초 동안 폭탄에 맞은 지역과 챔피언이 드러납니다.",
+        "iconFile": "PhosphorusBomb.png",
+        "cooldownSeconds": [
+          9,
+          8.5,
+          8,
+          7.5,
+          7
+        ],
+        "cost": {
+          "values": [
+            60,
+            65,
+            70,
+            75,
+            80
+          ],
+          "resource": "마나"
+        },
+        "range": [
+          825,
+          825,
+          825,
+          825,
+          825
+        ],
+        "rankValues": [
+          {
+            "label": "피해량",
+            "values": "60/105/150/195/240"
+          },
+          {
+            "label": "재사용 대기시간",
+            "values": "9/8.5/8/7.5/7"
+          },
+          {
+            "label": "소모값 마나",
+            "values": "60/65/70/75/80"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "Q Scaling",
+            "labelKo": "Q 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "0:TotalDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "W": {
+        "slot": "W",
+        "id": "CarpetBomb",
+        "name": "발키리",
+        "summary": "코르키가 목표 위치로 비행하며 폭탄을 투하하여 불타는 흔적을 남겨, 그 안에 있는 적에게 피해를 입힙니다.",
+        "bodyHtml": "코르키가 비행하며 경로를 2.5초 동안 불태웁니다. 경로에 있는 적들은 지속시간 동안 <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(150/225/300/375/450 + (150% 주문력) + (200% 추가 공격력))의 마법 피해</span>를 입습니다.",
+        "iconFile": "CarpetBomb.png",
+        "cooldownSeconds": [
+          20,
+          18,
+          16,
+          14,
+          12
+        ],
+        "cost": {
+          "values": [
+            80,
+            85,
+            90,
+            95,
+            100
+          ],
+          "resource": "마나"
+        },
+        "range": [
+          600,
+          600,
+          600,
+          600,
+          600
+        ],
+        "rankValues": [
+          {
+            "label": "지속 피해",
+            "values": "150/225/300/375/450"
+          },
+          {
+            "label": "재사용 대기시간",
+            "values": "20/18/16/14/12"
+          },
+          {
+            "label": "소모값 마나",
+            "values": "80/85/90/95/100"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "W Scaling",
+            "labelKo": "W 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "1:MaximumDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "E": {
+        "slot": "E",
+        "id": "GGun",
+        "name": "개틀링 건",
+        "summary": "코르키가 정면에 원뿔 형태로 개틀링 건을 발사하여 적의 방어력과 마법 저항력을 낮추고 피해를 입힙니다.",
+        "bodyHtml": "코르키가 전방에 개틀링 건을 발사하여 4초 동안 <span class=\"text-red-600 dark:text-red-500 font-semibold\">(80/130/180/230/280 + (240% 추가 공격력))의 물리 피해</span>를 입히고 <span>마법 저항력</span>과 <span class=\"text-orange-600 dark:text-orange-400\">방어력을 최대 12/14/16/18/20</span>만큼 감소시킵니다.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">감소 효과는 적중 후 2초 동안 유지됩니다.</span>",
+        "iconFile": "GGun.png",
+        "cooldownSeconds": [
+          12,
+          12,
+          12,
+          12,
+          12
+        ],
+        "cost": {
+          "values": [
+            50,
+            55,
+            60,
+            65,
+            70
+          ],
+          "resource": "마나"
+        },
+        "range": [
+          600,
+          600,
+          600,
+          600,
+          600
+        ],
+        "rankValues": [
+          {
+            "label": "피해량",
+            "values": "80/130/180/230/280"
+          },
+          {
+            "label": "방어력 / 마법 저항력 감소",
+            "values": "12/14/16/18/20"
+          },
+          {
+            "label": "소모값 마나",
+            "values": "50/55/60/65/70"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "E Scaling",
+            "labelKo": "E 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "2:TotalDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "R": {
+        "slot": "R",
+        "id": "MissileBarrage",
+        "name": "미사일 폭격",
+        "summary": "코르키가 목표 지점에 충돌 시 폭발하는 미사일을 발사하여 해당 지역에 있는 적들에게 피해를 입힙니다. 코르키는 시간이 지날수록 미사일을 저장하여 최대치까지 장전해 둘 수 있습니다. 3번째 발사하는 미사일은 '큰 놈'으로, 추가 피해를 입힙니다.",
+        "bodyHtml": "코르키가 처음으로 적을 맞히면 폭발하는 미사일을 발사하여 주변 적에게 <span class=\"text-red-600 dark:text-red-500 font-semibold\">(90/170/250 + (85% 추가 공격력))의 물리 피해</span>를 입힙니다. 세 번째 미사일은 매번 <span class=\"text-red-600 dark:text-red-500 font-semibold\">(180/340/500 + (170% 추가 공격력))의 물리 피해</span>를 입힙니다.<br /><br />이 스킬은 최대 4회 충전됩니다. 챔피언을 상대로 기본 공격 적중 시 충전 시간이 <span>(2 + (400%))</span>초 감소합니다.",
+        "iconFile": "MissileBarrage.png",
+        "cooldownSeconds": [
+          2,
+          2,
+          2
+        ],
+        "rechargeSeconds": [
+          20,
+          20,
+          20
+        ],
+        "maxCharges": 4,
+        "cost": {
+          "values": [
+            35,
+            35,
+            35
+          ],
+          "resource": "마나"
+        },
+        "range": [
+          1225,
+          1225,
+          1225
+        ],
+        "rankValues": [
+          {
+            "label": "피해량",
+            "values": "90/170/250"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "R Scaling",
+            "labelKo": "R 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "3:RSmallMissileDamage"
+              }
+            ]
+          }
+        ],
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      }
+    }
+  }
+}
