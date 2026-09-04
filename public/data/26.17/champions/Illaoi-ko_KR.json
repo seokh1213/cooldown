@@ -385,7 +385,7 @@
         "id": "IllaoiQ",
         "name": "촉수 강타",
         "description": "촉수의 피해량이 증가합니다. 사용 시 일라오이가 촉수로 내리쳐 물리 피해를 입힙니다.",
-        "tooltip": "<passive>기본 지속 효과:</passive> <keywordMajor>후려치기</keywordMajor>의 피해량이 <physicalDamage>{{ spell.illaoiq:tentacledamageamp*100 }}%</physicalDamage> 증가합니다. (현재 <physicalDamage>{{ spell.illaoiq:tentacledamagetotal }}의 물리 피해</physicalDamage>)<br /><br /><active>사용 시:</active> 일라오이가 성상을 휘둘러 촉수가 전방에 <keywordMajor>후려치기</keywordMajor>를 사용하게 합니다.{{ spellmodifierdescriptionappend }}",
+        "tooltip": "<span>기본 지속 효과:</span> <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">후려치기</span>의 피해량이 <span class=\"text-red-600 dark:text-red-500 font-semibold\"></span> 증가합니다. (현재 <span class=\"text-red-600 dark:text-red-500 font-semibold\">의 물리 피해</span>)<br /><br /><span>사용 시:</span> 일라오이가 성상을 휘둘러 촉수가 전방에 <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">후려치기</span>를 사용하게 합니다.",
         "leveltip": {
           "label": [
             "후려치기 추가 피해량",
@@ -522,13 +522,21 @@
           "w": 48,
           "h": 48
         },
-        "resource": "{{ abilityresourcename }} {{ cost }}"
+        "resource": "{{ abilityresourcename }} {{ cost }}",
+        "summary": "촉수의 피해량이 증가합니다. 사용 시 일라오이가 촉수로 내리쳐 물리 피해를 입힙니다.",
+        "tooltipSource": "communitydragon",
+        "tooltipDiagnostics": {
+          "unresolvedTokens": [
+            "spell.IllaoiQ:TentacleDamageAmp*100",
+            "spell.IllaoiQ:TentacleDamageTotal"
+          ]
+        }
       },
       {
         "id": "IllaoiW",
         "name": "혹독한 가르침",
         "description": "일라오이가 대상으로 도약해 물리 피해를 입히며, 근처의 촉수 또한 대상을 공격합니다.",
-        "tooltip": "일라오이가 다음 기본 공격 시 대상에게 돌진해 <physicalDamage>최대 체력의 {{ healthpercenttotal }}에 해당하는 물리 피해</physicalDamage>를 추가로 입힙니다. 일라오이가 공격하면 근처의 촉수도 함께 대상에게 <keywordMajor>후려치기</keywordMajor>를 사용합니다.{{ spellmodifierdescriptionappend }}",
+        "tooltip": "일라오이가 다음 기본 공격 시 대상에게 돌진해 <span class=\"text-red-600 dark:text-red-500 font-semibold\">최대 체력의 (3/3.5/4/4.5/5% + (0.035% 공격력))에 해당하는 물리 피해</span>를 추가로 입힙니다. 일라오이가 공격하면 근처의 촉수도 함께 대상에게 <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">후려치기</span>를 사용합니다.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">체력 비례 피해량은 최소 20/30/40/50/60이며, 정글 몬스터 상대로는 최대 300입니다.<br />이 스킬은 피해를 입힐 때 효과가 발동합니다.</span>",
         "leveltip": {
           "label": [
             "적 최대 체력 비례 피해량",
@@ -663,13 +671,15 @@
           "w": 48,
           "h": 48
         },
-        "resource": "{{ abilityresourcename }} {{ cost }}"
+        "resource": "{{ abilityresourcename }} {{ cost }}",
+        "summary": "일라오이가 대상으로 도약해 물리 피해를 입히며, 근처의 촉수 또한 대상을 공격합니다.",
+        "tooltipSource": "communitydragon"
       },
       {
         "id": "IllaoiE",
         "name": "영혼의 시험",
         "description": "일라오이가 적의 몸에서 영혼을 분리해 자신의 앞에 서게 만듭니다. 영혼은 자신이 입는 피해량의 일부를 원래의 대상에게 돌려줍니다. 대상이 처치되거나 영혼에서 너무 멀어지면, 대상은 <font color='#669900'>숙주</font>가 되어 촉수를 소환하기 시작합니다.",
-        "tooltip": "일라오이가 {{ spiritduration }}초 동안 적 챔피언에게서 영혼을 분리합니다. 영혼에게 피해를 입히면 피해량의 {{ echopercent }}가 해당 적 챔피언에게 전이됩니다.<br /><br />만약 영혼이 처치당하거나 대상이 일정 범위를 벗어나면, {{ vesselduration }}초 동안 대상에게 표식을 남기며 {{ slowduration }}초 동안 {{ slowamount*100 }}% <status>둔화</status>시킵니다. 표식이 남은 적은 가능할 경우 촉수를 소환합니다.<br /><br />촉수는 {{ timebetweenvesseltentacleslams }}초마다 영혼과 표식이 남은 적에게 <keywordMajor>후려치기</keywordMajor>를 사용합니다.{{ spellmodifierdescriptionappend }}",
+        "tooltip": "일라오이가 7초 동안 적 챔피언에게서 영혼을 분리합니다. 영혼에게 피해를 입히면 피해량의 (25/30/35/40/45% + (0.08% 공격력))가 해당 적 챔피언에게 전이됩니다.<br /><br />만약 영혼이 처치당하거나 대상이 일정 범위를 벗어나면, 4초 동안 대상에게 표식을 남기며 1.5초 동안 80% <span class=\"text-purple-600 dark:text-purple-500\">둔화</span>시킵니다. 표식이 남은 적은 가능할 경우 촉수를 소환합니다.<br /><br />촉수는 3초마다 영혼과 표식이 남은 적에게 <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">후려치기</span>를 사용합니다.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">표식이 남은 적은 잠깐 위치가 드러납니다.</span>",
         "leveltip": {
           "label": [
             "전이되는 피해량",
@@ -806,13 +816,15 @@
           "w": 48,
           "h": 48
         },
-        "resource": "{{ abilityresourcename }} {{ cost }}"
+        "resource": "{{ abilityresourcename }} {{ cost }}",
+        "summary": "일라오이가 적의 몸에서 영혼을 분리해 자신의 앞에 서게 만듭니다. 영혼은 자신이 입는 피해량의 일부를 원래의 대상에게 돌려줍니다. 대상이 처치되거나 영혼에서 너무 멀어지면, 대상은 <font color='#669900'>숙주</font>가 되어 촉수를 소환하기 시작합니다.",
+        "tooltipSource": "communitydragon"
       },
       {
         "id": "IllaoiR",
         "name": "믿음의 도약",
         "description": "일라오이가 자신의 성상을 바닥에 내리쳐 근처 적들에게 물리 피해를 입힙니다. 피해를 입는 적 챔피언 한 명당 하나의 촉수가 소환됩니다.",
-        "tooltip": "일라오이가 성상을 바닥에 내리쳐 근처 적들에게 <physicalDamage>{{ damagecalc }}의 물리 피해</physicalDamage>를 입히고, 피해를 입는 적 챔피언 한 명당 촉수를 하나씩 소환합니다.<br /><br />이후 촉수는 {{ duration }}초 동안 <keywordMajor>후려치기</keywordMajor>의 사용 속도가 50% 빨라지고 대상으로 지정할 수 없게 됩니다. <spellName>혹독한 가르침</spellName>의 재사용 대기시간이 {{ spell.illaoiw:cooldownduringr }}초로 줄어듭니다.{{ spellmodifierdescriptionappend }}",
+        "tooltip": "일라오이가 성상을 바닥에 내리쳐 근처 적들에게 <span class=\"text-red-600 dark:text-red-500 font-semibold\">(150/250/350 + (50% 추가 공격력))의 물리 피해</span>를 입히고, 피해를 입는 적 챔피언 한 명당 촉수를 하나씩 소환합니다.<br /><br />이후 촉수는 8초 동안 <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">후려치기</span>의 사용 속도가 50% 빨라지고 대상으로 지정할 수 없게 됩니다. <span>혹독한 가르침</span>의 재사용 대기시간이 초로 줄어듭니다.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\"><span>영혼의 시험</span>으로 분리한 영혼을 적중 시에도 촉수를 생성합니다.</span>",
         "leveltip": {
           "label": [
             "피해량",
@@ -921,7 +933,14 @@
           "w": 48,
           "h": 48
         },
-        "resource": "{{ abilityresourcename }} {{ cost }}"
+        "resource": "{{ abilityresourcename }} {{ cost }}",
+        "summary": "일라오이가 자신의 성상을 바닥에 내리쳐 근처 적들에게 물리 피해를 입힙니다. 피해를 입는 적 챔피언 한 명당 하나의 촉수가 소환됩니다.",
+        "tooltipSource": "communitydragon",
+        "tooltipDiagnostics": {
+          "unresolvedTokens": [
+            "spell.IllaoiW:CooldownDuringR"
+          ]
+        }
       }
     ],
     "passive": {

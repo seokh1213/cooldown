@@ -553,7 +553,7 @@
         "id": "SorakaQ",
         "name": "流星坠落",
         "description": "一颗流星从天而降，落在目标地点，造成魔法伤害，并对区域中心的敌人造成减速效果。如果一名敌人被此技能命中，那么索拉卡就会回复生命值。",
-        "tooltip": "索拉卡召唤下一颗星星，造成<magicDamage>{{ totaldamage }}魔法伤害</magicDamage>和持续{{ slowduration }}秒的{{ movespeedslow*100 }}%<status>减速</status>效果。<br /><br />命中一个敌方英雄时会为索拉卡提供<keywordMajor>活力焕发</keywordMajor>，在{{ hotduration }}秒里持续回复共<healing>{{ totalhot }}生命值</healing>并提供在此期间持续衰减的<speed>{{ movespeedhaste*100 }}%移动速度</speed>。{{ spellmodifierdescriptionappend }}",
+        "tooltip": "索拉卡召唤下一颗星星，造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(85/120/155/190/225 + (35% 法术强度))魔法伤害</span>和持续1.5秒的30%<span class=\"text-purple-600 dark:text-purple-500\">减速</span>效果。<br /><br />命中一个敌方英雄时会为索拉卡提供<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">活力焕发</span>，在2.5秒里持续回复共<span class=\"text-green-600 dark:text-green-400\">(60/75/90/105/120 + (30% 法术强度))生命值</span>并提供在此期间持续衰减的<span class=\"text-cyan-600 dark:text-cyan-500\">20/22.5/25/27.5/30%移动速度</span>。",
         "leveltip": {
           "label": [
             "伤害",
@@ -694,13 +694,15 @@
           "w": 48,
           "h": 48
         },
-        "resource": "{{ cost }} {{ abilityresourcename }}"
+        "resource": "{{ cost }} {{ abilityresourcename }}",
+        "summary": "一颗流星从天而降，落在目标地点，造成魔法伤害，并对区域中心的敌人造成减速效果。如果一名敌人被此技能命中，那么索拉卡就会回复生命值。",
+        "tooltipSource": "communitydragon"
       },
       {
         "id": "SorakaW",
         "name": "星之灌注",
         "description": "索拉卡牺牲自己的一部分生命值来治疗一个友方英雄。",
-        "tooltip": "索拉卡给一名友方英雄回复<healing>{{ totalheal }}生命值</healing>。<br /><br />如果索拉卡带有<keywordMajor>活力焕发</keywordMajor>，那么生命值消耗会降低{{ percenthealthcostrefund*100 }}%，并且目标也会获得<keywordMajor>活力焕发</keywordMajor>，持续{{ spell.sorakaq:hotduration }}秒。{{ spellmodifierdescriptionappend }}",
+        "tooltip": "索拉卡给一名友方英雄回复<span class=\"text-green-600 dark:text-green-400\">(90/110/130/150/170 + (50% 法术强度))生命值</span>。<br /><br />如果索拉卡带有<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">活力焕发</span>，那么生命值消耗会降低80/85/90/95/100%，并且目标也会获得<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">活力焕发</span>，持续秒。<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">这个技能在索拉卡低于(5% 生命值)生命值时无法使用。</span>",
         "leveltip": {
           "label": [
             "治疗效果",
@@ -839,13 +841,20 @@
           "w": 48,
           "h": 48
         },
-        "resource": "{{ percenthealthcost*100 }}%最大生命值，{{ cost }}法力"
+        "resource": "{{ percenthealthcost*100 }}%最大生命值，{{ cost }}法力",
+        "summary": "索拉卡牺牲自己的一部分生命值来治疗一个友方英雄。",
+        "tooltipSource": "communitydragon",
+        "tooltipDiagnostics": {
+          "unresolvedTokens": [
+            "Spell.SorakaQ:HoTDuration"
+          ]
+        }
       },
       {
         "id": "SorakaE",
         "name": "星体结界",
         "description": "在目标区域创造一个结界，沉默结界中的所有敌人。当结界消散时，仍在结界内的敌人会被禁锢。",
-        "tooltip": "索拉卡创造一个星之领域，对英雄造成<magicDamage>{{ totaldamage }}魔法伤害</magicDamage>。领域会存留{{ rootdelay }}秒，<status>沉默</status>其中的敌人们。当领域消失后，领域中的英雄们会被<status>禁锢</status>{{ rootduration }}秒并受到<magicDamage>{{ totaldamage }}魔法伤害</magicDamage>。{{ spellmodifierdescriptionappend }}",
+        "tooltip": "索拉卡创造一个星之领域，对英雄造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(70/95/120/145/170 + (40% 法术强度))魔法伤害</span>。领域会存留1.5秒，<span class=\"text-purple-600 dark:text-purple-500\">沉默</span>其中的敌人们。当领域消失后，领域中的英雄们会被<span class=\"text-purple-600 dark:text-purple-500\">禁锢</span>1/1.25/1.5/1.75/2秒并受到<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(70/95/120/145/170 + (40% 法术强度))魔法伤害</span>。",
         "leveltip": {
           "label": [
             "伤害",
@@ -984,13 +993,15 @@
           "w": 48,
           "h": 48
         },
-        "resource": "{{ cost }} {{ abilityresourcename }}"
+        "resource": "{{ cost }} {{ abilityresourcename }}",
+        "summary": "在目标区域创造一个结界，沉默结界中的所有敌人。当结界消散时，仍在结界内的敌人会被禁锢。",
+        "tooltipSource": "communitydragon"
       },
       {
         "id": "SorakaR",
         "name": "祈愿",
         "description": "索拉卡让友军充满希望，立刻使她和所有友方英雄回复生命值。",
-        "tooltip": "索拉卡召唤神圣的能量，来为所有友方英雄回复<healing>{{ healingcalc }}生命值</healing>，无论相距多远。对生命值低于40%的友方英雄的回复效果提升至<healing>{{ ampedhealing }}</healing>。{{ spellmodifierdescriptionappend }}",
+        "tooltip": "索拉卡召唤神圣的能量，来为所有友方英雄回复<span class=\"text-green-600 dark:text-green-400\">(150/250/350 + (50% 法术强度))生命值</span>，无论相距多远。对生命值低于40%的友方英雄的回复效果提升至<span class=\"text-green-600 dark:text-green-400\">(150/250/350 + (50% 法术强度))</span>。",
         "leveltip": {
           "label": [
             "治疗效果",
@@ -1099,7 +1110,9 @@
           "w": 48,
           "h": 48
         },
-        "resource": "{{ cost }} {{ abilityresourcename }}"
+        "resource": "{{ cost }} {{ abilityresourcename }}",
+        "summary": "索拉卡让友军充满希望，立刻使她和所有友方英雄回复生命值。",
+        "tooltipSource": "communitydragon"
       }
     ],
     "passive": {

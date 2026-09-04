@@ -257,7 +257,7 @@
         "id": "AzirQWrapper",
         "name": "Conquering Sands",
         "description": "Azir sends all Sand Soldiers towards a location. Sand Soldiers deal magic damage to enemies they pass through and apply a slow for 1 second.",
-        "tooltip": "Azir orders all <keywordMajor>Sand Soldiers</keywordMajor> to an area, dealing <magicDamage>{{ totaldamage }} magic damage</magicDamage> to enemies they pass through and <status>Slowing</status> them by {{ slowamount*-100 }}% for 1 second.{{ spellmodifierdescriptionappend }}",
+        "tooltip": "Azir orders all <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Sand Soldiers</span> to an area, dealing <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(75/95/115/135/155 + (35/40/45/50/55% Ability Power)) magic damage</span> to enemies they pass through and <span class=\"text-purple-600 dark:text-purple-500\">Slowing</span> them by 25% for 1 second.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">Enemies hit by multiple <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Sand Soldiers</span> will not take additional damage.</span>",
         "leveltip": {
           "label": [
             "Damage",
@@ -396,13 +396,15 @@
           "w": 48,
           "h": 48
         },
-        "resource": "{{ cost }} {{ abilityresourcename }}"
+        "resource": "{{ cost }} {{ abilityresourcename }}",
+        "summary": "Azir sends all Sand Soldiers towards a location. Sand Soldiers deal magic damage to enemies they pass through and apply a slow for 1 second.",
+        "tooltipSource": "communitydragon"
       },
       {
         "id": "AzirW",
         "name": "Arise!",
         "description": "Azir summons a Sand Soldier to attack nearby targets for him, replacing his basic attack against targets within the soldier's range. Their attacks deal magic damage to enemies in a line.",
-        "tooltip": "Azir summons a <keywordMajor>Sand Soldier</keywordMajor> for {{ soldierduration }} seconds. When Azir Attacks an enemy near a <keywordMajor>Sand Soldier</keywordMajor>, he instead orders the soldiers to stab, dealing <magicDamage>{{ totaldamage }} magic damage</magicDamage> in their direction.<br /><br />This Ability has {{ maxammo }} charges.{{ spellmodifierdescriptionappend }}",
+        "tooltip": "Azir summons a <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Sand Soldier</span> for 10 seconds. When Azir Attacks an enemy near a <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Sand Soldier</span>, he instead orders the soldiers to stab, dealing <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(50/65/80/95/110 + (35/42.5/50/57.5/65% Ability Power)) magic damage</span> in their direction.<br /><br />This Ability has charges.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\"><span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Sand Soldiers</span> apply On-hits at 50% damage once per attack to Azir's primary target.<br /><span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Sand Soldiers</span> that strike the same targets deal 25% damage after the first.<br /><span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Sand Soldiers</span> deal 20%damage to enemies that are not Azir's Attack target.<br /><span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Sand Soldiers</span> expire twice as fast when near an enemy turret.<br /></span>",
         "leveltip": {
           "label": [
             "Solder Attack Damage",
@@ -541,13 +543,20 @@
           "w": 48,
           "h": 48
         },
-        "resource": "{{ cost }} {{ abilityresourcename }}"
+        "resource": "{{ cost }} {{ abilityresourcename }}",
+        "summary": "Azir summons a Sand Soldier to attack nearby targets for him, replacing his basic attack against targets within the soldier's range. Their attacks deal magic damage to enemies in a line.",
+        "tooltipSource": "communitydragon",
+        "tooltipDiagnostics": {
+          "unresolvedTokens": [
+            "MaxAmmo"
+          ]
+        }
       },
       {
         "id": "AzirEWrapper",
         "name": "Shifting Sands",
         "description": "Azir shields himself briefly and dashes to one of his Sand Soldiers, damaging enemies. If he hits an enemy champion, he instantly readies a new Sand Soldier for deployment and halts his dash.",
-        "tooltip": "Azir grants himself <shield>{{ totalshield }} Shield</shield> for {{ shieldduration }} seconds and dashes to one of his <keywordMajor>Sand Soldiers</keywordMajor>, dealing <magicDamage>{{ totaldamage }} magic damage</magicDamage> to enemies he passes through.<br /><br />If Azir hits an enemy champion, he stops and gains a <keywordMajor>Sand Soldier</keywordMajor> charge.{{ spellmodifierdescriptionappend }}",
+        "tooltip": "Azir grants himself <span class=\"text-blue-600 dark:text-blue-300\">(70/110/150/190/230 + (60% Ability Power)) Shield</span> for 1.5 seconds and dashes to one of his <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Sand Soldiers</span>, dealing <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(70/110/150/190/230 + (60% Ability Power)) magic damage</span> to enemies he passes through.<br /><br />If Azir hits an enemy champion, he stops and gains a <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Sand Soldier</span> charge.",
         "leveltip": {
           "label": [
             "Shield Amount",
@@ -684,13 +693,15 @@
           "w": 48,
           "h": 48
         },
-        "resource": "{{ cost }} {{ abilityresourcename }}"
+        "resource": "{{ cost }} {{ abilityresourcename }}",
+        "summary": "Azir shields himself briefly and dashes to one of his Sand Soldiers, damaging enemies. If he hits an enemy champion, he instantly readies a new Sand Soldier for deployment and halts his dash.",
+        "tooltipSource": "communitydragon"
       },
       {
         "id": "AzirR",
         "name": "Emperor's Divide",
         "description": "Azir summons a wall of soldiers which charge forward, knocking back and damaging enemies.",
-        "tooltip": "Azir summons a wall of armored soldiers that charges forward, <status>Knocking Back</status> enemies and dealing <magicDamage>{{ totaldamage }} magic damage</magicDamage>. The soldiers remain, blocking enemy paths for {{ wallduration }} seconds.{{ spellmodifierdescriptionappend }}",
+        "tooltip": "Azir summons a wall of armored soldiers that charges forward, <span class=\"text-purple-600 dark:text-purple-500\">Knocking Back</span> enemies and dealing <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(200/400/600 + (75% Ability Power)) magic damage</span>. The soldiers remain, blocking enemy paths for 5 seconds.",
         "leveltip": {
           "label": [
             "Damage",
@@ -801,7 +812,9 @@
           "w": 48,
           "h": 48
         },
-        "resource": "{{ cost }} {{ abilityresourcename }}"
+        "resource": "{{ cost }} {{ abilityresourcename }}",
+        "summary": "Azir summons a wall of soldiers which charge forward, knocking back and damaging enemies.",
+        "tooltipSource": "communitydragon"
       }
     ],
     "passive": {

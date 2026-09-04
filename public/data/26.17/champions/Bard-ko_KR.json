@@ -381,7 +381,7 @@
         "id": "BardQ",
         "name": "우주의 결속",
         "description": "바드가 투사체를 발사하여, 처음 적중하는 적을 둔화시키고 관통합니다. 관통한 후 벽을 맞히면 처음 적중한 적을 기절시킵니다. 관통 후 다른 적에게 적중하면 두 대상을 모두 기절시킵니다.",
-        "tooltip": "바드가 에너지 광선을 직선으로 발사해 처음 적중하는 적 둘에게 <magicDamage>{{ totaldamage }}의 마법 피해</magicDamage>를 입힙니다. 처음 적중한 대상은 {{ slowduration }}초간 {{ slowamountpercentage }}% <status>둔화</status>됩니다.<br /><br />광선이 두 번째 대상이나 벽을 맞히면 적중당한 모든 적이 {{ stunduration }}초간 <status>기절</status>합니다.<br />{{ spellmodifierdescriptionappend }}",
+        "tooltip": "바드가 에너지 광선을 직선으로 발사해 처음 적중하는 적 둘에게 <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(80/120/160/200/240 + (80% 주문력))의 마법 피해</span>를 입힙니다. 처음 적중한 대상은 1/1.2/1.4/1.6/1.8초간 60% <span class=\"text-purple-600 dark:text-purple-500\">둔화</span>됩니다.<br /><br />광선이 두 번째 대상이나 벽을 맞히면 적중당한 모든 적이 1/1.2/1.4/1.6/1.8초간 <span class=\"text-purple-600 dark:text-purple-500\">기절</span>합니다.<br />",
         "leveltip": {
           "label": [
             "피해량",
@@ -520,13 +520,15 @@
           "w": 48,
           "h": 48
         },
-        "resource": "{{ abilityresourcename }} {{ cost }}"
+        "resource": "{{ abilityresourcename }} {{ cost }}",
+        "summary": "바드가 투사체를 발사하여, 처음 적중하는 적을 둔화시키고 관통합니다. 관통한 후 벽을 맞히면 처음 적중한 적을 기절시킵니다. 관통 후 다른 적에게 적중하면 두 대상을 모두 기절시킵니다.",
+        "tooltipSource": "communitydragon"
       },
       {
         "id": "BardW",
         "name": "수호자의 성소",
         "description": "짧은 시간 동안 치유력이 증가하는 체력 회복 성소를 드러냅니다. 성소는 처음 발을 들이는 아군을 치유하고 속도를 높인 후 사라집니다.",
-        "tooltip": "바드가 체력 회복 성소를 생성해, 처음 들어온 아군에게 {{ movespeed_duration }}초에 걸쳐 사라지는 <speed>{{ calc_movespeed }}의 이동 속도</speed>를 부여하고 최소 <healing>{{ initialheal }}의 체력</healing>을 회복시킵니다. 성소의 체력 회복 효과는 점차 증가해, {{ chargeuptime }}초 이후에는 최대 <healing>{{ maxheal }}의 체력</healing>을 회복시킬 수 있습니다.<br /><br />바드는 한 번에 최대 {{ maxpacks }}개의 성소를 세울 수 있습니다. 성소는 적 챔피언이 들어오면 파괴됩니다.<br /><br />이 스킬은 {{ ammo_limit }}회까지 충전됩니다.<br /><br />현재 활성화된 성소: {{ f1 }} / {{ f2 }}{{ spellmodifierdescriptionappend }}",
+        "tooltip": "바드가 체력 회복 성소를 생성해, 처음 들어온 아군에게 1.5초에 걸쳐 사라지는 <span class=\"text-cyan-600 dark:text-cyan-500\">(20/22.5/25/27.5/30% + (0.06% 주문력))의 이동 속도</span>를 부여하고 최소 <span class=\"text-green-600 dark:text-green-400\">(25/50/75/100/125 + (40% 주문력))의 체력</span>을 회복시킵니다. 성소의 체력 회복 효과는 점차 증가해, 5초 이후에는 최대 <span class=\"text-green-600 dark:text-green-400\">(50/87.5/125/162.5/200 + (70% 주문력))의 체력</span>을 회복시킬 수 있습니다.<br /><br />바드는 한 번에 최대 3개의 성소를 세울 수 있습니다. 성소는 적 챔피언이 들어오면 파괴됩니다.<br /><br />이 스킬은 2회까지 충전됩니다.<br /><br />현재 활성화된 성소: /",
         "leveltip": {
           "label": [
             "기본 회복량",
@@ -663,13 +665,21 @@
           "w": 48,
           "h": 48
         },
-        "resource": "{{ abilityresourcename }} {{ cost }}"
+        "resource": "{{ abilityresourcename }} {{ cost }}",
+        "summary": "짧은 시간 동안 치유력이 증가하는 체력 회복 성소를 드러냅니다. 성소는 처음 발을 들이는 아군을 치유하고 속도를 높인 후 사라집니다.",
+        "tooltipSource": "communitydragon",
+        "tooltipDiagnostics": {
+          "unresolvedTokens": [
+            "f1",
+            "f2"
+          ]
+        }
       },
       {
         "id": "BardE",
         "name": "신비한 차원문",
         "description": "바드가 근처 지형지물에 차원문을 엽니다. 아군과 적 챔피언이 모두 이 차원문을 이용해 정해진 방향으로 해당 지형지물을 통과할 수 있습니다.",
-        "tooltip": "바드가 지형을 통과하는 일방통행 차원문을 {{ doorduration }}초 동안 엽니다. 모든 챔피언은 입구 근처에서 차원문으로 이동하여 들어갈 수 있습니다.{{ spellmodifierdescriptionappend }}",
+        "tooltip": "바드가 지형을 통과하는 일방통행 차원문을 10초 동안 엽니다. 모든 챔피언은 입구 근처에서 차원문으로 이동하여 들어갈 수 있습니다.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">아군이 적보다 33% 빠르게 이동합니다.</span>",
         "leveltip": {
           "label": [
             "재사용 대기시간"
@@ -802,13 +812,15 @@
           "w": 48,
           "h": 48
         },
-        "resource": "{{ abilityresourcename }} {{ cost }}"
+        "resource": "{{ abilityresourcename }} {{ cost }}",
+        "summary": "바드가 근처 지형지물에 차원문을 엽니다. 아군과 적 챔피언이 모두 이 차원문을 이용해 정해진 방향으로 해당 지형지물을 통과할 수 있습니다.",
+        "tooltipSource": "communitydragon"
       },
       {
         "id": "BardR",
         "name": "운명의 소용돌이",
         "description": "바드가 목표 지점에 영적 에너지를 발사하여 잠시 동안 모든 유닛과 포탑을 정지시킵니다.",
-        "tooltip": "바드가 지정한 지역에 마법의 보호 에너지를 던집니다. 적중한 모든 유닛과 구조물은 {{ rstasisduration }}초 동안 경직 상태가 됩니다.{{ spellmodifierdescriptionappend }}",
+        "tooltip": "바드가 지정한 지역에 마법의 보호 에너지를 던집니다. 적중한 모든 유닛과 구조물은 2.5초 동안 경직 상태가 됩니다.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">경직 상태에 빠진 유닛은 움직이거나 행동할 수 없으며 대상으로 지정할 수 없는 무적 상태가 됩니다.</span>",
         "leveltip": {
           "label": [
             "재사용 대기시간"
@@ -915,7 +927,9 @@
           "w": 48,
           "h": 48
         },
-        "resource": "{{ abilityresourcename }} {{ cost }}"
+        "resource": "{{ abilityresourcename }} {{ cost }}",
+        "summary": "바드가 목표 지점에 영적 에너지를 발사하여 잠시 동안 모든 유닛과 포탑을 정지시킵니다.",
+        "tooltipSource": "communitydragon"
       }
     ],
     "passive": {

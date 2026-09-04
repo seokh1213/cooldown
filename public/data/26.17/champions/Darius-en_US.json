@@ -562,7 +562,7 @@
         "id": "DariusCleave",
         "name": "Decimate",
         "description": "Darius winds up and swings his axe in a wide circle. Enemies struck by the blade take more damage than those struck by the handle. Darius heals based on enemy champions and large monsters hit by the blade.",
-        "tooltip": "Darius hefts his axe then swings it around, dealing <physicalDamage>{{ bladedamage }} physical damage</physicalDamage> with the edge and <physicalDamage>{{ handledamage }} damage</physicalDamage> with the handle. Enemies hit with the handle do not take a <keywordMajor>Hemorrhage</keywordMajor> stack.<br /><br />Darius restores <healing>{{ missinghealthheal }}% missing Health</healing> per enemy champion and large jungle monster hit with the edge, up to a max of <healing>{{ missinghealpercent }}%</healing>.{{ spellmodifierdescriptionappend }}",
+        "tooltip": "Darius hefts his axe then swings it around, dealing <span class=\"text-red-600 dark:text-red-500 font-semibold\">50/80/110/140/170 physical damage</span> with the edge and <span class=\"text-red-600 dark:text-red-500 font-semibold\">17.5/28/38.5/49/59.5 damage</span> with the handle. Enemies hit with the handle do not take a <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Hemorrhage</span> stack.<br /><br />Darius restores <span class=\"text-green-600 dark:text-green-400\">17% missing Health</span> per enemy champion and large jungle monster hit with the edge, up to a max of <span class=\"text-green-600 dark:text-green-400\">51%</span>.",
         "leveltip": {
           "label": [
             "Damage",
@@ -701,13 +701,15 @@
           "w": 48,
           "h": 48
         },
-        "resource": "{{ cost }} {{ abilityresourcename }}"
+        "resource": "{{ cost }} {{ abilityresourcename }}",
+        "summary": "Darius winds up and swings his axe in a wide circle. Enemies struck by the blade take more damage than those struck by the handle. Darius heals based on enemy champions and large monsters hit by the blade.",
+        "tooltipSource": "communitydragon"
       },
       {
         "id": "DariusNoxianTacticsONH",
         "name": "Crippling Strike",
         "description": "Darius's next attack strikes an enemy's crucial artery. As they bleed out, their Move Speed is slowed.",
-        "tooltip": "Darius' next Attack deals <physicalDamage>{{ empoweredattackdamage }} physical damage</physicalDamage> and <status>Slows</status> by {{ slowpercent }}% for {{ slowduration }} second.<br /><br />This Ability refunds its Mana cost and reduces its Cooldown by {{ percentcdrefund }}% if it kills the target.<br /><br /><rules>This Ability triggers spell effects upon dealing damage.</rules>{{ spellmodifierdescriptionappend }}",
+        "tooltip": "Darius' next Attack deals <span class=\"text-red-600 dark:text-red-500 font-semibold\"> physical damage</span> and <span class=\"text-purple-600 dark:text-purple-500\">Slows</span> by 90% for 1 second.<br /><br />This Ability refunds its Mana cost and reduces its Cooldown by 50% if it kills the target.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">This Ability triggers spell effects upon dealing damage.</span>",
         "leveltip": {
           "label": [
             "Total AD Ratio"
@@ -840,13 +842,20 @@
           "w": 48,
           "h": 48
         },
-        "resource": "{{ cost }} {{ abilityresourcename }}"
+        "resource": "{{ cost }} {{ abilityresourcename }}",
+        "summary": "Darius's next attack strikes an enemy's crucial artery. As they bleed out, their Move Speed is slowed.",
+        "tooltipSource": "communitydragon",
+        "tooltipDiagnostics": {
+          "unresolvedTokens": [
+            "EmpoweredAttackDamage"
+          ]
+        }
       },
       {
         "id": "DariusAxeGrabCone",
         "name": "Apprehend",
         "description": "Darius hones his axe, passively causing his physical damage to ignore a percentage of his target's Armor. When activated, Darius sweeps up his enemies with his axe's hook and pulls them to him.",
-        "tooltip": "<spellPassive>Passive:</spellPassive> Darius gains {{ passivepercentarmorpen }}% Armor Penetration.<br /><br /><spellActive>Active:</spellActive> Darius hooks with his axe, <status>Pulling</status>, and <status>Knocking Up</status> and <status>Slowing</status> by {{ slowpercent }}% for {{ slowduration }} second.{{ spellmodifierdescriptionappend }}",
+        "tooltip": "<span class=\"text-gray-600 dark:text-gray-500 italic\">Passive:</span> Darius gains 20/25/30/35/40% Armor Penetration.<br /><br /><span class=\"text-gray-900 dark:text-white font-semibold\">Active:</span> Darius hooks with his axe, <span class=\"text-purple-600 dark:text-purple-500\">Pulling</span>, and <span class=\"text-purple-600 dark:text-purple-500\">Knocking Up</span> and <span class=\"text-purple-600 dark:text-purple-500\">Slowing</span> by 40% for 1 second.",
         "leveltip": {
           "label": [
             "Percent Armor Penetration",
@@ -983,13 +992,15 @@
           "w": 48,
           "h": 48
         },
-        "resource": "{{ cost }} {{ abilityresourcename }}"
+        "resource": "{{ cost }} {{ abilityresourcename }}",
+        "summary": "Darius hones his axe, passively causing his physical damage to ignore a percentage of his target's Armor. When activated, Darius sweeps up his enemies with his axe's hook and pulls them to him.",
+        "tooltipSource": "communitydragon"
       },
       {
         "id": "DariusExecute",
         "name": "Noxian Guillotine",
         "description": "Darius leaps to an enemy champion and strikes a lethal blow, dealing true damage. This damage is increased for each stack of Hemorrhage on the target. If Noxian Guillotine is a killing blow, its cooldown is refreshed for a brief duration.",
-        "tooltip": "Darius leaps to an enemy and strikes a lethal blow, dealing <trueDamage>{{ damage }} true damage</trueDamage>. For each <keywordMajor>Hemorrhage</keywordMajor> on the target, this Ability deals an additional {{ rdamagepercentperhemostack*100 }}% damage, up to a max of <trueDamage>{{ maximumdamage }} damage</trueDamage>.<br /><br />If this kills the target, Darius may <recast>Recast</recast> this Ability once within {{ rrecastduration }} seconds. At rank 3, this Ability has no Mana cost and kills refresh the Cooldown completely.{{ spellmodifierdescriptionappend }}",
+        "tooltip": "Darius leaps to an enemy and strikes a lethal blow, dealing <span class=\"text-yellow-600 dark:text-yellow-500 font-semibold\">(125/250/375 + (75% bonus Attack Damage)) true damage</span>. For each <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Hemorrhage</span> on the target, this Ability deals an additional 20% damage, up to a max of <span class=\"text-yellow-600 dark:text-yellow-500 font-semibold\">(250/500/750 + (150% bonus Attack Damage)) damage</span>.<br /><br />If this kills the target, Darius may <span class=\"text-yellow-600 dark:text-yellow-300\">Recast</span> this Ability once within 20 seconds. At rank 3, this Ability has no Mana cost and kills refresh the Cooldown completely.",
         "leveltip": {
           "label": [
             "Damage",
@@ -1098,7 +1109,9 @@
           "w": 48,
           "h": 48
         },
-        "resource": "{{ cost }} {{ abilityresourcename }}"
+        "resource": "{{ cost }} {{ abilityresourcename }}",
+        "summary": "Darius leaps to an enemy champion and strikes a lethal blow, dealing true damage. This damage is increased for each stack of Hemorrhage on the target. If Noxian Guillotine is a killing blow, its cooldown is refreshed for a brief duration.",
+        "tooltipSource": "communitydragon"
       }
     ],
     "passive": {

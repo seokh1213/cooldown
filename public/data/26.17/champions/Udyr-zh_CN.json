@@ -143,7 +143,7 @@
         "id": "UdyrQ",
         "name": "狂暴爪击",
         "description": "乌迪尔获得攻击速度加成并且他的下两次攻击造成额外的物理伤害。再次施放：获得更多攻击速度加成，并且下两次攻击会召唤闪电打击目标。",
-        "tooltip": "<spellActive>爪击姿态：</spellActive>乌迪尔获得<attackSpeed>{{ attackspeedbase*100 }}%攻击速度</attackSpeed>并且他攻击造成<physicalDamage>{{ onhitdamage }}物理伤害</physicalDamage> %i:OnHit%<OnHit>攻击特效</OnHit>，持续{{ attackspeeddurationbase }}秒。此外，乌迪尔在这个姿态中的下两次攻击造成额外的<physicalDamage>{{ maxhponhit1 }}最大生命值的物理伤害</physicalDamage>并获得{{ attackrange }}距离。<br /><br /><keywordMajor>觉醒：</keywordMajor>将额外<attackSpeed>攻击速度</attackSpeed>提升至<attackSpeed>{{ empoweredtotalas }}</attackSpeed>并且将百分比生命值伤害提升至<physicalDamage>{{ q2totalonhithpdamage }}</physicalDamage>。此外，乌迪尔的下两次攻击会召唤闪电进行6次打击，对落单的目标造成共计<magicDamage>{{ empoweredlightningbonusmax }}最大生命值的魔法伤害</magicDamage>(如果可能的话，闪电打击会弹射至附近的其它目标)。<br />{{ spellmodifierdescriptionappend }}",
+        "tooltip": "<span class=\"text-gray-900 dark:text-white font-semibold\">爪击姿态：</span>乌迪尔获得<span>20/32/44/56/68/80%攻击速度</span>并且他攻击造成<span class=\"text-red-600 dark:text-red-500 font-semibold\">(6/12/18/24/30/36 + (20% 额外攻击力) + (1/1.2/1.4/1.6/1.8/2% 额外生命值))物理伤害</span> <span>攻击特效</span>，持续4秒。此外，乌迪尔在这个姿态中的下两次攻击造成额外的<span class=\"text-red-600 dark:text-red-500 font-semibold\">(3/4/5/6/7/8% + (0.03% 额外攻击力))最大生命值的物理伤害</span>并获得50距离。<br /><br /><span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">觉醒：</span>将额外<span>攻击速度</span>提升至<span>20/32/44/56/68/80%</span>并且将百分比生命值伤害提升至<span class=\"text-red-600 dark:text-red-500 font-semibold\">(3/4/5/6/7/8% + (0.05% 额外攻击力) + (0.001% 额外生命值))</span>。此外，乌迪尔的下两次攻击会召唤闪电进行6次打击，对落单的目标造成共计<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">最大生命值的魔法伤害</span>(如果可能的话，闪电打击会弹射至附近的其它目标)。<br /><br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">【爪击姿态】最大生命值伤害对野怪的封顶值为(15 + (50% 法术强度) + (100% 额外攻击力))。每次闪电打击造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(0.01% 法术强度)最大生命值的魔法伤害</span>(对小兵的最小伤害：(40 ~ 160))。</span>",
         "leveltip": {
           "label": [
             "攻击速度",
@@ -295,13 +295,20 @@
           "w": 48,
           "h": 48
         },
-        "resource": "{{ cost }} {{ abilityresourcename }}"
+        "resource": "{{ cost }} {{ abilityresourcename }}",
+        "summary": "乌迪尔获得攻击速度加成并且他的下两次攻击造成额外的物理伤害。再次施放：获得更多攻击速度加成，并且下两次攻击会召唤闪电打击目标。",
+        "tooltipSource": "communitydragon",
+        "tooltipDiagnostics": {
+          "unresolvedTokens": [
+            "EmpoweredLightningBonusMax"
+          ]
+        }
       },
       {
         "id": "UdyrW",
         "name": "坚铁甲胄",
         "description": "乌迪尔获得护盾，并且下两次攻击会回复生命值。再次施放：获得更厚的护盾并且在接下来的若干秒内持续获得基于最大生命值的治疗效果。",
-        "tooltip": "<spellPassive>甲胄姿态：</spellPassive>乌迪尔获得持续{{ shieldduration }}秒的<shield>{{ totalshield }}护盾值</shield>。此外，乌迪尔的下两次攻击具有{{ lifesteal*100 }}%生命偷取并回复<healing>{{ lifeonhit }}生命值</healing>。<br /><br /><keywordMajor>觉醒：</keywordMajor>获得<shield>{{ recastshield }}护盾值</shield>，在{{ shieldduration }}秒里持续回复<healing>{{ recastheal }}生命值</healing>，并且乌迪尔的下两次攻击转而具有{{ lifesteal*200 }}%生命偷取并回复<healing>{{ lifeonhitawakened }}生命值</healing>。<br />{{ spellmodifierdescriptionappend }}",
+        "tooltip": "<span class=\"text-gray-600 dark:text-gray-500 italic\">甲胄姿态：</span>乌迪尔获得持续4秒的<span class=\"text-blue-600 dark:text-blue-300\">(45/65/85/105/125/145 + (2/2.3/2.6/2.9/3.2/3.5% 生命值) + (40% 法术强度) + (50% 额外攻击力))护盾值</span>。此外，乌迪尔的下两次攻击具有15/16/17/18/19/20%生命偷取并回复<span class=\"text-green-600 dark:text-green-400\">((1.2% 生命值) + (8% 法术强度))生命值</span>。<br /><br /><span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">觉醒：</span>获得<span class=\"text-blue-600 dark:text-blue-300\">(45/65/85/105/125/145 + (65% 法术强度) + (8% 生命值) + (100% 额外攻击力))护盾值</span>，在4秒里持续回复<span class=\"text-green-600 dark:text-green-400\">(22.5/32.5/42.5/52.5/62.5/72.5 + (32.5% 法术强度) + (4% 生命值) + (50% 额外攻击力))生命值</span>，并且乌迪尔的下两次攻击转而具有30/32/34/36/38/40%生命偷取并回复<span class=\"text-green-600 dark:text-green-400\">((2.4% 生命值) + (16% 法术强度))生命值</span>。<br /><br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">由觉醒技能提供的护盾将与原技能提供的剩余护盾叠加。对小兵的攻击附带生命回复效果降低40%。</span>",
         "leveltip": {
           "label": [
             "护盾值",
@@ -451,13 +458,15 @@
           "w": 48,
           "h": 48
         },
-        "resource": "{{ cost }} {{ abilityresourcename }}"
+        "resource": "{{ cost }} {{ abilityresourcename }}",
+        "summary": "乌迪尔获得护盾，并且下两次攻击会回复生命值。再次施放：获得更厚的护盾并且在接下来的若干秒内持续获得基于最大生命值的治疗效果。",
+        "tooltipSource": "communitydragon"
       },
       {
         "id": "UdyrE",
         "name": "踏火蛮冲",
         "description": "乌迪尔获得移动速度并且他对每个目标打出的第一次攻击将造成晕眩。再次施放：获得更多移动速度并在若干秒里免疫定身效果。 ",
-        "tooltip": "<spellActive>蛮冲姿态：</spellActive>乌迪尔获得在{{ movespeedduration }}秒里持续衰减的<speed>{{ movespeed }}移动速度</speed>。此外，乌迪尔的攻击会使他冲刺到目标处并造成{{ stunduration }}秒<status>晕眩</status>。(对每个目标各有{{ icd }}秒冷却时间)。<br /><br /><keywordMajor>觉醒：</keywordMajor>免疫<status>定身</status>和<status>限制</status>效果，并额外提供持续{{ unstoppableduration }}秒的<speed>{{ movespeedbonus }}移动速度</speed>。{{ spellmodifierdescriptionappend }}",
+        "tooltip": "<span class=\"text-gray-900 dark:text-white font-semibold\">蛮冲姿态：</span>乌迪尔获得在4秒里持续衰减的<span class=\"text-cyan-600 dark:text-cyan-500\">(25/31/37/43/49/55% + (0.05% 额外攻击力))移动速度</span>。此外，乌迪尔的攻击会使他冲刺到目标处并造成0.75秒<span class=\"text-purple-600 dark:text-purple-500\">晕眩</span>。(对每个目标各有6/5.6/5.2/4.8/4.4/4秒冷却时间)。<br /><br /><span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">觉醒：</span>免疫<span class=\"text-purple-600 dark:text-purple-500\">定身</span>和<span class=\"text-purple-600 dark:text-purple-500\">限制</span>效果，并额外提供持续1.5秒的<span class=\"text-cyan-600 dark:text-cyan-500\">(0.1% 额外攻击力)移动速度</span>。<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">乌迪尔在有移动速度加成期间可无视单位的碰撞体积，并且他在这个<span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">姿态</span>下的攻击无法被取消。</span>",
         "leveltip": {
           "label": [
             "移动速度",
@@ -605,13 +614,15 @@
           "w": 48,
           "h": 48
         },
-        "resource": "{{ cost }} {{ abilityresourcename }}"
+        "resource": "{{ cost }} {{ abilityresourcename }}",
+        "summary": "乌迪尔获得移动速度并且他对每个目标打出的第一次攻击将造成晕眩。再次施放：获得更多移动速度并在若干秒里免疫定身效果。 ",
+        "tooltipSource": "communitydragon"
       },
       {
         "id": "UdyrR",
         "name": "极凌飓风",
         "description": "乌迪尔召唤冰川风暴环绕自身，对附近的敌人造成伤害和减速。再次施放：强化并释放风暴，让风暴追踪敌人并造成额外伤害。",
-        "tooltip": "<spellActive>飓风姿态：</spellActive>乌迪尔召唤冰川风暴环绕自身{{ buffduration }}秒，每秒对附近的敌人造成<magicDamage>{{ stormdamage }}魔法伤害</magicDamage>，并对这些敌人造成{{ slowpotency*100 }}%<status>减速</status>。此外，乌迪尔在这个姿态中的下两次攻击对风暴中的敌人造成<magicDamage>{{ pulsedamage }}魔法伤害</magicDamage>。<br /><br /><keywordMajor>觉醒：</keywordMajor>释放风暴，使它跟随乌迪尔最后攻击的那名敌人，在持续期间造成额外的<magicDamage>{{ percenthpblast }}最大生命值的魔法伤害</magicDamage>，和额外的{{ empoweredslow }}<status>减速</status>。{{ spellmodifierdescriptionappend }}",
+        "tooltip": "<span class=\"text-gray-900 dark:text-white font-semibold\">飓风姿态：</span>乌迪尔召唤冰川风暴环绕自身4秒，每秒对附近的敌人造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(20/36/52/68/84/100 + (35% 法术强度))魔法伤害</span>，并对这些敌人造成15/18/21/24/27/30%<span class=\"text-purple-600 dark:text-purple-500\">减速</span>。此外，乌迪尔在这个姿态中的下两次攻击对风暴中的敌人造成<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(35% 法术强度)魔法伤害</span>。<br /><br /><span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">觉醒：</span>释放风暴，使它跟随乌迪尔最后攻击的那名敌人，在持续期间造成额外的<span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(0.03% 法术强度)最大生命值的魔法伤害</span>，和额外的5%<span class=\"text-purple-600 dark:text-purple-500\">减速</span>。<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">风暴对小兵造成100%伤害。觉醒版对野怪的最小伤害为。</span>",
         "leveltip": {
           "label": [
             "每秒伤害",
@@ -759,7 +770,14 @@
           "w": 48,
           "h": 48
         },
-        "resource": "{{ cost }} {{ abilityresourcename }}"
+        "resource": "{{ cost }} {{ abilityresourcename }}",
+        "summary": "乌迪尔召唤冰川风暴环绕自身，对附近的敌人造成伤害和减速。再次施放：强化并释放风暴，让风暴追踪敌人并造成额外伤害。",
+        "tooltipSource": "communitydragon",
+        "tooltipDiagnostics": {
+          "unresolvedTokens": [
+            "spell.UdyrQ:MonsterNukeMinRCalc"
+          ]
+        }
       }
     ],
     "passive": {

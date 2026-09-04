@@ -560,7 +560,7 @@
         "id": "Deceive",
         "name": "속임수",
         "description": "샤코가 즉시 투명해지며 지정한 위치로 순간이동합니다.<br><br>투명 상태에서 가하는 첫 번째 기본 공격이 강화되어 추가 피해를 입히고 뒤에서 공격 시 치명타로 적중합니다.",
-        "tooltip": "샤코가 근처로 순간이동해 {{ stealthduration }}초 동안 <keywordStealth>투명</keywordStealth> 상태가 됩니다. <spellName>깜짝 상자</spellName>나 <spellName>환각</spellName> 스킬을 사용해도 <keywordStealth>투명</keywordStealth> 상태는 유지됩니다.<br /><br /><keywordStealth>투명</keywordStealth> 상태에서 다음 기본 공격 시 <physicalDamage>{{ totaldamage }}의 물리 피해</physicalDamage>를 추가로 입힙니다. 뒤에서 기본 공격 시 치명타가 적용되어 {{ qcritdamagemod }}의 피해를 입힙니다.{{ spellmodifierdescriptionappend }}",
+        "tooltip": "샤코가 근처로 순간이동해 2.5/2.75/3/3.25/3.5초 동안 <span class=\"text-purple-600 dark:text-purple-400 font-semibold\">투명</span> 상태가 됩니다. <span>깜짝 상자</span>나 <span>환각</span> 스킬을 사용해도 <span class=\"text-purple-600 dark:text-purple-400 font-semibold\">투명</span> 상태는 유지됩니다.<br /><br /><span class=\"text-purple-600 dark:text-purple-400 font-semibold\">투명</span> 상태에서 다음 기본 공격 시 <span class=\"text-red-600 dark:text-red-500 font-semibold\">(25/35/45/55/65 + (60% 추가 공격력))의 물리 피해</span>를 추가로 입힙니다. 뒤에서 기본 공격 시 치명타가 적용되어 의 피해를 입힙니다.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">기본 공격 시 추가 피해량에 치명타가 적용될 수 있습니다.<br /><span class=\"text-purple-600 dark:text-purple-400 font-semibold\">투명</span> 상태의 유닛은 포탑이나 <span style=\"color: #ee91d7\">절대 시야</font color>로만 모습이 드러납니다.</span>",
         "leveltip": {
           "label": [
             "피해량",
@@ -697,13 +697,20 @@
           "w": 48,
           "h": 48
         },
-        "resource": "{{ abilityresourcename }} {{ cost }}"
+        "resource": "{{ abilityresourcename }} {{ cost }}",
+        "summary": "샤코가 즉시 투명해지며 지정한 위치로 순간이동합니다.<br><br>투명 상태에서 가하는 첫 번째 기본 공격이 강화되어 추가 피해를 입히고 뒤에서 공격 시 치명타로 적중합니다.",
+        "tooltipSource": "communitydragon",
+        "tooltipDiagnostics": {
+          "unresolvedTokens": [
+            "QCritDamageMod"
+          ]
+        }
       },
       {
         "id": "JackInTheBox",
         "name": "깜짝 상자",
         "description": "샤코가 깜짝 상자를 숨깁니다. 상자가 발동되면 주변의 적들을 공포 상태에 빠뜨린 다음 공격합니다.",
-        "tooltip": "샤코가 {{ armtime }}초 뒤 시야에서 사라지는 상자를 남깁니다. 상자는 {{ trapduration }}초 동안 보이지 않습니다. 적이 가까이 다가오거나 발각되면 발동해 주변 적 챔피언을 {{ fearduration }}초 동안, 미니언과 정글 몬스터를 {{ minionfearduration }}초 동안 <status>공포</status>에 빠뜨립니다.<br /><br />상자가 발동되면 주변 모든 적을 5초 동안 공격해 <magicDamage>{{ aoedamage }}의 마법 피해</magicDamage>를 입히거나 단일 대상 공격 시 <magicDamage>{{ stdamage }}의 피해</magicDamage>를 입힙니다.<br /><br />깜짝 상자는 몬스터에게 <magicDamage>{{ monsterbonusdamage }}</magicDamage>의 추가 피해를 입힙니다.{{ spellmodifierdescriptionappend }}",
+        "tooltip": "샤코가 2초 뒤 시야에서 사라지는 상자를 남깁니다. 상자는 (40 + (10% 주문력))초 동안 보이지 않습니다. 적이 가까이 다가오거나 발각되면 발동해 주변 적 챔피언을 0.5/0.75/1/1.25/1.5초 동안, 미니언과 정글 몬스터를 2초 동안 <span class=\"text-purple-600 dark:text-purple-500\">공포</span>에 빠뜨립니다.<br /><br />상자가 발동되면 주변 모든 적을 5초 동안 공격해 <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(10/15/20/25/30 + (12% 주문력))의 마법 피해</span>를 입히거나 단일 대상 공격 시 <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(25/40/55/70/85 + (18% 주문력))의 피해</span>를 입힙니다.<br /><br />깜짝 상자는 몬스터에게 <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">20/35/50/65/80</span>의 추가 피해를 입힙니다.",
         "leveltip": {
           "label": [
             "피해량",
@@ -842,13 +849,15 @@
           "w": 48,
           "h": 48
         },
-        "resource": "{{ abilityresourcename }} {{ cost }}"
+        "resource": "{{ abilityresourcename }} {{ cost }}",
+        "summary": "샤코가 깜짝 상자를 숨깁니다. 상자가 발동되면 주변의 적들을 공포 상태에 빠뜨린 다음 공격합니다.",
+        "tooltipSource": "communitydragon"
       },
       {
         "id": "TwoShivPoison",
         "name": "양날 독",
         "description": "샤코의 단검은 공격에 맞은 대상을 중독시켜 이동 속도를 늦춥니다. 샤코는 단검을 던져 적에게 피해를 입히고 중독시킬 수 있으며 이때 대상의 체력이 30% 이하면 추가 피해를 입힙니다.",
-        "tooltip": "<spellPassive>기본 지속 효과:</spellPassive> 이 스킬이 재사용 대기 상태가 아닐 때 샤코가 기본 공격 시 {{ slowdurationpassive }}초 동안 대상을 {{ slowamount*-100 }}% <status>둔화</status>시킵니다.<br /><br /><spellActive>사용 시:</spellActive> 샤코가 단검을 던져 <magicDamage>{{ totaldamage }}의 마법 피해</magicDamage>를 입히고 대상을{{ slowdurationactive }}초 동안 {{ slowamount*-100 }}% <status>둔화</status>시킵니다. 대상의 체력이 {{ executehealththreshold*100 }}% 미만이면 <magicDamage>{{ totalexecutedamage }}의 피해</magicDamage>를 입힙니다.{{ spellmodifierdescriptionappend }}",
+        "tooltip": "<span class=\"text-gray-600 dark:text-gray-500 italic\">기본 지속 효과:</span> 이 스킬이 재사용 대기 상태가 아닐 때 샤코가 기본 공격 시 2초 동안 대상을 20/22.5/25/27.5/30% <span class=\"text-purple-600 dark:text-purple-500\">둔화</span>시킵니다.<br /><br /><span class=\"text-gray-900 dark:text-white font-semibold\">사용 시:</span> 샤코가 단검을 던져 <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(70/95/120/145/170 + (80% 추가 공격력) + (60% 주문력))의 마법 피해</span>를 입히고 대상을3초 동안 20/22.5/25/27.5/30% <span class=\"text-purple-600 dark:text-purple-500\">둔화</span>시킵니다. 대상의 체력이 30% 미만이면 <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(105/142.5/180/217.5/255 + (120% 추가 공격력) + (90% 주문력))의 피해</span>를 입힙니다.",
         "leveltip": {
           "label": [
             "피해량",
@@ -983,13 +992,15 @@
           "w": 48,
           "h": 48
         },
-        "resource": "{{ abilityresourcename }} {{ cost }}"
+        "resource": "{{ abilityresourcename }} {{ cost }}",
+        "summary": "샤코의 단검은 공격에 맞은 대상을 중독시켜 이동 속도를 늦춥니다. 샤코는 단검을 던져 적에게 피해를 입히고 중독시킬 수 있으며 이때 대상의 체력이 30% 이하면 추가 피해를 입힙니다.",
+        "tooltipSource": "communitydragon"
       },
       {
         "id": "HallucinateFull",
         "name": "환각",
         "description": "샤코가 자신의 환영을 생성합니다. 적 포탑에게는 환영의 피해량이 줄어듭니다. 환영은 죽을 경우 폭발하며 세 개의 작은 깜짝 상자를 남겨 주변 적에게 피해를 입힙니다.",
-        "tooltip": "샤코가 잠시 사라졌다가 {{ clonelifetime }}초 동안 유지되는 분신과 함께 다시 나타납니다. 분신은 처치되면 폭발하여 <magicDamage>{{ explosiontotaldamage }}의 마법 피해</magicDamage>를 입히고 즉시 발동하는 작은 <spellName>깜짝 상자</spellName> 세 개를 남깁니다. 분신은 샤코의 {{ cloneaadamagepercent*100 }}%에 해당하는 피해를 입히지만, 받는 피해량이 {{ cloneincomingdamagepercent*100 }}% 증가합니다.<br /><br />작은 <spellName>깜짝 상자</spellName>는 <magicDamage>{{ aoedamage }}의 마법 피해</magicDamage>를 입히거나 단일 적 공격 시 <magicDamage>{{ stdamage }}의 마법 피해</magicDamage>를 입히고 {{ boxfearduration }}초 동안 적을 <status>공포</status>에 빠뜨립니다.<br />{{ spellmodifierdescriptionappend }}",
+        "tooltip": "샤코가 잠시 사라졌다가 18초 동안 유지되는 분신과 함께 다시 나타납니다. 분신은 처치되면 폭발하여 <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(150/225/300 + (70% 주문력))의 마법 피해</span>를 입히고 즉시 발동하는 작은 <span>깜짝 상자</span> 세 개를 남깁니다. 분신은 샤코의 60%에 해당하는 피해를 입히지만, 받는 피해량이 50% 증가합니다.<br /><br />작은 <span>깜짝 상자</span>는 <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(10/20/30 + (10% 주문력))의 마법 피해</span>를 입히거나 단일 적 공격 시 <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(25/50/75 + (15% 주문력))의 마법 피해</span>를 입히고 1초 동안 적을 <span class=\"text-purple-600 dark:text-purple-500\">공포</span>에 빠뜨립니다.<br /><br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">Alt 키를 누른 채로 마우스 오른쪽 버튼을 누르거나 이 스킬을 <span class=\"text-yellow-600 dark:text-yellow-300\">재사용</span>하면 분신을 조종할 수 있습니다.</span>",
         "leveltip": {
           "label": [
             "분신 사망 시 피해량",
@@ -1100,7 +1111,9 @@
           "w": 48,
           "h": 48
         },
-        "resource": "{{ abilityresourcename }} {{ cost }}"
+        "resource": "{{ abilityresourcename }} {{ cost }}",
+        "summary": "샤코가 자신의 환영을 생성합니다. 적 포탑에게는 환영의 피해량이 줄어듭니다. 환영은 죽을 경우 폭발하며 세 개의 작은 깜짝 상자를 남겨 주변 적에게 피해를 입힙니다.",
+        "tooltipSource": "communitydragon"
       }
     ],
     "passive": {

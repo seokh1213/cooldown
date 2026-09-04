@@ -11,6 +11,11 @@ export interface ChampionSpell {
   cooldownBurn?: string;
   description?: string;
   tooltip?: string;
+  summary?: string;
+  tooltipSource?: "communitydragon";
+  tooltipDiagnostics?: {
+    unresolvedTokens: string[];
+  };
   leveltip?: {
     label: string[];
     effect: string[];

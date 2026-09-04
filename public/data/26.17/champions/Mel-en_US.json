@@ -147,7 +147,7 @@
         "id": "MelQ",
         "name": "Radiant Volley",
         "description": "Mel fires a barrage of projectiles that explode around a target location, dealing damage repeatedly to enemies within the area.",
-        "tooltip": "Mel unleashes a barrage of {{ explosioncount }} projectiles that explode in the area around a target location.<br /><br />The first explosion hit deals <magicDamage>{{ initialexplosiondamage }} magic damage</magicDamage> and each subsequent explosion deals <magicDamage>{{ totalexplosiondamage }} magic damage</magicDamage>, adding up to <magicDamage>{{ alldamagehit }} magic damage</magicDamage> total.{{ spellmodifierdescriptionappend }}",
+        "tooltip": "Mel unleashes a barrage of 6/7/8/9/10 projectiles that explode in the area around a target location.<br /><br />The first explosion hit deals <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(60/85/110/135/160 + (55% Ability Power)) magic damage</span> and each subsequent explosion deals <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(5/7/9/11/13 + (5% Ability Power)) magic damage</span>, adding up to <span class=\"text-blue-600 dark:text-blue-500 font-semibold\"> magic damage</span> total.",
         "leveltip": {
           "label": [
             "Initial Damage",
@@ -288,13 +288,20 @@
           "w": 48,
           "h": 48
         },
-        "resource": "{{ cost }} {{ abilityresourcename }}"
+        "resource": "{{ cost }} {{ abilityresourcename }}",
+        "summary": "Mel fires a barrage of projectiles that explode around a target location, dealing damage repeatedly to enemies within the area.",
+        "tooltipSource": "communitydragon",
+        "tooltipDiagnostics": {
+          "unresolvedTokens": [
+            "AllDamageHit"
+          ]
+        }
       },
       {
         "id": "MelW",
         "name": "Rebuttal",
         "description": "Mel forms a barrier around herself that reflects enemy projectiles back at the attacker, prevents her from taking damage, and grants her movement speed.",
-        "tooltip": "Mel forms a barrier around herself that reflects projectiles from enemy champions, gaining <shield>{{ shieldamount }} Shields</shield> for {{ duration }} seconds and <speed>{{ movespeed*100 }}% decaying Move Speed</speed> for {{ movespeedduration }} seconds.<br /><br />Reflected projectiles deal <magicDamage>{{ damagepercent }} original damage as magic damage</magicDamage>.{{ spellmodifierdescriptionappend }}",
+        "tooltip": "Mel forms a barrier around herself that reflects projectiles from enemy champions, gaining <span class=\"text-blue-600 dark:text-blue-300\">(80/110/140/170/200 + (70% Ability Power)) Shields</span> for 0.75 seconds and <span class=\"text-cyan-600 dark:text-cyan-500\">40% decaying Move Speed</span> for 0.75 seconds.<br /><br />Reflected projectiles deal <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(40/45/50/55/60% + (0.05% Ability Power)) original damage as magic damage</span>.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">Reflected projectile damage is calculated using the original caster's attributes before damage adjustments and magic penetration.<br /><span class=\"text-red-600 dark:text-red-500 font-semibold\">Physical damage</span> is reduced by 30% when converted to magic damage.<br />Does not apply item effects from the original caster.<br />Projectiles targeting each enemy in an area are destroyed instead of reflected.</span>",
         "leveltip": {
           "label": [
             "Reflected Damage",
@@ -433,13 +440,15 @@
           "w": 48,
           "h": 48
         },
-        "resource": "{{ cost }} {{ abilityresourcename }}"
+        "resource": "{{ cost }} {{ abilityresourcename }}",
+        "summary": "Mel forms a barrier around herself that reflects enemy projectiles back at the attacker, prevents her from taking damage, and grants her movement speed.",
+        "tooltipSource": "communitydragon"
       },
       {
         "id": "MelE",
         "name": "Solar Snare",
         "description": "Mel fires a radiant orb forward, rooting those at its center while the area around it slows enemies and deals damage over time.",
-        "tooltip": "Mel fires a radiating orb, <status>Rooting</status> enemies at its center for {{ rootduration }} seconds and dealing <magicDamage>{{ damage }} magic damage</magicDamage>.<br /><br />The orb builds up a hostile area around it that <status>Slows</status> enemies by {{ areaslowamount*100 }}% and deals <magicDamage>{{ areadamagepersecond }} magic damage per second</magicDamage>.{{ spellmodifierdescriptionappend }}",
+        "tooltip": "Mel fires a radiating orb, <span class=\"text-purple-600 dark:text-purple-500\">Rooting</span> enemies at its center for 1.5 seconds and dealing <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(60/105/150/195/240 + (70% Ability Power)) magic damage</span>.<br /><br />The orb builds up a hostile area around it that <span class=\"text-purple-600 dark:text-purple-500\">Slows</span> enemies by 30% and deals <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(16/28/40/52/64 + (8% Ability Power)) magic damage per second</span>.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">The Slow and damage-over-time effects linger on enemies for a short duration after they've left the area created by the orb.<br />Deals reduced damage when used against minions.</span>",
         "leveltip": {
           "label": [
             "Damage",
@@ -578,13 +587,20 @@
           "w": 48,
           "h": 48
         },
-        "resource": "{{ cost }} {{ abilityresourcename }}"
+        "resource": "{{ cost }} {{ abilityresourcename }}",
+        "summary": "Mel fires a radiant orb forward, rooting those at its center while the area around it slows enemies and deals damage over time.",
+        "tooltipSource": "communitydragon",
+        "tooltipDiagnostics": {
+          "unresolvedTokens": [
+            "MinionModTooltip"
+          ]
+        }
       },
       {
         "id": "MelR",
         "name": "Golden Eclipse",
         "description": "Mel strikes all enemies marked with Overwhelm regardless of their distance from her, dealing additional damage for each stack of Overwhelm.<br><br>Ranks of Golden Eclipse increase Overwhelm's damage.",
-        "tooltip": "<spellPassive>Passive</spellPassive>: <keywordMajor>Overwhelm</keywordMajor> damage is increased to <magicDamage>{{ passiveflatdamage }} magic damage plus {{ passivestackdamage }} magic damage per stack</magicDamage>.<br /><br /><spellActive>Active</spellActive>: Mel unleashes her power on all enemies affected by <keywordMajor>Overwhelm</keywordMajor>, dealing <magicDamage>{{ ultflatdamage }} magic damage plus {{ ultstackdamage }} magic damage per <keywordMajor>Overwhelm</keywordMajor> stack</magicDamage>.<br /><br /><rules>Can only be cast when an enemy champion is affected by <keywordMajor>Overwhelm</keywordMajor>.</rules>{{ spellmodifierdescriptionappend }}",
+        "tooltip": "<span class=\"text-gray-600 dark:text-gray-500 italic\">Passive</span>: <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Overwhelm</span> damage is increased to <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(60/70/80 + (10% Ability Power)) magic damage plus (3/4/5 + (0.75% Ability Power)) magic damage per stack</span>.<br /><br /><span class=\"text-gray-900 dark:text-white font-semibold\">Active</span>: Mel unleashes her power on all enemies affected by <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Overwhelm</span>, dealing <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(125/200/275 + (30% Ability Power)) magic damage plus (4/7/10 + (4% Ability Power)) magic damage per <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Overwhelm</span> stack</span>.<br /><br /><span class=\"text-gray-600 dark:text-gray-400 italic\">Can only be cast when an enemy champion is affected by <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Overwhelm</span>.</span>",
         "leveltip": {
           "label": [
             "<spellName>Golden Eclipse</spellName> Flat Damage",
@@ -699,7 +715,9 @@
           "w": 48,
           "h": 48
         },
-        "resource": "{{ cost }} {{ abilityresourcename }}"
+        "resource": "{{ cost }} {{ abilityresourcename }}",
+        "summary": "Mel strikes all enemies marked with Overwhelm regardless of their distance from her, dealing additional damage for each stack of Overwhelm.<br><br>Ranks of Golden Eclipse increase Overwhelm's damage.",
+        "tooltipSource": "communitydragon"
       }
     ],
     "passive": {
