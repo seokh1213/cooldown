@@ -2,7 +2,6 @@ import * as fs from "fs";
 import * as path from "path";
 import type {
   NormalizedChampion,
-  NormalizedChampionDataFile,
   NormalizedItemDataFile,
   NormalizedRuneDataFile,
   NormalizedSummonerDataFile,
@@ -583,21 +582,6 @@ async function main() {
         }
       }
 
-      const normalizedFile: NormalizedChampionDataFile = {
-        schemaVersion: 2,
-        patchVersion,
-        locale: lang,
-        sources: sourceVersions,
-        champions: normalizedChampions,
-      };
-
-      await saveToFile(
-        normalizedFile,
-        path.join(
-          versionDir,
-          `champions-normalized-${lang}.json`
-        )
-      );
       const v2ChampionCount = writeChampionV2Dataset({
         versionDir,
         patchVersion,
@@ -607,7 +591,7 @@ async function main() {
         normalizedChampions,
       });
       console.log(
-        `✅ Saved normalized and v2 champion data for ${lang} (${v2ChampionCount} champions)`
+        `✅ Saved v2 champion data for ${lang} (${v2ChampionCount} champions)`
       );
     }
 
@@ -675,10 +659,7 @@ async function main() {
       `${simulationValidation.summary.abilities} safe ability simulations`
     );
 
-    const prunedFileCount = pruneIntermediateData(
-      versionDir,
-      LANGUAGES
-    );
+    const prunedFileCount = pruneIntermediateData(versionDir);
     console.log(`✅ Removed ${prunedFileCount} intermediate source files`);
 
     const versionInfo = {
