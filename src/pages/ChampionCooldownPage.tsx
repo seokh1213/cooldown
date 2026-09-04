@@ -21,17 +21,22 @@ import { VsSelectorModal } from "@/pages/EncyclopediaPage/VsSelectorModal";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { RotateCcw } from "lucide-react";
-import { setStorageWithVersion, removeStorageWithVersion } from "@/lib/storageValidator";
-import { VersionProvider } from "@/context/VersionContext";
+import {
+  APP_STORAGE_KEYS,
+  removeStorage,
+  writeStorage,
+} from "@/data/storage/appStorage";
 import type { StoredSelectedChampionList } from "@/lib/storageSchema";
 import { logger } from "@/lib/logger";
 import { useTranslation, type Language } from "@/i18n";
 
 type ChampionCooldownTab = "skills" | "stats";
 
-const COOLDOWN_STORAGE_KEY = "cooldown_selected_champions";
-const COOLDOWN_TABS_STORAGE_KEY = "cooldown_tabs";
-const COOLDOWN_SELECTED_TAB_ID_STORAGE_KEY = "cooldown_selected_tab_id";
+const {
+  selectedChampions: COOLDOWN_STORAGE_KEY,
+  tabs: COOLDOWN_TABS_STORAGE_KEY,
+  selectedTabId: COOLDOWN_SELECTED_TAB_ID_STORAGE_KEY,
+} = APP_STORAGE_KEYS;
 
 function isValidTab(tab: string | null): tab is ChampionCooldownTab {
   return tab === "skills" || tab === "stats";
@@ -44,10 +49,6 @@ interface ChampionCooldownPageProps {
   version: string;
   /** Data Dragon CDN 요청용 내부 버전 (예: 16.17.1) */
   ddragonVersion: string;
-  cdragonVersion: string | null;
-  initialSelectedChampions: StoredSelectedChampionList | null;
-  initialTabs: Tab[] | null;
-  initialSelectedTabId: string | null;
 }
 
 function ChampionCooldownPageContent({
@@ -55,9 +56,6 @@ function ChampionCooldownPageContent({
   championList,
   version,
   ddragonVersion,
-  initialSelectedChampions,
-  initialTabs,
-  initialSelectedTabId,
 }: ChampionCooldownPageProps) {
   const [searchParams, setSearchParams] = useSearchParams();
   const deviceType = useDeviceType();
@@ -134,8 +132,6 @@ function ChampionCooldownPageContent({
     generateTabId,
   } = useTabManagement({
     version,
-    initialTabs,
-    initialSelectedTabId,
     tabsStorageKey: COOLDOWN_TABS_STORAGE_KEY,
     selectedTabIdStorageKey: COOLDOWN_SELECTED_TAB_ID_STORAGE_KEY,
   });
@@ -153,7 +149,6 @@ function ChampionCooldownPageContent({
     lang,
     championList,
     tabs,
-    initialSelectedChampions,
     storageKey: COOLDOWN_STORAGE_KEY,
   });
 
@@ -166,23 +161,23 @@ function ChampionCooldownPageContent({
           id,
           key,
         }));
-        setStorageWithVersion(COOLDOWN_STORAGE_KEY, JSON.stringify(toStore));
+        writeStorage(COOLDOWN_STORAGE_KEY, JSON.stringify(toStore));
       } else {
-        removeStorageWithVersion(COOLDOWN_STORAGE_KEY);
+        removeStorage(COOLDOWN_STORAGE_KEY);
       }
 
       // 탭 배열 저장
       if (tabs.length > 0) {
-        setStorageWithVersion(COOLDOWN_TABS_STORAGE_KEY, JSON.stringify(tabs));
+        writeStorage(COOLDOWN_TABS_STORAGE_KEY, JSON.stringify(tabs));
       } else {
-        removeStorageWithVersion(COOLDOWN_TABS_STORAGE_KEY);
+        removeStorage(COOLDOWN_TABS_STORAGE_KEY);
       }
 
       // 선택된 탭 ID 저장
       if (selectedTabId) {
-        setStorageWithVersion(COOLDOWN_SELECTED_TAB_ID_STORAGE_KEY, selectedTabId);
+        writeStorage(COOLDOWN_SELECTED_TAB_ID_STORAGE_KEY, selectedTabId);
       } else {
-        removeStorageWithVersion(COOLDOWN_SELECTED_TAB_ID_STORAGE_KEY);
+        removeStorage(COOLDOWN_SELECTED_TAB_ID_STORAGE_KEY);
       }
     } catch (error) {
       logger.error("Failed to persist cooldown state to storage:", error);
@@ -275,9 +270,9 @@ function ChampionCooldownPageContent({
   const resetAll = useCallback(() => {
     resetChampionsData();
     resetTabs();
-    removeStorageWithVersion(COOLDOWN_STORAGE_KEY);
-    removeStorageWithVersion(COOLDOWN_TABS_STORAGE_KEY);
-    removeStorageWithVersion(COOLDOWN_SELECTED_TAB_ID_STORAGE_KEY);
+    removeStorage(COOLDOWN_STORAGE_KEY);
+    removeStorage(COOLDOWN_TABS_STORAGE_KEY);
+    removeStorage(COOLDOWN_SELECTED_TAB_ID_STORAGE_KEY);
   }, [resetChampionsData, resetTabs]);
 
   // VS 모드용 챔피언 선택 핸들러
@@ -544,12 +539,5 @@ function ChampionCooldownPageContent({
 }
 
 export default function ChampionCooldownPage(props: ChampionCooldownPageProps) {
-  return (
-    <VersionProvider
-      initialDDragonVersion={props.ddragonVersion}
-      initialCDragonVersion={props.cdragonVersion}
-    >
-      <ChampionCooldownPageContent {...props} />
-    </VersionProvider>
-  );
+  return <ChampionCooldownPageContent {...props} />;
 }
