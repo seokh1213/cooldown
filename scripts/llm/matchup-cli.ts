@@ -145,7 +145,7 @@ export function buildMatchupContext(args: {
   profile?: PromptProfile;
 }): BuiltMatchup {
   const data = loadStaticData(args.lang, args.patch);
-  const builder = createChampionCardBuilder(data.champions);
+  const builder = createChampionCardBuilder(data.champions, data.riotMeta);
 
   const meChamp = builder.find(args.me);
   const enemyChamp = builder.find(args.enemy);

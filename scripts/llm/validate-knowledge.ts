@@ -22,7 +22,7 @@ interface Finding {
 
 function main() {
   const data = loadStaticData("ko_KR");
-  const builder = createChampionCardBuilder(data.champions);
+  const builder = createChampionCardBuilder(data.champions, data.riotMeta);
   const cards = builder.buildAll();
 
   // 소환사의 협곡에서 실제로 구매 가능한 아이템만 유효로 본다.

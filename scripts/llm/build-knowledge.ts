@@ -28,7 +28,7 @@ function parseLang(argv: string[]): LlmLocale {
 function main() {
   const lang = parseLang(process.argv.slice(2));
   const data = loadStaticData(lang);
-  const builder = createChampionCardBuilder(data.champions);
+  const builder = createChampionCardBuilder(data.champions, data.riotMeta);
   const cards = builder.buildAll();
 
   const outDir = path.join(PUBLIC_DATA_ROOT, data.patch, "llm");
