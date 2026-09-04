@@ -267,8 +267,21 @@ export function deriveRecommendation(ctx: MatchupContext): string[] {
     ).filter((name) => !avoided.has(name));
 
   const lines: string[] = [];
+  /**
+   * 항목별 표시 상한.
+   * 지식 카드가 늘면 대안까지 다 모여 "선택"이 아니라 "후보 나열"이 된다.
+   * 앞쪽(상성 한정 → 조건 일치 → 일반) 순서가 이미 우선순위이므로 앞에서 자른다.
+   */
+  const LIMITS: Record<string, number> = {
+    "시작 아이템": 2,
+    "첫 아이템 후보": 3,
+    "코어 아이템": 4,
+    룬: 4,
+    "소환사 주문": 3,
+  };
   const push = (label: string, names: string[]) => {
-    if (names.length) lines.push(`${label}: ${names.join(", ")}`);
+    const limited = names.slice(0, LIMITS[label] ?? names.length);
+    if (limited.length) lines.push(`${label}: ${limited.join(", ")}`);
   };
 
   // 팁(상성 한정 지식)이 지목한 이름은 플레이북보다 우선한다
