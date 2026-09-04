@@ -22,7 +22,7 @@ import {
   StatKey,
 } from "@/types/combatStats";
 import {logger} from "@/lib/logger";
-import {getStaticDataPath} from "@/lib/staticDataUtils";
+import {getRuntimeBasePath, getStaticDataPath} from "@/lib/staticDataUtils";
 
 export const CHAMP_ICON_URL = (VERSION: string, NAME: string) =>
   `https://ddragon.leagueoflegends.com/cdn/${VERSION}/img/champion/${NAME}.png`;
@@ -53,7 +53,7 @@ export async function getDataVersions(): Promise<DataVersionInfo> {
   }
 
   try {
-    const basePath = import.meta.env.BASE_URL || '/';
+    const basePath = getRuntimeBasePath();
     const normalizedBase = basePath.endsWith('/') ? basePath : `${basePath}/`;
     const versionUrl = `${normalizedBase}data/version.json`;
     const response = await fetch(versionUrl);
@@ -724,12 +724,7 @@ export async function getCommunityDragonSpellData(
   championId: string,
   version: string
 ): Promise<CommunityDragonSpellResult> {
-  // Community Dragon 데이터도 정적 파일(champions/{id}-en_US.json)에 포함되어 있다고 가정하거나
-  // 혹은 별도 엔드포인트가 있다면 그곳을 사용해야 합니다.
-  // 현재 구조상 public/data/.../champions/{id}-en_US.json 을 사용합니다.
-  // 데이터 계산용이므로 언어는 en_US를 기본으로 사용합니다.
-  const lang = "en_US";
-  const staticUrl = getStaticDataPath(version, `champions/${championId}-${lang}.json`);
+  const staticUrl = getStaticDataPath(version, `spells/${championId}.json`);
 
   try {
     const response = await fetch(staticUrl);
@@ -738,27 +733,19 @@ export async function getCommunityDragonSpellData(
       return { spellDataMap: {} };
     }
 
-    const data = await response.json();
-    const spells = data.champion?.spells;
-    
-    if (!Array.isArray(spells)) {
+    const data = await response.json() as {
+      spellData?: unknown;
+      ddragonVersion?: string;
+      cdragonVersion?: string | null;
+    };
+    if (!data.spellData || typeof data.spellData !== "object") {
       return { spellDataMap: {} };
     }
 
-    const spellDataMap: Record<string, unknown> = {};
-    spells.forEach((spell: unknown, index: number) => {
-      // 인덱스 키 (0, 1, 2, 3)
-      spellDataMap[index.toString()] = spell;
-      // 스킬 ID 키 (AatroxQ 등)
-      if (spell && typeof spell === "object" && "id" in spell && typeof spell.id === "string") {
-        spellDataMap[spell.id] = spell;
-      }
-    });
-
     return {
-      spellDataMap,
-      ddragonVersion: data.ddragonVersion ?? data.version,
-      cdragonVersion: null,
+      spellDataMap: data.spellData as Record<string, unknown>,
+      ddragonVersion: data.ddragonVersion,
+      cdragonVersion: data.cdragonVersion ?? null,
     };
   } catch (error) {
     logger.warn(`[API] Failed to fetch Community Dragon data for ${championId}`, error);
@@ -786,4 +773,3 @@ export async function getChampionInfo(
     throw error;
   }
 }
-

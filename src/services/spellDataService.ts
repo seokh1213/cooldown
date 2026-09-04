@@ -57,11 +57,13 @@ export async function getIntegratedSpellData(
     // Community Dragon 데이터 찾기
     let communityDragonData: Record<string, unknown> = {};
     
-    // 1. 스킬 인덱스로 직접 찾기 (Q=0, W=1, E=2, R=3)
-    if (communityDragonDataMap[index.toString()]) {
+    // 1. 정확한 스킬 ID, 2. 스킬 인덱스(Q=0, W=1, E=2, R=3) 순으로 찾기
+    if (communityDragonDataMap[spell.id]) {
+      communityDragonData = communityDragonDataMap[spell.id];
+    } else if (communityDragonDataMap[index.toString()]) {
       communityDragonData = communityDragonDataMap[index.toString()];
     } else {
-      // 2. 스킬 ID로 찾기 시도
+      // 3. 래퍼/내부 스킬처럼 이름이 다른 경우에만 보조 매칭
       const spellName = spell.id.replace(championId, "");
       for (const key of Object.keys(communityDragonDataMap)) {
         if (
@@ -123,4 +125,3 @@ export async function getIntegratedSpellDataForChampions(
   await Promise.all(promises);
   return result;
 }
-
