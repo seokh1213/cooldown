@@ -277,6 +277,24 @@ export function evaluatePart(
     return { base: maxLevel, statParts: [] };
   }
 
+  // 레벨별 값 나열. 단독일 때는 evaluateRange 가 처리하고, 섞여 있으면 여기로 온다.
+  if (type === "ByCharLevelFormulaCalculationPart") {
+    const values = (part as ByCharLevelFormulaCalculationPart).values ?? [];
+    if (values.length < 2) return null;
+    const last = Math.min(values.length - 1, MAX_CHAMPION_LEVEL - 1);
+    if (values[0] === values[last]) return { base: values[0], statParts: [] };
+    return { base: [values[0], values[last]], statParts: [], isLevelRange: true };
+  }
+
+  // 레벨 선형 보간. 다른 항과 섞이면 evaluateRange 를 타지 않아 버려지고 있었다.
+  if (type === "ByCharLevelInterpolationCalculationPart") {
+    const interpolation = part as ByCharLevelInterpolationCalculationPart;
+    const start = interpolation.mStartValue ?? 0;
+    const end = interpolation.mEndValue ?? start;
+    if (start === end) return { base: start, statParts: [] };
+    return { base: [start, end], statParts: [], isLevelRange: true };
+  }
+
   if (type === "SumOfSubPartsCalculationPart") {
     const subparts = (part as SumOfSubPartsCalculationPart).mSubparts ?? [];
     if (subparts.length === 0) return null;
