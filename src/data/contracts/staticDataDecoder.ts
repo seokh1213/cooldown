@@ -55,7 +55,7 @@ export function assertStaticDataIdentity(
   }
 }
 
-export function formatIdentity(identity: StaticDataIdentity): string {
+function formatIdentity(identity: StaticDataIdentity): string {
   return [
     identity.patchVersion,
     identity.sources.ddragon,

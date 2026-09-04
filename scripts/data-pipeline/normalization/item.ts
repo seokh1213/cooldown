@@ -1,4 +1,4 @@
-import { parseItemDescription } from "../../../src/lib/spellTooltipParser/index";
+import { parseItemDescription } from "../../../src/lib/spellTooltipParser/parser";
 import type { NormalizedItem } from "../../../src/types/combatNormalized";
 import { StatKey, type StatContribution } from "../../../src/types/combatStats";
 import { getNormalizationOverrides } from "./overrides";

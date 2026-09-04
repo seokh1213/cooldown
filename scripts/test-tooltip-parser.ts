@@ -3,7 +3,7 @@
  * npm run test-tooltip으로 실행
  */
 
-import { parseSpellTooltip } from "../src/lib/spellTooltipParser";
+import { parseSpellTooltip } from "../src/lib/spellTooltipParser/parser";
 import type { ChampionSpell } from "../src/types";
 import type { CommunityDragonSpellData } from "../src/lib/spellTooltipParser/types";
 
