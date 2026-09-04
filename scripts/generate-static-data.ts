@@ -4,13 +4,9 @@ import type {
   NormalizedChampion,
   NormalizedChampionDataFile,
   NormalizedItemDataFile,
-  NormalizedRune,
   NormalizedRuneDataFile,
-  NormalizedStatShard,
   NormalizedSummonerDataFile,
 } from "../src/types/combatNormalized";
-import type { StatContribution } from "../src/types/combatStats";
-import { StatKey } from "../src/types/combatStats";
 import type { CommunityDragonSpellData } from "../src/lib/spellTooltipParser/types";
 import { resolveStaticDataRelease } from "../src/lib/staticDataRelease";
 import {
@@ -39,9 +35,13 @@ import { writeChampionV2Dataset } from "./data-pipeline/champion-v2-writer";
 import { pruneIntermediateData } from "./data-pipeline/prune-intermediate-data";
 import { validateAbilitySimulations } from "./data-pipeline/ability-simulation-validation";
 import { buildNormalizedChampion } from "./data-pipeline/normalization/champion";
-import { getNormalizationOverrides } from "./data-pipeline/normalization/overrides";
 import { normalizeItems } from "./data-pipeline/normalization/item";
 import { normalizeSummonerSpells } from "./data-pipeline/normalization/summoner";
+import {
+  normalizeRunesAndStatShards,
+  type RuneStatShardData,
+} from "./data-pipeline/normalization/rune";
+import { fetchCDragonRuneStatShards } from "./data-pipeline/sources/cdragon-runes";
 
 const VERSION_URL = "https://ddragon.leagueoflegends.com/api/versions.json";
 const CHAMP_LIST_URL = (VERSION: string, LANG: string) =>
@@ -65,14 +65,6 @@ const COMMUNITY_DRAGON_ITEMS_URL = (basePath: string, lang: string) => {
   const locale = toCommunityDragonLocale(lang);
   return `https://raw.communitydragon.org/${basePath}/plugins/rcp-be-lol-game-data/global/${locale}/v1/items.json`;
 };
-const COMMUNITY_DRAGON_PERKSTYLES_URL = (basePath: string, lang: string) => {
-  const locale = toCommunityDragonLocale(lang);
-  return `https://raw.communitydragon.org/${basePath}/plugins/rcp-be-lol-game-data/global/${locale}/v1/perkstyles.json`;
-};
-const COMMUNITY_DRAGON_PERKS_URL = (basePath: string, lang: string) => {
-  const locale = toCommunityDragonLocale(lang);
-  return `https://raw.communitydragon.org/${basePath}/plugins/rcp-be-lol-game-data/global/${locale}/v1/perks.json`;
-};
 const COMMUNITY_DRAGON_STRINGTABLE_URL = (
   basePath: string,
   lang: PassiveTooltipLocale
@@ -85,103 +77,6 @@ const DATA_DIR = path.join(process.cwd(), "public", "data");
 // Community Dragon 챔피언 ID 변환
 function convertChampionIdToCommunityDragon(championId: string): string {
   return championId.toLowerCase();
-}
-
-function inferStatShardContributionsFromText(
-  text: string
-): StatContribution[] {
-  const cleaned = text
-    .replace(/<[^>]+>/g, "")
-    .replace(/\s+/g, " ")
-    .trim();
-
-  const results: StatContribution[] = [];
-
-  const push = (
-    stat: StatKey,
-    value: number,
-    valueType: "flat" | "percent"
-  ) => {
-    results.push({
-      stat,
-      value,
-      valueType,
-      source: "rune",
-      scope: "rune",
-    });
-  };
-
-  // Adaptive Force: "+9 Adaptive Force"
-  {
-    const m = cleaned.match(/([+-]?\d+(\.\d+)?)\s*Adaptive Force/i);
-    if (m) {
-      push(StatKey.ADAPTIVE_FORCE, parseFloat(m[1]), "flat");
-      return results;
-    }
-  }
-
-  // Attack Speed: "+10% Attack Speed"
-  {
-    const m = cleaned.match(/([+-]?\d+(\.\d+)?)\s*%?\s*Attack Speed/i);
-    if (m) {
-      push(StatKey.ATTACK_SPEED, parseFloat(m[1]), "percent");
-      return results;
-    }
-  }
-
-  // Ability Haste: "+8 Ability Haste"
-  {
-    const m = cleaned.match(/([+-]?\d+(\.\d+)?)\s*Ability Haste/i);
-    if (m) {
-      push(StatKey.ABILITY_HASTE, parseFloat(m[1]), "flat");
-      return results;
-    }
-  }
-
-  // Move Speed: "+2.5% Move Speed"
-  {
-    const m = cleaned.match(/([+-]?\d+(\.\d+)?)\s*%?\s*Move Speed/i);
-    if (m) {
-      push(StatKey.MOVE_SPEED, parseFloat(m[1]), "percent");
-      return results;
-    }
-  }
-
-  // Health (flat): "+65 Health"
-  {
-    const m = cleaned.match(/([+-]?\d+(\.\d+)?)\s*Health(?!.*based on level)/i);
-    if (m) {
-      push(StatKey.MAX_HEALTH, parseFloat(m[1]), "flat");
-      return results;
-    }
-  }
-
-  // Tenacity and Slow Resist: "+15% Tenacity and Slow Resist"
-  {
-    const m = cleaned.match(
-      /([+-]?\d+(\.\d+)?)\s*%?\s*Tenacity and Slow Resist/i
-    );
-    if (m) {
-      const v = parseFloat(m[1]);
-      push(StatKey.TENACITY, v, "percent");
-      push(StatKey.SLOW_RESIST, v, "percent");
-      return results;
-    }
-  }
-
-  // Health scaling shard: "+10-180 Health (based on level)" – approximate using mid-value
-  if (/Health.*based on level/i.test(cleaned)) {
-    const rangeMatch = cleaned.match(/([0-9]+)\s*-\s*([0-9]+)/);
-    if (rangeMatch) {
-      const min = parseFloat(rangeMatch[1]);
-      const max = parseFloat(rangeMatch[2]);
-      const mid = (min + max) / 2;
-      push(StatKey.MAX_HEALTH, mid, "flat");
-      return results;
-    }
-  }
-
-  return results;
 }
 
 async function buildAndSaveNormalizedItems(
@@ -246,114 +141,16 @@ async function buildAndSaveNormalizedRunesAndStatShards(
   versionDir: string,
   patchVersion: string,
   sources: StaticDataSources,
-  runesDataByLang: Record<string, any>,
-  runeStatmodsDataByLang: Record<string, RuneStatShardStaticData | null>
+  runesDataByLang: Record<string, unknown>,
+  runeStatmodsDataByLang: Record<string, RuneStatShardData | null>
 ): Promise<void> {
-  // 먼저 en_US 스탯 조각에서 id → StatContribution 매핑을 만든다.
-  const shardStatById = new Map<number, StatContribution[]>();
-  const shardEn = runeStatmodsDataByLang["en_US"];
-  if (shardEn && shardEn.groups) {
-    for (const group of shardEn.groups) {
-      const rows = group.rows || [];
-      for (const row of rows) {
-        const perks = row.perks || [];
-        for (const perk of perks) {
-          const text = perk.longDesc || perk.shortDesc || "";
-          const contributions = inferStatShardContributionsFromText(text);
-          shardStatById.set(perk.id, contributions);
-        }
-      }
-    }
-  }
-
   for (const lang of LANGUAGES) {
-    const rawRunes = runesDataByLang[lang];
-    const rawShard = runeStatmodsDataByLang[lang];
-
-    const runes: NormalizedRune[] = [];
-    const statShards: NormalizedStatShard[] = [];
-
-    if (rawRunes) {
-      const trees: any[] = Array.isArray(rawRunes) ? rawRunes : (rawRunes as any[]);
-
-      for (const tree of trees) {
-        const pathId: number = tree.id;
-        const slots: any[] = Array.isArray(tree.slots) ? tree.slots : [];
-
-        slots.forEach((slot, slotIndex) => {
-          const runesInSlot: any[] = Array.isArray(slot.runes) ? slot.runes : [];
-          for (const rune of runesInSlot) {
-            const name = rune.name ?? String(rune.id);
-            const desc =
-              (typeof rune.longDesc === "string" && rune.longDesc) ||
-              (typeof rune.shortDesc === "string" && rune.shortDesc) ||
-              "";
-
-            let normalized: NormalizedRune = {
-              id: String(rune.id),
-              type: "rune",
-              name,
-              iconPath: rune.icon,
-              pathId,
-              slotIndex,
-              stats: [],
-              effects: [],
-              tooltip: desc,
-            };
-
-            const overrides = getNormalizationOverrides();
-            const runeOverrides =
-              overrides?.runes?.[lang]?.[normalized.id];
-            if (runeOverrides) {
-              normalized = {
-                ...normalized,
-                ...runeOverrides,
-              };
-            }
-
-            runes.push(normalized);
-          }
-        });
-      }
-    }
-
-    if (rawShard && rawShard.groups) {
-      const groups = rawShard.groups || [];
-      for (const group of groups) {
-        const rows = group.rows || [];
-        rows.forEach((row, rowIndex) => {
-          const perks = row.perks || [];
-          perks.forEach((perk, columnIndex) => {
-            const name = perk.name ?? String(perk.id);
-
-            const sharedStats =
-              shardStatById.get(perk.id)?.map((c) => ({ ...c })) || [];
-
-            let shard: NormalizedStatShard = {
-              id: String(perk.id),
-              type: "statShard",
-              name,
-              iconPath: perk.iconPath,
-              rowIndex,
-              columnIndex,
-              stats: sharedStats,
-            };
-
-            const overrides = getNormalizationOverrides();
-            const shardOverrides =
-              overrides?.statShards?.[lang]?.[shard.id];
-            if (shardOverrides) {
-              shard = {
-                ...shard,
-                ...shardOverrides,
-              };
-            }
-
-            statShards.push(shard);
-          });
-        });
-      }
-    }
+    const { runes, statShards } = normalizeRunesAndStatShards(
+      lang,
+      runesDataByLang[lang],
+      runeStatmodsDataByLang[lang],
+      runeStatmodsDataByLang.en_US,
+    );
 
     const file: NormalizedRuneDataFile = {
       schemaVersion: 2,
@@ -577,190 +374,13 @@ async function fetchCommunityDragonItems(
   return json as CommunityDragonItem[];
 }
 
-interface RuneStatShard {
-  id: number;
-  name: string;
-  iconPath: string;
-  shortDesc: string;
-  longDesc: string;
-}
-
-interface RuneStatShardRow {
-  label: string;
-  perks: RuneStatShard[];
-}
-
-interface RuneStatShardGroup {
-  styleId: number;
-  styleName: string;
-  rows: RuneStatShardRow[];
-}
-
-interface RuneStatShardStaticData {
-  version: string;
-  lang: string;
-  cdragonVersion: string | null;
-  groups: RuneStatShardGroup[];
-}
-
 async function fetchRuneStatShards(
-  lang: string,
+  locale: string,
   cdragonVersion: string,
-  ddragonVersion: string
-): Promise<RuneStatShardStaticData | null> {
-  const resultsLocale = toCommunityDragonLocale(lang);
-
-  for (const basePath of [cdragonVersion]) {
-    const perkstylesUrl = COMMUNITY_DRAGON_PERKSTYLES_URL(basePath, lang);
-    const perksUrl = COMMUNITY_DRAGON_PERKS_URL(basePath, lang);
-
-    try {
-      console.log(
-        `Fetching CDragon rune stat shards (${resultsLocale}): ${perkstylesUrl} & perks.json`
-      );
-
-      const [stylesRes, perksRes] = await Promise.all([
-        fetch(perkstylesUrl),
-        fetch(perksUrl),
-      ]);
-
-      if (stylesRes.status === 404 || perksRes.status === 404) {
-        console.warn(
-          `[CD][Runes] Stat shard data not found for ${resultsLocale} at exact ${basePath} (404)`
-        );
-        continue;
-      }
-
-      if (!stylesRes.ok || !perksRes.ok) {
-        console.warn(
-          `[CD][Runes] Failed to fetch stat shard data for ${resultsLocale} at exact ${basePath}. status=${stylesRes.status}/${perksRes.status}`
-        );
-        continue;
-      }
-
-      const stylesJson = (await stylesRes.json()) as any;
-      const perksJson = (await perksRes.json()) as any;
-
-      const styles: any[] | null = Array.isArray(stylesJson)
-        ? stylesJson
-        : stylesJson && Array.isArray(stylesJson.styles)
-        ? (stylesJson.styles as any[])
-        : null;
-
-      if (!styles || !Array.isArray(perksJson)) {
-        console.warn(
-          `[CD][Runes] Unexpected stat shard response format for ${resultsLocale} at ${basePath}`
-        );
-        continue;
-      }
-
-      const perkMap = new Map<number, any>();
-      for (const perk of perksJson) {
-        if (!perk || typeof perk.id !== "number") continue;
-        perkMap.set(perk.id, perk);
-      }
-
-      // kStatMod는 보통 슬롯의 type으로 설정되어 있으므로,
-      // 1) style.type === "kStatMod" 이거나
-      // 2) slots 중 하나라도 slot.type === "kStatMod" 인 스타일만 추출
-      const kStatModStyles = styles.filter((style) => {
-        if (!style) return false;
-        if (style.type === "kStatMod") return true;
-        const slots = Array.isArray(style.slots) ? style.slots : [];
-        return slots.some((slot: any) => slot && slot.type === "kStatMod");
-      });
-
-      if (kStatModStyles.length === 0) {
-        console.warn(
-          `[CD][Runes] No kStatMod styles found for ${resultsLocale} at ${basePath}`
-        );
-        continue;
-      }
-
-      const groups: RuneStatShardGroup[] = [];
-
-      for (const style of kStatModStyles) {
-        const styleId: number = style.id;
-        const styleName: string = style.name || "";
-        const slots: any[] = Array.isArray(style.slots) ? style.slots : [];
-
-        const rows: RuneStatShardRow[] = [];
-
-        // kStatMod 슬롯만 선택
-        const statModSlots = slots.filter(
-          (slot) => slot && slot.type === "kStatMod"
-        );
-
-        for (const slot of statModSlots) {
-          const label: string =
-            slot.name ||
-            slot.label ||
-            slot.localizedName ||
-            slot.slotLabel ||
-            "";
-          const perkIds: number[] = Array.isArray(slot.perks)
-            ? slot.perks
-            : [];
-
-          const perks: RuneStatShard[] = [];
-          for (const perkId of perkIds) {
-            const perk = perkMap.get(perkId);
-            if (!perk) continue;
-
-            perks.push({
-              id: perk.id,
-              name: perk.name,
-              iconPath: perk.iconPath,
-              shortDesc: perk.shortDesc,
-              longDesc: perk.longDesc,
-            });
-          }
-
-          if (perks.length > 0) {
-            rows.push({
-              label,
-              perks,
-            });
-          }
-        }
-
-        if (rows.length > 0) {
-          groups.push({
-            styleId,
-            styleName,
-            rows,
-          });
-        }
-      }
-
-      if (groups.length === 0) {
-        console.warn(
-          `[CD][Runes] No stat shard groups constructed for ${resultsLocale} at ${basePath}`
-        );
-        continue;
-      }
-
-      return {
-        version: ddragonVersion,
-        lang,
-        cdragonVersion: basePath,
-        groups,
-      };
-    } catch (error) {
-      console.warn(
-        `[CD][Runes] Error while fetching stat shard data for ${resultsLocale} at ${basePath}:`,
-        error
-      );
-      continue;
-    }
-  }
-
-  console.error(
-    `[CD][Runes] Exact CommunityDragon stat shards failed for ${resultsLocale}`
-  );
-  return null;
+): Promise<RuneStatShardData> {
+  console.log(`Fetching exact CDragon rune stat shards (${locale}/${cdragonVersion})`);
+  return fetchCDragonRuneStatShards(locale, cdragonVersion);
 }
-
 async function main() {
   console.log('🚀 Starting static data generation...\n');
 
@@ -793,7 +413,7 @@ async function main() {
     const abilitySourcesByChampion = new Map<string, ActiveSpellSourceData[]>();
 
     const runesDataByLang: Record<string, any> = {};
-    const runeStatmodsDataByLang: Record<string, RuneStatShardStaticData | null> = {};
+    const runeStatmodsDataByLang: Record<string, RuneStatShardData | null> = {};
     const itemsDataByLang: Record<string, any> = {};
     const summonerDataByLang: Record<string, any> = {};
 
@@ -817,7 +437,6 @@ async function main() {
         const statShardData = await fetchRuneStatShards(
           lang,
           cdragonVersion,
-          ddragonVersion
         );
 
         if (statShardData && statShardData.groups.length > 0) {
