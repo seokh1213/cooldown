@@ -10,6 +10,7 @@ import type {
   StaticDataSources,
 } from "../../src/data/contracts/staticData";
 import { replaceVariable } from "../../src/lib/spellTooltipParser/variableReplacer";
+import { parseSpellTooltip } from "../../src/lib/spellTooltipParser/parser";
 import type { CommunityDragonSpellData } from "../../src/lib/spellTooltipParser/types";
 import { getAbilityResourceName } from "../../src/lib/spellTooltipParser/valueUtils";
 import type { Champion, ChampionPassive, ChampionSpell } from "../../src/types";
@@ -30,9 +31,35 @@ function numericValues(values: (number | string)[] | undefined): number[] {
   return values.map(Number).filter(Number.isFinite);
 }
 
-function isPercentLabel(label: string): boolean {
-  const lower = label.toLowerCase();
-  return label.includes("%") || lower.includes("percent") || lower.includes("둔화");
+/**
+ * 퍼센트 값인지 판정한다.
+ *
+ * 번역된 라벨로 판단하면 언어마다 결과가 갈린다. 같은 값이 한국어에서는
+ * "60%", 영어에서는 "60" 으로 나오던 원인이다.
+ * DDragon leveltip 의 effect 문자열은 세 언어가 동일하고 토큰 뒤에 %를
+ * 달고 있어("{{ qtotaladratio*100 }}%") 이쪽을 근거로 삼는다.
+ */
+function isPercentEffect(effect: string): boolean {
+  return /}}\s*%/.test(effect);
+}
+
+/**
+ * 본문 HTML.
+ *
+ * CDragon 로컬라이즈가 된 스킬은 이미 렌더된 문자열이 들어 있다.
+ * 실패해서 DDragon 툴팁으로 남은 스킬은 아직 원본 템플릿이라 토큰이 그대로다.
+ * 아펠리오스 Q 가 "{{ spellmodifierdescriptionappend }}" 만 노출되던 원인이라
+ * 폴백 경로도 파서를 태운다.
+ */
+function buildBodyHtml(
+  spell: ChampionSpell,
+  source: CommunityDragonSpellData | undefined,
+  locale: DataLocale
+): string {
+  const tooltip = spell.tooltip ?? "";
+  if (!tooltip) return "";
+  if (spell.tooltipSource === "communitydragon") return tooltip;
+  return parseSpellTooltip(tooltip, spell, source, locale);
 }
 
 export function inferDamageType(
@@ -56,7 +83,8 @@ function buildRankValues(
   const values: AbilityRankValue[] = [];
   const length = Math.min(leveltip.label.length, leveltip.effect.length);
   for (let index = 0; index < length; index += 1) {
-    const match = leveltip.effect[index].match(/\{\{\s*([^}]+)\s*}}/);
+    const effect = leveltip.effect[index];
+    const match = effect.match(/\{\{\s*([^}]+)\s*}}/);
     if (!match) continue;
     const rendered = replaceVariable(match[1].trim(), spell, source, locale);
     if (!rendered) continue;
@@ -65,7 +93,7 @@ function buildRankValues(
       "@AbilityResourceName@",
       getAbilityResourceName(spell, locale)
     );
-    const displayValues = isPercentLabel(label) && !rendered.includes("%")
+    const displayValues = isPercentEffect(effect) && !rendered.includes("%")
       ? rendered.split("/").map((value) => `${value}%`).join("/")
       : rendered;
     values.push({ label, values: displayValues });
@@ -114,7 +142,7 @@ function buildActiveAbility(
     name: spell.name ?? normalized.spells[slot].name,
     maxRank: spell.maxrank,
     summary: spell.summary ?? spell.description ?? "",
-    bodyHtml: spell.tooltip ?? "",
+    bodyHtml: buildBodyHtml(spell, source, locale),
     iconFile: spell.image?.full ?? `${spell.id}.png`,
     cooldownSeconds: numericValues(spell.cooldown),
     rechargeSeconds:
