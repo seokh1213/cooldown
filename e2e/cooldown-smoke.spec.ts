@@ -46,6 +46,52 @@ test("serves a lazy route directly under the Pages base path", async ({ page }) 
   await expect(page.locator("#root")).not.toBeEmpty();
 });
 
+test("installs the PWA and serves a direct route offline", async ({ page, context }) => {
+  await page.goto("./simulation");
+  await page.evaluate(() => navigator.serviceWorker.ready);
+  await page.reload();
+  await expect.poll(() => page.evaluate(() => Boolean(navigator.serviceWorker.controller)))
+    .toBe(true);
+
+  await context.setOffline(true);
+  try {
+    await page.reload({ waitUntil: "domcontentloaded" });
+    await expect(page.getByRole("heading", { name: "시뮬레이션" }).nth(1)).toBeVisible();
+  } finally {
+    await context.setOffline(false);
+  }
+});
+
+test("captures overflow-safe screens in all supported locales", async ({ page }, testInfo) => {
+  const locales = [
+    { id: "ko_KR", heading: "시뮬레이션" },
+    { id: "en_US", heading: "Simulation" },
+    { id: "zh_CN", heading: "模拟器" },
+  ];
+  await page.goto("./simulation");
+  for (const locale of locales) {
+    await page.evaluate((id) => {
+      localStorage.setItem("cooldown:storage-schema", "2");
+      localStorage.setItem("language", id);
+    }, locale.id);
+    await page.reload();
+    await expect(page.getByRole("heading", { name: locale.heading }).nth(1)).toBeVisible();
+    for (const viewport of [
+      { name: "desktop", width: 1280, height: 900 },
+      { name: "mobile", width: 390, height: 844 },
+    ]) {
+      await page.setViewportSize(viewport);
+      await expect.poll(() => page.evaluate(
+        () => document.documentElement.scrollWidth <= window.innerWidth,
+      )).toBe(true);
+      await testInfo.attach(`${locale.id}-${viewport.name}`, {
+        body: await page.screenshot({ fullPage: true }),
+        contentType: "image/png",
+      });
+    }
+  }
+});
+
 test("keeps the mobile sidebar off-canvas until opened", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("./");
