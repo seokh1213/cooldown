@@ -1,5 +1,5 @@
 import type { ChampionSpell } from "../src/types";
-import { parseSpellTooltip } from "../src/lib/spellTooltipParser";
+import { parseSpellTooltip } from "../src/lib/spellTooltipParser/parser";
 import type {
   CommunityDragonSpellData,
   TooltipLocale,

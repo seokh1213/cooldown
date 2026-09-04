@@ -43,7 +43,7 @@ const ENGLISH_TO_HANGUL_MAP: Record<string, string> = {
  * 한글 문자열을 QWERTY 키보드 입력으로 변환
  * 예: "안녕" -> "dkssud"
  */
-export function hangulToEnglish(text: string): string {
+function hangulToEnglish(text: string): string {
   // hangul-js를 사용하여 한글을 자모 배열로 분해
   const disassembled = Hangul.d(text, true);
   
@@ -70,7 +70,7 @@ export function hangulToEnglish(text: string): string {
  * 영어 문자열을 한글 자모로 변환
  * 예: "dkssud" -> "ㅇㅏㄴㄴㅕㅇ"
  */
-export function englishToHangul(text: string): string {
+function englishToHangul(text: string): string {
   return text
     .split('')
     .map((char) => {
@@ -111,4 +111,3 @@ export function getSearchVariants(searchValue: string, lang: string = "ko_KR"): 
   
   return Array.from(variants);
 }
-

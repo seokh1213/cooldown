@@ -1,8 +1,9 @@
 import fs from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { parseSpellTooltip, replaceVariable } from "../src/lib/spellTooltipParser";
+import { parseSpellTooltip } from "../src/lib/spellTooltipParser/parser";
 import type { CommunityDragonSpellData } from "../src/lib/spellTooltipParser/types";
+import { replaceVariable } from "../src/lib/spellTooltipParser/variableReplacer";
 import type { ChampionSpell } from "../src/types";
 import {
   loadCDragonLocales,

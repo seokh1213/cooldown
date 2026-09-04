@@ -14,7 +14,7 @@ export function isVector(v: Value): v is number[] {
 /**
  * 값을 벡터로 변환
  */
-export function toVector(v: Value, length: number): number[] {
+function toVector(v: Value, length: number): number[] {
   if (Array.isArray(v)) return v;
   return Array.from({ length }, () => v);
 }
@@ -22,7 +22,7 @@ export function toVector(v: Value, length: number): number[] {
 /**
  * 이진 연산 수행
  */
-export function binaryOp(
+function binaryOp(
   a: Value,
   b: Value,
   op: (x: number, y: number) => number
