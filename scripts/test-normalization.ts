@@ -43,10 +43,22 @@ const summoners = normalizeSummonerSpells({
       image: { full: "SummonerFlash.png" },
       modes: ["CLASSIC", 11],
     },
+    SummonerDot: {
+      key: "14",
+      name: "Ignite",
+      tooltip: "{{ tooltiptruedamagecalculation }} / {{ grievousamount*100 }}%",
+      modes: ["CLASSIC"],
+    },
   },
 });
 assert.deepEqual(summoners[0].cooldown, [300]);
 assert.deepEqual(summoners[0].modes, ["CLASSIC"]);
+assert.deepEqual(summoners[0].damageEffects, []);
+assert.equal(summoners[1].tooltip, "90 - 430 / 40%");
+assert.deepEqual(summoners[1].damageEffects[0].valuesByLevel, [
+  90, 110, 130, 150, 170, 190, 210, 230, 250,
+  270, 290, 310, 330, 350, 370, 390, 410, 430,
+]);
 
 const runeRequests: string[] = [];
 const shards = await fetchCDragonRuneStatShards(

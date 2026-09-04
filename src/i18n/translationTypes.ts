@@ -144,6 +144,8 @@ export interface Translations {
       skillPlaceholderDescription: string;
       summonerSpellsTitle: string;
       summonerSpellsComingSoon: string;
+      selectSummonerSpell: string;
+      summonerSpellHint: string;
       runesTitle: string;
       runesComingSoon: string;
       combatTitle: string;

@@ -107,7 +107,8 @@ export function decodeNormalizedSummoners(
       typeof spell.tooltip !== "string" ||
       typeof spell.iconPath !== "string" ||
       !Array.isArray(spell.cooldown) ||
-      !Array.isArray(spell.modes)
+      !Array.isArray(spell.modes) ||
+      !Array.isArray(spell.damageEffects)
     ) {
       throw new Error("Invalid normalized summoner spell");
     }

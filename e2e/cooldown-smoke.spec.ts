@@ -167,6 +167,11 @@ test("calculates a ranked combo against target defenses", async ({ page }) => {
   await expect(page.getByTestId("combo-total")).toHaveText("0.0");
   await expect(page.getByTestId("combo-remaining-health")).toHaveText("100.0");
   await expect(page.getByTestId("combo-outcome")).toHaveText("생존");
+
+  await page.getByLabel("소환사 주문 1").selectOption({ label: "점화" });
+  await expect(page.getByRole("row", { name: /점화/ })).toContainText("430.0");
+  await expect(page.getByTestId("combo-total")).toHaveText("430.0");
+  await expect(page.getByTestId("combo-outcome")).toHaveText("처치 가능");
 });
 
 test("keeps the main workflow fully localized in Chinese", async ({ page }) => {

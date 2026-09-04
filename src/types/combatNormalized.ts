@@ -177,6 +177,16 @@ export interface NormalizedSummonerSpell {
    * 사용 가능한 게임 모드 (예: CLASSIC 등)
    */
   modes: string[];
+  damageEffects: NormalizedDamageEffect[];
+}
+
+export interface NormalizedDamageEffect {
+  id: string;
+  damageType: "physical" | "magical" | "true";
+  target: "champion" | "nonChampion";
+  valuesByLevel: number[];
+  durationSeconds?: number;
+  conditions?: string[];
 }
 
 export interface NormalizedSummonerDataFile extends StaticDataMetadata {
