@@ -1091,8 +1091,16 @@ async function buildLocalizedPassiveTooltips(
 
   const entries = await Promise.all(
     PASSIVE_TOOLTIP_LOCALES.map(async (lang) => {
-      const stringTable = await fetchPassiveStringTable(basePath, lang);
-      return [lang, localizePassiveTooltip(passive, stringTable, lang)] as const;
+      try {
+        const stringTable = await fetchPassiveStringTable(basePath, lang);
+        return [lang, localizePassiveTooltip(passive, stringTable, lang)] as const;
+      } catch (error) {
+        console.warn(
+          `[CD][Passive] Failed to localize ${passive.id} for ${lang}; preserving DDragon summary`,
+          error
+        );
+        return [lang, {}] as const;
+      }
     })
   );
   return Object.fromEntries(entries) as Record<

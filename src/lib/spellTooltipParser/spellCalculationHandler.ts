@@ -331,8 +331,7 @@ export function replaceCalculateData(
           const resourceName = getAbilityResourceName(spell, lang);
           // mStatFormula: 2 → bonus 자원
           const isBonus = resPart.mStatFormula === 2;
-          const bonus =
-            lang === "zh_CN" ? "额外" : getTranslations(lang).common.bonus;
+          const bonus = getTranslations(lang).common.bonus;
           const name = isBonus ? `${bonus} ${resourceName}` : resourceName;
 
           const ratio: Value = resPart.mCoefficient;

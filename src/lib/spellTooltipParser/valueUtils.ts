@@ -86,21 +86,7 @@ export function getStatName(
   mStatFormula?: number,
   lang: TooltipLocale = "ko_KR"
 ): string {
-  const t = lang === "zh_CN" ? null : getTranslations(lang);
-  const zhStats = {
-    abilityPower: "法术强度",
-    attackDamage: "攻击力",
-    bonusAttackDamage: "额外攻击力",
-    health: "生命值",
-    bonusHealth: "额外生命值",
-    armor: "护甲",
-    bonusArmor: "额外护甲",
-    magicResist: "魔法抗性",
-    bonusMagicResist: "额外魔法抗性",
-    lifesteal: "生命偷取",
-    bonusLifesteal: "额外生命偷取",
-  };
-  const stats = t?.stats ?? zhStats;
+  const stats = getTranslations(lang).stats;
   const hasStat = mStat !== undefined && mStat !== null;
   const hasFormula = mStatFormula !== undefined && mStatFormula !== null;
 
@@ -174,8 +160,7 @@ export function getAbilityResourceName(
   spell: ChampionSpell,
   lang: TooltipLocale = "ko_KR"
 ): string {
-  const resourceName =
-    lang === "zh_CN" ? "法力值" : getTranslations(lang).common.mana;
+  const resourceName = getTranslations(lang).common.mana;
 
   if (spell.costType) {
     const costType = spell.costType.trim();
