@@ -11,9 +11,17 @@ export function getDataValueByName(
   maxRank: number
 ): Value | null {
   if (!key || typeof key !== "string") return null;
-  const entry = Object.entries(dataValues).find(
-    ([name]) => name != null && name.toLowerCase() === key.toLowerCase()
-  );
+
+  const wanted = key.toLowerCase();
+  // 일부 값은 BIN 필드명 그대로라 "m" 접두사가 붙어 있다.
+  // 예) 툴팁 토큰 ammorechargetime ↔ DataValue mAmmoRechargeTime
+  const wantedWithPrefix = `m${wanted}`;
+
+  const entry = Object.entries(dataValues).find(([name]) => {
+    if (name == null) return false;
+    const lower = name.toLowerCase();
+    return lower === wanted || lower === wantedWithPrefix;
+  });
   if (!entry) return null;
 
   const [, raw] = entry;

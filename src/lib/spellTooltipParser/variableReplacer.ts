@@ -252,16 +252,79 @@ export function replaceVariable(
   const bySpellMetadata = replaceSpellMetadata(parseResult, spell);
   if (bySpellMetadata !== null) return bySpellMetadata;
 
+  // `spell.<이름>:<변수>` 는 값의 출처 스킬이 명시된 형태다.
+  // 자기 자신을 가리키면 그대로, 다른 스킬이면 형제 스킬 데이터에서 찾는다.
+  const targetData = resolveSpellRefData(parseResult.spellRef, spell, communityDragonData);
+  if (parseResult.spellRef && !targetData) {
+    return null;
+  }
+  const data = targetData ?? communityDragonData;
+
   // 0. effectBurn 기반 eN 변수(e1, e2, e3, ...) 우선 처리
-  const byEffectBurn = replaceEffectBurn(parseResult, spell, communityDragonData);
+  const byEffectBurn = replaceEffectBurn(parseResult, spell, data);
   if (byEffectBurn !== null) return byEffectBurn;
 
+  // 0.5 DDragon 스킬 자체 필드(cost, maxammo)를 가리키는 토큰
+  const bySpellField = replaceSpellField(parseResult, spell);
+  if (bySpellField !== null) return bySpellField;
+
   // 1. DataValues 먼저 시도
-  const byData = replaceData(parseResult, spell, communityDragonData);
+  const byData = replaceData(parseResult, spell, data);
   if (byData !== null) return byData;
 
   // 2. 안 되면 mSpellCalculations
-  return replaceCalculateData(parseResult, spell, communityDragonData, lang);
+  return replaceCalculateData(parseResult, spell, data, lang);
+}
+
+/**
+ * DDragon 스킬 객체에 그대로 들어 있는 값을 가리키는 토큰
+ * - cost      → costBurn ("40", "40/35/30/25/20")
+ * - maxammo   → maxammo ("2"). -1 은 충전형이 아니라는 뜻이라 제외
+ *
+ * 계산식이나 DataValues 에는 없고 DDragon 원본에만 있는 값들이다.
+ */
+function replaceSpellField(
+  parseResult: ParseResult,
+  spell: ChampionSpell
+): string | null {
+  const name = parseResult.variable.toLowerCase();
+
+  const raw =
+    name === "cost"
+      ? spell.costBurn
+      : name === "maxammo"
+        ? spell.maxammo
+        : null;
+
+  if (!raw) return null;
+  if (name === "maxammo" && raw.trim() === "-1") return null;
+
+  const nums = raw
+    .split("/")
+    .map((s) => Number.parseFloat(s))
+    .filter((n) => !Number.isNaN(n));
+  if (nums.length === 0) return null;
+
+  const value: Value = nums.length === 1 ? nums[0] : nums;
+  return valueToTooltipString(applyFormulaToValue(value, parseResult));
+}
+
+/**
+ * `spell.<이름>:` 접두사가 가리키는 스킬 데이터 찾기
+ * - 접두사가 없으면 undefined (호출부에서 현재 스킬 데이터를 쓴다)
+ * - 자기 자신을 가리키면 현재 데이터
+ * - 그 외에는 siblings 맵에서 찾는다
+ */
+function resolveSpellRefData(
+  spellRef: string | undefined,
+  spell: ChampionSpell,
+  communityDragonData?: CommunityDragonSpellData
+): CommunityDragonSpellData | undefined {
+  if (!spellRef) return undefined;
+  if (spell.id && spell.id.toLowerCase() === spellRef) {
+    return communityDragonData;
+  }
+  return communityDragonData?.siblings?.[spellRef];
 }
 
 function replaceSpellMetadata(

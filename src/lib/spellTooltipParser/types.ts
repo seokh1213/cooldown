@@ -6,8 +6,15 @@ export type TooltipLocale = "ko_KR" | "en_US" | "zh_CN";
  * 변수 파싱 결과
  */
 export type ParseResult =
-  | { type: "formula"; variable: string; operator: "*" | "+" | "-" | "/"; operand: number }
-  | { type: "variable"; variable: string };
+  | {
+      type: "formula";
+      variable: string;
+      operator: "*" | "+" | "-" | "/";
+      operand: number;
+      /** `spell.jaycetotheskies:damage` 처럼 다른 스킬을 가리키는 경우의 스킬 이름 */
+      spellRef?: string;
+    }
+  | { type: "variable"; variable: string; spellRef?: string };
 
 /**
  * 값 타입 (스칼라 또는 벡터)
@@ -31,6 +38,14 @@ export interface CommunityDragonSpellData {
    * - 예: [null, "25/30/35/40/45", "2", "15", "0.5", ...]
    */
   effectBurn?: (string | null)[];
+  /**
+   * 같은 챔피언의 다른 스킬 데이터 (스킬 이름 소문자 → 데이터)
+   *
+   * DDragon 툴팁은 `{{ spell.gnarq:minitotaldamage }}` 처럼 스킬을 명시해
+   * 값을 참조하는 경우가 있다. 자기 자신을 가리킬 때도 있고(자벌레 폼처럼)
+   * 제이스·나피리같이 다른 스킬을 가리킬 때도 있어서 형제 스킬 맵이 필요하다.
+   */
+  siblings?: Record<string, CommunityDragonSpellData>;
 }
 
 /**
@@ -64,6 +79,17 @@ export interface CalcResult {
    */
   isBreakpointRange?: boolean;
   /**
+   * 스탯에 비례하는 배율 (치명타 확률, 추가 공격 속도 등)
+   *
+   * 런타임 스탯을 모르면 하나의 숫자로 접을 수 없다.
+   * 접어버리면 "스탯 0" 가정의 값이 되어 실제보다 작아지므로,
+   * 접지 않고 "× (1 + 30% 추가 공격 속도)" 형태로 함께 노출한다.
+   */
+  statMultiplier?: {
+    base: Value;
+    statParts: StatPart[];
+  };
+  /**
    * 소수점 자릿수 (CommunityDragon GameCalculation.mPrecision)
    * - undefined 이면 기존처럼 정수(또는 formatNumber 기본 규칙)로 처리
    * - 0 이상이면 퍼센트/계수 계산 시 해당 자릿수까지 보존
@@ -74,8 +100,13 @@ export interface CalcResult {
 /**
  * 공통 multiplier 타입
  * GameCalculation / GameCalculationModified 둘 다에서 사용된다.
+ *
+ * 단순히 {mDataValue} / {mNumber} 만 오는 경우도 있지만,
+ * SumOfSubParts / CooldownMultiplier / SpellCalculationSubPart 처럼
+ * 계산 파트가 통째로 오는 경우도 있어 __type 을 함께 받는다.
  */
 export interface CalcMultiplier {
+  __type?: string;
   mDataValue?: string;
   mNumber?: number;
 }
@@ -119,17 +150,85 @@ export interface GameCalculation {
  */
 export interface ProductOfSubPartsCalculationPart {
   __type: "ProductOfSubPartsCalculationPart";
-  // 서브 파트는 NamedDataValue, Number 등 다양한 타입이 올 수 있으므로 느슨하게 정의
-  mPart1?: {
-    __type?: string;
-    mDataValue?: string;
-    mNumber?: number;
-  };
-  mPart2?: {
-    __type?: string;
-    mDataValue?: string;
-    mNumber?: number;
-  };
+  // 서브 파트에는 SumOfSubParts 같은 중첩 파트도 오므로 CalculationPart 로 받는다
+  mPart1?: CalculationPart;
+  mPart2?: CalculationPart;
+}
+
+/**
+ * 여러 서브 파트의 합
+ * 예: 1 + QSweetSpotBonus
+ */
+export interface SumOfSubPartsCalculationPart {
+  __type: "SumOfSubPartsCalculationPart";
+  mSubparts?: CalculationPart[];
+}
+
+/**
+ * 서브 파트 합을 [mFloor, mCeiling] 범위로 자르는 파트
+ */
+export interface ClampSubPartsCalculationPart {
+  __type: "ClampSubPartsCalculationPart";
+  mSubparts?: CalculationPart[];
+  mFloor?: number;
+  mCeiling?: number;
+}
+
+/**
+ * 서브 파트 결과를 특정 스탯의 계수로 사용하는 파트
+ * 예: mStat=8, mSubpart=(1 + bonus AS 계수) → "N% 스탯"
+ */
+export interface StatBySubPartCalculationPart {
+  __type: "StatBySubPartCalculationPart";
+  mSubpart?: CalculationPart;
+  mStat?: number;
+  mStatFormula?: number;
+}
+
+/**
+ * 챔피언 레벨별 값을 통째로 나열한 파트 (values[0] = 1레벨)
+ * 툴팁에서는 1레벨 ~ 18레벨 범위로 표현한다.
+ */
+export interface ByCharLevelFormulaCalculationPart {
+  __type: "ByCharLevelFormulaCalculationPart";
+  values?: number[];
+}
+
+/**
+ * 버프 중첩 수에 비례하는 값 (중첩당 DataValue)
+ * 런타임 중첩 수를 모르므로 툴팁에는 "중첩당 값" 을 노출한다.
+ */
+export interface BuffCounterByNamedDataValueCalculationPart {
+  __type: "BuffCounterByNamedDataValueCalculationPart";
+  mBuffName?: string;
+  mDataValue?: string;
+  mIconKey?: string;
+}
+
+/**
+ * 버프 중첩 수에 비례하는 값 (중첩당 계수)
+ */
+export interface BuffCounterByCoefficientCalculationPart {
+  __type: "BuffCounterByCoefficientCalculationPart";
+  mBuffName?: string;
+  mCoefficient?: number;
+}
+
+/**
+ * 스킬 쿨다운 자체를 값으로 사용하는 파트 (필드 없음)
+ * 예: mMultiplier 로 쓰이면 "계산 결과 × 쿨다운"
+ */
+export interface CooldownMultiplierCalculationPart {
+  __type: "CooldownMultiplierCalculationPart";
+}
+
+/**
+ * 다른 mSpellCalculations 항목을 참조하는 파트
+ * CommunityDragon 에서 타입명이 해시(`{f3cbe7b2}`)로 남아 있어 키로 식별한다.
+ */
+export interface SpellCalculationSubPart {
+  __type: string;
+  mSpellCalculationKey?: string;
 }
 
 /**
@@ -154,7 +253,15 @@ export type CalculationPart =
   | NumberCalculationPart
   | ByCharLevelBreakpointsCalculationPart
   | ProductOfSubPartsCalculationPart
-  | ByCharLevelInterpolationCalculationPart;
+  | ByCharLevelInterpolationCalculationPart
+  | SumOfSubPartsCalculationPart
+  | ClampSubPartsCalculationPart
+  | StatBySubPartCalculationPart
+  | ByCharLevelFormulaCalculationPart
+  | CooldownMultiplierCalculationPart
+  | BuffCounterByNamedDataValueCalculationPart
+  | BuffCounterByCoefficientCalculationPart
+  | SpellCalculationSubPart;
 
 /**
  * NamedDataValueCalculationPart 타입
@@ -232,6 +339,11 @@ export interface ByCharLevelBreakpointsCalculationPart {
      * 예: { mLevel: 17 }
      */
     mLevel?: number;
+    /**
+     * 해당 레벨부터 레벨당 붙는 증가량
+     * 예) 파이크 R: 7레벨부터 +40/레벨, 10레벨부터 +30/레벨 …
+     */
+    mBonusPerLevelAtAndAfter?: number;
   }>;
   /**
    * 1레벨 이후 레벨당 증가량 (예: 0.04 → 4%)
@@ -241,9 +353,23 @@ export interface ByCharLevelBreakpointsCalculationPart {
 }
 
 /**
+ * 조건부 계산식
+ * 버프 보유 여부 등 런타임 상태에 따라 계산식이 갈리는 경우로,
+ * 툴팁에서는 기본(mDefaultGameCalculation) 값을 사용한다.
+ */
+export interface GameCalculationConditional {
+  __type: "GameCalculationConditional";
+  mDefaultGameCalculation?: string;
+  mConditionalGameCalculation?: string;
+}
+
+/**
  * SpellCalculation 유니온 타입
  */
-export type SpellCalculation = GameCalculationModified | GameCalculation;
+export type SpellCalculation =
+  | GameCalculationModified
+  | GameCalculation
+  | GameCalculationConditional;
 
 /**
  * 변수 치환 함수 시그니처
