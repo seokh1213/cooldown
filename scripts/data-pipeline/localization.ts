@@ -64,11 +64,33 @@ function expandDynamicReferences(template: string, table: StringTable): string {
     DYNAMIC_REFERENCE,
     (_raw, prefix: string, token: string, suffix: string) => {
       const variants = findVariants(table, prefix, suffix);
-      const isBinaryState = variants.length === 2 && variants[0] === "0";
-      if (!isBinaryState) return unresolvedToken(prefix, token, suffix);
 
-      const base = lookupString(table, `${prefix}0${suffix}`);
-      return base ?? unresolvedToken(prefix, token, suffix);
+      // 기본 / 강화 이진 분기는 기본 상태(0번)를 쓴다.
+      // 신드라 W 진화 전 피해, 카르마 E 만트라 전 효과가 여기 해당한다.
+      if (variants.length === 2 && variants[0] === "0") {
+        const base = lookupString(table, `${prefix}0${suffix}`);
+        if (base) return base;
+      }
+
+      // 선택지가 여럿이면 하나를 고를 수 없다. 대신 전부 이어 붙인다.
+      // 아펠리오스 무기 5종, 케인 형태별 문구가 여기 해당한다.
+      // 각 항목이 무기·형태 이름으로 시작해서 나열해도 읽힌다.
+      if (variants.length >= 2) {
+        // 형태가 달라도 문장이 같은 경우가 있다(케인 기본/그림자 암살자).
+        // 그대로 이으면 같은 문단이 두 번 나오므로 중복은 걷어낸다.
+        const blocks = [
+          ...new Set(
+            variants
+              .filter((variant) => variant !== "0")
+              .map((variant) => lookupString(table, `${prefix}${variant}${suffix}`))
+              .filter((block): block is string => Boolean(block)),
+          ),
+        ];
+        if (blocks.length >= 2) return blocks.join("<br><br>");
+        if (blocks.length === 1) return blocks[0];
+      }
+
+      return unresolvedToken(prefix, token, suffix);
     }
   );
 }

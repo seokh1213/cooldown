@@ -172,6 +172,93 @@ export interface EvaluatorContext {
  * mMultiplier 자리에도 같은 파트 타입이 오므로 재귀로 처리한다.
  * 해석하지 못한 타입은 null 을 돌려주고 호출부에서 그 항만 건너뛴다.
  */
+/**
+ * "1레벨 값 / 18레벨 값" DataValue 두 개로 이뤄진 레벨 범위 파트인지 본다.
+ *
+ * CDragon 이 타입명을 해시로 남겨 __type 으로는 못 알아본다. 대신 구조를 본다.
+ * __type 을 뺀 필드가 정확히 문자열 둘이고, 둘 다 DataValue 로 풀리면 범위다.
+ */
+function readLevelPair(
+  part: CalculationPart,
+  ctx: EvaluatorContext,
+): PartResult | null {
+  const record = part as unknown as Record<string, unknown>;
+  const names = Object.entries(record)
+    .filter(([key]) => key !== "__type")
+    .map(([, value]) => value);
+  if (names.length !== 2 || !names.every((name) => typeof name === "string")) {
+    return null;
+  }
+
+  const [startName, endName] = names as [string, string];
+  const start = ctx.evaluateDataValue(startName);
+  const end = ctx.evaluateDataValue(endName);
+  if (start == null || end == null) return null;
+  if (isVector(start) || isVector(end)) return null;
+  if (start === end) return { base: start, statParts: [] };
+  return { base: [start, end], statParts: [], isLevelRange: true };
+}
+
+/**
+ * 레벨 브레이크포인트인데 값 대신 DataValue 이름이 들어 있는 파트.
+ *
+ * CDragon 이 타입·필드명을 해시로 남겨 이름으로는 못 알아본다. 구조로 본다.
+ *   { "{...}": "Level1MS", "{...}": "MSBonusPerLevelAtAndAfter",
+ *     "{...}": [ { level: 6, "{...}": "...AdditionalBonusAtThisLevel",
+ *                  "{...}": "...BonusPerLevelAtAndAfter" }, ... ] }
+ * 항목의 역할은 DataValue 이름 끝말로 가른다. Riot 이 일관되게 붙이는 이름이고,
+ * 못 알아보면 기존처럼 항을 비우므로 틀린 숫자가 나갈 위험은 없다.
+ */
+function readNamedBreakpoints(
+  part: CalculationPart,
+  ctx: EvaluatorContext,
+): PartResult | null {
+  const record = part as unknown as Record<string, unknown>;
+  const entries = Object.entries(record).filter(([key]) => key !== "__type");
+
+  const listEntry = entries.find(([, value]) => Array.isArray(value));
+  const names = entries
+    .filter(([, value]) => typeof value === "string")
+    .map(([, value]) => value as string);
+  if (!listEntry || names.length === 0) return null;
+
+  const level1Name = names.find((name) => /level ?1$/i.test(name)) ?? names[0];
+  const level1 = ctx.evaluateDataValue(level1Name);
+  if (level1 == null || isVector(level1)) return null;
+
+  const breakpoints: Array<{
+    mLevel?: number;
+    mAdditionalBonusAtThisLevel?: number;
+    mBonusPerLevelAtAndAfter?: number;
+  }> = [];
+
+  for (const raw of listEntry[1] as unknown[]) {
+    if (!raw || typeof raw !== "object") return null;
+    const entry = raw as Record<string, unknown>;
+    const level = typeof entry.level === "number" ? entry.level : undefined;
+    if (level == null) return null;
+
+    const point: (typeof breakpoints)[number] = { mLevel: level };
+    for (const value of Object.values(entry)) {
+      if (typeof value !== "string") continue;
+      const resolved = ctx.evaluateDataValue(value);
+      if (resolved == null || isVector(resolved)) continue;
+      if (/AdditionalBonus/i.test(value)) point.mAdditionalBonusAtThisLevel = resolved;
+      else if (/PerLevel/i.test(value)) point.mBonusPerLevelAtAndAfter = resolved;
+    }
+    breakpoints.push(point);
+  }
+  if (breakpoints.length === 0) return null;
+
+  const { level1: start, maxLevel } = expandLevelBreakpoints({
+    __type: "ByCharLevelBreakpointsCalculationPart",
+    mLevel1Value: level1,
+    mBreakpoints: breakpoints,
+  });
+  if (start === maxLevel) return { base: start, statParts: [] };
+  return { base: [start, maxLevel], statParts: [], isLevelRange: true };
+}
+
 export function evaluatePart(
   part: CalculationPart | undefined,
   ctx: EvaluatorContext,
@@ -276,6 +363,15 @@ export function evaluatePart(
     }
     return { base: maxLevel, statParts: [] };
   }
+
+  // CommunityDragon 이 타입명을 해시로 남긴 파트 중, 필드가 "1레벨 값 / 18레벨 값"
+  // DataValue 이름 두 개뿐인 형태가 있다. 해시에 기대지 않고 구조로 판별한다.
+  //   {"{0589a59c}":"EmpoweredBonusASLevel1","{0b65bc23}":"EmpoweredBonusASLevel18"}
+  const levelPair = readLevelPair(part, ctx);
+  if (levelPair) return levelPair;
+
+  const namedBreakpoints = readNamedBreakpoints(part, ctx);
+  if (namedBreakpoints) return namedBreakpoints;
 
   // 레벨별 값 나열. 단독일 때는 evaluateRange 가 처리하고, 섞여 있으면 여기로 온다.
   if (type === "ByCharLevelFormulaCalculationPart") {

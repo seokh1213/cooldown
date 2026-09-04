@@ -83,8 +83,8 @@ for (const entry of englishIndex.champions) {
 }
 
 assert.equal(activeAbilityCount, englishIndex.champions.length * 4);
-// 사전 계산 툴팁이 없는 스킬은 active-tooltip-allowlist.missingTooltips 와 같아야 한다
-assert.equal(precomputedSpellCount, activeAbilityCount - 2);
+// 모든 Q/W/E/R 이 CDragon 원문으로 렌더된다 (allowlist.missingTooltips 가 비어 있음)
+assert.equal(precomputedSpellCount, activeAbilityCount);
 assert.equal(detailedPassiveCount, englishIndex.champions.length - 5);
 assert.equal(
   simulationCounts.complete + simulationCounts.unsupported + simulationCounts.unavailable,

@@ -52,6 +52,30 @@ function render(
   };
 }
 
+/**
+ * 툴팁 문자열 키를 고른다.
+ *
+ * 일부 스킬은 실제 스킬을 감싸는 래퍼라 locKeys 에 keyTooltip 이 없다.
+ * (아펠리오스 Q·E 의 ApheliosQ_ClientTooltipWrapper)
+ * 이때 이름 키에서 규칙대로 유도해 본다. 래퍼 접미사를 떼면 실제 키가 나온다.
+ *   Spell_ApheliosQ_ClientTooltipWrapper_Name → Spell_ApheliosQ_Tooltip
+ */
+function resolveTooltipKey(
+  locKeys: { keyTooltip?: string; keyName?: string },
+  stringTable: StringTable,
+): string | undefined {
+  if (locKeys.keyTooltip) return locKeys.keyTooltip;
+  const name = locKeys.keyName;
+  if (!name) return undefined;
+
+  const base = name.replace(/_Name$/i, "");
+  const candidates = [
+    `${base}_Tooltip`,
+    `${base.replace(/_ClientTooltipWrapper$/i, "")}_Tooltip`,
+  ];
+  return candidates.find((key) => lookupString(stringTable, key) !== undefined);
+}
+
 export function localizeActiveTooltip(
   spell: ChampionSpell,
   source: ExtractedActiveSpellData,
@@ -65,8 +89,9 @@ export function localizeActiveTooltip(
   siblings?: Record<string, CommunityDragonSpellData>
 ): LocalizedActiveTooltip {
   const { locKeys } = source.source;
+  const tooltipKey = resolveTooltipKey(locKeys, stringTable);
   const tooltip = render(
-    lookupString(stringTable, locKeys.keyTooltip),
+    lookupString(stringTable, tooltipKey),
     spell,
     source,
     stringTable,
