@@ -12,6 +12,15 @@ import { applyFormulaToValue } from "./dataValueUtils";
 import { valueToTooltipString } from "./valueUtils";
 
 /**
+ * 값을 채울 수 없는 자리에 남기는 표시.
+ *
+ * fN 토큰처럼 인게임 실시간 상태라서 정적 데이터에 값이 없는 경우가 있다.
+ * 빈 문자열로 지우면 "방어력()", "추가 공격력 /100" 처럼 문장이 깨지므로
+ * 자리를 남겨 "인게임에서 확인" 이라는 뜻을 전달한다.
+ */
+const UNRESOLVED_MARK = "?";
+
+/**
  * 문자열 내 숫자들을 지정된 소수점 자릿수로 반올림
  * 예: precision=0 → 33.333 → 33
  * precision=1 → 33.0 → 33.0 (명시적으로 지정된 경우 0도 표시)
@@ -129,7 +138,7 @@ function replaceVariableTokens(
     }
 
     unresolvedTokens.add(trimmedVar);
-    return "";
+    return UNRESOLVED_MARK;
   });
 
   return {
@@ -159,10 +168,11 @@ function cleanupPlaceholdersAndIcons(text: string): string {
 
   // 치환 후 남은 "%" 기호가 혼자 있는 경우 제거
   result = result.replace(/\s+%\s+/g, " "); // 공백으로 둘러싸인 % 제거
-  result = result.replace(/(?<!\d)\s*%\s*(?!\d)/g, ""); // 숫자와 함께 있지 않은 % 제거
+  // 숫자(또는 미해석 표시)와 붙어 있지 않은 % 만 제거한다
+  result = result.replace(/(?<![\d?])\s*%\s*(?![\d?])/g, "");
   // 시작/끝 부분의 % 도, 숫자와 붙어있지 않은 경우에만 제거
-  result = result.replace(/^\s*%\s*(?!\d)/g, ""); // 시작 부분의 단독 % 제거
-  result = result.replace(/(?<!\d)\s*%\s*$/g, ""); // 끝 부분의 단독 % 제거
+  result = result.replace(/^\s*%\s*(?![\d?])/g, ""); // 시작 부분의 단독 % 제거
+  result = result.replace(/(?<![\d?])\s*%\s*$/g, ""); // 끝 부분의 단독 % 제거
 
   // 연속된 공백 정리 (개행 문자는 유지 → <br /> 줄바꿈 보존)
   result = result.replace(/[^\S\r\n]+/g, " ");

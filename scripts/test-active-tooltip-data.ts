@@ -45,9 +45,11 @@ const localized = localizeActiveTooltip(
 
 assert.equal(localized.name, "시험 스킬");
 assert.equal(localized.summary, "짧은 설명");
+// 값을 못 구한 자리는 지우지 않고 "?" 로 남긴다.
+// 빈 문자열로 지우면 조사만 남아 문장이 깨진다.
 assert.equal(
   localized.tooltip,
-  "강조: 대상에게 10/20의 피해를 입힙니다.<br /><br />재사용 대기시간은 8/7초, 지속시간은 1.5/2초이며 는 진단합니다."
+  "강조: 대상에게 10/20의 피해를 입힙니다.<br /><br />재사용 대기시간은 8/7초, 지속시간은 1.5/2초이며 ?는 진단합니다."
 );
 assert.doesNotMatch(localized.tooltip ?? "", /[@{}]/);
 assert.deepEqual(localized.unresolvedTokens, ["UnknownValue"]);
