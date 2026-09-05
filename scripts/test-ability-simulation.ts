@@ -7,6 +7,7 @@ import {
   evaluateAbilitySimulation,
   evaluateAbilitySimulationDetails,
   resistanceMultiplier,
+  effectiveResistance,
 } from "../src/pages/SimulationPage.damageUtils";
 import type { CommunityDragonSpellData } from "../src/lib/spellTooltipParser/types";
 import type { Champion } from "../src/types";
@@ -158,6 +159,54 @@ assert.equal(applyDamageMitigation(200, "physical", {
   magicResist: 0,
   damageReductionPercent: 0,
 }, { ...stats, lethality: 20 }), 200 * 100 / 180);
+
+// 백과사전 "저항력 감소와 관통" 항목과 같은 규칙이어야 한다
+// 적용 저항력 = (저항력 − 고정 감소) × (1 − 감소%) × (1 − 관통%) − 고정 관통
+assert.equal(effectiveResistance(100, {}), 100);
+assert.equal(effectiveResistance(100, { flatPenetration: 18 }), 82);
+assert.equal(Number(effectiveResistance(100, { percentPenetration: 0.3 }).toFixed(6)), 70);
+assert.equal(
+  Number(
+    effectiveResistance(100, {
+      percentPenetration: 0.3,
+      flatPenetration: 18,
+    }).toFixed(6),
+  ),
+  52,
+);
+// 비율이 고정보다 먼저다 (순서를 바꾸면 (100−18)×0.7 = 57.4 가 나온다)
+assert.notEqual(
+  effectiveResistance(100, { percentPenetration: 0.3, flatPenetration: 18 }),
+  57.4,
+);
+// 고정 감소는 합연산이고 음수까지 내려간다
+assert.equal(effectiveResistance(20, { flatReduction: 35 }), -15);
+// 저항력이 0 이하로 내려가면 비율 단계를 건너뛴다
+assert.equal(
+  effectiveResistance(20, { flatReduction: 35, percentPenetration: 0.5 }),
+  -15,
+);
+// 관통은 저항력을 0 밑으로 내리지 못한다
+assert.equal(effectiveResistance(20, { flatPenetration: 30 }), 0);
+assert.equal(
+  applyDamageMitigation(200, "physical", {
+    armor: 20,
+    magicResist: 0,
+    damageReductionPercent: 0,
+  }, { ...stats, lethality: 30 }),
+  200,
+);
+// 마법 쪽도 고정·비율 두 종류를 같은 순서로 쓴다
+assert.equal(
+  Number(
+    applyDamageMitigation(200, "magical", {
+      armor: 0,
+      magicResist: 100,
+      damageReductionPercent: 0,
+    }, { ...stats, magicPenPercent: 0.3, magicPenFlat: 18 })?.toFixed(6),
+  ),
+  Number((200 * 100 / 152).toFixed(6)),
+);
 
 const ezrealSimulation = compileAbilitySimulation(ezreal, 5);
 assert.equal(ezrealSimulation.status, "complete");

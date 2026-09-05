@@ -4,7 +4,7 @@ import { championIconUrl, itemIconUrl } from "@/data/assets/riotAssetUrls";
 import { useTranslation } from "@/i18n";
 import type { Champion } from "@/types";
 import type { NormalizedItem } from "@/types/combatNormalized";
-import type { SimpleStats } from "./SimulationPage.damageUtils";
+import { effectiveHealth, type SimpleStats } from "./SimulationPage.damageUtils";
 
 function StatRow(props: { label: string; value: number; base: number; precision?: number }) {
   const display = (value: number) => props.precision
@@ -81,6 +81,16 @@ export function SimulationSetupPanel(props: SimulationSetupPanelProps) {
               <StatRow label={t.stats.abilityPower} value={props.finalStats.abilityPower} base={props.baseStats.abilityPower} />
               <StatRow label={t.stats.armor} value={props.finalStats.armor} base={props.baseStats.armor} />
               <StatRow label={t.stats.magicResist} value={props.finalStats.magicResist} base={props.baseStats.magicResist} />
+              <StatRow
+                label={t.pages.simulation.effectiveHealthPhysical}
+                value={effectiveHealth(props.finalStats.health, props.finalStats.armor)}
+                base={effectiveHealth(props.baseStats.health, props.baseStats.armor)}
+              />
+              <StatRow
+                label={t.pages.simulation.effectiveHealthMagic}
+                value={effectiveHealth(props.finalStats.health, props.finalStats.magicResist)}
+                base={effectiveHealth(props.baseStats.health, props.baseStats.magicResist)}
+              />
               {aaDps !== null && <StatRow label={t.pages.simulation.aaDpsLabel} value={aaDps} base={aaDps} precision={1} />}
             </div>
           )}
