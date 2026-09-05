@@ -8,6 +8,7 @@ import { StatKey } from "../src/types/combatStats";
 import { fetchCDragonRuneStatShards } from "./data-pipeline/sources/cdragon-runes";
 import { mergeCDragonItems } from "./data-pipeline/sources/cdragon-items";
 import { htmlToPlainText } from "../src/lib/htmlText";
+import { mergeCDragonChampionStats } from "./data-pipeline/sources/cdragon-champion";
 
 assert.equal(
   htmlToPlainText("투명 <font color='#fff'>상태</font><br><br>다음 줄 &amp; 값"),
@@ -162,5 +163,18 @@ const champion = normalizeChampion({
 assert.equal(champion.baseStats.health.base, 600);
 assert.deepEqual(champion.spells.Q.cooldowns, [8]);
 assert.equal(champion.spells.P.name, "Passive");
+
+const mergedChampion = mergeCDragonChampionStats({
+  id: "Test",
+  key: "1",
+  title: "Test",
+  name: "Test",
+  stats: { attackdamage: 60, attackdamageperlevel: 0 },
+}, {
+  "Characters/Test/CharacterRecords/Root": {
+    damagePerLevelModifiable: { baseValue: 3.75 },
+  },
+});
+assert.equal(mergedChampion.stats?.attackdamageperlevel, 3.75);
 
 console.log("Champion, item, and summoner normalization tests passed.");

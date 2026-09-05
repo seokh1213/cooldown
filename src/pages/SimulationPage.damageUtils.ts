@@ -29,6 +29,10 @@ export interface SimpleStats {
   bonusCritDamage: number;
   lifeSteal: number;
   lethality: number;
+  armorPenFlat: number;
+  armorPenPercent: number;
+  magicPenFlat: number;
+  magicPenPercent: number;
 }
 
 export interface SkillSummary {
@@ -41,6 +45,20 @@ export interface SkillSummary {
 
 export type DamageType = AbilitySimulationCalculation["damageType"];
 
+export interface AbilitySimulationTermResult {
+  stat: AbilitySimulationStat;
+  coefficient: number;
+  statValue: number;
+  contribution: number;
+}
+
+export interface AbilitySimulationResult {
+  total: number;
+  base: number;
+  terms: AbilitySimulationTermResult[];
+  targetHealthMultiplier?: number;
+}
+
 export function resistanceMultiplier(resistance: number): number {
   return resistance >= 0
     ? 100 / (100 + resistance)
@@ -51,12 +69,15 @@ export function applyDamageMitigation(
   rawDamage: number,
   damageType: DamageType,
   target: { armor: number; magicResist: number; damageReductionPercent: number },
+  attacker?: Pick<SimpleStats, "lethality" | "armorPenFlat" | "armorPenPercent" | "magicPenFlat" | "magicPenPercent">,
 ): number | null {
   if (!Number.isFinite(rawDamage) || rawDamage < 0 || damageType === "unknown") {
     return null;
   }
   if (damageType === "true") return rawDamage;
-  const resistance = damageType === "physical" ? target.armor : target.magicResist;
+  const resistance = damageType === "physical"
+    ? target.armor * (1 - (attacker?.armorPenPercent ?? 0)) - (attacker?.armorPenFlat ?? 0) - (attacker?.lethality ?? 0)
+    : target.magicResist * (1 - (attacker?.magicPenPercent ?? 0)) - (attacker?.magicPenFlat ?? 0);
   const reduction = Math.min(Math.max(target.damageReductionPercent, 0), 100) / 100;
   return rawDamage * resistanceMultiplier(resistance) * (1 - reduction);
 }
@@ -96,6 +117,10 @@ export function computeChampionStatsAtLevel(
     bonusCritDamage: 0,
     lifeSteal: 0,
     lethality: 0,
+    armorPenFlat: 0,
+    armorPenPercent: 0,
+    magicPenFlat: 0,
+    magicPenPercent: 0,
   };
 }
 
@@ -129,6 +154,8 @@ function applyFlatStat(stats: SimpleStats, key: StatKey, value: number): void {
   else if (key === StatKey.ABILITY_POWER) stats.abilityPower += value;
   else if (key === StatKey.MOVE_SPEED) stats.movespeed += value;
   else if (key === StatKey.LETHALITY) stats.lethality += value;
+  else if (key === StatKey.ARMOR_PEN_FLAT) stats.armorPenFlat += value;
+  else if (key === StatKey.MAGIC_PEN_FLAT) stats.magicPenFlat += value;
 }
 
 export function applyNormalizedItemsToStats(
@@ -149,7 +176,19 @@ export function applyNormalizedItemsToStats(
       }
     }
   }
-  for (const [stat, value] of percentStats) applyPercentStat(result, stat, value);
+  for (const [stat, value] of percentStats) {
+    if (stat === StatKey.ATTACK_SPEED) {
+      const baseAttackSpeed = base.attackSpeed / (1 + base.bonusAttackSpeed);
+      result.bonusAttackSpeed += value;
+      result.attackSpeed = Math.min(baseAttackSpeed * (1 + result.bonusAttackSpeed), 2.5);
+    } else if (stat === StatKey.ARMOR_PEN_PERCENT) {
+      result.armorPenPercent = 1 - (1 - result.armorPenPercent) * (1 - value);
+    } else if (stat === StatKey.MAGIC_PEN_PERCENT) {
+      result.magicPenPercent = 1 - (1 - result.magicPenPercent) * (1 - value);
+    } else {
+      applyPercentStat(result, stat, value);
+    }
+  }
   result.bonusHealth = result.health - base.health;
   result.bonusMana = result.mana - base.mana;
   result.bonusArmor = result.armor - base.armor;
@@ -227,6 +266,20 @@ export function evaluateAbilitySimulation(
   stats: SimpleStats,
   target?: { currentHealth: number; maxHealth: number },
 ): number | null {
+  return evaluateAbilitySimulationDetails(
+    simulation,
+    abilityRank,
+    stats,
+    target,
+  )?.total ?? null;
+}
+
+export function evaluateAbilitySimulationDetails(
+  simulation: AbilitySimulation | undefined,
+  abilityRank: number,
+  stats: SimpleStats,
+  target?: { currentHealth: number; maxHealth: number },
+): AbilitySimulationResult | null {
   if (simulation?.status !== "complete" || !simulation.primary) return null;
   const rankIndex = Math.max(Math.trunc(abilityRank) - 1, 0);
   const levelIndex = Math.min(Math.max(Math.trunc(stats.level) - 1, 0), 17);
@@ -244,12 +297,14 @@ export function evaluateAbilitySimulation(
     return Number.NaN;
   };
   const primary = simulation.primary;
-  let total = valueAt(
+  const base = valueAt(
     primary.baseByRank,
     primary.baseByLevel,
     primary.baseByRankAndLevel,
   );
-  if (!Number.isFinite(total)) return null;
+  if (!Number.isFinite(base)) return null;
+  let total = base;
+  const terms: AbilitySimulationTermResult[] = [];
   for (const term of simulation.primary.terms) {
     const coefficient = valueAt(
       term.coefficientsByRank,
@@ -257,17 +312,23 @@ export function evaluateAbilitySimulation(
       term.coefficientsByRankAndLevel,
     );
     if (!Number.isFinite(coefficient)) return null;
-    total += coefficient * simulationStatValue(term.stat, stats);
+    const statValue = simulationStatValue(term.stat, stats);
+    const contribution = coefficient * statValue;
+    terms.push({ stat: term.stat, coefficient, statValue, contribution });
+    total += contribution;
   }
   const healthScaling = simulation.primary.targetHealthScaling;
+  let targetHealthMultiplier: number | undefined;
   if (healthScaling) {
     if (!target) return null;
-    const health = healthScaling === "max"
+    targetHealthMultiplier = healthScaling === "max"
       ? target.maxHealth
       : healthScaling === "current"
         ? target.currentHealth
         : Math.max(target.maxHealth - target.currentHealth, 0);
-    total *= health;
+    total *= targetHealthMultiplier;
   }
-  return Number.isFinite(total) ? total : null;
+  return Number.isFinite(total)
+    ? { total, base, terms, targetHealthMultiplier }
+    : null;
 }

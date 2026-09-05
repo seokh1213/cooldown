@@ -1,4 +1,4 @@
-import { RotateCcw } from "lucide-react";
+import { Calculator, RotateCcw } from "lucide-react";
 import { useTranslation } from "@/i18n";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -8,6 +8,7 @@ export function CooldownPageToolbar(props: {
   activeTab: CooldownViewTab;
   onSelectTab: (tab: CooldownViewTab) => void;
   onReset: () => void;
+  onSimulate?: () => void;
 }) {
   const { t } = useTranslation();
   return (
@@ -33,15 +34,23 @@ export function CooldownPageToolbar(props: {
             </TabsTrigger>
           </TabsList>
         </Tabs>
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={props.onReset}
-          className="flex items-center gap-1.5 shrink-0 text-muted-foreground hover:text-primary hover:bg-muted/30 border-0"
-        >
-          <RotateCcw className="h-3 w-3" />
-          <span className="text-[10px]">{t.encyclopedia.reset}</span>
-        </Button>
+        <div className="flex shrink-0 items-center gap-1">
+          {props.onSimulate && (
+            <Button variant="ghost" size="sm" onClick={props.onSimulate} className="flex items-center gap-1.5 text-primary hover:bg-primary/10">
+              <Calculator aria-hidden="true" className="h-3.5 w-3.5" />
+              <span className="text-[10px]">{t.pages.simulation.useInSimulation}</span>
+            </Button>
+          )}
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={props.onReset}
+            className="flex items-center gap-1.5 text-muted-foreground hover:text-primary hover:bg-muted/30 border-0"
+          >
+            <RotateCcw aria-hidden="true" className="h-3 w-3" />
+            <span className="text-[10px]">{t.encyclopedia.reset}</span>
+          </Button>
+        </div>
       </div>
     </div>
   );

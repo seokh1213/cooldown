@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo } from "react";
 import { Card } from "@/components/ui/card";
 import { Select } from "@/components/ui/select";
 import { championIconUrl, spellIconUrl } from "@/data/assets/riotAssetUrls";
@@ -12,9 +12,13 @@ import {
   type SimpleStats,
 } from "./SimulationPage.damageUtils";
 import type { SimulationExternalAction } from "./simulationExternalActions";
+import type {
+  ActiveSkillSlot,
+  SkillRanks,
+  TargetDefenseState,
+} from "./simulationState";
 
 type ActiveSlot = Exclude<AbilitySlot, "P">;
-type ActionKey = "AA" | ActiveSlot;
 
 interface SimulationCombatPanelProps {
   attacker: Champion | null;
@@ -27,13 +31,14 @@ interface SimulationCombatPanelProps {
   onOpenTargetSelector: () => void;
   onTargetLevelChange: (level: number) => void;
   externalActions: SimulationExternalAction[];
-}
-
-interface TargetDefense {
-  health: number;
-  armor: number;
-  magicResist: number;
-  damageReductionPercent: number;
+  ranks: SkillRanks;
+  onRankChange: (slot: ActiveSkillSlot, rank: number) => void;
+  counts: Record<string, number>;
+  onCountChange: (key: string, count: number) => void;
+  excludedActions: string[];
+  onToggleAction: (key: string) => void;
+  defense: TargetDefenseState;
+  onDefenseChange: (key: keyof TargetDefenseState, value: number) => void;
 }
 
 interface ComboRow {
@@ -50,11 +55,10 @@ interface ComboRow {
   hasRank: boolean;
   conditions: string[];
   displayKey: string;
+  enabled: boolean;
 }
 
 const ACTIVE_SLOTS: ActiveSlot[] = ["Q", "W", "E", "R"];
-const DEFAULT_RANKS: Record<ActiveSlot, number> = { Q: 1, W: 1, E: 1, R: 1 };
-const DEFAULT_COUNTS: Record<ActionKey, number> = { AA: 1, Q: 1, W: 0, E: 1, R: 1 };
 
 function NumberField(props: {
   label: string;
@@ -94,27 +98,6 @@ function formatDamage(value: number | null): string {
   return value === null ? "—" : value.toFixed(1);
 }
 
-function useTargetDefense(targetStats: SimpleStats | null) {
-  const [defense, setDefense] = useState<TargetDefense>({
-    health: 0,
-    armor: 0,
-    magicResist: 0,
-    damageReductionPercent: 0,
-  });
-  useEffect(() => {
-    setDefense({
-      health: Math.round(targetStats?.health ?? 0),
-      armor: Math.round(targetStats?.armor ?? 0),
-      magicResist: Math.round(targetStats?.magicResist ?? 0),
-      damageReductionPercent: 0,
-    });
-  }, [targetStats]);
-  const update = (key: keyof TargetDefense, value: number) => {
-    setDefense((current) => ({ ...current, [key]: value }));
-  };
-  return { defense, update };
-}
-
 function damageTypeLabel(type: DamageType, labels: ReturnType<typeof useTranslation>["t"]["pages"]["simulation"]): string {
   if (type === "physical") return labels.physicalDamage;
   if (type === "magical") return labels.magicalDamage;
@@ -124,65 +107,41 @@ function damageTypeLabel(type: DamageType, labels: ReturnType<typeof useTranslat
 
 export function SimulationCombatPanel(props: SimulationCombatPanelProps) {
   const { t } = useTranslation();
-  const { defense, update } = useTargetDefense(props.targetStats);
-  const [ranks, setRanks] = useState(DEFAULT_RANKS);
-  const [counts, setCounts] = useState<Record<string, number>>(DEFAULT_COUNTS);
-
-  useEffect(() => {
-    if (!props.attackerDetail) return;
-    setRanks(Object.fromEntries(ACTIVE_SLOTS.map((slot) => [
-      slot,
-      Math.max(props.attackerDetail!.champion.abilities[slot].maxRank, 1),
-    ])) as Record<ActiveSlot, number>);
-    setCounts({
-      AA: 1,
-      ...Object.fromEntries(ACTIVE_SLOTS.map((slot) => [
-        slot,
-        props.attackerDetail!.champion.abilities[slot].simulation.status === "complete" ? 1 : 0,
-      ])),
-    });
-  }, [props.attackerDetail]);
-
-  useEffect(() => {
-    setCounts((current) => {
-      const next = { ...current };
-      for (const action of props.externalActions) next[action.id] ??= 1;
-      return next;
-    });
-  }, [props.externalActions]);
 
   const rows = useMemo<ComboRow[]>(() => {
     if (!props.attackerStats || !props.attackerDetail) return [];
-    const target = defense;
+    const target = props.defense;
     const basicRaw = props.attackerStats.attackDamage;
-    const basicApplied = applyDamageMitigation(basicRaw, "physical", target);
+    const basicApplied = applyDamageMitigation(basicRaw, "physical", target, props.attackerStats);
     const abilityRows = ACTIVE_SLOTS.map((slot): ComboRow => {
       const ability = props.attackerDetail!.champion.abilities[slot];
-      const rawDamage = evaluateAbilitySimulation(
+      const rank = props.ranks[slot];
+      const rawDamage = rank > 0 ? evaluateAbilitySimulation(
         ability.simulation,
-        ranks[slot],
+        rank,
         props.attackerStats!,
         {
-          currentHealth: defense.health,
-          maxHealth: props.targetStats?.health ?? defense.health,
+          currentHealth: props.defense.health,
+          maxHealth: props.targetStats?.health ?? props.defense.health,
         },
-      );
+      ) : null;
       const damageType = ability.simulation.primary?.damageType ?? "unknown";
       return {
         key: slot,
         name: ability.name,
-        rank: ranks[slot],
+        rank,
         maxRank: ability.maxRank,
-        count: counts[slot],
+        count: props.counts[slot] ?? 0,
         rawDamage,
         appliedDamage: rawDamage === null
           ? null
-          : applyDamageMitigation(rawDamage, damageType, target),
+          : applyDamageMitigation(rawDamage, damageType, target, props.attackerStats!),
         damageType,
         iconId: ability.id,
         hasRank: true,
         conditions: ability.conditions,
         displayKey: slot,
+        enabled: !props.excludedActions.includes(slot),
       };
     });
     const externalRows = props.externalActions.map((action): ComboRow => ({
@@ -190,9 +149,9 @@ export function SimulationCombatPanel(props: SimulationCombatPanelProps) {
       name: action.name,
       rank: 1,
       maxRank: 1,
-      count: counts[action.id] ?? 1,
+      count: props.counts[action.id] ?? 1,
       rawDamage: action.rawDamage,
-      appliedDamage: applyDamageMitigation(action.rawDamage, action.damageType, target),
+      appliedDamage: applyDamageMitigation(action.rawDamage, action.damageType, target, props.attackerStats ?? undefined),
       damageType: action.damageType,
       iconUrl: action.iconUrl,
       hasRank: false,
@@ -202,27 +161,29 @@ export function SimulationCombatPanel(props: SimulationCombatPanelProps) {
         : action.category === "item"
           ? t.pages.simulation.itemsTitle
           : t.pages.simulation.summonerSpellsTitle,
+      enabled: !props.excludedActions.includes(action.id),
     }));
     return [{
       key: "AA",
       name: t.pages.simulation.basicAttack,
       rank: 1,
       maxRank: 1,
-      count: counts.AA,
+      count: props.counts.AA ?? 1,
       rawDamage: basicRaw,
       appliedDamage: basicApplied,
       damageType: "physical",
       hasRank: false,
       conditions: [],
       displayKey: "AA",
+      enabled: true,
     }, ...abilityRows, ...externalRows];
-  }, [counts, defense, props.attackerDetail, props.attackerStats, props.externalActions, props.targetStats, ranks, t]);
+  }, [props.attackerDetail, props.attackerStats, props.counts, props.defense, props.excludedActions, props.externalActions, props.ranks, props.targetStats, t]);
 
   const totalDamage = rows.reduce(
-    (total, row) => total + (row.appliedDamage ?? 0) * row.count,
+    (total, row) => total + (row.enabled ? (row.appliedDamage ?? 0) * row.count : 0),
     0,
   );
-  const remainingHealth = Math.max(defense.health - totalDamage, 0);
+  const remainingHealth = Math.max(props.defense.health - totalDamage, 0);
   const hasUnknownSelected = rows.some(
     (row) => row.count > 0 && row.rawDamage !== null && row.appliedDamage === null,
   );
@@ -255,6 +216,7 @@ export function SimulationCombatPanel(props: SimulationCombatPanelProps) {
           <label className="flex items-center justify-between gap-2 text-[11px] text-muted-foreground">
             <span>{t.common.level}</span>
             <Select
+              aria-label={t.pages.simulation.targetLevelLabel}
               disabled={!props.targetStats}
               value={String(props.targetLevel)}
               onChange={(event) => props.onTargetLevelChange(Number(event.target.value))}
@@ -266,10 +228,10 @@ export function SimulationCombatPanel(props: SimulationCombatPanelProps) {
             </Select>
           </label>
           <div className="grid grid-cols-2 gap-2">
-            <NumberField disabled={!props.targetStats} label={t.pages.simulation.targetHealth} value={defense.health} min={0} max={20000} onChange={(value) => update("health", value)} />
-            <NumberField disabled={!props.targetStats} label={t.pages.simulation.targetArmor} value={defense.armor} min={-100} max={1000} onChange={(value) => update("armor", value)} />
-            <NumberField disabled={!props.targetStats} label={t.pages.simulation.targetMagicResist} value={defense.magicResist} min={-100} max={1000} onChange={(value) => update("magicResist", value)} />
-            <NumberField disabled={!props.targetStats} label={t.pages.simulation.targetDamageReduction} value={defense.damageReductionPercent} min={0} max={100} suffix="%" onChange={(value) => update("damageReductionPercent", value)} />
+            <NumberField disabled={!props.targetStats} label={t.pages.simulation.targetHealth} value={props.defense.health} min={0} max={20000} onChange={(value) => props.onDefenseChange("health", value)} />
+            <NumberField disabled={!props.targetStats} label={t.pages.simulation.targetArmor} value={props.defense.armor} min={-100} max={1000} onChange={(value) => props.onDefenseChange("armor", value)} />
+            <NumberField disabled={!props.targetStats} label={t.pages.simulation.targetMagicResist} value={props.defense.magicResist} min={-100} max={1000} onChange={(value) => props.onDefenseChange("magicResist", value)} />
+            <NumberField disabled={!props.targetStats} label={t.pages.simulation.targetDamageReduction} value={props.defense.damageReductionPercent} min={0} max={100} suffix="%" onChange={(value) => props.onDefenseChange("damageReductionPercent", value)} />
           </div>
         </section>
 
@@ -287,9 +249,14 @@ export function SimulationCombatPanel(props: SimulationCombatPanelProps) {
                     <div className="text-xs"><strong>{row.displayKey}</strong> {row.name}</div>
                     <div className="text-[9px] text-muted-foreground">{damageTypeLabel(row.damageType, t.pages.simulation)}</div>
                     {row.conditions.length > 0 && (
-                      <div className="mt-0.5 text-[9px] leading-tight text-amber-700 dark:text-amber-300">
-                        {conditionText(row.conditions)}
-                      </div>
+                      <button
+                        type="button"
+                        aria-pressed={row.enabled}
+                        onClick={() => props.onToggleAction(row.key)}
+                        className={`mt-1 rounded-full px-2 py-1 text-[9px] font-medium transition-colors ${row.enabled ? "bg-amber-500/12 text-amber-700 dark:text-amber-300" : "bg-muted text-muted-foreground line-through"}`}
+                      >
+                        {row.enabled ? t.pages.simulation.conditionApplied : t.pages.simulation.conditionExcluded} · {conditionText(row.conditions)}
+                      </button>
                     )}
                   </div>
                 </div>
@@ -297,17 +264,17 @@ export function SimulationCombatPanel(props: SimulationCombatPanelProps) {
                   <label className="text-[9px] text-muted-foreground">
                     <span className="mb-1 block">{t.pages.simulation.rankLabel}</span>
                     {!row.hasRank ? <span className="block h-8 pt-2">—</span> : (
-                      <Select value={String(row.rank)} onChange={(event) => setRanks((current) => ({ ...current, [row.key]: Number(event.target.value) }))} className="h-8 w-full">
-                        {Array.from({ length: row.maxRank }, (_, index) => index + 1).map((value) => <option key={value} value={value}>{value}</option>)}
+                      <Select value={String(row.rank)} onChange={(event) => props.onRankChange(row.key as ActiveSkillSlot, Number(event.target.value))} className="h-8 w-full">
+                        {Array.from({ length: row.maxRank + 1 }, (_, index) => index).map((value) => <option key={value} value={value}>{value}</option>)}
                       </Select>
                     )}
                   </label>
                   <label className="text-[9px] text-muted-foreground">
                     <span className="mb-1 block">{t.pages.simulation.castCountLabel}</span>
-                    <input aria-label={`${row.name} ${t.pages.simulation.castCountLabel}`} type="number" min={0} max={10} value={row.count} onChange={(event) => setCounts((current) => ({ ...current, [row.key]: Math.min(Math.max(Number(event.target.value) || 0, 0), 10) }))} className="h-8 w-full rounded-md border border-border bg-background px-2 text-foreground" />
+                    <input aria-label={`${row.name} ${t.pages.simulation.castCountLabel}`} type="number" min={0} max={10} value={row.count} onChange={(event) => props.onCountChange(row.key, Math.min(Math.max(Number(event.target.value) || 0, 0), 10))} className="h-8 w-full rounded-md border border-border bg-background px-2 text-foreground" />
                   </label>
                   <div className="text-[9px] text-muted-foreground"><span>{t.pages.simulation.rawDamageLabel}</span><strong className="block text-xs font-medium text-foreground tabular-nums">{formatDamage(row.rawDamage)}</strong></div>
-                  <div className="text-right text-[9px] text-muted-foreground"><span>{t.pages.simulation.mitigatedDamageLabel}</span><strong className="block text-xs font-medium text-foreground tabular-nums">{formatDamage(row.appliedDamage === null ? null : row.appliedDamage * row.count)}</strong></div>
+                  <div className="text-right text-[9px] text-muted-foreground"><span>{t.pages.simulation.mitigatedDamageLabel}</span><strong className={`block text-xs font-medium tabular-nums ${row.enabled ? "text-foreground" : "text-muted-foreground line-through"}`}>{formatDamage(row.appliedDamage === null ? null : row.appliedDamage * row.count)}</strong></div>
                 </div>
               </article>
             ))}
@@ -332,23 +299,28 @@ export function SimulationCombatPanel(props: SimulationCombatPanelProps) {
                         <span className="min-w-0">
                           <span><strong>{row.displayKey}</strong> {row.name}<small className="ml-1 text-muted-foreground">{damageTypeLabel(row.damageType, t.pages.simulation)}</small></span>
                           {row.conditions.length > 0 && (
-                            <small className="mt-0.5 block text-[9px] leading-tight text-amber-700 dark:text-amber-300">
-                              {conditionText(row.conditions)}
-                            </small>
+                            <button
+                              type="button"
+                              aria-pressed={row.enabled}
+                              onClick={() => props.onToggleAction(row.key)}
+                              className={`mt-1 block rounded-full px-2 py-1 text-left text-[9px] leading-tight transition-colors ${row.enabled ? "bg-amber-500/12 text-amber-700 dark:text-amber-300" : "bg-muted text-muted-foreground line-through"}`}
+                            >
+                              {row.enabled ? t.pages.simulation.conditionApplied : t.pages.simulation.conditionExcluded} · {conditionText(row.conditions)}
+                            </button>
                           )}
                         </span>
                       </span>
                     </td>
                     <td className="py-2">
                       {!row.hasRank ? "—" : (
-                        <Select value={String(row.rank)} onChange={(event) => setRanks((current) => ({ ...current, [row.key]: Number(event.target.value) }))} className="h-8 w-16">
-                          {Array.from({ length: row.maxRank }, (_, index) => index + 1).map((value) => <option key={value} value={value}>{value}</option>)}
+                        <Select value={String(row.rank)} onChange={(event) => props.onRankChange(row.key as ActiveSkillSlot, Number(event.target.value))} className="h-8 w-16">
+                          {Array.from({ length: row.maxRank + 1 }, (_, index) => index).map((value) => <option key={value} value={value}>{value}</option>)}
                         </Select>
                       )}
                     </td>
-                    <td className="py-2"><input aria-label={`${row.name} ${t.pages.simulation.castCountLabel}`} type="number" min={0} max={10} value={row.count} onChange={(event) => setCounts((current) => ({ ...current, [row.key]: Math.min(Math.max(Number(event.target.value) || 0, 0), 10) }))} className="h-8 w-16 rounded-md border border-border bg-background px-2" /></td>
+                    <td className="py-2"><input aria-label={`${row.name} ${t.pages.simulation.castCountLabel}`} type="number" min={0} max={10} value={row.count} onChange={(event) => props.onCountChange(row.key, Math.min(Math.max(Number(event.target.value) || 0, 0), 10))} className="h-8 w-16 rounded-md border border-border bg-background px-2" /></td>
                     <td className="py-2 text-right tabular-nums">{formatDamage(row.rawDamage)}</td>
-                    <td className="py-2 text-right tabular-nums">{formatDamage(row.appliedDamage === null ? null : row.appliedDamage * row.count)}</td>
+                    <td className={`py-2 text-right tabular-nums ${row.enabled ? "" : "text-muted-foreground line-through"}`}>{formatDamage(row.appliedDamage === null ? null : row.appliedDamage * row.count)}</td>
                   </tr>
                 ))}
               </tbody>
@@ -359,7 +331,7 @@ export function SimulationCombatPanel(props: SimulationCombatPanelProps) {
           {calculationReady ? <div className="grid grid-cols-3 gap-2 rounded-md border border-border/70 bg-background/60 p-3 text-center">
             <div><div className="text-[10px] text-muted-foreground">{t.pages.simulation.totalDamageLabel}</div><div data-testid="combo-total" className="text-lg font-semibold tabular-nums">{totalDamage.toFixed(1)}</div></div>
             <div><div className="text-[10px] text-muted-foreground">{t.pages.simulation.remainingHealthLabel}</div><div data-testid="combo-remaining-health" className="text-lg font-semibold tabular-nums">{remainingHealth.toFixed(1)}</div></div>
-            <div><div className="text-[10px] text-muted-foreground">{t.pages.simulation.combatTitle}</div><div data-testid="combo-outcome" className={`text-lg font-semibold ${defense.health > 0 && totalDamage >= defense.health ? "text-rose-500" : "text-emerald-500"}`}>{defense.health > 0 && totalDamage >= defense.health ? t.pages.simulation.lethalLabel : t.pages.simulation.survivesLabel}</div></div>
+            <div><div className="text-[10px] text-muted-foreground">{t.pages.simulation.combatTitle}</div><div data-testid="combo-outcome" className={`text-lg font-semibold ${props.defense.health > 0 && totalDamage >= props.defense.health ? "text-rose-500" : "text-emerald-500"}`}>{props.defense.health > 0 && totalDamage >= props.defense.health ? t.pages.simulation.lethalLabel : t.pages.simulation.survivesLabel}</div></div>
           </div> : (
             <div className="rounded-md border border-dashed border-border/70 bg-background/30 px-4 py-6 text-center text-xs text-muted-foreground">
               {t.pages.simulation.combatEmptyHint}

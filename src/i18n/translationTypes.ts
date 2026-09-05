@@ -182,6 +182,31 @@ export interface Translations {
       magicalDamage: string;
       trueDamage: string;
       unknownDamage: string;
+      skillRankHelp: string;
+      skillRankLabel: string;
+      formulaLabel: string;
+      unsupportedFormula: string;
+      baseAttackDamage: string;
+      bonusMana: string;
+      bonusAttackSpeed: string;
+      critDamage: string;
+      bonusCritDamage: string;
+      lethality: string;
+      conditionApplied: string;
+      conditionExcluded: string;
+      trustSummary: string;
+      share: string;
+      copied: string;
+      copySuccess: string;
+      copyFailed: string;
+      resetSimulation: string;
+      levelPresets: string;
+      healthPresets: string;
+      useInSimulation: string;
+      addItemToSimulation: string;
+      attackerLevelLabel: string;
+      targetLevelLabel: string;
+      patchMismatch: string;
     };
   };
   championSelector: {
@@ -255,6 +280,7 @@ export interface Translations {
   };
   common: {
     level: string;
+    cooldown: string;
     seconds: string;
     noCost: string;
     mana: string;

@@ -17,7 +17,7 @@ import { writeChampionV2Dataset } from "../champion-v2-writer";
 import { fetchJson } from "../io/json";
 import type { DataLocale } from "../localization";
 import { normalizeChampion } from "../normalization/champion";
-import { fetchCDragonChampion } from "../sources/cdragon-champion";
+import { fetchCDragonChampion, mergeCDragonChampionStats } from "../sources/cdragon-champion";
 import {
   localizeActiveTooltips,
   localizePassiveTooltips,
@@ -124,6 +124,12 @@ async function fetchCDragonChampionData(
   abilitySources: ActiveSpellSourceData[];
 }> {
   const source = await fetchCDragonChampion(championId, cdragonVersion);
+  for (const champions of championsByLocale.values()) {
+    const champion = requireMapValue(champions, championId, "localized champion");
+    if (champions instanceof Map) {
+      champions.set(championId, mergeCDragonChampionStats(champion, source));
+    }
+  }
   const activeSpells = extractActiveSpells(source, championId.toLowerCase());
   const passive = extractPassiveSpell(source, championId);
   const spellData = buildSpellData(activeSpells, passive);

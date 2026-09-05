@@ -5,6 +5,7 @@ import {
   applyDamageMitigation,
   computeChampionStatsAtLevel,
   evaluateAbilitySimulation,
+  evaluateAbilitySimulationDetails,
   resistanceMultiplier,
 } from "../src/pages/SimulationPage.damageUtils";
 import type { CommunityDragonSpellData } from "../src/lib/spellTooltipParser/types";
@@ -80,6 +81,10 @@ const stats = {
   bonusCritDamage: 0,
   lifeSteal: 0,
   lethality: 0,
+  armorPenFlat: 0,
+  armorPenPercent: 0,
+  magicPenFlat: 0,
+  magicPenPercent: 0,
 };
 
 const wukongSimulation = compileAbilitySimulation(wukong, 5, "physical");
@@ -91,6 +96,17 @@ assert.deepEqual(wukongSimulation.primary?.terms, [{
   coefficientsByRank: [0.5, 0.5, 0.5, 0.5, 0.5],
 }]);
 assert.equal(evaluateAbilitySimulation(wukongSimulation, 5, stats), 140);
+assert.deepEqual(evaluateAbilitySimulationDetails(wukongSimulation, 5, stats), {
+  total: 140,
+  base: 120,
+  terms: [{
+    stat: "bonusAttackDamage",
+    coefficient: 0.5,
+    statValue: 40,
+    contribution: 20,
+  }],
+  targetHealthMultiplier: undefined,
+});
 assert.equal(resistanceMultiplier(100), 0.5);
 assert.equal(resistanceMultiplier(-100), 1.5);
 assert.equal(applyDamageMitigation(200, "physical", {
@@ -134,8 +150,14 @@ const attackSpeedItems = [{
 }] as NormalizedItem[];
 assert.equal(
   Number(applyNormalizedItemsToStats(stats, attackSpeedItems).attackSpeed.toFixed(4)),
-  1.2,
+  1.1077,
 );
+
+assert.equal(applyDamageMitigation(200, "physical", {
+  armor: 100,
+  magicResist: 0,
+  damageReductionPercent: 0,
+}, { ...stats, lethality: 20 }), 200 * 100 / 180);
 
 const ezrealSimulation = compileAbilitySimulation(ezreal, 5);
 assert.equal(ezrealSimulation.status, "complete");

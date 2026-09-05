@@ -1,4 +1,33 @@
 import { fetchJson } from "../io/json";
+import type { Champion } from "../../../src/types";
+
+type CDragonRecord = Record<string, unknown>;
+
+function modifiableValue(value: unknown): number | undefined {
+  if (typeof value !== "object" || value === null) return undefined;
+  const baseValue = (value as CDragonRecord).baseValue;
+  return typeof baseValue === "number" && Number.isFinite(baseValue)
+    ? baseValue
+    : undefined;
+}
+
+export function mergeCDragonChampionStats(
+  champion: Champion,
+  source: Record<string, unknown>,
+): Champion {
+  const root = Object.entries(source).find(([key, value]) =>
+    key.endsWith("/CharacterRecords/Root") && typeof value === "object" && value !== null
+  )?.[1] as CDragonRecord | undefined;
+  const attackDamagePerLevel = modifiableValue(root?.damagePerLevelModifiable);
+  if (attackDamagePerLevel === undefined) return champion;
+  return {
+    ...champion,
+    stats: {
+      ...champion.stats,
+      attackdamageperlevel: attackDamagePerLevel,
+    },
+  };
+}
 
 export async function fetchCDragonChampion(
   championId: string,

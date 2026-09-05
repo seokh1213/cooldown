@@ -1,50 +1,27 @@
-import { useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import type { Language } from "@/i18n";
 import { useTranslation } from "@/i18n";
-import { Card } from "@/components/ui/card";
-import { Select } from "@/components/ui/select";
-import { championIconUrl, itemIconUrl } from "@/data/assets/riotAssetUrls";
 import type { Champion } from "@/types";
 import type { StaticDataSources } from "@/data/contracts/staticData";
-import ChampionSelector from "@/components/features/ChampionSelector";
-import { SimulationItemPicker } from "./SimulationItemPicker";
+import { recordProductMetric } from "@/lib/productMetrics";
+import { copyTextToClipboard } from "@/lib/clipboard";
 import { SimulationSkills } from "./SimulationSkills";
 import { SimulationCombatPanel } from "./SimulationCombatPanel";
 import { SimulationLoadout } from "./SimulationLoadout";
 import { buildExternalActions } from "./simulationExternalActions";
 import { useSimulationData } from "./useSimulationData";
-
-interface StatRowProps {
-  label: string;
-  value: number;
-  base: number;
-  precision?: number;
-}
-
-function StatRow({ label, value, base, precision = 0 }: StatRowProps) {
-  const display = (n: number) =>
-    precision > 0 ? n.toFixed(precision) : Math.round(n).toString();
-  const delta = value - base;
-  const hasDelta = Math.abs(delta) > 0.01;
-  return (
-    <div className="flex items-center justify-between gap-2">
-      <span className="text-[11px] text-muted-foreground">{label}</span>
-      <span className="text-[11px] font-medium">
-        {display(value)}
-        {hasDelta && (
-          <span
-            className={`ml-1 ${
-              delta >= 0 ? "text-emerald-400" : "text-rose-400"
-            }`}
-          >
-            ({delta >= 0 ? "+" : ""}
-            {display(delta)})
-          </span>
-        )}
-      </span>
-    </div>
-  );
-}
+import { SimulationWorkspaceToolbar } from "./SimulationWorkspaceToolbar";
+import { SimulationSetupPanel } from "./SimulationSetupPanel";
+import { SimulationSelectors } from "./SimulationSelectors";
+import {
+  DEFAULT_SKILL_RANKS,
+  parseSimulationSearch,
+  serializeSimulationState,
+  type ActiveSkillSlot,
+  type SkillRanks,
+  type TargetDefenseState,
+} from "./simulationState";
 
 interface SimulationPageProps {
   lang: Language;
@@ -62,9 +39,25 @@ export default function SimulationPage({
   championList,
 }: SimulationPageProps) {
   const { t } = useTranslation();
-  const simulation = useSimulationData({ patchVersion, sources, lang });
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [initialSearch] = useState(() => searchParams.toString());
+  const [initialState] = useState(() => parseSimulationSearch(initialSearch));
+  const preserveInitialDefense = useRef(Boolean(initialState.defense));
+  const preserveInitialRanks = useRef(new URLSearchParams(initialSearch).has("sr"));
+  const simulation = useSimulationData({
+    patchVersion,
+    sources,
+    lang,
+    initialChampionId: initialState.attackerId,
+    initialTargetChampionId: initialState.targetId,
+    initialLevel: initialState.attackerLevel,
+    initialTargetLevel: initialState.targetLevel,
+    initialItemIds: initialState.itemIds,
+  });
   const {
+    selectedChampionId,
     setSelectedChampionId,
+    targetChampionId,
     setTargetChampionId,
     championInfo,
     championDetail,
@@ -89,18 +82,37 @@ export default function SimulationPage({
   const [isTargetModalOpen, setIsTargetModalOpen] = useState(false);
   const [isItemModalOpen, setIsItemModalOpen] = useState(false);
   const [activeItemSlotIndex, setActiveItemSlotIndex] = useState<number | null>(null);
-  const [selectedSummonerIds, setSelectedSummonerIds] = useState<string[]>(["", ""]);
-  const [selectedRuneId, setSelectedRuneId] = useState("");
+  const [selectedSummonerIds, setSelectedSummonerIds] = useState<string[]>(
+    () => [initialState.summonerIds?.[0] ?? "", initialState.summonerIds?.[1] ?? ""],
+  );
+  const [selectedRuneId, setSelectedRuneId] = useState(initialState.runeId ?? "");
+  const [skillRanks, setSkillRanks] = useState<SkillRanks>(
+    initialState.ranks ?? DEFAULT_SKILL_RANKS,
+  );
+  const [actionCounts, setActionCounts] = useState<Record<string, number>>(() => ({
+    AA: 1,
+    Q: 1,
+    W: 0,
+    E: 1,
+    R: 1,
+    ...initialState.counts,
+  }));
+  const [excludedActions, setExcludedActions] = useState<string[]>(initialState.excludedActions ?? []);
+  const [defense, setDefense] = useState<TargetDefenseState>(initialState.defense ?? {
+    health: 0,
+    armor: 0,
+    magicResist: 0,
+    damageReductionPercent: 0,
+  });
+  const [shareStatus, setShareStatus] = useState<"idle" | "copied" | "failed">("idle");
+  const lastSharedState = useRef("");
+  const lastReadyMetric = useRef("");
+  const metricContext = useMemo(() => ({ patch: patchVersion, locale: lang }), [lang, patchVersion]);
 
   const championOptions = useMemo(
     () => championList ?? [],
     [championList]
   );
-
-  const aaDps = useMemo(() => {
-    if (!finalStats) return null;
-    return finalStats.attackDamage * finalStats.attackSpeed;
-  }, [finalStats]);
 
   const externalActions = useMemo(() => buildExternalActions({
     summoners: availableSummoners,
@@ -113,6 +125,132 @@ export default function SimulationPage({
     ddragonVersion,
   }), [availableRunes, availableSummoners, ddragonVersion, finalStats, level, selectedItems, selectedRuneId, selectedSummonerIds, targetStats]);
 
+  useEffect(() => {
+    if (!championDetail) return;
+    const shouldPreserveRanks = preserveInitialRanks.current;
+    const maxRanks = Object.fromEntries(
+      (["Q", "W", "E", "R"] as const).map((slot) => [slot, championDetail.champion.abilities[slot].maxRank]),
+    ) as SkillRanks;
+    setSkillRanks((current) => shouldPreserveRanks
+      ? Object.fromEntries((Object.keys(maxRanks) as ActiveSkillSlot[]).map((slot) => [
+          slot,
+          Math.min(Math.max(current[slot], 0), maxRanks[slot]),
+        ])) as SkillRanks
+      : maxRanks);
+    preserveInitialRanks.current = false;
+    setActionCounts((current) => ({
+      ...current,
+      ...Object.fromEntries((["Q", "W", "E", "R"] as const).map((slot) => [
+        slot,
+        championDetail.champion.abilities[slot].simulation.status === "complete" ? (current[slot] ?? 1) : 0,
+      ])),
+    }));
+  }, [championDetail]);
+
+  useEffect(() => {
+    if (!targetStats) return;
+    if (preserveInitialDefense.current) {
+      preserveInitialDefense.current = false;
+      return;
+    }
+    setDefense({
+      health: Math.round(targetStats.health),
+      armor: Math.round(targetStats.armor),
+      magicResist: Math.round(targetStats.magicResist),
+      damageReductionPercent: 0,
+    });
+  }, [targetStats]);
+
+  useEffect(() => {
+    setActionCounts((current) => ({
+      ...current,
+      ...Object.fromEntries(externalActions.map((action) => [action.id, current[action.id] ?? 1])),
+    }));
+  }, [externalActions]);
+
+  useEffect(() => {
+    if (availableItems.length === 0) return;
+    const validIds = new Set(availableItems.map((item) => item.id));
+    setSelectedItemIds((current) => current.map((id) => id && validIds.has(id) ? id : null));
+  }, [availableItems, setSelectedItemIds]);
+
+  useEffect(() => {
+    if (availableSummoners.length === 0) return;
+    const validIds = new Set(availableSummoners.map((spell) => spell.id));
+    setSelectedSummonerIds((current) => current.map((id) => validIds.has(id) ? id : ""));
+  }, [availableSummoners]);
+
+  useEffect(() => {
+    if (availableRunes.length > 0 && !availableRunes.some((rune) => rune.id === selectedRuneId)) {
+      setSelectedRuneId("");
+    }
+  }, [availableRunes, selectedRuneId]);
+
+  useEffect(() => {
+    if (initialState.attackerId || initialState.targetId) {
+      recordProductMetric("simulation_restored", metricContext);
+    }
+  }, [initialState.attackerId, initialState.targetId, metricContext]);
+
+  useEffect(() => {
+    if (!championInfo || !targetChampionInfo) return;
+    const readyKey = `${championInfo.id}:${targetChampionInfo.id}`;
+    if (lastReadyMetric.current === readyKey) return;
+    lastReadyMetric.current = readyKey;
+    recordProductMetric("simulation_ready", metricContext);
+  }, [championInfo, metricContext, targetChampionInfo]);
+
+  const serializedState = useMemo(() => serializeSimulationState({
+    patchVersion,
+    attackerId: selectedChampionId,
+    targetId: targetChampionId,
+    attackerLevel: level,
+    targetLevel,
+    itemIds: selectedItemIds,
+    summonerIds: selectedSummonerIds,
+    runeId: selectedRuneId,
+    ranks: skillRanks,
+    counts: actionCounts,
+    excludedActions,
+    defense: targetChampionId ? defense : undefined,
+  }), [actionCounts, defense, excludedActions, level, patchVersion, selectedChampionId, selectedItemIds, selectedRuneId, selectedSummonerIds, skillRanks, targetChampionId, targetLevel]);
+
+  useEffect(() => {
+    if (searchParams.toString() !== serializedState) {
+      setSearchParams(serializedState, { replace: true });
+    }
+    if (lastSharedState.current && lastSharedState.current !== serializedState) {
+      lastSharedState.current = "";
+      setShareStatus("idle");
+    }
+  }, [searchParams, serializedState, setSearchParams]);
+
+  const handleShare = useCallback(async () => {
+    try {
+      const url = `${window.location.origin}${window.location.pathname}?${serializedState}`;
+      if (!await copyTextToClipboard(url)) throw new Error("clipboard unavailable");
+      lastSharedState.current = serializedState;
+      setShareStatus("copied");
+      recordProductMetric("simulation_shared", metricContext);
+    } catch {
+      setShareStatus("failed");
+    }
+  }, [metricContext, serializedState]);
+
+  const resetSimulation = useCallback(() => {
+    setSelectedChampionId("");
+    setTargetChampionId("");
+    setLevel(18);
+    setTargetLevel(18);
+    setSelectedItemIds(Array(6).fill(null));
+    setSelectedSummonerIds(["", ""]);
+    setSelectedRuneId("");
+    setSkillRanks(DEFAULT_SKILL_RANKS);
+    setActionCounts({ AA: 1, Q: 1, W: 0, E: 1, R: 1 });
+    setExcludedActions([]);
+    setDefense({ health: 0, armor: 0, magicResist: 0, damageReductionPercent: 0 });
+  }, [setLevel, setSelectedChampionId, setSelectedItemIds, setTargetChampionId, setTargetLevel]);
+
   return (
     <div className="w-full max-w-6xl mx-auto px-4 md:px-6 lg:px-8 py-8 md:py-10">
       <div className="mb-6">
@@ -124,172 +262,55 @@ export default function SimulationPage({
         </p>
       </div>
 
-      {/* 상단: 챔피언 + 스탯 / 아이템 빌드 영역 */}
-      <Card className="p-4 md:p-6 bg-card/60 border-border/70 space-y-6">
-        <div className="grid gap-6 md:grid-cols-[minmax(0,1.2fr)_minmax(0,1.3fr)]">
-          {/* 좌측: 챔피언 초상화 + 스탯 */}
-          <div className="flex flex-col md:flex-row md:items-start gap-4 md:gap-6">
-            <button
-              type="button"
-              onClick={() => setIsChampionModalOpen(true)}
-              aria-label={t.pages.simulation.selectChampionAria}
-              className="relative mx-auto md:mx-0 w-32 h-32 sm:w-36 sm:h-36 rounded-full border-4 border-border/80 bg-linear-to-br from-slate-800 via-slate-900 to-slate-700 flex items-center justify-center overflow-hidden shadow-lg"
-            >
-              {championInfo ? (
-                <img
-                  src={championIconUrl(ddragonVersion, championInfo.id)}
-                  alt={championInfo.name}
-                  width={144}
-                  height={144}
-                  className="w-full h-full object-cover"
-                />
-              ) : (
-                <span className="text-[11px] sm:text-xs font-semibold tracking-[0.08em] text-muted-foreground uppercase text-center px-4">
-                  {t.pages.simulation.championPlaceholder}
-                </span>
-              )}
-            </button>
+      <SimulationWorkspaceToolbar
+        patchVersion={patchVersion}
+        restoredPatchVersion={initialState.patchVersion}
+        shareStatus={shareStatus}
+        supportedAbilities={championDetail ? (["Q", "W", "E", "R"] as const).filter(
+          (slot) => championDetail.champion.abilities[slot].simulation.status === "complete",
+        ).length : 0}
+        conditionalActions={externalActions.filter((action) => action.conditions.length > 0).length}
+        excludedActions={excludedActions.length}
+        onShare={handleShare}
+        onReset={resetSimulation}
+        onLevelPreset={(presetLevel) => {
+          setLevel(presetLevel);
+          setTargetLevel(presetLevel);
+        }}
+        onHealthPreset={(percent) => {
+          if (!targetStats) return;
+          setDefense((current) => ({
+            ...current,
+            health: Math.round(targetStats.health * percent / 100),
+          }));
+        }}
+      />
 
-            <div className="flex-1 space-y-3">
-              <div className="flex items-center justify-between">
-                <div>
-                  <div className="text-[11px] font-semibold tracking-[0.18em] text-muted-foreground uppercase">
-                    {t.pages.simulation.statsTitle}
-                  </div>
-                  {championInfo && (
-                    <div className="mt-1 text-sm font-semibold">
-                      {championInfo.name}
-                    </div>
-                  )}
-                </div>
-                <div className="flex items-center gap-2">
-                  <span className="text-[11px] text-muted-foreground">
-                    {t.common.level}
-                  </span>
-                  <Select
-                    value={String(level)}
-                    onChange={(e) => {
-                      const next = Number(e.target.value);
-                      if (!Number.isNaN(next)) {
-                        setLevel(Math.min(Math.max(next, 1), 18));
-                      }
-                    }}
-                    className="h-8 w-18 text-xs px-2"
-                  >
-                    {Array.from({ length: 18 }).map((_, idx) => (
-                      <option key={idx + 1} value={idx + 1}>
-                        {idx + 1}
-                      </option>
-                    ))}
-                  </Select>
-                </div>
-              </div>
-
-              <div className="border-t border-border/60 pt-3">
-                {!finalStats || !baseStats ? (
-                  <div className="space-y-1.5 text-[11px] text-muted-foreground">
-                    <div>{t.pages.simulation.statsPlaceholderLine1}</div>
-                    <div>{t.pages.simulation.statsPlaceholderLine2}</div>
-                  </div>
-                ) : (
-                  <div className="space-y-1.5 text-[11px]">
-                    <StatRow
-                      label={t.stats.health}
-                      value={finalStats.health}
-                      base={baseStats.health}
-                    />
-                    <StatRow
-                      label={t.stats.attackDamage}
-                      value={finalStats.attackDamage}
-                      base={baseStats.attackDamage}
-                    />
-                    <StatRow
-                      label={t.stats.armor}
-                      value={finalStats.armor}
-                      base={baseStats.armor}
-                    />
-                    <StatRow
-                      label={t.stats.magicResist}
-                      value={finalStats.magicResist}
-                      base={baseStats.magicResist}
-                    />
-                    <StatRow
-                      label={t.stats.movespeed}
-                      value={finalStats.movespeed}
-                      base={baseStats.movespeed}
-                      precision={0}
-                    />
-                    {aaDps != null && (
-                      <StatRow
-                        label={t.pages.simulation.aaDpsLabel}
-                        value={aaDps}
-                        base={aaDps}
-                        precision={1}
-                      />
-                    )}
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
-
-          {/* 우측: 아이템 빌드 2x3 + ToolTips 버튼 */}
-          <div className="flex flex-col gap-4">
-            <div className="flex items-center justify-between">
-              <div className="text-[11px] font-semibold tracking-[0.18em] text-muted-foreground uppercase">
-                {t.pages.simulation.itemsTitle}
-              </div>
-              <div className="text-[10px] text-muted-foreground">
-                {selectedItems.length} / 6
-              </div>
-            </div>
-
-            <div className="grid grid-cols-3 gap-4">
-              {Array.from({ length: 6 }).map((_, idx) => {
-                const item = itemsBySlot[idx];
-                return (
-                  <div
-                    key={idx}
-                    className="flex flex-col items-center gap-2"
-                  >
-                    <button
-                      type="button"
-                      className="w-16 h-16 sm:w-18 sm:h-18 rounded-md border border-border/70 bg-background/40 flex items-center justify-center overflow-hidden shadow-xs"
-                      onClick={() => {
-                        setActiveItemSlotIndex(idx);
-                        setIsItemModalOpen(true);
-                      }}
-                    >
-                      {item ? (
-                        <img
-                          src={itemIconUrl(ddragonVersion ?? "", item.id)}
-                          alt={item.name}
-                          width={72}
-                          height={72}
-                          className="w-full h-full object-cover"
-                        />
-                      ) : (
-                        <span className="text-[9px] text-muted-foreground text-center px-1">
-                          {t.pages.simulation.itemPlaceholderLine1}
-                          <br />
-                          {t.pages.simulation.itemPlaceholderLine2}
-                        </span>
-                      )}
-                    </button>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        </div>
-      </Card>
+      <SimulationSetupPanel
+        champion={championInfo}
+        ddragonVersion={ddragonVersion}
+        level={level}
+        items={itemsBySlot}
+        selectedItemCount={selectedItems.length}
+        baseStats={baseStats}
+        finalStats={finalStats}
+        onSelectChampion={() => setIsChampionModalOpen(true)}
+        onLevelChange={setLevel}
+        onSelectItem={(slot) => {
+          setActiveItemSlotIndex(slot);
+          setIsItemModalOpen(true);
+        }}
+      />
 
       <SimulationSkills
         champion={championInfo}
         detail={championDetail}
         ddragonVersion={ddragonVersion}
         finalStats={finalStats}
+        targetStats={targetStats}
         skillSummaries={skillSummaries}
+        ranks={skillRanks}
+        onRankChange={(slot, rank) => setSkillRanks((current) => ({ ...current, [slot]: rank }))}
       />
 
       <SimulationLoadout
@@ -317,56 +338,47 @@ export default function SimulationPage({
         onOpenTargetSelector={() => setIsTargetModalOpen(true)}
         onTargetLevelChange={setTargetLevel}
         externalActions={externalActions}
-      />
-
-      {/* INFO 영역은 디자인상 제거 */}
-
-      {/* 챔피언 선택 모달 (Encyclopedia와 동일한 디자인 재사용) */}
-      <ChampionSelector
-        championList={championOptions}
-        selectedChampions={
-          championInfo && championList
-            ? championList.filter((c) => c.id === championInfo.id)
-            : []
-        }
-        onSelect={(champion) => {
-          setSelectedChampionId(champion.id);
+        ranks={skillRanks}
+        onRankChange={(slot, rank) => setSkillRanks((current) => ({ ...current, [slot]: rank }))}
+        counts={actionCounts}
+        onCountChange={(key, count) => setActionCounts((current) => ({ ...current, [key]: count }))}
+        excludedActions={excludedActions}
+        onToggleAction={(key) => {
+          setExcludedActions((current) => current.includes(key)
+            ? current.filter((value) => value !== key)
+            : [...current, key]);
+          recordProductMetric("condition_toggled", metricContext);
         }}
-        selectionMode="single"
-        onClose={() => setIsChampionModalOpen(false)}
-        open={isChampionModalOpen}
-        onOpenChange={setIsChampionModalOpen}
+        defense={defense}
+        onDefenseChange={(key, value) => setDefense((current) => ({ ...current, [key]: value }))}
       />
 
-      <ChampionSelector
-        championList={championOptions}
-        selectedChampions={
-          targetChampionInfo && championList
-            ? championList.filter((champion) => champion.id === targetChampionInfo.id)
-            : []
-        }
-        onSelect={(champion) => setTargetChampionId(champion.id)}
-        selectionMode="single"
-        onClose={() => setIsTargetModalOpen(false)}
-        open={isTargetModalOpen}
-        onOpenChange={setIsTargetModalOpen}
-      />
-
-      <SimulationItemPicker
-        open={isItemModalOpen}
-        activeSlotIndex={activeItemSlotIndex}
-        selectedItemId={
-          activeItemSlotIndex === null
-            ? null
-            : selectedItemIds[activeItemSlotIndex]
-        }
+      <SimulationSelectors
+        champions={championOptions}
+        attacker={championInfo}
+        target={targetChampionInfo}
+        attackerOpen={isChampionModalOpen}
+        targetOpen={isTargetModalOpen}
+        itemOpen={isItemModalOpen}
+        itemSlot={activeItemSlotIndex}
+        selectedItemId={activeItemSlotIndex === null ? null : selectedItemIds[activeItemSlotIndex]}
         items={availableItems}
         ddragonVersion={ddragonVersion}
-        onOpenChange={(open) => {
+        onAttackerOpenChange={setIsChampionModalOpen}
+        onTargetOpenChange={setIsTargetModalOpen}
+        onSelectAttacker={(champion) => {
+          setSelectedChampionId(champion.id);
+          recordProductMetric("attacker_selected", metricContext);
+        }}
+        onSelectTarget={(champion) => {
+          setTargetChampionId(champion.id);
+          recordProductMetric("target_selected", metricContext);
+        }}
+        onItemOpenChange={(open) => {
           setIsItemModalOpen(open);
           if (!open) setActiveItemSlotIndex(null);
         }}
-        onSelect={(itemId) => {
+        onSelectItem={(itemId) => {
           if (activeItemSlotIndex === null) return;
           setSelectedItemIds((current) => {
             const next = [...current];

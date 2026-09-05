@@ -1,6 +1,14 @@
 /// <reference types="vite/client" />
 
 interface ImportMetaEnv {
+  readonly VITE_PRODUCT_METRICS_ENDPOINT?: string;
+}
+
+interface ImportMeta {
+  readonly env: ImportMetaEnv;
+}
+
+interface ImportMetaEnv {
   readonly PROD: boolean;
   readonly DEV: boolean;
   readonly MODE: string;
@@ -23,7 +31,6 @@ declare module 'virtual:pwa-register' {
 
   export function registerSW(options?: RegisterSWOptions): (reloadPage?: boolean) => Promise<void>
 }
-
 
 
 

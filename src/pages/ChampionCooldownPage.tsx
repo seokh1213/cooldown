@@ -1,4 +1,5 @@
 import { useState, useCallback } from "react";
+import { useNavigate } from "react-router-dom";
 import { Champion } from "@/types";
 import { arrayMove } from "@dnd-kit/sortable";
 import ChampionComparison from "@/components/features/ChampionComparison";
@@ -50,6 +51,7 @@ export default function ChampionCooldownPage({
   const deviceType = useDeviceType();
   const isMobile = deviceType === "mobile";
   const { activeTab, selectTab } = useCooldownViewTab();
+  const navigate = useNavigate();
   
   const [showSelector, setShowSelector] = useState(false);
 
@@ -330,6 +332,11 @@ export default function ChampionCooldownPage({
         activeTab={activeTab}
         onSelectTab={selectTab}
         onReset={resetAll}
+        onSimulate={currentTabChampions.length > 0 ? () => {
+          const params = new URLSearchParams({ a: currentTabChampions[0].id });
+          if (currentTabChampions[1]) params.set("t", currentTabChampions[1].id);
+          navigate(`/simulation?${params.toString()}`);
+        } : undefined}
       />
 
       {/* Champion comparison */}
