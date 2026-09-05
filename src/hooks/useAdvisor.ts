@@ -52,6 +52,11 @@ export interface UseAdvisorResult {
   /** 이미 동의한 사용자가 대화창을 열었을 때 적재를 시작한다 */
   ensureLoaded: () => void;
   send: (text: string, system?: string) => void;
+  /**
+   * 상성 조언. 확정 구간은 코드가 만든 문장을 그대로 쓰고 서술 구간만 모델을 부른다.
+   * 구간마다 프롬프트가 달라 순서대로 이어 붙인다.
+   */
+  sendMatchup: (question: string, decided: string, sections: AdvisorChatMessage[][]) => void;
   stop: () => void;
   reset: () => void;
 }
@@ -204,6 +209,58 @@ export function useAdvisor(): UseAdvisorResult {
     });
   }, [post, model]);
 
+  /**
+   * 구간을 하나씩 돌린다.
+   *
+   * 한 번에 다 보내면 워커가 먼저 온 것부터 처리하다 순서가 뒤엉킨다.
+   * 앞 구간이 끝난 뒤에 다음을 보내야 답변이 형식대로 쌓인다.
+   */
+  const sendMatchup = useCallback(
+    (question: string, decided: string, sections: AdvisorChatMessage[][]) => {
+      const userId = nextId.current++;
+      const replyId = nextId.current++;
+      setError(null);
+      setStatus("generating");
+      setTurns((prev) => [
+        ...prev,
+        { id: userId, role: "user", content: question },
+        // 확정 구간은 모델을 기다리지 않고 바로 보여 준다
+        { id: replyId, role: "assistant", content: decided ? `${decided}\n\n` : "" },
+      ]);
+
+      const worker = ensureWorker();
+      let index = 0;
+      const runNext = () => {
+        if (index >= sections.length) {
+          setStatus("ready");
+          worker.removeEventListener("message", onSectionDone);
+          return;
+        }
+        const messages = sections[index++];
+        worker.postMessage({
+          type: "generate",
+          id: replyId,
+          model,
+          messages,
+        } satisfies AdvisorRequest);
+      };
+      function onSectionDone(event: MessageEvent<AdvisorResponse>) {
+        const message = event.data;
+        if (message.type === "done" && message.id === replyId) {
+          setTurns((prev) =>
+            prev.map((t) => (t.id === replyId ? { ...t, content: `${t.content}\n\n` } : t)),
+          );
+          runNext();
+        } else if (message.type === "error") {
+          worker.removeEventListener("message", onSectionDone);
+        }
+      }
+      worker.addEventListener("message", onSectionDone);
+      runNext();
+    },
+    [ensureWorker, model],
+  );
+
   const stop = useCallback(() => {
     workerRef.current?.postMessage({ type: "stop" } satisfies AdvisorRequest);
     setStatus("ready");
@@ -226,6 +283,7 @@ export function useAdvisor(): UseAdvisorResult {
     accept,
     ensureLoaded,
     send,
+    sendMatchup,
     stop,
     reset,
   };
