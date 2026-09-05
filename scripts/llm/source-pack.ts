@@ -8,7 +8,8 @@
  *   2. 분류           라이엇 피해 유형·특성, 위키 클래스·하위 클래스·포지션
  *   3. 통계 오라클    선마 순서, 아이템, 룬, 주문, 14분 지표와 라인 내 순위
  *   4. 위키 팁        플레이 팁, 상대 팁, 스킬 슬롯별 운용 노트 (영문)
- *   5. 작성 지침      지금 스키마에서 무엇을 쓰고 무엇을 쓰지 말아야 하는지
+ *   5. 패치 소급      현재 툴팁이 비어 있는 자리를 과거 패치에서 메운 것과, 지금은 사라진 설명
+ *   6. 작성 지침      지금 스키마에서 무엇을 쓰고 무엇을 쓰지 말아야 하는지
  *
  * 사용:
  *   npm run llm:source-pack -- --champ Nasus
@@ -20,6 +21,7 @@ import * as path from "path";
 import { loadStaticData } from "./lib/data";
 import { championCardToText, createChampionCardBuilder } from "./lib/facts";
 import { loadOracleBundle, oracleFacts, selectLane, type OracleChampion } from "./lib/oracle";
+import { loadPatchGaps, patchGapsToText } from "./lib/patchGaps";
 import { PLAYBOOK_ROOT } from "./lib/playbook";
 
 interface WikiTips {
@@ -195,7 +197,13 @@ function main() {
     }
   }
 
-  console.log(`\n## 5. 기존 지식 카드\n`);
+  const gapText = patchGapsToText(loadPatchGaps(data.patch).get(card.id));
+  if (gapText) {
+    console.log("\n## 5. 패치 소급\n");
+    console.log(gapText);
+  }
+
+  console.log(`\n## 6. 기존 지식 카드\n`);
   const file = path.join(PLAYBOOK_ROOT, `${card.id}.json`);
   console.log(fs.existsSync(file) ? `이미 존재: ${path.relative(process.cwd(), file)}` : "없음 (신규 작성)");
 
