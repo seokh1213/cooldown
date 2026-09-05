@@ -142,12 +142,18 @@ export function deriveThreatOrder(enemy: ChampionCard, limit = 3): ThreatRank[] 
     .slice(0, limit);
 }
 
-export function threatOrderToText(ranks: ThreatRank[]): string {
+/**
+ * 소형 모델은 슬롯 문자만 보고 스킬 이름을 자기 챔피언 것에서 가져다 붙인다.
+ * 아리로 제드를 상대할 때 "R 혼령 질주"(아리 R)를 상대 궁극기로 적는 식이다.
+ * 그래서 줄마다 상대 챔피언 이름을 함께 박아 이름이 어디에 묶이는지 못 헷갈리게 한다.
+ */
+export function threatOrderToText(ranks: ThreatRank[], enemyName?: string): string {
   if (!ranks.length) {
     return "효과 태그로 확정할 수 있는 위협이 없습니다. 스킬 목록의 쿨타임과 계수를 근거로 쓰십시오.";
   }
+  const owner = enemyName ? `${enemyName} ` : "";
   return ranks
-    .map((r, i) => `${i + 1}순위 ${r.slot} ${r.name} — ${r.reasons.slice(0, 2).join(" / ")}`)
+    .map((r, i) => `${i + 1}순위 ${owner}${r.slot} ${r.name} — ${r.reasons.slice(0, 2).join(" / ")}`)
     .join("\n");
 }
 
@@ -431,7 +437,7 @@ export function buildUserPrompt(ctx: MatchupContext): string {
     );
   }
   sections.push(
-    `[조심할 스킬 우선순위 — 이 순서를 따르십시오]\n${threatOrderToText(deriveThreatOrder(ctx.enemy))}`,
+    `[조심할 스킬 우선순위 — 이 순서를 따르십시오]\n${threatOrderToText(deriveThreatOrder(ctx.enemy), ctx.enemy.name)}`,
   );
   const recommendation = deriveRecommendation(ctx);
   if (recommendation.length) {
@@ -547,12 +553,12 @@ export function buildSections(ctx: MatchupContext): PromptSection[] {
       .filter((l) => l.includes("군중 제어") || l.includes("최장 기본 스킬") || l.includes("고정 피해") || l.includes("사거리"))
       .map((l) => `- ${l}`)
       .join("\n")}`,
-    `[조심할 스킬 우선순위 — 이 순서와 이유를 그대로 쓰십시오]\n${threatOrderToText(deriveThreatOrder(ctx.enemy))}`,
+    `[조심할 스킬 우선순위 — 이 순서와 이유를 그대로 쓰십시오]\n${threatOrderToText(deriveThreatOrder(ctx.enemy), ctx.enemy.name)}`,
     // 위 순위는 효과 태그로만 매긴 것이라 중첩·성장처럼 태그가 없는 위협을 놓친다.
     // 다리우스 P 과다출혈이 그런 경우다. 사람이 짚어 둔 상대 스킬 지식을 순위 바로 옆에 붙여
     // 모델이 순위만 그대로 옮겨 적고 끝내지 않게 한다.
     enemySkillNotes.length
-      ? `[지식 카드가 짚은 상대 스킬 — 위 순위에 없어도 반드시 함께 쓰십시오]\n${enemySkillNotes
+      ? `[지식 카드가 짚은 ${ctx.enemy.name}의 스킬 — 위 순위에 없어도 반드시 함께 쓰십시오]\n${enemySkillNotes
           .map((e) => `- ${e.text}`)
           .join("\n")}`
       : "",
@@ -573,9 +579,12 @@ export function buildSections(ctx: MatchupContext): PromptSection[] {
 ## 라인전 구도
 (2~4문장. 레벨 구간, 쿨타임, 사거리를 근거로 언제 강하고 언제 약한지)
 ## 조심할 스킬
-(위 우선순위 순서대로 슬롯과 이름을 지목하고 이유를 문장으로 풀어 씁니다. "1순위" 같은 내부 표기를 그대로 복사하지 마십시오.
-우선순위는 군중 제어와 계수로만 매긴 것이라 중첩이나 성장 같은 위협은 빠져 있습니다.
-지식 카드가 더 위험하다고 짚은 스킬이 있으면 목록에 없더라도 함께 적으십시오)
+(**상대 챔피언의 스킬만** 씁니다. 내 챔피언의 스킬을 여기에 적으면 안 됩니다.
+위 우선순위 순서대로 슬롯과 이름을 지목하고 이유를 문장으로 풀어 씁니다.
+스킬 이름은 [상대 챔피언] 목록에 적힌 것을 그대로 옮겨 적고, 슬롯만 보고 이름을 지어내지 마십시오.
+"1순위" 같은 내부 표기는 복사하지 마십시오.
+우선순위는 군중 제어와 계수로만 매긴 것이라 중첩이나 성장 같은 위협은 빠져 있으니,
+지식 카드가 더 위험하다고 짚은 상대 스킬이 있으면 목록에 없더라도 함께 적으십시오)
 ## 콤보와 플레이 팁
 (지식 카드의 콤보를 스킬 순서 그대로 적고 딜 교환 요령을 덧붙임)`,
   ]
@@ -627,7 +636,7 @@ export function buildChain(ctx: MatchupContext): { system: string; turns: ChainT
     `[근거 사실]\n${deriveConclusions(ctx)
       .map((l) => `- ${l}`)
       .join("\n")}`,
-    `[조심할 스킬 우선순위 — 이 순서와 이유를 그대로 쓰십시오]\n${threatOrderToText(deriveThreatOrder(ctx.enemy))}`,
+    `[조심할 스킬 우선순위 — 이 순서와 이유를 그대로 쓰십시오]\n${threatOrderToText(deriveThreatOrder(ctx.enemy), ctx.enemy.name)}`,
     `[확정된 선택]\n${deriveRecommendation(ctx)
       .map((r) => `- ${r}`)
       .join("\n")}`,
