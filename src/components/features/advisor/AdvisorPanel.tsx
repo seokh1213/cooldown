@@ -35,6 +35,8 @@ export function AdvisorPanel({ advisor, patch, onClose }: AdvisorPanelProps) {
   const copy = t.advisor;
   const [draft, setDraft] = useState("");
   const [data, setData] = useState<AdvisorData | null>(null);
+  // 동의 화면을 건너뛰고 코드 답변만으로 써 보는 상태
+  const [skippedModel, setSkippedModel] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
 
   // 챔피언 자료는 모델과 별개로 받는다. 모델이 준비되기 전에 미리 받아 둔다.
@@ -81,11 +83,16 @@ export function AdvisorPanel({ advisor, patch, onClose }: AdvisorPanelProps) {
       const matchup = detectMatchup(data, question);
       if (matchup) {
         const built = buildMatchup(data, matchup);
-        advisor.sendMatchup(
-          question,
-          built.decided,
-          built.sections.map((section) => section.messages),
-        );
+        // 모델이 없으면 코드 답변만으로 끝낸다. 평가에서 63/66 이라 쓸 만하다.
+        if (!advisor.consented || advisor.webgpu?.supported === false) {
+          advisor.answerWithoutModel(question, built.codeAnswer);
+        } else {
+          advisor.sendMatchup(
+            question,
+            built.decided,
+            built.sections.map((section) => section.messages),
+          );
+        }
         setDraft("");
         return;
       }
@@ -139,12 +146,13 @@ export function AdvisorPanel({ advisor, patch, onClose }: AdvisorPanelProps) {
         </div>
       </header>
 
-      {!advisor.consented ? (
+      {!advisor.consented && !skippedModel ? (
         <AdvisorConsent
           webgpu={advisor.webgpu}
           storage={advisor.storage}
           onAccept={advisor.accept}
           onCancel={onClose}
+          onSkip={() => setSkippedModel(true)}
         />
       ) : (
         <>

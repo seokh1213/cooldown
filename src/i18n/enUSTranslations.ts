@@ -250,6 +250,7 @@ export const enUSTranslations: Translations = {
       privacyNotice: "Your questions and answers never leave the device. Nothing is sent to a server.",
       accept: "Download and start",
       cancel: "Not now",
+      skipModel: "Try without the model",
     },
     unsupported: {
       title: "Not available in this browser",

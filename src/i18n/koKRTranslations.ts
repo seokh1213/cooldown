@@ -250,6 +250,7 @@ export const koKRTranslations: Translations = {
       privacyNotice: "질문과 답변은 기기를 벗어나지 않습니다. 서버로 보내지 않습니다.",
       accept: "내려받고 시작",
       cancel: "나중에",
+      skipModel: "모델 없이 써보기",
     },
     unsupported: {
       title: "이 브라우저에서는 쓸 수 없습니다",

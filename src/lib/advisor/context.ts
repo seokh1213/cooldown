@@ -21,6 +21,7 @@ import {
   type OracleBundle,
   type OracleFile,
 } from "../../../scripts/llm/lib/oracleCore";
+import { buildCodeAnswer } from "../../../scripts/llm/lib/codeAnswer";
 import { matchupToLine } from "../../../scripts/llm/lib/matchupReason";
 import {
   playbookToText,
@@ -185,6 +186,14 @@ export interface BuiltMatchup {
   ctx: MatchupContext;
   /** 코드가 확정한 구간. 모델을 거치지 않고 그대로 보여 준다. */
   decided: string;
+  /**
+   * 모델 없이 코드만으로 만든 답변 전체.
+   *
+   * 평가 10건에서 적중 63/66 이 나왔다. 모델(64/66)과 1건 차이인데 0초다.
+   * 그래서 이걸 먼저 보여 주고 모델은 다듬는 역할로 둔다.
+   * 모델을 못 쓰는 브라우저나 내려받기를 거절한 사용자에게도 이 답은 줄 수 있다.
+   */
+  codeAnswer: string;
   /** 서술 구간. 호출마다 프롬프트가 다르다. */
   sections: PromptSection[];
 }
@@ -234,7 +243,12 @@ export function buildMatchup(data: AdvisorData, request: MatchupRequest): BuiltM
     profile: "web",
   };
 
-  return { ctx, decided: renderDecidedSections(ctx), sections: buildSections(ctx) };
+  return {
+    ctx,
+    decided: renderDecidedSections(ctx),
+    codeAnswer: buildCodeAnswer(ctx),
+    sections: buildSections(ctx),
+  };
 }
 
 /**
