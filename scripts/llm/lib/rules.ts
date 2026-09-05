@@ -168,15 +168,24 @@ export function rulesToText(rules: RuleNotes[]): string | undefined {
  *
  * 규칙 질문의 답은 규칙문 자체다. 모델이 더할 것이 없고 뒤집을 위험만 있다.
  * 그래서 원문(번역본)을 그대로 낸다. 구조상 틀릴 수가 없다.
+ *
+ * 다만 순서는 손봐야 한다. "정복자 스택에 점화는 포함되나" 의 답은 정복자 스무 줄 중
+ * 한 줄이라, 문서 순서대로 내면 정작 답이 화면 아래로 밀린다.
+ * 두 이름이 함께 나오는 줄을 맨 앞에 따로 세운다.
  */
 export function buildRuleAnswer(rules: RuleNotes[], patch: string): string | undefined {
   if (!rules.length) return undefined;
+  const crossed = crossReferences(rules);
   const blocks = rules.map((rule) => {
     const lines = rule.notesKo?.length === rule.notes.length ? rule.notesKo : rule.notes;
     const body = lines.flatMap((n) => renderNote(n)).join("\n");
     return `## ${rule.name}\n${body}`;
   });
+  const answerFirst = crossed.length
+    ? [`## 질문에 직접 답하는 줄\n${crossed.flatMap((n) => renderNote(n)).join("\n")}`]
+    : [];
   return [
+    ...answerFirst,
     ...blocks,
     `_패치 ${patch} 기준 위키(CC BY-SA) 판정 규칙을 그대로 옮긴 것입니다. ` +
       "요약하지 않았으므로 부정과 예외를 그대로 읽어 주십시오._",
