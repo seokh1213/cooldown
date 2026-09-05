@@ -268,3 +268,51 @@ export function buildChampionBrief(data: AdvisorData, card: ChampionCard): strin
   );
   return lines.join("\n\n");
 }
+
+/**
+ * "오공 카운터가 뭐야" 처럼 **상대 챔피언을 골라 달라는** 질문에 붙일 자료.
+ *
+ * 지금까지 이 질문에 답할 수 없었다. 지식 카드는 챔피언 단위고 통계도 챔피언·라인 단위라
+ * "누가 이 챔피언에게 강한가" 를 담은 데이터가 없었기 때문이다.
+ * lol.ps 요약에 상성별 승률이 있어 그것을 싣는다.
+ *
+ * 승률의 방향에 주의한다. `hard` 의 winRate 는 **그 챔피언(오공)의** 승률이므로
+ * 낮을수록 상대가 유리하다. 뒤집어 말해야 사용자가 헷갈리지 않는다.
+ */
+export function buildCounterBrief(
+  data: AdvisorData,
+  card: ChampionCard,
+  lane?: string,
+): string | undefined {
+  const oracleLane = data.oracle ? selectLane(data.oracle.byChampion.get(card.id), lane) : undefined;
+  const matchups = oracleLane?.matchups;
+  if (!matchups?.hard.length) return undefined;
+
+  const facts = data.oracle && oracleLane ? oracleFacts(data.oracle, oracleLane) : undefined;
+  const line = (m: { name: string; winRate: number; count: number }) =>
+    `- ${m.name}: ${card.name}의 승률 ${m.winRate.toFixed(1)}% ` +
+    `(${m.name} 쪽 승률 ${(100 - m.winRate).toFixed(1)}%), 표본 ${m.count.toLocaleString("ko-KR")}판`;
+
+  const parts = [
+    `[패치] ${data.patch}`,
+    `[질문 대상] ${card.name} (${oracleLane?.laneLabel ?? "주 라인"})`,
+    `[${card.name}을(를) 상대로 강한 챔피언 — 통계 순]\n${matchups.hard.map(line).join("\n")}`,
+  ];
+  if (matchups.easy.length) {
+    parts.push(`[${card.name}이(가) 편하게 상대하는 챔피언]\n${matchups.easy.map(line).join("\n")}`);
+  }
+  if (facts) parts.push(`[통계 기준] ${facts.scope}`);
+
+  parts.push(
+    `[${card.name} 자료]\n${championCardToText(card, { includeSpellText: false, spellDetail: "meta" })}`,
+  );
+  parts.push(
+    `[요청] 위 "${card.name}을(를) 상대로 강한 챔피언" 목록의 **${matchups.hard.length}종을 모두** ` +
+      "승률이 유리한 순서대로 적으십시오. 목록에 없는 챔피언을 추천하지 마십시오.\n" +
+      "형식은 이렇게 씁니다. 챔피언마다 한 줄입니다.\n" +
+      `- <챔피언 이름> (승률 <상대 쪽 승률>%, <표본>판): <${card.name}의 어떤 스탯이나 스킬 때문에 유리한지 한 문장>\n` +
+      `승률은 ${card.name} 기준으로 적혀 있으니 100에서 빼서 상대 쪽 승률로 바꿔 쓰십시오. ` +
+      "이유는 자료에 있는 사실만 씁니다.",
+  );
+  return parts.join("\n\n");
+}

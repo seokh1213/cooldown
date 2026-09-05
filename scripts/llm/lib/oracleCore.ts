@@ -24,6 +24,14 @@ export interface OracleNamedSetRate {
   count: number;
 }
 
+/** 상성 하나. winRate 는 **이 챔피언의** 승률이라 낮을수록 불리하다. */
+export interface OracleMatchup {
+  id: string;
+  name: string;
+  winRate: number;
+  count: number;
+}
+
 export interface OracleSkillRow {
   skills: string[];
   winRate: number;
@@ -62,6 +70,11 @@ export interface OracleLane {
     shards: OracleNamedSetRate[];
   };
   summoners: OracleNamedSetRate[];
+  /** 상성별 승률. 상대를 구분하는 유일한 통계다. */
+  matchups?: {
+    hard: OracleMatchup[];
+    easy: OracleMatchup[];
+  };
   features?: {
     totalChampions: number;
     killsAt14: { value: number; rank: number };
@@ -150,6 +163,8 @@ export interface OracleFacts {
   scope: string;
   games?: number;
   lines: string[];
+  /** 상성별 승률 (있을 때만) */
+  matchups?: { hard: OracleMatchup[]; easy: OracleMatchup[] };
   /** 권장안에 넣을 이름들 */
   picks: {
     startingItems: string[];
@@ -223,10 +238,27 @@ export function oracleFacts(bundle: OracleBundle, lane: OracleLane): OracleFacts
     );
   }
 
+  const matchups = lane.matchups;
+  if (matchups?.hard.length) {
+    lines.push(
+      `상대하기 어려운 챔피언: ${matchups.hard
+        .map((m) => `${m.name}(내 승률 ${pct(m.winRate)}, ${m.count.toLocaleString("ko-KR")}판)`)
+        .join(", ")}`,
+    );
+  }
+  if (matchups?.easy.length) {
+    lines.push(
+      `상대하기 쉬운 챔피언: ${matchups.easy
+        .map((m) => `${m.name}(내 승률 ${pct(m.winRate)}, ${m.count.toLocaleString("ko-KR")}판)`)
+        .join(", ")}`,
+    );
+  }
+
   return {
     scope,
     games: lane.games,
     lines,
+    matchups,
     picks: {
       startingItems: starting[0]?.names ?? [],
       boots: boots.slice(0, 1).map((b) => b.name),

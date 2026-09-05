@@ -26,7 +26,9 @@ import * as fs from "fs";
 import * as path from "path";
 import { loadStaticData, PUBLIC_DATA_ROOT } from "../lib/data";
 import {
+  fetchChampSummary,
   fetchLaneFeatures,
+  type ChampSummary,
   fetchRuneStats,
   fetchSkillStats,
   fetchSpellItemStats,
@@ -101,6 +103,16 @@ interface LaneOracle {
     shards: NamedSetRate[];
   };
   summoners: NamedSetRate[];
+  /**
+   * 상성별 승률. 이 라인에서 이 챔피언이 상대별로 어떻게 하는지.
+   * 챔피언·라인 단위 통계로는 답할 수 없던 "누가 카운터인가" 를 여기서 답한다.
+   */
+  matchups?: {
+    /** 상대하기 어려운 챔피언. winRate 는 **이 챔피언의** 승률이라 낮을수록 불리 */
+    hard: Array<{ id: string; name: string; winRate: number; count: number }>;
+    /** 상대하기 쉬운 챔피언 */
+    easy: Array<{ id: string; name: string; winRate: number; count: number }>;
+  };
   /** 14분 지표와 라인 내 순위 (순위가 낮을수록 상위) */
   features?: {
     totalChampions: number;
@@ -111,6 +123,44 @@ interface LaneOracle {
     damagePerMin: { value: number; rank: number };
     turretPlates: { value: number; rank: number };
   };
+}
+
+/**
+ * 요약 응답에서 상성별 승률을 뽑는다.
+ *
+ * 빌드 유형(buildTypeId)마다 행이 나오지만 상성 목록은 같으므로 첫 행만 쓴다.
+ * 표본이 아주 작은 조합은 잡음이라 버린다.
+ */
+const MIN_MATCHUP_COUNT = 30;
+
+function buildMatchups(
+  summary: ChampSummary | undefined,
+  championByKey: Map<number, { id: string; name: string }>,
+): LaneOracle["matchups"] {
+  const row = summary?.[0];
+  if (!row) return undefined;
+  const pick = (
+    ids: number[] | undefined,
+    rates: number[] | undefined,
+    counts: number[] | undefined,
+  ) =>
+    (ids ?? [])
+      .map((key, i) => {
+        const champ = championByKey.get(key);
+        const winRate = rates?.[i];
+        const count = counts?.[i] ?? 0;
+        if (!champ || winRate === undefined || count < MIN_MATCHUP_COUNT) return undefined;
+        return { id: champ.id, name: champ.name, winRate, count };
+      })
+      .filter((v): v is { id: string; name: string; winRate: number; count: number } => !!v);
+
+  const hard = pick(row.counterChampionIdList, row.counterWinrateList, row.counterCountList);
+  const easy = pick(
+    row.counterEasyChampionIdList,
+    row.counterEasyWinrateList,
+    row.counterEasyCountList,
+  );
+  return hard.length || easy.length ? { hard, easy } : undefined;
 }
 
 interface ChampionOracle {
@@ -222,6 +272,10 @@ async function main() {
     }));
 
   const targets = args.limit ? data.champions.slice(0, args.limit) : data.champions;
+  // 상성 통계는 상대를 챔피언 키(숫자)로 준다. 이름을 붙이려면 역인덱스가 필요하다.
+  const championByKey = new Map(
+    data.champions.map((c) => [Number(c.key), { id: c.id, name: c.name }]),
+  );
   console.log(`대상 챔피언 ${targets.length}종\n`);
 
   const champions: ChampionOracle[] = [];
@@ -251,13 +305,14 @@ async function main() {
         lane: laneId,
       };
       const opts = { refresh: args.refresh, delayMs: args.delayMs };
-      const [skill, spellItem, runes, features] = [
+      const [skill, spellItem, runes, features, summary] = [
         await fetchSkillStats(championId, scope, opts),
         await fetchSpellItemStats(championId, scope, opts),
         await fetchRuneStats(championId, scope, opts),
         await fetchLaneFeatures(championId, scope, opts),
+        await fetchChampSummary(championId, scope, opts),
       ];
-      requestCount += 4;
+      requestCount += 5;
 
       const master = rows(skill?.master);
       const games = features?.count ?? master[0]?.count;
@@ -320,6 +375,7 @@ async function main() {
           shards: shardSets,
         },
         summoners: spellRows,
+        matchups: buildMatchups(summary, championByKey),
         features: features
           ? {
               totalChampions: features.totalChampions,

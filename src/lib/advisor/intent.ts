@@ -103,6 +103,17 @@ export function detectSingleChampion(
   return mentions[0].card;
 }
 
+/**
+ * "카운터가 뭐야", "누구를 골라야 해" 처럼 **상대 챔피언을 골라 달라는** 질문인지.
+ *
+ * 이 질문은 상성별 통계가 있어야 답할 수 있어 다른 자료를 붙인다.
+ */
+const COUNTER_ASK = /카운터|counter|천적|누구.{0,4}(골라|픽|해야)|어떤\s*챔피언.{0,8}(골라|픽|해야|좋)|상대로.{0,6}(뭐|누구|어떤)/i;
+
+export function asksForCounter(text: string): boolean {
+  return COUNTER_ASK.test(text);
+}
+
 /** 사용자가 챔피언 이름만 적었을 때를 위한 보조 (예: "오공 럼블") */
 export function looksLikeChampionQuery(data: AdvisorData, text: string): boolean {
   return Boolean(findChampion(data, text.trim()));
