@@ -214,7 +214,13 @@ export function selectDefensiveItems(
 
   // 시작 아이템은 역할군 태그가 없으므로 내 계수와 맞는 공격 스탯인지로 걸러낸다.
   // (AD 브루저에게 도란의 반지·암흑의 인장을 권하면 안 된다)
-  const myScalingPrimary = me?.scalingProfile.primary;
+  // 계수도 라이엇 damageType 을 우선한다 (나서스처럼 툴팁 집계가 틀리는 경우가 있다)
+  const myScalingPrimary =
+    me?.riot?.damageType === "물리"
+      ? "AD"
+      : me?.riot?.damageType === "마법"
+        ? "AP"
+        : me?.scalingProfile.primary;
   const starterFitsScaling = (item: NormalizedItem) => {
     const givesAp = hasStat(item, "ABILITY_POWER");
     const givesAd = hasStat(item, "ATTACK_DAMAGE");

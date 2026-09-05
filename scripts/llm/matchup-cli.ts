@@ -14,6 +14,7 @@ import { loadStaticData, type LlmLocale } from "./lib/data";
 import { createChampionCardBuilder } from "./lib/facts";
 import { loadCuratedTips, selectTips } from "./lib/knowledge";
 import { loadPlaybooks, selectPlaybook } from "./lib/playbook";
+import { loadOracleBundle, oracleFacts, selectLane } from "./lib/oracle";
 import { listOllamaModels, ollamaChat, type ChatMessage } from "./lib/ollama";
 import {
   buildChain,
@@ -171,6 +172,13 @@ export function buildMatchupContext(args: {
     ]),
   );
 
+  // 통계 오라클 (없으면 조용히 건너뛴다)
+  const oracleBundle = loadOracleBundle(args.patch);
+  const oracleLane = oracleBundle
+    ? selectLane(oracleBundle.byChampion.get(me.id), args.lane)
+    : undefined;
+  const oracle = oracleBundle && oracleLane ? oracleFacts(oracleBundle, oracleLane) : undefined;
+
   const ctx: MatchupContext = {
     patch: data.patch,
     lane: args.lane,
@@ -185,6 +193,7 @@ export function buildMatchupContext(args: {
     keystones: selectKeystones(data.runes.runes),
     summoners: selectRiftSummoners(data.summoners.spells),
     tips,
+    oracle,
     compact: args.compact,
     profile: args.profile,
   };
@@ -315,7 +324,7 @@ async function main() {
 
   const playbookCount = (ctx.playbook?.mine.length ?? 0) + (ctx.playbook?.vsEnemy.length ?? 0);
   console.error(
-    `[${args.model}] ${ctx.me.name} vs ${ctx.enemy.name}${ctx.lane ? ` (${ctx.lane})` : ""} — 프롬프트 ${promptChars}자, 지식 카드 ${playbookCount}건, 검증 팁 ${ctx.tips.length}건, 방어 기준 ${ctx.items.focus.join("+")}\n`,
+    `[${args.model}] ${ctx.me.name} vs ${ctx.enemy.name}${ctx.lane ? ` (${ctx.lane})` : ""} — 프롬프트 ${promptChars}자, 지식 카드 ${playbookCount}건, 검증 팁 ${ctx.tips.length}건, 통계 ${ctx.oracle ? `${ctx.oracle.games?.toLocaleString("ko-KR")}판` : "없음"}, 방어 기준 ${ctx.items.focus.join("+")}\n`,
   );
 
   const result = await ollamaChat({
