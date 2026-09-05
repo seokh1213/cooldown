@@ -135,8 +135,6 @@ export const enUSTranslations: Translations = {
         intro:
           "Tooltips tell you \"40 armor penetration\" but never how that reaches the damage number. These are the formulas whose order and shape are easy to get wrong.",
         exampleLabel: "Example:",
-        source:
-          "Source: LoL Fandom Wiki. Entries that patches have changed note the patch.",
       },
     },
     pages: {

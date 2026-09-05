@@ -56,10 +56,6 @@ export function FormulasTab() {
           </div>
         </section>
       ))}
-
-      <p className="text-xs text-muted-foreground/80 leading-relaxed">
-        {copy.source}
-      </p>
     </div>
   );
 }

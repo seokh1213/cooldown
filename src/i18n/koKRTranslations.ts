@@ -135,8 +135,6 @@ export const koKRTranslations: Translations = {
         intro:
           "툴팁은 \"방어구 관통력 40\" 까지만 알려주고 그게 피해량에 어떻게 반영되는지는 말해주지 않아요. 순서와 식이 헷갈리는 것들을 모았습니다.",
         exampleLabel: "예:",
-        source:
-          "출처: LoL Fandom 위키. 패치로 바뀔 수 있는 항목에는 해당 패치를 적어 두었습니다.",
       },
     },
     pages: {

@@ -126,7 +126,6 @@ export interface Translations {
     formulas: {
       intro: string;
       exampleLabel: string;
-      source: string;
     };
   };
   pages: {

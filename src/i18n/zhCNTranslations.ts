@@ -124,7 +124,6 @@ export const zhCNTranslations: Translations = {
       intro:
         "提示框只会告诉你“40 点护甲穿透”，却不会说明它如何影响最终伤害。这里整理了顺序和写法最容易搞错的那些公式。",
       exampleLabel: "示例：",
-      source: "来源：LoL Fandom 维基。会随版本变动的条目已标注对应版本。",
     },
   },
   pages: {
