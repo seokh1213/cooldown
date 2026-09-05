@@ -331,7 +331,7 @@ test("documents game formulas in the encyclopedia", async ({ page }) => {
 
   // 관통은 순서가 결과를 바꾸므로 순서 자체가 핵심 내용이다
   await expect(page.getByRole("heading", { name: "저항력 감소와 관통" })).toBeVisible();
-  await expect(page.getByText("① 저항력 감소(고정)", { exact: false })).toBeVisible();
+  await expect(page.getByText("① 저항력 감소 (고정)", { exact: false })).toBeVisible();
   await expect(page.getByText("100 / (100 + 저항력)", { exact: false }).first()).toBeVisible();
 
   // 스탯 아이콘은 여기서도 CommunityDragon 이미지로 그려진다

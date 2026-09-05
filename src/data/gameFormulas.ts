@@ -10,7 +10,8 @@ import type { Language } from "@/i18n/translations";
  * 계산식 자체는 언어와 무관하므로 번역 파일이 아니라 여기 둔다.
  * (i18n 쪽에 넣으면 영어·중국어 문자열이 같아져 번역 누락 검사에 걸린다)
  *
- * 근거는 LoL Fandom 위키 문서다. 패치로 바뀐 항목에는 패치를 적어 둔다.
+ * 근거는 LoL Fandom 위키 문서와 인게임 데이터다.
+ * 패치로 바뀐 항목에는 패치를 함께 적는다.
  */
 
 type Localized = Record<Language, string>;
@@ -69,18 +70,23 @@ export const FORMULA_GROUPS: FormulaGroup[] = [
         id: "effective-health",
         icon: "scalehealth",
         title: {
-          ko_KR: "실질 체력",
-          en_US: "Effective health",
-          zh_CN: "有效生命值",
+          ko_KR: "실질 체력 (위 식을 뒤집어 읽기)",
+          en_US: "Effective health (the same formula, inverted)",
+          zh_CN: "有效生命值（同一公式的逆向读法）",
         },
         formula: "실질 체력 = 체력 × (1 + 저항력 / 100)",
         description: {
           ko_KR:
-            "저항력 1점마다 실질 체력이 정확히 1%씩 는다. 그래서 저항력은 쌓을수록 손해 보는 스탯이 아니다. 다만 체력이 낮으면 늘어나는 절대량도 작다.",
+            "새로운 규칙이 아니라 위 감쇄식을 체력 쪽에서 다시 쓴 것이다. 받는 피해가 100/(100+저항력) 배가 되니, 버틸 수 있는 양은 그 역수만큼 늘어난다. 이렇게 보면 저항력 1점이 체력을 정확히 1%씩 늘려 준다는 게 드러나서, 방어 아이템과 체력 아이템 중 어느 쪽이 이득인지 비교할 때 쓴다.",
           en_US:
-            "Each point of resistance adds exactly 1% to effective health, so resistances never suffer diminishing returns. The absolute gain is small when your health pool is small.",
+            "Not a separate rule — it is the mitigation formula rewritten from the health side. Damage taken is multiplied by 100/(100+resist), so the amount you can absorb grows by its reciprocal. Read this way it becomes clear that one point of resistance adds exactly 1% health, which is how you compare a resistance item against a health item.",
           zh_CN:
-            "每 1 点抗性正好为有效生命值增加 1%，因此抗性不会出现收益递减。但生命值本身较低时，绝对收益也小。",
+            "并非另一条规则，而是把上面的减免公式从生命值一侧改写。承受伤害变为 100/(100+抗性) 倍，因此能承受的量按其倒数增长。这样看就能明白 1 点抗性正好等于 1% 生命值，用于比较抗性装备与生命值装备的收益。",
+        },
+        example: {
+          ko_KR: "체력 2000 + 저항력 100 → 실질 4000",
+          en_US: "2000 health + 100 resist → 4000 effective",
+          zh_CN: "2000 生命值 + 100 抗性 → 有效 4000",
         },
       },
       {
@@ -94,11 +100,11 @@ export const FORMULA_GROUPS: FormulaGroup[] = [
         formula: "받는 피해 = 원래 피해 × (2 − 100 / (100 − 저항력))",
         description: {
           ko_KR:
-            "저항력이 0 밑으로 내려가면 다른 곡선을 쓰고, 추가 피해는 최대 2배에서 멈춘다. 관통으로는 음수가 되지 않으므로 저항력 감소(reduction)로만 도달한다.",
+            "저항력이 0 밑으로 내려가면 다른 곡선을 쓰고, 추가 피해는 최대 2배에서 멈춘다. 관통으로는 음수가 되지 않으므로 고정 저항력 감소로만 도달한다.",
           en_US:
-            "Below zero the curve changes and bonus damage caps at 2x. Penetration cannot create negative resistance — only reduction can.",
+            "Below zero the curve changes and bonus damage caps at 2x. Penetration cannot create negative resistance — only flat reduction can.",
           zh_CN:
-            "抗性降到 0 以下会改用另一条曲线，额外伤害最多为 2 倍。穿透无法造成负抗性，只有削减可以。",
+            "抗性降到 0 以下会改用另一条曲线，额外伤害最多为 2 倍。穿透无法造成负抗性，只有固定削减可以。",
         },
       },
       {
@@ -114,8 +120,7 @@ export const FORMULA_GROUPS: FormulaGroup[] = [
             "저항력 계산을 통째로 건너뛴다. 다만 '받는 피해 감소' 효과는 고정 피해에도 적용된다.",
           en_US:
             "Skips the resistance step entirely. Flat damage reduction effects still apply to it.",
-          zh_CN:
-            "完全跳过抗性计算。但“受到伤害降低”类效果依然对其生效。",
+          zh_CN: "完全跳过抗性计算。但“受到伤害降低”类效果依然对其生效。",
         },
       },
       {
@@ -157,10 +162,11 @@ export const FORMULA_GROUPS: FormulaGroup[] = [
           en_US: "Reduction vs. penetration",
           zh_CN: "削减与穿透的区别",
         },
-        formula: "감소 = 대상의 저항력 자체를 깎음\n관통 = 내 피해 계산에서만 무시",
+        formula:
+          "감소 = 대상의 저항력 자체를 깎음\n관통 = 내 피해 계산에서만 무시",
         description: {
           ko_KR:
-            "감소(reduction)는 대상 스탯을 실제로 낮춰 아군 전체가 이득을 본다. 관통(penetration)은 내 피해를 계산할 때만 적용되고 대상의 표시 스탯은 그대로다. 기본 저항력과 추가 저항력은 따로 계산한다.",
+            "감소는 대상 스탯을 실제로 낮춰 아군 전체가 이득을 본다. 관통은 내 피해를 계산할 때만 적용되고 대상의 표시 스탯은 그대로다. 기본 저항력과 추가 저항력은 따로 계산한다.",
           en_US:
             "Reduction actually lowers the target's stat, so the whole team benefits. Penetration only applies while computing your own damage and leaves the target's displayed stat unchanged. Base and bonus resistances are computed separately.",
           zh_CN:
@@ -176,14 +182,14 @@ export const FORMULA_GROUPS: FormulaGroup[] = [
           zh_CN: "计算顺序（物理与魔法通用）",
         },
         formula:
-          "① 저항력 감소(고정)\n② 저항력 감소(%)\n③ 관통(%)\n④ 관통(고정)",
+          "① 저항력 감소 (고정)\n② 저항력 감소 (%)\n③ 관통 (%)\n④ 관통 (고정)",
         description: {
           ko_KR:
-            "순서가 결과를 바꾼다. 방어력·물리 관통력이든 마법 저항력·마법 관통력이든 같은 순서를 따른다.",
+            "순서가 결과를 바꾼다. 방어력 쪽이든 마법 저항력 쪽이든 네 단계가 똑같이 적용된다.",
           en_US:
-            "The order changes the result. It is the same on both sides — armor with armor penetration, magic resist with magic penetration.",
+            "The order changes the result, and the same four steps apply on the armor side and the magic resist side alike.",
           zh_CN:
-            "顺序会改变结果。护甲与护甲穿透、魔抗与法术穿透两侧遵循相同顺序。",
+            "顺序会改变结果，护甲侧与魔抗侧都遵循相同的四个步骤。",
         },
       },
       {
@@ -193,12 +199,12 @@ export const FORMULA_GROUPS: FormulaGroup[] = [
           en_US: "Flat resistance reduction",
           zh_CN: "固定抗性削减",
         },
-        formula: "저항력 = 저항력 − 감소량   (음수 가능)",
+        formula: "저항력 = 저항력 − 감소량   (합연산, 음수 가능)",
         description: {
           ko_KR:
-            "여러 효과가 더해지고, 기본 저항력과 추가 저항력에 비례해 나뉘어 적용된다. 유일하게 저항력을 0 밑으로 내릴 수 있는 수단이다.",
+            "여러 효과가 더해지고, 기본 저항력과 추가 저항력에 비례해 나뉘어 적용된다. 저항력을 0 밑으로 내릴 수 있는 유일한 수단이다.",
           en_US:
-            "Sources stack additively and the amount is split proportionally between base and bonus resistance. This is the only effect that can push resistance below zero.",
+            "Sources add together and the amount is split proportionally between base and bonus resistance. This is the only effect that can push resistance below zero.",
           zh_CN:
             "多个来源相加，并按基础抗性与额外抗性的比例分摊。这是唯一能把抗性压到 0 以下的手段。",
         },
@@ -215,12 +221,12 @@ export const FORMULA_GROUPS: FormulaGroup[] = [
           en_US: "Percent resistance reduction",
           zh_CN: "百分比抗性削减",
         },
-        formula: "저항력 = 저항력 × (1 − 감소%)",
+        formula: "저항력 = 저항력 × (1 − 감소%)   (곱연산)",
         description: {
           ko_KR:
             "여러 개가 겹치면 곱해진다. 대상 저항력이 0 이하면 아무 일도 일어나지 않는다.",
           en_US:
-            "Multiple sources stack multiplicatively, and it does nothing if the target is already at 0 or less.",
+            "Multiple sources multiply together, and it does nothing if the target is already at 0 or less.",
           zh_CN: "多个来源相乘叠加；若目标抗性已为 0 或更低则完全无效。",
         },
       },
@@ -228,52 +234,36 @@ export const FORMULA_GROUPS: FormulaGroup[] = [
         id: "percent-penetration",
         icon: "scaleapen",
         title: {
-          ko_KR: "관통 (%)",
-          en_US: "Percent penetration",
-          zh_CN: "百分比穿透",
+          ko_KR: "방어구 관통력 · 마법 관통력 (%)",
+          en_US: "Percent armor / magic penetration",
+          zh_CN: "百分比护甲穿透 · 法术穿透",
         },
-        formula: "적용 저항력 = 저항력 × (1 − 관통%)",
+        formula: "적용 저항력 = 저항력 × (1 − 관통%)   (곱연산)",
         description: {
           ko_KR:
-            "고정 관통보다 먼저 적용된다. 그래서 저항력이 높은 대상일수록 이득이 크다.",
+            "물리 쪽은 '방어구 관통력', 마법 쪽은 '마법 관통력'으로 표기되며 둘 다 비율이다. 서로 다른 출처끼리는 곱해진다. 고정 관통보다 먼저 적용되므로 저항력이 높은 대상일수록 이득이 크다.",
           en_US:
-            "Applied before flat penetration, so its value grows with the target's resistance.",
-          zh_CN: "在固定穿透之前结算，因此目标抗性越高收益越大。",
-        },
-      },
-      {
-        id: "lethality",
-        icon: "scaleapen",
-        title: {
-          ko_KR: "물리 관통력 (치명적 일격)",
-          en_US: "Lethality (flat armor penetration)",
-          zh_CN: "穿甲（固定护甲穿透）",
-        },
-        formula: "무시하는 방어력 = 치명적 일격 수치 (1 : 1)",
-        description: {
-          ko_KR:
-            "예전에는 레벨에 비례해 62~100%만 적용됐지만 V14.1부터 레벨과 무관하게 전부 적용된다. 방어력이 0 이하인 대상에게는 효과가 없다.",
-          en_US:
-            "It used to scale with level (62–100% of the value); since V14.1 the full amount applies at every level. It does nothing against targets at 0 or less armor.",
+            "Called armor penetration on the physical side and magic penetration on the magic side; both are percentages. Different sources multiply together. It resolves before flat penetration, so its value grows with the target's resistance.",
           zh_CN:
-            "过去会随等级只生效 62–100%，自 V14.1 起在任何等级都全额生效。对护甲 0 或以下的目标无效。",
+            "物理侧称为“护甲穿透”，魔法侧称为“法术穿透”，两者都是百分比。不同来源相乘叠加。它在固定穿透之前结算，因此目标抗性越高收益越大。",
         },
       },
       {
-        id: "magic-penetration",
+        id: "flat-penetration",
         icon: "scalempen",
         title: {
-          ko_KR: "마법 관통력 (고정)",
-          en_US: "Flat magic penetration",
-          zh_CN: "固定法术穿透",
+          ko_KR: "물리 관통력 · 마법 관통력 (고정)",
+          en_US: "Flat armor (lethality) / magic penetration",
+          zh_CN: "穿甲 · 固定法术穿透",
         },
-        formula: "적용 마저 = 마법 저항력 × (1 − 관통%) − 고정 관통",
+        formula: "적용 저항력 = 저항력 − 고정 관통   (합연산, 0 미만 불가)",
         description: {
           ko_KR:
-            "물리 쪽 치명적 일격과 같은 자리에 들어간다. 마법 저항력을 0 밑으로 내리지는 않는다.",
+            "물리 쪽 고정 관통이 '물리 관통력(Lethality)', 마법 쪽이 '마법 관통력(고정)'이다. 비율 관통과 달리 서로 다른 출처끼리 더해진다. 물리 관통력은 예전에 레벨에 비례해 62~100%만 적용됐지만 V14.1부터 레벨과 무관하게 전부 적용된다. 대상 저항력이 0 이하면 효과가 없고, 저항력을 음수로 만들지도 않는다.",
           en_US:
-            "Occupies the same slot as lethality on the physical side and never pushes magic resist below zero.",
-          zh_CN: "与物理侧的穿甲处于同一环节，且不会把魔抗降到 0 以下。",
+            "Flat penetration is called lethality on the physical side and flat magic penetration on the magic side. Unlike percent penetration, different sources add together. Lethality used to scale with level (62–100% of the value); since V14.1 the full amount applies at every level. It does nothing against a target at 0 or less resistance and never pushes resistance negative.",
+          zh_CN:
+            "物理侧的固定穿透称为“穿甲（Lethality）”，魔法侧称为“固定法术穿透”。与百分比穿透不同，不同来源相加。穿甲过去会随等级只生效 62–100%，自 V14.1 起在任何等级都全额生效。对抗性 0 或以下的目标无效，也不会造成负抗性。",
         },
       },
     ],
@@ -309,18 +299,18 @@ export const FORMULA_GROUPS: FormulaGroup[] = [
         id: "critical-strike",
         icon: "scalecritmult",
         title: {
-          ko_KR: "치명타",
-          en_US: "Critical strike",
-          zh_CN: "暴击",
+          ko_KR: "치명타 피해량",
+          en_US: "Critical strike damage",
+          zh_CN: "暴击伤害",
         },
         formula: "치명타 피해 = 원래 피해 × 175% (기본값)",
         description: {
           ko_KR:
-            "기본 치명타 피해량은 175%다. 아이템·룬으로 더 올릴 수 있고, 툴팁에 '치명타 피해량' 계수가 붙은 스킬은 이 값을 그대로 참조한다.",
+            "기본 치명타 피해량은 175%다. 오래된 자료에는 200%로 적혀 있는 경우가 있는데 지금 값이 아니다. 치명타 피해량 증가는 서로 더해진다 — 무한의 대검이 치명타 피해량 30%를 주므로 그것만 들면 205%가 된다.",
           en_US:
-            "Base critical strike damage is 175%. Items and runes can raise it, and abilities that scale with critical strike damage read the same value.",
+            "Base critical strike damage is 175%. Older references still say 200%, which is no longer current. Critical strike damage bonuses add together — Infinity Edge grants 30%, bringing it to 205% on its own.",
           zh_CN:
-            "基础暴击伤害为 175%。装备与符文可提高该数值，带“暴击伤害”加成的技能也直接引用它。",
+            "基础暴击伤害为 175%。较旧的资料仍写作 200%，那已不是当前数值。暴击伤害加成彼此相加——无尽之刃提供 30%，单独装备时即为 205%。",
         },
       },
       {
@@ -334,11 +324,11 @@ export const FORMULA_GROUPS: FormulaGroup[] = [
         formula: "1 적응형 = 추가 공격력 0.6  또는  주문력 1",
         description: {
           ko_KR:
-            "추가 공격력이 주문력보다 많으면 공격력으로, 아니면 주문력으로 바뀐다. 지속 효과로 얻은 공격력·주문력은 판정에 넣지 않는다.",
+            "추가 공격력이 주문력보다 많으면 공격력으로, 아니면 주문력으로 바뀐다. 지속 효과로 얻은 공격력·주문력은 이 판정에 넣지 않는다.",
           en_US:
-            "Converts to attack damage when bonus AD exceeds ability power, otherwise to ability power. AD and AP granted by passives do not count toward the comparison.",
+            "Converts to attack damage when bonus AD exceeds ability power, otherwise to ability power. AD and AP granted by passive effects do not count toward the comparison.",
           zh_CN:
-            "额外攻击力高于法术强度时转为攻击力，否则转为法术强度。被动效果提供的攻击力与法强不计入判定。",
+            "额外攻击力高于法术强度时转为攻击力，否则转为法术强度。被动效果提供的攻击力与法强不计入该判定。",
         },
       },
     ],
@@ -468,11 +458,11 @@ export const FORMULA_GROUPS: FormulaGroup[] = [
         formula: "군중 제어 지속시간 = 원래 지속시간 × (1 − 강인함)",
         description: {
           ko_KR:
-            "지속시간은 효과가 걸리는 순간에 확정된다. 걸린 뒤에 강인함을 올려도 이미 걸린 효과는 짧아지지 않는다. 이동 불가 계열에만 적용되고 둔화에는 적용되지 않는다.",
+            "지속시간은 효과가 걸리는 순간에 확정되므로, 걸린 뒤에 강인함을 올려도 이미 걸린 효과는 짧아지지 않는다. 0.3초 밑으로는 줄지 않는다. 공중에 띄우기·졸음·시야 축소·정지·억제에는 듣지 않고, 둔화에도 듣지 않는다. 출처 조합에 따라 더해지기도 하고 곱해지기도 한다.",
           en_US:
-            "Duration is locked in when the crowd control lands; raising tenacity afterwards does not shorten an effect already applied. It affects disables, not slows.",
+            "Duration is locked in when the crowd control lands, so raising tenacity afterwards does not shorten an effect already applied. It cannot cut duration below 0.3 seconds. Airborne, drowsy, nearsight, stasis and suppression are exempt, as are slows. Sources stack additively or multiplicatively depending on the combination.",
           zh_CN:
-            "持续时间在控制生效的瞬间确定；之后再提高坚韧不会缩短已生效的效果。它作用于控制类效果，不作用于减速。",
+            "持续时间在控制生效的瞬间确定，之后再提高坚韧也不会缩短已生效的效果，且最短只能减到 0.3 秒。击飞、瞌睡、视野缩小、停滞与压制不受其影响，减速同样不受影响。不同来源可能相加也可能相乘。",
         },
       },
       {
@@ -485,11 +475,11 @@ export const FORMULA_GROUPS: FormulaGroup[] = [
         formula: "적용 둔화 = 둔화 × (1 − 둔화 저항)",
         description: {
           ko_KR:
-            "강인함과는 별개의 스탯이다. 강인함은 둔화에 듣지 않고, 둔화 저항은 이동 불가 계열에 듣지 않는다.",
+            "강인함과는 별개의 스탯이다. 지속시간이 아니라 둔화의 세기 자체를 깎는다. 강인함은 둔화에 듣지 않고, 둔화 저항은 이동 불가 계열에 듣지 않는다.",
           en_US:
-            "A separate stat from tenacity. Tenacity does not affect slows, and slow resist does not affect disables.",
+            "A separate stat from tenacity: it weakens the slow itself rather than shortening it. Tenacity does not affect slows, and slow resist does not affect disables.",
           zh_CN:
-            "与坚韧是彼此独立的属性。坚韧对减速无效，减速抗性对控制类效果无效。",
+            "与坚韧是彼此独立的属性：它削弱减速的强度而非缩短时间。坚韧对减速无效，减速抗性对控制类效果无效。",
         },
       },
     ],
@@ -555,11 +545,11 @@ export const FORMULA_GROUPS: FormulaGroup[] = [
           "합연산 : 총합 = A + B + C\n곱연산 : 총합 = 1 − (1 − A) × (1 − B)",
         description: {
           ko_KR:
-            "고정 수치와 대부분의 % 증가는 더해진다. 받는 피해 감소, 저항력 % 감소처럼 '깎는' 쪽 효과는 곱해져서 절대 100%가 되지 않는다.",
+            "고정 수치와 대부분의 % 증가는 더해진다. 받는 피해 감소, 비율 저항력 감소, 비율 관통처럼 '깎는' 쪽 효과는 곱해져서 절대 100%가 되지 않는다.",
           en_US:
-            "Flat values and most percent bonuses add together. Effects that cut something — damage reduction, percent resistance reduction — multiply instead, so they never reach 100%.",
+            "Flat values and most percent bonuses add together. Effects that cut something — damage reduction, percent resistance reduction, percent penetration — multiply instead, so they never reach 100%.",
           zh_CN:
-            "固定数值与多数百分比加成相加。而“削减”类效果（减伤、百分比抗性削减）则相乘，因此永远无法达到 100%。",
+            "固定数值与多数百分比加成相加。而“削减”类效果（减伤、百分比抗性削减、百分比穿透）则相乘，因此永远无法达到 100%。",
         },
       },
     ],
