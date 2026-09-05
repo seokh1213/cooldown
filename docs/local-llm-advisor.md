@@ -62,19 +62,17 @@ D 계층이 이 설계의 핵심이다. 소형 모델에게 후보 목록을 주
 
 ```json
 {
-  "id": "aatrox-rune-default",
-  "category": "rune",
-  "text": "핵심 룬은 정복자가 기본이다. … 최후의 일격보다 최후의 저항이 무난하다.",
-  "when": { "enemyRange": ["원거리"] },
-  "refs": { "runes": ["정복자", "최후의 저항"] },
-  "avoid": { "runes": ["최후의 일격"] },
-  "source": "…",
+  "id": "aatrox-combo-w",
+  "category": "combo",
+  "text": "W 연계는 Q 1타 → W → 끌려오기 전에 Q 2타 → 끌려온 직후 Q 3타 순서다. …",
+  "source": "스킬 툴팁 판정",
   "verifiedPatch": "26.17"
 }
 ```
 
-- `category`: `combo` `phase` `rune` `summoner` `start-item` `first-item` `core-item`
-  `situational-item` `laning` `teamfight` `skill`
+- `category`: `combo` `phase` `skill` `laning` `teamfight` `situational-item`.
+  `rune` `summoner` `start-item` `first-item` `core-item` 은 **통계 오라클이 대신하므로 쓰지 않는다**
+  (7장 참고). 조건이 붙는 아이템 예외만 `situational-item` 으로 남긴다.
 - `when`: 상대 카드의 파생 사실로 판정한다. `enemyDamage` `enemyScaling` `enemyRange`
   `enemyHasEffects` `enemyLacksEffects` `enemyRoles` `enemyIds` `lanes`.
   덕분에 "상대가 원거리면 재생의 바람" 같은 조건부 지식을 챔피언당 한 번만 쓰면 된다.
@@ -84,6 +82,23 @@ D 계층이 이 설계의 핵심이다. 소형 모델에게 후보 목록을 주
 
 `knowledge/tips/<ChampionId>.json` — 상성 한정 지식. `vs`, `lane` 으로 좁힌다.
 `category: verdict` 는 상성 판정(누가 유리한지)이며, 데이터로 도출할 수 없어 반드시 사람이 쓴다.
+
+### 작성 범위
+
+플레이북은 **173종 전량**을 갖췄다. playing 2,406항목, against 972항목(챔피언당 평균 13.9 / 5.6)이고
+구성은 skill 1,420, combo 493, laning 488, teamfight 360, phase 356, situational-item 261 이다.
+
+카드 하나를 쓰는 비용은 `npm run llm:source-pack -- --champ <챔피언>` 이 낮췄다. 사실 카드, 라이엇·위키
+분류, 해당 라인 통계, 위키 팁, 작성 지침을 한 번에 출력하므로 작성자가 웹을 다시 뒤지지 않는다.
+`--todo` 는 아직 안 쓴 챔피언을 표본 많은 순으로 보여 준다.
+
+스킬 툴팁 자체가 비어 있는 경우는 과거 패치로 소급해 메운다(`docs/patch-fallback.md`).
+26.17 기준 결측 63건 중 3건을 26.15 본문으로 채웠고, 사라진 문장 50건을 확인 대기 목록으로 남겼다.
+소급해도 못 채운 자리는 자료 묶음이 "본문 서술을 피하라"고 알려 준다.
+
+위키 팁이 현재 툴팁·통계와 어긋나면 툴팁과 통계를 따른다. 실제로 스카너·피들스틱·볼리베어는
+위키 팁이 개편 전 스킬 기준이라 폐기했고, 코르키 짐 꾸러미는 26.17 툴팁에 서술이 없어 진입 수단으로
+계산하지 말라는 경고로 대체했다.
 
 ## 5. 결론 조립(D)
 
