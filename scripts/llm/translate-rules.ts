@@ -30,7 +30,9 @@ const SYSTEM = `당신은 리그 오브 레전드 위키 문서를 한국어로 
 규칙
 - 문장 하나를 한국어 한 문장으로 옮깁니다. 설명을 덧붙이지 않습니다.
 - 게임 용어는 한국어판 표기를 씁니다. Conqueror는 정복자, Ignite는 점화, Electrocute는 감전,
-  Phase Rush는 질풍, Summon Aery는 콩콩이 소환, Cleanse는 정화, on-hit은 적중 시 효과입니다.
+  Phase Rush는 질풍, Summon Aery는 콩콩이 소환, Cleanse는 정화, on-hit은 적중 시 효과,
+  Press the Attack은 집중 공격, Conditioning은 우세, tick은 틱, level-scaled는 레벨에 따라 달라지는 값입니다.
+- 한국어 용어 뒤에 영어 원문을 괄호로 덧붙이지 않습니다.
 - 챔피언 스킬은 "챔피언 슬롯" 형태를 유지합니다. "Azir W" 는 "아지르 W" 로 옮깁니다.
 - 수치와 조건을 빠뜨리지 않습니다. 뜻을 바꾸지 않습니다.
 - 번역문만 출력합니다. 원문이나 따옴표를 붙이지 않습니다.`;

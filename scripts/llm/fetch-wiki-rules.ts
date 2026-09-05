@@ -112,7 +112,12 @@ async function main(): Promise<void> {
         subject: "summoner" as const,
       })),
   ];
-  const scoped = limit ? targets.slice(0, limit) : targets;
+  // 소환사 주문은 지도마다 별도 항목으로 들어 있어 같은 이름이 여러 번 나온다.
+  // 위키 문서는 하나뿐이므로 한 번만 받는다.
+  const unique = new Map<string, (typeof targets)[number]>();
+  for (const t of targets) if (!unique.has(t.page)) unique.set(t.page, t);
+  const deduped = [...unique.values()];
+  const scoped = limit ? deduped.slice(0, limit) : deduped;
 
   console.log(`룬 ${ko.runes.runes.length}종, 소환사 주문 ${ko.summoners.spells.length}종 중 ${scoped.length}건 조회\n`);
 
