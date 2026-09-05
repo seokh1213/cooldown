@@ -23,10 +23,10 @@ import {
 } from "../../../scripts/llm/lib/oracleCore";
 import { buildCodeAnswer } from "../../../scripts/llm/lib/codeAnswer";
 import {
+  buildRuleAnswer,
   findMentionedRules,
   findRulesMentioning,
   indexRules,
-  rulesToText,
   type RuleIndex,
   type RuleNotes,
 } from "../../../scripts/llm/lib/rules";
@@ -379,16 +379,11 @@ export function buildRuleBrief(data: AdvisorData, question: string): string | un
   const named = findMentionedRules(data.ruleIndex, question);
   if (!named.length) return undefined;
   // 답이 다른 문서에 있을 수 있다. 그 이름을 본문에 언급한 규칙도 끌어온다.
-  const related = findRulesMentioning(data.ruleIndex, named.map((r) => r.name));
-  const body = rulesToText([...named, ...related]);
-  if (!body) return undefined;
-  return [
-    `[패치] ${data.patch}`,
-    body,
-    "[요청] 위 규칙에서 질문에 답하는 문장을 찾아 한국어로 옮기십시오. " +
-      "영어 이름은 대응표로 바꿔 읽습니다. 툴팁 문구로 추측하지 마십시오. " +
-      "규칙을 다 읽어도 답이 없을 때만 '자료에 없습니다' 라고 답하십시오.",
-  ].join("\n\n");
+  const related = findRulesMentioning(
+    data.ruleIndex,
+    named.map((r) => r.name),
+  );
+  return buildRuleAnswer([...named, ...related], data.patch);
 }
 
 /** 사전 생성된 답변 하나 */

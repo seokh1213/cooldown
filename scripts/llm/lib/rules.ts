@@ -99,6 +99,21 @@ export function findRulesMentioning(index: RuleIndex, names: string[], limit = 2
 }
 
 /**
+ * 한 줄을 본문과 하위 항목으로 나눠 계층을 살린다.
+ *
+ * 수집 단계에서 하위 항목을 괄호로 이어 붙였는데, 그대로 두면 앞 문장의 조건과 멀어진다.
+ * "…중첩되지 않습니다. (펫의 기본 공격 피해)" 를 보고 모델이 "펫으로 중첩된다" 고 뒤집었다.
+ * 들여쓴 줄로 내려 부정 바로 아래에 붙인다.
+ */
+function renderNote(note: string): string[] {
+  const parts = note.split(/\s\(/);
+  const head = parts[0].trim();
+  const children = parts.slice(1).map((p) => p.replace(/\)\s*$/, "").trim());
+  if (!children.length) return [`  - ${head}`];
+  return [`  - ${head}`, ...children.map((c) => `      · ${c}`)];
+}
+
+/**
  * 프롬프트에 실을 문단. 규칙이 없으면 undefined.
  *
  * **자르지 않는다.** 정복자·점화 질문에서 6건으로 잘랐더니 정작 답이 되는 문장
@@ -123,7 +138,10 @@ export function rulesToText(rules: RuleNotes[]): string | undefined {
         others.some((o) => n.includes(o)) || otherKorean.some((o) => n.includes(o)) ? 0 : 1;
       return score(a) - score(b);
     });
-    const notes = sorted.map((n) => `  - ${n}`);
+    // 하위 항목을 괄호로 이어 붙이면 앞 문장의 부정과 멀어진다.
+    // "…중첩되지 않습니다. (펫의 기본 공격 피해)" 를 보고 모델이 "펫으로 중첩된다" 고 뒤집었다.
+    // 들여쓴 줄로 내려 부정 바로 아래에 붙인다.
+    const notes = sorted.flatMap((n) => renderNote(n));
     // 이름 대응을 헤더에 못 박는다. 규칙 원문이 영어라 "점화 = Ignite" 를 모델이 이어 주지 못하면
     // 답이 눈앞에 있어도 "자료에 없습니다" 라고 답한다. 실제로 그랬다.
     return `[${rule.name} = ${rule.page}]\n${notes.join("\n")}`;
@@ -140,4 +158,27 @@ export function rulesToText(rules: RuleNotes[]): string | undefined {
     ? `\n\n[질문에 직접 답하는 줄]\n${crossed.map((n) => `  - ${n}`).join("\n")}`
     : "";
   return `${head}${crossBlock}\n\n${blocks.join("\n\n")}`;
+}
+
+/**
+ * 화면에 그대로 낼 규칙 답변. **모델을 거치지 않는다.**
+ *
+ * e2b 는 부정문을 뒤집는다. "정복자는 이러한 효과로 중첩되지 않습니다 · 펫의 기본 공격 피해"
+ * 를 보고 "정복자는 펫의 기본 공격으로 중첩됩니다" 라고 답했다. 계층을 살려도 마찬가지였다.
+ *
+ * 규칙 질문의 답은 규칙문 자체다. 모델이 더할 것이 없고 뒤집을 위험만 있다.
+ * 그래서 원문(번역본)을 그대로 낸다. 구조상 틀릴 수가 없다.
+ */
+export function buildRuleAnswer(rules: RuleNotes[], patch: string): string | undefined {
+  if (!rules.length) return undefined;
+  const blocks = rules.map((rule) => {
+    const lines = rule.notesKo?.length === rule.notes.length ? rule.notesKo : rule.notes;
+    const body = lines.flatMap((n) => renderNote(n)).join("\n");
+    return `## ${rule.name}\n${body}`;
+  });
+  return [
+    ...blocks,
+    `_패치 ${patch} 기준 위키(CC BY-SA) 판정 규칙을 그대로 옮긴 것입니다. ` +
+      "요약하지 않았으므로 부정과 예외를 그대로 읽어 주십시오._",
+  ].join("\n\n");
 }

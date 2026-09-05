@@ -82,10 +82,11 @@ export function AdvisorPanel({ advisor, patch, onClose }: AdvisorPanelProps) {
     const system = advisorSystemPrompt(lang);
 
     if (data) {
-      // 룬·주문 판정 질문이 먼저다. 툴팁으로 추측하면 틀리는 종류라 규칙을 실어야 한다.
-      const ruleBrief = buildRuleBrief(data, question);
-      if (ruleBrief) {
-        advisor.send(question, `${system}\n\n${ruleBrief}`);
+      // 룬·주문 판정 질문이 먼저다.
+      // 모델을 거치지 않는다. e2b 가 부정문을 뒤집어 정반대로 답했다.
+      const ruleAnswer = buildRuleBrief(data, question);
+      if (ruleAnswer) {
+        advisor.answerWithoutModel(question, ruleAnswer);
         setDraft("");
         return;
       }
