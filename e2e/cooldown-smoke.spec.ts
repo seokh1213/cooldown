@@ -171,6 +171,10 @@ test("simulation uses compiled Ability v2 without raw spell requests", async ({ 
   await expect(page.getByText("Q: 파쇄격")).toBeVisible();
   await expect(page.getByText("Skill Description Placeholder")).toHaveCount(0);
   const qSkill = page.getByText("Q: 파쇄격").locator("../..");
+  await expect(qSkill).toContainText("사거리가 135/145/155/165/175 증가");
+  await expect(qSkill).toContainText("방어력이 10/15/20/25/30% 감소");
+  await expect(qSkill.locator('img[src*="statsicon"]')).toBeVisible();
+  await expect(qSkill).not.toContainText("[[si:");
   await expect(qSkill).toContainText("산식 120.0");
   await page.getByLabel("Q 스킬 레벨").first().selectOption("1");
   await expect(qSkill).toContainText("산식 20.0");

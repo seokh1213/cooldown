@@ -1,8 +1,8 @@
 import { Select } from "@/components/ui/select";
+import { SafeBlockHtml } from "@/components/ui/safe-html";
 import type { ChampionDetailV2 } from "@/data/contracts/championData";
 import { spellIconUrl } from "@/data/assets/riotAssetUrls";
 import { useTranslation } from "@/i18n";
-import { htmlToPlainText } from "@/lib/htmlText";
 import type { Champion } from "@/types";
 import {
   evaluateAbilitySimulationDetails,
@@ -115,22 +115,29 @@ export function SimulationSkills({
                 <div className="text-sm font-semibold">
                   {slot}: {spell?.name ?? t.pages.simulation.skillPlaceholderTitle}
                 </div>
-                <div className="text-xs text-muted-foreground leading-relaxed">
-                  {spell
-                    ? htmlToPlainText(ability?.summary ?? spell.description ?? "")
-                    : t.pages.simulation.skillPlaceholderDescription}
-                </div>
+                {spell ? (
+                  <SafeBlockHtml
+                    html={ability?.bodyHtml || spell.tooltip || spell.description || ""}
+                    className="text-xs leading-relaxed text-muted-foreground [&_img]:mx-0.5 [&_img]:inline-block [&_img]:size-3.5 [&_img]:align-[-0.15em]"
+                  />
+                ) : (
+                  <div className="text-xs leading-relaxed text-muted-foreground">
+                    {t.pages.simulation.skillPlaceholderDescription}
+                  </div>
+                )}
                 {details && (
-                  <div className="rounded-md bg-muted/45 px-2.5 py-2 font-mono text-[11px] leading-relaxed text-muted-foreground">
-                    <span className="font-sans font-medium text-foreground">{t.pages.simulation.formulaLabel}</span>{" "}
-                    {details.base.toFixed(1)}
-                    {details.terms.map((term) => (
-                      <span key={term.stat}> + {statLabel(term.stat)} {term.statValue.toFixed(1)} × {term.coefficient.toFixed(2)}</span>
-                    ))}
-                    {details.targetHealthMultiplier !== undefined && (
-                      <span> × {details.targetHealthMultiplier.toFixed(1)}</span>
-                    )}
-                    <span className="font-semibold text-emerald-600 dark:text-emerald-400"> = {details.total.toFixed(1)}</span>
+                  <div className="mt-3 border-t border-border/50 pt-3">
+                    <div className="rounded-md bg-muted/45 px-2.5 py-2 font-mono text-[11px] leading-relaxed text-muted-foreground">
+                      <span className="font-sans font-medium text-foreground">{t.pages.simulation.formulaLabel}</span>{" "}
+                      {details.base.toFixed(1)}
+                      {details.terms.map((term) => (
+                        <span key={term.stat}> + {statLabel(term.stat)} {term.statValue.toFixed(1)} × {term.coefficient.toFixed(2)}</span>
+                      ))}
+                      {details.targetHealthMultiplier !== undefined && (
+                        <span> × {details.targetHealthMultiplier.toFixed(1)}</span>
+                      )}
+                      <span className="font-semibold text-emerald-600 dark:text-emerald-400"> = {details.total.toFixed(1)}</span>
+                    </div>
                   </div>
                 )}
                 {!details && ability?.simulation.status !== "complete" && (
