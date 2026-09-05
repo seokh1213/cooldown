@@ -22,6 +22,14 @@ import {
   type OracleFile,
 } from "../../../scripts/llm/lib/oracleCore";
 import { buildCodeAnswer } from "../../../scripts/llm/lib/codeAnswer";
+import {
+  findMentionedRules,
+  findRulesMentioning,
+  indexRules,
+  rulesToText,
+  type RuleIndex,
+  type RuleNotes,
+} from "../../../scripts/llm/lib/rules";
 import { matchupToLine } from "../../../scripts/llm/lib/matchupReason";
 import {
   playbookToText,
@@ -32,6 +40,7 @@ import {
   buildSections,
   renderDecidedSections,
   type MatchupContext,
+  type OutputLang,
   type PromptSection,
 } from "../../../scripts/llm/lib/prompt";
 import {
@@ -55,6 +64,7 @@ interface KnowledgeBundle {
   patchVersion: string;
   playbooks: Record<string, Playbook>;
   tips: CuratedTip[];
+  rules?: RuleNotes[];
   oracleFile?: string;
 }
 
@@ -87,6 +97,8 @@ export interface AdvisorData {
   cardById: Map<string, ChampionCard>;
   playbooks: Map<string, Playbook>;
   tips: CuratedTip[];
+  /** 룬·소환사 주문 판정 규칙. 이름으로 찾는다. */
+  ruleIndex: RuleIndex;
   items: NormalizedItem[];
   runes: NormalizedRune[];
   summoners: NormalizedSummonerSpell[];
@@ -151,6 +163,7 @@ export function loadAdvisorData(patch: string, locale = "ko_KR"): Promise<Adviso
       cardById: new Map(cardFile.cards.map((c) => [c.id, c])),
       playbooks: new Map(Object.entries(knowledge.playbooks)),
       tips: knowledge.tips,
+      ruleIndex: indexRules(knowledge.rules ?? []),
       items: itemFile.items,
       runes: runeFile.runes,
       summoners: summonerFile.spells,
@@ -180,6 +193,8 @@ export interface MatchupRequest {
   me: ChampionCard;
   enemy: ChampionCard;
   lane?: string;
+  /** 답변 언어. 자료는 한국어지만 답은 이 언어로 쓴다. */
+  outputLang?: OutputLang;
 }
 
 export interface BuiltMatchup {
@@ -205,7 +220,7 @@ export interface BuiltMatchup {
  * 호출당 프롬프트를 3~5k 토큰으로 유지한다.
  */
 export function buildMatchup(data: AdvisorData, request: MatchupRequest): BuiltMatchup {
-  const { me, enemy, lane } = request;
+  const { me, enemy, lane, outputLang } = request;
 
   const tips = selectTips(data.tips, { me: me.id, enemy: enemy.id, lane });
   const playbook = selectPlaybook(data.playbooks, me, enemy, lane);
@@ -239,6 +254,7 @@ export function buildMatchup(data: AdvisorData, request: MatchupRequest): BuiltM
     summoners: selectRiftSummoners(data.summoners),
     tips,
     oracle,
+    outputLang,
     compact: true,
     profile: "web",
   };
@@ -351,4 +367,26 @@ export function buildCounterBrief(
         : "승률 수치는 적지 마십시오."),
   );
   return parts.join("\n\n");
+}
+
+/**
+ * 룬·주문 판정을 묻는 질문에 붙일 자료.
+ *
+ * "정복자에 점화 스택이 되나" 같은 질문은 툴팁만 보면 틀린다. 실제로 그렇게 틀렸다.
+ * 문장에서 룬·주문 이름을 찾아 위키에서 모은 판정 규칙을 싣는다.
+ */
+export function buildRuleBrief(data: AdvisorData, question: string): string | undefined {
+  const named = findMentionedRules(data.ruleIndex, question);
+  if (!named.length) return undefined;
+  // 답이 다른 문서에 있을 수 있다. 그 이름을 본문에 언급한 규칙도 끌어온다.
+  const related = findRulesMentioning(data.ruleIndex, named.map((r) => r.name));
+  const body = rulesToText([...named, ...related]);
+  if (!body) return undefined;
+  return [
+    `[패치] ${data.patch}`,
+    body,
+    "[요청] 위 규칙에서 질문에 답하는 문장을 찾아 한국어로 옮기십시오. " +
+      "영어 이름은 대응표로 바꿔 읽습니다. 툴팁 문구로 추측하지 마십시오. " +
+      "규칙을 다 읽어도 답이 없을 때만 '자료에 없습니다' 라고 답하십시오.",
+  ].join("\n\n");
 }

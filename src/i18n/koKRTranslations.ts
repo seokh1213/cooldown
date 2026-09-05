@@ -269,6 +269,8 @@ export const koKRTranslations: Translations = {
     stop: "중단",
     reset: "대화 지우기",
     emptyHint: "챔피언 상성이나 스킬 운용을 물어보세요. 기기 안에서 답합니다.",
+    rateUp: "도움이 됐어요",
+    rateDown: "틀렸거나 부족해요",
     errorPrefix: "오류",
   },
 };

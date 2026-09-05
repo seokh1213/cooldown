@@ -17,6 +17,7 @@ import { loadOracleBundle } from "./lib/oracle";
 import { loadPlaybooks } from "./lib/playbook";
 import type { CuratedTip } from "./lib/knowledgeCore";
 import type { Playbook } from "./lib/playbookCore";
+import type { RuleNotes } from "./lib/rules";
 
 export const ADVISOR_BUNDLE_FILE = "advisor-knowledge.json";
 
@@ -28,12 +29,14 @@ export interface AdvisorKnowledgeBundle {
   playbooks: Record<string, Playbook>;
   /** 상성 한정 팁 */
   tips: CuratedTip[];
+  /** 룬·소환사 주문 판정 규칙. 툴팁이 담지 못하는 발동 조건과 예외. */
+  rules: RuleNotes[];
   /**
    * 통계 오라클 파일 이름.
    * 지역·티어가 이름에 들어가 고정할 수 없으므로, 브라우저가 무엇을 받아야 하는지 여기 적어 둔다.
    */
   oracleFile?: string;
-  counts: { champions: number; entries: number; tips: number };
+  counts: { champions: number; entries: number; tips: number; rules: number };
 }
 
 function main() {
@@ -41,6 +44,11 @@ function main() {
   const playbooks = loadPlaybooks();
   const tips = loadCuratedTips();
   const oracleFile = loadOracleBundle(patch)?.fileName;
+
+  const ruleFile = path.join(PUBLIC_DATA_ROOT, patch, "llm", "rule-notes.json");
+  const rules: RuleNotes[] = fs.existsSync(ruleFile)
+    ? (JSON.parse(fs.readFileSync(ruleFile, "utf8")) as { rules?: RuleNotes[] }).rules ?? []
+    : [];
 
   const byChampion: Record<string, Playbook> = {};
   let entries = 0;
@@ -55,8 +63,14 @@ function main() {
     generatedAt: new Date().toISOString(),
     playbooks: byChampion,
     tips,
+    rules,
     oracleFile,
-    counts: { champions: playbooks.size, entries, tips: tips.length },
+    counts: {
+      champions: playbooks.size,
+      entries,
+      tips: tips.length,
+      rules: rules.reduce((n, r) => n + r.notes.length, 0),
+    },
   };
 
   const out = path.join(PUBLIC_DATA_ROOT, patch, "llm", ADVISOR_BUNDLE_FILE);
@@ -66,7 +80,8 @@ function main() {
   const kb = (fs.statSync(out).size / 1024).toFixed(0);
   console.log(
     `생성: ${path.relative(process.cwd(), out)} ` +
-      `(챔피언 ${playbooks.size}종, 항목 ${entries}건, 팁 ${tips.length}건, ${kb} KB)` +
+      `(챔피언 ${playbooks.size}종, 항목 ${entries}건, 팁 ${tips.length}건, ` +
+      `판정 규칙 ${rules.length}종, ${kb} KB)` +
       `\n오라클: ${oracleFile ?? "없음"}`,
   );
 }

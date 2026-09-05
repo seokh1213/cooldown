@@ -30,6 +30,8 @@ export interface MatchupContext {
   playbook?: SelectedPlaybook;
   /** lol.ps 통계 오라클 (해당 패치·라인 기준). 상성 한정 지식보다는 뒤, 챔피언 지식보다는 앞 */
   oracle?: OracleFacts;
+  /** 답변 언어. 자료는 한국어지만 답은 이 언어로 쓴다. */
+  outputLang?: OutputLang;
   /** 컨텍스트 크기 절약 모드 (소형 모델용) */
   compact?: boolean;
   /**
@@ -42,6 +44,38 @@ export interface MatchupContext {
 }
 
 export type PromptProfile = "full" | "compact" | "web";
+
+/**
+ * 답변 언어.
+ *
+ * 지식 카드는 한국어로만 있다. 그렇다고 영어권 사용자에게 한국어로 답할 수는 없으므로,
+ * **자료는 한국어로 읽고 답만 다른 언어로 쓰게** 한다. 아이템·룬 이름은 그 언어의 게임 내 표기로 옮긴다.
+ */
+export type OutputLang = "ko_KR" | "en_US" | "zh_CN";
+
+const LANG_DIRECTIVE: Record<OutputLang, string> = {
+  ko_KR: "한국어로만 답합니다.",
+  en_US:
+    "Answer in English only. The reference material is in Korean: read it, then write in English " +
+    "and use each item, rune, and ability's English in-game name.",
+  zh_CN:
+    "只用中文回答。参考资料是韩语：读懂后用中文作答，装备、符文与技能一律使用中文游戏内名称。",
+};
+
+/** 출력 소제목. 형식이 언어마다 달라야 사용자가 읽을 수 있다. */
+const SECTION_TITLES: Record<OutputLang, { laning: string; threats: string; combo: string }> = {
+  ko_KR: { laning: "라인전 구도", threats: "조심할 스킬", combo: "콤보와 플레이 팁" },
+  en_US: { laning: "Laning", threats: "Abilities to respect", combo: "Combos and tips" },
+  zh_CN: { laning: "对线思路", threats: "需要提防的技能", combo: "连招与要点" },
+};
+
+export function langDirective(lang: OutputLang = "ko_KR"): string {
+  return LANG_DIRECTIVE[lang] ?? LANG_DIRECTIVE.ko_KR;
+}
+
+export function sectionTitles(lang: OutputLang = "ko_KR") {
+  return SECTION_TITLES[lang] ?? SECTION_TITLES.ko_KR;
+}
 
 export function resolveProfile(ctx: MatchupContext): PromptProfile {
   return ctx.profile ?? (ctx.compact ? "compact" : "full");
@@ -469,13 +503,44 @@ export interface PromptSection {
   messages: ChatMessage[];
 }
 
-const SYSTEM_SPLIT_KO = `당신은 리그 오브 레전드 상성 코치입니다. 한국어로만 답합니다.
+const SYSTEM_SPLIT_BASE = `당신은 리그 오브 레전드 상성 코치입니다. {{LANG}}
 
 규칙:
 1. 제공된 자료 안의 사실만 근거로 삼습니다. 자료에 없는 아이템·룬·스킬 이름이나 수치를 만들지 마십시오.
 2. 선택은 이미 정해져 있습니다. 이름을 바꾸거나 대안을 새로 제시하지 말고 이유만 서술하십시오.
 3. 스킬은 자료에 적힌 슬롯 문자(P, Q, W, E, R)와 이름을 함께 씁니다.
 4. 요청받은 소제목만 출력하고 다른 소제목은 만들지 마십시오.`;
+
+/**
+ * 분할 호출용 시스템 프롬프트.
+ * 답변 언어와 소제목만 갈아 끼우고 규칙 본문은 한국어로 둔다. 규칙은 모델이 읽기만 하면 된다.
+ */
+function splitSystem(ctx: MatchupContext): string {
+  const lang = ctx.outputLang ?? "ko_KR";
+  const titles = sectionTitles(lang);
+  const ko = sectionTitles("ko_KR");
+  return SYSTEM_SPLIT_BASE.replace("{{LANG}}", langDirective(lang))
+    .split(`## ${ko.laning}`)
+    .join(`## ${titles.laning}`)
+    .split(`## ${ko.threats}`)
+    .join(`## ${titles.threats}`)
+    .split(`## ${ko.combo}`)
+    .join(`## ${titles.combo}`);
+}
+
+/** 요청 문단의 소제목도 같은 언어로 바꾼다 */
+function localizeRequest(text: string, lang: OutputLang): string {
+  const titles = sectionTitles(lang);
+  const ko = sectionTitles("ko_KR");
+  return text
+    .split(`## ${ko.laning}`)
+    .join(`## ${titles.laning}`)
+    .split(`## ${ko.threats}`)
+    .join(`## ${titles.threats}`)
+    .split(`## ${ko.combo}`)
+    .join(`## ${titles.combo}`);
+}
+
 
 /** 확정 구간 — LLM 을 쓰지 않고 코드가 렌더링하는 부분 */
 export function renderDecidedSections(ctx: MatchupContext): string {
@@ -575,7 +640,8 @@ export function buildSections(ctx: MatchupContext): PromptSection[] {
           ctx.patch,
         )}`
       : "",
-    `[요청] 아래 소제목으로만 답하십시오.
+    localizeRequest(
+      `[요청] 아래 소제목으로만 답하십시오.
 ## 라인전 구도
 (2~4문장. 레벨 구간, 쿨타임, 사거리를 근거로 언제 강하고 언제 약한지)
 ## 조심할 스킬
@@ -587,6 +653,8 @@ export function buildSections(ctx: MatchupContext): PromptSection[] {
 지식 카드가 더 위험하다고 짚은 상대 스킬이 있으면 목록에 없더라도 함께 적으십시오)
 ## 콤보와 플레이 팁
 (지식 카드의 콤보를 스킬 순서 그대로 적고 딜 교환 요령을 덧붙임)`,
+      ctx.outputLang ?? "ko_KR",
+    ),
   ]
     .filter(Boolean)
     .join("\n\n");
@@ -596,7 +664,7 @@ export function buildSections(ctx: MatchupContext): PromptSection[] {
       id: "build-reasons",
       title: "선택 이유",
       messages: [
-        { role: "system", content: SYSTEM_SPLIT_KO },
+        { role: "system", content: splitSystem(ctx) },
         { role: "user", content: buildPrompt },
       ],
     },
@@ -604,7 +672,7 @@ export function buildSections(ctx: MatchupContext): PromptSection[] {
       id: "laning",
       title: "라인전",
       messages: [
-        { role: "system", content: SYSTEM_SPLIT_KO },
+        { role: "system", content: splitSystem(ctx) },
         { role: "user", content: lanePrompt },
       ],
     },
@@ -660,7 +728,7 @@ export function buildChain(ctx: MatchupContext): { system: string; turns: ChainT
     .join("\n\n");
 
   return {
-    system: SYSTEM_SPLIT_KO,
+    system: splitSystem(ctx),
     turns: [
       {
         id: "build-reasons",

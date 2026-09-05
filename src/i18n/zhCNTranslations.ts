@@ -87,6 +87,8 @@ export function createZhCNTranslations(english: Translations): Translations {
     stop: "停止",
     reset: "清空对话",
     emptyHint: "可以询问英雄克制或技能运用。回答在你的设备上生成。",
+    rateUp: "有帮助",
+    rateDown: "有误或不足",
     errorPrefix: "错误",
   },
   };

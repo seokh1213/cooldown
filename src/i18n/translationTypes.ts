@@ -260,6 +260,8 @@ export interface Translations {
     stop: string;
     reset: string;
     emptyHint: string;
+    rateUp: string;
+    rateDown: string;
     errorPrefix: string;
   };
 }

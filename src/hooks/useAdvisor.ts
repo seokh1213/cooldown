@@ -36,6 +36,33 @@ export interface AdvisorTurn extends AdvisorChatMessage {
   id: number;
   /** 생성이 끝난 뒤 붙는 실측치 */
   stats?: { tokens: number; seconds: number };
+  /** 사용자가 남긴 평가 */
+  rating?: "up" | "down";
+}
+
+/**
+ * 답변 평가 기록.
+ *
+ * 지금은 평가 케이스 10건으로 내가 재는 게 전부다. 실제로 어떤 질문이 어떤 답을 받았고
+ * 사용자가 어떻게 봤는지는 알 방법이 없다. 기기 안에만 쌓고 서버로 보내지 않는다.
+ */
+export interface AdvisorFeedback {
+  at: string;
+  question: string;
+  answer: string;
+  rating: "up" | "down";
+  patch: string;
+}
+
+const FEEDBACK_KEY = "cooldown.advisor.feedback.v1";
+const FEEDBACK_LIMIT = 200;
+
+export function readFeedback(): AdvisorFeedback[] {
+  try {
+    return JSON.parse(localStorage.getItem(FEEDBACK_KEY) ?? "[]") as AdvisorFeedback[];
+  } catch {
+    return [];
+  }
 }
 
 export interface UseAdvisorResult {
@@ -59,6 +86,8 @@ export interface UseAdvisorResult {
   sendMatchup: (question: string, decided: string, sections: AdvisorChatMessage[][]) => void;
   /** 모델 없이 코드가 만든 답을 그대로 보여 준다. 동의 전이나 WebGPU 가 없을 때 쓴다. */
   answerWithoutModel: (question: string, answer: string) => void;
+  /** 답변 평가. 기기 안에만 쌓인다. */
+  rate: (turnId: number, rating: "up" | "down", patch: string) => void;
   stop: () => void;
   reset: () => void;
 }
@@ -278,6 +307,39 @@ export function useAdvisor(): UseAdvisorResult {
     ]);
   }, []);
 
+  const rate = useCallback((turnId: number, rating: "up" | "down", patch: string) => {
+    setTurns((prev) => {
+      const index = prev.findIndex((t) => t.id === turnId);
+      if (index < 0) return prev;
+      const next = [...prev];
+      // 같은 버튼을 다시 누르면 평가를 물린다
+      const current = next[index].rating;
+      next[index] = { ...next[index], rating: current === rating ? undefined : rating };
+
+      if (next[index].rating) {
+        // 바로 앞 사용자 발화가 이 답의 질문이다
+        const question = [...prev.slice(0, index)].reverse().find((t) => t.role === "user");
+        try {
+          const log = readFeedback();
+          log.push({
+            at: new Date().toISOString(),
+            question: question?.content ?? "",
+            answer: next[index].content,
+            rating,
+            patch,
+          });
+          localStorage.setItem(
+            FEEDBACK_KEY,
+            JSON.stringify(log.slice(-FEEDBACK_LIMIT)),
+          );
+        } catch {
+          // 저장에 실패해도 화면 표시는 유지한다
+        }
+      }
+      return next;
+    });
+  }, []);
+
   const stop = useCallback(() => {
     workerRef.current?.postMessage({ type: "stop" } satisfies AdvisorRequest);
     setStatus("ready");
@@ -302,6 +364,7 @@ export function useAdvisor(): UseAdvisorResult {
     send,
     sendMatchup,
     answerWithoutModel,
+    rate,
     stop,
     reset,
   };
