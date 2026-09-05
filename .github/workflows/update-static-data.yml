@@ -81,6 +81,13 @@ jobs:
       - name: Validate knowledge layer
         run: npm run llm:validate
 
+      # 사실 카드와 통계는 자동으로 갱신되지만 사람이 쓴 지식 카드는 그대로 남는다.
+      # 스킬이 바뀐 챔피언의 카드를 재검토 대상으로 올려 둔다. 빌드를 막지는 않는다.
+      - name: Check knowledge drift
+        if: steps.patch.outputs.changed == 'true'
+        continue-on-error: true
+        run: npm run llm:check-drift
+
       - name: Validate project
         run: |
           npm run type-check
