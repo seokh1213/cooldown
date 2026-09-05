@@ -121,15 +121,31 @@ export function deriveThreatOrder(enemy: ChampionCard, limit = 3): ThreatRank[] 
     }
     // 궁극기는 쿨타임이 길어 상시 위험은 아니지만 한 번의 파괴력이 크다
     if (spell.slot === "R") score += 10;
+
+    // 군중 제어가 하나도 없는 순수 폭딜 궁극기는 위 표에 걸리지 않는다.
+    // 제드 R 죽음의 표식이 그런 경우인데, 상대 미드가 가장 조심해야 할 스킬이 빠지면 곤란하다.
+    // 계수가 붙어 있으면 그 자체를 이유로 삼는다.
+    if (spell.slot === "R" && reasons.length === 0) {
+      const top = Object.entries(spell.ratios).sort((a, b) => b[1] - a[1])[0];
+      if (top) {
+        score += 45;
+        reasons.push(`계수 ${top[0]} ${top[1]}%: 군중 제어는 없지만 한 번에 큰 피해가 들어온다`);
+      }
+    }
     return { slot: spell.slot, name: spell.name, score, reasons };
   });
   return ranked
-    .filter((r) => r.score > 0)
+    // 이유가 없으면 싣지 않는다. 궁극기 가산점만으로 올라오면 "R 스킬 —" 처럼 사유가 빈 줄이 나가고,
+    // 툴팁이 깨진 챔피언(케인)이 딱 그 경우다. 근거 없는 경고는 없느니만 못하다.
+    .filter((r) => r.reasons.length > 0)
     .sort((a, b) => b.score - a.score)
     .slice(0, limit);
 }
 
 export function threatOrderToText(ranks: ThreatRank[]): string {
+  if (!ranks.length) {
+    return "효과 태그로 확정할 수 있는 위협이 없습니다. 스킬 목록의 쿨타임과 계수를 근거로 쓰십시오.";
+  }
   return ranks
     .map((r, i) => `${i + 1}순위 ${r.slot} ${r.name} — ${r.reasons.slice(0, 2).join(" / ")}`)
     .join("\n");
@@ -522,6 +538,7 @@ export function buildSections(ctx: MatchupContext): PromptSection[] {
   // 2) 라인전과 콤보: 스킬 메타와 서술형 지식만.
   const cardOpts = { includeSpellText: false, spellDetail: "meta" as const };
   const laneKnowledge = pick(NARRATIVE);
+  const enemySkillNotes = laneKnowledge.vsEnemy.filter((e) => e.category === "skill").slice(0, 3);
   const lanePrompt = [
     `[패치] ${ctx.patch}`,
     `[내 챔피언]\n${championCardToText(ctx.me, cardOpts)}`,
@@ -531,6 +548,14 @@ export function buildSections(ctx: MatchupContext): PromptSection[] {
       .map((l) => `- ${l}`)
       .join("\n")}`,
     `[조심할 스킬 우선순위 — 이 순서와 이유를 그대로 쓰십시오]\n${threatOrderToText(deriveThreatOrder(ctx.enemy))}`,
+    // 위 순위는 효과 태그로만 매긴 것이라 중첩·성장처럼 태그가 없는 위협을 놓친다.
+    // 다리우스 P 과다출혈이 그런 경우다. 사람이 짚어 둔 상대 스킬 지식을 순위 바로 옆에 붙여
+    // 모델이 순위만 그대로 옮겨 적고 끝내지 않게 한다.
+    enemySkillNotes.length
+      ? `[지식 카드가 짚은 상대 스킬 — 위 순위에 없어도 반드시 함께 쓰십시오]\n${enemySkillNotes
+          .map((e) => `- ${e.text}`)
+          .join("\n")}`
+      : "",
     ctx.oracle?.lines.length
       ? `[통계 — ${ctx.oracle.scope}${ctx.oracle.games ? `, 표본 ${ctx.oracle.games.toLocaleString("ko-KR")}판` : ""}]\n${ctx.oracle.lines
           .filter((l) => l.startsWith("14분 지표") || l.startsWith("선마"))
@@ -548,7 +573,9 @@ export function buildSections(ctx: MatchupContext): PromptSection[] {
 ## 라인전 구도
 (2~4문장. 레벨 구간, 쿨타임, 사거리를 근거로 언제 강하고 언제 약한지)
 ## 조심할 스킬
-(상대 스킬 중 가장 위험한 것부터 슬롯과 이름으로 지목하고 이유를 문장으로 풀어 씁니다. "1순위" 같은 내부 표기를 그대로 복사하지 마십시오)
+(위 우선순위 순서대로 슬롯과 이름을 지목하고 이유를 문장으로 풀어 씁니다. "1순위" 같은 내부 표기를 그대로 복사하지 마십시오.
+우선순위는 군중 제어와 계수로만 매긴 것이라 중첩이나 성장 같은 위협은 빠져 있습니다.
+지식 카드가 더 위험하다고 짚은 스킬이 있으면 목록에 없더라도 함께 적으십시오)
 ## 콤보와 플레이 팁
 (지식 카드의 콤보를 스킬 순서 그대로 적고 딜 교환 요령을 덧붙임)`,
   ]
