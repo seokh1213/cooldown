@@ -5,6 +5,7 @@
  * 2) `refs` 에 적은 아이템/룬/소환사 주문 이름이 현재 패치 데이터에 존재하는지 (오타·삭제·개명 탐지)
  * 3) `refs` 에 적은 이름이 본문에도 실제로 등장하는지 (참조와 본문 불일치 탐지)
  * 4) 조건(`when`)의 효과 태그가 facts.ts 가 만들어내는 태그 집합에 있는지
+ * 5) `refs` 의 아이템이 그 챔피언의 계수와 맞는지 (AP 챔피언에게 공격력 아이템을 권하지 않았는지)
  *
  * 자유 텍스트에서 고유명사를 추론하지 않는다. 작성자가 refs 로 명시하고 검증기가 대조한다.
  *
@@ -40,6 +41,29 @@ function main() {
     ...data.runes.statShards.map((s) => s.name),
   ]);
   const summonerNames = new Set(data.summoners.spells.map((s) => s.name));
+
+  // 아이템이 주는 공격 스탯. 계수와 어긋난 추천을 잡는 데 쓴다.
+  const itemOffense = new Map<string, { ap: boolean; ad: boolean }>();
+  for (const item of data.items.items) {
+    if (!riftItemNames.has(item.name)) continue;
+    const stats = item.stats ?? [];
+    const gives = (stat: string) => stats.some((s) => s.stat === stat && s.value > 0);
+    itemOffense.set(item.name, {
+      ap: gives("ABILITY_POWER"),
+      ad: gives("ATTACK_DAMAGE"),
+    });
+  }
+  /**
+   * 챔피언의 계수는 라이엇 damageType 을 우선한다.
+   * 툴팁 집계는 계수 없는 스킬 때문에 틀릴 때가 있다(나서스가 AP 로 잡히던 문제).
+   */
+  const scalingOf = (championId: string): "AD" | "AP" | undefined => {
+    const card = cards.find((c) => c.id === championId);
+    if (!card) return undefined;
+    if (card.riot?.damageType === "물리") return "AD";
+    if (card.riot?.damageType === "마법") return "AP";
+    return undefined;
+  };
   const championIds = new Set(data.champions.map((c) => c.id));
   const effectTags = new Set(cards.flatMap((c) => c.mechanics));
 
@@ -91,6 +115,20 @@ function main() {
         const where = `playbooks/${champion}.json [${entry.id ?? `${scope}#${index + 1}`}]`;
         checkRefs(where, entry.refs, entry.text);
         checkRefs(where, entry.avoid, entry.text, "avoid");
+        // playing 쪽 추천만 본다. against 는 상대가 살 아이템을 말하는 자리다.
+        if (scope === "playing") {
+          const scaling = scalingOf(champion);
+          for (const name of entry.refs?.items ?? []) {
+            const offense = itemOffense.get(name);
+            if (!offense || !scaling) continue;
+            if (scaling === "AP" && offense.ad && !offense.ap) {
+              findings.push({ where, message: `마법 피해 챔피언에게 공격력 아이템을 권함: "${name}"` });
+            }
+            if (scaling === "AD" && offense.ap && !offense.ad) {
+              findings.push({ where, message: `물리 피해 챔피언에게 주문력 아이템을 권함: "${name}"` });
+            }
+          }
+        }
         for (const name of [
           ...(entry.avoid?.items ?? []),
           ...(entry.avoid?.runes ?? []),
