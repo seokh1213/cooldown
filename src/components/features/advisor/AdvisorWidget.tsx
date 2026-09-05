@@ -11,7 +11,11 @@ import { useAdvisor } from "@/hooks/useAdvisor";
 import { useTranslation } from "@/i18n";
 import { AdvisorPanel } from "./AdvisorPanel";
 
-export function AdvisorWidget() {
+interface AdvisorWidgetProps {
+  patch: string;
+}
+
+export function AdvisorWidget({ patch }: AdvisorWidgetProps) {
   const { t } = useTranslation();
   const [open, setOpen] = useState(false);
   const advisor = useAdvisor();
@@ -25,7 +29,7 @@ export function AdvisorWidget() {
 
   return (
     <>
-      {open && <AdvisorPanel advisor={advisor} onClose={() => setOpen(false)} />}
+      {open && <AdvisorPanel advisor={advisor} patch={patch} onClose={() => setOpen(false)} />}
       <button
         type="button"
         onClick={() => setOpen((prev) => !prev)}

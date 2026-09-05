@@ -9,11 +9,19 @@ import { Loader2, Send, Square, Trash2, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useTranslation } from "@/i18n";
 import { advisorSystemPrompt } from "@/lib/advisor/persona";
+import {
+  buildChampionBrief,
+  buildMatchup,
+  loadAdvisorData,
+  type AdvisorData,
+} from "@/lib/advisor/context";
+import { detectMatchup, detectSingleChampion } from "@/lib/advisor/intent";
 import type { UseAdvisorResult } from "@/hooks/useAdvisor";
 import { AdvisorConsent } from "./AdvisorConsent";
 
 interface AdvisorPanelProps {
   advisor: UseAdvisorResult;
+  patch: string;
   onClose: () => void;
 }
 
@@ -21,11 +29,27 @@ function formatMb(bytes: number): string {
   return (bytes / 1048576).toFixed(0);
 }
 
-export function AdvisorPanel({ advisor, onClose }: AdvisorPanelProps) {
+export function AdvisorPanel({ advisor, patch, onClose }: AdvisorPanelProps) {
   const { t, lang } = useTranslation();
   const copy = t.advisor;
   const [draft, setDraft] = useState("");
+  const [data, setData] = useState<AdvisorData | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
+
+  // 챔피언 자료는 모델과 별개로 받는다. 모델이 준비되기 전에 미리 받아 둔다.
+  useEffect(() => {
+    let alive = true;
+    void loadAdvisorData(patch)
+      .then((loaded) => {
+        if (alive) setData(loaded);
+      })
+      .catch(() => {
+        // 자료를 못 받아도 대화는 되게 둔다. 근거 없이 답하지 말라는 지시는 페르소나에 있다.
+      });
+    return () => {
+      alive = false;
+    };
+  }, [patch]);
 
   const busy = advisor.status === "generating";
   // 모델이 아직 안 올라왔으면 진행률을 계속 보여 준다.
@@ -41,10 +65,39 @@ export function AdvisorPanel({ advisor, onClose }: AdvisorPanelProps) {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight });
   }, [advisor.turns]);
 
+  /**
+   * 질문에서 챔피언을 읽어 자료를 붙인다.
+   *
+   * 자료 없이 보내면 모델이 이름부터 지어낸다("오공(Dragon Knight)"). 그래서
+   * 챔피언이 둘이면 상성 조언으로, 하나면 그 챔피언 자료를 실어 보낸다.
+   */
   const submit = () => {
-    if (busy || !draft.trim()) return;
-    // 페르소나는 매 요청에 함께 보낸다. 대화 이력에 남기지 않으므로 언어를 바꾸면 곧바로 반영된다.
-    advisor.send(draft, advisorSystemPrompt(lang));
+    const question = draft.trim();
+    if (busy || !question) return;
+    const system = advisorSystemPrompt(lang);
+
+    if (data) {
+      const matchup = detectMatchup(data, question);
+      if (matchup) {
+        const built = buildMatchup(data, matchup);
+        advisor.sendMatchup(
+          question,
+          built.decided,
+          built.sections.map((section) => section.messages),
+        );
+        setDraft("");
+        return;
+      }
+      const single = detectSingleChampion(data, question);
+      if (single) {
+        advisor.send(question, `${system}\n\n${buildChampionBrief(data, single)}`);
+        setDraft("");
+        return;
+      }
+    }
+
+    // 챔피언이 안 잡히면 페르소나만으로 답한다
+    advisor.send(question, system);
     setDraft("");
   };
 

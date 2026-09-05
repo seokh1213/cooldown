@@ -7,9 +7,11 @@ import { useDeviceType } from "@/hooks/useDeviceType";
 interface LayoutProps {
   children: React.ReactNode;
   nav?: React.ReactNode;
+  /** 상성 코치가 어느 패치의 자료를 받을지 */
+  patch?: string;
 }
 
-function Layout({ children, nav }: LayoutProps) {
+function Layout({ children, nav, patch }: LayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const deviceType = useDeviceType();
 
@@ -65,7 +67,7 @@ function Layout({ children, nav }: LayoutProps) {
       </SidebarInset>
 
       {/* 화면 오른쪽 아래 떠 있는 상성 코치. 동의 전에는 모델을 받지 않는다. */}
-      <AdvisorWidget />
+      {patch && <AdvisorWidget patch={patch} />}
     </div>
   );
 }

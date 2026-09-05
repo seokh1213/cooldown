@@ -24,6 +24,7 @@ function AppShell(props: AppRouterProps) {
   const { runtime, language, theme, onLanguageChange, onThemeToggle } = props;
   return (
     <Layout
+      patch={runtime.patchVersion}
       nav={
         <Nav
           patchVersion={runtime.patchVersion}
