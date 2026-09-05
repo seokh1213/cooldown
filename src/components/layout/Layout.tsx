@@ -1,5 +1,6 @@
 import React, { useState, useCallback } from "react";
 import Sidebar from "./Sidebar";
+import { AdvisorWidget } from "@/components/features/advisor/AdvisorWidget";
 import { SidebarRail, SidebarInset } from "@/components/ui/sidebar";
 import { useDeviceType } from "@/hooks/useDeviceType";
 
@@ -62,6 +63,9 @@ function Layout({ children, nav }: LayoutProps) {
           {children}
         </main>
       </SidebarInset>
+
+      {/* 화면 오른쪽 아래 떠 있는 상성 코치. 동의 전에는 모델을 받지 않는다. */}
+      <AdvisorWidget />
     </div>
   );
 }

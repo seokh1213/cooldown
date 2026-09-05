@@ -56,5 +56,37 @@ export function createZhCNTranslations(english: Translations): Translations {
       max: "最大",
       bonus: "额外",
     },
+  advisor: {
+    title: "对线教练",
+    open: "打开对线教练",
+    close: "关闭",
+    consent: {
+      title: "是否下载 AI 模型？",
+      lead: "对线教练完全在你的设备上运行。模型只需下载一次，之后不会重复下载。",
+      sizeNotice: "下载体积约 {size}MB。建议在 Wi‑Fi 环境下进行，以免产生流量费用。",
+      storageNotice: "文件保存在浏览器存储中。本站点当前可用空间约 {quota}MB。",
+      privacyNotice: "你的提问与回答不会离开设备，也不会发送到服务器。",
+      accept: "下载并开始",
+      cancel: "以后再说",
+    },
+    unsupported: {
+      title: "此浏览器暂不支持",
+      noApi: "该浏览器不支持 WebGPU。请使用较新版本的 Chrome 或 Edge。",
+      noAdapter: "未找到显卡适配器。请检查浏览器的硬件加速设置。",
+      error: "检测 WebGPU 时出现问题。",
+    },
+    status: {
+      downloading: "正在下载模型",
+      warming: "正在加载模型",
+      ready: "就绪",
+      generating: "思考中",
+    },
+    placeholder: "例如：用悟空对线兰博该怎么打？",
+    send: "发送",
+    stop: "停止",
+    reset: "清空对话",
+    emptyHint: "可以询问英雄克制或技能运用。回答在你的设备上生成。",
+    errorPrefix: "错误",
+  },
   };
 }
