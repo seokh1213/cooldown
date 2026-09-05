@@ -5,7 +5,7 @@
  * 모델에게는 "주어진 자료 밖의 수치·아이템명을 만들지 말 것" 을 강하게 요구한다.
  */
 import { championCardToText, type ChampionCard } from "./facts";
-import { tipsToText, type CuratedTip } from "./knowledge";
+import { tipsToText, type CuratedTip } from "./knowledgeCore";
 import {
   itemSelectionToText,
   keystonesToText,
@@ -15,8 +15,8 @@ import {
   type SummonerBrief,
 } from "./retrieval";
 import type { ChatMessage } from "./ollama";
-import { playbookToText, type SelectedPlaybook } from "./playbook";
-import type { OracleFacts } from "./oracle";
+import { playbookToText, type SelectedPlaybook } from "./playbookCore";
+import type { OracleFacts } from "./oracleCore";
 
 export interface MatchupContext {
   patch: string;
