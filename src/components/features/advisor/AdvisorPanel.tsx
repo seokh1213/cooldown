@@ -8,6 +8,7 @@ import { useEffect, useRef, useState } from "react";
 import { Loader2, Send, Square, Trash2, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useTranslation } from "@/i18n";
+import { advisorSystemPrompt } from "@/lib/advisor/persona";
 import type { UseAdvisorResult } from "@/hooks/useAdvisor";
 import { AdvisorConsent } from "./AdvisorConsent";
 
@@ -21,7 +22,7 @@ function formatMb(bytes: number): string {
 }
 
 export function AdvisorPanel({ advisor, onClose }: AdvisorPanelProps) {
-  const { t } = useTranslation();
+  const { t, lang } = useTranslation();
   const copy = t.advisor;
   const [draft, setDraft] = useState("");
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -42,7 +43,8 @@ export function AdvisorPanel({ advisor, onClose }: AdvisorPanelProps) {
 
   const submit = () => {
     if (busy || !draft.trim()) return;
-    advisor.send(draft);
+    // 페르소나는 매 요청에 함께 보낸다. 대화 이력에 남기지 않으므로 언어를 바꾸면 곧바로 반영된다.
+    advisor.send(draft, advisorSystemPrompt(lang));
     setDraft("");
   };
 
