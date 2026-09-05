@@ -122,6 +122,14 @@ export function stripWikiMarkup(text: string, renameAbility?: (english: string) 
     if (kind === "tip" || kind === "ci" || kind === "ii" || kind === "si" || kind === "ri") {
       return parts[parts.length - 1]?.trim() ?? "";
     }
+    // {{cai|W|Azir}} 는 챔피언 스킬을 가리킨다. 슬롯만 남기면 누구 스킬인지 사라진다.
+    if (kind === "cai") {
+      const slot = parts[0]?.trim() ?? "";
+      const champion = parts[1]?.trim() ?? "";
+      return champion ? `${champion} ${slot}` : slot;
+    }
+    // {{bug|2}} 같은 각주 표시는 본문이 아니다
+    if (kind === "bug" || kind === "note" || kind === "ref") return "";
     if (kind === "pp" || kind === "fd" || kind === "g") return parts[0]?.trim() ?? "";
     return parts[0]?.trim() ?? "";
   });

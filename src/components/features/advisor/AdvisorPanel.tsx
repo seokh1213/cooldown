@@ -5,7 +5,7 @@
  * 모델 적재는 수십 초가 걸리므로 진행률을 파일 합계로 계속 보여 준다.
  */
 import { useEffect, useRef, useState } from "react";
-import { Loader2, Send, Square, Trash2, X } from "lucide-react";
+import { Loader2, Send, Square, ThumbsDown, ThumbsUp, Trash2, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useTranslation } from "@/i18n";
 import { advisorSystemPrompt } from "@/lib/advisor/persona";
@@ -13,6 +13,7 @@ import {
   buildChampionBrief,
   buildCounterBrief,
   buildMatchup,
+  buildRuleBrief,
   loadAdvisorData,
   type AdvisorData,
 } from "@/lib/advisor/context";
@@ -80,9 +81,18 @@ export function AdvisorPanel({ advisor, patch, onClose }: AdvisorPanelProps) {
     const system = advisorSystemPrompt(lang);
 
     if (data) {
+      // 룬·주문 판정 질문이 먼저다. 툴팁으로 추측하면 틀리는 종류라 규칙을 실어야 한다.
+      const ruleBrief = buildRuleBrief(data, question);
+      if (ruleBrief) {
+        advisor.send(question, `${system}\n\n${ruleBrief}`);
+        setDraft("");
+        return;
+      }
+
       const matchup = detectMatchup(data, question);
       if (matchup) {
-        const built = buildMatchup(data, matchup);
+        // UI 언어로 답하게 한다. 자료는 한국어여도 답은 사용자 언어로 나가야 한다.
+        const built = buildMatchup(data, { ...matchup, outputLang: lang });
         // 모델이 없으면 코드 답변만으로 끝낸다. 평가에서 63/66 이라 쓸 만하다.
         if (!advisor.consented || advisor.webgpu?.supported === false) {
           advisor.answerWithoutModel(question, built.codeAnswer);
@@ -194,9 +204,40 @@ export function AdvisorPanel({ advisor, patch, onClose }: AdvisorPanelProps) {
                 }
               >
                 {turn.content || (turn.role === "assistant" && <Loader2 className="h-4 w-4 animate-spin" />)}
-                {turn.stats && (
-                  <div className="mt-1 text-[11px] text-muted-foreground">
-                    {turn.stats.tokens} tok · {turn.stats.seconds.toFixed(1)}s
+                {turn.role === "assistant" && turn.content && (
+                  <div className="mt-1 flex items-center gap-2 text-[11px] text-muted-foreground">
+                    {turn.stats && (
+                      <span>
+                        {turn.stats.tokens} tok · {turn.stats.seconds.toFixed(1)}s
+                      </span>
+                    )}
+                    {/* 평가는 기기 안에만 쌓인다. 서버로 보내지 않는다. */}
+                    <button
+                      type="button"
+                      aria-label={copy.rateUp}
+                      aria-pressed={turn.rating === "up"}
+                      onClick={() => advisor.rate(turn.id, "up", patch)}
+                      className={
+                        turn.rating === "up"
+                          ? "text-emerald-400"
+                          : "opacity-50 transition-opacity hover:opacity-100"
+                      }
+                    >
+                      <ThumbsUp className="h-3.5 w-3.5" />
+                    </button>
+                    <button
+                      type="button"
+                      aria-label={copy.rateDown}
+                      aria-pressed={turn.rating === "down"}
+                      onClick={() => advisor.rate(turn.id, "down", patch)}
+                      className={
+                        turn.rating === "down"
+                          ? "text-destructive"
+                          : "opacity-50 transition-opacity hover:opacity-100"
+                      }
+                    >
+                      <ThumbsDown className="h-3.5 w-3.5" />
+                    </button>
                   </div>
                 )}
               </div>

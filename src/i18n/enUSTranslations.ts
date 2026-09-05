@@ -269,6 +269,8 @@ export const enUSTranslations: Translations = {
     stop: "Stop",
     reset: "Clear chat",
     emptyHint: "Ask about matchups or ability usage. Answered on your device.",
+    rateUp: "Helpful",
+    rateDown: "Wrong or lacking",
     errorPrefix: "Error",
   },
 };
