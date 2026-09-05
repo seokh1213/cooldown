@@ -136,6 +136,8 @@ export const zhCNTranslations: Translations = {
       statsPlaceholderLine1: "选择英雄、等级、装备和符文后",
       statsPlaceholderLine2: "即可查看详细属性和技能信息。",
       aaDpsLabel: "普通攻击 DPS（估算）",
+      effectiveHealthPhysical: "有效生命值（物理）",
+      effectiveHealthMagic: "有效生命值（魔法）",
       itemsTitle: "装备",
       itemPlaceholderLine1: "点击装备栏",
       itemPlaceholderLine2: "添加装备",

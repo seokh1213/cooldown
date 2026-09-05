@@ -147,6 +147,8 @@ export const enUSTranslations: Translations = {
         statsPlaceholderLine1: "Select champion, level, items, and runes",
         statsPlaceholderLine2: "to see detailed stats and skill info.",
         aaDpsLabel: "Auto Attack DPS (Approx.)",
+        effectiveHealthPhysical: "Effective health (physical)",
+        effectiveHealthMagic: "Effective health (magic)",
         itemsTitle: "Items",
         itemPlaceholderLine1: "Click item slot",
         itemPlaceholderLine2: "to add an item",

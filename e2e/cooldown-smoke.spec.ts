@@ -357,3 +357,27 @@ test("documents game formulas in the encyclopedia", async ({ page }) => {
     )
     .toBe(true);
 });
+
+test("simulation reports effective health from the documented formula", async ({ page }) => {
+  await page.goto("./simulation");
+  await page.getByRole("button", { name: "시뮬레이션할 챔피언 선택" }).click();
+  await page.getByRole("button", { name: "Select 가렌", exact: true }).click();
+
+  // "방어력" 은 대상 방어구 입력에도 있으므로 스탯 패널 안으로 범위를 좁힌다
+  const panel = page
+    .getByText("실질 체력 (물리)", { exact: true })
+    .locator("xpath=ancestor::div[contains(@class,'border-y')]");
+  const read = async (label: string): Promise<number> => {
+    const row = panel.getByText(label, { exact: true }).locator("xpath=..");
+    const text = await row.innerText();
+    return Number(text.replace(label, "").replace(/[^\d.]/g, ""));
+  };
+
+  const health = await read("체력");
+  const armor = await read("방어력");
+  const effective = await read("실질 체력 (물리)");
+
+  // 실질 체력 = 체력 × (1 + 방어력 / 100). 표시는 각 항을 따로 반올림한다
+  expect(Math.abs(effective - health * (1 + armor / 100))).toBeLessThan(30);
+  expect(effective).toBeGreaterThan(health);
+});

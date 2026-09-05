@@ -138,6 +138,8 @@ export interface Translations {
       statsPlaceholderLine1: string;
       statsPlaceholderLine2: string;
       aaDpsLabel: string;
+      effectiveHealthPhysical: string;
+      effectiveHealthMagic: string;
       itemsTitle: string;
       itemPlaceholderLine1: string;
       itemPlaceholderLine2: string;

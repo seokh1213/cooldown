@@ -65,6 +65,54 @@ export function resistanceMultiplier(resistance: number): number {
     : 2 - 100 / (100 - resistance);
 }
 
+/**
+ * 실질 체력 = 체력 × (1 + 저항력 / 100)
+ *
+ * 감쇄식을 체력 쪽에서 뒤집어 쓴 값이다. 방어 아이템과 체력 아이템 중
+ * 어느 쪽이 더 버티는지 견줄 때 이 숫자를 본다.
+ */
+export function effectiveHealth(health: number, resistance: number): number {
+  return health / resistanceMultiplier(resistance);
+}
+
+/** 저항력에 걸리는 감소·관통 (백과사전 "저항력 감소와 관통" 항목과 같은 규칙) */
+export interface ResistanceModifiers {
+  /** ① 고정 감소 — 합연산, 저항력을 음수까지 내릴 수 있다 */
+  flatReduction?: number;
+  /** ② 비율 감소 — 곱연산 (0 ~ 1) */
+  percentReduction?: number;
+  /** ③ 비율 관통 — 곱연산 (0 ~ 1) */
+  percentPenetration?: number;
+  /** ④ 고정 관통 — 합연산, 0 밑으로는 내리지 못한다 */
+  flatPenetration?: number;
+}
+
+/**
+ * 적용 저항력 = (저항력 − 고정 감소) × (1 − 감소%) × (1 − 관통%) − 고정 관통
+ *
+ * 네 단계는 순서가 정해져 있고 각 단계마다 제약이 다르다.
+ * - 비율 감소와 비율 관통은 저항력이 0 이하면 건너뛴다
+ * - 고정 관통은 저항력을 0 밑으로 내리지 못한다
+ * - 저항력을 음수로 만들 수 있는 건 고정 감소뿐이다
+ *
+ * 마지막 제약을 빼먹으면 방어력이 낮은 대상에게 관통을 들었을 때
+ * 음수 방어력 구간으로 넘어가 실제로는 없는 추가 피해가 붙는다.
+ */
+export function effectiveResistance(
+  resistance: number,
+  modifiers: ResistanceModifiers = {},
+): number {
+  const afterFlatReduction = resistance - (modifiers.flatReduction ?? 0);
+  if (afterFlatReduction <= 0) return afterFlatReduction;
+
+  const afterPercent =
+    afterFlatReduction *
+    (1 - (modifiers.percentReduction ?? 0)) *
+    (1 - (modifiers.percentPenetration ?? 0));
+
+  return Math.max(0, afterPercent - (modifiers.flatPenetration ?? 0));
+}
+
 export function applyDamageMitigation(
   rawDamage: number,
   damageType: DamageType,
@@ -76,8 +124,17 @@ export function applyDamageMitigation(
   }
   if (damageType === "true") return rawDamage;
   const resistance = damageType === "physical"
-    ? target.armor * (1 - (attacker?.armorPenPercent ?? 0)) - (attacker?.armorPenFlat ?? 0) - (attacker?.lethality ?? 0)
-    : target.magicResist * (1 - (attacker?.magicPenPercent ?? 0)) - (attacker?.magicPenFlat ?? 0);
+    ? effectiveResistance(target.armor, {
+        percentPenetration: attacker?.armorPenPercent ?? 0,
+        // V14.1 부터 물리 관통력(치명적 일격)은 고정 방어구 관통과 1:1 이라
+        // 둘을 더해 한 값으로 쓴다
+        flatPenetration:
+          (attacker?.armorPenFlat ?? 0) + (attacker?.lethality ?? 0),
+      })
+    : effectiveResistance(target.magicResist, {
+        percentPenetration: attacker?.magicPenPercent ?? 0,
+        flatPenetration: attacker?.magicPenFlat ?? 0,
+      });
   const reduction = Math.min(Math.max(target.damageReductionPercent, 0), 100) / 100;
   return rawDamage * resistanceMultiplier(resistance) * (1 - reduction);
 }

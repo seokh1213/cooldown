@@ -147,6 +147,8 @@ export const koKRTranslations: Translations = {
         statsPlaceholderLine1: "챔피언, 레벨, 아이템, 룬을 선택하면",
         statsPlaceholderLine2: "상세 스탯과 스킬 정보를 확인할 수 있습니다.",
         aaDpsLabel: "기본 공격 DPS (근사치)",
+        effectiveHealthPhysical: "실질 체력 (물리)",
+        effectiveHealthMagic: "실질 체력 (마법)",
         itemsTitle: "아이템",
         itemPlaceholderLine1: "아이템 슬롯을 클릭하여",
         itemPlaceholderLine2: "아이템을 추가하세요",
