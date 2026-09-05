@@ -1,4 +1,5 @@
-import { AlertTriangle } from "lucide-react";
+import { AlertTriangle, Calculator } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { SafeBlockHtml } from "@/components/ui/safe-html";
 import type { DataLocale } from "@/data/contracts/staticData";
 import { itemIconUrl } from "@/data/assets/riotAssetUrls";
@@ -128,6 +129,7 @@ export function ItemDetail(props: {
   ddragonVersion: string;
   locale: DataLocale;
   onSelect: (item: Item) => void;
+  onUseInSimulation: () => void;
 }) {
   const { item, itemMap, ddragonVersion, locale, onSelect } = props;
   const { t } = useTranslation();
@@ -166,6 +168,10 @@ export function ItemDetail(props: {
                 </div>
               </div>
             </div>
+            <Button type="button" variant="outline" size="sm" onClick={props.onUseInSimulation} className="h-8 w-full gap-1.5 text-[10px]">
+              <Calculator aria-hidden="true" className="size-3" />
+              {t.pages.simulation.addItemToSimulation}
+            </Button>
             <div className="h-px bg-neutral-700/80" />
             {statLines.length > 0 && (
               <ul className="space-y-0.5 text-[11px] leading-snug">

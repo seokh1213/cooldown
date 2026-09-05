@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Search } from "lucide-react";
 import type { DataLocale, StaticDataSources } from "@/data/contracts/staticData";
 import { getNormalizedItems } from "@/data/queries/gameDataQueries";
@@ -89,6 +90,7 @@ function ItemGrid(props: {
 
 export function ItemsTab({ patchVersion, sources, ddragonVersion, lang }: ItemsTabProps) {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const isMobile = useDeviceType() === "mobile";
   const [items, setItems] = useState<Item[] | null>(null);
   const [storeItems, setStoreItems] = useState<Item[] | null>(null);
@@ -144,6 +146,7 @@ export function ItemsTab({ patchVersion, sources, ddragonVersion, lang }: ItemsT
       ddragonVersion={ddragonVersion}
       locale={lang}
       onSelect={setSelectedItem}
+      onUseInSimulation={() => navigate(`/simulation?i=${selectedItem.id}`)}
     />
   );
 

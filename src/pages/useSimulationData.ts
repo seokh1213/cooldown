@@ -64,22 +64,27 @@ export function useSimulationData(input: {
   patchVersion: string;
   sources: StaticDataSources;
   lang: Language;
+  initialChampionId?: string;
+  initialTargetChampionId?: string;
+  initialLevel?: number;
+  initialTargetLevel?: number;
+  initialItemIds?: (string | null)[];
 }) {
   const { patchVersion, sources, lang } = input;
-  const [selectedChampionId, setSelectedChampionId] = useState("");
-  const [targetChampionId, setTargetChampionId] = useState("");
+  const [selectedChampionId, setSelectedChampionId] = useState(input.initialChampionId ?? "");
+  const [targetChampionId, setTargetChampionId] = useState(input.initialTargetChampionId ?? "");
   const { champion: championInfo, detail: championDetail } = useChampionData(
     input,
     selectedChampionId,
   );
   const { champion: targetChampionInfo } = useChampionData(input, targetChampionId);
-  const [level, setLevel] = useState(18);
-  const [targetLevel, setTargetLevel] = useState(18);
+  const [level, setLevel] = useState(input.initialLevel ?? 18);
+  const [targetLevel, setTargetLevel] = useState(input.initialTargetLevel ?? 18);
   const [availableItems, setAvailableItems] = useState<NormalizedItem[]>([]);
   const [availableSummoners, setAvailableSummoners] = useState<NormalizedSummonerSpell[]>([]);
   const [availableRunes, setAvailableRunes] = useState<NormalizedRune[]>([]);
   const [selectedItemIds, setSelectedItemIds] = useState<(string | null)[]>(
-    () => Array(6).fill(null),
+    () => Array.from({ length: 6 }, (_, index) => input.initialItemIds?.[index] ?? null),
   );
 
   useEffect(() => {

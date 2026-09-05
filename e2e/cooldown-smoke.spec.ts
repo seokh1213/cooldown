@@ -170,7 +170,14 @@ test("simulation uses compiled Ability v2 without raw spell requests", async ({ 
   await expect(page.getByRole("dialog")).toBeHidden();
   await expect(page.getByText("Q: 파쇄격")).toBeVisible();
   await expect(page.getByText("Skill Description Placeholder")).toHaveCount(0);
-  await expect(page.getByText(/예상 피해 \(아이템\/레벨 반영\): 120\.0/)).toBeVisible();
+  const qSkill = page.getByText("Q: 파쇄격").locator("../..");
+  await expect(qSkill).toContainText("산식 120.0");
+  await page.getByLabel("Q 스킬 레벨").first().selectOption("1");
+  await expect(qSkill).toContainText("산식 20.0");
+  const rSkill = page.getByText("R: 회전격").locator("../..");
+  await expect(rSkill).toContainText("공격력 125.5 × 2.75");
+  await page.getByLabel("공격자 레벨").selectOption("1");
+  await expect(rSkill).toContainText("공격력 66.0 × 2.75");
   expect(dataRequests.some((url) => url.includes("/champions/ko_KR/MonkeyKing.json")))
     .toBe(true);
   expect(dataRequests.some((url) => url.includes("/spells/"))).toBe(false);
@@ -244,12 +251,45 @@ test("calculates a ranked combo against target defenses", async ({ page }) => {
   await expect(cheapShotRow).toContainText("이동·행동 방해 상태");
   await expect(page.getByTestId("combo-total")).toHaveText("475.0");
 
+  await page.getByRole("button", { name: /적용 · 이동·행동 방해 상태/ }).click();
+  await expect(page.getByTestId("combo-total")).toHaveText("430.0");
+  await expect(page).toHaveURL(/off=rune/);
+
   await page.getByLabel("피해 감소").fill("0");
-  await page.getByRole("button", { name: /아이템 슬롯을 클릭하여/ }).first().click();
+  await page.getByRole("button", { name: "아이템 1" }).click();
   await page.getByRole("button", { name: /내셔의 이빨/ }).click();
   const nashorRow = page.getByRole("row", { name: /내셔의 이빨/ });
   await expect(nashorRow).toContainText("27.0");
   await expect(nashorRow).toContainText("적중 시");
+});
+
+test("restores the complete simulation from its URL", async ({ page }) => {
+  await page.goto("./simulation?a=MonkeyKing&t=Garen&al=11&tl=10&sr=Q%3A3.W%3A1.E%3A2.R%3A1&cc=AA%3A2.Q%3A1&hp=777&ar=88&mr=44&dr=5");
+  await expect(page.getByLabel("Q 스킬 레벨").first()).toHaveValue("3");
+  await expect(page.getByLabel("현재 체력")).toHaveValue("777");
+  await expect(page.getByLabel("방어력")).toHaveValue("88");
+  await expect(page.getByLabel("파쇄격 횟수").last()).toHaveValue("1");
+  await page.getByRole("button", { name: "공유" }).click();
+  await expect(page.getByRole("button", { name: "복사됨" })).toBeVisible();
+  await page.reload();
+  await expect(page.getByLabel("Q 스킬 레벨").first()).toHaveValue("3");
+  await expect(page.getByLabel("현재 체력")).toHaveValue("777");
+});
+
+test("hands a selected champion off to the simulation", async ({ page }) => {
+  await page.goto("./");
+  await selectWukong(page);
+  await page.getByRole("button", { name: "이 조합으로 계산" }).click();
+  await expect(page).toHaveURL(/\/simulation\?.*a=MonkeyKing/);
+  await expect(page.getByText("Q: 파쇄격")).toBeVisible();
+});
+
+test("hands an encyclopedia item off to the simulation", async ({ page }) => {
+  await page.goto("./encyclopedia?tab=items");
+  await page.getByRole("button", { name: /롱소드/ }).first().click();
+  await page.getByRole("button", { name: "시뮬레이션 첫 슬롯에 담기" }).click();
+  await expect(page).toHaveURL(/\/simulation\?.*i=1036/);
+  await expect(page.getByRole("button", { name: "롱소드" })).toBeVisible();
 });
 
 test("keeps the main workflow fully localized in Chinese", async ({ page }) => {

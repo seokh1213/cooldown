@@ -27,6 +27,7 @@ const wukong = decodeChampionDetail(JSON.parse(
   await fs.readFile(path.join(versionDir, "champions/ko_KR/MonkeyKing.json"), "utf8")
 ));
 const wukongQ = wukong.champion.abilities.Q;
+assert.equal(wukong.champion.baseStats.attackDamage.perLevel, 3.5);
 assert.match(wukongQ.bodyHtml, /사거리가 135\/145\/155\/165\/175 증가/);
 assert.match(wukongQ.bodyHtml, /방어력이 10\/15\/20\/25\/30%/);
 assert.deepEqual(wukongQ.rankValues[0], {
