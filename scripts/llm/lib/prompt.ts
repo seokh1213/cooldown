@@ -16,6 +16,7 @@ import {
 } from "./retrieval";
 import type { ChatMessage } from "./ollama";
 import { playbookToText, type SelectedPlaybook } from "./playbook";
+import type { OracleFacts } from "./oracle";
 
 export interface MatchupContext {
   patch: string;
@@ -27,6 +28,8 @@ export interface MatchupContext {
   summoners: SummonerBrief[];
   tips: CuratedTip[];
   playbook?: SelectedPlaybook;
+  /** lol.ps 통계 오라클 (해당 패치·라인 기준). 상성 한정 지식보다는 뒤, 챔피언 지식보다는 앞 */
+  oracle?: OracleFacts;
   /** 컨텍스트 크기 절약 모드 (소형 모델용) */
   compact?: boolean;
   /**
@@ -50,6 +53,7 @@ export const SYSTEM_PROMPT_KO = `당신은 리그 오브 레전드 상성 코치
 1. 제공된 자료 안의 사실(스탯 등급, 계수, 스킬 효과, 아이템/룬/소환사 주문 목록, 지식 카드, 검증 팁)만 근거로 삼습니다. 자료에 없는 아이템·룬·스킬 이름이나 수치를 만들어내지 마십시오.
 2. [권장안 초안]이 주어지면 항목별 선택은 이미 정해진 것입니다. 그 이름을 그대로 쓰고 왜 좋은지 이유만 서술하십시오. 목록에 없는 대안을 새로 제시하지 마십시오.
 3. [지식 카드]와 [검증 팁]은 사람이 확인한 정보이므로 최우선으로 반영합니다. 콤보와 라인 운영은 반드시 지식 카드의 표현을 따릅니다.
+   [통계]는 그 패치에서 실제로 쓰인 선택이므로 근거로 인용합니다. 다만 상대가 누구인지 구분하지 않는 수치이므로, 상성 한정 지식과 어긋나면 지식을 따릅니다.
 4. [자동 결론]은 데이터에서 계산된 사실이므로 그대로 반영하고, 왜 그 선택이 좋은지 한 문장씩 이유를 붙입니다.
 5. 자료에 근거가 없는 항목은 "자료에 근거 없음"이라고 적고 추측을 사실처럼 쓰지 않습니다.
 6. 스킬을 지목할 때는 자료에 적힌 슬롯 문자(P, Q, W, E, R)와 스킬 이름을 함께 씁니다. 슬롯을 숫자로 바꾸지 마십시오.
@@ -278,7 +282,8 @@ export function deriveRecommendation(ctx: MatchupContext): string[] {
     "시작 아이템": 2,
     "첫 아이템 후보": 3,
     "코어 아이템": 4,
-    룬: 4,
+    룬: 6,
+    "룬 파편": 3,
     "소환사 주문": 3,
   };
   const push = (label: string, names: string[]) => {
@@ -298,7 +303,16 @@ export function deriveRecommendation(ctx: MatchupContext): string[] {
   const verdicts = ctx.tips.filter((t) => t.category === "verdict");
   for (const v of verdicts) lines.push(`상성 판정: ${v.text}`);
 
-  push("시작 아이템", merge(tipsByCategory(["item", "start-item"], "items"), byCategory("start-item", "items")));
+  const oracle = ctx.oracle?.picks;
+  const notAvoided = (names: string[]) => names.filter((n) => !avoided.has(n));
+
+  push(
+    "시작 아이템",
+    merge(
+      merge(tipsByCategory(["item", "start-item"], "items"), notAvoided(oracle?.startingItems ?? [])),
+      byCategory("start-item", "items"),
+    ),
+  );
   const boots = ctx.items.boots[0]?.name;
   const firstItems = [
     ...byCategory("first-item", "items"),
@@ -307,11 +321,35 @@ export function deriveRecommendation(ctx: MatchupContext): string[] {
   ];
   push(
     "첫 아이템 후보",
-    merge(tipsByCategory(["build-order"], "items"), Array.from(new Set(firstItems))),
+    merge(
+      merge(tipsByCategory(["build-order"], "items"), notAvoided(oracle?.boots ?? [])),
+      Array.from(new Set(firstItems)),
+    ),
   );
-  push("코어 아이템", byCategory("core-item", "items"));
-  push("룬", merge(tipsByCategory(["rune"], "runes"), byCategory("rune", "runes")));
-  push("소환사 주문", merge(tipsByCategory(["summoner"], "summoners"), byCategory("summoner", "summoners")));
+  push(
+    "코어 아이템",
+    merge(notAvoided(oracle?.coreItems ?? []), byCategory("core-item", "items")),
+  );
+  push(
+    "룬",
+    merge(
+      merge(tipsByCategory(["rune"], "runes"), notAvoided(oracle?.runes ?? [])),
+      byCategory("rune", "runes"),
+    ),
+  );
+  if (oracle?.shards?.length) push("룬 파편", notAvoided(oracle.shards));
+  push(
+    "소환사 주문",
+    merge(
+      merge(tipsByCategory(["summoner"], "summoners"), notAvoided(oracle?.summoners ?? [])),
+      byCategory("summoner", "summoners"),
+    ),
+  );
+  if (oracle?.skillOrder) {
+    lines.push(
+      `스킬 선마 순서: ${oracle.skillOrder}${oracle.skillOrderDetail ? ` (11레벨까지 ${oracle.skillOrderDetail})` : ""}`,
+    );
+  }
   if (ctx.items.antiHeal.length && ctx.enemy.mechanics.includes("회복")) {
     lines.push(`치유 감소: ${ctx.items.antiHeal[0].name}`);
   }
@@ -369,6 +407,13 @@ export function buildUserPrompt(ctx: MatchupContext): string {
     );
   }
   sections.push(`[검증 팁]\n${tipsToText(ctx.tips, ctx.patch)}`);
+  if (ctx.oracle?.lines.length) {
+    sections.push(
+      `[통계 — ${ctx.oracle.scope}${ctx.oracle.games ? `, 표본 ${ctx.oracle.games.toLocaleString("ko-KR")}판` : ""}]\n${ctx.oracle.lines
+        .map((l) => `- ${l}`)
+        .join("\n")}`,
+    );
+  }
   sections.push(
     `[조심할 스킬 우선순위 — 이 순서를 따르십시오]\n${threatOrderToText(deriveThreatOrder(ctx.enemy))}`,
   );
@@ -454,10 +499,17 @@ export function buildSections(ctx: MatchupContext): PromptSection[] {
     `[확정된 선택]\n${deriveRecommendation(ctx)
       .map((r) => `- ${r}`)
       .join("\n")}`,
+    ctx.oracle?.lines.length
+      ? `[통계 근거 — ${ctx.oracle.scope}${ctx.oracle.games ? `, 표본 ${ctx.oracle.games.toLocaleString("ko-KR")}판` : ""}]\n${ctx.oracle.lines
+          .filter((l) => !l.startsWith("14분 지표"))
+          .map((l) => `- ${l}`)
+          .join("\n")}`
+      : "",
     buildKnowledge.mine.length || buildKnowledge.vsEnemy.length
       ? `[지식 카드]\n${playbookToText(buildKnowledge, ctx.me.name, ctx.enemy.name, ctx.patch)}`
       : "",
     `[요청] 확정된 선택의 이유만 아래 형식으로 쓰십시오. 이름 목록은 이미 화면에 표시되므로 다시 나열하지 마십시오.
+통계가 있으면 픽률이나 승률을 근거로 한 번씩 인용하십시오.
 - 시작 아이템: <이유 1~2문장>
 - 첫 아이템: <이유 1~2문장>
 - 최종 아이템: <이유 1~2문장>
@@ -479,6 +531,12 @@ export function buildSections(ctx: MatchupContext): PromptSection[] {
       .map((l) => `- ${l}`)
       .join("\n")}`,
     `[조심할 스킬 우선순위 — 이 순서와 이유를 그대로 쓰십시오]\n${threatOrderToText(deriveThreatOrder(ctx.enemy))}`,
+    ctx.oracle?.lines.length
+      ? `[통계 — ${ctx.oracle.scope}${ctx.oracle.games ? `, 표본 ${ctx.oracle.games.toLocaleString("ko-KR")}판` : ""}]\n${ctx.oracle.lines
+          .filter((l) => l.startsWith("14분 지표") || l.startsWith("선마"))
+          .map((l) => `- ${l}`)
+          .join("\n")}`
+      : "",
     `[지식 카드 — 표현을 그대로 따르십시오]\n${playbookToText(laneKnowledge, ctx.me.name, ctx.enemy.name, ctx.patch)}`,
     ctx.tips.filter((t) => t.category !== "verdict").length
       ? `[검증 팁]\n${tipsToText(
@@ -546,6 +604,12 @@ export function buildChain(ctx: MatchupContext): { system: string; turns: ChainT
     `[확정된 선택]\n${deriveRecommendation(ctx)
       .map((r) => `- ${r}`)
       .join("\n")}`,
+    ctx.oracle?.lines.length
+      ? `[통계 근거 — ${ctx.oracle.scope}${ctx.oracle.games ? `, 표본 ${ctx.oracle.games.toLocaleString("ko-KR")}판` : ""}]\n${ctx.oracle.lines
+          .filter((l) => !l.startsWith("14분 지표"))
+          .map((l) => `- ${l}`)
+          .join("\n")}`
+      : "",
     ctx.playbook
       ? `[지식 카드 — 표현을 그대로 따르십시오]\n${playbookToText(ctx.playbook, ctx.me.name, ctx.enemy.name, ctx.patch)}`
       : "",
