@@ -26,6 +26,8 @@ export interface FormulaEntry {
   description: Localized;
   /** 숫자를 넣어 본 예시 */
   example?: Localized;
+  /** 한 줄로 합친 식처럼 폭을 다 쓰는 편이 나은 항목 */
+  wide?: boolean;
 }
 
 export interface FormulaGroup {
@@ -155,6 +157,34 @@ export const FORMULA_GROUPS: FormulaGroup[] = [
       zh_CN: "抗性削减与穿透",
     },
     entries: [
+      {
+        id: "penetration-combined",
+        icon: "scaleapen",
+        wide: true,
+        title: {
+          ko_KR: "한 줄로 합친 식",
+          en_US: "The whole chain in one formula",
+          zh_CN: "合并为一个公式",
+        },
+        formula:
+          "적용 저항력 = (저항력 − 고정 감소) × (1 − 감소%) × (1 − 관통%) − 고정 관통\n받는 피해   = 원래 피해 × 100 / (100 + 적용 저항력)",
+        description: {
+          ko_KR:
+            "아래 네 단계는 결국 이 한 줄이다. 물리든 마법이든 같다. 한 가지만 다른데, 비율 관통은 빼는 게 아니라 곱한다. 방어력 100에 관통 30%면 100 − 30 = 70 이 아니라 100 × 0.7 = 70 이라 같아 보이지만, 앞에 비율 감소가 걸려 있으면 결과가 달라진다. 세부 규칙도 있다. 비율 감소와 비율 관통은 저항력이 0 이하이면 건너뛰고, 고정 관통은 저항력을 0 밑으로 내리지 못한다. 저항력을 음수로 만들 수 있는 건 고정 감소뿐이다.",
+          en_US:
+            "The four steps below collapse into this one line, and it is the same on the physical and magic sides. One detail differs from the common shorthand: percent penetration multiplies rather than subtracts. With 100 armor and 30% penetration, 100 − 30 and 100 × 0.7 both give 70, but they diverge once a percent reduction is applied first. Two more rules: percent reduction and percent penetration are skipped when resistance is 0 or less, and flat penetration cannot push resistance below zero. Only flat reduction can make it negative.",
+          zh_CN:
+            "下面四个步骤最终就是这一行，物理与魔法完全相同。与常见简写有一处不同：百分比穿透是相乘而非相减。100 护甲搭配 30% 穿透时，100 − 30 与 100 × 0.7 都得 70，但一旦先经过百分比削减，结果就会不同。还有两条规则：抗性为 0 或更低时会跳过百分比削减与百分比穿透；固定穿透不能把抗性压到 0 以下。只有固定削减能使其为负。",
+        },
+        example: {
+          ko_KR:
+            "대상 방어력 100, 방어구 관통력 30%, 물리 관통력 18\n→ 적용 방어력 = 100 × 0.7 − 18 = 52\n→ 받는 피해 = 100 / (100 + 52) = 65.8%",
+          en_US:
+            "Target with 100 armor, 30% armor penetration, 18 lethality\n→ effective armor = 100 × 0.7 − 18 = 52\n→ damage taken = 100 / (100 + 52) = 65.8%",
+          zh_CN:
+            "目标 100 护甲，30% 护甲穿透，18 穿甲\n→ 生效护甲 = 100 × 0.7 − 18 = 52\n→ 承受伤害 = 100 / (100 + 52) = 65.8%",
+        },
+      },
       {
         id: "reduction-vs-penetration",
         title: {

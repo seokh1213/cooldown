@@ -23,7 +23,11 @@ export function FormulasTab() {
             {group.entries.map((entry) => (
               <article
                 key={entry.id}
-                className="rounded-lg border border-border bg-card p-4 space-y-2.5"
+                className={
+                  entry.wide
+                    ? "rounded-lg border border-primary/40 bg-card p-4 space-y-2.5 md:col-span-2"
+                    : "rounded-lg border border-border bg-card p-4 space-y-2.5"
+                }
               >
                 <h3 className="text-sm font-medium text-foreground flex items-center gap-1.5">
                   {entry.icon && (
