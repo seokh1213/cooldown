@@ -238,4 +238,36 @@ export const koKRTranslations: Translations = {
       items: "개",
       bonus: "추가",
     },
-  };
+    advisor: {
+    title: "상성 코치",
+    open: "상성 코치 열기",
+    close: "닫기",
+    consent: {
+      title: "AI 모델을 내려받아도 될까요?",
+      lead: "상성 코치는 기기 안에서 직접 동작합니다. 처음 한 번만 모델 파일을 내려받으면 그 뒤로는 다시 받지 않습니다.",
+      sizeNotice: "내려받는 용량은 약 {size}MB 입니다. 데이터 요금이 부과될 수 있으니 Wi‑Fi 를 권합니다.",
+      storageNotice: "브라우저 저장 공간에 보관합니다. 현재 이 사이트에 허용된 공간은 약 {quota}MB 입니다.",
+      privacyNotice: "질문과 답변은 기기를 벗어나지 않습니다. 서버로 보내지 않습니다.",
+      accept: "내려받고 시작",
+      cancel: "나중에",
+    },
+    unsupported: {
+      title: "이 브라우저에서는 쓸 수 없습니다",
+      noApi: "WebGPU 를 지원하지 않는 브라우저입니다. 최신 Chrome 이나 Edge 에서 열어 주세요.",
+      noAdapter: "그래픽 어댑터를 찾지 못했습니다. 브라우저의 하드웨어 가속 설정을 확인해 주세요.",
+      error: "WebGPU 를 확인하는 중 문제가 생겼습니다.",
+    },
+    status: {
+      downloading: "모델 내려받는 중",
+      warming: "모델 올리는 중",
+      ready: "준비됨",
+      generating: "생각하는 중",
+    },
+    placeholder: "예: 오공으로 럼블 상대할 때 어떻게 해요?",
+    send: "보내기",
+    stop: "중단",
+    reset: "대화 지우기",
+    emptyHint: "챔피언 상성이나 스킬 운용을 물어보세요. 기기 안에서 답합니다.",
+    errorPrefix: "오류",
+  },
+};

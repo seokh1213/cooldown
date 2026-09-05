@@ -58,6 +58,8 @@ export default tseslint.config(
       'build/**',
       'node_modules/**',
       '.claude/worktrees/**',
+      // 빌드 때 node_modules 에서 복사해 오는 ONNX Runtime 런타임
+      'public/ort/**',
       '*.config.js',
       '*.config.ts',
     ],
