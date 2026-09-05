@@ -14,6 +14,7 @@ import {
   buildCounterBrief,
   buildMatchup,
   buildRuleBrief,
+  findPrecomputed,
   loadAdvisorData,
   type AdvisorData,
 } from "@/lib/advisor/context";
@@ -91,19 +92,35 @@ export function AdvisorPanel({ advisor, patch, onClose }: AdvisorPanelProps) {
 
       const matchup = detectMatchup(data, question);
       if (matchup) {
-        // UI 언어로 답하게 한다. 자료는 한국어여도 답은 사용자 언어로 나가야 한다.
-        const built = buildMatchup(data, { ...matchup, outputLang: lang });
-        // 모델이 없으면 코드 답변만으로 끝낸다. 평가에서 63/66 이라 쓸 만하다.
-        if (!advisor.consented || advisor.webgpu?.supported === false) {
-          advisor.answerWithoutModel(question, built.codeAnswer);
-        } else {
-          advisor.sendMatchup(
-            question,
-            built.decided,
-            built.sections.map((section) => section.messages),
-          );
-        }
         setDraft("");
+        void (async () => {
+          // 미리 만들어 둔 답이 있으면 그것부터 낸다. 기다릴 이유가 없다.
+          // 한국어 답만 미리 만들어 두므로 다른 언어에서는 건너뛴다.
+          if (lang === "ko_KR") {
+            const hit = await findPrecomputed(
+              data.patch,
+              matchup.me.id,
+              matchup.enemy.id,
+              matchup.lane,
+            );
+            if (hit) {
+              advisor.answerWithoutModel(question, hit.answer);
+              return;
+            }
+          }
+          // UI 언어로 답하게 한다. 자료는 한국어여도 답은 사용자 언어로 나가야 한다.
+          const built = buildMatchup(data, { ...matchup, outputLang: lang });
+          // 모델이 없으면 코드 답변만으로 끝낸다. 평가에서 63/66 이라 쓸 만하다.
+          if (!advisor.consented || advisor.webgpu?.supported === false) {
+            advisor.answerWithoutModel(question, built.codeAnswer);
+          } else {
+            advisor.sendMatchup(
+              question,
+              built.decided,
+              built.sections.map((section) => section.messages),
+            );
+          }
+        })();
         return;
       }
       const single = detectSingleChampion(data, question);

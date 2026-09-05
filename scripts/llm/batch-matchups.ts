@@ -46,6 +46,8 @@ export interface GeneratedMatchup {
   decided: string;
   /** 모델이 서술한 구간 */
   sections: Array<{ id: string; title: string; text: string }>;
+  /** 화면에 그대로 낼 수 있게 이어 붙인 것. 브라우저가 이 필드만 읽으면 된다. */
+  answer: string;
   stats: { promptTokensMax: number; outputTokens: number; seconds: number };
 }
 
@@ -74,12 +76,22 @@ function parse(argv: string[]): BatchOptions {
   };
 }
 
-/** 생성된 답변이 데이터에 없는 이름을 말하지 않았는지 확인한다 */
-function findSuspectNames(text: string, riftItems: Set<string>, otherModeItems: Set<string>): string[] {
+/**
+ * 협곡에서 살 수 없는 아이템이 답변에 나오면 잘못된 조언이다.
+ *
+ * 다만 **이름이 룬과 겹치는 경우를 빼야 한다.** 과잉성장은 룬이면서 상점에 없는
+ * 내부 아이템 id(1524)로도 존재해서, 정상적인 룬 추천이 전부 오탐으로 잡혔다.
+ */
+function findSuspectNames(
+  text: string,
+  riftItems: Set<string>,
+  otherModeItems: Set<string>,
+  runeNames: Set<string>,
+): string[] {
   const found: string[] = [];
   for (const name of otherModeItems) {
-    // 협곡에서 살 수 없는 아이템(다른 게임 모드 전용)이 등장하면 잘못된 조언이다
-    if (!riftItems.has(name) && name.length >= 3 && text.includes(name)) found.push(name);
+    if (riftItems.has(name) || runeNames.has(name)) continue;
+    if (name.length >= 3 && text.includes(name)) found.push(name);
   }
   return found;
 }
@@ -100,6 +112,11 @@ async function main() {
       .map((i) => i.name),
   );
   const otherModeItems = new Set(data.items.items.map((i) => i.name));
+  // 룬과 이름이 겹치는 내부 아이템이 있다(과잉성장 id 1524). 룬 추천이 오탐으로 잡히지 않게 뺀다.
+  const runeNames = new Set([
+    ...data.runes.runes.map((r) => r.name),
+    ...data.runes.statShards.map((s) => s.name),
+  ]);
 
   const outDir = opts.outDir ?? path.join(PUBLIC_DATA_ROOT, data.patch, "llm", "matchups");
   console.log(
@@ -149,7 +166,7 @@ async function main() {
     }
 
     const fullText = [decided, ...sections.map((s) => s.text)].join("\n\n");
-    const suspects = findSuspectNames(fullText, riftItems, otherModeItems);
+    const suspects = findSuspectNames(fullText, riftItems, otherModeItems, runeNames);
     if (suspects.length) {
       problems.push(`${target.me} vs ${target.enemy}: 협곡에 없는 아이템 언급 — ${suspects.join(", ")}`);
     }
@@ -166,6 +183,7 @@ async function main() {
       generatedAt: new Date().toISOString(),
       decided,
       sections,
+      answer: fullText,
       stats: { promptTokensMax, outputTokens, seconds },
     };
     const dir = path.join(outDir, target.lane ?? "any");

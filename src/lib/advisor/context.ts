@@ -390,3 +390,43 @@ export function buildRuleBrief(data: AdvisorData, question: string): string | un
       "규칙을 다 읽어도 답이 없을 때만 '자료에 없습니다' 라고 답하십시오.",
   ].join("\n\n");
 }
+
+/** 사전 생성된 답변 하나 */
+export interface PrecomputedMatchup {
+  me: string;
+  enemy: string;
+  lane?: string;
+  patch: string;
+  answer: string;
+}
+
+/**
+ * 미리 만들어 둔 답변을 찾는다.
+ *
+ * 브라우저에서 만들면 24~75초가 걸린다. 미리 만들어 배포하면 **누구나 즉시** 본다.
+ * 3GB 를 받지 않은 사용자도 마찬가지다. 그래서 모델보다 이쪽을 먼저 본다.
+ *
+ * 없으면 조용히 undefined 를 돌려준다. 그때는 코드 답변이나 모델로 넘어간다.
+ */
+export async function findPrecomputed(
+  patch: string,
+  me: string,
+  enemy: string,
+  lane?: string,
+): Promise<PrecomputedMatchup | undefined> {
+  // 라인을 모르면 어느 폴더에 있는지 알 수 없다. 흔한 순서로 훑는다.
+  const lanes = lane ? [lane] : ["top", "mid", "jungle", "bot", "support"];
+  for (const candidate of lanes) {
+    try {
+      const url = dataUrl(patch, `llm/matchups/${candidate}/${me}-vs-${enemy}.json`);
+      const res = await fetch(url);
+      if (!res.ok) continue;
+      const parsed = (await res.json()) as { answer?: string; text?: string };
+      const answer = parsed.answer ?? parsed.text;
+      if (answer) return { me, enemy, lane: candidate, patch, answer };
+    } catch {
+      // 없으면 다음 라인
+    }
+  }
+  return undefined;
+}
