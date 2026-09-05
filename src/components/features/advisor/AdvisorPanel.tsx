@@ -9,6 +9,7 @@ import { Loader2, Send, Square, ThumbsDown, ThumbsUp, Trash2, X } from "lucide-r
 import { Button } from "@/components/ui/button";
 import { useTranslation } from "@/i18n";
 import { advisorSystemPrompt } from "@/lib/advisor/persona";
+import { AdvisorMarkdown } from "./AdvisorMarkdown";
 import {
   buildChampionBrief,
   buildCounterBrief,
@@ -218,10 +219,18 @@ export function AdvisorPanel({ advisor, patch, onClose }: AdvisorPanelProps) {
                 className={
                   turn.role === "user"
                     ? "ml-auto w-fit max-w-[85%] rounded-2xl rounded-br-sm bg-primary px-3 py-2 text-primary-foreground"
-                    : "mr-auto w-fit max-w-[95%] whitespace-pre-wrap rounded-2xl rounded-bl-sm bg-muted px-3 py-2"
+                    : "mr-auto w-fit max-w-[95%] rounded-2xl rounded-bl-sm bg-muted px-3 py-2"
                 }
               >
-                {turn.content || (turn.role === "assistant" && <Loader2 className="h-4 w-4 animate-spin" />)}
+                {turn.content ? (
+                  turn.role === "assistant" ? (
+                    <AdvisorMarkdown text={turn.content} />
+                  ) : (
+                    <span className="whitespace-pre-wrap">{turn.content}</span>
+                  )
+                ) : (
+                  turn.role === "assistant" && <Loader2 className="h-4 w-4 animate-spin" />
+                )}
                 {turn.role === "assistant" && turn.content && (
                   <div className="mt-1 flex items-center gap-2 text-[11px] text-muted-foreground">
                     {turn.stats && (
