@@ -159,6 +159,35 @@ export interface LaneFeatureStats {
   avgCsAt14minRank: number;
 }
 
+/**
+ * 챔피언 요약. **상성별 통계가 여기에만 있다.**
+ *
+ * `counterChampionIdList` 는 이 챔피언이 상대하기 **어려운** 챔피언이고
+ * `counterWinrateList` 는 그 상대를 만났을 때 **이 챔피언의** 승률이다(낮을수록 불리).
+ * `counterEasy*` 는 반대로 쉬운 상대다.
+ * 라인을 지정하지 않으면 표본이 크게 줄어든다(오공 기준 253판 대 1,850판).
+ */
+export interface ChampSummaryEntry {
+  buildTypeId: number;
+  winRate: string;
+  pickRate: string;
+  banRate: string;
+  top1LaneId?: number;
+  top1LaneRatio?: string;
+  counterChampionIdList?: number[];
+  counterWinrateList?: number[];
+  counterCountList?: number[];
+  counterEasyChampionIdList?: number[];
+  counterEasyWinrateList?: number[];
+  counterEasyCountList?: number[];
+}
+
+/**
+ * 이 엔드포인트만 `{data: [...]}` 가 아니라 **배열을 그대로** 돌려준다.
+ * 다른 통계 엔드포인트와 모양이 달라 한 번 헛짚었다.
+ */
+export type ChampSummary = ChampSummaryEntry[];
+
 export interface QueryScope {
   region: number;
   version: number;
@@ -246,6 +275,14 @@ export function fetchRuneStats(championId: number, scope: QueryScope, opts: Fetc
   return fetchJson<RuneStatPerkStats>(
     `${LOLPS_BASE}/champ/${championId}/runestatperk.json?${scopeQuery(scope)}`,
     cachePath("runestatperk", scope, String(championId)),
+    opts,
+  );
+}
+
+export function fetchChampSummary(championId: number, scope: QueryScope, opts: FetchOptions = {}) {
+  return fetchJson<ChampSummary>(
+    `${LOLPS_BASE}/champ/${championId}/summary.json?${scopeQuery(scope)}`,
+    cachePath("summary", scope, String(championId)),
     opts,
   );
 }

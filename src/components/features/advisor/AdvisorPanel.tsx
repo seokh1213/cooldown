@@ -11,11 +11,12 @@ import { useTranslation } from "@/i18n";
 import { advisorSystemPrompt } from "@/lib/advisor/persona";
 import {
   buildChampionBrief,
+  buildCounterBrief,
   buildMatchup,
   loadAdvisorData,
   type AdvisorData,
 } from "@/lib/advisor/context";
-import { detectMatchup, detectSingleChampion } from "@/lib/advisor/intent";
+import { asksForCounter, detectMatchup, detectSingleChampion } from "@/lib/advisor/intent";
 import type { UseAdvisorResult } from "@/hooks/useAdvisor";
 import { AdvisorConsent } from "./AdvisorConsent";
 
@@ -90,7 +91,11 @@ export function AdvisorPanel({ advisor, patch, onClose }: AdvisorPanelProps) {
       }
       const single = detectSingleChampion(data, question);
       if (single) {
-        advisor.send(question, `${system}\n\n${buildChampionBrief(data, single)}`);
+        // "카운터가 뭐야" 는 상성별 통계가 있어야 답할 수 있어 다른 자료를 붙인다
+        const brief = asksForCounter(question)
+          ? (buildCounterBrief(data, single) ?? buildChampionBrief(data, single))
+          : buildChampionBrief(data, single);
+        advisor.send(question, `${system}\n\n${brief}`);
         setDraft("");
         return;
       }
