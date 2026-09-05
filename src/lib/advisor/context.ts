@@ -21,6 +21,7 @@ import {
   type OracleBundle,
   type OracleFile,
 } from "../../../scripts/llm/lib/oracleCore";
+import { matchupToLine } from "../../../scripts/llm/lib/matchupReason";
 import {
   playbookToText,
   selectPlaybook,
@@ -70,7 +71,17 @@ interface WikiItemFile {
 }
 
 export interface AdvisorData {
+  /** 앱이 지금 쓰는 패치 */
   patch: string;
+  /**
+   * 지식·통계가 만들어진 패치.
+   *
+   * 게임 패치는 2주마다 바뀌는데 지식 계층은 따로 만든다. 어긋날 수 있으므로 함께 들고 다니며,
+   * 어긋나면 수치를 답에서 빼고 그 사실을 밝힌다. 낡은 수치를 현재값처럼 말하는 것이 최악이다.
+   */
+  knowledgePatch: string;
+  /** 지식 패치와 게임 패치가 다른가 */
+  stale: boolean;
   cards: ChampionCard[];
   cardById: Map<string, ChampionCard>;
   playbooks: Map<string, Playbook>;
@@ -133,6 +144,8 @@ export function loadAdvisorData(patch: string, locale = "ko_KR"): Promise<Adviso
 
     return {
       patch,
+      knowledgePatch: knowledge.patchVersion,
+      stale: knowledge.patchVersion !== patch,
       cards: cardFile.cards,
       cardById: new Map(cardFile.cards.map((c) => [c.id, c])),
       playbooks: new Map(Object.entries(knowledge.playbooks)),
@@ -289,30 +302,39 @@ export function buildCounterBrief(
   if (!matchups?.hard.length) return undefined;
 
   const facts = data.oracle && oracleLane ? oracleFacts(data.oracle, oracleLane) : undefined;
-  const line = (m: { name: string; winRate: number; count: number }) =>
-    `- ${m.name}: ${card.name}의 승률 ${m.winRate.toFixed(1)}% ` +
-    `(${m.name} 쪽 승률 ${(100 - m.winRate).toFixed(1)}%), 표본 ${m.count.toLocaleString("ko-KR")}판`;
+  // 지식 패치가 어긋나면 승률을 답에 싣지 않는다. 이름과 이유만 남긴다.
+  const useNumbers = !data.stale;
+  const line = (m: { id: string; name: string; winRate: number; count: number }) =>
+    matchupToLine(card, data.cardById.get(m.id), m, useNumbers);
 
   const parts = [
     `[패치] ${data.patch}`,
     `[질문 대상] ${card.name} (${oracleLane?.laneLabel ?? "주 라인"})`,
-    `[${card.name}을(를) 상대로 강한 챔피언 — 통계 순]\n${matchups.hard.map(line).join("\n")}`,
+    `[${card.name}을(를) 상대로 강한 챔피언 — 유리한 순서]\n${matchups.hard.map(line).join("\n")}`,
   ];
   if (matchups.easy.length) {
-    parts.push(`[${card.name}이(가) 편하게 상대하는 챔피언]\n${matchups.easy.map(line).join("\n")}`);
+    parts.push(
+      `[${card.name}이(가) 편하게 상대하는 챔피언]\n${matchups.easy
+        .map((m) => `- ${m.name}`)
+        .join("\n")}`,
+    );
   }
-  if (facts) parts.push(`[통계 기준] ${facts.scope}`);
+  if (facts && useNumbers) parts.push(`[통계 기준] ${facts.scope}`);
+  if (data.stale) {
+    parts.push(
+      `[주의] 통계는 ${data.knowledgePatch} 패치 기준이고 지금은 ${data.patch} 패치다. ` +
+        "승률 수치는 말하지 말고, 순서와 이유만 전하면서 패치가 지나 달라졌을 수 있다고 덧붙여라.",
+    );
+  }
 
   parts.push(
-    `[${card.name} 자료]\n${championCardToText(card, { includeSpellText: false, spellDetail: "meta" })}`,
-  );
-  parts.push(
     `[요청] 위 "${card.name}을(를) 상대로 강한 챔피언" 목록의 **${matchups.hard.length}종을 모두** ` +
-      "승률이 유리한 순서대로 적으십시오. 목록에 없는 챔피언을 추천하지 마십시오.\n" +
-      "형식은 이렇게 씁니다. 챔피언마다 한 줄입니다.\n" +
-      `- <챔피언 이름> (승률 <상대 쪽 승률>%, <표본>판): <${card.name}의 어떤 스탯이나 스킬 때문에 유리한지 한 문장>\n` +
-      `승률은 ${card.name} 기준으로 적혀 있으니 100에서 빼서 상대 쪽 승률로 바꿔 쓰십시오. ` +
-      "이유는 자료에 있는 사실만 씁니다.",
+      "적힌 순서대로 답하십시오. 목록에 없는 챔피언을 추천하지 마십시오.\n" +
+      "챔피언마다 한 줄로, **왜 유리한지 이유를 중심으로** 쓰십시오. " +
+      "이유는 목록에 함께 적힌 문장을 쓰고, 없으면 이유 없이 이름만 적으십시오. " +
+      (useNumbers
+        ? "승률은 이름 뒤 괄호에 짧게만 덧붙입니다."
+        : "승률 수치는 적지 마십시오."),
   );
   return parts.join("\n\n");
 }
