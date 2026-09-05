@@ -20,6 +20,7 @@ import * as path from "path";
 import { buildMatchupContext } from "./matchup-cli";
 import { loadStaticData } from "./lib/data";
 import { ollamaChat, type ChatMessage, type ChatStats } from "./lib/ollama";
+import { buildCodeAnswer } from "./lib/codeAnswer";
 import { buildMessages, buildSections, renderDecidedSections } from "./lib/prompt";
 
 interface EvalCase {
@@ -40,6 +41,8 @@ interface Variant {
   profile?: "full" | "compact" | "web";
   /** 확정 구간은 코드가 렌더링하고 서술 구간만 두 번 호출 */
   split?: boolean;
+  /** 모델을 아예 부르지 않고 코드만으로 답한다. 모델이 더하는 값을 재는 대조군. */
+  codeOnly?: boolean;
 }
 
 interface EvalRow {
@@ -82,6 +85,13 @@ const VARIANTS: Record<string, Variant> = {
   compact: { label: "compact+curated", curated: true, compact: true },
   web: { label: "web(4k예산)", curated: true, compact: true, profile: "web" },
   split: { label: "split(2회호출)", curated: true, compact: true, profile: "web", split: true },
+  "code-only": {
+    label: "code-only(모델없음)",
+    curated: true,
+    compact: true,
+    profile: "web",
+    codeOnly: true,
+  },
 };
 
 /** 답변에 나와야 하는 소제목 (분할 호출의 서술 구간 기준) */
@@ -169,7 +179,21 @@ async function main() {
         // 문맥 밖 이름 판정의 기준. 분할 호출은 구간마다 프롬프트가 다르므로 전부 모아야 한다.
         // 마지막 구간만 보면 앞 구간에서 제시한 아이템이 "자료 밖"으로 잘못 잡힌다.
         let promptText = renderDecidedSections(ctx);
-        if (variant.split) {
+        if (variant.codeOnly) {
+          // 모델을 부르지 않는다. 소요 시간과 토큰은 0 이다.
+          messages = [];
+          text = buildCodeAnswer(ctx);
+          stats = {
+            model,
+            promptTokens: 0,
+            outputTokens: 0,
+            promptSeconds: 0,
+            generateSeconds: 0,
+            totalSeconds: 0,
+            tokensPerSecond: 0,
+            firstTokenSeconds: 0,
+          };
+        } else if (variant.split) {
           const sections = buildSections(ctx);
           const parts: string[] = [renderDecidedSections(ctx)];
           let maxPrompt = 0;
@@ -272,7 +296,7 @@ async function main() {
             "## 프롬프트",
             "",
             "```",
-            messages[1].content,
+            messages[1]?.content ?? "(모델 호출 없음)",
             "```",
           ].join("\n"),
           "utf8",

@@ -68,6 +68,7 @@ export function createZhCNTranslations(english: Translations): Translations {
       privacyNotice: "你的提问与回答不会离开设备，也不会发送到服务器。",
       accept: "下载并开始",
       cancel: "以后再说",
+      skipModel: "不下载模型直接试用",
     },
     unsupported: {
       title: "此浏览器暂不支持",

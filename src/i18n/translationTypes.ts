@@ -241,6 +241,7 @@ export interface Translations {
       privacyNotice: string;
       accept: string;
       cancel: string;
+      skipModel: string;
     };
     unsupported: {
       title: string;

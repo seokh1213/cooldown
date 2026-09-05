@@ -57,6 +57,8 @@ export interface UseAdvisorResult {
    * 구간마다 프롬프트가 달라 순서대로 이어 붙인다.
    */
   sendMatchup: (question: string, decided: string, sections: AdvisorChatMessage[][]) => void;
+  /** 모델 없이 코드가 만든 답을 그대로 보여 준다. 동의 전이나 WebGPU 가 없을 때 쓴다. */
+  answerWithoutModel: (question: string, answer: string) => void;
   stop: () => void;
   reset: () => void;
 }
@@ -261,6 +263,21 @@ export function useAdvisor(): UseAdvisorResult {
     [ensureWorker, model],
   );
 
+  /**
+   * 모델을 부르지 않고 답을 얹는다.
+   *
+   * 코드 전용 답변은 평가에서 적중 63/66 으로 모델(64/66)과 거의 같았다.
+   * 3GB 를 받지 않은 사용자에게도 이 답은 줄 수 있어야 한다.
+   */
+  const answerWithoutModel = useCallback((question: string, answer: string) => {
+    setError(null);
+    setTurns((prev) => [
+      ...prev,
+      { id: nextId.current++, role: "user", content: question },
+      { id: nextId.current++, role: "assistant", content: answer },
+    ]);
+  }, []);
+
   const stop = useCallback(() => {
     workerRef.current?.postMessage({ type: "stop" } satisfies AdvisorRequest);
     setStatus("ready");
@@ -284,6 +301,7 @@ export function useAdvisor(): UseAdvisorResult {
     ensureLoaded,
     send,
     sendMatchup,
+    answerWithoutModel,
     stop,
     reset,
   };
