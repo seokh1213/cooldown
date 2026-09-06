@@ -118,9 +118,18 @@ function exportJobs(perJob: number, limit?: number): void {
   fs.rmSync(WORK_ROOT, { recursive: true, force: true });
   fs.mkdirSync(WORK_ROOT, { recursive: true });
 
+  // 이미 저술한 조합은 다시 내보내지 않는다. 그러지 않으면 재개할 때마다 같은 것을 다시 쓴다.
+  const alreadyAuthored = (t: Target): boolean => {
+    const file = outPath(t, patch);
+    if (!fs.existsSync(file)) return false;
+    const parsed = JSON.parse(fs.readFileSync(file, "utf8")) as { author?: string };
+    return parsed.author === "curated";
+  };
+
   let job = 0;
   let made = 0;
   let skipped = 0;
+  let done = 0;
   let batch: Job[] = [];
   const flush = () => {
     if (!batch.length) return;
@@ -132,6 +141,10 @@ function exportJobs(perJob: number, limit?: number): void {
 
   for (const target of ranked) {
     if (limit && made >= limit) break;
+    if (alreadyAuthored(target)) {
+      done += 1;
+      continue;
+    }
     const built = buildJob(target);
     if (!built) {
       skipped += 1;
@@ -143,7 +156,9 @@ function exportJobs(perJob: number, limit?: number): void {
   }
   flush();
 
-  console.log(`작업 ${made}건 / 파일 ${job}개 (지식 카드 부재로 제외 ${skipped}건)`);
+  console.log(
+    `작업 ${made}건 / 파일 ${job}개 (이미 저술 ${done}건 건너뜀, 지식 카드 부재로 제외 ${skipped}건)`,
+  );
   console.log(`위치: ${path.relative(process.cwd(), WORK_ROOT)}`);
   console.log(`배포 대상 패치: ${patch}`);
 }
