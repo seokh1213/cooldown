@@ -22,6 +22,7 @@ import { loadStaticData, PUBLIC_DATA_ROOT, type LlmLocale } from "./lib/data";
 const CDRAGON_LOCALE: Record<LlmLocale, string> = {
   ko_KR: "ko_kr",
   en_US: "default",
+  zh_CN: "zh_cn",
 };
 
 export interface RiotChampionMeta {
