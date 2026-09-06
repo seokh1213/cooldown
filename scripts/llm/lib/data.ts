@@ -16,7 +16,7 @@ import type {
   NormalizedSpellScaling,
 } from "../../../src/types/combatNormalized";
 
-export type LlmLocale = "ko_KR" | "en_US";
+export type LlmLocale = "ko_KR" | "en_US" | "zh_CN";
 
 export interface AbilityCostInfo {
   values: number[];
