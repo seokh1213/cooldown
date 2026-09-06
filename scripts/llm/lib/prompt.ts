@@ -159,7 +159,10 @@ export function deriveThreatOrder(enemy: ChampionCard, limit = 3): ThreatRank[] 
     // 군중 제어가 하나도 없는 순수 폭딜 궁극기는 위 표에 걸리지 않는다.
     // 제드 R 죽음의 표식이 그런 경우인데, 상대 미드가 가장 조심해야 할 스킬이 빠지면 곤란하다.
     // 계수가 붙어 있으면 그 자체를 이유로 삼는다.
-    if (spell.slot === "R" && reasons.length === 0) {
+    // **계수가 있다고 피해 스킬인 것은 아니다.** 밀리오 R 생명의 온기는 주문력 계수가
+    // 회복에 붙는데, 피해 여부를 보지 않아 "한 번에 큰 피해" 라는 경고가 나갔다.
+    // 소라카 R 기원, 룰루 R 급성장도 같은 경우다.
+    if (spell.slot === "R" && reasons.length === 0 && spell.damageTypes.length > 0) {
       const top = Object.entries(spell.ratios).sort((a, b) => b[1] - a[1])[0];
       if (top) {
         score += 45;
