@@ -184,15 +184,10 @@ const EFFECT_RULES: Array<[RegExp, string]> = [
   [/체력을? 회복|회복합니다|회복시|치유합/, "회복"],
   [/치유 효과[^.]{0,10}감소|치유 감소|고통스러운 상처/, "치유 감소"],
   [/은신|투명 상태|모습을 감/, "은신"],
-  // "비행 거리에 비례해" 는 투사체가 나는 것이라 이동기가 아니다. "비행하" 로 좁힌다.
-  // 이 목록이 좁아서 코르키 W 발키리, 레넥톤 E, 신 짜오 E, 레오나 E, 리 신 Q2 가 빠져 있었고,
-  // 그 탓에 "상대는 이동기가 없어 접근하면 이탈이 어렵다" 는 틀린 근거가 나갔다.
-  // 스스로 밀려나거나 끌려가는 것도 이동기다. 케이틀린 E 반동, 노틸러스 Q 지형 견인,
-  // 자크 E 가 그렇다. 다만 "끌려" 는 상대를 끄는 스킬에도 나오므로 방향을 함께 본다.
-  [
-    /돌진|도약|뛰어|순간이동|이동합니다|날아|비행하|돌격|활공|미끄러지|반동으로|뒤로 밀려|쪽으로 끌려|향해 끌려|몸을 날립/,
-    "이동기",
-  ],
+  // **움직이는 것이 챔피언인지 봐야 한다.** 이 판정은 아래 championMovesItself 가 맡는다.
+  // 여기 목록에 걸리기만 해서는 안 된다. "적에게 날아가는 여우불", "매를 날려 보내",
+  // "아군이 쓰레쉬에게 돌진합니다" 가 전부 이동기로 잡혔었다.
+  [/__NEVER__/, "이동기"],
   [/최대 체력의|최대 체력에 비례/, "최대 체력 비례 피해"],
   [/잃은 체력/, "잃은 체력 비례"],
   [/고정 피해/, "고정 피해"],
@@ -320,6 +315,34 @@ function isMinionOnly(sentence: string): boolean {
   return mentionsMinion && !mentionsChampion;
 }
 
+/**
+ * 이 스킬로 움직이는 것이 챔피언 자신인가.
+ *
+ * **낱말만 보면 안 된다.** "적에게 날아가는 여우불"(아리 W), "매를 날려 보내"(애쉬 E),
+ * "아군이 쓰레쉬에게 돌진합니다"(쓰레쉬 W) 가 전부 이동기로 잡혀 있었다. 그 탓에
+ * "상대는 이동기가 없어 접근하면 이탈이 어렵다" 라는 근거가 반대로 나갔다.
+ *
+ * 그래서 **주어를 본다.** 챔피언 이름이 주격으로 나오는 문장에서 자기 이동 동사가 나와야 한다.
+ * 앞에 다른 주어가 있으면 그쪽이 움직이는 것이다.
+ */
+const SELF_MOVE_VERBS =
+  /돌진|돌격|도약|비행하|활공|미끄러지|몸을 날려|몸을 날립|순간이동|순간적으로 이동|뒤로 밀려|쪽으로 끌려|향해 끌려/;
+const OTHER_SUBJECT = /(아군|적|대상|미니언|소환수)[이가]\s/;
+
+function championMovesItself(text: string, championName: string): boolean {
+  const escaped = championName.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const subject = new RegExp(`${escaped}(?:이|가|은|는)`);
+  for (const sentence of splitSentences(text)) {
+    if (!SELF_MOVE_VERBS.test(sentence)) continue;
+    const at = sentence.search(subject);
+    if (at < 0) continue;
+    const otherAt = sentence.search(OTHER_SUBJECT);
+    if (otherAt >= 0 && otherAt < at) continue;
+    return true;
+  }
+  return false;
+}
+
 function detectEffects(text: string): string[] {
   const found: string[] = [];
   const sentences = splitSentences(text);
@@ -405,7 +428,10 @@ export function createChampionCardBuilder(
         cooldownRank1: ability.cooldownSeconds?.[0],
         cost: formatLevels(ability.cost?.values),
         damageTypes: detectDamageTypes(text),
-        effects: detectEffects(text),
+        // 이동기는 주어를 봐야 해서 규칙표로 잡지 않는다
+        effects: championMovesItself(text, champ.name)
+          ? [...detectEffects(text), "이동기"]
+          : detectEffects(text),
         // 계수는 시뮬레이션 항(구조화된 값)을 우선하고, 없으면 툴팁 표기에서 뽑는다
         ratios: { ...detectRatios(text), ...ratiosFromSimulation(ability) },
       };
