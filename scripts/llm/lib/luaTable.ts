@@ -184,6 +184,9 @@ export function stripWikiMarkup(text: string, renameAbility?: (english: string) 
   out = out.replace(/\{\{[\s\S]*?\}\}/g, "");
   // [[File:critical.png|20px|link=]] 은 그림이라 본문이 아니다. 마지막 인자만 남기면 "20px|link=" 가 된다.
   out = out.replace(/\[\[(?:File|Image|파일):[^\]]*\]\]/gi, "");
+  // 템플릿이 아이콘을 가리키는 경우 파일 이름만 남는다.
+  // "the cooldown of a Summoner spell icon.png falls into" 가 그런 예다.
+  out = out.replace(/\s*[\w'-]*\.(?:png|jpg|jpeg|gif|svg)\b/gi, "");
   // [[링크|표시]] → 표시
   out = out.replace(/\[\[([^\]|]*)\|([^\]]*)\]\]/g, "$2").replace(/\[\[([^\]]*)\]\]/g, "$1");
   // [https://… 표시] 는 각주 링크다. 표시만 남기고 주소는 버린다.
