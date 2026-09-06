@@ -275,8 +275,21 @@ export function deriveConclusions(ctx: MatchupContext): string[] {
     out.push("상대에게 피해를 무시하는 스킬이 있어, 내 핵심 피해 스킬을 그 스킬이 빠진 뒤에 쓰는 것이 중요하다.");
   }
   if (!enemy.mechanics.includes("이동기")) out.push("상대는 이동기가 없어 접근하면 이탈이 어렵다.");
-  if (me.mechanics.includes("이동기") && enemy.rangeType === "원거리") {
+  // **내 사거리도 확인해야 한다.** 이동기만 보고 판정했더니 이즈리얼·루시안·트리스타나처럼
+  // 이동기를 가진 원거리 챔피언에게도 "나는 근접" 이 붙었다.
+  if (me.rangeType === "근접" && enemy.rangeType === "원거리" && me.mechanics.includes("이동기")) {
     out.push("나는 근접, 상대는 원거리이므로 이동기로 접근하는 타이밍이 교전의 핵심이다.");
+  } else if (me.rangeType === "근접" && enemy.rangeType === "원거리") {
+    out.push("나는 근접, 상대는 원거리인데 내게 이동기가 없어 접근 자체가 어렵다.");
+  } else if (
+    me.rangeType === "원거리" &&
+    enemy.rangeType === "원거리" &&
+    enemy.attackRange - me.attackRange >= 25
+  ) {
+    // 둘 다 원거리면 승부는 사거리 차이에서 갈린다
+    out.push(
+      `둘 다 원거리인데 내 사거리가 ${enemy.attackRange - me.attackRange} 짧아(${me.attackRange} 대 ${enemy.attackRange}) 평타 견제로는 손해를 본다.`,
+    );
   }
 
   // 계수 프로필 → 상대가 어떤 능력치로 성장하는지
