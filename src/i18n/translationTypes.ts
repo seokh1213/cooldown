@@ -311,4 +311,39 @@ export interface Translations {
      */
     perHundredStat: string;
   };
+  advisor: {
+    title: string;
+    open: string;
+    close: string;
+    consent: {
+      title: string;
+      lead: string;
+      sizeNotice: string;
+      storageNotice: string;
+      privacyNotice: string;
+      accept: string;
+      cancel: string;
+      skipModel: string;
+    };
+    unsupported: {
+      title: string;
+      noApi: string;
+      noAdapter: string;
+      error: string;
+    };
+    status: {
+      downloading: string;
+      warming: string;
+      ready: string;
+      generating: string;
+    };
+    placeholder: string;
+    send: string;
+    stop: string;
+    reset: string;
+    emptyHint: string;
+    rateUp: string;
+    rateDown: string;
+    errorPrefix: string;
+  };
 }

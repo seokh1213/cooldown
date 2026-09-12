@@ -37,3 +37,40 @@ export function truncate(text: string, max: number): string {
   if (text.length <= max) return text;
   return `${text.slice(0, max - 1).trimEnd()}…`;
 }
+
+/**
+ * 한국어 조사를 앞말의 받침에 맞춰 고른다.
+ *
+ * "오공가", "레넥톤는" 처럼 어긋나면 사람이 쓴 글로 읽히지 않는다.
+ * 한글 음절은 유니코드에서 0xAC00 부터 28개씩 묶여 있고, 그 안에서의 위치가 종성이다.
+ */
+export function hasFinalConsonant(word: string): boolean {
+  const trimmed = word.trim();
+  if (!trimmed) return false;
+  const code = trimmed.charCodeAt(trimmed.length - 1);
+  if (code < 0xac00 || code > 0xd7a3) return false;
+  return (code - 0xac00) % 28 !== 0;
+}
+
+/** 받침 여부에 따라 조사를 붙인다. `josa("오공", "이/가")` → "오공이" */
+export function josa(word: string, pair: "은/는" | "이/가" | "을/를" | "와/과" | "로/으로"): string {
+  const final = hasFinalConsonant(word);
+  // ㄹ 받침은 "으로" 가 아니라 "로" 를 쓴다
+  const trimmed = word.trim();
+  const lastCode = trimmed ? trimmed.charCodeAt(trimmed.length - 1) : 0;
+  const isRieul =
+    lastCode >= 0xac00 && lastCode <= 0xd7a3 && (lastCode - 0xac00) % 28 === 8;
+
+  switch (pair) {
+    case "은/는":
+      return `${word}${final ? "은" : "는"}`;
+    case "이/가":
+      return `${word}${final ? "이" : "가"}`;
+    case "을/를":
+      return `${word}${final ? "을" : "를"}`;
+    case "와/과":
+      return `${word}${final ? "과" : "와"}`;
+    case "로/으로":
+      return `${word}${final && !isRieul ? "으로" : "로"}`;
+  }
+}

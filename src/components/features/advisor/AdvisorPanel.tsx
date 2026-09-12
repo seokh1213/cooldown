@@ -1,0 +1,331 @@
+/**
+ * 롤 지식 질의 패널
+ *
+ * 화면 오른쪽 아래에 떠 있고, 동의 전에는 동의 화면을, 그 뒤에는 대화를 보여 준다.
+ * 모델 적재는 수십 초가 걸리므로 진행률을 파일 합계로 계속 보여 준다.
+ */
+import { useEffect, useRef, useState } from "react";
+import { Loader2, Send, Square, ThumbsDown, ThumbsUp, Trash2, X } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { useTranslation } from "@/i18n";
+import { advisorSystemPrompt } from "@/lib/advisor/persona";
+import { AdvisorMarkdown } from "./AdvisorMarkdown";
+import {
+  buildChampionsBrief,
+  buildItemAnswer,
+  buildTagAnswer,
+  buildMechanicsAnswer,
+  buildRuleBrief,
+  buildSpellAnswer,
+  loadAdvisorData,
+  type AdvisorData,
+} from "@/lib/advisor/context";
+import { detectChampions } from "@/lib/advisor/intent";
+import {
+  ADVISOR_TOOLS,
+  needsTools,
+  parseToolCalls,
+  runTool,
+} from "@/lib/advisor/tools";
+import type { UseAdvisorResult } from "@/hooks/useAdvisor";
+import { AdvisorConsent } from "./AdvisorConsent";
+
+interface AdvisorPanelProps {
+  advisor: UseAdvisorResult;
+  patch: string;
+  onClose: () => void;
+}
+
+function formatMb(bytes: number): string {
+  return (bytes / 1048576).toFixed(0);
+}
+
+export function AdvisorPanel({ advisor, patch, onClose }: AdvisorPanelProps) {
+  const { t, lang } = useTranslation();
+  const copy = t.advisor;
+  const [draft, setDraft] = useState("");
+  const [data, setData] = useState<AdvisorData | null>(null);
+  // 동의 화면을 건너뛰고 코드 답변만으로 써 보는 상태
+  const [skippedModel, setSkippedModel] = useState(false);
+  const scrollRef = useRef<HTMLDivElement>(null);
+
+  // 챔피언 자료는 모델과 별개로 받는다. 모델이 준비되기 전에 미리 받아 둔다.
+  useEffect(() => {
+    let alive = true;
+    void loadAdvisorData(patch)
+      .then((loaded) => {
+        if (alive) setData(loaded);
+      })
+      .catch(() => {
+        // 자료를 못 받아도 대화는 되게 둔다. 근거 없이 답하지 말라는 지시는 페르소나에 있다.
+      });
+    return () => {
+      alive = false;
+    };
+  }, [patch]);
+
+  const busy = advisor.status === "generating";
+  // 모델이 아직 안 올라왔으면 진행률을 계속 보여 준다.
+  // 적재 중에 질문을 받으면 상태가 generating 으로 바뀌는데, 그때 진행률을 감추면
+  // 사용자는 몇 분 동안 도는 점만 보게 된다.
+  const loading =
+    !advisor.modelReady &&
+    advisor.consented &&
+    advisor.status !== "idle" &&
+    advisor.status !== "error";
+
+  useEffect(() => {
+    scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight });
+  }, [advisor.turns]);
+
+  /**
+   * 질문에서 챔피언을 읽어 자료를 붙인다.
+   *
+   * 자료 없이 보내면 모델이 이름부터 지어낸다("오공(Dragon Knight)").
+   * 룬·주문 판정이면 코드가 바로 답하고, 챔피언이 잡히면 그 챔피언 자료를 싣는다.
+   */
+  const submit = () => {
+    const question = draft.trim();
+    if (busy || !question) return;
+    const system = advisorSystemPrompt(lang);
+
+    if (data) {
+      // 룬·주문 판정 질문이 먼저다.
+      // 모델을 거치지 않는다. e2b 가 부정문을 뒤집어 정반대로 답했다.
+      const ruleAnswer = buildRuleBrief(data, question);
+      if (ruleAnswer) {
+        advisor.answerWithoutModel(question, ruleAnswer);
+        setDraft("");
+        return;
+      }
+
+      const champions = detectChampions(data, question);
+      if (champions.length > 0) {
+        // 챔피언 둘 이상을 견주는 질문은 도구로 보낸다.
+        // 카드를 둘 다 붙여 줘도 모델이 글 속에서 수치를 골라 비교하지 못했다.
+        // 도구를 주면 각각 조회해 비교한다. 대신 오갈 때마다 프롬프트를 다시 읽어 느리다.
+        if (advisor.consented && needsTools(question, champions.length)) {
+          advisor.sendWithTools(
+            question,
+            system,
+            ADVISOR_TOOLS,
+            (calls) =>
+              calls
+                .map((c) => runTool({ cards: data.cards, items: data.items, patch: data.patch }, c))
+                .join("\n\n"),
+            parseToolCalls,
+            // 도구를 안 부르면 평소처럼 카드를 붙여 다시 묻는다.
+            `${system}\n\n${buildChampionsBrief(data, champions)}`,
+          );
+          setDraft("");
+          return;
+        }
+        // 효과 태그로 답이 정해지는 질문은 코드가 바로 답한다.
+        // 태그가 없다는 사실을 근거로 "아니다" 라고 말하는 것을 모델이 못 한다.
+        // 슬롯이 드러난 질문은 그 스킬을 통째로 보여 준다. 수치가 답의 핵심이다.
+        const spellAnswer =
+          champions.length === 1 ? buildSpellAnswer(data, champions[0], question) : undefined;
+        if (spellAnswer) {
+          advisor.answerWithoutModel(question, spellAnswer);
+          setDraft("");
+          return;
+        }
+        const tagAnswer =
+          champions.length === 1 ? buildTagAnswer(data, champions[0], question) : undefined;
+        if (tagAnswer) {
+          advisor.answerWithoutModel(question, tagAnswer);
+          setDraft("");
+          return;
+        }
+        advisor.send(question, `${system}\n\n${buildChampionsBrief(data, champions)}`);
+        setDraft("");
+        return;
+      }
+
+      // 챔피언이 안 잡히면 아이템, 그다음 게임 규칙을 본다.
+      // 아이템을 먼저 보는 이유는 이름이 구체적이라 잘못 걸릴 일이 적기 때문이다.
+      // 아이템도 모델을 거치지 않는다. 요약시키면 고유 효과를 빠뜨리거나 뒤집는다.
+      const itemAnswer = buildItemAnswer(data, question);
+      if (itemAnswer) {
+        advisor.answerWithoutModel(question, itemAnswer);
+        setDraft("");
+        return;
+      }
+
+      // 게임 규칙도 모델을 거치지 않는다. 적용 순서와 부정문을 뒤집어 답했다.
+      const mechanicsAnswer = buildMechanicsAnswer(data, question);
+      if (mechanicsAnswer) {
+        advisor.answerWithoutModel(question, mechanicsAnswer);
+        setDraft("");
+        return;
+      }
+    }
+
+    // 챔피언이 안 잡히면 페르소나만으로 답한다
+    advisor.send(question, system);
+    setDraft("");
+  };
+
+  const percent =
+    advisor.progress.totalBytes > 0
+      ? Math.min(100, Math.round((advisor.progress.loadedBytes / advisor.progress.totalBytes) * 100))
+      : 0;
+
+  return (
+    <div
+      role="dialog"
+      aria-label={copy.title}
+      className="fixed bottom-24 right-4 z-50 flex h-[min(600px,calc(100vh-8rem))] w-[min(400px,calc(100vw-2rem))] flex-col overflow-hidden rounded-2xl border bg-background shadow-2xl"
+    >
+      <header className="flex items-center justify-between border-b px-4 py-3">
+        <div className="flex items-center gap-2">
+          <span className="text-sm font-semibold">{copy.title}</span>
+          {advisor.status === "generating" && (
+            <span className="flex items-center gap-1 text-xs text-muted-foreground">
+              <Loader2 className="h-3 w-3 animate-spin" />
+              {copy.status.generating}
+            </span>
+          )}
+        </div>
+        <div className="flex items-center gap-1">
+          {advisor.turns.length > 0 && (
+            <Button variant="ghost" size="icon" onClick={advisor.reset} aria-label={copy.reset}>
+              <Trash2 className="h-4 w-4" />
+            </Button>
+          )}
+          <Button variant="ghost" size="icon" onClick={onClose} aria-label={copy.close}>
+            <X className="h-4 w-4" />
+          </Button>
+        </div>
+      </header>
+
+      {!advisor.consented && !skippedModel ? (
+        <AdvisorConsent
+          webgpu={advisor.webgpu}
+          storage={advisor.storage}
+          onAccept={advisor.accept}
+          onCancel={onClose}
+          onSkip={() => setSkippedModel(true)}
+        />
+      ) : (
+        <>
+          {loading && (
+            <div className="border-b px-4 py-3 text-xs text-muted-foreground">
+              <div className="mb-2 flex items-center justify-between">
+                <span>
+                  {advisor.progress.totalBytes > 0 &&
+                  advisor.progress.loadedBytes >= advisor.progress.totalBytes
+                    ? copy.status.warming
+                    : copy.status.downloading}
+                </span>
+                {advisor.progress.totalBytes > 0 && (
+                  <span>
+                    {formatMb(advisor.progress.loadedBytes)} / {formatMb(advisor.progress.totalBytes)} MB
+                  </span>
+                )}
+              </div>
+              <div className="h-1.5 w-full overflow-hidden rounded-full bg-muted">
+                <div
+                  className="h-full rounded-full bg-primary transition-[width]"
+                  style={{ width: `${percent}%` }}
+                />
+              </div>
+            </div>
+          )}
+
+          <div ref={scrollRef} className="flex-1 space-y-3 overflow-y-auto p-4 text-sm">
+            {advisor.turns.length === 0 && !loading && (
+              <p className="text-muted-foreground">{copy.emptyHint}</p>
+            )}
+            {advisor.turns.map((turn) => (
+              <div
+                key={turn.id}
+                className={
+                  turn.role === "user"
+                    ? "ml-auto w-fit max-w-[85%] rounded-2xl rounded-br-sm bg-primary px-3 py-2 text-primary-foreground"
+                    : "mr-auto w-fit max-w-[95%] rounded-2xl rounded-bl-sm bg-muted px-3 py-2"
+                }
+              >
+                {turn.content ? (
+                  turn.role === "assistant" ? (
+                    <AdvisorMarkdown text={turn.content} />
+                  ) : (
+                    <span className="whitespace-pre-wrap">{turn.content}</span>
+                  )
+                ) : (
+                  turn.role === "assistant" && <Loader2 className="h-4 w-4 animate-spin" />
+                )}
+                {turn.role === "assistant" && turn.content && (
+                  <div className="mt-1 flex items-center gap-2 text-[11px] text-muted-foreground">
+                    {turn.stats && (
+                      <span>
+                        {turn.stats.tokens} tok · {turn.stats.seconds.toFixed(1)}s
+                      </span>
+                    )}
+                    {/* 평가는 기기 안에만 쌓인다. 서버로 보내지 않는다. */}
+                    <button
+                      type="button"
+                      aria-label={copy.rateUp}
+                      aria-pressed={turn.rating === "up"}
+                      onClick={() => advisor.rate(turn.id, "up", patch)}
+                      className={
+                        turn.rating === "up"
+                          ? "text-emerald-400"
+                          : "opacity-50 transition-opacity hover:opacity-100"
+                      }
+                    >
+                      <ThumbsUp className="h-3.5 w-3.5" />
+                    </button>
+                    <button
+                      type="button"
+                      aria-label={copy.rateDown}
+                      aria-pressed={turn.rating === "down"}
+                      onClick={() => advisor.rate(turn.id, "down", patch)}
+                      className={
+                        turn.rating === "down"
+                          ? "text-destructive"
+                          : "opacity-50 transition-opacity hover:opacity-100"
+                      }
+                    >
+                      <ThumbsDown className="h-3.5 w-3.5" />
+                    </button>
+                  </div>
+                )}
+              </div>
+            ))}
+            {advisor.error && (
+              <p className="text-destructive">
+                {copy.errorPrefix}: {advisor.error}
+              </p>
+            )}
+          </div>
+
+          <footer className="flex items-end gap-2 border-t p-3">
+            <textarea
+              value={draft}
+              onChange={(event) => setDraft(event.target.value)}
+              onKeyDown={(event) => {
+                if (event.key === "Enter" && !event.shiftKey) {
+                  event.preventDefault();
+                  submit();
+                }
+              }}
+              rows={1}
+              placeholder={copy.placeholder}
+              className="max-h-32 min-h-9 flex-1 resize-none rounded-md border bg-transparent px-3 py-2 text-sm outline-none focus-visible:ring-1 focus-visible:ring-ring"
+            />
+            {busy ? (
+              <Button size="icon" variant="outline" onClick={advisor.stop} aria-label={copy.stop}>
+                <Square className="h-4 w-4" />
+              </Button>
+            ) : (
+              <Button size="icon" onClick={submit} disabled={!draft.trim()} aria-label={copy.send}>
+                <Send className="h-4 w-4" />
+              </Button>
+            )}
+          </footer>
+        </>
+      )}
+    </div>
+  );
+}

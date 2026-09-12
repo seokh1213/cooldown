@@ -9,8 +9,15 @@ import type {
   NormalizedRune,
   NormalizedSummonerSpell,
 } from "../../../src/types/combatNormalized";
-import { getOfficialLikeItemTier, type ItemTier } from "../../../src/lib/itemTierUtils";
+import type { ItemTier } from "../../../src/lib/itemTierUtils";
 import type { ChampionCard } from "./facts";
+import {
+  ARCHETYPE_LABEL,
+  championBuildProfile,
+  classifyItem,
+  type ItemArchetype,
+  type WikiItemInfo,
+} from "./itemArchetype";
 import { stripHtml, truncate } from "./text";
 
 const STAT_LABEL: Record<string, string> = {
@@ -44,6 +51,10 @@ export interface ItemBrief {
   priceTotal: number;
   stats: string;
   effects?: string;
+  /** 역할군 라벨 (브루저, 탱커 …) */
+  archetypes?: string;
+  /** 특수 기능 (치유 감소, 강인함 …) */
+  functions?: string;
 }
 
 export interface ItemSelection {
@@ -59,6 +70,8 @@ export interface ItemSelection {
   offensive: ItemBrief[];
   /** 지식 카드/팁이 이름으로 지목한 아이템 — 가격 절단으로 누락되지 않게 항상 포함 */
   pinned: ItemBrief[];
+  /** 내 챔피언 빌드 성향 (브루저/탱커/메이지/원거리 딜러/암살자/서포터) */
+  buildLabel?: string;
 }
 
 function describeStats(item: NormalizedItem): string {
@@ -75,17 +88,21 @@ function describeStats(item: NormalizedItem): string {
     .join(", ");
 }
 
-function toBrief(item: NormalizedItem): ItemBrief {
+function toBrief(item: NormalizedItem, wikiItems?: Map<string, WikiItemInfo>): ItemBrief {
   const effects = item.effects
     .map((e) => `${e.name}: ${truncate(stripHtml(e.description), 140)}`)
     .join(" | ");
+  const classification = classifyItem(item, wikiItems?.get(item.id));
   return {
     id: item.id,
     name: item.name,
-    tier: getOfficialLikeItemTier(item),
+    tier: classification.tier,
     priceTotal: item.priceTotal,
     stats: describeStats(item),
     effects: effects || undefined,
+    archetypes:
+      classification.archetypes.map((a) => ARCHETYPE_LABEL[a]).join(",") || undefined,
+    functions: classification.functions.join(",") || undefined,
   };
 }
 
@@ -125,71 +142,142 @@ export function selectDefensiveItems(
     maxOffensive?: number;
     /** 지식 카드가 지목한 아이템 이름 */
     pinnedNames?: string[];
+    /** LoL Wiki 아이템 상점 분류 (있으면 스탯 추정보다 우선) */
+    wikiItems?: Map<string, WikiItemInfo>;
   } = {},
 ): ItemSelection {
-  const { maxLegendaries = 8, maxComponents = 5, me, maxOffensive = 8, pinnedNames = [] } = options;
-  // 피해 유형이 혼합이면 계수 프로필로 동점을 깬다.
-  // 예: 피오라는 물리·마법·고정이 섞이지만 계수가 AD 이므로 방어력이 답이다.
+  const {
+    maxLegendaries = 8,
+    maxComponents = 5,
+    me,
+    maxOffensive = 8,
+    pinnedNames = [],
+    wikiItems,
+  } = options;
+  // 방어 기준 스탯은 라이엇 damageType 을 우선한다.
+  // 툴팁 집계는 나서스처럼 계수 없는 스킬 때문에 틀릴 수 있다(라이엇: 물리, 집계: 마법).
+  // 라이엇 값이 없거나 혼합이면 툴팁 집계와 계수 프로필로 판정한다.
+  const riotDamage = enemy.riot?.damageType;
   const focus: ItemSelection["focus"] =
-    enemy.damageProfile.primary === "마법"
+    riotDamage === "마법"
       ? ["MAGIC_RESIST"]
-      : enemy.damageProfile.primary === "물리"
+      : riotDamage === "물리"
         ? ["ARMOR"]
-        : enemy.scalingProfile.primary === "AD"
-          ? ["ARMOR"]
-          : enemy.scalingProfile.primary === "AP"
-            ? ["MAGIC_RESIST"]
-            : ["MAGIC_RESIST", "ARMOR"];
+        : enemy.damageProfile.primary === "마법"
+          ? ["MAGIC_RESIST"]
+          : enemy.damageProfile.primary === "물리"
+            ? ["ARMOR"]
+            : enemy.scalingProfile.primary === "AD"
+              ? ["ARMOR"]
+              : enemy.scalingProfile.primary === "AP"
+                ? ["MAGIC_RESIST"]
+                : ["MAGIC_RESIST", "ARMOR"];
 
   const rift = dedupeByName(items.filter(isRiftItem));
   const matchesFocus = (item: NormalizedItem) => focus.some((stat) => hasStat(item, stat));
 
-  const tiered = rift.map((item) => ({ item, tier: getOfficialLikeItemTier(item) }));
+  const classified = rift.map((item) => ({ item, c: classifyItem(item, wikiItems?.get(item.id)) }));
 
-  const starters = tiered
-    .filter(({ tier }) => tier === "starter")
+  /**
+   * 내 챔피언 빌드 성향으로 아이템 역할군을 좁힌다.
+   * 이 단계가 없으면 브루저 조언에 원거리 딜러 아이템이나 서포터 아이템이 섞인다.
+   * 근거는 docs/lol-fundamentals.md 8~9장.
+   */
+  const profile = me
+    ? championBuildProfile({
+        roleTags: me.roleTags,
+        scaling: me.scalingProfile.primary,
+        rangeType: me.rangeType,
+        hasPhysicalSpell: me.spells.some((s) => s.damageTypes.includes("물리")),
+        riot: me.riot,
+        wikiSubclass: me.wiki?.subclass,
+      })
+    : undefined;
+  /**
+   * 상점 역할군 탭은 한 아이템이 여러 개에 걸린다(칠흑의 양날 도끼 = 브루저·암살자).
+   * 그래서 "제외 역할군이 하나라도 있으면 배제" 하면 정상 아이템까지 빠진다.
+   * 선호 역할군에 하나라도 걸리면 통과시키고, 걸리는 것이 없을 때만 제외를 본다.
+   */
+  const fitsProfile = (archetypes: ItemArchetype[]) => {
+    if (!profile) return true;
+    // 장화·시작·하위 아이템은 역할군 판정 대상이 아니다
+    const combat = archetypes.filter(
+      (a) => !["boots", "starter", "component", "consumable", "trinket", "jungle"].includes(a),
+    );
+    if (combat.length === 0) return true;
+    // 아군 보조 아이템은 예외다. 상점이 탱커 탭에도 올려 두지만(기사의 맹세)
+    // 서포터가 아닌 챔피언에게는 값을 하지 못하므로 무조건 제외한다.
+    if (combat.includes("enchanter") && profile.excluded.includes("enchanter")) return false;
+    if (combat.some((a) => profile.preferred.includes(a))) return true;
+    return !combat.some((a) => profile.excluded.includes(a));
+  };
+
+  // 시작 아이템은 역할군 태그가 없으므로 내 계수와 맞는 공격 스탯인지로 걸러낸다.
+  // (AD 브루저에게 도란의 반지·암흑의 인장을 권하면 안 된다)
+  // 계수도 라이엇 damageType 을 우선한다 (나서스처럼 툴팁 집계가 틀리는 경우가 있다)
+  const myScalingPrimary =
+    me?.riot?.damageType === "물리"
+      ? "AD"
+      : me?.riot?.damageType === "마법"
+        ? "AP"
+        : me?.scalingProfile.primary;
+  const starterFitsScaling = (item: NormalizedItem) => {
+    const givesAp = hasStat(item, "ABILITY_POWER");
+    const givesAd = hasStat(item, "ATTACK_DAMAGE");
+    if (!givesAp && !givesAd) return true; // 방어·마나 계열은 누구나 산다
+    if (myScalingPrimary === "AD") return !givesAp;
+    if (myScalingPrimary === "AP") return !givesAd;
+    return true;
+  };
+
+  const starters = classified
+    .filter(({ c }) => c.tier === "starter")
     .filter(({ item }) => !item.tags.includes("Jungle") && !item.tags.includes("GoldPer"))
+    .filter(({ item }) => starterFitsScaling(item))
     .map(({ item }) => item)
     .sort((a, b) => a.priceTotal - b.priceTotal);
 
-  const components = tiered
-    .filter(({ tier, item }) => (tier === "basic" || tier === "epic") && matchesFocus(item))
+  const components = classified
+    .filter(({ c, item }) => (c.tier === "basic" || c.tier === "epic") && matchesFocus(item))
+    .filter(({ c }) => fitsProfile(c.archetypes))
     .map(({ item }) => item)
     .sort((a, b) => a.priceTotal - b.priceTotal)
     .slice(0, maxComponents);
 
-  const boots = tiered
-    .filter(({ tier, item }) => tier === "boots" && matchesFocus(item))
+  const boots = classified
+    .filter(({ c, item }) => c.tier === "boots" && matchesFocus(item))
     .map(({ item }) => item);
 
-  // 아군 대상 보조 아이템(오라/희생 계열)은 1대1 상성 조언에 부적합하므로 제외
-  const isSupportItem = (item: NormalizedItem) =>
-    item.tags.includes("Aura") || item.tags.includes("GoldPer");
-
-  const legendaries = tiered
-    .filter(({ tier, item }) => tier === "legendary" && matchesFocus(item) && !isSupportItem(item))
+  const legendaries = classified
+    .filter(({ c, item }) => c.tier === "legendary" && matchesFocus(item))
+    .filter(({ c }) => fitsProfile(c.archetypes))
     .map(({ item }) => item)
     .sort((a, b) => a.priceTotal - b.priceTotal)
     .slice(0, maxLegendaries);
 
+  // 치유 감소 아이템도 계수에 맞는 것만 남긴다.
+  // (AD 브루저에게 망각의 구·모렐로노미콘을 권하면 안 된다)
   const antiHeal = enemy.mechanics.includes("회복")
     ? rift
         .filter((item) => {
           const text = `${stripHtml(item.description)} ${item.effects.map((e) => stripHtml(e.description)).join(" ")}`;
           return ANTI_HEAL_RE.test(text);
         })
+        .filter((item) => starterFitsScaling(item))
         .sort((a, b) => a.priceTotal - b.priceTotal)
     : [];
 
   // 내 계수 프로필에 맞는 공격 전설 아이템
-  const myScaling = me?.scalingProfile.primary;
   const offensiveStat =
-    myScaling === "AP" ? "ABILITY_POWER" : myScaling === "AD" ? "ATTACK_DAMAGE" : undefined;
+    myScalingPrimary === "AP"
+      ? "ABILITY_POWER"
+      : myScalingPrimary === "AD"
+        ? "ATTACK_DAMAGE"
+        : undefined;
   const offensive = offensiveStat
-    ? tiered
-        .filter(
-          ({ tier, item }) => tier === "legendary" && hasStat(item, offensiveStat) && !isSupportItem(item),
-        )
+    ? classified
+        .filter(({ c, item }) => c.tier === "legendary" && hasStat(item, offensiveStat))
+        .filter(({ c }) => fitsProfile(c.archetypes))
         .map(({ item }) => item)
         .sort((a, b) => a.priceTotal - b.priceTotal)
         .slice(0, maxOffensive)
@@ -200,13 +288,14 @@ export function selectDefensiveItems(
 
   return {
     focus,
-    starters: starters.map(toBrief),
-    components: components.map(toBrief),
-    boots: boots.map(toBrief),
-    legendaries: legendaries.map(toBrief),
-    antiHeal: antiHeal.map(toBrief),
-    offensive: offensive.map(toBrief),
-    pinned: pinned.map(toBrief),
+    starters: starters.map((item) => toBrief(item, wikiItems)),
+    components: components.map((item) => toBrief(item, wikiItems)),
+    boots: boots.map((item) => toBrief(item, wikiItems)),
+    legendaries: legendaries.map((item) => toBrief(item, wikiItems)),
+    antiHeal: antiHeal.map((item) => toBrief(item, wikiItems)),
+    offensive: offensive.map((item) => toBrief(item, wikiItems)),
+    pinned: pinned.map((item) => toBrief(item, wikiItems)),
+    buildLabel: profile?.label,
   };
 }
 
@@ -214,10 +303,14 @@ export function itemSelectionToText(sel: ItemSelection): string {
   const focusLabel = sel.focus.map((f) => STAT_LABEL[f]).join("+");
   const fmt = (list: ItemBrief[]) =>
     list
-      .map((i) => `  - ${i.name} (${i.priceTotal}G; ${i.stats}${i.effects ? `; ${i.effects}` : ""})`)
+      .map(
+        (i) =>
+          `  - ${i.name} (${i.priceTotal}G; ${i.stats}${i.archetypes ? `; 역할군 ${i.archetypes}` : ""}${i.functions ? `; ${i.functions}` : ""}${i.effects ? `; ${i.effects}` : ""})`,
+      )
       .join("\n");
   const sections = [
     `방어 기준 스탯: ${focusLabel} (상대 주 피해 유형에서 도출)`,
+    ...(sel.buildLabel ? [`내 빌드 성향: ${sel.buildLabel} — 이 역할군 아이템만 고릅니다`] : []),
   ];
   if (sel.pinned.length) {
     sections.push(`지식 카드가 지목한 아이템(우선 고려):\n${fmt(sel.pinned)}`);

@@ -50,17 +50,37 @@ export function deriveThreatOrder(enemy: ChampionCard, limit = 3): ThreatRank[] 
     }
     // 궁극기는 쿨타임이 길어 상시 위험은 아니지만 한 번의 파괴력이 크다
     if (spell.slot === "R") score += 10;
+
+    // 군중 제어가 하나도 없는 순수 폭딜 궁극기는 위 표에 걸리지 않는다.
+    // 제드 R 죽음의 표식이 그런 경우인데, 상대 미드가 가장 조심해야 할 스킬이 빠지면 곤란하다.
+    // 계수가 붙어 있으면 그 자체를 이유로 삼는다.
+    // **계수가 있다고 피해 스킬인 것은 아니다.** 밀리오 R 생명의 온기는 주문력 계수가
+    // 회복에 붙는데, 피해 여부를 보지 않아 "한 번에 큰 피해" 라는 경고가 나갔다.
+    // 소라카 R 기원, 룰루 R 급성장도 같은 경우다.
+    if (spell.slot === "R" && reasons.length === 0 && spell.damageTypes.length > 0) {
+      const top = Object.entries(spell.ratios).sort((a, b) => b[1] - a[1])[0];
+      if (top) {
+        score += 45;
+        reasons.push(`계수 ${top[0]} ${top[1]}%: 군중 제어는 없지만 한 번에 큰 피해가 들어온다`);
+      }
+    }
     return { slot: spell.slot, name: spell.name, score, reasons };
   });
   return ranked
-    .filter((r) => r.score > 0)
+    // 이유가 없으면 싣지 않는다. 궁극기 가산점만으로 올라오면 "R 스킬 —" 처럼 사유가 빈 줄이 나가고,
+    // 툴팁이 깨진 챔피언(케인)이 딱 그 경우다. 근거 없는 경고는 없느니만 못하다.
+    .filter((r) => r.reasons.length > 0)
     .sort((a, b) => b.score - a.score)
     .slice(0, limit);
 }
 
-export function threatOrderToText(ranks: ThreatRank[]): string {
+export function threatOrderToText(ranks: ThreatRank[], enemyName?: string): string {
+  if (!ranks.length) {
+    return "효과 태그로 확정할 수 있는 위협이 없습니다. 스킬 목록의 쿨타임과 계수를 근거로 쓰십시오.";
+  }
+  const owner = enemyName ? `${enemyName} ` : "";
   return ranks
-    .map((r, i) => `${i + 1}순위 ${r.slot} ${r.name} — ${r.reasons.slice(0, 2).join(" / ")}`)
+    .map((r, i) => `${i + 1}순위 ${owner}${r.slot} ${r.name} — ${r.reasons.slice(0, 2).join(" / ")}`)
     .join("\n");
 }
 

@@ -1,0 +1,1421 @@
+{
+  "schemaVersion": 1,
+  "patch": "26.18",
+  "source": "https://wiki.leagueoflegends.com",
+  "license": "CC BY-SA",
+  "fetchedAt": "2026-09-12T14:57:20.377Z",
+  "rules": [
+    {
+      "name": "감전",
+      "page": "Electrocute",
+      "subject": "rune",
+      "notes": [
+        "Electrocute deals proc damage, and thus will not trigger spell effects.",
+        "Electrocute can trigger while dead.",
+        "Blind, Cripple, Drowsy, Kinematics, Nearsight, and Stasis do not count as valid crowd control for triggering stacks.",
+        "Becoming untargetable during the 0.25-second delay will not prevent the effect from occurring.",
+        "The 3 second timer is non-refreshing - the third stack has to be applied within 3 seconds of the first.",
+        "Ambessa R is special cased to apply a stack for the suppression application and the damage dealt.",
+        "Zed Razor Shuriken and Shadow Slash, when used together with Living Shadow, are special cased to generate a stack for each tick of damage.",
+        "Tidecaller's Blessing damage instances beyond its first are special cased to not apply a stack.",
+        "Effects that deal proc damage do not trigger a stack unless it is also tagged as pet damage. (Such effects can still trigger a stack if they apply a debuff (i.e Black Cleaver).)"
+      ],
+      "notesKo": [
+        "감전은 발동 피해를 주므로 스킬 효과를 발동시키지 않습니다.",
+        "감전은 사망한 상태에서도 발동할 수 있습니다.",
+        "실명, 공격 속도 감소, 졸음, 강제 이동, 시야 감소, 정지 상태는 중첩을 쌓을 수 있는 군중 제어로 인정되지 않습니다.",
+        "0.25초의 지연 시간 동안 대상 지정 불가 상태가 되어도 효과 발동은 막히지 않습니다.",
+        "3초 타이머는 갱신되지 않습니다. 세 번째 중첩은 첫 번째 중첩으로부터 3초 안에 쌓여야 합니다.",
+        "암베사 R은 예외 처리되어 제압을 걸 때와 피해를 줄 때 각각 중첩을 쌓습니다.",
+        "제드 Q 예리한 표창과 E 그림자 베기를 W 살아있는 그림자와 함께 쓰면 예외 처리되어 피해 틱마다 중첩을 쌓습니다.",
+        "나미 E 파도 소환사의 축복은 첫 번째 이후의 피해에 대해서는 예외 처리되어 중첩을 쌓지 않습니다.",
+        "발동 피해를 주는 효과는 소환수 피해로도 분류되지 않는 한 중첩을 쌓지 않습니다. (다만 그런 효과라도 약화 효과를 걸면 중첩을 쌓을 수 있습니다. 칠흑의 양날 도끼가 그렇습니다.)"
+      ]
+    },
+    {
+      "name": "어둠의 수확",
+      "page": "Dark Harvest",
+      "subject": "rune",
+      "notes": [
+        "Dark Harvest deals proc damage, and thus will not trigger spell effects.",
+        "Dark Harvest will trigger on clones, but not zombies.",
+        "Dark Harvest will not reap additional Souls during the delay before a Soul is gained.",
+        "Dark Harvest does not trigger on damage lower than 2, excluding Brand I (note).",
+        "Dark Harvest does not trigger on proc damage (e.g. Scorch, Liandry's Torment, W), excluding Teemo E."
+      ],
+      "notesKo": [
+        "어둠의 수확은 발동 피해를 주므로 스킬 효과를 발동시키지 않습니다.",
+        "어둠의 수확은 분신에게는 발동하지만 되살아난 유닛에게는 발동하지 않습니다.",
+        "어둠의 수확은 영혼을 얻기 전의 지연 시간 동안에는 영혼을 추가로 거두지 않습니다.",
+        "어둠의 수확은 2 미만의 피해에는 발동하지 않습니다. 브랜드 P 불길은 예외입니다.",
+        "어둠의 수확은 발동 피해에는 발동하지 않습니다. 주문 작열, 리안드리의 고통, W 계열이 그렇습니다. 티모 E 맹독 다트는 예외입니다."
+      ]
+    },
+    {
+      "name": "칼날비",
+      "page": "Hail of Blades",
+      "subject": "rune",
+      "notes": [
+        "Hail of Blades deals proc damage, and thus will not trigger spell effects.",
+        "Hail of Blades will generate additional stacks from attack resets only if the effect that triggered it has the Trait_AttackReset spell tag. (Twisted Fate W, Warwick Primal Howl 2 (recast), and Hextech Rocketbelt Supersonic all reset the user's basic attack timer upon their activation, but none of them have this tag. This causes them to be ineligible for generating an additional stack despite having an attack reset.) (Sett E and Sylas W have this tag but do not reset the caster's basic attack timer, allowing them to unintentionally generate an additional stack.) (K'Sante Q and Rell Ferromancy: Mount Up have this tag and reset the caster's basic attack timer upon use, but do not properly generate an additional stack as expected.) (These abilities were each assigned with the Trait_AttackReset tag in V26.09, and were documented as being fixed with Hail of Blades in the same patch, but the additional stack generation does not occur for either spell despite both having the tag.)",
+        "The duration of the stacks is not refreshed upon the user gaining an additional stack from having their attack timer reset.",
+        "The additional stack will be generated from attack resets even if the user's basic attack is not on cooldown at the time of the attack reset instance.",
+        "The user's attack speed cap is increased to 90.0 for the duration, however this value is already beyond the technical limit for attack speed. (The effect is able to remove Sion Glory in Death attack speed cap but is not able to remove Jhin, Graves nor Zeri.)",
+        "If the triggering attack's windup is cancelled, Hail of Blades will not grant the stacks and briefly goes on cooldown before resetting the cooldown timer. (The rune will play its effect ready VFX when this occurs, which is the VFX for when the cooldown times out normally.)",
+        "If an attack windup against an enemy champion is cancelled while Hail of Blades is active, the duration of the stacks is refreshed immediately and the user's next basic attack on-attack against an enemy champion will not be eligible for refreshing the duration. This may occur only once for each stack.",
+        "The rune's tracker in the HUD calculates \"percentage of Hail attacks landed\", which is the percentage relative to the base number of Hail of Blades-empowered attacks (3). The tracker counts attack resets while the rune is active as valid, thus the percentage can be above 100%. This is intended."
+      ],
+      "notesKo": [
+        "칼날비는 발동 피해를 주므로 스킬 효과를 발동시키지 않습니다.",
+        "칼날비는 기본 공격을 초기화한 효과에 Trait_AttackReset 태그가 붙어 있을 때만 추가 중첩을 만듭니다. (트위스티드 페이트 W 카드 뽑기, 워윅 E 원시의 포효 재사용, 마법공학 로켓 벨트의 초음속 돌진은 모두 사용 시 기본 공격 타이머를 초기화하지만 이 태그가 없습니다. 그래서 공격을 초기화하고도 추가 중첩을 만들지 못합니다.) (세트 E 안면 강타와 사일러스 W 국왕시해자는 이 태그가 있지만 기본 공격 타이머를 초기화하지 않아, 의도치 않게 추가 중첩을 만듭니다.) (크산테 Q 엔토포 타격과 렐 W 철마술 재사용은 이 태그가 있고 기본 공격 타이머도 초기화하지만, 기대와 달리 추가 중첩이 제대로 생기지 않습니다.) (이 스킬들은 26.09 패치에서 Trait_AttackReset 태그를 받았고 같은 패치에서 칼날비와의 문제가 고쳐졌다고 기록되었지만, 태그가 있는데도 두 스킬 모두 추가 중첩이 생기지 않습니다.)",
+        "기본 공격 타이머 초기화로 추가 중첩을 얻어도 중첩의 지속 시간은 갱신되지 않습니다.",
+        "기본 공격 초기화 시점에 기본 공격이 재사용 대기 중이 아니었더라도 추가 중첩은 생깁니다.",
+        "지속 시간 동안 공격 속도 상한이 90.0으로 올라가지만, 이 값은 이미 공격 속도의 기술적 한계를 넘어선 수치입니다. (이 효과는 사이온 P 영광스러운 죽음의 공격 속도 상한은 없앨 수 있지만, 진·그레이브즈·제리의 상한은 없애지 못합니다.)",
+        "발동시킨 공격의 준비 동작이 취소되면 칼날비는 중첩을 주지 않고 잠시 재사용 대기 상태가 되었다가 대기 시간을 초기화합니다. (이때 룬은 준비 완료 효과를 재생하는데, 이는 원래 재사용 대기 시간이 정상적으로 끝났을 때 나오는 연출입니다.)",
+        "칼날비가 켜져 있는 동안 적 챔피언을 향한 공격 준비 동작이 취소되면 중첩의 지속 시간이 즉시 갱신되고, 그다음 적 챔피언 대상 기본 공격은 지속 시간을 갱신하지 못합니다. 이는 중첩마다 한 번씩만 일어납니다.",
+        "화면의 룬 기록기는 \"적중한 칼날비 공격 비율\"을 계산하는데, 이는 칼날비가 강화하는 기본 공격 횟수 3회를 기준으로 한 비율입니다. 룬이 켜져 있는 동안의 기본 공격 초기화도 유효한 것으로 세기 때문에 비율이 100%를 넘을 수 있습니다. 이는 의도된 동작입니다."
+      ]
+    },
+    {
+      "name": "비열한 한 방",
+      "page": "Cheap Shot",
+      "subject": "rune",
+      "notes": [
+        "Cheap Shot deals proc damage, and thus will not trigger spell effects.",
+        "Cripple does not count as a valid crowd control for Cheap Shot.",
+        "Cheap Shot checks the status of the potential target every time damage is dealt to an enemy champion, during the damage event's on-deal-pre-drain phase. (CC that is applied on-hit (e.g. Alistar Trample) will be there before this check occurs, CC that is applied on-pre-apply (e.g. Rylai's Crystal Scepter) will not. Either will be applied on the same game tick, but may belong to a different cast-instance than the damage (see rule below).)",
+        "Cheap Shot may not trigger on damage that is applied on the same game tick as a crowd control effect from the same cast instance. (If the target is already under the effects of crowd control, this does not apply.) (This also occurs if the target is under the effect of CC from a neutral monster (e.g. Baron Nashor), despite Cheap Shot not triggering on non-teammate crowd control.) (Abilities such as Lux Lucent Singularity can apply a crowd control effect themselves and deal damage at a delay, skipping the same game tick rule and applying Cheap Shot on their own.) (Once Cheap Shot has triggered on a cast instance, it clears this marker for the next time the same cast instance applies a crowd control effect.)",
+        "All Basic damage (Note: All damage with this damage tag, not only damage from basic attacks) is considered the same cast instance to Cheap Shot. (Because of this and the above, for instance Ezreal Mystic Shot with Iceborn Gauntlet or Ashe Frost Shot will on its own be able to trigger Cheap Shot only every other time if it is the only attack to hit the enemy.)",
+        "Damage over time effects applied before a crowd control may also trigger Cheap Shot on a damage tick once an eligible effect has been applied."
+      ],
+      "notesKo": [
+        "비열한 한 방은 발동 피해를 주므로 스킬 효과를 발동시키지 않습니다.",
+        "공격 속도 감소는 비열한 한 방이 인정하는 군중 제어가 아닙니다.",
+        "비열한 한 방은 적 챔피언에게 피해를 줄 때마다 피해 이벤트의 지급 직전 단계에서 대상의 상태를 확인합니다. (적중 시에 걸리는 군중 제어는 이 확인보다 먼저 적용됩니다. 알리스타 E 짓밟기가 그렇습니다. 적용 직전에 걸리는 군중 제어는 그렇지 않습니다. 라일라이의 수정홀이 그렇습니다. 둘 다 같은 게임 틱에 적용되지만, 피해와 다른 시전 인스턴스에 속할 수 있습니다. 아래 규칙을 함께 보십시오.)",
+        "같은 시전 인스턴스의 군중 제어와 같은 게임 틱에 들어간 피해에는 비열한 한 방이 발동하지 않을 수 있습니다. (대상이 이미 군중 제어에 걸려 있었다면 해당하지 않습니다.) (비열한 한 방은 아군이 아닌 쪽의 군중 제어로는 발동하지 않는데도, 대상이 내셔 남작 같은 중립 몬스터의 군중 제어에 걸려 있을 때도 이 현상이 일어납니다.) (럭스 E 광휘의 특이점처럼 스스로 군중 제어를 걸고 시간을 두고 피해를 주는 스킬은 같은 게임 틱 규칙을 건너뛰고 자체적으로 비열한 한 방을 발동시킵니다.) (한 시전 인스턴스에서 비열한 한 방이 한 번 발동하면, 같은 시전 인스턴스가 다음에 군중 제어를 걸 때를 위해 이 표시가 지워집니다.)",
+        "모든 기본 피해는 비열한 한 방에게 같은 시전 인스턴스로 취급됩니다. 여기서 기본 피해란 기본 공격에서 나온 피해만이 아니라 이 피해 태그가 붙은 모든 피해를 말합니다. (이 규칙과 위 규칙 때문에, 얼어붙은 건틀릿을 낀 이즈리얼 Q 신비한 화살이나 애쉬 P 서리 화살이 적을 때리는 유일한 공격이라면 비열한 한 방은 두 번에 한 번씩만 발동합니다.)",
+        "군중 제어보다 먼저 걸린 지속 피해도, 조건을 만족하는 효과가 걸린 뒤에는 피해 틱에서 비열한 한 방을 발동시킬 수 있습니다."
+      ]
+    },
+    {
+      "name": "돌발 일격",
+      "page": "Sudden Impact",
+      "subject": "rune",
+      "notes": [
+        "Sudden Impact deals proc damage, and thus will not trigger spell effects.",
+        "Dashing, blinking or exiting stealth triggers a \"Sudden Impact ready\" (name paraphrased) buff that lasts for 4 seconds. Dealing damage to an enemy champion while this buff is active triggers a second buff with the actual effects, preventing \"Sudden Impact ready\" to be triggered again until it and the subsequent cooldown have run out. (Neither of the two buffs nor the cooldown is shown in the user's hotbar.)",
+        "\"Dealing damage to an enemy champion\" includes effects that deal 0 damage.",
+        "The following effects can be used by any champion to ready Sudden Impact, allowing them to trigger the effect within the next 4 seconds: (Blast Cone) (Hex-gates) (Dash (summoner spell)) (Hexflash) (Teleport and Unleashed Teleport) (Recall and Empowered Recall) (Hextech Rocketbelt) (Bard Magical Journey (for any champion entering the tunnel)) (Rootcaller dash (does not work if used at point-blank)) (Senna Curse of the Black Mist (as well as any champion entering Wraith Form)) (Tahm Kench Regurgitate (for both allies and enemies that are spat out)) (Thresh Dark Passage dash)",
+        "The effect does not trigger on lunges, as they only cause the champion to move in closer to their target, not necessarily \"dash\" in the traditional sense.",
+        "Emerging from outside the enemy vision (e.g. brush) does not ready Sudden Impact."
+      ],
+      "notesKo": [
+        "돌발 일격은 발동 피해를 주므로 스킬 효과를 발동시키지 않습니다.",
+        "돌진하거나 순간이동하거나 은신에서 빠져나오면 4초간 지속되는 \"돌발 일격 준비\" 상태가 생깁니다. 이 상태에서 적 챔피언에게 피해를 주면 실제 효과가 담긴 두 번째 상태가 발동하고, 그 상태와 뒤이은 재사용 대기 시간이 끝날 때까지는 \"돌발 일격 준비\"가 다시 생기지 않습니다. (두 상태도 재사용 대기 시간도 사용자의 스킬 창에 표시되지 않습니다.)",
+        "\"적 챔피언에게 피해를 준다\"에는 피해량이 0인 효과도 포함됩니다.",
+        "다음 효과들은 챔피언을 가리지 않고 돌발 일격을 준비 상태로 만들어, 이후 4초 안에 효과를 발동할 수 있게 합니다. (폭발 원뿔 꽃) (마법공학 관문) (소환사 주문 돌진) (마법공학 점멸) (순간이동과 봉인 풀린 순간이동) (귀환과 강화 귀환) (마법공학 로켓 벨트) (바드 E 신비한 차원문 — 차원문에 들어가는 모든 챔피언) (아이번 Q 덩굴뿌리의 돌진 — 밀착 거리에서 쓰면 되지 않습니다) (세나 E 검은 안개의 저주 — 망령 형태로 들어가는 모든 챔피언 포함) (탐 켄치 R 집어삼키기로 뱉어질 때 — 아군과 적 모두) (쓰레쉬 W 어둠의 통로 돌진)",
+        "이 효과는 달려들기 동작에는 발동하지 않습니다. 달려들기는 대상에게 가까이 붙기만 할 뿐 통상적인 의미의 \"돌진\"이 아니기 때문입니다.",
+        "수풀처럼 적 시야 밖에 있다가 나오는 것으로는 돌발 일격이 준비 상태가 되지 않습니다."
+      ]
+    },
+    {
+      "name": "육감",
+      "page": "Sixth Sense",
+      "subject": "rune",
+      "notes": [
+        "On modes where wards are disabled, Sixth Sense is exchanged with Grisly Mementos."
+      ],
+      "notesKo": [
+        "와드를 쓸 수 없는 모드에서는 육감이 섬뜩한 기념품으로 교체됩니다."
+      ]
+    },
+    {
+      "name": "섬뜩한 기념품",
+      "page": "Grisly Mementos",
+      "subject": "rune",
+      "notes": [
+        "In modes where wards are not available, each stack permanently grants 3 summoner spell haste instead, up to 54."
+      ],
+      "notesKo": [
+        "와드를 쓸 수 없는 모드에서는 중첩마다 소환사 주문 가속을 3씩 영구히 주며, 최대 54까지 쌓입니다."
+      ]
+    },
+    {
+      "name": "깊은 와드",
+      "page": "Deep Ward",
+      "subject": "rune",
+      "notes": [
+        "In modes where wards are not available, Deep Ward is swapped for Grisly Mementos."
+      ],
+      "notesKo": [
+        "와드를 쓸 수 없는 모드에서는 깊은 와드가 섬뜩한 기념품으로 교체됩니다."
+      ]
+    },
+    {
+      "name": "끈질긴 사냥꾼",
+      "page": "Relentless Hunter",
+      "subject": "rune",
+      "notes": [
+        "Relentless Hunter is immediately gained after 5 seconds of being out of combat.",
+        "Relentless Hunter does not consider Blast Cone knockup to be a source of combat."
+      ],
+      "notesKo": [
+        "끈질긴 사냥꾼은 전투에서 벗어난 지 5초가 지나면 즉시 적용됩니다.",
+        "끈질긴 사냥꾼은 폭발 원뿔 꽃으로 떠오르는 것을 전투로 치지 않습니다."
+      ]
+    },
+    {
+      "name": "궁극의 사냥꾼",
+      "page": "Ultimate Hunter",
+      "subject": "rune",
+      "notes": [
+        "On Bel'Veth, Ultimate Hunter is exchanged with Relentless Hunter.",
+        "On Samira, Ultimate Hunter is exchanged with Treasure Hunter.",
+        "Ultimate Hunter will affect both cooldowns and recharge timers on abilities such as Teemo Noxious Trap.",
+        "Ultimate Hunter stacks additively with other sources of haste."
+      ],
+      "notesKo": [
+        "벨베스에게는 궁극의 사냥꾼이 끈질긴 사냥꾼으로 교체됩니다.",
+        "사미라에게는 궁극의 사냥꾼이 보물 사냥꾼으로 교체됩니다.",
+        "궁극의 사냥꾼은 티모 R 유독성 함정처럼 충전형인 스킬의 재사용 대기 시간과 충전 시간 모두에 영향을 줍니다.",
+        "궁극의 사냥꾼은 다른 스킬 가속 효과와 합연산으로 더해집니다."
+      ]
+    },
+    {
+      "name": "빙결 강화",
+      "page": "Glacial Augment",
+      "subject": "rune",
+      "notes": [
+        "On champions without immobilizing effects and Yorick, Glacial Augment is exchanged with First Strike.",
+        "Glacial Augment will not activate if the immobilizing effect was applied to a target that is displacement immune."
+      ],
+      "notesKo": [
+        "이동 불가 효과가 없는 챔피언과 요릭에게는 빙결 강화가 선제공격으로 교체됩니다.",
+        "이동 불가 효과가 밀쳐내기 면역 대상에게 걸린 경우에는 빙결 강화가 발동하지 않습니다."
+      ]
+    },
+    {
+      "name": "봉인 풀린 주문서",
+      "page": "Unsealed Spellbook",
+      "subject": "rune",
+      "notes": [
+        "The original summoner spells continue cooling down in the background while swapped out.",
+        "The swap cooldown is static and thus is unaffected by summoner spell haste.",
+        "There is no time limit for swapped summoner spells; they will remain within the summoner spell slot until they are used.",
+        "Selecting Smite will not grant access to jungle-exclusive items (Gustwalker Hatchling, Mosstomper Seedling, and Scorchclaw Pup). (Swapping Smite out for another summoner spell does not prevent access to those items and does not remove their effects.)",
+        "If Smite was not one of the user's original summoner spells, its damage is modified to level-scaled. (The in-game tooltip always says it deals 600 damage even if it does more.) (The in-game tooltip says Smite requires 2 swaps for the damage to be increased, but its damage will only be increased if it is the third (or later) spell to be swapped.) (Swapping while Smite is already equipped will not affect the current damage.) (Selecting or swapping back to Smite will not place it on cooldown.)",
+        "Selecting Teleport after 10:00 will grant Unleashed Teleport instead. (If Teleport is currently being swapped to, it can transform into its unleashed version after 10:00.) (If Teleport is swapped out for a selected summoner spell, the transformation will take place after it returns to the spell slot.)",
+        "Selecting Teleport is possible before completing the top lane role quest, but it becomes locked after completion. (If Teleport is selected before completing the quest, it will remain usable after completion.) (However, if the quest Teleport is used, the selected Teleport will swap back to the original summoner spell prematurely.) (Neither Teleport will be empowered to grant a shield.)",
+        "If Hexflash is swapped out for another summoner spell and Flash comes off cooldown, the selected summoner spell will be automatically swapped back to Flash.",
+        "On the Hunt of the Blood Moon, Ultra Rapid Fire, and Ultimate Spellbook mode, Unsealed Spellbook is exchanged with First Strike.",
+        "Inputting a non-modifier key, or a (modifier-inclusive) key combination, even if its action is invalid and/or it is not bound to any event, will cause the menu to close."
+      ],
+      "notesKo": [
+        "원래 소환사 주문은 교체되어 있는 동안에도 뒤에서 계속 재사용 대기 시간이 돕니다.",
+        "교체 대기 시간은 고정값이므로 소환사 주문 가속의 영향을 받지 않습니다.",
+        "교체해 온 소환사 주문에는 시간 제한이 없습니다. 사용할 때까지 주문 칸에 그대로 남습니다.",
+        "강타를 골라도 정글 전용 아이템은 살 수 없습니다. 바람돌이 새끼, 이끼쿵쿵이 새싹, 화염발톱 새끼가 여기에 해당합니다. (이미 가지고 있던 강타를 다른 주문으로 바꾸는 것은 그 아이템의 사용을 막지도, 효과를 없애지도 않습니다.)",
+        "강타가 원래 들고 있던 소환사 주문이 아니었다면 그 피해량은 레벨에 따라 달라지는 값으로 바뀝니다. (게임 안 설명은 실제 피해가 더 크더라도 항상 600으로 표시합니다.) (게임 안 설명은 피해가 올라가려면 두 번 교체해야 한다고 적혀 있지만, 실제로는 세 번째 이후로 교체한 주문일 때만 피해가 올라갑니다.) (강타를 이미 들고 있는 상태에서 교체하는 것은 현재 피해량에 영향을 주지 않습니다.) (강타를 고르거나 다시 강타로 돌아와도 재사용 대기 시간이 걸리지 않습니다.)",
+        "10분 이후에 순간이동을 고르면 봉인 풀린 순간이동을 받습니다. (교체가 진행 중인 순간이동도 10분이 지나면 봉인 풀린 형태로 바뀔 수 있습니다.) (순간이동을 다른 주문으로 교체해 둔 상태라면, 주문 칸으로 돌아온 뒤에 변환이 일어납니다.)",
+        "탑 라인 역할 임무를 끝내기 전에는 순간이동을 고를 수 있지만, 임무를 끝내면 선택이 잠깁니다. (임무를 끝내기 전에 골라 두었다면 끝낸 뒤에도 그대로 쓸 수 있습니다.) (다만 임무로 받은 순간이동을 쓰면 골라 둔 순간이동이 원래 소환사 주문으로 미리 돌아갑니다.) (어느 쪽 순간이동도 보호막을 주도록 강화되지는 않습니다.)",
+        "마법공학 점멸을 다른 소환사 주문으로 교체한 상태에서 점멸의 재사용 대기 시간이 끝나면, 골라 둔 주문이 자동으로 점멸로 되돌아갑니다.",
+        "핏빛 달의 사냥, 우르프, 궁극기 주문서 모드에서는 봉인 풀린 주문서가 선제공격으로 교체됩니다.",
+        "조합키가 아닌 키를 누르거나 조합키를 포함한 키 조합을 누르면, 그 동작이 유효하지 않거나 아무 데도 연결되어 있지 않더라도 선택 창이 닫힙니다."
+      ]
+    },
+    {
+      "name": "선제공격",
+      "page": "First Strike",
+      "subject": "rune",
+      "notes": [
+        "First Strike deals proc damage, additionally tagged as indirect damage, and thus will not trigger spell effects. (Unlike damage modifiers, First Strike does not inherit damage tags from the source.)",
+        "On champions without immobilizing effects, Glacial Augment is exchanged with this.",
+        "\"Initiating combat\" includes effects that deal 0 damage.",
+        "First Strike's bonus damage will trigger from all damage types, including true damage.",
+        "First Strike goes on cooldown upon its activation.",
+        "The triggering instance of damage will also benefit from First Strike's bonus damage.",
+        "First Strike will benefit from damaging multiple champions in combat.",
+        "First Strike will fire a missile at the target for each instance of damage dealt to them per cast instance while the effect is active. (This missile has a fixed travel time of 0.4 seconds.) (The first instance of bonus damage by First Strike is dealt after the same delay.) (This missile does not determine the rune's effects.) (If multiple targets are damaged at the same time, the missile will be sent towards the first target hit.) (This missile causes the user to be revealed briefly.)"
+      ],
+      "notesKo": [
+        "선제공격은 발동 피해를 주며 간접 피해로도 분류되므로 스킬 효과를 발동시키지 않습니다. (피해 증폭 효과와 달리 선제공격은 원본 피해의 태그를 물려받지 않습니다.)",
+        "이동 불가 효과가 없는 챔피언에게는 빙결 강화가 이 룬으로 교체됩니다.",
+        "\"전투를 시작한다\"에는 피해량이 0인 효과도 포함됩니다.",
+        "선제공격의 추가 피해는 고정 피해를 포함한 모든 피해 유형에서 발동합니다.",
+        "선제공격은 발동하는 순간 재사용 대기 시간이 돌기 시작합니다.",
+        "선제공격을 발동시킨 피해 자체도 추가 피해를 받습니다.",
+        "선제공격은 전투에서 여러 챔피언에게 피해를 줄수록 이득을 봅니다.",
+        "선제공격은 효과가 켜져 있는 동안 시전 인스턴스마다 대상에게 준 피해 횟수만큼 투사체를 발사합니다. (이 투사체의 이동 시간은 0.4초로 고정입니다.) (선제공격의 첫 추가 피해도 같은 지연 후에 들어갑니다.) (이 투사체가 룬의 효과를 결정하지는 않습니다.) (여러 대상이 동시에 피해를 입으면 투사체는 처음 맞은 대상에게 날아갑니다.) (이 투사체 때문에 사용자의 위치가 잠깐 드러납니다.)"
+      ]
+    },
+    {
+      "name": "마법공학 점멸기",
+      "page": "Hextech Flashtraption",
+      "subject": "rune",
+      "notes": [
+        "Hexflash is disabled while grounded, rooted, or unable to cast.",
+        "Hextech Flashtraption is replaced with Cash Back if the user has not equipped Flash.",
+        "When Flash is used, Hexflash also incurs its own cooldown before becoming usable.",
+        "Hextech Flashtraption does not consider Blast Cone knockup to be a source of combat.",
+        "If Hexflash is being channeled and Flash cooldown ends, the user may still recast despite losing Hexflash, and doing so will still incur the cooldown afterwards.",
+        "Hexflash's cooldown (and halved cooldown for entering combat) is reduced by summoner spell haste.",
+        "Hexflash has no cast time, like most charged channels."
+      ],
+      "notesKo": [
+        "마법공학 점멸은 속박, 이동 불가, 스킬 사용 불가 상태에서는 쓸 수 없습니다.",
+        "점멸을 들지 않았다면 마법공학 점멸기가 환급으로 교체됩니다.",
+        "점멸을 쓰면 마법공학 점멸에도 별도의 재사용 대기 시간이 걸린 뒤에야 쓸 수 있게 됩니다.",
+        "마법공학 점멸기는 폭발 원뿔 꽃으로 떠오르는 것을 전투로 치지 않습니다.",
+        "마법공학 점멸을 정신 집중하는 도중에 점멸의 재사용 대기 시간이 끝나면, 마법공학 점멸을 잃더라도 재사용은 할 수 있고 그 뒤에는 재사용 대기 시간이 걸립니다.",
+        "마법공학 점멸의 재사용 대기 시간은 소환사 주문 가속으로 줄어듭니다. 전투에 들어갔을 때 절반으로 줄어드는 대기 시간도 마찬가지입니다.",
+        "마법공학 점멸은 대부분의 충전형 정신 집중 스킬처럼 시전 시간이 없습니다."
+      ]
+    },
+    {
+      "name": "마법의 신발",
+      "page": "Magical Footwear",
+      "subject": "rune",
+      "notes": [
+        "If sold, they can be re-purchased via purchasing Boots in the shop. Purchased tier-2 boots are also always slightly magical."
+      ],
+      "notesKo": [
+        "팔았더라도 상점에서 장화를 사면 다시 얻을 수 있습니다. 돈을 주고 산 2단계 장화에도 항상 약간의 마법 효과가 붙습니다."
+      ]
+    },
+    {
+      "name": "환급",
+      "page": "Cash Back",
+      "subject": "rune",
+      "notes": [
+        "Guardian items do not count as Legendary items for Cash Back."
+      ],
+      "notesKo": [
+        "수호자 계열 아이템은 환급에서 전설 아이템으로 세지 않습니다."
+      ]
+    },
+    {
+      "name": "시간 왜곡 물약",
+      "page": "Time Warp Tonic",
+      "subject": "rune",
+      "notes": [
+        "Time Warp Tonic activates on the following consumables: (Health Potion: Heals the user for 48.) (Refillable Potion: Heals the user for 40.)"
+      ],
+      "notesKo": [
+        "시간 왜곡 물약은 다음 소모품에서 발동합니다. (체력 물약: 48만큼 회복시킵니다.) (재사용 물약: 40만큼 회복시킵니다.)"
+      ]
+    },
+    {
+      "name": "비스킷 배달",
+      "page": "Biscuit Delivery",
+      "subject": "rune",
+      "notes": [
+        "Health gained from Biscuit Delivery is considered bonus health. (Undoing the selling of a biscuit will remove the bonus health.)",
+        "Gaining the effect's bonus health does not increase the user's current health."
+      ],
+      "notesKo": [
+        "비스킷 배달로 얻은 체력은 추가 체력으로 취급됩니다. (비스킷 판매를 취소하면 그 추가 체력이 사라집니다.)",
+        "이 효과로 추가 체력을 얻어도 현재 체력이 함께 오르지는 않습니다."
+      ]
+    },
+    {
+      "name": "쾌속 접근",
+      "page": "Approach Velocity",
+      "subject": "rune",
+      "notes": [
+        "Impaired champions in a 180° total angle towards the user's facing direction are valid targets. (The movement speed buff is granted even if the user is standing still.)",
+        "Approach Velocity does not trigger from Drowsy, despite being a movement impairment.",
+        "Approach Velocity has weird conditions in regards to sight of the enemy.",
+        "Approach Velocity works against movement-impaired enemies that are impaired by a source not allied to you (e.g. by Ocean Drake or themselves).",
+        "The movement speed bonus is updated based on the user's facing direction every 0.5 seconds.",
+        "The movement speed bonus can linger for up-to 0.25 seconds after the crowd control ends (or is removed) as a consequence of champion stats only being updated periodically."
+      ],
+      "notesKo": [
+        "사용자가 바라보는 방향을 기준으로 전체 180도 안에 있는, 이동이 방해된 챔피언이 대상이 됩니다. (사용자가 가만히 서 있어도 이동 속도 효과는 적용됩니다.)",
+        "졸음은 이동 방해 효과인데도 쾌속 접근을 발동시키지 않습니다.",
+        "쾌속 접근은 적을 볼 수 있는지에 관해 일관되지 않은 조건을 가집니다.",
+        "쾌속 접근은 아군이 아닌 쪽에서 이동을 방해한 적에게도 적용됩니다. 바다 드래곤이나 적 자신이 건 효과가 그렇습니다.",
+        "이동 속도 효과는 사용자가 바라보는 방향을 기준으로 0.5초마다 갱신됩니다.",
+        "챔피언 능력치가 주기적으로만 갱신되기 때문에, 군중 제어가 끝나거나 제거된 뒤에도 이동 속도 효과가 최대 0.25초까지 남을 수 있습니다."
+      ]
+    },
+    {
+      "name": "집중 공격",
+      "page": "Press the Attack",
+      "subject": "rune",
+      "notes": [
+        "Press the Attack's adaptive damage deals proc damage, and thus will not trigger spell effects.",
+        "The damage dealt by Press the Attack is not affected by on-hit damage modifiers.",
+        "Application is individually tracked and does not interact among multiple users.",
+        "Effects that allow the application of on-hit effects multiple times in one issued attack (e.g. Lightslinger, Ruthless Predator, Guinsoo's Rageblade) will also apply additional stacks of Press the Attack.",
+        "With the exception of Azir W, AoE on-hit attacks are excluded from interacting with Press the Attack, regardless of whether a single target is being hit (e.g Runaan's Hurricane, Statikk Shiv, Evelynn Empowered Whiplash, Katarina I and R, Master Yi Alpha Strike). Intended based on V14.1 Sylas fix",
+        "The basic attack that triggers Press the Attack's third stack does not benefit from the increased damage.",
+        "Press the Attack's adaptive damage is not affected by on-hit effect modifiers (e.g. Heroic Swing, Purge). (However, any damage over time or follow-up effects that come with the basic attack will be affected (e.g. Hemorrhage, Toxic Shot and every follow-up Tentacle Smash).) (Damage dealt on the same frame that the buff is gained will not be amplified.) (The triggering Press the Attack proc does not benefit from the increased damage but future procs that occur while affected by the damage buff will.)"
+      ],
+      "notesKo": [
+        "집중 공격의 적응형 피해는 발동 피해이므로 스킬 효과를 발동시키지 않습니다.",
+        "집중 공격이 주는 피해는 적중 시 피해 증폭 효과의 영향을 받지 않습니다.",
+        "중첩은 사용자별로 따로 기록되며, 여러 사용자끼리 합쳐지지 않습니다.",
+        "한 번의 공격으로 적중 시 효과를 여러 번 넣게 해 주는 효과는 집중 공격 중첩도 추가로 쌓습니다. 세나 P 면죄의 기본 공격, 레넥톤 W 무자비한 포식자, 구인수의 격노검이 그렇습니다.",
+        "아지르 W 일어나라!를 빼면, 광역으로 적중 시 효과를 넣는 공격은 대상이 하나뿐이더라도 집중 공격과 상호작용하지 않습니다. 루난의 허리케인, 스태틱의 단검, 이블린 E 채찍유린 강화판, 카타리나 P 탐욕과 R 죽음의 연꽃, 마스터 이 Q 일격 필살이 그렇습니다. 14.1 패치의 사일러스 수정 내용에 따르면 의도된 동작입니다.",
+        "집중 공격의 세 번째 중첩을 쌓은 그 기본 공격은 증폭된 피해를 받지 못합니다.",
+        "집중 공격의 적응형 피해는 적중 시 효과를 수정하는 효과의 영향을 받지 않습니다. 아크샨 E 영웅의 비상이나 우르곳 W 심판의 원이 그렇습니다. (다만 기본 공격에 딸려 오는 지속 피해나 후속 효과는 영향을 받습니다. 다리우스 P 과다출혈, 티모 E 맹독 다트, 일라오이 Q 촉수 강타의 후속 타격이 그렇습니다.) (효과를 얻은 것과 같은 프레임에 들어간 피해는 증폭되지 않습니다.) (집중 공격을 발동시킨 그 피해는 증폭을 받지 못하지만, 증폭 효과가 켜져 있는 동안 일어나는 이후 발동은 증폭을 받습니다.)"
+      ]
+    },
+    {
+      "name": "치명적 속도",
+      "page": "Lethal Tempo",
+      "subject": "rune",
+      "notes": [
+        "Lethal Tempo's bolt deals proc damage, and thus will not trigger spell effects.",
+        "Ranged values are derived from the melee ones: bonus attack speed per stack is multiplied by 0.8, and the bolt's damage by 0.667. The 1% per 1% bonus attack speed scaling applies to each champion's own base value and is unmodified. (These follow the champion's current form. Jayce switching between Hammer and Cannon changes them immediately, including for stacks already held.) (The rune's description text lists the ranged damage as 6 to 24, higher than what is dealt. The description applies the attack speed multiplier (0.8) to the damage instead of the damage multiplier (0.667). The values above are the ones actually dealt.)",
+        "Lethal Tempo's own attack speed stacks count toward the bonus attack speed that scales the bolt. (Because of this, reading the hover tooltip before gaining maximum stacks, will show less damage than the bolt will deal once it can fire at maximum stacks.)",
+        "The bolt scales with the bonus attack speed stat itself, not with how fast the champion actually attacks. Attack speed above the attack speed cap still increases the damage even though it grants no additional attacks.",
+        "The rune's damage tracker reports damage dealt after resistances."
+      ],
+      "notesKo": [
+        "치명적 속도의 전격은 발동 피해라 스킬 효과를 발동시키지 않습니다.",
+        "원거리 수치는 근접 수치에서 나옵니다. 중첩당 추가 공격 속도에 0.8을, 전격 피해량에 0.667을 곱합니다. 추가 공격 속도 1%당 1% 계수는 각 챔피언의 기본값에 적용되며 따로 보정되지 않습니다. (이 값은 챔피언의 현재 형태를 따릅니다. 제이스가 망치와 대포를 오가면 이미 쌓인 중첩까지 즉시 바뀝니다.) (룬 설명문에는 원거리 피해량이 6~24로 적혀 있는데 실제보다 높습니다. 설명문이 피해량 배수(0.667) 대신 공격 속도 배수(0.8)를 피해량에 적용했기 때문입니다. 위 수치가 실제로 들어가는 값입니다.)",
+        "치명적 속도가 주는 공격 속도 중첩도 전격 계수에 쓰이는 추가 공격 속도에 포함됩니다. (그래서 최대 중첩 전에 툴팁을 보면 최대 중첩에서 실제로 나가는 피해량보다 낮게 표시됩니다.)",
+        "전격은 챔피언이 실제로 얼마나 빨리 때리는지가 아니라 추가 공격 속도 능력치 자체에 비례합니다. 공격 속도 상한을 넘긴 수치는 공격 횟수를 늘리지 못해도 피해량은 계속 올립니다.",
+        "이 룬의 피해량 집계는 방어 관통을 거친 뒤의 실제 피해를 보여 줍니다."
+      ]
+    },
+    {
+      "name": "기민한 발놀림",
+      "page": "Fleet Footwork",
+      "subject": "rune",
+      "notes": [
+        "Fleet Footwork will not be consumed against wards or jungle plants."
+      ],
+      "notesKo": [
+        "기민한 발놀림은 와드나 정글 식물을 때릴 때는 소모되지 않습니다."
+      ]
+    },
+    {
+      "name": "정복자",
+      "page": "Conqueror",
+      "subject": "rune",
+      "notes": [
+        "Conqueror will grant stats based on the level of the user at the time of generating its first stack, even if more stacks are generated.",
+        "Some ranged on-hit basic ability damage will grant 2 stacks of Conqueror (i.e Azir W, Ezreal Q, Miss Fortune Q), others will grant only 1 (i.e Smolder Q, Vayne Q, Viktor Q), regardless of the damage belonging to an ability cast instance.",
+        "Conqueror's stacking can only occur once per cast instance. (For example, the fire waves from Kayle Divine Ascent share the cast instance with its triggering basic attack. This means it can only trigger a stack of Conqueror once per attack instead of the expected twice.) (Abilities that apply a separate cast instance per hit will grant multiple stacks as normal.) (In addition, Garen Judgment, and Wukong Cyclone have been special cased to stack Conqueror for every tick of damage.) (Other similar effects are not special cased (e.g Pantheon E, Taliyah Q, Zac R).) (While basic damage on-hit can stack multiple times regardless of cast instance, Master Yi Q is the only multi on-hit effect that doesn't do so for being a single cast instance and for not being basic damage.) (If Mordekaiser Darkness Rise is activated through either Obliterate or Death's Grasp, it will be treated as the same cast instance as the triggering spell and it will not stack Conqueror.)",
+        "Conqueror will not stack or refresh from these specific effects. (Basic damage from pets (i.e. Annie Tibbers attack, Malzahar Voidling and Yorick Maiden of the Mist attack).) (Daisy attacks apply Ivern on-hit effects, and therefore generate 1 stack of Conqueror per attack.) (Basic damage that does not trigger on-hit effects (Nunu I cone).) (Attacks done by clones, as they are accredited to the clone.) (Runaan's Hurricane Wind's Fury bolts, which are special cased to not stack Conqueror despite dealing basic damage that can trigger on-hit effects (this includes special modifiers of Wind's Fury, such as on Infernum cones, Ashe Q volleys, Jinx Q Fishbones attack).) (Attacks which are dodged or missed while the user is blinded.) (Attacks against an invulnerable target.) (The automatic basic attack following Dash if it already stacked Conqueror.)",
+        "Conqueror will stack or refresh for these specific effects. (W cone effect, as the only AoE non-spell damage that isn't tagged as proc damage.) (Default / raw damage) (Including The Collector Death - although it shares a cast instance with the ability that triggered it, meaning it can only stack Conqueror if triggered by a damage over time effect at least 4 seconds after the effect's initial application.) (Attacks which are blocked.)"
+      ],
+      "notesKo": [
+        "정복자는 첫 중첩을 쌓은 시점의 사용자 레벨을 기준으로 능력치를 줍니다. 이후 중첩이 더 쌓여도 기준은 바뀌지 않습니다.",
+        "원거리에서 적중 시 효과로 들어가는 기본 피해 계열 스킬 중 일부는 정복자 중첩을 2 주고, 나머지는 1만 줍니다. 2를 주는 쪽은 아지르 W 일어나라!, 이즈리얼 Q 신비한 화살, 미스 포츈 Q 한 발에 두 놈이고, 1만 주는 쪽은 스몰더 Q 초강력 화염 숨결, 베인 Q 구르기, 빅토르 Q 힘의 흡수입니다. 그 피해가 스킬 시전 인스턴스에 속하는지 여부와는 무관합니다.",
+        "정복자 중첩은 한 시전 인스턴스당 한 번만 쌓입니다. (예를 들어 케일 P 거룩한 승천의 화염파는 그것을 발동시킨 기본 공격과 시전 인스턴스를 공유합니다. 그래서 기대되는 두 번이 아니라 공격당 한 번만 중첩이 쌓입니다.) (타격마다 별도의 시전 인스턴스를 만드는 스킬은 정상적으로 여러 번 쌓습니다.) (또한 가렌 E 심판과 오공 R 회전격은 예외 처리되어 피해 틱마다 정복자를 쌓습니다.) (비슷한 다른 효과는 예외 처리되어 있지 않습니다. 판테온 E 방패 돌격, 탈리야 Q 파편 난사, 자크 R 바운스!가 그렇습니다.) (적중 시로 들어가는 기본 피해는 시전 인스턴스와 무관하게 여러 번 쌓을 수 있지만, 마스터 이 Q 일격 필살만은 단일 시전 인스턴스이고 기본 피해도 아니어서 그렇게 되지 않습니다.) (모데카이저 P 암흑 탄생이 Q 말살이나 E 죽음의 손아귀로 발동하면 그 스킬과 같은 시전 인스턴스로 취급되어 정복자를 쌓지 않습니다.)",
+        "정복자는 다음 효과로는 쌓이지도 갱신되지도 않습니다. (소환수의 기본 피해. 애니 R 소환: 티버의 공격, 말자하 W 공허의 무리에서 나온 공허충, 요릭 R 군도의 장송곡의 안개 여인의 공격이 그렇습니다.) (다만 아이번 R 데이지!의 공격은 아이번의 적중 시 효과를 적용하므로 공격당 정복자 중첩을 1 쌓습니다.) (적중 시 효과를 발동시키지 않는 기본 피해. 누누와 윌럼프 P 프렐요드의 부름의 원뿔이 그렇습니다.) (분신의 공격. 그 공격은 분신의 것으로 처리됩니다.) (루난의 허리케인에서 갈라져 나가는 화살. 적중 시 효과를 발동시킬 수 있는 기본 피해를 주는데도 예외 처리되어 정복자를 쌓지 않습니다. 벨베스의 원뿔, 애쉬 W 일제 사격, 징크스 Q 휘릭휘릭!의 폭탄총 공격처럼 이 효과가 변형된 형태도 포함합니다.) (사용자가 실명 상태여서 빗나가거나 회피된 공격.) (무적 대상을 향한 공격.) (소환사 주문 돌진 뒤에 자동으로 나가는 기본 공격. 돌진이 이미 정복자를 쌓았다면 해당합니다.)",
+        "정복자는 다음 효과로는 쌓이거나 갱신됩니다. (W 계열의 원뿔 효과. 발동 피해로 분류되지 않은 유일한 광역 비스킬 피해입니다.) (기본 피해 및 분류 없는 피해.) (징수의 총의 처형 효과도 포함합니다. 다만 이것은 발동시킨 스킬과 시전 인스턴스를 공유하므로, 지속 피해가 처음 걸린 뒤 4초 이상 지난 시점에 발동한 경우에만 정복자를 쌓습니다.) (막힌 공격.)"
+      ]
+    },
+    {
+      "name": "승전보",
+      "page": "Triumph",
+      "subject": "rune",
+      "notes": [
+        "The healing is calculated based on your missing health at the moment the takedown happened. (If during the delay another takedown is achieved, all pending Triumph heals have their calculated value updated to the new amount, which is of course based on your missing health at the moment the latest takedown happened.)",
+        "A missile with a fixed travel time of 1 seconds handles the delay and functionally triggers the benefits. (The missile is set as unblockable, which means that it isn't destroyed by colliding with effects such as Yasuo Wind Wall.) (The missile can be popped by effects that (unintentionally) destroy missiles from their own team aimed at them such as Fizz Trickster or Lissandra Frozen Tomb. This will prevent both the bonus gold and healing from being received.)"
+      ],
+      "notesKo": [
+        "회복량은 처치에 관여한 그 순간의 잃은 체력을 기준으로 계산됩니다. (지연 시간 동안 또 처치에 관여하면, 아직 들어오지 않은 승전보 회복이 모두 새 값으로 갱신됩니다. 물론 그 값도 가장 최근 처치 시점의 잃은 체력을 기준으로 합니다.)",
+        "이동 시간이 1초로 고정된 투사체가 지연을 처리하고 실제 효과를 발동시킵니다. (이 투사체는 막을 수 없도록 설정되어 있어 야스오 W 바람 장막 같은 효과에 부딪혀도 사라지지 않습니다.) (다만 피즈 E 재간둥이나 리산드라 R 얼음 무덤처럼 자기 팀에서 자신을 향해 날아오는 투사체를 의도치 않게 없애는 효과에는 터질 수 있습니다. 이 경우 추가 골드와 회복을 모두 받지 못합니다.)"
+      ]
+    },
+    {
+      "name": "침착",
+      "page": "Presence of Mind",
+      "subject": "rune",
+      "notes": [
+        "On the Ultra Rapid Fire mode and for champions that do not use mana nor energy as a resource, Presence of Mind is exchanged with Triumph.",
+        "On takedowns, champions that use energy as a resource restore 30 energy, increased to 60 energy for Shen and 42 energy for Akali while Twilight Shroud is active."
+      ],
+      "notesKo": [
+        "우르프 모드에서, 그리고 마나도 기력도 쓰지 않는 챔피언에게는 침착이 승전보로 교체됩니다.",
+        "처치에 관여하면 기력을 쓰는 챔피언은 기력을 30 회복합니다. 쉔은 60, 아칼리는 W 황혼의 장막이 켜져 있는 동안 42를 회복합니다."
+      ]
+    },
+    {
+      "name": "최후의 일격",
+      "page": "Coup de Grace",
+      "subject": "rune",
+      "notes": [
+        "Coup de Grace only triggers on damage dealt after the champion is brought below 40% health."
+      ],
+      "notesKo": [
+        "최후의 일격은 챔피언의 체력이 40% 아래로 내려간 뒤에 들어간 피해에만 적용됩니다."
+      ]
+    },
+    {
+      "name": "최후의 저항",
+      "page": "Last Stand",
+      "subject": "rune",
+      "notes": [
+        "Last Stand increases your damage output by level-scaled."
+      ],
+      "notesKo": [
+        "최후의 저항은 레벨에 따라 달라지는 만큼 피해량을 올려 줍니다."
+      ]
+    },
+    {
+      "name": "착취의 손아귀",
+      "page": "Grasp of the Undying",
+      "subject": "rune",
+      "notes": [
+        "Grasp of the Undying deals proc damage, and thus will not trigger spell effects.",
+        "The damage dealt by Grasp of the Undying is not affected by on-hit damage modifiers.",
+        "On champions without immobilizing effects and Yorick, Aftershock is exchanged with this.",
+        "It takes ~6 procs to increase the damage by 1 when using a melee champion, and ~16 procs when using a ranged champion.",
+        "It takes ~16 procs to increase the healing by 1 when using a melee champion, and ~43 procs when using a ranged champion."
+      ],
+      "notesKo": [
+        "착취의 손아귀는 발동 피해를 주므로 스킬 효과를 발동시키지 않습니다.",
+        "착취의 손아귀가 주는 피해는 적중 시 피해 증폭 효과의 영향을 받지 않습니다.",
+        "이동 불가 효과가 없는 챔피언과 요릭에게는 여진이 이 룬으로 교체됩니다.",
+        "피해량이 1 올라가려면 근접 챔피언은 약 6회, 원거리 챔피언은 약 16회 발동해야 합니다.",
+        "회복량이 1 올라가려면 근접 챔피언은 약 16회, 원거리 챔피언은 약 43회 발동해야 합니다."
+      ]
+    },
+    {
+      "name": "여진",
+      "page": "Aftershock",
+      "subject": "rune",
+      "notes": [
+        "Aftershock deals area damage, additionally tagged as proc, and thus will apply spell effects.",
+        "On champions without immobilizing effects and Yorick, Aftershock is exchanged with Grasp of the Undying.",
+        "Aftershock's bonus resistances do not scale dynamically; it only benefits from the bonus at the time of its trigger (excluding the base bonus).",
+        "Bonus armor from Aftershock will cap when you have level-scaled bonus armor.",
+        "Bonus magic resistance from Aftershock will cap when you have level-scaled bonus magic resistance.",
+        "Aftershock will not activate if the immobilizing effect was applied to a target that is displacement immune."
+      ],
+      "notesKo": [
+        "여진은 광역 피해를 주며 발동 피해로도 분류되므로 스킬 효과를 적용합니다.",
+        "이동 불가 효과가 없는 챔피언과 요릭에게는 여진이 착취의 손아귀로 교체됩니다.",
+        "여진이 주는 추가 방어력과 마법 저항력은 실시간으로 다시 계산되지 않습니다. 발동한 시점의 값만 반영합니다. 기본으로 주는 몫은 여기서 제외됩니다.",
+        "여진의 추가 방어력은 보유한 추가 방어력이 레벨에 따라 정해지는 기준에 이르면 더 오르지 않습니다.",
+        "여진의 추가 마법 저항력은 보유한 추가 마법 저항력이 레벨에 따라 정해지는 기준에 이르면 더 오르지 않습니다.",
+        "이동 불가 효과가 밀쳐내기 면역 대상에게 걸린 경우에는 여진이 발동하지 않습니다."
+      ]
+    },
+    {
+      "name": "수호자",
+      "page": "Guardian",
+      "subject": "rune",
+      "notes": [
+        "Guardian does not trigger from Heal, Sona Aria of Perseverance nor Lux Prismatic Barrier. However, Thresh Dark Passage triggers Guardian when cast on an allied champion.",
+        "Despite being a unit-targeted ability, Yuumi You and Me! does not apply Guard. However, Guardian will still trigger if she is within range of the targeted ally.",
+        "Guardian cannot trigger if the user is dead."
+      ],
+      "notesKo": [
+        "수호자는 소환사 주문 회복, 소나 W 인내의 아리아, 럭스 W 프리즘 보호막으로는 발동하지 않습니다. 다만 쓰레쉬 W 어둠의 통로를 아군 챔피언에게 쓰면 수호자가 발동합니다.",
+        "유미 W 너랑 유미랑!은 유닛을 지정하는 스킬인데도 수호 효과를 걸지 않습니다. 다만 지정한 아군의 범위 안에 유미가 있으면 수호자는 발동합니다.",
+        "수호자는 사용자가 사망한 상태에서는 발동하지 않습니다."
+      ]
+    },
+    {
+      "name": "철거",
+      "page": "Demolish",
+      "subject": "rune",
+      "notes": [
+        "Demolish deals proc damage and is tagged as basic damage, and thus will not trigger spell effects.",
+        "Stacks on turrets do not expire once applied; they last indefinitely until the user consumes the turret's stacks.",
+        "Stacks can be applied to multiple turrets at a time as long as Demolish is not on cooldown. (Once the user triggers Demolish on a turret, however, the lingering stacks on all other turrets will be removed.)",
+        "On modes where there are no structures or they are not targetable, Demolish is exchanged with Font of Life.",
+        "Multiple users of Demolish can apply stacks against the same turret, with the stacking tracked individually per user.",
+        "In the game, Demolish damage is incorrectly displayed as a real critical strike."
+      ],
+      "notesKo": [
+        "철거는 발동 피해를 주며 기본 피해로 분류되므로 스킬 효과를 발동시키지 않습니다.",
+        "포탑에 쌓인 중첩은 한 번 쌓이면 사라지지 않습니다. 사용자가 그 포탑의 중첩을 쓸 때까지 무기한 유지됩니다.",
+        "철거가 재사용 대기 중이 아니라면 여러 포탑에 동시에 중첩을 쌓을 수 있습니다. (다만 한 포탑에서 철거를 발동시키면 다른 모든 포탑에 남아 있던 중첩은 사라집니다.)",
+        "구조물이 없거나 구조물을 공격할 수 없는 모드에서는 철거가 생명의 샘으로 교체됩니다.",
+        "철거를 든 여러 명이 같은 포탑에 중첩을 쌓을 수 있으며, 중첩은 사용자별로 따로 기록됩니다.",
+        "게임 화면에서 철거의 피해가 실제 치명타인 것처럼 잘못 표시됩니다."
+      ]
+    },
+    {
+      "name": "생명의 샘",
+      "page": "Font of Life",
+      "subject": "rune",
+      "notes": [
+        "Font of Life will trigger if the user has no allies nearby, and triggers even while 100% maximum health. (Total healing listed in the Runes panel increases whether or not any actual healing was made.)",
+        "Font of Life will not grant assist credit.",
+        "Since V13.23, Corki in particular always exchanges Font of Life with Demolish.",
+        "Interacts like expected with healing-modifiers like Grievous Wounds and heal and shield power. (Total healing listed in the Runes panel does not account for neither positive nor negative healing-modifiers.)"
+      ],
+      "notesKo": [
+        "생명의 샘은 근처에 아군이 없어도 발동하고, 체력이 가득 찬 상태에서도 발동합니다. (룬 창에 표시되는 총 회복량은 실제로 회복이 일어났는지와 무관하게 올라갑니다.)",
+        "생명의 샘으로는 어시스트가 인정되지 않습니다.",
+        "13.23 패치부터 코르키에게는 생명의 샘이 항상 철거로 교체됩니다.",
+        "고통스러운 상처나 회복 및 보호막 효과 같은 회복 증감 효과와는 예상대로 상호작용합니다. (다만 룬 창에 표시되는 총 회복량은 그런 증감 효과를 반영하지 않습니다.)"
+      ]
+    },
+    {
+      "name": "보호막 강타",
+      "page": "Shield Bash",
+      "subject": "rune",
+      "notes": [
+        "Shield Bash deals proc damage, and thus will not trigger spell effects.",
+        "Shield Bash's shield scaling is calculated with the highest value of shield that is either currently active or has expired within the last 2 seconds. Gaining a new shield while Shield Bash is active will replace the previous empowerment if the new shield is larger than any other currently active shield. (Once the empowered attack has been used, all previously applied shield instances become invalid for subsequent triggers for Shield Bash, even if the shield lingers.)",
+        "Shield Bash's shield scaling is calculated with the initial maximum value of the shield. (If the shield value increases over multiple instances, then Shield Bash will scale with the highest instance of shielding that has been achieved.)",
+        "Shield Bash can only trigger once per gained shield.",
+        "Shield Bash triggers from all shield types, including magic and physical ones."
+      ],
+      "notesKo": [
+        "보호막 강타는 발동 피해를 주므로 스킬 효과를 발동시키지 않습니다.",
+        "보호막 강타의 보호막 계수는 현재 유지 중이거나 최근 2초 안에 사라진 보호막 중 가장 큰 값으로 계산됩니다. 보호막 강타가 켜져 있는 동안 새 보호막을 얻으면, 그 보호막이 현재 유지 중인 어떤 보호막보다 클 때 기존 강화를 대체합니다. (강화된 공격을 한 번 쓰고 나면, 보호막이 남아 있더라도 그전까지 적용된 보호막은 이후의 보호막 강타 발동에서는 무효가 됩니다.)",
+        "보호막 강타의 계수는 보호막의 최초 최대치를 기준으로 계산됩니다. (보호막 값이 여러 번에 걸쳐 커지는 경우에는 그중 가장 컸던 값을 기준으로 삼습니다.)",
+        "보호막 강타는 얻은 보호막 하나당 한 번만 발동합니다.",
+        "보호막 강타는 마법 보호막과 물리 보호막을 포함한 모든 종류의 보호막에서 발동합니다."
+      ]
+    },
+    {
+      "name": "사전 준비",
+      "page": "Conditioning",
+      "subject": "rune",
+      "notes": [
+        "The increase in stats from Conditioning does not exclusively count as bonus armor or magic resistance. (The 3% increased base armor and magic resistance do not count as bonus armor/magic resistance, and in the info tip panel when you hover the armor or magic resist stat are not displayed as an increase to the player's base armor/magic resistance. The values in the info tip do not add up properly for this reason.) (Due to a lack of any base armor and magic resistance ratios in the game it is unable to be determined whether the 3% bonus to base resistance stats counts as base armor/magic resistance or not. In the similar case of Overgrowth, they do count as the former.)",
+        "The increase in stats from Conditioning stacks with an instance of recursion."
+      ],
+      "notesKo": [
+        "사전 준비로 오른 능력치가 전부 추가 방어력이나 추가 마법 저항력으로 세어지는 것은 아닙니다. (기본 방어력과 기본 마법 저항력이 3% 오르는 몫은 추가 방어력이나 추가 마법 저항력으로 세지 않으며, 방어력이나 마법 저항력에 마우스를 올렸을 때 뜨는 정보 창에서도 기본 능력치가 오른 것으로 표시되지 않습니다. 그래서 정보 창의 값이 서로 맞아떨어지지 않습니다.) (게임에 기본 방어력과 기본 마법 저항력 계수가 없어서, 기본 저항력에 붙는 3%가 기본 능력치로 세어지는지는 확인할 수 없습니다. 비슷한 경우인 과잉성장에서는 기본 능력치로 세어집니다.)",
+        "사전 준비로 오른 능력치는 자기 자신에게 한 번 더 적용되는 방식으로 겹칩니다."
+      ]
+    },
+    {
+      "name": "재생의 바람",
+      "page": "Second Wind",
+      "subject": "rune",
+      "notes": [
+        "Second Wind grants health regeneration equal to 5*4/10% of missing health.",
+        "Second Wind will not trigger if the damage is: (Reduced to or equal to 0 damage.) (Dealt to shields.) (Absorbed by invulnerability.)"
+      ],
+      "notesKo": [
+        "재생의 바람은 잃은 체력의 일정 비율만큼 체력 재생을 줍니다.",
+        "다음과 같은 피해에는 재생의 바람이 발동하지 않습니다. (0 이하로 줄어든 피해.) (보호막이 대신 받은 피해.) (무적으로 흡수된 피해.)"
+      ]
+    },
+    {
+      "name": "뼈 방패",
+      "page": "Bone Plating",
+      "subject": "rune",
+      "notes": [
+        "The triggering instance of damage will not have its damage reduced by Bone Plating.",
+        "Bone Plating will still go on cooldown after its duration even if it does not block any damage.",
+        "Bone Plating only blocks damage from the champion who triggered it; it can only be active against one champion at a time until its next activation.",
+        "Bone Plating's damage reduction can only occur once per cast instance. (This can be the same cast instance as the one that initially triggers Bone Plating, if it deals multiple instances of damage (e.g Camille W).)",
+        "Bone Plating will not trigger if the damage dealt is: (Reduced to or equal to 0 damage.) (Dealt to shields.) (Absorbed by invulnerability.)",
+        "Bone Plating's damage reduction applies to the post-mitigation damage of the incoming attack or spell."
+      ],
+      "notesKo": [
+        "뼈 방패를 발동시킨 그 피해 자체는 감소되지 않습니다.",
+        "뼈 방패는 피해를 하나도 막지 못했더라도 지속 시간이 끝나면 재사용 대기 시간이 걸립니다.",
+        "뼈 방패는 그것을 발동시킨 챔피언의 피해만 막습니다. 다음 발동 전까지는 한 번에 한 챔피언에게만 적용됩니다.",
+        "뼈 방패의 피해 감소는 한 시전 인스턴스당 한 번만 적용됩니다. (그 시전 인스턴스가 피해를 여러 번 준다면, 뼈 방패를 처음 발동시킨 바로 그 시전 인스턴스일 수도 있습니다. 카밀 W 전술적 휩쓸기가 그렇습니다.)",
+        "다음과 같은 피해에는 뼈 방패가 발동하지 않습니다. (0 이하로 줄어든 피해.) (보호막이 대신 받은 피해.) (무적으로 흡수된 피해.)",
+        "뼈 방패의 피해 감소는 들어오는 공격이나 스킬의 방어력 적용 후 피해에 적용됩니다."
+      ]
+    },
+    {
+      "name": "과잉성장",
+      "page": "Overgrowth",
+      "subject": "rune",
+      "notes": [
+        "Overgrowth only counts unit deaths the champion has direct line of sight on. The effect's radius is reduced when there is terrain or nearsight blocking direct vision on dying units. Shared vision with other allied units observing the dying units is ignored. (Interaction with shared vision of an allied champion that has Overgrowth as well.)",
+        "Overgrowth users may still gain the effect while dead."
+      ],
+      "notesKo": [
+        "과잉성장은 챔피언이 직접 보고 있는 유닛의 죽음만 셉니다. 지형이나 시야 감소 때문에 죽는 유닛이 직접 보이지 않으면 효과 범위가 줄어듭니다. 그 유닛을 보고 있는 다른 아군과 시야를 공유하는 것은 무시됩니다. (과잉성장을 함께 든 아군 챔피언과 시야를 공유할 때도 마찬가지입니다.)",
+        "과잉성장은 사망한 상태에서도 계속 쌓입니다."
+      ]
+    },
+    {
+      "name": "소생",
+      "page": "Revitalize",
+      "subject": "rune",
+      "notes": [
+        "Revitalize's bonus 10% stacks multiplicatively with Heal Power, but it has an instance of recursion when stacking with Shield Power. (Therefore, Revitalize alone nets (0.05+1.05*0.1)*100% bonus healing and (0.05+1.05*0.1+1.05*0.1*0.05)*100% bonus shielding.)",
+        "For outgoing heals and shields, it also stacks multiplicatively with the affected ally's Revitalize (10%) and Spirit Visage Boundless Vitality (25%), granting them a total of 58.81% bonus healing (including the 5% Heal and shield power from Revitalize's passive).",
+        "Healing granted by Revitalize in the HUD stats panel tracker will count any healing at full health, as well as fountain regeneration.",
+        "Revitalize also amps Magic Shields (like Maw of Malmortius).",
+        "Barrier combined with Revitalize will provide an extra level-scaled shield, increased to level-scaled while under 40% maximum health.",
+        "Heal combined with Revitalize will grant an extra level-scaled healing, increased to level-scaled while under 40% maximum health."
+      ],
+      "notesKo": [
+        "소생의 추가 10%는 회복 효과와 곱연산으로 겹치지만, 보호막 효과와 겹칠 때는 자기 자신에게 한 번 더 적용됩니다. (그래서 소생만 들었을 때 회복은 (0.05+1.05*0.1)*100%, 보호막은 (0.05+1.05*0.1+1.05*0.1*0.05)*100%만큼 늘어납니다.)",
+        "남에게 주는 회복과 보호막의 경우, 받는 아군의 소생 10%와 정령의 형상 25%와도 곱연산으로 겹쳐 총 58.81%까지 회복량이 늘어납니다. 여기에는 소생이 기본으로 주는 회복 및 보호막 효과 5%도 포함됩니다.",
+        "화면 능력치 창에 표시되는 소생의 회복량에는 체력이 가득 찬 상태의 회복과 기지에서의 재생까지 포함됩니다.",
+        "소생은 맬모셔스의 아귀 같은 마법 보호막도 증폭시킵니다.",
+        "소생과 함께 쓰면 방어막이 레벨에 따라 달라지는 만큼 보호막을 더 주고, 최대 체력의 40% 미만일 때는 그 값이 더 커집니다.",
+        "소생과 함께 쓰면 회복이 레벨에 따라 달라지는 만큼 회복량을 더 주고, 최대 체력의 40% 미만일 때는 그 값이 더 커집니다."
+      ]
+    },
+    {
+      "name": "불굴의 의지",
+      "page": "Unflinching",
+      "subject": "rune",
+      "notes": [
+        "Unflinching triggers from all forms of crowd control, except for kinematics and disruption.",
+        "For effects that deal damage and apply crowd control simultaneously, Unflinching will activate after taking the damage and thus the user will not benefit from the increased resistances against that damage instance."
+      ],
+      "notesKo": [
+        "불굴의 의지는 강제 이동과 방해 효과를 뺀 모든 형태의 군중 제어에서 발동합니다.",
+        "피해와 군중 제어를 동시에 거는 효과의 경우, 불굴의 의지는 피해를 받은 뒤에 발동합니다. 따라서 그 피해에 대해서는 늘어난 방어력과 마법 저항력의 덕을 보지 못합니다."
+      ]
+    },
+    {
+      "name": "콩콩이 소환",
+      "page": "Summon Aery",
+      "subject": "rune",
+      "notes": [
+        "Aery deals proc damage, and thus will not trigger spell effects.",
+        "Aery's ally effect will trigger on all manner of abilities that affect allies (both directly targeted and not) and buffs, including Jarvan IV Demacian Standard (the shield will trigger on the ally closest to the flag), Kindred Lamb's Respite and Lulu Whimsy. (Orianna Command: Dissonance can trigger the allied effect both on activation and if an ally walks into the persistent area.) (Applying Nami Surging Tides to an ally will not trigger Aery - i.e. you cannot hit an ally with Aqua Prison to grant them a shield.) (Some buffs may not trigger the ally effect as the behavior is set on a case by case basis. For instance, Bandlepipes Fanfare attack speed buff granted to allies will not trigger Aery.)",
+        "Aery's shield will trigger Ardent Censer and Staff of Flowing Water, allowing champions who otherwise do not have heals or shields to trigger the effects.",
+        "Aery is special cased to trigger on the application of the first tick of Ignite.",
+        "Aery will not trigger on an ally healed by Font of Life.",
+        "Aery will not trigger spell effects.",
+        "Aery is not blocked by projectile-blocking effects.",
+        "When the champion Recalls, Aery will also spawn out to play a recall animation. (During this time, Aery has its own independant sight radius of 1350, and can occasionally see inside bush if the player recalls very close to it and faces a certain direction.)"
+      ],
+      "notesKo": [
+        "콩콩이는 발동 피해를 주므로 스킬 효과를 발동시키지 않습니다.",
+        "콩콩이의 아군 효과는 아군에게 영향을 주는 모든 종류의 스킬과 강화 효과에서 발동합니다. 대상을 직접 지정하든 아니든 상관없습니다. 자르반 4세 E 데마시아의 깃발(보호막은 깃발에서 가장 가까운 아군에게 갑니다), 킨드레드 R 양의 안식처, 룰루 W 변덕쟁이가 그렇습니다. (오리아나 W 명령: 불협화음은 사용하는 순간에도, 아군이 남아 있는 장판에 들어올 때도 아군 효과를 발동시킵니다.) (나미 P 밀려오는 파도를 아군에게 걸어도 콩콩이는 발동하지 않습니다. 즉 Q 물의 감옥을 아군에게 맞혀 보호막을 줄 수는 없습니다.) (일부 강화 효과는 아군 효과를 발동시키지 않습니다. 동작이 개별로 정해지기 때문입니다. 예를 들어 밴들피리가 아군에게 주는 공격 속도 효과는 콩콩이를 발동시키지 않습니다.)",
+        "콩콩이의 보호막은 불타는 향로와 흐르는 물의 지팡이를 발동시킵니다. 덕분에 원래 회복이나 보호막이 없는 챔피언도 이 아이템 효과를 쓸 수 있습니다.",
+        "콩콩이는 예외 처리되어 점화의 첫 틱이 들어갈 때 발동합니다.",
+        "생명의 샘으로 회복한 아군에게는 콩콩이가 발동하지 않습니다.",
+        "콩콩이는 스킬 효과를 발동시키지 않습니다.",
+        "콩콩이는 투사체를 막는 효과에 막히지 않습니다.",
+        "챔피언이 귀환하면 콩콩이도 나와서 귀환 동작을 함께 재생합니다. (이때 콩콩이는 반경 1350의 독립된 시야를 가지며, 수풀 아주 가까이에서 특정 방향을 보고 귀환하면 수풀 안이 보이기도 합니다.)"
+      ]
+    },
+    {
+      "name": "신비로운 유성",
+      "page": "Arcane Comet",
+      "subject": "rune",
+      "notes": [
+        "Arcane Comet deals proc damage and is tagged as area of effect without applying spell effects.",
+        "Arcane Comet can be blocked by spell shields.",
+        "Arcane Comet is a projectile and can be intercepted by Braum E, Samira W, and Yasuo W.",
+        "Arcane Comet is not triggered from dealing 0 damage.",
+        "Arcane Comet can be seen flying from the champion using it even if there is no vision of them, possibly giving away their position.",
+        "The impact indicator has a radius of 175 units, for reference."
+      ],
+      "notesKo": [
+        "신비로운 유성은 발동 피해를 주며 광역 피해로 분류되지만 스킬 효과를 적용하지는 않습니다.",
+        "신비로운 유성은 주문 방어막에 막힙니다.",
+        "신비로운 유성은 투사체라서 브라움 E 철벽 방패, 사미라 W 원형 검무, 야스오 W 바람 장막에 막힙니다.",
+        "피해량이 0이면 신비로운 유성은 발동하지 않습니다.",
+        "시야가 없는 챔피언이 쓰더라도 유성이 날아가는 모습은 보이므로 위치가 드러날 수 있습니다.",
+        "낙하 지점 표시의 반경은 175입니다."
+      ]
+    },
+    {
+      "name": "죽음불꽃 손길",
+      "page": "Deathfire Touch",
+      "subject": "rune",
+      "notes": [
+        "Deathfire Touch deals proc damage and is tagged as periodic without applying spell effects.",
+        "Deathfire Touch's total damage with the trigger of a single instance of ability damage on a target, without the burn being refreshed: (If the pet damage is also tagged as area damage, Deathfire Touch's duration will be 2 seconds.)",
+        "The burn can be stacked on a target when applied by multiple users, though not refreshing the debuff for all subsequent sources at a time.",
+        "Deathfire Touch's damage is not updated dynamically; the stats it references remain static until the debuff expires and is applied again."
+      ],
+      "notesKo": [
+        "죽음불꽃 손길은 발동 피해를 주며 주기적 피해로 분류되지만 스킬 효과를 적용하지는 않습니다.",
+        "화상이 갱신되지 않은 상태에서 스킬 피해 한 번으로 발동했을 때의 죽음불꽃 손길 총 피해량은 피해 종류에 따라 다릅니다. (소환수 피해가 광역 피해로도 분류되면 죽음불꽃 손길의 지속 시간은 2초가 됩니다.)",
+        "여러 명이 걸면 화상이 대상에게 겹쳐 쌓입니다. 다만 뒤에 거는 쪽이 앞선 화상까지 한꺼번에 갱신하지는 않습니다.",
+        "죽음불꽃 손길의 피해량은 실시간으로 다시 계산되지 않습니다. 참조하는 능력치는 약화 효과가 끝나고 다시 걸릴 때까지 고정됩니다."
+      ]
+    },
+    {
+      "name": "액시옴 비전 마법사",
+      "page": "Axiom Arcanist",
+      "subject": "rune",
+      "notes": [
+        "On Elise, Jayce, Nidalee and Zoe, Axiom Arcanist is exchanged with Nimbus Cloak.",
+        "Axiom Arcanist will affect the damaging passive effects of the user's ultimate ability. (Although Ryze's ultimate passive Ryze Realm Warp is a damaging effect, it does not appear to increase EQ (Spell Flux + Overload) damage by 12% nor 8%.)",
+        "Axiom Arcanist will also increase the damage, healing, and shielding done by pets summoned from the user's ultimate ability (except Illaoi R).",
+        "Axiom Arcanist does affect ultimate damage dealt to enemy non-champions and healing and shielding granted to allied non-champions. (The bonus ultimate damage, healing, and shielding tracker in the HUD of the rune's tooltip only tracks bonus damage dealt to enemy champions and bonus healing and shielding for the user or allied champions.)",
+        "Axiom Arcanist will not amplify self-healing effects. (Axiom Arcanist will amplify the healing via life steal by ultimates that apply life steal specifically.) (It is special-cased to amplify the regeneration granted by Dr. Mundo Maximum Dosage specifically.)",
+        "Axiom Arcanist will affect the empowered abilities of Heimerdinger R (H-28Q Apex Turret Hextech Rocket Swarm CH-3X Lightning Grenade) and Karma R (Soulflare Renewal Defiance).",
+        "Axiom Arcanist will only amplify the first instance of Chaaaaaaaarge!!! shield.",
+        "Axiom Arcanist will not amplify the maximum health reduction from Mordekaiser Realm of Death.",
+        "Sion does not benefit from Axiom Arcanist's cooldown refund during Glory in Death.",
+        "Twitch Spray and Pray bolts are special-cased to benefit from Axiom Arcanist as area of effect damage.",
+        "On Udyr, Axiom Arcanist will affect all Bridge Between abilities respectively. (The cooldown of Awakened Spirit however will not be refunded when he scores a takedown.)"
+      ],
+      "notesKo": [
+        "엘리스, 제이스, 니달리, 조이에게는 액시옴 비전 마법사가 빛의 망토로 교체됩니다.",
+        "액시옴 비전 마법사는 궁극기의 지속 효과 중 피해를 주는 것에도 적용됩니다. (다만 라이즈 R 공간 왜곡의 지속 효과는 피해를 주는 효과인데도 E 주문 전이와 Q 과부하 연계 피해를 12%도 8%도 올려 주지 않는 것으로 보입니다.)",
+        "액시옴 비전 마법사는 궁극기로 소환한 소환수의 피해량, 회복량, 보호막도 올려 줍니다. 일라오이 R 믿음의 도약은 예외입니다.",
+        "액시옴 비전 마법사는 챔피언이 아닌 적에게 준 궁극기 피해와, 챔피언이 아닌 아군에게 준 회복 및 보호막에도 적용됩니다. (다만 룬 설명의 기록기는 적 챔피언에게 준 추가 피해와 자신 또는 아군 챔피언에게 준 추가 회복·보호막만 셉니다.)",
+        "액시옴 비전 마법사는 자신을 회복시키는 효과는 증폭하지 않습니다. (다만 생명력 흡수를 적용하는 궁극기의 흡혈 회복은 증폭합니다.) (문도 박사 R 최대 투여량이 주는 재생은 예외 처리되어 증폭됩니다.)",
+        "액시옴 비전 마법사는 하이머딩거 R 업그레이드!!!로 강화한 스킬과 카르마 R 만트라로 강화한 스킬에도 적용됩니다.",
+        "액시옴 비전 마법사는 클레드 R 돌겨어어억!!!의 보호막 중 첫 번째 것만 증폭합니다.",
+        "액시옴 비전 마법사는 모데카이저 R 죽음의 세계가 깎는 최대 체력은 증폭하지 않습니다.",
+        "사이온은 P 영광스러운 죽음 상태에서는 액시옴 비전 마법사의 재사용 대기 시간 환급을 받지 못합니다.",
+        "트위치 R 무차별 난사의 화살은 예외 처리되어 광역 피해로서 액시옴 비전 마법사의 증폭을 받습니다.",
+        "우디르의 경우 액시옴 비전 마법사가 P 가교로 강화되는 모든 스킬에 각각 적용됩니다. (다만 처치에 관여해도 각성 상태의 재사용 대기 시간은 환급되지 않습니다.)"
+      ]
+    },
+    {
+      "name": "마나순환 팔찌",
+      "page": "Manaflow Band",
+      "subject": "rune",
+      "notes": [
+        "On the Ultra Rapid Fire mode and for champions without mana, Manaflow Band is exchanged with Axiom Arcanist.",
+        "It takes a minimum of 150 seconds to fully charge Manaflow Band.",
+        "Debuffs considered are: (Immobilizing crowd control and slows (potentially more))",
+        "Usually, an increase of maximum stat also leads to an increase of current stat. Since Manaflow Band is meant to not follow that rule, it is made to first deduct the amount, and then increase the maximum mana right after. This effect is considered mana expenditure for effects that trigger upon expending mana. (If the deduction in mana leads to a negative amount, Manaflow Band will actually increase current mana, since the floor of the stat is 0. The deduction will effectively be lower than the successive increase of maximum mana which will then increase current mana.)"
+      ],
+      "notesKo": [
+        "우르프 모드에서, 그리고 마나를 쓰지 않는 챔피언에게는 마나순환 팔찌가 액시옴 비전 마법사로 교체됩니다.",
+        "마나순환 팔찌를 끝까지 충전하려면 최소 150초가 걸립니다.",
+        "여기서 말하는 약화 효과는 다음과 같습니다. (이동을 막는 군중 제어와 둔화. 그 밖에도 더 있을 수 있습니다.)",
+        "보통은 최대치가 오르면 현재치도 함께 오릅니다. 마나순환 팔찌는 그 규칙을 따르지 않도록 만들어져서, 먼저 그만큼을 깎은 다음 곧바로 최대 마나를 올립니다. 이 깎는 동작은 마나 소모로 발동하는 효과에게 마나 소모로 취급됩니다. (깎은 결과가 음수가 되면 능력치의 하한이 0이므로 마나순환 팔찌가 오히려 현재 마나를 올리게 됩니다. 실제로 깎이는 양이 뒤이어 오르는 최대 마나보다 적어져 현재 마나가 늘어나기 때문입니다.)"
+      ]
+    },
+    {
+      "name": "빛의 망토",
+      "page": "Nimbus Cloak",
+      "subject": "rune",
+      "notes": [
+        "The movement speed bonus of Nimbus Cloak is based on one of three brackets the cooldown of a Summoner spell falls into. (To account for summoner spell cooldown reduction from different game modes, there are different thresholds in effect for them:) (ARAM: 60 seconds (maximum cooldown for low bracket), 150 seconds (maximum for medium bracket)) (Legend of the Poro King: 60 seconds (maximum cooldown for low bracket), 150 seconds (maximum for medium bracket)) (Ultra Rapid Fire: 20 seconds (maximum cooldown for low bracket), 50 seconds (maximum for medium bracket)) (One for All: 60 seconds (maximum cooldown for low bracket), 150 seconds (maximum for medium bracket)) (Ultimate Spellbook) (Summoner spell cooldown reduction from Cosmic Insight or Ionian Boots of Lucidity can reduce it below a threshold, the current example being Flash cooldown being reduced to 230.77 seconds in Summoner's Rift and 150 seconds in ARAM, making it fall into the medium bracket, causing Nimbus Cloak's activation to only grant a 20% movement speed bonus from it.) (Teleport cooldown is specially handled to always be in the highest bracket (if not cast by Zoe Spell Thief).) (Zoe casting summoner spells with Spell Thief will always use the ability's cooldown, which falls into the lowest bracket.)",
+        "Activating multiple summoner spells will only consider the one granting the strongest bonus movement speed. Summoner spells across different cooldown thresholds have each their own Nimbus Cloak activation, and once the strongest one's duration ends, the lesser one will take its place (duration permitting).",
+        "For the case of Teleport and Hexflash, Nimbus Cloak activates once their channel completes or is interrupted. (Hexflash has to have channeled until the blink is available to trigger Nimbus Cloak upon interruption.)"
+      ],
+      "notesKo": [
+        "빛의 망토가 주는 이동 속도는 사용한 소환사 주문의 재사용 대기 시간이 세 구간 중 어디에 속하는지에 따라 정해집니다. (모드마다 소환사 주문 대기 시간이 다르므로 기준값도 모드별로 다릅니다.) (칼바람 나락: 낮은 구간의 최대 대기 시간 60초, 중간 구간의 최대 150초) (포로왕 모드: 낮은 구간 60초, 중간 구간 150초) (우르프: 낮은 구간 20초, 중간 구간 50초) (모두 다 같은 챔피언: 낮은 구간 60초, 중간 구간 150초) (궁극기 주문서 모드) (우주적 통찰력이나 명석함의 아이오니아 장화로 대기 시간이 줄면 기준 아래로 내려갈 수 있습니다. 현재 예로는 점멸의 대기 시간이 소환사의 협곡에서 230.77초, 칼바람 나락에서 150초까지 줄어 중간 구간에 들어가고, 그 결과 빛의 망토가 이동 속도를 20%만 주게 됩니다.) (순간이동의 대기 시간은 따로 처리되어 항상 가장 높은 구간에 속합니다. 조이 W 주문도둑으로 쓴 경우는 예외입니다.) (조이가 W 주문도둑으로 소환사 주문을 쓰면 항상 그 스킬의 대기 시간을 기준으로 삼으며, 이는 가장 낮은 구간에 해당합니다.)",
+        "소환사 주문을 여러 개 쓰면 그중 이동 속도를 가장 많이 주는 것만 적용됩니다. 재사용 대기 시간 구간이 다른 주문은 각각 별도의 빛의 망토 발동을 가지므로, 가장 강한 것의 지속 시간이 끝나면 그다음 것이 자리를 이어받습니다. 지속 시간이 남아 있어야 합니다.",
+        "순간이동과 마법공학 점멸의 경우, 빛의 망토는 정신 집중이 끝나거나 끊긴 시점에 발동합니다. (마법공학 점멸은 점멸이 가능해질 때까지 정신 집중을 해야 중간에 끊겨도 빛의 망토가 발동합니다.)"
+      ]
+    },
+    {
+      "name": "기민함",
+      "page": "Celerity",
+      "subject": "rune",
+      "notes": [
+        "Bonus movement speed in general is split into flat, additive percent and multiplicative percent bonuses that construct the value of the total movement speed in stat updates every 0.25 seconds: (Celerity grants flat bonus movement speed equal to 7% of your other flat bonuses.) (Flat bonuses include increased base movement speed granted by Elise Spider Form / Human Form.) (Flat bonuses include bonuses with negative values such as those provided by Lulu Whimsy against enemies or Urgot Purge against himself.) (Celerity grants additive bonus movement speed equal to 7% of your other additive bonuses, including itself, only if your total additive bonus from other sources is greater than 5% (6% if including Celerity's bonus).) (Celerity grants multiplicative bonus movement speed equal to 7% of the sum of your other multiplicative bonuses.) (On every new stat update, the multiplicative bonus of Celerity will avoid multiplying itself from the previous cycle. However, since stat updates already actively avoid that, the multiplicative bonus will be much lower than it should be on some cycles and oscillate.) (is this outdated after V14.17?)"
+      ],
+      "notesKo": [
+        "추가 이동 속도는 고정값, 합연산 퍼센트, 곱연산 퍼센트로 나뉘며, 0.25초마다 갱신되는 능력치 계산에서 이 셋이 합쳐져 총 이동 속도가 됩니다. (기민함은 다른 고정값 합계의 7%만큼 고정 이동 속도를 줍니다.) (고정값에는 엘리스 R 거미 형태와 인간 형태가 올려 주는 기본 이동 속도도 들어갑니다.) (고정값에는 음수도 들어갑니다. 룰루 W 변덕쟁이를 적에게 걸었을 때나 우르곳 W 심판의 원이 자신에게 거는 효과가 그렇습니다.) (기민함은 다른 합연산 퍼센트 합계의 7%만큼 합연산 이동 속도를 주는데, 자기 자신도 포함하며, 다른 곳에서 오는 합연산 합계가 5%를 넘을 때만 적용됩니다. 기민함 몫까지 포함하면 6%입니다.) (기민함은 다른 곱연산 퍼센트 합계의 7%만큼 곱연산 이동 속도를 줍니다.) (능력치를 새로 계산할 때마다 기민함의 곱연산 몫은 직전 계산의 자기 자신을 다시 곱하지 않으려 합니다. 그런데 능력치 계산 자체가 이미 그것을 막고 있어서, 일부 계산 주기에서는 곱연산 몫이 원래보다 훨씬 작아지며 값이 오르내립니다.) (14.17 패치 이후로는 오래된 설명일 수 있습니다.)"
+      ]
+    },
+    {
+      "name": "주문 작열",
+      "page": "Scorch",
+      "subject": "rune",
+      "notes": [
+        "Scorch deals proc damage and is tagged as indirect damage and periodic without applying spell effects.",
+        "Scorch only affects one champion, if triggered by an area of effect ability it will hit the first champion to receive spell effects (this order depends on the spell, but usually based on proximity).",
+        "If Scorch is triggered as an on-attack effect (via Arise!, Royal Maelstrom), the damage dealt will be affected by on-attack damage modifiers."
+      ],
+      "notesKo": [
+        "주문 작열은 발동 피해를 주며 간접 피해이자 주기적 피해로 분류되지만 스킬 효과를 적용하지는 않습니다.",
+        "주문 작열은 한 챔피언에게만 적용됩니다. 광역 스킬로 발동한 경우에는 스킬 효과를 가장 먼저 받은 챔피언에게 들어갑니다. 그 순서는 스킬마다 다르지만 보통 거리 순입니다.",
+        "주문 작열이 공격 시 효과로 발동하면, 즉 아지르 W 일어나라!나 벨베스 E 여제의 소용돌이로 발동하면, 그 피해는 공격 시 피해 증폭 효과의 영향을 받습니다."
+      ]
+    },
+    {
+      "name": "물 위를 걷는 자",
+      "page": "Waterwalking",
+      "subject": "rune",
+      "notes": [
+        "The bonus movement speed decays over 1 second after leaving the river, while the bonus stats are lost immediately.",
+        "The water puddles created around the jungle by Ocean Drake count and will activate Waterwalking if tread upon.",
+        "On modes without the river, Waterwalking is exchanged with Scorch.",
+        "This rune provides no bonuses outside of Summoner's Rift, or in game modes where the river is inaccessible.",
+        "Referring to the river includes the entire zone covered in water, including the two parts outside of the Brushes in the middle lane."
+      ],
+      "notesKo": [
+        "강에서 벗어나면 이동 속도는 1초에 걸쳐 줄어들지만, 다른 능력치는 즉시 사라집니다.",
+        "바다 드래곤이 정글 곳곳에 만드는 물웅덩이도 강으로 인정되어, 밟으면 물 위를 걷는 자가 발동합니다.",
+        "강이 없는 모드에서는 물 위를 걷는 자가 주문 작열로 교체됩니다.",
+        "이 룬은 소환사의 협곡 밖에서는, 또는 강에 들어갈 수 없는 모드에서는 아무 효과도 주지 않습니다.",
+        "여기서 강이란 물이 덮인 구역 전체를 말하며, 미드 라인 수풀 바깥의 두 구역도 포함합니다."
+      ]
+    },
+    {
+      "name": "고양",
+      "page": "Surge",
+      "subject": "summoner",
+      "notes": [
+        "The spell increases the size of the character model of your champion.",
+        "This spell can not increase your attack speed over the set cap of 2.5."
+      ],
+      "notesKo": [
+        "이 주문은 챔피언 모델의 크기를 키웁니다.",
+        "이 주문으로는 공격 속도가 상한인 2.5를 넘지 못합니다."
+      ]
+    },
+    {
+      "name": "정화",
+      "page": "Cleanse",
+      "subject": "summoner",
+      "notes": [
+        "Cleanse will remove the following debuff types: (Crowd control:) (Forced action) (Drowsy & Sleep) (Stun (Suspension)) (Suspension's fake airborne is also removed when the stun is.) (Summoner spell:) (Does not remove the Grievous Wounds debuff.)",
+        "Cleanse cannot be activated while under the effects of suppression or stasis (both disable all summoner spells from use)."
+      ],
+      "notesKo": [
+        "정화는 다음 종류의 약화 효과를 제거합니다. (군중 제어) (강제 행동) (졸음과 수면) (기절 및 공중 정지) (공중 정지의 가짜 공중 판정도 기절과 함께 제거됩니다.) (소환사 주문으로 걸린 효과) (고통스러운 상처는 제거하지 못합니다.)",
+        "제압이나 정지 상태에서는 정화를 쓸 수 없습니다. 둘 다 모든 소환사 주문의 사용을 막습니다."
+      ]
+    },
+    {
+      "name": "점멸",
+      "page": "Flash",
+      "subject": "summoner",
+      "notes": [
+        "Flash cannot be used while rooted, grounded, or unable to cast.",
+        "Flash additionally changes the user's facing direction to be in the same direction they blinked.",
+        "With the Hextech Flashtraption rune, Hexflash replaces Flash when it's on cooldown.",
+        "Flash will cast at max range if cast beyond that.",
+        "Flash always employs Quick cast.",
+        "If Flash is cast during an ability's cast time, it will cause the ability's visual effects to spawn lower than normal."
+      ],
+      "notesKo": [
+        "점멸은 이동 불가, 속박, 스킬 사용 불가 상태에서는 쓸 수 없습니다.",
+        "점멸은 사용자가 바라보는 방향도 점멸한 방향으로 바꿉니다.",
+        "마법공학 점멸기 룬을 들면 점멸이 재사용 대기 중일 때 마법공학 점멸이 그 자리를 대신합니다.",
+        "사거리 밖을 찍어도 점멸은 최대 사거리까지만 이동합니다.",
+        "점멸은 항상 즉시 시전으로 동작합니다.",
+        "스킬의 시전 시간 도중에 점멸하면 그 스킬의 시각 효과가 평소보다 낮은 위치에서 생깁니다."
+      ]
+    },
+    {
+      "name": "천리안",
+      "page": "Clairvoyance",
+      "subject": "summoner",
+      "notes": [
+        "If Clairvoyance only extends over half of a brush patch, an enemy unit can remain unseen in the other half.",
+        "The \"eye\" placed at the Clairvoyance area can be seen by the enemy, even if it is in the fog of war.",
+        "Clairvoyance will reset the markers for neutral monster camps on the minimap.",
+        "Casting Clairvoyance does not interrupt Recalls channel.",
+        "The \"eye\" (green by ally and red by enemy) of the effect indicates its duration."
+      ],
+      "notesKo": [
+        "천리안이 수풀의 절반만 덮으면 나머지 절반에 있는 적 유닛은 보이지 않습니다.",
+        "천리안이 놓이는 자리의 \"눈\"은 전장의 안개 속에 있어도 적에게 보입니다.",
+        "천리안은 미니맵의 중립 몬스터 캠프 표시를 초기화합니다.",
+        "천리안을 써도 귀환의 정신 집중은 끊기지 않습니다.",
+        "이 효과의 \"눈\"은 남은 지속 시간을 나타냅니다. 아군에게는 초록색, 적에게는 빨간색으로 보입니다."
+      ]
+    },
+    {
+      "name": "점화",
+      "page": "Ignite",
+      "subject": "summoner",
+      "notes": [
+        "Each tick of Ignite deals level-scaled true damage.",
+        "Ignite deals its first tick of damage at [0 to 0.264] seconds after the cast, based on how soon the first character stat update tick after the cast occurs. (The last tick is thus dealt at [0 to 0.264] plus 5.28 seconds, well before the debuff's duration runs out.)",
+        "Cleanse removes the damage over time and reveal components of Ignite, but the healing reduction debuff will persist.",
+        "Ignite deals proc damage and is tagged as periodic without applying spell effects.",
+        "Ignite cannot reveal stealthed targets as it does not apply true sight.",
+        "Subsequent casts of Ignite on the same target will override the previous debuff; the effect will refresh in duration but cannot be stacked.",
+        "Ignite grants two stacks of Conqueror, and one of Electrocute and Phase Rush upon activation.",
+        "Ignite triggers Summon Aery on the application of its first tick. (Subsequent ticks cannot trigger the rune.)",
+        "Ignite's damage cannot be amplified by damage amplifiers."
+      ],
+      "notesKo": [
+        "점화의 매 틱은 레벨에 따라 달라지는 고정 피해를 입힙니다.",
+        "점화의 첫 피해는 시전 후 0초에서 0.264초 사이에 들어갑니다. 시전 뒤 첫 능력치 갱신 틱이 언제 오는지에 따라 달라집니다. (따라서 마지막 피해는 그 시점에서 5.28초를 더한 때에 들어가며, 이는 약화 효과의 지속 시간이 끝나기 훨씬 전입니다.)",
+        "정화는 점화의 지속 피해와 시야 노출은 없애지만 회복 감소 효과는 남습니다.",
+        "점화는 발동 피해를 주며 주기적 피해로 분류되지만 스킬 효과를 적용하지는 않습니다.",
+        "점화는 진실의 시야를 주지 않으므로 은신한 대상을 드러내지 못합니다.",
+        "같은 대상에게 점화를 다시 쓰면 앞서 걸린 효과를 덮어씁니다. 지속 시간은 갱신되지만 중첩되지는 않습니다.",
+        "점화는 사용하는 순간 정복자 중첩 2개, 감전과 질풍 중첩을 각각 1개씩 줍니다.",
+        "점화는 첫 틱이 들어갈 때 콩콩이 소환을 발동시킵니다. (그 이후의 틱은 이 룬을 발동시키지 못합니다.)",
+        "점화의 피해는 피해 증폭 효과로 늘어나지 않습니다."
+      ]
+    },
+    {
+      "name": "탈진",
+      "page": "Exhaust",
+      "subject": "summoner",
+      "notes": [
+        "Exhaust will not reduce true damage.",
+        "Exhaust applies its slow and damage reduction as separate debuffs, of which only the slow can be affected by tenacity or cleansed. (Cleanse, however, removes both the slow and the damage reduction.)",
+        "Using Exhaust on a champion when the target is already affected by that spell will reapply the effect, resetting its duration. It will not increase the effect. (The visual indicator of Exhaust will not reset along its duration, ending prematurely and not appearing for further Exhaust reapplications.)"
+      ],
+      "notesKo": [
+        "탈진은 고정 피해는 줄이지 못합니다.",
+        "탈진은 둔화와 피해 감소를 별개의 약화 효과로 겁니다. 이 중 강인함이 통하거나 해제할 수 있는 것은 둔화뿐입니다. (다만 소환사 주문 정화는 둔화와 피해 감소를 모두 제거합니다.)",
+        "이미 탈진에 걸린 챔피언에게 탈진을 다시 쓰면 효과가 다시 걸리면서 지속 시간이 초기화됩니다. 효과가 더 강해지지는 않습니다. (다만 탈진의 시각 표시는 지속 시간에 맞춰 초기화되지 않아, 먼저 사라지고 이후 재사용분에는 아예 표시되지 않습니다.)"
+      ]
+    },
+    {
+      "name": "구축",
+      "page": "Fortify",
+      "subject": "summoner",
+      "notes": [
+        "When you use Fortify, any hits to the protected tower won't proc certain abilities that would have worked before. For example, Jax Relentless Assault, Guinsoo's Rageblade, and Master Yi Double Strike.",
+        "Fortify can be used while your champion is dead.",
+        "While fortified, a turret grants you assists and kills when it last-hits or assists in killing an enemy champion as if you were dealing the damage, and not the turret. This does not, however, apply to minion kills."
+      ],
+      "notesKo": [
+        "구축을 쓰면 보호받는 포탑을 때려도 원래라면 발동했을 일부 효과가 발동하지 않습니다. 잭스 P 가차없는 맹공, 구인수의 격노검, 마스터 이 P 2연속 공격이 그렇습니다.",
+        "구축은 챔피언이 사망한 상태에서도 쓸 수 있습니다.",
+        "구축이 걸린 포탑이 적 챔피언을 처치하거나 처치에 관여하면, 포탑이 아니라 내가 피해를 준 것처럼 처치와 어시스트가 나에게 인정됩니다. 다만 미니언 처치에는 적용되지 않습니다."
+      ]
+    },
+    {
+      "name": "유체화",
+      "page": "Ghost",
+      "subject": "summoner",
+      "notes": [
+        "Ghost will still be in effect even after being resurrected.",
+        "Ghost's movement speed stacks additively.",
+        "Ghost may be stacked up to a maximum of 5 times (which is possible by Zoe Spell Thief). (Gaining a new stack does not refresh the previous stacks.)"
+      ],
+      "notesKo": [
+        "유체화는 부활한 뒤에도 효과가 유지됩니다.",
+        "유체화의 이동 속도는 합연산으로 더해집니다.",
+        "유체화는 최대 5번까지 겹칠 수 있습니다. 조이 W 주문도둑으로 가능합니다. (새 중첩을 얻어도 앞선 중첩의 지속 시간은 갱신되지 않습니다.)"
+      ]
+    },
+    {
+      "name": "회복",
+      "page": "Heal",
+      "subject": "summoner",
+      "notes": [
+        "Heal searches in a 200 units radius around the cursor for its intended allied target, if none is targeted directly. If it finds none, it targets the most wounded allied champion in the cast range, if no such distinction then the closest one. (\"Most wounded\" means the champion with the least current %HP.) (Interactions with clones.) (There is a bug causing the spell to sometimes not pick its second target successfully.)",
+        "Using or being affected by Heal if you were already Healed in the last 35 seconds heals for level-scaled."
+      ],
+      "notesKo": [
+        "대상을 직접 지정하지 않으면 회복은 커서를 중심으로 반경 200 안에서 아군을 찾습니다. 거기서 찾지 못하면 시전 범위 안에서 가장 많이 다친 아군 챔피언을, 그마저 구분되지 않으면 가장 가까운 아군을 대상으로 삼습니다. (\"가장 많이 다친\"이란 현재 체력 비율이 가장 낮은 챔피언을 말합니다.) (분신과의 상호작용도 있습니다.) (두 번째 대상을 제대로 고르지 못하는 버그가 있습니다.)",
+        "최근 35초 안에 이미 회복을 받았다면, 회복을 쓰거나 받을 때 회복량이 줄어든 값으로 적용됩니다. 그 값은 레벨에 따라 달라집니다."
+      ]
+    },
+    {
+      "name": "총명",
+      "page": "Clarity",
+      "subject": "summoner",
+      "notes": [
+        "Clarity, despite being unavailable on Summoner's Rift, can be obtained with Unsealed Spellbook."
+      ],
+      "notesKo": [
+        "총명은 소환사의 협곡에서 고를 수 없지만 봉인 풀린 주문서로는 얻을 수 있습니다."
+      ]
+    },
+    {
+      "name": "결집",
+      "page": "Rally",
+      "subject": "summoner",
+      "notes": [
+        "It could be single-targeted by dash abilities such as Lee Sin Safeguard.",
+        "It could be displaced.",
+        "It affected all allied units such as minions and Heimerdinger H-28G Evolution Turret."
+      ],
+      "notesKo": [
+        "리 신 W 방호처럼 대상을 지정하는 돌진 스킬의 대상이 될 수 있었습니다.",
+        "밀쳐낼 수 있었습니다.",
+        "미니언이나 하이머딩거 Q H-28 G 진화형 포탑 같은 모든 아군 유닛에게 적용되었습니다."
+      ]
+    },
+    {
+      "name": "부활",
+      "page": "Revive",
+      "subject": "summoner",
+      "notes": [
+        "Revive synergized well with champions who have an 'on-death' effect such as Karthus and Kog'Maw. (Note that a champion undergoing an on-death effect is considered alive until the ability ends; thus, only after entering into death would Revive become usable.)",
+        "Other movement speed and mobility effects could be combined with Revive, allowing players to traverse even greater distances at breakneck speed. (The boots enchantment Homeguard paired exceedingly well with Revive, as a revived player would almost always trigger Homeguard's otherwise uncommon condition - being at the summoner's platform.)"
+      ],
+      "notesKo": [
+        "부활은 카서스나 코그모처럼 사망 시 효과가 있는 챔피언과 잘 맞았습니다. (사망 시 효과가 진행 중인 챔피언은 그 스킬이 끝날 때까지 살아 있는 것으로 처리되므로, 완전히 사망한 뒤에야 부활을 쓸 수 있었습니다.)",
+        "다른 이동 속도나 기동성 효과를 부활과 함께 쓰면 훨씬 먼 거리를 아주 빠르게 이동할 수 있었습니다. (장화 부여 효과인 수호자는 부활과 특히 잘 맞았습니다. 부활한 플레이어는 거의 항상 기지에 있게 되는데, 그것이 평소에는 만족하기 어려운 수호자의 발동 조건이었기 때문입니다.)"
+      ]
+    },
+    {
+      "name": "강타",
+      "page": "Smite",
+      "subject": "summoner",
+      "notes": [
+        "Role Binding: In Summoner's Rift permanent queues, Smite is only available to players drafted in the Jungle role and must occupy one of their summoner spell slots. Players drafted in other roles will not have the option of choosing Smite within their loadout.",
+        "Smite has no cast time and can be cast during the cast times and channels of other abilities.",
+        "Smite starts with one charge and gains an additional charge every 90 seconds starting from 0:48, with a maximum of 2 charges.",
+        "The recharge cooldown of this spell can be reduced by summoner spell haste.",
+        "Smiting an enemy champion will draw the aggro of nearby minions as it is a single-targeted ability.",
+        "If the cursor is not on a valid target, prioritizes smiting epic monsters within 125 units.",
+        "Smite and its upgrades deal proc damage, and thus will not trigger spell effects.",
+        "Smite and its upgrades' damage is unaffected by damage amplifiers.",
+        "Unleashed Smite and Primal Smite can be blocked by spell shields.",
+        "In Ultra Rapid Fire: (Cooldown changed to 10 seconds.) (Recharge timer increased to 120 seconds.)"
+      ],
+      "notesKo": [
+        "역할 제한: 소환사의 협곡 상시 대기열에서는 정글 역할을 배정받은 사람만 강타를 쓸 수 있고, 반드시 소환사 주문 칸 하나를 강타로 채워야 합니다. 다른 역할을 배정받은 사람에게는 강타를 고르는 선택지 자체가 없습니다.",
+        "강타는 시전 시간이 없어서 다른 스킬의 시전 시간이나 정신 집중 도중에도 쓸 수 있습니다.",
+        "강타는 충전 1회로 시작하고, 게임 시간 0분 48초부터 90초마다 1회씩 더 충전되며 최대 2회까지 쌓입니다.",
+        "이 주문의 충전 대기 시간은 소환사 주문 가속으로 줄어듭니다.",
+        "강타는 대상을 지정하는 스킬이므로 적 챔피언에게 쓰면 근처 미니언의 어그로를 끕니다.",
+        "커서가 유효한 대상 위에 있지 않으면 반경 125 안의 대형 몬스터를 우선해서 때립니다.",
+        "강타와 그 상위 형태는 발동 피해를 주므로 스킬 효과를 발동시키지 않습니다.",
+        "강타와 그 상위 형태의 피해는 피해 증폭 효과의 영향을 받지 않습니다.",
+        "봉인 풀린 강타와 원시 강타는 주문 방어막에 막힙니다.",
+        "우르프 모드에서는 다음과 같습니다. (재사용 대기 시간이 10초로 바뀝니다.) (충전 시간이 120초로 늘어납니다.)"
+      ]
+    },
+    {
+      "name": "표식",
+      "page": "Mark",
+      "subject": "summoner",
+      "notes": [
+        "Mark and Dash cannot be used while unable to cast. (Dash cannot be used while grounded or rooted, but Mark can.)",
+        "Mark and Dash both deal spell damage, and thus both will trigger spell effects.",
+        "Mark cannot be blocked by Blade Whirl, Wind Wall, and spell shield.",
+        "Mark's debuff cannot be removed by Cleanse.",
+        "The caster, while performing Dash, will track the target if they change locations. (The caster will not stop tracking the target until they reach them, as there is no maximum tracking distance.)",
+        "Dash has a speed of 2500.",
+        "Dash will always deal its damage upon the dash's completion, even if the target is untargetable upon arrival.",
+        "Mark applies a debuff to the enemy hit, which is removed by sources of effects that dispel all hostile debuffs from the unit. A notable example of this is resurrection.",
+        "Dash's untargetability does not destroy inbound projectiles nor affects turrets.",
+        "The caster will automatically attack the target they dashed to upon arrival.",
+        "Despite the fact the duration of Mark's debuff refreshes on subsequent applications, summoners still only have their respective 3 seconds to cast Dash.",
+        "Dash is swapped back to Mark in the spell slot when it completes successfully, or the recast window expires, and then Mark goes on cooldown. (Dash's recast window will not end early if the dash is interrupted.)",
+        "Dash can be used even while the marked target is untargetable.",
+        "The cooldown of this summoner spell is automatically reduced to 48 seconds, due to the Howling Abyss aura, which grants 70 summoner spell haste. (The cooldown can be reduced even more with other sources of summoner spell haste.)"
+      ],
+      "notesKo": [
+        "표식과 돌진은 스킬 사용 불가 상태에서는 쓸 수 없습니다. (돌진은 속박이나 이동 불가 상태에서 쓸 수 없지만 표식은 쓸 수 있습니다.)",
+        "표식과 돌진은 둘 다 스킬 피해를 주므로 스킬 효과를 발동시킵니다.",
+        "표식은 사미라 W 원형 검무, 야스오 W 바람 장막, 주문 방어막에 막히지 않습니다.",
+        "표식이 거는 약화 효과는 정화로 제거되지 않습니다.",
+        "돌진하는 동안 대상이 움직이면 시전자가 그 위치를 따라갑니다. (추적 거리에 상한이 없어서 대상에게 닿을 때까지 추적을 멈추지 않습니다.)",
+        "돌진의 이동 속도는 2500입니다.",
+        "돌진은 도착 시점에 대상이 대상 지정 불가 상태여도 돌진이 끝나면 항상 피해를 줍니다.",
+        "표식은 맞은 적에게 약화 효과를 걸며, 이 효과는 적대적 약화 효과를 모두 없애는 수단으로 제거됩니다. 대표적인 예가 부활입니다.",
+        "돌진 중의 대상 지정 불가 상태는 날아오는 투사체를 없애지 못하며 포탑에도 영향을 주지 않습니다.",
+        "시전자는 돌진해 도착한 대상을 자동으로 공격합니다.",
+        "표식을 다시 걸면 약화 효과의 지속 시간은 갱신되지만, 돌진을 쓸 수 있는 시간은 각자 3초 그대로입니다.",
+        "돌진이 정상적으로 끝나거나 재사용 시간이 지나면 주문 칸이 표식으로 돌아가고, 그때부터 표식의 재사용 대기 시간이 돕니다. (돌진이 도중에 끊겨도 재사용 가능 시간이 앞당겨 끝나지는 않습니다.)",
+        "표식이 걸린 대상이 대상 지정 불가 상태여도 돌진은 쓸 수 있습니다.",
+        "칼바람 나락의 지역 효과가 소환사 주문 가속을 70 주기 때문에 이 주문의 재사용 대기 시간은 자동으로 48초까지 줄어듭니다. (다른 소환사 주문 가속을 더하면 더 줄일 수 있습니다.)"
+      ]
+    },
+    {
+      "name": "진급",
+      "page": "Promote",
+      "subject": "summoner",
+      "notes": [
+        "The super minion spawned by destroying an enemy inhibitor in classic mode cannot be promoted.",
+        "The promoted minion will give its host gold and score upon getting a kill, but not experience if the host stands too far from the slain enemy.",
+        "Note that if there are two siege minions in the vicinity, Promote will be used on the closest one, regardless of if it has been promoted already. This may result in wasting Promote on an already promoted siege minion.",
+        "Kills by a promoted minion do not trigger Twisted Fate Loaded Dice.",
+        "Promote was originally a summoner spell for the Classic mode which metamorphosed a regular minion into a siege rider one. The spell and the siege rider minion were removed in V1.0.0.63 due to abuse in Promote stacking, resulting in unstoppable pushes, but the later returned as Banner of Command's active effect.",
+        "Promote was previously removed because it was too strong, but it was since balanced and made available in all game modes until it was again removed for Season 3. The active effect returned as an item."
+      ],
+      "notesKo": [
+        "클래식 모드에서 적 억제기를 부숴 나오는 슈퍼 미니언에게는 진급을 쓸 수 없었습니다.",
+        "진급한 미니언이 적을 처치하면 주인에게 골드와 점수가 들어갔습니다. 다만 주인이 죽은 적에게서 너무 멀리 있으면 경험치는 들어오지 않았습니다.",
+        "근처에 공성 미니언이 둘 있으면 진급은 이미 진급한 미니언인지와 무관하게 가장 가까운 쪽에 걸렸습니다. 그래서 이미 진급한 공성 미니언에게 진급을 낭비할 수 있었습니다.",
+        "진급한 미니언이 처치해도 트위스티드 페이트 P 사기 주사위는 발동하지 않았습니다.",
+        "진급은 원래 클래식 모드의 소환사 주문으로, 일반 미니언을 공성 기병 미니언으로 바꾸는 것이었습니다. 진급을 여러 번 겹쳐 막을 수 없는 압박을 만드는 악용 때문에 1.0.0.63 패치에서 주문과 공성 기병 미니언이 함께 삭제되었고, 이후 지휘의 깃발의 사용 효과로 돌아왔습니다.",
+        "진급은 너무 강해서 한 번 삭제되었다가, 이후 균형이 조정되어 모든 모드에서 쓸 수 있게 되었지만 시즌 3에서 다시 삭제되었습니다. 그 사용 효과는 아이템으로 돌아왔습니다."
+      ]
+    },
+    {
+      "name": "순간이동",
+      "page": "Teleport",
+      "subject": "summoner",
+      "notes": [
+        "Completing the Toplane Role Quest rewards Unleashed Teleport as a bonus summoner spell (420 second cooldown). (If Teleport was already taken, the quest will instead empower the spell to grant a 35% maximum health shield for 10 seconds after the channel ends.)",
+        "Teleport calculates the travel time for the dash based on the distance between the user's casting position and the target's location at the start of the channel.",
+        "Teleport has a base dash speed of 1000. (The dash speed will be increased to account for the fixed travel time.)",
+        "Unleashed Teleport has a dash speed of 4500.",
+        "Unleashed Teleport will be placed on a 2-second cooldown after Teleport's transformation.",
+        "If Teleport's current cooldown is greater than Unleashed Teleport's maximum cooldown upon transformation, the current cooldown is reduced to its maximum.",
+        "Teleport has no cast time.",
+        "Teleport goes on cooldown after the dash ends.",
+        "Teleport is disabled while grounded, rooted, or unable to cast. It also cannot be used while in Mordekaiser Realm of Death. (Nearsight will prevent the caster from using Teleport globally.)",
+        "Teleport's untargetability does not destroy in-flight projectiles.",
+        "The champion's model is hidden while they are dashing with Teleport and instead can be visually seen as a trailing orb.",
+        "If there is not enough free space upon landing, the user may land in the nearest open space in the direction of travel.",
+        "While dashing with Teleport, the champion's portrait on the mini-map is hidden from the enemy's perspective.",
+        "Neither Teleport's channel nor dash will cancel if the target dies during either effects.",
+        "The target's location at the start of the channel will be considered for the destination location of Teleport, not the target's location when the channel completes or the dash ends.",
+        "Teleporting to a ward or stealthed trap reveals it to enemies. (The target ward or trap is only revealed if it is within an enemy's sight radius and their sight isn't being obstructed.)",
+        "The user may select their target for Teleport via the minimap.",
+        "When attempting to cast Teleport on a target that is at least 3000 units away, the targeting for the spell has a forgiveness radius of 400 units. This is particularly useful when targeting via the minimap.",
+        "Teleport's visual effects can be seen even through the fog of war.",
+        "While standing at the end of a wall or other standing out part of terrain, using Teleport slightly increases sight radius just around the corners in the fog of war.",
+        "Teleport and Unleashed Teleport will play an 'On My Way' ping on the target.",
+        "A timer for Teleport's remaining duration is visible at the target location to all players."
+      ],
+      "notesKo": [
+        "탑 역할 임무를 끝내면 봉인 풀린 순간이동을 추가 소환사 주문으로 받습니다. 재사용 대기 시간은 420초입니다. (이미 순간이동을 들고 있었다면 임무 보상으로 주문이 강화되어, 정신 집중이 끝난 뒤 10초 동안 최대 체력의 35%만큼 보호막을 줍니다.)",
+        "순간이동은 정신 집중을 시작한 시점의 시전 위치와 목표 위치 사이의 거리를 기준으로 이동 시간을 계산합니다.",
+        "순간이동의 기본 이동 속도는 1000입니다. (고정된 이동 시간을 맞추기 위해 실제 속도는 더 빨라집니다.)",
+        "봉인 풀린 순간이동의 이동 속도는 4500입니다.",
+        "순간이동이 변환된 직후 봉인 풀린 순간이동에는 2초의 재사용 대기 시간이 걸립니다.",
+        "변환 시점에 순간이동의 남은 대기 시간이 봉인 풀린 순간이동의 최대 대기 시간보다 길면, 그 최대치까지 줄어듭니다.",
+        "순간이동은 시전 시간이 없습니다.",
+        "순간이동의 재사용 대기 시간은 이동이 끝난 뒤부터 돕니다.",
+        "순간이동은 속박, 이동 불가, 스킬 사용 불가 상태에서는 쓸 수 없습니다. 모데카이저 R 죽음의 세계 안에서도 쓸 수 없습니다. (시야 감소 상태에서는 먼 거리로 순간이동할 수 없습니다.)",
+        "순간이동 중의 대상 지정 불가 상태는 날아오는 투사체를 없애지 못합니다.",
+        "순간이동으로 이동하는 동안 챔피언 모델은 감춰지고 대신 꼬리를 끄는 구슬로 보입니다.",
+        "도착 지점에 공간이 부족하면 이동 방향으로 가장 가까운 빈 자리에 내려섭니다.",
+        "순간이동으로 이동하는 동안 적의 미니맵에서는 챔피언 표시가 보이지 않습니다.",
+        "정신 집중 중이든 이동 중이든 목표가 사라져도 순간이동은 취소되지 않습니다.",
+        "순간이동의 도착 지점은 정신 집중을 시작한 시점의 목표 위치로 정해집니다. 정신 집중이 끝나거나 이동이 끝난 시점의 위치가 아닙니다.",
+        "와드나 은신한 함정으로 순간이동하면 그것이 적에게 드러납니다. (다만 그 와드나 함정이 적의 시야 범위 안에 있고 시야가 가려지지 않은 경우에만 드러납니다.)",
+        "순간이동의 목표는 미니맵에서 고를 수도 있습니다.",
+        "3000 이상 떨어진 목표에 순간이동을 쓰려 할 때는 400 반경까지 목표 지정이 너그럽게 적용됩니다. 미니맵으로 목표를 고를 때 특히 유용합니다.",
+        "순간이동의 시각 효과는 전장의 안개 너머에서도 보입니다.",
+        "벽 끝이나 튀어나온 지형에 서서 순간이동을 쓰면 전장의 안개 속 모퉁이 부근의 시야가 약간 넓어집니다.",
+        "순간이동과 봉인 풀린 순간이동은 목표 지점에 \"가는 중\" 신호를 띄웁니다.",
+        "순간이동의 남은 시간은 목표 지점에 표시되어 모든 플레이어에게 보입니다."
+      ]
+    },
+    {
+      "name": "미니언",
+      "page": "Minion (League of Legends)",
+      "subject": "gameplay",
+      "notes": [
+        "[Behavior] A champion stands in the minion's path, without any other targets within the minions' attack range and outside of a turret's range.",
+        "[Behavior] A champion deals damage to an enemy champion with a basic attack, the majority of unit-targeted abilities, and a minority of abilities which are marked as being similar to those two. Minions will prioritize the closest champion in the case there are multiple sources.",
+        "[Behavior] Bar the first wave (which is noted above as an exception), Call for Help signals are also ignored while minions are already attacking an enemy turret.",
+        "[Stats mechanics] Minions \"upgrade\" strictly every 90 seconds (i.e., every third wave), gaining health, ad, and possibly certain buffs depending on the game state.",
+        "[Stats mechanics] Minions deal 50% reduced damage to enemy champions.",
+        "[Stats mechanics] Minions start with 325 base movement speed and gain 10 to 25 movement speed as the game time progresses.",
+        "[General] Destroying an enemy inhibitor grants a small buff to allied minions in the lane where the inhibitor has been destroyed.",
+        "[Minion Pushing] Turret advantage is the difference between the number of inner and nexus turrets destroyed for each team.",
+        "[Wave Gold Value] As of V8.23, a minion wave has an average gold value that varies from 125 and up to 195 at 25:00.",
+        "[Wave Strategy] Without player interference, a lane's wave is neither advancing or retreating in any significant amount.",
+        "[Wave Strategy] A minion wave that catches up with its preceding wave starts pushing the lane towards enemy turret.",
+        "[Wave Strategy] Big waves of minions can overwhelm a turret.",
+        "[Wave Strategy] When a player interrupts an enemy minion wave, ensuring their minions deal more damage to the opponent's minions than they are receiving, the lane starts to push.",
+        "[Wave Strategy] In the simplest way, this is done by killing every minion in a wave without interference from your own minions. This changes where in the lane the minion waves clash.",
+        "[Game Terminology] Farming: Last hitting minions to earn gold and experience.",
+        "[Game Terminology] Lane Momentum: The strength with which the minions in a lane advance without champion aid.",
+        "[Game Terminology] Pushing: Attacking enemy minions to keep allied minions alive and allow them to advance along their lane.",
+        "[Game Terminology] Freezing: Preventing enemy minions from pushing the lane without pushing them back.",
+        "[Game Terminology] \"Winions\": A wave of minions so big or so strong that it can destroy turrets, nexuses, or champions without champion aid.",
+        "[Game Terminology] Free Farming: Farming without being confronted by an enemy champion.",
+        "[Game Terminology] Proxy Farming: Farming behind an enemy tower. It's easier than conventional farming because there is no interference from allied minions, but it's usually much more dangerous.",
+        "[Game Terminology] Split Pushing: Attacking several objectives at the same time when at least one of the objectives is a lane turret."
+      ],
+      "notesKo": [
+        "[미니언 행동] 챔피언이 미니언의 진로에 서 있고, 미니언 공격 사거리 안에 다른 표적이 없으며, 포탑 사거리 밖일 때입니다.",
+        "[미니언 행동] 챔피언이 적 챔피언에게 기본 공격, 대다수의 대상 지정 스킬, 그리고 그와 비슷하게 분류된 일부 스킬로 피해를 입힌 경우입니다. 원인이 여럿이면 미니언은 가장 가까운 챔피언을 우선합니다.",
+        "[미니언 행동] 첫 웨이브를 빼면, 미니언이 이미 적 포탑을 때리고 있는 동안에는 도움 요청 신호를 무시합니다.",
+        "[미니언 능력치] 미니언은 정확히 90초마다(세 웨이브마다) 강화되어 체력과 공격력이 오르고, 상황에 따라 추가 버프를 받기도 합니다.",
+        "[미니언 능력치] 미니언이 적 챔피언에게 주는 피해는 50% 줄어듭니다.",
+        "[미니언 능력치] 미니언의 기본 이동 속도는 325에서 시작해 시간이 지나면서 10~25만큼 올라갑니다.",
+        "[미니언] 적 억제기를 파괴하면 그 라인의 아군 미니언이 약한 버프를 받습니다.",
+        "[미니언 압박] 포탑 우위란 양 팀이 파괴한 안쪽 포탑과 넥서스 포탑 수의 차이를 말합니다.",
+        "[웨이브 골드] V8.23 기준으로 미니언 한 웨이브의 평균 골드 가치는 125에서 시작해 25분에 195까지 올라갑니다.",
+        "[웨이브 운영] 플레이어가 개입하지 않으면 라인의 웨이브는 어느 쪽으로도 크게 밀리지 않습니다.",
+        "[웨이브 운영] 앞 웨이브를 따라잡은 미니언 웨이브는 라인을 적 포탑 쪽으로 밀기 시작합니다.",
+        "[웨이브 운영] 미니언이 크게 뭉치면 포탑을 압도할 수 있습니다.",
+        "[웨이브 운영] 적 미니언 웨이브에 개입해 아군 미니언이 받는 피해보다 주는 피해를 크게 만들면 라인이 밀리기 시작합니다.",
+        "[웨이브 운영] 가장 단순한 방법은 아군 미니언의 개입 없이 적 웨이브를 통째로 잡는 것입니다. 그러면 웨이브가 부딪히는 지점이 바뀝니다.",
+        "[용어] 파밍: 미니언에 막타를 넣어 골드와 경험치를 얻는 것입니다.",
+        "[용어] 라인 탄력: 챔피언이 돕지 않아도 그 라인 미니언이 밀고 나가는 힘입니다.",
+        "[용어] 푸시: 적 미니언을 쳐서 아군 미니언을 살려 두고 라인을 밀어 올리는 것입니다.",
+        "[용어] 프리즈: 적 미니언이 라인을 밀지 못하게 하면서 되밀지도 않고 묶어 두는 것입니다.",
+        "[용어] 슈퍼 웨이브: 챔피언이 돕지 않아도 포탑·넥서스·챔피언을 무너뜨릴 만큼 크거나 강한 미니언 무리입니다.",
+        "[용어] 프리 파밍: 적 챔피언의 견제 없이 파밍하는 것입니다.",
+        "[용어] 프록시 파밍: 적 포탑 뒤에서 파밍하는 것입니다. 아군 미니언의 개입이 없어 막타는 쉽지만 대개 훨씬 위험합니다.",
+        "[용어] 스플릿 푸시: 목표 여럿을 동시에 치는 것으로, 그중 적어도 하나는 라인 포탑인 경우를 말합니다."
+      ]
+    },
+    {
+      "name": "와드",
+      "page": "Ward",
+      "subject": "gameplay",
+      "notes": [
+        "[General] A ward's vision does not extend over terrain.",
+        "[General] Placing a ward while at its limit will replace your earliest respective placed ward of its type.",
+        "[General] The sight from wards is classified as allied vision, and will be lost while under the effects of Nearsight. This includes wards that you placed.",
+        "[General] Newly set wards are not visible nor audible to nearsighted units outside of their proper sight radius.",
+        "[General] Nearsight prevents the unit from being able to reveal stealthed wards and traps.",
+        "[General] The mutated Scryer's Bloom on Chemtech Rift reduces the health of wards it reveals to 1.",
+        "[General] As of V7.16, passively-generated one-use on-hit effects such as Energized, Sona or Caitlyn, will not be consumed when attacking wards. Some cases were not added until later and other missing cases should be reported as a bug.",
+        "[General] Activated on-hit effects and attack resets, such as Blitzcrank and Jayce, will still be consumed as the player is choosing to prime them.",
+        "[General] Tidecaller's Blessing Nami will not be consumed when attacking wards.",
+        "[General] Flay Thresh will also not reset the bonus damage when attacking wards.",
+        "[General] Like with minions, if more than one allied champion is nearby when a ward is killed, all champions gain an equal share of 124% of the experience bounty.",
+        "[General] Effects such as Zombie Ward will track assists even if no gold is earned.",
+        "[General] As of V12.22, allied wards that have a set duration appear withered on the minimap, whenever their remaining duration reaches a third of its total.",
+        "[General] Stealth Ward trinkets reach the break-even point between Totem Ward duration and charge regeneration time at Level 18. At this level it is possible to always have another charge ready to use when the last ward placed with the trinket has expired of natural causes.",
+        "[General] At level 1 Stealth Ward only has an uptime of 37.5% (90s duration, 240s recharge) but this is increased to 75% with the Ghost Poro rune.",
+        "[Strategy] Placing wards near objectives or critical pathways on the map such as Dragon pit, Baron pit, and entrances to the jungle grant valuable information.",
+        "[Strategy] Control Wards reveal and disable other wards within their Sight.",
+        "[Strategy] Sweeper Drones will reveal and disable stealthed wards within its radius, and highlight non-stealthed wards as a red silhouette. Note that the drone can see into brush and over terrain.",
+        "[Strategy] Umbral Glaive passive, Blackout, triggers when a ward or stealthed trap is nearby. While it is active, you disable all nearby wards and expose nearby stealthed wards and traps. Unlike a Sweeper Drone, Blackout does not allow you to see over terrain or highlight other unseen units.",
+        "[Strategy] Scryer's Bloom grants vision of wards hit for 12 seconds.",
+        "[Strategy] Wards take 1 damage when hit by a basic attack, regardless of the attack's damage or on-hit effects.",
+        "[Strategy] Full basic attack resets allow you to destroy Stealth Wards and Totem Wards before they stealth.",
+        "[Strategy] As of V6.13, attacking a ward will not classify you as entering combat. For example, you will retain the bonus movement speed from Mobility Boots, Relentless Hunter, and abilities such as Rock Surfing Taliyah.",
+        "[Strategy] thumb|right When a ward is killed, times out or is replaced, it leaves behind Ward rubble for 5 minutes. This can be used to gain knowledge of the enemy's warding habits.",
+        "[Strategy] The rubble's transparency increases overtime."
+      ],
+      "notesKo": [
+        "[와드] 와드의 시야는 지형 너머로는 닿지 않습니다.",
+        "[와드] 설치 한도에 찬 상태에서 와드를 더 박으면 같은 종류 중 가장 먼저 박은 것이 사라집니다.",
+        "[와드] 와드 시야는 아군 시야로 분류되어 실명 상태에서는 보이지 않습니다. 본인이 박은 와드도 마찬가지입니다.",
+        "[와드] 실명 상태인 유닛은 자기 시야 반경 밖에 새로 박힌 와드를 보지도 듣지도 못합니다.",
+        "[와드] 실명 상태에서는 은신한 와드와 덫을 드러낼 수 없습니다.",
+        "[와드] 화학공학 협곡의 변이된 예언의 꽃은 드러낸 와드의 체력을 1로 낮춥니다.",
+        "[와드] V7.16부터 충전 효과처럼 저절로 쌓이는 1회용 적중 시 효과는 와드를 때려도 소모되지 않습니다.",
+        "[와드] 반면 직접 켜는 적중 시 효과와 평타 초기화는 와드를 때려도 소모됩니다. 플레이어가 스스로 준비한 것이기 때문입니다.",
+        "[와드] 나미 W 밀물의 축복은 와드를 때려도 소모되지 않습니다.",
+        "[와드] 쓰레쉬 E 척결도 와드를 때릴 때는 추가 피해가 초기화되지 않습니다.",
+        "[와드] 미니언과 마찬가지로, 와드가 파괴될 때 아군 챔피언이 여럿 근처에 있으면 경험치 124%를 똑같이 나눠 받습니다.",
+        "[와드] 좀비 와드 같은 효과는 골드를 못 받아도 도움은 집계합니다.",
+        "[와드] V12.22부터 지속시간이 정해진 아군 와드는 남은 시간이 3분의 1이 되면 미니맵에서 시든 모양으로 바뀝니다.",
+        "[와드] 18레벨이 되면 투명 와드 장신구의 충전 시간과 와드 지속시간이 맞아떨어져, 앞서 박은 와드가 저절로 사라질 때 다음 충전이 늘 준비되어 있습니다.",
+        "[와드] 1레벨에서 투명 와드의 가동률은 37.5%뿐입니다(지속 90초, 충전 240초). 유령 포로 룬을 들면 75%로 올라갑니다.",
+        "[와드 운영] 드래곤 둥지, 내셔 남작 둥지, 정글 입구처럼 오브젝트 근처나 길목에 박은 와드가 값진 정보를 줍니다.",
+        "[와드 운영] 제어 와드는 시야 안의 다른 와드를 드러내고 무력화합니다.",
+        "[와드 운영] 탐지 렌즈는 범위 안의 은신한 와드를 드러내 무력화하고, 은신하지 않은 와드는 붉은 윤곽으로 표시합니다. 렌즈는 덤불 안과 지형 너머도 봅니다.",
+        "[와드 운영] 그림자 검의 기본 지속 효과 정전은 와드나 은신한 덫이 가까이 있을 때 발동합니다. 발동 중에는 근처 와드를 무력화하고 은신한 와드·덫을 드러냅니다. 다만 탐지 렌즈와 달리 지형 너머를 보지는 못합니다.",
+        "[와드 운영] 예언의 꽃에 맞은 와드는 12초 동안 드러납니다.",
+        "[와드 운영] 와드는 기본 공격에 맞으면 공격력이나 적중 시 효과와 무관하게 1의 피해만 받습니다.",
+        "[와드 운영] 평타 초기화를 쓰면 투명 와드가 은신하기 전에 부술 수 있습니다.",
+        "[와드 운영] V6.13부터 와드를 때리는 것은 전투 진입으로 치지 않습니다. 그래서 기동력의 장화나 끈질긴 사냥꾼의 추가 이동 속도가 유지됩니다.",
+        "[와드 운영] 와드가 부서지거나 시간이 다하거나 교체되면 그 자리에 잔해가 5분간 남습니다. 적의 와드 습관을 읽는 데 쓸 수 있습니다.",
+        "[와드 운영] 잔해는 시간이 갈수록 점점 흐려집니다."
+      ]
+    },
+    {
+      "name": "덤불",
+      "page": "Brush",
+      "subject": "gameplay",
+      "notes": [
+        "[Utilizing brush] The visual indicators and effects of some abilities, such as Absolute Zero Nunu and Decimating Smash Sion, are hidden while inside of an unexposed brush.",
+        "[Utilizing brush] Moving into a brush while fleeing from chasing enemies allows the manipulation of the fog of war.",
+        "[Utilizing brush] Ivern is currently the only champion who can create brush, being able to do so via Ivern. He can create a line of brushes, blocking the sight of the enemy in any location."
+      ],
+      "notesKo": [
+        "[덤불] 누누 R 절대 영도나 사이온 Q 파멸의 강타처럼 일부 스킬의 시전 표시는 드러나지 않은 덤불 안에서는 보이지 않습니다.",
+        "[덤불] 쫓기는 중에 덤불로 들어가면 상대의 시야를 흔들 수 있습니다.",
+        "[덤불] 아이번은 덤불을 만들 수 있는 유일한 챔피언입니다. 덤불을 줄지어 만들어 어느 곳에서든 적 시야를 끊을 수 있습니다."
+      ]
+    },
+    {
+      "name": "포탑",
+      "page": "Turret",
+      "subject": "gameplay",
+      "notes": [
+        "[General] Plates take 17% reduced damage from minions and ranged champions.",
+        "[General] Destroying a plate grants 125 local gold.",
+        "[General] The toplane and midlane outer turrets receive a Fortification bonus for the first five minutes of each game.",
+        "[General] Inhibitor turrets regenerate 3 health per second up to a maximum that depends on their current health.",
+        "[General] Nexus turrets regenerate 6 health per second up to a maximum that depends on their current health.",
+        "[General] After being destroyed Nexus Turrets will respawn after a 3 minute delay.",
+        "[General] Armor and magic resistance are reduced to 40 at 12:00.",
+        "[General] Inhibitor turrets gain 30% damage reduction for 60 seconds after the Outer Turret is destroyed.",
+        "[Notes] If a turret is destroyed while one of its shots is in mid-flight, that shot will not deal damage.",
+        "[Notes] Turrets are units located on top of impassable terrain. This terrain remains even after the turret is destroyed.",
+        "[Notes] Effects that interact with terrain will do so for both functional and destroyed turrets.",
+        "[Items] Unique Passive - Fortification: 85% damage reduction from all sources. This effect expires after 5 minutes.",
+        "[Items] Unique Passive: Gains 30% armor penetration.",
+        "[Items] Unique Passive - Dodge Piercing: Turret attacks, once their windup has completed, cannot be evaded, parried, nor intercepted. They will be still be destroyed by effects that 'pop' homing projectiles, such as their target becoming untargetable.",
+        "[Items] Unique Passive - Warming Up: The damage dealt by turrets increases by 40% each time they hit a champion, up to 120% bonus damage. This effect resets 3 seconds after the last shot hits a champion, but it doesn't reset when switching targets.",
+        "[Items] Unique Passive - Reinforced Armor: Reduces incoming damage by 80%, including true damage, when no enemy minions or Summoned Rift Herald are nearby.",
+        "[Items] Pets, traps, and neutral monsters do not deactivate this effect.",
+        "[Items] Unique Passive - True Sight: Can see all units and traps (including those in stealth) within 1000 range, unless the direct line of vision is obstructed (e.g. by terrain).",
+        "[Turret rewards] The global reward is given to all the champions in the team.",
+        "[Turret rewards] Champions who are alive and have assisted in destroying the turret by dealing damage to it directly or via their summons (including the Rift Herald Mercenary) within the last 10 seconds receive their share as well, regardless of range.",
+        "[Turret rewards] The paradigm for local rewards also apply to the distributed reward from destroying Turret Plating stages.",
+        "[Turret rewards] The local reward for destroying the first turret (also referred to as \"Turret First Blood\" and \"First Turret gold\") grants 300 bonus gold.",
+        "[Damaging turrets] Physical damage if 100% bonus AD > 60% AP.",
+        "[Damaging turrets] Magic damage if 100% bonus AD < 60% AP.",
+        "[Abilities that affect turrets] Turrets can be put into stasis by Tempered Fate Bard.",
+        "[Abilities that affect turrets] Turrets can be shielded by Eye of the Storm Janna.",
+        "[Abilities that affect turrets] Turrets can be disabled by Stormbringer Volibear.",
+        "[Abilities that affect turrets] Carnivore Cho'Gath grants its heal and mana restore.",
+        "[Abilities that affect turrets] League of Draven Draven grants 1 stack.",
+        "[Abilities that affect turrets] Siphoning Strike Nasus gains permanent damage.",
+        "[Abilities that affect turrets] Loaded Dice Twisted Fate grants him 1 to 6.",
+        "[Strategy] Turrets can be used to create choke points using traps such as Yordle Snap Trap Caitlyn, especially in the narrow areas between a turret and nearby terrain, as minions will not normally walk through those areas of lanes.",
+        "[Strategy] Melee minions may sustain two turret attacks, and then one champion attack to last hit.",
+        "[Strategy] Ranged minions may sustain one champion attack, then one turret attack, then another champion attack to last hit."
+      ],
+      "notesKo": [
+        "[포탑] 방패 장치는 미니언과 원거리 챔피언에게 받는 피해가 17% 줄어듭니다.",
+        "[포탑] 방패 장치를 하나 깨면 그 자리에 있던 아군에게 125골드가 들어갑니다.",
+        "[포탑] 탑과 미드의 1차 포탑은 경기 시작 후 5분간 요새화 보너스를 받습니다.",
+        "[포탑] 억제기 포탑은 초당 체력 3을 회복하며, 회복 상한은 현재 체력에 따라 달라집니다.",
+        "[포탑] 넥서스 포탑은 초당 체력 6을 회복하며, 회복 상한은 현재 체력에 따라 달라집니다.",
+        "[포탑] 넥서스 포탑은 파괴된 뒤 3분이 지나면 다시 생깁니다.",
+        "[포탑] 12분이 되면 포탑의 방어력과 마법 저항력이 40으로 낮아집니다.",
+        "[포탑] 1차 포탑이 무너지면 억제기 포탑이 60초 동안 피해 감소 30%를 얻습니다.",
+        "[포탑] 포탑이 쏜 탄이 날아가는 도중에 포탑이 부서지면 그 탄은 피해를 주지 않습니다.",
+        "[포탑] 포탑은 통과할 수 없는 지형 위에 있는 유닛입니다. 그 지형은 포탑이 부서진 뒤에도 남습니다.",
+        "[포탑] 지형과 상호작용하는 효과는 멀쩡한 포탑이든 부서진 포탑이든 똑같이 작동합니다.",
+        "[포탑] 요새화: 모든 피해를 85% 줄입니다. 5분이 지나면 사라집니다.",
+        "[포탑] 포탑은 방어구 관통 30%를 얻습니다.",
+        "[포탑] 포탑 공격은 시전이 끝나면 회피·막기·가로채기가 되지 않습니다. 다만 대상이 지정 불가 상태가 되는 등 유도 투사체를 없애는 효과에는 사라집니다.",
+        "[포탑] 예열: 포탑이 챔피언을 맞힐 때마다 피해가 40%씩 올라 최대 120%까지 늘어납니다. 마지막 적중 3초 뒤 초기화되며, 대상을 바꿔도 초기화되지 않습니다.",
+        "[포탑] 강화 장갑: 근처에 적 미니언이나 소환된 협곡의 전령이 없으면 받는 피해가 고정 피해까지 포함해 80% 줄어듭니다.",
+        "[포탑] 소환물, 덫, 중립 몬스터는 이 효과를 풀지 못합니다.",
+        "[포탑] 실제 시야: 사거리 1000 안의 모든 유닛과 덫을 은신한 것까지 봅니다. 다만 지형 등에 시선이 막히면 보지 못합니다.",
+        "[포탑 보상] 전역 보상은 팀 전원에게 들어갑니다.",
+        "[포탑 보상] 마지막 10초 안에 직접 또는 소환물로 포탑에 피해를 준 살아 있는 챔피언은 거리와 무관하게 몫을 받습니다.",
+        "[포탑 보상] 방패 장치를 깰 때 나오는 보상도 같은 방식으로 나뉩니다.",
+        "[포탑 보상] 경기 첫 포탑을 깨면 추가로 300골드가 들어갑니다.",
+        "[포탑 공격] 추가 공격력 100%가 주문력 60%보다 크면 물리 피해로 들어갑니다.",
+        "[포탑 공격] 추가 공격력 100%가 주문력 60%보다 작으면 마법 피해로 들어갑니다.",
+        "[포탑에 듣는 스킬] 바드 R 운명의 소용돌이는 포탑을 정지 상태로 만들 수 있습니다.",
+        "[포탑에 듣는 스킬] 잔나 E 폭풍의 눈은 포탑에 보호막을 씌울 수 있습니다.",
+        "[포탑에 듣는 스킬] 볼리베어 R 폭풍을 부르는 자는 포탑을 멈출 수 있습니다.",
+        "[포탑에 듣는 스킬] 초가스 패시브 육식은 포탑을 부술 때도 체력과 마나를 돌려줍니다.",
+        "[포탑에 듣는 스킬] 드레이븐 패시브는 포탑을 부술 때 중첩 1을 줍니다.",
+        "[포탑에 듣는 스킬] 나서스 Q 흡수의 일격은 포탑을 부술 때도 영구 피해량이 오릅니다.",
+        "[포탑에 듣는 스킬] 트위스티드 페이트 패시브 설계된 운명은 포탑을 부술 때 1~6골드를 더 줍니다.",
+        "[포탑 운영] 포탑과 주변 지형 사이의 좁은 길에 케이틀린 W 요들잡이 덫 같은 덫을 깔면 길목을 막을 수 있습니다. 미니언은 보통 그쪽으로 다니지 않기 때문입니다.",
+        "[포탑 운영] 근접 미니언은 포탑 공격 두 번을 받은 뒤 챔피언이 한 번 때리면 막타가 됩니다.",
+        "[포탑 운영] 원거리 미니언은 챔피언 한 번, 포탑 한 번, 다시 챔피언 한 번 순으로 때리면 막타가 됩니다."
+      ]
+    },
+    {
+      "name": "시야 점수",
+      "page": "Vision score",
+      "subject": "gameplay",
+      "notes": [
+        "[Metrics] Vision Mechanics: There are a few non-combat utility abilities that will contribute to a champion's total vision score.",
+        "[Metrics] These include Scryer's Bloom and Rift Scuttler's Speed Shrine. The former grants a total of 0.5 points per champion revealed by the effect, and the latter grants 1 point once it has lasted its full duration.",
+        "[Metrics] Champion abilities that only grant vision (no offensive component) will contribute towards the score. Examples include Hawkshot Ashe, Sentinel Kalista, and Heightened Senses Quinn. These abilities will grant 0.33 points per champion they reveal.",
+        "[Ward Lifetime Provided Modifiers] A ward that hasn't seen any interesting units (enemy champions, wards, and epic monsters) in a while will gradually go down in point value, starting at -0% at 60 seconds of staleness and worsening to -50% at 120 seconds of staleness.",
+        "[Ward Lifetime Provided Modifiers] While a ward is near other allied sources of vision (allied wards, structures, and lane minions), its point value will be reduced, starting at -25% for 1 redundancy and worsening up to -75% for 3+ redundancies. Lane minions don't count as redundant if the ward is in brush.",
+        "[Ward Lifetime Provided Modifiers] A ward that's very close to your base can give less score, starting from -0% score around your buff camps and worsening to about -50% score at your base walls.",
+        "[Ward Lifetime Provided Modifiers] A ward that's very close to an allied structure or inside your own base will have a -100% modifier to its point value.",
+        "[Ward Lifetime Provided Modifiers] If a ward is quickly killed by enemies, it will still give lifetime score as if it survived a minimum of 20 seconds (0.33 points)."
+      ],
+      "notesKo": [
+        "[시야 점수] 전투와 무관한 일부 유틸 스킬도 시야 점수에 들어갑니다.",
+        "[시야 점수] 예언의 꽃과 협곡 바위게의 가속 성소가 그렇습니다. 앞의 것은 드러낸 챔피언 한 명당 0.5점, 뒤의 것은 지속시간을 다 채우면 1점을 줍니다.",
+        "[시야 점수] 공격 성분 없이 시야만 주는 스킬도 점수에 들어갑니다. 애쉬 E 매 눈, 칼리스타 W 파수병, 퀸 W 예리한 감각이 그렇고, 드러낸 챔피언 한 명당 0.33점입니다.",
+        "[시야 점수] 한동안 적 챔피언·와드·대형 몬스터를 보지 못한 와드는 점수 가치가 떨어집니다. 60초째에는 감점이 없고 120초째에 -50%까지 떨어집니다.",
+        "[시야 점수] 아군 와드·구조물·라인 미니언처럼 다른 아군 시야와 겹치면 점수가 깎입니다. 하나 겹치면 -25%, 셋 이상 겹치면 -75%입니다. 와드가 덤불 안에 있으면 라인 미니언은 겹침으로 세지 않습니다.",
+        "[시야 점수] 본진에 가까운 와드일수록 점수가 낮습니다. 아군 버프 캠프 근처에서는 감점이 없고 본진 성벽에서는 약 -50%입니다.",
+        "[시야 점수] 아군 구조물에 아주 가깝거나 본진 안에 있는 와드는 점수가 -100%가 됩니다.",
+        "[시야 점수] 적이 와드를 금방 부숴도 최소 20초는 살아 있던 것으로 쳐서 0.33점을 줍니다."
+      ]
+    },
+    {
+      "name": "귀환",
+      "page": "Recall",
+      "subject": "gameplay",
+      "notes": [
+        "[Notes] Recall is activated by either clicking on its icon in the HUD or by pressing the selected key bind (B is set to the default).",
+        "[Notes] Recall's channel is interrupted by ground and root.",
+        "[Notes] Recall's channel is not interrupted by taking damage in the final 0.1 seconds before it completes.",
+        "[Notes] Damage fully mitigated by a shield won't cancel Recall.",
+        "[Notes] Death's Dance Ignore Pain damage does not interrupt Recall.",
+        "[Notes] Recall is not visible through the fog of war, but if a Recalling champion was seen Recalling before being obscured from sight, the sound effects can still be heard, but this does not necessarily mean the channel was completed.",
+        "[Notes] When a player disconnects from the game, instead of Recalling, they will manually walk back to their base. After some time, their champion will become completely invincible."
+      ],
+      "notesKo": [
+        "[귀환] 귀환은 화면의 아이콘을 누르거나 지정한 단축키(기본 B)로 씁니다.",
+        "[귀환] 귀환 시전은 속박과 정지 효과에 끊깁니다.",
+        "[귀환] 귀환이 끝나기 직전 0.1초 안에 받은 피해로는 시전이 끊기지 않습니다.",
+        "[귀환] 보호막이 전부 막아 낸 피해로는 귀환이 취소되지 않습니다.",
+        "[귀환] 죽음의 무도가 미뤄 두는 피해로는 귀환이 끊기지 않습니다.",
+        "[귀환] 전장의 안개 너머의 귀환은 보이지 않습니다. 다만 귀환을 시작하는 것을 본 뒤 시야에서 사라졌다면 소리는 계속 들리는데, 그렇다고 귀환이 끝났다는 뜻은 아닙니다.",
+        "[귀환] 접속이 끊긴 플레이어는 귀환 대신 걸어서 본진으로 돌아갑니다. 일정 시간이 지나면 그 챔피언은 완전히 무적이 됩니다."
+      ]
+    }
+  ]
+}

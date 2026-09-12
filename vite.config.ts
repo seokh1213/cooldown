@@ -1,11 +1,37 @@
 import react from "@vitejs/plugin-react";
 import tailwindcss from "@tailwindcss/vite";
-import { defineConfig } from "vite";
+import { defineConfig, type PluginOption } from "vite";
 import { VitePWA } from "vite-plugin-pwa";
 import path from "node:path";
 import { createBuildRelease } from "./scripts/pwa/buildRelease.ts";
 
 const BASE_PATH = "/cooldown/";
+
+/**
+ * 개발 서버에서 ORT wasm 글루를 날것으로 내보낸다.
+ *
+ * onnxruntime 은 실행 중에 `import("/ort/ort-wasm-simd-threaded.asyncify.mjs")` 를 부른다.
+ * vite 개발 서버는 동적 import 를 보면 `?import` 를 붙여 모듈 변환 경로로 보내는데,
+ * 이 파일은 emscripten 이 만든 글루라 변환하면 깨진다. 그래서 적재가 실패했다.
+ *
+ *   no available backend found. ERR: [webgpu] TypeError:
+ *   Failed to fetch dynamically imported module: .../ort-wasm-simd-threaded.asyncify.mjs?import
+ *
+ * 배포본은 public/ 을 그대로 복사하므로 이 문제가 없다. 개발 서버에서만 질의를 떼어
+ * 정적 파일로 내보낸다.
+ */
+function serveOrtRaw(): PluginOption {
+  return {
+    name: "serve-ort-raw",
+    apply: "serve",
+    configureServer(server) {
+      server.middlewares.use((req, _res, next) => {
+        if (req.url?.startsWith("/ort/")) req.url = req.url.split("?")[0];
+        next();
+      });
+    },
+  };
+}
 
 export default defineConfig(({ mode }) => {
   const publicDirectory = path.resolve(import.meta.dirname, process.env.COOLDOWN_PUBLIC_DIR ?? "public");
@@ -14,6 +40,7 @@ export default defineConfig(({ mode }) => {
   base: mode === "development" ? "/" : BASE_PATH,
   publicDir: publicDirectory,
   plugins: [
+    serveOrtRaw(),
     tailwindcss(),
     react(),
     plugin,
