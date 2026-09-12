@@ -2,8 +2,8 @@ name: Update Static Data
 
 on:
   schedule:
-    # 30분마다 실행 (UTC 기준)
-    - cron: '*/30 * * * *'
+    # 매시 정각 (UTC 기준)
+    - cron: '0 * * * *'
   workflow_dispatch: # 수동 실행 가능
   push:
     branches:
@@ -17,9 +17,48 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  update-data:
+  # 먼저 값싸게 확인하고, 바뀐 게 없으면 여기서 끝낸다.
+  # 예전에는 회차마다 173챔피언 × 3언어를 통째로 다시 받은 뒤에야 변경 여부를 봤다.
+  check:
     runs-on: ubuntu-latest
-    
+    outputs:
+      run: ${{ steps.decide.outputs.run }}
+    steps:
+      - name: Checkout version marker
+        uses: actions/checkout@v7
+        with:
+          sparse-checkout: public/data/version.json
+          sparse-checkout-cone-mode: false
+
+      - name: Decide whether to run
+        id: decide
+        run: |
+          local_version="$(node -p "require('./public/data/version.json').sources.ddragon")"
+          curl -sS --retry 3 https://ddragon.leagueoflegends.com/api/versions.json -o /tmp/versions.json
+          remote_version="$(node -p "require('/tmp/versions.json')[0]")"
+          echo "로컬 $local_version / 원격 $remote_version"
+
+          if [[ "${{ github.event_name }}" != "schedule" ]]; then
+            echo "run=true" >> "$GITHUB_OUTPUT"
+          elif [[ "$remote_version" != "$local_version" ]]; then
+            echo "패치가 바뀌었다."
+            echo "run=true" >> "$GITHUB_OUTPUT"
+          elif [[ "$(date -u +%H)" == "00" ]]; then
+            # 버전이 그대로여도 하루 한 번은 다시 만든다.
+            # 배포 데이터에는 CDragon BIN 에서 나오는 부분(툴팁 현지화, 스킬 시뮬레이션)이
+            # 있는데, CDragon 은 같은 버전에서도 추출이 개선되면 출력이 달라진다.
+            echo "버전은 그대로지만 하루 한 번 회차다."
+            echo "run=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "run=false" >> "$GITHUB_OUTPUT"
+            echo "패치 그대로. 이번 회차는 여기서 끝낸다."
+          fi
+
+  update-data:
+    needs: check
+    if: needs.check.outputs.run == 'true'
+    runs-on: ubuntu-latest
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v7
