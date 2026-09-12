@@ -1,8 +1,13 @@
 import type { DataLocale } from "@/data/contracts/staticData";
+import type { ComparisonLabels, ItemDetailLabels } from "./comparisonTranslations";
+import type { ChampionProfileLabels } from "./championProfileTranslations";
 
 export type Language = DataLocale;
 
 export interface Translations {
+  championProfile: ChampionProfileLabels;
+  comparison: ComparisonLabels;
+  itemDetail: ItemDetailLabels;
   app: {
     updateReady: string;
     updateDescription: string;

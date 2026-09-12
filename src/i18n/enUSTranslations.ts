@@ -1,6 +1,11 @@
 import type { Translations } from "./translationTypes";
+import { enComparison, enItemDetail } from "./comparisonTranslations";
+import { enChampionProfile } from "./championProfileTranslations";
 
 export const enUSTranslations: Translations = {
+    championProfile: enChampionProfile,
+    comparison: enComparison,
+    itemDetail: enItemDetail,
     app: {
       updateReady: "A new version is ready.",
       updateDescription: "Refresh the app to update to the latest version.",
@@ -30,7 +35,7 @@ export const enUSTranslations: Translations = {
     },
     sidebar: {
       championCooldown: "Champion Cooldown",
-      encyclopedia: "Runes & Items Encyclopedia",
+      encyclopedia: "Encyclopedia",
       simulation: "Simulation",
     },
     tutorial: {

@@ -12,6 +12,7 @@ export interface ActiveSpellLocKeys {
 
 export interface ActiveSpellSourceData {
   path: string;
+  iconPath?: string;
   cooldowns?: number[];
   costs?: number[];
   locKeys: ActiveSpellLocKeys;
@@ -115,6 +116,8 @@ function extractSpellObject(
   const result: ExtractedActiveSpellData = {
     source: {
       path,
+      iconPath: Array.isArray(spell.mImgIconName) && typeof spell.mImgIconName[0] === "string"
+        ? spell.mImgIconName[0].toLowerCase().replace(/\.dds$/, ".png") : undefined,
       cooldowns: numericArray(spell.cooldownTime),
       costs: numericArray(spell.mana),
       locKeys: extractLocKeys(spell),

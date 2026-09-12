@@ -1,4 +1,7 @@
-import { VersionedCache, getSessionCacheStorage } from "@/data/cache/versionedCache";
+import { VersionedCache } from "@/data/cache/versionedCache";
+import { createReleaseCache } from "@/data/cache/releaseCache";
+import { trackStaticDataPath } from "@/pwa/staticDataRevision";
+import { decodeChampionProfile, type ChampionProfile } from "@/data/contracts/championProfile";
 import {
   decodeNormalizedItems,
   decodeNormalizedRunes,
@@ -36,11 +39,24 @@ export class GameDataRepository {
     locale: DataLocale
   ): Promise<NormalizedItemDataFile> {
     return this.getFile(
-      `items:${staticDataIdentityKey(identity)}:${locale}`,
+      `items:structured-v1:${staticDataIdentityKey(identity)}:${locale}`,
       `data/${identity.patchVersion}/items-normalized-${locale}.json`,
       decodeNormalizedItems,
       identity,
       locale
+    );
+  }
+
+  getChampionProfile(identity: StaticDataIdentity, locale: DataLocale, id: string): Promise<ChampionProfile> {
+    if (!/^[A-Za-z0-9]+$/.test(id)) return Promise.reject(new Error("Invalid champion id"));
+    return this.getFile(
+      `profile:skins-v1:${staticDataIdentityKey(identity)}:${locale}:${id}`,
+      `data/${identity.patchVersion}/champion-profiles/${locale}/${id}.json`,
+      (value) => {
+        const profile = decodeChampionProfile(value);
+        if (profile.champion.id !== id) throw new Error("Champion profile id mismatch");
+        return profile;
+      }, identity, locale,
     );
   }
 
@@ -81,6 +97,7 @@ export class GameDataRepository {
     identity: StaticDataIdentity,
     locale: DataLocale
   ): Promise<T> {
+    trackStaticDataPath(path);
     const cached = this.cache.get(key, decode);
     if (cached) {
       try {
@@ -108,5 +125,5 @@ export class GameDataRepository {
 
 export const gameDataRepository = new GameDataRepository(
   createStaticDataClient(),
-  new VersionedCache("cooldown:v2", getSessionCacheStorage())
+  createReleaseCache()
 );

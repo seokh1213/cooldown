@@ -1,4 +1,6 @@
-import { VersionedCache, getSessionCacheStorage } from "@/data/cache/versionedCache";
+import { VersionedCache } from "@/data/cache/versionedCache";
+import { createReleaseCache } from "@/data/cache/releaseCache";
+import { trackStaticDataPath } from "@/pwa/staticDataRevision";
 import {
   decodeChampionDetail,
   decodeChampionIndex,
@@ -29,6 +31,7 @@ export class ChampionRepository {
     identity: StaticDataIdentity,
     locale: DataLocale
   ): Promise<ChampionIndexV2> {
+    trackStaticDataPath(`data/${identity.patchVersion}/champions/${locale}/index.json`);
     const key = `champions:${staticDataIdentityKey(identity)}:${locale}:index`;
     const cached = this.cache.get(key, decodeChampionIndex);
     if (cached) {
@@ -53,7 +56,8 @@ export class ChampionRepository {
     locale: DataLocale,
     championId: string
   ): Promise<ChampionDetailV2> {
-    const key = `champions:${staticDataIdentityKey(identity)}:${locale}:${championId}`;
+    trackStaticDataPath(`data/${identity.patchVersion}/champions/${locale}/${championId}.json`);
+    const key = `champions:forms-v1:${staticDataIdentityKey(identity)}:${locale}:${championId}`;
     const cached = this.cache.get(key, decodeChampionDetail);
     if (cached) {
       try {
@@ -101,5 +105,5 @@ export class ChampionRepository {
 
 export const championRepository = new ChampionRepository(
   createStaticDataClient(),
-  new VersionedCache("cooldown:v2", getSessionCacheStorage())
+  createReleaseCache()
 );

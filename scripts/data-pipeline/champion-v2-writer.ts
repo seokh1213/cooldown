@@ -10,6 +10,7 @@ import {
   buildChampionIndexV2,
 } from "./champion-data-v2";
 import type { ChampionById, SpellDataByChampion } from "./champion-source";
+import { buildChampionProfile } from "./champion-profile";
 
 export interface ChampionV2WriterOptions {
   versionDir: string;
@@ -30,6 +31,8 @@ export function writeChampionV2Dataset(
   );
   const outputDir = path.join(options.versionDir, "champions", options.locale);
   fs.mkdirSync(outputDir, { recursive: true });
+  const profileDir = path.join(options.versionDir, "champion-profiles", options.locale);
+  fs.mkdirSync(profileDir, { recursive: true });
 
   const details = options.championIds.map((championId) => {
     const normalized = normalizedById.get(championId);
@@ -46,6 +49,11 @@ export function writeChampionV2Dataset(
       normalized,
       spellData,
     });
+    const profile = buildChampionProfile({
+      schemaVersion: 2, patchVersion: options.patchVersion, sources: options.sources,
+      locale: options.locale, champion,
+    });
+    fs.writeFileSync(path.join(profileDir, `${championId}.json`), JSON.stringify(profile, null, 2), "utf8");
     fs.writeFileSync(
       path.join(outputDir, `${championId}.json`),
       JSON.stringify(detail, null, 2),

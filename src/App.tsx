@@ -15,7 +15,7 @@ export default function App() {
   const [pwaUpdateAvailable, setPwaUpdateAvailable] = useState(false);
 
   useEffect(() => subscribeToPWAUpdate(() => {
-    if (preferences.autoUpdateEnabled) void applyPWAUpdate(true);
+    if (preferences.autoUpdateEnabled) void applyPWAUpdate();
     else setPwaUpdateAvailable(true);
   }), [preferences.autoUpdateEnabled]);
 

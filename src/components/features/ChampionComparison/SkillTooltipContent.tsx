@@ -3,6 +3,7 @@ import { spellIconUrl } from "@/data/assets/riotAssetUrls";
 import { SKILL_LETTERS } from "./constants";
 import { SafeBlockHtml } from "@/components/ui/safe-html";
 import { AbilityStructuredDetails } from "./AbilityStructuredDetails";
+import { AbilityFormDetails } from "./AbilityFormDetails";
 
 interface SkillTooltipContentProps {
   skill?: ChampionSpell;
@@ -91,6 +92,7 @@ function ActiveSkillHeader(props: SkillTooltipContentProps & { skill: ChampionSp
 function ActiveSkillContent(props: SkillTooltipContentProps) {
   const { skill } = props;
   if (!skill) return null;
+  if (skill.forms) return <AbilityFormDetails forms={skill.forms} />;
   return (
     <>
       <ActiveSkillHeader {...props} skill={skill} />

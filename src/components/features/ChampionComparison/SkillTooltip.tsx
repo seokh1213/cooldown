@@ -20,6 +20,7 @@ import { VisuallyHidden } from "@/components/ui/visually-hidden";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { SKILL_LETTERS } from "./constants";
 import { SkillTooltipContent } from "./SkillTooltipContent";
+import { AbilityFormIcon } from "./AbilityFormIcon";
 import { getCooldownText, getCostText } from "./utils";
 import { useDeviceType } from "@/hooks/useDeviceType";
 import { useTranslation } from "@/i18n";
@@ -50,7 +51,7 @@ export function SkillTooltip({
   const isMobile = deviceType === "mobile";
   const [open, setOpen] = React.useState(false);
   const [tooltipOpen, setTooltipOpen] = React.useState(false);
-  const triggerRef = React.useRef<HTMLDivElement>(null);
+  const triggerRef = React.useRef<HTMLButtonElement>(null);
   const closeTimeoutRef = React.useRef<number | null>(null);
   const tooltipIdRef = React.useRef<string>("");
   const [desktopSide, setDesktopSide] = React.useState<"top" | "bottom">("bottom");
@@ -172,20 +173,15 @@ export function SkillTooltip({
   }, []);
 
   const triggerButton = (
-    <div 
+    <button
+      type="button"
+      aria-label={passive ? passive.name : SKILL_LETTERS[skillIdx] + " " + (skill?.name ?? "")}
       ref={triggerRef}
       className={`flex flex-col items-center gap-0.5 p-1 -m-1 touch-manipulation ${isMobile ? "cursor-pointer" : "cursor-help"}`}
       onClick={(e) => {
-        if (isMobile) {
-          e.stopPropagation();
-          setOpen((prev) => !prev);
-        }
-      }}
-      onTouchStart={(e) => {
-        if (isMobile) {
-          e.stopPropagation();
-          setOpen((prev) => !prev);
-        }
+        e.stopPropagation();
+        setTooltipOpen(false);
+        setOpen(true);
       }}
       onPointerEnter={() => {
         if (!isMobile) {
@@ -209,17 +205,17 @@ export function SkillTooltip({
         </>
       ) : skill ? (
         <>
-          <img
+          {skill.forms ? <AbilityFormIcon forms={skill.forms} label={SKILL_LETTERS[skillIdx]} className={iconSize} /> : <img
             src={spellIconUrl(ddragonVersion, skill.id)}
             alt={SKILL_LETTERS[skillIdx]}
             className={cn(iconSize, "rounded")}
-          />
+          />}
           <span className={cn(textSize, "font-semibold")}>
             {SKILL_LETTERS[skillIdx]}
           </span>
         </>
       ) : null}
-    </div>
+    </button>
   );
 
   const content = (
@@ -237,6 +233,7 @@ export function SkillTooltip({
   const skillDialog = (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent
+        onCloseAutoFocus={(event) => { event.preventDefault(); triggerRef.current?.focus(); }}
         className={cn(
           isMobile
             ? "w-[calc(100vw-32px)] max-w-lg h-[70vh] max-h-[70vh]"

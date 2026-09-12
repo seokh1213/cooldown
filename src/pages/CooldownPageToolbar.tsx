@@ -1,4 +1,4 @@
-import { Calculator, RotateCcw } from "lucide-react";
+import { Swords, RotateCcw } from "lucide-react";
 import { useTranslation } from "@/i18n";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -8,7 +8,7 @@ export function CooldownPageToolbar(props: {
   activeTab: CooldownViewTab;
   onSelectTab: (tab: CooldownViewTab) => void;
   onReset: () => void;
-  onSimulate?: () => void;
+  onCompare?: () => void;
 }) {
   const { t } = useTranslation();
   return (
@@ -35,10 +35,10 @@ export function CooldownPageToolbar(props: {
           </TabsList>
         </Tabs>
         <div className="flex shrink-0 items-center gap-1">
-          {props.onSimulate && (
-            <Button variant="ghost" size="sm" onClick={props.onSimulate} className="flex items-center gap-1.5 text-primary hover:bg-primary/10">
-              <Calculator aria-hidden="true" className="h-3.5 w-3.5" />
-              <span className="text-[10px]">{t.pages.simulation.useInSimulation}</span>
+          {props.onCompare && (
+            <Button variant="ghost" size="sm" onClick={props.onCompare} className="flex items-center gap-1.5 text-primary hover:bg-primary/10">
+              <Swords aria-hidden="true" className="h-3.5 w-3.5" />
+              <span className="text-[10px]">{t.comparison.open}</span>
             </Button>
           )}
           <Button

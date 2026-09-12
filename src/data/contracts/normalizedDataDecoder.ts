@@ -35,6 +35,39 @@ function assertArrayFields(
   }
 }
 
+function finiteNumber(value: unknown): value is number {
+  return typeof value === "number" && Number.isFinite(value);
+}
+
+function assertItemEffect(value: unknown): void {
+  if (!isRecord(value) || typeof value.id !== "string" || typeof value.name !== "string" || typeof value.description !== "string" || !["passive", "active", "mythicPassive", "aura"].includes(String(value.kind))) {
+    throw new Error("Invalid normalized item effect description");
+  }
+  if (value.cooldownSeconds !== undefined && (!finiteNumber(value.cooldownSeconds) || value.cooldownSeconds < 0)) {
+    throw new Error("Invalid normalized item effect cooldown");
+  }
+  if (value.healthDamage !== undefined) {
+    const health = value.healthDamage;
+    if (!isRecord(health) || health.health !== "current" || !["physical", "magical", "true"].includes(String(health.damageType)) || !finiteNumber(health.melee) || !finiteNumber(health.ranged) || health.melee < 0 || health.ranged < 0) {
+      throw new Error("Invalid normalized item health damage");
+    }
+  }
+  if (value.damage === undefined) return;
+  const damage = value.damage;
+  if (!isRecord(damage) || !["physical", "magical", "true"].includes(String(damage.damageType)) || !Array.isArray(damage.valuesByLevel) || !damage.valuesByLevel.every(finiteNumber)) {
+    throw new Error("Invalid normalized item effect damage");
+  }
+  if (damage.durationSeconds !== undefined && (!finiteNumber(damage.durationSeconds) || damage.durationSeconds < 0)) {
+    throw new Error("Invalid normalized item effect duration");
+  }
+  if (damage.conditions !== undefined && (!Array.isArray(damage.conditions) || !damage.conditions.every((condition) => typeof condition === "string"))) {
+    throw new Error("Invalid normalized item effect conditions");
+  }
+  if (damage.scalings !== undefined && (!Array.isArray(damage.scalings) || !damage.scalings.every((scaling) => isRecord(scaling) && ["baseAttackDamage", "attackDamage", "abilityPower", "targetMaxHealth"].includes(String(scaling.stat)) && finiteNumber(scaling.coefficient)))) {
+    throw new Error("Invalid normalized item effect scalings");
+  }
+}
+
 export function decodeNormalizedItems(value: unknown): NormalizedItemDataFile {
   if (!isRecord(value)) throw new Error("Invalid normalized item data");
   decodeStaticDataMetadata(value);
@@ -57,6 +90,12 @@ export function decodeNormalizedItems(value: unknown): NormalizedItemDataFile {
     );
     if (record.damageEffects !== undefined && !Array.isArray(record.damageEffects)) {
       throw new Error("Invalid normalized item damage effects");
+    }
+    if (record.statDescriptions !== undefined && (!Array.isArray(record.statDescriptions) || !record.statDescriptions.every((line) => typeof line === "string"))) {
+      throw new Error("Invalid normalized item stat descriptions");
+    }
+    for (const effect of record.effects as unknown[]) {
+      assertItemEffect(effect);
     }
   }
   return value as unknown as NormalizedItemDataFile;

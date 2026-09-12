@@ -3,6 +3,7 @@ import type {
   ExtractedActiveSpellData,
 } from "../cdragon-active-spells";
 import { localizeActiveTooltip } from "../active-tooltip-data";
+import { buildAbilityForms } from "../ability-forms";
 import {
   requireMapValue,
   type ChampionsByLocale,
@@ -47,6 +48,8 @@ function applyActiveTooltip(
   stringTable: StringTable,
   locale: DataLocale,
   siblings: Record<string, CommunityDragonSpellData>,
+  aliases: Record<string, ExtractedActiveSpellData>,
+  cdragonVersion: string,
 ): void {
   champion.spells?.forEach((spell, index) => {
     const source = activeSpells[index];
@@ -74,6 +77,7 @@ function applyActiveTooltip(
     spell.tooltipDiagnostics = localized.unresolvedTokens.length > 0
       ? { unresolvedTokens: localized.unresolvedTokens }
       : undefined;
+    spell.forms = buildAbilityForms({ champion, spell, slot: (["Q", "W", "E", "R"] as const)[index], locale, table: stringTable, aliases, cdragonVersion });
     if (localized.name) spell.name = localized.name;
   });
 }
@@ -85,6 +89,7 @@ export async function localizeActiveTooltips(
   activeSpells: readonly ExtractedActiveSpellData[],
   /** `{{ spell.<이름>:<변수> }}` 참조용 형제 스킬 맵 */
   siblings: Record<string, CommunityDragonSpellData>,
+  aliases: Record<string, ExtractedActiveSpellData>,
 ): Promise<void> {
   await Promise.all(
     PASSIVE_TOOLTIP_LOCALES.map(async (locale) => {
@@ -100,6 +105,8 @@ export async function localizeActiveTooltips(
           await fetchStringTable(cdragonVersion, locale),
           locale,
           siblings,
+          aliases,
+          cdragonVersion,
         );
       } catch (error) {
         console.warn(

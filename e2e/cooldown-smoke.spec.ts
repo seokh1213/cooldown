@@ -42,6 +42,9 @@ test("serves a lazy route directly under the Pages base path", async ({ page }) 
   await page.goto("./encyclopedia");
   await expect(page).toHaveURL(/\/cooldown\/encyclopedia$/);
   await expect(page.getByRole("heading", { name: "백과사전" })).toBeVisible();
+  await expect(page.getByRole("tab", { name: "챔피언", exact: true })).toHaveAttribute("data-state", "active");
+  await expect(page.locator("[data-champion-grid]")).toBeVisible();
+  await page.getByRole("tab", { name: "룬 백과", exact: true }).click();
   await expect(page.getByText("집중 공격", { exact: true }).first()).toBeVisible();
   await page.getByRole("tab", { name: "아이템 백과" }).click();
   await expect(page.getByAltText("롱소드").first()).toBeVisible();
@@ -58,8 +61,9 @@ test("installs the PWA and serves a direct route offline", async ({ page, contex
   await page.reload();
   await expect.poll(() => page.evaluate(() => Boolean(navigator.serviceWorker.controller)))
     .toBe(true);
+  const manifest = await (await page.request.get("./data/version.json")).json();
   const cachedChampionUrl = new URL(
-    "data/26.17/champions/ko_KR/MonkeyKing.json",
+    `data/${manifest.patchVersion}/champions/ko_KR/MonkeyKing.json`,
     baseURL,
   ).href;
   await expect.poll(() => page.evaluate(async (url) => (await fetch(url)).status, cachedChampionUrl))
@@ -280,20 +284,19 @@ test("restores the complete simulation from its URL", async ({ page }) => {
   await expect(page.getByLabel("현재 체력")).toHaveValue("777");
 });
 
-test("hands a selected champion off to the simulation", async ({ page }) => {
+test("hands a selected champion off to the separate VS page", async ({ page }) => {
   await page.goto("./");
   await selectWukong(page);
-  await page.getByRole("button", { name: "이 조합으로 계산" }).click();
-  await expect(page).toHaveURL(/\/simulation\?.*a=MonkeyKing/);
-  await expect(page.getByText("Q: 파쇄격")).toBeVisible();
+  await page.getByRole("button", { name: "VS 화면에서 비교" }).click();
+  await expect(page).toHaveURL(/\/vs\?.*a=MonkeyKing/);
+  await expect(page.getByTestId("vs-mine-Q")).toContainText("파쇄격");
 });
 
-test("hands an encyclopedia item off to the simulation", async ({ page }) => {
+test("shows an item without a simulation entry point", async ({ page }) => {
   await page.goto("./encyclopedia?tab=items");
   await page.getByRole("button", { name: /롱소드/ }).first().click();
-  await page.getByRole("button", { name: "시뮬레이션 첫 슬롯에 담기" }).click();
-  await expect(page).toHaveURL(/\/simulation\?.*i=1036/);
-  await expect(page.getByRole("button", { name: "롱소드" })).toBeVisible();
+  await expect(page.getByTestId("item-detail").getByRole("heading", { name: "롱소드" })).toBeVisible();
+  await expect(page.getByRole("button", { name: "시뮬레이션 첫 슬롯에 담기" })).toHaveCount(0);
 });
 
 test("keeps the main workflow fully localized in Chinese", async ({ page }) => {

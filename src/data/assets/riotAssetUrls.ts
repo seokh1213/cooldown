@@ -1,6 +1,9 @@
 export const championIconUrl = (ddragonVersion: string, fileName: string) =>
   `https://ddragon.leagueoflegends.com/cdn/${ddragonVersion}/img/champion/${fileName}.png`;
 
+export const championSplashUrl = (championId: string, skinNum: number) =>
+  `https://ddragon.leagueoflegends.com/cdn/img/champion/splash/${championId}_${skinNum}.jpg`;
+
 export const passiveIconUrl = (ddragonVersion: string, fileName: string) =>
   `https://ddragon.leagueoflegends.com/cdn/${ddragonVersion}/img/passive/${fileName}`;
 

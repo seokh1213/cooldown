@@ -36,7 +36,7 @@ function Layout({ children, nav }: LayoutProps) {
       <SidebarRail className="transition-[left,right]" />
       
       <SidebarInset 
-        className="flex flex-col transition-[margin] duration-300 ease-in-out"
+        className="flex flex-col overflow-clip transition-[margin] duration-300 ease-in-out"
         style={{
           marginLeft: deviceType === "mobile" ? "0" : "4rem", // 모바일에서는 0, PC/태블릿에서는 64px
         }}
@@ -57,7 +57,7 @@ function Layout({ children, nav }: LayoutProps) {
         <main
           id="main-content"
           tabIndex={-1}
-          className="flex-1 w-full min-w-0 overflow-x-hidden pt-[60px]"
+          className="flex-1 w-full min-w-0 overflow-x-clip pt-[60px]"
         >
           {children}
         </main>

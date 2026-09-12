@@ -13,6 +13,9 @@ interface ImportMetaEnv {
   readonly DEV: boolean;
   readonly MODE: string;
   readonly VITE_DEPLOYMENT_VERSION?: string;
+  readonly VITE_APP_VERSION?: string;
+  readonly VITE_DATA_VERSION?: string;
+  readonly VITE_RELEASE_ID?: string;
 }
 
 interface ImportMeta {
@@ -31,6 +34,5 @@ declare module 'virtual:pwa-register' {
 
   export function registerSW(options?: RegisterSWOptions): (reloadPage?: boolean) => Promise<void>
 }
-
 
 

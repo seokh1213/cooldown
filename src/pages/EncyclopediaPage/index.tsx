@@ -5,9 +5,11 @@ import { RunesTab } from "./RunesTab";
 import { ItemsTab } from "./ItemsTab";
 import { SummonerTab } from "./SummonerTab";
 import { FormulasTab } from "./FormulasTab";
+import { ChampionsTab } from "./ChampionsTab";
 
 function isValidTab(tab: string | null): tab is EncyclopediaTab {
   return (
+    tab === "champions" ||
     tab === "runes" ||
     tab === "items" ||
     tab === "summoner" ||
@@ -20,16 +22,17 @@ function EncyclopediaPageContent({
   patchVersion,
   ddragonVersion,
   sources,
+  championList,
 }: EncyclopediaPageProps) {
   const [searchParams, setSearchParams] = useSearchParams();
   const requestedTab = searchParams.get("tab");
   const activeTab: EncyclopediaTab = isValidTab(requestedTab)
     ? requestedTab
-    : "runes";
+    : "champions";
 
   const selectTab = (tab: EncyclopediaTab) => {
     const next = new URLSearchParams(searchParams);
-    if (tab === "runes") next.delete("tab");
+    if (tab === "champions") next.delete("tab");
     else next.set("tab", tab);
     setSearchParams(next, { replace: true });
   };
@@ -44,7 +47,9 @@ function EncyclopediaPageContent({
         />
       </div>
 
-      {/* Runes / Items encyclopedia tabs */}
+      {activeTab === "champions" && (
+        <ChampionsTab championList={championList} patchVersion={patchVersion} sources={sources} lang={lang} ddragonVersion={ddragonVersion} />
+      )}
       {activeTab === "runes" && (
         <RunesTab patchVersion={patchVersion} sources={sources} lang={lang} />
       )}

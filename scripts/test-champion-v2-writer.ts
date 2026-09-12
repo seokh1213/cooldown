@@ -12,6 +12,8 @@ const champion = {
   name: "시험",
   title: "테스트 챔피언",
   tags: ["Mage"],
+  lore: "<p>배경 이야기</p>",
+  skins: [{ num: 0, name: "default" }, { num: 7, name: "스킨" }, { num: 8, name: "크로마", parentSkin: 7 }],
   passive: {
     name: "지속 효과",
     description: "패시브",
@@ -62,6 +64,10 @@ try {
   const detailPath = path.join(outputRoot, "champions", "ko_KR", "Test.json");
   const indexPath = path.join(outputRoot, "champions", "ko_KR", "index.json");
   assert.equal(count, 1);
+  const profile = JSON.parse(fs.readFileSync(path.join(outputRoot, "champion-profiles", "ko_KR", "Test.json"), "utf8"));
+  assert.equal(profile.champion.lore, "배경 이야기");
+  assert.deepEqual(profile.champion.skins, [{ num: 0, name: "default" }, { num: 7, name: "스킨" }]);
+  assert.equal(profile.sources.ddragon, "16.17.1");
   assert.equal(JSON.parse(fs.readFileSync(detailPath, "utf-8")).champion.id, "Test");
   assert.equal(JSON.parse(fs.readFileSync(indexPath, "utf-8")).champions.length, 1);
   assert.equal(fs.existsSync(path.join(outputRoot, "spells", "Test.json")), false);
