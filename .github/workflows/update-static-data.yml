@@ -2,8 +2,10 @@ name: Update Static Data
 
 on:
   schedule:
-    # 매시 정각 (UTC 기준)
-    - cron: '0 * * * *'
+    # 매시 17분 (UTC 기준).
+    # 정각은 cron 이 가장 몰리는 분이라 GitHub 이 공유 러너 부하로 회차를 버린다.
+    # 실제로 */30 을 걸어 둔 동안 하루 48회 중 6~8회만 실행됐다. 붐비지 않는 분으로 옮긴다.
+    - cron: '17 * * * *'
   workflow_dispatch: # 수동 실행 가능
   push:
     branches:
