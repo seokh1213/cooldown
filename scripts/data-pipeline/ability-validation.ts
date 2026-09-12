@@ -18,6 +18,10 @@ export interface AbilityValidationIssue {
   kind: IssueKind;
   ddragonValues?: number[];
   cdragonValues?: number[];
+  /** 게임 클라이언트 데이터 값. 불일치가 났을 때만 채운다. */
+  clientValues?: number[];
+  /** 배포 값이 클라이언트 데이터로 뒷받침되는가 */
+  corroborated?: boolean;
   allowlisted: boolean;
   reason?: string;
 }
