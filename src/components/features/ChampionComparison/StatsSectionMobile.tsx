@@ -9,6 +9,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { getStatFields } from "./constants";
+import { ChampionStatValue } from "./ChampionStatValue";
 import { SectionProps } from "./types";
 import { useTranslation } from "@/i18n";
 
@@ -27,7 +28,8 @@ export function StatsSectionMobile({
     
     return (
       <div className="overflow-x-auto -mx-4 px-4">
-        <div className="min-w-full">
+        <p className="mb-3 text-xs leading-relaxed text-muted-foreground">{t.comparison.baseGrowth} · {t.comparison.growthNote}</p>
+      <div className="min-w-full">
           <div className="relative">
             <div className="border border-border/30 rounded-lg overflow-hidden">
               <Table className="border-collapse table-fixed w-auto min-w-full">
@@ -87,7 +89,7 @@ export function StatsSectionMobile({
                           valueA === maxValue && maxValue !== minValue && "text-primary font-semibold",
                           valueA === minValue && maxValue !== minValue && "text-muted-foreground"
                         )}>
-                          {field.format(valueA)}
+                          <ChampionStatValue field={field} stats={championA.stats} />
                         </TableCell>
                         <TableCell className="p-1.5 border-r border-border/30 bg-muted/20 select-none"></TableCell>
                         <TableCell className={cn(
@@ -95,7 +97,7 @@ export function StatsSectionMobile({
                           valueB === maxValue && maxValue !== minValue && "text-primary font-semibold",
                           valueB === minValue && maxValue !== minValue && "text-muted-foreground"
                         )}>
-                          {field.format(valueB)}
+                          <ChampionStatValue field={field} stats={championB.stats} />
                         </TableCell>
                       </TableRow>
                     );
@@ -111,6 +113,7 @@ export function StatsSectionMobile({
 
   return (
     <div className="overflow-x-auto -mx-4 px-4">
+      <p className="mb-3 text-xs leading-relaxed text-muted-foreground">{t.comparison.baseGrowth} · {t.comparison.growthNote}</p>
       <div className="min-w-full">
         <div className="relative">
           <div className="border border-border/30 rounded-lg overflow-hidden">
@@ -168,7 +171,7 @@ export function StatsSectionMobile({
                               isMin && "text-muted-foreground"
                             )}
                           >
-                            {field.format(value)}
+                            <ChampionStatValue field={field} stats={champion.stats} />
                           </TableCell>
                         );
                       })}

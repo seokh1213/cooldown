@@ -105,6 +105,7 @@ export interface AbilitySimulation {
 }
 
 export interface AbilityV2 {
+  forms?: AbilityForm[];
   slot: AbilitySlot;
   id: string;
   name: string;
@@ -125,6 +126,20 @@ export interface AbilityV2 {
   diagnostics: {
     unresolvedTokens: string[];
   };
+}
+
+/** Separate castable forms; keep their source identity and scaling rank explicit. */
+export interface AbilityForm {
+  key: "A" | "B";
+  label: string;
+  id: string;
+  name: string;
+  iconPath: string;
+  iconVersion: string;
+  bodyHtml: string;
+  cooldownSeconds: number[];
+  tooltipRankSource: AbilitySlot;
+  diagnostics: { unresolvedTokens: string[] };
 }
 
 export interface ChampionDetailV2 {

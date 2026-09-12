@@ -6,6 +6,7 @@ import {
   decodeChampionIndex,
 } from "../src/data/contracts/championDataDecoder";
 import { decodeDataManifest } from "../src/data/contracts/dataManifest";
+import { decodeChampionProfile } from "../src/data/contracts/championProfile";
 import {
   decodeNormalizedItems,
   decodeNormalizedRunes,
@@ -24,6 +25,7 @@ const manifest = decodeDataManifest(
 );
 const releaseDirectory = path.join(dataDirectory, manifest.patchVersion);
 let checkedFiles = 0;
+let expectedFiles = 0;
 
 for (const locale of DATA_LOCALES) {
   const championDirectory = path.join(releaseDirectory, "champions", locale);
@@ -32,12 +34,17 @@ for (const locale of DATA_LOCALES) {
   );
   assertStaticDataIdentity(index, manifest, locale);
   checkedFiles += 1;
+  expectedFiles += 4 + index.champions.length * 2;
 
   for (const champion of index.champions) {
     const detail = decodeChampionDetail(
       await readJson(path.join(championDirectory, `${champion.id}.json`)),
     );
     assertStaticDataIdentity(detail, manifest, locale);
+    checkedFiles += 1;
+    const profile = decodeChampionProfile(await readJson(path.join(releaseDirectory, "champion-profiles", locale, champion.id + ".json")));
+    assertStaticDataIdentity(profile, manifest, locale);
+    assert.equal(profile.champion.id, champion.id);
     checkedFiles += 1;
   }
 
@@ -52,5 +59,5 @@ for (const locale of DATA_LOCALES) {
   }
 }
 
-assert.equal(checkedFiles, 531);
+assert.equal(checkedFiles, expectedFiles);
 console.log(`✅ ${checkedFiles} runtime files match the manifest source identity`);

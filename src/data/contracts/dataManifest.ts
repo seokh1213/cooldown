@@ -1,4 +1,4 @@
-import type { StaticDataSources } from "./staticData";
+import type { StaticDataSources } from "./staticData.ts";
 
 export interface DataManifest {
   schemaVersion: 2;

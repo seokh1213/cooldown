@@ -1,6 +1,11 @@
 import type { Translations } from "./translationTypes";
+import { zhComparison, zhItemDetail } from "./comparisonTranslations";
+import { zhChampionProfile } from "./championProfileTranslations";
 
 export const zhCNTranslations: Translations = {
+  championProfile: zhChampionProfile,
+    comparison: zhComparison,
+    itemDetail: zhItemDetail,
   app: {
     updateReady: "新版本已准备就绪。",
     updateDescription: "刷新应用即可更新到最新版本。",
@@ -24,7 +29,7 @@ export const zhCNTranslations: Translations = {
   },
   sidebar: {
     championCooldown: "英雄冷却时间",
-    encyclopedia: "符文与装备百科",
+    encyclopedia: "百科全书",
     simulation: "模拟器",
   },
   tutorial: {

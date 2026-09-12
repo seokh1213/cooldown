@@ -1,6 +1,11 @@
 import type { Translations } from "./translationTypes";
+import { koComparison, koItemDetail } from "./comparisonTranslations";
+import { koChampionProfile } from "./championProfileTranslations";
 
 export const koKRTranslations: Translations = {
+    championProfile: koChampionProfile,
+    comparison: koComparison,
+    itemDetail: koItemDetail,
     app: {
       updateReady: "새 버전이 준비되었습니다.",
       updateDescription: "앱을 새로고침하면 최신 버전으로 업데이트됩니다.",
@@ -30,7 +35,7 @@ export const koKRTranslations: Translations = {
     },
     sidebar: {
       championCooldown: "챔피언 쿨타임",
-      encyclopedia: "룬, 아이템 백과",
+      encyclopedia: "백과사전",
       simulation: "시뮬레이션",
     },
     tutorial: {

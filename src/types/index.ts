@@ -4,9 +4,11 @@ import type { AbilitySimulation } from "@/data/contracts/championData";
 export interface ChampionSkin {
   num: number;
   name: string;
+  parentSkin?: number;
 }
 
 export interface ChampionSpell {
+  forms?: import("@/data/contracts/championData").AbilityForm[];
   id: string;
   name?: string;
   maxrank: number;
@@ -67,6 +69,7 @@ export interface Champion {
   ddragonVersion?: string;
   hangul?: string;
   skins?: ChampionSkin[];
+  lore?: string;
   spells?: ChampionSpell[];
   passive?: ChampionPassive;
   // API에서 추가로 받을 수 있는 필드들 (타입 안정성을 위해 명시적으로 정의)

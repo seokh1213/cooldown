@@ -1,6 +1,7 @@
 import { defineConfig, devices } from "@playwright/test";
 
-const previewPort = process.env.PLAYWRIGHT_PORT ?? "4173";
+// Keep test deployments separate from the user's local PWA preview on 4173.
+const previewPort = process.env.PLAYWRIGHT_PORT ?? "4180";
 const baseURL = `http://127.0.0.1:${previewPort}/cooldown/`;
 
 export default defineConfig({
@@ -13,6 +14,7 @@ export default defineConfig({
     : "list",
   use: {
     baseURL,
+    channel: process.env.PLAYWRIGHT_CHANNEL,
     trace: "on-first-retry",
   },
   webServer: {

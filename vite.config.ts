@@ -2,17 +2,24 @@ import react from "@vitejs/plugin-react";
 import tailwindcss from "@tailwindcss/vite";
 import { defineConfig } from "vite";
 import { VitePWA } from "vite-plugin-pwa";
+import path from "node:path";
+import { createBuildRelease } from "./scripts/pwa/buildRelease.ts";
 
 const BASE_PATH = "/cooldown/";
 
-export default defineConfig(({ mode }) => ({
-  base: mode === "production" ? BASE_PATH : "/",
+export default defineConfig(({ mode }) => {
+  const publicDirectory = path.resolve(import.meta.dirname, process.env.COOLDOWN_PUBLIC_DIR ?? "public");
+  const { release, plugin, bridgeFile, bootstrapEntries } = createBuildRelease(import.meta.dirname, publicDirectory, mode);
+  return {
+  base: mode === "development" ? "/" : BASE_PATH,
+  publicDir: publicDirectory,
   plugins: [
     tailwindcss(),
     react(),
+    plugin,
     VitePWA({
       injectRegister: null,
-      registerType: "autoUpdate",
+      registerType: "prompt",
       includeAssets: [
         "favicon.ico",
         "favicon-16x16.png",
@@ -46,9 +53,27 @@ export default defineConfig(({ mode }) => ({
         ],
       },
       workbox: {
+        clientsClaim: true,
+        skipWaiting: false,
+        importScripts: [bridgeFile],
+        additionalManifestEntries: bootstrapEntries,
         cleanupOutdatedCaches: true,
         globPatterns: ["**/*.{js,css,html,png,svg,ico}"],
         runtimeCaching: [
+          {
+            urlPattern: /\/cooldown\/release\.json$/,
+            handler: "NetworkOnly",
+            options: { fetchOptions: { cache: "no-store" } },
+          },
+          {
+            urlPattern: /\/cooldown\/data\/releases\/[a-f0-9]{32}\//,
+            handler: "CacheFirst",
+            options: {
+              cacheName: "cooldown-game-data-releases-v1",
+              cacheableResponse: { statuses: [200] },
+              expiration: { maxEntries: 1200, maxAgeSeconds: 60 * 60 * 24 * 60 },
+            },
+          },
           {
             urlPattern: /\/cooldown\/data\/version\.json$/,
             handler: "NetworkFirst",
@@ -62,7 +87,7 @@ export default defineConfig(({ mode }) => ({
             urlPattern: /\/cooldown\/data\/(?!version\.json$).+/,
             handler: "CacheFirst",
             options: {
-              cacheName: "cooldown-game-data",
+              cacheName: "cooldown-game-data-forms-v1",
               cacheableResponse: { statuses: [0, 200] },
               expiration: {
                 maxEntries: 600,
@@ -72,17 +97,27 @@ export default defineConfig(({ mode }) => ({
           },
         ],
       },
-      devOptions: { enabled: true },
+      devOptions: { enabled: false },
     }),
   ],
   resolve: {
     alias: { "@": `${import.meta.dirname}/src` },
   },
-  build: { chunkSizeWarningLimit: 600 },
+  build: {
+    outDir: mode === "local-preview" ? "dev-dist/preview" : "dist",
+    chunkSizeWarningLimit: 600,
+  },
+  preview: {
+    headers: mode === "local-preview" ? { "Cache-Control": "no-store" } : {},
+  },
   define: {
+    "import.meta.env.VITE_APP_VERSION": JSON.stringify(mode === "development" ? "dev" : release.appVersion),
+    "import.meta.env.VITE_DATA_VERSION": JSON.stringify(mode === "development" ? "dev" : release.dataVersion),
+    "import.meta.env.VITE_RELEASE_ID": JSON.stringify(mode === "development" ? "dev" : release.releaseId),
     "import.meta.env.VITE_DEPLOYMENT_VERSION": JSON.stringify(
       process.env.VITE_DEPLOYMENT_VERSION ??
-        (mode === "production" ? "local" : "dev"),
+        (mode === "development" ? "dev" : "local"),
     ),
   },
-}));
+  };
+});

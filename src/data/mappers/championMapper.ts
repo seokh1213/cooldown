@@ -5,7 +5,7 @@ import type {
 } from "@/data/contracts/championData";
 import type { Champion, ChampionSpell } from "@/types";
 
-function toStats(detail: ChampionDetailV2): Record<string, number> {
+export function toChampionStats(detail: ChampionDetailV2): Record<string, number> {
   const stats = detail.champion.baseStats;
   return {
     hp: stats.health.base,
@@ -33,6 +33,7 @@ function toStats(detail: ChampionDetailV2): Record<string, number> {
 
 function toSpell(ability: AbilityV2): ChampionSpell {
   return {
+    forms: ability.forms,
     id: ability.id,
     name: ability.name,
     maxrank: ability.maxRank,
@@ -87,7 +88,7 @@ export function toChampion(detail: ChampionDetailV2): Champion {
     title: champion.title,
     ddragonVersion: detail.sources.ddragon,
     tags: champion.tags,
-    stats: toStats(detail),
+    stats: toChampionStats(detail),
     image: { full: `${champion.id}.png` },
     passive: {
       name: passive.name,

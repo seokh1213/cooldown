@@ -1,7 +1,7 @@
 import { copyFile, mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 
-const ROUTES = ["encyclopedia", "simulation"] as const;
+const ROUTES = ["encyclopedia", "vs", "simulation"] as const;
 
 export async function preparePagesArtifact(distDirectory: string): Promise<void> {
   const indexPath = path.join(distDirectory, "index.html");

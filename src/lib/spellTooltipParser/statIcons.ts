@@ -25,7 +25,7 @@ const ICON_BASE =
 const STAT_ICON_TOKEN = /\[\[si:([a-z]+)]]/g;
 
 const ICON_CLASS =
-  "inline-block h-[1em] w-[1em] align-[-0.15em] mr-[0.15em]";
+  "stat-icon inline-block h-[1em] w-[1em] align-[-0.15em] mr-[0.15em]";
 
 export function statIconToken(icon: string | undefined): string {
   return icon ? `[[si:${icon}]]` : "";

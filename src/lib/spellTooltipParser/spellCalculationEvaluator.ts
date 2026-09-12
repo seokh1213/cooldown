@@ -203,7 +203,7 @@ export function evaluateSpellCalculation(input: {
           ...inner,
           base: mul(inner.base, multiplier.base),
           statParts: inner.statParts.map((part) => ({
-            name: part.name,
+            ...part,
             ratio: mul(part.ratio, multiplier.base),
           })),
         };

@@ -170,6 +170,23 @@ function assertAbility(value: unknown, slot: AbilitySlot): void {
     throw new Error(`Invalid ${slot} ability data`);
   }
   assertSimulation(value.simulation);
+  if (value.forms !== undefined) assertAbilityForms(value.forms);
+}
+
+function assertAbilityForms(value: unknown): void {
+  if (!Array.isArray(value) || value.length !== 2) throw new Error("Invalid ability forms");
+  for (const [index, form] of value.entries()) {
+    if (!isRecord(form) || form.key !== (index === 0 ? "A" : "B") ||
+        typeof form.label !== "string" || typeof form.id !== "string" || typeof form.name !== "string" ||
+        typeof form.bodyHtml !== "string" || typeof form.iconPath !== "string" ||
+        typeof form.iconVersion !== "string" || !/^\d+\.\d+(?:\.\d+)?$/.test(form.iconVersion) ||
+        !/^assets\/characters\/[a-z0-9_/.-]+\.png$/.test(form.iconPath) || form.iconPath.includes("..") ||
+        !ABILITY_SLOTS.includes(form.tooltipRankSource as AbilitySlot) ||
+        !isRecord(form.diagnostics) || !Array.isArray(form.diagnostics.unresolvedTokens)) {
+      throw new Error("Invalid ability form");
+    }
+    assertFiniteNumbers(form.cooldownSeconds, "form cooldown");
+  }
 }
 
 export function decodeChampionDetail(value: unknown): ChampionDetailV2 {

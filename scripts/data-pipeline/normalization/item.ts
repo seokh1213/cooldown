@@ -3,6 +3,8 @@ import type { NormalizedItem } from "../../../src/types/combatNormalized";
 import { StatKey, type StatContribution } from "../../../src/types/combatStats";
 import { getNormalizationOverrides } from "./overrides";
 import { compileItemDamageEffects } from "./item-damage-effects";
+import { structureItemDescription } from "./item-description";
+import { attachItemEffectDetails } from "./item-effect-details";
 
 interface RawItem {
   name?: string;
@@ -99,13 +101,14 @@ function normalizeItem(
   const gold = item.gold ?? {};
   const availableOnMap11 = item.maps?.["11"];
   const damageEffects = compileItemDamageEffects(id, item.cdragonCalculation);
+  const description = item.description ?? item.cdragon?.description;
+  const structured = structureItemDescription(id, description);
   const normalized: NormalizedItem = {
     id,
     type: "item",
     name: item.name ?? id,
-    description: parseItemDescription(
-      item.description ?? item.cdragon?.description,
-    ),
+    description: parseItemDescription(description),
+    statDescriptions: structured.statDescriptions,
     iconPath: item.cdragon?.iconPath,
     price: typeof gold.base === "number" ? gold.base : 0,
     priceTotal: typeof gold.total === "number" ? gold.total : 0,
@@ -116,7 +119,7 @@ function normalizeItem(
     requiredChampion: item.cdragon?.requiredChampion ?? item.requiredChampion,
     requiredAlly: item.cdragon?.requiredAlly ?? item.requiredAlly,
     stats: mapStats(item.stats),
-    effects: [],
+    effects: attachItemEffectDetails({ id, effects: structured.effects, damage: damageEffects, calculation: item.cdragonCalculation }),
     ...(damageEffects.length > 0 ? { damageEffects } : {}),
     purchasable: gold.purchasable,
     inStore: item.inStore ?? item.cdragon?.inStore,

@@ -10,7 +10,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import { X, BookOpen, Clock, Calculator } from "lucide-react";
+import { X, BookOpen, Clock, Swords } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
@@ -24,7 +24,7 @@ interface SidebarProps {
 
 interface NavItem {
   path: string;
-  labelKey: "championCooldown" | "encyclopedia" | "simulation";
+  label: string;
   icon: React.ComponentType<{ className?: string }>;
 }
 
@@ -34,9 +34,9 @@ function Sidebar({ isOpen, isMobile, onClose }: SidebarProps) {
   const location = useLocation();
 
   const navItems: NavItem[] = [
-    { path: "/", labelKey: "championCooldown", icon: Clock },
-    { path: "/encyclopedia", labelKey: "encyclopedia", icon: BookOpen },
-    { path: "/simulation", labelKey: "simulation", icon: Calculator },
+    { path: "/", label: t.sidebar.championCooldown, icon: Clock },
+    { path: "/vs", label: t.comparison.title, icon: Swords },
+    { path: "/encyclopedia", label: t.sidebar.encyclopedia, icon: BookOpen },
   ];
 
   const handleNavigate = useCallback(
@@ -125,7 +125,7 @@ function Sidebar({ isOpen, isMobile, onClose }: SidebarProps) {
                               <SidebarMenuButton
                                 onClick={() => handleNavigate(item.path)}
                                 isActive={isActive}
-                                aria-label={t.sidebar[item.labelKey]}
+                                aria-label={item.label}
                                 aria-current={isActive ? "page" : undefined}
                                 className={cn(
                                   "w-full transition-colors duration-200 relative group/menu-item",
@@ -143,7 +143,7 @@ function Sidebar({ isOpen, isMobile, onClose }: SidebarProps) {
                               </SidebarMenuButton>
                             </TooltipTrigger>
                             <TooltipContent side="right" className="text-xs text-gray-500 dark:text-gray-400">
-                              {t.sidebar[item.labelKey]}
+                              {item.label}
                             </TooltipContent>
                           </Tooltip>
                         </div>
@@ -189,7 +189,7 @@ function Sidebar({ isOpen, isMobile, onClose }: SidebarProps) {
                                 ? "text-sidebar-foreground dark:text-sidebar-foreground font-semibold" 
                                 : "text-sidebar-foreground/70 dark:text-sidebar-foreground/80 group-hover/menu-item:text-sidebar-foreground dark:group-hover/menu-item:text-sidebar-foreground font-normal"
                             )}>
-                              {t.sidebar[item.labelKey]}
+                              {item.label}
                             </span>
                           </SidebarMenuButton>
                         </div>

@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/table";
 import ChampionSelector from "../ChampionSelector";
 import { getStatFields } from "./constants";
+import { ChampionStatValue } from "./ChampionStatValue";
 import { SectionProps } from "./types";
 import { Champion } from "@/types";
 import { useTranslation } from "@/i18n";
@@ -254,7 +255,7 @@ export function StatsSectionDesktop({
                           isMin && "text-muted-foreground"
                         )}
                       >
-                        {field.format(value)}
+                        <ChampionStatValue field={field} stats={champion.stats} />
                       </SortableCell>
                     );
                   })}
@@ -270,6 +271,7 @@ export function StatsSectionDesktop({
         </Table>
         </div>
       </DndContext>
+      <p className="mt-3 text-xs leading-relaxed text-muted-foreground">{t.comparison.baseGrowth} · {t.comparison.growthNote}</p>
       {showAddSlot && onAddChampion && championList && (
         <ChampionSelector
           championList={championList}

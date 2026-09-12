@@ -185,6 +185,7 @@ function buildActiveAbility(
   return {
     slot,
     id: spell.id,
+    forms: spell.forms,
     name: spell.name ?? normalized.spells[slot].name,
     maxRank: spell.maxrank,
     summary: spell.summary ?? spell.description ?? "",

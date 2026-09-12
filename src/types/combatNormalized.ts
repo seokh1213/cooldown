@@ -96,12 +96,21 @@ export interface NormalizedItemEffect {
   formulas?: Record<string, FormulaPart[]>;
   conditions?: string[];
   unresolved?: boolean;
+  cooldownSeconds?: number;
+  damage?: NormalizedDamageEffect;
+  healthDamage?: {
+    damageType: "physical" | "magical" | "true";
+    health: "current";
+    melee: number;
+    ranged: number;
+  };
 }
 
 export interface NormalizedItem extends NormalizedEntityBase {
   type: "item";
   name: string;
   description?: string;
+  statDescriptions?: string[];
   price: number;
   priceTotal: number;
   tags: string[];

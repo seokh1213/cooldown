@@ -18,6 +18,7 @@ import {
 import ChampionSelector from "../ChampionSelector";
 import { SectionProps } from "./types";
 import { SkillTooltip } from "./SkillTooltip";
+import { SkillRankCooldown } from "./SkillRankCooldown";
 import { getCooldownForLevel } from "./utils";
 import { useTranslation } from "@/i18n";
 import {
@@ -345,9 +346,7 @@ export function SkillsSectionDesktop({
                             className="flex flex-col items-center min-w-[32px]"
                           >
                             <span className="text-xs font-semibold">
-                              {skillData.cooldown !== ""
-                                ? `${skillData.cooldown}${t.common.seconds}`
-                                : "-"}
+                              <SkillRankCooldown skill={skillData.skill} rank={row.level} cooldown={skillData.cooldown} />
                             </span>
                           </div>
                         ))}

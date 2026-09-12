@@ -149,6 +149,7 @@ async function fetchCDragonChampionData(
       cdragonVersion,
       activeSpells.ordered,
       siblings,
+      activeSpells.aliases,
     ),
     localizePassiveTooltips(
       championsByLocale,

@@ -10,6 +10,7 @@ import type { AppTheme } from "./useAppPreferences";
 const ChampionCooldownPage = lazy(() => import("@/pages/ChampionCooldownPage"));
 const EncyclopediaPage = lazy(() => import("@/pages/EncyclopediaPage"));
 const SimulationPage = lazy(() => import("@/pages/SimulationPage"));
+const VsPage = lazy(() => import("@/pages/VsPage"));
 const OGPreviewPage = lazy(() => import("@/pages/OGPreviewPage"));
 
 interface AppRouterProps {
@@ -61,9 +62,14 @@ export function AppRouter(props: AppRouterProps) {
           }
         />
         <Route
+          path="vs"
+          element={<VsPage lang={language} championList={runtime.championList} patchVersion={runtime.patchVersion} sources={runtime.sources} />}
+        />
+        <Route
           path="encyclopedia"
           element={
             <EncyclopediaPage
+              championList={runtime.championList}
               lang={language}
               patchVersion={runtime.patchVersion}
               ddragonVersion={runtime.sources.ddragon}

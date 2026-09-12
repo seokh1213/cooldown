@@ -1,5 +1,4 @@
 import { useEffect, useMemo, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { Search } from "lucide-react";
 import type { DataLocale, StaticDataSources } from "@/data/contracts/staticData";
 import { getNormalizedItems } from "@/data/queries/gameDataQueries";
@@ -90,7 +89,6 @@ function ItemGrid(props: {
 
 export function ItemsTab({ patchVersion, sources, ddragonVersion, lang }: ItemsTabProps) {
   const { t } = useTranslation();
-  const navigate = useNavigate();
   const isMobile = useDeviceType() === "mobile";
   const [items, setItems] = useState<Item[] | null>(null);
   const [storeItems, setStoreItems] = useState<Item[] | null>(null);
@@ -146,7 +144,6 @@ export function ItemsTab({ patchVersion, sources, ddragonVersion, lang }: ItemsT
       ddragonVersion={ddragonVersion}
       locale={lang}
       onSelect={setSelectedItem}
-      onUseInSimulation={() => navigate(`/simulation?i=${selectedItem.id}`)}
     />
   );
 
@@ -182,7 +179,7 @@ export function ItemsTab({ patchVersion, sources, ddragonVersion, lang }: ItemsT
             <ItemGrid itemsByTier={itemsByTier} ddragonVersion={ddragonVersion} selectedId={selectedItem?.id} tierLabel={tierLabel} onSelect={setSelectedItem} />
           </ScrollArea>
         </div>
-        <div className="md:w-[340px] hidden md:flex flex-col p-3 min-h-0">
+        <div className="hidden min-h-0 flex-col p-4 md:flex md:w-[42%] md:min-w-[320px] lg:w-[420px]">
           {detail ?? <div className="text-xs text-muted-foreground h-full flex items-center justify-center text-center px-4">{t.encyclopedia.items.detailEmpty}</div>}
         </div>
       </div>
