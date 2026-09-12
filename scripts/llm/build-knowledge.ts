@@ -9,7 +9,12 @@
  */
 import * as fs from "fs";
 import * as path from "path";
-import { loadStaticData, PUBLIC_DATA_ROOT, type LlmLocale } from "./lib/data";
+import {
+  loadStaticData,
+  PUBLIC_DATA_ROOT,
+  resolvePatchVersion,
+  type LlmLocale,
+} from "./lib/data";
 import { createChampionCardBuilder, type ChampionCard } from "./lib/facts";
 
 export interface ChampionCardFile {
@@ -25,10 +30,32 @@ function parseLang(argv: string[]): LlmLocale {
   return (idx >= 0 ? argv[idx + 1] : "ko_KR") as LlmLocale;
 }
 
+/**
+ * 위키에서 받아 둔 대시 판정을 읽는다. 없으면 빈 표를 돌려주고 툴팁 추정으로 내려간다.
+ * `npm run llm:fetch-dashes` 로 만든다.
+ */
+function loadDashes(): Record<string, { dash: boolean; self: boolean }> {
+  const file = path.join(PUBLIC_DATA_ROOT, resolvePatchVersion(), "llm", "ability-dashes.json");
+  if (!fs.existsSync(file)) {
+    console.warn("대시 판정 파일 부재 — 툴팁 추정으로 대체한다 (npm run llm:fetch-dashes)");
+    return {};
+  }
+  return (
+    JSON.parse(fs.readFileSync(file, "utf8")) as {
+      abilities?: Record<string, { dash: boolean; self: boolean }>;
+    }
+  ).abilities ?? {};
+}
+
 function main() {
   const lang = parseLang(process.argv.slice(2));
   const data = loadStaticData(lang);
-  const builder = createChampionCardBuilder(data.champions);
+  const builder = createChampionCardBuilder(
+    data.champions,
+    data.riotMeta,
+    data.wikiMeta,
+    loadDashes(),
+  );
   const cards = builder.buildAll();
 
   const outDir = path.join(PUBLIC_DATA_ROOT, data.patch, "llm");

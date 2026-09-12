@@ -132,7 +132,7 @@ export function buildUserPrompt(ctx: MatchupContext): string {
   }
   sections.push(`[검증 팁]\n${tipsToText(ctx.tips, ctx.patch)}`);
   sections.push(
-    `[조심할 스킬 우선순위 — 이 순서를 따르십시오]\n${threatOrderToText(deriveThreatOrder(ctx.enemy))}`,
+    `[조심할 스킬 우선순위 — 이 순서를 따르십시오]\n${threatOrderToText(deriveThreatOrder(ctx.enemy), ctx.enemy.name)}`,
   );
   const recommendation = deriveRecommendation(ctx);
   if (recommendation.length) {
@@ -240,7 +240,7 @@ export function buildSections(ctx: MatchupContext): PromptSection[] {
       .filter((l) => l.includes("군중 제어") || l.includes("최장 기본 스킬") || l.includes("고정 피해") || l.includes("사거리"))
       .map((l) => `- ${l}`)
       .join("\n")}`,
-    `[조심할 스킬 우선순위 — 이 순서와 이유를 그대로 쓰십시오]\n${threatOrderToText(deriveThreatOrder(ctx.enemy))}`,
+    `[조심할 스킬 우선순위 — 이 순서와 이유를 그대로 쓰십시오]\n${threatOrderToText(deriveThreatOrder(ctx.enemy), ctx.enemy.name)}`,
     `[지식 카드 — 표현을 그대로 따르십시오]\n${playbookToText(laneKnowledge, ctx.me.name, ctx.enemy.name, ctx.patch)}`,
     ctx.tips.filter((t) => t.category !== "verdict").length
       ? `[검증 팁]\n${tipsToText(
@@ -304,7 +304,7 @@ export function buildChain(ctx: MatchupContext): { system: string; turns: ChainT
     `[근거 사실]\n${deriveConclusions(ctx)
       .map((l) => `- ${l}`)
       .join("\n")}`,
-    `[조심할 스킬 우선순위 — 이 순서와 이유를 그대로 쓰십시오]\n${threatOrderToText(deriveThreatOrder(ctx.enemy))}`,
+    `[조심할 스킬 우선순위 — 이 순서와 이유를 그대로 쓰십시오]\n${threatOrderToText(deriveThreatOrder(ctx.enemy), ctx.enemy.name)}`,
     `[확정된 선택]\n${deriveRecommendation(ctx)
       .map((r) => `- ${r}`)
       .join("\n")}`,
