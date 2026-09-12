@@ -80,9 +80,10 @@ jobs:
         run: echo "patch=$(node -p "require('./public/data/version.json').patchVersion")" >> "$GITHUB_OUTPUT"
 
       # 통계만 새로 받는 회차에는 챔피언 데이터를 다시 만들지 않는다.
-      # CDragon 은 같은 패치에서도 BIN 해시를 점점 사람이 읽을 이름으로 풀어내서
-      # ("{30412ba3}" → "HealthCostCalc") 다시 만들 때마다 파일이 미세하게 달라진다.
-      # 게임이 바뀐 것이 아닌데 커밋이 쌓인다.
+      # 다시 만들면 173챔피언 × 3언어를 전부 새로 쓰는데, 게임이 그대로여도
+      # 원본 표기가 달라져 있으면 그 차이가 그대로 커밋된다. CDragon 이 BIN 해시를
+      # 점점 사람이 읽을 이름으로 풀어내는 것이 그런 예다("{30412ba3}" → "HealthCostCalc",
+      # 둘은 fnv1a32 로 같은 필드다). 통계 갱신에는 챔피언 데이터가 필요 없다.
       - name: Generate static data
         if: needs.check.outputs.reason != 'stats'
         run: npm run generate-static-data
