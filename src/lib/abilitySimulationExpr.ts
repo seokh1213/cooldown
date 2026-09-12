@@ -1,4 +1,5 @@
 import type {
+  AbilitySlot,
   AbilitySimulationCurve,
   AbilitySimulationExpr,
   AbilitySimulationStat,
@@ -49,7 +50,8 @@ export interface ExprFormatOptions {
   rank?: number;
   level?: number;
   statLabel: (stat: AbilitySimulationStat) => string;
-  stacksLabel: string;
+  /** 중첩 수 표기. 소유 슬롯을 알면 받아서 `{Q 스택}` 처럼 쓴다. */
+  stacksLabel: (slot: AbilitySlot | undefined) => string;
 }
 
 function trim(value: number): string {
@@ -100,9 +102,8 @@ export function formatExpr(node: AbilitySimulationExpr, options: ExprFormatOptio
     }
     case "buffStacks": {
       const coefficient = curveText(node.coefficient, options, trim);
-      return coefficient === "1"
-        ? options.stacksLabel
-        : `${coefficient} × ${options.stacksLabel}`;
+      const label = options.stacksLabel(node.stackSource);
+      return coefficient === "1" ? label : `${coefficient} × ${label}`;
     }
     case "sum":
       return joinSum(node.parts.map((part) => formatExpr(part, options)));
@@ -111,4 +112,12 @@ export function formatExpr(node: AbilitySimulationExpr, options: ExprFormatOptio
         .map((part) => wrap(part, formatExpr(part, options)))
         .join(" × ");
   }
+}
+
+/** `{Q 스택}` 처럼 소유 슬롯을 함께 적는다. 슬롯을 모르면 슬롯 없이 적는다. */
+export function stacksLabelFor(
+  t: { stacksLabel: string; stacksLabelWithSlot: string },
+): (slot: AbilitySlot | undefined) => string {
+  return (slot) =>
+    slot ? t.stacksLabelWithSlot.replace("{slot}", slot) : t.stacksLabel;
 }

@@ -250,7 +250,8 @@ export const zhCNTranslations: Translations = {
     formulaTitle: "公式",
     formulaDescription: "无法拆分为线性系数，因此按原样显示。",
     formulaStacksNote: "随叠加层数变化。",
-    stacksLabel: "叠加层数",
+    stacksLabel: "{层数}",
+    stacksLabelWithSlot: "{{slot} 层数}",
   },
   skills: { label: "技能" },
   stats: {

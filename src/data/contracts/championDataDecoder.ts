@@ -86,6 +86,12 @@ function assertExprNode(value: unknown): void {
   }
   if (value.kind === "buffStacks") {
     if (typeof value.buff !== "string") throw new Error("Invalid ability simulation expression");
+    if (
+      value.stackSource !== undefined &&
+      !["P", "Q", "W", "E", "R"].includes(String(value.stackSource))
+    ) {
+      throw new Error("Invalid ability simulation stack source");
+    }
     assertExprCurve(value.coefficient, "expression coefficient");
     return;
   }

@@ -375,7 +375,7 @@ assert.equal(evaluateAbilitySimulation(critScaled, 3, { ...stats, critChance: 0 
 assert.equal(
   formatExpr(critScaled.expression!.root, {
     statLabel: (stat) => stat,
-    stacksLabel: "stacks",
+    stacksLabel: (slot) => (slot ? `{${slot} stacks}` : "{stacks}"),
   }),
   "(300/475/650 + bonusAttackDamage) × (1 + 30% critChance × (critDamage − 1))",
 );
@@ -383,13 +383,13 @@ assert.equal(
   formatExpr(critScaled.expression!.root, {
     rank: 1,
     statLabel: (stat) => stat,
-    stacksLabel: "stacks",
+    stacksLabel: (slot) => (slot ? `{${slot} stacks}` : "{stacks}"),
   }),
   "(300 + bonusAttackDamage) × (1 + 30% critChance × (critDamage − 1))",
 );
 
 // 나서스 Q 모양. 버프 중첩은 스탯이 아니므로 계산기는 값을 내지 않는다.
-const stacked = compileAbilitySimulation({
+const stackedSource = {
   DataValues: { BonusDamage: [0, 40, 60, 80, 100, 120] },
   mSpellCalculations: {
     TotalDamage: {
@@ -405,7 +405,9 @@ const stacked = compileAbilitySimulation({
       ],
     },
   },
-} as unknown as CommunityDragonSpellData, 5, "physical");
+} as unknown as CommunityDragonSpellData;
+
+const stacked = compileAbilitySimulation(stackedSource, 5, "physical", "", "Q");
 
 assert.equal(stacked.status, "expression");
 assert.equal(stacked.expression?.requiresBuffStacks, true);
@@ -415,10 +417,23 @@ assert.equal(
   formatExpr(stacked.expression!.root, {
     rank: 5,
     statLabel: (stat) => stat,
-    stacksLabel: "stacks",
+    stacksLabel: (slot) => (slot ? `{${slot} stacks}` : "{stacks}"),
   }),
-  "120 + totalAttackDamage + stacks",
+  "120 + totalAttackDamage + {Q stacks}",
 );
+// 표에 없는 스킬은 슬롯 없이 적는다. 틀린 슬롯을 지어내지 않는다.
+const unmappedStacks = compileAbilitySimulation(
+  stackedSource, 5, "physical",
+);
+assert.equal(
+  formatExpr(unmappedStacks.expression!.root, {
+    rank: 5,
+    statLabel: (stat) => stat,
+    stacksLabel: (slot) => (slot ? `{${slot} stacks}` : "{stacks}"),
+  }),
+  "120 + totalAttackDamage + {stacks}",
+);
+
 // 중첩 수를 주면 게임과 같은 값이 나온다: 120 + 200 + 150
 assert.equal(
   evaluateExpr(stacked.expression!.root, {

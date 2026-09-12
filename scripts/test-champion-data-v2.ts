@@ -168,6 +168,27 @@ assert.throws(
   /simulation expression/
 );
 
+// 중첩 소유 슬롯은 슬롯 글자여야 한다.
+assert.throws(
+  () => decodeChampionDetail(detailWithExpressionRoot({
+    kind: "buffStacks",
+    buff: "NasusQStacks",
+    coefficient: { byRank: [1, 1] },
+    stackSource: "Z",
+  })),
+  /stack source/
+);
+
+// 소유 슬롯이 없는 중첩 노드는 정상이다. 슬롯을 지어내지 않는 쪽이 맞다.
+assert.equal(
+  decodeChampionDetail(detailWithExpressionRoot({
+    kind: "buffStacks",
+    buff: "NasusQStacks",
+    coefficient: { byRank: [1, 1] },
+  })).champion.abilities.Q.simulation.status,
+  "expression"
+);
+
 // 모르는 스탯 이름도 막는다.
 assert.throws(
   () => decodeChampionDetail(detailWithExpressionRoot({

@@ -1,4 +1,5 @@
 import type {
+  AbilitySlot,
   AbilitySimulationCurve,
   AbilitySimulationExpr,
   AbilitySimulationStat,
@@ -28,12 +29,14 @@ import {
 export type RawExpr =
   | { kind: "value"; value: Matrix }
   | { kind: "stat"; stat: AbilitySimulationStat; coefficient: Matrix }
-  | { kind: "buffStacks"; buff: string; coefficient: Matrix }
+  | { kind: "buffStacks"; buff: string; coefficient: Matrix; stackSource?: AbilitySlot }
   | { kind: "sum"; parts: RawExpr[] }
   | { kind: "product"; parts: RawExpr[] };
 
 export interface ExpressionContext extends LeafContext {
   compileCalculation: (key: string, visited: Set<string>) => RawExpr;
+  /** 이 스킬이 쓰는 중첩의 소유 슬롯. 정해지지 않았으면 슬롯 없이 표기된다. */
+  stackSource?: AbilitySlot;
 }
 
 function everyCell(value: Matrix, predicate: (cell: number) => boolean): boolean {
@@ -124,6 +127,7 @@ export function compileExprPart(
       kind: "buffStacks",
       buff: buffName(value),
       coefficient: rankMatrix(rankValues(value.mCoefficient, ctx.maxRank)),
+      ...(ctx.stackSource ? { stackSource: ctx.stackSource } : {}),
     };
   }
   if (type === "BuffCounterByNamedDataValueCalculationPart") {
@@ -131,6 +135,7 @@ export function compileExprPart(
       kind: "buffStacks",
       buff: buffName(value),
       coefficient: dataValue(inner, value.mDataValue),
+      ...(ctx.stackSource ? { stackSource: ctx.stackSource } : {}),
     };
   }
   if (type === "StatBySubPartCalculationPart") {
@@ -182,7 +187,12 @@ export function serializeExpr(node: RawExpr): AbilitySimulationExpr {
     return { kind: "stat", stat: node.stat, coefficient: curve(node.coefficient) };
   }
   if (node.kind === "buffStacks") {
-    return { kind: "buffStacks", buff: node.buff, coefficient: curve(node.coefficient) };
+    return {
+      kind: "buffStacks",
+      buff: node.buff,
+      coefficient: curve(node.coefficient),
+      ...(node.stackSource ? { stackSource: node.stackSource } : {}),
+    };
   }
   return { kind: node.kind, parts: node.parts.map(serializeExpr) };
 }
