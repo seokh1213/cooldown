@@ -32,6 +32,8 @@ const SIMULATION_STATS = new Set([
   "lethality",
 ]);
 
+const CURVE_FIELDS = ["byRank", "byLevel", "byRankAndLevel"] as const;
+
 function assertFiniteNumbers(value: unknown, field: string): asserts value is number[] {
   if (!Array.isArray(value) || !value.every(Number.isFinite)) {
     throw new Error(`Invalid ability simulation ${field}`);
@@ -56,13 +58,66 @@ function assertSimulationSeries(
   }
 }
 
+function assertExprCurve(value: unknown, label: string): void {
+  // null 이나 숫자가 오면 필드 접근 자체가 터지므로 먼저 막는다.
+  if (!isRecord(value)) throw new Error(`Invalid ability simulation ${label}`);
+  assertSimulationSeries(value, CURVE_FIELDS, label);
+}
+
+function assertExprNode(value: unknown): void {
+  if (!isRecord(value)) throw new Error("Invalid ability simulation expression");
+  if (value.kind === "sum" || value.kind === "product") {
+    if (!Array.isArray(value.parts) || value.parts.length === 0) {
+      throw new Error("Invalid ability simulation expression");
+    }
+    for (const part of value.parts) assertExprNode(part);
+    return;
+  }
+  if (value.kind === "value") {
+    assertExprCurve(value.value, "expression value");
+    return;
+  }
+  if (value.kind === "stat") {
+    if (!SIMULATION_STATS.has(String(value.stat))) {
+      throw new Error("Invalid ability simulation stat");
+    }
+    assertExprCurve(value.coefficient, "expression coefficient");
+    return;
+  }
+  if (value.kind === "buffStacks") {
+    if (typeof value.buff !== "string") throw new Error("Invalid ability simulation expression");
+    assertExprCurve(value.coefficient, "expression coefficient");
+    return;
+  }
+  throw new Error("Invalid ability simulation expression");
+}
+
+function assertExpression(value: unknown): void {
+  if (
+    !isRecord(value) ||
+    typeof value.id !== "string" ||
+    value.kind !== "damage" ||
+    !["physical", "magical", "true", "unknown"].includes(String(value.damageType)) ||
+    (value.targetHealthScaling !== undefined &&
+      !["max", "current", "missing"].includes(String(value.targetHealthScaling))) ||
+    typeof value.requiresBuffStacks !== "boolean"
+  ) {
+    throw new Error("Invalid ability simulation expression");
+  }
+  assertExprNode(value.root);
+}
+
 function assertSimulation(value: unknown): void {
   if (
     !isRecord(value) ||
-    !["complete", "unsupported", "unavailable"].includes(String(value.status)) ||
+    !["complete", "expression", "unsupported", "unavailable"].includes(String(value.status)) ||
     !Array.isArray(value.unsupportedPartTypes)
   ) {
     throw new Error("Invalid ability simulation status");
+  }
+  if (value.status === "expression") {
+    assertExpression(value.expression);
+    return;
   }
   if (value.status !== "complete") return;
   if (

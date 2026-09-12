@@ -5,6 +5,7 @@ import type {
   AbilitySimulationTerm,
 } from "@/data/contracts/championData";
 import { StatKey, type FormulaPart } from "@/types/combatStats";
+import { formatExpr } from "@/lib/abilitySimulationExpr";
 import { useTranslation } from "@/i18n";
 
 interface AbilityStructuredDetailsProps {
@@ -103,6 +104,16 @@ export function AbilityStructuredDetails(props: AbilityStructuredDetailsProps) {
     ? normalizedScalingRows
     : simulationScalingRows(props.simulation, t.stats);
   const unresolved = props.diagnostics?.unresolvedTokens ?? [];
+  // 선형 계수로 못 나누는 스킬은 공식을 그대로 보여 준다. 숨기면 계수가 없는 스킬과 구분되지 않는다.
+  const expression = props.simulation?.status === "expression"
+    ? props.simulation.expression
+    : undefined;
+  const formulaText = expression
+    ? formatExpr(expression.root, {
+        statLabel: (stat) => simulationStatLabel(stat, t.stats),
+        stacksLabel: t.skillTooltip.stacksLabel,
+      })
+    : null;
 
   return (
     <div className="space-y-3 border-t pt-3 text-[11px] leading-relaxed text-muted-foreground">
@@ -126,6 +137,16 @@ export function AbilityStructuredDetails(props: AbilityStructuredDetailsProps) {
               <span className="text-right">{row.value}</span>
             </div>
           ))}
+        </section>
+      )}
+      {formulaText && (
+        <section aria-label={t.skillTooltip.formulaTitle}>
+          <div className="mb-1 font-semibold text-foreground">{t.skillTooltip.formulaTitle}</div>
+          <code className="block break-words text-[10px] leading-relaxed">{formulaText}</code>
+          <p className="mt-1">
+            {t.skillTooltip.formulaDescription}
+            {expression?.requiresBuffStacks ? ` ${t.skillTooltip.formulaStacksNote}` : ""}
+          </p>
         </section>
       )}
       {props.conditions && props.conditions.length > 0 && (

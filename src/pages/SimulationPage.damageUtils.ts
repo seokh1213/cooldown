@@ -2,7 +2,10 @@ import type {
   AbilitySimulation,
   AbilitySimulationCalculation,
   AbilitySimulationStat,
+  AbilitySimulationExpr,
+  AbilitySimulationExpression,
 } from "@/data/contracts/championData";
+import { evaluateExpr } from "@/lib/abilitySimulationExpr";
 import type { Champion, ChampionSpell } from "@/types";
 import type { NormalizedItem } from "@/types/combatNormalized";
 import { StatKey } from "@/types/combatStats";
@@ -57,6 +60,8 @@ export interface AbilitySimulationResult {
   base: number;
   terms: AbilitySimulationTermResult[];
   targetHealthMultiplier?: number;
+  /** 선형으로 못 나눈 스킬. 있으면 base/terms 대신 이 공식을 표시한다. */
+  expression?: AbilitySimulationExpr;
 }
 
 export function resistanceMultiplier(resistance: number): number {
@@ -317,6 +322,41 @@ function simulationStatValue(stat: AbilitySimulationStat, stats: SimpleStats): n
   return values[stat];
 }
 
+/** 대상 체력 비례 스킬은 마지막에 체력값을 곱한다. 선형 경로와 같은 규칙이다. */
+function targetHealthMultiplierFor(
+  scaling: "max" | "current" | "missing" | undefined,
+  target: { currentHealth: number; maxHealth: number } | undefined,
+): number | null | undefined {
+  if (!scaling) return undefined;
+  if (!target) return null;
+  if (scaling === "max") return target.maxHealth;
+  if (scaling === "current") return target.currentHealth;
+  return Math.max(target.maxHealth - target.currentHealth, 0);
+}
+
+function evaluateExpressionDetails(
+  expression: AbilitySimulationExpression,
+  abilityRank: number,
+  stats: SimpleStats,
+  target?: { currentHealth: number; maxHealth: number },
+): AbilitySimulationResult | null {
+  // 중첩 수를 모르는 채로 0 을 넣으면 조용히 틀린 값이 나온다. 값을 내지 않는 편이 옳다.
+  if (expression.requiresBuffStacks) return null;
+  // 공식을 스탯 항으로 쪼갤 수 없으므로 terms 는 비고, base 에는 대상 배수 이전 값을 담는다.
+  const base = evaluateExpr(expression.root, {
+    rank: abilityRank,
+    level: stats.level,
+    stat: (stat) => simulationStatValue(stat, stats),
+  });
+  if (!Number.isFinite(base)) return null;
+  const multiplier = targetHealthMultiplierFor(expression.targetHealthScaling, target);
+  if (multiplier === null) return null;
+  const total = multiplier === undefined ? base : base * multiplier;
+  return Number.isFinite(total)
+    ? { total, base, terms: [], targetHealthMultiplier: multiplier, expression: expression.root }
+    : null;
+}
+
 export function evaluateAbilitySimulation(
   simulation: AbilitySimulation | undefined,
   abilityRank: number,
@@ -337,6 +377,9 @@ export function evaluateAbilitySimulationDetails(
   stats: SimpleStats,
   target?: { currentHealth: number; maxHealth: number },
 ): AbilitySimulationResult | null {
+  if (simulation?.status === "expression" && simulation.expression) {
+    return evaluateExpressionDetails(simulation.expression, abilityRank, stats, target);
+  }
   if (simulation?.status !== "complete" || !simulation.primary) return null;
   const rankIndex = Math.max(Math.trunc(abilityRank) - 1, 0);
   const levelIndex = Math.min(Math.max(Math.trunc(stats.level) - 1, 0), 17);

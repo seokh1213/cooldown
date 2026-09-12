@@ -247,6 +247,10 @@ export const zhCNTranslations: Translations = {
     conditionsTitle: "触发条件",
     diagnosticsTitle: "需要核对的数值",
     diagnosticsDescription: "部分数值无法从源数据中完整解析。",
+    formulaTitle: "公式",
+    formulaDescription: "无法拆分为线性系数，因此按原样显示。",
+    formulaStacksNote: "随叠加层数变化。",
+    stacksLabel: "叠加层数",
   },
   skills: { label: "技能" },
   stats: {

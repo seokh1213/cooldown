@@ -392,7 +392,78 @@
           }
         ],
         "simulation": {
-          "status": "unsupported",
+          "status": "expression",
+          "expression": {
+            "id": "DamageToDeal",
+            "kind": "damage",
+            "damageType": "physical",
+            "root": {
+              "kind": "product",
+              "parts": [
+                {
+                  "kind": "sum",
+                  "parts": [
+                    {
+                      "kind": "value",
+                      "value": {
+                        "byRank": [
+                          8,
+                          16,
+                          24,
+                          32,
+                          40
+                        ]
+                      }
+                    },
+                    {
+                      "kind": "stat",
+                      "stat": "totalAttackDamage",
+                      "coefficient": {
+                        "byRank": [
+                          0.25,
+                          0.25,
+                          0.25,
+                          0.25,
+                          0.25
+                        ]
+                      }
+                    }
+                  ]
+                },
+                {
+                  "kind": "sum",
+                  "parts": [
+                    {
+                      "kind": "value",
+                      "value": {
+                        "byRank": [
+                          1,
+                          1,
+                          1,
+                          1,
+                          1
+                        ]
+                      }
+                    },
+                    {
+                      "kind": "stat",
+                      "stat": "bonusAttackSpeed",
+                      "coefficient": {
+                        "byRank": [
+                          0.30000001192092896,
+                          0.30000001192092896,
+                          0.30000001192092896,
+                          0.30000001192092896,
+                          0.30000001192092896
+                        ]
+                      }
+                    }
+                  ]
+                }
+              ]
+            },
+            "requiresBuffStacks": false
+          },
           "unsupportedPartTypes": [
             "nonlinear-multiplier"
           ]
@@ -459,7 +530,101 @@
           }
         ],
         "simulation": {
-          "status": "unsupported",
+          "status": "expression",
+          "expression": {
+            "id": "DamagePerBulletWithCrit",
+            "kind": "damage",
+            "damageType": "physical",
+            "root": {
+              "kind": "product",
+              "parts": [
+                {
+                  "kind": "sum",
+                  "parts": [
+                    {
+                      "kind": "value",
+                      "value": {
+                        "byRank": [
+                          25,
+                          35,
+                          45
+                        ]
+                      }
+                    },
+                    {
+                      "kind": "stat",
+                      "stat": "totalAttackDamage",
+                      "coefficient": {
+                        "byRank": [
+                          0.15000000596046448,
+                          0.15000000596046448,
+                          0.15000000596046448
+                        ]
+                      }
+                    }
+                  ]
+                },
+                {
+                  "kind": "sum",
+                  "parts": [
+                    {
+                      "kind": "value",
+                      "value": {
+                        "byRank": [
+                          1,
+                          1,
+                          1
+                        ]
+                      }
+                    },
+                    {
+                      "kind": "product",
+                      "parts": [
+                        {
+                          "kind": "stat",
+                          "stat": "critChance",
+                          "coefficient": {
+                            "byRank": [
+                              0.30000001192092896,
+                              0.30000001192092896,
+                              0.30000001192092896
+                            ]
+                          }
+                        },
+                        {
+                          "kind": "sum",
+                          "parts": [
+                            {
+                              "kind": "stat",
+                              "stat": "critDamage",
+                              "coefficient": {
+                                "byRank": [
+                                  1,
+                                  1,
+                                  1
+                                ]
+                              }
+                            },
+                            {
+                              "kind": "value",
+                              "value": {
+                                "byRank": [
+                                  -1,
+                                  -1,
+                                  -1
+                                ]
+                              }
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            "requiresBuffStacks": false
+          },
           "unsupportedPartTypes": [
             "nonlinear-product"
           ]

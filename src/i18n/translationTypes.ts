@@ -235,6 +235,10 @@ export interface Translations {
     conditionsTitle: string;
     diagnosticsTitle: string;
     diagnosticsDescription: string;
+    formulaTitle: string;
+    formulaDescription: string;
+    formulaStacksNote: string;
+    stacksLabel: string;
   };
   skills: {
     label: string;

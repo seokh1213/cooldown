@@ -1,6 +1,7 @@
 import type {
   AbilitySimulation,
   AbilitySimulationCalculation,
+  AbilitySimulationExpression,
 } from "../../src/data/contracts/championData";
 import type { CommunityDragonSpellData } from "../../src/lib/spellTooltipParser/types";
 import {
@@ -13,6 +14,16 @@ import {
   type LinearFormula,
   type CompressedMatrix,
 } from "./ability-simulation-formula";
+import {
+  compileExprMultiplier,
+  compileExprPart,
+  hasBuffStacks,
+  productExpr,
+  serializeExpr,
+  sumExpr,
+  type ExpressionContext,
+  type RawExpr,
+} from "./ability-simulation-expression";
 
 type RawCalculation = Record<string, unknown>;
 type DamageType = AbilitySimulationCalculation["damageType"];
@@ -141,6 +152,88 @@ function compileFormula(
   };
 }
 
+interface CompiledExpression {
+  expr: RawExpr;
+  isPercent: boolean;
+}
+
+/**
+ * compileFormula 와 같은 트리를 돌지만 선형으로 접지 않고 모양을 보존한다.
+ * 곱이 양쪽에 스탯을 물고 있어도 거부하지 않는 것이 유일한 차이다.
+ */
+function compileExpression(
+  calculations: Record<string, unknown>,
+  source: CommunityDragonSpellData,
+  maxRank: number,
+  key: string,
+  visited = new Set<string>(),
+): CompiledExpression {
+  if (visited.has(key)) throw new UnsupportedFormulaError("circular-calculation-reference");
+  const raw = calculations[key];
+  if (!isRecord(raw)) throw new UnsupportedFormulaError("invalid-calculation");
+  const nextVisited = new Set(visited).add(key);
+  const ctx: ExpressionContext = {
+    source,
+    maxRank,
+    compileCalculation: (reference, references) =>
+      compileExpression(calculations, source, maxRank, reference, references).expr,
+  };
+
+  if (raw.__type === "GameCalculationConditional") {
+    const target = raw.mDefaultGameCalculation ?? raw.mConditionalGameCalculation;
+    if (typeof target !== "string") throw new UnsupportedFormulaError("GameCalculationConditional");
+    return compileExpression(calculations, source, maxRank, target, nextVisited);
+  }
+  if (raw.__type === "GameCalculationModified") {
+    if (typeof raw.mModifiedGameCalculation !== "string") {
+      throw new UnsupportedFormulaError("GameCalculationModified");
+    }
+    const inner = compileExpression(
+      calculations,
+      source,
+      maxRank,
+      raw.mModifiedGameCalculation,
+      nextVisited,
+    );
+    const multiplier = compileExprMultiplier(raw.mMultiplier, ctx, nextVisited);
+    return {
+      expr: multiplier ? productExpr([inner.expr, multiplier], maxRank) : inner.expr,
+      isPercent: inner.isPercent,
+    };
+  }
+  if (raw.__type !== "GameCalculation" || !Array.isArray(raw.mFormulaParts)) {
+    throw new UnsupportedFormulaError(String(raw.__type ?? "missing-calculation-type"));
+  }
+  const body = sumExpr(
+    raw.mFormulaParts.map((part) => compileExprPart(part, ctx, nextVisited)),
+    maxRank,
+  );
+  const multiplier = compileExprMultiplier(raw.mMultiplier, ctx, nextVisited);
+  return {
+    expr: multiplier ? productExpr([body, multiplier], maxRank) : body,
+    isPercent: raw.mDisplayAsPercent === true,
+  };
+}
+
+function buildExpression(
+  id: string,
+  compiled: CompiledExpression,
+  damageType: DamageType,
+  healthScaling: AbilitySimulationCalculation["targetHealthScaling"] | null,
+): AbilitySimulationExpression {
+  if (compiled.isPercent && !healthScaling) {
+    throw new UnsupportedFormulaError("percent-calculation");
+  }
+  return {
+    id,
+    kind: "damage",
+    damageType,
+    ...(compiled.isPercent ? { targetHealthScaling: healthScaling! } : {}),
+    root: serializeExpr(compiled.expr),
+    requiresBuffStacks: hasBuffStacks(compiled.expr),
+  };
+}
+
 function targetHealthScaling(
   tooltip: string,
 ): AbilitySimulationCalculation["targetHealthScaling"] | null {
@@ -207,6 +300,24 @@ export function compileAbilitySimulation(
       unsupported.add(error instanceof UnsupportedFormulaError
         ? error.reason
         : "invalid-calculation");
+    }
+  }
+  // 선형으로 접히지 않는다. 게임이 하듯 공식 트리를 그대로 싣고 평가는 뒤로 미룬다.
+  for (const candidate of candidates) {
+    try {
+      const compiled = compileExpression(calculations, source, maxRank, candidate);
+      return {
+        status: "expression",
+        expression: buildExpression(
+          candidate,
+          compiled,
+          source.simulationCalculationDamageTypes?.[candidate] ?? damageType,
+          healthScaling,
+        ),
+        unsupportedPartTypes: [...unsupported].sort(),
+      };
+    } catch {
+      // 다음 후보를 본다. 사유는 이미 선형 시도에서 모았다.
     }
   }
   return { status: "unsupported", unsupportedPartTypes: [...unsupported].sort() };

@@ -57,9 +57,44 @@ export interface AbilitySimulationCalculation {
   terms: AbilitySimulationTerm[];
 }
 
+/** 한 값이 스킬 레벨과 챔피언 레벨 중 무엇에 따라 변하는지 압축해 담는다. */
+export interface AbilitySimulationCurve {
+  byRank?: number[];
+  byLevel?: number[];
+  byRankAndLevel?: number[][];
+}
+
+/**
+ * 선형 모델(base + Σ 스탯×계수)로 접히지 않는 공식을 원본 모양 그대로 담는다.
+ * 리엇 BIN 의 계산 트리를 우리가 다루는 노드로만 좁혀 옮긴 것이다.
+ */
+export type AbilitySimulationExpr =
+  | { kind: "value"; value: AbilitySimulationCurve }
+  | { kind: "stat"; stat: AbilitySimulationStat; coefficient: AbilitySimulationCurve }
+  | { kind: "buffStacks"; buff: string; coefficient: AbilitySimulationCurve }
+  | { kind: "sum"; parts: AbilitySimulationExpr[] }
+  | { kind: "product"; parts: AbilitySimulationExpr[] };
+
+export interface AbilitySimulationExpression {
+  id: string;
+  kind: "damage";
+  damageType: "physical" | "magical" | "true" | "unknown";
+  targetHealthScaling?: "max" | "current" | "missing";
+  root: AbilitySimulationExpr;
+  /** buffStacks 노드가 있으면 계산에 중첩 수 입력이 필요하다. */
+  requiresBuffStacks: boolean;
+}
+
 export interface AbilitySimulation {
-  status: "complete" | "unsupported" | "unavailable";
+  /**
+   * complete   선형으로 접힘. primary 사용.
+   * expression 선형으로는 못 접지만 공식 트리는 있음. expression 사용.
+   * unsupported 둘 다 실패.
+   * unavailable 피해 계산 자체가 없음.
+   */
+  status: "complete" | "expression" | "unsupported" | "unavailable";
   primary?: AbilitySimulationCalculation;
+  expression?: AbilitySimulationExpression;
   unsupportedPartTypes: string[];
 }
 

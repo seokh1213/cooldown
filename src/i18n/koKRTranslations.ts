@@ -258,6 +258,10 @@ export const koKRTranslations: Translations = {
       conditionsTitle: "발동 조건",
       diagnosticsTitle: "확인 필요한 수치",
       diagnosticsDescription: "원본 데이터에서 완전히 해석되지 않은 수치가 있습니다.",
+      formulaTitle: "공식",
+      formulaDescription: "선형 계수로 나눌 수 없어 원본 공식을 그대로 표시합니다.",
+      formulaStacksNote: "중첩 수에 따라 달라집니다.",
+      stacksLabel: "중첩 수",
     },
     skills: {
       label: "스킬",
