@@ -261,7 +261,8 @@ export const enUSTranslations: Translations = {
       formulaTitle: "Formula",
       formulaDescription: "Shown as-is because it cannot be split into linear ratios.",
       formulaStacksNote: "Varies with stack count.",
-      stacksLabel: "stacks",
+      stacksLabel: "{stacks}",
+      stacksLabelWithSlot: "{{slot} stacks}",
     },
     skills: {
       label: "Skills",

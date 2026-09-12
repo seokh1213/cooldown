@@ -3,7 +3,7 @@ import { SafeBlockHtml } from "@/components/ui/safe-html";
 import type { ChampionDetailV2 } from "@/data/contracts/championData";
 import { spellIconUrl } from "@/data/assets/riotAssetUrls";
 import { useTranslation } from "@/i18n";
-import { formatExpr } from "@/lib/abilitySimulationExpr";
+import { formatExpr, stacksLabelFor } from "@/lib/abilitySimulationExpr";
 import type { Champion } from "@/types";
 import {
   evaluateAbilitySimulationDetails,
@@ -136,7 +136,7 @@ export function SimulationSkills({
                             rank,
                             level: finalStats?.level,
                             statLabel,
-                            stacksLabel: t.skillTooltip.stacksLabel,
+                            stacksLabel: stacksLabelFor(t.skillTooltip),
                           })}
                         </span>
                       ) : (

@@ -71,7 +71,13 @@ export interface AbilitySimulationCurve {
 export type AbilitySimulationExpr =
   | { kind: "value"; value: AbilitySimulationCurve }
   | { kind: "stat"; stat: AbilitySimulationStat; coefficient: AbilitySimulationCurve }
-  | { kind: "buffStacks"; buff: string; coefficient: AbilitySimulationCurve }
+  | {
+      kind: "buffStacks";
+      buff: string;
+      coefficient: AbilitySimulationCurve;
+      /** 이 중첩을 소유한 스킬. 쌓는 스킬과 쓰는 스킬이 달라 자동 추론이 안 되므로 별도로 정한다. */
+      stackSource?: AbilitySlot;
+    }
   | { kind: "sum"; parts: AbilitySimulationExpr[] }
   | { kind: "product"; parts: AbilitySimulationExpr[] };
 

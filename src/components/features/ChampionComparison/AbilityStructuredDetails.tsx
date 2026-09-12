@@ -5,7 +5,7 @@ import type {
   AbilitySimulationTerm,
 } from "@/data/contracts/championData";
 import { StatKey, type FormulaPart } from "@/types/combatStats";
-import { formatExpr } from "@/lib/abilitySimulationExpr";
+import { formatExpr, stacksLabelFor } from "@/lib/abilitySimulationExpr";
 import { useTranslation } from "@/i18n";
 
 interface AbilityStructuredDetailsProps {
@@ -111,7 +111,7 @@ export function AbilityStructuredDetails(props: AbilityStructuredDetailsProps) {
   const formulaText = expression
     ? formatExpr(expression.root, {
         statLabel: (stat) => simulationStatLabel(stat, t.stats),
-        stacksLabel: t.skillTooltip.stacksLabel,
+        stacksLabel: stacksLabelFor(t.skillTooltip),
       })
     : null;
 

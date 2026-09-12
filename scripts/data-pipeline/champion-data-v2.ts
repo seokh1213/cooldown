@@ -18,6 +18,7 @@ import { getAbilityResourceName } from "../../src/lib/spellTooltipParser/valueUt
 import type { Champion, ChampionPassive, ChampionSpell } from "../../src/types";
 import type { NormalizedChampion } from "../../src/types/combatNormalized";
 import { compileAbilitySimulation } from "./ability-simulation";
+import stackSourceMap from "./ability-stack-sources.json";
 
 export interface ChampionDataV2Input {
   patchVersion: string;
@@ -151,6 +152,17 @@ function inferSimulationConditions(
   return [...new Set(conditions)];
 }
 
+/**
+ * 이 스킬이 쓰는 버프 중첩이 어느 스킬의 것인지 돌려준다.
+ * 쌓는 스킬과 쓰는 스킬이 달라 자동 추론이 안 되므로 사람이 정한 표를 본다.
+ */
+function stackSourceFor(championId: string, slot: AbilitySlot): AbilitySlot | undefined {
+  const value = (stackSourceMap as Record<string, unknown>)[`${championId}:${slot}`];
+  return typeof value === "string" && ["P", "Q", "W", "E", "R"].includes(value)
+    ? (value as AbilitySlot)
+    : undefined;
+}
+
 function buildActiveAbility(
   slot: Exclude<AbilitySlot, "P">,
   spell: ChampionSpell,
@@ -164,6 +176,7 @@ function buildActiveAbility(
     spell.maxrank,
     inferDamageType(spell.tooltip ?? ""),
     spell.tooltip ?? "",
+    stackSourceFor(normalized.id, slot),
   );
   const rechargeSeconds = source?.DataValues?.mAmmoRechargeTime?.slice(
     1,

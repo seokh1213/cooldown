@@ -261,7 +261,8 @@ export const koKRTranslations: Translations = {
       formulaTitle: "공식",
       formulaDescription: "선형 계수로 나눌 수 없어 원본 공식을 그대로 표시합니다.",
       formulaStacksNote: "중첩 수에 따라 달라집니다.",
-      stacksLabel: "중첩 수",
+      stacksLabel: "{스택}",
+      stacksLabelWithSlot: "{{slot} 스택}",
     },
     skills: {
       label: "스킬",

@@ -239,6 +239,7 @@ export interface Translations {
     formulaDescription: string;
     formulaStacksNote: string;
     stacksLabel: string;
+    stacksLabelWithSlot: string;
   };
   skills: {
     label: string;

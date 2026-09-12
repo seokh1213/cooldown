@@ -1,4 +1,5 @@
 import type {
+  AbilitySlot,
   AbilitySimulation,
   AbilitySimulationCalculation,
   AbilitySimulationExpression,
@@ -166,6 +167,7 @@ function compileExpression(
   source: CommunityDragonSpellData,
   maxRank: number,
   key: string,
+  stackSource: AbilitySlot | undefined,
   visited = new Set<string>(),
 ): CompiledExpression {
   if (visited.has(key)) throw new UnsupportedFormulaError("circular-calculation-reference");
@@ -175,14 +177,15 @@ function compileExpression(
   const ctx: ExpressionContext = {
     source,
     maxRank,
+    stackSource,
     compileCalculation: (reference, references) =>
-      compileExpression(calculations, source, maxRank, reference, references).expr,
+      compileExpression(calculations, source, maxRank, reference, stackSource, references).expr,
   };
 
   if (raw.__type === "GameCalculationConditional") {
     const target = raw.mDefaultGameCalculation ?? raw.mConditionalGameCalculation;
     if (typeof target !== "string") throw new UnsupportedFormulaError("GameCalculationConditional");
-    return compileExpression(calculations, source, maxRank, target, nextVisited);
+    return compileExpression(calculations, source, maxRank, target, stackSource, nextVisited);
   }
   if (raw.__type === "GameCalculationModified") {
     if (typeof raw.mModifiedGameCalculation !== "string") {
@@ -193,6 +196,7 @@ function compileExpression(
       source,
       maxRank,
       raw.mModifiedGameCalculation,
+      stackSource,
       nextVisited,
     );
     const multiplier = compileExprMultiplier(raw.mMultiplier, ctx, nextVisited);
@@ -271,6 +275,7 @@ export function compileAbilitySimulation(
   maxRank: number,
   damageType: DamageType = "unknown",
   tooltip = "",
+  stackSource?: AbilitySlot,
 ): AbilitySimulation {
   const calculations = source?.mSpellCalculations;
   if (!source || !calculations || maxRank <= 0) {
@@ -305,7 +310,7 @@ export function compileAbilitySimulation(
   // 선형으로 접히지 않는다. 게임이 하듯 공식 트리를 그대로 싣고 평가는 뒤로 미룬다.
   for (const candidate of candidates) {
     try {
-      const compiled = compileExpression(calculations, source, maxRank, candidate);
+      const compiled = compileExpression(calculations, source, maxRank, candidate, stackSource);
       return {
         status: "expression",
         expression: buildExpression(
