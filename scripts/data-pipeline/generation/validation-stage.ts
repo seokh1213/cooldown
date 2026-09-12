@@ -79,6 +79,15 @@ async function validateAbilitySources(
     );
   }
 
+  // 허용 목록이 낡으면 같은 자리의 진짜 문제까지 가린다. 지울 수 있는 항목을 알려 준다.
+  const stale = report.issues.filter((issue) => issue.allowlisted && issue.corroborated);
+  if (stale.length) {
+    console.log(
+      `ℹ️ 허용 목록에서 뺄 수 있는 항목 ${stale.length}건 (클라이언트 데이터가 배포 값을 뒷받침함): ` +
+        stale.map((issue) => issue.key).join(", "),
+    );
+  }
+
   const unexpected = report.issues
     .filter((issue) => !issue.allowlisted && !issue.corroborated)
     .map((issue) => issue.key);
