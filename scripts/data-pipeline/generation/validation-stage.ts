@@ -1,6 +1,7 @@
 import * as fs from "node:fs";
 import * as path from "node:path";
 import type { StaticDataRelease } from "../../../src/lib/staticDataRelease";
+import { corroborateMismatches } from "../ability-corroboration";
 import { validateAbilitySimulations } from "../ability-simulation-validation";
 import { validateGeneratedAbilities } from "../ability-validation";
 import {
@@ -59,16 +60,35 @@ async function validateAbilitySources(
     ),
     abilitySourcesByChampion: source.abilitySourcesByChampion,
   });
+  // 원본끼리 갈라졌을 때는 클라이언트 데이터에 물어본다. 배포하는 값이 그쪽과 같으면
+  // 우리 문제가 아니다. 이 단계가 없으면 밸런스 패치마다 사람이 허용 목록을 채워야 한다.
+  await corroborateMismatches(
+    report.issues,
+    requireMapValue(source.championsByLocale, "ko_KR", "Korean champion locale"),
+    release.sources,
+  );
   await writeJson(report, path.join(versionDir, "ability-validation.json"));
+
+  const corroborated = report.issues.filter(
+    (issue) => !issue.allowlisted && issue.corroborated,
+  );
+  for (const issue of corroborated) {
+    console.log(
+      `ℹ️ ${issue.key}: character bin 과 다르지만 클라이언트 데이터가 배포 값을 뒷받침함 ` +
+        `(배포 ${JSON.stringify(issue.ddragonValues)}, bin ${JSON.stringify(issue.cdragonValues)})`,
+    );
+  }
+
   const unexpected = report.issues
-    .filter((issue) => !issue.allowlisted)
+    .filter((issue) => !issue.allowlisted && !issue.corroborated)
     .map((issue) => issue.key);
   if (unexpected.length > 0) {
     throw new Error(`Unexpected ability source mismatches: ${unexpected.join(", ")}`);
   }
   console.log(
     `✅ Validated ${report.summary.abilities} Q/W/E/R abilities ` +
-      `(${report.summary.knownIssues} known source differences)`,
+      `(${report.summary.knownIssues} known source differences` +
+      `${corroborated.length ? `, ${corroborated.length} corroborated by client data` : ""})`,
   );
 }
 
