@@ -55,9 +55,10 @@ export async function corroborateMismatches(
   championsById: ChampionById,
   sources: StaticDataSources,
 ): Promise<void> {
+  // 허용 목록에 있는 것도 확인한다. 그 목록은 특정 시점의 사진이라 그대로 두면 낡는다.
+  // 이미 뒷받침되는 항목이 남아 있으면 나중에 같은 자리에서 진짜 문제가 나도 가려진다.
   const targets = issues.filter(
     (issue) =>
-      !issue.allowlisted &&
       (issue.kind === "cooldown-mismatch" || issue.kind === "cost-mismatch") &&
       issue.ddragonValues?.length,
   );
