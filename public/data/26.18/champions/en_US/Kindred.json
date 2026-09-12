@@ -377,7 +377,113 @@
           }
         ],
         "simulation": {
-          "status": "unsupported",
+          "status": "expression",
+          "expression": {
+            "id": "BaseBiteDamage",
+            "kind": "damage",
+            "damageType": "physical",
+            "root": {
+              "kind": "product",
+              "parts": [
+                {
+                  "kind": "sum",
+                  "parts": [
+                    {
+                      "kind": "value",
+                      "value": {
+                        "byRank": [
+                          80,
+                          110,
+                          140,
+                          170,
+                          200
+                        ]
+                      }
+                    },
+                    {
+                      "kind": "stat",
+                      "stat": "bonusAttackDamage",
+                      "coefficient": {
+                        "byRank": [
+                          1,
+                          1,
+                          1,
+                          1,
+                          1
+                        ]
+                      }
+                    }
+                  ]
+                },
+                {
+                  "kind": "sum",
+                  "parts": [
+                    {
+                      "kind": "value",
+                      "value": {
+                        "byRank": [
+                          1,
+                          1,
+                          1,
+                          1,
+                          1
+                        ]
+                      }
+                    },
+                    {
+                      "kind": "product",
+                      "parts": [
+                        {
+                          "kind": "stat",
+                          "stat": "critChance",
+                          "coefficient": {
+                            "byRank": [
+                              0.5,
+                              0.5,
+                              0.5,
+                              0.5,
+                              0.5
+                            ]
+                          }
+                        },
+                        {
+                          "kind": "sum",
+                          "parts": [
+                            {
+                              "kind": "stat",
+                              "stat": "critDamage",
+                              "coefficient": {
+                                "byRank": [
+                                  1,
+                                  1,
+                                  1,
+                                  1,
+                                  1
+                                ]
+                              }
+                            },
+                            {
+                              "kind": "value",
+                              "value": {
+                                "byRank": [
+                                  -1,
+                                  -1,
+                                  -1,
+                                  -1,
+                                  -1
+                                ]
+                              }
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            "requiresBuffStacks": false
+          },
           "unsupportedPartTypes": [
             "BuffCounterByCoefficientCalculationPart",
             "nonlinear-product"

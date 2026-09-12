@@ -13,6 +13,7 @@ export interface AbilitySimulationValidationReport {
   summary: {
     abilities: number;
     complete: number;
+    expression: number;
     unsupported: number;
     unavailable: number;
   };
@@ -20,7 +21,7 @@ export interface AbilitySimulationValidationReport {
   incomplete: Array<{
     championId: string;
     slot: Exclude<AbilitySlot, "P">;
-    status: "unsupported" | "unavailable";
+    status: "expression" | "unsupported" | "unavailable";
     unsupportedPartTypes: string[];
   }>;
 }
@@ -38,7 +39,7 @@ export function validateAbilitySimulations(
     schemaVersion: 1,
     patchVersion,
     sources,
-    summary: { abilities: 0, complete: 0, unsupported: 0, unavailable: 0 },
+    summary: { abilities: 0, complete: 0, expression: 0, unsupported: 0, unavailable: 0 },
     unsupportedPartTypes: {},
     incomplete: [],
   };

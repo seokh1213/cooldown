@@ -258,6 +258,10 @@ export const enUSTranslations: Translations = {
       conditionsTitle: "Conditions",
       diagnosticsTitle: "Values to verify",
       diagnosticsDescription: "Some values could not be fully resolved from the source data.",
+      formulaTitle: "Formula",
+      formulaDescription: "Shown as-is because it cannot be split into linear ratios.",
+      formulaStacksNote: "Varies with stack count.",
+      stacksLabel: "stacks",
     },
     skills: {
       label: "Skills",

@@ -6,6 +6,7 @@ import {
   decodeChampionDetail,
   decodeChampionIndex,
 } from "../src/data/contracts/championDataDecoder";
+import type { AbilitySimulationExpr } from "../src/data/contracts/championData";
 import type { DataManifest } from "../src/data/contracts/dataManifest";
 
 const locales = ["ko_KR", "en_US", "zh_CN"] as const;
@@ -43,7 +44,19 @@ const englishIndex = decodeChampionIndex(JSON.parse(
 let activeAbilityCount = 0;
 let precomputedSpellCount = 0;
 let detailedPassiveCount = 0;
-const simulationCounts = { complete: 0, unsupported: 0, unavailable: 0 };
+/** 표현식의 모든 곡선이 스킬 최대 레벨과 길이가 맞는지 재귀로 확인한다. */
+function assertExpressionCurves(node: AbilitySimulationExpr, maxRank: number): void {
+  if (node.kind === "sum" || node.kind === "product") {
+    assert.ok(node.parts.length > 0);
+    for (const part of node.parts) assertExpressionCurves(part, maxRank);
+    return;
+  }
+  const curve = node.kind === "value" ? node.value : node.coefficient;
+  if (curve.byRank) assert.equal(curve.byRank.length, maxRank);
+  if (curve.byRankAndLevel) assert.equal(curve.byRankAndLevel.length, maxRank);
+}
+
+const simulationCounts = { complete: 0, expression: 0, unsupported: 0, unavailable: 0 };
 
 for (const entry of englishIndex.champions) {
   let passiveLocalized = true;
@@ -85,6 +98,15 @@ for (const entry of englishIndex.champions) {
         }
       }
     }
+    if (ability.simulation.status === "expression") {
+      const expression = ability.simulation.expression!;
+      assert.equal(ability.simulation.primary, undefined);
+      assertExpressionCurves(expression.root, ability.maxRank);
+      assert.equal(
+        expression.requiresBuffStacks,
+        JSON.stringify(expression.root).includes('"buffStacks"'),
+      );
+    }
   }
 }
 
@@ -93,7 +115,10 @@ assert.equal(activeAbilityCount, englishIndex.champions.length * 4);
 assert.equal(precomputedSpellCount, activeAbilityCount);
 assert.equal(detailedPassiveCount, englishIndex.champions.length - allowedPassiveFallbacks.size);
 assert.equal(
-  simulationCounts.complete + simulationCounts.unsupported + simulationCounts.unavailable,
+  simulationCounts.complete +
+    simulationCounts.expression +
+    simulationCounts.unsupported +
+    simulationCounts.unavailable,
   activeAbilityCount
 );
 assert.deepEqual(simulationReport.summary, {

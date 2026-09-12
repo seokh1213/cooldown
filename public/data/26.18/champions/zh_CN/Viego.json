@@ -419,7 +419,86 @@
           }
         ],
         "simulation": {
-          "status": "unsupported",
+          "status": "expression",
+          "expression": {
+            "id": "TotalDamage",
+            "kind": "damage",
+            "damageType": "physical",
+            "root": {
+              "kind": "product",
+              "parts": [
+                {
+                  "kind": "stat",
+                  "stat": "totalAttackDamage",
+                  "coefficient": {
+                    "byRank": [
+                      1.2000000476837158,
+                      1.2000000476837158,
+                      1.2000000476837158
+                    ]
+                  }
+                },
+                {
+                  "kind": "sum",
+                  "parts": [
+                    {
+                      "kind": "value",
+                      "value": {
+                        "byRank": [
+                          1,
+                          1,
+                          1
+                        ]
+                      }
+                    },
+                    {
+                      "kind": "product",
+                      "parts": [
+                        {
+                          "kind": "stat",
+                          "stat": "critChance",
+                          "coefficient": {
+                            "byRank": [
+                              0.699999988079071,
+                              0.699999988079071,
+                              0.699999988079071
+                            ]
+                          }
+                        },
+                        {
+                          "kind": "sum",
+                          "parts": [
+                            {
+                              "kind": "stat",
+                              "stat": "critDamage",
+                              "coefficient": {
+                                "byRank": [
+                                  1,
+                                  1,
+                                  1
+                                ]
+                              }
+                            },
+                            {
+                              "kind": "value",
+                              "value": {
+                                "byRank": [
+                                  -1,
+                                  -1,
+                                  -1
+                                ]
+                              }
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            "requiresBuffStacks": false
+          },
           "unsupportedPartTypes": [
             "nonlinear-product"
           ]

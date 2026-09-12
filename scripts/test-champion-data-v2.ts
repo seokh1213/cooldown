@@ -98,4 +98,62 @@ assert.equal(inferDamageType("Deals magic damage"), "magical");
 assert.equal(inferDamageType("造成真实伤害"), "true");
 assert.equal(inferDamageType("적에게 피해를 줍니다."), "unknown");
 
+// --- 공식 트리를 싣는 스킬의 디코딩 ---
+
+const withExpression = {
+  ...detail,
+  champion: {
+    ...detail.champion,
+    abilities: {
+      ...detail.champion.abilities,
+      Q: {
+        ...detail.champion.abilities.Q,
+        simulation: {
+          status: "expression",
+          unsupportedPartTypes: ["nonlinear-product"],
+          expression: {
+            id: "TotalDamage",
+            kind: "damage",
+            damageType: "physical",
+            requiresBuffStacks: false,
+            root: {
+              kind: "product",
+              parts: [
+                { kind: "value", value: { byRank: [10, 20] } },
+                {
+                  kind: "sum",
+                  parts: [
+                    { kind: "value", value: { byRank: [1, 1] } },
+                    { kind: "stat", stat: "critChance", coefficient: { byRank: [0.3, 0.3] } },
+                  ],
+                },
+              ],
+            },
+          },
+        },
+      },
+    },
+  },
+};
+
+assert.equal(
+  decodeChampionDetail(withExpression).champion.abilities.Q.simulation.status,
+  "expression"
+);
+
+// 잎이 곡선이 아니면 거른다. null 이 와도 예외 대신 우리 오류로 떨어져야 한다.
+const brokenCurve = structuredClone(withExpression);
+brokenCurve.champion.abilities.Q.simulation.expression.root.parts[0].value = null;
+assert.throws(() => decodeChampionDetail(brokenCurve), /expression value/);
+
+// 모르는 노드 종류는 통과시키지 않는다.
+const brokenKind = structuredClone(withExpression);
+brokenKind.champion.abilities.Q.simulation.expression.root.parts[0].kind = "wat";
+assert.throws(() => decodeChampionDetail(brokenKind), /simulation expression/);
+
+// 비어 있는 합은 평가할 수 없다.
+const emptySum = structuredClone(withExpression);
+emptySum.champion.abilities.Q.simulation.expression.root.parts[1].parts = [];
+assert.throws(() => decodeChampionDetail(emptySum), /simulation expression/);
+
 console.log("✅ Champion and Ability v2 contract passed");

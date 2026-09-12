@@ -4,16 +4,20 @@ import type {
 import type { CommunityDragonSpellData } from "../../src/lib/spellTooltipParser/types";
 
 type RawPart = Record<string, unknown>;
-type Matrix = number[][];
+export type Matrix = number[][];
 
 export interface LinearFormula {
   base: Matrix;
   terms: Map<AbilitySimulationStat, Matrix>;
 }
 
-export interface FormulaContext {
+/** 잎 해석(DataValues, effectBurn)에 필요한 최소 정보. 표현식 컴파일러와 공유한다. */
+export interface LeafContext {
   source: CommunityDragonSpellData;
   maxRank: number;
+}
+
+export interface FormulaContext extends LeafContext {
   compileCalculation: (key: string, visited: Set<string>) => LinearFormula;
 }
 
@@ -23,17 +27,17 @@ export class UnsupportedFormulaError extends Error {
   }
 }
 
-const LEVELS = 18;
+export const LEVELS = 18;
 
-function isRecord(value: unknown): value is RawPart {
+export function isRecord(value: unknown): value is RawPart {
   return typeof value === "object" && value !== null;
 }
 
-function matrix(maxRank: number, value = 0): Matrix {
+export function matrix(maxRank: number, value = 0): Matrix {
   return Array.from({ length: maxRank }, () => Array(LEVELS).fill(value));
 }
 
-function rankValues(value: unknown, maxRank: number): number[] {
+export function rankValues(value: unknown, maxRank: number): number[] {
   if (typeof value === "number" && Number.isFinite(value)) return Array(maxRank).fill(value);
   if (!Array.isArray(value)) throw new UnsupportedFormulaError("invalid-rank-values");
   const numeric = value.map(Number);
@@ -44,11 +48,11 @@ function rankValues(value: unknown, maxRank: number): number[] {
   throw new UnsupportedFormulaError("invalid-rank-values");
 }
 
-function rankMatrix(values: number[]): Matrix {
+export function rankMatrix(values: number[]): Matrix {
   return values.map((value) => Array(LEVELS).fill(value));
 }
 
-function levelMatrix(values: number[], maxRank: number): Matrix {
+export function levelMatrix(values: number[], maxRank: number): Matrix {
   return Array.from({ length: maxRank }, () => [...values]);
 }
 
@@ -56,7 +60,7 @@ function valueFormula(values: Matrix): LinearFormula {
   return { base: values, terms: new Map() };
 }
 
-function dataValue(ctx: FormulaContext, name: unknown): Matrix {
+export function dataValue(ctx: LeafContext, name: unknown): Matrix {
   if (typeof name !== "string") throw new UnsupportedFormulaError("NamedDataValueCalculationPart");
   const entries = Object.entries(ctx.source.DataValues ?? {});
   const value = ctx.source.DataValues?.[name] ?? entries.find(
@@ -65,14 +69,14 @@ function dataValue(ctx: FormulaContext, name: unknown): Matrix {
   return rankMatrix(rankValues(value, ctx.maxRank));
 }
 
-function effectValue(ctx: FormulaContext, index: unknown): Matrix {
+export function effectValue(ctx: LeafContext, index: unknown): Matrix {
   if (typeof index !== "number") throw new UnsupportedFormulaError("EffectValueCalculationPart");
   const raw = ctx.source.effectBurn?.[index];
   if (typeof raw !== "string") throw new UnsupportedFormulaError("EffectValueCalculationPart");
   return rankMatrix(rankValues(raw.split("/").map(Number), ctx.maxRank));
 }
 
-function statForPart(part: RawPart): AbilitySimulationStat {
+export function statForPart(part: RawPart): AbilitySimulationStat {
   const stat = part.mStat;
   const formula = part.mStatFormula;
   if (stat === undefined && formula === undefined) return "abilityPower";
@@ -96,7 +100,7 @@ function statForPart(part: RawPart): AbilitySimulationStat {
   throw new UnsupportedFormulaError("unsupported-stat");
 }
 
-function levelBreakpoints(part: RawPart): number[] {
+export function levelBreakpoints(part: RawPart): number[] {
   const result = [Number(part.mLevel1Value) || 0];
   const breakpoints = Array.isArray(part.mBreakpoints)
     ? part.mBreakpoints.filter(isRecord)
@@ -118,7 +122,7 @@ function levelBreakpoints(part: RawPart): number[] {
   return result;
 }
 
-function levelInterpolation(part: RawPart): number[] {
+export function levelInterpolation(part: RawPart): number[] {
   const start = Number(part.mStartValue);
   const end = Number(part.mEndValue);
   if (!Number.isFinite(start) || !Number.isFinite(end)) {

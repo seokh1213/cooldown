@@ -3,6 +3,7 @@ import { SafeBlockHtml } from "@/components/ui/safe-html";
 import type { ChampionDetailV2 } from "@/data/contracts/championData";
 import { spellIconUrl } from "@/data/assets/riotAssetUrls";
 import { useTranslation } from "@/i18n";
+import { formatExpr } from "@/lib/abilitySimulationExpr";
 import type { Champion } from "@/types";
 import {
   evaluateAbilitySimulationDetails,
@@ -129,10 +130,23 @@ export function SimulationSkills({
                   <div className="mt-3 border-t border-border/50 pt-3">
                     <div className="rounded-md bg-muted/45 px-2.5 py-2 font-mono text-[11px] leading-relaxed text-muted-foreground">
                       <span className="font-sans font-medium text-foreground">{t.pages.simulation.formulaLabel}</span>{" "}
-                      {details.base.toFixed(1)}
-                      {details.terms.map((term) => (
-                        <span key={term.stat}> + {statLabel(term.stat)} {term.statValue.toFixed(1)} × {term.coefficient.toFixed(2)}</span>
-                      ))}
+                      {details.expression ? (
+                        <span>
+                          {formatExpr(details.expression, {
+                            rank,
+                            level: finalStats?.level,
+                            statLabel,
+                            stacksLabel: t.skillTooltip.stacksLabel,
+                          })}
+                        </span>
+                      ) : (
+                        <>
+                          {details.base.toFixed(1)}
+                          {details.terms.map((term) => (
+                            <span key={term.stat}> + {statLabel(term.stat)} {term.statValue.toFixed(1)} × {term.coefficient.toFixed(2)}</span>
+                          ))}
+                        </>
+                      )}
                       {details.targetHealthMultiplier !== undefined && (
                         <span> × {details.targetHealthMultiplier.toFixed(1)}</span>
                       )}
