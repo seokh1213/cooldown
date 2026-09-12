@@ -45,6 +45,17 @@ export default tseslint.config(
     },
   },
   {
+    // CI 판단기는 의존성 없이 Node 런타임에서 바로 돈다
+    files: ['scripts/ci/*.mjs'],
+    languageOptions: {
+      globals: {
+        fetch: 'readonly',
+        process: 'readonly',
+        console: 'readonly',
+      },
+    },
+  },
+  {
     files: ['scripts/find-localization.ts'],
     rules: {
       // One-off recursive JSON exploration utility; production data code stays strict.

@@ -27,32 +27,21 @@ jobs:
       - name: Checkout version marker
         uses: actions/checkout@v7
         with:
-          sparse-checkout: public/data/version.json
+          sparse-checkout: |
+            public/data/version.json
+            scripts/ci
           sparse-checkout-cone-mode: false
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: '24'
 
       - name: Decide whether to run
         id: decide
-        run: |
-          local_version="$(node -p "require('./public/data/version.json').sources.ddragon")"
-          curl -sS --retry 3 https://ddragon.leagueoflegends.com/api/versions.json -o /tmp/versions.json
-          remote_version="$(node -p "require('/tmp/versions.json')[0]")"
-          echo "로컬 $local_version / 원격 $remote_version"
-
-          if [[ "${{ github.event_name }}" != "schedule" ]]; then
-            echo "run=true" >> "$GITHUB_OUTPUT"
-          elif [[ "$remote_version" != "$local_version" ]]; then
-            echo "패치가 바뀌었다."
-            echo "run=true" >> "$GITHUB_OUTPUT"
-          elif [[ "$(date -u +%H)" == "00" ]]; then
-            # 버전이 그대로여도 하루 한 번은 다시 만든다.
-            # 배포 데이터에는 CDragon BIN 에서 나오는 부분(툴팁 현지화, 스킬 시뮬레이션)이
-            # 있는데, CDragon 은 같은 버전에서도 추출이 개선되면 출력이 달라진다.
-            echo "버전은 그대로지만 하루 한 번 회차다."
-            echo "run=true" >> "$GITHUB_OUTPUT"
-          else
-            echo "run=false" >> "$GITHUB_OUTPUT"
-            echo "패치 그대로. 이번 회차는 여기서 끝낸다."
-          fi
+        env:
+          GITHUB_EVENT_NAME: ${{ github.event_name }}
+        run: node scripts/ci/upstream-changed.mjs
 
   update-data:
     needs: check

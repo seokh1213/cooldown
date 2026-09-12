@@ -11,6 +11,7 @@ import {
   writeChampionData,
 } from "./data-pipeline/generation/champion-stage";
 import { validateGeneratedData } from "./data-pipeline/generation/validation-stage";
+import { fetchCdragonBuild } from "./data-pipeline/sources/cdragon-build";
 import { fetchJson, writeJson } from "./data-pipeline/io/json";
 
 const VERSION_URL = "https://ddragon.leagueoflegends.com/api/versions.json";
@@ -45,8 +46,10 @@ async function generateStaticData(): Promise<void> {
   writeChampionData(versionDir, release, DATA_LOCALES, champions);
   await writeCatalogData(versionDir, release, DATA_LOCALES, catalogs);
   await validateGeneratedData(versionDir, release, champions);
+  // 다음 회차가 "바뀐 게 없다" 를 판단할 근거. 패치 버전만으로는 CDragon 재추출을 놓친다.
+  const cdragonBuild = await fetchCdragonBuild(sources.cdragon);
   await writeJson(
-    { schemaVersion: 2, patchVersion, sources },
+    { schemaVersion: 2, patchVersion, sources, cdragonBuild },
     path.join(DATA_DIR, "version.json"),
   );
 
