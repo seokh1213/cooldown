@@ -135,9 +135,12 @@ for (const width of [1440, 360]) {
   test(`base + growth stats in VS and cooldown page at ${width}`, async ({ page }) => {
     await page.setViewportSize({ width, height: 900 });
     await page.goto("./vs?a=Aatrox&t=Fiora");
-    await expect(page.locator('[data-stat="hp"]').first()).toHaveText("650+ 114");
-    await expect(page.locator('[data-stat="attackspeed"]').first()).toHaveText("0.651+ 2.5%");
-    await expect(page.locator('[data-stat="mp"]').first()).toHaveText("0+ 0");
+    await expect(page.locator('[data-stat="hp"]').first()).toHaveText("650");
+    await expect(page.locator('[data-stat-growth="hp"]').first()).toHaveText("114");
+    await expect(page.locator('[data-stat="attackspeed"]').first()).toHaveText("0.651");
+    await expect(page.locator('[data-stat-growth="attackspeed"]').first()).toHaveText("2.5%");
+    await expect(page.locator('[data-stat="mp"]').first()).toHaveText("0");
+    await expect(page.locator('[data-stat-growth="movespeed"]').first()).toHaveText("—");
     await page.goto("./");
     await page.getByRole("button", { name: "챔피언 추가하기" }).click();
     await page.getByRole("button", { name: "Select 아트록스", exact: true }).click();

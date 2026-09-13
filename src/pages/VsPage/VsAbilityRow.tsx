@@ -10,13 +10,15 @@ export function VsAbilityCell(props: {
 }) {
   const { ability } = props;
   return (
-    <div data-testid={"vs-" + props.side + "-P"} className="min-w-0">
-      <div className="mb-2 flex items-center gap-2">
-        {ability && <img src={passiveIconUrl(props.version, ability.iconFile)} alt="" width={28} height={28} className="size-7 shrink-0 rounded" data-skill-icon />}
-        <h3 className="text-[13px] font-medium">{ability?.name ?? "—"}</h3>
-        <span className={"ml-auto shrink-0 text-[11px] " + (props.side === "mine" ? "text-blue-700 dark:text-blue-300" : "text-rose-700 dark:text-rose-300")}>{props.championName}</span>
+    <div data-testid={"vs-" + props.side + "-P"} className="flex min-w-0 items-start gap-2.5">
+      {ability ? <img src={passiveIconUrl(props.version, ability.iconFile)} alt="" width={24} height={24} className="mt-0.5 size-6 shrink-0 rounded shadow-none" data-skill-icon /> : <span className="mt-0.5 size-6 shrink-0 rounded bg-muted" />}
+      <div className="min-w-0 flex-1">
+        <h3 className="flex items-center gap-1.5 text-[13px] font-semibold leading-5">
+          <span className="truncate">{ability?.name ?? "—"}</span>
+          <span className="sr-only">{props.championName}</span>
+        </h3>
+        {ability && <div data-ability-body><SafeBlockHtml html={ability.bodyHtml || ability.summary} className="break-words text-xs leading-relaxed text-foreground/80" /></div>}
       </div>
-      {ability && <div data-ability-body><SafeBlockHtml html={ability.bodyHtml || ability.summary} className="break-words text-[13px] leading-relaxed text-foreground/85" /></div>}
     </div>
   );
 }

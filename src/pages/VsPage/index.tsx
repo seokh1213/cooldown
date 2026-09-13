@@ -29,15 +29,15 @@ function VsHeader(props: {
 }) {
   const { t } = useTranslation();
   return (
-    <div className="mb-3 flex items-center justify-between gap-2">
-      <div>
+    <div className="mb-2 flex items-center justify-between gap-2">
+      <div className="min-w-0 px-0.5">
         <h1 className="sr-only">
           {t.comparison.title}
         </h1>
-        <p className="text-xs leading-relaxed text-muted-foreground">{t.comparison.rankSeconds}</p>
+        <p className="hidden truncate text-xs text-muted-foreground sm:block">{t.comparison.description}</p>
       </div>
-      <div className="flex items-center gap-1">
-        <span className="mr-2 text-xs text-muted-foreground">
+      <div className="flex shrink-0 items-center gap-1">
+        <span className="mr-2 text-xs tabular-nums text-muted-foreground">
           {props.patchVersion}
         </span>
         <Button variant="ghost" size="icon" aria-label={t.comparison.swap} onClick={props.onSwap}>
@@ -87,7 +87,7 @@ export default function VsPage(props: VsPageProps) {
     }
   };
   return (
-    <div className="mx-auto w-full max-w-6xl px-2 py-4 sm:px-6 md:py-5">
+    <div className="mx-auto w-full max-w-[800px] px-2 py-4 sm:px-6 md:py-5">
       <VsHeader
         patchVersion={props.patchVersion}
         copied={Boolean(shared?.success)}

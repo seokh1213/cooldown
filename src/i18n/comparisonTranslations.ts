@@ -14,13 +14,12 @@ export interface ComparisonLabels {
   tableNote: string;
   cooldownNote: string;
   baseStats: string;
+  statBase: string;
+  statGrowth: string;
   details: string;
   cooldownReference: string;
-  rankSeconds: string;
   seconds: string;
   passive: string;
-  detailsHint: string;
-  scrollHint: string;
   baseGrowth: string;
   growthNote: string;
   shorter: string;
@@ -53,7 +52,7 @@ export interface ItemDetailLabels {
 
 export const koComparison: ComparisonLabels = {
   title: "VS 라인전 비교",
-  description: "내 챔피언과 상대의 스킬 쿨타임을 나란히 확인하세요.",
+  description: "두 챔피언의 스킬 쿨타임과 능력치를 나란히 비교해 보세요.",
   mine: "내 챔피언",
   opponent: "상대 챔피언",
   select: "챔피언 선택",
@@ -61,30 +60,29 @@ export const koComparison: ComparisonLabels = {
   open: "VS 화면에서 비교",
   empty: "챔피언을 선택하면 스킬과 쿨타임이 표시됩니다.",
   rank: "스킬 랭크",
-  baseCooldowns: "랭크별 기본 쿨타임",
+  baseCooldowns: "스킬 쿨타임",
   skill: "스킬",
   champion: "챔피언",
   tableNote:
     "Q·W·E·R마다 내 챔피언과 상대를 나란히 비교합니다. 행은 챔피언 레벨이 아닌 스킬 랭크입니다.",
   passive: "패시브",
-  detailsHint: "이미지에 올리거나 눌러 상세 보기",
   shorter: "같은 스킬·랭크에서 더 짧은 쿨타임",
   formRankNote: "스킬 효과 수치: R 랭크 기준",
-  scrollHint: "표를 좌우로 넘겨 Q · W · E · R을 비교하세요.",
   baseGrowth: "기본 + 성장",
   growthNote: "성장값은 레벨에 따른 증가 기준값이며, 매 레벨 고정 증가량은 아닙니다. 공격 속도 성장은 %입니다.",
   details: "스킬 상세",
   cooldownReference: "쿨타임 참고",
-  rankSeconds: "스킬 랭크 순 · 단위: 초",
   seconds: "초",
   cooldownNote:
     "기본 쿨타임 · 스킬 가속 미적용",
-  baseStats: "1레벨 기본 능력치",
+  baseStats: "레벨별 능력치",
+  statBase: "1레벨",
+  statGrowth: "레벨당",
 };
 export const enComparison: ComparisonLabels = {
   title: "VS lane comparison",
   description:
-    "Compare your champion’s ability cooldowns with your opponent’s.",
+    "Compare two champions’ ability cooldowns and stats side by side.",
   mine: "Your champion",
   opponent: "Opponent",
   select: "Select champion",
@@ -92,29 +90,28 @@ export const enComparison: ComparisonLabels = {
   open: "Compare in VS",
   empty: "Select a champion to see abilities and cooldowns.",
   rank: "Ability rank",
-  baseCooldowns: "Base cooldowns by rank",
+  baseCooldowns: "Ability cooldowns",
   skill: "Skill",
   champion: "Champion",
   tableNote:
     "Each Q/W/E/R group pairs your champion with the opponent. Rows are ability ranks, not champion levels.",
   passive: "Passives",
-  detailsHint: "Hover or select an ability for details",
   shorter: "Shorter cooldown at the same ability rank",
   formRankNote: "Effect values scale with R rank",
-  scrollHint: "Scroll horizontally to compare Q · W · E · R.",
   baseGrowth: "Base + growth",
   growthNote: "Growth is the stat’s level-scaling value, not a fixed increase each level. Attack speed growth is a percentage.",
   details: "Ability details",
   cooldownReference: "Cooldown notes",
-  rankSeconds: "Ability rank order · Seconds",
   seconds: "sec",
   cooldownNote:
     "Base cooldowns · Before ability haste",
-  baseStats: "Level 1 base stats",
+  baseStats: "Stats by level",
+  statBase: "Level 1",
+  statGrowth: "Per level",
 };
 export const zhComparison: ComparisonLabels = {
   title: "VS 对线比较",
-  description: "并排查看己方与对手的技能冷却时间。",
+  description: "并排比较两位英雄的技能冷却时间与属性。",
   mine: "己方英雄",
   opponent: "对手英雄",
   select: "选择英雄",
@@ -122,24 +119,23 @@ export const zhComparison: ComparisonLabels = {
   open: "前往 VS 比较",
   empty: "选择英雄后即可查看技能与冷却时间。",
   rank: "技能等级",
-  baseCooldowns: "各等级基础冷却时间",
+  baseCooldowns: "技能冷却时间",
   skill: "技能",
   champion: "英雄",
   tableNote: "Q/W/E/R 各组并排比较双方英雄。行表示技能等级，而非英雄等级。",
   passive: "被动技能",
-  detailsHint: "悬停或点击技能查看详情",
   shorter: "同一技能、同一等级下更短的冷却时间",
   formRankNote: "技能效果数值随 R 等级变化",
-  scrollHint: "左右滚动，比较 Q · W · E · R。",
   baseGrowth: "基础 + 成长",
   growthNote: "成长值是随英雄等级变化的计算基准，并非每级固定增量。攻击速度成长以百分比表示。",
   details: "技能详情",
   cooldownReference: "冷却说明",
-  rankSeconds: "按技能等级排列 · 单位：秒",
   seconds: "秒",
   cooldownNote:
     "基础冷却时间 · 未计算技能急速",
-  baseStats: "1级基础属性",
+  baseStats: "各等级属性",
+  statBase: "1级",
+  statGrowth: "每级",
 };
 
 export const koItemDetail: ItemDetailLabels = {

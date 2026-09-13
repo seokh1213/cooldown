@@ -4,22 +4,30 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { VsMatrixSkill } from "./VsMatrixSkill";
 import { VsCooldownValue } from "./VsCooldownValue";
 import { VsFormCooldown } from "./VsFormCooldown";
+import { VsChampionHeader } from "./VsChampionColumn";
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from "@/components/ui/dialog";
 import { useTranslation } from "@/i18n";
 import { VsAbilityBody } from "./VsAbilityRow";
 import { ACTIVE_SLOTS, comparisonCooldownAtRank, cooldownRankCount, rankCooldowns } from "./vsCooldownTable";
+import type { useVsChampion } from "./useVsWorkspace";
 import type { VsSideKey } from "./vsState";
 
 export interface MatrixSide {
   side: VsSideKey;
+  id: string;
   detail?: ChampionDetailV2;
+  result: ReturnType<typeof useVsChampion>;
 }
 
-export function VsCooldownMatrix({ sides, version }: { sides: MatrixSide[]; version: string }) {
+/**
+ * Rows are ranks, columns are two champion blocks of Q·W·E·R, the same grammar as the cooldown page.
+ * The champion header is the first table row, so each champion sits directly above their own skills.
+ */
+export function VsCooldownMatrix({ sides, version, onSelect }: { sides: MatrixSide[]; version: string; onSelect: (side: VsSideKey) => void }) {
   const { t, lang } = useTranslation();
   const returnFocus = useRef<HTMLButtonElement | null>(null);
   const [selected, setSelected] = useState<{ ability: AbilityV2; name: string; slot: string }>();
-  const columns = ACTIVE_SLOTS.flatMap((slot) => sides.map(({ side, detail }) => ({
+  const columns = sides.flatMap(({ side, detail }) => ACTIVE_SLOTS.map((slot) => ({
     side, slot, name: detail?.champion.name ?? t.comparison[side],
     ability: detail?.champion.abilities[slot],
   })));
@@ -30,47 +38,78 @@ export function VsCooldownMatrix({ sides, version }: { sides: MatrixSide[]; vers
     cooldowns: rankCooldowns({ ability: column.ability, columns: rowCount, values: column.ability?.cooldownSeconds ?? [] }),
     recharges: rankCooldowns({ ability: column.ability, columns: rowCount, values: column.ability?.rechargeSeconds ?? [] }),
   }));
+  const peerIndex = (index: number) => (index + ACTIVE_SLOTS.length) % columns.length;
+  const groupStart = (side: VsSideKey, slot: string) => side === "opponent" && slot === ACTIVE_SLOTS[0];
+  const groupClass = (side: VsSideKey, slot: string) => (groupStart(side, slot) ? " border-l border-l-border/60" : "");
+  const hasDetails = sides.some(({ detail }) => detail);
+  // A/B legend under the table: one line per champion that has forms, unique (key, label) pairs in A→B order.
+  const formLegend = (detail?: ChampionDetailV2) => {
+    const labels = new Map<string, string>();
+    for (const slot of ACTIVE_SLOTS) for (const form of detail?.champion.abilities[slot]?.forms ?? []) labels.set(form.key, form.label);
+    return [...labels].sort(([a], [b]) => a.localeCompare(b));
+  };
   return (
     <TooltipProvider delayDuration={150} skipDelayDuration={100}>
-    <section className="mt-5" aria-label={t.comparison.baseCooldowns}>
-      <div className="mb-3 flex flex-wrap items-center justify-between gap-x-4 gap-y-1.5">
-        <h2 className="text-base font-semibold tracking-tight">{t.comparison.baseCooldowns} <span className="ml-1 text-xs font-normal text-muted-foreground">{t.comparison.seconds}</span></h2>
-        <p className="flex items-center gap-1.5 text-[11px] text-muted-foreground"><span aria-hidden="true" className="size-2 rounded-sm bg-emerald-500/40" />{t.comparison.shorter}</p>
-      </div>
-      <div role="region" aria-label={t.comparison.baseCooldowns} tabIndex={0} className="overflow-x-auto rounded-lg border border-border bg-white focus-visible:outline-2 focus-visible:outline-primary dark:bg-card" data-cooldown-scroll>
-        <table className="w-full min-w-[860px] table-fixed border-separate border-spacing-0" aria-label={t.comparison.baseCooldowns}>
-          <caption className="sr-only">{t.comparison.tableNote}</caption>
-          <colgroup><col className="w-14" />{columns.map((column) => <col key={column.slot + column.side} />)}</colgroup>
-          <thead>
-            <tr className="bg-muted/50">
-              <th rowSpan={2} scope="col" className="sticky left-0 z-10 break-keep border-b border-r border-border bg-card px-2 text-[11px] font-medium text-muted-foreground">{t.comparison.rank}</th>
-              {ACTIVE_SLOTS.map((slot) => <th key={slot} scope="colgroup" colSpan={2} className="border-b border-r border-border py-1.5 text-sm font-semibold last:border-r-0">{slot}</th>)}
-            </tr>
-            <tr>
-              {columns.map(({ side, slot, name, ability }) => (
-                <VsMatrixSkill key={slot + side} side={side} slot={slot} name={name} ability={ability} version={version} onSelect={(selectedAbility, trigger) => { returnFocus.current = trigger; setSelected({ ability: selectedAbility, name, slot }); }} />
+    <section aria-label={t.comparison.baseCooldowns}>
+      <h2 className="mb-2 px-0.5 text-sm font-semibold tracking-tight">{t.comparison.baseCooldowns}</h2>
+      <table className="w-full table-fixed border-separate border-spacing-0" aria-label={t.comparison.baseCooldowns}>
+        <caption className="sr-only">{t.comparison.tableNote}</caption>
+        <colgroup><col className="w-8 sm:w-14" />{columns.map((column) => <col key={column.side + column.slot} />)}</colgroup>
+        <thead>
+          <tr>
+            {sides.map(({ side, id, result }, index) => (
+              <th key={side} scope="colgroup" colSpan={ACTIVE_SLOTS.length + (index === 0 ? 1 : 0)} className={"border-b border-border pb-2 pt-px align-top font-normal " + (side === "opponent" ? "border-l border-l-border/60 pl-1.5 sm:pl-2" : "pr-1.5 sm:pr-2")}>
+                <div id={"vs-header-" + side}>
+                  <VsChampionHeader id={id} side={side} label={t.comparison[side]} version={version} result={result} onSelect={() => onSelect(side)} />
+                </div>
+              </th>
+            ))}
+          </tr>
+          {hasDetails && <tr>
+            <th scope="col" className="border-b border-border/60 px-1 text-left text-[11px] font-normal text-muted-foreground sm:px-2">{t.comparison.skill}</th>
+            {columns.map(({ side, slot, name, ability }) => (
+              <VsMatrixSkill key={side + slot} side={side} slot={slot} name={name} ability={ability} version={version} groupStart={groupStart(side, slot)} onSelect={(selectedAbility, trigger) => { returnFocus.current = trigger; setSelected({ ability: selectedAbility, name, slot }); }} />
+            ))}
+          </tr>}
+        </thead>
+        <tbody>
+          {!hasDetails && (
+            <tr><td colSpan={columns.length + 1} className="px-2 py-8 text-center text-xs text-muted-foreground">{t.comparison.empty}</td></tr>
+          )}
+          {hasDetails && Array.from({ length: rowCount }, (_, index) => (
+            <tr key={index} data-rank-row={index + 1} className="hover:bg-muted/40">
+              <th id={"vs-rank-" + (index + 1)} scope="row" className="border-b border-border/50 px-1 py-1 text-left text-xs font-normal tabular-nums text-muted-foreground sm:px-2">{index + 1}</th>
+              {values.map(({ side, slot, ability, cooldowns, recharges }, columnIndex) => (
+                <td key={side + slot} headers={"vs-rank-" + (index + 1) + " vs-" + side + "-" + slot} className={"border-b border-border/50 px-0.5 py-1 text-center align-middle" + groupClass(side, slot)}>
+                  {ability?.forms ? <VsFormCooldown ability={ability} peer={values[peerIndex(columnIndex)]?.ability} rank={index + 1} side={side} slot={slot} format={formatter.format} /> : <VsCooldownValue value={cooldowns[index]} peer={comparisonCooldownAtRank(values[peerIndex(columnIndex)]?.ability, index + 1)} kind="cooldown" side={side} slot={slot} rank={index + 1} format={formatter.format} />}
+                  {recharges[index] !== null && <span className="mt-0.5 block text-[11px] leading-4 text-muted-foreground">{t.common.rechargeTime} <VsCooldownValue value={recharges[index]} peer={values[peerIndex(columnIndex)]?.recharges[index] ?? null} kind="recharge" side={side} slot={slot} rank={index + 1} format={formatter.format} /></span>}
+                </td>
               ))}
             </tr>
-          </thead>
-          <tbody>
-            {Array.from({ length: rowCount }, (_, index) => (
-              <tr key={index} data-rank-row={index + 1} className="group hover:bg-muted/50 [&:last-child>td]:border-b-0 [&:last-child>th]:border-b-0">
-                <th id={"vs-rank-" + (index + 1)} scope="row" className="sticky left-0 z-10 border-b border-r border-border/50 bg-card px-2 py-2 text-xs font-medium text-muted-foreground">{index + 1}</th>
-                {values.map(({ side, slot, ability, cooldowns, recharges }, columnIndex) => (
-                  <td key={slot + side} headers={"vs-rank-" + (index + 1) + " vs-" + side + "-" + slot} className={"border-b border-border/50 px-1 py-2 text-center tabular-nums " + (side === "opponent" ? "border-r border-r-border last:border-r-0" : "")}>
-                    {ability?.forms ? <VsFormCooldown ability={ability} peer={values[columnIndex ^ 1]?.ability} rank={index + 1} side={side} slot={slot} format={formatter.format} /> : <VsCooldownValue value={cooldowns[index]} peer={comparisonCooldownAtRank(values[columnIndex ^ 1]?.ability, index + 1)} kind="cooldown" side={side} slot={slot} rank={index + 1} format={formatter.format} />}
-                    {recharges[index] !== null && <span className="mt-0.5 block text-[11px] text-muted-foreground">{t.common.rechargeTime} <VsCooldownValue value={recharges[index]} peer={values[columnIndex % 2 === 0 ? columnIndex + 1 : columnIndex - 1]?.recharges[index] ?? null} kind="recharge" side={side} slot={slot} rank={index + 1} format={formatter.format} /></span>}
+          ))}
+        </tbody>
+        {hasDetails && (
+          <tfoot>
+            <tr>
+              {sides.map(({ side, detail }, index) => {
+                const forms = formLegend(detail);
+                return (
+                  <td key={side} colSpan={ACTIVE_SLOTS.length + (index === 0 ? 1 : 0)} className={"pb-1 pt-2 text-[11px] leading-4 text-muted-foreground " + (side === "opponent" ? "border-l border-l-border/60 pl-1.5 sm:pl-2" : "pl-1 sm:pl-2")}>
+                    {forms.length > 0 && (
+                      <p data-form-labels data-side={side}>
+                        <span className="mr-1.5 text-foreground/80">{detail?.champion.name}</span>
+                        {forms.map(([key, label], formIndex) => (
+                          <span key={key}>{formIndex > 0 && <span aria-hidden="true" className="mx-1.5 text-border">|</span>}<span className="mr-1 font-medium text-foreground/80">{key}</span>{label}</span>
+                        ))}
+                      </p>
+                    )}
                   </td>
-                ))}
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-      <div className="mt-2 flex flex-wrap justify-between gap-1 text-[11px] text-muted-foreground">
-        <p>{t.comparison.cooldownNote} · {t.comparison.detailsHint}</p>
-        <p className="lg:hidden">{t.comparison.scrollHint}</p>
-      </div>
+                );
+              })}
+            </tr>
+          </tfoot>
+        )}
+      </table>
       <Dialog open={Boolean(selected)} onOpenChange={(open) => { if (!open) setSelected(undefined); }}>
         <DialogContent onCloseAutoFocus={(event) => { event.preventDefault(); returnFocus.current?.focus(); }} className="max-h-[85dvh] w-[calc(100%-2rem)] max-w-2xl overflow-y-auto">
           <DialogTitle className="pr-6 leading-normal">{selected?.name} · {selected?.slot} {selected?.ability.name}</DialogTitle>

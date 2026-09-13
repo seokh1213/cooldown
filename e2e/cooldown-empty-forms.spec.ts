@@ -34,16 +34,14 @@ for (const width of [1440, 390]) {
     const row = page.locator('[data-rank-row="1"]');
     await expect(row).toBeVisible();
     expect((await row.boundingBox())!.height).toBeLessThanOrEqual(44);
-    const labels = page.getByTestId("vs-mine-Q").locator("[data-form-labels]");
-    await expect(labels).toHaveText("A 해머B 캐논");
-    for (const label of await labels.locator("span").all()) {
-      expect(await label.evaluate((element) => element.scrollWidth <= element.clientWidth)).toBe(true);
-    }
+    await expect(page.getByTestId("vs-mine-Q").locator("[data-form-half]")).toHaveCount(2);
+    await expect(page.locator('[data-form-labels][data-side="mine"]')).toHaveText(/제이스\s*A\s*해머\s*\|\s*B\s*캐논/);
     const q = row.locator('td[headers$="vs-mine-Q"]');
     const a = (await q.locator('[data-form-cooldown="A"]').boundingBox())!;
     const b = (await q.locator('[data-form-cooldown="B"]').boundingBox())!;
-    expect(a.y).toEqual(b.y);
-    expect(a.x + a.width).toBeLessThan(b.x);
+    // A above B in one cell, the same order as the split icon.
+    expect(a.y + a.height).toBeLessThanOrEqual(b.y + 0.5);
+    expect(Math.abs(a.x - b.x)).toBeLessThan(6);
     if (width === 1440) await expect(page.locator('[data-rank-row="6"]')).toBeInViewport({ ratio: 1 });
   });
 }
