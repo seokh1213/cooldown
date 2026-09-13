@@ -5,7 +5,7 @@
  * 모델 적재는 수십 초가 걸리므로 진행률을 파일 합계로 계속 보여 준다.
  */
 import { useEffect, useRef, useState } from "react";
-import { Loader2, Send, Square, ThumbsDown, ThumbsUp, Trash2, X } from "lucide-react";
+import { ChevronLeft, HardDrive, Loader2, Send, Square, ThumbsDown, ThumbsUp, Trash2, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useTranslation } from "@/i18n";
 import { advisorSystemPrompt } from "@/lib/advisor/persona";
@@ -37,6 +37,7 @@ import {
 } from "@/lib/advisor/tools";
 import type { UseAdvisorResult } from "@/hooks/useAdvisor";
 import { AdvisorConsent } from "./AdvisorConsent";
+import { AdvisorStorage } from "./AdvisorStorage";
 
 interface AdvisorPanelProps {
   advisor: UseAdvisorResult;
@@ -55,6 +56,8 @@ export function AdvisorPanel({ advisor, patch, onClose }: AdvisorPanelProps) {
   const [data, setData] = useState<AdvisorData | null>(null);
   // 동의 화면을 건너뛰고 코드 답변만으로 써 보는 상태
   const [skippedModel, setSkippedModel] = useState(false);
+  // 내려받은 모델을 보고 지우는 화면
+  const [showStorage, setShowStorage] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
 
   // 챔피언 자료는 모델과 별개로 받는다. 모델이 준비되기 전에 미리 받아 둔다.
@@ -218,8 +221,13 @@ export function AdvisorPanel({ advisor, patch, onClose }: AdvisorPanelProps) {
     >
       <header className="flex items-center justify-between border-b px-4 py-3">
         <div className="flex items-center gap-2">
-          <span className="text-sm font-semibold">{copy.title}</span>
-          {advisor.status === "generating" && (
+          {showStorage && (
+            <Button variant="ghost" size="icon" className="-ml-2 h-7 w-7" onClick={() => setShowStorage(false)} aria-label={copy.storage.back}>
+              <ChevronLeft className="h-4 w-4" />
+            </Button>
+          )}
+          <span className="text-sm font-semibold">{showStorage ? copy.storage.title : copy.title}</span>
+          {!showStorage && advisor.status === "generating" && (
             <span className="flex items-center gap-1 text-xs text-muted-foreground">
               <Loader2 className="h-3 w-3 animate-spin" />
               {copy.status.generating}
@@ -227,9 +235,15 @@ export function AdvisorPanel({ advisor, patch, onClose }: AdvisorPanelProps) {
           )}
         </div>
         <div className="flex items-center gap-1">
-          {advisor.turns.length > 0 && (
+          {!showStorage && advisor.turns.length > 0 && (
             <Button variant="ghost" size="icon" onClick={advisor.reset} aria-label={copy.reset}>
               <Trash2 className="h-4 w-4" />
+            </Button>
+          )}
+          {/* 3GB 는 받아 두면 계속 남는다. 지울 길을 눈에 보이는 곳에 둔다. */}
+          {!showStorage && (
+            <Button variant="ghost" size="icon" onClick={() => setShowStorage(true)} aria-label={copy.storage.open}>
+              <HardDrive className="h-4 w-4" />
             </Button>
           )}
           <Button variant="ghost" size="icon" onClick={onClose} aria-label={copy.close}>
@@ -238,7 +252,9 @@ export function AdvisorPanel({ advisor, patch, onClose }: AdvisorPanelProps) {
         </div>
       </header>
 
-      {!advisor.consented && !skippedModel ? (
+      {showStorage ? (
+        <AdvisorStorage onDelete={advisor.deleteModel} />
+      ) : !advisor.consented && !skippedModel ? (
         <AdvisorConsent
           webgpu={advisor.webgpu}
           storage={advisor.storage}

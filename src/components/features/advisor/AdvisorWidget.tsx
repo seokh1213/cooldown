@@ -8,6 +8,7 @@
 import { useEffect, useState } from "react";
 import { MessageCircle } from "lucide-react";
 import { useAdvisor } from "@/hooks/useAdvisor";
+import { useDeviceType } from "@/hooks/useDeviceType";
 import { useTranslation } from "@/i18n";
 import { AdvisorPanel } from "./AdvisorPanel";
 
@@ -15,7 +16,26 @@ interface AdvisorWidgetProps {
   patch: string;
 }
 
+/**
+ * 모바일에서는 띄우지 않는다.
+ *
+ * 모델이 3GB 다. 셀룰러로 받으면 요금이 나가고, 휴대폰 브라우저가 한 출처에 주는
+ * 저장 공간은 그보다 작은 경우가 많아 받다가 중간에 끊긴다. 받아도 WebGPU 를
+ * 제대로 주는 모바일 브라우저가 드물다. 셋 중 하나만 걸려도 사용자는 몇 분을
+ * 기다린 끝에 실패를 본다.
+ *
+ * 화면 폭으로 가른다(`useDeviceType`, 768px). 기기 종류를 user agent 로 맞히는 것보다
+ * 틀릴 일이 적고, 창을 줄인 데스크톱에서도 자리를 안 뺏는다.
+ *
+ * **위젯 자체를 그리지 않는다.** 버튼만 숨기면 훅이 붙어 워커를 만들 길이 남는다.
+ */
 export function AdvisorWidget({ patch }: AdvisorWidgetProps) {
+  const device = useDeviceType();
+  if (device === "mobile") return null;
+  return <AdvisorLauncher patch={patch} />;
+}
+
+function AdvisorLauncher({ patch }: AdvisorWidgetProps) {
   const { t } = useTranslation();
   const [open, setOpen] = useState(false);
   const advisor = useAdvisor();

@@ -13,6 +13,7 @@ import {
   resolveModel,
   type WebGpuSupport,
 } from "@/lib/advisor/config";
+import { deleteModelCache } from "@/lib/advisor/storage";
 import type {
   AdvisorChatMessage,
   AdvisorFileProgress,
@@ -139,6 +140,13 @@ export interface UseAdvisorResult {
   sendWithSearch: (question: string, system: string, options: SearchRoundOptions) => void;
   /** 답변 평가. 기기 안에만 쌓인다. */
   rate: (turnId: number, rating: "up" | "down", patch: string) => void;
+  /**
+   * 내려받은 모델을 삭제하고 처음 상태로 되돌린다.
+   *
+   * 캐시만 지우면 안 된다. 워커가 모델을 메모리에 들고 있어서 그대로면 계속 답한다.
+   * 동의도 거둬야 다음에 열 때 "3GB 를 받겠습니까" 를 다시 묻는다.
+   */
+  deleteModel: () => Promise<void>;
   stop: () => void;
   reset: () => void;
 }
@@ -618,6 +626,30 @@ export function useAdvisor(): UseAdvisorResult {
     setError(null);
   }, []);
 
+  /**
+   * 내려받은 모델을 삭제한다.
+   *
+   * 워커를 먼저 내린다. 살아 있으면 모델을 메모리에 든 채로 계속 답해서, 지웠는데도
+   * 지워지지 않은 것처럼 보인다. 그다음 캐시를 지우고 동의를 거둔다.
+   */
+  const deleteModel = useCallback(async () => {
+    workerRef.current?.terminate();
+    workerRef.current = null;
+    setModelReady(false);
+    setStatus("idle");
+    setProgress({ loadedBytes: 0, totalBytes: 0, files: [] });
+    setTurns([]);
+    setError(null);
+    await deleteModelCache();
+    try {
+      localStorage.removeItem(CONSENT_STORAGE_KEY);
+    } catch {
+      // 못 지워도 캐시는 비었으므로 다시 받게 된다
+    }
+    setConsented(false);
+    void estimateStorageMb().then(setStorage);
+  }, []);
+
   return {
     status,
     modelReady,
@@ -635,6 +667,7 @@ export function useAdvisor(): UseAdvisorResult {
     sendWithTools,
     sendWithSearch,
     rate,
+    deleteModel,
     stop,
     reset,
   };
