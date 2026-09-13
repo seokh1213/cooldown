@@ -156,6 +156,7 @@ async function fetchCDragonChampionData(
       championId,
       cdragonVersion,
       passive,
+      siblings,
     ),
   ]);
   return {

@@ -45,10 +45,16 @@ function replaceVariableTokens(
     const trimmedVar = String(variableName).trim();
 
     // 특수 변수 처리 (spellmodifierdescriptionappend, Spell_*_Tooltip 등)
+    //
+    // 대소문자를 가리지 않는다. 원문은 `@SpellModifierDescriptionAppend@` 처럼 섞어 쓰는데
+    // 정확 일치로 비교하고 있어 걸리지 않았다. 문자열표 21,210곳이 전부 섞인 표기이고
+    // 전부 소문자인 곳은 하나도 없다. 아이번 패시브가 이것 때문에 문장 끝에 물음표를
+    // 달고 있었다("…골드와 경험치를 얻을 수 있습니다?").
+    const lowerVar = trimmedVar.toLowerCase();
     if (
-      trimmedVar === "spellmodifierdescriptionappend" ||
-      trimmedVar.includes("gamemodeinteger") ||
-      (trimmedVar.includes("Spell_") && trimmedVar.includes("Tooltip"))
+      lowerVar === "spellmodifierdescriptionappend" ||
+      lowerVar.includes("gamemodeinteger") ||
+      (lowerVar.includes("spell_") && lowerVar.includes("tooltip"))
     ) {
       return "";
     }
