@@ -50,7 +50,7 @@ export interface ItemDetailLabels {
 }
 
 export const koComparison: ComparisonLabels = {
-  title: "VS 라인전 비교",
+  title: "챔피언 맞대결",
   description: "두 챔피언의 스킬 쿨타임과 능력치를 나란히 비교해 보세요.",
   mine: "내 챔피언",
   opponent: "상대 챔피언",
@@ -78,7 +78,7 @@ export const koComparison: ComparisonLabels = {
   statGrowth: "레벨당",
 };
 export const enComparison: ComparisonLabels = {
-  title: "VS lane comparison",
+  title: "Champion matchup",
   description:
     "Compare two champions’ ability cooldowns and stats side by side.",
   mine: "Your champion",
@@ -107,7 +107,7 @@ export const enComparison: ComparisonLabels = {
   statGrowth: "Per level",
 };
 export const zhComparison: ComparisonLabels = {
-  title: "VS 对线比较",
+  title: "英雄对决",
   description: "并排比较两位英雄的技能冷却时间与属性。",
   mine: "己方英雄",
   opponent: "对手英雄",
