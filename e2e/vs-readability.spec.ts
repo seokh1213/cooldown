@@ -34,7 +34,7 @@ for (const locale of ["ko_KR", "en_US", "zh_CN"] as const) {
     await expect(page.getByTestId("vs-opponent-P").locator("[data-ability-body]")).toBeVisible();
     await expect(page.locator("details")).toHaveCount(0);
     expect(await page.evaluate(() => scrollY)).toBe(0);
-    expect((await page.locator("[data-cooldown-notes]").allTextContents()).join(" ")).not.toMatch(/원문|原文|source/i);
+    await expect(page.locator('[data-ability-info][data-side="mine"] [data-ability-body]')).toHaveCount(5);
     const qButton = page.getByTestId("vs-mine-Q").getByRole("button");
     await qButton.locator("[data-skill-icon]").hover();
     await expect(page.getByRole("tooltip")).toContainText(t.comparison.mine === "내 챔피언" ? "다르킨의 검" : /Aatrox|亚托克斯/);
@@ -70,7 +70,7 @@ for (const locale of ["ko_KR", "en_US", "zh_CN"] as const) {
         const t = translations[locale];
         const q = page.getByTestId("vs-mine-Q");
         await expect(q.getByRole("button")).toBeEnabled();
-        await expect(page.locator('[data-cooldown-notes][data-side=opponent][data-slot=Q]')).toContainText("50%");
+        await expect(page.locator('[data-ability-info][data-side=opponent][data-slot=Q]')).toContainText("50%");
         await expectColumnOwnership(page);
         await q.getByRole("button").click();
         await expectHealingIcons(page.getByRole("dialog"));

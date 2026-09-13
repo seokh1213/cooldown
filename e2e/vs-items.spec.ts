@@ -59,7 +59,7 @@ for (const locale of ["ko_KR", "en_US", "zh_CN"] as const) {
         "90",
         "70", "—", "—",
       ]);
-      await expect(page.locator('[data-cooldown-notes][data-side="opponent"][data-slot="Q"]')).toContainText("50%");
+      await expect(page.locator('[data-ability-info][data-side="opponent"][data-slot="Q"]')).toContainText("50%");
       await expect(page.getByRole("combobox")).toHaveCount(0);
       await expect(
         page.getByRole("button", { name: t.sidebar.simulation, exact: true }),
