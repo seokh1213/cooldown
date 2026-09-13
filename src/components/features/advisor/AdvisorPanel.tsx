@@ -20,6 +20,14 @@ import {
   loadAdvisorData,
   type AdvisorData,
 } from "@/lib/advisor/context";
+import {
+  SEARCH_QUERY_SYSTEM,
+  buildQueryPrompt,
+  buildSearchCorpus,
+  extractQuery,
+  lexicalSearch,
+  searchContext,
+} from "@/lib/advisor/searchFallback";
 import { detectChampions } from "@/lib/advisor/intent";
 import {
   ADVISOR_TOOLS,
@@ -161,7 +169,32 @@ export function AdvisorPanel({ advisor, patch, onClose }: AdvisorPanelProps) {
       }
     }
 
-    // 챔피언이 안 잡히면 페르소나만으로 답한다
+    // 여기까지 왔으면 챔피언·아이템·규칙 어느 이름도 질문에 없다.
+    //
+    // 예전에는 자료 없이 페르소나만 붙여 내보냈고, 그러면 모델이 지어냈다.
+    // 모자란 것은 지식이 아니라 낱말이었다. "cs 어떻게 늘려?" 의 답은 미니언 문서에
+    // "파밍: 미니언에 막타를 넣어…" 로 이미 있는데 `cs` 라는 글자가 없어 못 만났다.
+    //
+    // 그래서 모델에게 **검색어만** 만들게 하고 찾는 일은 코드가 한다.
+    // 개체 판단을 맡기면 트페를 트리스타나로 바꾸지만, 여기 오는 질문에는 개체가 없다.
+    if (data && advisor.consented) {
+      const corpus = buildSearchCorpus(data);
+      advisor.sendWithSearch(question, system, {
+        querySystem: SEARCH_QUERY_SYSTEM,
+        buildPrompt: (tried) => buildQueryPrompt(question, tried),
+        extract: extractQuery,
+        search: (query) => {
+          const hits = lexicalSearch(corpus, query);
+          return hits.length ? searchContext(hits, data.patch, query) : undefined;
+        },
+        maxRounds: 2,
+        fallbackSystem: system,
+      });
+      setDraft("");
+      return;
+    }
+
+    // 모델을 안 받은 사용자는 페르소나만으로 답한다
     advisor.send(question, system);
     setDraft("");
   };

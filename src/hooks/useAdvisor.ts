@@ -65,6 +65,25 @@ export function readFeedback(): AdvisorFeedback[] {
   }
 }
 
+export interface SearchRoundOptions {
+  /** 검색어를 만들게 할 때 쓸 지시문. */
+  querySystem: string;
+  /** 회차마다 모델에게 건넬 글. 앞서 헛물켠 검색어를 함께 넘긴다. */
+  buildPrompt: (tried: string[]) => string;
+  /** 모델이 뱉은 글에서 검색어만 추린다. */
+  extract: (text: string) => string;
+  /**
+   * 검색을 실제로 한다. 코드가 한다.
+   * 아무것도 못 찾으면 undefined 를 돌려준다. 그때만 다시 찾는다.
+   * 찾긴 찾았는데 엉뚱한 경우는 가려낼 수 없다 — 점수로 맞고 틀림이 안 갈렸다.
+   */
+  search: (query: string) => string | undefined;
+  /** 못 찾았을 때 검색어를 몇 번까지 다시 만들지. */
+  maxRounds: number;
+  /** 끝내 못 찾았을 때 쓸 지시문. */
+  fallbackSystem: string;
+}
+
 export interface UseAdvisorResult {
   status: AdvisorStatus;
   /** 모델이 GPU 에 올라갔는지. 적재 전에 질문하면 생성 상태와 겹치므로 따로 둔다. */
@@ -96,6 +115,11 @@ export interface UseAdvisorResult {
     parse: (text: string) => Array<{ name: string; args: Record<string, string> }>,
     fallbackSystem?: string,
   ) => void;
+  /**
+   * 모델에게 검색어를 만들게 해서 자료를 찾은 뒤 답한다.
+   * 개체가 안 잡혀 자료 없이 나갈 질문에만 쓴다.
+   */
+  sendWithSearch: (question: string, system: string, options: SearchRoundOptions) => void;
   /** 답변 평가. 기기 안에만 쌓인다. */
   rate: (turnId: number, rating: "up" | "down", patch: string) => void;
   stop: () => void;
@@ -395,6 +419,105 @@ export function useAdvisor(): UseAdvisorResult {
   );
 
   /**
+   * 검색어를 만들게 한 뒤 코드가 찾아서 답한다.
+   *
+   * 검색 도구를 쥐여 주고 알아서 하라고 두면 안 됐다. 재 보니 여덟 문항 중 셋은
+   * 도구를 부르지도 않았고(`search:…` 를 그냥 글자로 뱉었다), 네 턴을 줘도
+   * 다시 찾은 적이 한 번도 없었다. 되먹임을 못 쓴다.
+   *
+   * 그래서 고르게 두지 않고 **시킨다.** 검색어를 내놓게 하고, 찾는 일은 코드가 한다.
+   * 아무것도 못 찾았을 때만 "다른 말로" 를 코드가 밀어 넣는다. 찾긴 찾았는데 엉뚱한
+   * 경우는 가려내지 않는다 — 점수로 맞고 틀림이 안 갈렸기 때문이다. 대신 상위 세 건을
+   * 다 실어서 어느 것이 답인지는 모델이 고르게 한다.
+   *
+   * 검색어를 만드는 회차는 화면에 보이지 않는다. 48토큰짜리 짧은 생성이고
+   * 사용자가 볼 글이 아니다. 그래서 보이는 답과 다른 id 로 돌린다.
+   */
+  const sendWithSearch = useCallback(
+    (question: string, system: string, options: SearchRoundOptions) => {
+      const trimmed = question.trim();
+      if (!trimmed) return;
+      const userId = nextId.current++;
+      const replyId = nextId.current++;
+      setError(null);
+      setStatus("generating");
+      setTurns((prev) => [
+        ...prev,
+        { id: userId, role: "user", content: trimmed },
+        { id: replyId, role: "assistant", content: "" },
+      ]);
+
+      const worker = ensureWorker();
+      // 검색어 회차는 보이는 답과 다른 id 로 돈다. 같은 id 면 화면에 검색어가 찍힌다.
+      const queryId = nextId.current++;
+      const tried: string[] = [];
+      let found: string | undefined;
+      let round = 0;
+
+      /** 찾은 자료를 싣고(또는 못 찾은 채로) 진짜 답을 만들게 한다. */
+      const answer = () => {
+        worker.postMessage({
+          type: "generate",
+          id: replyId,
+          model,
+          system: found ? `${system}\n\n${found}` : options.fallbackSystem,
+          messages: [{ role: "user", content: trimmed }],
+        } satisfies AdvisorRequest);
+      };
+
+      /** 검색어를 내놓게 한다. 이 회차의 출력은 화면에 얹지 않는다. */
+      const askForQuery = () => {
+        worker.postMessage({
+          type: "generate",
+          id: queryId,
+          model,
+          system: options.querySystem,
+          messages: [{ role: "user", content: options.buildPrompt(tried) }],
+          maxTokens: 48,
+        } satisfies AdvisorRequest);
+      };
+
+      function onDone(event: MessageEvent<AdvisorResponse>) {
+        const message = event.data;
+        if (message.type === "error") {
+          worker.removeEventListener("message", onDone);
+          return;
+        }
+        if (message.type !== "done") return;
+
+        // 보이는 답이 끝났으면 이 흐름도 끝이다.
+        if (message.id === replyId) {
+          worker.removeEventListener("message", onDone);
+          return;
+        }
+        if (message.id !== queryId) return;
+
+        // 검색어 회차가 끝났다. 화면은 건드리지 않았으므로 상태만 되돌린다.
+        setStatus("generating");
+
+        const query = options.extract(message.text);
+        if (!query || tried.includes(query)) {
+          answer();
+          return;
+        }
+        tried.push(query);
+        found = options.search(query);
+
+        round += 1;
+        if (found || round >= options.maxRounds) {
+          answer();
+          return;
+        }
+        askForQuery();
+      }
+
+      worker.addEventListener("message", onDone);
+      askForQuery();
+    },
+    [ensureWorker, model],
+  );
+
+  /**
    * 모델을 부르지 않고 답을 얹는다.
    *
    * 코드 전용 답변은 평가에서 적중 63/66 으로 모델(64/66)과 거의 같았다.
@@ -467,6 +590,7 @@ export function useAdvisor(): UseAdvisorResult {
     sendMatchup,
     answerWithoutModel,
     sendWithTools,
+    sendWithSearch,
     rate,
     stop,
     reset,

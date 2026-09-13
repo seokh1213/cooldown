@@ -30,6 +30,11 @@ export type AdvisorRequest =
       system?: string;
       /** 넘기면 모델이 조회 도구를 부를 수 있다. 복합 질문에만 쓴다. */
       tools?: unknown[];
+      /**
+       * 뽑을 토큰 수 상한. 안 주면 답변용 기본값을 쓴다.
+       * 검색어처럼 한 줄만 필요한 회차는 짧게 끊어야 기다림이 눈에 안 띈다.
+       */
+      maxTokens?: number;
     }
   | { type: "stop" };
 
