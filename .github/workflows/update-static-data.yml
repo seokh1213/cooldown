@@ -106,7 +106,12 @@ jobs:
           test -f dist/encyclopedia/index.html
           test -f dist/vs/index.html
           test -f dist/simulation/index.html
-          diff --recursive --brief public/data dist/data
+          # 빌드가 data/releases/<데이터 해시>/ 에 데이터 사본을 하나 더 만든다(PWA 릴리스 캐시).
+          # 원본 트리와 그 사본이 각각 public/data 와 같아야 한다.
+          diff --recursive --brief --exclude=releases public/data dist/data
+          release_dir=$(find dist/data/releases -mindepth 1 -maxdepth 1 -type d)
+          test "$(printf '%s\n' "$release_dir" | wc -l)" -eq 1
+          diff --recursive --brief public/data "$release_dir"
 
       - name: Install Playwright browser
         if: github.event_name != 'schedule' || steps.git-check.outputs.changed == 'true'
