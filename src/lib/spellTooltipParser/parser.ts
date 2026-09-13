@@ -10,6 +10,7 @@ import {
   replaceVariablesWithDiagnostics,
 } from "./variableReplacer";
 import { sanitizeHtml } from "./formatters";
+import { cleanUnresolvedMarks } from "./unresolvedCleanup";
 
 /**
  * 스킬 툴팁 파싱 메인 함수
@@ -48,7 +49,9 @@ export function parseSpellTooltipWithDiagnostics(
     lang
   );
   return {
-    html: sanitizeHtml(replaced.text).replace(/\n/g, "<br />"),
+    // 채우지 못한 자리 중 뜻이 없는 것만 걷어낸다. 진단은 그대로 남겨
+    // 무엇을 못 풀었는지는 계속 보이게 한다.
+    html: cleanUnresolvedMarks(sanitizeHtml(replaced.text).replace(/\n/g, "<br />")),
     unresolvedTokens: replaced.unresolvedTokens,
   };
 }
