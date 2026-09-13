@@ -270,6 +270,38 @@ export function buildTagAnswer(
   return `${lines.join("\n")}\n\n패치 ${data.patch} 기준 스킬 효과입니다.`;
 }
 
+/**
+ * 챔피언 한 명을 묻는 질문의 답.
+ *
+ * **모델을 거치지 않는다.** 자료를 붙여 모델에게 넘겼더니 받아 적기만 하다가
+ * 900토큰에서 잘렸다. 럼블은 카드 본문만 2,654자라 끝까지 닿지 못했고,
+ * 능력치 표를 통째로 빠뜨린 채 문장 중간에서 끊겼다.
+ *
+ * 자료가 곧 답인 질문이다. 코드가 내면 잘리지 않고, 빠뜨리지 않고, 즉시 나간다.
+ *
+ * 프롬프트가 아니므로 지식 카드를 자르지 않는다. `buildChampionBrief` 가 4건·3건으로
+ * 줄이는 것은 프롬프트가 6천 자에 닿으면 브라우저 런타임이 죽기 때문인데,
+ * 여기는 화면에 바로 나가는 글이라 그 제약이 없다.
+ */
+export function buildChampionAnswer(data: AdvisorData, card: ChampionCard): string {
+  const parts: string[] = [championCardToText(card, { includeSpellText: true, spellTextMax: 600 })];
+
+  const book = data.playbooks.get(card.id);
+  if (book) {
+    parts.push(
+      playbookToText(
+        { mine: book.playing, vsEnemy: book.against },
+        card.name,
+        card.name,
+        data.patch,
+      ),
+    );
+  }
+
+  parts.push(`패치 ${data.patch} 기준 자료를 그대로 옮긴 것입니다.`);
+  return parts.join("\n\n");
+}
+
 export function buildChampionsBrief(data: AdvisorData, cards: ChampionCard[]): string {
   if (cards.length === 1) return buildChampionBrief(data, cards[0]);
   const lines = [`[패치] ${data.patch}`];

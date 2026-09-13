@@ -11,6 +11,7 @@ import { useTranslation } from "@/i18n";
 import { advisorSystemPrompt } from "@/lib/advisor/persona";
 import { AdvisorMarkdown } from "./AdvisorMarkdown";
 import {
+  buildChampionAnswer,
   buildChampionsBrief,
   buildItemAnswer,
   buildTagAnswer,
@@ -152,6 +153,16 @@ export function AdvisorPanel({ advisor, patch, canUseModel, onClose }: AdvisorPa
           champions.length === 1 ? buildTagAnswer(data, champions[0], question) : undefined;
         if (tagAnswer) {
           advisor.answerWithoutModel(question, tagAnswer);
+          setDraft("");
+          return;
+        }
+        // 챔피언 한 명을 묻는 질문은 코드가 답한다.
+        //
+        // 모델에게 자료를 붙여 넘겼더니 받아 적기만 하다가 900토큰에서 잘렸다.
+        // "럼블 설명해줘" 가 문장 중간에서 끊겼고 능력치 표는 아예 빠졌다.
+        // 자료가 곧 답이라 모델이 더할 것이 없으면서 잘릴 위험만 진다.
+        if (champions.length === 1) {
+          advisor.answerWithoutModel(question, buildChampionAnswer(data, champions[0]));
           setDraft("");
           return;
         }
