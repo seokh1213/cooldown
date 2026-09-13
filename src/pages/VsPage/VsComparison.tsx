@@ -45,10 +45,8 @@ export function VsComparison(props: ComparisonProps) {
           </section>
           <section className="mt-8" aria-label={t.comparison.skillDetails}>
             <h2 className="mb-3 px-0.5 text-sm font-semibold tracking-tight">{t.comparison.skillDetails}</h2>
-            <div className="grid gap-x-8 gap-y-6 sm:grid-cols-2">
-              {sides.map(({ side, detail }) => detail
-                ? <VsSkillList key={side + detail.champion.id} side={side} detail={detail} version={version} />
-                : <div key={side} className="hidden sm:block" />)}
+            <div className="grid gap-x-8 sm:grid-cols-2">
+              {sides.map(({ side, detail }) => detail && <VsSkillList key={side + detail.champion.id} side={side} detail={detail} version={version} />)}
             </div>
           </section>
         </>

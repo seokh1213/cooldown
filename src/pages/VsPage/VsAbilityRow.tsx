@@ -9,6 +9,11 @@ import type { VsSideKey } from "./vsState";
 const LIST_SLOTS = ["P", "Q", "W", "E", "R"] as const;
 type ListSlot = (typeof LIST_SLOTS)[number];
 
+// Desktop places both champions' items for one slot on the same grid row so long texts never push
+// Q next to W. Literal class names keep Tailwind's scanner happy.
+const COLUMN_CLASS: Record<VsSideKey, string> = { mine: "sm:col-start-1", opponent: "sm:col-start-2" };
+const ROW_CLASS = ["sm:row-start-1", "sm:row-start-2", "sm:row-start-3", "sm:row-start-4", "sm:row-start-5", "sm:row-start-6"];
+
 function abilityIcon(ability: AbilityV2, slot: ListSlot, version: string, label: string) {
   if (ability.forms) return <AbilityFormIcon forms={ability.forms} label={label} className="size-7 rounded" />;
   const src = slot === "P" ? passiveIconUrl(version, ability.iconFile) : spellIconUrl(version, ability.id);
@@ -16,13 +21,13 @@ function abilityIcon(ability: AbilityV2, slot: ListSlot, version: string, label:
 }
 
 /** One ability, always open: icon, slot and name, then the full description. */
-export function VsAbilityItem(props: { ability?: AbilityV2; slot: ListSlot; side: VsSideKey; championName: string; version: string }) {
+export function VsAbilityItem(props: { ability?: AbilityV2; slot: ListSlot; side: VsSideKey; championName: string; version: string; className?: string }) {
   const { ability, slot } = props;
   return (
     <div
       data-testid={slot === "P" ? "vs-" + props.side + "-P" : undefined}
       data-ability-info data-side={props.side} data-slot={slot}
-      className="flex min-w-0 items-start gap-2.5 border-b border-border/50 py-3 last:border-b-0"
+      className={"flex min-w-0 items-start gap-2.5 border-b border-border/50 py-3 " + (props.className ?? "")}
     >
       <div className="mt-0.5 flex shrink-0 flex-col items-center gap-1">
         {ability ? abilityIcon(ability, slot, props.version, props.championName + " " + slot) : <span className="size-7 rounded bg-muted" />}
@@ -45,19 +50,23 @@ export function VsAbilityItem(props: { ability?: AbilityV2; slot: ListSlot; side
   );
 }
 
-/** Every ability of one champion, passive first, laid out like a reading list rather than behind clicks. */
+/**
+ * Every ability of one champion, passive first, always open. Rendered as grid children of the parent:
+ * stacked champion by champion on a phone, slot by slot across two columns on a desktop.
+ */
 export function VsSkillList(props: { side: VsSideKey; detail: ChampionDetailV2; version: string }) {
   const { champion } = props.detail;
+  const column = COLUMN_CLASS[props.side];
   return (
-    <div className="min-w-0">
-      <div className="flex items-center gap-2 border-b border-border pb-2">
+    <>
+      <div className={"flex min-w-0 items-center gap-2 self-end border-b border-border pb-2 " + column + " " + ROW_CLASS[0] + (props.side === "opponent" ? " mt-8 sm:mt-0" : "")}>
         <img src={championIconUrl(props.version, champion.id)} alt="" width={24} height={24} className="size-6 rounded shadow-none" />
         <span className="text-[13px] font-semibold">{champion.name}</span>
       </div>
-      {LIST_SLOTS.map((slot) => (
-        <VsAbilityItem key={slot} slot={slot} side={props.side} ability={champion.abilities[slot]} championName={champion.name} version={props.version} />
+      {LIST_SLOTS.map((slot, index) => (
+        <VsAbilityItem key={slot} slot={slot} side={props.side} ability={champion.abilities[slot]} championName={champion.name} version={props.version} className={column + " " + ROW_CLASS[index + 1]} />
       ))}
-    </div>
+    </>
   );
 }
 
