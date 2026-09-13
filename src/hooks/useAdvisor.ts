@@ -38,6 +38,20 @@ export interface AdvisorTurn extends AdvisorChatMessage {
   stats?: { tokens: number; seconds: number };
   /** 사용자가 남긴 평가 */
   rating?: "up" | "down";
+  /**
+   * 지금 무엇을 하는 중인지. 답이 나오면 지운다.
+   *
+   * 검색 폴백은 모델을 두 번 부르고 그 사이에 코드가 찾는다. 그동안 화면에는
+   * 도는 점만 있어서 멈춘 것처럼 보였다. 무슨 일이 도는지 한 줄로 알린다.
+   */
+  activity?: string;
+  /**
+   * 답의 근거가 된 자료 이름.
+   *
+   * "자료에 있는 것만 답한다" 가 설계인데 어느 자료인지 안 보이면 사용자가
+   * 맞는지 가릴 수 없다. 틀린 자료를 물어 온 경우에도 그 사실이 드러나야 한다.
+   */
+  sources?: string[];
 }
 
 /**
@@ -77,7 +91,9 @@ export interface SearchRoundOptions {
    * 아무것도 못 찾으면 undefined 를 돌려준다. 그때만 다시 찾는다.
    * 찾긴 찾았는데 엉뚱한 경우는 가려낼 수 없다 — 점수로 맞고 틀림이 안 갈렸다.
    */
-  search: (query: string) => string | undefined;
+  search: (query: string) => { context: string; titles: string[] } | undefined;
+  /** 진행 상태에 붙일 말. 회차마다 화면에 보인다. */
+  labels: { searching: string; searched: string };
   /** 못 찾았을 때 검색어를 몇 번까지 다시 만들지. */
   maxRounds: number;
   /** 끝내 못 찾았을 때 쓸 지시문. */
@@ -114,6 +130,7 @@ export interface UseAdvisorResult {
     execute: (calls: Array<{ name: string; args: Record<string, string> }>) => string,
     parse: (text: string) => Array<{ name: string; args: Record<string, string> }>,
     fallbackSystem?: string,
+    lookingLabel?: string,
   ) => void;
   /**
    * 모델에게 검색어를 만들게 해서 자료를 찾은 뒤 답한다.
@@ -344,6 +361,8 @@ export function useAdvisor(): UseAdvisorResult {
       parse: (text: string) => Array<{ name: string; args: Record<string, string> }>,
       /** 모델이 도구를 한 번도 부르지 않았을 때 대신 쓸 자료. */
       fallbackSystem?: string,
+      /** 회차 사이에 보여 줄 말. 무엇을 조회하는지 알린다. */
+      lookingLabel?: string,
     ) => {
       const trimmed = question.trim();
       if (!trimmed) return;
@@ -385,7 +404,9 @@ export function useAdvisor(): UseAdvisorResult {
         // "비교할 수 없습니다" 가 나간다. 한 번도 안 불렀으면 자료를 붙여 다시 묻는다.
         if (calls.length === 0 && rounds === 0 && fallbackSystem) {
           rounds += 1;
-          setTurns((prev) => prev.map((t) => (t.id === replyId ? { ...t, content: "" } : t)));
+          setTurns((prev) =>
+            prev.map((t) => (t.id === replyId ? { ...t, content: "", activity: lookingLabel } : t)),
+          );
           worker.postMessage({
             type: "generate",
             id: replyId,
@@ -398,7 +419,9 @@ export function useAdvisor(): UseAdvisorResult {
         if (calls.length === 0 || rounds >= 3) {
           // 도구 표식은 사용자에게 보일 글이 아니므로 지운다.
           const clean = message.text.replace(/<\|tool_call>[^\n]*/g, "").trim();
-          setTurns((prev) => prev.map((t) => (t.id === replyId ? { ...t, content: clean } : t)));
+          setTurns((prev) =>
+            prev.map((t) => (t.id === replyId ? { ...t, content: clean, activity: undefined } : t)),
+          );
           setStatus("ready");
           worker.removeEventListener("message", onDone);
           return;
@@ -407,8 +430,16 @@ export function useAdvisor(): UseAdvisorResult {
         rounds += 1;
         history.push({ role: "assistant", content: message.text });
         history.push({ role: "user", content: `[조회 결과]\n${execute(calls)}` });
-        // 다음 회차 출력이 앞 회차에 이어 붙지 않도록 비운다.
-        setTurns((prev) => prev.map((t) => (t.id === replyId ? { ...t, content: "" } : t)));
+        // 다음 회차 출력이 앞 회차에 이어 붙지 않도록 비운다. 그냥 비우면 글이 나왔다가
+        // 사라지는 것처럼 보이므로, 무엇을 조회했는지 그 자리에 대신 보여 준다.
+        const looked = calls.map((call) => Object.values(call.args).join(" ")).join(", ");
+        setTurns((prev) =>
+          prev.map((t) =>
+            t.id === replyId
+              ? { ...t, content: "", activity: lookingLabel ? `${lookingLabel}: ${looked}` : undefined }
+              : t,
+          ),
+        );
         ask();
       }
 
@@ -444,23 +475,32 @@ export function useAdvisor(): UseAdvisorResult {
       setTurns((prev) => [
         ...prev,
         { id: userId, role: "user", content: trimmed },
-        { id: replyId, role: "assistant", content: "" },
+        { id: replyId, role: "assistant", content: "", activity: options.labels.searching },
       ]);
 
       const worker = ensureWorker();
       // 검색어 회차는 보이는 답과 다른 id 로 돈다. 같은 id 면 화면에 검색어가 찍힌다.
       const queryId = nextId.current++;
       const tried: string[] = [];
-      let found: string | undefined;
+      let found: { context: string; titles: string[] } | undefined;
       let round = 0;
+
+      /** 말풍선에 붙은 진행 상태를 바꾼다. */
+      const setActivity = (activity: string | undefined, sources?: string[]) => {
+        setTurns((prev) =>
+          prev.map((turn) => (turn.id === replyId ? { ...turn, activity, sources } : turn)),
+        );
+      };
 
       /** 찾은 자료를 싣고(또는 못 찾은 채로) 진짜 답을 만들게 한다. */
       const answer = () => {
+        // 근거는 답이 나오기 전에 붙여 둔다. 무엇을 보고 쓰는 중인지 먼저 보여야 한다.
+        setActivity(undefined, found?.titles);
         worker.postMessage({
           type: "generate",
           id: replyId,
           model,
-          system: found ? `${system}\n\n${found}` : options.fallbackSystem,
+          system: found ? `${system}\n\n${found.context}` : options.fallbackSystem,
           messages: [{ role: "user", content: trimmed }],
         } satisfies AdvisorRequest);
       };
@@ -505,9 +545,12 @@ export function useAdvisor(): UseAdvisorResult {
 
         round += 1;
         if (found || round >= options.maxRounds) {
+          if (found) setActivity(`${options.labels.searched}: ${found.titles.join(", ")}`);
           answer();
           return;
         }
+        // 못 찾았으니 다시 만든다. 몇 번째인지 보이게 한다.
+        setActivity(`${options.labels.searching} (${round + 1})`);
         askForQuery();
       }
 
