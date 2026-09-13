@@ -124,6 +124,7 @@ export function AdvisorPanel({ advisor, patch, onClose }: AdvisorPanelProps) {
             parseToolCalls,
             // 도구를 안 부르면 평소처럼 카드를 붙여 다시 묻는다.
             `${system}\n\n${buildChampionsBrief(data, champions)}`,
+            copy.status.looking,
           );
           setDraft("");
           return;
@@ -185,8 +186,13 @@ export function AdvisorPanel({ advisor, patch, onClose }: AdvisorPanelProps) {
         extract: extractQuery,
         search: (query) => {
           const hits = lexicalSearch(corpus, query);
-          return hits.length ? searchContext(hits, data.patch, query) : undefined;
+          if (!hits.length) return undefined;
+          return {
+            context: searchContext(hits, data.patch, query),
+            titles: hits.map((hit) => hit.doc.title),
+          };
         },
+        labels: { searching: copy.status.searching, searched: copy.status.searched },
         maxRounds: 2,
         fallbackSystem: system,
       });
@@ -286,7 +292,32 @@ export function AdvisorPanel({ advisor, patch, onClose }: AdvisorPanelProps) {
                     <span className="whitespace-pre-wrap">{turn.content}</span>
                   )
                 ) : (
-                  turn.role === "assistant" && <Loader2 className="h-4 w-4 animate-spin" />
+                  turn.role === "assistant" && (
+                    // 검색 폴백은 모델을 두 번 부르고 사이에 코드가 찾는다. 그동안 도는 점만
+                    // 있으면 멈춘 것처럼 보인다. 지금 무엇을 하는지 옆에 적는다.
+                    <span className="flex items-center gap-2 text-xs text-muted-foreground">
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                      {turn.activity}
+                    </span>
+                  )
+                )}
+                {/*
+                  무엇을 보고 답했는지 밝힌다. "자료에 있는 것만 답한다" 가 설계인데
+                  어느 자료인지 안 보이면 사용자가 맞는지 가릴 수 없다. 엉뚱한 자료를
+                  물어 왔을 때도 그 사실이 드러나야 한다.
+
+                  "근거" 가 아니라 "찾은 자료" 다. 상위 세 건을 다 실어 놓고 어느 것이
+                  답인지는 모델이 고르므로, 답에 안 쓰인 것도 섞여 있다.
+                */}
+                {turn.role === "assistant" && turn.sources && turn.sources.length > 0 && (
+                  <div className="mt-2 flex flex-wrap items-center gap-1 border-t pt-2 text-[11px] text-muted-foreground">
+                    <span>{copy.sources}</span>
+                    {turn.sources.map((source) => (
+                      <span key={source} className="rounded bg-background px-1.5 py-0.5">
+                        {source}
+                      </span>
+                    ))}
+                  </div>
                 )}
                 {turn.role === "assistant" && turn.content && (
                   <div className="mt-1 flex items-center gap-2 text-[11px] text-muted-foreground">

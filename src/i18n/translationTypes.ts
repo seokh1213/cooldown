@@ -336,7 +336,20 @@ export interface Translations {
       warming: string;
       ready: string;
       generating: string;
+      /** 모델이 검색어를 만드는 중 */
+      searching: string;
+      /** 코드가 자료를 찾아낸 뒤 */
+      searched: string;
+      /** 모델이 조회 도구를 부른 뒤 */
+      looking: string;
     };
+    /**
+     * 모델에게 실어 준 자료 묶음 앞에 붙는 말.
+     *
+     * "근거" 라고 쓰면 안 된다. 상위 세 건을 다 실어 놓고 어느 것이 답인지는 모델이
+     * 고르므로, 실제로 답에 쓰이지 않은 것도 섞여 있다.
+     */
+    sources: string;
     placeholder: string;
     send: string;
     stop: string;
