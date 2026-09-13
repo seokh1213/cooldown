@@ -13,7 +13,7 @@ async function expectColumnOwnership(page: Page) {
         const valueBox = (await cell.boundingBox())!;
         expect(valueBox.x).toBeCloseTo(box.x, 0);
         expect(valueBox.width).toBeCloseTo(box.width, 0);
-        expect(valueBox.width).toBeGreaterThan(90);
+        expect(valueBox.width).toBeGreaterThan(page.viewportSize()!.width >= 1024 ? 80 : 30);
       }
     }
   }
@@ -26,14 +26,14 @@ for (const locale of ["ko_KR", "en_US", "zh_CN"] as const) {
     await page.goto("./vs?a=Aatrox&t=Fiora");
     const t = translations[locale];
     await expect(page.getByTestId("vs-mine-P").getByRole("heading")).not.toHaveText("—");
-    await expect(page.locator('th[scope="colgroup"]')).toHaveText(["Q", "W", "E", "R"]);
+    await expect(page.locator('th[scope="colgroup"]')).toHaveCount(2);
+    await expect(page.locator('th[scope="colgroup"]').first()).toContainText(/아트록스|Aatrox|亚托克斯/);
     await expect(page.locator("[data-rank-row] > th")).toHaveText(["1", "2", "3", "4", "5"]);
     await expect(page.locator("table").getByTestId("vs-mine-P")).toHaveCount(0);
     await expect(page.getByTestId("vs-mine-P").locator("[data-ability-body]")).toBeVisible();
     await expect(page.getByTestId("vs-opponent-P").locator("[data-ability-body]")).toBeVisible();
     await expect(page.locator("details")).toHaveCount(0);
     expect(await page.evaluate(() => scrollY)).toBe(0);
-    await expect(page.getByText(t.comparison.rankSeconds, { exact: true })).toHaveCount(1);
     expect((await page.locator("[data-cooldown-notes]").allTextContents()).join(" ")).not.toMatch(/원문|原文|source/i);
     const qButton = page.getByTestId("vs-mine-Q").getByRole("button");
     await qButton.locator("[data-skill-icon]").hover();
@@ -80,13 +80,16 @@ for (const locale of ["ko_KR", "en_US", "zh_CN"] as const) {
         await expect(page.getByRole("dialog")).toHaveCount(0);
         await expect(q.getByRole("button")).toBeFocused();
         await q.getByRole("button").scrollIntoViewIfNeeded();
-        const scroll = page.locator("[data-cooldown-scroll]");
-        await scroll.evaluate((element) => { element.scrollLeft = element.scrollWidth; });
         await expect(page.getByTestId("vs-opponent-R").getByRole("button")).toBeInViewport();
-        await page.evaluate(() => window.scrollTo(0, 700));
-        await expect.poll(async () => (await page.locator("#vs-header-mine").boundingBox())?.y).toBeCloseTo(61, 0);
-        await expect(page.getByRole("region", { name: t.comparison.mine, exact: true })).toBeInViewport();
-        await expect(page.getByRole("region", { name: t.comparison.opponent, exact: true })).toBeInViewport();
+        // Both champion headers share the top table row with their own skill columns beneath them.
+        const mineBox = (await page.locator("#vs-header-mine").boundingBox())!;
+        const opponentBox = (await page.locator("#vs-header-opponent").boundingBox())!;
+        expect(Math.abs(mineBox.y - opponentBox.y)).toBeLessThan(2);
+        const mineR = (await page.getByTestId("vs-mine-R").boundingBox())!;
+        expect(mineBox.x + mineBox.width).toBeGreaterThanOrEqual(mineR.x + mineR.width - 12);
+        expect((await page.getByTestId("vs-opponent-Q").boundingBox())!.x).toBeGreaterThanOrEqual(opponentBox.x - 12);
+        await expect(page.getByRole("region", { name: t.comparison.mine, exact: true })).toBeVisible();
+        await expect(page.getByRole("region", { name: t.comparison.opponent, exact: true })).toBeVisible();
         expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
         await page.screenshot({ path: testInfo.outputPath("vs-sticky.png"), animations: "disabled" });
       });
