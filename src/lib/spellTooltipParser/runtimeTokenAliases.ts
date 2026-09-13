@@ -50,6 +50,19 @@ const RUNTIME_TOKEN_ALIASES: Record<string, Record<string, RuntimeTokenAlias>> =
       evidence: "{{ f2 }}초 동안 25% 둔화시킵니다",
     },
   },
+  XayahPassive: {
+    f12: {
+      target: "PFeatherDuration",
+      evidence: "{{ f12 }}초 동안 유지되는 깃털을 남깁니다 (PFeatherDuration = 6)",
+    },
+    f14: {
+      target: "PStacksPerCast",
+      evidence: "스킬 사용 후 다음 {{ f14 }}회 기본 공격이 (PStacksPerCast = 3)",
+    },
+    // f16 은 넣지 않는다. `{{ f16*100 }}%의 피해만 입습니다` 자리인데 BIN 후보가
+    // PDamageFalloffMin/Mid/Max 셋(35/45/55%)이라 어느 것인지 데이터만으로 못 고른다.
+    // 틀린 숫자를 보여 주느니 물음표로 두는 편이 낫다.
+  },
   XinZhaoE: {
     f1: {
       // ASMod 는 비율(0.38)로 들어 있고 문장은 `{{ f1 }}%` 라 ×100 이 필요하다.
