@@ -1,5 +1,4 @@
 import type { AbilityForm, AbilityV2 } from "@/data/contracts/championData";
-import { htmlToPlainText } from "../../lib/htmlText";
 
 export const ACTIVE_SLOTS = ["Q", "W", "E", "R"] as const;
 
@@ -23,16 +22,6 @@ export function cooldownRankCount(abilities: (Pick<AbilityV2, "maxRank"> | undef
   return abilities.some((ability) => ability?.maxRank === 6) ? 6 : 5;
 }
 
-/** Verbatim source sentences, not inferred matchup advice. Keep decimal points intact. */
-export function cooldownNotes(html: string): string[] {
-  const paragraphs = html.split(/<br\s*\/?\s*>|<\/p>|<\/li>/i);
-  const sentences = paragraphs.flatMap((paragraph) =>
-    htmlToPlainText(paragraph).split(/(?<=[。！？])|(?<=[.!?])\s+/),
-  );
-  return [...new Set(sentences.map((sentence) => sentence.trim()).filter((sentence) =>
-    /재사용\s*대기시간|\bcooldown\b|冷却/i.test(sentence),
-  ))];
-}
 
 export function rankCooldowns(input: {
   ability: Pick<AbilityV2, "maxRank"> | undefined;

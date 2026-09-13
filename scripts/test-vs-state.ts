@@ -2,7 +2,6 @@ import assert from "node:assert/strict";
 import { parseVsState, serializeVsState } from "../src/pages/VsPage/vsState";
 import {
   rankCooldowns,
-  cooldownNotes,
   cooldownRankCount,
   ACTIVE_SLOTS,
   isShorterCooldown,
@@ -95,18 +94,6 @@ assert.equal(cooldownRankCount([]), 5);
 assert.equal(cooldownRankCount([undefined, { maxRank: 3 }, { maxRank: 5 }]), 5);
 assert.equal(cooldownRankCount(ACTIVE_SLOTS.map((slot) => champion("Udyr").champion.abilities[slot])), 6);
 assert.equal(cooldownRankCount(ACTIVE_SLOTS.map((slot) => champion("Teemo").champion.abilities[slot])), 5);
-assert.deepEqual(cooldownNotes("피해를 입힙니다. 적중 시 재사용 대기시간이 <b>0.5초</b> 감소합니다. 치명타 시 재사용 대기시간이 1.5초 감소합니다."), [
-  "적중 시 재사용 대기시간이 0.5초 감소합니다.",
-  "치명타 시 재사용 대기시간이 1.5초 감소합니다.",
-]);
-assert.deepEqual(cooldownNotes("Deals damage. Hits reduce this ability's cooldown by 0.5 seconds.<br>Hits reduce this ability's cooldown by 0.5 seconds."), [
-  "Hits reduce this ability's cooldown by 0.5 seconds.",
-]);
-assert.deepEqual(cooldownNotes("造成伤害。命中后冷却时间减少0.5秒。移动加速。"), ["命中后冷却时间减少0.5秒。"]);
-assert.deepEqual(cooldownNotes(""), []);
-assert.deepEqual(cooldownNotes("물리 피해를 입힙니다."), []);
-assert.match(cooldownNotes(champion("Fiora").champion.abilities.Q.bodyHtml).join(" "), /50%/);
-assert.match(cooldownNotes(champion("Zeri").champion.abilities.E.bodyHtml).join(" "), /0\.5초/);
 const teemoR = champion("Teemo").champion.abilities.R;
 assert.deepEqual(
   rankCooldowns({
