@@ -343,6 +343,27 @@ export interface Translations {
       /** 모델이 조회 도구를 부른 뒤 */
       looking: string;
     };
+    /** 내려받은 모델을 보고 지우는 화면 */
+    storage: {
+      title: string;
+      open: string;
+      back: string;
+      /** 이 기기에 저장된 것이 없을 때 */
+      empty: string;
+      /** 저장된 용량 앞에 붙는 말 */
+      used: string;
+      /** 파일 수 앞에 붙는 말 */
+      files: string;
+      remove: string;
+      removing: string;
+      /** 지우기 전에 묻는 말 */
+      confirm: string;
+      cancel: string;
+      /** 지운 뒤 */
+      removed: string;
+      /** 다시 받아야 한다는 안내 */
+      note: string;
+    };
     /**
      * 모델에게 실어 준 자료 묶음 앞에 붙는 말.
      *
