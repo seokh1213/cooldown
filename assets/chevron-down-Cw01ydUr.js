@@ -1,0 +1,1 @@
+import{J as e}from"./appStorage-C6ua4P2Z.js";var t=e(`chevron-down`,[[`path`,{d:`m6 9 6 6 6-6`,key:`qrunsl`}]]);export{t};
