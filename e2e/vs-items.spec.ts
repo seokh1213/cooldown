@@ -104,7 +104,7 @@ test("VS pair, swapping, sharing and reset persist without rank selection", asyn
   await expect(page.getByTestId("vs-mine-Q")).toContainText("오공");
   await page.goto("./");
   await page
-    .getByRole("button", { name: "VS 라인전 비교", exact: true })
+    .getByRole("button", { name: translations.ko_KR.comparison.title, exact: true })
     .click();
   await expect(page).toHaveURL(/a=MonkeyKing.*t=Garen/);
   const mine = page.getByRole("region", { name: "내 챔피언", exact: true });
@@ -128,7 +128,7 @@ test("VS pair, swapping, sharing and reset persist without rank selection", asyn
     page.getByRole("button", { name: "챔피언 추가하기" }),
   ).toBeVisible();
   await page
-    .getByRole("button", { name: "VS 라인전 비교", exact: true })
+    .getByRole("button", { name: translations.ko_KR.comparison.title, exact: true })
     .click();
   await expect(page.getByTestId("vs-opponent-Q")).toContainText("오공");
   await page.getByRole("button", { name: "상대 챔피언 챔피언 선택" }).click();
