@@ -276,7 +276,15 @@ async function buildPastDetail(
     // 같은 스킬을 다른 이름으로 참조하는 툴팁이 있어 별칭 표도 함께 넘긴다.
     activeSpells.aliases,
   );
-  await localizePassiveTooltips(championsByLocale, championId, cdragonVersion, passive);
+  // 패시브 설명도 형제 스킬 값을 부른다(소나 P 의 `@Spell.SonaQ:…@`).
+  // 활성 쪽과 같은 표를 넘겨야 그 자리가 물음표로 남지 않는다.
+  await localizePassiveTooltips(
+    championsByLocale,
+    championId,
+    cdragonVersion,
+    passive,
+    siblings as Parameters<typeof localizePassiveTooltips>[4],
+  );
 
   const details: Partial<Record<DataLocale, ChampionDetailV2>> = {};
   for (const locale of DATA_LOCALES) {
