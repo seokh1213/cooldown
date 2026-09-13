@@ -120,6 +120,7 @@ export function lexicalSearch(docs: SearchDoc[], query: string, top = 3): Search
 export const SEARCH_QUERY_SYSTEM = `너는 리그 오브 레전드 자료를 찾는 검색어를 만든다.
 사용자가 줄임말이나 은어로 물으면 게임 안의 정식 용어로 바꿔라.
 예: "cs" 는 미니언을 처치해 얻는 점수이므로 "미니언 파밍 골드" 로 바꾼다.
+게임에 실제로 있는 말만 써라. 없는 말을 지어내지 마라.
 검색어 한 줄만 출력한다. 질문에 답하지 마라. 설명하지 마라.`;
 
 export function buildQueryPrompt(question: string, tried: string[]): string {
@@ -188,16 +189,23 @@ const LINES_PER_DOC = 8;
 export function searchContext(hits: SearchHit[], patch: string, query: string): string {
   const terms = tokenize(query);
   return [
-    `아래는 "${query}" 로 찾은 자료다.`,
+    "아래는 질문과 관련해 찾은 자료다.",
     "",
+    // 질문의 말과 자료의 말을 잇는 다리다. 이것이 없으면 "cs가 뭐야?" 에 파밍 설명을
+    // 실어 줘도 "'cs' 에 대한 설명이 없습니다" 라고 답한다.
+    //
+    // 다만 문장으로 주면 안 된다. `아래는 "미니언 파밍 골드" 로 찾은 자료다` 라고 썼더니
+    // 모델이 그것을 출처 이름으로 읽고 "CS는 **미니언 파밍 골드에서** 미니언에 막타를
+    // 넣어…" 라고 답했다. 낱말만 늘어놓아 답에 그대로 실리지 않게 한다.
+    `질문에 쓴 말과 자료에 적힌 말이 다를 수 있다. 이 질문은 ${terms.join(", ")} 와 같은 뜻이다.`,
     // 이 두 줄이 없으면 자료를 주고도 "정보가 없습니다" 가 나온다.
     //
     // "cs 어떻게 늘려?" 에 미니언 문서를 실어 줬더니 그 안에 "파밍: 미니언에 막타를 넣어
     // 골드와 경험치를 얻는 것" 이 있는데도 모른다고 답했다. 검색할 때는 제가 cs 를
     // 파밍으로 풀어 놓고, 답할 때는 자료에서 "CS" 라는 글자를 찾다가 없다고 한 것이다.
     // 그래서 말이 다를 수 있다는 것을 답하는 자리에서 다시 일러 준다.
-    "질문에 쓴 말과 자료에 적힌 말이 다를 수 있다. 뜻이 같으면 그 내용으로 답해라.",
-    "자료에 정말 없는 것만 모른다고 해라. 지어내지는 마라.",
+    "뜻이 같으면 그 내용으로 답해라. 자료에 정말 없는 것만 모른다고 해라.",
+    "찾은 검색어를 답에 쓰지 마라. 자료에 적힌 말로 답해라.",
     "",
     hits
       .map((hit) => `### ${hit.doc.title}\n${selectLines(hit.doc.text, terms, LINES_PER_DOC)}`)
