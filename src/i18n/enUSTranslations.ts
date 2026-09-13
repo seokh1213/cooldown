@@ -360,6 +360,8 @@ export const enUSTranslations: Translations = {
       searched: "Found notes",
       looking: "Looking up",
     },
+    noModel: "The notes on hand do not answer this. Downloading the AI model would let it answer questions like this.",
+    modelUnavailable: "The AI model is not offered on this device. Champion, item and rule lookups still work.",
     storage: {
       title: "Storage",
       open: "Storage",

@@ -115,7 +115,11 @@ export interface UseAdvisorResult {
   /** 이미 동의한 사용자가 대화창을 열었을 때 적재를 시작한다 */
   ensureLoaded: () => void;
   /** tools 를 넘기면 모델이 조회 도구를 부를 수 있다. 복합 질문에만 쓴다. */
-  send: (text: string, system?: string, tools?: unknown[]) => void;
+  /**
+   * `notice` 를 주면 동의 전에는 모델을 부르지 않고 그 글을 대신 답으로 얹는다.
+   * 주지 않으면 예전처럼 바로 보낸다.
+   */
+  send: (text: string, system?: string, tools?: unknown[], notice?: string) => void;
   /**
    * 상성 조언. 확정 구간은 코드가 만든 문장을 그대로 쓰고 서술 구간만 모델을 부른다.
    * 구간마다 프롬프트가 달라 순서대로 이어 붙인다.
@@ -272,9 +276,28 @@ export function useAdvisor(): UseAdvisorResult {
     post({ type: "load", model });
   }, [consented, modelReady, post, model]);
 
-  const send = useCallback((text: string, system?: string, tools?: unknown[]) => {
+  /**
+   * 동의 없이 모델을 부르려 했는지 본다.
+   *
+   * `send` 계열은 워커를 만들고, 워커를 만드는 순간 3GB 를 받기 시작한다.
+   * "모델 없이 써보기" 를 고른 사용자가 코드가 못 답하는 질문을 던지면 실제로 그 일이
+   * 벌어졌다. 내려받기를 거절했는데 받아 버리는 셈이라 여기서 막는다.
+   */
+  const refuseWithoutConsent = useCallback((question: string, notice: string): boolean => {
+    if (consented) return false;
+    setError(null);
+    setTurns((prev) => [
+      ...prev,
+      { id: nextId.current++, role: "user", content: question },
+      { id: nextId.current++, role: "assistant", content: notice },
+    ]);
+    return true;
+  }, [consented]);
+
+  const send = useCallback((text: string, system?: string, tools?: unknown[], notice?: string) => {
     const trimmed = text.trim();
     if (!trimmed) return;
+    if (notice !== undefined && refuseWithoutConsent(trimmed, notice)) return;
     const userId = nextId.current++;
     const replyId = nextId.current++;
     setError(null);
@@ -298,7 +321,7 @@ export function useAdvisor(): UseAdvisorResult {
       });
       return next;
     });
-  }, [post, model]);
+  }, [post, model, refuseWithoutConsent]);
 
   /**
    * 구간을 하나씩 돌린다.
