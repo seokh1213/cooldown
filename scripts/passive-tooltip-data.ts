@@ -184,6 +184,30 @@ export function localizePassiveTooltip(
   return {
     name: lookupString(stringTable, passive.locKeys.keyName),
     summary: lookupString(stringTable, passive.locKeys.keySummary),
-    tooltip: primary && !primary.includes("?") ? primary : alternate ?? primary,
+    tooltip: pickTooltip(primary, alternate),
   };
+}
+
+/** 채우지 못한 자리의 수. 적을수록 읽을 것이 많은 툴팁이다. */
+function unresolvedCount(text: string | undefined): number {
+  return text ? (text.match(/\?/g) ?? []).length : Number.POSITIVE_INFINITY;
+}
+
+/**
+ * 정식 툴팁과 대체 툴팁 중 **덜 비는 쪽**을 고른다.
+ *
+ * 전에는 "정식에 물음표가 하나라도 있으면 대체" 였는데, 대체가 더 나쁜 경우가 있다.
+ * 퀸이 그렇다.
+ *   정식  `@f1@초마다 … @RevealDuration@초간 … @BonusDamage@의 추가 물리 피해`
+ *         f1(치명타 확률에 따라 변하는 값)만 못 풀고 나머지는 다 채워진다.
+ *   대체  `@f1@ … @f2@ (+@f3@) (공격력의 @f4@%)`
+ *         전부 fN 이라 넷 다 못 푼다.
+ * 물음표 하나를 피하려다 넷을 얻고 실제 수치까지 잃었다.
+ *
+ * 같은 수면 정식을 쓴다. 대체는 인게임 버프 설명이라 문장이 더 거칠다.
+ */
+function pickTooltip(primary: string | undefined, alternate: string | undefined): string | undefined {
+  if (!primary) return alternate;
+  if (!alternate) return primary;
+  return unresolvedCount(alternate) < unresolvedCount(primary) ? alternate : primary;
 }
