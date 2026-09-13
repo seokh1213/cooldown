@@ -132,6 +132,7 @@ function renderTemplate(
   passive: ExtractedPassiveSpell,
   locale: TooltipLocale,
   stringTable: StringTable,
+  siblings?: Record<string, CommunityDragonSpellData>,
 ): string | undefined {
   if (!template) return undefined;
   const spell: ChampionSpell = {
@@ -139,6 +140,11 @@ function renderTemplate(
     maxrank: 1,
     cooldown: [],
   };
+  // 패시브 설명이 형제 스킬 값을 부르는 일이 흔하다.
+  //   소나 P  `@Spell.SonaQ:TotalStaccatoDamage@의 마법 피해`
+  //   제리 P  `@Spell.ZeriQ:…@`
+  // 자기 데이터만 넘기면 이 자리가 전부 물음표가 된다.
+  const spellData = siblings ? { ...passive.spellData, siblings } : passive.spellData;
   const dynamic = /\{\{\s*([A-Za-z0-9_]*)@([^@{}]+)@([A-Za-z0-9_]*)\s*}}/g;
   const resolvedTemplate = template.replace(
     dynamic,
@@ -159,7 +165,7 @@ function renderTemplate(
   const rendered = parseSpellTooltip(
     toParserTemplate(expandStringReferences(resolvedTemplate, stringTable)),
     spell,
-    passive.spellData,
+    spellData,
     locale
   ).trim();
   return rendered || undefined;
@@ -168,19 +174,22 @@ function renderTemplate(
 export function localizePassiveTooltip(
   passive: ExtractedPassiveSpell,
   stringTable: StringTable,
-  locale: PassiveTooltipLocale
+  locale: PassiveTooltipLocale,
+  /** 같은 챔피언의 다른 스킬 데이터. `@Spell.SonaQ:…@` 같은 참조를 푸는 데 쓴다. */
+  siblings?: Record<string, CommunityDragonSpellData>,
 ): LocalizedPassiveTooltip {
   const primary = renderTemplate(
     lookupString(stringTable, passive.locKeys.keyTooltip),
     passive,
     locale,
     stringTable,
+    siblings,
   );
   const buffTooltip = lookupString(
     stringTable,
     `game_buff_tooltip_${passive.id}`,
   );
-  const alternate = renderTemplate(buffTooltip, passive, locale, stringTable);
+  const alternate = renderTemplate(buffTooltip, passive, locale, stringTable, siblings);
   return {
     name: lookupString(stringTable, passive.locKeys.keyName),
     summary: lookupString(stringTable, passive.locKeys.keySummary),

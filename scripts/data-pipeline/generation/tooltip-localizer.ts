@@ -121,12 +121,13 @@ export async function localizeActiveTooltips(
 async function buildLocalizedPassives(
   cdragonVersion: string,
   passive: ExtractedPassiveSpell,
+  siblings: Record<string, CommunityDragonSpellData>,
 ): Promise<Record<PassiveTooltipLocale, LocalizedPassiveTooltip>> {
   const entries = await Promise.all(
     PASSIVE_TOOLTIP_LOCALES.map(async (locale) => {
       try {
         const table = await fetchStringTable(cdragonVersion, locale);
-        return [locale, localizePassiveTooltip(passive, table, locale)] as const;
+        return [locale, localizePassiveTooltip(passive, table, locale, siblings)] as const;
       } catch (error) {
         console.warn(
           `[CD][Passive] Failed to localize ${passive.id}/${locale}; preserving DDragon summary`,
@@ -147,11 +148,13 @@ export async function localizePassiveTooltips(
   championId: string,
   cdragonVersion: string,
   passive: ExtractedPassiveSpell | null,
+  siblings: Record<string, CommunityDragonSpellData>,
 ): Promise<void> {
   if (!passive) return;
   const localizedByLocale = await buildLocalizedPassives(
     cdragonVersion,
     passive,
+    siblings,
   );
   for (const locale of PASSIVE_TOOLTIP_LOCALES) {
     const localized = localizedByLocale[locale];
