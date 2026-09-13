@@ -42,6 +42,11 @@ import { AdvisorStorage } from "./AdvisorStorage";
 interface AdvisorPanelProps {
   advisor: UseAdvisorResult;
   patch: string;
+  /**
+   * 이 기기에 모델을 권할 수 있는가. 모바일이거나 WebGPU 가 없으면 false.
+   * false 면 내려받기를 권하지 않고 코드 답변만으로 쓴다.
+   */
+  canUseModel: boolean;
   onClose: () => void;
 }
 
@@ -49,7 +54,7 @@ function formatMb(bytes: number): string {
   return (bytes / 1048576).toFixed(0);
 }
 
-export function AdvisorPanel({ advisor, patch, onClose }: AdvisorPanelProps) {
+export function AdvisorPanel({ advisor, patch, canUseModel, onClose }: AdvisorPanelProps) {
   const { t, lang } = useTranslation();
   const copy = t.advisor;
   const [draft, setDraft] = useState("");
@@ -80,6 +85,7 @@ export function AdvisorPanel({ advisor, patch, onClose }: AdvisorPanelProps) {
   // 적재 중에 질문을 받으면 상태가 generating 으로 바뀌는데, 그때 진행률을 감추면
   // 사용자는 몇 분 동안 도는 점만 보게 된다.
   const loading =
+    canUseModel &&
     !advisor.modelReady &&
     advisor.consented &&
     advisor.status !== "idle" &&
@@ -149,7 +155,7 @@ export function AdvisorPanel({ advisor, patch, onClose }: AdvisorPanelProps) {
           setDraft("");
           return;
         }
-        advisor.send(question, `${system}\n\n${buildChampionsBrief(data, champions)}`);
+        advisor.send(question, `${system}\n\n${buildChampionsBrief(data, champions)}`, undefined, copy.noModel);
         setDraft("");
         return;
       }
@@ -203,8 +209,9 @@ export function AdvisorPanel({ advisor, patch, onClose }: AdvisorPanelProps) {
       return;
     }
 
-    // 모델을 안 받은 사용자는 페르소나만으로 답한다
-    advisor.send(question, system);
+    // 동의 전이면 모델을 부르지 않고 못 찾았다고 알린다.
+    // 여기서 그냥 보내면 워커가 만들어지면서 3GB 를 받기 시작한다.
+    advisor.send(question, system, undefined, copy.noModel);
     setDraft("");
   };
 
@@ -254,7 +261,7 @@ export function AdvisorPanel({ advisor, patch, onClose }: AdvisorPanelProps) {
 
       {showStorage ? (
         <AdvisorStorage onDelete={advisor.deleteModel} />
-      ) : !advisor.consented && !skippedModel ? (
+      ) : canUseModel && !advisor.consented && !skippedModel ? (
         <AdvisorConsent
           webgpu={advisor.webgpu}
           storage={advisor.storage}
@@ -264,6 +271,15 @@ export function AdvisorPanel({ advisor, patch, onClose }: AdvisorPanelProps) {
         />
       ) : (
         <>
+          {/*
+            내려받기를 권하지 않는 기기에서는 동의 화면을 건너뛰고 바로 여기로 온다.
+            3GB 를 못 받는다고 챔피언·아이템·규칙 조회까지 막을 이유는 없다.
+          */}
+          {!canUseModel && (
+            <p className="border-b px-4 py-2.5 text-xs leading-relaxed text-muted-foreground">
+              {copy.modelUnavailable}
+            </p>
+          )}
           {loading && (
             <div className="border-b px-4 py-3 text-xs text-muted-foreground">
               <div className="mb-2 flex items-center justify-between">

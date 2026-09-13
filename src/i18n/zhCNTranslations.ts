@@ -346,6 +346,8 @@ export const zhCNTranslations: Translations = {
       searched: "已找到资料",
       looking: "正在查询",
     },
+    noModel: "现有资料无法回答这个问题。下载 AI 模型后即可回答此类问题。",
+    modelUnavailable: "此设备不提供 AI 模型下载。英雄、装备与规则查询仍可正常使用。",
     storage: {
       title: "存储空间",
       open: "存储空间",

@@ -343,6 +343,10 @@ export interface Translations {
       /** 모델이 조회 도구를 부른 뒤 */
       looking: string;
     };
+    /** 모델 없이 쓰는 중에 코드가 답을 못 찾았을 때 */
+    noModel: string;
+    /** 이 기기에서는 모델을 권하지 않는다는 안내 */
+    modelUnavailable: string;
     /** 내려받은 모델을 보고 지우는 화면 */
     storage: {
       title: string;

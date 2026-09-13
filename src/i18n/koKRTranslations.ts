@@ -360,6 +360,8 @@ export const koKRTranslations: Translations = {
       searched: "자료를 찾음",
       looking: "조회하는 중",
     },
+    noModel: "가지고 있는 자료에서는 답을 찾지 못했습니다. AI 모델을 내려받으면 이런 질문도 답할 수 있습니다.",
+    modelUnavailable: "이 기기에서는 AI 모델을 내려받지 않습니다. 챔피언·아이템·규칙 조회는 그대로 쓸 수 있습니다.",
     storage: {
       title: "저장 공간",
       open: "저장 공간",
