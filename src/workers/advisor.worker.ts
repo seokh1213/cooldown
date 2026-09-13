@@ -102,6 +102,7 @@ async function generate(
   messages: Array<{ role: string; content: string }>,
   system?: string,
   tools?: unknown[],
+  maxTokens?: number,
 ) {
   await load(spec);
   if (!tokenizer || !model) throw new Error("모델이 준비되지 않았습니다");
@@ -134,7 +135,7 @@ async function generate(
 
   await model.generate({
     ...inputs,
-    max_new_tokens: MAX_NEW_TOKENS,
+    max_new_tokens: maxTokens ?? MAX_NEW_TOKENS,
     do_sample: false,
     streamer,
     // 중단 요청이 오면 다음 토큰에서 멈춘다
@@ -163,7 +164,7 @@ ctx.addEventListener("message", (event: MessageEvent<AdvisorRequest>) => {
     return;
   }
   if (request.type === "generate") {
-    generate(request.id, request.model, request.messages, request.system, request.tools).catch((error: unknown) => {
+    generate(request.id, request.model, request.messages, request.system, request.tools, request.maxTokens).catch((error: unknown) => {
       post({ type: "error", id: request.id, message: (error as Error).message });
     });
   }

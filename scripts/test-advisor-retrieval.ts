@@ -12,6 +12,7 @@ import * as path from "node:path";
 import { indexRules, buildRuleAnswer, findMentionedRules, findRulesMentioning } from "./llm/lib/rules";
 import { findMechanics, mechanicsToText, type MechanicsIndex } from "./llm/lib/mechanics";
 import { PUBLIC_DATA_ROOT, resolvePatchVersion } from "./llm/lib/data";
+import { extractQuery, lexicalSearch, type SearchDoc } from "../src/lib/advisor/searchFallback";
 
 const patch = resolvePatchVersion();
 const llmDir = path.join(PUBLIC_DATA_ROOT, patch, "llm");
@@ -196,6 +197,66 @@ for (const [id, slot] of [["Ahri", "W"], ["Ashe", "E"], ["Lux", "Q"]] as const) 
   assert.ok(!effectsOf(id, slot).includes("이동기"), `${id} ${slot} 은 이동기가 아니다`);
 }
 
+
+/**
+ * 개체가 안 잡힌 질문의 검색 폴백
+ *
+ * 모델이 만든 검색어로 코드가 찾는 경로다. 여기 쓰인 검색어는 지어낸 것이 아니라
+ * gemma4:e2b 에게 실제로 물어서 받은 것을 그대로 옮겼다.
+ *
+ * **1위를 고정하지 않는다.** 실제 검색어로 재 보니 1위 적중은 4/8 이었지만
+ * 상위 3위 안에는 8/8 로 들어왔다. 화면에서도 셋을 다 실어 모델이 고르게 하므로
+ * 여기서도 셋 안에 있는지만 본다.
+ */
+const searchCorpus: SearchDoc[] = [
+  ...[...ruleIndex.values()].map((rule) => ({
+    kind: "rule" as const,
+    title: rule.name,
+    text: (rule.notesKo?.length === rule.notes.length ? rule.notesKo : rule.notes).join("\n"),
+  })),
+  ...mechanics.map((section) => ({
+    kind: "mechanics" as const,
+    title: section.title,
+    text: section.text,
+  })),
+];
+
+function titlesFor(query: string): string[] {
+  return lexicalSearch(searchCorpus, query).map((hit) => hit.doc.title);
+}
+
+// 모델이 은어를 풀어 준 검색어는 자료에 닿아야 한다.
+for (const [query, want] of [
+  ["미니언 파밍 골드", "미니언"],
+  ["미니언 사냥 효율 높이는 방법", "미니언"],
+  ["와드 위치 추천", "와드"],
+  ["와드 설치 위치 추천", "와드"],
+  ["정복자 점화 효과", "점화"],
+  ["부쉬에서 시야를 확보하는 방법", "덤불"],
+] as const) {
+  const titles = titlesFor(query);
+  assert.ok(
+    titles.includes(want),
+    `"${query}" 는 ${want} 문서에 닿아야 한다 (받은 것: ${titles.join(", ") || "없음"})`,
+  );
+}
+
+// 아이템·스킬은 이 경로에 오기 전에 이름으로 걸러진다. 여기 섞으면 규칙이 수적으로 밀린다.
+assert.ok(
+  searchCorpus.every((doc) => doc.kind === "rule" || doc.kind === "mechanics"),
+  "검색 폴백 코퍼스에는 규칙과 메커니즘만 있어야 한다",
+);
+
+// 찾을 낱말이 하나도 없으면 빈 결과여야 한다. 그래야 훅이 다시 찾는다.
+assert.equal(lexicalSearch(searchCorpus, "어떻게 하나요").length, 0, "없는 말뿐이면 빈 결과다");
+assert.equal(lexicalSearch(searchCorpus, "").length, 0, "빈 검색어는 빈 결과다");
+
+// 모델은 시키는 대로 안 할 때가 있다. 겉을 벗겨 낼 수 있어야 한다.
+assert.equal(extractQuery('"미니언 파밍 골드"'), "미니언 파밍 골드", "따옴표를 벗긴다");
+assert.equal(extractQuery("검색어: 와드 설치 위치"), "와드 설치 위치", "머리말을 벗긴다");
+assert.equal(extractQuery("와드 설치 위치\n설명: …"), "와드 설치 위치", "첫 줄만 쓴다");
+assert.equal(extractQuery("   "), "", "빈 응답은 빈 문자열이다");
+
 console.log(
-  `✅ Advisor retrieval passed (규칙 ${ruleIndex.size}종, 메커니즘 ${mechanics.length}절, 아이템 ${items.items.length}종)`,
+  `✅ Advisor retrieval passed (규칙 ${ruleIndex.size}종, 메커니즘 ${mechanics.length}절, 아이템 ${items.items.length}종, 검색 문서 ${searchCorpus.length}건)`,
 );
