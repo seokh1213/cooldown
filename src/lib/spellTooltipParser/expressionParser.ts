@@ -25,8 +25,12 @@ export function parseExpression(input: string): ParseResult {
 
   // VAR * 100, VAR * -100, VAR + 3, VAR - 2.5 같은 포뮬라 파싱
   // 예: "movespeedmod*-100" → variable: "movespeedmod", operator: "*", operand: -100
+  //
+  // 소수점 앞의 0 은 없을 수 있다. 원문에 `@YasuoCritToAD*.01@` 처럼 적힌 자리가 있는데
+  // 숫자를 하나 이상 요구하면 안 걸려서 `YasuoCritToAD*.01` 통째로 변수 이름이 되고
+  // 값을 못 찾아 물음표가 됐다. 야스오·요네 패시브가 그랬다.
   const formulaRegex = new RegExp(
-    "^([a-zA-Z_][a-zA-Z0-9_]*)\\s*([*+/-])\\s*(-?\\d+(?:\\.\\d+)?)$"
+    "^([a-zA-Z_][a-zA-Z0-9_]*)\\s*([*+/-])\\s*(-?(?:\\d+(?:\\.\\d+)?|\\.\\d+))$"
   );
   const formulaMatch = cleanInput.match(formulaRegex);
 
