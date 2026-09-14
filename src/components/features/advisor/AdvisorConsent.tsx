@@ -8,6 +8,16 @@ import { Button } from "@/components/ui/button";
 import { useTranslation } from "@/i18n";
 import { resolveModel, type WebGpuSupport } from "@/lib/advisor/config";
 
+/**
+ * 내려받기 용량을 사람이 체감하는 단위로 적는다.
+ *
+ * "2970MB" 는 이동통신 요금제의 단위가 아니다. 요금이 얼마나 나갈지 가늠하려면
+ * GB 로 보여야 한다. 1000 으로 나누는 것은 통신사가 데이터를 세는 방식이기 때문이다.
+ */
+function formatSize(mb: number): string {
+  return mb >= 1000 ? `${(mb / 1000).toFixed(1)}GB` : `${mb}MB`;
+}
+
 interface AdvisorConsentProps {
   webgpu: WebGpuSupport | null;
   storage: { quotaMb?: number; usageMb?: number };
@@ -52,7 +62,8 @@ export function AdvisorConsent({
       <h3 className="text-base font-semibold">{copy.consent.title}</h3>
       <p className="text-muted-foreground">{copy.consent.lead}</p>
       <ul className="flex flex-col gap-2 text-muted-foreground">
-        <li>· {copy.consent.sizeNotice.replace("{size}", String(model.downloadMb))}</li>
+        <li>· {copy.consent.sizeNotice.replace("{size}", formatSize(model.downloadMb))}</li>
+        <li>· {copy.consent.sourceNotice}</li>
         {storage.quotaMb !== undefined && (
           <li>· {copy.consent.storageNotice.replace("{quota}", String(storage.quotaMb))}</li>
         )}
