@@ -398,6 +398,7 @@ export interface Translations {
       goVsOne: string;
       goRunes: string;
       goSummoner: string;
+      goItem: string;
       /** 빈 화면 예시. 특정 사례가 아니라 질문의 종류다. 화면 맥락에 따라 고른다 */
       examples: {
         skillCd: string;

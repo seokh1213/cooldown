@@ -86,6 +86,13 @@ export type AdvisorAnswer =
       /** 상성 노트. 내 챔피언을 잡을 때(이 상대 한정 우선) / 상대를 상대할 때. 사람이 검증. */
       notes?: { mine: string[]; enemy: string[] };
     }
+  | {
+      /** 아이템 설명. 글이지만 개체(id)를 들고 있어 백과사전 링크를 만들 수 있다. */
+      kind: "item";
+      itemId: string;
+      itemName: string;
+      text: string;
+    }
   | { kind: "text"; text: string };
 
 export interface CompareRow {
@@ -375,7 +382,8 @@ export function looksChampionDirected(question: string, slot?: string): boolean 
 export type AnswerLink =
   | { kind: "vs"; to: string; names: [string, string] }
   | { kind: "vsOne"; to: string; name: string }
-  | { kind: "runes" | "summoner"; to: string };
+  | { kind: "runes" | "summoner"; to: string }
+  | { kind: "item"; to: string; name: string };
 
 export function answerLinks(answer: AdvisorAnswer): AnswerLink[] {
   switch (answer.kind) {
@@ -392,6 +400,8 @@ export function answerLinks(answer: AdvisorAnswer): AnswerLink[] {
       if (answer.rule.subject === "rune") return [{ kind: "runes", to: "/encyclopedia?tab=runes" }];
       if (answer.rule.subject === "summoner") return [{ kind: "summoner", to: "/encyclopedia?tab=summoner" }];
       return [];
+    case "item":
+      return [{ kind: "item", to: `/encyclopedia?tab=items&item=${encodeURIComponent(answer.itemId)}`, name: answer.itemName }];
     default:
       return [];
   }
@@ -411,6 +421,8 @@ export function answerKey(answer: AdvisorAnswer): string {
       return `compare:${answer.cards.map((card) => card.id).join(",")}:${answer.slot ?? ""}:${answer.matchup ? "m" : ""}`;
     case "rule":
       return `rule:${answer.rule.name}`;
+    case "item":
+      return `item:${answer.itemId}`;
     default:
       return answer.kind;
   }

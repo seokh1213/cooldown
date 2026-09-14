@@ -31,6 +31,7 @@ import {
   type MechanicsIndex,
 } from "../../../scripts/llm/lib/mechanics";
 import type { WikiItemMeta } from "../../../scripts/llm/lib/data";
+import type { AdvisorAnswer } from "./answer";
 import type {
   NormalizedItem,
   NormalizedRune,
@@ -431,6 +432,17 @@ function sentenceWith(body: string, term: string): string | undefined {
     .split(/\n|(?<=니다\.)\s*/)
     .map((line) => line.trim())
     .find((line) => line.includes(term));
+}
+
+/**
+ * 아이템 답을 개체와 함께. 글은 `buildItemAnswer` 그대로, 첫 아이템의 id 로 백과사전
+ * 아이템 탭 링크를 만든다. 둘 이상 물었으면 첫 아이템으로 간다.
+ */
+export function buildItemCard(data: AdvisorData, question: string): AdvisorAnswer | undefined {
+  const text = buildItemAnswer(data, question);
+  const [first] = findItems(data, question);
+  if (!text || !first) return undefined;
+  return { kind: "item", itemId: String(first.id), itemName: first.name, text };
 }
 
 export function buildItemAnswer(data: AdvisorData, question: string): string | undefined {

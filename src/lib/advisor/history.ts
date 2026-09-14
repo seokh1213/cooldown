@@ -45,6 +45,7 @@ export type StoredAnswer =
       matchup?: boolean;
       notes?: { mine: string[]; enemy: string[] };
     }
+  | { kind: "item"; itemId: string; itemName: string; text: string }
   | { kind: "text"; text: string };
 
 export interface StoredTurn {
@@ -101,6 +102,8 @@ export function dehydrateAnswer(answer: AdvisorAnswer): StoredAnswer {
         matchup: answer.matchup,
         notes: answer.notes,
       };
+    case "item":
+      return { kind: "item", itemId: answer.itemId, itemName: answer.itemName, text: answer.text };
     case "text":
       return { kind: "text", text: answer.text };
   }
@@ -152,6 +155,8 @@ export function reviveAnswer(stored: StoredAnswer, data: AdvisorData): AdvisorAn
         notes: stored.notes,
       };
     }
+    case "item":
+      return { kind: "item", itemId: stored.itemId, itemName: stored.itemName, text: stored.text };
     case "text":
       return { kind: "text", text: stored.text };
   }

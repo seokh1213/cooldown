@@ -225,6 +225,9 @@ assert.equal(detectSpellFocus("럼블 E 뭐야"), undefined, "사실을 안 짚�
     const links = answerLinks(buildCompareAnswer([card("MonkeyKing"), card("Malphite")], "누가 유리해", undefined, { matchup: true }));
     assert.deepEqual(links, [{ kind: "vs", to: "/vs?a=MonkeyKing&t=Malphite", names: ["오공", "말파이트"] }]);
     assert.deepEqual(answerLinks(buildRuleAnswer(ruleOf("점화"), ["정복자", "점화"])), [{ kind: "summoner", to: "/encyclopedia?tab=summoner" }]);
+    assert.deepEqual(answerLinks({ kind: "item", itemId: "3161", itemName: "쇼진의 창", text: "…" }), [
+      { kind: "item", to: "/encyclopedia?tab=items&item=3161", name: "쇼진의 창" },
+    ]);
     // 같은 자료인지 가리는 열쇠. 슬롯이 다르면 다른 카드다.
     assert.notEqual(
       answerKey(buildSpellAnswer(card("Malphite"), spellOf("Malphite", "Q"), "Q 쿨")),

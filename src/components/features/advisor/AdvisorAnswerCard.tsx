@@ -130,7 +130,7 @@ export function AdvisorAnswerCard({ answer, ddragonVersion, patch, onPickChampio
     </>
   );
 
-  if (answer.kind === "text") {
+  if (answer.kind === "text" || answer.kind === "item") {
     return <AdvisorMarkdown text={answer.text} />;
   }
 

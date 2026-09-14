@@ -404,6 +404,7 @@ export const koKRTranslations: Translations = {
       goVsOne: "{name} VS 화면으로 이동",
       goRunes: "룬 백과에서 보기",
       goSummoner: "소환사 주문 백과에서 보기",
+      goItem: "{name} 아이템 백과에서 보기",
       examples: {
         skillCd: "{name} 스킬 쿨타임",
         skillEffect: "{name} 스킬 효과",
