@@ -26,6 +26,7 @@ function AppShell(props: AppRouterProps) {
   return (
     <Layout
       patch={runtime.patchVersion}
+      ddragonVersion={runtime.sources.ddragon}
       nav={
         <Nav
           patchVersion={runtime.patchVersion}

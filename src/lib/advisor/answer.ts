@@ -9,7 +9,7 @@
  * 화면은 종류에 맞는 카드를 그리고, 모델은 이 구조를 받아 해설만 쓴다.
  * 모델이 수치를 입에 담을 일이 없어진다.
  */
-import type { ChampionCard, SpellFact } from "../../../scripts/llm/lib/facts";
+import type { ChampionCard, SpellFact, StatName } from "../../../scripts/llm/lib/facts";
 import type { RuleNotes } from "../../../scripts/llm/lib/rules";
 
 /** 카드에 한 줄로 놓을 사실. */
@@ -55,7 +55,33 @@ export type AdvisorAnswer =
       original: string;
       candidates: ChampionCard[];
     }
+  | {
+      /**
+       * 둘 이상을 견주는 답. 열이 챔피언, 행이 사실이다.
+       * 예전에는 모델이 도구로 수치를 두 번 꺼내 글로 견줬는데, 30초 걸리고 8토큰에서
+       * 끊기기도 했다. 견주는 일은 코드가 0초에 한다.
+       */
+      kind: "compare";
+      cards: ChampionCard[];
+      /** 능력치 비교면 어느 레벨 값인지 */
+      level?: 1 | 6 | 11 | 18;
+      /** 스킬 비교면 슬롯 */
+      slot?: string;
+      rows: CompareRow[];
+      /** 질문이 가리킨 행의 결론. "체력 (1레벨)" → "말파이트 665 > 럼블 640" */
+      headline?: Fact;
+    }
   | { kind: "text"; text: string };
+
+export interface CompareRow {
+  label: string;
+  /** cards 와 같은 순서. 없는 값은 빈 문자열. */
+  values: string[];
+  /** 질문이 가리킨 행 */
+  hit?: boolean;
+  /** 굵게 그릴 열. 동률이거나 크기 비교가 뜻이 없는 행이면 비운다. */
+  winner?: number;
+}
 
 /**
  * 질문이 스킬의 어느 사실을 묻는지.
@@ -117,10 +143,25 @@ function sentencesWith(text: string, keywords: string[]): string[] {
  * 구조 필드(쿨·소모·계수)는 값이 바로 있으니 headline 으로 올린다.
  * 효과 수치는 본문 문장에만 있으니 그 문장을 골라 highlighted 로 올린다.
  */
+/**
+ * 쿨타임 행. 충전형 스킬(럼블 E, 아칼리 R…)은 쿨타임 필드가 연속 시전 간격 0.5초여서
+ * 그대로 내면 틀린 답이 된다. 쿨타임 표와 같은 관례로 재충전 시간을 앞세운다.
+ */
+export function cooldownFact(spell: SpellFact): Fact | undefined {
+  if (spell.recharge) {
+    const charges = spell.maxCharges ? ` · ${spell.maxCharges}회 충전` : "";
+    const gap = spell.cooldown ? ` · 연속 시전 ${spell.cooldown}초` : "";
+    return { label: "재충전 대기시간", value: `${spell.recharge}초${charges}${gap}` };
+  }
+  if (spell.cooldown) return { label: "재사용 대기시간", value: `${spell.cooldown}초` };
+  return undefined;
+}
+
 export function buildSpellAnswer(card: ChampionCard, spell: SpellFact, question: string): AdvisorAnswer {
   const detected = detectSpellFocus(question);
   const facts: Fact[] = [];
-  if (spell.cooldown) facts.push({ label: "재사용 대기시간", value: `${spell.cooldown}초` });
+  const cooldown = cooldownFact(spell);
+  if (cooldown) facts.push(cooldown);
   if (spell.cost) facts.push({ label: "소모값", value: spell.cost });
   if (spell.damageTypes.length) facts.push({ label: "피해 유형", value: spell.damageTypes.join("·") });
   if (spell.effects.length) facts.push({ label: "효과", value: spell.effects.join(", ") });
@@ -131,8 +172,8 @@ export function buildSpellAnswer(card: ChampionCard, spell: SpellFact, question:
 
   let headline: Fact | undefined;
   let highlighted: string[] = [];
-  if (detected?.focus === "cooldown" && spell.cooldown) {
-    headline = { label: "재사용 대기시간", value: `${spell.cooldown}초` };
+  if (detected?.focus === "cooldown" && cooldown) {
+    headline = cooldown;
   } else if (detected?.focus === "cost" && spell.cost) {
     headline = { label: "소모값", value: spell.cost };
   } else if (detected?.focus === "ratio" && ratios.length) {
@@ -197,6 +238,17 @@ function hangulTokens(text: string): string[] {
 }
 
 /**
+ * 질문에 흔히 나오는 두 음절 기능어. 이름 오타로 보지 않는다.
+ * "누가 더 높아" 의 "누가" 는 누누와 거리 1 이지만 챔피언이 아니다. 첫 음절 규칙만으로는
+ * 두 음절 이름(누누·나미·자야…)과 두 음절 기능어의 충돌을 다 못 막는다.
+ */
+const FUNCTION_WORDS = new Set([
+  "누가", "누구", "누군", "뭐야", "뭐가", "뭔데", "뭐냐", "뭐지", "어디", "언제", "얼마", "어떤", "어느",
+  "제일", "가장", "설명", "비교", "차이", "상대", "대비", "대해", "해줘", "알려", "정도", "이랑", "하고",
+  "그리고", "중에", "레벨", "쿨감", "쿨은", "쿨이", "얼마나", "몇초",
+]);
+
+/**
  * 챔피언을 하나도 못 찾았을 때, 한 글자 틀린 이름이 있는지 본다.
  *
  * "럼미 E 마저" 는 럼블이다. 지금은 못 찾으면 검색 폴백으로 흘러가 헛답을 냈다.
@@ -207,12 +259,16 @@ function hangulTokens(text: string): string[] {
  * 잘 나지 않으므로 이 하나로 충돌 공간이 크게 준다(뭐·쿨·점·정·쇼·와 로 시작하는
  * 챔피언은 없다).
  *
+ * 이미 찾은 챔피언(`known`)은 후보에서 뺀다. "말파이트랑 럼베" 에서 "말파이트랑" 은
+ * 말파이트와 거리 1 이지만 오타가 아니라 조사가 붙은 것이고, 진짜 오타는 "럼베" 다.
+ *
  * 후보를 돌려주고, 하나만 남을 때 바로 갈지 물을지는 화면이 정한다.
  */
 export function suggestChampions(
   question: string,
   cards: ChampionCard[],
   nicknames: Map<string, ChampionCard>,
+  known: ReadonlySet<string> = new Set(),
 ): { original: string; candidates: ChampionCard[] } | undefined {
   const names: Array<[string, ChampionCard]> = [];
   for (const card of cards) {
@@ -224,9 +280,12 @@ export function suggestChampions(
   const initials = new Set(names.map(([name]) => name[0]));
 
   for (const token of hangulTokens(question)) {
-    if (!initials.has(token[0])) continue;
+    if (!initials.has(token[0]) || FUNCTION_WORDS.has(token)) continue;
     const found = new Map<string, ChampionCard>();
     for (const [name, card] of names) {
+      if (known.has(card.id)) continue;
+      // 첫 글자는 맞아야 한다. "럼미" 는 럼블이지 나미·유미가 아니다.
+      if (name[0] !== token[0]) continue;
       // 길이가 다르면 삽입·삭제인데, 두 글자 낱말에서는 그것이 너무 헐겁다.
       if (token.length <= 2 && name.length !== token.length) continue;
       if (Math.abs(name.length - token.length) > 1) continue;
@@ -234,5 +293,268 @@ export function suggestChampions(
     }
     if (found.size > 0) return { original: token, candidates: [...found.values()] };
   }
+  return undefined;
+}
+
+/** 카드에 쓰는 능력치 이름. 순서가 곧 표의 행 순서다. */
+export const CARD_STATS: StatName[] = ["health", "armor", "magicResist", "attackDamage", "moveSpeed"];
+
+// ── 비교 ──────────────────────────────────────────────────────────────
+
+/** 둘 이상을 견주는 질문인가. "누가 더 높아", "어느 쪽이", "비교", "중에". */
+const COMPARISON = /더\s*(높|많|센|강|단단|긴|짧|빠|느|좋)|누가|어느\s*쪽|비교|중에|\bvs\b/i;
+
+export function asksComparison(question: string, championCount: number): boolean {
+  return championCount >= 2 && COMPARISON.test(question);
+}
+
+/** 능력치를 가리키는 말. FOCUS_LEXICON 과 같은 성격의 의도 어휘다. */
+const STAT_LEXICON: Array<[StatName, RegExp]> = [
+  ["magicResist", /마법\s*저항|마저|마방/],
+  ["attackSpeed", /공격\s*속도|공속/],
+  ["moveSpeed", /이동\s*속도|이속|무빙/],
+  ["attackDamage", /공격력|깡뎀|\bad\b/i],
+  ["armor", /방어력|방어|아머/],
+  ["health", /체력|피통|\bhp\b/i],
+  ["healthRegen", /체력\s*재생|체젠/],
+];
+
+export function detectStat(question: string): StatName | undefined {
+  // 체력 재생이 체력보다, 마법 저항이 방어보다 먼저 잡혀야 하므로 긴 것부터 순서대로.
+  if (/체력\s*재생|체젠/.test(question)) return "healthRegen";
+  return STAT_LEXICON.find(([, pattern]) => pattern.test(question))?.[0];
+}
+
+/** 질문이 가리킨 레벨. 없으면 1레벨. 자료가 1·6·11·18 만 있다. */
+export function detectLevel(question: string): 1 | 6 | 11 | 18 {
+  if (/18\s*레벨|18\s*렙|만렙|풀\s*레벨|후반/.test(question)) return 18;
+  if (/11\s*레벨|11\s*렙/.test(question)) return 11;
+  if (/6\s*레벨|6\s*렙/.test(question)) return 6;
+  return 1;
+}
+
+function levelKey(level: 1 | 6 | 11 | 18): "lv1" | "lv6" | "lv11" | "lv18" {
+  return `lv${level}` as "lv1" | "lv6" | "lv11" | "lv18";
+}
+
+/** 가장 큰 값의 열. 동률이면 undefined. */
+function argmax(values: Array<number | undefined>): number | undefined {
+  let best: number | undefined;
+  let tie = false;
+  values.forEach((value, index) => {
+    if (value === undefined) return;
+    const current = best === undefined ? undefined : values[best];
+    if (current === undefined || value > current) {
+      best = index;
+      tie = false;
+    } else if (value === current) {
+      tie = true;
+    }
+  });
+  return tie ? undefined : best;
+}
+
+/**
+ * 챔피언 둘 이상을 견준다.
+ *
+ * 슬롯이 있으면 그 스킬의 사실을 나란히 놓고, 없으면 능력치를 놓는다.
+ * 능력치는 높을수록 좋다고 보고 큰 쪽을 굵게 한다. 스킬 행은 크기 비교가 뜻이 없어
+ * (쿨은 짧을수록, 소모는 적을수록, 계수는 클수록) 굵게 하지 않고 묻은 행만 강조한다.
+ */
+export function buildCompareAnswer(cards: ChampionCard[], question: string, slot?: string): AdvisorAnswer {
+  if (slot) {
+    const spells = cards.map((card) => card.spells.find((spell) => spell.slot === slot));
+    const focus = detectSpellFocus(question)?.focus;
+    const rows: CompareRow[] = [];
+    const push = (label: string, pick: (spell: SpellFact) => string | undefined, hit: boolean) => {
+      const values = spells.map((spell) => (spell ? pick(spell) ?? "" : ""));
+      if (values.some(Boolean)) rows.push({ label, values, hit });
+    };
+    push("스킬", (spell) => spell.name, false);
+    push(
+      spells.some((spell) => spell?.recharge) ? "재충전 대기시간" : "재사용 대기시간",
+      (spell) => cooldownFact(spell)?.value,
+      focus === "cooldown",
+    );
+    push("소모값", (spell) => spell.cost, focus === "cost");
+    push("피해 유형", (spell) => spell.damageTypes.join("·"), focus === "damage");
+    push("효과", (spell) => spell.effects.join(", "), focus === "effect");
+    push(
+      "계수",
+      (spell) => Object.entries(spell.ratios ?? {}).map(([stat, value]) => `${stat} ${value}%`).join(", "),
+      focus === "ratio",
+    );
+    const hit = rows.find((row) => row.hit);
+    const headline = hit
+      ? { label: `${slot} ${hit.label}`, value: cards.map((card, i) => `${card.name} ${hit.values[i] || "—"}`).join(" · ") }
+      : undefined;
+    return { kind: "compare", cards, slot, rows, headline };
+  }
+
+  const level = detectLevel(question);
+  const asked = detectStat(question);
+  const key = levelKey(level);
+  const stats: StatName[] = asked && !CARD_STATS.includes(asked) ? [...CARD_STATS, asked] : CARD_STATS;
+  const rows: CompareRow[] = stats.map((stat) => {
+    const numbers = cards.map((card) => card.stats[stat]?.[key]);
+    return {
+      label: STAT_LABEL[stat],
+      values: numbers.map((n) => (n === undefined ? "" : String(n))),
+      hit: stat === asked,
+      winner: argmax(numbers),
+    };
+  });
+  const hit = rows.find((row) => row.hit);
+  let headline: Fact | undefined;
+  if (hit) {
+    // 큰 쪽부터. "말파이트 665 > 럼블 640", 동률은 "=".
+    const order = cards
+      .map((card, i) => ({ name: card.name, value: Number(hit.values[i]) }))
+      .filter((entry) => Number.isFinite(entry.value))
+      .sort((a, b) => b.value - a.value);
+    const value = order
+      .map((entry, i) => (i === 0 ? `${entry.name} ${entry.value}` : `${entry.value === order[i - 1].value ? "=" : ">"} ${entry.name} ${entry.value}`))
+      .join(" ");
+    headline = { label: `${hit.label} (${level}레벨)`, value };
+  }
+  return { kind: "compare", cards, level, rows, headline };
+}
+
+export const STAT_LABEL: Record<StatName, string> = {
+  health: "체력",
+  armor: "방어력",
+  magicResist: "마법 저항력",
+  attackDamage: "공격력",
+  attackSpeed: "공격 속도",
+  moveSpeed: "이동 속도",
+  healthRegen: "체력 재생",
+};
+
+/**
+ * 백분위를 "상위 n%" 나 "하위 n%" 로 바꾼다.
+ * 카드의 percentile 은 0(최저)~100(최고) 이다. 69.5 는 위에서 31% 자리다.
+ */
+export function percentileLabel(percentile: number): { side: "top" | "bottom"; value: number } {
+  return percentile >= 50
+    ? { side: "top", value: Math.max(1, Math.round(100 - percentile)) }
+    : { side: "bottom", value: Math.max(1, Math.round(percentile)) };
+}
+
+/** 매우 높음·매우 낮음처럼 눈에 띄어야 하는 등급인지. 표에서 그 행만 굵게 한다. */
+export function isExtremeGrade(grade: string): boolean {
+  return grade === "매우 높음" || grade === "매우 낮음";
+}
+
+/**
+ * 스킬 한 줄 요약. 손으로 적지 않고 데이터에서 조립한다.
+ *   Q 화염방사기   쿨 10/9/8/7/6 · 최대 체력 비례 피해 · 주문력 105%
+ * 챔피언 카드에서 스킬 다섯 개를 한 줄씩 보여 줄 때 쓴다.
+ */
+export function spellOneLiner(spell: SpellFact): string {
+  const parts: string[] = [];
+  if (spell.recharge) parts.push(`재충전 ${spell.recharge}`);
+  else if (spell.cooldown) parts.push(`쿨 ${spell.cooldown}`);
+  if (spell.effects.length) parts.push(spell.effects.slice(0, 3).join(" · "));
+  const [top] = Object.entries(spell.ratios ?? {}).sort((a, b) => b[1] - a[1]);
+  if (top) parts.push(`${top[0]} ${top[1]}%`);
+  if (parts.length) return parts.join(" · ");
+  // 구조 필드가 하나도 없는 스킬(순수 패시브 등)은 요약 첫 절을 쓴다.
+  return (spell.summary ?? spell.text).split(/[.。]/)[0].slice(0, 60);
+}
+
+/** 부정. 이것이 있으면 "아니오" 쪽이다. */
+const NEGATION = /않|없|못\s|못합|불가|아니|제외|무시|적용되지|발동하지|주지\s*않/;
+/** 조건이 갈리는 문장. 한쪽은 되고 한쪽은 안 되면 배지 하나로 답할 수 없다. */
+const CONTRAST = /지만|반면|다만|경우에만|때만|에는\s*[^.]*에는/;
+/** 긍정. 무엇이 일어난다는 뜻의 서술. */
+const AFFIRM = /줍니다|적용|발동|증가|얻|추가|가능|받|쌓|들어|간주/;
+
+/**
+ * 예/아니오 배지를 달 수 있는지.
+ *
+ * 근거 문장이 **하나**일 때만 부르고, 그 문장의 극성이 분명할 때만 답을 낸다.
+ * "…에는 적용되지만 …에는 않습니다" 처럼 조건이 갈리면 undefined 를 돌려주고
+ * 카드는 배지 없이 문장만 보인다. 틀린 배지보다 배지 없는 편이 낫다.
+ */
+export function ruleVerdict(sentence: string): "yes" | "no" | undefined {
+  if (CONTRAST.test(sentence)) return undefined;
+  if (NEGATION.test(sentence)) return "no";
+  if (AFFIRM.test(sentence)) return "yes";
+  return undefined;
+}
+
+/**
+ * 모델에게 넘길 해설 재료.
+ *
+ * 카드가 이미 수치를 그렸으므로 모델은 **수치를 되풀이하지 않고 뜻만 잇는다.**
+ * 재료는 코드가 계산한 것(백분위 극단, 주 피해 유형, 계수 성향, 태그)이다.
+ * 이번 세션에서 모델이 스스로 판단하면 틀리는 것을 봤다(럼블 E 가 마저를 안 깎는다고 답함).
+ * 그래서 판단할 재료를 전부 주고 문장만 만들게 한다.
+ */
+export function buildCommentaryPrompt(answer: AdvisorAnswer, patch: string): string | undefined {
+  const rules = [
+    "[요청] 위 자료만 근거로 두세 문장으로 설명하십시오.",
+    "- 수치를 쓰지 마십시오. 수치는 이미 화면에 표로 있습니다. \"매우 낮다\", \"높은 편이다\" 처럼 정도로만 말하십시오.",
+    "- 자료에 없는 아이템·룬·스킬 이름을 만들지 마십시오.",
+    "- 합니다체로, 인사말 없이 바로 본문만 쓰십시오.",
+  ];
+
+  if (answer.kind === "champion") {
+    const card = answer.card;
+    const lines = [`[패치] ${patch}`, `[챔피언] ${card.name}`];
+    if (card.wiki?.subclass) lines.push(`- 분류: ${card.wiki.subclass}${card.wiki.positions?.length ? ` · 주 포지션 ${card.wiki.positions[0]}` : ""}`);
+    lines.push(`- 주 피해 유형: ${card.damageProfile.primary} · 계수 성향: ${card.scalingProfile.primary}`);
+    for (const stat of CARD_STATS) {
+      const snap = card.stats[stat];
+      if (!snap || !isExtremeGrade(snap.gradeLv1)) continue;
+      const { side, value } = percentileLabel(snap.percentileLv1);
+      lines.push(`- ${STAT_LABEL[stat]}: 1레벨 기준 전체 챔피언 중 ${side === "top" ? "상위" : "하위"} ${value}% (${snap.gradeLv1})`);
+    }
+    if (card.mechanics.length) lines.push(`- 보유 효과: ${card.mechanics.join(", ")}`);
+    lines.push(
+      "",
+      ...rules,
+      "- 이 챔피언을 처음 상대하거나 처음 잡는 사람에게 무엇이 중요한지, 위의 극단적인 능력치와 피해 유형이 라인전에서 어떤 뜻인지 말하십시오.",
+    );
+    return lines.join("\n");
+  }
+
+  if (answer.kind === "spell") {
+    // 쿨·소모·계수 하나를 물은 질문에는 해설을 붙이지 않는다. 재료가 숫자 하나뿐이라
+    // 모델이 할 말이 없고, 실제로 10초 쿨을 "매우 짧다" 고 지어냈다. 카드가 곧 답이다.
+    if (answer.highlighted.length === 0) return undefined;
+    const lines = [`[패치] ${patch}`, `[스킬] ${answer.championName} ${answer.spell.slot} ${answer.spell.name}`];
+    if (answer.headline) lines.push(`- ${answer.headline.label}: ${answer.headline.value}`);
+    for (const sentence of answer.highlighted) lines.push(`- ${sentence}`);
+    if (answer.spell.effects.length) lines.push(`- 효과: ${answer.spell.effects.join(", ")}`);
+    lines.push("", ...rules, "- 이 사실이 실전에서 왜 중요한지 한두 문장으로 말하십시오.");
+    return lines.join("\n");
+  }
+
+  if (answer.kind === "compare") {
+    // 한 능력치·한 스킬 사실을 물은 비교는 헤드라인이 곧 답이다. 해설은 열린 비교
+    // ("둘 중 누가 더 세?") 에만 붙인다. 재료는 각자의 극단 능력치와 피해·계수 성향.
+    if (answer.headline || answer.slot) return undefined;
+    const lines = [`[패치] ${patch}`, `[비교] ${answer.cards.map((card) => card.name).join(" vs ")}`];
+    for (const card of answer.cards) {
+      const traits: string[] = [];
+      if (card.wiki?.subclass) traits.push(card.wiki.subclass);
+      traits.push(`${card.damageProfile.primary} 피해`, `${card.scalingProfile.primary} 계수`);
+      for (const stat of CARD_STATS) {
+        const snap = card.stats[stat];
+        if (!snap || !isExtremeGrade(snap.gradeLv1)) continue;
+        const { side, value } = percentileLabel(snap.percentileLv1);
+        traits.push(`${STAT_LABEL[stat]} ${side === "top" ? "상위" : "하위"} ${value}%`);
+      }
+      if (card.mechanics.length) traits.push(`보유 효과: ${card.mechanics.slice(0, 6).join(", ")}`);
+      lines.push(`- ${card.name}: ${traits.join(" · ")}`);
+    }
+    lines.push("", ...rules, "- 둘이 맞붙었을 때 무엇이 갈리는지, 각자 무엇을 조심해야 하는지 말하십시오.");
+    return lines.join("\n");
+  }
+
+  // 규칙 답에는 해설을 붙이지 않는다. 배지와 근거 문장이 곧 답이라, 모델은 그 문장을
+  // 되풀이할 뿐이었다("점화 스킬을 사용하면 정복자 중첩이 두 개 추가로 적용됩니다").
+  // 되풀이는 분석이 아니고, 기다리게만 한다.
   return undefined;
 }

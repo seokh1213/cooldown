@@ -14,13 +14,24 @@ import { AdvisorPanel } from "./AdvisorPanel";
 
 interface AdvisorWidgetProps {
   patch: string;
+  /** 카드의 챔피언 아이콘을 받아 올 DDragon 버전 */
+  ddragonVersion: string;
+  /**
+   * 열림 상태를 레이아웃에 알린다.
+   * 드로어가 페이지를 옆으로 밀어야 표를 가리지 않으므로 레이아웃이 알아야 한다.
+   */
+  onOpenChange?: (open: boolean) => void;
 }
 
-export function AdvisorWidget({ patch }: AdvisorWidgetProps) {
+export function AdvisorWidget({ patch, ddragonVersion, onOpenChange }: AdvisorWidgetProps) {
   const { t } = useTranslation();
   const device = useDeviceType();
   const [open, setOpen] = useState(false);
   const advisor = useAdvisor();
+
+  useEffect(() => {
+    onOpenChange?.(open);
+  }, [open, onOpenChange]);
 
   /**
    * 모델을 권할 만한 기기인지.
@@ -48,7 +59,9 @@ export function AdvisorWidget({ patch }: AdvisorWidgetProps) {
 
   return (
     <>
-      {open && <AdvisorPanel advisor={advisor} patch={patch} canUseModel={canUseModel} onClose={() => setOpen(false)} />}
+      {open && <AdvisorPanel advisor={advisor} patch={patch} ddragonVersion={ddragonVersion} canUseModel={canUseModel} onClose={() => setOpen(false)} />}
+      {/* 드로어가 열리면 이 버튼은 드로어 하단의 전송 버튼 위에 겹친다. 닫기는 드로어 헤더에 있다. */}
+      {!open && (
       <button
         type="button"
         onClick={() => setOpen((prev) => !prev)}
@@ -61,6 +74,7 @@ export function AdvisorWidget({ patch }: AdvisorWidgetProps) {
           <span className="absolute right-1 top-1 h-3 w-3 animate-pulse rounded-full bg-emerald-400" />
         )}
       </button>
+      )}
     </>
   );
 }
