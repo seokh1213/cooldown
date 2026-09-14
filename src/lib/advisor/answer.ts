@@ -734,11 +734,18 @@ export function buildCommentaryPrompt(
       lines.push(`[${w.skills}]`);
       for (const spell of card.spells) lines.push(`- ${spell.slot} ${spell.name}: ${spellSummary(spell)}`);
     } else {
-      // 스킬 이름을 반드시 싣는다. 지시문이 "문장마다 스킬 이름을 넣으라" 고 하는데
-      // 개요 재료에 이름이 없으면 모델은 지어내는 수밖에 없다. 실제로 제이스 Q·E·R 을
-      // 모두 '스톰 블레이드' 라고 답했다. 요약 없이 슬롯과 이름만이면 길이도 거의 안 는다.
-      lines.push(`[${w.abilities}] ${card.spells.map((spell) => `${spell.slot} ${spell.name}`).join(" · ")}`);
-      if (card.mechanics.length) lines.push(`- ${w.effects}: ${tags(card.mechanics)}`);
+      // 스킬 이름과 그 스킬의 효과를 **붙여서** 준다.
+      //
+      // 처음에는 이름만 줬다. 지어내기는 멈췄지만 이번엔 짝을 틀리게 붙였다.
+      // 야스오 P 낭인의 길에 에어본·투사체 차단·돌진을 몰아 주고, 말파이트 Q
+      // 지진의 파편에 에어본을 붙였다. 이름 목록과 태그 뭉치를 따로 주면 어느
+      // 태그가 어느 스킬 것인지는 모델이 찍는 수밖에 없다. 카드에 스킬마다
+      // effects 가 이미 붙어 있으므로 그대로 옮긴다.
+      lines.push(`[${w.abilities}]`);
+      for (const spell of card.spells) {
+        const effects = spell.effects.length ? `: ${tags(spell.effects)}` : "";
+        lines.push(`- ${spell.slot} ${spell.name}${effects}`);
+      }
     }
     // 운용 노트는 한국어로만 있다(플레이북이 한국어다). 영어·중국어 프롬프트에
     // 한국어 문단을 섞으면 모델이 그 언어를 따라가 답까지 한국어가 된다.
@@ -799,9 +806,12 @@ export function buildCommentaryPrompt(
         const { side } = percentileLabel(snap.percentileLv1);
         traits.push(w.percentile(translateStat(stat, lang), side, translateGrade(snap.gradeLv1, lang)));
       }
-      // 비교에서도 스킬 이름을 준다. 이름 없이 "어느 스킬로 이긴다" 를 시키면 지어낸다.
-      traits.push(`${w.abilities}: ${card.spells.map((spell) => `${spell.slot} ${spell.name}`).join(" · ")}`);
-      if (card.mechanics.length) traits.push(`${w.effects}: ${tags(card.mechanics.slice(0, 6))}`);
+      // 비교에서도 스킬과 효과를 붙여서 준다. 따로 주면 짝을 틀리게 붙인다.
+      traits.push(
+        `${w.abilities}: ${card.spells
+          .map((spell) => `${spell.slot} ${spell.name}${spell.effects.length ? `(${tags(spell.effects)})` : ""}`)
+          .join(" · ")}`,
+      );
       lines.push(`- ${card.name}: ${traits.join(" · ")}`);
     }
     lines.push(
