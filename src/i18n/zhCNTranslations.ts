@@ -378,6 +378,10 @@ export const zhCNTranslations: Translations = {
       matchupTool: "对位",
       fromChat: "以刚才提到的 {name} 为准。",
       whichOne: "您指的是哪位英雄？",
+      playingNotes: "使用 {name} 时",
+      againstNotes: "对付 {name} 时",
+      notesSource: "人工核对的运营笔记",
+      moreNotes: "还有 {count} 条笔记",
       examples: {
         skillCd: "{name} 技能冷却",
         skillEffect: "{name} 技能效果",

@@ -392,6 +392,10 @@ export const koKRTranslations: Translations = {
       matchupTool: "상성",
       fromChat: "앞서 말한 {name} 기준입니다.",
       whichOne: "어느 챔피언 말씀이신가요?",
+      playingNotes: "{name}를 잡을 때",
+      againstNotes: "{name}를 상대할 때",
+      notesSource: "사람이 검증한 운용 노트",
+      moreNotes: "노트 {count}건 더",
       examples: {
         skillCd: "{name} 스킬 쿨타임",
         skillEffect: "{name} 스킬 효과",

@@ -22,6 +22,7 @@ import {
   ruleVerdict,
   spellFocusValue,
   spellOneLiner,
+  spellSummary,
   type AdvisorAnswer,
 } from "@/lib/advisor/answer";
 import { AdvisorMarkdown } from "./AdvisorMarkdown";
@@ -223,10 +224,34 @@ export function AdvisorAnswerCard({ answer, ddragonVersion, patch, onPickChampio
         ),
       };
     }).filter((row): row is NonNullable<typeof row> => Boolean(row));
+    // "스킬 설명해줘" 면 한 줄 요약(무엇을 하는 스킬인지), 아니면 쿨·효과·계수 한 줄.
+    const skillsView = answer.view === "skills";
     const skillRows = card.spells.map((spell) => ({
       label: `${spell.slot} ${spell.name}`,
-      value: spellOneLiner(spell),
+      value: skillsView ? spellSummary(spell) : spellOneLiner(spell),
+      hit: skillsView,
     }));
+    const notes = answer.notes;
+    const hasNotes = Boolean(notes && (notes.playing.length || notes.against.length));
+    // 노트는 한 건이 문단이다. 둘씩만 펼치고 나머지는 접는다 — 표가 주인공이다.
+    const NOTES_OPEN = 2;
+    const noteItems = (items: string[]) =>
+      items.map((note) => (
+        <li key={note} className="flex gap-1.5">
+          <span className="select-none text-muted-foreground">·</span>
+          <span>{note}</span>
+        </li>
+      ));
+    const noteList = (items: string[]) => (
+      <>
+        <ul className="space-y-1.5 text-[13px] leading-relaxed">{noteItems(items.slice(0, NOTES_OPEN))}</ul>
+        {items.length > NOTES_OPEN && (
+          <Disclosure summary={fill(copy.moreNotes, { count: items.length - NOTES_OPEN })}>
+            <ul className="space-y-1.5 text-[13px]">{noteItems(items.slice(NOTES_OPEN))}</ul>
+          </Disclosure>
+        )}
+      </>
+    );
     return (
       <Frame
         icon={header}
@@ -240,17 +265,43 @@ export function AdvisorAnswerCard({ answer, ddragonVersion, patch, onPickChampio
         tool={copy.champion}
         footer={footer}
       >
-        <div className="mb-1 text-[11px] font-medium text-muted-foreground">{copy.stats}</div>
-        <KvTable rows={statRows} />
-        <div className="mb-1 mt-3 text-[11px] font-medium text-muted-foreground">{copy.skills}</div>
+        {!skillsView && (
+          <>
+            <div className="mb-1 text-[11px] font-medium text-muted-foreground">{copy.stats}</div>
+            <KvTable rows={statRows} />
+          </>
+        )}
+        <div className={`mb-1 text-[11px] font-medium text-muted-foreground ${skillsView ? "" : "mt-3"}`}>{copy.skills}</div>
         <KvTable rows={skillRows} />
-        {card.mechanics.length > 0 && (
+        {!skillsView && card.mechanics.length > 0 && (
           <div className="mt-2.5 flex flex-wrap gap-1">
             {card.mechanics.map((tag) => (
               <span key={tag} className="rounded-full bg-muted px-2 py-px text-[11px] text-muted-foreground">
                 {tag}
               </span>
             ))}
+          </div>
+        )}
+        {/* 사람이 검증한 운용 노트. 수치·태그가 아니라 이것이 실전에 쓰는 말이다. */}
+        {hasNotes && notes && (
+          <div className="mt-3 space-y-2.5 border-t pt-2.5">
+            {notes.playing.length > 0 && (
+              <div>
+                <div className="mb-1 text-[11px] font-medium text-muted-foreground">
+                  {fill(copy.playingNotes, { name: card.name })}
+                </div>
+                {noteList(notes.playing)}
+              </div>
+            )}
+            {notes.against.length > 0 && (
+              <div>
+                <div className="mb-1 text-[11px] font-medium text-muted-foreground">
+                  {fill(copy.againstNotes, { name: card.name })}
+                </div>
+                {noteList(notes.against)}
+              </div>
+            )}
+            <div className="text-[11px] text-muted-foreground">{copy.notesSource}</div>
           </div>
         )}
       </Frame>

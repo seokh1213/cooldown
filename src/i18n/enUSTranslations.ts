@@ -392,6 +392,10 @@ export const enUSTranslations: Translations = {
       matchupTool: "Matchup",
       fromChat: "Using {name} from earlier in this chat.",
       whichOne: "Which champion do you mean?",
+      playingNotes: "Playing {name}",
+      againstNotes: "Against {name}",
+      notesSource: "Human-verified play notes",
+      moreNotes: "{count} more notes",
       examples: {
         skillCd: "{name} ability cooldowns",
         skillEffect: "{name} ability effects",

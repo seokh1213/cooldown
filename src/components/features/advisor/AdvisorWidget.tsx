@@ -81,10 +81,14 @@ export function AdvisorWidget({ patch, ddragonVersion, onOpenChange }: AdvisorWi
   const { consented, ensureLoaded } = advisor;
   useEffect(() => {
     if (!consented || !canUseModel) return;
-    const idle = window.requestIdleCallback ?? ((callback: () => void) => window.setTimeout(callback, 1500));
-    const cancel = window.cancelIdleCallback ?? window.clearTimeout;
-    const handle = idle(() => ensureLoaded());
-    return () => cancel(handle);
+    // timeout 을 꼭 준다. 없으면 브라우저가 한가하지 않다고 보는 동안(탭이 뒤에 있거나
+    // 표가 계속 그려지는 동안) 콜백을 무한정 미뤄, 대화창을 여는 순간에야 올라가기 시작했다.
+    if (typeof window.requestIdleCallback === "function") {
+      const handle = window.requestIdleCallback(() => ensureLoaded(), { timeout: 2000 });
+      return () => window.cancelIdleCallback(handle);
+    }
+    const handle = window.setTimeout(() => ensureLoaded(), 1500);
+    return () => window.clearTimeout(handle);
   }, [consented, canUseModel, ensureLoaded]);
 
   const loadingModel = advisor.status === "downloading" || advisor.status === "warming";
