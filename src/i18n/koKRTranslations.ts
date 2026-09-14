@@ -378,6 +378,7 @@ export const koKRTranslations: Translations = {
     },
     sources: "찾은 자료",
     placeholder: "예: 정복자 스택에 점화가 들어가나요?",
+    busyHint: "답을 만드는 중입니다. 끝나면 보내거나 ■ 로 멈추세요.",
     send: "보내기",
     stop: "중단",
     reset: "대화 지우기",
