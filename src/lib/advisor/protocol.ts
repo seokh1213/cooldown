@@ -8,6 +8,14 @@
 export interface AdvisorModelSpec {
   id: string;
   dtype: string;
+  /**
+   * 추론 백엔드. 기본은 WebGPU 다.
+   *
+   * `?advisorDevice=wasm` 으로 CPU 를 강제할 수 있다. 속도가 이상할 때
+   * "WebGPU 를 타고 있나, CPU 로 떨어졌나" 를 가르는 용도다. 둘이 같은 속도면
+   * WebGPU 가 안 붙은 것이다.
+   */
+  device?: "webgpu" | "wasm";
 }
 
 export interface AdvisorChatMessage {

@@ -11,6 +11,7 @@ import {
   detectWebGpu,
   estimateStorageMb,
   resolveModel,
+  resolveDevice,
   type WebGpuSupport,
 } from "@/lib/advisor/config";
 import { deleteModelCache } from "@/lib/advisor/storage";
@@ -190,7 +191,8 @@ export function useAdvisor(): UseAdvisorResult {
 
   const workerRef = useRef<Worker | null>(null);
   const nextId = useRef(1);
-  const model = useRef(resolveModel()).current;
+  // 백엔드는 주소에서 정한다. 기본 WebGPU, ?advisorDevice=wasm 이면 CPU.
+  const model = useRef({ ...resolveModel(), device: resolveDevice() }).current;
 
   useEffect(() => {
     void detectWebGpu().then(setWebgpu);
