@@ -5,7 +5,8 @@
  * 모델 적재는 수십 초가 걸리므로 진행률을 파일 합계로 계속 보여 준다.
  */
 import { useEffect, useRef, useState } from "react";
-import { ChevronLeft, HardDrive, History, Loader2, MessageSquarePlus, Send, Square, ThumbsDown, ThumbsUp, X } from "lucide-react";
+import { Link } from "react-router-dom";
+import { ArrowRight, ChevronLeft, HardDrive, History, Loader2, MessageSquarePlus, Send, Square, ThumbsDown, ThumbsUp, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useTranslation } from "@/i18n";
 import { advisorSystemPrompt } from "@/lib/advisor/persona";
@@ -14,6 +15,7 @@ import {
   buildChampionsBrief,
   buildMatchupTips,
   championNotes,
+  matchupNotes,
   buildItemAnswer,
   buildTagAnswer,
   buildMechanicsAnswer,
@@ -21,7 +23,10 @@ import {
   type AdvisorData,
 } from "@/lib/advisor/context";
 import {
+  FOCUS_LABEL,
   answerChampionIds,
+  answerKey,
+  answerLinks,
   asksComparison,
   asksMatchup,
   asksSkillsOverview,
@@ -31,6 +36,7 @@ import {
   buildSpellAnswer as buildSpellCard,
   detectSpellFocus,
   looksChampionDirected,
+  spellSummary,
   suggestChampions,
   type AdvisorAnswer,
 } from "@/lib/advisor/answer";
@@ -39,6 +45,7 @@ import { findMentionedRules } from "../../../../scripts/llm/lib/rules";
 import type { ChampionCard } from "../../../../scripts/llm/lib/facts";
 import { championIconUrl } from "@/data/assets/riotAssetUrls";
 import { usePageContext } from "@/hooks/usePageContext";
+import { ADVISOR_REFERENCE_WIDTH, advisorDrawerWidth, useWideViewport } from "@/hooks/useWideViewport";
 import { AdvisorAnswerCard } from "./AdvisorAnswerCard";
 import {
   SEARCH_QUERY_SYSTEM,
@@ -49,7 +56,7 @@ import {
   searchContext,
 } from "@/lib/advisor/searchFallback";
 import { detectChampions } from "@/lib/advisor/intent";
-import type { UseAdvisorResult } from "@/hooks/useAdvisor";
+import type { AdvisorTurn, UseAdvisorResult } from "@/hooks/useAdvisor";
 import type { UseAdvisorHistoryResult } from "@/hooks/useAdvisorHistory";
 import { AdvisorConsent } from "./AdvisorConsent";
 import { AdvisorHistory } from "./AdvisorHistory";
@@ -86,10 +93,15 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
   const [draft, setDraft] = useState("");
   // 동의 화면을 건너뛰고 코드 답변만으로 써 보는 상태
   const [skippedModel, setSkippedModel] = useState(false);
-  // 헤더 버튼으로 바꾸는 보조 화면. 저장 공간(모델 삭제) / 대화 기록(새 대화·열기·삭제)
-  const [view, setView] = useState<"chat" | "storage" | "history">("chat");
+  // 헤더 버튼으로 바꾸는 보조 화면. 저장 공간(모델 삭제) / 대화 기록(새 대화·열기·삭제) /
+  // 카드(좁은 화면에서 자료 칩을 눌렀을 때 카드를 덮어 보임)
+  const [view, setView] = useState<"chat" | "storage" | "history" | "card">("chat");
   const showStorage = view === "storage";
   const showHistory = view === "history";
+  // 넓은 화면(≥1280)이면 왼쪽에 자료 패널을 붙여 대화는 글로만 흐르게 한다(L1).
+  const wide = useWideViewport();
+  // 자료 패널이 보여 주는 답. 비우면 최신 답을 따라간다. 칩을 누르면 그 답에 고정된다.
+  const [refTurnId, setRefTurnId] = useState<number | undefined>(undefined);
   // 생성 중에 보내려 했는지. 조용히 먹히면 고장으로 보여서 한 줄 알린다.
   const [pressedWhileBusy, setPressedWhileBusy] = useState(false);
   // 지금 화면에 떠 있는 챔피언·탭. 이름을 생략한 질문과 빈 화면 예시가 여기에 기댄다.
@@ -119,6 +131,19 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
    * 카드는 코드가 0초에 그린다. 모델에게는 코드가 계산한 재료(백분위·계수·태그)를 주고
    * "왜 중요한가" 두세 문장만 시킨다. 수치는 카드에 있으니 모델이 숫자를 입에 담지 않는다.
    */
+  /** 상성 카드 + 내 챔피언 시점 해설. 재료는 사람이 검증한 지식 카드만. */
+  const deliverMatchup = (question: string, mine: ChampionCard, enemy: ChampionCard, notice?: string) => {
+    if (!data) return;
+    const answer = buildCompareCard([mine, enemy], question, undefined, { matchup: true, notes: matchupNotes(data, mine, enemy) });
+    const prompt = buildCommentaryPrompt(answer, patch);
+    if (canUseModel && advisor.consented && prompt) {
+      const tips = buildMatchupTips(data, mine, enemy);
+      advisor.sendWithAnswer(question, [advisorSystemPrompt(lang), tips, prompt].filter(Boolean).join("\n\n"), answer, notice);
+    } else {
+      advisor.answerWithoutModel(question, answer, notice);
+    }
+  };
+
   const deliver = (question: string, answer: AdvisorAnswer, notice?: string) => {
     const system = advisorSystemPrompt(lang);
     if (canUseModel && advisor.consented) {
@@ -194,18 +219,15 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
     if (champions.length === 1 && asksMatchup(question)) {
       const mine = recent.find((card) => card.id !== champions[0].id);
       if (mine) {
-        const pair = [mine, champions[0]];
-        const answer = buildCompareCard(pair, question, undefined, { matchup: true });
-        const prompt = buildCommentaryPrompt(answer, patch);
-        if (canUseModel && advisor.consented && prompt) {
-          // 상성 해설은 사람이 검증한 지식 카드(플레이북)를 재료로 더 준다.
-          const tips = buildMatchupTips(data, mine, champions[0]);
-          advisor.sendWithAnswer(question, [system, tips, prompt].filter(Boolean).join("\n\n"), answer, usedNotice);
-        } else {
-          advisor.answerWithoutModel(question, answer, usedNotice);
-        }
+        deliverMatchup(question, mine, champions[0], usedNotice);
         return;
       }
+    }
+    // "오공이랑 말파이트랑 싸우면 누가 유리해?" — 둘을 다 말했고 싸움을 묻는다. 먼저 말한
+    // 쪽이 내 챔피언이다. 능력치 비교표가 아니라 상성 카드와 시점 있는 해설, 그리고 VS 링크.
+    if (champions.length === 2 && asksMatchup(question)) {
+      deliverMatchup(question, champions[0], champions[1], usedNotice);
+      return;
     }
 
     // 4. 이름이 아예 없다. 아이템·게임 규칙 이름이면 그것이 답이다. 맥락 챔피언을 붙이기
@@ -379,6 +401,56 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
     : copy.placeholder;
   const lastAssistantId = [...advisor.turns].reverse().find((turn) => turn.role === "assistant")?.id;
 
+  // 자료 패널에 올릴 답. 카드로 그릴 만한 종류(스킬·챔피언·비교)만. 규칙은 짧아 대화 안에 둔다.
+  const isReference = (turn: AdvisorTurn): boolean =>
+    turn.role === "assistant" && !!turn.answer && (turn.answer.kind === "spell" || turn.answer.kind === "champion" || turn.answer.kind === "compare");
+  const referenceTurns = advisor.turns.filter(isReference);
+  const latestReference = referenceTurns[referenceTurns.length - 1];
+  const refTurn = referenceTurns.find((turn) => turn.id === refTurnId) ?? latestReference;
+  // 새 답이 오면 고정을 풀어 최신 답을 따라간다.
+  useEffect(() => {
+    setRefTurnId(undefined);
+  }, [lastAssistantId]);
+  const showReference = (turnId: number) => {
+    setRefTurnId(turnId);
+    if (!wide) setView("card");
+  };
+
+  const referenceTitle = (answer: AdvisorAnswer): { title: string; kind: string } => {
+    switch (answer.kind) {
+      case "spell":
+        return { title: `${answer.championName} · ${answer.spell.slot} ${answer.spell.name}`, kind: copy.card.spell };
+      case "champion":
+        return {
+          title: answer.card.name,
+          kind: answer.focus
+            ? `${copy.card.skills} · ${FOCUS_LABEL[answer.focus]}`
+            : answer.view === "skills"
+              ? copy.card.skills
+              : copy.card.champion,
+        };
+      case "compare":
+        return { title: answer.cards.map((card) => card.name).join(" vs "), kind: answer.matchup ? copy.card.matchupTool : copy.card.compare };
+      default:
+        return { title: "", kind: "" };
+    }
+  };
+
+  const linkLabel = (link: ReturnType<typeof answerLinks>[number]): string => {
+    switch (link.kind) {
+      case "vs":
+        return fill(copy.card.goVs, { a: link.names[0], b: link.names[1] });
+      case "vsOne":
+        return fill(copy.card.goVsOne, { name: link.name });
+      case "runes":
+        return copy.card.goRunes;
+      case "summoner":
+        return copy.card.goSummoner;
+    }
+  };
+
+  const drawerWidth = advisorDrawerWidth(wide);
+
   const percent =
     advisor.progress.totalBytes > 0
       ? Math.min(100, Math.round((advisor.progress.loadedBytes / advisor.progress.totalBytes) * 100))
@@ -388,8 +460,37 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
     <div
       role="dialog"
       aria-label={copy.title}
-      className="fixed inset-0 z-50 flex flex-col overflow-hidden bg-background shadow-2xl md:inset-y-0 md:left-auto md:right-0 md:w-[560px] md:border-l"
+      className="fixed inset-0 z-50 flex overflow-hidden bg-background shadow-2xl md:inset-y-0 md:left-auto md:right-0 md:w-[var(--drawer-w)] md:border-l"
+      style={{ "--drawer-w": `${drawerWidth}px` } as React.CSSProperties}
     >
+      {/*
+        자료 패널(L1). 대화는 오른쪽에 글로만 흐르고, 답의 카드는 여기 한 자리에서 갱신된다.
+        같은 오공 카드가 열 번 나와도 여기 하나다. 표를 보면서 다음 질문을 칠 수 있다.
+      */}
+      {wide && view === "chat" && (
+        <aside
+          className="hidden shrink-0 flex-col border-r bg-muted/30 md:flex"
+          style={{ width: `${ADVISOR_REFERENCE_WIDTH}px` }}
+        >
+          <div className="flex items-center gap-2 border-b px-3 py-3 text-xs">
+            <span className="font-semibold">{copy.card.reference}</span>
+            {refTurn?.answer && (
+              <span className="min-w-0 truncate text-muted-foreground">
+                {referenceTitle(refTurn.answer).title} · {referenceTitle(refTurn.answer).kind}
+              </span>
+            )}
+          </div>
+          <div className="flex-1 overflow-y-auto p-3">
+            {refTurn?.answer ? (
+              <AdvisorAnswerCard answer={refTurn.answer} ddragonVersion={ddragonVersion} patch={patch} onPickChampion={pickChampion} />
+            ) : (
+              <p className="text-xs text-muted-foreground">{copy.card.referenceEmpty}</p>
+            )}
+          </div>
+        </aside>
+      )}
+
+      <div className="flex min-w-0 flex-1 flex-col overflow-hidden">
       <header className="flex items-center justify-between border-b px-4 py-3">
         <div className="flex items-center gap-2">
           {view !== "chat" && (
@@ -398,7 +499,7 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
             </Button>
           )}
           <span className="text-sm font-semibold">
-            {showStorage ? copy.storage.title : showHistory ? copy.history.title : copy.title}
+            {showStorage ? copy.storage.title : showHistory ? copy.history.title : view === "card" ? copy.card.reference : copy.title}
           </span>
           {view === "chat" && advisor.status === "generating" && (
             <span className="flex items-center gap-1 text-xs text-muted-foreground">
@@ -436,6 +537,15 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
 
       {showStorage ? (
         <AdvisorStorage onDelete={advisor.deleteModel} />
+      ) : view === "card" ? (
+        // 좁은 화면에서 자료 칩을 눌렀을 때. 카드가 대화를 덮고, 뒤로 가면 대화다.
+        <div className="flex-1 overflow-y-auto p-4">
+          {refTurn?.answer ? (
+            <AdvisorAnswerCard answer={refTurn.answer} ddragonVersion={ddragonVersion} patch={patch} onPickChampion={pickChampion} />
+          ) : (
+            <p className="text-xs text-muted-foreground">{copy.card.referenceEmpty}</p>
+          )}
+        </div>
       ) : showHistory ? (
         <AdvisorHistory
           conversations={history.conversations}
@@ -533,7 +643,29 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
                 </div>
               </div>
             )}
-            {advisor.turns.map((turn) => (
+            {advisor.turns.map((turn, index) => {
+              // 직전 답과 같은 자료면 칩만 흐리게. "오공 Q 쿨, W 쿨" 은 카드 두 장이 아니다.
+              const previousAnswer = advisor.turns
+                .slice(0, index)
+                .reverse()
+                .find((entry) => entry.role === "assistant" && entry.answer)?.answer;
+              const sameAsPrevious =
+                Boolean(turn.answer && previousAnswer && answerKey(turn.answer) === answerKey(previousAnswer));
+              // 같은 챔피언을 이어 물으면 "VS 화면으로 이동" 이 답마다 붙는다. 직전 답에 있던 링크는 뺀다.
+              const previousLinkTargets = new Set(previousAnswer ? answerLinks(previousAnswer).map((link) => link.to) : []);
+              const links = turn.answer ? answerLinks(turn.answer).filter((link) => !previousLinkTargets.has(link.to)) : [];
+              const commentary = turn.content ? (
+                <div className="border-l-2 border-border pl-2.5 text-[13px] leading-relaxed">
+                  <span className="block text-[11px] text-muted-foreground">{copy.card.commentary}</span>
+                  <AdvisorMarkdown text={turn.content} />
+                </div>
+              ) : busy && turn.id === lastAssistantId ? (
+                <span className="flex items-center gap-2 pl-2.5 text-xs text-muted-foreground">
+                  <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                  {copy.card.commentaryPending}
+                </span>
+              ) : null;
+              return (
               <div
                 key={turn.id}
                 className={
@@ -545,10 +677,57 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
                 }
               >
                 {turn.notice && <p className="mb-1.5 text-[11px] text-muted-foreground">{turn.notice}</p>}
-                {turn.answer ? (
-                  // 카드가 먼저, 해설은 그 아래. 카드는 0초에 뜨고 해설은 그 밑에서 자라난다.
-                  // 처음엔 해설을 위에 두었는데(M3-A), 사실을 먼저 보고 해설을 읽는 쪽이 자연스럽다는
-                  // 피드백으로 바꿨다.
+                {turn.answer && isReference(turn) ? (
+                  // 카드는 자료 패널에 있다(L1). 대화에는 질문이 짚은 사실 한 줄, 해설, 자료 칩만.
+                  <div className="space-y-2">
+                    {turn.answer.kind === "spell" && turn.answer.headline && (
+                      <div className="border-l-2 border-foreground pl-2.5">
+                        <div className="text-[15px] font-semibold tabular-nums">{turn.answer.headline.value}</div>
+                        <div className="text-[11px] text-muted-foreground">
+                          {turn.answer.spell.slot} {turn.answer.spell.name} · {turn.answer.headline.label}
+                        </div>
+                      </div>
+                    )}
+                    {turn.answer.kind === "spell" && turn.answer.highlighted.length > 0 && (
+                      <div className="space-y-1 rounded-md bg-muted px-2.5 py-2 text-[13px] font-semibold leading-relaxed">
+                        {turn.answer.highlighted.map((sentence) => (
+                          <p key={sentence}>{sentence}</p>
+                        ))}
+                      </div>
+                    )}
+                    {turn.answer.kind === "spell" && !turn.answer.headline && turn.answer.highlighted.length === 0 && (
+                      // "W는?" 처럼 사실을 짚지 않았으면 스킬이 무엇을 하는지 한 줄. 표는 자료 패널에.
+                      <p className="text-[13px] leading-relaxed">{spellSummary(turn.answer.spell)}</p>
+                    )}
+                    {turn.answer.kind === "compare" && turn.answer.headline && (
+                      <div className="border-l-2 border-foreground pl-2.5">
+                        <div className="text-[15px] font-semibold tabular-nums">{turn.answer.headline.value}</div>
+                        <div className="text-[11px] text-muted-foreground">{turn.answer.headline.label}</div>
+                      </div>
+                    )}
+                    {commentary}
+                    <button
+                      type="button"
+                      onClick={() => showReference(turn.id)}
+                      aria-label={copy.card.openCard}
+                      className={`flex max-w-full items-center gap-2 rounded-md border px-2.5 py-1.5 text-left text-xs hover:bg-muted ${
+                        wide && refTurn?.id === turn.id ? "border-primary bg-primary/5" : "bg-background"
+                      } ${sameAsPrevious ? "text-muted-foreground" : ""}`}
+                    >
+                      <span className="flex shrink-0 -space-x-1.5">
+                        {answerChampionIds(turn.answer).slice(0, 2).map((id) => (
+                          <img key={id} src={championIconUrl(ddragonVersion, id)} alt="" width={18} height={18} className="h-[18px] w-[18px] rounded ring-1 ring-background" />
+                        ))}
+                      </span>
+                      <span className="truncate font-medium">{referenceTitle(turn.answer).title}</span>
+                      <span className="shrink-0 text-muted-foreground">
+                        {sameAsPrevious ? copy.card.sameReference : referenceTitle(turn.answer).kind}
+                      </span>
+                      <ArrowRight className="h-3 w-3 shrink-0 text-primary" />
+                    </button>
+                  </div>
+                ) : turn.answer ? (
+                  // 규칙·오타 후보·글은 짧아서 대화 안에 그대로 둔다.
                   <div className="space-y-2">
                     <AdvisorAnswerCard
                       answer={turn.answer}
@@ -556,17 +735,7 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
                       patch={patch}
                       onPickChampion={pickChampion}
                     />
-                    {turn.content ? (
-                      <div className="border-l-2 border-border pl-2.5 text-[13px] leading-relaxed">
-                        <span className="block text-[11px] text-muted-foreground">{copy.card.commentary}</span>
-                        <AdvisorMarkdown text={turn.content} />
-                      </div>
-                    ) : busy && turn.id === lastAssistantId ? (
-                      <span className="flex items-center gap-2 pl-2.5 text-xs text-muted-foreground">
-                        <Loader2 className="h-3.5 w-3.5 animate-spin" />
-                        {copy.card.commentaryPending}
-                      </span>
-                    ) : null}
+                    {commentary}
                   </div>
                 ) : turn.content ? (
                   turn.role === "assistant" ? (
@@ -599,6 +768,21 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
                       <span key={source} className="rounded bg-background px-1.5 py-0.5">
                         {source}
                       </span>
+                    ))}
+                  </div>
+                )}
+                {/* 바로 가기. 답의 개체를 코드가 알고 있으니 링크도 코드가 만든다. */}
+                {turn.role === "assistant" && links.length > 0 && (
+                  <div className="mt-2 flex flex-wrap gap-1.5">
+                    {links.map((link) => (
+                      <Link
+                        key={link.to}
+                        to={link.to}
+                        className="inline-flex items-center gap-1 rounded-md border border-primary/40 px-2.5 py-1 text-xs font-medium text-primary hover:bg-primary/5"
+                      >
+                        {linkLabel(link)}
+                        <ArrowRight className="h-3 w-3" />
+                      </Link>
                     ))}
                   </div>
                 )}
@@ -639,7 +823,8 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
                   </div>
                 )}
               </div>
-            ))}
+              );
+            })}
             {advisor.error && (
               <p className="text-destructive">
                 {copy.errorPrefix}: {advisor.error}
@@ -678,6 +863,7 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
           </footer>
         </>
       )}
+      </div>
     </div>
   );
 }

@@ -110,6 +110,26 @@ export function AdvisorAnswerCard({ answer, ddragonVersion, patch, onPickChampio
   const { t } = useTranslation();
   const copy = t.advisor.card;
 
+  // 운용 노트는 한 건이 문단이다. 둘씩만 펼치고 나머지는 접는다 — 표가 주인공이다.
+  const NOTES_OPEN = 2;
+  const noteItems = (items: string[]) =>
+    items.map((note) => (
+      <li key={note} className="flex gap-1.5">
+        <span className="select-none text-muted-foreground">·</span>
+        <span>{note}</span>
+      </li>
+    ));
+  const noteList = (items: string[]) => (
+    <>
+      <ul className="space-y-1.5 text-[13px] leading-relaxed">{noteItems(items.slice(0, NOTES_OPEN))}</ul>
+      {items.length > NOTES_OPEN && (
+        <Disclosure summary={fill(copy.moreNotes, { count: items.length - NOTES_OPEN })}>
+          <ul className="space-y-1.5 text-[13px]">{noteItems(items.slice(NOTES_OPEN))}</ul>
+        </Disclosure>
+      )}
+    </>
+  );
+
   if (answer.kind === "text") {
     return <AdvisorMarkdown text={answer.text} />;
   }
@@ -233,25 +253,6 @@ export function AdvisorAnswerCard({ answer, ddragonVersion, patch, onPickChampio
     }));
     const notes = answer.notes;
     const hasNotes = Boolean(notes && (notes.playing.length || notes.against.length));
-    // 노트는 한 건이 문단이다. 둘씩만 펼치고 나머지는 접는다 — 표가 주인공이다.
-    const NOTES_OPEN = 2;
-    const noteItems = (items: string[]) =>
-      items.map((note) => (
-        <li key={note} className="flex gap-1.5">
-          <span className="select-none text-muted-foreground">·</span>
-          <span>{note}</span>
-        </li>
-      ));
-    const noteList = (items: string[]) => (
-      <>
-        <ul className="space-y-1.5 text-[13px] leading-relaxed">{noteItems(items.slice(0, NOTES_OPEN))}</ul>
-        {items.length > NOTES_OPEN && (
-          <Disclosure summary={fill(copy.moreNotes, { count: items.length - NOTES_OPEN })}>
-            <ul className="space-y-1.5 text-[13px]">{noteItems(items.slice(NOTES_OPEN))}</ul>
-          </Disclosure>
-        )}
-      </>
-    );
     return (
       <Frame
         icon={header}
@@ -390,6 +391,24 @@ export function AdvisorAnswerCard({ answer, ddragonVersion, patch, onPickChampio
             })}
           </tbody>
         </table>
+        {/* 상성 노트. "누가 유리해" 의 실전 답은 능력치 표가 아니라 여기 있다. */}
+        {answer.matchup && second && answer.notes && (answer.notes.mine.length > 0 || answer.notes.enemy.length > 0) && (
+          <div className="mt-3 space-y-2.5 border-t pt-2.5">
+            {answer.notes.enemy.length > 0 && (
+              <div>
+                <div className="mb-1 text-[11px] font-medium text-muted-foreground">{fill(copy.againstNotes, { name: second.name })}</div>
+                {noteList(answer.notes.enemy)}
+              </div>
+            )}
+            {answer.notes.mine.length > 0 && (
+              <div>
+                <div className="mb-1 text-[11px] font-medium text-muted-foreground">{fill(copy.playingNotes, { name: first.name })}</div>
+                {noteList(answer.notes.mine)}
+              </div>
+            )}
+            <div className="text-[11px] text-muted-foreground">{copy.notesSource}</div>
+          </div>
+        )}
       </Frame>
     );
   }

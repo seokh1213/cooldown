@@ -3,6 +3,7 @@ import Sidebar from "./Sidebar";
 import { AdvisorWidget } from "@/components/features/advisor/AdvisorWidget";
 import { SidebarRail, SidebarInset } from "@/components/ui/sidebar";
 import { useDeviceType } from "@/hooks/useDeviceType";
+import { advisorDrawerWidth, useWideViewport } from "@/hooks/useWideViewport";
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -13,15 +14,13 @@ interface LayoutProps {
   ddragonVersion?: string;
 }
 
-/** 도우미 드로어 폭. 카드가 표 문법으로 들어가려면 이만큼은 필요하다. */
-export const ADVISOR_DRAWER_WIDTH = 560;
-
 function Layout({ children, nav, patch, ddragonVersion }: LayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   // 도우미가 열려 있으면 페이지를 옆으로 밀어 둘이 나란히 보이게 한다.
   // 위에 띄우면 쿨타임 표를 보면서 물을 수 없다 — 답이 표를 가린다.
   const [advisorOpen, setAdvisorOpen] = useState(false);
   const deviceType = useDeviceType();
+  const wide = useWideViewport();
 
   const toggleSidebar = useCallback(() => {
     setSidebarOpen((prev) => !prev);
@@ -51,7 +50,7 @@ function Layout({ children, nav, patch, ddragonVersion }: LayoutProps) {
         style={{
           marginLeft: deviceType === "mobile" ? "0" : "4rem", // 모바일에서는 0, PC/태블릿에서는 64px
           // 모바일은 드로어가 전체 화면이라 밀 것이 없다.
-          marginRight: deviceType !== "mobile" && advisorOpen ? `${ADVISOR_DRAWER_WIDTH}px` : "0",
+          marginRight: deviceType !== "mobile" && advisorOpen ? `${advisorDrawerWidth(wide)}px` : "0",
         }}
       >
         {/* Navigation bar */}

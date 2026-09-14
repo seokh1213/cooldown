@@ -83,6 +83,8 @@ export type AdvisorAnswer =
       headline?: Fact;
       /** 상성 질문. cards[0] 이 내 챔피언, cards[1] 이 상대다. 해설이 그 시점으로 쓴다. */
       matchup?: boolean;
+      /** 상성 노트. 내 챔피언을 잡을 때(이 상대 한정 우선) / 상대를 상대할 때. 사람이 검증. */
+      notes?: { mine: string[]; enemy: string[] };
     }
   | { kind: "text"; text: string };
 
@@ -301,6 +303,8 @@ export function suggestChampions(
     // 의도 어휘("스킬", "쿨타임", "체력"…)는 이름이 아니다. "스킬" 이 줄임말 "스카"(스카너) 와
     // 거리 1 이라 후보로 잡혔다.
     if (INTENT_WORD.test(token) || FOCUS_LEXICON.some(([, pattern]) => pattern.test(token))) continue;
+    // 그 자체가 이름이면 오타가 아니다. "오공 Q 쿨타임" 의 오공이 오른·오리아나 후보로 잡혔다.
+    if (names.some(([name]) => name === token)) continue;
     const found = new Map<string, ChampionCard>();
     for (const [name, card] of names) {
       if (known.has(card.id)) continue;
@@ -332,7 +336,7 @@ export function asksComparison(question: string, championCount: number): boolean
  * 상성을 묻는가. "제이스랑 상대한다 생각하면", "럼블 만나면 어떻게 해?".
  * 대화에서 방금 다룬 챔피언이 있으면 그가 내 챔피언, 새로 나온 이름이 상대다.
  */
-const MATCHUP = /상대|맞상대|맞붙|라인전|만나면|만났을|만날\s*때|카운터|어떻게\s*(해야|하지|해\b|되|풀)|이길|\bvs\b/i;
+const MATCHUP = /상대|맞상대|맞붙|라인전|만나면|만났을|만날\s*때|카운터|어떻게\s*(해야|하지|해\b|되|풀)|이길|이겨|이기|싸우|붙으면|붙었|유리|불리|\bvs\b/i;
 
 export function asksMatchup(question: string): boolean {
   return MATCHUP.test(question);
@@ -359,6 +363,57 @@ const CHAMPION_DIRECTED = /설명|스킬|능력치|스탯|상대|어때|어떤|�
 
 export function looksChampionDirected(question: string, slot?: string): boolean {
   return Boolean(slot) || CHAMPION_DIRECTED.test(question);
+}
+
+/**
+ * 답에서 바로 갈 수 있는 화면.
+ *
+ * 링크는 모델이 아니라 코드가 만든다. 코드는 답의 개체(챔피언 id·규칙 종류)를 이미 알고
+ * 있고, 모델에게 맡기면 없는 id 를 지어낸다. 상성·비교 답은 VS 화면, 챔피언은 그 챔피언의
+ * VS 화면, 룬·소환사 주문 규칙은 백과사전의 그 탭이다.
+ */
+export type AnswerLink =
+  | { kind: "vs"; to: string; names: [string, string] }
+  | { kind: "vsOne"; to: string; name: string }
+  | { kind: "runes" | "summoner"; to: string };
+
+export function answerLinks(answer: AdvisorAnswer): AnswerLink[] {
+  switch (answer.kind) {
+    case "compare": {
+      const [a, b] = answer.cards;
+      if (!b) return [{ kind: "vsOne", to: `/vs?a=${a.id}`, name: a.name }];
+      return [{ kind: "vs", to: `/vs?a=${a.id}&t=${b.id}`, names: [a.name, b.name] }];
+    }
+    case "champion":
+      return [{ kind: "vsOne", to: `/vs?a=${answer.card.id}`, name: answer.card.name }];
+    case "spell":
+      return [{ kind: "vsOne", to: `/vs?a=${answer.championId}`, name: answer.championName }];
+    case "rule":
+      if (answer.rule.subject === "rune") return [{ kind: "runes", to: "/encyclopedia?tab=runes" }];
+      if (answer.rule.subject === "summoner") return [{ kind: "summoner", to: "/encyclopedia?tab=summoner" }];
+      return [];
+    default:
+      return [];
+  }
+}
+
+/**
+ * 답의 자료가 같은지 가리는 열쇠. 같은 열쇠의 카드가 직전 답에 있으면 다시 그리지 않는다.
+ * "오공 Q 쿨, W 쿨, E 쿨" 은 카드 세 장이 아니라 헤드라인 세 줄이어야 한다.
+ */
+export function answerKey(answer: AdvisorAnswer): string {
+  switch (answer.kind) {
+    case "spell":
+      return `spell:${answer.championId}:${answer.spell.slot}`;
+    case "champion":
+      return `champion:${answer.card.id}:${answer.view ?? ""}:${answer.focus ?? ""}`;
+    case "compare":
+      return `compare:${answer.cards.map((card) => card.id).join(",")}:${answer.slot ?? ""}:${answer.matchup ? "m" : ""}`;
+    case "rule":
+      return `rule:${answer.rule.name}`;
+    default:
+      return answer.kind;
+  }
 }
 
 /** 답이 다룬 챔피언. 다음 질문이 이름을 생략하면 이들이 맥락이다. */
@@ -450,12 +505,14 @@ export function buildCompareAnswer(
   cards: ChampionCard[],
   question: string,
   slot?: string,
-  options: { matchup?: boolean } = {},
+  options: { matchup?: boolean; notes?: { mine: string[]; enemy: string[] } } = {},
 ): AdvisorAnswer {
   if (options.matchup) {
-    // 상성은 능력치 표 위에 해설. 사실 하나를 짚은 헤드라인은 두지 않는다.
+    // 상성은 능력치 표 + 상성 노트 위에 해설. 사실 하나를 짚은 헤드라인은 두지 않는다.
     const base = buildCompareAnswer(cards, question);
-    return base.kind === "compare" ? { ...base, headline: undefined, rows: base.rows.map((row) => ({ ...row, hit: false })), matchup: true } : base;
+    return base.kind === "compare"
+      ? { ...base, headline: undefined, rows: base.rows.map((row) => ({ ...row, hit: false })), matchup: true, notes: options.notes }
+      : base;
   }
   if (slot) {
     const spells = cards.map((card) => card.spells.find((spell) => spell.slot === slot));

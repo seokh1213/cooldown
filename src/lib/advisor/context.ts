@@ -296,6 +296,12 @@ export function buildMatchupTips(data: AdvisorData, me: ChampionCard, enemy: Cha
   return `[지식 카드 — 사람이 검증한 내용입니다. 이 표현을 따르십시오]\n${playbookToText(trimmed, me.name, enemy.name, data.patch)}`;
 }
 
+/** 상성 카드에 그대로 보일 노트. 해설 재료(buildMatchupTips)와 같은 것을 고른다. */
+export function matchupNotes(data: AdvisorData, me: ChampionCard, enemy: ChampionCard): { mine: string[]; enemy: string[] } {
+  const selected = selectPlaybook(data.playbooks, me, enemy);
+  return { mine: selected.mine.slice(0, 3).map((entry) => entry.text), enemy: selected.vsEnemy.slice(0, 3).map((entry) => entry.text) };
+}
+
 /**
  * 챔피언 카드에 얹을 운용 노트. 사람이 검증한 플레이북에서 고른다.
  *

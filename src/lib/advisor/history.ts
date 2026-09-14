@@ -43,6 +43,7 @@ export type StoredAnswer =
       rows: CompareRow[];
       headline?: Fact;
       matchup?: boolean;
+      notes?: { mine: string[]; enemy: string[] };
     }
   | { kind: "text"; text: string };
 
@@ -98,6 +99,7 @@ export function dehydrateAnswer(answer: AdvisorAnswer): StoredAnswer {
         rows: answer.rows,
         headline: answer.headline,
         matchup: answer.matchup,
+        notes: answer.notes,
       };
     case "text":
       return { kind: "text", text: answer.text };
@@ -147,6 +149,7 @@ export function reviveAnswer(stored: StoredAnswer, data: AdvisorData): AdvisorAn
         rows: stored.rows,
         headline: stored.headline,
         matchup: stored.matchup,
+        notes: stored.notes,
       };
     }
     case "text":
