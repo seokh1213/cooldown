@@ -640,7 +640,7 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
             </span>
           )}
         </div>
-        {view === "chat" && (
+        {view === "chat" && !showingConsent && (
           <div className="flex items-center gap-1">
             {/*
               자료. 넓은 화면에서는 왼쪽 패널을 접고 펴고, 좁은 화면에서는 카드 화면을 연다.
@@ -676,7 +676,7 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
             </Button>
           </div>
         )}
-        {view !== "chat" && (
+        {(view !== "chat" || showingConsent) && (
           <Button variant="ghost" size="icon" onClick={onClose} aria-label={copy.close}>
             <X className="h-4 w-4" />
           </Button>
