@@ -1,5 +1,6 @@
 import React, { useState, useCallback } from "react";
 import Sidebar from "./Sidebar";
+import { LegalFooter } from "./LegalFooter";
 import { SidebarRail, SidebarInset } from "@/components/ui/sidebar";
 import { useDeviceType } from "@/hooks/useDeviceType";
 
@@ -61,6 +62,9 @@ function Layout({ children, nav }: LayoutProps) {
         >
           {children}
         </main>
+
+        {/* 라이엇 고지는 모든 화면에 보여야 한다. main 밖에 두어 본문 스크롤 끝에 붙인다. */}
+        <LegalFooter />
       </SidebarInset>
     </div>
   );
