@@ -381,6 +381,12 @@ export interface Translations {
       fromChat: string;
       /** 화면에 둘이 있는데 누구 것인지 모를 때 */
       whichOne: string;
+      /** 운용 노트 제목. {name}를 잡을 때 / 상대할 때 */
+      playingNotes: string;
+      againstNotes: string;
+      notesSource: string;
+      /** 노트 {count}건 더 */
+      moreNotes: string;
       /** 빈 화면 예시. 특정 사례가 아니라 질문의 종류다. 화면 맥락에 따라 고른다 */
       examples: {
         skillCd: string;

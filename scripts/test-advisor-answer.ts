@@ -14,6 +14,7 @@ import {
   answerChampionIds,
   asksComparison,
   asksMatchup,
+  asksSkillsOverview,
   buildCompareAnswer,
   looksChampionDirected,
   spellFocusValue,
@@ -231,6 +232,22 @@ assert.equal(detectSpellFocus("럼블 E 뭐야"), undefined, "사실을 안 짚�
     const prompt = buildCommentaryPrompt(matchup, "26.18") ?? "";
     assert.match(prompt, /말파이트를 잡고 제이스를 상대/, "내 챔피언 시점으로 쓰라고 한다");
   }
+
+  // "스킬 설명해줘" 는 스킬 요약 화면이다. 운용 노트가 재료로 들어가고, 일반론은 금지한다.
+  assert.ok(asksSkillsOverview("말아피트 스킬 설명도 해줘"));
+  assert.ok(asksSkillsOverview("스킬 뭐 있어"));
+  assert.ok(!asksSkillsOverview("말파이트 스킬 쿨타임"), "쿨타임은 사실 조회지 설명이 아니다");
+  const skills: AdvisorAnswer = {
+    kind: "champion",
+    card: card("Malphite"),
+    view: "skills",
+    notes: { playing: ["화강암 방패는 피해를 받지 않는 시간이 쌓여야 다시 생긴다."], against: ["R은 저지 불가라 끊을 수 없다."] },
+  };
+  const skillsPrompt = buildCommentaryPrompt(skills, "26.18") ?? "";
+  assert.match(skillsPrompt, /화강암 방패는 피해를 받지 않는/, "운용 노트가 재료다");
+  assert.match(skillsPrompt, /R 멈출 수 없는 힘: /, "스킬 요약이 재료다");
+  assert.match(skillsPrompt, /어느 챔피언에나 맞는 말은 쓰지 마십시오/);
+  assert.match(skillsPrompt, /가장 조심할 것 하나/);
 
   // 슬롯 없이 사실 하나: 스킬 다섯 개의 그 사실. 해설은 없다.
   const focused: ReturnType<typeof buildCompareAnswer> = { kind: "champion", card: card("Rumble"), focus: "cooldown" };

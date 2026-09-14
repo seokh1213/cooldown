@@ -296,6 +296,32 @@ export function buildMatchupTips(data: AdvisorData, me: ChampionCard, enemy: Cha
   return `[지식 카드 — 사람이 검증한 내용입니다. 이 표현을 따르십시오]\n${playbookToText(trimmed, me.name, enemy.name, data.patch)}`;
 }
 
+/**
+ * 챔피언 카드에 얹을 운용 노트. 사람이 검증한 플레이북에서 고른다.
+ *
+ * 카드의 수치·태그만으로 해설을 시키면 "생존력이 뛰어나다", "압박이 중요하다" 같은 어느
+ * 챔피언에나 맞는 말이 나왔다. 실전에 쓸 말은 여기 있다 — "R 은 저지 불가라 CC 로 끊을
+ * 수 없다", "방패를 먼저 깨고 콤보를 시작해야 한다". 카드가 그대로 보이고, 모델은 이것을
+ * 재료로 우선순위만 정한다.
+ */
+export function championNotes(data: AdvisorData, card: ChampionCard): { playing: string[]; against: string[] } {
+  const book = data.playbooks.get(card.id);
+  if (!book) return { playing: [], against: [] };
+  // 스킬 운용·콤보·라인전이 먼저. 룬·아이템 추천은 다른 질문의 답이다.
+  const order = ["skill", "combo", "laning", "phase", "teamfight"];
+  const rank = (category: string) => {
+    const index = order.indexOf(category);
+    return index === -1 ? order.length : index;
+  };
+  const pick = (entries: { category: string; text: string }[], count: number) =>
+    entries
+      .filter((entry) => order.includes(entry.category))
+      .sort((a, b) => rank(a.category) - rank(b.category))
+      .slice(0, count)
+      .map((entry) => entry.text);
+  return { playing: pick(book.playing, 4), against: pick(book.against, 3) };
+}
+
 export function buildChampionAnswer(data: AdvisorData, card: ChampionCard): string {
   const parts: string[] = [championCardToText(card, { includeSpellText: true, spellTextMax: 600 })];
 

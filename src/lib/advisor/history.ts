@@ -26,7 +26,13 @@ export type StoredAnswer =
       facts: Fact[];
       highlighted: string[];
     }
-  | { kind: "champion"; cardId: string; focus?: SpellFocus }
+  | {
+      kind: "champion";
+      cardId: string;
+      focus?: SpellFocus;
+      view?: "skills";
+      notes?: { playing: string[]; against: string[] };
+    }
   | { kind: "rule"; ruleName: string; highlighted: string[]; rest: string[] }
   | { kind: "suggestion"; original: string; candidateIds: string[]; reason?: "typo" | "ambiguous" }
   | {
@@ -73,7 +79,7 @@ export function dehydrateAnswer(answer: AdvisorAnswer): StoredAnswer {
         highlighted: answer.highlighted,
       };
     case "champion":
-      return { kind: "champion", cardId: answer.card.id, focus: answer.focus };
+      return { kind: "champion", cardId: answer.card.id, focus: answer.focus, view: answer.view, notes: answer.notes };
     case "rule":
       return { kind: "rule", ruleName: answer.rule.name, highlighted: answer.highlighted, rest: answer.rest };
     case "suggestion":
@@ -118,7 +124,7 @@ export function reviveAnswer(stored: StoredAnswer, data: AdvisorData): AdvisorAn
     }
     case "champion": {
       const card = data.cardById.get(stored.cardId);
-      return card ? { kind: "champion", card, focus: stored.focus } : undefined;
+      return card ? { kind: "champion", card, focus: stored.focus, view: stored.view, notes: stored.notes } : undefined;
     }
     case "rule": {
       const rule = data.ruleIndex.get(stored.ruleName);

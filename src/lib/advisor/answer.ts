@@ -45,6 +45,10 @@ export type AdvisorAnswer =
       card: ChampionCard;
       /** "말파이트 스킬 쿨타임" 처럼 슬롯 없이 사실 하나를 물으면 스킬 다섯 개의 그 사실만 */
       focus?: SpellFocus;
+      /** "스킬 설명해줘": 능력치 대신 스킬 다섯 개의 요약 */
+      view?: "skills";
+      /** 사람이 검증한 운용 노트. 잡을 때 / 상대할 때. */
+      notes?: { playing: string[]; against: string[] };
     }
   | {
       kind: "rule";
@@ -334,6 +338,18 @@ export function asksMatchup(question: string): boolean {
   return MATCHUP.test(question);
 }
 
+/** 스킬 전체를 설명해 달라는가. "스킬 설명해줘", "스킬 뭐 있어", "스킬 알려줘". */
+const SKILLS_OVERVIEW = /스킬(들|은|이|도)?\s*(설명|알려|소개|정리|뭐|무엇|어떤|있)/;
+
+export function asksSkillsOverview(question: string): boolean {
+  return SKILLS_OVERVIEW.test(question);
+}
+
+/** 스킬 한 줄 요약. 요약이 없으면 본문 첫 문장. */
+export function spellSummary(spell: SpellFact): string {
+  return spell.summary ?? splitSentences(spell.text)[0] ?? "";
+}
+
 /**
  * 챔피언을 겨냥한 질문으로 보이는가. 이름은 없지만 "W 쿨타임", "설명해줘", "스킬 계수" 처럼
  * 챔피언이 있어야 답이 되는 질문. 대화·화면 맥락의 챔피언을 붙여도 되는지 가른다.
@@ -575,6 +591,9 @@ export function buildCommentaryPrompt(answer: AdvisorAnswer, patch: string): str
     "[요청] 위 자료만 근거로 두세 문장으로 설명하십시오.",
     "- 수치를 쓰지 마십시오. 수치는 이미 화면에 표로 있습니다. \"매우 낮다\", \"높은 편이다\" 처럼 정도로만 말하십시오.",
     "- 자료에 없는 아이템·룬·스킬 이름을 만들지 마십시오.",
+    // 재료가 백분위·태그뿐일 때 "생존력이 뛰어나다", "압박하는 것이 중요하다" 가 나왔다.
+    // 어느 챔피언에나 맞는 말은 답이 아니다. 문장마다 스킬이나 효과를 짚게 한다.
+    "- 어느 챔피언에나 맞는 말은 쓰지 마십시오(\"생존력이 뛰어나다\", \"압박하는 것이 중요하다\", \"주의해야 한다\"). 문장마다 스킬 이름이나 효과 이름을 하나 이상 넣으십시오.",
     "- 합니다체로, 인사말 없이 바로 본문만 쓰십시오.",
   ];
 
@@ -591,11 +610,24 @@ export function buildCommentaryPrompt(answer: AdvisorAnswer, patch: string): str
       const { side, value } = percentileLabel(snap.percentileLv1);
       lines.push(`- ${STAT_LABEL[stat]}: 1레벨 기준 전체 챔피언 중 ${side === "top" ? "상위" : "하위"} ${value}% (${snap.gradeLv1})`);
     }
-    if (card.mechanics.length) lines.push(`- 보유 효과: ${card.mechanics.join(", ")}`);
+    if (answer.view === "skills") {
+      lines.push("[스킬]");
+      for (const spell of card.spells) lines.push(`- ${spell.slot} ${spell.name}: ${spellSummary(spell)}`);
+    } else if (card.mechanics.length) {
+      lines.push(`- 보유 효과: ${card.mechanics.join(", ")}`);
+    }
+    const notes = answer.notes;
+    if (notes && (notes.playing.length || notes.against.length)) {
+      lines.push("[운용 노트 — 사람이 검증한 내용입니다. 이 표현을 따르십시오]");
+      for (const note of notes.playing) lines.push(`- 잡을 때: ${note}`);
+      for (const note of notes.against) lines.push(`- 상대할 때: ${note}`);
+    }
     lines.push(
       "",
       ...rules,
-      "- 이 챔피언을 처음 상대하거나 처음 잡는 사람에게 무엇이 중요한지, 위의 극단적인 능력치와 피해 유형이 라인전에서 어떤 뜻인지 말하십시오.",
+      notes && (notes.playing.length || notes.against.length)
+        ? "- 노트는 화면에 그대로 보입니다. 옮겨 쓰지 말고 우선순위를 정하십시오: 처음 상대하는 사람이 가장 조심할 것 하나, 처음 잡는 사람이 가장 먼저 익힐 것 하나. 각각 어느 스킬 때문인지 말하십시오."
+        : "- 이 챔피언을 처음 상대하거나 처음 잡는 사람에게 어느 스킬이 왜 중요한지 말하십시오.",
     );
     return lines.join("\n");
   }

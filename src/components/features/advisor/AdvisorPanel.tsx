@@ -13,6 +13,7 @@ import { AdvisorMarkdown } from "./AdvisorMarkdown";
 import {
   buildChampionsBrief,
   buildMatchupTips,
+  championNotes,
   buildItemAnswer,
   buildTagAnswer,
   buildMechanicsAnswer,
@@ -23,6 +24,7 @@ import {
   answerChampionIds,
   asksComparison,
   asksMatchup,
+  asksSkillsOverview,
   buildCommentaryPrompt,
   buildCompareAnswer as buildCompareCard,
   buildRuleAnswer as buildRuleCard,
@@ -276,9 +278,18 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
           advisor.answerWithoutModel(question, tagAnswer, usedNotice);
           return;
         }
+        // "말파이트 스킬 설명해줘": 스킬 다섯 개의 요약 + 운용 노트. 능력치 표는 뺀다.
+        if (asksSkillsOverview(question)) {
+          deliver(question, { kind: "champion", card, view: "skills", notes: championNotes(data, card) }, usedNotice);
+          return;
+        }
         // "말파이트 스킬 쿨타임": 슬롯 없이 사실 하나를 물으면 스킬 다섯 개의 그 사실을 표로.
         const focus = detectSpellFocus(question)?.focus;
-        deliver(question, { kind: "champion", card, focus: focus && focus !== "damage" ? focus : undefined }, usedNotice);
+        if (focus && focus !== "damage") {
+          deliver(question, { kind: "champion", card, focus }, usedNotice);
+          return;
+        }
+        deliver(question, { kind: "champion", card, notes: championNotes(data, card) }, usedNotice);
         return;
       }
       advisor.send(question, `${system}\n\n${buildChampionsBrief(data, champions)}`, undefined, copy.noModel);
