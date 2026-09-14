@@ -378,6 +378,7 @@ export const enUSTranslations: Translations = {
     },
     sources: "Retrieved",
     placeholder: "e.g. How do I play Wukong into Rumble?",
+    busyHint: "Still answering. Send when it finishes, or stop with ■.",
     send: "Send",
     stop: "Stop",
     reset: "Clear chat",

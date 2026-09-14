@@ -376,6 +376,8 @@ export interface Translations {
      */
     sources: string;
     placeholder: string;
+    /** 생성 중에 Enter 를 눌렀을 때. 조용히 먹히면 고장으로 보인다 */
+    busyHint: string;
     send: string;
     stop: string;
     reset: string;

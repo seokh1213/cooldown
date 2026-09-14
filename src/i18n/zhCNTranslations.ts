@@ -364,6 +364,7 @@ export const zhCNTranslations: Translations = {
     },
     sources: "已找到",
     placeholder: "例如：点燃会给征服者叠层吗？",
+    busyHint: "正在生成回答。完成后再发送，或按 ■ 停止。",
     send: "发送",
     stop: "停止",
     reset: "清空对话",

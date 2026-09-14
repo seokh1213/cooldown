@@ -85,7 +85,7 @@ function buildNicknames(cards: ChampionCard[]): Map<string, ChampionCard> {
 
 let nicknameCache: { cards: ChampionCard[]; map: Map<string, ChampionCard> } | null = null;
 
-function nicknames(cards: ChampionCard[]): Map<string, ChampionCard> {
+export function nicknames(cards: ChampionCard[]): Map<string, ChampionCard> {
   if (nicknameCache?.cards !== cards) {
     nicknameCache = { cards, map: buildNicknames(cards) };
   }

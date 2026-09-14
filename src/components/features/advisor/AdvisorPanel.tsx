@@ -64,6 +64,8 @@ export function AdvisorPanel({ advisor, patch, canUseModel, onClose }: AdvisorPa
   const [skippedModel, setSkippedModel] = useState(false);
   // 내려받은 모델을 보고 지우는 화면
   const [showStorage, setShowStorage] = useState(false);
+  // 생성 중에 보내려 했는지. 조용히 먹히면 고장으로 보여서 한 줄 알린다.
+  const [pressedWhileBusy, setPressedWhileBusy] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
 
   // 챔피언 자료는 모델과 별개로 받는다. 모델이 준비되기 전에 미리 받아 둔다.
@@ -104,7 +106,12 @@ export function AdvisorPanel({ advisor, patch, canUseModel, onClose }: AdvisorPa
    */
   const submit = () => {
     const question = draft.trim();
-    if (busy || !question) return;
+    if (!question) return;
+    if (busy) {
+      setPressedWhileBusy(true);
+      return;
+    }
+    setPressedWhileBusy(false);
     const system = advisorSystemPrompt(lang);
 
     if (data) {
@@ -407,7 +414,11 @@ export function AdvisorPanel({ advisor, patch, canUseModel, onClose }: AdvisorPa
             )}
           </div>
 
-          <footer className="flex items-end gap-2 border-t p-3">
+          <footer className="flex flex-col gap-1.5 border-t p-3">
+            {pressedWhileBusy && busy && (
+              <p className="px-1 text-[11px] leading-4 text-muted-foreground">{copy.busyHint}</p>
+            )}
+            <div className="flex items-end gap-2">
             <textarea
               value={draft}
               onChange={(event) => setDraft(event.target.value)}
@@ -430,6 +441,7 @@ export function AdvisorPanel({ advisor, patch, canUseModel, onClose }: AdvisorPa
                 <Send className="h-4 w-4" />
               </Button>
             )}
+            </div>
           </footer>
         </>
       )}
