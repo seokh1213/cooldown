@@ -165,6 +165,8 @@ export function useTabManagement({
     tabs,
     setTabs,
     tabsRef,
+    /** 저장소 복원이 끝났는가 */
+    hasRestored,
     selectedTabId,
     setSelectedTabId,
     showVsSelector,

@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Champion } from "@/types";
 import { arrayMove } from "@dnd-kit/sortable";
@@ -58,6 +58,7 @@ export default function ChampionCooldownPage({
   const {
     tabs,
     tabsRef,
+    hasRestored: tabsRestored,
     selectedTabId,
     setSelectedTabId,
     showVsSelector,
@@ -80,6 +81,7 @@ export default function ChampionCooldownPage({
   const {
     selectedChampions,
     setSelectedChampions,
+    hasRestored: championsRestored,
     championsWithFullInfo,
     normalTabChampions,
     addChampionToList,
@@ -103,6 +105,16 @@ export default function ChampionCooldownPage({
     selectedTabId,
     keys: COOLDOWN_STORAGE_KEYS,
   });
+
+  // 상태가 바뀌면 저장한다. 복원이 끝난 뒤에만 — 그 전에는 빈 목록이라 저장된 것을 지운다.
+  //
+  // 예전에는 선택 모달이 닫힐 때만 저장했다. 그 콜백은 닫히는 순간의 옛 상태를 들고 있어
+  // 방금 추가한 챔피언이 빠졌고, X 로 지우거나 순서를 바꾼 것은 저장되지 않았다.
+  // 배포 페이지에서 새로 고치면 처음 저장된 오공만 남던 원인이다.
+  useEffect(() => {
+    if (!championsRestored || !tabsRestored) return;
+    persistCooldownState();
+  }, [championsRestored, tabsRestored, persistCooldownState]);
 
   const sensors = useChampionDragSensors();
 
@@ -292,17 +304,9 @@ export default function ChampionCooldownPage({
           championList={championList}
           selectedChampions={normalTabChampions}
           onSelect={addChampion}
-          onClose={() => {
-            setShowSelector(false);
-            persistCooldownState();
-          }}
+          onClose={() => setShowSelector(false)}
           open={showSelector}
-          onOpenChange={(open) => {
-            setShowSelector(open);
-            if (!open) {
-              persistCooldownState();
-            }
-          }}
+          onOpenChange={setShowSelector}
         />
       )}
 
@@ -317,14 +321,10 @@ export default function ChampionCooldownPage({
         onClose={() => {
           setShowVsSelector(false);
           setVsSelectorMode(null);
-          persistCooldownState();
         }}
         onOpenChange={(open) => {
           setShowVsSelector(open);
-          if (!open) {
-            setVsSelectorMode(null);
-            persistCooldownState();
-          }
+          if (!open) setVsSelectorMode(null);
         }}
       />
 

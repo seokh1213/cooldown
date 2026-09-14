@@ -245,6 +245,8 @@ export function useChampionData({
   return {
     selectedChampions,
     setSelectedChampions,
+    /** 저장소 복원이 끝났는가. 그 전에 저장하면 빈 목록으로 덮어쓴다. */
+    hasRestored,
     championsWithFullInfo,
     normalTabChampions,
     addChampionToList,
