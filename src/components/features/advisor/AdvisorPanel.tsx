@@ -489,8 +489,6 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
     switch (link.kind) {
       case "vs":
         return fill(copy.card.goVs, { a: link.names[0], b: link.names[1] });
-      case "vsOne":
-        return fill(copy.card.goVsOne, { name: link.name });
       case "runes":
         return copy.card.goRunes;
       case "summoner":

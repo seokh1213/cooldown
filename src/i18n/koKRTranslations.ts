@@ -403,7 +403,6 @@ export const koKRTranslations: Translations = {
       sameReference: "같은 자료",
       openCard: "자료 보기",
       goVs: "{a} vs {b} 화면으로 이동",
-      goVsOne: "{name} VS 화면으로 이동",
       goRunes: "룬 백과에서 보기",
       goSummoner: "소환사 주문 백과에서 보기",
       goItem: "{name} 아이템 백과에서 보기",

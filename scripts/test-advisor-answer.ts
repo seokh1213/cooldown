@@ -225,6 +225,9 @@ assert.equal(detectSpellFocus("럼블 E 뭐야"), undefined, "사실을 안 짚�
     const links = answerLinks(buildCompareAnswer([card("MonkeyKing"), card("Malphite")], "누가 유리해", undefined, { matchup: true }));
     assert.deepEqual(links, [{ kind: "vs", to: "/vs?a=MonkeyKing&t=Malphite", names: ["오공", "말파이트"] }]);
     assert.deepEqual(answerLinks(buildRuleAnswer(ruleOf("점화"), ["정복자", "점화"])), [{ kind: "summoner", to: "/encyclopedia?tab=summoner" }]);
+    // 챔피언 하나·스킬 하나의 답에는 대화 링크가 없다. 답마다 "VS 화면으로 이동" 이 붙어 어지러웠다.
+    assert.deepEqual(answerLinks({ kind: "champion", card: card("MonkeyKing") }), []);
+    assert.deepEqual(answerLinks(buildSpellAnswer(card("MonkeyKing"), spellOf("MonkeyKing", "Q"), "Q 쿨")), []);
     assert.deepEqual(answerLinks({ kind: "item", itemId: "3161", itemName: "쇼진의 창", text: "…" }), [
       { kind: "item", to: "/encyclopedia?tab=items&item=3161", name: "쇼진의 창" },
     ]);
