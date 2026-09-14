@@ -52,6 +52,9 @@ export interface ChampionAbility {
   /** 상세 설명 (HTML) */
   bodyHtml?: string;
   cooldownSeconds?: number[];
+  /** 충전형 스킬의 재충전 시간·최대 충전 수. 이때 cooldownSeconds 는 연속 시전 간격이다. */
+  rechargeSeconds?: number[];
+  maxCharges?: number;
   cost?: AbilityCostInfo;
   range?: number[];
   rankValues?: Array<{ label: string; values: string }>;

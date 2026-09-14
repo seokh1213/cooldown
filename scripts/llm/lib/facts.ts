@@ -64,6 +64,9 @@ export interface SpellFact {
   cooldown?: string;
   /** 1레벨(첫 랭크) 쿨타임 초 — 교전 창 계산용 */
   cooldownRank1?: number;
+  /** 충전형 스킬의 재충전 시간. 이때 cooldown 은 연속 시전 간격(보통 0.5초)이다. */
+  recharge?: string;
+  maxCharges?: number;
   cost?: string;
   damageTypes: DamageType[];
   effects: string[];
@@ -261,6 +264,8 @@ export function createChampionCardBuilder(
         text,
         cooldown: formatLevels(ability.cooldownSeconds),
         cooldownRank1: ability.cooldownSeconds?.[0],
+        recharge: formatLevels(ability.rechargeSeconds),
+        maxCharges: ability.maxCharges,
         cost: formatLevels(ability.cost?.values),
         damageTypes: detectDamageTypes(text),
         // 이동기와 돌진은 규칙표로 잡지 않는다.
@@ -433,7 +438,8 @@ export function championCardToText(card: ChampionCard, opts: CardTextOptions = {
   lines.push("스킬:");
   for (const sp of card.spells) {
     const meta: string[] = [];
-    if (sp.cooldown) meta.push(`쿨 ${sp.cooldown}초`);
+    if (sp.recharge) meta.push(`재충전 ${sp.recharge}초${sp.maxCharges ? ` (${sp.maxCharges}회 충전)` : ""}`);
+    else if (sp.cooldown) meta.push(`쿨 ${sp.cooldown}초`);
     if (sp.cost && sp.cost !== "0") meta.push(`비용 ${sp.cost}`);
     if (sp.damageTypes.length) meta.push(`${sp.damageTypes.join("+")} 피해`);
     const ratioText = Object.entries(sp.ratios)

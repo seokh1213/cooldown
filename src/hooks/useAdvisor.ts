@@ -14,6 +14,7 @@ import {
   type WebGpuSupport,
 } from "@/lib/advisor/config";
 import { deleteModelCache } from "@/lib/advisor/storage";
+import type { AdvisorAnswer } from "@/lib/advisor/answer";
 import type {
   AdvisorChatMessage,
   AdvisorFileProgress,
@@ -53,6 +54,13 @@ export interface AdvisorTurn extends AdvisorChatMessage {
    * 맞는지 가릴 수 없다. 틀린 자료를 물어 온 경우에도 그 사실이 드러나야 한다.
    */
   sources?: string[];
+  /**
+   * 코드가 만든 구조화된 답. 화면이 종류별 카드로 그린다.
+   * 이것이 있으면 `content` 는 카드 위에 놓이는 모델 해설이다.
+   */
+  answer?: AdvisorAnswer;
+  /** 답 위에 작게 붙는 알림. "럼블로 이해했습니다" 같은 것. */
+  notice?: string;
 }
 
 /**
@@ -126,7 +134,12 @@ export interface UseAdvisorResult {
    */
   sendMatchup: (question: string, decided: string, sections: AdvisorChatMessage[][]) => void;
   /** 모델 없이 코드가 만든 답을 그대로 보여 준다. 동의 전이나 WebGPU 가 없을 때 쓴다. */
-  answerWithoutModel: (question: string, answer: string) => void;
+  answerWithoutModel: (question: string, answer: string | AdvisorAnswer, notice?: string) => void;
+  /**
+   * 카드는 지금, 해설은 나중에.
+   * 구조화된 답을 먼저 얹고 모델에게 해설만 만들게 한다. 해설은 카드 위에 스트리밍된다.
+   */
+  sendWithAnswer: (question: string, system: string, answer: AdvisorAnswer, notice?: string) => void;
   /** 도구를 주고 여러 번 오간다. 복합 질문에만 쓴다. */
   sendWithTools: (
     question: string,
@@ -597,14 +610,48 @@ export function useAdvisor(): UseAdvisorResult {
    * 코드 전용 답변은 평가에서 적중 63/66 으로 모델(64/66)과 거의 같았다.
    * 3GB 를 받지 않은 사용자에게도 이 답은 줄 수 있어야 한다.
    */
-  const answerWithoutModel = useCallback((question: string, answer: string) => {
-    setError(null);
-    setTurns((prev) => [
-      ...prev,
-      { id: nextId.current++, role: "user", content: question },
-      { id: nextId.current++, role: "assistant", content: answer },
-    ]);
-  }, []);
+  const answerWithoutModel = useCallback(
+    (question: string, answer: string | AdvisorAnswer, notice?: string) => {
+      setError(null);
+      const reply: AdvisorTurn =
+        typeof answer === "string"
+          ? { id: nextId.current++, role: "assistant", content: answer, notice }
+          : { id: nextId.current++, role: "assistant", content: "", answer, notice };
+      setTurns((prev) => [...prev, { id: nextId.current++, role: "user", content: question }, reply]);
+    },
+    [],
+  );
+
+  /**
+   * 카드는 0초에, 해설은 그 위에서 자라난다.
+   *
+   * 자료를 통째로 모델에게 넘겨 받아 적게 하면 잘리고 빠뜨린다(럼블 2,654자).
+   * 대신 코드가 만든 카드를 먼저 얹고, 모델에게는 "왜 중요한가" 두세 문장만 시킨다.
+   * 수치는 카드에 있으니 모델이 숫자를 입에 담을 일이 없다.
+   */
+  const sendWithAnswer = useCallback(
+    (question: string, system: string, answer: AdvisorAnswer, notice?: string) => {
+      const trimmed = question.trim();
+      if (!trimmed) return;
+      const userId = nextId.current++;
+      const replyId = nextId.current++;
+      setError(null);
+      setStatus("generating");
+      setTurns((prev) => [
+        ...prev,
+        { id: userId, role: "user", content: trimmed },
+        { id: replyId, role: "assistant", content: "", answer, notice },
+      ]);
+      post({
+        type: "generate",
+        id: replyId,
+        model,
+        system,
+        messages: [{ role: "user", content: trimmed }],
+      });
+    },
+    [post, model],
+  );
 
   const rate = useCallback((turnId: number, rating: "up" | "down", patch: string) => {
     setTurns((prev) => {
@@ -687,6 +734,7 @@ export function useAdvisor(): UseAdvisorResult {
     send,
     sendMatchup,
     answerWithoutModel,
+    sendWithAnswer,
     sendWithTools,
     sendWithSearch,
     rate,

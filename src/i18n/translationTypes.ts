@@ -347,6 +347,53 @@ export interface Translations {
     noModel: string;
     /** 이 기기에서는 모델을 권하지 않는다는 안내 */
     modelUnavailable: string;
+    /** 코드가 만든 답을 그리는 카드 */
+    card: {
+      spell: string;
+      champion: string;
+      rule: string;
+      patch: string;
+      openInVs: string;
+      fullText: string;
+      restRules: string;
+      verdictYes: string;
+      verdictNo: string;
+      ruleSource: string;
+      understoodAs: string;
+      fromScreen: string;
+      suggestPrefix: string;
+      suggestSuffix: string;
+      viewing: string;
+      comparing: string;
+      askAbout: string;
+      commentary: string;
+      commentaryPending: string;
+      top: string;
+      bottom: string;
+      stats: string;
+      skills: string;
+      compare: string;
+      atLevel: string;
+      /** 빈 화면 예시 질문. 화면 맥락에 따라 고른다 */
+      examples: {
+        spellCd: string;
+        counterBuy: string;
+        ultRange: string;
+        explain: string;
+        vsWho: string;
+        vsBuy: string;
+        item1: string;
+        item2: string;
+        rune1: string;
+        rune2: string;
+        summoner1: string;
+        summoner2: string;
+        generic1: string;
+        generic2: string;
+        generic3: string;
+        generic4: string;
+      };
+    };
     /** 내려받은 모델을 보고 지우는 화면 */
     storage: {
       title: string;

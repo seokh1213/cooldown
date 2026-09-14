@@ -180,7 +180,7 @@ export function findChampion(data: AdvisorData, query: string): ChampionCard | u
  *
  * 영어 낱말 속 알파벳에 걸리지 않도록 슬롯 문자는 앞뒤가 한글이거나 경계일 때만 센다.
  */
-function detectSlot(question: string): string | undefined {
+export function detectSlot(question: string): string | undefined {
   if (/패시브|기본\s?지속/.test(question)) return "P";
   // 한글에는 \b 가 듣지 않는다. "가렌 궁 뭐야" 를 놓쳤다.
   if (/궁극기|궁(?=[\s을은이의로]|$)/.test(question)) return "R";
