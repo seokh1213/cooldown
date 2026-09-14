@@ -1,23 +1,13 @@
 /**
  * 브라우저 상성 코치 설정
  *
- * 모델은 로컬 평가에서 고른 것을 그대로 쓴다. 추론만 Ollama 로 돌리고 프롬프트는
- * 브라우저와 같은 `buildCommentaryPrompt` 를 쓰므로 결과가 그대로 이전된다.
+ * 모델은 로컬 평가에서 고른 것을 그대로 쓴다. 10개 매치업 평가에서
+ * gemma4:e2b 가 적중 64/66, 스킬 소유자 오류 0, 매치업당 16초로
+ * 더 큰 e4b(65/66, 33초)와 품질 차이가 적으면서 두 배 빨랐다.
+ * 브라우저에서는 체감 지연이 품질보다 크게 작용하므로 E2B 를 택했다.
  *
- * 해설 26문항 평가(챔피언 25 + 스킬 1). 세 가지를 센다 — 숫자를 안 썼나(수치는
- * 카드에 있다), 재료 안에서 말했나, 합니다체를 지켰나.
- *
- *   모델                점수     tok/s   자/초   q4f16   평균 길이
- *   gemma4:e2b (구)    69/78     68.4    110    3.38GB   120자
- *   exaone3.5:2.4b     77/78     75.3    151    1.73GB   194자
- *   qwen3:4b-instruct  78/78     49.4     67    2.09GB   116자
- *   gemma4:12b         78/78     18.5     30       —      96자
- *
- * 자/초는 tok/s 를 토크나이저의 한국어 밀도로 나눈 값이다. 같은 tok/s 라도
- * 한국어를 잘게 쪼개는 모델은 화면에 글자가 늦게 찍힌다.
- *
- * 쓰던 gemma4:e2b 가 26문항 중 9번 백분위 숫자를 그대로 베꼈다. "수치를 쓰지
- * 말라" 는 지시를 세 번에 한 번꼴로 어긴 셈인데, 3문항 평가로는 안 보였다.
+ * `onnx-community/gemma-4-E2B-it-ONNX` 는 구글 공식 가중치의 ONNX 변환이고
+ * Ollama 의 `gemma4:e2b` 와 같은 모델이다. 그래서 로컬 평가 결과가 그대로 이전된다.
  */
 
 export interface AdvisorModel {
@@ -35,21 +25,14 @@ export interface AdvisorModel {
 /**
  * 실제로 쓰는 모델.
  *
- * 26문항에서 유일하게 만점(78/78)이었다. gemma4:12b 도 만점이지만 자/초가
- * 30 이고 브라우저에 올릴 크기가 아니다.
- *
- * 작은 모델로 내려간 것이 아니다. 유효 2.3B 에서 4B 로 올라가면서 내려받기는
- * 3.38GB 에서 2.09GB 로 줄었다. gemma 는 vocab 이 262,144 개라 임베딩 표에만
- * 1.59GB 를 쓰는데 그중 한글이 든 토큰이 1.7% 였다. Qwen3 는 그 표를 따로 싣지
- * 않아 단일 2.09GB 파일 하나다.
- *
- * 대가는 속도다. 한국어를 자당 0.74토큰으로 쪼개 gemma(0.62)보다 잘게 나눈다.
- * 자/초로는 110 에서 67 로 떨어진다. 두세 문장이면 3초 남짓이라 받아들일 값으로 봤다.
+ * 로컬 평가 10개 매치업에서 gemma4:e2b 가 적중 64/66, 스킬 소유자 오류 0,
+ * 매치업당 16초였다. 더 큰 e4b(65/66, 33초)와 품질 차이가 적으면서 두 배 빨라 이쪽을 골랐다.
+ * ONNX 변환본은 Ollama 의 `gemma4:e2b` 와 같은 가중치라 평가 결과가 그대로 이전된다.
  */
 export const ADVISOR_MODEL: AdvisorModel = {
-  id: "onnx-community/Qwen3-4B-Instruct-2507-ONNX",
+  id: "onnx-community/gemma-4-E2B-it-ONNX",
   dtype: "q4f16",
-  downloadMb: 2090,
+  downloadMb: 2970,
 };
 
 /**
@@ -65,15 +48,20 @@ export const SMOKE_MODEL: AdvisorModel = {
 };
 
 /**
- * 속도를 사고 싶을 때의 대안. `?advisorModel=exaone`
+ * 바꿔 달아 보려는 후보. 기본값이 아니라 재보기 위한 자리다.
  *
- * 77/78 로 기본값과 한 문항 차이인데 자/초는 151 로 두 배 넘게 빠르다. vocab
- * 102,400 중 한글 토큰이 33.3% 라 한국어를 자당 0.50토큰으로 쪼갠다. 후보 중
- * 가장 촘촘하다. 내려받기도 1.73GB 로 가장 작다.
+ * 지금 쓰는 Gemma 4 E2B 는 2.97GB 인데 그중 임베딩 테이블이 1.59GB 다. vocab 이
+ * 262,144 개이고 그중 한글이 든 토큰은 1.7% 뿐이다. 디코더보다 큰 표를 싣고
+ * 다니면서 한국어 몫은 그 정도다. 게다가 Gemma 3n·4 계열은 한국어 벤치마크
+ * 점수를 공표한 적이 없어, 지금 한국어 실력은 근거 없이 믿고 있는 상태다.
  *
- * 기본값으로 올리지 않은 이유는 길이다. 평균 194자로 다른 후보(116·120자)보다
- * 눈에 띄게 길고, 두세 문장을 넘겨 네 문장까지 간다. 해설은 카드 옆에 붙는
- * 곁글이라 길면 카드를 밀어낸다. 속도가 아쉬우면 이쪽으로 바꿔 끼운다.
+ * EXAONE 3.5 는 vocab 102,400 중 한글 토큰이 33.3% 고 LogicKor 8.51 이다.
+ * 용량은 1.73GB 로 절반 가까이 준다. 같은 문장을 더 적은 토큰으로 쓰므로
+ * 체감 속도도 같이 오를 것으로 본다.
+ *
+ * 다만 변환 시점이 2025-03 이라 transformers.js v4 의 어텐션 융합 이전 export 다.
+ * **적재는 되어도 WebGPU 가속 경로를 못 타 오히려 느릴 수 있다.** 그것만 재면
+ * 결론이 나므로 기본값을 바꾸지 않고 스위치로만 둔다.
  */
 export const EXAONE_MODEL: AdvisorModel = {
   id: "onnx-community/EXAONE-3.5-2.4B-Instruct",
@@ -82,21 +70,21 @@ export const EXAONE_MODEL: AdvisorModel = {
 };
 
 /**
- * 쓰던 모델. `?advisorModel=gemma`
+ * 품질 하한을 재보는 자리.
  *
- * 되돌릴 자리를 남겨 둔다. 새 기본값이 브라우저에서 문제를 내면 주소 한 줄로
- * 예전 동작으로 돌아간다.
+ * 모델은 해설 두세 문장과 검색어만 쓰고 수치는 입에 담지 못한다. 그렇다면
+ * 어디까지 작아져도 되는지가 실제 질문이다. 0.47GB 는 지금의 6분의 1 이다.
  */
-export const GEMMA_MODEL: AdvisorModel = {
-  id: "onnx-community/gemma-4-E2B-it-ONNX",
+export const TINY_MODEL: AdvisorModel = {
+  id: "onnx-community/Qwen3.5-0.8B-Text-ONNX",
   dtype: "q4f16",
-  downloadMb: 3380,
+  downloadMb: 470,
 };
 
 const SWAPPABLE: Record<string, AdvisorModel> = {
   smoke: SMOKE_MODEL,
   exaone: EXAONE_MODEL,
-  gemma: GEMMA_MODEL,
+  tiny: TINY_MODEL,
 };
 
 export function resolveModel(): AdvisorModel {
@@ -119,8 +107,8 @@ export function resolveModel(): AdvisorModel {
  * 상한은 **모델이 스스로 멈추지 않을 때만** 작동한다. 보통 답은 종료 토큰에서
  * 끝나므로 올려도 평소 속도는 그대로고, 길어야 할 답만 살아남는다.
  *
- * 값은 걸리는 시간으로 정했다. 같은 가중치를 Ollama(Metal)에서 재니 49.4 tok/s 였고
- * 브라우저 WebGPU 는 그보다 느리다. 1800 이면 로컬에서 36초, 브라우저에서 넉넉잡아
+ * 값은 걸리는 시간으로 정했다. 같은 가중치를 Ollama(Metal)에서 재니 66.8 tok/s 였고
+ * 브라우저 WebGPU 는 그보다 느리다. 1800 이면 로컬에서 27초, 브라우저에서 넉넉잡아
  * 2분 안쪽이다. 그 이상은 기다림이 답보다 커진다. 더 길어지면 중단 버튼이 있다.
  */
 export const MAX_NEW_TOKENS = 1800;
