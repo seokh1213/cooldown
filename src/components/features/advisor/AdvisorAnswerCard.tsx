@@ -12,7 +12,7 @@
  */
 import { Link } from "react-router-dom";
 import { useTranslation } from "@/i18n";
-import { championIconUrl } from "@/data/assets/riotAssetUrls";
+import { championIconUrl, itemIconUrl } from "@/data/assets/riotAssetUrls";
 import {
   CARD_STATS,
   FOCUS_LABEL,
@@ -132,8 +132,68 @@ export function AdvisorAnswerCard({ answer, ddragonVersion, patch, onPickChampio
     </>
   );
 
-  if (answer.kind === "text" || answer.kind === "item") {
+  if (answer.kind === "text") {
     return <AdvisorMarkdown text={answer.text} />;
+  }
+
+  if (answer.kind === "item") {
+    return (
+      <Frame
+        icon={
+          <img
+            src={itemIconUrl(ddragonVersion, answer.itemId)}
+            alt=""
+            width={36}
+            height={36}
+            className="h-9 w-9 shrink-0 rounded-md"
+          />
+        }
+        title={answer.itemName}
+        subtitle={answer.price ? fill(copy.itemPrice, { price: answer.price.toLocaleString() }) : undefined}
+        tool={copy.item}
+        footer={
+          <>
+            <span>{fill(copy.patch, { patch })}</span>
+            <Link
+              to={`/encyclopedia?tab=items&item=${encodeURIComponent(answer.itemId)}`}
+              onClick={onNavigate}
+              className="text-primary hover:underline"
+            >
+              {copy.openInItems}
+            </Link>
+          </>
+        }
+      >
+        {answer.stats.length > 0 && (
+          <>
+            <div className="mb-1 text-[11px] font-medium text-muted-foreground">{copy.itemStats}</div>
+            <KvTable rows={answer.stats.map((stat) => ({ label: stat.label, value: stat.value }))} />
+          </>
+        )}
+        {answer.effects.length > 0 && (
+          <>
+            <div className={`mb-1 text-[11px] font-medium text-muted-foreground ${answer.stats.length ? "mt-3" : ""}`}>
+              {copy.itemEffects}
+            </div>
+            <ul className="divide-y">
+              {answer.effects.map((effect) => (
+                <li key={`${effect.name}${effect.text}`} className="py-1.5 text-[13px] leading-relaxed">
+                  {effect.name && (
+                    <span className="font-semibold">
+                      {effect.name}
+                      <span className="ml-1.5 rounded-full border px-1.5 py-px text-[10px] font-normal text-muted-foreground">
+                        {effect.active ? copy.itemActive : copy.itemPassive}
+                      </span>
+                    </span>
+                  )}
+                  {effect.text && <p className={effect.name ? "mt-0.5" : ""}>{effect.text}</p>}
+                </li>
+              ))}
+            </ul>
+          </>
+        )}
+      </Frame>
+    );
   }
 
   if (answer.kind === "suggestion") {

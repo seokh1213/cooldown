@@ -87,13 +87,36 @@ export type AdvisorAnswer =
       notes?: { mine: string[]; enemy: string[] };
     }
   | {
-      /** 아이템 설명. 글이지만 개체(id)를 들고 있어 백과사전 링크를 만들 수 있다. */
+      /**
+       * 아이템. 설명문을 통째로 던지지 않고 능력치·효과로 갈라 둔다.
+       * 카드는 자료 패널이 그리고, 대화에는 효과 이름과 설명만 나간다.
+       */
       kind: "item";
       itemId: string;
       itemName: string;
-      text: string;
+      /** 총 가격 */
+      price?: number;
+      /** 공격력 45, 체력 450 … */
+      stats: Fact[];
+      effects: ItemEffect[];
+      /** "둔화 있어?" 처럼 효과 낱말을 물었을 때의 예/아니오. 있으면 이것이 곧 답이다. */
+      verdicts: ItemVerdict[];
     }
   | { kind: "text"; text: string };
+
+export interface ItemEffect {
+  name: string;
+  /** 사용 시 효과인가. 기본 지속과 운용이 다르므로 갈라 보인다. */
+  active: boolean;
+  text: string;
+}
+
+export interface ItemVerdict {
+  tag: string;
+  yes: boolean;
+  /** 설명문에서 그 낱말이 나온 문장. 근거 없이 예/아니오만 내지 않는다. */
+  evidence?: string;
+}
 
 export interface CompareRow {
   label: string;
@@ -359,6 +382,15 @@ export function asksSkillsOverview(question: string): boolean {
 /** 스킬 한 줄 요약. 요약이 없으면 본문 첫 문장. */
 export function spellSummary(spell: SpellFact): string {
   return spell.summary ?? splitSentences(spell.text)[0] ?? "";
+}
+
+/**
+ * 아이템 답의 머리글. 효과 이름을 잇고, 없으면 능력치를 잇는다.
+ * "쇼진의 창 효과" 에 대화가 먼저 내놓는 한 줄이다.
+ */
+export function itemHeadline(answer: Extract<AdvisorAnswer, { kind: "item" }>): string {
+  if (answer.effects.length) return answer.effects.map((effect) => effect.name).join(" · ");
+  return answer.stats.map((stat) => `${stat.label} ${stat.value}`).join(" · ");
 }
 
 /**
