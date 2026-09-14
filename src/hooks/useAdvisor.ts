@@ -166,6 +166,8 @@ export interface UseAdvisorResult {
   deleteModel: () => Promise<void>;
   stop: () => void;
   reset: () => void;
+  /** 저장된 대화를 통째로 올린다. id 가 겹치지 않게 다음 id 를 그 뒤로 옮긴다. */
+  replaceTurns: (turns: AdvisorTurn[]) => void;
 }
 
 function readConsent(): boolean {
@@ -696,6 +698,13 @@ export function useAdvisor(): UseAdvisorResult {
     setError(null);
   }, []);
 
+  const replaceTurns = useCallback((next: AdvisorTurn[]) => {
+    const maxId = next.reduce((max, turn) => Math.max(max, turn.id), 0);
+    if (maxId >= nextId.current) nextId.current = maxId + 1;
+    setTurns(next);
+    setError(null);
+  }, []);
+
   /**
    * 내려받은 모델을 삭제한다.
    *
@@ -741,5 +750,6 @@ export function useAdvisor(): UseAdvisorResult {
     deleteModel,
     stop,
     reset,
+    replaceTurns,
   };
 }

@@ -8,7 +8,7 @@ import assert from "node:assert/strict";
 import * as fs from "node:fs";
 import * as path from "node:path";
 import type { ChampionCard, SpellFact } from "./llm/lib/facts";
-import type { RuleNotes } from "./llm/lib/rules";
+import { indexRules, type RuleNotes } from "./llm/lib/rules";
 import { PUBLIC_DATA_ROOT, resolvePatchVersion } from "./llm/lib/data";
 import {
   answerChampionIds,
@@ -30,6 +30,9 @@ import {
 } from "../src/lib/advisor/answer";
 import { readPageContext } from "../src/lib/advisor/pageContext";
 import { nicknames } from "../src/lib/advisor/intent";
+import { dehydrateAnswer, reviveAnswer, reviveTurns, type StoredAnswer, type StoredTurn } from "../src/lib/advisor/history";
+import type { AdvisorAnswer } from "../src/lib/advisor/answer";
+import type { AdvisorData } from "../src/lib/advisor/context";
 
 const patch = resolvePatchVersion();
 const llmDir = path.join(PUBLIC_DATA_ROOT, patch, "llm");
@@ -234,6 +237,36 @@ assert.equal(detectSpellFocus("럼블 E 뭐야"), undefined, "사실을 안 짚�
   assert.equal(buildCommentaryPrompt(focused, "26.18"), undefined);
   assert.equal(spellFocusValue(spellOf("Rumble", "E"), "cooldown"), "6초 · 2회 충전 · 연속 시전 0.5초");
   assert.equal(spellFocusValue(spellOf("Malphite", "Q"), "ratio"), "주문력 60%");
+}
+
+// ── 대화 기록: 카드는 id 로 저장하고 자료에서 되살린다 ─────────────────────
+{
+  const data = { cardById: new Map(cards.map((c) => [c.id, c])), ruleIndex: indexRules(rules) } as unknown as AdvisorData;
+  const answers: AdvisorAnswer[] = [
+    buildSpellAnswer(card("Rumble"), spellOf("Rumble", "E"), "럼블 E 마저 몇 깎여?"),
+    { kind: "champion", card: card("Malphite"), focus: "cooldown" },
+    buildRuleAnswer(ruleOf("점화"), ["정복자", "점화"]),
+    buildCompareAnswer([card("Malphite"), card("Jayce")], "누가 더 세?", undefined, { matchup: true }),
+    { kind: "suggestion", original: "럼미", candidates: [card("Rumble"), card("Nami")], reason: "typo" },
+    { kind: "text", text: "그냥 글" },
+  ];
+  for (const answer of answers) {
+    const stored = dehydrateAnswer(answer);
+    const json = JSON.stringify(stored);
+    assert.ok(!json.includes('"spells"'), `${answer.kind}: 카드 통째로 저장하면 안 된다`);
+    const revived = reviveAnswer(JSON.parse(json) as StoredAnswer, data);
+    assert.ok(revived, `${answer.kind}: 되살려야 한다`);
+    assert.deepEqual(answerChampionIds(revived!), answerChampionIds(answer), `${answer.kind}: 챔피언이 같아야 한다`);
+    assert.equal(revived!.kind, answer.kind);
+  }
+  // 자료에서 사라진 챔피언은 답과 그 질문을 함께 버린다.
+  const gone: StoredTurn[] = [
+    { id: 1, role: "user", content: "없는애 설명" },
+    { id: 2, role: "assistant", content: "", answer: { kind: "champion", cardId: "NoSuchChampion" } },
+    { id: 3, role: "user", content: "럼블 설명" },
+    { id: 4, role: "assistant", content: "해설", answer: { kind: "champion", cardId: "Rumble" } },
+  ];
+  assert.deepEqual(reviveTurns(gone, data).map((t) => t.id), [3, 4]);
 }
 
 // ── 예/아니오 배지: 극성이 분명할 때만 ───────────────────────────────────

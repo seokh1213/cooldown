@@ -5,7 +5,7 @@
  * 모델 적재는 수십 초가 걸리므로 진행률을 파일 합계로 계속 보여 준다.
  */
 import { useEffect, useRef, useState } from "react";
-import { ChevronLeft, HardDrive, Loader2, Send, Square, ThumbsDown, ThumbsUp, Trash2, X } from "lucide-react";
+import { ChevronLeft, HardDrive, History, Loader2, MessageSquarePlus, Send, Square, ThumbsDown, ThumbsUp, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useTranslation } from "@/i18n";
 import { advisorSystemPrompt } from "@/lib/advisor/persona";
@@ -17,7 +17,6 @@ import {
   buildTagAnswer,
   buildMechanicsAnswer,
   detectSlot,
-  loadAdvisorData,
   type AdvisorData,
 } from "@/lib/advisor/context";
 import {
@@ -49,11 +48,16 @@ import {
 } from "@/lib/advisor/searchFallback";
 import { detectChampions } from "@/lib/advisor/intent";
 import type { UseAdvisorResult } from "@/hooks/useAdvisor";
+import type { UseAdvisorHistoryResult } from "@/hooks/useAdvisorHistory";
 import { AdvisorConsent } from "./AdvisorConsent";
+import { AdvisorHistory } from "./AdvisorHistory";
 import { AdvisorStorage } from "./AdvisorStorage";
 
 interface AdvisorPanelProps {
   advisor: UseAdvisorResult;
+  /** 챔피언·규칙 자료. 위젯이 받아 둔다. 아직 없으면 모델만으로 답한다. */
+  data: AdvisorData | null;
+  history: UseAdvisorHistoryResult;
   patch: string;
   /** 카드의 챔피언 아이콘용 */
   ddragonVersion: string;
@@ -74,15 +78,16 @@ function fill(template: string, values: Record<string, string | number>): string
   return template.replace(/\{(\w+)\}/g, (_, key: string) => String(values[key] ?? ""));
 }
 
-export function AdvisorPanel({ advisor, patch, ddragonVersion, canUseModel, onClose }: AdvisorPanelProps) {
+export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, canUseModel, onClose }: AdvisorPanelProps) {
   const { t, lang } = useTranslation();
   const copy = t.advisor;
   const [draft, setDraft] = useState("");
-  const [data, setData] = useState<AdvisorData | null>(null);
   // 동의 화면을 건너뛰고 코드 답변만으로 써 보는 상태
   const [skippedModel, setSkippedModel] = useState(false);
-  // 내려받은 모델을 보고 지우는 화면
-  const [showStorage, setShowStorage] = useState(false);
+  // 헤더 버튼으로 바꾸는 보조 화면. 저장 공간(모델 삭제) / 대화 기록(새 대화·열기·삭제)
+  const [view, setView] = useState<"chat" | "storage" | "history">("chat");
+  const showStorage = view === "storage";
+  const showHistory = view === "history";
   // 생성 중에 보내려 했는지. 조용히 먹히면 고장으로 보여서 한 줄 알린다.
   const [pressedWhileBusy, setPressedWhileBusy] = useState(false);
   // 지금 화면에 떠 있는 챔피언·탭. 이름을 생략한 질문과 빈 화면 예시가 여기에 기댄다.
@@ -90,21 +95,6 @@ export function AdvisorPanel({ advisor, patch, ddragonVersion, canUseModel, onCl
   // 오타 후보를 물었을 때의 원래 질문. 고르면 그 말만 바꿔 다시 묻는다.
   const pendingQuestion = useRef<string>("");
   const scrollRef = useRef<HTMLDivElement>(null);
-
-  // 챔피언 자료는 모델과 별개로 받는다. 모델이 준비되기 전에 미리 받아 둔다.
-  useEffect(() => {
-    let alive = true;
-    void loadAdvisorData(patch)
-      .then((loaded) => {
-        if (alive) setData(loaded);
-      })
-      .catch(() => {
-        // 자료를 못 받아도 대화는 되게 둔다. 근거 없이 답하지 말라는 지시는 페르소나에 있다.
-      });
-    return () => {
-      alive = false;
-    };
-  }, [patch]);
 
   const busy = advisor.status === "generating";
   // 모델이 아직 안 올라왔으면 진행률을 계속 보여 준다.
@@ -391,39 +381,65 @@ export function AdvisorPanel({ advisor, patch, ddragonVersion, canUseModel, onCl
     >
       <header className="flex items-center justify-between border-b px-4 py-3">
         <div className="flex items-center gap-2">
-          {showStorage && (
-            <Button variant="ghost" size="icon" className="-ml-2 h-7 w-7" onClick={() => setShowStorage(false)} aria-label={copy.storage.back}>
+          {view !== "chat" && (
+            <Button variant="ghost" size="icon" className="-ml-2 h-7 w-7" onClick={() => setView("chat")} aria-label={copy.storage.back}>
               <ChevronLeft className="h-4 w-4" />
             </Button>
           )}
-          <span className="text-sm font-semibold">{showStorage ? copy.storage.title : copy.title}</span>
-          {!showStorage && advisor.status === "generating" && (
+          <span className="text-sm font-semibold">
+            {showStorage ? copy.storage.title : showHistory ? copy.history.title : copy.title}
+          </span>
+          {view === "chat" && advisor.status === "generating" && (
             <span className="flex items-center gap-1 text-xs text-muted-foreground">
               <Loader2 className="h-3 w-3 animate-spin" />
               {copy.status.generating}
             </span>
           )}
         </div>
-        <div className="flex items-center gap-1">
-          {!showStorage && advisor.turns.length > 0 && (
-            <Button variant="ghost" size="icon" onClick={advisor.reset} aria-label={copy.reset}>
-              <Trash2 className="h-4 w-4" />
+        {view === "chat" && (
+          <div className="flex items-center gap-1">
+            {/* 대화는 지우는 것이 아니라 새로 시작한다. 지난 대화는 기록에 남아 다시 열 수 있다. */}
+            {advisor.turns.length > 0 && (
+              <Button variant="ghost" size="icon" disabled={busy} onClick={history.startNew} aria-label={copy.history.newChat}>
+                <MessageSquarePlus className="h-4 w-4" />
+              </Button>
+            )}
+            <Button variant="ghost" size="icon" onClick={() => setView("history")} aria-label={copy.history.open}>
+              <History className="h-4 w-4" />
             </Button>
-          )}
-          {/* 3GB 는 받아 두면 계속 남는다. 지울 길을 눈에 보이는 곳에 둔다. */}
-          {!showStorage && (
-            <Button variant="ghost" size="icon" onClick={() => setShowStorage(true)} aria-label={copy.storage.open}>
+            {/* 3GB 는 받아 두면 계속 남는다. 지울 길을 눈에 보이는 곳에 둔다. */}
+            <Button variant="ghost" size="icon" onClick={() => setView("storage")} aria-label={copy.storage.open}>
               <HardDrive className="h-4 w-4" />
             </Button>
-          )}
+            <Button variant="ghost" size="icon" onClick={onClose} aria-label={copy.close}>
+              <X className="h-4 w-4" />
+            </Button>
+          </div>
+        )}
+        {view !== "chat" && (
           <Button variant="ghost" size="icon" onClick={onClose} aria-label={copy.close}>
             <X className="h-4 w-4" />
           </Button>
-        </div>
+        )}
       </header>
 
       {showStorage ? (
         <AdvisorStorage onDelete={advisor.deleteModel} />
+      ) : showHistory ? (
+        <AdvisorHistory
+          conversations={history.conversations}
+          currentId={history.currentId}
+          busy={busy}
+          onNew={() => {
+            history.startNew();
+            setView("chat");
+          }}
+          onOpen={(id) => {
+            history.open(id);
+            setView("chat");
+          }}
+          onRemove={history.remove}
+        />
       ) : canUseModel && !advisor.consented && !skippedModel ? (
         <AdvisorConsent
           webgpu={advisor.webgpu}
