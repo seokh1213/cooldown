@@ -31,7 +31,7 @@ import {
   type MechanicsIndex,
 } from "../../../scripts/llm/lib/mechanics";
 import type { WikiItemMeta } from "../../../scripts/llm/lib/data";
-import type { AdvisorAnswer } from "./answer";
+import type { AdvisorAnswer, Fact } from "./answer";
 import type {
   NormalizedItem,
   NormalizedRune,
@@ -435,14 +435,59 @@ function sentenceWith(body: string, term: string): string | undefined {
 }
 
 /**
- * 아이템 답을 개체와 함께. 글은 `buildItemAnswer` 그대로, 첫 아이템의 id 로 백과사전
- * 아이템 탭 링크를 만든다. 둘 이상 물었으면 첫 아이템으로 간다.
+ * 아이템 답을 구조로. 설명문을 통째로 던지지 않고 능력치·효과로 갈라 둔다.
+ *
+ * 갈라 두면 카드가 표로 그릴 수 있고, 대화에는 효과 이름과 설명만 나간다.
+ * **아이템을 둘 이상 물었으면 구조를 쓰지 않는다** — 카드는 하나뿐인데 둘을 담으면
+ * 한쪽이 소리 없이 사라진다. 그때는 예전처럼 설명문을 그대로 낸다.
  */
-export function buildItemCard(data: AdvisorData, question: string): AdvisorAnswer | undefined {
-  const text = buildItemAnswer(data, question);
-  const [first] = findItems(data, question);
-  if (!text || !first) return undefined;
-  return { kind: "item", itemId: String(first.id), itemName: first.name, text };
+export function buildItemCard(
+  data: AdvisorData,
+  question: string,
+  /** 이름을 생략했을 때 쓸 아이템. 대화에서 방금 다룬 것 — "거기 둔화 있어?" */
+  recent?: string,
+): AdvisorAnswer | undefined {
+  const named = findItems(data, question);
+  // 이름이 없어도 효과 낱말을 물었으면 방금 다룬 아이템에 대한 질문이다.
+  const items =
+    named.length === 0 && recent && data.effectTags.some((tag) => question.includes(tag))
+      ? data.items.filter((item) => String(item.id) === recent).slice(0, 1)
+      : named;
+  if (items.length === 0) return undefined;
+  if (items.length > 1) {
+    const text = buildItemAnswer(data, question);
+    return text ? { kind: "text", text } : undefined;
+  }
+
+  const [item] = items;
+  const body = htmlToText(item.description ?? "");
+  const asked = data.effectTags.filter((tag) => question.includes(tag));
+  return {
+    kind: "item",
+    itemId: String(item.id),
+    itemName: item.name,
+    price: item.priceTotal,
+    stats: (item.statDescriptions ?? [])
+      .map((line) => {
+        // "공격력 <span>45</span>" → 마지막 낱말이 값, 앞이 이름. "공격 속도 25%" 도 같다.
+        const text = htmlToText(line).replace(/\s+/g, " ").trim();
+        const at = text.lastIndexOf(" ");
+        return at < 0 ? undefined : { label: text.slice(0, at), value: text.slice(at + 1) };
+      })
+      .filter((stat): stat is Fact => Boolean(stat)),
+    effects: (item.effects ?? [])
+      .map((effect) => ({
+        name: effect.name?.replace(/\s*[-–:]\s*$/, "").trim() ?? "",
+        active: effect.kind === "active",
+        text: htmlToText(effect.description ?? ""),
+      }))
+      // 이름도 설명도 없는 칸이 자료에 섞여 있다(선혈포식자). 빈 줄을 카드에 남기지 않는다.
+      .filter((effect) => effect.name || effect.text),
+    verdicts: asked.map((tag) => {
+      const evidence = sentenceWith(body, tag);
+      return { tag, yes: Boolean(evidence), evidence };
+    }),
+  };
 }
 
 export function buildItemAnswer(data: AdvisorData, question: string): string | undefined {

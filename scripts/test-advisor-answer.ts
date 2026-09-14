@@ -228,9 +228,10 @@ assert.equal(detectSpellFocus("럼블 E 뭐야"), undefined, "사실을 안 짚�
     // 챔피언 하나·스킬 하나의 답에는 대화 링크가 없다. 답마다 "VS 화면으로 이동" 이 붙어 어지러웠다.
     assert.deepEqual(answerLinks({ kind: "champion", card: card("MonkeyKing") }), []);
     assert.deepEqual(answerLinks(buildSpellAnswer(card("MonkeyKing"), spellOf("MonkeyKing", "Q"), "Q 쿨")), []);
-    assert.deepEqual(answerLinks({ kind: "item", itemId: "3161", itemName: "쇼진의 창", text: "…" }), [
-      { kind: "item", to: "/encyclopedia?tab=items&item=3161", name: "쇼진의 창" },
-    ]);
+    assert.deepEqual(
+      answerLinks({ kind: "item", itemId: "3161", itemName: "쇼진의 창", stats: [], effects: [], verdicts: [] }),
+      [{ kind: "item", to: "/encyclopedia?tab=items&item=3161", name: "쇼진의 창" }],
+    );
     // 같은 자료인지 가리는 열쇠. 슬롯이 다르면 다른 카드다.
     assert.notEqual(
       answerKey(buildSpellAnswer(card("Malphite"), spellOf("Malphite", "Q"), "Q 쿨")),

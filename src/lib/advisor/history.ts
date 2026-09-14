@@ -5,7 +5,7 @@
  * 수백 KB 가 된다. 카드는 id 로만 남기고(dehydrate) 불러올 때 자료에서 다시 채운다(revive).
  * 자료가 바뀌어 id 가 사라진 답은 조용히 버린다 — 낡은 카드를 현재값처럼 보이는 것이 최악이다.
  */
-import type { AdvisorAnswer, CompareRow, Fact, SpellFocus } from "./answer";
+import type { AdvisorAnswer, CompareRow, Fact, ItemEffect, ItemVerdict, SpellFocus } from "./answer";
 import type { AdvisorData } from "./context";
 import type { AdvisorTurn } from "@/hooks/useAdvisor";
 
@@ -45,7 +45,15 @@ export type StoredAnswer =
       matchup?: boolean;
       notes?: { mine: string[]; enemy: string[] };
     }
-  | { kind: "item"; itemId: string; itemName: string; text: string }
+  | {
+      kind: "item";
+      itemId: string;
+      itemName: string;
+      price?: number;
+      stats: Fact[];
+      effects: ItemEffect[];
+      verdicts: ItemVerdict[];
+    }
   | { kind: "text"; text: string };
 
 export interface StoredTurn {
@@ -103,7 +111,15 @@ export function dehydrateAnswer(answer: AdvisorAnswer): StoredAnswer {
         notes: answer.notes,
       };
     case "item":
-      return { kind: "item", itemId: answer.itemId, itemName: answer.itemName, text: answer.text };
+      return {
+        kind: "item",
+        itemId: answer.itemId,
+        itemName: answer.itemName,
+        price: answer.price,
+        stats: answer.stats,
+        effects: answer.effects,
+        verdicts: answer.verdicts,
+      };
     case "text":
       return { kind: "text", text: answer.text };
   }
@@ -156,7 +172,15 @@ export function reviveAnswer(stored: StoredAnswer, data: AdvisorData): AdvisorAn
       };
     }
     case "item":
-      return { kind: "item", itemId: stored.itemId, itemName: stored.itemName, text: stored.text };
+      return {
+        kind: "item",
+        itemId: stored.itemId,
+        itemName: stored.itemName,
+        price: stored.price,
+        stats: stored.stats,
+        effects: stored.effects,
+        verdicts: stored.verdicts,
+      };
     case "text":
       return { kind: "text", text: stored.text };
   }

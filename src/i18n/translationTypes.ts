@@ -374,6 +374,16 @@ export interface Translations {
       skills: string;
       compare: string;
       atLevel: string;
+      /** 아이템 카드 */
+      item: string;
+      itemPrice: string;
+      itemStats: string;
+      itemEffects: string;
+      itemPassive: string;
+      itemActive: string;
+      itemEffectCount: string;
+      itemNoTag: string;
+      openInItems: string;
       /** 상성 카드 부제. {a}로 {b} 상대 */
       matchup: string;
       matchupTool: string;

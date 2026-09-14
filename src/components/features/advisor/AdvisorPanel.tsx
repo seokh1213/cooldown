@@ -49,6 +49,7 @@ import {
   buildRuleAnswer as buildRuleCard,
   buildSpellAnswer as buildSpellCard,
   detectSpellFocus,
+  itemHeadline,
   looksChampionDirected,
   spellSummary,
   suggestChampions,
@@ -58,7 +59,7 @@ import {
 import { nicknames } from "@/lib/advisor/intent";
 import { findMentionedRules } from "../../../../scripts/llm/lib/rules";
 import type { ChampionCard } from "../../../../scripts/llm/lib/facts";
-import { championIconUrl } from "@/data/assets/riotAssetUrls";
+import { championIconUrl, itemIconUrl } from "@/data/assets/riotAssetUrls";
 import { usePageContext } from "@/hooks/usePageContext";
 import { WIDE_VIEWPORT_MIN, advisorDrawerWidth, referencePanelWidth, useViewportWidth } from "@/hooks/useWideViewport";
 import { AdvisorAnswerCard } from "./AdvisorAnswerCard";
@@ -237,6 +238,15 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
     return [];
   };
 
+  /** 대화에서 가장 최근에 다룬 아이템. "쇼진의 창 효과" 다음의 "거기 둔화 있어?" 가 여기 기댄다. */
+  const recentItem = (): string | undefined => {
+    for (let i = advisor.turns.length - 1; i >= 0; i -= 1) {
+      const answer = advisor.turns[i].answer;
+      if (answer?.kind === "item") return answer.itemId;
+    }
+    return undefined;
+  };
+
   /**
    * 질문 하나를 푼다.
    *
@@ -302,7 +312,7 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
     // 4. 이름이 아예 없다. 아이템·게임 규칙 이름이면 그것이 답이다. 맥락 챔피언을 붙이기
     //    전에 본다 — 말파이트 표를 보며 "쇼진의 창 효과" 를 물으면 아이템 질문이다.
     if (champions.length === 0) {
-      const itemAnswer = buildItemCard(data, question);
+      const itemAnswer = buildItemCard(data, question, recentItem());
       if (itemAnswer) {
         advisor.answerWithoutModel(question, itemAnswer);
         return;
@@ -472,7 +482,12 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
 
   // 자료 패널에 올릴 답. 카드로 그릴 만한 종류(스킬·챔피언·비교)만. 규칙은 짧아 대화 안에 둔다.
   const isReference = (turn: AdvisorTurn): boolean =>
-    turn.role === "assistant" && !!turn.answer && (turn.answer.kind === "spell" || turn.answer.kind === "champion" || turn.answer.kind === "compare");
+    turn.role === "assistant" &&
+    !!turn.answer &&
+    (turn.answer.kind === "spell" ||
+      turn.answer.kind === "champion" ||
+      turn.answer.kind === "compare" ||
+      turn.answer.kind === "item");
   const referenceTurns = advisor.turns.filter(isReference);
   const latestReference = referenceTurns[referenceTurns.length - 1];
   const refTurn = referenceTurns.find((turn) => turn.id === refTurnId) ?? latestReference;
@@ -500,6 +515,8 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
         };
       case "compare":
         return { title: answer.cards.map((card) => card.name).join(" vs "), kind: answer.matchup ? copy.card.matchupTool : copy.card.compare };
+      case "item":
+        return { title: answer.itemName, kind: copy.card.item };
       default:
         return { title: "", kind: "" };
     }
@@ -539,10 +556,17 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
         return answer.focus ? FOCUS_SHORT[answer.focus] : answer.view === "skills" ? copy.card.skills : copy.card.champion;
       case "compare":
         return answer.matchup ? copy.card.matchupTool : copy.card.compare;
+      case "item":
+        return answer.itemName;
       default:
         return "";
     }
   };
+  /** 탭·칩 앞에 붙는 그림. 챔피언 답은 챔피언 아이콘, 아이템 답은 아이템 아이콘. */
+  const answerIcons = (answer: AdvisorAnswer): string[] =>
+    answer.kind === "item"
+      ? [itemIconUrl(ddragonVersion, answer.itemId)]
+      : answerChampionIds(answer).slice(0, 2).map((id) => championIconUrl(ddragonVersion, id));
   const referenceTabStrip = referenceTabs.length > 1 && (
     <div className="flex gap-1 overflow-x-auto border-b px-2 pt-1.5 text-[11px] [scrollbar-width:thin]">
       {referenceTabs.map((turn) => {
@@ -560,8 +584,8 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
             }`}
           >
             <span className="flex -space-x-1">
-              {answerChampionIds(answer).slice(0, 2).map((id) => (
-                <img key={id} src={championIconUrl(ddragonVersion, id)} alt="" width={14} height={14} className="h-3.5 w-3.5 rounded-sm ring-1 ring-background" />
+              {answerIcons(answer).map((src) => (
+                <img key={src} src={src} alt="" width={14} height={14} className="h-3.5 w-3.5 rounded-sm ring-1 ring-background" />
               ))}
             </span>
             {tabLabel(answer)}
@@ -813,6 +837,18 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
               // 같은 챔피언을 이어 물으면 "VS 화면으로 이동" 이 답마다 붙는다. 직전 답에 있던 링크는 뺀다.
               const previousLinkTargets = new Set(previousAnswer ? answerLinks(previousAnswer).map((link) => link.to) : []);
               const links = turn.answer ? answerLinks(turn.answer).filter((link) => !previousLinkTargets.has(link.to)) : [];
+              // 자료 칩과 같은 줄에 둔다. 따로 두면 버튼이 두 줄로 쌓여 어지럽다.
+              const linkButtons = links.map((link) => (
+                <Link
+                  key={link.to}
+                  to={link.to}
+                  onClick={onNavigate}
+                  className="inline-flex items-center gap-1 rounded-md border border-primary/40 px-2.5 py-1 text-xs font-medium text-primary hover:bg-primary/5"
+                >
+                  {linkLabel(link)}
+                  <ArrowRight className="h-3 w-3" />
+                </Link>
+              ));
               const commentary = turn.content ? (
                 <div className="border-l-2 border-border pl-2.5 text-[13px] leading-relaxed">
                   <span className="block text-[11px] text-muted-foreground">{copy.card.commentary}</span>
@@ -858,6 +894,46 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
                       // "W는?" 처럼 사실을 짚지 않았으면 스킬이 무엇을 하는지 한 줄. 표는 자료 패널에.
                       <p className="text-[13px] leading-relaxed">{spellSummary(turn.answer.spell)}</p>
                     )}
+                    {turn.answer.kind === "item" && (
+                      // A3: 판정이 있으면 그것이 답이고, 없으면 효과 이름 한 줄 + 설명.
+                      // 능력치 표와 가격은 카드에 있다.
+                      <div className="space-y-2">
+                        {turn.answer.verdicts.map((verdict) => (
+                          <div key={verdict.tag} className="flex items-start gap-2.5">
+                            <span className="shrink-0 rounded-md bg-foreground px-2 py-0.5 text-sm font-bold text-background">
+                              {verdict.yes ? copy.card.verdictYes : copy.card.verdictNo}
+                            </span>
+                            <p className="text-[13px] font-semibold leading-relaxed">
+                              {verdict.evidence ?? fill(copy.card.itemNoTag, { name: turn.answer!.kind === "item" ? turn.answer!.itemName : "", tag: verdict.tag })}
+                            </p>
+                          </div>
+                        ))}
+                        {turn.answer.verdicts.length === 0 && (
+                          <>
+                            <div className="border-l-2 border-foreground pl-2.5">
+                              <div className="text-[15px] font-semibold">{itemHeadline(turn.answer)}</div>
+                              <div className="text-[11px] text-muted-foreground">
+                                {fill(copy.card.itemEffectCount, { name: turn.answer.itemName, n: turn.answer.effects.length })}
+                              </div>
+                            </div>
+                            <ul className="space-y-1 text-[13px] leading-relaxed">
+                              {turn.answer.effects.map((effect) => (
+                                <li key={`${effect.name}${effect.text}`}>
+                                  {effect.name && (
+                                    <span className="font-semibold">
+                                      {effect.name}
+                                      {effect.active && <span className="ml-1 text-[11px] font-normal text-muted-foreground">({copy.card.itemActive})</span>}
+                                      {effect.text ? " — " : ""}
+                                    </span>
+                                  )}
+                                  {effect.text}
+                                </li>
+                              ))}
+                            </ul>
+                          </>
+                        )}
+                      </div>
+                    )}
                     {turn.answer.kind === "compare" && turn.answer.headline && (
                       <div className="border-l-2 border-foreground pl-2.5">
                         <div className="text-[15px] font-semibold tabular-nums">{turn.answer.headline.value}</div>
@@ -865,25 +941,28 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
                       </div>
                     )}
                     {commentary}
-                    <button
-                      type="button"
-                      onClick={() => showReference(turn.id)}
-                      aria-label={copy.card.openCard}
-                      className={`flex max-w-full items-center gap-2 rounded-md border px-2.5 py-1.5 text-left text-xs hover:bg-muted ${
-                        wide && refTurn?.id === turn.id ? "border-primary bg-primary/5" : "bg-background"
-                      } ${sameAsPrevious ? "text-muted-foreground" : ""}`}
-                    >
-                      <span className="flex shrink-0 -space-x-1.5">
-                        {answerChampionIds(turn.answer).slice(0, 2).map((id) => (
-                          <img key={id} src={championIconUrl(ddragonVersion, id)} alt="" width={18} height={18} className="h-[18px] w-[18px] rounded ring-1 ring-background" />
-                        ))}
-                      </span>
-                      <span className="truncate font-medium">{referenceTitle(turn.answer).title}</span>
-                      <span className="shrink-0 text-muted-foreground">
-                        {sameAsPrevious ? copy.card.sameReference : referenceTitle(turn.answer).kind}
-                      </span>
-                      <ArrowRight className="h-3 w-3 shrink-0 text-primary" />
-                    </button>
+                    <div className="flex flex-wrap items-center gap-1.5">
+                      <button
+                        type="button"
+                        onClick={() => showReference(turn.id)}
+                        aria-label={copy.card.openCard}
+                        className={`flex min-w-0 max-w-full items-center gap-2 rounded-md border px-2.5 py-1.5 text-left text-xs hover:bg-muted ${
+                          wide && refTurn?.id === turn.id ? "border-primary bg-primary/5" : "bg-background"
+                        } ${sameAsPrevious ? "text-muted-foreground" : ""}`}
+                      >
+                        <span className="flex shrink-0 -space-x-1.5">
+                          {answerIcons(turn.answer).map((src) => (
+                            <img key={src} src={src} alt="" width={18} height={18} className="h-[18px] w-[18px] rounded ring-1 ring-background" />
+                          ))}
+                        </span>
+                        <span className="truncate font-medium">{referenceTitle(turn.answer).title}</span>
+                        <span className="shrink-0 text-muted-foreground">
+                          {sameAsPrevious ? copy.card.sameReference : referenceTitle(turn.answer).kind}
+                        </span>
+                        <ArrowRight className="h-3 w-3 shrink-0 text-primary" />
+                      </button>
+                      {linkButtons}
+                    </div>
                   </div>
                 ) : turn.answer ? (
                   // 규칙·오타 후보·글은 짧아서 대화 안에 그대로 둔다.
@@ -931,21 +1010,9 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
                     ))}
                   </div>
                 )}
-                {/* 바로 가기. 답의 개체를 코드가 알고 있으니 링크도 코드가 만든다. */}
-                {turn.role === "assistant" && links.length > 0 && (
-                  <div className="mt-2 flex flex-wrap gap-1.5">
-                    {links.map((link) => (
-                      <Link
-                        key={link.to}
-                        to={link.to}
-                        onClick={onNavigate}
-                        className="inline-flex items-center gap-1 rounded-md border border-primary/40 px-2.5 py-1 text-xs font-medium text-primary hover:bg-primary/5"
-                      >
-                        {linkLabel(link)}
-                        <ArrowRight className="h-3 w-3" />
-                      </Link>
-                    ))}
-                  </div>
+                {/* 카드 없는 답(규칙)의 바로 가기. 카드가 있는 답은 자료 칩 옆에 이미 붙였다. */}
+                {turn.role === "assistant" && linkButtons.length > 0 && !isReference(turn) && (
+                  <div className="mt-2 flex flex-wrap gap-1.5">{linkButtons}</div>
                 )}
                 {turn.role === "assistant" && (turn.content || turn.answer) && (
                   <div className="mt-1 flex items-center gap-2 text-[11px] text-muted-foreground">
