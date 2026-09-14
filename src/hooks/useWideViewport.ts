@@ -9,8 +9,13 @@ import { useEffect, useState } from "react";
 
 export const WIDE_VIEWPORT_MIN = 1280;
 
-/** 대화 열 폭. 카드가 표 문법으로 들어가려면 이만큼은 필요하다. */
+/** 드로어 폭(대화만). 카드가 대화 안에 들어올 때(좁은 화면의 카드 화면) 표 문법에 이만큼은 필요하다. */
 export const ADVISOR_DRAWER_WIDTH = 560;
+/**
+ * 자료 패널을 펼쳤을 때의 대화 열 폭. 카드가 자료 패널로 나갔으니 대화는 글만 흐른다.
+ * 560 을 그대로 두면 1280px 화면에서 드로어가 880px 을 먹어 뒤 표가 보이지 않았다.
+ */
+export const ADVISOR_CHAT_WIDTH_WITH_REFERENCE = 480;
 
 export function useViewportWidth(): number {
   const [width, setWidth] = useState(() => (typeof window === "undefined" ? 1440 : window.innerWidth));
@@ -37,5 +42,5 @@ export function referencePanelWidth(viewportWidth: number): number {
 /** 드로어 전체 폭. 자료 패널이 펼쳐져 있으면 그만큼 더 넓다. */
 export function advisorDrawerWidth(viewportWidth: number, referenceOpen: boolean): number {
   const wide = viewportWidth >= WIDE_VIEWPORT_MIN;
-  return wide && referenceOpen ? ADVISOR_DRAWER_WIDTH + referencePanelWidth(viewportWidth) : ADVISOR_DRAWER_WIDTH;
+  return wide && referenceOpen ? ADVISOR_CHAT_WIDTH_WITH_REFERENCE + referencePanelWidth(viewportWidth) : ADVISOR_DRAWER_WIDTH;
 }
