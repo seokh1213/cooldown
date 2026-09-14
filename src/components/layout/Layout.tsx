@@ -1,5 +1,6 @@
 import React, { useState, useCallback } from "react";
 import Sidebar from "./Sidebar";
+import { LegalFooter } from "./LegalFooter";
 import { AdvisorWidget } from "@/components/features/advisor/AdvisorWidget";
 import { SidebarRail, SidebarInset } from "@/components/ui/sidebar";
 import { useDeviceType } from "@/hooks/useDeviceType";
@@ -74,6 +75,9 @@ function Layout({ children, nav, patch, ddragonVersion }: LayoutProps) {
         >
           {children}
         </main>
+
+        {/* 라이엇 고지는 모든 화면에 보여야 한다. main 밖에 두어 본문 스크롤 끝에 붙인다. */}
+        <LegalFooter />
       </SidebarInset>
 
       {/* 오른쪽 드로어로 열리는 지식 도우미. 동의 전에는 모델을 받지 않는다. */}
