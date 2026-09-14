@@ -397,7 +397,6 @@ export interface Translations {
       openCard: string;
       /** 바로 가기 */
       goVs: string;
-      goVsOne: string;
       goRunes: string;
       goSummoner: string;
       goItem: string;

@@ -389,7 +389,6 @@ export const zhCNTranslations: Translations = {
       sameReference: "同一资料",
       openCard: "查看资料",
       goVs: "打开 {a} 对 {b}",
-      goVsOne: "在 VS 页面打开 {name}",
       goRunes: "在符文百科中查看",
       goSummoner: "在召唤师技能百科中查看",
       goItem: "在装备百科中查看 {name}",

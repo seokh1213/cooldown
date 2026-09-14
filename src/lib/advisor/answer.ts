@@ -376,12 +376,11 @@ export function looksChampionDirected(question: string, slot?: string): boolean 
  * 답에서 바로 갈 수 있는 화면.
  *
  * 링크는 모델이 아니라 코드가 만든다. 코드는 답의 개체(챔피언 id·규칙 종류)를 이미 알고
- * 있고, 모델에게 맡기면 없는 id 를 지어낸다. 상성·비교 답은 VS 화면, 챔피언은 그 챔피언의
- * VS 화면, 룬·소환사 주문 규칙은 백과사전의 그 탭이다.
+ * 있고, 모델에게 맡기면 없는 id 를 지어낸다. 상성·비교 답은 VS 화면, 룬·소환사 주문 규칙과
+ * 아이템은 백과사전의 그 탭이다. 챔피언·스킬 답은 자료 카드 꼬리의 링크만 쓴다.
  */
 export type AnswerLink =
   | { kind: "vs"; to: string; names: [string, string] }
-  | { kind: "vsOne"; to: string; name: string }
   | { kind: "runes" | "summoner"; to: string }
   | { kind: "item"; to: string; name: string };
 
@@ -389,13 +388,16 @@ export function answerLinks(answer: AdvisorAnswer): AnswerLink[] {
   switch (answer.kind) {
     case "compare": {
       const [a, b] = answer.cards;
-      if (!b) return [{ kind: "vsOne", to: `/vs?a=${a.id}`, name: a.name }];
+      if (!b) return [];
       return [{ kind: "vs", to: `/vs?a=${a.id}&t=${b.id}`, names: [a.name, b.name] }];
     }
+    // 챔피언 하나·스킬 하나의 답에는 대화 안에 링크를 붙이지 않는다. "오공 Q 쿨", "W는?" 마다
+    // "오공 VS 화면으로 이동" 이 따라붙어 대화가 버튼으로 어지러웠다. 그 챔피언의 VS 화면은
+    // 자료 카드 꼬리("VS 화면에서 보기") 한 곳에서 간다. 대화 링크는 답이 곧 다음 행동인 것만 —
+    // 상성·비교(둘을 VS 에서 보기), 규칙·아이템(백과사전에서 보기).
     case "champion":
-      return [{ kind: "vsOne", to: `/vs?a=${answer.card.id}`, name: answer.card.name }];
     case "spell":
-      return [{ kind: "vsOne", to: `/vs?a=${answer.championId}`, name: answer.championName }];
+      return [];
     case "rule":
       if (answer.rule.subject === "rune") return [{ kind: "runes", to: "/encyclopedia?tab=runes" }];
       if (answer.rule.subject === "summoner") return [{ kind: "summoner", to: "/encyclopedia?tab=summoner" }];
