@@ -39,6 +39,7 @@ import {
   spellSummary,
   suggestChampions,
   type AdvisorAnswer,
+  type SpellFocus,
 } from "@/lib/advisor/answer";
 import { nicknames } from "@/lib/advisor/intent";
 import { findMentionedRules } from "../../../../scripts/llm/lib/rules";
@@ -81,6 +82,9 @@ interface AdvisorPanelProps {
 function formatMb(bytes: number): string {
   return (bytes / 1048576).toFixed(0);
 }
+
+/** 자료 탭에 쓰는 한 글자짜리 사실 이름. "재사용 대기시간" 은 탭에 안 들어간다. */
+const FOCUS_SHORT: Record<SpellFocus, string> = { cooldown: "쿨", cost: "소모", ratio: "계수", damage: "피해", effect: "효과" };
 
 /** `{name}` 같은 자리를 채운다. */
 function fill(template: string, values: Record<string, string | number>): string {
@@ -451,6 +455,59 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
     }
   };
 
+  // 자료 패널의 탭 줄(R1). 이 대화에서 나온 카드가 자료별로 하나씩, 최근에 나온 것이 오른쪽.
+  // 같은 자료가 다시 나오면 탭을 새로 만들지 않고 오른쪽 끝으로 옮긴다.
+  const referenceTabs = (() => {
+    const byKey = new Map<string, AdvisorTurn>();
+    for (const turn of referenceTurns) {
+      const key = answerKey(turn.answer!);
+      byKey.delete(key);
+      byKey.set(key, turn);
+    }
+    return [...byKey.values()];
+  })();
+  const activeTabKey = refTurn?.answer ? answerKey(refTurn.answer) : undefined;
+  /** 탭 이름. 300px 에 여섯 개쯤 들어가야 하니 아이콘 + 한두 글자. */
+  const tabLabel = (answer: AdvisorAnswer): string => {
+    switch (answer.kind) {
+      case "spell":
+        return answer.spell.slot;
+      case "champion":
+        return answer.focus ? FOCUS_SHORT[answer.focus] : answer.view === "skills" ? copy.card.skills : copy.card.champion;
+      case "compare":
+        return answer.matchup ? copy.card.matchupTool : copy.card.compare;
+      default:
+        return "";
+    }
+  };
+  const referenceTabStrip = referenceTabs.length > 1 && (
+    <div className="flex gap-1 overflow-x-auto border-b px-2 pt-1.5 text-[11px] [scrollbar-width:thin]">
+      {referenceTabs.map((turn) => {
+        const answer = turn.answer!;
+        const active = answerKey(answer) === activeTabKey;
+        return (
+          <button
+            key={answerKey(answer)}
+            type="button"
+            onClick={() => setRefTurnId(turn.id)}
+            ref={active ? (node) => node?.scrollIntoView({ block: "nearest", inline: "nearest" }) : undefined}
+            title={`${referenceTitle(answer).title} · ${referenceTitle(answer).kind}`}
+            className={`flex shrink-0 items-center gap-1 whitespace-nowrap border-b-2 px-2 py-1.5 ${
+              active ? "border-primary font-semibold text-foreground" : "border-transparent text-muted-foreground hover:text-foreground"
+            }`}
+          >
+            <span className="flex -space-x-1">
+              {answerChampionIds(answer).slice(0, 2).map((id) => (
+                <img key={id} src={championIconUrl(ddragonVersion, id)} alt="" width={14} height={14} className="h-3.5 w-3.5 rounded-sm ring-1 ring-background" />
+              ))}
+            </span>
+            {tabLabel(answer)}
+          </button>
+        );
+      })}
+    </div>
+  );
+
   const drawerWidth = advisorDrawerWidth(wide);
 
   const percent =
@@ -482,6 +539,7 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
               </span>
             )}
           </div>
+          {referenceTabStrip}
           <div className="flex-1 overflow-y-auto p-3">
             {refTurn?.answer ? (
               <AdvisorAnswerCard answer={refTurn.answer} ddragonVersion={ddragonVersion} patch={patch} onPickChampion={pickChampion} />
@@ -541,6 +599,8 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
         <AdvisorStorage onDelete={advisor.deleteModel} />
       ) : view === "card" ? (
         // 좁은 화면에서 자료 칩을 눌렀을 때. 카드가 대화를 덮고, 뒤로 가면 대화다.
+        <>
+        {referenceTabStrip}
         <div className="flex-1 overflow-y-auto p-4">
           {refTurn?.answer ? (
             <AdvisorAnswerCard answer={refTurn.answer} ddragonVersion={ddragonVersion} patch={patch} onPickChampion={pickChampion} />
@@ -548,6 +608,7 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
             <p className="text-xs text-muted-foreground">{copy.card.referenceEmpty}</p>
           )}
         </div>
+        </>
       ) : showHistory ? (
         <AdvisorHistory
           conversations={history.conversations}
