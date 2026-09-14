@@ -86,9 +86,12 @@ async function load(spec: AdvisorModelSpec): Promise<void> {
     });
     // dtype 은 문자열 하나로 준다. 모듈마다 다른 값을 주면 세션 구성이 어긋난다.
     // Gemma 4 는 멀티모달이지만 *ForCausalLM 으로 부르면 라이브러리가 텍스트 전용 세션만 만든다.
+    // 기본은 WebGPU. `?advisorDevice=wasm` 은 진단용이다.
+    // 2.7GB 짜리는 wasm 힙에 안 들어가 std::bad_alloc 으로 죽는데, 그 자체가
+    // "WebGPU 로 돌고 있다" 는 증거다. 몰래 CPU 로 떨어졌다면 평소에도 죽었을 것이다.
     model = await AutoModelForCausalLM.from_pretrained(spec.id, {
       dtype: spec.dtype as "q4f16",
-      device: "webgpu",
+      device: spec.device ?? "webgpu",
       progress_callback: onProgress,
     });
     post({ type: "loaded" });

@@ -125,6 +125,20 @@ export function resolveModel(): AdvisorModel {
 }
 
 /**
+ * 추론 백엔드. 기본은 WebGPU 다.
+ *
+ * `?advisorDevice=wasm` 이면 CPU 로 돌린다. 속도가 이상할 때 WebGPU 가 실제로
+ * 붙었는지 가르는 용도다. 둘이 같은 속도로 나오면 WebGPU 를 안 타고 있는 것이다.
+ */
+export function resolveDevice(): "webgpu" | "wasm" {
+  try {
+    return new URLSearchParams(location.search).get("advisorDevice") === "wasm" ? "wasm" : "webgpu";
+  } catch {
+    return "webgpu";
+  }
+}
+
+/**
  * 한 번에 만들 최대 토큰 수.
  *
  * 900 이던 것을 올린다. "럼블 챔피언에 대해서 설명해줘" 가 문장 중간에서 잘렸다.
