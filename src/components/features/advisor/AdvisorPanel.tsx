@@ -280,7 +280,7 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
         }
         // "말파이트 스킬 설명해줘": 스킬 다섯 개의 요약 + 운용 노트. 능력치 표는 뺀다.
         if (asksSkillsOverview(question)) {
-          deliver(question, { kind: "champion", card, view: "skills", notes: championNotes(data, card) }, usedNotice);
+          deliver(question, { kind: "champion", card, view: "skills", notes: championNotes(data, card, "combo") }, usedNotice);
           return;
         }
         // "말파이트 스킬 쿨타임": 슬롯 없이 사실 하나를 물으면 스킬 다섯 개의 그 사실을 표로.
@@ -546,8 +546,16 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
               >
                 {turn.notice && <p className="mb-1.5 text-[11px] text-muted-foreground">{turn.notice}</p>}
                 {turn.answer ? (
-                  // 해설이 먼저, 카드가 아래(M3-A). 카드는 0초에 뜨고 해설은 그 위에서 자라난다.
+                  // 카드가 먼저, 해설은 그 아래. 카드는 0초에 뜨고 해설은 그 밑에서 자라난다.
+                  // 처음엔 해설을 위에 두었는데(M3-A), 사실을 먼저 보고 해설을 읽는 쪽이 자연스럽다는
+                  // 피드백으로 바꿨다.
                   <div className="space-y-2">
+                    <AdvisorAnswerCard
+                      answer={turn.answer}
+                      ddragonVersion={ddragonVersion}
+                      patch={patch}
+                      onPickChampion={pickChampion}
+                    />
                     {turn.content ? (
                       <div className="border-l-2 border-border pl-2.5 text-[13px] leading-relaxed">
                         <span className="block text-[11px] text-muted-foreground">{copy.card.commentary}</span>
@@ -559,12 +567,6 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
                         {copy.card.commentaryPending}
                       </span>
                     ) : null}
-                    <AdvisorAnswerCard
-                      answer={turn.answer}
-                      ddragonVersion={ddragonVersion}
-                      patch={patch}
-                      onPickChampion={pickChampion}
-                    />
                   </div>
                 ) : turn.content ? (
                   turn.role === "assistant" ? (

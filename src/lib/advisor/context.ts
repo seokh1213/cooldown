@@ -304,11 +304,16 @@ export function buildMatchupTips(data: AdvisorData, me: ChampionCard, enemy: Cha
  * 수 없다", "방패를 먼저 깨고 콤보를 시작해야 한다". 카드가 그대로 보이고, 모델은 이것을
  * 재료로 우선순위만 정한다.
  */
-export function championNotes(data: AdvisorData, card: ChampionCard): { playing: string[]; against: string[] } {
+export function championNotes(
+  data: AdvisorData,
+  card: ChampionCard,
+  /** 스킬셋을 묻는 질문이면 콤보(스킬이 맞물리는 순서)가 먼저다. */
+  prefer: "skill" | "combo" = "skill",
+): { playing: string[]; against: string[] } {
   const book = data.playbooks.get(card.id);
   if (!book) return { playing: [], against: [] };
   // 스킬 운용·콤보·라인전이 먼저. 룬·아이템 추천은 다른 질문의 답이다.
-  const order = ["skill", "combo", "laning", "phase", "teamfight"];
+  const order = prefer === "combo" ? ["combo", "skill", "laning", "phase", "teamfight"] : ["skill", "combo", "laning", "phase", "teamfight"];
   const rank = (category: string) => {
     const index = order.indexOf(category);
     return index === -1 ? order.length : index;

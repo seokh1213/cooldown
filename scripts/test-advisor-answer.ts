@@ -247,7 +247,9 @@ assert.equal(detectSpellFocus("럼블 E 뭐야"), undefined, "사실을 안 짚�
   assert.match(skillsPrompt, /화강암 방패는 피해를 받지 않는/, "운용 노트가 재료다");
   assert.match(skillsPrompt, /R 멈출 수 없는 힘: /, "스킬 요약이 재료다");
   assert.match(skillsPrompt, /어느 챔피언에나 맞는 말은 쓰지 마십시오/);
-  assert.match(skillsPrompt, /가장 조심할 것 하나/);
+  assert.match(skillsPrompt, /서로 어떻게 맞물리는지/, "스킬셋 질문은 스킬 사이의 관계를 묻는다");
+  assert.match(skillsPrompt, /상대가 파고드는 지점으로/, "약점은 상대가 조심할 것이 아니다");
+  assert.ok(asksSkillsOverview("오공은 스킬셋이 어떻게 되어있지?"));
 
   // 슬롯 없이 사실 하나: 스킬 다섯 개의 그 사실. 해설은 없다.
   const focused: ReturnType<typeof buildCompareAnswer> = { kind: "champion", card: card("Rumble"), focus: "cooldown" };

@@ -339,7 +339,7 @@ export function asksMatchup(question: string): boolean {
 }
 
 /** 스킬 전체를 설명해 달라는가. "스킬 설명해줘", "스킬 뭐 있어", "스킬 알려줘". */
-const SKILLS_OVERVIEW = /스킬(들|은|이|도)?\s*(설명|알려|소개|정리|뭐|무엇|어떤|있)/;
+const SKILLS_OVERVIEW = /스킬\s*(셋|세트|구성|킷)|스킬(들|은|이|도)?\s*(설명|알려|소개|정리|뭐|무엇|어떤|있|어떻)/;
 
 export function asksSkillsOverview(question: string): boolean {
   return SKILLS_OVERVIEW.test(question);
@@ -594,7 +594,12 @@ export function buildCommentaryPrompt(answer: AdvisorAnswer, patch: string): str
     // 재료가 백분위·태그뿐일 때 "생존력이 뛰어나다", "압박하는 것이 중요하다" 가 나왔다.
     // 어느 챔피언에나 맞는 말은 답이 아니다. 문장마다 스킬이나 효과를 짚게 한다.
     "- 어느 챔피언에나 맞는 말은 쓰지 마십시오(\"생존력이 뛰어나다\", \"압박하는 것이 중요하다\", \"주의해야 한다\"). 문장마다 스킬 이름이나 효과 이름을 하나 이상 넣으십시오.",
-    "- 합니다체로, 인사말 없이 바로 본문만 쓰십시오.",
+    // "상대하는 사람이 조심할 것은 오공의 낮은 마법 저항력" 이 나왔다. 약점은 상대가 파고드는
+    // 지점이지 상대가 조심할 것이 아니다. 방향을 못 박는다.
+    "- 낮은 능력치는 상대가 파고드는 지점으로 쓰십시오(\"마법 저항력이 낮아 마법 피해가 잘 들어간다\"). 상대가 조심할 것으로 쓰지 마십시오.",
+    "- 사용자의 질문에 직접 답하십시오. 묻지 않은 것을 덧붙이지 마십시오.",
+    // 노트가 한다체라 해설도 한다체로 따라갔다. 자료 문체와 답 문체를 갈라 둔다.
+    "- 합니다체로, 인사말 없이 바로 본문만 쓰십시오. 자료가 한다체여도 답은 합니다체입니다.",
   ];
 
   if (answer.kind === "champion") {
@@ -622,13 +627,22 @@ export function buildCommentaryPrompt(answer: AdvisorAnswer, patch: string): str
       for (const note of notes.playing) lines.push(`- 잡을 때: ${note}`);
       for (const note of notes.against) lines.push(`- 상대할 때: ${note}`);
     }
-    lines.push(
-      "",
-      ...rules,
-      notes && (notes.playing.length || notes.against.length)
-        ? "- 노트는 화면에 그대로 보입니다. 옮겨 쓰지 말고 우선순위를 정하십시오: 처음 상대하는 사람이 가장 조심할 것 하나, 처음 잡는 사람이 가장 먼저 익힐 것 하나. 각각 어느 스킬 때문인지 말하십시오."
-        : "- 이 챔피언을 처음 상대하거나 처음 잡는 사람에게 어느 스킬이 왜 중요한지 말하십시오.",
-    );
+    const hasNotes = Boolean(notes && (notes.playing.length || notes.against.length));
+    lines.push("", ...rules);
+    if (answer.view === "skills") {
+      // "스킬셋이 어떻게 되어 있지" 는 스킬 다섯 개가 어떻게 맞물리는지를 묻는 것이다.
+      // 스킬 하나하나의 설명은 카드에 있으니, 모델은 그 사이의 관계를 말한다.
+      lines.push(
+        "- 스킬 다섯 개가 서로 어떻게 맞물리는지 서너 문장으로 설명하십시오: 무엇으로 붙거나 시작하고, 무엇이 피해를 내고, 무엇이 살리거나 빠지는지. 노트에 콤보 순서가 있으면 그 순서를 근거로 삼으십시오.",
+        "- 스킬 하나하나를 다시 설명하지 마십시오. 설명은 이미 화면의 표에 있습니다.",
+      );
+    } else if (hasNotes) {
+      lines.push(
+        "- 노트는 화면에 그대로 보입니다. 옮겨 쓰지 말고 이 챔피언이 무엇으로 이기고(어느 스킬) 어디가 약한지(상대가 어떻게 파고드는지) 두세 문장으로 말하십시오.",
+      );
+    } else {
+      lines.push("- 이 챔피언이 무엇으로 이기고(어느 스킬) 어디가 약한지(상대가 어떻게 파고드는지) 두세 문장으로 말하십시오.");
+    }
     return lines.join("\n");
   }
 
