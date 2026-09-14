@@ -24,7 +24,7 @@ import {
   type RuleIndex,
   type RuleNotes,
 } from "../../../scripts/llm/lib/rules";
-import { playbookToText, type Playbook } from "../../../scripts/llm/lib/playbookCore";
+import { playbookToText, selectPlaybook, type Playbook } from "../../../scripts/llm/lib/playbookCore";
 import {
   findMechanics,
   mechanicsToText,
@@ -283,6 +283,19 @@ export function buildTagAnswer(
  * 줄이는 것은 프롬프트가 6천 자에 닿으면 브라우저 런타임이 죽기 때문인데,
  * 여기는 화면에 바로 나가는 글이라 그 제약이 없다.
  */
+/**
+ * 상성 해설 재료. 사람이 검증한 지식 카드만 준다 — 수치와 스킬 본문은 카드가 이미 그렸다.
+ *
+ * 두 챔피언의 자료를 통째로 주면 프롬프트가 길어져 해설 한 번에 25초가 걸렸다.
+ * 내 챔피언의 "플레이할 때" 셋과 상대 챔피언의 "상대하는 법" 셋만 남긴다.
+ */
+export function buildMatchupTips(data: AdvisorData, me: ChampionCard, enemy: ChampionCard): string | undefined {
+  const selected = selectPlaybook(data.playbooks, me, enemy);
+  const trimmed = { mine: selected.mine.slice(0, 3), vsEnemy: selected.vsEnemy.slice(0, 3) };
+  if (trimmed.mine.length === 0 && trimmed.vsEnemy.length === 0) return undefined;
+  return `[지식 카드 — 사람이 검증한 내용입니다. 이 표현을 따르십시오]\n${playbookToText(trimmed, me.name, enemy.name, data.patch)}`;
+}
+
 export function buildChampionAnswer(data: AdvisorData, card: ChampionCard): string {
   const parts: string[] = [championCardToText(card, { includeSpellText: true, spellTextMax: 600 })];
 

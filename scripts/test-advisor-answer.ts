@@ -11,8 +11,12 @@ import type { ChampionCard, SpellFact } from "./llm/lib/facts";
 import type { RuleNotes } from "./llm/lib/rules";
 import { PUBLIC_DATA_ROOT, resolvePatchVersion } from "./llm/lib/data";
 import {
+  answerChampionIds,
   asksComparison,
+  asksMatchup,
   buildCompareAnswer,
+  looksChampionDirected,
+  spellFocusValue,
   buildRuleAnswer,
   buildSpellAnswer,
   detectSpellFocus,
@@ -25,6 +29,7 @@ import {
   buildCommentaryPrompt,
 } from "../src/lib/advisor/answer";
 import { readPageContext } from "../src/lib/advisor/pageContext";
+import { nicknames } from "../src/lib/advisor/intent";
 
 const patch = resolvePatchVersion();
 const llmDir = path.join(PUBLIC_DATA_ROOT, patch, "llm");
@@ -149,6 +154,10 @@ assert.equal(detectSpellFocus("럼블 E 뭐야"), undefined, "사실을 안 짚�
     "둘 다 맞게 썼으면 오타가 없다",
   );
 
+  // 줄임말 표를 함께 줘도 게임 어휘는 후보가 아니다. "스킬" 이 "스카"(스카너) 로 잡혔다.
+  const withNicks = suggestChampions("말파이트 스킬 쿨타임", cards, nicknames(cards), new Set(["Malphite"]));
+  assert.equal(withNicks, undefined, `스킬 → ${withNicks?.candidates.map((c) => c.name).join(",")}`);
+
   // 멀쩡한 문장에서 헛짚으면 안 된다. 챔피언 이름이 없는 일반 질문들.
   for (const plain of ["정복자에 점화 들어가?", "쇼진의 창 효과", "cs가 뭐야?", "와드 몇 개까지 박을 수 있어?", "누가 더 높아?", "누구 골라야 해?"]) {
     const wrong = suggestChampions(plain, cards, none);
@@ -197,6 +206,34 @@ assert.equal(detectSpellFocus("럼블 E 뭐야"), undefined, "사실을 안 짚�
     assert.equal(row?.winner, undefined, "스킬 행은 크기 비교를 하지 않는다");
     assert.equal(buildCommentaryPrompt(q, "26.18"), undefined);
   }
+}
+
+// ── 대화 맥락: 상성·이름 생략 ─────────────────────────────────────────────
+{
+  assert.ok(asksMatchup("제이스랑 상대한다생각하면 어떻게되는거지"));
+  assert.ok(asksMatchup("럼블 만나면 어떻게 해?"));
+  assert.ok(!asksMatchup("제이스 설명해줘"));
+
+  assert.ok(looksChampionDirected("W 쿨타임", "W"));
+  assert.ok(looksChampionDirected("설명해줘"));
+  assert.ok(looksChampionDirected("스킬 계수"));
+  assert.ok(!looksChampionDirected("cs가 뭐야?"), "게임 용어 질문은 챔피언을 겨냥하지 않는다");
+
+  const pair = [card("Malphite"), card("Jayce")];
+  const matchup = buildCompareAnswer(pair, "제이스랑 상대한다 생각하면", undefined, { matchup: true });
+  if (matchup.kind === "compare") {
+    assert.equal(matchup.matchup, true);
+    assert.equal(matchup.headline, undefined);
+    assert.deepEqual(answerChampionIds(matchup), ["Malphite", "Jayce"]);
+    const prompt = buildCommentaryPrompt(matchup, "26.18") ?? "";
+    assert.match(prompt, /말파이트를 잡고 제이스를 상대/, "내 챔피언 시점으로 쓰라고 한다");
+  }
+
+  // 슬롯 없이 사실 하나: 스킬 다섯 개의 그 사실. 해설은 없다.
+  const focused: ReturnType<typeof buildCompareAnswer> = { kind: "champion", card: card("Rumble"), focus: "cooldown" };
+  assert.equal(buildCommentaryPrompt(focused, "26.18"), undefined);
+  assert.equal(spellFocusValue(spellOf("Rumble", "E"), "cooldown"), "6초 · 2회 충전 · 연속 시전 0.5초");
+  assert.equal(spellFocusValue(spellOf("Malphite", "Q"), "ratio"), "주문력 60%");
 }
 
 // ── 예/아니오 배지: 극성이 분명할 때만 ───────────────────────────────────

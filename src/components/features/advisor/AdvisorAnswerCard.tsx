@@ -15,10 +15,12 @@ import { useTranslation } from "@/i18n";
 import { championIconUrl } from "@/data/assets/riotAssetUrls";
 import {
   CARD_STATS,
+  FOCUS_LABEL,
   STAT_LABEL,
   isExtremeGrade,
   percentileLabel,
   ruleVerdict,
+  spellFocusValue,
   spellOneLiner,
   type AdvisorAnswer,
 } from "@/lib/advisor/answer";
@@ -114,7 +116,7 @@ export function AdvisorAnswerCard({ answer, ddragonVersion, patch, onPickChampio
   if (answer.kind === "suggestion") {
     return (
       <div className="flex flex-wrap items-center gap-1.5 text-sm">
-        <span>{fill(copy.suggestPrefix, { original: answer.original })}</span>
+        <span>{answer.reason === "ambiguous" ? copy.whichOne : fill(copy.suggestPrefix, { original: answer.original })}</span>
         {answer.candidates.map((card) => (
           <button
             key={card.id}
@@ -173,6 +175,38 @@ export function AdvisorAnswerCard({ answer, ddragonVersion, patch, onPickChampio
   if (answer.kind === "champion") {
     const { card } = answer;
     const subtitle = [card.wiki?.subclass, card.rangeType, card.wiki?.positions?.[0]].filter(Boolean).join(" · ");
+    const header = (
+      <img
+        src={championIconUrl(ddragonVersion, card.id)}
+        alt=""
+        width={36}
+        height={36}
+        className="h-9 w-9 shrink-0 rounded-md"
+      />
+    );
+    const footer = (
+      <>
+        <span>{fill(copy.patch, { patch })}</span>
+        <Link to={`/vs?a=${card.id}`} className="text-primary hover:underline">
+          {copy.openInVs}
+        </Link>
+      </>
+    );
+    // "말파이트 스킬 쿨타임": 스킬 다섯 개의 그 사실만. 능력치·해설은 없다.
+    if (answer.focus) {
+      const focus = answer.focus;
+      return (
+        <Frame icon={header} title={card.name} subtitle={`${copy.skills} · ${FOCUS_LABEL[focus]}`} tool={copy.champion} footer={footer}>
+          <KvTable
+            rows={card.spells.map((spell) => ({
+              label: `${spell.slot} ${spell.name}`,
+              value: spellFocusValue(spell, focus) || "—",
+              hit: true,
+            }))}
+          />
+        </Frame>
+      );
+    }
     const statRows = CARD_STATS.map((stat) => {
       const snap = card.stats[stat];
       if (!snap) return undefined;
@@ -195,15 +229,7 @@ export function AdvisorAnswerCard({ answer, ddragonVersion, patch, onPickChampio
     }));
     return (
       <Frame
-        icon={
-          <img
-            src={championIconUrl(ddragonVersion, card.id)}
-            alt=""
-            width={36}
-            height={36}
-            className="h-9 w-9 shrink-0 rounded-md"
-          />
-        }
+        icon={header}
         title={
           <>
             {card.name}
@@ -212,14 +238,7 @@ export function AdvisorAnswerCard({ answer, ddragonVersion, patch, onPickChampio
         }
         subtitle={subtitle}
         tool={copy.champion}
-        footer={
-          <>
-            <span>{fill(copy.patch, { patch })}</span>
-            <Link to={`/vs?a=${card.id}`} className="text-primary hover:underline">
-              {copy.openInVs}
-            </Link>
-          </>
-        }
+        footer={footer}
       >
         <div className="mb-1 text-[11px] font-medium text-muted-foreground">{copy.stats}</div>
         <KvTable rows={statRows} />
@@ -260,8 +279,16 @@ export function AdvisorAnswerCard({ answer, ddragonVersion, patch, onPickChampio
           </div>
         }
         title={cards.map((card) => card.name).join(" vs ")}
-        subtitle={answer.slot ? `${answer.slot}` : answer.level ? fill(copy.atLevel, { n: answer.level }) : undefined}
-        tool={copy.compare}
+        subtitle={
+          answer.matchup && second
+            ? fill(copy.matchup, { a: first.name, b: second.name })
+            : answer.slot
+              ? `${answer.slot}`
+              : answer.level
+                ? fill(copy.atLevel, { n: answer.level })
+                : undefined
+        }
+        tool={answer.matchup ? copy.matchupTool : copy.compare}
         footer={
           <>
             <span>{fill(copy.patch, { patch })}</span>

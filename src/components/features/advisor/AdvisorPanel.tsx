@@ -12,6 +12,7 @@ import { advisorSystemPrompt } from "@/lib/advisor/persona";
 import { AdvisorMarkdown } from "./AdvisorMarkdown";
 import {
   buildChampionsBrief,
+  buildMatchupTips,
   buildItemAnswer,
   buildTagAnswer,
   buildMechanicsAnswer,
@@ -20,11 +21,15 @@ import {
   type AdvisorData,
 } from "@/lib/advisor/context";
 import {
+  answerChampionIds,
   asksComparison,
+  asksMatchup,
   buildCommentaryPrompt,
   buildCompareAnswer as buildCompareCard,
   buildRuleAnswer as buildRuleCard,
   buildSpellAnswer as buildSpellCard,
+  detectSpellFocus,
+  looksChampionDirected,
   suggestChampions,
   type AdvisorAnswer,
 } from "@/lib/advisor/answer";
@@ -134,11 +139,24 @@ export function AdvisorPanel({ advisor, patch, ddragonVersion, canUseModel, onCl
     advisor.answerWithoutModel(question, answer, notice);
   };
 
+  /** 대화에서 가장 최근에 다룬 챔피언. 이름을 생략한 다음 질문의 맥락이다. */
+  const recentChampions = (): ChampionCard[] => {
+    if (!data) return [];
+    for (let i = advisor.turns.length - 1; i >= 0; i -= 1) {
+      const turn = advisor.turns[i];
+      if (turn.role !== "assistant" || !turn.answer) continue;
+      const ids = answerChampionIds(turn.answer);
+      if (ids.length) return ids.map((id) => data.cardById.get(id)).filter((card): card is ChampionCard => Boolean(card));
+    }
+    return [];
+  };
+
   /**
    * 질문 하나를 푼다.
    *
-   * 순서가 곧 우선순위다. 룬·주문 판정 → 챔피언(없으면 오타, 그래도 없으면 화면 맥락) →
-   * 아이템 → 게임 규칙 → 검색 폴백. 오타를 고쳐 다시 들어올 수 있어 submit 과 분리했다.
+   * 순서가 곧 우선순위다. 룬·주문 판정 → 챔피언(오타 교정) → 대화 맥락의 상성 →
+   * 아이템·게임 규칙 → 맥락 챔피언(대화, 화면) → 검색 폴백.
+   * 오타를 고쳐 다시 들어올 수 있어 submit 과 분리했다.
    */
   const ask = (question: string, notice?: string) => {
     const system = advisorSystemPrompt(lang);
@@ -178,24 +196,70 @@ export function AdvisorPanel({ advisor, patch, ddragonVersion, canUseModel, onCl
       }
     }
 
-    // 3. 이름이 아예 없으면 화면에 떠 있는 것을 쓴다 — 표를 보면서 "W 쿨타임" 이라
-    //    물으면 그 W 는 화면의 챔피언이다.
-    if (champions.length === 0 && context.championIds.length) {
+    // 3. 대화 맥락. "말파이트 설명해줘" 다음의 "제이스랑 상대한다 생각하면" 은 말파이트로
+    //    제이스를 상대하는 질문이다. 방금 다룬 챔피언이 내 챔피언, 새 이름이 상대.
+    const recent = recentChampions();
+    if (champions.length === 1 && asksMatchup(question)) {
+      const mine = recent.find((card) => card.id !== champions[0].id);
+      if (mine) {
+        const pair = [mine, champions[0]];
+        const answer = buildCompareCard(pair, question, undefined, { matchup: true });
+        const prompt = buildCommentaryPrompt(answer, patch);
+        if (canUseModel && advisor.consented && prompt) {
+          // 상성 해설은 사람이 검증한 지식 카드(플레이북)를 재료로 더 준다.
+          const tips = buildMatchupTips(data, mine, champions[0]);
+          advisor.sendWithAnswer(question, [system, tips, prompt].filter(Boolean).join("\n\n"), answer, usedNotice);
+        } else {
+          advisor.answerWithoutModel(question, answer, usedNotice);
+        }
+        return;
+      }
+    }
+
+    // 4. 이름이 아예 없다. 아이템·게임 규칙 이름이면 그것이 답이다. 맥락 챔피언을 붙이기
+    //    전에 본다 — 말파이트 표를 보며 "쇼진의 창 효과" 를 물으면 아이템 질문이다.
+    if (champions.length === 0) {
+      const itemAnswer = buildItemAnswer(data, question);
+      if (itemAnswer) {
+        advisor.answerWithoutModel(question, itemAnswer);
+        return;
+      }
+      const mechanicsAnswer = buildMechanicsAnswer(data, question);
+      if (mechanicsAnswer) {
+        advisor.answerWithoutModel(question, mechanicsAnswer);
+        return;
+      }
+    }
+
+    // 5. 챔피언을 겨냥했는데 이름이 없으면 맥락에서 가져온다. 대화에서 방금 다룬 챔피언이
+    //    먼저, 없으면 화면에 떠 있는 것 — 표를 보면서 "W 쿨타임" 이라 물으면 화면의 W 다.
+    const slot = detectSlot(question);
+    if (champions.length === 0 && looksChampionDirected(question, slot)) {
       const onScreen = context.championIds
         .map((id) => data.cardById.get(id))
         .filter((card): card is ChampionCard => Boolean(card));
-      if (onScreen.length === 1) {
-        champions = onScreen;
-        usedNotice = notice ?? fill(copy.card.fromScreen, { name: onScreen[0].name });
-      } else if (onScreen.length >= 2) {
-        const slot = detectSlot(question);
-        if (asksComparison(question, onScreen.length)) {
-          champions = onScreen;
+      const source = recent.length ? recent : onScreen;
+      const fromWhere = recent.length ? copy.card.fromChat : copy.card.fromScreen;
+      if (source.length === 1) {
+        champions = source;
+        usedNotice = notice ?? fill(fromWhere, { name: source[0].name });
+      } else if (source.length >= 2) {
+        if (asksComparison(question, source.length)) {
+          champions = source;
         } else if (slot) {
           // VS 화면에 둘이 떠 있는데 "W 쿨타임" 이면 둘의 W 를 나란히 놓는다. 견주러 온
           // 화면에서 "누구 것?" 하고 되묻는 것보다 둘 다 보여 주는 쪽이 답이다.
-          const names = onScreen.map((card) => card.name).join("·");
-          deliver(question, buildCompareCard(onScreen, question, slot), notice ?? fill(copy.card.fromScreen, { name: names }));
+          const names = source.map((card) => card.name).join("·");
+          deliver(question, buildCompareCard(source, question, slot), notice ?? fill(fromWhere, { name: names }));
+          return;
+        } else if (recent.length) {
+          // 상성을 말한 뒤의 "스킬 쿨타임" 은 내 챔피언(앞쪽) 것이다.
+          champions = [source[0]];
+          usedNotice = notice ?? fill(fromWhere, { name: source[0].name });
+        } else {
+          // 화면에 둘이 있는데 슬롯도 비교도 아니면 누구 것인지 묻는다.
+          pendingQuestion.current = question;
+          advisor.answerWithoutModel(question, { kind: "suggestion", original: question, candidates: source, reason: "ambiguous" });
           return;
         }
       }
@@ -205,12 +269,11 @@ export function AdvisorPanel({ advisor, patch, ddragonVersion, canUseModel, onCl
       // 둘 이상을 견주는 질문은 코드가 표로 견준다. 모델이 도구로 수치를 꺼내 글로
       // 견주게 했을 때는 30초 걸리고 "665이고," 에서 끊기기도 했다.
       if (asksComparison(question, champions.length)) {
-        deliver(question, buildCompareCard(champions, question, detectSlot(question)), usedNotice);
+        deliver(question, buildCompareCard(champions, question, slot), usedNotice);
         return;
       }
       if (champions.length === 1) {
         const [card] = champions;
-        const slot = detectSlot(question);
         const spell = slot ? card.spells.find((entry) => entry.slot === slot) : undefined;
         if (spell) {
           deliver(question, buildSpellCard(card, spell, question), usedNotice);
@@ -223,22 +286,12 @@ export function AdvisorPanel({ advisor, patch, ddragonVersion, canUseModel, onCl
           advisor.answerWithoutModel(question, tagAnswer, usedNotice);
           return;
         }
-        deliver(question, { kind: "champion", card }, usedNotice);
+        // "말파이트 스킬 쿨타임": 슬롯 없이 사실 하나를 물으면 스킬 다섯 개의 그 사실을 표로.
+        const focus = detectSpellFocus(question)?.focus;
+        deliver(question, { kind: "champion", card, focus: focus && focus !== "damage" ? focus : undefined }, usedNotice);
         return;
       }
       advisor.send(question, `${system}\n\n${buildChampionsBrief(data, champions)}`, undefined, copy.noModel);
-      return;
-    }
-
-    // 4. 아이템 → 게임 규칙. 둘 다 모델을 거치지 않는다.
-    const itemAnswer = buildItemAnswer(data, question);
-    if (itemAnswer) {
-      advisor.answerWithoutModel(question, itemAnswer);
-      return;
-    }
-    const mechanicsAnswer = buildMechanicsAnswer(data, question);
-    if (mechanicsAnswer) {
-      advisor.answerWithoutModel(question, mechanicsAnswer);
       return;
     }
 
@@ -296,18 +349,22 @@ export function AdvisorPanel({ advisor, patch, ddragonVersion, canUseModel, onCl
     : [];
   const examples = (() => {
     const ex = copy.card.examples;
+    // 예시는 특정 사례("W 쿨타임")가 아니라 질문의 종류다. 하나씩 눌러 보면 무엇을
+    // 물을 수 있는지 다 보인다.
     if (contextCards.length >= 2) {
       const [a, b] = contextCards;
-      return [
-        fill(ex.vsWho, { a: a.name, b: b.name }),
-        fill(ex.vsBuy, { a: a.name, b: b.name }),
-        fill(ex.spellCd, { name: a.name }),
-        fill(ex.ultRange, { name: b.name }),
-      ];
+      const pair = { a: a.name, b: b.name };
+      return [fill(ex.vsWho, pair), fill(ex.vsStat, pair), fill(ex.vsBuy, pair), fill(ex.skillCd, { name: a.name })];
     }
     if (contextCards.length === 1) {
       const name = contextCards[0].name;
-      return [fill(ex.spellCd, { name }), fill(ex.counterBuy, { name }), fill(ex.ultRange, { name }), fill(ex.explain, { name })];
+      return [
+        fill(ex.skillCd, { name }),
+        fill(ex.skillEffect, { name }),
+        fill(ex.skillRatio, { name }),
+        fill(ex.explain, { name }),
+        fill(ex.counterBuy, { name }),
+      ];
     }
     if (context.route === "encyclopedia") {
       if (context.tab === "items") return [ex.item1, ex.item2, ex.generic4];

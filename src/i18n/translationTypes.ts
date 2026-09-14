@@ -374,13 +374,22 @@ export interface Translations {
       skills: string;
       compare: string;
       atLevel: string;
-      /** 빈 화면 예시 질문. 화면 맥락에 따라 고른다 */
+      /** 상성 카드 부제. {a}로 {b} 상대 */
+      matchup: string;
+      matchupTool: string;
+      /** 대화에서 방금 다룬 챔피언을 붙였을 때 */
+      fromChat: string;
+      /** 화면에 둘이 있는데 누구 것인지 모를 때 */
+      whichOne: string;
+      /** 빈 화면 예시. 특정 사례가 아니라 질문의 종류다. 화면 맥락에 따라 고른다 */
       examples: {
-        spellCd: string;
+        skillCd: string;
+        skillEffect: string;
+        skillRatio: string;
         counterBuy: string;
-        ultRange: string;
         explain: string;
         vsWho: string;
+        vsStat: string;
         vsBuy: string;
         item1: string;
         item2: string;
