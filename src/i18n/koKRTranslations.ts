@@ -413,6 +413,17 @@ export const koKRTranslations: Translations = {
         generic4: "cs가 뭐야?",
       },
     },
+    history: {
+      title: "대화 기록",
+      open: "대화 기록",
+      newChat: "새 대화",
+      empty: "저장된 대화가 없습니다.",
+      current: "지금 대화",
+      questions: "질문 {n}개",
+      untitled: "(제목 없음)",
+      remove: "이 대화 삭제",
+      note: "대화는 이 기기에만 저장되고 최근 20개까지 남습니다. 서버로 가지 않습니다.",
+    },
     storage: {
       title: "저장 공간",
       open: "저장 공간",

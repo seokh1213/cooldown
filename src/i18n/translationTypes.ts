@@ -403,6 +403,19 @@ export interface Translations {
         generic4: string;
       };
     };
+    /** 저장된 대화 목록. 새 대화·열기·삭제 */
+    history: {
+      title: string;
+      open: string;
+      newChat: string;
+      empty: string;
+      current: string;
+      /** 질문 {n}개 */
+      questions: string;
+      untitled: string;
+      remove: string;
+      note: string;
+    };
     /** 내려받은 모델을 보고 지우는 화면 */
     storage: {
       title: string;

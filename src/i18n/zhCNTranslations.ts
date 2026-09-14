@@ -399,6 +399,17 @@ export const zhCNTranslations: Translations = {
         generic4: "什么是 CS？",
       },
     },
+    history: {
+      title: "对话记录",
+      open: "对话记录",
+      newChat: "新对话",
+      empty: "没有已保存的对话。",
+      current: "当前对话",
+      questions: "{n} 个问题",
+      untitled: "（无标题）",
+      remove: "删除此对话",
+      note: "对话只保存在本设备（最近 20 个），不会发送到服务器。",
+    },
     storage: {
       title: "存储空间",
       open: "存储空间",

@@ -413,6 +413,17 @@ export const enUSTranslations: Translations = {
         generic4: "What is CS?",
       },
     },
+    history: {
+      title: "Conversations",
+      open: "Conversations",
+      newChat: "New conversation",
+      empty: "No saved conversations.",
+      current: "current",
+      questions: "{n} questions",
+      untitled: "(untitled)",
+      remove: "Delete this conversation",
+      note: "Conversations stay on this device (latest 20) and never reach a server.",
+    },
     storage: {
       title: "Storage",
       open: "Storage",

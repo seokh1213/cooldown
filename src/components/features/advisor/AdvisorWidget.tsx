@@ -8,8 +8,10 @@
 import { useEffect, useState } from "react";
 import { MessageCircle } from "lucide-react";
 import { useAdvisor } from "@/hooks/useAdvisor";
+import { useAdvisorHistory } from "@/hooks/useAdvisorHistory";
 import { useDeviceType } from "@/hooks/useDeviceType";
 import { useTranslation } from "@/i18n";
+import { loadAdvisorData, type AdvisorData } from "@/lib/advisor/context";
 import { AdvisorPanel } from "./AdvisorPanel";
 
 interface AdvisorWidgetProps {
@@ -28,6 +30,24 @@ export function AdvisorWidget({ patch, ddragonVersion, onOpenChange }: AdvisorWi
   const device = useDeviceType();
   const [open, setOpen] = useState(false);
   const advisor = useAdvisor();
+  // 챔피언·규칙 자료는 모델과 별개로 받는다. 저장된 대화를 되살리는 데도 필요해서
+  // 패널이 아니라 위젯이 든다 — 패널은 닫혀 있을 수 있다.
+  const [data, setData] = useState<AdvisorData | null>(null);
+  const history = useAdvisorHistory(advisor, data);
+
+  useEffect(() => {
+    let alive = true;
+    void loadAdvisorData(patch)
+      .then((loaded) => {
+        if (alive) setData(loaded);
+      })
+      .catch(() => {
+        // 자료를 못 받아도 대화는 되게 둔다. 근거 없이 답하지 말라는 지시는 페르소나에 있다.
+      });
+    return () => {
+      alive = false;
+    };
+  }, [patch]);
 
   useEffect(() => {
     onOpenChange?.(open);
@@ -50,30 +70,69 @@ export function AdvisorWidget({ patch, ddragonVersion, onOpenChange }: AdvisorWi
    */
   const canUseModel = device === "desktop" && advisor.webgpu?.supported === true;
 
-  // 이미 동의한 사용자는 대화창을 여는 순간부터 모델을 준비한다.
-  // 질문을 받고 나서 받기 시작하면 첫 답변을 몇 분씩 기다리게 된다.
+  /**
+   * 이미 동의한 사용자는 앱이 뜨는 순간부터 모델을 올린다.
+   *
+   * 예전에는 대화창을 연 뒤에 올렸다. 캐시에서 3GB 를 GPU 에 올리는 데 10초쯤 걸려,
+   * 열 때마다 진행 막대를 먼저 봐야 했다. 동의는 이미 받았고 파일은 이미 기기에 있으니
+   * 첫 화면이 그려진 뒤 한가할 때 올려 두면 열 때는 바로 답한다.
+   * 동의 전에는 절대 올리지 않는다 — 워커를 만드는 순간 내려받기가 시작된다.
+   */
   const { consented, ensureLoaded } = advisor;
   useEffect(() => {
-    if (open && consented && canUseModel) ensureLoaded();
-  }, [open, consented, canUseModel, ensureLoaded]);
+    if (!consented || !canUseModel) return;
+    const idle = window.requestIdleCallback ?? ((callback: () => void) => window.setTimeout(callback, 1500));
+    const cancel = window.cancelIdleCallback ?? window.clearTimeout;
+    const handle = idle(() => ensureLoaded());
+    return () => cancel(handle);
+  }, [consented, canUseModel, ensureLoaded]);
+
+  const loadingModel = advisor.status === "downloading" || advisor.status === "warming";
+  const percent =
+    advisor.progress.totalBytes > 0
+      ? Math.min(100, Math.round((advisor.progress.loadedBytes / advisor.progress.totalBytes) * 100))
+      : 0;
 
   return (
     <>
-      {open && <AdvisorPanel advisor={advisor} patch={patch} ddragonVersion={ddragonVersion} canUseModel={canUseModel} onClose={() => setOpen(false)} />}
+      {open && (
+        <AdvisorPanel
+          advisor={advisor}
+          data={data}
+          history={history}
+          patch={patch}
+          ddragonVersion={ddragonVersion}
+          canUseModel={canUseModel}
+          onClose={() => setOpen(false)}
+        />
+      )}
       {/* 드로어가 열리면 이 버튼은 드로어 하단의 전송 버튼 위에 겹친다. 닫기는 드로어 헤더에 있다. */}
       {!open && (
-      <button
-        type="button"
-        onClick={() => setOpen((prev) => !prev)}
-        aria-label={open ? t.advisor.close : t.advisor.open}
-        aria-expanded={open}
-        className="fixed bottom-6 right-4 z-50 flex h-14 w-14 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-lg transition-transform hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-      >
-        <MessageCircle className="h-6 w-6" />
-        {advisor.status === "generating" && (
-          <span className="absolute right-1 top-1 h-3 w-3 animate-pulse rounded-full bg-emerald-400" />
-        )}
-      </button>
+        <button
+          type="button"
+          onClick={() => setOpen((prev) => !prev)}
+          aria-label={open ? t.advisor.close : t.advisor.open}
+          aria-expanded={open}
+          className="fixed bottom-6 right-4 z-50 flex h-14 w-14 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-lg transition-transform hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+        >
+          {/* 모델을 올리는 동안은 테두리가 진행률만큼 찬다. 열지 않아도 준비 상태가 보인다. */}
+          {loadingModel && (
+            <span
+              aria-hidden
+              className="absolute -inset-1 rounded-full"
+              style={{
+                background: `conic-gradient(var(--color-primary) ${percent}%, transparent 0)`,
+                mask: "radial-gradient(farthest-side, transparent calc(100% - 3px), #000 calc(100% - 2px))",
+                WebkitMask: "radial-gradient(farthest-side, transparent calc(100% - 3px), #000 calc(100% - 2px))",
+                opacity: 0.55,
+              }}
+            />
+          )}
+          <MessageCircle className="h-6 w-6" />
+          {advisor.status === "generating" && (
+            <span className="absolute right-1 top-1 h-3 w-3 animate-pulse rounded-full bg-emerald-400" />
+          )}
+        </button>
       )}
     </>
   );
