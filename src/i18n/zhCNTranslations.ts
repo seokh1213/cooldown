@@ -390,6 +390,7 @@ export const zhCNTranslations: Translations = {
       goVsOne: "在 VS 页面打开 {name}",
       goRunes: "在符文百科中查看",
       goSummoner: "在召唤师技能百科中查看",
+      goItem: "在装备百科中查看 {name}",
       examples: {
         skillCd: "{name} 技能冷却",
         skillEffect: "{name} 技能效果",

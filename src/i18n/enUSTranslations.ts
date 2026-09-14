@@ -404,6 +404,7 @@ export const enUSTranslations: Translations = {
       goVsOne: "Open {name} in VS",
       goRunes: "Open in rune encyclopedia",
       goSummoner: "Open in summoner spell encyclopedia",
+      goItem: "Open {name} in item encyclopedia",
       examples: {
         skillCd: "{name} ability cooldowns",
         skillEffect: "{name} ability effects",

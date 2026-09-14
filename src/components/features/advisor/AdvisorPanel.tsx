@@ -16,7 +16,7 @@ import {
   buildMatchupTips,
   championNotes,
   matchupNotes,
-  buildItemAnswer,
+  buildItemCard,
   buildTagAnswer,
   buildMechanicsAnswer,
   detectSlot,
@@ -233,7 +233,7 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
     // 4. 이름이 아예 없다. 아이템·게임 규칙 이름이면 그것이 답이다. 맥락 챔피언을 붙이기
     //    전에 본다 — 말파이트 표를 보며 "쇼진의 창 효과" 를 물으면 아이템 질문이다.
     if (champions.length === 0) {
-      const itemAnswer = buildItemAnswer(data, question);
+      const itemAnswer = buildItemCard(data, question);
       if (itemAnswer) {
         advisor.answerWithoutModel(question, itemAnswer);
         return;
@@ -446,6 +446,8 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
         return copy.card.goRunes;
       case "summoner":
         return copy.card.goSummoner;
+      case "item":
+        return fill(copy.card.goItem, { name: link.name });
     }
   };
 

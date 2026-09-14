@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import { Search } from "lucide-react";
 import type { DataLocale, StaticDataSources } from "@/data/contracts/staticData";
 import { getNormalizedItems } from "@/data/queries/gameDataQueries";
@@ -96,6 +97,8 @@ export function ItemsTab({ patchVersion, sources, ddragonVersion, lang }: ItemsT
   const [selectedItem, setSelectedItem] = useState<Item | null>(null);
   const [loading, setLoading] = useState(false);
   const [mobileDetailOpen, setMobileDetailOpen] = useState(false);
+  const [searchParams] = useSearchParams();
+  const requestedItemId = searchParams.get("item");
 
   useEffect(() => {
     let cancelled = false;
@@ -115,6 +118,15 @@ export function ItemsTab({ patchVersion, sources, ddragonVersion, lang }: ItemsT
       cancelled = true;
     };
   }, [patchVersion, sources, lang]);
+
+  // 도우미 답의 "아이템 백과에서 보기" 링크가 ?item=<id> 로 들어온다. 목록이 오면 그 아이템을 고른다.
+  useEffect(() => {
+    if (!items || !requestedItemId) return;
+    const requested = items.find((item) => item.id === requestedItemId);
+    if (!requested) return;
+    setSelectedItem(requested);
+    if (isMobile) setMobileDetailOpen(true);
+  }, [items, requestedItemId, isMobile]);
 
   const itemMap = useMemo(
     () => new Map((items ?? []).map((item) => [item.id, item])),
