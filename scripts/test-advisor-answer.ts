@@ -12,6 +12,8 @@ import { indexRules, type RuleNotes } from "./llm/lib/rules";
 import { PUBLIC_DATA_ROOT, resolvePatchVersion } from "./llm/lib/data";
 import {
   answerChampionIds,
+  answerKey,
+  answerLinks,
   asksComparison,
   asksMatchup,
   asksSkillsOverview,
@@ -158,6 +160,9 @@ assert.equal(detectSpellFocus("럼블 E 뭐야"), undefined, "사실을 안 짚�
     "둘 다 맞게 썼으면 오타가 없다",
   );
 
+  // 정식 이름 그 자체는 오타가 아니다. "오공" 이 오른·오리아나 후보로 잡혔다.
+  assert.equal(suggestChampions("오공 Q 쿨타임", cards, nicknames(cards), new Set(["MonkeyKing"])), undefined);
+
   // 줄임말 표를 함께 줘도 게임 어휘는 후보가 아니다. "스킬" 이 "스카"(스카너) 로 잡혔다.
   const withNicks = suggestChampions("말파이트 스킬 쿨타임", cards, nicknames(cards), new Set(["Malphite"]));
   assert.equal(withNicks, undefined, `스킬 → ${withNicks?.candidates.map((c) => c.name).join(",")}`);
@@ -215,6 +220,18 @@ assert.equal(detectSpellFocus("럼블 E 뭐야"), undefined, "사실을 안 짚�
 // ── 대화 맥락: 상성·이름 생략 ─────────────────────────────────────────────
 {
   assert.ok(asksMatchup("제이스랑 상대한다생각하면 어떻게되는거지"));
+  assert.ok(asksMatchup("오공이랑 말파이트랑 싸우면 누가유리해?"));
+  {
+    const links = answerLinks(buildCompareAnswer([card("MonkeyKing"), card("Malphite")], "누가 유리해", undefined, { matchup: true }));
+    assert.deepEqual(links, [{ kind: "vs", to: "/vs?a=MonkeyKing&t=Malphite", names: ["오공", "말파이트"] }]);
+    assert.deepEqual(answerLinks(buildRuleAnswer(ruleOf("점화"), ["정복자", "점화"])), [{ kind: "summoner", to: "/encyclopedia?tab=summoner" }]);
+    // 같은 자료인지 가리는 열쇠. 슬롯이 다르면 다른 카드다.
+    assert.notEqual(
+      answerKey(buildSpellAnswer(card("Malphite"), spellOf("Malphite", "Q"), "Q 쿨")),
+      answerKey(buildSpellAnswer(card("Malphite"), spellOf("Malphite", "W"), "W 쿨")),
+    );
+    assert.equal(answerKey({ kind: "champion", card: card("Malphite") }), answerKey({ kind: "champion", card: card("Malphite"), notes: { playing: [], against: [] } }));
+  }
   assert.ok(asksMatchup("럼블 만나면 어떻게 해?"));
   assert.ok(!asksMatchup("제이스 설명해줘"));
 

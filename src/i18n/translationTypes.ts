@@ -387,6 +387,17 @@ export interface Translations {
       notesSource: string;
       /** 노트 {count}건 더 */
       moreNotes: string;
+      /** 자료 패널(L1) */
+      reference: string;
+      referenceEmpty: string;
+      /** 직전 답과 같은 카드 */
+      sameReference: string;
+      openCard: string;
+      /** 바로 가기 */
+      goVs: string;
+      goVsOne: string;
+      goRunes: string;
+      goSummoner: string;
       /** 빈 화면 예시. 특정 사례가 아니라 질문의 종류다. 화면 맥락에 따라 고른다 */
       examples: {
         skillCd: string;
