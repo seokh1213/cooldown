@@ -33,6 +33,8 @@ interface AdvisorAnswerCardProps {
   patch: string;
   /** 오타 후보를 골랐을 때. 패널이 그 이름으로 다시 묻는다. */
   onPickChampion?: (championId: string) => void;
+  /** 카드 안의 화면 링크를 눌렀을 때. 모바일은 드로어가 전체 화면이라 패널이 닫아 준다. */
+  onNavigate?: () => void;
 }
 
 function fill(template: string, values: Record<string, string | number>): string {
@@ -106,7 +108,7 @@ function Disclosure({ summary, children }: { summary: string; children: React.Re
   );
 }
 
-export function AdvisorAnswerCard({ answer, ddragonVersion, patch, onPickChampion }: AdvisorAnswerCardProps) {
+export function AdvisorAnswerCard({ answer, ddragonVersion, patch, onPickChampion, onNavigate }: AdvisorAnswerCardProps) {
   const { t } = useTranslation();
   const copy = t.advisor.card;
 
@@ -171,7 +173,7 @@ export function AdvisorAnswerCard({ answer, ddragonVersion, patch, onPickChampio
         footer={
           <>
             <span>{fill(copy.patch, { patch })}</span>
-            <Link to={`/vs?a=${answer.championId}`} className="text-primary hover:underline">
+            <Link to={`/vs?a=${answer.championId}`} onClick={onNavigate} className="text-primary hover:underline">
               {copy.openInVs}
             </Link>
           </>
@@ -208,7 +210,7 @@ export function AdvisorAnswerCard({ answer, ddragonVersion, patch, onPickChampio
     const footer = (
       <>
         <span>{fill(copy.patch, { patch })}</span>
-        <Link to={`/vs?a=${card.id}`} className="text-primary hover:underline">
+        <Link to={`/vs?a=${card.id}`} onClick={onNavigate} className="text-primary hover:underline">
           {copy.openInVs}
         </Link>
       </>
@@ -344,7 +346,7 @@ export function AdvisorAnswerCard({ answer, ddragonVersion, patch, onPickChampio
         footer={
           <>
             <span>{fill(copy.patch, { patch })}</span>
-            <Link to={vsLink} className="text-primary hover:underline">
+            <Link to={vsLink} onClick={onNavigate} className="text-primary hover:underline">
               {copy.openInVs}
             </Link>
           </>

@@ -389,6 +389,8 @@ export interface Translations {
       moreNotes: string;
       /** 자료 패널(L1) */
       reference: string;
+      toggleReference: string;
+      collapseReference: string;
       referenceEmpty: string;
       /** 직전 답과 같은 카드 */
       sameReference: string;

@@ -23,9 +23,11 @@ interface AdvisorWidgetProps {
    * 드로어가 페이지를 옆으로 밀어야 표를 가리지 않으므로 레이아웃이 알아야 한다.
    */
   onOpenChange?: (open: boolean) => void;
+  /** 드로어 폭이 바뀌면(자료 패널 접기/펴기, 화면 폭) 레이아웃이 페이지를 그만큼 민다. */
+  onWidthChange?: (px: number) => void;
 }
 
-export function AdvisorWidget({ patch, ddragonVersion, onOpenChange }: AdvisorWidgetProps) {
+export function AdvisorWidget({ patch, ddragonVersion, onOpenChange, onWidthChange }: AdvisorWidgetProps) {
   const { t } = useTranslation();
   const device = useDeviceType();
   const [open, setOpen] = useState(false);
@@ -108,6 +110,7 @@ export function AdvisorWidget({ patch, ddragonVersion, onOpenChange }: AdvisorWi
           ddragonVersion={ddragonVersion}
           canUseModel={canUseModel}
           onClose={() => setOpen(false)}
+          onWidthChange={onWidthChange}
         />
       )}
       {/* 드로어가 열리면 이 버튼은 드로어 하단의 전송 버튼 위에 겹친다. 닫기는 드로어 헤더에 있다. */}
