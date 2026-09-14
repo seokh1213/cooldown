@@ -120,7 +120,7 @@ export function AdvisorWidget({ patch, ddragonVersion, onOpenChange, onWidthChan
           onClick={() => setOpen((prev) => !prev)}
           aria-label={open ? t.advisor.close : t.advisor.open}
           aria-expanded={open}
-          className="fixed bottom-6 right-4 z-50 flex h-14 w-14 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-lg transition-transform hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+          className="fixed bottom-6 right-4 z-50 flex h-14 w-14 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-lg transition-[background-color,transform,box-shadow] duration-150 hover:bg-primary-hover hover:shadow-xl hover:shadow-primary/20 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring/40 focus-visible:ring-offset-2 active:scale-[0.98] motion-reduce:transition-none"
         >
           {/* 모델을 올리는 동안은 테두리가 진행률만큼 찬다. 열지 않아도 준비 상태가 보인다. */}
           {loadingModel && (

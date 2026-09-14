@@ -584,7 +584,7 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
             onClick={() => setRefTurnId(turn.id)}
             ref={active ? (node) => node?.scrollIntoView({ block: "nearest", inline: "nearest" }) : undefined}
             title={`${referenceTitle(answer).title} · ${referenceTitle(answer).kind}`}
-            className={`flex shrink-0 items-center gap-1 whitespace-nowrap border-b-2 px-2 py-1.5 ${
+            className={`flex shrink-0 items-center gap-1 whitespace-nowrap rounded-t-md border-b-2 px-2 py-1.5 transition-colors focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring/40 ${
               active ? "border-primary font-semibold text-foreground" : "border-transparent text-muted-foreground hover:text-foreground"
             }`}
           >
@@ -636,7 +636,7 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
                 {referenceTitle(refTurn.answer).title} · {referenceTitle(refTurn.answer).kind}
               </span>
             )}
-            <Button variant="ghost" size="icon" className="h-7 w-7 shrink-0" onClick={toggleReference} aria-label={copy.card.collapseReference}>
+            <Button variant="ghost" size="icon" className="h-7 w-7 shrink-0 text-muted-foreground hover:text-foreground" onClick={toggleReference} aria-label={copy.card.collapseReference}>
               <PanelLeftClose className="h-4 w-4" />
             </Button>
           </div>
@@ -655,7 +655,7 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
       <header className="flex items-center justify-between border-b px-4 py-3">
         <div className="flex items-center gap-2">
           {view !== "chat" && (
-            <Button variant="ghost" size="icon" className="-ml-2 h-7 w-7" onClick={() => setView("chat")} aria-label={copy.storage.back}>
+            <Button variant="ghost" size="icon" className="-ml-2 h-7 w-7 text-muted-foreground hover:text-foreground" onClick={() => setView("chat")} aria-label={copy.storage.back}>
               <ChevronLeft className="h-4 w-4" />
             </Button>
           )}
@@ -688,31 +688,31 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
                 onClick={() => (wide ? toggleReference() : setView("card"))}
                 aria-label={copy.card.toggleReference}
                 aria-pressed={wide ? referenceOpen : undefined}
-                className={wide && referenceOpen ? "text-primary" : ""}
+                className={wide && referenceOpen ? "text-primary hover:bg-primary/10 hover:text-primary" : "text-muted-foreground hover:text-foreground"}
               >
                 {wide && referenceOpen ? <PanelLeftClose className="h-4 w-4" /> : <PanelLeftOpen className="h-4 w-4" />}
               </Button>
             )}
             {/* 대화는 지우는 것이 아니라 새로 시작한다. 지난 대화는 기록에 남아 다시 열 수 있다. */}
             {advisor.turns.length > 0 && (
-              <Button variant="ghost" size="icon" disabled={busy} onClick={history.startNew} aria-label={copy.history.newChat}>
+              <Button variant="ghost" size="icon" disabled={busy} onClick={history.startNew} aria-label={copy.history.newChat} className="text-muted-foreground hover:text-foreground">
                 <MessageSquarePlus className="h-4 w-4" />
               </Button>
             )}
-            <Button variant="ghost" size="icon" onClick={() => setView("history")} aria-label={copy.history.open}>
+            <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-foreground" onClick={() => setView("history")} aria-label={copy.history.open}>
               <History className="h-4 w-4" />
             </Button>
             {/* 3GB 는 받아 두면 계속 남는다. 지울 길을 눈에 보이는 곳에 둔다. */}
-            <Button variant="ghost" size="icon" onClick={() => setView("storage")} aria-label={copy.storage.open}>
+            <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-foreground" onClick={() => setView("storage")} aria-label={copy.storage.open}>
               <HardDrive className="h-4 w-4" />
             </Button>
-            <Button variant="ghost" size="icon" onClick={onClose} aria-label={copy.close}>
+            <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-foreground" onClick={onClose} aria-label={copy.close}>
               <X className="h-4 w-4" />
             </Button>
           </div>
         )}
         {(view !== "chat" || showingConsent) && (
-          <Button variant="ghost" size="icon" onClick={onClose} aria-label={copy.close}>
+          <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-foreground" onClick={onClose} aria-label={copy.close}>
             <X className="h-4 w-4" />
           </Button>
         )}
@@ -829,7 +829,7 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
                       key={example}
                       type="button"
                       onClick={() => ask(example)}
-                      className="rounded-md border bg-background px-2.5 py-1 text-xs text-foreground hover:bg-muted"
+                      className="rounded-md border bg-background px-2.5 py-1 text-xs text-foreground transition-colors hover:border-primary/50 hover:bg-accent hover:text-accent-foreground"
                     >
                       {example}
                     </button>
@@ -854,7 +854,7 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
                   key={link.to}
                   to={link.to}
                   onClick={onNavigate}
-                  className="inline-flex items-center gap-1 rounded-md border border-primary/40 px-2.5 py-1 text-xs font-medium text-primary hover:bg-primary/5"
+                  className="inline-flex items-center gap-1 rounded-md border border-primary/40 px-2.5 py-1 text-xs font-medium text-primary transition-colors hover:bg-primary/10"
                 >
                   {linkLabel(link)}
                   <ArrowRight className="h-3 w-3" />
@@ -958,7 +958,7 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
                         type="button"
                         onClick={() => showReference(turn.id)}
                         aria-label={copy.card.openCard}
-                        className={`flex min-w-0 max-w-full items-center gap-2 rounded-md border px-2.5 py-1.5 text-left text-xs hover:bg-muted ${
+                        className={`flex min-w-0 max-w-full items-center gap-2 rounded-md border px-2.5 py-1.5 text-left text-xs transition-colors hover:bg-accent hover:text-accent-foreground ${
                           wide && refTurn?.id === turn.id ? "border-primary bg-primary/5" : "bg-background"
                         } ${sameAsPrevious ? "text-muted-foreground" : ""}`}
                       >
@@ -1042,7 +1042,7 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
                       className={
                         turn.rating === "up"
                           ? "text-emerald-400"
-                          : "opacity-50 transition-opacity hover:opacity-100"
+                          : "text-muted-foreground transition-colors hover:text-foreground"
                       }
                     >
                       <ThumbsUp className="h-3.5 w-3.5" />
@@ -1055,7 +1055,7 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
                       className={
                         turn.rating === "down"
                           ? "text-destructive"
-                          : "opacity-50 transition-opacity hover:opacity-100"
+                          : "text-muted-foreground transition-colors hover:text-foreground"
                       }
                     >
                       <ThumbsDown className="h-3.5 w-3.5" />
@@ -1088,7 +1088,7 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
               }}
               rows={1}
               placeholder={placeholder}
-              className="max-h-32 min-h-9 flex-1 resize-none rounded-md border bg-transparent px-3 py-2 text-sm outline-none focus-visible:ring-1 focus-visible:ring-ring"
+              className="max-h-32 min-h-9 flex-1 resize-none rounded-md border bg-transparent px-3 py-2 text-sm outline-hidden transition-colors focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-ring/40"
             />
             {busy ? (
               <Button size="icon" variant="outline" onClick={advisor.stop} aria-label={copy.stop}>
