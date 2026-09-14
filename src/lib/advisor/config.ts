@@ -1,13 +1,26 @@
 /**
  * 브라우저 상성 코치 설정
  *
- * 모델은 로컬 평가에서 고른 것을 그대로 쓴다. 10개 매치업 평가에서
- * gemma4:e2b 가 적중 64/66, 스킬 소유자 오류 0, 매치업당 16초로
- * 더 큰 e4b(65/66, 33초)와 품질 차이가 적으면서 두 배 빨랐다.
- * 브라우저에서는 체감 지연이 품질보다 크게 작용하므로 E2B 를 택했다.
+ * 모델은 로컬 평가에서 고른 것을 그대로 쓴다. 추론만 Ollama 로 돌리고 프롬프트는
+ * 브라우저와 같은 `buildCommentaryPrompt` 를 쓰므로 결과가 그대로 이전된다.
  *
- * `onnx-community/gemma-4-E2B-it-ONNX` 는 구글 공식 가중치의 ONNX 변환이고
- * Ollama 의 `gemma4:e2b` 와 같은 모델이다. 그래서 로컬 평가 결과가 그대로 이전된다.
+ * 잰 것은 **내용**이다. 카드에는 스킬마다 effects 가 붙어 있으므로, 해설이
+ * "Q 지진의 파편으로 에어본" 처럼 잘못된 짝을 만들었는지 대조할 수 있다.
+ * 16챔피언 기준이다.
+ *
+ *   모델                맞은 짝  틀린 짝  정확도  답마다 짚은 스킬  tok/s  길이
+ *   gemma4:e2b (구)       21       3      88%        1.3개        68.7   110자
+ *   qwen3:4b-instruct     63       6      91%        3.7개        49.7   182자
+ *   exaone3.5:2.4b        49       1      98%        3.1개        70.3   368자
+ *
+ * 규칙 준수(숫자·문체·지어낸 이름)만 보던 잣대로는 gemma 가 멀쩡해 보였다.
+ * 정확해서가 아니라 말을 안 해서였다. 답마다 실제 스킬을 1.3개밖에 안 짚고
+ * "스킬을 사용하면 보호막을 얻고" 처럼 얼버무린다. 어느 스킬인지 말하지 않으면
+ * 틀릴 일도 없다. 맞은 주장 수가 가장 적고 정확도도 가장 낮았다.
+ *
+ * exaone 은 태그 짝이 가장 정확하지만 산문에서 샌다. 말파이트를 "그녀" 라 하고
+ * 야스오 낭인의 길이 "높은 방어력을 제공해 팀을 보호한다" 고 썼다. 태그 대조로는
+ * 안 잡히는 오류라 98% 는 그만큼 깎아서 봐야 한다. 길이도 두 배다.
  */
 
 export interface AdvisorModel {
@@ -25,14 +38,32 @@ export interface AdvisorModel {
 /**
  * 실제로 쓰는 모델.
  *
- * 로컬 평가 10개 매치업에서 gemma4:e2b 가 적중 64/66, 스킬 소유자 오류 0,
- * 매치업당 16초였다. 더 큰 e4b(65/66, 33초)와 품질 차이가 적으면서 두 배 빨라 이쪽을 골랐다.
- * ONNX 변환본은 Ollama 의 `gemma4:e2b` 와 같은 가중치라 평가 결과가 그대로 이전된다.
+ * 맞은 주장이 63개로 쓰던 모델의 세 배다. 야스오에서 다섯 스킬을 전부 제자리에
+ * 붙였다 — 낭인의 길에 보호막, 강철 폭풍에 에어본, 질풍검에 돌진, 바람 장막에
+ * 투사체 차단. 해설이 할 일이 "무엇으로 이기고 어디가 약한가" 를 짚는 것이므로
+ * 스킬을 몇 개나 옳게 짚느냐가 곧 쓸모다.
+ *
+ * 작은 모델로 내려간 것이 아니다. 유효 2.3B 에서 4B 로 올라가면서 내려받기는
+ * 2,986MB 에서 2,764MB 로 줄었다. gemma 는 vocab 이 262,144 개라 임베딩 표에만
+ * 1.59GB 를 쓰는데 그중 한글이 든 토큰은 1.7% 였다.
+ *
+ * 속도는 **브라우저에서 직접 쟀다.** Ollama 순위가 그대로 오지 않는다.
+ * Ollama(Metal)에서는 gemma 68.7 > qwen3 49.7 인데, WebGPU 에서는 뒤집힌다.
+ *
+ *   qwen3 4B    예열 후 40토큰 12.7초 = 3.1 tok/s   내려받기 2,764MB
+ *   gemma4 E2B  예열 후 51토큰 20.8초 = 2.5 tok/s   내려받기 2,986MB
+ *
+ * gemma 는 디코더와 임베딩을 세션 둘로 나눠 싣는데(decoder_model_merged +
+ * embed_tokens) 그 왕복이 붙는 것으로 보인다. qwen3 는 단일 세션이다.
+ * 결국 브라우저에서 더 빠르고, 더 작고, 내용도 낫다.
+ *
+ * WebGPU 어댑터는 maxBufferSize·maxStorageBufferBindingSize 가 각각 4GiB 이고
+ * shader-f16 을 지원했다. 2.7GB 짜리를 올리는 데 모자라지 않는다.
  */
 export const ADVISOR_MODEL: AdvisorModel = {
-  id: "onnx-community/gemma-4-E2B-it-ONNX",
+  id: "onnx-community/Qwen3-4B-Instruct-2507-ONNX",
   dtype: "q4f16",
-  downloadMb: 2970,
+  downloadMb: 2764,
 };
 
 /**
@@ -48,20 +79,15 @@ export const SMOKE_MODEL: AdvisorModel = {
 };
 
 /**
- * 바꿔 달아 보려는 후보. 기본값이 아니라 재보기 위한 자리다.
+ * 속도와 용량을 사고 싶을 때. `?advisorModel=exaone`
  *
- * 지금 쓰는 Gemma 4 E2B 는 2.97GB 인데 그중 임베딩 테이블이 1.59GB 다. vocab 이
- * 262,144 개이고 그중 한글이 든 토큰은 1.7% 뿐이다. 디코더보다 큰 표를 싣고
- * 다니면서 한국어 몫은 그 정도다. 게다가 Gemma 3n·4 계열은 한국어 벤치마크
- * 점수를 공표한 적이 없어, 지금 한국어 실력은 근거 없이 믿고 있는 상태다.
+ * 태그 짝은 98% 로 가장 정확하고 70.3 tok/s 에 1.73GB 로 가장 작다. vocab
+ * 102,400 중 한글 토큰이 33.3% 라 한국어를 자당 0.50토큰으로 쪼갠다. 후보 중
+ * 가장 촘촘하다.
  *
- * EXAONE 3.5 는 vocab 102,400 중 한글 토큰이 33.3% 고 LogicKor 8.51 이다.
- * 용량은 1.73GB 로 절반 가까이 준다. 같은 문장을 더 적은 토큰으로 쓰므로
- * 체감 속도도 같이 오를 것으로 본다.
- *
- * 다만 변환 시점이 2025-03 이라 transformers.js v4 의 어텐션 융합 이전 export 다.
- * **적재는 되어도 WebGPU 가속 경로를 못 타 오히려 느릴 수 있다.** 그것만 재면
- * 결론이 나므로 기본값을 바꾸지 않고 스위치로만 둔다.
+ * 기본값으로 올리지 않은 이유는 둘이다. 평균 368자로 기본값의 두 배이고,
+ * 태그 대조로는 안 잡히는 산문 오류가 있다. 말파이트를 "그녀" 라 부르고
+ * 야스오 낭인의 길을 "높은 방어력을 제공해 팀을 보호한다" 고 썼다.
  */
 export const EXAONE_MODEL: AdvisorModel = {
   id: "onnx-community/EXAONE-3.5-2.4B-Instruct",
@@ -70,21 +96,22 @@ export const EXAONE_MODEL: AdvisorModel = {
 };
 
 /**
- * 품질 하한을 재보는 자리.
+ * 쓰던 모델. `?advisorModel=gemma`
  *
- * 모델은 해설 두세 문장과 검색어만 쓰고 수치는 입에 담지 못한다. 그렇다면
- * 어디까지 작아져도 되는지가 실제 질문이다. 0.47GB 는 지금의 6분의 1 이다.
+ * 되돌릴 자리를 남겨 둔다. 새 기본값이 문제를 내면 주소 한 줄로 예전 동작이다.
+ * 브라우저에서 재보니 더 크고(2,986MB) 더 느리다(2.5 tok/s). 빠를 것이라
+ * 여겼던 것은 Ollama 기준이었고, WebGPU 에서는 순위가 뒤집혔다.
  */
-export const TINY_MODEL: AdvisorModel = {
-  id: "onnx-community/Qwen3.5-0.8B-Text-ONNX",
+export const GEMMA_MODEL: AdvisorModel = {
+  id: "onnx-community/gemma-4-E2B-it-ONNX",
   dtype: "q4f16",
-  downloadMb: 470,
+  downloadMb: 2986,
 };
 
 const SWAPPABLE: Record<string, AdvisorModel> = {
   smoke: SMOKE_MODEL,
   exaone: EXAONE_MODEL,
-  tiny: TINY_MODEL,
+  gemma: GEMMA_MODEL,
 };
 
 export function resolveModel(): AdvisorModel {
@@ -107,9 +134,9 @@ export function resolveModel(): AdvisorModel {
  * 상한은 **모델이 스스로 멈추지 않을 때만** 작동한다. 보통 답은 종료 토큰에서
  * 끝나므로 올려도 평소 속도는 그대로고, 길어야 할 답만 살아남는다.
  *
- * 값은 걸리는 시간으로 정했다. 같은 가중치를 Ollama(Metal)에서 재니 66.8 tok/s 였고
- * 브라우저 WebGPU 는 그보다 느리다. 1800 이면 로컬에서 27초, 브라우저에서 넉넉잡아
- * 2분 안쪽이다. 그 이상은 기다림이 답보다 커진다. 더 길어지면 중단 버튼이 있다.
+ * 값은 걸리는 시간으로 정했다. 브라우저 WebGPU 에서 직접 재니 3.1 tok/s 였다.
+ * 해설은 보통 40~60토큰에서 끝나 13~20초다. 1800 은 스스로 멈추지 않을 때만
+ * 걸리는 상한이고, 거기까지 가면 10분이 넘는다. 그래서 중단 버튼이 필요하다.
  */
 export const MAX_NEW_TOKENS = 1800;
 
