@@ -16,6 +16,7 @@ export const APP_STORAGE_KEYS = {
   selectedChampions: "cooldown_selected_champions",
   tabs: "cooldown_tabs",
   selectedTabId: "cooldown_selected_tab_id",
+  favoriteChampionIds: "cooldown:favorite-champion-ids",
   championSelectorScroll: "cooldown:champion-selector-scroll",
 } as const;
 
@@ -138,6 +139,14 @@ export function decodeSelectedChampions(
     (entry.key === undefined || typeof entry.key === "string")
   )) return null;
   return value as StoredSelectedChampionList;
+}
+
+export function decodeFavoriteChampionIds(value: unknown): string[] | null {
+  if (!Array.isArray(value)) return null;
+  if (!value.every((id) => typeof id === "string" && id.length > 0)) {
+    return null;
+  }
+  return [...new Set(value)];
 }
 
 export function decodeTabs(value: unknown): Tab[] | null {

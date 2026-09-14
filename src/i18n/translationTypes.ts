@@ -228,6 +228,12 @@ export interface Translations {
     emptyList: string;
     loading: string;
     closeButton: string;
+    favoriteSection: string;
+    allChampionsSection: string;
+    editFavorites: string;
+    finishEditingFavorites: string;
+    addFavorite: string;
+    removeFavorite: string;
   };
   skillTooltip: {
     passive: string;

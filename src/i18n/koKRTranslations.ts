@@ -251,6 +251,12 @@ export const koKRTranslations: Translations = {
       emptyList: "챔피언 목록이 비어있습니다",
       loading: "로딩 중...",
       closeButton: "챔피언 선택기 닫기",
+      favoriteSection: "즐겨찾기",
+      allChampionsSection: "전체 챔피언",
+      editFavorites: "즐겨찾기 편집",
+      finishEditingFavorites: "즐겨찾기 편집 완료",
+      addFavorite: "{champion} 즐겨찾기 추가",
+      removeFavorite: "{champion} 즐겨찾기 해제",
     },
     skillTooltip: {
       passive: "패시브",

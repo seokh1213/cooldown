@@ -163,7 +163,7 @@ function Nav({
           )}
           {/* Version without mismatch - desktop only */}
           {patchVersion && !isVersionMismatch && (
-            <div className="hidden sm:block text-xs font-medium leading-none text-muted-foreground/60">
+            <div className="hidden sm:block text-xs font-medium leading-none text-muted-foreground">
               v{patchVersion}
             </div>
           )}
@@ -173,7 +173,7 @@ function Nav({
               size="icon"
               onClick={onThemeToggle}
               className={cn(
-                "size-11 transition-colors text-muted-foreground/60 hover:bg-muted hover:text-muted-foreground sm:size-10"
+                "size-11 transition-colors text-muted-foreground hover:bg-muted hover:text-foreground sm:size-10"
               )}
               aria-label={theme === "dark" ? t.nav.theme.switchToLight : t.nav.theme.switchToDark}
               title={theme === "dark" ? t.nav.theme.switchToLight : t.nav.theme.switchToDark}
@@ -193,7 +193,7 @@ function Nav({
                 size="icon"
                 onClick={() => setTutorialOpen(true)}
                 className={cn(
-                  "size-11 transition-colors text-muted-foreground/60 hover:bg-muted hover:text-muted-foreground sm:size-10"
+                  "size-11 transition-colors text-muted-foreground hover:bg-muted hover:text-foreground sm:size-10"
                 )}
                 aria-label={t.nav.tutorial.title}
                 title={t.nav.tutorial.title}
@@ -231,7 +231,7 @@ function Nav({
                 variant="ghost"
                 size="icon"
                 className={cn(
-                  "size-11 transition-colors text-muted-foreground/60 hover:bg-muted hover:text-muted-foreground sm:size-10"
+                  "size-11 transition-colors text-muted-foreground hover:bg-muted hover:text-foreground sm:size-10"
                 )}
                 aria-label={t.nav.language.selectTitle}
                 title={t.nav.language.selectTitle}

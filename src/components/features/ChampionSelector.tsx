@@ -14,11 +14,13 @@ import { VisuallyHidden } from "@/components/ui/visually-hidden";
 import { useChampionSearch } from "@/hooks/useChampionSearch";
 import { useDebouncedValue } from "@/hooks/useDebouncedValue";
 import { useScrollPosition } from "@/hooks/useScrollPosition";
+import { useFavoriteChampions } from "@/hooks/useFavoriteChampions";
 import { useTranslation } from "@/i18n";
 import {
   ChampionSearchHeader,
   ChampionSelectorList,
 } from "./ChampionSelectorContent";
+import { partitionFavoriteChampions } from "./championFavorites";
 
 interface ChampionSelectorProps {
   championList: Champion[] | null;
@@ -58,6 +60,7 @@ function ChampionSelector({
   }, [isControlled, controlledOnOpenChange]);
   const [searchValue, setSearchValue] = useState("");
   const [focusedIndex, setFocusedIndex] = useState(-1);
+  const [favoriteEditing, setFavoriteEditing] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const listRef = useRef<HTMLDivElement>(null);
@@ -66,7 +69,16 @@ function ChampionSelector({
   const isModal = onClose !== undefined;
 
   const debouncedSearch = useDebouncedValue(searchValue, 200);
-  const availableChampions = useChampionSearch(championList, debouncedSearch);
+  const searchedChampions = useChampionSearch(championList, debouncedSearch);
+  const { favoriteChampionIdSet, toggleFavoriteChampion } =
+    useFavoriteChampions();
+  const availableChampions = useMemo(() => {
+    const sections = partitionFavoriteChampions(
+      searchedChampions,
+      favoriteChampionIdSet,
+    );
+    return [...sections.favorites, ...sections.others];
+  }, [searchedChampions, favoriteChampionIdSet]);
 
   // 선택된 챔피언 ID Set을 메모이제이션하여 O(1) 체크 가능
   const selectedChampionIds = useMemo(() => {
@@ -96,6 +108,7 @@ function ChampionSelector({
         setIsOpen(false);
         setSearchValue("");
         setFocusedIndex(-1);
+        setFavoriteEditing(false);
       }
     },
     [setIsOpen]
@@ -116,11 +129,18 @@ function ChampionSelector({
     if (!open) {
       setSearchValue("");
       setFocusedIndex(-1);
+      setFavoriteEditing(false);
       if (onClose) {
         onClose();
       }
     }
   }, [onClose, setIsOpen]);
+
+  const handleToggleFavorite = useCallback((champion: Champion) => {
+    toggleFavoriteChampion(champion.id);
+    setFocusedIndex(-1);
+    listRef.current?.scrollTo({ top: 0 });
+  }, [toggleFavoriteChampion]);
 
   const handleSelect = useCallback(
     (champion: Champion) => {
@@ -139,6 +159,7 @@ function ChampionSelector({
         // 모달이 아닐 때만 닫기
         setIsOpen(false);
         setFocusedIndex(-1);
+        setFavoriteEditing(false);
         document.body.style.overflow = "";
       }
     },
@@ -233,6 +254,7 @@ function ChampionSelector({
               onClick={() => {
                 setIsOpen(false);
                 setSearchValue("");
+                setFavoriteEditing(false);
                 document.body.style.overflow = "";
               }}
               aria-hidden="true"
@@ -255,8 +277,11 @@ function ChampionSelector({
               onClose={() => {
                 setIsOpen(false);
                 setSearchValue("");
+                setFavoriteEditing(false);
                 document.body.style.overflow = "";
               }}
+              favoriteEditing={favoriteEditing}
+              onFavoriteEditingChange={setFavoriteEditing}
             />
             <ChampionSelectorList
               listRef={listRef}
@@ -266,6 +291,9 @@ function ChampionSelector({
               query={searchValue}
               versus={false}
               onSelect={handleSelect}
+              favoriteIds={favoriteChampionIdSet}
+              favoriteEditing={favoriteEditing}
+              onToggleFavorite={handleToggleFavorite}
               className="flex-1 overflow-auto p-4 max-h-[calc(100vh-120px)]"
             />
             </div>
@@ -340,6 +368,8 @@ function ChampionSelector({
           }}
           onKeyDown={handleKeyDown}
           onClose={() => handleOpenChange(false)}
+          favoriteEditing={favoriteEditing}
+          onFavoriteEditingChange={setFavoriteEditing}
         />
         <ChampionSelectorList
           listRef={listRef}
@@ -350,6 +380,9 @@ function ChampionSelector({
           versus={Boolean(vsMode)}
           showEmptyState
           onSelect={handleSelect}
+          favoriteIds={favoriteChampionIdSet}
+          favoriteEditing={favoriteEditing}
+          onToggleFavorite={handleToggleFavorite}
           className="overflow-y-auto overflow-x-hidden p-4 flex-1 min-h-0 md:flex-none md:w-[600px] md:h-[427px] lg:w-[800px] lg:h-[527px]"
         />
         </DialogPrimitive.Content>

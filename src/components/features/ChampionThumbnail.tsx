@@ -3,7 +3,8 @@ import { Champion } from "@/types";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Check } from "lucide-react";
+import { Check, Star } from "lucide-react";
+import { useTranslation } from "@/i18n";
 
 interface ChampionThumbnailProps {
   addChampion: (champion: Champion) => void;
@@ -11,6 +12,9 @@ interface ChampionThumbnailProps {
   name: string;
   thumbnailSrc: string;
   selected: boolean;
+  favorite: boolean;
+  showFavoriteControl: boolean;
+  onToggleFavorite: (champion: Champion) => void;
 }
 
 function ChampionThumbnail({
@@ -19,7 +23,11 @@ function ChampionThumbnail({
   name,
   thumbnailSrc,
   selected,
+  favorite,
+  showFavoriteControl,
+  onToggleFavorite,
 }: ChampionThumbnailProps) {
+  const { t } = useTranslation();
   const [isLoaded, setIsLoaded] = useState(false);
   const [hasError, setHasError] = useState(false);
   // 즉시 피드백을 위한 로컬 선택 상태
@@ -46,8 +54,20 @@ function ChampionThumbnail({
     setHasError(true);
   }, []);
 
+  const handleFavoriteClick = useCallback((event: React.MouseEvent) => {
+    event.preventDefault();
+    event.stopPropagation();
+    onToggleFavorite(data);
+  }, [data, onToggleFavorite]);
+
+  const favoriteLabel = (
+    favorite
+      ? t.championSelector.removeFavorite
+      : t.championSelector.addFavorite
+  ).replace("{champion}", name);
+
   return (
-    <div className="flex flex-col items-center justify-center m-1 h-fit">
+    <div className="group relative flex flex-col items-center justify-center m-1 h-fit">
       <Button
         variant="ghost"
         className="cursor-pointer rounded-full shrink-0 p-0 h-auto w-auto hover:bg-transparent relative touch-manipulation"
@@ -98,6 +118,29 @@ function ChampionThumbnail({
             <Check className="w-2.5 h-2.5 md:w-3 md:h-3 text-primary-foreground stroke-3" />
           </div>
         )}
+      </Button>
+      <Button
+        variant="secondary"
+        size="icon"
+        className={cn(
+          "absolute -right-0.5 -top-1 z-30 h-6 w-6 rounded-full border border-background",
+          "[@media(hover:none)]:after:absolute [@media(hover:none)]:after:-inset-2.5 [@media(hover:none)]:after:content-['']",
+          "shadow-sm transition-[opacity,transform,color,background-color] duration-150",
+          "hover:scale-105 hover:text-amber-500 focus-visible:opacity-100",
+          favorite
+            ? "bg-background/95 text-amber-500 opacity-100"
+            : "text-muted-foreground opacity-0 pointer-events-none group-hover:pointer-events-auto group-hover:opacity-100 group-focus-within:pointer-events-auto group-focus-within:opacity-100",
+          showFavoriteControl && "pointer-events-auto opacity-100",
+        )}
+        onClick={handleFavoriteClick}
+        aria-label={favoriteLabel}
+        aria-pressed={favorite}
+        title={favoriteLabel}
+      >
+        <Star
+          aria-hidden="true"
+          className={cn("h-3.5 w-3.5", favorite && "fill-current")}
+        />
       </Button>
       <div className="text-xs md:text-sm whitespace-nowrap mt-0.5">{name}</div>
     </div>

@@ -251,6 +251,12 @@ export const enUSTranslations: Translations = {
       emptyList: "Champion list is empty",
       loading: "Loading...",
       closeButton: "Close champion selector",
+      favoriteSection: "Favorites",
+      allChampionsSection: "All champions",
+      editFavorites: "Edit favorites",
+      finishEditingFavorites: "Finish editing favorites",
+      addFavorite: "Add {champion} to favorites",
+      removeFavorite: "Remove {champion} from favorites",
     },
     skillTooltip: {
       passive: "Passive",

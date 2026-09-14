@@ -36,7 +36,7 @@ export function CooldownPageToolbar(props: {
         </Tabs>
         <div className="flex shrink-0 items-center gap-1">
           {props.onCompare && (
-            <Button variant="ghost" size="sm" onClick={props.onCompare} className="flex items-center gap-1.5 text-primary hover:bg-primary/10">
+            <Button variant="ghost" size="sm" onClick={props.onCompare} className="flex items-center gap-1.5 text-primary hover:bg-primary/10 hover:text-primary">
               <Swords aria-hidden="true" className="h-3.5 w-3.5" />
               <span className="text-[10px]">{t.comparison.open}</span>
             </Button>

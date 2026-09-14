@@ -13,7 +13,7 @@ export function BootstrapError({ message, onRetry }: BootstrapErrorProps) {
         <button
           type="button"
           onClick={onRetry}
-          className="rounded-md bg-primary px-4 py-2 text-sm text-primary-foreground"
+          className="rounded-md bg-primary px-4 py-2 text-sm text-primary-foreground transition-[background-color,box-shadow] duration-150 hover:bg-primary-hover hover:shadow-sm hover:shadow-primary/20 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring/40 focus-visible:ring-offset-2"
         >
           {t.app.retry}
         </button>
