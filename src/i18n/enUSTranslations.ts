@@ -440,6 +440,7 @@ export const enUSTranslations: Translations = {
     },
     storage: {
       title: "Storage",
+      download: "Download AI model",
       open: "Storage",
       back: "Back",
       empty: "No model is downloaded on this device.",

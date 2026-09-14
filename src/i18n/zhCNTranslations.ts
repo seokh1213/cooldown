@@ -426,6 +426,7 @@ export const zhCNTranslations: Translations = {
     },
     storage: {
       title: "存储空间",
+      download: "下载 AI 模型",
       open: "存储空间",
       back: "返回",
       empty: "此设备上没有已下载的模型。",
