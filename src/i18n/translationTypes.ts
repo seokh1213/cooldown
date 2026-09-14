@@ -319,6 +319,7 @@ export interface Translations {
       title: string;
       lead: string;
       sizeNotice: string;
+      sourceNotice: string;
       storageNotice: string;
       privacyNotice: string;
       accept: string;

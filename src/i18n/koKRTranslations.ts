@@ -338,9 +338,10 @@ export const koKRTranslations: Translations = {
     consent: {
       title: "AI 모델을 내려받아도 될까요?",
       lead: "롤 지식 도우미는 기기 안에서 직접 동작합니다. 처음 한 번만 모델 파일을 내려받으면 그 뒤로는 다시 받지 않습니다.",
-      sizeNotice: "내려받는 용량은 약 {size}MB 입니다. 데이터 요금이 부과될 수 있으니 Wi‑Fi 를 권합니다.",
+      sizeNotice: "처음 한 번 약 {size} 를 내려받습니다. 셀룰러로 받으면 데이터 요금이 그만큼 부과되므로 Wi‑Fi 를 권합니다.",
+      sourceNotice: "모델 파일은 Hugging Face 에서 받습니다. 이때 접속 기록이 그쪽에 남습니다.",
       storageNotice: "브라우저 저장 공간에 보관합니다. 현재 이 사이트에 허용된 공간은 약 {quota}MB 입니다.",
-      privacyNotice: "질문과 답변은 기기를 벗어나지 않습니다. 서버로 보내지 않습니다.",
+      privacyNotice: "내려받은 뒤에는 기기 안에서만 동작합니다. 질문과 답변은 어디로도 전송하지 않습니다.",
       accept: "내려받고 시작",
       cancel: "나중에",
       skipModel: "모델 없이 써보기",
@@ -380,8 +381,10 @@ export const koKRTranslations: Translations = {
       viewing: "지금 보고 있는 챔피언",
       comparing: "지금 비교 중",
       askAbout: "{name}에 대해 물어보세요",
-      commentary: "해설",
-      commentaryPending: "해설을 만드는 중",
+      // AI 기본법 제31조 제2항은 생성형 AI 가 만든 결과물임을 표시하게 한다.
+      // 카드의 표·수치는 코드가 만들고 이 문단만 모델이 쓰므로, 표시는 여기에 붙인다.
+      commentary: "AI 해설",
+      commentaryPending: "AI 해설을 만드는 중",
       top: "상위 {n}%",
       bottom: "하위 {n}%",
       stats: "능력치 (1레벨 → 18레벨)",
