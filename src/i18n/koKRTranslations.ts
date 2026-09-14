@@ -397,6 +397,8 @@ export const koKRTranslations: Translations = {
       notesSource: "사람이 검증한 운용 노트",
       moreNotes: "노트 {count}건 더",
       reference: "자료",
+      toggleReference: "자료 패널",
+      collapseReference: "자료 패널 접기",
       referenceEmpty: "답의 자료가 여기에 보입니다.",
       sameReference: "같은 자료",
       openCard: "자료 보기",

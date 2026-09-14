@@ -6,7 +6,21 @@
  */
 import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
-import { ArrowRight, ChevronLeft, HardDrive, History, Loader2, MessageSquarePlus, Send, Square, ThumbsDown, ThumbsUp, X } from "lucide-react";
+import {
+  ArrowRight,
+  ChevronLeft,
+  HardDrive,
+  History,
+  Loader2,
+  MessageSquarePlus,
+  PanelLeftClose,
+  PanelLeftOpen,
+  Send,
+  Square,
+  ThumbsDown,
+  ThumbsUp,
+  X,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useTranslation } from "@/i18n";
 import { advisorSystemPrompt } from "@/lib/advisor/persona";
@@ -46,7 +60,7 @@ import { findMentionedRules } from "../../../../scripts/llm/lib/rules";
 import type { ChampionCard } from "../../../../scripts/llm/lib/facts";
 import { championIconUrl } from "@/data/assets/riotAssetUrls";
 import { usePageContext } from "@/hooks/usePageContext";
-import { ADVISOR_REFERENCE_WIDTH, advisorDrawerWidth, useWideViewport } from "@/hooks/useWideViewport";
+import { WIDE_VIEWPORT_MIN, advisorDrawerWidth, referencePanelWidth, useViewportWidth } from "@/hooks/useWideViewport";
 import { AdvisorAnswerCard } from "./AdvisorAnswerCard";
 import {
   SEARCH_QUERY_SYSTEM,
@@ -77,6 +91,19 @@ interface AdvisorPanelProps {
    */
   canUseModel: boolean;
   onClose: () => void;
+  /** 드로어 폭이 바뀔 때. 레이아웃이 페이지를 그만큼 민다. */
+  onWidthChange?: (px: number) => void;
+}
+
+/** 자료 패널을 접어 둔 것을 기억하는 열쇠. 기기마다. */
+const REFERENCE_OPEN_KEY = "cooldown.advisor.reference-open";
+
+function readReferenceOpen(): boolean {
+  try {
+    return localStorage.getItem(REFERENCE_OPEN_KEY) !== "false";
+  } catch {
+    return true;
+  }
 }
 
 function formatMb(bytes: number): string {
@@ -91,7 +118,7 @@ function fill(template: string, values: Record<string, string | number>): string
   return template.replace(/\{(\w+)\}/g, (_, key: string) => String(values[key] ?? ""));
 }
 
-export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, canUseModel, onClose }: AdvisorPanelProps) {
+export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, canUseModel, onClose, onWidthChange }: AdvisorPanelProps) {
   const { t, lang } = useTranslation();
   const copy = t.advisor;
   const [draft, setDraft] = useState("");
@@ -103,7 +130,25 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
   const showStorage = view === "storage";
   const showHistory = view === "history";
   // 넓은 화면(≥1280)이면 왼쪽에 자료 패널을 붙여 대화는 글로만 흐르게 한다(L1).
-  const wide = useWideViewport();
+  // 접을 수 있고, 접은 상태는 기기에 남는다.
+  const viewportWidth = useViewportWidth();
+  const wide = viewportWidth >= WIDE_VIEWPORT_MIN;
+  const isMobile = viewportWidth < 768;
+  const [referenceOpen, setReferenceOpen] = useState(readReferenceOpen);
+  const toggleReference = () => {
+    setReferenceOpen((prev) => {
+      try {
+        localStorage.setItem(REFERENCE_OPEN_KEY, String(!prev));
+      } catch {
+        // 기억 못 해도 이번 세션에서는 동작한다
+      }
+      return !prev;
+    });
+  };
+  // 모바일은 드로어가 전체 화면이라 "화면으로 이동" 을 눌러도 뒤에서만 바뀐다. 이동하면 닫는다.
+  const onNavigate = () => {
+    if (isMobile) onClose();
+  };
   // 자료 패널이 보여 주는 답. 비우면 최신 답을 따라간다. 칩을 누르면 그 답에 고정된다.
   const [refTurnId, setRefTurnId] = useState<number | undefined>(undefined);
   // 생성 중에 보내려 했는지. 조용히 먹히면 고장으로 보여서 한 줄 알린다.
@@ -508,7 +553,11 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
     </div>
   );
 
-  const drawerWidth = advisorDrawerWidth(wide);
+  const drawerWidth = advisorDrawerWidth(viewportWidth, referenceOpen);
+  const showReferencePanel = wide && referenceOpen && view === "chat";
+  useEffect(() => {
+    onWidthChange?.(drawerWidth);
+  }, [drawerWidth, onWidthChange]);
 
   const percent =
     advisor.progress.totalBytes > 0
@@ -526,23 +575,26 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
         자료 패널(L1). 대화는 오른쪽에 글로만 흐르고, 답의 카드는 여기 한 자리에서 갱신된다.
         같은 오공 카드가 열 번 나와도 여기 하나다. 표를 보면서 다음 질문을 칠 수 있다.
       */}
-      {wide && view === "chat" && (
+      {showReferencePanel && (
         <aside
           className="hidden shrink-0 flex-col border-r bg-muted/30 md:flex"
-          style={{ width: `${ADVISOR_REFERENCE_WIDTH}px` }}
+          style={{ width: `${referencePanelWidth(viewportWidth)}px` }}
         >
-          <div className="flex items-center gap-2 border-b px-3 py-3 text-xs">
+          <div className="flex items-center gap-2 border-b px-3 py-2 text-xs">
             <span className="font-semibold">{copy.card.reference}</span>
             {refTurn?.answer && (
-              <span className="min-w-0 truncate text-muted-foreground">
+              <span className="min-w-0 flex-1 truncate text-muted-foreground">
                 {referenceTitle(refTurn.answer).title} · {referenceTitle(refTurn.answer).kind}
               </span>
             )}
+            <Button variant="ghost" size="icon" className="h-7 w-7 shrink-0" onClick={toggleReference} aria-label={copy.card.collapseReference}>
+              <PanelLeftClose className="h-4 w-4" />
+            </Button>
           </div>
           {referenceTabStrip}
           <div className="flex-1 overflow-y-auto p-3">
             {refTurn?.answer ? (
-              <AdvisorAnswerCard answer={refTurn.answer} ddragonVersion={ddragonVersion} patch={patch} onPickChampion={pickChampion} />
+              <AdvisorAnswerCard answer={refTurn.answer} ddragonVersion={ddragonVersion} patch={patch} onPickChampion={pickChampion} onNavigate={onNavigate} />
             ) : (
               <p className="text-xs text-muted-foreground">{copy.card.referenceEmpty}</p>
             )}
@@ -570,6 +622,22 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
         </div>
         {view === "chat" && (
           <div className="flex items-center gap-1">
+            {/*
+              자료. 넓은 화면에서는 왼쪽 패널을 접고 펴고, 좁은 화면에서는 카드 화면을 연다.
+              대화 안의 칩을 찾지 않고도 자료로 바로 가는 길이다.
+            */}
+            {referenceTurns.length > 0 && (
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => (wide ? toggleReference() : setView("card"))}
+                aria-label={copy.card.toggleReference}
+                aria-pressed={wide ? referenceOpen : undefined}
+                className={wide && referenceOpen ? "text-primary" : ""}
+              >
+                {wide && referenceOpen ? <PanelLeftClose className="h-4 w-4" /> : <PanelLeftOpen className="h-4 w-4" />}
+              </Button>
+            )}
             {/* 대화는 지우는 것이 아니라 새로 시작한다. 지난 대화는 기록에 남아 다시 열 수 있다. */}
             {advisor.turns.length > 0 && (
               <Button variant="ghost" size="icon" disabled={busy} onClick={history.startNew} aria-label={copy.history.newChat}>
@@ -603,7 +671,7 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
         {referenceTabStrip}
         <div className="flex-1 overflow-y-auto p-4">
           {refTurn?.answer ? (
-            <AdvisorAnswerCard answer={refTurn.answer} ddragonVersion={ddragonVersion} patch={patch} onPickChampion={pickChampion} />
+            <AdvisorAnswerCard answer={refTurn.answer} ddragonVersion={ddragonVersion} patch={patch} onPickChampion={pickChampion} onNavigate={onNavigate} />
           ) : (
             <p className="text-xs text-muted-foreground">{copy.card.referenceEmpty}</p>
           )}
@@ -797,6 +865,7 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
                       ddragonVersion={ddragonVersion}
                       patch={patch}
                       onPickChampion={pickChampion}
+                      onNavigate={onNavigate}
                     />
                     {commentary}
                   </div>
@@ -841,6 +910,7 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
                       <Link
                         key={link.to}
                         to={link.to}
+                        onClick={onNavigate}
                         className="inline-flex items-center gap-1 rounded-md border border-primary/40 px-2.5 py-1 text-xs font-medium text-primary hover:bg-primary/5"
                       >
                         {linkLabel(link)}

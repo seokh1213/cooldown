@@ -383,6 +383,8 @@ export const zhCNTranslations: Translations = {
       notesSource: "人工核对的运营笔记",
       moreNotes: "还有 {count} 条笔记",
       reference: "资料",
+      toggleReference: "资料面板",
+      collapseReference: "收起资料面板",
       referenceEmpty: "回答的资料卡会显示在这里。",
       sameReference: "同一资料",
       openCard: "查看资料",

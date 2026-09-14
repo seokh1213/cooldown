@@ -397,6 +397,8 @@ export const enUSTranslations: Translations = {
       notesSource: "Human-verified play notes",
       moreNotes: "{count} more notes",
       reference: "Reference",
+      toggleReference: "Reference panel",
+      collapseReference: "Collapse reference panel",
       referenceEmpty: "The answer's reference card appears here.",
       sameReference: "Same reference",
       openCard: "Open card",

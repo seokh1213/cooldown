@@ -3,7 +3,7 @@ import Sidebar from "./Sidebar";
 import { AdvisorWidget } from "@/components/features/advisor/AdvisorWidget";
 import { SidebarRail, SidebarInset } from "@/components/ui/sidebar";
 import { useDeviceType } from "@/hooks/useDeviceType";
-import { advisorDrawerWidth, useWideViewport } from "@/hooks/useWideViewport";
+import { ADVISOR_DRAWER_WIDTH } from "@/hooks/useWideViewport";
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -19,8 +19,9 @@ function Layout({ children, nav, patch, ddragonVersion }: LayoutProps) {
   // 도우미가 열려 있으면 페이지를 옆으로 밀어 둘이 나란히 보이게 한다.
   // 위에 띄우면 쿨타임 표를 보면서 물을 수 없다 — 답이 표를 가린다.
   const [advisorOpen, setAdvisorOpen] = useState(false);
+  // 드로어 폭은 드로어가 정한다(자료 패널을 접었는지, 화면이 얼마나 넓은지). 여기는 받아서 민다.
+  const [advisorWidth, setAdvisorWidth] = useState(ADVISOR_DRAWER_WIDTH);
   const deviceType = useDeviceType();
-  const wide = useWideViewport();
 
   const toggleSidebar = useCallback(() => {
     setSidebarOpen((prev) => !prev);
@@ -50,7 +51,7 @@ function Layout({ children, nav, patch, ddragonVersion }: LayoutProps) {
         style={{
           marginLeft: deviceType === "mobile" ? "0" : "4rem", // 모바일에서는 0, PC/태블릿에서는 64px
           // 모바일은 드로어가 전체 화면이라 밀 것이 없다.
-          marginRight: deviceType !== "mobile" && advisorOpen ? `${advisorDrawerWidth(wide)}px` : "0",
+          marginRight: deviceType !== "mobile" && advisorOpen ? `${advisorWidth}px` : "0",
         }}
       >
         {/* Navigation bar */}
@@ -77,7 +78,7 @@ function Layout({ children, nav, patch, ddragonVersion }: LayoutProps) {
 
       {/* 오른쪽 드로어로 열리는 지식 도우미. 동의 전에는 모델을 받지 않는다. */}
       {patch && ddragonVersion && (
-        <AdvisorWidget patch={patch} ddragonVersion={ddragonVersion} onOpenChange={setAdvisorOpen} />
+        <AdvisorWidget patch={patch} ddragonVersion={ddragonVersion} onOpenChange={setAdvisorOpen} onWidthChange={setAdvisorWidth} />
       )}
     </div>
   );
