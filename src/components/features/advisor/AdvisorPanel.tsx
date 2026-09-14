@@ -497,7 +497,12 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
   }, [lastAssistantId]);
   const showReference = (turnId: number) => {
     setRefTurnId(turnId);
-    if (!wide) setView("card");
+    if (!wide) {
+      setView("card");
+      return;
+    }
+    // 넓은 화면이라도 패널을 접어 뒀으면 눌러도 아무 일이 없어 보인다. 접혀 있으면 펼친다.
+    if (!referenceOpen) toggleReference();
   };
 
   const referenceTitle = (answer: AdvisorAnswer): { title: string; kind: string } => {
@@ -904,12 +909,13 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
                       // A3: 판정이 있으면 그것이 답이고, 없으면 효과 이름 한 줄 + 설명.
                       // 능력치 표와 가격은 카드에 있다.
                       <div className="space-y-2">
+                        {/* 다른 답의 헤드라인과 같은 꼴 — 세로선 하나와 굵기로 짚는다. */}
                         {turn.answer.verdicts.map((verdict) => (
-                          <div key={verdict.tag} className="flex items-start gap-2.5">
-                            <span className="shrink-0 rounded-md bg-foreground px-2 py-0.5 text-sm font-bold text-background">
+                          <div key={verdict.tag} className="border-l-2 border-foreground pl-2.5">
+                            <div className="text-[15px] font-semibold">
                               {verdict.yes ? copy.card.verdictYes : copy.card.verdictNo}
-                            </span>
-                            <p className="text-[13px] font-semibold leading-relaxed">
+                            </div>
+                            <p className="text-[13px] leading-relaxed">
                               {verdict.evidence ?? fill(copy.card.itemNoTag, { name: turn.answer!.kind === "item" ? turn.answer!.itemName : "", tag: verdict.tag })}
                             </p>
                           </div>
