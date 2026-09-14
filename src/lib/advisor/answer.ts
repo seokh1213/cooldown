@@ -40,7 +40,12 @@ export type AdvisorAnswer =
       /** 본문 중 질문과 닿는 문장. headline 이 없을 때의 근거이기도 하다. */
       highlighted: string[];
     }
-  | { kind: "champion"; card: ChampionCard }
+  | {
+      kind: "champion";
+      card: ChampionCard;
+      /** "말파이트 스킬 쿨타임" 처럼 슬롯 없이 사실 하나를 물으면 스킬 다섯 개의 그 사실만 */
+      focus?: SpellFocus;
+    }
   | {
       kind: "rule";
       rule: RuleNotes;
@@ -54,6 +59,8 @@ export type AdvisorAnswer =
       /** 사용자가 쓴, 챔피언으로 보이지만 못 찾은 말 */
       original: string;
       candidates: ChampionCard[];
+      /** typo: 이름을 잘못 썼다 / ambiguous: 화면에 둘이 있는데 누구 것인지 모른다 */
+      reason?: "typo" | "ambiguous";
     }
   | {
       /**
@@ -70,6 +77,8 @@ export type AdvisorAnswer =
       rows: CompareRow[];
       /** 질문이 가리킨 행의 결론. "체력 (1레벨)" → "말파이트 665 > 럼블 640" */
       headline?: Fact;
+      /** 상성 질문. cards[0] 이 내 챔피언, cards[1] 이 상대다. 해설이 그 시점으로 쓴다. */
+      matchup?: boolean;
     }
   | { kind: "text"; text: string };
 
@@ -242,6 +251,10 @@ function hangulTokens(text: string): string[] {
  * "누가 더 높아" 의 "누가" 는 누누와 거리 1 이지만 챔피언이 아니다. 첫 음절 규칙만으로는
  * 두 음절 이름(누누·나미·자야…)과 두 음절 기능어의 충돌을 다 못 막는다.
  */
+/** 게임 어휘. 챔피언 이름 오타 후보에서 뺀다. 데이터가 아니라 질문에 쓰이는 낱말이다. */
+const INTENT_WORD =
+  /^(스킬|스탯|능력치?|효과|계수|사거리|궁극기?|패시브|기본|공격|방어|체력|마나|이속|공속|아이템|템트리|소환사|주문|라인전?|정글|미드|원딜|서폿|서포터|상대|카운터|챔피언|챔프|레벨|설명|비교)/;
+
 const FUNCTION_WORDS = new Set([
   "누가", "누구", "누군", "뭐야", "뭐가", "뭔데", "뭐냐", "뭐지", "어디", "언제", "얼마", "어떤", "어느",
   "제일", "가장", "설명", "비교", "차이", "상대", "대비", "대해", "해줘", "알려", "정도", "이랑", "하고",
@@ -281,6 +294,9 @@ export function suggestChampions(
 
   for (const token of hangulTokens(question)) {
     if (!initials.has(token[0]) || FUNCTION_WORDS.has(token)) continue;
+    // 의도 어휘("스킬", "쿨타임", "체력"…)는 이름이 아니다. "스킬" 이 줄임말 "스카"(스카너) 와
+    // 거리 1 이라 후보로 잡혔다.
+    if (INTENT_WORD.test(token) || FOCUS_LEXICON.some(([, pattern]) => pattern.test(token))) continue;
     const found = new Map<string, ChampionCard>();
     for (const [name, card] of names) {
       if (known.has(card.id)) continue;
@@ -306,6 +322,59 @@ const COMPARISON = /더\s*(높|많|센|강|단단|긴|짧|빠|느|좋)|누가|�
 
 export function asksComparison(question: string, championCount: number): boolean {
   return championCount >= 2 && COMPARISON.test(question);
+}
+
+/**
+ * 상성을 묻는가. "제이스랑 상대한다 생각하면", "럼블 만나면 어떻게 해?".
+ * 대화에서 방금 다룬 챔피언이 있으면 그가 내 챔피언, 새로 나온 이름이 상대다.
+ */
+const MATCHUP = /상대|맞상대|맞붙|라인전|만나면|만났을|만날\s*때|카운터|어떻게\s*(해야|하지|해\b|되|풀)|이길|\bvs\b/i;
+
+export function asksMatchup(question: string): boolean {
+  return MATCHUP.test(question);
+}
+
+/**
+ * 챔피언을 겨냥한 질문으로 보이는가. 이름은 없지만 "W 쿨타임", "설명해줘", "스킬 계수" 처럼
+ * 챔피언이 있어야 답이 되는 질문. 대화·화면 맥락의 챔피언을 붙여도 되는지 가른다.
+ * "쇼진의 창 효과" 는 여기 걸리면 안 되므로 아이템·규칙 판정 뒤에 쓴다.
+ */
+const CHAMPION_DIRECTED = /설명|스킬|능력치|스탯|상대|어때|어떤|세[?요]?$|강해|약해|쿨|계수|사거리|체력|방어|마저|이속|공격력/;
+
+export function looksChampionDirected(question: string, slot?: string): boolean {
+  return Boolean(slot) || CHAMPION_DIRECTED.test(question);
+}
+
+/** 답이 다룬 챔피언. 다음 질문이 이름을 생략하면 이들이 맥락이다. */
+export function answerChampionIds(answer: AdvisorAnswer): string[] {
+  if (answer.kind === "spell") return [answer.championId];
+  if (answer.kind === "champion") return [answer.card.id];
+  if (answer.kind === "compare") return answer.cards.map((card) => card.id);
+  return [];
+}
+
+export const FOCUS_LABEL: Record<SpellFocus, string> = {
+  cooldown: "재사용 대기시간",
+  cost: "소모값",
+  ratio: "계수",
+  damage: "피해 유형",
+  effect: "효과",
+};
+
+/** 스킬 하나에서 사실 하나를 글로. 스킬 표(챔피언 카드의 focus)와 비교 표가 같이 쓴다. */
+export function spellFocusValue(spell: SpellFact, focus: SpellFocus): string {
+  switch (focus) {
+    case "cooldown":
+      return cooldownFact(spell)?.value ?? "";
+    case "cost":
+      return spell.cost ?? "";
+    case "ratio":
+      return Object.entries(spell.ratios ?? {}).map(([stat, value]) => `${stat} ${value}%`).join(", ");
+    case "damage":
+      return spell.damageTypes.join("·");
+    case "effect":
+      return spell.effects.join(", ");
+  }
 }
 
 /** 능력치를 가리키는 말. FOCUS_LEXICON 과 같은 성격의 의도 어휘다. */
@@ -361,7 +430,17 @@ function argmax(values: Array<number | undefined>): number | undefined {
  * 능력치는 높을수록 좋다고 보고 큰 쪽을 굵게 한다. 스킬 행은 크기 비교가 뜻이 없어
  * (쿨은 짧을수록, 소모는 적을수록, 계수는 클수록) 굵게 하지 않고 묻은 행만 강조한다.
  */
-export function buildCompareAnswer(cards: ChampionCard[], question: string, slot?: string): AdvisorAnswer {
+export function buildCompareAnswer(
+  cards: ChampionCard[],
+  question: string,
+  slot?: string,
+  options: { matchup?: boolean } = {},
+): AdvisorAnswer {
+  if (options.matchup) {
+    // 상성은 능력치 표 위에 해설. 사실 하나를 짚은 헤드라인은 두지 않는다.
+    const base = buildCompareAnswer(cards, question);
+    return base.kind === "compare" ? { ...base, headline: undefined, rows: base.rows.map((row) => ({ ...row, hit: false })), matchup: true } : base;
+  }
   if (slot) {
     const spells = cards.map((card) => card.spells.find((spell) => spell.slot === slot));
     const focus = detectSpellFocus(question)?.focus;
@@ -500,6 +579,8 @@ export function buildCommentaryPrompt(answer: AdvisorAnswer, patch: string): str
   ];
 
   if (answer.kind === "champion") {
+    // 스킬 표(쿨·소모·계수…)는 조회다. 카드가 곧 답.
+    if (answer.focus) return undefined;
     const card = answer.card;
     const lines = [`[패치] ${patch}`, `[챔피언] ${card.name}`];
     if (card.wiki?.subclass) lines.push(`- 분류: ${card.wiki.subclass}${card.wiki.positions?.length ? ` · 주 포지션 ${card.wiki.positions[0]}` : ""}`);
@@ -533,9 +614,15 @@ export function buildCommentaryPrompt(answer: AdvisorAnswer, patch: string): str
 
   if (answer.kind === "compare") {
     // 한 능력치·한 스킬 사실을 물은 비교는 헤드라인이 곧 답이다. 해설은 열린 비교
-    // ("둘 중 누가 더 세?") 에만 붙인다. 재료는 각자의 극단 능력치와 피해·계수 성향.
-    if (answer.headline || answer.slot) return undefined;
-    const lines = [`[패치] ${patch}`, `[비교] ${answer.cards.map((card) => card.name).join(" vs ")}`];
+    // ("둘 중 누가 더 세?") 와 상성 질문에만 붙인다. 재료는 각자의 극단 능력치와 피해·계수 성향.
+    if (!answer.matchup && (answer.headline || answer.slot)) return undefined;
+    const [me, enemy] = answer.cards;
+    const lines = [
+      `[패치] ${patch}`,
+      answer.matchup && enemy
+        ? `[상성] 사용자는 ${me.name}를 잡고 ${enemy.name}를 상대합니다. ${me.name} 시점으로 쓰십시오.`
+        : `[비교] ${answer.cards.map((card) => card.name).join(" vs ")}`,
+    ];
     for (const card of answer.cards) {
       const traits: string[] = [];
       if (card.wiki?.subclass) traits.push(card.wiki.subclass);
@@ -549,7 +636,13 @@ export function buildCommentaryPrompt(answer: AdvisorAnswer, patch: string): str
       if (card.mechanics.length) traits.push(`보유 효과: ${card.mechanics.slice(0, 6).join(", ")}`);
       lines.push(`- ${card.name}: ${traits.join(" · ")}`);
     }
-    lines.push("", ...rules, "- 둘이 맞붙었을 때 무엇이 갈리는지, 각자 무엇을 조심해야 하는지 말하십시오.");
+    lines.push(
+      "",
+      ...rules,
+      answer.matchup && enemy
+        ? `- ${enemy.name}의 피해 유형이 ${me.name}의 어느 저항과 만나는지, ${enemy.name}의 보유 효과 중 ${me.name}가 조심할 것, ${me.name}가 유리한 국면을 말하십시오.`
+        : "- 둘이 맞붙었을 때 무엇이 갈리는지, 각자 무엇을 조심해야 하는지 말하십시오.",
+    );
     return lines.join("\n");
   }
 
