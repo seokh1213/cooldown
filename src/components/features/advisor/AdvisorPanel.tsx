@@ -554,7 +554,8 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
   );
 
   const drawerWidth = advisorDrawerWidth(viewportWidth, referenceOpen);
-  const showReferencePanel = wide && referenceOpen && view === "chat";
+  // 보여 줄 카드가 없으면(동의 화면, 빈 대화) 패널을 두지 않는다. 첫 카드가 오면 그때 넓어진다.
+  const showReferencePanel = wide && referenceOpen && view === "chat" && referenceTurns.length > 0;
   useEffect(() => {
     onWidthChange?.(drawerWidth);
   }, [drawerWidth, onWidthChange]);
