@@ -28,7 +28,7 @@ interface AdvisorWidgetProps {
 }
 
 export function AdvisorWidget({ patch, ddragonVersion, onOpenChange, onWidthChange }: AdvisorWidgetProps) {
-  const { t } = useTranslation();
+  const { t, lang } = useTranslation();
   const device = useDeviceType();
   const [open, setOpen] = useState(false);
   const advisor = useAdvisor();
@@ -39,7 +39,9 @@ export function AdvisorWidget({ patch, ddragonVersion, onOpenChange, onWidthChan
 
   useEffect(() => {
     let alive = true;
-    void loadAdvisorData(patch)
+    // 로케일을 넘기지 않아 늘 ko_KR 이 실렸다. 영어·중국어 사용자에게 챔피언 이름과
+    // 스킬 이름이 한국어로 나오던 원인이다.
+    void loadAdvisorData(patch, lang)
       .then((loaded) => {
         if (alive) setData(loaded);
       })
@@ -49,7 +51,7 @@ export function AdvisorWidget({ patch, ddragonVersion, onOpenChange, onWidthChan
     return () => {
       alive = false;
     };
-  }, [patch]);
+  }, [patch, lang]);
 
   useEffect(() => {
     onOpenChange?.(open);
