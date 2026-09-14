@@ -190,6 +190,7 @@ export function SimulationCombatPanel(props: SimulationCombatPanelProps) {
   const calculationReady = Boolean(
     props.attacker && props.attackerStats && props.target && props.targetStats,
   );
+  const targetLabel = props.target?.name ?? t.pages.simulation.targetPlaceholder;
   const conditionText = (conditions: string[]) => conditions.map((condition) =>
     t.pages.simulation.conditionLabels[condition] ?? condition
   ).join(" · ");
@@ -204,14 +205,14 @@ export function SimulationCombatPanel(props: SimulationCombatPanelProps) {
         <section className="space-y-3" aria-label={t.pages.simulation.targetTitle}>
           <button
             type="button"
-            aria-label={t.pages.simulation.selectTargetAria}
+            aria-label={`${targetLabel} · ${t.pages.simulation.selectTargetAria}`}
             onClick={props.onOpenTargetSelector}
             className="flex min-h-14 w-full items-center gap-3 rounded-md border border-border/70 bg-background/50 p-2 text-left transition-colors hover:bg-muted/60"
           >
             {props.target ? (
               <img src={championIconUrl(props.ddragonVersion, props.target.id)} alt="" width={40} height={40} className="size-10 rounded-full" />
             ) : <span className="size-10 rounded-full border border-dashed border-border" />}
-            <span className="font-medium">{props.target?.name ?? t.pages.simulation.targetPlaceholder}</span>
+            <span className="font-medium">{targetLabel}</span>
           </button>
           <label className="flex items-center justify-between gap-2 text-[11px] text-muted-foreground">
             <span>{t.common.level}</span>

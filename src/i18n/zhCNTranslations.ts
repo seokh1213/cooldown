@@ -240,6 +240,12 @@ export const zhCNTranslations: Translations = {
     emptyList: "英雄列表为空",
     loading: "加载中…",
     closeButton: "关闭英雄选择器",
+    favoriteSection: "收藏",
+    allChampionsSection: "全部英雄",
+    editFavorites: "编辑收藏",
+    finishEditingFavorites: "完成收藏编辑",
+    addFavorite: "收藏 {champion}",
+    removeFavorite: "取消收藏 {champion}",
   },
   skillTooltip: {
     passive: "被动",

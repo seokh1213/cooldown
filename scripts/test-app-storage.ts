@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import {
   APP_STORAGE_KEYS,
+  decodeFavoriteChampionIds,
   decodeSelectedChampions,
   decodeTabs,
   initializeAppStorage,
@@ -39,6 +40,29 @@ storage.setItem(APP_STORAGE_KEYS.tabs, JSON.stringify([
 ]));
 assert.equal(readJsonStorage(APP_STORAGE_KEYS.tabs, decodeTabs, storage), null);
 assert.equal(storage.getItem(APP_STORAGE_KEYS.tabs), null);
+
+storage.setItem(
+  APP_STORAGE_KEYS.favoriteChampionIds,
+  JSON.stringify(["Ahri", "Ahri", "MonkeyKing"]),
+);
+assert.deepEqual(
+  readJsonStorage(
+    APP_STORAGE_KEYS.favoriteChampionIds,
+    decodeFavoriteChampionIds,
+    storage,
+  ),
+  ["Ahri", "MonkeyKing"],
+);
+storage.setItem(APP_STORAGE_KEYS.favoriteChampionIds, JSON.stringify(["Ahri", 1]));
+assert.equal(
+  readJsonStorage(
+    APP_STORAGE_KEYS.favoriteChampionIds,
+    decodeFavoriteChampionIds,
+    storage,
+  ),
+  null,
+);
+assert.equal(storage.getItem(APP_STORAGE_KEYS.favoriteChampionIds), null);
 
 writeSessionStorage(APP_STORAGE_KEYS.championSelectorScroll, "320", storage);
 assert.equal(

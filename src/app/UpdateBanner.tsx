@@ -38,12 +38,12 @@ export function UpdateBanner({
           {t.app.autoUpdate}
         </label>
         <div className="flex gap-1">
-          <button type="button" className="rounded bg-neutral-700 px-2 py-1 text-xs" onClick={onDismiss}>
+          <button type="button" className="rounded bg-neutral-700 px-2 py-1 text-xs transition-colors hover:bg-neutral-600 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-white/60" onClick={onDismiss}>
             {t.app.later}
           </button>
           <button
             type="button"
-            className="rounded bg-emerald-500 px-2 py-1 text-xs font-semibold text-black"
+            className="rounded bg-emerald-500 px-2 py-1 text-xs font-semibold text-black transition-colors hover:bg-emerald-400 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-emerald-200 disabled:cursor-not-allowed disabled:bg-neutral-600 disabled:text-neutral-300"
             disabled={applying}
             onClick={async () => {
               setApplying(true);
