@@ -98,6 +98,17 @@ interface AdvisorPanelProps {
 /** 자료 패널을 접어 둔 것을 기억하는 열쇠. 기기마다. */
 const REFERENCE_OPEN_KEY = "cooldown.advisor.reference-open";
 
+/** "모델 없이 써보기" 를 고른 것을 기억하는 열쇠. */
+const MODEL_SKIPPED_KEY = "cooldown.advisor.model-skipped";
+
+function readModelSkipped(): boolean {
+  try {
+    return localStorage.getItem(MODEL_SKIPPED_KEY) === "true";
+  } catch {
+    return false;
+  }
+}
+
 function readReferenceOpen(): boolean {
   try {
     return localStorage.getItem(REFERENCE_OPEN_KEY) !== "false";
@@ -122,8 +133,17 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
   const { t, lang } = useTranslation();
   const copy = t.advisor;
   const [draft, setDraft] = useState("");
-  // 동의 화면을 건너뛰고 코드 답변만으로 써 보는 상태
-  const [skippedModel, setSkippedModel] = useState(false);
+  // 동의 화면을 건너뛰고 코드 답변만으로 쓰는 선택. 기기에 남는다 — 새로 고칠 때마다
+  // 3GB 를 받겠느냐고 다시 묻는 것은 거절한 사람에게 성가시다. 저장 공간 화면에서 다시 받을 수 있다.
+  const [skippedModel, setSkippedModelState] = useState(readModelSkipped);
+  const setSkippedModel = (skipped: boolean) => {
+    setSkippedModelState(skipped);
+    try {
+      localStorage.setItem(MODEL_SKIPPED_KEY, String(skipped));
+    } catch {
+      // 기억 못 해도 이번 세션에서는 동작한다
+    }
+  };
   // 헤더 버튼으로 바꾸는 보조 화면. 저장 공간(모델 삭제) / 대화 기록(새 대화·열기·삭제) /
   // 카드(좁은 화면에서 자료 칩을 눌렀을 때 카드를 덮어 보임)
   const [view, setView] = useState<"chat" | "storage" | "history" | "card">("chat");
@@ -553,7 +573,8 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
 
   const drawerWidth = advisorDrawerWidth(viewportWidth, referenceOpen);
   // 보여 줄 카드가 없으면(동의 화면, 빈 대화) 패널을 두지 않는다. 첫 카드가 오면 그때 넓어진다.
-  const showReferencePanel = wide && referenceOpen && view === "chat" && referenceTurns.length > 0;
+  const showingConsent = canUseModel && !advisor.consented && !skippedModel;
+  const showReferencePanel = wide && referenceOpen && view === "chat" && referenceTurns.length > 0 && !showingConsent;
   useEffect(() => {
     onWidthChange?.(drawerWidth);
   }, [drawerWidth, onWidthChange]);
@@ -663,7 +684,15 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
       </header>
 
       {showStorage ? (
-        <AdvisorStorage onDelete={advisor.deleteModel} />
+        <AdvisorStorage
+          onDelete={advisor.deleteModel}
+          // 모델 없이 쓰기로 했던 사람이 마음을 바꾸는 길. 동의 화면이 다시 뜨지 않으므로 여기서 받는다.
+          onDownload={canUseModel && !advisor.consented ? () => {
+            setSkippedModel(false);
+            advisor.accept();
+            setView("chat");
+          } : undefined}
+        />
       ) : view === "card" ? (
         // 좁은 화면에서 자료 칩을 눌렀을 때. 카드가 대화를 덮고, 뒤로 가면 대화다.
         <>
@@ -691,7 +720,7 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
           }}
           onRemove={history.remove}
         />
-      ) : canUseModel && !advisor.consented && !skippedModel ? (
+      ) : showingConsent ? (
         <AdvisorConsent
           webgpu={advisor.webgpu}
           storage={advisor.storage}

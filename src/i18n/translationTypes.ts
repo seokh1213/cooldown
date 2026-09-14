@@ -438,6 +438,8 @@ export interface Translations {
     /** 내려받은 모델을 보고 지우는 화면 */
     storage: {
       title: string;
+      /** 받지 않은 기기에서 받기 시작 */
+      download: string;
       open: string;
       back: string;
       /** 이 기기에 저장된 것이 없을 때 */

@@ -6,7 +6,7 @@
  * 그러면 다른 설정도 같이 날아간다. 그래서 여기서 지울 수 있게 둔다.
  */
 import { useCallback, useEffect, useState } from "react";
-import { Loader2, Trash2 } from "lucide-react";
+import { Download, Loader2, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useTranslation } from "@/i18n";
 import { readModelCache, type ModelCacheInfo } from "@/lib/advisor/storage";
@@ -15,7 +15,13 @@ function formatMb(bytes: number): string {
   return (bytes / 1048576).toFixed(0);
 }
 
-export function AdvisorStorage({ onDelete }: { onDelete: () => Promise<void> }) {
+interface AdvisorStorageProps {
+  onDelete: () => Promise<void>;
+  /** 모델을 받지 않은 기기에서 받기 시작하는 길. 받을 수 없는 기기면 없다. */
+  onDownload?: () => void;
+}
+
+export function AdvisorStorage({ onDelete, onDownload }: AdvisorStorageProps) {
   const { t } = useTranslation();
   const copy = t.advisor.storage;
   const [info, setInfo] = useState<ModelCacheInfo | null>(null);
@@ -50,7 +56,15 @@ export function AdvisorStorage({ onDelete }: { onDelete: () => Promise<void> }) 
           <Loader2 className="h-4 w-4 animate-spin" />
         </p>
       ) : info.entries === 0 ? (
-        <p className="text-muted-foreground">{done ? copy.removed : copy.empty}</p>
+        <div className="space-y-3">
+          <p className="text-muted-foreground">{done ? copy.removed : copy.empty}</p>
+          {onDownload && (
+            <Button variant="outline" size="sm" onClick={onDownload}>
+              <Download className="mr-1.5 h-3.5 w-3.5" />
+              {copy.download}
+            </Button>
+          )}
+        </div>
       ) : (
         <dl className="space-y-2">
           {info.bytes !== undefined && (

@@ -440,6 +440,7 @@ export const koKRTranslations: Translations = {
     },
     storage: {
       title: "저장 공간",
+      download: "AI 모델 내려받기",
       open: "저장 공간",
       back: "돌아가기",
       empty: "이 기기에 내려받은 모델이 없습니다.",
