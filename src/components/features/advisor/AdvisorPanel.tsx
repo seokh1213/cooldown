@@ -61,7 +61,15 @@ import { findMentionedRules } from "../../../../scripts/llm/lib/rules";
 import type { ChampionCard } from "../../../../scripts/llm/lib/facts";
 import { championIconUrl, itemIconUrl } from "@/data/assets/riotAssetUrls";
 import { usePageContext } from "@/hooks/usePageContext";
-import { WIDE_VIEWPORT_MIN, advisorDrawerWidth, referencePanelWidth, useViewportWidth } from "@/hooks/useWideViewport";
+import {
+  REFERENCE_MAX_WIDTH,
+  REFERENCE_MIN_WIDTH,
+  WIDE_VIEWPORT_MIN,
+  advisorDrawerWidth,
+  clampReferenceWidth,
+  referencePanelWidth,
+  useViewportWidth,
+} from "@/hooks/useWideViewport";
 import { AdvisorAnswerCard } from "./AdvisorAnswerCard";
 import {
   SEARCH_QUERY_SYSTEM,
@@ -98,6 +106,19 @@ interface AdvisorPanelProps {
 
 /** 자료 패널을 접어 둔 것을 기억하는 열쇠. 기기마다. */
 const REFERENCE_OPEN_KEY = "cooldown.advisor.reference-open";
+/** 끌어서 정한 자료 패널 폭. */
+const REFERENCE_WIDTH_KEY = "cooldown.advisor.reference-width";
+/** 방향키로 한 번에 움직이는 폭. */
+const RESIZE_STEP = 24;
+
+function readReferenceWidth(): number | undefined {
+  try {
+    const stored = Number(localStorage.getItem(REFERENCE_WIDTH_KEY));
+    return Number.isFinite(stored) && stored > 0 ? stored : undefined;
+  } catch {
+    return undefined;
+  }
+}
 
 /** "모델 없이 써보기" 를 고른 것을 기억하는 열쇠. */
 const MODEL_SKIPPED_KEY = "cooldown.advisor.model-skipped";
@@ -156,15 +177,81 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
   const wide = viewportWidth >= WIDE_VIEWPORT_MIN;
   const isMobile = viewportWidth < 768;
   const [referenceOpen, setReferenceOpen] = useState(readReferenceOpen);
-  const toggleReference = () => {
-    setReferenceOpen((prev) => {
-      try {
-        localStorage.setItem(REFERENCE_OPEN_KEY, String(!prev));
-      } catch {
-        // 기억 못 해도 이번 세션에서는 동작한다
+  const setReferenceOpenPersisted = (open: boolean) => {
+    setReferenceOpen(open);
+    try {
+      localStorage.setItem(REFERENCE_OPEN_KEY, String(open));
+    } catch {
+      // 기억 못 해도 이번 세션에서는 동작한다
+    }
+  };
+  const toggleReference = () => setReferenceOpenPersisted(!referenceOpen);
+
+  // 자료 패널 폭. 사용자가 가장자리를 끌어 정하고, 그 값은 기기에 남는다.
+  const [storedWidth, setStoredWidth] = useState(readReferenceWidth);
+  const referenceWidth = clampReferenceWidth(storedWidth ?? referencePanelWidth(viewportWidth), viewportWidth);
+  const [resizing, setResizing] = useState(false);
+  const dragRef = useRef<{ startX: number; startWidth: number } | null>(null);
+
+  const applyWidth = (width: number, persist: boolean) => {
+    const next = clampReferenceWidth(width, viewportWidth);
+    setStoredWidth(next);
+    if (!persist) return;
+    try {
+      localStorage.setItem(REFERENCE_WIDTH_KEY, String(next));
+    } catch {
+      // 기억 못 해도 이번 세션에서는 동작한다
+    }
+  };
+
+  const startResize = (event: React.PointerEvent<HTMLDivElement>) => {
+    event.preventDefault();
+    try {
+      event.currentTarget.setPointerCapture(event.pointerId);
+    } catch {
+      // 포인터를 잡지 못해도 끌기는 된다. 손이 가장자리를 벗어나면 끝날 뿐이다.
+    }
+    dragRef.current = { startX: event.clientX, startWidth: referenceWidth };
+    setResizing(true);
+  };
+
+  const moveResize = (event: React.PointerEvent<HTMLDivElement>) => {
+    const drag = dragRef.current;
+    if (!drag) return;
+    // 패널은 드로어 왼쪽에 붙어 있다. 왼쪽으로 끌수록 넓어진다.
+    const raw = drag.startWidth + (drag.startX - event.clientX);
+    // 최소 폭보다 더 줄이려 하면 그 자리에서 닫는다. 끌다 말고 손을 떼게 하지 않는다.
+    if (raw < REFERENCE_MIN_WIDTH - RESIZE_STEP) {
+      endResize(event);
+      setReferenceOpenPersisted(false);
+      return;
+    }
+    applyWidth(raw, false);
+  };
+
+  const endResize = (event: React.PointerEvent<HTMLDivElement>) => {
+    if (!dragRef.current) return;
+    dragRef.current = null;
+    setResizing(false);
+    try {
+      if (event.currentTarget.hasPointerCapture(event.pointerId)) {
+        event.currentTarget.releasePointerCapture(event.pointerId);
       }
-      return !prev;
-    });
+    } catch {
+      // 이미 놓였으면 그만이다
+    }
+    applyWidth(referenceWidth, true);
+  };
+
+  const resizeByKey = (event: React.KeyboardEvent<HTMLDivElement>) => {
+    if (event.key === "ArrowLeft") applyWidth(referenceWidth + RESIZE_STEP, true);
+    else if (event.key === "ArrowRight") {
+      if (referenceWidth <= REFERENCE_MIN_WIDTH) setReferenceOpenPersisted(false);
+      else applyWidth(referenceWidth - RESIZE_STEP, true);
+    } else if (event.key === "Home") applyWidth(REFERENCE_MAX_WIDTH, true);
+    else if (event.key === "End") applyWidth(REFERENCE_MIN_WIDTH, true);
+    else return;
+    event.preventDefault();
   };
   // 모바일은 드로어가 전체 화면이라 "화면으로 이동" 을 눌러도 뒤에서만 바뀐다. 이동하면 닫는다.
   const onNavigate = () => {
@@ -600,7 +687,7 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
     </div>
   );
 
-  const drawerWidth = advisorDrawerWidth(viewportWidth, referenceOpen);
+  const drawerWidth = advisorDrawerWidth(viewportWidth, referenceOpen, storedWidth);
   // 보여 줄 카드가 없으면(동의 화면, 빈 대화) 패널을 두지 않는다. 첫 카드가 오면 그때 넓어진다.
   const showingConsent = canUseModel && !advisor.consented && !skippedModel;
   const showReferencePanel = wide && referenceOpen && view === "chat" && referenceTurns.length > 0 && !showingConsent;
@@ -626,9 +713,30 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
       */}
       {showReferencePanel && (
         <aside
-          className="hidden shrink-0 flex-col border-r bg-muted/30 md:flex"
-          style={{ width: `${referencePanelWidth(viewportWidth)}px` }}
+          className="relative hidden shrink-0 flex-col border-r bg-muted/30 md:flex"
+          style={{ width: `${referenceWidth}px` }}
         >
+          {/*
+            왼쪽 가장자리를 끌어 폭을 바꾼다. 최소 폭보다 더 줄이려 하면 그 자리에서 닫는다.
+            방향키로도 움직인다 — 가장자리를 정확히 집기 어려운 사람에게는 그것이 유일한 길이다.
+          */}
+          <div
+            role="separator"
+            aria-orientation="vertical"
+            aria-label={copy.card.resizeReference}
+            aria-valuenow={referenceWidth}
+            aria-valuemin={REFERENCE_MIN_WIDTH}
+            aria-valuemax={REFERENCE_MAX_WIDTH}
+            tabIndex={0}
+            onPointerDown={startResize}
+            onPointerMove={moveResize}
+            onPointerUp={endResize}
+            onPointerCancel={endResize}
+            onKeyDown={resizeByKey}
+            className={`absolute inset-y-0 left-0 z-10 w-1.5 cursor-col-resize touch-none transition-colors focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring/40 ${
+              resizing ? "bg-primary/40" : "hover:bg-primary/20"
+            }`}
+          />
           <div className="flex items-center gap-2 border-b px-3 py-2 text-xs">
             <span className="font-semibold">{copy.card.reference}</span>
             {refTurn?.answer && (
