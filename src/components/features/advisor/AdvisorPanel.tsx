@@ -654,9 +654,15 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
               <ChevronLeft className="h-4 w-4" />
             </Button>
           )}
-          <span className="text-sm font-semibold">
+          <span className="shrink-0 text-sm font-semibold">
             {showStorage ? copy.storage.title : showHistory ? copy.history.title : view === "card" ? copy.card.reference : copy.title}
           </span>
+          {/* 카드 화면은 대화를 덮으므로 지금 무엇을 보고 있는지 머리에 적는다. */}
+          {view === "card" && refTurn?.answer && (
+            <span className="min-w-0 truncate text-xs font-normal text-muted-foreground">
+              › {referenceTitle(refTurn.answer).title} · {referenceTitle(refTurn.answer).kind}
+            </span>
+          )}
           {view === "chat" && advisor.status === "generating" && (
             <span className="flex items-center gap-1 text-xs text-muted-foreground">
               <Loader2 className="h-3 w-3 animate-spin" />
