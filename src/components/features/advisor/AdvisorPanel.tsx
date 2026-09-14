@@ -292,7 +292,7 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
   const deliverMatchup = (question: string, mine: ChampionCard, enemy: ChampionCard, notice?: string) => {
     if (!data) return;
     const answer = buildCompareCard([mine, enemy], question, undefined, { matchup: true, notes: matchupNotes(data, mine, enemy) });
-    const prompt = buildCommentaryPrompt(answer, patch);
+    const prompt = buildCommentaryPrompt(answer, patch, lang);
     if (canUseModel && advisor.consented && prompt) {
       const tips = buildMatchupTips(data, mine, enemy);
       advisor.sendWithAnswer(question, [advisorSystemPrompt(lang), tips, prompt].filter(Boolean).join("\n\n"), answer, notice);
@@ -304,7 +304,7 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
   const deliver = (question: string, answer: AdvisorAnswer, notice?: string) => {
     const system = advisorSystemPrompt(lang);
     if (canUseModel && advisor.consented) {
-      const prompt = buildCommentaryPrompt(answer, patch);
+      const prompt = buildCommentaryPrompt(answer, patch, lang);
       if (prompt) {
         advisor.sendWithAnswer(question, `${system}\n\n${prompt}`, answer, notice);
         return;

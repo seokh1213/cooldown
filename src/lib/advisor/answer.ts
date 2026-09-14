@@ -11,6 +11,15 @@
  */
 import type { ChampionCard, SpellFact, StatName } from "../../../scripts/llm/lib/facts";
 import type { RuleNotes } from "../../../scripts/llm/lib/rules";
+import type { Language } from "@/i18n";
+import {
+  promptWords,
+  translateDamage,
+  translateGrade,
+  translateScaling,
+  translateStat,
+  translateTag,
+} from "./promptLocale";
 
 /** 카드에 한 줄로 놓을 사실. */
 export interface Fact {
@@ -689,62 +698,67 @@ export function ruleVerdict(sentence: string): "yes" | "no" | undefined {
  * 이번 세션에서 모델이 스스로 판단하면 틀리는 것을 봤다(럼블 E 가 마저를 안 깎는다고 답함).
  * 그래서 판단할 재료를 전부 주고 문장만 만들게 한다.
  */
-export function buildCommentaryPrompt(answer: AdvisorAnswer, patch: string): string | undefined {
-  const rules = [
-    "[요청] 위 자료만 근거로 두세 문장으로 설명하십시오.",
-    "- 수치를 쓰지 마십시오. 수치는 이미 화면에 표로 있습니다. \"매우 낮다\", \"높은 편이다\" 처럼 정도로만 말하십시오.",
-    "- 자료에 없는 아이템·룬·스킬 이름을 만들지 마십시오.",
-    // 재료가 백분위·태그뿐일 때 "생존력이 뛰어나다", "압박하는 것이 중요하다" 가 나왔다.
-    // 어느 챔피언에나 맞는 말은 답이 아니다. 문장마다 스킬이나 효과를 짚게 한다.
-    "- 어느 챔피언에나 맞는 말은 쓰지 마십시오(\"생존력이 뛰어나다\", \"압박하는 것이 중요하다\", \"주의해야 한다\"). 문장마다 스킬 이름이나 효과 이름을 하나 이상 넣으십시오.",
-    // "상대하는 사람이 조심할 것은 오공의 낮은 마법 저항력" 이 나왔다. 약점은 상대가 파고드는
-    // 지점이지 상대가 조심할 것이 아니다. 방향을 못 박는다.
-    "- 낮은 능력치는 상대가 파고드는 지점으로 쓰십시오(\"마법 저항력이 낮아 마법 피해가 잘 들어간다\"). 상대가 조심할 것으로 쓰지 마십시오.",
-    "- 사용자의 질문에 직접 답하십시오. 묻지 않은 것을 덧붙이지 마십시오.",
-    // 노트가 한다체라 해설도 한다체로 따라갔다. 자료 문체와 답 문체를 갈라 둔다.
-    "- 합니다체로, 인사말 없이 바로 본문만 쓰십시오. 자료가 한다체여도 답은 합니다체입니다.",
-  ];
+/**
+ * 해설 재료를 만든다.
+ *
+ * `lang` 은 **답이 나올 언어**다. 자료의 챔피언·스킬 이름은 카드가 그 로케일로
+ * 실려 오지만, 효과 태그와 능력치 등급은 파이프라인이 한국어 리터럴로 타입을
+ * 잡고 있어 여기서 옮긴다(promptLocale).
+ *
+ * 지시문까지 옮기지 않으면 모델이 지시문의 언어를 따라간다. 영어로 물어도
+ * 한국어 답이 나왔던 원인이 이것이다.
+ */
+export function buildCommentaryPrompt(
+  answer: AdvisorAnswer,
+  patch: string,
+  lang: Language = "ko_KR",
+): string | undefined {
+  const w = promptWords(lang);
+  const rules = w.rules;
+  const tags = (list: string[]): string => list.map((tag) => translateTag(tag, lang)).join(", ");
 
   if (answer.kind === "champion") {
     // 스킬 표(쿨·소모·계수…)는 조회다. 카드가 곧 답.
     if (answer.focus) return undefined;
     const card = answer.card;
-    const lines = [`[패치] ${patch}`, `[챔피언] ${card.name}`];
-    if (card.wiki?.subclass) lines.push(`- 분류: ${card.wiki.subclass}${card.wiki.positions?.length ? ` · 주 포지션 ${card.wiki.positions[0]}` : ""}`);
-    lines.push(`- 주 피해 유형: ${card.damageProfile.primary} · 계수 성향: ${card.scalingProfile.primary}`);
+    const lines = [`[${w.patch}] ${patch}`, `[${w.champion}] ${card.name}`];
+    if (card.wiki?.subclass) lines.push(`- ${w.subclassLine(card.wiki.subclass, card.wiki.positions?.[0])}`);
+    lines.push(`- ${w.damageLine(translateDamage(card.damageProfile.primary, lang), translateScaling(card.scalingProfile.primary, lang))}`);
     for (const stat of CARD_STATS) {
       const snap = card.stats[stat];
       if (!snap || !isExtremeGrade(snap.gradeLv1)) continue;
-      const { side, value } = percentileLabel(snap.percentileLv1);
-      lines.push(`- ${STAT_LABEL[stat]}: 1레벨 기준 전체 챔피언 중 ${side === "top" ? "상위" : "하위"} ${value}% (${snap.gradeLv1})`);
+      const { side } = percentileLabel(snap.percentileLv1);
+      lines.push(`- ${w.percentile(translateStat(stat, lang), side, translateGrade(snap.gradeLv1, lang))}`);
     }
     if (answer.view === "skills") {
-      lines.push("[스킬]");
+      lines.push(`[${w.skills}]`);
       for (const spell of card.spells) lines.push(`- ${spell.slot} ${spell.name}: ${spellSummary(spell)}`);
-    } else if (card.mechanics.length) {
-      lines.push(`- 보유 효과: ${card.mechanics.join(", ")}`);
+    } else {
+      // 스킬 이름을 반드시 싣는다. 지시문이 "문장마다 스킬 이름을 넣으라" 고 하는데
+      // 개요 재료에 이름이 없으면 모델은 지어내는 수밖에 없다. 실제로 제이스 Q·E·R 을
+      // 모두 '스톰 블레이드' 라고 답했다. 요약 없이 슬롯과 이름만이면 길이도 거의 안 는다.
+      lines.push(`[${w.abilities}] ${card.spells.map((spell) => `${spell.slot} ${spell.name}`).join(" · ")}`);
+      if (card.mechanics.length) lines.push(`- ${w.effects}: ${tags(card.mechanics)}`);
     }
-    const notes = answer.notes;
+    // 운용 노트는 한국어로만 있다(플레이북이 한국어다). 영어·중국어 프롬프트에
+    // 한국어 문단을 섞으면 모델이 그 언어를 따라가 답까지 한국어가 된다.
+    // 그래서 한국어일 때만 싣는다. 노트가 빠져도 태그와 능력치로 답은 나온다.
+    const notes = lang === "ko_KR" ? answer.notes : undefined;
     if (notes && (notes.playing.length || notes.against.length)) {
-      lines.push("[운용 노트 — 사람이 검증한 내용입니다. 이 표현을 따르십시오]");
-      for (const note of notes.playing) lines.push(`- 잡을 때: ${note}`);
-      for (const note of notes.against) lines.push(`- 상대할 때: ${note}`);
+      lines.push(w.notesHeader);
+      for (const note of notes.playing) lines.push(`- ${w.playing}: ${note}`);
+      for (const note of notes.against) lines.push(`- ${w.against}: ${note}`);
     }
     const hasNotes = Boolean(notes && (notes.playing.length || notes.against.length));
     lines.push("", ...rules);
     if (answer.view === "skills") {
       // "스킬셋이 어떻게 되어 있지" 는 스킬 다섯 개가 어떻게 맞물리는지를 묻는 것이다.
       // 스킬 하나하나의 설명은 카드에 있으니, 모델은 그 사이의 관계를 말한다.
-      lines.push(
-        "- 스킬 다섯 개가 서로 어떻게 맞물리는지 서너 문장으로 설명하십시오: 무엇으로 붙거나 시작하고, 무엇이 피해를 내고, 무엇이 살리거나 빠지는지. 노트에 콤보 순서가 있으면 그 순서를 근거로 삼으십시오.",
-        "- 스킬 하나하나를 다시 설명하지 마십시오. 설명은 이미 화면의 표에 있습니다.",
-      );
+      lines.push(w.closing.skills);
     } else if (hasNotes) {
-      lines.push(
-        "- 노트는 화면에 그대로 보입니다. 옮겨 쓰지 말고 이 챔피언이 무엇으로 이기고(어느 스킬) 어디가 약한지(상대가 어떻게 파고드는지) 두세 문장으로 말하십시오.",
-      );
+      lines.push(w.closing.championWithNotes);
     } else {
-      lines.push("- 이 챔피언이 무엇으로 이기고(어느 스킬) 어디가 약한지(상대가 어떻게 파고드는지) 두세 문장으로 말하십시오.");
+      lines.push(w.closing.champion);
     }
     return lines.join("\n");
   }
@@ -753,11 +767,14 @@ export function buildCommentaryPrompt(answer: AdvisorAnswer, patch: string): str
     // 쿨·소모·계수 하나를 물은 질문에는 해설을 붙이지 않는다. 재료가 숫자 하나뿐이라
     // 모델이 할 말이 없고, 실제로 10초 쿨을 "매우 짧다" 고 지어냈다. 카드가 곧 답이다.
     if (answer.highlighted.length === 0) return undefined;
-    const lines = [`[패치] ${patch}`, `[스킬] ${answer.championName} ${answer.spell.slot} ${answer.spell.name}`];
+    const lines = [
+      `[${w.patch}] ${patch}`,
+      `[${w.spell}] ${answer.championName} ${answer.spell.slot} ${answer.spell.name}`,
+    ];
     if (answer.headline) lines.push(`- ${answer.headline.label}: ${answer.headline.value}`);
     for (const sentence of answer.highlighted) lines.push(`- ${sentence}`);
-    if (answer.spell.effects.length) lines.push(`- 효과: ${answer.spell.effects.join(", ")}`);
-    lines.push("", ...rules, "- 이 사실이 실전에서 왜 중요한지 한두 문장으로 말하십시오.");
+    if (answer.spell.effects.length) lines.push(`- ${w.effects}: ${tags(answer.spell.effects)}`);
+    lines.push("", ...rules, w.closing.spell);
     return lines.join("\n");
   }
 
@@ -767,30 +784,30 @@ export function buildCommentaryPrompt(answer: AdvisorAnswer, patch: string): str
     if (!answer.matchup && (answer.headline || answer.slot)) return undefined;
     const [me, enemy] = answer.cards;
     const lines = [
-      `[패치] ${patch}`,
+      `[${w.patch}] ${patch}`,
       answer.matchup && enemy
-        ? `[상성] 사용자는 ${me.name}를 잡고 ${enemy.name}를 상대합니다. ${me.name} 시점으로 쓰십시오.`
-        : `[비교] ${answer.cards.map((card) => card.name).join(" vs ")}`,
+        ? w.matchup(me.name, enemy.name)
+        : `[${w.compare}] ${answer.cards.map((card) => card.name).join(" vs ")}`,
     ];
     for (const card of answer.cards) {
       const traits: string[] = [];
       if (card.wiki?.subclass) traits.push(card.wiki.subclass);
-      traits.push(`${card.damageProfile.primary} 피해`, `${card.scalingProfile.primary} 계수`);
+      traits.push(w.damageLine(translateDamage(card.damageProfile.primary, lang), translateScaling(card.scalingProfile.primary, lang)));
       for (const stat of CARD_STATS) {
         const snap = card.stats[stat];
         if (!snap || !isExtremeGrade(snap.gradeLv1)) continue;
-        const { side, value } = percentileLabel(snap.percentileLv1);
-        traits.push(`${STAT_LABEL[stat]} ${side === "top" ? "상위" : "하위"} ${value}%`);
+        const { side } = percentileLabel(snap.percentileLv1);
+        traits.push(w.percentile(translateStat(stat, lang), side, translateGrade(snap.gradeLv1, lang)));
       }
-      if (card.mechanics.length) traits.push(`보유 효과: ${card.mechanics.slice(0, 6).join(", ")}`);
+      // 비교에서도 스킬 이름을 준다. 이름 없이 "어느 스킬로 이긴다" 를 시키면 지어낸다.
+      traits.push(`${w.abilities}: ${card.spells.map((spell) => `${spell.slot} ${spell.name}`).join(" · ")}`);
+      if (card.mechanics.length) traits.push(`${w.effects}: ${tags(card.mechanics.slice(0, 6))}`);
       lines.push(`- ${card.name}: ${traits.join(" · ")}`);
     }
     lines.push(
       "",
       ...rules,
-      answer.matchup && enemy
-        ? `- ${enemy.name}의 피해 유형이 ${me.name}의 어느 저항과 만나는지, ${enemy.name}의 보유 효과 중 ${me.name}가 조심할 것, ${me.name}가 유리한 국면을 말하십시오.`
-        : "- 둘이 맞붙었을 때 무엇이 갈리는지, 각자 무엇을 조심해야 하는지 말하십시오.",
+      answer.matchup && enemy ? w.closing.matchup(me.name, enemy.name) : w.closing.compare,
     );
     return lines.join("\n");
   }
