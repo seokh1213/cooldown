@@ -61,5 +61,15 @@ export type AdvisorResponse =
   | { type: "loaded" }
   /** 생성 중 토큰 조각 */
   | { type: "chunk"; id: number; text: string }
-  | { type: "done"; id: number; text: string; tokens: number; seconds: number }
+  | {
+      type: "done";
+      id: number;
+      text: string;
+      tokens: number;
+      seconds: number;
+      /** 첫 토큰까지 걸린 시간. 프롬프트를 읽는 데 쓴 몫이다. */
+      ttftSeconds?: number;
+      /** 프롬프트 길이. 읽는 시간이 길면 여기가 큰 것이다. */
+      promptTokens?: number;
+    }
   | { type: "error"; id?: number; message: string };

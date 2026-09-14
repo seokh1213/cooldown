@@ -38,7 +38,8 @@ export type AdvisorStatus =
 export interface AdvisorTurn extends AdvisorChatMessage {
   id: number;
   /** 생성이 끝난 뒤 붙는 실측치 */
-  stats?: { tokens: number; seconds: number };
+  /** ttft 는 프롬프트를 읽는 데 쓴 시간이다. 나머지가 글을 쓰는 시간이다. */
+  stats?: { tokens: number; seconds: number; ttft?: number; promptTokens?: number };
   /** 사용자가 남긴 평가 */
   rating?: "up" | "down";
   /**
@@ -243,7 +244,12 @@ export function useAdvisor(): UseAdvisorResult {
               next[next.length - 1] = {
                 ...last,
                 content: message.text || last.content,
-                stats: { tokens: message.tokens, seconds: message.seconds },
+                stats: {
+                  tokens: message.tokens,
+                  seconds: message.seconds,
+                  ttft: message.ttftSeconds,
+                  promptTokens: message.promptTokens,
+                },
               };
             }
             return next;

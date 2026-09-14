@@ -125,11 +125,20 @@ async function generate(
   let text = "";
   let tokens = 0;
   const startedAt = performance.now();
+  /**
+   * 첫 토큰이 나온 시각.
+   *
+   * 전체 시간만 재면 프롬프트를 읽는 시간(prefill)과 글을 쓰는 시간(decode)이
+   * 뭉뚱그려진다. 해설 프롬프트는 페르소나·재료·노트가 붙어 길기 때문에 그 둘을
+   * 갈라야 "모델이 느린가, 프롬프트가 긴가" 를 판단할 수 있다.
+   */
+  let firstTokenAt = 0;
 
   const streamer = new TextStreamer(tokenizer, {
     skip_prompt: true,
     skip_special_tokens: true,
     callback_function: (chunk: string) => {
+      if (firstTokenAt === 0) firstTokenAt = performance.now();
       text += chunk;
       tokens += 1;
       post({ type: "chunk", id, text: chunk });
@@ -145,12 +154,19 @@ async function generate(
     stopping_criteria: stopper,
   } as Parameters<PreTrainedModel["generate"]>[0]);
 
+  const finishedAt = performance.now();
+  const dims = (inputs as { input_ids?: { dims?: number[] } }).input_ids?.dims;
+  const promptTokens = Array.isArray(dims) && dims.length > 0 ? dims[dims.length - 1] : 0;
+
   post({
     type: "done",
     id,
     text,
     tokens,
-    seconds: (performance.now() - startedAt) / 1000,
+    seconds: (finishedAt - startedAt) / 1000,
+    // 첫 토큰까지 = 프롬프트를 읽는 시간. 나머지가 글을 쓰는 시간이다.
+    ttftSeconds: firstTokenAt ? (firstTokenAt - startedAt) / 1000 : undefined,
+    promptTokens: promptTokens || undefined,
   });
 }
 

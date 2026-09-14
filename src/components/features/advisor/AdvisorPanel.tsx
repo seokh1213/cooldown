@@ -1139,6 +1139,13 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
                     {turn.stats && (
                       <span>
                         {turn.stats.tokens} tok · {turn.stats.seconds.toFixed(1)}s
+                        {turn.stats.ttft !== undefined && (
+                          <>
+                            {" "}
+                            (읽기 {turn.stats.ttft.toFixed(1)}s
+                            {turn.stats.promptTokens ? ` · 프롬프트 ${turn.stats.promptTokens} tok` : ""})
+                          </>
+                        )}
                       </span>
                     )}
                     {/* 평가는 기기 안에만 쌓인다. 서버로 보내지 않는다. */}
