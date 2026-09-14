@@ -408,6 +408,7 @@ export const enUSTranslations: Translations = {
       reference: "Reference",
       toggleReference: "Reference panel",
       collapseReference: "Collapse reference panel",
+      resizeReference: "Resize reference panel",
       referenceEmpty: "The answer's reference card appears here.",
       sameReference: "Same reference",
       openCard: "Open card",
