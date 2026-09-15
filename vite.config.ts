@@ -86,6 +86,10 @@ export default defineConfig(({ mode }) => {
         additionalManifestEntries: bootstrapEntries,
         cleanupOutdatedCaches: true,
         globPatterns: ["**/*.{js,css,html,png,svg,ico}"],
+        // WebLLM 워커는 6MB 다. `?advisorRuntime=webllm` 으로만 들어가는 실험 경로라
+        // 모두에게 미리 받게 할 이유가 없다. 사전 캐시에서 뺀다 — 넣으면 workbox 가
+        // 기본 한도(2MB)를 넘겼다며 빌드를 세운다.
+        globIgnores: ["**/advisorWebllm.worker-*.js"],
         runtimeCaching: [
           {
             urlPattern: /\/cooldown\/release\.json$/,

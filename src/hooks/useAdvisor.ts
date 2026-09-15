@@ -14,6 +14,8 @@ import {
   resolveDevice,
   resolveWasmBuild,
   resolveGraphCapture,
+  resolveRuntime,
+  WEBLLM_MODEL,
   type WebGpuSupport,
 } from "@/lib/advisor/config";
 import { deleteModelCache } from "@/lib/advisor/storage";
@@ -195,12 +197,19 @@ export function useAdvisor(): UseAdvisorResult {
   const workerRef = useRef<Worker | null>(null);
   const nextId = useRef(1);
   // 백엔드는 주소에서 정한다. 기본 WebGPU, ?advisorDevice=wasm 이면 CPU.
-  const model = useRef({
-    ...resolveModel(),
-    device: resolveDevice(),
-    wasmBuild: resolveWasmBuild(),
-    graphCapture: resolveGraphCapture(),
-  }).current;
+  // 런타임에 따라 모델 id 가 다르다. WebLLM 은 자기 프리빌트 이름을 쓴다.
+  // 주소에서 한 번 읽고 세션 내내 고정한다. 도중에 바뀌면 워커를 새로 만들어야 한다.
+  const [runtime] = useState(resolveRuntime);
+  const [model] = useState(() =>
+    runtime === "webllm"
+      ? { ...WEBLLM_MODEL }
+      : {
+          ...resolveModel(),
+          device: resolveDevice(),
+          wasmBuild: resolveWasmBuild(),
+          graphCapture: resolveGraphCapture(),
+        },
+  );
 
   useEffect(() => {
     void detectWebGpu().then(setWebgpu);
@@ -210,9 +219,10 @@ export function useAdvisor(): UseAdvisorResult {
   /** 워커는 동의 후에만 만든다 */
   const ensureWorker = useCallback((): Worker => {
     if (workerRef.current) return workerRef.current;
-    const worker = new Worker(new URL("../workers/advisor.worker.ts", import.meta.url), {
-      type: "module",
-    });
+    const worker =
+      runtime === "webllm"
+        ? new Worker(new URL("../workers/advisorWebllm.worker.ts", import.meta.url), { type: "module" })
+        : new Worker(new URL("../workers/advisor.worker.ts", import.meta.url), { type: "module" });
     worker.addEventListener("message", (event: MessageEvent<AdvisorResponse>) => {
       const message = event.data;
       switch (message.type) {
@@ -273,7 +283,7 @@ export function useAdvisor(): UseAdvisorResult {
     });
     workerRef.current = worker;
     return worker;
-  }, []);
+  }, [runtime]);
 
   useEffect(() => () => {
     workerRef.current?.terminate();
