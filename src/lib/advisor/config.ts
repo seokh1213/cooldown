@@ -147,27 +147,6 @@ export function resolveWasmBuild(): "asyncify" | "plain" {
   }
 }
 
-/**
- * 어느 런타임으로 돌릴지. `?advisorRuntime=webllm` 이면 MLC WebLLM.
- *
- * transformers.js 쪽에서 속도를 올릴 길이 다 막혀 남은 카드다. WebLLM 은 모델마다
- * 미리 컴파일한 WebGPU 커널을 쓴다. 범용 셰이더를 도는 ORT 와 구조가 다르다.
- */
-export function resolveRuntime(): "transformers" | "webllm" {
-  try {
-    return new URLSearchParams(location.search).get("advisorRuntime") === "webllm" ? "webllm" : "transformers";
-  } catch {
-    return "transformers";
-  }
-}
-
-/** WebLLM 프리빌트 모델 id. 같은 Qwen3 4B 를 q4f16 으로 컴파일해 둔 것이다. */
-export const WEBLLM_MODEL: AdvisorModel = {
-  id: "Qwen3-4B-q4f16_1-MLC",
-  dtype: "q4f16",
-  downloadMb: 2500,
-};
-
 /** ORT graph capture. `?advisorGraphCapture=1` */
 export function resolveGraphCapture(): boolean {
   try {
