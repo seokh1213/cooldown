@@ -147,18 +147,21 @@ const KO: PromptWords = {
   damageLine: (damage, scaling) => `주 피해 유형: ${damage} · 계수 성향: ${scaling}`,
   subclassLine: (subclass, position) => `분류: ${subclass}${position ? ` · 주 포지션 ${position}` : ""}`,
   rules: [
-    "[요청] 위 자료만 근거로 두세 문장으로 설명하십시오.",
+    "[요청] 위 자료만 근거로 설명하십시오. 분량은 자료가 받쳐 주는 만큼 쓰되, 같은 말을 되풀이하지 마십시오.",
     '- 수치를 쓰지 마십시오. 수치는 이미 화면에 표로 있습니다. "매우 낮다", "높은 편이다" 처럼 정도로만 말하십시오.',
     "- 자료에 없는 아이템·룬·스킬 이름을 만들지 마십시오. 스킬을 지목할 때는 위 [스킬 이름] 에 적힌 이름만 쓰십시오.",
     '- 어느 챔피언에나 맞는 말은 쓰지 마십시오("생존력이 뛰어나다", "압박하는 것이 중요하다", "주의해야 한다"). 문장마다 위 자료에 적힌 스킬 이름이나 효과 이름을 하나 이상 넣으십시오.',
     '- 낮은 능력치는 상대가 파고드는 지점으로 쓰십시오("마법 저항력이 낮아 마법 피해가 잘 들어간다"). 상대가 조심할 것으로 쓰지 마십시오.',
     "- 사용자의 질문에 직접 답하십시오. 묻지 않은 것을 덧붙이지 마십시오.",
-    "- 합니다체로, 인사말 없이 바로 본문만 쓰십시오. 자료가 한다체여도 답은 합니다체입니다.",
+    "- 합니다체로, 인사말 없이 바로 본문만 쓰십시오.",
   ],
   closing: {
-    champion: "- 이 챔피언이 무엇으로 이기고(어느 스킬) 어디가 약한지(상대가 어떻게 파고드는지) 두세 문장으로 말하십시오.",
+    champion: "- 이 챔피언이 무엇으로 이기고(어느 스킬) 어디가 약한지(상대가 어떻게 파고드는지) 말하십시오.",
     championWithNotes:
-      "- 노트는 화면에 그대로 보입니다. 옮겨 쓰지 말고 이 챔피언이 무엇으로 이기고(어느 스킬) 어디가 약한지(상대가 어떻게 파고드는지) 두세 문장으로 말하십시오.",
+      "- 노트는 화면에 그대로 보입니다. 옮겨 쓰지 마십시오.\n" +
+      "- 사용자의 질문이 한쪽만 물으면 그쪽만 쓰십시오. 잡는 법을 물으면 잡을 때만, 상대법을 물으면 상대할 때만입니다.\n" +
+      "- 양쪽을 다 쓸 때는 반드시 아래 두 머리말로 나누십시오. 한 문단에 섞지 마십시오.\n" +
+      "**잡을 때**\n(내용)\n\n**상대할 때**\n(내용)",
     skills:
       "- 스킬 다섯 개가 서로 어떻게 맞물리는지 서너 문장으로 설명하십시오: 무엇으로 붙거나 시작하고, 무엇이 피해를 내고, 무엇이 살리거나 빠지는지. 노트에 콤보 순서가 있으면 그 순서를 근거로 삼으십시오.",
     spell: "- 이 사실이 실전에서 왜 중요한지 한두 문장으로 말하십시오.",
@@ -185,7 +188,7 @@ const EN: PromptWords = {
   damageLine: (damage, scaling) => `Primary damage: ${damage} · Scaling: ${scaling}`,
   subclassLine: (subclass, position) => `Class: ${subclass}${position ? ` · main role ${position}` : ""}`,
   rules: [
-    "[Task] Using only the material above, explain in two or three sentences.",
+    "[Task] Explain using only the material above. Write as much as the material supports, but do not repeat yourself.",
     '- Do not write numbers. The numbers are already on screen in a table. Say only the degree, like "very low" or "on the high side".',
     "- Do not invent item, rune, or ability names that are not in the material. When naming an ability, use only the names listed under [Ability names] above.",
     '- Do not write anything that would fit any champion ("has great survivability", "it is important to apply pressure", "be careful"). Every sentence must name at least one ability or effect from the material above.',
@@ -195,9 +198,12 @@ const EN: PromptWords = {
   ],
   closing: {
     champion:
-      "- In two or three sentences, say what this champion wins with (which ability) and where it is weak (how the opponent gets in).",
+      "- Say what this champion wins with (which ability) and where it is weak (how the opponent gets in).",
     championWithNotes:
-      "- The notes are already visible on screen. Do not copy them. In two or three sentences, say what this champion wins with (which ability) and where it is weak (how the opponent gets in).",
+      "- The notes are already visible on screen. Do not copy them.\n" +
+      "- If the question asks about only one side, write only that side. Playing it, or playing against it.\n" +
+      "- When you cover both, split them under these two headings. Never mix them in one paragraph.\n" +
+      "**Playing it**\n(content)\n\n**Playing against it**\n(content)",
     skills:
       "- In three or four sentences, explain how the five abilities fit together: what starts the fight or closes the gap, what deals the damage, what saves or disengages. If the notes give a combo order, base it on that order.",
     spell: "- In one or two sentences, say why this fact matters in an actual game.",
@@ -224,7 +230,7 @@ const ZH: PromptWords = {
   damageLine: (damage, scaling) => `主要伤害类型：${damage} · 加成倾向：${scaling}`,
   subclassLine: (subclass, position) => `分类：${subclass}${position ? ` · 主要位置 ${position}` : ""}`,
   rules: [
-    "[要求] 仅依据以上资料，用两到三句话说明。",
+    "[要求] 仅依据以上资料说明。资料支持多少就写多少，但不要重复。",
     "- 不要写数值。数值已经以表格形式显示在屏幕上。只说程度，例如“极低”“偏高”。",
     "- 不要编造资料中没有的装备名、符文名或技能名。指出技能时，只能使用上面[技能名称]中列出的名称。",
     "- 不要写放在任何英雄身上都成立的话（“生存能力强”“需要施加压力”“要小心”）。每句话都必须至少提到上面资料中的一个技能名或效果名。",
@@ -233,9 +239,12 @@ const ZH: PromptWords = {
     "- 用中文作答，不加寒暄，只写正文。资料是韩文的，但回答必须是中文。",
   ],
   closing: {
-    champion: "- 用两到三句话说明这个英雄靠什么取胜（哪个技能），弱点在哪里（对手如何切入）。",
+    champion: "- 说明这个英雄靠什么取胜（哪个技能），弱点在哪里（对手如何切入）。",
     championWithNotes:
-      "- 笔记已经显示在屏幕上，不要照抄。用两到三句话说明这个英雄靠什么取胜（哪个技能），弱点在哪里（对手如何切入）。",
+      "- 笔记已经显示在屏幕上，不要照抄。\n" +
+      "- 若问题只问一侧，就只写那一侧：使用时，或对线时。\n" +
+      "- 两侧都写时必须用下面两个小标题分开，不要混在同一段。\n" +
+      "**使用时**\n（内容）\n\n**对线时**\n（内容）",
     skills:
       "- 用三到四句话说明五个技能如何衔接：靠什么开团或近身，靠什么造成伤害，靠什么保命或脱身。若笔记给出了连招顺序，请以该顺序为依据。",
     spell: "- 用一到两句话说明这个事实在实战中为什么重要。",
