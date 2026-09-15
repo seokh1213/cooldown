@@ -392,7 +392,7 @@ export interface Translations {
       fromChat: string;
       /** 화면에 둘이 있는데 누구 것인지 모를 때 */
       whichOne: string;
-      /** 운용 노트 제목. {name}를 잡을 때 / 상대할 때 */
+      /** 운용 노트 제목. {name} 플레이할 때 / 상대할 때 */
       playingNotes: string;
       againstNotes: string;
       notesSource: string;

@@ -404,7 +404,7 @@ export const koKRTranslations: Translations = {
       matchupTool: "상성",
       fromChat: "앞서 말한 {name} 기준입니다.",
       whichOne: "어느 챔피언 말씀이신가요?",
-      playingNotes: "{name}를 잡을 때",
+      playingNotes: "{name} 플레이할 때",
       againstNotes: "{name}를 상대할 때",
       notesSource: "사람이 검증한 운용 노트",
       moreNotes: "노트 {count}건 더",

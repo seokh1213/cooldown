@@ -56,7 +56,7 @@ export type AdvisorAnswer =
       focus?: SpellFocus;
       /** "스킬 설명해줘": 능력치 대신 스킬 다섯 개의 요약 */
       view?: "skills";
-      /** 사람이 검증한 운용 노트. 잡을 때 / 상대할 때. */
+      /** 사람이 검증한 운용 노트. 플레이할 때 / 상대할 때. */
       notes?: { playing: string[]; against: string[] };
     }
   | {
@@ -92,7 +92,7 @@ export type AdvisorAnswer =
       headline?: Fact;
       /** 상성 질문. cards[0] 이 내 챔피언, cards[1] 이 상대다. 해설이 그 시점으로 쓴다. */
       matchup?: boolean;
-      /** 상성 노트. 내 챔피언을 잡을 때(이 상대 한정 우선) / 상대를 상대할 때. 사람이 검증. */
+      /** 상성 노트. 내 챔피언을 플레이할 때(이 상대 한정 우선) / 상대를 상대할 때. 사람이 검증. */
       notes?: { mine: string[]; enemy: string[] };
     }
   | {
