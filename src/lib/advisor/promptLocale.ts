@@ -72,14 +72,21 @@ const GRADE: Record<string, { en: string; zh: string }> = {
   "매우 낮음": { en: "very low", zh: "极低" },
 };
 
-const STATS: Record<string, { en: string; zh: string }> = {
-  health: { en: "Health", zh: "生命值" },
-  armor: { en: "Armor", zh: "护甲" },
-  magicResist: { en: "Magic resist", zh: "魔抗" },
-  attackDamage: { en: "Attack damage", zh: "攻击力" },
-  moveSpeed: { en: "Move speed", zh: "移动速度" },
-  attackSpeed: { en: "Attack speed", zh: "攻速" },
-  healthRegen: { en: "Health regen", zh: "生命回复" },
+/**
+ * 능력치 이름.
+ *
+ * 다른 표들과 달리 열쇠가 한국어가 아니라 코드 이름(health, armor…)이다. 그래서
+ * 한국어 값을 따로 적어야 한다. 빼먹었더니 프롬프트에 "health: 상위권" 이 나갔고
+ * 모델이 그것을 "건강" 으로 옮겨 적었다.
+ */
+const STATS: Record<string, { ko: string; en: string; zh: string }> = {
+  health: { ko: "체력", en: "Health", zh: "生命值" },
+  armor: { ko: "방어력", en: "Armor", zh: "护甲" },
+  magicResist: { ko: "마법 저항력", en: "Magic resist", zh: "魔抗" },
+  attackDamage: { ko: "공격력", en: "Attack damage", zh: "攻击力" },
+  moveSpeed: { ko: "이동 속도", en: "Move speed", zh: "移动速度" },
+  attackSpeed: { ko: "공격 속도", en: "Attack speed", zh: "攻速" },
+  healthRegen: { ko: "체력 재생", en: "Health regen", zh: "生命回复" },
 };
 
 function pick(table: Record<string, { en: string; zh: string }>, key: string, lang: Language): string {
@@ -94,7 +101,13 @@ export const translateTag = (tag: string, lang: Language): string => pick(TAGS, 
 export const translateDamage = (value: string, lang: Language): string => pick(DAMAGE, value, lang);
 export const translateScaling = (value: string, lang: Language): string => pick(SCALING, value, lang);
 export const translateGrade = (value: string, lang: Language): string => pick(GRADE, value, lang);
-export const translateStat = (stat: string, lang: Language): string => pick(STATS, stat, lang);
+export function translateStat(stat: string, lang: Language): string {
+  const row = STATS[stat];
+  if (!row) return stat;
+  if (lang === "en_US") return row.en;
+  if (lang === "zh_CN") return row.zh;
+  return row.ko;
+}
 
 /** 프롬프트의 머리표·꼬리말. 자료 구획을 여는 말들이다. */
 export interface PromptWords {
@@ -139,7 +152,7 @@ const KO: PromptWords = {
   effects: "효과",
   abilities: "스킬 이름",
   notesHeader: "[운용 노트 — 사람이 검증한 내용입니다. 이 표현을 따르십시오]",
-  playing: "잡을 때",
+  playing: "플레이할 때",
   against: "상대할 때",
   percentile: (stat, side, grade) =>
     `${stat}: 1레벨 기준 전체 챔피언 중 ${side === "top" ? "상위권" : "하위권"} (${grade})`,
@@ -153,15 +166,19 @@ const KO: PromptWords = {
     '- 어느 챔피언에나 맞는 말은 쓰지 마십시오("생존력이 뛰어나다", "압박하는 것이 중요하다", "주의해야 한다"). 문장마다 위 자료에 적힌 스킬 이름이나 효과 이름을 하나 이상 넣으십시오.',
     '- 낮은 능력치는 상대가 파고드는 지점으로 쓰십시오("마법 저항력이 낮아 마법 피해가 잘 들어간다"). 상대가 조심할 것으로 쓰지 마십시오.',
     "- 사용자의 질문에 직접 답하십시오. 묻지 않은 것을 덧붙이지 마십시오.",
+    // 길이 상한을 걷어내자 모델이 위 자료를 그대로 옮겨 적고 시작했다.
+    // "분류: Vanguard · 주 피해 유형: 마법 · 스킬: P 화강암 방패…" 로 세 줄을 버렸다.
+    "- 위 자료를 목록으로 다시 적지 마십시오. 분류·피해 유형·능력치·스킬 목록은 이미 화면에 있습니다. 바로 본문부터 쓰십시오.",
     "- 합니다체로, 인사말 없이 바로 본문만 쓰십시오.",
   ],
   closing: {
     champion: "- 이 챔피언이 무엇으로 이기고(어느 스킬) 어디가 약한지(상대가 어떻게 파고드는지) 말하십시오.",
     championWithNotes:
       "- 노트는 화면에 그대로 보입니다. 옮겨 쓰지 마십시오.\n" +
-      "- 사용자의 질문이 한쪽만 물으면 그쪽만 쓰십시오. 잡는 법을 물으면 잡을 때만, 상대법을 물으면 상대할 때만입니다.\n" +
+      "- 사용자의 질문이 한쪽만 물으면 그쪽만 쓰십시오. 플레이 방법을 물으면 플레이할 때만, 상대법을 물으면 상대할 때만입니다.\n" +
       "- 양쪽을 다 쓸 때는 반드시 아래 두 머리말로 나누십시오. 한 문단에 섞지 마십시오.\n" +
-      "**잡을 때**\n(내용)\n\n**상대할 때**\n(내용)",
+      "**플레이할 때**\n(내용)\n\n**상대할 때**\n(내용)\n" +
+      "- 답은 반드시 머리말로 시작합니다. 그 앞에 분류·포지션·피해 유형을 적지 마십시오. 첫 글자가 ** 여야 합니다.",
     skills:
       "- 스킬 다섯 개가 서로 어떻게 맞물리는지 서너 문장으로 설명하십시오: 무엇으로 붙거나 시작하고, 무엇이 피해를 내고, 무엇이 살리거나 빠지는지. 노트에 콤보 순서가 있으면 그 순서를 근거로 삼으십시오.",
     spell: "- 이 사실이 실전에서 왜 중요한지 한두 문장으로 말하십시오.",
@@ -194,6 +211,7 @@ const EN: PromptWords = {
     '- Do not write anything that would fit any champion ("has great survivability", "it is important to apply pressure", "be careful"). Every sentence must name at least one ability or effect from the material above.',
     '- Treat a low stat as the opening the opponent attacks ("low magic resist, so magic damage lands well"). Do not write it as something the opponent should fear.',
     "- Answer the user's question directly. Do not add what was not asked.",
+    "- Do not restate the material as a list. The class, damage type, stats, and ability list are already on screen. Start with the body.",
     "- Write in English, no greeting, body text only. The material is in Korean; your answer must still be in English.",
   ],
   closing: {
@@ -203,7 +221,8 @@ const EN: PromptWords = {
       "- The notes are already visible on screen. Do not copy them.\n" +
       "- If the question asks about only one side, write only that side. Playing it, or playing against it.\n" +
       "- When you cover both, split them under these two headings. Never mix them in one paragraph.\n" +
-      "**Playing it**\n(content)\n\n**Playing against it**\n(content)",
+      "**Playing it**\n(content)\n\n**Playing against it**\n(content)\n" +
+      "- Begin with a heading. Do not write the class, role, or damage type before it. The first character must be *.",
     skills:
       "- In three or four sentences, explain how the five abilities fit together: what starts the fight or closes the gap, what deals the damage, what saves or disengages. If the notes give a combo order, base it on that order.",
     spell: "- In one or two sentences, say why this fact matters in an actual game.",
@@ -236,6 +255,7 @@ const ZH: PromptWords = {
     "- 不要写放在任何英雄身上都成立的话（“生存能力强”“需要施加压力”“要小心”）。每句话都必须至少提到上面资料中的一个技能名或效果名。",
     "- 把偏低的属性写成对手切入的突破口（“魔抗低，魔法伤害打得进去”），不要写成对手需要提防的东西。",
     "- 直接回答用户的问题，不要补充没有问到的内容。",
+    "- 不要把上面的资料再列一遍。分类、伤害类型、属性、技能列表都已经显示在屏幕上，直接从正文写起。",
     "- 用中文作答，不加寒暄，只写正文。资料是韩文的，但回答必须是中文。",
   ],
   closing: {
@@ -244,7 +264,8 @@ const ZH: PromptWords = {
       "- 笔记已经显示在屏幕上，不要照抄。\n" +
       "- 若问题只问一侧，就只写那一侧：使用时，或对线时。\n" +
       "- 两侧都写时必须用下面两个小标题分开，不要混在同一段。\n" +
-      "**使用时**\n（内容）\n\n**对线时**\n（内容）",
+      "**使用时**\n（内容）\n\n**对线时**\n（内容）\n" +
+      "- 必须以小标题开头，前面不要写分类、位置、伤害类型。第一个字符必须是 *。",
     skills:
       "- 用三到四句话说明五个技能如何衔接：靠什么开团或近身，靠什么造成伤害，靠什么保命或脱身。若笔记给出了连招顺序，请以该顺序为依据。",
     spell: "- 用一到两句话说明这个事实在实战中为什么重要。",
