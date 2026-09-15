@@ -125,36 +125,36 @@ export function resolveModel(): AdvisorModel {
 }
 
 /**
- * 추론 백엔드. 기본은 WebGPU 다.
+ * 속도를 올리려고 재본 것들 — 전부 막혀서 스위치를 걷어냈다.
  *
- * `?advisorDevice=wasm` 이면 CPU 로 돌린다. 속도가 이상할 때 WebGPU 가 실제로
- * 붙었는지 가르는 용도다. 둘이 같은 속도로 나오면 WebGPU 를 안 타고 있는 것이다.
+ * 브라우저 디코드는 5.5 tok/s 다. 같은 가중치가 Ollama(Metal)에서 49.7 tok/s 니
+ * 9배 차이다. 다음 넷을 실제로 돌려 봤고 결과만 남긴다.
+ *
+ * CPU 로 떨어진 건 아닌가 — 아니다.
+ *   device 를 wasm 으로 강제하면 std::bad_alloc 으로 죽는다(2.7GB 가 wasm 힙에
+ *   안 들어간다). 평소에 CPU 로 떨어지고 있었다면 진작 같은 오류가 났을 것이다.
+ *
+ * ORT 버전 올리기 — 불가.
+ *   transformers.js 가 onnxruntime-web 을 빌드 시점에 자기 번들에 넣는다.
+ *   dist 에 외부 import 가 0건이라 overrides 로 못 바꾼다. transformers.js 를
+ *   올려야 하는데 4.2.0 이 이미 최신이다.
+ *
+ * asyncify 대신 평범한 wasm 빌드 — 불가.
+ *   no available backend found. ERR: [webgpu] TypeError: z(...).webgpuInit is not a function
+ *   평범한 빌드에는 WebGPU 백엔드가 없다. JSPI 빌드는 글루가 번들에 없다.
+ *
+ * graph capture — 불가.
+ *   Only 'gpu-buffer' location is supported when enableGraphCapture is true.
+ *   transformers.js 는 KV 캐시만 GPU 에 두고 logits 는 CPU 로 내린다.
+ *
+ * 남은 것은 왜 느린가에 대한 답뿐이다. 애플 실리콘의 행렬 유닛(simdgroup_matrix)을
+ * WebGPU 가 아직 못 쓴다. 표준에 대응 명령이 없다. 커널도 범용 셰이더라 손으로
+ * 다듬은 Metal 커널을 못 따라간다. 설정 문제가 아니라 구조다.
+ *
+ * MLC WebLLM 은 디코드가 1.7배(9.5 tok/s) 빨랐지만 되돌렸다. 프리빌트에 있는
+ * 것이 Qwen3-4B 본판이고 우리가 쓰는 Instruct-2507 이 아니다. 본판은 사고 모드를
+ * 꺼도 영어로 추론을 흘려 해설이 1,000자를 넘었다. 속도보다 내용이 먼저다.
  */
-export function resolveDevice(): "webgpu" | "wasm" {
-  try {
-    return new URLSearchParams(location.search).get("advisorDevice") === "wasm" ? "wasm" : "webgpu";
-  } catch {
-    return "webgpu";
-  }
-}
-
-/** ORT wasm 빌드. `?advisorWasm=plain` 이면 asyncify 가 아닌 쪽으로 붙인다. */
-export function resolveWasmBuild(): "asyncify" | "plain" {
-  try {
-    return new URLSearchParams(location.search).get("advisorWasm") === "plain" ? "plain" : "asyncify";
-  } catch {
-    return "asyncify";
-  }
-}
-
-/** ORT graph capture. `?advisorGraphCapture=1` */
-export function resolveGraphCapture(): boolean {
-  try {
-    return new URLSearchParams(location.search).get("advisorGraphCapture") === "1";
-  } catch {
-    return false;
-  }
-}
 
 /**
  * 한 번에 만들 최대 토큰 수.

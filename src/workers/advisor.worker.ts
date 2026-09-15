@@ -2,7 +2,7 @@
 /**
  * 상성 코치 워커
  *
- * Transformers.js 로 gemma-4-E2B 를 WebGPU 에서 돌린다.
+ * Transformers.js 로 Qwen3 4B 를 WebGPU 에서 돌린다.
  * 모델 적재는 한 번만 하고 이후 생성 요청을 받아 토큰을 흘려보낸다.
  *
  * 브라우저 캐시에 파일이 남으므로 두 번째 방문부터는 내려받기가 없다.
@@ -81,28 +81,14 @@ function onProgress(event: HfProgress) {
 async function load(spec: AdvisorModelSpec): Promise<void> {
   if (loading) return loading;
   loading = (async () => {
-    // wasm 빌드 고르기. transformers.js 는 Safari 에만 평범한 빌드를 주고
-    // 나머지에는 asyncify 를 준다. 어느 쪽이 빠른지 재려고 바꿔 끼울 수 있게 둔다.
-    if (env.backends.onnx.wasm && spec.wasmBuild === "plain") {
-      const base = `${import.meta.env.BASE_URL}ort/`;
-      env.backends.onnx.wasm.wasmPaths = {
-        mjs: `${base}ort-wasm-simd-threaded.mjs`,
-        wasm: `${base}ort-wasm-simd-threaded.wasm`,
-      } as unknown as string;
-    }
     tokenizer = await AutoTokenizer.from_pretrained(spec.id, {
       progress_callback: onProgress,
     });
     // dtype 은 문자열 하나로 준다. 모듈마다 다른 값을 주면 세션 구성이 어긋난다.
-    // Gemma 4 는 멀티모달이지만 *ForCausalLM 으로 부르면 라이브러리가 텍스트 전용 세션만 만든다.
-    // 기본은 WebGPU. `?advisorDevice=wasm` 은 진단용이다.
-    // 2.7GB 짜리는 wasm 힙에 안 들어가 std::bad_alloc 으로 죽는데, 그 자체가
-    // "WebGPU 로 돌고 있다" 는 증거다. 몰래 CPU 로 떨어졌다면 평소에도 죽었을 것이다.
     model = await AutoModelForCausalLM.from_pretrained(spec.id, {
       dtype: spec.dtype as "q4f16",
-      device: spec.device ?? "webgpu",
+      device: "webgpu",
       progress_callback: onProgress,
-      ...(spec.graphCapture ? { session_options: { enableGraphCapture: true } } : {}),
     });
     post({ type: "loaded" });
   })();
@@ -122,7 +108,7 @@ async function generate(
 
   stopper = new InterruptableStoppingCriteria();
   const chat = system ? [{ role: "system", content: system }, ...messages] : messages;
-  // Gemma 4 는 사고 모드를 켤 수 있다. 켜 두면 답변 앞에 추론 과정을 길게 뱉어
+  // Qwen3 계열은 사고 모드를 켤 수 있다. 켜 두면 답변 앞에 추론 과정을 길게 뱉어
   // 브라우저에서 체감 지연이 몇 배가 된다. 상성 조언은 형식이 정해져 있으므로 끈다.
   const inputs = tokenizer.apply_chat_template(chat, {
     add_generation_prompt: true,
