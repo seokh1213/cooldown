@@ -78,40 +78,8 @@ export const SMOKE_MODEL: AdvisorModel = {
   downloadMb: 730,
 };
 
-/**
- * 속도와 용량을 사고 싶을 때. `?advisorModel=exaone`
- *
- * 태그 짝은 98% 로 가장 정확하고 70.3 tok/s 에 1.73GB 로 가장 작다. vocab
- * 102,400 중 한글 토큰이 33.3% 라 한국어를 자당 0.50토큰으로 쪼갠다. 후보 중
- * 가장 촘촘하다.
- *
- * 기본값으로 올리지 않은 이유는 둘이다. 평균 368자로 기본값의 두 배이고,
- * 태그 대조로는 안 잡히는 산문 오류가 있다. 말파이트를 "그녀" 라 부르고
- * 야스오 낭인의 길을 "높은 방어력을 제공해 팀을 보호한다" 고 썼다.
- */
-export const EXAONE_MODEL: AdvisorModel = {
-  id: "onnx-community/EXAONE-3.5-2.4B-Instruct",
-  dtype: "q4f16",
-  downloadMb: 1730,
-};
-
-/**
- * 쓰던 모델. `?advisorModel=gemma`
- *
- * 되돌릴 자리를 남겨 둔다. 새 기본값이 문제를 내면 주소 한 줄로 예전 동작이다.
- * 브라우저에서 재보니 더 크고(2,986MB) 더 느리다(2.5 tok/s). 빠를 것이라
- * 여겼던 것은 Ollama 기준이었고, WebGPU 에서는 순위가 뒤집혔다.
- */
-export const GEMMA_MODEL: AdvisorModel = {
-  id: "onnx-community/gemma-4-E2B-it-ONNX",
-  dtype: "q4f16",
-  downloadMb: 2986,
-};
-
 const SWAPPABLE: Record<string, AdvisorModel> = {
   smoke: SMOKE_MODEL,
-  exaone: EXAONE_MODEL,
-  gemma: GEMMA_MODEL,
 };
 
 export function resolveModel(): AdvisorModel {
