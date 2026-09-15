@@ -16,6 +16,31 @@ export interface AdvisorModelSpec {
    * WebGPU 가 안 붙은 것이다.
    */
   device?: "webgpu" | "wasm";
+  /**
+   * 어느 ORT wasm 빌드를 쓸지. `?advisorWasm=plain` 이면 asyncify 가 아닌 쪽.
+   *
+   * **재봤고, 안 된다.** 평범한 빌드에는 WebGPU 백엔드가 없다.
+   *   no available backend found. ERR: [webgpu] TypeError: z(...).webgpuInit is not a function
+   *
+   * transformers.js 가 Safari 에만 평범한 빌드를 주는 것은 Safari 가 WebGPU 대신
+   * 다른 길로 가기 때문이지, 평범한 빌드가 더 나아서가 아니었다. asyncify 가
+   * 느리다는 문서가 있어도 이 판에서는 WebGPU 를 쓰려면 그것뿐이다.
+   * 스위치를 남기는 것은 다음 사람이 같은 길을 다시 파지 않게 하려는 것이다.
+   */
+  wasmBuild?: "asyncify" | "plain";
+  /**
+   * ORT 의 graph capture. `?advisorGraphCapture=1`
+   *
+   * 디코드 반복을 그래프로 잡아 두면 다른 기기에서 2.4배가 측정됐다.
+   *
+   * **재봤고, 안 된다.** 입출력이 전부 gpu-buffer 여야 하는데 logits 가 CPU 로 내려온다.
+   *   Not supported preferred output location: cpu.
+   *   Only 'gpu-buffer' location is supported when enableGraphCapture is true.
+   *
+   * transformers.js 는 present.* (KV 캐시)만 gpu-buffer 로 잡는다. 켜려면
+   * 라이브러리를 고쳐 logits 까지 GPU 에 두고 고정 크기 KV 캐시를 써야 한다.
+   */
+  graphCapture?: boolean;
 }
 
 export interface AdvisorChatMessage {

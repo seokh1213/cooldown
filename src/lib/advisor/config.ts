@@ -138,6 +138,24 @@ export function resolveDevice(): "webgpu" | "wasm" {
   }
 }
 
+/** ORT wasm 빌드. `?advisorWasm=plain` 이면 asyncify 가 아닌 쪽으로 붙인다. */
+export function resolveWasmBuild(): "asyncify" | "plain" {
+  try {
+    return new URLSearchParams(location.search).get("advisorWasm") === "plain" ? "plain" : "asyncify";
+  } catch {
+    return "asyncify";
+  }
+}
+
+/** ORT graph capture. `?advisorGraphCapture=1` */
+export function resolveGraphCapture(): boolean {
+  try {
+    return new URLSearchParams(location.search).get("advisorGraphCapture") === "1";
+  } catch {
+    return false;
+  }
+}
+
 /**
  * 한 번에 만들 최대 토큰 수.
  *

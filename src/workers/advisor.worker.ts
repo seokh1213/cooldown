@@ -81,6 +81,15 @@ function onProgress(event: HfProgress) {
 async function load(spec: AdvisorModelSpec): Promise<void> {
   if (loading) return loading;
   loading = (async () => {
+    // wasm 빌드 고르기. transformers.js 는 Safari 에만 평범한 빌드를 주고
+    // 나머지에는 asyncify 를 준다. 어느 쪽이 빠른지 재려고 바꿔 끼울 수 있게 둔다.
+    if (env.backends.onnx.wasm && spec.wasmBuild === "plain") {
+      const base = `${import.meta.env.BASE_URL}ort/`;
+      env.backends.onnx.wasm.wasmPaths = {
+        mjs: `${base}ort-wasm-simd-threaded.mjs`,
+        wasm: `${base}ort-wasm-simd-threaded.wasm`,
+      } as unknown as string;
+    }
     tokenizer = await AutoTokenizer.from_pretrained(spec.id, {
       progress_callback: onProgress,
     });
@@ -93,6 +102,7 @@ async function load(spec: AdvisorModelSpec): Promise<void> {
       dtype: spec.dtype as "q4f16",
       device: spec.device ?? "webgpu",
       progress_callback: onProgress,
+      ...(spec.graphCapture ? { session_options: { enableGraphCapture: true } } : {}),
     });
     post({ type: "loaded" });
   })();
