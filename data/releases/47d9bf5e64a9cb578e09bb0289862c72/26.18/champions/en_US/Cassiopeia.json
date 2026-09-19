@@ -1,0 +1,523 @@
+{
+  "schemaVersion": 2,
+  "patchVersion": "26.18",
+  "locale": "en_US",
+  "sources": {
+    "ddragon": "16.18.1",
+    "cdragon": "16.18"
+  },
+  "champion": {
+    "id": "Cassiopeia",
+    "key": "69",
+    "name": "Cassiopeia",
+    "title": "the Serpent's Embrace",
+    "tags": [
+      "Mage"
+    ],
+    "baseStats": {
+      "health": {
+        "base": 630,
+        "perLevel": 98
+      },
+      "healthRegen": {
+        "base": 5.5,
+        "perLevel": 0.5
+      },
+      "mana": {
+        "base": 480,
+        "perLevel": 40
+      },
+      "manaRegen": {
+        "base": 8,
+        "perLevel": 0.8
+      },
+      "attackDamage": {
+        "base": 53,
+        "perLevel": 3
+      },
+      "attackSpeed": {
+        "base": 0.647,
+        "perLevel": 1.5
+      },
+      "armor": {
+        "base": 18,
+        "perLevel": 4.7
+      },
+      "magicResist": {
+        "base": 32,
+        "perLevel": 1.3
+      },
+      "moveSpeed": {
+        "base": 335,
+        "perLevel": 0
+      },
+      "attackRange": {
+        "base": 550,
+        "perLevel": 0
+      }
+    },
+    "baseStatContributions": [
+      {
+        "stat": "MAX_HEALTH",
+        "value": 98,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "HEALTH_REGEN",
+        "value": 0.5,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAX_MANA",
+        "value": 40,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MANA_REGEN",
+        "value": 0.8,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_DAMAGE",
+        "value": 3,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ATTACK_SPEED",
+        "value": 1.5,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "ARMOR",
+        "value": 4.7,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      },
+      {
+        "stat": "MAGIC_RESIST",
+        "value": 1.3,
+        "valueType": "perLevel",
+        "source": "base",
+        "scope": "champion-base"
+      }
+    ],
+    "abilities": {
+      "P": {
+        "slot": "P",
+        "id": "CassiopeiaPassive",
+        "name": "Serpentine Grace",
+        "maxRank": 0,
+        "summary": "All Move Speed bonuses are more effective on Cassiopeia.",
+        "bodyHtml": "Cassiopeia increases the effectiveness of all <span class=\"text-cyan-600 dark:text-cyan-500\">Move Speed</span> bonuses by 5%.",
+        "iconFile": "Cassiopeia_Passive.png",
+        "cooldownSeconds": [],
+        "range": [],
+        "rankValues": [],
+        "scalings": [],
+        "simulation": {
+          "status": "unavailable",
+          "unsupportedPartTypes": []
+        },
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "Q": {
+        "slot": "Q",
+        "id": "CassiopeiaQ",
+        "name": "Noxious Blast",
+        "maxRank": 5,
+        "summary": "Cassiopeia blasts an area with Poison after a brief delay, granting her increased Move Speed if she hits an enemy champion.",
+        "bodyHtml": "Cassiopeia blasts noxious gas, <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Poisoning</span> enemies and dealing <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(65/100/135/170/205 + ([[si:scaleap]]75% Ability Power)) magic damage</span> over 3 seconds. Hitting a champion grants Cassiopeia <span class=\"text-cyan-600 dark:text-cyan-500\">30/35/40/45/50% Move Speed</span> decaying over 3 seconds.",
+        "iconFile": "CassiopeiaQ.png",
+        "cooldownSeconds": [
+          3.5,
+          3.5,
+          3.5,
+          3.5,
+          3.5
+        ],
+        "cost": {
+          "values": [
+            50,
+            55,
+            60,
+            65,
+            70
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          850,
+          850,
+          850,
+          850,
+          850
+        ],
+        "rankValues": [
+          {
+            "label": "Damage",
+            "values": "65/100/135/170/205"
+          },
+          {
+            "label": "Move Speed",
+            "values": "30%/35%/40%/45%/50%"
+          },
+          {
+            "label": "Mana Cost",
+            "values": "50/55/60/65/70"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "Q Scaling",
+            "labelKo": "Q 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "0:TooltipTotalDamage"
+              }
+            ]
+          }
+        ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "TooltipTotalDamage",
+            "kind": "damage",
+            "damageType": "magical",
+            "baseByRank": [
+              65,
+              100,
+              135,
+              170,
+              205
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.75,
+                  0.75,
+                  0.75,
+                  0.75,
+                  0.75
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "W": {
+        "slot": "W",
+        "id": "CassiopeiaW",
+        "name": "Miasma",
+        "maxRank": 5,
+        "summary": "Cassiopeia releases several clouds of poison, slowing, grounding, and lightly damaging enemies that pass through them. Grounded enemies cannot use Movement abilities.",
+        "bodyHtml": "Cassiopeia spews venom, leaving toxic clouds for 5 seconds. Enemies in the clouds take <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(20/25/30/35/40 + ([[si:scaleap]]10% Ability Power)) magic damage</span> per second, are <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Poisoned</span>, <span class=\"text-purple-600 dark:text-purple-500\">Grounded</span>, and <span class=\"text-purple-600 dark:text-purple-500\">Slowed</span> by 40/50/60/70/80%.",
+        "iconFile": "CassiopeiaW.png",
+        "cooldownSeconds": [
+          24,
+          22,
+          20,
+          18,
+          16
+        ],
+        "cost": {
+          "values": [
+            70,
+            75,
+            80,
+            85,
+            90
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          700,
+          700,
+          700,
+          700,
+          700
+        ],
+        "rankValues": [
+          {
+            "label": "Damage",
+            "values": "20/25/30/35/40"
+          },
+          {
+            "label": "Slow",
+            "values": "40%/50%/60%/70%/80%"
+          },
+          {
+            "label": "Cooldown",
+            "values": "24/22/20/18/16"
+          },
+          {
+            "label": "Mana Cost",
+            "values": "70/75/80/85/90"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "W Scaling",
+            "labelKo": "W 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "1:DamagePerSecond"
+              }
+            ]
+          }
+        ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "DamagePerSecond",
+            "kind": "damage",
+            "damageType": "magical",
+            "baseByRank": [
+              20,
+              25,
+              30,
+              35,
+              40
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.10000000149011612,
+                  0.10000000149011612,
+                  0.10000000149011612,
+                  0.10000000149011612,
+                  0.10000000149011612
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
+        "conditions": [
+          "per-second"
+        ],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "E": {
+        "slot": "E",
+        "id": "CassiopeiaE",
+        "name": "Twin Fang",
+        "maxRank": 5,
+        "summary": "Cassiopeia lets loose an attack that deals increased damage to Poisoned targets and heals her for a percentage of the damage dealt. If the target dies from this attack, Cassiopeia regains Mana.",
+        "bodyHtml": "Cassiopeia launches deadly fangs, dealing <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(50 + ([[si:scaleap]]20% Ability Power)) magic damage</span>. If the enemy is <span class=\"text-yellow-600 dark:text-yellow-400 font-semibold\">Poisoned</span>, they take an additional <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(20/45/70/95/120 + ([[si:scaleap]]45% Ability Power)) magic damage</span> and Cassiopeia restores <span class=\"text-green-600 dark:text-green-400\">([[si:scaleap]]10/11.5/13/14.5/16% Ability Power) Health</span>, reduced to <span class=\"text-green-600 dark:text-green-400\">([[si:scaleap]]2.5/2.875/3.25/3.625/4% Ability Power) Health</span> against lane minions and small monsters.<br /><br />If this kills the target, Cassiopeia restores <span>40 Mana</span>.<br /><br />",
+        "iconFile": "CassiopeiaE.png",
+        "cooldownSeconds": [
+          0.75,
+          0.75,
+          0.75,
+          0.75,
+          0.75
+        ],
+        "cost": {
+          "values": [
+            45,
+            45,
+            45,
+            45,
+            45
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          700,
+          700,
+          700,
+          700,
+          700
+        ],
+        "rankValues": [
+          {
+            "label": "Bonus Poison Damage",
+            "values": "20/45/70/95/120"
+          },
+          {
+            "label": "Healing from Ability Power",
+            "values": "10%/11.5%/13%/14.5%/16%"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "E Scaling",
+            "labelKo": "E 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "2:HealCalc"
+              }
+            ]
+          }
+        ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "BasicDamage",
+            "kind": "damage",
+            "damageType": "magical",
+            "baseByLevel": [
+              50,
+              54.117599964141846,
+              58.23519992828369,
+              62.35279989242554,
+              66.47039985656738,
+              70.58799982070923,
+              74.70559978485107,
+              78.82319974899292,
+              82.94079971313477,
+              87.05839967727661,
+              91.17599964141846,
+              95.2935996055603,
+              99.41119956970215,
+              103.528799533844,
+              107.64639949798584,
+              111.76399946212769,
+              115.88159942626953,
+              119.99919939041138
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.20000000298023224,
+                  0.20000000298023224,
+                  0.20000000298023224,
+                  0.20000000298023224,
+                  0.20000000298023224
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      "R": {
+        "slot": "R",
+        "id": "CassiopeiaR",
+        "name": "Petrifying Gaze",
+        "maxRank": 3,
+        "summary": "Cassiopeia releases a swirl of magical energy from her eyes, stunning any enemies in front of her that are facing her and slowing any others with their back turned.",
+        "bodyHtml": "Cassiopeia unleashes a petrifying gaze, dealing <span class=\"text-blue-600 dark:text-blue-500 font-semibold\">(125/225/325 + ([[si:scaleap]]75% Ability Power)) magic damage</span> and <span class=\"text-purple-600 dark:text-purple-500\">Stunning</span> enemies facing her for 2 seconds. Enemies facing away are <span class=\"text-purple-600 dark:text-purple-500\">Slowed</span> by 40% decaying over the same duration instead.",
+        "iconFile": "CassiopeiaR.png",
+        "cooldownSeconds": [
+          120,
+          100,
+          80
+        ],
+        "cost": {
+          "values": [
+            100,
+            100,
+            100
+          ],
+          "resource": "Mana"
+        },
+        "range": [
+          825,
+          825,
+          825
+        ],
+        "rankValues": [
+          {
+            "label": "Damage",
+            "values": "125/225/325"
+          },
+          {
+            "label": "Cooldown",
+            "values": "120/100/80"
+          }
+        ],
+        "scalings": [
+          {
+            "id": "damage",
+            "labelEn": "R Scaling",
+            "labelKo": "R 계수",
+            "parts": [
+              {
+                "stat": null,
+                "coefficient": 1,
+                "op": "add",
+                "rawRef": "3:RDamage"
+              }
+            ]
+          }
+        ],
+        "simulation": {
+          "status": "complete",
+          "primary": {
+            "id": "RDamage",
+            "kind": "damage",
+            "damageType": "magical",
+            "baseByRank": [
+              125,
+              225,
+              325
+            ],
+            "terms": [
+              {
+                "stat": "abilityPower",
+                "coefficientsByRank": [
+                  0.75,
+                  0.75,
+                  0.75
+                ]
+              }
+            ]
+          },
+          "unsupportedPartTypes": []
+        },
+        "conditions": [],
+        "source": "communitydragon",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      }
+    }
+  }
+}
