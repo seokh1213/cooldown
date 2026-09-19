@@ -52,7 +52,7 @@ export function ChampionsTab(props: EncyclopediaPageProps) {
         <div>
           <label className="mb-4 flex max-w-md items-center gap-2 rounded-md border border-input px-3 focus-within:ring-2 focus-within:ring-primary">
             <Search aria-hidden="true" className="size-4 text-muted-foreground" />
-            <input value={search} onChange={(event) => setSearch(event.target.value)} aria-label={t.comparison.select} placeholder={t.comparison.select} className="w-full bg-transparent py-2.5 text-sm outline-none" />
+            <input value={search} onChange={(event) => setSearch(event.target.value)} aria-label={t.comparison.select} placeholder={t.comparison.select} className="w-full bg-transparent py-2.5 text-base md:text-sm outline-none" />
           </label>
           <div className="grid grid-cols-5 gap-x-2 gap-y-3 sm:grid-cols-8 md:grid-cols-10 lg:grid-cols-12 xl:grid-cols-16" data-champion-grid>
             {champions.map((champion) => (
