@@ -58,7 +58,14 @@ function Layout({ children, nav }: LayoutProps) {
         <main
           id="main-content"
           tabIndex={-1}
-          className="flex-1 w-full min-w-0 overflow-x-clip pt-[60px]"
+          /*
+           * 본문이 화면을 채우게 해 둔다. 안 그러면 자료가 오기 전의 짧은 화면에서
+           * 푸터가 중간에 떠 있다가, 챔피언 표가 들어오면서 아래로 밀린다. 그 움직임이
+           * 모바일 CLS 0.14 로 잡혔다(권장선 0.1). 부모가 min-h-screen 이라
+           * SidebarInset 의 h-full 이 잡히지 않아 flex-1 만으로는 늘어나지 않는다.
+           * 100svh 는 모바일 주소창이 접힐 때 높이가 튀지 않게 한다. 60px 은 위 고정 내비다.
+           */
+          className="flex-1 w-full min-w-0 overflow-x-clip pt-[60px] min-h-[calc(100svh-60px)]"
         >
           {children}
         </main>
