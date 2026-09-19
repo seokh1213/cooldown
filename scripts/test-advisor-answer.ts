@@ -167,6 +167,19 @@ assert.equal(detectSpellFocus("럼블 E 뭐야"), undefined, "사실을 안 짚�
   const withNicks = suggestChampions("말파이트 스킬 쿨타임", cards, nicknames(cards), new Set(["Malphite"]));
   assert.equal(withNicks, undefined, `스킬 → ${withNicks?.candidates.map((c) => c.name).join(",")}`);
 
+  // 첫 글자가 틀린 오타. 음절 거리로는 못 잡아 자모로 한 번 더 본다.
+  //   재이스 → 제이스   ㅐ↔ㅔ 하나인데 첫 글자가 다르다
+  //   갈렌 → 가렌       ㄹ 받침 하나
+  //   말파잍 → 말파이트  음절로는 거리 2, 자모로는 1
+  for (const [typo, want] of [["재이스", "Jayce"], ["갈렌", "Garen"], ["말파잍", "Malphite"], ["스레쉬", "Thresh"]] as const) {
+    const found = suggestChampions(`${typo} 스킬 쿨타임`, cards, none);
+    assert.ok(found, `${typo} → 후보가 있어야 한다`);
+    assert.ok(
+      found?.candidates.some((c) => c.id === want),
+      `${typo} → ${want} 가 후보에 있어야 한다: ${found?.candidates.map((c) => c.name).join(",")}`,
+    );
+  }
+
   // 멀쩡한 문장에서 헛짚으면 안 된다. 챔피언 이름이 없는 일반 질문들.
   for (const plain of ["정복자에 점화 들어가?", "쇼진의 창 효과", "cs가 뭐야?", "와드 몇 개까지 박을 수 있어?", "누가 더 높아?", "누구 골라야 해?"]) {
     const wrong = suggestChampions(plain, cards, none);

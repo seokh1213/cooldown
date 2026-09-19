@@ -269,6 +269,35 @@ export function buildRuleAnswer(rule: RuleNotes, mentionedNames: string[]): Advi
  * 두 낱말이 몇 글자 다른지. 한글 음절 하나가 한 글자다.
  * 짧은 이름끼리 쓰는 것이라 단순 동적 계획법으로 충분하다.
  */
+const HANGUL_BASE = 0xac00;
+const CHOSEONG = "ㄱㄲㄴㄷㄸㄹㅁㅂㅃㅅㅆㅇㅈㅉㅊㅋㅌㅍㅎ";
+const JUNGSEONG = "ㅏㅐㅑㅒㅓㅔㅕㅖㅗㅘㅙㅚㅛㅜㅝㅞㅟㅠㅡㅢㅣ";
+const JONGSEONG = " ㄱㄲㄳㄴㄵㄶㄷㄹㄺㄻㄼㄽㄾㄿㅀㅁㅂㅄㅅㅆㅇㅈㅊㅋㅌㅍㅎ";
+
+/**
+ * 한글을 자모로 푼다. "럼블" → "ㄹㅓㅁㅂㅡㄹ"
+ *
+ * 한글 한 글자는 자모 두세 개가 합쳐진 것이라, 자음 하나만 틀려도 음절로는 통째로
+ * 다른 글자가 된다. 자모로 풀면 그 차이가 1 로 보인다. "제이스 → 재이스" 가
+ * 음절로는 첫 글자부터 어긋나지만 자모로는 ㅔ↔ㅐ 하나다.
+ */
+export function toJamo(text: string): string {
+  let out = "";
+  for (const ch of text) {
+    const code = ch.codePointAt(0) ?? 0;
+    if (code < HANGUL_BASE || code > 0xd7a3) {
+      out += ch;
+      continue;
+    }
+    const offset = code - HANGUL_BASE;
+    out += CHOSEONG[Math.floor(offset / 588)];
+    out += JUNGSEONG[Math.floor((offset % 588) / 28)];
+    const jong = JONGSEONG[offset % 28];
+    if (jong !== " ") out += jong;
+  }
+  return out;
+}
+
 export function editDistance(a: string, b: string): number {
   if (a === b) return 0;
   const rows = a.length + 1;
@@ -298,7 +327,7 @@ function hangulTokens(text: string): string[] {
  */
 /** 게임 어휘. 챔피언 이름 오타 후보에서 뺀다. 데이터가 아니라 질문에 쓰이는 낱말이다. */
 const INTENT_WORD =
-  /^(스킬|스탯|능력치?|효과|계수|사거리|궁극기?|패시브|기본|공격|방어|체력|마나|이속|공속|아이템|템트리|소환사|주문|라인전?|정글|미드|원딜|서폿|서포터|상대|카운터|챔피언|챔프|레벨|설명|비교)/;
+  /^(스킬|스탯|능력치?|효과|계수|사거리|궁극기?|패시브|기본|공격|방어|체력|마나|이속|공속|아이템|템트리|소환사|주문|라인전?|정글|미드|탑|바텀|봇|원딜|서폿|서포터|상대|카운터|챔피언|챔프|레벨|설명|비교)/;
 
 const FUNCTION_WORDS = new Set([
   "누가", "누구", "누군", "뭐야", "뭐가", "뭔데", "뭐냐", "뭐지", "어디", "언제", "얼마", "어떤", "어느",
@@ -338,23 +367,63 @@ export function suggestChampions(
   const initials = new Set(names.map(([name]) => name[0]));
 
   for (const token of hangulTokens(question)) {
-    if (!initials.has(token[0]) || FUNCTION_WORDS.has(token)) continue;
+    // 첫 글자가 어느 이름과도 안 맞아도 버리지 않는다. 그 첫 글자 자체가 오타일 수
+    // 있다("재이스" 의 재). 대신 음절 단계에서만 첫 글자를 맞추고, 자모 단계는 푼다.
+    const initialKnown = initials.has(token[0]);
+    if (FUNCTION_WORDS.has(token)) continue;
+    // 두 글자 아래는 아무 이름과도 가까워서 첫 글자마저 틀리면 짚을 근거가 없다.
+    if (!initialKnown && token.length < 3) continue;
     // 의도 어휘("스킬", "쿨타임", "체력"…)는 이름이 아니다. "스킬" 이 줄임말 "스카"(스카너) 와
     // 거리 1 이라 후보로 잡혔다.
     if (INTENT_WORD.test(token) || FOCUS_LEXICON.some(([, pattern]) => pattern.test(token))) continue;
     // 그 자체가 이름이면 오타가 아니다. "오공 Q 쿨타임" 의 오공이 오른·오리아나 후보로 잡혔다.
     if (names.some(([name]) => name === token)) continue;
-    const found = new Map<string, ChampionCard>();
+    /*
+     * 후보를 두 갈래로 모아 **자모 거리로 함께 줄 세운다.**
+     *
+     *   음절 갈래  첫 글자를 고정하고 거리 1. 촘촘하고 헛짚음이 적다.
+     *   자모 갈래  첫 글자를 풀고 길이 대비 비율로 자른다. 첫 글자가 틀린 오타를 잡는다.
+     *
+     * 음절 갈래를 먼저 찾았다고 바로 내보내면 안 된다. "갈렌" 이 별칭 "갈리"(갈리오)와
+     * 음절 거리 1 이라 먼저 걸리는데, 정답 "가렌" 은 자모 거리 1 로 더 가깝다.
+     * 둘을 합쳐 자모 거리로 줄 세우면 가까운 쪽이 앞에 온다.
+     */
+    const tokenJamo = toJamo(token);
+    const scored = new Map<string, { card: ChampionCard; distance: number }>();
+    const consider = (card: ChampionCard, nameJamo: string) => {
+      const distance = editDistance(tokenJamo, nameJamo);
+      const prev = scored.get(card.id);
+      if (!prev || distance < prev.distance) scored.set(card.id, { card, distance });
+    };
+
     for (const [name, card] of names) {
       if (known.has(card.id)) continue;
-      // 첫 글자는 맞아야 한다. "럼미" 는 럼블이지 나미·유미가 아니다.
-      if (name[0] !== token[0]) continue;
-      // 길이가 다르면 삽입·삭제인데, 두 글자 낱말에서는 그것이 너무 헐겁다.
-      if (token.length <= 2 && name.length !== token.length) continue;
-      if (Math.abs(name.length - token.length) > 1) continue;
-      if (editDistance(token, name) === 1) found.set(card.id, card);
+      const nameJamo = toJamo(name);
+
+      // 음절 갈래
+      if (
+        initialKnown &&
+        name[0] === token[0] &&
+        !(token.length <= 2 && name.length !== token.length) &&
+        Math.abs(name.length - token.length) <= 1 &&
+        editDistance(token, name) === 1
+      ) {
+        consider(card, nameJamo);
+        continue;
+      }
+
+      // 자모 갈래
+      if (Math.abs(nameJamo.length - tokenJamo.length) > 3) continue;
+      const distance = editDistance(tokenJamo, nameJamo);
+      if (distance === 0) continue;
+      if (distance / Math.max(nameJamo.length, tokenJamo.length) > 0.25) continue;
+      consider(card, nameJamo);
     }
-    if (found.size > 0) return { original: token, candidates: [...found.values()] };
+
+    if (scored.size > 0) {
+      const ranked = [...scored.values()].sort((a, b) => a.distance - b.distance);
+      return { original: token, candidates: ranked.map((entry) => entry.card) };
+    }
   }
   return undefined;
 }
