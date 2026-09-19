@@ -1,7 +1,7 @@
 import { Swords, RotateCcw } from "lucide-react";
 import { useTranslation } from "@/i18n";
 import { Button } from "@/components/ui/button";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { ViewTabs } from "@/components/ui/viewTabs";
 import type { CooldownViewTab } from "./useCooldownViewTab";
 
 export function CooldownPageToolbar(props: {
@@ -14,26 +14,16 @@ export function CooldownPageToolbar(props: {
   return (
     <div className="mt-3 md:mt-4">
       <div className="flex items-center justify-between gap-2 border-b border-border overflow-x-auto -mx-4 md:mx-0 px-4 md:px-0">
-        <Tabs
+        <ViewTabs
+          className="flex-1 justify-start"
+          label={t.encyclopedia.champion}
           value={props.activeTab}
-          onValueChange={(value) => props.onSelectTab(value as CooldownViewTab)}
-          className="flex-1"
-        >
-          <TabsList className="inline-flex h-auto items-center justify-start gap-2 bg-transparent p-0 border-0">
-            <TabsTrigger
-              value="skills"
-              className="px-4 py-2 text-sm font-medium transition-colors border-b-2 border-transparent text-muted-foreground hover:text-foreground data-[state=active]:border-primary data-[state=active]:text-primary data-[state=active]:bg-transparent rounded-none shadow-none"
-            >
-              {t.encyclopedia.tabs.skills}
-            </TabsTrigger>
-            <TabsTrigger
-              value="stats"
-              className="px-4 py-2 text-sm font-medium transition-colors border-b-2 border-transparent text-muted-foreground hover:text-foreground data-[state=active]:border-primary data-[state=active]:text-primary data-[state=active]:bg-transparent rounded-none shadow-none"
-            >
-              {t.encyclopedia.tabs.stats}
-            </TabsTrigger>
-          </TabsList>
-        </Tabs>
+          onChange={props.onSelectTab}
+          items={[
+            { value: "skills", label: t.encyclopedia.tabs.skills },
+            { value: "stats", label: t.encyclopedia.tabs.stats },
+          ]}
+        />
         <div className="flex shrink-0 items-center gap-1">
           {props.onCompare && (
             <Button variant="ghost" size="sm" onClick={props.onCompare} className="flex items-center gap-1.5 text-primary hover:bg-primary/10 hover:text-primary">

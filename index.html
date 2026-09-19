@@ -13,10 +13,16 @@
     <link rel="icon" type="image/png" sizes="48x48" href="/favicon-48x48.png" />
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
     <meta name="theme-color" content="#0b0c0f" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no"
-    />
+    <!--
+      확대를 막지 않는다. `maximum-scale=1` 은 iOS 가 입력창에 포커스할 때 화면을
+      확대하는 것을 막으려고 넣었던 것인데, 눈이 나쁜 사람이 손가락으로 키우는 것까지
+      함께 막는다. Lighthouse 접근성 항목이 이것을 잡는다.
+
+      iOS 의 자동 확대는 포커스한 입력창의 글자가 16px 보다 작을 때만 일어난다.
+      그래서 입력창 글자를 모바일에서 16px 로 올리는 것으로 갈음한다
+      (`text-base md:text-sm`). 새 입력창을 만들 때도 그 규칙을 지켜야 한다.
+    -->
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Cooldown — 롤 스킬 비교와 콤보 피해 계산</title>
     
     <!-- Primary Meta Tags -->
