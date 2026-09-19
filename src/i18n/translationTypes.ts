@@ -348,6 +348,8 @@ export interface Translations {
     noModel: string;
     /** 이 기기에서는 모델을 권하지 않는다는 안내 */
     modelUnavailable: string;
+    /** WebGPU 는 도는데 shader-f16 이 없는 어댑터. 사유를 따로 말한다. */
+    modelUnavailableNoF16: string;
     /** 코드가 만든 답을 그리는 카드 */
     card: {
       spell: string;

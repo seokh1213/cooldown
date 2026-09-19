@@ -72,7 +72,21 @@ export function AdvisorWidget({ patch, ddragonVersion, onOpenChange, onWidthChan
    * 평가에서 적중 63/66 으로 모델(64/66)과 거의 같았다. 내려받을 수 없는 기기라고
    * 해서 그 답까지 뺏을 이유가 없다. 막는 것은 내려받기지 기능이 아니다.
    */
-  const canUseModel = device === "desktop" && advisor.webgpu?.supported === true;
+  /*
+   * 16비트 셰이더 연산(`shader-f16`)이 없으면 모델을 권하지 않는다.
+   *
+   * 쓰는 가중치가 q4f16 이라 그 기능이 있어야 돈다. 없는 기기에서 올리면
+   * 임베딩의 Gather 에서 죽는다 — 윈도우에서 실제로 그랬다.
+   *
+   *   Gather requires f16 but the device does not support it.
+   *
+   * f16 없이 도는 q4 가중치로 바꿔 보았지만 둘 다 메모리에서 막혔다.
+   * 4B q4(4.0GB)는 `memory access out of bounds`, 1.7B q4(2.2GB)는 내려받기도
+   * 전에 `Array buffer allocation failed` 였다. 그래서 대안을 두지 않고, 애초에
+   * 권하지 않는 쪽을 택한다. 조회 기능은 그대로 쓰므로 잃는 것은 해설뿐이다.
+   */
+  const canUseModel =
+    device === "desktop" && advisor.webgpu?.supported === true && advisor.webgpu.f16 === true;
 
   /**
    * 이미 동의한 사용자는 앱이 뜨는 순간부터 모델을 올린다.

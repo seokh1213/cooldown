@@ -66,12 +66,6 @@ export const ADVISOR_MODEL: AdvisorModel = {
   downloadMb: 2764,
 };
 
-/**
- * 배선 점검용 소형 모델.
- *
- * 적재가 안 될 때 "배선이 틀렸나, 모델이 큰 탓인가" 를 가르는 용도다.
- * `?advisorModel=smoke` 를 주소에 붙이면 이쪽으로 바꿔 끼운다.
- */
 export const SMOKE_MODEL: AdvisorModel = {
   id: "onnx-community/gemma-3-1b-it-ONNX",
   dtype: "q4f16",
@@ -147,6 +141,17 @@ export interface WebGpuSupport {
   supported: boolean;
   /** 지원하지 않을 때 사용자에게 보여줄 사유 */
   reason?: "no-api" | "no-adapter" | "error";
+  /**
+   * 어댑터가 16비트 셰이더 연산(`shader-f16`)을 지원하는가.
+   *
+   * 이게 없으면 f16 가중치를 못 올린다. 윈도우에서 이렇게 죽었다.
+   *
+   *   Gather requires f16 but the device does not support it.
+   *
+   * 애플 실리콘은 거의 다 지원해서 맥에서만 재보면 안 걸린다. 윈도우는 내장
+   * 그래픽이나 오래된 드라이버에서 빠지는 일이 흔하다.
+   */
+  f16: boolean;
 }
 
 /**
@@ -156,14 +161,20 @@ export interface WebGpuSupport {
  * 브라우저 설정에서 꺼 둔 경우). 그래서 어댑터까지 실제로 요청해 본다.
  */
 export async function detectWebGpu(): Promise<WebGpuSupport> {
-  const gpu = (navigator as Navigator & { gpu?: { requestAdapter(): Promise<unknown> } }).gpu;
-  if (!gpu) return { supported: false, reason: "no-api" };
+  const gpu = (navigator as Navigator & { gpu?: { requestAdapter(): Promise<GpuAdapterLike | null> } }).gpu;
+  if (!gpu) return { supported: false, reason: "no-api", f16: false };
   try {
     const adapter = await gpu.requestAdapter();
-    return adapter ? { supported: true } : { supported: false, reason: "no-adapter" };
+    if (!adapter) return { supported: false, reason: "no-adapter", f16: false };
+    return { supported: true, f16: adapter.features?.has("shader-f16") ?? false };
   } catch {
-    return { supported: false, reason: "error" };
+    return { supported: false, reason: "error", f16: false };
   }
+}
+
+/** `requestAdapter()` 가 돌려주는 것 중 우리가 보는 부분만. */
+interface GpuAdapterLike {
+  features?: { has(name: string): boolean };
 }
 
 /** 브라우저가 이 출처에 허용한 저장 공간. 모델을 캐시할 수 있는지 가늠한다. */

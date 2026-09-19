@@ -909,7 +909,8 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
           */}
           {!canUseModel && advisor.turns.length === 0 && (
             <p className="border-b px-4 py-2.5 text-xs leading-relaxed text-muted-foreground">
-              {copy.modelUnavailable}
+              {/* WebGPU 는 도는데 f16 만 없는 경우에는 사유를 짚어 준다. 윈도우에서 흔하다. */}
+              {advisor.webgpu?.supported && !advisor.webgpu.f16 ? copy.modelUnavailableNoF16 : copy.modelUnavailable}
             </p>
           )}
           {loading && (

@@ -363,6 +363,8 @@ export const koKRTranslations: Translations = {
     },
     noModel: "가지고 있는 자료에서는 답을 찾지 못했습니다. AI 모델을 내려받으면 이런 질문도 답할 수 있습니다.",
     modelUnavailable: "이 기기에서는 AI 모델을 내려받지 않습니다. 챔피언·아이템·규칙 조회는 그대로 쓸 수 있습니다.",
+    modelUnavailableNoF16:
+      "이 그래픽 어댑터가 16비트 셰이더 연산을 지원하지 않아 AI 모델을 올릴 수 없습니다. 챔피언·아이템·규칙 조회는 그대로 쓸 수 있습니다.",
     card: {
       spell: "스킬",
       champion: "챔피언",
