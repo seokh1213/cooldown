@@ -11,7 +11,9 @@ for (const width of [1440, 360]) {
   test(`encyclopedia menu entry always opens its first tab at ${width}`, async ({ page }) => {
     await page.setViewportSize({ width, height: 900 });
     const t = translations.ko_KR;
-    const firstTab = page.getByRole("tab").first();
+    // 탭 줄은 Radix Tabs 가 아니라 `role="group"` 안의 버튼 묶음이다. 페이지 전체에서
+    // 첫 버튼을 잡으면 사이드바 토글이 걸리므로 묶음 안으로 범위를 좁힌다.
+    const firstTab = page.getByRole("group", { name: t.sidebar.encyclopedia }).getByRole("button").first();
     const openEncyclopedia = async () => {
       if (width < 768) await page.getByRole("button", { name: "Open menu", exact: true }).click();
       await page.getByRole("navigation").getByRole("button", { name: t.sidebar.encyclopedia, exact: true }).click();
@@ -19,21 +21,21 @@ for (const width of [1440, 360]) {
 
     // An explicit tab link is respected, but it must not become the menu default.
     await page.goto("./encyclopedia?tab=runes");
-    await expect(page.getByRole("tab", { name: t.encyclopedia.tabs.runes, exact: true })).toHaveAttribute("data-state", "active");
+    await expect(page.getByRole("button", { name: t.encyclopedia.tabs.runes, exact: true })).toHaveAttribute("aria-pressed", "true");
     await openEncyclopedia();
     await expect(page).toHaveURL(/\/cooldown\/encyclopedia$/);
     await expect(firstTab).toHaveText(t.championProfile.tab);
-    await expect(firstTab).toHaveAttribute("data-state", "active");
+    await expect(firstTab).toHaveAttribute("aria-pressed", "true");
     await expect(page.locator("[data-champion-grid]").getByRole("button")).toHaveCount(173);
 
-    await page.getByRole("tab", { name: t.encyclopedia.tabs.items, exact: true }).click();
+    await page.getByRole("button", { name: t.encyclopedia.tabs.items, exact: true }).click();
     await page.goto("./");
     await openEncyclopedia();
-    await expect(firstTab).toHaveAttribute("data-state", "active");
+    await expect(firstTab).toHaveAttribute("aria-pressed", "true");
     await page.reload();
-    await expect(firstTab).toHaveAttribute("data-state", "active");
+    await expect(firstTab).toHaveAttribute("aria-pressed", "true");
     await page.goto("./encyclopedia?tab=unknown");
-    await expect(firstTab).toHaveAttribute("data-state", "active");
+    await expect(firstTab).toHaveAttribute("aria-pressed", "true");
     await expect(page.locator("[data-champion-grid]")).toBeVisible();
   });
 }
@@ -50,7 +52,7 @@ for (const locale of ["ko_KR", "en_US", "zh_CN"] as const) {
       const t = translations[locale];
       const expected = profileFor(locale).champion;
       await page.goto("./encyclopedia");
-      await expect(page.getByRole("tab", { name: t.championProfile.tab, exact: true })).toHaveAttribute("data-state", "active");
+      await expect(page.getByRole("button", { name: t.championProfile.tab, exact: true })).toHaveAttribute("aria-pressed", "true");
       const grid = page.locator("[data-champion-grid]");
       await expect(grid.getByRole("button")).toHaveCount(173);
       const columnCount = await grid.evaluate((element) => getComputedStyle(element).gridTemplateColumns.split(" ").length);
@@ -145,7 +147,7 @@ for (const width of [1440, 360]) {
     await page.getByRole("button", { name: "챔피언 추가하기" }).click();
     await page.getByRole("button", { name: "Select 아트록스", exact: true }).click();
     await page.keyboard.press("Escape");
-    await page.getByRole("tab", { name: translations.ko_KR.encyclopedia.tabs.stats, exact: true }).click();
+    await page.getByRole("button", { name: translations.ko_KR.encyclopedia.tabs.stats, exact: true }).click();
     await expect(page.locator('[data-stat="hp"]:visible').first()).toHaveText("650+ 114");
     await expect(page.locator('[data-stat="attackspeed"]:visible').first()).toHaveText("0.651+ 2.5%");
   });
