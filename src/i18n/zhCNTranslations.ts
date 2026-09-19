@@ -349,6 +349,8 @@ export const zhCNTranslations: Translations = {
     },
     noModel: "现有资料无法回答这个问题。下载 AI 模型后即可回答此类问题。",
     modelUnavailable: "此设备不提供 AI 模型下载。英雄、装备与规则查询仍可正常使用。",
+    modelUnavailableNoF16:
+      "该显卡不支持 16 位着色器运算，无法运行 AI 模型。英雄、装备与规则查询仍可正常使用。",
     card: {
       spell: "技能",
       champion: "英雄",
