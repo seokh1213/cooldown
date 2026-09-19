@@ -278,9 +278,26 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
     advisor.status !== "idle" &&
     advisor.status !== "error";
 
+  /*
+   * 새 답이 오면 그 답의 **머리**를 화면 위로 맞춘다.
+   *
+   * 예전에는 턴이 바뀔 때마다 맨 아래로 붙였다. 짧은 답일 때는 그게 맞았는데,
+   * 해설이 길어진 지금은 도착하자마자 끝으로 밀려나 첫 문장을 못 본다. 스트리밍
+   * 중에도 계속 끌려 내려가 읽던 자리를 잃는다.
+   *
+   * 그래서 턴이 **늘어났을 때만** 새 답의 첫 줄로 맞추고, 그 뒤 글자가 차오르는
+   * 동안에는 건드리지 않는다. 읽는 자리는 사용자가 정한다.
+   */
+  const lastTurnRef = useRef<HTMLDivElement | null>(null);
+  const turnCount = advisor.turns.length;
   useEffect(() => {
-    scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight });
-  }, [advisor.turns]);
+    const node = lastTurnRef.current;
+    const box = scrollRef.current;
+    if (!node || !box) return;
+    // 사용자가 보낸 줄이 위에 보이도록 조금 여유를 둔다.
+    const top = node.offsetTop - 12;
+    box.scrollTo({ top: Math.max(0, top), behavior: "smooth" });
+  }, [turnCount]);
 
   /**
    * 카드를 얹는다. 모델을 쓸 수 있으면 해설을 그 위에 스트리밍한다.
@@ -568,7 +585,15 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
   const lastAssistantId = [...advisor.turns].reverse().find((turn) => turn.role === "assistant")?.id;
 
   // 자료 패널에 올릴 답. 카드로 그릴 만한 종류(스킬·챔피언·비교)만. 규칙은 짧아 대화 안에 둔다.
+  /**
+   * 카드를 자료 패널로 보낼 답인가.
+   *
+   * **자료 패널이 있을 때만** 참이다. 좁은 화면에는 패널이 없어서, 참으로 두면
+   * 대화에 칩 하나만 남고 화면이 텅 빈다. 실제로 모바일에서 "말파이트 설명해줘" 에
+   * 칩 한 줄만 오고 나머지가 빈 공간이었다. 패널이 없으면 카드를 대화 안에 그린다.
+   */
   const isReference = (turn: AdvisorTurn): boolean =>
+    wide &&
     turn.role === "assistant" &&
     !!turn.answer &&
     (turn.answer.kind === "spell" ||
@@ -877,7 +902,12 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
             내려받기를 권하지 않는 기기에서는 동의 화면을 건너뛰고 바로 여기로 온다.
             3GB 를 못 받는다고 챔피언·아이템·규칙 조회까지 막을 이유는 없다.
           */}
-          {!canUseModel && (
+          {/*
+            모델을 못 쓰는 기기라는 안내는 **대화를 시작하기 전에만** 둔다.
+            계속 붙여 두면 좁은 화면에서 60px 을 내내 먹는데, 한 번 읽으면 그 뒤로는
+            답이 스스로 그 사실을 말한다(해설 없이 카드만 온다).
+          */}
+          {!canUseModel && advisor.turns.length === 0 && (
             <p className="border-b px-4 py-2.5 text-xs leading-relaxed text-muted-foreground">
               {copy.modelUnavailable}
             </p>
@@ -979,9 +1009,11 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
                   {copy.card.commentaryPending}
                 </span>
               ) : null;
+              const isLast = index === advisor.turns.length - 1;
               return (
               <div
                 key={turn.id}
+                ref={isLast ? lastTurnRef : undefined}
                 className={
                   turn.role === "user"
                     ? "ml-auto w-fit max-w-[85%] rounded-2xl rounded-br-sm bg-primary px-3 py-2 text-primary-foreground"
