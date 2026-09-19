@@ -348,7 +348,7 @@ export const koKRTranslations: Translations = {
     },
     unsupported: {
       title: "이 브라우저에서는 쓸 수 없습니다",
-      noApi: "WebGPU 를 지원하지 않는 브라우저입니다. 최신 Chrome 이나 Edge 에서 열어 주세요.",
+      noApi: "이 브라우저는 WebGPU 를 지원하지 않습니다. 최신 Chrome·Edge·Firefox 나 Safari 26 이상에서 열면 쓸 수 있습니다.",
       noAdapter: "그래픽 어댑터를 찾지 못했습니다. 브라우저의 하드웨어 가속 설정을 확인해 주세요.",
       error: "WebGPU 를 확인하는 중 문제가 생겼습니다.",
     },
@@ -407,7 +407,7 @@ export const koKRTranslations: Translations = {
       playingNotes: "{name} 플레이할 때",
       againstNotes: "{name}를 상대할 때",
       notesSource: "사람이 검증한 운용 노트",
-      moreNotes: "노트 {count}건 더",
+      moreNotes: "노트 {count}건 펼치기",
       reference: "자료",
       toggleReference: "자료 패널",
       collapseReference: "자료 패널 접기",

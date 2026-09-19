@@ -35,7 +35,11 @@ export function AdvisorMarkdown({ text }: { text: string }): ReactNode {
 
   for (let i = 0; i < lines.length; i += 1) {
     const line = lines[i];
-    const heading = /^#{2,3}\s+(.*)$/.exec(line);
+    // 줄 전체가 굵은 글씨면 구획 머리말로 본다.
+    // 해설이 "**플레이할 때**" / "**상대할 때**" 로 두 관점을 가르는데, 그냥 굵은
+    // 글씨로 두면 본문에 묻힌다. `##` 머리말과 같은 모양으로 맞춰 눈에 띄게 한다.
+    const boldOnly = /^\s*\*\*(.+?)\*\*\s*$/.exec(line);
+    const heading = boldOnly ?? /^#{2,3}\s+(.*)$/.exec(line);
     if (heading) {
       nodes.push(
         <p

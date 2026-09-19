@@ -348,7 +348,7 @@ export const enUSTranslations: Translations = {
     },
     unsupported: {
       title: "Not available in this browser",
-      noApi: "This browser does not support WebGPU. Please use a recent Chrome or Edge.",
+      noApi: "This browser does not support WebGPU. A recent Chrome, Edge, Firefox, or Safari 26+ will work.",
       noAdapter: "No graphics adapter was found. Check your browser's hardware acceleration setting.",
       error: "Something went wrong while checking WebGPU.",
     },
@@ -405,7 +405,7 @@ export const enUSTranslations: Translations = {
       playingNotes: "Playing {name}",
       againstNotes: "Against {name}",
       notesSource: "Human-verified play notes",
-      moreNotes: "{count} more notes",
+      moreNotes: "Show {count} notes",
       reference: "Reference",
       toggleReference: "Reference panel",
       collapseReference: "Collapse reference panel",
