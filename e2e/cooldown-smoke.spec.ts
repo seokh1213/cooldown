@@ -42,11 +42,14 @@ test("serves a lazy route directly under the Pages base path", async ({ page }) 
   await page.goto("./encyclopedia");
   await expect(page).toHaveURL(/\/cooldown\/encyclopedia$/);
   await expect(page.getByRole("heading", { name: "백과사전" })).toBeVisible();
-  await expect(page.getByRole("tab", { name: "챔피언", exact: true })).toHaveAttribute("data-state", "active");
+  // 탭 줄은 Radix Tabs 가 아니라 버튼 묶음이다. 버튼만 있고 패널이 없어서
+  // `aria-controls` 가 존재하지 않는 id 를 가리켰고, Lighthouse 가 그것을 잡았다.
+  // 켜진 것은 `aria-pressed` 로 알린다.
+  await expect(page.getByRole("button", { name: "챔피언", exact: true })).toHaveAttribute("aria-pressed", "true");
   await expect(page.locator("[data-champion-grid]")).toBeVisible();
-  await page.getByRole("tab", { name: "룬 백과", exact: true }).click();
+  await page.getByRole("button", { name: "룬 백과", exact: true }).click();
   await expect(page.getByText("집중 공격", { exact: true }).first()).toBeVisible();
-  await page.getByRole("tab", { name: "아이템 백과" }).click();
+  await page.getByRole("button", { name: "아이템 백과" }).click();
   await expect(page.getByAltText("롱소드").first()).toBeVisible();
   await expect(page.locator("#root")).not.toBeEmpty();
 });
