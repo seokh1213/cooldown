@@ -86,7 +86,7 @@ function NumberField(props: {
               props.onChange(Math.min(Math.max(value, props.min), props.max));
             }
           }}
-          className="h-9 w-full rounded-md border border-border bg-background px-2 text-sm text-foreground disabled:cursor-not-allowed disabled:opacity-50"
+          className="h-9 w-full rounded-md border border-border bg-background px-2 text-base md:text-sm text-foreground disabled:cursor-not-allowed disabled:opacity-50"
         />
         {props.suffix && <span>{props.suffix}</span>}
       </span>
@@ -272,7 +272,7 @@ export function SimulationCombatPanel(props: SimulationCombatPanelProps) {
                   </label>
                   <label className="text-[9px] text-muted-foreground">
                     <span className="mb-1 block">{t.pages.simulation.castCountLabel}</span>
-                    <input aria-label={`${row.name} ${t.pages.simulation.castCountLabel}`} type="number" min={0} max={10} value={row.count} onChange={(event) => props.onCountChange(row.key, Math.min(Math.max(Number(event.target.value) || 0, 0), 10))} className="h-8 w-full rounded-md border border-border bg-background px-2 text-foreground" />
+                    <input aria-label={`${row.name} ${t.pages.simulation.castCountLabel}`} type="number" min={0} max={10} value={row.count} onChange={(event) => props.onCountChange(row.key, Math.min(Math.max(Number(event.target.value) || 0, 0), 10))} className="h-8 w-full rounded-md border border-border bg-background px-2 text-base md:text-sm text-foreground" />
                   </label>
                   <div className="text-[9px] text-muted-foreground"><span>{t.pages.simulation.rawDamageLabel}</span><strong className="block text-xs font-medium text-foreground tabular-nums">{formatDamage(row.rawDamage)}</strong></div>
                   <div className="text-right text-[9px] text-muted-foreground"><span>{t.pages.simulation.mitigatedDamageLabel}</span><strong className={`block text-xs font-medium tabular-nums ${row.enabled ? "text-foreground" : "text-muted-foreground line-through"}`}>{formatDamage(row.appliedDamage === null ? null : row.appliedDamage * row.count)}</strong></div>
@@ -319,7 +319,7 @@ export function SimulationCombatPanel(props: SimulationCombatPanelProps) {
                         </Select>
                       )}
                     </td>
-                    <td className="py-2"><input aria-label={`${row.name} ${t.pages.simulation.castCountLabel}`} type="number" min={0} max={10} value={row.count} onChange={(event) => props.onCountChange(row.key, Math.min(Math.max(Number(event.target.value) || 0, 0), 10))} className="h-8 w-16 rounded-md border border-border bg-background px-2" /></td>
+                    <td className="py-2"><input aria-label={`${row.name} ${t.pages.simulation.castCountLabel}`} type="number" min={0} max={10} value={row.count} onChange={(event) => props.onCountChange(row.key, Math.min(Math.max(Number(event.target.value) || 0, 0), 10))} className="h-8 w-16 rounded-md border border-border bg-background px-2 text-base md:text-sm" /></td>
                     <td className="py-2 text-right tabular-nums">{formatDamage(row.rawDamage)}</td>
                     <td className={`py-2 text-right tabular-nums ${row.enabled ? "" : "text-muted-foreground line-through"}`}>{formatDamage(row.appliedDamage === null ? null : row.appliedDamage * row.count)}</td>
                   </tr>

@@ -1203,7 +1203,7 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
               }}
               rows={1}
               placeholder={placeholder}
-              className="max-h-32 min-h-9 flex-1 resize-none rounded-md border bg-transparent px-3 py-2 text-sm outline-hidden transition-colors focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-ring/40"
+              className="max-h-32 min-h-9 flex-1 resize-none rounded-md border bg-transparent px-3 py-2 text-base md:text-sm outline-hidden transition-colors focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-ring/40"
             />
             {busy ? (
               <Button size="icon" variant="outline" onClick={advisor.stop} aria-label={copy.stop}>
