@@ -334,7 +334,7 @@ export const zhCNTranslations: Translations = {
     },
     unsupported: {
       title: "此浏览器暂不支持",
-      noApi: "该浏览器不支持 WebGPU。请使用较新版本的 Chrome 或 Edge。",
+      noApi: "该浏览器不支持 WebGPU。较新版本的 Chrome、Edge、Firefox 或 Safari 26 以上均可使用。",
       noAdapter: "未找到显卡适配器。请检查浏览器的硬件加速设置。",
       error: "检测 WebGPU 时出现问题。",
     },
@@ -391,7 +391,7 @@ export const zhCNTranslations: Translations = {
       playingNotes: "使用 {name} 时",
       againstNotes: "对付 {name} 时",
       notesSource: "人工核对的运营笔记",
-      moreNotes: "还有 {count} 条笔记",
+      moreNotes: "展开 {count} 条笔记",
       reference: "资料",
       toggleReference: "资料面板",
       collapseReference: "收起资料面板",

@@ -112,8 +112,17 @@ export function AdvisorAnswerCard({ answer, ddragonVersion, patch, onPickChampio
   const { t } = useTranslation();
   const copy = t.advisor.card;
 
-  // 운용 노트는 한 건이 문단이다. 둘씩만 펼치고 나머지는 접는다 — 표가 주인공이다.
-  const NOTES_OPEN = 2;
+  /*
+   * 운용 노트는 전부 접어 둔다.
+   *
+   * 예전에는 둘을 펼쳐 두었다. 그때는 해설이 태그와 능력치로만 쓰여 노트와 겹치지
+   * 않았다. 지금은 해설이 노트를 재료로 쓰고, 재보니 문장의 95%가 거기서 온다.
+   * 그러면 서랍 안에서 같은 글을 두 번 읽게 된다 — 대화에서 한 번, 카드에서 또 한 번.
+   *
+   * 읽는 길은 해설로 두고, 카드의 노트는 근거를 확인하러 펼치는 자리로 둔다.
+   * 지우지 않는 이유는 사람이 검증한 원문이 해설의 근거이기 때문이다.
+   */
+  const NOTES_OPEN = 0;
   const noteItems = (items: string[]) =>
     items.map((note) => (
       <li key={note} className="flex gap-1.5">
