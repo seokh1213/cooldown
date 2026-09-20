@@ -130,6 +130,14 @@ export interface PromptWords {
    */
   percentile: (stat: string, side: "top" | "bottom", grade: string) => string;
   matchup: (me: string, enemy: string) => string;
+  /**
+   * 질문이 한쪽만 물었을 때 그 사실을 못 박는 말.
+   *
+   * "질문이 한쪽만 물으면 그쪽만 쓰십시오" 라고 일러 두었지만 모델이 어느 쪽인지를
+   * 스스로 가려야 했다. 11번 물어 5번만 맞혔다. 이제 조사로 가른 값이 코드에 있으므로
+   * 판단을 시키지 않고 **알려 준다.**
+   */
+  perspectiveOnly: (side: string) => string;
   damageLine: (damage: string, scaling: string) => string;
   subclassLine: (subclass: string, position?: string) => string;
   rules: string[];
@@ -157,6 +165,8 @@ const KO: PromptWords = {
   percentile: (stat, side, grade) =>
     `${stat}: 1레벨 기준 전체 챔피언 중 ${side === "top" ? "상위권" : "하위권"} (${grade})`,
   matchup: (me, enemy) => `[상성] 사용자는 ${me}를 잡고 ${enemy}를 상대합니다. ${me} 시점으로 쓰십시오.`,
+  perspectiveOnly: (side) =>
+    `[관점] 이 질문은 "${side}" 만 묻습니다. 그 관점만 쓰고, 머리말도 **${side}** 하나만 쓰십시오. 다른 관점은 한 문장도 쓰지 마십시오.`,
   damageLine: (damage, scaling) => `주 피해 유형: ${damage} · 계수 성향: ${scaling}`,
   subclassLine: (subclass, position) => `분류: ${subclass}${position ? ` · 주 포지션 ${position}` : ""}`,
   rules: [
@@ -202,6 +212,8 @@ const EN: PromptWords = {
   percentile: (stat, side, grade) =>
     `${stat}: among the ${side === "top" ? "highest" : "lowest"} of all champions at level 1 (${grade})`,
   matchup: (me, enemy) => `[Matchup] The user plays ${me} against ${enemy}. Write from ${me}'s point of view.`,
+  perspectiveOnly: (side) =>
+    `[Point of view] This question asks only about "${side}". Write that side only, use **${side}** as the single heading, and do not write a sentence about the other side.`,
   damageLine: (damage, scaling) => `Primary damage: ${damage} · Scaling: ${scaling}`,
   subclassLine: (subclass, position) => `Class: ${subclass}${position ? ` · main role ${position}` : ""}`,
   rules: [
@@ -246,6 +258,8 @@ const ZH: PromptWords = {
   percentile: (stat, side, grade) =>
     `${stat}：1级时在全英雄中属于${side === "top" ? "偏高" : "偏低"}的一档（${grade}）`,
   matchup: (me, enemy) => `[对位] 用户使用${me}对阵${enemy}。请以${me}的视角撰写。`,
+  perspectiveOnly: (side) =>
+    `[视角] 该问题只问“${side}”。只写这一侧，小标题也只用 **${side}** 一个，不要写另一侧的任何句子。`,
   damageLine: (damage, scaling) => `主要伤害类型：${damage} · 加成倾向：${scaling}`,
   subclassLine: (subclass, position) => `分类：${subclass}${position ? ` · 主要位置 ${position}` : ""}`,
   rules: [

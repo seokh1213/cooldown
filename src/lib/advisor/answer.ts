@@ -826,8 +826,11 @@ export function buildCommentaryPrompt(
     const notes = lang === "ko_KR" ? answer.notes : undefined;
     if (notes && (notes.playing.length || notes.against.length)) {
       lines.push(w.notesHeader);
-      for (const note of notes.playing) lines.push(`- ${w.playing}: ${note}`);
-      for (const note of notes.against) lines.push(`- ${w.against}: ${note}`);
+      // 물은 쪽을 먼저 싣는다. 재료 순서가 곧 글 순서가 된다.
+      const blocks = notes.perspective === "against"
+        ? ([[w.against, notes.against], [w.playing, notes.playing]] as const)
+        : ([[w.playing, notes.playing], [w.against, notes.against]] as const);
+      for (const [label, list] of blocks) for (const note of list) lines.push(`- ${label}: ${note}`);
     }
     const hasNotes = Boolean(notes && (notes.playing.length || notes.against.length));
     lines.push("", ...rules);
@@ -837,6 +840,10 @@ export function buildCommentaryPrompt(
       lines.push(w.closing.skills);
     } else if (hasNotes) {
       lines.push(w.closing.championWithNotes);
+      // 어느 쪽을 물었는지는 조사로 이미 갈라 두었다. 모델에게 다시 가리게 하지 않는다.
+      if (notes && notes.perspective !== "both") {
+        lines.push(w.perspectiveOnly(notes.perspective === "against" ? w.against : w.playing));
+      }
     } else {
       lines.push(w.closing.champion);
     }
