@@ -19,9 +19,16 @@ interface AdvisorStorageProps {
   onDelete: () => Promise<void>;
   /** 모델을 받지 않은 기기에서 받기 시작하는 길. 받을 수 없는 기기면 없다. */
   onDownload?: () => void;
+  /**
+   * 이 기기가 모델을 못 쓰는 이유. 있으면 내려받기 대신 이 말을 보여 준다.
+   *
+   * 없을 때는 "모델이 없습니다" 만 뜨고 단추도 없어서, 받을 길이 막힌 것인지
+   * 화면이 덜 그려진 것인지 알 수 없었다. 못 받는 기기라면 그렇다고 말해야 한다.
+   */
+  unavailable?: string;
 }
 
-export function AdvisorStorage({ onDelete, onDownload }: AdvisorStorageProps) {
+export function AdvisorStorage({ onDelete, onDownload, unavailable }: AdvisorStorageProps) {
   const { t } = useTranslation();
   const copy = t.advisor.storage;
   const [info, setInfo] = useState<ModelCacheInfo | null>(null);
@@ -57,8 +64,8 @@ export function AdvisorStorage({ onDelete, onDownload }: AdvisorStorageProps) {
         </p>
       ) : info.entries === 0 ? (
         <div className="space-y-3">
-          <p className="text-muted-foreground">{done ? copy.removed : copy.empty}</p>
-          {onDownload && (
+          <p className="text-muted-foreground">{done ? copy.removed : unavailable ?? copy.empty}</p>
+          {onDownload && !unavailable && (
             <Button variant="outline" size="sm" onClick={onDownload}>
               <Download className="mr-1.5 h-3.5 w-3.5" />
               {copy.download}

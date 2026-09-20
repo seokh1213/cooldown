@@ -715,6 +715,17 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
   const drawerWidth = advisorDrawerWidth(viewportWidth, referenceOpen, storedWidth);
   // 보여 줄 카드가 없으면(동의 화면, 빈 대화) 패널을 두지 않는다. 첫 카드가 오면 그때 넓어진다.
   const showingConsent = canUseModel && !advisor.consented && !skippedModel;
+  /*
+   * 이 기기가 모델을 못 쓰는 사유. 쓸 수 있으면, 그리고 아직 어댑터를 확인하는
+   * 중이면(`webgpu === null`) 아무 말도 하지 않는다. 확인이 끝나기 전에
+   * "이 기기에서는 내려받지 않습니다" 를 띄우면 멀쩡한 기기에 없는 말을 하는 셈이다.
+   */
+  const unavailableReason =
+    canUseModel || advisor.webgpu === null
+      ? undefined
+      : advisor.webgpu.supported && !advisor.webgpu.f16
+        ? copy.modelUnavailableNoF16
+        : copy.modelUnavailable;
   const showReferencePanel = wide && referenceOpen && view === "chat" && referenceTurns.length > 0 && !showingConsent;
   useEffect(() => {
     onWidthChange?.(drawerWidth);
@@ -854,6 +865,9 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
       {showStorage ? (
         <AdvisorStorage
           onDelete={advisor.deleteModel}
+          // 못 받는 기기에서는 이유를 말한다. 단추도 없이 "모델이 없습니다" 만 뜨면
+          // 길이 막힌 것인지 화면이 덜 그려진 것인지 알 수 없다.
+          unavailable={unavailableReason}
           /*
            * 다시 받는 길. 이 화면이 그 유일한 입구다.
            *
@@ -914,10 +928,10 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
             계속 붙여 두면 좁은 화면에서 60px 을 내내 먹는데, 한 번 읽으면 그 뒤로는
             답이 스스로 그 사실을 말한다(해설 없이 카드만 온다).
           */}
-          {!canUseModel && advisor.turns.length === 0 && (
+          {unavailableReason && advisor.turns.length === 0 && (
             <p className="border-b px-4 py-2.5 text-xs leading-relaxed text-muted-foreground">
               {/* WebGPU 는 도는데 f16 만 없는 경우에는 사유를 짚어 준다. 윈도우에서 흔하다. */}
-              {advisor.webgpu?.supported && !advisor.webgpu.f16 ? copy.modelUnavailableNoF16 : copy.modelUnavailable}
+              {unavailableReason}
             </p>
           )}
           {loading && (
