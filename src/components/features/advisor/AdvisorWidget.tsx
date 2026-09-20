@@ -12,7 +12,7 @@ import { useAdvisorHistory } from "@/hooks/useAdvisorHistory";
 import { useDeviceType } from "@/hooks/useDeviceType";
 import { useTranslation } from "@/i18n";
 import { loadAdvisorData, type AdvisorData } from "@/lib/advisor/context";
-import { canOfferModel, resolveModel } from "@/lib/advisor/config";
+import { canOfferModel } from "@/lib/advisor/config";
 import { AdvisorPanel } from "./AdvisorPanel";
 
 interface AdvisorWidgetProps {
@@ -84,7 +84,7 @@ export function AdvisorWidget({ patch, ddragonVersion, onOpenChange, onWidthChan
    * 16비트를 안 쓰는 판본으로 바꾸면 그 관문이 없어진다. 어디까지 올라가는지는
    * `config.ts` 의 `SWAPPABLE` 주석에 재 둔 표가 있다.
    */
-  const canUseModel = canOfferModel(resolveModel(), advisor.webgpu, device);
+  const canUseModel = canOfferModel(advisor.model, advisor.webgpu, device);
 
   /**
    * 이미 동의한 사용자는 앱이 뜨는 순간부터 모델을 올린다.

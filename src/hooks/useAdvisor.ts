@@ -11,6 +11,8 @@ import {
   detectWebGpu,
   estimateStorageMb,
   resolveModel,
+  writeModelChoice,
+  type AdvisorModel,
   type WebGpuSupport,
 } from "@/lib/advisor/config";
 import { deleteModelCache } from "@/lib/advisor/storage";
@@ -175,6 +177,10 @@ export interface UseAdvisorResult {
    * 동의도 거둬야 다음에 열 때 "3GB 를 받겠습니까" 를 다시 묻는다.
    */
   deleteModel: () => Promise<void>;
+  /** 지금 쓰는 모델. 화면이 용량과 이름을 보여 준다. */
+  model: AdvisorModel;
+  /** 쓸 모델을 바꾼다. 받아 둔 것을 지우고 워커를 새로 올린다. 대화는 남는다. */
+  chooseModel: (key: string) => Promise<void>;
   stop: () => void;
   reset: () => void;
   /** 저장된 대화를 통째로 올린다. id 가 겹치지 않게 다음 id 를 그 뒤로 옮긴다. */
@@ -203,7 +209,8 @@ export function useAdvisor(): UseAdvisorResult {
 
   const workerRef = useRef<Worker | null>(null);
   const nextId = useRef(1);
-  const model = useRef(resolveModel()).current;
+  // 모델은 화면에서 바꿀 수 있으므로 상태다. 바꾸면 워커를 내렸다 새로 올린다.
+  const [model, setModel] = useState(resolveModel);
 
   useEffect(() => {
     void detectWebGpu().then(setWebgpu);
@@ -728,18 +735,18 @@ export function useAdvisor(): UseAdvisorResult {
   }, []);
 
   /**
-   * 내려받은 모델을 삭제한다.
+   * 올려 둔 모델을 내린다.
    *
    * 워커를 먼저 내린다. 살아 있으면 모델을 메모리에 든 채로 계속 답해서, 지웠는데도
-   * 지워지지 않은 것처럼 보인다. 그다음 캐시를 지우고 동의를 거둔다.
+   * 지워지지 않은 것처럼 보인다. 그다음 캐시를 지우고 동의를 거둔다 — 다음에 받을
+   * 것은 용량이 다를 수 있으므로 다시 물어야 한다.
    */
-  const deleteModel = useCallback(async () => {
+  const teardown = useCallback(async () => {
     workerRef.current?.terminate();
     workerRef.current = null;
     setModelReady(false);
     setStatus("idle");
     setProgress({ loadedBytes: 0, totalBytes: 0, files: [] });
-    setTurns([]);
     setError(null);
     await deleteModelCache();
     try {
@@ -750,6 +757,40 @@ export function useAdvisor(): UseAdvisorResult {
     setConsented(false);
     void estimateStorageMb().then(setStorage);
   }, []);
+
+  /** 내려받은 모델을 삭제한다. 보고 있던 대화도 치운다 — 지우겠다는 뜻이 그것이다. */
+  const deleteModel = useCallback(async () => {
+    setTurns([]);
+    await teardown();
+  }, [teardown]);
+
+  /**
+   * 쓸 모델을 바꾼다.
+   *
+   * 화면을 다시 띄우지 않는다. 예전에는 `location.reload()` 로 했는데 패널이 닫히고
+   * 보던 대화가 사라져, 모델 하나 바꾸려다 하던 일을 잃었다. 워커만 내렸다 올리면
+   * 되는 일이다. **대화는 그대로 둔다.**
+   *
+   * 주소에 남은 `?advisorModel=` 도 지운다. 그쪽이 저장값보다 앞서기 때문에, 남겨
+   * 두면 고른 것이 다음 새로고침에 뒤집힌다.
+   */
+  const chooseModel = useCallback(
+    async (key: string) => {
+      writeModelChoice(key);
+      try {
+        const url = new URL(location.href);
+        if (url.searchParams.has("advisorModel")) {
+          url.searchParams.delete("advisorModel");
+          history.replaceState(null, "", url.toString());
+        }
+      } catch {
+        // 주소를 못 고쳐도 저장값은 바뀌었다
+      }
+      setModel(resolveModel());
+      await teardown();
+    },
+    [teardown],
+  );
 
   return {
     status,
@@ -770,6 +811,8 @@ export function useAdvisor(): UseAdvisorResult {
     sendWithSearch,
     rate,
     deleteModel,
+    model,
+    chooseModel,
     stop,
     reset,
     replaceTurns,

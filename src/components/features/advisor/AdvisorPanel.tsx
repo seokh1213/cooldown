@@ -26,6 +26,7 @@ import { useTranslation } from "@/i18n";
 import { advisorSystemPrompt } from "@/lib/advisor/persona";
 import { AdvisorMarkdown } from "./AdvisorMarkdown";
 import { groundCommentary } from "@/lib/advisor/grounding";
+import { currentModelChoice } from "@/lib/advisor/config";
 import {
   buildChampionsBrief,
   buildMatchupTips,
@@ -158,6 +159,7 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
   const [draft, setDraft] = useState("");
   // 동의 화면을 건너뛰고 코드 답변만으로 쓰는 선택. 기기에 남는다 — 새로 고칠 때마다
   // 3GB 를 받겠느냐고 다시 묻는 것은 거절한 사람에게 성가시다. 저장 공간 화면에서 다시 받을 수 있다.
+  const [modelChoice, setModelChoice] = useState(currentModelChoice);
   const [skippedModel, setSkippedModelState] = useState(readModelSkipped);
   const setSkippedModel = (skipped: boolean) => {
     setSkippedModelState(skipped);
@@ -874,6 +876,11 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
         <AdvisorStorage
           onDelete={advisor.deleteModel}
           webgpu={advisor.webgpu}
+          choice={modelChoice}
+          onChoose={async (key) => {
+            await advisor.chooseModel(key);
+            setModelChoice(key);
+          }}
           // 못 받는 기기에서는 이유를 말한다. 단추도 없이 "모델이 없습니다" 만 뜨면
           // 길이 막힌 것인지 화면이 덜 그려진 것인지 알 수 없다.
           unavailable={unavailableReason}
@@ -920,6 +927,7 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
         />
       ) : showingConsent ? (
         <AdvisorConsent
+          model={advisor.model}
           webgpu={advisor.webgpu}
           storage={advisor.storage}
           onAccept={advisor.accept}
