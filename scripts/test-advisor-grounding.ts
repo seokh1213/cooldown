@@ -11,7 +11,14 @@ import type { ChampionCard } from "./llm/lib/facts";
 import { PUBLIC_DATA_ROOT, resolvePatchVersion } from "./llm/lib/data";
 import { groundCommentary } from "../src/lib/advisor/grounding";
 import type { AdvisorAnswer } from "../src/lib/advisor/answer";
-import { canOfferModel, type AdvisorModel } from "../src/lib/advisor/config";
+import {
+  ADVISOR_MODEL,
+  FALLBACK_MODEL,
+  autoModel,
+  canOfferModel,
+  modelChoiceKey,
+  type AdvisorModel,
+} from "../src/lib/advisor/config";
 
 const llmDir = path.join(PUBLIC_DATA_ROOT, resolvePatchVersion(), "llm");
 const cards = (
@@ -132,4 +139,25 @@ assert.ok(q && !q.effects.includes("에어본"), "Q 에는 에어본이 없어�
   assert.equal(canOfferModel(free, withF16, "mobile"), false, "휴대폰에는 권하지 않는다");
 }
 
-console.log("✅ 근거 검사 통과 (18건)");
+/**
+ * 고르지 않았을 때 무엇을 줄 것인가.
+ *
+ * 16비트 셰이더가 없는 기기에 기본 모델을 주면 내려받기부터 막힌다. GTX 10xx 에서
+ * 후보를 전부 눌러 본 끝에 남은 것이 대체본이라, 그 기기에는 그것을 준다.
+ */
+{
+  assert.equal(autoModel({ supported: true, f16: true }).id, ADVISOR_MODEL.id, "f16 이 있으면 기본 모델");
+  assert.equal(autoModel({ supported: true, f16: false }).id, FALLBACK_MODEL.id, "f16 이 없으면 대체본");
+  assert.equal(autoModel(null).id, ADVISOR_MODEL.id, "확인 전에는 기본 모델");
+  assert.equal(autoModel({ supported: false, f16: false }).id, ADVISOR_MODEL.id, "WebGPU 가 없으면 어차피 안 권한다");
+
+  assert.equal(FALLBACK_MODEL.needsF16, false, "대체본이 16비트를 요구하면 뜻이 없다");
+  assert.equal(FALLBACK_MODEL.lite, true, "대체본은 간이로 표시해야 화면이 그렇게 알린다");
+  assert.equal(ADVISOR_MODEL.lite, undefined, "기본 모델은 간이가 아니다");
+
+  // 화면이 고른 줄을 표시하려면 목록에서 찾을 수 있어야 한다.
+  assert.equal(modelChoiceKey(ADVISOR_MODEL), "default");
+  assert.equal(modelChoiceKey(FALLBACK_MODEL), "lite");
+}
+
+console.log("✅ 근거 검사 통과 (26건)");

@@ -370,6 +370,7 @@ export const zhCNTranslations: Translations = {
       comparing: "正在对比",
       askAbout: "询问关于 {name} 的问题",
       commentary: "AI 解说",
+      commentaryLite: "AI 简易解说 · 准确度较低",
       commentaryPending: "正在撰写 AI 解说",
       top: "前 {n}%",
       bottom: "后 {n}%",

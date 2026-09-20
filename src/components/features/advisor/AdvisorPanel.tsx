@@ -26,7 +26,6 @@ import { useTranslation } from "@/i18n";
 import { advisorSystemPrompt } from "@/lib/advisor/persona";
 import { AdvisorMarkdown } from "./AdvisorMarkdown";
 import { groundCommentary } from "@/lib/advisor/grounding";
-import { currentModelChoice } from "@/lib/advisor/config";
 import {
   buildChampionsBrief,
   buildMatchupTips,
@@ -159,7 +158,6 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
   const [draft, setDraft] = useState("");
   // 동의 화면을 건너뛰고 코드 답변만으로 쓰는 선택. 기기에 남는다 — 새로 고칠 때마다
   // 3GB 를 받겠느냐고 다시 묻는 것은 거절한 사람에게 성가시다. 저장 공간 화면에서 다시 받을 수 있다.
-  const [modelChoice, setModelChoice] = useState(currentModelChoice);
   const [skippedModel, setSkippedModelState] = useState(readModelSkipped);
   const setSkippedModel = (skipped: boolean) => {
     setSkippedModelState(skipped);
@@ -876,11 +874,8 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
         <AdvisorStorage
           onDelete={advisor.deleteModel}
           webgpu={advisor.webgpu}
-          choice={modelChoice}
-          onChoose={async (key) => {
-            await advisor.chooseModel(key);
-            setModelChoice(key);
-          }}
+          choice={advisor.modelChoice}
+          onChoose={advisor.chooseModel}
           // 못 받는 기기에서는 이유를 말한다. 단추도 없이 "모델이 없습니다" 만 뜨면
           // 길이 막힌 것인지 화면이 덜 그려진 것인지 알 수 없다.
           unavailable={unavailableReason}
@@ -1041,15 +1036,20 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
                 코드가 쓴 글은 해설이 아니라 답 자체다. "해설" 딱지와 세로줄은 모델이
                 카드 위에 얹은 글에만 붙인다. 모델 글에는 근거 검사를 돌려 카드가
                 틀렸다고 증명하는 문장을 걷어낸다.
+
+                간이 모델에는 검사를 더 빡빡하게 건다. 1B 급은 근거 없는 문장에서
+                자주 틀리는데, 그런 문장은 있어서 얻는 것보다 잃는 것이 크다.
               */
-              const shown = turn.byCode ? turn.content : groundCommentary(turn.content, turn.answer).text;
+              const shown = turn.byCode
+                ? turn.content
+                : groundCommentary(turn.content, turn.answer, { strict: advisor.model.lite }).text;
               const commentary = !shown ? null : turn.byCode ? (
                 <div className="text-[13px] leading-relaxed">
                   <AdvisorMarkdown text={shown} />
                 </div>
               ) : (
                 <div className="border-l-2 border-border pl-2.5 text-[13px] leading-relaxed">
-                  <span className="block text-[11px] text-muted-foreground">{copy.card.commentary}</span>
+                  <span className="block text-[11px] text-muted-foreground">{advisor.model.lite ? copy.card.commentaryLite : copy.card.commentary}</span>
                   <AdvisorMarkdown text={shown} />
                 </div>
               );

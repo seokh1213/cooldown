@@ -386,6 +386,7 @@ export const koKRTranslations: Translations = {
       // AI 기본법 제31조 제2항은 생성형 AI 가 만든 결과물임을 표시하게 한다.
       // 카드의 표·수치는 코드가 만들고 이 문단만 모델이 쓰므로, 표시는 여기에 붙인다.
       commentary: "AI 해설",
+      commentaryLite: "AI 간이 해설 · 정확도가 낮습니다",
       commentaryPending: "AI 해설을 만드는 중",
       top: "상위 {n}%",
       bottom: "하위 {n}%",
