@@ -95,4 +95,19 @@ assert.ok(q && !q.effects.includes("에어본"), "Q 에는 에어본이 없어�
   assert.equal(result.dropped.length, 0, "소제목은 대조 대상이 아니다");
 }
 
-console.log("✅ 근거 검사 통과 (10건)");
+{
+  // 소수점은 문장 끝이 아니다. 쿨타임 "8/7.5/7" 을 문장 경계로 읽어 토막 내던 버그다.
+  const text = `${ult.name} 재사용 대기시간은 130/115/100초입니다. 뒤 문장입니다.`;
+  const result = groundCommentary(text, answer);
+  assert.equal(result.dropped.length, 1, "숫자 문장 하나만 걸린다");
+  assert.equal(result.text, "뒤 문장입니다.", "나머지는 온전히 남는다");
+}
+
+{
+  // 소수점이 든 문장이 남아야 할 때도 토막 나면 안 된다.
+  const kept = groundCommentary("쿨은 8/7.5/7초입니다.", answer);
+  assert.equal(kept.dropped.length, 1, "숫자 규칙에 걸린다");
+  assert.equal(kept.text, "", "쪼개진 토막이 남지 않는다");
+}
+
+console.log("✅ 근거 검사 통과 (12건)");
