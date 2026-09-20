@@ -364,7 +364,7 @@ export const enUSTranslations: Translations = {
     noModel: "The notes on hand do not answer this. Downloading the AI model would let it answer questions like this.",
     modelUnavailable: "The AI model is not offered on this device. Champion, item and rule lookups still work.",
     modelUnavailableNoF16:
-      "This graphics adapter has no 16-bit shader support, so the AI model cannot run here. Champion, item and rule lookups still work.",
+      "This graphics adapter has no 16-bit shader support, so the AI model cannot run here. Updating the graphics driver and the browser may change that. Champion, item and rule lookups still work.",
     card: {
       spell: "Ability",
       champion: "Champion",
