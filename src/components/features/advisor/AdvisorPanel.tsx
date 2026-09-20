@@ -25,6 +25,7 @@ import { Button } from "@/components/ui/button";
 import { useTranslation } from "@/i18n";
 import { advisorSystemPrompt } from "@/lib/advisor/persona";
 import { AdvisorMarkdown } from "./AdvisorMarkdown";
+import { groundCommentary } from "@/lib/advisor/grounding";
 import {
   buildChampionsBrief,
   buildMatchupTips,
@@ -1027,17 +1028,29 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
                   <ArrowRight className="h-3 w-3" />
                 </Link>
               ));
-              const commentary = turn.content ? (
+              /*
+                코드가 쓴 글은 해설이 아니라 답 자체다. "해설" 딱지와 세로줄은 모델이
+                카드 위에 얹은 글에만 붙인다. 모델 글에는 근거 검사를 돌려 카드가
+                틀렸다고 증명하는 문장을 걷어낸다.
+              */
+              const shown = turn.byCode ? turn.content : groundCommentary(turn.content, turn.answer).text;
+              const commentary = !shown ? null : turn.byCode ? (
+                <div className="text-[13px] leading-relaxed">
+                  <AdvisorMarkdown text={shown} />
+                </div>
+              ) : (
                 <div className="border-l-2 border-border pl-2.5 text-[13px] leading-relaxed">
                   <span className="block text-[11px] text-muted-foreground">{copy.card.commentary}</span>
-                  <AdvisorMarkdown text={turn.content} />
+                  <AdvisorMarkdown text={shown} />
                 </div>
-              ) : busy && turn.id === lastAssistantId ? (
-                <span className="flex items-center gap-2 pl-2.5 text-xs text-muted-foreground">
-                  <Loader2 className="h-3.5 w-3.5 animate-spin" />
-                  {copy.card.commentaryPending}
-                </span>
-              ) : null;
+              );
+              const pending =
+                !turn.content && busy && turn.id === lastAssistantId ? (
+                  <span className="flex items-center gap-2 pl-2.5 text-xs text-muted-foreground">
+                    <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                    {copy.card.commentaryPending}
+                  </span>
+                ) : null;
               const isLast = index === advisor.turns.length - 1;
               return (
               <div
@@ -1122,6 +1135,7 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
                       </div>
                     )}
                     {commentary}
+                    {pending}
                     <div className="flex flex-wrap items-center gap-1.5">
                       <button
                         type="button"
@@ -1156,6 +1170,7 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
                       onNavigate={onNavigate}
                     />
                     {commentary}
+                    {pending}
                   </div>
                 ) : turn.content ? (
                   turn.role === "assistant" ? (

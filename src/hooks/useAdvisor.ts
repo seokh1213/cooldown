@@ -64,6 +64,14 @@ export interface AdvisorTurn extends AdvisorChatMessage {
   answer?: AdvisorAnswer;
   /** 답 위에 작게 붙는 알림. "럼블로 이해했습니다" 같은 것. */
   notice?: string;
+  /**
+   * `content` 를 코드가 썼는가.
+   *
+   * 모델이 쓴 글은 카드 위에 얹히는 **해설**이라 "해설" 딱지와 세로줄을 달고 나간다.
+   * 코드가 쓴 글은 해설이 아니라 **답 자체**라 그 딱지를 달면 거짓말이 된다.
+   * 근거 검사도 모델이 쓴 글에만 돌린다 — 코드가 쓴 글은 카드에서 옮긴 값이다.
+   */
+  byCode?: boolean;
 }
 
 /**
@@ -632,7 +640,7 @@ export function useAdvisor(): UseAdvisorResult {
       const reply: AdvisorTurn =
         typeof answer === "string"
           ? { id: nextId.current++, role: "assistant", content: answer, notice }
-          : { id: nextId.current++, role: "assistant", content: answerProse(answer, lang), answer, notice };
+          : { id: nextId.current++, role: "assistant", content: answerProse(answer, lang), answer, notice, byCode: true };
       setTurns((prev) => [...prev, { id: nextId.current++, role: "user", content: question }, reply]);
     },
     [lang],
