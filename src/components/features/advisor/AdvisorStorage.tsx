@@ -145,7 +145,7 @@ export function AdvisorStorage({ onDelete, onDownload, unavailable, webgpu, choi
       <div className="border-t pt-3">
         <div className="mb-2 text-[11px] font-medium text-muted-foreground">{copy.pickTitle}</div>
         <div role="radiogroup" aria-label={copy.pickTitle} className="space-y-1">
-          {MODEL_CHOICES.map(({ key, model, label, note }) => {
+          {MODEL_CHOICES.map(({ key, model, label, note, detail }) => {
             const blocked = model.needsF16 && webgpu?.supported === true && !webgpu.f16;
             const active = key === choice;
             return (
@@ -156,6 +156,7 @@ export function AdvisorStorage({ onDelete, onDownload, unavailable, webgpu, choi
                 aria-checked={active}
                 disabled={blocked || busy}
                 onClick={() => pick(key)}
+                title={blocked ? `${detail}\n\n${copy.pickNeedsF16}` : detail}
                 className={`flex w-full items-baseline justify-between gap-2 rounded-md px-2.5 py-2 text-left transition-colors disabled:cursor-not-allowed disabled:opacity-45 ${
                   active ? "bg-muted" : "hover:bg-muted/60"
                 }`}

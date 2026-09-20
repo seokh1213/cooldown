@@ -44,6 +44,7 @@ import {
   answerKey,
   answerLinks,
   asksComparison,
+  asksGuide,
   asksMatchup,
   asksSkillsOverview,
   buildCommentaryPrompt,
@@ -422,7 +423,9 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
     // 3. 대화 맥락. "말파이트 설명해줘" 다음의 "제이스랑 상대한다 생각하면" 은 말파이트로
     //    제이스를 상대하는 질문이다. 방금 다룬 챔피언이 내 챔피언, 새 이름이 상대.
     const recent = recentChampions();
-    if (champions.length === 1 && asksMatchup(question)) {
+    // "말파이트 상대법" 은 그 챔피언의 공략을 달라는 말이다. 앞 대화에 다른 챔피언이
+    // 있다고 짝을 지으면 묻지 않은 상성이 된다. 그때는 아래 챔피언 경로로 내려간다.
+    if (champions.length === 1 && asksMatchup(question) && !asksGuide(question)) {
       const mine = recent.find((card) => card.id !== champions[0].id);
       if (mine) {
         deliverMatchup(question, mine, champions[0], usedNotice);

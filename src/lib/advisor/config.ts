@@ -116,23 +116,9 @@ export const SMOKE_MODEL: AdvisorModel = {
  */
 const SWAPPABLE: Record<string, AdvisorModel> = {
   smoke: SMOKE_MODEL,
-  /** 한국어가 가장 나은 후보. 맥에서는 세션 생성이 안 끝났다. */
-  exaone: {
-    id: "onnx-community/EXAONE-3.5-2.4B-Instruct",
-    dtype: "q4",
-    downloadMb: 2279,
-    needsF16: false,
-  },
-  /** 단일 파일 1.7GB. 맥에서는 std::bad_alloc 이었다. */
-  qwen15: {
-    id: "onnx-community/Qwen2.5-1.5B-Instruct",
-    dtype: "q4",
-    downloadMb: 1705,
-    needsF16: false,
-  },
   /**
-   * Gemma 보다 새롭고 작다. 압축 과제에서 더 낫다.
-   * 다만 그 기기에서 올라가는지는 아직 확인되지 않았다.
+   * 16비트 셰이더가 없는 기기에 주는 것. GTX 10xx 에서 동작을 확인했다.
+   * 526MB 로 가장 작고, 압축 과제에서 후보 중 가장 정확했다.
    */
   qwen35: {
     id: "onnx-community/Qwen3.5-0.8B-Text-ONNX",
@@ -141,19 +127,16 @@ const SWAPPABLE: Record<string, AdvisorModel> = {
     needsF16: false,
     lite: true,
   },
-  /** 확실히 도는 것. 품질은 확실히 떨어진다. */
-  lite: {
+  /**
+   * 예비. 화면 목록에는 없고 `?advisorModel=gemma` 로만 고를 수 있다.
+   *
+   * Qwen3.5 를 못 올리는 기기가 나오면 이것이 남은 길이다. 다만 같은 질문에
+   * "저는 Google AI입니다", "말파이트는 R의 지뢰로" 를 내놓아 기본으로 둘 수 없었다.
+   */
+  gemma: {
     id: "onnx-community/gemma-3-1b-it-ONNX",
     dtype: "q4",
     downloadMb: 819,
-    needsF16: false,
-    lite: true,
-  },
-  /** 가장 빠르고 가장 작다. 재료를 거의 그대로 베낀다. */
-  tiny: {
-    id: "onnx-community/Qwen3-0.6B-ONNX",
-    dtype: "q4",
-    downloadMb: 877,
     needsF16: false,
     lite: true,
   },
@@ -169,16 +152,29 @@ export interface ModelChoice {
   key: string;
   model: AdvisorModel;
   label: string;
+  /** 줄 아래에 늘 보이는 한 줄. */
   note: string;
+  /** 마우스를 올렸을 때. 무엇이 어떻게 다른지 풀어 적는다. */
+  detail: string;
 }
 
 export const MODEL_CHOICES: ModelChoice[] = [
-  { key: "default", model: ADVISOR_MODEL, label: "Qwen3 4B", note: "기본. 16비트 셰이더가 있어야 합니다" },
-  { key: "exaone", model: SWAPPABLE.exaone, label: "EXAONE 3.5 2.4B", note: "적재에 실패합니다. 파일 하나가 너무 큽니다" },
-  { key: "qwen15", model: SWAPPABLE.qwen15, label: "Qwen2.5 1.5B", note: "적재에 실패합니다. 메모리가 모자랍니다" },
-  { key: "qwen35", model: SWAPPABLE.qwen35, label: "Qwen3.5 0.8B", note: "가장 작고 답이 가장 낫습니다. 다만 도는 기기가 아직 덜 확인됐습니다" },
-  { key: "tiny", model: SWAPPABLE.tiny, label: "Qwen3 0.6B", note: "적재는 되지만 답하는 중에 멈추는 기기가 있습니다" },
-  { key: "lite", model: SWAPPABLE.lite, label: "Gemma 3 1B", note: "느리지만 확인된 기기가 가장 많습니다" },
+  {
+    key: "default",
+    model: ADVISOR_MODEL,
+    label: "Qwen3 4B",
+    note: "해설이 깊습니다. 16비트 셰이더가 있는 그래픽카드가 필요합니다",
+    detail:
+      "스킬 사이의 관계를 짚어 설명합니다. 답 하나에 실제 스킬 이름을 서너 개 씁니다. 대신 2.8GB 를 받아야 하고 글자가 천천히 나옵니다(초당 세 자 남짓).",
+  },
+  {
+    key: "qwen35",
+    model: SWAPPABLE.qwen35,
+    label: "Qwen3.5 0.8B",
+    note: "가볍고 어디서나 돕니다. 해설은 짧고 단순합니다",
+    detail:
+      "검증된 설명 중 질문에 맞는 것을 골라 줄여 씁니다. 스스로 분석하지는 않습니다. 526MB 만 받으면 되고 16비트 셰이더가 없는 그래픽카드에서도 돕니다.",
+  },
 ];
 
 /**
@@ -194,7 +190,7 @@ export const MODEL_CHOICES: ModelChoice[] = [
  * 맥(Metal)에서는 Qwen3 0.6B 도 18.5 tok/s 로 멀쩡히 돌았다. 같은 파일이 D3D12
  * 에서 트랩을 밟는다. **기기에서 눌러 보기 전에는 알 수 없다**는 것이 이 표의 요지다.
  */
-export const FALLBACK_MODEL = SWAPPABLE.lite;
+export const FALLBACK_MODEL = SWAPPABLE.qwen35;
 
 /**
  * 사용자가 고르지 않았을 때 쓸 모델.

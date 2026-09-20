@@ -17,6 +17,7 @@ import {
   FALLBACK_MODEL,
   autoModel,
   canOfferModel,
+  MODEL_CHOICES,
   modelChoiceKey,
   type AdvisorModel,
 } from "../src/lib/advisor/config";
@@ -158,7 +159,19 @@ assert.ok(q && !q.effects.includes("에어본"), "Q 에는 에어본이 없어�
 
   // 화면이 고른 줄을 표시하려면 목록에서 찾을 수 있어야 한다.
   assert.equal(modelChoiceKey(ADVISOR_MODEL), "default");
-  assert.equal(modelChoiceKey(FALLBACK_MODEL), "lite");
+  assert.equal(modelChoiceKey(FALLBACK_MODEL), "qwen35");
+
+  /*
+    고를 것은 둘이다. 후보를 늘어놓으면 무엇이 다른지 읽는 사람이 판단해야 한다.
+    실제로 돌려 보고 남은 둘만 둔다 — 깊은 해설과 가벼운 해설.
+  */
+  assert.equal(MODEL_CHOICES.length, 2, "고를 것은 둘");
+  for (const choice of MODEL_CHOICES) {
+    assert.ok(choice.detail.length > 30, `${choice.key}: 무엇이 다른지 적어야 한다`);
+    assert.ok(choice.note.length > 0, `${choice.key}: 한 줄 설명이 있어야 한다`);
+  }
+  // 하나는 어디서나 돌아야 한다. 그러지 않으면 f16 없는 기기가 다시 빈손이 된다.
+  assert.ok(MODEL_CHOICES.some((c) => !c.model.needsF16), "f16 없이 도는 줄이 있어야 한다");
 }
 
 /**
@@ -217,4 +230,4 @@ assert.ok(q && !q.effects.includes("에어본"), "Q 에는 에어본이 없어�
   assert.equal(tidyLite("이 스킬은 저지 불가라 끊을 수 없습니다."), "이 스킬은 저지 불가라 끊을 수 없습니다.");
 }
 
-console.log("✅ 근거 검사 통과 (39건)");
+console.log("✅ 근거 검사 통과 (44건)");

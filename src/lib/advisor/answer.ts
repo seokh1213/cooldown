@@ -379,7 +379,16 @@ export function suggestChampions(
     if (!initialKnown && token.length < 3) continue;
     // 의도 어휘("스킬", "쿨타임", "체력"…)는 이름이 아니다. "스킬" 이 줄임말 "스카"(스카너) 와
     // 거리 1 이라 후보로 잡혔다.
-    if (INTENT_WORD.test(token) || FOCUS_LEXICON.some(([, pattern]) => pattern.test(token))) continue;
+    // 효과 낱말도 이름이 아니다. "럼블 E 마저" 의 "마저" 가 마오카이·마스터 이 후보로
+    // 잡혀 "'마저' 챔피언을 찾지 못했습니다" 라고 되물었다. 표를 새로 만들지 않고
+    // 이미 있는 별칭표를 그대로 본다.
+    if (
+      INTENT_WORD.test(token) ||
+      FOCUS_LEXICON.some(([, pattern]) => pattern.test(token)) ||
+      EFFECT_ALIASES.some(([alias]) => alias.test(token))
+    ) {
+      continue;
+    }
     // 그 자체가 이름이면 오타가 아니다. "오공 Q 쿨타임" 의 오공이 오른·오리아나 후보로 잡혔다.
     if (names.some(([name]) => name === token)) continue;
     /*
@@ -452,6 +461,23 @@ const MATCHUP = /상대|맞상대|맞붙|라인전|만나면|만났을|만날\s*
 
 export function asksMatchup(question: string): boolean {
   return MATCHUP.test(question);
+}
+
+/**
+ * "말파이트 상대법" 처럼 **한 챔피언의 공략을 통째로** 묻는가.
+ *
+ * `asksMatchup` 은 "상대" 만 보고 참이 되므로 이것까지 상성으로 끌고 갔다. 앞 대화에
+ * 오공이 있었다는 이유로 "말파이트 상대법" 이 "오공 vs 말파이트" 가 됐다. 사용자는
+ * 내 챔피언을 말한 적이 없다.
+ *
+ * 가르는 것은 **명사인가 서술인가** 다. "만나면", "붙으면", "어떻게 해" 는 마주친
+ * 상황을 말하므로 상대가 누구인지 맥락이 채워 주는 것이 맞다. "상대법" 은 그 챔피언
+ * 자체의 공략을 달라는 말이라 짝지을 상대가 없다.
+ */
+const GUIDE_ASK = /(상대|공략|카운터|대처|파훼)\s*법|(상대|공략)\s*하는\s*법/;
+
+export function asksGuide(question: string): boolean {
+  return GUIDE_ASK.test(question);
 }
 
 /** 스킬 전체를 설명해 달라는가. "스킬 설명해줘", "스킬 뭐 있어", "스킬 알려줘". */
