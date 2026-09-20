@@ -202,3 +202,22 @@ export function asksForCounter(text: string): boolean {
 export function looksLikeChampionQuery(data: AdvisorData, text: string): boolean {
   return Boolean(findChampion(data, text.trim()));
 }
+
+/**
+ * 도우미 자신에 대한 질문인가.
+ *
+ * "넌 누구야" 를 자료 검색으로 흘려보냈더니 모델이 아무 검색어나 만들어 내고
+ * 화면에 "찾은 자료: 와드" 가 붙었다. 자기소개는 자료로 답할 것이 아니다.
+ *
+ * 점수로 거르는 방법은 이미 막혀 있다 — `lexicalSearch` 주석에 적힌 대로 맞은 것이
+ * 0.344, 틀린 것이 0.620 이라 문턱이 둘을 못 가른다. 그래서 질문 쪽에서 가른다.
+ *
+ * **표를 늘리지 않는다.** 모델 이름(gpt·claude…)이나 "서버에서 도냐" 같은 변형까지
+ * 적어 두면 유행 따라 계속 고쳐야 한다. 2인칭과 "누구/뭐" 가 붙은 꼴 하나만 본다.
+ * 나머지 변형은 모델이 페르소나로 답한다 — 애초에 답을 알고 있다.
+ */
+const HELPER_ASK = /(넌|너는|너|당신|네가|니가)\s*(누구|뭐야|뭐니|무엇)|(who|what)\s+are\s+you|你是[谁什]/i;
+
+export function asksAboutHelper(question: string): boolean {
+  return HELPER_ASK.test(question);
+}

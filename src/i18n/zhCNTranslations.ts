@@ -348,6 +348,8 @@ export const zhCNTranslations: Translations = {
       looking: "正在查询",
     },
     noModel: "现有资料无法回答这个问题。下载 AI 模型后即可回答此类问题。",
+    identity:
+      "我是内置于本应用的英雄联盟助手。我依据英雄、技能、装备与判定规则的资料作答。全部在你的设备上运行，对话不会发送到任何地方。",
     modelUnavailable: "此设备不提供 AI 模型下载。英雄、装备与规则查询仍可正常使用。",
     modelUnavailableNoF16:
       "该显卡不支持 16 位着色器运算，无法运行 AI 模型。更新显卡驱动与浏览器后或许可用。英雄、装备与规则查询仍可正常使用。",

@@ -13,6 +13,7 @@ import { indexRules, buildRuleAnswer, findMentionedRules, findRulesMentioning } 
 import { findMechanics, mechanicsToText, type MechanicsIndex } from "./llm/lib/mechanics";
 import { PUBLIC_DATA_ROOT, resolvePatchVersion } from "./llm/lib/data";
 import { extractQuery, lexicalSearch, type SearchDoc } from "../src/lib/advisor/searchFallback";
+import { asksAboutHelper } from "../src/lib/advisor/intent";
 
 const patch = resolvePatchVersion();
 const llmDir = path.join(PUBLIC_DATA_ROOT, patch, "llm");
@@ -256,6 +257,33 @@ assert.equal(extractQuery('"미니언 파밍 골드"'), "미니언 파밍 골드
 assert.equal(extractQuery("검색어: 와드 설치 위치"), "와드 설치 위치", "머리말을 벗긴다");
 assert.equal(extractQuery("와드 설치 위치\n설명: …"), "와드 설치 위치", "첫 줄만 쓴다");
 assert.equal(extractQuery("   "), "", "빈 응답은 빈 문자열이다");
+
+/**
+ * 문서의 부록은 자료가 아니다.
+ *
+ * 파이프라인 설명 절까지 색인했더니 "넌 누구야" 에 자료 이름으로
+ * "위키 팁 — 수집했으나 프롬프트에는 넣지 않는다" 가 붙어 나갔다.
+ */
+for (const section of mechanics) {
+  assert.doesNotMatch(section.title, /넣지 않는다|남는 한계|규칙 요약/, `부록이 자료로 들어왔다: ${section.title}`);
+}
+
+/**
+ * 도우미 자신을 묻는 말은 검색으로 보내지 않는다.
+ * 페르소나가 답을 들고 있고, 검색은 엉뚱한 자료 이름을 붙인다.
+ */
+{
+  for (const q of ["넌 누구야", "너는 누구니", "너 뭐야", "what are you", "你是谁"]) {
+    assert.ok(asksAboutHelper(q), `자기소개로 봐야 한다: ${q}`);
+  }
+  // 변형까지 표로 적지 않는다. 모델이 페르소나로 답한다.
+  for (const q of ["무슨 모델 써?", "너 어디서 돌아?", "자기소개 해줘"]) {
+    assert.ok(!asksAboutHelper(q), `표를 늘리지 않는다: ${q}`);
+  }
+  for (const q of ["말파이트 상대법", "오공 스킬 쿨타임", "누구를 골라야 해", "카운터가 뭐야", "와드 어디에 박아"]) {
+    assert.ok(!asksAboutHelper(q), `게임 질문이다: ${q}`);
+  }
+}
 
 console.log(
   `✅ Advisor retrieval passed (규칙 ${ruleIndex.size}종, 메커니즘 ${mechanics.length}절, 아이템 ${items.items.length}종, 검색 문서 ${searchCorpus.length}건)`,
