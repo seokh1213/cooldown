@@ -81,7 +81,7 @@ import {
   lexicalSearch,
   searchContext,
 } from "@/lib/advisor/searchFallback";
-import { detectChampions } from "@/lib/advisor/intent";
+import { asksAboutHelper, detectChampions } from "@/lib/advisor/intent";
 import type { AdvisorTurn, UseAdvisorResult } from "@/hooks/useAdvisor";
 import type { UseAdvisorHistoryResult } from "@/hooks/useAdvisorHistory";
 import { AdvisorConsent } from "./AdvisorConsent";
@@ -518,6 +518,22 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
         return;
       }
       advisor.send(question, `${system}\n\n${buildChampionsBrief(data, champions)}`, undefined, copy.noModel);
+      return;
+    }
+
+    /*
+      도우미 자신을 묻는 말은 자료로 답할 것이 아니다.
+
+      검색으로 흘려보냈더니 모델이 아무 검색어나 만들어 내고 화면에 "찾은 자료: 와드"
+      가 붙었다. 자기소개는 페르소나가 이미 답을 들고 있으므로 그대로 묻는다.
+    */
+    if (asksAboutHelper(question)) {
+      // 모델이 없어도 답할 수 있는 몇 안 되는 질문이다. 우리가 답을 알고 있다.
+      if (!canUseModel || !advisor.consented) {
+        advisor.answerWithoutModel(question, copy.identity);
+        return;
+      }
+      advisor.send(question, system);
       return;
     }
 

@@ -362,6 +362,8 @@ export const enUSTranslations: Translations = {
       looking: "Looking up",
     },
     noModel: "The notes on hand do not answer this. Downloading the AI model would let it answer questions like this.",
+    identity:
+      "I am the League of Legends helper built into this app. I answer from its data on champions, abilities, items and ruling rules. I run on your device and this conversation never leaves it.",
     modelUnavailable: "The AI model is not offered on this device. Champion, item and rule lookups still work.",
     modelUnavailableNoF16:
       "This graphics adapter has no 16-bit shader support, so the AI model cannot run here. Updating the graphics driver and the browser may change that. Champion, item and rule lookups still work.",

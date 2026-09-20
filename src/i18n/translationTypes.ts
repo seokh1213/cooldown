@@ -346,6 +346,8 @@ export interface Translations {
     };
     /** 모델 없이 쓰는 중에 코드가 답을 못 찾았을 때 */
     noModel: string;
+    /** 도우미 자신을 물었을 때. 모델이 없어도 답할 수 있는 몇 안 되는 질문이다. */
+    identity: string;
     /** 이 기기에서는 모델을 권하지 않는다는 안내 */
     modelUnavailable: string;
     /** WebGPU 는 도는데 shader-f16 이 없는 어댑터. 사유를 따로 말한다. */

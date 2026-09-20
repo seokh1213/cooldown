@@ -38,8 +38,24 @@ interface RawSection {
   body: string;
 }
 
+/**
+ * 부록부터는 읽지 않는다.
+ *
+ * 문서 뒷부분은 게임 지식이 아니라 **이 자료를 만드는 방법**에 대한 기록이다.
+ * 그것까지 색인하면 사용자가 "넌 누구야" 라고 물었을 때 자료 이름으로
+ * "위키 팁 — 수집했으나 프롬프트에는 넣지 않는다" 가 뜬다. 실제로 그랬다.
+ *
+ * 어느 절이 메모인지는 **글쓴이가 문서에 표시한다.** 여기에 제목 목록을 적어 두면
+ * 문서가 바뀔 때 따로 고쳐야 하고, 고치는 것을 잊으면 또 새어 나간다. 검색어를
+ * 문서에서 뽑는 것과 같은 원리다.
+ */
+function dropAppendix(markdown: string): string {
+  const appendix = markdown.search(/^# (?!.*리그 오브 레전드)/m);
+  return appendix < 0 ? markdown : markdown.slice(0, appendix);
+}
+
 function splitSections(markdown: string): RawSection[] {
-  return markdown
+  return dropAppendix(markdown)
     .split(/^## /m)
     .slice(1)
     .map((part) => {
