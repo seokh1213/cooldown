@@ -15,6 +15,7 @@ import {
   answerKey,
   answerLinks,
   asksComparison,
+  asksGuide,
   asksMatchup,
   asksSkillsOverview,
   buildCompareAnswer,
@@ -254,6 +255,18 @@ assert.equal(detectSpellFocus("럼블 E 뭐야"), undefined, "사실을 안 짚�
   }
   assert.ok(asksMatchup("럼블 만나면 어떻게 해?"));
   assert.ok(!asksMatchup("제이스 설명해줘"));
+
+  /*
+    "말파이트 상대법" 은 그 챔피언의 공략을 달라는 말이다. 앞 대화에 오공이 있었다는
+    이유로 "오공 vs 말파이트" 가 되면 묻지 않은 상성이 나간다.
+  */
+  for (const q of ["말파이트 상대법", "가렌 공략법", "제드 카운터법", "야스오 대처법", "다리우스 상대하는 법"]) {
+    assert.ok(asksGuide(q), `공략 요청이다: ${q}`);
+  }
+  // 마주친 상황을 말하는 쪽은 맥락이 상대를 채워 주는 것이 맞다.
+  for (const q of ["럼블 만나면 어떻게 해?", "제이스랑 상대한다 생각하면", "오공이랑 붙으면 누가 유리해"]) {
+    assert.ok(!asksGuide(q), `맥락이 채울 질문이다: ${q}`);
+  }
 
   assert.ok(looksChampionDirected("W 쿨타임", "W"));
   assert.ok(looksChampionDirected("설명해줘"));
