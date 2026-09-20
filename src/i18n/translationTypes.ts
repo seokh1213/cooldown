@@ -471,6 +471,12 @@ export interface Translations {
       removed: string;
       /** 다시 받아야 한다는 안내 */
       note: string;
+      /** 모델 고르는 자리의 머리말 */
+      pickTitle: string;
+      /** 이 기기가 못 도는 줄에 붙는 사유 */
+      pickNeedsF16: string;
+      /** 고르면 무슨 일이 생기는지 */
+      pickNote: string;
     };
     /**
      * 모델에게 실어 준 자료 묶음 앞에 붙는 말.

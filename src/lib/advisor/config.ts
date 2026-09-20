@@ -100,7 +100,7 @@ export const SMOKE_MODEL: AdvisorModel = {
  * 과정은 백엔드마다 다르다 — 여기는 Metal 이고 윈도우는 D3D12 다. **맥에서 매달린
  * 것이 그쪽에서도 매달린다는 보장이 없다.** 그래서 단정하지 않고 길을 열어 둔다.
  *
- * 주소 뒤에 `?advisorModel=exaone` 을 붙이면 그 기기에서 직접 시험할 수 있다.
+ * AI 모델 화면에서 고를 수 있고, 주소 뒤에 `?advisorModel=exaone` 을 붙여도 된다.
  */
 const SWAPPABLE: Record<string, AdvisorModel> = {
   smoke: SMOKE_MODEL,
@@ -111,6 +111,13 @@ const SWAPPABLE: Record<string, AdvisorModel> = {
     downloadMb: 2279,
     needsF16: false,
   },
+  /** 단일 파일 1.7GB. 맥에서는 std::bad_alloc 이었다. */
+  qwen15: {
+    id: "onnx-community/Qwen2.5-1.5B-Instruct",
+    dtype: "q4",
+    downloadMb: 1705,
+    needsF16: false,
+  },
   /** 확실히 도는 것. 품질은 확실히 떨어진다. */
   lite: {
     id: "onnx-community/gemma-3-1b-it-ONNX",
@@ -118,7 +125,63 @@ const SWAPPABLE: Record<string, AdvisorModel> = {
     downloadMb: 819,
     needsF16: false,
   },
+  /** 가장 빠르고 가장 작다. 재료를 거의 그대로 베낀다. */
+  tiny: {
+    id: "onnx-community/Qwen3-0.6B-ONNX",
+    dtype: "q4",
+    downloadMb: 877,
+    needsF16: false,
+  },
 };
+
+/**
+ * 화면에서 고를 수 있는 목록.
+ *
+ * 순서가 곧 권하는 순서다. 위가 좋은 것이고 아래로 갈수록 확실히 도는 것이다.
+ * `note` 는 맥에서 잰 결과를 그대로 적는다 — 고르는 사람이 무엇을 시험하는지 알아야
+ * 실패도 정보가 된다. 다른 그래픽 백엔드에서는 다를 수 있다는 것이 이 목록의 요지다.
+ */
+export interface ModelChoice {
+  key: string;
+  model: AdvisorModel;
+  label: string;
+  note: string;
+}
+
+export const MODEL_CHOICES: ModelChoice[] = [
+  { key: "default", model: ADVISOR_MODEL, label: "Qwen3 4B", note: "기본. 16비트 셰이더가 있어야 합니다" },
+  { key: "exaone", model: SWAPPABLE.exaone, label: "EXAONE 3.5 2.4B", note: "한국어가 가장 낫습니다. 맥에서는 적재가 끝나지 않았습니다" },
+  { key: "qwen15", model: SWAPPABLE.qwen15, label: "Qwen2.5 1.5B", note: "맥에서는 메모리 부족으로 실패했습니다" },
+  { key: "tiny", model: SWAPPABLE.tiny, label: "Qwen3 0.6B", note: "빠릅니다. 자료를 거의 그대로 옮겨 적습니다" },
+  { key: "lite", model: SWAPPABLE.lite, label: "Gemma 3 1B", note: "확실히 돕니다. 문장을 만들지만 자주 틀립니다" },
+];
+
+/** 고른 모델을 기억하는 열쇠. 기기마다. */
+export const MODEL_CHOICE_KEY = "cooldown.advisor.model";
+
+export function readModelChoice(): string | undefined {
+  try {
+    const stored = localStorage.getItem(MODEL_CHOICE_KEY);
+    return stored && stored in SWAPPABLE ? stored : undefined;
+  } catch {
+    return undefined;
+  }
+}
+
+/**
+ * 쓸 모델을 바꾼다.
+ *
+ * 워커가 이미 다른 모델을 메모리에 들고 있으므로 고른 것만으로는 안 바뀐다.
+ * 값을 남기고 화면을 다시 띄우는 것이 가장 확실하다 — 대화는 기록에 남아 있다.
+ */
+export function writeModelChoice(key: string): void {
+  try {
+    if (key === "default") localStorage.removeItem(MODEL_CHOICE_KEY);
+    else localStorage.setItem(MODEL_CHOICE_KEY, key);
+  } catch {
+    // 못 남겨도 이번 세션에서는 질의 문자열로 바꿀 수 있다
+  }
+}
 
 /**
  * 이 기기에 이 모델을 권할 수 있는가.
@@ -139,6 +202,12 @@ export function canOfferModel(
   return !model.needsF16 || webgpu.f16;
 }
 
+/**
+ * 쓸 모델. 질의 문자열이 먼저고, 그다음이 화면에서 고른 값이다.
+ *
+ * 질의 문자열을 앞에 두는 이유는 그것이 한 번 쓰고 마는 지시이기 때문이다.
+ * 화면에서 고른 값은 기기에 남아 다음에도 따라온다.
+ */
 export function resolveModel(): AdvisorModel {
   try {
     const wanted = new URLSearchParams(location.search).get("advisorModel");
@@ -146,7 +215,19 @@ export function resolveModel(): AdvisorModel {
   } catch {
     // 워커 등 location 을 못 읽는 곳에서는 기본값
   }
-  return ADVISOR_MODEL;
+  const stored = readModelChoice();
+  return stored ? SWAPPABLE[stored] : ADVISOR_MODEL;
+}
+
+/** 지금 고른 것이 목록의 어느 줄인가. */
+export function currentModelChoice(): string {
+  try {
+    const wanted = new URLSearchParams(location.search).get("advisorModel");
+    if (wanted && wanted in SWAPPABLE) return wanted;
+  } catch {
+    // 아래로
+  }
+  return readModelChoice() ?? "default";
 }
 
 /**
