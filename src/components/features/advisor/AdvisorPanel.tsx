@@ -311,7 +311,12 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
   const deliverMatchup = (question: string, mine: ChampionCard, enemy: ChampionCard, notice?: string) => {
     if (!data) return;
     const answer = buildCompareCard([mine, enemy], question, undefined, { matchup: true, notes: matchupNotes(data, mine, enemy) });
-    const prompt = buildCommentaryPrompt(answer, patch, lang);
+    /*
+      상성 해설은 4B 용 프롬프트다. 간이 모델에 그대로 먹였더니 백분위 문장을
+      그대로 옮겨 적고 "섭요를 피해야" 같은 말을 만들었다. 줄일 노트도 없는
+      경로이므로 간이 모델에게는 아예 시키지 않는다 — 카드가 곧 답이다.
+    */
+    const prompt = advisor.model.lite ? undefined : buildCommentaryPrompt(answer, patch, lang);
     if (canUseModel && advisor.consented && prompt) {
       const tips = buildMatchupTips(data, mine, enemy);
       advisor.sendWithAnswer(question, [advisorSystemPrompt(lang), tips, prompt].filter(Boolean).join("\n\n"), answer, notice);
@@ -528,8 +533,12 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
       가 붙었다. 자기소개는 페르소나가 이미 답을 들고 있으므로 그대로 묻는다.
     */
     if (asksAboutHelper(question)) {
-      // 모델이 없어도 답할 수 있는 몇 안 되는 질문이다. 우리가 답을 알고 있다.
-      if (!canUseModel || !advisor.consented) {
+      /*
+        우리가 답을 아는 질문이다. 간이 모델에게 맡기면 안 된다 — Gemma 3 1B 는
+        페르소나를 무시하고 "저는 Google AI입니다" 라고 답했다. 화면 곳곳에
+        "기기 안에서만 동작합니다" 라고 적어 둔 것과 정면으로 어긋난다.
+      */
+      if (!canUseModel || !advisor.consented || advisor.model.lite) {
         advisor.answerWithoutModel(question, copy.identity);
         return;
       }
