@@ -284,7 +284,39 @@ export function AdvisorAnswerCard({ answer, ddragonVersion, patch, onPickChampio
         </Link>
       </>
     );
-    // "말파이트 스킬 쿨타임": 스킬 다섯 개의 그 사실만. 능력치·해설은 없다.
+    const notes = answer.notes;
+    const hasNotes = Boolean(notes && (notes.playing.length || notes.against.length));
+    /*
+      사람이 검증한 운용 노트. 수치·태그가 아니라 이것이 실전에 쓰는 말이다.
+
+      **물은 쪽을 먼저 놓는다.** "말파 상대법" 을 물었는데 "말파로 플레이할 때" 가
+      먼저 나오면 읽는 사람이 관점을 뒤집어 읽는다. 어느 쪽을 물었는지는
+      `noteSelect` 가 조사로 가려 `perspective` 에 담아 준다.
+    */
+    const noteBlock = !hasNotes || !notes ? null : (
+      <div className="mt-3 space-y-2.5 border-t pt-2.5">
+        {(notes.perspective === "against"
+          ? ([
+              ["against", notes.against, copy.againstNotes],
+              ["playing", notes.playing, copy.playingNotes],
+            ] as const)
+          : ([
+              ["playing", notes.playing, copy.playingNotes],
+              ["against", notes.against, copy.againstNotes],
+            ] as const)
+        ).map(([key, list, label]) =>
+          list.length > 0 ? (
+            <div key={key}>
+              <div className="mb-1 text-[11px] font-medium text-muted-foreground">{fill(label, { name: card.name })}</div>
+              {noteList(list)}
+            </div>
+          ) : null,
+        )}
+        <div className="text-[11px] text-muted-foreground">{copy.notesSource}</div>
+      </div>
+    );
+    // "말파이트 스킬 쿨타임": 스킬 다섯 개의 그 사실만. 능력치는 없다.
+    // 값 자체는 이제 대화에도 글로 실리므로, 카드는 표를 넘어 운용 노트까지 얹어 더 준다.
     if (answer.focus) {
       const focus = answer.focus;
       return (
@@ -296,6 +328,7 @@ export function AdvisorAnswerCard({ answer, ddragonVersion, patch, onPickChampio
               hit: true,
             }))}
           />
+          {noteBlock}
         </Frame>
       );
     }
@@ -322,8 +355,6 @@ export function AdvisorAnswerCard({ answer, ddragonVersion, patch, onPickChampio
       value: skillsView ? spellSummary(spell) : spellOneLiner(spell),
       hit: skillsView,
     }));
-    const notes = answer.notes;
-    const hasNotes = Boolean(notes && (notes.playing.length || notes.against.length));
     return (
       <Frame
         icon={header}
@@ -354,35 +385,7 @@ export function AdvisorAnswerCard({ answer, ddragonVersion, patch, onPickChampio
             ))}
           </div>
         )}
-        {/*
-          사람이 검증한 운용 노트. 수치·태그가 아니라 이것이 실전에 쓰는 말이다.
-
-          **물은 쪽을 먼저 놓는다.** "말파 상대법" 을 물었는데 "말파로 플레이할 때" 가
-          먼저 나오면 읽는 사람이 관점을 뒤집어 읽는다. 어느 쪽을 물었는지는
-          `noteSelect` 가 조사로 가려 `perspective` 에 담아 준다.
-        */}
-        {hasNotes && notes && (
-          <div className="mt-3 space-y-2.5 border-t pt-2.5">
-            {(notes.perspective === "against"
-              ? ([
-                  ["against", notes.against, copy.againstNotes],
-                  ["playing", notes.playing, copy.playingNotes],
-                ] as const)
-              : ([
-                  ["playing", notes.playing, copy.playingNotes],
-                  ["against", notes.against, copy.againstNotes],
-                ] as const)
-            ).map(([key, list, label]) =>
-              list.length > 0 ? (
-                <div key={key}>
-                  <div className="mb-1 text-[11px] font-medium text-muted-foreground">{fill(label, { name: card.name })}</div>
-                  {noteList(list)}
-                </div>
-              ) : null,
-            )}
-            <div className="text-[11px] text-muted-foreground">{copy.notesSource}</div>
-          </div>
-        )}
+        {noteBlock}
       </Frame>
     );
   }

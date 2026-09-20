@@ -21,9 +21,17 @@
  */
 import type { AdvisorAnswer } from "./answer";
 
-/** 문장 경계. 한국어 종결과 마침표를 본다. 끝나지 않은 꼬리는 따로 돌려준다. */
+/**
+ * 문장 경계. 끝나지 않은 꼬리는 따로 돌려준다.
+ *
+ * 마침표만 보면 안 된다. 쿨타임이 "8/7.5/7/6.5/6초" 라 소수점마다 문장이 끊겼고,
+ * 그렇게 쪼개진 "5/7/6." 같은 토막이 숫자 규칙에 걸려 통째로 사라졌다. 답이
+ * "오공의 스킬별 재사용 대기시간입니다.5/7/6.25/8.5/7." 로 남았다.
+ *
+ * 그래서 **뒤에 공백이나 끝이 오는 마침표**만 경계로 본다. 소수점 뒤에는 숫자가 온다.
+ */
 function splitDone(text: string): { done: string[]; tail: string } {
-  const parts = text.split(/(?<=[.!?。])\s*/);
+  const parts = text.split(/(?<=[.!?。])(?=\s|$)/).filter((part) => part.length > 0);
   const tail = /[.!?。]\s*$/.test(text) ? "" : (parts.pop() ?? "");
   return { done: parts, tail };
 }

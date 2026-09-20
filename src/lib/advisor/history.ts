@@ -70,6 +70,11 @@ export interface StoredTurn {
   rating?: "up" | "down";
   sources?: string[];
   notice?: string;
+  /**
+   * 코드가 쓴 답인가. 이것을 빼먹으면 되살린 대화에서 코드 답문이 모델 해설로
+   * 둔갑해 "AI 해설" 딱지가 붙고, 근거 검사까지 돌아 숫자가 든 문장이 잘려 나간다.
+   */
+  byCode?: boolean;
   answer?: StoredAnswer;
 }
 
@@ -201,6 +206,7 @@ export function dehydrateTurn(turn: AdvisorTurn): StoredTurn {
   if (turn.rating) stored.rating = turn.rating;
   if (turn.sources) stored.sources = turn.sources;
   if (turn.notice) stored.notice = turn.notice;
+  if (turn.byCode) stored.byCode = true;
   if (turn.answer) stored.answer = dehydrateAnswer(turn.answer);
   return stored;
 }
@@ -215,6 +221,7 @@ export function reviveTurn(stored: StoredTurn, data: AdvisorData): AdvisorTurn |
   if (stored.rating) turn.rating = stored.rating;
   if (stored.sources) turn.sources = stored.sources;
   if (stored.notice) turn.notice = stored.notice;
+  if (stored.byCode) turn.byCode = true;
   if (stored.answer) {
     const answer = reviveAnswer(stored.answer, data);
     if (!answer) return undefined;
