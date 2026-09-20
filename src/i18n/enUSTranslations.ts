@@ -384,6 +384,7 @@ export const enUSTranslations: Translations = {
       comparing: "Comparing now",
       askAbout: "Ask about {name}",
       commentary: "AI notes",
+      commentaryLite: "AI notes (lite model — often inaccurate)",
       commentaryPending: "Writing AI notes",
       top: "top {n}%",
       bottom: "bottom {n}%",

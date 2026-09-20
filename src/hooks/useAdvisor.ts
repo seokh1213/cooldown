@@ -10,6 +10,9 @@ import {
   CONSENT_STORAGE_KEY,
   detectWebGpu,
   estimateStorageMb,
+  autoModel,
+  currentModelChoice,
+  modelChoiceKey,
   resolveModel,
   writeModelChoice,
   type AdvisorModel,
@@ -181,6 +184,8 @@ export interface UseAdvisorResult {
   model: AdvisorModel;
   /** 쓸 모델을 바꾼다. 받아 둔 것을 지우고 워커를 새로 올린다. 대화는 남는다. */
   chooseModel: (key: string) => Promise<void>;
+  /** 지금 쓰는 모델이 목록의 어느 줄인가. */
+  modelChoice: string;
   stop: () => void;
   reset: () => void;
   /** 저장된 대화를 통째로 올린다. id 가 겹치지 않게 다음 id 를 그 뒤로 옮긴다. */
@@ -216,6 +221,22 @@ export function useAdvisor(): UseAdvisorResult {
     void detectWebGpu().then(setWebgpu);
     void estimateStorageMb().then(setStorage);
   }, []);
+
+  /*
+    어댑터를 확인하고 나서 기본 모델을 정한다.
+
+    16비트 셰이더가 없는 기기에 q4f16 을 주면 내려받기부터 막힌다. 그런 기기에는
+    가벼운 쪽을 대신 준다. **사용자가 이미 고른 것이 있으면 건드리지 않는다** —
+    직접 고른 것을 기기 사정으로 되돌리면 그것도 고장이다.
+  */
+  useEffect(() => {
+    if (webgpu === null) return;
+    if (currentModelChoice() !== "default") return;
+    setModel((prev) => {
+      const next = autoModel(webgpu);
+      return next.id === prev.id && next.dtype === prev.dtype ? prev : next;
+    });
+  }, [webgpu]);
 
   /** 워커는 동의 후에만 만든다 */
   const ensureWorker = useCallback((): Worker => {
@@ -813,6 +834,7 @@ export function useAdvisor(): UseAdvisorResult {
     deleteModel,
     model,
     chooseModel,
+    modelChoice: modelChoiceKey(model),
     stop,
     reset,
     replaceTurns,

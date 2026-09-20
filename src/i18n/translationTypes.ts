@@ -370,6 +370,8 @@ export interface Translations {
       comparing: string;
       askAbout: string;
       commentary: string;
+      /** 간이 모델이 쓴 해설. 정확도가 낮다는 것을 이름으로 밝힌다. */
+      commentaryLite: string;
       commentaryPending: string;
       top: string;
       bottom: string;
