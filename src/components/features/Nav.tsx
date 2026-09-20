@@ -1,7 +1,7 @@
 import React, { useCallback, useState, useEffect, useMemo } from "react";
 import { useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Moon, Sun, Menu, HelpCircle, AlertTriangle, Globe } from "lucide-react";
+import { Moon, Sun, Menu, HelpCircle, AlertTriangle, Globe, Check } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
   Dialog,
@@ -13,6 +13,18 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { VisuallyHidden } from "@/components/ui/visually-hidden";
 import { TutorialContent } from "./TutorialContent";
 import { useTranslation } from "@/i18n";
+
+/**
+ * 고를 수 있는 언어. 이름은 그 언어로 적는다.
+ *
+ * 한국어 화면에서 "중국어 간체" 가 아니라 "简体中文" 이라고 보이는 편이 맞다. 언어를
+ * 바꾸려는 사람은 자기가 읽을 말을 찾지, 지금 언어로 번역된 이름을 찾지 않는다.
+ */
+const LANGUAGE_CHOICES: Array<{ value: string; label: (t: ReturnType<typeof useTranslation>["t"]) => string }> = [
+  { value: "ko_KR", label: (t) => t.nav.language.korean },
+  { value: "en_US", label: (t) => t.nav.language.english },
+  { value: "zh_CN", label: (t) => t.nav.language.chinese },
+];
 
 function getMajorMinor(version: string | null | undefined): string | null {
   if (!version) return null;
@@ -239,50 +251,33 @@ function Nav({
                 <Globe aria-hidden="true" className="h-4 w-4" />
               </Button>
             </PopoverTrigger>
-            <PopoverContent className="w-64 p-3" align="end" sideOffset={8}>
-              <div className="space-y-2">
-                <h4 className="font-medium text-sm leading-none mb-3">{t.nav.language.selectTitle}</h4>
-                <div className="grid grid-cols-3 gap-2">
-                  <button
-                    onClick={() => handleLanguageChange("ko_KR")}
-                    aria-pressed={lang === "ko_KR"}
-                    className={cn(
-                      "flex flex-col items-center justify-center gap-2 p-3 rounded-lg border-2 transition-[color,background-color,border-color]",
-                      lang === "ko_KR"
-                        ? "border-primary bg-primary/10"
-                        : "border-border hover:border-primary/50 hover:bg-muted/50"
-                    )}
-                  >
-                    <span className="text-2xl">🇰🇷</span>
-                    <span className="text-xs font-medium">{t.nav.language.korean}</span>
-                  </button>
-                  <button
-                    onClick={() => handleLanguageChange("en_US")}
-                    aria-pressed={lang === "en_US"}
-                    className={cn(
-                      "flex flex-col items-center justify-center gap-2 p-3 rounded-lg border-2 transition-[color,background-color,border-color]",
-                      lang === "en_US"
-                        ? "border-primary bg-primary/10"
-                        : "border-border hover:border-primary/50 hover:bg-muted/50"
-                    )}
-                  >
-                    <span className="text-2xl">🇺🇸</span>
-                    <span className="text-xs font-medium">{t.nav.language.english}</span>
-                  </button>
-                  <button
-                    onClick={() => handleLanguageChange("zh_CN")}
-                    aria-pressed={lang === "zh_CN"}
-                    className={cn(
-                      "flex flex-col items-center justify-center gap-2 p-3 rounded-lg border-2 transition-[color,background-color,border-color]",
-                      lang === "zh_CN"
-                        ? "border-primary bg-primary/10"
-                        : "border-border hover:border-primary/50 hover:bg-muted/50"
-                    )}
-                  >
-                    <span className="text-2xl">🇨🇳</span>
-                    <span className="text-xs font-medium">{t.nav.language.chinese}</span>
-                  </button>
-                </div>
+            {/*
+              고를 것이 셋뿐인 메뉴다.
+
+              예전에는 국기를 크게 띄운 네모 셋을 격자로 놓고, 고른 것에 파란 테두리와
+              배경색을 줬다. 채도로 강조한 셈인데 이 제품의 다른 화면은 굵기와 명도로
+              강조한다. 국기는 언어가 아니라 나라를 가리켜 "简体中文" 이 두 줄로 접히기도
+              했다. 이름만 세로로 세우고 고른 것은 굵기와 체크로 표시한다.
+            */}
+            <PopoverContent className="w-44 p-1" align="end" sideOffset={8}>
+              <div role="group" aria-label={t.nav.language.selectTitle}>
+                {LANGUAGE_CHOICES.map(({ value, label }) => {
+                  const active = lang === value;
+                  return (
+                    <button
+                      key={value}
+                      onClick={() => handleLanguageChange(value)}
+                      aria-pressed={active}
+                      className={cn(
+                        "flex w-full items-center justify-between rounded-md px-2.5 py-2 text-left text-sm transition-colors hover:bg-muted",
+                        active ? "font-semibold text-foreground" : "text-muted-foreground",
+                      )}
+                    >
+                      <span>{label(t)}</span>
+                      {active && <Check aria-hidden="true" className="h-3.5 w-3.5" />}
+                    </button>
+                  );
+                })}
               </div>
             </PopoverContent>
           </Popover>
