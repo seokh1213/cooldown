@@ -873,6 +873,7 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
       {showStorage ? (
         <AdvisorStorage
           onDelete={advisor.deleteModel}
+          webgpu={advisor.webgpu}
           // 못 받는 기기에서는 이유를 말한다. 단추도 없이 "모델이 없습니다" 만 뜨면
           // 길이 막힌 것인지 화면이 덜 그려진 것인지 알 수 없다.
           unavailable={unavailableReason}
