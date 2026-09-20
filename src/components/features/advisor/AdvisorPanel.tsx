@@ -26,6 +26,7 @@ import { useTranslation } from "@/i18n";
 import { advisorSystemPrompt } from "@/lib/advisor/persona";
 import { AdvisorMarkdown } from "./AdvisorMarkdown";
 import { groundCommentary } from "@/lib/advisor/grounding";
+import { LITE_MAX_TOKENS, buildLitePrompt, tidyLite } from "@/lib/advisor/litePrompt";
 import {
   buildChampionsBrief,
   buildMatchupTips,
@@ -320,11 +321,27 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
   };
 
   const deliver = (question: string, answer: AdvisorAnswer, notice?: string) => {
-    const system = advisorSystemPrompt(lang);
     if (canUseModel && advisor.consented) {
+      /*
+        간이 모델은 시키는 일이 다르다.
+
+        4B 에게는 재료를 주고 해설을 쓰게 하지만, 1B 에게 같은 것을 시키면 쓴 글의
+        93% 가 근거 검사에 걸려 사라진다. 대신 **검증된 노트를 줄이는 일**만 시킨다.
+        줄일 노트가 없는 답(스킬 하나·아이템)에는 아예 말을 시키지 않는다 — 빈손으로
+        말을 시키면 지어낸다. 잰 값은 `litePrompt.ts` 에 적어 두었다.
+      */
+      if (advisor.model.lite) {
+        const lite = buildLitePrompt(answer, lang);
+        if (lite) {
+          advisor.sendWithAnswer(question, lite, answer, notice, LITE_MAX_TOKENS);
+          return;
+        }
+        advisor.answerWithoutModel(question, answer, notice);
+        return;
+      }
       const prompt = buildCommentaryPrompt(answer, patch, lang);
       if (prompt) {
-        advisor.sendWithAnswer(question, `${system}\n\n${prompt}`, answer, notice);
+        advisor.sendWithAnswer(question, `${advisorSystemPrompt(lang)}\n\n${prompt}`, answer, notice);
         return;
       }
     }
@@ -1042,7 +1059,11 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
               */
               const shown = turn.byCode
                 ? turn.content
-                : groundCommentary(turn.content, turn.answer, { strict: advisor.model.lite }).text;
+                : groundCommentary(
+                    advisor.model.lite ? tidyLite(turn.content) : turn.content,
+                    turn.answer,
+                    { strict: advisor.model.lite },
+                  ).text;
               const commentary = !shown ? null : turn.byCode ? (
                 <div className="text-[13px] leading-relaxed">
                   <AdvisorMarkdown text={shown} />

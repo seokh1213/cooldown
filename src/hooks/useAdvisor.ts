@@ -155,7 +155,7 @@ export interface UseAdvisorResult {
    * 카드는 지금, 해설은 나중에.
    * 구조화된 답을 먼저 얹고 모델에게 해설만 만들게 한다. 해설은 카드 위에 스트리밍된다.
    */
-  sendWithAnswer: (question: string, system: string, answer: AdvisorAnswer, notice?: string) => void;
+  sendWithAnswer: (question: string, system: string, answer: AdvisorAnswer, notice?: string, maxTokens?: number) => void;
   /** 도구를 주고 여러 번 오간다. 복합 질문에만 쓴다. */
   sendWithTools: (
     question: string,
@@ -682,7 +682,7 @@ export function useAdvisor(): UseAdvisorResult {
    * 수치는 카드에 있으니 모델이 숫자를 입에 담을 일이 없다.
    */
   const sendWithAnswer = useCallback(
-    (question: string, system: string, answer: AdvisorAnswer, notice?: string) => {
+    (question: string, system: string, answer: AdvisorAnswer, notice?: string, maxTokens?: number) => {
       const trimmed = question.trim();
       if (!trimmed) return;
       const userId = nextId.current++;
@@ -700,6 +700,7 @@ export function useAdvisor(): UseAdvisorResult {
         model,
         system,
         messages: [{ role: "user", content: trimmed }],
+        maxTokens,
       });
     },
     [post, model],

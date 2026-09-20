@@ -11,6 +11,7 @@ import type { ChampionCard } from "./llm/lib/facts";
 import { PUBLIC_DATA_ROOT, resolvePatchVersion } from "./llm/lib/data";
 import { groundCommentary } from "../src/lib/advisor/grounding";
 import type { AdvisorAnswer } from "../src/lib/advisor/answer";
+import { buildLitePrompt, tidyLite } from "../src/lib/advisor/litePrompt";
 import {
   ADVISOR_MODEL,
   FALLBACK_MODEL,
@@ -160,4 +161,43 @@ assert.ok(q && !q.effects.includes("에어본"), "Q 에는 에어본이 없어�
   assert.equal(modelChoiceKey(FALLBACK_MODEL), "lite");
 }
 
-console.log("✅ 근거 검사 통과 (26건)");
+/**
+ * 간이 모델 경로.
+ *
+ * 1B 에게는 해설을 쓰게 하지 않고 검증된 노트를 줄이게 한다. Gemma 3 1B 로 재 보니
+ * 현행 프롬프트는 쓴 글의 78% 가 근거 검사에 걸려 사라지고 12문항 중 4개가 한 줄도
+ * 안 남았는데, 이 경로는 87% 가 남고 빈 답이 1개였다.
+ */
+{
+  const prompt = buildLitePrompt(answer, "ko_KR");
+  assert.ok(prompt, "노트가 있으면 시킬 일이 있다");
+  assert.match(prompt, /화강암 방패가 살아 있을 때/, "노트가 재료로 들어간다");
+  assert.doesNotMatch(prompt, /말파이트 상대법/, "질문은 사용자 발화로 따로 간다");
+
+  // 줄일 노트가 없으면 아예 말을 시키지 않는다. 빈손으로 시키면 지어낸다.
+  assert.equal(buildLitePrompt({ kind: "champion", card: malphite }, "ko_KR"), undefined, "노트가 없으면 시키지 않는다");
+  assert.equal(buildLitePrompt({ kind: "text", text: "아무 말" }, "ko_KR"), undefined, "챔피언 답이 아니면 시키지 않는다");
+}
+
+{
+  // 1B 는 "번호 없이" 를 안 지킨다. 코드로 지운다.
+  assert.equal(
+    tidyLite("1. R은 군중 제어로 끊을 수 없습니다. 2. 방패가 깨진 뒤에 붙습니다."),
+    "R은 군중 제어로 끊을 수 없습니다. 방패가 깨진 뒤에 붙습니다.",
+  );
+  assert.equal(tidyLite("- 방패가 차 있을 때 시작합니다. - 깨지면 물러납니다."), "방패가 차 있을 때 시작합니다. 깨지면 물러납니다.");
+
+  // 거의 같은 문장을 두 번 쓴다. 어절이 많이 겹치면 같은 말로 본다.
+  const dup = tidyLite("야스오가 직선상에서 벗어나는 습관을 들입니다. 야스오가 다가올 때 직선상에서 벗어나는 습관을 들입니다.");
+  assert.equal(dup, "야스오가 직선상에서 벗어나는 습관을 들입니다.", "거의 같은 말은 한 번만");
+
+  // 서로 다른 문장은 남긴다. 너무 세게 지우면 답이 한 줄로 줄어든다.
+  const two = tidyLite("R은 군중 제어로 끊을 수 없습니다. 평타 챔피언은 E 공격 속도 감소가 아픕니다.");
+  assert.ok(two.includes("군중 제어") && two.includes("공격 속도"), "다른 말은 둘 다 남는다");
+
+  // 두 문장까지다. 카드에 노트 전문이 이미 있다.
+  const three = tidyLite("R은 끊을 수 없습니다. 방패가 깨진 뒤에 붙습니다. 라인은 밀어 두고 움직입니다.");
+  assert.equal(three.split(". ").length, 2, "두 문장 상한");
+}
+
+console.log("✅ 근거 검사 통과 (35건)");
