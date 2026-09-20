@@ -11,6 +11,7 @@ import type { ChampionCard } from "./llm/lib/facts";
 import { PUBLIC_DATA_ROOT, resolvePatchVersion } from "./llm/lib/data";
 import { groundCommentary } from "../src/lib/advisor/grounding";
 import type { AdvisorAnswer } from "../src/lib/advisor/answer";
+import { canOfferModel, type AdvisorModel } from "../src/lib/advisor/config";
 
 const llmDir = path.join(PUBLIC_DATA_ROOT, resolvePatchVersion(), "llm");
 const cards = (
@@ -110,4 +111,25 @@ assert.ok(q && !q.effects.includes("에어본"), "Q 에는 에어본이 없어�
   assert.equal(kept.text, "", "쪼개진 토막이 남지 않는다");
 }
 
-console.log("✅ 근거 검사 통과 (12건)");
+/**
+ * 모델을 권할 기기인지 가리는 관문.
+ *
+ * f16 을 모델과 무관하게 따지면 Pascal 같은 카드가 16비트를 안 쓰는 판본까지 못 쓴다.
+ * 반대로 아예 안 따지면 q4f16 을 못 도는 기기에 3GB 를 받게 한다.
+ */
+{
+  const needs: AdvisorModel = { id: "a", dtype: "q4f16", downloadMb: 1, needsF16: true };
+  const free: AdvisorModel = { id: "b", dtype: "q4", downloadMb: 1, needsF16: false };
+  const withF16 = { supported: true, f16: true };
+  const noF16 = { supported: true, f16: false };
+  const noGpu = { supported: false, f16: false };
+
+  assert.equal(canOfferModel(needs, withF16, "desktop"), true, "f16 있으면 q4f16 을 권한다");
+  assert.equal(canOfferModel(needs, noF16, "desktop"), false, "f16 없으면 q4f16 을 권하지 않는다");
+  assert.equal(canOfferModel(free, noF16, "desktop"), true, "16비트를 안 쓰면 f16 없이도 권한다");
+  assert.equal(canOfferModel(free, noGpu, "desktop"), false, "WebGPU 자체가 없으면 권하지 않는다");
+  assert.equal(canOfferModel(free, null, "desktop"), false, "어댑터를 확인하기 전에는 권하지 않는다");
+  assert.equal(canOfferModel(free, withF16, "mobile"), false, "휴대폰에는 권하지 않는다");
+}
+
+console.log("✅ 근거 검사 통과 (18건)");

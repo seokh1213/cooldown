@@ -12,6 +12,7 @@ import { useAdvisorHistory } from "@/hooks/useAdvisorHistory";
 import { useDeviceType } from "@/hooks/useDeviceType";
 import { useTranslation } from "@/i18n";
 import { loadAdvisorData, type AdvisorData } from "@/lib/advisor/context";
+import { canOfferModel, resolveModel } from "@/lib/advisor/config";
 import { AdvisorPanel } from "./AdvisorPanel";
 
 interface AdvisorWidgetProps {
@@ -73,20 +74,17 @@ export function AdvisorWidget({ patch, ddragonVersion, onOpenChange, onWidthChan
    * 해서 그 답까지 뺏을 이유가 없다. 막는 것은 내려받기지 기능이 아니다.
    */
   /*
-   * 16비트 셰이더 연산(`shader-f16`)이 없으면 모델을 권하지 않는다.
+   * 16비트 셰이더 연산(`shader-f16`)은 **그 모델이 필요로 할 때만** 따진다.
    *
-   * 쓰는 가중치가 q4f16 이라 그 기능이 있어야 돈다. 없는 기기에서 올리면
-   * 임베딩의 Gather 에서 죽는다 — 윈도우에서 실제로 그랬다.
+   * 기본 모델은 q4f16 이라 필요하다. 없는 기기에서 올리면 임베딩의 Gather 에서
+   * 죽는다 — 윈도우에서 실제로 그랬다.
    *
    *   Gather requires f16 but the device does not support it.
    *
-   * f16 없이 도는 q4 가중치로 바꿔 보았지만 둘 다 메모리에서 막혔다.
-   * 4B q4(4.0GB)는 `memory access out of bounds`, 1.7B q4(2.2GB)는 내려받기도
-   * 전에 `Array buffer allocation failed` 였다. 그래서 대안을 두지 않고, 애초에
-   * 권하지 않는 쪽을 택한다. 조회 기능은 그대로 쓰므로 잃는 것은 해설뿐이다.
+   * 16비트를 안 쓰는 판본으로 바꾸면 그 관문이 없어진다. 어디까지 올라가는지는
+   * `config.ts` 의 `SWAPPABLE` 주석에 재 둔 표가 있다.
    */
-  const canUseModel =
-    device === "desktop" && advisor.webgpu?.supported === true && advisor.webgpu.f16 === true;
+  const canUseModel = canOfferModel(resolveModel(), advisor.webgpu, device);
 
   /**
    * 이미 동의한 사용자는 앱이 뜨는 순간부터 모델을 올린다.
