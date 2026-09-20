@@ -334,7 +334,7 @@ export const zhCNTranslations: Translations = {
     },
     unsupported: {
       title: "此浏览器暂不支持",
-      noApi: "该浏览器不支持 WebGPU。较新版本的 Chrome、Edge、Firefox 或 Safari 26 以上均可使用。",
+      noApi: "该浏览器不支持 WebGPU。使用 {browsers} 即可。",
       noAdapter: "未找到显卡适配器。请检查浏览器的硬件加速设置。",
       error: "检测 WebGPU 时出现问题。",
     },
@@ -438,9 +438,9 @@ export const zhCNTranslations: Translations = {
       note: "对话只保存在本设备（最近 20 个），不会发送到服务器。",
     },
     storage: {
-      title: "存储空间",
+      title: "AI 模型",
       download: "下载 AI 模型",
-      open: "存储空间",
+      open: "AI 模型",
       back: "返回",
       empty: "此设备上没有已下载的模型。",
       used: "占用空间",
