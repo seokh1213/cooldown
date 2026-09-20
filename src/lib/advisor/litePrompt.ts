@@ -59,6 +59,14 @@ const HEADER: Record<Language, string> = { ko_KR: "[문장들]", en_US: "[Senten
  */
 function material(answer: AdvisorAnswer): string[] {
   if (answer.kind !== "champion" || !answer.notes) return [];
+  /*
+    사실 하나를 묻는 답(쿨타임 표 등)에는 해설을 붙이지 않는다.
+
+    "오공 스킬 쿨타임" 에 간이 모델이 "오공 스킬 쿨타임은 1.5초입니다" 라고 썼다.
+    옆 카드와 대화 앞머리에 정확한 값이 있는데 그 아래에서 딴소리를 한 셈이다.
+    이 질문의 답은 이미 코드가 쓴다. 모델이 더할 것이 없다.
+  */
+  if (answer.focus) return [];
   const { playing, against, perspective } = answer.notes;
   // 셋까지만 준다. 넷을 줬더니 답이 길어지면서 고르는 일 자체가 흐려졌다.
   // 순서는 `noteSelect` 가 질문의 갈래로 이미 매겨 두었다.

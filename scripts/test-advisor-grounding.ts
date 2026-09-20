@@ -177,6 +177,17 @@ assert.ok(q && !q.effects.includes("에어본"), "Q 에는 에어본이 없어�
   // 줄일 노트가 없으면 아예 말을 시키지 않는다. 빈손으로 시키면 지어낸다.
   assert.equal(buildLitePrompt({ kind: "champion", card: malphite }, "ko_KR"), undefined, "노트가 없으면 시키지 않는다");
   assert.equal(buildLitePrompt({ kind: "text", text: "아무 말" }, "ko_KR"), undefined, "챔피언 답이 아니면 시키지 않는다");
+
+  /*
+    사실 하나를 묻는 답에는 붙이지 않는다. 실제로 "오공 스킬 쿨타임" 에
+    "오공 스킬 쿨타임은 1.5초입니다" 라고 썼다. 카드와 대화 앞머리에 정확한 값이
+    있는데 그 아래에서 딴소리를 한 셈이다.
+  */
+  assert.equal(
+    buildLitePrompt({ ...answer, focus: "cooldown" } as AdvisorAnswer, "ko_KR"),
+    undefined,
+    "사실 조회에는 해설을 붙이지 않는다",
+  );
 }
 
 {
@@ -206,4 +217,4 @@ assert.ok(q && !q.effects.includes("에어본"), "Q 에는 에어본이 없어�
   assert.equal(tidyLite("이 스킬은 저지 불가라 끊을 수 없습니다."), "이 스킬은 저지 불가라 끊을 수 없습니다.");
 }
 
-console.log("✅ 근거 검사 통과 (38건)");
+console.log("✅ 근거 검사 통과 (39건)");
