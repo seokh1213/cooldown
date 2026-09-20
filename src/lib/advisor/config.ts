@@ -130,6 +130,17 @@ const SWAPPABLE: Record<string, AdvisorModel> = {
     downloadMb: 1705,
     needsF16: false,
   },
+  /**
+   * Gemma 보다 새롭고 작다. 압축 과제에서 더 낫다.
+   * 다만 그 기기에서 올라가는지는 아직 확인되지 않았다.
+   */
+  qwen35: {
+    id: "onnx-community/Qwen3.5-0.8B-Text-ONNX",
+    dtype: "q4",
+    downloadMb: 526,
+    needsF16: false,
+    lite: true,
+  },
   /** 확실히 도는 것. 품질은 확실히 떨어진다. */
   lite: {
     id: "onnx-community/gemma-3-1b-it-ONNX",
@@ -165,8 +176,9 @@ export const MODEL_CHOICES: ModelChoice[] = [
   { key: "default", model: ADVISOR_MODEL, label: "Qwen3 4B", note: "기본. 16비트 셰이더가 있어야 합니다" },
   { key: "exaone", model: SWAPPABLE.exaone, label: "EXAONE 3.5 2.4B", note: "적재에 실패합니다. 파일 하나가 너무 큽니다" },
   { key: "qwen15", model: SWAPPABLE.qwen15, label: "Qwen2.5 1.5B", note: "적재에 실패합니다. 메모리가 모자랍니다" },
+  { key: "qwen35", model: SWAPPABLE.qwen35, label: "Qwen3.5 0.8B", note: "가장 작고 답이 가장 낫습니다. 다만 도는 기기가 아직 덜 확인됐습니다" },
   { key: "tiny", model: SWAPPABLE.tiny, label: "Qwen3 0.6B", note: "적재는 되지만 답하는 중에 멈추는 기기가 있습니다" },
-  { key: "lite", model: SWAPPABLE.lite, label: "Gemma 3 1B", note: "가볍고 어디서나 돕니다. 대신 해설이 자주 틀립니다" },
+  { key: "lite", model: SWAPPABLE.lite, label: "Gemma 3 1B", note: "느리지만 확인된 기기가 가장 많습니다" },
 ];
 
 /**

@@ -89,6 +89,21 @@ export function buildLitePrompt(answer: AdvisorAnswer, lang: Language = "ko_KR")
  * 들입니다" 와 "야스오가 다가올 때 직선상에서 벗어나는 습관을 들입니다" 가 나란히
  * 나왔다. 어절이 많이 겹치면 같은 말로 본다.
  */
+/**
+ * 낱말과 조사 사이에 낀 공백을 붙인다.
+ *
+ * 작은 모델이 "R 은 저지 불가 돌진이라", "오공 이 하는 일" 처럼 조사를 따로 띄운다.
+ * 토큰 경계가 그대로 새어 나온 것이라 프롬프트로 고칠 일이 아니다.
+ *
+ * 조사만 골라 붙인다. 앞 글자가 한글이나 영문일 때만 — "이 스킬" 의 "이" 처럼
+ * 관형사로 쓰인 경우를 건드리면 안 되는데, 그때는 앞이 문장 첫머리거나 구두점이다.
+ */
+const PARTICLE = /([가-힣A-Za-z0-9])\s+(은|는|이|가|을|를|의|로|으로|에|에서|와|과|도|만|이나|나|께|처럼|보다)(?=[\s,.)\]]|$)/g;
+
+function joinParticles(line: string): string {
+  return line.replace(PARTICLE, "$1$2");
+}
+
 export function tidyLite(text: string, limit = 2): string {
   const kept: string[] = [];
   const keptWords: Array<Set<string>> = [];
@@ -107,7 +122,7 @@ export function tidyLite(text: string, limit = 2): string {
       return shared >= 3 && shared / Math.max(words.size, prev.size) >= 0.7;
     });
     if (same) continue;
-    kept.push(line);
+    kept.push(joinParticles(line));
     keptWords.push(words);
     if (kept.length >= limit) break;
   }
