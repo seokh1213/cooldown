@@ -7,6 +7,7 @@
 import { Button } from "@/components/ui/button";
 import { useTranslation } from "@/i18n";
 import { resolveModel, type WebGpuSupport } from "@/lib/advisor/config";
+import { detectPlatform } from "@/lib/advisor/platform";
 
 /**
  * 내려받기 용량을 사람이 체감하는 단위로 적는다.
@@ -16,6 +17,25 @@ import { resolveModel, type WebGpuSupport } from "@/lib/advisor/config";
  */
 function formatSize(mb: number): string {
   return mb >= 1000 ? `${(mb / 1000).toFixed(1)}GB` : `${mb}MB`;
+}
+
+/**
+ * 이 운영체제에서 실제로 쓸 수 있는 브라우저만 적는다.
+ *
+ * Safari 는 맥에만 있고, 없는 브라우저를 권하면 안내가 아니라 소음이다.
+ * WebGPU 를 싣는 판만 적는다 — Safari 26, Firefox 는 윈도우·맥 모두 최근 판부터다.
+ */
+function browsersFor(): string {
+  switch (detectPlatform()) {
+    case "mac":
+      return "Safari 26+, Chrome, Edge, Firefox";
+    case "windows":
+      return "Chrome, Edge, Firefox";
+    case "linux":
+      return "Chrome, Edge";
+    default:
+      return "Chrome, Edge";
+  }
 }
 
 interface AdvisorConsentProps {
@@ -41,7 +61,7 @@ export function AdvisorConsent({
   if (webgpu && !webgpu.supported) {
     const reason =
       webgpu.reason === "no-api"
-        ? copy.unsupported.noApi
+        ? copy.unsupported.noApi.replace("{browsers}", browsersFor())
         : webgpu.reason === "no-adapter"
           ? copy.unsupported.noAdapter
           : copy.unsupported.error;

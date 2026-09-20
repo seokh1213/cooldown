@@ -348,7 +348,7 @@ export const enUSTranslations: Translations = {
     },
     unsupported: {
       title: "Not available in this browser",
-      noApi: "This browser does not support WebGPU. A recent Chrome, Edge, Firefox, or Safari 26+ will work.",
+      noApi: "This browser does not support WebGPU. {browsers} will work.",
       noAdapter: "No graphics adapter was found. Check your browser's hardware acceleration setting.",
       error: "Something went wrong while checking WebGPU.",
     },
@@ -452,9 +452,9 @@ export const enUSTranslations: Translations = {
       note: "Conversations stay on this device (latest 20) and never reach a server.",
     },
     storage: {
-      title: "Storage",
+      title: "AI model",
       download: "Download AI model",
-      open: "Storage",
+      open: "AI model",
       back: "Back",
       empty: "No model is downloaded on this device.",
       used: "Space used",

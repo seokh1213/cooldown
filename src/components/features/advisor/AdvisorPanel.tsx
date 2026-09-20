@@ -9,7 +9,7 @@ import { Link } from "react-router-dom";
 import {
   ArrowRight,
   ChevronLeft,
-  HardDrive,
+  Bot,
   History,
   Loader2,
   MessageSquarePlus,
@@ -837,7 +837,7 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
             </Button>
             {/* 3GB 는 받아 두면 계속 남는다. 지울 길을 눈에 보이는 곳에 둔다. */}
             <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-foreground" onClick={() => setView("storage")} aria-label={copy.storage.open}>
-              <HardDrive className="h-4 w-4" />
+              <Bot className="h-4 w-4" />
             </Button>
             <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-foreground" onClick={onClose} aria-label={copy.close}>
               <X className="h-4 w-4" />
@@ -854,8 +854,15 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
       {showStorage ? (
         <AdvisorStorage
           onDelete={advisor.deleteModel}
-          // 모델 없이 쓰기로 했던 사람이 마음을 바꾸는 길. 동의 화면이 다시 뜨지 않으므로 여기서 받는다.
-          onDownload={canUseModel && !advisor.consented ? () => {
+          /*
+           * 다시 받는 길. 이 화면이 그 유일한 입구다.
+           *
+           * 거절했거나("나중에", "모델 없이 써보기") 지운 뒤에는 동의 화면이 다시
+           * 뜨지 않는다. `!consented` 로만 열어 두면 조건이 어긋날 때 길이 통째로
+           * 막히므로, 모델을 쓸 수 있는 기기면 항상 열어 둔다. 실제로 받을지는
+           * 이 화면이 캐시가 비었을 때만 단추를 보이는 것으로 가린다.
+           */
+          onDownload={canUseModel ? () => {
             setSkippedModel(false);
             advisor.accept();
             setView("chat");

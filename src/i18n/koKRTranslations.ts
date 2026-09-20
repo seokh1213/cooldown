@@ -348,7 +348,7 @@ export const koKRTranslations: Translations = {
     },
     unsupported: {
       title: "이 브라우저에서는 쓸 수 없습니다",
-      noApi: "이 브라우저는 WebGPU 를 지원하지 않습니다. 최신 Chrome·Edge·Firefox 나 Safari 26 이상에서 열면 쓸 수 있습니다.",
+      noApi: "이 브라우저는 WebGPU 를 지원하지 않습니다. {browsers} 에서 열면 쓸 수 있습니다.",
       noAdapter: "그래픽 어댑터를 찾지 못했습니다. 브라우저의 하드웨어 가속 설정을 확인해 주세요.",
       error: "WebGPU 를 확인하는 중 문제가 생겼습니다.",
     },
@@ -454,11 +454,11 @@ export const koKRTranslations: Translations = {
       note: "대화는 이 기기에만 저장되고 최근 20개까지 남습니다. 서버로 가지 않습니다.",
     },
     storage: {
-      title: "저장 공간",
+      title: "AI 모델",
       download: "AI 모델 내려받기",
-      open: "저장 공간",
+      open: "AI 모델",
       back: "돌아가기",
-      empty: "이 기기에 내려받은 모델이 없습니다.",
+      empty: "이 기기에 내려받은 모델이 없습니다. 받으면 해설이 함께 나옵니다.",
       used: "차지하는 용량",
       files: "파일",
       remove: "모델 삭제",
