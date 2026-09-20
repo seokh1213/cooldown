@@ -55,7 +55,16 @@ export function AdvisorStorage({ onDelete, onDownload, unavailable, webgpu }: Ad
     try {
       await onDelete();
     } finally {
-      location.reload();
+      /*
+        주소의 `?advisorModel=` 을 떼고 다시 띄운다.
+
+        떼지 않으면 화면만 번쩍이고 고른 것이 안 먹는다. 질의 문자열이 저장값보다
+        앞서기 때문이다. 여기서 고르는 행위는 그 지시를 **덮어쓰겠다는 뜻**이므로
+        주소에 남은 지시를 함께 지운다.
+      */
+      const url = new URL(location.href);
+      url.searchParams.delete("advisorModel");
+      location.replace(url.toString());
     }
   };
 

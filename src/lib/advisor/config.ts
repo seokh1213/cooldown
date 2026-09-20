@@ -150,8 +150,8 @@ export interface ModelChoice {
 
 export const MODEL_CHOICES: ModelChoice[] = [
   { key: "default", model: ADVISOR_MODEL, label: "Qwen3 4B", note: "기본. 16비트 셰이더가 있어야 합니다" },
-  { key: "exaone", model: SWAPPABLE.exaone, label: "EXAONE 3.5 2.4B", note: "한국어가 가장 낫습니다. 맥에서는 적재가 끝나지 않았습니다" },
-  { key: "qwen15", model: SWAPPABLE.qwen15, label: "Qwen2.5 1.5B", note: "맥에서는 메모리 부족으로 실패했습니다" },
+  { key: "exaone", model: SWAPPABLE.exaone, label: "EXAONE 3.5 2.4B", note: "적재에 실패합니다. 파일 하나가 너무 큽니다" },
+  { key: "qwen15", model: SWAPPABLE.qwen15, label: "Qwen2.5 1.5B", note: "적재에 실패할 수 있습니다. 파일 하나가 1.7GB 입니다" },
   { key: "tiny", model: SWAPPABLE.tiny, label: "Qwen3 0.6B", note: "빠릅니다. 자료를 거의 그대로 옮겨 적습니다" },
   { key: "lite", model: SWAPPABLE.lite, label: "Gemma 3 1B", note: "확실히 돕니다. 문장을 만들지만 자주 틀립니다" },
 ];
