@@ -15,6 +15,8 @@ import {
 } from "@/lib/advisor/config";
 import { deleteModelCache } from "@/lib/advisor/storage";
 import type { AdvisorAnswer } from "@/lib/advisor/answer";
+import { answerProse } from "@/lib/advisor/prose";
+import { useTranslation } from "@/i18n";
 import type {
   AdvisorChatMessage,
   AdvisorFileProgress,
@@ -180,6 +182,8 @@ function readConsent(): boolean {
 }
 
 export function useAdvisor(): UseAdvisorResult {
+  // 코드가 쓰는 답문도 화면 언어를 따라야 한다.
+  const { lang } = useTranslation();
   const [consented, setConsented] = useState(readConsent);
   const [status, setStatus] = useState<AdvisorStatus>("idle");
   const [webgpu, setWebgpu] = useState<WebGpuSupport | null>(null);
@@ -617,6 +621,10 @@ export function useAdvisor(): UseAdvisorResult {
    *
    * 코드 전용 답변은 평가에서 적중 63/66 으로 모델(64/66)과 거의 같았다.
    * 3GB 를 받지 않은 사용자에게도 이 답은 줄 수 있어야 한다.
+   *
+   * 카드만 얹으면 대화에는 칩 하나만 남아 답을 못 받은 화면이 된다. 그래서
+   * `answerProse` 로 **카드 안의 값을 문장으로도** 적는다. 모델이 쓰는 글이 아니라
+   * 카드에 이미 있는 값을 옮기는 것이라 틀릴 자리가 없다.
    */
   const answerWithoutModel = useCallback(
     (question: string, answer: string | AdvisorAnswer, notice?: string) => {
@@ -624,10 +632,10 @@ export function useAdvisor(): UseAdvisorResult {
       const reply: AdvisorTurn =
         typeof answer === "string"
           ? { id: nextId.current++, role: "assistant", content: answer, notice }
-          : { id: nextId.current++, role: "assistant", content: "", answer, notice };
+          : { id: nextId.current++, role: "assistant", content: answerProse(answer, lang), answer, notice };
       setTurns((prev) => [...prev, { id: nextId.current++, role: "user", content: question }, reply]);
     },
-    [],
+    [lang],
   );
 
   /**

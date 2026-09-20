@@ -12,6 +12,7 @@
 import type { ChampionCard, SpellFact, StatName } from "../../../scripts/llm/lib/facts";
 import type { RuleNotes } from "../../../scripts/llm/lib/rules";
 import type { Language } from "@/i18n";
+import type { SelectedNotes } from "./noteSelect";
 import {
   promptWords,
   translateDamage,
@@ -56,8 +57,11 @@ export type AdvisorAnswer =
       focus?: SpellFocus;
       /** "스킬 설명해줘": 능력치 대신 스킬 다섯 개의 요약 */
       view?: "skills";
-      /** 사람이 검증한 운용 노트. 플레이할 때 / 상대할 때. */
-      notes?: { playing: string[]; against: string[] };
+      /**
+       * 사람이 검증한 운용 노트. 플레이할 때 / 상대할 때.
+       * `perspective` 는 질문이 어느 쪽을 물었는지로, 카드가 그쪽을 먼저 보인다.
+       */
+      notes?: SelectedNotes;
     }
   | {
       kind: "rule";

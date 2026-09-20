@@ -354,24 +354,31 @@ export function AdvisorAnswerCard({ answer, ddragonVersion, patch, onPickChampio
             ))}
           </div>
         )}
-        {/* 사람이 검증한 운용 노트. 수치·태그가 아니라 이것이 실전에 쓰는 말이다. */}
+        {/*
+          사람이 검증한 운용 노트. 수치·태그가 아니라 이것이 실전에 쓰는 말이다.
+
+          **물은 쪽을 먼저 놓는다.** "말파 상대법" 을 물었는데 "말파로 플레이할 때" 가
+          먼저 나오면 읽는 사람이 관점을 뒤집어 읽는다. 어느 쪽을 물었는지는
+          `noteSelect` 가 조사로 가려 `perspective` 에 담아 준다.
+        */}
         {hasNotes && notes && (
           <div className="mt-3 space-y-2.5 border-t pt-2.5">
-            {notes.playing.length > 0 && (
-              <div>
-                <div className="mb-1 text-[11px] font-medium text-muted-foreground">
-                  {fill(copy.playingNotes, { name: card.name })}
+            {(notes.perspective === "against"
+              ? ([
+                  ["against", notes.against, copy.againstNotes],
+                  ["playing", notes.playing, copy.playingNotes],
+                ] as const)
+              : ([
+                  ["playing", notes.playing, copy.playingNotes],
+                  ["against", notes.against, copy.againstNotes],
+                ] as const)
+            ).map(([key, list, label]) =>
+              list.length > 0 ? (
+                <div key={key}>
+                  <div className="mb-1 text-[11px] font-medium text-muted-foreground">{fill(label, { name: card.name })}</div>
+                  {noteList(list)}
                 </div>
-                {noteList(notes.playing)}
-              </div>
-            )}
-            {notes.against.length > 0 && (
-              <div>
-                <div className="mb-1 text-[11px] font-medium text-muted-foreground">
-                  {fill(copy.againstNotes, { name: card.name })}
-                </div>
-                {noteList(notes.against)}
-              </div>
+              ) : null,
             )}
             <div className="text-[11px] text-muted-foreground">{copy.notesSource}</div>
           </div>

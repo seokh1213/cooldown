@@ -25,6 +25,7 @@ import {
   type RuleNotes,
 } from "../../../scripts/llm/lib/rules";
 import { playbookToText, selectPlaybook, type Playbook } from "../../../scripts/llm/lib/playbookCore";
+import { selectNotes, type SelectedNotes } from "./noteSelect";
 import {
   findMechanics,
   mechanicsToText,
@@ -310,28 +311,20 @@ export function matchupNotes(data: AdvisorData, me: ChampionCard, enemy: Champio
  * 챔피언에나 맞는 말이 나왔다. 실전에 쓸 말은 여기 있다 — "R 은 저지 불가라 CC 로 끊을
  * 수 없다", "방패를 먼저 깨고 콤보를 시작해야 한다". 카드가 그대로 보이고, 모델은 이것을
  * 재료로 우선순위만 정한다.
+ *
+ * 고르는 기준은 **질문**이다. 예전에는 갈래 순서가 고정이라("스킬 먼저, 콤보 다음")
+ * "한타에서 뭘 조심하냐" 에도 스킬 운용 노트가 먼저 나왔다. 자료가 없어서가 아니라
+ * 질문을 안 봐서 생긴 헛발이다. 고르는 일은 `noteSelect` 가 한다.
  */
 export function championNotes(
   data: AdvisorData,
   card: ChampionCard,
-  /** 스킬셋을 묻는 질문이면 콤보(스킬이 맞물리는 순서)가 먼저다. */
-  prefer: "skill" | "combo" = "skill",
-): { playing: string[]; against: string[] } {
+  /** 사용자가 실제로 쓴 문장. 갈래와 관점을 여기서 읽는다. */
+  question: string,
+): SelectedNotes {
   const book = data.playbooks.get(card.id);
-  if (!book) return { playing: [], against: [] };
-  // 스킬 운용·콤보·라인전이 먼저. 룬·아이템 추천은 다른 질문의 답이다.
-  const order = prefer === "combo" ? ["combo", "skill", "laning", "phase", "teamfight"] : ["skill", "combo", "laning", "phase", "teamfight"];
-  const rank = (category: string) => {
-    const index = order.indexOf(category);
-    return index === -1 ? order.length : index;
-  };
-  const pick = (entries: { category: string; text: string }[], count: number) =>
-    entries
-      .filter((entry) => order.includes(entry.category))
-      .sort((a, b) => rank(a.category) - rank(b.category))
-      .slice(0, count)
-      .map((entry) => entry.text);
-  return { playing: pick(book.playing, 4), against: pick(book.against, 3) };
+  if (!book) return { playing: [], against: [], perspective: "both" };
+  return selectNotes(book, question);
 }
 
 export function buildChampionAnswer(data: AdvisorData, card: ChampionCard): string {

@@ -7,6 +7,7 @@
  */
 import type { AdvisorAnswer, CompareRow, Fact, ItemEffect, ItemVerdict, SpellFocus } from "./answer";
 import type { AdvisorData } from "./context";
+import type { NotePerspective } from "./noteSelect";
 import type { AdvisorTurn } from "@/hooks/useAdvisor";
 
 export const CONVERSATIONS_KEY = "cooldown.advisor.conversations.v1";
@@ -31,7 +32,12 @@ export type StoredAnswer =
       cardId: string;
       focus?: SpellFocus;
       view?: "skills";
-      notes?: { playing: string[]; against: string[] };
+      /**
+       * `perspective` 는 나중에 생긴 값이라 옛 대화에는 없다. 되살릴 때 채운다.
+       * 저장된 것을 고쳐 쓰지 않는 이유는, 옛 기록이 그때 무엇을 보여 줬는지가
+       * 남아야 하기 때문이다. 없으면 예전 순서("플레이할 때" 먼저)가 된다.
+       */
+      notes?: { playing: string[]; against: string[]; perspective?: NotePerspective };
     }
   | { kind: "rule"; ruleName: string; highlighted: string[]; rest: string[] }
   | { kind: "suggestion"; original: string; candidateIds: string[]; reason?: "typo" | "ambiguous" }
@@ -145,7 +151,9 @@ export function reviveAnswer(stored: StoredAnswer, data: AdvisorData): AdvisorAn
     }
     case "champion": {
       const card = data.cardById.get(stored.cardId);
-      return card ? { kind: "champion", card, focus: stored.focus, view: stored.view, notes: stored.notes } : undefined;
+      if (!card) return undefined;
+      const notes = stored.notes ? { ...stored.notes, perspective: stored.notes.perspective ?? ("both" as const) } : undefined;
+      return { kind: "champion", card, focus: stored.focus, view: stored.view, notes };
     }
     case "rule": {
       const rule = data.ruleIndex.get(stored.ruleName);
