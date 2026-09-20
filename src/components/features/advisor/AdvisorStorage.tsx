@@ -10,7 +10,7 @@ import { Download, Loader2, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useTranslation } from "@/i18n";
 import { readModelCache, type ModelCacheInfo } from "@/lib/advisor/storage";
-import { MODEL_CHOICES, currentModelChoice, writeModelChoice, type WebGpuSupport } from "@/lib/advisor/config";
+import { MODEL_CHOICES, type WebGpuSupport } from "@/lib/advisor/config";
 
 function formatMb(bytes: number): string {
   return (bytes / 1048576).toFixed(0);
@@ -29,44 +29,19 @@ interface AdvisorStorageProps {
   unavailable?: string;
   /** 어느 줄을 못 고르게 할지 가리는 데 쓴다. */
   webgpu: WebGpuSupport | null;
+  /** 지금 고른 줄. */
+  choice: string;
+  /** 다른 줄을 골랐을 때. 화면을 다시 띄우지 않고 워커만 바꾼다. */
+  onChoose: (key: string) => Promise<void>;
 }
 
-export function AdvisorStorage({ onDelete, onDownload, unavailable, webgpu }: AdvisorStorageProps) {
+export function AdvisorStorage({ onDelete, onDownload, unavailable, webgpu, choice, onChoose }: AdvisorStorageProps) {
   const { t } = useTranslation();
   const copy = t.advisor.storage;
   const [info, setInfo] = useState<ModelCacheInfo | null>(null);
   const [asking, setAsking] = useState(false);
   const [busy, setBusy] = useState(false);
   const [done, setDone] = useState(false);
-  const [choice, setChoice] = useState(currentModelChoice);
-
-  /**
-   * 모델을 바꾼다.
-   *
-   * 워커가 이미 다른 모델을 GPU 에 올려 두었으므로 값만 바꿔서는 안 바뀐다. 받아 둔
-   * 것도 지운다 — 남겨 두면 저장 공간에 안 쓰는 3GB 가 계속 남고, 이 화면은 캐시가
-   * 비었을 때만 내려받기를 보여 주므로 새 모델을 받을 길도 막힌다.
-   */
-  const pick = async (key: string) => {
-    if (key === choice) return;
-    setBusy(true);
-    setChoice(key);
-    writeModelChoice(key);
-    try {
-      await onDelete();
-    } finally {
-      /*
-        주소의 `?advisorModel=` 을 떼고 다시 띄운다.
-
-        떼지 않으면 화면만 번쩍이고 고른 것이 안 먹는다. 질의 문자열이 저장값보다
-        앞서기 때문이다. 여기서 고르는 행위는 그 지시를 **덮어쓰겠다는 뜻**이므로
-        주소에 남은 지시를 함께 지운다.
-      */
-      const url = new URL(location.href);
-      url.searchParams.delete("advisorModel");
-      location.replace(url.toString());
-    }
-  };
 
   const measure = useCallback(() => {
     // 용량은 응답 본문을 다 읽어 재므로 파일이 많으면 잠깐 걸린다. 먼저 비워 두고 채운다.
@@ -75,6 +50,19 @@ export function AdvisorStorage({ onDelete, onDownload, unavailable, webgpu }: Ad
   }, []);
 
   useEffect(measure, [measure]);
+
+  /** 다른 모델로 바꾼다. 워커만 갈아 끼우므로 이 화면은 그대로 있다. */
+  const pick = async (key: string) => {
+    if (key === choice || busy) return;
+    setBusy(true);
+    try {
+      await onChoose(key);
+      measure();
+    } finally {
+      setBusy(false);
+    }
+  };
+
 
   const remove = async () => {
     setBusy(true);

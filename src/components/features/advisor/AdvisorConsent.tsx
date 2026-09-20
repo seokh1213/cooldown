@@ -6,7 +6,7 @@
  */
 import { Button } from "@/components/ui/button";
 import { useTranslation } from "@/i18n";
-import { resolveModel, type WebGpuSupport } from "@/lib/advisor/config";
+import type { AdvisorModel, WebGpuSupport } from "@/lib/advisor/config";
 import { detectPlatform } from "@/lib/advisor/platform";
 
 /**
@@ -39,6 +39,8 @@ function browsersFor(): string {
 }
 
 interface AdvisorConsentProps {
+  /** 받으려는 모델. 화면에서 바꿀 수 있으므로 훅이 든 값을 받는다. */
+  model: AdvisorModel;
   webgpu: WebGpuSupport | null;
   storage: { quotaMb?: number; usageMb?: number };
   onAccept: () => void;
@@ -48,6 +50,7 @@ interface AdvisorConsentProps {
 }
 
 export function AdvisorConsent({
+  model,
   webgpu,
   storage,
   onAccept,
@@ -56,7 +59,6 @@ export function AdvisorConsent({
 }: AdvisorConsentProps) {
   const { t } = useTranslation();
   const copy = t.advisor;
-  const model = resolveModel();
 
   if (webgpu && !webgpu.supported) {
     const reason =

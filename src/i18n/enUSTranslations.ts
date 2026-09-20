@@ -467,7 +467,7 @@ export const enUSTranslations: Translations = {
       note: "Chat history and ratings stay on this device and never reach a server.",
       pickTitle: "Model in use",
       pickNeedsF16: "Unavailable: this graphics adapter has no 16-bit shader support",
-      pickNote: "Choosing one deletes the downloaded model and reloads the page. Your conversations are kept.",
+      pickNote: "Choosing one deletes the downloaded model so the new one can be fetched. Your conversation stays open.",
     },
     sources: "Retrieved",
     placeholder: "e.g. How do I play Wukong into Rumble?",
