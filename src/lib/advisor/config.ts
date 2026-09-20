@@ -30,9 +30,17 @@ export interface AdvisorModel {
    * 양자화. 모델 카드가 지정한 값을 그대로 쓴다.
    * 모듈마다 다른 값을 주면(예: 임베딩만 q8) 세션 구성이 어긋나 적재가 끝나지 않는다.
    */
-  dtype: "q4f16" | "q4" | "fp16";
+  dtype: "q4f16" | "q4" | "fp16" | "int8";
   /** 고지에 쓸 대략적인 내려받기 용량 */
   downloadMb: number;
+  /**
+   * 16비트 셰이더 연산(`shader-f16`)이 있어야 도는가.
+   *
+   * q4f16·fp16 은 그래프가 통째로 16비트라 없으면 첫 Gather 에서 죽는다. q4·int8 은
+   * 4비트/8비트 가중치에 fp32 연산이라 f16 없이도 돈다. 이 값에 따라 기기를 가리는
+   * 조건이 달라진다 — Pascal(GTX 10xx) 처럼 f16 만 없는 카드에도 뒤쪽은 줄 수 있다.
+   */
+  needsF16: boolean;
 }
 
 /**
@@ -64,17 +72,72 @@ export const ADVISOR_MODEL: AdvisorModel = {
   id: "onnx-community/Qwen3-4B-Instruct-2507-ONNX",
   dtype: "q4f16",
   downloadMb: 2764,
+  needsF16: true,
 };
 
 export const SMOKE_MODEL: AdvisorModel = {
   id: "onnx-community/gemma-3-1b-it-ONNX",
   dtype: "q4f16",
   downloadMb: 730,
+  needsF16: true,
 };
 
+/**
+ * f16 없는 기기에서 시험해 볼 후보들.
+ *
+ * `shader-f16` 이 없는 카드(Pascal, 구형 내장 그래픽)는 지금 모델을 못 올린다. 16비트를
+ * 안 쓰는 판본으로 바꿔 봤는데 맥에서 잰 결과는 이랬다.
+ *
+ *   Qwen3-4B q4        3,778MB  주소 공간 초과
+ *   EXAONE-2.4B q4     2,278MB  쪼개진 파일. 내려받기는 끝나고 세션 생성에서 매달림
+ *   Qwen2.5-1.5B q4    1,705MB  단일 파일. std::bad_alloc
+ *   Qwen2.5-1.5B int8  1,506MB  적재는 되나 출력이 무너짐
+ *   Qwen3-0.6B q4        877MB  18.5 tok/s. 재료를 베낌
+ *   gemma-3-1b q4        819MB  15.2 tok/s. 문장은 되나 주어가 뒤집힘
+ *
+ * 벽이 둘이다. **단일 파일은 1.5GB**, **쪼개진 파일은 2.7GB** 다. 그래서 2.3GB 짜리
+ * EXAONE 이 매달린 것은 메모리가 아니라 fp32 가중치를 GPU 로 올리는 과정이고, 그
+ * 과정은 백엔드마다 다르다 — 여기는 Metal 이고 윈도우는 D3D12 다. **맥에서 매달린
+ * 것이 그쪽에서도 매달린다는 보장이 없다.** 그래서 단정하지 않고 길을 열어 둔다.
+ *
+ * 주소 뒤에 `?advisorModel=exaone` 을 붙이면 그 기기에서 직접 시험할 수 있다.
+ */
 const SWAPPABLE: Record<string, AdvisorModel> = {
   smoke: SMOKE_MODEL,
+  /** 한국어가 가장 나은 후보. 맥에서는 세션 생성이 안 끝났다. */
+  exaone: {
+    id: "onnx-community/EXAONE-3.5-2.4B-Instruct",
+    dtype: "q4",
+    downloadMb: 2279,
+    needsF16: false,
+  },
+  /** 확실히 도는 것. 품질은 확실히 떨어진다. */
+  lite: {
+    id: "onnx-community/gemma-3-1b-it-ONNX",
+    dtype: "q4",
+    downloadMb: 819,
+    needsF16: false,
+  },
 };
+
+/**
+ * 이 기기에 이 모델을 권할 수 있는가.
+ *
+ * f16 은 **그 모델이 필요로 할 때만** 따진다. 16비트를 안 쓰는 판본은 Pascal 처럼
+ * f16 만 없는 카드에서도 돌 수 있으므로 미리 막지 않는다.
+ *
+ * 어댑터를 아직 확인하는 중(`null`)이면 권하지 않는다. 확인 전에 내려받기를 권했다가
+ * 못 쓰는 기기로 밝혀지면 3GB 를 헛되이 받게 된다.
+ */
+export function canOfferModel(
+  model: AdvisorModel,
+  webgpu: WebGpuSupport | null,
+  device: "desktop" | "mobile" | "tablet" | string,
+): boolean {
+  if (device !== "desktop") return false;
+  if (!webgpu?.supported) return false;
+  return !model.needsF16 || webgpu.f16;
+}
 
 export function resolveModel(): AdvisorModel {
   try {
