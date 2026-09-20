@@ -250,7 +250,7 @@ assert.equal(detectSpellFocus("럼블 E 뭐야"), undefined, "사실을 안 짚�
       answerKey(buildSpellAnswer(card("Malphite"), spellOf("Malphite", "Q"), "Q 쿨")),
       answerKey(buildSpellAnswer(card("Malphite"), spellOf("Malphite", "W"), "W 쿨")),
     );
-    assert.equal(answerKey({ kind: "champion", card: card("Malphite") }), answerKey({ kind: "champion", card: card("Malphite"), notes: { playing: [], against: [] } }));
+    assert.equal(answerKey({ kind: "champion", card: card("Malphite") }), answerKey({ kind: "champion", card: card("Malphite"), notes: { playing: [], against: [], perspective: "both" } }));
   }
   assert.ok(asksMatchup("럼블 만나면 어떻게 해?"));
   assert.ok(!asksMatchup("제이스 설명해줘"));
@@ -278,7 +278,7 @@ assert.equal(detectSpellFocus("럼블 E 뭐야"), undefined, "사실을 안 짚�
     kind: "champion",
     card: card("Malphite"),
     view: "skills",
-    notes: { playing: ["화강암 방패는 피해를 받지 않는 시간이 쌓여야 다시 생긴다."], against: ["R은 저지 불가라 끊을 수 없다."] },
+    notes: { playing: ["화강암 방패는 피해를 받지 않는 시간이 쌓여야 다시 생긴다."], against: ["R은 저지 불가라 끊을 수 없다."], perspective: "both" },
   };
   const skillsPrompt = buildCommentaryPrompt(skills, "26.18") ?? "";
   assert.match(skillsPrompt, /화강암 방패는 피해를 받지 않는/, "운용 노트가 재료다");

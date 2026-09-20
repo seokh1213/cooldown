@@ -485,16 +485,18 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
         }
         // "말파이트 스킬 설명해줘": 스킬 다섯 개의 요약 + 운용 노트. 능력치 표는 뺀다.
         if (asksSkillsOverview(question)) {
-          deliver(question, { kind: "champion", card, view: "skills", notes: championNotes(data, card, "combo") }, usedNotice);
+          deliver(question, { kind: "champion", card, view: "skills", notes: championNotes(data, card, question) }, usedNotice);
           return;
         }
         // "말파이트 스킬 쿨타임": 슬롯 없이 사실 하나를 물으면 스킬 다섯 개의 그 사실을 표로.
         const focus = detectSpellFocus(question)?.focus;
         if (focus && focus !== "damage") {
-          deliver(question, { kind: "champion", card, focus }, usedNotice);
+          // 값 표만 있던 카드다. 답 자체는 이제 대화에도 글로 적히므로, 카드는
+          // 표를 넘어 운용 노트까지 얹어 더 준다. 같은 것을 두 번 보여 줄 이유가 없다.
+          deliver(question, { kind: "champion", card, focus, notes: championNotes(data, card, question) }, usedNotice);
           return;
         }
-        deliver(question, { kind: "champion", card, notes: championNotes(data, card) }, usedNotice);
+        deliver(question, { kind: "champion", card, notes: championNotes(data, card, question) }, usedNotice);
         return;
       }
       advisor.send(question, `${system}\n\n${buildChampionsBrief(data, champions)}`, undefined, copy.noModel);
@@ -832,7 +834,12 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
                 onClick={() => (wide ? toggleReference() : setView("card"))}
                 aria-label={copy.card.toggleReference}
                 aria-pressed={wide ? referenceOpen : undefined}
-                className={wide && referenceOpen ? "text-primary hover:bg-primary/10 hover:text-primary" : "text-muted-foreground hover:text-foreground"}
+                /*
+                  눌린 상태를 강조색으로 칠하면 머리에서 이 단추 하나만 결이 달라진다.
+                  옆의 넷은 전부 무채색 ghost 다. 눌림은 채도가 아니라 명도로 — 바탕을
+                  한 단 올리고 글자를 진하게 한다.
+                */
+                className={wide && referenceOpen ? "bg-muted text-foreground hover:bg-muted" : "text-muted-foreground hover:text-foreground"}
               >
                 {wide && referenceOpen ? <PanelLeftClose className="h-4 w-4" /> : <PanelLeftOpen className="h-4 w-4" />}
               </Button>
