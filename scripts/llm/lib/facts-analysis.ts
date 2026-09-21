@@ -43,6 +43,25 @@ function scalesDamage(sentence: string): boolean {
   return /피해/.test(sentence) && !/회복|치유|보호막/.test(sentence);
 }
 
+/**
+ * 그 효과를 **거는가**. 면역이거나 계산 설명이면 아니다.
+ *
+ *   마스터 이 R  "모든 둔화 효과에 대해 면역이 됩니다"      → 둔화
+ *   카타리나 R   "물리 피해는 공격 속도에 비례해 증가"        → 공격 속도 증가
+ *   멜 W        "마법 관통력이 적용되기 전 능력치를 기준으로"  → 관통
+ */
+const NOT_APPLIED: Array<[string, RegExp]> = [
+  ["둔화", /둔화[^.]{0,12}(면역|저항|해제|제거)/],
+  ["기절", /기절[^.]{0,12}(면역|저항|해제|제거)/],
+  ["공격 속도 증가", /공격 속도에 비례/],
+  ["관통", /관통력이 적용|관통력을 무시|관통력을 기준/],
+];
+
+function appliesEffect(label: string, sentence: string): boolean {
+  const rule = NOT_APPLIED.find(([name]) => name === label);
+  return !rule || !rule[1].test(sentence);
+}
+
 /** 은신을 얻는가. 은신을 깨거나 드러내는 문장은 제외한다. */
 function gainsStealth(sentence: string): boolean {
   if (!/은신|투명 상태|모습을 감/.test(sentence)) return false;
@@ -50,7 +69,8 @@ function gainsStealth(sentence: string): boolean {
 }
 
 function shredsEnemy(text: string, word: "방어력" | "마법 저항력"): boolean {
-  const pattern = new RegExp(`[^.]{0,60}${word}[^.]{0,30}?감소`);
+  // "감소" 만 보면 코그모 Q 의 "방어력을 … 낮춥니다" 를 놓친다. 같은 말이다.
+  const pattern = new RegExp(`[^.]{0,60}${word}[^.]{0,30}?(감소|낮춤|낮춥|낮추)`);
   const span = pattern.exec(text)?.[0];
   return Boolean(span) && !SELF_RESIST.test(span as string);
 }
@@ -298,9 +318,18 @@ export function championMovesItself(text: string, championName: string): boolean
   return false;
 }
 
-export function detectEffects(text: string): string[] {
+/**
+ * 스킬 이름이 효과로 읽히는 것을 막는다.
+ *
+ * 카직스 R 본문의 "공포 감지" 와 킨드레드 P 본문의 "차오르는 공포" 가 공포 효과로
+ * 잡혔다. 둘 다 그 챔피언의 다른 스킬 이름이다. 이름은 효과가 아니므로 지우고 본다.
+ */
+export function detectEffects(text: string, skillNames: string[] = []): string[] {
   const found: string[] = [];
-  const sentences = splitSentences(text);
+  const cleaned = skillNames
+    .filter((name) => name.length >= 2)
+    .reduce((acc, name) => acc.split(name).join(" "), text);
+  const sentences = splitSentences(cleaned);
   for (const [re, label] of EFFECT_RULES) {
     if (found.includes(label)) continue;
     // 아래 넷은 표가 아니라 문장 판정으로 가른다. 주어와 대상을 봐야 한다.
@@ -325,13 +354,15 @@ export function detectEffects(text: string): string[] {
       if (sentences.some((sentence) => !isMinionOnly(sentence) && gainsStealth(sentence))) found.push(label);
       continue;
     }
-    if (!re.test(text)) continue;
-    if (!CHAMPION_RELEVANT_TAGS.has(label)) {
-      found.push(label);
-      continue;
+    if (!re.test(cleaned)) continue;
+    if (!NOT_APPLIED.some(([name]) => name === label)) {
+      if (!CHAMPION_RELEVANT_TAGS.has(label)) {
+        found.push(label);
+        continue;
+      }
     }
     // 챔피언에게 유효한 문장에서 나온 경우만 인정한다
-    const validSentence = sentences.some((s) => re.test(s) && !isMinionOnly(s));
+    const validSentence = sentences.some((s) => re.test(s) && !isMinionOnly(s) && appliesEffect(label, s));
     if (validSentence) found.push(label);
   }
   return found;

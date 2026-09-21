@@ -277,7 +277,8 @@ export function createChampionCardBuilder(
         //
         // 위키에 없는 챔피언(출시 직후)만 툴팁 추정으로 내려간다.
         effects: [
-          ...detectEffects(text),
+          // 이 챔피언의 다른 스킬 이름은 지우고 본다. "공포 감지" 가 공포로 잡혔다.
+          ...detectEffects(text, Object.values(champ.abilities).map((other) => other?.name ?? "")),
           ...dashTags(dashes[`${champ.id}:${ability.slot}`], text, champ.name),
         ],
         // 계수는 시뮬레이션 항(구조화된 값)을 우선하고, 없으면 툴팁 표기에서 뽑는다
