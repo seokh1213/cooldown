@@ -176,7 +176,7 @@ function gainsStealth(sentence: string): boolean {
  *
  * 창을 넓히면 상관없는 뒷절까지 들어온다. 재기 전에 수치를 지워 낱말만 남긴다.
  */
-function withoutNumbers(sentence: string): string {
+export function withoutNumbers(sentence: string): string {
   return sentence.replace(/\([^()]*(?:\([^()]*\)[^()]*)*\)/g, " ").replace(/[\d.,/~%\s]{2,}/g, " ");
 }
 
