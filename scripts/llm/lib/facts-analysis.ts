@@ -225,6 +225,27 @@ function gainsCrit(sentence: string): boolean {
 }
 
 /**
+ * 다른 스킬이 먼저 걸려야 세지는가.
+ *
+ * 애니비아 E 는 "적이 **냉각 상태일 경우** 두 배" 이고, 르블랑 Q 는 "**표식이 남은**
+ * 적을 스킬로 공격하면 인장이 폭발" 이다. 상성 판단에 그대로 쓰인다 — "Q 를 피하면
+ * E 가 절반" 이라는 말이 되기 때문이다.
+ *
+ * 피해가 커지는 것만 센다. 요릭 E 처럼 표식 쪽으로 빨리 걸어가는 것은 다른 이야기다.
+ */
+const FOLLOW_UP =
+  /상태(일|인|라면|이면)[^.]{0,12}(경우|적|대상)|표식이 (있는|남은|붙은|있으면)|표식이 붙어|중첩된 대상/;
+
+function amplifiedByFollowUp(sentence: string): boolean {
+  if (!FOLLOW_UP.test(sentence)) return false;
+  // 세진다는 것이 낱말이 아니라 **수치**로만 적히기도 한다. 애니비아 E 는 "냉각
+  // 상태일 경우" 뒤에 그냥 두 배인 수치를 적을 뿐 "증가" 라고 쓰지 않는다. 그래서
+  // 피해를 말하는 문장이면 센다. 요릭 E 처럼 표식 쪽으로 빨리 걷는 것은 피해가
+  // 없으므로 저절로 빠진다.
+  return /피해/.test(sentence);
+}
+
+/**
  * 스스로 되살아나는가.
  *
  * 모데카이저 R 의 "대상이 부활할 때까지" 와 시바나 R 의 "부활하기 전까지" 는 남의
@@ -309,6 +330,7 @@ const EFFECT_RULES: Array<[RegExp, string]> = [
   [/__AD_GAIN__/, "자기 공격력 증가"],
   [/__CRIT__/, "치명타"],
   [/__REVIVE__/, "부활"],
+  [/__FOLLOWUP__/, "연계 강화"],
   // 시바나 Q 처럼 "기본 공격 적중 시 … 피해를 입히고" 로만 적는 것도, 애쉬 Q 처럼
   // "강화된 기본 공격은" 이라고 앞에서 꾸미는 것도 평타 강화다.
   [
@@ -577,6 +599,10 @@ export function detectEffects(text: string, skillNames: string[] = []): string[]
     }
     if (label === "부활") {
       if (sentences.some((sentence) => revives(sentence))) found.push(label);
+      continue;
+    }
+    if (label === "연계 강화") {
+      if (sentences.some((sentence) => !isMinionOnly(sentence) && amplifiedByFollowUp(sentence))) found.push(label);
       continue;
     }
     if (label === "회복") {
