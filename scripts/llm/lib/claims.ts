@@ -306,6 +306,69 @@ function secondLine(card: ChampionCard, claims: ItemClaims): string | undefined 
   return undefined;
 }
 
+/* ------------------------------------------------------------------ *
+ * 이동 수단과 그 공백
+ *
+ * "언제 물어야 하나" 는 `against` 쪽에서 가장 자주 나오는 물음인데, 답이 상대의
+ * 이동기와 그 재사용 대기시간에 있다. 둘 다 카드에 있으므로 통째로 도출된다.
+ *
+ * 여기서는 **수치를 적는다**. 손글씨에 수치를 금한 것은 판올림이 바뀌어도 글이
+ * 그대로 남아 틀린 채로 굳기 때문이었다. 생성본은 판올림마다 다시 만들어지므로
+ * 그 걱정이 없고, 쿨타임은 이 앱이 원래 가장 잘 아는 값이다.
+ * ------------------------------------------------------------------ */
+
+export interface EscapeClaims {
+  /** 빠져나가거나 파고드는 스킬. 재사용 대기시간이 있는 것만. */
+  moves: Array<{ slot: string; name: string; cooldown: number }>;
+  /** 궁극기로만 움직이는가. 6레벨 전에는 없다는 뜻이다. */
+  ultimateOnly: boolean;
+}
+
+export function deriveEscapeClaims(card: ChampionCard): EscapeClaims {
+  const moves = card.spells
+    // 라칸 E 처럼 독립 재사용 대기시간이 없는 것은 0 으로 들어온다. 그것을 "0초" 로
+    // 적으면 언제나 쓸 수 있다는 말이 되므로 아예 세지 않는다.
+    .filter((s) => (has(s, "이동기") || has(s, "돌진")) && (s.cooldownRank1 ?? 0) > 0)
+    .map((s) => ({ slot: s.slot, name: s.name, cooldown: s.cooldownRank1 as number }));
+  return { moves, ultimateOnly: moves.length > 0 && moves.every((m) => m.slot === "R") };
+}
+
+/**
+ * 슬롯 문자 뒤의 조사.
+ *
+ * 받침으로 고르면 안 된다. 읽을 때는 "큐·더블유·이·아르" 이므로 R 만 받침이 있다.
+ * "E 을 쓰게 만든" 처럼 나가면 글이 대번에 어설퍼 보인다.
+ */
+const SLOT_PARTICLE: Record<string, { to: string; subject: string }> = {
+  P: { to: "를", subject: "가" },
+  Q: { to: "를", subject: "가" },
+  W: { to: "를", subject: "가" },
+  E: { to: "를", subject: "가" },
+  R: { to: "을", subject: "이" },
+};
+
+/** 형태가 바뀌는 스킬은 이름이 "A | B" 로 붙어 온다. 앞의 것만 부른다. */
+function shortName(name: string): string {
+  return name.split("|")[0].trim();
+}
+
+export function renderEscapeClaims(card: ChampionCard, claims: EscapeClaims): string {
+  const { moves } = claims;
+  if (moves.length === 0) {
+    return `${josa(card.name, "은/는")} 스스로 거리를 벌리는 스킬이 없습니다. 한 번 붙잡으면 점멸을 쓰게 만들기 전까지는 빠져나갈 수단이 없다는 뜻이므로, 진입 각이 나왔을 때 망설이지 않아도 됩니다.`;
+  }
+  const listed = moves.map((m) => `${m.slot} ${shortName(m.name)}(${m.cooldown}초)`).join(", ");
+  const longest = moves.reduce((a, b) => (a.cooldown >= b.cooldown ? a : b));
+  const head = `${card.name}의 이동 수단은 ${listed}입니다. 괄호 안은 1레벨 기준이라 스킬을 올릴수록 짧아집니다.`;
+  if (claims.ultimateOnly) {
+    return `${head} 궁극기 말고는 움직일 방법이 없으므로 6레벨 전이나 ${longest.slot}${SLOT_PARTICLE[longest.slot]?.subject ?? "이"} 빠진 사이가 그대로 무는 창입니다.`;
+  }
+  if (moves.length === 1) {
+    return `${head} 이것 하나뿐이라 ${moves[0].slot}${SLOT_PARTICLE[moves[0].slot]?.to ?? "을"} 쓰게 만든 직후가 거리를 좁히거나 잘라 낼 창입니다.`;
+  }
+  return `${head} 여러 개를 겹쳐 빠져나가므로 하나를 뺐다고 들어가면 나머지로 살아 나갑니다. 특히 ${longest.slot} ${josa(shortName(longest.name), "이/가")} 돌아오기 전을 노립니다.`;
+}
+
 /** 주장을 두세 문장으로 편다. 문장 순서는 유형 → 단서 → 다음 스탯으로 고정한다. */
 export function renderItemClaims(card: ChampionCard, claims: ItemClaims): string {
   return [profileLine(card, claims), ...discountLines(card, claims), secondLine(card, claims)]
