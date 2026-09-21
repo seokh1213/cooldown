@@ -17,7 +17,7 @@ import * as fs from "node:fs";
 import * as path from "node:path";
 import type { ChampionCard } from "./llm/lib/facts";
 import { PUBLIC_DATA_ROOT, resolvePatchVersion } from "./llm/lib/data";
-import { loadSpellOverrides } from "./llm/lib/spellOverrides";
+import { digestSpellText, loadSpellOverrides } from "./llm/lib/spellOverrides";
 import { detectEffects } from "./llm/lib/facts-analysis";
 
 const llmDir = path.join(PUBLIC_DATA_ROOT, resolvePatchVersion(), "llm");
@@ -43,6 +43,7 @@ const overrides = loadSpellOverrides();
 let tags = 0;
 let types = 0;
 let emptied = 0;
+let stamped = 0;
 
 for (const [key, override] of Object.entries(overrides)) {
   const [championId, slot] = key.split(":");
@@ -52,6 +53,25 @@ for (const [key, override] of Object.entries(overrides)) {
   assert.ok(card, `${key}: 없는 챔피언입니다`);
   const spell = card.spells.find((s) => s.slot === slot);
   assert.ok(spell, `${key}: 없는 슬롯입니다`);
+
+  /*
+   * 리워크를 잡는 자리다.
+   *
+   * 보정은 **그때 그 문구**를 보고 적은 것이라, 챔피언이 리워크되면 그대로 남아
+   * 조용히 틀린다. 규칙으로 뽑는 태그는 새 문구에서 다시 도출되므로 저절로
+   * 따라가지만 이쪽은 그러지 못한다. 지문이 어긋나면 사람이 다시 봐야 한다.
+   *
+   * 지문은 수치를 지우고 찍으므로 밸런스 판올림으로는 울지 않는다.
+   */
+  if (override.textDigest) {
+    const now = digestSpellText(spell.text);
+    assert.equal(
+      now,
+      override.textDigest,
+      `${key}: 툴팁 문구가 바뀌었습니다. 보정을 다시 확인하고 textDigest 를 "${now}" 로 바꾸십시오`,
+    );
+    stamped += 1;
+  }
 
   assert.ok(override.why?.trim(), `${key}: why 가 비어 있습니다`);
   assert.ok(/^https?:\/\//.test(override.source ?? ""), `${key}: source 가 주소가 아닙니다`);
@@ -95,5 +115,5 @@ for (const [key, override] of Object.entries(overrides)) {
 assert.ok(Object.keys(overrides).length > 0, "보정 항목이 하나도 없습니다");
 console.log(
   `✅ 보정 항목 통과 (${Object.keys(overrides).length}자리 · 태그 ${tags}건 · ` +
-    `피해 유형 ${types}건 · 사람이 확인 ${emptied}자리)`,
+    `피해 유형 ${types}건 · 사람이 확인 ${emptied}자리 · 지문 ${stamped}자리)`,
 );

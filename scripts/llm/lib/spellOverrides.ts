@@ -15,9 +15,11 @@
  * 보정은 도출 **뒤에** 얹는다. 규칙이 나중에 그 값을 잡게 되면 보정은 아무 일도
  * 하지 않으므로, 규칙을 고칠 때 여기를 지울 필요가 없다.
  */
+import * as crypto from "crypto";
 import * as fs from "fs";
 import * as path from "path";
 import type { DamageType } from "./facts";
+import { withoutNumbers } from "./facts-analysis";
 
 export const SPELL_OVERRIDE_FILE = path.resolve(process.cwd(), "knowledge", "spell-effects.json");
 
@@ -48,10 +50,28 @@ export interface SpellOverride {
   why: string;
   /** 무엇을 보고 적었는가 */
   source: string;
+  /**
+   * 적을 때 본 툴팁의 지문.
+   *
+   * 보정은 **그때 그 문구**를 보고 적은 것이다. 챔피언이 리워크되면 문구가 통째로
+   * 바뀌는데, 보정은 그대로 남아 조용히 틀린 값을 얹는다. 규칙으로 뽑는 태그는
+   * 새 문구에서 다시 도출되므로 저절로 따라가지만 이쪽은 그러지 못한다.
+   *
+   * **수치를 지우고** 찍는다. 그러지 않으면 밸런스 판올림마다 전부 어긋난 것으로
+   * 나와 아무도 안 보게 된다. 계수와 등급별 수치가 바뀌는 것은 다시 볼 일이 아니고,
+   * 문구가 바뀌는 것만 다시 볼 일이다.
+   */
+  textDigest?: string;
 }
 
 /** 키는 `<ChampionId>:<슬롯>` 이다. 예: `Annie:W` */
 export type SpellOverrides = Record<string, SpellOverride>;
+
+/** 문구만 남긴 지문. 수치가 바뀌어도 그대로다. */
+export function digestSpellText(text: string): string {
+  const words = withoutNumbers(text).replace(/\s+/g, " ").trim();
+  return crypto.createHash("sha256").update(words).digest("hex").slice(0, 12);
+}
 
 export function loadSpellOverrides(file = SPELL_OVERRIDE_FILE): SpellOverrides {
   if (!fs.existsSync(file)) return {};
