@@ -214,7 +214,7 @@ export function AdvisorAnswerCard({ answer, ddragonVersion, patch, onPickChampio
             key={card.id}
             type="button"
             onClick={() => onPickChampion?.(card.id)}
-            className="rounded-md border bg-background px-2.5 py-1 text-sm font-medium transition-colors hover:border-primary/50 hover:bg-accent hover:text-accent-foreground"
+            className="rounded-md border bg-background px-2.5 py-1 text-sm font-medium transition-colors hover:border-primary/50 hover:bg-muted hover:text-foreground"
           >
             {card.name}
           </button>

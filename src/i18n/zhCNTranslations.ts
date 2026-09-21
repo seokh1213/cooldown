@@ -456,6 +456,8 @@ export const zhCNTranslations: Translations = {
       note: "对话记录与评价只保存在本设备，从未发送到服务器。",
       pickTitle: "使用的模型",
       pickNeedsF16: "该显卡不支持 16 位着色器运算，无法选择",
+      pickNoteFull: "讲解到位，回答质量更好。代价是速度慢、体积大，且部分显卡可能不支持。",
+      pickNoteLite: "回答质量较弱，但在大多数电脑上都能轻松运行。",
       pickNote: "选择后会删除已下载的模型并改为下载新模型。当前对话会保留。",
     },
     sources: "已找到",

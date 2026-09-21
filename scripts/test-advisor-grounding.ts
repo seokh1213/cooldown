@@ -18,6 +18,7 @@ import {
   autoModel,
   canOfferModel,
   MODEL_CHOICES,
+  modelBlocked,
   modelChoiceKey,
   type AdvisorModel,
 } from "../src/lib/advisor/config";
@@ -166,12 +167,22 @@ assert.ok(q && !q.effects.includes("에어본"), "Q 에는 에어본이 없어�
     실제로 돌려 보고 남은 둘만 둔다 — 깊은 해설과 가벼운 해설.
   */
   assert.equal(MODEL_CHOICES.length, 2, "고를 것은 둘");
-  for (const choice of MODEL_CHOICES) {
-    assert.ok(choice.detail.length > 30, `${choice.key}: 무엇이 다른지 적어야 한다`);
-    assert.ok(choice.note.length > 0, `${choice.key}: 한 줄 설명이 있어야 한다`);
-  }
   // 하나는 어디서나 돌아야 한다. 그러지 않으면 f16 없는 기기가 다시 빈손이 된다.
   assert.ok(MODEL_CHOICES.some((c) => !c.model.needsF16), "f16 없이 도는 줄이 있어야 한다");
+  // 설명은 `lite` 로 갈라 보인다. 둘이 같은 쪽이면 한쪽 설명이 영영 안 나온다.
+  assert.equal(MODEL_CHOICES.filter((c) => c.model.lite).length, 1, "가벼운 줄은 하나");
+
+  /*
+    그래픽카드가 못 돌리는 줄은 잠근다. 받고 나서 적재에서 죽는 것보다 낫다.
+    확인하는 중에는 잠그지 않는다 — 잠갔다 푸는 편이 더 헷갈린다.
+  */
+  const heavy: AdvisorModel = { id: "a", dtype: "q4f16", downloadMb: 1, needsF16: true };
+  const light: AdvisorModel = { id: "b", dtype: "q4", downloadMb: 1, needsF16: false };
+  assert.equal(modelBlocked(heavy, { supported: true, f16: false }), true, "f16 없으면 q4f16 은 잠근다");
+  assert.equal(modelBlocked(light, { supported: true, f16: false }), false, "16비트를 안 쓰면 잠그지 않는다");
+  assert.equal(modelBlocked(light, { supported: false, f16: false }), true, "WebGPU 가 없으면 둘 다 잠근다");
+  assert.equal(modelBlocked(heavy, { supported: true, f16: true }), false, "f16 이 있으면 잠그지 않는다");
+  assert.equal(modelBlocked(heavy, null), false, "확인 전에는 잠그지 않는다");
 }
 
 /**
@@ -230,4 +241,4 @@ assert.ok(q && !q.effects.includes("에어본"), "Q 에는 에어본이 없어�
   assert.equal(tidyLite("이 스킬은 저지 불가라 끊을 수 없습니다."), "이 스킬은 저지 불가라 끊을 수 없습니다.");
 }
 
-console.log("✅ 근거 검사 통과 (44건)");
+console.log("✅ 근거 검사 통과 (49건)");
