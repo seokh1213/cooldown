@@ -85,6 +85,27 @@ export function noteOrder(question: string): NoteCategory[] {
 
 export type NotePerspective = "playing" | "against" | "both";
 
+/** 상대하는 쪽임을 드러내는 말 */
+const AGAINST_WORDS =
+  /상대|맞상대|카운터|이기|이길|막|상대법|공략법|어떻게\s*잡|까다로|상성|언제\s*물|물어야|무는|잘라|한테|에게|도망|진입/;
+
+/**
+ * 내가 그 챔피언이라는 표시.
+ *
+ * "말파로" 의 `로` 가 신호인데, **"말파 상대로" 에도 그 `로` 가 들어 있다.** 그래서
+ * "빅토르 상대로 마법 저항력 올려야 하나" 가 양쪽 다 참이 되어 관점을 못 가렸다.
+ * 조사 앞이 "상대·한테·에게" 면 그것은 내가 그 챔피언이라는 뜻이 아니다.
+ */
+const PLAYING_WORDS = /(?<!상대)(으로|로)\s|플레이|운용|하는\s*법|잘하|숙련|빌드|어떻게\s*쓰|콤보|내가/;
+
+/**
+ * 상대에게 맞춰 **올리는** 스탯. 이 말이 나오면 묻는 쪽은 그 챔피언이 아니다.
+ *
+ * "카타리나 치유 감소 필요해?" 에는 상대·한테 같은 표시가 없지만, 치유 감소는
+ * 회복하는 상대를 끊으려고 올리는 것이다. 강인함·저항도 마찬가지다.
+ */
+const COUNTER_STAT = /치유\s*감소|강인함|방어력|마법\s*저항력|저항력|갑옷/;
+
 /**
  * 내가 그 챔피언을 하는 질문인가, 상대하는 질문인가.
  *
@@ -95,9 +116,9 @@ export type NotePerspective = "playing" | "against" | "both";
  * 가른다. 여기 오는 것은 챔피언이 하나인 질문이다.
  */
 export function notePerspective(question: string): NotePerspective {
-  const against =
-    /상대|맞상대|카운터|이기|이길|막|상대법|공략법|어떻게\s*잡|까다로|상성|언제\s*물|물어야|무는|잘라/.test(question);
-  const playing = /(으로|로)\s|플레이|운용|하는\s*법|잘하|숙련|빌드|템|어떻게\s*쓰|콤보/.test(question);
+  const playingFirst = PLAYING_WORDS.test(question);
+  const against = AGAINST_WORDS.test(question) || (!playingFirst && COUNTER_STAT.test(question));
+  const playing = playingFirst;
   if (against && !playing) return "against";
   if (playing && !against) return "playing";
   return "both";
