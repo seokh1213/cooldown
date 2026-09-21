@@ -31,6 +31,10 @@ export interface ItemClaims {
     byType: Partial<Record<DamageType, string[]>>;
     /** 주된 유형과 다른 유형으로 들어오는 스킬. 저항 한 갈래로 못 막는 자리다. */
     exceptions: string[];
+    /** 한 스킬이 두 유형을 함께 내는 자리. 어느 목록에도 넣으면 안 된다. */
+    both: string[];
+    /** 기본 공격이 화력의 한 축인가. 평타는 물리라 "방어력 무용" 을 말할 수 없다. */
+    autoAttacker: boolean;
     /** 피해를 입히는데 유형이 안 적힌 스킬. 자료의 구멍이지 없는 피해가 아니다. */
     unknown: string[];
   };
@@ -96,10 +100,15 @@ function readProfile(card: ChampionCard): ItemClaims["profile"] {
     }
     if (spell.damageTypes.length === 0 && /피해를 입/.test(spell.text)) unknown.push(spell.slot);
   }
-  const physicalSlots = byType["물리"] ?? [];
-  const magicSlots = byType["마법"] ?? [];
+  // 한 스킬이 두 유형을 함께 내기도 한다(이렐리아 W, 아크샨 P). 물리 목록과 마법
+  // 목록에 같은 슬롯이 들어가면 "Q 가 물리, Q 가 마법" 이라는 말이 나오고, 예외로
+  // 뽑히면 "다만 Q 만 마법이라" 가 되어 Q 의 물리 피해가 없는 말이 된다. 따로 센다.
+  const both = (byType["물리"] ?? []).filter((slot) => (byType["마법"] ?? []).includes(slot));
+  const physicalSlots = (byType["물리"] ?? []).filter((slot) => !both.includes(slot));
+  const magicSlots = (byType["마법"] ?? []).filter((slot) => !both.includes(slot));
+  const autoAttacker = AUTO_SUBCLASSES.has(card.wiki?.subclass ?? "");
   if (physicalSlots.length === 0 && magicSlots.length === 0) {
-    return { mix: "불명", byType, exceptions: [], unknown };
+    return { mix: both.length ? "혼합" : "불명", byType, exceptions: [], both, autoAttacker, unknown };
   }
 
   // 기본 공격은 물리다. 평타가 화력의 축인 챔피언은 스킬 슬롯만 세면 물리 쪽이
@@ -108,17 +117,16 @@ function readProfile(card: ChampionCard): ItemClaims["profile"] {
   // 신호는 태그가 아니라 하위 클래스로 잡는다. "기본 공격 강화" 는 누누 P 처럼
   // 평타에 작은 덤을 얹는 것에도 붙어서, 실제로는 마법 챔피언인 누누까지 평타
   // 중심으로 읽혔다.
-  const autoAttacker = AUTO_SUBCLASSES.has(card.wiki?.subclass ?? "");
   const physical = physicalSlots.length + (autoAttacker ? 2 : 0);
   const magic = magicSlots.length;
 
   // 팽팽할 때만 혼합이다. 한 갈래라도 기울면 그쪽을 주된 것으로 말하고 나머지는
   // 예외로 짚는 편이 "어느 저항을 올릴까" 라는 물음에 맞는 답이다.
   if (physical === magic && physicalSlots.length > 0 && magicSlots.length > 0) {
-    return { mix: "혼합", byType, exceptions: [], unknown };
+    return { mix: "혼합", byType, exceptions: [], both, autoAttacker, unknown };
   }
   const mix: DamageType = physical > magic ? "물리" : "마법";
-  return { mix, byType, exceptions: mix === "물리" ? magicSlots : physicalSlots, unknown };
+  return { mix, byType, exceptions: mix === "물리" ? magicSlots : physicalSlots, both, autoAttacker, unknown };
 }
 
 export function deriveItemClaims(card: ChampionCard): ItemClaims {
@@ -138,7 +146,11 @@ export function deriveItemClaims(card: ChampionCard): ItemClaims {
 
   const sustain = slotsWhere(card, (s) => has(s, "회복"));
   const cc = slotsWhere(card, (s) => s.effects.some((tag) => CC_TAGS.has(tag)));
-  const dps = card.spells.some((s) => has(s, "기본 공격 강화") || has(s, "공격 속도 증가"));
+  // 온히트 하나만 있어도 평타 챔피언으로 보면 거의 전원이 걸린다. 나미·오리아나
+  // 까지 "화력의 축이 기본 공격" 이라는 말이 붙었다. 하위 클래스가 먼저다.
+  const dps =
+    AUTO_SUBCLASSES.has(card.wiki?.subclass ?? "") &&
+    card.spells.some((s) => has(s, "기본 공격 강화") || has(s, "공격 속도 증가"));
   const zoning = card.spells.some((s) => has(s, "광역")) && profile.mix !== "물리";
 
   return { champion: card.name, profile, discounts, sustain, cc, dps, zoning, stats: rankStats(profile, { discounts, sustain, cc, dps, zoning }) };
@@ -200,7 +212,10 @@ function profileLine(card: ChampionCard, claims: ItemClaims): string | undefined
   const name = card.name;
   // 유형이 안 적힌 딜링 스킬이 있으면 "모두" 라고 말할 수 없다. 그 한 마디가
   // "방어력은 살 필요 없다" 는 조언으로 읽히므로, 아는 것까지만 말한다.
-  const clean = profile.unknown.length === 0 && profile.exceptions.length === 0;
+  // 기본 공격은 슬롯이 없지만 물리로 들어온다. 평타가 축인 챔피언에게 "스킬이 전부
+  // 마법이니 방어력은 값이 없다" 고 하면 코그모 상대로 정반대 조언이 된다.
+  const clean =
+    profile.unknown.length === 0 && profile.exceptions.length === 0 && !profile.autoAttacker;
   for (const [type, joined, resist, other, otherJoined] of [
     ["마법", "마법이라", "마법 저항력", "방어력", "물리라"],
     ["물리", "물리라", "방어력", "마법 저항력", "마법이라"],
@@ -211,14 +226,33 @@ function profileLine(card: ChampionCard, claims: ItemClaims): string | undefined
       return `${name}의 피해는 ${slots}까지 모두 ${joined} ${other}은 한 푼도 값을 하지 않고 ${resist}만 실효 체력으로 바뀝니다.`;
     }
     const head = `${name}의 주력 피해는 ${josa(slots, "이/가")} ${type}이므로 ${resist}이 먼저입니다.`;
-    if (profile.exceptions.length === 0) return head;
+    const tails: string[] = [];
+    if (type === "마법" && profile.autoAttacker && profile.exceptions.length === 0) {
+      tails.push("다만 화력의 상당 부분이 기본 공격에서 나오고 그쪽은 물리라 방어력도 함께 값을 합니다.");
+    }
     // 예외를 말하지 않으면 "한 갈래만 올리면 된다" 로 읽힌다. 애쉬 R 이 그 자리다.
-    return `${head} 다만 ${callSlots(card, profile.exceptions)}만 ${otherJoined} 그 한 줄기는 ${resist}으로 막히지 않습니다.`;
+    if (profile.exceptions.length > 0) {
+      const one = profile.exceptions.length === 1 ? "그 한 줄기" : "그쪽";
+      tails.push(`다만 ${callSlots(card, profile.exceptions)}만 ${otherJoined} ${one}는 ${resist}으로 막히지 않습니다.`);
+    }
+    if (profile.both.length > 0) {
+      tails.push(`${josa(callSlots(card, profile.both), "은/는")} 두 유형을 함께 내므로 어느 저항으로도 절반만 막힙니다.`);
+    }
+    return [head, ...tails].join(" ");
   }
   if (profile.mix === "혼합") {
-    const phys = callSlots(card, profile.byType["물리"] ?? [], 2);
-    const magic = callSlots(card, profile.byType["마법"] ?? [], 2);
-    return `${josa(name, "은/는")} ${josa(phys, "이/가")} 물리, ${josa(magic, "이/가")} 마법이라 한쪽 저항만 올리면 절반은 그대로 들어옵니다.`;
+    // 두 유형을 함께 내는 슬롯은 어느 목록에도 넣지 않는다. 넣으면 "W 가 물리,
+    // W 가 마법" 이라는 말이 된다.
+    const only = (type: DamageType) =>
+      (profile.byType[type] ?? []).filter((slot) => !profile.both.includes(slot));
+    const phys = callSlots(card, only("물리"), 2);
+    const magic = callSlots(card, only("마법"), 2);
+    if (!phys || !magic) {
+      return `${josa(name, "은/는")} ${josa(callSlots(card, profile.both), "은/는")} 두 유형을 함께 내므로 어느 저항을 올려도 절반만 막힙니다.`;
+    }
+    const head = `${josa(name, "은/는")} ${josa(phys, "이/가")} 물리, ${josa(magic, "이/가")} 마법이라 한쪽 저항만 올리면 절반은 그대로 들어옵니다.`;
+    if (profile.both.length === 0) return head;
+    return `${head} ${josa(callSlots(card, profile.both), "은/는")} 두 유형을 한꺼번에 냅니다.`;
   }
   return undefined;
 }
