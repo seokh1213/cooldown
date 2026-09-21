@@ -920,6 +920,23 @@ export function buildCommentaryPrompt(
       );
       lines.push(`- ${card.name}: ${traits.join(" · ")}`);
     }
+    /*
+     * 상성 노트를 싣는다.
+     *
+     * 여기에만 노트가 빠져 있었다. 그래서 상성 질문에서는 모델이 카드 두 장만 보고
+     * 글을 지어야 했고, 실제로 "오공은 마법으로 주 피해를 받습니다" 처럼 카드를
+     * 거꾸로 읽은 글이 나왔다. 챔피언 하나를 묻는 자리에는 진작 노트가 들어가고
+     * 있었는데 조합을 묻는 자리만 비어 있었던 것이다.
+     *
+     * 재료에는 두 가지가 들어간다. 두 카드에서 그 자리에서 도출한 문장과, 사람이
+     * 검증해 둔 플레이북 문장이다. 도출한 쪽이 이 조합을 직접 말하므로 앞에 온다.
+     */
+    const matchupNotes = lang === "ko_KR" ? answer.notes : undefined;
+    if (matchupNotes && (matchupNotes.mine.length || matchupNotes.enemy.length)) {
+      lines.push(w.notesHeader);
+      for (const note of matchupNotes.mine) lines.push(`- ${me.name}: ${note}`);
+      for (const note of matchupNotes.enemy) lines.push(`- ${enemy?.name ?? ""}: ${note}`);
+    }
     lines.push(
       "",
       ...rules,

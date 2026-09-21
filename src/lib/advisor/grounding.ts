@@ -58,6 +58,8 @@ interface Material {
   noteSentences: string[];
   /** 카드 첫 줄이 적어 둔 피해 유형과 계수. 여기와 어긋나면 큰 거짓말이다. */
   profiles: Array<{ name: string; damage: string; scaling: string }>;
+  /** 스킬 이름 → 그 스킬을 가진 챔피언 이름 */
+  ownerByName: Map<string, string>;
 }
 
 function material(answer: AdvisorAnswer): Material | undefined {
@@ -100,12 +102,17 @@ function material(answer: AdvisorAnswer): Material | undefined {
     .map((sentence) => sentence.trim())
     .filter((sentence) => sentence.length > 10);
 
+  // 누구 스킬인지 적어 둔다. 챔피언이 둘일 때 모델이 남의 스킬을 내 것이라고
+  // 쓰는 일이 잦은데, 이것 없이는 잡을 수가 없다.
+  const ownerByName = new Map<string, string>();
+  for (const card of cards) for (const spell of card.spells) ownerByName.set(spell.name, card.name);
+
   const profiles = cards.map((card) => ({
     name: card.name,
     damage: card.damageProfile.primary,
     scaling: card.scalingProfile.primary,
   }));
-  return { effectsBySlot, slotByName, textBySlot, allTags, noteSentences, profiles };
+  return { effectsBySlot, slotByName, textBySlot, allTags, noteSentences, profiles, ownerByName };
 }
 
 /**
@@ -119,6 +126,34 @@ const DAMAGE_WORDS: Array<[string, RegExp]> = [
   ["물리", /물리/],
   ["마법", /마법/],
 ];
+
+/**
+ * 남의 스킬을 내 것이라고 말하는가.
+ *
+ * 상성 해설에서 가장 잦은 거짓말이다. "오공은 P 고철장 거인 스킬을 사용합니다" —
+ * 고철장 거인은 럼블 것이다. 챔피언 이름 뒤에 다른 챔피언의 스킬 이름이 오고
+ * 그 사이에 주인이 바뀔 만한 이름이 없으면 잘못 붙인 것이다.
+ */
+function misattributes(sentence: string, m: Material): boolean {
+  const names = m.profiles.map((p) => p.name);
+  if (names.length < 2) return false;
+  for (const [skill, owner] of m.ownerByName) {
+    const at = sentence.indexOf(skill);
+    if (at < 0) continue;
+    // 스킬 앞에서 가장 가까운 챔피언 이름이 임자다
+    let holder: string | undefined;
+    let best = -1;
+    for (const name of names) {
+      const found = sentence.lastIndexOf(name, at);
+      if (found >= 0 && found > best) {
+        best = found;
+        holder = name;
+      }
+    }
+    if (holder && holder !== owner) return true;
+  }
+  return false;
+}
 
 function contradictsProfile(sentence: string, profiles: Material["profiles"]): boolean {
   for (const profile of profiles) {
@@ -153,9 +188,16 @@ export type Verdict = "note" | "card-ok" | "card-wrong" | "unsupported" | "numbe
  * 있는 스킬 이름이 임자다. "R 로 띄운 뒤 Q 로 둔화를 겁니다" 에서 둔화는 Q 것이다.
  */
 export function classify(sentence: string, m: Material): Verdict {
-  if (m.noteSentences.some((note) => overlap(sentence, note) >= 0.7)) return "note";
-  // 카드 첫 줄을 뒤집어 말하는 것이 가장 큰 거짓말이다. 스킬을 안 짚어도 잡는다.
+  /*
+   * 틀린 것을 **먼저** 가린다.
+   *
+   * 노트 판정이 앞에 있었더니, 노트를 베끼면서 스킬 이름만 남의 것으로 바꾼 문장이
+   * 보호받았다. 실제로 럼블 노트를 그대로 옮기고 임자만 오공으로 바꾼 문단이 그대로
+   * 화면에 나갔다. 노트와 닮았다는 것이 맞다는 뜻은 아니다.
+   */
   if (contradictsProfile(sentence, m.profiles)) return "card-wrong";
+  if (misattributes(sentence, m)) return "card-wrong";
+  if (m.noteSentences.some((note) => overlap(sentence, note) >= 0.7)) return "note";
   if (HAS_NUMBER.test(sentence)) return "number";
 
   /*
