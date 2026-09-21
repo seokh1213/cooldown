@@ -158,7 +158,8 @@ const EFFECT_RULES: Array<[RegExp, string]> = [
   [/__MAXHP_DAMAGE__/, "최대 체력 비례 피해"],
   [/__MISSINGHP__/, "잃은 체력 비례"],
   [/고정 피해/, "고정 피해"],
-  [/처형|즉시 처치/, "처형"],
+  // 아우렐리온 솔 E 는 "최대 체력이 … 미만인 적은 즉사합니다" 라고 적는다. 같은 말이다.
+  [/처형|즉시 처치|즉사/, "처형"],
   [/강인함/, "강인함"],
   [/__IMMUNE__/, "피해 면역"],
   [/받는 모든 공격[^.]{0,20}막|막아낸 다음|모든 공격과 이동 불가|회피하고|빗나가게/, "공격 무효화"],
@@ -169,9 +170,13 @@ const EFFECT_RULES: Array<[RegExp, string]> = [
   // 아래 둘은 gainsResist 가 문장 단위로 가른다
   [/__MR_GAIN__/, "자기 마법 저항력 증가"],
   [/__ARMOR_GAIN__/, "자기 방어력 증가"],
-  [/기본 공격[^.]{0,20}(추가|강화)/, "기본 공격 강화"],
+  // 시바나 Q 처럼 "기본 공격 적중 시 … 피해를 입히고" 로만 적는 것도 평타 강화다.
+  [/기본 공격[^.]{0,20}(추가|강화)|기본 공격[^.]{0,6}적중 시[^.]{0,30}피해/, "기본 공격 강화"],
   [/재사용 대기시간[^.]{0,15}초기화/, "쿨타임 초기화"],
-  [/광역|주변 적|범위 내/, "광역"],
+  // 닐라 Q 는 "원뿔 범위를 공격", "경로상의 모든 적을 공격" 으로만 적는다. 다만
+  // "모든 적" 이 동작의 대상일 때만 센다. 그웬 W 의 "모든 적(포탑 제외)으로부터
+  // 대상으로 지정될 수 없는 상태" 는 광역 공격이 아니라 대상 지정 차단이다.
+  [/광역|주변 적|범위 내|모든 적[이을에]|원뿔 범위/, "광역"],
 ];
 
 /**
@@ -421,7 +426,12 @@ export function detectEffects(text: string, skillNames: string[] = []): string[]
       if (sentences.some((sentence) => !isMinionOnly(sentence) && grantsImmunity(sentence))) found.push(label);
       continue;
     }
-    if (!re.test(cleaned)) continue;
+    // 미니언에게만 걸리는 문장은 챔피언을 상대할 때의 조언이 아니다. 시비르 W 의
+    // "체력이 낮은 미니언을 즉시 처치합니다" 가 처형으로 잡혀 "체력을 확보해 처형
+    // 구간에서 벗어나라" 는 엉뚱한 말이 나왔다. 전체 본문 대신 문장으로 본다.
+    // 수치도 함께 지운다. 피즈 W 의 "다음 기본 공격이 (…)의 마법 피해를 추가로
+    // 입힙니다" 는 낱말로는 붙어 있는데 계수가 끼어 창 밖으로 밀려나 있었다.
+    if (!sentences.some((sentence) => !isMinionOnly(sentence) && re.test(withoutNumbers(sentence)))) continue;
     if (!NOT_APPLIED.some(([name]) => name === label)) {
       if (!CHAMPION_RELEVANT_TAGS.has(label)) {
         found.push(label);
