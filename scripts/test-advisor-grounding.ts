@@ -10,6 +10,7 @@ import * as path from "node:path";
 import type { ChampionCard } from "./llm/lib/facts";
 import { PUBLIC_DATA_ROOT, resolvePatchVersion } from "./llm/lib/data";
 import { groundCommentary } from "../src/lib/advisor/grounding";
+import { promptWords } from "../src/lib/advisor/promptLocale";
 import type { AdvisorAnswer } from "../src/lib/advisor/answer";
 import {
   ADVISOR_MODEL,
@@ -317,4 +318,53 @@ assert.ok(q && !q.effects.includes("에어본"), "Q 에는 에어본이 없어�
   assert.match(groundCommentary(onlyOther, asked).text, /방패를 채워/, "다 지워질 바엔 그대로 둔다");
 }
 
-console.log("✅ 근거 검사 통과 (41건)");
+{
+  /*
+   * 인사말과 지시문 베끼기를 걷어낸다.
+   *
+   * 페르소나가 인사말을 막고 프롬프트가 한 번 더 막는데도 0.8B 는 문단마다
+   * "물론이죠." 를 달았다. 규칙 문장 자체를 답에 옮겨 적기도 했다. 낱말 목록을
+   * 손으로 적는 대신 프롬프트 원문과 대조하므로, 규칙이 바뀌면 검사도 같이 바뀐다.
+   */
+  const w = promptWords("ko_KR");
+  // 규칙 중에는 한 줄에 두 문장인 것이 있어 세는 수가 흔들린다. 한 문장짜리로 잡는다.
+  const text = `물론이죠. ${w.closing.compare.replace(/^- /, "")} 화강암 방패가 살아 있을 때 딜 교환을 시작합니다.`;
+  const result = groundCommentary(text, answer);
+  const boiler = result.dropped.filter((d) => d.verdict === "boilerplate");
+  assert.equal(boiler.length, 2, "인사말 하나와 베낀 규칙 하나");
+  assert.doesNotMatch(result.text, /물론이죠/, "인사말은 사라진다");
+  assert.match(result.text, /화강암 방패/, "본문은 남는다");
+
+  // 어미를 바꿔 옮겨도 같은 문장이다.
+  const reworded = w.closing.champion.replace(/^- /, "").replace("말하십시오", "설명합니다");
+  const softened = groundCommentary(`${reworded} 화강암 방패가 살아 있을 때 딜 교환을 시작합니다.`, answer);
+  assert.equal(softened.dropped.filter((d) => d.verdict === "boilerplate").length, 1, "어미만 바꾼 베끼기도 잡는다");
+}
+
+{
+  /*
+   * 상성 답에서 남의 스킬을 갖다 붙이는 것.
+   *
+   * 여기 시험이 없어서 한 번 놓쳤다. 처음 규칙은 "앞에서 가장 가까운 이름이 임자"
+   * 였는데, 그러면 한 문장 안에서 상대를 한 번 부르는 순간 그 뒤의 모든 스킬이
+   * 상대 것으로 읽혔다. 맞는 문장이 잘리는 쪽이 더 큰 손해다. 양쪽을 다 건다.
+   */
+  const wukong = card("MonkeyKing");
+  const rumble = card("Rumble");
+  const versus: AdvisorAnswer = { kind: "compare", cards: [wukong, rumble], rows: [], matchup: true };
+
+  const theirs = rumble.spells.find((s) => s.slot === "P");
+  const mine = wukong.spells.find((s) => s.slot === "W");
+  assert.ok(theirs && mine, "럼블 P · 오공 W");
+
+  // 임자를 바꿔 붙이면 걷어낸다.
+  const wrong = groundCommentary(`오공은 P ${theirs.name}으로 시작합니다.`, versus);
+  assert.equal(wrong.dropped[0]?.verdict, "card-wrong", "남의 패시브를 내 것이라 하면 걷어낸다");
+
+  // 상대 스킬을 피한다는 말은 남긴다. 한 문장에 두 이름이 다 나와도 마찬가지다.
+  const dodge = `오공은 럼블의 P ${theirs.name}을 피하고 W ${mine.name}로 빠집니다.`;
+  assert.equal(groundCommentary(dodge, versus).dropped.length, 0, "상대 스킬을 피한다는 말은 남는다");
+  assert.match(groundCommentary(dodge, versus).text, new RegExp(mine.name), "내 스킬도 남는다");
+}
+
+console.log("✅ 근거 검사 통과 (49건)");

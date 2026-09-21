@@ -307,11 +307,25 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
    * 카드는 코드가 0초에 그린다. 모델에게는 코드가 계산한 재료(백분위·계수·태그)를 주고
    * "왜 중요한가" 두세 문장만 시킨다. 수치는 카드에 있으니 모델이 숫자를 입에 담지 않는다.
    */
-  /** 상성 카드 + 내 챔피언 시점 해설. 재료는 사람이 검증한 지식 카드만. */
+  /**
+   * 상성 카드 + 내 챔피언 시점 해설. 재료는 사람이 검증한 지식 카드만.
+   *
+   * 가벼운 모델에게는 해설을 맡기지 않는다.
+   *
+   * 챔피언이 둘이면 스킬 이름도 열 개다. 0.8B 는 그 열 개가 누구 것인지 끝까지
+   * 붙들지 못했다. 열네 쌍을 재 보니 근거 검사가 걷어낸 문장이 쓴 문장의 23% 였고
+   * (4B 는 9%), 남은 글도 카드를 통째로 다시 적거나 "이 스킬을 사용하면 추가적인
+   * 피해를 줄여줍니다" 처럼 뜻이 뒤집힌 말이었다. 임자 붙이기·규칙 손질·노트 축약을
+   * 판본으로 갈라 재 봤지만 실패 방식만 바뀌고 없어지지는 않았다.
+   *
+   * 그래서 해설을 뺀다. 손해가 크지 않다 — 상성 카드에는 도출한 문장과 사람이
+   * 검증한 노트가 이미 그대로 보인다(AdvisorAnswerCard). 모델이 얹던 것은 그 위의
+   * 잡음이었다. 기다림도 사라진다.
+   */
   const deliverMatchup = (question: string, mine: ChampionCard, enemy: ChampionCard, notice?: string) => {
     if (!data) return;
     const answer = buildCompareCard([mine, enemy], question, undefined, { matchup: true, notes: matchupNotes(data, mine, enemy) });
-    const prompt = buildCommentaryPrompt(answer, patch, lang);
+    const prompt = advisor.model.lite ? undefined : buildCommentaryPrompt(answer, patch, lang);
     if (canUseModel && advisor.consented && prompt) {
       const tips = buildMatchupTips(data, mine, enemy);
       advisor.sendWithAnswer(question, [advisorSystemPrompt(lang), tips, prompt].filter(Boolean).join("\n\n"), answer, notice);

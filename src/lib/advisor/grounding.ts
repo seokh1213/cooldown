@@ -131,26 +131,41 @@ const DAMAGE_WORDS: Array<[string, RegExp]> = [
  * 남의 스킬을 내 것이라고 말하는가.
  *
  * 상성 해설에서 가장 잦은 거짓말이다. "오공은 P 고철장 거인 스킬을 사용합니다" —
- * 고철장 거인은 럼블 것이다. 챔피언 이름 뒤에 다른 챔피언의 스킬 이름이 오고
- * 그 사이에 주인이 바뀔 만한 이름이 없으면 잘못 붙인 것이다.
+ * 고철장 거인은 럼블 것이다.
+ *
+ * 임자는 **바로 앞에 붙은 이름**으로만 본다. 처음에는 앞에서 가장 가까운 이름을
+ * 임자로 삼았는데, 그러면 한 문장 안에서 상대를 한 번 부르는 순간 그 뒤의 모든
+ * 스킬이 상대 것이 되었다. "제드는 럭스의 Q 를 피하고 W 살아있는 그림자로
+ * 빠집니다" 에서 살아있는 그림자가 럭스 것으로 읽혀 맞는 문장이 잘렸다. 4B 가
+ * 걷어낸 열두 문장 중 절반이 이 꼴이었다.
+ *
+ * 그래서 이름과 스킬 사이에 조사와 슬롯 문자밖에 없을 때만 임자로 친다. 잡는
+ * 것이 줄지만 잡은 것은 확실하다.
  */
+const POSSESSIVE = /^의\s*[PQWER]?\s*$/;
+/**
+ * 주격·주제격은 소유를 뜻하지 않는다. 슬롯 문자가 함께 있을 때만 임자로 친다.
+ *
+ * "리븐은 응수가 살아 있는 동안에는" 에서 응수는 피오라 것이지만 이 문장은
+ * 리븐이 그것을 피한다는 맞는 말이다. `은` 은 주제 표시일 뿐이다. 반면
+ * "오공은 P 고철장 거인으로 시작합니다" 처럼 슬롯을 달아 부르면 제 것이라는
+ * 뜻이라, 그때만 잡는다.
+ */
+const SUBJECT = /^(은|는|이|가|도|을|를)\s*[PQWER]\s*$/;
+
 function misattributes(sentence: string, m: Material): boolean {
   const names = m.profiles.map((p) => p.name);
   if (names.length < 2) return false;
   for (const [skill, owner] of m.ownerByName) {
     const at = sentence.indexOf(skill);
     if (at < 0) continue;
-    // 스킬 앞에서 가장 가까운 챔피언 이름이 임자다
-    let holder: string | undefined;
-    let best = -1;
     for (const name of names) {
+      if (name === owner) continue;
       const found = sentence.lastIndexOf(name, at);
-      if (found >= 0 && found > best) {
-        best = found;
-        holder = name;
-      }
+      if (found < 0) continue;
+      const gap = sentence.slice(found + name.length, at);
+      if (POSSESSIVE.test(gap) || SUBJECT.test(gap)) return true;
     }
-    if (holder && holder !== owner) return true;
   }
   return false;
 }
@@ -162,7 +177,14 @@ function contradictsProfile(sentence: string, profiles: Material["profiles"]): b
     // 이름 뒤 30 자 안에서 "주 피해" 를 말하는 자리만 본다. 스킬 하나의 피해 유형을
     // 말하는 문장까지 걸면 맞는 말이 잘린다.
     const near = sentence.slice(at, at + 60);
-    if (!/주 피해|피해 유형|피해를 (주|받|입)/.test(near)) continue;
+    /*
+     * **주는** 피해만 본다.
+     *
+     * `피해를 받` 까지 걸었더니 "럼블의 방어력은 매우 높으므로 물리 피해를 받기
+     * 어렵고" 가 걸렸다. 럼블이 주는 피해는 마법이 맞지만 이 문장은 받는 쪽
+     * 이야기다. 카드에 적힌 것은 주는 쪽이므로 대조할 근거가 없다.
+     */
+    if (!/주 피해|피해 유형|피해를 (주|입)/.test(near)) continue;
     if (profile.damage === "혼합") continue;
     for (const [word, re] of DAMAGE_WORDS) {
       if (word !== profile.damage && re.test(near) && !new RegExp(profile.damage).test(near)) return true;
@@ -179,7 +201,62 @@ function overlap(a: string, b: string): number {
   return words.filter((word) => other.has(word)).length / words.length;
 }
 
-export type Verdict = "note" | "card-ok" | "card-wrong" | "unsupported" | "number" | "duplicate";
+export type Verdict = "note" | "card-ok" | "card-wrong" | "unsupported" | "number" | "duplicate" | "boilerplate";
+
+/**
+ * 내용이 없는 문장. 인사말과, 모델이 지시문을 그대로 베낀 것.
+ *
+ * 페르소나는 인사말을 붙이지 말라고 이르고, 프롬프트도 한 번 더 이른다. 0.8B 는
+ * 그래도 문단마다 "물론이죠." 를 달았다. 여덟 자가 안 되어 길이 문턱을 그냥
+ * 지나쳤다. 규칙으로 못 막는 것은 코드가 지운다.
+ *
+ * 지시문 베끼기는 더 노골적이었다. "따라서 오공 시점으로 쓰십시오." 가 답 한복판에
+ * 나왔다 — 프롬프트 머리말을 그대로 옮긴 것이다. 노트 3,723 건을 훑어보니
+ * `십시오` 로 끝나는 문장은 **한 건도 없다.** 앱이 쓰는 말투가 아니므로, 그 꼴에
+ * 프롬프트에만 있는 낱말이 함께 있으면 베낀 것으로 본다.
+ */
+const GREETING = /^(물론(이죠|입니다)|네|예|알겠습니다|좋은 질문(입니다|이네요)|다음과 같습니다)[.!,]?$/;
+
+/**
+ * 프롬프트가 모델에게 지시한 문장들. 답에 나오면 베낀 것이다.
+ *
+ * 낱말 목록을 손으로 적어 두는 대신 **프롬프트 원문과 대조한다.** 규칙이 바뀌면
+ * 검사도 같이 바뀌므로 둘이 어긋날 일이 없다. 모델이 어미만 바꿔 옮기는 일이
+ * 잦아서("...말하십시오" → "...설명합니다") 어미는 떼고 견준다.
+ */
+function directives(lang: Language, answer: AdvisorAnswer | undefined): string[] {
+  const w = promptWords(lang);
+  const lines = [
+    w.notesHeader,
+    ...w.rules,
+    w.closing.champion,
+    w.closing.championWithNotes,
+    w.closing.skills,
+    w.closing.spell,
+    w.closing.compare,
+  ];
+  // 상성 지시문은 두 이름이 박혀 있어 카드를 봐야 지을 수 있다.
+  if (answer?.kind === "compare" && answer.matchup && answer.cards.length === 2) {
+    const [me, enemy] = answer.cards;
+    lines.push(w.matchup(me.name, enemy.name), w.closing.matchup(me.name, enemy.name));
+  }
+  return lines.flatMap((line) => line.split("\n")).map(strip);
+}
+
+/** 어미와 글머리 기호를 떼어 견줄 수 있는 꼴로 만든다. */
+function strip(line: string): string {
+  return line
+    .replace(/[*\-·\s]+/g, " ")
+    .trim()
+    .replace(/(십시오|습니다|합니다|입니다)\.?$/, "");
+}
+
+function isBoilerplate(sentence: string, directiveStems: string[]): boolean {
+  if (GREETING.test(sentence.replace(/\*\*/g, "").trim())) return true;
+  const stem = strip(sentence);
+  if (stem.length < 10) return false;
+  return directiveStems.some((other) => other.length >= 10 && overlap(stem, other) >= 0.6);
+}
 
 /**
  * 문장 하나를 가른다.
@@ -236,6 +313,15 @@ export function classify(sentence: string, m: Material): Verdict {
   for (const tag of m.allTags) {
     const at = sentence.indexOf(tag);
     if (at < 0) continue;
+    /*
+     * **없다고 말하는 효과**는 짝을 따지지 않는다.
+     *
+     * "럼블의 주력기인 화염방사기는 근접 사거리의 원뿔이며, 이동기가 없으므로" 가
+     * 걸렸다. 사람이 검증한 노트 그대로인데, `이동기` 를 화염방사기의 효과라고
+     * 읽고 카드와 어긋난다고 본 것이다. 없다는 말은 그 스킬이 그것을 가졌다는
+     * 주장이 아니다.
+     */
+    if (/없|않|못\s|아니/.test(sentence.slice(at + tag.length, at + tag.length + 12))) continue;
     seen += 1;
     const owner = [...marks].reverse().find((mark) => mark.at < at) ?? marks[0];
     if (m.effectsBySlot.get(owner.slot)?.has(tag)) matched += 1;
@@ -313,6 +399,7 @@ export function groundCommentary(
   if (!m) return { text, dropped: [] };
 
   const { done, tail } = splitDone(keepAskedPerspective(text, answer, lang));
+  const directiveStems = directives(lang, answer);
   const dropped: GroundResult["dropped"] = [];
   const kept: string[] = [];
   /** 이미 내보낸 말. 되풀이를 가리는 데 쓴다. */
@@ -320,6 +407,11 @@ export function groundCommentary(
   for (const raw of done) {
     const sentence = raw.trim();
     const plain = sentence.replace(/\*\*/g, "");
+    // 길이 문턱보다 먼저 본다. "물론이죠." 는 여섯 자라 문턱을 그냥 지나쳤다.
+    if (isBoilerplate(sentence, directiveStems)) {
+      dropped.push({ sentence, verdict: "boilerplate" });
+      continue;
+    }
     if (sentence.length < 8) {
       kept.push(raw);
       continue;
