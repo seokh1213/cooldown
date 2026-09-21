@@ -48,6 +48,11 @@ const TAGS: Record<string, { en: string; zh: string }> = {
   "투사체 차단": { en: "projectile block", zh: "格挡弹道" },
   "피해 면역": { en: "damage immunity", zh: "伤害免疫" },
   "회복": { en: "heal", zh: "回复" },
+  "받는 피해 감소": { en: "damage reduction", zh: "承受伤害降低" },
+  "변신": { en: "transform", zh: "变身" },
+  "생명력 흡수": { en: "lifesteal", zh: "吸血" },
+  "소환수": { en: "pet", zh: "召唤物" },
+  "자기 공격력 증가": { en: "self attack damage boost", zh: "自身攻击力提升" },
 };
 
 const DAMAGE: Record<string, { en: string; zh: string }> = {
