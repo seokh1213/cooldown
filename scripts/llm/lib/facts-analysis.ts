@@ -18,6 +18,37 @@ import { round } from "./text";
  */
 const SELF_RESIST = /추가 (방어력|마법 저항력)|받는/;
 
+/**
+ * 주어를 보지 않아 생긴 오독들. 전부 "그 문장이 무엇을 말하는가" 를 한 번 더 본다.
+ *
+ *   회복            "마나를 회복합니다"(브랜드 P, 카서스 E, 흐웨이 W) 가 체력 회복으로
+ *   최대 체력 비례   "최대 체력의 …를 회복"(가렌 P) 이 최대 체력 비례 **피해** 로
+ *   잃은 체력 비례   "잃은 체력에 비례해 회복"(카르마 R) 이 피해로
+ *   은신            "은신 상태가 아닌 적을 드러냅니다"(다이애나 Q) 가 은신으로
+ */
+/**
+ * 체력을 돌려주는가.
+ *
+ * "회복" 만 보면 마나 회복(제이스 W, 노틸러스 Q)과 소모값 반환(올라프 E)이 걸리고,
+ * "되돌" 까지 보면 구체가 되돌아가는 문장(오리아나 P)과 방패가 되돌아오는 문장
+ * (뽀삐 P)까지 걸린다. **체력이라고 적혀 있을 때만** 센다.
+ */
+function healsHealth(sentence: string): boolean {
+  if (!/회복|치유/.test(sentence)) return false;
+  return /체력/.test(sentence);
+}
+
+/** 체력 비례 표현이 피해를 말하는가, 회복을 말하는가. */
+function scalesDamage(sentence: string): boolean {
+  return /피해/.test(sentence) && !/회복|치유|보호막/.test(sentence);
+}
+
+/** 은신을 얻는가. 은신을 깨거나 드러내는 문장은 제외한다. */
+function gainsStealth(sentence: string): boolean {
+  if (!/은신|투명 상태|모습을 감/.test(sentence)) return false;
+  return !/드러|해제|아닌|밝혀|감지|보입니다/.test(sentence);
+}
+
 function shredsEnemy(text: string, word: "방어력" | "마법 저항력"): boolean {
   const pattern = new RegExp(`[^.]{0,60}${word}[^.]{0,30}?감소`);
   const span = pattern.exec(text)?.[0];
@@ -42,15 +73,15 @@ const EFFECT_RULES: Array<[RegExp, string]> = [
   [/억제/, "억제"],
   [/밀쳐|밀어내|끌어당|끌고 옵|잡아당|끌려가|끌어옵|끌어당김/, "강제 이동(넉백/끌기)"],
   [/보호막/, "보호막"],
-  [/체력을? 회복|회복합니다|회복시|치유합/, "회복"],
+  [/__HEAL__/, "회복"],
   [/치유 효과[^.]{0,10}감소|치유 감소|고통스러운 상처/, "치유 감소"],
-  [/은신|투명 상태|모습을 감/, "은신"],
+  [/__STEALTH__/, "은신"],
   // **움직이는 것이 챔피언인지 봐야 한다.** 이 판정은 아래 championMovesItself 가 맡는다.
   // 여기 목록에 걸리기만 해서는 안 된다. "적에게 날아가는 여우불", "매를 날려 보내",
   // "아군이 쓰레쉬에게 돌진합니다" 가 전부 이동기로 잡혔었다.
   [/__NEVER__/, "이동기"],
-  [/최대 체력의|최대 체력에 비례/, "최대 체력 비례 피해"],
-  [/잃은 체력/, "잃은 체력 비례"],
+  [/__MAXHP_DAMAGE__/, "최대 체력 비례 피해"],
+  [/__MISSINGHP__/, "잃은 체력 비례"],
   [/고정 피해/, "고정 피해"],
   [/처형|즉시 처치/, "처형"],
   [/강인함/, "강인함"],
@@ -68,11 +99,24 @@ const EFFECT_RULES: Array<[RegExp, string]> = [
   [/광역|주변 적|범위 내/, "광역"],
 ];
 
+/**
+ * 이 스킬이 **입히는** 피해 유형. 받는 피해는 세지 않는다.
+ *
+ * "받는 물리 피해가 감소합니다"(갈리오 W, 아무무 E) 가 물리 피해를 입히는 것으로
+ * 읽혔다. 갈리오 W 는 마법 피해만 입히는데 물리·마법 둘 다로 적혀 있었다.
+ */
+const TAKEN_DAMAGE = /받는[^.]{0,20}$/;
+
 export function detectDamageTypes(text: string): DamageType[] {
   const types: DamageType[] = [];
-  if (/물리 피해/.test(text)) types.push("물리");
-  if (/마법 피해/.test(text)) types.push("마법");
-  if (/고정 피해/.test(text)) types.push("고정");
+  const deals = (word: string) =>
+    splitSentences(text).some((sentence) => {
+      const at = sentence.indexOf(`${word} 피해`);
+      return at >= 0 && !TAKEN_DAMAGE.test(sentence.slice(0, at));
+    });
+  if (deals("물리")) types.push("물리");
+  if (deals("마법")) types.push("마법");
+  if (deals("고정")) types.push("고정");
   return types;
 }
 
@@ -259,10 +303,26 @@ export function detectEffects(text: string): string[] {
   const sentences = splitSentences(text);
   for (const [re, label] of EFFECT_RULES) {
     if (found.includes(label)) continue;
-    // 저항 감소는 표가 아니라 위 판정으로 가른다. 자기 쪽 문장을 걸러야 한다.
+    // 아래 넷은 표가 아니라 문장 판정으로 가른다. 주어와 대상을 봐야 한다.
     if (label === "적 마법 저항력 감소" || label === "적 방어력 감소") {
       const word = label === "적 마법 저항력 감소" ? "마법 저항력" : "방어력";
       if (sentences.some((sentence) => !isMinionOnly(sentence) && shredsEnemy(sentence, word))) found.push(label);
+      continue;
+    }
+    if (label === "회복") {
+      if (sentences.some((sentence) => !isMinionOnly(sentence) && healsHealth(sentence))) found.push(label);
+      continue;
+    }
+    if (label === "최대 체력 비례 피해") {
+      if (sentences.some((s2) => !isMinionOnly(s2) && /최대 체력의|최대 체력에 비례/.test(s2) && scalesDamage(s2))) found.push(label);
+      continue;
+    }
+    if (label === "잃은 체력 비례") {
+      if (sentences.some((s2) => !isMinionOnly(s2) && /잃은 체력/.test(s2) && scalesDamage(s2))) found.push(label);
+      continue;
+    }
+    if (label === "은신") {
+      if (sentences.some((sentence) => !isMinionOnly(sentence) && gainsStealth(sentence))) found.push(label);
       continue;
     }
     if (!re.test(text)) continue;
