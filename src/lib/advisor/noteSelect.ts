@@ -17,7 +17,14 @@
  */
 
 /** 플레이북이 쓰는 갈래. 데이터에 있는 값 그대로다. */
-export type NoteCategory = "skill" | "combo" | "laning" | "phase" | "teamfight" | "situational-item";
+export type NoteCategory =
+  | "skill"
+  | "combo"
+  | "laning"
+  | "phase"
+  | "teamfight"
+  | "situational-item"
+  | "escape-window";
 
 export interface NoteEntry {
   category: string;
@@ -40,12 +47,27 @@ const TOPIC_WORDS: Array<[RegExp, NoteCategory]> = [
   [/한타|교전|팀\s*파이트|집단|5대5|오대오|난전/, "teamfight"],
   [/라인전|라인|초반|레벨\s*[123]|cs|파밍|견제|주도권/, "laning"],
   [/중반|후반|스케일|성장|운영|오브젝트|드래곤|바론|전령|스플릿/, "phase"],
-  [/아이템|템|빌드|시작\s*템|신화|코어|방어구|갑옷/, "situational-item"],
+  // 아이템 이름이 아니라 **스탯**으로 묻는 경우가 더 많다. "마법 저항력 올려야 하나"
+  // 가 아무 갈래에도 안 걸려서, 정작 그 답을 담은 노트가 뽑히지 않고 있었다.
+  [
+    /아이템|템|빌드|시작\s*템|신화|코어|방어구|갑옷|방어력|저항력|저항|체력|강인함|치유\s*감소|올려야|올릴|쌓|스탯|카운터\s*스탯/,
+    "situational-item",
+  ],
+  // "언제 물어야 하나" 는 상대의 이동기와 그 공백을 묻는 것이다.
+  [/언제\s*물|물어야|무는|진입|파고|갱|짤라|잘라|도망|빠져나|이동기|점멸|각\s*(이|을|볼)/, "escape-window"],
   [/스킬|패시브|궁|궁극기|[QWER]\s*스킬|쿨|사거리|능력/, "skill"],
 ];
 
 /** 아무 낱말도 안 걸렸을 때의 순서. 예전 동작과 같다. */
-const DEFAULT_ORDER: NoteCategory[] = ["skill", "combo", "laning", "phase", "teamfight", "situational-item"];
+const DEFAULT_ORDER: NoteCategory[] = [
+  "skill",
+  "combo",
+  "laning",
+  "phase",
+  "teamfight",
+  "situational-item",
+  "escape-window",
+];
 
 /**
  * 질문이 어느 갈래를 묻는지 본다.
@@ -73,7 +95,8 @@ export type NotePerspective = "playing" | "against" | "both";
  * 가른다. 여기 오는 것은 챔피언이 하나인 질문이다.
  */
 export function notePerspective(question: string): NotePerspective {
-  const against = /상대|맞상대|카운터|이기|이길|막|상대법|공략법|어떻게\s*잡|까다로|상성/.test(question);
+  const against =
+    /상대|맞상대|카운터|이기|이길|막|상대법|공략법|어떻게\s*잡|까다로|상성|언제\s*물|물어야|무는|잘라/.test(question);
   const playing = /(으로|로)\s|플레이|운용|하는\s*법|잘하|숙련|빌드|템|어떻게\s*쓰|콤보/.test(question);
   if (against && !playing) return "against";
   if (playing && !against) return "playing";
