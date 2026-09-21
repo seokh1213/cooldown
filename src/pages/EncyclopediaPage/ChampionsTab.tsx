@@ -54,11 +54,30 @@ export function ChampionsTab(props: EncyclopediaPageProps) {
             <Search aria-hidden="true" className="size-4 text-muted-foreground" />
             <input value={search} onChange={(event) => setSearch(event.target.value)} aria-label={t.comparison.select} placeholder={t.comparison.select} className="w-full bg-transparent py-2.5 text-base md:text-sm outline-none" />
           </label>
-          <div className="grid grid-cols-5 gap-x-2 gap-y-3 sm:grid-cols-8 md:grid-cols-10 lg:grid-cols-12 xl:grid-cols-16" data-champion-grid>
+          {/*
+            열 수를 화면 크기마다 못 박지 않는다.
+
+            끊는 점마다 5·8·10·12·16 으로 적어 두었더니 그 사이 폭에서는 칸이 빠듯해져
+            "레나타 글라스크" 같은 이름이 서너 줄로 접혔다. 끊는 점을 더 늘리는 것은
+            같은 문제를 잘게 나눌 뿐이다.
+
+            대신 **칸의 최소 폭**만 정하고 몇 개가 들어갈지는 브라우저가 세게 한다.
+            아이콘 44px 에 두 글자 이름이 한 줄로 들어가는 폭이 76px 근방이다.
+            좁아지면 한 줄에 적게 들어가고, 넓어지면 저절로 늘어난다.
+          */}
+          <div
+            className="grid gap-x-2 gap-y-3 [grid-template-columns:repeat(auto-fill,minmax(76px,1fr))]"
+            data-champion-grid
+          >
             {champions.map((champion) => (
               <button key={champion.id} type="button" onClick={() => select(champion.id)} className="group flex min-w-0 flex-col items-center gap-1.5 rounded py-1 text-center focus-visible:outline-2 focus-visible:outline-primary">
                 <img src={championIconUrl(props.ddragonVersion, champion.id)} alt="" width={44} height={44} loading="lazy" className="size-11 rounded group-hover:ring-2 group-hover:ring-primary" />
-                <span className="text-[11px] leading-tight group-hover:text-primary">{champion.name}</span>
+                {/*
+                  `break-keep` 으로 낱말 가운데를 자르지 않는다. 기본값은 한글을 아무
+                  글자에서나 끊어서 "레나타 글라스크" 가 "레나 / 타 글 / 라스 / 크" 로
+                  네 줄이 됐다. 띄어쓰기에서만 끊으면 두 줄로 끝난다.
+                */}
+                <span className="break-keep text-[11px] leading-tight group-hover:text-primary">{champion.name}</span>
               </button>
             ))}
           </div>
