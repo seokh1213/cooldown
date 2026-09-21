@@ -281,7 +281,7 @@ function discountLines(card: ChampionCard, claims: ItemClaims): string[] {
     } else if (kind === "저항 감소") {
       lines.set(kind, `${josa(called, "이/가")} 저항 자체를 깎으므로 올려 둔 값이 그 사이에는 덜 듭니다.`);
     } else if (kind === "고정 피해") {
-      lines.set(kind, `${called}의 고정 피해에는 저항이 아예 관여하지 않으니 그 한 줄기는 체력 총량으로만 버팁니다.`);
+      lines.set(kind, `${called}의 고정 피해에는 저항이 아예 관여하지 않아 그 몫은 체력 총량으로만 버팁니다.`);
     } else if (kind === "관통") {
       lines.set(kind, `${called}에 관통이 걸려 있어 올린 저항의 일부는 그냥 뚫립니다.`);
     } else if (kind === "처형") {
@@ -293,7 +293,7 @@ function discountLines(card: ChampionCard, claims: ItemClaims): string[] {
   const picked = order.flatMap((kind) => (lines.has(kind) ? [lines.get(kind) as string] : [])).slice(0, 2);
   if (picked.length) return picked;
   if (first === "방어력" || first === "마법 저항력") {
-    return [`저항을 깎는 스킬도 고정 피해도 없으므로 올린 ${josa(first, "이/가")} 끝까지 그대로 값을 합니다.`];
+    return [`저항을 깎는 스킬도 고정 피해도 없어서 올린 ${first}은 끝까지 온전히 듣습니다.`];
   }
   return [];
 }
@@ -303,13 +303,13 @@ function secondLine(card: ChampionCard, claims: ItemClaims): string | undefined 
     return `${josa(callSlots(card, claims.sustain), "이/가")} 체력을 돌려주니 결투가 길어지는 구도라면 치유 감소가 저항 다음입니다.`;
   }
   if (claims.stats.includes("강인함")) {
-    return `실제로 죽는 경로는 ${josa(callSlots(card, claims.cc), "로/으로")} 이어지는 군중 제어에 묶이는 것이므로, 이동기가 없는 챔피언이라면 강인함을 저항보다 앞에 둘 수 있습니다.`;
+    return `죽는 경로는 ${josa(callSlots(card, claims.cc), "로/으로")} 이어지는 군중 제어에 묶이는 것이라 이동기가 없는 챔피언이라면 강인함을 저항보다 앞에 둘 수 있습니다.`;
   }
   if (claims.stats.includes("공격 속도 감소")) {
-    return `화력의 축이 기본 공격과 공격 속도에 있으므로 공격 속도 감소도 함께 값을 합니다.`;
+    return `화력의 축이 기본 공격과 공격 속도에 있어서 공격 속도를 깎으면 그만큼 덜 맞습니다.`;
   }
   if (claims.stats.includes("이동 속도")) {
-    return `범위를 깔아 놓고 미는 꼴이라 저항으로 다 받아 내기보다 예고된 자리에서 걸어 나갈 이동 속도가 함께 값을 합니다.`;
+    return `범위를 깔아 놓고 미는 꼴이라 저항으로 버티기보다 예고된 자리에서 걸어 나갈 이동 속도가 더 값을 합니다.`;
   }
   return undefined;
 }
@@ -363,11 +363,20 @@ function shortName(name: string): string {
 export function renderEscapeClaims(card: ChampionCard, claims: EscapeClaims): string {
   const { moves } = claims;
   if (moves.length === 0) {
-    return `${josa(card.name, "은/는")} 스스로 거리를 벌리는 스킬이 없습니다. 한 번 붙잡으면 점멸을 쓰게 만들기 전까지는 빠져나갈 수단이 없다는 뜻이므로, 진입 각이 나왔을 때 망설이지 않아도 됩니다.`;
+    // 같은 말을 173 종에 똑같이 붙이면 그것만으로 기계가 쓴 티가 난다. 사거리
+    // 유형은 카드에 있고 실제로 조언이 갈리는 값이라 여기서 나눈다. 원거리인데
+    // 이동기가 없는 것과 근접인데 없는 것은 상대하는 쪽이 할 일이 다르다.
+    const tail =
+      card.rangeType === "원거리"
+        ? "원거리인데도 빠져나갈 수단이 없으므로 한 번 거리를 좁히면 그대로 잡힙니다."
+        : "한 번 붙잡으면 점멸을 쓰게 만들기 전까지 빠져나갈 수단이 없다는 뜻이라 진입 각이 나왔을 때 망설이지 않아도 됩니다.";
+    return `${josa(card.name, "은/는")} 스스로 거리를 벌리는 스킬이 없습니다. ${tail}`;
   }
-  const listed = moves.map((m) => `${m.slot} ${shortName(m.name)}(${m.cooldown}초)`).join(", ");
+  // 1레벨 기준이라는 말을 따로 문장으로 두었더니 109 종에 똑같은 줄이 붙었다.
+  // 아무 정보도 더하지 않는 군더더기라 수치 옆에 한마디로 접는다.
+  const listed = moves.map((m) => `${m.slot} ${shortName(m.name)}(1레벨 ${m.cooldown}초)`).join(", ");
   const longest = moves.reduce((a, b) => (a.cooldown >= b.cooldown ? a : b));
-  const head = `${card.name}의 이동 수단은 ${listed}입니다. 괄호 안은 1레벨 기준이라 스킬을 올릴수록 짧아집니다.`;
+  const head = `${card.name}의 이동 수단은 ${listed}입니다.`;
   if (claims.ultimateOnly) {
     return `${head} 궁극기 말고는 움직일 방법이 없으므로 6레벨 전이나 ${longest.slot}${SLOT_PARTICLE[longest.slot]?.subject ?? "이"} 빠진 사이가 그대로 무는 창입니다.`;
   }
@@ -400,8 +409,8 @@ export function renderStackClaims(card: ChampionCard, claims: StackClaims): stri
   const passiveOnly = claims.slots.every((slot) => slot === "P");
   const head = `${josa(card.name, "은/는")} ${josa(called, "로/으로")} 쌓은 것이 영구히 남아 시간이 갈수록 세집니다.`;
   const tail = passiveOnly
-    ? "가장 약한 구간은 아무것도 쌓이지 않은 초반이므로, 그때 눌러 두지 못하면 나중에는 같은 각으로 못 잡습니다."
-    : "쌓는 자리를 막는 것이 곧 성장을 늦추는 것이라, 초반에 라인을 밀어 두거나 압박해 쌓을 틈을 주지 않는 편이 값을 합니다.";
+    ? "가장 약한 구간은 아무것도 쌓이지 않은 초반이라 그때 눌러 두지 못하면 나중에는 같은 각으로 못 잡습니다."
+    : "쌓는 자리를 막는 것이 곧 성장을 늦추는 길입니다. 초반에 라인을 밀어 두거나 압박해 쌓을 틈을 주지 않아야 합니다.";
   return `${head} ${tail}`;
 }
 
