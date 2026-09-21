@@ -68,6 +68,34 @@ assert.ok(q && !q.effects.includes("에어본"), "Q 에는 에어본이 없어�
   assert.equal(result.dropped.length, 0, "맞는 짝은 지우지 않는다");
 }
 
+/*
+ * 카드의 효과 태그는 성글다 — 스킬 865개 중 196개(23%)가 비어 있다. 태그 하나라도
+ * 어긋나면 틀렸다고 하던 규칙이 사람이 검증한 노트 36문장을 버렸다. 아래 셋을 더해
+ * 17문장으로 줄였다. 모르는 것을 틀렸다고 하지 않는 것이 요지다.
+ */
+{
+  // 짝이 하나라도 맞으면 맞다고 본다. "광역 기절" 은 한 덩어리 표현이지 두 주장이 아니다.
+  const both = `${ult.name}은 즉시 터지는 광역 에어본입니다.`;
+  assert.equal(groundCommentary(both, answer).dropped.length, 0, "하나라도 맞으면 통과");
+
+  // 임자의 태그가 비어 있으면 아무것도 모른다.
+  const bare = malphite.spells.find((s) => (s.effects ?? []).length === 0);
+  if (bare) {
+    const text = `${bare.name}으로 에어본을 겁니다.`;
+    assert.equal(groundCommentary(text, answer).dropped.length, 0, "태그가 없으면 판단하지 않는다");
+  }
+
+  // 태그에 없어도 툴팁 본문에 적혀 있으면 맞는 말이다.
+  const withText = malphite.spells.find(
+    (s) => (s.effects ?? []).length > 0 && ["둔화", "기절", "보호막"].some((tag) => !(s.effects ?? []).includes(tag) && (s.text ?? "").includes(tag)),
+  );
+  if (withText) {
+    const tag = ["둔화", "기절", "보호막"].find((t) => !(withText.effects ?? []).includes(t) && (withText.text ?? "").includes(t));
+    const text = `${withText.name}은 ${tag}를 겁니다.`;
+    assert.equal(groundCommentary(text, answer).dropped.length, 0, "툴팁에 있으면 통과");
+  }
+}
+
 {
   // 숫자는 해설에 쓰지 말라고 일러 두었다. 새어 나오면 대조할 방법이 없다.
   const result = groundCommentary("궁극기 쿨타임은 130초입니다.", answer);
@@ -262,4 +290,31 @@ assert.ok(q && !q.effects.includes("에어본"), "Q 에는 에어본이 없어�
   assert.equal(two.dropped.length, 0, "다른 말은 남는다");
 }
 
-console.log("✅ 근거 검사 통과 (33건)");
+/*
+ * 묻지 않은 관점은 화면에 안 나간다.
+ *
+ * "오공 상대법" 을 물었는데 답이 **상대할 때** 와 **플레이할 때** 둘 다 나왔다.
+ * 프롬프트가 이미 못 박아 두지만 작은 모델은 그 지시를 흘린다.
+ */
+{
+  const asked: AdvisorAnswer = {
+    kind: "champion",
+    card: malphite,
+    notes: { playing: [], against: [], perspective: "against" },
+  };
+  const both = "**상대할 때**\n각을 주지 않는 것이 유일한 대응입니다.\n\n**플레이할 때**\n방패를 채워 두고 시작합니다.";
+  const kept = groundCommentary(both, asked).text;
+  assert.match(kept, /상대할 때/, "물은 쪽은 남는다");
+  assert.doesNotMatch(kept, /플레이할 때/, "묻지 않은 쪽은 사라진다");
+  assert.doesNotMatch(kept, /방패를 채워/, "그 문단 본문도 함께 사라진다");
+
+  // 양쪽을 물었으면 그대로 둔다.
+  const bothAsked: AdvisorAnswer = { ...asked, notes: { playing: [], against: [], perspective: "both" } };
+  assert.match(groundCommentary(both, bothAsked).text, /플레이할 때/, "양쪽을 물으면 그대로");
+
+  // 다 잘라 내면 원문을 둔다. 빈 해설보다는 관점이 섞인 해설이 낫다.
+  const onlyOther = "**플레이할 때**\n방패를 채워 두고 시작합니다.";
+  assert.match(groundCommentary(onlyOther, asked).text, /방패를 채워/, "다 지워질 바엔 그대로 둔다");
+}
+
+console.log("✅ 근거 검사 통과 (41건)");
