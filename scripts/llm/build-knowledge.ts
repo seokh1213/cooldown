@@ -16,6 +16,7 @@ import {
   type LlmLocale,
 } from "./lib/data";
 import { createChampionCardBuilder, type ChampionCard } from "./lib/facts";
+import { loadSpellOverrides } from "./lib/spellOverrides";
 
 export interface ChampionCardFile {
   schemaVersion: 1;
@@ -55,6 +56,7 @@ function main() {
     data.riotMeta,
     data.wikiMeta,
     loadDashes(),
+    loadSpellOverrides(),
   );
   const cards = builder.buildAll();
 

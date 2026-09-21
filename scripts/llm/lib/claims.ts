@@ -221,7 +221,12 @@ function profileLine(card: ChampionCard, claims: ItemClaims): string | undefined
     ["물리", "물리라", "방어력", "마법 저항력", "마법이라"],
   ] as const) {
     if (profile.mix !== type) continue;
-    const slots = callSlots(card, profile.byType[type] ?? []);
+    // 두 유형을 함께 내는 슬롯은 여기서도 빼야 한다. 넣으면 "P 가 물리" 라고 해 놓고
+    // 바로 뒤에서 "P 는 두 유형을 함께 낸다" 가 되어 한 문단이 스스로 어긋난다.
+    const slots = callSlots(
+      card,
+      (profile.byType[type] ?? []).filter((slot) => !profile.both.includes(slot)),
+    );
     if (clean) {
       return `${name}의 피해는 ${slots}까지 모두 ${joined} ${other}은 한 푼도 값을 하지 않고 ${resist}만 실효 체력으로 바뀝니다.`;
     }
