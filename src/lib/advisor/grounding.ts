@@ -12,9 +12,12 @@
  *   없는 스킬    카드에 없는 이름을 슬롯과 함께 불렀다.
  *   숫자         해설에 숫자를 쓰지 말라고 일러 두었다. 새어 나온 값은 카드와 어긋날 수
  *                있고 대조할 방법이 없다.
+ *   되풀이       앞에서 한 말을 그대로 다시 한다. "오공 상대법" 에 같은 문단이 머리말만
+ *                바꿔 두 번 나왔다. 틀린 말은 아니지만 읽는 사람의 시간을 버린다.
  *
- * `strict` 를 켜면 근거 없는 문장까지 지운다. 작은 모델을 붙이게 되면 그쪽에 쓴다.
- * 큰 모델에는 켜지 않는다 — 멀쩡한 문장을 너무 많이 잃는다.
+ * 한때 "근거 없는 문장까지 지우는" 엄격 모드를 두었다. 지어내는 모델을 붙이려 했을
+ * 때의 안전장치인데, 지금 쓰는 두 모델 모두 틀린 짝이 0건이라 지울 것이 없었다.
+ * 쓰지 않는 장치를 남겨 두면 다음 사람이 켜 볼 뿐이라 걷어냈다.
  *
  * 스트리밍 중에도 돌아야 하므로 **끝난 문장만** 본다. 마지막 조각은 아직 자라는 중이라
  * 손대지 않고 그대로 둔다. 다 쓰고 나면 그 조각도 문장이 되어 한 번 더 걸린다.
@@ -74,7 +77,7 @@ function overlap(a: string, b: string): number {
   return words.filter((word) => other.has(word)).length / words.length;
 }
 
-export type Verdict = "note" | "card-ok" | "card-wrong" | "unsupported" | "number";
+export type Verdict = "note" | "card-ok" | "card-wrong" | "unsupported" | "number" | "duplicate";
 
 /**
  * 문장 하나를 가른다.
@@ -117,26 +120,36 @@ export interface GroundResult {
  * 카드가 챔피언 답이 아니면(스킬 하나, 아이템, 규칙) 대조할 자료가 없으므로 그대로 둔다.
  * 없는 자료로 지우는 것이 지우지 않는 것보다 위험하다.
  */
-export function groundCommentary(
-  text: string,
-  answer: AdvisorAnswer | undefined,
-  options: { strict?: boolean } = {},
-): GroundResult {
+export function groundCommentary(text: string, answer: AdvisorAnswer | undefined): GroundResult {
   const m = answer ? material(answer) : undefined;
   if (!m) return { text, dropped: [] };
 
   const { done, tail } = splitDone(text);
   const dropped: GroundResult["dropped"] = [];
   const kept: string[] = [];
+  /** 이미 내보낸 말. 되풀이를 가리는 데 쓴다. */
+  const said: string[] = [];
   for (const raw of done) {
     const sentence = raw.trim();
-    // 굵은 글씨 한 줄은 소제목이다. 사실을 주장하지 않으므로 대조하지 않는다.
-    if (sentence.length < 8 || /^\*\*[^*]+\*\*$/.test(sentence)) {
+    const plain = sentence.replace(/\*\*/g, "");
+    if (sentence.length < 8) {
       kept.push(raw);
       continue;
     }
-    const verdict = classify(sentence.replace(/\*\*/g, ""), m);
-    const drop = verdict === "card-wrong" || verdict === "number" || (options.strict && verdict === "unsupported");
+    // 앞에서 한 말을 다시 하면 버린다. 소제목도 본다 — 같은 문단이 머리말만 바꿔
+    // 두 번 나온 적이 있다.
+    if (said.some((prev) => overlap(plain, prev) >= 0.7 && overlap(prev, plain) >= 0.7)) {
+      dropped.push({ sentence, verdict: "duplicate" });
+      continue;
+    }
+    said.push(plain);
+    // 굵은 글씨 한 줄은 소제목이다. 사실을 주장하지 않으므로 대조하지 않는다.
+    if (/^\*\*[^*]+\*\*$/.test(sentence)) {
+      kept.push(raw);
+      continue;
+    }
+    const verdict = classify(plain, m);
+    const drop = verdict === "card-wrong" || verdict === "number";
     if (drop) dropped.push({ sentence, verdict });
     else kept.push(raw);
   }

@@ -388,7 +388,6 @@ export const koKRTranslations: Translations = {
       // AI 기본법 제31조 제2항은 생성형 AI 가 만든 결과물임을 표시하게 한다.
       // 카드의 표·수치는 코드가 만들고 이 문단만 모델이 쓰므로, 표시는 여기에 붙인다.
       commentary: "AI 해설",
-      commentaryLite: "AI 간이 해설 · 정확도가 낮습니다",
       commentaryPending: "AI 해설을 만드는 중",
       top: "상위 {n}%",
       bottom: "하위 {n}%",
@@ -473,8 +472,8 @@ export const koKRTranslations: Translations = {
       note: "대화 기록과 평가는 이 기기에만 있고 삭제해도 서버로 간 적이 없습니다.",
       pickTitle: "쓸 모델",
       pickNeedsF16: "이 그래픽 어댑터에 16비트 셰이더 연산이 없어 고를 수 없습니다",
-      pickNoteFull: "설명을 잘하고 답변 품질이 좋습니다. 대신 느리고 용량이 크며, 그래픽카드에 따라 지원되지 않을 수 있습니다",
-      pickNoteLite: "답변 품질은 떨어지지만 대부분의 컴퓨터에서 가볍게 돕니다",
+      pickNoteFull: "설명이 깊고 촘촘합니다. 대신 느리고 용량이 크며, 그래픽카드에 따라 지원되지 않을 수 있습니다",
+      pickNoteLite: "가볍고 네 배 빠릅니다. 설명은 조금 얕지만 대부분의 컴퓨터에서 돕니다",
       pickNote: "고르면 받아 둔 모델을 지우고 새로 받습니다. 보던 대화는 그대로 있습니다.",
     },
     sources: "찾은 자료",

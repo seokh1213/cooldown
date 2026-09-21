@@ -11,7 +11,6 @@ import type { ChampionCard } from "./llm/lib/facts";
 import { PUBLIC_DATA_ROOT, resolvePatchVersion } from "./llm/lib/data";
 import { groundCommentary } from "../src/lib/advisor/grounding";
 import type { AdvisorAnswer } from "../src/lib/advisor/answer";
-import { buildLitePrompt, tidyLite } from "../src/lib/advisor/litePrompt";
 import {
   ADVISOR_MODEL,
   FALLBACK_MODEL,
@@ -76,16 +75,15 @@ assert.ok(q && !q.effects.includes("에어본"), "Q 에는 에어본이 없어�
 }
 
 {
-  // 근거 없는 이음말은 기본값에서 남긴다. 다 지우면 해설이 토막 난다.
+  // 근거 없는 이음말은 남긴다. 다 지우면 해설이 토막 난다.
   const text = "한타에서는 진입 타이밍이 가장 중요합니다.";
-  assert.equal(groundCommentary(text, answer).dropped.length, 0, "기본값은 관대하다");
-  assert.equal(groundCommentary(text, answer, { strict: true }).dropped.length, 1, "strict 는 지운다");
+  assert.equal(groundCommentary(text, answer).dropped.length, 0, "근거가 없다고 지우지는 않는다");
 }
 
 {
-  // 노트에서 온 문장은 정의상 옳다. strict 에서도 남아야 한다.
+  // 노트에서 온 문장은 정의상 옳다.
   const text = "화강암 방패가 살아 있을 때 딜 교환을 시작합니다.";
-  assert.equal(groundCommentary(text, answer, { strict: true }).dropped.length, 0, "노트 문장은 남는다");
+  assert.equal(groundCommentary(text, answer).dropped.length, 0, "노트 문장은 남는다");
 }
 
 {
@@ -102,7 +100,7 @@ assert.ok(q && !q.effects.includes("에어본"), "Q 에는 에어본이 없어�
 
 {
   // 굵은 소제목은 사실을 주장하지 않는다.
-  const result = groundCommentary("**플레이할 때**", answer, { strict: true });
+  const result = groundCommentary("**플레이할 때**", answer);
   assert.equal(result.dropped.length, 0, "소제목은 대조 대상이 아니다");
 }
 
@@ -186,59 +184,82 @@ assert.ok(q && !q.effects.includes("에어본"), "Q 에는 에어본이 없어�
 }
 
 /**
- * 간이 모델 경로.
+ * 모델을 권할 기기인지 가리는 관문.
  *
- * 1B 에게는 해설을 쓰게 하지 않고 검증된 노트를 줄이게 한다. Gemma 3 1B 로 재 보니
- * 현행 프롬프트는 쓴 글의 78% 가 근거 검사에 걸려 사라지고 12문항 중 4개가 한 줄도
- * 안 남았는데, 이 경로는 87% 가 남고 빈 답이 1개였다.
+ * f16 을 모델과 무관하게 따지면 Pascal 같은 카드가 16비트를 안 쓰는 판본까지 못 쓴다.
+ * 반대로 아예 안 따지면 q4f16 을 못 도는 기기에 3GB 를 받게 한다.
  */
 {
-  const prompt = buildLitePrompt(answer, "ko_KR");
-  assert.ok(prompt, "노트가 있으면 시킬 일이 있다");
-  assert.match(prompt, /화강암 방패가 살아 있을 때/, "노트가 재료로 들어간다");
-  assert.doesNotMatch(prompt, /말파이트 상대법/, "질문은 사용자 발화로 따로 간다");
+  const needs: AdvisorModel = { id: "a", dtype: "q4f16", downloadMb: 1, needsF16: true };
+  const free: AdvisorModel = { id: "b", dtype: "q4", downloadMb: 1, needsF16: false };
+  const withF16 = { supported: true, f16: true };
+  const noF16 = { supported: true, f16: false };
+  const noGpu = { supported: false, f16: false };
 
-  // 줄일 노트가 없으면 아예 말을 시키지 않는다. 빈손으로 시키면 지어낸다.
-  assert.equal(buildLitePrompt({ kind: "champion", card: malphite }, "ko_KR"), undefined, "노트가 없으면 시키지 않는다");
-  assert.equal(buildLitePrompt({ kind: "text", text: "아무 말" }, "ko_KR"), undefined, "챔피언 답이 아니면 시키지 않는다");
+  assert.equal(canOfferModel(needs, withF16, "desktop"), true, "f16 있으면 q4f16 을 권한다");
+  assert.equal(canOfferModel(needs, noF16, "desktop"), false, "f16 없으면 q4f16 을 권하지 않는다");
+  assert.equal(canOfferModel(free, noF16, "desktop"), true, "16비트를 안 쓰면 f16 없이도 권한다");
+  assert.equal(canOfferModel(free, noGpu, "desktop"), false, "WebGPU 자체가 없으면 권하지 않는다");
+  assert.equal(canOfferModel(free, null, "desktop"), false, "어댑터를 확인하기 전에는 권하지 않는다");
+  assert.equal(canOfferModel(free, withF16, "mobile"), false, "휴대폰에는 권하지 않는다");
+}
+
+/**
+ * 고르지 않았을 때 무엇을 줄 것인가.
+ *
+ * 16비트 셰이더가 없는 기기에 기본 모델을 주면 내려받기부터 막힌다. GTX 10xx 에서
+ * 후보를 전부 눌러 본 끝에 남은 것이 대체본이라, 그 기기에는 그것을 준다.
+ */
+{
+  assert.equal(autoModel({ supported: true, f16: true }).id, ADVISOR_MODEL.id, "f16 이 있으면 기본 모델");
+  assert.equal(autoModel({ supported: true, f16: false }).id, FALLBACK_MODEL.id, "f16 이 없으면 대체본");
+  assert.equal(autoModel(null).id, ADVISOR_MODEL.id, "확인 전에는 기본 모델");
+  assert.equal(autoModel({ supported: false, f16: false }).id, ADVISOR_MODEL.id, "WebGPU 가 없으면 어차피 안 권한다");
+
+  assert.equal(FALLBACK_MODEL.needsF16, false, "대체본이 16비트를 요구하면 뜻이 없다");
+  assert.equal(FALLBACK_MODEL.lite, true, "대체본은 간이로 표시해야 화면이 그렇게 알린다");
+  assert.equal(ADVISOR_MODEL.lite, undefined, "기본 모델은 간이가 아니다");
+
+  // 화면이 고른 줄을 표시하려면 목록에서 찾을 수 있어야 한다.
+  assert.equal(modelChoiceKey(ADVISOR_MODEL), "default");
+  assert.equal(modelChoiceKey(FALLBACK_MODEL), "qwen35");
 
   /*
-    사실 하나를 묻는 답에는 붙이지 않는다. 실제로 "오공 스킬 쿨타임" 에
-    "오공 스킬 쿨타임은 1.5초입니다" 라고 썼다. 카드와 대화 앞머리에 정확한 값이
-    있는데 그 아래에서 딴소리를 한 셈이다.
+    고를 것은 둘이다. 후보를 늘어놓으면 무엇이 다른지 읽는 사람이 판단해야 한다.
+    실제로 돌려 보고 남은 둘만 둔다 — 깊은 해설과 가벼운 해설.
   */
-  assert.equal(
-    buildLitePrompt({ ...answer, focus: "cooldown" } as AdvisorAnswer, "ko_KR"),
-    undefined,
-    "사실 조회에는 해설을 붙이지 않는다",
-  );
+  assert.equal(MODEL_CHOICES.length, 2, "고를 것은 둘");
+  // 하나는 어디서나 돌아야 한다. 그러지 않으면 f16 없는 기기가 다시 빈손이 된다.
+  assert.ok(MODEL_CHOICES.some((c) => !c.model.needsF16), "f16 없이 도는 줄이 있어야 한다");
+  // 설명은 `lite` 로 갈라 보인다. 둘이 같은 쪽이면 한쪽 설명이 영영 안 나온다.
+  assert.equal(MODEL_CHOICES.filter((c) => c.model.lite).length, 1, "가벼운 줄은 하나");
+
+  /*
+    그래픽카드가 못 돌리는 줄은 잠근다. 받고 나서 적재에서 죽는 것보다 낫다.
+    확인하는 중에는 잠그지 않는다 — 잠갔다 푸는 편이 더 헷갈린다.
+  */
+  const heavy: AdvisorModel = { id: "a", dtype: "q4f16", downloadMb: 1, needsF16: true };
+  const light: AdvisorModel = { id: "b", dtype: "q4", downloadMb: 1, needsF16: false };
+  assert.equal(modelBlocked(heavy, { supported: true, f16: false }), true, "f16 없으면 q4f16 은 잠근다");
+  assert.equal(modelBlocked(light, { supported: true, f16: false }), false, "16비트를 안 쓰면 잠그지 않는다");
+  assert.equal(modelBlocked(light, { supported: false, f16: false }), true, "WebGPU 가 없으면 둘 다 잠근다");
+  assert.equal(modelBlocked(heavy, { supported: true, f16: true }), false, "f16 이 있으면 잠그지 않는다");
+  assert.equal(modelBlocked(heavy, null), false, "확인 전에는 잠그지 않는다");
 }
 
 {
-  // 1B 는 "번호 없이" 를 안 지킨다. 코드로 지운다.
-  assert.equal(
-    tidyLite("1. R은 군중 제어로 끊을 수 없습니다. 2. 방패가 깨진 뒤에 붙습니다."),
-    "R은 군중 제어로 끊을 수 없습니다. 방패가 깨진 뒤에 붙습니다.",
-  );
-  assert.equal(tidyLite("- 방패가 차 있을 때 시작합니다. - 깨지면 물러납니다."), "방패가 차 있을 때 시작합니다. 깨지면 물러납니다.");
+  /*
+    앞에서 한 말을 다시 하면 버린다. "오공 상대법" 에 같은 문단이 머리말만 바꿔
+    두 번 나왔다. 틀린 말은 아니지만 읽는 사람의 시간을 버린다.
+  */
+  const twice = "오래 붙어 싸울수록 오공이 유리해지므로 짧은 딜 교환을 반복합니다. 오래 붙어 싸울수록 오공이 유리해지므로 짧은 딜 교환을 반복합니다.";
+  const once = groundCommentary(twice, answer);
+  assert.equal(once.dropped.filter((d) => d.verdict === "duplicate").length, 1, "되풀이는 한 번만");
+  assert.equal(once.text.split("오래 붙어").length - 1, 1, "남는 것은 하나");
 
-  // 거의 같은 문장을 두 번 쓴다. 어절이 많이 겹치면 같은 말로 본다.
-  const dup = tidyLite("야스오가 직선상에서 벗어나는 습관을 들입니다. 야스오가 다가올 때 직선상에서 벗어나는 습관을 들입니다.");
-  assert.equal(dup, "야스오가 직선상에서 벗어나는 습관을 들입니다.", "거의 같은 말은 한 번만");
-
-  // 서로 다른 문장은 남긴다. 너무 세게 지우면 답이 한 줄로 줄어든다.
-  const two = tidyLite("R은 군중 제어로 끊을 수 없습니다. 평타 챔피언은 E 공격 속도 감소가 아픕니다.");
-  assert.ok(two.includes("군중 제어") && two.includes("공격 속도"), "다른 말은 둘 다 남는다");
-
-  // 두 문장까지다. 카드에 노트 전문이 이미 있다.
-  const three = tidyLite("R은 끊을 수 없습니다. 방패가 깨진 뒤에 붙습니다. 라인은 밀어 두고 움직입니다.");
-  assert.equal(three.split(". ").length, 2, "두 문장 상한");
-
-  // 작은 모델이 조사를 따로 띄운다. "R 은 저지 불가" 가 실제로 나왔다.
-  assert.equal(tidyLite("R 은 저지 불가 돌진이라 끊을 수 없습니다."), "R은 저지 불가 돌진이라 끊을 수 없습니다.");
-  assert.equal(tidyLite("상대가 겹치면 E 로 붙어 오공 이 들어갑니다."), "상대가 겹치면 E로 붙어 오공이 들어갑니다.");
-  // 관형사로 쓰인 "이" 는 건드리지 않는다. 앞이 낱말이 아니다.
-  assert.equal(tidyLite("이 스킬은 저지 불가라 끊을 수 없습니다."), "이 스킬은 저지 불가라 끊을 수 없습니다.");
+  // 다른 말은 둘 다 남는다. 너무 세게 지우면 해설이 토막 난다.
+  const two = groundCommentary("R은 저지 불가라 끊을 수 없습니다. 방패가 깨진 뒤에 붙어 싸웁니다.", answer);
+  assert.equal(two.dropped.length, 0, "다른 말은 남는다");
 }
 
-console.log("✅ 근거 검사 통과 (49건)");
+console.log("✅ 근거 검사 통과 (33건)");

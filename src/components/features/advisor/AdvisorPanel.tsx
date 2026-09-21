@@ -26,7 +26,6 @@ import { useTranslation } from "@/i18n";
 import { advisorSystemPrompt } from "@/lib/advisor/persona";
 import { AdvisorMarkdown } from "./AdvisorMarkdown";
 import { groundCommentary } from "@/lib/advisor/grounding";
-import { LITE_MAX_TOKENS, buildLitePrompt, tidyLite } from "@/lib/advisor/litePrompt";
 import {
   buildChampionsBrief,
   buildMatchupTips,
@@ -312,12 +311,7 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
   const deliverMatchup = (question: string, mine: ChampionCard, enemy: ChampionCard, notice?: string) => {
     if (!data) return;
     const answer = buildCompareCard([mine, enemy], question, undefined, { matchup: true, notes: matchupNotes(data, mine, enemy) });
-    /*
-      상성 해설은 4B 용 프롬프트다. 간이 모델에 그대로 먹였더니 백분위 문장을
-      그대로 옮겨 적고 "섭요를 피해야" 같은 말을 만들었다. 줄일 노트도 없는
-      경로이므로 간이 모델에게는 아예 시키지 않는다 — 카드가 곧 답이다.
-    */
-    const prompt = advisor.model.lite ? undefined : buildCommentaryPrompt(answer, patch, lang);
+    const prompt = buildCommentaryPrompt(answer, patch, lang);
     if (canUseModel && advisor.consented && prompt) {
       const tips = buildMatchupTips(data, mine, enemy);
       advisor.sendWithAnswer(question, [advisorSystemPrompt(lang), tips, prompt].filter(Boolean).join("\n\n"), answer, notice);
@@ -328,23 +322,6 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
 
   const deliver = (question: string, answer: AdvisorAnswer, notice?: string) => {
     if (canUseModel && advisor.consented) {
-      /*
-        간이 모델은 시키는 일이 다르다.
-
-        4B 에게는 재료를 주고 해설을 쓰게 하지만, 1B 에게 같은 것을 시키면 쓴 글의
-        93% 가 근거 검사에 걸려 사라진다. 대신 **검증된 노트를 줄이는 일**만 시킨다.
-        줄일 노트가 없는 답(스킬 하나·아이템)에는 아예 말을 시키지 않는다 — 빈손으로
-        말을 시키면 지어낸다. 잰 값은 `litePrompt.ts` 에 적어 두었다.
-      */
-      if (advisor.model.lite) {
-        const lite = buildLitePrompt(answer, lang);
-        if (lite) {
-          advisor.sendWithAnswer(question, lite, answer, notice, LITE_MAX_TOKENS);
-          return;
-        }
-        advisor.answerWithoutModel(question, answer, notice);
-        return;
-      }
       const prompt = buildCommentaryPrompt(answer, patch, lang);
       if (prompt) {
         advisor.sendWithAnswer(question, `${advisorSystemPrompt(lang)}\n\n${prompt}`, answer, notice);
@@ -537,15 +514,11 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
     */
     if (asksAboutHelper(question)) {
       /*
-        우리가 답을 아는 질문이다. 간이 모델에게 맡기면 안 된다 — Gemma 3 1B 는
-        페르소나를 무시하고 "저는 Google AI입니다" 라고 답했다. 화면 곳곳에
-        "기기 안에서만 동작합니다" 라고 적어 둔 것과 정면으로 어긋난다.
+        우리가 답을 아는 질문이라 모델을 부르지 않는다. 작은 모델은 페르소나를
+        무시하고 "저는 Google AI입니다" 라고 답한 적이 있고, 큰 모델이라 해도
+        이 답은 기다릴 이유가 없다. 화면 곳곳에 적어 둔 말과 어긋나서도 안 된다.
       */
-      if (!canUseModel || !advisor.consented || advisor.model.lite) {
-        advisor.answerWithoutModel(question, copy.identity);
-        return;
-      }
-      advisor.send(question, system);
+      advisor.answerWithoutModel(question, copy.identity);
       return;
     }
 
@@ -1121,24 +1094,15 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
                 코드가 쓴 글은 해설이 아니라 답 자체다. "해설" 딱지와 세로줄은 모델이
                 카드 위에 얹은 글에만 붙인다. 모델 글에는 근거 검사를 돌려 카드가
                 틀렸다고 증명하는 문장을 걷어낸다.
-
-                간이 모델에는 검사를 더 빡빡하게 건다. 1B 급은 근거 없는 문장에서
-                자주 틀리는데, 그런 문장은 있어서 얻는 것보다 잃는 것이 크다.
               */
-              const shown = turn.byCode
-                ? turn.content
-                : groundCommentary(
-                    advisor.model.lite ? tidyLite(turn.content) : turn.content,
-                    turn.answer,
-                    { strict: advisor.model.lite },
-                  ).text;
+              const shown = turn.byCode ? turn.content : groundCommentary(turn.content, turn.answer).text;
               const commentary = !shown ? null : turn.byCode ? (
                 <div className="text-[13px] leading-relaxed">
                   <AdvisorMarkdown text={shown} />
                 </div>
               ) : (
                 <div className="border-l-2 border-border pl-2.5 text-[13px] leading-relaxed">
-                  <span className="block text-[11px] text-muted-foreground">{advisor.model.lite ? copy.card.commentaryLite : copy.card.commentary}</span>
+                  <span className="block text-[11px] text-muted-foreground">{copy.card.commentary}</span>
                   <AdvisorMarkdown text={shown} />
                 </div>
               );
