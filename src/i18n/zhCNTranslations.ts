@@ -446,6 +446,7 @@ export const zhCNTranslations: Translations = {
       open: "AI 模型",
       back: "返回",
       empty: "此设备上没有已下载的模型。",
+      cached: "已下载的模型",
       used: "占用空间",
       files: "个文件",
       remove: "删除模型",

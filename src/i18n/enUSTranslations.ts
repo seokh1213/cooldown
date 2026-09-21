@@ -460,6 +460,7 @@ export const enUSTranslations: Translations = {
       open: "AI model",
       back: "Back",
       empty: "No model is downloaded on this device.",
+      cached: "Downloaded model",
       used: "Space used",
       files: "files",
       remove: "Delete model",

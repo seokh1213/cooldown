@@ -18,6 +18,26 @@ export interface ModelCacheInfo {
   entries: number;
   /** 실제로 차지하는 용량. 잴 수 없는 브라우저도 있어 없을 수 있다. */
   bytes?: number;
+  /**
+   * 어느 저장소의 파일이 들어 있는가. `onnx-community/Qwen3.5-0.8B-Text-ONNX` 꼴이다.
+   *
+   * 용량만 보여 주면 "1,734MB 가 있다" 는 알아도 **무엇이** 있는지는 모른다. 고른
+   * 모델과 실제로 받아 둔 모델이 다를 수 있으므로(받다 만 경우) 캐시에서 직접 읽는다.
+   */
+  repos: string[];
+}
+
+/**
+ * 요청 주소에서 저장소 이름을 꺼낸다.
+ *
+ * 두 가지 꼴로 들어온다. 가중치는 `huggingface.co/<소유자>/<이름>/resolve/…` 이고,
+ * 토크나이저 같은 작은 파일은 `…/api/resolve-cache/models/<소유자>/<이름>/<sha>/…` 다.
+ */
+function repoFromUrl(url: string): string | undefined {
+  const cached = /resolve-cache\/models\/([^/]+\/[^/]+)\//.exec(url);
+  if (cached) return cached[1];
+  const direct = /huggingface\.co\/([^/]+\/[^/]+)\/resolve\//.exec(url);
+  return direct?.[1];
 }
 
 function cacheStorage(): CacheStorage | undefined {
@@ -48,11 +68,12 @@ async function modelCacheNames(): Promise<string[]> {
 export async function readModelCache(): Promise<ModelCacheInfo> {
   const store = cacheStorage();
   const names = await modelCacheNames();
-  if (!store || names.length === 0) return { entries: 0 };
+  if (!store || names.length === 0) return { entries: 0, repos: [] };
 
   let entries = 0;
   let bytes = 0;
   let measured = true;
+  const repos = new Set<string>();
 
   for (const name of names) {
     try {
@@ -60,6 +81,8 @@ export async function readModelCache(): Promise<ModelCacheInfo> {
       const requests = await cache.keys();
       entries += requests.length;
       for (const request of requests) {
+        const repo = repoFromUrl(request.url);
+        if (repo) repos.add(repo);
         const response = await cache.match(request);
         if (!response) continue;
         const blob = await response.clone().blob();
@@ -70,7 +93,7 @@ export async function readModelCache(): Promise<ModelCacheInfo> {
     }
   }
 
-  return { entries, bytes: measured ? bytes : undefined };
+  return { entries, bytes: measured ? bytes : undefined, repos: [...repos] };
 }
 
 /**

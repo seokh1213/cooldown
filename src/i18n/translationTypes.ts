@@ -462,6 +462,8 @@ export interface Translations {
       back: string;
       /** 이 기기에 저장된 것이 없을 때 */
       empty: string;
+      /** 내려받아 둔 모델 이름 앞에 붙는 말 */
+      cached: string;
       /** 저장된 용량 앞에 붙는 말 */
       used: string;
       /** 파일 수 앞에 붙는 말 */
