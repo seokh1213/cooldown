@@ -13,6 +13,8 @@ on:
 
 permissions:
   contents: write
+  # 지식 계층 점검 결과를 이슈로 남긴다. 이슈 알림이 곧 메일이다.
+  issues: write
 
 concurrency:
   group: update-static-data
@@ -68,6 +70,28 @@ jobs:
 
       - name: Generate static data
         run: npm run generate-static-data
+
+      # 검증보다 **앞에** 둔다. 리워크가 오면 npm test 가 멈추는데, 그 뒤에 두면
+      # 정작 무엇이 바뀌었는지 적어 둘 기회를 잃는다. 이 단계는 스스로 멈추지 않는다.
+      - name: Report knowledge drift
+        id: drift
+        run: npm run llm:drift-report
+
+      # 실패 알림은 워크플로가 멈출 때만 온다. 여기서 다루는 것은 멈출 일은 아닌데
+      # 사람이 봐야 하는 것들이라, 이슈로 남겨 알림을 받는다. 열려 있는 이슈가 있으면
+      # 댓글만 달아 같은 이슈가 쌓이지 않게 한다.
+      - name: Open or update knowledge drift issue
+        if: steps.drift.outputs.has_report == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          title="지식 계층 점검 필요"
+          existing="$(gh issue list --state open --search "$title in:title" --json number --jq '.[0].number')"
+          if [[ -n "$existing" ]]; then
+            gh issue comment "$existing" --body-file knowledge-drift-report.md
+          else
+            gh issue create --title "$title" --body-file knowledge-drift-report.md
+          fi
 
       - name: Validate project
         run: |
