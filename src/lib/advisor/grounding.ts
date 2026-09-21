@@ -22,6 +22,7 @@
  * 스트리밍 중에도 돌아야 하므로 **끝난 문장만** 본다. 마지막 조각은 아직 자라는 중이라
  * 손대지 않고 그대로 둔다. 다 쓰고 나면 그 조각도 문장이 되어 한 번 더 걸린다.
  */
+import type { ChampionCard } from "../../../scripts/llm/lib/facts";
 import type { AdvisorAnswer } from "./answer";
 import type { Language } from "@/i18n";
 import { promptWords } from "./promptLocale";
@@ -55,24 +56,84 @@ interface Material {
   allTags: string[];
   /** 노트 문장. 여기서 온 말은 정의상 옳다. */
   noteSentences: string[];
+  /** 카드 첫 줄이 적어 둔 피해 유형과 계수. 여기와 어긋나면 큰 거짓말이다. */
+  profiles: Array<{ name: string; damage: string; scaling: string }>;
 }
 
 function material(answer: AdvisorAnswer): Material | undefined {
-  if (answer.kind !== "champion") return undefined;
+  /*
+   * 상성 답에도 돌려야 한다.
+   *
+   * 예전에는 `kind !== "champion"` 이면 그냥 나갔다. 그래서 **상성 질문의 해설은
+   * 아무 검사도 받지 않았다.** 실제로 "오공은 마법으로 주 피해를 받습니다"(카드에는
+   * 물리라고 적혀 있다) 가 그대로 화면에 나갔다. 챔피언이 둘이라 재료가 두 벌일 뿐
+   * 검사할 것은 같다.
+   */
+  const cards: ChampionCard[] =
+    answer.kind === "champion" ? [answer.card] : answer.kind === "compare" ? answer.cards : [];
+  if (cards.length === 0) return undefined;
+
   const effectsBySlot = new Map<string, Set<string>>();
   const slotByName = new Map<string, string>();
   const textBySlot = new Map<string, string>();
-  for (const spell of answer.card.spells) {
-    effectsBySlot.set(spell.slot, new Set(spell.effects ?? []));
-    slotByName.set(spell.name, spell.slot);
-    textBySlot.set(spell.slot, `${spell.summary ?? ""} ${spell.text ?? ""}`);
+  for (const card of cards) {
+    for (const spell of card.spells) {
+      // 챔피언이 둘이면 슬롯이 겹친다. 효과는 합쳐서 본다. 어느 쪽 Q 인지까지
+      // 가리려다 멀쩡한 문장을 버리는 편이 더 나쁘다.
+      const seen = effectsBySlot.get(spell.slot) ?? new Set<string>();
+      for (const tag of spell.effects ?? []) seen.add(tag);
+      effectsBySlot.set(spell.slot, seen);
+      slotByName.set(spell.name, spell.slot);
+      textBySlot.set(spell.slot, `${textBySlot.get(spell.slot) ?? ""} ${spell.summary ?? ""} ${spell.text ?? ""}`);
+    }
   }
-  const allTags = [...new Set(answer.card.spells.flatMap((spell) => spell.effects ?? []))];
-  const noteSentences = [...(answer.notes?.playing ?? []), ...(answer.notes?.against ?? [])]
+  const allTags = [...new Set(cards.flatMap((card) => card.spells.flatMap((spell) => spell.effects ?? [])))];
+
+  const notes =
+    answer.kind === "champion"
+      ? [...(answer.notes?.playing ?? []), ...(answer.notes?.against ?? [])]
+      : answer.kind === "compare"
+        ? [...(answer.notes?.mine ?? []), ...(answer.notes?.enemy ?? [])]
+        : [];
+  const noteSentences = notes
     .flatMap((note) => note.split(/(?<=[.!?])\s+/))
     .map((sentence) => sentence.trim())
     .filter((sentence) => sentence.length > 10);
-  return { effectsBySlot, slotByName, textBySlot, allTags, noteSentences };
+
+  const profiles = cards.map((card) => ({
+    name: card.name,
+    damage: card.damageProfile.primary,
+    scaling: card.scalingProfile.primary,
+  }));
+  return { effectsBySlot, slotByName, textBySlot, allTags, noteSentences, profiles };
+}
+
+/**
+ * 카드가 적어 둔 피해 유형·계수를 뒤집어 말하는가.
+ *
+ * 스킬과 효과의 짝만 보다 보니 더 큰 거짓말을 놓쳤다. "오공은 마법으로 주 피해를
+ * 받습니다" 는 어느 스킬도 짚지 않아 아무 규칙에도 안 걸렸는데, 카드 첫 줄과
+ * 정면으로 어긋난다. 상성 해설에서 특히 잦다.
+ */
+const DAMAGE_WORDS: Array<[string, RegExp]> = [
+  ["물리", /물리/],
+  ["마법", /마법/],
+];
+
+function contradictsProfile(sentence: string, profiles: Material["profiles"]): boolean {
+  for (const profile of profiles) {
+    const at = sentence.indexOf(profile.name);
+    if (at < 0) continue;
+    // 이름 뒤 30 자 안에서 "주 피해" 를 말하는 자리만 본다. 스킬 하나의 피해 유형을
+    // 말하는 문장까지 걸면 맞는 말이 잘린다.
+    const near = sentence.slice(at, at + 60);
+    if (!/주 피해|피해 유형|피해를 (주|받|입)/.test(near)) continue;
+    if (profile.damage === "혼합") continue;
+    for (const [word, re] of DAMAGE_WORDS) {
+      if (word !== profile.damage && re.test(near) && !new RegExp(profile.damage).test(near)) return true;
+    }
+  }
+  return false;
 }
 
 /** 두 문장이 사실상 같은 말인가. 어절이 얼마나 겹치는지로 본다. */
@@ -93,6 +154,8 @@ export type Verdict = "note" | "card-ok" | "card-wrong" | "unsupported" | "numbe
  */
 export function classify(sentence: string, m: Material): Verdict {
   if (m.noteSentences.some((note) => overlap(sentence, note) >= 0.7)) return "note";
+  // 카드 첫 줄을 뒤집어 말하는 것이 가장 큰 거짓말이다. 스킬을 안 짚어도 잡는다.
+  if (contradictsProfile(sentence, m.profiles)) return "card-wrong";
   if (HAS_NUMBER.test(sentence)) return "number";
 
   /*
