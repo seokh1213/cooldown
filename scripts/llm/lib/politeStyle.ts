@@ -76,7 +76,9 @@ export function toPoliteSentence(sentence: string): string {
   if (!tail.endsWith("다")) return sentence;
 
   const body = tail.slice(0, -1);
-  const last = body.at(-1);
+  // `String.prototype.at` 은 쓰지 않는다. 이 파일은 브라우저 번들에도 실리는데
+  // 그쪽 lib 목표가 더 낮아 컴파일이 막힌다.
+  const last = body.length > 0 ? body[body.length - 1] : undefined;
   // "콤보는 Q → E다" 처럼 한글이 아닌 것(슬롯 글자·숫자) 뒤에 붙은 `다` 는
   // 명사 뒤의 지정사다. "E입니다" 가 된다.
   if (!last || !isHangulSyllable(last)) return `${head}${body}입니다${punct}`;

@@ -26,6 +26,7 @@ import type { ChampionCard } from "../../../scripts/llm/lib/facts";
 import type { AdvisorAnswer } from "./answer";
 import type { Language } from "@/i18n";
 import { promptWords } from "./promptLocale";
+import { toPoliteSentence } from "../../../scripts/llm/lib/politeStyle";
 
 /**
  * 문장 경계. 끝나지 않은 꼬리는 따로 돌려준다.
@@ -400,6 +401,18 @@ export function groundCommentary(
 
   const { done, tail } = splitDone(keepAskedPerspective(text, answer, lang));
   const directiveStems = directives(lang, answer);
+  /*
+   * 한다체로 끝난 문장을 합니다체로 돌린다.
+   *
+   * 노트를 합니다체로 옮길 때 쓴 변환기를 그대로 쓴다. 그때는 재료를 고쳐 모델이
+   * 따라 하게 만드는 것이 목적이었는데, 4B 는 재료가 전부 합니다체인데도 문장 넷
+   * 중 하나를 한다체로 끝냈다(열네 쌍에서 47 문장 중 12). 노트에는 한 건도 없으니
+   * 모델이 스스로 내는 것이고, 페르소나와 규칙이 이미 두 번 이르는데도 안 되었다.
+   * 지시로 이길 수 없으면 나온 글을 고친다.
+   *
+   * 다 쓴 문장만 바꾼다 — 자라는 중인 꼬리를 건드리면 글자가 튄다.
+   */
+  const polite = (line: string) => (lang === "ko_KR" ? toPoliteSentence(line) : line);
   const dropped: GroundResult["dropped"] = [];
   const kept: string[] = [];
   /** 이미 내보낸 말. 되풀이를 가리는 데 쓴다. */
@@ -413,7 +426,7 @@ export function groundCommentary(
       continue;
     }
     if (sentence.length < 8) {
-      kept.push(raw);
+      kept.push(polite(raw));
       continue;
     }
     // 앞에서 한 말을 다시 하면 버린다. 소제목도 본다 — 같은 문단이 머리말만 바꿔
@@ -431,7 +444,7 @@ export function groundCommentary(
     const verdict = classify(plain, m);
     const drop = verdict === "card-wrong" || verdict === "number";
     if (drop) dropped.push({ sentence, verdict });
-    else kept.push(raw);
+    else kept.push(polite(raw));
   }
   return { text: (kept.join("") + tail).trim(), dropped };
 }
