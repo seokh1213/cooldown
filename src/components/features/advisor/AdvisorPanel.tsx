@@ -1106,6 +1106,46 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
                   <AdvisorMarkdown text={shown} />
                 </div>
               );
+              /*
+               * 관점을 문장으로 못 가린 자리에만 한 번 물어본다.
+               *
+               * "제드 라인전 어떻게 풀어" 는 내가 제드인지 제드를 상대하는지 한국어로도
+               * 알 수 없다. 그 정보는 **묻는 사람에게만** 있으므로 모델에게 다시 쓰게
+               * 해도 없는 것이 생기지 않는다. 버튼 하나가 제일 정확하고 제일 빠르다.
+               *
+               * 양쪽에 노트가 다 있을 때만 띄운다. 한쪽뿐이면 고를 것이 없다.
+               */
+              const notes = turn.answer?.kind === "champion" ? turn.answer.notes : undefined;
+              const askSide =
+                notes && notes.perspective === "both" && notes.playing.length > 0 && notes.against.length > 0
+                  ? (side: "playing" | "against") => {
+                      // 물었던 문장에 관점만 덧붙인다. 새로 지으면 "라인전" 같은 주제가 날아간다.
+                      const asked = advisor.turns[index - 1];
+                      const original = asked?.role === "user" ? asked.content : "";
+                      if (!original) return;
+                      const suffix = side === "against" ? copy.card.perspectiveAgainst : copy.card.perspectivePlaying;
+                      ask(`${original} (${suffix})`);
+                    }
+                  : undefined;
+              const perspectiveChips = !askSide ? null : (
+                <div className="flex flex-wrap items-center gap-1.5 pl-2.5 text-xs">
+                  <span className="text-muted-foreground">{copy.card.perspectiveAsk}</span>
+                  <button
+                    type="button"
+                    className="rounded-full border border-border px-2.5 py-0.5 hover:bg-muted"
+                    onClick={() => askSide("playing")}
+                  >
+                    {copy.card.perspectivePlaying}
+                  </button>
+                  <button
+                    type="button"
+                    className="rounded-full border border-border px-2.5 py-0.5 hover:bg-muted"
+                    onClick={() => askSide("against")}
+                  >
+                    {copy.card.perspectiveAgainst}
+                  </button>
+                </div>
+              );
               const pending =
                 !turn.content && busy && turn.id === lastAssistantId ? (
                   <span className="flex items-center gap-2 pl-2.5 text-xs text-muted-foreground">
@@ -1197,6 +1237,7 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
                       </div>
                     )}
                     {commentary}
+                    {perspectiveChips}
                     {pending}
                     <div className="flex flex-wrap items-center gap-1.5">
                       <button
@@ -1232,6 +1273,7 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
                       onNavigate={onNavigate}
                     />
                     {commentary}
+                    {perspectiveChips}
                     {pending}
                   </div>
                 ) : turn.content ? (

@@ -25,7 +25,7 @@ import {
   type RuleNotes,
 } from "../../../scripts/llm/lib/rules";
 import { playbookToText, selectPlaybook, type Playbook } from "../../../scripts/llm/lib/playbookCore";
-import { selectNotes, type SelectedNotes } from "./noteSelect";
+import { selectNotes, type NotePerspective, type SelectedNotes } from "./noteSelect";
 import {
   findMechanics,
   mechanicsToText,
@@ -321,10 +321,12 @@ export function championNotes(
   card: ChampionCard,
   /** 사용자가 실제로 쓴 문장. 갈래와 관점을 여기서 읽는다. */
   question: string,
+  /** 화면에서 골라 준 관점. 문장으로 못 가릴 때만 들어온다. */
+  forced?: NotePerspective,
 ): SelectedNotes {
   const book = data.playbooks.get(card.id);
   if (!book) return { playing: [], against: [], perspective: "both" };
-  return selectNotes(book, question);
+  return selectNotes(book, question, forced);
 }
 
 export function buildChampionAnswer(data: AdvisorData, card: ChampionCard): string {

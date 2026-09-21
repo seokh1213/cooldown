@@ -389,6 +389,9 @@ export const koKRTranslations: Translations = {
       // 카드의 표·수치는 코드가 만들고 이 문단만 모델이 쓰므로, 표시는 여기에 붙인다.
       commentary: "AI 해설",
       commentaryPending: "AI 해설을 만드는 중",
+      perspectiveAsk: "어느 쪽을 물으신 건가요?",
+      perspectivePlaying: "내가 할 때",
+      perspectiveAgainst: "상대할 때",
       top: "상위 {n}%",
       bottom: "하위 {n}%",
       stats: "능력치 (1레벨 → 18레벨)",

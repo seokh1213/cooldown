@@ -53,6 +53,8 @@ const TAGS: Record<string, { en: string; zh: string }> = {
   "생명력 흡수": { en: "lifesteal", zh: "吸血" },
   "소환수": { en: "pet", zh: "召唤物" },
   "자기 공격력 증가": { en: "self attack damage boost", zh: "自身攻击力提升" },
+  "치명타": { en: "critical strike", zh: "暴击" },
+  "부활": { en: "revive", zh: "复活" },
 };
 
 const DAMAGE: Record<string, { en: string; zh: string }> = {

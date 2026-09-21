@@ -190,6 +190,58 @@ function shredsEnemy(text: string, word: "방어력" | "마법 저항력"): bool
 }
 
 /**
+ * 자기 공격력이 오르는가.
+ *
+ * 저항과 같은 꼴이라 같은 방식으로 본다. 다만 둘을 가려야 한다. 잔나 E 는
+ * "**대상은** … 공격력을 얻습니다" 라 아군에게 주는 것이고, 트런들 Q 는 "트런들의
+ * 공격력이 증가하며 **적의** 공격력은 감소합니다" 라 한 문장에 둘이 같이 있다.
+ */
+const OTHER_AD = /대상은|아군|적의 공격력/;
+
+function gainsAttackDamage(sentence: string): boolean {
+  const clean = withoutNumbers(sentence);
+  // 계수로 쓰인 "추가 공격력" 은 오르는 것이 아니다.
+  // 사일러스 R 은 "공격력 **계수**를 주문력 계수로 전환해 … 총 공격력**당** 주문력을
+  // 얻습니다" 다. 공격력을 계수로 쓸 뿐 공격력이 오르지는 않는다.
+  if (/공격력 계수|공격력당/.test(clean)) return false;
+  const pattern = /(?<!추가 )공격력[^.감]{0,16}?(증가|상승|얻|획득)/;
+  const span = pattern.exec(clean)?.[0];
+  if (!span) return false;
+  if (/사거리|속도|계수|전환/.test(span)) return false;
+  return !OTHER_AD.test(clean.slice(0, clean.indexOf(span) + span.length));
+}
+
+/**
+ * 치명타 확률이 오르는가.
+ *
+ * "기본 공격이 (100% + (100% 치명타 확률))의 피해" (애쉬 P) 처럼 계산식에 쓰인 것은
+ * 오르는 것이 아니다. 괄호를 지우고 보면 갈린다.
+ */
+function gainsCrit(sentence: string): boolean {
+  const clean = withoutNumbers(sentence);
+  // 유미 Q 의 "단짝의 치명타 확률에 따라 증가" 는 남의 확률을 계수로 쓰는 말이다.
+  if (/치명타 확률에 (따라|비례)|치명타 확률\)/.test(clean)) return false;
+  return /치명타 확률[^.감]{0,16}?(증가|상승|오르|얻)/.test(clean);
+}
+
+/**
+ * 스스로 되살아나는가.
+ *
+ * 모데카이저 R 의 "대상이 부활할 때까지" 와 시바나 R 의 "부활하기 전까지" 는 남의
+ * 부활을 시각으로 쓰는 말이다. 아크샨 W 와 질리언 R 은 아군을 되살리는데, 상대하는
+ * 쪽에서는 "죽여도 일어난다" 라는 같은 뜻이라 함께 센다.
+ */
+function revives(sentence: string): boolean {
+  // 문장째로 보면 안 된다. 사이온 P 는 "처치된 다음 **되살아나** … 하지만
+  // **부활한 동안**에는 체력이 떨어집니다" 라 한 문장에 둘이 같이 있다.
+  for (const match of sentence.matchAll(/부활|되살아|되살립|환생/g)) {
+    const after = sentence.slice((match.index ?? 0) + match[0].length);
+    if (!/^(할 때까지|하기 전|한 동안|하면)/.test(after)) return true;
+  }
+  return false;
+}
+
+/**
  * 자기 저항이 오르는가.
  *
  * "증가" 만 보면 람머스 W 의 "방어력을 (…) 마법 저항력을 (…) 얻고" 를 놓친다.
@@ -253,6 +305,10 @@ const EFFECT_RULES: Array<[RegExp, string]> = [
   // 아래 둘은 gainsResist 가 문장 단위로 가른다
   [/__MR_GAIN__/, "자기 마법 저항력 증가"],
   [/__ARMOR_GAIN__/, "자기 방어력 증가"],
+  // 아래 셋도 문장 단위로 가른다
+  [/__AD_GAIN__/, "자기 공격력 증가"],
+  [/__CRIT__/, "치명타"],
+  [/__REVIVE__/, "부활"],
   // 시바나 Q 처럼 "기본 공격 적중 시 … 피해를 입히고" 로만 적는 것도, 애쉬 Q 처럼
   // "강화된 기본 공격은" 이라고 앞에서 꾸미는 것도 평타 강화다.
   [
@@ -484,7 +540,7 @@ export function championMovesItself(text: string, championName: string): boolean
  * 것은 어차피 참이다.
  */
 const EFFECT_WORDS =
-  /^(공포|침묵|속박|도발|매혹|기절|억제|둔화|처형|광역|회복|보호막|은신|분신|강인함|관통|돌진)$/;
+  /^(공포|침묵|속박|도발|매혹|기절|억제|둔화|처형|광역|회복|보호막|은신|분신|강인함|관통|돌진|환생|부활|변신)$/;
 
 /**
  * 스킬 이름이 효과로 읽히는 것을 막는다.
@@ -509,6 +565,18 @@ export function detectEffects(text: string, skillNames: string[] = []): string[]
     if (label === "자기 마법 저항력 증가" || label === "자기 방어력 증가") {
       const word = label === "자기 마법 저항력 증가" ? "마법 저항력" : "방어력";
       if (sentences.some((sentence) => gainsResist(sentence, word))) found.push(label);
+      continue;
+    }
+    if (label === "자기 공격력 증가") {
+      if (sentences.some((sentence) => !isMinionOnly(sentence) && gainsAttackDamage(sentence))) found.push(label);
+      continue;
+    }
+    if (label === "치명타") {
+      if (sentences.some((sentence) => gainsCrit(sentence))) found.push(label);
+      continue;
+    }
+    if (label === "부활") {
+      if (sentences.some((sentence) => revives(sentence))) found.push(label);
       continue;
     }
     if (label === "회복") {
