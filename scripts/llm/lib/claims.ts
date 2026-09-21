@@ -374,6 +374,34 @@ export function renderEscapeClaims(card: ChampionCard, claims: EscapeClaims): st
   return `${head} 여러 개를 겹쳐 빠져나가므로 하나를 뺐다고 들어가면 나머지로 살아 나갑니다. 특히 ${longest.slot} ${josa(shortName(longest.name), "이/가")} 돌아오기 전을 노립니다.`;
 }
 
+/* ------------------------------------------------------------------ *
+ * 성장 곡선
+ *
+ * 스택을 쌓아 커지는 챔피언은 **초반이 약하고 중후반이 세다**. 상대하는 쪽에서는
+ * 이것이 곧 "언제 눌러야 하는가" 라 상성 판단에 바로 쓰인다. 어느 스킬이 무엇을
+ * 쌓는지가 카드에 있으므로 통째로 도출된다.
+ * ------------------------------------------------------------------ */
+
+export interface StackClaims {
+  /** 무엇을 쌓아 커지는가 */
+  slots: string[];
+}
+
+export function deriveStackClaims(card: ChampionCard): StackClaims {
+  return { slots: slotsWhere(card, (s) => has(s, "성장 스택")) };
+}
+
+export function renderStackClaims(card: ChampionCard, claims: StackClaims): string {
+  if (claims.slots.length === 0) return "";
+  const called = callSlots(card, claims.slots);
+  const passiveOnly = claims.slots.every((slot) => slot === "P");
+  const head = `${josa(card.name, "은/는")} ${josa(called, "로/으로")} 쌓은 것이 영구히 남아 시간이 갈수록 세집니다.`;
+  const tail = passiveOnly
+    ? "가장 약한 구간은 아무것도 쌓이지 않은 초반이므로, 그때 눌러 두지 못하면 나중에는 같은 각으로 못 잡습니다."
+    : "쌓는 자리를 막는 것이 곧 성장을 늦추는 것이라, 초반에 라인을 밀어 두거나 압박해 쌓을 틈을 주지 않는 편이 값을 합니다.";
+  return `${head} ${tail}`;
+}
+
 /** 주장을 두세 문장으로 편다. 문장 순서는 유형 → 단서 → 다음 스탯으로 고정한다. */
 export function renderItemClaims(card: ChampionCard, claims: ItemClaims): string {
   return [profileLine(card, claims), ...discountLines(card, claims), secondLine(card, claims)]

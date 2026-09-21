@@ -51,7 +51,7 @@ export interface PlaybookEntry {
    * 사람이 쓴 문장은 카드와 대조할 수 없다. 기계적인 대목은 자료에서 도출해
    * 렌더하고(`claims.ts`), 사람은 도출할 수 없는 판단만 `nuance` 에 적는다.
    */
-  generated?: "situational-item" | "escape-window";
+  generated?: "situational-item" | "escape-window" | "stack-tempo";
   /** 도출로는 나오지 않는 한 문장. 생성된 본문 뒤에 붙는다. */
   nuance?: string;
   when?: PlaybookCondition;

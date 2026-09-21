@@ -20,8 +20,10 @@ import type { ChampionCard } from "./lib/facts";
 import {
   deriveEscapeClaims,
   deriveItemClaims,
+  deriveStackClaims,
   renderEscapeClaims,
   renderItemClaims,
+  renderStackClaims,
 } from "./lib/claims";
 import type { RuleNotes } from "./lib/rules";
 import { parseMechanics, type MechanicsIndex } from "./lib/mechanics";
@@ -61,7 +63,9 @@ function fillGenerated(entry: PlaybookEntry, card: ChampionCard | undefined): Pl
     ? ""
     : entry.generated === "situational-item"
       ? renderItemClaims(card, deriveItemClaims(card))
-      : renderEscapeClaims(card, deriveEscapeClaims(card));
+      : entry.generated === "escape-window"
+        ? renderEscapeClaims(card, deriveEscapeClaims(card))
+        : renderStackClaims(card, deriveStackClaims(card));
   const text = [made, entry.nuance].filter(Boolean).join(" ").trim();
   const { generated: _generated, nuance: _nuance, ...rest } = entry;
   return { ...rest, text };

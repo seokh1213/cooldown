@@ -253,10 +253,12 @@ function appliesMark(sentence: string): boolean {
  * **시간을 주면 안 된다.** 무엇이 자라는지(스탯이냐 스킬이냐)는 그다음이다.
  */
 function growsWithStacks(sentence: string): boolean {
-  if (!/중첩|스택|영구|성장/.test(sentence)) return false;
-  if (!/증가|강화|늘어|커지|올라/.test(sentence)) return false;
+  if (!/중첩|스택|영구|성장|파편/.test(sentence)) return false;
+  // 자라는 말이 하나가 아니다. 빅토르 P 는 "영구적으로 **업그레이드**됩니다" 이고
+  // 스몰더 P 는 "중첩은 기본 스킬을 **강화**합니다" 다.
+  if (!/증가|강화|늘어|커지|올라|업그레이드|진화/.test(sentence)) return false;
   // 지속시간이나 효과가 잠깐 세지는 것은 성장이 아니다.
-  return /중첩당|중첩마다|영구|누적|쌓을수록|쌓일수록/.test(sentence);
+  return /중첩당|중첩마다|중첩은|영구|누적|쌓을수록|쌓일수록|쌓일 때마다|획득할 때마다/.test(sentence);
 }
 
 /**
@@ -368,6 +370,7 @@ const EFFECT_RULES: Array<[RegExp, string]> = [
   [/__FOLLOWUP__/, "연계 강화"],
   [/__MARK__/, "표식 부여"],
   [/__STACK__/, "성장 스택"],
+  [/__EMPOWER__/, "스킬 강화"],
   [new RegExp(`(공격 )?사거리${GAP_UP}{0,14}(증가|늘어|늘리|길어|상승)`), "사거리 증가"],
   [new RegExp(`(?<!추가 )주문력${GAP_UP}{0,14}(증가|상승|얻|획득)`), "자기 주문력 증가"],
   // 시바나 Q 처럼 "기본 공격 적중 시 … 피해를 입히고" 로만 적는 것도, 애쉬 Q 처럼
@@ -650,6 +653,13 @@ export function detectEffects(text: string, skillNames: string[] = []): string[]
     }
     if (label === "성장 스택") {
       if (sentences.some((sentence) => growsWithStacks(sentence))) found.push(label);
+      continue;
+    }
+    if (label === "스킬 강화") {
+      // 영구히 자라는 것과 한동안만 세지는 것은 다른 이야기다. 둘 다 걸리면
+      // 영구 쪽이 이긴다. 스몰더 P 처럼 쌓은 것이 곧 강화인 경우가 그렇다.
+      if (found.includes("성장 스택")) continue;
+      if (sentences.some((sentence) => /스킬(을|이) 강화/.test(sentence))) found.push(label);
       continue;
     }
     if (label === "회복") {

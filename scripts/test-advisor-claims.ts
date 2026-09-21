@@ -17,8 +17,10 @@ import { loadPlaybooks } from "./llm/lib/playbook";
 import {
   deriveEscapeClaims,
   deriveItemClaims,
+  deriveStackClaims,
   renderEscapeClaims,
   renderItemClaims,
+  renderStackClaims,
 } from "./llm/lib/claims";
 
 const llmDir = path.join(PUBLIC_DATA_ROOT, resolvePatchVersion(), "llm");
@@ -46,11 +48,24 @@ const PAIRS: Array<[withFinal: string, withoutFinal: string]> = [
  * 문장 전체를 훑으면 "깎는", "있는" 같은 동사 어미까지 조사로 잡힌다. 실제로
  * 어긋날 수 있는 자리는 **챔피언마다 달라지는 것 뒤**, 곧 스킬 이름 뒤뿐이다.
  */
+/** 받침이 있으면 "으로", 없거나 ㄹ 받침이면 "로" 다. 두 글자라 따로 본다. */
+function badRo(name: string, tail: string): string | undefined {
+  const code = name.charCodeAt(name.length - 1) - 0xac00;
+  if (code < 0 || code > 11171) return undefined;
+  const final = code % 28;
+  const want = final !== 0 && final !== 8 ? "으로" : "로";
+  const got = tail.startsWith("으로") ? "으로" : tail.startsWith("로") ? "로" : undefined;
+  if (!got || got === want) return undefined;
+  return `${name}${got} → ${name}${want}`;
+}
+
 function badParticle(text: string, names: string[]): string | undefined {
   for (const name of names) {
     if (!name) continue;
     let at = text.indexOf(name);
     while (at >= 0) {
+      const ro = badRo(name, text.slice(at + name.length, at + name.length + 2));
+      if (ro) return ro;
       const after = text.slice(at + name.length, at + name.length + 1);
       const pair = PAIRS.find(([a, b]) => a === after || b === after);
       if (pair) {
@@ -96,6 +111,21 @@ for (const [champion, book] of playbooks) {
 
     const card = byId.get(champion);
     assert.ok(card, `${where}: 카드를 찾을 수 없습니다`);
+
+    if (entry.generated === "stack-tempo") {
+      const stack = deriveStackClaims(card);
+      assert.ok(stack.slots.length > 0, `${where}: 성장 스택이 없는데 성장 곡선 노트가 붙었습니다`);
+      for (const slot of stack.slots) {
+        const spell = card.spells.find((s) => s.slot === slot);
+        assert.ok(spell?.effects.includes("성장 스택"), `${where}: ${slot} 에 성장 스택 태그가 없습니다`);
+      }
+      const made = renderStackClaims(card, stack);
+      assert.ok(made.length >= 40, `${where}: 생성된 본문이 너무 짧습니다`);
+      const wrongOne = badParticle(made, card.spells.map((s) => s.name));
+      assert.equal(wrongOne, undefined, `${where}: 조사가 어긋났습니다 — "${wrongOne}"`);
+      checkNuance(entry.nuance ?? "", card, where);
+      continue;
+    }
 
     if (entry.generated === "escape-window") {
       const escape = deriveEscapeClaims(card);
@@ -169,5 +199,5 @@ for (const [champion, book] of playbooks) {
   }
 }
 
-assert.ok(generated >= 340, `도출 항목이 ${generated}건뿐입니다`);
+assert.ok(generated >= 360, `도출 항목이 ${generated}건뿐입니다`);
 console.log(`✅ 도출 노트 통과 (생성 ${generated}건, 그중 nuance ${withNuance}건)`);

@@ -58,6 +58,7 @@ const TAGS: Record<string, { en: string; zh: string }> = {
   "연계 강화": { en: "amplified by a prior hit", zh: "连招强化" },
   "표식 부여": { en: "applies a mark", zh: "施加标记" },
   "성장 스택": { en: "permanent stacking", zh: "永久叠加" },
+  "스킬 강화": { en: "next ability empowered", zh: "技能强化" },
   "사거리 증가": { en: "extended range", zh: "射程提升" },
   "자기 주문력 증가": { en: "self ability power boost", zh: "自身法强提升" },
 };
