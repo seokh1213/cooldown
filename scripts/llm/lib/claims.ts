@@ -237,8 +237,11 @@ function profileLine(card: ChampionCard, claims: ItemClaims): string | undefined
     }
     // 예외를 말하지 않으면 "한 갈래만 올리면 된다" 로 읽힌다. 애쉬 R 이 그 자리다.
     if (profile.exceptions.length > 0) {
+      // 낱말이 바뀌면 조사도 바뀐다. "그쪽는" 이 그대로 나갔었다.
       const one = profile.exceptions.length === 1 ? "그 한 줄기" : "그쪽";
-      tails.push(`다만 ${callSlots(card, profile.exceptions)}만 ${otherJoined} ${one}는 ${resist}으로 막히지 않습니다.`);
+      tails.push(
+        `다만 ${callSlots(card, profile.exceptions)}만 ${otherJoined} ${josa(one, "은/는")} ${resist}으로 막히지 않습니다.`,
+      );
     }
     if (profile.both.length > 0) {
       tails.push(`${josa(callSlots(card, profile.both), "은/는")} 두 유형을 함께 내므로 어느 저항으로도 절반만 막힙니다.`);
