@@ -42,21 +42,3 @@ export function loadSpellOverrides(file = SPELL_OVERRIDE_FILE): SpellOverrides {
   const parsed = JSON.parse(fs.readFileSync(file, "utf8")) as { overrides?: SpellOverrides };
   return parsed.overrides ?? {};
 }
-
-/** 도출된 태그에 보정을 얹는다. 중복은 합치고 순서는 도출분을 앞에 둔다. */
-export function applyEffectOverride(derived: string[], override: SpellOverride | undefined): string[] {
-  if (!override) return derived;
-  const removed = new Set(override.remove ?? []);
-  const kept = derived.filter((tag) => !removed.has(tag));
-  const added = (override.add ?? []).filter((tag) => !kept.includes(tag) && !removed.has(tag));
-  return [...kept, ...added];
-}
-
-/** 유형을 못 밝힌 스킬에만 보정을 쓴다. 툴팁이 말한 것을 덮지 않는다. */
-export function applyDamageTypeOverride(
-  derived: DamageType[],
-  override: SpellOverride | undefined,
-): DamageType[] {
-  if (!override?.damageTypes || derived.length > 0) return derived;
-  return override.damageTypes;
-}

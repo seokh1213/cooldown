@@ -28,11 +28,7 @@ import {
   detectRatios,
   ratiosFromSimulation,
 } from "./facts-analysis";
-import {
-  applyDamageTypeOverride,
-  applyEffectOverride,
-  loadSpellOverrides,
-} from "./spellOverrides";
+import type { SpellOverride, SpellOverrides } from "./spellOverrides";
 
 export type StatName =
   | "health"
@@ -215,12 +211,42 @@ function dashTags(
   ];
 }
 
+/**
+ * 도출된 태그에 보정을 얹는다. 중복은 합치고 순서는 도출분을 앞에 둔다.
+ *
+ * 보정은 **도출 뒤에** 얹는다. 규칙이 나중에 그 값을 잡게 되면 보정은 아무 일도
+ * 하지 않으므로, 규칙을 고칠 때 보정을 같이 지울 필요가 없다.
+ */
+function applyEffectOverride(derived: string[], override: SpellOverride | undefined): string[] {
+  if (!override) return derived;
+  const removed = new Set(override.remove ?? []);
+  const kept = derived.filter((tag) => !removed.has(tag));
+  const added = (override.add ?? []).filter((tag) => !kept.includes(tag) && !removed.has(tag));
+  return [...kept, ...added];
+}
+
+/** 유형을 못 밝힌 스킬에만 보정을 쓴다. 툴팁이 말한 것을 덮지 않는다. */
+function applyDamageTypeOverride(
+  derived: DamageType[],
+  override: SpellOverride | undefined,
+): DamageType[] {
+  if (!override?.damageTypes || derived.length > 0) return derived;
+  return override.damageTypes;
+}
+
 export function createChampionCardBuilder(
   champions: ChampionRecord[],
   riotMeta: Map<string, RiotChampionMeta> = new Map(),
   wikiMeta: Map<string, WikiChampionMeta> = new Map(),
   /** 위키에서 받은 대시 판정. `"Yasuo:E"` → `{ dash, self }` */
   dashes: Record<string, { dash: boolean; self: boolean }> = {},
+  /**
+   * 툴팁이 말하지 않는 것을 사람이 채운 값. `"Annie:W"` → `{ add, why, source }`
+   *
+   * 파일을 읽어 오는 일은 **부르는 쪽**이 한다. 이 모듈은 브라우저에서도 쓰이므로
+   * `fs` 를 알면 안 된다. 대시 판정을 넘겨받는 것과 같은 방식이다.
+   */
+  overrides: SpellOverrides = {},
 ): ChampionCardBuilder {
   // 스탯별 전체 분포를 미리 계산 (백분위용)
   const distributions = new Map<string, number[]>();
@@ -253,9 +279,6 @@ export function createChampionCardBuilder(
     }
     return out;
   };
-
-  // 툴팁이 말하지 않는 것은 규칙으로 못 뽑는다. 출처를 달아 손으로 채운 값을 얹는다.
-  const overrides = loadSpellOverrides();
 
   const build = (championId: string): ChampionCard | undefined => {
     const champ = champions.find((c) => c.id === championId);
