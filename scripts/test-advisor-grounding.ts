@@ -367,4 +367,18 @@ assert.ok(q && !q.effects.includes("에어본"), "Q 에는 에어본이 없어�
   assert.match(groundCommentary(dodge, versus).text, new RegExp(mine.name), "내 스킬도 남는다");
 }
 
-console.log("✅ 근거 검사 통과 (49건)");
+{
+  /*
+   * 한다체로 끝난 문장은 합니다체로 돌려서 내보낸다.
+   *
+   * 4B 가 문장 넷 중 하나를 한다체로 끝냈다. 노트를 옮길 때 쓴 변환기를 여기서도
+   * 쓴다. 영어·중국어 답에는 해당이 없으므로 한국어일 때만 돈다.
+   */
+  const text = "화강암 방패가 살아 있을 때 딜 교환을 시작한다. 그 뒤에는 거리를 벌린다.";
+  const kept = groundCommentary(text, answer, "ko_KR").text;
+  assert.match(kept, /시작합니다/, "한다체 종결을 합니다체로 바꾼다");
+  assert.match(kept, /벌립니다/, "두 번째 문장도 바꾼다");
+  assert.doesNotMatch(kept, /시작한다|벌린다/, "한다체가 남지 않는다");
+}
+
+console.log("✅ 근거 검사 통과 (52건)");
