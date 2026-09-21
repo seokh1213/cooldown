@@ -42,19 +42,27 @@ export interface PlaybookLike {
  * 표를 손으로 적는 것이 아니라 **묻는 말**을 적는 것이다. 챔피언·아이템 같은 자료는
  * 여전히 데이터에서 온다. 위에 있을수록 먼저 본다.
  */
-const TOPIC_WORDS: Array<[RegExp, NoteCategory]> = [
+export const TOPIC_PATTERNS: Array<[RegExp, NoteCategory]> = [
   [/콤보|연계|순서|어떻게\s*쓰|스킬\s*순|딜\s*교환|딜교/, "combo"],
   [/한타|교전|팀\s*파이트|집단|5대5|오대오|난전/, "teamfight"],
-  [/라인전|라인|초반|레벨\s*[123]|cs|파밍|견제|주도권/, "laning"],
+  // 라인 이름과 갱 이야기는 곧 라인전이다. 짧게 묻는 사람은 "라인전" 이라고 안 쓰고
+  // "탑 다리우스 짜증나", "정글 갱 오는데" 라고 쓴다.
+  [
+    /라인전|라인|초반|레벨\s*[123]|cs|파밍|견제|주도권|탑\s|미드|바텀|봇\s|원딜|서폿|서포터|정글|갱/,
+    "laning",
+  ],
   [/중반|후반|스케일|성장|운영|오브젝트|드래곤|바론|전령|스플릿/, "phase"],
   // 아이템 이름이 아니라 **스탯**으로 묻는 경우가 더 많다. "마법 저항력 올려야 하나"
   // 가 아무 갈래에도 안 걸려서, 정작 그 답을 담은 노트가 뽑히지 않고 있었다.
   [
-    /아이템|템|빌드|시작\s*템|신화|코어|방어구|갑옷|방어력|저항력|저항|체력|강인함|치유\s*감소|올려야|올릴|쌓|스탯|카운터\s*스탯/,
+    /아이템|템|빌드|시작\s*템|신화|코어|방어구|갑옷|방어력|저항력|저항|체력|강인함|치유\s*감소|올려야|올릴|쌓|스탯|카운터\s*스탯|안\s*죽|못\s*죽이|안죽/,
     "situational-item",
   ],
   // "언제 물어야 하나" 는 상대의 이동기와 그 공백을 묻는 것이다.
-  [/언제\s*물|물어야|무는|진입|파고|갱|짤라|잘라|도망|빠져나|이동기|점멸|각\s*(이|을|볼)/, "escape-window"],
+  [
+    /언제\s*물|물어야|무는|진입|들어가|파고|짤라|잘라|도망|빠져나|이동기|점멸|각\s*(이|을|볼)/,
+    "escape-window",
+  ],
   [/스킬|패시브|궁|궁극기|[QWER]\s*스킬|쿨|사거리|능력/, "skill"],
 ];
 
@@ -77,7 +85,7 @@ const DEFAULT_ORDER: NoteCategory[] = [
  */
 export function noteOrder(question: string): NoteCategory[] {
   const hit: NoteCategory[] = [];
-  for (const [pattern, category] of TOPIC_WORDS) {
+  for (const [pattern, category] of TOPIC_PATTERNS) {
     if (pattern.test(question) && !hit.includes(category)) hit.push(category);
   }
   return [...hit, ...DEFAULT_ORDER.filter((category) => !hit.includes(category))];

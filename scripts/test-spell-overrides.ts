@@ -83,6 +83,8 @@ for (const [key, override] of Object.entries(overrides)) {
     (override.add?.length ?? 0) + (override.remove?.length ?? 0) + (override.damageTypes?.length ?? 0);
   if (override.confirmedEmpty) {
     assert.equal(changes, 0, `${key}: 비었음을 확인해 놓고 보정도 적었습니다`);
+  }
+  if (override.confirmedEmpty || override.confirmedNoDamage) {
     emptied += 1;
   } else {
     assert.ok(changes > 0, `${key}: 보정할 내용이 없습니다`);
@@ -92,5 +94,5 @@ for (const [key, override] of Object.entries(overrides)) {
 assert.ok(Object.keys(overrides).length > 0, "보정 항목이 하나도 없습니다");
 console.log(
   `✅ 보정 항목 통과 (${Object.keys(overrides).length}자리 · 태그 ${tags}건 · ` +
-    `피해 유형 ${types}건 · 비었음 확인 ${emptied}자리)`,
+    `피해 유형 ${types}건 · 사람이 확인 ${emptied}자리)`,
 );

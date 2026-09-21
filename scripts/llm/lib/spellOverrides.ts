@@ -36,6 +36,14 @@ export interface SpellOverride {
    * 구멍 목록에서 빠진다.
    */
   confirmedEmpty?: boolean;
+  /**
+   * 피해를 입히지 않는다고 확인한 자리.
+   *
+   * 클레드 P 의 "기본 공격은 감소한 피해를 입힙니다" 는 평타 이야기이고, 라이즈 R 의
+   * "과부하 사용 시 추가 피해" 는 Q 의 피해다. 스스로 내는 피해가 아니므로 유형이
+   * 비어 있는 것이 맞다.
+   */
+  confirmedNoDamage?: boolean;
   /** 툴팁으로는 왜 안 나오는가 */
   why: string;
   /** 무엇을 보고 적었는가 */
