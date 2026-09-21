@@ -36,7 +36,7 @@ export interface PlaybookRefs {
 
 export interface PlaybookEntry {
   id?: string;
-  /** rune | summoner | start-item | first-item | core-item | situational-item | combo | phase | laning | teamfight | skill */
+  /** rune | summoner | start-item | first-item | core-item | situational-item | escape-window | combo | phase | laning | teamfight | skill */
   category: string;
   /**
    * 본문.
@@ -51,7 +51,7 @@ export interface PlaybookEntry {
    * 사람이 쓴 문장은 카드와 대조할 수 없다. 기계적인 대목은 자료에서 도출해
    * 렌더하고(`claims.ts`), 사람은 도출할 수 없는 판단만 `nuance` 에 적는다.
    */
-  generated?: "situational-item";
+  generated?: "situational-item" | "escape-window";
   /** 도출로는 나오지 않는 한 문장. 생성된 본문 뒤에 붙는다. */
   nuance?: string;
   when?: PlaybookCondition;
@@ -118,6 +118,7 @@ const CATEGORY_LABEL: Record<string, string> = {
   "first-item": "첫 아이템",
   "core-item": "코어 아이템",
   "situational-item": "상황별 아이템",
+  "escape-window": "이동 수단과 공백",
   combo: "콤보",
   phase: "힘의 구간",
   laning: "라인전",

@@ -14,7 +14,12 @@ import * as path from "node:path";
 import type { ChampionCard } from "./llm/lib/facts";
 import { PUBLIC_DATA_ROOT, resolvePatchVersion } from "./llm/lib/data";
 import { loadPlaybooks } from "./llm/lib/playbook";
-import { deriveItemClaims, renderItemClaims } from "./llm/lib/claims";
+import {
+  deriveEscapeClaims,
+  deriveItemClaims,
+  renderEscapeClaims,
+  renderItemClaims,
+} from "./llm/lib/claims";
 
 const llmDir = path.join(PUBLIC_DATA_ROOT, resolvePatchVersion(), "llm");
 const cards = (
@@ -62,6 +67,24 @@ function badParticle(text: string, names: string[]): string | undefined {
 let generated = 0;
 let withNuance = 0;
 
+/**
+ * 사람이 적은 한 문장을 본다.
+ *
+ * 내용의 참·거짓은 기계가 못 가린다. 도출할 수 없는 판단이라 적는 것이므로 당연하다.
+ * 대신 지킬 수 있는 것만 지킨다 — 한 문장, 합니다체, 아이템 이름과 수치 없음.
+ */
+function checkNuance(nuance: string, card: ChampionCard, where: string): void {
+  if (!nuance) return;
+  withNuance += 1;
+  assert.ok(nuance.endsWith("다."), `${where}: nuance 는 합니다체로 끝나야 합니다`);
+  const bare = card.spells.reduce((acc, s) => acc.split(s.name).join(" "), nuance);
+  assert.ok(!/\d/.test(bare), `${where}: nuance 에 수치가 있습니다`);
+  assert.ok(!ITEM_WORDS.test(nuance), `${where}: nuance 에 아이템 이름이 있습니다`);
+  const sentences = nuance.split(/(?<=다\.)\s+/).filter(Boolean);
+  assert.equal(sentences.length, 1, `${where}: nuance 는 한 문장이어야 합니다 (${sentences.length}문장)`);
+  assert.ok(nuance.length <= 200, `${where}: nuance 가 너무 깁니다 (${nuance.length}자)`);
+}
+
 for (const [champion, book] of playbooks) {
   for (const entry of [...book.playing, ...book.against]) {
     if (!entry.generated) continue;
@@ -73,6 +96,28 @@ for (const [champion, book] of playbooks) {
 
     const card = byId.get(champion);
     assert.ok(card, `${where}: 카드를 찾을 수 없습니다`);
+
+    if (entry.generated === "escape-window") {
+      const escape = deriveEscapeClaims(card);
+      const slots = new Set(card.spells.map((s) => s.slot));
+      for (const move of escape.moves) {
+        assert.ok(slots.has(move.slot as never), `${where}: 없는 슬롯 ${move.slot} 을 짚었습니다`);
+        const spell = card.spells.find((s) => s.slot === move.slot);
+        assert.ok(
+          spell?.effects.includes("이동기") || spell?.effects.includes("돌진"),
+          `${where}: ${move.slot} 은 이동 수단이 아닙니다`,
+        );
+        // 쿨타임은 수치를 그대로 싣는다. 판올림마다 다시 만들어지므로 낡지 않는다.
+        assert.ok(move.cooldown > 0, `${where}: ${move.slot} 쿨타임이 비어 있습니다`);
+      }
+      const madeEscape = renderEscapeClaims(card, escape);
+      assert.ok(madeEscape.length >= 40, `${where}: 생성된 본문이 너무 짧습니다`);
+      // 슬롯 문자 뒤 조사는 읽는 소리로 고른다. "E 을" 이 나오면 안 된다.
+      assert.ok(!/[PQWE]을\s|R를\s/.test(madeEscape), `${where}: 슬롯 뒤 조사가 어긋났습니다`);
+      assert.ok(!madeEscape.includes("|"), `${where}: 스킬 이름에 구분자가 남았습니다`);
+      checkNuance(entry.nuance ?? "", card, where);
+      continue;
+    }
 
     const claims = deriveItemClaims(card);
     const slots = new Set(card.spells.map((s) => s.slot));
@@ -120,18 +165,9 @@ for (const [champion, book] of playbooks) {
     const wrong = badParticle(rendered, card.spells.map((s) => s.name));
     assert.equal(wrong, undefined, `${where}: 조사가 어긋났습니다 — "${wrong}"`);
 
-    const nuance = entry.nuance ?? "";
-    if (!nuance) continue;
-    withNuance += 1;
-    assert.ok(nuance.endsWith("다."), `${where}: nuance 는 합니다체로 끝나야 합니다`);
-    const bareNuance = card.spells.reduce((acc, s) => acc.split(s.name).join(" "), nuance);
-    assert.ok(!/\d/.test(bareNuance), `${where}: nuance 에 수치가 있습니다`);
-    assert.ok(!ITEM_WORDS.test(nuance), `${where}: nuance 에 아이템 이름이 있습니다`);
-    const sentences = nuance.split(/(?<=다\.)\s+/).filter(Boolean);
-    assert.equal(sentences.length, 1, `${where}: nuance 는 한 문장이어야 합니다 (${sentences.length}문장)`);
-    assert.ok(nuance.length <= 200, `${where}: nuance 가 너무 깁니다 (${nuance.length}자)`);
+    checkNuance(entry.nuance ?? "", card, where);
   }
 }
 
-assert.ok(generated >= 170, `도출 항목이 ${generated}건뿐입니다`);
+assert.ok(generated >= 340, `도출 항목이 ${generated}건뿐입니다`);
 console.log(`✅ 도출 노트 통과 (생성 ${generated}건, 그중 nuance ${withNuance}건)`);

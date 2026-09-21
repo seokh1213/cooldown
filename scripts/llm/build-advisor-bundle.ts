@@ -17,7 +17,12 @@ import { loadPlaybooks } from "./lib/playbook";
 import type { CuratedTip } from "./lib/knowledgeCore";
 import type { Playbook, PlaybookEntry } from "./lib/playbookCore";
 import type { ChampionCard } from "./lib/facts";
-import { deriveItemClaims, renderItemClaims } from "./lib/claims";
+import {
+  deriveEscapeClaims,
+  deriveItemClaims,
+  renderEscapeClaims,
+  renderItemClaims,
+} from "./lib/claims";
 import type { RuleNotes } from "./lib/rules";
 import { parseMechanics, type MechanicsIndex } from "./lib/mechanics";
 
@@ -51,8 +56,12 @@ export interface AdvisorKnowledgeBundle {
  * 붙인다. 카드가 없으면(신규 챔피언 등) 만들 수 없으므로 nuance 만 남긴다.
  */
 function fillGenerated(entry: PlaybookEntry, card: ChampionCard | undefined): PlaybookEntry {
-  if (entry.generated !== "situational-item") return entry;
-  const made = card ? renderItemClaims(card, deriveItemClaims(card)) : "";
+  if (!entry.generated) return entry;
+  const made = !card
+    ? ""
+    : entry.generated === "situational-item"
+      ? renderItemClaims(card, deriveItemClaims(card))
+      : renderEscapeClaims(card, deriveEscapeClaims(card));
   const text = [made, entry.nuance].filter(Boolean).join(" ").trim();
   const { generated: _generated, nuance: _nuance, ...rest } = entry;
   return { ...rest, text };
