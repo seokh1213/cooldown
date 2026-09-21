@@ -1,0 +1,280 @@
+/**
+ * 노트를 문장이 아니라 **주장**으로 다룬다
+ *
+ * 지금까지 노트는 사람이 쓴 산문이었다. 산문은 세 가지가 안 된다.
+ *
+ *   통일   173종을 나눠 쓰면 챔피언마다 표현이 달라진다
+ *   검증   "빅토르의 피해는 전부 마법이다" 가 맞는지 기계가 대조할 수 없다
+ *   추적   모델이 그 문장을 고쳐 쓰면 어디서 온 말인지 알 수 없다
+ *
+ * 그래서 주장을 **카드를 가리키는 자료**로 적고, 문장은 코드가 만든다. 카드의
+ * 태그가 고쳐지면 문장이 따라 고쳐지고, 카드와 어긋나는 주장은 애초에 만들어지지
+ * 않는다. `prose.ts` 가 카드 값으로 문장을 짓는 것과 같은 원리를 노트로 옮긴 것이다.
+ *
+ * 여기서 다루는 것은 `situational-item` 한 갈래다. "무엇을 올려야 하는가" 는
+ * 질문이 가장 잦으면서 답이 전부 카드에서 나오는 갈래라 먼저 옮긴다.
+ */
+import type { ChampionCard, DamageType, SpellFact } from "./facts";
+import { josa } from "./text";
+
+/** 저항을 올려도 값이 깎이는 사유. 노트의 "단서" 문장이 되는 것들이다. */
+export type Discount = "저항 감소" | "관통" | "고정 피해" | "최대 체력 비례" | "처형";
+
+/** 올릴 스탯. 아이템 이름은 판올림마다 바뀌므로 스탯까지만 말한다. */
+export type CounterStat = "방어력" | "마법 저항력" | "체력" | "치유 감소" | "강인함" | "공격 속도 감소" | "이동 속도";
+
+export interface ItemClaims {
+  champion: string;
+  /** 피해가 어느 유형으로 들어오는가. 슬롯은 근거다. */
+  profile: {
+    mix: DamageType | "혼합" | "불명";
+    byType: Partial<Record<DamageType, string[]>>;
+    /** 주된 유형과 다른 유형으로 들어오는 스킬. 저항 한 갈래로 못 막는 자리다. */
+    exceptions: string[];
+    /** 피해를 입히는데 유형이 안 적힌 스킬. 자료의 구멍이지 없는 피해가 아니다. */
+    unknown: string[];
+  };
+  /** 올린 저항의 값을 깎는 것들 */
+  discounts: Array<{ kind: Discount; slots: string[] }>;
+  /** 체력을 돌려주는 스킬 */
+  sustain: string[];
+  /** 군중 제어를 거는 스킬 */
+  cc: string[];
+  /** 기본 공격과 공격 속도가 화력의 축인가 */
+  dps: boolean;
+  /** 자리를 깔아 놓고 미는 꼴인가 */
+  zoning: boolean;
+  /** 올릴 순서. 앞이 먼저다. */
+  stats: CounterStat[];
+}
+
+const CC_TAGS = new Set([
+  "기절",
+  "속박",
+  "매혹",
+  "도발",
+  "공포",
+  "침묵",
+  "억제",
+  "에어본",
+  "강제 이동(넉백/끌기)",
+]);
+
+/** 기본 공격이 화력의 한 축인 하위 클래스. 위키 분류를 그대로 쓴다. */
+const AUTO_SUBCLASSES = new Set(["Marksman", "Skirmisher", "Juggernaut", "Diver"]);
+
+function has(spell: SpellFact, tag: string): boolean {
+  return spell.effects.includes(tag);
+}
+
+function slotsWhere(card: ChampionCard, pick: (spell: SpellFact) => boolean): string[] {
+  return card.spells.filter(pick).map((spell) => spell.slot);
+}
+
+/**
+ * 피해 유형 구성을 읽는다.
+ *
+ * 유형을 못 밝힌 스킬이 있다(시비르 Q 는 라이엇 툴팁이 "피해" 라고만 적는다).
+ * 그런 스킬은 세지 않는다. 모르는 것을 물리로 넘겨짚으면 "방어력만 올리면 된다"
+ * 는 반대 조언이 나온다.
+ *
+ * 한 갈래라도 다른 유형이면 "혼합" 이라고 하면 안 된다. 애쉬는 R 하나만 마법인데
+ * 그것 때문에 혼합이 되어 "한쪽 저항은 절반만 막는다" 는 말이 나왔다. 실제로는
+ * 방어력이 답이고 R 만 예외다. 그래서 **어느 쪽이 주된가**를 먼저 가리고, 다른
+ * 유형은 예외로 따로 말한다.
+ *
+ * 라이엇의 `damageType` 은 여기에 쓰지 않는다. 그것은 피해 유형이 아니라 계수
+ * 기준이다. 이즈리얼은 "물리" 로 분류되지만 W·E·R 이 마법이라, 그대로 믿으면
+ * 방어력을 올리라는 반대 조언이 된다.
+ */
+function readProfile(card: ChampionCard): ItemClaims["profile"] {
+  const byType: Partial<Record<DamageType, string[]>> = {};
+  const unknown: string[] = [];
+  for (const spell of card.spells) {
+    for (const type of spell.damageTypes) {
+      byType[type] = [...(byType[type] ?? []), spell.slot];
+    }
+    if (spell.damageTypes.length === 0 && /피해를 입/.test(spell.text)) unknown.push(spell.slot);
+  }
+  const physicalSlots = byType["물리"] ?? [];
+  const magicSlots = byType["마법"] ?? [];
+  if (physicalSlots.length === 0 && magicSlots.length === 0) {
+    return { mix: "불명", byType, exceptions: [], unknown };
+  }
+
+  // 기본 공격은 물리다. 평타가 화력의 축인 챔피언은 스킬 슬롯만 세면 물리 쪽이
+  // 실제보다 가볍게 잡힌다. 애쉬·피오라가 그래서 혼합으로 잡혔다.
+  //
+  // 신호는 태그가 아니라 하위 클래스로 잡는다. "기본 공격 강화" 는 누누 P 처럼
+  // 평타에 작은 덤을 얹는 것에도 붙어서, 실제로는 마법 챔피언인 누누까지 평타
+  // 중심으로 읽혔다.
+  const autoAttacker = AUTO_SUBCLASSES.has(card.wiki?.subclass ?? "");
+  const physical = physicalSlots.length + (autoAttacker ? 2 : 0);
+  const magic = magicSlots.length;
+
+  // 팽팽할 때만 혼합이다. 한 갈래라도 기울면 그쪽을 주된 것으로 말하고 나머지는
+  // 예외로 짚는 편이 "어느 저항을 올릴까" 라는 물음에 맞는 답이다.
+  if (physical === magic && physicalSlots.length > 0 && magicSlots.length > 0) {
+    return { mix: "혼합", byType, exceptions: [], unknown };
+  }
+  const mix: DamageType = physical > magic ? "물리" : "마법";
+  return { mix, byType, exceptions: mix === "물리" ? magicSlots : physicalSlots, unknown };
+}
+
+export function deriveItemClaims(card: ChampionCard): ItemClaims {
+  const profile = readProfile(card);
+
+  const discounts: ItemClaims["discounts"] = [];
+  const shred = slotsWhere(card, (s) => has(s, "적 방어력 감소") || has(s, "적 마법 저항력 감소"));
+  if (shred.length) discounts.push({ kind: "저항 감소", slots: shred });
+  const pen = slotsWhere(card, (s) => has(s, "관통"));
+  if (pen.length) discounts.push({ kind: "관통", slots: pen });
+  const trueDmg = profile.byType["고정"] ?? [];
+  if (trueDmg.length) discounts.push({ kind: "고정 피해", slots: trueDmg });
+  const maxHp = slotsWhere(card, (s) => has(s, "최대 체력 비례 피해"));
+  if (maxHp.length) discounts.push({ kind: "최대 체력 비례", slots: maxHp });
+  const execute = slotsWhere(card, (s) => has(s, "처형"));
+  if (execute.length) discounts.push({ kind: "처형", slots: execute });
+
+  const sustain = slotsWhere(card, (s) => has(s, "회복"));
+  const cc = slotsWhere(card, (s) => s.effects.some((tag) => CC_TAGS.has(tag)));
+  const dps = card.spells.some((s) => has(s, "기본 공격 강화") || has(s, "공격 속도 증가"));
+  const zoning = card.spells.some((s) => has(s, "광역")) && profile.mix !== "물리";
+
+  return { champion: card.name, profile, discounts, sustain, cc, dps, zoning, stats: rankStats(profile, { discounts, sustain, cc, dps, zoning }) };
+}
+
+/**
+ * 올릴 순서를 정한다.
+ *
+ * 저항이 먼저인 것은 피해가 한 유형으로만 들어올 때뿐이다. 섞여 들어오면 한쪽을
+ * 올려 봐야 절반만 막히므로 체력이 앞에 온다. 최대 체력 비례 피해가 있으면 그
+ * 체력조차 값이 깎이므로 저항과 함께 올리라는 말이 되어야 한다.
+ */
+function rankStats(
+  profile: ItemClaims["profile"],
+  rest: Pick<ItemClaims, "discounts" | "sustain" | "cc" | "dps" | "zoning">,
+): CounterStat[] {
+  const stats: CounterStat[] = [];
+  const maxHp = rest.discounts.some((d) => d.kind === "최대 체력 비례");
+
+  if (profile.mix === "물리") stats.push("방어력");
+  else if (profile.mix === "마법") stats.push("마법 저항력");
+  else if (profile.mix === "혼합") stats.push(maxHp ? "방어력" : "체력");
+
+  if (!maxHp && profile.mix !== "혼합" && profile.mix !== "불명") stats.push("체력");
+  if (rest.sustain.length >= 2) stats.push("치유 감소");
+  if (rest.cc.length >= 3) stats.push("강인함");
+  if (rest.dps) stats.push("공격 속도 감소");
+  if (rest.zoning) stats.push("이동 속도");
+  return stats;
+}
+
+/* ------------------------------------------------------------------ *
+ * 렌더 — 주장에서 문장을 짓는다
+ *
+ * 표현을 여기 한 곳에만 두는 것이 요점이다. 173종이 같은 말투로 나오고, 카드의
+ * 태그가 고쳐지면 문장이 따라 고쳐진다. 아이템 이름과 수치는 넣지 않는다.
+ * 판올림마다 바뀌는 것을 문장에 박으면 틀린 채로 남는다.
+ * ------------------------------------------------------------------ */
+
+/** "Q 힘의 흡수" 꼴로 부른다. 슬롯 글자만 적으면 어느 스킬인지 읽는 쪽이 못 짚는다. */
+function callSlots(card: ChampionCard, slots: string[], limit = 3): string {
+  const named = slots.slice(0, limit).map((slot) => {
+    const spell = card.spells.find((s) => s.slot === slot);
+    return spell ? `${slot} ${spell.name}` : slot;
+  });
+  if (named.length <= 1) return named[0] ?? "";
+  const head = named.slice(0, -1);
+  const tail = named[named.length - 1];
+  return `${head.join(", ")}${particle(head[head.length - 1], "와/과")} ${tail}`;
+}
+
+/** `josa` 는 낱말까지 붙여 돌려준다. 여기서는 조사 글자만 필요하다. */
+function particle(word: string, pair: "은/는" | "이/가" | "을/를" | "와/과" | "로/으로"): string {
+  return josa(word, pair).slice(word.length);
+}
+
+function profileLine(card: ChampionCard, claims: ItemClaims): string | undefined {
+  const { profile } = claims;
+  const name = card.name;
+  // 유형이 안 적힌 딜링 스킬이 있으면 "모두" 라고 말할 수 없다. 그 한 마디가
+  // "방어력은 살 필요 없다" 는 조언으로 읽히므로, 아는 것까지만 말한다.
+  const clean = profile.unknown.length === 0 && profile.exceptions.length === 0;
+  for (const [type, joined, resist, other, otherJoined] of [
+    ["마법", "마법이라", "마법 저항력", "방어력", "물리라"],
+    ["물리", "물리라", "방어력", "마법 저항력", "마법이라"],
+  ] as const) {
+    if (profile.mix !== type) continue;
+    const slots = callSlots(card, profile.byType[type] ?? []);
+    if (clean) {
+      return `${name}의 피해는 ${slots}까지 모두 ${joined} ${other}은 한 푼도 값을 하지 않고 ${resist}만 실효 체력으로 바뀝니다.`;
+    }
+    const head = `${name}의 주력 피해는 ${josa(slots, "이/가")} ${type}이므로 ${resist}이 먼저입니다.`;
+    if (profile.exceptions.length === 0) return head;
+    // 예외를 말하지 않으면 "한 갈래만 올리면 된다" 로 읽힌다. 애쉬 R 이 그 자리다.
+    return `${head} 다만 ${callSlots(card, profile.exceptions)}만 ${otherJoined} 그 한 줄기는 ${resist}으로 막히지 않습니다.`;
+  }
+  if (profile.mix === "혼합") {
+    const phys = callSlots(card, profile.byType["물리"] ?? [], 2);
+    const magic = callSlots(card, profile.byType["마법"] ?? [], 2);
+    return `${josa(name, "은/는")} ${josa(phys, "이/가")} 물리, ${josa(magic, "이/가")} 마법이라 한쪽 저항만 올리면 절반은 그대로 들어옵니다.`;
+  }
+  return undefined;
+}
+
+/**
+ * 단서는 두 개까지 말한다.
+ *
+ * 저항을 깎는 스킬과 최대 체력 비례 피해가 함께 있으면(요릭 E·R) 하나만 말해서는
+ * 답이 반쪽이 된다. 셋 이상은 문장이 길어지기만 하므로 앞의 둘에서 끊는다.
+ */
+function discountLines(card: ChampionCard, claims: ItemClaims): string[] {
+  const first = claims.stats[0];
+  const lines = new Map<Discount, string>();
+  for (const { kind, slots } of claims.discounts) {
+    const called = callSlots(card, slots);
+    if (kind === "최대 체력 비례") {
+      lines.set(kind, `${josa(called, "이/가")} 최대 체력에 비례하므로 체력만 크게 불려 두면 그 피해도 같이 커집니다.`);
+    } else if (kind === "저항 감소") {
+      lines.set(kind, `${josa(called, "이/가")} 저항 자체를 깎으므로 올려 둔 값이 그 사이에는 덜 듭니다.`);
+    } else if (kind === "고정 피해") {
+      lines.set(kind, `${called}의 고정 피해에는 저항이 아예 관여하지 않으니 그 한 줄기는 체력 총량으로만 버팁니다.`);
+    } else if (kind === "관통") {
+      lines.set(kind, `${called}에 관통이 걸려 있어 올린 저항의 일부는 그냥 뚫립니다.`);
+    } else if (kind === "처형") {
+      lines.set(kind, `${josa(called, "은/는")} 체력이 낮은 적을 곧바로 끊으므로 처형 구간에서 벗어날 체력 총량도 함께 봅니다.`);
+    }
+  }
+  // 저항을 깎는 것이 가장 직접적이고, 그다음이 저항을 비껴가는 것들이다.
+  const order: Discount[] = ["저항 감소", "관통", "고정 피해", "최대 체력 비례", "처형"];
+  const picked = order.flatMap((kind) => (lines.has(kind) ? [lines.get(kind) as string] : [])).slice(0, 2);
+  if (picked.length) return picked;
+  if (first === "방어력" || first === "마법 저항력") {
+    return [`저항을 깎는 스킬도 고정 피해도 없으므로 올린 ${josa(first, "이/가")} 끝까지 그대로 값을 합니다.`];
+  }
+  return [];
+}
+
+function secondLine(card: ChampionCard, claims: ItemClaims): string | undefined {
+  if (claims.stats.includes("치유 감소")) {
+    return `${josa(callSlots(card, claims.sustain), "이/가")} 체력을 돌려주니 결투가 길어지는 구도라면 치유 감소가 저항 다음입니다.`;
+  }
+  if (claims.stats.includes("강인함")) {
+    return `실제로 죽는 경로는 ${josa(callSlots(card, claims.cc), "로/으로")} 이어지는 군중 제어에 묶이는 것이므로, 이동기가 없는 챔피언이라면 강인함을 저항보다 앞에 둘 수 있습니다.`;
+  }
+  if (claims.stats.includes("공격 속도 감소")) {
+    return `화력의 축이 기본 공격과 공격 속도에 있으므로 공격 속도 감소도 함께 값을 합니다.`;
+  }
+  if (claims.stats.includes("이동 속도")) {
+    return `범위를 깔아 놓고 미는 꼴이라 저항으로 다 받아 내기보다 예고된 자리에서 걸어 나갈 이동 속도가 함께 값을 합니다.`;
+  }
+  return undefined;
+}
+
+/** 주장을 두세 문장으로 편다. 문장 순서는 유형 → 단서 → 다음 스탯으로 고정한다. */
+export function renderItemClaims(card: ChampionCard, claims: ItemClaims): string {
+  return [profileLine(card, claims), ...discountLines(card, claims), secondLine(card, claims)]
+    .filter(Boolean)
+    .join(" ");
+}
