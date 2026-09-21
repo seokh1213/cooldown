@@ -462,6 +462,7 @@ export const koKRTranslations: Translations = {
       open: "AI 모델",
       back: "돌아가기",
       empty: "이 기기에 내려받은 모델이 없습니다. 받으면 해설이 함께 나옵니다.",
+      cached: "내려받은 모델",
       used: "차지하는 용량",
       files: "파일",
       remove: "모델 삭제",

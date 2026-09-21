@@ -39,6 +39,13 @@ export function AdvisorStorage({ onDelete, onDownload, unavailable, webgpu, choi
   const { t } = useTranslation();
   const copy = t.advisor.storage;
   const [info, setInfo] = useState<ModelCacheInfo | null>(null);
+  /**
+   * 받아 둔 것이 목록의 어느 줄인가. 목록에 없는 저장소면 이름을 그대로 적는다 —
+   * `?advisorModel=` 로 목록 밖의 것을 받아 둔 경우다.
+   */
+  const cachedKey = MODEL_CHOICES.find((entry) => info?.repos.includes(entry.model.id))?.key;
+  const cachedLabel =
+    MODEL_CHOICES.find((entry) => entry.key === cachedKey)?.label ?? info?.repos[0];
   const [asking, setAsking] = useState(false);
   const [busy, setBusy] = useState(false);
   const [done, setDone] = useState(false);
@@ -94,6 +101,17 @@ export function AdvisorStorage({ onDelete, onDownload, unavailable, webgpu, choi
         </div>
       ) : (
         <dl className="space-y-2">
+          {/*
+            무엇이 들어 있는지 먼저 적는다. 용량만 보이면 "1,734MB 가 있다" 는 알아도
+            그것이 어느 모델인지는 모른다. 고른 줄과 받아 둔 것이 다를 수 있다 —
+            받다 만 채로 바꾸면 그렇다.
+          */}
+          {cachedLabel && (
+            <div className="flex items-baseline justify-between gap-2">
+              <dt className="text-muted-foreground">{copy.cached}</dt>
+              <dd className="min-w-0 truncate font-semibold">{cachedLabel}</dd>
+            </div>
+          )}
           {info.bytes !== undefined && (
             <div className="flex items-baseline justify-between">
               <dt className="text-muted-foreground">{copy.used}</dt>
@@ -168,7 +186,10 @@ export function AdvisorStorage({ onDelete, onDownload, unavailable, webgpu, choi
                     {blocked ? copy.pickNeedsF16 : model.lite ? copy.pickNoteLite : copy.pickNoteFull}
                   </span>
                 </span>
-                <span className="shrink-0 text-[11px] tabular-nums text-muted-foreground">{model.downloadMb} MB</span>
+                {/* 받아 둔 줄은 용량 대신 그 사실을 적는다. 다시 받을 필요가 없는 줄이다. */}
+                <span className="shrink-0 text-[11px] tabular-nums text-muted-foreground">
+                  {key === cachedKey ? copy.cached : `${model.downloadMb} MB`}
+                </span>
               </button>
             );
           })}
