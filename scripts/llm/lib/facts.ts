@@ -28,6 +28,11 @@ import {
   detectRatios,
   ratiosFromSimulation,
 } from "./facts-analysis";
+import {
+  applyDamageTypeOverride,
+  applyEffectOverride,
+  loadSpellOverrides,
+} from "./spellOverrides";
 
 export type StatName =
   | "health"
@@ -249,6 +254,9 @@ export function createChampionCardBuilder(
     return out;
   };
 
+  // 툴팁이 말하지 않는 것은 규칙으로 못 뽑는다. 출처를 달아 손으로 채운 값을 얹는다.
+  const overrides = loadSpellOverrides();
+
   const build = (championId: string): ChampionCard | undefined => {
     const champ = champions.find((c) => c.id === championId);
     if (!champ) return undefined;
@@ -267,7 +275,7 @@ export function createChampionCardBuilder(
         recharge: formatLevels(ability.rechargeSeconds),
         maxCharges: ability.maxCharges,
         cost: formatLevels(ability.cost?.values),
-        damageTypes: detectDamageTypes(text),
+        damageTypes: applyDamageTypeOverride(detectDamageTypes(text), overrides[`${champ.id}:${slot}`]),
         // 이동기와 돌진은 규칙표로 잡지 않는다.
         //
         // **위키 판정을 먼저 쓴다.** LoL Wiki 는 대시를 `{{tip|dash}}` 로 표시하므로
@@ -276,11 +284,14 @@ export function createChampionCardBuilder(
         // "돌진하는 적을 막습니다"(뽀삐 W, 남의 돌진)를 끝내 못 갈랐다.
         //
         // 위키에 없는 챔피언(출시 직후)만 툴팁 추정으로 내려간다.
-        effects: [
-          // 이 챔피언의 다른 스킬 이름은 지우고 본다. "공포 감지" 가 공포로 잡혔다.
-          ...detectEffects(text, Object.values(champ.abilities).map((other) => other?.name ?? "")),
-          ...dashTags(dashes[`${champ.id}:${ability.slot}`], text, champ.name),
-        ],
+        effects: applyEffectOverride(
+          [
+            // 이 챔피언의 다른 스킬 이름은 지우고 본다. "공포 감지" 가 공포로 잡혔다.
+            ...detectEffects(text, Object.values(champ.abilities).map((other) => other?.name ?? "")),
+            ...dashTags(dashes[`${champ.id}:${ability.slot}`], text, champ.name),
+          ],
+          overrides[`${champ.id}:${slot}`],
+        ),
         // 계수는 시뮬레이션 항(구조화된 값)을 우선하고, 없으면 툴팁 표기에서 뽑는다
         ratios: { ...detectRatios(text), ...ratiosFromSimulation(ability) },
       };
