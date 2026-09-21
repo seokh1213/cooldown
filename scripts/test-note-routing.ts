@@ -50,6 +50,19 @@ for (const [question, category, side] of CASES) {
 assert.equal(notePerspective("빅토르 상대로 어떻게 해"), "against", "상대로 는 플레이 표시가 아닙니다");
 assert.equal(notePerspective("빅토르로 어떻게 해"), "playing", "…로 는 플레이 표시입니다");
 
+// 화면의 칩은 물었던 문장에 관점만 덧붙여 다시 묻는다. 주제는 그대로 남아야 한다.
+for (const [original, category] of [
+  ["제드 라인전 어떻게 풀어", "laning"],
+  ["그레이브즈 한타에서 뭐 해야 돼", "teamfight"],
+] as const) {
+  assert.equal(notePerspective(original), "both", `"${original}" 은 문장만으로 못 가립니다`);
+  for (const [suffix, side] of [["상대할 때", "against"], ["내가 할 때", "playing"]] as const) {
+    const asked = `${original} (${suffix})`;
+    assert.equal(notePerspective(asked), side, `"${asked}" 의 관점`);
+    assert.equal(noteOrder(asked)[0], category, `"${asked}" 의 갈래가 바뀌면 안 됩니다`);
+  }
+}
+
 // 갈래가 늘면 기본 순서에도 들어 있어야 한다. 빠지면 그 갈래는 영영 안 뽑힌다.
 for (const category of ["situational-item", "escape-window"] as const) {
   assert.ok(noteOrder("아무 말").includes(category), `기본 순서에 ${category} 가 없습니다`);

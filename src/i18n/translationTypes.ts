@@ -373,6 +373,10 @@ export interface Translations {
       askAbout: string;
       commentary: string;
       commentaryPending: string;
+      /** 문장으로 관점을 못 가릴 때 화면에서 한 번 물어본다 */
+      perspectiveAsk: string;
+      perspectivePlaying: string;
+      perspectiveAgainst: string;
       top: string;
       bottom: string;
       stats: string;

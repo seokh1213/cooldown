@@ -159,9 +159,20 @@ export interface SelectedNotes {
   perspective: NotePerspective;
 }
 
-export function selectNotes(book: PlaybookLike, question: string): SelectedNotes {
+/**
+ * 한국어로도 못 가리는 물음이 있다.
+ *
+ * "제드 라인전 어떻게 풀어" 는 내가 제드인지 제드를 상대하는지 알 수 없다. 그 정보는
+ * **묻는 사람에게만** 있으므로, 모델에게 다시 쓰게 해도 없는 것이 생기지 않는다.
+ * 화면에서 한 번 눌러 알려 주면 그 값이 여기로 들어온다.
+ */
+export function selectNotes(
+  book: PlaybookLike,
+  question: string,
+  forced?: NotePerspective,
+): SelectedNotes {
   const order = noteOrder(question);
-  const perspective = notePerspective(question);
+  const perspective = forced ?? notePerspective(question);
   const share = SHARE[perspective];
   return {
     playing: pick(book.playing, order, share.playing),
