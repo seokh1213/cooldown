@@ -558,6 +558,21 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
     setDraft("");
   };
 
+  /**
+   * 관점을 골라 줬을 때. 물었던 문장에 그 말만 덧붙여 다시 묻는다.
+   *
+   * 새 문장을 지으면 "라인전" 같은 주제가 날아간다. 그리고 이 함수는 **컴포넌트
+   * 수준에 둔다.** 렌더 안에서 만들면 `ask` 를 거쳐 ref 에 닿아 렌더 중 ref 접근으로
+   * 잡힌다.
+   */
+  const askPerspective = (index: number, side: "playing" | "against") => {
+    const asked = advisor.turns[index - 1];
+    const original = asked?.role === "user" ? asked.content : "";
+    if (!original) return;
+    const suffix = side === "against" ? copy.card.perspectiveAgainst : copy.card.perspectivePlaying;
+    ask(`${original} (${suffix})`);
+  };
+
   /** 오타 후보를 골랐을 때. 원래 질문에서 그 말만 바꿔 다시 묻는다. */
   const pickChampion = (championId: string) => {
     const card = data?.cardById.get(championId);
@@ -1116,31 +1131,25 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
                * 양쪽에 노트가 다 있을 때만 띄운다. 한쪽뿐이면 고를 것이 없다.
                */
               const notes = turn.answer?.kind === "champion" ? turn.answer.notes : undefined;
-              const askSide =
-                notes && notes.perspective === "both" && notes.playing.length > 0 && notes.against.length > 0
-                  ? (side: "playing" | "against") => {
-                      // 물었던 문장에 관점만 덧붙인다. 새로 지으면 "라인전" 같은 주제가 날아간다.
-                      const asked = advisor.turns[index - 1];
-                      const original = asked?.role === "user" ? asked.content : "";
-                      if (!original) return;
-                      const suffix = side === "against" ? copy.card.perspectiveAgainst : copy.card.perspectivePlaying;
-                      ask(`${original} (${suffix})`);
-                    }
-                  : undefined;
-              const perspectiveChips = !askSide ? null : (
+              // 렌더에서는 **띄울지 말지만** 가린다. 여기서 부르는 함수를 만들면
+              // 그 함수가 `ask` 를 거쳐 ref 에 닿아, 렌더 중 ref 접근으로 잡힌다.
+              const canAskSide = Boolean(
+                notes && notes.perspective === "both" && notes.playing.length > 0 && notes.against.length > 0,
+              );
+              const perspectiveChips = !canAskSide ? null : (
                 <div className="flex flex-wrap items-center gap-1.5 pl-2.5 text-xs">
                   <span className="text-muted-foreground">{copy.card.perspectiveAsk}</span>
                   <button
                     type="button"
                     className="rounded-full border border-border px-2.5 py-0.5 hover:bg-muted"
-                    onClick={() => askSide("playing")}
+                    onClick={() => askPerspective(index, "playing")}
                   >
                     {copy.card.perspectivePlaying}
                   </button>
                   <button
                     type="button"
                     className="rounded-full border border-border px-2.5 py-0.5 hover:bg-muted"
-                    onClick={() => askSide("against")}
+                    onClick={() => askPerspective(index, "against")}
                   >
                     {copy.card.perspectiveAgainst}
                   </button>
