@@ -62,6 +62,20 @@ function appliesEffect(label: string, sentence: string): boolean {
   return !rule || !rule[1].test(sentence);
 }
 
+/**
+ * 피해를 안 받는 상태가 되는가.
+ *
+ * "피해를 입지 않으**면** 보호막이 생긴다"(말파이트 P, 세주아니 P, 갈리오 W…)는
+ * 면역이 아니라 **조건**이다. 열다섯 중 여덟이 이 꼴이었다. 뒤에 오는 어미로 가른다.
+ */
+const IMMUNE_CONDITION = /(피해를 입지 않|피해를 받지 않)(으면|면|고|거나)/;
+
+function grantsImmunity(sentence: string): boolean {
+  if (!/무적|피해를 받지 않|피해를 입지 않/.test(sentence)) return false;
+  if (/무적/.test(sentence)) return true;
+  return !IMMUNE_CONDITION.test(sentence);
+}
+
 /** 은신을 얻는가. 은신을 깨거나 드러내는 문장은 제외한다. */
 function gainsStealth(sentence: string): boolean {
   if (!/은신|투명 상태|모습을 감/.test(sentence)) return false;
@@ -105,7 +119,7 @@ const EFFECT_RULES: Array<[RegExp, string]> = [
   [/고정 피해/, "고정 피해"],
   [/처형|즉시 처치/, "처형"],
   [/강인함/, "강인함"],
-  [/무적|피해를 받지 않|피해를 입지 않/, "피해 면역"],
+  [/__IMMUNE__/, "피해 면역"],
   [/받는 모든 공격[^.]{0,20}막|막아낸 다음|모든 공격과 이동 불가|회피하고|빗나가게/, "공격 무효화"],
   [/투사체를 (막|파괴)|막아냅|차단/, "투사체 차단"],
   [/공격 속도[^.]{0,12}증가/, "공격 속도 증가"],
@@ -352,6 +366,10 @@ export function detectEffects(text: string, skillNames: string[] = []): string[]
     }
     if (label === "은신") {
       if (sentences.some((sentence) => !isMinionOnly(sentence) && gainsStealth(sentence))) found.push(label);
+      continue;
+    }
+    if (label === "피해 면역") {
+      if (sentences.some((sentence) => !isMinionOnly(sentence) && grantsImmunity(sentence))) found.push(label);
       continue;
     }
     if (!re.test(cleaned)) continue;
