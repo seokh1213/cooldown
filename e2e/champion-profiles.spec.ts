@@ -55,8 +55,21 @@ for (const locale of ["ko_KR", "en_US", "zh_CN"] as const) {
       await expect(page.getByRole("button", { name: t.championProfile.tab, exact: true })).toHaveAttribute("aria-pressed", "true");
       const grid = page.locator("[data-champion-grid]");
       await expect(grid.getByRole("button")).toHaveCount(173);
-      const columnCount = await grid.evaluate((element) => getComputedStyle(element).gridTemplateColumns.split(" ").length);
-      expect(columnCount).toBe(width === 1440 ? 16 : 5);
+      /*
+        열 수는 화면이 정한다. 예전에는 끊는 점마다 5·8·10·12·16 으로 못 박았는데,
+        그 사이 폭에서 칸이 빠듯해져 이름이 서너 줄로 접혔다. 지금은 칸의 최소 폭만
+        정하므로 **개수가 아니라 규칙**을 본다 — 좁으면 적게, 넓으면 많이, 어느
+        폭에서도 칸이 최소 폭 아래로 눌리지 않는다.
+      */
+      const columns = await grid.evaluate((element) =>
+        getComputedStyle(element)
+          .gridTemplateColumns.split(" ")
+          .map((value) => Number.parseFloat(value)),
+      );
+      expect(Math.min(...columns)).toBeGreaterThanOrEqual(76);
+      expect(columns.length).toBeGreaterThanOrEqual(width === 1440 ? 12 : 3);
+      // 넓은 화면은 좁은 화면보다 촘촘해야 한다. 최소 폭만 지키고 안 늘어나면 허전하다.
+      if (width === 1440) expect(columns.length).toBeGreaterThan(8);
       expect(requests.filter((url) => url.includes("champion-profiles/"))).toHaveLength(0);
       const search = page.getByRole("textbox", { name: t.comparison.select });
       await search.fill("Aatrox");
