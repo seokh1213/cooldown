@@ -26,6 +26,7 @@ import {
 } from "../../../scripts/llm/lib/rules";
 import { playbookToText, selectPlaybook, type Playbook } from "../../../scripts/llm/lib/playbookCore";
 import { selectNotes, type NotePerspective, type SelectedNotes } from "./noteSelect";
+import { deriveMatchupClaims, renderMatchupClaims } from "../../../scripts/llm/lib/claims";
 import {
   findMechanics,
   mechanicsToText,
@@ -301,7 +302,19 @@ export function buildMatchupTips(data: AdvisorData, me: ChampionCard, enemy: Cha
 /** 상성 카드에 그대로 보일 노트. 해설 재료(buildMatchupTips)와 같은 것을 고른다. */
 export function matchupNotes(data: AdvisorData, me: ChampionCard, enemy: ChampionCard): { mine: string[]; enemy: string[] } {
   const selected = selectPlaybook(data.playbooks, me, enemy);
-  return { mine: selected.mine.slice(0, 3).map((entry) => entry.text), enemy: selected.vsEnemy.slice(0, 3).map((entry) => entry.text) };
+  /*
+   * 조합은 삼만 쌍에 가까워 손으로 쓸 수 없다. 그런데 **미리 만들 필요가 없다.**
+   * 두 카드만 있으면 그 자리에서 계산되므로 물어볼 때 짓는다.
+   *
+   * 맨 앞에 둔다. 사람이 쓴 노트는 한쪽 챔피언만 보고 쓴 것이라 이 조합에 관한
+   * 말이 아니고, 도출한 쪽이 물음에 더 가깝다. 이 문장들은 재료에 그대로 실리므로
+   * 근거 검사도 통과한다.
+   */
+  const derived = renderMatchupClaims(me, enemy, deriveMatchupClaims(me, enemy));
+  return {
+    mine: [...derived, ...selected.mine.slice(0, 3).map((entry) => entry.text)],
+    enemy: selected.vsEnemy.slice(0, 3).map((entry) => entry.text),
+  };
 }
 
 /**
