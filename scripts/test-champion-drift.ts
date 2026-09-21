@@ -38,8 +38,11 @@ const noteCount = (id: string) => {
 const reworked: string[] = [];
 const reworded: string[] = [];
 const fresh: string[] = [];
+/** 사람이 쓴 노트가 아직 없는 챔피언. 도출 노트는 저절로 나오므로 빈손은 아니다. */
+const unwritten: string[] = [];
 
 for (const card of cards) {
+  if (noteCount(card.id) === 0) unwritten.push(card.name);
   const seen = rows[card.id];
   if (!seen) {
     fresh.push(card.id);
@@ -57,6 +60,11 @@ for (const card of cards) {
 if (fresh.length) {
   console.log(`ℹ️  지문이 없는 챔피언 ${fresh.length}종: ${fresh.join(", ")} — npm run llm:stamp`);
 }
+if (unwritten.length) {
+  // 막지 않는다. 도출 노트("무엇을 올릴까", "언제 물까", "성장 곡선")는 카드만
+  // 있으면 나오므로 답이 빈손은 아니다. 다만 사람만 쓸 수 있는 것이 비어 있다.
+  console.log(`ℹ️  사람이 쓴 노트가 없는 챔피언 ${unwritten.length}종: ${unwritten.join(", ")}`);
+}
 if (reworded.length) {
   console.log(`ℹ️  툴팁 문구가 바뀐 챔피언 ${reworded.length}종: ${reworded.join(", ")}`);
   console.log("    설명만 다듬은 것일 수 있습니다. 읽어 보고 npm run llm:stamp -- <ChampionId> 로 다시 찍으십시오.");
@@ -68,4 +76,7 @@ assert.equal(
   `스킬 이름이 바뀐 챔피언이 있습니다. 리워크로 보이며 그 챔피언의 노트와 보정을 다시 봐야 합니다.\n\n    ${reworked.join("\n\n    ")}\n`,
 );
 
-console.log(`✅ 챔피언 변동 검사 통과 (지문 ${Object.keys(rows).length}종 · 문구 변동 ${reworded.length}종)`);
+console.log(
+  `✅ 챔피언 변동 검사 통과 (지문 ${Object.keys(rows).length}종 · 문구 변동 ${reworded.length}종 · ` +
+    `노트 미작성 ${unwritten.length}종)`,
+);
