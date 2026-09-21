@@ -55,6 +55,7 @@ const TAGS: Record<string, { en: string; zh: string }> = {
   "자기 공격력 증가": { en: "self attack damage boost", zh: "自身攻击力提升" },
   "치명타": { en: "critical strike", zh: "暴击" },
   "부활": { en: "revive", zh: "复活" },
+  "연계 강화": { en: "amplified by a prior hit", zh: "连招强化" },
 };
 
 const DAMAGE: Record<string, { en: string; zh: string }> = {
