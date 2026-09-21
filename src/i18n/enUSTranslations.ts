@@ -470,6 +470,8 @@ export const enUSTranslations: Translations = {
       note: "Chat history and ratings stay on this device and never reach a server.",
       pickTitle: "Model in use",
       pickNeedsF16: "Unavailable: this graphics adapter has no 16-bit shader support",
+      pickNoteFull: "Explains well and answers better. In return it is slow, large, and may not be supported by your graphics card.",
+      pickNoteLite: "Answers are weaker, but it runs lightly on most computers.",
       pickNote: "Choosing one deletes the downloaded model so the new one can be fetched. Your conversation stays open.",
     },
     sources: "Retrieved",

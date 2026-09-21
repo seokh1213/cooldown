@@ -472,6 +472,8 @@ export const koKRTranslations: Translations = {
       note: "대화 기록과 평가는 이 기기에만 있고 삭제해도 서버로 간 적이 없습니다.",
       pickTitle: "쓸 모델",
       pickNeedsF16: "이 그래픽 어댑터에 16비트 셰이더 연산이 없어 고를 수 없습니다",
+      pickNoteFull: "설명을 잘하고 답변 품질이 좋습니다. 대신 느리고 용량이 크며, 그래픽카드에 따라 지원되지 않을 수 있습니다",
+      pickNoteLite: "답변 품질은 떨어지지만 대부분의 컴퓨터에서 가볍게 돕니다",
       pickNote: "고르면 받아 둔 모델을 지우고 새로 받습니다. 보던 대화는 그대로 있습니다.",
     },
     sources: "찾은 자료",

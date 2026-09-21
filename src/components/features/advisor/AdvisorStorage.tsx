@@ -10,7 +10,7 @@ import { Download, Loader2, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useTranslation } from "@/i18n";
 import { readModelCache, type ModelCacheInfo } from "@/lib/advisor/storage";
-import { MODEL_CHOICES, type WebGpuSupport } from "@/lib/advisor/config";
+import { MODEL_CHOICES, modelBlocked, type WebGpuSupport } from "@/lib/advisor/config";
 
 function formatMb(bytes: number): string {
   return (bytes / 1048576).toFixed(0);
@@ -77,7 +77,7 @@ export function AdvisorStorage({ onDelete, onDownload, unavailable, webgpu, choi
   };
 
   return (
-    <div className="flex-1 space-y-4 overflow-y-auto p-4 text-sm">
+    <div className="flex-1 space-y-4 overflow-y-auto overscroll-contain p-4 text-sm">
       {info === null ? (
         <p className="flex items-center gap-2 text-muted-foreground">
           <Loader2 className="h-4 w-4 animate-spin" />
@@ -145,8 +145,10 @@ export function AdvisorStorage({ onDelete, onDownload, unavailable, webgpu, choi
       <div className="border-t pt-3">
         <div className="mb-2 text-[11px] font-medium text-muted-foreground">{copy.pickTitle}</div>
         <div role="radiogroup" aria-label={copy.pickTitle} className="space-y-1">
-          {MODEL_CHOICES.map(({ key, model, label, note, detail }) => {
-            const blocked = model.needsF16 && webgpu?.supported === true && !webgpu.f16;
+          {MODEL_CHOICES.map(({ key, model, label }) => {
+            // 이 기기의 그래픽카드가 못 돌리는 줄은 누르지 못하게 한다. 2.8GB 를 받은
+            // 뒤에 적재에서 죽는 것보다 받기 전에 아는 편이 낫다.
+            const blocked = modelBlocked(model, webgpu);
             const active = key === choice;
             return (
               <button
@@ -156,7 +158,6 @@ export function AdvisorStorage({ onDelete, onDownload, unavailable, webgpu, choi
                 aria-checked={active}
                 disabled={blocked || busy}
                 onClick={() => pick(key)}
-                title={blocked ? `${detail}\n\n${copy.pickNeedsF16}` : detail}
                 className={`flex w-full items-baseline justify-between gap-2 rounded-md px-2.5 py-2 text-left transition-colors disabled:cursor-not-allowed disabled:opacity-45 ${
                   active ? "bg-muted" : "hover:bg-muted/60"
                 }`}
@@ -164,7 +165,7 @@ export function AdvisorStorage({ onDelete, onDownload, unavailable, webgpu, choi
                 <span className="min-w-0">
                   <span className={`block text-[13px] ${active ? "font-semibold text-foreground" : ""}`}>{label}</span>
                   <span className="block text-[11px] leading-relaxed text-muted-foreground">
-                    {blocked ? copy.pickNeedsF16 : note}
+                    {blocked ? copy.pickNeedsF16 : model.lite ? copy.pickNoteLite : copy.pickNoteFull}
                   </span>
                 </span>
                 <span className="shrink-0 text-[11px] tabular-nums text-muted-foreground">{model.downloadMb} MB</span>

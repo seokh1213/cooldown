@@ -479,6 +479,10 @@ export interface Translations {
       pickTitle: string;
       /** 이 기기가 못 도는 줄에 붙는 사유 */
       pickNeedsF16: string;
+      /** 기본 모델 설명. 줄 아래 한 줄로 늘 보인다. */
+      pickNoteFull: string;
+      /** 가벼운 모델 설명. */
+      pickNoteLite: string;
       /** 고르면 무슨 일이 생기는지 */
       pickNote: string;
     };

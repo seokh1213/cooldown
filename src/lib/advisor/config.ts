@@ -145,36 +145,20 @@ const SWAPPABLE: Record<string, AdvisorModel> = {
 /**
  * 화면에서 고를 수 있는 목록.
  *
- * 위가 좋은 것이고 아래로 갈수록 확실히 도는 것이다. `note` 는 잰 결과를 그대로
- * 적는다 — 고르는 사람이 무엇을 시험하는지 알아야 실패도 정보가 된다.
+ * GTX 10xx 에서 후보를 전부 눌러 본 끝에 둘만 남았다. 나머지는 그 기기에서 올라가지
+ * 않거나, 추론 중에 멈추거나, 답이 못 미더웠다. 설명 문구는 i18n 에 둔다 — 화면에
+ * 보이는 말이고 한국어만 쓰는 사람이 보는 것이 아니다.
  */
 export interface ModelChoice {
   key: string;
   model: AdvisorModel;
+  /** 모델 이름. 번역하지 않는다. */
   label: string;
-  /** 줄 아래에 늘 보이는 한 줄. */
-  note: string;
-  /** 마우스를 올렸을 때. 무엇이 어떻게 다른지 풀어 적는다. */
-  detail: string;
 }
 
 export const MODEL_CHOICES: ModelChoice[] = [
-  {
-    key: "default",
-    model: ADVISOR_MODEL,
-    label: "Qwen3 4B",
-    note: "해설이 깊습니다. 16비트 셰이더가 있는 그래픽카드가 필요합니다",
-    detail:
-      "스킬 사이의 관계를 짚어 설명합니다. 답 하나에 실제 스킬 이름을 서너 개 씁니다. 대신 2.8GB 를 받아야 하고 글자가 천천히 나옵니다(초당 세 자 남짓).",
-  },
-  {
-    key: "qwen35",
-    model: SWAPPABLE.qwen35,
-    label: "Qwen3.5 0.8B",
-    note: "가볍고 어디서나 돕니다. 해설은 짧고 단순합니다",
-    detail:
-      "검증된 설명 중 질문에 맞는 것을 골라 줄여 씁니다. 스스로 분석하지는 않습니다. 526MB 만 받으면 되고 16비트 셰이더가 없는 그래픽카드에서도 돕니다.",
-  },
+  { key: "default", model: ADVISOR_MODEL, label: "Qwen3 4B" },
+  { key: "qwen35", model: SWAPPABLE.qwen35, label: "Qwen3.5 0.8B" },
 ];
 
 /**
@@ -264,6 +248,21 @@ export function canOfferModel(
  * 질의 문자열을 앞에 두는 이유는 그것이 한 번 쓰고 마는 지시이기 때문이다.
  * 화면에서 고른 값은 기기에 남아 다음에도 따라온다.
  */
+/**
+ * 이 줄을 고르지 못하게 막아야 하는가.
+ *
+ * `canOfferModel` 과 다르다. 그쪽은 "권할 만한가" 라 휴대폰에서도 거짓이지만, 이쪽은
+ * **그래픽카드가 못 돌리는가** 만 본다. 목록을 보는 사람에게 필요한 정보가 그것이다.
+ *
+ * 어댑터를 아직 확인하는 중이면 막지 않는다. 확인 전에 잠갔다 푸는 것이 더 헷갈리고,
+ * 그 사이에 눌러도 내려받기는 `canOfferModel` 이 따로 막는다.
+ */
+export function modelBlocked(model: AdvisorModel, webgpu: WebGpuSupport | null): boolean {
+  if (webgpu === null) return false;
+  if (!webgpu.supported) return true;
+  return model.needsF16 && !webgpu.f16;
+}
+
 export function resolveModel(): AdvisorModel {
   try {
     const wanted = new URLSearchParams(location.search).get("advisorModel");

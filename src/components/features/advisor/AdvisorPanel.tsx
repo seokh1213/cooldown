@@ -784,11 +784,51 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
       ? Math.min(100, Math.round((advisor.progress.loadedBytes / advisor.progress.totalBytes) * 100))
       : 0;
 
+  /*
+   * 서랍 위에서 굴린 휠이 뒤 페이지를 움직이지 않게 한다.
+   *
+   * `overscroll-behavior: contain` 만으로는 안 된다. 대화가 짧아 스크롤할 것이 없으면
+   * 그 칸은 스크롤할 자리가 없는 것으로 쳐서 브라우저가 휠을 그대로 조상에게 넘긴다.
+   * 대화 위에서 굴렸더니 뒤의 백과사전 목록이 500px 내려갔다. 바깥 테두리에 걸어 봐도
+   * 같았다 — `overflow-hidden` 이라도 넘칠 내용이 없으면 마찬가지다.
+   *
+   * 그래서 휠을 직접 본다. 손이 놓인 자리에서 위로 올라가며 **그 방향으로 실제로 더
+   * 움직일 수 있는 칸**을 찾고, 없으면 기본 동작을 막는다. 있으면 건드리지 않는다 —
+   * 대화가 길 때의 스크롤은 그대로 돌아야 한다.
+   *
+   * React 의 `onWheel` 로는 못 한다. 루트에 passive 로 붙어서 `preventDefault` 가
+   * 무시된다. 그래서 직접 `{ passive: false }` 로 단다.
+   */
+  const drawerRef = useRef<HTMLDivElement | null>(null);
+  useEffect(() => {
+    const drawer = drawerRef.current;
+    if (!drawer) return;
+    const onWheel = (event: WheelEvent) => {
+      if (event.deltaY === 0) return;
+      let node = event.target as HTMLElement | null;
+      while (node && node !== drawer) {
+        const style = getComputedStyle(node);
+        const scrolls = /(auto|scroll)/.test(style.overflowY);
+        const room = node.scrollHeight - node.clientHeight;
+        if (scrolls && room > 0) {
+          const atTop = node.scrollTop <= 0;
+          const atBottom = node.scrollTop >= room - 1;
+          if (!(event.deltaY < 0 ? atTop : atBottom)) return;
+        }
+        node = node.parentElement;
+      }
+      event.preventDefault();
+    };
+    drawer.addEventListener("wheel", onWheel, { passive: false });
+    return () => drawer.removeEventListener("wheel", onWheel);
+  }, []);
+
   return (
     <div
+      ref={drawerRef}
       role="dialog"
       aria-label={copy.title}
-      className="fixed inset-0 z-50 flex overflow-hidden bg-background shadow-2xl md:inset-y-0 md:left-auto md:right-0 md:w-[var(--drawer-w)] md:border-l"
+      className="fixed inset-0 z-50 flex overflow-hidden overscroll-contain bg-background shadow-2xl md:inset-y-0 md:left-auto md:right-0 md:w-[var(--drawer-w)] md:border-l"
       style={{ "--drawer-w": `${drawerWidth}px` } as React.CSSProperties}
     >
       {/*
@@ -833,7 +873,7 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
             </Button>
           </div>
           {referenceTabStrip}
-          <div className="flex-1 overflow-y-auto p-3">
+          <div className="flex-1 overflow-y-auto overscroll-contain p-3">
             {refTurn?.answer ? (
               <AdvisorAnswerCard answer={refTurn.answer} ddragonVersion={ddragonVersion} patch={patch} onPickChampion={pickChampion} onNavigate={onNavigate} />
             ) : (
@@ -847,7 +887,7 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
       <header className="flex items-center justify-between border-b px-4 py-3">
         <div className="flex items-center gap-2">
           {view !== "chat" && (
-            <Button variant="ghost" size="icon" className="-ml-2 h-7 w-7 text-muted-foreground hover:text-foreground" onClick={() => setView("chat")} aria-label={copy.storage.back}>
+            <Button variant="ghost" size="icon" className="-ml-2 h-7 w-7 text-muted-foreground" onClick={() => setView("chat")} aria-label={copy.storage.back}>
               <ChevronLeft className="h-4 w-4" />
             </Button>
           )}
@@ -885,31 +925,31 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
                   옆의 넷은 전부 무채색 ghost 다. 눌림은 채도가 아니라 명도로 — 바탕을
                   한 단 올리고 글자를 진하게 한다.
                 */
-                className={wide && referenceOpen ? "bg-muted text-foreground hover:bg-muted" : "text-muted-foreground hover:text-foreground"}
+                className={wide && referenceOpen ? "bg-muted text-foreground hover:bg-muted" : "text-muted-foreground"}
               >
                 {wide && referenceOpen ? <PanelLeftClose className="h-4 w-4" /> : <PanelLeftOpen className="h-4 w-4" />}
               </Button>
             )}
             {/* 대화는 지우는 것이 아니라 새로 시작한다. 지난 대화는 기록에 남아 다시 열 수 있다. */}
             {advisor.turns.length > 0 && (
-              <Button variant="ghost" size="icon" disabled={busy} onClick={history.startNew} aria-label={copy.history.newChat} className="text-muted-foreground hover:text-foreground">
+              <Button variant="ghost" size="icon" disabled={busy} onClick={history.startNew} aria-label={copy.history.newChat} className="text-muted-foreground">
                 <MessageSquarePlus className="h-4 w-4" />
               </Button>
             )}
-            <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-foreground" onClick={() => setView("history")} aria-label={copy.history.open}>
+            <Button variant="ghost" size="icon" className="text-muted-foreground" onClick={() => setView("history")} aria-label={copy.history.open}>
               <History className="h-4 w-4" />
             </Button>
             {/* 3GB 는 받아 두면 계속 남는다. 지울 길을 눈에 보이는 곳에 둔다. */}
-            <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-foreground" onClick={() => setView("storage")} aria-label={copy.storage.open}>
+            <Button variant="ghost" size="icon" className="text-muted-foreground" onClick={() => setView("storage")} aria-label={copy.storage.open}>
               <Bot className="h-4 w-4" />
             </Button>
-            <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-foreground" onClick={onClose} aria-label={copy.close}>
+            <Button variant="ghost" size="icon" className="text-muted-foreground" onClick={onClose} aria-label={copy.close}>
               <X className="h-4 w-4" />
             </Button>
           </div>
         )}
         {(view !== "chat" || showingConsent) && (
-          <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-foreground" onClick={onClose} aria-label={copy.close}>
+          <Button variant="ghost" size="icon" className="text-muted-foreground" onClick={onClose} aria-label={copy.close}>
             <X className="h-4 w-4" />
           </Button>
         )}
@@ -942,7 +982,7 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
         // 좁은 화면에서 자료 칩을 눌렀을 때. 카드가 대화를 덮고, 뒤로 가면 대화다.
         <>
         {referenceTabStrip}
-        <div className="flex-1 overflow-y-auto p-4">
+        <div className="flex-1 overflow-y-auto overscroll-contain p-4">
           {refTurn?.answer ? (
             <AdvisorAnswerCard answer={refTurn.answer} ddragonVersion={ddragonVersion} patch={patch} onPickChampion={pickChampion} onNavigate={onNavigate} />
           ) : (
@@ -1015,7 +1055,7 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
             </div>
           )}
 
-          <div ref={scrollRef} className="flex-1 space-y-3 overflow-y-auto p-4 text-sm">
+          <div ref={scrollRef} className="flex-1 space-y-3 overflow-y-auto overscroll-contain p-4 text-sm">
             {advisor.turns.length === 0 && !loading && (
               <div className="space-y-3 text-muted-foreground">
                 {contextCards.length > 0 ? (
@@ -1046,7 +1086,7 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
                       key={example}
                       type="button"
                       onClick={() => ask(example)}
-                      className="rounded-md border bg-background px-2.5 py-1 text-xs text-foreground transition-colors hover:border-primary/50 hover:bg-accent hover:text-accent-foreground"
+                      className="rounded-md border bg-background px-2.5 py-1 text-xs text-foreground transition-colors hover:border-primary/50 hover:bg-muted hover:text-foreground"
                     >
                       {example}
                     </button>
@@ -1199,7 +1239,7 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
                         type="button"
                         onClick={() => showReference(turn.id)}
                         aria-label={copy.card.openCard}
-                        className={`flex min-w-0 max-w-full items-center gap-2 rounded-md border px-2.5 py-1.5 text-left text-xs transition-colors hover:bg-accent hover:text-accent-foreground ${
+                        className={`flex min-w-0 max-w-full items-center gap-2 rounded-md border px-2.5 py-1.5 text-left text-xs transition-colors hover:bg-muted hover:text-foreground ${
                           wide && refTurn?.id === turn.id ? "border-primary bg-primary/5" : "bg-background"
                         } ${sameAsPrevious ? "text-muted-foreground" : ""}`}
                       >

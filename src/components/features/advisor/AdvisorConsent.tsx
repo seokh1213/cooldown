@@ -80,7 +80,7 @@ export function AdvisorConsent({
   }
 
   return (
-    <div className="flex flex-1 flex-col gap-4 overflow-y-auto p-6 text-sm">
+    <div className="flex flex-1 flex-col gap-4 overflow-y-auto overscroll-contain p-6 text-sm">
       <h3 className="text-base font-semibold">{copy.consent.title}</h3>
       <p className="text-muted-foreground">{copy.consent.lead}</p>
       <ul className="flex flex-col gap-2 text-muted-foreground">

@@ -32,7 +32,7 @@ export function AdvisorHistory({ conversations, currentId, busy, onNew, onOpen, 
   const locale = lang.replace("_", "-");
 
   return (
-    <div className="flex-1 space-y-3 overflow-y-auto p-4 text-sm">
+    <div className="flex-1 space-y-3 overflow-y-auto overscroll-contain p-4 text-sm">
       <Button variant="outline" size="sm" disabled={busy} onClick={onNew} className="w-full justify-start">
         <MessageSquarePlus className="mr-1.5 h-3.5 w-3.5" />
         {copy.newChat}
