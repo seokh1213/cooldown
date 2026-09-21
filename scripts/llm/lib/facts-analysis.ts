@@ -221,7 +221,42 @@ function gainsCrit(sentence: string): boolean {
   const clean = withoutNumbers(sentence);
   // 유미 Q 의 "단짝의 치명타 확률에 따라 증가" 는 남의 확률을 계수로 쓰는 말이다.
   if (/치명타 확률에 (따라|비례)|치명타 확률\)/.test(clean)) return false;
-  return /치명타 확률[^.감]{0,16}?(증가|상승|오르|얻)/.test(clean);
+  if (/치명타 확률[^.감]{0,16}?(증가|상승|오르|얻)/.test(clean)) return true;
+  // 유나라 P 의 "치명타가 추가 마법 피해를 입힙니다" 도 치명타를 축으로 쓰는 말이다.
+  // 다만 애쉬 P 는 "치명타는 추가 피해를 **가하지 않는** 대신" 이라 뜻이 반대다.
+  if (/치명타[가는이][^.]{0,30}(하지 않|입히지 않)/.test(clean)) return false;
+  return /치명타[가는이][^.]{0,20}(추가|증폭)/.test(clean);
+}
+
+/**
+ * 표식을 **거는** 스킬인가.
+ *
+ * 연계는 두 쪽으로 갈린다. 르블랑 Q 와 레오나 P 는 표식을 **남기는** 쪽이고,
+ * 애니비아 E 는 그 조건이 이미 붙어 있을 때 **세지는** 쪽이다. 상대하는 사람이
+ * 할 일이 정반대다 — 앞엣것은 첫 스킬을 피하는 것이고, 뒤엣것은 걸린 채로 서
+ * 있지 않는 것이다. 한 이름으로 묶으면 그 구분이 사라진다.
+ *
+ * "표식을 남긴 챔피언을 우선 공격합니다"(아크샨 E)는 거는 것이 아니라 쓰는 쪽이다.
+ * 어미로 가른다.
+ */
+const MARKS = /(표식|인장|낙인|각인)을 (남깁|남기고|남기며|남긴 뒤|부여|새깁|찍)/;
+
+function appliesMark(sentence: string): boolean {
+  return MARKS.test(sentence);
+}
+
+/**
+ * 시간이 지날수록 영구히 세지는가.
+ *
+ * 베이가 P 의 "극악 1중첩당 주문력이 1 증가", 나서스 Q 의 중첩, 신드라·스몰더·
+ * 빅토르의 스택이 모두 같은 말이다. 상성 판단에서 이것은 한 가지를 뜻한다.
+ * **시간을 주면 안 된다.** 무엇이 자라는지(스탯이냐 스킬이냐)는 그다음이다.
+ */
+function growsWithStacks(sentence: string): boolean {
+  if (!/중첩|스택|영구|성장/.test(sentence)) return false;
+  if (!/증가|강화|늘어|커지|올라/.test(sentence)) return false;
+  // 지속시간이나 효과가 잠깐 세지는 것은 성장이 아니다.
+  return /중첩당|중첩마다|영구|누적|쌓을수록|쌓일수록/.test(sentence);
 }
 
 /**
@@ -331,6 +366,10 @@ const EFFECT_RULES: Array<[RegExp, string]> = [
   [/__CRIT__/, "치명타"],
   [/__REVIVE__/, "부활"],
   [/__FOLLOWUP__/, "연계 강화"],
+  [/__MARK__/, "표식 부여"],
+  [/__STACK__/, "성장 스택"],
+  [new RegExp(`(공격 )?사거리${GAP_UP}{0,14}(증가|늘어|늘리|길어|상승)`), "사거리 증가"],
+  [new RegExp(`(?<!추가 )주문력${GAP_UP}{0,14}(증가|상승|얻|획득)`), "자기 주문력 증가"],
   // 시바나 Q 처럼 "기본 공격 적중 시 … 피해를 입히고" 로만 적는 것도, 애쉬 Q 처럼
   // "강화된 기본 공격은" 이라고 앞에서 꾸미는 것도 평타 강화다.
   [
@@ -603,6 +642,14 @@ export function detectEffects(text: string, skillNames: string[] = []): string[]
     }
     if (label === "연계 강화") {
       if (sentences.some((sentence) => !isMinionOnly(sentence) && amplifiedByFollowUp(sentence))) found.push(label);
+      continue;
+    }
+    if (label === "표식 부여") {
+      if (sentences.some((sentence) => appliesMark(sentence))) found.push(label);
+      continue;
+    }
+    if (label === "성장 스택") {
+      if (sentences.some((sentence) => growsWithStacks(sentence))) found.push(label);
       continue;
     }
     if (label === "회복") {
