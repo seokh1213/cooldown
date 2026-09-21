@@ -38,7 +38,22 @@ export interface PlaybookEntry {
   id?: string;
   /** rune | summoner | start-item | first-item | core-item | situational-item | combo | phase | laning | teamfight | skill */
   category: string;
+  /**
+   * 본문.
+   *
+   * `generated` 가 있으면 비워 둔다. 빌드할 때 카드에서 도출해 채우므로, 손으로
+   * 적어 두면 두 벌이 생겨 어느 쪽이 참인지 알 수 없게 된다.
+   */
   text: string;
+  /**
+   * 본문을 카드에서 도출해 만든다는 표시.
+   *
+   * 사람이 쓴 문장은 카드와 대조할 수 없다. 기계적인 대목은 자료에서 도출해
+   * 렌더하고(`claims.ts`), 사람은 도출할 수 없는 판단만 `nuance` 에 적는다.
+   */
+  generated?: "situational-item";
+  /** 도출로는 나오지 않는 한 문장. 생성된 본문 뒤에 붙는다. */
+  nuance?: string;
   when?: PlaybookCondition;
   /** 본문이 권장하는 이름 */
   refs?: PlaybookRefs;

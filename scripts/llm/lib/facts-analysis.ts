@@ -76,6 +76,44 @@ const NOT_APPLIED: Array<[string, RegExp]> = [
   ["관통", /관통력이 적용|관통력을 무시|관통력을 기준/],
 ];
 
+/**
+ * 군중 제어가 **조건**으로 적힌 문장.
+ *
+ * 알리스타 P 는 "적 챔피언을 기절시키거나, 공중으로 띄워 올리거나, 뒤로
+ * 밀어내거나, 적이 죽을 때마다 중첩을 얻습니다" 다. 기절·에어본·넉백은 P 가 거는
+ * 것이 아니라 다른 스킬로 그렇게 했을 때 P 가 반응하는 조건이다.
+ *
+ * "거나" 만 보면 안 된다. 그 어미는 조건뿐 아니라 **선택지**도 잇는다. 질리언 E 의
+ * "적 챔피언을 둔화시키거나 아군 챔피언의 이동 속도를 높입니다" 와 크산테 W 의
+ * "더는 적을 뒤로 밀어내거나 기절시키지 않습니다" 가 그렇게 지워졌다. 그래서
+ * 문장에 방아쇠 표시("때마다", "…면")가 함께 있을 때만 조건으로 본다.
+ */
+const TRIGGER = /때마다|하면|되면|으면|[을를이가]\s*\S*면\s/;
+const CC_LABELS = new Set([
+  "기절",
+  "에어본",
+  "강제 이동(넉백/끌기)",
+  "침묵",
+  "속박",
+  "도발",
+  "매혹",
+  "공포",
+  "억제",
+  "둔화",
+]);
+
+function inCondition(label: string, sentence: string, re: RegExp): boolean {
+  if (!CC_LABELS.has(label)) return false;
+  if (!TRIGGER.test(sentence)) return false;
+  const found = new RegExp(re.source, "g");
+  for (const match of sentence.matchAll(found)) {
+    const after = sentence.slice((match.index ?? 0) + match[0].length);
+    // 조건 어미가 바로 뒤에 없으면 그 자리는 실제로 거는 것이다.
+    if (!/^[^.]{0,8}(거나|때마다)/.test(after)) return false;
+  }
+  return true;
+}
+
 function appliesEffect(label: string, sentence: string): boolean {
   const rule = NOT_APPLIED.find(([name]) => name === label);
   return !rule || !rule[1].test(sentence);
@@ -142,7 +180,9 @@ function gainsResist(sentence: string, word: "방어력" | "마법 저항력"): 
 const EFFECT_RULES: Array<[RegExp, string]> = [
   [/__MAGIC_SHRED__/, "적 마법 저항력 감소"],
   [/__ARMOR_SHRED__/, "적 방어력 감소"],
-  [/방어력 관통|마법 관통/, "관통"],
+  // 툴팁은 "방어구 관통력" 이라고 적는다. "방어력 관통" 만 보면 다리우스 E,
+  // 판테온 R, 닐라 Q 처럼 관통을 주는 스킬을 통째로 놓친다.
+  [new RegExp(`(방어구|방어력|물리|마법|주문) 관통력?${GAP_UP}{0,20}(증가|상승|얻|획득)`), "관통"],
   [/둔화/, "둔화"],
   [/기절/, "기절"],
   // "공중으로" 만으로는 잡으면 안 된다. 도끼가 튀거나(드레이븐 Q) 본인이 도약하는(자야 R,
@@ -445,7 +485,15 @@ export function detectEffects(text: string, skillNames: string[] = []): string[]
     // 구간에서 벗어나라" 는 엉뚱한 말이 나왔다. 전체 본문 대신 문장으로 본다.
     // 수치도 함께 지운다. 피즈 W 의 "다음 기본 공격이 (…)의 마법 피해를 추가로
     // 입힙니다" 는 낱말로는 붙어 있는데 계수가 끼어 창 밖으로 밀려나 있었다.
-    if (!sentences.some((sentence) => !isMinionOnly(sentence) && re.test(withoutNumbers(sentence)))) continue;
+    if (
+      !sentences.some(
+        (sentence) =>
+          !isMinionOnly(sentence) &&
+          re.test(withoutNumbers(sentence)) &&
+          !inCondition(label, sentence, re),
+      )
+    )
+      continue;
     if (!NOT_APPLIED.some(([name]) => name === label)) {
       if (!CHAMPION_RELEVANT_TAGS.has(label)) {
         found.push(label);
@@ -454,7 +502,11 @@ export function detectEffects(text: string, skillNames: string[] = []): string[]
     }
     // 챔피언에게 유효한 문장에서 나온 경우만 인정한다
     const validSentence = sentences.some(
-      (s) => re.test(withoutNumbers(s)) && !isMinionOnly(s) && appliesEffect(label, s),
+      (s) =>
+        re.test(withoutNumbers(s)) &&
+        !isMinionOnly(s) &&
+        appliesEffect(label, s) &&
+        !inCondition(label, s, re),
     );
     if (validSentence) found.push(label);
   }

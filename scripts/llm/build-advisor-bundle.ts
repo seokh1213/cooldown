@@ -15,7 +15,9 @@ import { PUBLIC_DATA_ROOT, resolvePatchVersion } from "./lib/data";
 import { loadCuratedTips } from "./lib/knowledge";
 import { loadPlaybooks } from "./lib/playbook";
 import type { CuratedTip } from "./lib/knowledgeCore";
-import type { Playbook } from "./lib/playbookCore";
+import type { Playbook, PlaybookEntry } from "./lib/playbookCore";
+import type { ChampionCard } from "./lib/facts";
+import { deriveItemClaims, renderItemClaims } from "./lib/claims";
 import type { RuleNotes } from "./lib/rules";
 import { parseMechanics, type MechanicsIndex } from "./lib/mechanics";
 
@@ -42,10 +44,31 @@ export interface AdvisorKnowledgeBundle {
   };
 }
 
+/**
+ * `generated` 표시가 있는 항목의 본문을 카드에서 지어 넣는다.
+ *
+ * 자료에서 도출되는 대목은 여기서 만들고, 사람이 적은 `nuance` 한 문장을 뒤에
+ * 붙인다. 카드가 없으면(신규 챔피언 등) 만들 수 없으므로 nuance 만 남긴다.
+ */
+function fillGenerated(entry: PlaybookEntry, card: ChampionCard | undefined): PlaybookEntry {
+  if (entry.generated !== "situational-item") return entry;
+  const made = card ? renderItemClaims(card, deriveItemClaims(card)) : "";
+  const text = [made, entry.nuance].filter(Boolean).join(" ").trim();
+  const { generated: _generated, nuance: _nuance, ...rest } = entry;
+  return { ...rest, text };
+}
+
 function main() {
   const patch = resolvePatchVersion();
   const playbooks = loadPlaybooks();
   const tips = loadCuratedTips();
+
+  const cardFile = path.join(PUBLIC_DATA_ROOT, patch, "llm", "champion-cards-ko_KR.json");
+  const cards = new Map(
+    (JSON.parse(fs.readFileSync(cardFile, "utf8")) as { cards: ChampionCard[] }).cards.map(
+      (card) => [card.id, card] as const,
+    ),
+  );
 
   const ruleFile = path.join(PUBLIC_DATA_ROOT, patch, "llm", "rule-notes.json");
   const rules: RuleNotes[] = fs.existsSync(ruleFile)
@@ -60,8 +83,15 @@ function main() {
 
   const byChampion: Record<string, Playbook> = {};
   let entries = 0;
+  let generated = 0;
   for (const [champion, book] of playbooks) {
-    byChampion[champion] = book;
+    const card = cards.get(champion);
+    byChampion[champion] = {
+      champion,
+      playing: book.playing.map((entry) => fillGenerated(entry, card)),
+      against: book.against.map((entry) => fillGenerated(entry, card)),
+    };
+    generated += [...book.playing, ...book.against].filter((e) => e.generated).length;
     entries += book.playing.length + book.against.length;
   }
 
@@ -89,7 +119,7 @@ function main() {
   const kb = (fs.statSync(out).size / 1024).toFixed(0);
   console.log(
     `생성: ${path.relative(process.cwd(), out)} ` +
-      `(챔피언 ${playbooks.size}종, 항목 ${entries}건, 팁 ${tips.length}건, ` +
+      `(챔피언 ${playbooks.size}종, 항목 ${entries}건 중 생성 ${generated}건, 팁 ${tips.length}건, ` +
       `판정 규칙 ${rules.length}종, 메커니즘 ${mechanics.length}절, ${kb} KB)`,
   );
 }
