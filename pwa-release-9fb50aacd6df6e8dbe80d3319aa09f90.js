@@ -1,5 +1,5 @@
 
-const release = {"schemaVersion":1,"appVersion":"a350f9d6c40c8ec807d528cb83ba791f","dataVersion":"e51a3b64d876b7afc5ed4e71bd01efe1","releaseId":"d762b54f7d6d3b232aa8684314ec265a","patchVersion":"26.18"};
+const release = {"schemaVersion":1,"appVersion":"0e1a32e338d62c82a161678c8d5f2887","dataVersion":"262ec56965b5ee021003c1159d8cf0b4","releaseId":"9fb50aacd6df6e8dbe80d3319aa09f90","patchVersion":"26.18"};
 self.addEventListener('message', (event) => {
   if (event.data?.type === 'COOLDOWN_RELEASE') event.ports[0]?.postMessage(release);
 });
