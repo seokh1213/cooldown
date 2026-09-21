@@ -19,6 +19,16 @@ import { round } from "./text";
 const SELF_RESIST = /추가 (방어력|마법 저항력)|받는/;
 
 /**
+ * 한 문장 안에서 낱말과 낱말 사이.
+ *
+ * 여기서 쓰는 창은 전부 `[^.]{0,n}` 이었다. 마침표를 문장 끝으로 보고 문장을 넘지
+ * 않겠다는 뜻인데, 툴팁의 수치는 **소수점을 쓴다**. 레넥톤 E 의 "방어력을
+ * 25/27.5/30/32.5/35% 감소시킵니다" 는 27.5 의 점에서 창이 끊겨 저항 감소를
+ * 통째로 놓쳤다. 숫자 사이의 점은 문장 끝이 아니므로 지나가게 한다.
+ */
+const GAP = "(?:[^.]|\\.(?=\\d))";
+
+/**
  * 주어를 보지 않아 생긴 오독들. 전부 "그 문장이 무엇을 말하는가" 를 한 번 더 본다.
  *
  *   회복            "마나를 회복합니다"(브랜드 P, 카서스 E, 흐웨이 W) 가 체력 회복으로
@@ -82,11 +92,42 @@ function gainsStealth(sentence: string): boolean {
   return !/드러|해제|아닌|밝혀|감지|보입니다/.test(sentence);
 }
 
+/**
+ * 수치 표기를 지운다.
+ *
+ * 한국어 툴팁은 "A와 B를 얻습니다" 처럼 동사가 절 끝에 온다. 그 사이에 괄호 계수와
+ * 등급별 수치가 끼면 낱말 거리가 수십 자로 벌어진다.
+ *
+ *   람머스 W  "방어력을 (35.1/44/… + (30/…% 방어력)), 마법 저항력을 (…) 얻고"
+ *   브라이어 Q "방어력 및 마법 저항력을 10/12.5/15/17.5/20% 감소시킵니다"
+ *
+ * 창을 넓히면 상관없는 뒷절까지 들어온다. 재기 전에 수치를 지워 낱말만 남긴다.
+ */
+function withoutNumbers(sentence: string): string {
+  return sentence.replace(/\([^()]*(?:\([^()]*\)[^()]*)*\)/g, " ").replace(/[\d.,/~%\s]{2,}/g, " ");
+}
+
 function shredsEnemy(text: string, word: "방어력" | "마법 저항력"): boolean {
-  // "감소" 만 보면 코그모 Q 의 "방어력을 … 낮춥니다" 를 놓친다. 같은 말이다.
-  const pattern = new RegExp(`[^.]{0,60}${word}[^.]{0,30}?(감소|낮춤|낮춥|낮추)`);
-  const span = pattern.exec(text)?.[0];
+  // "감소" 만 보면 코그모 Q 의 "낮춥니다" 와 렐 P 의 "훔칩니다" 를 놓친다. 셋 다
+  // 적의 저항이 줄어드는 같은 말이다. 훔치는 쪽은 그만큼 자기 저항이 늘기도 하므로
+  // 아래 gainsResist 도 같은 동사를 본다.
+  const pattern = new RegExp(`[^.]{0,60}${word}[^.]{0,30}?(감소|낮[추춥춤출]|훔[치칩침쳐친칠])`);
+  const span = pattern.exec(withoutNumbers(text))?.[0];
   return Boolean(span) && !SELF_RESIST.test(span as string);
+}
+
+/**
+ * 자기 저항이 오르는가.
+ *
+ * "증가" 만 보면 람머스 W 의 "방어력을 (…) 마법 저항력을 (…) 얻고" 를 놓친다.
+ * 다만 "방어구 관통력을 얻습니다" 는 저항이 아니라 관통이므로 창 안에 관통이
+ * 들어오면 버린다.
+ */
+function gainsResist(sentence: string, word: "방어력" | "마법 저항력"): boolean {
+  const pattern = new RegExp(`${word}[^.감]{0,12}?(증가|얻|획득|훔[치칩침쳐친칠])`);
+  const span = pattern.exec(withoutNumbers(sentence))?.[0];
+  if (!span) return false;
+  return !/관통/.test(span);
 }
 
 const EFFECT_RULES: Array<[RegExp, string]> = [
@@ -108,7 +149,7 @@ const EFFECT_RULES: Array<[RegExp, string]> = [
   [/밀쳐|밀어내|끌어당|끌고 옵|잡아당|끌려가|끌어옵|끌어당김/, "강제 이동(넉백/끌기)"],
   [/보호막/, "보호막"],
   [/__HEAL__/, "회복"],
-  [/치유 효과[^.]{0,10}감소|치유 감소|고통스러운 상처/, "치유 감소"],
+  [new RegExp(`치유 효과${GAP}{0,10}감소|치유 감소|고통스러운 상처`), "치유 감소"],
   [/__STEALTH__/, "은신"],
   // **움직이는 것이 챔피언인지 봐야 한다.** 이 판정은 아래 championMovesItself 가 맡는다.
   // 여기 목록에 걸리기만 해서는 안 된다. "적에게 날아가는 여우불", "매를 날려 보내",
@@ -122,12 +163,12 @@ const EFFECT_RULES: Array<[RegExp, string]> = [
   [/__IMMUNE__/, "피해 면역"],
   [/받는 모든 공격[^.]{0,20}막|막아낸 다음|모든 공격과 이동 불가|회피하고|빗나가게/, "공격 무효화"],
   [/투사체를 (막|파괴)|막아냅|차단/, "투사체 차단"],
-  [/공격 속도[^.]{0,12}증가/, "공격 속도 증가"],
-  [/이동 속도[^.]{0,12}증가/, "이동 속도 증가"],
+  [new RegExp(`공격 속도${GAP}{0,12}증가`), "공격 속도 증가"],
+  [new RegExp(`이동 속도${GAP}{0,12}증가`), "이동 속도 증가"],
   [/분신|복제/, "분신"],
-  // "감소 효과가 50% 증가" 같은 문장을 배제하기 위해 창 안에 '감' 이 없어야 함
-  [/마법 저항력[^.감]{0,12}증가/, "자기 마법 저항력 증가"],
-  [/(?<!마법 저항력[^.]{0,12})방어력[^.감]{0,12}증가/, "자기 방어력 증가"],
+  // 아래 둘은 gainsResist 가 문장 단위로 가른다
+  [/__MR_GAIN__/, "자기 마법 저항력 증가"],
+  [/__ARMOR_GAIN__/, "자기 방어력 증가"],
   [/기본 공격[^.]{0,20}(추가|강화)/, "기본 공격 강화"],
   [/재사용 대기시간[^.]{0,15}초기화/, "쿨타임 초기화"],
   [/광역|주변 적|범위 내/, "광역"],
@@ -143,8 +184,11 @@ const TAKEN_DAMAGE = /받는[^.]{0,20}$/;
 
 export function detectDamageTypes(text: string): DamageType[] {
   const types: DamageType[] = [];
+  // 미니언·몬스터에게만 들어가는 피해는 챔피언 상대 피해 유형이 아니다. 누누 Q 의
+  // 고정 피해가 그렇다. 그대로 두면 "저항이 값을 못 한다" 는 반대 조언이 나온다.
   const deals = (word: string) =>
     splitSentences(text).some((sentence) => {
+      if (isMinionOnly(sentence)) return false;
       const at = sentence.indexOf(`${word} 피해`);
       return at >= 0 && !TAKEN_DAMAGE.test(sentence.slice(0, at));
     });
@@ -350,6 +394,11 @@ export function detectEffects(text: string, skillNames: string[] = []): string[]
     if (label === "적 마법 저항력 감소" || label === "적 방어력 감소") {
       const word = label === "적 마법 저항력 감소" ? "마법 저항력" : "방어력";
       if (sentences.some((sentence) => !isMinionOnly(sentence) && shredsEnemy(sentence, word))) found.push(label);
+      continue;
+    }
+    if (label === "자기 마법 저항력 증가" || label === "자기 방어력 증가") {
+      const word = label === "자기 마법 저항력 증가" ? "마법 저항력" : "방어력";
+      if (sentences.some((sentence) => gainsResist(sentence, word))) found.push(label);
       continue;
     }
     if (label === "회복") {
