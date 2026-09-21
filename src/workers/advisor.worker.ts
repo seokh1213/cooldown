@@ -130,6 +130,31 @@ async function generate(
    */
   let firstTokenAt = 0;
 
+  /**
+   * 같은 말을 되풀이하기 시작하면 끊는다.
+   *
+   * 이 크기의 모델은 탐욕 복호화에서 자주 고리에 빠진다. 실제로 "오공은 P 바위
+   * 피부 스킬을 사용합니다 …" 여섯 문장이 끝없이 되풀이되어 화면을 채웠다.
+   * 종료 토큰이 안 나오므로 상한(8192)에 닿을 때까지 멈추지 않는다.
+   *
+   * 같은 문장이 세 번 나오면 고장난 것으로 본다. 두 번은 강조하느라 그럴 수
+   * 있지만 세 번은 아니다. 문장 단위라서 멀쩡한 글을 자를 위험이 낮다.
+   */
+  const said = new Map<string, number>();
+  let looped = false;
+  const looping = (whole: string): boolean => {
+    const parts = whole.split(/(?<=다\.)\s+/);
+    // 마지막 조각은 아직 쓰는 중이라 세지 않는다
+    for (const part of parts.slice(0, -1)) {
+      const key = part.trim();
+      if (key.length < 12) continue;
+      const seen = (said.get(key) ?? 0) + 1;
+      said.set(key, seen);
+      if (seen >= 3) return true;
+    }
+    return false;
+  };
+
   const streamer = new TextStreamer(tokenizer, {
     skip_prompt: true,
     skip_special_tokens: true,
@@ -138,6 +163,13 @@ async function generate(
       text += chunk;
       tokens += 1;
       post({ type: "chunk", id, text: chunk });
+      if (!looped && chunk.includes("다.")) {
+        said.clear();
+        if (looping(text)) {
+          looped = true;
+          stopper.interrupt();
+        }
+      }
     },
   });
 
@@ -145,6 +177,9 @@ async function generate(
     ...inputs,
     max_new_tokens: maxTokens ?? MAX_NEW_TOKENS,
     do_sample: false,
+    // 탐욕 복호화만으로는 같은 구절을 반복해 찍는다. 살짝만 눌러 준다. 크게 주면
+    // 스킬 이름처럼 되풀이해야 하는 낱말까지 피하려 들어 글이 이상해진다.
+    repetition_penalty: 1.1,
     streamer,
     // 중단 요청이 오면 다음 토큰에서 멈춘다
     stopping_criteria: stopper,

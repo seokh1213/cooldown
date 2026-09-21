@@ -10,6 +10,7 @@
  * 따라가 영어로 물어도 한국어로 답한다. 실제로 en_US·zh_CN 에서 8문항 모두
  * 한국어 답이 나왔다.
  */
+import { josa } from "../../../scripts/llm/lib/text";
 import type { Language } from "@/i18n";
 
 /** 효과 태그 34개. 자료에 실제로 쓰이는 값만 담는다. */
@@ -177,7 +178,8 @@ const KO: PromptWords = {
   against: "상대할 때",
   percentile: (stat, side, grade) =>
     `${stat}: 1레벨 기준 전체 챔피언 중 ${side === "top" ? "상위권" : "하위권"} (${grade})`,
-  matchup: (me, enemy) => `[상성] 사용자는 ${me}를 잡고 ${enemy}를 상대합니다. ${me} 시점으로 쓰십시오.`,
+  matchup: (me, enemy) =>
+    `[상성] 사용자는 ${josa(me, "을/를")} 잡고 ${josa(enemy, "을/를")} 상대합니다. ${me} 시점으로 쓰십시오.`,
   perspectiveOnly: (side) =>
     `[관점] 이 질문은 "${side}" 만 묻습니다. 그 관점만 쓰고, 머리말도 **${side}** 하나만 쓰십시오. 다른 관점은 한 문장도 쓰지 마십시오.`,
   damageLine: (damage, scaling) => `주 피해 유형: ${damage} · 계수 성향: ${scaling}`,
@@ -207,7 +209,7 @@ const KO: PromptWords = {
     spell: "- 이 사실이 실전에서 왜 중요한지 한두 문장으로 말하십시오.",
     compare: "- 둘이 맞붙었을 때 무엇이 갈리는지, 각자 무엇을 조심해야 하는지 말하십시오.",
     matchup: (me, enemy) =>
-      `- ${enemy}의 피해 유형이 ${me}의 어느 저항과 만나는지, ${enemy}의 보유 효과 중 ${me}가 조심할 것, ${me}가 유리한 국면을 말하십시오.`,
+      `- ${enemy}의 피해 유형이 ${me}의 어느 저항과 만나는지, ${enemy}의 보유 효과 중 ${josa(me, "이/가")} 조심할 것, ${josa(me, "이/가")} 유리한 국면을 말하십시오.`,
   },
 };
 
