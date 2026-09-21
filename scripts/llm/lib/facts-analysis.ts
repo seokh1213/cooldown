@@ -2,9 +2,31 @@ import type { ChampionAbility } from "./data";
 import type { DamageType, ScalingProfile, SpellFact } from "./facts";
 import { round } from "./text";
 
+/**
+ * 저항 감소는 **적의 저항이 줄 때만** 센다.
+ *
+ * "방어력 … 감소" 를 그대로 잡았더니 자기 쪽 문장까지 걸렸다. 태그가 붙은 19개 중
+ * 셋이 틀렸다.
+ *
+ *   아무무 E  "받는 물리 피해가 (3% 추가 방어력) … 감소합니다"   자기 피해 감소
+ *   크산테 Q  "추가 방어력 및 마법 저항력만큼 … 시전 시간 감소"   자기 저항이 계수
+ *   크산테 R  "추가 방어력이 85% … 감소"                      자기 저항이 줄어듦
+ *
+ * 가르는 표시는 "추가 방어력/마법 저항력"(자기 스탯을 계수나 대상으로 쓰는 꼴)과
+ * "받는"(자기가 받는 피해) 이다. 맞게 붙은 열여섯은 전부 "대상의", "적은", "챔피언은"
+ * 처럼 상대를 가리키고 그 표시가 없다.
+ */
+const SELF_RESIST = /추가 (방어력|마법 저항력)|받는/;
+
+function shredsEnemy(text: string, word: "방어력" | "마법 저항력"): boolean {
+  const pattern = new RegExp(`[^.]{0,60}${word}[^.]{0,30}?감소`);
+  const span = pattern.exec(text)?.[0];
+  return Boolean(span) && !SELF_RESIST.test(span as string);
+}
+
 const EFFECT_RULES: Array<[RegExp, string]> = [
-  [/마법 저항력[^.]{0,30}?감소/, "적 마법 저항력 감소"],
-  [/방어력[^.]{0,30}?감소/, "적 방어력 감소"],
+  [/__MAGIC_SHRED__/, "적 마법 저항력 감소"],
+  [/__ARMOR_SHRED__/, "적 방어력 감소"],
   [/방어력 관통|마법 관통/, "관통"],
   [/둔화/, "둔화"],
   [/기절/, "기절"],
@@ -237,6 +259,12 @@ export function detectEffects(text: string): string[] {
   const sentences = splitSentences(text);
   for (const [re, label] of EFFECT_RULES) {
     if (found.includes(label)) continue;
+    // 저항 감소는 표가 아니라 위 판정으로 가른다. 자기 쪽 문장을 걸러야 한다.
+    if (label === "적 마법 저항력 감소" || label === "적 방어력 감소") {
+      const word = label === "적 마법 저항력 감소" ? "마법 저항력" : "방어력";
+      if (sentences.some((sentence) => !isMinionOnly(sentence) && shredsEnemy(sentence, word))) found.push(label);
+      continue;
+    }
     if (!re.test(text)) continue;
     if (!CHAMPION_RELEVANT_TAGS.has(label)) {
       found.push(label);
