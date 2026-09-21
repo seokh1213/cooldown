@@ -28,6 +28,14 @@ export interface SpellOverride {
   remove?: string[];
   /** 피해 유형. 툴팁이 유형을 안 밝힌 스킬에만 쓴다. */
   damageTypes?: DamageType[];
+  /**
+   * 사람이 보고 **정말 비어 있다**고 확인한 자리.
+   *
+   * 신드라 Q 처럼 단일 대상 피해만 주는 스킬은 태그가 없는 것이 맞다. 그것을
+   * 적어 두지 않으면 다음 점검 때 같은 자리를 또 묻게 된다. 이 표시가 있으면
+   * 구멍 목록에서 빠진다.
+   */
+  confirmedEmpty?: boolean;
   /** 툴팁으로는 왜 안 나오는가 */
   why: string;
   /** 무엇을 보고 적었는가 */

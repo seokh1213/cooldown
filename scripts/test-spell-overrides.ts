@@ -33,12 +33,15 @@ const TAGS = new Set([
   "고정 피해", "잃은 체력 비례", "쿨타임 초기화", "자기 마법 저항력 증가", "자기 방어력 증가",
   "적 방어력 감소", "은신", "적 마법 저항력 감소", "처형", "관통", "침묵", "공포", "피해 면역",
   "분신", "투사체 차단", "도발", "매혹", "치유 감소", "공격 무효화", "강인함",
+  // 사람이 결정해 늘린 어휘. 34개로는 담기지 않던 것들이다.
+  "받는 피해 감소", "변신", "생명력 흡수", "소환수", "자기 공격력 증가",
 ]);
 const DAMAGE_TYPES = new Set(["물리", "마법", "고정"]);
 
 const overrides = loadSpellOverrides();
 let tags = 0;
 let types = 0;
+let emptied = 0;
 
 for (const [key, override] of Object.entries(overrides)) {
   const [championId, slot] = key.split(":");
@@ -74,11 +77,20 @@ for (const [key, override] of Object.entries(overrides)) {
     types += 1;
   }
 
-  assert.ok(
-    (override.add?.length ?? 0) + (override.remove?.length ?? 0) + (override.damageTypes?.length ?? 0) > 0,
-    `${key}: 보정할 내용이 없습니다`,
-  );
+  // 비었음을 확인한 자리는 고칠 것이 없는 것이 정상이다. 다만 둘을 함께 적으면
+  // 무엇이 참인지 알 수 없으므로 막는다.
+  const changes =
+    (override.add?.length ?? 0) + (override.remove?.length ?? 0) + (override.damageTypes?.length ?? 0);
+  if (override.confirmedEmpty) {
+    assert.equal(changes, 0, `${key}: 비었음을 확인해 놓고 보정도 적었습니다`);
+    emptied += 1;
+  } else {
+    assert.ok(changes > 0, `${key}: 보정할 내용이 없습니다`);
+  }
 }
 
 assert.ok(Object.keys(overrides).length > 0, "보정 항목이 하나도 없습니다");
-console.log(`✅ 보정 항목 통과 (${Object.keys(overrides).length}자리 · 태그 ${tags}건 · 피해 유형 ${types}건)`);
+console.log(
+  `✅ 보정 항목 통과 (${Object.keys(overrides).length}자리 · 태그 ${tags}건 · ` +
+    `피해 유형 ${types}건 · 비었음 확인 ${emptied}자리)`,
+);
