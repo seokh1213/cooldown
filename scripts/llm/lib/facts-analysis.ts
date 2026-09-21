@@ -102,16 +102,28 @@ const CC_LABELS = new Set([
   "둔화",
 ]);
 
+/**
+ * 이미 그 효과에 걸린 대상을 가리키는 말. 거는 것이 아니라 고르는 것이다.
+ *
+ * 아리 W 는 "여우불은 **매혹에 적중한** 챔피언, 아리가 공격한 적, 이외 챔피언
+ * 순으로 공격합니다" 다. 우선순위를 말할 뿐 W 가 매혹을 걸지는 않는다.
+ */
+const ALREADY_AFFECTED = /^(된|에 적중|당한|에 걸린|상태)/;
+
 function inCondition(label: string, sentence: string, re: RegExp): boolean {
   if (!CC_LABELS.has(label)) return false;
-  if (!TRIGGER.test(sentence)) return false;
+  const trigger = TRIGGER.test(sentence);
   const found = new RegExp(re.source, "g");
+  let any = false;
   for (const match of sentence.matchAll(found)) {
+    any = true;
     const after = sentence.slice((match.index ?? 0) + match[0].length);
+    if (ALREADY_AFFECTED.test(after)) continue;
     // 조건 어미가 바로 뒤에 없으면 그 자리는 실제로 거는 것이다.
-    if (!/^[^.]{0,8}(거나|때마다)/.test(after)) return false;
+    if (trigger && /^[^.]{0,8}(거나|때마다)/.test(after)) continue;
+    return false;
   }
-  return true;
+  return any;
 }
 
 function appliesEffect(label: string, sentence: string): boolean {
@@ -171,7 +183,9 @@ function shredsEnemy(text: string, word: "방어력" | "마법 저항력"): bool
  * 들어오면 버린다.
  */
 function gainsResist(sentence: string, word: "방어력" | "마법 저항력"): boolean {
-  const pattern = new RegExp(`${word}[^.감]{0,12}?(증가|얻|획득|훔[치칩침쳐친칠])`);
+  // 창이 12 자면 나르 P 의 "방어력이 , 마법 저항력이 증가합니다"(수치를 지운 뒤)가
+  // 아슬아슬하게 걸리지 않는다. 한국어는 동사가 절 끝에 오므로 조금 넉넉히 본다.
+  const pattern = new RegExp(`${word}[^.감]{0,16}?(증가|얻|획득|훔[치칩침쳐친칠])`);
   const span = pattern.exec(withoutNumbers(sentence))?.[0];
   if (!span) return false;
   return !/관통/.test(span);
@@ -194,8 +208,11 @@ const EFFECT_RULES: Array<[RegExp, string]> = [
   [/도발/, "도발"],
   [/매혹/, "매혹"],
   [/공포/, "공포"],
-  [/억제/, "억제"],
-  [/밀쳐|밀어내|끌어당|끌고 옵|잡아당|끌려가|끌어옵|끌어당김/, "강제 이동(넉백/끌기)"],
+  // 말자하 R 은 "적 챔피언을 제압해" 라고 적는다. 억제와 같은 것이다. 다만 케인 P 의
+  // "라아스트를 제압하려고 합니다" 는 배경 설명이라 "하려" 가 붙은 것은 세지 않는다.
+  [/억제|제압(?!하려)/, "억제"],
+  // 활용형이 갈린다. 그라가스 R 은 "밀어냅니다" 라 어간 "밀어내" 로는 안 걸린다.
+  [/밀쳐|밀어[내냅냈]|끌어당|끌고 옵|잡아당|끌려가|끌어옵|끌어당김/, "강제 이동(넉백/끌기)"],
   [/보호막/, "보호막"],
   [/__HEAL__/, "회복"],
   [new RegExp(`치유 효과${GAP}{0,10}감소|치유 감소|고통스러운 상처`), "치유 감소"],
@@ -212,7 +229,8 @@ const EFFECT_RULES: Array<[RegExp, string]> = [
   [/강인함/, "강인함"],
   [/__IMMUNE__/, "피해 면역"],
   [/받는 모든 공격[^.]{0,20}막|막아낸 다음|모든 공격과 이동 불가|회피하고|빗나가게/, "공격 무효화"],
-  [/투사체를 (막|파괴)|막아냅|차단/, "투사체 차단"],
+  // 브라움 E 는 "투사체를 가로막아" 라고 적는다. 그 스킬의 본체가 이것이다.
+  [/투사체를 (막|파괴|가로막)|막아냅|차단/, "투사체 차단"],
   // 툴팁은 "증가" 로만 적지 않는다. 애쉬 Q 는 "오르며", 피오라 E 는 "상승합니다" 다.
   [new RegExp(`공격 속도${GAP_UP}{0,12}(증가|상승|오르|올라|얻)`), "공격 속도 증가"],
   [new RegExp(`이동 속도${GAP_UP}{0,12}(증가|상승|오르|올라|얻)`), "이동 속도 증가"],
@@ -246,8 +264,12 @@ export function detectDamageTypes(text: string): DamageType[] {
   // 미니언·몬스터에게만 들어가는 피해는 챔피언 상대 피해 유형이 아니다. 누누 Q 의
   // 고정 피해가 그렇다. 그대로 두면 "저항이 값을 못 한다" 는 반대 조언이 나온다.
   const deals = (word: string) =>
-    splitSentences(text).some((sentence) => {
-      if (isMinionOnly(sentence)) return false;
+    splitSentences(text).some((raw) => {
+      if (isMinionOnly(raw)) return false;
+      // "받는" 과의 거리를 잴 때도 수치를 지운다. 이렐리아 W 의 "받는 물리 피해가
+      // ((40 ~ 70) + (8% 주문력)), 마법 피해가 …" 는 계수가 창 밖으로 밀어내
+      // 뒷말인 "마법 피해" 가 입히는 피해로 읽혔다.
+      const sentence = withoutNumbers(raw);
       const at = sentence.indexOf(`${word} 피해`);
       return at >= 0 && !TAKEN_DAMAGE.test(sentence.slice(0, at));
     });
@@ -357,7 +379,10 @@ function splitSentences(text: string): string[] {
 
 function isMinionOnly(sentence: string): boolean {
   const mentionsMinion = /미니언|몬스터/.test(sentence);
-  const mentionsChampion = /챔피언|적에게|적을|적이|대상/.test(sentence);
+  // 복수형을 빠뜨리면 안 된다. 클레드 E 의 "경로 상에 있는 적들에게 … 물리 피해를
+  // 입히고, 미니언과 작은 몬스터를 …" 가 통째로 미니언 전용으로 걸러져 피해 유형이
+  // 사라졌다. 이 판정은 회복·체력 비례·은신·피해 면역이 모두 함께 쓴다.
+  const mentionsChampion = /챔피언|적들|적에게|적을|적이|대상/.test(sentence);
   return mentionsMinion && !mentionsChampion;
 }
 
@@ -436,6 +461,17 @@ export function championMovesItself(text: string, championName: string): boolean
 }
 
 /**
+ * 효과 이름을 그대로 쓰는 스킬 이름. 지우면 본문의 진짜 효과까지 사라진다.
+ *
+ * 피들스틱 Q 의 이름이 **"공포"** 다. 이름을 지우는 규칙이 본문의 "공포에
+ * 빠트리고" 까지 통째로 지워서, 피들스틱은 다섯 스킬 전부 공포 태그가 없었다.
+ * 이름과 효과어가 겹치면 지우지 않고 그대로 둔다. 그 경우 이름이 효과로 읽히는
+ * 것은 어차피 참이다.
+ */
+const EFFECT_WORDS =
+  /^(공포|침묵|속박|도발|매혹|기절|억제|둔화|처형|광역|회복|보호막|은신|분신|강인함|관통|돌진)$/;
+
+/**
  * 스킬 이름이 효과로 읽히는 것을 막는다.
  *
  * 카직스 R 본문의 "공포 감지" 와 킨드레드 P 본문의 "차오르는 공포" 가 공포 효과로
@@ -444,7 +480,7 @@ export function championMovesItself(text: string, championName: string): boolean
 export function detectEffects(text: string, skillNames: string[] = []): string[] {
   const found: string[] = [];
   const cleaned = skillNames
-    .filter((name) => name.length >= 2)
+    .filter((name) => name.length >= 2 && !EFFECT_WORDS.test(name.trim()))
     .reduce((acc, name) => acc.split(name).join(" "), text);
   const sentences = splitSentences(cleaned);
   for (const [re, label] of EFFECT_RULES) {
