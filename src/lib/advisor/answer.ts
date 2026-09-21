@@ -912,10 +912,19 @@ export function buildCommentaryPrompt(
         const { side } = percentileLabel(snap.percentileLv1);
         traits.push(w.percentile(translateStat(stat, lang), side, translateGrade(snap.gradeLv1, lang)));
       }
-      // 비교에서도 스킬과 효과를 붙여서 준다. 따로 주면 짝을 틀리게 붙인다.
+      /*
+       * 비교에서도 스킬과 효과를 붙여서 준다. 따로 주면 짝을 틀리게 붙인다.
+       *
+       * 여기서는 이름 앞에 임자까지 붙인다. 줄머리에 `- 럼블:` 이 있어도 0.8B 는
+       * 스킬 다섯 개를 읽는 사이에 그것을 놓치고 "오공은 P 고철장 거인" 을 썼다.
+       * 이름마다 임자를 달아 두면 놓칠 자리가 없다.
+       *
+       * 열네 쌍을 두 번 돌려 쟀다. 근거 검사가 걷어낸 문장이 118 → 53 으로 줄고
+       * 무한 반복이 5 → 2 로 줄었다. 두 번 다 같은 방향이었다.
+       */
       traits.push(
         `${w.abilities}: ${card.spells
-          .map((spell) => `${spell.slot} ${spell.name}${spell.effects.length ? `(${tags(spell.effects)})` : ""}`)
+          .map((spell) => `${card.name} ${spell.slot} ${spell.name}${spell.effects.length ? `(${tags(spell.effects)})` : ""}`)
           .join(" · ")}`,
       );
       lines.push(`- ${card.name}: ${traits.join(" · ")}`);
