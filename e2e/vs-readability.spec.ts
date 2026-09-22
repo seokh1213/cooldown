@@ -107,6 +107,28 @@ for (const locale of ["ko_KR", "en_US", "zh_CN"] as const) {
         const mineR = (await page.getByTestId("vs-mine-R").boundingBox())!;
         expect(mineBox.x + mineBox.width).toBeGreaterThanOrEqual(mineR.x + mineR.width - gutter.right - 2);
         expect((await page.getByTestId("vs-opponent-Q").boundingBox())!.x).toBeGreaterThanOrEqual(opponentBox.x - gutter.left - 2);
+        /*
+         * 세 구역이 가운데를 같은 자리에서 가른다.
+         *
+         * 스킬 쿨타임만 왼쪽에 순위 열이 있어서 그 절반인 28px 만큼 가운데가 오른쪽으로
+         * 밀려 있었다. 오른쪽에 같은 폭을 비워 맞췄다. 눈으로는 잘 안 보이는 어긋남이라
+         * 세 번 놓쳤다. 좌표로 건다.
+         *
+         * sm 미만에서는 아래 구역이 한 줄로 쌓이므로 맞출 가운데가 없다.
+         */
+        if (width >= 640) {
+          const edges = await page.evaluate(() => {
+            const box = (el: Element | null | undefined) => {
+              if (!el) return null;
+              const r = el.getBoundingClientRect();
+              return { left: Math.round(r.left), right: Math.round(r.right) };
+            };
+            const stats = [...document.querySelectorAll("[data-testid$='-stats']")];
+            return { mineCard: box(document.querySelector("#vs-header-mine")), opponentCard: box(document.querySelector("#vs-header-opponent")), mineStats: box(stats[0]), opponentStats: box(stats[1]) };
+          });
+          expect(edges.mineCard).toEqual(edges.mineStats);
+          expect(edges.opponentCard).toEqual(edges.opponentStats);
+        }
         // 두 챔피언 사이에 세로선을 긋지 않는다. 아래 두 구역과 같이 여백으로만 가른다.
         const rules = await page.evaluate(() => {
           const table = document.querySelector("#vs-header-opponent")?.closest("table");
