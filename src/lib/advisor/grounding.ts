@@ -26,6 +26,7 @@ import type { ChampionCard } from "../../../scripts/llm/lib/facts";
 import type { AdvisorAnswer } from "./answer";
 import type { Language } from "@/i18n";
 import { promptWords } from "./promptLocale";
+import { advisorSystemPrompt } from "./persona";
 import { toPoliteSentence } from "../../../scripts/llm/lib/politeStyle";
 
 /**
@@ -151,8 +152,12 @@ const POSSESSIVE = /^의\s*[PQWER]?\s*$/;
  * 리븐이 그것을 피한다는 맞는 말이다. `은` 은 주제 표시일 뿐이다. 반면
  * "오공은 P 고철장 거인으로 시작합니다" 처럼 슬롯을 달아 부르면 제 것이라는
  * 뜻이라, 그때만 잡는다.
+ *
+ * 조사가 아예 없는 꼴도 잡는다. 0.8B 가 소제목처럼 "**오공 P 고철장 거인**" 을
+ * 줄줄이 적었는데(고철장 거인은 럼블 것이다) 조사를 요구하는 바람에 그대로
+ * 통과했다. 슬롯 문자가 붙어 있으면 조사 없이도 제 것이라는 뜻이다.
  */
-const SUBJECT = /^(은|는|이|가|도|을|를)\s*[PQWER]\s*$/;
+const SUBJECT = /^(은|는|이|가|도|을|를)?\s*[PQWER]\s*$/;
 
 function misattributes(sentence: string, m: Material): boolean {
   const names = m.profiles.map((p) => p.name);
@@ -227,7 +232,15 @@ const GREETING = /^(물론(이죠|입니다)|네|예|알겠습니다|좋은 질�
  */
 function directives(lang: Language, answer: AdvisorAnswer | undefined): string[] {
   const w = promptWords(lang);
+  /*
+   * 페르소나도 함께 본다.
+   *
+   * 0.8B 가 "이 앱에 내장된 도우미이고 기기 안에서 동작합니다" 로 답을 시작했다.
+   * 정체를 물었을 때 **그렇게 답하라**고 일러 둔 문장인데, 묻지도 않았는데 옮겨
+   * 적은 것이다. 프롬프트 규칙과 같은 성격이므로 같은 자리에서 걸러 낸다.
+   */
   const lines = [
+    ...advisorSystemPrompt(lang).split("\n"),
     w.notesHeader,
     ...w.rules,
     w.closing.champion,
@@ -252,8 +265,20 @@ function strip(line: string): string {
     .replace(/(십시오|습니다|합니다|입니다)\.?$/, "");
 }
 
+/**
+ * 명령형으로 끝나는 문장. 앱의 말투가 아니다.
+ *
+ * 페르소나가 합니다체를 이르고, 사람이 검증한 노트 3,723 건(10,441 문장)에
+ * `십시오` 로 끝나는 것이 **한 건도 없다.** 그러니 답에 나온 것은 프롬프트에서
+ * 새어 나온 것이다. 실제로 0.8B 가 문단마다 "…를 오공 시점으로 쓰십시오" 를
+ * 달았는데, 규칙 원문과 어절이 덜 겹쳐 대조로는 안 걸렸다.
+ */
+const IMPERATIVE = /십시오[.!]?$/;
+
 function isBoilerplate(sentence: string, directiveStems: string[]): boolean {
-  if (GREETING.test(sentence.replace(/\*\*/g, "").trim())) return true;
+  const plain = sentence.replace(/\*\*/g, "").trim();
+  if (GREETING.test(plain)) return true;
+  if (IMPERATIVE.test(plain)) return true;
   const stem = strip(sentence);
   if (stem.length < 10) return false;
   return directiveStems.some((other) => other.length >= 10 && overlap(stem, other) >= 0.6);
