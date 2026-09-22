@@ -40,11 +40,9 @@ export function ChampionsTab(props: EncyclopediaPageProps) {
   );
   /*
    * 목록 아이콘은 스프라이트 한 장에서 잘라 쓴다. 173건이 줄줄이 날아가던 것이
-   * 1건이 된다. 스프라이트에 없는 챔피언(새로 나온 뒤 아직 안 만들어진 경우)은
-   * 낱장으로 돌아간다.
+   * 1건이 된다. 칸 차례는 묶음에 심어 두었으므로 목록을 넘기지 않는다.
    */
-  const championIds = useMemo(() => (props.championList ?? []).map((champion) => champion.id), [props.championList]);
-  const sprite = useSpriteSheet("champion", props.ddragonVersion, championIds);
+  const sprite = useSpriteSheet("champion", props.ddragonVersion);
   const toggleRole = (role: string) =>
     setRoles((current) => (current.includes(role) ? current.filter((value) => value !== role) : [...current, role]));
   const selected = props.championList?.find((champion) => champion.id === params.get("champion"));

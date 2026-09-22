@@ -1,6 +1,7 @@
 import { Plus } from "lucide-react";
 import { Select } from "@/components/ui/select";
-import { championIconUrl, itemIconUrl } from "@/data/assets/riotAssetUrls";
+import { championIconUrl } from "@/data/assets/riotAssetUrls";
+import { ItemIcon } from "@/components/ui/item-icon";
 import { useTranslation } from "@/i18n";
 import type { Champion } from "@/types";
 import type { NormalizedItem } from "@/types/combatNormalized";
@@ -117,7 +118,7 @@ export function SimulationSetupPanel(props: SimulationSetupPanelProps) {
               className="group aspect-square overflow-hidden rounded-md border border-border bg-muted/30 transition-[border-color,transform,background-color] hover:-translate-y-0.5 hover:border-primary hover:bg-primary/5"
             >
               {item ? (
-                <img src={itemIconUrl(props.ddragonVersion, item.id)} alt={item.name} className="size-full object-cover" />
+                <ItemIcon id={item.id} ddragonVersion={props.ddragonVersion} alt={item.name} className="block size-full" />
               ) : (
                 <span className="flex size-full items-center justify-center text-muted-foreground group-hover:text-primary"><Plus aria-hidden="true" className="size-4" /></span>
               )}

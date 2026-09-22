@@ -51,6 +51,17 @@ export interface StatDefinition {
   isPerLevel: boolean;
   label: { ko: string; en: string };
   riotKeywords: string[];
+  /**
+   * 스탯 글리프 이름(`scalehealth`…).
+   *
+   * 스킬 툴팁은 "60% 공격력" 앞에 검 모양을 붙여 어떤 스탯인지 한눈에 보이게 한다.
+   * 아이템 능력치 줄도 같은 값을 말하므로 같은 글리프를 쓴다. 이름만 여기 적고
+   * 그림은 `statIconUrl` 이 가리킨다.
+   *
+   * 글리프가 없는 스탯은 비워 둔다. 원본에 없는 것을 억지로 맞추면 엉뚱한 그림이
+   * 붙는다 — 만능 흡혈·슬로우 저항·경험치 획득은 실제로 없다(404 확인).
+   */
+  icon?: string;
 }
 
 export interface StatContribution {
@@ -84,6 +95,7 @@ export const STAT_DEFINITIONS: Record<StatKey, StatDefinition> = {
     isPerLevel: false,
     label: { en: "Health", ko: "체력" },
     riotKeywords: ["Health", "max Health", "maximum Health", "hp", "MaxHealth"],
+    icon: "scalehealth",
   },
   [StatKey.HEALTH_REGEN]: {
     key: StatKey.HEALTH_REGEN,
@@ -92,6 +104,7 @@ export const STAT_DEFINITIONS: Record<StatKey, StatDefinition> = {
     isPerLevel: false,
     label: { en: "Health Regen", ko: "체력 재생" },
     riotKeywords: ["Health Regen", "health regeneration", "hp regen"],
+    icon: "scalehpregen",
   },
   [StatKey.MAX_MANA]: {
     key: StatKey.MAX_MANA,
@@ -100,6 +113,7 @@ export const STAT_DEFINITIONS: Record<StatKey, StatDefinition> = {
     isPerLevel: false,
     label: { en: "Mana", ko: "마나" },
     riotKeywords: ["Mana", "max Mana", "maximum Mana", "mp"],
+    icon: "scalemana",
   },
   [StatKey.MANA_REGEN]: {
     key: StatKey.MANA_REGEN,
@@ -108,6 +122,7 @@ export const STAT_DEFINITIONS: Record<StatKey, StatDefinition> = {
     isPerLevel: false,
     label: { en: "Mana Regen", ko: "마나 재생" },
     riotKeywords: ["Mana Regen", "mana regeneration", "mp regen"],
+    icon: "scalemanaregen",
   },
   [StatKey.MAX_ENERGY]: {
     key: StatKey.MAX_ENERGY,
@@ -132,6 +147,7 @@ export const STAT_DEFINITIONS: Record<StatKey, StatDefinition> = {
     isPerLevel: false,
     label: { en: "Attack Damage", ko: "공격력" },
     riotKeywords: ["Attack Damage", "AD", "attack damage"],
+    icon: "scalead",
   },
   [StatKey.ABILITY_POWER]: {
     key: StatKey.ABILITY_POWER,
@@ -140,6 +156,7 @@ export const STAT_DEFINITIONS: Record<StatKey, StatDefinition> = {
     isPerLevel: false,
     label: { en: "Ability Power", ko: "주문력" },
     riotKeywords: ["Ability Power", "AP"],
+    icon: "scaleap",
   },
   [StatKey.ARMOR]: {
     key: StatKey.ARMOR,
@@ -148,6 +165,7 @@ export const STAT_DEFINITIONS: Record<StatKey, StatDefinition> = {
     isPerLevel: false,
     label: { en: "Armor", ko: "방어력" },
     riotKeywords: ["Armor", "armor"],
+    icon: "scalearmor",
   },
   [StatKey.MAGIC_RESIST]: {
     key: StatKey.MAGIC_RESIST,
@@ -156,6 +174,7 @@ export const STAT_DEFINITIONS: Record<StatKey, StatDefinition> = {
     isPerLevel: false,
     label: { en: "Magic Resist", ko: "마법 저항력" },
     riotKeywords: ["Magic Resist", "MR", "spell block"],
+    icon: "scalemr",
   },
   [StatKey.ATTACK_SPEED]: {
     key: StatKey.ATTACK_SPEED,
@@ -164,6 +183,7 @@ export const STAT_DEFINITIONS: Record<StatKey, StatDefinition> = {
     isPerLevel: false,
     label: { en: "Attack Speed", ko: "공격 속도" },
     riotKeywords: ["Attack Speed", "AS"],
+    icon: "scaleas",
   },
   [StatKey.CRIT_CHANCE]: {
     key: StatKey.CRIT_CHANCE,
@@ -172,6 +192,7 @@ export const STAT_DEFINITIONS: Record<StatKey, StatDefinition> = {
     isPerLevel: false,
     label: { en: "Crit Chance", ko: "치명타 확률" },
     riotKeywords: ["Critical Strike Chance", "Crit Chance"],
+    icon: "scalecrit",
   },
   [StatKey.CRIT_DAMAGE]: {
     key: StatKey.CRIT_DAMAGE,
@@ -180,6 +201,7 @@ export const STAT_DEFINITIONS: Record<StatKey, StatDefinition> = {
     isPerLevel: false,
     label: { en: "Crit Damage", ko: "치명타 피해" },
     riotKeywords: ["Critical Strike Damage", "Crit Damage"],
+    icon: "scalecritmult",
   },
   [StatKey.MOVE_SPEED]: {
     key: StatKey.MOVE_SPEED,
@@ -188,6 +210,7 @@ export const STAT_DEFINITIONS: Record<StatKey, StatDefinition> = {
     isPerLevel: false,
     label: { en: "Move Speed", ko: "이동 속도" },
     riotKeywords: ["Move Speed", "Movement Speed", "MS"],
+    icon: "scalems",
   },
   [StatKey.ATTACK_RANGE]: {
     key: StatKey.ATTACK_RANGE,
@@ -196,6 +219,7 @@ export const STAT_DEFINITIONS: Record<StatKey, StatDefinition> = {
     isPerLevel: false,
     label: { en: "Attack Range", ko: "공격 사거리" },
     riotKeywords: ["Attack Range", "range"],
+    icon: "scalerange",
   },
   [StatKey.ABILITY_HASTE]: {
     key: StatKey.ABILITY_HASTE,
@@ -204,6 +228,7 @@ export const STAT_DEFINITIONS: Record<StatKey, StatDefinition> = {
     isPerLevel: false,
     label: { en: "Ability Haste", ko: "스킬 가속" },
     riotKeywords: ["Ability Haste", "ability haste"],
+    icon: "scaleah",
   },
   [StatKey.LIFE_STEAL]: {
     key: StatKey.LIFE_STEAL,
@@ -212,6 +237,7 @@ export const STAT_DEFINITIONS: Record<StatKey, StatDefinition> = {
     isPerLevel: false,
     label: { en: "Life Steal", ko: "생명력 흡수" },
     riotKeywords: ["Life Steal", "lifesteal"],
+    icon: "scalels",
   },
   [StatKey.OMNIVAMP]: {
     key: StatKey.OMNIVAMP,
@@ -244,6 +270,7 @@ export const STAT_DEFINITIONS: Record<StatKey, StatDefinition> = {
     isPerLevel: false,
     label: { en: "Lethality", ko: "물리 관통력" },
     riotKeywords: ["Lethality"],
+    icon: "scaleapen",
   },
   [StatKey.ARMOR_PEN_FLAT]: {
     key: StatKey.ARMOR_PEN_FLAT,
@@ -252,6 +279,7 @@ export const STAT_DEFINITIONS: Record<StatKey, StatDefinition> = {
     isPerLevel: false,
     label: { en: "Armor Penetration", ko: "방어구 관통력" },
     riotKeywords: ["Armor Penetration", "Flat Armor Penetration"],
+    icon: "scaleapen",
   },
   [StatKey.ARMOR_PEN_PERCENT]: {
     key: StatKey.ARMOR_PEN_PERCENT,
@@ -260,6 +288,7 @@ export const STAT_DEFINITIONS: Record<StatKey, StatDefinition> = {
     isPerLevel: false,
     label: { en: "Armor Penetration %", ko: "방어구 관통 (비율)" },
     riotKeywords: ["% Armor Penetration", "Percent Armor Penetration"],
+    icon: "scaleapen",
   },
   [StatKey.MAGIC_PEN_FLAT]: {
     key: StatKey.MAGIC_PEN_FLAT,
@@ -268,6 +297,7 @@ export const STAT_DEFINITIONS: Record<StatKey, StatDefinition> = {
     isPerLevel: false,
     label: { en: "Magic Penetration", ko: "마법 관통력" },
     riotKeywords: ["Magic Penetration", "Flat Magic Penetration"],
+    icon: "scalempen",
   },
   [StatKey.MAGIC_PEN_PERCENT]: {
     key: StatKey.MAGIC_PEN_PERCENT,
@@ -276,6 +306,7 @@ export const STAT_DEFINITIONS: Record<StatKey, StatDefinition> = {
     isPerLevel: false,
     label: { en: "Magic Penetration %", ko: "마법 관통 (비율)" },
     riotKeywords: ["% Magic Penetration", "Percent Magic Penetration"],
+    icon: "scalempen",
   },
   [StatKey.TENACITY]: {
     key: StatKey.TENACITY,
@@ -284,6 +315,7 @@ export const STAT_DEFINITIONS: Record<StatKey, StatDefinition> = {
     isPerLevel: false,
     label: { en: "Tenacity", ko: "강인함" },
     riotKeywords: ["Tenacity"],
+    icon: "scaletenacity",
   },
   [StatKey.SLOW_RESIST]: {
     key: StatKey.SLOW_RESIST,
@@ -300,6 +332,7 @@ export const STAT_DEFINITIONS: Record<StatKey, StatDefinition> = {
     isPerLevel: false,
     label: { en: "Heal Power", ko: "회복량 증가" },
     riotKeywords: ["Heal and Shield Power", "heal power"],
+    icon: "scalehealshield",
   },
   [StatKey.SHIELD_POWER]: {
     key: StatKey.SHIELD_POWER,
@@ -308,6 +341,7 @@ export const STAT_DEFINITIONS: Record<StatKey, StatDefinition> = {
     isPerLevel: false,
     label: { en: "Shield Power", ko: "보호막 증가" },
     riotKeywords: ["Shield Power"],
+    icon: "scalehealshield",
   },
   [StatKey.GOLD_PER_10]: {
     key: StatKey.GOLD_PER_10,
@@ -332,6 +366,7 @@ export const STAT_DEFINITIONS: Record<StatKey, StatDefinition> = {
     isPerLevel: false,
     label: { en: "Adaptive Force", ko: "적응형 능력치" },
     riotKeywords: ["Adaptive Force"],
+    icon: "scaleadaptiveforce",
   },
   [StatKey.ATTACK_SPEED_RATIO]: {
     key: StatKey.ATTACK_SPEED_RATIO,

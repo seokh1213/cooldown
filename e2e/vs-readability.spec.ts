@@ -49,8 +49,9 @@ for (const locale of ["ko_KR", "en_US", "zh_CN"] as const) {
 }
 
 async function expectHealingIcons(container: Locator) {
-  const health = container.locator('img.stat-icon[src$="/scalehealth.png"]').last();
-  const power = container.locator('img.stat-icon[src$="/scaleap.png"]').last();
+  // 스탯 글리프를 우리 자리로 옮기면서 주소가 `img/stat/<이름>.webp` 가 되었다.
+  const health = container.locator('img.stat-icon[src$="/scalehealth.webp"]').last();
+  const power = container.locator('img.stat-icon[src$="/scaleap.webp"]').last();
   for (const [icon, percentage] of [[health, "6%"], [power, "54%"]] as const) {
     await expect(icon).toBeVisible();
     await expect(icon).toHaveCSS("box-shadow", "none");

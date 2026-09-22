@@ -20,6 +20,8 @@ import { existsSync } from "node:fs";
 import { mkdir, readFile, readdir, rm, writeFile } from "node:fs/promises";
 import path from "node:path";
 import sharp from "sharp";
+import { FORMULA_GROUPS } from "../src/data/gameFormulas";
+import { STAT_DEFINITIONS } from "../src/types/combatStats";
 import { decodeDataManifest } from "../src/data/contracts/dataManifest";
 import { RUNE_TREE_META } from "../src/data/mappers/runeMapper";
 
@@ -39,6 +41,8 @@ const ABILITY_SIZE = 64;
  * 맡지도 못했다. 우리 자리로 가져오면 그 문제도 같이 풀린다.
  */
 const RUNE_SIZE = 64;
+/** 스탯 글리프는 글자 높이로 그린다(`h-[1em]`). 원본이 32px 고 그대로 둔다. */
+const STAT_ICON_SIZE = 32;
 const QUALITY = 82;
 /*
  * 합친 장의 AVIF 사본.
@@ -155,9 +159,14 @@ async function generateThumbnails() {
    */
   const imgRoot = path.join(process.cwd(), "public/img");
   const runeOut = path.join(imgRoot, "runes");
+  // 스탯 글리프도 판본 밖이다. 패치별 자료가 아니라 UI 글리프라 값이 바뀌지 않는다.
+  const statOut = path.join(imgRoot, "stat");
   for (const entry of await readdir(imgRoot).catch(() => [])) {
-    if (entry !== ddragon && entry !== "runes") await rm(path.join(imgRoot, entry), { recursive: true, force: true });
+    if (entry !== ddragon && entry !== "runes" && entry !== "stat") {
+      await rm(path.join(imgRoot, entry), { recursive: true, force: true });
+    }
   }
+  await mkdir(statOut, { recursive: true });
   /*
    * 소환사 주문 아이콘.
    *
@@ -185,6 +194,17 @@ async function generateThumbnails() {
    */
   const abilityIcons = new Set<string>();
   const passiveIcons = new Set<string>();
+  /*
+   * 스탯 글리프.
+   *
+   * 화면이 마지막까지 CommunityDragon 을 직접 보던 것이다. 툴팁의 "60% 공격력" 앞에
+   * 붙는 검 모양이고, 이제 아이템 능력치 줄도 같은 것을 쓴다. 이름이 나오는 자리는
+   * 셋이라 셋을 다 모은다 — 챔피언 자료에 박힌 자리 표시, 계산식 표, 스탯 정의.
+   */
+  const statIcons = new Set<string>();
+  for (const group of FORMULA_GROUPS) for (const entry of group.entries) if (entry.icon) statIcons.add(entry.icon);
+  for (const definition of Object.values(STAT_DEFINITIONS)) if (definition.icon) statIcons.add(definition.icon);
+
   /** 챔피언 → P·Q·W·E·R 차례의 아이콘 파일 이름. 띠의 칸 차례가 곧 이 차례다. */
   const abilityStrips = new Map<string, Array<string | undefined>>();
   /*
@@ -207,6 +227,7 @@ async function generateThumbnails() {
         abilityIcons.add(ability.id);
       }
     }
+    for (const token of JSON.stringify(champion ?? {}).matchAll(/\[\[si:([a-z]+)]]/g)) statIcons.add(token[1]);
     for (const ability of Object.values(champion?.abilities ?? {})) {
       for (const form of ability?.forms ?? []) {
         if (form.iconVersion && form.iconPath) formIcons.set(formIconKey(form.iconPath), form);
@@ -256,6 +277,11 @@ async function generateThumbnails() {
       file: path.join(out, "summoner", `${name}.webp`),
       size: SUMMONER_SIZE,
     })),
+    ...[...statIcons].sort().map((name) => ({
+      url: `https://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/assets/ux/fonts/texticons/lol/statsicon/${name}.png`,
+      file: path.join(statOut, `${name}.webp`),
+      size: STAT_ICON_SIZE,
+    })),
     ...[...formIcons].map(([key, form]) => ({
       url: `https://raw.communitydragon.org/${form.iconVersion}/game/${form.iconPath}`,
       file: path.join(out, "form", `${key}.webp`),
@@ -302,8 +328,9 @@ async function generateThumbnails() {
     await buildSheet("item", items.map((item) => item.id), ITEM_SIZE, out, 70),
   ];
   const strips = await buildAbilityStrips(abilityStrips, out);
+  await writeSheetIndex(sheets);
   const mb = (bytes: number) => `${(bytes / 1024 / 1024).toFixed(1)}MB`;
-  console.log(`썸네일 ${jobs.length}장 (챔피언 ${championIds.length} · 아이템 ${items.length} · 룬 ${runePaths.length} · 소환사 주문 ${summonerIcons.length} · 스킬 ${abilityIcons.size} · 패시브 ${passiveIcons.size} · 변신 ${formIcons.size})`);
+  console.log(`썸네일 ${jobs.length}장 (챔피언 ${championIds.length} · 아이템 ${items.length} · 룬 ${runePaths.length} · 소환사 주문 ${summonerIcons.length} · 스킬 ${abilityIcons.size} · 패시브 ${passiveIcons.size} · 변신 ${formIcons.size} · 스탯 글리프 ${statIcons.size})`);
   console.log(`  원본 ${mb(bytesIn)} → ${mb(bytesOut)} (${Math.round((1 - bytesOut / bytesIn) * 100)}% 절감)`);
   console.log(`  ${out}`);
   for (const sheet of sheets) {
@@ -324,6 +351,41 @@ generateThumbnails().catch((error: unknown) => {
   console.error(error);
   process.exitCode = 1;
 });
+
+/**
+ * 시트에 무엇이 몇째 칸에 있는지를 **묶음에 심는다.**
+ *
+ * 그동안 화면이 자기가 들고 있는 목록으로 자리를 셌다. 그 목록은 보여 줄 차례라
+ * 시트와 맞을 까닭이 없었고 실제로 어긋나 있었다(가렌 자리에 아트록스). 이름순으로
+ * 다시 세게 해서 그것은 고쳤지만, 목록을 **일부만** 넘기면 여전히 열 수가 달라져
+ * 통째로 밀린다. 그리고 목록을 들고 있지 않은 자리(아이템 상세·고르개)는 시트를
+ * 아예 쓸 수가 없었다.
+ *
+ * 그래서 차례를 화면에 맡기지 않고 여기서 적어 준다. 네 시트를 합쳐 13KB(gzip
+ * 4KB)라 묶음에 넣을 만하고, 부르는 쪽은 id 만 대면 된다.
+ *
+ * 시트 옆의 `<kind>s.json` 은 그대로 남긴다. 그쪽은 시험이 짝을 맞춰 보는 자리다.
+ */
+async function writeSheetIndex(sheets: SheetInfo[]): Promise<void> {
+  const body = sheets
+    .map((sheet) => `  ${sheet.kind}: { cols: ${sheet.cols}, ids: ${JSON.stringify(sheet.ids)} },`)
+    .join("\n");
+  const file = [
+    "/* 자동 생성 — `npm run generate-thumbnails`. 손으로 고치지 마십시오. */",
+    "",
+    "export interface SheetGrid {",
+    "  cols: number;",
+    "  /** 시트에 붙은 차례. 칸 번호가 곧 이 배열의 자리다. */",
+    "  ids: string[];",
+    "}",
+    "",
+    "export const SPRITE_SHEETS: Record<string, SheetGrid> = {",
+    body,
+    "};",
+    "",
+  ].join("\n");
+  await writeFile(path.join(process.cwd(), "src/data/generated/spriteSheets.ts"), file);
+}
 
 /**
  * 변신 아이콘의 파일 이름. 경로를 눕혀 한 낱말로 만든다.
@@ -392,6 +454,8 @@ interface SheetInfo {
   rows: number;
   bytes: number;
   avifBytes: number;
+  /** 시트에 실제로 붙은 차례. 묶음에 심을 값이다. */
+  ids: string[];
 }
 
 /**
@@ -437,5 +501,5 @@ async function buildSheet(
   await writeFile(path.join(sheetDir, `${kind}s.webp`), sheet);
   await writeFile(path.join(sheetDir, `${kind}s.avif`), avif);
   await writeFile(path.join(sheetDir, `${kind}s.json`), `${JSON.stringify({ size, cols, rows, ids: present })}\n`);
-  return { kind, count: present.length, cols, rows, bytes: sheet.length, avifBytes: avif.length };
+  return { kind, count: present.length, cols, rows, bytes: sheet.length, avifBytes: avif.length, ids: present };
 }
