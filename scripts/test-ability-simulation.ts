@@ -1,18 +1,10 @@
 import assert from "node:assert/strict";
 import { compileAbilitySimulation } from "./data-pipeline/ability-simulation";
 import {
-  applyNormalizedItemsToStats,
-  applyDamageMitigation,
-  computeChampionStatsAtLevel,
   evaluateAbilitySimulation,
   evaluateAbilitySimulationDetails,
-  resistanceMultiplier,
-  effectiveResistance,
-} from "../src/pages/SimulationPage.damageUtils";
+} from "./data-pipeline/ability-simulation-evaluate";
 import type { CommunityDragonSpellData } from "../src/lib/spellTooltipParser/types";
-import type { Champion } from "../src/types";
-import type { NormalizedItem } from "../src/types/combatNormalized";
-import { StatKey } from "../src/types/combatStats";
 import { evaluateExpr, formatExpr } from "../src/lib/abilitySimulationExpr";
 
 const wukong = {
@@ -109,105 +101,12 @@ assert.deepEqual(evaluateAbilitySimulationDetails(wukongSimulation, 5, stats), {
   }],
   targetHealthMultiplier: undefined,
 });
-assert.equal(resistanceMultiplier(100), 0.5);
-assert.equal(resistanceMultiplier(-100), 1.5);
-assert.equal(applyDamageMitigation(200, "physical", {
-  armor: 100,
-  magicResist: 0,
-  damageReductionPercent: 20,
-}), 80);
-assert.equal(applyDamageMitigation(200, "true", {
-  armor: 100,
-  magicResist: 100,
-  damageReductionPercent: 20,
-}), 200);
-assert.equal(applyDamageMitigation(200, "unknown", {
-  armor: 0,
-  magicResist: 0,
-  damageReductionPercent: 0,
-}), null);
-
-const levelTwoStats = computeChampionStatsAtLevel({
-  id: "Test",
-  key: "1",
-  name: "Test",
-  title: "Test",
-  stats: {
-    attackdamage: 100,
-    attackdamageperlevel: 10,
-    attackspeed: 0.7,
-    attackspeedperlevel: 2,
-  },
-} satisfies Champion, 2);
-assert.equal(levelTwoStats?.attackDamage, 107.2);
-assert.equal(Number(levelTwoStats?.attackSpeed.toFixed(4)), 0.7101);
-
-const attackSpeedItems = [{
-  stats: [0.3, 0.2].map((value) => ({
-    stat: StatKey.ATTACK_SPEED,
-    value,
-    valueType: "percent" as const,
-    source: "item" as const,
-  })),
-}] as NormalizedItem[];
-assert.equal(
-  Number(applyNormalizedItemsToStats(stats, attackSpeedItems).attackSpeed.toFixed(4)),
-  1.1077,
-);
-
-assert.equal(applyDamageMitigation(200, "physical", {
-  armor: 100,
-  magicResist: 0,
-  damageReductionPercent: 0,
-}, { ...stats, lethality: 20 }), 200 * 100 / 180);
-
-// 백과사전 "저항력 감소와 관통" 항목과 같은 규칙이어야 한다
-// 적용 저항력 = (저항력 − 고정 감소) × (1 − 감소%) × (1 − 관통%) − 고정 관통
-assert.equal(effectiveResistance(100, {}), 100);
-assert.equal(effectiveResistance(100, { flatPenetration: 18 }), 82);
-assert.equal(Number(effectiveResistance(100, { percentPenetration: 0.3 }).toFixed(6)), 70);
-assert.equal(
-  Number(
-    effectiveResistance(100, {
-      percentPenetration: 0.3,
-      flatPenetration: 18,
-    }).toFixed(6),
-  ),
-  52,
-);
-// 비율이 고정보다 먼저다 (순서를 바꾸면 (100−18)×0.7 = 57.4 가 나온다)
-assert.notEqual(
-  effectiveResistance(100, { percentPenetration: 0.3, flatPenetration: 18 }),
-  57.4,
-);
-// 고정 감소는 합연산이고 음수까지 내려간다
-assert.equal(effectiveResistance(20, { flatReduction: 35 }), -15);
-// 저항력이 0 이하로 내려가면 비율 단계를 건너뛴다
-assert.equal(
-  effectiveResistance(20, { flatReduction: 35, percentPenetration: 0.5 }),
-  -15,
-);
-// 관통은 저항력을 0 밑으로 내리지 못한다
-assert.equal(effectiveResistance(20, { flatPenetration: 30 }), 0);
-assert.equal(
-  applyDamageMitigation(200, "physical", {
-    armor: 20,
-    magicResist: 0,
-    damageReductionPercent: 0,
-  }, { ...stats, lethality: 30 }),
-  200,
-);
-// 마법 쪽도 고정·비율 두 종류를 같은 순서로 쓴다
-assert.equal(
-  Number(
-    applyDamageMitigation(200, "magical", {
-      armor: 0,
-      magicResist: 100,
-      damageReductionPercent: 0,
-    }, { ...stats, magicPenPercent: 0.3, magicPenFlat: 18 })?.toFixed(6),
-  ),
-  Number((200 * 100 / 152).toFixed(6)),
-);
+/*
+ * 피해 감쇄·관통·아이템 반영 검사는 시뮬레이션 화면과 함께 걷어냈다.
+ *
+ * 그 식들을 들고 있던 것이 화면 코드였고, 화면이 없어지면서 검사할 대상도 함께
+ * 사라졌다. 같은 규칙을 글로 적어 둔 백과사전 "수치 공식" 탭은 그대로 남는다.
+ */
 
 const ezrealSimulation = compileAbilitySimulation(ezreal, 5);
 assert.equal(ezrealSimulation.status, "complete");

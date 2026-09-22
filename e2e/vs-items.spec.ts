@@ -61,9 +61,6 @@ for (const locale of ["ko_KR", "en_US", "zh_CN"] as const) {
       ]);
       await expect(page.locator('[data-ability-info][data-side="opponent"][data-slot="Q"]')).toContainText("50%");
       await expect(page.getByRole("combobox")).toHaveCount(0);
-      await expect(
-        page.getByRole("button", { name: t.sidebar.simulation, exact: true }),
-      ).toHaveCount(0);
       await expectNoHorizontalOverflow(page);
       await page.screenshot({
         path: testInfo.outputPath("vs.png"),
@@ -89,11 +86,6 @@ for (const locale of ["ko_KR", "en_US", "zh_CN"] as const) {
         `${t.itemDetail.baseAttackDamage} × 100%`,
       );
       await expect(detail).toContainText(t.itemDetail.cooldown);
-      await expect(
-        detail.getByRole("button", {
-          name: t.pages.simulation.addItemToSimulation,
-        }),
-      ).toHaveCount(0);
       await expectNoHorizontalOverflow(page);
       await page.screenshot({
         path: testInfo.outputPath("item.png"),

@@ -54,7 +54,7 @@ function VsHeader(props: {
           ) : (
             <Copy aria-hidden="true" className="size-4" />
           )}
-          {t.pages.simulation.share}
+          {t.comparison.share}
         </Button>
         <Button
           variant="ghost"
@@ -105,8 +105,8 @@ export default function VsPage(props: VsPageProps) {
       >
         {shared &&
           (shared.success
-            ? t.pages.simulation.copySuccess
-            : t.pages.simulation.copyFailed)}
+            ? t.comparison.copySuccess
+            : t.comparison.copyFailed)}
       </div>
       <VsComparison
         state={state}

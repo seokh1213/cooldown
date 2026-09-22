@@ -30,7 +30,7 @@ function collectSharedLeaves(
 
 const sharedLeaves = collectSharedLeaves(translations.en_US, translations.zh_CN);
 assert.deepEqual(sharedLeaves, [], `Chinese UI still falls back to English: ${sharedLeaves.join(", ")}`);
-assert.equal(translations.zh_CN.pages.simulation.lethalLabel, "可以击杀");
+assert.equal(translations.zh_CN.comparison.copySuccess, "已复制当前对位的链接。");
 assert.equal(translations.zh_CN.skillTooltip.scalingsTitle, "加成");
 
 /*

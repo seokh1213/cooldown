@@ -1,9 +1,6 @@
 export type ProductMetricName =
-  | "simulation_restored"
   | "attacker_selected"
   | "target_selected"
-  | "simulation_ready"
-  | "simulation_shared"
   | "condition_toggled";
 
 interface ProductMetric {

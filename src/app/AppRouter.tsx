@@ -1,5 +1,5 @@
 import { lazy, Suspense } from "react";
-import { Outlet, Route, Routes } from "react-router-dom";
+import { Navigate, Outlet, Route, Routes } from "react-router-dom";
 import Layout from "@/components/layout/Layout";
 import SplashScreen from "@/components/layout/SplashScreen";
 import Nav from "@/components/features/Nav";
@@ -9,7 +9,6 @@ import type { AppTheme } from "./useAppPreferences";
 
 const ChampionCooldownPage = lazy(() => import("@/pages/ChampionCooldownPage"));
 const EncyclopediaPage = lazy(() => import("@/pages/EncyclopediaPage"));
-const SimulationPage = lazy(() => import("@/pages/SimulationPage"));
 const VsPage = lazy(() => import("@/pages/VsPage"));
 const OGPreviewPage = lazy(() => import("@/pages/OGPreviewPage"));
 
@@ -79,18 +78,14 @@ export function AppRouter(props: AppRouterProps) {
             />
           }
         />
-        <Route
-          path="simulation"
-          element={
-            <SimulationPage
-              lang={language}
-              patchVersion={runtime.patchVersion}
-              ddragonVersion={runtime.sources.ddragon}
-              sources={runtime.sources}
-              championList={runtime.championList}
-            />
-          }
-        />
+        {/*
+          * 갈 곳 없는 주소는 처음으로 돌린다.
+          *
+          * 시뮬레이션 화면을 걷어내면서 알았다. 잡히지 않는 경로는 틀을 그린 뒤 본문만
+          * 비워 두었다 — 머리와 옆줄은 멀쩡한데 가운데가 텅 빈 화면이라, 사용자는
+          * 고장인지 빈 화면인지 알 길이 없었다. 북마크나 옛 링크로 들어오는 자리다.
+          */}
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Route>
       {import.meta.env.DEV && (
         <Route

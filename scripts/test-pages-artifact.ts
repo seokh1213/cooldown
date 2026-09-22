@@ -14,7 +14,6 @@ try {
   for (const relativePath of [
     "404.html",
     "encyclopedia/index.html",
-    "simulation/index.html",
     "vs/index.html",
   ]) {
     assert.equal(await readFile(path.join(directory, relativePath), "utf8"), indexHtml);

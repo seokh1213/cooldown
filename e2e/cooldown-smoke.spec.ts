@@ -58,7 +58,9 @@ test("serves a lazy route directly under the Pages base path", async ({ page }) 
 });
 
 test("installs the PWA and serves a direct route offline", async ({ page, context, baseURL }) => {
-  await page.goto("./simulation");
+  // 시뮬레이션 화면을 걷어내면서 깊은 링크 표본을 VS 로 옮겼다. 보는 것은 같다 —
+  // 지연 로딩되는 경로가 서비스워커를 거쳐 오프라인에서도 열리는지다.
+  await page.goto("./vs");
   const workerSource = await (await page.request.get("./sw.js")).text();
   expect(workerSource).toContain("cooldown-game-data");
   expect(workerSource).toContain("cooldown-version");
@@ -80,7 +82,7 @@ test("installs the PWA and serves a direct route offline", async ({ page, contex
     await expect.poll(() => page.evaluate(async (url) => (await fetch(url)).status, cachedChampionUrl))
       .toBe(200);
     await page.reload({ waitUntil: "domcontentloaded" });
-    await expect(page.getByRole("heading", { name: "시뮬레이션" }).nth(1)).toBeVisible();
+    await expect(page.getByRole("heading", { name: "챔피언 맞대결" }).nth(1)).toBeVisible();
   } finally {
     await context.setOffline(false);
   }
@@ -88,11 +90,11 @@ test("installs the PWA and serves a direct route offline", async ({ page, contex
 
 test("captures overflow-safe screens in all supported locales", async ({ page }, testInfo) => {
   const locales = [
-    { id: "ko_KR", heading: "시뮬레이션" },
-    { id: "en_US", heading: "Simulation" },
-    { id: "zh_CN", heading: "模拟器" },
+    { id: "ko_KR", heading: "챔피언 맞대결" },
+    { id: "en_US", heading: "Champion matchup" },
+    { id: "zh_CN", heading: "英雄对决" },
   ];
-  await page.goto("./simulation");
+  await page.goto("./vs");
   for (const locale of locales) {
     await page.evaluate((id) => {
       localStorage.setItem("cooldown:storage-schema", "2");
@@ -164,38 +166,6 @@ test("supports keyboard navigation and accessible mobile controls", async ({ pag
   expect(reducedDuration).toBeLessThan(0.001);
 });
 
-test("simulation uses compiled Ability v2 without raw spell requests", async ({ page }) => {
-  const dataRequests: string[] = [];
-  page.on("request", (request) => {
-    if (request.url().includes("/data/")) dataRequests.push(request.url());
-  });
-  await page.goto("./simulation");
-  await expect(
-    page.getByRole("heading", { name: "시뮬레이션" }).nth(1)
-  ).toBeVisible();
-  await expect(page.getByText("공격 챔피언과 대상을 선택하면 콤보 결과를 계산합니다.")).toBeVisible();
-  await expect(page.getByTestId("combo-outcome")).toHaveCount(0);
-  await page.getByRole("button", { name: "시뮬레이션할 챔피언 선택" }).click();
-  await page.getByRole("button", { name: "Select 오공", exact: true }).click();
-  await expect(page.getByRole("dialog")).toBeHidden();
-  await expect(page.getByText("Q: 파쇄격")).toBeVisible();
-  await expect(page.getByText("Skill Description Placeholder")).toHaveCount(0);
-  const qSkill = page.getByText("Q: 파쇄격").locator("../..");
-  await expect(qSkill).toContainText("사거리가 135/145/155/165/175 증가");
-  await expect(qSkill).toContainText("방어력이 10/15/20/25/30% 감소");
-  await expect(qSkill.locator('img.stat-icon')).toBeVisible();
-  await expect(qSkill).not.toContainText("[[si:");
-  await expect(qSkill).toContainText("산식 120.0");
-  await page.getByLabel("Q 스킬 레벨").first().selectOption("1");
-  await expect(qSkill).toContainText("산식 20.0");
-  const rSkill = page.getByText("R: 회전격").locator("../..");
-  await expect(rSkill).toContainText("공격력 125.5 × 2.75");
-  await page.getByLabel("공격자 레벨").selectOption("1");
-  await expect(rSkill).toContainText("공격력 66.0 × 2.75");
-  expect(dataRequests.some((url) => url.includes("/champions/ko_KR/MonkeyKing.json")))
-    .toBe(true);
-  expect(dataRequests.some((url) => url.includes("/spells/"))).toBe(false);
-});
 
 test("sanitizes game data HTML at the render boundary", async ({ browser, baseURL }) => {
   const context = await browser.newContext({ baseURL, serviceWorkers: "block" });
@@ -237,58 +207,7 @@ test("exposes unresolved Ability v2 diagnostics without hiding the tooltip", asy
   await expect(tooltip).toContainText("원본 데이터에서 완전히 해석되지 않은 수치가 있습니다.");
 });
 
-test("calculates a ranked combo against target defenses", async ({ page }) => {
-  await page.goto("./simulation");
-  await page.getByRole("button", { name: "시뮬레이션할 챔피언 선택" }).click();
-  await page.getByRole("button", { name: "Select 오공", exact: true }).click();
-  await page.getByRole("button", { name: "피해를 받을 대상 챔피언 선택" }).click();
-  await page.getByRole("button", { name: "Select 가렌", exact: true }).click();
 
-  await expect(page.getByRole("button", { name: "피해를 받을 대상 챔피언 선택" })).toContainText("가렌");
-  await page.getByLabel("현재 체력").fill("100");
-  await expect(page.getByTestId("combo-outcome")).toHaveText("처치 가능");
-  expect(Number(await page.getByTestId("combo-total").innerText())).toBeGreaterThan(100);
-
-  await page.getByLabel("피해 감소").fill("100");
-  await expect(page.getByTestId("combo-total")).toHaveText("0.0");
-  await expect(page.getByTestId("combo-remaining-health")).toHaveText("100.0");
-  await expect(page.getByTestId("combo-outcome")).toHaveText("생존");
-
-  await page.getByLabel("소환사 주문 1").selectOption({ label: "점화" });
-  await expect(page.getByRole("row", { name: /점화/ })).toContainText("430.0");
-  await expect(page.getByTestId("combo-total")).toHaveText("430.0");
-  await expect(page.getByTestId("combo-outcome")).toHaveText("처치 가능");
-
-  await page.getByLabel("직접 피해 룬 선택").selectOption({ label: "비열한 한 방" });
-  const cheapShotRow = page.getByRole("row", { name: /비열한 한 방/ });
-  await expect(cheapShotRow).toContainText("45.0");
-  await expect(cheapShotRow).toContainText("이동·행동 방해 상태");
-  await expect(page.getByTestId("combo-total")).toHaveText("475.0");
-
-  await page.getByRole("button", { name: /적용 · 이동·행동 방해 상태/ }).click();
-  await expect(page.getByTestId("combo-total")).toHaveText("430.0");
-  await expect(page).toHaveURL(/off=rune/);
-
-  await page.getByLabel("피해 감소").fill("0");
-  await page.getByRole("button", { name: "아이템 1" }).click();
-  await page.getByRole("button", { name: /내셔의 이빨/ }).click();
-  const nashorRow = page.getByRole("row", { name: /내셔의 이빨/ });
-  await expect(nashorRow).toContainText("27.0");
-  await expect(nashorRow).toContainText("적중 시");
-});
-
-test("restores the complete simulation from its URL", async ({ page }) => {
-  await page.goto("./simulation?a=MonkeyKing&t=Garen&al=11&tl=10&sr=Q%3A3.W%3A1.E%3A2.R%3A1&cc=AA%3A2.Q%3A1&hp=777&ar=88&mr=44&dr=5");
-  await expect(page.getByLabel("Q 스킬 레벨").first()).toHaveValue("3");
-  await expect(page.getByLabel("현재 체력")).toHaveValue("777");
-  await expect(page.getByLabel("방어력")).toHaveValue("88");
-  await expect(page.getByLabel("파쇄격 횟수").last()).toHaveValue("1");
-  await page.getByRole("button", { name: "공유" }).click();
-  await expect(page.getByRole("button", { name: "복사됨" })).toBeVisible();
-  await page.reload();
-  await expect(page.getByLabel("Q 스킬 레벨").first()).toHaveValue("3");
-  await expect(page.getByLabel("현재 체력")).toHaveValue("777");
-});
 
 test("hands a selected champion off to the separate VS page", async ({ page }) => {
   await page.goto("./");
@@ -298,12 +217,6 @@ test("hands a selected champion off to the separate VS page", async ({ page }) =
   await expect(page.getByTestId("vs-mine-Q")).toContainText("파쇄격");
 });
 
-test("shows an item without a simulation entry point", async ({ page }) => {
-  await page.goto("./encyclopedia?tab=items");
-  await page.getByRole("button", { name: /롱소드/ }).first().click();
-  await expect(page.getByTestId("item-detail").getByRole("heading", { name: "롱소드" })).toBeVisible();
-  await expect(page.getByRole("button", { name: "시뮬레이션 첫 슬롯에 담기" })).toHaveCount(0);
-});
 
 test("keeps the main workflow fully localized in Chinese", async ({ page }) => {
   await page.goto("./");
@@ -311,10 +224,11 @@ test("keeps the main workflow fully localized in Chinese", async ({ page }) => {
   await page.getByRole("button", { name: /简体中文/ }).click();
   await expect(page.getByRole("heading", { name: "英雄冷却时间" })).toBeVisible();
 
-  await page.goto("./simulation");
-  await expect(page.getByRole("heading", { name: "模拟器" }).nth(1)).toBeVisible();
-  await expect(page.getByRole("heading", { name: "连招伤害与斩杀判断" })).toBeVisible();
-  await expect(page.getByRole("button", { name: "选择承受伤害的目标英雄" })).toBeVisible();
+  // 시뮬레이션 화면을 걷어내면서 표본을 VS 로 옮겼다. 보는 것은 같다 — 다른 화면으로
+  // 건너가도 고른 언어가 그대로 따라오는지다.
+  await page.goto("./vs?a=MonkeyKing&t=Garen");
+  await expect(page.getByRole("heading", { name: "英雄对决" }).nth(1)).toBeVisible();
+  await expect(page.getByRole("button", { name: "交换" })).toBeVisible();
 });
 
 test("renders stat icons inside ability tooltips", async ({ page }) => {
@@ -367,26 +281,3 @@ test("documents game formulas in the encyclopedia", async ({ page }) => {
     .toBe(true);
 });
 
-test("simulation reports effective health from the documented formula", async ({ page }) => {
-  await page.goto("./simulation");
-  await page.getByRole("button", { name: "시뮬레이션할 챔피언 선택" }).click();
-  await page.getByRole("button", { name: "Select 가렌", exact: true }).click();
-
-  // "방어력" 은 대상 방어구 입력에도 있으므로 스탯 패널 안으로 범위를 좁힌다
-  const panel = page
-    .getByText("실질 체력 (물리)", { exact: true })
-    .locator("xpath=ancestor::div[contains(@class,'border-y')]");
-  const read = async (label: string): Promise<number> => {
-    const row = panel.getByText(label, { exact: true }).locator("xpath=..");
-    const text = await row.innerText();
-    return Number(text.replace(label, "").replace(/[^\d.]/g, ""));
-  };
-
-  const health = await read("체력");
-  const armor = await read("방어력");
-  const effective = await read("실질 체력 (물리)");
-
-  // 실질 체력 = 체력 × (1 + 방어력 / 100). 표시는 각 항을 따로 반올림한다
-  expect(Math.abs(effective - health * (1 + armor / 100))).toBeLessThan(30);
-  expect(effective).toBeGreaterThan(health);
-});

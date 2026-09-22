@@ -1,5 +1,15 @@
 export interface ComparisonLabels {
   title: string;
+  /**
+   * 주소 복사. 한때 `pages.simulation` 밑에 있었다.
+   *
+   * 시뮬레이션 화면이 쓰던 문구를 VS 화면이 같이 가져다 썼고, 그래서 맞대결을
+   * 공유해도 "현재 시뮬레이션 링크를 복사했습니다" 가 떴다. 화면이 사라지면서
+   * 제 블록으로 옮기고 문구도 맞췄다.
+   */
+  share: string;
+  copySuccess: string;
+  copyFailed: string;
   description: string;
   mine: string;
   opponent: string;
@@ -27,6 +37,8 @@ export interface ComparisonLabels {
 
 export interface ItemDetailLabels {
   stats: string;
+  /** 효과가 붙는 조건. 한때 `pages.simulation` 밑에 있었다. */
+  conditionLabels: Record<string, string>;
   effects: string;
   passive: string;
   active: string;
@@ -50,6 +62,9 @@ export interface ItemDetailLabels {
 }
 
 export const koComparison: ComparisonLabels = {
+  share: "공유",
+  copySuccess: "지금 보고 있는 맞대결 링크를 복사했습니다.",
+  copyFailed: "링크를 복사하지 못했습니다.",
   title: "챔피언 맞대결",
   description: "두 챔피언의 스킬 쿨타임과 능력치를 나란히 비교해 보세요.",
   mine: "내 챔피언",
@@ -78,6 +93,9 @@ export const koComparison: ComparisonLabels = {
   statGrowth: "레벨당",
 };
 export const enComparison: ComparisonLabels = {
+  share: "Share",
+  copySuccess: "The link to this matchup was copied.",
+  copyFailed: "The link could not be copied.",
   title: "Champion matchup",
   description:
     "Compare two champions’ ability cooldowns and stats side by side.",
@@ -107,6 +125,9 @@ export const enComparison: ComparisonLabels = {
   statGrowth: "Per level",
 };
 export const zhComparison: ComparisonLabels = {
+  share: "分享",
+  copySuccess: "已复制当前对位的链接。",
+  copyFailed: "无法复制链接。",
   title: "英雄对决",
   description: "并排比较两位英雄的技能冷却时间与属性。",
   mine: "己方英雄",
@@ -135,6 +156,21 @@ export const zhComparison: ComparisonLabels = {
 };
 
 export const koItemDetail: ItemDetailLabels = {
+  conditionLabels: {
+  "after-ability": "스킬 사용 후",
+  "next-attack": "다음 기본 공격",
+  "on-hit": "적중 시",
+  "damaging-ability": "피해 스킬 적중",
+  "one-echo": "메아리 1회",
+  "full-burn": "지속 피해 전부",
+  "no-suffering-amplification": "고통 증폭 제외",
+  "movement-or-action-impaired": "이동·행동 방해 상태",
+  "damaging-ability-hit": "피해 스킬 적중",
+  "target-max-health": "대상 최대 체력 비례",
+  "per-second": "1초 피해",
+  "third-hit": "세 번째 적중",
+  "maximum-charge": "최대 충전",
+},
   stats: "능력치",
   effects: "아이템 효과",
   passive: "기본 지속 효과",
@@ -158,6 +194,21 @@ export const koItemDetail: ItemDetailLabels = {
   missingFormula: "이 효과의 추가 수치·공식은 아직 제공되지 않습니다.",
 };
 export const enItemDetail: ItemDetailLabels = {
+  conditionLabels: {
+  "after-ability": "after using an ability",
+  "next-attack": "next basic attack",
+  "on-hit": "on hit",
+  "damaging-ability": "damaging ability hit",
+  "one-echo": "one echo",
+  "full-burn": "full damage over time",
+  "no-suffering-amplification": "Suffering amp excluded",
+  "movement-or-action-impaired": "movement/action impaired",
+  "damaging-ability-hit": "damaging ability hit",
+  "target-max-health": "target max-health scaling",
+  "per-second": "one second of damage",
+  "third-hit": "third hit",
+  "maximum-charge": "maximum charge",
+},
   stats: "Stats",
   effects: "Item effects",
   passive: "Passive effect",
@@ -182,6 +233,21 @@ export const enItemDetail: ItemDetailLabels = {
     "Additional values and formulas for this effect are not yet available.",
 };
 export const zhItemDetail: ItemDetailLabels = {
+  conditionLabels: {
+        "after-ability": "施放技能后",
+        "next-attack": "下一次普通攻击",
+        "on-hit": "命中时",
+        "damaging-ability": "伤害技能命中",
+        "one-echo": "一次回声",
+        "full-burn": "完整持续伤害",
+        "no-suffering-amplification": "不含苦楚增幅",
+        "movement-or-action-impaired": "移动或行动受限",
+        "damaging-ability-hit": "伤害技能命中",
+        "target-max-health": "按目标最大生命值",
+        "per-second": "一秒伤害",
+        "third-hit": "第三次命中",
+        "maximum-charge": "最大蓄力",
+      },
   stats: "属性",
   effects: "装备效果",
   passive: "被动效果",
