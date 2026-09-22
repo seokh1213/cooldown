@@ -1,5 +1,5 @@
 import type { NormalizedItem } from "@/types/combatNormalized";
-import { itemIconUrl } from "@/data/assets/riotAssetUrls";
+import { ItemIcon } from "@/components/ui/item-icon";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -64,12 +64,11 @@ export function SimulationItemPicker(props: {
                       : "hover:bg-muted/60 text-foreground/80"
                   }`}
                 >
-                  <img
-                    src={itemIconUrl(ddragonVersion, item.id)}
+                  <ItemIcon
+                    id={item.id}
+                    ddragonVersion={ddragonVersion}
                     alt={item.name || item.id}
-                    loading="lazy"
-                    decoding="async"
-                    className="w-6 h-6 rounded-sm border border-border/60 bg-black/40"
+                    className="block w-6 h-6 rounded-sm border border-border/60 bg-black/40"
                   />
                   <span className="flex-1 truncate">{item.name || item.id}</span>
                   {(item.priceTotal ?? 0) > 0 && (

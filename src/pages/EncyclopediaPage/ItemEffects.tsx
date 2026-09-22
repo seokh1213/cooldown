@@ -5,7 +5,8 @@ import type {
   NormalizedItemEffect,
 } from "@/types/combatNormalized";
 import { formatItemNumber, itemDamageFormula } from "./itemFormula";
-import { getItemStatLines } from "./itemCatalogModel";
+import { getItemStatLines, statLineIcon } from "./itemCatalogModel";
+import { STAT_ICON_CLASS, statIconUrl } from "@/lib/spellTooltipParser/statIcons";
 
 function EffectFormula({ effect }: { effect: NormalizedItemEffect }) {
   const { t, lang } = useTranslation();
@@ -77,7 +78,7 @@ function EffectFormula({ effect }: { effect: NormalizedItemEffect }) {
   );
 }
 
-export function ItemEffects({ item }: { item: NormalizedItem }) {
+export function ItemEffects({ item, statIcons }: { item: NormalizedItem; statIcons: ReadonlyMap<string, string> }) {
   const { t, lang } = useTranslation();
   const structured = item.statDescriptions !== undefined;
   const stats = structured
@@ -91,11 +92,16 @@ export function ItemEffects({ item }: { item: NormalizedItem }) {
             {t.itemDetail.stats}
           </h3>
           <ul className="grid grid-cols-2 gap-x-4 gap-y-2 text-sm leading-relaxed">
-            {stats.map((line, index) => (
-              <li key={index}>
-                {structured ? <SafeInlineHtml html={line} /> : line}
-              </li>
-            ))}
+            {stats.map((line, index) => {
+              // 스킬 툴팁의 계수 항과 같은 글리프다. 이름을 못 찾으면 글자만 둔다.
+              const icon = statLineIcon(line, statIcons);
+              return (
+                <li key={index}>
+                  {icon && <img src={statIconUrl(icon)} alt="" decoding="async" className={STAT_ICON_CLASS} />}
+                  {structured ? <SafeInlineHtml html={line} /> : line}
+                </li>
+              );
+            })}
           </ul>
         </section>
       )}

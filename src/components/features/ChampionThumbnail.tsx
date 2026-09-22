@@ -6,7 +6,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Check, Star } from "lucide-react";
 import { useTranslation } from "@/i18n";
 import { championIconUrl } from "@/data/assets/riotAssetUrls";
-import { ChampionIcon, useChampionSheet } from "@/components/ui/champion-icon";
+import { ChampionIcon, championInSheet } from "@/components/ui/champion-icon";
 
 interface ChampionThumbnailProps {
   addChampion: (champion: Champion) => void;
@@ -36,8 +36,7 @@ function ChampionThumbnail({
    * 때마다 보였다. 시트는 서비스워커가 이미 들고 있어 첫 그림에 바로 나오므로
    * 자리맡도 나타나는 효과도 필요 없다. 시트에 없는 챔피언만 옛 길로 간다.
    */
-  const sheet = useChampionSheet();
-  const fromSheet = sheet?.index.has(data.id) ?? false;
+  const fromSheet = championInSheet(data.id, data.ddragonVersion || "");
   const [isLoaded, setIsLoaded] = useState(false);
   const [hasError, setHasError] = useState(false);
   // 즉시 피드백을 위한 로컬 선택 상태

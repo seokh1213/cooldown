@@ -2,7 +2,7 @@ import type { CSSProperties } from "react";
 import type { Rune, RuneStatShard, RuneTree } from "@/types";
 import { runeIconKey, runeIconUrl } from "@/data/assets/riotAssetUrls";
 import { SpriteIcon, useSpriteSheet, type SheetState } from "@/components/ui/sprite-icon";
-import { createContext, useContext, useMemo } from "react";
+import { createContext, useContext } from "react";
 import { AlertTriangle } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import {
@@ -233,20 +233,8 @@ export function RuneCatalog(props: {
   onSelectRune: (rune: Rune | null) => void;
 }) {
   const { trees, statShardRows, selectedRune, isMobile, warning, statShardsTitle, onSelectRune } = props;
-  /*
-   * 시트 칸 자리는 이름 차례로 센다. 생성기도 같은 차례로 붙인다 — 룬과 파편이
-   * 자료에서 서로 다른 자리에 있어 실린 차례를 화면이 되살리기 어렵기 때문이다.
-   */
-  const runeIds = useMemo(() => {
-    const keys = new Set<string>();
-    for (const tree of trees) {
-      keys.add(runeIconKey(tree.icon));
-      for (const slot of tree.slots) for (const rune of slot.runes) keys.add(runeIconKey(rune.icon));
-    }
-    for (const row of statShardRows) for (const perk of row.perks) keys.add(runeIconKey(perk.iconPath));
-    return [...keys].sort();
-  }, [trees, statShardRows]);
-  const sprite = useSpriteSheet("rune", "", runeIds);
+  // 칸 차례는 묶음에 심어 두었다. 룬은 판본 밖에 모이므로 판본을 비워 부른다.
+  const sprite = useSpriteSheet("rune", "");
   return (
     <RuneSpriteContext.Provider value={sprite}>
     <TooltipProvider delayDuration={200}>

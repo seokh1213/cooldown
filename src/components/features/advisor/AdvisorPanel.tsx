@@ -62,7 +62,7 @@ import { nicknames } from "@/lib/advisor/intent";
 import { parseRoute, routePrompt, type AskRoute } from "@/lib/advisor/routeAsk";
 import { findMentionedRules } from "../../../../scripts/llm/lib/rules";
 import type { ChampionCard } from "../../../../scripts/llm/lib/facts";
-import { itemIconUrl } from "@/data/assets/riotAssetUrls";
+import { ItemIcon } from "@/components/ui/item-icon";
 import { ChampionIcon } from "@/components/ui/champion-icon";
 import { usePageContext } from "@/hooks/usePageContext";
 import {
@@ -781,7 +781,7 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
   /** 탭 머리의 작은 아이콘. 아이템은 낱장 주소, 챔피언은 시트에서 자른다. */
   const answerIcons = (answer: AdvisorAnswer, className: string): React.ReactNode[] =>
     answer.kind === "item"
-      ? [<img key={answer.itemId} src={itemIconUrl(ddragonVersion, answer.itemId)} alt="" className={className} />]
+      ? [<ItemIcon key={answer.itemId} id={answer.itemId} ddragonVersion={ddragonVersion} className={`block ${className}`} />]
       : answerChampionIds(answer)
           .slice(0, 2)
           .map((id) => <ChampionIcon key={id} id={id} ddragonVersion={ddragonVersion} className={`block ${className}`} />);

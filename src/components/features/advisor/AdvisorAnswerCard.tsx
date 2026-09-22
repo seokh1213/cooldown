@@ -12,7 +12,7 @@
  */
 import { Link } from "react-router-dom";
 import { useTranslation } from "@/i18n";
-import { itemIconUrl } from "@/data/assets/riotAssetUrls";
+import { ItemIcon } from "@/components/ui/item-icon";
 import { ChampionIcon } from "@/components/ui/champion-icon";
 import {
   CARD_STATS,
@@ -150,13 +150,7 @@ export function AdvisorAnswerCard({ answer, ddragonVersion, patch, onPickChampio
     return (
       <Frame
         icon={
-          <img
-            src={itemIconUrl(ddragonVersion, answer.itemId)}
-            alt=""
-            width={36}
-            height={36}
-            className="h-9 w-9 shrink-0 rounded-md"
-          />
+          <ItemIcon id={answer.itemId} ddragonVersion={ddragonVersion} size={36} className="block h-9 w-9 shrink-0 rounded-md" />
         }
         title={answer.itemName}
         subtitle={answer.price ? fill(copy.itemPrice, { price: answer.price.toLocaleString() }) : undefined}

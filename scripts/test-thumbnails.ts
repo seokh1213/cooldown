@@ -11,6 +11,8 @@ import assert from "node:assert/strict";
 import * as fs from "node:fs";
 import * as path from "node:path";
 import { formIconKey, runeIconKey } from "../src/data/assets/riotAssetUrls";
+import { FORMULA_GROUPS } from "../src/data/gameFormulas";
+import { STAT_DEFINITIONS } from "../src/types/combatStats";
 import { RUNE_TREE_META } from "../src/data/mappers/runeMapper";
 
 const root = process.cwd();
@@ -24,10 +26,18 @@ const out = path.join(imgRoot, release.sources.ddragon);
 
 assert.ok(fs.existsSync(out), `썸네일 폴더가 없다: ${out}. \`npm run generate-thumbnails\` 를 돌려야 한다`);
 
-// `runes` 는 판본 밖에 두는 자리다. 시트 파일도 여기 있다. 낡은 것으로 세지 않는다.
+/*
+ * `runes` 와 `stat` 은 판본 밖에 두는 자리다. 시트 파일도 여기 있다.
+ *
+ * 룬은 자료에 판본이 안 들어 있어 부르는 쪽이 값을 모르고, 스탯 글리프는 패치별
+ * 자료가 아니라 UI 그림이라 값이 안 바뀐다. 둘 다 낡은 것으로 세지 않는다.
+ */
 const stale = fs
   .readdirSync(imgRoot)
-  .filter((entry) => entry !== release.sources.ddragon && entry !== "runes" && !entry.startsWith("runes."));
+  .filter(
+    (entry) =>
+      entry !== release.sources.ddragon && entry !== "runes" && entry !== "stat" && !entry.startsWith("runes."),
+  );
 assert.deepEqual(stale, [], "지난 판본 썸네일이 남아 있다. 저장소가 패치마다 불어난다");
 
 const championIds = fs
@@ -104,6 +114,24 @@ for (const id of championIds) {
 assert.ok(abilityIcons.length > 500, `스킬 아이콘이 ${abilityIcons.length}개뿐이다`);
 assert.ok(passiveIcons.length > 150, `패시브 아이콘이 ${passiveIcons.length}개뿐이다`);
 assert.ok(formKeys.length > 20, `변신 아이콘이 ${formKeys.length}개뿐이다`);
+
+/*
+ * 스탯 글리프. 툴팁의 계수 항과 아이템 능력치 줄이 함께 쓴다.
+ *
+ * 화면이 마지막까지 CommunityDragon 을 직접 보던 것이라, 우리 자리로 옮기면서
+ * 이름이 나오는 세 자리를 다 모아야 한다 — 챔피언 자료의 자리 표시, 계산식 표,
+ * 스탯 정의. 한 장이라도 빠지면 그 줄의 그림만 조용히 빈다.
+ */
+const statIcons = new Set<string>();
+for (const group of FORMULA_GROUPS) for (const entry of group.entries) if (entry.icon) statIcons.add(entry.icon);
+for (const definition of Object.values(STAT_DEFINITIONS)) if (definition.icon) statIcons.add(definition.icon);
+for (const id of championIds) {
+  const raw = fs.readFileSync(path.join(dataDir, release.patchVersion, "champions", "ko_KR", `${id}.json`), "utf8");
+  for (const token of raw.matchAll(/\[\[si:([a-z]+)]]/g)) statIcons.add(token[1]);
+}
+assert.ok(statIcons.size > 15, `스탯 글리프가 ${statIcons.size}개뿐이다`);
+const missingStatIcons = [...statIcons].filter((name) => !fs.existsSync(path.join(imgRoot, "stat", `${name}.webp`)));
+assert.deepEqual(missingStatIcons, [], `스탯 글리프가 빠진 것 ${missingStatIcons.length}건`);
 
 const missing: string[] = [];
 for (const id of championIds) if (!fs.existsSync(path.join(out, "champion", `${id}.webp`))) missing.push(`champion/${id}`);

@@ -1,4 +1,5 @@
 import { useMemo } from "react";
+import { SPRITE_SHEETS } from "@/data/generated/spriteSheets";
 
 /**
  * 목록 화면의 아이콘을 **한 장에서 잘라 쓴다**
@@ -63,30 +64,44 @@ export interface SheetState {
 /**
  * 시트를 쓸 준비를 한다. 받아 오는 것이 없으므로 곧바로 쓸 수 있다.
  *
- * **차례는 부르는 쪽이 정하지 않는다.** 여기서 이름순으로 다시 세운다.
+ * **차례는 부르는 쪽에서 오지 않는다.** 생성기가 시트를 붙이면서 적어 둔 목록을
+ * 묶음에 심어 두고(`src/data/generated/spriteSheets.ts`) 그것을 본다.
  *
- * 예전에는 부르는 쪽이 준 차례를 그대로 자리로 삼았다. 그런데 화면이 들고 있는
- * 목록은 **보여 줄 차례**다 — 즐겨찾기가 앞에 오고 그다음은 그 나라 말 가나다순이다.
- * 시트는 id 순으로 붙어 있으니 둘이 맞을 까닭이 없었고, 실제로 어긋나 있었다.
+ * 한때는 화면이 들고 있는 목록을 그대로 자리로 삼았다. 그 목록은 **보여 줄 차례**라
+ * — 즐겨찾기가 앞에 오고 그다음은 그 나라 말 가나다순 — 시트와 맞을 까닭이 없었고
+ * 실제로 어긋나 있었다.
  *
  *   가렌 자리에 아트록스, 갈리오 자리에 아리
  *
- * 그림이 비지 않고 **다른 그림이** 나오므로 눈으로는 고장으로 안 보인다. 그래서
- * 부르는 쪽에 "같은 차례로 주십시오" 를 맡기지 않고 여기서 못 박는다. 생성기도
- * 같은 비교로 세운다(`buildSheet`).
+ * 그림이 비지 않고 **다른 그림이** 나오므로 눈으로는 고장으로 안 보인다. 양쪽을
+ * 이름순으로 맞춰 한 번 고쳤지만, 목록을 일부만 넘기면 열 수가 달라져 여전히 밀렸다.
+ * 그리고 목록을 들고 있지 않은 자리(아이템 상세·고르개)는 시트를 아예 못 썼다.
+ *
+ * 네 시트를 합쳐 13KB(gzip 4KB)다. 그만큼을 묶음에 지고 부르는 쪽은 id 만 댄다.
+ *
+ * 판본마다 한 벌만 만들어 두고 나눠 쓴다. 아이템 격자는 한 화면에 이백 칸이 넘게
+ * 그려지는데, 칸마다 868자리 표를 새로 지으면 그것이 곧 비용이다.
  */
-export function useSpriteSheet(kind: SheetKind, ddragonVersion: string, ids: readonly string[]): SheetState {
-  return useMemo(() => {
-    // 룬 아이콘만 판본 밖에 둔다. 룬 자료에 판본이 없어 부르는 쪽이 값을 모른다.
-    const base = kind === "rune" ? `${import.meta.env.BASE_URL}img` : `${import.meta.env.BASE_URL}img/${ddragonVersion}`;
-    const ordered = [...new Set(ids)].sort();
-    return {
-      url: `${base}/${kind}s.webp`,
-      index: new Map(ordered.map((id, position) => [id, position])),
-      // 생성기가 정사각에 가깝게 붙인다. 칸 수만 같으면 열 수가 저절로 맞는다.
-      cols: Math.max(1, Math.ceil(Math.sqrt(ordered.length))),
-    };
-  }, [kind, ddragonVersion, ids]);
+const sheets = new Map<string, SheetState>();
+
+export function sheetFor(kind: SheetKind, ddragonVersion: string): SheetState {
+  const key = `${kind}:${ddragonVersion}`;
+  const cached = sheets.get(key);
+  if (cached) return cached;
+  // 룬 아이콘만 판본 밖에 둔다. 룬 자료에 판본이 없어 부르는 쪽이 값을 모른다.
+  const base = kind === "rune" ? `${import.meta.env.BASE_URL}img` : `${import.meta.env.BASE_URL}img/${ddragonVersion}`;
+  const grid = SPRITE_SHEETS[kind];
+  const state: SheetState = {
+    url: `${base}/${kind}s.webp`,
+    index: new Map((grid?.ids ?? []).map((id, position) => [id, position])),
+    cols: Math.max(1, grid?.cols ?? 1),
+  };
+  sheets.set(key, state);
+  return state;
+}
+
+export function useSpriteSheet(kind: SheetKind, ddragonVersion: string): SheetState {
+  return useMemo(() => sheetFor(kind, ddragonVersion), [kind, ddragonVersion]);
 }
 
 interface SpriteIconProps {

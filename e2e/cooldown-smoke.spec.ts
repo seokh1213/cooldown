@@ -183,7 +183,7 @@ test("simulation uses compiled Ability v2 without raw spell requests", async ({ 
   const qSkill = page.getByText("Q: 파쇄격").locator("../..");
   await expect(qSkill).toContainText("사거리가 135/145/155/165/175 증가");
   await expect(qSkill).toContainText("방어력이 10/15/20/25/30% 감소");
-  await expect(qSkill.locator('img[src*="statsicon"]')).toBeVisible();
+  await expect(qSkill.locator('img.stat-icon')).toBeVisible();
   await expect(qSkill).not.toContainText("[[si:");
   await expect(qSkill).toContainText("산식 120.0");
   await page.getByLabel("Q 스킬 레벨").first().selectOption("1");
@@ -324,9 +324,9 @@ test("renders stat icons inside ability tooltips", async ({ page }) => {
   await page.getByAltText("Q").hover();
   const qTooltip = page.getByRole("tooltip");
   // 계산해 만든 스탯 항 앞에 스탯 아이콘이 붙는다
-  const statIcon = qTooltip.locator('img[src*="statsicon"]').first();
+  const statIcon = qTooltip.locator('img.stat-icon').first();
   await expect(statIcon).toBeVisible();
-  await expect(statIcon).toHaveAttribute("src", /statsicon\/scale[a-z]+\.png$/);
+  await expect(statIcon).toHaveAttribute("src", /\/img\/stat\/scale[a-z]+\.webp$/);
   // 자리 표시가 그대로 노출되면 안 된다
   await expect(qTooltip).not.toContainText("[[si:");
   // 실제로 그려졌는지 (깨진 이미지가 아닌지) 확인
@@ -355,7 +355,7 @@ test("documents game formulas in the encyclopedia", async ({ page }) => {
   await expect(page.getByText("100 / (100 + 저항력)", { exact: false }).first()).toBeVisible();
 
   // 스탯 아이콘은 여기서도 CommunityDragon 이미지로 그려진다
-  await expect(page.locator('img[src*="statsicon"]').first()).toBeVisible();
+  await expect(page.locator('img.stat-icon').first()).toBeVisible();
 
   await page.setViewportSize({ width: 390, height: 844 });
   await expect

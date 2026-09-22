@@ -105,10 +105,13 @@ jobs:
           npm run lint
           npm test
 
+      # `src/data/generated` 도 생성물이다. 시트에 무엇이 몇째 칸에 있는지를 적어 둔
+      # 파일이라, 챔피언이나 아이템이 늘면 시트와 함께 바뀐다. 여기 안 넣으면 그림만
+      # 새로 붙고 차례는 낡은 채로 나가 아이콘이 통째로 밀린다 — 화면은 조용하다.
       - name: Check for changes
         id: git-check
         run: |
-          if [[ -n "$(git status --porcelain --untracked-files=all -- public/data public/img scripts/active-tooltip-allowlist.json)" ]]; then
+          if [[ -n "$(git status --porcelain --untracked-files=all -- public/data public/img src/data/generated scripts/active-tooltip-allowlist.json)" ]]; then
             echo "changed=true" >> "$GITHUB_OUTPUT"
           fi
 
@@ -117,7 +120,7 @@ jobs:
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
-          git add public/data/ public/img/ scripts/active-tooltip-allowlist.json
+          git add public/data/ public/img/ src/data/generated/ scripts/active-tooltip-allowlist.json
           git commit -m "chore: update static data [skip ci]"
 
       - name: Build project
