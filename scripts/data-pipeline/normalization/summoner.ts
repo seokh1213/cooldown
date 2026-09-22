@@ -50,6 +50,18 @@ export function normalizeSummonerSpells(raw: unknown): NormalizedSummonerSpell[]
     id,
     key: spell.key ?? id,
     name: spell.name ?? id,
+    /*
+     * 짧은 설명을 따로 담는다.
+     *
+     * 툴팁에는 `{{ shieldduration }}` 같은 치환자가 그대로 남아 있다. 라이엇이
+     * 값을 안 채워 주고 CommunityDragon 에도 없다 — `datavalues` 가 빈 객체이고
+     * `effect` 는 전부 0 이다. 열한 주문 중 아홉이 이 꼴이라 화면에 물음표가
+     * 줄줄이 나왔다.
+     *
+     * `description` 은 값이 안 들어간 대신 깨끗하다("잠시 동안 보호막을 얻습니다").
+     * 화면은 이것을 먼저 보이고, 치환자가 없는 툴팁만 덧붙인다.
+     */
+    summary: spell.description ?? "",
     tooltip: resolveKnownTooltipTokens(
       id,
       spell.tooltip || spell.description || "",
