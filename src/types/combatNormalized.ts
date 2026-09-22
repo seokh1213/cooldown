@@ -114,6 +114,17 @@ export interface NormalizedItem extends NormalizedEntityBase {
   price: number;
   priceTotal: number;
   tags: string[];
+  /**
+   * 상점에서 통하는 별칭. Data Dragon 의 `colloq` 를 갈라 담는다.
+   *
+   * 리엇이 로케일마다 직접 채워 둔 값이라 번역이 필요 없다. 성격은 언어마다 다르다 —
+   * 한국어는 별명("똥신", "요부", "자벨"), 영어는 약어("bf", "dshield"), 중국어는
+   * 병음과 그 이니셜("sdzx", "xnfh") 이다. 중국어 이니셜은 한국어 초성 검색과 같은
+   * 장치라 같은 규칙으로 걸린다.
+   *
+   * 868개 중 한국어 151개, 중국어 148개, 영어 67개에 값이 있다.
+   */
+  aliases?: string[];
   buildsFrom: string[];
   buildsInto: string[];
   requiredChampion?: string;

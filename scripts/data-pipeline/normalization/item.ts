@@ -8,6 +8,8 @@ import { attachItemEffectDetails } from "./item-effect-details";
 
 interface RawItem {
   name?: string;
+  /** 상점 별칭. `;` 으로 이은 한 줄이다. 로케일마다 리엇이 직접 채운다. */
+  colloq?: string;
   description?: string;
   stats?: Record<string, number | undefined>;
   tags?: unknown[];
@@ -102,6 +104,11 @@ function normalizeItem(
   const availableOnMap11 = item.maps?.["11"];
   const damageEffects = compileItemDamageEffects(id, item.cdragonCalculation);
   const description = item.description ?? item.cdragon?.description;
+  /*
+   * 별칭은 `;` 으로 이어 붙인 한 줄로 온다. 앞뒤로 빈 칸이 붙기도 한다(";똥신;boots;speed").
+   * 갈라서 빈 것을 버리고 중복을 지운다. 대소문자는 검색 쪽에서 맞추므로 원문을 둔다.
+   */
+  const aliases = [...new Set((item.colloq ?? "").split(";").map((part) => part.trim()).filter(Boolean))];
   const structured = structureItemDescription(id, description);
   const normalized: NormalizedItem = {
     id,
@@ -114,6 +121,7 @@ function normalizeItem(
     priceTotal: typeof gold.total === "number" ? gold.total : 0,
     tags: [...new Set(collectTags(id, allItems, new Set()).map((tag) => tag.trim()))]
       .filter(Boolean),
+    ...(aliases.length > 0 ? { aliases } : {}),
     buildsFrom: stringsOnly(item.from),
     buildsInto: stringsOnly(item.into),
     requiredChampion: item.cdragon?.requiredChampion ?? item.requiredChampion,

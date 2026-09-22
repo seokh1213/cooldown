@@ -88,6 +88,10 @@ export function decodeNormalizedItems(value: unknown): NormalizedItemDataFile {
       ["tags", "buildsFrom", "buildsInto", "stats", "effects"],
       "normalized item"
     );
+    // 별칭은 값이 있는 아이템에만 붙는다. 있으면 문자열 목록이어야 한다.
+    if (record.aliases !== undefined && !Array.isArray(record.aliases)) {
+      throw new Error("Invalid normalized item aliases");
+    }
     if (record.damageEffects !== undefined && !Array.isArray(record.damageEffects)) {
       throw new Error("Invalid normalized item damage effects");
     }
