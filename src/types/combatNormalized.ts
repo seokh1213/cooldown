@@ -187,6 +187,13 @@ export interface NormalizedSummonerSpell {
    */
   name: string;
   /**
+   * 한 줄 설명. 치환자가 없어 언제나 그대로 보여 줄 수 있다.
+   *
+   * 툴팁에는 `{{ shieldduration }}` 같은 치환자가 남아 있는데 라이엇이 값을 안
+   * 채워 준다. 이 값은 그 대신 쓰는 깨끗한 문장이다.
+   */
+  summary?: string;
+  /**
    * 로컬라이즈된 툴팁/설명 (HTML 포함 가능, 현재 lang 기준)
    */
   tooltip: string;

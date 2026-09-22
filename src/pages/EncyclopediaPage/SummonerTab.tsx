@@ -2,21 +2,29 @@ import { useEffect, useMemo, useState } from "react";
 import { getNormalizedSummonerSpells } from "@/data/queries/gameDataQueries";
 import type { DataLocale } from "@/data/contracts/staticData";
 import type { NormalizedSummonerSpell } from "@/types/combatNormalized";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { Input } from "@/components/ui/input";
 import { useTranslation } from "@/i18n";
-import { useDeviceType } from "@/hooks/useDeviceType";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import { VisuallyHidden } from "@/components/ui/visually-hidden";
-import { Search, AlertTriangle } from "lucide-react";
+import { Search } from "lucide-react";
 import { summonerSpellIconUrl } from "@/data/assets/riotAssetUrls";
-import { htmlToPlainText } from "@/lib/htmlText";
 import { SafeInlineHtml } from "@/components/ui/safe-html";
+
+/**
+ * 소환사 주문 백과
+ *
+ * 협곡에서 쓰는 주문이 아홉이다. 그런데 화면은 목록과 상세를 좌우로 가른 꼴이라,
+ * 아홉 줄을 보려고 한 번에 하나씩 눌러야 했다. 같이 놓고 견주는 것이 이 앱이 하는
+ * 일인데 그 화면만 반대로 되어 있었다.
+ *
+ * 격자로 펼치고 **재사용 대기시간을 주인공으로** 세운다. 15초짜리 강타와 300초짜리
+ * 점멸이 한눈에 갈리고, 막대 길이가 그 차이를 그대로 보인다. 아홉 장이라 한 화면에
+ * 다 들어간다.
+ *
+ * 설명이 깨져 나오던 것도 여기서 고친다. 툴팁에는 `{{ shieldduration }}` 같은
+ * 치환자가 남아 있는데 라이엇이 값을 안 채워 준다 — `datavalues` 가 빈 객체이고
+ * `effect` 는 전부 0 이며 CommunityDragon 에도 없다. 아홉 중 일곱이 이 꼴이라
+ * 화면에 빨간 물음표가 줄줄이 나왔다. 값 없는 자리를 보이느니 깨끗한 한 줄 설명을
+ * 쓰고, 치환자가 없는 툴팁만 접어서 덧붙인다.
+ */
 
 interface SummonerTabProps {
   /** 정적 데이터 경로/캐시 키로 쓰는 Riot 공식 패치 버전 */
@@ -27,282 +35,125 @@ interface SummonerTabProps {
   lang: DataLocale;
 }
 
-function getSpellName(spell: NormalizedSummonerSpell): string {
-  return spell.name || spell.id;
+/** 값이 안 채워진 자리가 남아 있는가. 있으면 그 툴팁은 보이지 않는다. */
+function hasUnresolvedTokens(tooltip: string): boolean {
+  return /\{\{/.test(tooltip);
 }
 
-function getSpellTooltip(spell: NormalizedSummonerSpell): string {
-  return spell.tooltip || "";
+function cooldownOf(spell: NormalizedSummonerSpell): number {
+  return spell.cooldown?.[0] ?? 0;
 }
 
 export function SummonerTab({ patchVersion, sources, ddragonVersion, lang }: SummonerTabProps) {
   const { t } = useTranslation();
-  const deviceType = useDeviceType();
-  const isMobile = deviceType === "mobile";
-
   const [spells, setSpells] = useState<NormalizedSummonerSpell[] | null>(null);
-  const [loading, setLoading] = useState<boolean>(false);
-  const [search, setSearch] = useState<string>("");
-  const [selectedSpell, setSelectedSpell] = useState<NormalizedSummonerSpell | null>(
-    null
-  );
-  const [mobileDetailOpen, setMobileDetailOpen] = useState(false);
+  const [search, setSearch] = useState("");
 
   useEffect(() => {
     let cancelled = false;
-    setLoading(true);
-
-    getNormalizedSummonerSpells({ patchVersion, sources }, lang)
-      .then((data) => {
-        if (!cancelled) {
-          const classicOnly = data.filter(
-            (spell) => Array.isArray(spell.modes) && spell.modes.includes("CLASSIC")
-          );
-          const sorted = [...classicOnly].sort((a, b) =>
-            a.name.localeCompare(b.name)
-          );
-          setSpells(sorted);
-          setSelectedSpell((current) =>
-            sorted.find((spell) => spell.id === current?.id) ?? sorted[0] ?? null
-          );
-        }
-      })
-      .finally(() => {
-        if (!cancelled) {
-          setLoading(false);
-        }
-      });
-
+    getNormalizedSummonerSpells({ patchVersion, sources }, lang).then((data) => {
+      if (cancelled) return;
+      // 협곡에서 쓰는 것만 둔다. 다른 모드 전용 주문까지 섞으면 견줄 대상이 흐려진다.
+      const classic = data.filter((spell) => spell.modes?.includes("CLASSIC"));
+      // 대기시간 차례로 세운다. 이 화면에서 가장 먼저 눈에 들어와야 하는 값이다.
+      setSpells([...classic].sort((left, right) => cooldownOf(left) - cooldownOf(right)));
+    });
     return () => {
       cancelled = true;
     };
   }, [patchVersion, sources, lang]);
 
   const term = search.trim().toLowerCase();
-
   const filtered = useMemo(() => {
     if (!spells) return [];
     if (!term) return spells;
-    return spells.filter((spell) => {
-      const name = getSpellName(spell).toLowerCase();
-      const tooltip = getSpellTooltip(spell).toLowerCase();
-      return (
-        name.includes(term) || tooltip.includes(term)
-      );
-    });
+    return spells.filter((spell) =>
+      `${spell.name} ${spell.summary ?? ""}`.toLowerCase().includes(term),
+    );
   }, [spells, term]);
 
-  if (loading && !spells) {
-    return (
-      <div className="mt-4 text-sm text-muted-foreground">
-        {t.championSelector.loading}
-      </div>
-    );
+  // 막대 길이의 기준. 가장 긴 것이 꽉 차고 나머지는 그에 견준다.
+  const longest = useMemo(() => Math.max(1, ...(spells ?? []).map(cooldownOf)), [spells]);
+
+  if (!spells) {
+    return <div className="mt-4 text-sm text-muted-foreground">{t.championSelector.loading}</div>;
   }
-
-  if (!spells || spells.length === 0) {
-    return (
-      <div className="mt-4 text-sm text-muted-foreground">
-        {t.championSelector.emptyList}
-      </div>
-    );
-  }
-
-  const renderDescriptionHtml = (spell: NormalizedSummonerSpell) => {
-    /**
-     * 소환사 주문 설명/툴팁 내 {{ 변수 }} 패턴을 물음표로 치환
-     * 예: {{ shieldduration }} → ?
-     */
-    const replaceUnresolvedVariables = (text: string): string => {
-      const errorMarkup =
-        ' <span class="text-destructive dark:text-red-400">?</span> ';
-      return text.replace(/{{\s*[^}]+\s*}}/g, errorMarkup);
-    };
-
-    const html = getSpellTooltip(spell);
-    const processedHtml = replaceUnresolvedVariables(html);
-    return (
-      <SafeInlineHtml
-        className="text-xs leading-relaxed [&_br]:block"
-        html={processedHtml}
-      />
-    );
-  };
-
-  const listContent = (
-    <div className="p-2 space-y-1">
-      {filtered.map((spell) => {
-        const isSelected = selectedSpell?.id === spell.id;
-        return (
-          <button
-            key={spell.id}
-            type="button"
-            onClick={() => {
-              setSelectedSpell(spell);
-              if (isMobile) {
-                setMobileDetailOpen(true);
-              }
-            }}
-            className={`w-full flex items-center gap-2 rounded-md px-2 py-1.5 text-left transition-colors ${
-              isSelected
-                ? "bg-primary/10 border border-primary/60"
-                : "hover:bg-muted/60 border border-transparent"
-            }`}
-          >
-            <img
-              src={summonerSpellIconUrl(ddragonVersion, spell.iconPath)}
-              alt={getSpellName(spell)}
-              loading="lazy"
-              decoding="async"
-              width={32}
-              height={32}
-              className="w-8 h-8 rounded-md border border-border/60 bg-black/40 shrink-0"
-            />
-            <div className="flex-1 min-w-0">
-              <div className="flex items-center justify-between gap-2">
-                <span className="text-xs font-semibold truncate">
-                  {getSpellName(spell)}
-                </span>
-                <span className="text-[11px] text-muted-foreground whitespace-nowrap">
-                  {spell.cooldown && spell.cooldown.length > 0
-                    ? `${spell.cooldown[0]}${t.common.seconds}`
-                    : ""}
-                </span>
-              </div>
-              <div className="mt-0.5 text-[11px] text-muted-foreground line-clamp-2">
-                {htmlToPlainText(spell.tooltip || "")}
-              </div>
-            </div>
-          </button>
-        );
-      })}
-    </div>
-  );
-
-  const detailContent =
-    selectedSpell && (
-      <div className="flex flex-col gap-2 h-full min-h-0">
-        <div className="flex items-start gap-3">
-          <img
-            src={summonerSpellIconUrl(ddragonVersion, selectedSpell.iconPath)}
-            alt={getSpellName(selectedSpell)}
-            loading="lazy"
-            decoding="async"
-            width={40}
-            height={40}
-            className="w-10 h-10 rounded-md border border-border/60 bg-black/40 shrink-0"
-          />
-          <div className="flex-1 min-w-0">
-            <div className="flex items-center justify-between gap-2">
-              <div className="text-sm font-semibold truncate">
-                {getSpellName(selectedSpell)}
-              </div>
-              {selectedSpell.cooldown && selectedSpell.cooldown.length > 0 && (
-                <div className="text-xs text-muted-foreground whitespace-nowrap">
-                  {t.common.rechargeTime}: {selectedSpell.cooldown[0]}
-                  {t.common.seconds}
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-
-        <ScrollArea className="flex-1 min-h-0 mt-2">
-          <div className="pr-3">
-            <div className="rounded-md border border-border/70 bg-card px-3 py-2 space-y-1.5">
-              {renderDescriptionHtml(selectedSpell)}
-              <div className="text-xs text-muted-foreground/80 italic leading-relaxed border-t pt-3 mt-3 flex items-center gap-1.5">
-                <AlertTriangle className="w-2.5 h-2.5 text-yellow-600 dark:text-yellow-500 shrink-0" />
-                <span>{t.encyclopedia.runes.warning}</span>
-              </div>
-            </div>
-          </div>
-        </ScrollArea>
-      </div>
-    );
-
-  if (isMobile) {
-    return (
-      <div className="mt-4 space-y-3">
-        <div className="relative group">
-          <Search
-            className="absolute left-2 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground pointer-events-none transition-colors group-focus-within:text-primary"
-          />
-          <Input
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            placeholder={t.encyclopedia.summoner.searchPlaceholder}
-            className="h-9 pl-7 text-xs border-neutral-400 focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-primary"
-          />
-        </div>
-
-        <div className="rounded-md border bg-card/40 max-h-[50vh]">
-          <ScrollArea className="h-[50vh]">{listContent}</ScrollArea>
-        </div>
-
-        <Dialog
-          open={mobileDetailOpen && !!selectedSpell}
-          onOpenChange={(open) => {
-            if (!open) {
-              setMobileDetailOpen(false);
-            }
-          }}
-        >
-          <DialogContent className="w-[calc(100vw-32px)] max-w-lg max-h-[70vh] h-[70vh] p-0 rounded-xl overflow-hidden flex flex-col">
-            <VisuallyHidden>
-              <DialogTitle>{selectedSpell?.name ?? "Summoner Spell"}</DialogTitle>
-              <DialogDescription>
-                {selectedSpell?.name ?? "Summoner Spell"}
-              </DialogDescription>
-            </VisuallyHidden>
-            <div className="flex-1 min-h-0 overflow-y-auto">
-              <div className="p-4">{detailContent}</div>
-            </div>
-          </DialogContent>
-        </Dialog>
-      </div>
-    );
+  if (spells.length === 0) {
+    return <div className="mt-4 text-sm text-muted-foreground">{t.championSelector.emptyList}</div>;
   }
 
   return (
-    <div className="mt-4 space-y-3">
-      <div className="flex items-center justify-between gap-2">
-        <div className="text-sm font-semibold">
-          {t.encyclopedia.tabs.summoner}
-        </div>
-        <div className="relative w-full sm:w-52 md:w-64 group">
-          <Search
-            className="absolute left-2 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none transition-colors group-focus-within:text-primary"
-          />
+    <div className="mt-4 space-y-3" data-summoner-tab>
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <div className="text-sm font-semibold">{t.encyclopedia.tabs.summoner}</div>
+        <div className="group relative w-full sm:w-64">
+          <Search aria-hidden="true" className="pointer-events-none absolute left-2 top-1/2 size-4 -translate-y-1/2 text-muted-foreground transition-colors group-focus-within:text-primary" />
           <Input
             value={search}
-            onChange={(e) => setSearch(e.target.value)}
+            onChange={(event) => setSearch(event.target.value)}
             placeholder={t.encyclopedia.summoner.searchPlaceholder}
-            className="h-8 pl-8 text-xs md:text-sm w-full border-neutral-400 focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-primary"
+            className="h-8 w-full pl-8 text-xs md:text-sm"
           />
         </div>
       </div>
 
-      <div className="rounded-md border bg-card/40 md:h-[calc(100vh-12rem)] flex flex-col md:flex-row">
-        <div className="md:flex-1 md:border-r border-border/60 flex flex-col min-w-0 min-h-0">
-          <div className="px-3 py-2 border-b border-border/60 flex items-center justify-between shrink-0">
-            <div className="text-[11px] font-semibold text-muted-foreground">
-              {t.encyclopedia.summoner.listTitle}
-            </div>
-          </div>
-          <ScrollArea className="flex-1 min-h-0">{listContent}</ScrollArea>
-        </div>
+      <div className="grid gap-3 [grid-template-columns:repeat(auto-fill,minmax(260px,1fr))]">
+        {filtered.map((spell) => {
+          const cooldown = cooldownOf(spell);
+          const tooltip = spell.tooltip ?? "";
+          const showTooltip = tooltip.length > 0 && !hasUnresolvedTokens(tooltip);
+          return (
+            <article key={spell.id} data-summoner-spell={spell.id} className="rounded-lg border bg-card p-3">
+              <div className="flex items-start gap-3">
+                <img
+                  src={summonerSpellIconUrl(ddragonVersion, spell.iconPath)}
+                  alt=""
+                  width={40}
+                  height={40}
+                  loading="lazy"
+                  className="size-10 shrink-0 rounded-md border border-border/60 bg-black/40"
+                />
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-baseline justify-between gap-2">
+                    <h3 className="truncate text-sm font-semibold">{spell.name}</h3>
+                    {/* 대기시간이 주인공이다. 숫자를 크게, 단위를 작게. */}
+                    <span className="shrink-0 tabular-nums">
+                      <span className="text-base font-semibold">{cooldown}</span>
+                      <span className="ml-0.5 text-[11px] text-muted-foreground">{t.common.seconds}</span>
+                    </span>
+                  </div>
+                  {/*
+                    막대는 길이만으로 말한다. 색을 쓰면 주문마다 뜻이 있는 것처럼 읽히는데
+                    여기서 가르는 것은 길고 짧음 하나뿐이다.
+                  */}
+                  <div className="mt-1.5 h-1 w-full overflow-hidden rounded-full bg-muted" aria-hidden="true">
+                    <div className="h-full rounded-full bg-foreground/40" style={{ width: `${(cooldown / longest) * 100}%` }} />
+                  </div>
+                </div>
+              </div>
 
-        <div className="md:w-[340px] hidden md:flex flex-col p-3 min-h-0">
-          {selectedSpell ? (
-            detailContent
-          ) : (
-            <div className="text-xs text-muted-foreground h-full flex items-center justify-center text-center px-4">
-              {t.encyclopedia.summoner.detailEmpty}
-            </div>
-          )}
-        </div>
+              <p className="mt-2.5 text-xs leading-relaxed text-muted-foreground">
+                {spell.summary || spell.name}
+              </p>
+
+              {showTooltip && (
+                <details className="mt-2">
+                  <summary className="cursor-pointer text-[11px] text-muted-foreground hover:text-foreground">
+                    {t.itemDetail.original}
+                  </summary>
+                  <SafeInlineHtml className="mt-1.5 block text-xs leading-relaxed [&_br]:block" html={tooltip} />
+                </details>
+              )}
+            </article>
+          );
+        })}
       </div>
+
+      {filtered.length === 0 && (
+        <p role="status" className="py-6 text-sm text-muted-foreground">{t.championSelector.noResults}</p>
+      )}
+
+      <p className="text-[11px] text-muted-foreground">{t.encyclopedia.runes.warning}</p>
     </div>
   );
 }
