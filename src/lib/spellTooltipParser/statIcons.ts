@@ -12,13 +12,16 @@
  * 서비스워커가 맡지 못해 볼 때마다 밖으로 나갔고, 그쪽이 흔들리면 툴팁의 계수 항이
  * 통째로 빈다. 스물다섯 장에 6KB뿐이라 함께 받아 둔다.
  *
- * 판본 밖에 둔다. 패치별 자료가 아니라 UI 글리프라 값이 바뀌지 않는다.
+ * 주소에 판본을 넣는다. 그림은 패치를 타지 않지만, 주소가 그대로면 서비스워커가
+ * CacheFirst 로 영영 붙잡아 내용이 바뀌어도 새 그림이 안 온다. 실제로 그랬다.
  *
  * 주소를 상수가 아니라 함수로 짓고 바탕 경로가 없을 때를 둔다. 이 파일은 시험이
  * Node 에서도 부르는데 거기에는 `import.meta.env` 가 없다. 시험이 보는 것은 `<img>`
  * 를 만들었는지 여부이지 주소가 아니다.
  */
-const ICON_BASE = () => `${(import.meta.env as ImportMetaEnv | undefined)?.BASE_URL ?? "/"}img/stat/`;
+const ICON_BASE = () => `${(import.meta.env as ImportMetaEnv | undefined)?.BASE_URL ?? "/"}img/${IMAGE_VERSION}/stat/`;
+
+import { IMAGE_VERSION } from "@/data/generated/assetVersion";
 
 /**
  * 아이콘 자리 표시.

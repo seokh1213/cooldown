@@ -11,6 +11,8 @@
  * 스플래시 아트만 그대로 Data Dragon 을 본다. 한 장이 수백 KB 이고 스킨마다 따로라,
  * 줄여 두는 값보다 저장소에 쌓이는 값이 크다.
  */
+import { IMAGE_VERSION } from "@/data/generated/assetVersion";
+
 const local = (ddragonVersion: string, kind: string, name: string) =>
   `${import.meta.env.BASE_URL}img/${ddragonVersion}/${kind}/${name}.webp`;
 
@@ -67,4 +69,4 @@ export const runeIconKey = (iconPath: string) =>
   iconPath.replace(/^\/lol-game-data\/assets\/v1\//, "").replace(/^\//, "").replace(/\.png$/, "");
 
 export const runeIconUrl = (iconPath: string) =>
-  `${import.meta.env.BASE_URL}img/runes/${runeIconKey(iconPath)}.webp`;
+  `${import.meta.env.BASE_URL}img/${IMAGE_VERSION}/runes/${runeIconKey(iconPath)}.webp`;

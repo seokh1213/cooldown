@@ -14,6 +14,7 @@ import { formIconKey, runeIconKey } from "../src/data/assets/riotAssetUrls";
 import { FORMULA_GROUPS } from "../src/data/gameFormulas";
 import { STAT_DEFINITIONS } from "../src/types/combatStats";
 import { RUNE_TREE_META } from "../src/data/mappers/runeMapper";
+import { IMAGE_VERSION } from "../src/data/generated/assetVersion";
 
 const root = process.cwd();
 const dataDir = path.join(root, "public/data");
@@ -27,17 +28,21 @@ const out = path.join(imgRoot, release.sources.ddragon);
 assert.ok(fs.existsSync(out), `썸네일 폴더가 없다: ${out}. \`npm run generate-thumbnails\` 를 돌려야 한다`);
 
 /*
- * `runes` 와 `stat` 은 판본 밖에 두는 자리다. 시트 파일도 여기 있다.
+ * 그림 주소에는 **늘 판본이 들어간다.**
  *
- * 룬은 자료에 판본이 안 들어 있어 부르는 쪽이 값을 모르고, 스탯 글리프는 패치별
- * 자료가 아니라 UI 그림이라 값이 안 바뀐다. 둘 다 낡은 것으로 세지 않는다.
+ * 한때 룬과 스탯 글리프만 판본 밖에 두었다. 그랬더니 내용이 바뀌어도 주소가 그대로라
+ * 서비스워커가 옛 그림을 영영 쥐고 있었다. 예외가 없어야 그 일이 안 생기므로, 판본
+ * 폴더 말고 다른 것이 남아 있으면 잡는다.
  */
-const stale = fs
-  .readdirSync(imgRoot)
-  .filter(
-    (entry) =>
-      entry !== release.sources.ddragon && entry !== "runes" && entry !== "stat" && !entry.startsWith("runes."),
-  );
+const stale = fs.readdirSync(imgRoot).filter((entry) => entry !== release.sources.ddragon);
+
+/*
+ * 묶음이 아는 판본과 그림이 놓인 판본이 같아야 한다.
+ *
+ * 스탯 글리프처럼 React 밖에서 주소를 짓는 자리는 이 값을 보고 판본을 채운다. 둘이
+ * 어긋나면 그 그림만 404 가 되는데, 화면은 빈 칸을 그릴 뿐 아무 말도 안 한다.
+ */
+assert.equal(IMAGE_VERSION, release.sources.ddragon, "묶음이 아는 그림 판본이 자료와 다르다");
 assert.deepEqual(stale, [], "지난 판본 썸네일이 남아 있다. 저장소가 패치마다 불어난다");
 
 const championIds = fs
@@ -130,13 +135,13 @@ for (const id of championIds) {
   for (const token of raw.matchAll(/\[\[si:([a-z]+)]]/g)) statIcons.add(token[1]);
 }
 assert.ok(statIcons.size > 15, `스탯 글리프가 ${statIcons.size}개뿐이다`);
-const missingStatIcons = [...statIcons].filter((name) => !fs.existsSync(path.join(imgRoot, "stat", `${name}.webp`)));
+const missingStatIcons = [...statIcons].filter((name) => !fs.existsSync(path.join(out, "stat", `${name}.webp`)));
 assert.deepEqual(missingStatIcons, [], `스탯 글리프가 빠진 것 ${missingStatIcons.length}건`);
 
 const missing: string[] = [];
 for (const id of championIds) if (!fs.existsSync(path.join(out, "champion", `${id}.webp`))) missing.push(`champion/${id}`);
 for (const id of itemIds) if (!fs.existsSync(path.join(out, "item", `${id}.webp`))) missing.push(`item/${id}`);
-for (const key of runeKeys) if (!fs.existsSync(path.join(imgRoot, "runes", `${key}.webp`))) missing.push(`runes/${key}`);
+for (const key of runeKeys) if (!fs.existsSync(path.join(out, "runes", `${key}.webp`))) missing.push(`runes/${key}`);
 for (const name of summonerIcons) if (!fs.existsSync(path.join(out, "summoner", `${name}.webp`))) missing.push(`summoner/${name}`);
 for (const name of new Set(abilityIcons)) if (!fs.existsSync(path.join(out, "spell", `${name}.webp`))) missing.push(`spell/${name}`);
 for (const name of new Set(passiveIcons)) if (!fs.existsSync(path.join(out, "passive", `${name}.webp`))) missing.push(`passive/${name}`);
@@ -170,7 +175,7 @@ for (const [kind, source, dir] of [
   ["item", itemIds, out],
   // 룬 시트는 판본 밖에 있다. 넷 다 이름 차례로 붙고, 화면도 같은 비교로 센다.
   ["summoner", summonerIcons, out],
-  ["rune", runeKeys, imgRoot],
+  ["rune", runeKeys, out],
 ] as const) {
   /*
    * 차례는 **이름순**이다.

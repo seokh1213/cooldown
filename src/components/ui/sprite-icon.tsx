@@ -1,5 +1,6 @@
 import { useMemo } from "react";
 import { SPRITE_SHEETS } from "@/data/generated/spriteSheets";
+import { IMAGE_VERSION } from "@/data/generated/assetVersion";
 
 /**
  * 목록 화면의 아이콘을 **한 장에서 잘라 쓴다**
@@ -88,8 +89,8 @@ export function sheetFor(kind: SheetKind, ddragonVersion: string): SheetState {
   const key = `${kind}:${ddragonVersion}`;
   const cached = sheets.get(key);
   if (cached) return cached;
-  // 룬 아이콘만 판본 밖에 둔다. 룬 자료에 판본이 없어 부르는 쪽이 값을 모른다.
-  const base = kind === "rune" ? `${import.meta.env.BASE_URL}img` : `${import.meta.env.BASE_URL}img/${ddragonVersion}`;
+  // 룬 시트도 판본 자리 안이다. 룬 자료에 판본이 없어 부르는 쪽이 비워 보내면 여기서 채운다.
+  const base = `${import.meta.env.BASE_URL}img/${ddragonVersion || IMAGE_VERSION}`;
   const grid = SPRITE_SHEETS[kind];
   const state: SheetState = {
     url: `${base}/${kind}s.webp`,

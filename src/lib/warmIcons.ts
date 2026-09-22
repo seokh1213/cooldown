@@ -75,13 +75,9 @@ export function warmIcons(ddragonVersion: string): void {
      * 거치므로 받은 것은 `cooldown-icons-v1` 에 들어간다(실측 확인).
      */
     const base = import.meta.env.BASE_URL;
-    // 룬만 판본 밖에 있다. 룬 자료에 판본이 안 들어 있어 부르는 쪽이 값을 모른다.
-    const sheets = [
-      `${base}img/${ddragonVersion}/champions.webp`,
-      `${base}img/${ddragonVersion}/items.webp`,
-      `${base}img/${ddragonVersion}/summoners.webp`,
-      `${base}img/runes.webp`,
-    ];
+    const sheets = ["champions", "items", "summoners", "runes"].map(
+      (kind) => `${base}img/${ddragonVersion}/${kind}.webp`,
+    );
     for (const sheet of sheets) {
       const link = document.createElement("link");
       link.rel = "prefetch";

@@ -23,10 +23,11 @@ const GAME_HTML_POLICY: Config = {
    * 나가지 않는다.
    *
    * 예전에는 CommunityDragon 주소만 허용했다. 스탯 글리프를 우리 자리로 옮기면서
-   * 주소가 `/<바탕>/img/stat/...` 가 되었는데, 이 규칙을 같이 안 고쳤더니 DOMPurify
-   * 가 `src` 를 통째로 지워 툴팁의 계수 항 아이콘이 빈 칸으로 나갔다.
+   * 주소가 `/<바탕>/img/<판본>/stat/...` 가 되었는데, 이 규칙을 같이 안 고쳤더니
+   * DOMPurify 가 `src` 를 통째로 지워 툴팁의 계수 항 아이콘이 빈 칸으로 나갔다.
+   * 판본을 넣을 때 또 한 번 같은 일을 겪었다 — 이 줄은 주소를 바꿀 때마다 같이 본다.
    */
-  ALLOWED_URI_REGEXP: /^[^:]*\/img\/stat\//,
+  ALLOWED_URI_REGEXP: /^[^:]*\/img\/[^:]*\/stat\//,
 };
 
 interface SafeHtmlProps {

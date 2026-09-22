@@ -181,8 +181,8 @@ for (const [tab, sheet, scope] of [
 ] as const) {
   test(`${tab} sprites point at the right cell`, async ({ page }) => {
     const release = decodeDataManifest(JSON.parse(readFileSync(new URL("../public/data/version.json", import.meta.url), "utf8")));
-    // 룬 시트만 판본 밖에 있다. 룬 자료에 판본이 안 들어 있기 때문이다.
-    const at = sheet === "runes" ? `../public/img/${sheet}.json` : `../public/img/${release.sources.ddragon}/${sheet}.json`;
+    // 네 시트 모두 판본 자리 안이다. 주소가 판본을 타야 캐시가 옛 그림을 안 붙잡는다.
+    const at = `../public/img/${release.sources.ddragon}/${sheet}.json`;
     const { cols, ids } = JSON.parse(readFileSync(new URL(at, import.meta.url), "utf8")) as { cols: number; ids: string[] };
     await page.goto(`./encyclopedia?tab=${tab}`);
     const icons = page.locator(`${scope}[data-sprite]`);
