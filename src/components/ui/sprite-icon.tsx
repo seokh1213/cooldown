@@ -20,7 +20,7 @@ import { useMemo } from "react";
  * 전체를 받을 까닭이 없다.
  */
 
-export type SheetKind = "champion" | "item" | "rune";
+export type SheetKind = "champion" | "item" | "rune" | "summoner";
 
 /*
  * 시트에 박힌 칸 크기는 챔피언 96px, 아이템·룬 64px 다

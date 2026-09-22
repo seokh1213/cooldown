@@ -27,6 +27,10 @@ import { RUNE_TREE_META } from "../src/data/mappers/runeMapper";
 const CHAMPION_SIZE = 96;
 /** 아이템은 원본이 64px 다. 표시 자리는 32px 안팎이라 64px 를 유지한다. */
 const ITEM_SIZE = 64;
+/** 소환사 주문 아이콘. 백과에서 40px 로 쓴다. */
+const SUMMONER_SIZE = 64;
+/** 챔피언 스킬·패시브 아이콘. VS 표에서 32px, 상세에서 40px 로 쓴다. */
+const ABILITY_SIZE = 64;
 /**
  * 룬 아이콘은 원본이 가장 무겁다. 25장에 854KB 로 한 장에 34KB 다.
  *
@@ -141,7 +145,47 @@ async function generateThumbnails() {
   for (const entry of await readdir(imgRoot).catch(() => [])) {
     if (entry !== ddragon && entry !== "runes") await rm(path.join(imgRoot, entry), { recursive: true, force: true });
   }
+  /*
+   * 소환사 주문 아이콘.
+   *
+   * 백과 네 탭 중 이것만 아직 Data Dragon 을 직접 보고 있었다. 서른네 장이라
+   * 시트로 붙이면 한 건이 된다. 파일 이름이 그대로 열쇠다("SummonerBarrier.png").
+   */
+  const summonerFile = path.join(directory, release.patchVersion, "summoner-normalized-ko_KR.json");
+  const summonerIcons = [
+    ...new Set(
+      (JSON.parse(await readFile(summonerFile, "utf8")) as { spells: Array<{ iconPath?: string }> }).spells
+        .map((spell) => (spell.iconPath ?? "").replace(/\.png$/, ""))
+        .filter(Boolean),
+    ),
+  ].sort();
+
+  /*
+   * 챔피언 스킬·패시브 아이콘.
+   *
+   * 마지막까지 Data Dragon 을 직접 보던 것이다. 시트로 묶지는 않는다 — VS 표와 상세
+   * 화면은 한 번에 다섯에서 여덟 장만 쓰므로, 팔백예순다섯 장을 한 장에 붙이면 안 볼
+   * 것까지 받게 된다. 낱장으로 두면 서비스워커가 본 것만 담는다.
+   */
+  const abilityIcons = new Set<string>();
+  const passiveIcons = new Set<string>();
+  for (const id of championIds) {
+    const champion = (JSON.parse(await readFile(path.join(championDir, `${id}.json`), "utf8")) as {
+      champion?: { abilities?: Record<string, { id?: string; iconFile?: string }> };
+    }).champion;
+    for (const [slot, ability] of Object.entries(champion?.abilities ?? {})) {
+      if (slot === "P") {
+        if (ability?.iconFile) passiveIcons.add(ability.iconFile.replace(/\.png$/, ""));
+      } else if (ability?.id) {
+        abilityIcons.add(ability.id);
+      }
+    }
+  }
+
   await mkdir(path.join(out, "champion"), { recursive: true });
+  await mkdir(path.join(out, "summoner"), { recursive: true });
+  await mkdir(path.join(out, "spell"), { recursive: true });
+  await mkdir(path.join(out, "passive"), { recursive: true });
   await mkdir(path.join(out, "item"), { recursive: true });
 
   const jobs: Job[] = [
@@ -154,6 +198,21 @@ async function generateThumbnails() {
       url: `https://ddragon.leagueoflegends.com/cdn/${ddragon}/img/item/${item.id}.png`,
       file: path.join(out, "item", `${item.id}.webp`),
       size: ITEM_SIZE,
+    })),
+    ...[...abilityIcons].map((name) => ({
+      url: `https://ddragon.leagueoflegends.com/cdn/${ddragon}/img/spell/${name}.png`,
+      file: path.join(out, "spell", `${name}.webp`),
+      size: ABILITY_SIZE,
+    })),
+    ...[...passiveIcons].map((name) => ({
+      url: `https://ddragon.leagueoflegends.com/cdn/${ddragon}/img/passive/${name}.png`,
+      file: path.join(out, "passive", `${name}.webp`),
+      size: ABILITY_SIZE,
+    })),
+    ...summonerIcons.map((name) => ({
+      url: `https://ddragon.leagueoflegends.com/cdn/${ddragon}/img/spell/${name}.png`,
+      file: path.join(out, "summoner", `${name}.webp`),
+      size: SUMMONER_SIZE,
     })),
     ...runePaths.map((iconPath) => ({
       url: `https://ddragon.leagueoflegends.com/cdn/img/${runeKey(iconPath)}.png`,
@@ -183,6 +242,7 @@ async function generateThumbnails() {
    */
   const sheets = [
     await buildSheet("champion", championIds, CHAMPION_SIZE, out, QUALITY),
+    await buildSheet("summoner", summonerIcons, SUMMONER_SIZE, out, QUALITY),
     // 룬은 판본 밖 자리에 모인다. 칸 이름도 경로를 눕힌 꼴이라 따로 넘긴다.
     await buildSheet("rune", runePaths.map(runeKey), RUNE_SIZE, runeOut, QUALITY, imgRoot),
     /*
@@ -195,7 +255,7 @@ async function generateThumbnails() {
     await buildSheet("item", items.map((item) => item.id), ITEM_SIZE, out, 70),
   ];
   const mb = (bytes: number) => `${(bytes / 1024 / 1024).toFixed(1)}MB`;
-  console.log(`썸네일 ${jobs.length}장 (챔피언 ${championIds.length} · 아이템 ${items.length} · 룬 ${runePaths.length})`);
+  console.log(`썸네일 ${jobs.length}장 (챔피언 ${championIds.length} · 아이템 ${items.length} · 룬 ${runePaths.length} · 소환사 주문 ${summonerIcons.length} · 스킬 ${abilityIcons.size} · 패시브 ${passiveIcons.size})`);
   console.log(`  원본 ${mb(bytesIn)} → ${mb(bytesOut)} (${Math.round((1 - bytesOut / bytesIn) * 100)}% 절감)`);
   console.log(`  ${out}`);
   for (const sheet of sheets) {
