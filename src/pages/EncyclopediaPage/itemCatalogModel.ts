@@ -2,6 +2,7 @@ import Hangul from "hangul-js";
 import type { Translations } from "@/i18n/translations";
 import type { NormalizedItem } from "@/types/combatNormalized";
 import { STAT_DEFINITIONS, type StatContribution, StatKey } from "@/types/combatStats";
+import { STAT_LABEL_ICONS } from "@/data/generated/statLabelIcons";
 import { getOfficialLikeItemTier, type ItemTier } from "@/lib/itemTierUtils";
 
 export type Item = NormalizedItem;
@@ -44,47 +45,18 @@ export function getItemPriceLabel(item: Item, t: Translations): string {
 /**
  * 능력치 줄에 붙일 스탯 글리프
  *
- * 스킬 툴팁은 "60% 공격력" 앞에 검 모양을 붙여 어떤 스탯인지 한눈에 보이게 한다.
- * 아이템 능력치 줄도 같은 값을 말하는데 글자만 있었다.
+ * 표는 빌드 때 만든다(`scripts/generate-stat-label-icons.ts`). 줄은 라이엇이 준
+ * 그 나라 말 문장이라 스탯 코드가 안 붙어 있는데, 이름을 언어마다 손으로 적으면
+ * 세 벌을 지어내야 하고 라이엇이 말을 바꾸면 조용히 어긋난다. 생성기는 같은
+ * 아이템의 같은 줄 번호로 세 언어를 잇고, 우리 저장소에 이미 적혀 있는 이름과
+ * 맞춰 글리프를 단다.
  *
- *   체력 150 / 방어력 8 / 마법 저항력 8
- *
- * 줄은 라이엇이 준 그 나라 말 문장이라 스탯 코드가 붙어 있지 않다. 이름을 언어마다
- * 손으로 적을 수도 있지만 그러면 세 벌을 지어내야 하고, 지어낸 이름은 라이엇이 말을
- * 바꾸는 순간 조용히 어긋난다.
- *
- * 대신 **자료에서 짝을 뽑는다.** 능력치 줄이 하나이고 스탯도 하나인 아이템은 그
- * 둘이 서로를 가리킨다 — 장화는 `["이동 속도 25"]` 와 `[MOVE_SPEED]` 다. 이런
- * 아이템만 모으면 라이엇이 쓰는 그 나라 말 이름이 그대로 나오고, 세 언어에서
- * 충돌이 한 건도 없다(각 8종 확정).
- *
- * 줄이 여럿인 아이템으로 셈을 넓혀 보니 오히려 틀렸다. 수치가 같은 줄끼리 엮여
- * "방어구 관통력" 이 공격력이 되고 "모든 피해 흡혈" 이 이동 속도가 됐다. 값은
- * 겹치기 때문에 근거가 못 된다.
- *
- * 그래서 짝을 못 찾는 줄에는 아무 그림도 붙이지 않는다. 스킬 가속·강인함·관통력은
- * ddragon 의 아이템 능력치 묶음에 아예 안 실려 근거가 없다.
+ * 찾을 때는 **이름이 똑같을 때만** 붙인다. 들어 있는지로 보면 "기본 체력 재생" 에
+ * "체력" 글리프가 붙는다 — 표를 지을 때 이미 가장 긴 이름으로 가려 두었으므로
+ * 여기서 다시 헤아릴 까닭이 없다.
  */
-export function buildStatLabelIcons(items: Iterable<Item>): Map<string, string> {
-  const byLabel = new Map<string, StatKey>();
-  const conflicting = new Set<string>();
-  for (const item of items) {
-    const lines = item.statDescriptions ?? [];
-    const stats = (item.stats ?? []) as StatContribution[];
-    if (lines.length !== 1 || stats.length !== 1) continue;
-    const label = statLineLabel(lines[0]);
-    if (!label) continue;
-    const known = byLabel.get(label);
-    if (known && known !== stats[0].stat) conflicting.add(label);
-    else byLabel.set(label, stats[0].stat);
-  }
-  const icons = new Map<string, string>();
-  for (const [label, stat] of byLabel) {
-    if (conflicting.has(label)) continue;
-    const icon = STAT_DEFINITIONS[stat]?.icon;
-    if (icon) icons.set(label, icon);
-  }
-  return icons;
+export function statLineIcon(line: string, lang: string): string | undefined {
+  return STAT_LABEL_ICONS[lang]?.[statLineLabel(line)];
 }
 
 /** 능력치 줄에서 수치와 표시를 걷어낸 이름. "공격력 <span>10</span>" → "공격력" */
@@ -94,17 +66,6 @@ function statLineLabel(line: string): string {
     .replace(/[\d.,%+-]+/g, " ")
     .replace(/\s+/g, " ")
     .trim();
-}
-
-/** 줄이 말하는 스탯의 글리프. 긴 이름을 먼저 본다 — "체력" 은 "체력 재생" 안에도 있다. */
-export function statLineIcon(line: string, icons: ReadonlyMap<string, string>): string | undefined {
-  const plain = statLineLabel(line);
-  let best: { length: number; icon: string } | undefined;
-  for (const [label, icon] of icons) {
-    if (!plain.includes(label)) continue;
-    if (!best || label.length > best.length) best = { length: label.length, icon };
-  }
-  return best?.icon;
 }
 
 export function getItemStatLines(item: Item, locale: string): string[] {

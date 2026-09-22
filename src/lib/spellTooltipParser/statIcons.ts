@@ -28,8 +28,9 @@ const ICON_BASE = () => `${(import.meta.env as ImportMetaEnv | undefined)?.BASE_
  */
 const STAT_ICON_TOKEN = /\[\[si:([a-z]+)]]/g;
 
-const ICON_CLASS =
-  "stat-icon inline-block h-[1em] w-[1em] align-[-0.15em] mr-[0.15em]";
+// 크기와 세로 자리는 `img.stat-icon` 이 정한다(`src/index.css`). 여기서 또 적으면
+// 두 곳이 서로 다른 값을 들고 있게 된다.
+const ICON_CLASS = "stat-icon inline-block mr-[0.15em]";
 
 export function statIconToken(icon: string | undefined): string {
   return icon ? `[[si:${icon}]]` : "";
