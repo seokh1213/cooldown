@@ -59,6 +59,7 @@ import {
   type SpellFocus,
 } from "@/lib/advisor/answer";
 import { nicknames } from "@/lib/advisor/intent";
+import { parseRoute, routePrompt, type AskRoute } from "@/lib/advisor/routeAsk";
 import { findMentionedRules } from "../../../../scripts/llm/lib/rules";
 import type { ChampionCard } from "../../../../scripts/llm/lib/facts";
 import { championIconUrl, itemIconUrl } from "@/data/assets/riotAssetUrls";
@@ -389,11 +390,30 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
    * 아이템·게임 규칙 → 맥락 챔피언(대화, 화면) → 검색 폴백.
    * 오타를 고쳐 다시 들어올 수 있어 submit 과 분리했다.
    */
-  const ask = (question: string, notice?: string) => {
+  const ask = async (question: string, notice?: string) => {
     const system = advisorSystemPrompt(lang);
     if (!data) {
       advisor.send(question, system, undefined, copy.noModel);
       return;
+    }
+
+    /*
+     * 0. 질문이 무엇을 묻는지 **모델에게** 가리게 한다.
+     *
+     * 아래 규칙들은 전부 한국어 낱말 목록이다. 세 언어로 재 보니 한국어 5/6,
+     * 영어 1/6, 중국어 1/6 이었다 — 영어·중국어 사용자에게는 거의 아무것도 못 가린다.
+     * 같은 문항을 모델에 물으니 4B 가 17/18 이다.
+     *
+     * 실패하거나 모델이 없으면 `undefined` 로 두고 예전 규칙이 돈다. 낱말 목록을
+     * 지우지 않는 까닭이 이것이다 — 모델을 안 받은 사용자에게도 답은 나와야 한다.
+     */
+    let route: AskRoute | undefined;
+    if (canUseModel && advisor.consented) {
+      const named = detectChampions(data, question);
+      route = await advisor
+        .classify(routePrompt(named.map((card) => card.name)), question)
+        .then((reply) => parseRoute(reply, named))
+        .catch(() => undefined);
     }
 
     // 1. 룬·주문 판정. 함께 나온 다른 규칙 이름이 든 문장이 답이다.
@@ -417,7 +437,7 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
       const typo = suggestChampions(question, data.cards, nicknames(data.cards), known);
       if (typo?.candidates.length === 1) {
         const [card] = typo.candidates;
-        ask(question.replace(typo.original, card.name), fill(copy.card.understoodAs, { name: card.name }));
+        void ask(question.replace(typo.original, card.name), fill(copy.card.understoodAs, { name: card.name }));
         return;
       }
       if (typo && typo.candidates.length > 1) {
@@ -432,7 +452,7 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
     const recent = recentChampions();
     // "말파이트 상대법" 은 그 챔피언의 공략을 달라는 말이다. 앞 대화에 다른 챔피언이
     // 있다고 짝을 지으면 묻지 않은 상성이 된다. 그때는 아래 챔피언 경로로 내려간다.
-    if (champions.length === 1 && asksMatchup(question) && !asksGuide(question)) {
+    if (champions.length === 1 && (route ? route.kind === "matchup" : asksMatchup(question) && !asksGuide(question))) {
       const mine = recent.find((card) => card.id !== champions[0].id);
       if (mine) {
         deliverMatchup(question, mine, champions[0], usedNotice);
@@ -447,8 +467,12 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
      * 상대를 먼저 말하면 통째로 뒤집혔다 — "럼블 상대로 오공 하는데" 가 럼블 시점이
      * 됐다. 열 문장으로 재 보니 어순은 4/10, 조사는 9/10 이다.
      */
-    if (champions.length === 2 && asksMatchup(question)) {
-      const [mine, enemy] = matchupSides(question, champions);
+    if (champions.length === 2 && (route ? route.kind === "matchup" : asksMatchup(question))) {
+      // 모델이 시점까지 골라 주면 그것을 쓴다. 못 고르면 조사 규칙으로 되돌아간다.
+      const picked = route?.mine && champions.includes(route.mine) ? route.mine : undefined;
+      const [mine, enemy] = picked
+        ? [picked, champions.find((card) => card.id !== picked.id) ?? champions[1]]
+        : matchupSides(question, champions);
       deliverMatchup(question, mine, enemy, usedNotice);
       return;
     }
@@ -524,7 +548,7 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
           return;
         }
         // "말파이트 스킬 설명해줘": 스킬 다섯 개의 요약 + 운용 노트. 능력치 표는 뺀다.
-        if (asksSkillsOverview(question)) {
+        if (route ? route.kind === "skills" : asksSkillsOverview(question)) {
           deliver(question, { kind: "champion", card, view: "skills", notes: championNotes(data, card, question) }, usedNotice);
           return;
         }
@@ -591,7 +615,7 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
       return;
     }
     setPressedWhileBusy(false);
-    ask(question);
+    void ask(question);
     setDraft("");
   };
 
@@ -607,7 +631,7 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
     const original = asked?.role === "user" ? asked.content : "";
     if (!original) return;
     const suffix = side === "against" ? copy.card.perspectiveAgainst : copy.card.perspectivePlaying;
-    ask(`${original} (${suffix})`);
+    void ask(`${original} (${suffix})`);
   };
 
   /** 오타 후보를 골랐을 때. 원래 질문에서 그 말만 바꿔 다시 묻는다. */
@@ -619,7 +643,7 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
     const typo = suggestChampions(original, data.cards, nicknames(data.cards));
     // 오타였으면 그 말을 바꾸고, 화면의 둘 중 하나를 고른 것이면 이름을 앞에 붙인다.
     const fixed = typo ? original.replace(typo.original, card.name) : `${card.name} ${original}`;
-    ask(fixed, fill(copy.card.understoodAs, { name: card.name }));
+    void ask(fixed, fill(copy.card.understoodAs, { name: card.name }));
   };
 
   // 빈 화면과 입력창 안내는 화면 맥락을 따른다. 말파이트 표를 보고 있으면 말파이트 예시.
@@ -1110,7 +1134,7 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
                     <button
                       key={example}
                       type="button"
-                      onClick={() => ask(example)}
+                      onClick={() => void ask(example)}
                       className="rounded-md border bg-background px-2.5 py-1 text-xs text-foreground transition-colors hover:border-primary/50 hover:bg-muted hover:text-foreground"
                     >
                       {example}
