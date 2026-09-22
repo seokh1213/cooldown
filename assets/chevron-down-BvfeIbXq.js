@@ -1,1 +1,0 @@
-import{it as e}from"./staticDataClient-DFN78m7F.js";var t=e(`chevron-down`,[[`path`,{d:`m6 9 6 6 6-6`,key:`qrunsl`}]]);export{t};
