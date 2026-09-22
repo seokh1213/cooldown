@@ -80,16 +80,34 @@ function koreanInitials(value: string): string {
   }
 }
 
+/**
+ * 이름 말고 **별칭**으로도 찾는다.
+ *
+ * 리엇이 로케일마다 `colloq` 에 상점 별칭을 채워 둔다. 한국어는 "똥신"·"요부"·"자벨",
+ * 영어는 "bf"·"dshield", 중국어는 병음과 그 이니셜 "sdzx"·"xnfh" 다. 쓰는 사람이
+ * 실제로 부르는 말이라 이름만 보는 검색은 이것들을 다 놓쳤다.
+ *
+ * 공식 값만 쓴다. 손으로 별칭 표를 만들지 않는다 — 패치마다 갱신해야 하고 틀리면
+ * 고칠 사람이 없다.
+ */
+function searchKeys(item: Item): string[] {
+  return [getItemName(item), ...(item.aliases ?? [])];
+}
+
 function matchesSearch(item: Item, rawQuery: string): boolean {
   const query = normalizeSearchText(rawQuery.trim());
   const initialQuery = rawQuery.replace(/\s+/g, "");
   const initialsOnly = /^[ㄱ-ㅎ]+$/.test(initialQuery) ? initialQuery : "";
   if (!query && !initialsOnly) return true;
-  const name = normalizeSearchText(getItemName(item));
-  if (query && name.includes(query)) return true;
-  const initials = koreanInitials(getItemName(item));
-  if (initialsOnly && initials.includes(initialsOnly)) return true;
-  return Boolean(query && initials && `${initials[0]}${name.slice(1)}`.includes(query));
+  for (const key of searchKeys(item)) {
+    const name = normalizeSearchText(key);
+    if (query && name.includes(query)) return true;
+    const initials = koreanInitials(key);
+    if (initialsOnly && initials.includes(initialsOnly)) return true;
+    // 첫 글자만 초성으로 친 꼴("ㅁ첩성의 망토"). 이름에 쓰던 규칙을 별칭에도 적용한다.
+    if (query && initials && `${initials[0]}${name.slice(1)}`.includes(query)) return true;
+  }
+  return false;
 }
 
 export function groupItemsByTier(
