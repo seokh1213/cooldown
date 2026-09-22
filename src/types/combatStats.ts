@@ -246,6 +246,7 @@ export const STAT_DEFINITIONS: Record<StatKey, StatDefinition> = {
     isPerLevel: false,
     label: { en: "Omnivamp", ko: "만능 흡혈" },
     riotKeywords: ["Omnivamp"],
+    icon: "scalesv",
   },
   [StatKey.PHYSICAL_VAMP]: {
     key: StatKey.PHYSICAL_VAMP,

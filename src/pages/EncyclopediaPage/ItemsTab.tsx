@@ -103,7 +103,7 @@ export function ItemsTab({ patchVersion, sources, ddragonVersion, lang }: ItemsT
   const [selectedItem, setSelectedItem] = useState<Item | null>(null);
   const [loading, setLoading] = useState(false);
   const [mobileDetailOpen, setMobileDetailOpen] = useState(false);
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const requestedItemId = searchParams.get("item");
 
   useEffect(() => {
@@ -125,6 +125,23 @@ export function ItemsTab({ patchVersion, sources, ddragonVersion, lang }: ItemsT
     };
   }, [patchVersion, sources, lang]);
 
+  /*
+   * 고른 아이템을 주소에 적는다.
+   *
+   * 예전에는 화면 안에서만 들고 있어서 새로고침하면 목록 첫 칸으로 돌아갔다.
+   * 보던 것을 링크로 건네지도 못했다. 챔피언 탭이 `?champion=` 으로 하는 것과 같다.
+   *
+   * 자리를 **밀어 넣지 않고 갈아 끼운다**(`replace`). 격자에서는 훑어보느라 여러 개를
+   * 잇달아 누르는데, 누를 때마다 기록이 쌓이면 뒤로 가기가 아이템을 하나씩 되짚는
+   * 일이 된다. 사용자가 바라는 것은 백과를 떠나는 쪽이다.
+   */
+  const selectItem = (item: Item) => {
+    setSelectedItem(item);
+    const next = new URLSearchParams(searchParams);
+    next.set("item", item.id);
+    setSearchParams(next, { replace: true });
+  };
+
   // 도우미 답의 "아이템 백과에서 보기" 링크가 ?item=<id> 로 들어온다. 목록이 오면 그 아이템을 고른다.
   useEffect(() => {
     if (!items || !requestedItemId) return;
@@ -145,7 +162,7 @@ export function ItemsTab({ patchVersion, sources, ddragonVersion, lang }: ItemsT
   );
   const tierLabel = (tier: ItemTier) => t.encyclopedia.items.tiers[tier];
   const selectMobileItem = (item: Item) => {
-    setSelectedItem(item);
+    selectItem(item);
     setMobileDetailOpen(true);
   };
 
@@ -161,7 +178,7 @@ export function ItemsTab({ patchVersion, sources, ddragonVersion, lang }: ItemsT
       itemMap={itemMap}
       ddragonVersion={ddragonVersion}
       locale={lang}
-      onSelect={setSelectedItem}
+      onSelect={selectItem}
     />
   );
 
@@ -194,7 +211,7 @@ export function ItemsTab({ patchVersion, sources, ddragonVersion, lang }: ItemsT
             {t.encyclopedia.items.listTitle}
           </div>
           <ScrollArea className="flex-1 min-h-0">
-            <ItemGrid itemsByTier={itemsByTier} ddragonVersion={ddragonVersion} selectedId={selectedItem?.id} tierLabel={tierLabel} onSelect={setSelectedItem} />
+            <ItemGrid itemsByTier={itemsByTier} ddragonVersion={ddragonVersion} selectedId={selectedItem?.id} tierLabel={tierLabel} onSelect={selectItem} />
           </ScrollArea>
         </div>
         <div className="hidden min-h-0 flex-col p-4 md:flex md:w-[42%] md:min-w-[320px] lg:w-[420px]">

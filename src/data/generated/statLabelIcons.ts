@@ -15,6 +15,7 @@ export const STAT_LABEL_ICONS: Record<string, Record<string, string>> = {
       "공격력": "scalead",
       "공격 속도": "scaleas",
       "생명력 흡수": "scalels",
+      "모든 피해 흡혈": "scalesv",
       "스킬 가속": "scaleah",
       "마법 관통력": "scalempen",
       "강인함": "scaletenacity",
@@ -24,7 +25,8 @@ export const STAT_LABEL_ICONS: Record<string, Record<string, string>> = {
       "방어구 관통력": "scaleapen",
       "적응형 능력치": "scaleadaptiveforce",
       "초당 마나 재생": "scalemanaregen",
-      "초당 체력 재생": "scalehpregen"
+      "초당 체력 재생": "scalehpregen",
+      "재사용 대기시간 감소": "scalecooldown"
   },
   en_US: {
       "Move Speed": "scalems",
@@ -39,6 +41,7 @@ export const STAT_LABEL_ICONS: Record<string, Record<string, string>> = {
       "Attack Damage": "scalead",
       "Attack Speed": "scaleas",
       "Life Steal": "scalels",
+      "Omnivamp": "scalesv",
       "Ability Haste": "scaleah",
       "Magic Penetration": "scalempen",
       "Tenacity": "scaletenacity",
@@ -48,7 +51,8 @@ export const STAT_LABEL_ICONS: Record<string, Record<string, string>> = {
       "Armor Penetration": "scaleapen",
       "Adaptive Force": "scaleadaptiveforce",
       "Mana Regen per seconds": "scalemanaregen",
-      "Health Regen per seconds": "scalehpregen"
+      "Health Regen per seconds": "scalehpregen",
+      "Cooldown Reduction": "scalecooldown"
   },
   zh_CN: {
       "移动速度": "scalems",
@@ -63,6 +67,7 @@ export const STAT_LABEL_ICONS: Record<string, Record<string, string>> = {
       "攻击力": "scalead",
       "攻击速度": "scaleas",
       "生命偷取": "scalels",
+      "全能吸血": "scalesv",
       "技能急速": "scaleah",
       "法术穿透": "scalempen",
       "韧性": "scaletenacity",
@@ -72,6 +77,7 @@ export const STAT_LABEL_ICONS: Record<string, Record<string, string>> = {
       "护甲穿透": "scaleapen",
       "适应之力": "scaleadaptiveforce",
       "法力回复/ 秒": "scalemanaregen",
-      "生命回复/ 秒": "scalehpregen"
+      "生命回复/ 秒": "scalehpregen",
+      "冷却缩减": "scalecooldown"
   },
 };
