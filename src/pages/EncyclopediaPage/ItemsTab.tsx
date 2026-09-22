@@ -57,14 +57,22 @@ function ItemSearch(props: {
 
 function ItemGrid(props: {
   itemsByTier: Record<ItemTier, Item[]>;
+  /**
+   * 거르기 전 **전체** 아이템 차례.
+   *
+   * 스프라이트 칸 자리를 이것으로 센다. 화면에 보이는 것만 넘기면 검색할 때마다
+   * 자리가 밀려 엉뚱한 아이콘이 나온다.
+   */
+  allItems: Item[];
   ddragonVersion: string;
   selectedId: string | undefined;
   tierLabel: (tier: ItemTier) => string;
   onSelect: (item: Item) => void;
 }) {
-  const { itemsByTier, ddragonVersion, selectedId, tierLabel, onSelect } = props;
+  const { itemsByTier, allItems, ddragonVersion, selectedId, tierLabel, onSelect } = props;
+  const itemIds = useMemo(() => allItems.map((item) => item.id), [allItems]);
   // 목록 아이콘은 한 장에서 잘라 쓴다. 한 화면에 이백 칸이 넘어 요청 수가 곧 지연이다.
-  const sprite = useSpriteSheet("item", ddragonVersion);
+  const sprite = useSpriteSheet("item", ddragonVersion, itemIds);
   return (
     <div className="p-1 space-y-1">
       {(Object.keys(itemsByTier) as ItemTier[]).map((tier) => {
@@ -168,7 +176,7 @@ export function ItemsTab({ patchVersion, sources, ddragonVersion, lang }: ItemsT
       <div className="mt-4 space-y-3">
         <ItemSearch value={search} placeholder={t.encyclopedia.items.searchPlaceholder} mobile onChange={setSearch} />
         <div className="rounded-md border bg-card/40">
-          <ItemGrid itemsByTier={itemsByTier} ddragonVersion={ddragonVersion} selectedId={selectedItem?.id} tierLabel={tierLabel} onSelect={selectMobileItem} />
+          <ItemGrid itemsByTier={itemsByTier} allItems={items ?? []} ddragonVersion={ddragonVersion} selectedId={selectedItem?.id} tierLabel={tierLabel} onSelect={selectMobileItem} />
         </div>
         <Dialog open={mobileDetailOpen && selectedItem !== null} onOpenChange={setMobileDetailOpen}>
           <DialogContent className="w-[calc(100vw-32px)] max-w-lg h-[70vh] p-0 rounded-xl overflow-hidden flex flex-col">
@@ -192,7 +200,7 @@ export function ItemsTab({ patchVersion, sources, ddragonVersion, lang }: ItemsT
             {t.encyclopedia.items.listTitle}
           </div>
           <ScrollArea className="flex-1 min-h-0">
-            <ItemGrid itemsByTier={itemsByTier} ddragonVersion={ddragonVersion} selectedId={selectedItem?.id} tierLabel={tierLabel} onSelect={setSelectedItem} />
+            <ItemGrid itemsByTier={itemsByTier} allItems={items ?? []} ddragonVersion={ddragonVersion} selectedId={selectedItem?.id} tierLabel={tierLabel} onSelect={setSelectedItem} />
           </ScrollArea>
         </div>
         <div className="hidden min-h-0 flex-col p-4 md:flex md:w-[42%] md:min-w-[320px] lg:w-[420px]">

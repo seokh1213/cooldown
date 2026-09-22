@@ -24,8 +24,10 @@ const out = path.join(imgRoot, release.sources.ddragon);
 
 assert.ok(fs.existsSync(out), `썸네일 폴더가 없다: ${out}. \`npm run generate-thumbnails\` 를 돌려야 한다`);
 
-// `runes` 는 판본 밖에 두는 자리다. 낡은 것으로 세지 않는다.
-const stale = fs.readdirSync(imgRoot).filter((entry) => entry !== release.sources.ddragon && entry !== "runes");
+// `runes` 는 판본 밖에 두는 자리다. 시트 파일도 여기 있다. 낡은 것으로 세지 않는다.
+const stale = fs
+  .readdirSync(imgRoot)
+  .filter((entry) => entry !== release.sources.ddragon && entry !== "runes" && !entry.startsWith("runes."));
 assert.deepEqual(stale, [], "지난 판본 썸네일이 남아 있다. 저장소가 패치마다 불어난다");
 
 const championIds = fs
@@ -85,17 +87,24 @@ assert.deepEqual(heavy.slice(0, 10), [], "줄어들지 않은 썸네일이 있�
  * 목록 화면이 이것을 보고 칸을 자른다. 차례가 하나만 밀려도 챔피언마다 엉뚱한
  * 그림이 나오는데, 눈으로는 "왜 이 아이콘이지" 싶을 뿐 고장으로 안 보인다.
  */
-for (const [kind, expected] of [
-  ["champion", championIds],
-  ["item", itemIds],
+for (const [kind, expected, dir] of [
+  ["champion", championIds, out],
+  ["item", itemIds, out],
+  // 룬 시트는 판본 밖에 있고 이름 차례로 붙는다. 화면도 같은 차례로 센다.
+  ["rune", [...runeKeys].sort(), imgRoot],
 ] as const) {
-  const sheetFile = path.join(out, `${kind}s.webp`);
-  const listFile = path.join(out, `${kind}s.json`);
+  const sheetFile = path.join(dir, `${kind}s.webp`);
+  const listFile = path.join(dir, `${kind}s.json`);
   assert.ok(fs.existsSync(sheetFile), `${kind} 스프라이트가 없다`);
   const list = JSON.parse(fs.readFileSync(listFile, "utf8")) as { size: number; cols: number; rows: number; ids: string[] };
   assert.deepEqual(list.ids, expected, `${kind}: 스프라이트 차례가 자료와 다르다`);
   assert.ok(list.cols * list.rows >= list.ids.length, `${kind}: 격자가 칸 수보다 작다`);
   assert.ok(list.size > 0, `${kind}: 칸 크기가 없다`);
+  /*
+   * 화면은 목록 파일을 받지 않고 열 수를 스스로 센다. 그 셈이 생성기와 같아야 한다 —
+   * 어긋나면 아이콘이 통째로 밀리는데 눈으로는 고장으로 안 보인다.
+   */
+  assert.equal(list.cols, Math.max(1, Math.ceil(Math.sqrt(list.ids.length))), `${kind}: 열 수 셈이 화면과 다르다`);
 }
 
 const total = [...championIds.map((id) => path.join(out, "champion", `${id}.webp`)), ...itemIds.map((id) => path.join(out, "item", `${id}.webp`))]
