@@ -44,6 +44,7 @@ import {
   asksComparison,
   asksGuide,
   asksMatchup,
+  matchupSides,
   asksSkillsOverview,
   buildCommentaryPrompt,
   buildCompareAnswer as buildCompareCard,
@@ -438,10 +439,17 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
         return;
       }
     }
-    // "오공이랑 말파이트랑 싸우면 누가 유리해?" — 둘을 다 말했고 싸움을 묻는다. 먼저 말한
-    // 쪽이 내 챔피언이다. 능력치 비교표가 아니라 상성 카드와 시점 있는 해설, 그리고 VS 링크.
+    /*
+     * "오공이랑 말파이트랑 싸우면 누가 유리해?" — 둘을 다 말했고 싸움을 묻는다.
+     * 능력치 비교표가 아니라 상성 카드와 시점 있는 해설, 그리고 VS 링크.
+     *
+     * 누가 내 챔피언인지는 **조사가** 가린다. 예전에는 먼저 말한 쪽으로 정했는데,
+     * 상대를 먼저 말하면 통째로 뒤집혔다 — "럼블 상대로 오공 하는데" 가 럼블 시점이
+     * 됐다. 열 문장으로 재 보니 어순은 4/10, 조사는 9/10 이다.
+     */
     if (champions.length === 2 && asksMatchup(question)) {
-      deliverMatchup(question, champions[0], champions[1], usedNotice);
+      const [mine, enemy] = matchupSides(question, champions);
+      deliverMatchup(question, mine, enemy, usedNotice);
       return;
     }
 
