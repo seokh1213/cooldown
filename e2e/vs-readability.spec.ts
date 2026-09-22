@@ -86,27 +86,17 @@ for (const locale of ["ko_KR", "en_US", "zh_CN"] as const) {
         const opponentBox = (await page.locator("#vs-header-opponent").boundingBox())!;
         expect(Math.abs(mineBox.y - opponentBox.y)).toBeLessThan(2);
         /*
-         * 카드는 제 스킬 열 위에 걸치되, 두 챔피언 사이 여백만큼은 물러서 있어야 한다.
+         * 카드는 제 스킬 열 위에 **딱 맞게** 걸친다.
          *
-         * 예전에는 오차를 12px 로 못 박았다. 그때는 경계 여백이 8px 이었기 때문이다.
-         * 두 챔피언을 세로선이 아니라 여백으로 가르기로 하면서 그 값이 넓어졌으므로
-         * (sm 이상 16px), 고정값 대신 **실제 여백을 읽어** 견준다. 여백을 다시
-         * 손대도 시험이 같이 따라온다.
+         * 두 챔피언을 가운데 빈 열이 가르므로 카드와 열의 경계가 같은 자리다. 예전에는
+         * 칸 안쪽 여백으로 갈라서 오차를 두고 견뎌야 했는데, 이제는 자를 대고 잴 수 있다.
          */
-        const gutter = await page.evaluate(() => {
-          const mine = document.querySelector("#vs-header-mine")?.closest("th");
-          const opponent = document.querySelector("#vs-header-opponent")?.closest("th");
-          if (!mine || !opponent) return { right: 0, left: 0 };
-          return {
-            right: parseFloat(getComputedStyle(mine).paddingRight),
-            left: parseFloat(getComputedStyle(opponent).paddingLeft),
-          };
-        });
-        expect(gutter.right).toBeGreaterThan(0);
-        expect(gutter.left).toBeGreaterThan(0);
         const mineR = (await page.getByTestId("vs-mine-R").boundingBox())!;
-        expect(mineBox.x + mineBox.width).toBeGreaterThanOrEqual(mineR.x + mineR.width - gutter.right - 2);
-        expect((await page.getByTestId("vs-opponent-Q").boundingBox())!.x).toBeGreaterThanOrEqual(opponentBox.x - gutter.left - 2);
+        const opponentQ = (await page.getByTestId("vs-opponent-Q").boundingBox())!;
+        expect(Math.round(mineBox.x + mineBox.width)).toBe(Math.round(mineR.x + mineR.width));
+        expect(Math.round(opponentQ.x)).toBe(Math.round(opponentBox.x));
+        // 사이에 빈 통로가 실제로 있어야 한다. 여기가 0 이면 두 챔피언이 붙어 버린다.
+        expect(opponentQ.x - (mineR.x + mineR.width)).toBeGreaterThan(width >= 640 ? 24 : 4);
         /*
          * 세 구역이 가운데를 같은 자리에서 가른다.
          *
