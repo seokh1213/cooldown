@@ -205,7 +205,7 @@ export function SkillTooltip({
         </>
       ) : skill ? (
         <>
-          {skill.forms ? <AbilityFormIcon forms={skill.forms} label={SKILL_LETTERS[skillIdx]} className={iconSize} /> : <img
+          {skill.forms ? <AbilityFormIcon forms={skill.forms} label={SKILL_LETTERS[skillIdx]} ddragonVersion={ddragonVersion} className={iconSize} /> : <img
             src={spellIconUrl(ddragonVersion, skill.id)}
             alt={SKILL_LETTERS[skillIdx]}
             className={cn(iconSize, "rounded")}

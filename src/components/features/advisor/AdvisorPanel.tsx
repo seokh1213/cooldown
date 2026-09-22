@@ -62,7 +62,8 @@ import { nicknames } from "@/lib/advisor/intent";
 import { parseRoute, routePrompt, type AskRoute } from "@/lib/advisor/routeAsk";
 import { findMentionedRules } from "../../../../scripts/llm/lib/rules";
 import type { ChampionCard } from "../../../../scripts/llm/lib/facts";
-import { championIconUrl, itemIconUrl } from "@/data/assets/riotAssetUrls";
+import { itemIconUrl } from "@/data/assets/riotAssetUrls";
+import { ChampionIcon } from "@/components/ui/champion-icon";
 import { usePageContext } from "@/hooks/usePageContext";
 import {
   REFERENCE_MAX_WIDTH,
@@ -777,10 +778,13 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
     }
   };
   /** 탭·칩 앞에 붙는 그림. 챔피언 답은 챔피언 아이콘, 아이템 답은 아이템 아이콘. */
-  const answerIcons = (answer: AdvisorAnswer): string[] =>
+  /** 탭 머리의 작은 아이콘. 아이템은 낱장 주소, 챔피언은 시트에서 자른다. */
+  const answerIcons = (answer: AdvisorAnswer, className: string): React.ReactNode[] =>
     answer.kind === "item"
-      ? [itemIconUrl(ddragonVersion, answer.itemId)]
-      : answerChampionIds(answer).slice(0, 2).map((id) => championIconUrl(ddragonVersion, id));
+      ? [<img key={answer.itemId} src={itemIconUrl(ddragonVersion, answer.itemId)} alt="" className={className} />]
+      : answerChampionIds(answer)
+          .slice(0, 2)
+          .map((id) => <ChampionIcon key={id} id={id} ddragonVersion={ddragonVersion} className={`block ${className}`} />);
   const referenceTabStrip = referenceTabs.length > 1 && (
     <div className="flex gap-1 overflow-x-auto border-b px-2 pt-1.5 text-[11px] [scrollbar-width:thin]">
       {referenceTabs.map((turn) => {
@@ -798,9 +802,7 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
             }`}
           >
             <span className="flex -space-x-1">
-              {answerIcons(answer).map((src) => (
-                <img key={src} src={src} alt="" width={14} height={14} className="h-3.5 w-3.5 rounded-sm ring-1 ring-background" />
-              ))}
+              {answerIcons(answer, "h-3.5 w-3.5 rounded-sm ring-1 ring-background")}
             </span>
             {tabLabel(answer)}
           </button>
@@ -1110,13 +1112,11 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
                 {contextCards.length > 0 ? (
                   <div className="flex items-center gap-2 rounded-xl border bg-background px-3 py-2 text-foreground">
                     {contextCards.map((card) => (
-                      <img
+                      <ChampionIcon
                         key={card.id}
-                        src={championIconUrl(ddragonVersion, card.id)}
-                        alt=""
-                        width={28}
-                        height={28}
-                        className="h-7 w-7 shrink-0 rounded-md"
+                        id={card.id}
+                        ddragonVersion={ddragonVersion}
+                        className="block h-7 w-7 shrink-0 rounded-md"
                       />
                     ))}
                     <div className="min-w-0 leading-tight">
@@ -1319,9 +1319,7 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
                         } ${sameAsPrevious ? "text-muted-foreground" : ""}`}
                       >
                         <span className="flex shrink-0 -space-x-1.5">
-                          {answerIcons(turn.answer).map((src) => (
-                            <img key={src} src={src} alt="" width={18} height={18} className="h-[18px] w-[18px] rounded ring-1 ring-background" />
-                          ))}
+                          {answerIcons(turn.answer, "h-[18px] w-[18px] rounded ring-1 ring-background")}
                         </span>
                         <span className="truncate font-medium">{referenceTitle(turn.answer).title}</span>
                         <span className="shrink-0 text-muted-foreground">

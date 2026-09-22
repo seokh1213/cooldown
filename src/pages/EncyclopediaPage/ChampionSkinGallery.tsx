@@ -17,7 +17,7 @@ function SplashImage({ src, name }: { src: string; name: string }) {
           {status === "error" && <Button size="sm" variant="outline" onClick={() => { setStatus("loading"); setAttempt((value) => value + 1); }}>{t.app.retry}</Button>}
         </div>
       )}
-      {status !== "error" && <img key={attempt} src={src} alt={name} width={1215} height={717} onLoad={() => setStatus("loaded")} onError={() => setStatus("error")} className={"relative h-full w-full object-contain " + (status === "loaded" ? "opacity-100" : "opacity-0")} data-skin-splash />}
+      {status !== "error" && <img key={attempt} src={src} alt={name} width={1215} height={717} decoding="async" onLoad={() => setStatus("loaded")} onError={() => setStatus("error")} className={"relative h-full w-full object-contain " + (status === "loaded" ? "opacity-100" : "opacity-0")} data-skin-splash />}
     </div>
   );
 }

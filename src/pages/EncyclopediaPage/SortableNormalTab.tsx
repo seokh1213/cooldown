@@ -2,7 +2,7 @@ import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { X, Swords, GripVertical } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { championIconUrl } from "@/data/assets/riotAssetUrls";
+import { ChampionIcon } from "@/components/ui/champion-icon";
 import { useTranslation } from "@/i18n";
 import { Tab, ChampionWithInfo } from "./types";
 import {
@@ -82,12 +82,7 @@ export function SortableNormalTab({
         드래그는 왼쪽 Grip 아이콘 버튼(드래그 핸들)에서만 처리됩니다.
       */}
       <div className="flex items-center gap-1.5 flex-1 cursor-pointer select-none">
-        <img
-          src={championIconUrl(ddragonVersion, champion.id)}
-          alt={champion.name}
-          className="w-5 h-5 rounded-full pointer-events-none select-none"
-          draggable="false"
-        />
+        <ChampionIcon id={champion.id} ddragonVersion={ddragonVersion} alt={champion.name} className="block w-5 h-5 rounded-full pointer-events-none select-none" />
         <span className="pointer-events-none select-none">{champion.name}</span>
       </div>
 

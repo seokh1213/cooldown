@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { championIconUrl } from "@/data/assets/riotAssetUrls";
+import { ChampionIcon } from "@/components/ui/champion-icon";
 import { cn } from "@/lib/utils";
 import { X, Plus, GripVertical } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -147,10 +147,11 @@ export function StatsSectionDesktop({
             </button>
           )}
           <div className="relative">
-            <img
-              src={championIconUrl(ddragonVersion, champion.id)}
+            <ChampionIcon
+              id={champion.id}
+              ddragonVersion={ddragonVersion}
               alt={champion.name}
-              className="w-8 h-8 rounded-full"
+              className="block w-8 h-8 rounded-full"
             />
             {onRemoveChampion && (
               <Button

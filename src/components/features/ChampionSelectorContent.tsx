@@ -1,7 +1,6 @@
 import type { KeyboardEvent, RefObject } from "react";
 import { Search, Star, Swords, X } from "lucide-react";
 import type { Champion } from "@/types";
-import { championIconUrl } from "@/data/assets/riotAssetUrls";
 import { useTranslation } from "@/i18n";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -234,10 +233,6 @@ function ChampionSection(props: {
                 favorite={props.favoriteIds.has(champion.id)}
                 showFavoriteControl={props.favoriteEditing}
                 onToggleFavorite={props.onToggleFavorite}
-                thumbnailSrc={championIconUrl(
-                  champion.ddragonVersion || "",
-                  champion.id,
-                )}
               />
             </div>
           );

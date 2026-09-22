@@ -157,3 +157,48 @@ test("serves the synchronized release, not just a new version label", async ({ p
   expect(champion.champion.abilities.Q.bodyHtml).toContain("[[si:scaleap]]54%");
   await expect(page.locator("main")).toContainText(expected.patchVersion);
 });
+
+/*
+ * 스프라이트가 **맞는 칸**을 가리키는지 본다.
+ *
+ * 시트에서 자르기 시작한 뒤로 화면과 생성기가 자리를 각각 세었다. 화면은 보여 줄
+ * 차례(즐겨찾기 먼저, 그 나라 말 가나다순)로, 생성기는 이름 차례로 세어 둘이
+ * 어긋나 있었다 — 가렌 자리에 아트록스, 갈리오 자리에 아리가 나왔다.
+ *
+ * 그림이 비지 않고 다른 그림이 나오는 고장이라 화면은 조용하고, 단위 시험도
+ * 생성기와 자기 자신만 견주고 있어 못 잡았다. 그려진 배경 자리를 되짚어 시트
+ * 목록의 몇째 칸인지 계산하면, 실제로 무엇이 보이는지를 확인할 수 있다.
+ *
+ * 화면이 **전체 목록**을 넘겼는지도 여기서 걸린다. 일부만 넘기면 열 수 셈이
+ * 달라져 자리가 통째로 밀리는데, 그 역시 그림만 바뀌고 조용하다.
+ */
+for (const [tab, sheet, scope] of [
+  ["champions", "champions", "[data-champion-grid] "],
+  ["items", "items", ""],
+  ["runes", "runes", ""],
+  ["summoner", "summoners", ""],
+] as const) {
+  test(`${tab} sprites point at the right cell`, async ({ page }) => {
+    const release = decodeDataManifest(JSON.parse(readFileSync(new URL("../public/data/version.json", import.meta.url), "utf8")));
+    // 룬 시트만 판본 밖에 있다. 룬 자료에 판본이 안 들어 있기 때문이다.
+    const at = sheet === "runes" ? `../public/img/${sheet}.json` : `../public/img/${release.sources.ddragon}/${sheet}.json`;
+    const { cols, ids } = JSON.parse(readFileSync(new URL(at, import.meta.url), "utf8")) as { cols: number; ids: string[] };
+    await page.goto(`./encyclopedia?tab=${tab}`);
+    const icons = page.locator(`${scope}[data-sprite]`);
+    await expect(icons.first()).toBeVisible();
+    const shown = await icons.evaluateAll(
+      (nodes, grid) =>
+        nodes.slice(0, 12).map((node) => {
+          const element = node as HTMLElement;
+          const [x, y] = element.style.backgroundPosition.split(" ").map(Number.parseFloat);
+          const rows = Math.ceil(grid.ids.length / grid.cols);
+          const column = Math.round((x / 100) * (grid.cols - 1));
+          const row = Math.round((y / 100) * (rows - 1));
+          return { wants: element.dataset.sprite, shows: grid.ids[row * grid.cols + column] };
+        }),
+      { cols, ids },
+    );
+    expect(shown.length).toBeGreaterThan(5);
+    for (const { wants, shows } of shown) expect(shows).toBe(wants);
+  });
+}

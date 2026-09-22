@@ -2,7 +2,7 @@ import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { X, GripVertical } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { championIconUrl } from "@/data/assets/riotAssetUrls";
+import { ChampionIcon } from "@/components/ui/champion-icon";
 import { useTranslation } from "@/i18n";
 import { Tab, ChampionWithInfo } from "./types";
 import {
@@ -86,12 +86,7 @@ export function SortableVsTab({
           }}
           className="flex items-center touch-none hover:opacity-80 transition-opacity select-none"
         >
-          <img
-            src={championIconUrl(ddragonVersion, championA.id)}
-            alt={championA.name}
-            className="w-5 h-5 rounded-full select-none pointer-events-none"
-            draggable="false"
-          />
+          <ChampionIcon id={championA.id} ddragonVersion={ddragonVersion} alt={championA.name} className="block w-5 h-5 rounded-full select-none pointer-events-none" />
         </button>
         <button
           onClick={() => {
@@ -109,12 +104,7 @@ export function SortableVsTab({
           }}
           className="flex items-center touch-none hover:opacity-80 transition-opacity select-none"
         >
-          <img
-            src={championIconUrl(ddragonVersion, championB.id)}
-            alt={championB.name}
-            className="w-5 h-5 rounded-full select-none pointer-events-none"
-            draggable="false"
-          />
+          <ChampionIcon id={championB.id} ddragonVersion={ddragonVersion} alt={championB.name} className="block w-5 h-5 rounded-full select-none pointer-events-none" />
         </button>
       </div>
 

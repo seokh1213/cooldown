@@ -1,5 +1,5 @@
 import type { AbilityV2 } from "@/data/contracts/championData";
-import { spellIconUrl } from "@/data/assets/riotAssetUrls";
+import { AbilityIcon } from "@/components/ui/ability-icon";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { SafeBlockHtml } from "@/components/ui/safe-html";
 import { useTranslation } from "@/i18n";
@@ -9,18 +9,18 @@ import { AbilityFormDetails } from "@/components/features/ChampionComparison/Abi
 
 /** Icon and slot letter only; the name lives in the tooltip and the champion in the row above. */
 export function VsMatrixSkill(props: {
-  side: VsSideKey; slot: string; name: string; ability?: AbilityV2;
+  side: VsSideKey; slot: string; name: string; championId: string; ability?: AbilityV2;
   version: string; onSelect: (ability: AbilityV2, trigger: HTMLButtonElement) => void;
 }) {
   const { t } = useTranslation();
-  const { side, slot, name, ability, version, onSelect } = props;
+  const { side, slot, name, championId, ability, version, onSelect } = props;
   // 두 챔피언은 가운데 빈 열이 가른다(VsCooldownMatrix). 여기서는 경계를 신경 쓰지 않는다.
   return (
     <th id={"vs-" + side + "-" + slot} data-testid={"vs-" + side + "-" + slot} scope="col" className="border-b border-border/60 p-0 align-top font-normal">
       <Tooltip>
         <TooltipTrigger asChild>
           <button type="button" disabled={!ability} onClick={(event) => ability && onSelect(ability, event.currentTarget)} aria-label={name + " " + slot + " " + t.comparison.details} className="flex w-full min-w-0 flex-col items-center gap-1 px-0.5 pb-2 pt-2.5 hover:bg-muted/50 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-primary disabled:cursor-default">
-            {ability?.forms ? <AbilityFormIcon forms={ability.forms} label={name + " " + slot} className="size-7 sm:size-8" /> : ability ? <img src={spellIconUrl(version, ability.id)} alt="" width={32} height={32} className="size-7 shrink-0 rounded shadow-none sm:size-8" data-skill-icon /> : <span className="size-7 shrink-0 rounded bg-muted sm:size-8" />}
+            {ability?.forms ? <AbilityFormIcon forms={ability.forms} label={name + " " + slot} ddragonVersion={version} className="size-7 sm:size-8" /> : ability ? <AbilityIcon championId={championId} slot={slot} ddragonVersion={version} className="block size-7 shrink-0 rounded shadow-none sm:size-8" /> : <span className="size-7 shrink-0 rounded bg-muted sm:size-8" />}
             <span className="text-[11px] leading-3 text-muted-foreground">{slot}</span>
             <span className="sr-only">{name} · {t.comparison[side]} · {ability?.name ?? "—"}</span>
           </button>

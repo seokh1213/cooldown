@@ -40,6 +40,19 @@ const ABILITY_SIZE = 64;
  */
 const RUNE_SIZE = 64;
 const QUALITY = 82;
+/*
+ * 합친 장의 AVIF 사본.
+ *
+ * 시트는 우리가 내보내는 것 중 가장 무겁다(아이템 1,036KB). AVIF 로 다시 뽑으면
+ * 챔피언 383KB→175KB, 아이템 1,036KB→646KB 로 줄어든다. 낱장은 한두 KB 라 얻을
+ * 것이 없어 합친 장에만 만든다.
+ *
+ * 화면은 `image-set(... type("image/avif"))` 로 둘을 함께 걸고, 못 읽는 브라우저는
+ * WebP 를 집는다. 그래서 WebP 를 지우지 않는다.
+ */
+const AVIF_QUALITY = 50;
+// 8 까지 올리면 5% 더 줄지만 CI 시간이 세 배가 된다. 4 가 그 사이다.
+const AVIF_EFFORT = 4;
 
 /** 같은 파일을 여러 번 받지 않도록 한 번에 여덟 개씩만 받는다. */
 const CONCURRENCY = 8;
@@ -163,15 +176,29 @@ async function generateThumbnails() {
   /*
    * 챔피언 스킬·패시브 아이콘.
    *
-   * 마지막까지 Data Dragon 을 직접 보던 것이다. 시트로 묶지는 않는다 — VS 표와 상세
-   * 화면은 한 번에 다섯에서 여덟 장만 쓰므로, 팔백예순다섯 장을 한 장에 붙이면 안 볼
-   * 것까지 받게 된다. 낱장으로 두면 서비스워커가 본 것만 담는다.
+   * 마지막까지 Data Dragon 을 직접 보던 것이다. 팔백예순다섯 장을 한 장에 붙이지는
+   * 않는다 — VS 표는 한 번에 다섯에서 열 장만 쓰므로 안 볼 것까지 받게 된다.
+   * 대신 **챔피언마다 다섯 칸짜리 띠**로 붙인다(`ability/<id>.webp`, 7KB). VS
+   * 화면 진입이 낱장 열 건에서 띠 두 건이 되고 받는 양은 그대로다.
+   *
+   * 낱장도 남긴다. 툴팁과 시뮬레이션처럼 한두 장만 쓰는 자리는 띠를 받을 까닭이 없다.
    */
   const abilityIcons = new Set<string>();
   const passiveIcons = new Set<string>();
+  /** 챔피언 → P·Q·W·E·R 차례의 아이콘 파일 이름. 띠의 칸 차례가 곧 이 차례다. */
+  const abilityStrips = new Map<string, Array<string | undefined>>();
+  /*
+   * 변신 스킬 아이콘 스물일곱 장(엘리스·니달리·제이스·그웬).
+   *
+   * 여기만 마지막까지 Community Dragon 을 화면에서 직접 보고 있었다. 우리 자리로
+   * 옮겨야 서비스워커가 맡고 판본이 바뀌어도 주소가 어긋나지 않는다.
+   */
+  const formIcons = new Map<string, { iconVersion: string; iconPath: string }>();
   for (const id of championIds) {
     const champion = (JSON.parse(await readFile(path.join(championDir, `${id}.json`), "utf8")) as {
-      champion?: { abilities?: Record<string, { id?: string; iconFile?: string }> };
+      champion?: {
+        abilities?: Record<string, { id?: string; iconFile?: string; forms?: Array<{ iconVersion: string; iconPath: string }> }>;
+      };
     }).champion;
     for (const [slot, ability] of Object.entries(champion?.abilities ?? {})) {
       if (slot === "P") {
@@ -180,8 +207,23 @@ async function generateThumbnails() {
         abilityIcons.add(ability.id);
       }
     }
+    for (const ability of Object.values(champion?.abilities ?? {})) {
+      for (const form of ability?.forms ?? []) {
+        if (form.iconVersion && form.iconPath) formIcons.set(formIconKey(form.iconPath), form);
+      }
+    }
+    abilityStrips.set(
+      id,
+      ABILITY_SLOTS.map((slot) => {
+        const ability = champion?.abilities?.[slot];
+        if (!ability) return undefined;
+        return slot === "P" ? ability.iconFile?.replace(/\.png$/, "") : ability.id;
+      }),
+    );
   }
 
+  await mkdir(path.join(out, "ability"), { recursive: true });
+  await mkdir(path.join(out, "form"), { recursive: true });
   await mkdir(path.join(out, "champion"), { recursive: true });
   await mkdir(path.join(out, "summoner"), { recursive: true });
   await mkdir(path.join(out, "spell"), { recursive: true });
@@ -213,6 +255,11 @@ async function generateThumbnails() {
       url: `https://ddragon.leagueoflegends.com/cdn/${ddragon}/img/spell/${name}.png`,
       file: path.join(out, "summoner", `${name}.webp`),
       size: SUMMONER_SIZE,
+    })),
+    ...[...formIcons].map(([key, form]) => ({
+      url: `https://raw.communitydragon.org/${form.iconVersion}/game/${form.iconPath}`,
+      file: path.join(out, "form", `${key}.webp`),
+      size: ABILITY_SIZE,
     })),
     ...runePaths.map((iconPath) => ({
       url: `https://ddragon.leagueoflegends.com/cdn/img/${runeKey(iconPath)}.png`,
@@ -254,13 +301,19 @@ async function generateThumbnails() {
      */
     await buildSheet("item", items.map((item) => item.id), ITEM_SIZE, out, 70),
   ];
+  const strips = await buildAbilityStrips(abilityStrips, out);
   const mb = (bytes: number) => `${(bytes / 1024 / 1024).toFixed(1)}MB`;
-  console.log(`썸네일 ${jobs.length}장 (챔피언 ${championIds.length} · 아이템 ${items.length} · 룬 ${runePaths.length} · 소환사 주문 ${summonerIcons.length} · 스킬 ${abilityIcons.size} · 패시브 ${passiveIcons.size})`);
+  console.log(`썸네일 ${jobs.length}장 (챔피언 ${championIds.length} · 아이템 ${items.length} · 룬 ${runePaths.length} · 소환사 주문 ${summonerIcons.length} · 스킬 ${abilityIcons.size} · 패시브 ${passiveIcons.size} · 변신 ${formIcons.size})`);
   console.log(`  원본 ${mb(bytesIn)} → ${mb(bytesOut)} (${Math.round((1 - bytesOut / bytesIn) * 100)}% 절감)`);
   console.log(`  ${out}`);
   for (const sheet of sheets) {
-    console.log(`  스프라이트 ${sheet.kind}: ${sheet.count}장 · ${sheet.cols}×${sheet.rows} · ${(sheet.bytes / 1024).toFixed(0)}KB`);
+    const saved = Math.round((1 - sheet.avifBytes / sheet.bytes) * 100);
+    console.log(
+      `  스프라이트 ${sheet.kind}: ${sheet.count}장 · ${sheet.cols}×${sheet.rows} · ${(sheet.bytes / 1024).toFixed(0)}KB` +
+        ` · avif ${(sheet.avifBytes / 1024).toFixed(0)}KB (${saved}% 절감)`,
+    );
   }
+  console.log(`  스킬 띠: 챔피언 ${strips.count}명 · 총 ${(strips.bytes / 1024).toFixed(0)}KB (avif ${(strips.avifBytes / 1024).toFixed(0)}KB)`);
   if (missing.length > 0) {
     console.log(`\n  못 받은 것 ${missing.length}장`);
     for (const line of missing.slice(0, 10)) console.log(`    ${line}`);
@@ -272,20 +325,88 @@ generateThumbnails().catch((error: unknown) => {
   process.exitCode = 1;
 });
 
+/**
+ * 변신 아이콘의 파일 이름. 경로를 눕혀 한 낱말로 만든다.
+ *
+ * 화면 쪽 `formIconKey` 와 같은 규칙이어야 하고, 어긋나면 시험이 잡는다.
+ */
+export const formIconKey = (iconPath: string) =>
+  iconPath.replace(/^\//, "").replace(/\.png$/i, "").replace(/[^a-zA-Z0-9]+/g, "-");
+
+/** 띠의 칸 차례. 화면도 이 차례로 자리를 센다. */
+export const ABILITY_SLOTS = ["P", "Q", "W", "E", "R"] as const;
+
+/**
+ * 챔피언마다 스킬 다섯 개를 가로 한 줄로 붙인다.
+ *
+ * 칸 자리를 받아 오지 않는다. 차례가 P·Q·W·E·R 로 정해져 있으므로 화면은 슬롯
+ * 글자만 알면 몇째 칸인지 안다. 빠진 스킬 자리는 빈 칸으로 둔다 — 자리가 밀리면
+ * 다섯 개가 통째로 어긋나는데 눈으로는 "왜 이 아이콘이지" 싶을 뿐이라 못 알아본다.
+ *
+ * 띠가 없는 챔피언이 생기면 그 화면은 빈 칸이 된다. 그래서 `test-thumbnails` 가
+ * 챔피언 수와 띠 수가 같은지 본다.
+ */
+async function buildAbilityStrips(
+  strips: Map<string, Array<string | undefined>>,
+  out: string,
+): Promise<{ count: number; bytes: number; avifBytes: number }> {
+  const cell = (name: string | undefined, slot: string) => {
+    if (!name) return undefined;
+    const file = path.join(out, slot === "P" ? "passive" : "spell", `${name}.webp`);
+    return existsSync(file) ? file : undefined;
+  };
+  let bytes = 0;
+  let avifBytes = 0;
+  let count = 0;
+  for (const [championId, names] of strips) {
+    const composite = [];
+    for (const [index, name] of names.entries()) {
+      const file = cell(name, ABILITY_SLOTS[index]);
+      if (!file) continue;
+      composite.push({ input: await readFile(file), left: index * ABILITY_SIZE, top: 0 });
+    }
+    if (composite.length === 0) continue;
+    const canvas = sharp({
+      create: {
+        width: ABILITY_SLOTS.length * ABILITY_SIZE,
+        height: ABILITY_SIZE,
+        channels: 4,
+        background: { r: 0, g: 0, b: 0, alpha: 0 },
+      },
+    }).composite(composite);
+    const strip = await canvas.webp({ quality: QUALITY }).toBuffer();
+    const avif = await canvas.avif({ quality: AVIF_QUALITY, effort: AVIF_EFFORT }).toBuffer();
+    await writeFile(path.join(out, "ability", `${championId}.webp`), strip);
+    await writeFile(path.join(out, "ability", `${championId}.avif`), avif);
+    bytes += strip.length;
+    avifBytes += avif.length;
+    count += 1;
+  }
+  return { count, bytes, avifBytes };
+}
+
 interface SheetInfo {
   kind: string;
   count: number;
   cols: number;
   rows: number;
   bytes: number;
+  avifBytes: number;
 }
 
 /**
  * 낱장을 격자로 붙여 한 장으로 만든다.
  *
- * 차례는 **자료에 있는 순서 그대로**이고, 옆에 이름 목록을 담은 작은 JSON 을 함께
- * 남긴다. 순서를 양쪽에서 따로 계산하게 두면 하나만 어긋나도 그림이 통째로 밀리는데,
- * 목록을 같이 주면 그럴 일이 없다.
+ * 차례는 **이름순**이다. 화면도 같은 비교로 다시 세운다(`useSpriteSheet`).
+ *
+ * 한때는 자료에 실린 차례를 그대로 썼다. 챔피언은 그것이 디렉터리를 읽은 차례라
+ * 파일 시스템에 달려 있었고, 화면이 들고 있는 목록은 보여 줄 차례(즐겨찾기 먼저,
+ * 그 나라 말 가나다순)였다. 둘이 맞을 까닭이 없었고 실제로 어긋나 있었다 — 가렌
+ * 자리에 아트록스가 나왔다. 그림이 비는 것이 아니라 **다른 그림이** 나오므로
+ * 아무도 고장으로 안 봤다.
+ *
+ * 이름순은 양쪽이 아무것도 주고받지 않고도 같아지는 유일한 차례다. 옆에 남기는
+ * 목록 JSON 은 그 짝을 시험이 맞춰 보는 용도로만 쓴다.
  */
 async function buildSheet(
   kind: string,
@@ -298,7 +419,7 @@ async function buildSheet(
 ): Promise<SheetInfo> {
   // 룬은 낱장이 `runes/` 바로 아래에 있고 나머지는 `<kind>/` 아래에 있다.
   const cell = (id: string) => (kind === "rune" ? path.join(out, `${id}.webp`) : path.join(out, kind, `${id}.webp`));
-  const present = ids.filter((id) => existsSync(cell(id)));
+  const present = [...new Set(ids)].sort().filter((id) => existsSync(cell(id)));
   const cols = Math.ceil(Math.sqrt(present.length));
   const rows = Math.ceil(present.length / cols);
   const composite = await Promise.all(
@@ -308,13 +429,13 @@ async function buildSheet(
       top: Math.floor(index / cols) * size,
     })),
   );
-  const sheet = await sharp({
+  const canvas = sharp({
     create: { width: cols * size, height: rows * size, channels: 4, background: { r: 0, g: 0, b: 0, alpha: 0 } },
-  })
-    .composite(composite)
-    .webp({ quality })
-    .toBuffer();
+  }).composite(composite);
+  const sheet = await canvas.webp({ quality }).toBuffer();
+  const avif = await canvas.avif({ quality: AVIF_QUALITY, effort: AVIF_EFFORT }).toBuffer();
   await writeFile(path.join(sheetDir, `${kind}s.webp`), sheet);
+  await writeFile(path.join(sheetDir, `${kind}s.avif`), avif);
   await writeFile(path.join(sheetDir, `${kind}s.json`), `${JSON.stringify({ size, cols, rows, ids: present })}\n`);
-  return { kind, count: present.length, cols, rows, bytes: sheet.length };
+  return { kind, count: present.length, cols, rows, bytes: sheet.length, avifBytes: avif.length };
 }
