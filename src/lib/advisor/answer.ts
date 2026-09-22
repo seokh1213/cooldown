@@ -148,29 +148,40 @@ export interface CompareRow {
  *
  * 사람 말은 다양하지만 겨냥하는 칸은 몇 개 안 된다. 이 표는 **데이터가 아니라 의도 어휘**라
  * `detectSlot` 의 "궁·궁극기" 와 같은 성격이다.
+ *
+ * **세 언어를 한 표에 담는다.** 한국어만 적어 두었더니 영어·중국어에서는 아무것도
+ * 안 걸렸다. 갈래를 가리는 일은 모델이 하지만(`routeAsk`), 어느 **수치**를 묻는지는
+ * 라우터가 다루지 않아 이 표가 유일한 길이다. 실제로 재 보니 여섯 갈래 물음에서
+ * 영어·중국어는 규칙이 하나도 안 걸렸다.
+ *
+ * 세 언어를 한 정규식에 섞어도 부딪히지 않는다. 한국어 물음에 "cooldown" 이 들어
+ * 있을 까닭이 없고, 그 반대도 마찬가지다.
  */
 const FOCUS_LEXICON: Array<[SpellFocus, RegExp]> = [
-  ["cooldown", /쿨(타임|다운)?|재사용|\bcd\b/i],
-  ["cost", /마나|소모|코스트|기력|분노|비용/],
-  ["ratio", /계수|주문력\s*계수|공격력\s*계수|\bap\b|\bad\b/i],
-  ["damage", /피해|데미지|딜(량)?|대미지/],
+  ["cooldown", /쿨(타임|다운)?|재사용|\bcd\b|cool\s*down|冷却|CD/i],
+  ["cost", /마나|소모|코스트|기력|분노|비용|\bmana\b|\bcost\b|energy|fury|法力|消耗|能量/i],
+  ["ratio", /계수|주문력\s*계수|공격력\s*계수|\bap\b|\bad\b|ratio|scaling|coefficient|加成|系数/i],
+  ["damage", /피해|데미지|딜(량)?|대미지|\bdamage\b|\bdmg\b|伤害/i],
 ];
 
 /**
  * 본문에서 찾을 효과 낱말. 줄임말을 툴팁이 실제로 쓰는 말로 편다.
  * "마저" 라고 물으면 툴팁의 "마법 저항력" 문장을 찾아야 한다.
+ *
+ * 찾을 낱말도 세 언어를 함께 담는다. 툴팁 본문이 그 나라 말이므로, 영어로 물으면
+ * 영어 툴팁에서 영어 낱말을 찾아야 한다. 어느 하나만 맞으면 그 문장이 걸린다.
  */
 const EFFECT_ALIASES: Array<[RegExp, string[]]> = [
-  [/마저|마법\s*저항/, ["마법 저항력"]],
-  [/방깎|방어력\s*감소|방어력/, ["방어력"]],
-  [/둔화|슬로우/, ["둔화"]],
-  [/기절|스턴/, ["기절"]],
-  [/보호막|실드/, ["보호막"]],
-  [/회복|힐/, ["회복"]],
-  [/사거리|거리|범위/, ["사거리", "범위"]],
-  [/지속(시간)?|초\s*동안/, ["초 동안", "초간"]],
-  [/침묵/, ["침묵"]],
-  [/에어본|띄우|공중/, ["공중", "띄"]],
+  [/마저|마법\s*저항|magic\s*resist|魔抗|魔法抗性/i, ["마법 저항력", "Magic Resist", "魔法抗性"]],
+  [/방깎|방어력\s*감소|방어력|\barmor\b|护甲/i, ["방어력", "Armor", "护甲"]],
+  [/둔화|슬로우|\bslow\b|减速/i, ["둔화", "Slow", "减速"]],
+  [/기절|스턴|\bstun\b|眩晕/i, ["기절", "Stun", "眩晕"]],
+  [/보호막|실드|\bshield\b|护盾/i, ["보호막", "Shield", "护盾"]],
+  [/회복|힐|\bheal\b|治疗|回复/i, ["회복", "Heal", "治疗", "回复"]],
+  [/사거리|거리|범위|\brange\b|射程|范围/i, ["사거리", "범위", "Range", "射程", "范围"]],
+  [/지속(시간)?|초\s*동안|duration|持续/i, ["초 동안", "초간", "second", "seconds", "秒"]],
+  [/침묵|silence|沉默/i, ["침묵", "Silence", "沉默"]],
+  [/에어본|띄우|공중|airborne|knock\s*up|击飞/i, ["공중", "띄", "Airborne", "击飞"]],
 ];
 
 export function detectSpellFocus(question: string): { focus: SpellFocus; keywords: string[] } | undefined {
@@ -468,7 +479,8 @@ export const CARD_STATS: StatName[] = ["health", "armor", "magicResist", "attack
 // ── 비교 ──────────────────────────────────────────────────────────────
 
 /** 둘 이상을 견주는 질문인가. "누가 더 높아", "어느 쪽이", "비교", "중에". */
-const COMPARISON = /더\s*(높|많|센|강|단단|긴|짧|빠|느|좋)|누가|어느\s*쪽|비교|중에|\bvs\b/i;
+const COMPARISON =
+  /더\s*(높|많|센|강|단단|긴|짧|빠|느|좋)|누가|어느\s*쪽|비교|중에|\bvs\b|\b(who|which)\b|\b(more|higher|better|stronger|tankier|longer|shorter|faster|slower)\b|\bcompare\b|谁|哪个|比较|更(高|多|强|快|好)/i;
 
 export function asksComparison(question: string, championCount: number): boolean {
   return championCount >= 2 && COMPARISON.test(question);
@@ -478,7 +490,8 @@ export function asksComparison(question: string, championCount: number): boolean
  * 상성을 묻는가. "제이스랑 상대한다 생각하면", "럼블 만나면 어떻게 해?".
  * 대화에서 방금 다룬 챔피언이 있으면 그가 내 챔피언, 새로 나온 이름이 상대다.
  */
-const MATCHUP = /상대|맞상대|맞붙|라인전|만나면|만났을|만날\s*때|카운터|어떻게\s*(해야|하지|해\b|되|풀)|이길|이겨|이기|싸우|붙으면|붙었|유리|불리|\bvs\b/i;
+const MATCHUP =
+  /상대|맞상대|맞붙|라인전|만나면|만났을|만날\s*때|카운터|어떻게\s*(해야|하지|해\b|되|풀)|이길|이겨|이기|싸우|붙으면|붙었|유리|불리|\bvs\b|\b(against|into|counter|matchup|lane)\b|\bbeat\b|对线|对位|克制|怎么打|打得过/i;
 
 export function asksMatchup(question: string): boolean {
   return MATCHUP.test(question);
@@ -558,14 +571,16 @@ export function matchupSidesDetailed<T extends { name: string }>(question: strin
  * 상황을 말하므로 상대가 누구인지 맥락이 채워 주는 것이 맞다. "상대법" 은 그 챔피언
  * 자체의 공략을 달라는 말이라 짝지을 상대가 없다.
  */
-const GUIDE_ASK = /(상대|공략|카운터|대처|파훼)\s*법|(상대|공략)\s*하는\s*법/;
+const GUIDE_ASK =
+  /(상대|공략|카운터|대처|파훼)\s*법|(상대|공략)\s*하는\s*법|how\s+(do\s+i|to)\s+(beat|counter|deal\s+with|play\s+against)|怎么(打|对付|应对)|如何(打|对付|应对)/i;
 
 export function asksGuide(question: string): boolean {
   return GUIDE_ASK.test(question);
 }
 
 /** 스킬 전체를 설명해 달라는가. "스킬 설명해줘", "스킬 뭐 있어", "스킬 알려줘". */
-const SKILLS_OVERVIEW = /스킬\s*(셋|세트|구성|킷)|스킬(들|은|이|도)?\s*(설명|알려|소개|정리|뭐|무엇|어떤|있|어떻)/;
+const SKILLS_OVERVIEW =
+  /스킬\s*(셋|세트|구성|킷)|스킬(들|은|이|도)?\s*(설명|알려|소개|정리|뭐|무엇|어떤|있|어떻)|\b(abilities|kit|skill\s*set)\b|explain\s+\w+'?s?\s*(abilities|kit|skills)|技能(介绍|构成|组成)|介绍.{0,6}技能/i;
 
 export function asksSkillsOverview(question: string): boolean {
   return SKILLS_OVERVIEW.test(question);
@@ -683,28 +698,34 @@ export function spellFocusValue(spell: SpellFact, focus: SpellFocus, lang: Langu
   }
 }
 
-/** 능력치를 가리키는 말. FOCUS_LEXICON 과 같은 성격의 의도 어휘다. */
+/** 능력치를 가리키는 말. FOCUS_LEXICON 과 같은 성격의 의도 어휘고, 역시 세 언어를 담는다. */
 const STAT_LEXICON: Array<[StatName, RegExp]> = [
-  ["magicResist", /마법\s*저항|마저|마방/],
-  ["attackSpeed", /공격\s*속도|공속/],
-  ["moveSpeed", /이동\s*속도|이속|무빙/],
-  ["attackDamage", /공격력|깡뎀|\bad\b/i],
-  ["armor", /방어력|방어|아머/],
-  ["health", /체력|피통|\bhp\b/i],
-  ["healthRegen", /체력\s*재생|체젠/],
+  ["healthRegen", /체력\s*재생|체젠|health\s*regen|生命(值)?回复/i],
+  ["magicResist", /마법\s*저항|마저|마방|magic\s*resist|\bmr\b|魔抗|魔法抗性/i],
+  ["attackSpeed", /공격\s*속도|공속|attack\s*speed|\bas\b|攻(击)?速(度)?/i],
+  ["moveSpeed", /이동\s*속도|이속|무빙|move(ment)?\s*speed|\bms\b|移动速度|移速/i],
+  ["attackDamage", /공격력|깡뎀|\bad\b|attack\s*damage|攻击力/i],
+  ["armor", /방어력|방어|아머|\barmor\b|护甲/i],
+  ["health", /체력|피통|\bhp\b|\bhealth\b|生命值/i],
 ];
 
 export function detectStat(question: string): StatName | undefined {
-  // 체력 재생이 체력보다, 마법 저항이 방어보다 먼저 잡혀야 하므로 긴 것부터 순서대로.
-  if (/체력\s*재생|체젠/.test(question)) return "healthRegen";
+  // 긴 것이 먼저 걸려야 한다. "체력 재생" 은 "체력" 을, "magic resist" 는 "resist" 를 품는다.
   return STAT_LEXICON.find(([, pattern]) => pattern.test(question))?.[0];
 }
 
-/** 질문이 가리킨 레벨. 없으면 1레벨. 자료가 1·6·11·18 만 있다. */
+/**
+ * 질문이 가리킨 레벨. 없으면 1레벨. 자료가 1·6·11·18 만 있다.
+ *
+ * 숫자는 언어를 안 타지만 그 옆에 붙는 말은 탄다. 한국어만 적어 두었더니
+ * "at level 18", "18级" 이 모두 1레벨로 떨어졌다.
+ */
+const LEVEL_WORD = String.raw`\s*(레벨|렙|level|lv\.?|급|级)`;
 export function detectLevel(question: string): 1 | 6 | 11 | 18 {
-  if (/18\s*레벨|18\s*렙|만렙|풀\s*레벨|후반/.test(question)) return 18;
-  if (/11\s*레벨|11\s*렙/.test(question)) return 11;
-  if (/6\s*레벨|6\s*렙/.test(question)) return 6;
+  if (/만렙|풀\s*레벨|후반|max\s*level|full\s*build|满级/i.test(question)) return 18;
+  if (new RegExp(`18${LEVEL_WORD}|level\\s*18|lv\\.?\\s*18`, "i").test(question)) return 18;
+  if (new RegExp(`11${LEVEL_WORD}|level\\s*11|lv\\.?\\s*11`, "i").test(question)) return 11;
+  if (new RegExp(`6${LEVEL_WORD}|level\\s*6|lv\\.?\\s*6`, "i").test(question)) return 6;
   return 1;
 }
 
