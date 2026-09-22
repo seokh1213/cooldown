@@ -112,7 +112,15 @@ async function generateThumbnails() {
     ...new Set([...(await readFile(runesFile, "utf8")).matchAll(/"iconPath"\s*:\s*"([^"]+)"/g)].map((match) => match[1])),
   ]
     .concat(Object.values(RUNE_TREE_META).map((tree) => tree.icon))
-    .filter((iconPath) => iconPath.endsWith(".png")))];
+    .filter((iconPath) => iconPath.endsWith(".png")))]
+    /*
+     * 이름 차례로 세운다.
+     *
+     * 시트 칸 자리를 화면이 스스로 계산하려면 양쪽이 같은 차례를 써야 한다.
+     * 자료에 실린 차례는 룬과 파편이 서로 다른 자리에서 오므로 화면이 그대로
+     * 되살리기 어렵다. 이름으로 세우면 어느 쪽에서 세든 같다.
+     */
+    .sort((left, right) => (left < right ? -1 : left > right ? 1 : 0));
   /*
    * 두 꼴이 섞여 온다. 룬은 상대 경로, 스탯 파편만 `/lol-game-data/assets/v1/...`
    * 절대 경로다. Data Dragon 은 뒤엣것의 접두사를 뺀 자리에 파일을 둔다. 화면 쪽
@@ -175,6 +183,8 @@ async function generateThumbnails() {
    */
   const sheets = [
     await buildSheet("champion", championIds, CHAMPION_SIZE, out, QUALITY),
+    // 룬은 판본 밖 자리에 모인다. 칸 이름도 경로를 눕힌 꼴이라 따로 넘긴다.
+    await buildSheet("rune", runePaths.map(runeKey), RUNE_SIZE, runeOut, QUALITY, imgRoot),
     /*
      * 아이템 시트만 압축을 더 건다.
      *
@@ -217,13 +227,23 @@ interface SheetInfo {
  * 남긴다. 순서를 양쪽에서 따로 계산하게 두면 하나만 어긋나도 그림이 통째로 밀리는데,
  * 목록을 같이 주면 그럴 일이 없다.
  */
-async function buildSheet(kind: string, ids: string[], size: number, out: string, quality: number): Promise<SheetInfo> {
-  const present = ids.filter((id) => existsSync(path.join(out, kind, `${id}.webp`)));
+async function buildSheet(
+  kind: string,
+  ids: string[],
+  size: number,
+  out: string,
+  quality: number,
+  /** 시트를 둘 자리. 안 주면 낱장이 있는 자리에 함께 둔다. */
+  sheetDir = out,
+): Promise<SheetInfo> {
+  // 룬은 낱장이 `runes/` 바로 아래에 있고 나머지는 `<kind>/` 아래에 있다.
+  const cell = (id: string) => (kind === "rune" ? path.join(out, `${id}.webp`) : path.join(out, kind, `${id}.webp`));
+  const present = ids.filter((id) => existsSync(cell(id)));
   const cols = Math.ceil(Math.sqrt(present.length));
   const rows = Math.ceil(present.length / cols);
   const composite = await Promise.all(
     present.map(async (id, index) => ({
-      input: await readFile(path.join(out, kind, `${id}.webp`)),
+      input: await readFile(cell(id)),
       left: (index % cols) * size,
       top: Math.floor(index / cols) * size,
     })),
@@ -234,7 +254,7 @@ async function buildSheet(kind: string, ids: string[], size: number, out: string
     .composite(composite)
     .webp({ quality })
     .toBuffer();
-  await writeFile(path.join(out, `${kind}s.webp`), sheet);
-  await writeFile(path.join(out, `${kind}s.json`), `${JSON.stringify({ size, cols, rows, ids: present })}\n`);
+  await writeFile(path.join(sheetDir, `${kind}s.webp`), sheet);
+  await writeFile(path.join(sheetDir, `${kind}s.json`), `${JSON.stringify({ size, cols, rows, ids: present })}\n`);
   return { kind, count: present.length, cols, rows, bytes: sheet.length };
 }

@@ -42,9 +42,7 @@ export function ItemCell(props: {
           : "hover:bg-muted/60 border border-transparent"
       }`}
     >
-      {sprite?.pending ? (
-        <span className="w-7 h-7 md:w-8 md:h-8 rounded-sm border border-border/60 bg-muted/40 shrink-0" />
-      ) : sprite?.index.has(item.id) ? (
+      {sprite?.index.has(item.id) ? (
         <SpriteIcon
           state={sprite}
           id={item.id}

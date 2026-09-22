@@ -1,6 +1,8 @@
 import type { CSSProperties } from "react";
 import type { Rune, RuneStatShard, RuneTree } from "@/types";
-import { runeIconUrl } from "@/data/assets/riotAssetUrls";
+import { runeIconKey, runeIconUrl } from "@/data/assets/riotAssetUrls";
+import { SpriteIcon, useSpriteSheet, type SheetState } from "@/components/ui/sprite-icon";
+import { createContext, useContext, useMemo } from "react";
 import { AlertTriangle } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import {
@@ -30,8 +32,28 @@ interface RuneDetailProps {
 }
 
 // 같은 함수를 여기에 한 벌 더 두고 있었다. 룬과 스탯 파편이 경로 꼴이 달라 둘로
-// 갈라 두었는데, 공용 `runeIconUrl` 이 두 꼴을 다 받는다. 한 자리만 남긴다.
-const statShardIconUrl = runeIconUrl;
+// 갈라 두었는데, 공용 `runeIconUrl` 이 두 꼴을 다 받는다. 한 자리만 남겼고, 지금은
+// `RuneSprite` 가 두 꼴을 함께 받으므로 이름도 따로 두지 않는다.
+
+/*
+ * 룬 아이콘 스프라이트.
+ *
+ * 룬 화면은 아이콘 일흔여섯 장을 한꺼번에 그린다. 낱장으로 받으면 그만큼 요청이
+ * 날아가는데, 재 보니 이 화면이 셋 중 가장 무거웠다(25장에 854KB). 한 장으로 붙여
+ * 137KB 한 건이 되었다.
+ *
+ * 그리는 자리가 넷으로 흩어져 있어 맥락으로 내려보낸다. 없으면 낱장으로 돌아간다.
+ */
+const RuneSpriteContext = createContext<SheetState | null>(null);
+
+function RuneSprite({ iconPath, size, alt, className }: { iconPath: string; size: number; alt: string; className: string }) {
+  const sheet = useContext(RuneSpriteContext);
+  const id = runeIconKey(iconPath);
+  if (sheet?.index.has(id)) {
+    return <SpriteIcon state={sheet} id={id} size={size} alt={alt} className={`block bg-cover ${className}`} />;
+  }
+  return <img src={runeIconUrl(iconPath)} alt={alt} width={size} height={size} loading="lazy" className={className} />;
+}
 
 function RuneDetail({ rune, warning }: RuneDetailProps) {
   const description = (rune.descriptionHtml || "")
@@ -82,13 +104,10 @@ function RuneIcon(props: RuneIconProps) {
       }`}
       style={style}
     >
-      <img
-        src={runeIconUrl(rune.icon)}
+      <RuneSprite
+        iconPath={rune.icon}
         alt={rune.name}
-        loading="lazy"
-        decoding="async"
-        width={40}
-        height={40}
+        size={40}
         className="w-10 h-10 rounded-full border border-border/60 bg-transparent shrink-0"
       />
       <span className="text-[10px] text-center leading-tight line-clamp-2 w-full">
@@ -128,11 +147,10 @@ function RuneTreeCard({ tree, isMobile, warning, onSelect }: RuneTreeCardProps) 
   return (
     <Card className="p-4 flex flex-col gap-3 bg-background/60 border-border/70">
       <div className="flex items-center gap-3">
-        <img
-          src={runeIconUrl(tree.icon)}
+        <RuneSprite
+          iconPath={tree.icon}
           alt={tree.name}
-          width={32}
-          height={32}
+          size={32}
           className="w-8 h-8 rounded-full border border-border/60 bg-transparent"
         />
         <div className="flex flex-col">
@@ -187,7 +205,7 @@ function StatShardCard({ rows, title, warning }: {
             <div className="flex flex-wrap gap-2">
               {row.perks.map((perk) => (
                 <div key={perk.id} className="inline-flex items-center gap-2 rounded-md border border-border/60 bg-background/80 px-2 py-1">
-                  <img src={statShardIconUrl(perk.iconPath)} alt={perk.name} width={24} height={24} className="w-6 h-6 rounded-full border border-border/60 shrink-0" />
+                  <RuneSprite iconPath={perk.iconPath} alt={perk.name} size={24} className="w-6 h-6 rounded-full border border-border/60 shrink-0" />
                   <div className="flex flex-col min-w-0">
                     <span className="text-[11px] font-semibold truncate">{perk.name}</span>
                     <SafeInlineHtml
@@ -215,7 +233,22 @@ export function RuneCatalog(props: {
   onSelectRune: (rune: Rune | null) => void;
 }) {
   const { trees, statShardRows, selectedRune, isMobile, warning, statShardsTitle, onSelectRune } = props;
+  /*
+   * 시트 칸 자리는 이름 차례로 센다. 생성기도 같은 차례로 붙인다 — 룬과 파편이
+   * 자료에서 서로 다른 자리에 있어 실린 차례를 화면이 되살리기 어렵기 때문이다.
+   */
+  const runeIds = useMemo(() => {
+    const keys = new Set<string>();
+    for (const tree of trees) {
+      keys.add(runeIconKey(tree.icon));
+      for (const slot of tree.slots) for (const rune of slot.runes) keys.add(runeIconKey(rune.icon));
+    }
+    for (const row of statShardRows) for (const perk of row.perks) keys.add(runeIconKey(perk.iconPath));
+    return [...keys].sort();
+  }, [trees, statShardRows]);
+  const sprite = useSpriteSheet("rune", "", runeIds);
   return (
+    <RuneSpriteContext.Provider value={sprite}>
     <TooltipProvider delayDuration={200}>
       <div className="mt-4">
         <ScrollArea className="rounded-md border bg-card/40">
@@ -241,5 +274,6 @@ export function RuneCatalog(props: {
         )}
       </div>
     </TooltipProvider>
+    </RuneSpriteContext.Provider>
   );
 }

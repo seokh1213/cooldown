@@ -43,7 +43,8 @@ export function ChampionsTab(props: EncyclopediaPageProps) {
    * 1건이 된다. 스프라이트에 없는 챔피언(새로 나온 뒤 아직 안 만들어진 경우)은
    * 낱장으로 돌아간다.
    */
-  const sprite = useSpriteSheet("champion", props.ddragonVersion);
+  const championIds = useMemo(() => (props.championList ?? []).map((champion) => champion.id), [props.championList]);
+  const sprite = useSpriteSheet("champion", props.ddragonVersion, championIds);
   const toggleRole = (role: string) =>
     setRoles((current) => (current.includes(role) ? current.filter((value) => value !== role) : [...current, role]));
   const selected = props.championList?.find((champion) => champion.id === params.get("champion"));
@@ -128,9 +129,7 @@ export function ChampionsTab(props: EncyclopediaPageProps) {
           >
             {champions.map((champion) => (
               <button key={champion.id} type="button" onClick={() => select(champion.id)} className="group flex min-w-0 flex-col items-center gap-1.5 rounded py-1 text-center focus-visible:outline-2 focus-visible:outline-primary">
-                {sprite.pending ? (
-                  <span className="size-11 rounded bg-muted/40" />
-                ) : sprite.index.has(champion.id) ? (
+                {sprite.index.has(champion.id) ? (
                   <SpriteIcon state={sprite} id={champion.id} size={44} className="block rounded bg-cover group-hover:ring-2 group-hover:ring-primary" />
                 ) : (
                   <img src={championIconUrl(props.ddragonVersion, champion.id)} alt="" width={44} height={44} loading="lazy" className="size-11 rounded group-hover:ring-2 group-hover:ring-primary" />

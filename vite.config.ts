@@ -92,12 +92,14 @@ export default defineConfig(({ mode }) => {
          * 처음 열 때 173건이 줄줄이 날아가고 그동안 자리맡이 보인다. 설치 때
          * 424KB 를 미리 받아 두면 그 화면이 처음부터 꽉 찬 채로 뜬다.
          *
-         * 아이템 스프라이트(1.28MB)는 넣지 않는다. 아이템 화면에 들어가야 쓰는
-         * 것이라 미리 받으면 안 볼 사람까지 받는다. 목록 매니페스트는 둘 다 넣는다 —
-         * 합쳐서 30KB 도 안 되는데, 이것이 늦으면 스프라이트를 쓸지 정하지 못해
-         * 낱장이 먼저 나가 버린다.
+         * 아이템 시트(1MB)는 넣지 않는다. 그 화면에 들어가야 쓰는 것이라 미리 받으면
+         * 안 볼 사람까지 받는다. 대신 앱이 뜬 뒤 손이 빈 틈에 받는다(`warmIcons`).
+         *
+         * 룬 시트는 137KB 라 함께 받아 둔다. 목록 JSON 은 넣지 않는다 — 화면이 칸
+         * 자리를 스스로 세므로 받을 일이 없고, 그 파일은 생성기와 화면의 셈이 같은지
+         * 시험이 맞춰 보는 용도로만 남는다.
          */
-        globPatterns: ["**/*.{js,css,html,png,svg,ico}", "img/*/champions.webp", "img/*/*s.json"],
+        globPatterns: ["**/*.{js,css,html,png,svg,ico}", "img/*/champions.webp", "img/runes.webp"],
         runtimeCaching: [
           {
             urlPattern: /\/cooldown\/release\.json$/,
