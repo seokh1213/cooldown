@@ -39,8 +39,15 @@ import { toPoliteSentence } from "../../../scripts/llm/lib/politeStyle";
  * 그래서 **뒤에 공백이나 끝이 오는 마침표**만 경계로 본다. 소수점 뒤에는 숫자가 온다.
  */
 function splitDone(text: string): { done: string[]; tail: string } {
-  const parts = text.split(/(?<=[.!?。])(?=\s|$)/).filter((part) => part.length > 0);
-  const tail = /[.!?。]\s*$/.test(text) ? "" : (parts.pop() ?? "");
+  /*
+   * 줄바꿈도 경계로 본다.
+   *
+   * 마침표만 보았더니 마침표 없이 끝나는 줄이 다음 문장과 한 덩어리가 되었다.
+   * 모델이 "**[스킬 이름] 오공 P 바위 피부 (회복, 분신)**" 처럼 카드를 옮겨 적고
+   * 줄을 바꾼 뒤 본문을 쓰는데, 둘이 붙어 버려 베낀 줄만 걷어낼 수가 없었다.
+   */
+  const parts = text.split(/(?<=[.!?。])(?=\s|$)|(?<=\n)/).filter((part) => part.length > 0);
+  const tail = /([.!?。]|\n)\s*$/.test(text) ? "" : (parts.pop() ?? "");
   return { done: parts, tail };
 }
 
@@ -62,6 +69,18 @@ interface Material {
   profiles: Array<{ name: string; damage: string; scaling: string }>;
   /** 스킬 이름 → 그 스킬을 가진 챔피언 이름 */
   ownerByName: Map<string, string>;
+  /**
+   * 프롬프트가 재료로 실어 준 카드 줄들.
+   *
+   * 모델이 이것을 답에 그대로 옮겨 적는다. "오공 P 바위 피부: 회복, 분신" 처럼
+   * 줄줄이 늘어놓고 마지막에 두 문장을 붙이는 꼴이다. 틀린 말이 아니라서 어느
+   * 규칙에도 안 걸렸는데, 카드가 화면에 이미 있으므로 값이 0 이다.
+   *
+   * 베낀 것과 제대로 쓴 글은 조사로 갈린다. 베끼면 "오공 P 바위 피부: 회복" 처럼
+   * 원문 그대로라 어절이 다 겹치고, 제 말로 쓰면 "바위 피부는 회복을 줍니다" 처럼
+   * 조사가 붙어 안 겹친다.
+   */
+  cardLines: string[];
 }
 
 function material(answer: AdvisorAnswer): Material | undefined {
@@ -114,7 +133,11 @@ function material(answer: AdvisorAnswer): Material | undefined {
     damage: card.damageProfile.primary,
     scaling: card.scalingProfile.primary,
   }));
-  return { effectsBySlot, slotByName, textBySlot, allTags, noteSentences, profiles, ownerByName };
+  const cardLines = cards.flatMap((card) => [
+    `${card.name} ${card.damageProfile.primary} ${card.scalingProfile.primary} ${card.wiki?.subclass ?? ""}`,
+    ...card.spells.map((spell) => `${card.name} ${spell.slot} ${spell.name} ${(spell.effects ?? []).join(" ")}`),
+  ]);
+  return { effectsBySlot, slotByName, textBySlot, allTags, noteSentences, profiles, ownerByName, cardLines };
 }
 
 /**
@@ -257,12 +280,20 @@ function directives(lang: Language, answer: AdvisorAnswer | undefined): string[]
   return lines.flatMap((line) => line.split("\n")).map(strip);
 }
 
-/** 어미와 글머리 기호를 떼어 견줄 수 있는 꼴로 만든다. */
+/**
+ * 어미와 기호를 떼어 견줄 수 있는 꼴로 만든다.
+ *
+ * 구두점도 뗀다. 모델이 카드를 옮길 때 "**[스킬 이름] 오공 P 바위 피부 (회복,
+ * 분신)**" 처럼 괄호와 쉼표를 달고 오는데, 그것이 어절에 붙어 있으면 "회복," 과
+ * "회복" 이 다른 낱말로 세어져 겹침이 0.55 로 떨어졌다. 원문과 같은 말인데도
+ * 그대로 통과했다.
+ */
 function strip(line: string): string {
   return line
-    .replace(/[*\-·\s]+/g, " ")
+    .replace(/[*\-·()[\]{}<>,.:;!?"'`|/\\]/g, " ")
+    .replace(/\s+/g, " ")
     .trim()
-    .replace(/(십시오|습니다|합니다|입니다)\.?$/, "");
+    .replace(/(십시오|습니다|합니다|입니다)$/, "");
 }
 
 /**
@@ -275,13 +306,15 @@ function strip(line: string): string {
  */
 const IMPERATIVE = /십시오[.!]?$/;
 
-function isBoilerplate(sentence: string, directiveStems: string[]): boolean {
+function isBoilerplate(sentence: string, directiveStems: string[], cardLines: string[] = []): boolean {
   const plain = sentence.replace(/\*\*/g, "").trim();
   if (GREETING.test(plain)) return true;
   if (IMPERATIVE.test(plain)) return true;
   const stem = strip(sentence);
   if (stem.length < 10) return false;
-  return directiveStems.some((other) => other.length >= 10 && overlap(stem, other) >= 0.6);
+  if (directiveStems.some((other) => other.length >= 10 && overlap(stem, other) >= 0.6)) return true;
+  // 카드를 그대로 옮겨 적은 줄. 조사가 없어 어절이 통째로 겹친다.
+  return cardLines.some((line) => overlap(strip(line), stem) >= 0.7 && overlap(stem, strip(line)) >= 0.7);
 }
 
 /**
@@ -446,7 +479,7 @@ export function groundCommentary(
     const sentence = raw.trim();
     const plain = sentence.replace(/\*\*/g, "");
     // 길이 문턱보다 먼저 본다. "물론이죠." 는 여섯 자라 문턱을 그냥 지나쳤다.
-    if (isBoilerplate(sentence, directiveStems)) {
+    if (isBoilerplate(sentence, directiveStems, m.cardLines)) {
       dropped.push({ sentence, verdict: "boilerplate" });
       continue;
     }
