@@ -76,7 +76,9 @@ for (const locale of ["ko_KR", "en_US", "zh_CN"] as const) {
       await expectNoHorizontalOverflow(page);
 
       await page.goto("./encyclopedia?tab=items");
-      await page.locator('button:has(img[src$="/3057.png"])').first().click();
+      // 확장자로 고르지 않는다. 아이콘을 미리 줄인 WebP 로 바꾸면서 `.png` 가
+      // 사라졌고 이 줄이 30초를 기다리다 죽었다. 아이템 번호만 보면 형식을 바꿔도 산다.
+      await page.locator('button:has(img[src*="/3057."])').first().click();
       const detail = page.getByTestId("item-detail");
       await expect(detail).toContainText(
         `${t.itemDetail.baseAttackDamage} × 100%`,
