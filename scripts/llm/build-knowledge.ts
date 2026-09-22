@@ -60,6 +60,52 @@ function main() {
   );
   const cards = builder.buildAll();
 
+  /*
+   * 효과 태그와 피해 유형을 한국어에서 가져다 쓴다.
+   *
+   * 이 값들은 툴팁 본문을 한국어 정규식으로 읽어 뽑는다("둔화시킵니다", "마법
+   * 피해를 입힙니다"). 그래서 영어·중국어 카드에서는 거의 아무것도 안 잡혔다.
+   *
+   *          효과 태그   피해 유형   태그 없는 스킬
+   *   한국어    1,799       696            24
+   *   영어·중국어  247         0           741
+   *
+   * 카드가 이 꼴이면 상성 도출도 못 돌고(피해 유형이 "불명" 이 된다) 해설에 실을
+   * 재료가 없다. 정규식을 언어마다 새로 쓰는 길은 언어가 늘 때마다 같은 일을
+   * 되풀이하는 길이다.
+   *
+   * 태그는 **번역하지 않는 열쇠**다. 화면과 프롬프트가 `translateTag` 로 옮겨
+   * 보이므로, 한국어에서 한 번 뽑아 모든 언어가 나눠 쓰면 된다. 챔피언 id 와 슬롯은
+   * 언어와 무관하므로 짝을 잃을 자리도 없다.
+   */
+  if (lang !== "ko_KR") {
+    const korean = loadStaticData("ko_KR");
+    const base = createChampionCardBuilder(
+      korean.champions,
+      korean.riotMeta,
+      korean.wikiMeta,
+      loadDashes(),
+      loadSpellOverrides(),
+    ).buildAll();
+    const bySlot = new Map<string, { damageTypes: ChampionCard["spells"][number]["damageTypes"]; effects: string[] }>();
+    const mechanicsById = new Map<string, string[]>();
+    for (const card of base) {
+      mechanicsById.set(card.id, card.mechanics);
+      for (const spell of card.spells) {
+        bySlot.set(`${card.id}:${spell.slot}`, { damageTypes: spell.damageTypes, effects: spell.effects });
+      }
+    }
+    for (const card of cards) {
+      card.mechanics = mechanicsById.get(card.id) ?? card.mechanics;
+      for (const spell of card.spells) {
+        const derived = bySlot.get(`${card.id}:${spell.slot}`);
+        if (!derived) continue;
+        spell.damageTypes = derived.damageTypes;
+        spell.effects = derived.effects;
+      }
+    }
+  }
+
   const outDir = path.join(PUBLIC_DATA_ROOT, data.patch, "llm");
   fs.mkdirSync(outDir, { recursive: true });
   const outFile = path.join(outDir, `champion-cards-${lang}.json`);
