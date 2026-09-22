@@ -39,8 +39,21 @@ export function VsCooldownMatrix({ sides, version, onSelect }: { sides: MatrixSi
     recharges: rankCooldowns({ ability: column.ability, columns: rowCount, values: column.ability?.rechargeSeconds ?? [] }),
   }));
   const peerIndex = (index: number) => (index + ACTIVE_SLOTS.length) % columns.length;
+  /*
+   * 두 챔피언을 여백으로 가른다. 세로선은 긋지 않는다.
+   *
+   * 예전에는 상대 쪽 첫 칸마다 `border-l` 을 붙였다. 표 칸은 행 높이를 꽉 채우고
+   * 칸끼리 붙어 있어서, 챔피언 고르는 줄 위부터 꼬리말 아래까지 한 줄이 통으로
+   * 내려갔다. 그런데 아래 두 구역(레벨별 능력치, 스킬 상세)은 `gap-x-8` 여백으로만
+   * 가른다. 같은 화면에서 한 구역만 선을 그으니 어긋나 보였다.
+   *
+   * 여백 폭을 아래 구역과 맞춘다(sm 이상에서 양쪽 16px, 합쳐서 32px = gap-x-8).
+   * 표가 `table-fixed` 라 칸 너비는 그대로고 안쪽 여백만 는다.
+   */
   const groupStart = (side: VsSideKey, slot: string) => side === "opponent" && slot === ACTIVE_SLOTS[0];
-  const groupClass = (side: VsSideKey, slot: string) => (groupStart(side, slot) ? " border-l border-l-border/60" : "");
+  const groupEnd = (side: VsSideKey, slot: string) => side === "mine" && slot === ACTIVE_SLOTS[ACTIVE_SLOTS.length - 1];
+  const groupClass = (side: VsSideKey, slot: string) =>
+    groupStart(side, slot) ? " pl-2 sm:pl-4" : groupEnd(side, slot) ? " pr-2 sm:pr-4" : "";
   const hasDetails = sides.some(({ detail }) => detail);
   // A/B legend under the table: one line per champion that has forms, unique (key, label) pairs in A→B order.
   const formLegend = (detail?: ChampionDetailV2) => {
@@ -58,7 +71,7 @@ export function VsCooldownMatrix({ sides, version, onSelect }: { sides: MatrixSi
         <thead>
           <tr>
             {sides.map(({ side, id, result }, index) => (
-              <th key={side} scope="colgroup" colSpan={ACTIVE_SLOTS.length + (index === 0 ? 1 : 0)} className={"border-b border-border pb-2 pt-px align-top font-normal " + (side === "opponent" ? "border-l border-l-border/60 pl-1.5 sm:pl-2" : "pr-1.5 sm:pr-2")}>
+              <th key={side} scope="colgroup" colSpan={ACTIVE_SLOTS.length + (index === 0 ? 1 : 0)} className={"border-b border-border pb-2 pt-px align-top font-normal " + (side === "opponent" ? "pl-2 sm:pl-4" : "pr-2 sm:pr-4")}>
                 <div id={"vs-header-" + side}>
                   <VsChampionHeader id={id} side={side} label={t.comparison[side]} version={version} result={result} onSelect={() => onSelect(side)} />
                 </div>
@@ -68,7 +81,7 @@ export function VsCooldownMatrix({ sides, version, onSelect }: { sides: MatrixSi
           {hasDetails && <tr>
             <th scope="col" className="border-b border-border/60 px-1 text-left text-[11px] font-normal text-muted-foreground sm:px-2">{t.comparison.skill}</th>
             {columns.map(({ side, slot, name, ability }) => (
-              <VsMatrixSkill key={side + slot} side={side} slot={slot} name={name} ability={ability} version={version} groupStart={groupStart(side, slot)} onSelect={(selectedAbility, trigger) => { returnFocus.current = trigger; setSelected({ ability: selectedAbility, name, slot }); }} />
+              <VsMatrixSkill key={side + slot} side={side} slot={slot} name={name} ability={ability} version={version} groupClass={groupClass(side, slot)} onSelect={(selectedAbility, trigger) => { returnFocus.current = trigger; setSelected({ ability: selectedAbility, name, slot }); }} />
             ))}
           </tr>}
         </thead>
@@ -94,7 +107,7 @@ export function VsCooldownMatrix({ sides, version, onSelect }: { sides: MatrixSi
               {sides.map(({ side, detail }, index) => {
                 const forms = formLegend(detail);
                 return (
-                  <td key={side} colSpan={ACTIVE_SLOTS.length + (index === 0 ? 1 : 0)} className={"pb-1 pt-2 text-[11px] leading-4 text-muted-foreground " + (side === "opponent" ? "border-l border-l-border/60 pl-1.5 sm:pl-2" : "pl-1 sm:pl-2")}>
+                  <td key={side} colSpan={ACTIVE_SLOTS.length + (index === 0 ? 1 : 0)} className={"pb-1 pt-2 text-[11px] leading-4 text-muted-foreground " + (side === "opponent" ? "pl-2 sm:pl-4" : "pl-1 sm:pl-2")}>
                     {forms.length > 0 && (
                       <p data-form-labels data-side={side}>
                         <span className="mr-1.5 text-foreground/80">{detail?.champion.name}</span>
