@@ -67,11 +67,27 @@ export function VsCooldownMatrix({ sides, version, onSelect }: { sides: MatrixSi
       <h2 className="mb-2 px-0.5 text-sm font-semibold tracking-tight">{t.comparison.baseCooldowns}</h2>
       <table className="w-full table-fixed border-separate border-spacing-0" aria-label={t.comparison.baseCooldowns}>
         <caption className="sr-only">{t.comparison.tableNote}</caption>
-        <colgroup><col className="w-8 sm:w-14" />{columns.map((column) => <col key={column.side + column.slot} />)}</colgroup>
+        {/*
+          왼쪽 순위 열과 짝이 되는 빈 열을 오른쪽에 둔다.
+
+          아래 두 구역(레벨별 능력치, 스킬 상세)은 폭을 정확히 반으로 갈라 가운데가
+          container 정중앙에 떨어진다. 이 표는 왼쪽에만 순위 열이 있어서 그 절반인
+          28px 만큼 가운데가 오른쪽으로 밀려 있었다. 다섯 너비에서 재 보니 640px
+          부터 1512px 까지 모두 28px 로 같았다.
+
+          한쪽 열만 좁혀서 맞추면 같은 슬롯끼리 어긋난다 — Q 는 327px, R 은 369px
+          떨어져 비교표 구실을 못 한다. 순위 열을 페이지 바깥으로 빼는 것도 안 된다.
+          640px 에서 왼쪽 여백이 24px 뿐이라 잘린다.
+
+          그래서 오른쪽에 같은 폭을 비워 좌우를 맞춘다. 여덟 열이 모두 같은 너비로
+          남고 가운데가 정중앙에 온다. sm 미만에서는 아래 구역이 한 줄로 쌓여 맞출
+          가운데가 없으므로 폭을 주지 않는다.
+        */}
+        <colgroup><col className="w-8 sm:w-10" />{columns.map((column) => <col key={column.side + column.slot} />)}<col className="w-0 sm:w-10" /></colgroup>
         <thead>
           <tr>
-            {sides.map(({ side, id, result }, index) => (
-              <th key={side} scope="colgroup" colSpan={ACTIVE_SLOTS.length + (index === 0 ? 1 : 0)} className={"border-b border-border pb-2 pt-px align-top font-normal " + (side === "opponent" ? "pl-2 sm:pl-4" : "pr-2 sm:pr-4")}>
+            {sides.map(({ side, id, result }) => (
+              <th key={side} scope="colgroup" colSpan={ACTIVE_SLOTS.length + 1} className={"border-b border-border pb-2 pt-px align-top font-normal " + (side === "opponent" ? "pl-2 sm:pl-4" : "pr-2 sm:pr-4")}>
                 <div id={"vs-header-" + side}>
                   <VsChampionHeader id={id} side={side} label={t.comparison[side]} version={version} result={result} onSelect={() => onSelect(side)} />
                 </div>
@@ -83,11 +99,12 @@ export function VsCooldownMatrix({ sides, version, onSelect }: { sides: MatrixSi
             {columns.map(({ side, slot, name, ability }) => (
               <VsMatrixSkill key={side + slot} side={side} slot={slot} name={name} ability={ability} version={version} groupClass={groupClass(side, slot)} onSelect={(selectedAbility, trigger) => { returnFocus.current = trigger; setSelected({ ability: selectedAbility, name, slot }); }} />
             ))}
+            <td className="border-b border-border/60 p-0" />
           </tr>}
         </thead>
         <tbody>
           {!hasDetails && (
-            <tr><td colSpan={columns.length + 1} className="px-2 py-8 text-center text-xs text-muted-foreground">{t.comparison.empty}</td></tr>
+            <tr><td colSpan={columns.length + 2} className="px-2 py-8 text-center text-xs text-muted-foreground">{t.comparison.empty}</td></tr>
           )}
           {hasDetails && Array.from({ length: rowCount }, (_, index) => (
             <tr key={index} data-rank-row={index + 1} className="hover:bg-muted/40">
@@ -98,16 +115,17 @@ export function VsCooldownMatrix({ sides, version, onSelect }: { sides: MatrixSi
                   {recharges[index] !== null && <span className="mt-0.5 block text-[11px] leading-4 text-muted-foreground">{t.common.rechargeTime} <VsCooldownValue value={recharges[index]} peer={values[peerIndex(columnIndex)]?.recharges[index] ?? null} kind="recharge" side={side} slot={slot} rank={index + 1} format={formatter.format} /></span>}
                 </td>
               ))}
+              <td className="border-b border-border/50 p-0" />
             </tr>
           ))}
         </tbody>
         {hasDetails && (
           <tfoot>
             <tr>
-              {sides.map(({ side, detail }, index) => {
+              {sides.map(({ side, detail }) => {
                 const forms = formLegend(detail);
                 return (
-                  <td key={side} colSpan={ACTIVE_SLOTS.length + (index === 0 ? 1 : 0)} className={"pb-1 pt-2 text-[11px] leading-4 text-muted-foreground " + (side === "opponent" ? "pl-2 sm:pl-4" : "pl-1 sm:pl-2")}>
+                  <td key={side} colSpan={ACTIVE_SLOTS.length + 1} className={"pb-1 pt-2 text-[11px] leading-4 text-muted-foreground " + (side === "opponent" ? "pl-2 sm:pl-4" : "pl-1 sm:pl-2")}>
                     {forms.length > 0 && (
                       <p data-form-labels data-side={side}>
                         <span className="mr-1.5 text-foreground/80">{detail?.champion.name}</span>
