@@ -20,11 +20,20 @@ import { mkdir, readFile, readdir, rm, writeFile } from "node:fs/promises";
 import path from "node:path";
 import sharp from "sharp";
 import { decodeDataManifest } from "../src/data/contracts/dataManifest";
+import { RUNE_TREE_META } from "../src/data/mappers/runeMapper";
 
 /** 화면에서 가장 크게 쓰는 자리가 40px 이다. 2배 화면을 덮고도 남는 값. */
 const CHAMPION_SIZE = 96;
 /** 아이템은 원본이 64px 다. 표시 자리는 32px 안팎이라 64px 를 유지한다. */
 const ITEM_SIZE = 64;
+/**
+ * 룬 아이콘은 원본이 가장 무겁다. 25장에 854KB 로 한 장에 34KB 다.
+ *
+ * 룬 화면에서 가장 크게 쓰는 자리도 40px 대라 64px 면 넉넉하다. 게다가 이 아이콘만
+ * 외부 호스트(`ddragon.leagueoflegends.com`)를 직접 보고 있어서 서비스워커가
+ * 맡지도 못했다. 우리 자리로 가져오면 그 문제도 같이 풀린다.
+ */
+const RUNE_SIZE = 64;
 const QUALITY = 82;
 
 /** 같은 파일을 여러 번 받지 않도록 한 번에 여덟 개씩만 받는다. */
@@ -92,10 +101,36 @@ async function generateThumbnails() {
   const itemsFile = path.join(directory, release.patchVersion, "items-normalized-ko_KR.json");
   const items = (JSON.parse(await readFile(itemsFile, "utf8")) as { items: Array<{ id: string }> }).items;
 
-  // 지난 판본은 지운다. 남겨 두면 패치마다 저장소가 불어난다.
+  /*
+   * 룬 아이콘 경로는 자료 안에 `perk-images/Styles/.../X.png` 꼴로 박혀 있다.
+   * 로케일마다 같은 그림이라 하나만 읽어 모으고, 폴더 구조를 그대로 옮긴다.
+   * 화면이 `runeIconUrl(iconPath)` 로 부르므로 경로가 어긋나면 안 된다.
+   */
+  const runesFile = path.join(directory, release.patchVersion, "runes-normalized-ko_KR.json");
+  const runePaths = [...new Set([
+    ...new Set([...(await readFile(runesFile, "utf8")).matchAll(/"iconPath"\s*:\s*"([^"]+)"/g)].map((match) => match[1])),
+  ]
+    .concat(Object.values(RUNE_TREE_META).map((tree) => tree.icon))
+    .filter((iconPath) => iconPath.endsWith(".png")))];
+  /*
+   * 두 꼴이 섞여 온다. 룬은 상대 경로, 스탯 파편만 `/lol-game-data/assets/v1/...`
+   * 절대 경로다. Data Dragon 은 뒤엣것의 접두사를 뺀 자리에 파일을 둔다. 화면 쪽
+   * `runeIconKey` 와 같은 규칙이어야 하고, 어긋나면 시험이 잡는다.
+   */
+  const runeKey = (iconPath: string) =>
+    iconPath.replace(/^\/lol-game-data\/assets\/v1\//, "").replace(/^\//, "").replace(/\.png$/, "");
+
+  /*
+   * 지난 판본은 지운다. 남겨 두면 패치마다 저장소가 불어난다.
+   *
+   * `runes` 는 예외다. 룬 자료에는 판본이 안 들어 있어 부르는 쪽이 값을 모르고,
+   * Data Dragon 도 룬 아이콘만은 판본 없는 주소로 준다. 그래서 판본 밖에 두고
+   * 패치마다 덮어쓴다.
+   */
   const imgRoot = path.join(process.cwd(), "public/img");
+  const runeOut = path.join(imgRoot, "runes");
   for (const entry of await readdir(imgRoot).catch(() => [])) {
-    if (entry !== ddragon) await rm(path.join(imgRoot, entry), { recursive: true, force: true });
+    if (entry !== ddragon && entry !== "runes") await rm(path.join(imgRoot, entry), { recursive: true, force: true });
   }
   await mkdir(path.join(out, "champion"), { recursive: true });
   await mkdir(path.join(out, "item"), { recursive: true });
@@ -111,11 +146,20 @@ async function generateThumbnails() {
       file: path.join(out, "item", `${item.id}.webp`),
       size: ITEM_SIZE,
     })),
+    ...runePaths.map((iconPath) => ({
+      url: `https://ddragon.leagueoflegends.com/cdn/img/${runeKey(iconPath)}.png`,
+      file: path.join(runeOut, `${runeKey(iconPath)}.webp`),
+      size: RUNE_SIZE,
+    })),
   ];
+  // 룬은 폴더가 깊다. 미리 만들어 두지 않으면 쓰기가 실패한다.
+  for (const iconPath of runePaths) {
+    await mkdir(path.dirname(path.join(runeOut, runeKey(iconPath))), { recursive: true });
+  }
 
   const { bytesIn, bytesOut, missing } = await run(jobs);
   const mb = (bytes: number) => `${(bytes / 1024 / 1024).toFixed(1)}MB`;
-  console.log(`썸네일 ${jobs.length}장 (챔피언 ${championIds.length} · 아이템 ${items.length})`);
+  console.log(`썸네일 ${jobs.length}장 (챔피언 ${championIds.length} · 아이템 ${items.length} · 룬 ${runePaths.length})`);
   console.log(`  원본 ${mb(bytesIn)} → ${mb(bytesOut)} (${Math.round((1 - bytesOut / bytesIn) * 100)}% 절감)`);
   console.log(`  ${out}`);
   if (missing.length > 0) {

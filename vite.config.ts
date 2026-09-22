@@ -101,6 +101,31 @@ export default defineConfig(({ mode }) => {
               expiration: { maxEntries: 1200, maxAgeSeconds: 60 * 60 * 24 * 60 },
             },
           },
+          /*
+           * 아이콘은 한 번 받으면 다시 묻지 않는다.
+           *
+           * 여기에 규칙이 없어서 이미지가 서비스워커를 아예 안 거치고 있었다.
+           * 챔피언 목록을 두 번째로 열어도 요청이 174건 그대로 나갔다. 바이트는
+           * 브라우저 캐시로 줄지만 왕복 174번은 그대로라, 그 사이 자리맡이
+           * 보였다가 채워졌다.
+           *
+           * 경로에 Data Dragon 판본이 박혀 있어(`img/16.18.1/...`) 같은 주소의
+           * 내용이 바뀌는 일이 없다. 그래서 CacheFirst 로 두고 오래 붙잡는다.
+           * 판본이 올라가면 주소가 달라지고, 낡은 것은 `cleanupOutdatedCaches` 와
+           * 수명이 치운다.
+           *
+           * 미리 받아 두지는 않는다(globPatterns 에 webp 를 넣지 않았다). 1,041장
+           * 1.9MB 를 설치 때 다 받으면 첫 방문이 그만큼 늦어진다. 본 것만 담는다.
+           */
+          {
+            urlPattern: /\/cooldown\/img\//,
+            handler: "CacheFirst",
+            options: {
+              cacheName: "cooldown-icons-v1",
+              cacheableResponse: { statuses: [0, 200] },
+              expiration: { maxEntries: 1500, maxAgeSeconds: 60 * 60 * 24 * 60 },
+            },
+          },
           {
             urlPattern: /\/cooldown\/data\/version\.json$/,
             handler: "NetworkFirst",
