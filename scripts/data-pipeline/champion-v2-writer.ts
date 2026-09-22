@@ -8,6 +8,7 @@ import type {
 import {
   buildChampionDetailV2,
   buildChampionIndexV2,
+  type WikiClassById,
 } from "./champion-data-v2";
 import type { ChampionById, SpellDataByChampion } from "./champion-source";
 import { buildChampionProfile } from "./champion-profile";
@@ -64,8 +65,28 @@ export function writeChampionV2Dataset(
 
   fs.writeFileSync(
     path.join(outputDir, "index.json"),
-    JSON.stringify(buildChampionIndexV2(details), null, 2),
+    JSON.stringify(buildChampionIndexV2(details, readWikiClasses(options.versionDir)), null, 2),
     "utf-8"
   );
   return details.length;
+}
+
+/**
+ * 위키가 매긴 하위 직군을 읽는다. 없으면 빈 표를 돌려준다.
+ *
+ * `npm run llm:fetch-wiki` 가 만드는 파일이다. 아직 안 받았거나 새 패치라 비어
+ * 있어도 목록 생성은 멈추지 않는다. 그 대신 몇 명이 빠졌는지 시험이 지켜본다.
+ */
+function readWikiClasses(versionDir: string): WikiClassById {
+  const file = path.join(versionDir, "llm", "champion-wiki-meta.json");
+  if (!fs.existsSync(file)) return {};
+  const parsed = JSON.parse(fs.readFileSync(file, "utf-8")) as {
+    champions?: Array<{ id?: string; subclasses?: string[]; positions?: string[] }>;
+  };
+  const table: WikiClassById = {};
+  for (const entry of parsed.champions ?? []) {
+    if (!entry.id) continue;
+    table[entry.id] = { subclasses: entry.subclasses, positions: entry.positions };
+  }
+  return table;
 }

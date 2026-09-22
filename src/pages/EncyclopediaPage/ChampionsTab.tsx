@@ -15,7 +15,31 @@ export function ChampionsTab(props: EncyclopediaPageProps) {
   const [params, setParams] = useSearchParams();
   const [selecting, setSelecting] = useState(false);
   const [search, setSearch] = useState("");
-  const champions = useChampionSearch(props.championList, search);
+  /*
+   * 직군으로 거른다.
+   *
+   * 라이엇의 `tags` 는 여섯 갈래뿐이라 가렌과 야스오가 같은 Fighter 로 묶인다.
+   * 실제로 쓰는 말과 맞지 않아 거르개로 쓸 수 없다. 대신 커뮤니티 위키가 매긴
+   * 하위 직군을 쓴다 — 나서스는 Juggernaut, 야스오는 Skirmisher 다.
+   *
+   * 갈래 이름은 옮기지 않고 위키 원문을 쓴다. 상성 카드가 이미 그렇게 보이고 있어
+   * 화면 안에서 같은 말이 두 가지로 나오는 편이 더 나쁘다.
+   *
+   * 여럿 고르면 그중 하나라도 걸리면 남긴다. 한 챔피언이 둘에 걸치기도 한다
+   * (오로라 = Mage + Assassin).
+   */
+  const [roles, setRoles] = useState<string[]>([]);
+  const searched = useChampionSearch(props.championList, search);
+  const allRoles = useMemo(
+    () => [...new Set((props.championList ?? []).flatMap((champion) => champion.subclasses ?? []))].sort(),
+    [props.championList],
+  );
+  const champions = useMemo(
+    () => (roles.length === 0 ? searched : searched.filter((champion) => champion.subclasses?.some((role) => roles.includes(role)))),
+    [searched, roles],
+  );
+  const toggleRole = (role: string) =>
+    setRoles((current) => (current.includes(role) ? current.filter((value) => value !== role) : [...current, role]));
   const selected = props.championList?.find((champion) => champion.id === params.get("champion"));
   const identity = useMemo(() => ({ patchVersion: props.patchVersion, sources: props.sources }), [props.patchVersion, props.sources]);
   const { profile, error, retry } = useChampionProfile(selected?.id ?? "", identity, props.lang);
@@ -54,6 +78,33 @@ export function ChampionsTab(props: EncyclopediaPageProps) {
             <Search aria-hidden="true" className="size-4 text-muted-foreground" />
             <input value={search} onChange={(event) => setSearch(event.target.value)} aria-label={t.comparison.select} placeholder={t.comparison.select} className="w-full bg-transparent py-2.5 text-base md:text-sm outline-none" />
           </label>
+          {allRoles.length > 0 && (
+            <div className="mb-4 flex flex-wrap items-center gap-1.5" role="group" aria-label={t.championProfile.roleFilter} data-role-filter>
+              <button
+                type="button"
+                onClick={() => setRoles([])}
+                aria-pressed={roles.length === 0}
+                className={`rounded-full border px-2.5 py-1 text-xs focus-visible:outline-2 focus-visible:outline-primary ${roles.length === 0 ? "border-foreground/40 font-semibold" : "border-border text-muted-foreground hover:text-foreground"}`}
+              >
+                {t.championProfile.roleFilterAll}
+              </button>
+              {allRoles.map((role) => {
+                const on = roles.includes(role);
+                return (
+                  <button
+                    key={role}
+                    type="button"
+                    onClick={() => toggleRole(role)}
+                    aria-pressed={on}
+                    data-role={role}
+                    className={`rounded-full border px-2.5 py-1 text-xs focus-visible:outline-2 focus-visible:outline-primary ${on ? "border-foreground/40 font-semibold" : "border-border text-muted-foreground hover:text-foreground"}`}
+                  >
+                    {role}
+                  </button>
+                );
+              })}
+            </div>
+          )}
           {/*
             열 수를 화면 크기마다 못 박지 않는다.
 
