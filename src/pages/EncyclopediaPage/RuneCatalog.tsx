@@ -1,5 +1,6 @@
 import type { CSSProperties } from "react";
 import type { Rune, RuneStatShard, RuneTree } from "@/types";
+import { runeIconUrl } from "@/data/assets/riotAssetUrls";
 import { AlertTriangle } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import {
@@ -28,17 +29,9 @@ interface RuneDetailProps {
   warning: string;
 }
 
-function runeIconUrl(icon: string): string {
-  return `https://ddragon.leagueoflegends.com/cdn/img/${icon}`;
-}
-
-function statShardIconUrl(iconPath: string): string {
-  const prefix = "/lol-game-data/assets/v1";
-  const trimmed = iconPath.startsWith(prefix)
-    ? iconPath.slice(prefix.length)
-    : iconPath;
-  return `https://ddragon.leagueoflegends.com/cdn/img${trimmed}`;
-}
+// 같은 함수를 여기에 한 벌 더 두고 있었다. 룬과 스탯 파편이 경로 꼴이 달라 둘로
+// 갈라 두었는데, 공용 `runeIconUrl` 이 두 꼴을 다 받는다. 한 자리만 남긴다.
+const statShardIconUrl = runeIconUrl;
 
 function RuneDetail({ rune, warning }: RuneDetailProps) {
   const description = (rune.descriptionHtml || "")

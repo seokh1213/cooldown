@@ -10,6 +10,8 @@
 import assert from "node:assert/strict";
 import * as fs from "node:fs";
 import * as path from "node:path";
+import { runeIconKey } from "../src/data/assets/riotAssetUrls";
+import { RUNE_TREE_META } from "../src/data/mappers/runeMapper";
 
 const root = process.cwd();
 const dataDir = path.join(root, "public/data");
@@ -22,7 +24,8 @@ const out = path.join(imgRoot, release.sources.ddragon);
 
 assert.ok(fs.existsSync(out), `썸네일 폴더가 없다: ${out}. \`npm run generate-thumbnails\` 를 돌려야 한다`);
 
-const stale = fs.readdirSync(imgRoot).filter((entry) => entry !== release.sources.ddragon);
+// `runes` 는 판본 밖에 두는 자리다. 낡은 것으로 세지 않는다.
+const stale = fs.readdirSync(imgRoot).filter((entry) => entry !== release.sources.ddragon && entry !== "runes");
 assert.deepEqual(stale, [], "지난 판본 썸네일이 남아 있다. 저장소가 패치마다 불어난다");
 
 const championIds = fs
@@ -35,9 +38,29 @@ const itemIds = (
   }
 ).items.map((item) => item.id);
 
+/*
+ * 룬은 판본 폴더 밖에 있다. 룬 자료에 판본이 안 들어 있어 부르는 쪽이 값을 모르고,
+ * Data Dragon 도 룬 아이콘만은 판본 없는 주소로 주기 때문이다.
+ *
+ * 경로 꼴이 둘로 섞여 오므로 화면과 생성기가 같은 규칙으로 이름을 지어야 한다.
+ * 여기서 그 짝을 확인한다 — 어긋나면 룬 화면 그림이 통째로 깨진다.
+ */
+const runeKeys = [
+  ...new Set(
+    [...fs.readFileSync(path.join(dataDir, release.patchVersion, "runes-normalized-ko_KR.json"), "utf8").matchAll(/"iconPath"\s*:\s*"([^"]+)"/g)]
+      .map((match) => match[1])
+      .filter((iconPath) => iconPath.endsWith(".png"))
+      .map(runeIconKey)
+      // 계열 아이콘 다섯 장은 자료가 아니라 매퍼에 박혀 있다. 여기 없으면 룬 화면이 깨진다.
+      .concat(Object.values(RUNE_TREE_META).map((tree) => runeIconKey(tree.icon))),
+  ),
+];
+assert.ok(runeKeys.length > 40, `룬 아이콘이 ${runeKeys.length}개뿐이다`);
+
 const missing: string[] = [];
 for (const id of championIds) if (!fs.existsSync(path.join(out, "champion", `${id}.webp`))) missing.push(`champion/${id}`);
 for (const id of itemIds) if (!fs.existsSync(path.join(out, "item", `${id}.webp`))) missing.push(`item/${id}`);
+for (const key of runeKeys) if (!fs.existsSync(path.join(imgRoot, "runes", `${key}.webp`))) missing.push(`runes/${key}`);
 assert.deepEqual(missing.slice(0, 20), [], `썸네일이 빠진 것 ${missing.length}건`);
 
 assert.ok(championIds.length > 150, `챔피언이 ${championIds.length}명뿐이다. 자료를 못 읽은 것이다`);

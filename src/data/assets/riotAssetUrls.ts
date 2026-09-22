@@ -32,5 +32,26 @@ export const summonerSpellIconUrl = (
 ) =>
   `https://ddragon.leagueoflegends.com/cdn/${ddragonVersion}/img/spell/${fileName}`;
 
+/**
+ * 룬 아이콘. 자료에 박힌 경로를 그대로 쓰되 우리 자리를 본다.
+ *
+ * 이것만 외부 호스트를 직접 보고 있었다. 25장에 854KB — 셋 중 가장 무거운데
+ * 서비스워커가 맡지도 못했다. 판본 자리로 옮기면서 64px WebP 로 줄였다.
+ *
+ * 룬 자료에는 판본이 안 들어 있어 경로를 부르는 쪽이 값을 모른다. Data Dragon 도
+ * 룬 아이콘만은 판본 없는 주소(`cdn/img/...`)로 주므로, 우리도 판본 없는 자리에
+ * 둔다. 대신 `runes` 라는 이름으로 갈라 두어 판본 갈이 때 덮어써진다.
+ */
+/**
+ * 자료에 박힌 룬 아이콘 경로를 파일 이름으로 바꾼다.
+ *
+ * 두 꼴이 섞여 온다. 룬은 `perk-images/Styles/...` 처럼 상대 경로이고, 스탯 파편만
+ * `/lol-game-data/assets/v1/perk-images/StatMods/...` 처럼 절대 경로다. Data Dragon
+ * 은 뒤엣것의 접두사를 뺀 자리에 파일을 둔다. 썸네일 생성기도 같은 규칙을 쓴다 —
+ * 어긋나면 그림이 깨지므로 시험이 짝을 확인한다.
+ */
+export const runeIconKey = (iconPath: string) =>
+  iconPath.replace(/^\/lol-game-data\/assets\/v1\//, "").replace(/^\//, "").replace(/\.png$/, "");
+
 export const runeIconUrl = (iconPath: string) =>
-  `https://ddragon.leagueoflegends.com/cdn/img/${iconPath}`;
+  `${import.meta.env.BASE_URL}img/runes/${runeIconKey(iconPath)}.webp`;

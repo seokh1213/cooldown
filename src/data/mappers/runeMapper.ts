@@ -9,7 +9,13 @@ import type {
 import type { NormalizedRuneDataFile } from "@/types/combatNormalized";
 import { STAT_DEFINITIONS, type StatKey } from "@/types/combatStats";
 
-const RUNE_TREE_META: Record<
+/**
+ * 룬 계열 다섯 갈래의 이름과 아이콘.
+ *
+ * 아이콘 경로가 자료 파일이 아니라 여기 박혀 있다. 썸네일 생성기도 이 표를 읽는다 —
+ * 두 자리에 따로 적어 두었더니 계열 아이콘 다섯 장만 안 만들어져 룬 화면에서 깨졌다.
+ */
+export const RUNE_TREE_META: Record<
   number,
   { key: string; nameEn: string; nameKo: string; icon: string }
 > = {
