@@ -96,7 +96,16 @@ export function ItemEffects({ item }: { item: NormalizedItem }) {
               // 스킬 툴팁의 계수 항과 같은 글리프다. 이름을 못 찾으면 글자만 둔다.
               const icon = statLineIcon(line, lang);
               return (
-                <li key={index}>
+                /*
+                 * 열쇠에 줄 내용을 담는다. 자리 번호만 쓰면 아이템을 바꿔도 React 가
+                 * 같은 `<img>` 를 그대로 쓰고 `src` 만 갈아 끼운다. 브라우저는 새 그림을
+                 * 풀 때까지 **옛 픽셀을 계속 띄우므로**, 크라켄에서 사파이어 수정으로
+                 * 넘어가면 마나 자리에 공격력 글리프가 잠깐 남았다.
+                 *
+                 * 줄이 같으면 그림도 같으니 그때는 그대로 두는 것이 맞다. 달라질 때만
+                 * 새 칸이 선다.
+                 */
+                <li key={`${index}:${line}`}>
                   {icon && <img src={statIconUrl(icon)} alt="" decoding="async" className={STAT_ICON_CLASS} />}
                   {structured ? <SafeInlineHtml html={line} /> : line}
                 </li>
