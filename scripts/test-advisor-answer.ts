@@ -24,6 +24,8 @@ import {
   buildRuleAnswer,
   buildSpellAnswer,
   detectSpellFocus,
+  detectStat,
+  detectLevel,
   editDistance,
   percentileLabel,
   ruleVerdict,
@@ -69,7 +71,14 @@ assert.equal(detectSpellFocus("말파 W 쿨타임")?.focus, "cooldown");
 assert.equal(detectSpellFocus("말파 W 쿨 몇이야")?.focus, "cooldown");
 assert.equal(detectSpellFocus("럼블 Q 마나 얼마 먹어")?.focus, "cost");
 assert.equal(detectSpellFocus("럼블 Q 계수")?.focus, "ratio");
-assert.deepEqual(detectSpellFocus("럼블 E 마저 몇 깎여?"), { focus: "effect", keywords: ["마법 저항력"] });
+/*
+ * 찾을 낱말이 세 언어를 함께 담는다. 툴팁 본문이 그 나라 말이라 어느 하나만 맞으면 된다.
+ * 한국어로 물어도 목록에 영어·중국어가 함께 있는 것이 맞다.
+ */
+assert.deepEqual(detectSpellFocus("럼블 E 마저 몇 깎여?"), {
+  focus: "effect",
+  keywords: ["마법 저항력", "Magic Resist", "魔法抗性"],
+});
 assert.equal(detectSpellFocus("럼블 E 둔화 몇 퍼")?.focus, "effect");
 assert.equal(detectSpellFocus("럼블 E 뭐야"), undefined, "사실을 안 짚으면 초점 없음");
 
@@ -419,6 +428,79 @@ assert.deepEqual(percentileLabel(100), { side: "top", value: 1 }, "최고도 상
   }
   // 한국어는 그대로여야 한다. 옮기는 길이 기본값을 건드리면 안 된다.
   assert.match(spellOneLiner(spellOf("Rumble", "Q")), /^쿨 /, "한국어 요약은 그대로");
+}
+
+// ── 의도 어휘가 세 언어에서 같이 걸리는가 ────────────────────────────────
+/*
+ * 갈래를 가리는 일은 모델이 한다(`routeAsk`). 그런데 모델이 다루지 않는 것이 있다 —
+ * 둘을 견주는 물음인지, 어느 능력치를 묻는지, 몇 레벨을 묻는지.
+ *
+ * 그 셋은 이 파일의 어휘표가 유일한 길인데 한국어만 적혀 있었다. 재 보니 영어·중국어
+ * 물음 여섯 갈래에서 **규칙이 하나도 안 걸렸다.** 비교 카드가 아예 안 나오고, 스킬
+ * 답에 머리글이 안 붙고, 능력치는 늘 1레벨이었다.
+ *
+ * 같은 뜻의 물음이면 어느 말로 물어도 같은 것이 걸려야 한다.
+ */
+{
+  const ASKS: Array<{ what: string; ko: string; en: string; zh: string; expect: string[] }> = [
+    {
+      what: "둘을 견준다",
+      ko: "럼블이랑 오공 중에 누가 더 체력 높아?",
+      en: "Who has more health, Rumble or Wukong?",
+      zh: "鳄鱼和悟空谁的生命值更高？",
+      expect: ["비교", "스탯:health"],
+    },
+    {
+      what: "스킬 전체",
+      ko: "오공 스킬 설명해줘",
+      en: "Explain Wukong's abilities",
+      zh: "介绍一下悟空的技能",
+      expect: ["스킬전체"],
+    },
+    {
+      what: "스킬 한 수치",
+      ko: "럼블 Q 쿨타임",
+      en: "Rumble Q cooldown",
+      zh: "鳄鱼 Q 冷却时间",
+      expect: ["수치:cooldown"],
+    },
+    {
+      what: "레벨을 짚은 능력치",
+      ko: "18레벨 마법 저항력 누가 높아",
+      en: "Who has more magic resist at level 18",
+      zh: "18级魔抗谁更高",
+      expect: ["비교", "스탯:magicResist", "레벨:18"],
+    },
+    {
+      what: "한 챔피언 공략",
+      ko: "럼블 상대법 알려줘",
+      en: "How do I beat Rumble?",
+      zh: "怎么打鳄鱼？",
+      expect: ["상성", "공략법"],
+    },
+  ];
+  const fired = (text: string): string[] => {
+    const focus = detectSpellFocus(text);
+    const stat = detectStat(text);
+    const level = detectLevel(text);
+    return [
+      asksComparison(text, 2) ? "비교" : "",
+      asksMatchup(text) ? "상성" : "",
+      asksGuide(text) ? "공략법" : "",
+      asksSkillsOverview(text) ? "스킬전체" : "",
+      focus ? `수치:${focus.focus}` : "",
+      stat ? `스탯:${stat}` : "",
+      level !== 1 ? `레벨:${level}` : "",
+    ].filter(Boolean);
+  };
+  for (const ask of ASKS) {
+    for (const lang of ["ko", "en", "zh"] as const) {
+      const got = fired(ask[lang]);
+      for (const want of ask.expect) {
+        assert.ok(got.includes(want), `${ask.what}(${lang}): "${want}" 가 안 걸렸다 — 걸린 것 ${got.join(", ") || "없음"}`);
+      }
+    }
+  }
 }
 
 console.log(`✅ Advisor answer passed (카드 ${cards.length}, 규칙 ${rules.length})`);
