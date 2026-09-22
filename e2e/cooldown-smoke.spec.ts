@@ -50,7 +50,10 @@ test("serves a lazy route directly under the Pages base path", async ({ page }) 
   await page.getByRole("button", { name: "룬 백과", exact: true }).click();
   await expect(page.getByText("집중 공격", { exact: true }).first()).toBeVisible();
   await page.getByRole("button", { name: "아이템 백과" }).click();
-  await expect(page.getByAltText("롱소드").first()).toBeVisible();
+  // `alt` 가 아니라 역할로 찾는다. 아이템 목록 아이콘이 스프라이트에서 잘라 쓰는
+  // `role="img"` 로 바뀌었는데, `getByAltText` 는 `<img alt>` 만 본다. 역할로 찾으면
+  // 둘 다 잡히므로 그리는 방식이 또 바뀌어도 살아남는다.
+  await expect(page.getByRole("img", { name: "롱소드" }).first()).toBeVisible();
   await expect(page.locator("#root")).not.toBeEmpty();
 });
 

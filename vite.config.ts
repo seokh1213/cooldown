@@ -85,7 +85,19 @@ export default defineConfig(({ mode }) => {
         importScripts: [bridgeFile],
         additionalManifestEntries: bootstrapEntries,
         cleanupOutdatedCaches: true,
-        globPatterns: ["**/*.{js,css,html,png,svg,ico}"],
+        /*
+         * 챔피언 아이콘만 미리 받아 둔다.
+         *
+         * 챔피언 목록은 173장을 한꺼번에 그린다. 지연 로딩이 통하지 않는 화면이라
+         * 처음 열 때 173건이 줄줄이 날아가고 그동안 자리맡이 보인다. 설치 때
+         * 424KB 를 미리 받아 두면 그 화면이 처음부터 꽉 찬 채로 뜬다.
+         *
+         * 아이템 스프라이트(1.28MB)는 넣지 않는다. 아이템 화면에 들어가야 쓰는
+         * 것이라 미리 받으면 안 볼 사람까지 받는다. 목록 매니페스트는 둘 다 넣는다 —
+         * 합쳐서 30KB 도 안 되는데, 이것이 늦으면 스프라이트를 쓸지 정하지 못해
+         * 낱장이 먼저 나가 버린다.
+         */
+        globPatterns: ["**/*.{js,css,html,png,svg,ico}", "img/*/champions.webp", "img/*/*s.json"],
         runtimeCaching: [
           {
             urlPattern: /\/cooldown\/release\.json$/,

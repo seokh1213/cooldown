@@ -16,6 +16,7 @@
  * 내려받은 것을 그대로 두지 않고 **자료에 있는 챔피언·아이템만** 만든다. 목록이
  * 곧 만들 대상이라 빠지는 것이 생길 수 없고, 시험이 그 짝을 확인한다.
  */
+import { existsSync } from "node:fs";
 import { mkdir, readFile, readdir, rm, writeFile } from "node:fs/promises";
 import path from "node:path";
 import sharp from "sharp";
@@ -158,10 +159,38 @@ async function generateThumbnails() {
   }
 
   const { bytesIn, bytesOut, missing } = await run(jobs);
+
+  /*
+   * 낱장을 한 장으로 합친다.
+   *
+   * 목록 화면은 아이콘을 한꺼번에 그린다. 챔피언 173건, 아이템은 눈에 보이는
+   * 것만 해도 212건이 줄줄이 날아가고 그동안 자리맡이 보인다. 한 장으로 합치면
+   * 요청이 1건이 되고 화면이 한 번에 채워진다.
+   *
+   * 바이트도 조금 준다. 비슷한 그림이 모여 있어 압축이 더 먹는다.
+   *   챔피언 424KB → 373KB (12%)   아이템 1,524KB → 1,243KB (18%)
+   *
+   * 낱장도 그대로 남긴다. 상세 화면처럼 한 장만 쓰는 자리는 합친 것을 받을 까닭이
+   * 없다. 목록만 합친 것을 본다.
+   */
+  const sheets = [
+    await buildSheet("champion", championIds, CHAMPION_SIZE, out, QUALITY),
+    /*
+     * 아이템 시트만 압축을 더 건다.
+     *
+     * 868칸이라 한 장이 크다. 품질을 82 에서 70 으로 내리면 1,243KB 가 1,042KB 가
+     * 된다. 더 내려도 55 에서 901KB 로 얻는 것이 줄고, 32px 로 그리는 그림이라
+     * 70 아래부터는 눈에 띈다.
+     */
+    await buildSheet("item", items.map((item) => item.id), ITEM_SIZE, out, 70),
+  ];
   const mb = (bytes: number) => `${(bytes / 1024 / 1024).toFixed(1)}MB`;
   console.log(`썸네일 ${jobs.length}장 (챔피언 ${championIds.length} · 아이템 ${items.length} · 룬 ${runePaths.length})`);
   console.log(`  원본 ${mb(bytesIn)} → ${mb(bytesOut)} (${Math.round((1 - bytesOut / bytesIn) * 100)}% 절감)`);
   console.log(`  ${out}`);
+  for (const sheet of sheets) {
+    console.log(`  스프라이트 ${sheet.kind}: ${sheet.count}장 · ${sheet.cols}×${sheet.rows} · ${(sheet.bytes / 1024).toFixed(0)}KB`);
+  }
   if (missing.length > 0) {
     console.log(`\n  못 받은 것 ${missing.length}장`);
     for (const line of missing.slice(0, 10)) console.log(`    ${line}`);
@@ -172,3 +201,40 @@ generateThumbnails().catch((error: unknown) => {
   console.error(error);
   process.exitCode = 1;
 });
+
+interface SheetInfo {
+  kind: string;
+  count: number;
+  cols: number;
+  rows: number;
+  bytes: number;
+}
+
+/**
+ * 낱장을 격자로 붙여 한 장으로 만든다.
+ *
+ * 차례는 **자료에 있는 순서 그대로**이고, 옆에 이름 목록을 담은 작은 JSON 을 함께
+ * 남긴다. 순서를 양쪽에서 따로 계산하게 두면 하나만 어긋나도 그림이 통째로 밀리는데,
+ * 목록을 같이 주면 그럴 일이 없다.
+ */
+async function buildSheet(kind: string, ids: string[], size: number, out: string, quality: number): Promise<SheetInfo> {
+  const present = ids.filter((id) => existsSync(path.join(out, kind, `${id}.webp`)));
+  const cols = Math.ceil(Math.sqrt(present.length));
+  const rows = Math.ceil(present.length / cols);
+  const composite = await Promise.all(
+    present.map(async (id, index) => ({
+      input: await readFile(path.join(out, kind, `${id}.webp`)),
+      left: (index % cols) * size,
+      top: Math.floor(index / cols) * size,
+    })),
+  );
+  const sheet = await sharp({
+    create: { width: cols * size, height: rows * size, channels: 4, background: { r: 0, g: 0, b: 0, alpha: 0 } },
+  })
+    .composite(composite)
+    .webp({ quality })
+    .toBuffer();
+  await writeFile(path.join(out, `${kind}s.webp`), sheet);
+  await writeFile(path.join(out, `${kind}s.json`), `${JSON.stringify({ size, cols, rows, ids: present })}\n`);
+  return { kind, count: present.length, cols, rows, bytes: sheet.length };
+}

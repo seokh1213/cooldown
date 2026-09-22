@@ -12,6 +12,7 @@ import { useDeviceType } from "@/hooks/useDeviceType";
 import { useTranslation } from "@/i18n";
 import type { ItemTier } from "@/lib/itemTierUtils";
 import { ItemCell, ItemDetail } from "./ItemDetail";
+import { useSpriteSheet } from "@/components/ui/sprite-icon";
 import {
   groupItemsByTier,
   shouldShowInStore,
@@ -62,6 +63,8 @@ function ItemGrid(props: {
   onSelect: (item: Item) => void;
 }) {
   const { itemsByTier, ddragonVersion, selectedId, tierLabel, onSelect } = props;
+  // 목록 아이콘은 한 장에서 잘라 쓴다. 한 화면에 이백 칸이 넘어 요청 수가 곧 지연이다.
+  const sprite = useSpriteSheet("item", ddragonVersion);
   return (
     <div className="p-1 space-y-1">
       {(Object.keys(itemsByTier) as ItemTier[]).map((tier) => {
@@ -76,6 +79,7 @@ function ItemGrid(props: {
                   key={item.id}
                   item={item}
                   ddragonVersion={ddragonVersion}
+                  sprite={sprite}
                   isSelected={selectedId === item.id}
                   onSelect={() => onSelect(item)}
                 />

@@ -76,9 +76,14 @@ for (const locale of ["ko_KR", "en_US", "zh_CN"] as const) {
       await expectNoHorizontalOverflow(page);
 
       await page.goto("./encyclopedia?tab=items");
-      // 확장자로 고르지 않는다. 아이콘을 미리 줄인 WebP 로 바꾸면서 `.png` 가
-      // 사라졌고 이 줄이 30초를 기다리다 죽었다. 아이템 번호만 보면 형식을 바꿔도 산다.
-      await page.locator('button:has(img[src*="/3057."])').first().click();
+      /*
+       * 아이템 번호로만 고른다.
+       *
+       * 두 번 깨졌다. 아이콘을 WebP 로 바꾸자 `.png` 로 찾던 줄이 죽었고, 목록을
+       * 스프라이트로 바꾸자 `<img>` 자체가 사라졌다. 그릴 때마다 붙는 `data-sprite`
+       * 와 낱장 `<img>` 를 함께 걸어 둔다.
+       */
+      await page.locator('button:has([data-sprite="3057"]), button:has(img[src*="/3057."])').first().click();
       const detail = page.getByTestId("item-detail");
       await expect(detail).toContainText(
         `${t.itemDetail.baseAttackDamage} × 100%`,
