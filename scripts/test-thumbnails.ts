@@ -79,6 +79,25 @@ for (const kind of ["champion", "item"] as const) {
 }
 assert.deepEqual(heavy.slice(0, 10), [], "줄어들지 않은 썸네일이 있다");
 
+/*
+ * 스프라이트와 그 목록이 자료와 맞는지 본다.
+ *
+ * 목록 화면이 이것을 보고 칸을 자른다. 차례가 하나만 밀려도 챔피언마다 엉뚱한
+ * 그림이 나오는데, 눈으로는 "왜 이 아이콘이지" 싶을 뿐 고장으로 안 보인다.
+ */
+for (const [kind, expected] of [
+  ["champion", championIds],
+  ["item", itemIds],
+] as const) {
+  const sheetFile = path.join(out, `${kind}s.webp`);
+  const listFile = path.join(out, `${kind}s.json`);
+  assert.ok(fs.existsSync(sheetFile), `${kind} 스프라이트가 없다`);
+  const list = JSON.parse(fs.readFileSync(listFile, "utf8")) as { size: number; cols: number; rows: number; ids: string[] };
+  assert.deepEqual(list.ids, expected, `${kind}: 스프라이트 차례가 자료와 다르다`);
+  assert.ok(list.cols * list.rows >= list.ids.length, `${kind}: 격자가 칸 수보다 작다`);
+  assert.ok(list.size > 0, `${kind}: 칸 크기가 없다`);
+}
+
 const total = [...championIds.map((id) => path.join(out, "champion", `${id}.webp`)), ...itemIds.map((id) => path.join(out, "item", `${id}.webp`))]
   .reduce((sum, file) => sum + fs.statSync(file).size, 0);
 console.log(`✅ 썸네일 통과 (${championIds.length + itemIds.length}장 · ${(total / 1024 / 1024).toFixed(1)}MB)`);

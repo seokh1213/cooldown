@@ -4,6 +4,7 @@ import { ArrowLeft, ChevronDown, Search } from "lucide-react";
 import ChampionSelector from "@/components/features/ChampionSelector";
 import { Button } from "@/components/ui/button";
 import { championIconUrl } from "@/data/assets/riotAssetUrls";
+import { SpriteIcon, useSpriteSheet } from "@/components/ui/sprite-icon";
 import { useChampionSearch } from "@/hooks/useChampionSearch";
 import { useTranslation } from "@/i18n";
 import { ChampionSkinGallery } from "./ChampionSkinGallery";
@@ -38,6 +39,12 @@ export function ChampionsTab(props: EncyclopediaPageProps) {
     () => (roles.length === 0 ? searched : searched.filter((champion) => champion.subclasses?.some((role) => roles.includes(role)))),
     [searched, roles],
   );
+  /*
+   * 목록 아이콘은 스프라이트 한 장에서 잘라 쓴다. 173건이 줄줄이 날아가던 것이
+   * 1건이 된다. 스프라이트에 없는 챔피언(새로 나온 뒤 아직 안 만들어진 경우)은
+   * 낱장으로 돌아간다.
+   */
+  const sprite = useSpriteSheet("champion", props.ddragonVersion);
   const toggleRole = (role: string) =>
     setRoles((current) => (current.includes(role) ? current.filter((value) => value !== role) : [...current, role]));
   const selected = props.championList?.find((champion) => champion.id === params.get("champion"));
@@ -122,7 +129,13 @@ export function ChampionsTab(props: EncyclopediaPageProps) {
           >
             {champions.map((champion) => (
               <button key={champion.id} type="button" onClick={() => select(champion.id)} className="group flex min-w-0 flex-col items-center gap-1.5 rounded py-1 text-center focus-visible:outline-2 focus-visible:outline-primary">
-                <img src={championIconUrl(props.ddragonVersion, champion.id)} alt="" width={44} height={44} loading="lazy" className="size-11 rounded group-hover:ring-2 group-hover:ring-primary" />
+                {sprite.pending ? (
+                  <span className="size-11 rounded bg-muted/40" />
+                ) : sprite.index.has(champion.id) ? (
+                  <SpriteIcon state={sprite} id={champion.id} size={44} className="block rounded bg-cover group-hover:ring-2 group-hover:ring-primary" />
+                ) : (
+                  <img src={championIconUrl(props.ddragonVersion, champion.id)} alt="" width={44} height={44} loading="lazy" className="size-11 rounded group-hover:ring-2 group-hover:ring-primary" />
+                )}
                 {/*
                   `break-keep` 으로 낱말 가운데를 자르지 않는다. 기본값은 한글을 아무
                   글자에서나 끊어서 "레나타 글라스크" 가 "레나 / 타 글 / 라스 / 크" 로
