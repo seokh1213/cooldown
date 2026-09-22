@@ -166,21 +166,18 @@ export interface ChampionIndexEntryV2 {
   title: string;
   iconFile: string;
   /**
-   * 커뮤니티 위키 기준 하위 직군. 목록 화면의 거르개가 이것을 쓴다.
+   * 라이엇 공식 역할군. 목록 화면의 거르개가 이것을 쓴다.
    *
-   * 라이엇의 `tags` 는 여섯 갈래(Fighter/Mage/Tank…)뿐이라 "가렌과 야스오가
-   * 같은 Fighter" 가 된다. 실제로 쓰는 말과 맞지 않는다. Fandom 위키는
-   * Juggernaut·Diver·Skirmisher 처럼 열넷으로 갈라 두었고, 나서스는
-   * Juggernaut, 야스오는 Skirmisher 다.
+   * 클라이언트가 보여 주는 여섯 갈래 그대로다 — fighter, mage, assassin, marksman,
+   * tank, support. 한 챔피언이 둘까지 갖는다(아리 = mage + assassin).
    *
-   * 한 챔피언이 둘 이상에 걸치기도 한다(오로라 = Mage + Assassin). 위키에
-   * 아직 안 올라온 새 챔피언은 비어 있다.
+   * 한때 커뮤니티 위키의 하위 직군 열넷을 썼다. 가렌 Juggernaut, 야스오 Skirmisher
+   * 처럼 가르는 눈은 더 밝지만 거르개로는 칸이 너무 잘게 쪼개져 쓸모가 없었다.
+   * 공식 여섯이면 173명이 고르게 나뉜다.
    *
-   * 출처: League of Legends Wiki (Fandom) Module:ChampionData/data — CC BY-SA
+   * 출처: Riot 챔피언 메타(`champion-riot-meta-<locale>.json`)
    */
-  subclasses?: string[];
-  /** 위키 기준 주 포지션(Top, Jungle, Middle, Bottom, Support). */
-  positions?: string[];
+  roles?: string[];
 }
 
 export interface ChampionIndexV2 {

@@ -8,7 +8,7 @@ import type {
 import {
   buildChampionDetailV2,
   buildChampionIndexV2,
-  type WikiClassById,
+  type ChampionRolesById,
 } from "./champion-data-v2";
 import type { ChampionById, SpellDataByChampion } from "./champion-source";
 import { buildChampionProfile } from "./champion-profile";
@@ -65,28 +65,31 @@ export function writeChampionV2Dataset(
 
   fs.writeFileSync(
     path.join(outputDir, "index.json"),
-    JSON.stringify(buildChampionIndexV2(details, readWikiClasses(options.versionDir)), null, 2),
+    JSON.stringify(buildChampionIndexV2(details, readChampionRoles(options.versionDir, options.locale)), null, 2),
     "utf-8"
   );
   return details.length;
 }
 
 /**
- * 위키가 매긴 하위 직군을 읽는다. 없으면 빈 표를 돌려준다.
+ * 라이엇이 매긴 역할군을 읽는다. 없으면 빈 표를 돌려준다.
  *
- * `npm run llm:fetch-wiki` 가 만드는 파일이다. 아직 안 받았거나 새 패치라 비어
- * 있어도 목록 생성은 멈추지 않는다. 그 대신 몇 명이 빠졌는지 시험이 지켜본다.
+ * 클라이언트가 보여 주는 여섯 갈래다. 로케일마다 파일이 있지만 값은 영문 열쇠라
+ * 어느 것을 읽어도 같다 — 없을 때를 대비해 한국어 파일로 떨어진다.
  */
-function readWikiClasses(versionDir: string): WikiClassById {
-  const file = path.join(versionDir, "llm", "champion-wiki-meta.json");
-  if (!fs.existsSync(file)) return {};
+function readChampionRoles(versionDir: string, locale: string): ChampionRolesById {
+  const candidates = [
+    path.join(versionDir, "llm", `champion-riot-meta-${locale}.json`),
+    path.join(versionDir, "llm", "champion-riot-meta-ko_KR.json"),
+  ];
+  const file = candidates.find((candidate) => fs.existsSync(candidate));
+  if (!file) return {};
   const parsed = JSON.parse(fs.readFileSync(file, "utf-8")) as {
-    champions?: Array<{ id?: string; subclasses?: string[]; positions?: string[] }>;
+    champions?: Array<{ id?: string; roles?: string[] }>;
   };
-  const table: WikiClassById = {};
+  const table: ChampionRolesById = {};
   for (const entry of parsed.champions ?? []) {
-    if (!entry.id) continue;
-    table[entry.id] = { subclasses: entry.subclasses, positions: entry.positions };
+    if (entry.id && entry.roles?.length) table[entry.id] = entry.roles;
   }
   return table;
 }
