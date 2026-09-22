@@ -13,7 +13,7 @@
  */
 import { APP_STORAGE_KEYS, decodeSelectedChampions, readStorage } from "@/data/storage/appStorage";
 
-export type PageRoute = "cooldown" | "vs" | "encyclopedia" | "simulation" | "other";
+export type PageRoute = "cooldown" | "vs" | "encyclopedia" | "other";
 
 export interface PageContext {
   route: PageRoute;
@@ -28,7 +28,6 @@ function routeOf(pathname: string): PageRoute {
   if (path === "/") return "cooldown";
   if (path.endsWith("/vs")) return "vs";
   if (path.endsWith("/encyclopedia")) return "encyclopedia";
-  if (path.endsWith("/simulation")) return "simulation";
   return "other";
 }
 

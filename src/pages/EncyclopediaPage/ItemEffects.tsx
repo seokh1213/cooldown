@@ -66,7 +66,7 @@ function EffectFormula({ effect }: { effect: NormalizedItemEffect }) {
           {damage.conditions
             .map(
               (condition) =>
-                t.pages.simulation.conditionLabels[condition] ?? condition,
+                t.itemDetail.conditionLabels[condition] ?? condition,
             )
             .join(" · ")}
         </p>
