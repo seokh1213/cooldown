@@ -22,8 +22,8 @@ export function ChampionsTab(props: EncyclopediaPageProps) {
    * 실제로 쓰는 말과 맞지 않아 거르개로 쓸 수 없다. 대신 커뮤니티 위키가 매긴
    * 하위 직군을 쓴다 — 나서스는 Juggernaut, 야스오는 Skirmisher 다.
    *
-   * 갈래 이름은 옮기지 않고 위키 원문을 쓴다. 상성 카드가 이미 그렇게 보이고 있어
-   * 화면 안에서 같은 말이 두 가지로 나오는 편이 더 나쁘다.
+   * 갈래 이름은 언어마다 옮긴다. 라이엇 자료에는 영문만 있고 클라이언트도 큰 분류
+   * 여섯만 쓰므로, 각 언어권 커뮤니티가 굳혀 놓은 말을 따른다(`roleNames`).
    *
    * 여럿 고르면 그중 하나라도 걸리면 남긴다. 한 챔피언이 둘에 걸치기도 한다
    * (오로라 = Mage + Assassin).
@@ -99,7 +99,7 @@ export function ChampionsTab(props: EncyclopediaPageProps) {
                     data-role={role}
                     className={`rounded-full border px-2.5 py-1 text-xs focus-visible:outline-2 focus-visible:outline-primary ${on ? "border-foreground/40 font-semibold" : "border-border text-muted-foreground hover:text-foreground"}`}
                   >
-                    {role}
+                    {t.championProfile.roleNames[role] ?? role}
                   </button>
                 );
               })}
