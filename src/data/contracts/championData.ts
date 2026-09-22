@@ -165,6 +165,22 @@ export interface ChampionIndexEntryV2 {
   name: string;
   title: string;
   iconFile: string;
+  /**
+   * 커뮤니티 위키 기준 하위 직군. 목록 화면의 거르개가 이것을 쓴다.
+   *
+   * 라이엇의 `tags` 는 여섯 갈래(Fighter/Mage/Tank…)뿐이라 "가렌과 야스오가
+   * 같은 Fighter" 가 된다. 실제로 쓰는 말과 맞지 않는다. Fandom 위키는
+   * Juggernaut·Diver·Skirmisher 처럼 열넷으로 갈라 두었고, 나서스는
+   * Juggernaut, 야스오는 Skirmisher 다.
+   *
+   * 한 챔피언이 둘 이상에 걸치기도 한다(오로라 = Mage + Assassin). 위키에
+   * 아직 안 올라온 새 챔피언은 비어 있다.
+   *
+   * 출처: League of Legends Wiki (Fandom) Module:ChampionData/data — CC BY-SA
+   */
+  subclasses?: string[];
+  /** 위키 기준 주 포지션(Top, Jungle, Middle, Bottom, Support). */
+  positions?: string[];
 }
 
 export interface ChampionIndexV2 {

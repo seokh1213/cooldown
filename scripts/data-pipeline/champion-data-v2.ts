@@ -254,8 +254,17 @@ export function buildChampionDetailV2(
   };
 }
 
+/**
+ * 위키가 알려 준 갈래. 파일 읽기는 부르는 쪽이 한다.
+ *
+ * 여기는 순수 함수로 둔다. 시험이 자료 없이 돌 수 있어야 하고, 위키 파일이
+ * 없어도(새로 받기 전이라도) 목록은 만들어져야 한다.
+ */
+export type WikiClassById = Record<string, { subclasses?: string[]; positions?: string[] }>;
+
 export function buildChampionIndexV2(
-  details: ChampionDetailV2[]
+  details: ChampionDetailV2[],
+  wiki: WikiClassById = {}
 ): ChampionIndexV2 {
   const first = details[0];
   if (!first) throw new Error("Cannot build an empty champion index");
@@ -271,6 +280,8 @@ export function buildChampionIndexV2(
         name: champion.name,
         title: champion.title,
         iconFile: `${champion.id}.png`,
+        ...(wiki[champion.id]?.subclasses?.length ? { subclasses: wiki[champion.id].subclasses } : {}),
+        ...(wiki[champion.id]?.positions?.length ? { positions: wiki[champion.id].positions } : {}),
       }))
       .sort((left, right) => left.name.localeCompare(right.name)),
   };
