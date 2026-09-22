@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { useTranslation } from "@/i18n";
 import { Search } from "lucide-react";
 import { summonerSpellIconUrl } from "@/data/assets/riotAssetUrls";
-import { SafeInlineHtml } from "@/components/ui/safe-html";
+import { SafeBlockHtml } from "@/components/ui/safe-html";
 
 /**
  * 소환사 주문 백과
@@ -15,15 +15,15 @@ import { SafeInlineHtml } from "@/components/ui/safe-html";
  * 아홉 줄을 보려고 한 번에 하나씩 눌러야 했다. 같이 놓고 견주는 것이 이 앱이 하는
  * 일인데 그 화면만 반대로 되어 있었다.
  *
- * 격자로 펼치고 **재사용 대기시간을 주인공으로** 세운다. 15초짜리 강타와 300초짜리
- * 점멸이 한눈에 갈리고, 막대 길이가 그 차이를 그대로 보인다. 아홉 장이라 한 화면에
- * 다 들어간다.
+ * 격자로 펼치고 대기시간을 크게 적는다. 아홉 장이라 한 화면에 다 들어간다.
  *
- * 설명이 깨져 나오던 것도 여기서 고친다. 툴팁에는 `{{ shieldduration }}` 같은
- * 치환자가 남아 있는데 라이엇이 값을 안 채워 준다 — `datavalues` 가 빈 객체이고
- * `effect` 는 전부 0 이며 CommunityDragon 에도 없다. 아홉 중 일곱이 이 꼴이라
- * 화면에 빨간 물음표가 줄줄이 나왔다. 값 없는 자리를 보이느니 깨끗한 한 줄 설명을
- * 쓰고, 치환자가 없는 툴팁만 접어서 덧붙인다.
+ * 한때 대기시간 옆에 막대를 그렸다. 길이로 견주라는 뜻이었는데 그래프로 읽혀
+ * "이게 뭔가" 싶게 만들었다. 숫자가 이미 그 일을 하므로 걷어냈다.
+ *
+ * 설명은 **수치가 든 쪽을 먼저** 쓴다. 툴팁에 `{{ shieldduration }}` 같은 치환자가
+ * 남아 있으면 라이엇이 값을 안 채운 것이라(아홉 중 일곱이 이 꼴이다) 그때만 한 줄
+ * 설명으로 내린다. 치환자가 없는 툴팁은 "5초에 걸쳐 90 - 430의 고정 피해" 처럼
+ * 실제 수치를 담고 있으므로 접지 않고 그대로 보인다.
  */
 
 interface SummonerTabProps {
@@ -72,9 +72,6 @@ export function SummonerTab({ patchVersion, sources, ddragonVersion, lang }: Sum
     );
   }, [spells, term]);
 
-  // 막대 길이의 기준. 가장 긴 것이 꽉 차고 나머지는 그에 견준다.
-  const longest = useMemo(() => Math.max(1, ...(spells ?? []).map(cooldownOf)), [spells]);
-
   if (!spells) {
     return <div className="mt-4 text-sm text-muted-foreground">{t.championSelector.loading}</div>;
   }
@@ -101,10 +98,11 @@ export function SummonerTab({ patchVersion, sources, ddragonVersion, lang }: Sum
         {filtered.map((spell) => {
           const cooldown = cooldownOf(spell);
           const tooltip = spell.tooltip ?? "";
-          const showTooltip = tooltip.length > 0 && !hasUnresolvedTokens(tooltip);
+          // 수치가 든 쪽을 먼저 쓴다. 치환자가 남아 있으면 값이 없는 것이라 한 줄 설명으로.
+          const detailed = tooltip.length > 0 && !hasUnresolvedTokens(tooltip);
           return (
             <article key={spell.id} data-summoner-spell={spell.id} className="rounded-lg border bg-card p-3">
-              <div className="flex items-start gap-3">
+              <div className="flex items-center gap-3">
                 <img
                   src={summonerSpellIconUrl(ddragonVersion, spell.iconPath)}
                   alt=""
@@ -113,36 +111,17 @@ export function SummonerTab({ patchVersion, sources, ddragonVersion, lang }: Sum
                   loading="lazy"
                   className="size-10 shrink-0 rounded-md border border-border/60 bg-black/40"
                 />
-                <div className="min-w-0 flex-1">
-                  <div className="flex items-baseline justify-between gap-2">
-                    <h3 className="truncate text-sm font-semibold">{spell.name}</h3>
-                    {/* 대기시간이 주인공이다. 숫자를 크게, 단위를 작게. */}
-                    <span className="shrink-0 tabular-nums">
-                      <span className="text-base font-semibold">{cooldown}</span>
-                      <span className="ml-0.5 text-[11px] text-muted-foreground">{t.common.seconds}</span>
-                    </span>
-                  </div>
-                  {/*
-                    막대는 길이만으로 말한다. 색을 쓰면 주문마다 뜻이 있는 것처럼 읽히는데
-                    여기서 가르는 것은 길고 짧음 하나뿐이다.
-                  */}
-                  <div className="mt-1.5 h-1 w-full overflow-hidden rounded-full bg-muted" aria-hidden="true">
-                    <div className="h-full rounded-full bg-foreground/40" style={{ width: `${(cooldown / longest) * 100}%` }} />
-                  </div>
-                </div>
+                <h3 className="min-w-0 flex-1 truncate text-sm font-semibold">{spell.name}</h3>
+                <span className="shrink-0 tabular-nums">
+                  <span className="text-base font-semibold">{cooldown}</span>
+                  <span className="ml-0.5 text-[11px] text-muted-foreground">{t.common.seconds}</span>
+                </span>
               </div>
 
-              <p className="mt-2.5 text-xs leading-relaxed text-muted-foreground">
-                {spell.summary || spell.name}
-              </p>
-
-              {showTooltip && (
-                <details className="mt-2">
-                  <summary className="cursor-pointer text-[11px] text-muted-foreground hover:text-foreground">
-                    {t.itemDetail.original}
-                  </summary>
-                  <SafeInlineHtml className="mt-1.5 block text-xs leading-relaxed [&_br]:block" html={tooltip} />
-                </details>
+              {detailed ? (
+                <SafeBlockHtml className="mt-2.5 block text-xs leading-relaxed [&_br]:block" html={tooltip} />
+              ) : (
+                <p className="mt-2.5 text-xs leading-relaxed text-muted-foreground">{spell.summary || spell.name}</p>
               )}
             </article>
           );
