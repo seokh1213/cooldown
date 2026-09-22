@@ -140,6 +140,26 @@ export default defineConfig(({ mode }) => {
               expiration: { maxEntries: 1500, maxAgeSeconds: 60 * 60 * 24 * 60 },
             },
           },
+          /*
+           * 스플래시 아트는 본 것만 담는다.
+           *
+           * 아이콘과 달리 우리 자리로 옮기지 않았다. 스킨이 2,121종이고 960px WebP
+           * 로 줄여도 97MB 다. 저장소에 넣고 스킨이 나올 때마다 불리는 값보다,
+           * 갤러리에서 한 장씩 보는 그림을 그때 받는 값이 싸다.
+           *
+           * 대신 한 번 본 것은 다시 묻지 않는다. 주소에 스킨 번호가 박혀 있어 같은
+           * 주소의 내용이 바뀌지 않으므로 CacheFirst 로 둔다. 갤러리를 앞뒤로 넘길 때
+           * 두 번째부터는 네트워크를 안 탄다.
+           */
+          {
+            urlPattern: /^https:\/\/ddragon\.leagueoflegends\.com\/cdn\/img\/champion\/splash\//,
+            handler: "CacheFirst",
+            options: {
+              cacheName: "cooldown-splash-v1",
+              cacheableResponse: { statuses: [0, 200] },
+              expiration: { maxEntries: 300, maxAgeSeconds: 60 * 60 * 24 * 30 },
+            },
+          },
           {
             urlPattern: /\/cooldown\/data\/version\.json$/,
             handler: "NetworkFirst",

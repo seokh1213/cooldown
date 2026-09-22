@@ -171,6 +171,11 @@ export interface UseAdvisorResult {
    * 개체가 안 잡혀 자료 없이 나갈 질문에만 쓴다.
    */
   sendWithSearch: (question: string, system: string, options: SearchRoundOptions) => void;
+  /**
+   * 질문이 무엇을 묻는지 모델에게 묻는다. 화면에는 아무것도 남지 않는다.
+   * 모델이 없거나 실패하면 거절하므로 부르는 쪽이 규칙으로 되돌아간다.
+   */
+  classify: (system: string, question: string, maxTokens?: number) => Promise<string>;
   /** 답변 평가. 기기 안에만 쌓인다. */
   rate: (turnId: number, rating: "up" | "down", patch: string) => void;
   /**
@@ -653,6 +658,47 @@ export function useAdvisor(): UseAdvisorResult {
   );
 
   /**
+   * 값 하나만 받아 온다. 화면에는 아무것도 남기지 않는다.
+   *
+   * 질문이 무엇을 묻는지 가르는 일을 모델에게 맡기려고 둔 길이다. 지금까지는 한국어
+   * 낱말 목록이 그 일을 했는데, 세 언어로 재 보니 한국어 5/6, 영어 1/6, 중국어 1/6
+   * 이었다. 같은 문항에서 4B 는 6/6, 4/6, 6/6 이다. 낱말을 늘리는 것으로는 언어가
+   * 늘 때마다 같은 일을 다시 해야 한다.
+   *
+   * 답을 스트리밍하지 않고 끝난 글만 돌려준다. 짧은 생성이고 사용자가 볼 글이 아니라
+   * `turns` 를 건드리지 않는다. 실패하면 거절하고, 부르는 쪽이 규칙으로 되돌아간다.
+   */
+  const classify = useCallback(
+    (system: string, question: string, maxTokens = 16): Promise<string> => {
+      const worker = ensureWorker();
+      const id = nextId.current++;
+      return new Promise<string>((resolve, reject) => {
+        const onMessage = (event: MessageEvent<AdvisorResponse>) => {
+          const message = event.data;
+          if (!("id" in message) || message.id !== id) return;
+          if (message.type === "done") {
+            worker.removeEventListener("message", onMessage);
+            resolve(message.text.trim());
+          } else if (message.type === "error") {
+            worker.removeEventListener("message", onMessage);
+            reject(new Error(message.message));
+          }
+        };
+        worker.addEventListener("message", onMessage);
+        post({
+          type: "generate",
+          id,
+          model,
+          messages: [{ role: "user", content: question }],
+          system,
+          maxTokens,
+        });
+      });
+    },
+    [ensureWorker, post, model],
+  );
+
+  /**
    * 모델을 부르지 않고 답을 얹는다.
    *
    * 코드 전용 답변은 평가에서 적중 63/66 으로 모델(64/66)과 거의 같았다.
@@ -828,6 +874,7 @@ export function useAdvisor(): UseAdvisorResult {
     send,
     sendMatchup,
     answerWithoutModel,
+    classify,
     sendWithAnswer,
     sendWithTools,
     sendWithSearch,
