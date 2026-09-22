@@ -17,9 +17,11 @@ import { loadPlaybooks } from "./llm/lib/playbook";
 import {
   deriveEscapeClaims,
   deriveItemClaims,
+  deriveMatchupClaims,
   deriveStackClaims,
   renderEscapeClaims,
   renderItemClaims,
+  renderMatchupClaims,
   renderStackClaims,
 } from "./llm/lib/claims";
 
@@ -200,4 +202,38 @@ for (const [champion, book] of playbooks) {
 }
 
 assert.ok(generated >= 360, `도출 항목이 ${generated}건뿐입니다`);
+/*
+ * 상성 도출 문장이 세 언어로 나오는지 본다.
+ *
+ * 카드의 효과 태그와 피해 유형은 한국어 툴팁에서 뽑는다. 예전에는 영어·중국어 카드가
+ * 그 값을 못 받아 `damage` 가 "불명" 이 되고 도출이 한 줄도 안 나왔다 — 그 언어
+ * 사용자는 상성 지식을 하나도 못 받았다. 이제 한국어에서 뽑아 나눠 쓴다.
+ *
+ * 문장은 옮겨 적은 말이 아니라 그 서버가 실제로 쓰는 말이어야 한다. armor / 护甲,
+ * penetration / 穿透 이 나오는지 집어 확인한다.
+ */
+{
+  const me = cards.find((card) => card.id === "MonkeyKing");
+  const enemy = cards.find((card) => card.id === "Rumble");
+  assert.ok(me && enemy, "오공·럼블 카드");
+  const claims = deriveMatchupClaims(me, enemy);
+  assert.notEqual(claims.mine.damage, "불명", "내 피해 유형이 잡혀야 한다");
+  assert.notEqual(claims.theirs.damage, "불명", "상대 피해 유형이 잡혀야 한다");
+
+  for (const [lang, must] of [
+    ["ko_KR", ["방어력", "관통"]],
+    ["en_US", ["armor", "penetration"]],
+    ["zh_CN", ["护甲", "穿透"]],
+  ] as const) {
+    const lines = renderMatchupClaims(me, enemy, claims, lang);
+    assert.ok(lines.length >= 2, `${lang}: 도출 문장이 ${lines.length}줄뿐이다`);
+    const joined = lines.join(" ");
+    for (const word of must) {
+      assert.ok(joined.includes(word), `${lang}: "${word}" 가 없다. 그 서버가 쓰는 말이 아니다`);
+    }
+    // 다른 언어의 말이 섞이면 안 된다.
+    if (lang !== "ko_KR") assert.doesNotMatch(joined, /방어력|마법 저항력|관통을/, `${lang}: 한국어가 섞였다`);
+  }
+}
+
 console.log(`✅ 도출 노트 통과 (생성 ${generated}건, 그중 nuance ${withNuance}건)`);

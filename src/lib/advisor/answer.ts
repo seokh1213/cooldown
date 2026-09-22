@@ -1003,7 +1003,17 @@ export function buildCommentaryPrompt(
      * 재료에는 두 가지가 들어간다. 두 카드에서 그 자리에서 도출한 문장과, 사람이
      * 검증해 둔 플레이북 문장이다. 도출한 쪽이 이 조합을 직접 말하므로 앞에 온다.
      */
-    const matchupNotes = lang === "ko_KR" ? answer.notes : undefined;
+    /*
+     * 언어를 가리지 않는다.
+     *
+     * 예전에는 한국어일 때만 실었다. 노트가 한국어뿐이라 섞으면 모델이 한국어로
+     * 답해 버렸기 때문이다. 그런데 그 바람에 영어·중국어 사용자는 상성 지식을
+     * 하나도 못 받았다 — 카드만 보고 글을 지어야 했다.
+     *
+     * 이제 `matchupNotes` 가 언어별로 도출 문장을 짓고, 손으로 쓴 한국어 노트는
+     * 한국어일 때만 붙인다. 여기까지 온 글은 그 화면의 언어로 쓰여 있다.
+     */
+    const matchupNotes = answer.notes;
     if (matchupNotes && (matchupNotes.mine.length || matchupNotes.enemy.length)) {
       lines.push(w.notesHeader);
       for (const note of matchupNotes.mine) lines.push(`- ${me.name}: ${note}`);

@@ -26,7 +26,7 @@ import {
 } from "../../../scripts/llm/lib/rules";
 import { playbookToText, selectPlaybook, type Playbook } from "../../../scripts/llm/lib/playbookCore";
 import { selectNotes, type NotePerspective, type SelectedNotes } from "./noteSelect";
-import { deriveMatchupClaims, renderMatchupClaims } from "../../../scripts/llm/lib/claims";
+import { deriveMatchupClaims, renderMatchupClaims, type ClaimLang } from "../../../scripts/llm/lib/claims";
 import {
   findMechanics,
   mechanicsToText,
@@ -296,7 +296,12 @@ export function buildTagAnswer(
  */
 
 /** 상성 카드에 그대로 보일 노트. 해설 재료도 이것을 쓴다. */
-export function matchupNotes(data: AdvisorData, me: ChampionCard, enemy: ChampionCard): { mine: string[]; enemy: string[] } {
+export function matchupNotes(
+  data: AdvisorData,
+  me: ChampionCard,
+  enemy: ChampionCard,
+  lang: ClaimLang = "ko_KR",
+): { mine: string[]; enemy: string[] } {
   const selected = selectPlaybook(data.playbooks, me, enemy);
   /*
    * 조합은 삼만 쌍에 가까워 손으로 쓸 수 없다. 그런데 **미리 만들 필요가 없다.**
@@ -306,10 +311,21 @@ export function matchupNotes(data: AdvisorData, me: ChampionCard, enemy: Champio
    * 말이 아니고, 도출한 쪽이 물음에 더 가깝다. 이 문장들은 재료에 그대로 실리므로
    * 근거 검사도 통과한다.
    */
-  const derived = renderMatchupClaims(me, enemy, deriveMatchupClaims(me, enemy));
+  const derived = renderMatchupClaims(me, enemy, deriveMatchupClaims(me, enemy), lang);
+  /*
+   * 손으로 쓴 노트는 한국어일 때만 붙인다.
+   *
+   * 플레이북 3,723 건이 한국어로만 있다. 영어·중국어 프롬프트에 한국어 문단을
+   * 섞으면 모델이 그 언어를 따라가 답까지 한국어가 된다.
+   *
+   * 도출 문장은 다르다. 코드가 언어마다 짓는 글이라 섞일 일이 없다. 예전에는 이
+   * 둘을 한 덩어리로 보고 통째로 뺐고, 그래서 영어·중국어 사용자는 상성 지식을
+   * 하나도 못 받았다. 갈라 둔다.
+   */
+  const written = lang === "ko_KR";
   return {
-    mine: [...derived, ...selected.mine.slice(0, 3).map((entry) => entry.text)],
-    enemy: selected.vsEnemy.slice(0, 3).map((entry) => entry.text),
+    mine: [...derived, ...(written ? selected.mine.slice(0, 3).map((entry) => entry.text) : [])],
+    enemy: written ? selected.vsEnemy.slice(0, 3).map((entry) => entry.text) : [],
   };
 }
 
