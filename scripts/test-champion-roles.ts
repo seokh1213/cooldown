@@ -14,6 +14,11 @@ import assert from "node:assert/strict";
 import * as fs from "node:fs";
 import * as path from "node:path";
 import type { ChampionIndexV2 } from "../src/data/contracts/championData";
+import {
+  enChampionProfile,
+  koChampionProfile,
+  zhChampionProfile,
+} from "../src/i18n/championProfileTranslations";
 
 const directory = path.join(process.cwd(), "public/data");
 const patch = (JSON.parse(fs.readFileSync(path.join(directory, "version.json"), "utf8")) as { patchVersion: string }).patchVersion;
@@ -45,6 +50,24 @@ assert.deepEqual(roleOf("Yasuo"), ["Skirmisher"], "야스오는 Skirmisher 이�
 assert.ok(roleOf("Nasus").includes("Juggernaut"), "나서스는 Juggernaut 이어야 한다");
 // 한 챔피언이 둘에 걸치기도 한다. 거르개가 배열을 받는 근거다.
 assert.ok(roleOf("Aurora").length >= 2, "오로라는 갈래가 둘 이상이어야 한다");
+
+/*
+ * 갈래 이름이 세 언어에 다 있어야 한다.
+ *
+ * 없으면 화면이 영문을 그대로 보인다. 빈칸보다는 낫지만 한국어 화면에 영문이 섞여
+ * 나오는 것은 고장이다. 자료에 실제로 쓰인 갈래만 본다 — 위키가 새 갈래를 만들면
+ * 여기서 먼저 걸린다.
+ */
+const usedRoles = [...new Set(ko.champions.flatMap((champion) => champion.subclasses ?? []))].sort();
+for (const [locale, labels] of [
+  ["ko_KR", koChampionProfile],
+  ["zh_CN", zhChampionProfile],
+] as const) {
+  const missingNames = usedRoles.filter((role) => !labels.roleNames[role]);
+  assert.deepEqual(missingNames, [], `${locale}: 갈래 이름이 없다`);
+}
+// 영어는 위키가 쓰는 말이 곧 영어라 옮길 것이 없다. 표가 비어 있는 것이 맞다.
+assert.deepEqual(Object.keys(enChampionProfile.roleNames), [], "영어는 옮기지 않는다");
 
 const covered = ko.champions.filter((champion) => (champion.subclasses?.length ?? 0) > 0).length;
 console.log(`✅ 챔피언 직군 통과 (${covered}/${ko.champions.length}명 · 로케일 3종)`);
