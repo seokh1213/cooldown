@@ -335,10 +335,18 @@ export function currentModelChoice(): string {
  * **실제로는 걸리지 않을 만큼 큰 값**을 준다. 모델이 스스로 멈추지 않는 고장난
  * 상황에서만 작동하고, 그때는 중단 버튼이 있다.
  *
- * 8192 는 프롬프트 2천 토큰을 빼고도 남는 자리다. 지금 가장 긴 해설이 700토큰
- * 남짓이니 열 배 여유가 있다.
+ * 한때 8192 를 두었다. "걸리지 않을 만큼 크게" 라는 뜻이었는데, 이 값은 공짜가
+ * 아니다. WebGPU 는 프롬프트와 이 값을 더한 만큼 키·값 캐시 버퍼를 잡는다. 실제로
+ * 상성 질문에서 버퍼를 못 읽어 답이 통째로 오류로 바뀌었다.
+ *
+ *   failed to call OrtRun() ... Failed to download data from buffer:
+ *   [Invalid Buffer] is invalid due to a previous error.
+ *
+ * 가장 긴 해설이 700토큰 남짓이다. 2048 이면 세 배 여유이면서 캐시는 4분의 1 로
+ * 준다. 폭주는 이 선보다 먼저 반복 차단이 잡는다 — 같은 문장이 세 번 나오면
+ * 워커가 끊는다.
  */
-export const MAX_NEW_TOKENS = 8192;
+export const MAX_NEW_TOKENS = 2048;
 
 /** 동의 여부를 남기는 곳. 지우면 다시 묻는다. */
 export const CONSENT_STORAGE_KEY = "cooldown.advisor.consent.v1";
