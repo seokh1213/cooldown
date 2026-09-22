@@ -25,7 +25,7 @@
 import type { ChampionCard } from "../../../scripts/llm/lib/facts";
 import type { AdvisorAnswer } from "./answer";
 import type { Language } from "@/i18n";
-import { promptWords } from "./promptLocale";
+import { promptWords, translateDamage, translateScaling, translateTag } from "./promptLocale";
 import { advisorSystemPrompt } from "./persona";
 import { toPoliteSentence } from "../../../scripts/llm/lib/politeStyle";
 
@@ -55,14 +55,23 @@ function splitDone(text: string): { done: string[]; tail: string } {
 const HAS_NUMBER = /\d/;
 
 interface Material {
+  /** 이 해설이 쓰인 언어. 말을 찾는 규칙이 언어마다 다르다. */
+  lang: Language;
   /** 슬롯 → 그 스킬이 실제로 가진 효과 태그 */
   effectsBySlot: Map<string, Set<string>>;
   /** 스킬 이름 → 슬롯 */
   slotByName: Map<string, string>;
   /** 슬롯 → 툴팁 본문. 태그가 비어도 본문에는 적혀 있는 효과가 많다. */
   textBySlot: Map<string, string>;
-  /** 이 챔피언 스킬들의 효과 태그 전체 */
-  allTags: string[];
+  /**
+   * 이 챔피언 스킬들의 효과 태그 전체.
+   *
+   * `key` 는 카드에 적힌 한국어, `surface` 는 모델이 실제로 쓸 그 언어의 말이다.
+   * 둘을 갈라 두지 않았을 때는 영어·중국어 해설에서 태그가 **하나도** 안 잡혔다.
+   * 카드에는 "둔화" 라고 적혀 있는데 모델은 "slow" 라고 쓰기 때문이다. 짝이 안
+   * 맞는 문장이 걸리지 않고 그대로 나갔다.
+   */
+  allTags: Array<{ key: string; surface: string }>;
   /** 노트 문장. 여기서 온 말은 정의상 옳다. */
   noteSentences: string[];
   /** 카드 첫 줄이 적어 둔 피해 유형과 계수. 여기와 어긋나면 큰 거짓말이다. */
@@ -83,7 +92,7 @@ interface Material {
   cardLines: string[];
 }
 
-function material(answer: AdvisorAnswer): Material | undefined {
+function material(answer: AdvisorAnswer, lang: Language): Material | undefined {
   /*
    * 상성 답에도 돌려야 한다.
    *
@@ -110,7 +119,9 @@ function material(answer: AdvisorAnswer): Material | undefined {
       textBySlot.set(spell.slot, `${textBySlot.get(spell.slot) ?? ""} ${spell.summary ?? ""} ${spell.text ?? ""}`);
     }
   }
-  const allTags = [...new Set(cards.flatMap((card) => card.spells.flatMap((spell) => spell.effects ?? [])))];
+  const allTags = [...new Set(cards.flatMap((card) => card.spells.flatMap((spell) => spell.effects ?? [])))].map(
+    (key) => ({ key, surface: translateTag(key, lang) }),
+  );
 
   const notes =
     answer.kind === "champion"
@@ -134,10 +145,12 @@ function material(answer: AdvisorAnswer): Material | undefined {
     scaling: card.scalingProfile.primary,
   }));
   const cardLines = cards.flatMap((card) => [
-    `${card.name} ${card.damageProfile.primary} ${card.scalingProfile.primary} ${card.wiki?.subclass ?? ""}`,
-    ...card.spells.map((spell) => `${card.name} ${spell.slot} ${spell.name} ${(spell.effects ?? []).join(" ")}`),
+    `${card.name} ${translateDamage(card.damageProfile.primary, lang)} ${translateScaling(card.scalingProfile.primary, lang)} ${card.wiki?.subclass ?? ""}`,
+    ...card.spells.map(
+      (spell) => `${card.name} ${spell.slot} ${spell.name} ${(spell.effects ?? []).map((tag) => translateTag(tag, lang)).join(" ")}`,
+    ),
   ]);
-  return { effectsBySlot, slotByName, textBySlot, allTags, noteSentences, profiles, ownerByName, cardLines };
+  return { lang, effectsBySlot, slotByName, textBySlot, allTags, noteSentences, profiles, ownerByName, cardLines };
 }
 
 /**
@@ -147,10 +160,34 @@ function material(answer: AdvisorAnswer): Material | undefined {
  * 받습니다" 는 어느 스킬도 짚지 않아 아무 규칙에도 안 걸렸는데, 카드 첫 줄과
  * 정면으로 어긋난다. 상성 해설에서 특히 잦다.
  */
-const DAMAGE_WORDS: Array<[string, RegExp]> = [
-  ["물리", /물리/],
-  ["마법", /마법/],
-];
+const DAMAGE_WORDS: Record<Language, Array<[string, RegExp]>> = {
+  ko_KR: [
+    ["물리", /물리/],
+    ["마법", /마법/],
+  ],
+  en_US: [
+    ["물리", /\bphysical\b/i],
+    ["마법", /\bmagic(al)?\b/i],
+  ],
+  zh_CN: [
+    ["물리", /物理/],
+    ["마법", /魔法|法术/],
+  ],
+};
+
+/**
+ * **주는** 피해를 말하는 자리인가.
+ *
+ * 이 두 표가 한국어뿐이던 동안 영어·중국어 해설은 이 검사를 통째로 건너뛰었다.
+ * 카드에 물리라고 적힌 챔피언을 두고 "deals mostly magic damage" 라고 써도
+ * 아무 데도 안 걸렸다는 뜻이다. 태그와 달리 여기는 말 자체를 찾아야 하므로
+ * 카드 어휘표로는 안 되고 언어마다 적는다.
+ */
+const DAMAGE_CLAIM: Record<Language, RegExp> = {
+  ko_KR: /주 피해|피해 유형|피해를 (주|입)/,
+  en_US: /\b(primary|main|mostly|primarily|largely)\b[^.]{0,20}damage|damage (type|profile)|deals?\b[^.]{0,20}damage/i,
+  zh_CN: /主要伤害|伤害类型|造成[^。]{0,12}伤害/,
+};
 
 /**
  * 남의 스킬을 내 것이라고 말하는가.
@@ -167,7 +204,7 @@ const DAMAGE_WORDS: Array<[string, RegExp]> = [
  * 그래서 이름과 스킬 사이에 조사와 슬롯 문자밖에 없을 때만 임자로 친다. 잡는
  * 것이 줄지만 잡은 것은 확실하다.
  */
-const POSSESSIVE = /^의\s*[PQWER]?\s*$/;
+const POSSESSIVE = /^(의|'s|’s|的)\s*[PQWER]?\s*$/;
 /**
  * 주격·주제격은 소유를 뜻하지 않는다. 슬롯 문자가 함께 있을 때만 임자로 친다.
  *
@@ -199,7 +236,7 @@ function misattributes(sentence: string, m: Material): boolean {
   return false;
 }
 
-function contradictsProfile(sentence: string, profiles: Material["profiles"]): boolean {
+function contradictsProfile(sentence: string, profiles: Material["profiles"], lang: Language): boolean {
   for (const profile of profiles) {
     const at = sentence.indexOf(profile.name);
     if (at < 0) continue;
@@ -213,10 +250,12 @@ function contradictsProfile(sentence: string, profiles: Material["profiles"]): b
      * 어렵고" 가 걸렸다. 럼블이 주는 피해는 마법이 맞지만 이 문장은 받는 쪽
      * 이야기다. 카드에 적힌 것은 주는 쪽이므로 대조할 근거가 없다.
      */
-    if (!/주 피해|피해 유형|피해를 (주|입)/.test(near)) continue;
+    if (!(DAMAGE_CLAIM[lang] ?? DAMAGE_CLAIM.ko_KR).test(near)) continue;
     if (profile.damage === "혼합") continue;
-    for (const [word, re] of DAMAGE_WORDS) {
-      if (word !== profile.damage && re.test(near) && !new RegExp(profile.damage).test(near)) return true;
+    const words = DAMAGE_WORDS[lang] ?? DAMAGE_WORDS.ko_KR;
+    const mine = words.find(([key]) => key === profile.damage)?.[1];
+    for (const [key, re] of words) {
+      if (key !== profile.damage && re.test(near) && !(mine && mine.test(near))) return true;
     }
   }
   return false;
@@ -317,6 +356,18 @@ function isBoilerplate(sentence: string, directiveStems: string[], cardLines: st
   return cardLines.some((line) => overlap(strip(line), stem) >= 0.7 && overlap(stem, strip(line)) >= 0.7);
 }
 
+/** 뒤에 오는 부정(한국어) */
+const NEGATED_AFTER = /없|않|못\s|아니/;
+/** 앞에 오는 부정(영어·중국어) */
+const NEGATED_BEFORE = /(\b(no|not|without|lacks?|lacking|cannot|can't|never)\b|没有|不|无|缺)[^.。]{0,12}$/i;
+
+function negated(sentence: string, at: number, length: number): boolean {
+  return (
+    NEGATED_AFTER.test(sentence.slice(at + length, at + length + 16)) ||
+    NEGATED_BEFORE.test(sentence.slice(Math.max(0, at - 24), at))
+  );
+}
+
 /**
  * 문장 하나를 가른다.
  *
@@ -331,7 +382,7 @@ export function classify(sentence: string, m: Material): Verdict {
    * 보호받았다. 실제로 럼블 노트를 그대로 옮기고 임자만 오공으로 바꾼 문단이 그대로
    * 화면에 나갔다. 노트와 닮았다는 것이 맞다는 뜻은 아니다.
    */
-  if (contradictsProfile(sentence, m.profiles)) return "card-wrong";
+  if (contradictsProfile(sentence, m.profiles, m.lang)) return "card-wrong";
   if (misattributes(sentence, m)) return "card-wrong";
   if (m.noteSentences.some((note) => overlap(sentence, note) >= 0.7)) return "note";
   if (HAS_NUMBER.test(sentence)) return "number";
@@ -369,8 +420,8 @@ export function classify(sentence: string, m: Material): Verdict {
    */
   let seen = 0;
   let matched = 0;
-  for (const tag of m.allTags) {
-    const at = sentence.indexOf(tag);
+  for (const { key, surface } of m.allTags) {
+    const at = sentence.indexOf(surface);
     if (at < 0) continue;
     /*
      * **없다고 말하는 효과**는 짝을 따지지 않는다.
@@ -379,11 +430,14 @@ export function classify(sentence: string, m: Material): Verdict {
      * 걸렸다. 사람이 검증한 노트 그대로인데, `이동기` 를 화염방사기의 효과라고
      * 읽고 카드와 어긋난다고 본 것이다. 없다는 말은 그 스킬이 그것을 가졌다는
      * 주장이 아니다.
+     *
+     * 부정이 붙는 자리가 언어마다 다르다. 한국어는 뒤에("이동기가 없으므로"),
+     * 영어와 중국어는 앞에 온다("no mobility", "没有位移"). 그래서 양쪽을 다 본다.
      */
-    if (/없|않|못\s|아니/.test(sentence.slice(at + tag.length, at + tag.length + 12))) continue;
+    if (negated(sentence, at, surface.length)) continue;
     seen += 1;
     const owner = [...marks].reverse().find((mark) => mark.at < at) ?? marks[0];
-    if (m.effectsBySlot.get(owner.slot)?.has(tag)) matched += 1;
+    if (m.effectsBySlot.get(owner.slot)?.has(key)) matched += 1;
   }
   if (seen === 0) return "unsupported";
   if (matched > 0) return "card-ok";
@@ -399,8 +453,9 @@ export function classify(sentence: string, m: Material): Verdict {
    * 걸러진다. 지어낸 짝은 본문에도 없으므로 그대로 잡힌다.
    */
   const text = m.textBySlot.get(owner.slot) ?? "";
-  for (const tag of m.allTags) {
-    if (sentence.includes(tag) && text.includes(tag)) return "card-ok";
+  // 본문은 그 언어의 툴팁이므로 카드의 한국어 열쇠가 아니라 그 언어의 말로 찾는다.
+  for (const { surface } of m.allTags) {
+    if (sentence.includes(surface) && text.includes(surface)) return "card-ok";
   }
   return "card-wrong";
 }
@@ -454,7 +509,7 @@ export function groundCommentary(
   answer: AdvisorAnswer | undefined,
   lang: Language = "ko_KR",
 ): GroundResult {
-  const m = answer ? material(answer) : undefined;
+  const m = answer ? material(answer, lang) : undefined;
   if (!m) return { text, dropped: [] };
 
   const { done, tail } = splitDone(keepAskedPerspective(text, answer, lang));

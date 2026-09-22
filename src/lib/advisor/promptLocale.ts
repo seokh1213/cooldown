@@ -1,126 +1,113 @@
 /**
- * 해설 프롬프트의 언어
+ * 해설 프롬프트와 자료 카드의 언어
  *
  * 카드 자료(`champion-cards-<locale>.json`)는 챔피언 이름과 스킬 이름만 로케일을
- * 따른다. 효과 태그·피해 유형·능력치 등급은 파이프라인이 한국어 문자열 리터럴로
- * 타입을 잡고 있어 데이터 쪽을 통째로 옮기기 어렵다. 어차피 **닫힌 어휘**라
- * 모델에게 보내기 직전에 여기서 옮긴다.
+ * 따른다. 효과 태그·피해 유형·능력치 등급은 코드가 열쇠로 쓰는 값이라 한국어로
+ * 두고(`scripts/llm/lib/cardWords`), 보이기 직전에 여기서 옮긴다. 옮길 자리는
+ * 모델에게 보내는 프롬프트와 화면의 자료 카드 두 곳이다.
  *
  * 지시문까지 함께 옮겨야 한다. 지시문만 한국어로 남겨 두면 모델이 그 언어를
  * 따라가 영어로 물어도 한국어로 답한다. 실제로 en_US·zh_CN 에서 8문항 모두
  * 한국어 답이 나왔다.
  */
+import { DAMAGE, GRADE, RANGE, RATIO_STATS, SCALING, STATS, TAGS, pick } from "../../../scripts/llm/lib/cardWords";
 import { josa } from "../../../scripts/llm/lib/text";
 import type { Language } from "@/i18n";
-
-/** 효과 태그 34개. 자료에 실제로 쓰이는 값만 담는다. */
-const TAGS: Record<string, { en: string; zh: string }> = {
-  "강인함": { en: "tenacity", zh: "坚韧" },
-  "강제 이동(넉백/끌기)": { en: "forced movement (knockback/pull)", zh: "强制位移（击退/拉拽）" },
-  "고정 피해": { en: "true damage", zh: "真实伤害" },
-  "공격 무효화": { en: "attack negation", zh: "攻击无效化" },
-  "공격 속도 증가": { en: "attack speed boost", zh: "攻速提升" },
-  "공포": { en: "fear", zh: "恐惧" },
-  "관통": { en: "penetration", zh: "穿透" },
-  "광역": { en: "area of effect", zh: "范围效果" },
-  "기본 공격 강화": { en: "empowered auto-attack", zh: "强化普攻" },
-  "기절": { en: "stun", zh: "眩晕" },
-  "도발": { en: "taunt", zh: "嘲讽" },
-  "돌진": { en: "dash", zh: "突进" },
-  "둔화": { en: "slow", zh: "减速" },
-  "매혹": { en: "charm", zh: "魅惑" },
-  "보호막": { en: "shield", zh: "护盾" },
-  "분신": { en: "clone", zh: "分身" },
-  "속박": { en: "root", zh: "定身" },
-  "에어본": { en: "airborne", zh: "击飞" },
-  "은신": { en: "stealth", zh: "隐身" },
-  "이동 속도 증가": { en: "move speed boost", zh: "移速提升" },
-  "이동기": { en: "mobility", zh: "位移" },
-  "잃은 체력 비례": { en: "scales with missing health", zh: "按已损失生命值加成" },
-  "자기 마법 저항력 증가": { en: "self magic resist boost", zh: "自身魔抗提升" },
-  "자기 방어력 증가": { en: "self armor boost", zh: "自身护甲提升" },
-  "적 마법 저항력 감소": { en: "enemy magic resist shred", zh: "削减敌方魔抗" },
-  "적 방어력 감소": { en: "enemy armor shred", zh: "削减敌方护甲" },
-  "처형": { en: "execute", zh: "处决" },
-  "최대 체력 비례 피해": { en: "max health damage", zh: "最大生命值伤害" },
-  "치유 감소": { en: "grievous wounds", zh: "治疗削减" },
-  "침묵": { en: "silence", zh: "沉默" },
-  "쿨타임 초기화": { en: "cooldown reset", zh: "冷却重置" },
-  "투사체 차단": { en: "projectile block", zh: "格挡弹道" },
-  "피해 면역": { en: "damage immunity", zh: "伤害免疫" },
-  "회복": { en: "heal", zh: "回复" },
-  "받는 피해 감소": { en: "damage reduction", zh: "承受伤害降低" },
-  "변신": { en: "transform", zh: "变身" },
-  "생명력 흡수": { en: "lifesteal", zh: "吸血" },
-  "소환수": { en: "pet", zh: "召唤物" },
-  "자기 공격력 증가": { en: "self attack damage boost", zh: "自身攻击力提升" },
-  "치명타": { en: "critical strike", zh: "暴击" },
-  "부활": { en: "revive", zh: "复活" },
-  "연계 강화": { en: "amplified by a prior hit", zh: "连招强化" },
-  "표식 부여": { en: "applies a mark", zh: "施加标记" },
-  "성장 스택": { en: "permanent stacking", zh: "永久叠加" },
-  "스킬 강화": { en: "next ability empowered", zh: "技能强化" },
-  "사거리 증가": { en: "extended range", zh: "射程提升" },
-  "자기 주문력 증가": { en: "self ability power boost", zh: "自身法强提升" },
-};
-
-const DAMAGE: Record<string, { en: string; zh: string }> = {
-  "물리": { en: "physical", zh: "物理" },
-  "마법": { en: "magic", zh: "魔法" },
-  "혼합": { en: "mixed", zh: "混合" },
-  "고정": { en: "true", zh: "真实" },
-};
-
-const SCALING: Record<string, { en: string; zh: string }> = {
-  AD: { en: "AD", zh: "AD" },
-  AP: { en: "AP", zh: "AP" },
-  "체력": { en: "health", zh: "生命值" },
-  "혼합": { en: "mixed", zh: "混合" },
-};
-
-const GRADE: Record<string, { en: string; zh: string }> = {
-  "매우 높음": { en: "very high", zh: "极高" },
-  "높음": { en: "high", zh: "高" },
-  "보통": { en: "average", zh: "中等" },
-  "낮음": { en: "low", zh: "低" },
-  "매우 낮음": { en: "very low", zh: "极低" },
-};
-
-/**
- * 능력치 이름.
- *
- * 다른 표들과 달리 열쇠가 한국어가 아니라 코드 이름(health, armor…)이다. 그래서
- * 한국어 값을 따로 적어야 한다. 빼먹었더니 프롬프트에 "health: 상위권" 이 나갔고
- * 모델이 그것을 "건강" 으로 옮겨 적었다.
- */
-const STATS: Record<string, { ko: string; en: string; zh: string }> = {
-  health: { ko: "체력", en: "Health", zh: "生命值" },
-  armor: { ko: "방어력", en: "Armor", zh: "护甲" },
-  magicResist: { ko: "마법 저항력", en: "Magic resist", zh: "魔抗" },
-  attackDamage: { ko: "공격력", en: "Attack damage", zh: "攻击力" },
-  moveSpeed: { ko: "이동 속도", en: "Move speed", zh: "移动速度" },
-  attackSpeed: { ko: "공격 속도", en: "Attack speed", zh: "攻速" },
-  healthRegen: { ko: "체력 재생", en: "Health regen", zh: "生命回复" },
-};
-
-function pick(table: Record<string, { en: string; zh: string }>, key: string, lang: Language): string {
-  const row = table[key];
-  if (!row) return key; // 새 태그가 생기면 한국어 그대로. 빈칸보다 낫다.
-  if (lang === "en_US") return row.en;
-  if (lang === "zh_CN") return row.zh;
-  return key;
-}
 
 export const translateTag = (tag: string, lang: Language): string => pick(TAGS, tag, lang);
 export const translateDamage = (value: string, lang: Language): string => pick(DAMAGE, value, lang);
 export const translateScaling = (value: string, lang: Language): string => pick(SCALING, value, lang);
 export const translateGrade = (value: string, lang: Language): string => pick(GRADE, value, lang);
+export const translateRange = (value: string, lang: Language): string => pick(RANGE, value, lang);
+export const translateRatioStat = (value: string, lang: Language): string => pick(RATIO_STATS, value, lang);
 export function translateStat(stat: string, lang: Language): string {
   const row = STATS[stat];
   if (!row) return stat;
   if (lang === "en_US") return row.en;
   if (lang === "zh_CN") return row.zh;
   return row.ko;
+}
+
+/**
+ * 자료 카드의 표 머리말과 단위
+ *
+ * 카드는 코드가 짓는다. 그래서 머리말도 코드 안에 한국어로 박혀 있었고, 언어를
+ * 영어로 바꿔도 "재사용 대기시간 · 피해 유형 · 효과" 가 그대로 나왔다. 화면의
+ * 다른 글은 `t.advisor` 를 타는데 이 표만 그 길 밖에 있었다.
+ *
+ * 값을 만드는 곳(`answer.ts`)과 그리는 곳(`AdvisorAnswerCard`)이 나뉘어 있어
+ * 머리말이 양쪽에서 나온다. 두 곳이 같은 표를 보게 여기 한 벌만 둔다.
+ */
+export interface CardLabels {
+  spell: string;
+  cooldown: string;
+  recharge: string;
+  cost: string;
+  damageType: string;
+  effects: string;
+  ratios: string;
+  /** 초 단위. 값은 "9/8/7/6/5" 처럼 레벨별로 끊긴 문자열일 수 있다. */
+  seconds: (value: string) => string;
+  /** 충전형 스킬의 충전 횟수 */
+  charges: (n: number) => string;
+  /** 충전형 스킬의 연속 시전 간격 */
+  recast: (seconds: string) => string;
+  level: (n: number) => string;
+  /** 스킬 한 줄 요약의 쿨타임. 표가 아니라 줄 안에 들어가므로 짧게. */
+  briefCooldown: (value: string) => string;
+  briefRecharge: (value: string) => string;
+}
+
+const CARD_LABELS: Record<Language, CardLabels> = {
+  ko_KR: {
+    spell: "스킬",
+    cooldown: "재사용 대기시간",
+    recharge: "재충전 대기시간",
+    cost: "소모값",
+    damageType: "피해 유형",
+    effects: "효과",
+    ratios: "계수",
+    seconds: (value) => `${value}초`,
+    charges: (n) => `${n}회 충전`,
+    recast: (seconds) => `연속 시전 ${seconds}초`,
+    level: (n) => `${n}레벨`,
+    briefCooldown: (value) => `쿨 ${value}`,
+    briefRecharge: (value) => `재충전 ${value}`,
+  },
+  en_US: {
+    spell: "Ability",
+    cooldown: "Cooldown",
+    recharge: "Recharge",
+    cost: "Cost",
+    damageType: "Damage type",
+    effects: "Effects",
+    ratios: "Ratios",
+    seconds: (value) => `${value}s`,
+    charges: (n) => `${n} charges`,
+    recast: (seconds) => `recast ${seconds}s`,
+    level: (n) => `level ${n}`,
+    briefCooldown: (value) => `CD ${value}`,
+    briefRecharge: (value) => `recharge ${value}`,
+  },
+  zh_CN: {
+    spell: "技能",
+    cooldown: "冷却时间",
+    recharge: "充能时间",
+    cost: "消耗",
+    damageType: "伤害类型",
+    effects: "效果",
+    ratios: "加成系数",
+    seconds: (value) => `${value}秒`,
+    charges: (n) => `${n}层充能`,
+    recast: (seconds) => `连续施放 ${seconds}秒`,
+    level: (n) => `${n}级`,
+    briefCooldown: (value) => `CD ${value}`,
+    briefRecharge: (value) => `充能 ${value}`,
+  },
+};
+
+export function cardLabels(lang: Language): CardLabels {
+  return CARD_LABELS[lang] ?? CARD_LABELS.ko_KR;
 }
 
 /** 프롬프트의 머리표·꼬리말. 자료 구획을 여는 말들이다. */

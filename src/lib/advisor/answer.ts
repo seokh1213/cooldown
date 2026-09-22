@@ -14,9 +14,11 @@ import type { RuleNotes } from "../../../scripts/llm/lib/rules";
 import type { Language } from "@/i18n";
 import type { SelectedNotes } from "./noteSelect";
 import {
+  cardLabels,
   promptWords,
   translateDamage,
   translateGrade,
+  translateRatioStat,
   translateScaling,
   translateStat,
   translateTag,
@@ -196,46 +198,65 @@ function sentencesWith(text: string, keywords: string[]): string[] {
 }
 
 /**
+ * 계수 목록을 글로. "주문력 105%" 의 능력치 이름은 툴팁에서 읽어 낸 한국어라 옮긴다.
+ *
+ * 한 줄 요약·표·헤드라인이 저마다 같은 식을 적고 있었다. 옮길 자리가 늘자 한 곳을
+ * 빠뜨려 영어 카드에 "Ratios 주문력 50%" 가 나왔다. 식을 한 곳에 모은다.
+ */
+function ratioText(ratios: Array<[string, number]>, lang: Language): string {
+  return ratios.map(([stat, value]) => `${translateRatioStat(stat, lang)} ${value}%`).join(", ");
+}
+
+/**
+ * 쿨타임 행. 충전형 스킬(럼블 E, 아칼리 R…)은 쿨타임 필드가 연속 시전 간격 0.5초여서
+ * 그대로 내면 틀린 답이 된다. 쿨타임 표와 같은 관례로 재충전 시간을 앞세운다.
+ */
+export function cooldownFact(spell: SpellFact, lang: Language = "ko_KR"): Fact | undefined {
+  const w = cardLabels(lang);
+  if (spell.recharge) {
+    const charges = spell.maxCharges ? ` · ${w.charges(spell.maxCharges)}` : "";
+    const gap = spell.cooldown ? ` · ${w.recast(spell.cooldown)}` : "";
+    return { label: w.recharge, value: `${w.seconds(spell.recharge)}${charges}${gap}` };
+  }
+  if (spell.cooldown) return { label: w.cooldown, value: w.seconds(spell.cooldown) };
+  return undefined;
+}
+
+/**
  * 스킬 답. 질문이 가리키는 사실을 앞에 놓는다.
  *
  * 구조 필드(쿨·소모·계수)는 값이 바로 있으니 headline 으로 올린다.
  * 효과 수치는 본문 문장에만 있으니 그 문장을 골라 highlighted 로 올린다.
  */
-/**
- * 쿨타임 행. 충전형 스킬(럼블 E, 아칼리 R…)은 쿨타임 필드가 연속 시전 간격 0.5초여서
- * 그대로 내면 틀린 답이 된다. 쿨타임 표와 같은 관례로 재충전 시간을 앞세운다.
- */
-export function cooldownFact(spell: SpellFact): Fact | undefined {
-  if (spell.recharge) {
-    const charges = spell.maxCharges ? ` · ${spell.maxCharges}회 충전` : "";
-    const gap = spell.cooldown ? ` · 연속 시전 ${spell.cooldown}초` : "";
-    return { label: "재충전 대기시간", value: `${spell.recharge}초${charges}${gap}` };
-  }
-  if (spell.cooldown) return { label: "재사용 대기시간", value: `${spell.cooldown}초` };
-  return undefined;
-}
-
-export function buildSpellAnswer(card: ChampionCard, spell: SpellFact, question: string): AdvisorAnswer {
+export function buildSpellAnswer(
+  card: ChampionCard,
+  spell: SpellFact,
+  question: string,
+  lang: Language = "ko_KR",
+): AdvisorAnswer {
+  const w = cardLabels(lang);
   const detected = detectSpellFocus(question);
   const facts: Fact[] = [];
-  const cooldown = cooldownFact(spell);
+  const cooldown = cooldownFact(spell, lang);
   if (cooldown) facts.push(cooldown);
-  if (spell.cost) facts.push({ label: "소모값", value: spell.cost });
-  if (spell.damageTypes.length) facts.push({ label: "피해 유형", value: spell.damageTypes.join("·") });
-  if (spell.effects.length) facts.push({ label: "효과", value: spell.effects.join(", ") });
-  const ratios = Object.entries(spell.ratios ?? {});
-  if (ratios.length) {
-    facts.push({ label: "계수", value: ratios.map(([stat, value]) => `${stat} ${value}%`).join(", ") });
+  if (spell.cost) facts.push({ label: w.cost, value: spell.cost });
+  if (spell.damageTypes.length) {
+    facts.push({ label: w.damageType, value: spell.damageTypes.map((type) => translateDamage(type, lang)).join("·") });
   }
+  if (spell.effects.length) {
+    facts.push({ label: w.effects, value: spell.effects.map((tag) => translateTag(tag, lang)).join(", ") });
+  }
+  const ratios = Object.entries(spell.ratios ?? {});
+  if (ratios.length) facts.push({ label: w.ratios, value: ratioText(ratios, lang) });
 
   let headline: Fact | undefined;
   let highlighted: string[] = [];
   if (detected?.focus === "cooldown" && cooldown) {
     headline = cooldown;
   } else if (detected?.focus === "cost" && spell.cost) {
-    headline = { label: "소모값", value: spell.cost };
+    headline = { label: w.cost, value: spell.cost };
   } else if (detected?.focus === "ratio" && ratios.length) {
-    headline = { label: "계수", value: ratios.map(([stat, value]) => `${stat} ${value}%`).join(", ") };
+    headline = { label: w.ratios, value: ratioText(ratios, lang) };
   } else if (detected?.focus === "effect") {
     highlighted = sentencesWith(spell.text, detected.keywords);
   } else if (detected?.focus === "damage") {
@@ -641,27 +662,24 @@ export function answerChampionIds(answer: AdvisorAnswer): string[] {
   return [];
 }
 
-export const FOCUS_LABEL: Record<SpellFocus, string> = {
-  cooldown: "재사용 대기시간",
-  cost: "소모값",
-  ratio: "계수",
-  damage: "피해 유형",
-  effect: "효과",
-};
+export function focusLabel(focus: SpellFocus, lang: Language = "ko_KR"): string {
+  const w = cardLabels(lang);
+  return { cooldown: w.cooldown, cost: w.cost, ratio: w.ratios, damage: w.damageType, effect: w.effects }[focus];
+}
 
 /** 스킬 하나에서 사실 하나를 글로. 스킬 표(챔피언 카드의 focus)와 비교 표가 같이 쓴다. */
-export function spellFocusValue(spell: SpellFact, focus: SpellFocus): string {
+export function spellFocusValue(spell: SpellFact, focus: SpellFocus, lang: Language = "ko_KR"): string {
   switch (focus) {
     case "cooldown":
-      return cooldownFact(spell)?.value ?? "";
+      return cooldownFact(spell, lang)?.value ?? "";
     case "cost":
       return spell.cost ?? "";
     case "ratio":
-      return Object.entries(spell.ratios ?? {}).map(([stat, value]) => `${stat} ${value}%`).join(", ");
+      return ratioText(Object.entries(spell.ratios ?? {}), lang);
     case "damage":
-      return spell.damageTypes.join("·");
+      return spell.damageTypes.map((type) => translateDamage(type, lang)).join("·");
     case "effect":
-      return spell.effects.join(", ");
+      return spell.effects.map((tag) => translateTag(tag, lang)).join(", ");
   }
 }
 
@@ -722,11 +740,13 @@ export function buildCompareAnswer(
   cards: ChampionCard[],
   question: string,
   slot?: string,
-  options: { matchup?: boolean; notes?: { mine: string[]; enemy: string[] } } = {},
+  options: { matchup?: boolean; notes?: { mine: string[]; enemy: string[] }; lang?: Language } = {},
 ): AdvisorAnswer {
+  const lang = options.lang ?? "ko_KR";
+  const w = cardLabels(lang);
   if (options.matchup) {
     // 상성은 능력치 표 + 상성 노트 위에 해설. 사실 하나를 짚은 헤드라인은 두지 않는다.
-    const base = buildCompareAnswer(cards, question);
+    const base = buildCompareAnswer(cards, question, undefined, { lang });
     return base.kind === "compare"
       ? { ...base, headline: undefined, rows: base.rows.map((row) => ({ ...row, hit: false })), matchup: true, notes: options.notes }
       : base;
@@ -739,18 +759,18 @@ export function buildCompareAnswer(
       const values = spells.map((spell) => (spell ? pick(spell) ?? "" : ""));
       if (values.some(Boolean)) rows.push({ label, values, hit });
     };
-    push("스킬", (spell) => spell.name, false);
+    push(w.spell, (spell) => spell.name, false);
     push(
-      spells.some((spell) => spell?.recharge) ? "재충전 대기시간" : "재사용 대기시간",
-      (spell) => cooldownFact(spell)?.value,
+      spells.some((spell) => spell?.recharge) ? w.recharge : w.cooldown,
+      (spell) => cooldownFact(spell, lang)?.value,
       focus === "cooldown",
     );
-    push("소모값", (spell) => spell.cost, focus === "cost");
-    push("피해 유형", (spell) => spell.damageTypes.join("·"), focus === "damage");
-    push("효과", (spell) => spell.effects.join(", "), focus === "effect");
+    push(w.cost, (spell) => spell.cost, focus === "cost");
+    push(w.damageType, (spell) => spell.damageTypes.map((type) => translateDamage(type, lang)).join("·"), focus === "damage");
+    push(w.effects, (spell) => spell.effects.map((tag) => translateTag(tag, lang)).join(", "), focus === "effect");
     push(
-      "계수",
-      (spell) => Object.entries(spell.ratios ?? {}).map(([stat, value]) => `${stat} ${value}%`).join(", "),
+      w.ratios,
+      (spell) => ratioText(Object.entries(spell.ratios ?? {}), lang),
       focus === "ratio",
     );
     const hit = rows.find((row) => row.hit);
@@ -767,7 +787,7 @@ export function buildCompareAnswer(
   const rows: CompareRow[] = stats.map((stat) => {
     const numbers = cards.map((card) => card.stats[stat]?.[key]);
     return {
-      label: STAT_LABEL[stat],
+      label: translateStat(stat, lang),
       values: numbers.map((n) => (n === undefined ? "" : String(n))),
       hit: stat === asked,
       winner: argmax(numbers),
@@ -784,20 +804,10 @@ export function buildCompareAnswer(
     const value = order
       .map((entry, i) => (i === 0 ? `${entry.name} ${entry.value}` : `${entry.value === order[i - 1].value ? "=" : ">"} ${entry.name} ${entry.value}`))
       .join(" ");
-    headline = { label: `${hit.label} (${level}레벨)`, value };
+    headline = { label: `${hit.label} (${w.level(level)})`, value };
   }
   return { kind: "compare", cards, level, rows, headline };
 }
-
-export const STAT_LABEL: Record<StatName, string> = {
-  health: "체력",
-  armor: "방어력",
-  magicResist: "마법 저항력",
-  attackDamage: "공격력",
-  attackSpeed: "공격 속도",
-  moveSpeed: "이동 속도",
-  healthRegen: "체력 재생",
-};
 
 /**
  * 백분위를 "상위 n%" 나 "하위 n%" 로 바꾼다.
@@ -819,13 +829,14 @@ export function isExtremeGrade(grade: string): boolean {
  *   Q 화염방사기   쿨 10/9/8/7/6 · 최대 체력 비례 피해 · 주문력 105%
  * 챔피언 카드에서 스킬 다섯 개를 한 줄씩 보여 줄 때 쓴다.
  */
-export function spellOneLiner(spell: SpellFact): string {
+export function spellOneLiner(spell: SpellFact, lang: Language = "ko_KR"): string {
+  const w = cardLabels(lang);
   const parts: string[] = [];
-  if (spell.recharge) parts.push(`재충전 ${spell.recharge}`);
-  else if (spell.cooldown) parts.push(`쿨 ${spell.cooldown}`);
-  if (spell.effects.length) parts.push(spell.effects.slice(0, 3).join(" · "));
+  if (spell.recharge) parts.push(w.briefRecharge(spell.recharge));
+  else if (spell.cooldown) parts.push(w.briefCooldown(spell.cooldown));
+  if (spell.effects.length) parts.push(spell.effects.slice(0, 3).map((tag) => translateTag(tag, lang)).join(" · "));
   const [top] = Object.entries(spell.ratios ?? {}).sort((a, b) => b[1] - a[1]);
-  if (top) parts.push(`${top[0]} ${top[1]}%`);
+  if (top) parts.push(ratioText([top], lang));
   if (parts.length) return parts.join(" · ");
   // 구조 필드가 하나도 없는 스킬(순수 패시브 등)은 요약 첫 절을 쓴다.
   return (spell.summary ?? spell.text).split(/[.。]/)[0].slice(0, 60);

@@ -32,6 +32,7 @@ import {
   suggestChampions,
   buildCommentaryPrompt,
 } from "../src/lib/advisor/answer";
+import { TAGS, DAMAGE, GRADE, RANGE, RATIO_STATS, missingCardWords } from "./llm/lib/cardWords";
 import { readPageContext } from "../src/lib/advisor/pageContext";
 import { nicknames } from "../src/lib/advisor/intent";
 import { dehydrateAnswer, reviveAnswer, reviveTurns, type StoredAnswer, type StoredTurn } from "../src/lib/advisor/history";
@@ -368,6 +369,56 @@ assert.deepEqual(percentileLabel(100), { side: "top", value: 1 }, "최고도 상
   assert.deepEqual(readPageContext("/encyclopedia", "?tab=items", read), { route: "encyclopedia", championIds: [], tab: "items" });
   assert.deepEqual(readPageContext("/encyclopedia", "", read), { route: "encyclopedia", championIds: [], tab: "champions" });
   assert.deepEqual(readPageContext("/", "", () => "not json"), { route: "cooldown", championIds: [] }, "깨진 저장값은 빈 목록");
+}
+
+// ── 카드 어휘가 세 언어를 다 갖췄는가 ─────────────────────────────────────
+/*
+ * 자료의 값은 한국어 열쇠로 둔다(코드가 그것으로 짝을 맞춘다). 대신 보이기 직전에
+ * 옮기므로 표가 자료보다 먼저 차 있어야 한다. 빠진 값은 영어·중국어 화면에 한국어로
+ * 그대로 새어 나가는데 빈칸이 아니라서 눈으로는 고장으로 안 보인다.
+ *
+ * 카드 생성기가 같은 검사를 하고 빌드를 세운다. 여기서도 재는 까닭은, 자료 파일이
+ * 먼저 커밋되고 표가 뒤늦게 오는 경우를 시험이 잡아야 하기 때문이다.
+ */
+{
+  const gaps: Array<[string, string[]]> = [
+    ["효과 태그", missingCardWords(cards.flatMap((c) => [...c.mechanics, ...c.spells.flatMap((s) => s.effects)]), TAGS)],
+    ["피해 유형", missingCardWords(cards.flatMap((c) => c.spells.flatMap((s) => s.damageTypes)), DAMAGE)],
+    ["사거리", missingCardWords(cards.map((c) => c.rangeType), RANGE)],
+    ["계수 능력치", missingCardWords(cards.flatMap((c) => c.spells.flatMap((s) => Object.keys(s.ratios ?? {}))), RATIO_STATS)],
+    ["능력치 등급", missingCardWords(cards.flatMap((c) => Object.values(c.stats).flatMap((s) => [s.gradeLv1, s.gradeLv18])), GRADE)],
+  ];
+  for (const [what, missing] of gaps) {
+    assert.deepEqual(missing, [], `${what} 번역 누락: ${missing.join(", ")}`);
+  }
+}
+
+// ── 카드가 그 언어로 나오는가 ─────────────────────────────────────────────
+/*
+ * 머리말과 태그가 코드에 한국어로 박혀 있어 언어를 바꿔도 "재사용 대기시간 · 효과"
+ * 가 그대로 나왔다. 한글이 한 자라도 섞여 있으면 새는 자리가 남았다는 뜻이다.
+ */
+{
+  const HANGUL = /[가-힣]/;
+  const rumbleE = spellOf("Rumble", "E");
+  for (const lang of ["en_US", "zh_CN"] as const) {
+    const answer = buildSpellAnswer(card("Rumble"), rumbleE, "Rumble E cooldown", lang);
+    assert.equal(answer.kind, "spell");
+    if (answer.kind !== "spell") throw new Error("unreachable");
+    for (const fact of [...answer.facts, ...(answer.headline ? [answer.headline] : [])]) {
+      assert.ok(!HANGUL.test(fact.label), `${lang} 표 머리말에 한글: ${fact.label}`);
+      assert.ok(!HANGUL.test(fact.value), `${lang} 표 값에 한글: ${fact.label} = ${fact.value}`);
+    }
+    const line = spellOneLiner(rumbleE, lang);
+    assert.ok(!HANGUL.test(line), `${lang} 한 줄 요약에 한글: ${line}`);
+    assert.ok(!HANGUL.test(spellFocusValue(rumbleE, "effect", lang)), `${lang} 효과 값에 한글`);
+    const compare = buildCompareAnswer([card("Malphite"), card("Rumble")], "who has more health", undefined, { lang });
+    assert.equal(compare.kind, "compare");
+    if (compare.kind !== "compare") throw new Error("unreachable");
+    for (const row of compare.rows) assert.ok(!HANGUL.test(row.label), `${lang} 비교 표 머리말에 한글: ${row.label}`);
+  }
+  // 한국어는 그대로여야 한다. 옮기는 길이 기본값을 건드리면 안 된다.
+  assert.match(spellOneLiner(spellOf("Rumble", "Q")), /^쿨 /, "한국어 요약은 그대로");
 }
 
 console.log(`✅ Advisor answer passed (카드 ${cards.length}, 규칙 ${rules.length})`);

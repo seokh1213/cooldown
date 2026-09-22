@@ -15,8 +15,7 @@ import { useTranslation } from "@/i18n";
 import { championIconUrl, itemIconUrl } from "@/data/assets/riotAssetUrls";
 import {
   CARD_STATS,
-  FOCUS_LABEL,
-  STAT_LABEL,
+  focusLabel,
   isExtremeGrade,
   percentileLabel,
   ruleVerdict,
@@ -25,6 +24,7 @@ import {
   spellSummary,
   type AdvisorAnswer,
 } from "@/lib/advisor/answer";
+import { translateRange, translateStat, translateTag } from "@/lib/advisor/promptLocale";
 import { AdvisorMarkdown } from "./AdvisorMarkdown";
 
 interface AdvisorAnswerCardProps {
@@ -109,7 +109,7 @@ function Disclosure({ summary, children }: { summary: string; children: React.Re
 }
 
 export function AdvisorAnswerCard({ answer, ddragonVersion, patch, onPickChampion, onNavigate }: AdvisorAnswerCardProps) {
-  const { t } = useTranslation();
+  const { t, lang } = useTranslation();
   const copy = t.advisor.card;
 
   /*
@@ -266,7 +266,9 @@ export function AdvisorAnswerCard({ answer, ddragonVersion, patch, onPickChampio
 
   if (answer.kind === "champion") {
     const { card } = answer;
-    const subtitle = [card.wiki?.subclass, card.rangeType, card.wiki?.positions?.[0]].filter(Boolean).join(" · ");
+    const subtitle = [card.wiki?.subclass, translateRange(card.rangeType, lang), card.wiki?.positions?.[0]]
+      .filter(Boolean)
+      .join(" · ");
     const header = (
       <img
         src={championIconUrl(ddragonVersion, card.id)}
@@ -320,11 +322,11 @@ export function AdvisorAnswerCard({ answer, ddragonVersion, patch, onPickChampio
     if (answer.focus) {
       const focus = answer.focus;
       return (
-        <Frame icon={header} title={card.name} subtitle={`${copy.skills} · ${FOCUS_LABEL[focus]}`} tool={copy.champion} footer={footer}>
+        <Frame icon={header} title={card.name} subtitle={`${copy.skills} · ${focusLabel(focus, lang)}`} tool={copy.champion} footer={footer}>
           <KvTable
             rows={card.spells.map((spell) => ({
               label: `${spell.slot} ${spell.name}`,
-              value: spellFocusValue(spell, focus) || "—",
+              value: spellFocusValue(spell, focus, lang) || "—",
               hit: true,
             }))}
           />
@@ -338,7 +340,7 @@ export function AdvisorAnswerCard({ answer, ddragonVersion, patch, onPickChampio
       const { side, value } = percentileLabel(snap.percentileLv1);
       const pct = fill(side === "top" ? copy.top : copy.bottom, { n: value });
       return {
-        label: STAT_LABEL[stat],
+        label: translateStat(stat, lang),
         hit: isExtremeGrade(snap.gradeLv1),
         value: (
           <>
@@ -352,7 +354,7 @@ export function AdvisorAnswerCard({ answer, ddragonVersion, patch, onPickChampio
     const skillsView = answer.view === "skills";
     const skillRows = card.spells.map((spell) => ({
       label: `${spell.slot} ${spell.name}`,
-      value: skillsView ? spellSummary(spell) : spellOneLiner(spell),
+      value: skillsView ? spellSummary(spell) : spellOneLiner(spell, lang),
       hit: skillsView,
     }));
     return (
@@ -380,7 +382,7 @@ export function AdvisorAnswerCard({ answer, ddragonVersion, patch, onPickChampio
           <div className="mt-2.5 flex flex-wrap gap-1">
             {card.mechanics.map((tag) => (
               <span key={tag} className="rounded-full bg-muted px-2 py-px text-[11px] text-muted-foreground">
-                {tag}
+                {translateTag(tag, lang)}
               </span>
             ))}
           </div>
