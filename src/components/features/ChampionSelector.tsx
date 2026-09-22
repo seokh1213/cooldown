@@ -1,6 +1,6 @@
 import React, { useState, useCallback, useRef, useEffect, useMemo } from "react";
 import { Champion } from "@/types";
-import { championIconUrl } from "@/data/assets/riotAssetUrls";
+import { ChampionIcon } from "@/components/ui/champion-icon";
 import { Button } from "@/components/ui/button";
 import { Search, Swords } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -334,14 +334,7 @@ function ChampionSelector({
           <div className="p-4 border-b-2 border-destructive/30 bg-destructive/5 flex items-center gap-3 shrink-0">
             <div className="flex items-center gap-2 flex-1">
               <div className="relative">
-                <img
-                  src={championIconUrl(
-                    currentChampion.ddragonVersion || "",
-                    currentChampion.id,
-                  )}
-                  alt={currentChampion.name}
-                  className="w-10 h-10 rounded-full border-2 border-destructive/50"
-                />
+                <ChampionIcon id={currentChampion.id} ddragonVersion={currentChampion.ddragonVersion || ""} alt={currentChampion.name} className="block w-10 h-10 rounded-full border-2 border-destructive/50" />
                 <div className="absolute -top-1 -right-1 bg-destructive rounded-full p-0.5">
                   <Swords className="h-3 w-3 text-white" />
                 </div>

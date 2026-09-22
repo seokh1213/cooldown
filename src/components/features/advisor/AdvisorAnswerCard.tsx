@@ -12,7 +12,8 @@
  */
 import { Link } from "react-router-dom";
 import { useTranslation } from "@/i18n";
-import { championIconUrl, itemIconUrl } from "@/data/assets/riotAssetUrls";
+import { itemIconUrl } from "@/data/assets/riotAssetUrls";
+import { ChampionIcon } from "@/components/ui/champion-icon";
 import {
   CARD_STATS,
   focusLabel,
@@ -270,13 +271,7 @@ export function AdvisorAnswerCard({ answer, ddragonVersion, patch, onPickChampio
       .filter(Boolean)
       .join(" · ");
     const header = (
-      <img
-        src={championIconUrl(ddragonVersion, card.id)}
-        alt=""
-        width={36}
-        height={36}
-        className="h-9 w-9 shrink-0 rounded-md"
-      />
+      <ChampionIcon id={card.id} ddragonVersion={ddragonVersion} className="block h-9 w-9 shrink-0 rounded-md" />
     );
     const footer = (
       <>
@@ -402,13 +397,11 @@ export function AdvisorAnswerCard({ answer, ddragonVersion, patch, onPickChampio
         icon={
           <div className="flex shrink-0 -space-x-2">
             {cards.map((card) => (
-              <img
+              <ChampionIcon
                 key={card.id}
-                src={championIconUrl(ddragonVersion, card.id)}
-                alt=""
-                width={28}
-                height={28}
-                className="h-7 w-7 rounded-md ring-2 ring-background"
+                id={card.id}
+                ddragonVersion={ddragonVersion}
+                className="block h-7 w-7 rounded-md ring-2 ring-background"
               />
             ))}
           </div>

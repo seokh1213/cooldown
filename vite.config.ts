@@ -86,20 +86,20 @@ export default defineConfig(({ mode }) => {
         additionalManifestEntries: bootstrapEntries,
         cleanupOutdatedCaches: true,
         /*
-         * 챔피언 아이콘만 미리 받아 둔다.
+         * 시트는 설치 목록에 넣지 않는다.
          *
-         * 챔피언 목록은 173장을 한꺼번에 그린다. 지연 로딩이 통하지 않는 화면이라
-         * 처음 열 때 173건이 줄줄이 날아가고 그동안 자리맡이 보인다. 설치 때
-         * 424KB 를 미리 받아 두면 그 화면이 처음부터 꽉 찬 채로 뜬다.
+         * 한때 챔피언과 룬 시트를 여기 넣어 두었다. 그러다 시트마다 AVIF 사본이
+         * 생기면서 셈이 달라졌다 — 브라우저는 둘 중 **하나만** 쓰는데 설치 목록은
+         * 둘 다 받는다. 챔피언 한 장에 383+179KB 를 받아 179KB 만 쓰는 꼴이다.
          *
-         * 아이템 시트(1MB)는 넣지 않는다. 그 화면에 들어가야 쓰는 것이라 미리 받으면
-         * 안 볼 사람까지 받는다. 대신 앱이 뜬 뒤 손이 빈 틈에 받는다(`warmIcons`).
+         * 대신 앱이 뜬 뒤 손이 빈 틈에 넷을 다 받는다(`warmIcons`). 그쪽은 브라우저가
+         * 고른 꼴 하나만 받고, 설치를 늦추지도 않는다. 받은 것은 같은 `cooldown-icons-v1`
+         * 에 들어가므로 다음부터는 요청 자체가 안 나간다.
          *
-         * 룬 시트는 137KB 라 함께 받아 둔다. 목록 JSON 은 넣지 않는다 — 화면이 칸
-         * 자리를 스스로 세므로 받을 일이 없고, 그 파일은 생성기와 화면의 셈이 같은지
-         * 시험이 맞춰 보는 용도로만 남는다.
+         * 목록 JSON 도 넣지 않는다 — 화면이 칸 자리를 스스로 세므로 받을 일이 없고,
+         * 그 파일은 생성기와 화면의 셈이 같은지 시험이 맞춰 보는 용도로만 남는다.
          */
-        globPatterns: ["**/*.{js,css,html,png,svg,ico}", "img/*/champions.webp", "img/runes.webp"],
+        globPatterns: ["**/*.{js,css,html,png,svg,ico}"],
         runtimeCaching: [
           {
             urlPattern: /\/cooldown\/release\.json$/,

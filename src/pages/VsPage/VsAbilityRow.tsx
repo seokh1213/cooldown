@@ -1,4 +1,5 @@
-import { championIconUrl, passiveIconUrl, spellIconUrl } from "@/data/assets/riotAssetUrls";
+import { ChampionIcon } from "@/components/ui/champion-icon";
+import { AbilityIcon } from "@/components/ui/ability-icon";
 import type { AbilityV2, ChampionDetailV2 } from "@/data/contracts/championData";
 import { SafeBlockHtml } from "@/components/ui/safe-html";
 import { AbilityStructuredDetails } from "@/components/features/ChampionComparison/AbilityStructuredDetails";
@@ -14,14 +15,20 @@ type ListSlot = (typeof LIST_SLOTS)[number];
 const COLUMN_CLASS: Record<VsSideKey, string> = { mine: "sm:col-start-1", opponent: "sm:col-start-2" };
 const ROW_CLASS = ["sm:row-start-1", "sm:row-start-2", "sm:row-start-3", "sm:row-start-4", "sm:row-start-5", "sm:row-start-6"];
 
-function abilityIcon(ability: AbilityV2, slot: ListSlot, version: string, label: string) {
-  if (ability.forms) return <AbilityFormIcon forms={ability.forms} label={label} className="size-7 rounded" />;
-  const src = slot === "P" ? passiveIconUrl(version, ability.iconFile) : spellIconUrl(version, ability.id);
-  return <img src={src} alt="" width={28} height={28} className="size-7 shrink-0 rounded shadow-none" data-skill-icon />;
+function abilityIcon(ability: AbilityV2, slot: ListSlot, championId: string, version: string, label: string) {
+  if (ability.forms) return <AbilityFormIcon forms={ability.forms} label={label} ddragonVersion={version} className="size-7 rounded" />;
+  return (
+    <AbilityIcon
+      championId={championId}
+      slot={slot}
+      ddragonVersion={version}
+      className="block size-7 shrink-0 rounded shadow-none"
+    />
+  );
 }
 
 /** One ability, always open: icon, slot and name, then the full description. */
-export function VsAbilityItem(props: { ability?: AbilityV2; slot: ListSlot; side: VsSideKey; championName: string; version: string; className?: string }) {
+export function VsAbilityItem(props: { ability?: AbilityV2; slot: ListSlot; side: VsSideKey; championId: string; championName: string; version: string; className?: string }) {
   const { ability, slot } = props;
   return (
     <div
@@ -30,7 +37,7 @@ export function VsAbilityItem(props: { ability?: AbilityV2; slot: ListSlot; side
       className={"flex min-w-0 items-start gap-2.5 border-b border-border/50 py-3 " + (props.className ?? "")}
     >
       <div className="mt-0.5 flex shrink-0 flex-col items-center gap-1">
-        {ability ? abilityIcon(ability, slot, props.version, props.championName + " " + slot) : <span className="size-7 rounded bg-muted" />}
+        {ability ? abilityIcon(ability, slot, props.championId, props.version, props.championName + " " + slot) : <span className="size-7 rounded bg-muted" />}
         <span className="text-[10px] leading-3 text-muted-foreground">{slot}</span>
       </div>
       <div className="min-w-0 flex-1">
@@ -60,11 +67,11 @@ export function VsSkillList(props: { side: VsSideKey; detail: ChampionDetailV2; 
   return (
     <>
       <div className={"flex min-w-0 items-center gap-2 self-end border-b border-border pb-2 " + column + " " + ROW_CLASS[0] + (props.side === "opponent" ? " mt-8 sm:mt-0" : "")}>
-        <img src={championIconUrl(props.version, champion.id)} alt="" width={24} height={24} className="size-6 rounded shadow-none" />
+        <ChampionIcon id={champion.id} ddragonVersion={props.version} className="block size-6 rounded shadow-none" />
         <span className="text-[13px] font-semibold">{champion.name}</span>
       </div>
       {LIST_SLOTS.map((slot, index) => (
-        <VsAbilityItem key={slot} slot={slot} side={props.side} ability={champion.abilities[slot]} championName={champion.name} version={props.version} className={column + " " + ROW_CLASS[index + 1]} />
+        <VsAbilityItem key={slot} slot={slot} side={props.side} ability={champion.abilities[slot]} championId={champion.id} championName={champion.name} version={props.version} className={column + " " + ROW_CLASS[index + 1]} />
       ))}
     </>
   );

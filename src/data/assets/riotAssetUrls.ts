@@ -33,6 +33,19 @@ export const summonerSpellIconUrl = (ddragonVersion: string, fileName: string) =
   local(ddragonVersion, "summoner", fileName.replace(/\.png$/, ""));
 
 /**
+ * 변신 스킬 아이콘(엘리스·니달리·제이스·그웬 스물일곱 장).
+ *
+ * 이것만 화면이 Community Dragon 을 직접 보고 있었다. 서비스워커가 맡지 못하고,
+ * 그쪽이 흔들리면 그림이 통째로 빈다. 경로를 눕혀 이름으로 삼아 우리 자리에 둔다 —
+ * 생성기의 `formIconKey` 와 같은 규칙이고, 어긋나면 시험이 잡는다.
+ */
+export const formIconKey = (iconPath: string) =>
+  iconPath.replace(/^\//, "").replace(/\.png$/i, "").replace(/[^a-zA-Z0-9]+/g, "-");
+
+export const formIconUrl = (ddragonVersion: string, iconPath: string) =>
+  local(ddragonVersion, "form", formIconKey(iconPath));
+
+/**
  * 룬 아이콘. 자료에 박힌 경로를 그대로 쓰되 우리 자리를 본다.
  *
  * 이것만 외부 호스트를 직접 보고 있었다. 25장에 854KB — 셋 중 가장 무거운데

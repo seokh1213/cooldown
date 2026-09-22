@@ -67,6 +67,8 @@ export function SimulationItemPicker(props: {
                   <img
                     src={itemIconUrl(ddragonVersion, item.id)}
                     alt={item.name || item.id}
+                    loading="lazy"
+                    decoding="async"
                     className="w-6 h-6 rounded-sm border border-border/60 bg-black/40"
                   />
                   <span className="flex-1 truncate">{item.name || item.id}</span>

@@ -3,7 +3,7 @@ import { useSearchParams } from "react-router-dom";
 import { ArrowLeft, ChevronDown, Search } from "lucide-react";
 import ChampionSelector from "@/components/features/ChampionSelector";
 import { Button } from "@/components/ui/button";
-import { championIconUrl } from "@/data/assets/riotAssetUrls";
+import { ChampionIcon } from "@/components/ui/champion-icon";
 import { SpriteIcon, useSpriteSheet } from "@/components/ui/sprite-icon";
 import { useChampionSearch } from "@/hooks/useChampionSearch";
 import { useTranslation } from "@/i18n";
@@ -70,7 +70,7 @@ export function ChampionsTab(props: EncyclopediaPageProps) {
       <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
         {selected ? (
           <button type="button" onClick={() => setSelecting(true)} aria-label={t.comparison.select} className="flex items-center gap-3 rounded text-left focus-visible:outline-2 focus-visible:outline-primary">
-            <img src={championIconUrl(props.ddragonVersion, selected.id)} alt="" width={48} height={48} className="size-12 rounded" />
+            <ChampionIcon id={selected.id} ddragonVersion={props.ddragonVersion} className="block size-12 rounded" />
             <span><h1 className="text-xl font-semibold">{selected.name}</h1><span className="text-sm text-muted-foreground">{selected.title}</span></span>
             <ChevronDown aria-hidden="true" className="ml-2 size-4 text-muted-foreground" />
           </button>
@@ -132,7 +132,7 @@ export function ChampionsTab(props: EncyclopediaPageProps) {
                 {sprite.index.has(champion.id) ? (
                   <SpriteIcon state={sprite} id={champion.id} size={44} className="block rounded bg-cover group-hover:ring-2 group-hover:ring-primary" />
                 ) : (
-                  <img src={championIconUrl(props.ddragonVersion, champion.id)} alt="" width={44} height={44} loading="lazy" className="size-11 rounded group-hover:ring-2 group-hover:ring-primary" />
+                  <ChampionIcon id={champion.id} ddragonVersion={props.ddragonVersion} className="block size-11 rounded group-hover:ring-2 group-hover:ring-primary" />
                 )}
                 {/*
                   `break-keep` 으로 낱말 가운데를 자르지 않는다. 기본값은 한글을 아무

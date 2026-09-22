@@ -51,6 +51,11 @@ export function SimulationSetupPanel(props: SimulationSetupPanelProps) {
           aria-label={t.pages.simulation.selectChampionAria}
           className="group relative aspect-[4/5] w-28 overflow-hidden rounded-lg border border-border bg-muted text-left transition-[border-color,transform] hover:-translate-y-0.5 hover:border-primary"
         >
+          {/*
+            여기만 낱장 `<img>` 로 남긴다. 담는 칸이 4:5 라 정사각 초상을 잘라 넣어야
+            하는데(`object-cover`), 시트는 배경으로 그려 잘라 넣을 방법이 없어 늘어난다.
+            한 장짜리라 왕복을 아낄 이득도 없다.
+          */}
           {props.champion ? (
             <img src={championIconUrl(props.ddragonVersion, props.champion.id)} alt={props.champion.name} className="size-full object-cover" />
           ) : (

@@ -5,12 +5,13 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Check, Star } from "lucide-react";
 import { useTranslation } from "@/i18n";
+import { championIconUrl } from "@/data/assets/riotAssetUrls";
+import { ChampionIcon, useChampionSheet } from "@/components/ui/champion-icon";
 
 interface ChampionThumbnailProps {
   addChampion: (champion: Champion) => void;
   data: Champion;
   name: string;
-  thumbnailSrc: string;
   selected: boolean;
   favorite: boolean;
   showFavoriteControl: boolean;
@@ -21,13 +22,22 @@ function ChampionThumbnail({
   addChampion,
   data,
   name,
-  thumbnailSrc,
   selected,
   favorite,
   showFavoriteControl,
   onToggleFavorite,
 }: ChampionThumbnailProps) {
   const { t } = useTranslation();
+  /*
+   * 시트에서 자를 수 있으면 **기다릴 것이 없다.**
+   *
+   * 이 격자는 173장을 한꺼번에 그린다. 낱장으로 받던 시절에는 받아 오는 동안
+   * 자리맡을 띄우고 `onLoad` 에 맞춰 흐리게 나타냈는데, 그 깜빡임이 화면에 들어갈
+   * 때마다 보였다. 시트는 서비스워커가 이미 들고 있어 첫 그림에 바로 나오므로
+   * 자리맡도 나타나는 효과도 필요 없다. 시트에 없는 챔피언만 옛 길로 간다.
+   */
+  const sheet = useChampionSheet();
+  const fromSheet = sheet?.index.has(data.id) ?? false;
   const [isLoaded, setIsLoaded] = useState(false);
   const [hasError, setHasError] = useState(false);
   // 즉시 피드백을 위한 로컬 선택 상태
@@ -78,14 +88,25 @@ function ChampionThumbnail({
         {/* 고정 크기 컨테이너 - 레이아웃 시프트 방지, overflow-hidden으로 scale 시 보더가 벗어나지 않도록 */}
         <div className="relative w-12 h-12 md:w-14 md:h-14 shrink-0 overflow-hidden rounded-full">
           {/* Skeleton placeholder - 고정 크기로 레이아웃 시프트 방지 */}
-          {!isLoaded && !hasError && (
+          {!fromSheet && !isLoaded && !hasError && (
             <Skeleton className="absolute inset-0 rounded-full" />
           )}
           {/* Blur placeholder - 이미지가 로드되기 전까지 */}
-          {!isLoaded && !hasError && (
+          {!fromSheet && !isLoaded && !hasError && (
             <div className="absolute inset-0 rounded-full bg-linear-to-br from-muted via-muted/80 to-muted/60 blur-xs" />
           )}
           {/* Actual image - 고정 크기로 레이아웃 시프트 방지 */}
+          {fromSheet ? (
+            <ChampionIcon
+              id={data.id}
+              ddragonVersion={data.ddragonVersion || ""}
+              alt={name}
+              className={cn(
+                "absolute inset-0 w-full h-full rounded-full bg-black/5 bg-cover transition-transform duration-200 ease-out",
+                !selected && !isLocallySelected && "hover:scale-105",
+              )}
+            />
+          ) : (
           <img
             className={cn(
               "absolute inset-0 w-full h-full rounded-full bg-black/5 border-0 box-border transition-[transform,opacity] duration-200 ease-out object-cover",
@@ -93,7 +114,7 @@ function ChampionThumbnail({
               !selected && !isLocallySelected && "hover:scale-105",
               isLoaded ? "opacity-100" : "opacity-0"
             )}
-            src={thumbnailSrc}
+            src={championIconUrl(data.ddragonVersion || "", data.id)}
             alt={name}
             loading="lazy"
             decoding="async"
@@ -102,6 +123,7 @@ function ChampionThumbnail({
             onLoad={handleLoad}
             onError={handleError}
           />
+          )}
           {/* 선택 인디케이터 - 가시성 향상을 위한 외부 ring */}
           {(isLocallySelected || selected) && (
             <div 

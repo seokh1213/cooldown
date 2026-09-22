@@ -1,4 +1,4 @@
-import { championIconUrl } from "@/data/assets/riotAssetUrls";
+import { ChampionIcon } from "@/components/ui/champion-icon";
 import { cn } from "@/lib/utils";
 import {
   Table,
@@ -40,12 +40,7 @@ export function StatsSectionMobile({
                     </TableHead>
                     <TableHead className="text-center p-1.5 text-[10px] font-semibold text-foreground w-1/2 border-r border-border/30 select-none">
                       <div className="flex flex-col items-center justify-center gap-0.5">
-                        <img
-                          src={championIconUrl(ddragonVersion, championA.id)}
-                          alt={championA.name}
-                          className="w-6 h-6 rounded-full"
-                          draggable="false"
-                        />
+                        <ChampionIcon id={championA.id} ddragonVersion={ddragonVersion} alt={championA.name} className="block w-6 h-6 rounded-full" />
                         <div className="text-xs font-semibold leading-tight text-center text-foreground">
                           {championA.name}
                         </div>
@@ -56,12 +51,7 @@ export function StatsSectionMobile({
                     </TableHead>
                     <TableHead className="text-center p-1.5 text-[10px] font-semibold text-foreground w-1/2 select-none">
                       <div className="flex flex-col items-center justify-center gap-0.5">
-                        <img
-                          src={championIconUrl(ddragonVersion, championB.id)}
-                          alt={championB.name}
-                          className="w-6 h-6 rounded-full"
-                          draggable="false"
-                        />
+                        <ChampionIcon id={championB.id} ddragonVersion={ddragonVersion} alt={championB.name} className="block w-6 h-6 rounded-full" />
                         <div className="text-xs font-semibold leading-tight text-center text-foreground">
                           {championB.name}
                         </div>
@@ -129,12 +119,7 @@ export function StatsSectionMobile({
                       className="text-center p-1.5 text-[11px] font-semibold text-foreground w-full select-none"
                     >
                       <div className="flex flex-col items-center justify-center gap-1">
-                        <img
-                          src={championIconUrl(ddragonVersion, champion.id)}
-                          alt={champion.name}
-                          className="w-8 h-8 rounded-full"
-                          draggable="false"
-                        />
+                        <ChampionIcon id={champion.id} ddragonVersion={ddragonVersion} alt={champion.name} className="block w-8 h-8 rounded-full" />
                         <div className="text-sm font-semibold leading-tight text-center text-foreground">
                           {champion.name}
                         </div>

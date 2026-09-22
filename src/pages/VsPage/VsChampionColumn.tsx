@@ -1,7 +1,7 @@
 import { toChampionStats } from "@/data/mappers/championMapper";
 import { getStatFields } from "@/components/features/ChampionComparison/constants";
 import { ChevronDown, Plus } from "lucide-react";
-import { championIconUrl } from "@/data/assets/riotAssetUrls";
+import { ChampionIcon } from "@/components/ui/champion-icon";
 import type { ChampionDetailV2 } from "@/data/contracts/championData";
 import { Button } from "@/components/ui/button";
 import { useTranslation } from "@/i18n";
@@ -30,7 +30,7 @@ export function VsChampionHeader(props: ChampionHeaderProps) {
         className="group flex w-full min-w-0 items-center gap-2.5 rounded-md border border-border bg-card px-2 py-1.5 text-left shadow-xs hover:border-primary/60 hover:bg-muted/40 focus-visible:outline-2 focus-visible:outline-primary"
       >
         {props.id ? (
-          <img key={props.id} src={championIconUrl(props.version, props.id)} alt="" width={36} height={36} className="size-7 shrink-0 rounded-md shadow-none sm:size-9" />
+          <ChampionIcon key={props.id} id={props.id} ddragonVersion={props.version} className="block size-7 shrink-0 rounded-md shadow-none sm:size-9" />
         ) : (
           <span className="flex size-7 shrink-0 items-center justify-center rounded-md border border-dashed border-border bg-muted/30 sm:size-9">
             <Plus aria-hidden="true" className="size-4 text-muted-foreground" />
@@ -84,7 +84,7 @@ export function VsStatList(props: StatListProps) {
     <div data-testid={"vs-" + props.side + "-stats"} className="min-w-0">
       <div className="grid grid-cols-[1fr_auto_5.5rem] items-center gap-x-3 border-b border-border pb-2 text-[11px] text-muted-foreground">
         <div className="flex items-center gap-2">
-          <img src={championIconUrl(props.version, props.detail.champion.id)} alt="" width={24} height={24} className="size-6 rounded shadow-none" />
+          <ChampionIcon id={props.detail.champion.id} ddragonVersion={props.version} className="block size-6 rounded shadow-none" />
           <span className="text-[13px] font-semibold text-foreground">{props.detail.champion.name}</span>
         </div>
         <span className="text-right">{t.comparison.statBase}</span>

@@ -29,6 +29,7 @@ export function VsCooldownMatrix({ sides, version, onSelect }: { sides: MatrixSi
   const [selected, setSelected] = useState<{ ability: AbilityV2; name: string; slot: string }>();
   const columns = sides.flatMap(({ side, detail }) => ACTIVE_SLOTS.map((slot) => ({
     side, slot, name: detail?.champion.name ?? t.comparison[side],
+    championId: detail?.champion.id ?? "",
     ability: detail?.champion.abilities[slot],
   })));
   const rowCount = cooldownRankCount(columns.map(({ ability }) => ability));
@@ -94,10 +95,10 @@ export function VsCooldownMatrix({ sides, version, onSelect }: { sides: MatrixSi
           </tr>
           {hasDetails && <tr>
             <th scope="col" className="border-b border-border/60 px-1 text-left text-[11px] font-normal text-muted-foreground">{t.comparison.skill}</th>
-            {columns.map(({ side, slot, name, ability }, index) => (
+            {columns.map(({ side, slot, name, championId, ability }, index) => (
               <Fragment key={side + slot}>
                 {index === ACTIVE_SLOTS.length && <td aria-hidden="true" className="p-0" />}
-                <VsMatrixSkill side={side} slot={slot} name={name} ability={ability} version={version} onSelect={(selectedAbility, trigger) => { returnFocus.current = trigger; setSelected({ ability: selectedAbility, name, slot }); }} />
+                <VsMatrixSkill side={side} slot={slot} name={name} championId={championId} ability={ability} version={version} onSelect={(selectedAbility, trigger) => { returnFocus.current = trigger; setSelected({ ability: selectedAbility, name, slot }); }} />
               </Fragment>
             ))}
             <td className="border-b border-border/60 p-0" />

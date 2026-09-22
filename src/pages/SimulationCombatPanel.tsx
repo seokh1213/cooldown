@@ -1,7 +1,8 @@
 import { useMemo } from "react";
 import { Card } from "@/components/ui/card";
 import { Select } from "@/components/ui/select";
-import { championIconUrl, spellIconUrl } from "@/data/assets/riotAssetUrls";
+import { spellIconUrl } from "@/data/assets/riotAssetUrls";
+import { ChampionIcon } from "@/components/ui/champion-icon";
 import type { AbilitySlot, ChampionDetailV2 } from "@/data/contracts/championData";
 import { useTranslation } from "@/i18n";
 import type { Champion } from "@/types";
@@ -210,7 +211,7 @@ export function SimulationCombatPanel(props: SimulationCombatPanelProps) {
             className="flex min-h-14 w-full items-center gap-3 rounded-md border border-border/70 bg-background/50 p-2 text-left transition-colors hover:bg-muted/60"
           >
             {props.target ? (
-              <img src={championIconUrl(props.ddragonVersion, props.target.id)} alt="" width={40} height={40} className="size-10 rounded-full" />
+              <ChampionIcon id={props.target.id} ddragonVersion={props.ddragonVersion} className="block size-10 rounded-full bg-cover" />
             ) : <span className="size-10 rounded-full border border-dashed border-border" />}
             <span className="font-medium">{targetLabel}</span>
           </button>
