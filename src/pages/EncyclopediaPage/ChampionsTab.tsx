@@ -19,12 +19,11 @@ export function ChampionsTab(props: EncyclopediaPageProps) {
   /*
    * 직군으로 거른다.
    *
-   * 라이엇의 `tags` 는 여섯 갈래뿐이라 가렌과 야스오가 같은 Fighter 로 묶인다.
-   * 실제로 쓰는 말과 맞지 않아 거르개로 쓸 수 없다. 대신 커뮤니티 위키가 매긴
-   * 하위 직군을 쓴다 — 나서스는 Juggernaut, 야스오는 Skirmisher 다.
+   * 라이엇 공식 여섯 갈래를 쓴다 — 전사·마법사·암살자·원거리 딜러·탱커·서포터.
    *
-   * 갈래 이름은 언어마다 옮긴다. 라이엇 자료에는 영문만 있고 클라이언트도 큰 분류
-   * 여섯만 쓰므로, 각 언어권 커뮤니티가 굳혀 놓은 말을 따른다(`roleNames`).
+   * 한때 커뮤니티 위키의 하위 직군 열넷을 썼다. 가르는 눈은 더 밝지만 칸이 잘게
+   * 쪼개져 거르개로 쓸모가 없었다(Artillery 7명, Mage 1명 하는 식이다). 공식
+   * 여섯이면 33~75명씩 고르게 나뉜다.
    *
    * 여럿 고르면 그중 하나라도 걸리면 남긴다. 한 챔피언이 둘에 걸치기도 한다
    * (오로라 = Mage + Assassin).
@@ -32,11 +31,11 @@ export function ChampionsTab(props: EncyclopediaPageProps) {
   const [roles, setRoles] = useState<string[]>([]);
   const searched = useChampionSearch(props.championList, search);
   const allRoles = useMemo(
-    () => [...new Set((props.championList ?? []).flatMap((champion) => champion.subclasses ?? []))].sort(),
+    () => [...new Set((props.championList ?? []).flatMap((champion) => champion.roles ?? []))].sort(),
     [props.championList],
   );
   const champions = useMemo(
-    () => (roles.length === 0 ? searched : searched.filter((champion) => champion.subclasses?.some((role) => roles.includes(role)))),
+    () => (roles.length === 0 ? searched : searched.filter((champion) => champion.roles?.some((role) => roles.includes(role)))),
     [searched, roles],
   );
   /*

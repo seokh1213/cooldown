@@ -75,15 +75,12 @@ export interface Champion {
   // API에서 추가로 받을 수 있는 필드들 (타입 안정성을 위해 명시적으로 정의)
   tags?: string[];
   /**
-   * 커뮤니티 위키 기준 하위 직군. 챔피언 목록의 거르개가 쓴다.
+   * 라이엇 공식 역할군. 챔피언 목록의 거르개가 쓴다.
    *
-   * `tags` 는 라이엇이 매긴 여섯 갈래라 가렌과 야스오가 같은 Fighter 가 된다.
-   * 이쪽은 열넷으로 갈라 두어 Juggernaut / Skirmisher 로 나뉜다.
-   * 자세한 것은 `ChampionIndexEntryV2.subclasses` 에 적어 두었다.
+   * 클라이언트가 보여 주는 여섯 갈래다. `tags` 와 값이 겹치지만 이쪽은 정규화된
+   * 소문자 열쇠라 화면이 번역표를 바로 찾을 수 있다.
    */
-  subclasses?: string[];
-  /** 위키 기준 주 포지션(Top, Jungle, Middle, Bottom, Support). */
-  positions?: string[];
+  roles?: string[];
   info?: {
     attack: number;
     defense: number;

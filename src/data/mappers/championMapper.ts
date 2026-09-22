@@ -75,9 +75,8 @@ export function toChampionSummary(
     title: entry.title,
     ddragonVersion,
     image: { full: entry.iconFile },
-    // 목록 거르개가 쓴다. 위키에 아직 안 올라온 새 챔피언은 비어 있다.
-    ...(entry.subclasses?.length ? { subclasses: entry.subclasses } : {}),
-    ...(entry.positions?.length ? { positions: entry.positions } : {}),
+    // 목록 거르개가 쓴다. 라이엇이 아직 안 매긴 새 챔피언은 비어 있다.
+    ...(entry.roles?.length ? { roles: entry.roles } : {}),
   };
 }
 
