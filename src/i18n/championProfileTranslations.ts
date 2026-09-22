@@ -45,7 +45,9 @@ export const koChampionProfile: ChampionProfileLabels = {
     Enchanter: "강화형 보조술사",
     Catcher: "포획형 보조술사",
     Marksman: "원거리 딜러",
-    Specialist: "분류 불가",
+    // 위키 문서는 "분류 불가" 라고 부르지만 거르개 이름표로는 자료가 빈 것처럼 읽힌다.
+    // 티모·헤임딩거·갱플랭크처럼 제 방식이 뚜렷해서 어느 갈래에도 안 들어가는 쪽이다.
+    Specialist: "특수형",
     Mage: "마법사",
   },
   tab: "챔피언", intro: "챔피언을 선택해 스킨과 배경 이야기를 살펴보세요.",
