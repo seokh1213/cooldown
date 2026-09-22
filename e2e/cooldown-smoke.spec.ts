@@ -326,7 +326,7 @@ test("renders stat icons inside ability tooltips", async ({ page }) => {
   // 계산해 만든 스탯 항 앞에 스탯 아이콘이 붙는다
   const statIcon = qTooltip.locator('img.stat-icon').first();
   await expect(statIcon).toBeVisible();
-  await expect(statIcon).toHaveAttribute("src", /\/img\/stat\/scale[a-z]+\.webp$/);
+  await expect(statIcon).toHaveAttribute("src", /\/img\/[^/]+\/stat\/scale[a-z]+\.webp$/);
   // 자리 표시가 그대로 노출되면 안 된다
   await expect(qTooltip).not.toContainText("[[si:");
   // 실제로 그려졌는지 (깨진 이미지가 아닌지) 확인

@@ -159,13 +159,22 @@ async function generateThumbnails() {
    * 패치마다 덮어쓴다.
    */
   const imgRoot = path.join(process.cwd(), "public/img");
-  const runeOut = path.join(imgRoot, "runes");
-  // 스탯 글리프도 판본 밖이다. 패치별 자료가 아니라 UI 글리프라 값이 바뀌지 않는다.
-  const statOut = path.join(imgRoot, "stat");
+  /*
+   * 룬과 스탯 글리프도 **판본 자리 안**에 둔다.
+   *
+   * 한때 둘만 밖에 두었다. 룬 자료에 판본이 없고 글리프는 패치를 타지 않아서였다.
+   * 그런데 그림 주소가 그대로면 서비스워커가 CacheFirst 로 영영 붙잡는다 — 내용이
+   * 바뀌어도 새 그림이 안 온다. 실제로 재 보니 서버는 752바이트를 주는데 캐시는
+   * 662바이트짜리 옛 그림을 쥐고 있었고, 강력 새로고침으로도 안 바뀌었다.
+   *
+   * 판본을 넣으면 내용이 바뀔 때 주소가 함께 바뀌므로 그 일이 생길 수가 없다.
+   * 예외를 두는 대신 규칙 하나로 맞춘다 — **그림 주소에는 늘 판본이 들어간다.**
+   * 지난 판본 폴더는 통째로 지우므로 낡은 것이 쌓이지도 않는다.
+   */
+  const runeOut = path.join(out, "runes");
+  const statOut = path.join(out, "stat");
   for (const entry of await readdir(imgRoot).catch(() => [])) {
-    if (entry !== ddragon && entry !== "runes" && entry !== "stat") {
-      await rm(path.join(imgRoot, entry), { recursive: true, force: true });
-    }
+    if (entry !== ddragon) await rm(path.join(imgRoot, entry), { recursive: true, force: true });
   }
   await mkdir(statOut, { recursive: true });
   /*
@@ -318,8 +327,8 @@ async function generateThumbnails() {
   const sheets = [
     await buildSheet("champion", championIds, CHAMPION_SIZE, out, QUALITY),
     await buildSheet("summoner", summonerIcons, SUMMONER_SIZE, out, QUALITY),
-    // 룬은 판본 밖 자리에 모인다. 칸 이름도 경로를 눕힌 꼴이라 따로 넘긴다.
-    await buildSheet("rune", runePaths.map(runeKey), RUNE_SIZE, runeOut, QUALITY, imgRoot),
+    // 룬은 낱장이 `runes/` 아래 모이고 시트는 그 위에 둔다. 칸 이름은 경로를 눕힌 꼴이다.
+    await buildSheet("rune", runePaths.map(runeKey), RUNE_SIZE, runeOut, QUALITY, out),
     /*
      * 아이템 시트만 압축을 더 건다.
      *
@@ -331,6 +340,7 @@ async function generateThumbnails() {
   ];
   const strips = await buildAbilityStrips(abilityStrips, out);
   await writeSheetIndex(sheets);
+  await writeAssetVersion(ddragon);
   const mb = (bytes: number) => `${(bytes / 1024 / 1024).toFixed(1)}MB`;
   console.log(`썸네일 ${jobs.length}장 (챔피언 ${championIds.length} · 아이템 ${items.length} · 룬 ${runePaths.length} · 소환사 주문 ${summonerIcons.length} · 스킬 ${abilityIcons.size} · 패시브 ${passiveIcons.size} · 변신 ${formIcons.size} · 스탯 글리프 ${statIcons.size})`);
   console.log(`  원본 ${mb(bytesIn)} → ${mb(bytesOut)} (${Math.round((1 - bytesOut / bytesIn) * 100)}% 절감)`);
@@ -387,6 +397,24 @@ async function writeSheetIndex(sheets: SheetInfo[]): Promise<void> {
     "",
   ].join("\n");
   await writeFile(path.join(process.cwd(), "src/data/generated/spriteSheets.ts"), file);
+}
+
+/**
+ * 그림이 놓인 판본을 묶음에 적어 둔다.
+ *
+ * 주소를 짓는 자리 중에는 React 밖도 있다(스탯 글리프). 거기서는 화면이 들고 있는
+ * 판본을 받을 수 없으므로 여기서 적어 준다. 그림과 함께 커밋되므로 둘이 어긋날
+ * 자리가 없다.
+ */
+async function writeAssetVersion(ddragon: string): Promise<void> {
+  const file = [
+    "/* 자동 생성 — `npm run generate-thumbnails`. 손으로 고치지 마십시오. */",
+    "",
+    "/** `public/img/<이 값>/` 아래에 그림이 있다. 주소가 판본을 타야 캐시가 안 굳는다. */",
+    `export const IMAGE_VERSION = ${JSON.stringify(ddragon)};`,
+    "",
+  ].join("\n");
+  await writeFile(path.join(process.cwd(), "src/data/generated/assetVersion.ts"), file);
 }
 
 /**
