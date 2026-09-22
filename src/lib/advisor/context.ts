@@ -286,20 +286,16 @@ export function buildTagAnswer(
  * 줄이는 것은 프롬프트가 6천 자에 닿으면 브라우저 런타임이 죽기 때문인데,
  * 여기는 화면에 바로 나가는 글이라 그 제약이 없다.
  */
-/**
- * 상성 해설 재료. 사람이 검증한 지식 카드만 준다 — 수치와 스킬 본문은 카드가 이미 그렸다.
+/*
+ * 상성 해설 재료를 따로 만들던 `buildMatchupTips` 는 걷어냈다.
  *
- * 두 챔피언의 자료를 통째로 주면 프롬프트가 길어져 해설 한 번에 25초가 걸렸다.
- * 내 챔피언의 "플레이할 때" 셋과 상대 챔피언의 "상대하는 법" 셋만 남긴다.
+ * 상성 프롬프트에 노트가 아예 안 실리던 것을 고치면서 `buildCommentaryPrompt` 안에
+ * 노트를 넣었는데, 화면 코드가 이 함수로 같은 노트를 한 번 더 붙이고 있었다. 다섯
+ * 줄이 두 번씩 실려 프롬프트가 3,172자까지 부풀었다. 재료를 만드는 자리는 하나면
+ * 된다.
  */
-export function buildMatchupTips(data: AdvisorData, me: ChampionCard, enemy: ChampionCard): string | undefined {
-  const selected = selectPlaybook(data.playbooks, me, enemy);
-  const trimmed = { mine: selected.mine.slice(0, 3), vsEnemy: selected.vsEnemy.slice(0, 3) };
-  if (trimmed.mine.length === 0 && trimmed.vsEnemy.length === 0) return undefined;
-  return `[지식 카드 — 사람이 검증한 내용입니다. 이 표현을 따르십시오]\n${playbookToText(trimmed, me.name, enemy.name, data.patch)}`;
-}
 
-/** 상성 카드에 그대로 보일 노트. 해설 재료(buildMatchupTips)와 같은 것을 고른다. */
+/** 상성 카드에 그대로 보일 노트. 해설 재료도 이것을 쓴다. */
 export function matchupNotes(data: AdvisorData, me: ChampionCard, enemy: ChampionCard): { mine: string[]; enemy: string[] } {
   const selected = selectPlaybook(data.playbooks, me, enemy);
   /*

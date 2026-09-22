@@ -28,7 +28,6 @@ import { AdvisorMarkdown } from "./AdvisorMarkdown";
 import { groundCommentary } from "@/lib/advisor/grounding";
 import {
   buildChampionsBrief,
-  buildMatchupTips,
   championNotes,
   matchupNotes,
   buildItemCard,
@@ -333,8 +332,18 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
     const answer = buildCompareCard([mine, enemy], question, undefined, { matchup: true, notes: matchupNotes(data, mine, enemy) });
     const prompt = buildCommentaryPrompt(answer, patch, lang);
     if (canUseModel && advisor.consented && prompt) {
-      const tips = buildMatchupTips(data, mine, enemy);
-      advisor.sendWithAnswer(question, [advisorSystemPrompt(lang), tips, prompt].filter(Boolean).join("\n\n"), answer, notice);
+      /*
+       * 노트를 한 번만 싣는다.
+       *
+       * 여기서 `buildMatchupTips` 로 노트를 붙이고 있었는데, 상성 프롬프트가 비어
+       * 있던 것을 고치면서 `buildCommentaryPrompt` 안에도 같은 노트를 넣었다. 그래서
+       * 다섯 줄이 **두 번씩** 실렸다. 재 보니 프롬프트가 3,172자(약 2,000토큰)였고
+       * 그중 672자가 군더더기였다.
+       *
+       * 길이만 버리는 것이 아니다. 같은 문장이 두 번 보이면 모델이 그것을 중요한
+       * 말로 읽고 그대로 옮겨 적는다.
+       */
+      advisor.sendWithAnswer(question, `${advisorSystemPrompt(lang)}\n\n${prompt}`, answer, notice);
     } else {
       advisor.answerWithoutModel(question, answer, notice);
     }
