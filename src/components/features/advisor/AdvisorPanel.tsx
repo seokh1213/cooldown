@@ -310,22 +310,28 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
   /**
    * 상성 카드 + 내 챔피언 시점 해설. 재료는 사람이 검증한 지식 카드만.
    *
-   * 가벼운 모델에게는 해설을 맡기지 않는다.
+   * **모델 크기로 갈래를 두지 않는다.**
    *
-   * 챔피언이 둘이면 스킬 이름도 열 개다. 0.8B 는 그 열 개가 누구 것인지 끝까지
-   * 붙들지 못했다. 열네 쌍을 재 보니 근거 검사가 걷어낸 문장이 쓴 문장의 23% 였고
-   * (4B 는 9%), 남은 글도 카드를 통째로 다시 적거나 "이 스킬을 사용하면 추가적인
-   * 피해를 줄여줍니다" 처럼 뜻이 뒤집힌 말이었다. 임자 붙이기·규칙 손질·노트 축약을
-   * 판본으로 갈라 재 봤지만 실패 방식만 바뀌고 없어지지는 않았다.
+   * 한때 가벼운 모델에게는 해설을 맡기지 않았다. 0.8B 가 상성에서 카드를 통째로
+   * 되읊길래 뺐는데, 그러면 상성 질문에 카드만 뜨고 한 글자도 안 나온다. 모델을
+   * 올려 두었는데 말을 안 하는 것은 고장으로 보인다.
    *
-   * 그래서 해설을 뺀다. 손해가 크지 않다 — 상성 카드에는 도출한 문장과 사람이
-   * 검증한 노트가 이미 그대로 보인다(AdvisorAnswerCard). 모델이 얹던 것은 그 위의
-   * 잡음이었다. 기다림도 사라진다.
+   * 그래서 모델마다 재료를 달리 주는 쪽을 재 봤다. 스킬 표를 빼고 할 일을 두세
+   * 문장으로 좁히는 판본이다. 0.8B 는 덜 망가졌지만(걷어냄 71 → 48, 고리 5 → 1)
+   * 나아진 것이 아니라 조용해진 것이었다 — 남은 문장의 54% 가 노트 베끼기이고
+   * 시점 놓침은 오히려 가장 나빴다(5/14). 같은 판본을 4B 에 주니 529 자 답이
+   * 194 자로 깎였다. 좋은 모델을 망가뜨려 나쁜 모델을 덜 티 나게 만드는 거래다.
+   *
+   * 게다가 저 `고리 5` 는 재는 도구 탓이 크다. 워커에는 같은 문장이 세 번 나오면
+   * 끊는 장치가 있는데 평가 하네스에는 없다.
+   *
+   * 프롬프트는 하나다. 모델과 무관한 두 장치가 뒤를 받친다 — 근거 검사가 틀린
+   * 문장을 걷어내고, 워커가 반복을 끊는다.
    */
   const deliverMatchup = (question: string, mine: ChampionCard, enemy: ChampionCard, notice?: string) => {
     if (!data) return;
     const answer = buildCompareCard([mine, enemy], question, undefined, { matchup: true, notes: matchupNotes(data, mine, enemy) });
-    const prompt = advisor.model.lite ? undefined : buildCommentaryPrompt(answer, patch, lang);
+    const prompt = buildCommentaryPrompt(answer, patch, lang);
     if (canUseModel && advisor.consented && prompt) {
       const tips = buildMatchupTips(data, mine, enemy);
       advisor.sendWithAnswer(question, [advisorSystemPrompt(lang), tips, prompt].filter(Boolean).join("\n\n"), answer, notice);
