@@ -21,8 +21,14 @@ export interface FormulaEntry {
   /** 이 값에 해당하는 스탯 아이콘 (statIcons 의 이름) */
   icon?: string;
   title: Localized;
-  /** 언어와 무관한 계산식 */
-  formula: string;
+  /**
+   * 계산식.
+   *
+   * 한때 "언어와 무관하다" 고 적어 두고 한국어로만 썼다. 식 자체는 언어를 안 타지만
+   * 그 안의 낱말은 탄다 — 영어 화면에 "받는 피해 = 원래 피해 × 100 / (100 + 저항력)"
+   * 이 그대로 나왔다. 스물여섯 줄 전부 그랬다.
+   */
+  formula: Localized;
   description: Localized;
   /** 숫자를 넣어 본 예시 */
   example?: Localized;
@@ -53,7 +59,11 @@ export const FORMULA_GROUPS: FormulaGroup[] = [
           en_US: "Armor / magic resist → damage taken",
           zh_CN: "护甲·魔抗 → 承受伤害",
         },
-        formula: "받는 피해 = 원래 피해 × 100 / (100 + 저항력)",
+        formula: {
+          ko_KR: "받는 피해 = 원래 피해 × 100 / (100 + 저항력)",
+          en_US: "Damage taken = Raw damage × 100 / (100 + Resistance)",
+          zh_CN: "承受伤害 = 原始伤害 × 100 / (100 + 抗性)",
+        },
         description: {
           ko_KR:
             "방어력은 물리 피해에, 마법 저항력은 마법 피해에 같은 식으로 쓰인다. 피해를 몇 % 깎는 게 아니라 나누는 값이라 아무리 쌓아도 100%가 되지 않는다.",
@@ -76,7 +86,11 @@ export const FORMULA_GROUPS: FormulaGroup[] = [
           en_US: "Effective health (the same formula, inverted)",
           zh_CN: "有效生命值（同一公式的逆向读法）",
         },
-        formula: "실질 체력 = 체력 × (1 + 저항력 / 100)",
+        formula: {
+          ko_KR: "실질 체력 = 체력 × (1 + 저항력 / 100)",
+          en_US: "Effective health = Health × (1 + Resistance / 100)",
+          zh_CN: "有效生命值 = 生命值 × (1 + 抗性 / 100)",
+        },
         description: {
           ko_KR:
             "새로운 규칙이 아니라 위 감쇄식을 체력 쪽에서 다시 쓴 것이다. 받는 피해가 100/(100+저항력) 배가 되니, 버틸 수 있는 양은 그 역수만큼 늘어난다. 이렇게 보면 저항력 1점이 체력을 정확히 1%씩 늘려 준다는 게 드러나서, 방어 아이템과 체력 아이템 중 어느 쪽이 이득인지 비교할 때 쓴다.",
@@ -99,7 +113,11 @@ export const FORMULA_GROUPS: FormulaGroup[] = [
           en_US: "Negative resistance",
           zh_CN: "抗性为负时",
         },
-        formula: "받는 피해 = 원래 피해 × (2 − 100 / (100 − 저항력))",
+        formula: {
+          ko_KR: "받는 피해 = 원래 피해 × (2 − 100 / (100 − 저항력))",
+          en_US: "Damage taken = Raw damage × (2 − 100 / (100 − Resistance))",
+          zh_CN: "承受伤害 = 原始伤害 × (2 − 100 / (100 − 抗性))",
+        },
         description: {
           ko_KR:
             "저항력이 0 밑으로 내려가면 다른 곡선을 쓰고, 추가 피해는 최대 2배에서 멈춘다. 관통으로는 음수가 되지 않으므로 고정 저항력 감소로만 도달한다.",
@@ -116,7 +134,11 @@ export const FORMULA_GROUPS: FormulaGroup[] = [
           en_US: "True damage",
           zh_CN: "真实伤害",
         },
-        formula: "받는 피해 = 원래 피해 (저항력 무시)",
+        formula: {
+          ko_KR: "받는 피해 = 원래 피해 (저항력 무시)",
+          en_US: "Damage taken = Raw damage (resistance ignored)",
+          zh_CN: "承受伤害 = 原始伤害（无视抗性）",
+        },
         description: {
           ko_KR:
             "저항력 계산을 통째로 건너뛴다. 다만 '받는 피해 감소' 효과는 고정 피해에도 적용된다.",
@@ -133,7 +155,11 @@ export const FORMULA_GROUPS: FormulaGroup[] = [
           en_US: "Stacking damage reduction",
           zh_CN: "减伤效果的叠加",
         },
-        formula: "총 배율 = (1 − 감소A) × (1 − 감소B) × …",
+        formula: {
+          ko_KR: "총 배율 = (1 − 감소A) × (1 − 감소B) × …",
+          en_US: "Total multiplier = (1 − Reduction A) × (1 − Reduction B) × …",
+          zh_CN: "总系数 = (1 − 减伤A) × (1 − 减伤B) × …",
+        },
         description: {
           ko_KR:
             "받는 피해 감소는 더해지지 않고 곱해진다. 그래서 여러 개를 겹쳐도 100%에 닿지 않는다.",
@@ -166,8 +192,11 @@ export const FORMULA_GROUPS: FormulaGroup[] = [
           en_US: "The whole chain in one formula",
           zh_CN: "合并为一个公式",
         },
-        formula:
-          "적용 저항력 = (저항력 − 고정 감소) × (1 − 감소%) × (1 − 관통%) − 고정 관통\n받는 피해   = 원래 피해 × 100 / (100 + 적용 저항력)",
+        formula: {
+          ko_KR: "적용 저항력 = (저항력 − 고정 감소) × (1 − 감소%) × (1 − 관통%) − 고정 관통\n받는 피해   = 원래 피해 × 100 / (100 + 적용 저항력)",
+          en_US: "Applied resistance = (Resistance − Flat reduction) × (1 − Reduction%) × (1 − Penetration%) − Flat penetration\nDamage taken       = Raw damage × 100 / (100 + Applied resistance)",
+          zh_CN: "生效抗性 = (抗性 − 固定削减) × (1 − 削减%) × (1 − 穿透%) − 固定穿透\n承受伤害 = 原始伤害 × 100 / (100 + 生效抗性)",
+        },
         description: {
           ko_KR:
             "아래 네 단계는 결국 이 한 줄이다. 물리든 마법이든 같다. 한 가지만 다른데, 비율 관통은 빼는 게 아니라 곱한다. 방어력 100에 관통 30%면 100 − 30 = 70 이 아니라 100 × 0.7 = 70 이라 같아 보이지만, 앞에 비율 감소가 걸려 있으면 결과가 달라진다. 세부 규칙도 있다. 비율 감소와 비율 관통은 저항력이 0 이하이면 건너뛰고, 고정 관통은 저항력을 0 밑으로 내리지 못한다. 저항력을 음수로 만들 수 있는 건 고정 감소뿐이다.",
@@ -192,8 +221,11 @@ export const FORMULA_GROUPS: FormulaGroup[] = [
           en_US: "Reduction vs. penetration",
           zh_CN: "削减与穿透的区别",
         },
-        formula:
-          "감소 = 대상의 저항력 자체를 깎음\n관통 = 내 피해 계산에서만 무시",
+        formula: {
+          ko_KR: "감소 = 대상의 저항력 자체를 깎음\n관통 = 내 피해 계산에서만 무시",
+          en_US: "Reduction  = lowers the target's own resistance\nPenetration = ignored only when my damage is computed",
+          zh_CN: "削减 = 直接降低目标自身的抗性\n穿透 = 仅在计算我方伤害时无视",
+        },
         description: {
           ko_KR:
             "감소는 대상 스탯을 실제로 낮춰 아군 전체가 이득을 본다. 관통은 내 피해를 계산할 때만 적용되고 대상의 표시 스탯은 그대로다. 기본 저항력과 추가 저항력은 따로 계산한다.",
@@ -211,8 +243,11 @@ export const FORMULA_GROUPS: FormulaGroup[] = [
           en_US: "Order of operations (physical and magic)",
           zh_CN: "计算顺序（物理与魔法通用）",
         },
-        formula:
-          "① 저항력 감소 (고정)\n② 저항력 감소 (%)\n③ 관통 (%)\n④ 관통 (고정)",
+        formula: {
+          ko_KR: "① 저항력 감소 (고정)\n② 저항력 감소 (%)\n③ 관통 (%)\n④ 관통 (고정)",
+          en_US: "① Flat resistance reduction\n② Percent resistance reduction\n③ Percent penetration\n④ Flat penetration",
+          zh_CN: "① 固定抗性削减\n② 百分比抗性削减\n③ 百分比穿透\n④ 固定穿透",
+        },
         description: {
           ko_KR:
             "순서가 결과를 바꾼다. 방어력 쪽이든 마법 저항력 쪽이든 네 단계가 똑같이 적용된다.",
@@ -229,7 +264,11 @@ export const FORMULA_GROUPS: FormulaGroup[] = [
           en_US: "Flat resistance reduction",
           zh_CN: "固定抗性削减",
         },
-        formula: "저항력 = 저항력 − 감소량   (합연산, 음수 가능)",
+        formula: {
+          ko_KR: "저항력 = 저항력 − 감소량   (합연산, 음수 가능)",
+          en_US: "Resistance = Resistance − Reduction   (additive, can go below 0)",
+          zh_CN: "抗性 = 抗性 − 削减量（加算，可为负）",
+        },
         description: {
           ko_KR:
             "여러 효과가 더해지고, 기본 저항력과 추가 저항력에 비례해 나뉘어 적용된다. 저항력을 0 밑으로 내릴 수 있는 유일한 수단이다.",
@@ -251,7 +290,11 @@ export const FORMULA_GROUPS: FormulaGroup[] = [
           en_US: "Percent resistance reduction",
           zh_CN: "百分比抗性削减",
         },
-        formula: "저항력 = 저항력 × (1 − 감소%)   (곱연산)",
+        formula: {
+          ko_KR: "저항력 = 저항력 × (1 − 감소%)   (곱연산)",
+          en_US: "Resistance = Resistance × (1 − Reduction%)   (multiplicative)",
+          zh_CN: "抗性 = 抗性 × (1 − 削减%)（乘算）",
+        },
         description: {
           ko_KR:
             "여러 개가 겹치면 곱해진다. 대상 저항력이 0 이하면 아무 일도 일어나지 않는다.",
@@ -268,7 +311,11 @@ export const FORMULA_GROUPS: FormulaGroup[] = [
           en_US: "Percent armor / magic penetration",
           zh_CN: "百分比护甲穿透 · 法术穿透",
         },
-        formula: "적용 저항력 = 저항력 × (1 − 관통%)   (곱연산)",
+        formula: {
+          ko_KR: "적용 저항력 = 저항력 × (1 − 관통%)   (곱연산)",
+          en_US: "Applied resistance = Resistance × (1 − Penetration%)   (multiplicative)",
+          zh_CN: "生效抗性 = 抗性 × (1 − 穿透%)（乘算）",
+        },
         description: {
           ko_KR:
             "물리 쪽은 '방어구 관통력', 마법 쪽은 '마법 관통력'으로 표기되며 둘 다 비율이다. 서로 다른 출처끼리는 곱해진다. 고정 관통보다 먼저 적용되므로 저항력이 높은 대상일수록 이득이 크다.",
@@ -286,7 +333,11 @@ export const FORMULA_GROUPS: FormulaGroup[] = [
           en_US: "Flat armor (lethality) / magic penetration",
           zh_CN: "穿甲 · 固定法术穿透",
         },
-        formula: "적용 저항력 = 저항력 − 고정 관통   (합연산, 0 미만 불가)",
+        formula: {
+          ko_KR: "적용 저항력 = 저항력 − 고정 관통   (합연산, 0 미만 불가)",
+          en_US: "Applied resistance = Resistance − Flat penetration   (additive, never below 0)",
+          zh_CN: "生效抗性 = 抗性 − 固定穿透（加算，不低于 0）",
+        },
         description: {
           ko_KR:
             "물리 쪽 고정 관통이 '물리 관통력(Lethality)', 마법 쪽이 '마법 관통력(고정)'이다. 비율 관통과 달리 서로 다른 출처끼리 더해진다. 물리 관통력은 예전에 레벨에 비례해 62~100%만 적용됐지만 V14.1부터 레벨과 무관하게 전부 적용된다. 대상 저항력이 0 이하면 효과가 없고, 저항력을 음수로 만들지도 않는다.",
@@ -314,8 +365,11 @@ export const FORMULA_GROUPS: FormulaGroup[] = [
           en_US: "Attack speed",
           zh_CN: "攻击速度",
         },
-        formula:
-          "공격 속도 = 기본 공격 속도 + 공격 속도 계수 × 추가 공격 속도%",
+        formula: {
+          ko_KR: "공격 속도 = 기본 공격 속도 + 공격 속도 계수 × 추가 공격 속도%",
+          en_US: "Attack speed = Base attack speed + Attack speed ratio × Bonus attack speed%",
+          zh_CN: "攻击速度 = 基础攻速 + 攻速系数 × 额外攻速%",
+        },
         description: {
           ko_KR:
             "추가 공격 속도는 기본값에 곱해지는 게 아니라 챔피언마다 다른 '공격 속도 계수'에 곱해져 더해진다. 상한은 초당 2.5회다.",
@@ -333,7 +387,11 @@ export const FORMULA_GROUPS: FormulaGroup[] = [
           en_US: "Critical strike damage",
           zh_CN: "暴击伤害",
         },
-        formula: "치명타 피해 = 원래 피해 × 175% (기본값)",
+        formula: {
+          ko_KR: "치명타 피해 = 원래 피해 × 175% (기본값)",
+          en_US: "Critical damage = Raw damage × 175% (default)",
+          zh_CN: "暴击伤害 = 原始伤害 × 175%（默认）",
+        },
         description: {
           ko_KR:
             "기본 치명타 피해량은 175%다. 오래된 자료에는 200%로 적혀 있는 경우가 있는데 지금 값이 아니다. 치명타 피해량 증가는 서로 더해진다 — 무한의 대검이 치명타 피해량 30%를 주므로 그것만 들면 205%가 된다.",
@@ -351,7 +409,11 @@ export const FORMULA_GROUPS: FormulaGroup[] = [
           en_US: "Adaptive force",
           zh_CN: "适应之力",
         },
-        formula: "1 적응형 = 추가 공격력 0.6  또는  주문력 1",
+        formula: {
+          ko_KR: "1 적응형 = 추가 공격력 0.6  또는  주문력 1",
+          en_US: "1 adaptive force = 0.6 bonus AD  or  1 AP",
+          zh_CN: "1 点适应之力 = 0.6 额外攻击力  或  1 法术强度",
+        },
         description: {
           ko_KR:
             "추가 공격력이 주문력보다 많으면 공격력으로, 아니면 주문력으로 바뀐다. 지속 효과로 얻은 공격력·주문력은 이 판정에 넣지 않는다.",
@@ -379,7 +441,11 @@ export const FORMULA_GROUPS: FormulaGroup[] = [
           en_US: "Heal and shield power",
           zh_CN: "治疗与护盾强度",
         },
-        formula: "회복량 = 기본 회복량 × (1 + 회복·보호막 강화)",
+        formula: {
+          ko_KR: "회복량 = 기본 회복량 × (1 + 회복·보호막 강화)",
+          en_US: "Healing = Base healing × (1 + Heal and shield power)",
+          zh_CN: "治疗量 = 基础治疗量 × (1 + 治疗与护盾强度)",
+        },
         description: {
           ko_KR:
             "자기 자신끼리는 더해지고, 다른 회복 배율과는 곱해진다. 내가 주는 회복과 보호막에만 붙고 남에게서 받는 회복에는 붙지 않는다.",
@@ -396,7 +462,11 @@ export const FORMULA_GROUPS: FormulaGroup[] = [
           en_US: "Grievous Wounds (healing reduction)",
           zh_CN: "重伤（治疗削减）",
         },
-        formula: "받는 회복량 = 원래 회복량 × 60%",
+        formula: {
+          ko_KR: "받는 회복량 = 원래 회복량 × 60%",
+          en_US: "Healing received = Raw healing × 60%",
+          zh_CN: "受到的治疗 = 原始治疗量 × 60%",
+        },
         description: {
           ko_KR:
             "받는 모든 회복과 체력 재생을 40% 줄인다. 여러 개를 걸어도 중첩되지 않고 지속시간만 갱신된다. 보호막에는 적용되지 않는다.",
@@ -414,7 +484,11 @@ export const FORMULA_GROUPS: FormulaGroup[] = [
           en_US: "Life steal and omnivamp",
           zh_CN: "生命偷取与全能吸血",
         },
-        formula: "회복량 = 감쇄 후 피해 × 흡혈%",
+        formula: {
+          ko_KR: "회복량 = 감쇄 후 피해 × 흡혈%",
+          en_US: "Healing = Post-mitigation damage × Vamp%",
+          zh_CN: "治疗量 = 减伤后伤害 × 吸血%",
+        },
         description: {
           ko_KR:
             "저항력으로 감쇄된 뒤의 피해를 기준으로 계산한다. 생명력 흡수는 기본 공격에만, 흡혈(옴니뱀프)은 모든 피해에 붙는다. 미니언과 몬스터에게는 흡혈이 20%만 적용되고, 회복·보호막 강화의 영향을 받지 않는다.",
@@ -442,8 +516,11 @@ export const FORMULA_GROUPS: FormulaGroup[] = [
           en_US: "Movement speed order",
           zh_CN: "移动速度计算顺序",
         },
-        formula:
-          "(기본 + 고정 증가)\n× (1 + 합연산 % 증가의 합)\n× (1 − 가장 강한 둔화)\n× 곱연산 증가들",
+        formula: {
+          ko_KR: "(기본 + 고정 증가)\n× (1 + 합연산 % 증가의 합)\n× (1 − 가장 강한 둔화)\n× 곱연산 증가들",
+          en_US: "(Base + flat bonuses)\n× (1 + sum of additive % bonuses)\n× (1 − strongest slow)\n× multiplicative bonuses",
+          zh_CN: "(基础 + 固定加成)\n× (1 + 加算百分比加成之和)\n× (1 − 最强减速)\n× 乘算加成",
+        },
         description: {
           ko_KR:
             "둔화는 여러 개가 걸려도 가장 강한 것 하나만 적용된다. 대부분의 이동 속도 증가는 합연산이고, 일부만 따로 곱해진다.",
@@ -461,8 +538,11 @@ export const FORMULA_GROUPS: FormulaGroup[] = [
           en_US: "Movement speed soft caps",
           zh_CN: "移动速度软上限",
         },
-        formula:
-          "415 초과 490 이하 : 실제 = 계산값 × 0.8 + 83\n490 초과       : 실제 = 계산값 × 0.5 + 230\n220 미만       : 실제 = 계산값 × 0.5 + 110",
+        formula: {
+          ko_KR: "415 초과 490 이하 : 실제 = 계산값 × 0.8 + 83\n490 초과       : 실제 = 계산값 × 0.5 + 230\n220 미만       : 실제 = 계산값 × 0.5 + 110",
+          en_US: "Above 415 up to 490 : Actual = Computed × 0.8 + 83\nAbove 490           : Actual = Computed × 0.5 + 230\nBelow 220           : Actual = Computed × 0.5 + 110",
+          zh_CN: "大于 415 且不超过 490：实际 = 计算值 × 0.8 + 83\n大于 490：实际 = 计算值 × 0.5 + 230\n小于 220：实际 = 计算值 × 0.5 + 110",
+        },
         description: {
           ko_KR:
             "415를 넘는 구간부터 효율이 깎이고, 반대로 220 밑으로는 잘 안 떨어진다. 그래서 이동 속도는 어느 선을 넘으면 더 쌓아도 이득이 급격히 줄어든다.",
@@ -485,7 +565,11 @@ export const FORMULA_GROUPS: FormulaGroup[] = [
           en_US: "Tenacity",
           zh_CN: "坚韧",
         },
-        formula: "군중 제어 지속시간 = 원래 지속시간 × (1 − 강인함)",
+        formula: {
+          ko_KR: "군중 제어 지속시간 = 원래 지속시간 × (1 − 강인함)",
+          en_US: "CC duration = Base duration × (1 − Tenacity)",
+          zh_CN: "控制时长 = 原始时长 × (1 − 坚韧)",
+        },
         description: {
           ko_KR:
             "지속시간은 효과가 걸리는 순간에 확정되므로, 걸린 뒤에 강인함을 올려도 이미 걸린 효과는 짧아지지 않는다. 0.3초 밑으로는 줄지 않는다. 공중에 띄우기·졸음·시야 축소·정지·억제에는 듣지 않고, 둔화에도 듣지 않는다. 출처 조합에 따라 더해지기도 하고 곱해지기도 한다.",
@@ -502,7 +586,11 @@ export const FORMULA_GROUPS: FormulaGroup[] = [
           en_US: "Slow resist",
           zh_CN: "减速抗性",
         },
-        formula: "적용 둔화 = 둔화 × (1 − 둔화 저항)",
+        formula: {
+          ko_KR: "적용 둔화 = 둔화 × (1 − 둔화 저항)",
+          en_US: "Applied slow = Slow × (1 − Slow resist)",
+          zh_CN: "生效减速 = 减速 × (1 − 减速抗性)",
+        },
         description: {
           ko_KR:
             "강인함과는 별개의 스탯이다. 지속시간이 아니라 둔화의 세기 자체를 깎는다. 강인함은 둔화에 듣지 않고, 둔화 저항은 이동 불가 계열에 듣지 않는다.",
@@ -530,8 +618,11 @@ export const FORMULA_GROUPS: FormulaGroup[] = [
           en_US: "Per-level growth",
           zh_CN: "每级成长",
         },
-        formula:
-          "스탯 = 기본값 + 성장치 × (레벨 − 1) × (0.7025 + 0.0175 × (레벨 − 1))",
+        formula: {
+          ko_KR: "스탯 = 기본값 + 성장치 × (레벨 − 1) × (0.7025 + 0.0175 × (레벨 − 1))",
+          en_US: "Stat = Base + Growth × (Level − 1) × (0.7025 + 0.0175 × (Level − 1))",
+          zh_CN: "属性 = 基础值 + 成长值 × (等级 − 1) × (0.7025 + 0.0175 × (等级 − 1))",
+        },
         description: {
           ko_KR:
             "레벨업으로 얻는 양이 일정하지 않다. 1→2 레벨에서는 성장치의 72%만 받고, 9→10에서 100%, 17→18에서는 128%를 받는다. 체력·마나·공격력·공격 속도·방어력·마법 저항력·체력 재생·마나 재생 여덟 가지에 적용된다.",
@@ -549,7 +640,11 @@ export const FORMULA_GROUPS: FormulaGroup[] = [
           en_US: "Ability haste",
           zh_CN: "技能急速",
         },
-        formula: "재사용 대기시간 = 기본 대기시간 × 100 / (100 + 스킬 가속)",
+        formula: {
+          ko_KR: "재사용 대기시간 = 기본 대기시간 × 100 / (100 + 스킬 가속)",
+          en_US: "Cooldown = Base cooldown × 100 / (100 + Ability haste)",
+          zh_CN: "冷却时间 = 基础冷却 × 100 / (100 + 技能急速)",
+        },
         description: {
           ko_KR:
             "저항력과 같은 모양이라 상한이 없고 수익이 일정하다. 예전의 '재사용 대기시간 감소(%)'와 달리 쌓을수록 손해 보지 않는다.",
@@ -571,8 +666,11 @@ export const FORMULA_GROUPS: FormulaGroup[] = [
           en_US: "Additive vs. multiplicative",
           zh_CN: "相加与相乘",
         },
-        formula:
-          "합연산 : 총합 = A + B + C\n곱연산 : 총합 = 1 − (1 − A) × (1 − B)",
+        formula: {
+          ko_KR: "합연산 : 총합 = A + B + C\n곱연산 : 총합 = 1 − (1 − A) × (1 − B)",
+          en_US: "Additive       : Total = A + B + C\nMultiplicative : Total = 1 − (1 − A) × (1 − B)",
+          zh_CN: "加算：总计 = A + B + C\n乘算：总计 = 1 − (1 − A) × (1 − B)",
+        },
         description: {
           ko_KR:
             "고정 수치와 대부분의 % 증가는 더해진다. 받는 피해 감소, 비율 저항력 감소, 비율 관통처럼 '깎는' 쪽 효과는 곱해져서 절대 100%가 되지 않는다.",
@@ -600,8 +698,11 @@ export const FORMULA_GROUPS: FormulaGroup[] = [
           en_US: "Circular conversion (Vladimir's Crimson Pact)",
           zh_CN: "循环转换（弗拉基米尔·血之契约）",
         },
-        formula:
-          "표시값 = 보정계수 × 변환율 × (내 스탯 − 반대쪽 변환율 × 상대 스탯)",
+        formula: {
+          ko_KR: "표시값 = 보정계수 × 변환율 × (내 스탯 − 반대쪽 변환율 × 상대 스탯)",
+          en_US: "Shown value = Correction × Conversion × (Own stat − Reverse conversion × Other stat)",
+          zh_CN: "显示值 = 修正系数 × 转换率 × (自身属性 − 反向转换率 × 对方属性)",
+        },
         description: {
           ko_KR:
             "추가 체력 30당 주문력 1을 주고, 다시 주문력 1당 최대 체력 1.6을 준다. 두 값이 서로를 먹여 무한히 불어나므로 게임은 둘을 중첩시키지 않는다. 이미 상대에게서 받은 몫을 빼야 두 번 세지 않기에 식에 음수 항이 나온다. 앞의 보정계수(약 1.06)는 잘라 낸 순환을 되메우는 값으로, 1 / (1 − 1.6 ÷ 30) 에서 온다.",

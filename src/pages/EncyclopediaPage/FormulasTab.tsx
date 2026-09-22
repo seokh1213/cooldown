@@ -40,7 +40,7 @@ export function FormulasTab() {
                 </h3>
 
                 <p className="rounded-md bg-muted/60 px-3 py-2 font-mono text-xs leading-relaxed text-foreground overflow-x-auto whitespace-pre-wrap">
-                  {entry.formula}
+                  {entry.formula[lang]}
                 </p>
 
                 <p className="text-xs leading-relaxed text-muted-foreground">
