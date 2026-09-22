@@ -8,11 +8,25 @@ import { BootstrapError } from "@/app/BootstrapError";
 import { UpdateBanner } from "@/app/UpdateBanner";
 import { useAppBootstrap } from "@/app/useAppBootstrap";
 import { useAppPreferences } from "@/app/useAppPreferences";
+import { warmIcons } from "@/lib/warmIcons";
 
 export default function App() {
   const preferences = useAppPreferences();
   const bootstrap = useAppBootstrap(preferences.language);
   const [pwaUpdateAvailable, setPwaUpdateAvailable] = useState(false);
+
+  /*
+   * 아이템 스프라이트를 미리 받아 둔다.
+   *
+   * 챔피언 시트는 서비스워커가 설치할 때 받지만 아이템 시트는 1MB 라 거기 넣지
+   * 않았다. 대신 앱이 뜬 뒤 손이 빈 틈에 받아 둔다 — 스플래시가 지나고 첫 화면이
+   * 그려진 다음이라 지금 보여야 할 것과 다투지 않는다. 데이터 절약이 켜져 있거나
+   * 회선이 느리면 받지 않는다.
+   */
+  const ddragonVersion = bootstrap.state.status === "ready" ? bootstrap.state.data.sources.ddragon : "";
+  useEffect(() => {
+    if (ddragonVersion) warmIcons(ddragonVersion);
+  }, [ddragonVersion]);
 
   useEffect(() => subscribeToPWAUpdate(() => {
     if (preferences.autoUpdateEnabled) void applyPWAUpdate();
