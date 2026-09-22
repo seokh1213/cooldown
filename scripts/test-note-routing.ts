@@ -12,6 +12,10 @@
  */
 import assert from "node:assert/strict";
 import { noteOrder, notePerspective, type NoteCategory, type NotePerspective } from "../src/lib/advisor/noteSelect";
+import { asksMatchup, matchupSidesDetailed } from "../src/lib/advisor/answer";
+
+/** 시점 시험에 쓰는 이름들. 자료를 읽지 않고 이름만 있으면 된다. */
+const NAMES = ["오공", "럼블", "야스오", "말파이트", "제드", "럭스"];
 
 const CASES: Array<[question: string, category: NoteCategory, side: NotePerspective]> = [
   // 무엇을 올려야 하는가 — 물건 이름이 아니라 스탯으로 묻는 쪽이 더 잦다
@@ -68,4 +72,40 @@ for (const category of ["situational-item", "escape-window"] as const) {
   assert.ok(noteOrder("아무 말").includes(category), `기본 순서에 ${category} 가 없습니다`);
 }
 
-console.log(`✅ 노트 선택 통과 (물음 ${CASES.length}개)`);
+/*
+ * 상성 질문에서 누가 내 챔피언인지 가린다.
+ *
+ * 예전에는 문장에 먼저 나온 쪽으로 정했다. 상대를 먼저 말하면 통째로 뒤집혀서
+ * "럼블 상대로 오공 하는데" 가 럼블 시점 해설이 됐다. 조사가 그 자리를 표시하므로
+ * 조사를 본다. 스무 문항으로 재니 어순 4, 조사 16 이었다.
+ *
+ * 조사가 갈라 주지 못하는 꼴("나 오공", "상대 제드")은 `confident` 가 거짓이 되고,
+ * 그때는 부르는 쪽이 모델에게 넘긴다. 여기서는 그 표시가 제대로 서는지까지 본다.
+ */
+const SIDES: Array<[string, string, boolean]> = [
+  ["오공으로 럼블 상대가 어려운데 팁 없나?", "오공", true],
+  ["럼블 상대로 오공 하는데 어려워", "오공", true],
+  ["럼블을 오공으로 상대하려면?", "오공", true],
+  ["상대가 럼블인데 오공으로 어떻게 해", "오공", true],
+  ["야스오 상대로 말파이트 괜찮아?", "말파이트", true],
+  ["말파이트로 야스오 카운터 되나", "말파이트", true],
+  ["제드 상대하는 럭스 공략", "럭스", true],
+  ["럭스로 제드 상대법", "럭스", true],
+  // 조사가 갈라 주지 않는 꼴. 어순으로 떨어지고, 믿을 것이 못 된다고 표시해야 한다.
+  ["오공이랑 럼블 붙으면 누가 이겨", "오공", false],
+  ["럼블이랑 붙었는데 나 오공", "럼블", false],
+];
+
+for (const [question, expected, confident] of SIDES) {
+  const found = [...NAMES]
+    .filter((name) => question.includes(name))
+    .sort((left, right) => question.indexOf(left) - question.indexOf(right))
+    .map((name) => ({ name }));
+  assert.equal(found.length, 2, `"${question}" 에서 챔피언 둘을 찾아야 한다`);
+  assert.ok(asksMatchup(question), `"${question}" 은 상성 질문이어야 한다`);
+  const detail = matchupSidesDetailed(question, found);
+  assert.equal(detail.sides[0].name, expected, `"${question}" 의 내 챔피언`);
+  assert.equal(detail.confident, confident, `"${question}" 의 확신 여부`);
+}
+
+console.log(`✅ 노트 선택 통과 (물음 ${CASES.length}개 · 시점 ${SIDES.length}개)`);

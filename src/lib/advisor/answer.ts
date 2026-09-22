@@ -464,6 +464,69 @@ export function asksMatchup(question: string): boolean {
 }
 
 /**
+ * 둘 중 누가 **내 챔피언**인지 가린다.
+ *
+ * 예전에는 문장에 먼저 나온 쪽을 내 챔피언으로 삼았다. "오공으로 럼블" 은 맞지만
+ * 상대를 먼저 말하면 통째로 뒤집힌다. 열 문장으로 재 보니 넷만 맞았다.
+ *
+ *   럼블 상대로 오공 하는데 어려워       → 럼블이 내 챔피언이 됐다
+ *   야스오 상대로 말파이트 괜찮아?       → 야스오가 내 챔피언이 됐다
+ *   제드 상대하는 럭스 공략              → 제드가 내 챔피언이 됐다
+ *
+ * 한국어는 그 자리를 **조사가** 표시한다. `-으로/로` 는 내가 잡은 쪽이고,
+ * 이름 뒤의 `상대`·`전`·`vs`·`카운터` 는 맞은편이다. 어순은 마지막에만 본다.
+ *
+ * `상대로` 는 `-로` 로 끝나지만 내 쪽이 아니다. 앞이 `상대` 면 세지 않는다.
+ */
+const PLAYS = /(?<!상대)(으로|로)(\s|$)/;
+const FACES = /^\s*(을|를|이|가|은|는|와|과|랑|이랑)?\s*(상대|전에서|전\s|vs|카운터|맞상대)/i;
+/*
+ * 이름 **앞**의 표지는 주격일 때만 센다.
+ *
+ * "상대가 럼블인데" 는 럼블이 맞은편이라는 뜻이다. 그런데 `로` 까지 세었더니
+ * "럼블 상대로 오공" 에서 오공 앞의 "상대로" 가 걸려 오공도 맞은편이 되었다.
+ * 그 "상대로" 는 앞에 있는 럼블의 표지이지 오공의 것이 아니다. 둘 다 -2 가 되어
+ * 차이가 0 이 되고 어순으로 떨어졌다.
+ */
+const FACED_BEFORE = /(상대|맞상대)\s*(가|는|이)\s*$/;
+
+export interface MatchupSides<T> {
+  sides: [T, T];
+  /**
+   * 조사가 실제로 갈라 주었는가.
+   *
+   * 거짓이면 어순으로 떨어진 것이라 믿을 것이 못 된다. 스무 문항으로 재 보니 규칙이
+   * 틀린 넷이 모두 이 자리였다("럼블 만났는데 나 오공", "상대 제드, 나 럭스").
+   * 부르는 쪽은 이 값을 보고 모델에게 넘길지 정한다.
+   */
+  confident: boolean;
+}
+
+export function matchupSides<T extends { name: string }>(question: string, found: T[]): [T, T] {
+  return matchupSidesDetailed(question, found).sides;
+}
+
+export function matchupSidesDetailed<T extends { name: string }>(question: string, found: T[]): MatchupSides<T> {
+  const [first, second] = found;
+  if (found.length < 2) return { sides: [first, second], confident: false };
+  const score = (card: T): number => {
+    const at = question.indexOf(card.name);
+    if (at < 0) return 0;
+    const after = question.slice(at + card.name.length);
+    const before = question.slice(0, at);
+    let value = 0;
+    if (PLAYS.test(after.slice(0, 4))) value += 2;
+    if (FACES.test(after)) value -= 2;
+    if (FACED_BEFORE.test(before)) value -= 2;
+    return value;
+  };
+  const gap = score(first) - score(second);
+  // 조사가 갈라 주지 않으면 어순으로 간다. 그 편이 맞는 경우가 더 많았다.
+  if (gap < 0) return { sides: [second, first], confident: true };
+  return { sides: [first, second], confident: gap > 0 };
+}
+
+/**
  * "말파이트 상대법" 처럼 **한 챔피언의 공략을 통째로** 묻는가.
  *
  * `asksMatchup` 은 "상대" 만 보고 참이 되므로 이것까지 상성으로 끌고 갔다. 앞 대화에
