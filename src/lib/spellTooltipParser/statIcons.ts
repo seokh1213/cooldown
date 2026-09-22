@@ -45,13 +45,33 @@ export function renderStatIconTokens(text: string): string {
   );
 }
 
+/**
+ * 우리 전투 모델에 자리가 없는 스탯의 글리프.
+ *
+ * 글리프는 있는데 `StatKey` 가 없는 값들이다. 재사용 대기시간 감소는 게임에서
+ * 스킬 가속으로 갈린 뒤로 우리 모델이 세지 않는데, 옛 아이템 글에는 아직 남아 있다.
+ * 스킬 가속 글리프를 빌려 쓰면 다른 값을 같은 것으로 보이게 하는 셈이라 따로 둔다.
+ *
+ * 열쇠는 **라이엇이 쓰는 영어 이름**이다. 세 언어 이름은 아이템 자료를 이어서 얻으므로
+ * (`scripts/generate-stat-label-icons.ts`) 여기에 적을 것은 한 언어뿐이다.
+ */
+export const EXTRA_STAT_GLYPHS: Record<string, string> = {
+  "cooldown reduction": "scalecooldown",
+};
+
 /** 스탯 글리프 주소. HTML 이 아니라 `<img>` 로 그리는 자리에서 쓴다. */
 export function statIconUrl(icon: string): string {
   return `${ICON_BASE()}${icon}.webp`;
 }
 
-/** 붙여 그릴 때 쓰는 공통 class. 글자 크기를 따라간다. */
-export const STAT_ICON_CLASS = ICON_CLASS;
+/**
+ * 목록에 붙여 그릴 때 쓰는 class.
+ *
+ * 문장 속 글리프(`ICON_CLASS`)와 갈라 둔다. 목록은 어두운 바탕 칩을 씌워 밝은
+ * 글리프도 흰 바탕에서 읽히게 하고, 문장 속은 칩 없이 테두리만 둘러 글을 무겁게
+ * 하지 않는다.
+ */
+export const STAT_ICON_CLASS = `${ICON_CLASS} stat-icon-chip`;
 
 /** HTML 이 아닌 곳(레벨별 수치 목록 등)에서는 자리 표시를 지운다 */
 export function stripStatIconTokens(text: string): string {

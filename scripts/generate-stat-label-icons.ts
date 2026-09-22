@@ -33,6 +33,7 @@ import * as path from "node:path";
 import { decodeDataManifest } from "../src/data/contracts/dataManifest";
 import { FORMULA_GROUPS } from "../src/data/gameFormulas";
 import { STAT_DEFINITIONS } from "../src/types/combatStats";
+import { EXTRA_STAT_GLYPHS } from "../src/lib/spellTooltipParser/statIcons";
 
 const LOCALES = ["ko_KR", "en_US", "zh_CN"] as const;
 type Locale = (typeof LOCALES)[number];
@@ -77,6 +78,8 @@ function buildAnchors(): Map<string, string> {
       put(entry.title.en_US, entry.icon);
     }
   }
+  // 우리 모델에 자리가 없는 스탯(재사용 대기시간 감소 …). 영어 이름 하나만 적어 둔다.
+  for (const [name, icon] of Object.entries(EXTRA_STAT_GLYPHS)) put(name, icon);
   return anchors;
 }
 

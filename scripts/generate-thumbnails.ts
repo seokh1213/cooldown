@@ -22,6 +22,7 @@ import path from "node:path";
 import sharp from "sharp";
 import { FORMULA_GROUPS } from "../src/data/gameFormulas";
 import { STAT_DEFINITIONS } from "../src/types/combatStats";
+import { EXTRA_STAT_GLYPHS } from "../src/lib/spellTooltipParser/statIcons";
 import { decodeDataManifest } from "../src/data/contracts/dataManifest";
 import { RUNE_TREE_META } from "../src/data/mappers/runeMapper";
 
@@ -204,6 +205,7 @@ async function generateThumbnails() {
   const statIcons = new Set<string>();
   for (const group of FORMULA_GROUPS) for (const entry of group.entries) if (entry.icon) statIcons.add(entry.icon);
   for (const definition of Object.values(STAT_DEFINITIONS)) if (definition.icon) statIcons.add(definition.icon);
+  for (const icon of Object.values(EXTRA_STAT_GLYPHS)) statIcons.add(icon);
 
   /** 챔피언 → P·Q·W·E·R 차례의 아이콘 파일 이름. 띠의 칸 차례가 곧 이 차례다. */
   const abilityStrips = new Map<string, Array<string | undefined>>();
@@ -428,16 +430,20 @@ async function buildAbilityStrips(
       composite.push({ input: await readFile(file), left: index * ABILITY_SIZE, top: 0 });
     }
     if (composite.length === 0) continue;
-    const canvas = sharp({
+    // 시트와 같은 까닭으로 합친 그림을 먼저 굳히고 꼴마다 새로 인코딩한다.
+    const flat = await sharp({
       create: {
         width: ABILITY_SLOTS.length * ABILITY_SIZE,
         height: ABILITY_SIZE,
         channels: 4,
         background: { r: 0, g: 0, b: 0, alpha: 0 },
       },
-    }).composite(composite);
-    const strip = await canvas.webp({ quality: QUALITY }).toBuffer();
-    const avif = await canvas.avif({ quality: AVIF_QUALITY, effort: AVIF_EFFORT }).toBuffer();
+    })
+      .composite(composite)
+      .png()
+      .toBuffer();
+    const strip = await sharp(flat).webp({ quality: QUALITY }).toBuffer();
+    const avif = await sharp(flat).avif({ quality: AVIF_QUALITY, effort: AVIF_EFFORT }).toBuffer();
     await writeFile(path.join(out, "ability", `${championId}.webp`), strip);
     await writeFile(path.join(out, "ability", `${championId}.avif`), avif);
     bytes += strip.length;
@@ -493,11 +499,21 @@ async function buildSheet(
       top: Math.floor(index / cols) * size,
     })),
   );
-  const canvas = sharp({
+  /*
+   * 합친 그림을 먼저 손실 없이 굳히고, 꼴마다 **새로 인코딩한다.**
+   *
+   * 한 파이프라인에 `.webp()` 와 `.avif()` 를 잇달아 걸고 두 번 뽑으면 앞 호출이
+   * 남긴 설정이 뒤에 섞인다. 같은 자료로 돌려도 판마다 바이트가 달라져, 바뀐 것이
+   * 없는데 파일 177개가 커밋에 딸려 왔다.
+   */
+  const flat = await sharp({
     create: { width: cols * size, height: rows * size, channels: 4, background: { r: 0, g: 0, b: 0, alpha: 0 } },
-  }).composite(composite);
-  const sheet = await canvas.webp({ quality }).toBuffer();
-  const avif = await canvas.avif({ quality: AVIF_QUALITY, effort: AVIF_EFFORT }).toBuffer();
+  })
+    .composite(composite)
+    .png()
+    .toBuffer();
+  const sheet = await sharp(flat).webp({ quality }).toBuffer();
+  const avif = await sharp(flat).avif({ quality: AVIF_QUALITY, effort: AVIF_EFFORT }).toBuffer();
   await writeFile(path.join(sheetDir, `${kind}s.webp`), sheet);
   await writeFile(path.join(sheetDir, `${kind}s.avif`), avif);
   await writeFile(path.join(sheetDir, `${kind}s.json`), `${JSON.stringify({ size, cols, rows, ids: present })}\n`);
