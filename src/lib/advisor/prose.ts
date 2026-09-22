@@ -17,8 +17,8 @@
 import type { Language } from "@/i18n";
 import type { AdvisorAnswer } from "./answer";
 import type { SpellFact } from "../../../scripts/llm/lib/facts";
-import { cooldownFact, spellOneLiner } from "./answer";
-import { translateTag } from "./promptLocale";
+import { cooldownFact, focusLabel as cardFocusLabel, spellOneLiner } from "./answer";
+import { translateRatioStat, translateTag } from "./promptLocale";
 
 interface ProseWords {
   /** "{champion}의 {label}입니다." 처럼 값 하나를 알리는 말 */
@@ -29,13 +29,6 @@ interface ProseWords {
   effects: (subject: string, list: string) => string;
   none: (subject: string) => string;
   joiner: string;
-  /**
-   * 질문이 가리킨 사실의 이름.
-   *
-   * 없으면 `SpellFocus` 열거값(`cost`)이 그대로 문장에 샌다. 실제로 "오공의 스킬별
-   * cost입니다" 가 나왔다. 쿨타임만 카드에서 이름을 꺼내 쓰고 나머지는 빈손이었다.
-   */
-  focus: Record<string, string>;
   /** 두 번째 문장의 주어. 앞 문장에서 이미 이름을 댔으므로 되풀이하지 않는다. */
   it: string;
 }
@@ -48,7 +41,6 @@ const WORDS: Record<Language, ProseWords> = {
     effects: (subject, list) => `${subject}의 효과는 ${list}입니다.`,
     none: (subject) => `${subject}은 자료에 없습니다.`,
     joiner: ", ",
-    focus: { cooldown: "재사용 대기시간", cost: "소모값", ratio: "계수", damage: "피해량", effect: "효과" },
     it: "이 스킬",
   },
   en_US: {
@@ -58,7 +50,6 @@ const WORDS: Record<Language, ProseWords> = {
     effects: (subject, list) => `${subject} applies ${list}.`,
     none: (subject) => `${subject} is not in the data.`,
     joiner: ", ",
-    focus: { cooldown: "Cooldown", cost: "Cost", ratio: "Ratios", damage: "Damage", effect: "Effects" },
     it: "It",
   },
   zh_CN: {
@@ -68,18 +59,17 @@ const WORDS: Record<Language, ProseWords> = {
     effects: (subject, list) => `${subject}的效果为${list}。`,
     none: (subject) => `资料中没有${subject}。`,
     joiner: "，",
-    focus: { cooldown: "冷却时间", cost: "消耗", ratio: "加成系数", damage: "伤害", effect: "效果" },
     it: "该技能",
   },
 };
 
 /** 스킬 하나에서 질문이 가리킨 값을 꺼낸다. 카드가 쓰는 것과 같은 규칙이다. */
-function focusValue(spell: SpellFact, focus: string): string | undefined {
-  if (focus === "cooldown") return cooldownFact(spell)?.value;
+function focusValue(spell: SpellFact, focus: string, lang: Language): string | undefined {
+  if (focus === "cooldown") return cooldownFact(spell, lang)?.value;
   if (focus === "cost") return spell.cost || undefined;
   if (focus === "ratio") {
     const ratios = Object.entries(spell.ratios ?? {});
-    return ratios.length ? ratios.map(([stat, value]) => `${stat} ${value}%`).join(", ") : undefined;
+    return ratios.length ? ratios.map(([stat, value]) => `${translateRatioStat(stat, lang)} ${value}%`).join(", ") : undefined;
   }
   return undefined;
 }
@@ -87,17 +77,17 @@ function focusValue(spell: SpellFact, focus: string): string | undefined {
 /**
  * 질문이 가리킨 사실의 이름.
  *
- * 쿨타임은 카드가 쓰는 말을 그대로 가져온다. 충전형 스킬이 섞이면 "재충전 대기시간"
- * 이 되어 표의 머리와 글의 말이 달라지기 때문이다. 나머지는 고정 이름을 쓴다.
+ * 카드가 쓰는 말을 그대로 가져온다. 표의 머리와 글의 말이 다르면 같은 값을 두 이름으로
+ * 부르는 꼴이 된다. 충전형 스킬이 섞이면 "재충전 대기시간" 이 되는 것도 카드와 같다.
  */
-function focusLabel(answer: Extract<AdvisorAnswer, { kind: "champion" }>, w: ProseWords): string {
+function focusLabel(answer: Extract<AdvisorAnswer, { kind: "champion" }>, lang: Language): string {
   if (answer.focus === "cooldown") {
     for (const spell of answer.card.spells) {
-      const fact = cooldownFact(spell);
+      const fact = cooldownFact(spell, lang);
       if (fact) return fact.label;
     }
   }
-  return w.focus[answer.focus ?? ""] ?? (answer.focus ?? "");
+  return answer.focus ? cardFocusLabel(answer.focus, lang) : "";
 }
 
 /**
@@ -113,7 +103,7 @@ export function answerProse(answer: AdvisorAnswer, lang: Language = "ko_KR"): st
     const lines: string[] = [];
     if (answer.headline) lines.push(w.is(`${title} ${answer.headline.label}`, answer.headline.value));
     else if (answer.highlighted.length) lines.push(answer.highlighted.join(" "));
-    else lines.push(spellOneLiner(answer.spell));
+    else lines.push(spellOneLiner(answer.spell, lang));
     // 두 번째 문장에서 이름을 다시 대면 "말파이트 R 멈출 수 없는 힘" 이 두 줄 연속으로
     // 나온다. 앞에서 누구인지 밝혔으므로 여기서는 가리키는 말이면 된다.
     if (answer.spell.effects.length && answer.headline) {
@@ -126,10 +116,10 @@ export function answerProse(answer: AdvisorAnswer, lang: Language = "ko_KR"): st
     const name = answer.card.name;
     const focus = answer.focus;
     if (focus) {
-      const label = focusLabel(answer, w);
+      const label = focusLabel(answer, lang);
       const rows = answer.card.spells
         .map((spell) => {
-          const value = focusValue(spell, focus);
+          const value = focusValue(spell, focus, lang);
           return value ? `${spell.slot} ${spell.name} ${value}` : undefined;
         })
         .filter((row): row is string => Boolean(row));
@@ -139,7 +129,7 @@ export function answerProse(answer: AdvisorAnswer, lang: Language = "ko_KR"): st
     // 이름만 늘어놓으면 "P 화강암 방패, Q 지진의 파편…" 으로 끝나 아무것도 안 알려 준다.
     // 스킬마다 쿨·효과 한 줄을 붙인다. 카드에 이미 있는 값이라 지어내는 부분이 없다.
     if (answer.view === "skills") {
-      const lines = answer.card.spells.map((spell) => `- ${spell.slot} ${spell.name}: ${spellOneLiner(spell)}`);
+      const lines = answer.card.spells.map((spell) => `- ${spell.slot} ${spell.name}: ${spellOneLiner(spell, lang)}`);
       return [w.skillset(name), ...lines].join("\n");
     }
     return "";

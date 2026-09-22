@@ -37,7 +37,7 @@ import {
   type AdvisorData,
 } from "@/lib/advisor/context";
 import {
-  FOCUS_LABEL,
+  focusLabel,
   answerChampionIds,
   answerKey,
   answerLinks,
@@ -331,7 +331,7 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
    */
   const deliverMatchup = (question: string, mine: ChampionCard, enemy: ChampionCard, notice?: string) => {
     if (!data) return;
-    const answer = buildCompareCard([mine, enemy], question, undefined, { matchup: true, notes: matchupNotes(data, mine, enemy, lang) });
+    const answer = buildCompareCard([mine, enemy], question, undefined, { matchup: true, notes: matchupNotes(data, mine, enemy, lang), lang });
     const prompt = buildCommentaryPrompt(answer, patch, lang);
     if (canUseModel && advisor.consented && prompt) {
       /*
@@ -511,7 +511,7 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
           // VS 화면에 둘이 떠 있는데 "W 쿨타임" 이면 둘의 W 를 나란히 놓는다. 견주러 온
           // 화면에서 "누구 것?" 하고 되묻는 것보다 둘 다 보여 주는 쪽이 답이다.
           const names = source.map((card) => card.name).join("·");
-          deliver(question, buildCompareCard(source, question, slot), notice ?? fill(fromWhere, { name: names }));
+          deliver(question, buildCompareCard(source, question, slot, { lang }), notice ?? fill(fromWhere, { name: names }));
           return;
         } else if (recent.length) {
           // 상성을 말한 뒤의 "스킬 쿨타임" 은 내 챔피언(앞쪽) 것이다.
@@ -530,14 +530,14 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
       // 둘 이상을 견주는 질문은 코드가 표로 견준다. 모델이 도구로 수치를 꺼내 글로
       // 견주게 했을 때는 30초 걸리고 "665이고," 에서 끊기기도 했다.
       if (asksComparison(question, champions.length)) {
-        deliver(question, buildCompareCard(champions, question, slot), usedNotice);
+        deliver(question, buildCompareCard(champions, question, slot, { lang }), usedNotice);
         return;
       }
       if (champions.length === 1) {
         const [card] = champions;
         const spell = slot ? card.spells.find((entry) => entry.slot === slot) : undefined;
         if (spell) {
-          deliver(question, buildSpellCard(card, spell, question), usedNotice);
+          deliver(question, buildSpellCard(card, spell, question, lang), usedNotice);
           return;
         }
         // 효과 태그 예/아니오는 코드가 바로 답한다. 태그가 없다는 사실을 근거로
@@ -722,7 +722,7 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
         return {
           title: answer.card.name,
           kind: answer.focus
-            ? `${copy.card.skills} · ${FOCUS_LABEL[answer.focus]}`
+            ? `${copy.card.skills} · ${focusLabel(answer.focus, lang)}`
             : answer.view === "skills"
               ? copy.card.skills
               : copy.card.champion,

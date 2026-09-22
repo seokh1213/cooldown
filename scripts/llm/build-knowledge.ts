@@ -15,6 +15,7 @@ import {
   resolvePatchVersion,
   type LlmLocale,
 } from "./lib/data";
+import { DAMAGE, GRADE, RANGE, RATIO_STATS, TAGS, missingCardWords } from "./lib/cardWords";
 import { createChampionCardBuilder, type ChampionCard } from "./lib/facts";
 import { loadSpellOverrides } from "./lib/spellOverrides";
 
@@ -77,6 +78,17 @@ function main() {
    * 태그는 **번역하지 않는 열쇠**다. 화면과 프롬프트가 `translateTag` 로 옮겨
    * 보이므로, 한국어에서 한 번 뽑아 모든 언어가 나눠 쓰면 된다. 챔피언 id 와 슬롯은
    * 언어와 무관하므로 짝을 잃을 자리도 없다.
+   *
+   * 스킬 태그만 옮겼더니 **한 겹 위가 그대로 남아 있었다.** 챔피언의 피해 성향과
+   * 계수 성향은 스킬을 세어 만드는 값인데, 영어·중국어에서는 셀 것이 없어 역할
+   * 가중치(Marksman +2, Mage +1)만 남아 있었다.
+   *
+   *              물리   마법   혼합
+   *   한국어       58     95     20
+   *   영어·중국어  110     63      0
+   *
+   * 173챔피언이 모두 달랐고 계수 성향은 136이 달랐다. 같은 챔피언인데 언어를 바꾸면
+   * 다른 챔피언이 되는 셈이다. 도출된 값은 한 벌만 있어야 하므로 통째로 옮긴다.
    */
   if (lang !== "ko_KR") {
     const korean = loadStaticData("ko_KR");
@@ -88,15 +100,21 @@ function main() {
       loadSpellOverrides(),
     ).buildAll();
     const bySlot = new Map<string, { damageTypes: ChampionCard["spells"][number]["damageTypes"]; effects: string[] }>();
-    const mechanicsById = new Map<string, string[]>();
+    const byId = new Map<string, ChampionCard>();
     for (const card of base) {
-      mechanicsById.set(card.id, card.mechanics);
+      byId.set(card.id, card);
       for (const spell of card.spells) {
         bySlot.set(`${card.id}:${spell.slot}`, { damageTypes: spell.damageTypes, effects: spell.effects });
       }
     }
     for (const card of cards) {
-      card.mechanics = mechanicsById.get(card.id) ?? card.mechanics;
+      const derivedCard = byId.get(card.id);
+      if (derivedCard) {
+        card.mechanics = derivedCard.mechanics;
+        card.damageProfile = derivedCard.damageProfile;
+        card.scalingProfile = derivedCard.scalingProfile;
+        card.rangeType = derivedCard.rangeType;
+      }
       for (const spell of card.spells) {
         const derived = bySlot.get(`${card.id}:${spell.slot}`);
         if (!derived) continue;
@@ -104,6 +122,29 @@ function main() {
         spell.effects = derived.effects;
       }
     }
+  }
+
+  /*
+   * 태그가 세 언어를 다 갖췄는지 카드를 쓰기 전에 본다.
+   *
+   * 화면과 프롬프트는 이 값들을 `translateTag`·`translateDamage` 로 옮겨 보인다.
+   * 표에 없는 값은 한국어 그대로 돌아오므로 영어·중국어 화면에 한국어가 섞여
+   * 나가는데, 빈칸이 아니라서 눈으로는 고장으로 안 보인다. 실제로 그렇게 새고
+   * 있었다. 표는 툴팁 정규식보다 늦게 자라기 마련이니 자동으로 잡아야 한다.
+   */
+  const gaps: Array<readonly [string, string[]]> = ([
+    ["효과 태그", missingCardWords(cards.flatMap((c) => [...c.mechanics, ...c.spells.flatMap((s) => s.effects)]), TAGS)],
+    ["피해 유형", missingCardWords(cards.flatMap((c) => c.spells.flatMap((s) => s.damageTypes)), DAMAGE)],
+    ["사거리", missingCardWords(cards.map((c) => c.rangeType), RANGE)],
+    ["계수 능력치", missingCardWords(cards.flatMap((c) => c.spells.flatMap((s) => Object.keys(s.ratios ?? {}))), RATIO_STATS)],
+    ["능력치 등급", missingCardWords(cards.flatMap((c) => Object.values(c.stats).flatMap((s) => [s.gradeLv1, s.gradeLv18])), GRADE)],
+  ] as const).filter(([, missing]) => missing.length > 0);
+  if (gaps.length > 0) {
+    for (const [what, missing] of gaps) {
+      console.error(`${what} 번역 누락 ${missing.length}건: ${missing.join(", ")}`);
+    }
+    console.error("scripts/llm/lib/cardWords.ts 에 세 언어 표기를 채운 뒤 다시 돌리십시오.");
+    process.exit(1);
   }
 
   const outDir = path.join(PUBLIC_DATA_ROOT, data.patch, "llm");
