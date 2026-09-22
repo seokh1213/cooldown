@@ -3,10 +3,8 @@ import { ItemIcon } from "@/components/ui/item-icon";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useTranslation } from "@/i18n";
 import { getOfficialLikeItemTier } from "@/lib/itemTierUtils";
-import { useMemo } from "react";
 import {
   buildItemTree,
-  buildStatLabelIcons,
   collectUpgradeItems,
   getItemName,
   getItemPriceLabel,
@@ -129,11 +127,6 @@ export function ItemDetail(props: {
   const { item, itemMap, ddragonVersion, onSelect } = props;
   const { t } = useTranslation();
   const upgrades = collectUpgradeItems(item, itemMap);
-  /*
-   * 능력치 줄에 붙일 글리프는 자료에서 뽑는다. 이름이 그 나라 말이라 언어마다
-   * 손으로 적는 대신, 줄과 스탯이 하나씩인 아이템에서 짝을 읽는다.
-   */
-  const statIcons = useMemo(() => buildStatLabelIcons(itemMap.values()), [itemMap]);
   return (
     <ScrollArea className="h-full min-h-0">
       <div className="space-y-5 pr-3" data-testid="item-detail">
@@ -145,7 +138,7 @@ export function ItemDetail(props: {
           </div>
           {shouldShowPrice(item) && <span className="text-sm font-semibold text-amber-600 tabular-nums dark:text-amber-300">{getItemPriceLabel(item, t)}</span>}
         </div>
-        <ItemEffects item={item} statIcons={statIcons} />
+        <ItemEffects item={item} />
         <div className="space-y-3 border-t border-border/60 pt-4">
           <h3 className="text-xs font-medium text-muted-foreground">{t.encyclopedia.items.treeTitle}</h3>
           <BuildTree item={item} itemMap={itemMap} ddragonVersion={ddragonVersion} onSelect={onSelect} />

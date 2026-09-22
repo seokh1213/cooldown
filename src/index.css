@@ -4,9 +4,26 @@
 
 @custom-variant dark (&:is(.dark *));
 
-/* Keep inline stat glyphs free of browser/theme image shadows. */
+/*
+ * 글 사이에 놓는 스탯 글리프.
+ *
+ * 게임 HUD 에서 온 그림이라 어두운 바탕에 맞춰 그려져 있다. 평균 밝기가 111~191 로
+ * 가운데 톤이어서 흰 바탕에서는 밝은 것이(방어력 191) 묻히고 어두운 바탕에서는
+ * 어두운 것이(체력 111) 묻힌다. 실제로 "잘 안 보인다" 는 말을 들었다.
+ *
+ * 글자 높이에 딱 맞추면 32px 그림이 14px 로 줄어 획도 가늘어진다. 조금 키우고,
+ * 바탕색과 반대되는 얇은 테두리를 둘러 어느 쪽 바탕에서도 윤곽이 남게 한다.
+ */
 img.stat-icon {
   box-shadow: none;
+  width: 1.2em;
+  height: 1.2em;
+  vertical-align: -0.25em;
+  filter: drop-shadow(0 0 1px rgb(0 0 0 / 0.45));
+}
+
+.dark img.stat-icon {
+  filter: drop-shadow(0 0 1px rgb(255 255 255 / 0.45));
 }
 
 @theme {
