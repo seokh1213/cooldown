@@ -5,7 +5,7 @@ import type { NormalizedSummonerSpell } from "@/types/combatNormalized";
 import { Input } from "@/components/ui/input";
 import { useTranslation } from "@/i18n";
 import { Search } from "lucide-react";
-import { summonerSpellIconUrl } from "@/data/assets/riotAssetUrls";
+import { SpriteIcon, useSpriteSheet } from "@/components/ui/sprite-icon";
 import { SafeBlockHtml } from "@/components/ui/safe-html";
 
 /**
@@ -47,6 +47,13 @@ function cooldownOf(spell: NormalizedSummonerSpell): number {
 export function SummonerTab({ patchVersion, sources, ddragonVersion, lang }: SummonerTabProps) {
   const { t } = useTranslation();
   const [spells, setSpells] = useState<NormalizedSummonerSpell[] | null>(null);
+  /**
+   * 거르기 전 **전체** 아이콘 이름.
+   *
+   * 시트는 자료에 실린 서른네 종을 전부 붙인다. 화면에 보이는 아홉 개로 자리를 세면
+   * 칸이 밀려 엉뚱한 그림이 나온다 — 실제로 한 번 그랬다.
+   */
+  const [allIcons, setAllIcons] = useState<string[]>([]);
   const [search, setSearch] = useState("");
 
   useEffect(() => {
@@ -54,6 +61,7 @@ export function SummonerTab({ patchVersion, sources, ddragonVersion, lang }: Sum
     getNormalizedSummonerSpells({ patchVersion, sources }, lang).then((data) => {
       if (cancelled) return;
       // 협곡에서 쓰는 것만 둔다. 다른 모드 전용 주문까지 섞으면 견줄 대상이 흐려진다.
+      setAllIcons([...new Set(data.map((spell) => (spell.iconPath ?? "").replace(/\.png$/, "")).filter(Boolean))].sort());
       const classic = data.filter((spell) => spell.modes?.includes("CLASSIC"));
       // 대기시간 차례로 세운다. 이 화면에서 가장 먼저 눈에 들어와야 하는 값이다.
       setSpells([...classic].sort((left, right) => cooldownOf(left) - cooldownOf(right)));
@@ -62,6 +70,12 @@ export function SummonerTab({ patchVersion, sources, ddragonVersion, lang }: Sum
       cancelled = true;
     };
   }, [patchVersion, sources, lang]);
+
+  /*
+   * 아이콘은 시트 한 장에서 잘라 쓴다. 백과 네 탭 중 이것만 Data Dragon 을 직접
+   * 보고 있었다. 칸 자리는 이름 차례로 세고, 생성기도 같은 차례로 붙인다.
+   */
+  const sprite = useSpriteSheet("summoner", ddragonVersion, allIcons);
 
   const term = search.trim().toLowerCase();
   const filtered = useMemo(() => {
@@ -103,13 +117,11 @@ export function SummonerTab({ patchVersion, sources, ddragonVersion, lang }: Sum
           return (
             <article key={spell.id} data-summoner-spell={spell.id} className="rounded-lg border bg-card p-3">
               <div className="flex items-center gap-3">
-                <img
-                  src={summonerSpellIconUrl(ddragonVersion, spell.iconPath)}
-                  alt=""
-                  width={40}
-                  height={40}
-                  loading="lazy"
-                  className="size-10 shrink-0 rounded-md border border-border/60 bg-black/40"
+                <SpriteIcon
+                  state={sprite}
+                  id={(spell.iconPath ?? "").replace(/\.png$/, "")}
+                  size={40}
+                  className="block size-10 shrink-0 rounded-md border border-border/60 bg-black/40 bg-cover"
                 />
                 <h3 className="min-w-0 flex-1 truncate text-sm font-semibold">{spell.name}</h3>
                 <span className="shrink-0 tabular-nums">
@@ -119,7 +131,7 @@ export function SummonerTab({ patchVersion, sources, ddragonVersion, lang }: Sum
               </div>
 
               {detailed ? (
-                <SafeBlockHtml className="mt-2.5 block text-xs leading-relaxed [&_br]:block" html={tooltip} />
+                <SafeBlockHtml className="mt-2.5 block text-xs leading-relaxed text-muted-foreground [&_br]:block" html={tooltip} />
               ) : (
                 <p className="mt-2.5 text-xs leading-relaxed text-muted-foreground">{spell.summary || spell.name}</p>
               )}

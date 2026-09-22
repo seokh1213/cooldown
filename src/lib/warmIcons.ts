@@ -1,11 +1,12 @@
 /**
  * 아이콘을 미리 받아 둔다
  *
- * 챔피언 시트는 서비스워커가 설치할 때 받아 둔다(383KB). 아이템 시트는 1MB 라
- * 거기 넣지 않았다 — 아이템 화면에 안 들어갈 사람까지 받게 되기 때문이다.
+ * 백과 네 탭이 쓰는 시트는 넷이다. 챔피언(383KB)과 룬(137KB)은 서비스워커가 설치할
+ * 때 받아 둔다. 아이템(1MB)과 소환사 주문(48KB)은 거기 넣지 않았다 — 아이템 시트가
+ * 커서, 그 화면에 안 들어갈 사람까지 받게 되기 때문이다.
  *
  * 대신 **앱이 뜨고 손이 빈 틈에** 받아 둔다. 스플래시가 지나고 첫 화면이 그려진
- * 뒤이므로 그 순간 보여야 할 것과 다투지 않고, 나중에 아이템 탭을 열면 이미 와 있다.
+ * 뒤이므로 그 순간 보여야 할 것과 다투지 않고, 나중에 백과를 열면 이미 와 있다.
  *
  * 받지 않는 경우가 있다.
  *   데이터 절약   사용자가 켜 두었으면 1MB 를 몰래 쓰지 않는다
@@ -37,8 +38,9 @@ function whenIdle(run: () => void): void {
 let warmed = "";
 
 /**
- * 아이템 스프라이트를 미리 받아 둔다. 한 판본에 한 번만 돈다.
+ * 백과가 쓰는 시트를 미리 받아 둔다. 한 판본에 한 번만 돈다.
  *
+ * 챔피언·룬 시트는 서비스워커가 설치할 때 받으므로 여기서는 나머지를 챙긴다.
  * 실패해도 아무 일도 하지 않는다. 미리 받는 것은 덤이고, 못 받으면 화면에
  * 들어갈 때 받으면 된다.
  */
@@ -54,10 +56,12 @@ export function warmIcons(ddragonVersion: string): void {
      * 요청이 떠 있는 동안 새 워커로 넘어가는 흐름과 부딪힌다. `prefetch` 는 브라우저가
      * 가장 낮은 우선순위로 잡고 지금 쓰는 것과 다투지 않게 스스로 미룬다.
      */
-    const link = document.createElement("link");
-    link.rel = "prefetch";
-    link.as = "image";
-    link.href = `${import.meta.env.BASE_URL}img/${ddragonVersion}/items.webp`;
-    document.head.append(link);
+    for (const sheet of [`${ddragonVersion}/items`, `${ddragonVersion}/summoners`]) {
+      const link = document.createElement("link");
+      link.rel = "prefetch";
+      link.as = "image";
+      link.href = `${import.meta.env.BASE_URL}img/${sheet}.webp`;
+      document.head.append(link);
+    }
   });
 }

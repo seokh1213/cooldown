@@ -96,7 +96,15 @@ const summoners = normalizeSummonerSpells({
 assert.deepEqual(summoners[0].cooldown, [300]);
 assert.deepEqual(summoners[0].modes, ["CLASSIC"]);
 assert.deepEqual(summoners[0].damageEffects, []);
-assert.equal(summoners[1].tooltip, "90 - 430 / 40%");
+/*
+ * 툴팁은 원문 그대로 둔다.
+ *
+ * 한때 점화만 `{{ tooltiptruedamagecalculation }}` 을 "90 - 430" 으로 바꿔 넣었다.
+ * 출처가 없는 값이라 패치가 바뀌어도 아무도 모르고, 아홉 주문 중 하나만 수치가 살아
+ * 있어 보이는 까닭도 이것이었다. 값을 주는 오라클이 없으므로 지어내지 않는다 —
+ * 화면은 치환자가 남은 툴팁 대신 깨끗한 `description` 을 쓴다.
+ */
+assert.equal(summoners[1].tooltip, "{{ tooltiptruedamagecalculation }} / {{ grievousamount*100 }}%");
 assert.deepEqual(summoners[1].damageEffects[0].valuesByLevel, [
   90, 110, 130, 150, 170, 190, 210, 230, 250,
   270, 290, 310, 330, 350, 370, 390, 410, 430,

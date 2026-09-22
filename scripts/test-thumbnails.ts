@@ -59,10 +59,50 @@ const runeKeys = [
 ];
 assert.ok(runeKeys.length > 40, `룬 아이콘이 ${runeKeys.length}개뿐이다`);
 
+/** 소환사 주문 아이콘. 백과 네 탭 중 마지막으로 우리 자리로 옮긴 것이다. */
+const summonerIcons = [
+  ...new Set(
+    (
+      JSON.parse(fs.readFileSync(path.join(dataDir, release.patchVersion, "summoner-normalized-ko_KR.json"), "utf8")) as {
+        spells: Array<{ iconPath?: string }>;
+      }
+    ).spells
+      .map((spell) => (spell.iconPath ?? "").replace(/\.png$/, ""))
+      .filter(Boolean),
+  ),
+].sort();
+assert.ok(summonerIcons.length > 20, `소환사 주문 아이콘이 ${summonerIcons.length}개뿐이다`);
+
+/*
+ * 챔피언 스킬·패시브 아이콘. 마지막까지 Data Dragon 을 직접 보던 것이다.
+ * 시트로 묶지 않고 낱장으로 둔다 — 한 화면에 다섯에서 여덟 장만 쓰기 때문이다.
+ */
+const abilityIcons: string[] = [];
+const passiveIcons: string[] = [];
+for (const id of championIds) {
+  const champion = (
+    JSON.parse(fs.readFileSync(path.join(dataDir, release.patchVersion, "champions", "ko_KR", `${id}.json`), "utf8")) as {
+      champion?: { abilities?: Record<string, { id?: string; iconFile?: string }> };
+    }
+  ).champion;
+  for (const [slot, ability] of Object.entries(champion?.abilities ?? {})) {
+    if (slot === "P") {
+      if (ability?.iconFile) passiveIcons.push(ability.iconFile.replace(/\.png$/, ""));
+    } else if (ability?.id) {
+      abilityIcons.push(ability.id);
+    }
+  }
+}
+assert.ok(abilityIcons.length > 500, `스킬 아이콘이 ${abilityIcons.length}개뿐이다`);
+assert.ok(passiveIcons.length > 150, `패시브 아이콘이 ${passiveIcons.length}개뿐이다`);
+
 const missing: string[] = [];
 for (const id of championIds) if (!fs.existsSync(path.join(out, "champion", `${id}.webp`))) missing.push(`champion/${id}`);
 for (const id of itemIds) if (!fs.existsSync(path.join(out, "item", `${id}.webp`))) missing.push(`item/${id}`);
 for (const key of runeKeys) if (!fs.existsSync(path.join(imgRoot, "runes", `${key}.webp`))) missing.push(`runes/${key}`);
+for (const name of summonerIcons) if (!fs.existsSync(path.join(out, "summoner", `${name}.webp`))) missing.push(`summoner/${name}`);
+for (const name of new Set(abilityIcons)) if (!fs.existsSync(path.join(out, "spell", `${name}.webp`))) missing.push(`spell/${name}`);
+for (const name of new Set(passiveIcons)) if (!fs.existsSync(path.join(out, "passive", `${name}.webp`))) missing.push(`passive/${name}`);
 assert.deepEqual(missing.slice(0, 20), [], `썸네일이 빠진 것 ${missing.length}건`);
 
 assert.ok(championIds.length > 150, `챔피언이 ${championIds.length}명뿐이다. 자료를 못 읽은 것이다`);
@@ -91,6 +131,7 @@ for (const [kind, expected, dir] of [
   ["champion", championIds, out],
   ["item", itemIds, out],
   // 룬 시트는 판본 밖에 있고 이름 차례로 붙는다. 화면도 같은 차례로 센다.
+  ["summoner", summonerIcons, out],
   ["rune", [...runeKeys].sort(), imgRoot],
 ] as const) {
   const sheetFile = path.join(dir, `${kind}s.webp`);

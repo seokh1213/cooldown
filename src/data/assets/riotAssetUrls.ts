@@ -5,8 +5,11 @@
  * 10.2MB 인데 화면에서 가장 크게 쓰는 자리가 40px 이다. CI 가 96px/64px WebP 로
  * 줄여 `public/img/<ddragon>/` 에 넣어 두었고(1.9MB, 81% 절감) 여기서 그것을 가리킨다.
  *
- * 만드는 대상은 자료에 있는 챔피언·아이템 전부다. 빠지는 것이 생기면 시험이 잡는다.
- * 원본이 필요한 자리(스플래시)는 그대로 Data Dragon 을 본다.
+ * 만드는 대상은 자료에 있는 것 전부다 — 챔피언·아이템·룬·소환사 주문·스킬·패시브.
+ * 빠지는 것이 생기면 시험이 잡는다.
+ *
+ * 스플래시 아트만 그대로 Data Dragon 을 본다. 한 장이 수백 KB 이고 스킨마다 따로라,
+ * 줄여 두는 값보다 저장소에 쌓이는 값이 크다.
  */
 const local = (ddragonVersion: string, kind: string, name: string) =>
   `${import.meta.env.BASE_URL}img/${ddragonVersion}/${kind}/${name}.webp`;
@@ -18,19 +21,16 @@ export const championSplashUrl = (championId: string, skinNum: number) =>
   `https://ddragon.leagueoflegends.com/cdn/img/champion/splash/${championId}_${skinNum}.jpg`;
 
 export const passiveIconUrl = (ddragonVersion: string, fileName: string) =>
-  `https://ddragon.leagueoflegends.com/cdn/${ddragonVersion}/img/passive/${fileName}`;
+  local(ddragonVersion, "passive", fileName.replace(/\.png$/, ""));
 
 export const spellIconUrl = (ddragonVersion: string, spellId: string) =>
-  `https://ddragon.leagueoflegends.com/cdn/${ddragonVersion}/img/spell/${spellId}.png`;
+  local(ddragonVersion, "spell", spellId);
 
 export const itemIconUrl = (ddragonVersion: string, itemId: string) =>
   local(ddragonVersion, "item", itemId);
 
-export const summonerSpellIconUrl = (
-  ddragonVersion: string,
-  fileName: string
-) =>
-  `https://ddragon.leagueoflegends.com/cdn/${ddragonVersion}/img/spell/${fileName}`;
+export const summonerSpellIconUrl = (ddragonVersion: string, fileName: string) =>
+  local(ddragonVersion, "summoner", fileName.replace(/\.png$/, ""));
 
 /**
  * 룬 아이콘. 자료에 박힌 경로를 그대로 쓰되 우리 자리를 본다.
