@@ -132,6 +132,16 @@ export interface PromptWords {
   skills: string;
   effects: string;
   abilities: string;
+  /**
+   * 노트 구획의 머리말.
+   *
+   * 한때 "이 표현을 따르십시오" 라고 적어 두었다. 낱말을 이 말로 쓰라는 뜻이었는데
+   * 모델은 **글을 그대로 옮기라**는 뜻으로 읽었다. 마무리에서는 "옮겨 쓰지
+   * 마십시오" 라고 이르고 있었으니 프롬프트가 스스로 모순이었다. 살아남은 문장 중
+   * 노트 베끼기가 0.8B 30%, 4B 24% 였다.
+   *
+   * 지금은 근거라는 것만 밝힌다. 옮겨 쓰지 말라는 말은 마무리 한 곳에만 둔다.
+   */
   notesHeader: string;
   playing: string;
   against: string;
@@ -173,7 +183,7 @@ const KO: PromptWords = {
   skills: "스킬",
   effects: "효과",
   abilities: "스킬 이름",
-  notesHeader: "[운용 노트 — 사람이 검증한 내용입니다. 이 표현을 따르십시오]",
+  notesHeader: "[운용 노트 — 사람이 검증한 사실입니다. 판단의 근거로 삼으십시오]",
   playing: "플레이할 때",
   against: "상대할 때",
   percentile: (stat, side, grade) =>
@@ -225,7 +235,7 @@ const EN: PromptWords = {
   skills: "Abilities",
   effects: "Effects",
   abilities: "Ability names",
-  notesHeader: "[Playbook notes — human-verified. Follow this wording.]",
+  notesHeader: "[Playbook notes — human-verified facts. Reason from them.]",
   playing: "Playing it",
   against: "Playing against it",
   percentile: (stat, side, grade) =>
@@ -271,7 +281,7 @@ const ZH: PromptWords = {
   skills: "技能",
   effects: "效果",
   abilities: "技能名称",
-  notesHeader: "[操作笔记 — 人工核验，请沿用这些说法]",
+  notesHeader: "[操作笔记 — 人工核验的事实，请据此判断]",
   playing: "使用时",
   against: "对线时",
   percentile: (stat, side, grade) =>
