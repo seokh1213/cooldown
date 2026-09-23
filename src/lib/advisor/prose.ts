@@ -214,9 +214,25 @@ const PER_SECTION = 2;
  * 노트마다 첫 문장만 쓴다. 노트 전문은 카드에서 펼쳐 볼 수 있다.
  */
 export function matchupDigest(answer: Extract<AdvisorAnswer, { kind: "compare" }>, lang: Language = "ko_KR"): string {
+  return digestSections(answer, lang)
+    .filter((section) => section.lines.length)
+    .map((section) => `**${section.title}**\n${labelSlots(section.lines.join(" "), answer.cards)}`)
+    .join("\n\n");
+}
+
+/** 상성 요약의 칸 하나. `key` 로 다른 조립(XML 답 등)이 칸을 맞춰 쓴다. */
+export interface DigestSection {
+  key: "watch" | "build" | "fight";
+  title: string;
+  /** 검증된 문장. 슬롯 붙이기 전이다. */
+  lines: string[];
+}
+
+/** 칸별로 고른 문장. 칸 순서는 물은 주제를 따른다. */
+export function digestSections(answer: Extract<AdvisorAnswer, { kind: "compare" }>, lang: Language = "ko_KR"): DigestSection[] {
   const notes = answer.notes;
   const plan = notes?.plan;
-  if (!notes || !plan) return "";
+  if (!notes || !plan) return [];
   const [, enemy] = answer.cards;
   const heading = DIGEST_HEADINGS[lang] ?? DIGEST_HEADINGS.ko_KR;
   const claims = (kind: string) => plan.claims.filter((claim) => claim.kind === kind).map((claim) => claim.text);
@@ -242,18 +258,21 @@ export function matchupDigest(answer: Extract<AdvisorAnswer, { kind: "compare" }
 
   const focus = plan.focus ?? "general";
   const fightCategories = FIGHT_TITLES.ko_KR[focus] ? [focus] : [];
-  const watch: [string, string[], number] = [
+  const watch: [DigestSection["key"], string, string[], number] = [
+    "watch",
     heading.watch,
     [...threats.slice(0, focus === "skill" ? 2 : 1).map((line) => withOwner(line, enemy?.name)), ...claims("pinned")],
     PER_SECTION,
   ];
-  const build: [string, string[], number] = [
+  const build: [DigestSection["key"], string, string[], number] = [
+    "build",
     heading.build,
     [...claims("defense"), ...byCategory(plan.mine, "situational-item"), ...byCategory(plan.enemy, "situational-item"), ...claims("offense")],
     // 아이템을 물었으면 더 싣는다
     focus === "situational-item" ? 3 : PER_SECTION,
   ];
-  const fight: [string, string[], number] = [
+  const fight: [DigestSection["key"], string, string[], number] = [
+    "fight",
     (FIGHT_TITLES[lang] ?? FIGHT_TITLES.ko_KR)[focus] ?? heading.fight,
     [
       // 물은 갈래의 노트를 먼저. 시간대를 물었으면 성장 문장이 곧 답이다.
@@ -270,14 +289,11 @@ export function matchupDigest(answer: Extract<AdvisorAnswer, { kind: "compare" }
   const sections =
     focus === "situational-item" ? [build, watch, fight] : fightCategories.length ? [fight, watch, build] : [watch, build, fight];
   const used = new Set<string>();
-  return sections
-    .map(([title, lines, size]) => {
-      const picked = lines.filter((line) => line && !used.has(line)).slice(0, size);
-      for (const line of picked) used.add(line);
-      return picked.length ? `**${title}**\n${labelSlots(picked.join(" "), answer.cards)}` : "";
-    })
-    .filter(Boolean)
-    .join("\n\n");
+  return sections.map(([key, title, lines, size]) => {
+    const picked = lines.filter((line) => line && !used.has(line)).slice(0, size);
+    for (const line of picked) used.add(line);
+    return { key, title, lines: picked };
+  });
 }
 
 /**

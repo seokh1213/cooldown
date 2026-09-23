@@ -50,7 +50,7 @@ export interface Generated {
 
 export type Generate = (system: string, user: string, maxTokens: number) => Promise<Generated>;
 
-export type Mode = "single" | "lite" | "rewrite";
+export type Mode = "single" | "lite" | "rewrite" | "xml" | "digest";
 
 export interface Row {
   question: string;
@@ -73,6 +73,9 @@ export interface Row {
   sentences: number;
   /** 그중 노트를 거의 그대로 옮긴 문장 수. 근거 검사의 "note" 판정과 같은 문턱(0.7)이다. */
   noteCopies: number;
+  /** xml: 세 칸이 다 있었는가, 노트 조립으로 대체한 칸 수 */
+  xmlWellFormed?: boolean;
+  xmlFallback?: number;
 }
 
 /** 원문에 같은 24자 구간이 세 번 이상 나왔나. 공백은 접어서 본다. */
@@ -179,7 +182,30 @@ export async function runPair(
   let capped = false;
   let promptChars = 0;
 
-  if (mode === "lite" || mode === "rewrite") {
+  let xmlWellFormed: boolean | undefined;
+  let xmlFallback: number | undefined;
+  if (mode === "digest") {
+    // 모델 없이 노트 조립만. 0.8B 기기와 모델 없는 기기가 받는 답이다.
+    const prose = await import("../../../src/lib/advisor/prose.ts");
+    shownRaw = prose.answerProse(answer, "ko_KR");
+    raw = shownRaw;
+  } else if (mode === "xml") {
+    const xml = await import("../../../src/lib/advisor/xmlAnswer.ts");
+    const prompt = xml.buildXmlMatchupPrompt(answer, patch, "ko_KR");
+    if (!prompt) throw new Error("XML 재료 없음");
+    promptChars = prompt.length;
+    const result = await generate(`${persona}\n\n${prompt}`, question, 700);
+    raw = result.untrimmed ?? result.text;
+    tokens = result.tokens;
+    seconds = result.seconds;
+    capped = result.tokens >= 700;
+    cut = result.looped ?? false;
+    if (answer.kind !== "compare") throw new Error("상성 답이 아님");
+    const rendered = xml.renderXmlMatchup(result.text, answer, "ko_KR");
+    xmlWellFormed = rendered.wellFormed;
+    xmlFallback = rendered.sections.filter((section) => section.source === "digest").length;
+    shownRaw = rendered.text;
+  } else if (mode === "lite" || mode === "rewrite") {
     const lite = await import("../../../src/lib/advisor/litePrompt.ts");
     const prompt = mode === "lite" ? lite.buildLiteMatchupPrompt(answer, "ko_KR") : lite.buildRewriteMatchupPrompt(answer, "ko_KR");
     if (!prompt) throw new Error("가벼운 재료 없음");
@@ -204,7 +230,7 @@ export async function runPair(
     shownRaw = result.text;
   }
 
-  const grounded = groundCommentary(shownRaw, answer, "ko_KR");
+  const grounded = mode === "xml" || mode === "digest" ? { text: shownRaw, dropped: [] } : groundCommentary(shownRaw, answer, "ko_KR");
   const coverage = slotCoverage(grounded.text, answer);
   return {
     question,
@@ -224,6 +250,8 @@ export async function runPair(
     wrongSlot: coverage.wrongSlot,
     templateCopies: (grounded.text.match(TEMPLATE) ?? []).length,
     ...noteCopying(grounded.text, answer),
+    xmlWellFormed,
+    xmlFallback,
   };
 }
 
@@ -255,5 +283,8 @@ export function summarize(rows: Row[]): string {
     `평균 화면 길이   ${Math.round(sum((r) => r.shownChars) / n)}자`,
     `평균 시간        ${(sum((r) => r.seconds) / n).toFixed(1)}초 · 평균 토큰 ${Math.round(sum((r) => r.tokens) / n)}`,
     `평균 프롬프트    ${Math.round(sum((r) => r.promptChars) / n)}자`,
+    ...(rows.some((r) => r.xmlWellFormed !== undefined)
+      ? [`XML 세 칸 온전   ${rows.filter((r) => r.xmlWellFormed).length}/${rows.length} · 조립으로 대체한 칸 ${sum((r) => r.xmlFallback ?? 0)}/${rows.length * 3}`]
+      : []),
   ].join("\n");
 }

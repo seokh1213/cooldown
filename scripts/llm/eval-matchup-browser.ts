@@ -79,8 +79,10 @@ async function loadData(): Promise<{ data: AdvisorData; patch: string }> {
   const knowledge = (await (await fetch(`/data/${patch}/llm/advisor-knowledge.json`)).json()) as {
     playbooks: Record<string, Playbook>;
   };
+  const items = ((await (await fetch(`/data/${patch}/items-normalized-ko_KR.json`)).json()) as { items: unknown[] }).items;
   const data = {
     cards,
+    items,
     cardById: new Map(cards.map((card) => [card.id, card])),
     playbooks: new Map(Object.entries(knowledge.playbooks)),
   } as unknown as AdvisorData;
