@@ -169,6 +169,25 @@ export default defineConfig(({ mode }) => {
               cacheableResponse: { statuses: [0, 200] },
             },
           },
+          /*
+           * 도우미 모델의 실행기(ONNX Runtime).
+           *
+           * 여기에 규칙이 없어서 모델을 받아 둔 사용자도 오프라인에서는 모델을 못 올렸다.
+           * 가중치(수백 MB)는 Transformers.js 가 Cache Storage 에 넣지만, 그것을 돌리는
+           * `ort/*.mjs`·`*.wasm`(12MB)은 선캐시 패턴에도 없고 런타임 규칙도 없어 브라우저
+           * HTTP 캐시에 우연히 남아 있어야만 떴다. 선캐시에 넣지 않는 까닭은 모델을 안 쓰는
+           * 사람에게까지 12MB 를 받게 할 이유가 없어서다 — 한 번 쓴 사람만 담는다.
+           * 파일 이름이 판본과 함께 바뀌지 않으므로 수명을 두어 판올림을 따라간다.
+           */
+          {
+            urlPattern: /\/cooldown\/ort\//,
+            handler: "CacheFirst",
+            options: {
+              cacheName: "cooldown-advisor-runtime-v1",
+              cacheableResponse: { statuses: [200] },
+              expiration: { maxEntries: 40, maxAgeSeconds: 60 * 60 * 24 * 30 },
+            },
+          },
           {
             urlPattern: /\/cooldown\/data\/(?!version\.json$).+/,
             handler: "CacheFirst",

@@ -48,6 +48,7 @@ import {
   asksSkillsOverview,
   buildCommentaryPrompt,
   buildCompareAnswer as buildCompareCard,
+  matchupSidesByPhrase,
   buildRuleAnswer as buildRuleCard,
   buildSpellAnswer as buildSpellCard,
   detectSpellFocus,
@@ -414,6 +415,12 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
       route = await advisor
         .classify(routePrompt(named.map((card) => card.name)), question)
         .then((reply) => parseRoute(reply, named))
+        .then((parsed) => {
+          // 영어·중국어 문형이 시점을 정해 주면 그것을 따른다. 모델이 가장 자주 틀리는 자리다.
+          if (parsed?.kind !== "matchup" || named.length < 2) return parsed;
+          const phrased = matchupSidesByPhrase(question, [named[0], named[1]], (card) => [card.name, ...(data.aliases.get(card.id) ?? [])]);
+          return phrased ? { ...parsed, mine: phrased } : parsed;
+        })
         .catch(() => undefined);
     }
 

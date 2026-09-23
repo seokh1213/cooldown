@@ -561,6 +561,43 @@ export function matchupSidesDetailed<T extends { name: string }>(question: strin
 }
 
 /**
+ * 영어·중국어 문형으로 내 챔피언을 가른다. 문형이 안 걸리면 undefined.
+ *
+ * 한국어는 조사가 가르지만(`matchupSidesDetailed`) 영어·중국어에는 조사가 없다.
+ * 모델에게 맡기면 여기서 틀린다. 4B 도 "Caitlyn is the enemy ADC and I'm on Vayne" 을
+ * 케이틀린 시점으로 읽었고, 0.8B 판정기는 "Playing Darius into Sett", "I'm Jax against
+ * Teemo", "我用武器大师对线迅捷斥候" 를 모두 거꾸로 골랐다. 이런 문장은 낱말이 시점을
+ * 정해 주므로 모델보다 규칙이 확실하다.
+ *
+ * `names` 는 챔피언마다 알아볼 이름들(화면 언어 이름과 다른 언어 이름).
+ */
+export function matchupSidesByPhrase<T>(question: string, found: [T, T], names: (card: T) => string[]): T | undefined {
+  const escape = (value: string) => value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const score = (card: T): number => {
+    const alt = names(card).filter((name) => name.length >= 2).map(escape).join("|");
+    if (!alt) return 0;
+    const name = `(?:${alt})`;
+    const mine = [
+      new RegExp(`\\b(?:play|playing|plays|as|main|maining|on|i'?m|i am)\\s+(?:a\\s+|an\\s+)?${name}`, "i"),
+      new RegExp(`${name}\\s+(?:into|vs\\.?|versus|against)\\s`, "i"),
+      new RegExp(`我(?:用|玩|拿|是|选)\\s*${name}`),
+      new RegExp(`${name}\\s*(?:打|对线|对上|对)`),
+    ];
+    const enemy = [
+      new RegExp(`\\b(?:into|against|vs\\.?|versus|facing)\\s+(?:a\\s+|an\\s+)?${name}`, "i"),
+      new RegExp(`${name}\\s+is\\s+(?:the\\s+|my\\s+)?(?:enemy|opponent|lane opponent)`, "i"),
+      new RegExp(`(?:打|对线|对上|对付|碰到|遇到)\\s*${name}`),
+    ];
+    return (mine.some((re) => re.test(question)) ? 2 : 0) - (enemy.some((re) => re.test(question)) ? 2 : 0);
+  };
+  const [a, b] = found;
+  const gap = score(a) - score(b);
+  if (gap > 0) return a;
+  if (gap < 0) return b;
+  return undefined;
+}
+
+/**
  * "말파이트 상대법" 처럼 **한 챔피언의 공략을 통째로** 묻는가.
  *
  * `asksMatchup` 은 "상대" 만 보고 참이 되므로 이것까지 상성으로 끌고 갔다. 앞 대화에
