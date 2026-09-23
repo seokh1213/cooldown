@@ -26,13 +26,14 @@ import {
 } from "../../../scripts/llm/lib/rules";
 import { playbookToText, selectPlaybook, type Playbook } from "../../../scripts/llm/lib/playbookCore";
 import { selectNotes, type NotePerspective, type SelectedNotes } from "./noteSelect";
-import { deriveMatchupClaims, renderMatchupClaims, type ClaimLang } from "../../../scripts/llm/lib/claims";
+import { deriveMatchupClaims, renderTaggedClaims, type ClaimLang, type TaggedClaim } from "../../../scripts/llm/lib/claims";
 import {
   findMechanics,
   mechanicsToText,
   type MechanicsIndex,
 } from "../../../scripts/llm/lib/mechanics";
 import type { WikiItemMeta } from "../../../scripts/llm/lib/data";
+import { josa } from "../../../scripts/llm/lib/text";
 import type { AdvisorAnswer, Fact, MatchupNotes } from "./answer";
 import type {
   NormalizedItem,
@@ -80,6 +81,11 @@ export interface AdvisorData {
   stale: boolean;
   cards: ChampionCard[];
   cardById: Map<string, ChampionCard>;
+  /**
+   * 화면 언어가 아닌 이름. id → [영어·중국어 이름, DDragon id].
+   * 한국어 화면에서 "Yasuo" 로 물어도 알아보게 한다. 없으면 빈 표다.
+   */
+  aliases: Map<string, string[]>;
   playbooks: Map<string, Playbook>;
   tips: CuratedTip[];
   /** 룬·소환사 주문 판정 규칙. 이름으로 찾는다. */
@@ -128,6 +134,10 @@ export function loadAdvisorData(patch: string, locale = "ko_KR"): Promise<Adviso
           (): WikiItemFile => ({}),
         ),
       ]);
+    // 이름 색인은 없어도 된다. 없으면 화면 언어 이름으로만 찾는다.
+    const names = await getJson<{ names: Record<string, string[]> }>(dataUrl(patch, "llm/champion-names.json")).catch(
+      () => ({ names: {} as Record<string, string[]> }),
+    );
 
     return {
       patch,
@@ -135,6 +145,9 @@ export function loadAdvisorData(patch: string, locale = "ko_KR"): Promise<Adviso
       stale: knowledge.patchVersion !== patch,
       cards: cardFile.cards,
       cardById: new Map(cardFile.cards.map((c) => [c.id, c])),
+      aliases: new Map(
+        cardFile.cards.map((c) => [c.id, [...new Set([...(names.names[c.id] ?? []), c.id])].filter((name) => name !== c.name)]),
+      ),
       playbooks: new Map(Object.entries(knowledge.playbooks)),
       tips: knowledge.tips,
       ruleIndex: indexRules(knowledge.rules ?? []),
@@ -311,7 +324,11 @@ export function matchupNotes(
    * 말이 아니고, 도출한 쪽이 물음에 더 가깝다. 이 문장들은 재료에 그대로 실리므로
    * 근거 검사도 통과한다.
    */
-  const derived = renderMatchupClaims(me, enemy, deriveMatchupClaims(me, enemy), lang);
+  const claims = deriveMatchupClaims(me, enemy);
+  const tagged: TaggedClaim[] = renderTaggedClaims(me, enemy, claims, lang);
+  const early = earlyResistLine(data, claims.theirs.damage, tagged, lang);
+  if (early) tagged.splice(tagged.findIndex((claim) => claim.kind === "defense") + 1, 0, early);
+  const derived = tagged.map((claim) => claim.text);
   /*
    * 손으로 쓴 노트는 한국어일 때만 붙인다.
    *
@@ -327,7 +344,48 @@ export function matchupNotes(
     mine: [...derived, ...(written ? selected.mine.slice(0, 3).map((entry) => entry.text) : [])],
     enemy: written ? selected.vsEnemy.slice(0, 3).map((entry) => entry.text) : [],
     derived: derived.length,
+    // 요약은 갈래를 보고 칸을 채운다. 카드에 보이는 세 줄보다 넓게 준다.
+    plan: {
+      claims: tagged,
+      mine: written ? selected.mine.map(({ category, text }) => ({ category, text })) : [],
+      enemy: written ? selected.vsEnemy.map(({ category, text }) => ({ category, text })) : [],
+    },
   };
+}
+
+/** 초반 저항 아이템. 데이터에 있는 이름을 쓴다. 판올림으로 id 가 사라지면 문장을 만들지 않는다. */
+const EARLY_RESIST: Record<"마법" | "물리", { component: string; boots: string }> = {
+  마법: { component: "1033", boots: "3111" }, // 마법무효화의 망토 · 헤르메스의 발걸음
+  물리: { component: "1029", boots: "3047" }, // 천 갑옷 · 판금 장화
+};
+
+/**
+ * 상대 피해가 내 약한 저항을 파고들 때, 초반에 무엇을 먼저 사는지 한 줄.
+ *
+ * "그쪽이 먼저 올릴 저항입니다" 만으로는 **무엇을 사라는지**가 없다. 초반 저항은
+ * 하위 아이템 하나와 신발이 정석이라 챔피언과 무관하게 말할 수 있다. 코어 아이템은
+ * 챔피언마다 달라 여기서 고르지 않는다 — 그것은 사람이 쓴 노트의 몫이다.
+ */
+function earlyResistLine(
+  data: AdvisorData,
+  damage: string,
+  claims: TaggedClaim[],
+  lang: ClaimLang,
+): TaggedClaim | undefined {
+  if (!claims.some((claim) => claim.kind === "defense")) return undefined;
+  if (damage !== "마법" && damage !== "물리") return undefined;
+  const ids = EARLY_RESIST[damage];
+  const name = (id: string) => data.items?.find((item) => String(item.id) === id)?.name;
+  const component = name(ids.component);
+  const boots = name(ids.boots);
+  if (!component || !boots) return undefined;
+  const text =
+    lang === "ko_KR"
+      ? `초반에는 ${josa(component, "로/으로")} 먼저 버티고 신발은 ${josa(boots, "을/를")} 고릅니다.`
+      : lang === "en_US"
+        ? `Start with a ${component} and take ${boots} as your boots.`
+        : `前期先出${component}，鞋子选${boots}。`;
+  return { kind: "defense", text };
 }
 
 /**

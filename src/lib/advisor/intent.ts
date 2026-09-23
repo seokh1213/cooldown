@@ -132,6 +132,31 @@ function findMentions(data: AdvisorData, text: string): Mention[] {
     });
   }
 
+  /*
+   * 그래도 못 찾은 챔피언은 다른 언어 이름으로 본다.
+   *
+   * 한국어 화면에서 "How do I play Yasuo into Malphite?" 가 챔피언 없음으로 빠졌다.
+   * 영문은 대소문자를 가리지 않고 **낱말 경계**로만 찾는다 — "Vi" 가 "vision" 안에서,
+   * "Ekko" 가 이름이 아닌 글에서 걸리면 안 된다. 한자는 경계가 없으니 그대로 찾는다.
+   */
+  const aliasEntries = [...(data.aliases ?? new Map<string, string[]>())]
+    .flatMap(([id, list]) => list.map((alias) => ({ id, alias })))
+    .filter(({ alias }) => alias.length >= 2)
+    .sort((a, b) => b.alias.length - a.alias.length);
+  for (const { id, alias } of aliasEntries) {
+    if (mentions.some((m) => m.card.id === id)) continue;
+    const card = data.cardById.get(id);
+    if (!card) continue;
+    const latin = /^[ -~]+$/.test(alias);
+    const escaped = alias.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    const found = latin ? new RegExp(`(?<![A-Za-z])${escaped}(?![A-Za-z])`, "i").exec(text) : null;
+    const index = latin ? (found?.index ?? -1) : text.indexOf(alias);
+    if (index < 0) continue;
+    if (taken.some(([s, e]) => index < e && index + alias.length > s)) continue;
+    taken.push([index, index + alias.length]);
+    mentions.push({ card, index, tail: text.slice(index + alias.length, index + alias.length + 12) });
+  }
+
   return mentions.sort((a, b) => a.index - b.index);
 }
 

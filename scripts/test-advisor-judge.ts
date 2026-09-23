@@ -65,23 +65,31 @@ const card = (id: string) => cards.find((c) => c.id === id)!;
   ok(routeFromJudge([0.1, 0.1, 0.1, 0.6, 0.1], undefined, [wukong]).kind === "spellStat", "가장 높은 갈래를 고른다");
 }
 
-// --- 상성 요약: 검증된 문장만, 도출·내 노트·상대 노트 순 ---
+// --- 상성 요약: 칸(조심할 것·아이템·싸우는 법)을 코드가 정하고 검증된 문장만 쓴다 ---
 {
   const knowledge = JSON.parse(fs.readFileSync(path.join(llmDir, "advisor-knowledge.json"), "utf8")) as { playbooks: Record<string, Playbook> };
-  const data = { cards, cardById: new Map(cards.map((c) => [c.id, c])), playbooks: new Map(Object.entries(knowledge.playbooks)) } as unknown as AdvisorData;
+  const items = (JSON.parse(fs.readFileSync(path.join(PUBLIC_DATA_ROOT, resolvePatchVersion(), "items-normalized-ko_KR.json"), "utf8")) as { items: unknown[] }).items;
+  const data = { cards, items, cardById: new Map(cards.map((c) => [c.id, c])), playbooks: new Map(Object.entries(knowledge.playbooks)) } as unknown as AdvisorData;
   const [me, enemy] = [card("MonkeyKing"), card("Rumble")];
   const notes = matchupNotes(data, me, enemy, "ko_KR");
   const answer = buildCompareAnswer([me, enemy], "오공으로 럼블 팁", undefined, { matchup: true, notes, lang: "ko_KR" });
   const digest = answerProse(answer, "ko_KR");
-  const sentences = digest.split(/(?<=[.!?])\s+/);
-  ok(sentences.length === 3, "세 문장");
+  const section = (title: string) => new RegExp(`\\*\\*${title}\\*\\*\\n([^\\n]+)`).exec(digest)?.[1] ?? "";
+  // 사용자가 짚은 두 가지: 럼블 E 가 마법 저항력을 깎는다, 오공은 마저가 낮아 마저 아이템이 먼저다
+  ok(/럼블 E 전기 작살/.test(section("조심할 것")) && /마법 저항력/.test(section("조심할 것")), "조심할 것: 럼블 E 전기 작살이 마법 저항력을 깎는다");
+  ok(/오공의 마법 저항력이 낮은/.test(section("아이템")), "아이템: 오공의 마법 저항력이 낮다");
+  ok(/마법무효화의 망토/.test(section("아이템")) && /헤르메스의 발걸음/.test(section("아이템")), "아이템: 초반 마저 아이템 이름은 아이템 자료에서");
+  ok(/Q 파쇄격/.test(section("싸우는 법")), "싸우는 법: 내 콤보, 슬롯이 붙는다");
+  // 초반 아이템 한 줄 말고는 노트·도출 문장 그대로다
   const first = (text: string) => text.split(/(?<=[.!?])\s+/)[0];
-  const pool = [...notes.mine, ...notes.enemy].map(first);
-  // 슬롯을 붙인 것 말고는 노트 문장 그대로여야 한다
-  const bare = (text: string) => text.replace(/\b[PQWER] (?=\S)/g, "");
-  for (const sentence of sentences) ok(pool.some((note) => bare(note) === bare(sentence)), `노트에 있는 문장이다: ${sentence}`);
-  ok(sentences[0] === first(notes.mine[0]), "첫 문장은 도출 문장");
-  ok(/Q 화염방사기/.test(digest), "스킬 이름에 슬롯이 붙는다");
+  const pool = [...(notes.plan?.claims.map((c) => c.text) ?? []), ...(notes.plan?.mine ?? []), ...(notes.plan?.enemy ?? [])].map((entry) =>
+    first(typeof entry === "string" ? entry : entry.text),
+  );
+  const bare = (text: string) => text.replace(/\b[PQWER] (?=\S)/g, "").replace(/^럼블 /, "");
+  const sentences = digest.split("\n").filter((line) => line && !line.startsWith("**")).flatMap((line) => line.split(/(?<=[.!?])\s+/));
+  for (const sentence of sentences) ok(pool.some((note) => bare(note) === bare(sentence)), `검증된 문장이다: ${sentence}`);
+  // 한 칸은 두 문장을 넘지 않는다
+  for (const title of ["조심할 것", "아이템", "싸우는 법"]) ok(section(title).split(/(?<=[.!?])\s+/).length <= 2, `${title} 는 두 문장 이하`);
 }
 
 console.log(`✅ 판정기 통과 (${checks}건)`);
