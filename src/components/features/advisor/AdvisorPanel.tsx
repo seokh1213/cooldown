@@ -26,6 +26,7 @@ import { useTranslation } from "@/i18n";
 import { advisorSystemPrompt } from "@/lib/advisor/persona";
 import { AdvisorMarkdown } from "./AdvisorMarkdown";
 import { groundCommentary } from "@/lib/advisor/grounding";
+import { matchupSections } from "@/lib/advisor/sections";
 import {
   buildChampionsBrief,
   championNotes,
@@ -327,8 +328,13 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
    * 게다가 저 `고리 5` 는 재는 도구 탓이 크다. 워커에는 같은 문장이 세 번 나오면
    * 끊는 장치가 있는데 평가 하네스에는 없다.
    *
-   * 프롬프트는 하나다. 모델과 무관한 두 장치가 뒤를 받친다 — 근거 검사가 틀린
-   * 문장을 걷어내고, 워커가 반복을 끊는다.
+   * 모델과 무관한 장치가 뒤를 받친다 — 근거 검사가 틀린 문장을 걷어내고 슬롯을
+   * 바로잡으며, 워커가 반복을 끊는다.
+   *
+   * 그 뒤에 한 번 더 갈랐다. 가벼운 모델은 **칸을 나눠** 쓴다(`sections.ts`). 위의
+   * 판본과 다른 점은 할 일을 좁힌 것이 아니라 칸마다 따로 부른다는 것이다. 열네 쌍을
+   * 브라우저에서 재 보니 노트 베끼기 10% → 5%, 틀린 슬롯 0 을 유지했지만 기다림이
+   * 14.6초 → 21.7초로 늘었다. 4B 는 그대로 한 번에 쓴다.
    */
   const deliverMatchup = (question: string, mine: ChampionCard, enemy: ChampionCard, notice?: string) => {
     if (!data) return;
@@ -346,6 +352,18 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
        * 길이만 버리는 것이 아니다. 같은 문장이 두 번 보이면 모델이 그것을 중요한
        * 말로 읽고 그대로 옮겨 적는다.
        */
+      // 가벼운 모델은 칸을 나눠 쓴다. 까닭과 잰 값은 `lib/advisor/sections.ts` 에 있다.
+      const parts = advisor.model.lite ? matchupSections(answer, patch, lang) : undefined;
+      if (parts) {
+        const persona = advisorSystemPrompt(lang);
+        advisor.sendSections(
+          question,
+          answer,
+          parts.map((part) => ({ heading: part.heading, system: `${persona}\n\n${part.prompt}`, maxTokens: part.maxTokens })),
+          notice,
+        );
+        return;
+      }
       advisor.sendWithAnswer(question, `${advisorSystemPrompt(lang)}\n\n${prompt}`, answer, notice);
     } else {
       advisor.answerWithoutModel(question, answer, notice);

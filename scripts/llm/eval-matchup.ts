@@ -109,7 +109,7 @@ const generate: Generate = async (system, user, maxTokens) => {
   } catch (error) {
     if ((error as Error).message !== "cut" && (error as Error).name !== "AbortError") throw error;
   }
-  return { text: looped ? trimLoop(text) : text, tokens, seconds: (Date.now() - started) / 1000, looped };
+  return { text: looped ? trimLoop(text) : text, untrimmed: text, tokens, seconds: (Date.now() - started) / 1000, looped };
 };
 
 async function main(): Promise<void> {

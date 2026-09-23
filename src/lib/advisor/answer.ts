@@ -845,6 +845,22 @@ export function isExtremeGrade(grade: string): boolean {
   return grade === "매우 높음" || grade === "매우 낮음";
 }
 
+/** 극단 능력치를 한 줄로. 없으면 undefined. 한 줄로 모으는 까닭은 `PromptWords.extremes` 에 적었다. */
+export function extremeStatsLine(card: ChampionCard, lang: Language = "ko_KR"): string | undefined {
+  const high: string[] = [];
+  const low: string[] = [];
+  for (const stat of CARD_STATS) {
+    const snap = card.stats[stat];
+    if (!snap || !isExtremeGrade(snap.gradeLv1)) continue;
+    (percentileLabel(snap.percentileLv1).side === "top" ? high : low).push(translateStat(stat, lang));
+  }
+  if (!high.length && !low.length) return undefined;
+  return promptWords(lang).extremes(high, low, {
+    high: translateGrade("매우 높음", lang),
+    low: translateGrade("매우 낮음", lang),
+  });
+}
+
 /**
  * 스킬 한 줄 요약. 손으로 적지 않고 데이터에서 조립한다.
  *   Q 화염방사기   쿨 10/9/8/7/6 · 최대 체력 비례 피해 · 주문력 105%
@@ -918,12 +934,8 @@ export function buildCommentaryPrompt(
     const lines = [`[${w.patch}] ${patch}`, `[${w.champion}] ${card.name}`];
     if (card.wiki?.subclass) lines.push(`- ${w.subclassLine(card.wiki.subclass, card.wiki.positions?.[0])}`);
     lines.push(`- ${w.damageLine(translateDamage(card.damageProfile.primary, lang), translateScaling(card.scalingProfile.primary, lang))}`);
-    for (const stat of CARD_STATS) {
-      const snap = card.stats[stat];
-      if (!snap || !isExtremeGrade(snap.gradeLv1)) continue;
-      const { side } = percentileLabel(snap.percentileLv1);
-      lines.push(`- ${w.percentile(translateStat(stat, lang), side, translateGrade(snap.gradeLv1, lang))}`);
-    }
+    const extremes = extremeStatsLine(card, lang);
+    if (extremes) lines.push(`- ${extremes}`);
     if (answer.view === "skills") {
       lines.push(`[${w.skills}]`);
       for (const spell of card.spells) lines.push(`- ${spell.slot} ${spell.name}: ${spellSummary(spell)}`);
@@ -1001,12 +1013,8 @@ export function buildCommentaryPrompt(
       const traits: string[] = [];
       if (card.wiki?.subclass) traits.push(card.wiki.subclass);
       traits.push(w.damageLine(translateDamage(card.damageProfile.primary, lang), translateScaling(card.scalingProfile.primary, lang)));
-      for (const stat of CARD_STATS) {
-        const snap = card.stats[stat];
-        if (!snap || !isExtremeGrade(snap.gradeLv1)) continue;
-        const { side } = percentileLabel(snap.percentileLv1);
-        traits.push(w.percentile(translateStat(stat, lang), side, translateGrade(snap.gradeLv1, lang)));
-      }
+      const extremes = extremeStatsLine(card, lang);
+      if (extremes) traits.push(extremes);
       /*
        * 비교에서도 스킬과 효과를 붙여서 준다. 따로 주면 짝을 틀리게 붙인다.
        *

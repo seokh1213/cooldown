@@ -44,6 +44,8 @@ export interface Generated {
   seconds: number;
   /** 생성하는 쪽이 반복 차단으로 끊었다고 알려 온 경우 */
   looped?: boolean;
+  /** 끊기 전 원문. 끊은 판단이 옳았는지 사람이 보려고 남긴다. */
+  untrimmed?: string;
 }
 
 export type Generate = (system: string, user: string, maxTokens: number) => Promise<Generated>;
@@ -65,7 +67,12 @@ export interface Row {
   dropped: number;
   named: number;
   slotted: number;
+  wrongSlot: number;
   templateCopies: number;
+  /** 화면에 나간 문장 수(머리말 제외) */
+  sentences: number;
+  /** 그중 노트를 거의 그대로 옮긴 문장 수. 근거 검사의 "note" 판정과 같은 문턱(0.7)이다. */
+  noteCopies: number;
 }
 
 /** 원문에 같은 24자 구간이 세 번 이상 나왔나. 공백은 접어서 본다. */
@@ -84,28 +91,59 @@ export function repeatedSpan(text: string, width = 24): string | undefined {
   return undefined;
 }
 
-/** 화면에 나간 글에서 스킬 이름을 짚은 횟수와 그중 슬롯이 붙은 횟수. */
-export function slotCoverage(text: string, answer: AdvisorAnswer): { named: number; slotted: number } {
-  if (answer.kind !== "compare") return { named: 0, slotted: 0 };
+/**
+ * 화면에 나간 글에서 스킬 이름을 짚은 횟수, 그중 맞는 슬롯이 붙은 횟수, 틀린 슬롯이 붙은 횟수.
+ *
+ * 두 글자 이하 이름은 세지 않는다. 슬롯 붙이기가 일부러 건드리지 않는 길이다.
+ */
+export function slotCoverage(text: string, answer: AdvisorAnswer): { named: number; slotted: number; wrongSlot: number } {
+  if (answer.kind !== "compare") return { named: 0, slotted: 0, wrongSlot: 0 };
   let named = 0;
   let slotted = 0;
+  let wrongSlot = 0;
   for (const c of answer.cards) {
     for (const spell of c.spells) {
-      if (spell.name.length < 2) continue;
+      if (spell.name.replace(/\s/g, "").length < 3) continue;
       const escaped = spell.name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
       for (const match of text.matchAll(new RegExp(escaped, "g"))) {
         named += 1;
         const at = match.index ?? 0;
-        const before = text.slice(Math.max(0, at - 4), at);
-        const after = text.slice(at + spell.name.length, at + spell.name.length + 5);
-        if (/[PQWER][\s'"‘“*(]*$/.test(before) || /^\s*\([PQWER]\)/.test(after)) slotted += 1;
+        const before = /(?<![A-Za-z])([A-Z])(?:\s*스킬\S?)?[\s'"‘“*(（]*$/.exec(text.slice(Math.max(0, at - 8), at));
+        const after = /^\s*[(（]([A-Z])[)）]/.exec(text.slice(at + spell.name.length, at + spell.name.length + 5));
+        const letter = before?.[1] ?? after?.[1];
+        if (letter === spell.slot) slotted += 1;
+        else if (letter) wrongSlot += 1;
       }
     }
   }
-  return { named, slotted };
+  return { named, slotted, wrongSlot };
 }
 
 const TEMPLATE = /1레벨 기준 전체 챔피언 중/g;
+
+/** 근거 검사의 `overlap` 과 같은 셈. 문장 a 의 낱말 중 b 에도 있는 비율. */
+function overlap(a: string, b: string): number {
+  const words = a.split(/\s+/).filter((word) => word.length > 1);
+  const other = new Set(b.split(/\s+/).filter((word) => word.length > 1));
+  if (words.length === 0) return 0;
+  return words.filter((word) => other.has(word)).length / words.length;
+}
+
+/** 화면 글의 문장과, 그중 노트를 베낀 문장. */
+function noteCopying(text: string, answer: AdvisorAnswer): { sentences: number; noteCopies: number } {
+  const notes =
+    answer.kind === "compare"
+      ? [...(answer.notes?.mine ?? []), ...(answer.notes?.enemy ?? [])].flatMap((note) => note.split(/(?<=[.!?])\s+/))
+      : [];
+  const sentences = text
+    .split(/(?<=[.!?。])\s+|\n+/)
+    .map((sentence) => sentence.replace(/\*\*/g, "").trim())
+    .filter((sentence) => sentence.length > 10);
+  return {
+    sentences: sentences.length,
+    noteCopies: sentences.filter((sentence) => notes.some((note) => overlap(sentence, note) >= 0.7)).length,
+  };
+}
 
 /** 생성하는 쪽이 끊었는지 알려 주지 않으면 같은 장치에 글을 흘려 넣어 본다. */
 function replayGuard(text: string): boolean {
@@ -149,7 +187,7 @@ export async function runPair(
     for (const part of plan) {
       promptChars += part.prompt.length;
       const result = await generate(`${persona}\n\n${part.prompt}`, question, part.maxTokens);
-      raw += `${result.text}\n`;
+      raw += `${result.untrimmed ?? result.text}\n`;
       tokens += result.tokens;
       seconds += result.seconds;
       if (result.looped ?? replayGuard(result.text)) cut = true;
@@ -161,12 +199,12 @@ export async function runPair(
     if (!prompt) throw new Error("재료 없음");
     promptChars = prompt.length;
     const result = await generate(`${persona}\n\n${prompt}`, question, MAX_NEW_TOKENS);
-    raw = result.text;
+    raw = result.untrimmed ?? result.text;
     tokens = result.tokens;
     seconds = result.seconds;
     capped = result.tokens >= MAX_NEW_TOKENS;
     cut = result.looped ?? (!capped && replayGuard(raw));
-    shownRaw = raw;
+    shownRaw = result.text;
   }
 
   const grounded = groundCommentary(shownRaw, answer, "ko_KR");
@@ -186,7 +224,9 @@ export async function runPair(
     dropped: grounded.dropped.length,
     named: coverage.named,
     slotted: coverage.slotted,
+    wrongSlot: coverage.wrongSlot,
     templateCopies: (grounded.text.match(TEMPLATE) ?? []).length,
+    ...noteCopying(grounded.text, answer),
   };
 }
 
@@ -196,7 +236,7 @@ export function formatRow(row: Row): string {
     .join(" · ");
   return (
     `■ ${row.question}  (${row.seconds.toFixed(1)}초 · ${row.tokens}토큰 · 화면 ${row.shownChars}자 · ` +
-    `슬롯 ${row.slotted}/${row.named} · 걷어냄 ${row.dropped}${row.templateCopies ? ` · 틀 ${row.templateCopies}` : ""})` +
+    `슬롯 ${row.slotted}/${row.named}${row.wrongSlot ? `(틀림 ${row.wrongSlot})` : ""} · 베낌 ${row.noteCopies}/${row.sentences} · 걷어냄 ${row.dropped}${row.templateCopies ? ` · 틀 ${row.templateCopies}` : ""})` +
     `${flags ? `  ⚠ ${flags}` : ""}\n  ${row.shown.replace(/\s+/g, " ").slice(0, 500)}\n`
   );
 }
@@ -211,9 +251,10 @@ export function summarize(rows: Row[]): string {
     `상한까지 감      ${rows.filter((r) => r.capped).length}/${rows.length}`,
     `차단이 끊음      ${rows.filter((r) => r.cut).length}/${rows.length}`,
     `화면 고리        ${rows.filter((r) => repeatedSpan(r.shown)).length}/${rows.length}`,
-    `슬롯 표기        ${slotted}/${named} (${named ? Math.round((slotted / named) * 100) : 0}%)`,
+    `슬롯 맞게 붙음   ${slotted}/${named} (${named ? Math.round((slotted / named) * 100) : 0}%) · 틀리게 붙음 ${sum((r) => r.wrongSlot)}`,
     `틀 베끼기        ${sum((r) => r.templateCopies)}회`,
     `걷어낸 문장      ${sum((r) => r.dropped)}`,
+    `노트 베끼기      ${sum((r) => r.noteCopies)}/${sum((r) => r.sentences)}문장 (${sum((r) => r.sentences) ? Math.round((sum((r) => r.noteCopies) / sum((r) => r.sentences)) * 100) : 0}%)`,
     `평균 화면 길이   ${Math.round(sum((r) => r.shownChars) / n)}자`,
     `평균 시간        ${(sum((r) => r.seconds) / n).toFixed(1)}초 · 평균 토큰 ${Math.round(sum((r) => r.tokens) / n)}`,
     `평균 프롬프트    ${Math.round(sum((r) => r.promptChars) / n)}자`,

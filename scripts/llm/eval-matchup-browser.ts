@@ -33,15 +33,19 @@ function makeGenerate(model: { id: string; dtype: string }): Generate {
     new Promise((resolve, reject) => {
       const w = ensureWorker();
       const id = nextId++;
+      // 워커는 끊으면 걷어 낸 글을 돌려준다. 끊기 전 원문은 흘려 받은 조각에서 모은다.
+      let streamed = "";
       const onMessage = (event: MessageEvent<AdvisorResponse>) => {
         const message = event.data;
+        if (message.type === "chunk" && message.id === id) streamed += message.text;
         if (message.type === "done" && message.id === id) {
           w.removeEventListener("message", onMessage);
           resolve({
             text: message.text,
             tokens: message.tokens,
             seconds: message.seconds,
-            looped: (message as { looped?: boolean }).looped,
+            looped: message.looped,
+            untrimmed: streamed,
           });
         } else if (message.type === "error" && (message.id === id || message.id === undefined)) {
           w.removeEventListener("message", onMessage);
