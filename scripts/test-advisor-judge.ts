@@ -24,12 +24,12 @@ const ok = (value: unknown, message: string) => {
 
 // --- 헤드: 내보낸 파일로 계산한 확률이 파이썬(torch)과 같다 ---
 const dir = path.join(process.cwd(), "public", "models", "judge");
-const meta = JSON.parse(fs.readFileSync(path.join(dir, "route-v1.json"), "utf8")) as JudgeHeadMeta;
-const bin = fs.readFileSync(path.join(dir, "route-v1.bin"));
+const meta = JSON.parse(fs.readFileSync(path.join(dir, "route-v2.json"), "utf8")) as JudgeHeadMeta;
+const bin = fs.readFileSync(path.join(dir, "route-v2.bin"));
 const head = readJudgeHead(meta, bin.buffer.slice(bin.byteOffset, bin.byteOffset + bin.byteLength));
 ok(head.dim === head.subset.length, "특징 차원은 고른 토큰 수와 같다");
 ok(meta.instructions.kind === JUDGE_KIND_INSTRUCTIONS && meta.instructions.mine === JUDGE_MINE_INSTRUCTIONS, "헤드가 배운 지시문과 앱이 묻는 지시문이 같다");
-const fixture = JSON.parse(fs.readFileSync(path.join(process.cwd(), "scripts", "fixtures", "judge-route-v1.json"), "utf8")) as {
+const fixture = JSON.parse(fs.readFileSync(path.join(process.cwd(), "scripts", "fixtures", "judge-route-v2.json"), "utf8")) as {
   features: number[][];
   probs: number[];
   label: number;
