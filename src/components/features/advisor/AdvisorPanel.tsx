@@ -73,7 +73,7 @@ import {
 import { topicFromJudge, topicQuestions } from "@/lib/advisor/topicJudge";
 
 /** 판정 헤드. `public/models/judge/` 아래 이 이름의 .json·.bin 이 있다. */
-const ROUTE_HEAD = "route-v1";
+const ROUTE_HEAD = "route-v2";
 const TOPIC_HEAD = "topic-v1";
 import { findMentionedRules } from "../../../../scripts/llm/lib/rules";
 import type { ChampionCard } from "../../../../scripts/llm/lib/facts";
@@ -441,8 +441,8 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
       const named = detectChampions(data, question);
       const names = named.map((card) => card.name);
       /*
-       * 가벼운 모델은 글로 답하게 하지 않고 판정기로 가른다. 세 언어 60문항에서
-       * 0.8B 생성 34, 낱말 규칙 38, 판정기 56 이었다(4B 생성 57).
+       * 가벼운 모델은 글로 답하게 하지 않고 판정기로 가른다. 세 언어 큰 세트 374문항에서
+       * 0.8B 생성 183, 판정기(route-v2, 아래 문형 보정 포함) 322, 4B 생성 310 이었다.
        */
       route = advisor.model.lite
         ? await advisor

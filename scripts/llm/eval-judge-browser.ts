@@ -5,7 +5,7 @@
  * 문항은 kev 요청 꼴 JSONL(질문마다 label). 개발 서버를 띄운 탭의 콘솔에서:
  *
  *   const m = await import("/scripts/llm/eval-judge-browser.ts");
- *   await m.run("/research/llm-evals/kev/route-test.jsonl", "route-v1");
+ *   await m.run("/research/llm-evals/kev/route-test.jsonl", "route-v2");
  */
 import { FALLBACK_MODEL } from "../../src/lib/advisor/config";
 import { readJudgeHead, scoreJudge, type JudgeHeadMeta, type JudgeQuestion } from "../../src/lib/advisor/judge";

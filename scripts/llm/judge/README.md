@@ -14,9 +14,13 @@ SEED=1 FEAT=featL OUT=head.pt uv run --python 3.13 --with torch --with numpy pyt
 uv run --python 3.13 --with torch --with numpy python export_head.py head.pt ../../../public/models/judge/route-v1 meta.json
 ```
 
-route-v1: 학습 `route-train.jsonl`(851건, 평가 챔피언·이름은 뺀 합성 — advisor-qwen35-eval 워크트리의
+route-v2 (앱이 쓰는 것): 학습 `route-train.jsonl` 851건 + `route-train-v2.jsonl` 598건, dev 90 으로 골라(87/90)
+큰 세트 `route-large` 374문항에서 판정기만 302, 앱 보정(이름 하나면 matchup→guide, 영어·중국어 시점 문형)
+포함 322(한국어 103/124 · 영어 113/125 · 중국어 106/125). 같은 세트에서 4B 생성 310, kev LoRA 329, 0.8B 생성 183.
+
+route-v1 (걷어냄): 학습 `route-train.jsonl`(851건, 평가 챔피언·이름은 뺀 합성 — advisor-qwen35-eval 워크트리의
 `build-route-train.ts`), dev 89/90 으로 골라 시험 60문항 55/60. 브라우저(WebGPU, 끊어 넣기)에서 다시 재도
-55/60 이었다(`scripts/llm/eval-judge-browser.ts`). 시드에 따라 54~57.
+55/60 이었다(`scripts/llm/eval-judge-browser.ts`). 시드에 따라 54~57. 큰 세트에서는 앱 보정 포함 294.
 
 ## topic-v1 — 주제·관점
 
