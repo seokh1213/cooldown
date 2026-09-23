@@ -80,6 +80,11 @@ export interface AdvisorData {
   stale: boolean;
   cards: ChampionCard[];
   cardById: Map<string, ChampionCard>;
+  /**
+   * 화면 언어가 아닌 이름. id → [영어·중국어 이름, DDragon id].
+   * 한국어 화면에서 "Yasuo" 로 물어도 알아보게 한다. 없으면 빈 표다.
+   */
+  aliases: Map<string, string[]>;
   playbooks: Map<string, Playbook>;
   tips: CuratedTip[];
   /** 룬·소환사 주문 판정 규칙. 이름으로 찾는다. */
@@ -128,6 +133,10 @@ export function loadAdvisorData(patch: string, locale = "ko_KR"): Promise<Adviso
           (): WikiItemFile => ({}),
         ),
       ]);
+    // 이름 색인은 없어도 된다. 없으면 화면 언어 이름으로만 찾는다.
+    const names = await getJson<{ names: Record<string, string[]> }>(dataUrl(patch, "llm/champion-names.json")).catch(
+      () => ({ names: {} as Record<string, string[]> }),
+    );
 
     return {
       patch,
@@ -135,6 +144,9 @@ export function loadAdvisorData(patch: string, locale = "ko_KR"): Promise<Adviso
       stale: knowledge.patchVersion !== patch,
       cards: cardFile.cards,
       cardById: new Map(cardFile.cards.map((c) => [c.id, c])),
+      aliases: new Map(
+        cardFile.cards.map((c) => [c.id, [...new Set([...(names.names[c.id] ?? []), c.id])].filter((name) => name !== c.name)]),
+      ),
       playbooks: new Map(Object.entries(knowledge.playbooks)),
       tips: knowledge.tips,
       ruleIndex: indexRules(knowledge.rules ?? []),
