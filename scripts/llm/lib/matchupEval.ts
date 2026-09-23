@@ -50,7 +50,7 @@ export interface Generated {
 
 export type Generate = (system: string, user: string, maxTokens: number) => Promise<Generated>;
 
-export type Mode = "single" | "sections" | "lite" | "rewrite";
+export type Mode = "single" | "lite" | "rewrite";
 
 export interface Row {
   question: string;
@@ -179,22 +179,7 @@ export async function runPair(
   let capped = false;
   let promptChars = 0;
 
-  if (mode === "sections") {
-    // 칸 나누기 모듈은 이 방식을 잴 때만 올린다
-    const sections = await import("../../../src/lib/advisor/sections.ts");
-    const plan = sections.matchupSections(answer, patch, "ko_KR");
-    if (!plan) throw new Error("칸 재료 없음");
-    for (const part of plan) {
-      promptChars += part.prompt.length;
-      const result = await generate(`${persona}\n\n${part.prompt}`, question, part.maxTokens);
-      raw += `${result.untrimmed ?? result.text}\n`;
-      tokens += result.tokens;
-      seconds += result.seconds;
-      if (result.looped ?? replayGuard(result.text)) cut = true;
-      if (result.tokens >= part.maxTokens) capped = true;
-      shownRaw += sections.joinSection(part, result.text);
-    }
-  } else if (mode === "lite" || mode === "rewrite") {
+  if (mode === "lite" || mode === "rewrite") {
     const lite = await import("../../../src/lib/advisor/litePrompt.ts");
     const prompt = mode === "lite" ? lite.buildLiteMatchupPrompt(answer, "ko_KR") : lite.buildRewriteMatchupPrompt(answer, "ko_KR");
     if (!prompt) throw new Error("가벼운 재료 없음");

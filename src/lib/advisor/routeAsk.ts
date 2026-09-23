@@ -89,3 +89,39 @@ export function parseRoute(reply: string, champions: ChampionCard[]): AskRoute |
   const mine = champions.find((card) => reply.includes(card.name));
   return { kind, mine };
 }
+
+/*
+ * 판정기(`judge.ts`)로 가를 때의 질문 꼴.
+ *
+ * 생성 모델 없이 0.8B 의 속내에 판정 헤드를 붙여 가른다. 세 언어 시험 60문항에서
+ * 낱말 규칙 38, 0.8B 생성 34, 판정기 56, 4B 생성 57 이었다.
+ *
+ * **학습한 글자와 한 글자도 다르면 안 된다.** 헤드는 이 문구를 읽은 속내로 배웠다.
+ * 문구를 고치면 헤드를 다시 학습해야 한다.
+ */
+export const JUDGE_KIND_INSTRUCTIONS = "What is this League of Legends question asking for?";
+export const JUDGE_MINE_INSTRUCTIONS = "Which champion does the user play? (The other one is the opponent.)";
+
+export const JUDGE_KIND_CRITERIA: Record<AskKind, string> = {
+  matchup: "The user plays one named champion against another named champion (two champions named)",
+  guide: "How to beat or handle one champion, without saying which champion the user plays",
+  skills: "What a champion's abilities are; an overview of the kit",
+  spellStat: "One number about one champion ability: cooldown, cost, ratio, damage or range",
+  other: "Items, runes, summoner spells, objectives, game rules or small talk",
+};
+
+export function judgeRouteState(question: string, names: string[]): string {
+  return names.length ? `Question: ${question}\nChampions named: ${names.join(", ")}` : `Question: ${question}`;
+}
+
+/**
+ * 판정기가 낸 확률로 갈래와 내 챔피언을 정한다.
+ *
+ * 상성은 이름이 둘 나와야 성립한다는 제약은 `parseRoute` 와 같게 둔다.
+ */
+export function routeFromJudge(kindProbs: number[], mineProbs: number[] | undefined, champions: ChampionCard[]): AskRoute {
+  const kind = KINDS[kindProbs.indexOf(Math.max(...kindProbs))];
+  if (kind === "matchup" && champions.length < 2) return { kind: "guide" };
+  if (kind !== "matchup" || !mineProbs) return { kind };
+  return { kind, mine: champions[mineProbs.indexOf(Math.max(...mineProbs))] };
+}

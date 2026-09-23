@@ -10,7 +10,7 @@
  *
  * 사용:
  *   npm run llm:eval-matchup
- *   npm run llm:eval-matchup -- --mode sections --only 오공 --out research/llm-evals/x.json
+ *   npm run llm:eval-matchup -- --mode rewrite --only 오공 --out research/llm-evals/x.json
  */
 import * as fs from "fs";
 import * as path from "path";

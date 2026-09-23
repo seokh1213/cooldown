@@ -5,6 +5,8 @@
  * 메인 스레드에서 돌리면 화면이 통째로 멈춘다.
  */
 
+import type { JudgeQuestion } from "./judge";
+
 export interface AdvisorModelSpec {
   id: string;
   dtype: string;
@@ -36,6 +38,11 @@ export type AdvisorRequest =
        */
       maxTokens?: number;
     }
+  /**
+   * 판정. 글을 쓰지 않고 질문마다 판정 위치의 특징만 뽑아 돌려준다.
+   * 헤드 계산은 메인 스레드가 한다(`judge.ts`). `subset` 은 헤드가 배운 logits 토큰이다.
+   */
+  | { type: "judge"; id: number; model: AdvisorModelSpec; state: string; questions: JudgeQuestion[]; subset: number[] }
   | { type: "stop" };
 
 /** 파일 하나의 내려받기 진행 상황 */
@@ -66,4 +73,6 @@ export type AdvisorResponse =
       /** 프롬프트 길이. 읽는 시간이 길면 여기가 큰 것이다. */
       promptTokens?: number;
     }
+  /** 질문마다 [판정 위치 수 × subset 길이] 를 이어 붙인 특징 */
+  | { type: "judged"; id: number; features: Float32Array[]; seconds: number }
   | { type: "error"; id?: number; message: string };

@@ -25,6 +25,13 @@ import {
 } from "./promptLocale";
 
 /** 카드에 한 줄로 놓을 사실. */
+/** 상성 노트. `derived` 는 mine 앞쪽의 도출 문장 수다. */
+export interface MatchupNotes {
+  mine: string[];
+  enemy: string[];
+  derived?: number;
+}
+
 export interface Fact {
   label: string;
   value: string;
@@ -99,7 +106,8 @@ export type AdvisorAnswer =
       /** 상성 질문. cards[0] 이 내 챔피언, cards[1] 이 상대다. 해설이 그 시점으로 쓴다. */
       matchup?: boolean;
       /** 상성 노트. 내 챔피언을 플레이할 때(이 상대 한정 우선) / 상대를 상대할 때. 사람이 검증. */
-      notes?: { mine: string[]; enemy: string[] };
+      /** `derived` 는 mine 앞쪽의 코드가 도출한 문장 수. 뒤는 사람이 쓴 플레이북 노트다. */
+      notes?: MatchupNotes;
     }
   | {
       /**
@@ -761,7 +769,7 @@ export function buildCompareAnswer(
   cards: ChampionCard[],
   question: string,
   slot?: string,
-  options: { matchup?: boolean; notes?: { mine: string[]; enemy: string[] }; lang?: Language } = {},
+  options: { matchup?: boolean; notes?: MatchupNotes; lang?: Language } = {},
 ): AdvisorAnswer {
   const lang = options.lang ?? "ko_KR";
   const w = cardLabels(lang);

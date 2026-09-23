@@ -19,6 +19,7 @@ import type { AdvisorAnswer } from "./answer";
 import type { SpellFact } from "../../../scripts/llm/lib/facts";
 import { cooldownFact, focusLabel as cardFocusLabel, spellOneLiner } from "./answer";
 import { translateRatioStat, translateTag } from "./promptLocale";
+import { labelSlots } from "./grounding";
 
 interface ProseWords {
   /** "{champion}의 {label}입니다." 처럼 값 하나를 알리는 말 */
@@ -139,6 +140,8 @@ export function answerProse(answer: AdvisorAnswer, lang: Language = "ko_KR"): st
     return w.is(answer.headline.label, answer.headline.value);
   }
 
+  if (answer.kind === "compare" && answer.matchup) return matchupDigest(answer);
+
   if (answer.kind === "item") {
     if (answer.verdicts.length) {
       return answer.verdicts
@@ -152,4 +155,33 @@ export function answerProse(answer: AdvisorAnswer, lang: Language = "ko_KR"): st
   }
 
   return "";
+}
+
+/** 상성 요약에 싣는 문장 수 */
+const DIGEST_SIZE = 3;
+
+const firstSentence = (text: string) => text.split(/(?<=[.!?。])\s+/)[0]?.trim() ?? text;
+
+/**
+ * 상성 답을 검증된 문장으로 조립한다. 모델이 쓰지 않는다.
+ *
+ * 0.8B 가 쓴 상성 해설은 어떤 프롬프트로도 1~2점이었다(14쌍, 1~5점). 같은 자리에
+ * 검증된 노트 셋을 그대로 놓으면 3.8, 판정기가 고른 셋이면 4.1 이었다. 옳은 말만
+ * 나가고 되풀이·지어내기가 없다. 모델이 없는 기기도 같은 답을 받는다.
+ *
+ * 고르는 순서: 이 조합을 직접 말하는 도출 문장 하나, 내 쪽 운용 노트 하나, 상대 쪽
+ * 노트 하나. 모자라면 내 쪽 노트로 채운다. 노트마다 첫 문장만 쓴다 — 노트 전문은 카드에
+ * 펼쳐 볼 수 있다.
+ */
+export function matchupDigest(answer: Extract<AdvisorAnswer, { kind: "compare" }>): string {
+  const notes = answer.notes;
+  if (!notes) return "";
+  const derivedCount = notes.derived ?? 0;
+  const derived = notes.mine.slice(0, derivedCount);
+  const playbook = notes.mine.slice(derivedCount);
+  const picked = [derived[0], playbook[0], notes.enemy[0], ...playbook.slice(1), ...derived.slice(1)]
+    .filter((note): note is string => Boolean(note))
+    .map(firstSentence);
+  const unique = [...new Set(picked)].slice(0, DIGEST_SIZE);
+  return labelSlots(unique.join(" "), answer.cards);
 }

@@ -14,11 +14,13 @@ import {
   AutoTokenizer,
   InterruptableStoppingCriteria,
   TextStreamer,
+  Tensor,
   type PreTrainedModel,
   type PreTrainedTokenizer,
 } from "@huggingface/transformers";
 import { MAX_NEW_TOKENS, NO_REPEAT_NGRAM } from "@/lib/advisor/config";
 import { createLoopGuard, trimLoop } from "@/lib/advisor/loopGuard";
+import { encodeJudgeRow, JUDGE_SPECIAL, type JudgeQuestion } from "@/lib/advisor/judge";
 import type {
   AdvisorFileProgress,
   AdvisorModelSpec,
@@ -195,11 +197,72 @@ async function generate(
   });
 }
 
+/**
+ * 판정 위치의 특징을 뽑는다.
+ *
+ * 판정 위치마다 그 위치가 마지막 토큰이 되도록 입력을 끊어 넣고, 앞 조각의 상태를 이어
+ * 받는다. 그러면 위치마다 logits 한 줄(1MB)만 GPU 에서 내려온다. 한 번에 넣고 모든 위치의
+ * logits 를 받으면 길이 150 에 150MB 다.
+ *
+ * 생성과 같은 세션을 쓴다. 모델을 두 번 올리지 않는다.
+ */
+async function judge(id: number, spec: AdvisorModelSpec, state: string, questions: JudgeQuestion[], subset: number[]) {
+  await load(spec);
+  if (!tokenizer || !model) throw new Error("모델이 준비되지 않았습니다");
+  const started = performance.now();
+  const special = tokenizer.convert_tokens_to_ids([...JUDGE_SPECIAL]) as number[];
+  // 사용자 글이 구분 토큰을 흉내 내도 특수 토큰이 되지 않게 한다(kev 와 같은 처리).
+  const tokenize = (text: string) =>
+    tokenizer!.encode(text.replace(/<\|(\w+)\|>/g, "<¦$1¦>"), { add_special_tokens: false }) as number[];
+  const features: Float32Array[] = [];
+  for (const question of questions) {
+    const row = encodeJudgeRow(tokenize, special, state, question);
+    const out = new Float32Array(row.positions.length * subset.length);
+    let past: Record<string, Tensor> = {};
+    let start = 0;
+    for (const [k, position] of row.positions.entries()) {
+      const chunk = row.ids.slice(start, position + 1);
+      const result = (await model.forward({
+        input_ids: new Tensor("int64", BigInt64Array.from(chunk.map(BigInt)), [1, chunk.length]),
+        attention_mask: new Tensor("int64", new BigInt64Array(position + 1).fill(1n), [1, position + 1]),
+        num_logits_to_keep: new Tensor("int64", [1n], []),
+        // 첫 조각에는 넘기지 않는다. 빈 객체를 주면 라이브러리가 캐시로 알고 .update() 를 부른다.
+        ...(start > 0 ? { past_key_values: past } : {}),
+      })) as Record<string, Tensor>;
+      const logits = result.logits.data as Float32Array;
+      const vocab = result.logits.dims[result.logits.dims.length - 1];
+      const last = logits.length - vocab;
+      for (const [j, token] of subset.entries()) out[k * subset.length + j] = logits[last + token];
+      // 앞 조각의 상태를 다음 조각에 넘긴다. 이름만 present → past 로 바꾼다.
+      const next: Record<string, Tensor> = {};
+      for (const [name, tensor] of Object.entries(result)) {
+        if (!name.startsWith("present")) continue;
+        next[name.replace("present_conv", "past_conv").replace("present_recurrent", "past_recurrent").replace("present", "past_key_values")] = tensor;
+      }
+      for (const tensor of Object.values(past)) (tensor as Tensor & { dispose?: () => void }).dispose?.();
+      past = next;
+      start = position + 1;
+    }
+    for (const tensor of Object.values(past)) (tensor as Tensor & { dispose?: () => void }).dispose?.();
+    features.push(out);
+  }
+  ctx.postMessage(
+    { type: "judged", id, features, seconds: (performance.now() - started) / 1000 } satisfies AdvisorResponse,
+    features.map((f) => f.buffer),
+  );
+}
+
 ctx.addEventListener("message", (event: MessageEvent<AdvisorRequest>) => {
   const request = event.data;
   if (request.type === "load") {
     load(request.model).catch((error: unknown) => {
       post({ type: "error", message: (error as Error).message });
+    });
+    return;
+  }
+  if (request.type === "judge") {
+    judge(request.id, request.model, request.state, request.questions, request.subset).catch((error: unknown) => {
+      post({ type: "error", id: request.id, message: (error as Error).message });
     });
     return;
   }
