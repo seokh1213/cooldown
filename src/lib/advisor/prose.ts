@@ -16,7 +16,7 @@
  */
 import type { Language } from "@/i18n";
 import type { AdvisorAnswer } from "./answer";
-import type { SpellFact } from "../../../scripts/llm/lib/facts";
+import type { ChampionCard, SpellFact } from "../../../scripts/llm/lib/facts";
 import { cooldownFact, focusLabel as cardFocusLabel, spellOneLiner } from "./answer";
 import { translateRatioStat, translateTag } from "./promptLocale";
 import { labelSlots } from "./grounding";
@@ -211,13 +211,14 @@ const PER_SECTION = 2;
  *   아이템     상대 피해가 내 약한 저항을 파고드는가 + 초반 저항 아이템 + 상황별 아이템 노트
  *   싸우는 법  내 콤보 + 상대의 빈틈(이동 수단 공백·라인전) + 시간이 누구 편인가
  *
- * 노트마다 첫 문장만 쓴다. 한 갈래를 물었으면 그 칸의 첫 노트만 전문으로 싣는다(`DigestDetail`).
+ * 노트마다 첫 문장만 쓴다. 한 갈래를 물었으면 그 칸의 첫 노트는 전문으로, 다른 노트에는 "언제" 를
+ * 말하는 문장을 하나씩 덧붙인다(`DigestDetail`).
  * 나머지 전문은 카드에서 펼쳐 볼 수 있다.
  */
 export function matchupDigest(
   answer: Extract<AdvisorAnswer, { kind: "compare" }>,
   lang: Language = "ko_KR",
-  detail: DigestDetail = "focus-lead",
+  detail: DigestDetail = "focus-cue-all",
 ): string {
   return digestSections(answer, lang, detail)
     .filter((section) => section.lines.length)
@@ -242,16 +243,31 @@ export interface DigestSection {
  * 첫 문장만으로는 "W 응수를 빼내는 것이 첫 과제입니다" 에서 끝나 방법이 빠졌다(얇다).
  * 전부 펼치면 길어져 물은 것이 묻혔고, 뒤쪽 노트의 틀린 문장까지 딸려 나왔다.
  *
+ * 10점 항목 채점(직답 2·슬롯 1·방법 2·타이밍 2·상성 특화 1·정확 1·간결 1)으로 다시 쟀다.
+ * 규칙을 맞춘 8문항과, 규칙을 고칠 때 보지 않은 검증 8문항(`FOCUSED_HOLDOUT`):
+ *
+ *                   맞춘 8   검증 8
+ *   short            6.12     5.12
+ *   focus-lead       7.38     6.88
+ *   focus-cue        7.62     7.50
+ *   focus-cue-all    8.12     8.12   ← 기본
+ *
+ * 오른 것은 타이밍(0.88 → 1.38)과 상성 특화였다. 노트의 둘째 문장 이후에 "Q를 맞은 직후에는",
+ * "Q·W·E를 모두 쓴 직후가 반격 구간" 같은 문장이 있었는데 첫 문장만 싣느라 버리고 있었다.
+ *
  *   short       노트마다 첫 문장만
  *   focus-full  물은 칸의 노트는 전문
- *   focus-lead  물은 칸의 첫 노트만 전문, 나머지는 첫 문장(기본)
+ *   focus-lead  물은 칸의 첫 노트만 전문, 나머지는 첫 문장
+ *   focus-cue   focus-lead 에 더해: 물은 칸에서 내 노트와 상대 노트를 번갈아 싣고, 질문 낱말이
+ *               든 문장을 앞에 두고, 나머지 노트에는 "언제" 를 말하는 문장을 하나 덧붙인다
+ *   focus-cue-all  focus-cue 의 덧붙이기를 다른 칸에도(기본)
  */
-export type DigestDetail = "short" | "focus-full" | "focus-lead";
+export type DigestDetail = "short" | "focus-full" | "focus-lead" | "focus-cue" | "focus-cue-all";
 
 export function digestSections(
   answer: Extract<AdvisorAnswer, { kind: "compare" }>,
   lang: Language = "ko_KR",
-  detail: DigestDetail = "focus-lead",
+  detail: DigestDetail = "focus-cue-all",
 ): DigestSection[] {
   const notes = answer.notes;
   const plan = notes?.plan;
@@ -274,14 +290,21 @@ export function digestSections(
           (spell.slot !== "P" && new RegExp(`(?<![A-Za-z])${spell.slot}(?=\\s|[은는이가을를로의와과에]|$)`).test(text)),
       )
       .reduce((sum, spell) => sum + spell.effects.filter((tag) => THREAT_TAGS.has(tag)).length, 0);
+  // 질문이 상대 스킬을 슬롯으로 집었으면("드레이븐 Q") 그 스킬을 말하는 노트가 위협 점수보다 먼저다
+  const askedSlots = detail === "focus-cue" || detail === "focus-cue-all" ? enemySlotsAsked(plan.question ?? "", enemy) : [];
+  const namesSlot = (text: string) =>
+    askedSlots.some(
+      (spell) => (spell.name.length >= 2 && text.includes(spell.name)) || new RegExp(`(?<![A-Za-z])${spell.slot}(?=\\s|[은는이가을를로의와과에]|$)`).test(firstSentence(text)),
+    );
   const threats = plan.enemy
     .filter((entry) => ["skill", "laning", "teamfight"].includes(entry.category))
-    .map((entry) => ({ text: firstSentence(entry.text), score: threat(entry.text) }))
+    .map((entry) => ({ text: firstSentence(entry.text), score: threat(entry.text) + (namesSlot(entry.text) ? 100 : 0) }))
     .filter((entry) => entry.score > 0)
     .sort((a, b) => b.score - a.score)
     .map((entry) => entry.text);
 
   const focus = plan.focus ?? "general";
+  const cue = detail === "focus-cue" || detail === "focus-cue-all";
   const fightCategories = FIGHT_TITLES.ko_KR[focus] ? [focus] : [];
   const watch: [DigestSection["key"], string, string[], number] = [
     "watch",
@@ -302,8 +325,11 @@ export function digestSections(
     [
       // 물은 갈래의 노트를 먼저. 시간대를 물었으면 성장 문장이 곧 답이다.
       ...(focus === "phase" ? claims("scaling") : []),
-      ...byCategory(plan.mine, ...fightCategories),
-      ...byCategory(plan.enemy, ...fightCategories),
+      ...(cue
+        ? interleave(byCategory(plan.mine, ...fightCategories), byCategory(plan.enemy, ...fightCategories))
+        : [...byCategory(plan.mine, ...fightCategories), ...byCategory(plan.enemy, ...fightCategories)]),
+      // 시간대 낱말이 가리키는 갈래를 콤보보다 먼저. "후반 어때" 에 콤보를 채우지 않게.
+      ...(cue ? timeCategories(plan.question ?? "", focus).flatMap((category) => interleave(byCategory(plan.mine, category), byCategory(plan.enemy, category))) : []),
       ...byCategory(plan.mine, "combo"),
       ...byCategory(plan.enemy, "escape-window", "laning"),
       ...claims("scaling"),
@@ -321,11 +347,91 @@ export function digestSections(
     // 한 갈래를 물었으면 맨 앞 칸이 그 답이다. 첫 문장만으로는 "W 응수를 빼내는 것이 첫
     // 과제입니다" 에서 끝나 방법이 빠졌다. 그 칸만 노트 전문으로 펼친다.
     const expand = asked && index === 0 && detail !== "short";
+    if (cue && asked) {
+      const terms = questionTerms(plan.question ?? "");
+      const names = [enemy?.name, ...(enemy?.spells ?? []).map((spell) => spell.name)].filter((name): name is string => !!name && name.length >= 2);
+      // 노트끼리 문장이 겹친다(조건만 다른 같은 콤보 노트). 이미 실은 문장은 다시 싣지 않는다.
+      const said = new Set<string>();
+      const shown: string[] = [];
+      for (const [i, line] of picked.entries()) {
+        const full = expandLine(line, fullOf, enemy?.name);
+        let text = line;
+        if (full !== line && expand && i === 0) text = leadWithTerms(full, terms);
+        else if (full !== line && (expand || detail === "focus-cue-all")) {
+          const extra = cueSentence(full, terms, names, said);
+          if (extra) text = `${line} ${extra}`;
+        }
+        const fresh = sentencesOf(text).filter((sentence) => !said.has(sentence));
+        if (!fresh.length) continue;
+        for (const sentence of fresh) said.add(sentence);
+        shown.push(fresh.join(" "));
+      }
+      return { key, title, lines: shown };
+    }
     const shown = expand
       ? picked.map((line, i) => (detail === "focus-full" || i === 0 ? expandLine(line, fullOf, enemy?.name) : line))
       : picked;
     return { key, title, lines: shown };
   });
+}
+
+const sentencesOf = (text: string) => text.split(/(?<=[.!?。])\s+/).map((sentence) => sentence.trim()).filter(Boolean);
+
+function interleave<T>(a: T[], b: T[]): T[] {
+  const out: T[] = [];
+  for (let i = 0; i < Math.max(a.length, b.length); i += 1) {
+    if (i < a.length) out.push(a[i]);
+    if (i < b.length) out.push(b[i]);
+  }
+  return out;
+}
+
+/** "언제" 를 말하는 문장. 채점에서 가장 많이 잃은 항목이 타이밍이었다. */
+const TIMING = /직후|뒤에|뒤로|이후|후에|빠진|빠지면|빠졌|끝난|끝나|동안|쿨타임|대기시간|재사용|순간|시점|타이밍|때만|레벨/;
+const TIME_WORDS = ["초반", "중반", "후반", "라인전", "한타", "갱킹", "합류", "스플릿", "오브젝트"];
+
+const TIME_CATEGORY: Record<string, string> = { 후반: "teamfight", 한타: "teamfight", 초반: "laning", 라인전: "laning" };
+
+function timeCategories(question: string, focus: string): string[] {
+  return [...new Set(Object.entries(TIME_CATEGORY).filter(([word]) => question.includes(word)).map(([, category]) => category))].filter(
+    (category) => category !== focus,
+  );
+}
+
+/** 질문이 상대 스킬을 슬롯으로 집었는가. "드레이븐 Q", "피오라 W" 처럼 상대 이름 바로 뒤의 슬롯 */
+function enemySlotsAsked(question: string, enemy: ChampionCard | undefined) {
+  if (!enemy) return [];
+  const slots = [...question.matchAll(new RegExp(`${enemy.name}\\s*([QWER])(?![A-Za-z])`, "gi"))].map((m) => m[1].toUpperCase());
+  return enemy.spells.filter((spell) => slots.includes(spell.slot));
+}
+
+/** 질문에서 문장을 고를 때 쓸 낱말. 시간대 낱말과 슬롯 글자("피오라 W") */
+function questionTerms(question: string): RegExp[] {
+  // "5레벨 후반부터" 의 후반은 게임 후반이 아니다
+  const terms = TIME_WORDS.filter((word) => question.includes(word)).map((word) => new RegExp(`(?<!레벨 )${word}`));
+  for (const m of question.matchAll(/(?<![A-Za-z])([QWER])(?![A-Za-z])/gi)) terms.push(new RegExp(`(?<![A-Za-z])${m[1].toUpperCase()}(?![A-Za-z])`));
+  return terms;
+}
+
+/** 전문을 싣되 질문 낱말이 든 문장을 앞으로. "후반 어때" 에 초반 이야기부터 하지 않게. */
+function leadWithTerms(full: string, terms: RegExp[]): string {
+  if (!terms.length) return full;
+  const sentences = sentencesOf(full);
+  const hit = sentences.filter((sentence) => terms.some((term) => term.test(sentence)));
+  if (!hit.length || hit[0] === sentences[0]) return full;
+  return [...hit, ...sentences.filter((sentence) => !hit.includes(sentence))].join(" ");
+}
+
+/** 첫 문장 뒤에 덧붙일 한 문장. 질문 낱말·타이밍·상대 이름이 든 것 중 가장 나은 것 */
+function cueSentence(full: string, terms: RegExp[], names: string[], said: Set<string>): string | undefined {
+  let best: { sentence: string; score: number } | undefined;
+  for (const sentence of sentencesOf(full).slice(1)) {
+    if (said.has(sentence)) continue;
+    const score =
+      (terms.some((term) => term.test(sentence)) ? 2 : 0) + (TIMING.test(sentence) ? 2 : 0) + (names.some((name) => sentence.includes(name)) ? 1 : 0);
+    if (score >= 2 && (!best || score > best.score)) best = { sentence, score };
+  }
+  return best?.sentence;
 }
 
 /** 첫 문장을 노트 전문으로 바꾼다. `withOwner` 가 이름을 붙였으면 떼고 찾아 다시 붙인다. */

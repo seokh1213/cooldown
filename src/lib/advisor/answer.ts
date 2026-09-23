@@ -37,6 +37,8 @@ export interface MatchupNotes {
 export interface MatchupPlan {
   /** 판정기가 가른 주제. 요약이 어느 칸을 앞에 두고 무엇을 더 실을지 정한다. 없으면 "general". */
   focus?: string;
+  /** 사용자가 쓴 질문. 물은 칸에서 질문 낱말("후반")이 든 문장을 앞에 둔다. */
+  question?: string;
   claims: Array<{ kind: "offense" | "defense" | "pinned" | "scaling"; text: string }>;
   /** 내 플레이북(playing) — 조건이 맞는 것만, 조건이 구체적인 것부터 */
   mine: Array<{ category: string; text: string }>;

@@ -354,6 +354,7 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
     if (!data) return;
     const notes = matchupNotes(data, mine, enemy, lang);
     if (notes.plan && focus) notes.plan.focus = focus;
+    if (notes.plan) notes.plan.question = question;
     const answer = buildCompareCard([mine, enemy], question, undefined, { matchup: true, notes, lang });
     const prompt = buildCommentaryPrompt(answer, patch, lang);
     if (canUseModel && advisor.consented && prompt) {
