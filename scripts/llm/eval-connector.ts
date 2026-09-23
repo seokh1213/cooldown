@@ -140,6 +140,19 @@ function run(program: string, args: string[], input: string): Promise<string> {
   });
 }
 
+async function codexJudge(prompt: string): Promise<string> {
+  const dir = fs.mkdtempSync(`${os.tmpdir()}/codex-judge-`);
+  const out = `${dir}/out.txt`;
+  await new Promise<void>((resolve) => {
+    const child = spawn("codex", ["exec", "--ephemeral", "--skip-git-repo-check", "-s", "read-only", "-C", dir, "-o", out, "-"], { cwd: dir });
+    child.stdin.end(`${prompt}\n파일을 읽거나 명령을 실행하지 말 것.`);
+    child.on("close", () => resolve());
+  });
+  const text = fs.existsSync(out) ? fs.readFileSync(out, "utf8") : "";
+  fs.rmSync(dir, { recursive: true, force: true });
+  return text;
+}
+
 async function main(): Promise<void> {
   if (cmd === "prompts") {
     const lines = evalItems().map((item) => {
@@ -230,7 +243,7 @@ async function main(): Promise<void> {
           ),
         };
       }
-      if (file === "atoms" || file === "atoms-bare") {
+      if (file === "atoms" || file === "atoms-bare" || file.startsWith("atoms-v:")) {
         const atoms = (id: string): AtomFile | undefined =>
           fs.existsSync(`knowledge/atoms/${id}.json`) ? (JSON.parse(fs.readFileSync(`knowledge/atoms/${id}.json`, "utf8")) as AtomFile) : undefined;
         return {
@@ -240,7 +253,41 @@ async function main(): Promise<void> {
               const b = build(item);
               // atoms-bare: 까닭을 붙이지 않은 첫 판(견줌용)
               const eligible = eligibleNotes(connectorData.playbooks as unknown as Map<string, Playbook>, b.me, b.enemy);
-              const sections = atomSections(b.answer, atoms(item.me), atoms(item.enemy), undefined, file === "atoms", eligible);
+              // atoms-v:<변형> — 조립 규칙 변형(E2). short: 칸마다 한 줄 덜, notrait: 특징 줄 빼기,
+              // fullnote: 첫 칸 첫 원자를 그 원자가 나온 노트 전문으로 바꾸기
+              const variant = file.startsWith("atoms-v:") ? file.slice("atoms-v:".length) : undefined;
+              const noteText = (source: string) => {
+                const id = source.slice("playbook:".length);
+                for (const [champ, side] of [[item.me, "playing"], [item.enemy, "against"]] as const) {
+                  const found = ((connectorData.playbooks as unknown as Map<string, Record<string, Array<{ id: string; text: string }>>>).get(champ)?.[side] ?? []).find((n) => n.id === id);
+                  if (found) return found.text;
+                }
+                return undefined;
+              };
+              const oracle = variant?.split("+").includes("oracle") ? (JSON.parse(fs.readFileSync(process.env.ORACLE ?? "", "utf8")) as Record<string, string[]>) : {};
+              let first = true;
+              // 변형은 + 로 겹친다(fullnote+notrait). long: 칸마다 한 줄 더, fullall: 첫 칸 원자를 모두 전문으로
+              const flags = new Set((variant ?? "").split("+"));
+              const pick = (_key: string, candidates: Candidate[], size: number): Candidate[] => {
+                let pool = candidates;
+                if (flags.has("oracle")) {
+                  const drop = new Set((oracle[item.id] ?? []) as string[]);
+                  pool = pool.filter((c) => !drop.has(c.text));
+                }
+                if (flags.has("notrait")) pool = pool.filter((c) => c.atom?.kind !== "trait");
+                const n = flags.has("short") ? Math.max(1, size - 1) : flags.has("long") ? size + 1 : size;
+                const picked = pool.slice(0, n);
+                if ((flags.has("fullnote") || flags.has("fullall")) && first) {
+                  first = false;
+                  const targets = picked.map((c, i) => (c.atom ? i : -1)).filter((i) => i >= 0);
+                  for (const at of flags.has("fullall") ? targets : targets.slice(0, 1)) {
+                    const full = noteText(picked[at].atom!.source);
+                    if (full) picked[at] = { ...picked[at], text: full };
+                  }
+                }
+                return picked;
+              };
+              const sections = atomSections(b.answer, atoms(item.me), atoms(item.enemy), variant ? pick : undefined, file !== "atoms-bare", eligible);
               return [item.id, renderSections(sections, b.answer)];
             }),
           ),
@@ -249,6 +296,11 @@ async function main(): Promise<void> {
       const data = JSON.parse(fs.readFileSync(file, "utf8")) as { rows: Scored[] };
       return { name: file, rows: new Map(data.rows.map((r) => [r.id, r.shown])) };
     });
+    // SHOW=x9,x13 이면 채점 없이 그 문항의 판들만 찍는다
+    if (process.env.SHOW) {
+      for (const id of process.env.SHOW.split(",")) for (const v of loaded) console.log(`## ${id} ${v.name}\n${v.rows.get(id)}\n`);
+      return;
+    }
     let seed = 1213;
     const rand = () => {
       seed = (seed * 1664525 + 1013904223) >>> 0;
@@ -278,7 +330,8 @@ async function main(): Promise<void> {
             ...order.flatMap((v, i) => [`[판 ${letters[i]}]`, v.rows.get(item.id) ?? "(없음)", ""]),
             `JSON 한 줄로만 답한다: {${letters.map((l) => `"${l}": 점수`).join(", ")}, "note": "가장 큰 차이 한 줄"}`,
           ].join("\n");
-          const text = await run("claude", ["-p", "--tools", "", "--no-session-persistence", "--setting-sources", ""], prompt);
+          // JUDGE=codex 면 Codex 가 채점한다. 채점자 한 명의 버릇이 결론을 만들지 않았는지 보려고.
+          const text = process.env.JUDGE === "codex" ? await codexJudge(prompt) : await run("claude", ["-p", "--tools", "", "--no-session-persistence", "--setting-sources", ""], prompt);
           const json = /\{[\s\S]*\}/.exec(text)?.[0];
           try {
             const parsed = JSON.parse(json ?? "{}") as Record<string, number | string>;
