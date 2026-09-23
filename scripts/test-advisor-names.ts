@@ -16,8 +16,10 @@ import { matchupSidesByPhrase } from "../src/lib/advisor/answer";
 const dir = path.join(PUBLIC_DATA_ROOT, resolvePatchVersion(), "llm");
 const cards = (JSON.parse(fs.readFileSync(path.join(dir, "champion-cards-ko_KR.json"), "utf8")) as { cards: ChampionCard[] }).cards;
 const names = (JSON.parse(fs.readFileSync(path.join(dir, "champion-names.json"), "utf8")) as { names: Record<string, string[]> }).names;
+const items = (JSON.parse(fs.readFileSync(path.join(dir, "..", "items-normalized-ko_KR.json"), "utf8")) as { items: unknown[] }).items;
 const data = {
   cards,
+  items,
   cardById: new Map(cards.map((c) => [c.id, c])),
   aliases: new Map(cards.map((c) => [c.id, [...new Set([...(names[c.id] ?? []), c.id])].filter((n) => n !== c.name)])),
 } as unknown as AdvisorData;
@@ -53,5 +55,13 @@ eq(ids("오공 럼블"), ["MonkeyKing", "Rumble"], "화면 언어 이름은 그�
   eq(side("Caitlyn is the enemy ADC and I'm on Vayne, how do I survive lane?"), "Vayne", "Y is the enemy · I'm on X → X");
   eq(side("Wukong Rumble"), undefined, "문형이 없으면 가르지 않는다(판정기에 맡긴다)");
 }
+
+// 줄임말(이름 앞 두 글자)이 흔한 말 안에서 걸리면 안 된다. "아이템" 의 아이 → 아이번.
+eq(ids("오공으로 럼블 상대할 때 아이템 뭐 가?"), ["MonkeyKing", "Rumble"], "아이템 속 아이는 아이번이 아니다");
+eq(ids("다이아 가려면 누구 해야 돼?"), [], "다이아 속 다이는 다이애나가 아니다");
+eq(ids("카이팅 잘하는 법"), [], "카이팅 속 카이는 카이사가 아니다");
+eq(ids("징크 템트리 알려줘"), ["Jinx"], "템트리를 가려도 줄임말 징크는 찾는다");
+eq(ids("아이번 정글 동선"), ["Ivern"], "정식 이름은 그대로");
+eq(ids("라일라이의 수정홀 언제 사?"), [], "아이템 이름 속 일라는 일라오이가 아니다");
 
 console.log(`✅ 이름 찾기·시점 문형 통과 (${checks}건)`);
