@@ -17,7 +17,8 @@ import {
   type PreTrainedModel,
   type PreTrainedTokenizer,
 } from "@huggingface/transformers";
-import { MAX_NEW_TOKENS } from "@/lib/advisor/config";
+import { MAX_NEW_TOKENS, NO_REPEAT_NGRAM } from "@/lib/advisor/config";
+import { createLoopGuard, trimLoop } from "@/lib/advisor/loopGuard";
 import type {
   AdvisorFileProgress,
   AdvisorModelSpec,
@@ -133,27 +134,11 @@ async function generate(
   /**
    * 같은 말을 되풀이하기 시작하면 끊는다.
    *
-   * 이 크기의 모델은 탐욕 복호화에서 자주 고리에 빠진다. 실제로 "오공은 P 바위
-   * 피부 스킬을 사용합니다 …" 여섯 문장이 끝없이 되풀이되어 화면을 채웠다.
-   * 종료 토큰이 안 나오므로 상한(8192)에 닿을 때까지 멈추지 않는다.
-   *
-   * 같은 문장이 세 번 나오면 고장난 것으로 본다. 두 번은 강조하느라 그럴 수
-   * 있지만 세 번은 아니다. 문장 단위라서 멀쩡한 글을 자를 위험이 낮다.
+   * 이 크기의 모델은 탐욕 복호화에서 자주 고리에 빠진다. 종료 토큰이 안 나오므로
+   * 상한에 닿을 때까지 멈추지 않는다. 무엇을 되풀이로 보는지는 `loopGuard` 에 적었다.
    */
-  const said = new Map<string, number>();
+  const guard = createLoopGuard();
   let looped = false;
-  const looping = (whole: string): boolean => {
-    const parts = whole.split(/(?<=다\.)\s+/);
-    // 마지막 조각은 아직 쓰는 중이라 세지 않는다
-    for (const part of parts.slice(0, -1)) {
-      const key = part.trim();
-      if (key.length < 12) continue;
-      const seen = (said.get(key) ?? 0) + 1;
-      said.set(key, seen);
-      if (seen >= 3) return true;
-    }
-    return false;
-  };
 
   const streamer = new TextStreamer(tokenizer, {
     skip_prompt: true,
@@ -163,12 +148,9 @@ async function generate(
       text += chunk;
       tokens += 1;
       post({ type: "chunk", id, text: chunk });
-      if (!looped && chunk.includes("다.")) {
-        said.clear();
-        if (looping(text)) {
-          looped = true;
-          stopper.interrupt();
-        }
+      if (!looped && guard.feed(chunk)) {
+        looped = true;
+        stopper.interrupt();
       }
     },
   });
@@ -180,6 +162,16 @@ async function generate(
     // 탐욕 복호화만으로는 같은 구절을 반복해 찍는다. 살짝만 눌러 준다. 크게 주면
     // 스킬 이름처럼 되풀이해야 하는 낱말까지 피하려 들어 글이 이상해진다.
     repetition_penalty: 1.1,
+    /*
+     * 같은 20토큰이 두 번 나오지 못하게 한다. 끊는 것보다 앞에서 막는다.
+     *
+     * 라이브러리는 프롬프트까지 합친 전체에서 n-gram 을 센다. 그래서 값이 작으면
+     * 재료에 적힌 스킬 이름조차 옮겨 적지 못한다. 카드 865개 스킬의 "챔피언 슬롯 이름"
+     * 은 중앙값 8토큰, 가장 긴 것이 18토큰("유나라 W 심판의 궤적 | 파멸의 궤적")이다.
+     * 되풀이 한 바퀴는 18토큰 남짓이었다("1레벨 기준 전체 챔피언 중 하위권이라는 점,
+     * 그리고 오공이 "). 20 이면 이름은 막지 않고 바퀴는 두 번째에서 막힌다.
+     */
+    no_repeat_ngram_size: NO_REPEAT_NGRAM,
     streamer,
     // 중단 요청이 오면 다음 토큰에서 멈춘다
     stopping_criteria: stopper,
@@ -192,7 +184,9 @@ async function generate(
   post({
     type: "done",
     id,
-    text,
+    // 끊었으면 되풀이한 꼬리를 걷어 낸 글로 바꾼다. 화면은 흘려 받은 조각 대신 이것을 쓴다.
+    text: looped ? trimLoop(text) : text,
+    looped,
     tokens,
     seconds: (finishedAt - startedAt) / 1000,
     // 첫 토큰까지 = 프롬프트를 읽는 시간. 나머지가 글을 쓰는 시간이다.

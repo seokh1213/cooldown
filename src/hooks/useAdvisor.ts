@@ -21,10 +21,12 @@ import {
 import { deleteModelCache } from "@/lib/advisor/storage";
 import type { AdvisorAnswer } from "@/lib/advisor/answer";
 import { answerProse } from "@/lib/advisor/prose";
+import { joinSection } from "@/lib/advisor/sections";
 import { useTranslation } from "@/i18n";
 import type {
   AdvisorChatMessage,
   AdvisorFileProgress,
+  AdvisorModelSpec,
   AdvisorRequest,
   AdvisorResponse,
 } from "@/lib/advisor/protocol";
@@ -104,6 +106,29 @@ export function readFeedback(): AdvisorFeedback[] {
   }
 }
 
+/** 칸 하나. `sendSections` 가 순서대로 부른다. */
+export interface SectionRequest {
+  heading: string;
+  system: string;
+  maxTokens: number;
+}
+
+/** 진행 중인 칸 나눠 쓰기. 워커의 `done` 이 올 때마다 다음 칸으로 넘어간다. */
+interface SectionRun {
+  parts: SectionRequest[];
+  index: number;
+  /** 끝난 칸들을 이어 붙인 글 */
+  written: string;
+  question: string;
+  model: AdvisorModelSpec;
+  tokens: number;
+  seconds: number;
+  ttft?: number;
+  promptTokens: number;
+  /** 중단을 눌렀으면 다음 칸을 부르지 않는다 */
+  stopped: boolean;
+}
+
 export interface SearchRoundOptions {
   /** 검색어를 만들게 할 때 쓸 지시문. */
   querySystem: string;
@@ -145,10 +170,10 @@ export interface UseAdvisorResult {
    */
   send: (text: string, system?: string, tools?: unknown[], notice?: string) => void;
   /**
-   * 상성 조언. 확정 구간은 코드가 만든 문장을 그대로 쓰고 서술 구간만 모델을 부른다.
-   * 구간마다 프롬프트가 달라 순서대로 이어 붙인다.
+   * 카드를 얹고 해설을 칸별로 나눠 쓰게 한다. 가벼운 모델의 상성 답에 쓴다.
+   * 칸마다 따로 부르고, 머리말은 코드가 붙인다. 까닭은 `lib/advisor/sections.ts` 에 있다.
    */
-  sendMatchup: (question: string, decided: string, sections: AdvisorChatMessage[][]) => void;
+  sendSections: (question: string, answer: AdvisorAnswer, parts: SectionRequest[], notice?: string) => void;
   /** 모델 없이 코드가 만든 답을 그대로 보여 준다. 동의 전이나 WebGPU 가 없을 때 쓴다. */
   answerWithoutModel: (question: string, answer: string | AdvisorAnswer, notice?: string) => void;
   /**
@@ -219,6 +244,8 @@ export function useAdvisor(): UseAdvisorResult {
 
   const workerRef = useRef<Worker | null>(null);
   const nextId = useRef(1);
+  /** 칸 나눠 쓰기의 진행 상황. 답 id 로 찾는다. */
+  const sectionRuns = useRef(new Map<number, SectionRun>());
   // 모델은 화면에서 바꿀 수 있으므로 상태다. 바꾸면 워커를 내렸다 새로 올린다.
   const [model, setModel] = useState(resolveModel);
 
@@ -279,7 +306,59 @@ export function useAdvisor(): UseAdvisorResult {
             return next;
           });
           break;
-        case "done":
+        case "done": {
+          /*
+           * 칸 나눠 쓰기 중이면 끝난 칸을 쌓고 다음 칸을 부른다.
+           *
+           * 여기서 가로채야 한다. 아래 기본 처리는 답 전체를 `message.text` 로 바꾸는데,
+           * 그 글은 방금 끝난 **칸 하나**뿐이라 앞 칸들이 지워진다. 예전 `sendMatchup` 이
+           * 바로 그렇게 망가져 있었다(부르는 곳이 없어 드러나지 않았다).
+           */
+          const run = sectionRuns.current.get(message.id);
+          if (run) {
+            run.written += joinSection(run.parts[run.index], message.text);
+            run.tokens += message.tokens;
+            run.seconds += message.seconds;
+            run.ttft ??= message.ttftSeconds;
+            run.promptTokens += message.promptTokens ?? 0;
+            run.index += 1;
+            const next = run.stopped ? undefined : run.parts[run.index];
+            const content = next ? `${run.written}**${next.heading}**\n` : run.written.trim();
+            setTurns((prev) =>
+              prev.map((turn) =>
+                turn.id === message.id
+                  ? {
+                      ...turn,
+                      content,
+                      ...(next
+                        ? {}
+                        : {
+                            stats: {
+                              tokens: run.tokens,
+                              seconds: run.seconds,
+                              ttft: run.ttft,
+                              promptTokens: run.promptTokens || undefined,
+                            },
+                          }),
+                    }
+                  : turn,
+              ),
+            );
+            if (next) {
+              worker.postMessage({
+                type: "generate",
+                id: message.id,
+                model: run.model,
+                system: next.system,
+                messages: [{ role: "user", content: run.question }],
+                maxTokens: next.maxTokens,
+              } satisfies AdvisorRequest);
+            } else {
+              sectionRuns.current.delete(message.id);
+              setStatus("ready");
+            }
+            break;
+          }
           setTurns((prev) => {
             const next = [...prev];
             const last = next[next.length - 1];
@@ -299,7 +378,10 @@ export function useAdvisor(): UseAdvisorResult {
           });
           setStatus("ready");
           break;
+        }
         case "error":
+          // 칸 나눠 쓰기 중이었다면 다음 칸을 부르지 않는다
+          if (message.id !== undefined) sectionRuns.current.delete(message.id);
           setError(message.message);
           setStatus("error");
           break;
@@ -395,52 +477,6 @@ export function useAdvisor(): UseAdvisorResult {
    * 한 번에 다 보내면 워커가 먼저 온 것부터 처리하다 순서가 뒤엉킨다.
    * 앞 구간이 끝난 뒤에 다음을 보내야 답변이 형식대로 쌓인다.
    */
-  const sendMatchup = useCallback(
-    (question: string, decided: string, sections: AdvisorChatMessage[][]) => {
-      const userId = nextId.current++;
-      const replyId = nextId.current++;
-      setError(null);
-      setStatus("generating");
-      setTurns((prev) => [
-        ...prev,
-        { id: userId, role: "user", content: question },
-        // 확정 구간은 모델을 기다리지 않고 바로 보여 준다
-        { id: replyId, role: "assistant", content: decided ? `${decided}\n\n` : "" },
-      ]);
-
-      const worker = ensureWorker();
-      let index = 0;
-      const runNext = () => {
-        if (index >= sections.length) {
-          setStatus("ready");
-          worker.removeEventListener("message", onSectionDone);
-          return;
-        }
-        const messages = sections[index++];
-        worker.postMessage({
-          type: "generate",
-          id: replyId,
-          model,
-          messages,
-        } satisfies AdvisorRequest);
-      };
-      function onSectionDone(event: MessageEvent<AdvisorResponse>) {
-        const message = event.data;
-        if (message.type === "done" && message.id === replyId) {
-          setTurns((prev) =>
-            prev.map((t) => (t.id === replyId ? { ...t, content: `${t.content}\n\n` } : t)),
-          );
-          runNext();
-        } else if (message.type === "error") {
-          worker.removeEventListener("message", onSectionDone);
-        }
-      }
-      worker.addEventListener("message", onSectionDone);
-      runNext();
-    },
-    [ensureWorker, model],
-  );
-
   /**
    * 도구를 주고 여러 번 오간다.
    *
@@ -752,6 +788,43 @@ export function useAdvisor(): UseAdvisorResult {
     [post, model],
   );
 
+  const sendSections = useCallback(
+    (question: string, answer: AdvisorAnswer, parts: SectionRequest[], notice?: string) => {
+      const trimmed = question.trim();
+      if (!trimmed || parts.length === 0) return;
+      const userId = nextId.current++;
+      const replyId = nextId.current++;
+      setError(null);
+      setStatus("generating");
+      // 첫 머리말은 바로 보인다. 모델이 첫 글자를 내기 전에도 무엇을 쓰는 중인지 알 수 있다.
+      setTurns((prev) => [
+        ...prev,
+        { id: userId, role: "user", content: trimmed },
+        { id: replyId, role: "assistant", content: `**${parts[0].heading}**\n`, answer, notice },
+      ]);
+      sectionRuns.current.set(replyId, {
+        parts,
+        index: 0,
+        written: "",
+        question: trimmed,
+        model,
+        tokens: 0,
+        seconds: 0,
+        promptTokens: 0,
+        stopped: false,
+      });
+      post({
+        type: "generate",
+        id: replyId,
+        model,
+        system: parts[0].system,
+        messages: [{ role: "user", content: trimmed }],
+        maxTokens: parts[0].maxTokens,
+      });
+    },
+    [post, model],
+  );
+
   const rate = useCallback((turnId: number, rating: "up" | "down", patch: string) => {
     setTurns((prev) => {
       const index = prev.findIndex((t) => t.id === turnId);
@@ -786,6 +859,8 @@ export function useAdvisor(): UseAdvisorResult {
   }, []);
 
   const stop = useCallback(() => {
+    // 쓰는 중인 칸은 끝까지 받아 붙이고, 그다음 칸은 부르지 않는다
+    for (const run of sectionRuns.current.values()) run.stopped = true;
     workerRef.current?.postMessage({ type: "stop" } satisfies AdvisorRequest);
     setStatus("ready");
   }, []);
@@ -872,7 +947,7 @@ export function useAdvisor(): UseAdvisorResult {
     accept,
     ensureLoaded,
     send,
-    sendMatchup,
+    sendSections,
     answerWithoutModel,
     classify,
     sendWithAnswer,
