@@ -50,6 +50,21 @@ export const FOCUSED_HOLDOUT: Array<[string, string, string, string]> = [
   ["Orianna", "Malphite", "teamfight", "오리아나로 말파이트 있는 한타 어떻게 해?"],
 ];
 
+/**
+ * 두 번째 검증 세트. 노트를 보강하기 **전에** 정해 두고 보강 전 답을 먼저 떠 두었다.
+ * 노트를 이 문항에 맞춰 쓰지 않았다.
+ */
+export const FOCUSED_HOLDOUT2: Array<[string, string, string, string]> = [
+  ["Ahri", "Yasuo", "skill", "아리로 야스오 상대할 때 야스오 W 어떻게 해?"],
+  ["Garen", "Teemo", "laning", "가렌으로 티모 라인전 어떻게 해?"],
+  ["Leona", "Ezreal", "escape-window", "레오나로 이즈리얼 상대할 때 언제 들어가?"],
+  ["Darius", "Vayne", "combo", "다리우스로 베인 상대 콤보 어떻게 넣어?"],
+  ["Annie", "Katarina", "situational-item", "애니로 카타리나 상대 아이템 뭐 가?"],
+  ["Jinx", "Nautilus", "laning", "징크스로 노틸러스 상대 라인전 어떻게 버텨?"],
+  ["Tryndamere", "Nasus", "phase", "트린다미어로 나서스 상대하면 후반 어때?"],
+  ["Morgana", "Zed", "teamfight", "모르가나로 제드 있는 한타 어떻게 해?"],
+];
+
 /** 첫 줄이 실제로 화면에서 무한 반복을 낸 질문이다. */
 export const PAIRS: Array<[string, string, string]> = [
   ["MonkeyKing", "Rumble", "오공으로 럼블이 너무어려운데 팁이 없나?"],

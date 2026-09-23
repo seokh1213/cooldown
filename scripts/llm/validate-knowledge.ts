@@ -146,6 +146,12 @@ function main() {
         for (const target of entry.when?.enemyIds ?? []) {
           if (!championIds.has(target)) findings.push({ where, message: `없는 상대 id: ${target}` });
         }
+        for (const hook of entry.hooks ?? []) {
+          if (!/\{spells/.test(hook.text)) findings.push({ where, message: `고리 문형에 {spells} 자리가 없음: "${hook.text}"` });
+          for (const tag of hook.effects) {
+            if (!effectTags.has(tag)) findings.push({ where, message: `고리의 효과 태그가 어떤 챔피언에게도 없음: "${tag}"` });
+          }
+        }
         for (const tag of [...(entry.when?.enemyHasEffects ?? []), ...(entry.when?.enemyLacksEffects ?? [])]) {
           if (!effectTags.has(tag)) {
             findings.push({ where, message: `어떤 챔피언에게도 없는 효과 태그: "${tag}"` });
