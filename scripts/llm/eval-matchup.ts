@@ -41,8 +41,11 @@ const knowledge = JSON.parse(fs.readFileSync(path.join(llmDir, "advisor-knowledg
   playbooks: Record<string, Playbook>;
 };
 // matchupNotes 가 보는 것은 카드와 플레이북뿐이다.
+// 상성 요약의 초반 저항 아이템 문장이 아이템 이름을 쓴다(앱과 같게)
+const items = (JSON.parse(fs.readFileSync(path.join(PUBLIC_DATA_ROOT, patch, "items-normalized-ko_KR.json"), "utf8")) as { items: unknown[] }).items;
 const data = {
   cards,
+  items,
   cardById: new Map(cards.map((card) => [card.id, card])),
   playbooks: new Map(Object.entries(knowledge.playbooks)),
 } as unknown as AdvisorData;
