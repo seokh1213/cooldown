@@ -33,7 +33,7 @@ import {
   type MechanicsIndex,
 } from "../../../scripts/llm/lib/mechanics";
 import type { WikiItemMeta } from "../../../scripts/llm/lib/data";
-import type { AdvisorAnswer, Fact } from "./answer";
+import type { AdvisorAnswer, Fact, MatchupNotes } from "./answer";
 import type {
   NormalizedItem,
   NormalizedRune,
@@ -301,7 +301,7 @@ export function matchupNotes(
   me: ChampionCard,
   enemy: ChampionCard,
   lang: ClaimLang = "ko_KR",
-): { mine: string[]; enemy: string[] } {
+): MatchupNotes {
   const selected = selectPlaybook(data.playbooks, me, enemy);
   /*
    * 조합은 삼만 쌍에 가까워 손으로 쓸 수 없다. 그런데 **미리 만들 필요가 없다.**
@@ -326,6 +326,7 @@ export function matchupNotes(
   return {
     mine: [...derived, ...(written ? selected.mine.slice(0, 3).map((entry) => entry.text) : [])],
     enemy: written ? selected.vsEnemy.slice(0, 3).map((entry) => entry.text) : [],
+    derived: derived.length,
   };
 }
 

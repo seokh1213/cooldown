@@ -26,7 +26,6 @@ import { useTranslation } from "@/i18n";
 import { advisorSystemPrompt } from "@/lib/advisor/persona";
 import { AdvisorMarkdown } from "./AdvisorMarkdown";
 import { groundCommentary } from "@/lib/advisor/grounding";
-import { matchupSections } from "@/lib/advisor/sections";
 import {
   buildChampionsBrief,
   championNotes,
@@ -60,7 +59,19 @@ import {
   type SpellFocus,
 } from "@/lib/advisor/answer";
 import { nicknames } from "@/lib/advisor/intent";
-import { parseRoute, routePrompt, type AskRoute } from "@/lib/advisor/routeAsk";
+import {
+  JUDGE_KIND_CRITERIA,
+  JUDGE_KIND_INSTRUCTIONS,
+  JUDGE_MINE_INSTRUCTIONS,
+  judgeRouteState,
+  parseRoute,
+  routeFromJudge,
+  routePrompt,
+  type AskRoute,
+} from "@/lib/advisor/routeAsk";
+
+/** 질문 갈래 판정 헤드. `public/models/judge/` 아래 이 이름의 .json·.bin 이 있다. */
+const ROUTE_HEAD = "route-v1";
 import { findMentionedRules } from "../../../../scripts/llm/lib/rules";
 import type { ChampionCard } from "../../../../scripts/llm/lib/facts";
 import { ItemIcon } from "@/components/ui/item-icon";
@@ -331,10 +342,10 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
    * 모델과 무관한 장치가 뒤를 받친다 — 근거 검사가 틀린 문장을 걷어내고 슬롯을
    * 바로잡으며, 워커가 반복을 끊는다.
    *
-   * 그 뒤에 한 번 더 갈랐다. 가벼운 모델은 **칸을 나눠** 쓴다(`sections.ts`). 위의
-   * 판본과 다른 점은 할 일을 좁힌 것이 아니라 칸마다 따로 부른다는 것이다. 열네 쌍을
-   * 브라우저에서 재 보니 노트 베끼기 10% → 5%, 틀린 슬롯 0 을 유지했지만 기다림이
-   * 14.6초 → 21.7초로 늘었다. 4B 는 그대로 한 번에 쓴다.
+   * 가벼운 모델(0.8B)은 **해설을 쓰지 않는다.** 칸 나눠 쓰기, 짧은 프롬프트와 예시,
+   * 바꿔 쓰기, int8 판본까지 재 봤지만 14쌍 1~5점 채점에서 전부 1~2점이었다. 대신
+   * 검증된 노트를 코드가 골라 조립한다(`matchupDigest`, 3.8점). 모델이 없는 기기와 같은
+   * 길이다. 0.8B 는 판정기로만 쓴다(`judge.ts`). 4B 는 그대로 해설을 쓴다.
    */
   const deliverMatchup = (question: string, mine: ChampionCard, enemy: ChampionCard, notice?: string) => {
     if (!data) return;
@@ -352,16 +363,8 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
        * 길이만 버리는 것이 아니다. 같은 문장이 두 번 보이면 모델이 그것을 중요한
        * 말로 읽고 그대로 옮겨 적는다.
        */
-      // 가벼운 모델은 칸을 나눠 쓴다. 까닭과 잰 값은 `lib/advisor/sections.ts` 에 있다.
-      const parts = advisor.model.lite ? matchupSections(answer, patch, lang) : undefined;
-      if (parts) {
-        const persona = advisorSystemPrompt(lang);
-        advisor.sendSections(
-          question,
-          answer,
-          parts.map((part) => ({ heading: part.heading, system: `${persona}\n\n${part.prompt}`, maxTokens: part.maxTokens })),
-          notice,
-        );
+      if (advisor.model.lite) {
+        advisor.answerWithoutModel(question, answer, notice);
         return;
       }
       advisor.sendWithAnswer(question, `${advisorSystemPrompt(lang)}\n\n${prompt}`, answer, notice);
@@ -429,10 +432,23 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
     let route: AskRoute | undefined;
     if (canUseModel && advisor.consented) {
       const named = detectChampions(data, question);
-      route = await advisor
-        .classify(routePrompt(named.map((card) => card.name)), question)
-        .then((reply) => parseRoute(reply, named))
-        .catch(() => undefined);
+      const names = named.map((card) => card.name);
+      /*
+       * 가벼운 모델은 글로 답하게 하지 않고 판정기로 가른다. 세 언어 60문항에서
+       * 0.8B 생성 34, 낱말 규칙 38, 판정기 56 이었다(4B 생성 57).
+       */
+      route = advisor.model.lite
+        ? await advisor
+            .judge(ROUTE_HEAD, judgeRouteState(question, names), [
+              { instructions: JUDGE_KIND_INSTRUCTIONS, options: Object.entries(JUDGE_KIND_CRITERIA).map(([name, description]) => ({ name, description })) },
+              ...(named.length >= 2 ? [{ instructions: JUDGE_MINE_INSTRUCTIONS, options: names.map((name) => ({ name })) }] : []),
+            ])
+            .then(([kind, mine]) => routeFromJudge(kind, mine, named))
+            .catch(() => undefined)
+        : await advisor
+            .classify(routePrompt(names), question)
+            .then((reply) => parseRoute(reply, named))
+            .catch(() => undefined);
     }
 
     // 1. 룬·주문 판정. 함께 나온 다른 규칙 이름이 든 문장이 답이다.
