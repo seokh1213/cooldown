@@ -536,8 +536,12 @@ export function labelSlots(text: string, cards: ChampionCard[]): string {
    * 앞 글자는 영문 대문자 하나만 본다. "IQ" 나 "AD" 처럼 낱말의 끝 글자는 건드리지
    * 않도록 그 앞이 영문자가 아니어야 한다.
    */
+  /*
+   * 이름 바로 앞이 한글이면 그 이름은 다른 낱말의 일부다. "되찌르기" 안의 "찌르기"(피오라 Q)에
+   * Q 를 붙여 "되Q 찌르기" 가 됐다 — 응수의 되찌르기가 Q 의 효과처럼 읽혔다.
+   */
   const pattern = new RegExp(
-    `(?<![A-Za-z])(?:([A-Z])(\\s*스킬\\S?)?([\\s'"‘“*(（]*))?(${names.map((entry) => escape(entry.name)).join("|")})`,
+    `(?<![A-Za-z])(?:([A-Z])(\\s*스킬\\S?)?([\\s'"‘“*(（]*))?(?<![가-힣])(${names.map((entry) => escape(entry.name)).join("|")})`,
     "g",
   );
   return text.replace(pattern, (whole, letter: string | undefined, skill = "", gap = "", name: string, offset: number) => {
