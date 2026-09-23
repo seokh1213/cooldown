@@ -50,7 +50,7 @@ export interface Generated {
 
 export type Generate = (system: string, user: string, maxTokens: number) => Promise<Generated>;
 
-export type Mode = "single" | "sections";
+export type Mode = "single" | "sections" | "lite" | "rewrite";
 
 export interface Row {
   question: string;
@@ -194,6 +194,18 @@ export async function runPair(
       if (result.tokens >= part.maxTokens) capped = true;
       shownRaw += sections.joinSection(part, result.text);
     }
+  } else if (mode === "lite" || mode === "rewrite") {
+    const lite = await import("../../../src/lib/advisor/litePrompt.ts");
+    const prompt = mode === "lite" ? lite.buildLiteMatchupPrompt(answer, "ko_KR") : lite.buildRewriteMatchupPrompt(answer, "ko_KR");
+    if (!prompt) throw new Error("가벼운 재료 없음");
+    promptChars = prompt.length;
+    const result = await generate(`${persona}\n\n${prompt}`, question, lite.LITE_TOKENS);
+    raw = result.untrimmed ?? result.text;
+    tokens = result.tokens;
+    seconds = result.seconds;
+    capped = result.tokens >= lite.LITE_TOKENS;
+    cut = result.looped ?? (!capped && replayGuard(raw));
+    shownRaw = result.text;
   } else {
     const prompt = buildCommentaryPrompt(answer, patch, "ko_KR");
     if (!prompt) throw new Error("재료 없음");
