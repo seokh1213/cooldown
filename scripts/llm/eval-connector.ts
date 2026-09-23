@@ -44,11 +44,15 @@ function judgeMaterial(answer: Parameters<typeof buildCommentaryPrompt>[0], dige
     return (book[side] ?? []).map((n) => `- ${n.text}`);
   };
   const full = [...notes(meId, "playing"), ...notes(enemyId, "against")];
+  // 코드가 카드에서 도출한 문장 전체. 조립판이 안 실은 도출 문장을 원자 판이 실으면, 채점자가
+  // 근거를 못 찾아 "케이틀린 주력 피해가 P·Q·W 물리" 를 지어낸 말로 깎았다.
+  const claims = ((answer as { notes?: MatchupNotes }).notes?.plan?.claims ?? []).map((c) => `- ${c.text}`);
   return [
     (end >= 0 ? prompt.slice(0, end) : prompt).trim(),
     "",
     "[코드가 검증해 조립한 칸 사실]",
     digest,
+    ...(claims.length ? ["", "[카드에서 도출한 사실]", ...claims] : []),
     ...(full.length ? ["", "[두 챔피언의 검증된 운용 노트 전문]", ...full] : []),
   ].join("\n");
 }
