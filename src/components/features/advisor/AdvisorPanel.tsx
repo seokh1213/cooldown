@@ -70,7 +70,7 @@ import {
   routePrompt,
   type AskRoute,
 } from "@/lib/advisor/routeAsk";
-import { topicFromJudge, topicQuestions } from "@/lib/advisor/topicJudge";
+import { topicFromJudge, topicFromWords, topicQuestions } from "@/lib/advisor/topicJudge";
 
 /** 판정 헤드. `public/models/judge/` 아래 이 이름의 .json·.bin 이 있다. */
 const ROUTE_HEAD = "route-v2";
@@ -469,10 +469,15 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
        * 관점은 여전히 낱말 표가 가른다 — 까닭은 `topicQuestions` 에 있다.
        */
       if (advisor.model.lite && named.length) {
-        judgedTopic = await advisor
-          .judge(TOPIC_HEAD, judgeRouteState(question, names), topicQuestions(named.length))
-          .then(([topic]) => topicFromJudge(topic))
-          .catch(() => undefined);
+        // 갈래를 못 박는 낱말("한타", "라인전", "피오라 W")이 있으면 판정기보다 먼저다.
+        // 상성 문항 24개에서 판정기 14, 낱말 먼저 24. 까닭은 `topicFromWords` 에 있다.
+        const worded = topicFromWords(question, [...names, ...named.flatMap((card) => data.aliases.get(card.id) ?? [])]);
+        judgedTopic = worded
+          ? { topic: worded }
+          : await advisor
+              .judge(TOPIC_HEAD, judgeRouteState(question, names), topicQuestions(named.length))
+              .then(([topic]) => topicFromJudge(topic))
+              .catch(() => undefined);
       }
     }
 

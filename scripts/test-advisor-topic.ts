@@ -14,6 +14,7 @@ import { askedSlot, selectNotes } from "../src/lib/advisor/noteSelect";
 import { championNotes, matchupNotes, type AdvisorData } from "../src/lib/advisor/context";
 import { buildCompareAnswer } from "../src/lib/advisor/answer";
 import { answerProse } from "../src/lib/advisor/prose";
+import { topicFromWords } from "../src/lib/advisor/topicJudge";
 import { TOPIC_CRITERIA, TOPIC_LABELS, topicFromJudge, topicQuestions } from "../src/lib/advisor/topicJudge";
 import { TOPIC_TEST } from "./llm/lib/topicCases";
 
@@ -85,5 +86,20 @@ eq(askedSlot("궁금한데 야스오 어때"), undefined, "궁금 은 궁이 아
   ok(text.startsWith("**상대할 때**"), "상대하는 질문은 상대할 때부터");
   ok(/\*\*플레이할 때\*\*/.test(text), "묻지 않은 쪽도 한 줄은 붙인다");
 }
+
+// 갈래를 못 박는 낱말은 판정기보다 먼저다. 판정기는 상성 문항에서 "한타" 를 라인전으로 갈랐다.
+eq(topicFromWords("가렌으로 다리우스 있는 한타 어떻게 해?", ["가렌", "다리우스"]), "teamfight", "한타");
+eq(topicFromWords("리븐으로 레넥톤 라인전 어떻게 해?", ["리븐", "레넥톤"]), "laning", "라인전");
+eq(topicFromWords("잭스로 피오라 상대할 때 피오라 W 어떻게 빼?", ["잭스", "피오라"]), "skill", "이름 바로 뒤의 슬롯은 스킬");
+eq(topicFromWords("제드 궁 어떻게 피해", ["제드"]), "skill", "이름 뒤의 궁");
+eq(topicFromWords("오공으로 럼블 상대할 때 아이템 뭐 가?", ["오공", "럼블"]), "situational-item", "아이템");
+eq(topicFromWords("세트로 모데카이저 상대하면 후반 어때?", ["세트", "모데카이저"]), "phase", "후반");
+eq(topicFromWords("제드로 럭스 상대할 때 언제 들어가?", ["제드", "럭스"]), "escape-window", "언제 들어가");
+eq(topicFromWords("What should I build as Wukong against Rumble?"), "situational-item", "영어 build");
+eq(topicFromWords("剑魔团战怎么打"), "teamfight", "중국어 团战");
+// 낱말이 없으면 판정기에 맡긴다. 넓은 말("들어가", "라인")로 가르지 않는다.
+eq(topicFromWords("오공으로 럼블이 너무어려운데 팁이 없나?", ["오공", "럼블"]), undefined, "낱말 없음");
+eq(topicFromWords("탑 라인 다리우스 짜증나", ["다리우스"]), undefined, "라인 한 글자로는 가르지 않는다");
+eq(topicFromWords("템빨로 이기는 챔피언이야?", []), undefined, "낱말 속 템은 아이템이 아니다");
 
 console.log(`✅ 주제 판정 통과 (${checks}건)`);
