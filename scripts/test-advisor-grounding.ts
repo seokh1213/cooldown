@@ -9,7 +9,8 @@ import * as fs from "node:fs";
 import * as path from "node:path";
 import type { ChampionCard } from "./llm/lib/facts";
 import { PUBLIC_DATA_ROOT, resolvePatchVersion } from "./llm/lib/data";
-import { groundCommentary } from "../src/lib/advisor/grounding";
+import { groundCommentary, labelSlots } from "../src/lib/advisor/grounding";
+import { createLoopGuard, trimLoop } from "../src/lib/advisor/loopGuard";
 import { promptWords } from "../src/lib/advisor/promptLocale";
 import type { AdvisorAnswer } from "../src/lib/advisor/answer";
 import {
@@ -381,4 +382,67 @@ assert.ok(q && !q.effects.includes("에어본"), "Q 에는 에어본이 없어�
   assert.doesNotMatch(kept, /시작한다|벌린다/, "한다체가 남지 않는다");
 }
 
-console.log("✅ 근거 검사 통과 (52건)");
+{
+  /*
+   * 스킬 이름 앞에 슬롯 문자를 붙이고, 틀린 글자는 바로잡는다.
+   *
+   * 0.8B 가 "럼블의 화염방사기나 고철장 거인" 처럼 슬롯을 떨구거나, 피오라 스킬
+   * 다섯 개를 전부 P 로 적었다.
+   */
+  const wukong = card("MonkeyKing");
+  const rumble = card("Rumble");
+  const fiora = card("Fiora");
+  const name = (c: ChampionCard, slot: string) => c.spells.find((s) => s.slot === slot)!.name;
+  const pair = [wukong, rumble];
+
+  const bare = labelSlots(`럼블의 ${name(rumble, "Q")}나 ${name(rumble, "P")}의 피해가 들어갑니다.`, pair);
+  assert.match(bare, new RegExp(`Q ${name(rumble, "Q")}`), "빠진 슬롯을 붙인다");
+  assert.match(bare, new RegExp(`P ${name(rumble, "P")}`), "패시브도 붙인다");
+
+  const marked = `**'Q ${name(wukong, "Q")}'** 와 ${name(wukong, "R")}(R)`;
+  assert.equal(labelSlots(marked, pair), marked, "이미 맞게 붙은 것은 두 번 붙이지 않는다");
+
+  const wrong = labelSlots(`**P ${name(fiora, "Q")}** 와 ${name(fiora, "R")}(Q)`, [fiora]);
+  assert.match(wrong, new RegExp(`Q ${name(fiora, "Q")}`), "앞에 틀리게 붙은 글자를 바로잡는다");
+  assert.match(wrong, new RegExp(`${name(fiora, "R")}\\(R\\)`), "뒤에 틀리게 붙은 글자도 바로잡는다");
+
+  // 두 글자 이하 이름은 스킬이 아닌 뜻으로도 흔히 쓴다("공포", "도약").
+  const short = cards.flatMap((c) => c.spells.map((s) => ({ c, s }))).find(({ s }) => s.name.length === 2);
+  assert.ok(short, "두 글자 스킬 이름");
+  assert.equal(labelSlots(`${short.s.name}에 걸린 적`, [short.c]), `${short.s.name}에 걸린 적`, "짧은 이름은 건드리지 않는다");
+}
+
+{
+  /*
+   * 문장을 끝내지 않고 쉼표로 이어 가는 되풀이도 끊는다.
+   *
+   * 예전 장치는 "다." 로 끝나는 문장만 셌다. 화면에서 실제로 나온 글이 아래 모양이었고,
+   * "다." 가 한 번도 안 나와 상한까지 3,800자를 채웠다.
+   */
+  const head = "오공은 마법 저항력이 매우 낮습니다.\n\n따라서 럼블의 화염방사기 피해가 많이 들어갑니다.\n\n하지만, 오공이 위험한 것은 ";
+  const cycle = "오공이 1레벨 기준 전체 챔피언 중 하위권이라는 점, 그리고 ";
+  const looping = head + cycle.repeat(6);
+  const guard = createLoopGuard();
+  let cutAt = -1;
+  for (let i = 0; i < looping.length; i += 3) {
+    if (guard.feed(looping.slice(i, i + 3))) {
+      cutAt = i + 3;
+      break;
+    }
+  }
+  assert.ok(cutAt > 0 && cutAt < head.length + cycle.length * 4, "세 바퀴 안에 끊는다");
+  assert.equal(trimLoop(looping.slice(0, cutAt)), head.split("\n\n하지만")[0], "끝나지 않은 되풀이 문장은 통째로 걷는다");
+
+  // 머리말이 두 번, 스킬 이름이 여러 번 나오는 멀쩡한 글은 끊지 않는다.
+  const fine =
+    "**플레이할 때**\n오공 E 근두운 급습으로 붙은 뒤 오공 Q 파쇄격으로 방어력을 깎습니다. 오공 W 분신 전사로 럼블 Q 화염방사기를 피합니다.\n\n" +
+    "**상대할 때**\n럼블 E 전기 작살의 둔화를 맞으면 오공 E 근두운 급습으로 빠지기 어렵습니다. 럼블 R 이퀄라이저 미사일 위에서는 싸우지 마십시오. " +
+    "오공 R 회전격은 럼블 W 고철 방패를 깬 뒤에 씁니다. 오공 E 근두운 급습은 럼블 E 전기 작살을 맞은 뒤에는 아껴 둡니다.";
+  const calm = createLoopGuard();
+  let flagged = false;
+  for (let i = 0; i < fine.length; i += 2) flagged = calm.feed(fine.slice(i, i + 2)) || flagged;
+  assert.equal(flagged, false, "멀쩡한 글은 끊지 않는다");
+  assert.equal(trimLoop(fine), fine, "되풀이가 없으면 손대지 않는다");
+}
+
+console.log("✅ 근거 검사 통과 (62건)");

@@ -138,8 +138,16 @@ export interface PromptWords {
    * **백분위 수치를 넣지 않는다.** 지시문은 "수치를 쓰지 말라" 고 하는데 재료가
    * 숫자를 쥐여 주면 모델이 그대로 베낀다. 중국어에서 8문항 중 6번 "前14%" 처럼
    * 옮겨 적었다. 등급 낱말(매우 낮음/very low/极低)이 뜻을 이미 담고 있다.
+   *
+   * **능력치마다 줄을 따로 두지 않는다.** 예전에는 "마법 저항력: 1레벨 기준 전체
+   * 챔피언 중 하위권 (매우 낮음)" 을 능력치마다 한 줄씩 썼다. 오공·럼블이면 거의 같은
+   * 줄이 여섯 번 실린다. 0.8B 는 그 틀을 통째로 외워 능력치 이름을 떨군 채 "오공이
+   * 1레벨 기준 전체 챔피언 중 하위권이라는 점, 그리고 …상위권이라는 점" 을 상한까지
+   * 되풀이했다. 한 줄에 모으면 되풀이할 틀이 남지 않는다.
+   *
+   * `high`·`low` 는 이미 옮긴 능력치 이름이다. 둘 다 비면 부르지 않는다.
    */
-  percentile: (stat: string, side: "top" | "bottom", grade: string) => string;
+  extremes: (high: string[], low: string[], grades: { high: string; low: string }) => string;
   matchup: (me: string, enemy: string) => string;
   /**
    * 질문이 한쪽만 물었을 때 그 사실을 못 박는 말.
@@ -173,8 +181,8 @@ const KO: PromptWords = {
   notesHeader: "[운용 노트 — 사람이 검증한 사실입니다. 판단의 근거로 삼으십시오]",
   playing: "플레이할 때",
   against: "상대할 때",
-  percentile: (stat, side, grade) =>
-    `${stat}: 1레벨 기준 전체 챔피언 중 ${side === "top" ? "상위권" : "하위권"} (${grade})`,
+  extremes: (high, low, grades) =>
+    `능력치(1레벨, 전체 챔피언 대비): ${[high.length ? `${grades.high} — ${high.join("·")}` : "", low.length ? `${grades.low} — ${low.join("·")}` : ""].filter(Boolean).join(" / ")}`,
   matchup: (me, enemy) =>
     `[상성] 사용자는 ${josa(me, "을/를")} 잡고 ${josa(enemy, "을/를")} 상대합니다. ${me} 시점으로 쓰십시오.`,
   perspectiveOnly: (side) =>
@@ -225,8 +233,8 @@ const EN: PromptWords = {
   notesHeader: "[Playbook notes — human-verified facts. Reason from them.]",
   playing: "Playing it",
   against: "Playing against it",
-  percentile: (stat, side, grade) =>
-    `${stat}: among the ${side === "top" ? "highest" : "lowest"} of all champions at level 1 (${grade})`,
+  extremes: (high, low, grades) =>
+    `Stats (level 1, vs. all champions): ${[high.length ? `${grades.high} — ${high.join(", ")}` : "", low.length ? `${grades.low} — ${low.join(", ")}` : ""].filter(Boolean).join(" / ")}`,
   matchup: (me, enemy) => `[Matchup] The user plays ${me} against ${enemy}. Write from ${me}'s point of view.`,
   perspectiveOnly: (side) =>
     `[Point of view] This question asks only about "${side}". Write that side only, use **${side}** as the single heading, and do not write a sentence about the other side.`,
@@ -271,8 +279,8 @@ const ZH: PromptWords = {
   notesHeader: "[操作笔记 — 人工核验的事实，请据此判断]",
   playing: "使用时",
   against: "对线时",
-  percentile: (stat, side, grade) =>
-    `${stat}：1级时在全英雄中属于${side === "top" ? "偏高" : "偏低"}的一档（${grade}）`,
+  extremes: (high, low, grades) =>
+    `属性（1级，与全英雄相比）：${[high.length ? `${grades.high} — ${high.join("、")}` : "", low.length ? `${grades.low} — ${low.join("、")}` : ""].filter(Boolean).join(" / ")}`,
   matchup: (me, enemy) => `[对位] 用户使用${me}对阵${enemy}。请以${me}的视角撰写。`,
   perspectiveOnly: (side) =>
     `[视角] 该问题只问“${side}”。只写这一侧，小标题也只用 **${side}** 一个，不要写另一侧的任何句子。`,
