@@ -61,7 +61,8 @@ export interface Atom {
   effects: string[];
   steps?: string[];
   when?: { enemyIds?: string[] };
-  text: { ko: string };
+  /** ko 는 원문. en_US·zh_CN 은 translate-atoms.ts 가 검수해 싣는다(없으면 그 언어에서 안 쓴다). */
+  text: { ko: string; en_US?: string; zh_CN?: string };
 }
 
 export interface AtomFile {
