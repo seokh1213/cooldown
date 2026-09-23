@@ -409,10 +409,18 @@ export interface MatchupClaims {
   scaling: "mine" | "theirs" | "even";
 }
 
-/** 그 저항이 높은 편인가. 카드가 매긴 등급을 그대로 읽는다. */
+/**
+ * 그 저항이 높은 편인가. 카드가 매긴 1레벨 등급을 읽는다.
+ *
+ * 1레벨과 18레벨 등급이 반대쪽이면 말하지 않는다. 이즈리얼 마법 저항력은 1레벨 33으로
+ * 상위 9%지만(대부분 32) 18레벨에는 하위 11%다. "높은 편이라 잘 들어가지 않는다" 는
+ * 1점 차이를 두고 한 거짓말이 된다. 이런 챔피언·저항이 33건 있다.
+ */
 function resistGrade(card: ChampionCard, stat: "armor" | "magicResist"): string | undefined {
   const snap = card.stats[stat];
   if (!snap) return undefined;
+  const late = snap.gradeLv18;
+  if ((isHigh(snap.gradeLv1) && isLow(late)) || (isLow(snap.gradeLv1) && isHigh(late))) return undefined;
   return snap.gradeLv1;
 }
 
