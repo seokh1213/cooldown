@@ -38,6 +38,33 @@ eq(ids("how does vision work in this game"), [], "낱말 속 글자(vision 의 V
 eq(ids("오공 럼블"), ["MonkeyKing", "Rumble"], "화면 언어 이름은 그대로");
 
 
+// --- 화면 언어별 카드로 찾기: 소문자 영문, 중국어 음역·칭호 조각, 별명, 헛잡음 막기 ---
+{
+  const load = (lang: string) => {
+    const langCards = (JSON.parse(fs.readFileSync(path.join(dir, `champion-cards-${lang}.json`), "utf8")) as { cards: ChampionCard[] }).cards;
+    return {
+      cards: langCards,
+      cardById: new Map(langCards.map((c) => [c.id, c])),
+      aliases: new Map(langCards.map((c) => [c.id, [...new Set([...(names[c.id] ?? []), c.id])].filter((n) => n !== c.name)])),
+    } as unknown as AdvisorData;
+  };
+  const en = load("en_US");
+  const zh = load("zh_CN");
+  const idsIn = (d: AdvisorData, text: string) => detectChampions(d, text).map((c) => c.id);
+  eq(idsIn(en, "how do i lane vs zed as ahri"), ["Zed", "Ahri"], "영어 화면에서 소문자 이름");
+  eq(idsIn(en, "cho gath top tips"), ["Chogath"], "띄어 쓴 Cho'Gath");
+  eq(idsIn(en, "Could you help me? Everyone says it's hard"), [], "Could·Everyone 이 Corki·Evelynn 으로 잡히지 않는다");
+  eq(idsIn(zh, "我们中单瑞兹、辅助加里奥"), ["Ryze", "Galio"], "중국어 음역 이름(瑞兹·加里奥)");
+  eq(idsIn(zh, "光辉怎莫这么烦啊"), ["Lux"], "중국어 칭호 앞 두 글자(光辉女郎 → 光辉)");
+  eq(idsIn(zh, "请问排位选人时能不能换符文页？"), [], "符文(룬)이 라이즈(符文法师)로 잡히지 않는다");
+  eq(idsIn(zh, "帮助之手 攻击会对小兵造成额外伤害"), [], "아이템 효과 이름(帮助之手)이 다리우스로 잡히지 않는다");
+  eq(ids("모르겠어 아무것도 못 하겠어"), [], "두 글자 접두사(모르·아무)가 모르가나·아무무로 잡히지 않는다");
+  eq(ids("업그레이드는 언제 해?"), [], "별명(그레)은 낱말 앞머리에서만");
+  eq(ids("캐릭터 오른쪽으로 쏩니다"), [], "두 글자 이름(오른)도 낱말 앞머리에서만");
+  eq(ids("룰루로 렐 상대중인데"), ["Lulu", "Rell"], "한 글자 이름(렐)은 뒤에 공백·조사가 올 때");
+  eq(ids("진짜 어렵다"), [], "진짜 의 진은 진(Jhin)이 아니다");
+}
+
 // --- 영어·중국어 문형으로 시점 가르기 ---
 {
   const names = (card: ChampionCard) => [card.name, ...(data.aliases.get(card.id) ?? [])];
