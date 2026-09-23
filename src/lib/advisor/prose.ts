@@ -211,10 +211,15 @@ const PER_SECTION = 2;
  *   아이템     상대 피해가 내 약한 저항을 파고드는가 + 초반 저항 아이템 + 상황별 아이템 노트
  *   싸우는 법  내 콤보 + 상대의 빈틈(이동 수단 공백·라인전) + 시간이 누구 편인가
  *
- * 노트마다 첫 문장만 쓴다. 노트 전문은 카드에서 펼쳐 볼 수 있다.
+ * 노트마다 첫 문장만 쓴다. 한 갈래를 물었으면 그 칸의 첫 노트만 전문으로 싣는다(`DigestDetail`).
+ * 나머지 전문은 카드에서 펼쳐 볼 수 있다.
  */
-export function matchupDigest(answer: Extract<AdvisorAnswer, { kind: "compare" }>, lang: Language = "ko_KR"): string {
-  return digestSections(answer, lang)
+export function matchupDigest(
+  answer: Extract<AdvisorAnswer, { kind: "compare" }>,
+  lang: Language = "ko_KR",
+  detail: DigestDetail = "focus-lead",
+): string {
+  return digestSections(answer, lang, detail)
     .filter((section) => section.lines.length)
     .map((section) => `**${section.title}**\n${labelSlots(section.lines.join(" "), answer.cards)}`)
     .join("\n\n");
@@ -229,10 +234,30 @@ export interface DigestSection {
 }
 
 /** 칸별로 고른 문장. 칸 순서는 물은 주제를 따른다. */
-export function digestSections(answer: Extract<AdvisorAnswer, { kind: "compare" }>, lang: Language = "ko_KR"): DigestSection[] {
+/**
+ * 물은 칸을 얼마나 자세히 실을지. 일반 질문(갈래 general)은 어느 값이든 첫 문장만 싣는다.
+ *
+ * 한 갈래 8문항 맹검(1~5점, 2026-09-24, 채점은 답을 처음 보는 별도 에이전트):
+ *   focus-lead 3.50 · focus-full 3.38 · short 2.75 · 4B 산문 2.62
+ * 첫 문장만으로는 "W 응수를 빼내는 것이 첫 과제입니다" 에서 끝나 방법이 빠졌다(얇다).
+ * 전부 펼치면 길어져 물은 것이 묻혔고, 뒤쪽 노트의 틀린 문장까지 딸려 나왔다.
+ *
+ *   short       노트마다 첫 문장만
+ *   focus-full  물은 칸의 노트는 전문
+ *   focus-lead  물은 칸의 첫 노트만 전문, 나머지는 첫 문장(기본)
+ */
+export type DigestDetail = "short" | "focus-full" | "focus-lead";
+
+export function digestSections(
+  answer: Extract<AdvisorAnswer, { kind: "compare" }>,
+  lang: Language = "ko_KR",
+  detail: DigestDetail = "focus-lead",
+): DigestSection[] {
   const notes = answer.notes;
   const plan = notes?.plan;
   if (!notes || !plan) return [];
+  // 첫 문장 → 전문. 물은 칸을 펼칠 때 쓴다. 도출 문장은 한 문장이라 그대로다.
+  const fullOf = new Map([...plan.mine, ...plan.enemy].map((entry) => [firstSentence(entry.text), entry.text]));
   const [, enemy] = answer.cards;
   const heading = DIGEST_HEADINGS[lang] ?? DIGEST_HEADINGS.ko_KR;
   const claims = (kind: string) => plan.claims.filter((claim) => claim.kind === kind).map((claim) => claim.text);
@@ -289,11 +314,29 @@ export function digestSections(answer: Extract<AdvisorAnswer, { kind: "compare" 
   const sections =
     focus === "situational-item" ? [build, watch, fight] : fightCategories.length ? [fight, watch, build] : [watch, build, fight];
   const used = new Set<string>();
-  return sections.map(([key, title, lines, size]) => {
+  const asked = focus !== "general";
+  return sections.map(([key, title, lines, size], index) => {
     const picked = lines.filter((line) => line && !used.has(line)).slice(0, size);
     for (const line of picked) used.add(line);
-    return { key, title, lines: picked };
+    // 한 갈래를 물었으면 맨 앞 칸이 그 답이다. 첫 문장만으로는 "W 응수를 빼내는 것이 첫
+    // 과제입니다" 에서 끝나 방법이 빠졌다. 그 칸만 노트 전문으로 펼친다.
+    const expand = asked && index === 0 && detail !== "short";
+    const shown = expand
+      ? picked.map((line, i) => (detail === "focus-full" || i === 0 ? expandLine(line, fullOf, enemy?.name) : line))
+      : picked;
+    return { key, title, lines: shown };
   });
+}
+
+/** 첫 문장을 노트 전문으로 바꾼다. `withOwner` 가 이름을 붙였으면 떼고 찾아 다시 붙인다. */
+function expandLine(line: string, fullOf: Map<string, string>, name: string | undefined): string {
+  const direct = fullOf.get(line);
+  if (direct) return direct;
+  if (name && line.startsWith(`${name} `)) {
+    const full = fullOf.get(line.slice(name.length + 1));
+    if (full) return withOwner(full, name);
+  }
+  return line;
 }
 
 /**
