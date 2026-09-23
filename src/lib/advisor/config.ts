@@ -343,10 +343,13 @@ export function currentModelChoice(): string {
  *   [Invalid Buffer] is invalid due to a previous error.
  *
  * 가장 긴 해설이 700토큰 남짓이다. 2048 이면 세 배 여유이면서 캐시는 4분의 1 로
- * 준다. 폭주는 이 선보다 먼저 반복 차단이 잡는다 — 같은 문장이 세 번 나오면
- * 워커가 끊는다.
+ * 준다. 폭주는 이 선보다 먼저 반복 차단이 잡는다 — 같은 24자 구간이 세 번 나오면
+ * 워커가 끊는다(`loopGuard`).
  */
 export const MAX_NEW_TOKENS = 2048;
+
+/** 같은 n-gram 을 두 번 못 쓰게 하는 길이. 까닭은 워커의 `generate` 에 적었다. */
+export const NO_REPEAT_NGRAM = 20;
 
 /** 동의 여부를 남기는 곳. 지우면 다시 묻는다. */
 export const CONSENT_STORAGE_KEY = "cooldown.advisor.consent.v1";

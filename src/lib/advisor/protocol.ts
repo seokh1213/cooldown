@@ -59,6 +59,8 @@ export type AdvisorResponse =
       text: string;
       tokens: number;
       seconds: number;
+      /** 반복 차단이 끊었는가. 그랬다면 `text` 는 되풀이한 꼬리를 걷어 낸 글이다. */
+      looped?: boolean;
       /** 첫 토큰까지 걸린 시간. 프롬프트를 읽는 데 쓴 몫이다. */
       ttftSeconds?: number;
       /** 프롬프트 길이. 읽는 시간이 길면 여기가 큰 것이다. */
