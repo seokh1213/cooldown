@@ -105,6 +105,7 @@ async function generate(
   system?: string,
   tools?: unknown[],
   maxTokens?: number,
+  loopGuard = true,
 ) {
   await load(spec);
   if (!tokenizer || !model) throw new Error("모델이 준비되지 않았습니다");
@@ -150,7 +151,7 @@ async function generate(
       text += chunk;
       tokens += 1;
       post({ type: "chunk", id, text: chunk });
-      if (!looped && guard.feed(chunk)) {
+      if (loopGuard && !looped && guard.feed(chunk)) {
         looped = true;
         stopper.interrupt();
       }
@@ -319,7 +320,7 @@ ctx.addEventListener("message", (event: MessageEvent<AdvisorRequest>) => {
     return;
   }
   if (request.type === "generate") {
-    generate(request.id, request.model, request.messages, request.system, request.tools, request.maxTokens).catch((error: unknown) => {
+    generate(request.id, request.model, request.messages, request.system, request.tools, request.maxTokens, request.loopGuard ?? true).catch((error: unknown) => {
       const message = (error as Error).message;
       /*
        * GPU 쪽이 한 번 깨지면 세션이 살아 있어도 못 쓴다.

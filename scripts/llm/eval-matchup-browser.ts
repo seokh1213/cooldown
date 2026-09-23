@@ -16,7 +16,7 @@ import type { Playbook } from "./lib/playbookCore";
 import type { AdvisorData } from "../../src/lib/advisor/context";
 import { FALLBACK_MODEL, ADVISOR_MODEL } from "../../src/lib/advisor/config";
 import type { AdvisorRequest, AdvisorResponse } from "../../src/lib/advisor/protocol";
-import { PAIRS, formatRow, runPair, summarize, type Generate, type Mode, type Row } from "./lib/matchupEval";
+import { FOCUSED, PAIRS, formatRow, runPair, summarize, type Generate, type Mode, type Row } from "./lib/matchupEval";
 
 let worker: Worker | null = null;
 let workerModel = "";
@@ -36,7 +36,7 @@ function ensureWorker(key: string): Worker {
 }
 
 function makeGenerate(model: { id: string; dtype: string }): Generate {
-  return (system, user, maxTokens) =>
+  return (system, user, maxTokens, options) =>
     new Promise((resolve, reject) => {
       const w = ensureWorker(`${model.id}:${model.dtype}`);
       const id = nextId++;
@@ -67,6 +67,7 @@ function makeGenerate(model: { id: string; dtype: string }): Generate {
         system,
         messages: [{ role: "user", content: user }],
         maxTokens,
+        loopGuard: options?.guard !== false,
       };
       w.postMessage(request);
     });
@@ -94,7 +95,7 @@ async function loadData(): Promise<{ data: AdvisorData; patch: string }> {
  *   await m.run({ spec: { id: "onnx-community/Qwen3.5-0.8B-Text-ONNX", dtype: "q8" } })
  */
 export async function run(
-  options: { mode?: Mode; only?: string; model?: "lite" | "default"; spec?: { id: string; dtype: string } } = {},
+  options: { mode?: Mode; only?: string; set?: "pairs" | "focused"; model?: "lite" | "default"; spec?: { id: string; dtype: string } } = {},
 ) {
   const mode = options.mode ?? "single";
   const model = options.spec ?? (options.model === "default" ? ADVISOR_MODEL : FALLBACK_MODEL);
@@ -102,9 +103,11 @@ export async function run(
   const generate = makeGenerate(model);
   const rows: Row[] = [];
   const log: string[] = [];
-  for (const [meId, enemyId, question] of PAIRS) {
+  const cases: Array<[string, string, string, string?]> =
+    options.set === "focused" ? FOCUSED.map(([a, b, focus, q]) => [a, b, q, focus]) : PAIRS.map(([a, b, q]) => [a, b, q]);
+  for (const [meId, enemyId, question, focus] of cases) {
     if (options.only && !question.includes(options.only)) continue;
-    const row = await runPair(generate, data, data.cardById.get(meId)!, data.cardById.get(enemyId)!, question, patch, mode);
+    const row = await runPair(generate, data, data.cardById.get(meId)!, data.cardById.get(enemyId)!, question, patch, mode, focus);
     rows.push(row);
     const line = formatRow(row);
     log.push(line);

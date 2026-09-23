@@ -20,6 +20,21 @@ import { advisorSystemPrompt } from "../../../src/lib/advisor/persona";
 import { MAX_NEW_TOKENS } from "../../../src/lib/advisor/config";
 import { createLoopGuard } from "../../../src/lib/advisor/loopGuard";
 
+/**
+ * 한 갈래를 콕 집은 상성 질문. 셋째 값이 그 갈래다(판정기 topic-v1 이 가를 값).
+ * 고르는 판본이 질문에 맞춰 칸을 고르는지 본다.
+ */
+export const FOCUSED: Array<[string, string, string, string]> = [
+  ["MonkeyKing", "Rumble", "situational-item", "오공으로 럼블 상대할 때 아이템 뭐 가?"],
+  ["Yasuo", "Malphite", "laning", "야스오로 말파이트 라인전 어떻게 해?"],
+  ["Ahri", "Zed", "combo", "아리로 제드 상대할 때 콤보 어떻게 넣어?"],
+  ["Zed", "Lux", "escape-window", "제드로 럭스 상대할 때 언제 들어가?"],
+  ["Jax", "Fiora", "skill", "잭스로 피오라 상대할 때 피오라 W 어떻게 빼?"],
+  ["Sett", "Mordekaiser", "phase", "세트로 모데카이저 상대하면 후반 어때?"],
+  ["Vayne", "Caitlyn", "laning", "베인으로 케이틀린 상대 초반 어떻게 버텨?"],
+  ["Garen", "Darius", "teamfight", "가렌으로 다리우스 있는 한타 어떻게 해?"],
+];
+
 /** 첫 줄이 실제로 화면에서 무한 반복을 낸 질문이다. */
 export const PAIRS: Array<[string, string, string]> = [
   ["MonkeyKing", "Rumble", "오공으로 럼블이 너무어려운데 팁이 없나?"],
@@ -48,9 +63,10 @@ export interface Generated {
   untrimmed?: string;
 }
 
-export type Generate = (system: string, user: string, maxTokens: number) => Promise<Generated>;
+/** `guard` 가 거짓이면 반복 차단을 걸지 않는다 — 번호만 쓰는 XML 은 태그가 되풀이되는 것이 정상이다. */
+export type Generate = (system: string, user: string, maxTokens: number, options?: { guard?: boolean }) => Promise<Generated>;
 
-export type Mode = "single" | "lite" | "rewrite" | "xml" | "digest";
+export type Mode = "single" | "lite" | "rewrite" | "xml" | "digest" | "pick" | "pick-shuf";
 
 export interface Row {
   question: string;
@@ -76,6 +92,12 @@ export interface Row {
   /** xml: 세 칸이 다 있었는가, 노트 조립으로 대체한 칸 수 */
   xmlWellFormed?: boolean;
   xmlFallback?: number;
+  /** pick: 같은 선택을 사실 전문으로 옮긴 판, 고른 번호, 없는 번호 수 */
+  alt?: string;
+  picked?: Record<string, number[]>;
+  invalid?: number;
+  /** 질문이 콕 집은 갈래(두 번째 문항 세트). 조립 답의 칸 순서가 이것을 따른다. */
+  focus?: string;
 }
 
 /** 원문에 같은 24자 구간이 세 번 이상 나왔나. 공백은 접어서 본다. */
@@ -171,6 +193,7 @@ export async function runPair(
   question: string,
   patch: string,
   mode: Mode,
+  focus?: string,
 ): Promise<Row> {
   const answer = matchupAnswer(data, me, enemy, question);
   const persona = advisorSystemPrompt("ko_KR");
@@ -184,11 +207,37 @@ export async function runPair(
 
   let xmlWellFormed: boolean | undefined;
   let xmlFallback: number | undefined;
+  let altText: string | undefined;
+  let picked: Record<string, number[]> | undefined;
+  let invalid: number | undefined;
+  // 두 번째 문항 세트는 갈래를 정해 둔다. 판정기가 가른 값을 넣는 것과 같다.
+  if (focus && answer.kind === "compare" && answer.notes?.plan) answer.notes.plan.focus = focus;
   if (mode === "digest") {
     // 모델 없이 노트 조립만. 0.8B 기기와 모델 없는 기기가 받는 답이다.
     const prose = await import("../../../src/lib/advisor/prose.ts");
     shownRaw = prose.answerProse(answer, "ko_KR");
     raw = shownRaw;
+  } else if (mode === "pick" || mode === "pick-shuf") {
+    const pick = await import("../../../src/lib/advisor/factPick.ts");
+    // 섞는 값은 질문에서 정한다. 같은 질문이면 같은 순서라 다시 재도 같다.
+    const shuffle = mode === "pick-shuf" ? [...question].reduce((h, ch) => (h * 31 + ch.charCodeAt(0)) >>> 0, 7) : undefined;
+    const prompt = pick.buildFactPickPrompt(answer, "ko_KR", shuffle);
+    if (!prompt) throw new Error("사실 목록 없음");
+    promptChars = prompt.length;
+    const result = await generate(`${persona}\n\n${prompt}`, question, 200, { guard: false });
+    raw = result.untrimmed ?? result.text;
+    tokens = result.tokens;
+    seconds = result.seconds;
+    capped = result.tokens >= 200;
+    if (answer.kind !== "compare") throw new Error("상성 답이 아님");
+    const first = pick.renderFactPick(result.text, answer, "ko_KR", false, shuffle);
+    const whole = pick.renderFactPick(result.text, answer, "ko_KR", true, shuffle);
+    shownRaw = first.text;
+    altText = whole.text;
+    picked = first.picked;
+    invalid = first.invalid;
+    xmlWellFormed = first.wellFormed;
+    xmlFallback = first.fallback;
   } else if (mode === "xml") {
     const xml = await import("../../../src/lib/advisor/xmlAnswer.ts");
     const prompt = xml.buildXmlMatchupPrompt(answer, patch, "ko_KR");
@@ -230,7 +279,7 @@ export async function runPair(
     shownRaw = result.text;
   }
 
-  const grounded = mode === "xml" || mode === "digest" ? { text: shownRaw, dropped: [] } : groundCommentary(shownRaw, answer, "ko_KR");
+  const grounded = mode === "xml" || mode === "digest" || mode === "pick" || mode === "pick-shuf" ? { text: shownRaw, dropped: [] } : groundCommentary(shownRaw, answer, "ko_KR");
   const coverage = slotCoverage(grounded.text, answer);
   return {
     question,
@@ -252,6 +301,10 @@ export async function runPair(
     ...noteCopying(grounded.text, answer),
     xmlWellFormed,
     xmlFallback,
+    alt: altText,
+    picked,
+    invalid,
+    focus,
   };
 }
 
