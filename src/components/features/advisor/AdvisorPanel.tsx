@@ -48,6 +48,7 @@ import {
   asksSkillsOverview,
   buildCommentaryPrompt,
   buildCompareAnswer as buildCompareCard,
+  matchupSidesByPhrase,
   buildRuleAnswer as buildRuleCard,
   buildSpellAnswer as buildSpellCard,
   detectSpellFocus,
@@ -443,7 +444,13 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
               { instructions: JUDGE_KIND_INSTRUCTIONS, options: Object.entries(JUDGE_KIND_CRITERIA).map(([name, description]) => ({ name, description })) },
               ...(named.length >= 2 ? [{ instructions: JUDGE_MINE_INSTRUCTIONS, options: names.map((name) => ({ name })) }] : []),
             ])
-            .then(([kind, mine]) => routeFromJudge(kind, mine, named))
+            .then(([kind, mine]) => {
+              const route = routeFromJudge(kind, mine, named);
+              // 영어·중국어 문형이 시점을 정해 주면 그것을 따른다. 판정기가 가장 약한 자리다.
+              if (route.kind !== "matchup" || named.length < 2) return route;
+              const phrased = matchupSidesByPhrase(question, [named[0], named[1]], (card) => [card.name, ...(data.aliases.get(card.id) ?? [])]);
+              return phrased ? { ...route, mine: phrased } : route;
+            })
             .catch(() => undefined)
         : await advisor
             .classify(routePrompt(names), question)

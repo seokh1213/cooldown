@@ -18,7 +18,7 @@ import {
   type AdvisorModel,
   type WebGpuSupport,
 } from "@/lib/advisor/config";
-import { deleteModelCache } from "@/lib/advisor/storage";
+import { deleteModelCache, fetchJudgeFile } from "@/lib/advisor/storage";
 import type { AdvisorAnswer } from "@/lib/advisor/answer";
 import { answerProse } from "@/lib/advisor/prose";
 import { readJudgeHead, scoreJudge, type JudgeHead, type JudgeHeadMeta, type JudgeQuestion } from "@/lib/advisor/judge";
@@ -197,6 +197,9 @@ export interface UseAdvisorResult {
   /** 저장된 대화를 통째로 올린다. id 가 겹치지 않게 다음 id 를 그 뒤로 옮긴다. */
   replaceTurns: (turns: AdvisorTurn[]) => void;
 }
+
+/** 가벼운 모델이 쓰는 판정 헤드. 모델을 올리면 미리 받아 둔다. */
+const LITE_JUDGE_HEADS = ["route-v1"];
 
 function readConsent(): boolean {
   try {
@@ -726,6 +729,21 @@ export function useAdvisor(): UseAdvisorResult {
     [post, model],
   );
 
+  /** 판정 헤드를 한 번만 받아 둔다. 실패하면 다음에 다시 받는다. */
+  const loadJudgeHead = useCallback((headName: string): Promise<JudgeHead> => {
+    let pending = judgeHeads.current.get(headName);
+    if (!pending) {
+      const base = `${import.meta.env.BASE_URL}models/judge/${headName}`;
+      pending = Promise.all([fetchJudgeFile(`${base}.json`), fetchJudgeFile(`${base}.bin`)]).then(async ([metaRes, binRes]) => {
+        if (!metaRes.ok || !binRes.ok) throw new Error(`판정 헤드 ${headName} 를 받지 못했습니다`);
+        return readJudgeHead((await metaRes.json()) as JudgeHeadMeta, await binRes.arrayBuffer());
+      });
+      judgeHeads.current.set(headName, pending);
+      pending.catch(() => judgeHeads.current.delete(headName));
+    }
+    return pending;
+  }, []);
+
   /**
    * 판정기로 고른다.
    *
@@ -735,17 +753,7 @@ export function useAdvisor(): UseAdvisorResult {
   const judge = useCallback(
     async (headName: string, state: string, questions: JudgeQuestion[]): Promise<number[][]> => {
       if (!consented) throw new Error("동의 전에는 모델을 부르지 않습니다");
-      let pending = judgeHeads.current.get(headName);
-      if (!pending) {
-        const base = `${import.meta.env.BASE_URL}models/judge/${headName}`;
-        pending = Promise.all([fetch(`${base}.json`), fetch(`${base}.bin`)]).then(async ([metaRes, binRes]) => {
-          if (!metaRes.ok || !binRes.ok) throw new Error(`판정 헤드 ${headName} 를 받지 못했습니다`);
-          return readJudgeHead((await metaRes.json()) as JudgeHeadMeta, await binRes.arrayBuffer());
-        });
-        judgeHeads.current.set(headName, pending);
-        pending.catch(() => judgeHeads.current.delete(headName));
-      }
-      const head = await pending;
+      const head = await loadJudgeHead(headName);
       if (head.model.id !== model.id || head.model.dtype !== model.dtype) {
         throw new Error(`판정 헤드 ${headName} 는 ${head.model.id} 용입니다`);
       }
@@ -760,8 +768,19 @@ export function useAdvisor(): UseAdvisorResult {
         return scoreJudge(head, rows);
       });
     },
-    [consented, model, post],
+    [consented, model, post, loadJudgeHead],
   );
+
+  /*
+   * 가벼운 모델을 다 올렸으면 판정 헤드를 미리 받아 둔다.
+   *
+   * 처음 판정할 때 받으면, 모델만 받아 두고 오프라인이 된 사용자는 판정기를 한 번도
+   * 못 쓴다. 모델 적재가 끝난 때가 네트워크가 확실히 있던 마지막 순간이다.
+   */
+  useEffect(() => {
+    if (!modelReady || !model.lite) return;
+    for (const name of LITE_JUDGE_HEADS) void loadJudgeHead(name).catch(() => undefined);
+  }, [modelReady, model, loadJudgeHead]);
 
   const rate = useCallback((turnId: number, rating: "up" | "down", patch: string) => {
     setTurns((prev) => {

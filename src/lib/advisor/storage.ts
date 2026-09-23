@@ -117,3 +117,28 @@ export async function deleteModelCache(): Promise<boolean> {
   }
   return removed;
 }
+
+/**
+ * 판정 헤드를 넣어 두는 캐시.
+ *
+ * 모델 캐시와 같은 접두사라 "모델 삭제" 가 함께 지우고 용량에도 함께 잡힌다. 헤드만
+ * 남거나 모델만 남으면 판정기가 안 도므로 둘은 같이 있어야 한다.
+ */
+const JUDGE_CACHE = `${CACHE_PREFIX}-judge`;
+
+/**
+ * 판정 헤드 파일을 받는다. 캐시에 있으면 네트워크에 가지 않는다.
+ *
+ * 헤드 이름에 판(`route-v1`)이 붙어 있어 내용이 바뀌면 이름이 바뀐다. 그래서 캐시를
+ * 먼저 본다. 모델을 받아 둔 사용자는 오프라인에서도 판정기를 써야 한다 — 서비스
+ * 워커의 선캐시에는 넣지 않았다(4MB 를 모델을 안 쓰는 사람에게까지 받게 할 이유가 없다).
+ */
+export async function fetchJudgeFile(url: string): Promise<Response> {
+  const store = cacheStorage();
+  const cache = store ? await store.open(JUDGE_CACHE).catch(() => undefined) : undefined;
+  const hit = await cache?.match(url).catch(() => undefined);
+  if (hit) return hit;
+  const response = await fetch(url);
+  if (response.ok && cache) await cache.put(url, response.clone()).catch(() => undefined);
+  return response;
+}

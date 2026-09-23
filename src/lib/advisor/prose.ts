@@ -140,7 +140,7 @@ export function answerProse(answer: AdvisorAnswer, lang: Language = "ko_KR"): st
     return w.is(answer.headline.label, answer.headline.value);
   }
 
-  if (answer.kind === "compare" && answer.matchup) return matchupDigest(answer);
+  if (answer.kind === "compare" && answer.matchup) return matchupDigest(answer, lang);
 
   if (answer.kind === "item") {
     if (answer.verdicts.length) {
@@ -157,10 +157,33 @@ export function answerProse(answer: AdvisorAnswer, lang: Language = "ko_KR"): st
   return "";
 }
 
-/** 상성 요약에 싣는 문장 수 */
-const DIGEST_SIZE = 3;
-
 const firstSentence = (text: string) => text.split(/(?<=[.!?。])\s+/)[0]?.trim() ?? text;
+
+/**
+ * 상대에게 맞으면 곤란한 효과. 상성 요약의 "조심할 것" 을 고르는 잣대다.
+ *
+ * 카드 태그를 그대로 쓴다(스킬 865개에 붙은 값). 붙잡는 것과 저항을 깎는 것이 위협이다
+ * — "럼블 E 전기 작살을 맞으면 마법 저항력이 깎인다" 가 이 둘이 겹친 경우다.
+ */
+const THREAT_TAGS = new Set([
+  "둔화", "기절", "속박", "에어본", "강제 이동(넉백/끌기)", "침묵", "공포", "매혹", "도발", "억제",
+  "적 마법 저항력 감소", "적 방어력 감소", "처형", "치유 감소",
+]);
+
+const DIGEST_HEADINGS: Record<Language, { watch: string; build: string; fight: string }> = {
+  ko_KR: { watch: "조심할 것", build: "아이템", fight: "싸우는 법" },
+  en_US: { watch: "Watch out", build: "Build", fight: "How to fight" },
+  zh_CN: { watch: "注意", build: "出装", fight: "打法" },
+};
+
+/** 문장이 챔피언 이름으로 시작하지 않으면 앞에 붙인다. 이미 "럼블의" 로 시작하면 둔다. */
+function withOwner(line: string, name: string | undefined): string {
+  if (!name || line.startsWith(name)) return line;
+  return `${name} ${line}`;
+}
+
+/** 한 칸에 싣는 문장 수 상한. 길어지면 요약이 아니라 노트 전문이 된다. */
+const PER_SECTION = 2;
 
 /**
  * 상성 답을 검증된 문장으로 조립한다. 모델이 쓰지 않는다.
@@ -169,19 +192,57 @@ const firstSentence = (text: string) => text.split(/(?<=[.!?。])\s+/)[0]?.trim(
  * 검증된 노트 셋을 그대로 놓으면 3.8, 판정기가 고른 셋이면 4.1 이었다. 옳은 말만
  * 나가고 되풀이·지어내기가 없다. 모델이 없는 기기도 같은 답을 받는다.
  *
- * 고르는 순서: 이 조합을 직접 말하는 도출 문장 하나, 내 쪽 운용 노트 하나, 상대 쪽
- * 노트 하나. 모자라면 내 쪽 노트로 채운다. 노트마다 첫 문장만 쓴다 — 노트 전문은 카드에
- * 펼쳐 볼 수 있다.
+ * **칸을 코드가 정한다.** 처음에는 "도출 하나·내 노트 하나·상대 노트 하나" 를 순서대로
+ * 뽑았는데, 오공·럼블에서 "오공의 물리 피해가 럼블 방어력에 막힌다" 가 먼저 나오고
+ * 정작 급한 말 — 럼블 E 를 맞으면 마법 저항력이 깎인다, 오공은 마법 저항력이 바닥이라
+ * 마저 아이템이 먼저다 — 은 빠졌다. 재료에는 다 있었다. 순서가 기계적이었을 뿐이다.
+ *
+ *   조심할 것  상대 노트 중 위협 효과(붙잡기·저항 깎기)를 가진 스킬을 말하는 것
+ *   아이템     상대 피해가 내 약한 저항을 파고드는가 + 초반 저항 아이템 + 상황별 아이템 노트
+ *   싸우는 법  내 콤보 + 상대의 빈틈(이동 수단 공백·라인전) + 시간이 누구 편인가
+ *
+ * 노트마다 첫 문장만 쓴다. 노트 전문은 카드에서 펼쳐 볼 수 있다.
  */
-export function matchupDigest(answer: Extract<AdvisorAnswer, { kind: "compare" }>): string {
+export function matchupDigest(answer: Extract<AdvisorAnswer, { kind: "compare" }>, lang: Language = "ko_KR"): string {
   const notes = answer.notes;
-  if (!notes) return "";
-  const derivedCount = notes.derived ?? 0;
-  const derived = notes.mine.slice(0, derivedCount);
-  const playbook = notes.mine.slice(derivedCount);
-  const picked = [derived[0], playbook[0], notes.enemy[0], ...playbook.slice(1), ...derived.slice(1)]
-    .filter((note): note is string => Boolean(note))
-    .map(firstSentence);
-  const unique = [...new Set(picked)].slice(0, DIGEST_SIZE);
-  return labelSlots(unique.join(" "), answer.cards);
+  const plan = notes?.plan;
+  if (!notes || !plan) return "";
+  const [, enemy] = answer.cards;
+  const heading = DIGEST_HEADINGS[lang] ?? DIGEST_HEADINGS.ko_KR;
+  const claims = (kind: string) => plan.claims.filter((claim) => claim.kind === kind).map((claim) => claim.text);
+  const byCategory = (list: typeof plan.mine, ...categories: string[]) =>
+    categories.flatMap((category) => list.filter((entry) => entry.category === category)).map((entry) => firstSentence(entry.text));
+
+  // 상대 노트를 위협 정도로 줄 세운다. 노트가 부르는 상대 스킬의 효과 태그 중 위협인 것의 수.
+  // 노트는 스킬을 이름으로도("전기 작살을") 슬롯으로도("R은", "E로") 부른다. 둘 다 본다.
+  const threat = (text: string) =>
+    (enemy?.spells ?? [])
+      .filter(
+        (spell) =>
+          (spell.name.length >= 2 && text.includes(spell.name)) ||
+          (spell.slot !== "P" && new RegExp(`(?<![A-Za-z])${spell.slot}(?=\\s|[은는이가을를로의와과에]|$)`).test(text)),
+      )
+      .reduce((sum, spell) => sum + spell.effects.filter((tag) => THREAT_TAGS.has(tag)).length, 0);
+  const threats = plan.enemy
+    .filter((entry) => ["skill", "laning", "teamfight"].includes(entry.category))
+    .map((entry) => ({ text: firstSentence(entry.text), score: threat(entry.text) }))
+    .filter((entry) => entry.score > 0)
+    .sort((a, b) => b.score - a.score)
+    .map((entry) => entry.text);
+
+  const sections: Array<[string, string[]]> = [
+    // 누구의 스킬인지 흐려지지 않게 상대 이름을 앞에 둔다("E 전기 작살을…" → "럼블 E 전기 작살을…").
+    [heading.watch, [...threats.slice(0, 1).map((line) => withOwner(line, enemy?.name)), ...claims("pinned")]],
+    [heading.build, [...claims("defense"), ...byCategory(plan.mine, "situational-item"), ...byCategory(plan.enemy, "situational-item"), ...claims("offense")]],
+    [heading.fight, [...byCategory(plan.mine, "combo"), ...byCategory(plan.enemy, "escape-window", "laning"), ...claims("scaling")]],
+  ];
+  const used = new Set<string>();
+  return sections
+    .map(([title, lines]) => {
+      const picked = lines.filter((line) => line && !used.has(line)).slice(0, PER_SECTION);
+      for (const line of picked) used.add(line);
+      return picked.length ? `**${title}**\n${labelSlots(picked.join(" "), answer.cards)}` : "";
+    })
+    .filter(Boolean)
+    .join("\n\n");
 }
