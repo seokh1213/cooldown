@@ -189,6 +189,10 @@ const FIGHT_TITLES: Record<Language, Partial<Record<string, string>>> = {
 /** 문장이 챔피언 이름으로 시작하지 않으면 앞에 붙인다. 이미 "럼블의" 로 시작하면 둔다. */
 function withOwner(line: string, name: string | undefined): string {
   if (!name || line.startsWith(name)) return line;
+  // 문장 안에 이미 이름이 있으면 붙이지 않는다. "논타겟 스킬은 드레이븐이 아니라" 앞에 붙이면
+  // "드레이븐 논타겟 스킬은 드레이븐이 아니라" 가 된다. 다만 슬롯으로 시작하면("E는 세트의
+  // 양옆에") 누구의 E 인지가 문장 머리에 있어야 하므로 붙인다.
+  if (line.includes(name) && !/^[PQWER](?![A-Za-z])/.test(line)) return line;
   return `${name} ${line}`;
 }
 
@@ -436,8 +440,15 @@ function questionTerms(question: string): RegExp[] {
   return terms;
 }
 
-/** 전문을 싣되 질문 낱말이 든 문장을 앞으로. "후반 어때" 에 초반 이야기부터 하지 않게. */
-function leadWithTerms(full: string, terms: RegExp[]): string {
+/**
+ * 전문을 싣되 질문 낱말이 든 문장을 앞으로. "후반 어때" 에 초반 이야기부터 하지 않게.
+ *
+ * 시간대 낱말과 슬롯만 본다. "한타 어떻게 해" 의 한타는 갈래 그 자체라 한타 노트의 모든
+ * 문장이 한타 이야기다. 그 낱말이 든 문장을 당기면 노트의 첫 문장("가렌은 선공권이
+ * 없습니다")을 밀어내고 "한타 각 자체가 나오지 않는 구도라면" 으로 시작하게 됐다.
+ */
+function leadWithTerms(full: string, allTerms: RegExp[]): string {
+  const terms = allTerms.filter((term) => !/라인전|한타|갱킹|합류|스플릿|오브젝트/.test(term.source));
   if (!terms.length) return full;
   const sentences = sentencesOf(full);
   const hit = sentences.filter((sentence) => terms.some((term) => term.test(sentence)));
