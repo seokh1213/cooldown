@@ -5,6 +5,7 @@
  * 브라우저 상성 코치가 같은 규칙으로 지식 카드를 고르게 하려면 이 코드가 fs 를 몰라야 한다.
  */
 import type { ChampionCard } from "./facts";
+import { hasFinalConsonant, josa } from "./text";
 
 export interface PlaybookCondition {
   /** 상대 주 피해 유형 */
@@ -34,6 +35,24 @@ export interface PlaybookRefs {
   summoners?: string[];
 }
 
+/**
+ * 상대편 챔피언의 스킬을 채워 넣는 고리.
+ *
+ * 노트는 한 챔피언만 보고 쓴다. "응수가 살아 있는 동안에는 이동 불가 스킬을 함부로 쓰지
+ * 말라" 까지는 쓸 수 있지만 **내 어느 스킬이 그것인지**는 상대를 알아야 한다. 조합이
+ * 삼만 쌍이라 손으로 쓸 수 없다. 그래서 노트에는 효과 태그와 문형만 적고, 고를 때 상대편
+ * 카드에서 그 효과를 가진 스킬을 찾아 문장을 짓는다. 해당 스킬이 없으면 문장을 붙이지 않는다.
+ *
+ * 상대편은 `playing` 노트면 상대 챔피언, `against` 노트면 사용자 챔피언이다.
+ *
+ * 문형의 자리: `{name}` 상대편 이름, `{spells}` 해당 스킬("E 반격"). 조사는 `{name:라면}`,
+ * `{spells:을/를}` 처럼 붙이면 받침에 맞춘다.
+ */
+export interface PlaybookHook {
+  effects: string[];
+  text: string;
+}
+
 export interface PlaybookEntry {
   id?: string;
   /** rune | summoner | start-item | first-item | core-item | situational-item | escape-window | combo | phase | laning | teamfight | skill */
@@ -55,6 +74,7 @@ export interface PlaybookEntry {
   /** 도출로는 나오지 않는 한 문장. 생성된 본문 뒤에 붙는다. */
   nuance?: string;
   when?: PlaybookCondition;
+  hooks?: PlaybookHook[];
   /** 본문이 권장하는 이름 */
   refs?: PlaybookRefs;
   /** 본문이 비교 대상으로만 언급하거나 피하라고 한 이름 (권장안에서 제외) */
@@ -103,12 +123,53 @@ export function selectPlaybook(
   const rank = (e: PlaybookEntry) => (e.when?.enemyIds ? 0 : e.when ? 1 : 2);
   const mine = (mineBook?.playing ?? [])
     .filter((e) => matches(e.when, enemy, lane))
-    .sort((a, b) => rank(a) - rank(b));
+    .sort((a, b) => rank(a) - rank(b))
+    .map((e) => withHooks(e, enemy));
   // 상대 플레이북의 against 는 "이 챔피언을 상대하는 법" 이므로 조건 판정 대상은 내 챔피언이다
   const vsEnemy = (enemyBook?.against ?? [])
     .filter((e) => matches(e.when, me, lane))
-    .sort((a, b) => rank(a) - rank(b));
+    .sort((a, b) => rank(a) - rank(b))
+    .map((e) => withHooks(e, me));
   return { mine, vsEnemy };
+}
+
+type JosaPair = Parameters<typeof josa>[1];
+
+/** 상대를 제자리에 묶는 효과. 둔화는 넣지 않는다 — "빠져나가지 못한다" 는 이것들만 말할 수 있다. */
+export const HARD_CC = ["기절", "속박", "에어본", "강제 이동(넉백/끌기)", "도발", "매혹", "공포", "억제"];
+export const DASH = ["돌진", "이동기"];
+
+/**
+ * "이동 수단과 공백" 노트(카드에서 도출)에 붙이는 고리. 상대 이동기가 빠진 창에 **내 무엇으로**
+ * 붙고 묶는지. 173명 모두의 노트에 같은 두 문형을 단다.
+ */
+export const ESCAPE_HOOKS: PlaybookHook[] = [
+  { effects: DASH, text: "{name:라면} {spells:로/으로} 이 틈에 거리를 좁힙니다." },
+  { effects: HARD_CC, text: "그때 {spells:을/를} 넣으면 빠져나가지 못합니다." },
+];
+
+/** 고리를 상대편 카드로 채워 본문 뒤에 붙인다. 채울 스킬이 없는 고리는 버린다. */
+export function withHooks(entry: PlaybookEntry, other: ChampionCard): PlaybookEntry {
+  // 이동 수단 노트는 카드에서 도출해 173명 모두에게 있다. 같은 고리를 데이터에 173번 적지 않고 여기서 단다.
+  const hooks = entry.hooks ?? (entry.category === "escape-window" ? ESCAPE_HOOKS : undefined);
+  if (!hooks?.length) return entry;
+  const used = new Set<string>();
+  const sentences: string[] = [];
+  for (const hook of hooks) {
+    // 앞 고리가 이미 부른 스킬은 다시 부르지 않는다(돌진이자 기절인 레오나 E)
+    const spells = other.spells.filter(
+      (spell) => spell.slot !== "P" && !used.has(spell.slot) && spell.effects.some((tag) => hook.effects.includes(tag)),
+    );
+    if (!spells.length) continue;
+    for (const spell of spells) used.add(spell.slot);
+    const list = spells.map((spell) => `${spell.slot} ${spell.name}`).join("·");
+    sentences.push(
+      hook.text
+        .replace(/\{name(?::라면)?\}/g, (m) => (m === "{name}" ? other.name : `${other.name}${hasFinalConsonant(other.name) ? "이라면" : "라면"}`))
+        .replace(/\{spells(?::([^}]+))?\}/g, (_, pair?: string) => (pair ? josa(list, pair as JosaPair) : list)),
+    );
+  }
+  return sentences.length ? { ...entry, text: `${entry.text} ${sentences.join(" ")}` } : entry;
 }
 
 const CATEGORY_LABEL: Record<string, string> = {

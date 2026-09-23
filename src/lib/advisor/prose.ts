@@ -284,18 +284,11 @@ export function digestSections(
   // 노트는 스킬을 이름으로도("전기 작살을") 슬롯으로도("R은", "E로") 부른다. 둘 다 본다.
   const threat = (text: string) =>
     (enemy?.spells ?? [])
-      .filter(
-        (spell) =>
-          (spell.name.length >= 2 && text.includes(spell.name)) ||
-          (spell.slot !== "P" && new RegExp(`(?<![A-Za-z])${spell.slot}(?=\\s|[은는이가을를로의와과에]|$)`).test(text)),
-      )
+      .filter((spell) => spellMentioned(text, spell))
       .reduce((sum, spell) => sum + spell.effects.filter((tag) => THREAT_TAGS.has(tag)).length, 0);
   // 질문이 상대 스킬을 슬롯으로 집었으면("드레이븐 Q") 그 스킬을 말하는 노트가 위협 점수보다 먼저다
   const askedSlots = detail === "focus-cue" || detail === "focus-cue-all" ? enemySlotsAsked(plan.question ?? "", enemy) : [];
-  const namesSlot = (text: string) =>
-    askedSlots.some(
-      (spell) => (spell.name.length >= 2 && text.includes(spell.name)) || new RegExp(`(?<![A-Za-z])${spell.slot}(?=\\s|[은는이가을를로의와과에]|$)`).test(firstSentence(text)),
-    );
+  const namesSlot = (text: string) => askedSlots.some((spell) => spellMentioned(firstSentence(text), spell));
   const threats = plan.enemy
     .filter((entry) => ["skill", "laning", "teamfight"].includes(entry.category))
     .map((entry) => ({ text: firstSentence(entry.text), score: threat(entry.text) + (namesSlot(entry.text) ? 100 : 0) }))
@@ -341,6 +334,9 @@ export function digestSections(
     focus === "situational-item" ? [build, watch, fight] : fightCategories.length ? [fight, watch, build] : [watch, build, fight];
   const used = new Set<string>();
   const asked = focus !== "general";
+  // 칸을 넘어 이어 간다. 고리 문장("제드라면 W·R로 …")은 노트 둘이 같은 스킬을 부르면 두 번 나온다.
+  const hookSaid = new Set<string>();
+  const hookSlots = new Set<string>();
   return sections.map(([key, title, lines, size], index) => {
     const picked = lines.filter((line) => line && !used.has(line)).slice(0, size);
     for (const line of picked) used.add(line);
@@ -350,18 +346,20 @@ export function digestSections(
     if (cue && asked) {
       const terms = questionTerms(plan.question ?? "");
       const names = [enemy?.name, ...(enemy?.spells ?? []).map((spell) => spell.name)].filter((name): name is string => !!name && name.length >= 2);
+      // 고리가 지은 문장("잭스라면 E 반격이 여기에 해당합니다")은 내 이름으로 시작한다. 상성 특화의 핵심이다.
+      const mineName = answer.cards[0]?.name;
       // 노트끼리 문장이 겹친다(조건만 다른 같은 콤보 노트). 이미 실은 문장은 다시 싣지 않는다.
-      const said = new Set<string>();
+      const said = hookSaid;
       const shown: string[] = [];
       for (const [i, line] of picked.entries()) {
         const full = expandLine(line, fullOf, enemy?.name);
         let text = line;
         if (full !== line && expand && i === 0) text = leadWithTerms(full, terms);
         else if (full !== line && (expand || detail === "focus-cue-all")) {
-          const extra = cueSentence(full, terms, names, said);
+          const extra = cueSentence(full, terms, names, said, mineName, hookSlots);
           if (extra) text = `${line} ${extra}`;
         }
-        const fresh = sentencesOf(text).filter((sentence) => !said.has(sentence));
+        const fresh = sentencesOf(text).filter((sentence) => !said.has(sentence) && !repeatsHook(sentence, mineName, hookSlots));
         if (!fresh.length) continue;
         for (const sentence of fresh) said.add(sentence);
         shown.push(fresh.join(" "));
@@ -386,6 +384,16 @@ function interleave<T>(a: T[], b: T[]): T[] {
   return out;
 }
 
+/** 고리 문장이 이미 부른 스킬 묶음을 다시 부르는가. 부르지 않았으면 기억해 둔다. */
+function repeatsHook(sentence: string, mineName: string | undefined, seen: Set<string>): boolean {
+  if (!mineName || !sentence.startsWith(mineName)) return false;
+  const slots = [...sentence.matchAll(/(?:^|[\s·])([QWER]) /g)].map((m) => m[1]).join("");
+  if (!slots) return false;
+  if (seen.has(slots)) return true;
+  seen.add(slots);
+  return false;
+}
+
 /** "언제" 를 말하는 문장. 채점에서 가장 많이 잃은 항목이 타이밍이었다. */
 const TIMING = /직후|뒤에|뒤로|이후|후에|빠진|빠지면|빠졌|끝난|끝나|동안|쿨타임|대기시간|재사용|순간|시점|타이밍|때만|레벨/;
 const TIME_WORDS = ["초반", "중반", "후반", "라인전", "한타", "갱킹", "합류", "스플릿", "오브젝트"];
@@ -396,6 +404,21 @@ function timeCategories(question: string, focus: string): string[] {
   return [...new Set(Object.entries(TIME_CATEGORY).filter(([word]) => question.includes(word)).map(([, category]) => category))].filter(
     (category) => category !== focus,
   );
+}
+
+/** 이름 끝 낱말로 부르기에는 너무 흔한 말. "무기 강화" 의 강화는 드레이븐 노트에도 나온다. */
+const GENERIC_HEADS = new Set(["강화", "공격", "일격", "강타", "폭발", "돌진", "질주", "도약", "방패", "보호막", "베기", "사격", "소환", "변신", "타격"]);
+
+/**
+ * 노트가 이 스킬을 말하는가. 슬롯("E로"), 이름("전기 작살"), 이름의 끝 낱말("도끼를 받으러")
+ * 중 하나. 노트는 스킬을 별명처럼 끝 낱말로만 부르는 일이 많다(드레이븐 Q 회전 도끼 → "도끼").
+ */
+function spellMentioned(text: string, spell: { slot: string; name: string }): boolean {
+  if (spell.name.length >= 2 && text.includes(spell.name)) return true;
+  if (spell.slot !== "P" && new RegExp(`(?<![A-Za-z])${spell.slot}(?=\\s|[은는이가을를로의와과에]|$)`).test(text)) return true;
+  const words = spell.name.split(/\s+/);
+  const head = words[words.length - 1];
+  return words.length > 1 && head.length >= 2 && !GENERIC_HEADS.has(head) && text.includes(head);
 }
 
 /** 질문이 상대 스킬을 슬롯으로 집었는가. "드레이븐 Q", "피오라 W" 처럼 상대 이름 바로 뒤의 슬롯 */
@@ -423,12 +446,23 @@ function leadWithTerms(full: string, terms: RegExp[]): string {
 }
 
 /** 첫 문장 뒤에 덧붙일 한 문장. 질문 낱말·타이밍·상대 이름이 든 것 중 가장 나은 것 */
-function cueSentence(full: string, terms: RegExp[], names: string[], said: Set<string>): string | undefined {
+function cueSentence(
+  full: string,
+  terms: RegExp[],
+  names: string[],
+  said: Set<string>,
+  mineName?: string,
+  hookSlots?: Set<string>,
+): string | undefined {
   let best: { sentence: string; score: number } | undefined;
   for (const sentence of sentencesOf(full).slice(1)) {
-    if (said.has(sentence)) continue;
+    // 이미 실었거나, 실어 봐야 겹친다고 버려질 고리 문장은 고르지 않는다. 고르면 그 자리의 타이밍 문장을 잃는다.
+    if (said.has(sentence) || (hookSlots && repeatsHook(sentence, mineName, new Set(hookSlots)))) continue;
     const score =
-      (terms.some((term) => term.test(sentence)) ? 2 : 0) + (TIMING.test(sentence) ? 2 : 0) + (names.some((name) => sentence.includes(name)) ? 1 : 0);
+      (terms.some((term) => term.test(sentence)) ? 2 : 0) +
+      (TIMING.test(sentence) ? 2 : 0) +
+      (names.some((name) => sentence.includes(name)) ? 1 : 0) +
+      (mineName && sentence.startsWith(mineName) ? 3 : 0);
     if (score >= 2 && (!best || score > best.score)) best = { sentence, score };
   }
   return best?.sentence;
