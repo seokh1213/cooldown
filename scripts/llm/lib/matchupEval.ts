@@ -35,6 +35,21 @@ export const FOCUSED: Array<[string, string, string, string]> = [
   ["Garen", "Darius", "teamfight", "가렌으로 다리우스 있는 한타 어떻게 해?"],
 ];
 
+/**
+ * 조립 규칙을 고칠 때 쓰지 않는 검증 세트. `FOCUSED` 만 보고 규칙을 맞추면 그 여덟 문항에만
+ * 맞는다. 규칙을 바꾸면 두 세트를 함께 재서 여기서도 오르는지 본다.
+ */
+export const FOCUSED_HOLDOUT: Array<[string, string, string, string]> = [
+  ["Malphite", "Yasuo", "situational-item", "말파이트로 야스오 상대할 때 뭐 사?"],
+  ["Riven", "Renekton", "laning", "리븐으로 레넥톤 라인전 어떻게 해?"],
+  ["Irelia", "Sett", "combo", "이렐리아로 세트 상대 콤보 어떻게 넣어?"],
+  ["Katarina", "Syndra", "escape-window", "카타리나로 신드라 상대할 때 언제 들어가?"],
+  ["Ezreal", "Draven", "skill", "이즈리얼로 드레이븐 상대할 때 드레이븐 Q 어떻게 해?"],
+  ["Kayle", "Nasus", "phase", "케일로 나서스 상대하면 후반 어때?"],
+  ["Lux", "Zed", "laning", "럭스로 제드 상대 초반 어떻게 버텨?"],
+  ["Orianna", "Malphite", "teamfight", "오리아나로 말파이트 있는 한타 어떻게 해?"],
+];
+
 /** 첫 줄이 실제로 화면에서 무한 반복을 낸 질문이다. */
 export const PAIRS: Array<[string, string, string]> = [
   ["MonkeyKing", "Rumble", "오공으로 럼블이 너무어려운데 팁이 없나?"],
@@ -212,6 +227,7 @@ export async function runPair(
   let invalid: number | undefined;
   // 두 번째 문항 세트는 갈래를 정해 둔다. 판정기가 가른 값을 넣는 것과 같다.
   if (focus && answer.kind === "compare" && answer.notes?.plan) answer.notes.plan.focus = focus;
+  if (answer.kind === "compare" && answer.notes?.plan) answer.notes.plan.question = question;
   if (mode === "digest") {
     // 모델 없이 노트 조립만. 0.8B 기기와 모델 없는 기기가 받는 답이다.
     const prose = await import("../../../src/lib/advisor/prose.ts");
