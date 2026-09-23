@@ -19,9 +19,16 @@ import type { AdvisorRequest, AdvisorResponse } from "../../src/lib/advisor/prot
 import { PAIRS, formatRow, runPair, summarize, type Generate, type Mode, type Row } from "./lib/matchupEval";
 
 let worker: Worker | null = null;
+let workerModel = "";
 let nextId = 1;
 
-function ensureWorker(): Worker {
+/** 워커는 모델을 한 번만 올린다. 다른 모델을 재려면 새로 띄운다. */
+function ensureWorker(key: string): Worker {
+  if (worker && workerModel !== key) {
+    worker.terminate();
+    worker = null;
+  }
+  workerModel = key;
   if (!worker) {
     worker = new Worker(new URL("../../src/workers/advisor.worker.ts", import.meta.url), { type: "module" });
   }
@@ -31,7 +38,7 @@ function ensureWorker(): Worker {
 function makeGenerate(model: { id: string; dtype: string }): Generate {
   return (system, user, maxTokens) =>
     new Promise((resolve, reject) => {
-      const w = ensureWorker();
+      const w = ensureWorker(`${model.id}:${model.dtype}`);
       const id = nextId++;
       // 워커는 끊으면 걷어 낸 글을 돌려준다. 끊기 전 원문은 흘려 받은 조각에서 모은다.
       let streamed = "";
@@ -80,9 +87,15 @@ async function loadData(): Promise<{ data: AdvisorData; patch: string }> {
   return { data, patch };
 }
 
-export async function run(options: { mode?: Mode; only?: string; model?: "lite" | "default" } = {}) {
+/**
+ * `spec` 을 주면 목록에 없는 모델도 잰다. 후보를 앱에 올리기 전에 견주는 데 쓴다.
+ *   await m.run({ spec: { id: "onnx-community/Qwen3.5-0.8B-Text-ONNX", dtype: "q8" } })
+ */
+export async function run(
+  options: { mode?: Mode; only?: string; model?: "lite" | "default"; spec?: { id: string; dtype: string } } = {},
+) {
   const mode = options.mode ?? "single";
-  const model = options.model === "default" ? ADVISOR_MODEL : FALLBACK_MODEL;
+  const model = options.spec ?? (options.model === "default" ? ADVISOR_MODEL : FALLBACK_MODEL);
   const { data, patch } = await loadData();
   const generate = makeGenerate(model);
   const rows: Row[] = [];
