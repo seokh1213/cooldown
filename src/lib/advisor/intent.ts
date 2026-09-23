@@ -92,6 +92,27 @@ export function nicknames(cards: ChampionCard[]): Map<string, ChampionCard> {
   return nicknameCache.map;
 }
 
+/**
+ * 줄임말이 들어 있는 흔한 말. 이름 앞 두 글자를 줄임말로 받으므로 "아이템" 의 "아이" 가
+ * 아이번이 됐다. "오공으로 럼블 상대할 때 아이템 뭐 가?" 가 챔피언 셋을 부른 질문이 되어
+ * 상성 답으로 가지 못했다. 게임에서 흔히 쓰는 말과 아이템 이름을 가린 뒤에 줄임말을 찾는다.
+ */
+const COMMON_WORDS = ["아이템", "템트리", "다이아", "카이팅", "회오리", "밀리"];
+
+let itemNameCache: { items: unknown; names: string[] } | null = null;
+
+function maskCommonWords(text: string, data: AdvisorData): string {
+  if (itemNameCache?.items !== data.items) {
+    const names = (data.items ?? []).map((item) => item.name).filter((name): name is string => !!name && name.length >= 3);
+    itemNameCache = { items: data.items, names: [...new Set(names)].sort((a, b) => b.length - a.length) };
+  }
+  let out = text;
+  for (const word of [...itemNameCache.names, ...COMMON_WORDS]) {
+    if (out.includes(word)) out = out.split(word).join("□".repeat(word.length));
+  }
+  return out;
+}
+
 function findMentions(data: AdvisorData, text: string): Mention[] {
   const names = data.cards
     .map((c) => ({ card: c, name: c.name }))
@@ -118,10 +139,12 @@ function findMentions(data: AdvisorData, text: string): Mention[] {
   }
 
   // 정식 이름으로 못 찾았으면 줄임말을 본다. 긴 줄임말이 더 구체적이라 먼저 맞춘다.
+  // 줄임말은 흔한 말 안에서 찾지 않는다(`maskCommonWords`).
+  const masked = maskCommonWords(text, data);
   const nickEntries = [...nicknames(data.cards)].sort((a, b) => b[0].length - a[0].length);
   for (const [nick, card] of nickEntries) {
     if (mentions.some((m) => m.card.id === card.id)) continue;
-    const index = text.indexOf(nick);
+    const index = masked.indexOf(nick);
     if (index < 0) continue;
     if (taken.some(([s, e]) => index < e && index + nick.length > s)) continue;
     taken.push([index, index + nick.length]);
