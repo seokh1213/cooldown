@@ -59,3 +59,32 @@ export function topicFromJudge(topicProbs: number[], perspectiveProbs?: number[]
   const perspective = perspectiveProbs ? PERSPECTIVE_LABELS[perspectiveProbs.indexOf(Math.max(...perspectiveProbs))] : undefined;
   return { topic, perspective };
 }
+
+/**
+ * 질문에 갈래를 못 박는 낱말이 있으면 그것을 따른다. 없으면 undefined(판정기에 맡긴다).
+ *
+ * 판정기는 챔피언 하나인 문항 72개에서 64개를 맞혔지만 **상성 문항 24개에서는 14개**였다.
+ * "가렌으로 다리우스 있는 한타 어떻게 해?" 를 라인전으로, "리븐으로 레넥톤 라인전 어떻게
+ * 해?" 를 한타로 갈랐다. 낱말이 그대로 적혀 있는데도 틀린다. 그래서 뜻이 하나뿐인 낱말만
+ * 골라 판정기 앞에 둔다. `TOPIC_PATTERNS`(노트 고르기용)처럼 넓게 잡지 않는다 — "들어가",
+ * "라인" 같은 말은 다른 뜻으로도 쓰여 여기서는 뺐다.
+ *
+ * 순서가 곧 우선순위다. 상대 스킬을 슬롯으로 집은 질문("피오라 W 어떻게 빼")이 맨 앞이다.
+ */
+const TOPIC_WORDS: Array<[RegExp, TopicLabel]> = [
+  [/한타|팀\s*파이트|teamfight|team fight|团战/i, "teamfight"],
+  [/라인전|laning|对线/i, "laning"],
+  [/아이템|템\s|템$|뭐\s*(사|가|올려)|빌드|\bbuild\b|\bitems?\b|what (should I|to) buy|出装|装备/i, "situational-item"],
+  [/콤보|연계|\bcombo\b|连招/i, "combo"],
+  [/후반|중반|late game|mid game|scal(e|ing)|后期|中期/i, "phase"],
+  [/초반|early game|前期/i, "laning"],
+  [/언제\s*(들어가|물|진입|이니시|올인)|진입\s*타이밍|when (can|should|do) I (go in|engage|all[- ]?in|jump)|什么时候(进|切|开)/i, "escape-window"],
+];
+
+export function topicFromWords(question: string, names: string[] = []): TopicLabel | undefined {
+  // "피오라 W 어떻게 빼" — 챔피언 이름 바로 뒤의 슬롯. 스킬 하나를 묻는 것이다.
+  for (const name of names) {
+    if (new RegExp(`${name}\\s*(의\\s*)?[QWER](?![A-Za-z])|${name}\\s*(궁|궁극기|패시브)`).test(question)) return "skill";
+  }
+  return TOPIC_WORDS.find(([pattern]) => pattern.test(question))?.[1];
+}
