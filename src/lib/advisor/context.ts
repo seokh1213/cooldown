@@ -25,7 +25,7 @@ import {
   type RuleNotes,
 } from "../../../scripts/llm/lib/rules";
 import { playbookToText, selectPlaybook, type Playbook } from "../../../scripts/llm/lib/playbookCore";
-import { selectNotes, type NotePerspective, type SelectedNotes } from "./noteSelect";
+import { selectNotes, type NoteCategory, type NotePerspective, type SelectedNotes } from "./noteSelect";
 import { deriveMatchupClaims, renderTaggedClaims, type ClaimLang, type TaggedClaim } from "../../../scripts/llm/lib/claims";
 import {
   findMechanics,
@@ -407,10 +407,12 @@ export function championNotes(
   question: string,
   /** 화면에서 골라 준 관점. 문장으로 못 가릴 때만 들어온다. */
   forced?: NotePerspective,
+  /** 판정기가 가른 주제·관점. 없으면 낱말 표로 가른다. */
+  judged?: { topic?: NoteCategory | "general"; perspective?: NotePerspective },
 ): SelectedNotes {
   const book = data.playbooks.get(card.id);
   if (!book) return { playing: [], against: [], perspective: "both" };
-  return selectNotes(book, question, forced);
+  return selectNotes(book, question, forced, judged);
 }
 
 export function buildChampionAnswer(data: AdvisorData, card: ChampionCard): string {

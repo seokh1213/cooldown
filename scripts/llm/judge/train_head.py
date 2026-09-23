@@ -25,6 +25,12 @@ def acc(head, rows):
             ok.setdefault(r["qid"], []).append(p == r["label"])
     return {k: f"{sum(v)}/{len(v)}" for k, v in ok.items()}, ok
 
+def score(rows, head):
+    """route 헤드는 갈래·내 챔피언을 함께 맞혀야 한 문항으로 친다. 그 밖의 헤드는 질문마다 센다."""
+    if rows and rows[0]["qid"] == "kind": return route_score(rows, head)
+    per = acc(head, rows)[1]
+    return f"{sum(sum(v) for v in per.values())}/{sum(len(v) for v in per.values())}"
+
 def route_score(rows, head):
     # eval-route 와 같은 잣대: 갈래가 맞고, matchup 이면 내 챔피언도 맞아야 한다. 문항 순서대로 kind 뒤에 mine 이 온다.
     head.eval(); total = right = 0; i = 0
@@ -42,14 +48,22 @@ def route_score(rows, head):
 
 head = PointerHead(train[0]["decide"].shape[0]); opt = torch.optim.AdamW(head.parameters(), lr=float(sys.argv[1]) if len(sys.argv) > 1 else 3e-4, weight_decay=0.01)
 best = (-1, None)
+# 질문 종류(qid)마다 선택지 수가 같으므로 묶어서 한 번에 계산한다. 한 문항씩 돌면 CPU 에서 수십 배 느리다.
+groups = {}
+for r in train: groups.setdefault((r["qid"], r["opts"].shape[0]), []).append(r)
+batches = {k: (torch.stack([T(r["decide"]) for r in v]), torch.stack([T(r["opts"]) for r in v]), torch.tensor([r["label"] for r in v])) for k, v in groups.items()}
+BATCH = 32
 for epoch in range(40):
-    head.train(); perm = np.random.RandomState(epoch).permutation(len(train)); loss_sum = 0
-    for j in perm:
-        r = train[j]; logits = head(T(r["decide"]), T(r["opts"]))
-        loss = nn.functional.cross_entropy(logits[None], torch.tensor([r["label"]]))
-        opt.zero_grad(); loss.backward(); opt.step(); loss_sum += float(loss)
-    d = route_score(dev, head); dv = int(d.split("/")[0])
+    head.train(); loss_sum = 0; steps = 0
+    rng = np.random.RandomState(epoch)
+    for key, (D, O, Y) in batches.items():
+        for idx in np.array_split(rng.permutation(len(Y)), max(1, len(Y) // BATCH)):
+            q = head.q(D[idx]); k = head.k(O[idx])                      # [B,dp], [B,K,dp]
+            logits = torch.einsum("bkd,bd->bk", k, q) * head.scale
+            loss = nn.functional.cross_entropy(logits, Y[idx])
+            opt.zero_grad(); loss.backward(); opt.step(); loss_sum += float(loss); steps += 1
+    d = score(dev, head); dv = int(d.split("/")[0])
     if dv > best[0]: best = (dv, {k: v.clone() for k, v in head.state_dict().items()}, epoch)
-    if epoch % 5 == 4: print(f"epoch {epoch+1} loss {loss_sum/len(train):.3f} dev {d} {acc(head, dev)[0]}", flush=True)
-head.load_state_dict(best[1]); print(f"고른 epoch {best[2]+1}: dev {route_score(dev, head)} · test {route_score(test, head)} {acc(head, test)[0]}")
+    if epoch % 5 == 4: print(f"epoch {epoch+1} loss {loss_sum/steps:.3f} dev {d} {acc(head, dev)[0]}", flush=True)
+head.load_state_dict(best[1]); print(f"고른 epoch {best[2]+1}: dev {score(dev, head)} · test {score(test, head)} {acc(head, test)[0]}")
 torch.save({"state": head.state_dict(), "mu": mu, "sd": sd}, OUT)

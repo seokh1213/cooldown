@@ -17,3 +17,17 @@ uv run --python 3.13 --with torch --with numpy python export_head.py head.pt ../
 route-v1: 학습 `route-train.jsonl`(851건, 평가 챔피언·이름은 뺀 합성 — advisor-qwen35-eval 워크트리의
 `build-route-train.ts`), dev 89/90 으로 골라 시험 60문항 55/60. 브라우저(WebGPU, 끊어 넣기)에서 다시 재도
 55/60 이었다(`scripts/llm/eval-judge-browser.ts`). 시드에 따라 54~57.
+
+## topic-v1 — 주제·관점
+
+질문이 어느 갈래(콤보·라인전·한타·운영·아이템·진입 타이밍·스킬·일반)를 묻는지, 챔피언이 하나면
+내가 그 챔피언인지 상대하는지를 가른다. `noteSelect` 의 한국어 낱말 표를 대신한다.
+
+```bash
+npx tsx scripts/llm/build-topic-train.ts --n 2000 --out topic-train.jsonl   # 합성, 시험 챔피언 19명 제외
+npx tsx scripts/llm/build-topic-train.ts --test topic-test.jsonl             # 손으로 쓴 72문항(세 언어 24씩)
+# 학습 자료 앞 1800 을 train, 뒤 200 을 dev 로 나눠 위와 같이 features → train_head → export
+```
+
+질문 꼴은 `src/lib/advisor/topicJudge.ts`. 낱말 표 기준선(시험 72문항): 주제 한국어 19/24 · 영어 3/24 ·
+중국어 3/24, 관점 한국어 16/23 · 영어 7/23 · 중국어 6/23.

@@ -70,9 +70,11 @@ import {
   routePrompt,
   type AskRoute,
 } from "@/lib/advisor/routeAsk";
+import { topicFromJudge, topicQuestions } from "@/lib/advisor/topicJudge";
 
-/** 질문 갈래 판정 헤드. `public/models/judge/` 아래 이 이름의 .json·.bin 이 있다. */
+/** 판정 헤드. `public/models/judge/` 아래 이 이름의 .json·.bin 이 있다. */
 const ROUTE_HEAD = "route-v1";
+const TOPIC_HEAD = "topic-v1";
 import { findMentionedRules } from "../../../../scripts/llm/lib/rules";
 import type { ChampionCard } from "../../../../scripts/llm/lib/facts";
 import { ItemIcon } from "@/components/ui/item-icon";
@@ -348,9 +350,11 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
    * 검증된 노트를 코드가 골라 조립한다(`matchupDigest`, 3.8점). 모델이 없는 기기와 같은
    * 길이다. 0.8B 는 판정기로만 쓴다(`judge.ts`). 4B 는 그대로 해설을 쓴다.
    */
-  const deliverMatchup = (question: string, mine: ChampionCard, enemy: ChampionCard, notice?: string) => {
+  const deliverMatchup = (question: string, mine: ChampionCard, enemy: ChampionCard, notice?: string, focus?: string) => {
     if (!data) return;
-    const answer = buildCompareCard([mine, enemy], question, undefined, { matchup: true, notes: matchupNotes(data, mine, enemy, lang), lang });
+    const notes = matchupNotes(data, mine, enemy, lang);
+    if (notes.plan && focus) notes.plan.focus = focus;
+    const answer = buildCompareCard([mine, enemy], question, undefined, { matchup: true, notes, lang });
     const prompt = buildCommentaryPrompt(answer, patch, lang);
     if (canUseModel && advisor.consented && prompt) {
       /*
@@ -375,7 +379,8 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
   };
 
   const deliver = (question: string, answer: AdvisorAnswer, notice?: string) => {
-    if (canUseModel && advisor.consented) {
+    // 가벼운 모델은 카드 해설을 쓰지 않는다. 답은 코드가 노트로 조립한다(`answerProse`).
+    if (canUseModel && advisor.consented && !advisor.model.lite) {
       const prompt = buildCommentaryPrompt(answer, patch, lang);
       if (prompt) {
         advisor.sendWithAnswer(question, `${advisorSystemPrompt(lang)}\n\n${prompt}`, answer, notice);
@@ -431,6 +436,7 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
      * 지우지 않는 까닭이 이것이다 — 모델을 안 받은 사용자에게도 답은 나와야 한다.
      */
     let route: AskRoute | undefined;
+    let judgedTopic: ReturnType<typeof topicFromJudge> | undefined;
     if (canUseModel && advisor.consented) {
       const named = detectChampions(data, question);
       const names = named.map((card) => card.name);
@@ -456,6 +462,17 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
             .classify(routePrompt(names), question)
             .then((reply) => parseRoute(reply, named))
             .catch(() => undefined);
+      /*
+       * 무엇을 묻는지(주제)도 판정기로 가른다. 노트 고르기와 요약의 칸 순서가 이것을
+       * 따른다. 시험 72문항에서 낱말 표 25, 판정기 64 였다(영어·중국어 3 → 22·21).
+       * 관점은 여전히 낱말 표가 가른다 — 까닭은 `topicQuestions` 에 있다.
+       */
+      if (advisor.model.lite && named.length) {
+        judgedTopic = await advisor
+          .judge(TOPIC_HEAD, judgeRouteState(question, names), topicQuestions(named.length))
+          .then(([topic]) => topicFromJudge(topic))
+          .catch(() => undefined);
+      }
     }
 
     // 1. 룬·주문 판정. 함께 나온 다른 규칙 이름이 든 문장이 답이다.
@@ -497,7 +514,7 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
     if (champions.length === 1 && (route ? route.kind === "matchup" : asksMatchup(question) && !asksGuide(question))) {
       const mine = recent.find((card) => card.id !== champions[0].id);
       if (mine) {
-        deliverMatchup(question, mine, champions[0], usedNotice);
+        deliverMatchup(question, mine, champions[0], usedNotice, judgedTopic?.topic);
         return;
       }
     }
@@ -515,7 +532,7 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
       const [mine, enemy] = picked
         ? [picked, champions.find((card) => card.id !== picked.id) ?? champions[1]]
         : matchupSides(question, champions);
-      deliverMatchup(question, mine, enemy, usedNotice);
+      deliverMatchup(question, mine, enemy, usedNotice, judgedTopic?.topic);
       return;
     }
 
@@ -591,7 +608,7 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
         }
         // "말파이트 스킬 설명해줘": 스킬 다섯 개의 요약 + 운용 노트. 능력치 표는 뺀다.
         if (route ? route.kind === "skills" : asksSkillsOverview(question)) {
-          deliver(question, { kind: "champion", card, view: "skills", notes: championNotes(data, card, question) }, usedNotice);
+          deliver(question, { kind: "champion", card, view: "skills", notes: championNotes(data, card, question, undefined, judgedTopic) }, usedNotice);
           return;
         }
         // "말파이트 스킬 쿨타임": 슬롯 없이 사실 하나를 물으면 스킬 다섯 개의 그 사실을 표로.
@@ -607,7 +624,7 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
           deliver(question, { kind: "champion", card, focus }, usedNotice);
           return;
         }
-        deliver(question, { kind: "champion", card, notes: championNotes(data, card, question) }, usedNotice);
+        deliver(question, { kind: "champion", card, notes: championNotes(data, card, question, undefined, judgedTopic) }, usedNotice);
         return;
       }
       advisor.send(question, `${system}\n\n${buildChampionsBrief(data, champions)}`, undefined, copy.noModel);

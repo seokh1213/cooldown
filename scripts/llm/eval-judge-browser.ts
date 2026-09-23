@@ -41,7 +41,9 @@ export async function run(file: string, headName: string) {
     });
 
   let right = 0;
+  let total = 0;
   let seconds = 0;
+  const byQuestion: Record<string, [number, number]> = {};
   const misses: string[] = [];
   for (const record of records) {
     const entries = Object.entries(record.questions).filter(([, q]) => q.label !== null);
@@ -51,19 +53,34 @@ export async function run(file: string, headName: string) {
     }));
     const result = await ask(record.state, questions);
     seconds += result.seconds;
-    // eval-route 와 같은 잣대: 갈래가 맞고, 정답이 matchup 이면 내 챔피언도 맞아야 한다
     const picks = result.features.map((flat, i) => {
       const k = questions[i].options.length + 1;
       const probs = scoreJudge(head, Array.from({ length: k }, (_, j) => flat.subarray(j * head.dim, (j + 1) * head.dim)));
       return questions[i].options[probs.indexOf(Math.max(...probs))].name;
     });
-    const kindOk = picks[0] === entries[0][1].label;
-    const mineOk = entries[0][1].label !== "matchup" || entries.length < 2 || picks[1] === entries[1][1].label;
-    if (kindOk && mineOk) right += 1;
-    else misses.push(`${record.state.split("\n")[0]} → ${picks.join("/")} (정답 ${entries.map(([, q]) => q.label).join("/")})`);
+    if (entries[0][0] === "kind") {
+      // eval-route 와 같은 잣대: 갈래가 맞고, 정답이 matchup 이면 내 챔피언도 맞아야 한다
+      const kindOk = picks[0] === entries[0][1].label;
+      const mineOk = entries[0][1].label !== "matchup" || entries.length < 2 || picks[1] === entries[1][1].label;
+      total += 1;
+      if (kindOk && mineOk) right += 1;
+      else misses.push(`${record.state.split("\n")[0]} → ${picks.join("/")} (정답 ${entries.map(([, q]) => q.label).join("/")})`);
+    } else {
+      // 그 밖의 헤드는 질문마다 센다
+      for (const [i, [qid, q]] of entries.entries()) {
+        const key = `${record.lang ?? ""}:${qid}`;
+        const tally = (byQuestion[key] ??= [0, 0]);
+        tally[1] += 1;
+        total += 1;
+        if (picks[i] === q.label) {
+          tally[0] += 1;
+          right += 1;
+        } else misses.push(`${record.state.split("\n")[0]} [${qid}] → ${picks[i]} (정답 ${q.label})`);
+      }
+    }
   }
   worker.terminate();
-  const summary = `${right}/${records.length} · 문항당 ${(seconds / records.length).toFixed(2)}초`;
-  console.log(summary, misses);
-  return { summary, misses };
+  const summary = `${right}/${total} · 문항당 ${(seconds / records.length).toFixed(2)}초`;
+  console.log(summary, byQuestion, misses);
+  return { summary, byQuestion, misses };
 }

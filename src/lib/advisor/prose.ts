@@ -133,7 +133,7 @@ export function answerProse(answer: AdvisorAnswer, lang: Language = "ko_KR"): st
       const lines = answer.card.spells.map((spell) => `- ${spell.slot} ${spell.name}: ${spellOneLiner(spell, lang)}`);
       return [w.skillset(name), ...lines].join("\n");
     }
-    return "";
+    return championDigest(answer, lang);
   }
 
   if (answer.kind === "compare" && answer.headline) {
@@ -170,10 +170,20 @@ const THREAT_TAGS = new Set([
   "적 마법 저항력 감소", "적 방어력 감소", "처형", "치유 감소",
 ]);
 
-const DIGEST_HEADINGS: Record<Language, { watch: string; build: string; fight: string }> = {
-  ko_KR: { watch: "조심할 것", build: "아이템", fight: "싸우는 법" },
-  en_US: { watch: "Watch out", build: "Build", fight: "How to fight" },
-  zh_CN: { watch: "注意", build: "出装", fight: "打法" },
+const DIGEST_HEADINGS: Record<Language, { watch: string; build: string; fight: string; playing: string; against: string }> = {
+  ko_KR: { watch: "조심할 것", build: "아이템", fight: "싸우는 법", playing: "플레이할 때", against: "상대할 때" },
+  en_US: { watch: "Watch out", build: "Build", fight: "How to fight", playing: "Playing it", against: "Playing against it" },
+  zh_CN: { watch: "注意", build: "出装", fight: "打法", playing: "使用时", against: "对线时" },
+};
+
+/**
+ * 질문이 한 갈래를 콕 집으면 "싸우는 법" 칸의 제목을 그 갈래로 바꾼다.
+ * "라인전 어떻게 해" 에 "싸우는 법" 이라고 답하면 물은 것에 답했는지 한눈에 안 보인다.
+ */
+const FIGHT_TITLES: Record<Language, Partial<Record<string, string>>> = {
+  ko_KR: { combo: "콤보", laning: "라인전", teamfight: "한타", phase: "운영", "escape-window": "진입 타이밍" },
+  en_US: { combo: "Combo", laning: "Laning", teamfight: "Teamfights", phase: "Game plan", "escape-window": "When to go in" },
+  zh_CN: { combo: "连招", laning: "对线", teamfight: "团战", phase: "运营", "escape-window": "进场时机" },
 };
 
 /** 문장이 챔피언 이름으로 시작하지 않으면 앞에 붙인다. 이미 "럼블의" 로 시작하면 둔다. */
@@ -230,19 +240,64 @@ export function matchupDigest(answer: Extract<AdvisorAnswer, { kind: "compare" }
     .sort((a, b) => b.score - a.score)
     .map((entry) => entry.text);
 
-  const sections: Array<[string, string[]]> = [
-    // 누구의 스킬인지 흐려지지 않게 상대 이름을 앞에 둔다("E 전기 작살을…" → "럼블 E 전기 작살을…").
-    [heading.watch, [...threats.slice(0, 1).map((line) => withOwner(line, enemy?.name)), ...claims("pinned")]],
-    [heading.build, [...claims("defense"), ...byCategory(plan.mine, "situational-item"), ...byCategory(plan.enemy, "situational-item"), ...claims("offense")]],
-    [heading.fight, [...byCategory(plan.mine, "combo"), ...byCategory(plan.enemy, "escape-window", "laning"), ...claims("scaling")]],
+  const focus = plan.focus ?? "general";
+  const fightCategories = FIGHT_TITLES.ko_KR[focus] ? [focus] : [];
+  const watch: [string, string[], number] = [
+    heading.watch,
+    [...threats.slice(0, focus === "skill" ? 2 : 1).map((line) => withOwner(line, enemy?.name)), ...claims("pinned")],
+    PER_SECTION,
   ];
+  const build: [string, string[], number] = [
+    heading.build,
+    [...claims("defense"), ...byCategory(plan.mine, "situational-item"), ...byCategory(plan.enemy, "situational-item"), ...claims("offense")],
+    // 아이템을 물었으면 더 싣는다
+    focus === "situational-item" ? 3 : PER_SECTION,
+  ];
+  const fight: [string, string[], number] = [
+    (FIGHT_TITLES[lang] ?? FIGHT_TITLES.ko_KR)[focus] ?? heading.fight,
+    [
+      // 물은 갈래의 노트를 먼저. 시간대를 물었으면 성장 문장이 곧 답이다.
+      ...(focus === "phase" ? claims("scaling") : []),
+      ...byCategory(plan.mine, ...fightCategories),
+      ...byCategory(plan.enemy, ...fightCategories),
+      ...byCategory(plan.mine, "combo"),
+      ...byCategory(plan.enemy, "escape-window", "laning"),
+      ...claims("scaling"),
+    ],
+    fightCategories.length ? 3 : PER_SECTION,
+  ];
+  // 물은 칸을 맨 앞에 둔다
+  const sections =
+    focus === "situational-item" ? [build, watch, fight] : fightCategories.length ? [fight, watch, build] : [watch, build, fight];
   const used = new Set<string>();
   return sections
-    .map(([title, lines]) => {
-      const picked = lines.filter((line) => line && !used.has(line)).slice(0, PER_SECTION);
+    .map(([title, lines, size]) => {
+      const picked = lines.filter((line) => line && !used.has(line)).slice(0, size);
       for (const line of picked) used.add(line);
       return picked.length ? `**${title}**\n${labelSlots(picked.join(" "), answer.cards)}` : "";
     })
     .filter(Boolean)
     .join("\n\n");
+}
+
+/**
+ * 챔피언 하나를 물은 답을 노트로 조립한다. 상성 요약과 같은 까닭으로 모델이 쓰지 않는다.
+ *
+ * 노트는 이미 질문의 갈래·관점에 맞춰 골라져 있다(`selectNotes`). 여기서는 물은 쪽을
+ * 먼저 두고, 묻지 않은 쪽은 한 줄만 붙인다.
+ */
+function championDigest(answer: Extract<AdvisorAnswer, { kind: "champion" }>, lang: Language): string {
+  const notes = answer.notes;
+  if (!notes || (!notes.playing.length && !notes.against.length)) return "";
+  const heading = DIGEST_HEADINGS[lang] ?? DIGEST_HEADINGS.ko_KR;
+  const block = (title: string, lines: string[], size: number) =>
+    lines.length ? `**${title}**\n${labelSlots(lines.slice(0, size).map(firstSentence).join(" "), [answer.card])}` : "";
+  const size = { main: 3, side: 1 };
+  const parts =
+    notes.perspective === "against"
+      ? [block(heading.against, notes.against, size.main), block(heading.playing, notes.playing, size.side)]
+      : notes.perspective === "playing"
+        ? [block(heading.playing, notes.playing, size.main), block(heading.against, notes.against, size.side)]
+        : [block(heading.playing, notes.playing, 2), block(heading.against, notes.against, 2)];
+  return parts.filter(Boolean).join("\n\n");
 }
