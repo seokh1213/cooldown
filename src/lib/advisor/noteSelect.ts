@@ -93,6 +93,18 @@ export function noteOrder(question: string): NoteCategory[] {
 
 export type NotePerspective = "playing" | "against" | "both";
 
+/**
+ * 질문이 지목한 스킬 슬롯. 세 언어의 흔한 말을 받는다. 못 찾으면 undefined.
+ *
+ * "제드 궁 피하는 법" 에 스킬 갈래 노트가 파일 순서대로 나와 R 이야기가 셋째에 섰다.
+ * 슬롯 문자는 영문 대문자 하나만 본다 — "q 몇 초" 같은 소문자는 낱말과 헷갈린다.
+ */
+export function askedSlot(question: string): string | undefined {
+  if (/궁극기|궁(?=[\s을은이으]|$)|\bult(imate)?\b|大招/i.test(question)) return "R";
+  if (/패시브|\bpassive\b|被动/i.test(question)) return "P";
+  return /(?<![A-Za-z])([QWER])(?![A-Za-z])/.exec(question)?.[1];
+}
+
 /** 상대하는 쪽임을 드러내는 말 */
 const AGAINST_WORDS =
   /상대|맞상대|카운터|이기|이길|막|상대법|공략법|어떻게\s*잡|까다로|상성|언제\s*물|물어야|무는|잘라|한테|에게|도망|진입/;
@@ -137,14 +149,16 @@ export function notePerspective(question: string): NotePerspective {
  *
  * 같은 갈래 안에서는 파일에 적힌 순서를 지킨다. 사람이 중요한 것부터 적어 두었다.
  */
-function pick(entries: NoteEntry[], order: NoteCategory[], count: number): string[] {
+function pick(entries: NoteEntry[], order: NoteCategory[], count: number, slot?: string): string[] {
   const rank = (category: string) => {
     const index = order.indexOf(category as NoteCategory);
     return index === -1 ? order.length : index;
   };
+  // 질문이 스킬 하나를 지목했으면 같은 갈래 안에서 그 스킬을 말하는 노트를 앞에 둔다.
+  const names = (text: string) => (slot && new RegExp(`(?<![A-Za-z])${slot}(?![A-Za-z])`).test(text) ? 0 : 1);
   return entries
     .map((entry, index) => ({ entry, index }))
-    .sort((a, b) => rank(a.entry.category) - rank(b.entry.category) || a.index - b.index)
+    .sort((a, b) => rank(a.entry.category) - rank(b.entry.category) || names(a.entry.text) - names(b.entry.text) || a.index - b.index)
     .slice(0, count)
     .map(({ entry }) => entry.text);
 }
@@ -178,13 +192,21 @@ export function selectNotes(
   book: PlaybookLike,
   question: string,
   forced?: NotePerspective,
+  /**
+   * 판정기가 가른 주제와 관점(`topicJudge.ts`). 주면 낱말 표 대신 이것을 쓴다.
+   * 낱말 표는 한국어에서 19/24, 영어·중국어에서 3/24 였다.
+   */
+  judged?: { topic?: NoteCategory | "general"; perspective?: NotePerspective },
 ): SelectedNotes {
-  const order = noteOrder(question);
-  const perspective = forced ?? notePerspective(question);
+  const topic = judged?.topic;
+  const order =
+    topic && topic !== "general" ? [topic, ...DEFAULT_ORDER.filter((category) => category !== topic)] : topic === "general" ? DEFAULT_ORDER : noteOrder(question);
+  const perspective = forced ?? judged?.perspective ?? notePerspective(question);
   const share = SHARE[perspective];
+  const slot = askedSlot(question);
   return {
-    playing: pick(book.playing, order, share.playing),
-    against: pick(book.against, order, share.against),
+    playing: pick(book.playing, order, share.playing, slot),
+    against: pick(book.against, order, share.against, slot),
     perspective,
   };
 }

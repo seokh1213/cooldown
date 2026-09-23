@@ -14,7 +14,13 @@ S_ID, Q_ID, O_ID, C_ID, D_ID = (tok.token_to_id(t) for t in SPECIAL)
 # 일반 어휘 구간에서 고르게 2048개. 특수·예약 토큰(248000 이후)은 임베딩이 학습되지 않았을 수 있어 뺀다.
 SUBSET = np.linspace(100, 240000, 2048).astype(np.int64)
 so = ort.SessionOptions(); so.intra_op_num_threads = 8
-MODEL = hf_hub_download("onnx-community/Qwen3.5-0.8B-Text-ONNX", "onnx/model_q4.onnx"); hf_hub_download("onnx-community/Qwen3.5-0.8B-Text-ONNX", "onnx/model_q4.onnx_data")
+# HF 캐시는 파일을 심볼릭 링크로 둔다. ONNX Runtime 은 가중치 경로가 모델 폴더 밖으로 나가면
+# 거부하므로(external data path escapes model directory) 실제 파일로 받는다.
+import os
+LOCAL = os.path.expanduser("~/.cache/cooldown-judge/Qwen3.5-0.8B-Text-ONNX")
+for name in ("onnx/model_q4.onnx", "onnx/model_q4.onnx_data"):
+    hf_hub_download("onnx-community/Qwen3.5-0.8B-Text-ONNX", name, local_dir=LOCAL)
+MODEL = os.path.join(LOCAL, "onnx/model_q4.onnx")
 sess = ort.InferenceSession(MODEL, so, providers=["CPUExecutionProvider"])
 EMPTY = {}
 for i in sess.get_inputs():
@@ -32,13 +38,27 @@ def row(state, q):
     ids.append(D_ID)
     return ids, ends, opts
 
+OUTPUTS = [o.name for o in sess.get_outputs()]
+
 def logits_at(ids, positions):
-    feeds = dict(EMPTY)
-    feeds["input_ids"] = np.array([ids], dtype=np.int64)
-    feeds["attention_mask"] = np.ones((1, len(ids)), dtype=np.int64)
-    feeds["num_logits_to_keep"] = np.array(len(ids), dtype=np.int64)
-    lg = sess.run(["logits"], feeds)[0][0]          # [L, V]
-    return lg[positions][:, SUBSET]
+    """판정 위치마다 그 위치가 마지막 토큰이 되도록 끊어 넣고 상태를 이어 받는다.
+
+    브라우저 워커(`advisor.worker.ts` 의 judge)와 같은 계산이다. 한 번에 넣고 모든 위치의
+    logits 를 받으면 [길이 × 248,320] 이라 긴 입력에서 문장 하나에 1GB 를 넘는다. 두 방식의
+    차이는 최대 3e-5 였다.
+    """
+    past = dict(EMPTY); start = 0; rows = []
+    for p in positions:
+        feeds = dict(past)
+        feeds["input_ids"] = np.array([ids[start:p + 1]], dtype=np.int64)
+        feeds["attention_mask"] = np.ones((1, p + 1), dtype=np.int64)
+        feeds["num_logits_to_keep"] = np.array(1, dtype=np.int64)
+        res = dict(zip(OUTPUTS, sess.run(OUTPUTS, feeds)))
+        rows.append(res["logits"][0, -1][SUBSET])
+        past = {k.replace("present_conv", "past_conv").replace("present_recurrent", "past_recurrent").replace("present", "past_key_values"): v
+                for k, v in res.items() if k.startswith("present")}
+        start = p + 1
+    return np.stack(rows)
 
 def main(src, dst):
     out = []; t = time.time()

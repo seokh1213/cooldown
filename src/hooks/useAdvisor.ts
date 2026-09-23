@@ -199,7 +199,7 @@ export interface UseAdvisorResult {
 }
 
 /** 가벼운 모델이 쓰는 판정 헤드. 모델을 올리면 미리 받아 둔다. */
-const LITE_JUDGE_HEADS = ["route-v1"];
+const LITE_JUDGE_HEADS = ["route-v1", "topic-v1"];
 
 function readConsent(): boolean {
   try {
