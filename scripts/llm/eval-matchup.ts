@@ -19,7 +19,7 @@ import type { Playbook } from "./lib/playbookCore";
 import { PUBLIC_DATA_ROOT, resolvePatchVersion } from "./lib/data";
 import type { AdvisorData } from "../../src/lib/advisor/context";
 import { createLoopGuard, trimLoop } from "../../src/lib/advisor/loopGuard";
-import { PAIRS, formatRow, runPair, summarize, type Generate, type Mode, type Row } from "./lib/matchupEval";
+import { FOCUSED, PAIRS, formatRow, runPair, summarize, type Generate, type Mode, type Row } from "./lib/matchupEval";
 
 const HOST = process.env.OLLAMA_HOST?.startsWith("http") ? process.env.OLLAMA_HOST : "http://127.0.0.1:11434";
 
@@ -51,7 +51,7 @@ const data = {
 } as unknown as AdvisorData;
 
 /** 워커처럼 조각마다 반복 차단에 넣고, 걸리면 요청을 끊는다. */
-const generate: Generate = async (system, user, maxTokens) => {
+const generate: Generate = async (system, user, maxTokens, options) => {
   const started = Date.now();
   const controller = new AbortController();
   const res = await fetch(`${HOST}/api/chat`, {
@@ -100,7 +100,7 @@ const generate: Generate = async (system, user, maxTokens) => {
         if (piece) {
           text += piece;
           tokens += 1;
-          if (guard.feed(piece)) {
+          if (options?.guard !== false && guard.feed(piece)) {
             looped = true;
             controller.abort();
             throw new Error("cut");
@@ -118,9 +118,12 @@ const generate: Generate = async (system, user, maxTokens) => {
 async function main(): Promise<void> {
   console.log(`모델 ${MODEL} · 패치 ${patch} · ${MODE}\n`);
   const rows: Row[] = [];
-  for (const [meId, enemyId, question] of PAIRS) {
+  // --set focused 면 한 갈래를 콕 집은 질문 여덟을 잰다
+  const cases: Array<[string, string, string, string?]> =
+    arg("set") === "focused" ? FOCUSED.map(([a, b, focus, q]) => [a, b, q, focus]) : PAIRS.map(([a, b, q]) => [a, b, q]);
+  for (const [meId, enemyId, question, focus] of cases) {
     if (ONLY && !question.includes(ONLY)) continue;
-    const row = await runPair(generate, data, data.cardById.get(meId)!, data.cardById.get(enemyId)!, question, patch, MODE);
+    const row = await runPair(generate, data, data.cardById.get(meId)!, data.cardById.get(enemyId)!, question, patch, MODE, focus);
     rows.push(row);
     console.log(formatRow(row));
   }
