@@ -306,8 +306,8 @@ export function AdvisorAnswerCard({ answer, ddragonVersion, patch, onPickChampio
         <div className="text-[11px] text-muted-foreground">{copy.notesSource}</div>
       </div>
     );
-    // "말파이트 스킬 쿨타임": 스킬 다섯 개의 그 사실만. 능력치는 없다.
-    // 값 자체는 이제 대화에도 글로 실리므로, 카드는 표를 넘어 운용 노트까지 얹어 더 준다.
+    // "말파이트 스킬 쿨타임": 스킬 다섯 개의 그 사실만. 능력치도 운용 노트도 없다 —
+    // 수치 하나를 물은 자리에 노트를 얹었더니 무엇을 답한 것인지 흐려졌다.
     if (answer.focus) {
       const focus = answer.focus;
       return (
@@ -319,7 +319,6 @@ export function AdvisorAnswerCard({ answer, ddragonVersion, patch, onPickChampio
               hit: true,
             }))}
           />
-          {noteBlock}
         </Frame>
       );
     }
