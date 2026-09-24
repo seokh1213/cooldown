@@ -73,7 +73,9 @@ async function reverify(id: string): Promise<[number, number]> {
 }
 
 async function main(): Promise<void> {
-  const ids = arg("champions")?.split(",") ?? fs.readdirSync(DIR).map((f) => f.replace(/\.json$/, ""));
+  // --list <파일>: 쉼표나 줄바꿈으로 적은 챔피언 목록(원자화가 끝난 것부터 겹쳐 돌리려고)
+  const listed = arg("list") ? fs.readFileSync(arg("list")!, "utf8").split(/[,\s]+/).filter(Boolean) : undefined;
+  const ids = listed ?? arg("champions")?.split(",") ?? fs.readdirSync(DIR).map((f) => f.replace(/\.json$/, ""));
   let next = 0;
   let kept = 0;
   let dropped = 0;
