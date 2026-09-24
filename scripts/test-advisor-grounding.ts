@@ -406,6 +406,13 @@ assert.ok(q && !q.effects.includes("에어본"), "Q 에는 에어본이 없어�
   assert.match(wrong, new RegExp(`Q ${name(fiora, "Q")}`), "앞에 틀리게 붙은 글자를 바로잡는다");
   assert.match(wrong, new RegExp(`${name(fiora, "R")}\\(R\\)`), "뒤에 틀리게 붙은 글자도 바로잡는다");
 
+  // 다른 낱말 안에 든 스킬 이름에는 붙이지 않는다. "되찌르기" 가 "되Q 찌르기" 가 됐다.
+  assert.equal(
+    labelSlots("이동 불가를 막으면 되찌르기가 기절을 겁니다.", [fiora]),
+    "이동 불가를 막으면 되찌르기가 기절을 겁니다.",
+    "낱말 속 스킬 이름(되찌르기 안의 찌르기)에는 슬롯을 붙이지 않는다",
+  );
+
   // 두 글자 이하 이름은 스킬이 아닌 뜻으로도 흔히 쓴다("공포", "도약").
   const short = cards.flatMap((c) => c.spells.map((s) => ({ c, s }))).find(({ s }) => s.name.length === 2);
   assert.ok(short, "두 글자 스킬 이름");
