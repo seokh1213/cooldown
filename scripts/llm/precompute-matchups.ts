@@ -97,13 +97,22 @@ function prompt(me: ChampionCard, enemy: ChampionCard): string {
   ].join("\n");
 }
 
+/** Codex 가 사용량 한도를 알렸는가. 알리면 더 부르지 않고 멈춘다(다시 돌리면 이어 쓴다). */
+let limitHit = false;
+
 function codex(text: string): Promise<string> {
   return new Promise((resolve) => {
     const dir = fs.mkdtempSync(path.join(os.tmpdir(), "codex-mu-"));
     const out = path.join(dir, "out.txt");
     const child = spawn("codex", ["exec", "--ephemeral", "--skip-git-repo-check", "-s", "read-only", "-m", CODEX_MODEL, "-C", dir, "-o", out, "-"], { cwd: dir });
+    let stderr = "";
+    child.stderr.on("data", (chunk: Buffer) => (stderr += chunk));
+    // 사용량 한도에 걸리면 Codex 가 끝나지 않고 매달려 있었다. 5분이면 끊는다.
+    const timer = setTimeout(() => child.kill("SIGKILL"), 5 * 60 * 1000);
     child.stdin.end(text);
     child.on("close", () => {
+      clearTimeout(timer);
+      if (/usage limit/i.test(stderr)) limitHit = true;
       const result = fs.existsSync(out) ? fs.readFileSync(out, "utf8") : "";
       fs.rmSync(dir, { recursive: true, force: true });
       resolve(result);
@@ -202,12 +211,15 @@ async function main() {
   const log: Array<{ me: string; enemy: string; kept: number; dropped: string[]; seconds: number }> = [];
   let next = 0;
   let done = 0;
+  let failures = 0;
   await Promise.all(
     Array.from({ length: CONCURRENCY }, async () => {
-      while (next < todo.length) {
+      while (next < todo.length && !limitHit && failures < 10) {
         const [a, b] = todo[next++];
         const result = await precomputePair(data.cardById.get(a)!, data.cardById.get(b)!).catch(() => undefined);
         done += 1;
+        // 연속으로 실패하면 멈춘다. 한도에 걸린 채 수천 쌍을 헛돌지 않게.
+        failures = result ? 0 : failures + 1;
         if (!result) continue;
         const file = load(a);
         file.pairs[b] = result.pair;
@@ -217,6 +229,7 @@ async function main() {
       }
     }),
   );
+  if (limitHit || failures >= 10) console.log(limitHit ? "Codex 사용량 한도 — 멈춤. 한도가 풀리면 다시 돌리면 이어 씁니다." : "연속 10쌍 실패 — 멈춤.");
   const logFile = arg("log");
   if (logFile) fs.writeFileSync(logFile, JSON.stringify(log, null, 2));
   const drops = log.reduce((n, r) => n + r.dropped.length, 0);
