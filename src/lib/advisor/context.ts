@@ -120,12 +120,20 @@ function collectEffectTags(cards: ChampionCard[]): string[] {
   return [...tags].sort((a, b) => b.length - a.length);
 }
 
-let cached: Promise<AdvisorData> | null = null;
+/**
+ * 받아 둔 재료. 패치·언어마다 따로 둔다.
+ *
+ * 하나만 쥐고 있었더니 화면 언어를 바꿔도 처음 받은 언어의 자료가 그대로 돌아왔다 — 영어로
+ * 바꾼 뒤에도 "오공 into 럼블", "마법무효화의 망토" 가 나왔다. 새로고침해야만 풀렸다.
+ */
+const cached = new Map<string, Promise<AdvisorData>>();
 
 /** 재료를 한 번만 받아 두고 재사용한다 */
 export function loadAdvisorData(patch: string, locale = "ko_KR"): Promise<AdvisorData> {
-  if (cached) return cached;
-  cached = (async () => {
+  const key = `${patch}:${locale}`;
+  const hit = cached.get(key);
+  if (hit) return hit;
+  const loading = (async () => {
     const knowledge = await getJson<KnowledgeBundle>(
       dataUrl(patch, "llm/advisor-knowledge.json"),
     );
@@ -171,7 +179,10 @@ export function loadAdvisorData(patch: string, locale = "ko_KR"): Promise<Adviso
       wikiItems: new Map((wikiItemFile.items ?? []).map((i) => [i.id, i])),
     } satisfies AdvisorData;
   })();
-  return cached;
+  cached.set(key, loading);
+  // 받다가 실패하면 쥐고 있지 않는다. 다음에 다시 받는다(오프라인에서 돌아온 경우).
+  loading.catch(() => cached.delete(key));
+  return loading;
 }
 
 const normalize = (s: string) => s.replace(/\s+/g, "").toLowerCase();
