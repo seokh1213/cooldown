@@ -57,4 +57,13 @@ for (const lang of ["en_US", "zh_CN"] as const) {
   ok(matchupNotes(bare, byId.get("Jax")!, byId.get("Fiora")!, lang).plan!.enemy.length === 0, `${lang}: 번역이 없으면 노트를 싣지 않는다`);
 }
 
+// 내 노트가 상대 이동기를 가리키면 상대 카드로 채워 그 문장 바로 뒤에 붙인다
+{
+  const text = selectPlaybook(books, card("Kindred"), card("Caitlyn")).mine.map((e) => e.text).find((t) => t.includes("케이틀린이라면"));
+  ok(!!text && /이동기로 빠질[^.]*\. 케이틀린이라면 E 90구경 투망이 그 이동기입니다\./.test(text), "킨드레드 노트: 이동기 문장 바로 뒤에 케이틀린 E");
+  // 상대 팀을 말하는 문장(지원가·아군)에는 붙이지 않는다
+  const fizz = selectPlaybook(books, card("Nocturne"), card("Swain")).mine.map((e) => e.text).join(" ");
+  ok(!/상대 지원가의 군중 제어를 먼저 소모시키고[^.]*\. 스웨인이라면/.test(fizz), "지원가를 말하는 문장에는 라인 상대 스킬을 붙이지 않는다");
+}
+
 console.log(`✅ 노트 고리 통과 (${checks}건)`);
