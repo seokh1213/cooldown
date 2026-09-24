@@ -87,6 +87,11 @@ export interface AdvisorData {
    */
   aliases: Map<string, string[]>;
   playbooks: Map<string, Playbook>;
+  /**
+   * 화면 언어로 옮긴 노트(노트 id → 글). 한국어 화면에서는 비어 있다 — 원문이 한국어다.
+   * 번역 원자를 노트 단위로 이은 것이라(`build-note-translations.ts`) 원자가 있는 챔피언만 있다.
+   */
+  noteTranslations?: Record<string, string>;
   tips: CuratedTip[];
   /** 룬·소환사 주문 판정 규칙. 이름으로 찾는다. */
   ruleIndex: RuleIndex;
@@ -134,6 +139,11 @@ export function loadAdvisorData(patch: string, locale = "ko_KR"): Promise<Adviso
           (): WikiItemFile => ({}),
         ),
       ]);
+    // 노트 번역도 없어도 된다. 없으면 영어·중국어 답은 지금처럼 도출 문장만으로 짓는다.
+    const translations =
+      locale === "ko_KR"
+        ? undefined
+        : await getJson<{ notes: Record<string, string> }>(dataUrl(patch, `llm/note-translations-${locale}.json`)).catch(() => undefined);
     // 이름 색인은 없어도 된다. 없으면 화면 언어 이름으로만 찾는다.
     const names = await getJson<{ names: Record<string, string[]> }>(dataUrl(patch, "llm/champion-names.json")).catch(
       () => ({ names: {} as Record<string, string[]> }),
@@ -149,6 +159,7 @@ export function loadAdvisorData(patch: string, locale = "ko_KR"): Promise<Adviso
         cardFile.cards.map((c) => [c.id, [...new Set([...(names.names[c.id] ?? []), c.id])].filter((name) => name !== c.name)]),
       ),
       playbooks: new Map(Object.entries(knowledge.playbooks)),
+      noteTranslations: translations?.notes,
       tips: knowledge.tips,
       ruleIndex: indexRules(knowledge.rules ?? []),
       mechanics: knowledge.mechanics ?? [],
@@ -330,7 +341,7 @@ export function matchupNotes(
   if (early) tagged.splice(tagged.findIndex((claim) => claim.kind === "defense") + 1, 0, early);
   const derived = tagged.map((claim) => claim.text);
   /*
-   * 손으로 쓴 노트는 한국어일 때만 붙인다.
+   * 손으로 쓴 노트는 한국어 원문이거나 옮긴 것만 붙인다(아래 `written`).
    *
    * 플레이북 3,723 건이 한국어로만 있다. 영어·중국어 프롬프트에 한국어 문단을
    * 섞으면 모델이 그 언어를 따라가 답까지 한국어가 된다.
@@ -339,17 +350,26 @@ export function matchupNotes(
    * 둘을 한 덩어리로 보고 통째로 뺐고, 그래서 영어·중국어 사용자는 상성 지식을
    * 하나도 못 받았다. 갈라 둔다.
    */
-  const written = lang === "ko_KR";
+  /*
+   * 영어·중국어는 옮겨 둔 노트만 싣는다(`noteTranslations`). 옮긴 것이 없는 노트는 빠진다 —
+   * 한국어 문단을 섞지 않는다는 원칙은 그대로다. 고리(hooks)가 붙인 문장은 한국어 문형이라
+   * 번역에는 없다. 번역은 원문 노트 id 로 찾으므로 고리 문장이 붙기 전의 글이다.
+   */
+  const written = (list: typeof selected.mine) =>
+    lang === "ko_KR"
+      ? list.map(({ category, text }) => ({ category, text }))
+      : list.flatMap(({ id, category }) => {
+          const text = id ? data.noteTranslations?.[id] : undefined;
+          return text ? [{ category, text }] : [];
+        });
+  const mine = written(selected.mine);
+  const enemyNotes = written(selected.vsEnemy);
   return {
-    mine: [...derived, ...(written ? selected.mine.slice(0, 3).map((entry) => entry.text) : [])],
-    enemy: written ? selected.vsEnemy.slice(0, 3).map((entry) => entry.text) : [],
+    mine: [...derived, ...mine.slice(0, 3).map((entry) => entry.text)],
+    enemy: enemyNotes.slice(0, 3).map((entry) => entry.text),
     derived: derived.length,
     // 요약은 갈래를 보고 칸을 채운다. 카드에 보이는 세 줄보다 넓게 준다.
-    plan: {
-      claims: tagged,
-      mine: written ? selected.mine.map(({ category, text }) => ({ category, text })) : [],
-      enemy: written ? selected.vsEnemy.map(({ category, text }) => ({ category, text })) : [],
-    },
+    plan: { claims: tagged, mine, enemy: enemyNotes },
   };
 }
 

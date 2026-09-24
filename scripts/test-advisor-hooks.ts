@@ -11,6 +11,7 @@ import type { ChampionCard } from "./llm/lib/facts";
 import type { Playbook } from "./llm/lib/playbookCore";
 import { selectPlaybook, withHooks } from "./llm/lib/playbookCore";
 import { PUBLIC_DATA_ROOT, resolvePatchVersion } from "./llm/lib/data";
+import { matchupNotes, type AdvisorData } from "../src/lib/advisor/context";
 
 const dir = path.join(PUBLIC_DATA_ROOT, resolvePatchVersion(), "llm");
 const cards = (JSON.parse(fs.readFileSync(path.join(dir, "champion-cards-ko_KR.json"), "utf8")) as { cards: ChampionCard[] }).cards;
@@ -41,5 +42,19 @@ const leona = note("Leona", "Lux", "vs-lux-escape");
 ok((leona.match(/E 천공의 검/g) ?? []).length <= 1, "한 스킬을 두 고리가 겹쳐 부르지 않는다");
 // 패시브는 부르지 않는다
 ok(!/ P /.test(withHooks({ category: "escape-window", text: "x." }, card("Yasuo")).text), "패시브는 부르지 않는다");
+
+// 영어·중국어는 옮긴 노트만 싣는다. 고리 문장(한국어 문형)은 붙지 않는다.
+for (const lang of ["en_US", "zh_CN"] as const) {
+  const langCards = (JSON.parse(fs.readFileSync(path.join(dir, `champion-cards-${lang}.json`), "utf8")) as { cards: ChampionCard[] }).cards;
+  const notes = (JSON.parse(fs.readFileSync(path.join(dir, `note-translations-${lang}.json`), "utf8")) as { notes: Record<string, string> }).notes;
+  const byId = new Map(langCards.map((c) => [c.id, c]));
+  const data = { cards: langCards, cardById: byId, playbooks: books, items: [], noteTranslations: notes } as unknown as AdvisorData;
+  const plan = matchupNotes(data, byId.get("Jax")!, byId.get("Fiora")!, lang).plan!;
+  ok(plan.enemy.length > 0, `${lang}: 옮긴 상대 노트가 실린다`);
+  ok([...plan.mine, ...plan.enemy].every((entry) => !/[가-힣]/.test(entry.text)), `${lang}: 한국어가 섞이지 않는다(고리 문장 포함)`);
+  ok(plan.enemy.some((entry) => entry.text === notes["vs-fiora-riposte"]), `${lang}: 피오라 W 노트가 번역으로 실린다`);
+  const bare = { ...data, noteTranslations: undefined } as unknown as AdvisorData;
+  ok(matchupNotes(bare, byId.get("Jax")!, byId.get("Fiora")!, lang).plan!.enemy.length === 0, `${lang}: 번역이 없으면 노트를 싣지 않는다`);
+}
 
 console.log(`✅ 노트 고리 통과 (${checks}건)`);
