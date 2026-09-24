@@ -71,6 +71,11 @@ jobs:
       - name: Generate static data
         run: npm run generate-static-data
 
+      # 새 패치로 넘어가면 생성기가 옛 패치의 도우미 자료(llm/)를 옮겨 둔다. 새 툴팁으로 카드·지식
+      # 묶음·번역을 다시 짓고, 미리 쓴 상성 답은 재료가 그대로인 쌍만 남긴다. 옮긴 것이 없으면 그냥 끝난다.
+      - name: Carry advisor data to the new patch
+        run: npm run llm:carry
+
       # 자료가 새로 오면 아이콘 판본도 바뀐다. 목록 화면이 쓰는 축소 사본을 여기서
       # 같이 만든다. Data Dragon 에서 1,041장을 받아 96px/64px WebP 로 줄이는데
       # 10.2MB 가 1.9MB 가 된다. 지난 판본 폴더는 생성기가 지운다.

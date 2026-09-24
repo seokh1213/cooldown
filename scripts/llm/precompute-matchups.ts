@@ -194,6 +194,11 @@ export async function precomputePair(me: ChampionCard, enemy: ChampionCard): Pro
   return { pair, kept, dropped, seconds: (Date.now() - started) / 1000 };
 }
 
+/** 재료 지문. 생성 때 파일에 적어 두고, 패치를 넘길 때 재료가 그대로인 쌍만 남기는 데 쓴다. */
+export function materialFingerprint(a: string, b: string): string {
+  return crypto.createHash("sha1").update(material(data.cardById.get(a)!, data.cardById.get(b)!)).digest("hex").slice(0, 12);
+}
+
 async function main() {
   const outDir = arg("out") ?? path.join(PUBLIC_DATA_ROOT, patch, "llm", "matchups");
   const positions = new Map(cards.map((card) => [card.id, new Set(card.wiki?.positions ?? [])]));
@@ -203,7 +208,7 @@ async function main() {
   fs.mkdirSync(outDir, { recursive: true });
   const byMe = new Map<string, { patch: string; pairs: Record<string, PrecomputedPair>; materials?: Record<string, string> }>();
   // 재료 지문. 노트·카드를 고치면 재료가 바뀐 쌍만 다시 쓴다(전부 다시 쓰면 Codex 한도를 몇 번 채운다).
-  const fingerprint = (a: string, b: string) => crypto.createHash("sha1").update(material(data.cardById.get(a)!, data.cardById.get(b)!)).digest("hex").slice(0, 12);
+  const fingerprint = materialFingerprint;
   const fileOf = (me: string) => path.join(outDir, `${me}.json`);
   const load = (me: string) => {
     if (!byMe.has(me)) byMe.set(me, fs.existsSync(fileOf(me)) ? JSON.parse(fs.readFileSync(fileOf(me), "utf8")) : { patch, pairs: {} });
