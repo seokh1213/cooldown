@@ -104,7 +104,7 @@ export interface AdvisorData {
   wikiItems: Map<string, WikiItemMeta>;
 }
 
-function dataUrl(patch: string, relative: string): string {
+export function dataUrl(patch: string, relative: string): string {
   return `${import.meta.env.BASE_URL}data/${patch}/${relative}`;
 }
 

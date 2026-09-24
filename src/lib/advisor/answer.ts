@@ -122,6 +122,8 @@ export type AdvisorAnswer =
       /** 상성 노트. 내 챔피언을 플레이할 때(이 상대 한정 우선) / 상대를 상대할 때. 사람이 검증. */
       /** `derived` 는 mine 앞쪽의 코드가 도출한 문장 수. 뒤는 사람이 쓴 플레이북 노트다. */
       notes?: MatchupNotes;
+      /** 빌드할 때 미리 써 둔 상성 답(`precomputed.ts`). 있으면 노트 조립 대신 이것을 보인다. */
+      precomputed?: string;
     }
   | {
       /**
