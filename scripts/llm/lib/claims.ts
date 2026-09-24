@@ -374,14 +374,26 @@ export function renderEscapeClaims(card: ChampionCard, claims: EscapeClaims): st
   }
   // 1레벨 기준이라는 말을 따로 문장으로 두었더니 109 종에 똑같은 줄이 붙었다.
   // 아무 정보도 더하지 않는 군더더기라 수치 옆에 한마디로 접는다.
-  const listed = moves.map((m) => `${m.slot} ${shortName(m.name)}(1레벨 ${m.cooldown}초)`).join(", ");
-  const longest = moves.reduce((a, b) => (a.cooldown >= b.cooldown ? a : b));
+  //
+  // 재사용 대기시간이 3초 이하인 것(야스오 E 0.5초, 닐라 E 0.5초, 벨베스 R 1초)은 쿨타임으로
+  // 막히는 스킬이 아니다 — 대상마다·충전·산호 같은 다른 조건이 쓰임을 막는다. "(1레벨 1초)" 라
+  // 적고 "빠진 직후가 창" 이라 하면 틀린다. 수치를 적지 않고 창 계산에서도 뺀다.
+  const SHORT = 3;
+  const gated = moves.filter((m) => m.cooldown > SHORT);
+  const listed = moves.map((m) => `${m.slot} ${shortName(m.name)}${m.cooldown > SHORT ? `(1레벨 ${m.cooldown}초)` : ""}`).join(", ");
   const head = `${card.name}의 이동 수단은 ${listed}입니다.`;
+  if (!gated.length) {
+    return `${head} 재사용 대기시간이 짧아 거의 언제든 쓸 수 있으므로, 이동기가 빠진 틈보다 군중 제어로 먼저 묶는 쪽이 확실합니다.`;
+  }
+  const longest = gated.reduce((a, b) => (a.cooldown >= b.cooldown ? a : b));
   if (claims.ultimateOnly) {
     return `${head} 궁극기 말고는 움직일 방법이 없으므로 6레벨 전이나 ${longest.slot}${SLOT_PARTICLE[longest.slot]?.subject ?? "이"} 빠진 사이가 그대로 무는 창입니다.`;
   }
   if (moves.length === 1) {
     return `${head} 이것 하나뿐이라 ${moves[0].slot}${SLOT_PARTICLE[moves[0].slot]?.to ?? "을"} 쓰게 만든 직후가 거리를 좁히거나 잘라 낼 창입니다.`;
+  }
+  if (gated.length < moves.length) {
+    return `${head} 짧게 도는 이동기가 있어 하나를 뺐다고 들어가면 살아 나갑니다. ${longest.slot} ${josa(shortName(longest.name), "이/가")} 돌아오기 전에 군중 제어와 함께 노립니다.`;
   }
   return `${head} 여러 개를 겹쳐 빠져나가므로 하나를 뺐다고 들어가면 나머지로 살아 나갑니다. 특히 ${longest.slot} ${josa(shortName(longest.name), "이/가")} 돌아오기 전을 노립니다.`;
 }
