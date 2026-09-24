@@ -17,10 +17,28 @@ import { fetchJson, writeJson } from "./data-pipeline/io/json";
 const VERSION_URL = "https://ddragon.leagueoflegends.com/api/versions.json";
 const DATA_DIR = path.join(process.cwd(), "public", "data");
 
+/**
+ * 도우미 자료(`<패치>/llm`)는 이 생성기가 만들지 않는다. 위키에서 받은 것(대시·위키 메타·규칙
+ * 노트)과 그로부터 지은 것(카드·지식 묶음·번역·미리 쓴 상성 답)이 섞여 있다. 옛 패치 폴더를 통째로
+ * 지우면 새 패치에는 도우미 자료가 하나도 없게 된다 — 26.19 가 나온 날 CI 가 그 자리에서 멈췄다
+ * (지식 점검이 새 패치의 카드를 못 찾았다). 지우기 전에 새 패치 폴더로 옮겨 두고, 새 자료로 다시
+ * 짓는 일은 `npm run llm:carry` 가 한다.
+ */
+function carryAdvisorData(fromDir: string, currentPatchVersion: string, fromPatch: string): void {
+  const source = path.join(fromDir, "llm");
+  const target = path.join(DATA_DIR, currentPatchVersion, "llm");
+  if (!fs.existsSync(source) || fs.existsSync(target)) return;
+  fs.mkdirSync(path.dirname(target), { recursive: true });
+  fs.renameSync(source, target);
+  fs.writeFileSync(path.join(target, ".carried-from"), fromPatch);
+  console.log(`📦 Carried advisor data ${fromPatch} → ${currentPatchVersion} (npm run llm:carry rebuilds it)`);
+}
+
 function removeOldReleaseDirectories(currentPatchVersion: string): void {
   if (!fs.existsSync(DATA_DIR)) return;
   for (const entry of fs.readdirSync(DATA_DIR, { withFileTypes: true })) {
     if (!entry.isDirectory() || entry.name === currentPatchVersion) continue;
+    if (/^\d+\.\d+$/.test(entry.name)) carryAdvisorData(path.join(DATA_DIR, entry.name), currentPatchVersion, entry.name);
     console.log(`🗑️ Removing old patch data: ${entry.name}`);
     fs.rmSync(path.join(DATA_DIR, entry.name), {
       recursive: true,
