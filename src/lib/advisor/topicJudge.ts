@@ -91,6 +91,9 @@ const TOPIC_WORDS: Array<[RegExp, TopicLabel]> = [
   [/후반|중반|late game|mid game|scal(e|ing)|后期|中期/i, "phase"],
   [/초반|early game|前期/i, "laning"],
   [/언제\s*(들어가|물|진입|이니시|올인)|진입\s*타이밍|when (can|should|do) I (go in|engage|all[- ]?in|jump)|什么时候(进|切|开)/i, "escape-window"],
+  // 갈래 낱말 없이 두루 묻는 말. 위의 갈래 낱말이 먼저라 "라인전 팁" 은 라인전이다.
+  // 판정기가 "How do I play Jax against Fiora?" 를 한타로 확신했다.
+  [/팁|공략|어떻게\s*(이겨|이기|상대해|상대하|잡아)|how (do|should|can) I (play|beat|win|deal with)|\btips?\b|怎么玩|怎么打|攻略/i, "general"],
 ];
 
 export function topicFromWords(question: string, names: string[] = []): TopicLabel | undefined {

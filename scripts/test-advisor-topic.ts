@@ -99,7 +99,11 @@ eq(topicFromWords("제드로 럭스 상대할 때 언제 들어가?", ["제드",
 eq(topicFromWords("What should I build as Wukong against Rumble?"), "situational-item", "영어 build");
 eq(topicFromWords("剑魔团战怎么打"), "teamfight", "중국어 团战");
 // 낱말이 없으면 판정기에 맡긴다. 넓은 말("들어가", "라인")로 가르지 않는다.
-eq(topicFromWords("오공으로 럼블이 너무어려운데 팁이 없나?", ["오공", "럼블"]), undefined, "낱말 없음");
+eq(topicFromWords("오공으로 럼블이 너무어려운데 팁이 없나?", ["오공", "럼블"]), "general", "두루 묻는 말(팁)");
+eq(topicFromWords("How do I play Jax against Fiora?"), "general", "영어 how do I play — 판정기는 한타로 확신했다");
+eq(topicFromWords("리신 인섹킥 어떻게 해", ["리 신"]), undefined, "어떻게 해 만으로는 두루 묻는 말이 아니다");
+eq(topicFromWords("가렌 라인전 팁", ["가렌"]), "laning", "갈래 낱말이 두루 묻는 말보다 먼저");
+eq(topicFromWords("럼블 만났는데 나 오공", ["럼블", "오공"]), undefined, "낱말 없음");
 eq(topicFromWords("탑 라인 다리우스 짜증나", ["다리우스"]), undefined, "라인 한 글자로는 가르지 않는다");
 eq(topicFromWords("템빨로 이기는 챔피언이야?", []), undefined, "낱말 속 템은 아이템이 아니다");
 eq(topicFromWords("잭스 상대로 피오라 할 때 탑 갱 오는 정글이 녹턴이면?", ["잭스", "피오라", "녹턴"]), "laning", "갱");
