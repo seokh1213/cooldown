@@ -146,6 +146,10 @@ function main() {
         for (const target of entry.when?.enemyIds ?? []) {
           if (!championIds.has(target)) findings.push({ where, message: `없는 상대 id: ${target}` });
         }
+        // 태그에는 지정형인지가 없다. "지정형 군중 제어" 를 말하는 노트에 고리를 달면 논타겟 스킬(소나 R)을 부른다.
+        if (entry.hooks?.length && /지정형/.test(entry.text)) {
+          findings.push({ where, message: "지정형 스킬을 말하는 노트에 고리를 달았다 — 태그로는 지정형을 가리지 못한다" });
+        }
         for (const hook of entry.hooks ?? []) {
           if (!/\{spells/.test(hook.text)) findings.push({ where, message: `고리 문형에 {spells} 자리가 없음: "${hook.text}"` });
           for (const tag of hook.effects) {
