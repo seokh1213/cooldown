@@ -16,6 +16,7 @@
  *   npx tsx scripts/llm/precompute-matchups.ts --all --concurrency 6
  */
 import { spawn } from "child_process";
+import * as crypto from "crypto";
 import * as fs from "fs";
 import * as os from "os";
 import * as path from "path";
@@ -200,14 +201,30 @@ async function main() {
     ? cards.flatMap((a) => cards.filter((b) => b.id !== a.id && [...positions.get(a.id)!].some((p) => positions.get(b.id)!.has(p))).map((b) => [a.id, b.id] as [string, string]))
     : (arg("pairs") ?? "").split(",").filter(Boolean).map((p) => p.split(":") as [string, string]);
   fs.mkdirSync(outDir, { recursive: true });
-  const byMe = new Map<string, { patch: string; pairs: Record<string, PrecomputedPair> }>();
+  const byMe = new Map<string, { patch: string; pairs: Record<string, PrecomputedPair>; materials?: Record<string, string> }>();
+  // 재료 지문. 노트·카드를 고치면 재료가 바뀐 쌍만 다시 쓴다(전부 다시 쓰면 Codex 한도를 몇 번 채운다).
+  const fingerprint = (a: string, b: string) => crypto.createHash("sha1").update(material(data.cardById.get(a)!, data.cardById.get(b)!)).digest("hex").slice(0, 12);
   const fileOf = (me: string) => path.join(outDir, `${me}.json`);
   const load = (me: string) => {
     if (!byMe.has(me)) byMe.set(me, fs.existsSync(fileOf(me)) ? JSON.parse(fs.readFileSync(fileOf(me), "utf8")) : { patch, pairs: {} });
     return byMe.get(me)!;
   };
-  // 이미 쓴 쌍은 건너뛴다(다시 돌려도 이어 쓴다)
-  const todo = list.filter(([a, b]) => !load(a).pairs[b]);
+  // 지문이 없는 옛 쌍은 지금 재료로 썼다고 보고 지문만 채운다(--adopt). 토큰을 쓰지 않는다.
+  if (process.argv.includes("--adopt")) {
+    for (const [a, b] of list) {
+      const file = load(a);
+      if (file.pairs[b] && !file.materials?.[b]) (file.materials ??= {})[b] = fingerprint(a, b);
+    }
+    for (const [me, file] of byMe) fs.writeFileSync(fileOf(me), JSON.stringify(file));
+    console.log("지문을 채웠다");
+    return;
+  }
+  // 이미 쓴 쌍은 건너뛴다(다시 돌려도 이어 쓴다). 재료가 바뀐 쌍은 다시 쓴다.
+  const todo = list.filter(([a, b]) => {
+    const file = load(a);
+    return !file.pairs[b] || (file.materials?.[b] !== undefined && file.materials[b] !== fingerprint(a, b));
+  });
+  console.log(`쓸 쌍 ${todo.length}(새 쌍 ${todo.filter(([a, b]) => !load(a).pairs[b]).length})`);
   const log: Array<{ me: string; enemy: string; kept: number; dropped: string[]; seconds: number }> = [];
   let next = 0;
   let done = 0;
@@ -223,6 +240,7 @@ async function main() {
         if (!result) continue;
         const file = load(a);
         file.pairs[b] = result.pair;
+        (file.materials ??= {})[b] = fingerprint(a, b);
         fs.writeFileSync(fileOf(a), JSON.stringify(file));
         log.push({ me: a, enemy: b, kept: result.kept, dropped: result.dropped, seconds: result.seconds });
         if (done % 10 === 0) console.log(`${done}/${todo.length}`);
