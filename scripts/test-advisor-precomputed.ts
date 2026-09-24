@@ -27,4 +27,6 @@ ok(precomputedDigest(pair, "teamfight", pairCards) === undefined, "물은 칸이
 ok(precomputedDigest({ laning: "라인전." }, "laning", pairCards) === undefined, "칸이 하나뿐이면 쓰지 않는다");
 ok(/W 응수/.test(precomputedDigest(pair, "skill", pairCards)!), "스킬 질문은 조심할 것부터");
 
+ok(!/\*\*\n이후에는/.test(precomputedDigest({ ...pair, fight: "이후에는 짧게 딜 교환합니다." }, "general", pairCards)!), "칸 첫머리의 이음말을 뗀다");
+
 console.log(`✅ 미리 쓴 상성 답 통과 (${checks}건)`);
