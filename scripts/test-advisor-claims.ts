@@ -213,9 +213,10 @@ assert.ok(generated >= 360, `도출 항목이 ${generated}건뿐입니다`);
  * penetration / 穿透 이 나오는지 집어 확인한다.
  */
 {
+  // 방어력 벽 문장은 1·18레벨 모두 매우 높은 앞라인에게만 나온다(럼블 36 은 아니다). 말파이트로 본다.
   const me = cards.find((card) => card.id === "MonkeyKing");
-  const enemy = cards.find((card) => card.id === "Rumble");
-  assert.ok(me && enemy, "오공·럼블 카드");
+  const enemy = cards.find((card) => card.id === "Malphite");
+  assert.ok(me && enemy, "오공·말파이트 카드");
   const claims = deriveMatchupClaims(me, enemy);
   assert.notEqual(claims.mine.damage, "불명", "내 피해 유형이 잡혀야 한다");
   assert.notEqual(claims.theirs.damage, "불명", "상대 피해 유형이 잡혀야 한다");
