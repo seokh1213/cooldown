@@ -269,6 +269,7 @@ export const zhCNTranslations: Translations = {
       verdictNo: "否",
       ruleSource: "Wiki 判定规则",
       understoodAs: "已按 {name} 理解。",
+      pairFromMany: "按 {mine} 对 {enemy} 回答（另外提到：{others}）。",
       fromScreen: "以当前页面的 {name} 为准。",
       suggestPrefix: "找不到名为 '{original}' 的英雄。",
       suggestSuffix: "您是指以下哪位？",

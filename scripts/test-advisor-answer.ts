@@ -171,6 +171,18 @@ assert.equal(detectSpellFocus("럼블 E 뭐야"), undefined, "사실을 안 짚�
     "둘 다 맞게 썼으면 오타가 없다",
   );
 
+  // 이름을 이미 둘 찾았으면 두 글자 낱말("오는")은 오타로 보지 않는다
+  assert.equal(
+    suggestChampions("잭스 상대로 피오라 할 때 탑 갱 오는 정글이 녹턴이면?", cards, nicknames(cards), new Set(["Jax", "Fiora", "Nocturne"])),
+    undefined,
+    "오는 → 오른·오공 후보가 아니다",
+  );
+  // 하나만 찾았을 때 두 글자 오타는 여전히 잡는다
+  assert.deepEqual(
+    suggestChampions("말파이트랑 럼베 중 1레벨 체력 누가 더 높아?", cards, none, malphite)?.candidates.map((c) => c.id),
+    ["Rumble"],
+  );
+
   // 정식 이름 그 자체는 오타가 아니다. "오공" 이 오른·오리아나 후보로 잡혔다.
   assert.equal(suggestChampions("오공 Q 쿨타임", cards, nicknames(cards), new Set(["MonkeyKing"])), undefined);
 

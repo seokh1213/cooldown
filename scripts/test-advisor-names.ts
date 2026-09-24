@@ -11,7 +11,7 @@ import type { ChampionCard } from "./llm/lib/facts";
 import { PUBLIC_DATA_ROOT, resolvePatchVersion } from "./llm/lib/data";
 import type { AdvisorData } from "../src/lib/advisor/context";
 import { detectChampions } from "../src/lib/advisor/intent";
-import { matchupSidesByPhrase } from "../src/lib/advisor/answer";
+import { matchupPair, matchupSides, matchupSidesByPhrase } from "../src/lib/advisor/answer";
 
 const dir = path.join(PUBLIC_DATA_ROOT, resolvePatchVersion(), "llm");
 const cards = (JSON.parse(fs.readFileSync(path.join(dir, "champion-cards-ko_KR.json"), "utf8")) as { cards: ChampionCard[] }).cards;
@@ -63,5 +63,21 @@ eq(ids("카이팅 잘하는 법"), [], "카이팅 속 카이는 카이사가 아
 eq(ids("징크 템트리 알려줘"), ["Jinx"], "템트리를 가려도 줄임말 징크는 찾는다");
 eq(ids("아이번 정글 동선"), ["Ivern"], "정식 이름은 그대로");
 eq(ids("라일라이의 수정홀 언제 사?"), [], "아이템 이름 속 일라는 일라오이가 아니다");
+
+// 이름이 셋이면 곁들인 이름(자리 낱말이 붙은 것)을 빼고 맞붙는 둘을 고른다
+const allNames = (card: ChampionCard) => [card.name, ...(data.aliases.get(card.id) ?? [])];
+const pairOf = (q: string) => {
+  const pair = matchupPair(q, detectChampions(data, q), allNames);
+  if (!pair) return undefined;
+  const phrased = matchupSidesByPhrase(q, pair, allNames);
+  const sides = phrased ? [phrased, pair.find((c) => c.id !== phrased.id)!] : matchupSides(q, pair);
+  return sides.map((c) => c.id);
+};
+eq(pairOf("오공으로 럼블 상대할 때 아이번 정글이면 아이템 뭐 가?"), ["MonkeyKing", "Rumble"], "뒤에 붙은 정글");
+eq(pairOf("잭스 상대로 피오라 할 때 탑 갱 오는 정글이 녹턴이면?"), ["Fiora", "Jax"], "앞에 붙은 정글, 상대를 먼저 말해도");
+eq(pairOf("I play Garen into Darius and their support is Thresh, how do I lane?"), ["Garen", "Darius"], "영어 support");
+eq(pairOf("我用亚索打墨菲特，对面打野是盲僧，怎么对线？"), ["Yasuo", "Malphite"], "중국어 打野 — 띄어 쓰지 않아도 옆 이름을 잡지 않는다");
+eq(ids("我用亚索打墨菲特"), ["Yasuo", "Malphite"], "중국어 칭호(亚索)도 이름으로");
+eq(pairOf("오공 럼블 아이번 중 누가 제일 세?"), ["MonkeyKing", "Rumble"], "자리 낱말이 없으면 앞의 둘(셋을 견주는 질문은 비교 경로가 먼저 받는다)");
 
 console.log(`✅ 이름 찾기·시점 문형 통과 (${checks}건)`);

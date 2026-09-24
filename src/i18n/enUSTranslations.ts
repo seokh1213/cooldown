@@ -283,6 +283,7 @@ export const enUSTranslations: Translations = {
       verdictNo: "No",
       ruleSource: "Wiki ruling",
       understoodAs: "Read as {name}.",
+      pairFromMany: "Answering as {mine} vs {enemy} (also mentioned: {others}).",
       fromScreen: "Using {name} from the current page.",
       suggestPrefix: "No champion named '{original}'.",
       suggestSuffix: "— did you mean one of these?",

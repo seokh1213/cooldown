@@ -44,7 +44,9 @@ import {
   asksComparison,
   asksGuide,
   asksMatchup,
+  matchupPair,
   matchupSides,
+  matchupSidesDetailed,
   asksSkillsOverview,
   buildCommentaryPrompt,
   buildCompareAnswer as buildCompareCard,
@@ -532,12 +534,33 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
      * 상대를 먼저 말하면 통째로 뒤집혔다 — "럼블 상대로 오공 하는데" 가 럼블 시점이
      * 됐다. 열 문장으로 재 보니 어순은 4/10, 조사는 9/10 이다.
      */
+    /*
+     * 이름이 셋 이상인 상성 질문. "오공으로 럼블 상대할 때 아이번 정글이면 아이템 뭐 가?" 는
+     * 오공 vs 럼블 을 묻고 아이번은 곁들인 말이다. 예전에는 셋을 다 0.8B 에 실어 글을 쓰게 했고,
+     * 프롬프트가 2,300토큰이 넘어 실행이 죽었다. 자리 낱말로 곁들인 이름을 빼고 둘로 답한다.
+     * 시점은 판정기에 묻지 않는다 — 이름 둘로 배운 헤드라 셋 앞에서는 12문항 중 6개만 맞혔다.
+     */
+    // 셋을 한꺼번에 견주는 질문("오공 럼블 아이번 중 누가 세?")은 아래 비교 표가 받는다
+    if (champions.length >= 3 && !asksComparison(question, champions.length) && (route ? route.kind === "matchup" : asksMatchup(question))) {
+      const aliasesOf = (card: ChampionCard) => [card.name, ...(data.aliases.get(card.id) ?? [])];
+      const pair = matchupPair(question, champions, aliasesOf);
+      if (pair) {
+        const phrased = matchupSidesByPhrase(question, pair, aliasesOf);
+        const [mine, enemy] = phrased ? [phrased, pair.find((card) => card.id !== phrased.id) ?? pair[1]] : matchupSides(question, pair);
+        const others = champions.filter((card) => !pair.includes(card)).map((card) => card.name).join(", ");
+        deliverMatchup(question, mine, enemy, usedNotice ?? fill(copy.card.pairFromMany, { mine: mine.name, enemy: enemy.name, others }), judgedTopic?.topic);
+        return;
+      }
+    }
     if (champions.length === 2 && (route ? route.kind === "matchup" : asksMatchup(question))) {
-      // 모델이 시점까지 골라 주면 그것을 쓴다. 못 고르면 조사 규칙으로 되돌아간다.
-      const picked = route?.mine && champions.includes(route.mine) ? route.mine : undefined;
-      const [mine, enemy] = picked
-        ? [picked, champions.find((card) => card.id !== picked.id) ?? champions[1]]
-        : matchupSides(question, champions);
+      /*
+       * 조사가 확실히 가르면("오공으로", "럼블 상대로") 그것이 먼저다. 판정기가 "오공으로 럼블 너무
+       * 어려운데 팁 없나?" 를 럼블 시점으로 골랐다. 조사 규칙이 틀린 것은 모두 조사가 없어 어순으로
+       * 떨어진 경우였다(`matchupSidesDetailed`). 그때만 판정기(영어·중국어는 문형 보정)를 따른다.
+       */
+      const byJosa = matchupSidesDetailed(question, champions);
+      const picked = !byJosa.confident && route?.mine && champions.includes(route.mine) ? route.mine : undefined;
+      const [mine, enemy] = picked ? [picked, champions.find((card) => card.id !== picked.id) ?? champions[1]] : byJosa.sides;
       deliverMatchup(question, mine, enemy, usedNotice, judgedTopic?.topic);
       return;
     }
