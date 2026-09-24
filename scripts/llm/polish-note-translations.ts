@@ -7,7 +7,7 @@
  *   1. Codex 가 챔피언마다 노트 원문(한국어)과 이어 붙인 번역을 받아, 노트마다 한 편으로 옮긴다.
  *      스킬 이름은 그 언어 카드 이름을 쓴다(대응표).
  *   2. 코드가 대조한다: 한국어 글자가 남지 않았나, 이어 붙인 번역에 있던 슬롯 문자·스킬 이름이
- *      다듬은 글에도 있나, 길이가 이어 붙인 글의 절반~1.5배 안인가.
+ *      다듬은 글에도 있나, 길이가 한국어 원문에 비해 지나치지 않나(en 1.2~4배 · zh 0.5~1.6배).
  *   3. Claude 가 다듬은 글이 원문·원자 번역과 뜻이 같은지 가린다(더함·뺌·주체·스킬 짝).
  *   4. 통과한 글만 knowledge/note-translations/<lang>.json 에 basis(이어 붙인 글)와 함께 싣는다.
  *      원자를 다시 지어 이어 붙인 글이 바뀌면 build-note-translations 가 다듬은 글을 쓰지 않는다.
@@ -118,8 +118,13 @@ async function polish(id: string, joined: Map<string, string>, store: PolishedSt
   todo.forEach((n, k) => {
     const text = result[String(k)]?.trim();
     const basis = joined.get(n.id)!;
-    const ratio = text ? text.length / basis.length : 0;
-    if (!text || /[가-힣]/.test(text) || ratio < 0.5 || ratio > 1.5 || lostNames(basis, text, target).length) {
+    // 길이는 한국어 원문에 댄다. 원자 번역은 원문 일부를 빠뜨리고, 다듬을 때 원문에서 되살리므로
+    // 이어 붙인 글에 대면 충실한 글이 "너무 길다" 로 떨어졌다(영어 탈락 대부분).
+    const ratio = text ? text.length / n.text.length : 0;
+    const [lo, hi] = LANG === "en_US" ? [1.2, 4] : [0.5, 1.6];
+    const lost = text ? lostNames(basis, text, target) : [];
+    if (!text || /[가-힣]/.test(text) || ratio < lo || ratio > hi || lost.length) {
+      if (process.env.POLISH_DEBUG) console.log(`  탈락 ${n.id}: 길이비 ${ratio.toFixed(2)} 빠진 이름 ${lost.join(", ")}\n    ${basis}\n    ${text}`);
       rejected += 1;
       return;
     }
@@ -127,8 +132,9 @@ async function polish(id: string, joined: Map<string, string>, store: PolishedSt
   });
   const check = [
     `League of Legends coaching notes about ${target.name}. For each number: the Korean original, the sentence-by-sentence ${LANG_NAME[LANG]} translation (checked), and a rewritten version.`,
-    "Answer true only if the rewritten version means the same as the checked translation: same subject (whose ability/action), same ability and effect pairing,",
+    "Answer true only if the rewritten version means the same as the Korean original: same subject (whose ability/action), same ability and effect pairing,",
     "no fact, condition, timing or advice dropped, nothing added that is not in the Korean original. Smoother wording is fine.",
+    "The checked translation may leave out parts of the original; restoring them from the original is fine.",
     "",
     ...passed.flatMap((p, k) => [`${k}. KO: ${p.ko}`, `   CHECKED: ${p.basis}`, `   REWRITTEN: ${p.text}`]),
     "",
