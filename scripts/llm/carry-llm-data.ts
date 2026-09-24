@@ -11,6 +11,7 @@
  *
  * 사용: npm run llm:carry            (CI: generate-static-data 다음)
  *       npm run llm:carry -- --force (표시 없이 다시 짓기)
+ *       npm run llm:carry -- --force --matchups-only (미리 쓴 답만 새 재료에 맞대 거르기)
  */
 import { execSync } from "child_process";
 import * as fs from "fs";
@@ -36,10 +37,14 @@ async function main() {
     console.log(`$ ${cmd}`);
     execSync(cmd, { stdio: "inherit" });
   };
-  for (const lang of ["ko_KR", "en_US", "zh_CN"]) run(`npm run --silent llm:build -- --lang ${lang}`);
-  run("npm run --silent llm:names");
-  run("npm run --silent llm:bundle");
-  run("npm run --silent llm:note-tr");
+  // --matchups-only: 카드·묶음은 이미 새 자료로 지어져 있고 미리 쓴 상성 답만 새 재료에 맞대 거른다
+  // (옛 패치에서 새로 써 온 쌍을 들일 때)
+  if (!process.argv.includes("--matchups-only")) {
+    for (const lang of ["ko_KR", "en_US", "zh_CN"]) run(`npm run --silent llm:build -- --lang ${lang}`);
+    run("npm run --silent llm:names");
+    run("npm run --silent llm:bundle");
+    run("npm run --silent llm:note-tr");
+  }
 
   // 미리 쓴 상성 답: 새 재료로 지문을 다시 재어 같은 쌍만 남긴다. 모듈이 불러올 때 카드를 읽으므로
   // 카드를 다시 지은 뒤에 불러온다.
