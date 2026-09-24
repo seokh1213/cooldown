@@ -51,11 +51,13 @@ const files = new Map<string, Promise<PrecomputedFile | undefined>>();
  * 내 챔피언의 미리 쓴 답 파일. 한 번 받은 것은 쥐고 있고, 없거나 못 받으면 undefined.
  * 챔피언마다 파일을 나눠 두어 물어본 챔피언 것만 받는다(같은 포지션 상대 40여 명, 수십 KB).
  */
-export function loadPrecomputed(patch: string, championId: string): Promise<PrecomputedFile | undefined> {
-  const key = `${patch}:${championId}`;
+export function loadPrecomputed(patch: string, championId: string, lang: Language = "ko_KR"): Promise<PrecomputedFile | undefined> {
+  const key = `${patch}:${championId}:${lang}`;
   let hit = files.get(key);
   if (!hit) {
-    hit = fetch(dataUrl(patch, `llm/matchups/${championId}.json`))
+    // 한국어가 원본(<id>.json), 영어·중국어는 옮긴 것(<id>.<lang>.json). 없으면 노트 조립으로 간다.
+    const file = lang === "ko_KR" ? `${championId}.json` : `${championId}.${lang}.json`;
+    hit = fetch(dataUrl(patch, `llm/matchups/${file}`))
       .then((res) => (res.ok ? (res.json() as Promise<PrecomputedFile>) : undefined))
       .catch(() => undefined);
     files.set(key, hit);
