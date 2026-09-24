@@ -189,6 +189,16 @@ function writeStore(id: string, store: Store): void {
   fs.writeFileSync(storePath(id), `${JSON.stringify({ pairs }, null, 2)}\n`);
 }
 
+/** 원문 파일. 생성기가 쌍마다 파일을 통째로 다시 쓰므로 쓰는 도중에 읽으면 깨져 있다 — 그때는 건너뛴다. */
+function readSource(id: string): MatchupFile | undefined {
+  try {
+    return JSON.parse(fs.readFileSync(path.join(SRC, `${id}.json`), "utf8")) as MatchupFile;
+  } catch {
+    console.log(`  ${id}: 원문을 읽지 못해 건너뜀(생성 중)`);
+    return undefined;
+  }
+}
+
 const sourceIds = () =>
   fs
     .readdirSync(SRC)
@@ -201,7 +211,8 @@ function emit(): void {
   let sections = 0;
   let missing = 0;
   for (const id of sourceIds()) {
-    const source = JSON.parse(fs.readFileSync(path.join(SRC, `${id}.json`), "utf8")) as MatchupFile;
+    const source = readSource(id);
+    if (!source) continue;
     const store = readStore(id);
     const pairs: Record<string, Sections> = {};
     for (const [enemy, secs] of Object.entries(source.pairs)) {
@@ -225,7 +236,8 @@ async function main(): Promise<void> {
   const tasks: Array<{ me: string; jobs: Array<{ enemy: string; slot: string; ko: string }> }> = [];
   const stores = new Map<string, Store>();
   for (const me of ids) {
-    const source = JSON.parse(fs.readFileSync(path.join(SRC, `${me}.json`), "utf8")) as MatchupFile;
+    const source = readSource(me);
+    if (!source) continue;
     const store = readStore(me);
     stores.set(me, store);
     const jobs = Object.entries(source.pairs).flatMap(([enemy, secs]) =>
