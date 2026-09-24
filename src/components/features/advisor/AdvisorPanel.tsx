@@ -359,9 +359,9 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
     if (notes.plan && focus) notes.plan.focus = focus;
     if (notes.plan) notes.plan.question = question;
     const answer = buildCompareCard([mine, enemy], question, undefined, { matchup: true, notes, lang });
-    // 미리 써 둔 답이 있으면 그것을 보인다(한국어만). 없으면 아래에서 노트를 조립한다.
-    if (lang === "ko_KR" && answer.kind === "compare") {
-      const pair = (await loadPrecomputed(data.patch, mine.id))?.pairs[enemy.id];
+    // 미리 써 둔 답이 있으면 그것을 보인다. 없으면 아래에서 노트를 조립한다.
+    if (answer.kind === "compare") {
+      const pair = (await loadPrecomputed(data.patch, mine.id, lang))?.pairs[enemy.id];
       const text = pair ? precomputedDigest(pair, notes.plan?.focus, [mine, enemy], lang) : undefined;
       if (text) {
         // 큰 모델이 검증된 재료로 미리 쓴 글이라 기기에서 4B 가 새로 쓰는 것보다 낫다. 모델과 상관없이 쓴다.
