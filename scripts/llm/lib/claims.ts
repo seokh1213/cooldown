@@ -421,6 +421,14 @@ function resistGrade(card: ChampionCard, stat: "armor" | "magicResist"): string 
   if (!snap) return undefined;
   const late = snap.gradeLv18;
   if ((isHigh(snap.gradeLv1) && isLow(late)) || (isLow(snap.gradeLv1) && isHigh(late))) return undefined;
+  /*
+   * "높은 편이라 그대로는 잘 들어가지 않습니다. 관통을 섞거나…" 는 강한 말이다. 1레벨과 18레벨이
+   * 모두 매우 높을 때만 한다. 등급은 챔피언 사이 순위라 방어력 36 이 이미 "매우 높음" 인데(중앙값 30),
+   * 받는 피해로는 4% 차이다. 그 기준으로는 61명(35%)이 "방어력이 높은 편" 이 되어 럼블·리 신에게도
+   * 관통을 권했다(채점자가 둘 다 의심했다). 엄격히 하면 13명 — 말파이트·레오나·다리우스 같은 앞라인이다.
+   * 낮은 쪽은 그대로 둔다. 거기서 나오는 말은 "그 저항을 먼저 올린다" 라 과해도 해가 없다.
+   */
+  if (isHigh(snap.gradeLv1) && !(snap.gradeLv1 === "매우 높음" && late === "매우 높음")) return "보통";
   return snap.gradeLv1;
 }
 
