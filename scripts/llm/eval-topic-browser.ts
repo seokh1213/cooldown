@@ -39,7 +39,7 @@ export async function run(headName = "topic-v1") {
       worker.addEventListener("message", onMessage);
       worker.postMessage({ type: "judge", id, model: FALLBACK_MODEL, state, questions, subset: head.subset } satisfies AdvisorRequest);
     });
-  const rows: Array<{ question: string; want: string; got: string; set: string }> = [];
+  const rows: Array<{ question: string; want: string; got: string; set: string; p: number[] }> = [];
   const items = [
     ...[...FOCUSED, ...FOCUSED_HOLDOUT, ...FOCUSED_HOLDOUT2].map(([me, enemy, want, question]) => ({ set: "matchup", ids: [me, enemy], want, question })),
     ...TOPIC_TEST.map((c) => ({ set: `topic-${c.lang}`, ids: c.champions, want: c.topic as string, question: c.question })),
@@ -49,7 +49,7 @@ export async function run(headName = "topic-v1") {
     const flat = (await ask(judgeRouteState(question, ids.map((id) => nameOf.get(id) ?? id)), questions))[0];
     const k = questions[0].options.length + 1;
     const probs = scoreJudge(head, Array.from({ length: k }, (_, j) => flat.subarray(j * head.dim, (j + 1) * head.dim)));
-    rows.push({ question, want, got: topicFromJudge(probs).topic, set });
+    rows.push({ question, want, got: topicFromJudge(probs).topic, set, p: probs.map((x) => Math.round(x * 1000) / 1000) });
   }
   worker.terminate();
   const right = rows.filter((row) => row.want === row.got).length;

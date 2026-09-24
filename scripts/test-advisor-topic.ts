@@ -43,6 +43,7 @@ const card = (id: string) => data.cardById.get(id)!;
   eq(topicQuestions(2, true).length, 1, "챔피언이 둘이면 관점은 묻지 않는다");
   eq(topicQuestions(1).length, 1, "앱은 기본으로 주제만 묻는다");
   eq(topicFromJudge([0, 0, 0, 0, 0.9, 0.1, 0, 0], [0.1, 0.8, 0.1]), { topic: "situational-item", perspective: "against" }, "가장 높은 것을 고른다");
+  eq(topicFromJudge([0.45, 0.4, 0, 0, 0.15, 0, 0, 0]).topic, "general", "확신이 0.6 에 못 미치면 한 갈래로 몰지 않는다");
   ok(Object.keys(TOPIC_CRITERIA).length === 8, "주제는 여덟");
   // 시험 문항의 정답이 모두 선택지 안에 있다
   for (const c of TOPIC_TEST) ok(TOPIC_LABELS.includes(c.topic), `정답 갈래가 선택지에 있다: ${c.question}`);
@@ -101,5 +102,8 @@ eq(topicFromWords("剑魔团战怎么打"), "teamfight", "중국어 团战");
 eq(topicFromWords("오공으로 럼블이 너무어려운데 팁이 없나?", ["오공", "럼블"]), undefined, "낱말 없음");
 eq(topicFromWords("탑 라인 다리우스 짜증나", ["다리우스"]), undefined, "라인 한 글자로는 가르지 않는다");
 eq(topicFromWords("템빨로 이기는 챔피언이야?", []), undefined, "낱말 속 템은 아이템이 아니다");
+eq(topicFromWords("잭스 상대로 피오라 할 때 탑 갱 오는 정글이 녹턴이면?", ["잭스", "피오라", "녹턴"]), "laning", "갱");
+eq(topicFromWords("How do I survive ganks as Vayne?"), "laning", "gank");
+eq(topicFromWords("갱플랭크 통 어떻게 써?", ["갱플랭크"]), undefined, "이름 속 갱은 갱이 아니다");
 
 console.log(`✅ 주제 판정 통과 (${checks}건)`);
