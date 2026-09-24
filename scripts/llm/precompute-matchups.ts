@@ -16,6 +16,7 @@
  *   npx tsx scripts/llm/precompute-matchups.ts --all --concurrency 6
  */
 import { spawn } from "child_process";
+import * as crypto from "crypto";
 import * as fs from "fs";
 import * as os from "os";
 import * as path from "path";
@@ -97,13 +98,22 @@ function prompt(me: ChampionCard, enemy: ChampionCard): string {
   ].join("\n");
 }
 
+/** Codex 가 사용량 한도를 알렸는가. 알리면 더 부르지 않고 멈춘다(다시 돌리면 이어 쓴다). */
+let limitHit = false;
+
 function codex(text: string): Promise<string> {
   return new Promise((resolve) => {
     const dir = fs.mkdtempSync(path.join(os.tmpdir(), "codex-mu-"));
     const out = path.join(dir, "out.txt");
     const child = spawn("codex", ["exec", "--ephemeral", "--skip-git-repo-check", "-s", "read-only", "-m", CODEX_MODEL, "-C", dir, "-o", out, "-"], { cwd: dir });
+    let stderr = "";
+    child.stderr.on("data", (chunk: Buffer) => (stderr += chunk));
+    // 사용량 한도에 걸리면 Codex 가 끝나지 않고 매달려 있었다. 5분이면 끊는다.
+    const timer = setTimeout(() => child.kill("SIGKILL"), 5 * 60 * 1000);
     child.stdin.end(text);
     child.on("close", () => {
+      clearTimeout(timer);
+      if (/usage limit/i.test(stderr)) limitHit = true;
       const result = fs.existsSync(out) ? fs.readFileSync(out, "utf8") : "";
       fs.rmSync(dir, { recursive: true, force: true });
       resolve(result);
@@ -184,6 +194,11 @@ export async function precomputePair(me: ChampionCard, enemy: ChampionCard): Pro
   return { pair, kept, dropped, seconds: (Date.now() - started) / 1000 };
 }
 
+/** 재료 지문. 생성 때 파일에 적어 두고, 패치를 넘길 때 재료가 그대로인 쌍만 남기는 데 쓴다. */
+export function materialFingerprint(a: string, b: string): string {
+  return crypto.createHash("sha1").update(material(data.cardById.get(a)!, data.cardById.get(b)!)).digest("hex").slice(0, 12);
+}
+
 async function main() {
   const outDir = arg("out") ?? path.join(PUBLIC_DATA_ROOT, patch, "llm", "matchups");
   const positions = new Map(cards.map((card) => [card.id, new Set(card.wiki?.positions ?? [])]));
@@ -191,32 +206,53 @@ async function main() {
     ? cards.flatMap((a) => cards.filter((b) => b.id !== a.id && [...positions.get(a.id)!].some((p) => positions.get(b.id)!.has(p))).map((b) => [a.id, b.id] as [string, string]))
     : (arg("pairs") ?? "").split(",").filter(Boolean).map((p) => p.split(":") as [string, string]);
   fs.mkdirSync(outDir, { recursive: true });
-  const byMe = new Map<string, { patch: string; pairs: Record<string, PrecomputedPair> }>();
+  const byMe = new Map<string, { patch: string; pairs: Record<string, PrecomputedPair>; materials?: Record<string, string> }>();
+  // 재료 지문. 노트·카드를 고치면 재료가 바뀐 쌍만 다시 쓴다(전부 다시 쓰면 Codex 한도를 몇 번 채운다).
+  const fingerprint = materialFingerprint;
   const fileOf = (me: string) => path.join(outDir, `${me}.json`);
   const load = (me: string) => {
     if (!byMe.has(me)) byMe.set(me, fs.existsSync(fileOf(me)) ? JSON.parse(fs.readFileSync(fileOf(me), "utf8")) : { patch, pairs: {} });
     return byMe.get(me)!;
   };
-  // 이미 쓴 쌍은 건너뛴다(다시 돌려도 이어 쓴다)
-  const todo = list.filter(([a, b]) => !load(a).pairs[b]);
+  // 지문이 없는 옛 쌍은 지금 재료로 썼다고 보고 지문만 채운다(--adopt). 토큰을 쓰지 않는다.
+  if (process.argv.includes("--adopt")) {
+    for (const [a, b] of list) {
+      const file = load(a);
+      if (file.pairs[b] && !file.materials?.[b]) (file.materials ??= {})[b] = fingerprint(a, b);
+    }
+    for (const [me, file] of byMe) fs.writeFileSync(fileOf(me), JSON.stringify(file));
+    console.log("지문을 채웠다");
+    return;
+  }
+  // 이미 쓴 쌍은 건너뛴다(다시 돌려도 이어 쓴다). 재료가 바뀐 쌍은 다시 쓴다.
+  const todo = list.filter(([a, b]) => {
+    const file = load(a);
+    return !file.pairs[b] || (file.materials?.[b] !== undefined && file.materials[b] !== fingerprint(a, b));
+  });
+  console.log(`쓸 쌍 ${todo.length}(새 쌍 ${todo.filter(([a, b]) => !load(a).pairs[b]).length})`);
   const log: Array<{ me: string; enemy: string; kept: number; dropped: string[]; seconds: number }> = [];
   let next = 0;
   let done = 0;
+  let failures = 0;
   await Promise.all(
     Array.from({ length: CONCURRENCY }, async () => {
-      while (next < todo.length) {
+      while (next < todo.length && !limitHit && failures < 10) {
         const [a, b] = todo[next++];
         const result = await precomputePair(data.cardById.get(a)!, data.cardById.get(b)!).catch(() => undefined);
         done += 1;
+        // 연속으로 실패하면 멈춘다. 한도에 걸린 채 수천 쌍을 헛돌지 않게.
+        failures = result ? 0 : failures + 1;
         if (!result) continue;
         const file = load(a);
         file.pairs[b] = result.pair;
+        (file.materials ??= {})[b] = fingerprint(a, b);
         fs.writeFileSync(fileOf(a), JSON.stringify(file));
         log.push({ me: a, enemy: b, kept: result.kept, dropped: result.dropped, seconds: result.seconds });
         if (done % 10 === 0) console.log(`${done}/${todo.length}`);
       }
     }),
   );
+  if (limitHit || failures >= 10) console.log(limitHit ? "Codex 사용량 한도 — 멈춤. 한도가 풀리면 다시 돌리면 이어 씁니다." : "연속 10쌍 실패 — 멈춤.");
   const logFile = arg("log");
   if (logFile) fs.writeFileSync(logFile, JSON.stringify(log, null, 2));
   const drops = log.reduce((n, r) => n + r.dropped.length, 0);
