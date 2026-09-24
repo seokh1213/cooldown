@@ -53,9 +53,19 @@ export function topicQuestions(championCount: number, withPerspective = false) {
   ];
 }
 
+/**
+ * 판정기가 이만큼 확신하지 못하면 한 갈래로 몰지 않고 `general`(세 칸을 고르게)로 둔다.
+ *
+ * 틀릴 때의 확신은 대개 0.5 언저리였다. 낱말 규칙을 먼저 쓰고 남은 것에 0.6 을 걸면, 단일
+ * 챔피언 72문항에서 틀린 갈래 7 → 1, 맞힌 수는 64 그대로(7문항이 일반 답으로). 틀린 칸을
+ * 앞세우는 것보다 고르게 두는 편이 낫다.
+ */
+export const TOPIC_MIN_CONFIDENCE = 0.6;
+
 /** 확률에서 고른다. */
 export function topicFromJudge(topicProbs: number[], perspectiveProbs?: number[]): { topic: TopicLabel; perspective?: NotePerspective } {
-  const topic = TOPIC_LABELS[topicProbs.indexOf(Math.max(...topicProbs))];
+  const best = Math.max(...topicProbs);
+  const topic = best >= TOPIC_MIN_CONFIDENCE ? TOPIC_LABELS[topicProbs.indexOf(best)] : "general";
   const perspective = perspectiveProbs ? PERSPECTIVE_LABELS[perspectiveProbs.indexOf(Math.max(...perspectiveProbs))] : undefined;
   return { topic, perspective };
 }
@@ -74,6 +84,8 @@ export function topicFromJudge(topicProbs: number[], perspectiveProbs?: number[]
 const TOPIC_WORDS: Array<[RegExp, TopicLabel]> = [
   [/한타|팀\s*파이트|teamfight|team fight|团战/i, "teamfight"],
   [/라인전|laning|对线/i, "laning"],
+  // 갱은 라인에 선 사람이 받는 것이다. "탑 갱 오는 정글이 녹턴이면?" 을 판정기가 한타로 갈랐다.
+  [/갱(?![가-힣])|갱킹|갱\s*(와|오|옴|당)|\bganks?\b|\bganking\b|抓人|被抓/i, "laning"],
   [/아이템|템\s|템$|뭐\s*(사|가|올려)|빌드|\bbuild\b|\bitems?\b|what (should I|to) buy|出装|装备/i, "situational-item"],
   [/콤보|연계|\bcombo\b|连招/i, "combo"],
   [/후반|중반|late game|mid game|scal(e|ing)|后期|中期/i, "phase"],
