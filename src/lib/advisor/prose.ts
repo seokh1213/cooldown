@@ -386,7 +386,10 @@ export function digestSections(
         if (full !== line && expand && i === 0) text = leadWithTerms(full, terms, joinerOf(lang));
         else if (full !== line && (expand || detail === "focus-cue-all" || detail === "cue-all-general")) {
           const extra = cueSentence(full, terms, names, said, mineName, hookSlots);
-          if (extra) text = `${line}${joinerOf(lang)}${extra}`;
+          // 고른 문장 바로 뒤가 고리 문장("피오라라면 Q 찌르기가 그 이동기입니다")이면 함께 싣는다.
+          // 고리는 그 문장을 풀어 주는 말이라 떼어 놓으면 뜻이 반쪽이다.
+          const next = extra ? hookAfter(full, extra, enemy?.name) : undefined;
+          if (extra) text = [line, extra, ...(next ? [next] : [])].join(joinerOf(lang));
         }
         const fresh = sentencesOf(text).filter((sentence) => !said.has(sentence) && !repeatsHook(sentence, mineName, hookSlots));
         if (!fresh.length) continue;
@@ -489,6 +492,14 @@ function leadWithTerms(full: string, allTerms: RegExp[], joiner = " "): string {
   const hit = sentences.filter((sentence) => terms.some((term) => term.test(sentence)));
   if (!hit.length || hit[0] === sentences[0]) return full;
   return [...hit, ...sentences.filter((sentence) => !hit.includes(sentence))].join(joiner);
+}
+
+/** `sentence` 바로 다음 문장이 상대 이름으로 시작하는 고리 문장이면 그것 */
+function hookAfter(full: string, sentence: string, enemyName: string | undefined): string | undefined {
+  if (!enemyName) return undefined;
+  const list = sentencesOf(full);
+  const next = list[list.indexOf(sentence) + 1];
+  return next && new RegExp(`^${enemyName}(이)?라면 `).test(next) ? next : undefined;
 }
 
 /** 첫 문장 뒤에 덧붙일 한 문장. 질문 낱말·타이밍·상대 이름이 든 것 중 가장 나은 것 */

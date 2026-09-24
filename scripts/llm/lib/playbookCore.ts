@@ -51,6 +51,8 @@ export interface PlaybookRefs {
 export interface PlaybookHook {
   effects: string[];
   text: string;
+  /** 이 꼴의 문장 바로 뒤에 붙인다. 없으면 본문 끝. 코드가 다는 고리만 쓴다(데이터에는 없다). */
+  after?: RegExp;
 }
 
 export interface PlaybookEntry {
@@ -124,12 +126,12 @@ export function selectPlaybook(
   const mine = (mineBook?.playing ?? [])
     .filter((e) => matches(e.when, enemy, lane))
     .sort((a, b) => rank(a) - rank(b))
-    .map((e) => withHooks(e, enemy));
+    .map((e) => withHooks(e, enemy, "playing"));
   // 상대 플레이북의 against 는 "이 챔피언을 상대하는 법" 이므로 조건 판정 대상은 내 챔피언이다
   const vsEnemy = (enemyBook?.against ?? [])
     .filter((e) => matches(e.when, me, lane))
     .sort((a, b) => rank(a) - rank(b))
-    .map((e) => withHooks(e, me));
+    .map((e) => withHooks(e, me, "against"));
   return { mine, vsEnemy };
 }
 
@@ -149,12 +151,41 @@ export const ESCAPE_HOOKS: PlaybookHook[] = [
 ];
 
 /** 고리를 상대편 카드로 채워 본문 뒤에 붙인다. 채울 스킬이 없는 고리는 버린다. */
-export function withHooks(entry: PlaybookEntry, other: ChampionCard): PlaybookEntry {
+/**
+ * 내 노트(playing)가 상대의 이동기·군중 제어를 가리키면 상대편 카드로 그 스킬을 채운다.
+ *
+ * "Q는 상대가 이동기를 쓴 직후나 마무리용으로 남깁니다" 는 상대를 모르고 쓴 문장이다. 상대가
+ * 피오라면 "피오라라면 Q 찌르기가 그 이동기입니다" 가 붙는다. 내 노트 948건 중 이동기 80건,
+ * 군중 제어 28건이 이런 꼴이다. 손으로 달지 않고 문장 꼴로 알아본다.
+ *
+ * 라인 상대가 아니라 상대 팀을 말하는 문장("상대 지원가의 군중 제어", "상대 진입기가 아군 전방에")
+ * 은 뺀다. 거기에 라인 상대의 스킬을 붙이면 엉뚱한 사람의 스킬이 된다.
+ */
+const TEAM_CONTEXT = /지원가|서포터|정글|팀|아군/;
+const ENEMY_MOBILITY = /상대[의가]?[^.]{0,15}(이동기|도주기|돌진기|이탈기|도주 수단|진입기)/;
+const ENEMY_CC = /상대[의가]?[^.]{0,15}(군중 제어|CC|이동 불가|기절|속박|에어본)[^.]{0,12}(빠진|뺀|빼|쓴|피|흘|소모|빗나)/;
+export const PLAYING_HOOKS: Array<[RegExp, PlaybookHook]> = [
+  [ENEMY_MOBILITY, { effects: DASH, text: "{name:라면} {spells:이/가} 그 이동기입니다.", after: ENEMY_MOBILITY }],
+  [ENEMY_CC, { effects: HARD_CC, text: "{name:라면} {spells:이/가} 그 군중 제어입니다.", after: ENEMY_CC }],
+];
+
+function autoHooks(entry: PlaybookEntry, side: "playing" | "against"): PlaybookHook[] | undefined {
+  if (entry.category === "escape-window") return ESCAPE_HOOKS;
+  if (side !== "playing") return undefined;
+  const sentences = entry.text.split(/(?<=[.!?])\s+/).filter((sentence) => !TEAM_CONTEXT.test(sentence));
+  const hooks = PLAYING_HOOKS.filter(([pattern]) => sentences.some((sentence) => pattern.test(sentence))).map(([, hook]) => hook);
+  return hooks.length ? hooks : undefined;
+}
+
+export function withHooks(entry: PlaybookEntry, other: ChampionCard, side: "playing" | "against" = "against"): PlaybookEntry {
   // 이동 수단 노트는 카드에서 도출해 173명 모두에게 있다. 같은 고리를 데이터에 173번 적지 않고 여기서 단다.
-  const hooks = entry.hooks ?? (entry.category === "escape-window" ? ESCAPE_HOOKS : undefined);
+  const hooks = entry.hooks ?? autoHooks(entry, side);
   if (!hooks?.length) return entry;
   const used = new Set<string>();
   const sentences: string[] = [];
+  // 문장 바로 뒤에 붙일 것: 본문 문장 번호 → 붙일 문장들
+  const body = entry.text.split(/(?<=[.!?])\s+/);
+  const inserts = new Map<number, string[]>();
   for (const hook of hooks) {
     // 앞 고리가 이미 부른 스킬은 다시 부르지 않는다(돌진이자 기절인 레오나 E)
     const spells = other.spells.filter(
@@ -163,13 +194,16 @@ export function withHooks(entry: PlaybookEntry, other: ChampionCard): PlaybookEn
     if (!spells.length) continue;
     for (const spell of spells) used.add(spell.slot);
     const list = spells.map((spell) => `${spell.slot} ${spell.name}`).join("·");
-    sentences.push(
-      hook.text
-        .replace(/\{name(?::라면)?\}/g, (m) => (m === "{name}" ? other.name : `${other.name}${hasFinalConsonant(other.name) ? "이라면" : "라면"}`))
-        .replace(/\{spells(?::([^}]+))?\}/g, (_, pair?: string) => (pair ? josa(list, pair as JosaPair) : list)),
-    );
+    const made = hook.text
+      .replace(/\{name(?::라면)?\}/g, (m) => (m === "{name}" ? other.name : `${other.name}${hasFinalConsonant(other.name) ? "이라면" : "라면"}`))
+      .replace(/\{spells(?::([^}]+))?\}/g, (_, pair?: string) => (pair ? josa(list, pair as JosaPair) : list));
+    const at = hook.after ? body.findIndex((sentence) => !TEAM_CONTEXT.test(sentence) && hook.after!.test(sentence)) : -1;
+    if (at >= 0) inserts.set(at, [...(inserts.get(at) ?? []), made]);
+    else sentences.push(made);
   }
-  return sentences.length ? { ...entry, text: `${entry.text} ${sentences.join(" ")}` } : entry;
+  if (!sentences.length && !inserts.size) return entry;
+  const text = [...body.flatMap((sentence, i) => [sentence, ...(inserts.get(i) ?? [])]), ...sentences].join(" ");
+  return { ...entry, text };
 }
 
 const CATEGORY_LABEL: Record<string, string> = {
