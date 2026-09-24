@@ -17,6 +17,8 @@ export type PrecomputedPair = Partial<Record<PrecomputedKey, string>>;
 export interface PrecomputedFile {
   patch: string;
   pairs: Record<string, PrecomputedPair>;
+  /** 생성할 때의 재료 지문(상대 id → sha1 12자리). 앱은 쓰지 않는다 — 다시 쓸 쌍을 가리는 데 쓴다. */
+  materials?: Record<string, string>;
 }
 
 /** 주제 → 맨 앞에 둘 칸 */
