@@ -283,6 +283,7 @@ export const koKRTranslations: Translations = {
       verdictNo: "아니오",
       ruleSource: "위키 판정 규칙",
       understoodAs: "{name}로 이해했습니다.",
+      pairFromMany: "{mine} vs {enemy} 상성으로 답합니다 (곁들인 이름: {others}).",
       fromScreen: "화면의 {name} 기준입니다.",
       suggestPrefix: "'{original}' 챔피언을 찾지 못했습니다.",
       suggestSuffix: "중 말씀이신가요?",

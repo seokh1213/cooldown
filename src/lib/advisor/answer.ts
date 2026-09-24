@@ -425,6 +425,12 @@ export function suggestChampions(
   const initials = new Set(names.map(([name]) => name[0]));
 
   for (const token of hangulTokens(question)) {
+    /*
+     * 이미 이름을 둘 찾았으면 두 글자 낱말은 오타로 보지 않는다. 상성 질문은 그것으로 성립하고,
+     * 두 글자는 아무 이름과도 가깝다. "잭스 상대로 피오라 할 때 탑 갱 오는 정글이 녹턴이면?" 의
+     * "오는" 이 오른·오공 후보로 잡혀 상성 답 대신 "'오는' 챔피언을 찾지 못했습니다" 가 떴다.
+     */
+    if (known.size >= 2 && token.length <= 2) continue;
     // 첫 글자가 어느 이름과도 안 맞아도 버리지 않는다. 그 첫 글자 자체가 오타일 수
     // 있다("재이스" 의 재). 대신 음절 단계에서만 첫 글자를 맞추고, 자모 단계는 푼다.
     const initialKnown = initials.has(token[0]);
@@ -580,6 +586,33 @@ export function matchupSidesDetailed<T extends { name: string }>(question: strin
   // 조사가 갈라 주지 않으면 어순으로 간다. 그 편이 맞는 경우가 더 많았다.
   if (gap < 0) return { sides: [second, first], confident: true };
   return { sides: [first, second], confident: gap > 0 };
+}
+
+/**
+ * 이름이 셋 이상 나온 상성 질문에서 맞붙는 둘을 고른다.
+ *
+ * "오공으로 럼블 상대할 때 아이번 정글이면 아이템 뭐 가?" 의 아이번은 맞상대가 아니라 곁들인
+ * 말이다. 그런 이름은 앞(12자 안)이나 바로 뒤(3자 안)에 자리 낱말(정글·서폿·jungler·打野 …)이
+ * 붙는다. 뒤를 넓게 보면 띄어 쓰지 않는 중국어에서 다음 이름의 자리 낱말까지 잡는다. 그것을 빼고
+ * 남은 앞의 둘을 쓴다. 둘이 안 남으면 undefined — 셋을 한꺼번에 견주는 질문일 수 있다.
+ *
+ * 판정기에 "누가 맞상대인가" 를 물어도 봤다. 이름 둘로만 배운 헤드라 12문항에서 내 챔피언
+ * 6, 맞상대 1 이었다. 자리 낱말 규칙은 12문항을 다 맞혔다.
+ */
+const ROLE_WORDS = /정글|서폿|서포터|원딜|바텀|미드|support|supp|jungler|jungle|\bjg\b|\bmid\b|\badc\b|打野|辅助|中单|下路/i;
+
+export function matchupPair<T>(question: string, found: T[], names: (card: T) => string[]): [T, T] | undefined {
+  if (found.length < 3) return found.length === 2 ? [found[0], found[1]] : undefined;
+  const escape = (value: string) => value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const side = (card: T) => {
+    const alt = names(card).filter((name) => name.length >= 2).map(escape).join("|");
+    if (!alt) return false;
+    const re = new RegExp(`(.{0,12})(?:${alt})(.{0,3})`, "gi");
+    for (const m of question.matchAll(re)) if (ROLE_WORDS.test(m[1]) || ROLE_WORDS.test(m[2])) return true;
+    return false;
+  };
+  const kept = found.filter((card) => !side(card));
+  return kept.length >= 2 ? [kept[0], kept[1]] : undefined;
 }
 
 /**

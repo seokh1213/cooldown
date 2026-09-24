@@ -283,6 +283,8 @@ export interface Translations {
       verdictNo: string;
       ruleSource: string;
       understoodAs: string;
+      /** 이름이 셋 이상인 상성 질문에서 맞붙는 둘만 골랐을 때 */
+      pairFromMany: string;
       fromScreen: string;
       suggestPrefix: string;
       suggestSuffix: string;

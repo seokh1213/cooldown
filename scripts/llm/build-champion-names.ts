@@ -7,7 +7,7 @@
  * 뽑아 둔다.
  *
  * 사용: npx tsx scripts/llm/build-champion-names.ts
- * 출력: public/data/<patch>/llm/champion-names.json  { id: [ko, en, zh] }
+ * 출력: public/data/<patch>/llm/champion-names.json  { id: [ko, en, zh, zh 칭호] }
  */
 import * as fs from "fs";
 import * as path from "path";
@@ -19,7 +19,12 @@ const dir = path.join(PUBLIC_DATA_ROOT, patch, "llm");
 const names: Record<string, string[]> = {};
 for (const lang of ["ko_KR", "en_US", "zh_CN"]) {
   const cards = (JSON.parse(fs.readFileSync(path.join(dir, `champion-cards-${lang}.json`), "utf8")) as { cards: ChampionCard[] }).cards;
-  for (const card of cards) (names[card.id] ??= []).push(card.name);
+  for (const card of cards) {
+    (names[card.id] ??= []).push(card.name);
+    // 중국어 자료는 이름과 칭호가 뒤바뀌어 있다. name 이 "疾风剑豪", title 이 "亚索" 다.
+    // 사람들은 둘 다 쓰므로("我用亚索打…") 칭호도 이름으로 받는다.
+    if (lang === "zh_CN" && card.title && card.title !== card.name) names[card.id].push(card.title);
+  }
 }
 const out = path.join(dir, "champion-names.json");
 fs.writeFileSync(out, JSON.stringify({ patch, names }), "utf8");
