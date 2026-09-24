@@ -8,6 +8,10 @@
  * 원자 절반 이상이 번역되지 않은 노트는 뺀다 — 앞뒤가 빠진 번역은 뜻이 달라질 수 있다.
  * 원자가 있는 챔피언만 번역이 생긴다. 없는 노트는 지금처럼 싣지 않는다.
  *
+ * 이어 붙인 글은 원자마다 주어를 다시 세워 읽기가 거칠다. polish-note-translations.ts 가 노트 한 편으로
+ * 다듬은 글(knowledge/note-translations/<lang>.json)이 있고, 그 바탕(basis)이 지금 이어 붙인 글과 같으면
+ * 다듬은 글을 쓴다. 원자를 다시 지어 바탕이 바뀌었으면 이어 붙인 글로 돌아간다.
+ *
  * 사용: npx tsx scripts/llm/build-note-translations.ts
  * 출력: public/data/<patch>/llm/note-translations-<lang>.json  { patch, notes: { 노트 id: 글 } }
  */
@@ -19,9 +23,9 @@ import type { AtomFile } from "./build-note-atoms";
 const LANGS = ["en_US", "zh_CN"] as const;
 const ATOM_DIR = path.join(process.cwd(), "knowledge", "atoms");
 
-const patch = resolvePatchVersion();
-const files = fs.existsSync(ATOM_DIR) ? fs.readdirSync(ATOM_DIR).filter((f) => f.endsWith(".json")) : [];
-for (const lang of LANGS) {
+/** 같은 노트의 번역 원자를 순서대로 이은 글. 절반 미만만 번역된 노트는 뺀다. */
+export function joinedNotes(lang: (typeof LANGS)[number]): { notes: Record<string, string>; skipped: number } {
+  const files = fs.existsSync(ATOM_DIR) ? fs.readdirSync(ATOM_DIR).filter((f) => f.endsWith(".json")) : [];
   const notes: Record<string, string> = {};
   let skipped = 0;
   for (const file of files) {
@@ -40,7 +44,28 @@ for (const lang of LANGS) {
       notes[source.slice("playbook:".length)] = parts.join(lang === "zh_CN" ? "" : " ");
     }
   }
-  const out = path.join(PUBLIC_DATA_ROOT, patch, "llm", `note-translations-${lang}.json`);
-  fs.writeFileSync(out, JSON.stringify({ patch, notes }), "utf8");
-  console.log(`생성: ${path.relative(process.cwd(), out)} (노트 ${Object.keys(notes).length}건, 번역 절반 미만이라 뺀 노트 ${skipped}건, ${(fs.statSync(out).size / 1024).toFixed(0)} KB)`);
+  return { notes, skipped };
 }
+
+function main(): void {
+  const patch = resolvePatchVersion();
+  for (const lang of LANGS) {
+    const { notes, skipped } = joinedNotes(lang);
+    const store = path.join(process.cwd(), "knowledge", "note-translations", `${lang}.json`);
+    const polished = fs.existsSync(store) ? (JSON.parse(fs.readFileSync(store, "utf8")) as { notes: Record<string, { basis: string; text: string }> }).notes : {};
+    let used = 0;
+    for (const [id, text] of Object.entries(notes)) {
+      if (polished[id]?.basis === text) {
+        notes[id] = polished[id].text;
+        used += 1;
+      }
+    }
+    const out = path.join(PUBLIC_DATA_ROOT, patch, "llm", `note-translations-${lang}.json`);
+    fs.writeFileSync(out, JSON.stringify({ patch, notes }), "utf8");
+    console.log(
+      `생성: ${path.relative(process.cwd(), out)} (노트 ${Object.keys(notes).length}건, 다듬은 글 ${used}건, 번역 절반 미만이라 뺀 노트 ${skipped}건, ${(fs.statSync(out).size / 1024).toFixed(0)} KB)`,
+    );
+  }
+}
+
+if (process.argv[1]?.endsWith("build-note-translations.ts")) main();
