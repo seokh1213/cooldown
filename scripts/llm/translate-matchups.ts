@@ -125,6 +125,10 @@ function missingNames(text: string, names: Array<{ ko: string; target: string }>
   return names.filter((n) => !norm(text).includes(norm(n.target))).map((n) => n.target);
 }
 
+/** 연달아 받은 빈 답의 수. Codex 한도에 걸리면 답이 비어 모든 칸이 "탈락" 으로 헛돌았다. */
+let emptyReplies = 0;
+const MAX_EMPTY = 3;
+
 async function translateBatch(me: string, jobs: Array<{ enemy: string; slot: string; ko: string }>, store: Store): Promise<[number, number, number]> {
   const ids = [me, ...new Set(jobs.map((j) => j.enemy))];
   const glossary = new Map<string, string>();
@@ -140,7 +144,11 @@ async function translateBatch(me: string, jobs: Array<{ enemy: string; slot: str
     "",
     ...jobs.map((j, k) => `${k}. ${j.ko}`),
   ].join("\n");
-  const result = jsonObject<Record<string, string>>(await codex(prompt)) ?? {};
+  const parsed = jsonObject<Record<string, string>>(await codex(prompt));
+  // 빈 답(한도·오류)은 따로 센다 — 연달아 나오면 main 이 멈춘다
+  if (!parsed) emptyReplies += 1;
+  else emptyReplies = 0;
+  const result = parsed ?? {};
   let rejected = 0;
   const passed: Array<{ job: (typeof jobs)[number]; text: string }> = [];
   jobs.forEach((job, k) => {
@@ -260,6 +268,10 @@ async function main(): Promise<void> {
   await Promise.all(
     Array.from({ length: CONCURRENCY }, async () => {
       while (next < tasks.length) {
+        if (emptyReplies >= MAX_EMPTY) {
+          console.log(`Codex 빈 답이 ${MAX_EMPTY}번 이어져 멈춘다(한도·오류). 다시 돌리면 이어서 옮긴다.`);
+          return;
+        }
         const task = tasks[next++];
         const store = stores.get(task.me)!;
         const [k, r, m] = await translateBatch(task.me, task.jobs, store);
