@@ -37,6 +37,13 @@ const arg = (name: string): string | undefined => {
 };
 const OUT_DIR = arg("out") ?? "knowledge/atoms";
 const CONCURRENCY = Number(arg("concurrency") ?? 3);
+/** 원자를 짓는 Codex 모델. 173명 확장(2026-09-24)은 gpt-6-sol. */
+export const CODEX_MODEL = arg("model") ?? process.env.CODEX_MODEL ?? "gpt-6-sol";
+/**
+ * 위키 팁을 재료로 줄지. 위키 출처 원자(415건)는 통계 서술이 조각난 줄로 나와 간결을 깎았고,
+ * 앱은 playbook 원자만 쓴다. 173명 확장부터는 주지 않는다(--wiki 로 되돌림).
+ */
+const WITH_WIKI = process.argv.includes("--wiki");
 
 /** 평가 30문항(eval-connector)에 나오는 챔피언. */
 export const EVAL_CHAMPIONS = [
@@ -103,7 +110,7 @@ function run(cmd: string, args: string[], input: string, cwd: string): Promise<s
 async function codex(prompt: string): Promise<string> {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), "codex-atoms-"));
   const out = path.join(dir, "out.txt");
-  await run("codex", ["exec", "--ephemeral", "--skip-git-repo-check", "-s", "read-only", "-C", dir, "-o", out, "-"], prompt, dir);
+  await run("codex", ["exec", "--ephemeral", "--skip-git-repo-check", "-s", "read-only", "-m", CODEX_MODEL, "-C", dir, "-o", out, "-"], prompt, dir);
   const text = fs.existsSync(out) ? fs.readFileSync(out, "utf8") : "";
   fs.rmSync(dir, { recursive: true, force: true });
   return text;
@@ -138,15 +145,17 @@ function validate(card: ChampionCard, atom: Atom): string | undefined {
   return undefined;
 }
 
-async function atomize(id: string): Promise<{ file: AtomFile; dropped: Record<string, number> }> {
+/** only: 이 노트들만 다시 원자화한다(노트 글을 고친 뒤). 원자 id 는 노트 id 를 넣어 기존 것과 겹치지 않게 한다. */
+async function atomize(id: string, only?: Set<string>): Promise<{ file: AtomFile; dropped: Record<string, number> }> {
   const card = cardById.get(id)!;
   const book = JSON.parse(fs.readFileSync(`knowledge/playbooks/${id}.json`, "utf8")) as Playbook;
   const tip = tips.get(id);
+  const keep = (n: { id?: string }) => !only || only.has(n.id ?? "");
   const notes = [
-    ...book.playing.map((n) => `[playbook:${n.id}] (playing, ${n.category}) ${n.text}`),
-    ...book.against.map((n) => `[playbook:${n.id}] (against, ${n.category}) ${n.text}`),
+    ...book.playing.filter(keep).map((n) => `[playbook:${n.id}] (playing, ${n.category}) ${n.text}`),
+    ...book.against.filter(keep).map((n) => `[playbook:${n.id}] (against, ${n.category}) ${n.text}`),
   ];
-  const wiki = [...(tip?.playingAs ?? []).map((t) => `(playing) ${t}`), ...(tip?.playingAgainst ?? []).map((t) => `(against) ${t}`)];
+  const wiki = !WITH_WIKI || only ? [] : [...(tip?.playingAs ?? []).map((t) => `(playing) ${t}`), ...(tip?.playingAgainst ?? []).map((t) => `(against) ${t}`)];
   const prompt = [
     `리그 오브 레전드 챔피언 ${card.name}(${id}) 의 운용 노트를 **원자 주장**으로 나눠라. 파일을 읽거나 명령을 실행하지 말 것.`,
     "",
@@ -160,7 +169,9 @@ async function atomize(id: string): Promise<{ file: AtomFile; dropped: Record<st
     "trait 은 챔피언 자체의 특징이다: 강한 시기(초반/후반), 무엇에 의존하나(공격 속도, 중첩, 자원), 무엇에 약하나(치유 감소, 특정 CC, 사일러스가 궁을 뺏으면 위험 같은 상대 조건).",
     "능력치 등급(방어력 높음 등)은 코드가 따로 만드니 trait 으로 적지 말 것. 노트·위키 팁에 근거가 있는 것만.",
     "",
-    "**출처에 없는 사실을 더하지 말 것.** 각 원자에 출처 태그(source)를 붙인다: 노트면 \"playbook:<id>\", 위키 팁이면 \"wiki\".",
+    WITH_WIKI
+      ? "**출처에 없는 사실을 더하지 말 것.** 각 원자에 출처 태그(source)를 붙인다: 노트면 \"playbook:<id>\", 위키 팁이면 \"wiki\"."
+      : "**출처에 없는 사실을 더하지 말 것.** 각 원자에 출처 태그(source)로 그 원자가 나온 노트를 \"playbook:<id>\" 로 붙인다. 카드 요약은 슬롯·효과 확인용이지 원자의 출처가 아니다.",
     "",
     "[카드 요약]",
     cardSummary(card),
@@ -168,20 +179,20 @@ async function atomize(id: string): Promise<{ file: AtomFile; dropped: Record<st
     "[플레이북 노트]",
     ...notes,
     "",
-    "[위키 팁(영문, 참고)]",
-    ...wiki,
-    "",
+    ...(wiki.length ? ["[위키 팁(영문, 참고)]", ...wiki, ""] : []),
     '출력: JSON 배열 하나만. [{"source": "...", "perspective": "...", "kind": "...", "topic": "...", "skills": [], "effects": [], "steps": [], "when": {}, "text": "..."}, ...]',
   ].join("\n");
 
-  const drafted = jsonValue<Array<Omit<Atom, "id" | "text"> & { text: string }>>(await codex(prompt), "[") ?? [];
+  type Draft = Array<Omit<Atom, "id" | "text"> & { text: string }>;
+  // 173명을 한 번에 돌리면 가끔 빈 답이 온다. 한 번 더 묻는다.
+  const drafted = jsonValue<Draft>(await codex(prompt), "[") ?? jsonValue<Draft>(await codex(prompt), "[") ?? [];
   const dropped: Record<string, number> = {};
   const drop = (why: string) => (dropped[why] = (dropped[why] ?? 0) + 1);
   const shaped: Atom[] = [];
   drafted.forEach((d, i) => {
     if (!d || typeof d.text !== "string" || !d.text.trim()) return drop("빈 원자");
     const atom: Atom = {
-      id: `${id}-a${i}`,
+      id: only ? `${id}-${String(d.source ?? "").replace(/^playbook:/, "")}-${i}` : `${id}-a${i}`,
       source: String(d.source ?? ""),
       perspective: (["playing", "against", "both"].includes(d.perspective) ? d.perspective : "playing") as Atom["perspective"],
       kind: d.kind,
@@ -192,6 +203,7 @@ async function atomize(id: string): Promise<{ file: AtomFile; dropped: Record<st
       ...(d.when?.enemyIds?.length ? { when: { enemyIds: d.when.enemyIds.map(String) } } : {}),
       text: { ko: d.text.trim() },
     };
+    if (!WITH_WIKI && !atom.source.startsWith("playbook:")) return drop("노트 출처 아님");
     const problem = validate(card, atom);
     if (problem) return drop(`코드 대조: ${problem.split(" ")[0]}`);
     shaped.push(atom);
@@ -226,8 +238,38 @@ async function atomize(id: string): Promise<{ file: AtomFile; dropped: Record<st
   return { file: { champion: id, patch, atoms: kept }, dropped };
 }
 
+/** --notes a,b: 고친 노트에서 나온 원자만 바꿔 끼운다. 번역은 빠지므로 translate-atoms 를 다시 돌린다. */
+async function renote(noteIds: string[]): Promise<void> {
+  const owners = new Map<string, Set<string>>();
+  for (const f of fs.readdirSync("knowledge/playbooks")) {
+    const book = JSON.parse(fs.readFileSync(`knowledge/playbooks/${f}`, "utf8")) as Playbook;
+    for (const n of [...book.playing, ...book.against]) {
+      if (n.id && noteIds.includes(n.id)) owners.set(book.champion, (owners.get(book.champion) ?? new Set()).add(n.id));
+    }
+  }
+  const missing = noteIds.filter((n) => ![...owners.values()].some((set) => set.has(n)));
+  if (missing.length) console.log(`찾지 못한 노트: ${missing.join(", ")}`);
+  for (const [id, only] of owners) {
+    const { file: fresh, dropped } = await atomize(id, only);
+    const target = path.join(OUT_DIR, `${id}.json`);
+    const old = JSON.parse(fs.readFileSync(target, "utf8")) as AtomFile;
+    const stale = old.atoms.filter((a) => only.has(a.source.replace(/^playbook:/, ""))).length;
+    old.atoms = [...old.atoms.filter((a) => !only.has(a.source.replace(/^playbook:/, ""))), ...fresh.atoms];
+    fs.writeFileSync(target, `${JSON.stringify(old, null, 2)}\n`);
+    console.log(`${id}: 노트 ${only.size} · 옛 원자 ${stale} → 새 원자 ${fresh.atoms.length} · 뺀 것 ${JSON.stringify(dropped)}`);
+  }
+}
+
 async function main(): Promise<void> {
-  const list = arg("champions") === "bench" ? EVAL_CHAMPIONS : (arg("champions") ?? "").split(",").filter(Boolean);
+  if (arg("notes")) return renote(arg("notes")!.split(","));
+  // rest = 플레이북은 있는데 원자 파일이 아직 없는 챔피언 전부
+  const rest = () =>
+    fs
+      .readdirSync("knowledge/playbooks")
+      .map((f) => f.replace(/\.json$/, ""))
+      .filter((id) => cardById.has(id) && !fs.existsSync(path.join(OUT_DIR, `${id}.json`)));
+  const list =
+    arg("champions") === "bench" ? EVAL_CHAMPIONS : arg("champions") === "rest" ? rest() : (arg("champions") ?? "").split(",").filter(Boolean);
   fs.mkdirSync(OUT_DIR, { recursive: true });
   let next = 0;
   const totals = { atoms: 0 };
@@ -237,6 +279,11 @@ async function main(): Promise<void> {
       while (next < list.length) {
         const id = list[next++];
         const { file, dropped } = await atomize(id);
+        // 원자가 하나도 없으면 파일을 쓰지 않는다 — 다음 --champions rest 가 다시 집는다
+        if (!file.atoms.length) {
+          console.log(`${id}: 원자 없음(파일 안 씀) · 뺀 것 ${JSON.stringify(dropped)}`);
+          continue;
+        }
         fs.writeFileSync(path.join(OUT_DIR, `${id}.json`), `${JSON.stringify(file, null, 2)}\n`);
         totals.atoms += file.atoms.length;
         for (const [k, v] of Object.entries(dropped)) droppedAll[k] = (droppedAll[k] ?? 0) + v;
