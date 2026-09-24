@@ -140,7 +140,7 @@ export function answerProse(answer: AdvisorAnswer, lang: Language = "ko_KR"): st
     return w.is(answer.headline.label, answer.headline.value);
   }
 
-  if (answer.kind === "compare" && answer.matchup) return matchupDigest(answer, lang);
+  if (answer.kind === "compare" && answer.matchup) return answer.precomputed ?? matchupDigest(answer, lang);
 
   if (answer.kind === "item") {
     if (answer.verdicts.length) {
@@ -172,7 +172,7 @@ const THREAT_TAGS = new Set([
   "적 마법 저항력 감소", "적 방어력 감소", "처형", "치유 감소",
 ]);
 
-const DIGEST_HEADINGS: Record<Language, { watch: string; build: string; fight: string; playing: string; against: string }> = {
+export const DIGEST_HEADINGS: Record<Language, { watch: string; build: string; fight: string; playing: string; against: string }> = {
   ko_KR: { watch: "조심할 것", build: "아이템", fight: "싸우는 법", playing: "플레이할 때", against: "상대할 때" },
   en_US: { watch: "Watch out", build: "Build", fight: "How to fight", playing: "Playing it", against: "Playing against it" },
   zh_CN: { watch: "注意", build: "出装", fight: "打法", playing: "使用时", against: "对线时" },
@@ -182,7 +182,7 @@ const DIGEST_HEADINGS: Record<Language, { watch: string; build: string; fight: s
  * 질문이 한 갈래를 콕 집으면 "싸우는 법" 칸의 제목을 그 갈래로 바꾼다.
  * "라인전 어떻게 해" 에 "싸우는 법" 이라고 답하면 물은 것에 답했는지 한눈에 안 보인다.
  */
-const FIGHT_TITLES: Record<Language, Partial<Record<string, string>>> = {
+export const FIGHT_TITLES: Record<Language, Partial<Record<string, string>>> = {
   ko_KR: { combo: "콤보", laning: "라인전", teamfight: "한타", phase: "운영", "escape-window": "진입 타이밍" },
   en_US: { combo: "Combo", laning: "Laning", teamfight: "Teamfights", phase: "Game plan", "escape-window": "When to go in" },
   zh_CN: { combo: "连招", laning: "对线", teamfight: "团战", phase: "运营", "escape-window": "进场时机" },

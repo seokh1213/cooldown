@@ -73,6 +73,7 @@ import {
   type AskRoute,
 } from "@/lib/advisor/routeAsk";
 import { topicFromJudge, topicFromWords, topicQuestions } from "@/lib/advisor/topicJudge";
+import { loadPrecomputed, precomputedDigest } from "@/lib/advisor/precomputed";
 
 /** 판정 헤드. `public/models/judge/` 아래 이 이름의 .json·.bin 이 있다. */
 const ROUTE_HEAD = "route-v2";
@@ -352,12 +353,23 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
    * 검증된 노트를 코드가 골라 조립한다(`matchupDigest`, 3.8점). 모델이 없는 기기와 같은
    * 길이다. 0.8B 는 판정기로만 쓴다(`judge.ts`). 4B 는 그대로 해설을 쓴다.
    */
-  const deliverMatchup = (question: string, mine: ChampionCard, enemy: ChampionCard, notice?: string, focus?: string) => {
+  const deliverMatchup = async (question: string, mine: ChampionCard, enemy: ChampionCard, notice?: string, focus?: string) => {
     if (!data) return;
     const notes = matchupNotes(data, mine, enemy, lang);
     if (notes.plan && focus) notes.plan.focus = focus;
     if (notes.plan) notes.plan.question = question;
     const answer = buildCompareCard([mine, enemy], question, undefined, { matchup: true, notes, lang });
+    // 미리 써 둔 답이 있으면 그것을 보인다(한국어만). 없으면 아래에서 노트를 조립한다.
+    if (lang === "ko_KR" && answer.kind === "compare") {
+      const pair = (await loadPrecomputed(data.patch, mine.id))?.pairs[enemy.id];
+      const text = pair ? precomputedDigest(pair, notes.plan?.focus, [mine, enemy], lang) : undefined;
+      if (text) {
+        // 큰 모델이 검증된 재료로 미리 쓴 글이라 기기에서 4B 가 새로 쓰는 것보다 낫다. 모델과 상관없이 쓴다.
+        answer.precomputed = text;
+        advisor.answerWithoutModel(question, answer, notice);
+        return;
+      }
+    }
     const prompt = buildCommentaryPrompt(answer, patch, lang);
     if (canUseModel && advisor.consented && prompt) {
       /*
@@ -522,7 +534,7 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
     if (champions.length === 1 && (route ? route.kind === "matchup" : asksMatchup(question) && !asksGuide(question))) {
       const mine = recent.find((card) => card.id !== champions[0].id);
       if (mine) {
-        deliverMatchup(question, mine, champions[0], usedNotice, judgedTopic?.topic);
+        await deliverMatchup(question, mine, champions[0], usedNotice, judgedTopic?.topic);
         return;
       }
     }
@@ -548,7 +560,7 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
         const phrased = matchupSidesByPhrase(question, pair, aliasesOf);
         const [mine, enemy] = phrased ? [phrased, pair.find((card) => card.id !== phrased.id) ?? pair[1]] : matchupSides(question, pair);
         const others = champions.filter((card) => !pair.includes(card)).map((card) => card.name).join(", ");
-        deliverMatchup(question, mine, enemy, usedNotice ?? fill(copy.card.pairFromMany, { mine: mine.name, enemy: enemy.name, others }), judgedTopic?.topic);
+        await deliverMatchup(question, mine, enemy, usedNotice ?? fill(copy.card.pairFromMany, { mine: mine.name, enemy: enemy.name, others }), judgedTopic?.topic);
         return;
       }
     }
@@ -561,7 +573,7 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
       const byJosa = matchupSidesDetailed(question, champions);
       const picked = !byJosa.confident && route?.mine && champions.includes(route.mine) ? route.mine : undefined;
       const [mine, enemy] = picked ? [picked, champions.find((card) => card.id !== picked.id) ?? champions[1]] : byJosa.sides;
-      deliverMatchup(question, mine, enemy, usedNotice, judgedTopic?.topic);
+      await deliverMatchup(question, mine, enemy, usedNotice, judgedTopic?.topic);
       return;
     }
 
