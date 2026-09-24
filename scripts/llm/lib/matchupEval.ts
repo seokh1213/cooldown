@@ -13,6 +13,7 @@
  *   틀 베끼기 재료의 고정 문구("1레벨 기준 전체 챔피언 중")를 옮겨 적은 횟수.
  */
 import type { ChampionCard } from "./facts";
+import { josa } from "./text";
 import { buildCompareAnswer, buildCommentaryPrompt, type AdvisorAnswer } from "../../../src/lib/advisor/answer";
 import { matchupNotes, type AdvisorData } from "../../../src/lib/advisor/context";
 import { groundCommentary } from "../../../src/lib/advisor/grounding";
@@ -64,6 +65,48 @@ export const FOCUSED_HOLDOUT2: Array<[string, string, string, string]> = [
   ["Tryndamere", "Nasus", "phase", "트린다미어로 나서스 상대하면 후반 어때?"],
   ["Morgana", "Zed", "teamfight", "모르가나로 제드 있는 한타 어떻게 해?"],
 ];
+
+/**
+ * 큰 검증 세트(48). 갈래 8가지 × 6쌍. 쌍은 같은 포지션 챔피언끼리 고정 시드로 뽑는다 —
+ * 사람이 고르지 않아서 규칙을 이 문항에 맞출 수 없다. 앞의 세트에 쓴 쌍은 뺀다.
+ * 판정기 대신 갈래를 정해 두고 잰다(조립만 견주려고).
+ */
+export function focusedBig(cards: ChampionCard[]): Array<[string, string, string, string]> {
+  const used = new Set([...FOCUSED, ...FOCUSED_HOLDOUT, ...FOCUSED_HOLDOUT2].map(([a, b]) => `${a}:${b}`));
+  let seed = 20260924;
+  const rand = () => ((seed = (seed * 1664525 + 1013904223) >>> 0) / 2 ** 32);
+  const byPos = new Map<string, ChampionCard[]>();
+  for (const card of cards) {
+    const pos = card.wiki?.positions?.[0];
+    if (pos) byPos.set(pos, [...(byPos.get(pos) ?? []), card]);
+  }
+  const groups = [...byPos.values()].filter((list) => list.length >= 4);
+  const templates: Array<[string, (a: string, b: string, slot: string) => string]> = [
+    ["general", (a, b) => `${josa(a, "로/으로")} ${b} 상대 팁 좀 줘`],
+    ["laning", (a, b) => `${josa(a, "로/으로")} ${b} 라인전 어떻게 해?`],
+    ["situational-item", (a, b) => `${josa(a, "로/으로")} ${b} 상대할 때 템 뭐 가?`],
+    ["combo", (a, b) => `${josa(a, "로/으로")} ${b} 상대 콤보 어떻게 넣어?`],
+    ["escape-window", (a, b) => `${josa(a, "로/으로")} ${b} 상대할 때 언제 들어가?`],
+    ["skill", (a, b, slot) => `${josa(a, "로/으로")} ${b} 상대할 때 ${b} ${slot} 어떻게 해?`],
+    ["phase", (a, b) => `${josa(a, "로/으로")} ${b} 상대하면 후반 어때?`],
+    ["teamfight", (a, b) => `${josa(a, "로/으로")} ${b} 있는 한타 어떻게 해?`],
+  ];
+  const out: Array<[string, string, string, string]> = [];
+  for (const [focus, make] of templates) {
+    let made = 0;
+    while (made < 6) {
+      const group = groups[Math.floor(rand() * groups.length)];
+      const a = group[Math.floor(rand() * group.length)];
+      const b = group[Math.floor(rand() * group.length)];
+      if (a.id === b.id || used.has(`${a.id}:${b.id}`)) continue;
+      used.add(`${a.id}:${b.id}`);
+      const slot = ["Q", "W", "E", "R"][Math.floor(rand() * 4)];
+      out.push([a.id, b.id, focus, make(a.name, b.name, slot)]);
+      made += 1;
+    }
+  }
+  return out;
+}
 
 /** 첫 줄이 실제로 화면에서 무한 반복을 낸 질문이다. */
 export const PAIRS: Array<[string, string, string]> = [

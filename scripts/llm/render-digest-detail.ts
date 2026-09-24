@@ -1,6 +1,6 @@
 /** 한 갈래 문항 세트를 조립 답의 세 자세함으로 옮긴다(맹검용). */
 import fs from "node:fs";
-import { FOCUSED, FOCUSED_HOLDOUT, FOCUSED_HOLDOUT2, matchupAnswer } from "./lib/matchupEval";
+import { FOCUSED, FOCUSED_HOLDOUT, FOCUSED_HOLDOUT2, focusedBig, matchupAnswer } from "./lib/matchupEval";
 import { matchupDigest, type DigestDetail } from "../../src/lib/advisor/prose";
 import * as path from "path";
 import { PUBLIC_DATA_ROOT, resolvePatchVersion } from "./lib/data";
@@ -16,7 +16,7 @@ const data = {
   playbooks: new Map(Object.entries(read("llm/advisor-knowledge.json").playbooks)),
 } as unknown as AdvisorData;
 const out: Record<string, Array<{ q: string; text: string }>> = {};
-const set = process.argv.includes("--holdout2") ? FOCUSED_HOLDOUT2 : process.argv.includes("--holdout") ? FOCUSED_HOLDOUT : FOCUSED;
+const set = process.argv.includes("--big") ? focusedBig(cards as never) : process.argv.includes("--holdout2") ? FOCUSED_HOLDOUT2 : process.argv.includes("--holdout") ? FOCUSED_HOLDOUT : FOCUSED;
 const details = (process.argv.find((arg) => arg.startsWith("--details="))?.slice(10).split(",") ?? ["short", "focus-lead", "focus-full"]) as DigestDetail[];
 for (const detail of details) {
   out[detail] = set.map(([a, b, focus, q]) => {
