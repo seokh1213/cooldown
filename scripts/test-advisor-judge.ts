@@ -80,16 +80,15 @@ const card = (id: string) => cards.find((c) => c.id === id)!;
   ok(/오공의 마법 저항력이 낮은/.test(section("아이템")), "아이템: 오공의 마법 저항력이 낮다");
   ok(/마법무효화의 망토/.test(section("아이템")) && /헤르메스의 발걸음/.test(section("아이템")), "아이템: 초반 마저 아이템 이름은 아이템 자료에서");
   ok(/Q 파쇄격/.test(section("싸우는 법")), "싸우는 법: 내 콤보, 슬롯이 붙는다");
-  // 초반 아이템 한 줄 말고는 노트·도출 문장 그대로다
-  const first = (text: string) => text.split(/(?<=[.!?])\s+/)[0];
-  const pool = [...(notes.plan?.claims.map((c) => c.text) ?? []), ...(notes.plan?.mine ?? []), ...(notes.plan?.enemy ?? [])].map((entry) =>
-    first(typeof entry === "string" ? entry : entry.text),
+  // 노트·도출 문장 그대로다. 맨 앞 칸은 노트 전문을, 다른 칸은 첫 문장과 "언제" 문장 하나를 싣는다.
+  const pool = [...(notes.plan?.claims.map((c) => c.text) ?? []), ...(notes.plan?.mine ?? []), ...(notes.plan?.enemy ?? [])].flatMap((entry) =>
+    (typeof entry === "string" ? entry : entry.text).split(/(?<=[.!?])\s+/),
   );
   const bare = (text: string) => text.replace(/\b[PQWER] (?=\S)/g, "").replace(/^럼블 /, "");
   const sentences = digest.split("\n").filter((line) => line && !line.startsWith("**")).flatMap((line) => line.split(/(?<=[.!?])\s+/));
   for (const sentence of sentences) ok(pool.some((note) => bare(note) === bare(sentence)), `검증된 문장이다: ${sentence}`);
-  // 한 칸은 두 문장을 넘지 않는다
-  for (const title of ["조심할 것", "아이템", "싸우는 법"]) ok(section(title).split(/(?<=[.!?])\s+/).length <= 2, `${title} 는 두 문장 이하`);
+  // 맨 앞 칸 말고는 노트 둘 × (첫 문장 + 덧붙인 한 문장)을 넘지 않는다
+  for (const title of ["아이템", "싸우는 법"]) ok(section(title).split(/(?<=[.!?])\s+/).length <= 4, `${title} 는 네 문장 이하`);
 }
 
 console.log(`✅ 판정기 통과 (${checks}건)`);
