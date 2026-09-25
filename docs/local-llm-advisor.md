@@ -1,5 +1,7 @@
 # 로컬 LLM 상성 코치 — 데이터/컨텍스트 설계
 
+> 지금 도우미가 답을 만드는 구조·품질 관리·측정은 [`advisor-answer-pipeline.md`](advisor-answer-pipeline.md) 에 있다. 이 문서는 Ollama 로 선검증하던 때의 설계 기록이다.
+
 > 상태: CLI 프로토타입 (Ollama). web-llm 브라우저 탑재은 8장 이후 단계.
 
 ## 1. 목표
