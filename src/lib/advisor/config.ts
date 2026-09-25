@@ -131,24 +131,14 @@ export const SMOKE_MODEL: AdvisorModel = {
 const SWAPPABLE: Record<string, AdvisorModel> = {
   smoke: SMOKE_MODEL,
   /**
-   * 16비트 셰이더가 없는 기기에 주는 것. GTX 10xx 에서 동작을 확인했다.
-   * 526MB 로 가장 작고, 압축 과제에서 후보 중 가장 정확했다.
+   * 16비트 셰이더가 없는 기기에 주는 것. GTX 10xx 에서 동작을 확인했다. 526MB 로 가장 작다.
+   *
+   * **판정은 kev LoRA 로 한다.** 가중치는 onnx-community 에서 그대로 받고, LoRA 를 덧붙인 그래프(약 22MB)만 우리
+   * 사이트에서 받는다(`scripts/llm/kev-agent/b3/lora_onnx.py`). 판정이 원본 logits 위 헤드 여럿 대신 kev 헤드 하나다.
+   * 대화 270턴 7.1 → 8.2, 갈래 9칸 판정기만 331/374, 대화 흐름 55/60(`research/llm-evals/kev-agent/`).
+   * B3 는 Base 에서 배웠고 이 그래프는 Instruct 변환이라 Instruct 로 옮겨 한 번 더 배운 판(b3-v2)이다.
    */
   qwen35: {
-    id: "onnx-community/Qwen3.5-0.8B-Text-ONNX",
-    dtype: "q4",
-    downloadMb: 526,
-    needsF16: false,
-    lite: true,
-  },
-  /**
-   * 0.8B + kev LoRA(B3). 가중치는 qwen35 와 같은 파일을 onnx-community 에서 받고, 그래프(LoRA 를 덧붙인 것,
-   * 약 22MB)만 우리 사이트에서 받는다. 판정이 헤드 여럿 대신 kev 헤드 하나다.
-   * B3 는 Base 에서 배웠는데 이 그래프는 Instruct 변환이라, Instruct 로 옮겨 한 번 더 배운 판(b3-v2)을 쓴다:
-   * 갈래 9칸 판정기만 316 → 331/374, 대화 흐름 54 → 55/60(`research/llm-evals/kev-agent/`).
-   * 시험 중이라 목록에는 없고 `?advisorModel=kev` 로만 고른다.
-   */
-  kev: {
     id: "onnx-community/Qwen3.5-0.8B-Text-ONNX",
     dtype: "q4",
     downloadMb: 548,
@@ -156,6 +146,17 @@ const SWAPPABLE: Record<string, AdvisorModel> = {
     lite: true,
     graph: "models/kev/b3-v2/model_q4.onnx",
     judge: "kev",
+  },
+  /**
+   * 예전 판정(원본 그래프 위 헤드 route-v2·sub-v1·topic-v1·act-v1). 측정·비교용이라 `?advisorModel=qwen35-heads` 로만 고른다.
+   */
+  "qwen35-heads": {
+    id: "onnx-community/Qwen3.5-0.8B-Text-ONNX",
+    dtype: "q4",
+    downloadMb: 526,
+    needsF16: false,
+    lite: true,
+    judge: "heads",
   },
   /**
    * 예비. 화면 목록에는 없고 `?advisorModel=gemma` 로만 고를 수 있다.
