@@ -15,7 +15,7 @@ import type { ChampionCard } from "../lib/facts";
 import type { AdvisorData } from "../../../src/lib/advisor/context";
 import { detectChampions } from "../../../src/lib/advisor/intent";
 import { matchupSidesByPhrase, matchupSidesDetailed } from "../../../src/lib/advisor/answer";
-import { JUDGE_KIND_CRITERIA, JUDGE_KIND_INSTRUCTIONS, JUDGE_MINE_INSTRUCTIONS, JUDGE_SUB_CRITERIA, JUDGE_SUB_INSTRUCTIONS, judgeRouteState, routeFromJudge, subFromJudge } from "../../../src/lib/advisor/routeAsk";
+import { JUDGE_KIND_CRITERIA, JUDGE_KIND9_CRITERIA, JUDGE_KIND_INSTRUCTIONS, JUDGE_MINE_INSTRUCTIONS, JUDGE_SUB_CRITERIA, JUDGE_SUB_INSTRUCTIONS, judgeRouteState, routeFromJudge, subFromJudge } from "../../../src/lib/advisor/routeAsk";
 import { topicFromJudge, topicFromWords, topicQuestions } from "../../../src/lib/advisor/topicJudge";
 import { TOPIC_TEST } from "../lib/topicCases";
 import { ROOT, appJudge, kevJudge, loadData, saveJudgeCache, type Judge, type Lang } from "./lib";
@@ -24,18 +24,8 @@ const arg = (name: string) => {
   const i = process.argv.indexOf(`--${name}`);
   return i >= 0 ? process.argv[i + 1] : undefined;
 };
-/** B3 LoRA 가 배운 아홉 갈래(`b3/build_b3.py` KIND3) */
-export const KIND9: Record<string, string> = {
-  matchup: "The user plays one named champion against another named champion (two champions named)",
-  guide: "How to beat or handle one champion, without saying which champion the user plays",
-  skills: "What a champion's abilities are; an overview of the kit",
-  spellStat: "One number about one champion ability: cooldown, cost, ratio, damage or range",
-  item: "Items: what to buy, what an item does, its price or who builds it",
-  rune: "Runes: which to take, what a rune does or how it works",
-  spell: "Summoner spells such as Flash, Ignite, Smite, Teleport: when to take them, cooldown, how they work",
-  game: "Game rules and meta: objectives and their timers, gold, surrender, remake, ranked and dodging, champion or skin prices, the client",
-  chat: "Greetings, thanks, feelings or small talk, not a game question",
-};
+/** B3 LoRA 가 배운 아홉 갈래 — 앱과 같은 문구 */
+export const KIND9: Record<string, string> = JUDGE_KIND9_CRITERIA;
 const aliasesOf = (data: AdvisorData) => (card: ChampionCard) => [card.name, ...(data.aliases.get(card.id) ?? [])];
 
 /** AdvisorPanel.ask 가 갈래·내 챔피언을 정하는 부분(판정 → 문형 보정 → 조사 우선) */
