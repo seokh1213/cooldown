@@ -19,6 +19,11 @@ export interface RuleNotes {
   notes: string[];
   /** 한국어 번역. `npm run llm:translate-rules` 가 채운다. */
   notesKo?: string[];
+  /** 중국어 번역. `scripts/llm/translate-rules-zh.ts` 가 채운다. 문장이 하나라도 없으면 비운다 */
+  notesZh?: string[];
+  /** 영어·중국어 클라이언트 이름. 그 언어로 물어도 찾고, 그 화면에서는 이 이름으로 보인다 */
+  nameEn?: string;
+  nameZh?: string;
 }
 
 export type RuleIndex = Map<string, RuleNotes>;
@@ -34,19 +39,42 @@ export function indexRules(rules: RuleNotes[]): RuleIndex {
  * "점화" 가 "점화의 성물" 같은 이름 안에 들어갈 수 있다.
  */
 export function findMentionedRules(index: RuleIndex, text: string, limit = 3): RuleNotes[] {
-  const names = [...index.keys()].sort((a, b) => b.length - a.length);
+  // 세 언어 이름을 모두 본다. 영어는 대소문자를 가리지 않고 낱말 경계로("Flash" 가 "flashy" 에 걸리지 않게).
+  const names: Array<[string, RuleNotes]> = [];
+  for (const rule of new Set(index.values())) {
+    for (const name of [rule.name, rule.nameEn, rule.nameZh]) if (name && name.length >= 2) names.push([name, rule]);
+  }
+  names.sort((a, b) => b[0].length - a[0].length);
+  const lower = text.toLowerCase();
   const found: RuleNotes[] = [];
   const taken: Array<[number, number]> = [];
-  for (const name of names) {
+  for (const [name, rule] of names) {
     if (found.length >= limit) break;
-    if (name.length < 2) continue;
-    const at = text.indexOf(name);
+    if (found.includes(rule)) continue;
+    let at: number;
+    if (/^[ -~]+$/.test(name)) {
+      const m = new RegExp(`(?<![a-z])${name.toLowerCase().replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}(?![a-z])`).exec(lower);
+      at = m ? m.index : -1;
+    } else {
+      at = text.indexOf(name);
+    }
     if (at < 0) continue;
     if (taken.some(([s, e]) => at < e && at + name.length > s)) continue;
     taken.push([at, at + name.length]);
-    found.push(index.get(name)!);
+    found.push(rule);
   }
   return found;
+}
+
+/** 화면 언어의 이름과 본문. 중국어 본문이 없으면 영어 원문이다. */
+export function ruleName(rule: RuleNotes, lang: string): string {
+  return lang.startsWith("en") ? (rule.nameEn ?? rule.name) : lang.startsWith("zh") ? (rule.nameZh ?? rule.nameEn ?? rule.name) : rule.name;
+}
+
+export function ruleLines(rule: RuleNotes, lang: string): string[] {
+  if (lang.startsWith("en")) return rule.notes;
+  if (lang.startsWith("zh")) return rule.notesZh?.length === rule.notes.length ? rule.notesZh : rule.notes;
+  return rule.notesKo?.length === rule.notes.length ? rule.notesKo : rule.notes;
 }
 
 /**

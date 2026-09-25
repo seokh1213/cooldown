@@ -10,7 +10,7 @@
  * 모델이 수치를 입에 담을 일이 없어진다.
  */
 import type { ChampionCard, SpellFact, StatName } from "../../../scripts/llm/lib/facts";
-import type { RuleNotes } from "../../../scripts/llm/lib/rules";
+import { ruleLines, ruleName, type RuleNotes } from "../../../scripts/llm/lib/rules";
 import type { Language } from "@/i18n";
 import type { SelectedNotes } from "./noteSelect";
 import {
@@ -319,10 +319,11 @@ export function buildSpellAnswer(
  * "정복자에 점화 들어가?" 는 점화 규칙 9문장 중 "정복자" 가 든 한 문장이 답이다.
  * 이름을 담은 문장이 없으면 전부 rest 로 두고 카드가 원문을 보인다.
  */
-export function buildRuleAnswer(rule: RuleNotes, mentionedNames: string[]): AdvisorAnswer {
-  const lines = rule.notesKo?.length === rule.notes.length ? rule.notesKo : rule.notes;
-  const others = mentionedNames.filter((name) => name !== rule.name);
-  const highlighted = others.length ? lines.filter((line) => others.some((name) => line.includes(name))) : [];
+export function buildRuleAnswer(rule: RuleNotes, mentionedNames: string[], lang = "ko_KR", mentioned: RuleNotes[] = []): AdvisorAnswer {
+  const lines = ruleLines(rule, lang);
+  // 함께 물은 다른 규칙을 그 화면 언어 이름으로 찾는다("정복자에 점화" → 점화 규칙에서 정복자가 든 줄)
+  const others = [...new Set([...mentionedNames.filter((name) => name !== rule.name), ...mentioned.filter((r) => r !== rule).map((r) => ruleName(r, lang))])];
+  const highlighted = others.length ? lines.filter((line) => others.some((name) => line.toLowerCase().includes(name.toLowerCase()))) : [];
   const rest = lines.filter((line) => !highlighted.includes(line));
   return { kind: "rule", rule, highlighted, rest };
 }
@@ -690,6 +691,20 @@ const SKILLS_OVERVIEW =
 
 export function asksSkillsOverview(question: string): boolean {
   return SKILLS_OVERVIEW.test(question);
+}
+
+/**
+ * 스킬 여럿을 한꺼번에 묻는가. "패시브와 네 가지 스킬을 각각", "패시브랑 QWER 전체", "passive q w e r".
+ *
+ * 슬롯 낱말("패시브")이 하나 보이면 그 스킬 카드로 갔는데, 이런 질문은 스킬 전체 소개가 답이다.
+ * 슬롯이 둘 이상 나오거나 "각각·전체·모든 스킬·네 가지" 를 말하면 전체로 본다.
+ */
+export function asksWholeKit(question: string): boolean {
+  if (/네\s*가지|4\s*가지|각각|전체|모든\s*스킬|스킬\s*다|QWER|all (abilities|skills|spells)|each (ability|skill)|every (ability|skill)|全部技能|每个技能|所有技能|各个技能/i.test(question)) return true;
+  const slots = new Set<string>();
+  if (/패시브|passive|被动/i.test(question)) slots.add("P");
+  for (const m of question.matchAll(/(?<![A-Za-z])([QWERqwer])(?![A-Za-z])/g)) slots.add(m[1].toUpperCase());
+  return slots.size >= 2;
 }
 
 /** 스킬 한 줄 요약. 요약이 없으면 본문 첫 문장. */

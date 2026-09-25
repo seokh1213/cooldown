@@ -18,6 +18,7 @@ import {
   asksGuide,
   asksMatchup,
   asksSkillsOverview,
+  asksWholeKit,
   buildCompareAnswer,
   looksChampionDirected,
   spellFocusValue,
@@ -154,6 +155,13 @@ assert.equal(detectSpellFocus("럼블 E 뭐야"), undefined, "사실을 안 짚�
 
   // 줄임말 표는 intent.ts 가 만든다. 여기서는 정식 이름만으로도 잡혀야 한다.
   const none = new Map<string, ChampionCard>();
+  // 스킬 여럿을 한꺼번에 물으면 스킬 전체 소개다(패시브 한 칸 카드가 아니다)
+  for (const q of ["자크 능력 소개 부탁드립니다. 패시브와 네 가지 스킬을 각각 짧게 설명해 주시면 돼요.", "아우솔 처음 보는데 패시브랑 QWER 전체 설명 좀", "yo what does blitz actually do passive q w e r", "介绍一下阿狸的每个技能"]) {
+    assert.equal(asksWholeKit(q), true, `스킬 전체: ${q}`);
+  }
+  for (const q of ["말파이트 패시브 설명해줘", "야스오 Q 쿨타임", "럼블 E 마저 몇 깎여?", "What does Ahri's passive do?"]) {
+    assert.equal(asksWholeKit(q), false, `스킬 하나: ${q}`);
+  }
   // 이어 묻는 말의 첫머리는 이름 오타가 아니다("그럼" → 그웬)
   for (const q of ["그럼 한타 때는?", "근데 템트리는 어떻게 가져가?", "그건 왜 그런 거야?", "레벨 6 찍고 나서는 달라져?", "정글이 자꾸 미드로 오는데 그럴 땐?", "뭐 사야 돼"]) {
     assert.equal(suggestChampions(q, cards, nicknames(cards)), undefined, `${q} 에 오타 후보가 없다`);
