@@ -134,6 +134,28 @@ export const JUDGE_SUB_CRITERIA: Record<"item" | "rune" | "spell" | "game" | "ch
   chat: "Greetings, thanks, feelings or small talk, not a game question",
 };
 
+/**
+ * kev LoRA(B3) 판정기의 갈래 — 아홉 칸을 한 번에 묻는다. B3 가 이 문구로 배웠다(`scripts/llm/kev-agent/b3/build_b3.py` KIND3).
+ * 원본 모델 위 헤드는 아홉 칸을 한 번에 가르면 챔피언 갈래가 흔들려(route-v3, 321 → 278) 두 단계로 나눴지만,
+ * LoRA 는 한 번에 가른다(route-large 374 판정기만 316, 챔피언 4갈래가 헤드보다 높다).
+ */
+export const JUDGE_KIND9_CRITERIA: Record<Exclude<AskKind, "other">, string> = {
+  matchup: JUDGE_KIND_CRITERIA.matchup,
+  guide: JUDGE_KIND_CRITERIA.guide,
+  skills: JUDGE_KIND_CRITERIA.skills,
+  spellStat: JUDGE_KIND_CRITERIA.spellStat,
+  ...JUDGE_SUB_CRITERIA,
+};
+
+/** 아홉 칸 판정에서 갈래와 내 챔피언을 정한다. 상성은 이름이 둘이어야 한다(`routeFromJudge` 와 같은 제약). */
+export function routeFromKind9(kindProbs: number[], mineProbs: number[] | undefined, champions: ChampionCard[]): AskRoute {
+  const kinds = Object.keys(JUDGE_KIND9_CRITERIA) as AskKind[];
+  const kind = kinds[kindProbs.indexOf(Math.max(...kindProbs))];
+  if (kind === "matchup" && champions.length < 2) return { kind: "guide" };
+  if (kind !== "matchup" || !mineProbs) return { kind };
+  return { kind, mine: champions[mineProbs.indexOf(Math.max(...mineProbs))] };
+}
+
 export function subFromJudge(probs: number[]): AskKind {
   const kinds = Object.keys(JUDGE_SUB_CRITERIA) as AskKind[];
   return kinds[probs.indexOf(Math.max(...probs))];

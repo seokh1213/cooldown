@@ -63,6 +63,7 @@ import {
 } from "@/lib/advisor/answer";
 import { nicknames } from "@/lib/advisor/intent";
 import {
+  JUDGE_KIND9_CRITERIA,
   JUDGE_KIND_CRITERIA,
   JUDGE_KIND_INSTRUCTIONS,
   JUDGE_MINE_INSTRUCTIONS,
@@ -72,11 +73,13 @@ import {
   subFromJudge,
   parseRoute,
   routeFromJudge,
+  routeFromKind9,
   routePrompt,
   type AskRoute,
 } from "@/lib/advisor/routeAsk";
 import { topicFromJudge, topicFromWords, topicQuestions } from "@/lib/advisor/topicJudge";
 import { loadPrecomputed, precomputedDigest, precomputedMore } from "@/lib/advisor/precomputed";
+import { championPriceAnswer, gameMetaAnswer } from "@/lib/advisor/gameMeta";
 import { actFromProbs, actFromWords, actQuestion, actState, matchupStateOf, planTurn, sideOfNewName } from "@/lib/advisor/conversation";
 
 /** 판정 헤드. `public/models/judge/` 아래 이 이름의 .json·.bin 이 있다. */
@@ -86,6 +89,8 @@ const SUB_HEAD = "sub-v1";
 const TOPIC_HEAD = "topic-v1";
 /** 대화 흐름(이어 묻기·상대 바꾸기·입장 뒤집기 …). `conversation.ts` */
 const ACT_HEAD = "act-v1";
+/** kev LoRA 모델(`judge: "kev"`)은 이 헤드 하나로 갈래(아홉 칸)·주제·대화 흐름을 모두 가른다 */
+const KEV_HEAD = "kev-b3";
 import { findMentionedRules } from "../../../../scripts/llm/lib/rules";
 import type { ChampionCard } from "../../../../scripts/llm/lib/facts";
 import { ItemIcon } from "@/components/ui/item-icon";
@@ -473,7 +478,21 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
        * 가벼운 모델은 글로 답하게 하지 않고 판정기로 가른다. 세 언어 큰 세트 374문항에서
        * 0.8B 생성 183, 판정기(route-v2, 아래 문형 보정 포함) 322, 4B 생성 310 이었다.
        */
-      route = advisor.model.lite
+      const kevJudge = advisor.model.judge === "kev";
+      route = advisor.model.lite && kevJudge
+        ? await advisor
+            .judge(KEV_HEAD, judgeRouteState(question, names), [
+              { instructions: JUDGE_KIND_INSTRUCTIONS, options: Object.entries(JUDGE_KIND9_CRITERIA).map(([name, description]) => ({ name, description })) },
+              ...(named.length >= 2 ? [{ instructions: JUDGE_MINE_INSTRUCTIONS, options: names.map((name) => ({ name })) }] : []),
+            ])
+            .then(([kind, mine]) => {
+              const route = routeFromKind9(kind, mine, named);
+              if (route.kind !== "matchup" || named.length < 2) return route;
+              const phrased = matchupSidesByPhrase(question, [named[0], named[1]], (card) => [card.name, ...(data.aliases.get(card.id) ?? [])]);
+              return phrased ? { ...route, mine: phrased } : route;
+            })
+            .catch(() => undefined)
+        : advisor.model.lite
         ? await advisor
             .judge(ROUTE_HEAD, judgeRouteState(question, names), [
               { instructions: JUDGE_KIND_INSTRUCTIONS, options: Object.entries(JUDGE_KIND_CRITERIA).map(([name, description]) => ({ name, description })) },
@@ -512,7 +531,7 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
         judgedTopic = worded
           ? { topic: worded }
           : await advisor
-              .judge(TOPIC_HEAD, judgeRouteState(question, names), topicQuestions(named.length))
+              .judge(advisor.model.judge === "kev" ? KEV_HEAD : TOPIC_HEAD, judgeRouteState(question, names), topicQuestions(named.length))
               .then(([topic]) => topicFromJudge(topic))
               .catch(() => undefined);
       }
@@ -552,6 +571,27 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
     }
 
     /*
+     * 게임 규칙·메타(항복·다시하기·오브젝트 시간·챔피언 가격·닷지 …). 공식 위키에서 옮긴 사실로 답한다(`gameMeta.ts`).
+     * 이름이 없으면 낱말로, 챔피언 하나가 곁들여졌으면 판정기가 그 밖·게임 규칙으로 가른 때만("킨드레드 하는 중인데
+     * 첫 바론 몇 분에 나와"). 상성 대화 중이어도 새 질문이다.
+     */
+    if (champions.length === 1) {
+      // "피오라 굶드라 가격" 은 아이템 가격이다 — 아이템 이름이 있으면 챔피언 가격으로 답하지 않는다
+      const price = buildItemCard(data, question, undefined) ? undefined : championPriceAnswer(question, champions[0], lang);
+      if (price) {
+        advisor.answerWithoutModel(question, price, usedNotice);
+        return;
+      }
+    }
+    if (champions.length === 0 || (champions.length === 1 && (route?.kind === "other" || route?.kind === "game"))) {
+      const fact = gameMetaAnswer(question, lang);
+      if (fact) {
+        advisor.answerWithoutModel(question, fact, usedNotice);
+        return;
+      }
+    }
+
+    /*
      * 3. 방금 답한 상성에 이어 묻는가. "그럼 아이템은?", "다리우스는?", "피오라 입장에서는?", "왜?"
      *
      * 대화 이력을 모델에 넣지 않는다 — 0.8B 는 맥락을 못 쥔다(이력을 넣은 판정 10점 환산 1.0~1.3).
@@ -569,7 +609,7 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
         worded ??
         (!named && canUseModel && advisor.consented && advisor.model.lite
           ? await advisor
-              .judge(ACT_HEAD, actState(state.mine.name, state.enemy.name, question, champions[0]?.name), [actQuestion(state.mine.name, state.enemy.name)])
+              .judge(advisor.model.judge === "kev" ? KEV_HEAD : ACT_HEAD, actState(state.mine.name, state.enemy.name, question, champions[0]?.name), [actQuestion(state.mine.name, state.enemy.name)])
               .then(([probs]) => actFromProbs(probs))
               .catch(() => undefined)
           : undefined);
@@ -577,6 +617,11 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
        * 새 질문은 이름(아이템·게임 규칙 문서)과 문형(항복·닷지·가격 …)이 가른다. 판정기의 "new" 는 쓰지 않는다.
        * 갈래 판정기(sub-v1)의 게임 규칙·잡담을 판정기 둘이 동의할 때만 새 질문으로 쳐 봤는데, 이어 묻기를
        * 더 잃었다("How do I survive lane", "要出护甲吗"). 손 시험 60 + 대화 270턴 합계 236 → 뺀 판 240.
+       */
+      /*
+       * 판정기의 "new" 는 kev LoRA 여도 믿지 않는다. 평균은 조금 올랐지만(대화 270턴 8.2, 손 시험 49 → 51) 틀리면
+       * 이어 묻기("정글이 자꾸 탑으로 오는데 그럴 땐?")가 검색 길로 빠져 0.8B 가 자료 없이 글을 썼다. 새 질문 대부분은
+       * 게임 규칙·메타 자료(`gameMeta.ts`)와 이름이 먼저 받으므로 믿어서 얻는 것이 거의 없다.
        */
       const entity = champions.length === 0 && (named || worded === "new");
       // 새 이름이 내 자리인지 상대 자리인지 문형이 못 박으면 판정기보다 먼저다("오공으로 하면", "야스오 만나면")
@@ -592,7 +637,7 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
             topicFromWords(question, [...names, ...[plan.mine, plan.enemy].flatMap((card) => data.aliases.get(card.id) ?? [])]) ??
             (advisor.model.lite && advisor.consented
               ? await advisor
-                  .judge(TOPIC_HEAD, judgeRouteState(question, names), topicQuestions(2))
+                  .judge(advisor.model.judge === "kev" ? KEV_HEAD : TOPIC_HEAD, judgeRouteState(question, names), topicQuestions(2))
                   .then(([probs]) => topicFromJudge(probs).topic)
                   .catch(() => undefined)
               : undefined);

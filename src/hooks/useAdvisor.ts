@@ -199,7 +199,9 @@ export interface UseAdvisorResult {
 }
 
 /** 가벼운 모델이 쓰는 판정 헤드. 모델을 올리면 미리 받아 둔다. */
-const LITE_JUDGE_HEADS = ["route-v2", "topic-v1"];
+const LITE_JUDGE_HEADS = ["route-v2", "sub-v1", "topic-v1", "act-v1"];
+/** kev LoRA 모델은 헤드 하나로 모든 판정을 한다 */
+const KEV_JUDGE_HEADS = ["kev-b3"];
 
 function readConsent(): boolean {
   try {
@@ -754,13 +756,13 @@ export function useAdvisor(): UseAdvisorResult {
     async (headName: string, state: string, questions: JudgeQuestion[]): Promise<number[][]> => {
       if (!consented) throw new Error("동의 전에는 모델을 부르지 않습니다");
       const head = await loadJudgeHead(headName);
-      if (head.model.id !== model.id || head.model.dtype !== model.dtype) {
+      if (head.model.id !== model.id || head.model.dtype !== model.dtype || (head.model.graph ?? "") !== (model.graph ?? "")) {
         throw new Error(`판정 헤드 ${headName} 는 ${head.model.id} 용입니다`);
       }
       const id = nextId.current++;
       const features = await new Promise<Float32Array[]>((resolve, reject) => {
         judgeWaiters.current.set(id, { resolve, reject });
-        post({ type: "judge", id, model, state, questions, subset: head.subset });
+        post({ type: "judge", id, model, state, questions, subset: head.subset, feature: head.feature });
       });
       return features.map((flat, index) => {
         const positions = questions[index].options.length + 1;
@@ -779,7 +781,7 @@ export function useAdvisor(): UseAdvisorResult {
    */
   useEffect(() => {
     if (!modelReady || !model.lite) return;
-    for (const name of LITE_JUDGE_HEADS) void loadJudgeHead(name).catch(() => undefined);
+    for (const name of model.judge === "kev" ? KEV_JUDGE_HEADS : LITE_JUDGE_HEADS) void loadJudgeHead(name).catch(() => undefined);
   }, [modelReady, model, loadJudgeHead]);
 
   const rate = useCallback((turnId: number, rating: "up" | "down", patch: string) => {

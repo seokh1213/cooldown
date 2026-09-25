@@ -106,6 +106,9 @@ eq(topicFromWords("가렌 라인전 팁", ["가렌"]), "laning", "갈래 낱말�
 eq(topicFromWords("럼블 만났는데 나 오공", ["럼블", "오공"]), undefined, "낱말 없음");
 eq(topicFromWords("탑 라인 다리우스 짜증나", ["다리우스"]), undefined, "라인 한 글자로는 가르지 않는다");
 eq(topicFromWords("템빨로 이기는 챔피언이야?", []), undefined, "낱말 속 템은 아이템이 아니다");
+eq(topicFromWords("그럼 템은?", []), "situational-item", "조사가 붙은 템(이어 묻기)");
+eq(topicFromWords("템트리 어떻게 가?", []), "situational-item", "템트리");
+eq(topicFromWords("시스템은 어때", []), undefined, "시스템의 템은 아니다");
 eq(topicFromWords("잭스 상대로 피오라 할 때 탑 갱 오는 정글이 녹턴이면?", ["잭스", "피오라", "녹턴"]), "laning", "갱");
 eq(topicFromWords("How do I survive ganks as Vayne?"), "laning", "gank");
 eq(topicFromWords("갱플랭크 통 어떻게 써?", ["갱플랭크"]), undefined, "이름 속 갱은 갱이 아니다");

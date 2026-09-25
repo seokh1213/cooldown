@@ -56,6 +56,13 @@ export interface AdvisorModel {
    *   Qwen3.5 0.8B   473자 ·  98% 통과 · 틀린 짝 0 ·  2.5초
    */
   lite?: boolean;
+  /**
+   * 그래프만 바꿔 끼운다(앱 기준 상대 주소). 가중치는 `id` 저장소에서 그대로 받는다. kev LoRA 를 덧붙인 그래프다.
+   * 있으면 판정은 kev 헤드 하나(`judge: "kev"`)로 한다.
+   */
+  graph?: string;
+  /** 판정 방식. heads = 원본 logits 위 헤드 여럿(route-v2·sub-v1·topic-v1·act-v1), kev = kev LoRA 헤드 하나 */
+  judge?: "heads" | "kev";
 }
 
 /**
@@ -133,6 +140,21 @@ const SWAPPABLE: Record<string, AdvisorModel> = {
     downloadMb: 526,
     needsF16: false,
     lite: true,
+  },
+  /**
+   * 0.8B + kev LoRA(B3). 가중치는 qwen35 와 같은 파일을 onnx-community 에서 받고, 그래프(LoRA 를 덧붙인 것,
+   * 약 22MB)만 우리 사이트에서 받는다. 판정이 헤드 여럿 대신 kev 헤드 하나다.
+   * 대화 270턴 8.2(헤드 7.1), 갈래 9칸 판정기만 316/374, 대화 흐름 54/60(`research/llm-evals/kev-agent/`).
+   * 시험 중이라 목록에는 없고 `?advisorModel=kev` 로만 고른다.
+   */
+  kev: {
+    id: "onnx-community/Qwen3.5-0.8B-Text-ONNX",
+    dtype: "q4",
+    downloadMb: 548,
+    needsF16: false,
+    lite: true,
+    graph: "models/kev/b3-v1/model_q4.onnx",
+    judge: "kev",
   },
   /**
    * 예비. 화면 목록에는 없고 `?advisorModel=gemma` 로만 고를 수 있다.
@@ -407,3 +429,6 @@ export async function estimateStorageMb(): Promise<{ quotaMb?: number; usageMb?:
     return {};
   }
 }
+
+/** 측정 도구(`scripts/llm/kev-agent/eval-kev-browser.ts`)가 쓰는 판본 목록. 앱은 `resolveModel` 로만 고른다. */
+export const SWAPPABLE_FOR_TEST = SWAPPABLE;

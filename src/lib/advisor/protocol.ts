@@ -10,6 +10,11 @@ import type { JudgeQuestion } from "./judge";
 export interface AdvisorModelSpec {
   id: string;
   dtype: string;
+  /**
+   * 그래프만 바꿔 끼울 때 그 파일의 주소(`model_q4.onnx` 자리). 가중치는 원래 저장소에서 그대로 받는다.
+   * kev LoRA 를 덧붙인 그래프가 이것이다(`scripts/llm/kev-agent/b3/lora_onnx.py`).
+   */
+  graph?: string;
 }
 
 export interface AdvisorChatMessage {
@@ -47,7 +52,16 @@ export type AdvisorRequest =
    * 판정. 글을 쓰지 않고 질문마다 판정 위치의 특징만 뽑아 돌려준다.
    * 헤드 계산은 메인 스레드가 한다(`judge.ts`). `subset` 은 헤드가 배운 logits 토큰이다.
    */
-  | { type: "judge"; id: number; model: AdvisorModelSpec; state: string; questions: JudgeQuestion[]; subset: number[] }
+  | {
+      type: "judge";
+      id: number;
+      model: AdvisorModelSpec;
+      state: string;
+      questions: JudgeQuestion[];
+      subset: number[];
+      /** 판정 위치에서 무엇을 꺼내나. logits(기본, subset 만) 또는 은닉 상태 전체(kev 헤드, LoRA 를 켠다) */
+      feature?: "logits" | "hidden";
+    }
   | { type: "stop" };
 
 /** 파일 하나의 내려받기 진행 상황 */
