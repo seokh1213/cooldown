@@ -21,7 +21,9 @@ for (const [q, id] of [
   ["킬 골드 얼마야?", "kill-gold"], ["How much gold is a kill?", "kill-gold"],
   ["랭겜 닷지하면 LP 얼마나 까여?", "dodge"], ["is there a penalty for dodging ranked?", "dodge"],
   ["듀오 티어 제한이 어떻게 되나요?", "duo"],
-  ["cs가 뭐야?", "cs"], ["Do jungle monsters count toward the CS number?", "cs"],
+  ["cs가 뭐야?", "cs"], ["바위게 몇 분에 나와?", "scuttle"], ["When does scuttle spawn?", "scuttle"], ["블루 버프 리젠 몇 분이야?", "buffs"],
+  ["lethality vs armor pen whats the difference", "lethality"], ["팀원 채팅 음소거 어떻게 해?", "mute"], ["how do i mute one teammate's pings", "mute"],
+  ["죽으면 몇 초 뒤에 부활해?", "death-timer"], ["Do jungle monsters count toward the CS number?", "cs"],
 ] as const) eq(findGameMeta(q)?.id, id, `사실: ${q}`);
 
 // 게임 규칙이 아닌 말에는 걸리지 않는다("ff" 가 "effect" 에, "dc" 가 낱말 속에 걸리지 않게)
