@@ -55,6 +55,24 @@ export function precomputedDigest(pair: PrecomputedPair, focus: string | undefin
   return sections.join("\n\n");
 }
 
+/**
+ * "더 자세히" — 처음 답(`precomputedDigest`)에 싣지 않은 칸. 주제 여덟 칸 중 남은 것을 세 칸까지.
+ * 남은 칸이 없으면 undefined(노트 조립을 펼쳐 보인다).
+ */
+export function precomputedMore(pair: PrecomputedPair, focus: string | undefined, cards: ChampionCard[], lang: Language = "ko_KR"): string | undefined {
+  const lead = LEAD[focus ?? "general"] ?? "watch";
+  const shown = new Set([lead, ...(["watch", "build", "fight"] as PrecomputedKey[]).filter((key) => key !== lead)].slice(0, 3));
+  const heading = DIGEST_HEADINGS[lang] ?? DIGEST_HEADINGS.ko_KR;
+  const titleOf = (key: PrecomputedKey) =>
+    key === "watch" || key === "build" || key === "fight" ? heading[key] : ((FIGHT_TITLES[lang] ?? FIGHT_TITLES.ko_KR)[TOPIC_OF[key] ?? ""] ?? heading.fight);
+  const rest = (["laning", "combo", "escape", "teamfight", "phase", "watch", "build", "fight"] as PrecomputedKey[]).filter((key) => !shown.has(key) && pair[key]);
+  if (!rest.length) return undefined;
+  return rest
+    .slice(0, 3)
+    .map((key) => `**${titleOf(key)}**\n${labelSlots(leadClean(pair[key]!), cards)}`)
+    .join("\n\n");
+}
+
 const files = new Map<string, Promise<PrecomputedFile | undefined>>();
 
 /**

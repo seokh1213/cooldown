@@ -262,6 +262,8 @@ export interface Translations {
       /** 모델이 조회 도구를 부른 뒤 */
       looking: string;
     };
+    /** 게임 규칙·메타 질문인데 자료에 없을 때. 모델이 지어내지 않게 이 말로 답한다. */
+    noGameData: string;
     /** 모델 없이 쓰는 중에 코드가 답을 못 찾았을 때 */
     noModel: string;
     /** 도우미 자신을 물었을 때. 모델이 없어도 답할 수 있는 몇 안 되는 질문이다. */
