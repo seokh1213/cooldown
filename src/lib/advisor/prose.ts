@@ -140,7 +140,7 @@ export function answerProse(answer: AdvisorAnswer, lang: Language = "ko_KR"): st
     return w.is(answer.headline.label, answer.headline.value);
   }
 
-  if (answer.kind === "compare" && answer.matchup) return answer.precomputed ?? matchupDigest(answer, lang);
+  if (answer.kind === "compare" && answer.matchup) return answer.precomputed ?? matchupDigest(answer, lang, answer.more ? "focus-full" : undefined);
 
   if (answer.kind === "item") {
     if (answer.verdicts.length) {

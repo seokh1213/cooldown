@@ -265,6 +265,7 @@ export const enUSTranslations: Translations = {
       searched: "Found notes",
       looking: "Looking up",
     },
+    noGameData: "This game rule or meta detail (surrender, objective timers, champion prices, ranked rules and the like) is not in the data yet, so I won't guess.",
     noModel: "The notes on hand do not answer this. Downloading the AI model would let it answer questions like this.",
     identity:
       "I am the League of Legends helper built into this app. I answer from its data on champions, abilities, items and ruling rules. I run on your device and this conversation never leaves it.",

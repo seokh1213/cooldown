@@ -20,8 +20,14 @@ import type { ChampionCard } from "../../../scripts/llm/lib/facts";
  * 갈래가 늘었을 때이지 언어가 늘었을 때가 아니다.
  */
 
-/** 질문이 겨냥하는 것. 화면이 어떤 카드를 지을지 정한다. */
-export type AskKind = "matchup" | "guide" | "skills" | "spellStat" | "other";
+/**
+ * 질문이 겨냥하는 것. 화면이 어떤 카드를 지을지 정한다.
+ *
+ * 4B(생성으로 가름)와 route-v2 는 앞의 다섯만 쓴다. 판정기는 "그 밖" 을 sub-v1 으로 다섯으로 더 나눈다 — 이어 묻기에서
+ * "방어력 올려?"(아이템, 앞 상성의 이어 묻기)와 "항복 몇 분부터?"(게임 규칙, 새 질문)를 가르려면 둘이 한
+ * 갈래여서는 안 됐다.
+ */
+export type AskKind = "matchup" | "guide" | "skills" | "spellStat" | "other" | "item" | "rune" | "spell" | "game" | "chat";
 
 const KINDS: AskKind[] = ["matchup", "guide", "skills", "spellStat", "other"];
 
@@ -103,13 +109,35 @@ export function parseRoute(reply: string, champions: ChampionCard[]): AskRoute |
 export const JUDGE_KIND_INSTRUCTIONS = "What is this League of Legends question asking for?";
 export const JUDGE_MINE_INSTRUCTIONS = "Which champion does the user play? (The other one is the opponent.)";
 
-export const JUDGE_KIND_CRITERIA: Record<AskKind, string> = {
+export const JUDGE_KIND_CRITERIA: Record<"matchup" | "guide" | "skills" | "spellStat" | "other", string> = {
   matchup: "The user plays one named champion against another named champion (two champions named)",
   guide: "How to beat or handle one champion, without saying which champion the user plays",
   skills: "What a champion's abilities are; an overview of the kit",
   spellStat: "One number about one champion ability: cooldown, cost, ratio, damage or range",
   other: "Items, runes, summoner spells, objectives, game rules or small talk",
 };
+
+/**
+ * "그 밖" 을 한 번 더 가르는 판정기(sub-v1)의 질문 꼴. route-v2 가 other 를 고른 질문에만 묻는다.
+ *
+ * 한 헤드로 아홉 갈래를 가르게 하면(route-v3) 챔피언 네 갈래까지 흔들렸다(route-large 374: 앱 보정 포함
+ * 321 → 278). 원본 모델 위의 작은 헤드에게는 둘로 나눠 묻는 편이 낫다. 순서가 곧 선택지 순서다
+ * (`scripts/llm/kev-agent/b3/` 의 SUB 와 같다). 학습 자료는 그 밖 258문항을 사람이 다시 붙인 것과
+ * 게임 메타 틀 문장이다. dev 27/33.
+ */
+export const JUDGE_SUB_INSTRUCTIONS = "What kind of League of Legends question is this?";
+export const JUDGE_SUB_CRITERIA: Record<"item" | "rune" | "spell" | "game" | "chat", string> = {
+  item: "Items: what to buy, what an item does, its price or who builds it",
+  rune: "Runes: which to take, what a rune does or how it works",
+  spell: "Summoner spells such as Flash, Ignite, Smite, Teleport: when to take them, cooldown, how they work",
+  game: "Game rules and meta: objectives and their timers, gold, surrender, remake, ranked and dodging, champion or skin prices, the client",
+  chat: "Greetings, thanks, feelings or small talk, not a game question",
+};
+
+export function subFromJudge(probs: number[]): AskKind {
+  const kinds = Object.keys(JUDGE_SUB_CRITERIA) as AskKind[];
+  return kinds[probs.indexOf(Math.max(...probs))];
+}
 
 export function judgeRouteState(question: string, names: string[]): string {
   return names.length ? `Question: ${question}\nChampions named: ${names.join(", ")}` : `Question: ${question}`;

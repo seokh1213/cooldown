@@ -66,18 +66,26 @@ import {
   JUDGE_KIND_CRITERIA,
   JUDGE_KIND_INSTRUCTIONS,
   JUDGE_MINE_INSTRUCTIONS,
+  JUDGE_SUB_CRITERIA,
+  JUDGE_SUB_INSTRUCTIONS,
   judgeRouteState,
+  subFromJudge,
   parseRoute,
   routeFromJudge,
   routePrompt,
   type AskRoute,
 } from "@/lib/advisor/routeAsk";
 import { topicFromJudge, topicFromWords, topicQuestions } from "@/lib/advisor/topicJudge";
-import { loadPrecomputed, precomputedDigest } from "@/lib/advisor/precomputed";
+import { loadPrecomputed, precomputedDigest, precomputedMore } from "@/lib/advisor/precomputed";
+import { actFromProbs, actFromWords, actQuestion, actState, matchupStateOf, planTurn, sideOfNewName } from "@/lib/advisor/conversation";
 
 /** 판정 헤드. `public/models/judge/` 아래 이 이름의 .json·.bin 이 있다. */
 const ROUTE_HEAD = "route-v2";
+/** route-v2 가 "그 밖" 을 고르면 한 번 더 가른다(아이템·룬·소환사 주문·게임 규칙·잡담). */
+const SUB_HEAD = "sub-v1";
 const TOPIC_HEAD = "topic-v1";
+/** 대화 흐름(이어 묻기·상대 바꾸기·입장 뒤집기 …). `conversation.ts` */
+const ACT_HEAD = "act-v1";
 import { findMentionedRules } from "../../../../scripts/llm/lib/rules";
 import type { ChampionCard } from "../../../../scripts/llm/lib/facts";
 import { ItemIcon } from "@/components/ui/item-icon";
@@ -353,7 +361,7 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
    * 검증된 노트를 코드가 골라 조립한다(`matchupDigest`, 3.8점). 모델이 없는 기기와 같은
    * 길이다. 0.8B 는 판정기로만 쓴다(`judge.ts`). 4B 는 그대로 해설을 쓴다.
    */
-  const deliverMatchup = async (question: string, mine: ChampionCard, enemy: ChampionCard, notice?: string, focus?: string) => {
+  const deliverMatchup = async (question: string, mine: ChampionCard, enemy: ChampionCard, notice?: string, focus?: string, more = false) => {
     if (!data) return;
     const notes = matchupNotes(data, mine, enemy, lang);
     if (notes.plan && focus) notes.plan.focus = focus;
@@ -361,8 +369,14 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
     const answer = buildCompareCard([mine, enemy], question, undefined, { matchup: true, notes, lang });
     // 미리 써 둔 답이 있으면 그것을 보인다. 없으면 아래에서 노트를 조립한다.
     if (answer.kind === "compare") {
+      answer.more = more || undefined;
       const pair = (await loadPrecomputed(data.patch, mine.id, lang))?.pairs[enemy.id];
-      const text = pair ? precomputedDigest(pair, notes.plan?.focus, [mine, enemy], lang) : undefined;
+      // "더 자세히" 는 처음 답에 싣지 않은 칸을 보인다. 남은 칸이 없으면 노트를 펼친다.
+      const text = pair
+        ? more
+          ? precomputedMore(pair, notes.plan?.focus, [mine, enemy], lang)
+          : precomputedDigest(pair, notes.plan?.focus, [mine, enemy], lang)
+        : undefined;
       if (text) {
         // 큰 모델이 검증된 재료로 미리 쓴 글이라 기기에서 4B 가 새로 쓰는 것보다 낫다. 모델과 상관없이 쓴다.
         answer.precomputed = text;
@@ -465,8 +479,17 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
               { instructions: JUDGE_KIND_INSTRUCTIONS, options: Object.entries(JUDGE_KIND_CRITERIA).map(([name, description]) => ({ name, description })) },
               ...(named.length >= 2 ? [{ instructions: JUDGE_MINE_INSTRUCTIONS, options: names.map((name) => ({ name })) }] : []),
             ])
-            .then(([kind, mine]) => {
+            .then(async ([kind, mine]) => {
               const route = routeFromJudge(kind, mine, named);
+              if (route.kind === "other") {
+                const sub = await advisor
+                  .judge(SUB_HEAD, judgeRouteState(question, names), [
+                    { instructions: JUDGE_SUB_INSTRUCTIONS, options: Object.entries(JUDGE_SUB_CRITERIA).map(([name, description]) => ({ name, description })) },
+                  ])
+                  .then(([probs]) => subFromJudge(probs))
+                  .catch(() => undefined);
+                return sub ? { kind: sub } : route;
+              }
               // 영어·중국어 문형이 시점을 정해 주면 그것을 따른다. 판정기가 가장 약한 자리다.
               if (route.kind !== "matchup" || named.length < 2) return route;
               const phrased = matchupSidesByPhrase(question, [named[0], named[1]], (card) => [card.name, ...(data.aliases.get(card.id) ?? [])]);
@@ -513,7 +536,9 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
     let usedNotice = notice;
     {
       const known = new Set(champions.map((card) => card.id));
-      const typo = suggestChampions(question, data.cards, nicknames(data.cards), known);
+      // 상성 대화를 이어 가는 중이면 두 글자 낱말은 오타로 보지 않는다(`suggestChampions` 의 minLength)
+      const inMatchup = Boolean(matchupStateOf(advisor.turns.map((turn) => (turn.role === "assistant" ? turn.answer : undefined))));
+      const typo = suggestChampions(question, data.cards, nicknames(data.cards), known, inMatchup ? 3 : 1);
       if (typo?.candidates.length === 1) {
         const [card] = typo.candidates;
         void ask(question.replace(typo.original, card.name), fill(copy.card.understoodAs, { name: card.name }));
@@ -526,7 +551,59 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
       }
     }
 
-    // 3. 대화 맥락. "말파이트 설명해줘" 다음의 "제이스랑 상대한다 생각하면" 은 말파이트로
+    /*
+     * 3. 방금 답한 상성에 이어 묻는가. "그럼 아이템은?", "다리우스는?", "피오라 입장에서는?", "왜?"
+     *
+     * 대화 이력을 모델에 넣지 않는다 — 0.8B 는 맥락을 못 쥔다(이력을 넣은 판정 10점 환산 1.0~1.3).
+     * 상성(내 챔피언·상대)은 코드가 들고, 새 말이 그 상성과 어떤 관계인지만 판정기가 고른다.
+     * 판정기가 없으면 규칙: 아이템·게임 규칙 이름이 있으면 새 질문, 없으면 이어 묻기(3.8 → 7.0).
+     * 까닭과 측정은 `conversation.ts`.
+     */
+    const state = matchupStateOf(advisor.turns.map((turn) => (turn.role === "assistant" ? turn.answer : undefined)));
+    if (state && champions.length <= 1) {
+      // 아이템 이름·게임 규칙 문서가 걸리면 새 질문이다
+      const named = champions.length === 0 && (Boolean(buildItemCard(data, question, recentItem())) || Boolean(buildMechanicsAnswer(data, question)));
+      // 문형이 분명하면("입장에서는?", "왜?", "항복 몇 분부터") 판정기보다 먼저다. 모델이 없는 기기의 길이기도 하다.
+      const worded = actFromWords(question);
+      const act =
+        worded ??
+        (!named && canUseModel && advisor.consented && advisor.model.lite
+          ? await advisor
+              .judge(ACT_HEAD, actState(state.mine.name, state.enemy.name, question, champions[0]?.name), [actQuestion(state.mine.name, state.enemy.name)])
+              .then(([probs]) => actFromProbs(probs))
+              .catch(() => undefined)
+          : undefined);
+      /*
+       * 새 질문은 이름(아이템·게임 규칙 문서)과 문형(항복·닷지·가격 …)이 가른다. 판정기의 "new" 는 쓰지 않는다.
+       * 갈래 판정기(sub-v1)의 게임 규칙·잡담을 판정기 둘이 동의할 때만 새 질문으로 쳐 봤는데, 이어 묻기를
+       * 더 잃었다("How do I survive lane", "要出护甲吗"). 손 시험 60 + 대화 270턴 합계 236 → 뺀 판 240.
+       */
+      const entity = champions.length === 0 && (named || worded === "new");
+      // 새 이름이 내 자리인지 상대 자리인지 문형이 못 박으면 판정기보다 먼저다("오공으로 하면", "야스오 만나면")
+      const side = champions.length === 1 ? sideOfNewName(question, [champions[0].name, ...(data.aliases.get(champions[0].id) ?? [])]) : undefined;
+      const plan = planTurn(state, champions, entity, act, side, route?.kind);
+      if (plan.kind === "matchup") {
+        const lastFocus = [...advisor.turns].reverse().find((turn) => turn.answer?.kind === "compare" && turn.answer.matchup)?.answer;
+        const previousFocus = lastFocus?.kind === "compare" ? lastFocus.notes?.plan?.focus : undefined;
+        let topic = plan.act === "more" ? previousFocus : undefined;
+        if (plan.act !== "more") {
+          const names = [plan.mine.name, plan.enemy.name];
+          topic =
+            topicFromWords(question, [...names, ...[plan.mine, plan.enemy].flatMap((card) => data.aliases.get(card.id) ?? [])]) ??
+            (advisor.model.lite && advisor.consented
+              ? await advisor
+                  .judge(TOPIC_HEAD, judgeRouteState(question, names), topicQuestions(2))
+                  .then(([probs]) => topicFromJudge(probs).topic)
+                  .catch(() => undefined)
+              : undefined);
+        }
+        const pairNotice = fill(copy.card.fromChat, { name: `${plan.mine.name} vs ${plan.enemy.name}` });
+        await deliverMatchup(question, plan.mine, plan.enemy, usedNotice ?? pairNotice, topic, plan.act === "more");
+        return;
+      }
+    }
+
+    // 4. 대화 맥락. "말파이트 설명해줘" 다음의 "제이스랑 상대한다 생각하면" 은 말파이트로
     //    제이스를 상대하는 질문이다. 방금 다룬 챔피언이 내 챔피언, 새 이름이 상대.
     const recent = recentChampions();
     // "말파이트 상대법" 은 그 챔피언의 공략을 달라는 말이다. 앞 대화에 다른 챔피언이
@@ -577,7 +654,7 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
       return;
     }
 
-    // 4. 이름이 아예 없다. 아이템·게임 규칙 이름이면 그것이 답이다. 맥락 챔피언을 붙이기
+    // 5. 이름이 아예 없다. 아이템·게임 규칙 이름이면 그것이 답이다. 맥락 챔피언을 붙이기
     //    전에 본다 — 말파이트 표를 보며 "쇼진의 창 효과" 를 물으면 아이템 질문이다.
     if (champions.length === 0) {
       const itemAnswer = buildItemCard(data, question, recentItem());
@@ -592,7 +669,7 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
       }
     }
 
-    // 5. 챔피언을 겨냥했는데 이름이 없으면 맥락에서 가져온다. 대화에서 방금 다룬 챔피언이
+    // 6. 챔피언을 겨냥했는데 이름이 없으면 맥락에서 가져온다. 대화에서 방금 다룬 챔피언이
     //    먼저, 없으면 화면에 떠 있는 것 — 표를 보면서 "W 쿨타임" 이라 물으면 화면의 W 다.
     const slot = detectSlot(question);
     if (champions.length === 0 && looksChampionDirected(question, slot)) {
@@ -688,9 +765,18 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
       return;
     }
 
-    // 5. 어느 이름도 없다. 모델에게 검색어만 만들게 하고 찾는 일은 코드가 한다.
+    // 7. 어느 이름도 없다. 모델에게 검색어만 만들게 하고 찾는 일은 코드가 한다.
     if (advisor.consented) {
       const corpus = buildSearchCorpus(data);
+      /*
+       * 게임 규칙·메타(항복·오브젝트 시간·챔피언 가격·랭크)는 자료에 없는 것이 많다. 검색이 비면 모델이
+       * 자료 없이 답하는데(fallbackSystem), 0.8B 는 "항복은 10분부터" 처럼 지어낸다. 판정기가 게임 규칙으로
+       * 가른 질문은 질문 낱말로 먼저 찾아 보고, 없으면 자료가 없다고 말한다.
+       */
+      if (route?.kind === "game" && !lexicalSearch(corpus, question).length) {
+        advisor.answerWithoutModel(question, copy.noGameData);
+        return;
+      }
       advisor.sendWithSearch(question, system, {
         querySystem: SEARCH_QUERY_SYSTEM,
         buildPrompt: (tried) => buildQueryPrompt(question, tried),

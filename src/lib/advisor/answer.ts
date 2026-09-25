@@ -124,6 +124,8 @@ export type AdvisorAnswer =
       notes?: MatchupNotes;
       /** 빌드할 때 미리 써 둔 상성 답(`precomputed.ts`). 있으면 노트 조립 대신 이것을 보인다. */
       precomputed?: string;
+      /** "더 자세히" 에 답한 것. 노트 조립이면 물은 칸의 노트를 전문으로 펼친다. */
+      more?: boolean;
     }
   | {
       /**
@@ -393,6 +395,11 @@ const FUNCTION_WORDS = new Set([
   "누가", "누구", "누군", "뭐야", "뭐가", "뭔데", "뭐냐", "뭐지", "어디", "언제", "얼마", "어떤", "어느",
   "제일", "가장", "설명", "비교", "차이", "상대", "대비", "대해", "해줘", "알려", "정도", "이랑", "하고",
   "그리고", "중에", "레벨", "쿨감", "쿨은", "쿨이", "얼마나", "몇초",
+  // 이어 묻는 말의 첫머리. "그럼 한타 때는?" 의 "그럼" 이 그웬(거리 1)으로 고쳐져 상성 대화가 끊겼다.
+  "그럼", "그러면", "그럼요", "근데", "그런데", "그래서", "그건", "그게", "그거", "이건", "이거", "저건",
+  "만약", "차라리", "반대로", "방금", "혹시", "아니면", "그냥", "나는", "내가", "제가", "저는",
+  // 이어 묻는 말에 흔한 낱말이 이름과 거리 1 이었다: 그런→그웬, 나서는→나서스, 자꾸→자야, 사야→자야
+  "그런", "그럴", "그렇게", "나서", "나서는", "나서도", "자꾸", "사야", "해야", "가야", "봐야", "써야", "서야", "돼야",
 ]);
 
 /**
@@ -416,6 +423,11 @@ export function suggestChampions(
   cards: ChampionCard[],
   nicknames: Map<string, ChampionCard>,
   known: ReadonlySet<string> = new Set(),
+  /**
+   * 이 길이보다 짧은 낱말은 오타로 보지 않는다. 상성 대화를 이어 가는 중에는 3 을 준다 — 이어 묻는 말의
+   * 두 글자 낱말("나아", "사야", "자꾸")은 아무 이름과도 거리 1 이라 대화를 끊었다.
+   */
+  minLength = 1,
 ): { original: string; candidates: ChampionCard[] } | undefined {
   const names: Array<[string, ChampionCard]> = [];
   for (const card of cards) {
@@ -433,6 +445,7 @@ export function suggestChampions(
      * "오는" 이 오른·오공 후보로 잡혀 상성 답 대신 "'오는' 챔피언을 찾지 못했습니다" 가 떴다.
      */
     if (known.size >= 2 && token.length <= 2) continue;
+    if (token.length < minLength) continue;
     // 첫 글자가 어느 이름과도 안 맞아도 버리지 않는다. 그 첫 글자 자체가 오타일 수
     // 있다("재이스" 의 재). 대신 음절 단계에서만 첫 글자를 맞추고, 자모 단계는 푼다.
     const initialKnown = initials.has(token[0]);

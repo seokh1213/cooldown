@@ -154,6 +154,13 @@ assert.equal(detectSpellFocus("럼블 E 뭐야"), undefined, "사실을 안 짚�
 
   // 줄임말 표는 intent.ts 가 만든다. 여기서는 정식 이름만으로도 잡혀야 한다.
   const none = new Map<string, ChampionCard>();
+  // 이어 묻는 말의 첫머리는 이름 오타가 아니다("그럼" → 그웬)
+  for (const q of ["그럼 한타 때는?", "근데 템트리는 어떻게 가져가?", "그건 왜 그런 거야?", "레벨 6 찍고 나서는 달라져?", "정글이 자꾸 미드로 오는데 그럴 땐?", "뭐 사야 돼"]) {
+    assert.equal(suggestChampions(q, cards, nicknames(cards)), undefined, `${q} 에 오타 후보가 없다`);
+  }
+  // 상성 대화 중에는 두 글자 낱말을 오타로 보지 않는다("나아" → 나미). 세 글자 오타는 그대로 잡는다.
+  assert.equal(suggestChampions("차라리 뭐가 나아?", cards, nicknames(cards), new Set(), 3), undefined, "대화 중 두 글자는 오타가 아니다");
+  assert.equal(suggestChampions("다리어스 상대로는?", cards, nicknames(cards), new Set(), 3)?.candidates[0]?.id, "Darius", "대화 중에도 세 글자 오타는 잡는다");
   const typo = suggestChampions("럼미 E 마저 몇 깎여?", cards, none);
   assert.ok(typo, "럼미 → 후보가 있어야 한다");
   assert.equal(typo?.original, "럼미");
