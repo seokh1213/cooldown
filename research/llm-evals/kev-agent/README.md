@@ -218,3 +218,17 @@ Hugging Face 에 모델을 새로 올리지 않는다. 원본 가중치(`model_q
 - `knowledge/champion-prices.json`: 위키 챔피언 데이터 모듈의 챔피언별 BE·RP(173명, `scripts/llm/fetch-champion-prices.ts`)
 - 시험 세트 route-large 의 게임 규칙 21문항 중 12개에 자료로 답한다. 못 답하는 것: 넥서스 포탑 재생, CS 에 정글 몬스터가
   드는지, 핑 음소거, 칼바람 상점, 관통 차이(영어), 붙여 쓴 영어("baronbufflastshowlong")
+
+### B3 를 Instruct 로 옮겨 다시 배움 (b3-v2, 2026-09-26)
+
+앱 그래프가 Instruct 변환이라 B3(Base 에서 배움)를 Qwen3.5-0.8B(Instruct)로 옮겨 1 epoch 더 배웠다(같은 자료, lr 3e-5,
+B3 어댑터에서 이어서). Colab T4 + flash-linear-attention 에서 레코드당 0.5~0.8초, 약 35분(맥 MPS 는 1.4초).
+
+| 브라우저 그래프(Instruct q4 + LoRA) | 갈래 9칸 374(판정기만) | 대화 흐름 60 |
+|---|---|---|
+| B3 (Base 에서 배움) | 316 | 54 |
+| **B3 → Instruct (b3-v2)** | **331** | **55** |
+| (참고) B3 맥 MLX, Base | 334 | 52 |
+
+파이썬 CPU 와 브라우저 WebGPU 가 같은 답(대화 흐름 55/60). 앱은 `models/kev/b3-v2` · 헤드 `kev-b3i` 를 쓴다(주소가 바뀌어
+받아 둔 사람도 새 판을 받는다).

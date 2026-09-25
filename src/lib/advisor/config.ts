@@ -144,7 +144,8 @@ const SWAPPABLE: Record<string, AdvisorModel> = {
   /**
    * 0.8B + kev LoRA(B3). 가중치는 qwen35 와 같은 파일을 onnx-community 에서 받고, 그래프(LoRA 를 덧붙인 것,
    * 약 22MB)만 우리 사이트에서 받는다. 판정이 헤드 여럿 대신 kev 헤드 하나다.
-   * 대화 270턴 8.2(헤드 7.1), 갈래 9칸 판정기만 316/374, 대화 흐름 54/60(`research/llm-evals/kev-agent/`).
+   * B3 는 Base 에서 배웠는데 이 그래프는 Instruct 변환이라, Instruct 로 옮겨 한 번 더 배운 판(b3-v2)을 쓴다:
+   * 갈래 9칸 판정기만 316 → 331/374, 대화 흐름 54 → 55/60(`research/llm-evals/kev-agent/`).
    * 시험 중이라 목록에는 없고 `?advisorModel=kev` 로만 고른다.
    */
   kev: {
@@ -153,7 +154,7 @@ const SWAPPABLE: Record<string, AdvisorModel> = {
     downloadMb: 548,
     needsF16: false,
     lite: true,
-    graph: "models/kev/b3-v1/model_q4.onnx",
+    graph: "models/kev/b3-v2/model_q4.onnx",
     judge: "kev",
   },
   /**

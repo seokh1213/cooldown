@@ -90,7 +90,7 @@ const TOPIC_HEAD = "topic-v1";
 /** 대화 흐름(이어 묻기·상대 바꾸기·입장 뒤집기 …). `conversation.ts` */
 const ACT_HEAD = "act-v1";
 /** kev LoRA 모델(`judge: "kev"`)은 이 헤드 하나로 갈래(아홉 칸)·주제·대화 흐름을 모두 가른다 */
-const KEV_HEAD = "kev-b3";
+const KEV_HEAD = "kev-b3i";
 import { findMentionedRules } from "../../../../scripts/llm/lib/rules";
 import type { ChampionCard } from "../../../../scripts/llm/lib/facts";
 import { ItemIcon } from "@/components/ui/item-icon";
