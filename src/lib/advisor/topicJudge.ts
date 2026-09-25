@@ -86,7 +86,7 @@ const TOPIC_WORDS: Array<[RegExp, TopicLabel]> = [
   [/라인전|laning|对线/i, "laning"],
   // 갱은 라인에 선 사람이 받는 것이다. "탑 갱 오는 정글이 녹턴이면?" 을 판정기가 한타로 갈랐다.
   [/갱(?![가-힣])|갱킹|갱\s*(와|오|옴|당)|\bganks?\b|\bganking\b|抓人|被抓/i, "laning"],
-  [/아이템|템\s|템$|뭐\s*(사|가|올려)|빌드|\bbuild\b|\bitems?\b|what (should I|to) buy|出装|装备/i, "situational-item"],
+  [/아이템|템\s|템$|(?<![가-힣])템(은|는|이|을|트리)|뭐\s*(사|가|올려)|빌드|\bbuild\b|\bitems?\b|what (should I|to) buy|出装|装备/i, "situational-item"],
   [/콤보|연계|\bcombo\b|连招/i, "combo"],
   [/후반|중반|late game|mid game|scal(e|ing)|后期|中期/i, "phase"],
   [/초반|early game|前期/i, "laning"],

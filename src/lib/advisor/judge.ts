@@ -72,8 +72,10 @@ export function encodeJudgeRow(
 
 /** 판정 헤드. 정규화는 가중치에 접혀 있다. */
 export interface JudgeHead {
-  /** 어느 모델의 속내로 학습했는가. 다른 모델에 붙이면 뜻이 없다. */
-  model: { id: string; dtype: string };
+  /** 어느 모델의 속내로 학습했는가. 다른 모델에 붙이면 뜻이 없다. `graph` 는 그래프를 바꿔 끼운 모델(kev LoRA) */
+  model: { id: string; dtype: string; graph?: string };
+  /** 특징. logits(기본, subset 토큰) 또는 은닉 상태(kev 헤드) */
+  feature?: "logits" | "hidden";
   /** 특징으로 쓰는 logits 토큰 id */
   subset: number[];
   /** 입력 차원(= subset 길이)과 판정 차원 */
@@ -122,7 +124,8 @@ export function scoreJudge(head: JudgeHead, features: Float32Array[]): number[] 
 
 /** 내보낸 헤드 파일의 머리. 가중치는 같은 이름의 `.bin`(float32, 아래 순서)에 있다. */
 export interface JudgeHeadMeta {
-  model: { id: string; dtype: string };
+  model: { id: string; dtype: string; graph?: string };
+  feature?: "logits" | "hidden";
   subset: number[];
   dim: number;
   pointer: number;
@@ -146,6 +149,7 @@ export function readJudgeHead(meta: JudgeHeadMeta, buffer: ArrayBuffer): JudgeHe
   };
   return {
     model: meta.model,
+    feature: meta.feature,
     subset: meta.subset,
     dim: meta.dim,
     pointer: meta.pointer,
