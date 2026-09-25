@@ -27,6 +27,8 @@ import {
 } from "@/lib/advisor/answer";
 import { translateRange, translateStat, translateTag } from "@/lib/advisor/promptLocale";
 import { AdvisorMarkdown } from "./AdvisorMarkdown";
+import { josa } from "../../../../scripts/llm/lib/text";
+import { ruleName } from "../../../../scripts/llm/lib/rules";
 
 interface AdvisorAnswerCardProps {
   answer: AdvisorAnswer;
@@ -402,7 +404,8 @@ export function AdvisorAnswerCard({ answer, ddragonVersion, patch, onPickChampio
         title={cards.map((card) => card.name).join(" vs ")}
         subtitle={
           answer.matchup && second
-            ? fill(copy.matchup, { a: first.name, b: second.name })
+            ? // 한국어는 받침에 맞춰 조사를 붙인다("가렌으로", "럭스로"). 다른 언어 문구는 {a} 를 쓴다.
+              fill(copy.matchup, { a: first.name, aWith: josa(first.name, "로/으로"), b: second.name })
             : answer.slot
               ? `${answer.slot}`
               : answer.level
@@ -489,7 +492,7 @@ export function AdvisorAnswerCard({ answer, ddragonVersion, patch, onPickChampio
   return (
     <Frame
       icon={<SlotBadge slot="§" />}
-      title={answer.rule.name}
+      title={ruleName(answer.rule, lang)}
       subtitle={copy.ruleSource}
       tool={copy.rule}
       footer={

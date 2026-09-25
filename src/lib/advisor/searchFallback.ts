@@ -19,6 +19,7 @@
  * 웹에서 2.97GB 위에 얹을 값이 아니라서 글자 검색으로 간다.
  */
 import type { AdvisorData } from "./context";
+import { ruleLines, ruleName } from "../../../scripts/llm/lib/rules";
 
 export interface SearchDoc {
   kind: "rule" | "mechanics";
@@ -38,11 +39,11 @@ export interface SearchHit {
  * 여기 온 질문에는 그 이름이 없다. 재 보니 아이템 800건을 섞으면 규칙 70건이 수적으로
  * 밀려서, "와드 위치 추천" 이 와드 문서 대신 아이템 "시야 와드" 를 물어 왔다.
  */
-export function buildSearchCorpus(data: AdvisorData): SearchDoc[] {
+export function buildSearchCorpus(data: AdvisorData, lang = "ko_KR"): SearchDoc[] {
   const docs: SearchDoc[] = [];
-  for (const rule of data.ruleIndex.values()) {
-    const lines = rule.notesKo?.length === rule.notes.length ? rule.notesKo : rule.notes;
-    docs.push({ kind: "rule", title: rule.name, text: lines.join("\n") });
+  // 화면 언어의 이름·본문으로 찾는다. 한국어 이름만 두었더니 영어·중국어 질문이 규칙을 하나도 못 찾았다.
+  for (const rule of new Set(data.ruleIndex.values())) {
+    docs.push({ kind: "rule", title: ruleName(rule, lang), text: ruleLines(rule, lang).join("\n") });
   }
   for (const section of data.mechanics) {
     docs.push({ kind: "mechanics", title: section.title, text: section.text });

@@ -48,6 +48,7 @@ import {
   matchupSides,
   matchupSidesDetailed,
   asksSkillsOverview,
+  asksWholeKit,
   buildCommentaryPrompt,
   buildCompareAnswer as buildCompareCard,
   matchupSidesByPhrase,
@@ -543,7 +544,7 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
     const named = findMentionedRules(data.ruleIndex, question);
     if (named.length) {
       const names = named.map((rule) => rule.name);
-      const cards = named.map((rule) => buildRuleCard(rule, names));
+      const cards = named.map((rule) => buildRuleCard(rule, names, lang, named));
       const best = cards.find((card) => card.kind === "rule" && card.highlighted.length > 0) ?? cards[0];
       deliver(question, best, notice);
       return;
@@ -758,7 +759,8 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
       }
       if (champions.length === 1) {
         const [card] = champions;
-        const spell = slot ? card.spells.find((entry) => entry.slot === slot) : undefined;
+        // "패시브와 네 가지 스킬을 각각" 은 패시브 한 칸이 아니라 스킬 전체 소개다
+        const spell = slot && !asksWholeKit(question) ? card.spells.find((entry) => entry.slot === slot) : undefined;
         if (spell) {
           deliver(question, buildSpellCard(card, spell, question, lang), usedNotice);
           return;
@@ -771,7 +773,7 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
           return;
         }
         // "말파이트 스킬 설명해줘": 스킬 다섯 개의 요약 + 운용 노트. 능력치 표는 뺀다.
-        if (route ? route.kind === "skills" : asksSkillsOverview(question)) {
+        if ((route ? route.kind === "skills" : asksSkillsOverview(question)) || asksWholeKit(question)) {
           deliver(question, { kind: "champion", card, view: "skills", notes: championNotes(data, card, question, undefined, judgedTopic) }, usedNotice);
           return;
         }
@@ -813,7 +815,7 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
 
     // 7. 어느 이름도 없다. 모델에게 검색어만 만들게 하고 찾는 일은 코드가 한다.
     if (advisor.consented) {
-      const corpus = buildSearchCorpus(data);
+      const corpus = buildSearchCorpus(data, lang);
       /*
        * 게임 규칙·메타(항복·오브젝트 시간·챔피언 가격·랭크)는 자료에 없는 것이 많다. 검색이 비면 모델이
        * 자료 없이 답하는데(fallbackSystem), 0.8B 는 "항복은 10분부터" 처럼 지어낸다. 판정기가 게임 규칙으로

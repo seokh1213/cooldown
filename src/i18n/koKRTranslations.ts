@@ -315,7 +315,7 @@ export const koKRTranslations: Translations = {
       itemEffectCount: "{name} · 효과 {n}개",
       itemNoTag: "{name} 설명에 {tag}는 없습니다.",
       openInItems: "아이템 백과에서 보기",
-      matchup: "{a}로 {b} 상대",
+      matchup: "{aWith} {b} 상대",
       matchupTool: "상성",
       fromChat: "앞서 말한 {name} 기준입니다.",
       whichOne: "어느 챔피언 말씀이신가요?",
