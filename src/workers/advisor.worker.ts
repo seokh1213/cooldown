@@ -21,6 +21,7 @@ import {
 import { FALLBACK_MODEL, MAX_NEW_TOKENS, NO_REPEAT_NGRAM } from "@/lib/advisor/config";
 import { createLoopGuard, trimLoop } from "@/lib/advisor/loopGuard";
 import { encodeJudgeRow, JUDGE_SPECIAL, type JudgeQuestion } from "@/lib/advisor/judge";
+import { readLargeFile, writeLargeFile } from "@/lib/advisor/largeFileCache";
 import type {
   AdvisorFileProgress,
   AdvisorModelSpec,
@@ -82,34 +83,48 @@ function onProgress(event: HfProgress) {
 }
 
 /**
- * 그래프만 바꿔 끼운다. transformers.js 가 `…/onnx/model_q4.onnx` 를 찾으면 우리 사이트의 그래프(kev LoRA 를
- * 덧붙인 것, 약 22MB)를 내주고, 나머지(가중치 550MB·토큰화기)는 원래대로 브라우저 캐시 → 원래 저장소에서 받는다.
- * 새로 올리는 것은 변경분뿐이다.
+ * transformers.js 의 캐시를 우리가 맡는다. 두 가지 일이다.
+ *
+ * 1. 그래프만 바꿔 끼운다(`spec.graph`). `…/onnx/model_q4.onnx` 를 찾으면 우리 사이트의 그래프(kev LoRA 를 덧붙인 것,
+ *    약 22MB)를 내주고, 나머지(가중치 550MB·토큰화기)는 원래대로 받는다. 새로 올리는 것은 변경분뿐이다.
+ * 2. Cache Storage 가 받지 못한 큰 파일은 OPFS 에 둔다(`largeFileCache.ts`). 550MB 한 덩어리를 넣다가 실패해
+ *    방문할 때마다 다시 받는 브라우저가 있었다.
  */
-function swapGraph(graph: string | undefined) {
-  if (!graph) {
-    env.useCustomCache = false;
-    return;
-  }
-  const url = new URL(graph, self.location.origin + import.meta.env.BASE_URL).href;
+function installCache(graph: string | undefined) {
+  const url = graph ? new URL(graph, self.location.origin + import.meta.env.BASE_URL).href : undefined;
+  const isGraph = (key: string) => Boolean(url) && /\/onnx\/model_q4\.onnx$/.test(key);
+  const keyOf = (request: string | Request) => (typeof request === "string" ? request : request.url);
   env.useCustomCache = true;
   env.customCache = {
     async match(request: string | Request) {
-      const key = typeof request === "string" ? request : request.url;
-      if (/\/onnx\/model_q4\.onnx$/.test(key)) return fetch(url);
-      return (await caches.open(env.cacheKey)).match(request);
+      const key = keyOf(request);
+      if (isGraph(key)) {
+        // 그래프도 캐시에 둔다(주소에 판이 붙어 있어 바뀌면 새로 받는다). 안 두면 적재마다 22MB 를 두 번 받았다.
+        const cache = await caches.open(env.cacheKey);
+        const hit = await cache.match(url!).catch(() => undefined);
+        if (hit) return hit;
+        const response = await fetch(url!);
+        if (response.ok) await cache.put(url!, response.clone()).catch(() => undefined);
+        return response;
+      }
+      const hit = await (await caches.open(env.cacheKey)).match(request).catch(() => undefined);
+      return hit ?? (await readLargeFile(key));
     },
     async put(request: string | Request, response: Response) {
-      const key = typeof request === "string" ? request : request.url;
-      if (/\/onnx\/model_q4\.onnx$/.test(key)) return;
-      await (await caches.open(env.cacheKey)).put(request, response);
+      const key = keyOf(request);
+      if (isGraph(key)) return;
+      try {
+        await (await caches.open(env.cacheKey)).put(request, response.clone());
+      } catch {
+        await writeLargeFile(key, new Uint8Array(await response.arrayBuffer()));
+      }
     },
   } as unknown as typeof env.customCache;
 }
 
 async function load(spec: AdvisorModelSpec): Promise<void> {
   if (loading) return loading;
-  swapGraph(spec.graph);
+  installCache(spec.graph);
   loading = (async () => {
     tokenizer = await AutoTokenizer.from_pretrained(spec.id, {
       progress_callback: onProgress,

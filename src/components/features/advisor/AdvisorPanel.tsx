@@ -111,6 +111,7 @@ import {
   buildQueryPrompt,
   buildSearchCorpus,
   extractQuery,
+  hitsToAnswer,
   lexicalSearch,
   searchContext,
 } from "@/lib/advisor/searchFallback";
@@ -820,6 +821,15 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
        */
       if (route?.kind === "game" && !lexicalSearch(corpus, question).length) {
         advisor.answerWithoutModel(question, copy.noGameData);
+        return;
+      }
+      /*
+       * 가벼운 모델(0.8B)은 여기서도 글을 쓰지 않는다. 검색어를 짓게 하지 않고 질문 낱말로 찾아, 걸린 자료 문장을
+       * 그대로 보인다(`hitsToAnswer`). 없으면 자료가 없다고 말한다. 4B 는 그대로 자료를 읽고 답을 쓴다.
+       */
+      if (advisor.model.lite) {
+        const shown = hitsToAnswer(lexicalSearch(corpus, question), question);
+        advisor.answerWithoutModel(question, shown ? `${shown}\n\n${copy.fromNotes}` : copy.noLiteAnswer);
         return;
       }
       advisor.sendWithSearch(question, system, {

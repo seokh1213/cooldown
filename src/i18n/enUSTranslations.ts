@@ -265,6 +265,8 @@ export const enUSTranslations: Translations = {
       searched: "Found notes",
       looking: "Looking up",
     },
+    fromNotes: "Quoted as found in the notes.",
+    noLiteAnswer: "I couldn't find this in the notes I have. Try asking with a champion, item or rune name and I can answer from the data.",
     noGameData: "This game rule or meta detail (surrender, objective timers, champion prices, ranked rules and the like) is not in the data yet, so I won't guess.",
     noModel: "The notes on hand do not answer this. Downloading the AI model would let it answer questions like this.",
     identity:

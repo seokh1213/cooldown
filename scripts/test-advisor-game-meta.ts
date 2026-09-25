@@ -21,6 +21,7 @@ for (const [q, id] of [
   ["킬 골드 얼마야?", "kill-gold"], ["How much gold is a kill?", "kill-gold"],
   ["랭겜 닷지하면 LP 얼마나 까여?", "dodge"], ["is there a penalty for dodging ranked?", "dodge"],
   ["듀오 티어 제한이 어떻게 되나요?", "duo"],
+  ["cs가 뭐야?", "cs"], ["Do jungle monsters count toward the CS number?", "cs"],
 ] as const) eq(findGameMeta(q)?.id, id, `사실: ${q}`);
 
 // 게임 규칙이 아닌 말에는 걸리지 않는다("ff" 가 "effect" 에, "dc" 가 낱말 속에 걸리지 않게)
