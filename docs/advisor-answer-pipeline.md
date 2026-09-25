@@ -53,10 +53,12 @@
 |---|---|---|
 | 노트 원본(한국어, 사람 검증) | `knowledge/playbooks/*.json` | 3,723항목, 고리 포함 |
 | 노트 원자(173명) | `knowledge/atoms/*.json` | 노트를 사실 단위로 나눈 것, 번역·검수에 쓴다 |
-| 노트 번역 | `public/data/<패치>/llm/note-translations-<lang>.json` | 원자를 이어 노트 한 편으로 다듬음(en 3,173 · zh 3,175) |
+| 노트 번역 | `public/data/<패치>/llm/note-translations-<lang>.json` | 번역이 붙은 노트 en 3,350 · zh 3,353, 그중 원자 둘 이상짜리를 한 편으로 다듬은 것 3,173 · 3,175 |
 | 효과 태그 보정 | `knowledge/spell-effects.json` | 툴팁이 말하지 않거나 잘못 읽힌 것 |
 | 별명 사전 | `knowledge/champion-aliases.json` | 두 글자 별명은 여기서만 |
 
+- **노트 번역 검수**: Codex 번역 → 코드 대조(한국어 잔존, 스킬·챔피언 이름, 길이) → Claude 뜻 대조(한국어 원문 기준).
+  다듬은 글은 원자를 다시 만들어 이어 붙인 글(basis)이 바뀌면 이어 붙인 글로 돌아간다(`polish-note-translations` 로 그 노트만 다시 다듬는다).
 - **노트 사실 검수** (`scripts/llm/audit-note-facts.ts`, `research/llm-evals/fact-audit/`):
   사실 원자(영어)를 영어 툴팁에 맞대 로컬 Bespoke-MiniCheck-7B 로 거름 → 걸린 것을 에이전트가 툴팁·위키로
   판정 → **다른 에이전트가 반박하며 재검토**(첫 판정의 24%가 오판이었다) → 틀린 구절을 지우는 쪽으로 고침.
@@ -86,7 +88,7 @@ npm run llm:carry -- --force --matchups-only      # 옛 패치에서 써 온 쌍
 | 원자 fullall 대 노트 조립(+일반 펼침) | 7.96 대 8.37 (51문항) | `merge-atoms/` |
 | 고리 | 바뀐 6문항 7.33 → 8.67, 상성 특화 0.67 → 1.00 | `detail/r3/` |
 | 미리 쓴 답 대 노트 조립 | 무작위 40쌍 · 채점자 2: 8.38 → 10.10(11점), 차 95% 1.24~2.20, 선호 68:11, 근거 이탈 0 | `precompute/measure40/` |
-| 영어·중국어 미리 쓴 답(번역) 대 지금 답 | en 5.2 → 7.7, zh 5.2 → 7.3 (30쌍 ×2) | `matchup-translation/` |
+| 영어·중국어 미리 쓴 답(번역) 대 지금 답 (총점 1~10, Claude 1명 × 2회 — 항목 채점 아님) | en 5.2 → 7.7, zh 5.2 → 7.3 (30쌍) | `matchup-translation/` |
 | 주제 판정: 판정기만 → 낱말 먼저 + 확신 0.6 | 상성 24: 14 → 24, 단일 72: 틀림 8 → 1 | `app` 실측 |
 
 채점자는 답을 처음 보는 별도 에이전트다. 채점 자료에는 답의 근거(재료)를 넣어야 한다 — 빠지면 맞는 사실이
