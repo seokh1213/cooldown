@@ -8,7 +8,10 @@
  *   const m = await import("/scripts/llm/eval-topic-browser.ts");
  *   await m.run();
  */
-import { FALLBACK_MODEL } from "../../src/lib/advisor/config";
+import { SWAPPABLE_FOR_TEST } from "../../src/lib/advisor/config";
+
+/** 원본 그래프 위 헤드(topic-v1)를 재는 도구다. 앱 기본(kev)이 아니라 예전 판정 모델을 쓴다. */
+const FALLBACK_MODEL = SWAPPABLE_FOR_TEST["qwen35-heads"];
 import { readJudgeHead, scoreJudge, type JudgeHeadMeta, type JudgeQuestion } from "../../src/lib/advisor/judge";
 import type { AdvisorRequest, AdvisorResponse } from "../../src/lib/advisor/protocol";
 import { judgeRouteState } from "../../src/lib/advisor/routeAsk";

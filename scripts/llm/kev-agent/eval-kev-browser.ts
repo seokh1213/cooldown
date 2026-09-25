@@ -15,7 +15,7 @@ interface KevRecord {
 }
 
 export async function run(file: string, limit = Infinity) {
-  const model = SWAPPABLE_FOR_TEST.kev;
+  const model = SWAPPABLE_FOR_TEST.qwen35;
   const meta = (await (await fetch(`/models/judge/kev-b3i.json`)).json()) as JudgeHeadMeta;
   const head = readJudgeHead(meta, await (await fetch(`/models/judge/kev-b3i.bin`)).arrayBuffer());
   const records = (await (await fetch(file)).text()).trim().split("\n").map((l) => JSON.parse(l) as KevRecord).slice(0, limit);
