@@ -265,6 +265,8 @@ export const koKRTranslations: Translations = {
       searched: "자료를 찾음",
       looking: "조회하는 중",
     },
+    fromNotes: "찾은 자료를 그대로 옮겼습니다.",
+    noLiteAnswer: "가지고 있는 자료에서 이 질문의 답을 찾지 못했습니다. 챔피언·아이템·룬 이름을 넣어 물어 보시면 자료로 답할 수 있습니다.",
     noGameData: "이 게임 규칙·메타 정보(항복, 오브젝트 등장 시간, 챔피언 가격, 랭크 규칙 등)는 아직 자료에 없어 추측으로 답하지 않습니다.",
     noModel: "가지고 있는 자료에서는 답을 찾지 못했습니다. AI 모델을 내려받으면 이런 질문도 답할 수 있습니다.",
     identity:

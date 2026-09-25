@@ -262,6 +262,10 @@ export interface Translations {
       /** 모델이 조회 도구를 부른 뒤 */
       looking: string;
     };
+    /** 가벼운 모델이 검색 자료를 그대로 옮겨 보였을 때 붙이는 말 */
+    fromNotes: string;
+    /** 가벼운 모델이 자료를 못 찾았을 때(모델이 글을 쓰지 않으므로) */
+    noLiteAnswer: string;
     /** 게임 규칙·메타 질문인데 자료에 없을 때. 모델이 지어내지 않게 이 말로 답한다. */
     noGameData: string;
     /** 모델 없이 쓰는 중에 코드가 답을 못 찾았을 때 */

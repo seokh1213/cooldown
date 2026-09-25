@@ -186,6 +186,31 @@ const LINES_PER_DOC = 8;
  * 프롬프트가 6,000자에 가까워지면 브라우저 런타임이 정렬 오류로 죽는다. 그래서
  * 문서마다 줄 수를 묶어 둔다.
  */
+/**
+ * 찾은 자료를 모델 없이 그대로 보인다 — 가벼운 모델(0.8B)은 글을 쓰지 않는다.
+ *
+ * 검색 길에서 0.8B 가 자료를 읽고 답을 쓰게 두었더니, 이어 묻기가 잘못 흘러든 "정글이 자꾸 탑으로 오는데 그럴 땐?" 에
+ * "정글은 탑으로 오지 않습니다. 게임 내에서 탑은 플레이어의 캐릭터이며 …" 를 지어냈다. 자료 문장 중 질문 낱말이
+ * 든 것만 옮긴다. 1위가 틀릴 수 있어(정답은 상위 3위 안에 8/8) 두 문서까지 싣는다. 걸리는 문장이 없으면 undefined.
+ */
+export function hitsToAnswer(hits: SearchHit[], question: string, maxDocs = 2, maxLines = 3): string | undefined {
+  const terms = tokenize(question);
+  const parts: string[] = [];
+  for (const hit of hits) {
+    // 제목에 질문 낱말이 있는 문서만. "정글이 자꾸 탑으로 오는데" 가 "정글" 한 낱말로 기민한 발놀림(정글 식물)을 끌어왔다.
+    if (!terms.some((term) => hit.doc.title.includes(term))) continue;
+    const lines = hit.doc.text
+      .split(/\n+/)
+      .map((line) => line.replace(/^[-*#>\s]+/, "").trim())
+      .filter((line) => line.length >= 8 && !line.startsWith("|") && !line.startsWith("```"))
+      .filter((line) => terms.some((term) => line.includes(term)));
+    if (!lines.length) continue;
+    parts.push(`**${hit.doc.title}**\n${lines.slice(0, maxLines).join("\n")}`);
+    if (parts.length >= maxDocs) break;
+  }
+  return parts.length ? parts.join("\n\n") : undefined;
+}
+
 export function searchContext(hits: SearchHit[], patch: string, query: string): string {
   const terms = tokenize(query);
   return [

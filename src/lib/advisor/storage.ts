@@ -7,8 +7,10 @@
  * 같이 날아간다.
  *
  * Transformers.js 는 Cache Storage 에 넣는다. 이름은 라이브러리가 정한 값이라
- * 판올림 때 바뀔 수 있으므로 **이름을 박아 두지 않고** 접두사로 찾는다.
+ * 판올림 때 바뀔 수 있으므로 **이름을 박아 두지 않고** 접두사로 찾는다. Cache Storage 가 받지 못한 큰 파일은
+ * OPFS 에 있다(`largeFileCache.ts`) — 재고 지울 때 함께 본다.
  */
+import { deleteLargeFiles, listLargeFiles } from "./largeFileCache";
 
 /** Transformers.js 가 쓰는 캐시 이름의 앞부분. `transformers-cache` 와 해시 캐시가 걸린다. */
 const CACHE_PREFIX = "transformers";
@@ -68,12 +70,15 @@ async function modelCacheNames(): Promise<string[]> {
 export async function readModelCache(): Promise<ModelCacheInfo> {
   const store = cacheStorage();
   const names = await modelCacheNames();
-  if (!store || names.length === 0) return { entries: 0, repos: [] };
+  // Cache Storage 가 못 받아 OPFS 에 둔 큰 파일(`largeFileCache.ts`)도 모델의 일부다
+  const large = await listLargeFiles();
+  if ((!store || names.length === 0) && large.length === 0) return { entries: 0, repos: [] };
 
-  let entries = 0;
-  let bytes = 0;
+  let entries = large.length;
+  let bytes = large.reduce((sum, file) => sum + file.bytes, 0);
   let measured = true;
-  const repos = new Set<string>();
+  const repos = new Set<string>(large.map((file) => repoFromUrl(file.url)).filter((repo): repo is string => Boolean(repo)));
+  if (!store) return { entries, bytes, repos: [...repos] };
 
   for (const name of names) {
     try {
@@ -105,9 +110,9 @@ export async function readModelCache(): Promise<ModelCacheInfo> {
 export async function deleteModelCache(): Promise<boolean> {
   const store = cacheStorage();
   const names = await modelCacheNames();
-  if (!store || names.length === 0) return false;
+  let removed = (await listLargeFiles()).length > 0 && (await deleteLargeFiles());
+  if (!store || names.length === 0) return removed;
 
-  let removed = false;
   for (const name of names) {
     try {
       if (await store.delete(name)) removed = true;

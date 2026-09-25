@@ -251,6 +251,8 @@ export const zhCNTranslations: Translations = {
       searched: "已找到资料",
       looking: "正在查询",
     },
+    fromNotes: "以上内容直接摘自资料。",
+    noLiteAnswer: "现有资料中找不到这个问题的答案。提问时带上英雄、装备或符文的名字，就能根据资料回答。",
     noGameData: "这类游戏规则或元信息（投降、野怪刷新时间、英雄价格、排位规则等）暂时没有收录，为避免编造，这里不作回答。",
     noModel: "现有资料无法回答这个问题。下载 AI 模型后即可回答此类问题。",
     identity:

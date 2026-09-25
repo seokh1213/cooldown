@@ -12,7 +12,7 @@ import * as path from "node:path";
 import { indexRules, buildRuleAnswer, findMentionedRules, findRulesMentioning } from "./llm/lib/rules";
 import { findMechanics, mechanicsToText, type MechanicsIndex } from "./llm/lib/mechanics";
 import { PUBLIC_DATA_ROOT, resolvePatchVersion } from "./llm/lib/data";
-import { extractQuery, lexicalSearch, type SearchDoc } from "../src/lib/advisor/searchFallback";
+import { extractQuery, hitsToAnswer, lexicalSearch, type SearchDoc } from "../src/lib/advisor/searchFallback";
 import { asksAboutHelper } from "../src/lib/advisor/intent";
 
 const patch = resolvePatchVersion();
@@ -251,6 +251,17 @@ assert.ok(
 // 찾을 낱말이 하나도 없으면 빈 결과여야 한다. 그래야 훅이 다시 찾는다.
 assert.equal(lexicalSearch(searchCorpus, "어떻게 하나요").length, 0, "없는 말뿐이면 빈 결과다");
 assert.equal(lexicalSearch(searchCorpus, "").length, 0, "빈 검색어는 빈 결과다");
+
+// 가벼운 모델은 찾은 자료를 그대로 옮긴다. 제목에 질문 낱말이 있는 문서만, 질문 낱말이 든 문장만.
+{
+  const ward = hitsToAnswer(lexicalSearch(searchCorpus, "와드 몇 개까지 설치돼?"), "와드 몇 개까지 설치돼?") ?? "";
+  assert.ok(ward.startsWith("**와드**"), "와드 질문은 와드 문서가 먼저");
+  assert.equal(
+    hitsToAnswer(lexicalSearch(searchCorpus, "정글이 자꾸 탑으로 오는데 그럴 땐?"), "정글이 자꾸 탑으로 오는데 그럴 땐?"),
+    undefined,
+    "제목에 질문 낱말이 없는 문서(정글 식물 이야기)는 싣지 않는다",
+  );
+}
 
 // 모델은 시키는 대로 안 할 때가 있다. 겉을 벗겨 낼 수 있어야 한다.
 assert.equal(extractQuery('"미니언 파밍 골드"'), "미니언 파밍 골드", "따옴표를 벗긴다");
