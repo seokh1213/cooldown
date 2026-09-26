@@ -16,6 +16,8 @@
  *
  * 여러 절에 두루 나오는 말은 그 절을 가리키지 못하므로 뺀다. 이것도 세어서 정한다.
  */
+import { askedRuleKinds } from "./rules";
+import { aliasAt, aliasesOf } from "./searchAliases";
 
 export interface MechanicsSection {
   id: string;
@@ -155,13 +157,20 @@ export function findMechanics(
   question: string,
   limit = 2,
 ): MechanicsSection[] {
+  /*
+   * 룬·소환사 주문을 묻는다고 밝혔으면 게임 원리 절이 답이 아니다. 능력치 낱말("공속", "마저", "攻速", "双抗")이
+   * 절의 낱말이라 "싸울수록 공속 쌓이는 정밀 핵심룬" 이 공격 속도 절로 갔다.
+   */
+  if (askedRuleKinds(question).size > 0) return [];
   const text = question.toLowerCase();
   return index
     .map((section) => ({
       section,
-      score: section.keywords
-        .filter((word) => mentions(text, word.toLowerCase()))
-        .reduce((total, word) => total + word.length, 0),
+      score: [
+        ...section.keywords.filter((word) => mentions(text, word.toLowerCase())),
+        // 은어 — knowledge/search-aliases.json
+        ...aliasesOf(`mech:${section.id}`).filter((alias) => aliasAt(question, alias) >= 0),
+      ].reduce((total, word) => total + word.length, 0),
     }))
     .filter((entry) => entry.score > 0)
     .sort((a, b) => b.score - a.score)

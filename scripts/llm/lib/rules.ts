@@ -9,6 +9,8 @@
  */
 
 /** gameplay 는 챔피언·룬과 무관한 일반 플레이 지식(미니언, 와드, 포탑 …)이다. */
+import { aliasAt, aliasesOf } from "./searchAliases";
+
 export type RuleSubject = "rune" | "summoner" | "gameplay";
 
 export interface RuleNotes {
@@ -43,6 +45,8 @@ export function findMentionedRules(index: RuleIndex, text: string, limit = 3): R
   const names: Array<[string, RuleNotes]> = [];
   for (const rule of new Set(index.values())) {
     for (const name of [rule.name, rule.nameEn, rule.nameZh]) if (name && name.length >= 2) names.push([name, rule]);
+    // 은어("스마", "PTA", "TP") — knowledge/search-aliases.json
+    for (const alias of aliasesOf(`rule:${rule.name}`)) names.push([alias, rule]);
   }
   names.sort((a, b) => b[0].length - a[0].length);
   const lower = text.toLowerCase();
@@ -56,7 +60,7 @@ export function findMentionedRules(index: RuleIndex, text: string, limit = 3): R
       const m = new RegExp(`(?<![a-z])${name.toLowerCase().replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}(?![a-z])`).exec(lower);
       at = m ? m.index : -1;
     } else {
-      at = text.indexOf(name);
+      at = aliasAt(text, name);
     }
     if (at < 0) continue;
     if (taken.some(([s, e]) => at < e && at + name.length > s)) continue;
@@ -78,10 +82,16 @@ const ASKS_SUMMONER = /스펠|소환사\s*주문|\bsummoner\b|召唤师技能/i;
  * "킬 관여하면 피 채워주는 **룬**, 회복량은 …" 이 소환사 주문 회복으로, "미니언을 키워 주던 **스펠**" 이 미니언으로 갔다.
  * 남은 것이 없으면 비운다 — 틀린 자료를 보이는 것보다 다음 단계(낱말 검색)로 넘기는 편이 낫다.
  */
-export function narrowToAsked(rules: RuleNotes[], text: string): RuleNotes[] {
+/** 질문이 밝힌 규칙 갈래(룬·소환사 주문). 없으면 빈 집합. */
+export function askedRuleKinds(text: string): Set<RuleSubject> {
   const asked = new Set<RuleSubject>();
   if (ASKS_RUNE.test(text)) asked.add("rune");
   if (ASKS_SUMMONER.test(text)) asked.add("summoner");
+  return asked;
+}
+
+export function narrowToAsked(rules: RuleNotes[], text: string): RuleNotes[] {
+  const asked = askedRuleKinds(text);
   if (asked.size === 0) return rules;
   return rules.filter((rule) => asked.has(rule.subject));
 }

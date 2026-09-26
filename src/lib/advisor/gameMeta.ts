@@ -8,6 +8,7 @@
  */
 import meta from "../../../knowledge/game-meta.json";
 import prices from "../../../knowledge/champion-prices.json";
+import { aliasAt, aliasesOf } from "../../../scripts/llm/lib/searchAliases";
 type Language = string;
 const short = (lang: Language): "ko" | "en" | "zh" => (lang.startsWith("en") ? "en" : lang.startsWith("zh") ? "zh" : "ko");
 
@@ -33,7 +34,8 @@ export function findGameMeta(question: string): GameMetaFact | undefined {
   let best: { fact: GameMetaFact; score: number } | undefined;
   for (const fact of FACTS) {
     const words = [...fact.keywords.ko, ...fact.keywords.en, ...fact.keywords.zh];
-    const score = Math.max(0, ...words.filter((w) => matches(question, w)).map((w) => w.length));
+    const aliases = aliasesOf(`meta:${fact.id}`).filter((alias) => aliasAt(question, alias) >= 0);
+    const score = Math.max(0, ...words.filter((w) => matches(question, w)).map((w) => w.length), ...aliases.map((w) => w.length));
     if (score > 0 && (!best || score > best.score)) best = { fact, score };
   }
   return best?.fact;
