@@ -117,6 +117,30 @@ MORE = {
     "en_US": ["why?", "tell me more", "can you explain that?", "more detail please", "what do you mean?", "go deeper"],
     "zh_CN": ["为什么?", "详细说说", "再多讲点", "什么意思?", "展开讲讲", "具体点"],
 }
+# 상황형 이어 묻기(b3-v3). 틀 문장만 배웠더니 "정글이 자꾸 미드로 오는데 그럴 땐?" 같은 말투를 새 질문으로 봤다.
+# 손 시험(act-test.jsonl) 문장은 쓰지 않고, 같은 유형의 다른 상황으로 쓴다.
+FOLLOW2 = {
+    "ko_KR": ["상대가 계속 포킹하는데 그럴 땐 어떡해?", "라인 밀리면 어떻게 해?", "정글이 계속 봐주는데 어떡하지", "상대가 먼저 6렙 찍으면?",
+              "cs 차이 벌어지면 어떻게 복구해?", "귀환 타이밍은 언제가 좋아?", "딜교 지면 뭐부터 해야 돼", "상대가 템 먼저 나오면?",
+              "근데 초반에 킬 따이면 그땐?", "상대 궁 빠지면 바로 들어가도 돼?", "타워 다이브 당하면 어떻게 버텨", "서폿이 로밍 가면 어떻게 해",
+              "상대가 텔 들었으면?", "라인 프리징은 어떻게 해?", "한타에서 누구부터 물어야 돼?", "오브젝트 싸움 땐 어디 서야 돼?",
+              "스킬 순서는 뭐 먼저 찍어?", "룬은 뭐 들어?", "점화 들어도 돼?", "체력 반 남았으면 빠져야 돼?"],
+    "en_US": ["they keep poking me, what then?", "what if my wave gets shoved in?", "their jungler keeps hovering top, what do i do", "what if he hits 6 first?",
+              "how do i recover if i'm down cs?", "when should i back?", "i lost the first trade, now what", "what if he completes his item first?",
+              "and if i give first blood?", "can i go in right after his ult is down?", "how do i survive a dive?", "my support roamed, what now",
+              "what if he took teleport?", "how do i freeze the wave here?", "who do i target in fights?", "where do i stand for dragon fights?",
+              "which skill do i max first?", "what runes?", "is ignite fine here?", "should i back at half hp?"],
+    "zh_CN": ["他一直消耗我，这种时候怎么办?", "兵线被推进塔了怎么办?", "打野一直蹲上路怎么办", "他先到六级呢?",
+              "补刀落后了怎么追?", "什么时候回城比较好?", "第一波换血输了然后呢", "他先出了大件怎么办?",
+              "要是被拿了一血呢?", "他大招交了能直接上吗?", "被越塔了怎么扛?", "辅助去游走了怎么办",
+              "他带了传送呢?", "这里怎么控线?", "团战先打谁?", "打龙的时候站哪?",
+              "先主哪个技能?", "符文带什么?", "带点燃可以吗?", "半血要回去吗?"],
+}
+MORE2 = {
+    "ko_KR": ["그건 무슨 뜻이야?", "왜 그렇게 해야 돼?", "이유 좀 알려줘", "한 번만 더 설명해줘", "구체적으로 말해줄래?", "예를 들면?"],
+    "en_US": ["why though?", "can you elaborate?", "what's the reasoning?", "explain it simpler", "give me an example", "in more detail?"],
+    "zh_CN": ["为什么要这样?", "能再解释一下吗", "举个例子?", "说具体点呗", "原因是什么?", "没太懂"],
+}
 ENEMY = {
     "ko_KR": ["{X}는?", "{X} 상대로는?", "그럼 {X} 만나면?", "{X}면 어때?", "{X} 어떻게 상대해?", "{X}한테는 어떻게 해?"],
     "en_US": ["what about {X}?", "and against {X}?", "if i face {X} instead?", "how about {X}?", "how do i deal with {X}?", "vs {X}?"],
@@ -179,6 +203,13 @@ for lang in ("ko_KR", "en_US", "zh_CN"):
             m, e = pair(lang); add(lang, m, e, t, "followup")
     for t in MORE[lang]:
         for _ in range(10):
+            m, e = pair(lang); add(lang, m, e, t, "more")
+    # 상황형은 틀 문장보다 많이 넣는다(가장 많이 틀리던 칸)
+    for t in FOLLOW2[lang]:
+        for _ in range(20):
+            m, e = pair(lang); add(lang, m, e, t, "followup")
+    for t in MORE2[lang]:
+        for _ in range(12):
             m, e = pair(lang); add(lang, m, e, t, "more")
     for t in ENEMY[lang]:
         for _ in range(18):

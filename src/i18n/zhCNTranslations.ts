@@ -365,6 +365,8 @@ export const zhCNTranslations: Translations = {
       cancel: "取消",
       removed: "已删除。",
       note: "对话记录与评价只保存在本设备，从未发送到服务器。",
+      feedbackCount: "{n} 条评价记录（仅保存在本机）",
+      feedbackExport: "导出",
       pickTitle: "使用的模型",
       pickNeedsF16: "该显卡不支持 16 位着色器运算，无法选择",
       pickNoteFull: "讲解更深入细致。代价是速度慢、体积大，且部分显卡可能不支持。",

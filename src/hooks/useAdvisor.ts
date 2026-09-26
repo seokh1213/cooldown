@@ -19,7 +19,8 @@ import {
   type WebGpuSupport,
 } from "@/lib/advisor/config";
 import { deleteModelCache, fetchJudgeFile } from "@/lib/advisor/storage";
-import type { AdvisorAnswer } from "@/lib/advisor/answer";
+import { answerChampionIds, type AdvisorAnswer } from "@/lib/advisor/answer";
+import { matchupStateOf } from "@/lib/advisor/conversation";
 import { answerProse } from "@/lib/advisor/prose";
 import { readJudgeHead, scoreJudge, type JudgeHead, type JudgeHeadMeta, type JudgeQuestion } from "@/lib/advisor/judge";
 import { useTranslation } from "@/i18n";
@@ -92,10 +93,35 @@ export interface AdvisorFeedback {
   answer: string;
   rating: "up" | "down";
   patch: string;
+  /**
+   * 대화 흐름을 다시 재기 위한 맥락. "틀렸거나 부족해요" 를 누른 이어 묻기가 무엇이었는지 알아야 판정기
+   * 시험 세트(`scripts/llm/kev-agent/feedback-to-tests.ts`)로 옮길 수 있다. 기기 밖으로는 사용자가 내보낼 때만 나간다.
+   */
+  lang?: string;
+  previousQuestion?: string;
+  /** 이 답을 내기 전에 이어 가던 상성(내 챔피언·상대 id) */
+  previousMatchup?: { mine: string; enemy: string };
+  /** 이 답이 무엇이었나(상성·챔피언·규칙 …)와 다룬 챔피언 id */
+  answerKind?: string;
+  champions?: string[];
 }
 
 const FEEDBACK_KEY = "cooldown.advisor.feedback.v1";
 const FEEDBACK_LIMIT = 200;
+
+/** 평가 기록을 파일로 내려받는다. 사용자가 누를 때만 기기 밖으로 나간다. */
+export function exportFeedback(): number {
+  const log = readFeedback();
+  if (!log.length) return 0;
+  const blob = new Blob([JSON.stringify({ exportedAt: new Date().toISOString(), feedback: log }, null, 1)], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = `cooldown-advisor-feedback-${new Date().toISOString().slice(0, 10)}.json`;
+  link.click();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+  return log.length;
+}
 
 export function readFeedback(): AdvisorFeedback[] {
   try {
@@ -795,7 +821,12 @@ export function useAdvisor(): UseAdvisorResult {
 
       if (next[index].rating) {
         // 바로 앞 사용자 발화가 이 답의 질문이다
-        const question = [...prev.slice(0, index)].reverse().find((t) => t.role === "user");
+        const before = prev.slice(0, index);
+        const question = [...before].reverse().find((t) => t.role === "user");
+        const questionAt = question ? before.lastIndexOf(question) : -1;
+        const previousQuestion = [...before.slice(0, Math.max(0, questionAt))].reverse().find((t) => t.role === "user");
+        const state = matchupStateOf(before.slice(0, Math.max(0, questionAt)).map((t) => (t.role === "assistant" ? t.answer : undefined)));
+        const answer = next[index].answer;
         try {
           const log = readFeedback();
           log.push({
@@ -804,6 +835,11 @@ export function useAdvisor(): UseAdvisorResult {
             answer: next[index].content,
             rating,
             patch,
+            lang,
+            previousQuestion: previousQuestion?.content,
+            previousMatchup: state ? { mine: state.mine.id, enemy: state.enemy.id } : undefined,
+            answerKind: answer?.kind,
+            champions: answer ? answerChampionIds(answer) : undefined,
           });
           localStorage.setItem(
             FEEDBACK_KEY,
@@ -815,7 +851,7 @@ export function useAdvisor(): UseAdvisorResult {
       }
       return next;
     });
-  }, []);
+  }, [lang]);
 
   const stop = useCallback(() => {
     workerRef.current?.postMessage({ type: "stop" } satisfies AdvisorRequest);

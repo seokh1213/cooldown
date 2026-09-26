@@ -406,6 +406,9 @@ export interface Translations {
       /** 다시 받아야 한다는 안내 */
       note: string;
       /** 모델 고르는 자리의 머리말 */
+      /** 평가 기록 수와 내보내기 단추 */
+      feedbackCount: string;
+      feedbackExport: string;
       pickTitle: string;
       /** 이 기기가 못 도는 줄에 붙는 사유 */
       pickNeedsF16: string;
