@@ -88,6 +88,18 @@ eq(askedSlot("궁금한데 야스오 어때"), undefined, "궁금 은 궁이 아
   ok(/\*\*플레이할 때\*\*/.test(text), "묻지 않은 쪽도 한 줄은 붙인다");
 }
 
+// --- 챔피언 하나, 영어·중국어: 옮긴 노트만 싣는다. 한국어 원문이 섞이면 안 된다 ---
+for (const lang of ["en_US", "zh_CN"] as const) {
+  const translations = (JSON.parse(fs.readFileSync(path.join(root, "llm", `note-translations-${lang}.json`), "utf8")) as { notes: Record<string, string> }).notes;
+  const local = { ...data, locale: lang, noteTranslations: translations } as AdvisorData;
+  const notes = championNotes(local, card("Malphite"), lang === "en_US" ? "Tell me about Malphite" : "介绍一下墨菲特");
+  const lines = [...notes.playing, ...notes.against];
+  ok(lines.length > 0, `${lang} 옮긴 노트가 있다`);
+  ok(lines.every((line) => !/[가-힣]/.test(line)), `${lang} 노트에 한국어 원문이 없다`);
+  const empty = championNotes({ ...local, noteTranslations: {} } as AdvisorData, card("Malphite"), "Tell me about Malphite");
+  eq(empty.playing.length + empty.against.length, 0, `${lang} 옮긴 것이 없으면 한국어로 채우지 않는다`);
+}
+
 // 갈래를 못 박는 낱말은 판정기보다 먼저다. 판정기는 상성 문항에서 "한타" 를 라인전으로 갈랐다.
 eq(topicFromWords("가렌으로 다리우스 있는 한타 어떻게 해?", ["가렌", "다리우스"]), "teamfight", "한타");
 eq(topicFromWords("리븐으로 레넥톤 라인전 어떻게 해?", ["리븐", "레넥톤"]), "laning", "라인전");
