@@ -84,6 +84,7 @@
 
 ```
 npm run llm:precompute -- --all --batch 8 --concurrency 2   # 없는 쌍·재료가 바뀐 쌍만 (Opus 헤드리스, v2)
+npm run llm:precompute -- --all --engine codex --concurrency 4   # Codex(gpt-6-sol)로 쓸 때. --model 로 바꾼다(예: gpt-6-luna)
 npm run llm:carry -- --force --matchups-only      # 옛 패치에서 써 온 쌍을 새 재료로 거르기
 ```
 
