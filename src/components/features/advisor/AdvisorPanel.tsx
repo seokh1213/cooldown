@@ -408,7 +408,7 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
         advisor.answerWithoutModel(question, answer, notice);
         return;
       }
-      advisor.sendWithAnswer(question, `${advisorSystemPrompt(lang)}\n\n${prompt}`, answer, notice);
+      advisor.respond(question, { system: `${advisorSystemPrompt(lang)}\n\n${prompt}`, answer, notice });
     } else {
       advisor.answerWithoutModel(question, answer, notice);
     }
@@ -419,7 +419,7 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
     if (canUseModel && advisor.consented && !advisor.model.lite) {
       const prompt = buildCommentaryPrompt(answer, patch, lang);
       if (prompt) {
-        advisor.sendWithAnswer(question, `${advisorSystemPrompt(lang)}\n\n${prompt}`, answer, notice);
+        advisor.respond(question, { system: `${advisorSystemPrompt(lang)}\n\n${prompt}`, answer, notice });
         return;
       }
     }
@@ -457,7 +457,7 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
   const ask = async (question: string, notice?: string) => {
     const system = advisorSystemPrompt(lang);
     if (!data) {
-      advisor.send(question, system, undefined, copy.noModel);
+      advisor.respond(question, { system, withoutConsent: copy.noModel });
       return;
     }
 
@@ -793,7 +793,7 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
         deliver(question, { kind: "champion", card, notes: championNotes(data, card, question, undefined, judgedTopic) }, usedNotice);
         return;
       }
-      advisor.send(question, `${system}\n\n${buildChampionsBrief(data, champions)}`, undefined, copy.noModel);
+      advisor.respond(question, { system: `${system}\n\n${buildChampionsBrief(data, champions)}`, withoutConsent: copy.noModel });
       return;
     }
 
@@ -834,7 +834,7 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
         advisor.answerWithoutModel(question, shown ? `${shown}\n\n${copy.fromNotes}` : copy.noLiteAnswer);
         return;
       }
-      advisor.sendWithSearch(question, system, {
+      advisor.respond(question, { system, search: {
         querySystem: SEARCH_QUERY_SYSTEM,
         buildPrompt: (tried) => buildQueryPrompt(question, tried),
         extract: extractQuery,
@@ -849,10 +849,10 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
         labels: { searching: copy.status.searching, searched: copy.status.searched },
         maxRounds: 2,
         fallbackSystem: system,
-      });
+      } });
       return;
     }
-    advisor.send(question, system, undefined, copy.noModel);
+    advisor.respond(question, { system, withoutConsent: copy.noModel });
   };
 
   const submit = () => {
