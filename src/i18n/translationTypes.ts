@@ -259,8 +259,6 @@ export interface Translations {
       searching: string;
       /** 코드가 자료를 찾아낸 뒤 */
       searched: string;
-      /** 모델이 조회 도구를 부른 뒤 */
-      looking: string;
     };
     /** 가벼운 모델이 검색 자료를 그대로 옮겨 보였을 때 붙이는 말 */
     fromNotes: string;
