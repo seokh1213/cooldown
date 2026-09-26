@@ -613,7 +613,7 @@ export function useAdvisor(): UseAdvisorResult {
    * 못 쓴다. 모델 적재가 끝난 때가 네트워크가 확실히 있던 마지막 순간이다.
    */
   useEffect(() => {
-    if (!modelReady || !model.lite) return;
+    if (!modelReady || model.judge === "generate") return;
     for (const name of model.judge === "kev" ? KEV_JUDGE_HEADS : LITE_JUDGE_HEADS) void loadJudgeHead(name).catch(() => undefined);
   }, [modelReady, model, loadJudgeHead]);
 

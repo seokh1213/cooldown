@@ -156,8 +156,8 @@ assert.ok(q && !q.effects.includes("에어본"), "Q 에는 에어본이 없어�
  * 반대로 아예 안 따지면 q4f16 을 못 도는 기기에 3GB 를 받게 한다.
  */
 {
-  const needs: AdvisorModel = { id: "a", dtype: "q4f16", downloadMb: 1, needsF16: true };
-  const free: AdvisorModel = { id: "b", dtype: "q4", downloadMb: 1, needsF16: false };
+  const needs: AdvisorModel = { id: "a", dtype: "q4f16", downloadMb: 1, needsF16: true, judge: "generate", writes: "free" };
+  const free: AdvisorModel = { id: "b", dtype: "q4", downloadMb: 1, needsF16: false, judge: "generate", writes: "free" };
   const withF16 = { supported: true, f16: true };
   const noF16 = { supported: true, f16: false };
   const noGpu = { supported: false, f16: false };
@@ -204,8 +204,8 @@ assert.ok(q && !q.effects.includes("에어본"), "Q 에는 에어본이 없어�
     그래픽카드가 못 돌리는 줄은 잠근다. 받고 나서 적재에서 죽는 것보다 낫다.
     확인하는 중에는 잠그지 않는다 — 잠갔다 푸는 편이 더 헷갈린다.
   */
-  const heavy: AdvisorModel = { id: "a", dtype: "q4f16", downloadMb: 1, needsF16: true };
-  const light: AdvisorModel = { id: "b", dtype: "q4", downloadMb: 1, needsF16: false };
+  const heavy: AdvisorModel = { id: "a", dtype: "q4f16", downloadMb: 1, needsF16: true, judge: "generate", writes: "free" };
+  const light: AdvisorModel = { id: "b", dtype: "q4", downloadMb: 1, needsF16: false, judge: "generate", writes: "free" };
   assert.equal(modelBlocked(heavy, { supported: true, f16: false }), true, "f16 없으면 q4f16 은 잠근다");
   assert.equal(modelBlocked(light, { supported: true, f16: false }), false, "16비트를 안 쓰면 잠그지 않는다");
   assert.equal(modelBlocked(light, { supported: false, f16: false }), true, "WebGPU 가 없으면 둘 다 잠근다");
@@ -220,8 +220,8 @@ assert.ok(q && !q.effects.includes("에어본"), "Q 에는 에어본이 없어�
  * 반대로 아예 안 따지면 q4f16 을 못 도는 기기에 3GB 를 받게 한다.
  */
 {
-  const needs: AdvisorModel = { id: "a", dtype: "q4f16", downloadMb: 1, needsF16: true };
-  const free: AdvisorModel = { id: "b", dtype: "q4", downloadMb: 1, needsF16: false };
+  const needs: AdvisorModel = { id: "a", dtype: "q4f16", downloadMb: 1, needsF16: true, judge: "generate", writes: "free" };
+  const free: AdvisorModel = { id: "b", dtype: "q4", downloadMb: 1, needsF16: false, judge: "generate", writes: "free" };
   const withF16 = { supported: true, f16: true };
   const noF16 = { supported: true, f16: false };
   const noGpu = { supported: false, f16: false };
@@ -268,8 +268,8 @@ assert.ok(q && !q.effects.includes("에어본"), "Q 에는 에어본이 없어�
     그래픽카드가 못 돌리는 줄은 잠근다. 받고 나서 적재에서 죽는 것보다 낫다.
     확인하는 중에는 잠그지 않는다 — 잠갔다 푸는 편이 더 헷갈린다.
   */
-  const heavy: AdvisorModel = { id: "a", dtype: "q4f16", downloadMb: 1, needsF16: true };
-  const light: AdvisorModel = { id: "b", dtype: "q4", downloadMb: 1, needsF16: false };
+  const heavy: AdvisorModel = { id: "a", dtype: "q4f16", downloadMb: 1, needsF16: true, judge: "generate", writes: "free" };
+  const light: AdvisorModel = { id: "b", dtype: "q4", downloadMb: 1, needsF16: false, judge: "generate", writes: "free" };
   assert.equal(modelBlocked(heavy, { supported: true, f16: false }), true, "f16 없으면 q4f16 은 잠근다");
   assert.equal(modelBlocked(light, { supported: true, f16: false }), false, "16비트를 안 쓰면 잠그지 않는다");
   assert.equal(modelBlocked(light, { supported: false, f16: false }), true, "WebGPU 가 없으면 둘 다 잠근다");

@@ -42,27 +42,32 @@ export interface AdvisorModel {
    */
   needsF16: boolean;
   /**
-   * 가벼운 쪽인가.
+   * 가벼운 쪽인가. 목록에 어느 설명을 붙일지와 워커의 프롬프트 길이 상한만 고른다.
    *
-   * **동작은 같다.** 두 모델 모두 같은 프롬프트로 같은 일을 하고 같은 검사를 거친다.
-   * 이 값은 목록에 어느 설명을 붙일지만 고른다.
-   *
-   * 한때는 이 표시가 동작을 갈랐다. 작은 모델에게는 해설 대신 노트 압축만 시키고
-   * 근거 검사도 더 빡빡하게 걸었다. Gemma 3 1B 가 "저는 Google AI입니다", "R의
-   * 지뢰로" 를 내놓던 시절의 방어였다. Qwen3.5 0.8B 로 바꾸고 같은 12문항을 다시
-   * 재 보니 그 방어가 쓸모를 잃었다 — 4B 와 견줘 틀린 짝 0건에 내용 양도 비슷했다.
-   *
-   *   Qwen3 4B       485자 · 100% 통과 · 틀린 짝 0 · 11.2초
-   *   Qwen3.5 0.8B   473자 ·  98% 통과 · 틀린 짝 0 ·  2.5초
+   * **흐름은 모든 모델이 같다**(판정 → 카드 → 해설). 모델마다 다른 것은 아래 `judge`·`writes` 두 값뿐이고,
+   * 코드에서 모델 크기로 길을 가르지 않는다. 한때 `lite` 로 아홉 군데가 갈라져 있었다.
    */
   lite?: boolean;
   /**
    * 그래프만 바꿔 끼운다(앱 기준 상대 주소). 가중치는 `id` 저장소에서 그대로 받는다. kev LoRA 를 덧붙인 그래프다.
-   * 있으면 판정은 kev 헤드 하나(`judge: "kev"`)로 한다.
    */
   graph?: string;
-  /** 판정 방식. heads = 원본 logits 위 헤드 여럿(route-v2·sub-v1·topic-v1·act-v1), kev = kev LoRA 헤드 하나 */
-  judge?: "heads" | "kev";
+  /**
+   * 무엇을 묻는지·대화가 어떻게 이어지는지를 무엇으로 가르나.
+   *   generate  모델이 짧은 글로 답한다(`classify`). 판정 헤드가 없는 모델
+   *   heads     원본 logits 위 헤드 여럿(route-v2·sub-v1·topic-v1·act-v1)
+   *   kev       kev LoRA 헤드 하나
+   * 374문항에서 0.8B 가 글로 가르면 183, 헤드로 고르면 322, 4B 가 글로 가르면 310 이었다.
+   */
+  judge: "generate" | "heads" | "kev";
+  /**
+   * 모델에게 글을 어디까지 맡기나.
+   *   free  카드 위 해설, 자료를 찾아 쓰는 답, 여러 챔피언을 한데 묻는 답까지
+   *   card  코드가 만든 카드 위의 짧은 해설만. 근거 없는 문장은 걷어낸다. 카드 없는 답은 코드가 자료 문장을 그대로 보인다
+   *   none  글을 쓰지 않는다. 카드와 자료 문장만
+   * 0.8B 가 자유롭게 쓴 해설은 맹검에서 코드 조립보다 낮았다(3.20 대 3.90, 2026-09-23).
+   */
+  writes: "free" | "card" | "none";
 }
 
 /**
@@ -95,6 +100,8 @@ export const ADVISOR_MODEL: AdvisorModel = {
   dtype: "q4f16",
   downloadMb: 2764,
   needsF16: true,
+  judge: "generate",
+  writes: "free",
 };
 
 export const SMOKE_MODEL: AdvisorModel = {
@@ -102,6 +109,8 @@ export const SMOKE_MODEL: AdvisorModel = {
   dtype: "q4f16",
   downloadMb: 730,
   needsF16: true,
+  judge: "generate",
+  writes: "free",
 };
 
 /**
@@ -146,6 +155,7 @@ const SWAPPABLE: Record<string, AdvisorModel> = {
     lite: true,
     graph: "models/kev/b3-v2/model_q4.onnx",
     judge: "kev",
+    writes: "none",
   },
   /**
    * 예전 판정(원본 그래프 위 헤드 route-v2·sub-v1·topic-v1·act-v1). 측정·비교용이라 `?advisorModel=qwen35-heads` 로만 고른다.
@@ -157,6 +167,7 @@ const SWAPPABLE: Record<string, AdvisorModel> = {
     needsF16: false,
     lite: true,
     judge: "heads",
+    writes: "none",
   },
   /**
    * 예비. 화면 목록에는 없고 `?advisorModel=gemma` 로만 고를 수 있다.
@@ -170,6 +181,8 @@ const SWAPPABLE: Record<string, AdvisorModel> = {
     downloadMb: 819,
     needsF16: false,
     lite: true,
+    judge: "heads",
+    writes: "none",
   },
 };
 
