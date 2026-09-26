@@ -379,6 +379,8 @@ export const enUSTranslations: Translations = {
       cancel: "Cancel",
       removed: "Deleted.",
       note: "Chat history and ratings stay on this device and never reach a server.",
+      feedbackCount: "{n} rated answers (kept on this device)",
+      feedbackExport: "Export",
       pickTitle: "Model in use",
       pickNeedsF16: "Unavailable: this graphics adapter has no 16-bit shader support",
       pickNoteFull: "Deeper, more thorough explanations. In return it is slow, large, and may not be supported by your graphics card.",

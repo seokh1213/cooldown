@@ -30,6 +30,7 @@ import {
   JUDGE_KIND_CRITERIA,
   JUDGE_KIND_INSTRUCTIONS,
   JUDGE_MINE_INSTRUCTIONS,
+  JUDGE_KIND9_CRITERIA,
   JUDGE_SUB_CRITERIA,
   JUDGE_SUB_INSTRUCTIONS,
   judgeRouteState,
@@ -261,9 +262,11 @@ async function convResolve(data: AdvisorData, question: string, state: Resolved 
   if (!st || named.length > 1 || findMentionedRules(data.ruleIndex, question).length) return appResolve(data, question, recent);
   const worded = topicFromWords(question);
   const names = named.map((c) => c.name);
-  const [kindP] = await appJudge("route-v2", judgeRouteState(question, names), [{ instructions: JUDGE_KIND_INSTRUCTIONS, options: kindOptions }]);
-  let kind: string = Object.keys(JUDGE_KIND_CRITERIA)[kindP.indexOf(Math.max(...kindP))];
-  if (kind === "other") {
+  // KEV9: 앱의 kev 판정(아홉 칸을 한 번에)과 같게
+  const crit = process.env.KEV9 ? JUDGE_KIND9_CRITERIA : JUDGE_KIND_CRITERIA;
+  const [kindP] = await appJudge("route-v2", judgeRouteState(question, names), [{ instructions: JUDGE_KIND_INSTRUCTIONS, options: Object.entries(crit).map(([name, description]) => ({ name, description })) }]);
+  let kind: string = Object.keys(crit)[kindP.indexOf(Math.max(...kindP))];
+  if (kind === "other" && !process.env.KEV9) {
     const [p] = await appJudge(SUB_HEAD, judgeRouteState(question, names), [
       { instructions: JUDGE_SUB_INSTRUCTIONS, options: Object.entries(JUDGE_SUB_CRITERIA).map(([name, description]) => ({ name, description })) },
     ]);
