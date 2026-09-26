@@ -10,7 +10,11 @@ MatMulNBits(q4) 마다  y = MatMulNBits(x) + lora_scale · (x · A^T) · (B^T ·
 정확히 들어간다. `lora_scale` 은 입력이다 — 워커가 생성에는 0(원본 그대로), 판정에는 1 을 넣는다.
 은닉 상태 출력 `hidden` 은 lm_head 바로 앞(최종 정규화 뒤, num_logits_to_keep 로 자른 것)이다. kev 헤드가 읽는 값이다.
 
-  python3 lora_onnx.py <원본 model_q4.onnx> <adapter 폴더> <출력 폴더>
+  python3 lora_onnx.py <원본 model_q4.onnx> <adapter 폴더> <출력 폴더> [<adapter 폴더>:<입력 이름> ...]
+
+뒤에 붙인 adapter 는 각자의 켜고 끄는 입력을 갖는 가지로 같은 자리에 더한다. 검색용 임베딩 LoRA 가 이것이다
+(`…/embed-lora/eol-ep3:embed_scale`). 그래프를 따로 두면 550MB 가중치를 GPU 에 두 번 올리게 되어 한 그래프에 둘을 싣는다.
+워커는 생성에 둘 다 0, 판정에 lora_scale 1, 검색에 embed_scale 1 을 넣는다.
 """
 import json, os, sys
 import numpy as np
@@ -19,12 +23,14 @@ from onnx import TensorProto, helper, numpy_helper
 from safetensors.numpy import load_file
 
 src, adapter, out = sys.argv[1:4]
+branches = [(adapter, "lora_scale")] + [tuple(a.rsplit(":", 1)) for a in sys.argv[4:]]
 os.makedirs(out, exist_ok=True)
 DTYPE = np.float16
 
-cfg = json.load(open(os.path.join(adapter, "adapter_config.json")))
-scale = cfg["lora_alpha"] / cfg["r"]
-w = load_file(os.path.join(adapter, "adapter_model.safetensors"))
+def read_adapter(path):
+    cfg = json.load(open(os.path.join(path, "adapter_config.json")))
+    return cfg["lora_alpha"] / cfg["r"], load_file(os.path.join(path, "adapter_model.safetensors"))
+adapters = [(read_adapter(path), gate_name) for path, gate_name in branches]
 
 m = onnx.load(src, load_external_data=False)
 g = m.graph
@@ -44,7 +50,8 @@ def external(name, arr):
 
 # 판정만 LoRA 를 켠다. 꼭 넣어야 하는 입력이다 — ONNX Runtime Web 은 기본값 있는 입력(초기값을 가진 그래프 입력)에
 # 값을 넣으면 거절한다. 워커가 transformers.js 에게는 이 입력을 숨기고 0 을 채워 준다(생성은 원본 그대로).
-g.input.append(helper.make_tensor_value_info("lora_scale", TensorProto.FLOAT, []))
+for _, gate_name in adapters:
+    g.input.append(helper.make_tensor_value_info(gate_name, TensorProto.FLOAT, []))
 
 new_nodes = []
 done = 0
@@ -57,25 +64,32 @@ for n in list(g.node):
     layer, block, proj = path[0], path[1], path[2]
     block = {"gdn": "linear_attn", "attn": "self_attn"}.get(block, block)
     key = f"base_model.model.{layer}.{block}.{proj}"
-    A, B = w[f"{key}.lora_A.weight"], w[f"{key}.lora_B.weight"]   # A [r,K], B [N,r]
-    tag = key.replace(".", "_")
-    external(f"{tag}_lora_AT", A.T)                    # [K, r]
-    external(f"{tag}_lora_BT", (B.T * scale))          # [r, N]
     x, y = n.input[0], n.output[0]
     base_y = y + "_base"
     n.output[0] = base_y
-    cast_x = helper.make_node("Cast", [x], [f"{tag}_x16"], to=TensorProto.FLOAT16, name=f"{tag}_cast_in")
-    mm1 = helper.make_node("MatMul", [f"{tag}_x16", f"{tag}_lora_AT"], [f"{tag}_xa"], name=f"{tag}_lora_a")
-    mm2 = helper.make_node("MatMul", [f"{tag}_xa", f"{tag}_lora_BT"], [f"{tag}_d16"], name=f"{tag}_lora_b")
-    cast_d = helper.make_node("Cast", [f"{tag}_d16"], [f"{tag}_d"], to=TensorProto.FLOAT, name=f"{tag}_cast_out")
-    gate = helper.make_node("Mul", [f"{tag}_d", "lora_scale"], [f"{tag}_ds"], name=f"{tag}_lora_gate")
-    add = helper.make_node("Add", [base_y, f"{tag}_ds"], [y], name=f"{tag}_lora_add")
-    new_nodes += [cast_x, mm1, mm2, cast_d, gate, add]
+    tag0 = key.replace(".", "_")
+    cast_x = helper.make_node("Cast", [x], [f"{tag0}_x16"], to=TensorProto.FLOAT16, name=f"{tag0}_cast_in")
+    new_nodes.append(cast_x)
+    acc = base_y
+    for k, ((scale, w), gate_name) in enumerate(adapters):
+        A, B = w[f"{key}.lora_A.weight"], w[f"{key}.lora_B.weight"]   # A [r,K], B [N,r]
+        tag = tag0 if k == 0 else f"{tag0}_{gate_name}"   # 첫 가지 이름은 예전 그대로
+        external(f"{tag}_lora_AT", A.T)                    # [K, r]
+        external(f"{tag}_lora_BT", (B.T * scale))          # [r, N]
+        mm1 = helper.make_node("MatMul", [f"{tag0}_x16", f"{tag}_lora_AT"], [f"{tag}_xa"], name=f"{tag}_lora_a")
+        mm2 = helper.make_node("MatMul", [f"{tag}_xa", f"{tag}_lora_BT"], [f"{tag}_d16"], name=f"{tag}_lora_b")
+        cast_d = helper.make_node("Cast", [f"{tag}_d16"], [f"{tag}_d"], to=TensorProto.FLOAT, name=f"{tag}_cast_out")
+        gate = helper.make_node("Mul", [f"{tag}_d", gate_name], [f"{tag}_ds"], name=f"{tag}_lora_gate")
+        out_y = y if k == len(adapters) - 1 else f"{tag}_acc"
+        add = helper.make_node("Add", [acc, f"{tag}_ds"], [out_y], name=f"{tag}_lora_add")
+        new_nodes += [mm1, mm2, cast_d, gate, add]
+        acc = out_y
     done += 1
 
 del g.node[:]
 g.node.extend(new_nodes)
-assert done == len({k.split(".lora_")[0] for k in w}), (done, len(w))
+for (_, w), gate_name in adapters:
+    assert done == len({k.split(".lora_")[0] for k in w}), (gate_name, done, len(w))
 
 # 은닉 상태 출력
 hidden = [n for n in g.node if n.name == "/lm_head/MatMul_Quant"][0].input[0]

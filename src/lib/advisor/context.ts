@@ -623,6 +623,14 @@ export function buildMechanicsAnswer(
   return `${text}\n\n패치 ${data.patch} 기준으로 정리해 둔 규칙을 그대로 옮긴 것입니다.`;
 }
 
+/** 문서 id(`mech:스킬-가속`)로 답한다. 검색 벡터가 고른 절을 보일 때 쓴다. */
+export function buildMechanicsAnswerById(data: AdvisorData, id: string): string | undefined {
+  const section = data.mechanics.find((entry) => `mech:${entry.id}` === id);
+  const text = section ? mechanicsToText([section]) : undefined;
+  if (!text) return undefined;
+  return `${text}\n\n패치 ${data.patch} 기준으로 정리해 둔 규칙을 그대로 옮긴 것입니다.`;
+}
+
 /** 설명문은 HTML 이라 그대로 실으면 태그가 답에 샌다. */
 function htmlToText(html: string): string {
   return html

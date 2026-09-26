@@ -258,3 +258,31 @@ export function searchContext(hits: SearchHit[], patch: string, query: string): 
     `패치 ${patch} 기준이다.`,
   ].join("\n");
 }
+
+/** 낱말로 걸린 문서와 그것을 찾은 단계. 앱의 이름 없는 질문 순서(룬·주문 이름·은어 → 게임 메타 낱말 → 게임 원리 낱말)와 같다. */
+export interface LexicalHit {
+  id: string;
+  step: "rule" | "meta" | "mech";
+}
+
+/**
+ * 낱말로 걸린 문서를 벡터 몇 위까지 믿나. 벡터는 바꿔 말한 질문에 강하고 이름·은어를 그대로 넣은 짧은 질문에 약했다
+ * ("cs가 뭐야?" 가 문턱 밑, "PTA 포탑에도 터져?" 는 집중 공격이 22위). 룬·주문 이름·은어는 사람이 고른 말이라 벡터가
+ * 아주 멀리 두지 않는 한(30위 밖) 믿고, 게임 메타·원리 낱말은 벡터 1위와 같을 때만 믿는다(흔한 말이 섞여 있다).
+ */
+const AGREE: Record<LexicalHit["step"], number> = { rule: 30, meta: 1, mech: 1 };
+
+/**
+ * 검색 벡터 상위 문서와 낱말로 걸린 문서 중 무엇을 보일지. 낱말 문서를 믿지 않으면 벡터 1위가 문턱을 넘을 때만.
+ *
+ *   research/llm-evals/vector-search (맞음 · 틀린 자료)   시험 절반 355   실제에 가까운 질문 44   이름 넣은 질문 22
+ *   낱말만(예전 앱)                                        212 · 31        24 · 15                 22 · 0
+ *   벡터만                                                 288 · 31        28 · 10                 11 · 1
+ *   벡터 1위와 같을 때만 낱말                              292 · 31        29 · 10                 16 · 1
+ *   이 판(이름·은어 30위 · 메타·원리 1위)                  296 · 38        26 · 14                 22 · 0
+ * 세 세트 모두에서 예전 앱보다 낫거나 같은 판 중 가장 나은 것이다(손잡이 셋을 이 세트들로 골랐다).
+ */
+export function pickSearchDoc(top: Array<{ id: string; score: number }>, lexical: LexicalHit | undefined, threshold: number): string | undefined {
+  if (lexical && top.slice(0, AGREE[lexical.step]).some((doc) => doc.id === lexical.id)) return lexical.id;
+  return top[0] && top[0].score >= threshold ? top[0].id : undefined;
+}

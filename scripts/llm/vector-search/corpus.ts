@@ -28,7 +28,7 @@ export interface Doc {
   text: string;
 }
 
-function corpus(lang: Lang): Doc[] {
+export function corpus(lang: Lang): Doc[] {
   const data = loadData(lang);
   const docs: Doc[] = [];
   for (const rule of new Set(data.ruleIndex.values())) {
@@ -42,7 +42,7 @@ function corpus(lang: Lang): Doc[] {
 }
 
 /** 지금 앱이 보이는 문서(여러 개면 맨 앞)와 그것을 찾은 단계. */
-function current(lang: Lang, question: string): { id: string | null; step?: string } {
+export function current(lang: Lang, question: string): { id: string | null; step?: string } {
   const data = loadData(lang);
   const named = findMentionedRules(data.ruleIndex, question);
   const metaFirst = named.length > 0 && named.every((rule) => rule.subject === "gameplay") && Boolean(findGameMeta(question));
@@ -63,7 +63,10 @@ function current(lang: Lang, question: string): { id: string | null; step?: stri
 }
 
 const [command, file] = process.argv.slice(2);
-if (command === "dump") {
+const isMain = import.meta.url === `file://${process.argv[1]}`;
+if (!isMain) {
+  // 다른 스크립트가 불러 쓴다
+} else if (command === "dump") {
   for (const lang of LANGS) {
     const docs = corpus(lang);
     fs.writeFileSync(path.join(OUT, `corpus-${lang}.json`), JSON.stringify(docs, null, 1) + "\n");

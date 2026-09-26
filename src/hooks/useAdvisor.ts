@@ -159,6 +159,59 @@ export interface SearchRoundOptions {
   fallbackSystem: string;
 }
 
+/** 문서 벡터 파일(`doc-vectors.json` + `.bin`, 언어마다 [문서 수 × dim] fp16). `dual_graph_check.py` 가 만든다. */
+interface DocVectors {
+  dim: number;
+  prompt: Record<string, string>;
+  languages: Record<string, { ids: string[]; matrix: Float32Array }>;
+}
+
+/** fp16 → fp32 */
+function halfToFloat(h: number): number {
+  const sign = h & 0x8000 ? -1 : 1;
+  const exponent = (h >> 10) & 0x1f;
+  const fraction = h & 0x3ff;
+  if (exponent === 0) return sign * 2 ** -14 * (fraction / 1024);
+  if (exponent === 31) return fraction ? NaN : sign * Infinity;
+  return sign * 2 ** (exponent - 15) * (1 + fraction / 1024);
+}
+
+export async function loadDocVectors(base: string): Promise<DocVectors> {
+  const [metaRes, binRes] = await Promise.all([fetchJudgeFile(`${base}.json`), fetchJudgeFile(`${base}.bin`)]);
+  if (!metaRes.ok || !binRes.ok) throw new Error(`문서 벡터 ${base} 를 받지 못했습니다`);
+  const meta = (await metaRes.json()) as { dim: number; prompt: Record<string, string>; languages: Record<string, { offset: number; ids: string[] }> };
+  const half = new Uint16Array(await binRes.arrayBuffer());
+  const languages: DocVectors["languages"] = {};
+  for (const [lang, { offset, ids }] of Object.entries(meta.languages)) {
+    const matrix = new Float32Array(ids.length * meta.dim);
+    for (let i = 0; i < matrix.length; i += 1) matrix[i] = halfToFloat(half[offset + i]);
+    languages[lang] = { ids, matrix };
+  }
+  return { dim: meta.dim, prompt: meta.prompt, languages };
+}
+
+/** 질문을 쓴 언어. 한글이 있으면 한국어, 한자만 있으면 중국어, 로마자만 있으면 영어. 가를 수 없으면 undefined. */
+export function questionLanguage(question: string): "ko_KR" | "zh_CN" | "en_US" | undefined {
+  if (/[가-힣]/.test(question)) return "ko_KR";
+  if (/[\u4e00-\u9fff]/.test(question)) return "zh_CN";
+  if (/[A-Za-z]{2,}/.test(question)) return "en_US";
+  return undefined;
+}
+
+/** 코사인 순으로 늘어놓은 문서. 둘 다 정규화되어 있어 내적이 곧 코사인이다. */
+export function ranked(query: Float32Array, matrix: Float32Array, ids: string[]): Array<{ id: string; score: number }> {
+  const dim = query.length;
+  return ids
+    .map((id, k) => {
+      let dot = 0;
+      for (let i = 0; i < dim; i += 1) dot += query[i] * matrix[k * dim + i];
+      return { id, score: dot };
+    })
+    .sort((a, b) => b.score - a.score);
+}
+
+export const nearest = (query: Float32Array, matrix: Float32Array, ids: string[]) => ranked(query, matrix, ids)[0];
+
 /** `respond` 한 번에 필요한 것. 자료는 부르는 쪽(코드)이 모아서 `system` 에 싣는다. */
 export interface RespondPlan {
   /** 페르소나 + 코드가 모은 자료 */
@@ -196,6 +249,11 @@ export interface UseAdvisorResult {
    * 헤드가 지금 모델용이 아니거나 모델이 없으면 거절하므로 부르는 쪽이 규칙으로 되돌아간다.
    */
   judge: (headName: string, state: string, questions: JudgeQuestion[]) => Promise<number[][]>;
+  /**
+   * 이름 없는 질문의 자료를 검색 LoRA 벡터로 찾는다(`model.retrieval`). 코사인 순 상위 문서들(가장 가까운 것이 맨 앞).
+   * 문턱은 부르는 쪽이 본다. 모델에 검색 가지가 없거나 동의 전이면 거절하므로 부르는 쪽이 낱말 검색으로 되돌아간다.
+   */
+  search: (question: string, lang: string) => Promise<Array<{ id: string; score: number }>>;
   /** 모델 없이 코드가 만든 답을 그대로 보여 준다. 동의 전이나 WebGPU 가 없을 때 쓴다. */
   answerWithoutModel: (question: string, answer: string | AdvisorAnswer, notice?: string) => void;
   /**
@@ -236,7 +294,7 @@ export interface UseAdvisorResult {
 /** 가벼운 모델이 쓰는 판정 헤드. 모델을 올리면 미리 받아 둔다. */
 const LITE_JUDGE_HEADS = ["route-v2", "sub-v1", "topic-v1", "act-v1"];
 /** kev LoRA 모델은 헤드 하나로 모든 판정을 한다 */
-const KEV_JUDGE_HEADS = ["kev-b3i"];
+const KEV_JUDGE_HEADS = ["kev-b3e"];
 
 function readConsent(): boolean {
   try {
@@ -268,6 +326,9 @@ export function useAdvisor(): UseAdvisorResult {
   const [revealing, setRevealing] = useState(false);
   /** 판정 요청을 기다리는 쪽. 답 id 로 찾는다. */
   const judgeWaiters = useRef(new Map<number, { resolve: (features: Float32Array[]) => void; reject: (error: Error) => void }>());
+  const embedWaiters = useRef(new Map<number, { resolve: (vector: Float32Array) => void; reject: (error: Error) => void }>());
+  /** 문서 벡터(주소마다 한 번만 받는다) */
+  const docVectors = useRef(new Map<string, Promise<DocVectors>>());
   /** 받아 둔 판정 헤드. 이름으로 찾는다. */
   const judgeHeads = useRef(new Map<string, Promise<JudgeHead>>());
   // 모델은 화면에서 바꿀 수 있으므로 상태다. 바꾸면 워커를 내렸다 새로 올린다.
@@ -357,11 +418,18 @@ export function useAdvisor(): UseAdvisorResult {
           waiter?.resolve(message.features);
           break;
         }
+        case "embedded": {
+          const waiter = embedWaiters.current.get(message.id);
+          embedWaiters.current.delete(message.id);
+          waiter?.resolve(message.vector);
+          break;
+        }
         case "error": {
           // 판정 요청이 실패했으면 부르는 쪽에 알린다. 화면 오류로는 띄우지 않는다 — 규칙으로 되돌아간다.
-          const waiter = message.id !== undefined ? judgeWaiters.current.get(message.id) : undefined;
+          const waiter = message.id !== undefined ? judgeWaiters.current.get(message.id) ?? embedWaiters.current.get(message.id) : undefined;
           if (waiter) {
             judgeWaiters.current.delete(message.id!);
+            embedWaiters.current.delete(message.id!);
             waiter.reject(new Error(message.message));
             break;
           }
@@ -702,6 +770,32 @@ export function useAdvisor(): UseAdvisorResult {
     [consented, model, post, loadJudgeHead],
   );
 
+  const search = useCallback(
+    async (question: string, lang: string): Promise<Array<{ id: string; score: number }>> => {
+      const retrieval = model.retrieval;
+      if (!consented || !retrieval) throw new Error("검색 벡터가 없는 모델입니다");
+      let pending = docVectors.current.get(retrieval.vectors);
+      if (!pending) {
+        pending = loadDocVectors(`${import.meta.env.BASE_URL}${retrieval.vectors}`);
+        docVectors.current.set(retrieval.vectors, pending);
+        pending.catch(() => docVectors.current.delete(retrieval.vectors));
+      }
+      const vectors = await pending;
+      // 질문 글자로 언어를 정한다. 화면 언어로 찾았더니 한국어 화면의 "Does ignite work with conqueror?" 가 한국어 문서 벡터와
+      // 멀어 아무것도 못 찾았다(낱말 찾기는 세 언어 이름을 다 본다).
+      const asked = questionLanguage(question) ?? lang;
+      const block = vectors.languages[asked] ?? vectors.languages[lang] ?? vectors.languages.ko_KR;
+      const prompt = (vectors.prompt[asked] ?? vectors.prompt[lang] ?? vectors.prompt.ko_KR).replace("{}", question);
+      const id = nextId.current++;
+      const query = await new Promise<Float32Array>((resolve, reject) => {
+        embedWaiters.current.set(id, { resolve, reject });
+        post({ type: "embed", id, model, text: prompt });
+      });
+      return ranked(query, block.matrix, block.ids).slice(0, 30);
+    },
+    [consented, model, post],
+  );
+
   /*
    * 가벼운 모델을 다 올렸으면 판정 헤드를 미리 받아 둔다.
    *
@@ -851,6 +945,7 @@ export function useAdvisor(): UseAdvisorResult {
     ensureLoaded,
     respond,
     judge,
+    search,
     answerWithoutModel,
     begin,
     settle,

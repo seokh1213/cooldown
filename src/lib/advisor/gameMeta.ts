@@ -74,12 +74,25 @@ export function championPriceAnswer(question: string, champion: { id: string; na
   return `${PRICE_TEXT[l](champion.name, price.be, price.rp)}\n\n${SOURCE_TEXT[l]}`;
 }
 
+/** 챔피언 가격 단계를 묻는가("챔피언 가격 얼마야"). 문서가 아니라 고정된 글로 답한다. */
+export function asksPriceTiers(question: string): boolean {
+  return /챔피언|챔프|champion|champ|英雄/i.test(question) && asksPrice(question);
+}
+
 /** 이름 없는 게임 규칙·메타 질문의 답. 가격을 물었는데 챔피언이 없으면 가격 단계를 답한다. */
 export function gameMetaAnswer(question: string, lang: Language): string | undefined {
   const l = short(lang);
   const fact = findGameMeta(question);
   if (fact) return `${fact.text[l]}\n\n${SOURCE_TEXT[l]}`;
-  if (/챔피언|챔프|champion|champ|英雄/i.test(question) && asksPrice(question)) return `${TIERS_TEXT[l]}\n\n${SOURCE_TEXT[l]}`;
+  if (asksPriceTiers(question)) return `${TIERS_TEXT[l]}\n\n${SOURCE_TEXT[l]}`;
   return undefined;
+}
+
+/** 문서 id(`meta:surrender`)로 답한다. 검색 벡터가 고른 문서를 보일 때 쓴다. */
+export function gameMetaById(id: string, lang: Language): string | undefined {
+  const fact = FACTS.find((entry) => `meta:${entry.id}` === id);
+  if (!fact) return undefined;
+  const l = short(lang);
+  return `${fact.text[l]}\n\n${SOURCE_TEXT[l]}`;
 }
 

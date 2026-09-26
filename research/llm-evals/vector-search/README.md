@@ -186,3 +186,42 @@ uv run --python 3.13 --with numpy python scripts/llm/vector-search/score.py qwen
 ```
 
 adapter: `~/.cache/cooldown-kev/embed-lora/eol-ep3`(채택), `mean-ep1`.
+
+## 앱에 싣기 — 판정·검색 LoRA 한 그래프(b3e), 로컬 검증 (2026-09-27, 실음)
+
+- 그래프: `lora_onnx.py <원본> <kev b3-v2 adapter> <출력> <embed adapter>:embed_scale` — 186곳마다 가지 둘, 44.3MB
+  (`public/models/kev/b3e/`). 문서 벡터 `doc-vectors.{json,bin}`(언어마다 100 × 1024 fp16, 600KB, `dual_graph_check.py`).
+- 워커: 생성 둘 다 0, 판정 `lora_scale` 1, 검색 `embed_scale` 1(요청 `embed`). 판정 헤드 `kev-b3e`(b3i 와 같은 가중치, 그래프 주소만).
+- 앱 흐름(`AdvisorPanel`): 챔피언·아이템 이름·오타 후보가 없고, 이어 묻는 상성·도우미 자신·챔피언 가격 단계가 아닌 질문만.
+  질문 글자로 언어를 정해(한글·한자·로마자) 그 언어 문서 벡터와 견준다. 검색이 실패하면 예전 낱말 길 그대로.
+
+### 검증
+
+| # | 무엇 | 결과 |
+|---|---|---|
+| 1 | 브라우저(WebGPU) 벡터 = 파이썬 CPU | 720문항 코사인 최소 0.9999993, 채점 288 · 31(파이썬과 같음) |
+| 2 | 판정 회귀(검색 가지를 붙인 그래프, 브라우저) | 대화 흐름 55/60 · 갈래 331/374 — b3-v2 와 같음. CPU 에서 은닉 상태·logits 차 0 |
+| 3 | 속도 | 이름 없는 질문 검색 한 번 0.14초(중앙값), 그래프 22 → 44MB |
+| 4 | 챔피언 질문 가로채기(route-large 374) | 검색으로 가는 51문항 중 챔피언 질문 14건은 이름 찾기 실패(붙여 쓴 영어·소유격·중국어 별명). 13건 문턱 밑(예전과 같이 자료 없음), 1건 새 오답("彗" 흐웨이 → 신비로운 유성) |
+| 5 | 실제에 가까운 질문(route-large 그 밖 75, 정답 문서 라벨 `real-other.jsonl`) | 아래 |
+
+벡터만 쓰면 이름·은어를 그대로 넣은 짧은 질문에서 무너졌다 — "cs가 뭐야?"(앱 예시), "PTA 포탑에도 터져?"(집중 공격 22위),
+"Does ignite work with conqueror?"(한국어 화면). 시험 세트는 절반이 바꿔 말한 질문이라 이것이 가려졌다. 이름 넣은 질문 22개
+(`direct-probe.jsonl`)를 더해 세 세트로 판을 골랐다(`pickSearchDoc`):
+
+| 맞음 · 틀린 자료 | 시험 절반 355 | 실제에 가까운 44 | 이름 넣은 22 |
+|---|---|---|---|
+| 낱말만(예전 앱) | 212 · 31 | 24 · 15 | 22 · 0 |
+| 벡터만 | 288 · 31 | 28 · 10 | 11 · 1 |
+| 벡터 1위와 같을 때만 낱말 | 292 · 31 | 29 · 10 | 16 · 1 |
+| **낱말(룬·주문 이름·은어는 벡터 30위 안, 메타·원리 낱말은 1위일 때) → 아니면 벡터** | **296 · 38** | **26 · 14** | **22 · 0** |
+
+세 세트 모두에서 예전 앱보다 낫거나 같다. 손잡이 셋을 이 세트들로 골랐으므로 조금 낙관적이다. 실제 44 의 "틀린 자료" 중
+여럿은 주제는 맞는데 수치가 문서에 없는 것(“점멸 쿨 몇 초야” 에 점멸 규칙)이다.
+
+```
+uv run … python scripts/llm/vector-search/dual_graph_check.py ~/.cache/cooldown-kev/onnx-b3i/model_q4.onnx <b3e 그래프> <출력>
+uv run … python scripts/llm/vector-search/embed_questions.py <b3e 그래프> <질문.jsonl> <출력.npz>
+npx tsx scripts/llm/vector-search/app_flow.ts <질문.jsonl> <벡터.f32> [route-large]
+# 브라우저: (await import("/scripts/llm/vector-search/eval-search-browser.ts")).run()  — ref-dual-q.{json,f32} 는 dual npz 에서
+```

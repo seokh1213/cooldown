@@ -68,6 +68,12 @@ export interface AdvisorModel {
    * 0.8B 가 자유롭게 쓴 해설은 맹검에서 코드 조립보다 낮았다(3.20 대 3.90, 2026-09-23).
    */
   writes: "free" | "card" | "none";
+  /**
+   * 이름 없는 질문의 자료 찾기를 검색 LoRA 벡터로 한다(그래프에 `embed_scale` 가지가 있어야 한다).
+   * `vectors` 는 문서 벡터 파일(앱 기준 상대, `.json`·`.bin`), 코사인이 `threshold` 밑이면 "자료 없음".
+   * 없으면 낱말·은어로 찾는다. 근거는 `research/llm-evals/vector-search/README.md`.
+   */
+  retrieval?: { vectors: string; threshold: number };
 }
 
 /**
@@ -150,12 +156,17 @@ const SWAPPABLE: Record<string, AdvisorModel> = {
   qwen35: {
     id: "onnx-community/Qwen3.5-0.8B-Text-ONNX",
     dtype: "q4",
-    downloadMb: 548,
+    downloadMb: 570,
     needsF16: false,
     lite: true,
-    graph: "models/kev/b3-v2/model_q4.onnx",
+    graph: "models/kev/b3e/model_q4.onnx",
     judge: "kev",
     writes: "none",
+    /*
+     * 이름 없는 질문("스마 충전 몇 초마다 차?")은 검색 LoRA 벡터로 문서 100건(언어마다) 중에서 찾는다. 판정 LoRA(b3-v2)와 같은
+     * 그래프에 두 번째 가지로 실었다(22 → 44MB). 시험 절반 355문항에서 낱말·은어 212 · 틀린 자료 31 → 벡터 288 · 31.
+     */
+    retrieval: { vectors: "models/kev/b3e/doc-vectors", threshold: 0.39 },
   },
   /**
    * 예전 판정(원본 그래프 위 헤드 route-v2·sub-v1·topic-v1·act-v1). 측정·비교용이라 `?advisorModel=qwen35-heads` 로만 고른다.

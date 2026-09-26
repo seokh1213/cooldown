@@ -141,26 +141,30 @@ async function load(spec: AdvisorModelSpec): Promise<void> {
   return loading;
 }
 
-/** LoRA 를 켜는 입력을 받는 원래 세션. 판정(`stepHidden`)만 이것을 직접 부른다. */
+/** LoRA 를 켜는 입력을 받는 원래 세션. 판정(`stepHidden`)·검색(`embedText`)만 이것을 직접 부른다. */
 let loraSession: OrtSession | null = null;
+/** 그래프에 있는 LoRA 켜기 입력. 판정 LoRA(`lora_scale`)와 검색 LoRA(`embed_scale`, 있을 때만). */
+let gateInputs: string[] = [];
+const GATES = ["lora_scale", "embed_scale"];
 
 /**
- * kev 그래프에는 `lora_scale` 입력이 있다. transformers.js 는 세션의 입력을 전부 채우려 하므로(없으면 오류)
- * 그 세션에는 이 입력을 숨기고 0 을 채워 준다 — 생성·기존 판정은 원본 가중치 그대로다.
+ * kev 그래프에는 LoRA 를 켜는 입력(`lora_scale`, 검색 LoRA 까지 실었으면 `embed_scale`)이 있다. transformers.js 는
+ * 세션의 입력을 전부 채우려 하므로(없으면 오류) 그 세션에는 이 입력들을 숨기고 0 을 채워 준다 — 생성은 원본 가중치 그대로다.
  */
 function hideLoraInput() {
   const sessions = (model as unknown as { sessions: Record<string, OrtSession & { inputNames: string[] }> }).sessions;
   const raw = sessions.model;
-  if (!raw.inputNames.includes("lora_scale")) return;
+  gateInputs = GATES.filter((name) => raw.inputNames.includes(name));
+  if (!gateInputs.length) return;
   loraSession = raw;
   const Ort = ortTensor();
   sessions.model = new Proxy(raw, {
     get(target, prop) {
-      if (prop === "inputNames") return target.inputNames.filter((name) => name !== "lora_scale");
+      if (prop === "inputNames") return target.inputNames.filter((name) => !gateInputs.includes(name));
       if (prop === "run") {
         return (feeds: OrtFeeds, ...rest: unknown[]) =>
           (target.run as (f: OrtFeeds, ...r: unknown[]) => Promise<Record<string, OrtTensor>>)(
-            { lora_scale: new Ort("float32", Float32Array.from([0]), []), ...feeds },
+            { ...Object.fromEntries(gateInputs.map((name) => [name, new Ort("float32", Float32Array.from([0]), [])])), ...feeds },
             ...rest,
           );
       }
@@ -168,6 +172,12 @@ function hideLoraInput() {
       return typeof value === "function" ? value.bind(target) : value;
     },
   });
+}
+
+/** LoRA 켜기 입력값. 그래프에 없는 입력은 넣지 않는다. */
+function gates(values: Record<string, number>): OrtFeeds {
+  const Ort = ortTensor();
+  return Object.fromEntries(gateInputs.map((name) => [name, new Ort("float32", Float32Array.from([values[name] ?? 0]), [])]));
 }
 
 /** 가벼운 모델 프롬프트 상한. 죽는 선(약 2,120)에서 여유를 둔다. */
@@ -439,7 +449,7 @@ async function stepHidden(chunk: number[], total: number, past: OrtFeeds) {
     input_ids: new Ort("int64", BigInt64Array.from(chunk.map(BigInt)), [1, chunk.length]),
     attention_mask: new Ort("int64", new BigInt64Array(total).fill(1n), [1, total]),
     num_logits_to_keep: new Ort("int64", BigInt64Array.from([1n]), []),
-    lora_scale: new Ort("float32", Float32Array.from([1]), []),
+    ...(gateInputs.length ? gates({ lora_scale: 1 }) : { lora_scale: new Ort("float32", Float32Array.from([1]), []) }),
     ...past,
   });
   const hidden = Float32Array.from((await outputs.hidden.getData()) as Float32Array);
@@ -491,6 +501,31 @@ async function judgeHidden(id: number, spec: AdvisorModelSpec, state: string, qu
   );
 }
 
+/**
+ * 검색 벡터. 요약 프롬프트로 싼 글을 한 번 읽고(검색 LoRA 켬, 판정 LoRA 끔) 마지막 자리를 정규화한다.
+ * 문서 벡터(`doc-vectors.bin`)를 만든 계산(`scripts/llm/vector-search/dual_graph_check.py`)과 같다.
+ */
+async function embedText(id: number, spec: AdvisorModelSpec, text: string) {
+  await load(spec);
+  if (!tokenizer || !model || !loraSession || !gateInputs.includes("embed_scale")) throw new Error("검색 LoRA 가 없는 그래프입니다");
+  const started = performance.now();
+  const Ort = ortTensor();
+  const ids = (tokenizer.encode(text, { add_special_tokens: false }) as number[]).slice(0, 512);
+  const outputs = await loraSession.run({
+    input_ids: new Ort("int64", BigInt64Array.from(ids.map(BigInt)), [1, ids.length]),
+    attention_mask: new Ort("int64", new BigInt64Array(ids.length).fill(1n), [1, ids.length]),
+    num_logits_to_keep: new Ort("int64", BigInt64Array.from([1n]), []),
+    ...gates({ embed_scale: 1 }),
+    ...(await emptyState()),
+  });
+  const hidden = (await outputs.hidden.getData()) as Float32Array;
+  for (const tensor of Object.values(outputs)) tensor.dispose?.();
+  const vector = Float32Array.from(hidden.subarray(hidden.length - 1024));
+  const norm = Math.hypot(...vector) || 1;
+  for (let i = 0; i < vector.length; i += 1) vector[i] /= norm;
+  ctx.postMessage({ type: "embedded", id, vector, seconds: (performance.now() - started) / 1000 } satisfies AdvisorResponse, [vector.buffer]);
+}
+
 ctx.addEventListener("message", (event: MessageEvent<AdvisorRequest>) => {
   const request = event.data;
   if (request.type === "load") {
@@ -516,6 +551,12 @@ ctx.addEventListener("message", (event: MessageEvent<AdvisorRequest>) => {
         loading = null;
       }
       post({ type: "error", id: request.id, message });
+    });
+    return;
+  }
+  if (request.type === "embed") {
+    embedText(request.id, request.model, request.text).catch((error: unknown) => {
+      post({ type: "error", id: request.id, message: (error as Error).message });
     });
     return;
   }

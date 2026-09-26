@@ -33,6 +33,7 @@ import {
   buildItemCard,
   buildTagAnswer,
   buildMechanicsAnswer,
+  buildMechanicsAnswerById,
   detectSlot,
   type AdvisorData,
 } from "@/lib/advisor/context";
@@ -80,7 +81,7 @@ import {
 } from "@/lib/advisor/routeAsk";
 import { topicFromJudge, topicFromWords, topicQuestions } from "@/lib/advisor/topicJudge";
 import { loadPrecomputed, precomputedDigest, precomputedMore } from "@/lib/advisor/precomputed";
-import { championPriceAnswer, findGameMeta, gameMetaAnswer } from "@/lib/advisor/gameMeta";
+import { asksPriceTiers, championPriceAnswer, findGameMeta, gameMetaAnswer, gameMetaById } from "@/lib/advisor/gameMeta";
 import { actFromProbs, actFromWords, actQuestion, actState, matchupStateOf, planTurn, sideOfNewName } from "@/lib/advisor/conversation";
 
 /** 판정 헤드. `public/models/judge/` 아래 이 이름의 .json·.bin 이 있다. */
@@ -91,8 +92,9 @@ const TOPIC_HEAD = "topic-v1";
 /** 대화 흐름(이어 묻기·상대 바꾸기·입장 뒤집기 …). `conversation.ts` */
 const ACT_HEAD = "act-v1";
 /** kev LoRA 모델(`judge: "kev"`)은 이 헤드 하나로 갈래(아홉 칸)·주제·대화 흐름을 모두 가른다 */
-const KEV_HEAD = "kev-b3i";
+const KEV_HEAD = "kev-b3e";
 import { findMentionedRules } from "../../../../scripts/llm/lib/rules";
+import { findMechanics } from "../../../../scripts/llm/lib/mechanics";
 import type { ChampionCard } from "../../../../scripts/llm/lib/facts";
 import { ItemIcon } from "@/components/ui/item-icon";
 import { ChampionIcon } from "@/components/ui/champion-icon";
@@ -113,6 +115,8 @@ import {
   buildSearchCorpus,
   extractQuery,
   hitsToAnswer,
+  pickSearchDoc,
+  type LexicalHit,
   lexicalSearch,
   searchContext,
 } from "@/lib/advisor/searchFallback";
@@ -455,6 +459,27 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
    * 아이템·게임 규칙 → 맥락 챔피언(대화, 화면) → 검색 폴백.
    * 오타를 고쳐 다시 들어올 수 있어 submit 과 분리했다.
    */
+  /** 검색이 고른 문서(`rule:점화` · `meta:surrender` · `mech:스킬-가속`)를 답으로. 규칙은 함께 부른 다른 규칙 이름이 든 문장을 밝힌다. */
+  const docAnswer = (id: string, question: string): AdvisorAnswer | string | undefined => {
+    if (!data) return undefined;
+    if (id.startsWith("rule:")) {
+      const rule = data.ruleIndex.get(id.slice(5));
+      if (!rule) return undefined;
+      /*
+       * 1단계와 같다: 함께 부른 규칙마다 카드를 만들고, 다른 규칙 이름이 든 문장이 있는 카드를 보인다.
+       * "정복자에 점화 들어가?" 의 답은 정복자 카드가 아니라 점화 규칙의 "정복자" 가 든 문장이다.
+       */
+      const named = findMentionedRules(data.ruleIndex, question);
+      const all = named.some((entry) => entry.name === rule.name) ? named : [rule, ...named];
+      const names = all.map((entry) => entry.name);
+      const cards = all.map((entry) => buildRuleCard(entry, names, lang, all));
+      return cards.find((card) => card.kind === "rule" && card.highlighted.length > 0) ?? cards[all.indexOf(rule)];
+    }
+    if (id.startsWith("meta:")) return gameMetaById(id, lang);
+    if (id.startsWith("mech:")) return buildMechanicsAnswerById(data, id);
+    return undefined;
+  };
+
   const ask = async (question: string, notice?: string) => {
     // 질문을 받자마자 자리를 띄운다. 답이 정해지면 그 자리가 채워진다(`begin`).
     advisor.begin(question, copy.status.generating);
@@ -549,6 +574,53 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
       }
     }
 
+    /*
+     * 이름 없는 질문은 검색 LoRA 벡터로 찾는다(`model.retrieval`). 챔피언·아이템 이름이 없고, 이어 묻는 상성 대화도 아니고,
+     * 도우미 자신·챔피언 가격 단계를 묻는 것도 아닐 때. 낱말(룬·주문 이름 → 게임 메타 → 게임 원리 → 낱말 검색)보다 먼저 쓴다 —
+     * 낱말이 먼저 답하면 그 틀린 답이 그대로 남았다(시험 절반: 낱말 먼저 226 · 31, 벡터만 288 · 31).
+     * 챔피언 이름 오타 후보가 있어도 찾지 않는다 — "럼미 E" 는 럼블 질문이다(2단계가 고친다).
+     * 검색이 실패하면(그래프·파일) 아래 낱말 길이 처음부터 그대로 돈다.
+     */
+    const searchable =
+      canUseModel &&
+      advisor.consented &&
+      Boolean(advisor.model.retrieval) &&
+      detectChampions(data, question).length === 0 &&
+      !suggestChampions(question, data.cards, nicknames(data.cards), new Set(), 1)?.candidates.length &&
+      !buildItemCard(data, question, recentItem()) &&
+      !matchupStateOf(advisor.turns.map((turn) => (turn.role === "assistant" ? turn.answer : undefined))) &&
+      !asksAboutHelper(question) &&
+      !asksPriceTiers(question);
+    if (searchable) {
+      const top = await advisor.search(question, lang).catch((error: unknown) => {
+        console.warn("[advisor] 검색 벡터 실패 — 낱말 검색으로", error);
+        return null;
+      });
+      // null: 검색 실패 — 아래 낱말 길로 내려간다
+      if (top !== null) {
+        // 낱말(룬·주문 이름·은어 → 게임 메타 → 게임 원리)로 걸린 문서를 벡터가 크게 반대하지 않으면 그것, 아니면 벡터 1위(문턱).
+        // 까닭과 수치는 `pickSearchDoc`
+        const named = findMentionedRules(data.ruleIndex, question);
+        const fact = findGameMeta(question);
+        const metaFirst = named.length > 0 && named.every((rule) => rule.subject === "gameplay") && Boolean(fact);
+        const [section] = findMechanics(data.mechanics, question);
+        const lexical: LexicalHit | undefined =
+          named.length && !metaFirst
+            ? { id: `rule:${named[0].name}`, step: "rule" }
+            : fact
+              ? { id: `meta:${fact.id}`, step: "meta" }
+              : section
+                ? { id: `mech:${section.id}`, step: "mech" }
+                : undefined;
+        const id = pickSearchDoc(top, lexical, advisor.model.retrieval!.threshold);
+        const answer = id ? docAnswer(id, question) : undefined;
+        if (typeof answer === "string") advisor.answerWithoutModel(question, answer, notice);
+        else if (answer) deliver(question, answer, notice);
+        else advisor.answerWithoutModel(question, copy.noLiteAnswer);
+        return;
+      }
+    }
+
     // 1. 룬·주문 판정. 함께 나온 다른 규칙 이름이 든 문장이 답이다.
     //    "정복자에 점화 들어가?" 는 점화 규칙 9문장 중 "정복자" 가 든 한 문장.
     const named = findMentionedRules(data.ruleIndex, question);
@@ -584,6 +656,7 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
         return;
       }
     }
+
 
     /*
      * 게임 규칙·메타(항복·다시하기·오브젝트 시간·챔피언 가격·닷지 …). 공식 위키에서 옮긴 사실로 답한다(`gameMeta.ts`).

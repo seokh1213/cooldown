@@ -60,6 +60,11 @@ export type AdvisorRequest =
       /** 판정 위치에서 무엇을 꺼내나. logits(기본, subset 만) 또는 은닉 상태 전체(kev 헤드, LoRA 를 켠다) */
       feature?: "logits" | "hidden";
     }
+  /**
+   * 검색 벡터. 글을 한 번 읽고(검색 LoRA 를 켜고) 마지막 자리 은닉 상태를 정규화해 돌려준다.
+   * `text` 는 부르는 쪽이 문서 벡터와 같은 요약 프롬프트로 이미 싼 것이다.
+   */
+  | { type: "embed"; id: number; model: AdvisorModelSpec; text: string }
   | { type: "stop" };
 
 /** 파일 하나의 내려받기 진행 상황 */
@@ -92,4 +97,5 @@ export type AdvisorResponse =
     }
   /** 질문마다 [판정 위치 수 × subset 길이] 를 이어 붙인 특징 */
   | { type: "judged"; id: number; features: Float32Array[]; seconds: number }
+  | { type: "embedded"; id: number; vector: Float32Array; seconds: number }
   | { type: "error"; id?: number; message: string };
