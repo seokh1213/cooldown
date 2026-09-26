@@ -178,7 +178,6 @@ async function generate(
   spec: AdvisorModelSpec,
   messages: Array<{ role: string; content: string }>,
   system?: string,
-  tools?: unknown[],
   maxTokens?: number,
   loopGuard = true,
 ) {
@@ -193,8 +192,6 @@ async function generate(
       add_generation_prompt: true,
       return_dict: true,
       enable_thinking: false,
-      // 도구를 넘기면 템플릿이 선언을 앞에 붙이고, 모델은 `<|tool_call>call:이름{…}` 으로 답한다.
-      ...(tools && tools.length ? { tools } : {}),
     } as Parameters<PreTrainedTokenizer["apply_chat_template"]>[1]) as Record<string, unknown>;
   const lengthOf = (encoded: Record<string, unknown>) => ((dims: number[]) => dims[dims.length - 1] ?? 0)((encoded.input_ids as { dims: number[] }).dims);
   let inputs = encode(messages, system);
@@ -527,7 +524,7 @@ ctx.addEventListener("message", (event: MessageEvent<AdvisorRequest>) => {
     return;
   }
   if (request.type === "generate") {
-    generate(request.id, request.model, request.messages, request.system, request.tools, request.maxTokens, request.loopGuard ?? true).catch((error: unknown) => {
+    generate(request.id, request.model, request.messages, request.system, request.maxTokens, request.loopGuard ?? true).catch((error: unknown) => {
       const message = (error as Error).message;
       /*
        * GPU 쪽이 한 번 깨지면 세션이 살아 있어도 못 쓴다.

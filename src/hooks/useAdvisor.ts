@@ -152,6 +152,21 @@ export interface SearchRoundOptions {
   fallbackSystem: string;
 }
 
+/** `respond` 한 번에 필요한 것. 자료는 부르는 쪽(코드)이 모아서 `system` 에 싣는다. */
+export interface RespondPlan {
+  /** 페르소나 + 코드가 모은 자료 */
+  system: string;
+  /** 코드가 만든 카드. 주면 답보다 먼저 얹고, 모델은 그 위에 해설만 쓴다. */
+  answer?: AdvisorAnswer;
+  /** 말풍선에 붙일 안내(오타를 고쳤다는 등) */
+  notice?: string;
+  /** 동의 전이면 모델을 부르지 않고 이 글을 답으로 얹는다. 주지 않으면 그냥 보낸다. */
+  withoutConsent?: string;
+  maxTokens?: number;
+  /** 자료가 아직 없을 때만: 모델에게 검색어를 짓게 하고 코드가 찾은 뒤 답한다. */
+  search?: SearchRoundOptions;
+}
+
 export interface UseAdvisorResult {
   status: AdvisorStatus;
   /** 모델이 GPU 에 올라갔는지. 적재 전에 질문하면 생성 상태와 겹치므로 따로 둔다. */
@@ -165,12 +180,10 @@ export interface UseAdvisorResult {
   accept: () => void;
   /** 이미 동의한 사용자가 대화창을 열었을 때 적재를 시작한다 */
   ensureLoaded: () => void;
-  /** tools 를 넘기면 모델이 조회 도구를 부를 수 있다. 복합 질문에만 쓴다. */
   /**
-   * `notice` 를 주면 동의 전에는 모델을 부르지 않고 그 글을 대신 답으로 얹는다.
-   * 주지 않으면 예전처럼 바로 보낸다.
+   * 모델이 답을 쓰는 유일한 길. 자세한 것은 구현의 주석.
    */
-  send: (text: string, system?: string, tools?: unknown[], notice?: string) => void;
+  respond: (question: string, plan: RespondPlan) => void;
   /**
    * 판정기로 고른다. 글을 쓰지 않는다. 질문마다 선택지 확률을 돌려준다.
    * 헤드가 지금 모델용이 아니거나 모델이 없으면 거절하므로 부르는 쪽이 규칙으로 되돌아간다.
@@ -178,26 +191,6 @@ export interface UseAdvisorResult {
   judge: (headName: string, state: string, questions: JudgeQuestion[]) => Promise<number[][]>;
   /** 모델 없이 코드가 만든 답을 그대로 보여 준다. 동의 전이나 WebGPU 가 없을 때 쓴다. */
   answerWithoutModel: (question: string, answer: string | AdvisorAnswer, notice?: string) => void;
-  /**
-   * 카드는 지금, 해설은 나중에.
-   * 구조화된 답을 먼저 얹고 모델에게 해설만 만들게 한다. 해설은 카드 위에 스트리밍된다.
-   */
-  sendWithAnswer: (question: string, system: string, answer: AdvisorAnswer, notice?: string, maxTokens?: number) => void;
-  /** 도구를 주고 여러 번 오간다. 복합 질문에만 쓴다. */
-  sendWithTools: (
-    question: string,
-    system: string,
-    tools: unknown[],
-    execute: (calls: Array<{ name: string; args: Record<string, string> }>) => string,
-    parse: (text: string) => Array<{ name: string; args: Record<string, string> }>,
-    fallbackSystem?: string,
-    lookingLabel?: string,
-  ) => void;
-  /**
-   * 모델에게 검색어를 만들게 해서 자료를 찾은 뒤 답한다.
-   * 개체가 안 잡혀 자료 없이 나갈 질문에만 쓴다.
-   */
-  sendWithSearch: (question: string, system: string, options: SearchRoundOptions) => void;
   /**
    * 질문이 무엇을 묻는지 모델에게 묻는다. 화면에는 아무것도 남지 않는다.
    * 모델이 없거나 실패하면 거절하므로 부르는 쪽이 규칙으로 되돌아간다.
@@ -411,63 +404,27 @@ export function useAdvisor(): UseAdvisorResult {
     return true;
   }, [consented]);
 
-  const send = useCallback((text: string, system?: string, tools?: unknown[], notice?: string) => {
-    const trimmed = text.trim();
-    if (!trimmed) return;
-    if (notice !== undefined && refuseWithoutConsent(trimmed, notice)) return;
-    const userId = nextId.current++;
-    const replyId = nextId.current++;
-    setError(null);
-    setStatus("generating");
-    setTurns((prev) => {
-      const next: AdvisorTurn[] = [
-        ...prev,
-        { id: userId, role: "user", content: trimmed },
-        { id: replyId, role: "assistant", content: "" },
-      ];
-      // 워커에는 사용자 발화까지만 넘긴다
-      post({
-        type: "generate",
-        id: replyId,
-        model,
-        system,
-        ...(tools && tools.length ? { tools } : {}),
-        messages: next
-          .filter((t) => t.id !== replyId)
-          .map(({ role, content }) => ({ role, content })),
-      });
-      return next;
-    });
-  }, [post, model, refuseWithoutConsent]);
-
   /**
-   * 구간을 하나씩 돌린다.
+   * 모델이 답을 쓰는 유일한 길.
    *
-   * 한 번에 다 보내면 워커가 먼저 온 것부터 처리하다 순서가 뒤엉킨다.
-   * 앞 구간이 끝난 뒤에 다음을 보내야 답변이 형식대로 쌓인다.
+   * 예전에는 네 갈래였다. `send`(대화 전체를 넘기고 알아서), `sendWithAnswer`(카드 먼저, 해설만),
+   * `sendWithTools`(도구를 쥐여 주고 고르게), `sendWithSearch`(검색어만 짓게 하고 찾기는 코드가).
+   * 재 보니 이긴 쪽은 늘 **코드가 자료를 모으고 모델은 마지막에 한 번 쓰는** 쪽이었다.
+   *   - 도구: 여덟 문항 중 셋은 도구를 부르지 않았고, 네 턴을 줘도 다시 찾은 적이 없다. 쓰는 곳도 없어 지웠다.
+   *   - 대화 전체: 앞 턴 글이 쌓이면 작은 모델이 맥락을 놓친다. 맥락(상성·최근 챔피언)은 코드가 쥐고
+   *     자료로 싣는다. 그래서 질문 한 줄만 넘긴다.
+   * 남은 차이는 "자료가 이미 있나(카드·요약) / 아직 찾아야 하나(검색)" 뿐이라 선택 사항 둘로 둔다.
+   *
+   * 검색어를 만드는 회차는 화면에 보이지 않는다. 48토큰짜리 짧은 생성이고 사용자가 볼 글이 아니다.
+   * 그래서 보이는 답과 다른 id 로 돌린다. 아무것도 못 찾았을 때만 다시 짓게 하고, 찾긴 찾았는데
+   * 엉뚱한 경우는 가려내지 않는다 — 점수로 맞고 틀림이 안 갈렸다. 대신 상위 세 건을 다 싣는다.
    */
-  /**
-   * 도구를 주고 여러 번 오간다.
-   *
-   * 모델이 `<|tool_call>call:이름{…}` 을 뱉으면 그 자리에서 실행해 결과를 되먹이고
-   * 다시 부른다. 도구를 더 부르지 않으면 그 답을 그대로 쓴다.
-   *
-   * 오갈 때마다 프롬프트를 처음부터 다시 읽으므로 느리다. 호출 수를 3회로 묶어 둔다.
-   */
-  const sendWithTools = useCallback(
-    (
-      question: string,
-      system: string,
-      tools: unknown[],
-      execute: (calls: Array<{ name: string; args: Record<string, string> }>) => string,
-      parse: (text: string) => Array<{ name: string; args: Record<string, string> }>,
-      /** 모델이 도구를 한 번도 부르지 않았을 때 대신 쓸 자료. */
-      fallbackSystem?: string,
-      /** 회차 사이에 보여 줄 말. 무엇을 조회하는지 알린다. */
-      lookingLabel?: string,
-    ) => {
+  const respond = useCallback(
+    (question: string, plan: RespondPlan) => {
       const trimmed = question.trim();
       if (!trimmed) return;
+      if (plan.withoutConsent !== undefined && refuseWithoutConsent(trimmed, plan.withoutConsent)) return;
+      const { system, answer, notice, maxTokens, search } = plan;
       const userId = nextId.current++;
       const replyId = nextId.current++;
       setError(null);
@@ -475,113 +432,19 @@ export function useAdvisor(): UseAdvisorResult {
       setTurns((prev) => [
         ...prev,
         { id: userId, role: "user", content: trimmed },
-        { id: replyId, role: "assistant", content: "" },
+        { id: replyId, role: "assistant", content: "", answer, notice, activity: search?.labels.searching },
       ]);
 
-      const worker = ensureWorker();
-      const history: AdvisorChatMessage[] = [{ role: "user", content: trimmed }];
-      let rounds = 0;
+      /** 진짜 답. 찾은 자료가 있으면 덧붙인다. */
+      const write = (systemText: string) =>
+        post({ type: "generate", id: replyId, model, system: systemText, messages: [{ role: "user", content: trimmed }], maxTokens });
 
-      const ask = () => {
-        worker.postMessage({
-          type: "generate",
-          id: replyId,
-          model,
-          system,
-          tools,
-          messages: history,
-        } satisfies AdvisorRequest);
-      };
-
-      function onDone(event: MessageEvent<AdvisorResponse>) {
-        const message = event.data;
-        if (message.type === "error") {
-          worker.removeEventListener("message", onDone);
-          return;
-        }
-        if (message.type !== "done" || message.id !== replyId) return;
-
-        const calls = parse(message.text);
-        // 브라우저 모델은 도구를 부르지 않고 그냥 답할 때가 있다. 그러면 자료가 없어
-        // "비교할 수 없습니다" 가 나간다. 한 번도 안 불렀으면 자료를 붙여 다시 묻는다.
-        if (calls.length === 0 && rounds === 0 && fallbackSystem) {
-          rounds += 1;
-          setTurns((prev) =>
-            prev.map((t) => (t.id === replyId ? { ...t, content: "", activity: lookingLabel } : t)),
-          );
-          worker.postMessage({
-            type: "generate",
-            id: replyId,
-            model,
-            system: fallbackSystem,
-            messages: [{ role: "user", content: trimmed }],
-          } satisfies AdvisorRequest);
-          return;
-        }
-        if (calls.length === 0 || rounds >= 3) {
-          // 도구 표식은 사용자에게 보일 글이 아니므로 지운다.
-          const clean = message.text.replace(/<\|tool_call>[^\n]*/g, "").trim();
-          setTurns((prev) =>
-            prev.map((t) => (t.id === replyId ? { ...t, content: clean, activity: undefined } : t)),
-          );
-          setStatus("ready");
-          worker.removeEventListener("message", onDone);
-          return;
-        }
-
-        rounds += 1;
-        history.push({ role: "assistant", content: message.text });
-        history.push({ role: "user", content: `[조회 결과]\n${execute(calls)}` });
-        // 다음 회차 출력이 앞 회차에 이어 붙지 않도록 비운다. 그냥 비우면 글이 나왔다가
-        // 사라지는 것처럼 보이므로, 무엇을 조회했는지 그 자리에 대신 보여 준다.
-        const looked = calls.map((call) => Object.values(call.args).join(" ")).join(", ");
-        setTurns((prev) =>
-          prev.map((t) =>
-            t.id === replyId
-              ? { ...t, content: "", activity: lookingLabel ? `${lookingLabel}: ${looked}` : undefined }
-              : t,
-          ),
-        );
-        ask();
+      if (!search) {
+        write(system);
+        return;
       }
 
-      worker.addEventListener("message", onDone);
-      ask();
-    },
-    [ensureWorker, model],
-  );
-
-  /**
-   * 검색어를 만들게 한 뒤 코드가 찾아서 답한다.
-   *
-   * 검색 도구를 쥐여 주고 알아서 하라고 두면 안 됐다. 재 보니 여덟 문항 중 셋은
-   * 도구를 부르지도 않았고(`search:…` 를 그냥 글자로 뱉었다), 네 턴을 줘도
-   * 다시 찾은 적이 한 번도 없었다. 되먹임을 못 쓴다.
-   *
-   * 그래서 고르게 두지 않고 **시킨다.** 검색어를 내놓게 하고, 찾는 일은 코드가 한다.
-   * 아무것도 못 찾았을 때만 "다른 말로" 를 코드가 밀어 넣는다. 찾긴 찾았는데 엉뚱한
-   * 경우는 가려내지 않는다 — 점수로 맞고 틀림이 안 갈렸기 때문이다. 대신 상위 세 건을
-   * 다 실어서 어느 것이 답인지는 모델이 고르게 한다.
-   *
-   * 검색어를 만드는 회차는 화면에 보이지 않는다. 48토큰짜리 짧은 생성이고
-   * 사용자가 볼 글이 아니다. 그래서 보이는 답과 다른 id 로 돌린다.
-   */
-  const sendWithSearch = useCallback(
-    (question: string, system: string, options: SearchRoundOptions) => {
-      const trimmed = question.trim();
-      if (!trimmed) return;
-      const userId = nextId.current++;
-      const replyId = nextId.current++;
-      setError(null);
-      setStatus("generating");
-      setTurns((prev) => [
-        ...prev,
-        { id: userId, role: "user", content: trimmed },
-        { id: replyId, role: "assistant", content: "", activity: options.labels.searching },
-      ]);
-
       const worker = ensureWorker();
-      // 검색어 회차는 보이는 답과 다른 id 로 돈다. 같은 id 면 화면에 검색어가 찍힌다.
       const queryId = nextId.current++;
       const tried: string[] = [];
       let found: { context: string; titles: string[] } | undefined;
@@ -589,77 +452,53 @@ export function useAdvisor(): UseAdvisorResult {
 
       /** 말풍선에 붙은 진행 상태를 바꾼다. */
       const setActivity = (activity: string | undefined, sources?: string[]) => {
-        setTurns((prev) =>
-          prev.map((turn) => (turn.id === replyId ? { ...turn, activity, sources } : turn)),
-        );
+        setTurns((prev) => prev.map((turn) => (turn.id === replyId ? { ...turn, activity, sources } : turn)));
       };
-
-      /** 찾은 자료를 싣고(또는 못 찾은 채로) 진짜 답을 만들게 한다. */
-      const answer = () => {
+      const finish = () => {
         // 근거는 답이 나오기 전에 붙여 둔다. 무엇을 보고 쓰는 중인지 먼저 보여야 한다.
         setActivity(undefined, found?.titles);
-        worker.postMessage({
-          type: "generate",
-          id: replyId,
-          model,
-          system: found ? `${system}\n\n${found.context}` : options.fallbackSystem,
-          messages: [{ role: "user", content: trimmed }],
-        } satisfies AdvisorRequest);
+        write(found ? `${system}\n\n${found.context}` : search.fallbackSystem);
       };
-
-      /** 검색어를 내놓게 한다. 이 회차의 출력은 화면에 얹지 않는다. */
-      const askForQuery = () => {
-        worker.postMessage({
+      const askForQuery = () =>
+        post({
           type: "generate",
           id: queryId,
           model,
-          system: options.querySystem,
-          messages: [{ role: "user", content: options.buildPrompt(tried) }],
+          system: search.querySystem,
+          messages: [{ role: "user", content: search.buildPrompt(tried) }],
           maxTokens: 48,
-        } satisfies AdvisorRequest);
-      };
+        });
 
       function onDone(event: MessageEvent<AdvisorResponse>) {
         const message = event.data;
-        if (message.type === "error") {
+        if (message.type === "error" || (message.type === "done" && message.id === replyId)) {
           worker.removeEventListener("message", onDone);
           return;
         }
-        if (message.type !== "done") return;
-
-        // 보이는 답이 끝났으면 이 흐름도 끝이다.
-        if (message.id === replyId) {
-          worker.removeEventListener("message", onDone);
-          return;
-        }
-        if (message.id !== queryId) return;
-
+        if (message.type !== "done" || message.id !== queryId) return;
         // 검색어 회차가 끝났다. 화면은 건드리지 않았으므로 상태만 되돌린다.
         setStatus("generating");
-
-        const query = options.extract(message.text);
+        const query = search!.extract(message.text);
         if (!query || tried.includes(query)) {
-          answer();
+          finish();
           return;
         }
         tried.push(query);
-        found = options.search(query);
-
+        found = search!.search(query);
         round += 1;
-        if (found || round >= options.maxRounds) {
-          if (found) setActivity(`${options.labels.searched}: ${found.titles.join(", ")}`);
-          answer();
+        if (found || round >= search!.maxRounds) {
+          if (found) setActivity(`${search!.labels.searched}: ${found.titles.join(", ")}`);
+          finish();
           return;
         }
-        // 못 찾았으니 다시 만든다. 몇 번째인지 보이게 한다.
-        setActivity(`${options.labels.searching} (${round + 1})`);
+        setActivity(`${search!.labels.searching} (${round + 1})`);
         askForQuery();
       }
 
       worker.addEventListener("message", onDone);
       askForQuery();
     },
-    [ensureWorker, model],
+    [ensureWorker, post, model, refuseWithoutConsent],
   );
 
   /**
@@ -723,38 +562,6 @@ export function useAdvisor(): UseAdvisorResult {
       setTurns((prev) => [...prev, { id: nextId.current++, role: "user", content: question }, reply]);
     },
     [lang],
-  );
-
-  /**
-   * 카드는 0초에, 해설은 그 위에서 자라난다.
-   *
-   * 자료를 통째로 모델에게 넘겨 받아 적게 하면 잘리고 빠뜨린다(럼블 2,654자).
-   * 대신 코드가 만든 카드를 먼저 얹고, 모델에게는 "왜 중요한가" 두세 문장만 시킨다.
-   * 수치는 카드에 있으니 모델이 숫자를 입에 담을 일이 없다.
-   */
-  const sendWithAnswer = useCallback(
-    (question: string, system: string, answer: AdvisorAnswer, notice?: string, maxTokens?: number) => {
-      const trimmed = question.trim();
-      if (!trimmed) return;
-      const userId = nextId.current++;
-      const replyId = nextId.current++;
-      setError(null);
-      setStatus("generating");
-      setTurns((prev) => [
-        ...prev,
-        { id: userId, role: "user", content: trimmed },
-        { id: replyId, role: "assistant", content: "", answer, notice },
-      ]);
-      post({
-        type: "generate",
-        id: replyId,
-        model,
-        system,
-        messages: [{ role: "user", content: trimmed }],
-        maxTokens,
-      });
-    },
-    [post, model],
   );
 
   /** 판정 헤드를 한 번만 받아 둔다. 실패하면 다음에 다시 받는다. */
@@ -939,13 +746,10 @@ export function useAdvisor(): UseAdvisorResult {
     error,
     accept,
     ensureLoaded,
-    send,
+    respond,
     judge,
     answerWithoutModel,
     classify,
-    sendWithAnswer,
-    sendWithTools,
-    sendWithSearch,
     rate,
     deleteModel,
     model,
