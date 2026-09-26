@@ -95,6 +95,13 @@ assert.equal(
   "챔피언 질문에는 메커니즘 절이 붙지 않아야 한다",
 );
 
+// 질문이 "룬"·"스펠" 이라고 밝혔으면 그 갈래 규칙만. 흔한 낱말(와드·회복·미니언)이 규칙 이름이라 걸렸다.
+assert.deepEqual(findMentionedRules(ruleIndex, "와드 없는 모드에서 킬로 트로피 모으는 룬").map((r) => r.name), [], "룬을 물었는데 와드(게임 요소)");
+assert.deepEqual(findMentionedRules(ruleIndex, "킬 관여하면 피 채워주는 룬, 회복량은?").map((r) => r.name), [], "룬을 물었는데 회복(소환사 주문)");
+assert.deepEqual(findMentionedRules(ruleIndex, "미니언을 키워 주던 스펠").map((r) => r.name), [], "스펠을 물었는데 미니언(게임 요소)");
+assert.deepEqual(findMentionedRules(ruleIndex, "정복자에 점화 들어가?").map((r) => r.name).sort(), ["점화", "정복자"].sort(), "갈래를 안 밝히면 그대로");
+assert.deepEqual(findMentionedRules(ruleIndex, "감전 룬 쿨타임").map((r) => r.name), ["감전"], "룬을 물었고 룬이 걸리면 그대로");
+
 // 영문 낱말은 낱말 경계로만 찾는다. "damage" 안의 "Mage", "adds" 안의 "AD", "mid" 안의 "id" 가 걸렸다.
 for (const question of ["the rune that deals more damage to low hp enemies", "the Domination rune that adds true damage", "swap summoner spells mid game"]) {
   assert.deepEqual(findMechanics(mechanics, question), [], `"${question}" 에 게임 원리 절이 붙지 않아야 한다`);

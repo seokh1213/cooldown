@@ -80,7 +80,7 @@ import {
 } from "@/lib/advisor/routeAsk";
 import { topicFromJudge, topicFromWords, topicQuestions } from "@/lib/advisor/topicJudge";
 import { loadPrecomputed, precomputedDigest, precomputedMore } from "@/lib/advisor/precomputed";
-import { championPriceAnswer, gameMetaAnswer } from "@/lib/advisor/gameMeta";
+import { championPriceAnswer, findGameMeta, gameMetaAnswer } from "@/lib/advisor/gameMeta";
 import { actFromProbs, actFromWords, actQuestion, actState, matchupStateOf, planTurn, sideOfNewName } from "@/lib/advisor/conversation";
 
 /** 판정 헤드. `public/models/judge/` 아래 이 이름의 .json·.bin 이 있다. */
@@ -552,7 +552,10 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
     // 1. 룬·주문 판정. 함께 나온 다른 규칙 이름이 든 문장이 답이다.
     //    "정복자에 점화 들어가?" 는 점화 규칙 9문장 중 "정복자" 가 든 한 문장.
     const named = findMentionedRules(data.ruleIndex, question);
-    if (named.length) {
+    // 걸린 것이 게임 요소(미니언·포탑 …)뿐이고 게임 메타 항목이 따로 잡히면 메타가 답이다.
+    // "미니언 웨이브 생성 주기" 가 미니언 규칙으로, "억제기 … 슈퍼 미니언" 이 미니언으로 갔다.
+    const metaFirst = named.length > 0 && named.every((rule) => rule.subject === "gameplay") && Boolean(findGameMeta(question));
+    if (named.length && !metaFirst) {
       const names = named.map((rule) => rule.name);
       const cards = named.map((rule) => buildRuleCard(rule, names, lang, named));
       const best = cards.find((card) => card.kind === "rule" && card.highlighted.length > 0) ?? cards[0];

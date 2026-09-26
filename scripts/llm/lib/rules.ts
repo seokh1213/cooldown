@@ -63,7 +63,27 @@ export function findMentionedRules(index: RuleIndex, text: string, limit = 3): R
     taken.push([at, at + name.length]);
     found.push(rule);
   }
-  return found;
+  return narrowToAsked(found, text);
+}
+
+/** 질문이 "룬" 이라고 밝혔는가. 세 언어. */
+const ASKS_RUNE = /룬|키스톤|\brunes?\b|\bkeystone\b|符文|基石/i;
+/** 질문이 "소환사 주문" 이라고 밝혔는가. 영어 "spell" 만으로는 스킬일 수 있어 summoner 를 요구한다. */
+const ASKS_SUMMONER = /스펠|소환사\s*주문|\bsummoner\b|召唤师技能/i;
+
+/**
+ * 질문이 갈래를 밝혔으면 그 갈래의 규칙만 남긴다.
+ *
+ * 흔한 낱말이 게임 요소·소환사 주문 이름과 같아서 걸렸다 — "와드 없는 모드에서 킬로 트로피 모으는 **룬**" 이 와드로,
+ * "킬 관여하면 피 채워주는 **룬**, 회복량은 …" 이 소환사 주문 회복으로, "미니언을 키워 주던 **스펠**" 이 미니언으로 갔다.
+ * 남은 것이 없으면 비운다 — 틀린 자료를 보이는 것보다 다음 단계(낱말 검색)로 넘기는 편이 낫다.
+ */
+export function narrowToAsked(rules: RuleNotes[], text: string): RuleNotes[] {
+  const asked = new Set<RuleSubject>();
+  if (ASKS_RUNE.test(text)) asked.add("rune");
+  if (ASKS_SUMMONER.test(text)) asked.add("summoner");
+  if (asked.size === 0) return rules;
+  return rules.filter((rule) => asked.has(rule.subject));
 }
 
 /** 화면 언어의 이름과 본문. 중국어 본문이 없으면 영어 원문이다. */

@@ -45,7 +45,8 @@ function corpus(lang: Lang): Doc[] {
 function current(lang: Lang, question: string): { id: string | null; step?: string } {
   const data = loadData(lang);
   const named = findMentionedRules(data.ruleIndex, question);
-  if (named.length) return { id: `rule:${named[0].name}`, step: "rule-name" };
+  const metaFirst = named.length > 0 && named.every((rule) => rule.subject === "gameplay") && Boolean(findGameMeta(question));
+  if (named.length && !metaFirst) return { id: `rule:${named[0].name}`, step: "rule-name" };
   const fact = findGameMeta(question);
   if (fact) return { id: `meta:${fact.id}`, step: "meta-word" };
   const [section] = findMechanics(data.mechanics, question);
