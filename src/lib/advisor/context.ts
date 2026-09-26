@@ -89,6 +89,8 @@ export interface AdvisorData {
    * 번역 원자를 노트 단위로 이은 것이라(`build-note-translations.ts`) 원자가 있는 챔피언만 있다.
    */
   noteTranslations?: Record<string, string>;
+  /** 불러온 화면 언어. 없으면 한국어로 본다(Node 로더·측정 도구). */
+  locale?: string;
   tips: CuratedTip[];
   /** 룬·소환사 주문 판정 규칙. 이름으로 찾는다. */
   ruleIndex: RuleIndex;
@@ -165,6 +167,7 @@ export function loadAdvisorData(patch: string, locale = "ko_KR"): Promise<Adviso
       ),
       playbooks: new Map(Object.entries(knowledge.playbooks)),
       noteTranslations: translations?.notes,
+      locale,
       tips: knowledge.tips,
       ruleIndex: indexRules(knowledge.rules ?? []),
       mechanics: knowledge.mechanics ?? [],
@@ -426,6 +429,18 @@ export function championNotes(
 ): SelectedNotes {
   const book = data.playbooks.get(card.id);
   if (!book) return { playing: [], against: [], perspective: "both" };
+  /*
+   * 영어·중국어는 옮겨 둔 노트만 싣는다. 상성(`matchupNotes`)은 그렇게 하고 있었는데 챔피언 하나를 묻는 길은
+   * 빠져 있어서, 영어 화면의 "Tell me about Malphite" 에 "**Playing it** 말파이트에게 방어력은 …" 처럼 한국어 원문이 나갔다.
+   */
+  if (data.locale && data.locale !== "ko_KR") {
+    const translated = (entries: typeof book.playing) =>
+      entries.flatMap((entry) => {
+        const text = entry.id ? data.noteTranslations?.[entry.id] : undefined;
+        return text ? [{ ...entry, text }] : [];
+      });
+    return selectNotes({ playing: translated(book.playing), against: translated(book.against) }, question, forced, judged);
+  }
   return selectNotes(book, question, forced, judged);
 }
 
