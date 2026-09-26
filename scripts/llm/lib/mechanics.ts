@@ -131,6 +131,19 @@ export function parseMechanics(markdown: string): MechanicsIndex {
   }));
 }
 
+const escapeRegExp = (text: string) => text.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+
+/**
+ * 영문 낱말은 낱말 경계로만 찾는다. 한국어·중국어는 낱말 경계가 없으니 들어 있으면.
+ *
+ * 부분 문자열로 찾았더니 영어 질문이 엉뚱한 절로 갔다 — "damage" 안의 "Mage", "adds" 안의 "AD", "mid" 안의 "id".
+ * 이름 없는 질문 720문항(research/llm-evals/vector-search)에서 틀린 문서를 보인 136건 중 영어 32건이 이것이었다.
+ */
+function mentions(text: string, word: string): boolean {
+  if (/^[a-z0-9 .'-]+$/.test(word)) return new RegExp(`(?<![a-z0-9])${escapeRegExp(word)}(?![a-z0-9])`).test(text);
+  return text.includes(word);
+}
+
 /**
  * 질문에 나온 말로 절을 고른다.
  *
@@ -147,7 +160,7 @@ export function findMechanics(
     .map((section) => ({
       section,
       score: section.keywords
-        .filter((word) => text.includes(word.toLowerCase()))
+        .filter((word) => mentions(text, word.toLowerCase()))
         .reduce((total, word) => total + word.length, 0),
     }))
     .filter((entry) => entry.score > 0)

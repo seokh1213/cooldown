@@ -95,6 +95,11 @@ assert.equal(
   "챔피언 질문에는 메커니즘 절이 붙지 않아야 한다",
 );
 
+// 영문 낱말은 낱말 경계로만 찾는다. "damage" 안의 "Mage", "adds" 안의 "AD", "mid" 안의 "id" 가 걸렸다.
+for (const question of ["the rune that deals more damage to low hp enemies", "the Domination rune that adds true damage", "swap summoner spells mid game"]) {
+  assert.deepEqual(findMechanics(mechanics, question), [], `"${question}" 에 게임 원리 절이 붙지 않아야 한다`);
+}
+
 // --- 스킬 조회: 수치가 답에 들어가는가 ---
 
 function detectSlot(question: string): string | undefined {
@@ -260,6 +265,20 @@ assert.equal(lexicalSearch(searchCorpus, "").length, 0, "빈 검색어는 빈 �
     hitsToAnswer(lexicalSearch(searchCorpus, "정글이 자꾸 탑으로 오는데 그럴 땐?"), "정글이 자꾸 탑으로 오는데 그럴 땐?"),
     undefined,
     "제목에 질문 낱말이 없는 문서(정글 식물 이야기)는 싣지 않는다",
+  );
+  // 영어 기능어("the")로 제목이 걸리면 안 된다. "Walk on the water"·"Press the Attack" 이 딸려 왔다.
+  const english: SearchDoc[] = [
+    { kind: "rule", title: "Press the Attack", text: "Hitting an enemy champion with 3 consecutive basic attacks deals bonus damage." },
+    { kind: "rule", title: "Waterwalking", text: "Grants bonus movement speed in the river." },
+  ];
+  assert.equal(
+    hitsToAnswer(lexicalSearch(english, "the rune that gives bonus damage after you dash"), "the rune that gives bonus damage after you dash"),
+    undefined,
+    "기능어만 겹친 제목은 싣지 않는다",
+  );
+  assert.ok(
+    (hitsToAnswer(lexicalSearch(english, "does press the attack work on towers? bonus damage"), "does press the attack work on towers? bonus damage") ?? "").startsWith("**Press the Attack**"),
+    "제목 낱말(press·attack)은 대소문자와 상관없이 찾는다",
   );
 }
 
