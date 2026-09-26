@@ -249,7 +249,6 @@ export const zhCNTranslations: Translations = {
       generating: "思考中",
       searching: "正在查找资料",
       searched: "已找到资料",
-      looking: "正在查询",
     },
     fromNotes: "以上内容直接摘自资料。",
     noLiteAnswer: "现有资料中找不到这个问题的答案。提问时带上英雄、装备或符文的名字，就能根据资料回答。",

@@ -263,7 +263,6 @@ export const koKRTranslations: Translations = {
       generating: "생각하는 중",
       searching: "자료 찾는 중",
       searched: "자료를 찾음",
-      looking: "조회하는 중",
     },
     fromNotes: "찾은 자료를 그대로 옮겼습니다.",
     noLiteAnswer: "가지고 있는 자료에서 이 질문의 답을 찾지 못했습니다. 챔피언·아이템·룬 이름을 넣어 물어 보시면 자료로 답할 수 있습니다.",

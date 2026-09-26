@@ -17,9 +17,6 @@
 import { championCardToText, type ChampionCard } from "../../../scripts/llm/lib/facts";
 import type { CuratedTip } from "../../../scripts/llm/lib/knowledgeCore";
 import {
-  buildRuleAnswer,
-  findMentionedRules,
-  findRulesMentioning,
   indexRules,
   type RuleIndex,
   type RuleNotes,
@@ -183,20 +180,6 @@ export function loadAdvisorData(patch: string, locale = "ko_KR"): Promise<Adviso
   // 받다가 실패하면 쥐고 있지 않는다. 다음에 다시 받는다(오프라인에서 돌아온 경우).
   loading.catch(() => cached.delete(key));
   return loading;
-}
-
-const normalize = (s: string) => s.replace(/\s+/g, "").toLowerCase();
-
-/** 한국어 이름, 영어 이름, DDragon id 를 모두 받아 준다 */
-export function findChampion(data: AdvisorData, query: string): ChampionCard | undefined {
-  const q = normalize(query);
-  if (!q) return undefined;
-  return (
-    data.cards.find((c) => normalize(c.id) === q) ??
-    data.cards.find((c) => normalize(c.name) === q) ??
-    data.cards.find((c) => normalize(c.name).includes(q)) ??
-    data.cards.find((c) => normalize(c.id).includes(q))
-  );
 }
 
 /**
@@ -446,25 +429,6 @@ export function championNotes(
   return selectNotes(book, question, forced, judged);
 }
 
-export function buildChampionAnswer(data: AdvisorData, card: ChampionCard): string {
-  const parts: string[] = [championCardToText(card, { includeSpellText: true, spellTextMax: 600 })];
-
-  const book = data.playbooks.get(card.id);
-  if (book) {
-    parts.push(
-      playbookToText(
-        { mine: book.playing, vsEnemy: book.against },
-        card.name,
-        card.name,
-        data.patch,
-      ),
-    );
-  }
-
-  parts.push(`패치 ${data.patch} 기준 자료를 그대로 옮긴 것입니다.`);
-  return parts.join("\n\n");
-}
-
 export function buildChampionsBrief(data: AdvisorData, cards: ChampionCard[]): string {
   if (cards.length === 1) return buildChampionBrief(data, cards[0]);
   const lines = [`[패치] ${data.patch}`];
@@ -672,15 +636,4 @@ function findItems(data: AdvisorData, question: string, limit = 3) {
     if (found.length >= limit) break;
   }
   return found;
-}
-
-export function buildRuleBrief(data: AdvisorData, question: string): string | undefined {
-  const named = findMentionedRules(data.ruleIndex, question);
-  if (!named.length) return undefined;
-  // 답이 다른 문서에 있을 수 있다. 그 이름을 본문에 언급한 규칙도 끌어온다.
-  const related = findRulesMentioning(
-    data.ruleIndex,
-    named.map((r) => r.name),
-  );
-  return buildRuleAnswer([...named, ...related], data.patch);
 }

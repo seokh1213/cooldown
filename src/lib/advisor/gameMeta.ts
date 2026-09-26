@@ -19,7 +19,6 @@ export interface GameMetaFact {
 }
 
 const FACTS = meta.facts as GameMetaFact[];
-export const GAME_META_CHECKED = meta.checked;
 
 const escape = (text: string) => text.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 

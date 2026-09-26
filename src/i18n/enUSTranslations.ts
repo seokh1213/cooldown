@@ -263,7 +263,6 @@ export const enUSTranslations: Translations = {
       generating: "Thinking",
       searching: "Searching notes",
       searched: "Found notes",
-      looking: "Looking up",
     },
     fromNotes: "Quoted as found in the notes.",
     noLiteAnswer: "I couldn't find this in the notes I have. Try asking with a champion, item or rune name and I can answer from the data.",
