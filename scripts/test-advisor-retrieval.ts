@@ -102,6 +102,16 @@ assert.deepEqual(findMentionedRules(ruleIndex, "미니언을 키워 주던 스�
 assert.deepEqual(findMentionedRules(ruleIndex, "정복자에 점화 들어가?").map((r) => r.name).sort(), ["점화", "정복자"].sort(), "갈래를 안 밝히면 그대로");
 assert.deepEqual(findMentionedRules(ruleIndex, "감전 룬 쿨타임").map((r) => r.name), ["감전"], "룬을 물었고 룬이 걸리면 그대로");
 
+// 은어로도 찾는다(knowledge/search-aliases.json). 짧은 한국어 은어는 낱말 경계로.
+assert.deepEqual(findMentionedRules(ruleIndex, "스마 충전 몇 초마다 차?").map((r) => r.name), ["강타"], "스마 → 강타");
+assert.deepEqual(findMentionedRules(ruleIndex, "does PTA work on towers").map((r) => r.name), ["집중 공격"], "PTA → 집중 공격");
+assert.deepEqual(findMentionedRules(ruleIndex, "텔포 타고 복귀").map((r) => r.name), ["순간이동"], "텔포 → 순간이동");
+assert.deepEqual(findMentionedRules(ruleIndex, "플레이할 때 팁").map((r) => r.name), [], "플레이 의 플 은 점멸이 아니다");
+assert.deepEqual(findMentionedRules(ruleIndex, "플 빠지면 바로 들어가").map((r) => r.name), ["점멸"], "플 + 조사 없는 띄어쓰기");
+// 룬·스펠을 묻는다고 밝혔으면 게임 원리 절이 아니다(능력치 낱말 "공속" 이 절의 은어)
+assert.deepEqual(findMechanics(mechanics, "싸울수록 공속 쌓이는 정밀 핵심룬"), [], "룬 질문은 게임 원리 절로 가지 않는다");
+assert.ok(findMechanics(mechanics, "공속 상한 몇이야?").length > 0, "룬을 안 밝히면 공속 은어로 찾는다");
+
 // 영문 낱말은 낱말 경계로만 찾는다. "damage" 안의 "Mage", "adds" 안의 "AD", "mid" 안의 "id" 가 걸렸다.
 for (const question of ["the rune that deals more damage to low hp enemies", "the Domination rune that adds true damage", "swap summoner spells mid game"]) {
   assert.deepEqual(findMechanics(mechanics, question), [], `"${question}" 에 게임 원리 절이 붙지 않아야 한다`);
