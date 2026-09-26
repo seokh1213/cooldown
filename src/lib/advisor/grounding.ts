@@ -15,9 +15,7 @@
  *   되풀이       앞에서 한 말을 그대로 다시 한다. "오공 상대법" 에 같은 문단이 머리말만
  *                바꿔 두 번 나왔다. 틀린 말은 아니지만 읽는 사람의 시간을 버린다.
  *
- * 한때 "근거 없는 문장까지 지우는" 엄격 모드를 두었다. 지어내는 모델을 붙이려 했을
- * 때의 안전장치인데, 지금 쓰는 두 모델 모두 틀린 짝이 0건이라 지울 것이 없었다.
- * 쓰지 않는 장치를 남겨 두면 다음 사람이 켜 볼 뿐이라 걷어냈다.
+ * "근거 없는 문장까지 지우는" 엄격 모드(`strict`)는 카드 위 해설만 맡긴 모델(`writes: "card"`)에만 건다.
  *
  * 스트리밍 중에도 돌아야 하므로 **끝난 문장만** 본다. 마지막 조각은 아직 자라는 중이라
  * 손대지 않고 그대로 둔다. 다 쓰고 나면 그 조각도 문장이 되어 한 번 더 걸린다.
@@ -576,6 +574,11 @@ export function groundCommentary(
   text: string,
   answer: AdvisorAnswer | undefined,
   lang: Language = "ko_KR",
+  /**
+   * 근거 없는 문장(노트와도 카드와도 닿지 않는 것)까지 지운다. 카드 위 해설만 맡긴 모델(`writes: "card"`)에 건다.
+   * 멀쩡한 이음말도 함께 지워지므로 자유롭게 쓰는 모델에는 걸지 않는다.
+   */
+  strict = false,
 ): GroundResult {
   const m = answer ? material(answer, lang) : undefined;
   if (!m) return { text, dropped: [] };
@@ -623,7 +626,7 @@ export function groundCommentary(
       continue;
     }
     const verdict = classify(plain, m);
-    const drop = verdict === "card-wrong" || verdict === "number";
+    const drop = verdict === "card-wrong" || verdict === "number" || (strict && verdict === "unsupported");
     if (drop) dropped.push({ sentence, verdict });
     else kept.push(polite(raw));
   }

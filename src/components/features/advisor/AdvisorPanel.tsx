@@ -1423,7 +1423,7 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
                 카드 위에 얹은 글에만 붙인다. 모델 글에는 근거 검사를 돌려 카드가
                 틀렸다고 증명하는 문장을 걷어낸다.
               */
-              const shown = turn.byCode ? turn.content : groundCommentary(turn.content, turn.answer, lang).text;
+              const shown = turn.byCode ? turn.content : groundCommentary(turn.content, turn.answer, lang, advisor.model.writes === "card").text;
               const commentary = !shown ? null : turn.byCode ? (
                 <div className="text-[13px] leading-relaxed">
                   <AdvisorMarkdown text={shown} />
