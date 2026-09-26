@@ -304,7 +304,8 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
   const pendingQuestion = useRef<string>("");
   const scrollRef = useRef<HTMLDivElement>(null);
 
-  const busy = advisor.status === "generating";
+  // 답을 찾는 중(판정기·노트)과 코드 답을 흘려 보이는 중에도 바쁘다. 그 사이 새 질문이 끼면 자리가 엉킨다.
+  const busy = advisor.status === "generating" || advisor.working;
   // 모델이 아직 안 올라왔으면 진행률을 계속 보여 준다.
   // 적재 중에 질문을 받으면 상태가 generating 으로 바뀌는데, 그때 진행률을 감추면
   // 사용자는 몇 분 동안 도는 점만 보게 된다.
@@ -455,6 +456,16 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
    * 오타를 고쳐 다시 들어올 수 있어 submit 과 분리했다.
    */
   const ask = async (question: string, notice?: string) => {
+    // 질문을 받자마자 자리를 띄운다. 답이 정해지면 그 자리가 채워진다(`begin`).
+    advisor.begin(question, copy.status.generating);
+    try {
+      await solve(question, notice);
+    } finally {
+      advisor.settle();
+    }
+  };
+
+  const solve = async (question: string, notice?: string) => {
     const system = advisorSystemPrompt(lang);
     if (!data) {
       advisor.respond(question, { system, withoutConsent: copy.noModel });
@@ -1203,7 +1214,7 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
               › {referenceTitle(refTurn.answer).title} · {referenceTitle(refTurn.answer).kind}
             </span>
           )}
-          {view === "chat" && advisor.status === "generating" && (
+          {view === "chat" && busy && (
             <span className="flex items-center gap-1 text-xs text-muted-foreground">
               <Loader2 className="h-3 w-3 animate-spin" />
               {copy.status.generating}
@@ -1469,7 +1480,7 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
                 </div>
               );
               const pending =
-                !turn.content && busy && turn.id === lastAssistantId ? (
+                !turn.content && !turn.byCode && busy && turn.id === lastAssistantId ? (
                   <span className="flex items-center gap-2 pl-2.5 text-xs text-muted-foreground">
                     <Loader2 className="h-3.5 w-3.5 animate-spin" />
                     {copy.card.commentaryPending}
