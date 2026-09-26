@@ -39,7 +39,9 @@ const TOPIC_OF: Partial<Record<PrecomputedKey, string>> = { laning: "laning", co
  * 앞이 없는 말로 시작했다.
  */
 function leadClean(text: string): string {
-  return text.replace(/^(이후에는|그 뒤에는|그다음에는|그다음|그래서|또한|또|다만|반대로|하지만|그러나)\s+/, "");
+  // "이후 라인을 밀고…", "그때 구체를…", "이 틈에 거리를…" 도 같은 흔적이다. 은행 7,416쌍에서 칸 첫머리의
+  // 0.7~1.9%(laning·escape·phase·fight)가 이렇게 시작했다(`scripts/llm/audit-precomputed.ts`).
+  return text.replace(/^(이후에는|이후에도|이후|그 뒤에는|그 뒤|그다음에는|그다음|그때는|그때|이때는|이때|이 틈에|그 틈에|그 사이에|그 순간|그래서|또한|또|다만|반대로|하지만|그러나)\s+/, "");
 }
 
 /** 맨 앞은 물은 칸, 그 뒤로 조심할 것·아이템·싸우는 법 중 남은 것. 세 칸까지. */
