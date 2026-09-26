@@ -194,12 +194,30 @@ const LINES_PER_DOC = 8;
  * "정글은 탑으로 오지 않습니다. 게임 내에서 탑은 플레이어의 캐릭터이며 …" 를 지어냈다. 자료 문장 중 질문 낱말이
  * 든 것만 옮긴다. 1위가 틀릴 수 있어(정답은 상위 3위 안에 8/8) 두 문서까지 싣는다. 걸리는 문장이 없으면 undefined.
  */
+/**
+ * 제목을 가리키는 낱말인가. 영어 기능어는 빼고, 영문은 낱말 경계로(대소문자 무시) 본다.
+ *
+ * 예전에는 "the" 도 제목 낱말로 쳐서 "the rune that gives bonus damage after you dash" 가 "Walk on **the** water" 로,
+ * "that precision rune …" 이 "Press **the** Attack" 으로 갔다(이름 없는 질문 720문항 중 영어 40건).
+ */
+const ENGLISH_FUNCTION_WORDS = new Set(
+  "the that this what which when where does did how why who with from for you your are was were can could should would and but not its it's into onto about after before still then than them they their there here have has had get got give gives just like also only very much many more most some any all each every one two three is be been being do doing to of in on at by as or if so up out off my me mine i we us our".split(" "),
+);
+function titleMentions(title: string, term: string): boolean {
+  if (/^[A-Za-z0-9'-]+$/.test(term)) {
+    const word = term.toLowerCase();
+    if (word.length < 3 || ENGLISH_FUNCTION_WORDS.has(word)) return false;
+    return new RegExp(`(?<![a-z0-9])${word.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}(?![a-z0-9])`).test(title.toLowerCase());
+  }
+  return title.includes(term);
+}
+
 export function hitsToAnswer(hits: SearchHit[], question: string, maxDocs = 2, maxLines = 3): string | undefined {
   const terms = tokenize(question);
   const parts: string[] = [];
   for (const hit of hits) {
     // 제목에 질문 낱말이 있는 문서만. "정글이 자꾸 탑으로 오는데" 가 "정글" 한 낱말로 기민한 발놀림(정글 식물)을 끌어왔다.
-    if (!terms.some((term) => hit.doc.title.includes(term))) continue;
+    if (!terms.some((term) => titleMentions(hit.doc.title, term))) continue;
     const lines = hit.doc.text
       .split(/\n+/)
       .map((line) => line.replace(/^[-*#>\s]+/, "").trim())
