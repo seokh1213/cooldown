@@ -1,0 +1,602 @@
+[
+ {
+  "id": "rule:감전",
+  "kind": "rule",
+  "title": "Electrocute",
+  "text": "Electrocute deals proc damage, and thus will not trigger spell effects.\nElectrocute can trigger while dead.\nBlind, Cripple, Drowsy, Kinematics, Nearsight, and Stasis do not count as valid crowd control for triggering stacks.\nBecoming untargetable during the 0.25-second delay will not prevent the effect from occurring.\nThe 3 second timer is non-refreshing - the third stack has to be applied within 3 seconds of the first.\nAmbessa R is special cased to apply a stack for the suppression application and the damage dealt.\nZed Razor Shuriken and Shadow Slash, when used together with Living Shadow, are special cased to generate a stack for each tick of damage.\nTidecaller's Blessing damage instances beyond its first are special cased to not apply a stack.\nEffects that deal proc damage do not trigger a stack unless it is also tagged as pet damage. (Such effects can still trigger a stack if they apply a debuff (i.e Black Cleaver).)"
+ },
+ {
+  "id": "rule:어둠의 수확",
+  "kind": "rule",
+  "title": "Dark Harvest",
+  "text": "Dark Harvest deals proc damage, and thus will not trigger spell effects.\nDark Harvest will trigger on clones, but not zombies.\nDark Harvest will not reap additional Souls during the delay before a Soul is gained.\nDark Harvest does not trigger on damage lower than 2, excluding Brand I (note).\nDark Harvest does not trigger on proc damage (e.g. Scorch, Liandry's Torment, W), excluding Teemo E."
+ },
+ {
+  "id": "rule:칼날비",
+  "kind": "rule",
+  "title": "Hail of Blades",
+  "text": "Hail of Blades deals proc damage, and thus will not trigger spell effects.\nHail of Blades will generate additional stacks from attack resets only if the effect that triggered it has the Trait_AttackReset spell tag. (Twisted Fate W, Warwick Primal Howl 2 (recast), and Hextech Rocketbelt Supersonic all reset the user's basic attack timer upon their activation, but none of them have this tag. This causes them to be ineligible for generating an additional stack despite having an attack reset.) (Sett E and Sylas W have this tag but do not reset the caster's basic attack timer, allowing them to unintentionally generate an additional stack.) (K'Sante Q and Rell Ferromancy: Mount Up have this tag and reset the caster's basic attack timer upon use, but do not properly generate an additional stack as expected.) (These abilities were each assigned with the Trait_AttackReset tag in V26.09, and were documented as being fixed with Hail of Blades in the same patch, but the additional stack generation does not occur for either spell despite both having the tag.)\nThe duration of the stacks is not refreshed upon the user gaining an additional stack from having their attack timer reset.\nThe additional stack will be generated from attack resets even if the user's basic attack is not on cooldown at the time of the attack reset instance.\nThe user's attack speed cap is increased to 90.0 for the duration, however this value is already beyond the technical limit for attack speed. (The effect is able to remove Sion Glory in Death attack speed cap but is not able to remove Jhin, Graves nor Zeri.)\nIf the triggering attack's windup is cancelled, Hail of Blades will not grant the stacks and briefly goes on cooldown before resetting the cooldown timer. (The rune will play its effect ready VFX when this occurs, which is the VFX for when the cooldown times out normally.)\nIf an attack windup against an enemy champion is cancelled while Hail of Blades is active, the duration of the stacks is refreshed immediately and the user's next basic attack on-attack against an enemy champion will not be eligible for refreshing the duration. This may occur only once for each stack.\nThe rune's tracker in the HUD calculates \"percentage of Hail attacks landed\", which is the percentage relative to the base number of Hail of Blades-empowered attacks (3). The tracker counts attack resets while the rune is active as valid, thus the percentage can be above 100%. This is intended."
+ },
+ {
+  "id": "rule:비열한 한 방",
+  "kind": "rule",
+  "title": "Cheap Shot",
+  "text": "Cheap Shot deals proc damage, and thus will not trigger spell effects.\nCripple does not count as a valid crowd control for Cheap Shot.\nCheap Shot checks the status of the potential target every time damage is dealt to an enemy champion, during the damage event's on-deal-pre-drain phase. (CC that is applied on-hit (e.g. Alistar Trample) will be there before this check occurs, CC that is applied on-pre-apply (e.g. Rylai's Crystal Scepter) will not. Either will be applied on the same game tick, but may belong to a different cast-instance than the damage (see rule below).)\nCheap Shot may not trigger on damage that is applied on the same game tick as a crowd control effect from the same cast instance. (If the target is already under the effects of crowd control, this does not apply.) (This also occurs if the target is under the effect of CC from a neutral monster (e.g. Baron Nashor), despite Cheap Shot not triggering on non-teammate crowd control.) (Abilities such as Lux Lucent Singularity can apply a crowd control effect themselves and deal damage at a delay, skipping the same game tick rule and applying Cheap Shot on their own.) (Once Cheap Shot has triggered on a cast instance, it clears this marker for the next time the same cast instance applies a crowd control effect.)\nAll Basic damage (Note: All damage with this damage tag, not only damage from basic attacks) is considered the same cast instance to Cheap Shot. (Because of this and the above, for instance Ezreal Mystic Shot with Iceborn Gauntlet or Ashe Frost Shot will on its own be able to trigger Cheap Shot only every other time if it is the only attack to hit the enemy.)\nDamage over time effects applied before a crowd control may also trigger Cheap Shot on a damage tick once an eligible effect has been applied."
+ },
+ {
+  "id": "rule:돌발 일격",
+  "kind": "rule",
+  "title": "Sudden Impact",
+  "text": "Sudden Impact deals proc damage, and thus will not trigger spell effects.\nDashing, blinking or exiting stealth triggers a \"Sudden Impact ready\" (name paraphrased) buff that lasts for 4 seconds. Dealing damage to an enemy champion while this buff is active triggers a second buff with the actual effects, preventing \"Sudden Impact ready\" to be triggered again until it and the subsequent cooldown have run out. (Neither of the two buffs nor the cooldown is shown in the user's hotbar.)\n\"Dealing damage to an enemy champion\" includes effects that deal 0 damage.\nThe following effects can be used by any champion to ready Sudden Impact, allowing them to trigger the effect within the next 4 seconds: (Blast Cone) (Hex-gates) (Dash (summoner spell)) (Hexflash) (Teleport and Unleashed Teleport) (Recall and Empowered Recall) (Hextech Rocketbelt) (Bard Magical Journey (for any champion entering the tunnel)) (Rootcaller dash (does not work if used at point-blank)) (Senna Curse of the Black Mist (as well as any champion entering Wraith Form)) (Tahm Kench Regurgitate (for both allies and enemies that are spat out)) (Thresh Dark Passage dash)\nThe effect does not trigger on lunges, as they only cause the champion to move in closer to their target, not necessarily \"dash\" in the traditional sense.\nEmerging from outside the enemy vision (e.g. brush) does not ready Sudden Impact."
+ },
+ {
+  "id": "rule:육감",
+  "kind": "rule",
+  "title": "Sixth Sense",
+  "text": "On modes where wards are disabled, Sixth Sense is exchanged with Grisly Mementos."
+ },
+ {
+  "id": "rule:섬뜩한 기념품",
+  "kind": "rule",
+  "title": "Grisly Mementos",
+  "text": "In modes where wards are not available, each stack permanently grants 3 summoner spell haste instead, up to 54."
+ },
+ {
+  "id": "rule:깊은 와드",
+  "kind": "rule",
+  "title": "Deep Ward",
+  "text": "In modes where wards are not available, Deep Ward is swapped for Grisly Mementos."
+ },
+ {
+  "id": "rule:끈질긴 사냥꾼",
+  "kind": "rule",
+  "title": "Relentless Hunter",
+  "text": "Relentless Hunter is immediately gained after 5 seconds of being out of combat.\nRelentless Hunter does not consider Blast Cone knockup to be a source of combat."
+ },
+ {
+  "id": "rule:궁극의 사냥꾼",
+  "kind": "rule",
+  "title": "Ultimate Hunter",
+  "text": "On Bel'Veth, Ultimate Hunter is exchanged with Relentless Hunter.\nOn Samira, Ultimate Hunter is exchanged with Treasure Hunter.\nUltimate Hunter will affect both cooldowns and recharge timers on abilities such as Teemo Noxious Trap.\nUltimate Hunter stacks additively with other sources of haste."
+ },
+ {
+  "id": "rule:빙결 강화",
+  "kind": "rule",
+  "title": "Glacial Augment",
+  "text": "On champions without immobilizing effects and Yorick, Glacial Augment is exchanged with First Strike.\nGlacial Augment will not activate if the immobilizing effect was applied to a target that is displacement immune."
+ },
+ {
+  "id": "rule:봉인 풀린 주문서",
+  "kind": "rule",
+  "title": "Unsealed Spellbook",
+  "text": "The original summoner spells continue cooling down in the background while swapped out.\nThe swap cooldown is static and thus is unaffected by summoner spell haste.\nThere is no time limit for swapped summoner spells; they will remain within the summoner spell slot until they are used.\nSelecting Smite will not grant access to jungle-exclusive items (Gustwalker Hatchling, Mosstomper Seedling, and Scorchclaw Pup). (Swapping Smite out for another summoner spell does not prevent access to those items and does not remove their effects.)\nIf Smite was not one of the user's original summoner spells, its damage is modified to level-scaled. (The in-game tooltip always says it deals 600 damage even if it does more.) (The in-game tooltip says Smite requires 2 swaps for the damage to be increased, but its damage will only be increased if it is the third (or later) spell to be swapped.) (Swapping while Smite is already equipped will not affect the current damage.) (Selecting or swapping back to Smite will not place it on cooldown.)\nSelecting Teleport after 10:00 will grant Unleashed Teleport instead. (If Teleport is currently being swapped to, it can transform into its unleashed version after 10:00.) (If Teleport is swapped out for a selected summoner spell, the transformation will take place after it returns to the spell slot.)\nSelecting Teleport is possible before completing the top lane role quest, but it becomes locked after completion. (If Teleport is selected before completing the quest, it will remain usable after completion.) (However, if the quest Teleport is used, the selected Teleport will swap back to the original summoner spell prematurely.) (Neither Teleport will be empowered to grant a shield.)\nIf Hexflash is swapped out for another summoner spell and Flash comes off cooldown, the selected summoner spell will be automatically swapped back to Flash.\nOn the Hunt of the Blood Moon, Ultra Rapid Fire, and Ultimate Spellbook mode, Unsealed Spellbook is exchanged with First Strike.\nInputting a non-modifier key, or a (modifier-inclusive) key combination, even if its action is invalid and/or it is not bound to any event, will cause the menu to close."
+ },
+ {
+  "id": "rule:선제공격",
+  "kind": "rule",
+  "title": "First Strike",
+  "text": "First Strike deals proc damage, additionally tagged as indirect damage, and thus will not trigger spell effects. (Unlike damage modifiers, First Strike does not inherit damage tags from the source.)\nOn champions without immobilizing effects, Glacial Augment is exchanged with this.\n\"Initiating combat\" includes effects that deal 0 damage.\nFirst Strike's bonus damage will trigger from all damage types, including true damage.\nFirst Strike goes on cooldown upon its activation.\nThe triggering instance of damage will also benefit from First Strike's bonus damage.\nFirst Strike will benefit from damaging multiple champions in combat.\nFirst Strike will fire a missile at the target for each instance of damage dealt to them per cast instance while the effect is active. (This missile has a fixed travel time of 0.4 seconds.) (The first instance of bonus damage by First Strike is dealt after the same delay.) (This missile does not determine the rune's effects.) (If multiple targets are damaged at the same time, the missile will be sent towards the first target hit.) (This missile causes the user to be revealed briefly.)"
+ },
+ {
+  "id": "rule:마법공학 점멸기",
+  "kind": "rule",
+  "title": "Hextech Flashtraption",
+  "text": "Hexflash is disabled while grounded, rooted, or unable to cast.\nHextech Flashtraption is replaced with Cash Back if the user has not equipped Flash.\nWhen Flash is used, Hexflash also incurs its own cooldown before becoming usable.\nHextech Flashtraption does not consider Blast Cone knockup to be a source of combat.\nIf Hexflash is being channeled and Flash cooldown ends, the user may still recast despite losing Hexflash, and doing so will still incur the cooldown afterwards.\nHexflash's cooldown (and halved cooldown for entering combat) is reduced by summoner spell haste.\nHexflash has no cast time, like most charged channels."
+ },
+ {
+  "id": "rule:마법의 신발",
+  "kind": "rule",
+  "title": "Magical Footwear",
+  "text": "If sold, they can be re-purchased via purchasing Boots in the shop. Purchased tier-2 boots are also always slightly magical."
+ },
+ {
+  "id": "rule:환급",
+  "kind": "rule",
+  "title": "Cash Back",
+  "text": "Guardian items do not count as Legendary items for Cash Back."
+ },
+ {
+  "id": "rule:시간 왜곡 물약",
+  "kind": "rule",
+  "title": "Time Warp Tonic",
+  "text": "Time Warp Tonic activates on the following consumables: (Health Potion: Heals the user for 48.) (Refillable Potion: Heals the user for 40.)"
+ },
+ {
+  "id": "rule:비스킷 배달",
+  "kind": "rule",
+  "title": "Biscuit Delivery",
+  "text": "Health gained from Biscuit Delivery is considered bonus health. (Undoing the selling of a biscuit will remove the bonus health.)\nGaining the effect's bonus health does not increase the user's current health."
+ },
+ {
+  "id": "rule:쾌속 접근",
+  "kind": "rule",
+  "title": "Approach Velocity",
+  "text": "Impaired champions in a 180° total angle towards the user's facing direction are valid targets. (The movement speed buff is granted even if the user is standing still.)\nApproach Velocity does not trigger from Drowsy, despite being a movement impairment.\nApproach Velocity has weird conditions in regards to sight of the enemy.\nApproach Velocity works against movement-impaired enemies that are impaired by a source not allied to you (e.g. by Ocean Drake or themselves).\nThe movement speed bonus is updated based on the user's facing direction every 0.5 seconds.\nThe movement speed bonus can linger for up-to 0.25 seconds after the crowd control ends (or is removed) as a consequence of champion stats only being updated periodically."
+ },
+ {
+  "id": "rule:집중 공격",
+  "kind": "rule",
+  "title": "Press the Attack",
+  "text": "Press the Attack's adaptive damage deals proc damage, and thus will not trigger spell effects.\nThe damage dealt by Press the Attack is not affected by on-hit damage modifiers.\nApplication is individually tracked and does not interact among multiple users.\nEffects that allow the application of on-hit effects multiple times in one issued attack (e.g. Lightslinger, Ruthless Predator, Guinsoo's Rageblade) will also apply additional stacks of Press the Attack.\nWith the exception of Azir W, AoE on-hit attacks are excluded from interacting with Press the Attack, regardless of whether a single target is being hit (e.g Runaan's Hurricane, Statikk Shiv, Evelynn Empowered Whiplash, Katarina I and R, Master Yi Alpha Strike). Intended based on V14.1 Sylas fix\nThe basic attack that triggers Press the Attack's third stack does not benefit from the increased damage.\nPress the Attack's adaptive damage is not affected by on-hit effect modifiers (e.g. Heroic Swing, Purge). (However, any damage over time or follow-up effects that come with the basic attack will be affected (e.g. Hemorrhage, Toxic Shot and every follow-up Tentacle Smash).) (Damage dealt on the same frame that the buff is gained will not be amplified.) (The triggering Press the Attack proc does not benefit from the increased damage but future procs that occur while affected by the damage buff will.)"
+ },
+ {
+  "id": "rule:치명적 속도",
+  "kind": "rule",
+  "title": "Lethal Tempo",
+  "text": "Lethal Tempo's bolt deals proc damage, and thus will not trigger spell effects.\nRanged values are derived from the melee ones: bonus attack speed per stack is multiplied by 0.8, and the bolt's damage by 0.667. The 1% per 1% bonus attack speed scaling applies to each champion's own base value and is unmodified. (These follow the champion's current form. Jayce switching between Hammer and Cannon changes them immediately, including for stacks already held.) (The rune's description text lists the ranged damage as 6 to 24, higher than what is dealt. The description applies the attack speed multiplier (0.8) to the damage instead of the damage multiplier (0.667). The values above are the ones actually dealt.)\nLethal Tempo's own attack speed stacks count toward the bonus attack speed that scales the bolt. (Because of this, reading the hover tooltip before gaining maximum stacks, will show less damage than the bolt will deal once it can fire at maximum stacks.)\nThe bolt scales with the bonus attack speed stat itself, not with how fast the champion actually attacks. Attack speed above the attack speed cap still increases the damage even though it grants no additional attacks.\nThe rune's damage tracker reports damage dealt after resistances."
+ },
+ {
+  "id": "rule:기민한 발놀림",
+  "kind": "rule",
+  "title": "Fleet Footwork",
+  "text": "Fleet Footwork will not be consumed against wards or jungle plants."
+ },
+ {
+  "id": "rule:정복자",
+  "kind": "rule",
+  "title": "Conqueror",
+  "text": "Conqueror will grant stats based on the level of the user at the time of generating its first stack, even if more stacks are generated.\nSome ranged on-hit basic ability damage will grant 2 stacks of Conqueror (i.e Azir W, Ezreal Q, Miss Fortune Q), others will grant only 1 (i.e Smolder Q, Vayne Q, Viktor Q), regardless of the damage belonging to an ability cast instance.\nConqueror's stacking can only occur once per cast instance. (For example, the fire waves from Kayle Divine Ascent share the cast instance with its triggering basic attack. This means it can only trigger a stack of Conqueror once per attack instead of the expected twice.) (Abilities that apply a separate cast instance per hit will grant multiple stacks as normal.) (In addition, Garen Judgment, and Wukong Cyclone have been special cased to stack Conqueror for every tick of damage.) (Other similar effects are not special cased (e.g Pantheon E, Taliyah Q, Zac R).) (While basic damage on-hit can stack multiple times regardless of cast instance, Master Yi Q is the only multi on-hit effect that doesn't do so for being a single cast instance and for not being basic damage.) (If Mordekaiser Darkness Rise is activated through either Obliterate or Death's Grasp, it will be treated as the same cast instance as the triggering spell and it will not stack Conqueror.)\nConqueror will not stack or refresh from these specific effects. (Basic damage from pets (i.e. Annie Tibbers attack, Malzahar Voidling and Yorick Maiden of the Mist attack).) (Daisy attacks apply Ivern on-hit effects, and therefore generate 1 stack of Conqueror per attack.) (Basic damage that does not trigger on-hit effects (Nunu I cone).) (Attacks done by clones, as they are accredited to the clone.) (Runaan's Hurricane Wind's Fury bolts, which are special cased to not stack Conqueror despite dealing basic damage that can trigger on-hit effects (this includes special modifiers of Wind's Fury, such as on Infernum cones, Ashe Q volleys, Jinx Q Fishbones attack).) (Attacks which are dodged or missed while the user is blinded.) (Attacks against an invulnerable target.) (The automatic basic attack following Dash if it already stacked Conqueror.)\nConqueror will stack or refresh for these specific effects. (W cone effect, as the only AoE non-spell damage that isn't tagged as proc damage.) (Default / raw damage) (Including The Collector Death - although it shares a cast instance with the ability that triggered it, meaning it can only stack Conqueror if triggered by a damage over time effect at least 4 seconds after the effect's initial application.) (Attacks which are blocked.)"
+ },
+ {
+  "id": "rule:승전보",
+  "kind": "rule",
+  "title": "Triumph",
+  "text": "The healing is calculated based on your missing health at the moment the takedown happened. (If during the delay another takedown is achieved, all pending Triumph heals have their calculated value updated to the new amount, which is of course based on your missing health at the moment the latest takedown happened.)\nA missile with a fixed travel time of 1 seconds handles the delay and functionally triggers the benefits. (The missile is set as unblockable, which means that it isn't destroyed by colliding with effects such as Yasuo Wind Wall.) (The missile can be popped by effects that (unintentionally) destroy missiles from their own team aimed at them such as Fizz Trickster or Lissandra Frozen Tomb. This will prevent both the bonus gold and healing from being received.)"
+ },
+ {
+  "id": "rule:침착",
+  "kind": "rule",
+  "title": "Presence of Mind",
+  "text": "On the Ultra Rapid Fire mode and for champions that do not use mana nor energy as a resource, Presence of Mind is exchanged with Triumph.\nOn takedowns, champions that use energy as a resource restore 30 energy, increased to 60 energy for Shen and 42 energy for Akali while Twilight Shroud is active."
+ },
+ {
+  "id": "rule:최후의 일격",
+  "kind": "rule",
+  "title": "Coup de Grace",
+  "text": "Coup de Grace only triggers on damage dealt after the champion is brought below 40% health."
+ },
+ {
+  "id": "rule:최후의 저항",
+  "kind": "rule",
+  "title": "Last Stand",
+  "text": "Last Stand increases your damage output by level-scaled."
+ },
+ {
+  "id": "rule:착취의 손아귀",
+  "kind": "rule",
+  "title": "Grasp of the Undying",
+  "text": "Grasp of the Undying deals proc damage, and thus will not trigger spell effects.\nThe damage dealt by Grasp of the Undying is not affected by on-hit damage modifiers.\nOn champions without immobilizing effects and Yorick, Aftershock is exchanged with this.\nIt takes ~6 procs to increase the damage by 1 when using a melee champion, and ~16 procs when using a ranged champion.\nIt takes ~16 procs to increase the healing by 1 when using a melee champion, and ~43 procs when using a ranged champion."
+ },
+ {
+  "id": "rule:여진",
+  "kind": "rule",
+  "title": "Aftershock",
+  "text": "Aftershock deals area damage, additionally tagged as proc, and thus will apply spell effects.\nOn champions without immobilizing effects and Yorick, Aftershock is exchanged with Grasp of the Undying.\nAftershock's bonus resistances do not scale dynamically; it only benefits from the bonus at the time of its trigger (excluding the base bonus).\nBonus armor from Aftershock will cap when you have level-scaled bonus armor.\nBonus magic resistance from Aftershock will cap when you have level-scaled bonus magic resistance.\nAftershock will not activate if the immobilizing effect was applied to a target that is displacement immune."
+ },
+ {
+  "id": "rule:수호자",
+  "kind": "rule",
+  "title": "Guardian",
+  "text": "Guardian does not trigger from Heal, Sona Aria of Perseverance nor Lux Prismatic Barrier. However, Thresh Dark Passage triggers Guardian when cast on an allied champion.\nDespite being a unit-targeted ability, Yuumi You and Me! does not apply Guard. However, Guardian will still trigger if she is within range of the targeted ally.\nGuardian cannot trigger if the user is dead."
+ },
+ {
+  "id": "rule:철거",
+  "kind": "rule",
+  "title": "Demolish",
+  "text": "Demolish deals proc damage and is tagged as basic damage, and thus will not trigger spell effects.\nStacks on turrets do not expire once applied; they last indefinitely until the user consumes the turret's stacks.\nStacks can be applied to multiple turrets at a time as long as Demolish is not on cooldown. (Once the user triggers Demolish on a turret, however, the lingering stacks on all other turrets will be removed.)\nOn modes where there are no structures or they are not targetable, Demolish is exchanged with Font of Life.\nMultiple users of Demolish can apply stacks against the same turret, with the stacking tracked individually per user.\nIn the game, Demolish damage is incorrectly displayed as a real critical strike."
+ },
+ {
+  "id": "rule:생명의 샘",
+  "kind": "rule",
+  "title": "Font of Life",
+  "text": "Font of Life will trigger if the user has no allies nearby, and triggers even while 100% maximum health. (Total healing listed in the Runes panel increases whether or not any actual healing was made.)\nFont of Life will not grant assist credit.\nSince V13.23, Corki in particular always exchanges Font of Life with Demolish.\nInteracts like expected with healing-modifiers like Grievous Wounds and heal and shield power. (Total healing listed in the Runes panel does not account for neither positive nor negative healing-modifiers.)"
+ },
+ {
+  "id": "rule:보호막 강타",
+  "kind": "rule",
+  "title": "Shield Bash",
+  "text": "Shield Bash deals proc damage, and thus will not trigger spell effects.\nShield Bash's shield scaling is calculated with the highest value of shield that is either currently active or has expired within the last 2 seconds. Gaining a new shield while Shield Bash is active will replace the previous empowerment if the new shield is larger than any other currently active shield. (Once the empowered attack has been used, all previously applied shield instances become invalid for subsequent triggers for Shield Bash, even if the shield lingers.)\nShield Bash's shield scaling is calculated with the initial maximum value of the shield. (If the shield value increases over multiple instances, then Shield Bash will scale with the highest instance of shielding that has been achieved.)\nShield Bash can only trigger once per gained shield.\nShield Bash triggers from all shield types, including magic and physical ones."
+ },
+ {
+  "id": "rule:사전 준비",
+  "kind": "rule",
+  "title": "Conditioning",
+  "text": "The increase in stats from Conditioning does not exclusively count as bonus armor or magic resistance. (The 3% increased base armor and magic resistance do not count as bonus armor/magic resistance, and in the info tip panel when you hover the armor or magic resist stat are not displayed as an increase to the player's base armor/magic resistance. The values in the info tip do not add up properly for this reason.) (Due to a lack of any base armor and magic resistance ratios in the game it is unable to be determined whether the 3% bonus to base resistance stats counts as base armor/magic resistance or not. In the similar case of Overgrowth, they do count as the former.)\nThe increase in stats from Conditioning stacks with an instance of recursion."
+ },
+ {
+  "id": "rule:재생의 바람",
+  "kind": "rule",
+  "title": "Second Wind",
+  "text": "Second Wind grants health regeneration equal to 5*4/10% of missing health.\nSecond Wind will not trigger if the damage is: (Reduced to or equal to 0 damage.) (Dealt to shields.) (Absorbed by invulnerability.)"
+ },
+ {
+  "id": "rule:뼈 방패",
+  "kind": "rule",
+  "title": "Bone Plating",
+  "text": "The triggering instance of damage will not have its damage reduced by Bone Plating.\nBone Plating will still go on cooldown after its duration even if it does not block any damage.\nBone Plating only blocks damage from the champion who triggered it; it can only be active against one champion at a time until its next activation.\nBone Plating's damage reduction can only occur once per cast instance. (This can be the same cast instance as the one that initially triggers Bone Plating, if it deals multiple instances of damage (e.g Camille W).)\nBone Plating will not trigger if the damage dealt is: (Reduced to or equal to 0 damage.) (Dealt to shields.) (Absorbed by invulnerability.)\nBone Plating's damage reduction applies to the post-mitigation damage of the incoming attack or spell."
+ },
+ {
+  "id": "rule:과잉성장",
+  "kind": "rule",
+  "title": "Overgrowth",
+  "text": "Overgrowth only counts unit deaths the champion has direct line of sight on. The effect's radius is reduced when there is terrain or nearsight blocking direct vision on dying units. Shared vision with other allied units observing the dying units is ignored. (Interaction with shared vision of an allied champion that has Overgrowth as well.)\nOvergrowth users may still gain the effect while dead."
+ },
+ {
+  "id": "rule:소생",
+  "kind": "rule",
+  "title": "Revitalize",
+  "text": "Revitalize's bonus 10% stacks multiplicatively with Heal Power, but it has an instance of recursion when stacking with Shield Power. (Therefore, Revitalize alone nets (0.05+1.05*0.1)*100% bonus healing and (0.05+1.05*0.1+1.05*0.1*0.05)*100% bonus shielding.)\nFor outgoing heals and shields, it also stacks multiplicatively with the affected ally's Revitalize (10%) and Spirit Visage Boundless Vitality (25%), granting them a total of 58.81% bonus healing (including the 5% Heal and shield power from Revitalize's passive).\nHealing granted by Revitalize in the HUD stats panel tracker will count any healing at full health, as well as fountain regeneration.\nRevitalize also amps Magic Shields (like Maw of Malmortius).\nBarrier combined with Revitalize will provide an extra level-scaled shield, increased to level-scaled while under 40% maximum health.\nHeal combined with Revitalize will grant an extra level-scaled healing, increased to level-scaled while under 40% maximum health."
+ },
+ {
+  "id": "rule:불굴의 의지",
+  "kind": "rule",
+  "title": "Unflinching",
+  "text": "Unflinching triggers from all forms of crowd control, except for kinematics and disruption.\nFor effects that deal damage and apply crowd control simultaneously, Unflinching will activate after taking the damage and thus the user will not benefit from the increased resistances against that damage instance."
+ },
+ {
+  "id": "rule:콩콩이 소환",
+  "kind": "rule",
+  "title": "Summon Aery",
+  "text": "Aery deals proc damage, and thus will not trigger spell effects.\nAery's ally effect will trigger on all manner of abilities that affect allies (both directly targeted and not) and buffs, including Jarvan IV Demacian Standard (the shield will trigger on the ally closest to the flag), Kindred Lamb's Respite and Lulu Whimsy. (Orianna Command: Dissonance can trigger the allied effect both on activation and if an ally walks into the persistent area.) (Applying Nami Surging Tides to an ally will not trigger Aery - i.e. you cannot hit an ally with Aqua Prison to grant them a shield.) (Some buffs may not trigger the ally effect as the behavior is set on a case by case basis. For instance, Bandlepipes Fanfare attack speed buff granted to allies will not trigger Aery.)\nAery's shield will trigger Ardent Censer and Staff of Flowing Water, allowing champions who otherwise do not have heals or shields to trigger the effects.\nAery is special cased to trigger on the application of the first tick of Ignite.\nAery will not trigger on an ally healed by Font of Life.\nAery will not trigger spell effects.\nAery is not blocked by projectile-blocking effects.\nWhen the champion Recalls, Aery will also spawn out to play a recall animation. (During this time, Aery has its own independant sight radius of 1350, and can occasionally see inside bush if the player recalls very close to it and faces a certain direction.)"
+ },
+ {
+  "id": "rule:신비로운 유성",
+  "kind": "rule",
+  "title": "Arcane Comet",
+  "text": "Arcane Comet deals proc damage and is tagged as area of effect without applying spell effects.\nArcane Comet can be blocked by spell shields.\nArcane Comet is a projectile and can be intercepted by Braum E, Samira W, and Yasuo W.\nArcane Comet is not triggered from dealing 0 damage.\nArcane Comet can be seen flying from the champion using it even if there is no vision of them, possibly giving away their position.\nThe impact indicator has a radius of 175 units, for reference."
+ },
+ {
+  "id": "rule:죽음불꽃 손길",
+  "kind": "rule",
+  "title": "Deathfire Touch",
+  "text": "Deathfire Touch deals proc damage and is tagged as periodic without applying spell effects.\nDeathfire Touch's total damage with the trigger of a single instance of ability damage on a target, without the burn being refreshed: (If the pet damage is also tagged as area damage, Deathfire Touch's duration will be 2 seconds.)\nThe burn can be stacked on a target when applied by multiple users, though not refreshing the debuff for all subsequent sources at a time.\nDeathfire Touch's damage is not updated dynamically; the stats it references remain static until the debuff expires and is applied again."
+ },
+ {
+  "id": "rule:액시옴 비전 마법사",
+  "kind": "rule",
+  "title": "Axiom Arcanist",
+  "text": "On Elise, Jayce, Nidalee and Zoe, Axiom Arcanist is exchanged with Nimbus Cloak.\nAxiom Arcanist will affect the damaging passive effects of the user's ultimate ability. (Although Ryze's ultimate passive Ryze Realm Warp is a damaging effect, it does not appear to increase EQ (Spell Flux + Overload) damage by 12% nor 8%.)\nAxiom Arcanist will also increase the damage, healing, and shielding done by pets summoned from the user's ultimate ability (except Illaoi R).\nAxiom Arcanist does affect ultimate damage dealt to enemy non-champions and healing and shielding granted to allied non-champions. (The bonus ultimate damage, healing, and shielding tracker in the HUD of the rune's tooltip only tracks bonus damage dealt to enemy champions and bonus healing and shielding for the user or allied champions.)\nAxiom Arcanist will not amplify self-healing effects. (Axiom Arcanist will amplify the healing via life steal by ultimates that apply life steal specifically.) (It is special-cased to amplify the regeneration granted by Dr. Mundo Maximum Dosage specifically.)\nAxiom Arcanist will affect the empowered abilities of Heimerdinger R (H-28Q Apex Turret Hextech Rocket Swarm CH-3X Lightning Grenade) and Karma R (Soulflare Renewal Defiance).\nAxiom Arcanist will only amplify the first instance of Chaaaaaaaarge!!! shield.\nAxiom Arcanist will not amplify the maximum health reduction from Mordekaiser Realm of Death.\nSion does not benefit from Axiom Arcanist's cooldown refund during Glory in Death.\nTwitch Spray and Pray bolts are special-cased to benefit from Axiom Arcanist as area of effect damage.\nOn Udyr, Axiom Arcanist will affect all Bridge Between abilities respectively. (The cooldown of Awakened Spirit however will not be refunded when he scores a takedown.)"
+ },
+ {
+  "id": "rule:마나순환 팔찌",
+  "kind": "rule",
+  "title": "Manaflow Band",
+  "text": "On the Ultra Rapid Fire mode and for champions without mana, Manaflow Band is exchanged with Axiom Arcanist.\nIt takes a minimum of 150 seconds to fully charge Manaflow Band.\nDebuffs considered are: (Immobilizing crowd control and slows (potentially more))\nUsually, an increase of maximum stat also leads to an increase of current stat. Since Manaflow Band is meant to not follow that rule, it is made to first deduct the amount, and then increase the maximum mana right after. This effect is considered mana expenditure for effects that trigger upon expending mana. (If the deduction in mana leads to a negative amount, Manaflow Band will actually increase current mana, since the floor of the stat is 0. The deduction will effectively be lower than the successive increase of maximum mana which will then increase current mana.)"
+ },
+ {
+  "id": "rule:빛의 망토",
+  "kind": "rule",
+  "title": "Nimbus Cloak",
+  "text": "The movement speed bonus of Nimbus Cloak is based on one of three brackets the cooldown of a Summoner spell falls into. (To account for summoner spell cooldown reduction from different game modes, there are different thresholds in effect for them:) (ARAM: 60 seconds (maximum cooldown for low bracket), 150 seconds (maximum for medium bracket)) (Legend of the Poro King: 60 seconds (maximum cooldown for low bracket), 150 seconds (maximum for medium bracket)) (Ultra Rapid Fire: 20 seconds (maximum cooldown for low bracket), 50 seconds (maximum for medium bracket)) (One for All: 60 seconds (maximum cooldown for low bracket), 150 seconds (maximum for medium bracket)) (Ultimate Spellbook) (Summoner spell cooldown reduction from Cosmic Insight or Ionian Boots of Lucidity can reduce it below a threshold, the current example being Flash cooldown being reduced to 230.77 seconds in Summoner's Rift and 150 seconds in ARAM, making it fall into the medium bracket, causing Nimbus Cloak's activation to only grant a 20% movement speed bonus from it.) (Teleport cooldown is specially handled to always be in the highest bracket (if not cast by Zoe Spell Thief).) (Zoe casting summoner spells with Spell Thief will always use the ability's cooldown, which falls into the lowest bracket.)\nActivating multiple summoner spells will only consider the one granting the strongest bonus movement speed. Summoner spells across different cooldown thresholds have each their own Nimbus Cloak activation, and once the strongest one's duration ends, the lesser one will take its place (duration permitting).\nFor the case of Teleport and Hexflash, Nimbus Cloak activates once their channel completes or is interrupted. (Hexflash has to have channeled until the blink is available to trigger Nimbus Cloak upon interruption.)"
+ },
+ {
+  "id": "rule:기민함",
+  "kind": "rule",
+  "title": "Celerity",
+  "text": "Bonus movement speed in general is split into flat, additive percent and multiplicative percent bonuses that construct the value of the total movement speed in stat updates every 0.25 seconds: (Celerity grants flat bonus movement speed equal to 7% of your other flat bonuses.) (Flat bonuses include increased base movement speed granted by Elise Spider Form / Human Form.) (Flat bonuses include bonuses with negative values such as those provided by Lulu Whimsy against enemies or Urgot Purge against himself.) (Celerity grants additive bonus movement speed equal to 7% of your other additive bonuses, including itself, only if your total additive bonus from other sources is greater than 5% (6% if including Celerity's bonus).) (Celerity grants multiplicative bonus movement speed equal to 7% of the sum of your other multiplicative bonuses.) (On every new stat update, the multiplicative bonus of Celerity will avoid multiplying itself from the previous cycle. However, since stat updates already actively avoid that, the multiplicative bonus will be much lower than it should be on some cycles and oscillate.) (is this outdated after V14.17?)"
+ },
+ {
+  "id": "rule:주문 작열",
+  "kind": "rule",
+  "title": "Scorch",
+  "text": "Scorch deals proc damage and is tagged as indirect damage and periodic without applying spell effects.\nScorch only affects one champion, if triggered by an area of effect ability it will hit the first champion to receive spell effects (this order depends on the spell, but usually based on proximity).\nIf Scorch is triggered as an on-attack effect (via Arise!, Royal Maelstrom), the damage dealt will be affected by on-attack damage modifiers."
+ },
+ {
+  "id": "rule:물 위를 걷는 자",
+  "kind": "rule",
+  "title": "Waterwalking",
+  "text": "The bonus movement speed decays over 1 second after leaving the river, while the bonus stats are lost immediately.\nThe water puddles created around the jungle by Ocean Drake count and will activate Waterwalking if tread upon.\nOn modes without the river, Waterwalking is exchanged with Scorch.\nThis rune provides no bonuses outside of Summoner's Rift, or in game modes where the river is inaccessible.\nReferring to the river includes the entire zone covered in water, including the two parts outside of the Brushes in the middle lane."
+ },
+ {
+  "id": "rule:고양",
+  "kind": "rule",
+  "title": "Surge",
+  "text": "The spell increases the size of the character model of your champion.\nThis spell can not increase your attack speed over the set cap of 2.5."
+ },
+ {
+  "id": "rule:정화",
+  "kind": "rule",
+  "title": "Cleanse",
+  "text": "Cleanse will remove the following debuff types: (Crowd control:) (Forced action) (Drowsy & Sleep) (Stun (Suspension)) (Suspension's fake airborne is also removed when the stun is.) (Summoner spell:) (Does not remove the Grievous Wounds debuff.)\nCleanse cannot be activated while under the effects of suppression or stasis (both disable all summoner spells from use)."
+ },
+ {
+  "id": "rule:점멸",
+  "kind": "rule",
+  "title": "Flash",
+  "text": "Flash cannot be used while rooted, grounded, or unable to cast.\nFlash additionally changes the user's facing direction to be in the same direction they blinked.\nWith the Hextech Flashtraption rune, Hexflash replaces Flash when it's on cooldown.\nFlash will cast at max range if cast beyond that.\nFlash always employs Quick cast.\nIf Flash is cast during an ability's cast time, it will cause the ability's visual effects to spawn lower than normal."
+ },
+ {
+  "id": "rule:천리안",
+  "kind": "rule",
+  "title": "Clairvoyance",
+  "text": "If Clairvoyance only extends over half of a brush patch, an enemy unit can remain unseen in the other half.\nThe \"eye\" placed at the Clairvoyance area can be seen by the enemy, even if it is in the fog of war.\nClairvoyance will reset the markers for neutral monster camps on the minimap.\nCasting Clairvoyance does not interrupt Recalls channel.\nThe \"eye\" (green by ally and red by enemy) of the effect indicates its duration."
+ },
+ {
+  "id": "rule:점화",
+  "kind": "rule",
+  "title": "Ignite",
+  "text": "Each tick of Ignite deals level-scaled true damage.\nIgnite deals its first tick of damage at [0 to 0.264] seconds after the cast, based on how soon the first character stat update tick after the cast occurs. (The last tick is thus dealt at [0 to 0.264] plus 5.28 seconds, well before the debuff's duration runs out.)\nCleanse removes the damage over time and reveal components of Ignite, but the healing reduction debuff will persist.\nIgnite deals proc damage and is tagged as periodic without applying spell effects.\nIgnite cannot reveal stealthed targets as it does not apply true sight.\nSubsequent casts of Ignite on the same target will override the previous debuff; the effect will refresh in duration but cannot be stacked.\nIgnite grants two stacks of Conqueror, and one of Electrocute and Phase Rush upon activation.\nIgnite triggers Summon Aery on the application of its first tick. (Subsequent ticks cannot trigger the rune.)\nIgnite's damage cannot be amplified by damage amplifiers."
+ },
+ {
+  "id": "rule:탈진",
+  "kind": "rule",
+  "title": "Exhaust",
+  "text": "Exhaust will not reduce true damage.\nExhaust applies its slow and damage reduction as separate debuffs, of which only the slow can be affected by tenacity or cleansed. (Cleanse, however, removes both the slow and the damage reduction.)\nUsing Exhaust on a champion when the target is already affected by that spell will reapply the effect, resetting its duration. It will not increase the effect. (The visual indicator of Exhaust will not reset along its duration, ending prematurely and not appearing for further Exhaust reapplications.)"
+ },
+ {
+  "id": "rule:구축",
+  "kind": "rule",
+  "title": "Fortify",
+  "text": "When you use Fortify, any hits to the protected tower won't proc certain abilities that would have worked before. For example, Jax Relentless Assault, Guinsoo's Rageblade, and Master Yi Double Strike.\nFortify can be used while your champion is dead.\nWhile fortified, a turret grants you assists and kills when it last-hits or assists in killing an enemy champion as if you were dealing the damage, and not the turret. This does not, however, apply to minion kills."
+ },
+ {
+  "id": "rule:유체화",
+  "kind": "rule",
+  "title": "Ghost",
+  "text": "Ghost will still be in effect even after being resurrected.\nGhost's movement speed stacks additively.\nGhost may be stacked up to a maximum of 5 times (which is possible by Zoe Spell Thief). (Gaining a new stack does not refresh the previous stacks.)"
+ },
+ {
+  "id": "rule:회복",
+  "kind": "rule",
+  "title": "Heal",
+  "text": "Heal searches in a 200 units radius around the cursor for its intended allied target, if none is targeted directly. If it finds none, it targets the most wounded allied champion in the cast range, if no such distinction then the closest one. (\"Most wounded\" means the champion with the least current %HP.) (Interactions with clones.) (There is a bug causing the spell to sometimes not pick its second target successfully.)\nUsing or being affected by Heal if you were already Healed in the last 35 seconds heals for level-scaled."
+ },
+ {
+  "id": "rule:총명",
+  "kind": "rule",
+  "title": "Clarity",
+  "text": "Clarity, despite being unavailable on Summoner's Rift, can be obtained with Unsealed Spellbook."
+ },
+ {
+  "id": "rule:결집",
+  "kind": "rule",
+  "title": "Rally",
+  "text": "It could be single-targeted by dash abilities such as Lee Sin Safeguard.\nIt could be displaced.\nIt affected all allied units such as minions and Heimerdinger H-28G Evolution Turret."
+ },
+ {
+  "id": "rule:부활",
+  "kind": "rule",
+  "title": "Revive",
+  "text": "Revive synergized well with champions who have an 'on-death' effect such as Karthus and Kog'Maw. (Note that a champion undergoing an on-death effect is considered alive until the ability ends; thus, only after entering into death would Revive become usable.)\nOther movement speed and mobility effects could be combined with Revive, allowing players to traverse even greater distances at breakneck speed. (The boots enchantment Homeguard paired exceedingly well with Revive, as a revived player would almost always trigger Homeguard's otherwise uncommon condition - being at the summoner's platform.)"
+ },
+ {
+  "id": "rule:강타",
+  "kind": "rule",
+  "title": "Smite",
+  "text": "Role Binding: In Summoner's Rift permanent queues, Smite is only available to players drafted in the Jungle role and must occupy one of their summoner spell slots. Players drafted in other roles will not have the option of choosing Smite within their loadout.\nSmite has no cast time and can be cast during the cast times and channels of other abilities.\nSmite starts with one charge and gains an additional charge every 90 seconds starting from 0:48, with a maximum of 2 charges.\nThe recharge cooldown of this spell can be reduced by summoner spell haste.\nSmiting an enemy champion will draw the aggro of nearby minions as it is a single-targeted ability.\nIf the cursor is not on a valid target, prioritizes smiting epic monsters within 125 units.\nSmite and its upgrades deal proc damage, and thus will not trigger spell effects.\nSmite and its upgrades' damage is unaffected by damage amplifiers.\nUnleashed Smite and Primal Smite can be blocked by spell shields.\nIn Ultra Rapid Fire: (Cooldown changed to 10 seconds.) (Recharge timer increased to 120 seconds.)"
+ },
+ {
+  "id": "rule:표식",
+  "kind": "rule",
+  "title": "Mark",
+  "text": "Mark and Dash cannot be used while unable to cast. (Dash cannot be used while grounded or rooted, but Mark can.)\nMark and Dash both deal spell damage, and thus both will trigger spell effects.\nMark cannot be blocked by Blade Whirl, Wind Wall, and spell shield.\nMark's debuff cannot be removed by Cleanse.\nThe caster, while performing Dash, will track the target if they change locations. (The caster will not stop tracking the target until they reach them, as there is no maximum tracking distance.)\nDash has a speed of 2500.\nDash will always deal its damage upon the dash's completion, even if the target is untargetable upon arrival.\nMark applies a debuff to the enemy hit, which is removed by sources of effects that dispel all hostile debuffs from the unit. A notable example of this is resurrection.\nDash's untargetability does not destroy inbound projectiles nor affects turrets.\nThe caster will automatically attack the target they dashed to upon arrival.\nDespite the fact the duration of Mark's debuff refreshes on subsequent applications, summoners still only have their respective 3 seconds to cast Dash.\nDash is swapped back to Mark in the spell slot when it completes successfully, or the recast window expires, and then Mark goes on cooldown. (Dash's recast window will not end early if the dash is interrupted.)\nDash can be used even while the marked target is untargetable.\nThe cooldown of this summoner spell is automatically reduced to 48 seconds, due to the Howling Abyss aura, which grants 70 summoner spell haste. (The cooldown can be reduced even more with other sources of summoner spell haste.)"
+ },
+ {
+  "id": "rule:진급",
+  "kind": "rule",
+  "title": "Promote",
+  "text": "The super minion spawned by destroying an enemy inhibitor in classic mode cannot be promoted.\nThe promoted minion will give its host gold and score upon getting a kill, but not experience if the host stands too far from the slain enemy.\nNote that if there are two siege minions in the vicinity, Promote will be used on the closest one, regardless of if it has been promoted already. This may result in wasting Promote on an already promoted siege minion.\nKills by a promoted minion do not trigger Twisted Fate Loaded Dice.\nPromote was originally a summoner spell for the Classic mode which metamorphosed a regular minion into a siege rider one. The spell and the siege rider minion were removed in V1.0.0.63 due to abuse in Promote stacking, resulting in unstoppable pushes, but the later returned as Banner of Command's active effect.\nPromote was previously removed because it was too strong, but it was since balanced and made available in all game modes until it was again removed for Season 3. The active effect returned as an item."
+ },
+ {
+  "id": "rule:순간이동",
+  "kind": "rule",
+  "title": "Teleport",
+  "text": "Completing the Toplane Role Quest rewards Unleashed Teleport as a bonus summoner spell (420 second cooldown). (If Teleport was already taken, the quest will instead empower the spell to grant a 35% maximum health shield for 10 seconds after the channel ends.)\nTeleport calculates the travel time for the dash based on the distance between the user's casting position and the target's location at the start of the channel.\nTeleport has a base dash speed of 1000. (The dash speed will be increased to account for the fixed travel time.)\nUnleashed Teleport has a dash speed of 4500.\nUnleashed Teleport will be placed on a 2-second cooldown after Teleport's transformation.\nIf Teleport's current cooldown is greater than Unleashed Teleport's maximum cooldown upon transformation, the current cooldown is reduced to its maximum.\nTeleport has no cast time.\nTeleport goes on cooldown after the dash ends.\nTeleport is disabled while grounded, rooted, or unable to cast. It also cannot be used while in Mordekaiser Realm of Death. (Nearsight will prevent the caster from using Teleport globally.)\nTeleport's untargetability does not destroy in-flight projectiles.\nThe champion's model is hidden while they are dashing with Teleport and instead can be visually seen as a trailing orb.\nIf there is not enough free space upon landing, the user may land in the nearest open space in the direction of travel.\nWhile dashing with Teleport, the champion's portrait on the mini-map is hidden from the enemy's perspective.\nNeither Teleport's channel nor dash will cancel if the target dies during either effects.\nThe target's location at the start of the channel will be considered for the destination location of Teleport, not the target's location when the channel completes or the dash ends.\nTeleporting to a ward or stealthed trap reveals it to enemies. (The target ward or trap is only revealed if it is within an enemy's sight radius and their sight isn't being obstructed.)\nThe user may select their target for Teleport via the minimap.\nWhen attempting to cast Teleport on a target that is at least 3000 units away, the targeting for the spell has a forgiveness radius of 400 units. This is particularly useful when targeting via the minimap.\nTeleport's visual effects can be seen even through the fog of war.\nWhile standing at the end of a wall or other standing out part of terrain, using Teleport slightly increases sight radius just around the corners in the fog of war.\nTeleport and Unleashed Teleport will play an 'On My Way' ping on the target.\nA timer for Teleport's remaining duration is visible at the target location to all players."
+ },
+ {
+  "id": "rule:미니언",
+  "kind": "rule",
+  "title": "Minion",
+  "text": "[Behavior] A champion stands in the minion's path, without any other targets within the minions' attack range and outside of a turret's range.\n[Behavior] A champion deals damage to an enemy champion with a basic attack, the majority of unit-targeted abilities, and a minority of abilities which are marked as being similar to those two. Minions will prioritize the closest champion in the case there are multiple sources.\n[Behavior] Bar the first wave (which is noted above as an exception), Call for Help signals are also ignored while minions are already attacking an enemy turret.\n[Stats mechanics] Minions \"upgrade\" strictly every 90 seconds (i.e., every third wave), gaining health, ad, and possibly certain buffs depending on the game state.\n[Stats mechanics] Minions deal 50% reduced damage to enemy champions.\n[Stats mechanics] Minions start with 325 base movement speed and gain 10 to 25 movement speed as the game time progresses.\n[General] Destroying an enemy inhibitor grants a small buff to allied minions in the lane where the inhibitor has been destroyed.\n[Minion Pushing] Turret advantage is the difference between the number of inner and nexus turrets destroyed for each team.\n[Wave Gold Value] As of V8.23, a minion wave has an average gold value that varies from 125 and up to 195 at 25:00.\n[Wave Strategy] Without player interference, a lane's wave is neither advancing or retreating in any significant amount.\n[Wave Strategy] A minion wave that catches up with its preceding wave starts pushing the lane towards enemy turret.\n[Wave Strategy] Big waves of minions can overwhelm a turret.\n[Wave Strategy] When a player interrupts an enemy minion wave, ensuring their minions deal more damage to the opponent's minions than they are receiving, the lane starts to push.\n[Wave Strategy] In the simplest way, this is done by killing every minion in a wave without interference from your own minions. This changes where in the lane the minion waves clash.\n[Game Terminology] Farming: Last hitting minions to earn gold and experience.\n[Game Terminology] Lane Momentum: The strength with which the minions in a lane advance without champion aid.\n[Game Terminology] Pushing: Attacking enemy minions to keep allied minions alive and allow them to advance along their lane.\n[Game Terminology] Freezing: Preventing enemy minions from pushing the lane without pushing them back.\n[Game Terminology] \"Winions\": A wave of minions so big or so strong that it can destroy turrets, nexuses, or champions without champion aid.\n[Game Terminology] Free Farming: Farming without being confronted by an enemy champion.\n[Game Terminology] Proxy Farming: Farming behind an enemy tower. It's easier than conventional farming because there is no interference from allied minions, but it's usually much more dangerous.\n[Game Terminology] Split Pushing: Attacking several objectives at the same time when at least one of the objectives is a lane turret."
+ },
+ {
+  "id": "rule:와드",
+  "kind": "rule",
+  "title": "Ward",
+  "text": "[General] A ward's vision does not extend over terrain.\n[General] Placing a ward while at its limit will replace your earliest respective placed ward of its type.\n[General] The sight from wards is classified as allied vision, and will be lost while under the effects of Nearsight. This includes wards that you placed.\n[General] Newly set wards are not visible nor audible to nearsighted units outside of their proper sight radius.\n[General] Nearsight prevents the unit from being able to reveal stealthed wards and traps.\n[General] The mutated Scryer's Bloom on Chemtech Rift reduces the health of wards it reveals to 1.\n[General] As of V7.16, passively-generated one-use on-hit effects such as Energized, Sona or Caitlyn, will not be consumed when attacking wards. Some cases were not added until later and other missing cases should be reported as a bug.\n[General] Activated on-hit effects and attack resets, such as Blitzcrank and Jayce, will still be consumed as the player is choosing to prime them.\n[General] Tidecaller's Blessing Nami will not be consumed when attacking wards.\n[General] Flay Thresh will also not reset the bonus damage when attacking wards.\n[General] Like with minions, if more than one allied champion is nearby when a ward is killed, all champions gain an equal share of 124% of the experience bounty.\n[General] Effects such as Zombie Ward will track assists even if no gold is earned.\n[General] As of V12.22, allied wards that have a set duration appear withered on the minimap, whenever their remaining duration reaches a third of its total.\n[General] Stealth Ward trinkets reach the break-even point between Totem Ward duration and charge regeneration time at Level 18. At this level it is possible to always have another charge ready to use when the last ward placed with the trinket has expired of natural causes.\n[General] At level 1 Stealth Ward only has an uptime of 37.5% (90s duration, 240s recharge) but this is increased to 75% with the Ghost Poro rune.\n[Strategy] Placing wards near objectives or critical pathways on the map such as Dragon pit, Baron pit, and entrances to the jungle grant valuable information.\n[Strategy] Control Wards reveal and disable other wards within their Sight.\n[Strategy] Sweeper Drones will reveal and disable stealthed wards within its radius, and highlight non-stealthed wards as a red silhouette. Note that the drone can see into brush and over terrain.\n[Strategy] Umbral Glaive passive, Blackout, triggers when a ward or stealthed trap is nearby. While it is active, you disable all nearby wards and expose nearby stealthed wards and traps. Unlike a Sweeper Drone, Blackout does not allow you to see over terrain or highlight other unseen units.\n[Strategy] Scryer's Bloom grants vision of wards hit for 12 seconds.\n[Strategy] Wards take 1 damage when hit by a basic attack, regardless of the attack's damage or on-hit effects.\n[Strategy] Full basic attack resets allow you to destroy Stealth Wards and Totem Wards before they stealth.\n[Strategy] As of V6.13, attacking a ward will not classify you as entering combat. For example, you will retain the bonus movement speed from Mobility Boots, Relentless Hunter, and abilities such as Rock Surfing Taliyah.\n[Strategy] thumb|right When a ward is killed, times out or is replaced, it leaves behind Ward rubble for 5 minutes. This can be used to gain knowledge of the enemy's warding habits.\n[Strategy] The rubble's transparency increases overtime."
+ },
+ {
+  "id": "rule:덤불",
+  "kind": "rule",
+  "title": "Brush",
+  "text": "[Utilizing brush] The visual indicators and effects of some abilities, such as Absolute Zero Nunu and Decimating Smash Sion, are hidden while inside of an unexposed brush.\n[Utilizing brush] Moving into a brush while fleeing from chasing enemies allows the manipulation of the fog of war.\n[Utilizing brush] Ivern is currently the only champion who can create brush, being able to do so via Ivern. He can create a line of brushes, blocking the sight of the enemy in any location."
+ },
+ {
+  "id": "rule:포탑",
+  "kind": "rule",
+  "title": "Turret",
+  "text": "[General] Plates take 17% reduced damage from minions and ranged champions.\n[General] Destroying a plate grants 125 local gold.\n[General] The toplane and midlane outer turrets receive a Fortification bonus for the first five minutes of each game.\n[General] Inhibitor turrets regenerate 3 health per second up to a maximum that depends on their current health.\n[General] Nexus turrets regenerate 6 health per second up to a maximum that depends on their current health.\n[General] After being destroyed Nexus Turrets will respawn after a 3 minute delay.\n[General] Armor and magic resistance are reduced to 40 at 12:00.\n[General] Inhibitor turrets gain 30% damage reduction for 60 seconds after the Outer Turret is destroyed.\n[Notes] If a turret is destroyed while one of its shots is in mid-flight, that shot will not deal damage.\n[Notes] Turrets are units located on top of impassable terrain. This terrain remains even after the turret is destroyed.\n[Notes] Effects that interact with terrain will do so for both functional and destroyed turrets.\n[Items] Unique Passive - Fortification: 85% damage reduction from all sources. This effect expires after 5 minutes.\n[Items] Unique Passive: Gains 30% armor penetration.\n[Items] Unique Passive - Dodge Piercing: Turret attacks, once their windup has completed, cannot be evaded, parried, nor intercepted. They will be still be destroyed by effects that 'pop' homing projectiles, such as their target becoming untargetable.\n[Items] Unique Passive - Warming Up: The damage dealt by turrets increases by 40% each time they hit a champion, up to 120% bonus damage. This effect resets 3 seconds after the last shot hits a champion, but it doesn't reset when switching targets.\n[Items] Unique Passive - Reinforced Armor: Reduces incoming damage by 80%, including true damage, when no enemy minions or Summoned Rift Herald are nearby.\n[Items] Pets, traps, and neutral monsters do not deactivate this effect.\n[Items] Unique Passive - True Sight: Can see all units and traps (including those in stealth) within 1000 range, unless the direct line of vision is obstructed (e.g. by terrain).\n[Turret rewards] The global reward is given to all the champions in the team.\n[Turret rewards] Champions who are alive and have assisted in destroying the turret by dealing damage to it directly or via their summons (including the Rift Herald Mercenary) within the last 10 seconds receive their share as well, regardless of range.\n[Turret rewards] The paradigm for local rewards also apply to the distributed reward from destroying Turret Plating stages.\n[Turret rewards] The local reward for destroying the first turret (also referred to as \"Turret First Blood\" and \"First Turret gold\") grants 300 bonus gold.\n[Damaging turrets] Physical damage if 100% bonus AD > 60% AP.\n[Damaging turrets] Magic damage if 100% bonus AD < 60% AP.\n[Abilities that affect turrets] Turrets can be put into stasis by Tempered Fate Bard.\n[Abilities that affect turrets] Turrets can be shielded by Eye of the Storm Janna.\n[Abilities that affect turrets] Turrets can be disabled by Stormbringer Volibear.\n[Abilities that affect turrets] Carnivore Cho'Gath grants its heal and mana restore.\n[Abilities that affect turrets] League of Draven Draven grants 1 stack.\n[Abilities that affect turrets] Siphoning Strike Nasus gains permanent damage.\n[Abilities that affect turrets] Loaded Dice Twisted Fate grants him 1 to 6.\n[Strategy] Turrets can be used to create choke points using traps such as Yordle Snap Trap Caitlyn, especially in the narrow areas between a turret and nearby terrain, as minions will not normally walk through those areas of lanes.\n[Strategy] Melee minions may sustain two turret attacks, and then one champion attack to last hit.\n[Strategy] Ranged minions may sustain one champion attack, then one turret attack, then another champion attack to last hit."
+ },
+ {
+  "id": "rule:시야 점수",
+  "kind": "rule",
+  "title": "Vision score",
+  "text": "[Metrics] Vision Mechanics: There are a few non-combat utility abilities that will contribute to a champion's total vision score.\n[Metrics] These include Scryer's Bloom and Rift Scuttler's Speed Shrine. The former grants a total of 0.5 points per champion revealed by the effect, and the latter grants 1 point once it has lasted its full duration.\n[Metrics] Champion abilities that only grant vision (no offensive component) will contribute towards the score. Examples include Hawkshot Ashe, Sentinel Kalista, and Heightened Senses Quinn. These abilities will grant 0.33 points per champion they reveal.\n[Ward Lifetime Provided Modifiers] A ward that hasn't seen any interesting units (enemy champions, wards, and epic monsters) in a while will gradually go down in point value, starting at -0% at 60 seconds of staleness and worsening to -50% at 120 seconds of staleness.\n[Ward Lifetime Provided Modifiers] While a ward is near other allied sources of vision (allied wards, structures, and lane minions), its point value will be reduced, starting at -25% for 1 redundancy and worsening up to -75% for 3+ redundancies. Lane minions don't count as redundant if the ward is in brush.\n[Ward Lifetime Provided Modifiers] A ward that's very close to your base can give less score, starting from -0% score around your buff camps and worsening to about -50% score at your base walls.\n[Ward Lifetime Provided Modifiers] A ward that's very close to an allied structure or inside your own base will have a -100% modifier to its point value.\n[Ward Lifetime Provided Modifiers] If a ward is quickly killed by enemies, it will still give lifetime score as if it survived a minimum of 20 seconds (0.33 points)."
+ },
+ {
+  "id": "rule:귀환",
+  "kind": "rule",
+  "title": "Recall",
+  "text": "[Notes] Recall is activated by either clicking on its icon in the HUD or by pressing the selected key bind (B is set to the default).\n[Notes] Recall's channel is interrupted by ground and root.\n[Notes] Recall's channel is not interrupted by taking damage in the final 0.1 seconds before it completes.\n[Notes] Damage fully mitigated by a shield won't cancel Recall.\n[Notes] Death's Dance Ignore Pain damage does not interrupt Recall.\n[Notes] Recall is not visible through the fog of war, but if a Recalling champion was seen Recalling before being obscured from sight, the sound effects can still be heard, but this does not necessarily mean the channel was completed.\n[Notes] When a player disconnects from the game, instead of Recalling, they will manually walk back to their base. After some time, their champion will become completely invincible."
+ },
+ {
+  "id": "mech:저항과-피해-감소",
+  "kind": "mechanics",
+  "title": "저항과 피해 감소",
+  "text": "방어력은 물리 피해, 마법 저항력은 마법 피해를 줄인다. 계산은 동일하다.\n\n```\n받는 피해 = 원래 피해 × 100 / (100 + 저항)\n저항이 음수면 = 원래 피해 × (2 − 100 / (100 − 저항))\n```\n\n핵심은 **실효 체력**이다. 저항 1당 해당 피해 유형에 대한 실효 체력이 1% 늘어난다.\n체력 1000에 방어력 25면 물리 피해에 대한 실효 체력은 1250이고, 원래 피해 1000은 800으로 들어온다.\n\n여기서 조언에 직결되는 두 가지가 나온다.\n\n- **저항은 체력과 곱으로 작동한다.** 체력만 쌓거나 저항만 쌓는 것보다 함께 쌓는 것이 실효 체력을 크게 만든다.\n  탱커 아이템이 체력과 저항을 함께 주는 이유다.\n- **저항은 수익이 체감되지 않는다.** 저항 1당 실효 체력 1%는 저항이 높아도 그대로다.\n  \"마법 저항력을 더 올려도 소용없다\"는 말은 틀렸고, 실제로 소용없게 만드는 것은 아래의 관통과 감소다."
+ },
+ {
+  "id": "mech:관통과-감소,-그리고-적용-순서",
+  "kind": "mechanics",
+  "title": "관통과 감소, 그리고 적용 순서",
+  "text": "같은 \"저항 무시\"처럼 보이지만 성질이 다르다.\n\n| 구분 | 대상 | 효과 범위 |\n|---|---|---|\n| 감소(shred) | 대상의 저항 자체를 깎는다 | **우리 팀 전체**에게 적용 |\n| 관통(penetration) | 계산할 때만 저항을 낮게 본다 | **그 챔피언의 피해**에만 적용 |\n\n적용 순서는 감소가 먼저, 관통이 나중이고 각 단계에서 비율이 고정보다 먼저다.\n\n```\n1) 고정 감소  →  2) 비율 감소  →  3) 비율 관통  →  4) 고정 관통(물리 관통력/치사량)\n```\n\n- 고정 감소는 저항을 음수까지 내릴 수 있지만 비율 감소는 0 아래로 내리지 못한다.\n- 비율 관통과 물리 관통력은 대상 저항이 0 이하면 아무 효과가 없다.\n- 물리 관통력(치사량)은 V14.1 이후 레벨에 비례하지 않는다. 표기된 수치만큼 방어력을 무시한다.\n\n**조언에 쓰는 규칙**\n\n- 상대에게 저항 감소 스킬이 있으면 내 저항 아이템의 값이 실제로 떨어진다.\n  그래서 럼블 E 전기 작살처럼 마법 저항력을 깎는 스킬은 회피 우선순위가 가장 높다.\n- 고정 관통은 저항이 낮은 대상(딜러)에게, 비율 관통은 저항이 높은 대상(탱커)에게 값을 한다.\n  그래서 암살자는 물리 관통력을, 지속 피해형은 비율 관통을 든다."
+ },
+ {
+  "id": "mech:고정-피해",
+  "kind": "mechanics",
+  "title": "고정 피해",
+  "text": "고정 피해는 방어력도 마법 저항력도 줄이지 못한다. 대응 수단은 체력, 회복, 거리 유지뿐이다.\n피오라 패시브 급소와 R, 가렌 R처럼 고정 피해가 주력인 스킬을 상대로 저항 아이템을 먼저 사는 것은 잘못된 조언이다."
+ },
+ {
+  "id": "mech:스킬-가속",
+  "kind": "mechanics",
+  "title": "스킬 가속",
+  "text": "```\n쿨타임 감소율 = 가속 / (100 + 가속)\n최종 쿨타임 = 기본 쿨타임 × 100 / (100 + 가속)\n```\n\n- 가속끼리는 더하기로 쌓인다. 예전 쿨감(곱연산, 40% 상한)과 다르다.\n- 감소율은 100%에 닿지 않는다. 가속 상한은 500(감소율 83.3%)이다.\n- 스킬 가속과 궁극기 가속은 더해지며 합계에 같은 상한이 걸린다.\n\n**조언에 쓰는 규칙**: 쿨타임이 긴 핵심 스킬을 가진 챔피언은 가속의 체감이 크다.\n반대로 쿨타임이 이미 짧은 스킬 위주 챔피언은 가속보다 피해 스탯이 낫다."
+ },
+ {
+  "id": "mech:공격-속도,-치명타",
+  "kind": "mechanics",
+  "title": "공격 속도, 치명타",
+  "text": "- 추가 공격 속도는 기본 공격 속도에 비율로 더해진다.\n- 공격 속도에는 상한이 있고, 상한을 넘긴 초과분은 일부 스킬 계수로만 환산된다.\n- **적의 공격 속도 감소(둔화 계열)는 최종 공격 속도에 곱으로 걸린다.** 그래서 평타 의존 챔피언에게\n  얼어붙은 심장이나 마법사의 최후 같은 공격 속도 감소가 강하게 작동한다.\n- 치명타는 원거리 딜러 아이템군의 축이다. 치명타 확률 아이템은 평타를 여러 번 넣는 챔피언에게만 값을 한다."
+ },
+ {
+  "id": "mech:강인함",
+  "kind": "mechanics",
+  "title": "강인함",
+  "text": "- 군중 제어 지속시간을 줄인다. 상한 100%이고, 어떤 경우에도 지속시간이 0.3초 밑으로는 내려가지 않는다.\n- **같은 그룹끼리는 곱, 다른 그룹끼리는 합**으로 쌓인다. 헤르메스의 발걸음 30%와 전설: 강인함 20%를\n  더해 50%가 되는 것이 아니라 1 − (0.7 × 0.8) = 44%다.\n- 이동기가 없는 챔피언은 군중 제어 한 번에 콤보를 통째로 받는다. 그래서 마법 저항력보다 강인함이 먼저인 경우가 있다."
+ },
+ {
+  "id": "mech:아이템-등급",
+  "kind": "mechanics",
+  "title": "아이템 등급",
+  "text": "| 등급 | 특징 | 데이터 판정 |\n|---|---|---|\n| 소모품·장신구 | 물약, 와드 | `Consumable`, `Trinket` 태그 |\n| 시작 아이템 | 도란 계열, 정글 아이템, 여신의 눈물 | 이름과 가격, 조합 관계 |\n| 기본 | 조합 재료 | 상위 조합만 있고 하위 조합 없음 |\n| 서사 | 부가 효과가 붙기 시작 | 하위·상위 조합 모두 있음 |\n| 전설 | 최종 아이템 | 상위 조합 없음 |\n| 장화 | 이동 속도 전용 계열 | `Boots` 태그 |"
+ },
+ {
+  "id": "mech:아이템-역할군-—-위키의-상점-분류를-쓴다",
+  "kind": "mechanics",
+  "title": "아이템 역할군 — 위키의 상점 분류를 쓴다",
+  "text": "게임 상점은 아이템을 **브루저·탱커·메이지·원거리 딜러·암살자·서포터** 탭으로 나눠 보여준다.\n라이엇 데이터에는 그 분류가 없다.\n\n- CommunityDragon `v1/items.json` 의 `categories` 는 우리 `tags` 와 같아 스탯 종류만 알려준다.\n- 역할군별 상점 탭 에셋을 찾지 못했다(`shop-item-categories.json` 등 404).\n\n**LoL Wiki(Fandom) `Module:ItemData/data` 가 `menu` 필드로 이 분류를 관리한다.**\n`npm run llm:fetch-wiki-items` 로 수집해 `item-wiki-meta.json` 에 저장한다(CC BY-SA).\n\n| 필드 | 내용 |\n|---|---|\n| `menu` | fighter 61, tank 62, mage 75, marksman 63, assassin 54, support 48, movement 23, onhit effects 28, lifesteal vamp 6, armor pen 4, magic pen 1 … |\n| `type` | Legendary 115, Epic 46, Basic 15, Starter 18, Boots 12, Consumable 19, Trinket 7, Prismatic 47(아레나) … |\n| `itemlimit` | 동시 보유 제한 그룹 (예: Hydra) |\n| `nickname` | 별칭 (무한의 대검 = ie) |\n\n숫자 `id` 로 우리 한국어 데이터와 대응된다. 협곡 아이템 254개 중 193개가 매칭되고\n2026년 신규 61개는 위키에 아직 없다. **위키 분류가 있으면 그것을 쓰고, 없으면 스탯 조합으로 추정한다.**\n추정 규칙은 `scripts/llm/lib/itemArchetype.ts` 에 있다.\n\n상점 탭은 한 아이템이 여러 개에 걸린다(칠흑의 양날 도끼 = fighter + assassin).\n그래서 후보 판정은 \"제외 역할군이 하나라도 있으면 배제\" 가 아니라\n\"선호 역할군에 하나라도 걸리면 통과\" 로 한다. 단 아군 보조 아이템은 예외로 무조건 제외한다.\n상점이 기사의 맹세를 탱커 탭에도 올려 두지만 서포터가 아닌 챔피언에게는 값을 하지 못한다.\n\n### 위키가 없을 때의 추정 규칙\n\n| 역할군 | 판정 규칙 |\n|---|---|\n| 서포터 | 오라 태그, 골드 획득 태그, 아군 대상 문구, 아군 지정 필요 |\n| 브루저 | 공격력(스탯 또는 \"추가 공격력\" 문구) + 생존 스탯(체력·방어력·마법 저항력) |\n| 탱커 | 생존 스탯만, 또는 저항과 체력을 함께 주고 치명타가 없음 |\n| 메이지 | 주문력 + 마나·마법 관통·스킬 가속 |\n| 마법 전사 | 주문력 + 체력 |\n| 원거리 딜러 | 치명타, 또는 공격력 + 공격 속도 + 생명력 흡수 |\n| 암살자 | 공격력 + 물리 관통, 생존 스탯 없음 |\n\n판정에서 주의한 예외\n\n- 스테락의 도전은 스탯이 체력뿐이지만 효과가 추가 공격력을 준다. 문구를 읽어 브루저로 넣는다.\n- 마법사의 최후는 마법 저항력을 주지만 공격 속도 아이템이므로 탱커가 아니라 브루저·원거리 딜러다.\n- 기사의 맹세는 방어력과 체력을 주지만 아군 대상 아이템이므로 서포터로만 취급한다.\n- 오른 업그레이드 등으로 같은 이름이 두 번 등장하므로 이름 기준으로 중복을 제거한다."
+ },
+ {
+  "id": "mech:챔피언-분류-—-두-외부-출처를-함께-쓴다",
+  "kind": "mechanics",
+  "title": "챔피언 분류 — 두 외부 출처를 함께 쓴다",
+  "text": "챔피언 분류는 추정하지 않는다. 서로 보완하는 두 출처를 수집해 쓴다.\n\n| 출처 | 알려주는 것 | 수집 명령 |\n|---|---|---|\n| 라이엇 (CommunityDragon) | 역할 태그 순서, 주·부 특성, 피해 유형, 근접·원거리, 플레이스타일 지표 | `npm run llm:fetch-meta` |\n| LoL Wiki (Fandom) | **하위 클래스**(저거너트·스커미셔·다이버 …), **포지션**(탑·정글·미드·바텀·서포터) | `npm run llm:fetch-wiki` |\n\n### 9-1. LoL Wiki 하위 클래스 — 실제 빌드가 갈리는 층\n\nFandom 의 `Module:ChampionData/data` 를 `action=parse` API 로 받아 파싱한다(CC BY-SA).\n라이엇 역할 태그는 `Fighter/Tank` 까지만 알려주는데, 위키는 그 안을 다시 나눈다.\n\n| 클래스 | 하위 클래스 | 수집된 수 |\n|---|---|---|\n| Fighter | Juggernaut, Diver, Skirmisher | 14, 17, 16 |\n| Tank | Vanguard, Warden | 15, 7 |\n| Slayer | Assassin, Skirmisher | 19 |\n| Mage | Burst, Battlemage, Artillery | 18, 11, 7 |\n| Marksman | Marksman | 25 |\n| Controller | Enchanter, Catcher | 12, 10 |\n| — | Specialist(분류 불가) | 14 |\n\n이 층이 필요한 이유는 같은 `Fighter/Tank` 안에서 빌드가 갈리기 때문이다.\n\n- 나서스·다리우스·가렌·세트 = **Juggernaut** → 브루저와 탱커 아이템\n- 레넥톤·카밀 = **Diver** → 브루저와 탱커, 물리 관통도 후보\n- 피오라·잭스·야스오·그웬 = **Skirmisher** → 브루저와 함께 **치명타 아이템도 후보**\n  (야스오가 치명타를 사는 이유가 이 층에서 설명된다)\n- 말파이트·오른 = **Vanguard** → 탱커\n- 브라움 = **Warden** → 탱커와 아군 보조\n- 쓰레쉬 = **Catcher** → 서포터 아이템\n\n포지션도 함께 온다. 탑 46, 미드 43, 정글 41, 서포터 36, 바텀 27이다.\n\"포지션은 데이터에 없다\"는 한계가 이것으로 해소됐다.\n\n170/173 챔피언이 매칭됐고 못 찾은 3종(Locke, Yunara, Zaahen)은 위키에 아직 등재되지 않은 신규 챔피언이다.\n\n### 9-2. 라이엇 데이터 — 피해 유형의 최종 근거\n\n스킬 툴팁으로 피해 유형을 추정하면 틀린다. 나서스가 대표적이다. Q 흡수의 일격은 중첩으로\n피해가 커져 데이터에 계수가 없고, E와 R만 주문력 계수를 가져서 \"AP 챔피언\"으로 읽혔다.\n실제 나서스는 브루저 또는 탱커다.\n\n**라이엇이 직접 붙인 분류가 CommunityDragon 에 있다.**\n`rcp-be-lol-game-data/global/<locale>/v1/champions/<key>.json` 의 필드다.\n\n| 필드 | 내용 | 나서스 값 |\n|---|---|---|\n| `roles` | 순서 있는 역할 태그 | `[\"fighter\",\"tank\"]` |\n| `championTagInfo` | 주·부 특성 | 내구성 / 하이퍼캐리 |\n| `tacticalInfo.damageType` | kPhysical / kMagic / kMixed | **kPhysical** |\n| `tacticalInfo.attackType` | melee / ranged | melee |\n| `playstyleInfo` | damage·durability·crowdControl·mobility·utility (0~3) | 내구도 **3** |\n\n`npm run llm:fetch-meta` 로 173 챔피언분을 수집해\n`public/data/<patch>/llm/champion-riot-meta-<locale>.json` 에 저장한다. 수집 결과 분포는\n물리 78 / 마법 87 / 혼합 8, 근접 90 / 원거리 83이고 주 특성은 기동력 22, 폭발적 피해 17,\n군중 제어 14, 결투가 13, 기본 공격 12 순이다.\n\n### 9-3. 판정 순서\n\n1. **아이템 풀은 위키 하위 클래스가 정한다.** `SUBCLASS_POOLS` 표를 따른다.\n   Specialist(티모·신지드·케일·퀸 등 14종)는 분류 불가이므로 아래의 역할 태그 규칙으로 넘긴다.\n2. **AD/AP 는 라이엇 `damageType` 이 결정한다.** 스킬 계수 추정은 이 값이 없을 때만 쓴다.\n   방어 기준 스탯 판정과 프롬프트의 자동 결론도 이 값을 우선한다.\n3. **근접·원거리는 라이엇 `attackType` 이 결정한다.** 사거리 수치 기준(300)은 예비 수단이다.\n4. **내구도 3 또는 주 특성 \"내구성\" 이면 탱커 아이템을 후보에 더한다.**\n5. **역할 태그는 순서가 의미를 가진다.** 첫 번째가 주 역할이다.\n\n`npm run llm:profiles` 로 판정 결과를 확인한다. 주요 챔피언 판정은 다음과 같다.\n\n| 챔피언 | 라이엇 역할 | 피해 | 주 특성 | 내구 | 판정 |\n|---|---|---|---|---|---|\n| 나서스 | Fighter/Tank | 물리 | 내구성 | 3 | 탱커 → 브루저 |\n| 아트록스 | Fighter | 물리 | 지속 피해 | 3 | 탱커 → 브루저 |\n| 다리우스 | Fighter/Tank | 물리 | 결투가 | 2 | 브루저 → 탱커 |\n| 피오라 | Fighter/Assassin | 물리 | 결투가 | 2 | 브루저 → 탱커 → 암살자 |\n| 말파이트 | Tank/Mage | 마법 | 전투 개시 | 3 | 탱커 → 마법 전사 → 메이지 |\n| 그웬 | Fighter | 마법 | 지속 피해 | 2 | 마법 전사 → 탱커 → 메이지 |\n| 티모 | Marksman/Mage | 마법 | 지속 피해 | 1 | 메이지 → 마법 전사 |\n| 케이틀린 | Marksman | 물리 | 기본 공격 | 1 | 원거리 딜러 → 암살자 → 브루저 |\n| 제드 | Assassin | 물리 | 폭발적 피해 | 1 | 암살자 → 브루저 |\n| 브라움 | Tank/Support | 마법 | 내구성 | 2 | 탱커 → 서포터 |\n\n### 규칙표\n\nddragon 태그 조합은 26가지이고 가장 많은 것이 `Fighter/Tank`(20종), `Fighter/Assassin`(18종)이다.\n순서를 무시하면 오분류가 난다.\n\n- 피오라와 카밀은 `Fighter/Assassin` 이다. 주 역할이 전사이므로 **암살자 아이템이 아니라 브루저 아이템**을 산다.\n  부 역할이 암살자이므로 물리 관통 계열(세릴다의 원한 등)만 후보에 남긴다.\n- 말파이트와 신지드는 `Tank/Mage` 다. 주 역할이 탱커, 부 역할이 마법사인 AP 탱커다.\n- 브라움은 `Tank/Support`, 쓰레쉬는 `Support/Tank` 다. 순서가 다르면 선호가 다르다.\n- 티모는 `Marksman/Mage` 이고 계수가 AP 다. 원거리 딜러 태그지만 메이지 아이템을 산다.\n\n여기에 계수 프로필(AD/AP)을 곱해 최종 풀을 정한다. 규칙은 `championBuildProfile` 에 있다.\n\n| 주 역할 | 조건 | 선호 |\n|---|---|---|\n| Marksman | AD | 원거리 딜러 → 암살자 → 브루저 |\n| Marksman | AP | 메이지 → 마법 전사 |\n| Marksman | 부 역할 Mage, AD 아님 | 메이지 → 원거리 딜러 → 마법 전사 |\n| Support | — | 서포터 → 탱커 → 마법 전사 |\n| Mage | 부 역할 Support | 서포터 → 메이지 → 마법 전사 |\n| Mage | 그 외 | 메이지 → 마법 전사 |\n| Assassin | AD | 암살자 → 브루저 |\n| Assassin | AP | 메이지 → 마법 전사 |\n| Tank | 부 역할 Support | 탱커 → 서포터 |\n| Tank | AP 또는 부 역할 Mage | 탱커 → 마법 전사 → 메이지 |\n| Tank | 그 외 | 탱커 → 브루저 |\n| Fighter | AP + 물리 피해 스킬 보유 | 마법 전사 → 브루저 → 탱커 → 메이지 |\n| Fighter | AP | 마법 전사 → 탱커 → 메이지 |\n| Fighter | 부 역할 Assassin | 브루저 → 탱커 → 암살자 |\n| Fighter | 그 외 | 브루저 → 탱커 |\n\n선호 목록에 없는 전투 역할군은 자동으로 제외된다. AP 챔피언에게 치명타·물리 관통 아이템이,\nAD 챔피언에게 주문력 아이템이 후보로 올라오지 않는다.\n\n여기에 상대 피해 유형으로 방어 스탯을 고르는 규칙을 곱한다.\n아트록스가 피오라를 상대하면 브루저·탱커 역할군 중 방어력을 주는 것이 후보가 된다.\n\n`npm run llm:profiles` 로 판정 결과를 확인할 수 있다."
+ },
+ {
+  "id": "meta:surrender",
+  "kind": "meta",
+  "title": "surrender",
+  "text": "On Summoner's Rift a surrender vote can be called from 15:00. It passes with at least 4 of 5 players (70%); with three or fewer active players it must be unanimous. If a teammate is AFK, the team can surrender from 3:30 with a unanimous vote. A vote stays open for 25 seconds; after a failed vote no new one can start for 3 minutes, and the player who called it cannot call another for 6 minutes."
+ },
+ {
+  "id": "meta:remake",
+  "kind": "meta",
+  "title": "remake",
+  "text": "If a teammate is disconnected or idle for 55 seconds in a row within the first 2:25, the rest of the team can vote to /remake. The vote is available from 0:55 to 2:25, runs for 30 seconds, and passes with at least 30% of connected players (2 of 4); the game then ends with no win or loss. It only works if the team had not given up First Blood before the player disconnected. The leaver gets a loss, an LP loss and a leaver flag."
+ },
+ {
+  "id": "meta:dragon",
+  "kind": "meta",
+  "title": "dragon",
+  "text": "The first elemental drake spawns at 5:00, and the next one spawns 5 minutes after a drake is slain. The element is random; after the second drake the map turns into the third drake's elemental rift and the element stays the same. When a team slays its fourth drake it gains the Dragon Soul, and from then on the Elder Dragon spawns with a 6-minute respawn timer."
+ },
+ {
+  "id": "meta:elder",
+  "kind": "meta",
+  "title": "elder",
+  "text": "Once a team slays its fourth elemental drake and claims the Dragon Soul, the dragon pit spawns the Elder Dragon instead, respawning 6 minutes after it is slain."
+ },
+ {
+  "id": "meta:voidgrubs",
+  "kind": "meta",
+  "title": "voidgrub",
+  "text": "The Voidgrubs (three of them) spawn once in the Baron pit at 8:00 and never respawn. They despawn at 14:45 (14:55 if in combat), and the Rift Herald spawns in the same spot at 15:00."
+ },
+ {
+  "id": "meta:herald",
+  "kind": "meta",
+  "title": "herald",
+  "text": "The Rift Herald spawns once in the Baron pit at 15:00. It despawns at 19:45 (19:55 if in combat), and Baron Nashor spawns in its place at 20:00."
+ },
+ {
+  "id": "meta:baron",
+  "kind": "meta",
+  "title": "baron",
+  "text": "Baron Nashor spawns at 20:00 and respawns 6 minutes after it is slain. Living members of the slaying team get Hand of Baron for 180 seconds: bonus attack damage and ability power, Empowered Recall and an aura that empowers nearby minions. The buff is lost on death."
+ },
+ {
+  "id": "meta:atakhan",
+  "kind": "meta",
+  "title": "atakhan",
+  "text": "Atakhan was removed from the game in patch 26.01 and no longer appears on Summoner's Rift."
+ },
+ {
+  "id": "meta:plating",
+  "kind": "meta",
+  "title": "turret plating",
+  "text": "Outer turrets have five plates; each plate destroyed grants 120 local gold to the champion who broke it and nearby allies. Since patch 26.01 plating is no longer removed at 14:00. As a turret loses plates its resistances go up."
+ },
+ {
+  "id": "meta:inhibitor",
+  "kind": "meta",
+  "title": "inhibitor",
+  "text": "A destroyed inhibitor respawns after 5 minutes. While it is down, the enemy Nexus sends super minions down that lane."
+ },
+ {
+  "id": "meta:minion-waves",
+  "kind": "meta",
+  "title": "minion wave",
+  "text": "Minion waves spawn every 30 seconds starting at 0:30, every 25 seconds from 14:00, and every 20 seconds from 30:00."
+ },
+ {
+  "id": "meta:kill-gold",
+  "kind": "meta",
+  "title": "kill gold",
+  "text": "A champion's base kill bounty is 300 gold until level 6, then +10 per level up to 420. First Blood adds 100 bonus gold. Assist gold is half the kill bounty split among assisters (capped at 50% of the base), and champions who are ahead are worth more and carry a Shut Down bounty."
+ },
+ {
+  "id": "meta:dodge",
+  "kind": "meta",
+  "title": "dodge penalty",
+  "text": "Leaving champion select (dodging) locks you out of all queues: 6 minutes for the first dodge, 30 for the second, 720 from the third (ARAM's first is 15 minutes). In ranked, the first dodge costs 5 LP and each later one 15 LP; in Apex tiers it is 20 LP plus an MMR impact. The tier drops by one every 24 hours, dodging cannot demote you, and LP penalties stack up to -100."
+ },
+ {
+  "id": "meta:duo",
+  "kind": "meta",
+  "title": "duo",
+  "text": "In Ranked Solo/Duo, players below Master can generally duo with the tier directly above or below. Narrower rules apply higher up: Emerald can duo up to Diamond III; Diamond IV–II only with Emerald II–Diamond II; Diamond I only within 200 LP of their division. Master needs a close hidden MMR, and Grandmaster/Challenger-MMR players cannot duo together (in Korea and China this includes Master MMR)."
+ },
+ {
+  "id": "meta:cs",
+  "kind": "meta",
+  "title": "cs",
+  "text": "CS (creep score) counts the minions and monsters you have killed: each minion is 1 point and a full jungle camp is 4 points. You get a minion's gold only by landing the killing blow (last hit). CS per minute is used to gauge how well someone farms."
+ },
+ {
+  "id": "meta:scuttle",
+  "kind": "meta",
+  "title": "scuttle",
+  "text": "Rift Scuttlers spawn at 2:55, one in the top and one in the bottom river. Both must be killed before the respawn timer starts; they respawn 2:30 after being killed, one at a time from then on. Once Baron Nashor spawns at 20:00 they become Voidborn."
+ },
+ {
+  "id": "meta:buffs",
+  "kind": "meta",
+  "title": "blue buff",
+  "text": "The Blue Sentinel and Red Brambleback first spawn at 0:55 and respawn 5 minutes after being killed. If your team saw the camp cleared, the minimap shows its respawn timer."
+ },
+ {
+  "id": "meta:lethality",
+  "kind": "meta",
+  "title": "lethality",
+  "text": "Lethality is flat armor penetration: 20 lethality makes a target with 30 armor take damage as if it had 10. It cannot go below 0 and the target's real armor does not change. Percentage armor penetration ignores a share of armor instead; armor reduction applies before penetration, and percentage before flat in each step."
+ },
+ {
+  "id": "meta:mute",
+  "kind": "meta",
+  "title": "mute",
+  "text": "Use in-game chat commands: /mute name (or all) mutes their chat, /muteping name mutes only their pings, and /mutefull name mutes both. /deafen turns off all chat, pings and emotes and tells your allies. Type the same command again to undo it."
+ },
+ {
+  "id": "meta:ping-limit",
+  "kind": "meta",
+  "title": "ping limit",
+  "text": "You can ping 2–7 times within 5 seconds depending on Honor level; going over locks pings for 6 seconds and longer on repeats. Generic, Alert and Enemy Missing pings are also limited to 3 each per 6 seconds."
+ },
+ {
+  "id": "meta:death-timer",
+  "kind": "meta",
+  "title": "death timer",
+  "text": "On Summoner's Rift the death timer grows with level, from 10 seconds at level 1 to 52.5 seconds at level 18, and from 15 minutes it also grows with game time."
+ }
+]
