@@ -131,6 +131,13 @@ export function readFeedback(): AdvisorFeedback[] {
   }
 }
 
+/** 흘려 보이는 도중 짝이 안 맞은 굵은 글씨 표시를 뗀다. 반쯤 나온 "**" 가 "*" 로 잠깐 보였다. */
+function unfinishedMarkup(text: string): string {
+  let out = text.replace(/\*$/, (star) => (text.endsWith("**") ? star : ""));
+  if ((out.match(/\*\*/g) ?? []).length % 2 === 1) out = out.slice(0, out.lastIndexOf("**"));
+  return out;
+}
+
 export interface SearchRoundOptions {
   /** 검색어를 만들게 할 때 쓸 지시문. */
   querySystem: string;
@@ -192,6 +199,15 @@ export interface UseAdvisorResult {
   /** 모델 없이 코드가 만든 답을 그대로 보여 준다. 동의 전이나 WebGPU 가 없을 때 쓴다. */
   answerWithoutModel: (question: string, answer: string | AdvisorAnswer, notice?: string) => void;
   /**
+   * 질문을 받자마자 말풍선 자리를 띄우고 "생각하는 중" 을 보인다. 답(`answerWithoutModel`·`respond`)이 이 자리를 채운다.
+   * 판정기·노트 찾기가 1~3초 걸리는 동안 화면이 멈춘 것처럼 보이지 않게 한다. 이미 띄운 자리가 있으면 아무것도 안 한다.
+   */
+  begin: (question: string, label: string) => void;
+  /** 질문을 다 풀었는데 띄운 자리를 쓰지 않았으면 걷는다. */
+  settle: () => void;
+  /** 자리를 띄워 두고 답을 찾는 중이거나, 코드가 쓴 답을 흘려 보이는 중 */
+  working: boolean;
+  /**
    * 질문이 무엇을 묻는지 모델에게 묻는다. 화면에는 아무것도 남지 않는다.
    * 모델이 없거나 실패하면 거절하므로 부르는 쪽이 규칙으로 되돌아간다.
    */
@@ -244,6 +260,12 @@ export function useAdvisor(): UseAdvisorResult {
 
   const workerRef = useRef<Worker | null>(null);
   const nextId = useRef(1);
+  /** `begin` 이 띄운 자리. 답이 채우면 비운다. */
+  const pendingRef = useRef<{ userId: number; replyId: number } | null>(null);
+  const [thinking, setThinking] = useState(false);
+  /** 흘려 보이는 중인 코드 답. 멈추면 끝까지 한 번에 보인다. */
+  const revealRef = useRef<{ id: number; full: string; timer: number } | null>(null);
+  const [revealing, setRevealing] = useState(false);
   /** 판정 요청을 기다리는 쪽. 답 id 로 찾는다. */
   const judgeWaiters = useRef(new Map<number, { resolve: (features: Float32Array[]) => void; reject: (error: Error) => void }>());
   /** 받아 둔 판정 헤드. 이름으로 찾는다. */
@@ -393,16 +415,94 @@ export function useAdvisor(): UseAdvisorResult {
    * "모델 없이 써보기" 를 고른 사용자가 코드가 못 답하는 질문을 던지면 실제로 그 일이
    * 벌어졌다. 내려받기를 거절했는데 받아 버리는 셈이라 여기서 막는다.
    */
+  const begin = useCallback((question: string, label: string) => {
+    const trimmed = question.trim();
+    if (!trimmed || pendingRef.current) return;
+    const userId = nextId.current++;
+    const replyId = nextId.current++;
+    pendingRef.current = { userId, replyId };
+    setError(null);
+    setThinking(true);
+    setTurns((prev) => [
+      ...prev,
+      { id: userId, role: "user", content: trimmed },
+      { id: replyId, role: "assistant", content: "", activity: label },
+    ]);
+  }, []);
+
+  /** 답 자리를 연다. `begin` 이 띄운 자리가 있으면 그것을 채우고, 없으면 새로 붙인다. 답의 id 를 돌려준다. */
+  const place = useCallback((question: string, reply: Omit<AdvisorTurn, "id">): number => {
+    const pending = pendingRef.current;
+    pendingRef.current = null;
+    setThinking(false);
+    if (pending) {
+      setTurns((prev) =>
+        prev.map((turn) =>
+          turn.id === pending.userId ? { ...turn, content: question } : turn.id === pending.replyId ? { id: pending.replyId, ...reply } : turn,
+        ),
+      );
+      return pending.replyId;
+    }
+    const userId = nextId.current++;
+    const replyId = nextId.current++;
+    setTurns((prev) => [...prev, { id: userId, role: "user", content: question }, { id: replyId, ...reply }]);
+    return replyId;
+  }, []);
+
+  const settle = useCallback(() => {
+    const pending = pendingRef.current;
+    if (!pending) return;
+    pendingRef.current = null;
+    setThinking(false);
+    setTurns((prev) => prev.filter((turn) => turn.id !== pending.userId && turn.id !== pending.replyId));
+  }, []);
+
+  /** 흘려 보이던 답을 끝까지 한 번에 보인다. */
+  const finishReveal = useCallback(() => {
+    const current = revealRef.current;
+    if (!current) return;
+    window.clearInterval(current.timer);
+    revealRef.current = null;
+    setRevealing(false);
+    setTurns((prev) => prev.map((turn) => (turn.id === current.id ? { ...turn, content: current.full } : turn)));
+  }, []);
+
+  /**
+   * 코드가 쓴 답을 모델이 쓰듯 조금씩 보인다.
+   *
+   * 다 된 글이 한 번에 뜨면 앞의 기다림과 이어져 "멈췄다가 빡 뜬다" 로 읽혔다. 길이와 상관없이 2초 안에 끝나게
+   * 한 번에 내보낼 글자 수를 정한다(짧으면 두 글자씩).
+   */
+  const reveal = useCallback((id: number, full: string) => {
+    finishReveal();
+    if (!full) return;
+    const step = Math.max(2, Math.ceil(full.length / 90));
+    let shown = 0;
+    const timer = window.setInterval(() => {
+      shown = Math.min(full.length, shown + step);
+      // 이모지 같은 두 칸 글자를 반으로 자르지 않는다
+      if (shown < full.length && /[\uD800-\uDBFF]/.test(full[shown - 1])) shown += 1;
+      const text = shown >= full.length ? full : unfinishedMarkup(full.slice(0, shown));
+      setTurns((prev) => prev.map((turn) => (turn.id === id ? { ...turn, content: text } : turn)));
+      if (shown >= full.length) {
+        window.clearInterval(timer);
+        revealRef.current = null;
+        setRevealing(false);
+      }
+    }, 20);
+    revealRef.current = { id, full, timer };
+    setRevealing(true);
+  }, [finishReveal]);
+
+  useEffect(() => () => window.clearInterval(revealRef.current?.timer), []);
+
   const refuseWithoutConsent = useCallback((question: string, notice: string): boolean => {
     if (consented) return false;
     setError(null);
-    setTurns((prev) => [
-      ...prev,
-      { id: nextId.current++, role: "user", content: question },
-      { id: nextId.current++, role: "assistant", content: notice },
-    ]);
+    const id = place(question, { role: "assistant", content: "" });
+    reveal(id, notice);
     return true;
-  }, [consented]);
+  }, [consented, place, reveal]);
 
   /**
    * 모델이 답을 쓰는 유일한 길.
@@ -425,15 +525,9 @@ export function useAdvisor(): UseAdvisorResult {
       if (!trimmed) return;
       if (plan.withoutConsent !== undefined && refuseWithoutConsent(trimmed, plan.withoutConsent)) return;
       const { system, answer, notice, maxTokens, search } = plan;
-      const userId = nextId.current++;
-      const replyId = nextId.current++;
       setError(null);
       setStatus("generating");
-      setTurns((prev) => [
-        ...prev,
-        { id: userId, role: "user", content: trimmed },
-        { id: replyId, role: "assistant", content: "", answer, notice, activity: search?.labels.searching },
-      ]);
+      const replyId = place(trimmed, { role: "assistant", content: "", answer, notice, activity: search?.labels.searching });
 
       /** 진짜 답. 찾은 자료가 있으면 덧붙인다. */
       const write = (systemText: string) =>
@@ -498,7 +592,7 @@ export function useAdvisor(): UseAdvisorResult {
       worker.addEventListener("message", onDone);
       askForQuery();
     },
-    [ensureWorker, post, model, refuseWithoutConsent],
+    [ensureWorker, post, model, refuseWithoutConsent, place],
   );
 
   /**
@@ -555,13 +649,15 @@ export function useAdvisor(): UseAdvisorResult {
   const answerWithoutModel = useCallback(
     (question: string, answer: string | AdvisorAnswer, notice?: string) => {
       setError(null);
-      const reply: AdvisorTurn =
+      // 카드는 바로, 글은 흘려서 보인다(`reveal`)
+      const full = typeof answer === "string" ? answer : answerProse(answer, lang);
+      const id =
         typeof answer === "string"
-          ? { id: nextId.current++, role: "assistant", content: answer, notice }
-          : { id: nextId.current++, role: "assistant", content: answerProse(answer, lang), answer, notice, byCode: true };
-      setTurns((prev) => [...prev, { id: nextId.current++, role: "user", content: question }, reply]);
+          ? place(question, { role: "assistant", content: "", notice })
+          : place(question, { role: "assistant", content: "", answer, notice, byCode: true });
+      reveal(id, full);
     },
-    [lang],
+    [lang, place, reveal],
   );
 
   /** 판정 헤드를 한 번만 받아 둔다. 실패하면 다음에 다시 받는다. */
@@ -661,21 +757,28 @@ export function useAdvisor(): UseAdvisorResult {
   }, [lang]);
 
   const stop = useCallback(() => {
+    finishReveal();
     workerRef.current?.postMessage({ type: "stop" } satisfies AdvisorRequest);
     setStatus("ready");
-  }, []);
+  }, [finishReveal]);
 
   const reset = useCallback(() => {
+    finishReveal();
+    pendingRef.current = null;
+    setThinking(false);
     setTurns([]);
     setError(null);
-  }, []);
+  }, [finishReveal]);
 
   const replaceTurns = useCallback((next: AdvisorTurn[]) => {
+    finishReveal();
+    pendingRef.current = null;
+    setThinking(false);
     const maxId = next.reduce((max, turn) => Math.max(max, turn.id), 0);
     if (maxId >= nextId.current) nextId.current = maxId + 1;
     setTurns(next);
     setError(null);
-  }, []);
+  }, [finishReveal]);
 
   /**
    * 올려 둔 모델을 내린다.
@@ -749,6 +852,9 @@ export function useAdvisor(): UseAdvisorResult {
     respond,
     judge,
     answerWithoutModel,
+    begin,
+    settle,
+    working: thinking || revealing,
     classify,
     rate,
     deleteModel,
