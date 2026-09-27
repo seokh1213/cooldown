@@ -142,21 +142,7 @@ export function AdvisorTurnView(props: AdvisorTurnViewProps) {
         turn.role === "assistant" ? (
           <>
             <AdvisorMarkdown text={turn.content} />
-            {turn.related?.length ? (
-              <div className="mt-2 flex flex-wrap gap-1.5">
-                {turn.related.map((doc) => (
-                  <button
-                    key={doc.id}
-                    type="button"
-                    disabled={busy}
-                    onClick={() => props.onShowDoc(doc.id, doc.title)}
-                    className="rounded-md border bg-background px-2.5 py-1 text-xs font-medium transition-colors hover:border-primary/50 hover:bg-muted disabled:opacity-50"
-                  >
-                    {doc.title}
-                  </button>
-                ))}
-              </div>
-            ) : null}
+            {turn.related?.length ? <RelatedDocs docs={turn.related} busy={busy} onShowDoc={props.onShowDoc} /> : null}
           </>
         ) : (
           <span className="whitespace-pre-wrap">{turn.content}</span>
@@ -171,29 +157,61 @@ export function AdvisorTurnView(props: AdvisorTurnViewProps) {
           </span>
         )
       )}
-      {/*
-        무엇을 보고 답했는지 밝힌다. "자료에 있는 것만 답한다" 가 설계인데
-        어느 자료인지 안 보이면 사용자가 맞는지 가릴 수 없다. 엉뚱한 자료를
-        물어 왔을 때도 그 사실이 드러나야 한다.
-
-        "근거" 가 아니라 "찾은 자료" 다. 상위 세 건을 다 실어 놓고 어느 것이
-        답인지는 모델이 고르므로, 답에 안 쓰인 것도 섞여 있다.
-      */}
-      {turn.role === "assistant" && turn.sources && turn.sources.length > 0 && (
-        <div className="mt-2 flex flex-wrap items-center gap-1 border-t pt-2 text-[11px] text-muted-foreground">
-          <span>{copy.sources}</span>
-          {turn.sources.map((source) => (
-            <span key={source} className="rounded bg-background px-1.5 py-0.5">
-              {source}
-            </span>
-          ))}
-        </div>
-      )}
+      {turn.role === "assistant" && turn.sources && turn.sources.length > 0 && <TurnSources sources={turn.sources} />}
       {/* 카드 없는 답(규칙)의 바로 가기. 카드가 있는 답은 자료 칩 옆에 이미 붙였다. */}
       {turn.role === "assistant" && linkButtons.length > 0 && !asReference && (
         <div className="mt-2 flex flex-wrap gap-1.5">{linkButtons}</div>
       )}
       {turn.role === "assistant" && (turn.content || turn.answer) && <TurnFooter turn={turn} patch={patch} onRate={props.onRate} />}
+    </div>
+  );
+}
+
+/** "혹시 이 자료를?" 에 붙는 자료 단추. 누르면 그 자료를 보인다. */
+function RelatedDocs({
+  docs,
+  busy,
+  onShowDoc,
+}: {
+  docs: NonNullable<AdvisorTurn["related"]>;
+  busy: boolean;
+  onShowDoc: AdvisorTurnViewProps["onShowDoc"];
+}) {
+  return (
+    <div className="mt-2 flex flex-wrap gap-1.5">
+      {docs.map((doc) => (
+        <button
+          key={doc.id}
+          type="button"
+          disabled={busy}
+          onClick={() => onShowDoc(doc.id, doc.title)}
+          className="rounded-md border bg-background px-2.5 py-1 text-xs font-medium transition-colors hover:border-primary/50 hover:bg-muted disabled:opacity-50"
+        >
+          {doc.title}
+        </button>
+      ))}
+    </div>
+  );
+}
+
+/*
+  무엇을 보고 답했는지 밝힌다. "자료에 있는 것만 답한다" 가 설계인데
+  어느 자료인지 안 보이면 사용자가 맞는지 가릴 수 없다. 엉뚱한 자료를
+  물어 왔을 때도 그 사실이 드러나야 한다.
+
+  "근거" 가 아니라 "찾은 자료" 다. 상위 세 건을 다 실어 놓고 어느 것이
+  답인지는 모델이 고르므로, 답에 안 쓰인 것도 섞여 있다.
+*/
+function TurnSources({ sources }: { sources: string[] }) {
+  const { t } = useTranslation();
+  return (
+    <div className="mt-2 flex flex-wrap items-center gap-1 border-t pt-2 text-[11px] text-muted-foreground">
+      <span>{t.advisor.sources}</span>
+      {sources.map((source) => (
+        <span key={source} className="rounded bg-background px-1.5 py-0.5">
+          {source}
+        </span>
+      ))}
     </div>
   );
 }
