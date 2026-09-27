@@ -14,9 +14,9 @@
  * 여기서 다루는 것은 `situational-item` 한 갈래다. "무엇을 올려야 하는가" 는
  * 질문이 가장 잦으면서 답이 전부 카드에서 나오는 갈래라 먼저 옮긴다.
  */
-import type { ChampionCard, DamageType, SpellFact } from "../../../src/lib/knowledge/facts";
-import { josa } from "../../../src/lib/knowledge/text";
-import { CROWD_CONTROL_TAGS } from "../../../src/lib/knowledge/facts-analysis";
+import type { ChampionCard, DamageType, SpellFact } from "./facts";
+import { josa } from "./text";
+import { CROWD_CONTROL_TAGS } from "./facts-analysis";
 
 /** 저항을 올려도 값이 깎이는 사유. 노트의 "단서" 문장이 되는 것들이다. */
 export type Discount = "저항 감소" | "관통" | "고정 피해" | "최대 체력 비례" | "처형";

@@ -21,8 +21,8 @@ import {
   renderEscapeClaims,
   renderItemClaims,
   renderStackClaims,
-} from "./llm/lib/claims";
-import { deriveMatchupClaims, renderMatchupClaims } from "./llm/lib/matchupClaims";
+} from "../src/lib/knowledge/claims";
+import { deriveMatchupClaims, renderMatchupClaims } from "../src/lib/knowledge/matchupClaims";
 
 const llmDir = path.join(PUBLIC_DATA_ROOT, resolvePatchVersion(), "llm");
 const cards = (

@@ -11,7 +11,7 @@
  */
 import * as fs from "fs";
 import * as path from "path";
-import { toPoliteText } from "./lib/politeStyle";
+import { toPoliteText } from "../../src/lib/knowledge/politeStyle";
 
 const ROOT = path.resolve(process.cwd(), "knowledge", "playbooks");
 const WRITE = process.argv.includes("--write");

@@ -26,7 +26,7 @@ import type { AdvisorAnswer } from "./answer";
 import type { Language } from "@/i18n";
 import { promptWords, translateDamage, translateScaling, translateTag } from "./promptLocale";
 import { advisorSystemPrompt } from "./persona";
-import { toPoliteSentence } from "../../../scripts/llm/lib/politeStyle";
+import { toPoliteSentence } from "@/lib/knowledge/politeStyle";
 import { labelSlots } from "./slotLabels";
 
 /**

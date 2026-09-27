@@ -22,7 +22,7 @@ import { connectorAnswer, connectorData, connectorPrompt, parseConnector, sectio
 import type { MatchupNotes } from "../../src/lib/advisor/answer";
 import { buildCommentaryPrompt } from "../../src/lib/advisor/commentaryPrompt";
 import { atomSections, eligibleNotes, renderSections, type Candidate } from "./lib/atomAssembly";
-import type { Playbook } from "./lib/playbookCore";
+import type { Playbook } from "../../src/lib/knowledge/playbookCore";
 import type { AtomFile } from "./build-note-atoms";
 import { resolvePatchVersion } from "./lib/data";
 

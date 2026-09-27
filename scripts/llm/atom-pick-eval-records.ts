@@ -9,7 +9,7 @@
 import * as fs from "fs";
 import type { ChampionCard } from "../../src/lib/knowledge/facts";
 import type { MatchupNotes } from "../../src/lib/advisor/answer";
-import type { Playbook } from "./lib/playbookCore";
+import type { Playbook } from "../../src/lib/knowledge/playbookCore";
 import { atomCandidates, eligibleNotes } from "./lib/atomAssembly";
 import { connectorAnswer, connectorData } from "./build-connector-data";
 import { pickRecord, MAX_OPTIONS } from "./build-atom-pick-data";

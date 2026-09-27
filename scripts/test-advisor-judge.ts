@@ -8,7 +8,7 @@ import assert from "node:assert/strict";
 import * as fs from "node:fs";
 import * as path from "node:path";
 import type { ChampionCard } from "../src/lib/knowledge/facts";
-import type { Playbook } from "./llm/lib/playbookCore";
+import type { Playbook } from "../src/lib/knowledge/playbookCore";
 import { PUBLIC_DATA_ROOT, resolvePatchVersion } from "./llm/lib/data";
 import { encodeJudgeRow, readJudgeHead, scoreJudge, type JudgeHeadMeta } from "../src/lib/advisor/judge";
 import { JUDGE_KIND_INSTRUCTIONS, JUDGE_MINE_INSTRUCTIONS, routeFromJudge } from "../src/lib/advisor/routeAsk";

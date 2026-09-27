@@ -4,7 +4,7 @@
  * 노트 원본을 통째로 고치는 변환이라, 규칙이 어긋나면 9천 문장이 한꺼번에 상한다.
  * 실제 노트에서 가장 많이 나온 종결 스물다섯 가지를 그대로 담는다.
  */
-import { toPoliteSentence, toPoliteText } from "./llm/lib/politeStyle";
+import { toPoliteSentence, toPoliteText } from "../src/lib/knowledge/politeStyle";
 
 const CASES: Array<[string, string]> = [
   // ~ㄴ다 (모음 어간 동사)

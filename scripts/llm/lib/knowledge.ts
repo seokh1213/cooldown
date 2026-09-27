@@ -7,9 +7,9 @@
 import * as fs from "fs";
 import * as path from "path";
 
-import type { CuratedTip, CuratedTipFile } from "./knowledgeCore";
+import type { CuratedTip, CuratedTipFile } from "../../../src/lib/knowledge/knowledgeCore";
 
-export * from "./knowledgeCore";
+export * from "../../../src/lib/knowledge/knowledgeCore";
 
 export const KNOWLEDGE_ROOT = path.resolve(process.cwd(), "knowledge", "tips");
 

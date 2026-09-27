@@ -12,7 +12,7 @@
  * 결과는 `window.__matchupEval` 에도 남는다.
  */
 import type { ChampionCard } from "../../src/lib/knowledge/facts";
-import type { Playbook } from "./lib/playbookCore";
+import type { Playbook } from "../../src/lib/knowledge/playbookCore";
 import type { AdvisorData } from "../../src/lib/advisor/context";
 import { ADVISOR_MODEL } from "../../src/lib/advisor/config";
 import type { AdvisorRequest, AdvisorResponse } from "../../src/lib/advisor/protocol";

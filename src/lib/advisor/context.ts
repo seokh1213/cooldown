@@ -18,13 +18,13 @@ import type { ChampionCard } from "@/lib/knowledge/facts";
 import { aliasAt } from "@/lib/knowledge/searchAliases";
 import { askedRuleKinds } from "@/lib/knowledge/rules";
 import itemAliasFile from "../../../knowledge/item-aliases.json";
-import type { CuratedTip } from "../../../scripts/llm/lib/knowledgeCore";
+import type { CuratedTip } from "@/lib/knowledge/knowledgeCore";
 import {
   indexRules,
   type RuleIndex,
   type RuleNotes,
 } from "@/lib/knowledge/rules";
-import type { Playbook } from "../../../scripts/llm/lib/playbookCore";
+import type { Playbook } from "@/lib/knowledge/playbookCore";
 import {
   findMechanics,
   mechanicsToText,

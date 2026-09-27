@@ -4,8 +4,8 @@
  * 파일을 읽는 부분은 `playbook.ts` 에 남기고, 조건 판정과 문장 조립만 여기 둔다.
  * 브라우저 상성 코치가 같은 규칙으로 지식 카드를 고르게 하려면 이 코드가 fs 를 몰라야 한다.
  */
-import type { ChampionCard } from "../../../src/lib/knowledge/facts";
-import { hasFinalConsonant, josa } from "../../../src/lib/knowledge/text";
+import type { ChampionCard } from "./facts";
+import { hasFinalConsonant, josa } from "./text";
 
 export interface PlaybookCondition {
   /** 상대 주 피해 유형 */

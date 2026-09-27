@@ -14,8 +14,8 @@ import * as path from "path";
 import { PUBLIC_DATA_ROOT, resolvePatchVersion } from "./lib/data";
 import { loadCuratedTips } from "./lib/knowledge";
 import { loadPlaybooks } from "./lib/playbook";
-import type { CuratedTip } from "./lib/knowledgeCore";
-import type { Playbook, PlaybookEntry } from "./lib/playbookCore";
+import type { CuratedTip } from "../../src/lib/knowledge/knowledgeCore";
+import type { Playbook, PlaybookEntry } from "../../src/lib/knowledge/playbookCore";
 import type { ChampionCard } from "../../src/lib/knowledge/facts";
 import {
   deriveEscapeClaims,
@@ -24,7 +24,7 @@ import {
   renderEscapeClaims,
   renderItemClaims,
   renderStackClaims,
-} from "./lib/claims";
+} from "../../src/lib/knowledge/claims";
 import type { RuleNotes } from "../../src/lib/knowledge/rules";
 import { parseMechanics, type MechanicsIndex } from "../../src/lib/knowledge/mechanics";
 

@@ -7,9 +7,9 @@
  */
 import * as fs from "fs";
 import * as path from "path";
-import type { Playbook } from "./playbookCore";
+import type { Playbook } from "../../../src/lib/knowledge/playbookCore";
 
-export * from "./playbookCore";
+export * from "../../../src/lib/knowledge/playbookCore";
 
 export const PLAYBOOK_ROOT = path.resolve(process.cwd(), "knowledge", "playbooks");
 

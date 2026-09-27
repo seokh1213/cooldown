@@ -11,7 +11,7 @@ import { matchupDigest } from "../../src/lib/advisor/prose";
 import { connectorAnswer, connectorData } from "./build-connector-data";
 import { atomSections, eligibleNotes, renderSections, type Candidate } from "./lib/atomAssembly";
 import type { AtomFile } from "./build-note-atoms";
-import type { Playbook } from "./lib/playbookCore";
+import type { Playbook } from "../../src/lib/knowledge/playbookCore";
 import { evalItems, focusOf } from "./eval-connector";
 import { FOCUSED, FOCUSED_HOLDOUT, FOCUSED_HOLDOUT2 } from "./lib/matchupEval";
 

@@ -21,7 +21,7 @@ import type { Language } from "../../../src/i18n";
 import { labelSlots } from "../../../src/lib/advisor/slotLabels";
 import type { Atom, AtomFile } from "../build-note-atoms";
 import type { ChampionCard } from "../../../src/lib/knowledge/facts";
-import { selectPlaybook, type Playbook } from "./playbookCore";
+import { selectPlaybook, type Playbook } from "../../../src/lib/knowledge/playbookCore";
 
 /**
  * 조건이 맞는 노트의 id. 원자는 노트의 적용 조건(when: 상대가 회복형이면 …)을 물려받지 않았다.

@@ -32,7 +32,7 @@ import {
   type Slot,
 } from "./lib/patchHistory";
 import { loadPlaybooks } from "./lib/playbook";
-import type { PlaybookEntry } from "./lib/playbookCore";
+import type { PlaybookEntry } from "../../src/lib/knowledge/playbookCore";
 
 export const DRIFT_FILE = "knowledge-drift.json";
 

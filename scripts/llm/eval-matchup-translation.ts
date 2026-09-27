@@ -16,7 +16,7 @@ import * as fs from "fs";
 import * as os from "os";
 import * as path from "path";
 import type { ChampionCard } from "../../src/lib/knowledge/facts";
-import type { Playbook } from "./lib/playbookCore";
+import type { Playbook } from "../../src/lib/knowledge/playbookCore";
 import { PUBLIC_DATA_ROOT, resolvePatchVersion } from "./lib/data";
 import type { AdvisorData } from "../../src/lib/advisor/context";
 import { matchupNotes } from "../../src/lib/advisor/playbookNotes";

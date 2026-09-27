@@ -1,6 +1,6 @@
 import { CC_TAGS, has, readProfile } from "./claims";
-import type { ChampionCard, DamageType } from "../../../src/lib/knowledge/facts";
-import { josa } from "../../../src/lib/knowledge/text";
+import type { ChampionCard, DamageType } from "./facts";
+import { josa } from "./text";
 
 /* ------------------------------------------------------------------ *
  * 상성

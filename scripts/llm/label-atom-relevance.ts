@@ -11,7 +11,7 @@ import { spawn } from "child_process";
 import * as fs from "fs";
 import * as os from "os";
 import { atomSections, eligibleNotes } from "./lib/atomAssembly";
-import type { Playbook } from "./lib/playbookCore";
+import type { Playbook } from "../../src/lib/knowledge/playbookCore";
 import type { AtomFile } from "./build-note-atoms";
 import type { ChampionCard } from "../../src/lib/knowledge/facts";
 import type { MatchupNotes } from "../../src/lib/advisor/answer";
