@@ -19,7 +19,7 @@ import * as crypto from "crypto";
 import * as fs from "fs";
 import * as path from "path";
 import type { ChampionCard } from "./facts";
-import { withoutNumbers } from "./facts-analysis";
+import { withoutNumbers } from "./tooltip-sentences";
 
 export const FINGERPRINT_FILE = path.resolve(process.cwd(), "knowledge", "champion-fingerprints.json");
 

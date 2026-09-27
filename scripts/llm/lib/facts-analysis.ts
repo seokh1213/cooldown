@@ -1,6 +1,5 @@
-import type { ChampionAbility } from "./data";
-import type { DamageType, ScalingProfile, SpellFact } from "./facts";
-import { round } from "./text";
+import type { DamageType } from "./facts";
+import { isMinionOnly, splitSentences, withoutNumbers } from "./tooltip-sentences";
 
 /**
  * 저항 감소는 **적의 저항이 줄 때만** 센다.
@@ -163,21 +162,6 @@ function grantsImmunity(sentence: string): boolean {
 function gainsStealth(sentence: string): boolean {
   if (!/은신|투명 상태|모습을 감/.test(sentence)) return false;
   return !/드러|해제|아닌|밝혀|감지|보입니다/.test(sentence);
-}
-
-/**
- * 수치 표기를 지운다.
- *
- * 한국어 툴팁은 "A와 B를 얻습니다" 처럼 동사가 절 끝에 온다. 그 사이에 괄호 계수와
- * 등급별 수치가 끼면 낱말 거리가 수십 자로 벌어진다.
- *
- *   람머스 W  "방어력을 (35.1/44/… + (30/…% 방어력)), 마법 저항력을 (…) 얻고"
- *   브라이어 Q "방어력 및 마법 저항력을 10/12.5/15/17.5/20% 감소시킵니다"
- *
- * 창을 넓히면 상관없는 뒷절까지 들어온다. 재기 전에 수치를 지워 낱말만 남긴다.
- */
-export function withoutNumbers(sentence: string): string {
-  return sentence.replace(/\([^()]*(?:\([^()]*\)[^()]*)*\)/g, " ").replace(/[\d.,/~%\s]{2,}/g, " ");
 }
 
 function shredsEnemy(text: string, word: "방어력" | "마법 저항력"): boolean {
@@ -417,78 +401,6 @@ export function detectDamageTypes(text: string): DamageType[] {
   return types;
 }
 
-/** "(105% 주문력)", "(50% 추가 공격력)", "최대 체력의 8%" 같은 계수 표기를 스탯별 최대값으로 수집 */
-const RATIO_STATS =
-  "주문력|추가 공격력|공격력|총 공격력|추가 체력|최대 체력|체력|추가 방어력|방어력|추가 마법 저항력|마법 저항력|추가 공격 속도";
-const RATIO_PAREN_RE = new RegExp(`\\((\\d+(?:\\.\\d+)?)% (${RATIO_STATS})\\)`, "g");
-const RATIO_MAXHP_RE = /(?:최대|추가) 체력의 ([\d./]+)%/g;
-
-export function detectRatios(text: string): Record<string, number> {
-  const out: Record<string, number> = {};
-  for (const m of text.matchAll(RATIO_PAREN_RE)) {
-    const value = Number(m[1]);
-    const stat = m[2];
-    out[stat] = Math.max(out[stat] ?? 0, value);
-  }
-  for (const m of text.matchAll(RATIO_MAXHP_RE)) {
-    // "6/6.5/7/7.5/8" → 최대 랭크 값
-    const parts = m[1].split("/").map(Number).filter((n) => !Number.isNaN(n));
-    if (parts.length) out["최대 체력"] = Math.max(out["최대 체력"] ?? 0, parts[parts.length - 1]);
-  }
-  return out;
-}
-
-/**
- * 시뮬레이션 항(structured terms)에서 계수를 뽑는다.
- * 툴팁 정규식보다 정확하므로 값이 있으면 이쪽을 우선한다.
- */
-const SIM_STAT_LABEL: Record<string, string> = {
-  abilityPower: "주문력",
-  bonusAttackDamage: "추가 공격력",
-  totalAttackDamage: "공격력",
-  bonusHealth: "추가 체력",
-  maxHealth: "최대 체력",
-  bonusArmor: "추가 방어력",
-  armor: "방어력",
-  bonusMagicResist: "추가 마법 저항력",
-  magicResist: "마법 저항력",
-};
-
-export function ratiosFromSimulation(ability: ChampionAbility): Record<string, number> {
-  const out: Record<string, number> = {};
-  const terms = ability.simulation?.primary?.terms ?? [];
-  for (const term of terms) {
-    const label = SIM_STAT_LABEL[term.stat];
-    if (!label) continue;
-    const values = term.coefficientsByRankAndLevel?.flat() ??
-      term.coefficientsByLevel ??
-      term.coefficientsByRank ??
-      [];
-    const max = Math.max(...values.filter((n) => Number.isFinite(n)), 0);
-    if (max <= 0) continue;
-    out[label] = Math.max(out[label] ?? 0, round(max * 100, 1));
-  }
-  return out;
-}
-
-export function buildScalingProfile(spells: SpellFact[]): ScalingProfile {
-  let apSpells = 0;
-  let adSpells = 0;
-  let healthSpells = 0;
-  for (const s of spells) {
-    const keys = Object.keys(s.ratios);
-    if (keys.includes("주문력")) apSpells += 1;
-    if (keys.some((k) => /공격력/.test(k))) adSpells += 1;
-    if (keys.some((k) => /체력/.test(k))) healthSpells += 1;
-  }
-  let primary: ScalingProfile["primary"] = "없음";
-  if (apSpells === 0 && adSpells === 0) primary = healthSpells > 0 ? "체력" : "없음";
-  else if (apSpells >= adSpells * 2) primary = "AP";
-  else if (adSpells >= apSpells * 2) primary = "AD";
-  else primary = "혼합";
-  return { apSpells, adSpells, healthSpells, primary };
-}
-
 /**
  * 군중 제어 태그는 문장 단위로 판정한다.
  *
@@ -507,96 +419,6 @@ const CHAMPION_RELEVANT_TAGS = new Set([
   "강제 이동(넉백/끌기)",
   "둔화",
 ]);
-
-function splitSentences(text: string): string[] {
-  return text
-    .split(/(?<=니다\.?)\s+|(?<=[.!?])\s+/)
-    .map((s) => s.trim())
-    .filter(Boolean);
-}
-
-function isMinionOnly(sentence: string): boolean {
-  const mentionsMinion = /미니언|몬스터/.test(sentence);
-  // 복수형을 빠뜨리면 안 된다. 클레드 E 의 "경로 상에 있는 적들에게 … 물리 피해를
-  // 입히고, 미니언과 작은 몬스터를 …" 가 통째로 미니언 전용으로 걸러져 피해 유형이
-  // 사라졌다. 이 판정은 회복·체력 비례·은신·피해 면역이 모두 함께 쓴다.
-  const mentionsChampion = /챔피언|적들|적에게|적을|적이|대상/.test(sentence);
-  return mentionsMinion && !mentionsChampion;
-}
-
-/**
- * 이 스킬로 움직이는 것이 챔피언 자신인가.
- *
- * **낱말만 보면 안 된다.** "적에게 날아가는 여우불"(아리 W), "매를 날려 보내"(애쉬 E),
- * "아군이 쓰레쉬에게 돌진합니다"(쓰레쉬 W) 가 전부 이동기로 잡혀 있었다. 그 탓에
- * "상대는 이동기가 없어 접근하면 이탈이 어렵다" 라는 근거가 반대로 나갔다.
- *
- * 그래서 **주어를 본다.** 챔피언 이름이 주격으로 나오는 문장에서 자기 이동 동사가 나와야 한다.
- * 앞에 다른 주어가 있으면 그쪽이 움직이는 것이다.
- */
-// 어간 뒤 활용형을 요구한다. 관형형(-는)은 남의 동작을 꾸미는 말이라 뺀다.
-// "돌진 도중"(야스오 Q)은 명사, "돌진하는 적을 막습니다"(뽀삐 W)는 남의 돌진이다.
-const SELF_MOVE_VERBS =
-  /돌진[하해합했한](?!는)|돌격[하해합했한](?!는)|도약[하해합했한](?!는)|도약\s?후|비행하(?!는)|활공하(?!는)|하늘을 날|미끄러지|몸을 날[려립]|순간이동|순간적으로 이동|뒤로 밀려|쪽으로 끌려|향해 끌려/;
-// 주격(이/가)뿐 아니라 주제(은/는)도 주어 자리다.
-const OTHER_SUBJECT = /(아군|적|대상|미니언|몬스터|소환수|랜턴|이 스킬|챔피언)[이가은는]\s/g;
-
-/**
- * 이 스킬로 **누군가가** 돌진하는가.
- *
- * `이동기` 와 묻는 것이 다르다. 쓰레쉬 W 어둠의 통로는 쓰레쉬가 아니라 아군이 돌진하지만,
- * 그 돌진은 뽀삐 W 굳건한 태세로 막힌다. 시전자가 움직이느냐(이탈·진입 판단)와
- * 돌진 판정이 생기느냐(차단 가능 여부)는 별개 질문이라 태그를 나눈다.
- *
- * 한계: 리엇 내부의 대시 판정이 아니라 한국어 툴팁 서술을 본다. 툴팁이 "돌진" 이라
- * 쓰지 않는 이동기(아크샨 E 갈고리)는 잡지 못한다.
- */
-const DASH_VERBS = /돌진[하해합했한]|돌격[하해합했한]|도약[하해합했한]|도약\s?후|뛰어[오올]|몸을 날[려립]/;
-// "돌진하는 적을 막습니다"(뽀삐 W) 는 남의 돌진을 막는 쪽이라 제 스킬의 돌진이 아니다.
-const DASH_REACTION = /돌진하는[^.]{0,20}(막|차단|저지|멈추)/;
-
-export function abilityCausesDash(text: string): boolean {
-  return splitSentences(text).some(
-    (sentence) => DASH_VERBS.test(sentence) && !DASH_REACTION.test(sentence),
-  );
-}
-
-/** 당하는 쪽이 반드시 적히는 피동 이동. 주어 생략 추정을 적용하지 않는다. */
-const PASSIVE_MOVE = /밀려|끌려/;
-
-export function championMovesItself(text: string, championName: string): boolean {
-  const escaped = championName.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-  const subject = new RegExp(`${escaped}(?:이|가|은|는)`, "g");
-  const verbs = new RegExp(SELF_MOVE_VERBS.source, "g");
-  for (const sentence of splitSentences(text)) {
-    for (const verb of sentence.matchAll(verbs)) {
-      const at = verb.index ?? 0;
-      // **동사에 가장 가까운 주어가 그 동작의 주체다.**
-      // 쓰레쉬 W 는 "쓰레쉬가 ... 아군이 ... 돌진합니다" 라 등장 순서만 봐서는 틀린다.
-      const lastBefore = (re: RegExp): number => {
-        let best = -1;
-        for (const m of sentence.matchAll(re)) {
-          const i = m.index ?? 0;
-          if (i < at && i > best) best = i;
-        }
-        return best;
-      };
-      const mine = lastBefore(subject);
-      const other = lastBefore(OTHER_SUBJECT);
-      // 한국어 툴팁은 시전자가 주어면 생략한다("대상을 뚫고 돌진하여" — 야스오 E).
-      // 단, 피동으로 밀리거나 끌려가는 서술은 당하는 쪽이 반드시 적혀 있으므로
-      // 주어가 없다고 시전자로 보면 안 된다. 능동 이동 동사에만 생략을 인정한다.
-      if (mine < 0 && other < 0) {
-        if (PASSIVE_MOVE.test(verb[0])) continue;
-        return true;
-      }
-      if (mine < 0) continue;
-      if (other > mine) continue;
-      return true;
-    }
-  }
-  return false;
-}
 
 /**
  * 효과 이름을 그대로 쓰는 스킬 이름. 지우면 본문의 진짜 효과까지 사라진다.

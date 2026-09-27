@@ -19,15 +19,9 @@ import type {
   WikiChampionMeta,
 } from "./data";
 import { formatLevels, round, stripHtml } from "./text";
-import {
-  abilityCausesDash,
-  buildScalingProfile,
-  championMovesItself,
-  detectDamageTypes,
-  detectEffects,
-  detectRatios,
-  ratiosFromSimulation,
-} from "./facts-analysis";
+import { detectDamageTypes, detectEffects } from "./facts-analysis";
+import { abilityCausesDash, championMovesItself } from "./facts-movement";
+import { buildScalingProfile, detectRatios, ratiosFromSimulation } from "./facts-ratios";
 import type { SpellOverride, SpellOverrides } from "./spellOverrides";
 
 export type StatName =

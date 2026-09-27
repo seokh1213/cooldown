@@ -17,13 +17,12 @@ import { loadPlaybooks } from "./llm/lib/playbook";
 import {
   deriveEscapeClaims,
   deriveItemClaims,
-  deriveMatchupClaims,
   deriveStackClaims,
   renderEscapeClaims,
   renderItemClaims,
-  renderMatchupClaims,
   renderStackClaims,
 } from "./llm/lib/claims";
+import { deriveMatchupClaims, renderMatchupClaims } from "./llm/lib/matchupClaims";
 
 const llmDir = path.join(PUBLIC_DATA_ROOT, resolvePatchVersion(), "llm");
 const cards = (

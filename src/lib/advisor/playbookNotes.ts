@@ -1,6 +1,6 @@
 import type { ChampionCard } from "../../../scripts/llm/lib/facts";
 import { selectPlaybook } from "../../../scripts/llm/lib/playbookCore";
-import { deriveMatchupClaims, renderTaggedClaims, type ClaimLang, type TaggedClaim } from "../../../scripts/llm/lib/claims";
+import { deriveMatchupClaims, renderTaggedClaims, type ClaimLang, type TaggedClaim } from "../../../scripts/llm/lib/matchupClaims";
 import { josa } from "../../../scripts/llm/lib/text";
 import { selectNotes, type NoteCategory, type NotePerspective, type SelectedNotes } from "./noteSelect";
 import type { MatchupNotes } from "./answer";

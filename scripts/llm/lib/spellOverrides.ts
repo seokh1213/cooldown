@@ -19,7 +19,7 @@ import * as crypto from "crypto";
 import * as fs from "fs";
 import * as path from "path";
 import type { DamageType } from "./facts";
-import { withoutNumbers } from "./facts-analysis";
+import { withoutNumbers } from "./tooltip-sentences";
 
 export const SPELL_OVERRIDE_FILE = path.resolve(process.cwd(), "knowledge", "spell-effects.json");
 
