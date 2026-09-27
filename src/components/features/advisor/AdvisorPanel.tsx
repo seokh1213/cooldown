@@ -93,10 +93,15 @@ const TOPIC_HEAD = "topic-v1";
 const ACT_HEAD = "act-v1";
 /** kev LoRA 모델(`judge: "kev"`)은 이 헤드 하나로 갈래(아홉 칸)·주제·대화 흐름을 모두 가른다 */
 const KEV_HEAD = "kev-b3e";
+/** 상성 대화에서 소환사 주문의 쓰임새를 묻는 말(규칙 카드가 아니라 이어 묻기) */
+const SPELL_USE_IN_MATCHUP = /대신|빠지|빠졌|없(을|으면|는데|을\s*때)|instead|\bis\s+down\b|\bdown\b|without|没了|没有|不带|换成/i;
+/** 판정기가 잡담이라 해도 이어 묻기일 수 있는 말(조언 요청·되묻기) */
+const FOLLOWUP_GUARD = /팁|조언|어떻게|방법|요령|왜|\btips?\b|\badvice\b|\bhow\b|\bwhy\b|建议|技巧|怎么|攻略|为啥|为什么/i;
 /** 상성 대화 중 이름 없는 말을 새 질문으로 볼 검색 벡터 점수(낱말 가산점 없이) */
 const CONVERSATION_NEW_QUESTION = 0.55;
 import { findMentionedRules } from "../../../../scripts/llm/lib/rules";
 import { findMechanics } from "../../../../scripts/llm/lib/mechanics";
+import { josa } from "../../../../scripts/llm/lib/text";
 import type { ChampionCard } from "../../../../scripts/llm/lib/facts";
 import { ItemIcon } from "@/components/ui/item-icon";
 import { ChampionIcon } from "@/components/ui/champion-icon";
@@ -485,7 +490,14 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
 
   /** 게임 낱말(게임 메타·룬·주문 이름·은어). 챔피언 이름 오타로 보지 않는다(`suggestChampions`). */
   const isGameWord = (token: string): boolean =>
-    Boolean(data && (findGameMeta(token) || findMentionedRules(data.ruleIndex, token).length > 0));
+    Boolean(
+      data &&
+        (findGameMeta(token) ||
+          findMentionedRules(data.ruleIndex, token).length > 0 ||
+          // 아이템 이름·줄임말("리안드리" 가 리산드라 오타로 잡혔다)
+          (token.length >= 3 && data.items.some((item) => item.name?.includes(token))) ||
+          Boolean(buildItemCard(data, token))),
+    );
 
   /** "혹시 이 자료를?" 에서 고른 자료를 보인다. 검색을 다시 돌리지 않는다. */
   const showDoc = (id: string, title: string) => {
@@ -656,7 +668,16 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
     // 걸린 것이 게임 요소(미니언·포탑 …)뿐이고 게임 메타 항목이 따로 잡히면 메타가 답이다.
     // "미니언 웨이브 생성 주기" 가 미니언 규칙으로, "억제기 … 슈퍼 미니언" 이 미니언으로 갔다.
     const metaFirst = named.length > 0 && named.every((rule) => rule.subject === "gameplay") && Boolean(findGameMeta(question));
-    if (named.length && !metaFirst) {
+    /*
+     * 상성 대화 중에 소환사 주문을 **어떻게 쓰느냐**를 물으면("점멸 빠지면 물어도 돼?", "점멸 대신 방어막 들어도 돼?") 규칙 카드가 아니라
+     * 그 상성의 이어 묻기다. 대화 흐름 시험에서 이름이 든 이어 묻기 9개가 모두 이 꼴이었고, 새 질문 3개는 룬 자체의 속성("감전 쿨타임")이었다.
+     */
+    const spellInMatchup =
+      named.length > 0 &&
+      named.every((rule) => rule.subject === "summoner") &&
+      SPELL_USE_IN_MATCHUP.test(question) &&
+      Boolean(matchupStateOf(advisor.turns.map((turn) => (turn.role === "assistant" ? turn.answer : undefined))));
+    if (named.length && !metaFirst && !spellInMatchup) {
       const names = named.map((rule) => rule.name);
       const cards = named.map((rule) => buildRuleCard(rule, names, lang, named));
       const best = cards.find((card) => card.kind === "rule" && card.highlighted.length > 0) ?? cards[0];
@@ -676,7 +697,7 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
       const typo = suggestChampions(question, data.cards, nicknames(data.cards), known, inMatchup ? 3 : 1, isGameWord);
       if (typo?.candidates.length === 1) {
         const [card] = typo.candidates;
-        void ask(question.replace(typo.original, card.name), fill(copy.card.understoodAs, { name: card.name }));
+        void ask(question.replace(typo.original, card.name), fill(copy.card.understoodAs, { name: card.name, nameWith: josa(card.name, "로/으로") }));
         return;
       }
       if (typo && typo.candidates.length > 1) {
@@ -725,6 +746,15 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
        * 빼고 벡터 점수만 본다 — "점멸 빠지면 물어도 돼?" 는 상성 이어 묻기인데 소환사 주문 이름이 걸린다. 대화 흐름 시험에서 0.55 는
        * 이어 묻기 127문항을 하나도 끊지 않고 새 질문 24문항 중 6개를 빼냈다(research/llm-evals/vector-search/README.md).
        */
+      /*
+       * 게임과 무관한 말("내일 날씨 어때?", "라면 맛있게 끓이는 법")은 앞 상성의 이어 묻기가 아니다. 판정기(kev)가 잡담이라 가르고,
+       * 문형("왜?", "풀어서")·조언 요청("팁 좀", "any tips?")이 없을 때만. 대화 흐름 시험에서 이어 묻기 133 중 0 을 끊고
+       * 답 없는 질문 119 중 무관한 것 9 를 잡았다.
+       */
+      if (!named && champions.length === 0 && route?.kind === "chat" && !actFromWords(question) && !FOLLOWUP_GUARD.test(question)) {
+        advisor.answerWithoutModel(question, copy.noLiteAnswer);
+        return;
+      }
       if (!named && champions.length === 0 && canUseModel && advisor.consented && advisor.model.retrieval && !actFromWords(question)) {
         const top = await advisor.search(question, lang).catch(() => null);
         const answer = top?.[0] && top[0].score >= CONVERSATION_NEW_QUESTION ? docAnswer(top[0].id, question) : undefined;
@@ -1028,7 +1058,7 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
     const typo = suggestChampions(original, data.cards, nicknames(data.cards));
     // 오타였으면 그 말을 바꾸고, 화면의 둘 중 하나를 고른 것이면 이름을 앞에 붙인다.
     const fixed = typo ? original.replace(typo.original, card.name) : `${card.name} ${original}`;
-    void ask(fixed, fill(copy.card.understoodAs, { name: card.name }));
+    void ask(fixed, fill(copy.card.understoodAs, { name: card.name, nameWith: josa(card.name, "로/으로") }));
   };
 
   // 빈 화면과 입력창 안내는 화면 맥락을 따른다. 말파이트 표를 보고 있으면 말파이트 예시.

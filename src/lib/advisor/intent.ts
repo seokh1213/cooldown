@@ -180,10 +180,47 @@ function findMentions(data: AdvisorData, text: string): Mention[] {
   for (const { id, alias } of aliasEntries) {
     if (mentions.some((m) => m.card.id === id)) continue;
     const card = data.cardById.get(id);
-    if (card) take(card, locate(text, alias, true, true));
+    // 아이템 이름을 가린 글에서 찾는다. "破败王"(비에고)이 "破败王者之刃"(몰락한 왕의 검) 안에서 잡히지 않게.
+    if (card) take(card, locate(masked, alias, true, true));
+  }
+
+  /*
+   * 4. 공백 없이 붙여 쓴 영어("imtristanahowdoibeatzed", "AnnieQmanacost", "howtobeatksante"). 열두 글자 이상 이어진 로마자
+   *    덩어리 안에서만 영어 이름을 찾는다 — 보통 문장에서 찾으면 "vision" 의 Sion, "really" 의 Rell 이 걸린다. 네 글자 이상 이름은
+   *    덩어리 어디서나, 세 글자 이름(Zed)은 덩어리 맨 앞·맨 끝에서만.
+   */
+  for (const run of text.matchAll(/[A-Za-z']{12,}/g)) {
+    const lower = run[0].toLowerCase().replace(/'/g, "");
+    for (const { id, name } of latinNames(data)) {
+      if (mentions.some((m) => m.card.id === id)) continue;
+      const at = lower.indexOf(name);
+      if (at < 0) continue;
+      if (name.length < 4 && at !== 0 && at + name.length !== lower.length) continue;
+      const card = data.cardById.get(id);
+      if (card) take(card, [(run.index ?? 0) + at, name.length]);
+    }
   }
 
   return mentions.sort((a, b) => a.index - b.index);
+}
+
+let latinCache: { data: AdvisorData; names: Array<{ id: string; name: string }> } | null = null;
+
+/** 영어 이름(id, 세 글자 이상)과 로마자 별명(다섯 글자 이상)을 소문자·붙여 쓴 꼴로. 긴 것부터. */
+function latinNames(data: AdvisorData): Array<{ id: string; name: string }> {
+  if (latinCache?.data !== data) {
+    const names = new Map<string, string>();
+    for (const card of data.cards) names.set(card.id.toLowerCase(), card.id);
+    for (const [id, list] of data.aliases ?? new Map<string, string[]>()) {
+      for (const alias of list) {
+        const compact = alias.toLowerCase().replace(/[\s'.]/g, "");
+        // 별명은 다섯 글자 이상만. "Revitalize's" 안의 "tali"(탈리야)가 걸렸다.
+        if (/^[a-z]{5,}$/.test(compact)) names.set(compact, id);
+      }
+    }
+    latinCache = { data, names: [...names].map(([name, id]) => ({ id, name })).sort((a, b) => b.name.length - a.name.length) };
+  }
+  return latinCache.names;
 }
 
 /**

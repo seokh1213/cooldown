@@ -15,6 +15,9 @@
  * 합쳐 7MB 남짓이다. 모델이 3GB 인 것에 비하면 작고, 한 번 받으면 캐시에 남는다.
  */
 import { championCardToText, type ChampionCard } from "../../../scripts/llm/lib/facts";
+import { aliasAt } from "../../../scripts/llm/lib/searchAliases";
+import { askedRuleKinds } from "../../../scripts/llm/lib/rules";
+import itemAliasFile from "../../../knowledge/item-aliases.json";
 import type { CuratedTip } from "../../../scripts/llm/lib/knowledgeCore";
 import {
   indexRules,
@@ -650,13 +653,39 @@ function findItems(data: AdvisorData, question: string, limit = 3) {
     .sort((a, b) => b.name.length - a.name.length);
   const found: typeof named = [];
   const taken: Array<[number, number]> = [];
-  for (const item of named) {
-    const index = question.indexOf(item.name);
-    if (index < 0) continue;
-    if (taken.some(([start, end]) => index < end && index + item.name.length > start)) continue;
-    taken.push([index, index + item.name.length]);
+  const take = (item: (typeof named)[number], index: number, length: number) => {
+    if (index < 0 || found.includes(item)) return;
+    if (taken.some(([start, end]) => index < end && index + length > start)) return;
+    taken.push([index, index + length]);
     found.push(item);
+  };
+  for (const item of named) {
+    take(item, question.indexOf(item.name), item.name.length);
+    if (found.length >= limit) return found;
+  }
+  /*
+   * 줄임말("쇼진 몇 골드야?", "botrk passive", "中亚能挡什么"). knowledge/item-aliases.json — 협곡 기본 아이템 id 마다 세 언어.
+   * 공식 이름을 먼저 찾고, 남은 자리에서 긴 줄임말부터. 짧은 한글·영문은 낱말 경계로(`aliasAt`).
+   */
+  // 룬·소환사 주문을 묻는다고 밝힌 질문에서는 줄임말로만 걸린 아이템을 보지 않는다. "리안드리 화상으로 영혼 거두는 룬 발동돼?" 는 룬 질문이다.
+  if (askedRuleKinds(question).size > 0) return found;
+  const byId = new Map(named.map((item) => [item.id, item]));
+  // 챔피언 별명 안에 든 줄임말은 아이템이 아니다. "破败王来反野"(비에고)의 "破败" 가 몰락한 왕의 검으로 잡혔다.
+  const championAliases = [...(data.aliases?.values() ?? [])].flat().filter((alias) => alias.length >= 2 && question.includes(alias));
+  for (const { id, alias } of itemAliasList()) {
+    const item = byId.get(id);
+    if (!item) continue;
+    if (championAliases.some((name) => name !== alias && name.includes(alias))) continue;
+    take(item, aliasAt(question, alias), alias.length);
     if (found.length >= limit) break;
   }
   return found;
+}
+
+let itemAliasCache: Array<{ id: string; alias: string }> | null = null;
+function itemAliasList(): Array<{ id: string; alias: string }> {
+  itemAliasCache ??= Object.entries((itemAliasFile as { aliases: Record<string, Record<string, string[]>> }).aliases)
+    .flatMap(([id, byLang]) => Object.values(byLang).flat().map((alias) => ({ id, alias })))
+    .sort((a, b) => b.alias.length - a.alias.length);
+  return itemAliasCache;
 }

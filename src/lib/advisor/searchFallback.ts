@@ -294,7 +294,7 @@ export function buildRetrievalDocs(data: AdvisorData, lang: string, withAliases 
 /**
  * 하이브리드 검색 — 문서마다 벡터 코사인과 낱말 점수를 한 점수로 합친다.
  *
- *   점수 = 코사인 + 0.05 · BM25(질문 안 1위 = 1) + (이름·은어 0.5 · 게임 메타 0.05 · 게임 원리 0.1) · (낱말 단계가 가리킨 문서)
+ *   점수 = 코사인 + 0.05 · BM25(질문 안 1위 = 1) + (이름·은어 0.5 · 게임 메타 0.1 · 게임 원리 0.1) · (낱말 단계가 가리킨 문서)
  *   답   1위 ≥ 0.43          후보   답이 없고 1위 ≥ 0.35 이면 상위 3건을 "혹시 이 자료를?" 으로
  *
  * 벡터는 바꿔 말한 질문에 강하고 이름·은어를 그대로 넣은 짧은 질문에 약했다("cs가 뭐야?" 가 문턱 밑, "PTA 포탑에도 터져?" 는
@@ -304,11 +304,14 @@ export function buildRetrievalDocs(data: AdvisorData, lang: string, withAliases 
  *   낱말만(예전 앱)           212 · 31             24 · 15            22 · 0
  *   벡터만                    288 · 31             28 · 10            11 · 1
  *   규칙으로 고르기            296 · 38             26 · 14            22 · 0
- *   이 합산                   299 · 32             26 · 14            22 · 0
+ *   이 합산(메타 0.05)        299 · 32             26 · 14            22 · 0
+ *   이 합산(메타 0.1)         298 · 33             26 · 15            26 · 0 (+ 바론 등장 4문항)
+ * 메타 0.05 에서 "바론 몇 분에 나와?" 가 협곡의 전령으로 갔다 — 전령 본문에 "20분에 그 자리에 내셔 남작이 나옵니다" 가 있어 벡터가
+ * 전령을 1위로 둔다. 흔한 질문이라 한 문항씩을 내주고 0.1 로 올렸다.
  * 후보 제시(0.35)는 답하지 못한 것 중 test 14 · 실제 2 를 살리고, 답 없는 질문 test 9 · 실제 3 에 후보를 띄운다.
  * research/llm-evals/vector-search/hybrid_score.py
  */
-export const HYBRID = { bm25: 0.05, lexical: { rule: 0.5, meta: 0.05, mech: 0.1 }, answer: 0.43, suggest: 0.35 } as const;
+export const HYBRID = { bm25: 0.05, lexical: { rule: 0.5, meta: 0.1, mech: 0.1 }, answer: 0.43, suggest: 0.35 } as const;
 
 export function hybridSearch(
   vector: Array<{ id: string; score: number }>,

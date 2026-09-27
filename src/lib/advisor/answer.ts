@@ -401,9 +401,19 @@ const FUNCTION_WORDS = new Set([
   "만약", "차라리", "반대로", "방금", "혹시", "아니면", "그냥", "나는", "내가", "제가", "저는",
   // 일상 낱말. "오늘 날씨 어때" 의 "오늘" 이 오른·오공 오타로 잡혔다.
   "오늘", "내일", "어제", "요즘", "지금", "날씨", "진짜", "정말",
+  // 흔한 동사 활용. "바위게 언제 나와?" 의 "나와" 가 나르·나미 오타로 잡혔다.
+  "나와", "나와요", "나옴", "나오면", "나오는", "나올", "나가", "나감", "나가면", "나갔", "나갈", "사면", "팔면", "써야", "가야",
+  "올라", "올라가", "올라감", "올라와", "올라간", "올라요", "오르면", "직접", "소리", "나를", "타는", "세짐", "피감", "마법", "신발", "조건", "조건이",
+  "바뀜", "바뀌", "가능", "마리", "오름", "신고", "요정",
   // 이어 묻는 말에 흔한 낱말이 이름과 거리 1 이었다: 그런→그웬, 나서는→나서스, 자꾸→자야, 사야→자야
   "그런", "그럴", "그렇게", "나서", "나서는", "나서도", "자꾸", "사야", "해야", "가야", "봐야", "써야", "서야", "돼야",
 ]);
+
+/** 이름 뒤에 오는 말. 이것이 붙어야 두세 글자 낱말을 이름 오타로 본다(`suggestChampions`). */
+const CHAMPION_SLOT_AFTER =
+  /^\s*(?:으로|로|이랑|랑|하고|한테|에게|를|을|은|는|이|가|의)?\s*(?:vs|상대|카운터|스킬|패시브|궁|콤보|공략|룬|템|빌드|어때|어떻게|잡|이기|이길|할\s*때|하면|중|비교|[QWERPqwerp](?![A-Za-z])|[?？!.~]*$)/;
+/** 이름 앞에 오는 말. 다른 이름과 잇는 말이 앞에 오면 이름 자리다("말파이트랑 럼베 중"). */
+const CHAMPION_SLOT_BEFORE = /(?:랑|이랑|하고|vs|와|과|로|으로)\s*$/i;
 
 /**
  * 챔피언을 하나도 못 찾았을 때, 한 글자 틀린 이름이 있는지 본다.
@@ -460,6 +470,13 @@ export function suggestChampions(
     const initialKnown = initials.has(token[0]);
     if (FUNCTION_WORDS.has(token)) continue;
     if (isGameWord?.(token)) continue;
+    /*
+     * 세 글자 이하는 챔피언을 묻는 문맥일 때만 오타로 본다. 두세 글자 낱말은 일상어와 이름이 너무 가깝다 — 챔피언 이름 없는
+     * 질문 3,174개에서 271개(8.5%)가 오타 후보를 냈다("마법 저항력" → 마스터 이, "스킬 가속" → 가렌, "타워" → 타릭, "조건이" → 조이).
+     * 뒤에 스킬 키·"상대법"·"으로"·"어떻게" 같은 말이 붙어야 이름 자리다("갈렌 상대법", "럼미 E", "재이스 궁").
+     */
+    const at = question.indexOf(token);
+    if (token.length <= 3 && !CHAMPION_SLOT_AFTER.test(question.slice(at + token.length)) && !CHAMPION_SLOT_BEFORE.test(question.slice(0, at))) continue;
     // 두 글자 아래는 아무 이름과도 가까워서 첫 글자마저 틀리면 짚을 근거가 없다.
     if (!initialKnown && token.length < 3) continue;
     // 의도 어휘("스킬", "쿨타임", "체력"…)는 이름이 아니다. "스킬" 이 줄임말 "스카"(스카너) 와
@@ -522,6 +539,35 @@ export function suggestChampions(
       const ranked = [...scored.values()].sort((a, b) => a.distance - b.distance);
       return { original: token, candidates: ranked.map((entry) => entry.card) };
     }
+  }
+  return suggestLatinChampion(question, cards, known, isGameWord);
+}
+
+/**
+ * 영어 이름과 한 글자 차이인 흔한 말. 오타로 보지 않는다("driven" ↔ Draven, "rubble" ↔ Rumble, "mastery" ↔ Master Yi).
+ * 아이템·룬·규칙 이름에 든 낱말("Berserker's Greaves" ↔ Graves)은 부르는 쪽이 `isGameWord` 로 거른다.
+ */
+const LATIN_NEAR_WORDS = new Set(["driven", "grander", "salons", "talons", "shacks", "stains", "rubble", "mastery", "mastered", "greaves"]);
+
+/**
+ * 영어 이름 오타("aatrx" → Aatrox). 여섯 글자 이상 이름만 한 글자 차이까지 본다 — 넷·다섯 글자 이름은 흔한 영단어와
+ * 한 글자 차이인 것이 많다(Sett·set, Yone·one, Zeri·zero, Rell·tell).
+ */
+function suggestLatinChampion(
+  question: string,
+  cards: ChampionCard[],
+  known: ReadonlySet<string>,
+  isGameWord?: (token: string) => boolean,
+): { original: string; candidates: ChampionCard[] } | undefined {
+  const tokens = [...new Set((question.match(/[A-Za-z']{5,}/g) ?? []).map((token) => token.toLowerCase().replace(/'/g, "")))];
+  if (!tokens.length) return undefined;
+  const names = cards
+    .map((card) => ({ card, name: card.id.toLowerCase() }))
+    .filter(({ name }) => name.length >= 6);
+  for (const token of tokens) {
+    if (LATIN_NEAR_WORDS.has(token) || isGameWord?.(token) || names.some(({ name }) => name === token)) continue;
+    const found = names.filter(({ card, name }) => !known.has(card.id) && Math.abs(name.length - token.length) <= 1 && editDistance(token, name) === 1);
+    if (found.length) return { original: token, candidates: found.map(({ card }) => card) };
   }
   return undefined;
 }

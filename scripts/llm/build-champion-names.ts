@@ -72,6 +72,14 @@ for (const lang of ["ko_KR", "en_US", "zh_CN"]) {
  * 찾으므로 보지 않는다. 게임 글에 챔피언 이름이 그대로 적힌 곳("피들스틱과 똑같아 보이는")은
  * 먼저 지운다 — 안 지우면 "피들" 이 제 이름 때문에 빠진다.
  */
+const spellRuneNames: string[] = [];
+for (const lang of ["ko_KR", "en_US", "zh_CN"]) {
+  const load = <T>(file: string) => JSON.parse(fs.readFileSync(path.join(PUBLIC_DATA_ROOT, patch, file), "utf8")) as T;
+  for (const r of load<{ runes: Array<{ name: string }> }>(`runes-normalized-${lang}.json`).runes) spellRuneNames.push(r.name);
+  for (const sp of load<{ spells: Array<{ name: string }> }>(`summoner-normalized-${lang}.json`).spells) spellRuneNames.push(sp.name);
+}
+const inSpellOrRuneName = (alias: string) => !/^[ -~]+$/.test(alias) && spellRuneNames.some((name) => name.includes(alias));
+
 let gameText: string[] | undefined;
 const inGameText = (piece: string) => {
   if (/^[ -~]+$/.test(piece)) return false;
@@ -120,7 +128,9 @@ if (fs.existsSync(aliasFile)) {
       const key = alias.toLowerCase();
       if ((owners.get(key)?.size ?? 0) > 1) continue;
       if (official.has(key) && official.get(key) !== id) continue;
-      if (inGameText(alias)) continue;
+      // 사람이 고른 별명은 룬·소환사 주문 **이름**과 겹칠 때만 뺀다. 설명 본문까지 보면 아트·문도·炼金·天使 처럼 실제로 쓰는 별명이
+      // 빠졌다. 아이템 이름과 겹치는 것(破败王 ↔ 破败王者之刃)은 앱이 아이템 이름을 가린 뒤에 찾는다(intent.ts findMentions).
+      if (inSpellOrRuneName(alias)) continue;
       if (!names[id].some((n) => n.toLowerCase() === key)) {
         add(id, alias);
         aliasCount += 1;
