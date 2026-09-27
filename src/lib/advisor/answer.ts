@@ -547,7 +547,24 @@ export function suggestChampions(
  * 영어 이름과 한 글자 차이인 흔한 말. 오타로 보지 않는다("driven" ↔ Draven, "rubble" ↔ Rumble, "mastery" ↔ Master Yi).
  * 아이템·룬·규칙 이름에 든 낱말("Berserker's Greaves" ↔ Graves)은 부르는 쪽이 `isGameWord` 로 거른다.
  */
-const LATIN_NEAR_WORDS = new Set(["driven", "grander", "salons", "talons", "shacks", "stains", "rubble", "mastery", "mastered", "greaves"]);
+const LATIN_NEAR_WORDS = new Set(["driven", "grander", "salons", "talons", "shacks", "stains", "rubble", "mastery", "mastered", "greaves", "river", "rivers"]);
+
+/** 한 글자 넣기·빼기·바꾸기와 **이웃 두 글자 자리 바꿈**을 모두 1 로 센다(yasou ↔ yasuo). */
+function typoDistance(a: string, b: string): number {
+  const d = Array.from({ length: a.length + 1 }, (_, i) => Array.from({ length: b.length + 1 }, (_, j) => (i === 0 ? j : j === 0 ? i : 0)));
+  for (let i = 1; i <= a.length; i += 1) {
+    for (let j = 1; j <= b.length; j += 1) {
+      const cost = a[i - 1] === b[j - 1] ? 0 : 1;
+      d[i][j] = Math.min(d[i - 1][j] + 1, d[i][j - 1] + 1, d[i - 1][j - 1] + cost);
+      if (i > 1 && j > 1 && a[i - 1] === b[j - 2] && a[i - 2] === b[j - 1]) d[i][j] = Math.min(d[i][j], d[i - 2][j - 2] + 1);
+    }
+  }
+  return d[a.length][b.length];
+}
+
+/** 영어 이름 뒤·앞의 챔피언 문맥 */
+const LATIN_SLOT_AFTER = /^'?s?\s*(?:kit|combo|build|builds|matchup|counter|counters|guide|abilities|ability|passive|ult|ultimate|runes?|items?|mid|top|jungle|jg|adc|support|supp|main|vs|into|[qwerp](?![a-z]))/;
+const LATIN_SLOT_BEFORE = /(?:\bvs\.?|\binto|\bagainst|\bplay(?:ing)?|\bas|\bbeat|\bcounter)\s*$/;
 
 /**
  * 영어 이름 오타("aatrx" → Aatrox). 여섯 글자 이상 이름만 한 글자 차이까지 본다 — 넷·다섯 글자 이름은 흔한 영단어와
@@ -561,12 +578,17 @@ function suggestLatinChampion(
 ): { original: string; candidates: ChampionCard[] } | undefined {
   const tokens = [...new Set((question.match(/[A-Za-z']{5,}/g) ?? []).map((token) => token.toLowerCase().replace(/'/g, "")))];
   if (!tokens.length) return undefined;
-  const names = cards
-    .map((card) => ({ card, name: card.id.toLowerCase() }))
-    .filter(({ name }) => name.length >= 6);
+  const names = cards.map((card) => ({ card, name: card.id.toLowerCase() })).filter(({ name }) => name.length >= 4);
+  const lower = question.toLowerCase();
   for (const token of tokens) {
     if (LATIN_NEAR_WORDS.has(token) || isGameWord?.(token) || names.some(({ name }) => name === token)) continue;
-    const found = names.filter(({ card, name }) => !known.has(card.id) && Math.abs(name.length - token.length) <= 1 && editDistance(token, name) === 1);
+    // 넷·다섯 글자 이름은 챔피언 문맥이 있을 때만("yasou mid", "vs olaff"). "set" ↔ Sett, "one" ↔ Yone 같은 흔한 말이 많다.
+    const at = lower.indexOf(token);
+    const inContext = LATIN_SLOT_AFTER.test(lower.slice(at + token.length)) || LATIN_SLOT_BEFORE.test(lower.slice(0, at));
+    const found = names.filter(
+      ({ card, name }) =>
+        !known.has(card.id) && (name.length >= 6 || inContext) && Math.abs(name.length - token.length) <= 1 && typoDistance(token, name) === 1,
+    );
     if (found.length) return { original: token, candidates: found.map(({ card }) => card) };
   }
   return undefined;

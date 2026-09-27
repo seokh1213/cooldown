@@ -95,6 +95,13 @@ const ACT_HEAD = "act-v1";
 const KEV_HEAD = "kev-b3e";
 /** 상성 대화에서 소환사 주문의 쓰임새를 묻는 말(규칙 카드가 아니라 이어 묻기) */
 const SPELL_USE_IN_MATCHUP = /대신|빠지|빠졌|없(을|으면|는데|을\s*때)|instead|\bis\s+down\b|\bdown\b|without|没了|没有|不带|换成/i;
+/**
+ * 게임과 무관한 주제 낱말(날씨·요리·영화·숙제·코딩 …). 판정기가 잡담으로 못 가른 것도 잡는다 — 대화 흐름 시험에서 판정기만 9, 이 낱말까지
+ * 19 를 잡고 이어 묻기 133 은 하나도 끊지 않았다(낱말은 그 시험 문항을 보며 골라 조금 낙관적이다). 롤 속어와 겹치는 말(요리하다·cooked·
+ * TP travel)은 넣지 않는다.
+ */
+const OFF_TOPIC =
+  /날씨|기온|저녁|점심|레시피|끓이|맛집|영화|드라마|숙제|과제|이력서|자기소개서|코딩|파이썬|주식|여행|weather|recipe|dinner|lunch|movie|tv show|homework|resume|python|javascript|stock market|天气|菜谱|做饭|怎么做好吃|电影|电视剧|作业|简历|代码|股票|旅游|失眠|减肥/i;
 /** 판정기가 잡담이라 해도 이어 묻기일 수 있는 말(조언 요청·되묻기) */
 const FOLLOWUP_GUARD = /팁|조언|어떻게|방법|요령|왜|\btips?\b|\badvice\b|\bhow\b|\bwhy\b|建议|技巧|怎么|攻略|为啥|为什么/i;
 /** 상성 대화 중 이름 없는 말을 새 질문으로 볼 검색 벡터 점수(낱말 가산점 없이) */
@@ -751,7 +758,7 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
        * 문형("왜?", "풀어서")·조언 요청("팁 좀", "any tips?")이 없을 때만. 대화 흐름 시험에서 이어 묻기 133 중 0 을 끊고
        * 답 없는 질문 119 중 무관한 것 9 를 잡았다.
        */
-      if (!named && champions.length === 0 && route?.kind === "chat" && !actFromWords(question) && !FOLLOWUP_GUARD.test(question)) {
+      if (!named && champions.length === 0 && (OFF_TOPIC.test(question) || (route?.kind === "chat" && !actFromWords(question) && !FOLLOWUP_GUARD.test(question)))) {
         advisor.answerWithoutModel(question, copy.noLiteAnswer);
         return;
       }
@@ -1720,7 +1727,8 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
                         <div className="text-[11px] text-muted-foreground">{turn.answer.headline.label}</div>
                       </div>
                     )}
-                    {commentary}
+                    {/* 스킬·아이템은 위의 사실 줄이 곧 답이다. 코드가 쓴 글(answerProse)은 같은 문장을 되풀이하므로 그리지 않는다. */}
+                    {!(turn.byCode && (turn.answer.kind === "spell" || turn.answer.kind === "item")) && commentary}
                     {perspectiveChips}
                     {pending}
                     <div className="flex flex-wrap items-center gap-1.5">

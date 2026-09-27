@@ -94,6 +94,8 @@ export interface AdvisorData {
   noteTranslations?: Record<string, string>;
   /** 불러온 화면 언어. 없으면 한국어로 본다(Node 로더·측정 도구). */
   locale?: string;
+  /** 아이템 id → 세 언어 공식 이름(llm/item-names.json). 다른 언어로 쓴 아이템 이름을 찾는다. 없어도 된다. */
+  itemNames?: Map<string, string[]>;
   tips: CuratedTip[];
   /** 룬·소환사 주문 판정 규칙. 이름으로 찾는다. */
   ruleIndex: RuleIndex;
@@ -158,6 +160,9 @@ export function loadAdvisorData(patch: string, locale = "ko_KR"): Promise<Adviso
     const names = await getJson<{ names: Record<string, string[]> }>(dataUrl(patch, "llm/champion-names.json")).catch(
       () => ({ names: {} as Record<string, string[]> }),
     );
+    const itemNames = await getJson<{ names: Record<string, string[]> }>(dataUrl(patch, "llm/item-names.json")).catch(
+      () => ({ names: {} as Record<string, string[]> }),
+    );
 
     return {
       patch,
@@ -171,6 +176,7 @@ export function loadAdvisorData(patch: string, locale = "ko_KR"): Promise<Adviso
       playbooks: new Map(Object.entries(knowledge.playbooks)),
       noteTranslations: translations?.notes,
       locale,
+      itemNames: new Map(Object.entries(itemNames.names)),
       tips: knowledge.tips,
       ruleIndex: indexRules(knowledge.rules ?? []),
       mechanics: knowledge.mechanics ?? [],
@@ -667,6 +673,19 @@ function findItems(data: AdvisorData, question: string, limit = 3) {
    * 줄임말("쇼진 몇 골드야?", "botrk passive", "中亚能挡什么"). knowledge/item-aliases.json — 협곡 기본 아이템 id 마다 세 언어.
    * 공식 이름을 먼저 찾고, 남은 자리에서 긴 줄임말부터. 짧은 한글·영문은 낱말 경계로(`aliasAt`).
    */
+  // 다른 언어 공식 이름("Blade of the Ruined King" 을 한국어 화면에서). 긴 이름부터, 영문은 낱말 경계로.
+  if (data.itemNames) {
+    const byIdAll = new Map(named.map((item) => [item.id, item]));
+    const other = [...data.itemNames]
+      .flatMap(([id, list]) => list.map((name) => ({ id, name })))
+      .filter(({ id, name }) => byIdAll.get(id)?.name !== name)
+      .sort((a, b) => b.name.length - a.name.length);
+    for (const { id, name } of other) {
+      const item = byIdAll.get(id);
+      if (item) take(item, aliasAt(question, name), name.length);
+      if (found.length >= limit) return found;
+    }
+  }
   // 룬·소환사 주문을 묻는다고 밝힌 질문에서는 줄임말로만 걸린 아이템을 보지 않는다. "리안드리 화상으로 영혼 거두는 룬 발동돼?" 는 룬 질문이다.
   if (askedRuleKinds(question).size > 0) return found;
   const byId = new Map(named.map((item) => [item.id, item]));

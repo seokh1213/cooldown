@@ -104,7 +104,10 @@ function installCache(graph: string | undefined) {
         const hit = await cache.match(url!).catch(() => undefined);
         if (hit) return hit;
         const response = await fetch(url!);
-        if (response.ok) await cache.put(url!, response.clone()).catch(() => undefined);
+        if (response.ok) {
+          await cache.put(url!, response.clone()).catch(() => undefined);
+          void pruneOldGraphs(cache, url!);
+        }
         return response;
       }
       const hit = await (await caches.open(env.cacheKey)).match(request).catch(() => undefined);
@@ -120,6 +123,19 @@ function installCache(graph: string | undefined) {
       }
     },
   } as unknown as typeof env.customCache;
+}
+
+/**
+ * 다른 판의 kev 그래프를 캐시에서 지운다. 그래프 주소에 판이 붙어 있어(b3-v2 → b3e) 새 판을 받아도 옛 판(22~44MB)이 남았다.
+ */
+async function pruneOldGraphs(cache: Awaited<ReturnType<typeof caches.open>>, current: string) {
+  try {
+    for (const request of await cache.keys()) {
+      if (request.url !== current && /\/models\/kev\/[^/]+\/model_q4\.onnx$/.test(request.url)) await cache.delete(request);
+    }
+  } catch {
+    // 못 지워도 동작에는 지장이 없다
+  }
 }
 
 async function load(spec: AdvisorModelSpec): Promise<void> {

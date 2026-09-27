@@ -52,4 +52,22 @@ eq(suggest("ko_KR", "재이스 Q"), "Jayce", "진짜 오타(세 글자 + 스킬 
 eq(suggest("ko_KR", "모데카이져 상대법"), "Mordekaiser", "진짜 오타(네 글자 이상)");
 eq(suggest("en_US", "aatrx keeps landing the whole combo on me"), "Aatrox", "영어 오타(여섯 글자 이상 이름)");
 
+// 한 글자 중국어 이름 — 흔한 합성어 안에서는 이름이 아니다
+eq(champs("zh_CN", "烬捏着第四枪往前走的时候"), ["Jhin"], "烬 = 진");
+eq(champs("zh_CN", "彗到底有多少种技能"), ["Hwei"], "彗 = 흐웨이");
+eq(champs("zh_CN", "彗星天赋怎么点"), [], "彗星(혜성) 안의 彗 는 이름이 아니다");
+eq(champs("zh_CN", "灰烬之主"), [], "灰烬(재) 안의 烬");
+eq(champs("zh_CN", "打团要慎重"), [], "慎重(신중) 안의 慎");
+eq(champs("zh_CN", "容易吗"), [], "易 는 싣지 않는다");
+
+// 영어 오타 — 넷·다섯 글자 이름은 챔피언 문맥이 있을 때만, 이웃 두 글자 자리 바꿈도 한 글자 차이
+eq(suggest("en_US", "yasou mid"), "Yasuo", "yasou mid");
+eq(suggest("en_US", "vs olaff"), "Olaf", "vs olaff");
+eq(suggest("en_US", "i set up a trap"), undefined, "set 은 Sett 가 아니다");
+eq(suggest("en_US", "does the river rune give anything"), undefined, "river 는 Riven 이 아니다");
+
+// 다른 언어로 쓴 아이템 공식 이름
+eq(itemOf("ko_KR", "Blade of the Ruined King 효과"), "3153", "한국어 화면의 영어 아이템 이름");
+eq(itemOf("zh_CN", "몰락한 왕의 검 被动"), "3153", "중국어 화면의 한국어 아이템 이름");
+
 console.log(`✅ 별명·줄임말·오타 헛잡음 통과 (${checks}건)`);

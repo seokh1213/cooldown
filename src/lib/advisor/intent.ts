@@ -5,6 +5,7 @@
  */
 import type { ChampionCard } from "../../../scripts/llm/lib/facts";
 import type { AdvisorData } from "./context";
+import championAliasFile from "../../../knowledge/champion-aliases.json";
 
 interface Mention {
   card: ChampionCard;
@@ -185,6 +186,21 @@ function findMentions(data: AdvisorData, text: string): Mention[] {
   }
 
   /*
+   * 5. 한 글자 중국어 이름(烬·彗·劫·慎·蔚·霞·洛). 글자가 흔한 합성어 안에 있으면 이름이 아니다 — 灰烬(재), 彗星(혜성), 抢劫(강도),
+   *    慎重(신중), 蔚蓝(쪽빛), 晚霞(노을). 긴 이름·별명이 이미 잡은 자리는 건너뛴다(`take`). 아이템 이름은 가린 글에서 찾는다.
+   */
+  for (const [char, id] of SINGLE_CHAR_NAMES) {
+    if (mentions.some((m) => m.card.id === id)) continue;
+    const card = data.cardById.get(id);
+    if (!card) continue;
+    for (let at = masked.indexOf(char); at >= 0; at = masked.indexOf(char, at + 1)) {
+      const around = masked.slice(Math.max(0, at - 2), at + 3);
+      if ((SINGLE_CHAR_COMPOUNDS[char] ?? []).some((word) => around.includes(word))) continue;
+      if (take(card, [at, 1])) break;
+    }
+  }
+
+  /*
    * 4. 공백 없이 붙여 쓴 영어("imtristanahowdoibeatzed", "AnnieQmanacost", "howtobeatksante"). 열두 글자 이상 이어진 로마자
    *    덩어리 안에서만 영어 이름을 찾는다 — 보통 문장에서 찾으면 "vision" 의 Sion, "really" 의 Rell 이 걸린다. 네 글자 이상 이름은
    *    덩어리 어디서나, 세 글자 이름(Zed)은 덩어리 맨 앞·맨 끝에서만.
@@ -203,6 +219,22 @@ function findMentions(data: AdvisorData, text: string): Mention[] {
 
   return mentions.sort((a, b) => a.index - b.index);
 }
+
+/** 한 글자 중국어 이름(knowledge/champion-aliases.json 의 zh_CN_single) */
+const SINGLE_CHAR_NAMES: Array<[string, string]> = Object.entries(
+  (championAliasFile as { aliases: Record<string, { zh_CN_single?: string[] }> }).aliases,
+).flatMap(([id, byLang]) => (byLang.zh_CN_single ?? []).map((char) => [char, id] as [string, string]));
+
+/** 그 글자가 들어가는 흔한 낱말. 이 안에 있으면 이름이 아니다. */
+const SINGLE_CHAR_COMPOUNDS: Record<string, string[]> = {
+  烬: ["灰烬", "余烬", "烬余"],
+  彗: ["彗星", "扫帚彗"],
+  劫: ["抢劫", "劫持", "打劫", "劫难", "浩劫", "劫后", "洗劫", "劫匪", "劫富", "渡劫", "劫数"],
+  慎: ["慎重", "谨慎", "慎用", "慎选", "慎入", "审慎", "不慎", "慎行"],
+  蔚: ["蔚蓝", "蔚然", "蔚为"],
+  霞: ["晚霞", "彩霞", "朝霞", "霞光", "云霞"],
+  洛: ["洛杉矶", "洛阳", "洛克", "克洛", "洛可可", "诺克萨斯"],
+};
 
 let latinCache: { data: AdvisorData; names: Array<{ id: string; name: string }> } | null = null;
 

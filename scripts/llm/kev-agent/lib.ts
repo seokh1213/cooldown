@@ -28,6 +28,8 @@ export function loadData(lang: Lang): AdvisorData {
   );
   const cards = read<{ cards: ChampionCard[] }>(path.join(DATA, `llm/champion-cards-${lang}.json`)).cards;
   const names = read<{ names: Record<string, string[]> }>(path.join(DATA, "llm/champion-names.json")).names;
+  const itemNameFile = path.join(DATA, "llm/item-names.json");
+  const itemNames = fs.existsSync(itemNameFile) ? read<{ names: Record<string, string[]> }>(itemNameFile).names : {};
   const translations = lang === "ko_KR" ? undefined : read<{ notes: Record<string, string> }>(path.join(DATA, `llm/note-translations-${lang}.json`)).notes;
   const wiki = fs.existsSync(path.join(DATA, "llm/item-wiki-meta.json"))
     ? read<{ items?: Array<{ id: string }> }>(path.join(DATA, "llm/item-wiki-meta.json"))
@@ -43,6 +45,8 @@ export function loadData(lang: Lang): AdvisorData {
     aliases: new Map(cards.map((c) => [c.id, [...new Set([...(names[c.id] ?? []), c.id])].filter((n) => n !== c.name)])),
     playbooks: new Map(Object.entries(knowledge.playbooks)),
     noteTranslations: translations,
+    locale: lang,
+    itemNames: new Map(Object.entries(itemNames)),
     tips: knowledge.tips,
     ruleIndex: indexRules(knowledge.rules ?? []),
     mechanics: knowledge.mechanics ?? [],

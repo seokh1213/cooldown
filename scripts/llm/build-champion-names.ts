@@ -139,6 +139,21 @@ if (fs.existsSync(aliasFile)) {
   }
 }
 
+/*
+ * 아이템 이름 색인 — 세 언어 공식 이름. 도우미는 화면 언어 아이템만 받아서 한국어 화면의 "Blade of the Ruined King" 을 못 찾았다.
+ * 설명이 있는(상점에서 사는) 아이템만. 출력: llm/item-names.json { id: [이름…] }
+ */
+const itemNames: Record<string, string[]> = {};
+for (const lang of ["ko_KR", "en_US", "zh_CN"]) {
+  const file = path.join(PUBLIC_DATA_ROOT, patch, `items-normalized-${lang}.json`);
+  for (const item of (JSON.parse(fs.readFileSync(file, "utf8")) as { items: Array<{ id: string; name?: string; description?: string }> }).items) {
+    if (!item.name || item.name.length < 2 || !item.description) continue;
+    const list = (itemNames[item.id] ??= []);
+    if (!list.includes(item.name)) list.push(item.name);
+  }
+}
+fs.writeFileSync(path.join(dir, "item-names.json"), JSON.stringify({ patch, names: itemNames }), "utf8");
+
 const out = path.join(dir, "champion-names.json");
 fs.writeFileSync(out, JSON.stringify({ patch, names }), "utf8");
 console.log(
