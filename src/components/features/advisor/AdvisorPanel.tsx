@@ -41,19 +41,21 @@ import {
   answerChampionIds,
   answerKey,
   answerLinks,
+  buildCompareAnswer as buildCompareCard,
+  buildRuleAnswer as buildRuleCard,
+  buildSpellAnswer as buildSpellCard,
+  itemHeadline,
+  spellSummary,
+  type AdvisorAnswer,
+} from "@/lib/advisor/answer";
+import {
   asksComparison,
   asksGuide,
   asksMatchup,
   asksSkillsOverview,
   asksWholeKit,
-  buildCompareAnswer as buildCompareCard,
-  buildRuleAnswer as buildRuleCard,
-  buildSpellAnswer as buildSpellCard,
-  itemHeadline,
   looksChampionDirected,
-  spellSummary,
-  type AdvisorAnswer,
-} from "@/lib/advisor/answer";
+} from "@/lib/advisor/askWords";
 import { detectSpellFocus, type SpellFocus } from "@/lib/advisor/spellFocus";
 import { suggestChampions } from "@/lib/advisor/championTypo";
 import { matchupPair, matchupSides, matchupSidesByPhrase, matchupSidesDetailed } from "@/lib/advisor/matchupSides";

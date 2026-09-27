@@ -14,13 +14,7 @@ import {
   answerChampionIds,
   answerKey,
   answerLinks,
-  asksComparison,
-  asksGuide,
-  asksMatchup,
-  asksSkillsOverview,
-  asksWholeKit,
   buildCompareAnswer,
-  looksChampionDirected,
   spellFocusValue,
   buildRuleAnswer,
   buildSpellAnswer,
@@ -32,6 +26,14 @@ import {
   splitSentences,
   buildCommentaryPrompt,
 } from "../src/lib/advisor/answer";
+import {
+  asksComparison,
+  asksGuide,
+  asksMatchup,
+  asksSkillsOverview,
+  asksWholeKit,
+  looksChampionDirected,
+} from "../src/lib/advisor/askWords";
 import { detectSpellFocus } from "../src/lib/advisor/spellFocus";
 import { editDistance, suggestChampions } from "../src/lib/advisor/championTypo";
 import { TAGS, DAMAGE, GRADE, RANGE, RATIO_STATS, missingCardWords } from "./llm/lib/cardWords";

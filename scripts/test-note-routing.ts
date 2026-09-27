@@ -12,7 +12,7 @@
  */
 import assert from "node:assert/strict";
 import { noteOrder, notePerspective, type NoteCategory, type NotePerspective } from "../src/lib/advisor/noteSelect";
-import { asksMatchup } from "../src/lib/advisor/answer";
+import { asksMatchup } from "../src/lib/advisor/askWords";
 import { matchupSidesDetailed } from "../src/lib/advisor/matchupSides";
 
 /** 시점 시험에 쓰는 이름들. 자료를 읽지 않고 이름만 있으면 된다. */
