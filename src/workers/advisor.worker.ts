@@ -8,28 +8,14 @@
  * 브라우저 캐시에 파일이 남으므로 두 번째 방문부터는 내려받기가 없다.
  * 진행률은 파일 단위로 모아 보낸다. 파일이 여러 개라 개별로 보내면 화면이 튄다.
  */
-import {
-  env,
-  AutoModelForCausalLM,
-  AutoTokenizer,
-  InterruptableStoppingCriteria,
-  TextStreamer,
-  Tensor,
-  type PreTrainedModel,
-  type PreTrainedTokenizer,
-} from "@huggingface/transformers";
+import { env, InterruptableStoppingCriteria, type PreTrainedModel, type PreTrainedTokenizer, Tensor, TextStreamer } from "@huggingface/transformers";
 import { MAX_NEW_TOKENS, NO_REPEAT_NGRAM } from "@/lib/advisor/config";
-import { createLoopGuard, trimLoop } from "@/lib/advisor/loopGuard";
 import { encodeJudgeRow, JUDGE_SPECIAL, type JudgeQuestion } from "@/lib/advisor/judge";
-import type {
-  AdvisorFileProgress,
-  AdvisorModelSpec,
-  AdvisorRequest,
-  AdvisorResponse,
-} from "@/lib/advisor/protocol";
-import { installCache } from "./advisor/modelCache";
-
-const ctx = self as unknown as DedicatedWorkerGlobalScope;
+import { createLoopGuard, trimLoop } from "@/lib/advisor/loopGuard";
+import type { AdvisorModelSpec } from "@/lib/advisor/protocol";
+import { activeGates, forgetLoraSession, gates, getLoraSession, type OrtFeeds, type OrtSession, ortTensor } from "./advisor/lora";
+import { getModel, getTokenizer, load, releaseModel } from "./advisor/model";
+import { onRequest, post } from "./advisor/port";
 
 // ONNX Runtime 런타임을 우리 출처에서 받는다.
 // 기본값은 jsDelivr 인데, 제3자 CDN 이 막힌 환경에서 상성 코치가 통째로 죽는다.
@@ -38,106 +24,11 @@ if (env.backends.onnx.wasm) {
   env.backends.onnx.wasm.wasmPaths = `${import.meta.env.BASE_URL}ort/`;
 }
 
-function post(message: AdvisorResponse) {
-  ctx.postMessage(message);
-}
-
-let tokenizer: PreTrainedTokenizer | null = null;
-let model: PreTrainedModel | null = null;
-let loading: Promise<void> | null = null;
 /** 생성 중단 스위치. 라이브러리가 매 토큰마다 확인한다. */
 let stopper = new InterruptableStoppingCriteria();
 
-const progressByFile = new Map<string, AdvisorFileProgress>();
-
-function reportProgress() {
-  const files = [...progressByFile.values()];
-  const loadedBytes = files.reduce((sum, f) => sum + f.loaded, 0);
-  const totalBytes = files.reduce((sum, f) => sum + f.total, 0);
-  post({ type: "progress", files, loadedBytes, totalBytes });
-}
-
-interface HfProgress {
-  status: string;
-  file?: string;
-  loaded?: number;
-  total?: number;
-}
-
-function onProgress(event: HfProgress) {
-  if (!event.file) return;
-  if (event.status === "progress" || event.status === "download") {
-    progressByFile.set(event.file, {
-      file: event.file,
-      loaded: event.loaded ?? 0,
-      total: event.total ?? 0,
-    });
-    reportProgress();
-  } else if (event.status === "done") {
-    const current = progressByFile.get(event.file);
-    if (current) {
-      progressByFile.set(event.file, { ...current, loaded: current.total });
-      reportProgress();
-    }
-  }
-}
-
-async function load(spec: AdvisorModelSpec): Promise<void> {
-  if (loading) return loading;
-  installCache(spec.graph);
-  loading = (async () => {
-    tokenizer = await AutoTokenizer.from_pretrained(spec.id, {
-      progress_callback: onProgress,
-    });
-    // dtype 은 문자열 하나로 준다. 모듈마다 다른 값을 주면 세션 구성이 어긋난다.
-    model = await AutoModelForCausalLM.from_pretrained(spec.id, {
-      dtype: spec.dtype as "q4f16",
-      device: "webgpu",
-      progress_callback: onProgress,
-    });
-    if (spec.graph) hideLoraInput();
-    post({ type: "loaded" });
-  })();
-  return loading;
-}
-
-/** LoRA 를 켜는 입력을 받는 원래 세션. 판정(`stepHidden`)·검색(`embedText`)만 이것을 직접 부른다. */
-let loraSession: OrtSession | null = null;
-/** 그래프에 있는 LoRA 켜기 입력. 판정 LoRA(`lora_scale`)와 검색 LoRA(`embed_scale`, 있을 때만). */
-let gateInputs: string[] = [];
-const GATES = ["lora_scale", "embed_scale"];
-
-/**
- * kev 그래프에는 LoRA 를 켜는 입력(`lora_scale`, 검색 LoRA 까지 실었으면 `embed_scale`)이 있다. transformers.js 는
- * 세션의 입력을 전부 채우려 하므로(없으면 오류) 그 세션에는 이 입력들을 숨기고 0 을 채워 준다 — 생성은 원본 가중치 그대로다.
- */
-function hideLoraInput() {
-  const sessions = (model as unknown as { sessions: Record<string, OrtSession & { inputNames: string[] }> }).sessions;
-  const raw = sessions.model;
-  gateInputs = GATES.filter((name) => raw.inputNames.includes(name));
-  if (!gateInputs.length) return;
-  loraSession = raw;
-  const Ort = ortTensor();
-  sessions.model = new Proxy(raw, {
-    get(target, prop) {
-      if (prop === "inputNames") return target.inputNames.filter((name) => !gateInputs.includes(name));
-      if (prop === "run") {
-        return (feeds: OrtFeeds, ...rest: unknown[]) =>
-          (target.run as (f: OrtFeeds, ...r: unknown[]) => Promise<Record<string, OrtTensor>>)(
-            { ...Object.fromEntries(gateInputs.map((name) => [name, new Ort("float32", Float32Array.from([0]), [])])), ...feeds },
-            ...rest,
-          );
-      }
-      const value = Reflect.get(target, prop, target);
-      return typeof value === "function" ? value.bind(target) : value;
-    },
-  });
-}
-
-/** LoRA 켜기 입력값. 그래프에 없는 입력은 넣지 않는다. */
-function gates(values: Record<string, number>): OrtFeeds {
-  const Ort = ortTensor();
-  return Object.fromEntries(gateInputs.map((name) => [name, new Ort("float32", Float32Array.from([values[name] ?? 0]), [])]));
+function stopGeneration() {
+  stopper.interrupt();
 }
 
 /** 프롬프트 상한. 죽는 선(약 2,120)에서 여유를 둔다. */
@@ -152,6 +43,8 @@ async function generate(
   loopGuard = true,
 ) {
   await load(spec);
+  const tokenizer = getTokenizer();
+  const model = getModel();
   if (!tokenizer || !model) throw new Error("모델이 준비되지 않았습니다");
 
   stopper = new InterruptableStoppingCriteria();
@@ -286,9 +179,13 @@ function clearJudgePrefix() {
   judgePrefix = null;
 }
 
+function forgetJudgePrefix() {
+  judgePrefix = null;
+}
+
 /** 조각 하나를 넣는다. 마지막 위치의 logits 한 줄과 이어 갈 상태를 돌려준다. */
 async function step(chunk: number[], total: number, past: Cache | undefined) {
-  const result = (await model!.forward({
+  const result = (await getModel()!.forward({
     input_ids: new Tensor("int64", BigInt64Array.from(chunk.map(BigInt)), [1, chunk.length]),
     attention_mask: new Tensor("int64", new BigInt64Array(total).fill(1n), [1, total]),
     num_logits_to_keep: new Tensor("int64", [1n], []),
@@ -315,12 +212,13 @@ async function step(chunk: number[], total: number, past: Cache | undefined) {
  */
 async function judge(id: number, spec: AdvisorModelSpec, state: string, questions: JudgeQuestion[], subset: number[]) {
   await load(spec);
-  if (!tokenizer || !model) throw new Error("모델이 준비되지 않았습니다");
+  const tokenizer = getTokenizer();
+  if (!tokenizer || !getModel()) throw new Error("모델이 준비되지 않았습니다");
   const started = performance.now();
   const special = tokenizer.convert_tokens_to_ids([...JUDGE_SPECIAL]) as number[];
   // 사용자 글이 구분 토큰을 흉내 내도 특수 토큰이 되지 않게 한다(kev 와 같은 처리).
   const tokenize = (text: string) =>
-    tokenizer!.encode(text.replace(/<\|(\w+)\|>/g, "<¦$1¦>"), { add_special_tokens: false }) as number[];
+    getTokenizer()!.encode(text.replace(/<\|(\w+)\|>/g, "<¦$1¦>"), { add_special_tokens: false }) as number[];
 
   // 질문 글 부분(<state> …)을 한 번만 읽는다. 앞선 판정과 같은 글이면 그 상태를 그대로 쓴다.
   const prefixIds = [special[0], ...tokenize(state)];
@@ -351,25 +249,16 @@ async function judge(id: number, spec: AdvisorModelSpec, state: string, question
     if (past !== prefix.cache) dispose(past);
     features.push(out);
   }
-  ctx.postMessage(
-    { type: "judged", id, features, seconds: (performance.now() - started) / 1000 } satisfies AdvisorResponse,
+  post(
+    { type: "judged", id, features, seconds: (performance.now() - started) / 1000 },
     features.map((f) => f.buffer),
   );
 }
 
 // ---- kev 판정: 은닉 상태 + LoRA ------------------------------------------------------------
 
-/** ONNX Runtime 텐서(transformers.js 가 감싸기 전의 것) */
-type OrtTensor = { type: string; dims: readonly number[]; getData: () => Promise<unknown>; dispose?: () => void };
-type OrtFeeds = Record<string, OrtTensor>;
-type OrtSession = { run: (feeds: OrtFeeds) => Promise<Record<string, OrtTensor>> };
-type OrtTensorCtor = new (type: string, data: ArrayLike<unknown>, dims: readonly number[]) => OrtTensor;
-
 let emptyPast: OrtFeeds | null = null;
 let hiddenPrefix: { key: string; length: number; cache: OrtFeeds } | null = null;
-
-const ortTensor = (): OrtTensorCtor =>
-  (new Tensor("int64", new BigInt64Array(1), [1]) as unknown as { ort_tensor: { constructor: OrtTensorCtor } }).ort_tensor.constructor;
 
 const disposeOrt = (cache: OrtFeeds) => {
   for (const tensor of Object.values(cache)) tensor.dispose?.();
@@ -382,7 +271,7 @@ const disposeOrt = (cache: OrtFeeds) => {
 async function emptyState(): Promise<OrtFeeds> {
   if (emptyPast) return emptyPast;
   const Ort = ortTensor();
-  const probe = (await model!.forward({
+  const probe = (await getModel()!.forward({
     input_ids: new Tensor("int64", BigInt64Array.from([0n]), [1, 1]),
     attention_mask: new Tensor("int64", BigInt64Array.from([1n]), [1, 1]),
     num_logits_to_keep: new Tensor("int64", [1n], []),
@@ -404,12 +293,12 @@ async function emptyState(): Promise<OrtFeeds> {
 /** 조각 하나를 LoRA 를 켜고 넣는다. 마지막 위치의 은닉 상태와 이어 갈 상태. transformers.js 는 모르는 입력(lora_scale)을 걸러 버려 세션을 직접 부른다. */
 async function stepHidden(chunk: number[], total: number, past: OrtFeeds) {
   const Ort = ortTensor();
-  const session = loraSession ?? (model as unknown as { sessions: Record<string, OrtSession> }).sessions.model;
+  const session = getLoraSession() ?? (getModel() as unknown as { sessions: Record<string, OrtSession> }).sessions.model;
   const outputs = await session.run({
     input_ids: new Ort("int64", BigInt64Array.from(chunk.map(BigInt)), [1, chunk.length]),
     attention_mask: new Ort("int64", new BigInt64Array(total).fill(1n), [1, total]),
     num_logits_to_keep: new Ort("int64", BigInt64Array.from([1n]), []),
-    ...(gateInputs.length ? gates({ lora_scale: 1 }) : { lora_scale: new Ort("float32", Float32Array.from([1]), []) }),
+    ...(activeGates().length ? gates({ lora_scale: 1 }) : { lora_scale: new Ort("float32", Float32Array.from([1]), []) }),
     ...past,
   });
   const hidden = Float32Array.from((await outputs.hidden.getData()) as Float32Array);
@@ -426,11 +315,12 @@ async function stepHidden(chunk: number[], total: number, past: OrtFeeds) {
 
 async function judgeHidden(id: number, spec: AdvisorModelSpec, state: string, questions: JudgeQuestion[]) {
   await load(spec);
-  if (!tokenizer || !model) throw new Error("모델이 준비되지 않았습니다");
+  const tokenizer = getTokenizer();
+  if (!tokenizer || !getModel()) throw new Error("모델이 준비되지 않았습니다");
   const started = performance.now();
   const special = tokenizer.convert_tokens_to_ids([...JUDGE_SPECIAL]) as number[];
   const tokenize = (text: string) =>
-    tokenizer!.encode(text.replace(/<\|(\w+)\|>/g, "<¦$1¦>"), { add_special_tokens: false }) as number[];
+    getTokenizer()!.encode(text.replace(/<\|(\w+)\|>/g, "<¦$1¦>"), { add_special_tokens: false }) as number[];
   const prefixIds = [special[0], ...tokenize(state)];
   const key = `${spec.id}:${spec.graph}:${prefixIds.join(",")}`;
   if (hiddenPrefix?.key !== key) {
@@ -455,8 +345,8 @@ async function judgeHidden(id: number, spec: AdvisorModelSpec, state: string, qu
     if (past !== prefix.cache) disposeOrt(past);
     features.push(out);
   }
-  ctx.postMessage(
-    { type: "judged", id, features, seconds: (performance.now() - started) / 1000 } satisfies AdvisorResponse,
+  post(
+    { type: "judged", id, features, seconds: (performance.now() - started) / 1000 },
     features.map((f) => f.buffer),
   );
 }
@@ -467,7 +357,9 @@ async function judgeHidden(id: number, spec: AdvisorModelSpec, state: string, qu
  */
 async function embedText(id: number, spec: AdvisorModelSpec, text: string) {
   await load(spec);
-  if (!tokenizer || !model || !loraSession || !gateInputs.includes("embed_scale")) throw new Error("검색 LoRA 가 없는 그래프입니다");
+  const tokenizer = getTokenizer();
+  const loraSession = getLoraSession();
+  if (!tokenizer || !getModel() || !loraSession || !activeGates().includes("embed_scale")) throw new Error("검색 LoRA 가 없는 그래프입니다");
   const started = performance.now();
   const Ort = ortTensor();
   const ids = (tokenizer.encode(text, { add_special_tokens: false }) as number[]).slice(0, 512);
@@ -483,11 +375,15 @@ async function embedText(id: number, spec: AdvisorModelSpec, text: string) {
   const vector = Float32Array.from(hidden.subarray(hidden.length - 1024));
   const norm = Math.hypot(...vector) || 1;
   for (let i = 0; i < vector.length; i += 1) vector[i] /= norm;
-  ctx.postMessage({ type: "embedded", id, vector, seconds: (performance.now() - started) / 1000 } satisfies AdvisorResponse, [vector.buffer]);
+  post({ type: "embedded", id, vector, seconds: (performance.now() - started) / 1000 }, [vector.buffer]);
 }
 
-ctx.addEventListener("message", (event: MessageEvent<AdvisorRequest>) => {
-  const request = event.data;
+function forgetLoraFeatures() {
+  hiddenPrefix = null;
+  emptyPast = null;
+}
+
+onRequest((request) => {
   if (request.type === "load") {
     load(request.model).catch((error: unknown) => {
       post({ type: "error", message: (error as Error).message });
@@ -502,13 +398,10 @@ ctx.addEventListener("message", (event: MessageEvent<AdvisorRequest>) => {
       const message = (error as Error).message;
       // 생성과 같다 — GPU 가 한 번 깨지면 쥐고 있던 것을 놓아야 다음 요청이 모델을 다시 올린다
       if (/OrtRun|buffer|webgpu|device|GPU/i.test(message)) {
-        judgePrefix = null;
-        hiddenPrefix = null;
-        emptyPast = null;
-        loraSession = null;
-        model = null;
-        tokenizer = null;
-        loading = null;
+        forgetJudgePrefix();
+        forgetLoraFeatures();
+        forgetLoraSession();
+        releaseModel();
       }
       post({ type: "error", id: request.id, message });
     });
@@ -521,7 +414,7 @@ ctx.addEventListener("message", (event: MessageEvent<AdvisorRequest>) => {
     return;
   }
   if (request.type === "stop") {
-    stopper.interrupt();
+    stopGeneration();
     return;
   }
   if (request.type === "generate") {
@@ -539,10 +432,8 @@ ctx.addEventListener("message", (event: MessageEvent<AdvisorRequest>) => {
        * 파일은 브라우저 캐시에 있으므로 내려받기를 다시 하지는 않는다.
        */
       if (/OrtRun|buffer|webgpu|device|GPU/i.test(message)) {
-        judgePrefix = null;
-        model = null;
-        tokenizer = null;
-        loading = null;
+        forgetJudgePrefix();
+        releaseModel();
       }
       post({ type: "error", id: request.id, message });
     });
