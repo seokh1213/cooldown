@@ -23,6 +23,7 @@ import { matchupStateOf } from "@/lib/advisor/conversation";
 import { answerProse } from "@/lib/advisor/prose";
 import { readJudgeHead, scoreJudge, type JudgeHead, type JudgeHeadMeta, type JudgeQuestion } from "@/lib/advisor/judge";
 import { useTranslation } from "@/i18n";
+import { useRevealText } from "./useRevealText";
 import type {
   AdvisorChatMessage,
   AdvisorFileProgress,
@@ -80,13 +81,6 @@ export interface AdvisorTurn extends AdvisorChatMessage {
    * 근거 검사도 모델이 쓴 글에만 돌린다 — 코드가 쓴 글은 카드에서 옮긴 값이다.
    */
   byCode?: boolean;
-}
-
-/** 흘려 보이는 도중 짝이 안 맞은 굵은 글씨 표시를 뗀다. 반쯤 나온 "**" 가 "*" 로 잠깐 보였다. */
-function unfinishedMarkup(text: string): string {
-  let out = text.replace(/\*$/, (star) => (text.endsWith("**") ? star : ""));
-  if ((out.match(/\*\*/g) ?? []).length % 2 === 1) out = out.slice(0, out.lastIndexOf("**"));
-  return out;
 }
 
 /** `respond` 한 번에 필요한 것. 자료는 부르는 쪽(코드)이 모아서 `system` 에 싣는다. */
@@ -185,9 +179,10 @@ export function useAdvisor(): UseAdvisorResult {
   /** `begin` 이 띄운 자리. 답이 채우면 비운다. */
   const pendingRef = useRef<{ userId: number; replyId: number } | null>(null);
   const [thinking, setThinking] = useState(false);
-  /** 흘려 보이는 중인 코드 답. 멈추면 끝까지 한 번에 보인다. */
-  const revealRef = useRef<{ id: number; full: string; timer: number } | null>(null);
-  const [revealing, setRevealing] = useState(false);
+  const writeContent = useCallback((id: number, content: string) => {
+    setTurns((prev) => prev.map((turn) => (turn.id === id ? { ...turn, content } : turn)));
+  }, []);
+  const { reveal, finishReveal, revealing } = useRevealText(writeContent);
   /** 판정 요청을 기다리는 쪽. 답 id 로 찾는다. */
   const judgeWaiters = useRef(new Map<number, { resolve: (features: Float32Array[]) => void; reject: (error: Error) => void }>());
   const embedWaiters = useRef(new Map<number, { resolve: (vector: Float32Array) => void; reject: (error: Error) => void }>());
@@ -371,45 +366,6 @@ export function useAdvisor(): UseAdvisorResult {
     setThinking(false);
     setTurns((prev) => prev.filter((turn) => turn.id !== pending.userId && turn.id !== pending.replyId));
   }, []);
-
-  /** 흘려 보이던 답을 끝까지 한 번에 보인다. */
-  const finishReveal = useCallback(() => {
-    const current = revealRef.current;
-    if (!current) return;
-    window.clearInterval(current.timer);
-    revealRef.current = null;
-    setRevealing(false);
-    setTurns((prev) => prev.map((turn) => (turn.id === current.id ? { ...turn, content: current.full } : turn)));
-  }, []);
-
-  /**
-   * 코드가 쓴 답을 모델이 쓰듯 조금씩 보인다.
-   *
-   * 다 된 글이 한 번에 뜨면 앞의 기다림과 이어져 "멈췄다가 빡 뜬다" 로 읽혔다. 길이와 상관없이 2초 안에 끝나게
-   * 한 번에 내보낼 글자 수를 정한다(짧으면 두 글자씩).
-   */
-  const reveal = useCallback((id: number, full: string) => {
-    finishReveal();
-    if (!full) return;
-    const step = Math.max(2, Math.ceil(full.length / 90));
-    let shown = 0;
-    const timer = window.setInterval(() => {
-      shown = Math.min(full.length, shown + step);
-      // 이모지 같은 두 칸 글자를 반으로 자르지 않는다
-      if (shown < full.length && /[\uD800-\uDBFF]/.test(full[shown - 1])) shown += 1;
-      const text = shown >= full.length ? full : unfinishedMarkup(full.slice(0, shown));
-      setTurns((prev) => prev.map((turn) => (turn.id === id ? { ...turn, content: text } : turn)));
-      if (shown >= full.length) {
-        window.clearInterval(timer);
-        revealRef.current = null;
-        setRevealing(false);
-      }
-    }, 20);
-    revealRef.current = { id, full, timer };
-    setRevealing(true);
-  }, [finishReveal]);
-
-  useEffect(() => () => window.clearInterval(revealRef.current?.timer), []);
 
   const refuseWithoutConsent = useCallback((question: string, notice: string): boolean => {
     if (consented) return false;
