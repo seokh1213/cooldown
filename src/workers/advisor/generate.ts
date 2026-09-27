@@ -20,10 +20,12 @@ export function stopGeneration() {
 /** 프롬프트 상한. 죽는 선(약 2,120)에서 여유를 둔다. */
 const PROMPT_LIMIT = 1900;
 
+type ChatMessage = { role: string; content: string };
+
 export async function generate(
   id: number,
   spec: AdvisorModelSpec,
-  messages: Array<{ role: string; content: string }>,
+  messages: ChatMessage[],
   system?: string,
   maxTokens?: number,
   loopGuard = true,
@@ -34,36 +36,7 @@ export async function generate(
   if (!tokenizer || !model) throw new Error("모델이 준비되지 않았습니다");
 
   stopper = new InterruptableStoppingCriteria();
-  // Qwen3 계열은 사고 모드를 켤 수 있다. 켜 두면 답변 앞에 추론 과정을 길게 뱉어
-  // 브라우저에서 체감 지연이 몇 배가 된다. 상성 조언은 형식이 정해져 있으므로 끈다.
-  const encode = (history: typeof messages, systemText: string | undefined) =>
-    tokenizer!.apply_chat_template(systemText ? [{ role: "system", content: systemText }, ...history] : history, {
-      add_generation_prompt: true,
-      return_dict: true,
-      enable_thinking: false,
-    } as Parameters<PreTrainedTokenizer["apply_chat_template"]>[1]) as Record<string, unknown>;
-  const lengthOf = (encoded: Record<string, unknown>) => ((dims: number[]) => dims[dims.length - 1] ?? 0)((encoded.input_ids as { dims: number[] }).dims);
-  let inputs = encode(messages, system);
-  /*
-   * Qwen3.5 0.8B 는 프롬프트가 약 2,120토큰을 넘으면 WebGPU 실행이 "SafeIntOnOverflow" 로
-   * 죽는다(2,113 은 되고 2,180 은 안 됐다). 생성 길이와는 무관하고 첫 읽기 길이만 문제다.
-   * 챔피언 셋의 요약을 실은 질문이 약 2,300토큰이라 화면에 오류가 그대로 떴다.
-   *
-   * 넘치면 오래된 대화부터 뺀다. 그래도 넘치면 시스템 글의 뒤쪽을 자른다 — 재료가 줄어도
-   * 답이 나오는 편이 오류보다 낫다.
-   */
-  if (lengthOf(inputs) > PROMPT_LIMIT) {
-    let history = messages;
-    while (history.length > 1 && lengthOf(inputs) > PROMPT_LIMIT) {
-      history = history.slice(history.length > 2 ? 2 : 1);
-      inputs = encode(history, system);
-    }
-    let systemText = system;
-    while (systemText && lengthOf(inputs) > PROMPT_LIMIT) {
-      systemText = systemText.slice(0, Math.floor(systemText.length * 0.85));
-      inputs = encode(history, systemText);
-    }
-  }
+  const inputs = encodeWithinLimit(tokenizer, messages, system);
 
   let text = "";
   let tokens = 0;
@@ -139,4 +112,40 @@ export async function generate(
     ttftSeconds: firstTokenAt ? (firstTokenAt - startedAt) / 1000 : undefined,
     promptTokens: promptTokens || undefined,
   });
+}
+
+/**
+ * 대화를 모델 입력으로 바꾸되 프롬프트 상한(`PROMPT_LIMIT`)을 넘지 않게 줄인다.
+ *
+ * Qwen3.5 0.8B 는 프롬프트가 약 2,120토큰을 넘으면 WebGPU 실행이 "SafeIntOnOverflow" 로
+ * 죽는다(2,113 은 되고 2,180 은 안 됐다). 생성 길이와는 무관하고 첫 읽기 길이만 문제다.
+ * 챔피언 셋의 요약을 실은 질문이 약 2,300토큰이라 화면에 오류가 그대로 떴다.
+ *
+ * 넘치면 오래된 대화부터 뺀다. 그래도 넘치면 시스템 글의 뒤쪽을 자른다 — 재료가 줄어도
+ * 답이 나오는 편이 오류보다 낫다.
+ */
+function encodeWithinLimit(tokenizer: PreTrainedTokenizer, messages: ChatMessage[], system: string | undefined): Record<string, unknown> {
+  // Qwen3 계열은 사고 모드를 켤 수 있다. 켜 두면 답변 앞에 추론 과정을 길게 뱉어
+  // 브라우저에서 체감 지연이 몇 배가 된다. 상성 조언은 형식이 정해져 있으므로 끈다.
+  const encode = (history: ChatMessage[], systemText: string | undefined) =>
+    tokenizer.apply_chat_template(systemText ? [{ role: "system", content: systemText }, ...history] : history, {
+      add_generation_prompt: true,
+      return_dict: true,
+      enable_thinking: false,
+    } as Parameters<PreTrainedTokenizer["apply_chat_template"]>[1]) as Record<string, unknown>;
+  const lengthOf = (encoded: Record<string, unknown>) => ((dims: number[]) => dims[dims.length - 1] ?? 0)((encoded.input_ids as { dims: number[] }).dims);
+  let inputs = encode(messages, system);
+  if (lengthOf(inputs) > PROMPT_LIMIT) {
+    let history = messages;
+    while (history.length > 1 && lengthOf(inputs) > PROMPT_LIMIT) {
+      history = history.slice(history.length > 2 ? 2 : 1);
+      inputs = encode(history, system);
+    }
+    let systemText = system;
+    while (systemText && lengthOf(inputs) > PROMPT_LIMIT) {
+      systemText = systemText.slice(0, Math.floor(systemText.length * 0.85));
+      inputs = encode(history, systemText);
+    }
+  }
+  return inputs;
 }
