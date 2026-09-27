@@ -44,13 +44,9 @@ import {
   asksComparison,
   asksGuide,
   asksMatchup,
-  matchupPair,
-  matchupSides,
-  matchupSidesDetailed,
   asksSkillsOverview,
   asksWholeKit,
   buildCompareAnswer as buildCompareCard,
-  matchupSidesByPhrase,
   buildRuleAnswer as buildRuleCard,
   buildSpellAnswer as buildSpellCard,
   itemHeadline,
@@ -60,6 +56,7 @@ import {
 } from "@/lib/advisor/answer";
 import { detectSpellFocus, type SpellFocus } from "@/lib/advisor/spellFocus";
 import { suggestChampions } from "@/lib/advisor/championTypo";
+import { matchupPair, matchupSides, matchupSidesByPhrase, matchupSidesDetailed } from "@/lib/advisor/matchupSides";
 import { isSmallTalk, nicknames } from "@/lib/advisor/intent";
 import {
   JUDGE_KIND9_CRITERIA,

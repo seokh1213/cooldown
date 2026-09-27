@@ -14,7 +14,7 @@ import * as path from "node:path";
 import type { ChampionCard } from "../lib/facts";
 import type { AdvisorData } from "../../../src/lib/advisor/context";
 import { detectChampions } from "../../../src/lib/advisor/intent";
-import { matchupSidesByPhrase, matchupSidesDetailed } from "../../../src/lib/advisor/answer";
+import { matchupSidesByPhrase, matchupSidesDetailed } from "../../../src/lib/advisor/matchupSides";
 import { JUDGE_KIND_CRITERIA, JUDGE_KIND9_CRITERIA, JUDGE_KIND_INSTRUCTIONS, JUDGE_MINE_INSTRUCTIONS, JUDGE_SUB_CRITERIA, JUDGE_SUB_INSTRUCTIONS, judgeRouteState, routeFromJudge, subFromJudge } from "../../../src/lib/advisor/routeAsk";
 import { topicFromJudge, topicFromWords, topicQuestions } from "../../../src/lib/advisor/topicJudge";
 import { TOPIC_TEST } from "../lib/topicCases";
