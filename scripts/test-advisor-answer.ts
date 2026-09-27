@@ -37,7 +37,7 @@ import {
 } from "../src/lib/advisor/answer";
 import { TAGS, DAMAGE, GRADE, RANGE, RATIO_STATS, missingCardWords } from "./llm/lib/cardWords";
 import { readPageContext } from "../src/lib/advisor/pageContext";
-import { nicknames } from "../src/lib/advisor/intent";
+import { isSmallTalk, nicknames } from "../src/lib/advisor/intent";
 import { dehydrateAnswer, reviveAnswer, reviveTurns, type StoredAnswer, type StoredTurn } from "../src/lib/advisor/history";
 import type { AdvisorAnswer } from "../src/lib/advisor/answer";
 import type { AdvisorData } from "../src/lib/advisor/context";
@@ -166,6 +166,15 @@ assert.equal(detectSpellFocus("럼블 E 뭐야"), undefined, "사실을 안 짚�
   for (const q of ["그럼 한타 때는?", "근데 템트리는 어떻게 가져가?", "그건 왜 그런 거야?", "레벨 6 찍고 나서는 달라져?", "정글이 자꾸 미드로 오는데 그럴 땐?", "뭐 사야 돼"]) {
     assert.equal(suggestChampions(q, cards, nicknames(cards)), undefined, `${q} 에 오타 후보가 없다`);
   }
+  // 일상 낱말·게임 낱말은 이름 오타가 아니다("오늘" → 오른, "바론" → 바드). 게임 낱말은 부르는 쪽이 판정해 넘긴다.
+  assert.equal(suggestChampions("오늘 날씨 어때", cards, nicknames(cards)), undefined, "오늘 은 오타가 아니다");
+  const gameWord = (token: string) => ["바론", "항복", "점멸"].includes(token);
+  assert.equal(suggestChampions("바론 버프 몇 초 가?", cards, nicknames(cards), new Set(), 1, gameWord), undefined, "바론 은 게임 낱말");
+  // 스킬 키가 붙은 두 글자는 대화 중에도 오타로 본다("럼미 E")
+  assert.equal(suggestChampions("럼미 E", cards, nicknames(cards), new Set(), 3)?.candidates[0]?.id, "Rumble", "대화 중 럼미 E");
+  // 잡담
+  for (const q of ["고마워", "고마워 덕분에 이겼다", "thanks, won that one", "谢了，这把赢了", "ㅋㅋㅋ"]) assert.equal(isSmallTalk(q), true, `잡담: ${q}`);
+  for (const q of ["고마워 근데 템은?", "how do i gank", "감사 인사 이모트 어디 있어?"]) assert.equal(isSmallTalk(q), false, `잡담 아님: ${q}`);
   // 상성 대화 중에는 두 글자 낱말을 오타로 보지 않는다("나아" → 나미). 세 글자 오타는 그대로 잡는다.
   assert.equal(suggestChampions("차라리 뭐가 나아?", cards, nicknames(cards), new Set(), 3), undefined, "대화 중 두 글자는 오타가 아니다");
   assert.equal(suggestChampions("다리어스 상대로는?", cards, nicknames(cards), new Set(), 3)?.candidates[0]?.id, "Darius", "대화 중에도 세 글자 오타는 잡는다");

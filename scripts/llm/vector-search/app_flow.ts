@@ -11,7 +11,8 @@ import * as fs from "node:fs";
 import { detectChampions, asksAboutHelper, nicknames } from "../../../src/lib/advisor/intent";
 import { suggestChampions } from "../../../src/lib/advisor/answer";
 import { buildItemCard } from "../../../src/lib/advisor/context";
-import { asksPriceTiers } from "../../../src/lib/advisor/gameMeta";
+import { asksPriceTiers, findGameMeta } from "../../../src/lib/advisor/gameMeta";
+import { findMentionedRules } from "../lib/rules";
 import { loadData, type Lang } from "../kev-agent/lib";
 
 const [input] = process.argv.slice(2);
@@ -23,7 +24,8 @@ const rows = fs
 function searchable(lang: Lang, question: string): boolean {
   const data = loadData(lang);
   if (detectChampions(data, question).length) return false;
-  if (suggestChampions(question, data.cards, nicknames(data.cards), new Set(), 1)?.candidates.length) return false;
+  const gameWord = (token: string) => Boolean(findGameMeta(token) || findMentionedRules(data.ruleIndex, token).length);
+  if (suggestChampions(question, data.cards, nicknames(data.cards), new Set(), 1, gameWord)?.candidates.length) return false;
   if (buildItemCard(data, question, undefined)) return false;
   return !asksAboutHelper(question) && !asksPriceTiers(question);
 }

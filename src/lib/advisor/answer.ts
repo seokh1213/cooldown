@@ -399,6 +399,8 @@ const FUNCTION_WORDS = new Set([
   // 이어 묻는 말의 첫머리. "그럼 한타 때는?" 의 "그럼" 이 그웬(거리 1)으로 고쳐져 상성 대화가 끊겼다.
   "그럼", "그러면", "그럼요", "근데", "그런데", "그래서", "그건", "그게", "그거", "이건", "이거", "저건",
   "만약", "차라리", "반대로", "방금", "혹시", "아니면", "그냥", "나는", "내가", "제가", "저는",
+  // 일상 낱말. "오늘 날씨 어때" 의 "오늘" 이 오른·오공 오타로 잡혔다.
+  "오늘", "내일", "어제", "요즘", "지금", "날씨", "진짜", "정말",
   // 이어 묻는 말에 흔한 낱말이 이름과 거리 1 이었다: 그런→그웬, 나서는→나서스, 자꾸→자야, 사야→자야
   "그런", "그럴", "그렇게", "나서", "나서는", "나서도", "자꾸", "사야", "해야", "가야", "봐야", "써야", "서야", "돼야",
 ]);
@@ -429,6 +431,11 @@ export function suggestChampions(
    * 두 글자 낱말("나아", "사야", "자꾸")은 아무 이름과도 거리 1 이라 대화를 끊었다.
    */
   minLength = 1,
+  /**
+   * 게임 낱말인가(게임 메타 낱말·룬·주문 이름·은어). 이름 오타로 보지 않는다. "바론 버프 몇 초 가?" 의 "바론" 이 바드·바이 후보로
+   * 잡혀 "'바론' 챔피언을 찾지 못했습니다" 라고 되물었다. 자료를 쥔 쪽이 넘긴다.
+   */
+  isGameWord?: (token: string) => boolean,
 ): { original: string; candidates: ChampionCard[] } | undefined {
   const names: Array<[string, ChampionCard]> = [];
   for (const card of cards) {
@@ -446,11 +453,13 @@ export function suggestChampions(
      * "오는" 이 오른·오공 후보로 잡혀 상성 답 대신 "'오는' 챔피언을 찾지 못했습니다" 가 떴다.
      */
     if (known.size >= 2 && token.length <= 2) continue;
-    if (token.length < minLength) continue;
+    // "럼미 E" 처럼 스킬 키가 바로 붙은 낱말은 짧아도 이름이다(상성 대화 중에는 minLength 3 이라 놓쳤다)
+    if (token.length < minLength && !new RegExp(`${token}\\s*[QWERqwer](?![A-Za-z])`).test(question)) continue;
     // 첫 글자가 어느 이름과도 안 맞아도 버리지 않는다. 그 첫 글자 자체가 오타일 수
     // 있다("재이스" 의 재). 대신 음절 단계에서만 첫 글자를 맞추고, 자모 단계는 푼다.
     const initialKnown = initials.has(token[0]);
     if (FUNCTION_WORDS.has(token)) continue;
+    if (isGameWord?.(token)) continue;
     // 두 글자 아래는 아무 이름과도 가까워서 첫 글자마저 틀리면 짚을 근거가 없다.
     if (!initialKnown && token.length < 3) continue;
     // 의도 어휘("스킬", "쿨타임", "체력"…)는 이름이 아니다. "스킬" 이 줄임말 "스카"(스카너) 와

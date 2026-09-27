@@ -9,7 +9,9 @@ import { aliasesOf } from "../lib/searchAliases";
 import { lexicalSearch, type SearchDoc } from "../../../src/lib/advisor/searchFallback";
 import { questionLanguage } from "../../../src/hooks/useAdvisor";
 import { corpus, current } from "./corpus";
-import type { Lang } from "../kev-agent/lib";
+import { detectChampions } from "../../../src/lib/advisor/intent";
+import { buildItemCard, buildMechanicsAnswer } from "../../../src/lib/advisor/context";
+import { loadData, type Lang } from "../kev-agent/lib";
 
 const [input, output] = process.argv.slice(2);
 const rows = fs
@@ -32,7 +34,10 @@ const out = rows.map((row) => {
   const bm25: Record<string, number> = {};
   for (const hit of lexicalSearch(docsOf(lang), q, 100)) bm25[(hit.doc as SearchDoc & { id: string }).id] = hit.score;
   const found = current(row.lang, q);
-  return { lang, bm25, lexical: found.id, step: found.step ?? null };
+  const data = loadData(row.lang);
+  // 대화 흐름 시험용: 챔피언 이름 수, 아이템·게임 원리 이름(앱이 새 질문으로 치는 것)
+  const entity = Boolean(buildItemCard(data, q, undefined)) || Boolean(buildMechanicsAnswer(data, q));
+  return { lang, bm25, lexical: found.id, step: found.step ?? null, champions: detectChampions(data, q).length, entity };
 });
 fs.writeFileSync(output, JSON.stringify(out));
 console.log("저장", output, out.length);

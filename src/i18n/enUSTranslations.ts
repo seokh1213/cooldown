@@ -268,6 +268,7 @@ export const enUSTranslations: Translations = {
     noLiteAnswer: "I couldn't find this in the notes I have. Try asking with a champion, item or rune name and I can answer from the data.",
     noGameData: "This game rule or meta detail (surrender, objective timers, champion prices, ranked rules and the like) is not in the data yet, so I won't guess.",
     noModel: "The notes on hand do not answer this. Downloading the AI model would let it answer questions like this.",
+    smallTalk: "Glad it helped. Ask me anything else about champions, matchups, runes or game rules.",
     identity:
       "I am the League of Legends helper built into this app. I answer from its data on champions, abilities, items and ruling rules. I run on your device and this conversation never leaves it.",
     modelUnavailable: "The AI model is not offered on this device. Champion, item and rule lookups still work.",

@@ -85,7 +85,8 @@ function locate(text: string, name: string, wordStart = false, isAlias = false):
   if (/^[ -~]+$/.test(name)) {
     const chunks = name.split(/[\s'.]+/).filter(Boolean).map((c) => c.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"));
     if (!chunks.length) return undefined;
-    const found = new RegExp(`(?<![A-Za-z])${chunks.join("[\\s'.]*")}(?![A-Za-z])`, "i").exec(text);
+    // 소유격·복수("olafs kit", "fiora's passive", "yasuos")도 이름이다
+    const found = new RegExp(`(?<![A-Za-z])${chunks.join("[\\s'.]*")}(?:'?s)?(?![A-Za-z])`, "i").exec(text);
     return found ? [found.index, found[0].length] : undefined;
   }
   // 한 글자 이름(렐·진·퀸)과 두 글자 이름(오른·아리)은 앞뒤 경계를 모두 본다.
@@ -199,6 +200,17 @@ export function detectChampions(
   return findMentions(data, text)
     .slice(0, limit)
     .map((mention) => mention.card);
+}
+
+/**
+ * 고맙다·안녕 같은 잡담인가. 짧은 말 전체가 그것일 때만(“고마워 근데 템은?” 은 잡담이 아니다).
+ * 상성 대화 중에 "고마워 덕분에 이겼다" 가 앞 상성의 이어 묻기로 가서 상성 조언이 다시 나왔다.
+ */
+const SMALL_TALK =
+  /^(고마워(요)?|고맙(다|습니다)|감사(합니다|해요|해)?|ㄳ|ㄱㅅ|땡큐|덕분에[^?？]*|안녕(하세요)?|ㅎㅇ|잘\s*자|ㅋㅋ+|ㅎㅎ+|thanks?( you)?|thx|ty|tysm|hi|hello|hey|gg|谢谢|谢了|多谢|你好|嗨)([\s,.!~ㅋㅎ，。！]|덕분에|이겼다|이겼어|won|that one|这把赢了|赢了)*[.!~。！]*$/i;
+
+export function isSmallTalk(question: string): boolean {
+  return SMALL_TALK.test(question.trim());
 }
 
 /**

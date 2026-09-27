@@ -63,7 +63,7 @@ import {
   type AdvisorAnswer,
   type SpellFocus,
 } from "@/lib/advisor/answer";
-import { nicknames } from "@/lib/advisor/intent";
+import { isSmallTalk, nicknames } from "@/lib/advisor/intent";
 import {
   JUDGE_KIND9_CRITERIA,
   JUDGE_KIND_CRITERIA,
@@ -93,6 +93,8 @@ const TOPIC_HEAD = "topic-v1";
 const ACT_HEAD = "act-v1";
 /** kev LoRA 모델(`judge: "kev"`)은 이 헤드 하나로 갈래(아홉 칸)·주제·대화 흐름을 모두 가른다 */
 const KEV_HEAD = "kev-b3e";
+/** 상성 대화 중 이름 없는 말을 새 질문으로 볼 검색 벡터 점수(낱말 가산점 없이) */
+const CONVERSATION_NEW_QUESTION = 0.55;
 import { findMentionedRules } from "../../../../scripts/llm/lib/rules";
 import { findMechanics } from "../../../../scripts/llm/lib/mechanics";
 import type { ChampionCard } from "../../../../scripts/llm/lib/facts";
@@ -481,6 +483,10 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
     return undefined;
   };
 
+  /** 게임 낱말(게임 메타·룬·주문 이름·은어). 챔피언 이름 오타로 보지 않는다(`suggestChampions`). */
+  const isGameWord = (token: string): boolean =>
+    Boolean(data && (findGameMeta(token) || findMentionedRules(data.ruleIndex, token).length > 0));
+
   /** "혹시 이 자료를?" 에서 고른 자료를 보인다. 검색을 다시 돌리지 않는다. */
   const showDoc = (id: string, title: string) => {
     const answer = docAnswer(id, title);
@@ -502,6 +508,16 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
     const system = advisorSystemPrompt(lang);
     if (!data) {
       advisor.respond(question, { system, withoutConsent: copy.noModel });
+      return;
+    }
+
+    // 잡담·도우미 자신은 자료로 답할 것이 아니다. 상성 대화 중이어도 먼저 받는다("고마워 덕분에 이겼다" 가 상성 이어 묻기로 갔다).
+    if (isSmallTalk(question)) {
+      advisor.answerWithoutModel(question, copy.smallTalk);
+      return;
+    }
+    if (asksAboutHelper(question)) {
+      advisor.answerWithoutModel(question, copy.identity);
       return;
     }
 
@@ -594,7 +610,7 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
       advisor.consented &&
       Boolean(advisor.model.retrieval) &&
       detectChampions(data, question).length === 0 &&
-      !suggestChampions(question, data.cards, nicknames(data.cards), new Set(), 1)?.candidates.length &&
+      !suggestChampions(question, data.cards, nicknames(data.cards), new Set(), 1, isGameWord)?.candidates.length &&
       !buildItemCard(data, question, recentItem()) &&
       !matchupStateOf(advisor.turns.map((turn) => (turn.role === "assistant" ? turn.answer : undefined))) &&
       !asksAboutHelper(question) &&
@@ -657,7 +673,7 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
       const known = new Set(champions.map((card) => card.id));
       // 상성 대화를 이어 가는 중이면 두 글자 낱말은 오타로 보지 않는다(`suggestChampions` 의 minLength)
       const inMatchup = Boolean(matchupStateOf(advisor.turns.map((turn) => (turn.role === "assistant" ? turn.answer : undefined))));
-      const typo = suggestChampions(question, data.cards, nicknames(data.cards), known, inMatchup ? 3 : 1);
+      const typo = suggestChampions(question, data.cards, nicknames(data.cards), known, inMatchup ? 3 : 1, isGameWord);
       if (typo?.candidates.length === 1) {
         const [card] = typo.candidates;
         void ask(question.replace(typo.original, card.name), fill(copy.card.understoodAs, { name: card.name }));
@@ -704,6 +720,20 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
     if (state && champions.length <= 1) {
       // 아이템 이름·게임 규칙 문서가 걸리면 새 질문이다
       const named = champions.length === 0 && (Boolean(buildItemCard(data, question, recentItem())) || Boolean(buildMechanicsAnswer(data, question)));
+      /*
+       * 이름이 없어도 검색 벡터가 자료 하나를 뚜렷이 가리키면 새 질문이다("대룡 먹으면 버프 얼마나 가?"). 대화 중에는 낱말 가산점을
+       * 빼고 벡터 점수만 본다 — "점멸 빠지면 물어도 돼?" 는 상성 이어 묻기인데 소환사 주문 이름이 걸린다. 대화 흐름 시험에서 0.55 는
+       * 이어 묻기 127문항을 하나도 끊지 않고 새 질문 24문항 중 6개를 빼냈다(research/llm-evals/vector-search/README.md).
+       */
+      if (!named && champions.length === 0 && canUseModel && advisor.consented && advisor.model.retrieval && !actFromWords(question)) {
+        const top = await advisor.search(question, lang).catch(() => null);
+        const answer = top?.[0] && top[0].score >= CONVERSATION_NEW_QUESTION ? docAnswer(top[0].id, question) : undefined;
+        if (answer) {
+          if (typeof answer === "string") advisor.answerWithoutModel(question, answer, usedNotice);
+          else deliver(question, answer, usedNotice);
+          return;
+        }
+      }
       // 문형이 분명하면("입장에서는?", "왜?", "항복 몇 분부터") 판정기보다 먼저다. 모델이 없는 기기의 길이기도 하다.
       const worded = actFromWords(question);
       const act =
@@ -727,7 +757,9 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
       const entity = champions.length === 0 && (named || worded === "new");
       // 새 이름이 내 자리인지 상대 자리인지 문형이 못 박으면 판정기보다 먼저다("오공으로 하면", "야스오 만나면")
       const side = champions.length === 1 ? sideOfNewName(question, [champions[0].name, ...(data.aliases.get(champions[0].id) ?? [])]) : undefined;
-      const plan = planTurn(state, champions, entity, act, side, route?.kind);
+      // 새 챔피언 + 스킬 지목("제드 궁 어떻게 피해")은 상대를 바꾼 것이 아니라 그 챔피언의 스킬 질문이다
+      const alone = champions.length === 1 && detectSlot(question) ? "skills" : route?.kind;
+      const plan = planTurn(state, champions, entity, act, side, alone);
       if (plan.kind === "matchup") {
         const lastFocus = [...advisor.turns].reverse().find((turn) => turn.answer?.kind === "compare" && turn.answer.matchup)?.answer;
         const previousFocus = lastFocus?.kind === "compare" ? lastFocus.notes?.plan?.focus : undefined;
