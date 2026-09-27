@@ -116,7 +116,8 @@ import {
   lexicalSearch,
 } from "@/lib/advisor/searchFallback";
 import { asksAboutHelper, detectChampions } from "@/lib/advisor/intent";
-import { questionLanguage, type AdvisorTurn, type UseAdvisorResult } from "@/hooks/useAdvisor";
+import type { AdvisorTurn, UseAdvisorResult } from "@/hooks/useAdvisor";
+import { questionLanguage } from "@/lib/advisor/questionLanguage";
 import type { UseAdvisorHistoryResult } from "@/hooks/useAdvisorHistory";
 import { AdvisorConsent } from "./AdvisorConsent";
 import { AdvisorHistory } from "./AdvisorHistory";

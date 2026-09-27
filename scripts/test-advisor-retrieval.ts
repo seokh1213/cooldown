@@ -13,7 +13,7 @@ import { indexRules, buildRuleAnswer, findMentionedRules, findRulesMentioning } 
 import { findMechanics, mechanicsToText, type MechanicsIndex } from "./llm/lib/mechanics";
 import { PUBLIC_DATA_ROOT, resolvePatchVersion } from "./llm/lib/data";
 import { hitsToAnswer, hybridSearch, lexicalSearch, type SearchDoc } from "../src/lib/advisor/searchFallback";
-import { questionLanguage } from "../src/hooks/useAdvisor";
+import { questionLanguage } from "../src/lib/advisor/questionLanguage";
 import { asksAboutHelper } from "../src/lib/advisor/intent";
 
 const patch = resolvePatchVersion();

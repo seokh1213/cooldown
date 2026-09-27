@@ -6,7 +6,8 @@
  */
 import * as fs from "node:fs";
 import * as zlib from "node:zlib";
-import { ranked, questionLanguage } from "../../../src/hooks/useAdvisor";
+import { ranked } from "../../../src/lib/advisor/docVectors";
+import { questionLanguage } from "../../../src/lib/advisor/questionLanguage";
 import { buildRetrievalDocs, hybridSearch, lexicalSearch, type LexicalHit } from "../../../src/lib/advisor/searchFallback";
 import { current } from "./corpus";
 import { loadData, ROOT, type Lang } from "../kev-agent/lib";
