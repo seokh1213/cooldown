@@ -4,15 +4,14 @@
  *   dump                         언어마다 찾을 문서(규칙 70 · 게임 원리 9 · 게임 메타 21)를 research/llm-evals/vector-search/corpus-<언어>.json 으로
  *   current <queries.jsonl>      지금 앱이 그 질문에 어느 문서를 보이는지(없으면 null) → current.json
  *
- * 지금 앱 판은 AdvisorPanel 의 이름 없는 질문 순서를 그대로 따른다:
+ * 지금 앱 판은 앱의 이름 없는 질문 순서를 따른다(이름 단계는 `lexicalHit`):
  *   룬·주문 이름(findMentionedRules) → 게임 메타 낱말(findGameMeta) → 게임 원리 낱말(findMechanics) → 낱말 검색 + 제목 거르기(hitsToAnswer)
  * 아이템은 이름으로 찾는 영역이라 뺐다.
  */
 import * as fs from "node:fs";
 import * as path from "node:path";
-import { findMentionedRules, ruleName, type RuleNotes } from "../lib/rules";
-import { findMechanics } from "../lib/mechanics";
-import { findGameMeta } from "../../../src/lib/advisor/gameMeta";
+import { ruleName, type RuleNotes } from "../lib/rules";
+import { lexicalHit } from "../../../src/lib/advisor/questionDocs";
 import { buildRetrievalDocs, buildSearchCorpus, hitsToAnswer, lexicalSearch } from "../../../src/lib/advisor/searchFallback";
 import { loadData, ROOT, type Lang } from "../kev-agent/lib";
 
@@ -31,16 +30,13 @@ export function corpus(lang: Lang): Doc[] {
   return buildRetrievalDocs(loadData(lang), lang);
 }
 
-/** 지금 앱이 보이는 문서(여러 개면 맨 앞)와 그것을 찾은 단계. */
+const LEXICAL_STEP = { rule: "rule-name", meta: "meta-word", mech: "mech-word" } as const;
+
+/** 지금 앱이 보이는 문서(여러 개면 맨 앞)와 그것을 찾은 단계. 이름 단계는 앱의 `lexicalHit` 을 그대로 부른다. */
 export function current(lang: Lang, question: string): { id: string | null; step?: string } {
   const data = loadData(lang);
-  const named = findMentionedRules(data.ruleIndex, question);
-  const metaFirst = named.length > 0 && named.every((rule) => rule.subject === "gameplay") && Boolean(findGameMeta(question));
-  if (named.length && !metaFirst) return { id: `rule:${named[0].name}`, step: "rule-name" };
-  const fact = findGameMeta(question);
-  if (fact) return { id: `meta:${fact.id}`, step: "meta-word" };
-  const [section] = findMechanics(data.mechanics, question);
-  if (section) return { id: `mech:${section.id}`, step: "mech-word" };
+  const hit = lexicalHit(data, question);
+  if (hit) return { id: hit.id, step: LEXICAL_STEP[hit.step] };
   const docs = buildSearchCorpus(data, lang);
   const hits = lexicalSearch(docs, question);
   for (const hit of hits) {
