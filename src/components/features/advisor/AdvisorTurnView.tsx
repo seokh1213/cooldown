@@ -1,0 +1,399 @@
+/**
+ * 대화의 말풍선 하나 — 사용자 질문, 또는 답(카드·코드가 쓴 글·모델 해설)과 그 곁의 칩·링크·평가.
+ */
+import { Link } from "react-router-dom";
+import { ArrowRight, Loader2, ThumbsDown, ThumbsUp } from "lucide-react";
+import { useTranslation } from "@/i18n";
+import type { Translations } from "@/i18n/translations";
+import { fill } from "@/i18n/fill";
+import type { AdvisorTurn } from "@/hooks/useAdvisorTurns";
+import { groundCommentary } from "@/lib/advisor/grounding";
+import { answerKey, answerLinks, itemHeadline, spellSummary, type AdvisorAnswer } from "@/lib/advisor/answer";
+import { AdvisorAnswerCard } from "./AdvisorAnswerCard";
+import { AdvisorMarkdown } from "./AdvisorMarkdown";
+import { AnswerIcons, referenceTitle } from "./AdvisorReference";
+
+interface AdvisorTurnViewProps {
+  ref?: React.Ref<HTMLDivElement>;
+  turn: AdvisorTurn;
+  index: number;
+  /** 이 말풍선 앞의 가장 최근 답 */
+  previousAnswer: AdvisorAnswer | undefined;
+  /** 카드를 자료 패널로 보낸 답인가. 그러면 대화에는 짚은 사실과 자료 칩만 남는다. */
+  asReference: boolean;
+  /** 자료 패널이 지금 이 답을 보이는가 */
+  shownInReference: boolean;
+  /** 답을 쓰는 중인 마지막 답인가 */
+  answering: boolean;
+  busy: boolean;
+  ddragonVersion: string;
+  patch: string;
+  onShowReference: (turnId: number) => void;
+  onAskPerspective: (index: number, side: "playing" | "against") => void;
+  onShowDoc: (id: string, title: string) => void;
+  onPickChampion: (championId: string) => void;
+  onNavigate: () => void;
+  onRate: (turnId: number, rating: "up" | "down", patch: string) => void;
+}
+
+function linkLabel(link: ReturnType<typeof answerLinks>[number], copy: Translations["advisor"]): string {
+  switch (link.kind) {
+    case "vs":
+      return fill(copy.card.goVs, { a: link.names[0], b: link.names[1] });
+    case "runes":
+      return copy.card.goRunes;
+    case "summoner":
+      return copy.card.goSummoner;
+    case "item":
+      return fill(copy.card.goItem, { name: link.name });
+  }
+}
+
+export function AdvisorTurnView(props: AdvisorTurnViewProps) {
+  const { ref, turn, index, previousAnswer, asReference, busy, ddragonVersion, patch, onNavigate } = props;
+  const { t } = useTranslation();
+  const copy = t.advisor;
+  // 같은 챔피언을 이어 물으면 "VS 화면으로 이동" 이 답마다 붙는다. 직전 답에 있던 링크는 뺀다.
+  const previousLinkTargets = new Set(previousAnswer ? answerLinks(previousAnswer).map((link) => link.to) : []);
+  const links = turn.answer ? answerLinks(turn.answer).filter((link) => !previousLinkTargets.has(link.to)) : [];
+  // 자료 칩과 같은 줄에 둔다. 따로 두면 버튼이 두 줄로 쌓여 어지럽다.
+  const linkButtons = links.map((link) => (
+    <Link
+      key={link.to}
+      to={link.to}
+      onClick={onNavigate}
+      className="inline-flex items-center gap-1 rounded-md border border-primary/40 px-2.5 py-1 text-xs font-medium text-primary transition-colors hover:bg-primary/10"
+    >
+      {linkLabel(link, copy)}
+      <ArrowRight className="h-3 w-3" />
+    </Link>
+  ));
+  const commentary = <TurnCommentary turn={turn} />;
+  /*
+   * 관점을 문장으로 못 가린 자리에만 한 번 물어본다.
+   *
+   * "제드 라인전 어떻게 풀어" 는 내가 제드인지 제드를 상대하는지 한국어로도
+   * 알 수 없다. 그 정보는 **묻는 사람에게만** 있으므로 모델에게 다시 쓰게
+   * 해도 없는 것이 생기지 않는다. 버튼 하나가 제일 정확하고 제일 빠르다.
+   *
+   * 양쪽에 노트가 다 있을 때만 띄운다. 한쪽뿐이면 고를 것이 없다.
+   */
+  const notes = turn.answer?.kind === "champion" ? turn.answer.notes : undefined;
+  // 렌더에서는 **띄울지 말지만** 가린다. 여기서 부르는 함수를 만들면
+  // 그 함수가 `ask` 를 거쳐 ref 에 닿아, 렌더 중 ref 접근으로 잡힌다.
+  const canAskSide = Boolean(
+    notes && notes.perspective === "both" && notes.playing.length > 0 && notes.against.length > 0,
+  );
+  const perspectiveChips = !canAskSide ? null : <PerspectiveChips index={index} onAskPerspective={props.onAskPerspective} />;
+  const pending =
+    !turn.content && !turn.byCode && props.answering ? (
+      <span className="flex items-center gap-2 pl-2.5 text-xs text-muted-foreground">
+        <Loader2 className="h-3.5 w-3.5 animate-spin" />
+        {copy.card.commentaryPending}
+      </span>
+    ) : null;
+  return (
+    <div
+      ref={ref}
+      className={
+        turn.role === "user"
+          ? "ml-auto w-fit max-w-[85%] rounded-2xl rounded-br-sm bg-primary px-3 py-2 text-primary-foreground"
+          : turn.answer
+            ? "w-full"
+            : "mr-auto w-fit max-w-[95%] rounded-2xl rounded-bl-sm bg-muted px-3 py-2"
+      }
+    >
+      {turn.notice && <p className="mb-1.5 text-[11px] text-muted-foreground">{turn.notice}</p>}
+      {turn.answer && asReference ? (
+        // 카드는 자료 패널에 있다(L1). 대화에는 질문이 짚은 사실 한 줄, 해설, 자료 칩만.
+        <div className="space-y-2">
+          <ReferenceDigest answer={turn.answer} />
+          {/* 스킬·아이템은 위의 사실 줄이 곧 답이다. 코드가 쓴 글(answerProse)은 같은 문장을 되풀이하므로 그리지 않는다. */}
+          {!(turn.byCode && (turn.answer.kind === "spell" || turn.answer.kind === "item")) && commentary}
+          {perspectiveChips}
+          {pending}
+          <div className="flex flex-wrap items-center gap-1.5">
+            <ReferenceChip
+              answer={turn.answer}
+              active={props.shownInReference}
+              // 직전 답과 같은 자료면 칩만 흐리게. "오공 Q 쿨, W 쿨" 은 카드 두 장이 아니다.
+              sameAsPrevious={Boolean(previousAnswer && answerKey(turn.answer) === answerKey(previousAnswer))}
+              ddragonVersion={ddragonVersion}
+              onClick={() => props.onShowReference(turn.id)}
+            />
+            {linkButtons}
+          </div>
+        </div>
+      ) : turn.answer ? (
+        // 규칙·오타 후보·글은 짧아서 대화 안에 그대로 둔다.
+        <div className="space-y-2">
+          <AdvisorAnswerCard
+            answer={turn.answer}
+            ddragonVersion={ddragonVersion}
+            patch={patch}
+            onPickChampion={props.onPickChampion}
+            onNavigate={onNavigate}
+          />
+          {commentary}
+          {perspectiveChips}
+          {pending}
+        </div>
+      ) : turn.content ? (
+        turn.role === "assistant" ? (
+          <>
+            <AdvisorMarkdown text={turn.content} />
+            {turn.related?.length ? (
+              <div className="mt-2 flex flex-wrap gap-1.5">
+                {turn.related.map((doc) => (
+                  <button
+                    key={doc.id}
+                    type="button"
+                    disabled={busy}
+                    onClick={() => props.onShowDoc(doc.id, doc.title)}
+                    className="rounded-md border bg-background px-2.5 py-1 text-xs font-medium transition-colors hover:border-primary/50 hover:bg-muted disabled:opacity-50"
+                  >
+                    {doc.title}
+                  </button>
+                ))}
+              </div>
+            ) : null}
+          </>
+        ) : (
+          <span className="whitespace-pre-wrap">{turn.content}</span>
+        )
+      ) : (
+        turn.role === "assistant" && (
+          // 검색 폴백은 모델을 두 번 부르고 사이에 코드가 찾는다. 그동안 도는 점만
+          // 있으면 멈춘 것처럼 보인다. 지금 무엇을 하는지 옆에 적는다.
+          <span className="flex items-center gap-2 text-xs text-muted-foreground">
+            <Loader2 className="h-4 w-4 animate-spin" />
+            {turn.activity}
+          </span>
+        )
+      )}
+      {/*
+        무엇을 보고 답했는지 밝힌다. "자료에 있는 것만 답한다" 가 설계인데
+        어느 자료인지 안 보이면 사용자가 맞는지 가릴 수 없다. 엉뚱한 자료를
+        물어 왔을 때도 그 사실이 드러나야 한다.
+
+        "근거" 가 아니라 "찾은 자료" 다. 상위 세 건을 다 실어 놓고 어느 것이
+        답인지는 모델이 고르므로, 답에 안 쓰인 것도 섞여 있다.
+      */}
+      {turn.role === "assistant" && turn.sources && turn.sources.length > 0 && (
+        <div className="mt-2 flex flex-wrap items-center gap-1 border-t pt-2 text-[11px] text-muted-foreground">
+          <span>{copy.sources}</span>
+          {turn.sources.map((source) => (
+            <span key={source} className="rounded bg-background px-1.5 py-0.5">
+              {source}
+            </span>
+          ))}
+        </div>
+      )}
+      {/* 카드 없는 답(규칙)의 바로 가기. 카드가 있는 답은 자료 칩 옆에 이미 붙였다. */}
+      {turn.role === "assistant" && linkButtons.length > 0 && !asReference && (
+        <div className="mt-2 flex flex-wrap gap-1.5">{linkButtons}</div>
+      )}
+      {turn.role === "assistant" && (turn.content || turn.answer) && <TurnFooter turn={turn} patch={patch} onRate={props.onRate} />}
+    </div>
+  );
+}
+
+/*
+  코드가 쓴 글은 해설이 아니라 답 자체다. "해설" 딱지와 세로줄은 모델이
+  카드 위에 얹은 글에만 붙인다. 모델 글에는 근거 검사를 돌려 카드가
+  틀렸다고 증명하는 문장을 걷어낸다.
+*/
+function TurnCommentary({ turn }: { turn: AdvisorTurn }) {
+  const { t, lang } = useTranslation();
+  const shown = turn.byCode ? turn.content : groundCommentary(turn.content, turn.answer, lang).text;
+  return !shown ? null : turn.byCode ? (
+    <div className="text-[13px] leading-relaxed">
+      <AdvisorMarkdown text={shown} />
+    </div>
+  ) : (
+    <div className="border-l-2 border-border pl-2.5 text-[13px] leading-relaxed">
+      <span className="block text-[11px] text-muted-foreground">{t.advisor.card.commentary}</span>
+      <AdvisorMarkdown text={shown} />
+    </div>
+  );
+}
+
+function PerspectiveChips({ index, onAskPerspective }: { index: number; onAskPerspective: AdvisorTurnViewProps["onAskPerspective"] }) {
+  const { t } = useTranslation();
+  const copy = t.advisor;
+  return (
+    <div className="flex flex-wrap items-center gap-1.5 pl-2.5 text-xs">
+      <span className="text-muted-foreground">{copy.card.perspectiveAsk}</span>
+      <button
+        type="button"
+        className="rounded-full border border-border px-2.5 py-0.5 hover:bg-muted"
+        onClick={() => onAskPerspective(index, "playing")}
+      >
+        {copy.card.perspectivePlaying}
+      </button>
+      <button
+        type="button"
+        className="rounded-full border border-border px-2.5 py-0.5 hover:bg-muted"
+        onClick={() => onAskPerspective(index, "against")}
+      >
+        {copy.card.perspectiveAgainst}
+      </button>
+    </div>
+  );
+}
+
+/** 카드를 자료 패널에 둔 답이 대화에 남기는 것 — 질문이 짚은 사실 한 줄 */
+function ReferenceDigest({ answer }: { answer: AdvisorAnswer }) {
+  const { t } = useTranslation();
+  const copy = t.advisor;
+  return (
+    <>
+      {answer.kind === "spell" && answer.headline && (
+        <div className="border-l-2 border-foreground pl-2.5">
+          <div className="text-[15px] font-semibold tabular-nums">{answer.headline.value}</div>
+          <div className="text-[11px] text-muted-foreground">
+            {answer.spell.slot} {answer.spell.name} · {answer.headline.label}
+          </div>
+        </div>
+      )}
+      {answer.kind === "spell" && answer.highlighted.length > 0 && (
+        <div className="space-y-1 rounded-md bg-muted px-2.5 py-2 text-[13px] font-semibold leading-relaxed">
+          {answer.highlighted.map((sentence) => (
+            <p key={sentence}>{sentence}</p>
+          ))}
+        </div>
+      )}
+      {answer.kind === "spell" && !answer.headline && answer.highlighted.length === 0 && (
+        // "W는?" 처럼 사실을 짚지 않았으면 스킬이 무엇을 하는지 한 줄. 표는 자료 패널에.
+        <p className="text-[13px] leading-relaxed">{spellSummary(answer.spell)}</p>
+      )}
+      {answer.kind === "item" && (
+        // A3: 판정이 있으면 그것이 답이고, 없으면 효과 이름 한 줄 + 설명.
+        // 능력치 표와 가격은 카드에 있다.
+        <div className="space-y-2">
+          {/* 다른 답의 헤드라인과 같은 꼴 — 세로선 하나와 굵기로 짚는다. */}
+          {answer.verdicts.map((verdict) => (
+            <div key={verdict.tag} className="border-l-2 border-foreground pl-2.5">
+              <div className="text-[15px] font-semibold">
+                {verdict.yes ? copy.card.verdictYes : copy.card.verdictNo}
+              </div>
+              <p className="text-[13px] leading-relaxed">
+                {verdict.evidence ?? fill(copy.card.itemNoTag, { name: answer.itemName, tag: verdict.tag })}
+              </p>
+            </div>
+          ))}
+          {answer.verdicts.length === 0 && (
+            <>
+              <div className="border-l-2 border-foreground pl-2.5">
+                <div className="text-[15px] font-semibold">{itemHeadline(answer)}</div>
+                <div className="text-[11px] text-muted-foreground">
+                  {fill(copy.card.itemEffectCount, { name: answer.itemName, n: answer.effects.length })}
+                </div>
+              </div>
+              <ul className="space-y-1 text-[13px] leading-relaxed">
+                {answer.effects.map((effect) => (
+                  <li key={`${effect.name}${effect.text}`}>
+                    {effect.name && (
+                      <span className="font-semibold">
+                        {effect.name}
+                        {effect.active && <span className="ml-1 text-[11px] font-normal text-muted-foreground">({copy.card.itemActive})</span>}
+                        {effect.text ? " — " : ""}
+                      </span>
+                    )}
+                    {effect.text}
+                  </li>
+                ))}
+              </ul>
+            </>
+          )}
+        </div>
+      )}
+      {answer.kind === "compare" && answer.headline && (
+        <div className="border-l-2 border-foreground pl-2.5">
+          <div className="text-[15px] font-semibold tabular-nums">{answer.headline.value}</div>
+          <div className="text-[11px] text-muted-foreground">{answer.headline.label}</div>
+        </div>
+      )}
+    </>
+  );
+}
+
+interface ReferenceChipProps {
+  answer: AdvisorAnswer;
+  active: boolean;
+  sameAsPrevious: boolean;
+  ddragonVersion: string;
+  onClick: () => void;
+}
+
+/** 자료 패널(좁은 화면이면 카드 화면)로 가는 칩 */
+function ReferenceChip({ answer, active, sameAsPrevious, ddragonVersion, onClick }: ReferenceChipProps) {
+  const { t, lang } = useTranslation();
+  const copy = t.advisor;
+  const { title, kind } = referenceTitle(answer, copy, lang);
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      aria-label={copy.card.openCard}
+      className={`flex min-w-0 max-w-full items-center gap-2 rounded-md border px-2.5 py-1.5 text-left text-xs transition-colors hover:bg-muted hover:text-foreground ${
+        active ? "border-primary bg-primary/5" : "bg-background"
+      } ${sameAsPrevious ? "text-muted-foreground" : ""}`}
+    >
+      <span className="flex shrink-0 -space-x-1.5">
+        <AnswerIcons answer={answer} ddragonVersion={ddragonVersion} className="h-[18px] w-[18px] rounded ring-1 ring-background" />
+      </span>
+      <span className="truncate font-medium">{title}</span>
+      <span className="shrink-0 text-muted-foreground">{sameAsPrevious ? copy.card.sameReference : kind}</span>
+      <ArrowRight className="h-3 w-3 shrink-0 text-primary" />
+    </button>
+  );
+}
+
+function TurnFooter({ turn, patch, onRate }: { turn: AdvisorTurn; patch: string; onRate: AdvisorTurnViewProps["onRate"] }) {
+  const { t } = useTranslation();
+  const copy = t.advisor;
+  return (
+    <div className="mt-1 flex items-center gap-2 text-[11px] text-muted-foreground">
+      {turn.stats && (
+        <span>
+          {turn.stats.tokens} tok · {turn.stats.seconds.toFixed(1)}s
+          {turn.stats.ttft !== undefined && (
+            <>
+              {" "}
+              (읽기 {turn.stats.ttft.toFixed(1)}s
+              {turn.stats.promptTokens ? ` · 프롬프트 ${turn.stats.promptTokens} tok` : ""})
+            </>
+          )}
+        </span>
+      )}
+      {/* 평가는 기기 안에만 쌓인다. 서버로 보내지 않는다. */}
+      <button
+        type="button"
+        aria-label={copy.rateUp}
+        aria-pressed={turn.rating === "up"}
+        onClick={() => onRate(turn.id, "up", patch)}
+        className={
+          turn.rating === "up"
+            ? "text-emerald-400"
+            : "text-muted-foreground transition-colors hover:text-foreground"
+        }
+      >
+        <ThumbsUp className="h-3.5 w-3.5" />
+      </button>
+      <button
+        type="button"
+        aria-label={copy.rateDown}
+        aria-pressed={turn.rating === "down"}
+        onClick={() => onRate(turn.id, "down", patch)}
+        className={
+          turn.rating === "down"
+            ? "text-destructive"
+            : "text-muted-foreground transition-colors hover:text-foreground"
+        }
+      >
+        <ThumbsDown className="h-3.5 w-3.5" />
+      </button>
+    </div>
+  );
+}
