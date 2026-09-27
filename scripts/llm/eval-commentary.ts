@@ -12,7 +12,7 @@
 import * as fs from "fs";
 import * as path from "path";
 import type { ChampionCard } from "../../src/lib/knowledge/facts";
-import { indexRules, type RuleNotes } from "./lib/rules";
+import { indexRules, type RuleNotes } from "../../src/lib/knowledge/rules";
 import { PUBLIC_DATA_ROOT, resolvePatchVersion } from "./lib/data";
 import {
   buildRuleAnswer,

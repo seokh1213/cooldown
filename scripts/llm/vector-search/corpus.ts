@@ -10,7 +10,7 @@
  */
 import * as fs from "node:fs";
 import * as path from "node:path";
-import { ruleName, type RuleNotes } from "../lib/rules";
+import { ruleName, type RuleNotes } from "../../../src/lib/knowledge/rules";
 import { lexicalHit } from "../../../src/lib/advisor/questionDocs";
 import { buildRetrievalDocs, buildSearchCorpus, hitsToAnswer, lexicalSearch } from "../../../src/lib/advisor/searchFallback";
 import { loadData, ROOT, type Lang } from "../kev-agent/lib";

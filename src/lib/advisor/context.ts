@@ -15,21 +15,21 @@
  * 합쳐 7MB 남짓이다. 모델(570MB)에 비하면 작고, 한 번 받으면 캐시에 남는다.
  */
 import type { ChampionCard } from "@/lib/knowledge/facts";
-import { aliasAt } from "../../../scripts/llm/lib/searchAliases";
-import { askedRuleKinds } from "../../../scripts/llm/lib/rules";
+import { aliasAt } from "@/lib/knowledge/searchAliases";
+import { askedRuleKinds } from "@/lib/knowledge/rules";
 import itemAliasFile from "../../../knowledge/item-aliases.json";
 import type { CuratedTip } from "../../../scripts/llm/lib/knowledgeCore";
 import {
   indexRules,
   type RuleIndex,
   type RuleNotes,
-} from "../../../scripts/llm/lib/rules";
+} from "@/lib/knowledge/rules";
 import type { Playbook } from "../../../scripts/llm/lib/playbookCore";
 import {
   findMechanics,
   mechanicsToText,
   type MechanicsIndex,
-} from "../../../scripts/llm/lib/mechanics";
+} from "@/lib/knowledge/mechanics";
 import type { WikiItemMeta } from "@/lib/knowledge/sourceRecords";
 import type { AdvisorAnswer, Fact } from "./answer";
 import type {

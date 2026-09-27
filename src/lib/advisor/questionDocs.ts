@@ -11,8 +11,8 @@ import { suggestChampions } from "./championTypo";
 import { asksAboutHelper, detectChampions, nicknames } from "./intent";
 import { asksPriceTiers, findGameMeta, gameMetaById } from "./gameMeta";
 import type { LexicalHit } from "./searchFallback";
-import { findMentionedRules } from "../../../scripts/llm/lib/rules";
-import { findMechanics } from "../../../scripts/llm/lib/mechanics";
+import { findMentionedRules } from "@/lib/knowledge/rules";
+import { findMechanics } from "@/lib/knowledge/mechanics";
 
 /** 검색 벡터로 찾을 질문인가(모델·동의 조건은 뺀 것). 평가 하네스도 이 조건으로 가른다. */
 export function searchesByVector(data: AdvisorData, question: string, recentItem: string | undefined, inMatchup: boolean): boolean {

@@ -8,7 +8,7 @@
 import * as fs from "node:fs";
 import * as path from "node:path";
 import type { ChampionCard } from "../../../src/lib/knowledge/facts";
-import { indexRules, type RuleNotes } from "../lib/rules";
+import { indexRules, type RuleNotes } from "../../../src/lib/knowledge/rules";
 import { championAliases, collectEffectTags, type AdvisorData } from "../../../src/lib/advisor/context";
 import { readJudgeHead, scoreJudge, type JudgeHead, type JudgeHeadMeta, type JudgeQuestion } from "../../../src/lib/advisor/judge";
 

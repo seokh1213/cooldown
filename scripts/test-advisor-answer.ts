@@ -8,7 +8,7 @@ import assert from "node:assert/strict";
 import * as fs from "node:fs";
 import * as path from "node:path";
 import type { ChampionCard, SpellFact } from "../src/lib/knowledge/facts";
-import { indexRules, type RuleNotes } from "./llm/lib/rules";
+import { indexRules, type RuleNotes } from "../src/lib/knowledge/rules";
 import { PUBLIC_DATA_ROOT, resolvePatchVersion } from "./llm/lib/data";
 import {
   answerChampionIds,

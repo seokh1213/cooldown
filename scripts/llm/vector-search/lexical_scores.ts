@@ -5,7 +5,7 @@
  *   npx tsx scripts/llm/vector-search/lexical_scores.ts <질문.jsonl> <출력.json>
  */
 import * as fs from "node:fs";
-import { aliasesOf } from "../lib/searchAliases";
+import { aliasesOf } from "../../../src/lib/knowledge/searchAliases";
 import { lexicalSearch, type SearchDoc } from "../../../src/lib/advisor/searchFallback";
 import { questionLanguage } from "../../../src/lib/advisor/questionLanguage";
 import { corpus, current } from "./corpus";

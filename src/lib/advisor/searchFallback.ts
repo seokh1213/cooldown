@@ -19,9 +19,9 @@
  * 웹에서 2.97GB 위에 얹을 값이 아니라서 글자 검색으로 간다.
  */
 import type { AdvisorData } from "./context";
-import { aliasesOf } from "../../../scripts/llm/lib/searchAliases";
+import { aliasesOf } from "@/lib/knowledge/searchAliases";
 import { gameMetaDocs } from "./gameMeta";
-import { ruleLines, ruleName } from "../../../scripts/llm/lib/rules";
+import { ruleLines, ruleName } from "@/lib/knowledge/rules";
 
 export interface SearchDoc {
   /** 검색 문서 id(`rule:점화`). 하이브리드 검색이 벡터 점수와 맞춘다 */

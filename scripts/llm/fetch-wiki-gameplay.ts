@@ -16,7 +16,7 @@
 import * as fs from "fs";
 import * as path from "path";
 import { PUBLIC_DATA_ROOT, resolvePatchVersion } from "./lib/data";
-import type { RuleNotes } from "./lib/rules";
+import type { RuleNotes } from "../../src/lib/knowledge/rules";
 
 const API = "https://leagueoflegends.fandom.com/api.php";
 const USER_AGENT = "cooldown-knowledge/1.0 (gameplay reference)";

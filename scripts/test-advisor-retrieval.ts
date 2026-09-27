@@ -9,8 +9,8 @@
 import assert from "node:assert/strict";
 import * as fs from "node:fs";
 import * as path from "node:path";
-import { indexRules, buildRuleAnswer, findMentionedRules, findRulesMentioning } from "./llm/lib/rules";
-import { findMechanics, mechanicsToText, type MechanicsIndex } from "./llm/lib/mechanics";
+import { indexRules, buildRuleAnswer, findMentionedRules, findRulesMentioning } from "../src/lib/knowledge/rules";
+import { findMechanics, mechanicsToText, type MechanicsIndex } from "../src/lib/knowledge/mechanics";
 import { PUBLIC_DATA_ROOT, resolvePatchVersion } from "./llm/lib/data";
 import { hitsToAnswer, hybridSearch, lexicalSearch, type SearchDoc } from "../src/lib/advisor/searchFallback";
 import { questionLanguage } from "../src/lib/advisor/questionLanguage";

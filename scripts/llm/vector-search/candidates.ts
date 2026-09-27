@@ -7,9 +7,9 @@
  *   npx tsx scripts/llm/vector-search/candidates.ts <질문.jsonl> <출력.json> [K=8]
  */
 import * as fs from "node:fs";
-import { findMentionedRules } from "../lib/rules";
-import { findMechanics } from "../lib/mechanics";
-import { aliasesOf } from "../lib/searchAliases";
+import { findMentionedRules } from "../../../src/lib/knowledge/rules";
+import { findMechanics } from "../../../src/lib/knowledge/mechanics";
+import { aliasesOf } from "../../../src/lib/knowledge/searchAliases";
 import { findGameMeta } from "../../../src/lib/advisor/gameMeta";
 import { lexicalSearch, type SearchDoc } from "../../../src/lib/advisor/searchFallback";
 import { loadData, ROOT, type Lang } from "../kev-agent/lib";

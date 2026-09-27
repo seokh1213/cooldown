@@ -15,7 +15,7 @@ import * as fs from "node:fs";
 import * as os from "node:os";
 import * as path from "node:path";
 import { PUBLIC_DATA_ROOT, resolvePatchVersion } from "./lib/data";
-import type { RuleNotes } from "./lib/rules";
+import type { RuleNotes } from "../../src/lib/knowledge/rules";
 
 const arg = (name: string) => {
   const i = process.argv.indexOf(`--${name}`);

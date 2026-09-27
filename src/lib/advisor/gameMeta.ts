@@ -8,7 +8,7 @@
  */
 import meta from "../../../knowledge/game-meta.json";
 import prices from "../../../knowledge/champion-prices.json";
-import { aliasAt, aliasesOf } from "../../../scripts/llm/lib/searchAliases";
+import { aliasAt, aliasesOf } from "@/lib/knowledge/searchAliases";
 type Language = string;
 const short = (lang: Language): "ko" | "en" | "zh" => (lang.startsWith("en") ? "en" : lang.startsWith("zh") ? "zh" : "ko");
 

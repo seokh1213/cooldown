@@ -25,8 +25,8 @@ import {
   renderItemClaims,
   renderStackClaims,
 } from "./lib/claims";
-import type { RuleNotes } from "./lib/rules";
-import { parseMechanics, type MechanicsIndex } from "./lib/mechanics";
+import type { RuleNotes } from "../../src/lib/knowledge/rules";
+import { parseMechanics, type MechanicsIndex } from "../../src/lib/knowledge/mechanics";
 
 export const ADVISOR_BUNDLE_FILE = "advisor-knowledge.json";
 

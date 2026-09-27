@@ -14,7 +14,7 @@ import { useTranslation } from "@/i18n";
 import { fill } from "@/i18n/fill";
 import { ItemIcon } from "@/components/ui/item-icon";
 import { ruleVerdict, type AdvisorAnswer } from "@/lib/advisor/answer";
-import { ruleName } from "../../../../scripts/llm/lib/rules";
+import { ruleName } from "@/lib/knowledge/rules";
 import { AdvisorMarkdown } from "./AdvisorMarkdown";
 import { Disclosure, Frame, KvTable, PatchLinkFooter, SlotBadge } from "./AnswerCardFrame";
 import { ChampionAnswerCard } from "./ChampionAnswerCard";

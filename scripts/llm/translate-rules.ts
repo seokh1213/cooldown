@@ -28,7 +28,7 @@ import * as fs from "fs";
 import * as path from "path";
 import { PUBLIC_DATA_ROOT, resolvePatchVersion } from "./lib/data";
 import { ollamaChat } from "./lib/ollama";
-import type { RuleNotes } from "./lib/rules";
+import type { RuleNotes } from "../../src/lib/knowledge/rules";
 
 const CACHE_FILE = path.resolve(process.cwd(), "research", ".rule-translations.json");
 /** 사람이 검수한 번역. 원문 그대로를 키로 쓴다. 해시로 두면 무엇이 바뀌었는지 볼 수 없다. */

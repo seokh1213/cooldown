@@ -10,7 +10,7 @@
  * 모델이 수치를 입에 담을 일이 없어진다.
  */
 import type { ChampionCard, SpellFact, StatName } from "@/lib/knowledge/facts";
-import { ruleLines, ruleName, type RuleNotes } from "../../../scripts/llm/lib/rules";
+import { ruleLines, ruleName, type RuleNotes } from "@/lib/knowledge/rules";
 import type { Language } from "@/i18n";
 import type { SelectedNotes } from "./noteSelect";
 import { detectSpellFocus, type SpellFocus } from "./spellFocus";
