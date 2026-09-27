@@ -22,7 +22,7 @@ import type { ChampionCard } from "./lib/facts";
 import type { Playbook } from "./lib/playbookCore";
 import { PUBLIC_DATA_ROOT, resolvePatchVersion } from "./lib/data";
 import type { AdvisorData } from "../../src/lib/advisor/context";
-import { matchupNotes } from "../../src/lib/advisor/context";
+import { matchupNotes } from "../../src/lib/advisor/playbookNotes";
 import { buildCompareAnswer, type AdvisorAnswer } from "../../src/lib/advisor/answer";
 import { groundCommentary } from "../../src/lib/advisor/grounding";
 import { matchupDigest } from "../../src/lib/advisor/prose";

@@ -11,7 +11,8 @@ import type { ChampionCard } from "./llm/lib/facts";
 import type { Playbook } from "./llm/lib/playbookCore";
 import { selectPlaybook, withHooks } from "./llm/lib/playbookCore";
 import { PUBLIC_DATA_ROOT, resolvePatchVersion } from "./llm/lib/data";
-import { matchupNotes, type AdvisorData } from "../src/lib/advisor/context";
+import type { AdvisorData } from "../src/lib/advisor/context";
+import { matchupNotes } from "../src/lib/advisor/playbookNotes";
 
 const dir = path.join(PUBLIC_DATA_ROOT, resolvePatchVersion(), "llm");
 const cards = (JSON.parse(fs.readFileSync(path.join(dir, "champion-cards-ko_KR.json"), "utf8")) as { cards: ChampionCard[] }).cards;

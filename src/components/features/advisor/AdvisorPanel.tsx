@@ -26,9 +26,8 @@ import { useTranslation } from "@/i18n";
 import { advisorSystemPrompt } from "@/lib/advisor/persona";
 import { AdvisorMarkdown } from "./AdvisorMarkdown";
 import { groundCommentary } from "@/lib/advisor/grounding";
+import { championNotes, matchupNotes } from "@/lib/advisor/playbookNotes";
 import {
-  championNotes,
-  matchupNotes,
   buildItemCard,
   buildTagAnswer,
   buildMechanicsAnswer,

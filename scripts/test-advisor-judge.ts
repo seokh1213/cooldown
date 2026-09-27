@@ -13,7 +13,8 @@ import { PUBLIC_DATA_ROOT, resolvePatchVersion } from "./llm/lib/data";
 import { encodeJudgeRow, readJudgeHead, scoreJudge, type JudgeHeadMeta } from "../src/lib/advisor/judge";
 import { JUDGE_KIND_INSTRUCTIONS, JUDGE_MINE_INSTRUCTIONS, routeFromJudge } from "../src/lib/advisor/routeAsk";
 import { buildCompareAnswer } from "../src/lib/advisor/answer";
-import { matchupNotes, type AdvisorData } from "../src/lib/advisor/context";
+import type { AdvisorData } from "../src/lib/advisor/context";
+import { matchupNotes } from "../src/lib/advisor/playbookNotes";
 import { answerProse } from "../src/lib/advisor/prose";
 
 let checks = 0;
