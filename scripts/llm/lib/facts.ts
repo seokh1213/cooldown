@@ -21,13 +21,11 @@ import type {
 import { formatLevels, round, stripHtml } from "./text";
 import {
   abilityCausesDash,
-  buildScalingProfile,
   championMovesItself,
   detectDamageTypes,
   detectEffects,
-  detectRatios,
-  ratiosFromSimulation,
 } from "./facts-analysis";
+import { buildScalingProfile, detectRatios, ratiosFromSimulation } from "./facts-ratios";
 import type { SpellOverride, SpellOverrides } from "./spellOverrides";
 
 export type StatName =
