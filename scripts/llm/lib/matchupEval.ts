@@ -18,7 +18,7 @@ import { buildCompareAnswer, type AdvisorAnswer } from "../../../src/lib/advisor
 import { buildCommentaryPrompt } from "../../../src/lib/advisor/commentaryPrompt";
 import type { AdvisorData } from "../../../src/lib/advisor/context";
 import { matchupNotes } from "../../../src/lib/advisor/playbookNotes";
-import { groundCommentary } from "../../../src/lib/advisor/grounding";
+import { groundCommentary, NOTE_COPY_OVERLAP, overlap } from "../../../src/lib/advisor/grounding";
 import { advisorSystemPrompt } from "../../../src/lib/advisor/persona";
 import { MAX_NEW_TOKENS } from "../../../src/lib/advisor/config";
 import { createLoopGuard } from "../../../src/lib/advisor/loopGuard";
@@ -221,14 +221,6 @@ export function slotCoverage(text: string, answer: AdvisorAnswer): { named: numb
 
 const TEMPLATE = /1레벨 기준 전체 챔피언 중/g;
 
-/** 근거 검사의 `overlap` 과 같은 셈. 문장 a 의 낱말 중 b 에도 있는 비율. */
-function overlap(a: string, b: string): number {
-  const words = a.split(/\s+/).filter((word) => word.length > 1);
-  const other = new Set(b.split(/\s+/).filter((word) => word.length > 1));
-  if (words.length === 0) return 0;
-  return words.filter((word) => other.has(word)).length / words.length;
-}
-
 /** 화면 글의 문장과, 그중 노트를 베낀 문장. */
 function noteCopying(text: string, answer: AdvisorAnswer): { sentences: number; noteCopies: number } {
   const notes =
@@ -241,7 +233,7 @@ function noteCopying(text: string, answer: AdvisorAnswer): { sentences: number; 
     .filter((sentence) => sentence.length > 10);
   return {
     sentences: sentences.length,
-    noteCopies: sentences.filter((sentence) => notes.some((note) => overlap(sentence, note) >= 0.7)).length,
+    noteCopies: sentences.filter((sentence) => notes.some((note) => overlap(sentence, note) >= NOTE_COPY_OVERLAP)).length,
   };
 }
 

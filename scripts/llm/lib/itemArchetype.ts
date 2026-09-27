@@ -81,7 +81,7 @@ function fullText(item: NormalizedItem): string {
 
 /** 아군을 대상으로 하는 효과는 서포터 아이템의 표식이다 */
 const ALLY_RE = /아군|주변 아군|보호 중인/;
-const ANTI_HEAL_RE = /치유 효과|고통스러운 상처/;
+export const ANTI_HEAL_RE = /치유 효과|고통스러운 상처/;
 const ANTI_SHIELD_RE = /보호막[^.]{0,20}(감소|무시)/;
 const ATTACK_SPEED_SLOW_RE = /공격 속도[^.]{0,20}감소/;
 const TENACITY_RE = /강인함/;

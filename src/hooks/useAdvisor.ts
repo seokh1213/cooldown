@@ -23,6 +23,7 @@ import { readJudgeHead, scoreJudge, type JudgeHead, type JudgeHeadMeta, type Jud
 import { useTranslation } from "@/i18n";
 import { useAdvisorTurns, type AdvisorTurn } from "./useAdvisorTurns";
 import { useAdvisorWorker, type AdvisorStatus } from "./useAdvisorWorker";
+import { KEV_HEAD } from "@/lib/advisor/plan";
 
 /** `respond` 한 번에 필요한 것. 자료는 부르는 쪽(코드)이 모아서 `system` 에 싣는다. */
 export interface RespondPlan {
@@ -93,7 +94,7 @@ export interface UseAdvisorResult {
 }
 
 /** 판정 헤드. kev LoRA 헤드 하나로 모든 판정을 한다. 모델을 올리면 미리 받아 둔다. */
-const KEV_JUDGE_HEADS = ["kev-b3e"];
+const KEV_JUDGE_HEADS = [KEV_HEAD];
 
 function readConsent(): boolean {
   try {

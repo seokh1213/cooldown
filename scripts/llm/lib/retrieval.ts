@@ -12,6 +12,7 @@ import type {
 import type { ItemTier } from "../../../src/lib/itemTierUtils";
 import type { ChampionCard } from "./facts";
 import {
+  ANTI_HEAL_RE,
   ARCHETYPE_LABEL,
   championBuildProfile,
   classifyItem,
@@ -129,8 +130,6 @@ function dedupeByName(items: NormalizedItem[]): NormalizedItem[] {
   }
   return Array.from(byName.values());
 }
-
-const ANTI_HEAL_RE = /치유 효과|고통스러운 상처/;
 
 export function selectDefensiveItems(
   items: NormalizedItem[],
