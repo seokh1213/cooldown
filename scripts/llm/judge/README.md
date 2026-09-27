@@ -2,7 +2,7 @@
 
 0.8B(`onnx-community/Qwen3.5-0.8B-Text-ONNX`, q4)의 판정 위치 logits 2048개 위에
 kev(jaredpalmer/kev) 의 PointerHead 만 학습한다. 모델 가중치는 건드리지 않는다.
-앱 쪽 계산은 `src/lib/advisor/judge.ts`, 워커 쪽 특징 추출은 `advisor.worker.ts` 의 `judge`.
+앱 쪽 계산은 `src/lib/advisor/judge.ts`, 워커 쪽 특징 추출은 `src/workers/advisor/logitJudge.ts` 의 `judge`.
 
 ```bash
 # 1. 특징 (CPU, 학습 851건에 약 7분). 입력은 kev 요청 꼴 JSONL — 질문마다 label

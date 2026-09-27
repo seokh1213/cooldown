@@ -43,7 +43,7 @@ OUTPUTS = [o.name for o in sess.get_outputs()]
 def logits_at(ids, positions):
     """판정 위치마다 그 위치가 마지막 토큰이 되도록 끊어 넣고 상태를 이어 받는다.
 
-    브라우저 워커(`advisor.worker.ts` 의 judge)와 같은 계산이다. 한 번에 넣고 모든 위치의
+    브라우저 워커(`src/workers/advisor/logitJudge.ts` 의 judge)와 같은 계산이다. 한 번에 넣고 모든 위치의
     logits 를 받으면 [길이 × 248,320] 이라 긴 입력에서 문장 하나에 1GB 를 넘는다. 두 방식의
     차이는 최대 3e-5 였다.
     """
