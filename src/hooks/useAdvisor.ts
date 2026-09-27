@@ -18,26 +18,11 @@ import { deleteModelCache, fetchJudgeFile, pruneOtherModels } from "@/lib/adviso
 import { loadDocVectors, ranked, type DocVectors } from "@/lib/advisor/docVectors";
 import { questionLanguage } from "@/lib/advisor/questionLanguage";
 import type { AdvisorAnswer } from "@/lib/advisor/answer";
+import type { AdvisorFileProgress } from "@/lib/advisor/protocol";
 import { readJudgeHead, scoreJudge, type JudgeHead, type JudgeHeadMeta, type JudgeQuestion } from "@/lib/advisor/judge";
 import { useTranslation } from "@/i18n";
 import { useAdvisorTurns, type AdvisorTurn } from "./useAdvisorTurns";
-import type {
-  AdvisorFileProgress,
-  AdvisorRequest,
-  AdvisorResponse,
-} from "@/lib/advisor/protocol";
-
-export type AdvisorStatus =
-  /** 아직 동의를 받지 않았다 */
-  | "idle"
-  /** 모델 파일을 내려받는 중 */
-  | "downloading"
-  /** 내려받기는 끝났고 GPU 에 올리는 중 */
-  | "warming"
-  | "ready"
-  /** 답변을 만드는 중 */
-  | "generating"
-  | "error";
+import { useAdvisorWorker, type AdvisorStatus } from "./useAdvisorWorker";
 
 /** `respond` 한 번에 필요한 것. 자료는 부르는 쪽(코드)이 모아서 `system` 에 싣는다. */
 export interface RespondPlan {
@@ -122,12 +107,9 @@ export function useAdvisor(): UseAdvisorResult {
   // 코드가 쓰는 답문도 화면 언어를 따라야 한다.
   const { lang } = useTranslation();
   const [consented, setConsented] = useState(readConsent);
-  const [status, setStatus] = useState<AdvisorStatus>("idle");
   const [webgpu, setWebgpu] = useState<WebGpuSupport | null>(null);
   const [storage, setStorage] = useState<{ quotaMb?: number; usageMb?: number }>({});
-  const [progress, setProgress] = useState({ loadedBytes: 0, totalBytes: 0, files: [] as AdvisorFileProgress[] });
   const [error, setError] = useState<string | null>(null);
-  const [modelReady, setModelReady] = useState(false);
   const {
     turns,
     setTurns,
@@ -145,11 +127,12 @@ export function useAdvisor(): UseAdvisorResult {
     reset,
     replaceTurns,
   } = useAdvisorTurns(lang, setError);
+  const { status, setStatus, progress, modelReady, post, requestJudge, requestEmbed, interrupt, hasWorker, shutdown } = useAdvisorWorker({
+    onChunk: appendChunk,
+    onDone: completeReply,
+    setError,
+  });
 
-  const workerRef = useRef<Worker | null>(null);
-  /** 판정 요청을 기다리는 쪽. 답 id 로 찾는다. */
-  const judgeWaiters = useRef(new Map<number, { resolve: (features: Float32Array[]) => void; reject: (error: Error) => void }>());
-  const embedWaiters = useRef(new Map<number, { resolve: (vector: Float32Array) => void; reject: (error: Error) => void }>());
   /** 문서 벡터(주소마다 한 번만 받는다) */
   const docVectors = useRef(new Map<string, Promise<DocVectors>>());
   /** 받아 둔 판정 헤드. 이름으로 찾는다. */
@@ -161,82 +144,6 @@ export function useAdvisor(): UseAdvisorResult {
     void estimateStorageMb().then(setStorage);
   }, []);
 
-  /** 워커는 동의 후에만 만든다 */
-  const ensureWorker = useCallback((): Worker => {
-    if (workerRef.current) return workerRef.current;
-    const worker = new Worker(new URL("../workers/advisor.worker.ts", import.meta.url), {
-      type: "module",
-    });
-    worker.addEventListener("message", (event: MessageEvent<AdvisorResponse>) => {
-      const message = event.data;
-      switch (message.type) {
-        case "progress":
-          setStatus((prev) => (prev === "generating" ? prev : "downloading"));
-          setProgress({
-            loadedBytes: message.loadedBytes,
-            totalBytes: message.totalBytes,
-            files: message.files,
-          });
-          // 내려받기가 끝나면 GPU 적재 구간으로 넘어간다
-          if (message.totalBytes > 0 && message.loadedBytes >= message.totalBytes) {
-            setStatus((prev) => (prev === "generating" ? prev : "warming"));
-          }
-          break;
-        case "loaded":
-          setModelReady(true);
-          // 적재를 기다리는 동안 이미 질문을 받았을 수 있다. 그때는 생성 상태를 유지한다.
-          setStatus((prev) => (prev === "generating" ? prev : "ready"));
-          break;
-        case "chunk":
-          appendChunk(message.id, message.text);
-          break;
-        case "done": {
-          completeReply(message);
-          setStatus("ready");
-          break;
-        }
-        case "judged": {
-          const waiter = judgeWaiters.current.get(message.id);
-          judgeWaiters.current.delete(message.id);
-          waiter?.resolve(message.features);
-          break;
-        }
-        case "embedded": {
-          const waiter = embedWaiters.current.get(message.id);
-          embedWaiters.current.delete(message.id);
-          waiter?.resolve(message.vector);
-          break;
-        }
-        case "error": {
-          // 판정 요청이 실패했으면 부르는 쪽에 알린다. 화면 오류로는 띄우지 않는다 — 규칙으로 되돌아간다.
-          const waiter = message.id !== undefined ? judgeWaiters.current.get(message.id) ?? embedWaiters.current.get(message.id) : undefined;
-          if (waiter) {
-            judgeWaiters.current.delete(message.id!);
-            embedWaiters.current.delete(message.id!);
-            waiter.reject(new Error(message.message));
-            break;
-          }
-          setError(message.message);
-          setStatus("error");
-          break;
-        }
-        default:
-          break;
-      }
-    });
-    workerRef.current = worker;
-    return worker;
-  }, [appendChunk, completeReply]);
-
-  useEffect(() => () => {
-    workerRef.current?.terminate();
-    workerRef.current = null;
-  }, []);
-
-  const post = useCallback((request: AdvisorRequest) => {
-    ensureWorker().postMessage(request);
-  }, [ensureWorker]);
-
   const accept = useCallback(() => {
     try {
       localStorage.setItem(CONSENT_STORAGE_KEY, "granted");
@@ -247,17 +154,17 @@ export function useAdvisor(): UseAdvisorResult {
     setError(null);
     setStatus("downloading");
     post({ type: "load", model });
-  }, [post, model]);
+  }, [post, model, setStatus]);
 
   /**
    * 동의는 이미 받았고 아직 적재하지 않았으면 지금 시작한다.
    * 위젯이 늘 떠 있으므로 화면을 켜자마자 받게 하지 않고, 대화창을 연 시점에 시작한다.
    */
   const ensureLoaded = useCallback(() => {
-    if (!consented || modelReady || workerRef.current) return;
+    if (!consented || modelReady || hasWorker()) return;
     setStatus("downloading");
     post({ type: "load", model });
-  }, [consented, modelReady, post, model]);
+  }, [consented, modelReady, hasWorker, post, model, setStatus]);
 
   /**
    * 동의 없이 모델을 부르려 했는지 본다.
@@ -296,7 +203,7 @@ export function useAdvisor(): UseAdvisorResult {
       const replyId = place(trimmed, { role: "assistant", content: "", answer, notice });
       post({ type: "generate", id: replyId, model, system, messages: [{ role: "user", content: trimmed }], maxTokens });
     },
-    [post, model, refuseWithoutConsent, place],
+    [post, model, refuseWithoutConsent, place, setStatus],
   );
 
   /** 판정 헤드를 한 번만 받아 둔다. 실패하면 다음에 다시 받는다. */
@@ -328,17 +235,14 @@ export function useAdvisor(): UseAdvisorResult {
         throw new Error(`판정 헤드 ${headName} 는 ${head.model.id} 용입니다`);
       }
       const id = takeId();
-      const features = await new Promise<Float32Array[]>((resolve, reject) => {
-        judgeWaiters.current.set(id, { resolve, reject });
-        post({ type: "judge", id, model, state, questions, subset: head.subset, feature: head.feature });
-      });
+      const features = await requestJudge({ type: "judge", id, model, state, questions, subset: head.subset, feature: head.feature });
       return features.map((flat, index) => {
         const positions = questions[index].options.length + 1;
         const rows = Array.from({ length: positions }, (_, k) => flat.subarray(k * head.dim, (k + 1) * head.dim));
         return scoreJudge(head, rows);
       });
     },
-    [consented, model, post, loadJudgeHead, takeId],
+    [consented, model, requestJudge, loadJudgeHead, takeId],
   );
 
   const search = useCallback(
@@ -358,13 +262,10 @@ export function useAdvisor(): UseAdvisorResult {
       const block = vectors.languages[asked] ?? vectors.languages[lang] ?? vectors.languages.ko_KR;
       const prompt = (vectors.prompt[asked] ?? vectors.prompt[lang] ?? vectors.prompt.ko_KR).replace("{}", question);
       const id = takeId();
-      const query = await new Promise<Float32Array>((resolve, reject) => {
-        embedWaiters.current.set(id, { resolve, reject });
-        post({ type: "embed", id, model, text: prompt });
-      });
+      const query = await requestEmbed({ type: "embed", id, model, text: prompt });
       return ranked(query, block.matrix, block.ids);
     },
-    [consented, model, post, takeId],
+    [consented, model, requestEmbed, takeId],
   );
 
   /*
@@ -382,9 +283,9 @@ export function useAdvisor(): UseAdvisorResult {
 
   const stop = useCallback(() => {
     finishReveal();
-    workerRef.current?.postMessage({ type: "stop" } satisfies AdvisorRequest);
+    interrupt();
     setStatus("ready");
-  }, [finishReveal]);
+  }, [finishReveal, interrupt, setStatus]);
 
   /**
    * 올려 둔 모델을 내린다.
@@ -394,12 +295,7 @@ export function useAdvisor(): UseAdvisorResult {
    * 것은 용량이 다를 수 있으므로 다시 물어야 한다.
    */
   const teardown = useCallback(async () => {
-    workerRef.current?.terminate();
-    workerRef.current = null;
-    setModelReady(false);
-    setStatus("idle");
-    setProgress({ loadedBytes: 0, totalBytes: 0, files: [] });
-    setError(null);
+    shutdown();
     await deleteModelCache();
     try {
       localStorage.removeItem(CONSENT_STORAGE_KEY);
@@ -408,7 +304,7 @@ export function useAdvisor(): UseAdvisorResult {
     }
     setConsented(false);
     void estimateStorageMb().then(setStorage);
-  }, []);
+  }, [shutdown]);
 
   /** 내려받은 모델을 삭제한다. 보고 있던 대화도 치운다 — 지우겠다는 뜻이 그것이다. */
   const deleteModel = useCallback(async () => {
