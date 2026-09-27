@@ -121,81 +121,86 @@ export function renderTaggedClaims(
   claims: MatchupClaims,
   lang: ClaimLang = "ko_KR",
 ): TaggedClaim[] {
-  const lines: TaggedClaim[] = [];
-  let kind: ClaimKind = "offense";
+  const tagged: Array<[ClaimKind, string | undefined]> = [
+    ["offense", offenseClaim(me, enemy, claims.mine, lang)],
+    ["defense", defenseClaim(me, enemy, claims.theirs, lang)],
+    ["pinned", claims.pinned ? pinnedClaim(me, enemy, lang) : undefined],
+    ["scaling", scalingClaim(me, enemy, claims.scaling, lang)],
+  ];
+  return tagged.flatMap(([kind, text]) => (text ? [{ kind, text }] : []));
+}
+
+type MainDamage = MatchupClaims["mine"]["damage"];
+
+function resistWord(damage: MainDamage, lang: ClaimLang): string {
   const w = CLAIM_WORDS[lang];
-  const resist = (damage: DamageType | "혼합" | "불명") =>
-    damage === "물리" ? w.armor : damage === "마법" ? w.mr : lang === "ko_KR" ? "저항" : lang === "en_US" ? "resistances" : "抗性";
-  const damageWord = (damage: DamageType | "혼합" | "불명") => (damage === "물리" ? w.physical : w.magic);
+  return damage === "물리" ? w.armor : damage === "마법" ? w.mr : lang === "ko_KR" ? "저항" : lang === "en_US" ? "resistances" : "抗性";
+}
 
-  if (claims.mine.damage !== "불명" && claims.mine.damage !== "혼합") {
-    const wall = claims.mine.wall;
-    const name = resist(claims.mine.damage);
-    const dmg = damageWord(claims.mine.damage);
-    if (isHigh(wall)) {
-      lines.push({ kind, text:
-        lang === "ko_KR"
-          ? `${me.name}의 피해는 주로 ${dmg}인데 ${enemy.name}의 ${name}이 높은 편이라 그대로는 잘 들어가지 않습니다. 관통을 섞거나 ${name}이 값을 못 하는 피해를 찾아야 합니다.`
-          : lang === "en_US"
-            ? `${me.name} deals mostly ${dmg} damage and ${enemy.name} has high ${name}, so raw damage falls off. Build penetration or look for damage that ignores ${name}.`
-            : `${me.name}主要打${dmg}伤害，而${enemy.name}的${name}很高，硬打伤害会被吃掉。需要出穿透，或者找不吃${name}的伤害。`,
-      });
-    } else if (isLow(wall)) {
-      lines.push({ kind, text:
-        lang === "ko_KR"
-          ? `${me.name}의 피해는 주로 ${dmg}이고 ${enemy.name}의 ${name}이 낮은 편이라 그대로 잘 들어갑니다.`
-          : lang === "en_US"
-            ? `${me.name} deals mostly ${dmg} damage and ${enemy.name} has low ${name}, so it lands hard as is.`
-            : `${me.name}主要打${dmg}伤害，而${enemy.name}的${name}偏低，伤害可以直接打出来。`,
-      });
-    }
+function damageWord(damage: MainDamage, lang: ClaimLang): string {
+  const w = CLAIM_WORDS[lang];
+  return damage === "물리" ? w.physical : w.magic;
+}
+
+/** 내 피해가 상대 저항에 어떻게 걸리나 */
+function offenseClaim(me: ChampionCard, enemy: ChampionCard, mine: MatchupClaims["mine"], lang: ClaimLang): string | undefined {
+  if (mine.damage === "불명" || mine.damage === "혼합") return undefined;
+  const name = resistWord(mine.damage, lang);
+  const dmg = damageWord(mine.damage, lang);
+  if (isHigh(mine.wall)) {
+    return lang === "ko_KR"
+      ? `${me.name}의 피해는 주로 ${dmg}인데 ${enemy.name}의 ${name}이 높은 편이라 그대로는 잘 들어가지 않습니다. 관통을 섞거나 ${name}이 값을 못 하는 피해를 찾아야 합니다.`
+      : lang === "en_US"
+        ? `${me.name} deals mostly ${dmg} damage and ${enemy.name} has high ${name}, so raw damage falls off. Build penetration or look for damage that ignores ${name}.`
+        : `${me.name}主要打${dmg}伤害，而${enemy.name}的${name}很高，硬打伤害会被吃掉。需要出穿透，或者找不吃${name}的伤害。`;
   }
-
-  kind = "defense";
-  if (claims.theirs.damage !== "불명" && claims.theirs.damage !== "혼합") {
-    const wall = claims.theirs.wall;
-    const name = resist(claims.theirs.damage);
-    const dmg = damageWord(claims.theirs.damage);
-    if (isLow(wall)) {
-      lines.push({ kind, text:
-        lang === "ko_KR"
-          ? `${enemy.name}의 피해는 주로 ${dmg}인데 ${me.name}의 ${name}이 낮은 편이라 그쪽이 먼저 올릴 저항입니다.`
-          : lang === "en_US"
-            ? `${enemy.name} deals mostly ${dmg} damage and ${me.name} has low ${name}, so that is the stat to buy first.`
-            : `${enemy.name}主要打${dmg}伤害，而${me.name}的${name}偏低，这条抗性要优先堆。`,
-      });
-    }
+  if (isLow(mine.wall)) {
+    return lang === "ko_KR"
+      ? `${me.name}의 피해는 주로 ${dmg}이고 ${enemy.name}의 ${name}이 낮은 편이라 그대로 잘 들어갑니다.`
+      : lang === "en_US"
+        ? `${me.name} deals mostly ${dmg} damage and ${enemy.name} has low ${name}, so it lands hard as is.`
+        : `${me.name}主要打${dmg}伤害，而${enemy.name}的${name}偏低，伤害可以直接打出来。`;
   }
+  return undefined;
+}
 
-  kind = "pinned";
-  if (claims.pinned) {
-    lines.push({ kind, text:
-      lang === "ko_KR"
-        ? `${josa(me.name, "은/는")} 스스로 빠져나갈 스킬이 없고 ${josa(enemy.name, "은/는")} 붙잡는 수단을 여럿 가졌습니다. 한 번 걸리면 그대로 이어 맞는 구도라 거리 관리가 먼저입니다.`
-        : lang === "en_US"
-          ? `${me.name} has no escape and ${enemy.name} has multiple pieces of CC. One catch chains into the rest, so spacing comes first.`
-          : `${me.name}没有位移逃生手段，而${enemy.name}有多个控制。一旦被抓就会被连到底，所以走位拉扯是第一位的。`,
-    });
+/** 상대 피해가 내 저항에 어떻게 걸리나 — 무엇을 먼저 올릴지 */
+function defenseClaim(me: ChampionCard, enemy: ChampionCard, theirs: MatchupClaims["theirs"], lang: ClaimLang): string | undefined {
+  if (theirs.damage === "불명" || theirs.damage === "혼합") return undefined;
+  if (!isLow(theirs.wall)) return undefined;
+  const name = resistWord(theirs.damage, lang);
+  const dmg = damageWord(theirs.damage, lang);
+  return lang === "ko_KR"
+    ? `${enemy.name}의 피해는 주로 ${dmg}인데 ${me.name}의 ${name}이 낮은 편이라 그쪽이 먼저 올릴 저항입니다.`
+    : lang === "en_US"
+      ? `${enemy.name} deals mostly ${dmg} damage and ${me.name} has low ${name}, so that is the stat to buy first.`
+      : `${enemy.name}主要打${dmg}伤害，而${me.name}的${name}偏低，这条抗性要优先堆。`;
+}
+
+/** 붙잡히면 못 빠진다 */
+function pinnedClaim(me: ChampionCard, enemy: ChampionCard, lang: ClaimLang): string {
+  return lang === "ko_KR"
+    ? `${josa(me.name, "은/는")} 스스로 빠져나갈 스킬이 없고 ${josa(enemy.name, "은/는")} 붙잡는 수단을 여럿 가졌습니다. 한 번 걸리면 그대로 이어 맞는 구도라 거리 관리가 먼저입니다.`
+    : lang === "en_US"
+      ? `${me.name} has no escape and ${enemy.name} has multiple pieces of CC. One catch chains into the rest, so spacing comes first.`
+      : `${me.name}没有位移逃生手段，而${enemy.name}有多个控制。一旦被抓就会被连到底，所以走位拉扯是第一位的。`;
+}
+
+/** 시간이 누구 편인가 */
+function scalingClaim(me: ChampionCard, enemy: ChampionCard, scaling: MatchupClaims["scaling"], lang: ClaimLang): string | undefined {
+  if (scaling === "theirs") {
+    return lang === "ko_KR"
+      ? `${josa(enemy.name, "은/는")} 쌓을수록 세지므로 시간이 갈수록 불리해집니다. 초반에 눌러 두는 편이 낫습니다.`
+      : lang === "en_US"
+        ? `${enemy.name} scales with stacks, so the game gets worse the longer it runs. Punish early.`
+        : `${enemy.name}靠叠层发育，拖得越久越不利。要在前期压制。`;
   }
-
-  kind = "scaling";
-  if (claims.scaling === "theirs") {
-    lines.push({ kind, text:
-      lang === "ko_KR"
-        ? `${josa(enemy.name, "은/는")} 쌓을수록 세지므로 시간이 갈수록 불리해집니다. 초반에 눌러 두는 편이 낫습니다.`
-        : lang === "en_US"
-          ? `${enemy.name} scales with stacks, so the game gets worse the longer it runs. Punish early.`
-          : `${enemy.name}靠叠层发育，拖得越久越不利。要在前期压制。`,
-    });
-  } else if (claims.scaling === "mine") {
-    lines.push({ kind, text:
-      lang === "ko_KR"
-        ? `${josa(me.name, "은/는")} 쌓을수록 세지므로 초반을 버티면 뒤로 갈수록 유리해집니다.`
-        : lang === "en_US"
-          ? `${me.name} scales with stacks, so surviving the early game turns the matchup around.`
-          : `${me.name}靠叠层发育，熬过前期后期会越来越强。`,
-    });
+  if (scaling === "mine") {
+    return lang === "ko_KR"
+      ? `${josa(me.name, "은/는")} 쌓을수록 세지므로 초반을 버티면 뒤로 갈수록 유리해집니다.`
+      : lang === "en_US"
+        ? `${me.name} scales with stacks, so surviving the early game turns the matchup around.`
+        : `${me.name}靠叠层发育，熬过前期后期会越来越强。`;
   }
-
-  return lines;
+  return undefined;
 }
