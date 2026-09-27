@@ -25,7 +25,8 @@ import type { ChampionCard } from "./lib/facts";
 import type { Playbook } from "./lib/playbookCore";
 import { PUBLIC_DATA_ROOT, resolvePatchVersion } from "./lib/data";
 import type { AdvisorData } from "../../src/lib/advisor/context";
-import { buildCommentaryPrompt, splitSentences } from "../../src/lib/advisor/answer";
+import { splitSentences } from "../../src/lib/advisor/answer";
+import { buildCommentaryPrompt } from "../../src/lib/advisor/commentaryPrompt";
 import { PAIRS, matchupAnswer, type Row } from "./lib/matchupEval";
 
 const mode = process.argv[2];

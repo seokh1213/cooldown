@@ -15,11 +15,11 @@ import type { ChampionCard } from "./lib/facts";
 import { indexRules, type RuleNotes } from "./lib/rules";
 import { PUBLIC_DATA_ROOT, resolvePatchVersion } from "./lib/data";
 import {
-  buildCommentaryPrompt,
   buildRuleAnswer,
   buildSpellAnswer,
   type AdvisorAnswer,
 } from "../../src/lib/advisor/answer";
+import { buildCommentaryPrompt } from "../../src/lib/advisor/commentaryPrompt";
 
 const HOST = process.env.OLLAMA_HOST ?? "http://localhost:11434";
 const MODEL = process.env.ADVISOR_EVAL_MODEL ?? "gemma4:e2b";

@@ -14,7 +14,8 @@
  */
 import type { ChampionCard } from "./facts";
 import { josa } from "./text";
-import { buildCompareAnswer, buildCommentaryPrompt, type AdvisorAnswer } from "../../../src/lib/advisor/answer";
+import { buildCompareAnswer, type AdvisorAnswer } from "../../../src/lib/advisor/answer";
+import { buildCommentaryPrompt } from "../../../src/lib/advisor/commentaryPrompt";
 import { matchupNotes, type AdvisorData } from "../../../src/lib/advisor/context";
 import { groundCommentary } from "../../../src/lib/advisor/grounding";
 import { advisorSystemPrompt } from "../../../src/lib/advisor/persona";

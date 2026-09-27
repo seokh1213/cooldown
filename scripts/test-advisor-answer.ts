@@ -24,7 +24,6 @@ import {
   ruleVerdict,
   spellOneLiner,
   splitSentences,
-  buildCommentaryPrompt,
 } from "../src/lib/advisor/answer";
 import {
   asksComparison,
@@ -34,6 +33,7 @@ import {
   asksWholeKit,
   looksChampionDirected,
 } from "../src/lib/advisor/askWords";
+import { buildCommentaryPrompt } from "../src/lib/advisor/commentaryPrompt";
 import { detectSpellFocus } from "../src/lib/advisor/spellFocus";
 import { editDistance, suggestChampions } from "../src/lib/advisor/championTypo";
 import { TAGS, DAMAGE, GRADE, RANGE, RATIO_STATS, missingCardWords } from "./llm/lib/cardWords";
