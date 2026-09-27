@@ -10,16 +10,14 @@
  */
 import * as fs from "node:fs";
 import * as path from "node:path";
-import { findMentionedRules, ruleLines, ruleName, type RuleNotes } from "../lib/rules";
+import { findMentionedRules, ruleName, type RuleNotes } from "../lib/rules";
 import { findMechanics } from "../lib/mechanics";
-import { findGameMeta, type GameMetaFact } from "../../../src/lib/advisor/gameMeta";
-import { buildSearchCorpus, hitsToAnswer, lexicalSearch } from "../../../src/lib/advisor/searchFallback";
-import meta from "../../../knowledge/game-meta.json";
+import { findGameMeta } from "../../../src/lib/advisor/gameMeta";
+import { buildRetrievalDocs, buildSearchCorpus, hitsToAnswer, lexicalSearch } from "../../../src/lib/advisor/searchFallback";
 import { loadData, ROOT, type Lang } from "../kev-agent/lib";
 
 const OUT = path.join(ROOT, "research/llm-evals/vector-search");
 const LANGS: Lang[] = ["ko_KR", "en_US", "zh_CN"];
-const short = (lang: Lang) => (lang === "en_US" ? "en" : lang === "zh_CN" ? "zh" : "ko");
 
 export interface Doc {
   id: string;
@@ -29,16 +27,8 @@ export interface Doc {
 }
 
 export function corpus(lang: Lang): Doc[] {
-  const data = loadData(lang);
-  const docs: Doc[] = [];
-  for (const rule of new Set(data.ruleIndex.values())) {
-    docs.push({ id: `rule:${rule.name}`, kind: "rule", title: ruleName(rule, lang), text: ruleLines(rule, lang).join("\n") });
-  }
-  for (const section of data.mechanics) docs.push({ id: `mech:${section.id}`, kind: "mechanics", title: section.title, text: section.text });
-  for (const fact of meta.facts as GameMetaFact[]) {
-    docs.push({ id: `meta:${fact.id}`, kind: "meta", title: fact.keywords[short(lang)][0] ?? fact.id, text: fact.text[short(lang)] });
-  }
-  return docs;
+  // 앱과 같은 목록(문서 벡터를 이것으로 만들었다)
+  return buildRetrievalDocs(loadData(lang), lang);
 }
 
 /** 지금 앱이 보이는 문서(여러 개면 맨 앞)와 그것을 찾은 단계. */

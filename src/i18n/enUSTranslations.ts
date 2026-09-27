@@ -288,6 +288,7 @@ export const enUSTranslations: Translations = {
       pairFromMany: "Answering as {mine} vs {enemy} (also mentioned: {others}).",
       fromScreen: "Using {name} from the current page.",
       suggestPrefix: "No champion named '{original}'.",
+      relatedPrompt: "I couldn't find an exact match. Were you looking for one of these?",
       suggestSuffix: "— did you mean one of these?",
       viewing: "Champion on screen",
       comparing: "Comparing now",

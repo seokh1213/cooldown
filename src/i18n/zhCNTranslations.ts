@@ -274,6 +274,7 @@ export const zhCNTranslations: Translations = {
       pairFromMany: "按 {mine} 对 {enemy} 回答（另外提到：{others}）。",
       fromScreen: "以当前页面的 {name} 为准。",
       suggestPrefix: "找不到名为 '{original}' 的英雄。",
+      relatedPrompt: "没有找到完全对应的资料。您要找的是不是这些？",
       suggestSuffix: "您是指以下哪位？",
       viewing: "当前查看的英雄",
       comparing: "正在对比",

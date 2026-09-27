@@ -291,6 +291,8 @@ export interface Translations {
       pairFromMany: string;
       fromScreen: string;
       suggestPrefix: string;
+      /** 검색이 확신하지 못해 가까운 자료를 고르게 할 때 */
+      relatedPrompt: string;
       suggestSuffix: string;
       viewing: string;
       comparing: string;

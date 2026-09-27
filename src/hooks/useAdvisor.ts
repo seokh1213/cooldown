@@ -71,6 +71,8 @@ export interface AdvisorTurn extends AdvisorChatMessage {
   answer?: AdvisorAnswer;
   /** 답 위에 작게 붙는 알림. "럼블로 이해했습니다" 같은 것. */
   notice?: string;
+  /** "혹시 이 자료를 찾으셨나요?" 에 붙는 자료 버튼. 검색이 확신하지 못했을 때만. 누르면 그 자료를 보인다. */
+  related?: Array<{ id: string; title: string }>;
   /**
    * `content` 를 코드가 썼는가.
    *
@@ -250,12 +252,12 @@ export interface UseAdvisorResult {
    */
   judge: (headName: string, state: string, questions: JudgeQuestion[]) => Promise<number[][]>;
   /**
-   * 이름 없는 질문의 자료를 검색 LoRA 벡터로 찾는다(`model.retrieval`). 코사인 순 상위 문서들(가장 가까운 것이 맨 앞).
-   * 문턱은 부르는 쪽이 본다. 모델에 검색 가지가 없거나 동의 전이면 거절하므로 부르는 쪽이 낱말 검색으로 되돌아간다.
+   * 이름 없는 질문의 자료를 검색 LoRA 벡터로 찾는다(`model.retrieval`). 질문 언어의 문서 전부를 코사인 순으로(가까운 것이 맨 앞).
+   * 낱말 점수와 합치고 문턱을 보는 것은 부르는 쪽(`hybridSearch`)이다. 모델에 검색 가지가 없거나 동의 전이면 거절하므로 부르는 쪽이 낱말 검색으로 되돌아간다.
    */
   search: (question: string, lang: string) => Promise<Array<{ id: string; score: number }>>;
   /** 모델 없이 코드가 만든 답을 그대로 보여 준다. 동의 전이나 WebGPU 가 없을 때 쓴다. */
-  answerWithoutModel: (question: string, answer: string | AdvisorAnswer, notice?: string) => void;
+  answerWithoutModel: (question: string, answer: string | AdvisorAnswer, notice?: string, related?: AdvisorTurn["related"]) => void;
   /**
    * 질문을 받자마자 말풍선 자리를 띄우고 "생각하는 중" 을 보인다. 답(`answerWithoutModel`·`respond`)이 이 자리를 채운다.
    * 판정기·노트 찾기가 1~3초 걸리는 동안 화면이 멈춘 것처럼 보이지 않게 한다. 이미 띄운 자리가 있으면 아무것도 안 한다.
@@ -715,13 +717,13 @@ export function useAdvisor(): UseAdvisorResult {
    * 카드에 이미 있는 값을 옮기는 것이라 틀릴 자리가 없다.
    */
   const answerWithoutModel = useCallback(
-    (question: string, answer: string | AdvisorAnswer, notice?: string) => {
+    (question: string, answer: string | AdvisorAnswer, notice?: string, related?: AdvisorTurn["related"]) => {
       setError(null);
       // 카드는 바로, 글은 흘려서 보인다(`reveal`)
       const full = typeof answer === "string" ? answer : answerProse(answer, lang);
       const id =
         typeof answer === "string"
-          ? place(question, { role: "assistant", content: "", notice })
+          ? place(question, { role: "assistant", content: "", notice, related })
           : place(question, { role: "assistant", content: "", answer, notice, byCode: true });
       reveal(id, full);
     },
@@ -791,7 +793,7 @@ export function useAdvisor(): UseAdvisorResult {
         embedWaiters.current.set(id, { resolve, reject });
         post({ type: "embed", id, model, text: prompt });
       });
-      return ranked(query, block.matrix, block.ids).slice(0, 30);
+      return ranked(query, block.matrix, block.ids);
     },
     [consented, model, post],
   );

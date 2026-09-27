@@ -88,6 +88,12 @@ export function gameMetaAnswer(question: string, lang: Language): string | undef
   return undefined;
 }
 
+/** 검색 문서 꼴(id · 제목 · 본문). 문서 벡터를 만든 것과 같은 제목·본문이다. */
+export function gameMetaDocs(lang: Language): Array<{ id: string; title: string; text: string }> {
+  const l = short(lang);
+  return FACTS.map((fact) => ({ id: `meta:${fact.id}`, title: fact.keywords[l][0] ?? fact.id, text: fact.text[l] }));
+}
+
 /** 문서 id(`meta:surrender`)로 답한다. 검색 벡터가 고른 문서를 보일 때 쓴다. */
 export function gameMetaById(id: string, lang: Language): string | undefined {
   const fact = FACTS.find((entry) => `meta:${entry.id}` === id);

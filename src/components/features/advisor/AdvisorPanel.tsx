@@ -115,13 +115,14 @@ import {
   buildSearchCorpus,
   extractQuery,
   hitsToAnswer,
-  pickSearchDoc,
+  buildRetrievalDocs,
+  hybridSearch,
   type LexicalHit,
   lexicalSearch,
   searchContext,
 } from "@/lib/advisor/searchFallback";
 import { asksAboutHelper, detectChampions } from "@/lib/advisor/intent";
-import type { AdvisorTurn, UseAdvisorResult } from "@/hooks/useAdvisor";
+import { questionLanguage, type AdvisorTurn, type UseAdvisorResult } from "@/hooks/useAdvisor";
 import type { UseAdvisorHistoryResult } from "@/hooks/useAdvisorHistory";
 import { AdvisorConsent } from "./AdvisorConsent";
 import { AdvisorHistory } from "./AdvisorHistory";
@@ -480,6 +481,13 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
     return undefined;
   };
 
+  /** "혹시 이 자료를?" 에서 고른 자료를 보인다. 검색을 다시 돌리지 않는다. */
+  const showDoc = (id: string, title: string) => {
+    const answer = docAnswer(id, title);
+    if (typeof answer === "string") advisor.answerWithoutModel(title, answer);
+    else if (answer) deliver(title, answer);
+  };
+
   const ask = async (question: string, notice?: string) => {
     // 질문을 받자마자 자리를 띄운다. 답이 정해지면 그 자리가 채워진다(`begin`).
     advisor.begin(question, copy.status.generating);
@@ -598,8 +606,7 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
       });
       // null: 검색 실패 — 아래 낱말 길로 내려간다
       if (top !== null) {
-        // 낱말(룬·주문 이름·은어 → 게임 메타 → 게임 원리)로 걸린 문서를 벡터가 크게 반대하지 않으면 그것, 아니면 벡터 1위(문턱).
-        // 까닭과 수치는 `pickSearchDoc`
+        // 벡터 점수와 낱말 점수(BM25 · 룬·주문 이름·은어 → 게임 메타 → 게임 원리 적중)를 합친다. 까닭과 수치는 `hybridSearch`
         const named = findMentionedRules(data.ruleIndex, question);
         const fact = findGameMeta(question);
         const metaFirst = named.length > 0 && named.every((rule) => rule.subject === "gameplay") && Boolean(fact);
@@ -612,11 +619,17 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
               : section
                 ? { id: `mech:${section.id}`, step: "mech" }
                 : undefined;
-        const id = pickSearchDoc(top, lexical, advisor.model.retrieval!.threshold);
-        const answer = id ? docAnswer(id, question) : undefined;
+        const asked = questionLanguage(question) ?? lang;
+        const bm25 = lexicalSearch(buildRetrievalDocs(data, asked, true), question, 100);
+        const found = hybridSearch(top, bm25, lexical);
+        const answer = found.answer ? docAnswer(found.answer, question) : undefined;
         if (typeof answer === "string") advisor.answerWithoutModel(question, answer, notice);
         else if (answer) deliver(question, answer, notice);
-        else advisor.answerWithoutModel(question, copy.noLiteAnswer);
+        else if (found.related?.length) {
+          // 확신이 없으면 "자료 없음" 대신 가까운 자료 셋을 고르게 한다. 누르면 그 자료를 보인다(`showDoc`).
+          const titles = new Map(buildRetrievalDocs(data, lang).map((doc) => [doc.id, doc.title]));
+          advisor.answerWithoutModel(question, copy.card.relatedPrompt, undefined, found.related.map((id) => ({ id, title: titles.get(id) ?? id })));
+        } else advisor.answerWithoutModel(question, copy.noLiteAnswer);
         return;
       }
     }
@@ -1685,7 +1698,24 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
                   </div>
                 ) : turn.content ? (
                   turn.role === "assistant" ? (
-                    <AdvisorMarkdown text={turn.content} />
+                    <>
+                      <AdvisorMarkdown text={turn.content} />
+                      {turn.related?.length ? (
+                        <div className="mt-2 flex flex-wrap gap-1.5">
+                          {turn.related.map((doc) => (
+                            <button
+                              key={doc.id}
+                              type="button"
+                              disabled={busy}
+                              onClick={() => showDoc(doc.id, doc.title)}
+                              className="rounded-md border bg-background px-2.5 py-1 text-xs font-medium transition-colors hover:border-primary/50 hover:bg-muted disabled:opacity-50"
+                            >
+                              {doc.title}
+                            </button>
+                          ))}
+                        </div>
+                      ) : null}
+                    </>
                   ) : (
                     <span className="whitespace-pre-wrap">{turn.content}</span>
                   )

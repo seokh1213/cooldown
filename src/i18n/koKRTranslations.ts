@@ -288,6 +288,7 @@ export const koKRTranslations: Translations = {
       pairFromMany: "{mine} vs {enemy} 상성으로 답합니다 (곁들인 이름: {others}).",
       fromScreen: "화면의 {name} 기준입니다.",
       suggestPrefix: "'{original}' 챔피언을 찾지 못했습니다.",
+      relatedPrompt: "딱 맞는 자료를 찾지 못했습니다. 혹시 이 자료를 찾으셨나요?",
       suggestSuffix: "중 말씀이신가요?",
       viewing: "지금 보고 있는 챔피언",
       comparing: "지금 비교 중",

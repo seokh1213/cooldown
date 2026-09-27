@@ -19,10 +19,14 @@
  * 웹에서 2.97GB 위에 얹을 값이 아니라서 글자 검색으로 간다.
  */
 import type { AdvisorData } from "./context";
+import { aliasesOf } from "../../../scripts/llm/lib/searchAliases";
+import { gameMetaDocs } from "./gameMeta";
 import { ruleLines, ruleName } from "../../../scripts/llm/lib/rules";
 
 export interface SearchDoc {
-  kind: "rule" | "mechanics";
+  /** 검색 문서 id(`rule:점화`). 하이브리드 검색이 벡터 점수와 맞춘다 */
+  id?: string;
+  kind: "rule" | "mechanics" | "meta";
   title: string;
   text: string;
 }
@@ -265,24 +269,66 @@ export interface LexicalHit {
   step: "rule" | "meta" | "mech";
 }
 
-/**
- * 낱말로 걸린 문서를 벡터 몇 위까지 믿나. 벡터는 바꿔 말한 질문에 강하고 이름·은어를 그대로 넣은 짧은 질문에 약했다
- * ("cs가 뭐야?" 가 문턱 밑, "PTA 포탑에도 터져?" 는 집중 공격이 22위). 룬·주문 이름·은어는 사람이 고른 말이라 벡터가
- * 아주 멀리 두지 않는 한(30위 밖) 믿고, 게임 메타·원리 낱말은 벡터 1위와 같을 때만 믿는다(흔한 말이 섞여 있다).
- */
-const AGREE: Record<LexicalHit["step"], number> = { rule: 30, meta: 1, mech: 1 };
+/** 검색 문서 하나. 문서 벡터(`doc-vectors`)와 같은 id·제목·본문. */
+export interface RetrievalDoc {
+  id: string;
+  kind: "rule" | "mechanics" | "meta";
+  title: string;
+  text: string;
+}
 
 /**
- * 검색 벡터 상위 문서와 낱말로 걸린 문서 중 무엇을 보일지. 낱말 문서를 믿지 않으면 벡터 1위가 문턱을 넘을 때만.
- *
- *   research/llm-evals/vector-search (맞음 · 틀린 자료)   시험 절반 355   실제에 가까운 질문 44   이름 넣은 질문 22
- *   낱말만(예전 앱)                                        212 · 31        24 · 15                 22 · 0
- *   벡터만                                                 288 · 31        28 · 10                 11 · 1
- *   벡터 1위와 같을 때만 낱말                              292 · 31        29 · 10                 16 · 1
- *   이 판(이름·은어 30위 · 메타·원리 1위)                  296 · 38        26 · 14                 22 · 0
- * 세 세트 모두에서 예전 앱보다 낫거나 같은 판 중 가장 나은 것이다(손잡이 셋을 이 세트들로 골랐다).
+ * 이름 없는 질문의 검색 문서 — 규칙 70 · 게임 원리 9 · 게임 메타 21. 문서 벡터를 만든 목록과 같아야 한다
+ * (`scripts/llm/vector-search/corpus.ts dump` 가 이것을 쓴다). `withAliases` 면 본문 끝에 은어를 붙인다(BM25 용).
  */
-export function pickSearchDoc(top: Array<{ id: string; score: number }>, lexical: LexicalHit | undefined, threshold: number): string | undefined {
-  if (lexical && top.slice(0, AGREE[lexical.step]).some((doc) => doc.id === lexical.id)) return lexical.id;
-  return top[0] && top[0].score >= threshold ? top[0].id : undefined;
+export function buildRetrievalDocs(data: AdvisorData, lang: string, withAliases = false): RetrievalDoc[] {
+  const docs: RetrievalDoc[] = [];
+  for (const rule of new Set(data.ruleIndex.values())) {
+    docs.push({ id: `rule:${rule.name}`, kind: "rule", title: ruleName(rule, lang), text: ruleLines(rule, lang).join("\n") });
+  }
+  for (const section of data.mechanics) docs.push({ id: `mech:${section.id}`, kind: "mechanics", title: section.title, text: section.text });
+  for (const fact of gameMetaDocs(lang)) docs.push({ ...fact, kind: "meta" });
+  return withAliases ? docs.map((doc) => ({ ...doc, text: `${doc.text}\n${aliasesOf(doc.id).join(" ")}` })) : docs;
+}
+
+/**
+ * 하이브리드 검색 — 문서마다 벡터 코사인과 낱말 점수를 한 점수로 합친다.
+ *
+ *   점수 = 코사인 + 0.05 · BM25(질문 안 1위 = 1) + (이름·은어 0.5 · 게임 메타 0.05 · 게임 원리 0.1) · (낱말 단계가 가리킨 문서)
+ *   답   1위 ≥ 0.43          후보   답이 없고 1위 ≥ 0.35 이면 상위 3건을 "혹시 이 자료를?" 으로
+ *
+ * 벡터는 바꿔 말한 질문에 강하고 이름·은어를 그대로 넣은 짧은 질문에 약했다("cs가 뭐야?" 가 문턱 밑, "PTA 포탑에도 터져?" 는
+ * 집중 공격이 22위). 낱말은 그 반대다. 값은 시험 세트의 dev 절반에서 골랐고(이름 넣은 질문 22개 퇴보 금지), 평가는 나머지로:
+ *
+ *   맞음 · 틀린 자료          시험 test 절반 355   실제에 가까운 44   이름 넣은 22
+ *   낱말만(예전 앱)           212 · 31             24 · 15            22 · 0
+ *   벡터만                    288 · 31             28 · 10            11 · 1
+ *   규칙으로 고르기            296 · 38             26 · 14            22 · 0
+ *   이 합산                   299 · 32             26 · 14            22 · 0
+ * 후보 제시(0.35)는 답하지 못한 것 중 test 14 · 실제 2 를 살리고, 답 없는 질문 test 9 · 실제 3 에 후보를 띄운다.
+ * research/llm-evals/vector-search/hybrid_score.py
+ */
+export const HYBRID = { bm25: 0.05, lexical: { rule: 0.5, meta: 0.05, mech: 0.1 }, answer: 0.43, suggest: 0.35 } as const;
+
+export function hybridSearch(
+  vector: Array<{ id: string; score: number }>,
+  bm25: SearchHit[],
+  lexical: LexicalHit | undefined,
+): { answer?: string; related?: string[] } {
+  const bmById = new Map(bm25.map((hit) => [(hit.doc as SearchDoc & { id?: string }).id ?? hit.doc.title, hit.score]));
+  const bmMax = Math.max(0, ...bmById.values());
+  const ranked = vector
+    .map(({ id, score }) => ({
+      id,
+      score:
+        score +
+        (bmMax > 0 ? (HYBRID.bm25 * (bmById.get(id) ?? 0)) / bmMax : 0) +
+        (lexical && lexical.id === id ? HYBRID.lexical[lexical.step] : 0),
+    }))
+    .sort((a, b) => b.score - a.score);
+  const top = ranked[0];
+  if (!top) return {};
+  if (top.score >= HYBRID.answer) return { answer: top.id };
+  if (top.score >= HYBRID.suggest) return { related: ranked.slice(0, 3).map((doc) => doc.id) };
+  return {};
 }

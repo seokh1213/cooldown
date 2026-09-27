@@ -12,7 +12,7 @@ import * as path from "node:path";
 import { indexRules, buildRuleAnswer, findMentionedRules, findRulesMentioning } from "./llm/lib/rules";
 import { findMechanics, mechanicsToText, type MechanicsIndex } from "./llm/lib/mechanics";
 import { PUBLIC_DATA_ROOT, resolvePatchVersion } from "./llm/lib/data";
-import { extractQuery, hitsToAnswer, lexicalSearch, pickSearchDoc, type SearchDoc } from "../src/lib/advisor/searchFallback";
+import { extractQuery, hitsToAnswer, hybridSearch, lexicalSearch, type SearchDoc } from "../src/lib/advisor/searchFallback";
 import { questionLanguage } from "../src/hooks/useAdvisor";
 import { asksAboutHelper } from "../src/lib/advisor/intent";
 
@@ -113,13 +113,15 @@ assert.deepEqual(findMentionedRules(ruleIndex, "플 빠지면 바로 들어가")
 assert.deepEqual(findMechanics(mechanics, "싸울수록 공속 쌓이는 정밀 핵심룬"), [], "룬 질문은 게임 원리 절로 가지 않는다");
 assert.ok(findMechanics(mechanics, "공속 상한 몇이야?").length > 0, "룬을 안 밝히면 공속 은어로 찾는다");
 
-// 검색 벡터와 낱말 중 무엇을 보이나(pickSearchDoc). 룬·주문 이름·은어는 벡터 30위 안이면, 메타·원리 낱말은 1위일 때만 믿는다.
+// 하이브리드 검색(hybridSearch): 벡터 코사인 + 낱말 점수. 확신이 없으면 후보 셋.
 {
-  const top = [{ id: "rule:구축", score: 0.62 }, ...Array.from({ length: 21 }, (_, i) => ({ id: `rule:x${i}`, score: 0.3 })), { id: "rule:집중 공격", score: 0.2 }];
-  assert.equal(pickSearchDoc(top, { id: "rule:집중 공격", step: "rule" }, 0.39), "rule:집중 공격", "은어(PTA)로 걸린 규칙은 벡터 23위여도 믿는다");
-  assert.equal(pickSearchDoc(top, { id: "meta:cs", step: "meta" }, 0.39), "rule:구축", "메타 낱말은 벡터 1위가 아니면 벡터를 따른다");
-  assert.equal(pickSearchDoc([{ id: "meta:cs", score: 0.3 }], { id: "meta:cs", step: "meta" }, 0.39), "meta:cs", "벡터 1위와 같으면 문턱 밑이어도 보인다");
-  assert.equal(pickSearchDoc([{ id: "rule:점멸", score: 0.3 }], undefined, 0.39), undefined, "낱말이 없고 벡터가 문턱 밑이면 자료 없음");
+  const vector = [{ id: "rule:구축", score: 0.4 }, { id: "rule:집중 공격", score: 0.2 }, { id: "meta:cs", score: 0.1 }, { id: "rule:점멸", score: 0.05 }];
+  const none: import("../src/lib/advisor/searchFallback").SearchHit[] = [];
+  assert.equal(hybridSearch(vector, none, { id: "rule:집중 공격", step: "rule" }).answer, "rule:집중 공격", "은어(PTA)로 걸린 규칙이 벡터 1위를 넘는다");
+  assert.equal(hybridSearch(vector, none, undefined).answer, undefined, "벡터 1위가 답 문턱(0.43) 밑이면 답하지 않는다");
+  assert.deepEqual(hybridSearch(vector, none, undefined).related, ["rule:구축", "rule:집중 공격", "meta:cs"], "후보 문턱(0.35) 위면 후보 셋");
+  assert.deepEqual(hybridSearch([{ id: "rule:점멸", score: 0.28 }], none, undefined), {}, "잡담(0.28)에는 후보도 없다");
+  assert.equal(hybridSearch([{ id: "meta:cs", score: 0.4 }], none, { id: "meta:cs", step: "meta" }).answer, "meta:cs", "메타 낱말이 조금 더해 문턱을 넘긴다");
   assert.equal(questionLanguage("Does ignite work with conqueror?"), "en_US");
   assert.equal(questionLanguage("PTA 포탑에도 터져?"), "ko_KR", "한글이 섞이면 한국어");
   assert.equal(questionLanguage("TP回城要几秒"), "zh_CN", "한자가 섞이면 중국어");
