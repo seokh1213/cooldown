@@ -10,7 +10,9 @@ import * as path from "node:path";
 import type { ChampionCard } from "../../../src/lib/knowledge/facts";
 import { indexRules, type RuleNotes } from "../../../src/lib/knowledge/rules";
 import { championAliases, collectEffectTags, type AdvisorData } from "../../../src/lib/advisor/context";
-import { readJudgeHead, scoreJudge, type JudgeHead, type JudgeHeadMeta, type JudgeQuestion } from "../../../src/lib/advisor/judge";
+import { encodeJudgeRow, JUDGE_SPECIAL, readJudgeHead, scoreJudge, type JudgeHead, type JudgeHeadMeta, type JudgeQuestion } from "../../../src/lib/advisor/judge";
+import { AutoTokenizer, type PreTrainedTokenizer } from "@huggingface/transformers";
+import { ADVISOR_MODEL } from "../../../src/lib/advisor/config";
 
 export const ROOT = path.resolve(import.meta.dirname, "../../..");
 export const PATCH = "26.19";
@@ -81,6 +83,33 @@ export function saveJudgeCache() {
 
 export type Judge = (headName: string, state: string, questions: JudgeQuestion[]) => Promise<number[][]>;
 
+/**
+ * 앱과 같은 kev 판정: 앱 그래프의 은닉 상태(`hidden_judge_serve.py`)에 앱 헤드(`public/models/judge/<헤드>`)를 얹는다.
+ * 토큰화·판정 위치는 워커(`src/workers/advisor/loraFeatures.ts` judgeHidden)와 같은 `encodeJudgeRow` 를 쓴다.
+ */
+let judgeTokenizer: Promise<PreTrainedTokenizer> | undefined;
+export function hiddenJudge(url: string): Judge {
+  return async (headName, state, questions) => {
+    const key = JSON.stringify(["hidden", headName, state, questions]);
+    const hit = judgeCache.get(key);
+    if (hit) return hit;
+    const tokenizer = await (judgeTokenizer ??= AutoTokenizer.from_pretrained(ADVISOR_MODEL.id));
+    const special = tokenizer.convert_tokens_to_ids([...JUDGE_SPECIAL]) as number[];
+    // 워커와 같게: 상태 글 속 특수 토큰 꼴은 깨 둔다
+    const tokenize = (text: string) => tokenizer.encode(text.replace(/<\|(\w+)\|>/g, "<¦$1¦>"), { add_special_tokens: false }) as number[];
+    const h = head(headName);
+    const probs: number[][] = [];
+    for (const question of questions) {
+      const row = encodeJudgeRow(tokenize, special, state, question);
+      const res = await fetch(`${url}/hidden`, { method: "POST", body: JSON.stringify({ ids: row.ids, positions: row.positions }) });
+      const { hidden } = (await res.json()) as { hidden: number[][] };
+      probs.push(scoreJudge(h, hidden.map((r) => Float32Array.from(r))));
+    }
+    judgeCache.set(key, probs);
+    return probs;
+  };
+}
+
 /** 같은 질문을 kev 서버에 묻는다(헤드 이름은 무시 — kev 는 헤드 하나로 모든 질문을 받는다). */
 export function kevJudge(url: string): Judge {
   const cache = new Map<string, number[][]>();
@@ -108,7 +137,8 @@ export function kevJudge(url: string): Judge {
 
 /** 앱 판정기와 같은 답: 질문마다 선택지 확률 */
 /** JUDGE_URL 을 주면 앱 판정기 자리에 kev 서버를 끼운다(B 의 판정기로 A 를 다시 잴 때). */
-const judgeOverride = process.env.JUDGE_URL ? kevJudge(process.env.JUDGE_URL) : undefined;
+/** HIDDEN_JUDGE 를 주면 앱 그래프·앱 헤드 그대로(`hiddenJudge`) 잰다. */
+const judgeOverride = process.env.JUDGE_URL ? kevJudge(process.env.JUDGE_URL) : process.env.HIDDEN_JUDGE ? hiddenJudge(process.env.HIDDEN_JUDGE) : undefined;
 export const appJudge: Judge = async (headName, state, questions) => {
   if (judgeOverride) return judgeOverride(headName, state, questions);
   const key = JSON.stringify([headName, state, questions]);
