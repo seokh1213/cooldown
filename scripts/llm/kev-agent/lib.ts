@@ -9,7 +9,7 @@ import * as fs from "node:fs";
 import * as path from "node:path";
 import type { ChampionCard } from "../lib/facts";
 import { indexRules, type RuleNotes } from "../lib/rules";
-import type { AdvisorData } from "../../../src/lib/advisor/context";
+import { championAliases, collectEffectTags, type AdvisorData } from "../../../src/lib/advisor/context";
 import { readJudgeHead, scoreJudge, type JudgeHead, type JudgeHeadMeta, type JudgeQuestion } from "../../../src/lib/advisor/judge";
 
 export const ROOT = path.resolve(import.meta.dirname, "../../..");
@@ -34,15 +34,13 @@ export function loadData(lang: Lang): AdvisorData {
   const wiki = fs.existsSync(path.join(DATA, "llm/item-wiki-meta.json"))
     ? read<{ items?: Array<{ id: string }> }>(path.join(DATA, "llm/item-wiki-meta.json"))
     : {};
-  const tags = new Set<string>();
-  for (const card of cards) for (const spell of card.spells) for (const tag of spell.effects) tags.add(tag);
   const data = {
     patch: PATCH,
     knowledgePatch: knowledge.patchVersion,
     stale: knowledge.patchVersion !== PATCH,
     cards,
     cardById: new Map(cards.map((c) => [c.id, c])),
-    aliases: new Map(cards.map((c) => [c.id, [...new Set([...(names[c.id] ?? []), c.id])].filter((n) => n !== c.name)])),
+    aliases: championAliases(cards, names),
     playbooks: new Map(Object.entries(knowledge.playbooks)),
     noteTranslations: translations,
     locale: lang,
@@ -50,7 +48,7 @@ export function loadData(lang: Lang): AdvisorData {
     tips: knowledge.tips,
     ruleIndex: indexRules(knowledge.rules ?? []),
     mechanics: knowledge.mechanics ?? [],
-    effectTags: [...tags].sort((a, b) => b.length - a.length),
+    effectTags: collectEffectTags(cards),
     items: read<{ items: unknown[] }>(path.join(DATA, `items-normalized-${lang}.json`)).items,
     runes: read<{ runes: unknown[] }>(path.join(DATA, `runes-normalized-${lang}.json`)).runes,
     summoners: read<{ spells: unknown[] }>(path.join(DATA, `summoner-normalized-${lang}.json`)).spells,

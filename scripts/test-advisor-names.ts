@@ -9,7 +9,7 @@ import * as fs from "node:fs";
 import * as path from "node:path";
 import type { ChampionCard } from "./llm/lib/facts";
 import { PUBLIC_DATA_ROOT, resolvePatchVersion } from "./llm/lib/data";
-import type { AdvisorData } from "../src/lib/advisor/context";
+import { championAliases, type AdvisorData } from "../src/lib/advisor/context";
 import { detectChampions } from "../src/lib/advisor/intent";
 import { matchupPair, matchupSides, matchupSidesByPhrase } from "../src/lib/advisor/matchupSides";
 
@@ -21,7 +21,7 @@ const data = {
   cards,
   items,
   cardById: new Map(cards.map((c) => [c.id, c])),
-  aliases: new Map(cards.map((c) => [c.id, [...new Set([...(names[c.id] ?? []), c.id])].filter((n) => n !== c.name)])),
+  aliases: championAliases(cards, names),
 } as unknown as AdvisorData;
 const ids = (text: string) => detectChampions(data, text).map((c) => c.id);
 
@@ -47,7 +47,7 @@ eq(ids("오공 럼블"), ["MonkeyKing", "Rumble"], "화면 언어 이름은 그�
     return {
       cards: langCards,
       cardById: new Map(langCards.map((c) => [c.id, c])),
-      aliases: new Map(langCards.map((c) => [c.id, [...new Set([...(names[c.id] ?? []), c.id])].filter((n) => n !== c.name)])),
+      aliases: championAliases(langCards, names),
     } as unknown as AdvisorData;
   };
   const en = load("en_US");

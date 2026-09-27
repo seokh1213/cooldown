@@ -115,10 +115,18 @@ async function getJson<T>(url: string): Promise<T> {
   return (await res.json()) as T;
 }
 /** 카드에 쓰인 효과 태그를 모은다. 긴 이름을 먼저 맞춰야 "이동기" 가 "이동 속도 증가" 를 가리지 않는다. */
-function collectEffectTags(cards: ChampionCard[]): string[] {
+export function collectEffectTags(cards: ChampionCard[]): string[] {
   const tags = new Set<string>();
   for (const card of cards) for (const spell of card.spells) for (const tag of spell.effects) tags.add(tag);
   return [...tags].sort((a, b) => b.length - a.length);
+}
+
+/**
+ * 화면 언어가 아닌 이름 표(`AdvisorData.aliases`). 이름 색인(llm/champion-names.json)의 이름과 DDragon id 에서
+ * 화면 언어 이름을 뺀다.
+ */
+export function championAliases(cards: ChampionCard[], names: Record<string, string[]>): Map<string, string[]> {
+  return new Map(cards.map((c) => [c.id, [...new Set([...(names[c.id] ?? []), c.id])].filter((name) => name !== c.name)]));
 }
 
 /**
@@ -167,9 +175,7 @@ export function loadAdvisorData(patch: string, locale = "ko_KR"): Promise<Adviso
       stale: knowledge.patchVersion !== patch,
       cards: cardFile.cards,
       cardById: new Map(cardFile.cards.map((c) => [c.id, c])),
-      aliases: new Map(
-        cardFile.cards.map((c) => [c.id, [...new Set([...(names.names[c.id] ?? []), c.id])].filter((name) => name !== c.name)]),
-      ),
+      aliases: championAliases(cardFile.cards, names.names),
       playbooks: new Map(Object.entries(knowledge.playbooks)),
       noteTranslations: translations?.notes,
       locale,

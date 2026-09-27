@@ -15,6 +15,7 @@ import { PUBLIC_DATA_ROOT, resolvePatchVersion } from "./llm/lib/data";
 import { hitsToAnswer, hybridSearch, lexicalSearch, type SearchDoc } from "../src/lib/advisor/searchFallback";
 import { questionLanguage } from "../src/lib/advisor/questionLanguage";
 import { asksAboutHelper } from "../src/lib/advisor/intent";
+import { detectSlot } from "../src/lib/advisor/context";
 
 const patch = resolvePatchVersion();
 const llmDir = path.join(PUBLIC_DATA_ROOT, patch, "llm");
@@ -133,13 +134,6 @@ for (const question of ["the rune that deals more damage to low hp enemies", "th
 }
 
 // --- 스킬 조회: 수치가 답에 들어가는가 ---
-
-function detectSlot(question: string): string | undefined {
-  if (/패시브|기본\s?지속/.test(question)) return "P";
-  if (/궁극기|궁(?=[\s을은이의로]|$)/.test(question)) return "R";
-  const match = /(^|[^A-Za-z])([QWERqwer])($|[^A-Za-z])/.exec(question);
-  return match ? match[2].toUpperCase() : undefined;
-}
 
 function spellOf(id: string, slot: string) {
   const card = cards.cards.find((c) => c.id === id);

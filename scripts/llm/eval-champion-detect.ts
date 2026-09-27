@@ -17,7 +17,7 @@ import * as fs from "fs";
 import * as path from "path";
 import type { ChampionCard } from "./lib/facts";
 import { PUBLIC_DATA_ROOT, resolvePatchVersion } from "./lib/data";
-import type { AdvisorData } from "../../src/lib/advisor/context";
+import { championAliases, type AdvisorData } from "../../src/lib/advisor/context";
 import { detectChampions } from "../../src/lib/advisor/intent";
 
 type Lang = "ko_KR" | "en_US" | "zh_CN";
@@ -39,11 +39,10 @@ const names = (JSON.parse(fs.readFileSync(namesFile, "utf8")) as { names: Record
 const dataFor = new Map<Lang, AdvisorData>();
 for (const lang of ["ko_KR", "en_US", "zh_CN"] as Lang[]) {
   const cards = (JSON.parse(fs.readFileSync(path.join(dir, `champion-cards-${lang}.json`), "utf8")) as { cards: ChampionCard[] }).cards;
-  // context.ts 의 loadAdvisorData 와 같은 꼴
   dataFor.set(lang, {
     cards,
     cardById: new Map(cards.map((c) => [c.id, c])),
-    aliases: new Map(cards.map((c) => [c.id, [...new Set([...(names[c.id] ?? []), c.id])].filter((n) => n !== c.name)])),
+    aliases: championAliases(cards, names),
   } as unknown as AdvisorData);
 }
 
