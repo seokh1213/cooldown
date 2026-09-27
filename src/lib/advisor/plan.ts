@@ -57,7 +57,7 @@ import { josa } from "../../../scripts/llm/lib/text";
 import type { ChampionCard } from "../../../scripts/llm/lib/facts";
 
 /** 판정 헤드(`public/models/judge/kev-b3e.{json,bin}`). 이 헤드 하나로 갈래(아홉 칸)·주제·대화 흐름을 모두 가른다 */
-const KEV_HEAD = "kev-b3e";
+export const KEV_HEAD = "kev-b3e";
 /** 상성 대화에서 소환사 주문의 쓰임새를 묻는 말(규칙 카드가 아니라 이어 묻기) */
 const SPELL_USE_IN_MATCHUP = /대신|빠지|빠졌|없(을|으면|는데|을\s*때)|instead|\bis\s+down\b|\bdown\b|without|没了|没有|不带|换成/i;
 /**

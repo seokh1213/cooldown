@@ -5,10 +5,9 @@
 import * as fs from "node:fs";
 import * as path from "node:path";
 import { detectChampions } from "../../../../src/lib/advisor/intent";
-import { JUDGE_KIND_INSTRUCTIONS, JUDGE_MINE_INSTRUCTIONS, judgeRouteState } from "../../../../src/lib/advisor/routeAsk";
+import { JUDGE_KIND9_CRITERIA, JUDGE_KIND_INSTRUCTIONS, JUDGE_MINE_INSTRUCTIONS, judgeRouteState } from "../../../../src/lib/advisor/routeAsk";
 import { actCriteria, actState, ACT_INSTRUCTIONS } from "../../../../src/lib/advisor/conversation";
 import { ROOT, loadData, readJsonl, type Lang } from "../lib";
-import { KIND9 } from "../eval-b";
 
 const out = process.argv[2];
 fs.mkdirSync(out, { recursive: true });
@@ -16,7 +15,7 @@ const cases = (JSON.parse(fs.readFileSync(path.join(ROOT, "research/llm-evals/ke
 const route = cases.map((c) => {
   const named = detectChampions(loadData(c.lang), c.question);
   const names = named.map((x) => x.name);
-  const questions: Record<string, unknown> = { kind: { type: "choice", instructions: JUDGE_KIND_INSTRUCTIONS, criteria: KIND9, label: c.kind3 } };
+  const questions: Record<string, unknown> = { kind: { type: "choice", instructions: JUDGE_KIND_INSTRUCTIONS, criteria: JUDGE_KIND9_CRITERIA, label: c.kind3 } };
   const mine = named.find((x) => x.id === c.mine)?.name;
   if (named.length >= 2) questions.mine = { type: "choice", instructions: JUDGE_MINE_INSTRUCTIONS, criteria: Object.fromEntries(names.map((n) => [n, null])), label: c.kind3 === "matchup" ? mine ?? null : null };
   return { lang: c.lang, state: judgeRouteState(c.question, names), questions };

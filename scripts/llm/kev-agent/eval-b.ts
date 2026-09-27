@@ -14,8 +14,9 @@ import * as path from "node:path";
 import type { ChampionCard } from "../lib/facts";
 import type { AdvisorData } from "../../../src/lib/advisor/context";
 import { detectChampions } from "../../../src/lib/advisor/intent";
-import { matchupSidesByPhrase, matchupSidesDetailed } from "../../../src/lib/advisor/matchupSides";
-import { JUDGE_KIND_CRITERIA, JUDGE_KIND9_CRITERIA, JUDGE_KIND_INSTRUCTIONS, JUDGE_MINE_INSTRUCTIONS, JUDGE_SUB_CRITERIA, JUDGE_SUB_INSTRUCTIONS, judgeRouteState, routeFromJudge, subFromJudge } from "../../../src/lib/advisor/routeAsk";
+import { matchupSidesByPhrase } from "../../../src/lib/advisor/matchupSides";
+import { pickMatchupSides } from "../../../src/lib/advisor/plan";
+import { JUDGE_KIND_CRITERIA, JUDGE_KIND_INSTRUCTIONS, JUDGE_MINE_INSTRUCTIONS, JUDGE_SUB_CRITERIA, JUDGE_SUB_INSTRUCTIONS, judgeRouteState, routeFromJudge, subFromJudge } from "../../../src/lib/advisor/routeAsk";
 import { topicFromJudge, topicFromWords, topicQuestions } from "../../../src/lib/advisor/topicJudge";
 import { TOPIC_TEST } from "../lib/topicCases";
 import { ROOT, appJudge, kevJudge, loadData, saveJudgeCache, type Judge, type Lang } from "./lib";
@@ -24,12 +25,13 @@ const arg = (name: string) => {
   const i = process.argv.indexOf(`--${name}`);
   return i >= 0 ? process.argv[i + 1] : undefined;
 };
-/** B3 LoRA 가 배운 아홉 갈래 — 앱과 같은 문구 */
-export const KIND9: Record<string, string> = JUDGE_KIND9_CRITERIA;
 const aliasesOf = (data: AdvisorData) => (card: ChampionCard) => [card.name, ...(data.aliases.get(card.id) ?? [])];
 
-/** AdvisorPanel.ask 가 갈래·내 챔피언을 정하는 부분(판정 → 문형 보정 → 조사 우선) */
-export async function route(data: AdvisorData, question: string, judge: Judge, head = "route-v2", subHead?: string, criteria: Record<string, string> = JUDGE_KIND_CRITERIA) {
+/**
+ * 옛 헤드(route-v2 + sub-v1)로 갈래·내 챔피언을 정한다(판정 → 문형 보정 → 조사 우선). 앱은 이제 아홉 칸 kev 헤드 하나로
+ * 가른다(`understand`) — 앱 흐름을 재려면 eval-b3 를 쓴다. 이름 둘의 시점은 앱과 같은 `pickMatchupSides`.
+ */
+async function route(data: AdvisorData, question: string, judge: Judge, head = "route-v2", subHead?: string, criteria: Record<string, string> = JUDGE_KIND_CRITERIA) {
   const named = detectChampions(data, question);
   const names = named.map((c) => c.name);
   const [kindP, mineP] = await judge(head, judgeRouteState(question, names), [
@@ -41,11 +43,7 @@ export async function route(data: AdvisorData, question: string, judge: Judge, h
   if (r.kind === "matchup" && named.length >= 2) {
     const phrased = matchupSidesByPhrase(question, [named[0], named[1]], aliasesOf(data));
     if (phrased) r = { ...r, mine: phrased };
-    if (named.length === 2) {
-      const byJosa = matchupSidesDetailed(question, named);
-      const picked = !byJosa.confident && r.mine && named.includes(r.mine) ? r.mine : undefined;
-      r = { ...r, mine: picked ?? byJosa.sides[0] };
-    }
+    if (named.length === 2) r = { ...r, mine: pickMatchupSides(question, named, r)[0] };
   }
   if (r.kind === "other" && subHead) {
     const [p] = await judge(subHead, judgeRouteState(question, names), [
@@ -56,7 +54,7 @@ export async function route(data: AdvisorData, question: string, judge: Judge, h
   return { raw, kind: r.kind, mine: r.mine?.id };
 }
 
-export async function topic(data: AdvisorData, question: string, judge: Judge) {
+async function topic(data: AdvisorData, question: string, judge: Judge) {
   const named = detectChampions(data, question);
   const names = named.map((c) => c.name);
   const worded = topicFromWords(question, [...names, ...named.flatMap((c) => data.aliases.get(c.id) ?? [])]);
