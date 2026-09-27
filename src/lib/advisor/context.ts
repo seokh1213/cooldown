@@ -30,7 +30,7 @@ import {
   mechanicsToText,
   type MechanicsIndex,
 } from "../../../scripts/llm/lib/mechanics";
-import type { WikiItemMeta } from "../../../scripts/llm/lib/data";
+import type { WikiItemMeta } from "../knowledge/sourceRecords";
 import type { AdvisorAnswer, Fact } from "./answer";
 import type {
   NormalizedItem,
