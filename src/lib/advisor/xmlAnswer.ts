@@ -37,7 +37,8 @@
 import type { Language } from "@/i18n";
 import type { AdvisorAnswer } from "./answer";
 import { extremeStatsLine } from "./answer";
-import { groundCommentary, labelSlots } from "./grounding";
+import { groundCommentary } from "./grounding";
+import { labelSlots } from "./slotLabels";
 import { digestSections, type DigestSection } from "./prose";
 import { translateDamage, translateTag } from "./promptLocale";
 import { josa } from "../../../scripts/llm/lib/text";

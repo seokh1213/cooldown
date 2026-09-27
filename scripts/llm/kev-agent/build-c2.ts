@@ -16,7 +16,7 @@ import { matchupAnswer } from "../lib/matchupEval";
 import type { AdvisorAnswer } from "../../../src/lib/advisor/answer";
 import type { AdvisorData } from "../../../src/lib/advisor/context";
 import { digestSections } from "../../../src/lib/advisor/prose";
-import { labelSlots } from "../../../src/lib/advisor/grounding";
+import { labelSlots } from "../../../src/lib/advisor/slotLabels";
 import { PATCH, ROOT, kev } from "./lib";
 
 type Compare = Extract<AdvisorAnswer, { kind: "compare" }>;

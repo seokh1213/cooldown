@@ -18,7 +18,8 @@ import type { AdvisorAnswer } from "../../../src/lib/advisor/answer";
 import type { AdvisorData } from "../../../src/lib/advisor/context";
 import { digestSections, matchupDigest, type DigestSection } from "../../../src/lib/advisor/prose";
 import { precomputedDigest, type PrecomputedFile } from "../../../src/lib/advisor/precomputed";
-import { groundCommentary, labelSlots } from "../../../src/lib/advisor/grounding";
+import { groundCommentary } from "../../../src/lib/advisor/grounding";
+import { labelSlots } from "../../../src/lib/advisor/slotLabels";
 import { repeatedSpan } from "../lib/matchupEval";
 import { PATCH, ROOT, kev } from "./lib";
 

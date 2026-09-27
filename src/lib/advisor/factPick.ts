@@ -30,7 +30,7 @@
  */
 import type { Language } from "@/i18n";
 import type { AdvisorAnswer } from "./answer";
-import { labelSlots } from "./grounding";
+import { labelSlots } from "./slotLabels";
 import { digestSections, type DigestSection } from "./prose";
 import { josa } from "../../../scripts/llm/lib/text";
 

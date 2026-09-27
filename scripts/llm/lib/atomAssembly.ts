@@ -18,7 +18,7 @@
 import type { AdvisorAnswer, MatchupNotes } from "../../../src/lib/advisor/answer";
 import type { DigestSection } from "../../../src/lib/advisor/prose";
 import type { Language } from "../../../src/i18n";
-import { labelSlots } from "../../../src/lib/advisor/grounding";
+import { labelSlots } from "../../../src/lib/advisor/slotLabels";
 import type { Atom, AtomFile } from "../build-note-atoms";
 import type { ChampionCard } from "./facts";
 import { selectPlaybook, type Playbook } from "./playbookCore";

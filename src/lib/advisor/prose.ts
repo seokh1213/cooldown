@@ -19,7 +19,7 @@ import type { AdvisorAnswer } from "./answer";
 import type { ChampionCard, SpellFact } from "../../../scripts/llm/lib/facts";
 import { cooldownFact, focusLabel as cardFocusLabel, spellOneLiner } from "./answer";
 import { translateRatioStat, translateTag } from "./promptLocale";
-import { labelSlots } from "./grounding";
+import { labelSlots } from "./slotLabels";
 
 interface ProseWords {
   /** "{champion}의 {label}입니다." 처럼 값 하나를 알리는 말 */

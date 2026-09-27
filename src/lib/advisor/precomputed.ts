@@ -8,7 +8,7 @@
  */
 import type { Language } from "@/i18n";
 import type { ChampionCard } from "../../../scripts/llm/lib/facts";
-import { labelSlots } from "./grounding";
+import { labelSlots } from "./slotLabels";
 import { DIGEST_HEADINGS, FIGHT_TITLES } from "./prose";
 import { dataUrl } from "./context";
 
