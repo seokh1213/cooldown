@@ -5,6 +5,7 @@ import { MessageSquarePlus, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useTranslation } from "@/i18n";
 import type { Conversation } from "@/lib/advisor/history";
+import { fill } from "@/i18n/fill";
 
 interface AdvisorHistoryProps {
   conversations: Conversation[];
@@ -14,10 +15,6 @@ interface AdvisorHistoryProps {
   onNew: () => void;
   onOpen: (id: string) => void;
   onRemove: (id: string) => void;
-}
-
-function fill(template: string, values: Record<string, string | number>): string {
-  return template.replace(/\{(\w+)\}/g, (_, key: string) => String(values[key] ?? ""));
 }
 
 function formatDate(iso: string, locale: string): string {

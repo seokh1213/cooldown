@@ -58,6 +58,7 @@ import {
 import { detectSpellFocus, type SpellFocus } from "@/lib/advisor/spellFocus";
 import { suggestChampions } from "@/lib/advisor/championTypo";
 import { matchupPair, matchupSides, matchupSidesByPhrase, matchupSidesDetailed } from "@/lib/advisor/matchupSides";
+import { fill } from "@/i18n/fill";
 import { isSmallTalk, nicknames } from "@/lib/advisor/intent";
 import {
   JUDGE_KIND9_CRITERIA,
@@ -180,11 +181,6 @@ function formatMb(bytes: number): string {
 
 /** 자료 탭에 쓰는 한 글자짜리 사실 이름. "재사용 대기시간" 은 탭에 안 들어간다. */
 const FOCUS_SHORT: Record<SpellFocus, string> = { cooldown: "쿨", cost: "소모", ratio: "계수", damage: "피해", effect: "효과" };
-
-/** `{name}` 같은 자리를 채운다. */
-function fill(template: string, values: Record<string, string | number>): string {
-  return template.replace(/\{(\w+)\}/g, (_, key: string) => String(values[key] ?? ""));
-}
 
 export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, canUseModel, onClose, onWidthChange }: AdvisorPanelProps) {
   const { t, lang } = useTranslation();

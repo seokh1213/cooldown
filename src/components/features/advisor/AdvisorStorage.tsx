@@ -12,10 +12,7 @@ import { useTranslation } from "@/i18n";
 import { readModelCache, type ModelCacheInfo } from "@/lib/advisor/storage";
 import { exportFeedback, readFeedback } from "@/lib/advisor/feedback";
 import { ADVISOR_MODEL, ADVISOR_MODEL_LABEL } from "@/lib/advisor/config";
-
-function fill(template: string, values: Record<string, string | number>): string {
-  return template.replace(/\{(\w+)\}/g, (_, key: string) => String(values[key] ?? ""));
-}
+import { fill } from "@/i18n/fill";
 
 /**
  * 평가 기록 내보내기. "틀렸거나 부족해요" 를 누른 답과 그 앞 맥락이 기기 안에 쌓여 있다. 판정기를 실제 말투로 다시 재는

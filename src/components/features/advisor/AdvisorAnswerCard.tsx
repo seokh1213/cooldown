@@ -29,6 +29,7 @@ import { translateRange, translateStat, translateTag } from "@/lib/advisor/promp
 import { AdvisorMarkdown } from "./AdvisorMarkdown";
 import { josa } from "../../../../scripts/llm/lib/text";
 import { ruleName } from "../../../../scripts/llm/lib/rules";
+import { fill } from "@/i18n/fill";
 
 interface AdvisorAnswerCardProps {
   answer: AdvisorAnswer;
@@ -38,10 +39,6 @@ interface AdvisorAnswerCardProps {
   onPickChampion?: (championId: string) => void;
   /** 카드 안의 화면 링크를 눌렀을 때. 모바일은 드로어가 전체 화면이라 패널이 닫아 준다. */
   onNavigate?: () => void;
-}
-
-function fill(template: string, values: Record<string, string | number>): string {
-  return template.replace(/\{(\w+)\}/g, (_, key: string) => String(values[key] ?? ""));
 }
 
 /** 카드 틀. 머리(아이콘·이름·종류 칩) / 몸 / 꼬리(출처·링크). */
