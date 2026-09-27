@@ -10,7 +10,7 @@ import { Download, Loader2, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useTranslation } from "@/i18n";
 import { readModelCache, type ModelCacheInfo } from "@/lib/advisor/storage";
-import { exportFeedback, readFeedback } from "@/hooks/useAdvisor";
+import { exportFeedback, readFeedback } from "@/lib/advisor/feedback";
 import { ADVISOR_MODEL, ADVISOR_MODEL_LABEL } from "@/lib/advisor/config";
 
 function fill(template: string, values: Record<string, string | number>): string {
