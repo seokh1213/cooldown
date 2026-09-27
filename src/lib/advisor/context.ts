@@ -26,7 +26,7 @@ import {
 } from "../../../scripts/llm/lib/rules";
 import { selectPlaybook, type Playbook } from "../../../scripts/llm/lib/playbookCore";
 import { selectNotes, type NoteCategory, type NotePerspective, type SelectedNotes } from "./noteSelect";
-import { deriveMatchupClaims, renderTaggedClaims, type ClaimLang, type TaggedClaim } from "../../../scripts/llm/lib/claims";
+import { deriveMatchupClaims, renderTaggedClaims, type ClaimLang, type TaggedClaim } from "../../../scripts/llm/lib/matchupClaims";
 import {
   findMechanics,
   mechanicsToText,
