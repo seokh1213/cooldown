@@ -27,7 +27,6 @@ import { advisorSystemPrompt } from "@/lib/advisor/persona";
 import { AdvisorMarkdown } from "./AdvisorMarkdown";
 import { groundCommentary } from "@/lib/advisor/grounding";
 import {
-  buildChampionsBrief,
   championNotes,
   matchupNotes,
   buildItemCard,
@@ -50,7 +49,6 @@ import {
   matchupSidesDetailed,
   asksSkillsOverview,
   asksWholeKit,
-  buildCommentaryPrompt,
   buildCompareAnswer as buildCompareCard,
   matchupSidesByPhrase,
   buildRuleAnswer as buildRuleCard,
@@ -66,17 +64,10 @@ import {
 import { isSmallTalk, nicknames } from "@/lib/advisor/intent";
 import {
   JUDGE_KIND9_CRITERIA,
-  JUDGE_KIND_CRITERIA,
   JUDGE_KIND_INSTRUCTIONS,
   JUDGE_MINE_INSTRUCTIONS,
-  JUDGE_SUB_CRITERIA,
-  JUDGE_SUB_INSTRUCTIONS,
   judgeRouteState,
-  subFromJudge,
-  parseRoute,
-  routeFromJudge,
   routeFromKind9,
-  routePrompt,
   type AskRoute,
 } from "@/lib/advisor/routeAsk";
 import { topicFromJudge, topicFromWords, topicQuestions } from "@/lib/advisor/topicJudge";
@@ -84,14 +75,7 @@ import { loadPrecomputed, precomputedDigest, precomputedMore } from "@/lib/advis
 import { asksPriceTiers, championPriceAnswer, findGameMeta, gameMetaAnswer, gameMetaById } from "@/lib/advisor/gameMeta";
 import { actFromProbs, actFromWords, actQuestion, actState, matchupStateOf, planTurn, sideOfNewName } from "@/lib/advisor/conversation";
 
-/** 판정 헤드. `public/models/judge/` 아래 이 이름의 .json·.bin 이 있다. */
-const ROUTE_HEAD = "route-v2";
-/** route-v2 가 "그 밖" 을 고르면 한 번 더 가른다(아이템·룬·소환사 주문·게임 규칙·잡담). */
-const SUB_HEAD = "sub-v1";
-const TOPIC_HEAD = "topic-v1";
-/** 대화 흐름(이어 묻기·상대 바꾸기·입장 뒤집기 …). `conversation.ts` */
-const ACT_HEAD = "act-v1";
-/** kev LoRA 모델(`judge: "kev"`)은 이 헤드 하나로 갈래(아홉 칸)·주제·대화 흐름을 모두 가른다 */
+/** 판정 헤드(`public/models/judge/kev-b3e.{json,bin}`). 이 헤드 하나로 갈래(아홉 칸)·주제·대화 흐름을 모두 가른다 */
 const KEV_HEAD = "kev-b3e";
 /** 상성 대화에서 소환사 주문의 쓰임새를 묻는 말(규칙 카드가 아니라 이어 묻기) */
 const SPELL_USE_IN_MATCHUP = /대신|빠지|빠졌|없(을|으면|는데|을\s*때)|instead|\bis\s+down\b|\bdown\b|without|没了|没有|不带|换成/i;
@@ -124,16 +108,12 @@ import {
 } from "@/hooks/useWideViewport";
 import { AdvisorAnswerCard } from "./AdvisorAnswerCard";
 import {
-  SEARCH_QUERY_SYSTEM,
-  buildQueryPrompt,
   buildSearchCorpus,
-  extractQuery,
   hitsToAnswer,
   buildRetrievalDocs,
   hybridSearch,
   type LexicalHit,
   lexicalSearch,
-  searchContext,
 } from "@/lib/advisor/searchFallback";
 import { asksAboutHelper, detectChampions } from "@/lib/advisor/intent";
 import { questionLanguage, type AdvisorTurn, type UseAdvisorResult } from "@/hooks/useAdvisor";
@@ -212,7 +192,7 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
   const copy = t.advisor;
   const [draft, setDraft] = useState("");
   // 동의 화면을 건너뛰고 코드 답변만으로 쓰는 선택. 기기에 남는다 — 새로 고칠 때마다
-  // 3GB 를 받겠느냐고 다시 묻는 것은 거절한 사람에게 성가시다. 저장 공간 화면에서 다시 받을 수 있다.
+  // 모델(570MB)을 받겠느냐고 다시 묻는 것은 거절한 사람에게 성가시다. 저장 공간 화면에서 다시 받을 수 있다.
   const [skippedModel, setSkippedModelState] = useState(readModelSkipped);
   const setSkippedModel = (skipped: boolean) => {
     setSkippedModelState(skipped);
@@ -404,47 +384,14 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
           ? precomputedMore(pair, notes.plan?.focus, [mine, enemy], lang)
           : precomputedDigest(pair, notes.plan?.focus, [mine, enemy], lang)
         : undefined;
-      if (text) {
-        // 큰 모델이 검증된 재료로 미리 쓴 글이라 기기에서 4B 가 새로 쓰는 것보다 낫다. 모델과 상관없이 쓴다.
-        answer.precomputed = text;
-        advisor.answerWithoutModel(question, answer, notice);
-        return;
-      }
-    }
-    const prompt = buildCommentaryPrompt(answer, patch, lang);
-    if (canUseModel && advisor.consented && prompt) {
-      /*
-       * 노트를 한 번만 싣는다.
-       *
-       * 여기서 `buildMatchupTips` 로 노트를 붙이고 있었는데, 상성 프롬프트가 비어
-       * 있던 것을 고치면서 `buildCommentaryPrompt` 안에도 같은 노트를 넣었다. 그래서
-       * 다섯 줄이 **두 번씩** 실렸다. 재 보니 프롬프트가 3,172자(약 2,000토큰)였고
-       * 그중 672자가 군더더기였다.
-       *
-       * 길이만 버리는 것이 아니다. 같은 문장이 두 번 보이면 모델이 그것을 중요한
-       * 말로 읽고 그대로 옮겨 적는다.
-       */
-      if (advisor.model.writes === "none") {
-        advisor.answerWithoutModel(question, answer, notice);
-        return;
-      }
-      advisor.respond(question, { system: `${advisorSystemPrompt(lang)}\n\n${prompt}`, answer, notice });
-    } else {
-      advisor.answerWithoutModel(question, answer, notice);
-    }
-  };
-
-  const deliver = (question: string, answer: AdvisorAnswer, notice?: string) => {
-    // 글을 맡기지 않는 모델(`writes: "none"`)은 카드 해설을 쓰지 않는다. 답은 코드가 노트로 조립한다(`answerProse`).
-    if (canUseModel && advisor.consented && advisor.model.writes !== "none") {
-      const prompt = buildCommentaryPrompt(answer, patch, lang);
-      if (prompt) {
-        advisor.respond(question, { system: `${advisorSystemPrompt(lang)}\n\n${prompt}`, answer, notice });
-        return;
-      }
+      // 큰 모델이 검증된 재료로 미리 쓴 글이다
+      if (text) answer.precomputed = text;
     }
     advisor.answerWithoutModel(question, answer, notice);
   };
+
+  // 카드 위 해설은 모델이 쓰지 않는다. 답은 코드가 노트로 조립한다(`answerProse`).
+  const deliver = (question: string, answer: AdvisorAnswer, notice?: string) => advisor.answerWithoutModel(question, answer, notice);
 
   /** 대화에서 가장 최근에 다룬 챔피언. 이름을 생략한 다음 질문의 맥락이다. */
   const recentChampions = (): ChampionCard[] => {
@@ -555,63 +502,33 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
     if (canUseModel && advisor.consented) {
       const named = detectChampions(data, question);
       const names = named.map((card) => card.name);
-      /*
-       * 판정 헤드가 있는 모델(`judge`)은 글로 답하게 하지 않고 판정기로 가른다. 세 언어 큰 세트 374문항에서
-       * 0.8B 생성 183, 판정기(route-v2, 아래 문형 보정 포함) 322, 4B 생성 310 이었다.
-       */
-      route = advisor.model.judge === "kev"
-        ? await advisor
-            .judge(KEV_HEAD, judgeRouteState(question, names), [
-              { instructions: JUDGE_KIND_INSTRUCTIONS, options: Object.entries(JUDGE_KIND9_CRITERIA).map(([name, description]) => ({ name, description })) },
-              ...(named.length >= 2 ? [{ instructions: JUDGE_MINE_INSTRUCTIONS, options: names.map((name) => ({ name })) }] : []),
-            ])
-            .then(([kind, mine]) => {
-              const route = routeFromKind9(kind, mine, named);
-              if (route.kind !== "matchup" || named.length < 2) return route;
-              const phrased = matchupSidesByPhrase(question, [named[0], named[1]], (card) => [card.name, ...(data.aliases.get(card.id) ?? [])]);
-              return phrased ? { ...route, mine: phrased } : route;
-            })
-            .catch(() => undefined)
-        : advisor.model.judge === "heads"
-        ? await advisor
-            .judge(ROUTE_HEAD, judgeRouteState(question, names), [
-              { instructions: JUDGE_KIND_INSTRUCTIONS, options: Object.entries(JUDGE_KIND_CRITERIA).map(([name, description]) => ({ name, description })) },
-              ...(named.length >= 2 ? [{ instructions: JUDGE_MINE_INSTRUCTIONS, options: names.map((name) => ({ name })) }] : []),
-            ])
-            .then(async ([kind, mine]) => {
-              const route = routeFromJudge(kind, mine, named);
-              if (route.kind === "other") {
-                const sub = await advisor
-                  .judge(SUB_HEAD, judgeRouteState(question, names), [
-                    { instructions: JUDGE_SUB_INSTRUCTIONS, options: Object.entries(JUDGE_SUB_CRITERIA).map(([name, description]) => ({ name, description })) },
-                  ])
-                  .then(([probs]) => subFromJudge(probs))
-                  .catch(() => undefined);
-                return sub ? { kind: sub } : route;
-              }
-              // 영어·중국어 문형이 시점을 정해 주면 그것을 따른다. 판정기가 가장 약한 자리다.
-              if (route.kind !== "matchup" || named.length < 2) return route;
-              const phrased = matchupSidesByPhrase(question, [named[0], named[1]], (card) => [card.name, ...(data.aliases.get(card.id) ?? [])]);
-              return phrased ? { ...route, mine: phrased } : route;
-            })
-            .catch(() => undefined)
-        : await advisor
-            .classify(routePrompt(names), question)
-            .then((reply) => parseRoute(reply, named))
-            .catch(() => undefined);
+      // 374문항에서 0.8B 가 글로 가르면 183, 옛 헤드(route-v2) 322, 4B 가 글로 가르면 310, kev 헤드 331 이었다.
+      route = await advisor
+        .judge(KEV_HEAD, judgeRouteState(question, names), [
+          { instructions: JUDGE_KIND_INSTRUCTIONS, options: Object.entries(JUDGE_KIND9_CRITERIA).map(([name, description]) => ({ name, description })) },
+          ...(named.length >= 2 ? [{ instructions: JUDGE_MINE_INSTRUCTIONS, options: names.map((name) => ({ name })) }] : []),
+        ])
+        .then(([kind, mine]) => {
+          const route = routeFromKind9(kind, mine, named);
+          if (route.kind !== "matchup" || named.length < 2) return route;
+          // 영어·중국어 문형이 시점을 정해 주면 그것을 따른다. 판정기가 가장 약한 자리다.
+          const phrased = matchupSidesByPhrase(question, [named[0], named[1]], (card) => [card.name, ...(data.aliases.get(card.id) ?? [])]);
+          return phrased ? { ...route, mine: phrased } : route;
+        })
+        .catch(() => undefined);
       /*
        * 무엇을 묻는지(주제)도 판정기로 가른다. 노트 고르기와 요약의 칸 순서가 이것을
        * 따른다. 시험 72문항에서 낱말 표 25, 판정기 64 였다(영어·중국어 3 → 22·21).
        * 관점은 여전히 낱말 표가 가른다 — 까닭은 `topicQuestions` 에 있다.
        */
-      if (advisor.model.judge !== "generate" && named.length) {
+      if (named.length) {
         // 갈래를 못 박는 낱말("한타", "라인전", "피오라 W")이 있으면 판정기보다 먼저다.
         // 상성 문항 24개에서 판정기 14, 낱말 먼저 24. 까닭은 `topicFromWords` 에 있다.
         const worded = topicFromWords(question, [...names, ...named.flatMap((card) => data.aliases.get(card.id) ?? [])]);
         judgedTopic = worded
           ? { topic: worded }
           : await advisor
-              .judge(advisor.model.judge === "kev" ? KEV_HEAD : TOPIC_HEAD, judgeRouteState(question, names), topicQuestions(named.length))
+              .judge(KEV_HEAD, judgeRouteState(question, names), topicQuestions(named.length))
               .then(([topic]) => topicFromJudge(topic))
               .catch(() => undefined);
       }
@@ -775,9 +692,9 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
       const worded = actFromWords(question);
       const act =
         worded ??
-        (!named && canUseModel && advisor.consented && advisor.model.judge !== "generate"
+        (!named && canUseModel && advisor.consented
           ? await advisor
-              .judge(advisor.model.judge === "kev" ? KEV_HEAD : ACT_HEAD, actState(state.mine.name, state.enemy.name, question, champions[0]?.name), [actQuestion(state.mine.name, state.enemy.name)])
+              .judge(KEV_HEAD, actState(state.mine.name, state.enemy.name, question, champions[0]?.name), [actQuestion(state.mine.name, state.enemy.name)])
               .then(([probs]) => actFromProbs(probs))
               .catch(() => undefined)
           : undefined);
@@ -805,9 +722,9 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
           const names = [plan.mine.name, plan.enemy.name];
           topic =
             topicFromWords(question, [...names, ...[plan.mine, plan.enemy].flatMap((card) => data.aliases.get(card.id) ?? [])]) ??
-            (advisor.model.judge !== "generate" && advisor.consented
+            (advisor.consented
               ? await advisor
-                  .judge(advisor.model.judge === "kev" ? KEV_HEAD : TOPIC_HEAD, judgeRouteState(question, names), topicQuestions(2))
+                  .judge(KEV_HEAD, judgeRouteState(question, names), topicQuestions(2))
                   .then(([probs]) => topicFromJudge(probs).topic)
                   .catch(() => undefined)
               : undefined);
@@ -961,12 +878,7 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
         deliver(question, { kind: "champion", card, notes: championNotes(data, card, question, undefined, judgedTopic) }, usedNotice);
         return;
       }
-      // 여럿을 한데 묻는 말. 요약을 읽고 글로 답하는 것은 `writes: "free"` 모델만 한다. 나머지(모델을 안 받은 기기 포함)는
-      // 나란히 놓은 표로 답한다.
-      if (advisor.model.writes === "free" && advisor.consented) {
-        advisor.respond(question, { system: `${system}\n\n${buildChampionsBrief(data, champions)}`, withoutConsent: copy.noModel });
-        return;
-      }
+      // 여럿을 한데 묻는 말은 나란히 놓은 표로 답한다
       deliver(question, buildCompareCard(champions, question, slot, { lang }), usedNotice);
       return;
     }
@@ -987,43 +899,20 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
       return;
     }
 
-    // 7. 어느 이름도 없다. 모델에게 검색어만 만들게 하고 찾는 일은 코드가 한다.
+    // 7. 어느 이름도 없고 벡터 검색도 답을 못 냈다. 질문 낱말로 찾는다.
     if (advisor.consented) {
       const corpus = buildSearchCorpus(data, lang);
       /*
-       * 게임 규칙·메타(항복·오브젝트 시간·챔피언 가격·랭크)는 자료에 없는 것이 많다. 검색이 비면 모델이
-       * 자료 없이 답하는데(fallbackSystem), 0.8B 는 "항복은 10분부터" 처럼 지어낸다. 판정기가 게임 규칙으로
-       * 가른 질문은 질문 낱말로 먼저 찾아 보고, 없으면 자료가 없다고 말한다.
+       * 게임 규칙·메타(항복·오브젝트 시간·챔피언 가격·랭크)는 자료에 없는 것이 많다. 판정기가 게임 규칙으로 가른 질문이
+       * 낱말 검색에도 안 걸리면 자료가 없다는 안내(`noGameData`)를 보인다.
        */
       if (route?.kind === "game" && !lexicalSearch(corpus, question).length) {
         advisor.answerWithoutModel(question, copy.noGameData);
         return;
       }
-      /*
-       * 카드 없는 답을 맡기지 않는 모델(`writes` 가 free 가 아님)은 여기서 글을 쓰지 않는다. 검색어를 짓게 하지 않고
-       * 질문 낱말로 찾아, 걸린 자료 문장을 그대로 보인다(`hitsToAnswer`). 없으면 자료가 없다고 말한다.
-       */
-      if (advisor.model.writes !== "free") {
-        const shown = hitsToAnswer(lexicalSearch(corpus, question), question);
-        advisor.answerWithoutModel(question, shown ? `${shown}\n\n${copy.fromNotes}` : copy.noLiteAnswer);
-        return;
-      }
-      advisor.respond(question, { system, search: {
-        querySystem: SEARCH_QUERY_SYSTEM,
-        buildPrompt: (tried) => buildQueryPrompt(question, tried),
-        extract: extractQuery,
-        search: (query) => {
-          const hits = lexicalSearch(corpus, query);
-          if (!hits.length) return undefined;
-          return {
-            context: searchContext(hits, data.patch, query),
-            titles: hits.map((hit) => hit.doc.title),
-          };
-        },
-        labels: { searching: copy.status.searching, searched: copy.status.searched },
-        maxRounds: 2,
-        fallbackSystem: system,
-      } });
+      // 모델은 카드 없는 답을 쓰지 않는다. 질문 낱말로 찾아 걸린 자료 문장을 그대로 보인다(`hitsToAnswer`). 없으면 자료가 없다고 말한다.
+      const shown = hitsToAnswer(lexicalSearch(corpus, question), question);
+      advisor.answerWithoutModel(question, shown ? `${shown}\n\n${copy.fromNotes}` : copy.noLiteAnswer);
       return;
     }
     advisor.respond(question, { system, withoutConsent: copy.noModel });
@@ -1411,7 +1300,7 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
             <Button variant="ghost" size="icon" className="text-muted-foreground" onClick={() => setView("history")} aria-label={copy.history.open}>
               <History className="h-4 w-4" />
             </Button>
-            {/* 3GB 는 받아 두면 계속 남는다. 지울 길을 눈에 보이는 곳에 둔다. */}
+            {/* 모델(570MB)은 받아 두면 계속 남는다. 지울 길을 눈에 보이는 곳에 둔다. */}
             <Button variant="ghost" size="icon" className="text-muted-foreground" onClick={() => setView("storage")} aria-label={copy.storage.open}>
               <Bot className="h-4 w-4" />
             </Button>
@@ -1430,9 +1319,6 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
       {showStorage ? (
         <AdvisorStorage
           onDelete={advisor.deleteModel}
-          webgpu={advisor.webgpu}
-          choice={advisor.modelChoice}
-          onChoose={advisor.chooseModel}
           // 못 받는 기기에서는 이유를 말한다. 단추도 없이 "모델이 없습니다" 만 뜨면
           // 길이 막힌 것인지 화면이 덜 그려진 것인지 알 수 없다.
           unavailable={unavailableReason}
@@ -1490,7 +1376,7 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
         <>
           {/*
             내려받기를 권하지 않는 기기에서는 동의 화면을 건너뛰고 바로 여기로 온다.
-            3GB 를 못 받는다고 챔피언·아이템·규칙 조회까지 막을 이유는 없다.
+            모델(570MB)을 못 받는다고 챔피언·아이템·규칙 조회까지 막을 이유는 없다.
           */}
           {/*
             모델을 못 쓰는 기기라는 안내는 **대화를 시작하기 전에만** 둔다.
@@ -1592,7 +1478,7 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
                 카드 위에 얹은 글에만 붙인다. 모델 글에는 근거 검사를 돌려 카드가
                 틀렸다고 증명하는 문장을 걷어낸다.
               */
-              const shown = turn.byCode ? turn.content : groundCommentary(turn.content, turn.answer, lang, advisor.model.writes === "card").text;
+              const shown = turn.byCode ? turn.content : groundCommentary(turn.content, turn.answer, lang).text;
               const commentary = !shown ? null : turn.byCode ? (
                 <div className="text-[13px] leading-relaxed">
                   <AdvisorMarkdown text={shown} />

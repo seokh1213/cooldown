@@ -122,82 +122,6 @@ export function lexicalSearch(docs: SearchDoc[], query: string, top = 3): Search
     .slice(0, top);
 }
 
-export const SEARCH_QUERY_SYSTEM = `너는 리그 오브 레전드 자료를 찾는 검색어를 만든다.
-사용자가 줄임말이나 은어로 물으면 게임 안의 정식 용어로 바꿔라.
-예: "cs" 는 미니언을 처치해 얻는 점수이므로 "미니언 파밍 골드" 로 바꾼다.
-게임에 실제로 있는 말만 써라. 없는 말을 지어내지 마라.
-검색어 한 줄만 출력한다. 질문에 답하지 마라. 설명하지 마라.`;
-
-export function buildQueryPrompt(question: string, tried: string[]): string {
-  if (tried.length === 0) return question;
-  return [
-    `질문: ${question}`,
-    `이미 써 본 검색어: ${tried.join(", ")}`,
-    "아무것도 찾지 못했다. 완전히 다른 낱말로 검색어를 하나 만들어라.",
-  ].join("\n");
-}
-
-/**
- * 모델이 뱉은 글에서 검색어만 추린다.
- *
- * 시키는 대로 안 할 때가 있다. 검색어 자리에 답을 쓰거나("럼블 E 는 …깎지 않습니다"),
- * `검색어: ` 를 앞에 붙이거나, 따옴표로 감싼다. 어차피 낱말 단위로 쪼개 쓰므로
- * 겉을 벗기고 길이만 자른다.
- */
-export function extractQuery(text: string): string {
-  const line = text.trim().split("\n").find((candidate) => candidate.trim().length > 0) ?? "";
-  return line
-    .replace(/^\s*(검색어|질의|query)\s*[:：]\s*/i, "")
-    .replace(/^["'`]+|["'`]+$/g, "")
-    .trim()
-    .slice(0, 60);
-}
-
-/**
- * 문서에서 질문에 걸리는 문장만 고른다.
- *
- * 앞머리부터 잘라 쓰면 안 된다. 미니언 문서는 1,296자인데 답인 "파밍: 미니언에 막타를
- * 넣어 골드와 경험치를 얻는 것" 이 886자 지점에 있었다. 700자에서 자르니 그 줄이
- * 사라졌고, 모델은 문서를 받고도 "자료에 없습니다" 라고 답했다.
- *
- * 문서 한 줄이 한 문장이므로 줄 단위로 고르고, 원래 순서로 되돌려 잇는다.
- */
-function selectLines(text: string, terms: string[], limit: number): string {
-  const lines = text.split("\n").filter((line) => line.trim().length > 0);
-  if (lines.length <= limit) return lines.join("\n");
-
-  const ranked = lines
-    .map((line, index) => ({
-      index,
-      line,
-      score: terms.filter((term) => line.includes(term)).length,
-    }))
-    .sort((a, b) => b.score - a.score || a.index - b.index)
-    .slice(0, limit)
-    .sort((a, b) => a.index - b.index);
-
-  return ranked.map((entry) => entry.line).join("\n");
-}
-
-/** 한 문서에서 실을 줄 수. 셋을 실어도 프롬프트가 길어지지 않을 만큼만 둔다. */
-const LINES_PER_DOC = 8;
-
-/**
- * 찾은 자료를 프롬프트에 실을 글로 만든다.
- *
- * 셋 다 싣는다. 어느 것이 답인지는 모델이 고른다. 하나만 싣고 그것이 틀리면
- * 모델은 틀린 자료로 답할 수밖에 없다.
- *
- * 프롬프트가 6,000자에 가까워지면 브라우저 런타임이 정렬 오류로 죽는다. 그래서
- * 문서마다 줄 수를 묶어 둔다.
- */
-/**
- * 찾은 자료를 모델 없이 그대로 보인다 — 가벼운 모델(0.8B)은 글을 쓰지 않는다.
- *
- * 검색 길에서 0.8B 가 자료를 읽고 답을 쓰게 두었더니, 이어 묻기가 잘못 흘러든 "정글이 자꾸 탑으로 오는데 그럴 땐?" 에
- * "정글은 탑으로 오지 않습니다. 게임 내에서 탑은 플레이어의 캐릭터이며 …" 를 지어냈다. 자료 문장 중 질문 낱말이
- * 든 것만 옮긴다. 1위가 틀릴 수 있어(정답은 상위 3위 안에 8/8) 두 문서까지 싣는다. 걸리는 문장이 없으면 undefined.
- */
 /**
  * 제목을 가리키는 낱말인가. 영어 기능어는 빼고, 영문은 낱말 경계로(대소문자 무시) 본다.
  *
@@ -216,6 +140,13 @@ function titleMentions(title: string, term: string): boolean {
   return title.includes(term);
 }
 
+/**
+ * 찾은 자료를 모델 없이 그대로 보인다 — 모델은 카드 없는 답을 쓰지 않는다.
+ *
+ * 검색 길에서 0.8B 가 자료를 읽고 답을 쓰게 두었더니, 이어 묻기가 잘못 흘러든 "정글이 자꾸 탑으로 오는데 그럴 땐?" 에
+ * "정글은 탑으로 오지 않습니다. 게임 내에서 탑은 플레이어의 캐릭터이며 …" 를 지어냈다. 자료 문장 중 질문 낱말이
+ * 든 것만 옮긴다. 1위가 틀릴 수 있어(정답은 상위 3위 안에 8/8) 두 문서까지 싣는다. 걸리는 문장이 없으면 undefined.
+ */
 export function hitsToAnswer(hits: SearchHit[], question: string, maxDocs = 2, maxLines = 3): string | undefined {
   const terms = tokenize(question);
   const parts: string[] = [];
@@ -232,35 +163,6 @@ export function hitsToAnswer(hits: SearchHit[], question: string, maxDocs = 2, m
     if (parts.length >= maxDocs) break;
   }
   return parts.length ? parts.join("\n\n") : undefined;
-}
-
-export function searchContext(hits: SearchHit[], patch: string, query: string): string {
-  const terms = tokenize(query);
-  return [
-    "아래는 질문과 관련해 찾은 자료다.",
-    "",
-    // 질문의 말과 자료의 말을 잇는 다리다. 이것이 없으면 "cs가 뭐야?" 에 파밍 설명을
-    // 실어 줘도 "'cs' 에 대한 설명이 없습니다" 라고 답한다.
-    //
-    // 다만 문장으로 주면 안 된다. `아래는 "미니언 파밍 골드" 로 찾은 자료다` 라고 썼더니
-    // 모델이 그것을 출처 이름으로 읽고 "CS는 **미니언 파밍 골드에서** 미니언에 막타를
-    // 넣어…" 라고 답했다. 낱말만 늘어놓아 답에 그대로 실리지 않게 한다.
-    `질문에 쓴 말과 자료에 적힌 말이 다를 수 있다. 이 질문은 ${terms.join(", ")} 와 같은 뜻이다.`,
-    // 이 두 줄이 없으면 자료를 주고도 "정보가 없습니다" 가 나온다.
-    //
-    // "cs 어떻게 늘려?" 에 미니언 문서를 실어 줬더니 그 안에 "파밍: 미니언에 막타를 넣어
-    // 골드와 경험치를 얻는 것" 이 있는데도 모른다고 답했다. 검색할 때는 제가 cs 를
-    // 파밍으로 풀어 놓고, 답할 때는 자료에서 "CS" 라는 글자를 찾다가 없다고 한 것이다.
-    // 그래서 말이 다를 수 있다는 것을 답하는 자리에서 다시 일러 준다.
-    "뜻이 같으면 그 내용으로 답해라. 자료에 정말 없는 것만 모른다고 해라.",
-    "찾은 검색어를 답에 쓰지 마라. 자료에 적힌 말로 답해라.",
-    "",
-    hits
-      .map((hit) => `### ${hit.doc.title}\n${selectLines(hit.doc.text, terms, LINES_PER_DOC)}`)
-      .join("\n\n"),
-    "",
-    `패치 ${patch} 기준이다.`,
-  ].join("\n");
 }
 
 /** 낱말로 걸린 문서와 그것을 찾은 단계. 앱의 이름 없는 질문 순서(룬·주문 이름·은어 → 게임 메타 낱말 → 게임 원리 낱말)와 같다. */

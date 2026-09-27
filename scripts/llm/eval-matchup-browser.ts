@@ -14,7 +14,7 @@
 import type { ChampionCard } from "./lib/facts";
 import type { Playbook } from "./lib/playbookCore";
 import type { AdvisorData } from "../../src/lib/advisor/context";
-import { FALLBACK_MODEL, ADVISOR_MODEL } from "../../src/lib/advisor/config";
+import { ADVISOR_MODEL } from "../../src/lib/advisor/config";
 import type { AdvisorRequest, AdvisorResponse } from "../../src/lib/advisor/protocol";
 import { FOCUSED, PAIRS, formatRow, runPair, summarize, type Generate, type Mode, type Row } from "./lib/matchupEval";
 
@@ -95,10 +95,10 @@ async function loadData(): Promise<{ data: AdvisorData; patch: string }> {
  *   await m.run({ spec: { id: "onnx-community/Qwen3.5-0.8B-Text-ONNX", dtype: "q8" } })
  */
 export async function run(
-  options: { mode?: Mode; only?: string; set?: "pairs" | "focused"; model?: "lite" | "default"; spec?: { id: string; dtype: string } } = {},
+  options: { mode?: Mode; only?: string; set?: "pairs" | "focused"; spec?: { id: string; dtype: string } } = {},
 ) {
   const mode = options.mode ?? "single";
-  const model = options.spec ?? (options.model === "default" ? ADVISOR_MODEL : FALLBACK_MODEL);
+  const model = options.spec ?? ADVISOR_MODEL;
   const { data, patch } = await loadData();
   const generate = makeGenerate(model);
   const rows: Row[] = [];

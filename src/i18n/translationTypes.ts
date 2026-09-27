@@ -407,19 +407,9 @@ export interface Translations {
       removed: string;
       /** 다시 받아야 한다는 안내 */
       note: string;
-      /** 모델 고르는 자리의 머리말 */
       /** 평가 기록 수와 내보내기 단추 */
       feedbackCount: string;
       feedbackExport: string;
-      pickTitle: string;
-      /** 이 기기가 못 도는 줄에 붙는 사유 */
-      pickNeedsF16: string;
-      /** 기본 모델 설명. 줄 아래 한 줄로 늘 보인다. */
-      pickNoteFull: string;
-      /** 가벼운 모델 설명. */
-      pickNoteLite: string;
-      /** 고르면 무슨 일이 생기는지 */
-      pickNote: string;
     };
     /**
      * 모델에게 실어 준 자료 묶음 앞에 붙는 말.

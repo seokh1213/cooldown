@@ -1,7 +1,7 @@
 /**
  * 내려받은 모델을 보고 지우는 화면
  *
- * 모델은 3GB 다. 한 번 받으면 브라우저 저장 공간에 남고, 안 쓰기로 해도 계속 남는다.
+ * 모델은 570MB 다. 한 번 받으면 브라우저 저장 공간에 남고, 안 쓰기로 해도 계속 남는다.
  * 지울 길이 없으면 브라우저 설정에서 사이트 데이터를 통째로 지우는 수밖에 없는데
  * 그러면 다른 설정도 같이 날아간다. 그래서 여기서 지울 수 있게 둔다.
  */
@@ -11,7 +11,7 @@ import { Button } from "@/components/ui/button";
 import { useTranslation } from "@/i18n";
 import { readModelCache, type ModelCacheInfo } from "@/lib/advisor/storage";
 import { exportFeedback, readFeedback } from "@/hooks/useAdvisor";
-import { MODEL_CHOICES, modelBlocked, type WebGpuSupport } from "@/lib/advisor/config";
+import { ADVISOR_MODEL, ADVISOR_MODEL_LABEL } from "@/lib/advisor/config";
 
 function fill(template: string, values: Record<string, string | number>): string {
   return template.replace(/\{(\w+)\}/g, (_, key: string) => String(values[key] ?? ""));
@@ -52,25 +52,14 @@ interface AdvisorStorageProps {
    * 화면이 덜 그려진 것인지 알 수 없었다. 못 받는 기기라면 그렇다고 말해야 한다.
    */
   unavailable?: string;
-  /** 어느 줄을 못 고르게 할지 가리는 데 쓴다. */
-  webgpu: WebGpuSupport | null;
-  /** 지금 고른 줄. */
-  choice: string;
-  /** 다른 줄을 골랐을 때. 화면을 다시 띄우지 않고 워커만 바꾼다. */
-  onChoose: (key: string) => Promise<void>;
 }
 
-export function AdvisorStorage({ onDelete, onDownload, unavailable, webgpu, choice, onChoose }: AdvisorStorageProps) {
+export function AdvisorStorage({ onDelete, onDownload, unavailable }: AdvisorStorageProps) {
   const { t } = useTranslation();
   const copy = t.advisor.storage;
   const [info, setInfo] = useState<ModelCacheInfo | null>(null);
-  /**
-   * 받아 둔 것이 목록의 어느 줄인가. 목록에 없는 저장소면 이름을 그대로 적는다 —
-   * `?advisorModel=` 로 목록 밖의 것을 받아 둔 경우다.
-   */
-  const cachedKey = MODEL_CHOICES.find((entry) => info?.repos.includes(entry.model.id))?.key;
-  const cachedLabel =
-    MODEL_CHOICES.find((entry) => entry.key === cachedKey)?.label ?? info?.repos[0];
+  // 받아 둔 저장소 이름. 예전 모델(Qwen3 4B)이 남아 있으면 그 이름이 그대로 보인다.
+  const cachedLabel = info?.repos.includes(ADVISOR_MODEL.id) ? ADVISOR_MODEL_LABEL : info?.repos[0];
   const [asking, setAsking] = useState(false);
   const [busy, setBusy] = useState(false);
   const [done, setDone] = useState(false);
@@ -82,19 +71,6 @@ export function AdvisorStorage({ onDelete, onDownload, unavailable, webgpu, choi
   }, []);
 
   useEffect(measure, [measure]);
-
-  /** 다른 모델로 바꾼다. 워커만 갈아 끼우므로 이 화면은 그대로 있다. */
-  const pick = async (key: string) => {
-    if (key === choice || busy) return;
-    setBusy(true);
-    try {
-      await onChoose(key);
-      measure();
-    } finally {
-      setBusy(false);
-    }
-  };
-
 
   const remove = async () => {
     setBusy(true);
@@ -173,54 +149,6 @@ export function AdvisorStorage({ onDelete, onDownload, unavailable, webgpu, choi
           )}
         </div>
       )}
-
-      {/*
-        어느 모델을 쓸지 고르는 자리.
-
-        f16 이 없는 카드(Pascal 등)에서는 기본 모델이 안 돈다. 그렇다고 그 기기가
-        아무것도 못 쓰는 것은 아니라서, 16비트를 안 쓰는 판본을 여기서 고를 수 있게
-        둔다. 어디까지 올라가는지는 그래픽 백엔드마다 달라 미리 정할 수 없다 —
-        **고르고 눌러 보는 것이 유일한 확인 방법이다.**
-
-        못 쓸 것이 분명한 줄은 눌리지 않게 하고 사유를 적는다. 3GB 를 받고 나서
-        실패하는 것보다 받기 전에 아는 편이 낫다.
-      */}
-      <div className="border-t pt-3">
-        <div className="mb-2 text-[11px] font-medium text-muted-foreground">{copy.pickTitle}</div>
-        <div role="radiogroup" aria-label={copy.pickTitle} className="space-y-1">
-          {MODEL_CHOICES.map(({ key, model, label }) => {
-            // 이 기기의 그래픽카드가 못 돌리는 줄은 누르지 못하게 한다. 2.8GB 를 받은
-            // 뒤에 적재에서 죽는 것보다 받기 전에 아는 편이 낫다.
-            const blocked = modelBlocked(model, webgpu);
-            const active = key === choice;
-            return (
-              <button
-                key={key}
-                type="button"
-                role="radio"
-                aria-checked={active}
-                disabled={blocked || busy}
-                onClick={() => pick(key)}
-                className={`flex w-full items-baseline justify-between gap-2 rounded-md px-2.5 py-2 text-left transition-colors disabled:cursor-not-allowed disabled:opacity-45 ${
-                  active ? "bg-muted" : "hover:bg-muted/60"
-                }`}
-              >
-                <span className="min-w-0">
-                  <span className={`block text-[13px] ${active ? "font-semibold text-foreground" : ""}`}>{label}</span>
-                  <span className="block text-[11px] leading-relaxed text-muted-foreground">
-                    {blocked ? copy.pickNeedsF16 : model.lite ? copy.pickNoteLite : copy.pickNoteFull}
-                  </span>
-                </span>
-                {/* 받아 둔 줄은 용량 대신 그 사실을 적는다. 다시 받을 필요가 없는 줄이다. */}
-                <span className="shrink-0 text-[11px] tabular-nums text-muted-foreground">
-                  {key === cachedKey ? copy.cached : `${model.downloadMb} MB`}
-                </span>
-              </button>
-            );
-          })}
-        </div>
-        <p className="mt-2 text-[11px] leading-relaxed text-muted-foreground">{copy.pickNote}</p>
-      </div>
 
       <FeedbackExport />
       <p className="border-t pt-3 text-xs leading-relaxed text-muted-foreground">{copy.note}</p>

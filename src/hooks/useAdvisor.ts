@@ -3,22 +3,18 @@
  *
  * 동의 → 모델 내려받기 → 적재 → 대화 순서를 한 곳에서 다룬다.
  * **동의 전에는 워커를 만들지 않는다.** 워커를 만드는 순간 모델을 받기 시작하므로,
- * 사용자가 허락하기 전에 수 기가바이트를 내려받는 일이 없어야 한다.
+ * 사용자가 허락하기 전에 수백 MB 를 내려받는 일이 없어야 한다.
  */
 import { useCallback, useEffect, useRef, useState } from "react";
 import {
   CONSENT_STORAGE_KEY,
   detectWebGpu,
   estimateStorageMb,
-  autoModel,
-  currentModelChoice,
-  modelChoiceKey,
-  resolveModel,
-  writeModelChoice,
+  ADVISOR_MODEL,
   type AdvisorModel,
   type WebGpuSupport,
 } from "@/lib/advisor/config";
-import { deleteModelCache, fetchJudgeFile } from "@/lib/advisor/storage";
+import { deleteModelCache, fetchJudgeFile, pruneOtherModels } from "@/lib/advisor/storage";
 import { answerChampionIds, type AdvisorAnswer } from "@/lib/advisor/answer";
 import { matchupStateOf } from "@/lib/advisor/conversation";
 import { answerProse } from "@/lib/advisor/prose";
@@ -140,27 +136,6 @@ function unfinishedMarkup(text: string): string {
   return out;
 }
 
-export interface SearchRoundOptions {
-  /** 검색어를 만들게 할 때 쓸 지시문. */
-  querySystem: string;
-  /** 회차마다 모델에게 건넬 글. 앞서 헛물켠 검색어를 함께 넘긴다. */
-  buildPrompt: (tried: string[]) => string;
-  /** 모델이 뱉은 글에서 검색어만 추린다. */
-  extract: (text: string) => string;
-  /**
-   * 검색을 실제로 한다. 코드가 한다.
-   * 아무것도 못 찾으면 undefined 를 돌려준다. 그때만 다시 찾는다.
-   * 찾긴 찾았는데 엉뚱한 경우는 가려낼 수 없다 — 점수로 맞고 틀림이 안 갈렸다.
-   */
-  search: (query: string) => { context: string; titles: string[] } | undefined;
-  /** 진행 상태에 붙일 말. 회차마다 화면에 보인다. */
-  labels: { searching: string; searched: string };
-  /** 못 찾았을 때 검색어를 몇 번까지 다시 만들지. */
-  maxRounds: number;
-  /** 끝내 못 찾았을 때 쓸 지시문. */
-  fallbackSystem: string;
-}
-
 /** 문서 벡터 파일(`doc-vectors.json` + `.bin`, 언어마다 [문서 수 × dim] fp16). `dual_graph_check.py` 가 만든다. */
 interface DocVectors {
   dim: number;
@@ -225,8 +200,6 @@ export interface RespondPlan {
   /** 동의 전이면 모델을 부르지 않고 이 글을 답으로 얹는다. 주지 않으면 그냥 보낸다. */
   withoutConsent?: string;
   maxTokens?: number;
-  /** 자료가 아직 없을 때만: 모델에게 검색어를 짓게 하고 코드가 찾은 뒤 답한다. */
-  search?: SearchRoundOptions;
 }
 
 export interface UseAdvisorResult {
@@ -267,35 +240,24 @@ export interface UseAdvisorResult {
   settle: () => void;
   /** 자리를 띄워 두고 답을 찾는 중이거나, 코드가 쓴 답을 흘려 보이는 중 */
   working: boolean;
-  /**
-   * 질문이 무엇을 묻는지 모델에게 묻는다. 화면에는 아무것도 남지 않는다.
-   * 모델이 없거나 실패하면 거절하므로 부르는 쪽이 규칙으로 되돌아간다.
-   */
-  classify: (system: string, question: string, maxTokens?: number) => Promise<string>;
   /** 답변 평가. 기기 안에만 쌓인다. */
   rate: (turnId: number, rating: "up" | "down", patch: string) => void;
   /**
    * 내려받은 모델을 삭제하고 처음 상태로 되돌린다.
    *
    * 캐시만 지우면 안 된다. 워커가 모델을 메모리에 들고 있어서 그대로면 계속 답한다.
-   * 동의도 거둬야 다음에 열 때 "3GB 를 받겠습니까" 를 다시 묻는다.
+   * 동의도 거둬야 다음에 열 때 "모델(570MB)을 받겠습니까" 를 다시 묻는다.
    */
   deleteModel: () => Promise<void>;
   /** 지금 쓰는 모델. 화면이 용량과 이름을 보여 준다. */
   model: AdvisorModel;
-  /** 쓸 모델을 바꾼다. 받아 둔 것을 지우고 워커를 새로 올린다. 대화는 남는다. */
-  chooseModel: (key: string) => Promise<void>;
-  /** 지금 쓰는 모델이 목록의 어느 줄인가. */
-  modelChoice: string;
   stop: () => void;
   reset: () => void;
   /** 저장된 대화를 통째로 올린다. id 가 겹치지 않게 다음 id 를 그 뒤로 옮긴다. */
   replaceTurns: (turns: AdvisorTurn[]) => void;
 }
 
-/** 가벼운 모델이 쓰는 판정 헤드. 모델을 올리면 미리 받아 둔다. */
-const LITE_JUDGE_HEADS = ["route-v2", "sub-v1", "topic-v1", "act-v1"];
-/** kev LoRA 모델은 헤드 하나로 모든 판정을 한다 */
+/** 판정 헤드. kev LoRA 헤드 하나로 모든 판정을 한다. 모델을 올리면 미리 받아 둔다. */
 const KEV_JUDGE_HEADS = ["kev-b3e"];
 
 function readConsent(): boolean {
@@ -333,29 +295,12 @@ export function useAdvisor(): UseAdvisorResult {
   const docVectors = useRef(new Map<string, Promise<DocVectors>>());
   /** 받아 둔 판정 헤드. 이름으로 찾는다. */
   const judgeHeads = useRef(new Map<string, Promise<JudgeHead>>());
-  // 모델은 화면에서 바꿀 수 있으므로 상태다. 바꾸면 워커를 내렸다 새로 올린다.
-  const [model, setModel] = useState(resolveModel);
+  const model = ADVISOR_MODEL;
 
   useEffect(() => {
     void detectWebGpu().then(setWebgpu);
     void estimateStorageMb().then(setStorage);
   }, []);
-
-  /*
-    어댑터를 확인하고 나서 기본 모델을 정한다.
-
-    16비트 셰이더가 없는 기기에 q4f16 을 주면 내려받기부터 막힌다. 그런 기기에는
-    가벼운 쪽을 대신 준다. **사용자가 이미 고른 것이 있으면 건드리지 않는다** —
-    직접 고른 것을 기기 사정으로 되돌리면 그것도 고장이다.
-  */
-  useEffect(() => {
-    if (webgpu === null) return;
-    if (currentModelChoice() !== "default") return;
-    setModel((prev) => {
-      const next = autoModel(webgpu);
-      return next.id === prev.id && next.dtype === prev.dtype ? prev : next;
-    });
-  }, [webgpu]);
 
   /** 워커는 동의 후에만 만든다 */
   const ensureWorker = useCallback((): Worker => {
@@ -481,7 +426,7 @@ export function useAdvisor(): UseAdvisorResult {
   /**
    * 동의 없이 모델을 부르려 했는지 본다.
    *
-   * `send` 계열은 워커를 만들고, 워커를 만드는 순간 3GB 를 받기 시작한다.
+   * `send` 계열은 워커를 만들고, 워커를 만드는 순간 모델(570MB)을 받기 시작한다.
    * "모델 없이 써보기" 를 고른 사용자가 코드가 못 답하는 질문을 던지면 실제로 그 일이
    * 벌어졌다. 내려받기를 거절했는데 받아 버리는 셈이라 여기서 막는다.
    */
@@ -583,134 +528,27 @@ export function useAdvisor(): UseAdvisorResult {
    *   - 도구: 여덟 문항 중 셋은 도구를 부르지 않았고, 네 턴을 줘도 다시 찾은 적이 없다. 쓰는 곳도 없어 지웠다.
    *   - 대화 전체: 앞 턴 글이 쌓이면 작은 모델이 맥락을 놓친다. 맥락(상성·최근 챔피언)은 코드가 쥐고
    *     자료로 싣는다. 그래서 질문 한 줄만 넘긴다.
-   * 남은 차이는 "자료가 이미 있나(카드·요약) / 아직 찾아야 하나(검색)" 뿐이라 선택 사항 둘로 둔다.
-   *
-   * 검색어를 만드는 회차는 화면에 보이지 않는다. 48토큰짜리 짧은 생성이고 사용자가 볼 글이 아니다.
-   * 그래서 보이는 답과 다른 id 로 돌린다. 아무것도 못 찾았을 때만 다시 짓게 하고, 찾긴 찾았는데
-   * 엉뚱한 경우는 가려내지 않는다 — 점수로 맞고 틀림이 안 갈렸다. 대신 상위 세 건을 다 싣는다.
+   * 모델이 검색어를 짓고 코드가 찾던 길(`search`)도 있었으나 이름 없는 질문을 검색 LoRA 벡터(`search`)가 맡으면서 지웠다.
    */
   const respond = useCallback(
     (question: string, plan: RespondPlan) => {
       const trimmed = question.trim();
       if (!trimmed) return;
       if (plan.withoutConsent !== undefined && refuseWithoutConsent(trimmed, plan.withoutConsent)) return;
-      const { system, answer, notice, maxTokens, search } = plan;
+      const { system, answer, notice, maxTokens } = plan;
       setError(null);
       setStatus("generating");
-      const replyId = place(trimmed, { role: "assistant", content: "", answer, notice, activity: search?.labels.searching });
-
-      /** 진짜 답. 찾은 자료가 있으면 덧붙인다. */
-      const write = (systemText: string) =>
-        post({ type: "generate", id: replyId, model, system: systemText, messages: [{ role: "user", content: trimmed }], maxTokens });
-
-      if (!search) {
-        write(system);
-        return;
-      }
-
-      const worker = ensureWorker();
-      const queryId = nextId.current++;
-      const tried: string[] = [];
-      let found: { context: string; titles: string[] } | undefined;
-      let round = 0;
-
-      /** 말풍선에 붙은 진행 상태를 바꾼다. */
-      const setActivity = (activity: string | undefined, sources?: string[]) => {
-        setTurns((prev) => prev.map((turn) => (turn.id === replyId ? { ...turn, activity, sources } : turn)));
-      };
-      const finish = () => {
-        // 근거는 답이 나오기 전에 붙여 둔다. 무엇을 보고 쓰는 중인지 먼저 보여야 한다.
-        setActivity(undefined, found?.titles);
-        write(found ? `${system}\n\n${found.context}` : search.fallbackSystem);
-      };
-      const askForQuery = () =>
-        post({
-          type: "generate",
-          id: queryId,
-          model,
-          system: search.querySystem,
-          messages: [{ role: "user", content: search.buildPrompt(tried) }],
-          maxTokens: 48,
-        });
-
-      function onDone(event: MessageEvent<AdvisorResponse>) {
-        const message = event.data;
-        if (message.type === "error" || (message.type === "done" && message.id === replyId)) {
-          worker.removeEventListener("message", onDone);
-          return;
-        }
-        if (message.type !== "done" || message.id !== queryId) return;
-        // 검색어 회차가 끝났다. 화면은 건드리지 않았으므로 상태만 되돌린다.
-        setStatus("generating");
-        const query = search!.extract(message.text);
-        if (!query || tried.includes(query)) {
-          finish();
-          return;
-        }
-        tried.push(query);
-        found = search!.search(query);
-        round += 1;
-        if (found || round >= search!.maxRounds) {
-          if (found) setActivity(`${search!.labels.searched}: ${found.titles.join(", ")}`);
-          finish();
-          return;
-        }
-        setActivity(`${search!.labels.searching} (${round + 1})`);
-        askForQuery();
-      }
-
-      worker.addEventListener("message", onDone);
-      askForQuery();
+      const replyId = place(trimmed, { role: "assistant", content: "", answer, notice });
+      post({ type: "generate", id: replyId, model, system, messages: [{ role: "user", content: trimmed }], maxTokens });
     },
-    [ensureWorker, post, model, refuseWithoutConsent, place],
-  );
-
-  /**
-   * 값 하나만 받아 온다. 화면에는 아무것도 남기지 않는다.
-   *
-   * 질문이 무엇을 묻는지 가르는 일을 모델에게 맡기려고 둔 길이다. 지금까지는 한국어
-   * 낱말 목록이 그 일을 했는데, 세 언어로 재 보니 한국어 5/6, 영어 1/6, 중국어 1/6
-   * 이었다. 같은 문항에서 4B 는 6/6, 4/6, 6/6 이다. 낱말을 늘리는 것으로는 언어가
-   * 늘 때마다 같은 일을 다시 해야 한다.
-   *
-   * 답을 스트리밍하지 않고 끝난 글만 돌려준다. 짧은 생성이고 사용자가 볼 글이 아니라
-   * `turns` 를 건드리지 않는다. 실패하면 거절하고, 부르는 쪽이 규칙으로 되돌아간다.
-   */
-  const classify = useCallback(
-    (system: string, question: string, maxTokens = 16): Promise<string> => {
-      const worker = ensureWorker();
-      const id = nextId.current++;
-      return new Promise<string>((resolve, reject) => {
-        const onMessage = (event: MessageEvent<AdvisorResponse>) => {
-          const message = event.data;
-          if (!("id" in message) || message.id !== id) return;
-          if (message.type === "done") {
-            worker.removeEventListener("message", onMessage);
-            resolve(message.text.trim());
-          } else if (message.type === "error") {
-            worker.removeEventListener("message", onMessage);
-            reject(new Error(message.message));
-          }
-        };
-        worker.addEventListener("message", onMessage);
-        post({
-          type: "generate",
-          id,
-          model,
-          messages: [{ role: "user", content: question }],
-          system,
-          maxTokens,
-        });
-      });
-    },
-    [ensureWorker, post, model],
+    [post, model, refuseWithoutConsent, place],
   );
 
   /**
    * 모델을 부르지 않고 답을 얹는다.
    *
    * 코드 전용 답변은 평가에서 적중 63/66 으로 모델(64/66)과 거의 같았다.
-   * 3GB 를 받지 않은 사용자에게도 이 답은 줄 수 있어야 한다.
+   * 모델(570MB)을 받지 않은 사용자에게도 이 답은 줄 수 있어야 한다.
    *
    * 카드만 얹으면 대화에는 칩 하나만 남아 답을 못 받은 화면이 된다. 그래서
    * `answerProse` 로 **카드 안의 값을 문장으로도** 적는다. 모델이 쓰는 글이 아니라
@@ -799,15 +637,17 @@ export function useAdvisor(): UseAdvisorResult {
   );
 
   /*
-   * 가벼운 모델을 다 올렸으면 판정 헤드를 미리 받아 둔다.
+   * 모델을 다 올렸으면 판정 헤드를 미리 받아 둔다.
    *
    * 처음 판정할 때 받으면, 모델만 받아 두고 오프라인이 된 사용자는 판정기를 한 번도
    * 못 쓴다. 모델 적재가 끝난 때가 네트워크가 확실히 있던 마지막 순간이다.
    */
   useEffect(() => {
-    if (!modelReady || model.judge === "generate") return;
-    for (const name of model.judge === "kev" ? KEV_JUDGE_HEADS : LITE_JUDGE_HEADS) void loadJudgeHead(name).catch(() => undefined);
-  }, [modelReady, model, loadJudgeHead]);
+    if (!modelReady) return;
+    for (const name of KEV_JUDGE_HEADS) void loadJudgeHead(name).catch(() => undefined);
+    // 예전 모델(Qwen3 4B)을 받아 둔 기기라면 그 파일을 치운다(`pruneOtherModels`)
+    void pruneOtherModels(model.id);
+  }, [modelReady, model.id, loadJudgeHead]);
 
   const rate = useCallback((turnId: number, rating: "up" | "down", patch: string) => {
     setTurns((prev) => {
@@ -906,34 +746,6 @@ export function useAdvisor(): UseAdvisorResult {
     await teardown();
   }, [teardown]);
 
-  /**
-   * 쓸 모델을 바꾼다.
-   *
-   * 화면을 다시 띄우지 않는다. 예전에는 `location.reload()` 로 했는데 패널이 닫히고
-   * 보던 대화가 사라져, 모델 하나 바꾸려다 하던 일을 잃었다. 워커만 내렸다 올리면
-   * 되는 일이다. **대화는 그대로 둔다.**
-   *
-   * 주소에 남은 `?advisorModel=` 도 지운다. 그쪽이 저장값보다 앞서기 때문에, 남겨
-   * 두면 고른 것이 다음 새로고침에 뒤집힌다.
-   */
-  const chooseModel = useCallback(
-    async (key: string) => {
-      writeModelChoice(key);
-      try {
-        const url = new URL(location.href);
-        if (url.searchParams.has("advisorModel")) {
-          url.searchParams.delete("advisorModel");
-          history.replaceState(null, "", url.toString());
-        }
-      } catch {
-        // 주소를 못 고쳐도 저장값은 바뀌었다
-      }
-      setModel(resolveModel());
-      await teardown();
-    },
-    [teardown],
-  );
-
   return {
     status,
     modelReady,
@@ -952,12 +764,9 @@ export function useAdvisor(): UseAdvisorResult {
     begin,
     settle,
     working: thinking || revealing,
-    classify,
     rate,
     deleteModel,
     model,
-    chooseModel,
-    modelChoice: modelChoiceKey(model),
     stop,
     reset,
     replaceTurns,

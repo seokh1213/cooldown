@@ -5,7 +5,7 @@
  *   const m = await import("/scripts/llm/kev-agent/eval-kev-browser.ts");
  *   await m.run("/research/llm-evals/kev-agent/kev-act-test.jsonl");
  */
-import { SWAPPABLE_FOR_TEST } from "../../../src/lib/advisor/config";
+import { ADVISOR_MODEL } from "../../../src/lib/advisor/config";
 import { readJudgeHead, scoreJudge, type JudgeHeadMeta, type JudgeQuestion } from "../../../src/lib/advisor/judge";
 import type { AdvisorRequest, AdvisorResponse } from "../../../src/lib/advisor/protocol";
 
@@ -15,7 +15,7 @@ interface KevRecord {
 }
 
 export async function run(file: string, limit = Infinity) {
-  const model = SWAPPABLE_FOR_TEST.qwen35;
+  const model = ADVISOR_MODEL;
   const meta = (await (await fetch(`/models/judge/kev-b3e.json`)).json()) as JudgeHeadMeta;
   const head = readJudgeHead(meta, await (await fetch(`/models/judge/kev-b3e.bin`)).arrayBuffer());
   const records = (await (await fetch(file)).text()).trim().split("\n").map((l) => JSON.parse(l) as KevRecord).slice(0, limit);

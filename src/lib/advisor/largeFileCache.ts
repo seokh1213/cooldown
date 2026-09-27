@@ -79,6 +79,12 @@ export async function listLargeFiles(): Promise<Array<{ url: string; bytes: numb
   return out;
 }
 
+/** 파일 하나를 지운다. 없으면 아무것도 안 한다. */
+export async function deleteLargeFile(url: string): Promise<void> {
+  const dir = await directory(false);
+  await dir?.removeEntry(nameOf(url)).catch(() => undefined);
+}
+
 export async function deleteLargeFiles(): Promise<boolean> {
   try {
     const root = await navigator.storage.getDirectory();

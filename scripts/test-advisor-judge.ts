@@ -23,7 +23,8 @@ const ok = (value: unknown, message: string) => {
 };
 
 // --- 헤드: 내보낸 파일로 계산한 확률이 파이썬(torch)과 같다 ---
-const dir = path.join(process.cwd(), "public", "models", "judge");
+// 옛 판정기(route-v2)는 앱에서 걷어냈지만 헤드 계산 코드(`judge.ts`)가 파이썬과 같은지 보는 데는 그대로 쓴다
+const dir = path.join(process.cwd(), "research", "llm-evals", "kev-agent", "heads");
 const meta = JSON.parse(fs.readFileSync(path.join(dir, "route-v2.json"), "utf8")) as JudgeHeadMeta;
 const bin = fs.readFileSync(path.join(dir, "route-v2.bin"));
 const head = readJudgeHead(meta, bin.buffer.slice(bin.byteOffset, bin.byteOffset + bin.byteLength));

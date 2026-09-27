@@ -1,8 +1,8 @@
 /**
  * 내려받은 모델 캐시를 재고 지운다
  *
- * 모델은 3GB 다. 한 번 받으면 브라우저 저장 공간에 남아 두 번째 방문부터는 안 받는데,
- * 그 말은 **안 쓰기로 해도 3GB 가 계속 남는다**는 뜻이다. 지울 길이 없으면
+ * 모델은 570MB 다. 한 번 받으면 브라우저 저장 공간에 남아 두 번째 방문부터는 안 받는데,
+ * 그 말은 **안 쓰기로 해도 계속 남는다**는 뜻이다. 지울 길이 없으면
  * 브라우저 설정에서 사이트 데이터를 통째로 지우는 수밖에 없고, 그러면 다른 설정도
  * 같이 날아간다.
  *
@@ -10,7 +10,7 @@
  * 판올림 때 바뀔 수 있으므로 **이름을 박아 두지 않고** 접두사로 찾는다. Cache Storage 가 받지 못한 큰 파일은
  * OPFS 에 있다(`largeFileCache.ts`) — 재고 지울 때 함께 본다.
  */
-import { deleteLargeFiles, listLargeFiles } from "./largeFileCache";
+import { deleteLargeFile, deleteLargeFiles, listLargeFiles } from "./largeFileCache";
 
 /** Transformers.js 가 쓰는 캐시 이름의 앞부분. `transformers-cache` 와 해시 캐시가 걸린다. */
 const CACHE_PREFIX = "transformers";
@@ -121,6 +121,32 @@ export async function deleteModelCache(): Promise<boolean> {
     }
   }
   return removed;
+}
+
+/**
+ * 지금 쓰는 모델이 아닌 저장소의 파일을 지운다.
+ *
+ * 예전에는 Qwen3 4B(2.7GB)를 기본으로 받았다. 모델을 하나로 줄인 뒤에도 받아 둔 사람의 저장 공간에는 그대로 남으므로,
+ * 지금 모델을 다 올린 뒤에 치운다. 저장소를 알 수 없는 파일(판정 헤드·그래프)은 건드리지 않는다.
+ */
+export async function pruneOtherModels(keep: string): Promise<void> {
+  for (const file of await listLargeFiles()) {
+    const repo = repoFromUrl(file.url);
+    if (repo && repo !== keep) await deleteLargeFile(file.url);
+  }
+  const store = cacheStorage();
+  if (!store) return;
+  for (const name of await modelCacheNames()) {
+    try {
+      const cache = await store.open(name);
+      for (const request of await cache.keys()) {
+        const repo = repoFromUrl(request.url);
+        if (repo && repo !== keep) await cache.delete(request);
+      }
+    } catch {
+      // 못 지워도 동작에는 지장이 없다
+    }
+  }
 }
 
 /**

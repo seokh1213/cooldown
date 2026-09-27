@@ -12,9 +12,9 @@
  * - 지식 카드: `llm/advisor-knowledge.json` (`npm run llm:bundle` 산출물)
  * - 아이템·룬·주문·아이템 위키 분류: 앱이 이미 쓰는 정규화 데이터
  *
- * 합쳐 7MB 남짓이다. 모델이 3GB 인 것에 비하면 작고, 한 번 받으면 캐시에 남는다.
+ * 합쳐 7MB 남짓이다. 모델(570MB)에 비하면 작고, 한 번 받으면 캐시에 남는다.
  */
-import { championCardToText, type ChampionCard } from "../../../scripts/llm/lib/facts";
+import type { ChampionCard } from "../../../scripts/llm/lib/facts";
 import { aliasAt } from "../../../scripts/llm/lib/searchAliases";
 import { askedRuleKinds } from "../../../scripts/llm/lib/rules";
 import itemAliasFile from "../../../knowledge/item-aliases.json";
@@ -24,7 +24,7 @@ import {
   type RuleIndex,
   type RuleNotes,
 } from "../../../scripts/llm/lib/rules";
-import { playbookToText, selectPlaybook, type Playbook } from "../../../scripts/llm/lib/playbookCore";
+import { selectPlaybook, type Playbook } from "../../../scripts/llm/lib/playbookCore";
 import { selectNotes, type NoteCategory, type NotePerspective, type SelectedNotes } from "./noteSelect";
 import { deriveMatchupClaims, renderTaggedClaims, type ClaimLang, type TaggedClaim } from "../../../scripts/llm/lib/claims";
 import {
@@ -451,53 +451,6 @@ export function championNotes(
     return selectNotes({ playing: translated(book.playing), against: translated(book.against) }, question, forced, judged);
   }
   return selectNotes(book, question, forced, judged);
-}
-
-export function buildChampionsBrief(data: AdvisorData, cards: ChampionCard[]): string {
-  if (cards.length === 1) return buildChampionBrief(data, cards[0]);
-  const lines = [`[패치] ${data.patch}`];
-  for (const card of cards) {
-    lines.push(
-      `[${card.name} 자료]\n${championCardToText(card, { includeSpellText: true, spellTextMax: 420 })}`,
-    );
-  }
-  lines.push(
-    "[요청] 위 자료 안의 사실만 근거로 삼으십시오. " +
-      "묻는 챔피언을 모두 답하고, 자료에 없는 수치를 지어내지 마십시오.",
-  );
-  return lines.join("\n\n");
-}
-
-export function buildChampionBrief(data: AdvisorData, card: ChampionCard): string {
-  const book = data.playbooks.get(card.id);
-  const lines: string[] = [
-    `[패치] ${data.patch}`,
-    // **스킬 본문을 싣는다.** 빼고 넘겼더니 "럼블 E 마법 저항력 감소가 몇이냐" 에
-    // "자료로는 확실하지 않습니다" 라고 답했다. 수치는 툴팁 본문에만 있다.
-    `[챔피언 자료]\n${championCardToText(card, { includeSpellText: true, spellTextMax: 600 })}`,
-  ];
-
-  if (book) {
-    // 이 챔피언을 플레이할 때와 상대할 때를 모두 싣는다. 어느 쪽을 묻는지 알 수 없다.
-    // 스킬 본문을 싣기 시작하면서 프롬프트가 6천 자에 닿았고, 거기서 ORT 가
-    // "operation does not support unaligned accesses" 로 죽었다. 지식 카드를 줄여 맞춘다.
-    const selected = { mine: book.playing.slice(0, 4), vsEnemy: book.against.slice(0, 3) };
-    lines.push(
-      `[지식 카드 — 사람이 검증한 내용입니다. 이 표현을 따르십시오]\n${playbookToText(
-        selected,
-        card.name,
-        card.name,
-        data.patch,
-      )}`,
-    );
-  }
-
-  lines.push(
-    "[요청] 위 자료 안의 사실만 근거로 삼으십시오. " +
-      "자료에 없는 아이템·룬·스킬 이름이나 수치를 만들어내지 마십시오. " +
-      "스킬은 슬롯 문자와 이름을 함께 씁니다.",
-  );
-  return lines.join("\n\n");
 }
 
 /**

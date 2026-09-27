@@ -13,16 +13,7 @@ import { groundCommentary, labelSlots } from "../src/lib/advisor/grounding";
 import { createLoopGuard, trimLoop } from "../src/lib/advisor/loopGuard";
 import { promptWords } from "../src/lib/advisor/promptLocale";
 import type { AdvisorAnswer } from "../src/lib/advisor/answer";
-import {
-  ADVISOR_MODEL,
-  FALLBACK_MODEL,
-  autoModel,
-  canOfferModel,
-  MODEL_CHOICES,
-  modelBlocked,
-  modelChoiceKey,
-  type AdvisorModel,
-} from "../src/lib/advisor/config";
+import { ADVISOR_MODEL, canOfferModel, type AdvisorModel } from "../src/lib/advisor/config";
 
 const llmDir = path.join(PUBLIC_DATA_ROOT, resolvePatchVersion(), "llm");
 const cards = (
@@ -153,11 +144,11 @@ assert.ok(q && !q.effects.includes("에어본"), "Q 에는 에어본이 없어�
  * 모델을 권할 기기인지 가리는 관문.
  *
  * f16 을 모델과 무관하게 따지면 Pascal 같은 카드가 16비트를 안 쓰는 판본까지 못 쓴다.
- * 반대로 아예 안 따지면 q4f16 을 못 도는 기기에 3GB 를 받게 한다.
+ * 반대로 아예 안 따지면 q4f16 을 못 도는 기기에 받게 한다.
  */
 {
-  const needs: AdvisorModel = { id: "a", dtype: "q4f16", downloadMb: 1, needsF16: true, judge: "generate", writes: "free" };
-  const free: AdvisorModel = { id: "b", dtype: "q4", downloadMb: 1, needsF16: false, judge: "generate", writes: "free" };
+  const needs: AdvisorModel = { id: "a", dtype: "q4f16", downloadMb: 1, needsF16: true };
+  const free: AdvisorModel = { id: "b", dtype: "q4", downloadMb: 1, needsF16: false };
   const withF16 = { supported: true, f16: true };
   const noF16 = { supported: true, f16: false };
   const noGpu = { supported: false, f16: false };
@@ -168,113 +159,8 @@ assert.ok(q && !q.effects.includes("에어본"), "Q 에는 에어본이 없어�
   assert.equal(canOfferModel(free, noGpu, "desktop"), false, "WebGPU 자체가 없으면 권하지 않는다");
   assert.equal(canOfferModel(free, null, "desktop"), false, "어댑터를 확인하기 전에는 권하지 않는다");
   assert.equal(canOfferModel(free, withF16, "mobile"), false, "휴대폰에는 권하지 않는다");
-}
-
-/**
- * 고르지 않았을 때 무엇을 줄 것인가.
- *
- * 16비트 셰이더가 없는 기기에 기본 모델을 주면 내려받기부터 막힌다. GTX 10xx 에서
- * 후보를 전부 눌러 본 끝에 남은 것이 대체본이라, 그 기기에는 그것을 준다.
- */
-{
-  assert.equal(autoModel({ supported: true, f16: true }).id, ADVISOR_MODEL.id, "f16 이 있으면 기본 모델");
-  assert.equal(autoModel({ supported: true, f16: false }).id, FALLBACK_MODEL.id, "f16 이 없으면 대체본");
-  assert.equal(autoModel(null).id, ADVISOR_MODEL.id, "확인 전에는 기본 모델");
-  assert.equal(autoModel({ supported: false, f16: false }).id, ADVISOR_MODEL.id, "WebGPU 가 없으면 어차피 안 권한다");
-
-  assert.equal(FALLBACK_MODEL.needsF16, false, "대체본이 16비트를 요구하면 뜻이 없다");
-  assert.equal(FALLBACK_MODEL.lite, true, "대체본은 간이로 표시해야 화면이 그렇게 알린다");
-  assert.equal(ADVISOR_MODEL.lite, undefined, "기본 모델은 간이가 아니다");
-
-  // 화면이 고른 줄을 표시하려면 목록에서 찾을 수 있어야 한다.
-  assert.equal(modelChoiceKey(ADVISOR_MODEL), "default");
-  assert.equal(modelChoiceKey(FALLBACK_MODEL), "qwen35");
-
-  /*
-    고를 것은 둘이다. 후보를 늘어놓으면 무엇이 다른지 읽는 사람이 판단해야 한다.
-    실제로 돌려 보고 남은 둘만 둔다 — 깊은 해설과 가벼운 해설.
-  */
-  assert.equal(MODEL_CHOICES.length, 2, "고를 것은 둘");
-  // 하나는 어디서나 돌아야 한다. 그러지 않으면 f16 없는 기기가 다시 빈손이 된다.
-  assert.ok(MODEL_CHOICES.some((c) => !c.model.needsF16), "f16 없이 도는 줄이 있어야 한다");
-  // 설명은 `lite` 로 갈라 보인다. 둘이 같은 쪽이면 한쪽 설명이 영영 안 나온다.
-  assert.equal(MODEL_CHOICES.filter((c) => c.model.lite).length, 1, "가벼운 줄은 하나");
-
-  /*
-    그래픽카드가 못 돌리는 줄은 잠근다. 받고 나서 적재에서 죽는 것보다 낫다.
-    확인하는 중에는 잠그지 않는다 — 잠갔다 푸는 편이 더 헷갈린다.
-  */
-  const heavy: AdvisorModel = { id: "a", dtype: "q4f16", downloadMb: 1, needsF16: true, judge: "generate", writes: "free" };
-  const light: AdvisorModel = { id: "b", dtype: "q4", downloadMb: 1, needsF16: false, judge: "generate", writes: "free" };
-  assert.equal(modelBlocked(heavy, { supported: true, f16: false }), true, "f16 없으면 q4f16 은 잠근다");
-  assert.equal(modelBlocked(light, { supported: true, f16: false }), false, "16비트를 안 쓰면 잠그지 않는다");
-  assert.equal(modelBlocked(light, { supported: false, f16: false }), true, "WebGPU 가 없으면 둘 다 잠근다");
-  assert.equal(modelBlocked(heavy, { supported: true, f16: true }), false, "f16 이 있으면 잠그지 않는다");
-  assert.equal(modelBlocked(heavy, null), false, "확인 전에는 잠그지 않는다");
-}
-
-/**
- * 모델을 권할 기기인지 가리는 관문.
- *
- * f16 을 모델과 무관하게 따지면 Pascal 같은 카드가 16비트를 안 쓰는 판본까지 못 쓴다.
- * 반대로 아예 안 따지면 q4f16 을 못 도는 기기에 3GB 를 받게 한다.
- */
-{
-  const needs: AdvisorModel = { id: "a", dtype: "q4f16", downloadMb: 1, needsF16: true, judge: "generate", writes: "free" };
-  const free: AdvisorModel = { id: "b", dtype: "q4", downloadMb: 1, needsF16: false, judge: "generate", writes: "free" };
-  const withF16 = { supported: true, f16: true };
-  const noF16 = { supported: true, f16: false };
-  const noGpu = { supported: false, f16: false };
-
-  assert.equal(canOfferModel(needs, withF16, "desktop"), true, "f16 있으면 q4f16 을 권한다");
-  assert.equal(canOfferModel(needs, noF16, "desktop"), false, "f16 없으면 q4f16 을 권하지 않는다");
-  assert.equal(canOfferModel(free, noF16, "desktop"), true, "16비트를 안 쓰면 f16 없이도 권한다");
-  assert.equal(canOfferModel(free, noGpu, "desktop"), false, "WebGPU 자체가 없으면 권하지 않는다");
-  assert.equal(canOfferModel(free, null, "desktop"), false, "어댑터를 확인하기 전에는 권하지 않는다");
-  assert.equal(canOfferModel(free, withF16, "mobile"), false, "휴대폰에는 권하지 않는다");
-}
-
-/**
- * 고르지 않았을 때 무엇을 줄 것인가.
- *
- * 16비트 셰이더가 없는 기기에 기본 모델을 주면 내려받기부터 막힌다. GTX 10xx 에서
- * 후보를 전부 눌러 본 끝에 남은 것이 대체본이라, 그 기기에는 그것을 준다.
- */
-{
-  assert.equal(autoModel({ supported: true, f16: true }).id, ADVISOR_MODEL.id, "f16 이 있으면 기본 모델");
-  assert.equal(autoModel({ supported: true, f16: false }).id, FALLBACK_MODEL.id, "f16 이 없으면 대체본");
-  assert.equal(autoModel(null).id, ADVISOR_MODEL.id, "확인 전에는 기본 모델");
-  assert.equal(autoModel({ supported: false, f16: false }).id, ADVISOR_MODEL.id, "WebGPU 가 없으면 어차피 안 권한다");
-
-  assert.equal(FALLBACK_MODEL.needsF16, false, "대체본이 16비트를 요구하면 뜻이 없다");
-  assert.equal(FALLBACK_MODEL.lite, true, "대체본은 간이로 표시해야 화면이 그렇게 알린다");
-  assert.equal(ADVISOR_MODEL.lite, undefined, "기본 모델은 간이가 아니다");
-
-  // 화면이 고른 줄을 표시하려면 목록에서 찾을 수 있어야 한다.
-  assert.equal(modelChoiceKey(ADVISOR_MODEL), "default");
-  assert.equal(modelChoiceKey(FALLBACK_MODEL), "qwen35");
-
-  /*
-    고를 것은 둘이다. 후보를 늘어놓으면 무엇이 다른지 읽는 사람이 판단해야 한다.
-    실제로 돌려 보고 남은 둘만 둔다 — 깊은 해설과 가벼운 해설.
-  */
-  assert.equal(MODEL_CHOICES.length, 2, "고를 것은 둘");
-  // 하나는 어디서나 돌아야 한다. 그러지 않으면 f16 없는 기기가 다시 빈손이 된다.
-  assert.ok(MODEL_CHOICES.some((c) => !c.model.needsF16), "f16 없이 도는 줄이 있어야 한다");
-  // 설명은 `lite` 로 갈라 보인다. 둘이 같은 쪽이면 한쪽 설명이 영영 안 나온다.
-  assert.equal(MODEL_CHOICES.filter((c) => c.model.lite).length, 1, "가벼운 줄은 하나");
-
-  /*
-    그래픽카드가 못 돌리는 줄은 잠근다. 받고 나서 적재에서 죽는 것보다 낫다.
-    확인하는 중에는 잠그지 않는다 — 잠갔다 푸는 편이 더 헷갈린다.
-  */
-  const heavy: AdvisorModel = { id: "a", dtype: "q4f16", downloadMb: 1, needsF16: true, judge: "generate", writes: "free" };
-  const light: AdvisorModel = { id: "b", dtype: "q4", downloadMb: 1, needsF16: false, judge: "generate", writes: "free" };
-  assert.equal(modelBlocked(heavy, { supported: true, f16: false }), true, "f16 없으면 q4f16 은 잠근다");
-  assert.equal(modelBlocked(light, { supported: true, f16: false }), false, "16비트를 안 쓰면 잠그지 않는다");
-  assert.equal(modelBlocked(light, { supported: false, f16: false }), true, "WebGPU 가 없으면 둘 다 잠근다");
-  assert.equal(modelBlocked(heavy, { supported: true, f16: true }), false, "f16 이 있으면 잠그지 않는다");
-  assert.equal(modelBlocked(heavy, null), false, "확인 전에는 잠그지 않는다");
+  // 모델이 하나뿐이라 f16 없는 기기(GTX 10xx)에서도 돌아야 한다
+  assert.equal(ADVISOR_MODEL.needsF16, false, "쓰는 모델은 16비트를 요구하지 않는다");
 }
 
 {

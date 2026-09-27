@@ -18,7 +18,7 @@ import {
   type PreTrainedModel,
   type PreTrainedTokenizer,
 } from "@huggingface/transformers";
-import { FALLBACK_MODEL, MAX_NEW_TOKENS, NO_REPEAT_NGRAM } from "@/lib/advisor/config";
+import { MAX_NEW_TOKENS, NO_REPEAT_NGRAM } from "@/lib/advisor/config";
 import { createLoopGuard, trimLoop } from "@/lib/advisor/loopGuard";
 import { encodeJudgeRow, JUDGE_SPECIAL, type JudgeQuestion } from "@/lib/advisor/judge";
 import { readLargeFile, writeLargeFile } from "@/lib/advisor/largeFileCache";
@@ -196,8 +196,8 @@ function gates(values: Record<string, number>): OrtFeeds {
   return Object.fromEntries(gateInputs.map((name) => [name, new Ort("float32", Float32Array.from([values[name] ?? 0]), [])]));
 }
 
-/** 가벼운 모델 프롬프트 상한. 죽는 선(약 2,120)에서 여유를 둔다. */
-const LITE_PROMPT_LIMIT = 1900;
+/** 프롬프트 상한. 죽는 선(약 2,120)에서 여유를 둔다. */
+const PROMPT_LIMIT = 1900;
 
 async function generate(
   id: number,
@@ -222,21 +222,21 @@ async function generate(
   const lengthOf = (encoded: Record<string, unknown>) => ((dims: number[]) => dims[dims.length - 1] ?? 0)((encoded.input_ids as { dims: number[] }).dims);
   let inputs = encode(messages, system);
   /*
-   * 가벼운 모델은 프롬프트가 약 2,120토큰을 넘으면 WebGPU 실행이 "SafeIntOnOverflow" 로
+   * Qwen3.5 0.8B 는 프롬프트가 약 2,120토큰을 넘으면 WebGPU 실행이 "SafeIntOnOverflow" 로
    * 죽는다(2,113 은 되고 2,180 은 안 됐다). 생성 길이와는 무관하고 첫 읽기 길이만 문제다.
    * 챔피언 셋의 요약을 실은 질문이 약 2,300토큰이라 화면에 오류가 그대로 떴다.
    *
    * 넘치면 오래된 대화부터 뺀다. 그래도 넘치면 시스템 글의 뒤쪽을 자른다 — 재료가 줄어도
    * 답이 나오는 편이 오류보다 낫다.
    */
-  if (spec.id === FALLBACK_MODEL.id && lengthOf(inputs) > LITE_PROMPT_LIMIT) {
+  if (lengthOf(inputs) > PROMPT_LIMIT) {
     let history = messages;
-    while (history.length > 1 && lengthOf(inputs) > LITE_PROMPT_LIMIT) {
+    while (history.length > 1 && lengthOf(inputs) > PROMPT_LIMIT) {
       history = history.slice(history.length > 2 ? 2 : 1);
       inputs = encode(history, system);
     }
     let systemText = system;
-    while (systemText && lengthOf(inputs) > LITE_PROMPT_LIMIT) {
+    while (systemText && lengthOf(inputs) > PROMPT_LIMIT) {
       systemText = systemText.slice(0, Math.floor(systemText.length * 0.85));
       inputs = encode(history, systemText);
     }

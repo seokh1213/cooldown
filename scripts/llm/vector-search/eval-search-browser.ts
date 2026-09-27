@@ -5,12 +5,12 @@
  *   const m = await import("/scripts/llm/vector-search/eval-search-browser.ts");
  *   await m.run();            // 결과는 window.__searchEval
  */
-import { SWAPPABLE_FOR_TEST } from "../../../src/lib/advisor/config";
+import { ADVISOR_MODEL } from "../../../src/lib/advisor/config";
 import { loadDocVectors, nearest } from "../../../src/hooks/useAdvisor";
 import type { AdvisorRequest, AdvisorResponse } from "../../../src/lib/advisor/protocol";
 
 export async function run(limit = Infinity) {
-  const model = SWAPPABLE_FOR_TEST.qwen35;
+  const model = ADVISOR_MODEL;
   const retrieval = model.retrieval!;
   const vectors = await loadDocVectors(`/${retrieval.vectors}`);
   const rows = (await (await fetch("/research/llm-evals/vector-search/queries.jsonl")).text())

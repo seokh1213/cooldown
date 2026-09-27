@@ -12,7 +12,7 @@ import * as path from "node:path";
 import { indexRules, buildRuleAnswer, findMentionedRules, findRulesMentioning } from "./llm/lib/rules";
 import { findMechanics, mechanicsToText, type MechanicsIndex } from "./llm/lib/mechanics";
 import { PUBLIC_DATA_ROOT, resolvePatchVersion } from "./llm/lib/data";
-import { extractQuery, hitsToAnswer, hybridSearch, lexicalSearch, type SearchDoc } from "../src/lib/advisor/searchFallback";
+import { hitsToAnswer, hybridSearch, lexicalSearch, type SearchDoc } from "../src/lib/advisor/searchFallback";
 import { questionLanguage } from "../src/hooks/useAdvisor";
 import { asksAboutHelper } from "../src/lib/advisor/intent";
 
@@ -313,12 +313,6 @@ assert.equal(lexicalSearch(searchCorpus, "").length, 0, "빈 검색어는 빈 �
     "제목 낱말(press·attack)은 대소문자와 상관없이 찾는다",
   );
 }
-
-// 모델은 시키는 대로 안 할 때가 있다. 겉을 벗겨 낼 수 있어야 한다.
-assert.equal(extractQuery('"미니언 파밍 골드"'), "미니언 파밍 골드", "따옴표를 벗긴다");
-assert.equal(extractQuery("검색어: 와드 설치 위치"), "와드 설치 위치", "머리말을 벗긴다");
-assert.equal(extractQuery("와드 설치 위치\n설명: …"), "와드 설치 위치", "첫 줄만 쓴다");
-assert.equal(extractQuery("   "), "", "빈 응답은 빈 문자열이다");
 
 /**
  * 문서의 부록은 자료가 아니다.
