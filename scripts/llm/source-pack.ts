@@ -18,7 +18,7 @@
 import * as fs from "fs";
 import * as path from "path";
 import { loadStaticData } from "./lib/data";
-import { championCardToText, createChampionCardBuilder } from "./lib/facts";
+import { championCardToText, createChampionCardBuilder } from "../../src/lib/knowledge/facts";
 import { loadPatchGaps, patchGapsToText } from "./lib/patchGaps";
 import { PLAYBOOK_ROOT } from "./lib/playbook";
 

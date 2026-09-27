@@ -32,7 +32,7 @@ import type { Language } from "@/i18n";
 import type { AdvisorAnswer } from "./answer";
 import { labelSlots } from "./slotLabels";
 import { digestSections, type DigestSection } from "./prose";
-import { josa } from "../../../scripts/llm/lib/text";
+import { josa } from "@/lib/knowledge/text";
 
 type Compare = Extract<AdvisorAnswer, { kind: "compare" }>;
 const KEYS: DigestSection["key"][] = ["watch", "build", "fight"];

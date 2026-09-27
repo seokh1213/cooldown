@@ -11,7 +11,7 @@
  */
 import * as fs from "node:fs";
 import * as path from "node:path";
-import type { ChampionCard } from "../lib/facts";
+import type { ChampionCard } from "../../../src/lib/knowledge/facts";
 import { matchupAnswer } from "../lib/matchupEval";
 import { material } from "../precompute-matchups";
 import type { AdvisorAnswer } from "../../../src/lib/advisor/answer";

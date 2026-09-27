@@ -41,7 +41,7 @@ import { groundCommentary } from "./grounding";
 import { labelSlots } from "./slotLabels";
 import { digestSections, type DigestSection } from "./prose";
 import { translateDamage, translateTag } from "./promptLocale";
-import { josa } from "../../../scripts/llm/lib/text";
+import { josa } from "@/lib/knowledge/text";
 
 type Compare = Extract<AdvisorAnswer, { kind: "compare" }>;
 const KEYS: DigestSection["key"][] = ["watch", "build", "fight"];

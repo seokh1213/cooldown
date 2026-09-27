@@ -16,7 +16,7 @@ import { loadCuratedTips } from "./lib/knowledge";
 import { loadPlaybooks } from "./lib/playbook";
 import type { CuratedTip } from "./lib/knowledgeCore";
 import type { Playbook, PlaybookEntry } from "./lib/playbookCore";
-import type { ChampionCard } from "./lib/facts";
+import type { ChampionCard } from "../../src/lib/knowledge/facts";
 import {
   deriveEscapeClaims,
   deriveItemClaims,

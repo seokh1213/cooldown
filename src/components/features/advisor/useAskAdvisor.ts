@@ -15,8 +15,8 @@ import { nicknames } from "@/lib/advisor/intent";
 import { loadPrecomputed, precomputedDigest, precomputedMore } from "@/lib/advisor/precomputed";
 import { planAnswer, type AnswerPlan } from "@/lib/advisor/plan";
 import { docAnswer } from "@/lib/advisor/questionDocs";
-import { josa } from "../../../../scripts/llm/lib/text";
-import type { ChampionCard } from "../../../../scripts/llm/lib/facts";
+import { josa } from "@/lib/knowledge/text";
+import type { ChampionCard } from "@/lib/knowledge/facts";
 
 interface AskAdvisorOptions {
   advisor: UseAdvisorResult;

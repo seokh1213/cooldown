@@ -5,7 +5,7 @@
  * 원자가 있는 것. 판마다 같은 답(connectorAnswer)에서 조립만 바꾼다.
  */
 import * as fs from "fs";
-import type { ChampionCard } from "./lib/facts";
+import type { ChampionCard } from "../../src/lib/knowledge/facts";
 import type { MatchupNotes } from "../../src/lib/advisor/answer";
 import { matchupDigest } from "../../src/lib/advisor/prose";
 import { connectorAnswer, connectorData } from "./build-connector-data";

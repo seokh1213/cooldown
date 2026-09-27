@@ -3,15 +3,15 @@
  *
  * 카드 자료(`champion-cards-<locale>.json`)는 챔피언 이름과 스킬 이름만 로케일을
  * 따른다. 효과 태그·피해 유형·능력치 등급은 코드가 열쇠로 쓰는 값이라 한국어로
- * 두고(`scripts/llm/lib/cardWords`), 보이기 직전에 여기서 옮긴다. 옮길 자리는
+ * 두고(`src/lib/knowledge/cardWords`), 보이기 직전에 여기서 옮긴다. 옮길 자리는
  * 모델에게 보내는 프롬프트와 화면의 자료 카드 두 곳이다.
  *
  * 지시문까지 함께 옮겨야 한다. 지시문만 한국어로 남겨 두면 모델이 그 언어를
  * 따라가 영어로 물어도 한국어로 답한다. 실제로 en_US·zh_CN 에서 8문항 모두
  * 한국어 답이 나왔다.
  */
-import { DAMAGE, GRADE, RANGE, RATIO_STATS, SCALING, STATS, TAGS, pick } from "../../../scripts/llm/lib/cardWords";
-import { josa } from "../../../scripts/llm/lib/text";
+import { DAMAGE, GRADE, RANGE, RATIO_STATS, SCALING, STATS, TAGS, pick } from "@/lib/knowledge/cardWords";
+import { josa } from "@/lib/knowledge/text";
 import type { Language } from "@/i18n";
 
 export const translateTag = (tag: string, lang: Language): string => pick(TAGS, tag, lang);

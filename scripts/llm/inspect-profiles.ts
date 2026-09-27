@@ -5,7 +5,7 @@
  * 사용: npm run llm:profiles [-- --all]
  */
 import { loadStaticData } from "./lib/data";
-import { createChampionCardBuilder } from "./lib/facts";
+import { createChampionCardBuilder } from "../../src/lib/knowledge/facts";
 import { ARCHETYPE_LABEL, championBuildProfile } from "./lib/itemArchetype";
 
 const SAMPLE = [

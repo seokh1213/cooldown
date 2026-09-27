@@ -15,7 +15,7 @@
 import * as fs from "fs";
 import * as path from "path";
 import { toOfficialPatchVersion } from "../../../src/lib/staticDataRelease";
-import { stripHtml } from "./text";
+import { stripHtml } from "../../../src/lib/knowledge/text";
 
 const VERSION_URL = "https://ddragon.leagueoflegends.com/api/versions.json";
 const CACHE_ROOT = path.resolve(process.cwd(), "research", ".patch-cache");

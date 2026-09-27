@@ -5,8 +5,8 @@ import { useTranslation } from "@/i18n";
 import { fill } from "@/i18n/fill";
 import { ChampionIcon } from "@/components/ui/champion-icon";
 import type { AdvisorAnswer, CompareRow, MatchupNotes } from "@/lib/advisor/answer";
-import type { ChampionCard } from "../../../../scripts/llm/lib/facts";
-import { josa } from "../../../../scripts/llm/lib/text";
+import type { ChampionCard } from "@/lib/knowledge/facts";
+import { josa } from "@/lib/knowledge/text";
 import { Frame, NoteList, PatchLinkFooter } from "./AnswerCardFrame";
 
 export function CompareAnswerCard({

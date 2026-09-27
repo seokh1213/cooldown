@@ -7,7 +7,7 @@
  * 파일이 없거나 쌍이 없으면 undefined — 부르는 쪽이 노트 조립(`matchupDigest`)으로 간다.
  */
 import type { Language } from "@/i18n";
-import type { ChampionCard } from "../../../scripts/llm/lib/facts";
+import type { ChampionCard } from "@/lib/knowledge/facts";
 import { labelSlots } from "./slotLabels";
 import { DIGEST_HEADINGS, FIGHT_TITLES } from "./prose";
 import { dataUrl } from "./context";

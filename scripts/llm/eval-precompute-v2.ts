@@ -12,10 +12,10 @@
  */
 import * as fs from "fs";
 import * as path from "path";
-import type { ChampionCard } from "./lib/facts";
+import type { ChampionCard } from "../../src/lib/knowledge/facts";
 import { matchupAnswer } from "./lib/matchupEval";
 import { material, prompt, SECTION_KEYS, stripNumericAsides, type PrecomputedPair, type PromptVersion } from "./precompute-matchups";
-import { josa } from "./lib/text";
+import { josa } from "../../src/lib/knowledge/text";
 import type { AdvisorAnswer } from "../../src/lib/advisor/answer";
 import type { AdvisorData } from "../../src/lib/advisor/context";
 import { precomputedDigest, type PrecomputedFile } from "../../src/lib/advisor/precomputed";

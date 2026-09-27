@@ -9,7 +9,7 @@
  * 화면은 종류에 맞는 카드를 그리고, 모델은 이 구조를 받아 해설만 쓴다.
  * 모델이 수치를 입에 담을 일이 없어진다.
  */
-import type { ChampionCard, SpellFact, StatName } from "../../../scripts/llm/lib/facts";
+import type { ChampionCard, SpellFact, StatName } from "@/lib/knowledge/facts";
 import { ruleLines, ruleName, type RuleNotes } from "../../../scripts/llm/lib/rules";
 import type { Language } from "@/i18n";
 import type { SelectedNotes } from "./noteSelect";

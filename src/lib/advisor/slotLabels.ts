@@ -1,4 +1,4 @@
-import type { ChampionCard } from "../../../scripts/llm/lib/facts";
+import type { ChampionCard } from "@/lib/knowledge/facts";
 
 /**
  * 스킬 이름 앞에 슬롯 문자를 붙인다.

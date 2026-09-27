@@ -1,4 +1,4 @@
-import type { ChampionCard } from "../../../scripts/llm/lib/facts";
+import type { ChampionCard } from "@/lib/knowledge/facts";
 import { isSpellFocusWord } from "./spellFocus";
 
 /**

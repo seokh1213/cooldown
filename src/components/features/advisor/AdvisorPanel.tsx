@@ -9,7 +9,7 @@ import { useTranslation } from "@/i18n";
 import { fill } from "@/i18n/fill";
 import type { AdvisorData } from "@/lib/advisor/context";
 import { answerKey } from "@/lib/advisor/answer";
-import type { ChampionCard } from "../../../../scripts/llm/lib/facts";
+import type { ChampionCard } from "@/lib/knowledge/facts";
 import { usePageContext } from "@/hooks/usePageContext";
 import { WIDE_VIEWPORT_MIN, useViewportWidth } from "@/hooks/useWideViewport";
 import type { UseAdvisorResult } from "@/hooks/useAdvisor";

@@ -15,8 +15,8 @@ import {
   resolvePatchVersion,
   type LlmLocale,
 } from "./lib/data";
-import { DAMAGE, GRADE, RANGE, RATIO_STATS, TAGS, missingCardWords } from "./lib/cardWords";
-import { createChampionCardBuilder, type ChampionCard } from "./lib/facts";
+import { DAMAGE, GRADE, RANGE, RATIO_STATS, TAGS, missingCardWords } from "../../src/lib/knowledge/cardWords";
+import { createChampionCardBuilder, type ChampionCard } from "../../src/lib/knowledge/facts";
 import { loadSpellOverrides } from "./lib/spellOverrides";
 
 export interface ChampionCardFile {
@@ -143,7 +143,7 @@ function main() {
     for (const [what, missing] of gaps) {
       console.error(`${what} 번역 누락 ${missing.length}건: ${missing.join(", ")}`);
     }
-    console.error("scripts/llm/lib/cardWords.ts 에 세 언어 표기를 채운 뒤 다시 돌리십시오.");
+    console.error("src/lib/knowledge/cardWords.ts 에 세 언어 표기를 채운 뒤 다시 돌리십시오.");
     process.exit(1);
   }
 

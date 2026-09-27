@@ -10,7 +10,7 @@ import type {
   NormalizedSummonerSpell,
 } from "../../../src/types/combatNormalized";
 import type { ItemTier } from "../../../src/lib/itemTierUtils";
-import type { ChampionCard } from "./facts";
+import type { ChampionCard } from "../../../src/lib/knowledge/facts";
 import {
   ANTI_HEAL_RE,
   ARCHETYPE_LABEL,
@@ -19,7 +19,7 @@ import {
   type ItemArchetype,
   type WikiItemInfo,
 } from "./itemArchetype";
-import { stripHtml, truncate } from "./text";
+import { stripHtml, truncate } from "../../../src/lib/knowledge/text";
 
 const STAT_LABEL: Record<string, string> = {
   MAX_HEALTH: "체력",

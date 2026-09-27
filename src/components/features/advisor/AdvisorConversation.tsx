@@ -6,7 +6,7 @@
 import { useTranslation } from "@/i18n";
 import type { PageContext } from "@/lib/advisor/pageContext";
 import type { AdvisorTurn } from "@/hooks/useAdvisorTurns";
-import type { ChampionCard } from "../../../../scripts/llm/lib/facts";
+import type { ChampionCard } from "@/lib/knowledge/facts";
 import { AdvisorEmptyState } from "./AdvisorEmptyState";
 import { AdvisorTurnView } from "./AdvisorTurnView";
 

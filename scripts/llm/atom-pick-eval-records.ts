@@ -7,7 +7,7 @@
  * 사용: npx tsx scripts/llm/atom-pick-eval-records.ts <out.jsonl>
  */
 import * as fs from "fs";
-import type { ChampionCard } from "./lib/facts";
+import type { ChampionCard } from "../../src/lib/knowledge/facts";
 import type { MatchupNotes } from "../../src/lib/advisor/answer";
 import type { Playbook } from "./lib/playbookCore";
 import { atomCandidates, eligibleNotes } from "./lib/atomAssembly";

@@ -53,8 +53,8 @@ import { buildSearchCorpus, hitsToAnswer, buildRetrievalDocs, hybridSearch, lexi
 import { questionLanguage } from "./questionLanguage";
 import type { JudgeQuestion } from "./judge";
 import { askedRules, docAnswer, isGameWord, lexicalHit, searchesByVector } from "./questionDocs";
-import { josa } from "../../../scripts/llm/lib/text";
-import type { ChampionCard } from "../../../scripts/llm/lib/facts";
+import { josa } from "@/lib/knowledge/text";
+import type { ChampionCard } from "@/lib/knowledge/facts";
 
 /** 판정 헤드(`public/models/judge/kev-b3e.{json,bin}`). 이 헤드 하나로 갈래(아홉 칸)·주제·대화 흐름을 모두 가른다 */
 export const KEV_HEAD = "kev-b3e";

@@ -4,7 +4,7 @@
  * 컨텍스트 = [자동 도출 사실 카드] + [규칙 기반 아이템/룬/주문 후보] + [큐레이션 팁]
  * 모델에게는 "주어진 자료 밖의 수치·아이템명을 만들지 말 것" 을 강하게 요구한다.
  */
-import { championCardToText, type ChampionCard } from "./facts";
+import { championCardToText, type ChampionCard } from "../../../src/lib/knowledge/facts";
 import { tipsToText, type CuratedTip } from "./knowledge";
 import {
   itemSelectionToText,

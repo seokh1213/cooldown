@@ -39,7 +39,7 @@ import { normalizeChampion } from "../data-pipeline/normalization/champion";
 import { fetchCDragonChampion } from "../data-pipeline/sources/cdragon-champion";
 import { extractPassiveSpell } from "../passive-tooltip-data";
 import { PUBLIC_DATA_ROOT, resolvePatchVersion } from "./lib/data";
-import { stripHtml } from "./lib/text";
+import { stripHtml } from "../../src/lib/knowledge/text";
 
 const VERSION_URL = "https://ddragon.leagueoflegends.com/api/versions.json";
 const CACHE_ROOT = path.resolve(process.cwd(), "research", ".patch-cache");

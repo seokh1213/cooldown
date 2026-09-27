@@ -11,7 +11,7 @@
  *
  * **학습한 글자와 한 글자도 다르면 안 된다.** `scripts/llm/kev-agent/b3/build_b3.py` 와 같은 문구다.
  */
-import type { ChampionCard } from "../../../scripts/llm/lib/facts";
+import type { ChampionCard } from "@/lib/knowledge/facts";
 import type { AdvisorAnswer } from "./answer";
 
 export type Act = "followup" | "more" | "enemy" | "mine" | "flip" | "new";

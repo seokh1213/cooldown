@@ -10,7 +10,7 @@
 import * as fs from "fs";
 import * as path from "path";
 import { PUBLIC_DATA_ROOT, resolvePatchVersion } from "./lib/data";
-import type { ChampionCard } from "./lib/facts";
+import type { ChampionCard } from "../../src/lib/knowledge/facts";
 import { fingerprint, loadFingerprints, saveFingerprints } from "./lib/championFingerprint";
 
 const patch = resolvePatchVersion();

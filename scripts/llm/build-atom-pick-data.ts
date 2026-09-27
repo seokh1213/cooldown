@@ -17,7 +17,7 @@ import { spawn } from "child_process";
 import * as fs from "fs";
 import * as os from "os";
 import * as path from "path";
-import type { ChampionCard } from "./lib/facts";
+import type { ChampionCard } from "../../src/lib/knowledge/facts";
 import type { MatchupNotes } from "../../src/lib/advisor/answer";
 import { atomCandidates, type SectionCandidates } from "./lib/atomAssembly";
 import { connectorAnswer, connectorData } from "./build-connector-data";

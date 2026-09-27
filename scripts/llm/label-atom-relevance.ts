@@ -13,7 +13,7 @@ import * as os from "os";
 import { atomSections, eligibleNotes } from "./lib/atomAssembly";
 import type { Playbook } from "./lib/playbookCore";
 import type { AtomFile } from "./build-note-atoms";
-import type { ChampionCard } from "./lib/facts";
+import type { ChampionCard } from "../../src/lib/knowledge/facts";
 import type { MatchupNotes } from "../../src/lib/advisor/answer";
 import { connectorAnswer, connectorData } from "./build-connector-data";
 import { evalItems, focusOf } from "./eval-connector";

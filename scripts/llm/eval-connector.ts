@@ -14,7 +14,7 @@
 import { spawn } from "child_process";
 import * as fs from "fs";
 import * as os from "os";
-import type { ChampionCard } from "./lib/facts";
+import type { ChampionCard } from "../../src/lib/knowledge/facts";
 import { groundCommentary } from "../../src/lib/advisor/grounding";
 import { matchupDigest } from "../../src/lib/advisor/prose";
 import { PAIRS, repeatedSpan } from "./lib/matchupEval";

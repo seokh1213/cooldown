@@ -18,8 +18,8 @@
 import * as crypto from "crypto";
 import * as fs from "fs";
 import * as path from "path";
-import type { SpellOverrides } from "./facts";
-import { withoutNumbers } from "./tooltip-sentences";
+import type { SpellOverrides } from "../../../src/lib/knowledge/facts";
+import { withoutNumbers } from "../../../src/lib/knowledge/tooltip-sentences";
 
 export const SPELL_OVERRIDE_FILE = path.resolve(process.cwd(), "knowledge", "spell-effects.json");
 

@@ -8,7 +8,7 @@
  *   npm run llm:items -- --champion Aatrox # 챔피언 선호 역할군과 추천 풀
  */
 import { loadStaticData } from "./lib/data";
-import { createChampionCardBuilder } from "./lib/facts";
+import { createChampionCardBuilder } from "../../src/lib/knowledge/facts";
 import {
   ARCHETYPE_LABEL,
   championBuildProfile,

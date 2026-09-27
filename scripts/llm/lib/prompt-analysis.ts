@@ -1,4 +1,4 @@
-import type { ChampionCard } from "./facts";
+import type { ChampionCard } from "../../../src/lib/knowledge/facts";
 import type { MatchupContext } from "./prompt";
 
 const CC_EFFECTS = new Set(["기절", "에어본", "침묵", "속박", "도발", "매혹", "공포", "억제", "강제 이동(넉백/끌기)"]);

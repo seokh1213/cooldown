@@ -3,7 +3,7 @@
  *
  * 어느 쪽이 내 챔피언인지는 여기서 가르지 않는다. 판정기와 문형(`conversation.ts`·`routeAsk.ts`)이 가른다.
  */
-import type { ChampionCard } from "../../../scripts/llm/lib/facts";
+import type { ChampionCard } from "@/lib/knowledge/facts";
 import type { AdvisorData } from "./context";
 import championAliasFile from "../../../knowledge/champion-aliases.json";
 

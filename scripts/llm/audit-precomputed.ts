@@ -14,7 +14,7 @@ import * as fs from "fs";
 import * as path from "path";
 import { PUBLIC_DATA_ROOT, resolvePatchVersion } from "./lib/data";
 import { material, SECTION_KEYS } from "./precompute-matchups";
-import type { ChampionCard } from "./lib/facts";
+import type { ChampionCard } from "../../src/lib/knowledge/facts";
 
 const patch = resolvePatchVersion();
 const dir = path.join(PUBLIC_DATA_ROOT, patch, "llm", "matchups");

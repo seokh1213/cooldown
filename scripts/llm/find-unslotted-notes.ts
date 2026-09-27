@@ -11,7 +11,7 @@ import * as fs from "fs";
 import * as path from "path";
 import { PUBLIC_DATA_ROOT, resolvePatchVersion } from "./lib/data";
 import { loadPlaybooks } from "./lib/playbook";
-import type { ChampionCard } from "./lib/facts";
+import type { ChampionCard } from "../../src/lib/knowledge/facts";
 
 const SKILL_CATEGORIES = new Set(["skill", "combo", "laning", "teamfight", "escape-window"]);
 const patch = resolvePatchVersion();

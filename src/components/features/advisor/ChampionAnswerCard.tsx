@@ -18,7 +18,7 @@ import {
 } from "@/lib/advisor/answer";
 import type { SelectedNotes } from "@/lib/advisor/noteSelect";
 import { translateRange, translateStat, translateTag } from "@/lib/advisor/promptLocale";
-import type { ChampionCard } from "../../../../scripts/llm/lib/facts";
+import type { ChampionCard } from "@/lib/knowledge/facts";
 import { Frame, KvTable, NoteList, PatchLinkFooter } from "./AnswerCardFrame";
 
 export function ChampionAnswerCard({

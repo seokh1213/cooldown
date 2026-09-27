@@ -11,13 +11,13 @@
 import type {
   ChampionSpellSlot,
   LevelScaledScalar,
-} from "../../../src/types/combatNormalized";
+} from "../../types/combatNormalized";
 import type {
   ChampionAbility,
   ChampionRecord,
   RiotChampionMeta,
   WikiChampionMeta,
-} from "../../../src/lib/knowledge/sourceRecords";
+} from "./sourceRecords";
 import { formatLevels, round, stripHtml } from "./text";
 import { detectDamageTypes, detectEffects } from "./facts-analysis";
 import { abilityCausesDash, championMovesItself } from "./facts-movement";

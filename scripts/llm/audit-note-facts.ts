@@ -16,7 +16,7 @@
 import * as fs from "fs";
 import * as path from "path";
 import { PUBLIC_DATA_ROOT, resolvePatchVersion } from "./lib/data";
-import type { ChampionCard } from "./lib/facts";
+import type { ChampionCard } from "../../src/lib/knowledge/facts";
 import type { AtomFile } from "./build-note-atoms";
 
 const arg = (name: string) => {

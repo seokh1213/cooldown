@@ -12,7 +12,7 @@
  * 사용: npm run llm:validate
  */
 import { loadStaticData } from "./lib/data";
-import { createChampionCardBuilder } from "./lib/facts";
+import { createChampionCardBuilder } from "../../src/lib/knowledge/facts";
 import { loadCuratedTips } from "./lib/knowledge";
 import { loadPlaybooks, type PlaybookRefs } from "./lib/playbook";
 

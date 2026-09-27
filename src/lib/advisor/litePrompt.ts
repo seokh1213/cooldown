@@ -27,7 +27,7 @@ import type { Language } from "@/i18n";
 import type { AdvisorAnswer } from "./answer";
 import { extremeStatsLine } from "./answer";
 import { translateDamage, translateTag } from "./promptLocale";
-import { josa } from "../../../scripts/llm/lib/text";
+import { josa } from "@/lib/knowledge/text";
 
 const EXAMPLE_KO =
   "애니 P 방화광을 채워 둔 채로 있으면 카타리나가 E 순보로 들어오는 순간 애니 Q 붕괴로 바로 기절시킬 수 있습니다. " +

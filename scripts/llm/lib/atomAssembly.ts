@@ -20,7 +20,7 @@ import type { DigestSection } from "../../../src/lib/advisor/prose";
 import type { Language } from "../../../src/i18n";
 import { labelSlots } from "../../../src/lib/advisor/slotLabels";
 import type { Atom, AtomFile } from "../build-note-atoms";
-import type { ChampionCard } from "./facts";
+import type { ChampionCard } from "../../../src/lib/knowledge/facts";
 import { selectPlaybook, type Playbook } from "./playbookCore";
 
 /**

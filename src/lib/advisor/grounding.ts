@@ -21,7 +21,7 @@
  * 스트리밍 중에도 돌아야 하므로 **끝난 문장만** 본다. 마지막 조각은 아직 자라는 중이라
  * 손대지 않고 그대로 둔다. 다 쓰고 나면 그 조각도 문장이 되어 한 번 더 걸린다.
  */
-import type { ChampionCard } from "../../../scripts/llm/lib/facts";
+import type { ChampionCard } from "@/lib/knowledge/facts";
 import type { AdvisorAnswer } from "./answer";
 import type { Language } from "@/i18n";
 import { promptWords, translateDamage, translateScaling, translateTag } from "./promptLocale";

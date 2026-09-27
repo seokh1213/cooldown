@@ -1,7 +1,7 @@
 # knowledge/ — 사람이 검증한 지식 계층
 
 LLM 상성 코치가 참고한다. 데이터에서 자동 계산되는 사실(스탯 등급, 계수, 스킬 효과 태그)은
-`scripts/llm/lib/facts.ts` 가 만든다. 여기에는 **데이터만으로 알 수 없는 "왜 / 언제"** 만 적는다.
+`src/lib/knowledge/facts.ts` 가 만든다. 여기에는 **데이터만으로 알 수 없는 "왜 / 언제"** 만 적는다.
 
 설계 배경과 측정 결과는 `docs/local-llm-advisor.md` 참고.
 

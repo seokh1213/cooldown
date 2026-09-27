@@ -1,4 +1,4 @@
-import type { ChampionCard } from "../../../scripts/llm/lib/facts";
+import type { ChampionCard } from "@/lib/knowledge/facts";
 
 /**
  * 질문이 무엇을 묻는지 판정기(kev 헤드)로 가른다

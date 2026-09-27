@@ -6,7 +6,7 @@ import { useTranslation } from "@/i18n";
 import type { Translations } from "@/i18n/translations";
 import { fill } from "@/i18n/fill";
 import type { PageContext } from "@/lib/advisor/pageContext";
-import type { ChampionCard } from "../../../../scripts/llm/lib/facts";
+import type { ChampionCard } from "@/lib/knowledge/facts";
 
 /** 빈 화면 예시는 화면 맥락을 따른다. 말파이트 표를 보고 있으면 말파이트 예시. */
 function exampleQuestions(copy: Translations["advisor"], contextCards: ChampionCard[], context: Pick<PageContext, "route" | "tab">): string[] {

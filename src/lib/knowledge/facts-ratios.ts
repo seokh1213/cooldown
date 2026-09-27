@@ -1,4 +1,4 @@
-import type { ChampionAbility } from "../../../src/lib/knowledge/sourceRecords";
+import type { ChampionAbility } from "./sourceRecords";
 import type { ScalingProfile, SpellFact } from "./facts";
 import { round } from "./text";
 

@@ -18,7 +18,7 @@
 
 | 계층 | 출처 | 생성 방식 | 예시 | 코드 |
 |---|---|---|---|---|
-| A. 사실 카드 | `champions-normalized-*.json` + ddragon 보조 | 빌드 시 결정적 계산 | "아트록스 방어력 38, 전체 중 상위 6%", "피오라 W: 마법 피해, 계수 주문력 100%, 효과 기절" | `lib/facts.ts` |
+| A. 사실 카드 | `champions-normalized-*.json` + ddragon 보조 | 빌드 시 결정적 계산 | "아트록스 방어력 38, 전체 중 상위 6%", "피오라 W: 마법 피해, 계수 주문력 100%, 효과 기절" | `src/lib/knowledge/facts.ts` |
 | B. 후보 선별 | items / runes / summoner normalized | 질의 시 규칙 기반 retrieval | 상대 계수가 AD → 방어력 아이템만 티어별로, 상대에게 회복이 있으면 치유 감소 목록 | `lib/retrieval.ts` |
 | C. 지식 계층 | `knowledge/playbooks/*.json`, `knowledge/tips/*.json` | 사람이 작성, 조건으로 선택 | 콤보 "Q 1타 → E → 평타 → W → Q 2·3타", "응수가 살아 있으면 W를 아낀다" | `lib/playbook.ts`, `lib/knowledge.ts` |
 | D. 결론 조립 | A+B+C | 코드가 문장·목록으로 확정 | "우선 올릴 방어 스탯은 방어력", "룬: 정복자, 최후의 저항" | `lib/prompt.ts` |

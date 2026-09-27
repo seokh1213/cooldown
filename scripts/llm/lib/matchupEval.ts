@@ -12,8 +12,8 @@
  *   슬롯      화면에 나간 글에서 스킬 이름 앞에 P/Q/W/E/R 이 붙은 비율.
  *   틀 베끼기 재료의 고정 문구("1레벨 기준 전체 챔피언 중")를 옮겨 적은 횟수.
  */
-import type { ChampionCard } from "./facts";
-import { josa } from "./text";
+import type { ChampionCard } from "../../../src/lib/knowledge/facts";
+import { josa } from "../../../src/lib/knowledge/text";
 import { buildCompareAnswer, type AdvisorAnswer } from "../../../src/lib/advisor/answer";
 import { buildCommentaryPrompt } from "../../../src/lib/advisor/commentaryPrompt";
 import type { AdvisorData } from "../../../src/lib/advisor/context";

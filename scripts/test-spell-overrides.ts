@@ -15,10 +15,10 @@
 import assert from "node:assert/strict";
 import * as fs from "node:fs";
 import * as path from "node:path";
-import type { ChampionCard } from "./llm/lib/facts";
+import type { ChampionCard } from "../src/lib/knowledge/facts";
 import { PUBLIC_DATA_ROOT, resolvePatchVersion } from "./llm/lib/data";
 import { digestSpellText, loadSpellOverrides } from "./llm/lib/spellOverrides";
-import { detectEffects } from "./llm/lib/facts-analysis";
+import { detectEffects } from "../src/lib/knowledge/facts-analysis";
 
 const llmDir = path.join(PUBLIC_DATA_ROOT, resolvePatchVersion(), "llm");
 const cards = (

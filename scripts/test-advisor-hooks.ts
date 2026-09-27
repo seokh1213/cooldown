@@ -7,7 +7,7 @@
 import assert from "node:assert/strict";
 import * as fs from "node:fs";
 import * as path from "node:path";
-import type { ChampionCard } from "./llm/lib/facts";
+import type { ChampionCard } from "../src/lib/knowledge/facts";
 import type { Playbook } from "./llm/lib/playbookCore";
 import { selectPlaybook, withHooks } from "./llm/lib/playbookCore";
 import { PUBLIC_DATA_ROOT, resolvePatchVersion } from "./llm/lib/data";

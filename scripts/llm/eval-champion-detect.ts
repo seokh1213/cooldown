@@ -15,7 +15,7 @@
  */
 import * as fs from "fs";
 import * as path from "path";
-import type { ChampionCard } from "./lib/facts";
+import type { ChampionCard } from "../../src/lib/knowledge/facts";
 import { PUBLIC_DATA_ROOT, resolvePatchVersion } from "./lib/data";
 import { championAliases, type AdvisorData } from "../../src/lib/advisor/context";
 import { detectChampions } from "../../src/lib/advisor/intent";

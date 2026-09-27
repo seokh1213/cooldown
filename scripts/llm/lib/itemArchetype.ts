@@ -15,7 +15,7 @@
  */
 import type { NormalizedItem } from "../../../src/types/combatNormalized";
 import { getOfficialLikeItemTier, type ItemTier } from "../../../src/lib/itemTierUtils";
-import { stripHtml } from "./text";
+import { stripHtml } from "../../../src/lib/knowledge/text";
 
 export type ItemArchetype =
   | "bruiser"

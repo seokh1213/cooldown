@@ -11,7 +11,7 @@
  * 내려받기를 거절한 사용자에게도 이 답은 줄 수 있다.
  */
 import { deriveThreatOrder, renderDecidedSections, type MatchupContext } from "./prompt";
-import { josa } from "./text";
+import { josa } from "../../../src/lib/knowledge/text";
 
 /** 소제목 아래에 지식 카드 문장을 그대로 싣는다 */
 function section(title: string, lines: string[]): string | undefined {

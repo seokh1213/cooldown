@@ -7,7 +7,7 @@
 import assert from "node:assert/strict";
 import * as fs from "node:fs";
 import * as path from "node:path";
-import type { ChampionCard, SpellFact } from "./llm/lib/facts";
+import type { ChampionCard, SpellFact } from "../src/lib/knowledge/facts";
 import { indexRules, type RuleNotes } from "./llm/lib/rules";
 import { PUBLIC_DATA_ROOT, resolvePatchVersion } from "./llm/lib/data";
 import {
@@ -36,7 +36,7 @@ import {
 import { buildCommentaryPrompt } from "../src/lib/advisor/commentaryPrompt";
 import { detectSpellFocus } from "../src/lib/advisor/spellFocus";
 import { editDistance, suggestChampions } from "../src/lib/advisor/championTypo";
-import { TAGS, DAMAGE, GRADE, RANGE, RATIO_STATS, missingCardWords } from "./llm/lib/cardWords";
+import { TAGS, DAMAGE, GRADE, RANGE, RATIO_STATS, missingCardWords } from "../src/lib/knowledge/cardWords";
 import { readPageContext } from "../src/lib/advisor/pageContext";
 import { isSmallTalk, nicknames } from "../src/lib/advisor/intent";
 import { dehydrateAnswer, reviveAnswer, reviveTurns, type StoredAnswer, type StoredTurn } from "../src/lib/advisor/history";
