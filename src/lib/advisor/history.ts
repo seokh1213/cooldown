@@ -5,7 +5,8 @@
  * 수백 KB 가 된다. 카드는 id 로만 남기고(dehydrate) 불러올 때 자료에서 다시 채운다(revive).
  * 자료가 바뀌어 id 가 사라진 답은 조용히 버린다 — 낡은 카드를 현재값처럼 보이는 것이 최악이다.
  */
-import type { AdvisorAnswer, CompareRow, Fact, ItemEffect, ItemVerdict, SpellFocus } from "./answer";
+import type { AdvisorAnswer, CompareRow, Fact, ItemEffect, ItemVerdict } from "./answer";
+import type { SpellFocus } from "./spellFocus";
 import type { AdvisorData } from "./context";
 import type { NotePerspective } from "./noteSelect";
 import type { AdvisorTurn } from "@/hooks/useAdvisor";

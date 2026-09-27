@@ -1,0 +1,63 @@
+export type SpellFocus =
+  | "cooldown"
+  | "cost"
+  | "ratio"
+  | "damage"
+  /** 툴팁 본문에서 찾아야 하는 효과 수치 (마저 감소, 둔화율 …) */
+  | "effect";
+
+/**
+ * 질문이 스킬의 어느 사실을 묻는지.
+ *
+ * 사람 말은 다양하지만 겨냥하는 칸은 몇 개 안 된다. 이 표는 **데이터가 아니라 의도 어휘**라
+ * `detectSlot` 의 "궁·궁극기" 와 같은 성격이다.
+ *
+ * **세 언어를 한 표에 담는다.** 한국어만 적어 두었더니 영어·중국어에서는 아무것도
+ * 안 걸렸다. 갈래를 가리는 일은 모델이 하지만(`routeAsk`), 어느 **수치**를 묻는지는
+ * 라우터가 다루지 않아 이 표가 유일한 길이다. 실제로 재 보니 여섯 갈래 물음에서
+ * 영어·중국어는 규칙이 하나도 안 걸렸다.
+ *
+ * 세 언어를 한 정규식에 섞어도 부딪히지 않는다. 한국어 물음에 "cooldown" 이 들어
+ * 있을 까닭이 없고, 그 반대도 마찬가지다.
+ */
+const FOCUS_LEXICON: Array<[SpellFocus, RegExp]> = [
+  ["cooldown", /쿨(타임|다운)?|재사용|\bcd\b|cool\s*down|冷却|CD/i],
+  ["cost", /마나|소모|코스트|기력|분노|비용|\bmana\b|\bcost\b|energy|fury|法力|消耗|能量/i],
+  ["ratio", /계수|주문력\s*계수|공격력\s*계수|\bap\b|\bad\b|ratio|scaling|coefficient|加成|系数/i],
+  ["damage", /피해|데미지|딜(량)?|대미지|\bdamage\b|\bdmg\b|伤害/i],
+];
+
+/**
+ * 본문에서 찾을 효과 낱말. 줄임말을 툴팁이 실제로 쓰는 말로 편다.
+ * "마저" 라고 물으면 툴팁의 "마법 저항력" 문장을 찾아야 한다.
+ *
+ * 찾을 낱말도 세 언어를 함께 담는다. 툴팁 본문이 그 나라 말이므로, 영어로 물으면
+ * 영어 툴팁에서 영어 낱말을 찾아야 한다. 어느 하나만 맞으면 그 문장이 걸린다.
+ */
+const EFFECT_ALIASES: Array<[RegExp, string[]]> = [
+  [/마저|마법\s*저항|magic\s*resist|魔抗|魔法抗性/i, ["마법 저항력", "Magic Resist", "魔法抗性"]],
+  [/방깎|방어력\s*감소|방어력|\barmor\b|护甲/i, ["방어력", "Armor", "护甲"]],
+  [/둔화|슬로우|\bslow\b|减速/i, ["둔화", "Slow", "减速"]],
+  [/기절|스턴|\bstun\b|眩晕/i, ["기절", "Stun", "眩晕"]],
+  [/보호막|실드|\bshield\b|护盾/i, ["보호막", "Shield", "护盾"]],
+  [/회복|힐|\bheal\b|治疗|回复/i, ["회복", "Heal", "治疗", "回复"]],
+  [/사거리|거리|범위|\brange\b|射程|范围/i, ["사거리", "범위", "Range", "射程", "范围"]],
+  [/지속(시간)?|초\s*동안|duration|持续/i, ["초 동안", "초간", "second", "seconds", "秒"]],
+  [/침묵|silence|沉默/i, ["침묵", "Silence", "沉默"]],
+  [/에어본|띄우|공중|airborne|knock\s*up|击飞/i, ["공중", "띄", "Airborne", "击飞"]],
+];
+
+export function detectSpellFocus(question: string): { focus: SpellFocus; keywords: string[] } | undefined {
+  for (const [alias, words] of EFFECT_ALIASES) {
+    if (alias.test(question)) return { focus: "effect", keywords: words };
+  }
+  for (const [focus, pattern] of FOCUS_LEXICON) {
+    if (pattern.test(question)) return { focus, keywords: [] };
+  }
+  return undefined;
+}
+
+/** 효과·수치를 묻는 낱말인가. 챔피언 이름 오타 후보에서 뺀다(`suggestChampions`). */
+export function isSpellFocusWord(token: string): boolean {
+  return FOCUS_LEXICON.some(([, pattern]) => pattern.test(token)) || EFFECT_ALIASES.some(([alias]) => alias.test(token));
+}

@@ -24,7 +24,6 @@ import {
   spellFocusValue,
   buildRuleAnswer,
   buildSpellAnswer,
-  detectSpellFocus,
   detectStat,
   detectLevel,
   editDistance,
@@ -35,6 +34,7 @@ import {
   suggestChampions,
   buildCommentaryPrompt,
 } from "../src/lib/advisor/answer";
+import { detectSpellFocus } from "../src/lib/advisor/spellFocus";
 import { TAGS, DAMAGE, GRADE, RANGE, RATIO_STATS, missingCardWords } from "./llm/lib/cardWords";
 import { readPageContext } from "../src/lib/advisor/pageContext";
 import { isSmallTalk, nicknames } from "../src/lib/advisor/intent";

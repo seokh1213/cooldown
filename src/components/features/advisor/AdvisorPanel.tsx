@@ -53,14 +53,13 @@ import {
   matchupSidesByPhrase,
   buildRuleAnswer as buildRuleCard,
   buildSpellAnswer as buildSpellCard,
-  detectSpellFocus,
   itemHeadline,
   looksChampionDirected,
   spellSummary,
   suggestChampions,
   type AdvisorAnswer,
-  type SpellFocus,
 } from "@/lib/advisor/answer";
+import { detectSpellFocus, type SpellFocus } from "@/lib/advisor/spellFocus";
 import { isSmallTalk, nicknames } from "@/lib/advisor/intent";
 import {
   JUDGE_KIND9_CRITERIA,
