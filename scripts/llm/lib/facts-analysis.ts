@@ -414,6 +414,61 @@ export function detectDamageTypes(text: string): DamageType[] {
 const EFFECT_WORDS =
   /^(공포|침묵|속박|도발|매혹|기절|억제|둔화|처형|광역|회복|보호막|은신|분신|강인함|관통|돌진|환생|부활|변신)$/;
 
+/** 표가 아니라 문장 판정으로 가르는 태그. 주어와 대상을 봐야 한다. 한 문장이라도 참이면 그 태그다. */
+const SENTENCE_JUDGED = new Map<string, (sentence: string) => boolean>([
+  ["적 마법 저항력 감소", (s) => !isMinionOnly(s) && shredsEnemy(s, "마법 저항력")],
+  ["적 방어력 감소", (s) => !isMinionOnly(s) && shredsEnemy(s, "방어력")],
+  ["자기 마법 저항력 증가", (s) => gainsResist(s, "마법 저항력")],
+  ["자기 방어력 증가", (s) => gainsResist(s, "방어력")],
+  ["자기 공격력 증가", (s) => !isMinionOnly(s) && gainsAttackDamage(s)],
+  ["치명타", (s) => gainsCrit(s)],
+  ["부활", (s) => revives(s)],
+  ["연계 강화", (s) => !isMinionOnly(s) && amplifiedByFollowUp(s)],
+  ["표식 부여", (s) => appliesMark(s)],
+  ["성장 스택", (s) => growsWithStacks(s)],
+  ["스킬 강화", (s) => /스킬(을|이) 강화/.test(s)],
+  ["회복", (s) => !isMinionOnly(s) && healsHealth(s)],
+  ["최대 체력 비례 피해", (s) => !isMinionOnly(s) && /최대 체력의|최대 체력에 비례/.test(s) && scalesDamage(s)],
+  ["잃은 체력 비례", (s) => !isMinionOnly(s) && /잃은 체력/.test(s) && scalesDamage(s)],
+  ["은신", (s) => !isMinionOnly(s) && gainsStealth(s)],
+  ["피해 면역", (s) => !isMinionOnly(s) && grantsImmunity(s)],
+]);
+
+/** 표(`EFFECT_RULES`)의 정규식으로 가르는 태그가 이 본문에 걸리는가. */
+function matchesRule(label: string, re: RegExp, sentences: string[]): boolean {
+  // 미니언에게만 걸리는 문장은 챔피언을 상대할 때의 조언이 아니다. 시비르 W 의
+  // "체력이 낮은 미니언을 즉시 처치합니다" 가 처형으로 잡혀 "체력을 확보해 처형
+  // 구간에서 벗어나라" 는 엉뚱한 말이 나왔다. 전체 본문 대신 문장으로 본다.
+  // 수치도 함께 지운다. 피즈 W 의 "다음 기본 공격이 (…)의 마법 피해를 추가로
+  // 입힙니다" 는 낱말로는 붙어 있는데 계수가 끼어 창 밖으로 밀려나 있었다.
+  if (
+    !sentences.some(
+      (sentence) =>
+        !isMinionOnly(sentence) &&
+        re.test(withoutNumbers(sentence)) &&
+        !inCondition(label, sentence, re),
+    )
+  )
+    return false;
+  /*
+   * 군중 제어 태그는 문장 단위로 판정한다.
+   *
+   * 예: 아트록스 R "근처 미니언이 3초 동안 공포에 떨게 하고" — 챔피언에게 걸리는 공포가 아니다.
+   * 대상이 미니언·몬스터로 한정된 문장에서 나온 군중 제어는 상성 판단에서 제외한다.
+   */
+  if (!NOT_APPLIED.some(([name]) => name === label)) {
+    if (!CROWD_CONTROL_TAGS.has(label)) return true;
+  }
+  // 챔피언에게 유효한 문장에서 나온 경우만 인정한다
+  return sentences.some(
+    (s) =>
+      re.test(withoutNumbers(s)) &&
+      !isMinionOnly(s) &&
+      appliesEffect(label, s) &&
+      !inCondition(label, s, re),
+  );
+}
+
 /**
  * 스킬 이름이 효과로 읽히는 것을 막는다.
  *
@@ -428,103 +483,15 @@ export function detectEffects(text: string, skillNames: string[] = []): string[]
   const sentences = splitSentences(cleaned);
   for (const [re, label] of EFFECT_RULES) {
     if (found.includes(label)) continue;
-    // 아래 넷은 표가 아니라 문장 판정으로 가른다. 주어와 대상을 봐야 한다.
-    if (label === "적 마법 저항력 감소" || label === "적 방어력 감소") {
-      const word = label === "적 마법 저항력 감소" ? "마법 저항력" : "방어력";
-      if (sentences.some((sentence) => !isMinionOnly(sentence) && shredsEnemy(sentence, word))) found.push(label);
-      continue;
-    }
-    if (label === "자기 마법 저항력 증가" || label === "자기 방어력 증가") {
-      const word = label === "자기 마법 저항력 증가" ? "마법 저항력" : "방어력";
-      if (sentences.some((sentence) => gainsResist(sentence, word))) found.push(label);
-      continue;
-    }
-    if (label === "자기 공격력 증가") {
-      if (sentences.some((sentence) => !isMinionOnly(sentence) && gainsAttackDamage(sentence))) found.push(label);
-      continue;
-    }
-    if (label === "치명타") {
-      if (sentences.some((sentence) => gainsCrit(sentence))) found.push(label);
-      continue;
-    }
-    if (label === "부활") {
-      if (sentences.some((sentence) => revives(sentence))) found.push(label);
-      continue;
-    }
-    if (label === "연계 강화") {
-      if (sentences.some((sentence) => !isMinionOnly(sentence) && amplifiedByFollowUp(sentence))) found.push(label);
-      continue;
-    }
-    if (label === "표식 부여") {
-      if (sentences.some((sentence) => appliesMark(sentence))) found.push(label);
-      continue;
-    }
-    if (label === "성장 스택") {
-      if (sentences.some((sentence) => growsWithStacks(sentence))) found.push(label);
-      continue;
-    }
-    if (label === "스킬 강화") {
+    const judge = SENTENCE_JUDGED.get(label);
+    if (judge) {
       // 영구히 자라는 것과 한동안만 세지는 것은 다른 이야기다. 둘 다 걸리면
       // 영구 쪽이 이긴다. 스몰더 P 처럼 쌓은 것이 곧 강화인 경우가 그렇다.
-      if (found.includes("성장 스택")) continue;
-      if (sentences.some((sentence) => /스킬(을|이) 강화/.test(sentence))) found.push(label);
+      if (label === "스킬 강화" && found.includes("성장 스택")) continue;
+      if (sentences.some(judge)) found.push(label);
       continue;
     }
-    if (label === "회복") {
-      if (sentences.some((sentence) => !isMinionOnly(sentence) && healsHealth(sentence))) found.push(label);
-      continue;
-    }
-    if (label === "최대 체력 비례 피해") {
-      if (sentences.some((s2) => !isMinionOnly(s2) && /최대 체력의|최대 체력에 비례/.test(s2) && scalesDamage(s2))) found.push(label);
-      continue;
-    }
-    if (label === "잃은 체력 비례") {
-      if (sentences.some((s2) => !isMinionOnly(s2) && /잃은 체력/.test(s2) && scalesDamage(s2))) found.push(label);
-      continue;
-    }
-    if (label === "은신") {
-      if (sentences.some((sentence) => !isMinionOnly(sentence) && gainsStealth(sentence))) found.push(label);
-      continue;
-    }
-    if (label === "피해 면역") {
-      if (sentences.some((sentence) => !isMinionOnly(sentence) && grantsImmunity(sentence))) found.push(label);
-      continue;
-    }
-    // 미니언에게만 걸리는 문장은 챔피언을 상대할 때의 조언이 아니다. 시비르 W 의
-    // "체력이 낮은 미니언을 즉시 처치합니다" 가 처형으로 잡혀 "체력을 확보해 처형
-    // 구간에서 벗어나라" 는 엉뚱한 말이 나왔다. 전체 본문 대신 문장으로 본다.
-    // 수치도 함께 지운다. 피즈 W 의 "다음 기본 공격이 (…)의 마법 피해를 추가로
-    // 입힙니다" 는 낱말로는 붙어 있는데 계수가 끼어 창 밖으로 밀려나 있었다.
-    if (
-      !sentences.some(
-        (sentence) =>
-          !isMinionOnly(sentence) &&
-          re.test(withoutNumbers(sentence)) &&
-          !inCondition(label, sentence, re),
-      )
-    )
-      continue;
-    /*
-     * 군중 제어 태그는 문장 단위로 판정한다.
-     *
-     * 예: 아트록스 R "근처 미니언이 3초 동안 공포에 떨게 하고" — 챔피언에게 걸리는 공포가 아니다.
-     * 대상이 미니언·몬스터로 한정된 문장에서 나온 군중 제어는 상성 판단에서 제외한다.
-     */
-    if (!NOT_APPLIED.some(([name]) => name === label)) {
-      if (!CROWD_CONTROL_TAGS.has(label)) {
-        found.push(label);
-        continue;
-      }
-    }
-    // 챔피언에게 유효한 문장에서 나온 경우만 인정한다
-    const validSentence = sentences.some(
-      (s) =>
-        re.test(withoutNumbers(s)) &&
-        !isMinionOnly(s) &&
-        appliesEffect(label, s) &&
-        !inCondition(label, s, re),
-    );
-    if (validSentence) found.push(label);
+    if (matchesRule(label, re, sentences)) found.push(label);
   }
   return found;
 }
