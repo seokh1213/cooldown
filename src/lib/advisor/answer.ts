@@ -24,7 +24,6 @@ import {
   translateTag,
 } from "./promptLocale";
 
-/** 카드에 한 줄로 놓을 사실. */
 /** 상성 노트. `derived` 는 mine 앞쪽의 도출 문장 수다. */
 export interface MatchupNotes {
   mine: string[];
@@ -46,6 +45,7 @@ export interface MatchupPlan {
   enemy: Array<{ category: string; text: string }>;
 }
 
+/** 카드에 한 줄로 놓을 사실. */
 export interface Fact {
   label: string;
   value: string;

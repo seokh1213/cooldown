@@ -2,7 +2,7 @@
 /**
  * 상성 코치 워커
  *
- * Transformers.js 로 Qwen3 4B 를 WebGPU 에서 돌린다.
+ * Transformers.js 로 Qwen3.5 0.8B(kev LoRA 판정·검색 가지를 덧붙인 그래프)를 WebGPU 에서 돌린다.
  * 모델 적재는 한 번만 하고 이후 생성 요청을 받아 토큰을 흘려보낸다.
  *
  * 브라우저 캐시에 파일이 남으므로 두 번째 방문부터는 내려받기가 없다.

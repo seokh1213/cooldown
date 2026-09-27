@@ -33,12 +33,6 @@ export function useAskAdvisor({ advisor, data, championIds, canUseModel }: AskAd
   const pendingQuestion = useRef<string>("");
 
   /**
-   * 카드를 얹는다. 모델을 쓸 수 있으면 해설을 그 위에 스트리밍한다.
-   *
-   * 카드는 코드가 0초에 그린다. 모델에게는 코드가 계산한 재료(백분위·계수·태그)를 주고
-   * "왜 중요한가" 두세 문장만 시킨다. 수치는 카드에 있으니 모델이 숫자를 입에 담지 않는다.
-   */
-  /**
    * 상성 카드 + 내 챔피언 시점 해설. 재료는 사람이 검증한 지식 카드만.
    *
    * **모델 크기로 갈래를 두지 않는다.**
@@ -62,7 +56,7 @@ export function useAskAdvisor({ advisor, data, championIds, canUseModel }: AskAd
    * 가벼운 모델(0.8B)은 **해설을 쓰지 않는다.** 칸 나눠 쓰기, 짧은 프롬프트와 예시,
    * 바꿔 쓰기, int8 판본까지 재 봤지만 14쌍 1~5점 채점에서 전부 1~2점이었다. 대신
    * 검증된 노트를 코드가 골라 조립한다(`matchupDigest`, 3.8점). 모델이 없는 기기와 같은
-   * 길이다. 0.8B 는 판정기로만 쓴다(`judge.ts`). 4B 는 그대로 해설을 쓴다.
+   * 길이다. 0.8B 는 판정기로만 쓴다(`judge.ts`). (4B 를 쓰던 때에는 4B 가 그대로 해설을 썼다.)
    */
   const deliverMatchup = async (question: string, mine: ChampionCard, enemy: ChampionCard, notice?: string, focus?: string, more = false) => {
     if (!data) return;

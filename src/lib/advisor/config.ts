@@ -78,7 +78,7 @@ export function canOfferModel(
   return !model.needsF16 || webgpu.f16;
 }
 
-/**
+/*
  * 속도를 올리려고 재본 것들 — 전부 막혀서 스위치를 걷어냈다.
  *
  * (Qwen3 4B 를 쓰던 때 잰 것이다.) 브라우저 디코드는 5.5 tok/s 다. 같은 가중치가 Ollama(Metal)에서 49.7 tok/s 니

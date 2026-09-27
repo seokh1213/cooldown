@@ -106,10 +106,6 @@ export function luaTrueKeys(body: string, name: string): string[] {
   return Array.from(inner.matchAll(/\["([^"]+)"\]\s*=\s*true/g)).map((m) => m[1]);
 }
 
-/**
- * 위키 문법을 평문으로 바꾼다.
- * {{ai|Umbral Dash|Aatrox}} → 그림자 돌진 처럼 이름만 남기고, 링크와 강조를 벗긴다.
- */
 /** {{#expr:5*4*0.264}} 같은 산술만 계산한다. 그 외 파서 함수는 본문이 아니다. */
 function evaluateParserFunction(body: string): string {
   const match = /^#expr:([\d\s.+\-*/()]+)$/.exec(body.trim());
@@ -136,6 +132,10 @@ function numericTemplateValue(raw: string): string {
   return /^[\d\s.,/%+-]+$|^\[.*\]$/.test(value) ? value : "level-scaled";
 }
 
+/**
+ * 위키 문법을 평문으로 바꾼다.
+ * {{ai|Umbral Dash|Aatrox}} → 그림자 돌진 처럼 이름만 남기고, 링크와 강조를 벗긴다.
+ */
 export function stripWikiMarkup(text: string, renameAbility?: (english: string) => string): string {
   let out = text;
   // 각주와 HTML 태그는 본문이 아니다

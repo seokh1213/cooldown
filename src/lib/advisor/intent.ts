@@ -13,12 +13,6 @@ interface Mention {
 }
 
 /**
- * 문장에서 챔피언 언급을 모은다.
- *
- * 이름이 긴 쪽을 먼저 맞춰야 한다. "미스 포츈" 을 "포츈" 으로 자르거나
- * "리 신" 을 놓치면 엉뚱한 상성이 된다.
- */
-/**
  * 줄임말 후보를 만든다.
  *
  * 사람들은 "말파이트" 를 "말파", "트위스티드 페이트" 를 "트페" 라고 부른다.
@@ -64,6 +58,10 @@ function buildNicknames(cards: ChampionCard[]): Map<string, ChampionCard> {
   return unique;
 }
 
+/** 짧은 한글 이름 뒤에 올 수 있는 것: 공백·문장부호·끝·조사, 그리고 이름 다음에 흔히 붙는 말. */
+const HANGUL_NAME_END =
+  "\\s|[,.?!~/·]|$|[A-Za-z0-9]|으로|로|이|가|은|는|을|를|랑|이랑|과|와|의|도|만|한테|에게|상대|전|vs|하|해|했|할|잡|픽|인|이야|야|라|궁|패시브|스킬|카운터|대처|공략";
+
 /**
  * 문장에서 이름 하나를 찾는다. 글자 체계마다 규칙이 다르다.
  *
@@ -78,10 +76,6 @@ function buildNicknames(cards: ChampionCard[]): Map<string, ChampionCard> {
  *
  * 돌려주는 것은 [시작, 길이] 다. 못 찾으면 undefined.
  */
-/** 짧은 한글 이름 뒤에 올 수 있는 것: 공백·문장부호·끝·조사, 그리고 이름 다음에 흔히 붙는 말. */
-const HANGUL_NAME_END =
-  "\\s|[,.?!~/·]|$|[A-Za-z0-9]|으로|로|이|가|은|는|을|를|랑|이랑|과|와|의|도|만|한테|에게|상대|전|vs|하|해|했|할|잡|픽|인|이야|야|라|궁|패시브|스킬|카운터|대처|공략";
-
 function locate(text: string, name: string, wordStart = false, isAlias = false): [number, number] | undefined {
   if (/^[ -~]+$/.test(name)) {
     const chunks = name.split(/[\s'.]+/).filter(Boolean).map((c) => c.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"));
@@ -136,6 +130,12 @@ function maskCommonWords(text: string, data: AdvisorData): string {
   return out;
 }
 
+/**
+ * 문장에서 챔피언 언급을 모은다.
+ *
+ * 이름이 긴 쪽을 먼저 맞춰야 한다. "미스 포츈" 을 "포츈" 으로 자르거나
+ * "리 신" 을 놓치면 엉뚱한 상성이 된다.
+ */
 function findMentions(data: AdvisorData, text: string): Mention[] {
   const mentions: Mention[] = [];
   const taken: Array<[number, number]> = [];

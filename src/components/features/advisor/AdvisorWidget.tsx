@@ -76,13 +76,12 @@ export function AdvisorWidget({ patch, ddragonVersion, onOpenChange, onWidthChan
   /*
    * 16비트 셰이더 연산(`shader-f16`)은 **그 모델이 필요로 할 때만** 따진다.
    *
-   * 기본 모델은 q4f16 이라 필요하다. 없는 기기에서 올리면 임베딩의 Gather 에서
-   * 죽는다 — 윈도우에서 실제로 그랬다.
+   * (q4f16 모델을 쓰던 때) 없는 기기에서 올리면 임베딩의 Gather 에서
+   * 죽었다 — 윈도우에서 실제로 그랬다.
    *
    *   Gather requires f16 but the device does not support it.
    *
-   * 16비트를 안 쓰는 판본으로 바꾸면 그 관문이 없어진다. 어디까지 올라가는지는
-   * `config.ts` 의 `SWAPPABLE` 주석에 재 둔 표가 있다.
+   * 지금 모델은 q4 라 16비트를 안 쓰므로(`needsF16: false`) 이 관문이 없다.
    */
   const canUseModel = canOfferModel(advisor.model, advisor.webgpu, device);
 
