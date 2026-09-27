@@ -103,7 +103,8 @@ const NOT_APPLIED: Array<[string, RegExp]> = [
  * 문장에 방아쇠 표시("때마다", "…면")가 함께 있을 때만 조건으로 본다.
  */
 const TRIGGER = /때마다|하면|되면|으면|[을를이가]\s*\S*면\s/;
-const CC_LABELS = new Set([
+/** 군중 제어 효과 태그. 조건 판정과 미니언 한정 문장 판정이 함께 쓰고, 상성 주장(`claims.ts`)은 여기서 둔화를 뺀다. */
+export const CROWD_CONTROL_TAGS: ReadonlySet<string> = new Set([
   "기절",
   "에어본",
   "강제 이동(넉백/끌기)",
@@ -125,7 +126,7 @@ const CC_LABELS = new Set([
 const ALREADY_AFFECTED = /^(된|에 적중|당한|에 걸린|상태)/;
 
 function inCondition(label: string, sentence: string, re: RegExp): boolean {
-  if (!CC_LABELS.has(label)) return false;
+  if (!CROWD_CONTROL_TAGS.has(label)) return false;
   const trigger = TRIGGER.test(sentence);
   const found = new RegExp(re.source, "g");
   let any = false;
@@ -403,25 +404,6 @@ export function detectDamageTypes(text: string): DamageType[] {
 }
 
 /**
- * 군중 제어 태그는 문장 단위로 판정한다.
- *
- * 예: 아트록스 R "근처 미니언이 3초 동안 공포에 떨게 하고" — 챔피언에게 걸리는 공포가 아니다.
- * 대상이 미니언·몬스터로 한정된 문장에서 나온 군중 제어는 상성 판단에서 제외한다.
- */
-const CHAMPION_RELEVANT_TAGS = new Set([
-  "기절",
-  "에어본",
-  "침묵",
-  "속박",
-  "도발",
-  "매혹",
-  "공포",
-  "억제",
-  "강제 이동(넉백/끌기)",
-  "둔화",
-]);
-
-/**
  * 효과 이름을 그대로 쓰는 스킬 이름. 지우면 본문의 진짜 효과까지 사라진다.
  *
  * 피들스틱 Q 의 이름이 **"공포"** 다. 이름을 지우는 규칙이 본문의 "공포에
@@ -522,8 +504,14 @@ export function detectEffects(text: string, skillNames: string[] = []): string[]
       )
     )
       continue;
+    /*
+     * 군중 제어 태그는 문장 단위로 판정한다.
+     *
+     * 예: 아트록스 R "근처 미니언이 3초 동안 공포에 떨게 하고" — 챔피언에게 걸리는 공포가 아니다.
+     * 대상이 미니언·몬스터로 한정된 문장에서 나온 군중 제어는 상성 판단에서 제외한다.
+     */
     if (!NOT_APPLIED.some(([name]) => name === label)) {
-      if (!CHAMPION_RELEVANT_TAGS.has(label)) {
+      if (!CROWD_CONTROL_TAGS.has(label)) {
         found.push(label);
         continue;
       }

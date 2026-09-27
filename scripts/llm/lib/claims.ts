@@ -16,6 +16,7 @@
  */
 import type { ChampionCard, DamageType, SpellFact } from "./facts";
 import { josa } from "./text";
+import { CROWD_CONTROL_TAGS } from "./facts-analysis";
 
 /** 저항을 올려도 값이 깎이는 사유. 노트의 "단서" 문장이 되는 것들이다. */
 export type Discount = "저항 감소" | "관통" | "고정 피해" | "최대 체력 비례" | "처형";
@@ -52,17 +53,8 @@ export interface ItemClaims {
   stats: CounterStat[];
 }
 
-export const CC_TAGS = new Set([
-  "기절",
-  "속박",
-  "매혹",
-  "도발",
-  "공포",
-  "침묵",
-  "억제",
-  "에어본",
-  "강제 이동(넉백/끌기)",
-]);
+/** 군중 제어 태그에서 둔화를 뺀 것 */
+export const CC_TAGS: ReadonlySet<string> = new Set([...CROWD_CONTROL_TAGS].filter((tag) => tag !== "둔화"));
 
 /** 기본 공격이 화력의 한 축인 하위 클래스. 위키 분류를 그대로 쓴다. */
 const AUTO_SUBCLASSES = new Set(["Marksman", "Skirmisher", "Juggernaut", "Diver"]);
