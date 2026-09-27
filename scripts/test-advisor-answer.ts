@@ -26,15 +26,14 @@ import {
   buildSpellAnswer,
   detectStat,
   detectLevel,
-  editDistance,
   percentileLabel,
   ruleVerdict,
   spellOneLiner,
   splitSentences,
-  suggestChampions,
   buildCommentaryPrompt,
 } from "../src/lib/advisor/answer";
 import { detectSpellFocus } from "../src/lib/advisor/spellFocus";
+import { editDistance, suggestChampions } from "../src/lib/advisor/championTypo";
 import { TAGS, DAMAGE, GRADE, RANGE, RATIO_STATS, missingCardWords } from "./llm/lib/cardWords";
 import { readPageContext } from "../src/lib/advisor/pageContext";
 import { isSmallTalk, nicknames } from "../src/lib/advisor/intent";

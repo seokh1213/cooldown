@@ -56,10 +56,10 @@ import {
   itemHeadline,
   looksChampionDirected,
   spellSummary,
-  suggestChampions,
   type AdvisorAnswer,
 } from "@/lib/advisor/answer";
 import { detectSpellFocus, type SpellFocus } from "@/lib/advisor/spellFocus";
+import { suggestChampions } from "@/lib/advisor/championTypo";
 import { isSmallTalk, nicknames } from "@/lib/advisor/intent";
 import {
   JUDGE_KIND9_CRITERIA,

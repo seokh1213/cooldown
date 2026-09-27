@@ -5,7 +5,7 @@
 import assert from "node:assert/strict";
 import { detectChampions, nicknames } from "../src/lib/advisor/intent";
 import { buildItemCard } from "../src/lib/advisor/context";
-import { suggestChampions } from "../src/lib/advisor/answer";
+import { suggestChampions } from "../src/lib/advisor/championTypo";
 import { findGameMeta } from "../src/lib/advisor/gameMeta";
 import { findMentionedRules } from "./llm/lib/rules";
 import { loadData, type Lang } from "./llm/kev-agent/lib";

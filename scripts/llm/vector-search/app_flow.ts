@@ -9,7 +9,7 @@
  */
 import * as fs from "node:fs";
 import { detectChampions, asksAboutHelper, nicknames } from "../../../src/lib/advisor/intent";
-import { suggestChampions } from "../../../src/lib/advisor/answer";
+import { suggestChampions } from "../../../src/lib/advisor/championTypo";
 import { buildItemCard } from "../../../src/lib/advisor/context";
 import { asksPriceTiers, findGameMeta } from "../../../src/lib/advisor/gameMeta";
 import { findMentionedRules } from "../lib/rules";
