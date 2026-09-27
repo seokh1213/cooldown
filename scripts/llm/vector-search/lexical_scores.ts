@@ -7,7 +7,7 @@
 import * as fs from "node:fs";
 import { aliasesOf } from "../lib/searchAliases";
 import { lexicalSearch, type SearchDoc } from "../../../src/lib/advisor/searchFallback";
-import { questionLanguage } from "../../../src/hooks/useAdvisor";
+import { questionLanguage } from "../../../src/lib/advisor/questionLanguage";
 import { corpus, current } from "./corpus";
 import { detectChampions } from "../../../src/lib/advisor/intent";
 import { buildItemCard, buildMechanicsAnswer } from "../../../src/lib/advisor/context";

@@ -15,179 +15,14 @@ import {
   type WebGpuSupport,
 } from "@/lib/advisor/config";
 import { deleteModelCache, fetchJudgeFile, pruneOtherModels } from "@/lib/advisor/storage";
-import { answerChampionIds, type AdvisorAnswer } from "@/lib/advisor/answer";
-import { matchupStateOf } from "@/lib/advisor/conversation";
-import { answerProse } from "@/lib/advisor/prose";
+import { loadDocVectors, ranked, type DocVectors } from "@/lib/advisor/docVectors";
+import { questionLanguage } from "@/lib/advisor/questionLanguage";
+import type { AdvisorAnswer } from "@/lib/advisor/answer";
+import type { AdvisorFileProgress } from "@/lib/advisor/protocol";
 import { readJudgeHead, scoreJudge, type JudgeHead, type JudgeHeadMeta, type JudgeQuestion } from "@/lib/advisor/judge";
 import { useTranslation } from "@/i18n";
-import type {
-  AdvisorChatMessage,
-  AdvisorFileProgress,
-  AdvisorRequest,
-  AdvisorResponse,
-} from "@/lib/advisor/protocol";
-
-export type AdvisorStatus =
-  /** 아직 동의를 받지 않았다 */
-  | "idle"
-  /** 모델 파일을 내려받는 중 */
-  | "downloading"
-  /** 내려받기는 끝났고 GPU 에 올리는 중 */
-  | "warming"
-  | "ready"
-  /** 답변을 만드는 중 */
-  | "generating"
-  | "error";
-
-export interface AdvisorTurn extends AdvisorChatMessage {
-  id: number;
-  /** 생성이 끝난 뒤 붙는 실측치 */
-  /** ttft 는 프롬프트를 읽는 데 쓴 시간이다. 나머지가 글을 쓰는 시간이다. */
-  stats?: { tokens: number; seconds: number; ttft?: number; promptTokens?: number };
-  /** 사용자가 남긴 평가 */
-  rating?: "up" | "down";
-  /**
-   * 지금 무엇을 하는 중인지. 답이 나오면 지운다.
-   *
-   * 검색 폴백은 모델을 두 번 부르고 그 사이에 코드가 찾는다. 그동안 화면에는
-   * 도는 점만 있어서 멈춘 것처럼 보였다. 무슨 일이 도는지 한 줄로 알린다.
-   */
-  activity?: string;
-  /**
-   * 답의 근거가 된 자료 이름.
-   *
-   * "자료에 있는 것만 답한다" 가 설계인데 어느 자료인지 안 보이면 사용자가
-   * 맞는지 가릴 수 없다. 틀린 자료를 물어 온 경우에도 그 사실이 드러나야 한다.
-   */
-  sources?: string[];
-  /**
-   * 코드가 만든 구조화된 답. 화면이 종류별 카드로 그린다.
-   * 이것이 있으면 `content` 는 카드 위에 놓이는 모델 해설이다.
-   */
-  answer?: AdvisorAnswer;
-  /** 답 위에 작게 붙는 알림. "럼블로 이해했습니다" 같은 것. */
-  notice?: string;
-  /** "혹시 이 자료를 찾으셨나요?" 에 붙는 자료 버튼. 검색이 확신하지 못했을 때만. 누르면 그 자료를 보인다. */
-  related?: Array<{ id: string; title: string }>;
-  /**
-   * `content` 를 코드가 썼는가.
-   *
-   * 모델이 쓴 글은 카드 위에 얹히는 **해설**이라 "해설" 딱지와 세로줄을 달고 나간다.
-   * 코드가 쓴 글은 해설이 아니라 **답 자체**라 그 딱지를 달면 거짓말이 된다.
-   * 근거 검사도 모델이 쓴 글에만 돌린다 — 코드가 쓴 글은 카드에서 옮긴 값이다.
-   */
-  byCode?: boolean;
-}
-
-/**
- * 답변 평가 기록.
- *
- * 지금은 평가 케이스 10건으로 내가 재는 게 전부다. 실제로 어떤 질문이 어떤 답을 받았고
- * 사용자가 어떻게 봤는지는 알 방법이 없다. 기기 안에만 쌓고 서버로 보내지 않는다.
- */
-export interface AdvisorFeedback {
-  at: string;
-  question: string;
-  answer: string;
-  rating: "up" | "down";
-  patch: string;
-  /**
-   * 대화 흐름을 다시 재기 위한 맥락. "틀렸거나 부족해요" 를 누른 이어 묻기가 무엇이었는지 알아야 판정기
-   * 시험 세트(`scripts/llm/kev-agent/feedback-to-tests.ts`)로 옮길 수 있다. 기기 밖으로는 사용자가 내보낼 때만 나간다.
-   */
-  lang?: string;
-  previousQuestion?: string;
-  /** 이 답을 내기 전에 이어 가던 상성(내 챔피언·상대 id) */
-  previousMatchup?: { mine: string; enemy: string };
-  /** 이 답이 무엇이었나(상성·챔피언·규칙 …)와 다룬 챔피언 id */
-  answerKind?: string;
-  champions?: string[];
-}
-
-const FEEDBACK_KEY = "cooldown.advisor.feedback.v1";
-const FEEDBACK_LIMIT = 200;
-
-/** 평가 기록을 파일로 내려받는다. 사용자가 누를 때만 기기 밖으로 나간다. */
-export function exportFeedback(): number {
-  const log = readFeedback();
-  if (!log.length) return 0;
-  const blob = new Blob([JSON.stringify({ exportedAt: new Date().toISOString(), feedback: log }, null, 1)], { type: "application/json" });
-  const url = URL.createObjectURL(blob);
-  const link = document.createElement("a");
-  link.href = url;
-  link.download = `cooldown-advisor-feedback-${new Date().toISOString().slice(0, 10)}.json`;
-  link.click();
-  setTimeout(() => URL.revokeObjectURL(url), 1000);
-  return log.length;
-}
-
-export function readFeedback(): AdvisorFeedback[] {
-  try {
-    return JSON.parse(localStorage.getItem(FEEDBACK_KEY) ?? "[]") as AdvisorFeedback[];
-  } catch {
-    return [];
-  }
-}
-
-/** 흘려 보이는 도중 짝이 안 맞은 굵은 글씨 표시를 뗀다. 반쯤 나온 "**" 가 "*" 로 잠깐 보였다. */
-function unfinishedMarkup(text: string): string {
-  let out = text.replace(/\*$/, (star) => (text.endsWith("**") ? star : ""));
-  if ((out.match(/\*\*/g) ?? []).length % 2 === 1) out = out.slice(0, out.lastIndexOf("**"));
-  return out;
-}
-
-/** 문서 벡터 파일(`doc-vectors.json` + `.bin`, 언어마다 [문서 수 × dim] fp16). `dual_graph_check.py` 가 만든다. */
-interface DocVectors {
-  dim: number;
-  prompt: Record<string, string>;
-  languages: Record<string, { ids: string[]; matrix: Float32Array }>;
-}
-
-/** fp16 → fp32 */
-function halfToFloat(h: number): number {
-  const sign = h & 0x8000 ? -1 : 1;
-  const exponent = (h >> 10) & 0x1f;
-  const fraction = h & 0x3ff;
-  if (exponent === 0) return sign * 2 ** -14 * (fraction / 1024);
-  if (exponent === 31) return fraction ? NaN : sign * Infinity;
-  return sign * 2 ** (exponent - 15) * (1 + fraction / 1024);
-}
-
-export async function loadDocVectors(base: string): Promise<DocVectors> {
-  const [metaRes, binRes] = await Promise.all([fetchJudgeFile(`${base}.json`), fetchJudgeFile(`${base}.bin`)]);
-  if (!metaRes.ok || !binRes.ok) throw new Error(`문서 벡터 ${base} 를 받지 못했습니다`);
-  const meta = (await metaRes.json()) as { dim: number; prompt: Record<string, string>; languages: Record<string, { offset: number; ids: string[] }> };
-  const half = new Uint16Array(await binRes.arrayBuffer());
-  const languages: DocVectors["languages"] = {};
-  for (const [lang, { offset, ids }] of Object.entries(meta.languages)) {
-    const matrix = new Float32Array(ids.length * meta.dim);
-    for (let i = 0; i < matrix.length; i += 1) matrix[i] = halfToFloat(half[offset + i]);
-    languages[lang] = { ids, matrix };
-  }
-  return { dim: meta.dim, prompt: meta.prompt, languages };
-}
-
-/** 질문을 쓴 언어. 한글이 있으면 한국어, 한자만 있으면 중국어, 로마자만 있으면 영어. 가를 수 없으면 undefined. */
-export function questionLanguage(question: string): "ko_KR" | "zh_CN" | "en_US" | undefined {
-  if (/[가-힣]/.test(question)) return "ko_KR";
-  if (/[\u4e00-\u9fff]/.test(question)) return "zh_CN";
-  if (/[A-Za-z]{2,}/.test(question)) return "en_US";
-  return undefined;
-}
-
-/** 코사인 순으로 늘어놓은 문서. 둘 다 정규화되어 있어 내적이 곧 코사인이다. */
-export function ranked(query: Float32Array, matrix: Float32Array, ids: string[]): Array<{ id: string; score: number }> {
-  const dim = query.length;
-  return ids
-    .map((id, k) => {
-      let dot = 0;
-      for (let i = 0; i < dim; i += 1) dot += query[i] * matrix[k * dim + i];
-      return { id, score: dot };
-    })
-    .sort((a, b) => b.score - a.score);
-}
-
-export const nearest = (query: Float32Array, matrix: Float32Array, ids: string[]) => ranked(query, matrix, ids)[0];
+import { useAdvisorTurns, type AdvisorTurn } from "./useAdvisorTurns";
+import { useAdvisorWorker, type AdvisorStatus } from "./useAdvisorWorker";
 
 /** `respond` 한 번에 필요한 것. 자료는 부르는 쪽(코드)이 모아서 `system` 에 싣는다. */
 export interface RespondPlan {
@@ -272,25 +107,32 @@ export function useAdvisor(): UseAdvisorResult {
   // 코드가 쓰는 답문도 화면 언어를 따라야 한다.
   const { lang } = useTranslation();
   const [consented, setConsented] = useState(readConsent);
-  const [status, setStatus] = useState<AdvisorStatus>("idle");
   const [webgpu, setWebgpu] = useState<WebGpuSupport | null>(null);
   const [storage, setStorage] = useState<{ quotaMb?: number; usageMb?: number }>({});
-  const [progress, setProgress] = useState({ loadedBytes: 0, totalBytes: 0, files: [] as AdvisorFileProgress[] });
-  const [turns, setTurns] = useState<AdvisorTurn[]>([]);
   const [error, setError] = useState<string | null>(null);
-  const [modelReady, setModelReady] = useState(false);
+  const {
+    turns,
+    setTurns,
+    takeId,
+    begin,
+    place,
+    settle,
+    reveal,
+    finishReveal,
+    working,
+    appendChunk,
+    completeReply,
+    answerWithoutModel,
+    rate,
+    reset,
+    replaceTurns,
+  } = useAdvisorTurns(lang, setError);
+  const { status, setStatus, progress, modelReady, post, requestJudge, requestEmbed, interrupt, hasWorker, shutdown } = useAdvisorWorker({
+    onChunk: appendChunk,
+    onDone: completeReply,
+    setError,
+  });
 
-  const workerRef = useRef<Worker | null>(null);
-  const nextId = useRef(1);
-  /** `begin` 이 띄운 자리. 답이 채우면 비운다. */
-  const pendingRef = useRef<{ userId: number; replyId: number } | null>(null);
-  const [thinking, setThinking] = useState(false);
-  /** 흘려 보이는 중인 코드 답. 멈추면 끝까지 한 번에 보인다. */
-  const revealRef = useRef<{ id: number; full: string; timer: number } | null>(null);
-  const [revealing, setRevealing] = useState(false);
-  /** 판정 요청을 기다리는 쪽. 답 id 로 찾는다. */
-  const judgeWaiters = useRef(new Map<number, { resolve: (features: Float32Array[]) => void; reject: (error: Error) => void }>());
-  const embedWaiters = useRef(new Map<number, { resolve: (vector: Float32Array) => void; reject: (error: Error) => void }>());
   /** 문서 벡터(주소마다 한 번만 받는다) */
   const docVectors = useRef(new Map<string, Promise<DocVectors>>());
   /** 받아 둔 판정 헤드. 이름으로 찾는다. */
@@ -302,105 +144,6 @@ export function useAdvisor(): UseAdvisorResult {
     void estimateStorageMb().then(setStorage);
   }, []);
 
-  /** 워커는 동의 후에만 만든다 */
-  const ensureWorker = useCallback((): Worker => {
-    if (workerRef.current) return workerRef.current;
-    const worker = new Worker(new URL("../workers/advisor.worker.ts", import.meta.url), {
-      type: "module",
-    });
-    worker.addEventListener("message", (event: MessageEvent<AdvisorResponse>) => {
-      const message = event.data;
-      switch (message.type) {
-        case "progress":
-          setStatus((prev) => (prev === "generating" ? prev : "downloading"));
-          setProgress({
-            loadedBytes: message.loadedBytes,
-            totalBytes: message.totalBytes,
-            files: message.files,
-          });
-          // 내려받기가 끝나면 GPU 적재 구간으로 넘어간다
-          if (message.totalBytes > 0 && message.loadedBytes >= message.totalBytes) {
-            setStatus((prev) => (prev === "generating" ? prev : "warming"));
-          }
-          break;
-        case "loaded":
-          setModelReady(true);
-          // 적재를 기다리는 동안 이미 질문을 받았을 수 있다. 그때는 생성 상태를 유지한다.
-          setStatus((prev) => (prev === "generating" ? prev : "ready"));
-          break;
-        case "chunk":
-          setTurns((prev) => {
-            const next = [...prev];
-            const last = next[next.length - 1];
-            if (last?.role === "assistant" && last.id === message.id) {
-              next[next.length - 1] = { ...last, content: last.content + message.text };
-            }
-            return next;
-          });
-          break;
-        case "done": {
-          setTurns((prev) => {
-            const next = [...prev];
-            const last = next[next.length - 1];
-            if (last?.role === "assistant" && last.id === message.id) {
-              next[next.length - 1] = {
-                ...last,
-                content: message.text || last.content,
-                stats: {
-                  tokens: message.tokens,
-                  seconds: message.seconds,
-                  ttft: message.ttftSeconds,
-                  promptTokens: message.promptTokens,
-                },
-              };
-            }
-            return next;
-          });
-          setStatus("ready");
-          break;
-        }
-        case "judged": {
-          const waiter = judgeWaiters.current.get(message.id);
-          judgeWaiters.current.delete(message.id);
-          waiter?.resolve(message.features);
-          break;
-        }
-        case "embedded": {
-          const waiter = embedWaiters.current.get(message.id);
-          embedWaiters.current.delete(message.id);
-          waiter?.resolve(message.vector);
-          break;
-        }
-        case "error": {
-          // 판정 요청이 실패했으면 부르는 쪽에 알린다. 화면 오류로는 띄우지 않는다 — 규칙으로 되돌아간다.
-          const waiter = message.id !== undefined ? judgeWaiters.current.get(message.id) ?? embedWaiters.current.get(message.id) : undefined;
-          if (waiter) {
-            judgeWaiters.current.delete(message.id!);
-            embedWaiters.current.delete(message.id!);
-            waiter.reject(new Error(message.message));
-            break;
-          }
-          setError(message.message);
-          setStatus("error");
-          break;
-        }
-        default:
-          break;
-      }
-    });
-    workerRef.current = worker;
-    return worker;
-  }, []);
-
-  useEffect(() => () => {
-    workerRef.current?.terminate();
-    workerRef.current = null;
-  }, []);
-
-  const post = useCallback((request: AdvisorRequest) => {
-    ensureWorker().postMessage(request);
-  }, [ensureWorker]);
-
   const accept = useCallback(() => {
     try {
       localStorage.setItem(CONSENT_STORAGE_KEY, "granted");
@@ -411,17 +154,17 @@ export function useAdvisor(): UseAdvisorResult {
     setError(null);
     setStatus("downloading");
     post({ type: "load", model });
-  }, [post, model]);
+  }, [post, model, setStatus]);
 
   /**
    * 동의는 이미 받았고 아직 적재하지 않았으면 지금 시작한다.
    * 위젯이 늘 떠 있으므로 화면을 켜자마자 받게 하지 않고, 대화창을 연 시점에 시작한다.
    */
   const ensureLoaded = useCallback(() => {
-    if (!consented || modelReady || workerRef.current) return;
+    if (!consented || modelReady || hasWorker()) return;
     setStatus("downloading");
     post({ type: "load", model });
-  }, [consented, modelReady, post, model]);
+  }, [consented, modelReady, hasWorker, post, model, setStatus]);
 
   /**
    * 동의 없이 모델을 부르려 했는지 본다.
@@ -430,87 +173,6 @@ export function useAdvisor(): UseAdvisorResult {
    * "모델 없이 써보기" 를 고른 사용자가 코드가 못 답하는 질문을 던지면 실제로 그 일이
    * 벌어졌다. 내려받기를 거절했는데 받아 버리는 셈이라 여기서 막는다.
    */
-  const begin = useCallback((question: string, label: string) => {
-    const trimmed = question.trim();
-    if (!trimmed || pendingRef.current) return;
-    const userId = nextId.current++;
-    const replyId = nextId.current++;
-    pendingRef.current = { userId, replyId };
-    setError(null);
-    setThinking(true);
-    setTurns((prev) => [
-      ...prev,
-      { id: userId, role: "user", content: trimmed },
-      { id: replyId, role: "assistant", content: "", activity: label },
-    ]);
-  }, []);
-
-  /** 답 자리를 연다. `begin` 이 띄운 자리가 있으면 그것을 채우고, 없으면 새로 붙인다. 답의 id 를 돌려준다. */
-  const place = useCallback((question: string, reply: Omit<AdvisorTurn, "id">): number => {
-    const pending = pendingRef.current;
-    pendingRef.current = null;
-    setThinking(false);
-    if (pending) {
-      setTurns((prev) =>
-        prev.map((turn) =>
-          turn.id === pending.userId ? { ...turn, content: question } : turn.id === pending.replyId ? { id: pending.replyId, ...reply } : turn,
-        ),
-      );
-      return pending.replyId;
-    }
-    const userId = nextId.current++;
-    const replyId = nextId.current++;
-    setTurns((prev) => [...prev, { id: userId, role: "user", content: question }, { id: replyId, ...reply }]);
-    return replyId;
-  }, []);
-
-  const settle = useCallback(() => {
-    const pending = pendingRef.current;
-    if (!pending) return;
-    pendingRef.current = null;
-    setThinking(false);
-    setTurns((prev) => prev.filter((turn) => turn.id !== pending.userId && turn.id !== pending.replyId));
-  }, []);
-
-  /** 흘려 보이던 답을 끝까지 한 번에 보인다. */
-  const finishReveal = useCallback(() => {
-    const current = revealRef.current;
-    if (!current) return;
-    window.clearInterval(current.timer);
-    revealRef.current = null;
-    setRevealing(false);
-    setTurns((prev) => prev.map((turn) => (turn.id === current.id ? { ...turn, content: current.full } : turn)));
-  }, []);
-
-  /**
-   * 코드가 쓴 답을 모델이 쓰듯 조금씩 보인다.
-   *
-   * 다 된 글이 한 번에 뜨면 앞의 기다림과 이어져 "멈췄다가 빡 뜬다" 로 읽혔다. 길이와 상관없이 2초 안에 끝나게
-   * 한 번에 내보낼 글자 수를 정한다(짧으면 두 글자씩).
-   */
-  const reveal = useCallback((id: number, full: string) => {
-    finishReveal();
-    if (!full) return;
-    const step = Math.max(2, Math.ceil(full.length / 90));
-    let shown = 0;
-    const timer = window.setInterval(() => {
-      shown = Math.min(full.length, shown + step);
-      // 이모지 같은 두 칸 글자를 반으로 자르지 않는다
-      if (shown < full.length && /[\uD800-\uDBFF]/.test(full[shown - 1])) shown += 1;
-      const text = shown >= full.length ? full : unfinishedMarkup(full.slice(0, shown));
-      setTurns((prev) => prev.map((turn) => (turn.id === id ? { ...turn, content: text } : turn)));
-      if (shown >= full.length) {
-        window.clearInterval(timer);
-        revealRef.current = null;
-        setRevealing(false);
-      }
-    }, 20);
-    revealRef.current = { id, full, timer };
-    setRevealing(true);
-  }, [finishReveal]);
-
-  useEffect(() => () => window.clearInterval(revealRef.current?.timer), []);
-
   const refuseWithoutConsent = useCallback((question: string, notice: string): boolean => {
     if (consented) return false;
     setError(null);
@@ -541,31 +203,7 @@ export function useAdvisor(): UseAdvisorResult {
       const replyId = place(trimmed, { role: "assistant", content: "", answer, notice });
       post({ type: "generate", id: replyId, model, system, messages: [{ role: "user", content: trimmed }], maxTokens });
     },
-    [post, model, refuseWithoutConsent, place],
-  );
-
-  /**
-   * 모델을 부르지 않고 답을 얹는다.
-   *
-   * 코드 전용 답변은 평가에서 적중 63/66 으로 모델(64/66)과 거의 같았다.
-   * 모델(570MB)을 받지 않은 사용자에게도 이 답은 줄 수 있어야 한다.
-   *
-   * 카드만 얹으면 대화에는 칩 하나만 남아 답을 못 받은 화면이 된다. 그래서
-   * `answerProse` 로 **카드 안의 값을 문장으로도** 적는다. 모델이 쓰는 글이 아니라
-   * 카드에 이미 있는 값을 옮기는 것이라 틀릴 자리가 없다.
-   */
-  const answerWithoutModel = useCallback(
-    (question: string, answer: string | AdvisorAnswer, notice?: string, related?: AdvisorTurn["related"]) => {
-      setError(null);
-      // 카드는 바로, 글은 흘려서 보인다(`reveal`)
-      const full = typeof answer === "string" ? answer : answerProse(answer, lang);
-      const id =
-        typeof answer === "string"
-          ? place(question, { role: "assistant", content: "", notice, related })
-          : place(question, { role: "assistant", content: "", answer, notice, byCode: true });
-      reveal(id, full);
-    },
-    [lang, place, reveal],
+    [post, model, refuseWithoutConsent, place, setStatus],
   );
 
   /** 판정 헤드를 한 번만 받아 둔다. 실패하면 다음에 다시 받는다. */
@@ -596,18 +234,15 @@ export function useAdvisor(): UseAdvisorResult {
       if (head.model.id !== model.id || head.model.dtype !== model.dtype || (head.model.graph ?? "") !== (model.graph ?? "")) {
         throw new Error(`판정 헤드 ${headName} 는 ${head.model.id} 용입니다`);
       }
-      const id = nextId.current++;
-      const features = await new Promise<Float32Array[]>((resolve, reject) => {
-        judgeWaiters.current.set(id, { resolve, reject });
-        post({ type: "judge", id, model, state, questions, subset: head.subset, feature: head.feature });
-      });
+      const id = takeId();
+      const features = await requestJudge({ type: "judge", id, model, state, questions, subset: head.subset, feature: head.feature });
       return features.map((flat, index) => {
         const positions = questions[index].options.length + 1;
         const rows = Array.from({ length: positions }, (_, k) => flat.subarray(k * head.dim, (k + 1) * head.dim));
         return scoreJudge(head, rows);
       });
     },
-    [consented, model, post, loadJudgeHead],
+    [consented, model, requestJudge, loadJudgeHead, takeId],
   );
 
   const search = useCallback(
@@ -626,14 +261,11 @@ export function useAdvisor(): UseAdvisorResult {
       const asked = questionLanguage(question) ?? lang;
       const block = vectors.languages[asked] ?? vectors.languages[lang] ?? vectors.languages.ko_KR;
       const prompt = (vectors.prompt[asked] ?? vectors.prompt[lang] ?? vectors.prompt.ko_KR).replace("{}", question);
-      const id = nextId.current++;
-      const query = await new Promise<Float32Array>((resolve, reject) => {
-        embedWaiters.current.set(id, { resolve, reject });
-        post({ type: "embed", id, model, text: prompt });
-      });
+      const id = takeId();
+      const query = await requestEmbed({ type: "embed", id, model, text: prompt });
       return ranked(query, block.matrix, block.ids);
     },
-    [consented, model, post],
+    [consented, model, requestEmbed, takeId],
   );
 
   /*
@@ -649,72 +281,11 @@ export function useAdvisor(): UseAdvisorResult {
     void pruneOtherModels(model.id);
   }, [modelReady, model.id, loadJudgeHead]);
 
-  const rate = useCallback((turnId: number, rating: "up" | "down", patch: string) => {
-    setTurns((prev) => {
-      const index = prev.findIndex((t) => t.id === turnId);
-      if (index < 0) return prev;
-      const next = [...prev];
-      // 같은 버튼을 다시 누르면 평가를 물린다
-      const current = next[index].rating;
-      next[index] = { ...next[index], rating: current === rating ? undefined : rating };
-
-      if (next[index].rating) {
-        // 바로 앞 사용자 발화가 이 답의 질문이다
-        const before = prev.slice(0, index);
-        const question = [...before].reverse().find((t) => t.role === "user");
-        const questionAt = question ? before.lastIndexOf(question) : -1;
-        const previousQuestion = [...before.slice(0, Math.max(0, questionAt))].reverse().find((t) => t.role === "user");
-        const state = matchupStateOf(before.slice(0, Math.max(0, questionAt)).map((t) => (t.role === "assistant" ? t.answer : undefined)));
-        const answer = next[index].answer;
-        try {
-          const log = readFeedback();
-          log.push({
-            at: new Date().toISOString(),
-            question: question?.content ?? "",
-            answer: next[index].content,
-            rating,
-            patch,
-            lang,
-            previousQuestion: previousQuestion?.content,
-            previousMatchup: state ? { mine: state.mine.id, enemy: state.enemy.id } : undefined,
-            answerKind: answer?.kind,
-            champions: answer ? answerChampionIds(answer) : undefined,
-          });
-          localStorage.setItem(
-            FEEDBACK_KEY,
-            JSON.stringify(log.slice(-FEEDBACK_LIMIT)),
-          );
-        } catch {
-          // 저장에 실패해도 화면 표시는 유지한다
-        }
-      }
-      return next;
-    });
-  }, [lang]);
-
   const stop = useCallback(() => {
     finishReveal();
-    workerRef.current?.postMessage({ type: "stop" } satisfies AdvisorRequest);
+    interrupt();
     setStatus("ready");
-  }, [finishReveal]);
-
-  const reset = useCallback(() => {
-    finishReveal();
-    pendingRef.current = null;
-    setThinking(false);
-    setTurns([]);
-    setError(null);
-  }, [finishReveal]);
-
-  const replaceTurns = useCallback((next: AdvisorTurn[]) => {
-    finishReveal();
-    pendingRef.current = null;
-    setThinking(false);
-    const maxId = next.reduce((max, turn) => Math.max(max, turn.id), 0);
-    if (maxId >= nextId.current) nextId.current = maxId + 1;
-    setTurns(next);
-    setError(null);
-  }, [finishReveal]);
+  }, [finishReveal, interrupt, setStatus]);
 
   /**
    * 올려 둔 모델을 내린다.
@@ -724,12 +295,7 @@ export function useAdvisor(): UseAdvisorResult {
    * 것은 용량이 다를 수 있으므로 다시 물어야 한다.
    */
   const teardown = useCallback(async () => {
-    workerRef.current?.terminate();
-    workerRef.current = null;
-    setModelReady(false);
-    setStatus("idle");
-    setProgress({ loadedBytes: 0, totalBytes: 0, files: [] });
-    setError(null);
+    shutdown();
     await deleteModelCache();
     try {
       localStorage.removeItem(CONSENT_STORAGE_KEY);
@@ -738,13 +304,13 @@ export function useAdvisor(): UseAdvisorResult {
     }
     setConsented(false);
     void estimateStorageMb().then(setStorage);
-  }, []);
+  }, [shutdown]);
 
   /** 내려받은 모델을 삭제한다. 보고 있던 대화도 치운다 — 지우겠다는 뜻이 그것이다. */
   const deleteModel = useCallback(async () => {
     setTurns([]);
     await teardown();
-  }, [teardown]);
+  }, [setTurns, teardown]);
 
   return {
     status,
@@ -763,7 +329,7 @@ export function useAdvisor(): UseAdvisorResult {
     answerWithoutModel,
     begin,
     settle,
-    working: thinking || revealing,
+    working,
     rate,
     deleteModel,
     model,

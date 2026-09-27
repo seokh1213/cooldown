@@ -4,7 +4,7 @@ features.py 는 입력 전체의 logits 를 받은 뒤 필요한 위치(선택�
 갈래 판정처럼 짧은 질문에는 문제가 없지만 검증(재료 1천 토큰)에서는 [L, 248320] 이 한 문장에
 1GB 가 넘어 dev 124문장에 7분을 넘겼다. 필요한 위치에서 입력을 끊어 넣고 과거 상태
 (DeltaNet conv/recurrent, 어텐션 KV)를 이어 가면 위치마다 logits 한 줄만 받는다.
-브라우저 워커가 하는 방식과 같다(advisor.worker.ts judge).
+브라우저 워커가 하는 방식과 같다(src/workers/advisor/logitJudge.ts judge).
 
     python features_chunked.py in.jsonl out.npy
 """

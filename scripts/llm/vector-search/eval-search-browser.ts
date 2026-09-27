@@ -6,7 +6,7 @@
  *   await m.run();            // 결과는 window.__searchEval
  */
 import { ADVISOR_MODEL } from "../../../src/lib/advisor/config";
-import { loadDocVectors, nearest } from "../../../src/hooks/useAdvisor";
+import { loadDocVectors, nearest } from "../../../src/lib/advisor/docVectors";
 import type { AdvisorRequest, AdvisorResponse } from "../../../src/lib/advisor/protocol";
 
 export async function run(limit = Infinity) {

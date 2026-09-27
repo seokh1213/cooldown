@@ -9,7 +9,7 @@ import type { AdvisorAnswer, CompareRow, Fact, ItemEffect, ItemVerdict } from ".
 import type { SpellFocus } from "./spellFocus";
 import type { AdvisorData } from "./context";
 import type { NotePerspective } from "./noteSelect";
-import type { AdvisorTurn } from "@/hooks/useAdvisor";
+import type { AdvisorTurn } from "@/hooks/useAdvisorTurns";
 
 export const CONVERSATIONS_KEY = "cooldown.advisor.conversations.v1";
 /** 남기는 대화 수. 넘으면 오래된 것부터 버린다. */
