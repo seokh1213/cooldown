@@ -337,9 +337,9 @@ function fixChampionTypo({ question, ctx, data, champions, matchup }: Intent): A
  */
 function answerGameFact({ question, ctx, data, champions, route }: Intent): AnswerPlan | undefined {
   if (champions.length === 1) {
-    // "피오라 굶드라 가격" 은 아이템 가격이다 — 아이템 이름이 있으면 챔피언 가격으로 답하지 않는다
-    const price = buildItemCard(data, question, undefined) ? undefined : championPriceAnswer(question, champions[0], ctx.lang);
-    if (price) return { type: "code", answer: price, notice: ctx.notice };
+    const price = championPriceAnswer(question, champions[0], ctx.lang);
+    // "피오라 굶주린 히드라 가격" 은 아이템 가격이다 — 아이템 이름이 있으면 챔피언 가격 대신 아이템 카드로 답한다
+    if (price) return { type: "code", answer: buildItemCard(data, question, undefined) ?? price, notice: ctx.notice };
   }
   if (champions.length === 0 || (champions.length === 1 && (route?.kind === "other" || route?.kind === "game"))) {
     const fact = gameMetaAnswer(question, ctx.lang);

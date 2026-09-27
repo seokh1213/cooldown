@@ -160,7 +160,7 @@ const CASES: Case[] = [
   { name: "오타 하나는 고쳐 다시 묻는다(말파이트 화면)", question: "럼미 E", screen: ["Malphite"], want: "retry \"럼블 E\" · 럼블로 이해했습니다.", calls: [] },
   { name: "오타 후보가 여럿이면 고르게 한다", question: "제라 e", want: "code suggestion \"제라\" [Zeri,Zed] pending", calls: [] },
   { name: "상성 대화 중 두 글자 낱말은 오타로 보지 않는다", question: "라인 어떻게 서", turns: matchupTurns("Garen", "Darius"), want: "matchup Garen>Darius · 앞서 말한 가렌 vs 다리우스 기준입니다.", calls: [] },
-  { name: "피오라 굶드라 가격: 지금은 '가격' 을 가렌 오타로 고친다(아이템 가격 길까지 못 간다)", question: "피오라 굶드라 가격", want: "retry \"피오라 굶드라 가렌\" · 가렌으로 이해했습니다.", calls: [] },
+  { name: "챔피언 + 아이템 가격은 아이템 가격('가격' 을 가렌 오타로 보지 않는다)", question: "피오라 굶주린 히드라 가격", want: "code item 3074 verdicts=0", calls: [] },
   { name: "챔피언 가격", question: "피오라 가격 얼마야", want: "code text \"피오라의 상점 가격은 블루 정수 2,400 \"", calls: [] },
   { name: "게임 메타", question: "항복 몇 분부터 돼?", want: "code text \"소환사의 협곡에서는 15분부터 항복 투표를 \"", calls: [] },
   { name: "상성 이어 묻기(판정기 없이)", question: "그럼 한타 때는?", turns: matchupTurns("Garen", "Darius"), want: "matchup Garen>Darius focus=teamfight · 앞서 말한 가렌 vs 다리우스 기준입니다.", calls: [] },
