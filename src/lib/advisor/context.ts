@@ -4,7 +4,7 @@
  * CLI 와 **같은 코드로** 자료를 만든다. `scripts/llm/lib/` 의 조립 로직은 파일을 읽지 않으므로
  * 그대로 가져다 쓸 수 있고, 여기서는 파일 대신 `fetch` 로 재료를 모아 넘기기만 한다.
  *
- * 답하는 범위는 챔피언 한 명에 대한 조회와 룬·주문 판정 두 가지다.
+ * 여기서 바로 짓는 답은 효과 태그 예/아니오, 아이템, 게임 규칙 조회다.
  * 상성 서술과 통계는 다루지 않는다.
  *
  * 받아 오는 재료
@@ -192,20 +192,6 @@ export function loadAdvisorData(patch: string, locale = "ko_KR"): Promise<Adviso
 }
 
 /**
- * 챔피언 하나에 대한 질문에 붙일 자료.
- *
- * 자료 없이 두면 모델이 "오공(Dragon Knight)" 같은 이름부터 지어낸다.
- * 실제로 그렇게 답했다.
- *
- * 사실 카드와 사람이 쓴 지식 카드만 싣는다. 통계는 더 이상 싣지 않는다.
- */
-/**
- * 챔피언 여럿을 묻는 질문에 붙일 자료.
- *
- * "럼블 마법저항력 1렙에 몇이고 오공은 몇이야" 처럼 둘을 나란히 묻는 질문이 있다.
- * 한 명일 때만 자료를 붙였더니 이런 질문이 통째로 빈손으로 나갔다.
- */
-/**
  * 질문이 가리키는 스킬 슬롯. "럼블 E는", "가렌 궁", "제드 패시브" 를 모두 받는다.
  *
  * 영어 낱말 속 알파벳에 걸리지 않도록 슬롯 문자는 앞뒤가 한글이거나 경계일 때만 센다.
@@ -216,45 +202,6 @@ export function detectSlot(question: string): string | undefined {
   if (/궁극기|궁(?=[\s을은이의로]|$)/.test(question)) return "R";
   const match = /(^|[^A-Za-z])([QWERqwer])($|[^A-Za-z])/.exec(question);
   return match ? match[2].toUpperCase() : undefined;
-}
-
-/**
- * 스킬 하나를 묻는 질문의 답.
- *
- * **모델을 거치지 않는다.** "럼블 E는 마법저항력이 깎이나?" 에 모델은
- * "네, 감소합니다" 라고만 답하고 수치를 빠뜨렸다. 물어본 사람이 알고 싶은 것은
- * 몇이 깎이느냐인데 그 값은 툴팁에 이미 있다.
- *
- * 효과 태그로 못 잡는 이유도 여기 있다. 태그는 "적 마법 저항력 감소" 인데 질문은
- * "마법저항력이 깎이나" 라 글자가 맞지 않는다. 동의어 표를 만드는 대신 슬롯이
- * 드러난 질문은 그 스킬을 통째로 보여 준다.
- */
-export function buildSpellAnswer(
-  data: AdvisorData,
-  card: ChampionCard,
-  question: string,
-): string | undefined {
-  const slot = detectSlot(question);
-  if (!slot) return undefined;
-  const spell = card.spells.find((s) => s.slot === slot);
-  if (!spell) return undefined;
-
-  const lines = [`## ${card.name} ${spell.slot} ${spell.name}`];
-  const facts: string[] = [];
-  if (spell.cooldown) facts.push(`재사용 대기시간 ${spell.cooldown}초`);
-  const cost = (spell as { cost?: string }).cost;
-  if (cost) facts.push(`소모값 ${cost}`);
-  if (spell.damageTypes?.length) facts.push(`피해 유형 ${spell.damageTypes.join("·")}`);
-  if (facts.length) lines.push(facts.join(" · "));
-
-  if (spell.effects.length) lines.push(`효과: ${spell.effects.join(", ")}`);
-  const ratios = Object.entries(spell.ratios ?? {});
-  if (ratios.length) {
-    lines.push(`계수: ${ratios.map(([stat, value]) => `${stat} ${value}%`).join(", ")}`);
-  }
-  if (spell.text) lines.push(`\n${spell.text}`);
-  lines.push(`\n패치 ${data.patch} 기준 스킬 설명입니다.`);
-  return lines.join("\n");
 }
 
 /**
@@ -300,36 +247,6 @@ export function buildTagAnswer(
   return `${lines.join("\n")}\n\n패치 ${data.patch} 기준 스킬 효과입니다.`;
 }
 
-/**
- * 챔피언 한 명을 묻는 질문의 답.
- *
- * **모델을 거치지 않는다.** 자료를 붙여 모델에게 넘겼더니 받아 적기만 하다가
- * 900토큰에서 잘렸다. 럼블은 카드 본문만 2,654자라 끝까지 닿지 못했고,
- * 능력치 표를 통째로 빠뜨린 채 문장 중간에서 끊겼다.
- *
- * 자료가 곧 답인 질문이다. 코드가 내면 잘리지 않고, 빠뜨리지 않고, 즉시 나간다.
- *
- * 프롬프트가 아니므로 지식 카드를 자르지 않는다. `buildChampionBrief` 가 4건·3건으로
- * 줄이는 것은 프롬프트가 6천 자에 닿으면 브라우저 런타임이 죽기 때문인데,
- * 여기는 화면에 바로 나가는 글이라 그 제약이 없다.
- */
-
-/**
- * 룬·주문 판정을 묻는 질문에 붙일 자료.
- *
- * "정복자에 점화 스택이 되나" 같은 질문은 툴팁만 보면 틀린다. 실제로 그렇게 틀렸다.
- * 문장에서 룬·주문 이름을 찾아 위키에서 모은 판정 규칙을 싣는다.
- */
-
-/**
- * 아이템 질문의 답.
- *
- * **모델을 거치지 않는다.** 설명문을 요약시켰더니 두 가지로 틀렸다.
- * "쇼진의 창은 궁극기에도 적용되나요" 에 "적용되지 않습니다" 라고 답했고
- * (설명문은 "챔피언 스킬" 이라 적는데 궁극기가 거기 든다는 추론을 못 한다),
- * "몰락한 왕의 검은 어떤 효과야" 에는 능력치만 읊고 고유 효과 두 개를 빠뜨렸다.
- * e4b 로 키워도 같았다. 설명문 자체가 답이므로 그대로 낸다.
- */
 /** 받침 유무로 조사를 고른다. "보호막는" 처럼 나가면 답이 어설퍼 보인다. */
 function withParticle(word: string, withFinal: string, withoutFinal: string): string {
   const last = word.charCodeAt(word.length - 1);
@@ -349,7 +266,13 @@ function sentenceWith(body: string, term: string): string | undefined {
 }
 
 /**
- * 아이템 답을 구조로. 설명문을 통째로 던지지 않고 능력치·효과로 갈라 둔다.
+ * 아이템 질문의 답. 설명문을 통째로 던지지 않고 능력치·효과로 갈라 둔다.
+ *
+ * **모델을 거치지 않는다.** 설명문을 요약시켰더니 두 가지로 틀렸다.
+ * "쇼진의 창은 궁극기에도 적용되나요" 에 "적용되지 않습니다" 라고 답했고
+ * (설명문은 "챔피언 스킬" 이라 적는데 궁극기가 거기 든다는 추론을 못 한다),
+ * "몰락한 왕의 검은 어떤 효과야" 에는 능력치만 읊고 고유 효과 두 개를 빠뜨렸다.
+ * e4b 로 키워도 같았다. 설명문 자체가 답이므로 그대로 낸다.
  *
  * 갈라 두면 카드가 표로 그릴 수 있고, 대화에는 효과 이름과 설명만 나간다.
  * **아이템을 둘 이상 물었으면 구조를 쓰지 않는다** — 카드는 하나뿐인데 둘을 담으면

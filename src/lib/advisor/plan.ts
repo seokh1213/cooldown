@@ -288,6 +288,9 @@ async function answerByVector({ question, ctx, data, recentItem, matchup }: Inte
 /**
  * 룬·주문 판정. 함께 나온 다른 규칙 이름이 든 문장이 답이다.
  * "정복자에 점화 들어가?" 는 점화 규칙 9문장 중 "정복자" 가 든 한 문장.
+ *
+ * 이런 질문은 툴팁만 보면 틀린다. 실제로 그렇게 틀렸다. 그래서 문장에서 룬·주문 이름을 찾아
+ * 위키에서 모은 판정 규칙으로 답한다.
  */
 function answerRuleQuestion({ question, ctx, data, matchup }: Intent): AnswerPlan | undefined {
   const named = askedRules(data, question);
@@ -542,6 +545,19 @@ function championsFromContext({ question, ctx, data, recent, slot }: Intent): An
   return { type: "code", answer: { kind: "suggestion", original: question, candidates: source, reason: "ambiguous" }, pending: true };
 }
 
+/**
+ * 챔피언 한 명을 묻는 질문의 답.
+ *
+ * **모델을 거치지 않는다.** 자료를 붙여 모델에게 넘겼더니 받아 적기만 하다가
+ * 900토큰에서 잘렸다. 럼블은 카드 본문만 2,654자라 끝까지 닿지 못했고,
+ * 능력치 표를 통째로 빠뜨린 채 문장 중간에서 끊겼다.
+ *
+ * 자료가 곧 답인 질문이다. 코드가 내면 잘리지 않고, 빠뜨리지 않고, 즉시 나간다.
+ *
+ * 프롬프트가 아니므로 지식 카드를 자르지 않는다. (자료를 프롬프트에 붙이던 때) `buildChampionBrief` 가
+ * 4건·3건으로 줄인 것은 프롬프트가 6천 자에 닿으면 브라우저 런타임이 죽기 때문이었는데,
+ * 여기는 화면에 바로 나가는 글이라 그 제약이 없다.
+ */
 function answerOneChampion({ question, ctx, data, route, topic, slot }: Intent, card: ChampionCard, notice: string | undefined): AnswerPlan {
   // "패시브와 네 가지 스킬을 각각" 은 패시브 한 칸이 아니라 스킬 전체 소개다
   const spell = slot && !asksWholeKit(question) ? card.spells.find((entry) => entry.slot === slot) : undefined;
