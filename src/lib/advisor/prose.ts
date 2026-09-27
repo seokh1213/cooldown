@@ -28,6 +28,7 @@ interface ProseWords {
   perSkill: (champion: string, label: string) => string;
   skillset: (champion: string) => string;
   effects: (subject: string, list: string) => string;
+  price: (item: string, gold: string) => string;
   none: (subject: string) => string;
   joiner: string;
   /** 두 번째 문장의 주어. 앞 문장에서 이미 이름을 댔으므로 되풀이하지 않는다. */
@@ -40,6 +41,7 @@ const WORDS: Record<Language, ProseWords> = {
     perSkill: (champion, label) => `${champion}의 스킬별 ${label}입니다.`,
     skillset: (champion) => `${champion}의 스킬 구성입니다.`,
     effects: (subject, list) => `${subject}의 효과는 ${list}입니다.`,
+    price: (item, gold) => `${item} 가격은 ${gold} 골드입니다.`,
     none: (subject) => `${subject}은 자료에 없습니다.`,
     joiner: ", ",
     it: "이 스킬",
@@ -49,6 +51,7 @@ const WORDS: Record<Language, ProseWords> = {
     perSkill: (champion, label) => `${label} for each of ${champion}'s abilities:`,
     skillset: (champion) => `${champion}'s abilities:`,
     effects: (subject, list) => `${subject} applies ${list}.`,
+    price: (item, gold) => `${item} costs ${gold} gold.`,
     none: (subject) => `${subject} is not in the data.`,
     joiner: ", ",
     it: "It",
@@ -58,6 +61,7 @@ const WORDS: Record<Language, ProseWords> = {
     perSkill: (champion, label) => `${champion} 各技能的${label}：`,
     skillset: (champion) => `${champion} 的技能构成：`,
     effects: (subject, list) => `${subject}的效果为${list}。`,
+    price: (item, gold) => `${item}的价格为 ${gold} 金币。`,
     none: (subject) => `资料中没有${subject}。`,
     joiner: "，",
     it: "该技能",
@@ -143,6 +147,8 @@ export function answerProse(answer: AdvisorAnswer, lang: Language = "ko_KR"): st
   if (answer.kind === "compare" && answer.matchup) return answer.precomputed ?? matchupDigest(answer, lang, answer.more ? "focus-full" : undefined);
 
   if (answer.kind === "item") {
+    // "굶주린 히드라 가격" 에 효과 이름만 적었다. 가격은 카드 머리에만 있어 대화에는 답이 없었다.
+    if (answer.askedPrice && answer.price) return w.price(answer.itemName, answer.price.toLocaleString());
     if (answer.verdicts.length) {
       return answer.verdicts
         .map((verdict) => (verdict.evidence ? verdict.evidence : w.none(`${answer.itemName} ${translateTag(verdict.tag, lang)}`)))

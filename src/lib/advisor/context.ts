@@ -17,6 +17,7 @@
 import type { ChampionCard } from "@/lib/knowledge/facts";
 import { aliasAt } from "@/lib/knowledge/searchAliases";
 import { askedRuleKinds } from "@/lib/knowledge/rules";
+import { asksPrice } from "./gameMeta";
 import itemAliasFile from "../../../knowledge/item-aliases.json";
 import type { CuratedTip } from "@/lib/knowledge/knowledgeCore";
 import {
@@ -310,6 +311,7 @@ export function buildItemCard(
     itemId: String(item.id),
     itemName: item.name,
     price: item.priceTotal,
+    askedPrice: asksPrice(question) || undefined,
     stats: (item.statDescriptions ?? [])
       .map((line) => {
         // "공격력 <span>45</span>" → 마지막 낱말이 값, 앞이 이름. "공격 속도 25%" 도 같다.

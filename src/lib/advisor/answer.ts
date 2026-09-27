@@ -129,6 +129,8 @@ export type AdvisorAnswer =
       itemName: string;
       /** 총 가격 */
       price?: number;
+      /** 가격을 물었는가. 대화 글이 가격부터 답한다. */
+      askedPrice?: boolean;
       /** 공격력 45, 체력 450 … */
       stats: Fact[];
       effects: ItemEffect[];

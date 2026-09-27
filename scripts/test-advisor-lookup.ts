@@ -5,6 +5,7 @@
 import assert from "node:assert/strict";
 import { detectChampions, nicknames } from "../src/lib/advisor/intent";
 import { buildItemCard } from "../src/lib/advisor/context";
+import { answerProse } from "../src/lib/advisor/prose";
 import { suggestChampions } from "../src/lib/advisor/championTypo";
 import { findGameMeta } from "../src/lib/advisor/gameMeta";
 import { findMentionedRules } from "../src/lib/knowledge/rules";
@@ -69,5 +70,13 @@ eq(suggest("en_US", "does the river rune give anything"), undefined, "river 는 
 // 다른 언어로 쓴 아이템 공식 이름
 eq(itemOf("ko_KR", "Blade of the Ruined King 효과"), "3153", "한국어 화면의 영어 아이템 이름");
 eq(itemOf("zh_CN", "몰락한 왕의 검 被动"), "3153", "중국어 화면의 한국어 아이템 이름");
+
+// 아이템 가격을 물으면 대화 글이 가격부터 답한다(가격은 카드 머리에만 있었다)
+{
+  const priced = buildItemCard(loadData("ko_KR"), "굶주린 히드라 가격");
+  eq(priced ? /^굶주린 히드라 가격은 [\d,]+ 골드입니다\.$/.test(answerProse(priced, "ko_KR")) : false, true, "가격 질문의 대화 글");
+  const effect = buildItemCard(loadData("ko_KR"), "굶주린 히드라 효과");
+  eq(effect ? answerProse(effect, "ko_KR").includes("가격") : true, false, "효과 질문에는 가격을 적지 않는다");
+}
 
 console.log(`✅ 별명·줄임말·오타 헛잡음 통과 (${checks}건)`);
