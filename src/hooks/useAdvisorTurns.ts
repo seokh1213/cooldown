@@ -159,43 +159,41 @@ export function useAdvisorTurns(lang: Language, setError: (error: string | null)
     [lang, place, reveal, setError],
   );
 
+  /*
+   * 기록은 상태 갱신 함수 밖에서 남긴다. 갱신 함수 안에서 남기면 개발 모드(StrictMode)가 갱신 함수를 두 번 불러
+   * 같은 평가가 두 번 쌓였다.
+   */
   const rate = useCallback((turnId: number, rating: "up" | "down", patch: string) => {
-    setTurns((prev) => {
-      const index = prev.findIndex((t) => t.id === turnId);
-      if (index < 0) return prev;
-      const next = [...prev];
-      // 같은 버튼을 다시 누르면 평가를 물린다
-      const current = next[index].rating;
-      next[index] = { ...next[index], rating: current === rating ? undefined : rating };
-
-      if (next[index].rating) {
-        // 바로 앞 사용자 발화가 이 답의 질문이다
-        const before = prev.slice(0, index);
-        const question = [...before].reverse().find((t) => t.role === "user");
-        const questionAt = question ? before.lastIndexOf(question) : -1;
-        const previousQuestion = [...before.slice(0, Math.max(0, questionAt))].reverse().find((t) => t.role === "user");
-        const state = matchupStateOf(before.slice(0, Math.max(0, questionAt)).map((t) => (t.role === "assistant" ? t.answer : undefined)));
-        const answer = next[index].answer;
-        try {
-          appendFeedback({
-            at: new Date().toISOString(),
-            question: question?.content ?? "",
-            answer: next[index].content,
-            rating,
-            patch,
-            lang,
-            previousQuestion: previousQuestion?.content,
-            previousMatchup: state ? { mine: state.mine.id, enemy: state.enemy.id } : undefined,
-            answerKind: answer?.kind,
-            champions: answer ? answerChampionIds(answer) : undefined,
-          });
-        } catch {
-          // 저장에 실패해도 화면 표시는 유지한다
-        }
-      }
-      return next;
-    });
-  }, [lang]);
+    const index = turns.findIndex((t) => t.id === turnId);
+    if (index < 0) return;
+    // 같은 버튼을 다시 누르면 평가를 물린다
+    const next = turns[index].rating === rating ? undefined : rating;
+    setTurns((prev) => prev.map((t) => (t.id === turnId ? { ...t, rating: next } : t)));
+    if (!next) return;
+    // 바로 앞 사용자 발화가 이 답의 질문이다
+    const before = turns.slice(0, index);
+    const question = [...before].reverse().find((t) => t.role === "user");
+    const questionAt = question ? before.lastIndexOf(question) : -1;
+    const previousQuestion = [...before.slice(0, Math.max(0, questionAt))].reverse().find((t) => t.role === "user");
+    const state = matchupStateOf(before.slice(0, Math.max(0, questionAt)).map((t) => (t.role === "assistant" ? t.answer : undefined)));
+    const answer = turns[index].answer;
+    try {
+      appendFeedback({
+        at: new Date().toISOString(),
+        question: question?.content ?? "",
+        answer: turns[index].content,
+        rating,
+        patch,
+        lang,
+        previousQuestion: previousQuestion?.content,
+        previousMatchup: state ? { mine: state.mine.id, enemy: state.enemy.id } : undefined,
+        answerKind: answer?.kind,
+        champions: answer ? answerChampionIds(answer) : undefined,
+      });
+    } catch {
+      // 저장에 실패해도 화면 표시는 유지한다
+    }
+  }, [turns, lang]);
 
   const reset = useCallback(() => {
     finishReveal();
