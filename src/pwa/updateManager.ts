@@ -10,6 +10,8 @@ export class PwaUpdateManager {
   private readonly listeners = new Set<UpdateListener>();
   private preparedWorker?: ServiceWorker;
   private checking?: Promise<void>;
+  private releaseRequested = false;
+  private recheck = false;
   private preparing?: Promise<void>;
   private applying = false;
   private reloading = false;
@@ -38,11 +40,30 @@ export class PwaUpdateManager {
 
   async check(): Promise<void> {
     if (!navigator.onLine || document.visibilityState === "hidden") return;
-    if (this.checking) return this.checking;
-    this.checking = this.checkRelease().catch(() => {
-      // Offline, partial deploys and failed installs leave the current PWA intact.
-    }).finally(() => { this.checking = undefined; });
+    if (this.checking) {
+      // The running check may already have read release.json from the previous
+      // deployment. Remember this focus/online/interval signal instead of
+      // dropping it until the next trigger.
+      if (this.releaseRequested) this.recheck = true;
+      return this.checking;
+    }
+    this.checking = this.runChecks().finally(() => { this.checking = undefined; });
     return this.checking;
+  }
+
+  private async runChecks(): Promise<void> {
+    let foundUpdate = false;
+    do {
+      this.recheck = false;
+      this.releaseRequested = false;
+      foundUpdate = await this.checkRelease().catch(() => {
+        // Offline, partial deploys and failed installs leave the current PWA intact.
+        return false;
+      });
+      // A check that found a newer release is already installing it; asking
+      // again would only race the install and activation.
+    } while (this.recheck && !foundUpdate && navigator.onLine);
+    this.releaseRequested = false;
   }
 
   private async register(): Promise<ServiceWorkerRegistration> {
@@ -64,16 +85,20 @@ export class PwaUpdateManager {
     return registration;
   }
 
-  private async checkRelease(): Promise<void> {
+  /** Resolves true when release.json names a release other than the running one. */
+  private async checkRelease(): Promise<boolean> {
     const registration = await this.register();
+    this.releaseRequested = true;
     const response = await fetch(`${getRuntimeBasePath()}release.json`, {
       cache: "no-store",
       signal: AbortSignal.timeout(5000),
     });
-    if (!response.ok) return;
+    if (!response.ok) return false;
     const latest = decodeAppRelease(await response.json());
-    if (latest.releaseId !== RELEASE_ID) await registration.update();
+    const foundUpdate = latest.releaseId !== RELEASE_ID;
+    if (foundUpdate) await registration.update();
     await this.prepareWaiting();
+    return foundUpdate;
   }
 
   private async prepareWaiting(): Promise<void> {
