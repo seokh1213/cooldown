@@ -81,7 +81,9 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
   const viewportWidth = useViewportWidth();
   const wide = viewportWidth >= WIDE_VIEWPORT_MIN;
   const isMobile = viewportWidth < 768;
-  const referenceSize = useReferencePanelSize(viewportWidth);
+  // 지금 화면에 떠 있는 챔피언·탭. 이름을 생략한 질문과 빈 화면 예시가 여기에 기댄다.
+  const context = usePageContext();
+  const referenceSize = useReferencePanelSize(viewportWidth, context.route);
   const { referenceOpen, toggleReference, drawerWidth } = referenceSize;
   // 모바일은 드로어가 전체 화면이라 "화면으로 이동" 을 눌러도 뒤에서만 바뀐다. 이동하면 닫는다.
   const onNavigate = () => {
@@ -89,8 +91,6 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
   };
   // 생성 중에 보내려 했는지. 조용히 먹히면 고장으로 보여서 한 줄 알린다.
   const [pressedWhileBusy, setPressedWhileBusy] = useState(false);
-  // 지금 화면에 떠 있는 챔피언·탭. 이름을 생략한 질문과 빈 화면 예시가 여기에 기댄다.
-  const context = usePageContext();
   const { ask, showDoc, askPerspective, pickChampion } = useAskAdvisor({ advisor, data, championIds: context.championIds, canUseModel });
 
   // 답을 찾는 중(판정기·노트)과 코드 답을 흘려 보이는 중에도 바쁘다. 그 사이 새 질문이 끼면 자리가 엉킨다.

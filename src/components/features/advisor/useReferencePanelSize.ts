@@ -7,6 +7,7 @@ import {
   REFERENCE_MIN_WIDTH,
   advisorDrawerWidth,
   clampReferenceWidth,
+  referenceFitsPage,
   referencePanelWidth,
 } from "@/hooks/useWideViewport";
 
@@ -34,9 +35,14 @@ function readReferenceOpen(): boolean {
   }
 }
 
-export function useReferencePanelSize(viewportWidth: number) {
+export function useReferencePanelSize(viewportWidth: number, route: string) {
   // 접을 수 있고, 접은 상태는 기기에 남는다.
-  const [referenceOpen, setReferenceOpen] = useState(readReferenceOpen);
+  const [storedOpen, setReferenceOpen] = useState(readReferenceOpen);
+  // 뒤 페이지가 모자라 접어 둔 채로 연 뒤에 사용자가 펼친 것. 이번 세션만 따른다 — 넓은 화면에서 다시 열 때는 기억된 값이 이긴다.
+  const [openedAnyway, setOpenedAnyway] = useState(false);
+  const [storedWidth, setStoredWidth] = useState(readReferenceWidth);
+  const fits = referenceFitsPage(viewportWidth, route, storedWidth);
+  const referenceOpen = storedOpen && (fits || openedAnyway);
   const setReferenceOpenPersisted = (open: boolean) => {
     setReferenceOpen(open);
     try {
@@ -45,10 +51,17 @@ export function useReferencePanelSize(viewportWidth: number) {
       // 기억 못 해도 이번 세션에서는 동작한다
     }
   };
-  const toggleReference = () => setReferenceOpenPersisted(!referenceOpen);
+  const toggleReference = () => {
+    if (referenceOpen) {
+      setOpenedAnyway(false);
+      setReferenceOpenPersisted(false);
+      return;
+    }
+    if (!fits) setOpenedAnyway(true);
+    setReferenceOpenPersisted(true);
+  };
 
   // 자료 패널 폭. 사용자가 가장자리를 끌어 정하고, 그 값은 기기에 남는다.
-  const [storedWidth, setStoredWidth] = useState(readReferenceWidth);
   const referenceWidth = clampReferenceWidth(storedWidth ?? referencePanelWidth(viewportWidth), viewportWidth);
   const [resizing, setResizing] = useState(false);
   const dragRef = useRef<{ startX: number; startWidth: number } | null>(null);

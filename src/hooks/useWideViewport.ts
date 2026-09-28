@@ -52,6 +52,11 @@ export const REFERENCE_MIN_WIDTH = 260;
 export const REFERENCE_MAX_WIDTH = 560;
 /** 뒤 페이지에 최소한 남겨 둘 폭. 이만큼은 남아야 표가 표 구실을 한다. */
 const PAGE_MIN_WIDTH = 160;
+/**
+ * VS 화면은 두 챔피언 표가 나란히 서야 해서 쿨타임 표처럼 줄어들지 않는다. 1280px 에서 자료 패널까지 펼치면
+ * 페이지에 416px 이 남는데 표는 약 530px 이 필요해 오른쪽 챔피언 표가 도우미 밑으로 가려졌다.
+ */
+const VS_PAGE_MIN_WIDTH = 540;
 /** 왼쪽 사이드바 레일 */
 const SIDEBAR_WIDTH = 64;
 
@@ -60,6 +65,16 @@ export function clampReferenceWidth(width: number, viewportWidth: number): numbe
   const room = viewportWidth - ADVISOR_CHAT_WIDTH_WITH_REFERENCE - SIDEBAR_WIDTH - PAGE_MIN_WIDTH;
   const max = Math.max(REFERENCE_MIN_WIDTH, Math.min(REFERENCE_MAX_WIDTH, room));
   return Math.round(Math.min(max, Math.max(REFERENCE_MIN_WIDTH, width)));
+}
+
+/**
+ * 자료 패널을 펼쳐도 뒤 페이지가 제 구실을 하는가. 모자라면 자료 패널을 접은 채로 연다(사용자가 펼치면 그대로 둔다).
+ * 쿨타임 표는 160px 까지 줄어들고, VS 화면은 두 표가 들어갈 폭이 남아야 한다.
+ */
+export function referenceFitsPage(viewportWidth: number, route: string, referenceWidth?: number): boolean {
+  const panel = clampReferenceWidth(referenceWidth ?? referencePanelWidth(viewportWidth), viewportWidth);
+  const room = viewportWidth - SIDEBAR_WIDTH - ADVISOR_CHAT_WIDTH_WITH_REFERENCE - panel;
+  return room >= (route === "vs" ? VS_PAGE_MIN_WIDTH : PAGE_MIN_WIDTH);
 }
 
 /** 드로어 전체 폭. 자료 패널이 펼쳐져 있으면 그 폭만큼 더 넓다. */

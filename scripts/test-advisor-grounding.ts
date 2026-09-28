@@ -15,6 +15,7 @@ import { createLoopGuard, trimLoop } from "../src/lib/advisor/loopGuard";
 import { promptWords } from "../src/lib/advisor/promptLocale";
 import type { AdvisorAnswer } from "../src/lib/advisor/answer";
 import { ADVISOR_MODEL, canOfferModel, type AdvisorModel } from "../src/lib/advisor/config";
+import { referenceFitsPage } from "../src/hooks/useWideViewport";
 
 const llmDir = path.join(PUBLIC_DATA_ROOT, resolvePatchVersion(), "llm");
 const cards = (
@@ -337,6 +338,16 @@ assert.ok(q && !q.effects.includes("에어본"), "Q 에는 에어본이 없어�
   for (let i = 0; i < fine.length; i += 2) flagged = calm.feed(fine.slice(i, i + 2)) || flagged;
   assert.equal(flagged, false, "멀쩡한 글은 끊지 않는다");
   assert.equal(trimLoop(fine), fine, "되풀이가 없으면 손대지 않는다");
+}
+
+/**
+ * 자료 패널을 펼쳐도 뒤 페이지가 제 구실을 하는가. VS 화면은 두 표가 나란히 서야 해서 1280px 에서는 접은 채로 연다.
+ */
+{
+  assert.equal(referenceFitsPage(1280, "vs"), false, "1280 VS: 자료 패널을 펼치면 표가 가려진다");
+  assert.equal(referenceFitsPage(1512, "vs"), true, "1512 VS: 넉넉하다");
+  assert.equal(referenceFitsPage(1280, "cooldown"), true, "쿨타임 표는 줄어든다");
+  assert.equal(referenceFitsPage(1194, "cooldown"), true, "태블릿 가로(1194)에서도 쿨타임 표는 보인다");
 }
 
 console.log("✅ 근거 검사 통과 (62건)");
