@@ -125,6 +125,12 @@ test("online recovery and periodic polling detect releases without a manual relo
     await expect(appRelease(page)).toHaveAttribute("content", builds.releaseA.releaseId);
     await context.setOffline(false);
     await expect(appRelease(page)).toHaveAttribute("content", builds.releaseB.releaseId, { timeout: 20_000 });
+    // 릴리스 표식은 HTML 에 박혀 있어 B 문서가 막 열린 순간에 이미 맞는다. 그때 B 는
+    // 막 활성화되어 새 문서의 첫 요청과 첫 확인을 처리하는 중이다. 이 틈에 C 설치와
+    // SKIP_WAITING 이 겹치면, 전체를 병렬로 돌릴 때 가끔 크로미움이 C 를 installed 에
+    // 둔 채 20초 안에 활성화하지 않았다. 이 시험이 보려는 것은 주기 확인이므로, 첫 화면의
+    // 요청이 가라앉은 뒤에 C 를 올린다.
+    await page.waitForLoadState("networkidle");
     server.deploy("c");
     await page.clock.fastForward(60_100);
     await expect(appRelease(page)).toHaveAttribute("content", builds.releaseC.releaseId, { timeout: 20_000 });

@@ -74,13 +74,21 @@ test("installs the PWA and serves a direct route offline", async ({ page, contex
     `data/${manifest.patchVersion}/champions/ko_KR/MonkeyKing.json`,
     baseURL,
   ).href;
+  await expect(page.getByRole("heading", { name: "챔피언 맞대결" }).nth(1)).toBeVisible();
   await expect.poll(() => page.evaluate(async (url) => (await fetch(url)).status, cachedChampionUrl))
     .toBe(200);
+  // 온라인 응답이 200 이어도 서비스워커(CacheFirst)는 응답을 돌려준 뒤에 캐시에 쓴다.
+  // 그 쓰기가 끝나기 전에 끊으면 첫 오프라인 요청이 네트워크로 가서 실패하므로,
+  // 캐시에 실제로 들어간 것을 보고 나서 끊는다.
+  await expect.poll(() => page.evaluate(async (url) => Boolean(await caches.match(url)), cachedChampionUrl))
+    .toBe(true);
 
   await context.setOffline(true);
   try {
-    await expect.poll(() => page.evaluate(async (url) => (await fetch(url)).status, cachedChampionUrl))
-      .toBe(200);
+    await expect.poll(() => page.evaluate(
+      async (url) => (await fetch(url).catch(() => undefined))?.status,
+      cachedChampionUrl,
+    )).toBe(200);
     await page.reload({ waitUntil: "domcontentloaded" });
     await expect(page.getByRole("heading", { name: "챔피언 맞대결" }).nth(1)).toBeVisible();
   } finally {
