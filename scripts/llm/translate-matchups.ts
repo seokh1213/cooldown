@@ -11,6 +11,9 @@
  *      다시 돌리면 원문이 그대로인 칸은 건너뛴다(원문이 바뀐 칸만 다시 옮긴다).
  *   --emit 은 저장된 번역으로 public/data/<patch>/llm/matchups/<id>.<lang>.json 을 짓는다(키 구조는 원문과 같다).
  *
+ * 번역기는 `--translator codex`(기본, Codex CLI) 또는 `ollama:<모델>`(로컬, 토큰 비용 없음). 뜻 대조는 `--checker claude`(기본 모델)·
+ * `sonnet`·`none`. `--probe <파일>` 은 저장된 번역을 건너뛰지 않고 새로 옮겨 칸마다 결과를 파일에 적는다(저장소는 건드리지 않는다).
+ *
  * 사용: npx tsx scripts/llm/translate-matchups.ts --lang en_US [--champions A,B] [--concurrency 2] [--batch 4]
  *       npx tsx scripts/llm/translate-matchups.ts --lang en_US --emit
  */
@@ -29,6 +32,10 @@ const arg = (name: string): string | undefined => {
 const LANG = (arg("lang") ?? "en_US") as "en_US" | "zh_CN";
 const CONCURRENCY = Number(arg("concurrency") ?? 2);
 const BATCH = Number(arg("batch") ?? 4);
+const TRANSLATOR = arg("translator") ?? "codex";
+const CHECKER = arg("checker") ?? "claude";
+const PROBE = arg("probe");
+const probeRows: Array<{ me: string; enemy: string; slot: string; ko: string; text?: string; stage: "code" | "meaning" | "kept" }> = [];
 const LANG_NAME = { en_US: "English", zh_CN: "简体中文" };
 
 const patch = resolvePatchVersion();
@@ -83,7 +90,19 @@ async function codex(prompt: string): Promise<string> {
   return text;
 }
 
-const claude = (prompt: string) => spawnText("claude", ["-p", "--tools", "", "--no-session-persistence", "--setting-sources", ""], prompt, os.tmpdir());
+/** 로컬 Ollama. JSON 한 덩어리로 답하게 한다. 사고 모드가 있는 모델은 끈다. */
+async function ollama(model: string, prompt: string): Promise<string> {
+  const res = await fetch("http://127.0.0.1:11434/api/chat", {
+    method: "POST",
+    body: JSON.stringify({ model, messages: [{ role: "user", content: prompt }], stream: false, format: "json", think: false, options: { temperature: 0.2, num_ctx: 16384 } }),
+  });
+  return res.ok ? (((await res.json()) as { message?: { content?: string } }).message?.content ?? "") : "";
+}
+
+const translate = (prompt: string) => (TRANSLATOR.startsWith("ollama:") ? ollama(TRANSLATOR.slice("ollama:".length), prompt) : codex(prompt));
+
+const claude = (prompt: string) =>
+  spawnText("claude", ["-p", "--tools", "", "--no-session-persistence", "--setting-sources", "", ...(CHECKER === "sonnet" ? ["--model", "sonnet"] : [])], prompt, os.tmpdir());
 
 function jsonObject<T>(text: string): T | undefined {
   const start = text.indexOf("{");
@@ -104,9 +123,13 @@ function namesIn(ko: string, ids: string[]): Array<{ ko: string; target: string 
     if (!k || !t) continue;
     if (ko.includes(k.name)) out.push({ ko: k.name, target: t.name });
     for (const s of k.spells) {
-      const koName = s.name.split(/\s*[/|]\s*/)[0];
-      const tName = t.spells.find((x) => x.slot === s.slot)?.name.split(/\s*[/|]\s*/)[0];
-      if (tName && koName.length >= 2 && ko.includes(koName)) out.push({ ko: koName, target: tName });
+      // 이름이 둘인 스킬("도주 / 억압")은 두 이름을 모두 대조한다. 앞 이름만 보다가 "潜掠 / 压制"(정답 潜掠/强掳)가 통과했다.
+      const koNames = s.name.split(/\s*[/|]\s*/);
+      const tNames = t.spells.find((x) => x.slot === s.slot)?.name.split(/\s*[/|]\s*/) ?? [];
+      koNames.forEach((koName, i) => {
+        const tName = tNames[i] ?? tNames[0];
+        if (tName && koName.length >= 2 && ko.includes(koName)) out.push({ ko: koName, target: tName });
+      });
     }
   }
   let rest = ko;
@@ -129,14 +152,18 @@ function missingNames(text: string, names: Array<{ ko: string; target: string }>
 let emptyReplies = 0;
 const MAX_EMPTY = 3;
 
-async function translateBatch(me: string, jobs: Array<{ enemy: string; slot: string; ko: string }>, store: Store): Promise<[number, number, number]> {
+type Job = { enemy: string; slot: string; ko: string };
+
+function batchPrompt(me: string, jobs: Job[]): string {
   const ids = [me, ...new Set(jobs.map((j) => j.enemy))];
   const glossary = new Map<string, string>();
   for (const j of jobs) for (const n of namesIn(j.ko, [me, j.enemy])) glossary.set(n.ko, n.target);
-  const prompt = [
+  return [
     `Translate these League of Legends matchup coaching paragraphs from Korean to ${LANG_NAME[LANG]}. The player plays ${targetCards.get(me)?.name}.`,
     "Keep the meaning exactly: every fact, condition, timing and advice stays; add nothing. Natural, concise game-guide style.",
     'Abilities are written as "<champion> <slot> <ability name>" (e.g. "Rumble E Electro-Harpoon"); keep that form with the slot letter.',
+    // 로컬 모델(qwen3 30B)이 "R 이 빠진 직후" 를 "R is missed" 로 옮겼다
+    'Korean "빠지다/빠진/빠졌을 때" said of an ability or spell means it is on cooldown ("is down", "has been used"), never "missed".',
     `Use exactly these names (Korean → ${LANG_NAME[LANG]}):`,
     ...[...glossary].map(([k, t]) => `${k} → ${t}`),
     ...ids.map((id) => `${koCards.get(id)?.name} → ${targetCards.get(id)?.name}`),
@@ -144,7 +171,15 @@ async function translateBatch(me: string, jobs: Array<{ enemy: string; slot: str
     "",
     ...jobs.map((j, k) => `${k}. ${j.ko}`),
   ].join("\n");
-  const parsed = jsonObject<Record<string, string>>(await codex(prompt));
+}
+
+async function translateBatch(me: string, jobs: Job[], store: Store): Promise<[number, number, number]> {
+  return acceptBatch(me, jobs, await translate(batchPrompt(me, jobs)), store);
+}
+
+/** 번역기가 낸 글을 코드로 대조하고 뜻 대조를 거쳐 통과한 칸만 저장소에 싣는다. `--import` 도 이 길을 탄다. */
+async function acceptBatch(me: string, jobs: Job[], reply: string, store: Store): Promise<[number, number, number]> {
+  const parsed = jsonObject<Record<string, string>>(reply);
   // 빈 답(한도·오류)은 따로 센다 — 연달아 나오면 main 이 멈춘다
   if (!parsed) emptyReplies += 1;
   else emptyReplies = 0;
@@ -159,6 +194,7 @@ async function translateBatch(me: string, jobs: Array<{ enemy: string; slot: str
     const lost = text ? missingNames(text, namesIn(job.ko, [me, job.enemy])) : [];
     if (!text || /[가-힣]/.test(text) || ratio < lo || ratio > hi || lost.length) {
       if (process.env.MU_DEBUG) console.log(`  탈락 ${job.enemy}.${job.slot}: 길이비 ${ratio.toFixed(2)} 빠진 이름 ${lost.join(", ")}\n    ${job.ko}\n    ${text}`);
+      if (PROBE) probeRows.push({ me, enemy: job.enemy, slot: job.slot, ko: job.ko, text, stage: "code" });
       rejected += 1;
       return;
     }
@@ -173,11 +209,18 @@ async function translateBatch(me: string, jobs: Array<{ enemy: string; slot: str
     "",
     'Reply with ONE JSON object only: {"0": true, "1": false, ...}',
   ].join("\n");
-  const verdict = passed.length ? (jsonObject<Record<string, boolean>>(await claude(check)) ?? jsonObject<Record<string, boolean>>(await claude(check))) : {};
+  const verdict =
+    CHECKER === "none"
+      ? Object.fromEntries(passed.map((_, k) => [String(k), true]))
+      : passed.length
+        ? (jsonObject<Record<string, boolean>>(await claude(check)) ?? jsonObject<Record<string, boolean>>(await claude(check)))
+        : {};
   let kept = 0;
   let meaning = 0;
   passed.forEach((p, k) => {
-    if (verdict?.[String(k)] === true) {
+    const ok = verdict?.[String(k)] === true;
+    if (PROBE) probeRows.push({ me, enemy: p.job.enemy, slot: p.job.slot, ko: p.job.ko, text: p.text, stage: ok ? "kept" : "meaning" });
+    if (ok) {
       (store.pairs[p.job.enemy] ??= {})[p.job.slot] = { basis: p.job.ko, text: p.text };
       kept += 1;
     } else {
@@ -246,7 +289,8 @@ async function main(): Promise<void> {
   for (const me of ids) {
     const source = readSource(me);
     if (!source) continue;
-    const store = readStore(me);
+    // 시험(--probe)은 저장된 번역도 새로 옮기고, 결과는 저장소가 아니라 파일에 적는다
+    const store = PROBE ? { pairs: {} } : readStore(me);
     stores.set(me, store);
     const jobs = Object.entries(source.pairs).flatMap(([enemy, secs]) =>
       Object.entries(secs)
@@ -263,27 +307,65 @@ async function main(): Promise<void> {
   // --max-tasks: 시험 삼아 앞 몇 묶음만
   if (arg("max-tasks")) tasks.splice(Number(arg("max-tasks")));
   console.log(`${LANG}: 묶음 ${tasks.length}개`);
+  /*
+   * --export: 번역기를 부르지 않고 묶음마다 지시문을 JSONL 로 적는다. 다른 곳(Colab vLLM)에서 한꺼번에 돌린 답을
+   * --import 로 받아 같은 대조를 거쳐 싣는다. 답 파일은 {"i": 묶음 번호, "text": 답} 줄이고 묶음 번호는 내보낸 파일과 같다.
+   */
+  if (arg("export")) {
+    fs.writeFileSync(arg("export")!, tasks.map((t, i) => JSON.stringify({ i, lang: LANG, me: t.me, jobs: t.jobs, prompt: batchPrompt(t.me, t.jobs) })).join("\n") + "\n");
+    console.log(`→ ${arg("export")}`);
+    return;
+  }
+  if (arg("import")) return importReplies(arg("import")!);
   let next = 0;
   const total = [0, 0, 0];
   await Promise.all(
     Array.from({ length: CONCURRENCY }, async () => {
       while (next < tasks.length) {
         if (emptyReplies >= MAX_EMPTY) {
-          console.log(`Codex 빈 답이 ${MAX_EMPTY}번 이어져 멈춘다(한도·오류). 다시 돌리면 이어서 옮긴다.`);
+          console.log(`번역기 빈 답이 ${MAX_EMPTY}번 이어져 멈춘다(한도·오류). 다시 돌리면 이어서 옮긴다.`);
           return;
         }
         const task = tasks[next++];
         const store = stores.get(task.me)!;
+        const started = Date.now();
         const [k, r, m] = await translateBatch(task.me, task.jobs, store);
-        writeStore(task.me, store);
+        if (!PROBE) writeStore(task.me, store);
         total[0] += k;
         total[1] += r;
         total[2] += m;
-        console.log(`${LANG} ${task.me} (${next}/${tasks.length}): 번역 ${k} · 탈락 ${r}(뜻 대조 ${m})`);
+        console.log(`${LANG} ${task.me} (${next}/${tasks.length}): 번역 ${k} · 탈락 ${r}(뜻 대조 ${m}) · ${((Date.now() - started) / 1000).toFixed(0)}초`);
       }
     }),
   );
   console.log(`\n${LANG} 번역 ${total[0]} · 탈락 ${total[1]}(뜻 대조 ${total[2]})`);
+  if (PROBE) fs.writeFileSync(PROBE, JSON.stringify(probeRows, null, 1));
+}
+
+async function importReplies(file: string): Promise<void> {
+  const rows = fs
+    .readFileSync(file, "utf8")
+    .trim()
+    .split("\n")
+    .map((line) => JSON.parse(line) as { i: number; lang: string; me: string; jobs: Job[]; text: string });
+  const total = [0, 0, 0];
+  let next = 0;
+  await Promise.all(
+    Array.from({ length: CONCURRENCY }, async () => {
+      while (next < rows.length) {
+        const row = rows[next++];
+        if (row.lang !== LANG) continue;
+        const store = readStore(row.me);
+        const [k, r, m] = await acceptBatch(row.me, row.jobs, row.text, store);
+        if (!PROBE) writeStore(row.me, store);
+        total[0] += k;
+        total[1] += r;
+        total[2] += m;
+      }
+    }),
+  );
+  console.log(`${LANG} 들인 답 ${rows.length} · 번역 ${total[0]} · 탈락 ${total[1]}(뜻 대조 ${total[2]})`);
+  if (PROBE) fs.writeFileSync(PROBE, JSON.stringify(probeRows, null, 1));
 }
 
 main().catch((error: unknown) => {
