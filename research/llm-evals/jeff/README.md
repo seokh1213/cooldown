@@ -37,3 +37,36 @@ a-set 270턴 중 앞 턴이 상성인 이어 턴 172개에서, 앱에 없는 새
 - Jeff 는 이어 묻는 말("언제 진입해", "후반엔?")을 거의 모두 "아니오" 로 본다. 영어 턴도 58개 중 19~20개로 언어 탓이 아니다.
   생략된 주어를 앞 대화에서 잇는 판단은 제로샷 판정기가 설명만 보고 하지 못한다.
 - 그래서 대화 흐름 같은 우리 고유 문항의 시험대로는 쓸 수 없다. 설명만으로 가를 수 있는 문항(갈래 이름·명시적 분류)에 한해 참고한다.
+
+## Jeff-0.8B 를 우리 자료로 이어 학습 (2026-09-29)
+
+Jeff-Qwen3.5-0.8B 에서 우리 판정 자료(route3 1,657 · act 2,000 · topic 1,068 = 4,725행, build_b3.py 출력 + topic-train,
+시험 세트 제외)로 1 epoch 이어 학습했다. dev 366 으로 고르고 calibration 366 으로 온도를 맞췄다. Colab T4 에서만 학습.
+
+| 판정기 | route3 374 (앱 흐름) | 챔피언 4갈래 299 | 그 밖 5갈래 75 | act 60 (판정기만) | 흐름 60 (앱) | A 270 (앱) |
+|---|---|---|---|---|---|---|
+| 지금 앱 b3e | **338** | **291** | 47 | **55** | 59 | **240** |
+| Jeff-0.8B 제로샷 | 304 | 266 | 38 | 34 | 58 | 188 |
+| Jeff-0.8B 이어 학습 step 50 | 306 | 270 | 36 | 53 | 59 | 229 |
+| **Jeff-0.8B 이어 학습 step 100 (고른 판)** | 336 | 288 | **48** | 54 | **60** | 239 |
+
+- 이어 학습한 Jeff 는 b3e 와 사실상 같은 자리다(route3 −2, act −1, 흐름 +1, A −1). 제로샷보다 act +20, A +51.
+- dev(366): 57.7% → step 50 92.3% → step 100 96.2%(act 157/159 · route3 107/116 · topic 88/91), 온도 1.355.
+- 판정 1회(맥 MLX bf16, HTTP 한 건씩, dev 200건): 중앙 91ms · p95 112ms. 제로샷 Jeff 와 같다(구조가 같다).
+- 브라우저에 싣지 않았다. 전체 가중치가 바뀌어 q4 ONNX 로 새로 내보내 올려야 한다(지금 앱은 원본 q4 + LoRA 그래프).
+
+방법:
+
+- Jeff 자체 trainer(`jeff-train --initial-checkpoint`)는 T4 에서 돌지 못했다. host 메모리에 fp32 사본·Adam 상태를 두는
+  `CPUOffloadAdamW` 가 약 14GB 를 요구해 무료 Colab(12GB)에서 첫 optimizer step 에 OOM kill.
+- 그래서 `jft_train.py` 로 돌렸다. 손실(선택지 코드 교차 엔트로피)·선택지 섞기·microbatch·LR 일정(5% warmup 뒤 cosine, 끝 0.1배)·
+  dev NLL 로 고르기·calibration 온도 맞추기는 `jeff.train` 함수를 그대로 가져다 쓰고 셋만 바꿨다:
+  fp32(T4 는 bf16 이 없다), 토큰 임베딩·비전 탑 고정(나머지 4.98억 전부 학습), GPU fused AdamW.
+  LoRA 는 쓰지 않았다(전체 가중치 학습).
+- lr 1e-5, weight decay 0.01, 유효 배치 32(148 step), gradient checkpointing, 한 step 17~20초, 평가 50 step 마다.
+  fp16 autocast 는 14.9초로 거의 빠르지 않고 첫 step 이 NaN 이라 버렸다.
+- 저장: 고른 가중치를 bf16 으로 내려받아 원본 Jeff 폴더에 끼워 같은 형식(model.safetensors · readout.safetensors ·
+  decision_config.json)으로 만들고 `jeff-serve`(MLX)로 띄웠다. 맥 MLX dev 95.9% ≈ Colab fp32 96.2%.
+- 무료 T4 가 22~60분 만에 세 번 회수되었다. 25 step 마다 가중치를 내려받고 새 VM 에서 이어 가도록 했지만, 마지막엔
+  step 148 최종 평가 중에 회수되었고 그 뒤 1시간 넘게 할당이 거절되어(Service Unavailable) step 148 은 평가하지 못했다.
+  고른 판은 평가한 step 중 dev NLL 이 가장 낮은 step 100 이다. lr 5e-6 비교는 하지 못했다.
