@@ -121,6 +121,8 @@ export function kevJudge(url: string): Judge {
       method: "POST",
       headers: { "content-type": "application/json" },
       body: JSON.stringify({
+        // Jeff(Jev 형식 서버)는 model 을 요구한다. kev 서버는 모르는 칸을 무시한다.
+        model: "jeff-latest",
         state,
         questions: Object.fromEntries(
           questions.map((q, i) => [`q${i}`, { type: "choice", instructions: q.instructions, criteria: Object.fromEntries(q.options.map((o) => [o.name, o.description ?? null])) }]),
