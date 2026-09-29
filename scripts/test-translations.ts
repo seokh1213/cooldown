@@ -7,6 +7,7 @@ const ALLOWED_SHARED_TEXT = new Set([
   "nav.language.english",
   "nav.language.chinese",
   "encyclopedia.vs",
+  "advisor.card.patch",
 ]);
 
 function collectSharedLeaves(
