@@ -5,7 +5,9 @@ import { SafeBlockHtml } from "@/components/ui/safe-html";
 import { AbilityStructuredDetails } from "@/components/features/ChampionComparison/AbilityStructuredDetails";
 import { AbilityFormDetails } from "@/components/features/ChampionComparison/AbilityFormDetails";
 import { AbilityFormIcon } from "@/components/features/ChampionComparison/AbilityFormIcon";
+import { useTranslation } from "@/i18n";
 import type { VsSideKey } from "./vsState";
+import { rankCooldowns } from "./vsCooldownTable";
 
 const LIST_SLOTS = ["P", "Q", "W", "E", "R"] as const;
 type ListSlot = (typeof LIST_SLOTS)[number];
@@ -24,6 +26,40 @@ function abilityIcon(ability: AbilityV2, slot: ListSlot, championId: string, ver
       ddragonVersion={version}
       className="block size-7 shrink-0 rounded shadow-none"
     />
+  );
+}
+
+/** 랭크별 값을 "25 / 23 / 21초" 로. 값이 없으면 undefined, 모든 랭크가 같으면 하나만 적는다. */
+function rankLine(ability: AbilityV2, values: readonly number[] | undefined, format: (value: number) => string, unit: string): string | undefined {
+  const ranks = rankCooldowns({ ability, values: values ?? [], columns: ability.maxRank }).filter((value): value is number => value !== null);
+  if (!ranks.length) return undefined;
+  const shown = ranks.every((value) => value === ranks[0]) ? [ranks[0]] : ranks;
+  return `${shown.map(format).join(" / ")}${unit}`;
+}
+
+/**
+ * 설명 아래 실제 쿨타임. 설명 문장만으로는 수치를 찾기 어렵다는 요청(2026-09-29)에 따라 흐린 구분선 뒤에 적는다.
+ * 형태가 둘인 스킬은 형태 설명마다 이미 쿨타임 줄이 있어(`AbilityFormDetails`) 적지 않는다. 충전형은 재충전 대기시간을 한 줄 더.
+ */
+function VsAbilityCooldowns({ ability }: { ability: AbilityV2 }) {
+  const { t, lang } = useTranslation();
+  if (ability.forms) return null;
+  const format = new Intl.NumberFormat(lang.replace("_", "-"), { maximumFractionDigits: 3 }).format;
+  const unit = ` ${t.comparison.seconds}`;
+  const shown = [
+    { label: t.comparison.cooldownNote, value: rankLine(ability, ability.cooldownSeconds, format, unit) },
+    { label: t.common.rechargeTime, value: rankLine(ability, ability.rechargeSeconds, format, unit) },
+  ].filter((line): line is { label: string; value: string } => Boolean(line.value));
+  if (!shown.length) return null;
+  return (
+    <dl data-ability-cooldowns className="mt-2 space-y-0.5 border-t border-border/60 pt-2 text-xs text-muted-foreground">
+      {shown.map((line) => (
+        <div key={line.label} className="flex flex-wrap gap-x-2">
+          <dt>{line.label}</dt>
+          <dd className="tabular-nums text-foreground/80">{line.value}</dd>
+        </div>
+      ))}
+    </dl>
   );
 }
 
@@ -50,6 +86,7 @@ export function VsAbilityItem(props: { ability?: AbilityV2; slot: ListSlot; side
             {ability.forms
               ? <AbilityFormDetails forms={ability.forms} />
               : <SafeBlockHtml html={ability.bodyHtml || ability.summary} className="break-words text-xs leading-relaxed text-foreground/80" />}
+            <VsAbilityCooldowns ability={ability} />
           </div>
         )}
       </div>
