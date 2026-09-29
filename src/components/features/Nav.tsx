@@ -1,3 +1,4 @@
+import { patchLabel } from "@/lib/staticDataRelease";
 import React, { useCallback, useState, useEffect, useMemo } from "react";
 import { useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -141,7 +142,7 @@ function Nav({
                   <AlertTriangle aria-hidden="true" className="size-4 shrink-0" />
                   {patchVersion && (
                     <span className="hidden text-xs font-medium leading-none sm:inline">
-                      v{patchVersion}
+                      {patchLabel(patchVersion)}
                     </span>
                   )}
                 </button>
@@ -171,10 +172,10 @@ function Nav({
               </PopoverContent>
             </Popover>
           )}
-          {/* Version without mismatch - desktop only */}
+          {/* 모바일에서도 보인다. 모바일에는 화면마다 수치가 어느 패치 기준인지 적을 자리가 여기 하나뿐이다. */}
           {patchVersion && !isVersionMismatch && (
-            <div className="hidden sm:block text-xs font-medium leading-none text-muted-foreground">
-              v{patchVersion}
+            <div className="text-xs font-medium leading-none tabular-nums text-muted-foreground">
+              {patchLabel(patchVersion)}
             </div>
           )}
           {onThemeToggle && (

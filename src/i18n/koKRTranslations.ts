@@ -278,7 +278,7 @@ export const koKRTranslations: Translations = {
       spell: "스킬",
       champion: "챔피언",
       rule: "규칙",
-      patch: "패치 {patch}",
+      patch: "v{patch}",
       openInVs: "VS 화면에서 보기",
       fullText: "설명 전문",
       restRules: "규칙 전체 {count}문장",

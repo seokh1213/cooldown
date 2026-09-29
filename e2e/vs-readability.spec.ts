@@ -156,7 +156,8 @@ test("serves the synchronized release, not just a new version label", async ({ p
   const champion = await (await championResponse).json();
   expect(champion.champion.abilities.Q.bodyHtml).toContain("[[si:scalehealth]]6%");
   expect(champion.champion.abilities.Q.bodyHtml).toContain("[[si:scaleap]]54%");
-  await expect(page.locator("main")).toContainText(expected.patchVersion);
+  // 패치 표기는 상단 바 한 곳에 있다(모바일 포함)
+  await expect(page.getByRole("banner").or(page.locator("nav")).first()).toContainText(`v${expected.patchVersion}`);
 });
 
 /*

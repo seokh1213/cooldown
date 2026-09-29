@@ -38,3 +38,8 @@ export function resolveStaticDataRelease(
     },
   };
 }
+
+/** 화면에 적는 게임 패치 표기. 어디서나 같은 꼴("v26.19")로 적어 어느 패치 기준 수치인지 한눈에 보이게 한다. */
+export function patchLabel(patchVersion: string): string {
+  return `v${patchVersion}`;
+}

@@ -264,7 +264,7 @@ export const zhCNTranslations: Translations = {
       spell: "技能",
       champion: "英雄",
       rule: "规则",
-      patch: "版本 {patch}",
+      patch: "v{patch}",
       openInVs: "在 VS 页面查看",
       fullText: "完整说明",
       restRules: "全部 {count} 条规则",

@@ -278,7 +278,7 @@ export const enUSTranslations: Translations = {
       spell: "Ability",
       champion: "Champion",
       rule: "Rule",
-      patch: "Patch {patch}",
+      patch: "v{patch}",
       openInVs: "Open in VS",
       fullText: "Full description",
       restRules: "All {count} rule notes",

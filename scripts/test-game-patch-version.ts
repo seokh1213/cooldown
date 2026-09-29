@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import {
   resolveStaticDataRelease,
   toCommunityDragonVersion,
+  patchLabel,
   toOfficialPatchVersion,
 } from "../src/lib/staticDataRelease";
 
@@ -15,5 +16,7 @@ assert.deepEqual(resolveStaticDataRelease("16.17.1"), {
 for (const invalid of ["invalid", "latest", "16.17", "16.17.x"]) {
   assert.throws(() => resolveStaticDataRelease(invalid), /Invalid Data Dragon/);
 }
+
+assert.equal(patchLabel("26.19"), "v26.19");
 
 console.log("✅ Official patch version formatting passed");

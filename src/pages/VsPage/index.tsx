@@ -37,9 +37,6 @@ function VsHeader(props: {
         <p className="hidden truncate text-xs text-muted-foreground sm:block">{t.comparison.description}</p>
       </div>
       <div className="flex shrink-0 items-center gap-1">
-        <span className="mr-2 text-xs tabular-nums text-muted-foreground">
-          {props.patchVersion}
-        </span>
         <Button variant="ghost" size="icon" aria-label={t.comparison.swap} onClick={props.onSwap}>
           <ArrowLeftRight aria-hidden="true" className="size-4" />
         </Button>
