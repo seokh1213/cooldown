@@ -44,10 +44,21 @@ test("탭은 올바르면 읽고 깨졌으면 지운다", () => {
   ]));
   assert.equal(readJsonStorage(APP_STORAGE_KEYS.tabs, decodeTabs, storage)?.[0].id, "valid");
   storage.setItem(APP_STORAGE_KEYS.tabs, JSON.stringify([
-    { id: "broken", mode: "vs", champions: ["Ahri"] },
+    { id: "broken", mode: "normal", champions: ["Ahri", "Zed"] },
   ]));
   assert.equal(readJsonStorage(APP_STORAGE_KEYS.tabs, decodeTabs, storage), null);
   assert.equal(storage.getItem(APP_STORAGE_KEYS.tabs), null);
+});
+
+test("저장본의 VS 탭은 버리고 일반 탭만 읽는다", () => {
+  storage.setItem(APP_STORAGE_KEYS.tabs, JSON.stringify([
+    { id: "vs", mode: "vs", champions: ["Ahri", "Zed"] },
+    { id: "normal", mode: "normal", champions: ["Ahri"] },
+  ]));
+  assert.deepEqual(
+    readJsonStorage(APP_STORAGE_KEYS.tabs, decodeTabs, storage)?.map((tab) => tab.id),
+    ["normal"],
+  );
 });
 
 test("즐겨찾기는 중복을 빼고 깨졌으면 지운다", () => {

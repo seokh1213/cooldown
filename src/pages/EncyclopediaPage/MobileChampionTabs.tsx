@@ -14,7 +14,6 @@ import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { useTranslation } from "@/i18n";
 import { Tab, ChampionWithInfo } from "./types";
 import { SortableNormalTab } from "./SortableNormalTab";
-import { SortableVsTab } from "./SortableVsTab";
 
 interface MobileChampionTabsProps {
   tabs: Tab[];
@@ -25,9 +24,6 @@ interface MobileChampionTabsProps {
   onDragEnd: (event: DragEndEvent) => void;
   onSelectTab: (tabId: string) => void;
   onRemoveTab: (tabId: string) => void;
-  onVsClick: (tabId: string) => void;
-  onChangeChampionA: (tabId: string) => void;
-  onChangeChampionB: (tabId: string) => void;
   onAddClick: () => void;
 }
 
@@ -40,9 +36,6 @@ export function MobileChampionTabs({
   onDragEnd,
   onSelectTab,
   onRemoveTab,
-  onVsClick,
-  onChangeChampionA,
-  onChangeChampionB,
   onAddClick,
 }: MobileChampionTabsProps) {
   const { t } = useTranslation();
@@ -155,48 +148,22 @@ export function MobileChampionTabs({
               */}
               <div className="flex items-center gap-2 w-max select-none pr-2">
                 {tabs.map((tab) => {
-                  if (tab.mode === "vs") {
-                    const championA = championsWithFullInfo.find(
-                      (c) => c.id === tab.champions[0]
-                    );
-                    const championB = championsWithFullInfo.find(
-                      (c) => c.id === tab.champions[1]
-                    );
-                    if (!championA || !championB) return null;
+                  const champion = championsWithFullInfo.find(
+                    (c) => c.id === tab.champions[0]
+                  );
+                  if (!champion) return null;
 
-                    return (
-                      <SortableVsTab
-                        key={tab.id}
-                        tab={tab}
-                        championA={championA}
-                        championB={championB}
-                        ddragonVersion={ddragonVersion}
-                        selectedTabId={selectedTabId}
-                        onSelect={onSelectTab}
-                        onRemove={onRemoveTab}
-                        onChangeChampionA={onChangeChampionA}
-                        onChangeChampionB={onChangeChampionB}
-                      />
-                    );
-                  } else {
-                    const champion = championsWithFullInfo.find(
-                      (c) => c.id === tab.champions[0]
-                    );
-                    if (!champion) return null;
-
-                    return (
-                      <SortableNormalTab
-                        key={tab.id}
-                        tab={tab}
-                        champion={champion}
-                        ddragonVersion={ddragonVersion}
-                        selectedTabId={selectedTabId}
-                        onSelect={onSelectTab}
-                        onRemove={onRemoveTab}
-                        onVsClick={onVsClick}
-                      />
-                    );
-                  }
+                  return (
+                    <SortableNormalTab
+                      key={tab.id}
+                      tab={tab}
+                      champion={champion}
+                      ddragonVersion={ddragonVersion}
+                      selectedTabId={selectedTabId}
+                      onSelect={onSelectTab}
+                      onRemove={onRemoveTab}
+                    />
+                  );
                 })}
 
                 {/* 추가 버튼 */}

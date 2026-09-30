@@ -1,5 +1,5 @@
 import type { KeyboardEvent, RefObject } from "react";
-import { Search, Star, Swords, X } from "lucide-react";
+import { Search, Star, X } from "lucide-react";
 import type { Champion } from "@/types";
 import { useTranslation } from "@/i18n";
 import { cn } from "@/lib/utils";
@@ -11,7 +11,6 @@ import { partitionFavoriteChampions } from "./championFavorites";
 export function ChampionSearchHeader(props: {
   inputRef: RefObject<HTMLInputElement | null>;
   query: string;
-  versus: boolean;
   onQueryChange: (value: string) => void;
   onKeyDown: (event: KeyboardEvent<HTMLInputElement>) => void;
   onClose: () => void;
@@ -22,7 +21,6 @@ export function ChampionSearchHeader(props: {
   const {
     inputRef,
     query,
-    versus,
     onQueryChange,
     onKeyDown,
     onClose,
@@ -30,34 +28,15 @@ export function ChampionSearchHeader(props: {
     onFavoriteEditingChange,
   } = props;
   return (
-    <div
-      className={cn(
-        "p-4 border-b border-border flex items-center gap-2 shrink-0",
-        versus ? "bg-muted/30" : "bg-card",
-      )}
-    >
-      <Search
-        aria-hidden="true"
-        className={cn(
-          "h-5 w-5 shrink-0",
-          versus ? "text-destructive" : "text-muted-foreground",
-        )}
-      />
+    <div className="p-4 border-b border-border flex items-center gap-2 shrink-0 bg-card">
+      <Search aria-hidden="true" className="h-5 w-5 shrink-0 text-muted-foreground" />
       <Input
         ref={inputRef}
         type="text"
         name="champion-search"
-        aria-label={
-          versus
-            ? t.championSelector.vsSearchPlaceholder
-            : t.championSelector.searchPlaceholder
-        }
+        aria-label={t.championSelector.searchPlaceholder}
         autoComplete="off"
-        placeholder={
-          versus
-            ? t.championSelector.vsSearchPlaceholder
-            : t.championSelector.searchPlaceholder
-        }
+        placeholder={t.championSelector.searchPlaceholder}
         value={query}
         onChange={(event) => onQueryChange(event.target.value)}
         onKeyDown={onKeyDown}
@@ -107,7 +86,6 @@ export function ChampionSelectorList(props: {
   selectedIds: ReadonlySet<string>;
   focusedIndex: number;
   query: string;
-  versus: boolean;
   showEmptyState?: boolean;
   className: string;
   onSelect: (champion: Champion) => void;
@@ -122,7 +100,6 @@ export function ChampionSelectorList(props: {
     selectedIds,
     focusedIndex,
     query,
-    versus,
     showEmptyState = false,
     className,
     onSelect,
@@ -152,22 +129,12 @@ export function ChampionSelectorList(props: {
         </div>
       ) : (
         <>
-          {versus && (
-            <div className="mb-3 pb-2 border-b border-destructive/20">
-              <div className="flex items-center gap-2 text-destructive">
-                <Swords className="h-4 w-4" />
-                <span className="text-sm font-semibold">
-                  {t.championSelector.selectOpponentLabel}
-                </span>
-              </div>
-            </div>
-          )}
           {sections && sections.favorites.length > 0 && (
             <ChampionSection
               label={t.championSelector.favoriteSection}
               champions={sections.favorites}
               indexOffset={0}
-              {...{ selectedIds, focusedIndex, versus, favoriteIds, favoriteEditing, onSelect, onToggleFavorite }}
+              {...{ selectedIds, focusedIndex, favoriteIds, favoriteEditing, onSelect, onToggleFavorite }}
             />
           )}
           {sections && sections.others.length > 0 && (
@@ -180,7 +147,7 @@ export function ChampionSelectorList(props: {
               divided={sections.favorites.length > 0}
               champions={sections.others}
               indexOffset={sections.favorites.length}
-              {...{ selectedIds, focusedIndex, versus, favoriteIds, favoriteEditing, onSelect, onToggleFavorite }}
+              {...{ selectedIds, focusedIndex, favoriteIds, favoriteEditing, onSelect, onToggleFavorite }}
             />
           )}
         </>
@@ -196,7 +163,6 @@ function ChampionSection(props: {
   indexOffset: number;
   selectedIds: ReadonlySet<string>;
   focusedIndex: number;
-  versus: boolean;
   favoriteIds: ReadonlySet<string>;
   favoriteEditing: boolean;
   onSelect: (champion: Champion) => void;
@@ -220,16 +186,14 @@ function ChampionSection(props: {
               key={champion.id}
               data-champion-item
               className={cn(
-                props.focusedIndex === index && "rounded-md ring-2 ring-offset-1",
-                props.focusedIndex === index &&
-                  (props.versus ? "ring-destructive" : "ring-primary"),
+                props.focusedIndex === index && "rounded-md ring-2 ring-offset-1 ring-primary",
               )}
             >
               <ChampionThumbnail
                 addChampion={props.onSelect}
                 data={champion}
                 name={champion.name}
-                selected={!props.versus && props.selectedIds.has(champion.id)}
+                selected={props.selectedIds.has(champion.id)}
                 favorite={props.favoriteIds.has(champion.id)}
                 showFavoriteControl={props.favoriteEditing}
                 onToggleFavorite={props.onToggleFavorite}

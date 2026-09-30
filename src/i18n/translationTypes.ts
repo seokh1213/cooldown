@@ -61,9 +61,6 @@ export interface Translations {
     };
     reset: string;
     champion: string;
-    vs: string;
-    vsStart: string;
-    selectOpponent: string;
     add: string;
     emptyState: {
       title: string;
@@ -125,12 +122,7 @@ export interface Translations {
   championSelector: {
     selectChampion: string;
     searchPlaceholder: string;
-    vsSelectOpponent: string;
-    vsSelectOpponentDescription: string;
     selectChampionDescription: string;
-    currentChampion: string;
-    vsSearchPlaceholder: string;
-    selectOpponentLabel: string;
     noResults: string;
     emptyList: string;
     loading: string;

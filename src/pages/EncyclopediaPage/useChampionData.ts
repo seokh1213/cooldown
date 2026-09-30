@@ -232,23 +232,12 @@ export function useChampionData({
     return selectedChampions.filter((c) => c.fullInfo && !c.isLoading);
   }, [selectedChampions]);
 
-  // 일반 탭에 있는 챔피언들만 필터링 (VS 모드 제외)
-  const normalTabChampions = useMemo(() => {
-    const normalTabChampionIds = new Set(
-      tabs
-        .filter((tab) => tab.mode === 'normal')
-        .flatMap((tab) => tab.champions)
-    );
-    return selectedChampions.filter((c) => normalTabChampionIds.has(c.id));
-  }, [tabs, selectedChampions]);
-
   return {
     selectedChampions,
     setSelectedChampions,
     /** 저장소 복원이 끝났는가. 그 전에 저장하면 빈 목록으로 덮어쓴다. */
     hasRestored,
     championsWithFullInfo,
-    normalTabChampions,
     addChampionToList,
     removeChampion,
     resetChampions,

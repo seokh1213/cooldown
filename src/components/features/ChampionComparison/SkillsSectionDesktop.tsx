@@ -47,7 +47,6 @@ export function SkillsSectionDesktop({
   onAddChampion,
   onRemoveChampion,
   onReorderChampions,
-  vsMode: _vsMode,
 }: SectionProps) {
   const { t } = useTranslation();
   const [showAddSlot, setShowAddSlot] = useState(false);

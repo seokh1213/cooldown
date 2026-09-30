@@ -11,10 +11,6 @@ export interface ChampionComparisonProps {
   onAddChampion?: (champion: Champion) => void;
   onRemoveChampion?: (championId: string) => void;
   onReorderChampions?: (oldIndex: number, newIndex: number) => void;
-  vsMode?: {
-    championA: Champion;
-    championB: Champion;
-  };
 }
 
 export interface SectionProps {
@@ -27,8 +23,4 @@ export interface SectionProps {
   onAddChampion?: (champion: Champion) => void;
   onRemoveChampion?: (championId: string) => void;
   onReorderChampions?: (oldIndex: number, newIndex: number) => void;
-  vsMode?: {
-    championA: Champion;
-    championB: Champion;
-  };
 }

@@ -35,7 +35,6 @@ interface SkillTooltipProps {
   /** Data Dragon CDN 요청용 내부 버전 */
   ddragonVersion: string;
   passive?: ChampionPassive;
-  size?: "default" | "small";
 }
 
 export function SkillTooltip({
@@ -44,7 +43,6 @@ export function SkillTooltip({
   patchVersion,
   ddragonVersion,
   passive,
-  size = "default",
 }: SkillTooltipProps) {
   const { t, lang } = useTranslation();
   const deviceType = useDeviceType();
@@ -63,9 +61,7 @@ export function SkillTooltip({
   const costText = skill ? getCostText(skill, lang) : null;
   const abilityId = passive?.spellId ?? skill?.id ?? "unknown";
 
-  const isSmall = size === "small";
-  const iconSize = isSmall ? "min-w-6 min-h-6 w-6 h-6" : "min-w-8 min-h-8 w-8 h-8";
-  const textSize = isSmall ? "text-[8px]" : "text-[9px]";
+  const iconSize = "min-w-8 min-h-8 w-8 h-8";
 
   const openTooltip = React.useCallback(() => {
     if (isMobile) return;
@@ -201,7 +197,7 @@ export function SkillTooltip({
             alt="Passive"
             className={cn(iconSize, "rounded")}
           />
-          <span className={cn(textSize, "font-semibold")}>P</span>
+          <span className="text-[9px] font-semibold">P</span>
         </>
       ) : skill ? (
         <>
@@ -210,7 +206,7 @@ export function SkillTooltip({
             alt={SKILL_LETTERS[skillIdx]}
             className={cn(iconSize, "rounded")}
           />}
-          <span className={cn(textSize, "font-semibold")}>
+          <span className="text-[9px] font-semibold">
             {SKILL_LETTERS[skillIdx]}
           </span>
         </>

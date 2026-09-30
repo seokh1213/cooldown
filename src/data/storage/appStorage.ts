@@ -151,14 +151,15 @@ export function decodeFavoriteChampionIds(value: unknown): string[] | null {
 
 export function decodeTabs(value: unknown): Tab[] | null {
   if (!Array.isArray(value)) return null;
-  if (!value.every((tab) => {
+  // 저장본에 남은 VS 탭(mode "vs")은 버리고 일반 탭만 복원한다.
+  const tabs = value.filter((tab) => tab?.mode !== "vs");
+  if (!tabs.every((tab) => {
     if (typeof tab !== "object" || tab === null) return false;
-    if (tab.mode !== "normal" && tab.mode !== "vs") return false;
+    if (tab.mode !== "normal") return false;
     if (typeof tab.id !== "string" || !Array.isArray(tab.champions)) return false;
-    if (!tab.champions.every((id: unknown) => typeof id === "string")) return false;
-    return tab.champions.length === (tab.mode === "normal" ? 1 : 2);
+    return tab.champions.length === 1 && typeof tab.champions[0] === "string";
   })) return null;
-  return value as Tab[];
+  return tabs as Tab[];
 }
 
 export function readTheme(): "light" | "dark" | null {

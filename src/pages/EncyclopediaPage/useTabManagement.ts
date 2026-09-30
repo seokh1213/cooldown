@@ -1,7 +1,7 @@
-import { useState, useCallback, useEffect, useRef } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { DragEndEvent } from "@dnd-kit/core";
 import { arrayMove } from "@dnd-kit/sortable";
-import { Tab, VsSelectorMode } from "./types";
+import { Tab } from "./types";
 import { generateTabId } from "./utils";
 import {
   decodeTabs,
@@ -23,16 +23,8 @@ export function useTabManagement({
   selectedTabIdStorageKey,
 }: UseTabManagementOptions) {
   const [tabs, setTabs] = useState<Tab[]>([]);
-  const tabsRef = useRef<Tab[]>([]);
   const [selectedTabId, setSelectedTabId] = useState<string | null>(null);
-  const [showVsSelector, setShowVsSelector] = useState(false);
-  const [vsSelectorMode, setVsSelectorMode] = useState<VsSelectorMode | null>(null);
   const [hasRestored, setHasRestored] = useState(false);
-
-  // tabs 상태가 변경될 때마다 ref 업데이트
-  useEffect(() => {
-    tabsRef.current = tabs;
-  }, [tabs]);
 
   // 저장소 계약에서 탭 상태를 한 번 복원한다.
   useEffect(() => {
@@ -122,23 +114,6 @@ export function useTabManagement({
     setSelectedTabId(tab.id);
   }, []);
 
-  const updateTab = useCallback((tabId: string, updater: (tab: Tab) => Tab) => {
-    setTabs((prev) => prev.map((t) => (t.id === tabId ? updater(t) : t)));
-  }, []);
-
-  const replaceTab = useCallback((tabId: string, newTab: Tab) => {
-    setTabs((prev) => {
-      const tabIndex = prev.findIndex((t) => t.id === tabId);
-      if (tabIndex === -1) {
-        return [...prev, newTab];
-      }
-      const newTabs = [...prev];
-      newTabs[tabIndex] = newTab;
-      return newTabs;
-    });
-    setSelectedTabId(newTab.id);
-  }, []);
-
   const resetTabs = useCallback(() => {
     setTabs([]);
     setSelectedTabId(null);
@@ -164,19 +139,12 @@ export function useTabManagement({
   return {
     tabs,
     setTabs,
-    tabsRef,
     /** 저장소 복원이 끝났는가 */
     hasRestored,
     selectedTabId,
     setSelectedTabId,
-    showVsSelector,
-    setShowVsSelector,
-    vsSelectorMode,
-    setVsSelectorMode,
     removeTab,
     addTab,
-    updateTab,
-    replaceTab,
     resetTabs,
     handleDragEnd,
     generateTabId,

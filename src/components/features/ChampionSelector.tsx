@@ -1,8 +1,7 @@
 import React, { useState, useCallback, useRef, useEffect, useMemo } from "react";
 import { Champion } from "@/types";
-import { ChampionIcon } from "@/components/ui/champion-icon";
 import { Button } from "@/components/ui/button";
-import { Search, Swords } from "lucide-react";
+import { Search } from "lucide-react";
 import { cn } from "@/lib/utils";
 import * as DialogPrimitive from "@radix-ui/react-dialog";
 import {
@@ -30,10 +29,6 @@ interface ChampionSelectorProps {
   open?: boolean;
   onOpenChange?: (open: boolean) => void;
   selectionMode?: "multiple" | "single";
-  vsMode?: {
-    currentChampionId: string;
-    title?: string;
-  };
 }
 
 function ChampionSelector({
@@ -44,7 +39,6 @@ function ChampionSelector({
   open: controlledOpen,
   onOpenChange: controlledOnOpenChange,
   selectionMode = "multiple",
-  vsMode,
 }: ChampionSelectorProps) {
   const { t } = useTranslation();
   const [internalOpen, setInternalOpen] = useState(false);
@@ -84,22 +78,6 @@ function ChampionSelector({
   const selectedChampionIds = useMemo(() => {
     return new Set(selectedChampions.map((c) => c.id));
   }, [selectedChampions]);
-
-  // VS 모드일 때 현재 챔피언 정보
-  const currentChampion = useMemo(() => {
-    if (!vsMode) return null;
-    return selectedChampions.find((c) => c.id === vsMode.currentChampionId) || 
-           championList?.find((c) => c.id === vsMode.currentChampionId) || null;
-  }, [vsMode, selectedChampions, championList]);
-
-  // VS 모드일 때 현재 챔피언을 제외한 목록
-  const vsAvailableChampions = useMemo(() => {
-    if (!vsMode) return availableChampions;
-    return availableChampions.filter((c) => c.id !== vsMode.currentChampionId);
-  }, [availableChampions, vsMode]);
-  const selectableChampions = vsMode
-    ? vsAvailableChampions
-    : availableChampions;
 
   const handleBlur = useCallback(
     (e: MouseEvent) => {
@@ -173,14 +151,14 @@ function ChampionSelector({
       if (e.key === "ArrowDown") {
         e.preventDefault();
         setFocusedIndex((prev) =>
-          prev < selectableChampions.length - 1 ? prev + 1 : prev
+          prev < availableChampions.length - 1 ? prev + 1 : prev
         );
       } else if (e.key === "ArrowUp") {
         e.preventDefault();
         setFocusedIndex((prev) => (prev > 0 ? prev - 1 : -1));
       } else if (e.key === "Enter" && focusedIndex >= 0) {
         e.preventDefault();
-        const champion = selectableChampions[focusedIndex];
+        const champion = availableChampions[focusedIndex];
         if (champion) {
           handleSelect(champion);
         }
@@ -188,7 +166,7 @@ function ChampionSelector({
         handleOpenChange(false);
       }
     },
-    [isOpen, isModal, championList, selectableChampions, focusedIndex, handleSelect, handleOpenChange]
+    [isOpen, isModal, championList, availableChampions, focusedIndex, handleSelect, handleOpenChange]
   );
 
   useEffect(() => {
@@ -268,7 +246,6 @@ function ChampionSelector({
             <ChampionSearchHeader
               inputRef={inputRef}
               query={searchValue}
-              versus={false}
               onQueryChange={(value) => {
                 setSearchValue(value);
                 setFocusedIndex(-1);
@@ -285,11 +262,10 @@ function ChampionSelector({
             />
             <ChampionSelectorList
               listRef={listRef}
-              champions={championList ? selectableChampions : null}
+              champions={championList ? availableChampions : null}
               selectedIds={selectedChampionIds}
               focusedIndex={focusedIndex}
               query={searchValue}
-              versus={false}
               onSelect={handleSelect}
               favoriteIds={favoriteChampionIdSet}
               favoriteEditing={favoriteEditing}
@@ -325,36 +301,13 @@ function ChampionSelector({
           }}
         >
         <VisuallyHidden>
-          <DialogTitle>{vsMode ? t.championSelector.vsSelectOpponent : t.championSelector.selectChampion}</DialogTitle>
-          <DialogDescription>{vsMode ? t.championSelector.vsSelectOpponentDescription : t.championSelector.selectChampionDescription}</DialogDescription>
+          <DialogTitle>{t.championSelector.selectChampion}</DialogTitle>
+          <DialogDescription>{t.championSelector.selectChampionDescription}</DialogDescription>
         </VisuallyHidden>
-        
-        {/* VS 모드일 때 현재 챔피언 표시 */}
-        {vsMode && currentChampion && (
-          <div className="p-4 border-b-2 border-destructive/30 bg-destructive/5 flex items-center gap-3 shrink-0">
-            <div className="flex items-center gap-2 flex-1">
-              <div className="relative">
-                <ChampionIcon id={currentChampion.id} ddragonVersion={currentChampion.ddragonVersion || ""} alt={currentChampion.name} className="block w-10 h-10 rounded-full border-2 border-destructive/50" />
-                <div className="absolute -top-1 -right-1 bg-destructive rounded-full p-0.5">
-                  <Swords className="h-3 w-3 text-white" />
-                </div>
-              </div>
-              <div className="flex-1 min-w-0">
-                <div className="text-sm font-semibold text-foreground">{currentChampion.name}</div>
-                <div className="text-xs text-muted-foreground">{t.championSelector.currentChampion}</div>
-              </div>
-            </div>
-            <div className="flex items-center gap-1 text-destructive">
-              <Swords className="h-5 w-5" />
-              <span className="text-sm font-semibold">VS</span>
-            </div>
-          </div>
-        )}
         
         <ChampionSearchHeader
           inputRef={inputRef}
           query={searchValue}
-          versus={Boolean(vsMode)}
           onQueryChange={(value) => {
             setSearchValue(value);
             setFocusedIndex(-1);
@@ -366,11 +319,10 @@ function ChampionSelector({
         />
         <ChampionSelectorList
           listRef={listRef}
-          champions={championList ? selectableChampions : null}
+          champions={championList ? availableChampions : null}
           selectedIds={selectedChampionIds}
           focusedIndex={focusedIndex}
           query={searchValue}
-          versus={Boolean(vsMode)}
           showEmptyState
           onSelect={handleSelect}
           favoriteIds={favoriteChampionIdSet}

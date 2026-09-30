@@ -53,9 +53,6 @@ export const zhCNTranslations: Translations = {
     },
     reset: "重置",
     champion: "英雄",
-    vs: "VS",
-    vsStart: "开始 VS 对比",
-    selectOpponent: "选择对手",
     add: "添加",
     emptyState: {
       title: "选择英雄",
@@ -123,12 +120,7 @@ export const zhCNTranslations: Translations = {
   championSelector: {
     selectChampion: "选择英雄",
     searchPlaceholder: "搜索英雄…",
-    vsSelectOpponent: "选择 VS 对手",
-    vsSelectOpponentDescription: "选择要比较的对手",
     selectChampionDescription: "选择要比较的英雄",
-    currentChampion: "当前选择的英雄",
-    vsSearchPlaceholder: "搜索对手…",
-    selectOpponentLabel: "选择对手",
     noResults: "没有搜索结果",
     emptyList: "英雄列表为空",
     loading: "加载中…",

@@ -59,9 +59,6 @@ export const koKRTranslations: Translations = {
       },
       reset: "초기화",
       champion: "챔피언",
-      vs: "VS",
-      vsStart: "VS 비교 시작",
-      selectOpponent: "비교할 상대 선택",
       add: "추가",
       emptyState: {
         title: "챔피언을 선택하세요",
@@ -134,12 +131,7 @@ export const koKRTranslations: Translations = {
       championSelector: {
       selectChampion: "챔피언 선택",
       searchPlaceholder: "챔피언 검색...",
-      vsSelectOpponent: "VS 상대 선택",
-      vsSelectOpponentDescription: "비교할 상대를 선택하세요",
       selectChampionDescription: "비교할 챔피언을 선택하세요",
-      currentChampion: "현재 선택된 챔피언",
-      vsSearchPlaceholder: "비교할 상대 검색...",
-      selectOpponentLabel: "비교할 상대 선택",
       noResults: "검색 결과가 없습니다",
       emptyList: "챔피언 목록이 비어있습니다",
       loading: "로딩 중...",

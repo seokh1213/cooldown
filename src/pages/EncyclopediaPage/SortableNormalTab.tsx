@@ -1,9 +1,8 @@
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { X, Swords, GripVertical } from "lucide-react";
+import { X, GripVertical } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { ChampionIcon } from "@/components/ui/champion-icon";
-import { useTranslation } from "@/i18n";
 import { Tab, ChampionWithInfo } from "./types";
 import {
   TAB_BASE_CLASSES,
@@ -11,7 +10,6 @@ import {
   TAB_INACTIVE_CLASSES,
   DRAG_HANDLE_CLASSES,
   REMOVE_BUTTON_CLASSES,
-  VS_BUTTON_CLASSES,
 } from "./styles";
 
 interface SortableNormalTabProps {
@@ -21,7 +19,6 @@ interface SortableNormalTabProps {
   selectedTabId: string | null;
   onSelect: (tabId: string) => void;
   onRemove: (tabId: string) => void;
-  onVsClick: (tabId: string) => void;
 }
 
 export function SortableNormalTab({
@@ -31,9 +28,7 @@ export function SortableNormalTab({
   selectedTabId,
   onSelect,
   onRemove,
-  onVsClick,
 }: SortableNormalTabProps) {
-  const { t } = useTranslation();
   const {
     attributes,
     listeners,
@@ -85,28 +80,6 @@ export function SortableNormalTab({
         <ChampionIcon id={champion.id} ddragonVersion={ddragonVersion} alt={champion.name} className="block w-5 h-5 rounded-full pointer-events-none select-none" />
         <span className="pointer-events-none select-none">{champion.name}</span>
       </div>
-
-      {/* VS 버튼 */}
-      <button
-        onClick={(e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          onVsClick(tab.id);
-        }}
-        className={VS_BUTTON_CLASSES}
-        aria-label={`${t.encyclopedia.vs} with ${champion.name}`}
-        title={t.encyclopedia.vsStart}
-        type="button"
-      >
-        <Swords
-          className={cn(
-            "h-3 w-3 transition-colors",
-            isActive
-              ? "text-primary-foreground"
-              : "text-muted-foreground"
-          )}
-        />
-      </button>
 
       {/* 제거 버튼 */}
       <button

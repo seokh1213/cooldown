@@ -10,5 +10,3 @@ export const DRAG_HANDLE_CLASSES = "touch-none cursor-grab active:cursor-grabbin
 
 export const REMOVE_BUTTON_CLASSES = "ml-1 p-0.5 rounded-full hover:bg-muted/50 active:bg-muted transition-colors shrink-0 select-none group";
 
-export const VS_BUTTON_CLASSES = "ml-1 p-1 rounded-full hover:bg-muted/50 active:bg-muted transition-colors shrink-0 select-none group";
-

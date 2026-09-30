@@ -59,9 +59,6 @@ export const enUSTranslations: Translations = {
       },
       reset: "Reset",
       champion: "Champion",
-      vs: "VS",
-      vsStart: "Start VS Comparison",
-      selectOpponent: "Select Opponent",
       add: "Add",
       emptyState: {
         title: "Select a Champion",
@@ -134,12 +131,7 @@ export const enUSTranslations: Translations = {
       championSelector: {
       selectChampion: "Select Champion",
       searchPlaceholder: "Search champions...",
-      vsSelectOpponent: "Select VS Opponent",
-      vsSelectOpponentDescription: "Select an opponent to compare",
       selectChampionDescription: "Select a champion to compare",
-      currentChampion: "Currently Selected Champion",
-      vsSearchPlaceholder: "Search opponent...",
-      selectOpponentLabel: "Select Opponent",
       noResults: "No search results",
       emptyList: "Champion list is empty",
       loading: "Loading...",
