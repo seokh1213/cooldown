@@ -24,7 +24,7 @@ import {
   buildSpellAnswer as buildSpellCard,
   type AdvisorAnswer,
 } from "./answer";
-import { askFromWords, asksComparison, asksWholeKit, looksChampionDirected, refersToContextChampions } from "./askWords";
+import { askFromWords, asksComparison, asksGuide, asksMatchup, asksWholeKit, looksChampionDirected, refersToContextChampions } from "./askWords";
 import { detectSpellFocus } from "./spellFocus";
 import { suggestChampions } from "./championTypo";
 import { matchupPair, matchupSides, matchupSidesByPhrase, matchupSidesDetailed } from "./matchupSides";
@@ -55,6 +55,7 @@ import { questionLanguage } from "./questionLanguage";
 import type { JudgeQuestion } from "./judge";
 import { askedRules, docAnswer, isGameWord, lexicalHit, searchesByVector } from "./questionDocs";
 import { josa } from "@/lib/knowledge/text";
+import type { RuleNotes } from "@/lib/knowledge/rules";
 import type { ChampionCard } from "@/lib/knowledge/facts";
 
 /*
@@ -362,7 +363,15 @@ function answerRuleQuestion({ question, ctx, data, matchup }: Intent): AnswerPla
     named.length > 0 && named.every((rule) => rule.subject === "summoner") && SPELL_USE_IN_MATCHUP.test(question) && Boolean(matchup);
   if (!named.length || spellInMatchup) return undefined;
   const names = named.map((rule) => rule.name);
-  const cards = named.map((rule) => buildRuleCard(rule, names, ctx.lang, named));
+  // 소환사 주문의 재사용 대기시간을 물으면 자료(summoner-normalized)의 값을 첫 줄로. 협곡(CLASSIC) 판을 고른다 — 아레나 점멸은 0.25초다.
+  const cooldownOf = (rule: RuleNotes): number | undefined => {
+    if (rule.subject !== "summoner" || detectSpellFocus(question)?.focus !== "cooldown") return undefined;
+    // 자료의 이름은 화면 언어라 규칙의 세 언어 이름 중 하나와 맞춘다
+    const names = new Set([rule.name, rule.nameEn, rule.nameZh].filter(Boolean));
+    const spell = data.summoners.find((entry) => names.has(entry.name) && entry.modes?.includes("CLASSIC")) ?? data.summoners.find((entry) => names.has(entry.name) && !entry.modes?.includes("CHERRY"));
+    return spell?.cooldown?.[0];
+  };
+  const cards = named.map((rule) => buildRuleCard(rule, names, ctx.lang, named, cooldownOf(rule)));
   const best = cards.find((card) => card.kind === "rule" && card.highlighted.length > 0) ?? cards[0];
   return { type: "card", answer: best, notice: ctx.notice };
 }
@@ -532,11 +541,14 @@ async function matchupTopic(question: string, data: AdvisorData, ctx: PlanContex
  * 대화 맥락의 상성. "말파이트 설명해줘" 다음의 "제이스랑 상대한다 생각하면" 은 말파이트로
  * 제이스를 상대하는 질문이다. 방금 다룬 챔피언이 내 챔피언, 새 이름이 상대.
  */
-async function answerMatchupWithRecent({ ctx, champions, ask, recent, topic }: Intent): Promise<AnswerPlan | undefined> {
+async function answerMatchupWithRecent({ question, ctx, champions, ask, recent, topic }: Intent): Promise<AnswerPlan | undefined> {
   // "말파이트 상대법" 은 그 챔피언의 공략을 달라는 말이다(갈래 guide). 앞 대화에 다른 챔피언이
   // 있다고 짝을 지으면 묻지 않은 상성이 된다. 그때는 아래 챔피언 경로로 내려간다.
-  // 판정기는 이름 하나를 상성으로 가르지 않으므로(`routeFromKind9`) 이 길은 낱말 갈래(`askFromWords`)의 것이다.
-  if (champions.length !== 1 || ask !== "matchup") return undefined;
+  // 판정기는 이름 하나를 상성으로 가르지 않고(`routeFromKind9`) 공략(guide)으로 준다. 그래서 "가렌 설명해줘" 뒤의
+  // "제이스랑 상대한다 생각하면" 이 판정기가 있는 기기에서는 제이스 공략 카드로 갔다(2026-09-30 브라우저 시험). 공략 갈래여도
+  // 상성 낱말("상대한다", "만나면")이 있고 공략 요청 낱말("상대법")이 없으면 앞 대화의 챔피언과 짝을 짓는다.
+  const pairs = ask === "matchup" || (ask === "guide" && asksMatchup(question) && !asksGuide(question));
+  if (champions.length !== 1 || !pairs) return undefined;
   const mine = recent.find((card) => card.id !== champions[0].id);
   return mine ? { type: "matchup", mine, enemy: champions[0], notice: ctx.notice, focus: (await topic())?.topic } : undefined;
 }

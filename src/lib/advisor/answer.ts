@@ -12,6 +12,7 @@
 import type { ChampionCard, SpellFact, StatName } from "@/lib/knowledge/facts";
 import { ruleLines, ruleName, type RuleNotes } from "@/lib/knowledge/rules";
 import type { Language } from "@/i18n";
+import { translations } from "@/i18n/translations";
 import type { SelectedNotes } from "./noteSelect";
 import { detectSpellFocus, type SpellFocus } from "./spellFocus";
 import {
@@ -264,11 +265,17 @@ export function buildSpellAnswer(
  * "정복자에 점화 들어가?" 는 점화 규칙 9문장 중 "정복자" 가 든 한 문장이 답이다.
  * 이름을 담은 문장이 없으면 전부 rest 로 두고 카드가 원문을 보인다.
  */
-export function buildRuleAnswer(rule: RuleNotes, mentionedNames: string[], lang = "ko_KR", mentioned: RuleNotes[] = []): AdvisorAnswer {
-  const lines = ruleLines(rule, lang);
+export function buildRuleAnswer(rule: RuleNotes, mentionedNames: string[], lang = "ko_KR", mentioned: RuleNotes[] = [], cooldownSeconds?: number): AdvisorAnswer {
+  // "점멸 쿨타임" 은 판정 규칙이 아니라 수치를 묻는 것이다. 규칙 문장만 보였더니 300초가 어디에도 없었다(2026-09-30 브라우저 시험).
+  const cooldownLine =
+    cooldownSeconds === undefined ? undefined : `${cardLabels(lang as Language).cooldown} ${cooldownSeconds}${translations[lang as Language].comparison.seconds}`;
+  const lines = [...(cooldownLine ? [cooldownLine] : []), ...ruleLines(rule, lang)];
   // 함께 물은 다른 규칙을 그 화면 언어 이름으로 찾는다("정복자에 점화" → 점화 규칙에서 정복자가 든 줄)
   const others = [...new Set([...mentionedNames.filter((name) => name !== rule.name), ...mentioned.filter((r) => r !== rule).map((r) => ruleName(r, lang))])];
-  const highlighted = others.length ? lines.filter((line) => others.some((name) => line.toLowerCase().includes(name.toLowerCase()))) : [];
+  const highlighted = [
+    ...(cooldownLine ? [cooldownLine] : []),
+    ...(others.length ? lines.filter((line) => line !== cooldownLine && others.some((name) => line.toLowerCase().includes(name.toLowerCase()))) : []),
+  ];
   const rest = lines.filter((line) => !highlighted.includes(line));
   return { kind: "rule", rule, highlighted, rest };
 }

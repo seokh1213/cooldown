@@ -194,6 +194,7 @@ const CASES: Case[] = [
   { name: "상성 대화 밖의 쿨타임 감소 계산은 게임 원리 문서", question: "쿨타임 감소 계산 어떻게 해?", want: "code text \"### 스킬 가속\n```\n쿨타임 감소율 = \"", calls: [] },
   { name: "상대법 + 앞 대화의 다른 챔피언은 상성이 아니라 공략", question: "말파이트 상대법", turns: championTurns("Garen"), want: "card champion Malphite notes=against 1/4 \"말파이트에게 방어력은 \"", calls: [] },
   { name: "앞 대화 챔피언 + 새 이름 상성", question: "제이스랑 상대한다 생각하면", turns: championTurns("Malphite"), want: "matchup Malphite>Jayce", calls: [] },
+  { name: "앞 대화 챔피언 + 새 이름 상성(판정기 guide 여도 상성 낱말이면 짝짓기)", question: "제이스랑 상대한다 생각하면", model: true, judge: { kind: "guide", topic: "general" }, turns: championTurns("Garen"), want: "matchup Garen>Jayce focus=general", calls: ["judge kind", "judge topic"] },
   { name: "이름 셋 상성은 자리 낱말 붙은 이름을 뺀다", question: "오공으로 럼블 상대할 때 아이번 정글이면 아이템 뭐 가?", want: "matchup MonkeyKing>Rumble · 오공 vs 럼블 상성으로 답합니다 (곁들인 이름: 아이번).", calls: [] },
   { name: "셋을 견주는 질문은 비교 표", question: "오공 럼블 아이번 중 누가 세?", want: "card compare MonkeyKing,Rumble,Ivern", calls: [] },
   { name: "이름 둘 상성: 조사가 시점", question: "럼블 상대로 오공 하는데 어떻게 해", want: "matchup MonkeyKing>Rumble", calls: [] },
