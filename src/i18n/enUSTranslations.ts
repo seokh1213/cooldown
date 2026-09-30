@@ -47,17 +47,6 @@ export const enUSTranslations: Translations = {
         skillInfo: "Skill Information",
         skillDetails: "Cooldown, mana cost, etc.",
       },
-      vsMode: {
-        title: "Compare Champions in VS Mode",
-        description: "Tap the VS button on champion tabs to directly compare with other champions. Compare skill cooldowns and base stats side by side.",
-        vsModeLabel: "VS Comparison Mode",
-        comparisonDescription: "Compare two champions side by side",
-        vsButtonHint: "Tap the VS button to select an opponent champion",
-        changeOpponentHint: "In VS mode tabs, you can click on champion portraits to change the opponent",
-        exampleChampion: "Galio",
-        exampleChampionB: "Yasuo",
-        clickChampionToChange: "Click champion portrait to change",
-      },
     },
     encyclopedia: {
       tabs: {

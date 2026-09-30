@@ -10,7 +10,6 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { VisuallyHidden } from "@/components/ui/visually-hidden";
 import { TutorialContent } from "./TutorialContent";
 import { useTranslation } from "@/i18n";
@@ -224,12 +223,13 @@ function Nav({
               </Button>
               <Dialog open={tutorialOpen} onOpenChange={setTutorialOpen}>
                 <DialogContent
-                  className="w-[calc(100vw-32px)] max-w-lg h-[70vh] max-h-[70vh] p-0 rounded-xl overflow-hidden flex flex-col"
+                  className="w-[calc(100vw-32px)] max-w-lg max-h-[70vh] p-0 rounded-xl overflow-hidden flex flex-col"
                 >
                   <VisuallyHidden>
                     <DialogTitle>{t.nav.tutorial.title}</DialogTitle>
                   </VisuallyHidden>
-                  <ScrollArea className="flex-1 min-h-0">
+                  {/* 높이를 내용에 맞추고 70vh 를 넘으면 스크롤한다. ScrollArea 는 높이가 고정된 부모에서만 스크롤한다. */}
+                  <div className="flex-1 min-h-0 overflow-y-auto">
                     <div className="p-4 flex flex-col gap-3">
                       <div className="text-center space-y-2 mb-4">
                         <h2 className="text-xl font-bold text-foreground">
@@ -241,7 +241,7 @@ function Nav({
                       </div>
                       <TutorialContent />
                     </div>
-                  </ScrollArea>
+                  </div>
                 </DialogContent>
               </Dialog>
             </>

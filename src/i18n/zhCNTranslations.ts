@@ -41,17 +41,6 @@ export const zhCNTranslations: Translations = {
       skillInfo: "技能信息",
       skillDetails: "冷却时间、法力消耗等",
     },
-    vsMode: {
-      title: "使用 VS 模式对比英雄",
-      description: "点击英雄标签页的 VS 按钮选择对手，并排比较技能冷却时间和基础属性。",
-      vsModeLabel: "VS 对比模式",
-      comparisonDescription: "并排比较两名英雄",
-      vsButtonHint: "点击 VS 按钮选择对手英雄",
-      changeOpponentHint: "在 VS 标签页中点击英雄头像可更换对手",
-      exampleChampion: "加里奥",
-      exampleChampionB: "亚索",
-      clickChampionToChange: "点击英雄头像进行更换",
-    },
   },
   encyclopedia: {
     tabs: {

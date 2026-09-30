@@ -47,17 +47,6 @@ export const koKRTranslations: Translations = {
         skillInfo: "스킬 정보",
         skillDetails: "쿨타임, 마나 소모량 등",
       },
-      vsMode: {
-        title: "VS 모드로 챔피언 비교하기",
-        description: "챔피언 탭의 VS 버튼을 탭하면 다른 챔피언과 직접 비교할 수 있습니다. 두 챔피언의 스킬 쿨타임과 기본 스탯을 나란히 비교해보세요.",
-        vsModeLabel: "VS 비교 모드",
-        comparisonDescription: "두 챔피언 나란히 비교",
-        vsButtonHint: "VS 버튼을 탭하면 상대 챔피언을 선택할 수 있습니다",
-        changeOpponentHint: "VS 모드 탭에서 챔피언 사진을 클릭하면 상대 챔피언을 변경할 수 있습니다",
-        exampleChampion: "갈리오",
-        exampleChampionB: "야스오",
-        clickChampionToChange: "챔피언 사진을 클릭하여 변경",
-      },
     },
     encyclopedia: {
       tabs: {

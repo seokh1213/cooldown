@@ -49,17 +49,6 @@ export interface Translations {
       skillInfo: string;
       skillDetails: string;
     };
-      vsMode: {
-        title: string;
-        description: string;
-        vsModeLabel: string;
-        comparisonDescription: string;
-        vsButtonHint: string;
-        changeOpponentHint: string;
-        exampleChampion: string;
-        exampleChampionB: string;
-        clickChampionToChange: string;
-      };
   };
   encyclopedia: {
     tabs: {
