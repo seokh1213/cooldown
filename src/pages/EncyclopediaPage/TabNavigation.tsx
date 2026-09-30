@@ -23,10 +23,10 @@ export function TabNavigation({
         onChange={onTabChange}
         items={[
           { value: "champions", label: t.championProfile.tab },
-          { value: "runes", label: t.encyclopedia.tabs.runes },
-          { value: "items", label: t.encyclopedia.tabs.items },
-          { value: "summoner", label: t.encyclopedia.tabs.summoner },
-          { value: "formulas", label: t.encyclopedia.tabs.formulas },
+          { value: "runes", label: t.encyclopedia.tabs.runes, shortLabel: t.encyclopedia.tabsShort.runes },
+          { value: "items", label: t.encyclopedia.tabs.items, shortLabel: t.encyclopedia.tabsShort.items },
+          { value: "summoner", label: t.encyclopedia.tabs.summoner, shortLabel: t.encyclopedia.tabsShort.summoner },
+          { value: "formulas", label: t.encyclopedia.tabs.formulas, shortLabel: t.encyclopedia.tabsShort.formulas },
         ]}
       />
     </div>

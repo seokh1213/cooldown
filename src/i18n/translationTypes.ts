@@ -59,6 +59,15 @@ export interface Translations {
       summoner: string;
       formulas: string;
     };
+    /** 좁은 화면의 탭 이름. 화면 제목이 이미 무엇인지 말하므로 머리말을 뺀다. */
+    tabsShort: {
+      skills: string;
+      stats: string;
+      runes: string;
+      items: string;
+      summoner: string;
+      formulas: string;
+    };
     reset: string;
     champion: string;
     add: string;
