@@ -141,6 +141,8 @@ export function kevJudge(url: string): Judge {
 /** HIDDEN_JUDGE 를 주면 앱 그래프·앱 헤드 그대로(`hiddenJudge`) 잰다. */
 const judgeOverride = process.env.JUDGE_URL ? kevJudge(process.env.JUDGE_URL) : process.env.HIDDEN_JUDGE ? hiddenJudge(process.env.HIDDEN_JUDGE) : undefined;
 /** JUDGE_HEAD 를 주면 앱이 부르는 헤드 이름을 그것으로 바꿔 잰다(새 헤드 실험용, research/llm-evals/kev-agent/heads 에서 찾는다). */
+// 실험용: 흐름 판정 lookup 의 확신 문턱(`plan.ts` continueMatchup)을 환경 변수로 바꿔 잰다
+if (process.env.ACT_LOOKUP_MIN) (globalThis as { ACT_LOOKUP_MIN?: number }).ACT_LOOKUP_MIN = Number(process.env.ACT_LOOKUP_MIN);
 export const appJudge: Judge = async (headName, state, questions) => {
   headName = process.env.JUDGE_HEAD ?? headName;
   if (judgeOverride) return judgeOverride(headName, state, questions);

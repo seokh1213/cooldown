@@ -38,6 +38,7 @@ import {
 import { topicFromJudge, topicFromWords, topicQuestions } from "./topicJudge";
 import { championPriceAnswer, gameMetaAnswer } from "./gameMeta";
 import {
+  ACT_LABELS,
   actFromProbs,
   actFromWords,
   actQuestion,
@@ -426,7 +427,12 @@ async function continueMatchup(intent: Intent, deps: PlanDeps): Promise<AnswerPl
     (!named && ctx.canUseModel && ctx.consented
       ? await deps
           .judge(ACT_HEAD, actState(state.mine.name, state.enemy.name, question, champions[0]?.name), [actQuestion(state.mine.name, state.enemy.name)])
-          .then(([probs]) => actFromProbs(probs))
+          .then(([probs]) => {
+            const chosen = actFromProbs(probs);
+            // 조회(lookup)는 확신이 낮으면 이어 묻기로 받는다 — 틀린 표보다 해설이 덜 어긋난다. 문턱은 실험용 전역으로 바꿔 잰다(측정 뒤 상수로).
+            const lookupMin = (globalThis as { ACT_LOOKUP_MIN?: number }).ACT_LOOKUP_MIN ?? 0;
+            return chosen === "lookup" && probs[ACT_LABELS.indexOf("lookup")] < lookupMin ? "followup" : chosen;
+          })
           .catch(() => undefined)
       : undefined);
   /*
