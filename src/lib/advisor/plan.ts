@@ -26,7 +26,7 @@ import {
   looksChampionDirected,
   refersToContextChampions,
 } from "./askWords";
-import { detectSpellFocus } from "./spellFocus";
+import { asksSpellNumbers, detectSpellFocus } from "./spellFocus";
 import { suggestChampions } from "./championTypo";
 import { matchupPair, matchupSides, matchupSidesByPhrase, matchupSidesDetailed } from "./matchupSides";
 import { asksAboutHelper, detectChampions, isSmallTalk, nicknames } from "./intent";
@@ -370,6 +370,8 @@ function answerGameFact({ question, ctx, data, champions, route }: Intent): Answ
 async function continueMatchup(intent: Intent, deps: PlanDeps): Promise<AnswerPlan | undefined> {
   const { question, ctx, data, champions, matchup: state, route } = intent;
   if (!state || champions.length > 1) return undefined;
+  // 이름 없이 스킬 수치를 찾으면 해설이 아니라 두 챔피언의 표다(`answerChampion` 이 대화의 두 챔피언을 붙인다)
+  if (champions.length === 0 && asksSpellNumbers(question)) return undefined;
   // 아이템 이름·게임 규칙 문서가 걸리면 새 질문이다
   const named = champions.length === 0 && (Boolean(buildItemCard(data, question, intent.recentItem)) || Boolean(buildMechanicsAnswer(data, question)));
   if (!named && champions.length === 0) {
@@ -543,7 +545,7 @@ function championsFromContext({ question, ctx, data, recent, slot }: Intent): An
   const fromWhere = recent.length ? ctx.copy.card.fromChat : ctx.copy.card.fromScreen;
   if (source.length === 1) return { champions: source, notice: ctx.notice ?? fill(fromWhere, { name: source[0].name }) };
   if (source.length === 0) return { champions: [], notice: ctx.notice };
-  if (asksComparison(question, source.length)) return { champions: source, notice: ctx.notice };
+  if (asksComparison(question, source.length)) return { champions: source, notice: ctx.notice ?? fill(fromWhere, { name: source.map((card) => card.name).join("·") }) };
   if (slot) {
     // VS 화면에 둘이 떠 있는데 "W 쿨타임" 이면 둘의 W 를 나란히 놓는다. 견주러 온
     // 화면에서 "누구 것?" 하고 되묻는 것보다 둘 다 보여 주는 쪽이 답이다.

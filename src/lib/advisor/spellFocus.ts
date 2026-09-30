@@ -57,6 +57,19 @@ export function detectSpellFocus(question: string): { focus: SpellFocus; keyword
   return undefined;
 }
 
+/**
+ * 스킬 수치(쿨타임·코스트·계수)를 찾아 달라는 말인가. 상성 대화 중에도 해설이 아니라 표가 답이다.
+ * "두 챔피언에 대해 스킬 쿨타임도 알려줘" 가 상성 이어 묻기로 가서 한타·아이템 해설이 나왔다.
+ * "궁 쿨 빠지면 들어가도 돼?" 처럼 때를 묻는 말은 공략이라 뺀다.
+ */
+export function asksSpellNumbers(question: string): boolean {
+  const focus = detectSpellFocus(question)?.focus;
+  if (focus !== "cooldown" && focus !== "cost" && focus !== "ratio") return false;
+  // 코스트·계수 낱말은 스킬 밖에서도 쓴다. 스킬을 가리키는 말이 함께 있어야 한다.
+  if (focus !== "cooldown" && !/스킬|기술|궁|패시브|(?<![a-z])[qwer](?![a-z])|\b(skill|ability|spell|ult)\b|技能|大招/i.test(question)) return false;
+  return !/빠지|돌아|돌 때|들어가|노려|때[는에]?|이후|동안|어떻게|언제|\b(when|after|while|how to)\b|之后|的时候|怎么/i.test(question);
+}
+
 /** 효과·수치를 묻는 낱말인가. 챔피언 이름 오타 후보에서 뺀다(`suggestChampions`). */
 export function isSpellFocusWord(token: string): boolean {
   return FOCUS_LEXICON.some(([, pattern]) => pattern.test(token)) || EFFECT_ALIASES.some(([alias]) => alias.test(token));
