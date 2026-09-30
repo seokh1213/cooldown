@@ -176,6 +176,8 @@ const CASES: Case[] = [
   { name: "상성 대화 중 아이템 이름은 새 질문", question: "쇼진의 창 효과", turns: matchupTurns("Garen", "Darius"), want: "code item 3161 verdicts=0", calls: [] },
   { name: "상성 대화 중 영어 ult 쿨타임은 두 R", question: "give me the ult cooldowns for both", lang: "en_US", turns: matchupTurns("Garen", "Darius", undefined, "en_US"), want: "card compare Garen,Darius slot=R · Using Garen·Darius from earlier in this chat.", calls: [] },
   { name: "상성 대화 중 중국어 大招 CD 는 두 R", question: "两人大招CD各是多少", lang: "zh_CN", turns: matchupTurns("Garen", "Darius", undefined, "zh_CN"), want: "card compare Garen,Darius slot=R · 以刚才提到的 德玛西亚之力·诺克萨斯之手 为准。", calls: [] },
+  // "champions" 가 "챔피언 분류" 절의 검색어였다. 모델 없이는 영어 스킬 낱말이 대화 챔피언을 붙이지 못해 모델에게 넘어간다(문서가 아니라는 것이 요점)
+  { name: "상성 대화 중 영어 champions 는 문서 검색어가 아니다", question: "show me both champions' ability cooldowns", lang: "en_US", turns: matchupTurns("Garen", "Darius", undefined, "en_US"), want: "respond", calls: [] },
   { name: "상대법 + 앞 대화의 다른 챔피언은 상성이 아니라 공략", question: "말파이트 상대법", turns: championTurns("Garen"), want: "card champion Malphite notes=against 1/4 \"말파이트에게 방어력은 \"", calls: [] },
   { name: "앞 대화 챔피언 + 새 이름 상성", question: "제이스랑 상대한다 생각하면", turns: championTurns("Malphite"), want: "matchup Malphite>Jayce", calls: [] },
   { name: "이름 셋 상성은 자리 낱말 붙은 이름을 뺀다", question: "오공으로 럼블 상대할 때 아이번 정글이면 아이템 뭐 가?", want: "matchup MonkeyKing>Rumble · 오공 vs 럼블 상성으로 답합니다 (곁들인 이름: 아이번).", calls: [] },

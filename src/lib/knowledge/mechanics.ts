@@ -35,6 +35,9 @@ const STOP_WORDS = new Set([
   "우리", "전체", "적용", "사용", "기준", "수치", "표기", "참고", "예시", "정도",
   // 챔피언을 묻는 거의 모든 질문에 든다. "두 챔피언에 대해 스킬 쿨타임도 알려줘" 가 "챔피언 분류" 절을 통째로 받았다.
   "챔피언",
+  // 같은 까닭의 영어·중국어. 본문의 `.../v1/champions/<key>.json` 경로에서 "champions" 가 검색어로 뽑혀
+  // "show me both champions' ability cooldowns" 가 "챔피언 분류" 절을 받았다. 소문자로 견준다(`mentions` 와 같다).
+  "champion", "champions", "英雄",
 ]);
 
 interface RawSection {
@@ -106,7 +109,7 @@ function candidateTerms(section: RawSection): string[] {
     .flatMap((term) => [term, ...term.split("/").map((part) => part.trim())])
     .map((term) => term.replace(/[()[\]]/g, "").trim())
     .filter((term) => term.length >= 2 && term.length <= 20)
-    .filter((term) => !STOP_WORDS.has(term))
+    .filter((term) => !STOP_WORDS.has(term.toLowerCase()))
     .filter((term) => !/^\d/.test(term))
     // 굵은 글씨가 문장을 통째로 감싼 경우가 있다. 문장은 검색어가 아니다.
     .filter((term) => !/[.。=]|다$|니다$/.test(term))
