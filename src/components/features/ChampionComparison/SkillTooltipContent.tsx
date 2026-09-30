@@ -1,5 +1,5 @@
 import type { ChampionPassive, ChampionSpell } from "@/types";
-import { spellIconUrl } from "@/data/assets/riotAssetUrls";
+import { passiveIconUrl, spellIconUrl } from "@/data/assets/riotAssetUrls";
 import { SKILL_LETTERS } from "./constants";
 import { SafeBlockHtml } from "@/components/ui/safe-html";
 import { AbilityStructuredDetails } from "./AbilityStructuredDetails";
@@ -15,16 +15,34 @@ interface SkillTooltipContentProps {
   mobile: boolean;
 }
 
+/** 액티브 스킬 머리(`ActiveSkillHeader`)와 같은 꼴. 패시브만 아이콘 없이 이름 글자로 시작하던 것을 맞춘다. */
+function PassiveHeader({ passive, ddragonVersion }: { passive: ChampionPassive; ddragonVersion: string }) {
+  return (
+    <div className="flex items-start gap-3 border-b pb-3 pr-6">
+      <img
+        src={passiveIconUrl(ddragonVersion, passive.image.full)}
+        alt="P"
+        width={48}
+        height={48}
+        className="w-12 h-12 min-w-12 min-h-12 rounded shrink-0"
+      />
+      <div className="flex-1 min-w-0">
+        {passive.name && (
+          <div className="font-semibold text-sm">
+            [P] {passive.name}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
 function PassiveContent(props: SkillTooltipContentProps) {
   const { passive } = props;
   if (!passive) return null;
   return (
     <>
-      {passive.name && (
-        <div className={`font-semibold text-sm ${props.mobile ? "pr-10" : ""}`}>
-          {passive.name}
-        </div>
-      )}
+      <PassiveHeader passive={passive} ddragonVersion={props.ddragonVersion} />
       {passive.description && (
         <SafeBlockHtml
           className="text-xs leading-relaxed"
