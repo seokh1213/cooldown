@@ -92,6 +92,9 @@ export function sideOfNewName(question: string, names: string[]): "mine" | "enem
     ];
     const enemy = [
       new RegExp(`${n}\\s*(을|를)?\\s*(만나|상대|한테|에게|는|은)(?![가-힣])|${n}\\s*(을|를)?\\s*(만나|상대|한테|에게)|상대가\\s*${n}`),
+      // "what about fiora?", "how about fiora" — 상성 대화 중 새 이름만 던지는 영어 문형은 상대 바꾸기다(한국어 "피오라는?" 과 같다).
+      // 모델 없는 기기의 오프라인 판정기가 이 문형을 피오라 소개 카드로 보냈다(2026-09-30 브라우저 시험).
+      new RegExp(`\\b(vs\\.?|versus|against|into|face|facing|fight|get|meet|if it'?s|laning (vs|against)|what about|how about|and)\\s+${n}\\s*\\??$`, "i"),
       new RegExp(`\\b(vs\\.?|versus|against|into|face|facing|fight|get|meet|if it'?s|laning (vs|against))\\s+${n}\\b`, "i"),
       new RegExp(`(对面|遇到|碰到|对上|对线|打|对)\\s*(换成)?\\s*${n}`),
     ];

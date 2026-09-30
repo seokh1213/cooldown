@@ -193,6 +193,8 @@ const CASES: Case[] = [
   { name: "상성 대화 중 갈래 낱말 없는 쿨타임 감소 계산은 게임 원리 문서", question: "쿨타임 감소 계산 어떻게 해?", turns: matchupTurns("Garen", "Darius"), want: "code text \"### 스킬 가속\n```\n쿨타임 감소율 = \"", calls: [] },
   { name: "상성 대화 밖의 쿨타임 감소 계산은 게임 원리 문서", question: "쿨타임 감소 계산 어떻게 해?", want: "code text \"### 스킬 가속\n```\n쿨타임 감소율 = \"", calls: [] },
   { name: "상대법 + 앞 대화의 다른 챔피언은 상성이 아니라 공략", question: "말파이트 상대법", turns: championTurns("Garen"), want: "card champion Malphite notes=against 1/4 \"말파이트에게 방어력은 \"", calls: [] },
+  { name: "챔피언 카드 뒤의 '그럼 템은?' 은 그 챔피언의 아이템 노트(모델 없음)", question: "그럼 템은?", turns: championTurns("Jayce"), want: "card champion Jayce notes=both 3/3 \"상대가 회복으로 버티는\" · 앞서 말한 제이스 기준입니다.", calls: [] },
+  { name: "챔피언 카드 뒤의 '그럼 템은?' 은 그 챔피언의 아이템 노트(판정기 item)", question: "그럼 템은?", model: true, judge: { kind: "item", topic: "situational-item" }, turns: championTurns("Jayce"), want: "card champion Jayce notes=both 3/3 \"상대가 회복으로 버티는\" · 앞서 말한 제이스 기준입니다.", calls: ["judge kind"] },
   { name: "앞 대화 챔피언 + 새 이름 상성", question: "제이스랑 상대한다 생각하면", turns: championTurns("Malphite"), want: "matchup Malphite>Jayce", calls: [] },
   { name: "앞 대화 챔피언 + 새 이름 상성(판정기 guide 여도 상성 낱말이면 짝짓기)", question: "제이스랑 상대한다 생각하면", model: true, judge: { kind: "guide", topic: "general" }, turns: championTurns("Garen"), want: "matchup Garen>Jayce focus=general", calls: ["judge kind", "judge topic"] },
   { name: "이름 셋 상성은 자리 낱말 붙은 이름을 뺀다", question: "오공으로 럼블 상대할 때 아이번 정글이면 아이템 뭐 가?", want: "matchup MonkeyKing>Rumble · 오공 vs 럼블 상성으로 답합니다 (곁들인 이름: 아이번).", calls: [] },
