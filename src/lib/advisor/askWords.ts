@@ -1,6 +1,6 @@
-/** 둘 이상을 견주는 질문인가. "누가 더 높아", "어느 쪽이", "비교", "중에". */
+/** 둘 이상을 견주는 질문인가. "누가 더 높아", "어느 쪽이", "비교", "중에", "두 챔피언", "둘 다". */
 const COMPARISON =
-  /더\s*(높|많|센|강|단단|긴|짧|빠|느|좋)|누가|어느\s*쪽|비교|중에|\bvs\b|\b(who|which)\b|\b(more|higher|better|stronger|tankier|longer|shorter|faster|slower)\b|\bcompare\b|谁|哪个|比较|更(高|多|强|快|好)/i;
+  /더\s*(높|많|센|강|단단|긴|짧|빠|느|좋)|누가|어느\s*쪽|비교|중에|두\s*챔피언|둘\s*다|양쪽|\bboth\b|两个|\bvs\b|\b(who|which)\b|\b(more|higher|better|stronger|tankier|longer|shorter|faster|slower)\b|\bcompare\b|谁|哪个|比较|更(高|多|强|快|好)/i;
 
 export function asksComparison(question: string, championCount: number): boolean {
   return championCount >= 2 && COMPARISON.test(question);
@@ -63,6 +63,13 @@ export function asksWholeKit(question: string): boolean {
  * "쇼진의 창 효과" 는 여기 걸리면 안 되므로 아이템·규칙 판정 뒤에 쓴다.
  */
 const CHAMPION_DIRECTED = /설명|스킬|능력치|스탯|상대|어때|어떤|세[?요]?$|강해|약해|쿨|계수|사거리|체력|방어|마저|이속|공격력/;
+
+/** 화면·대화의 챔피언을 가리키는 말. "두 챔피언", "둘 다", "이 챔피언". 이름이 없어도 검색 문서가 아니라 그 챔피언이 답이다. */
+const CONTEXT_CHAMPIONS = /두\s*챔피언|둘\s*다|이\s*둘|양쪽|이\s*챔(피언|프)|\bboth\b|these\s+two|this\s+champ|两个英雄|这个英雄/i;
+
+export function refersToContextChampions(question: string): boolean {
+  return CONTEXT_CHAMPIONS.test(question);
+}
 
 export function looksChampionDirected(question: string, slot?: string): boolean {
   return Boolean(slot) || CHAMPION_DIRECTED.test(question);

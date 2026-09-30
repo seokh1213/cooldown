@@ -479,6 +479,16 @@ export function buildCompareAnswer(
       : undefined;
     return { kind: "compare", cards, slot, rows, headline };
   }
+  if (detectSpellFocus(question)?.focus === "cooldown") {
+    // 슬롯 없이 "두 챔피언 스킬 쿨타임" 이면 네 스킬의 쿨타임을 한 줄씩. 능력치 표를 내면 물은 것이 없다.
+    const rows: CompareRow[] = ["Q", "W", "E", "R"].flatMap((each) => {
+      const spells = cards.map((card) => card.spells.find((spell) => spell.slot === each));
+      const values = spells.map((spell) => (spell ? cooldownFact(spell, lang)?.value ?? "" : ""));
+      const label = `${each} ${spells.some((spell) => spell?.recharge) ? w.recharge : w.cooldown}`;
+      return values.some(Boolean) ? [{ label, values, hit: false }] : [];
+    });
+    if (rows.length) return { kind: "compare", cards, rows };
+  }
 
   const level = detectLevel(question);
   const asked = detectStat(question);
