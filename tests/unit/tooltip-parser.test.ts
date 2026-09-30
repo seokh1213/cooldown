@@ -685,3 +685,17 @@ test("mPrecision -1 인 레벨 범위는 반올림하지 않는다 (벡스 P 공
   // 인게임: 0.75 = (0.75 ~ 1.5). 1~5레벨 0.75, 6~8 1, 9~12 1.25, 13~ 1.5
   assert.equal(renderCalculation("Calc", 1, data), "(0.75 ~ 1.5)");
 });
+
+test("원문 아이콘 자리 표시만 지우고 스탯 글리프를 넘어 문장을 지우지 않는다 (중국어 야스오 P)", () => {
+  const spell = { id: "Test", maxrank: 1, cooldown: [] } as ChampionSpell;
+  // 띄어쓰기 없는 중국어에서 앞 값의 % 부터 글리프 자리 표시의 콜론을 지나 다음 % 까지를 %i:이름% 로 읽으면 사이 문장이 빠진다
+  assert.equal(
+    parseSpellTooltip(
+      "亚索的暴击几率提升100%但他的暴击伤害降低至([[si:scalecritmult]]100% 暴击伤害)。%i:scaleCrit%",
+      spell,
+      {} as CommunityDragonSpellData,
+      "zh_CN",
+    ),
+    "亚索的暴击几率提升100%但他的暴击伤害降低至([[si:scalecritmult]]100% 暴击伤害)。",
+  );
+});

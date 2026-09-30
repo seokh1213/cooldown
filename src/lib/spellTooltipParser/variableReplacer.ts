@@ -129,13 +129,14 @@ function cleanupPlaceholdersAndIcons(text: string): string {
   // 아이콘/리소스 플레이스홀더 제거
   // 형식: %{리소스타입}:{이름}%
   // 예: %i:scaleAPen% → "" (토큰만 삭제, 나머지 문장은 유지)
-  // - %% 안에 공백이 없고, ":" 콜론이 포함된 경우에만 매칭
+  // - 문자열표의 아이콘은 모두 %i:영문숫자% 꼴이다. 이름 자리에 아무 글자나 받으면 띄어쓰기가
+  //   없는 중국어에서 "100%但…([[si:scalecritmult]]100%" 처럼 두 값 사이 문장을 통째로 지운다.
   //
   // 토큰만 지우면 앞뒤 공백이 남아 "방어구 관통력 을" 처럼 조사가 떨어진다.
   // 원문이 "관통력 %i:scaleAPen%</armorPen>을" 이라 앞쪽 공백이 아이콘 몫이다.
   // 양쪽이 모두 공백이면 하나만 남기고, 한쪽뿐이면 공백까지 함께 지운다.
   result = result.replace(
-    /(\s*)%[^\s:%]+:[^\s%]+%(\s*)/g,
+    /(\s*)%[A-Za-z]+:[A-Za-z0-9_]+%(\s*)/g,
     (_match, before: string, after: string) => (before && after ? " " : "")
   );
 
