@@ -398,3 +398,13 @@ kev 헤드(PointerHead q·k 1024→256)만 이어 배웠다. LoRA 본체는 그�
 - 남은 실패 1건(새 39)은 "闪现交了是不是击杀窗口" 가 점멸 규칙 카드로 가는 것(규칙 문서 우선 순위, 이전부터).
 - 헤드 파일: `public/models/judge/kev-b3e-{route,topic,act}.{json,bin}`. `kev-b3e.{json,bin}` 은 옛 도구용으로 남김. 앱은 세 헤드를 미리 받는다(`useAdvisor`).
 - 분류기: `public/models/offline/judge.{json,bin}`, 학습 `scripts/llm/offline-classifier/train.py`, 기록 `research/llm-evals/offline-classifier/README.md`.
+
+#### 배포 뒤 재발 — 검색 벡터의 "새 질문" 검사가 흐름 판정보다 앞에 있었다 (2026-09-30 밤)
+
+배포된 앱에서 같은 질문이 다시 "챔피언 분류" 절로 나갔다. `continueMatchup` 은 이름 없는 말에 대해 `leaveMatchup`(검색 벡터가 자료 하나를 0.55 이상으로
+가리키면 새 질문)을 흐름 판정보다 먼저 돌렸고, 검색 벡터는 브라우저(WebGPU)에서만 돌아 Node 측정(검색 끔)에는 이 길이 없었다. 갈래 판정이 spellStat 이면
+그 앞에서 빠져나가지만, 그 밖의 갈래로 갈리면 벡터가 고른 문서가 답이 됐다. 두 가지를 고쳤다.
+
+- 흐름 판정을 먼저 하고, lookup 이면 벡터 검사를 건너뛴다(그 밖은 종전과 같다). 특성 시험은 호출 순서만 바뀌었다(9건).
+- `docs/lol-fundamentals.md` 8절(아이템 역할군)·9절(챔피언 분류)은 게임 지식이 아니라 만드는 쪽 메모라 부록으로 옮겨 색인·검색 대상에서 뺐다(메커니즘 7절).
+  `doc-vectors.json` 에 남은 옛 id 는 답을 못 찾아 그냥 지나간다. 다음 벡터 재생성 때 정리된다.

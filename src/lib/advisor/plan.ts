@@ -434,10 +434,6 @@ async function continueMatchup(intent: Intent, deps: PlanDeps): Promise<AnswerPl
   const named =
     champions.length === 0 &&
     (Boolean(buildItemCard(data, question, intent.recentItem)) || (Boolean(buildMechanicsAnswer(data, question)) && !topicFromWords(question)));
-  if (!named && champions.length === 0) {
-    const left = await leaveMatchup(intent, deps);
-    if (left) return left;
-  }
   // 문형이 분명하면("입장에서는?", "왜?", "항복 몇 분부터") 판정기보다 먼저다. 판정기가 아예 없는 기기의 길이기도 하다.
   const worded = actFromWords(question);
   const act =
@@ -459,6 +455,14 @@ async function continueMatchup(intent: Intent, deps: PlanDeps): Promise<AnswerPl
    * 이어 묻기("정글이 자꾸 탑으로 오는데 그럴 땐?")가 검색 길로 빠져 0.8B 가 자료 없이 글을 썼다. 새 질문 대부분은
    * 게임 규칙·메타 자료(`gameMeta.ts`)와 이름이 먼저 받으므로 믿어서 얻는 것이 거의 없다.
    */
+  /*
+   * 검색 벡터로 새 질문을 빼내는 검사(`leaveMatchup`)는 흐름 판정 뒤에 둔다. 앞에 두었더니 "두 챔피언에 대해 스킬 쿨타임도 알려줘" 가
+   * lookup 으로 판정되기 전에 벡터가 고른 "챔피언 분류" 절 원문으로 나갔다. 검색 벡터는 브라우저에서만 돌아 Node 측정에는 잡히지 않았다.
+   */
+  if (!named && champions.length === 0 && act !== "lookup") {
+    const left = await leaveMatchup(intent, deps);
+    if (left) return left;
+  }
   const entity = champions.length === 0 && (named || worded === "new");
   /*
    * 흐름 판정기가 "두 챔피언의 스킬 수치 조회"(lookup) 라 하면 해설이 아니라 그 둘의 표다. 갈래 판정기가 소환사 주문(spell)으로
