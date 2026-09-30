@@ -253,6 +253,7 @@ test("레벨 범위 항 하나뿐인 계산식도 mMultiplier 를 적용한다 (
   const data = levelRangeOnly("RegenCalc", {
     __type: "GameCalculation",
     mDisplayAsPercent: true,
+    mPrecision: 1,
     mMultiplier: { __type: "NumberCalculationPart", mNumber: 0.01 },
     mFormulaParts: [
       {
@@ -304,6 +305,7 @@ test("이름 브레이크포인트 파트의 레벨당 증가량 필드를 읽�
     mSpellCalculations: {
       AttackSpeedPerStack: {
         __type: "GameCalculation",
+        mPrecision: 2,
         mFormulaParts: [
           {
             __type: "{4ce08984}",
@@ -325,8 +327,8 @@ test("이름 브레이크포인트 파트의 레벨당 증가량 필드를 읽�
     data,
     "en_US",
   );
-  // 위키: 0.1% – 2%. 없는 이름·__type 해시는 값 누락 진단으로 잡지 않는다.
-  assert.equal(rendered.html, "(0.1 ~ 2)");
+  // 위키: 0.1% – 2%. mPrecision 2 라 끝자리 0 까지 적는다. 없는 이름·__type 해시는 값 누락 진단으로 잡지 않는다.
+  assert.equal(rendered.html, "(0.10 ~ 2.00)");
   assert.deepEqual(rendered.droppedCalculations, []);
 });
 
@@ -518,8 +520,8 @@ test("19레벨 브레이크포인트는 18레벨 끝값에 들어가지 않는�
     mInitialBonusPerLevel: -1.5,
     mBreakpoints: [{ __type: "Breakpoint", mLevel: 19, mBonusPerLevelAtAndAfter: -0.875 }],
   }], { mPrecision: 1, mSimpleTooltipCalculationDisplay: 6 });
-  // 위키: 40 to 14.5
-  assert.equal(renderCalculation("Calc", 1, data), "(40 ~ 14.5)");
+  // 위키: 40 to 14.5. mPrecision 1 이라 끝자리 0 까지 적는다(인게임 나르 P 공격 속도 (5.5% ~ 99.0%) 와 같은 규칙)
+  assert.equal(renderCalculation("Calc", 1, data), "(40.0 ~ 14.5)");
 });
 
 test("브레이크포인트마다 레벨당 증가량이 바뀐다 (조이 Q 레벨 항)", () => {
@@ -536,15 +538,21 @@ test("브레이크포인트마다 레벨당 증가량이 바뀐다 (조이 Q 레
   assert.equal(renderCalculation("Calc", 1, data), "(2 ~ 50)");
 });
 
-test("mPrecision 자릿수는 float32 잡음을 걷어낸 10진 값으로 반올림한다 (쉔 P 재사용 대기시간 감소)", () => {
-  const data = levelCalculation([{
-    __type: "ByCharLevelBreakpointsCalculationPart",
-    mLevel1Value: 4,
-    mInitialBonusPerLevel: 0.23499999940395355,
-    mBreakpoints: [{ __type: "Breakpoint", mLevel: 19, mBonusPerLevelAtAndAfter: 0.125 }],
-  }], { mPrecision: 1, mSimpleTooltipCalculationDisplay: 6 });
-  // 위키: 4 to 8. float32 증가량으로 18레벨이 7.99499… 가 되어 toFixed(2) 로는 7.99 가 된다
-  assert.equal(renderCalculation("Calc", 1, data), "(4 ~ 8)");
+const shenCooldownReduction = (precision: number) => levelCalculation([{
+  __type: "ByCharLevelBreakpointsCalculationPart",
+  mLevel1Value: 4,
+  mInitialBonusPerLevel: 0.23499999940395355,
+  mBreakpoints: [{ __type: "Breakpoint", mLevel: 19, mBonusPerLevelAtAndAfter: 0.125 }],
+}], { mPrecision: precision, mSimpleTooltipCalculationDisplay: 6 });
+
+test("레벨 범위는 mPrecision 자릿수로 끝자리 0 까지 적는다 (쉔 P 재사용 대기시간 감소)", () => {
+  // 위키: 4 to 8
+  assert.equal(renderCalculation("Calc", 1, shenCooldownReduction(1)), "(4.0 ~ 8.0)");
+});
+
+test("자릿수는 float32 잡음을 걷어낸 10진 값으로 반올림한다", () => {
+  // float32 증가량으로 18레벨이 7.99499… 라 toFixed(2) 만 쓰면 7.99 가 된다. 10진으로는 7.995 → 8.00
+  assert.equal(renderCalculation("Calc", 1, shenCooldownReduction(2)), "(4.00 ~ 8.00)");
 });
 
 test("레벨별 값 나열은 values[i] 가 i레벨이다 (럭스 P 폭발 피해)", () => {
@@ -637,7 +645,7 @@ test("mScaleByStatProgressionMultiplier 보간은 끝값은 같고 중간 레벨
   assert.equal(linear[9].toFixed(2), "376.47");
 });
 
-test("mLevel 이 없는 브레이크포인트는 1레벨부터다 (요네 W 미니언 최소 피해)", () => {
+test("mLevel 이 없는 브레이크포인트는 1레벨이고 그 증가량은 1레벨 값에도 붙는다 (요네 W 미니언 최소 피해)", () => {
   const data = levelCalculation([{
     __type: "ByCharLevelBreakpointsCalculationPart",
     mLevel1Value: 30,
@@ -647,6 +655,6 @@ test("mLevel 이 없는 브레이크포인트는 1레벨부터다 (요네 W 미�
       { __type: "Breakpoint", mLevel: 14, mBonusPerLevelAtAndAfter: 40 },
     ],
   }], { mSimpleTooltipCalculationDisplay: 6 });
-  // 2레벨부터 +10, 9레벨부터 +20, 14레벨부터 +40 → 18레벨 400
-  assert.equal(renderCalculation("Calc", 1, data), "(30 ~ 400)");
+  // 인게임 1~20레벨: 40 50 … 110 130 … 210 250 … 410 450 490. 툴팁 범위는 18레벨까지
+  assert.equal(renderCalculation("Calc", 1, data), "(40 ~ 410)");
 });

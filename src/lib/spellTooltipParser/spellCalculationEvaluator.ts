@@ -166,10 +166,13 @@ function evaluateGameCalculation(
   ctx: EvaluatorContext,
   visited: Set<string>,
 ): CalcResult {
+  const precision =
+    typeof calc.mPrecision === "number" && calc.mPrecision >= 0 ? calc.mPrecision : undefined;
+
   // 레벨 범위 항 하나뿐인 계산식도 mMultiplier 는 적용한다
   // (가렌 P RegenCalc ×0.01, 람머스 Q MinimumMoveSpeed × MSMultiplier)
   const range = evaluateRange(calc);
-  if (range) return applyMultiplier(key, range, calc.mMultiplier, ctx, visited);
+  if (range) return applyMultiplier(key, { ...range, precision }, calc.mMultiplier, ctx, visited);
 
   // 랭크 값과 레벨 범위([1레벨, 18레벨])는 따로 모은다.
   // 한 줄로 더하면 항 순서에 따라 결과가 갈린다. 레벨 범위가 먼저 오면
@@ -225,10 +228,7 @@ function evaluateGameCalculation(
     isPercent: Boolean(calc.mDisplayAsPercent),
     isBreakpointRange: hasLevelRange || undefined,
     extraRanges: extraRanges.length > 0 ? extraRanges : undefined,
-    precision:
-      typeof calc.mPrecision === "number" && calc.mPrecision >= 0
-        ? calc.mPrecision + 1
-        : undefined,
+    precision,
   }, calc.mMultiplier, ctx, visited);
 }
 export function evaluateSpellCalculation(input: {

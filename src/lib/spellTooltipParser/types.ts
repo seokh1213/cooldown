@@ -169,9 +169,8 @@ export interface CalcResult {
   /** statMultiplier 뒤에 이어 곱하는 배율 (배율이 겹친 GameCalculationModified) */
   extraMultipliers?: NonNullable<CalcResult["statMultiplier"]>[];
   /**
-   * 소수점 자릿수 (CommunityDragon GameCalculation.mPrecision)
-   * - undefined 이면 기존처럼 정수(또는 formatNumber 기본 규칙)로 처리
-   * - 0 이상이면 퍼센트/계수 계산 시 해당 자릿수까지 보존
+   * 게임 툴팁이 적는 소수점 자릿수 (CommunityDragon GameCalculation.mPrecision). 없으면 정수로 적는다
+   * (인게임: 카시오페아 P (5% ~ 36%), 나르 P 공격 속도 mPrecision 1 → (5.5% ~ 99.0%))
    */
   precision?: number;
 }

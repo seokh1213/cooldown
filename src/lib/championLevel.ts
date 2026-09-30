@@ -1,9 +1,9 @@
 /**
  * 스킬 수치의 챔피언 레벨 축
  *
- * 챔피언은 탑 라인 역할 퀘스트로 20레벨까지 오르지만 스킬·패시브 수치는 18레벨 뒤로 오르지 않는다
- * (인게임 확인. 위키 틀의 `for 20` 값은 틀렸다). 툴팁의 레벨 범위와 스킬 시뮬레이션이 같은
- * 레벨별 값을 쓴다.
+ * 인게임 툴팁은 레벨 범위를 1~18레벨로 적는다. 챔피언은 탑 라인 역할 퀘스트로 20레벨까지 오르고,
+ * 레벨 구간형 값은 19·20레벨에도 오르지만(요네 W 미니언 최소 피해 450·490) 레벨 보간형은
+ * 18레벨 값에 머문다(샤코 P). 툴팁 범위와 스킬 시뮬레이션은 1~18레벨 값을 쓴다.
  *
  * 레벨별 값 배열은 [0] 이 1레벨이고 길이는 ABILITY_SCALING_MAX_LEVEL 이다.
  */
@@ -18,12 +18,13 @@ export interface LevelBreakpoint {
 /**
  * ByCharLevelBreakpoints 를 레벨별 값으로 편다.
  *
- * 1레벨 값은 level1 이다. 2레벨부터 첫 브레이크포인트 전까지는 initialPerLevel 만큼 오른다.
- * 브레이크포인트 레벨부터는 그 브레이크포인트의 mBonusPerLevelAtAndAfter 만큼 오르고, 값이 없으면 0 이다
+ * 2레벨부터 첫 브레이크포인트 전까지는 initialPerLevel 만큼 오른다. 브레이크포인트 레벨부터는
+ * 그 브레이크포인트의 mBonusPerLevelAtAndAfter 만큼 오르고, 값이 없으면 0 이다
  * (신짜오 W 미니언 피해는 16레벨 추가량 뒤로 더 오르지 않는다).
  * mAdditionalBonusAtThisLevel 은 그 레벨에서 한 번 더해진다.
- * mLevel 이 없으면 1레벨이다. CDragon 은 기본값인 필드를 생략한다
- * (요네 W 미니언 최소 피해: 2레벨부터 +10, 9레벨부터 +20, 14레벨부터 +40 → 30 ~ 400).
+ * mLevel 이 없으면 1레벨이다(CDragon 은 기본값인 필드를 생략한다). 1레벨 브레이크포인트의 증가량은
+ * 1레벨 값에도 붙는다. 요네 W 미니언 최소 피해는 30 에 +10 이 붙어 40 부터 오른다
+ * (인게임 1~20레벨: 40 50 … 110 130 … 210 250 … 410 450 490).
  */
 export function breakpointLevelValues(
   level1: number,
@@ -31,7 +32,10 @@ export function breakpointLevelValues(
   breakpoints: readonly LevelBreakpoint[],
 ): number[] {
   const levelOf = (entry: LevelBreakpoint): number => entry.mLevel ?? 1;
-  const values = [level1];
+  const atLevel1 = breakpoints.filter((entry) => levelOf(entry) <= 1);
+  const perLevelAtLevel1 = atLevel1.reduce((sum, entry) => sum + (entry.mBonusPerLevelAtAndAfter ?? 0), 0);
+  const additionalAtLevel1 = atLevel1.reduce((sum, entry) => sum + (entry.mAdditionalBonusAtThisLevel ?? 0), 0);
+  const values = [level1 + perLevelAtLevel1 + additionalAtLevel1];
   for (let level = 2; level <= ABILITY_SCALING_MAX_LEVEL; level += 1) {
     let perLevel = initialPerLevel;
     let activeLevel = -1;

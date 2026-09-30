@@ -18,15 +18,27 @@ function scalePercent(value: Value, precision?: number): Value {
  * 걷어낸 뒤, 2진 표현이 아니라 10진 값으로 반올림한다. toFixed 는 8.245 를 8.2449999… 로 보고
  * 8.24 로 내린다 (쉔 P 18레벨 7.995 → 소수 둘째 자리 8).
  */
-function formatFixed(value: number, digits: number): string {
-  if (!Number.isFinite(value)) return String(value);
+function roundDecimal(value: number, digits: number): number {
   const denoised = Number(value.toPrecision(7));
   const text = String(Math.abs(denoised));
   const rounded = text.includes("e")
     ? Number(Math.abs(denoised).toFixed(digits))
     : Number(`${Math.round(Number(`${text}e${digits}`))}e-${digits}`);
-  const signed = denoised < 0 && rounded !== 0 ? -rounded : rounded;
-  return signed.toFixed(digits).replace(/\.0+$|(\.\d*?)0+$/, "$1");
+  return denoised < 0 && rounded !== 0 ? -rounded : rounded;
+}
+
+/** digits 자리에서 반올림하고 끝자리 0 은 지운다 */
+function formatFixed(value: number, digits: number): string {
+  if (!Number.isFinite(value)) return String(value);
+  return roundDecimal(value, digits).toFixed(digits).replace(/\.0+$|(\.\d*?)0+$/, "$1");
+}
+
+/**
+ * 랭크 값·스탯 계수·배율에 쓰는 자릿수. 게임은 이 자리에 현재 랭크의 값 하나만 적어 비교할 근거가 없다.
+ * 여러 랭크 값을 나란히 적을 때 값이 뭉개지지 않게 mPrecision 보다 한 자리 더 적는다.
+ */
+function detailDigits(precision: number | undefined): number | undefined {
+  return precision == null ? undefined : precision + 1;
 }
 
 function formatValueWithPrecision(value: Value, precision: number): string {
@@ -80,12 +92,24 @@ function isZeroValue(value: Value): boolean {
     : value === 0;
 }
 
-/** 자릿수가 정해지지 않은 레벨 범위 끝값은 소수 둘째 자리까지 적는다 (신짜오 W 미니언 피해 100.002 → 100) */
+/** 자릿수가 정해지지 않은 배율·스탯 계수 레벨 범위는 소수 둘째 자리까지 적는다 */
 const LEVEL_RANGE_DEFAULT_DIGITS = 2;
 
 /**
- * [1레벨, 18레벨] 범위를 "(a ~ b)" 로 적는다. value 는 이미 퍼센트로 바꾼 값이다.
- * 기본 수치·합치지 못한 범위·배율·스탯 계수가 모두 이 함수로 범위를 적는다.
+ * 기본 수치의 [1레벨, 18레벨] 범위를 인게임 툴팁처럼 적는다. value 는 이미 퍼센트로 바꾼 값이다.
+ * 자릿수는 mPrecision 그대로(없으면 정수)이고 끝자리 0 도 남긴다
+ * (인게임: 카시오페아 P (5% ~ 36%), 나르 P 방어력 (4 ~ 55), 공격 속도 (5.5% ~ 99.0%), 샤코 P (23 ~ 75)).
+ */
+function formatGameLevelRange(range: readonly number[], suffix: string, precision?: number): string {
+  const digits = precision ?? 0;
+  const [minimum, maximum] = range.map((entry) =>
+    Number.isFinite(entry) ? roundDecimal(entry, digits).toFixed(digits) : String(entry));
+  return `(${minimum}${suffix} ~ ${maximum}${suffix})`;
+}
+
+/**
+ * 배율·스탯 계수의 [1레벨, 18레벨] 범위를 "(a ~ b)" 로 적는다. value 는 이미 퍼센트로 바꾼 값이다.
+ * 정수로 자르면 "× (1.3 ~ 1.6)" 이나 "(3.5% ~ 10.5%) 공격력" 의 뜻이 망가져 소수 둘째 자리까지 둔다.
  */
 function formatLevelRange(
   range: readonly number[],
@@ -104,7 +128,7 @@ function isRangePair(value: Value): value is [number, number] {
 function formatRange(result: CalcResult, base: Value): string | null {
   const isRange = result.isCharLevelRange || result.isBreakpointRange;
   if (!isRange || !isRangePair(base)) return null;
-  return formatLevelRange(base, result.isPercent ? "%" : "", result.precision);
+  return formatGameLevelRange(base, result.isPercent ? "%" : "", result.precision);
 }
 
 function formatBase(result: CalcResult, base: Value): string | null {
@@ -113,9 +137,10 @@ function formatBase(result: CalcResult, base: Value): string | null {
   const range = formatRange(result, base);
   if (range) return range;
 
-  const raw = result.precision == null
+  const digits = detailDigits(result.precision);
+  const raw = digits == null
     ? valueToTooltipString(base)
-    : formatValueWithPrecision(base, result.precision);
+    : formatValueWithPrecision(base, digits);
   return result.isPercent ? `${raw}%` : raw;
 }
 
@@ -181,7 +206,7 @@ function formatStatMultiplier(
   if (isLevelRange && isRangePair(base)) {
     // 레벨 범위 배율은 랭크 값("1.3/1.6")으로 읽히지 않게 범위로 적는다
     const scaled = isPercent ? (scaleBy100(base) as number[]) : base;
-    terms.push(formatLevelRange(scaled, isPercent ? "%" : "", multiplierResult.precision));
+    terms.push(formatLevelRange(scaled, isPercent ? "%" : "", detailDigits(multiplierResult.precision)));
   } else if (!isZeroValue(base)) {
     // 퍼센트로 적는 계산식을 배율로 쓰면 base 도 퍼센트여야 한다.
     // 세트 W 의 투지 전환율이 "0.25" 가 아니라 "25%" 로 나와야 하는 경우.
@@ -198,7 +223,7 @@ function formatStatMultiplier(
     if (isZeroValue(scaled)) continue;
     // 레벨 범위 계수는 "19/40%" 처럼 랭크 값으로 읽히지 않게 "(19% ~ 40%)" 로 적는다
     const value = part.isLevelRange && isRangePair(scaled)
-      ? formatLevelRange(scaled, "%", multiplierResult.precision)
+      ? formatLevelRange(scaled, "%", detailDigits(multiplierResult.precision))
       : `${valueToTooltipString(scaled)}%`;
     terms.push(part.name ? `${statIconToken(part.icon)}${value} ${part.name}` : value);
   }
@@ -231,13 +256,13 @@ export function formatCalculationResult(
   const rangeParts = (result.extraRanges ?? []).map((range) => {
     if (!isRangePair(range)) return valueToTooltipString(range);
     const scaled = result.isPercent ? (scalePercent(range, result.precision) as number[]) : range;
-    return formatLevelRange(scaled, result.isPercent ? "%" : "", result.precision);
+    return formatGameLevelRange(scaled, result.isPercent ? "%" : "", result.precision);
   });
 
   const parts = [
     formatBase(result, base),
     ...rangeParts,
-    ...statParts.map((part) => formatStatPart(part, lang, result.precision)),
+    ...statParts.map((part) => formatStatPart(part, lang, detailDigits(result.precision))),
   ].filter((part): part is string => part !== null);
 
   // 배율이 여럿이면 차례로 곱한다 (아크샨 E 치명타: … × (1 + 30% 추가 공격 속도) × 100% 치명타 피해량)
