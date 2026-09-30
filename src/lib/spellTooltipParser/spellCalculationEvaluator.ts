@@ -166,8 +166,7 @@ function evaluateGameCalculation(
   ctx: EvaluatorContext,
   visited: Set<string>,
 ): CalcResult {
-  const precision =
-    typeof calc.mPrecision === "number" && calc.mPrecision >= 0 ? calc.mPrecision : undefined;
+  const precision = typeof calc.mPrecision === "number" ? calc.mPrecision : undefined;
 
   // 레벨 범위 항 하나뿐인 계산식도 mMultiplier 는 적용한다
   // (가렌 P RegenCalc ×0.01, 람머스 Q MinimumMoveSpeed × MSMultiplier)

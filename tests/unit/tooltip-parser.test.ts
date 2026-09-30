@@ -673,3 +673,15 @@ test("CDragon 이 필드명을 풀어 내보내도 1레벨·18레벨 값 파트�
     assert.equal(renderCalculation("Calc", 1, data), "(100 ~ 831)");
   }
 });
+
+test("mPrecision -1 인 레벨 범위는 반올림하지 않는다 (벡스 P 공포 지속 시간)", () => {
+  const data = levelCalculation([{
+    __type: "ByCharLevelBreakpointsCalculationPart",
+    mLevel1Value: 0.75,
+    mBreakpoints: [6, 9, 13].map((level) => ({
+      __type: "Breakpoint", mLevel: level, mAdditionalBonusAtThisLevel: 0.25,
+    })),
+  }], { mPrecision: -1 });
+  // 인게임: 0.75 = (0.75 ~ 1.5). 1~5레벨 0.75, 6~8 1, 9~12 1.25, 13~ 1.5
+  assert.equal(renderCalculation("Calc", 1, data), "(0.75 ~ 1.5)");
+});

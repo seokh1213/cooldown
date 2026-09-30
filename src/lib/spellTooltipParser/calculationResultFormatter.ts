@@ -38,8 +38,12 @@ function formatFixed(value: number, digits: number): string {
  * 여러 랭크 값을 나란히 적을 때 값이 뭉개지지 않게 mPrecision 보다 한 자리 더 적는다.
  */
 function detailDigits(precision: number | undefined): number | undefined {
-  return precision == null ? undefined : precision + 1;
+  return precision == null || precision < 0 ? undefined : precision + 1;
 }
+
+/** mPrecision -1 이면 반올림하지 않는다. float32 잡음만 걷어내 소수 셋째 자리까지 적는다 */
+const EXACT_PRECISION = -1;
+const EXACT_DIGITS = 3;
 
 function formatValueWithPrecision(value: Value, precision: number): string {
   const formatEntry = (entry: number): string => formatFixed(entry, precision);
@@ -97,13 +101,17 @@ const LEVEL_RANGE_DEFAULT_DIGITS = 2;
 
 /**
  * 기본 수치의 [1레벨, 18레벨] 범위를 인게임 툴팁처럼 적는다. value 는 이미 퍼센트로 바꾼 값이다.
- * 자릿수는 mPrecision 그대로(없으면 정수)이고 끝자리 0 도 남긴다
+ * 자릿수는 mPrecision 그대로(없으면 정수, -1 이면 반올림하지 않음)이고 끝자리 0 도 남긴다
  * (인게임: 카시오페아 P (5% ~ 36%), 나르 P 방어력 (4 ~ 55), 공격 속도 (5.5% ~ 99.0%), 샤코 P (23 ~ 75)).
  */
 function formatGameLevelRange(range: readonly number[], suffix: string, precision?: number): string {
-  const digits = precision ?? 0;
-  const [minimum, maximum] = range.map((entry) =>
-    Number.isFinite(entry) ? roundDecimal(entry, digits).toFixed(digits) : String(entry));
+  const format = (entry: number): string => {
+    if (!Number.isFinite(entry)) return String(entry);
+    if (precision === EXACT_PRECISION) return formatFixed(entry, EXACT_DIGITS);
+    const digits = precision ?? 0;
+    return roundDecimal(entry, digits).toFixed(digits);
+  };
+  const [minimum, maximum] = range.map(format);
   return `(${minimum}${suffix} ~ ${maximum}${suffix})`;
 }
 
