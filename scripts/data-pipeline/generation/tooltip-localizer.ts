@@ -1,4 +1,4 @@
-import type { Champion } from "../../../src/types";
+import type { AbilityFormDiagnostics, Champion } from "../../../src/types";
 import type {
   ExtractedActiveSpellData,
 } from "../cdragon-active-spells";
@@ -84,7 +84,16 @@ function applyActiveTooltip(
                 : undefined,
           }
         : undefined;
-    spell.forms = buildAbilityForms({ champion, spell, slot: (["Q", "W", "E", "R"] as const)[index], locale, table: stringTable, aliases, cdragonVersion });
+    const formDiagnostics: AbilityFormDiagnostics[] = [];
+    spell.forms = buildAbilityForms({
+      champion, spell, slot: (["Q", "W", "E", "R"] as const)[index], locale, table: stringTable, aliases, cdragonVersion,
+      reportDiagnostics: (diagnostics) => {
+        if (diagnostics.unresolvedTokens.length > 0 || diagnostics.droppedCalculations.length > 0) {
+          formDiagnostics.push(diagnostics);
+        }
+      },
+    });
+    spell.formDiagnostics = formDiagnostics.length > 0 ? formDiagnostics : undefined;
     if (localized.name) spell.name = localized.name;
   });
 }

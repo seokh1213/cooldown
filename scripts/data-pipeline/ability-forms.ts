@@ -1,4 +1,4 @@
-import type { Champion, ChampionSpell } from "../../src/types";
+import type { AbilityFormDiagnostics, Champion, ChampionSpell } from "../../src/types";
 import type { AbilityForm, AbilitySlot } from "../../src/data/contracts/championData";
 import type { ExtractedActiveSpellData } from "./cdragon-active-spells";
 import type { CommunityDragonSpellData } from "../../src/lib/spellTooltipParser/types";
@@ -34,6 +34,8 @@ function rankedCooldowns(source: ExtractedActiveSpellData, maxRank: number, fall
 export function buildAbilityForms(input: {
   champion: Champion; spell: ChampionSpell; slot: AbilitySlot; locale: DataLocale;
   table: StringTable; aliases: Record<string, ExtractedActiveSpellData>; cdragonVersion: string;
+  /** 폼 툴팁 진단을 받는다. 공개 자료에 싣지 않는 값 누락까지 담긴다 */
+  reportDiagnostics?: (diagnostics: AbilityFormDiagnostics) => void;
 }): AbilityForm[] | undefined {
   const { champion, spell, slot, locale, table, aliases } = input;
   const definition = ABILITY_FORM_DEFINITIONS[champion.id];
@@ -56,6 +58,10 @@ export function buildAbilityForms(input: {
     };
     const localized = localizeActiveTooltip(formSpell, source, table, locale, siblings);
     if (!localized.tooltip) throw new Error(`Missing ${id} form tooltip for ${locale}`);
+    input.reportDiagnostics?.({
+      form: key, spellId: id,
+      unresolvedTokens: localized.unresolvedTokens, droppedCalculations: localized.droppedCalculations,
+    });
     // Alternate tooltips often reuse the primary form's localization name.
     const names = (spell.name ?? id).split(/\s*\/\s*/);
     return {

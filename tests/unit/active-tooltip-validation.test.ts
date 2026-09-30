@@ -143,3 +143,34 @@ test("값을 버린 계산식 자리는 허용 목록(사유 포함) 밖이면 �
     { id: "Test:Q:TotalDamage:sum-mismatch", why: "시험용" },
   ]);
 });
+
+test("변신 폼 툴팁의 값 누락·미해석 토큰도 폼 키를 붙여 기준선으로 본다", () => {
+  const champions: ChampionsByLocale = new Map([
+    ["ko_KR", new Map([
+      ["Jayce", createChampion("Jayce", [
+        createSpell("JayceQ", {
+          tooltipSource: "communitydragon",
+          formDiagnostics: [{
+            form: "B",
+            spellId: "JayceShockBlast",
+            unresolvedTokens: ["FormToken"],
+            droppedCalculations: [{ key: "Damage", reason: "sum-mismatch" }],
+          }],
+        }),
+      ])],
+    ])],
+  ]);
+  const report = validateActiveTooltips({
+    championsByLocale: champions,
+    patchVersion: "26.19",
+    sources: { ddragon: "16.19.1", cdragon: "16.19" },
+    allowlist: { unresolvedTokens: [], missingTooltips: [], droppedCalculations: [] },
+  });
+  assert.deepEqual(report.unexpectedDroppedCalculations, ["Jayce:Q/B:Damage:sum-mismatch"]);
+  assert.deepEqual(report.droppedCalculations.map(({ form, spellId }) => ({ form, spellId })), [
+    { form: "B", spellId: "JayceShockBlast" },
+  ]);
+  assert.deepEqual(report.unexpectedTokens, ["FormToken"]);
+  assert.equal(report.issues[0]?.form, "B");
+  assert.throws(() => assertActiveTooltipReport(report), /1 new dropped calculations/);
+});

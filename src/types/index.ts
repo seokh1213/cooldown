@@ -25,6 +25,8 @@ export interface ChampionSpell {
     /** 생성 때만 쓰는 진단. 계산식을 평가하다 값을 버린 자리 */
     droppedCalculations?: import("@/lib/spellTooltipParser/types").DroppedCalculation[];
   };
+  /** 생성 때만 쓰는 변신 폼 툴팁 진단. 공개 자료의 forms 에는 싣지 않는다 */
+  formDiagnostics?: AbilityFormDiagnostics[];
   leveltip?: {
     label: string[];
     effect: string[];
@@ -42,6 +44,13 @@ export interface ChampionSpell {
   conditions?: string[];
   simulation?: AbilitySimulation;
   maxammo?: string;
+}
+
+export interface AbilityFormDiagnostics {
+  form: "A" | "B";
+  spellId: string;
+  unresolvedTokens: string[];
+  droppedCalculations: import("@/lib/spellTooltipParser/types").DroppedCalculation[];
 }
 
 export interface ChampionPassive {

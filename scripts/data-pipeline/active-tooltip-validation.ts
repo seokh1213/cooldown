@@ -8,7 +8,7 @@ const ABILITY_SLOTS = ["Q", "W", "E", "R"] as const;
 
 /** 값을 버린 계산식 자리 중 지금은 고칠 수 없어 기준선에 두는 것. 사유를 반드시 적는다. */
 export interface AllowedDroppedCalculation {
-  /** `<챔피언>:<슬롯>:<계산식 키>:<사유 코드>` */
+  /** `<챔피언>:<슬롯>:<계산식 키>:<사유 코드>`. 변신 폼이면 슬롯 자리가 `Q/B` 꼴이다 */
   id: string;
   why: string;
 }
@@ -20,11 +20,13 @@ export interface ActiveTooltipAllowlist {
 }
 
 export interface DroppedCalculationIssue extends DroppedCalculation {
-  /** 언어와 무관한 식별자 `<챔피언>:<슬롯>:<계산식 키>:<사유 코드>` */
+  /** 언어와 무관한 식별자 `<챔피언>:<슬롯>:<계산식 키>:<사유 코드>` (폼이면 슬롯 자리가 `Q/B`) */
   id: string;
   championId: string;
   locale: DataLocale;
   slot: "P" | (typeof ABILITY_SLOTS)[number];
+  /** 변신 폼 툴팁이면 폼 키 */
+  form?: "A" | "B";
   spellId: string;
 }
 
@@ -32,6 +34,8 @@ export interface ActiveTooltipIssue {
   championId: string;
   locale: DataLocale;
   slot: (typeof ABILITY_SLOTS)[number];
+  /** 변신 폼 툴팁이면 폼 키 */
+  form?: "A" | "B";
   spellId: string;
   unresolvedTokens: string[];
 }
@@ -109,23 +113,32 @@ export function validateActiveTooltips({
   const issues: ActiveTooltipIssue[] = [];
   const dropped: DroppedCalculationIssue[] = [];
   const missing = new Set<string>();
+  interface TooltipLocation {
+    championId: string;
+    locale: DataLocale;
+    slot: DroppedCalculationIssue["slot"];
+    form?: "A" | "B";
+    spellId: string;
+  }
   const collectDropped = (
-    championId: string,
-    locale: DataLocale,
-    slot: DroppedCalculationIssue["slot"],
-    spellId: string,
+    location: TooltipLocation,
     entries: DroppedCalculation[] | undefined,
   ): void => {
+    const slotId = location.form ? `${location.slot}/${location.form}` : location.slot;
     for (const entry of entries ?? []) {
       dropped.push({
-        id: `${championId}:${slot}:${entry.key}:${entry.reason}`,
-        championId,
-        locale,
-        slot,
-        spellId,
+        id: `${location.championId}:${slotId}:${entry.key}:${entry.reason}`,
+        ...location,
         ...entry,
       });
     }
+  };
+  const collectUnresolved = (
+    location: TooltipLocation & { slot: ActiveTooltipIssue["slot"] },
+    unresolvedTokens: string[] | undefined,
+  ): void => {
+    if (!unresolvedTokens || unresolvedTokens.length === 0) return;
+    issues.push({ ...location, unresolvedTokens });
   };
   let abilities = 0;
   let localized = 0;
@@ -134,35 +147,25 @@ export function validateActiveTooltips({
     championsByLocale,
   )) {
     collectDropped(
-      championId,
-      locale,
-      "P",
-      champion.passive?.spellId ?? "unknown",
+      { championId, locale, slot: "P", spellId: champion.passive?.spellId ?? "unknown" },
       champion.passive?.tooltipDiagnostics?.droppedCalculations,
     );
     (champion.spells ?? []).forEach((spell, index) => {
       const slot = ABILITY_SLOTS[index];
       if (!slot) return;
       abilities += 1;
-      collectDropped(
-        championId,
-        locale,
-        slot,
-        spell.id ?? "unknown",
-        spell.tooltipDiagnostics?.droppedCalculations,
-      );
+      const location = { championId, locale, slot, spellId: spell.id ?? "unknown" };
+      collectDropped(location, spell.tooltipDiagnostics?.droppedCalculations);
       if (spell.tooltipSource === "communitydragon") localized += 1;
       else missing.add(`${championId}:${slot}`);
+      collectUnresolved(location, spell.tooltipDiagnostics?.unresolvedTokens);
 
-      const unresolvedTokens = spell.tooltipDiagnostics?.unresolvedTokens ?? [];
-      if (unresolvedTokens.length === 0) return;
-      issues.push({
-        championId,
-        locale,
-        slot,
-        spellId: spell.id ?? "unknown",
-        unresolvedTokens,
-      });
+      // 변신 챔피언은 화면에 폼마다의 본문을 보인다. 폼 툴팁도 같은 기준선으로 본다.
+      for (const form of spell.formDiagnostics ?? []) {
+        const formLocation = { championId, locale, slot, form: form.form, spellId: form.spellId };
+        collectDropped(formLocation, form.droppedCalculations);
+        collectUnresolved(formLocation, form.unresolvedTokens);
+      }
     });
   }
 
