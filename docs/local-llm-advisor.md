@@ -73,8 +73,8 @@ D 계층이 이 설계의 핵심이다. 소형 모델에게 후보 목록을 주
 ```
 
 - `category`: `combo` `phase` `skill` `laning` `teamfight` `situational-item`.
-  `rune` `summoner` `start-item` `first-item` `core-item` 은 **통계 오라클이 대신하므로 쓰지 않는다**
-  (7장 참고). 조건이 붙는 아이템 예외만 `situational-item` 으로 남긴다.
+  `rune` `summoner` `start-item` `first-item` `core-item` 은 **통계 없이 확정할 수 없어 쓰지 않는다**.
+  조건이 붙는 아이템 예외만 `situational-item` 으로 남긴다.
 - `when`: 상대 카드의 파생 사실로 판정한다. `enemyDamage` `enemyScaling` `enemyRange`
   `enemyHasEffects` `enemyLacksEffects` `enemyRoles` `enemyIds` `lanes`.
   덕분에 "상대가 원거리면 재생의 바람" 같은 조건부 지식을 챔피언당 한 번만 쓰면 된다.
@@ -190,7 +190,7 @@ CLI 는 처음부터 스트리밍이다(`/api/chat` 의 `stream: true`, 토큰�
 
 ### 지식 카드 173종을 갖춘 뒤 재측정 (26.17)
 
-평가 케이스를 10건으로 늘리고 다섯 라인을 모두 덮었다. 기대값은 전부 오라클 확정 구간에서 가져왔다.
+평가 케이스를 10건으로 늘리고 다섯 라인을 모두 덮었다. 기대값은 전부 코드가 확정하는 구간에서 가져왔다.
 변형은 실제 배포에 쓰는 `split`(확정 구간은 코드, 서술만 2회 호출) 하나로 통일했다.
 
 | 모델 | 적중 | 금지 표현 | 호출당 프롬프트 | 속도 | 매치업당 소요 |
@@ -397,7 +397,7 @@ chain 은 prefill 총량이 적지만 컨텍스트에 1턴 답변이 쌓여 4096
 
 - 팀 단위 파생 사실: 아군/적 5명 카드의 피해 프로필 합, CC 태그 합, 이동기·탱커 수
 - 역할군 풀: 라인별 후보 챔피언 목록
-- 메타 통계(선택): 픽률·승률은 외부 소스가 필요하다. `research/lolps-*` 조사 결과 참고, 라이선스 확인 뒤 결정
+- 메타 통계(선택): 픽률·승률은 외부 소스가 필요하다. 라이선스 확인 뒤 결정
 
 ## 10. 실행 방법
 

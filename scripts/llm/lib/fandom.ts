@@ -1,19 +1,19 @@
 /**
- * LoL Fandom 위키를 세 번째 오라클로 쓴다.
+ * LoL Fandom 위키에서 챔피언 스킬 이름과 계수를 읽는다.
  *
- * lol.ps·poro.gg 는 Riot 데이터를 각자 렌더한 결과라, 우리와 같은 원본을
- * 같은 방식으로 잘못 읽으면 둘 다 같이 틀린다. Fandom 은 사람이 손으로
- * 적고 검증한 문서라 그 종류의 오류를 잡아 준다.
- * (실제로 "추가 주문력" 을 "공격력" 으로 읽던 버그가 이 축에서 드러난다)
+ * Riot 데이터를 기계로 읽는 우리 파이프라인과 달리 사람이 손으로 적고 검증한
+ * 문서라, 원본을 같은 방식으로 잘못 읽는 종류의 오류를 잡아 준다.
+ * (실제로 "추가 주문력" 을 "공격력" 으로 읽던 버그가 이 축에서 드러났다)
  *
  * 수집 경로
  *   1. Module:ChampionData/data  → 챔피언별 스킬 이름
  *   2. Template:Data <챔피언>/<스킬 이름>  → leveling 필드에 계수가 명시됨
  *
  * 위키 문서는 CC BY-SA 라 대조 용도로만 쓰고 앱에 싣지 않는다.
+ * 지금은 `fetch-wiki-dashes.ts` 가 이동기 판정 재료로 쓴다.
  */
 const API = "https://leagueoflegends.fandom.com/api.php";
-const USER_AGENT = "cooldown-oracle-research/1.0 (tooltip verification)";
+const USER_AGENT = "cooldown-wiki-research/1.0 (ability verification)";
 
 /** 한 번에 넘길 수 있는 문서 수 (MediaWiki 기본 상한) */
 const TITLES_PER_REQUEST = 50;

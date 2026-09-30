@@ -18,7 +18,7 @@
  */
 import * as fs from "fs";
 import * as path from "path";
-import { fetchChampionAbilities, fetchChampionSkillNames } from "../oracle/fandom";
+import { fetchChampionAbilities, fetchChampionSkillNames } from "./lib/fandom";
 import { PUBLIC_DATA_ROOT, resolvePatchVersion } from "./lib/data";
 
 export const DASH_FILE = "ability-dashes.json";

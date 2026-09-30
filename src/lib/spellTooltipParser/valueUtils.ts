@@ -83,7 +83,7 @@ export function scaleBy100(value: Value): Value {
  * CommunityDragon mStat 코드 → 번역 키 표
  *
  * 코드값은 Riot 이 공개하지 않으므로, CommunityDragon 계산 데이터와
- * lol.ps 의 완성 문장을 같은 패치에서 대조해 확정한 것만 싣는다.
+ * 인게임 완성 문장을 같은 패치에서 대조해 확정한 것만 싣는다.
  * (근거 없는 코드는 넣지 않는다. 틀린 스탯 이름은 값이 없는 것보다 나쁘다)
  *
  * - base:  기본 이름 번역 키
@@ -178,7 +178,7 @@ export function getStatIcon(mStat?: number): string | undefined {
  * 각각 정한다. mStat 이 없으면 주문력 계수이며, 이때 mStatFormula 는
  * 스탯 코드가 아니라 총합/추가 구분으로만 쓰인다.
  * (블라디미르 패시브·잭스 E/R·벨베스 W 의 "추가 주문력" 항.
- *  lol.ps 도 같은 자리를 "추가 주문력" 으로 적는다)
+ *  인게임 문장도 같은 자리를 "추가 주문력" 으로 적는다)
  *
  * 표에 없는 코드는 잘못된 이름을 붙이는 대신 빈 문자열을 돌려주고,
  * 호출부에서 "(240%)" 처럼 수치만 노출한다.
