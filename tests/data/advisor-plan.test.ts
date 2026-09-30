@@ -257,6 +257,17 @@ const CASES: Case[] = [
   { name: "재질문의 안내는 그대로 실린다", question: "럼블 E", notice: "럼블로 알아들었어요", screen: ["Malphite"], want: "card spell Rumble E · 럼블로 알아들었어요", calls: [] },
   { name: "영어 상성(판정기)", question: "how do I play Yasuo into Malphite?", lang: "en_US", model: true, judge: { kind: "matchup", mine: "Malphite", topic: "laning" }, want: "matchup Yasuo>Malphite focus=general", calls: ["judge kind+mine"] },
 
+  // --- 오프라인 판정기(모델 없는 기기): 판정기는 부르되 동의·검색 벡터가 없다 ---
+  { name: "오프라인: 갈래 + 주제 판정은 모델 판정기와 같은 길", question: "말파이트 어떻게 해", offline: true, judge: { kind: "guide", topic: "laning" }, want: "card champion Malphite notes=both 3/3 \"라인전은 Q로 갉고 화\"", calls: ["judge kind", "judge topic"] },
+  { name: "오프라인: 판정 거절(파일 못 받음)은 낱말 규칙으로", question: "말파이트 알려줘", offline: true, want: "card champion Malphite notes=both 3/3 \"말파이트에게 방어력은 \"", calls: ["judge kind (refused)", "judge topic (refused)"] },
+  { name: "오프라인: 이름 둘, 조사가 없으면 판정기의 내 챔피언", question: "오공 럼블 라인전", offline: true, judge: { kind: "matchup", mine: "럼블" }, want: "matchup Rumble>MonkeyKing focus=laning", calls: ["judge kind+mine"] },
+  { name: "오프라인: 상성 대화 흐름(새 상대)은 검색 없이 판정기로", question: "피오라는 어때", offline: true, judge: { kind: "guide", act: "enemy", topic: "general" }, turns: matchupTurns("Garen", "Darius"), want: "matchup Garen>Fiora focus=general · 앞서 말한 가렌 vs 피오라 기준입니다.", calls: ["judge kind", "judge act", "judge topic"] },
+  { name: "오프라인: 흐름 판정기의 lookup 은 두 챔피언 표", question: "두 챔피언에 대해 스킬 쿨타임도 알려줘", offline: true, judge: { kind: "guide", act: "lookup" }, turns: matchupTurns("MonkeyKing", "Rumble"), want: "card compare MonkeyKing,Rumble · 앞서 말한 오공·럼블 기준입니다.", calls: ["judge kind", "judge act"] },
+  { name: "오프라인: 판정기의 new 는 따르지 않는다", question: "정글이 자꾸 탑으로 오는데 그럴 땐?", offline: true, judge: { kind: "guide", act: "new", topic: "phase" }, turns: matchupTurns("Garen", "Darius"), want: "matchup Garen>Darius focus=phase · 앞서 말한 가렌 vs 다리우스 기준입니다.", calls: ["judge kind", "judge act", "judge topic"] },
+  { name: "오프라인: 판정기 잡담 + 조언 요청 없음은 자료 없음", question: "오늘 기분 좋다", offline: true, judge: { kind: "chat" }, turns: matchupTurns("Garen", "Darius"), want: "code copy.noLiteAnswer", calls: ["judge kind"] },
+  // 갈래 판정기가 있어도 이름 없는 질문은 동의 전이면 모델에게(동의 전 문구) — 낱말 검색 답은 동의한 기기의 것이다
+  { name: "오프라인: 이름 없는 질문은 동의 전 문구", question: "갱킹 타이밍", offline: true, judge: { kind: "other" }, want: "respond", calls: ["judge kind"] },
+  { name: "오프라인: 영어 상성은 문형 보정이 판정기보다 먼저", question: "how do I play Yasuo into Malphite?", lang: "en_US", offline: true, judge: { kind: "matchup", mine: "Malphite", topic: "laning" }, want: "matchup Yasuo>Malphite focus=general", calls: ["judge kind+mine"] },
 ];
 
 test("자료가 없으면 모델에게", async () => {
