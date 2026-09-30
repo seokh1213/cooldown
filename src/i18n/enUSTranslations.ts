@@ -231,6 +231,7 @@ export const enUSTranslations: Translations = {
       mana: "Mana",
       rechargeTime: "Recharge Time",
       rechargeShort: "Recharge",
+      maxCharges: "Max charges",
       max: "Max",
       items: "",
       bonus: "bonus",

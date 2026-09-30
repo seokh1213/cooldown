@@ -231,6 +231,7 @@ export const koKRTranslations: Translations = {
       mana: "마나",
       rechargeTime: "재충전 대기시간",
       rechargeShort: "재충전",
+      maxCharges: "최대 충전",
       max: "최대",
       items: "개",
       bonus: "추가",

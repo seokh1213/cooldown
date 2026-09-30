@@ -38,7 +38,7 @@ function rankLine(ability: AbilityV2, values: readonly number[] | undefined, for
 
 /**
  * 설명 아래 실제 쿨타임. 설명 문장만으로는 수치를 찾기 어렵다는 요청(2026-09-29)에 따라 흐린 구분선 뒤에 적는다.
- * 형태가 둘인 스킬은 형태 설명마다 이미 쿨타임 줄이 있어(`AbilityFormDetails`) 적지 않는다. 충전형은 재충전 대기시간을 한 줄 더.
+ * 형태가 둘인 스킬은 형태 설명마다 이미 쿨타임 줄이 있어(`AbilityFormDetails`) 적지 않는다. 충전형은 재충전 대기시간과 최대 충전 수를 한 줄씩 더.
  */
 function VsAbilityCooldowns({ ability }: { ability: AbilityV2 }) {
   const { t, lang } = useTranslation();
@@ -48,6 +48,8 @@ function VsAbilityCooldowns({ ability }: { ability: AbilityV2 }) {
   const shown = [
     { label: t.comparison.cooldownNote, value: rankLine(ability, ability.cooldownSeconds, format, unit) },
     { label: t.common.rechargeTime, value: rankLine(ability, ability.rechargeSeconds, format, unit) },
+    // 대화창 머리(getCooldownText)는 "(최대: 2개)" 를 붙이는데 여기만 빠져 있었다(2026-09-30).
+    { label: t.common.maxCharges, value: ability.maxCharges ? `${ability.maxCharges}${t.common.items}` : undefined },
   ].filter((line): line is { label: string; value: string } => Boolean(line.value));
   if (!shown.length) return null;
   return (
