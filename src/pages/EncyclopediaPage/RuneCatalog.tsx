@@ -110,7 +110,7 @@ function RuneIcon(props: RuneIconProps) {
         size={40}
         className="w-10 h-10 rounded-full border border-border/60 bg-transparent shrink-0"
       />
-      <span className="text-[10px] text-center leading-tight line-clamp-2 w-full">
+      <span className="text-[10px] text-center leading-tight line-clamp-2 w-full break-keep-ko hyphens-auto wrap-anywhere">
         {rune.name}
       </span>
     </button>

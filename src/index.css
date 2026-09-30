@@ -130,6 +130,17 @@ img.stat-icon-chip {
   }
 }
 
+/*
+ * 한글 이름표를 띄어쓰기에서만 꺾는다("기민한 발놀|림" 대신 "기민한|발놀림").
+ * 한글에만 건다. 중국어는 낱말 사이에 띄어쓰기가 없어 keep-all 이면 한 줄로 넘친다.
+ * 문서 언어(html lang)는 I18nProvider 가 화면 언어로 맞춘다.
+ */
+@utility break-keep-ko {
+  &:lang(ko) {
+    word-break: keep-all;
+  }
+}
+
 @utility scrollbar-always-visible {
   /* 모바일에서 스크롤바 항상 표시 */
   scrollbar-gutter: stable;

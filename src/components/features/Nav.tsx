@@ -128,7 +128,8 @@ function Nav({
           */}
           {(isEncyclopediaPage || isChampionCooldownPage || isVsPage) && (
             <div className="min-w-0 flex-1">
-              <h1 className="truncate whitespace-nowrap text-[15px] md:text-lg font-medium text-foreground/70 leading-tight md:leading-none">
+              {/* 좁은 휴대폰에서 영어 제목은 한 줄에 안 들어간다. 잘라서 "Champion …" 만 남기지 않고 두 줄로 꺾는다. */}
+              <h1 className="line-clamp-2 break-keep-ko text-[15px] md:line-clamp-1 md:text-lg font-medium text-foreground/70 leading-tight md:leading-none">
                 {isEncyclopediaPage && t.nav.encyclopedia}
                 {isVsPage && t.comparison.title}
                 {isChampionCooldownPage && t.sidebar.championCooldown}

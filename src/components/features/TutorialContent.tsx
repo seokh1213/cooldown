@@ -12,7 +12,7 @@ export function TutorialContent() {
             <MousePointerClick className="w-6 h-6 text-primary" />
           </div>
           <div className="flex-1">
-            <h2 className="font-semibold text-foreground mb-1">
+            <h2 className="font-semibold text-foreground mb-1 break-keep-ko">
               {t.tutorial.skillIcon.title}
             </h2>
             <p className="text-sm text-muted-foreground">

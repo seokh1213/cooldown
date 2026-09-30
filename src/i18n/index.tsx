@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useMemo } from "react";
+import React, { createContext, useContext, useEffect, useMemo } from "react";
 import { translations, Translations } from "./translations";
 import type { Language } from "./translations";
 
@@ -9,6 +9,9 @@ interface I18nContextType {
 
 const I18nContext = createContext<I18nContextType | undefined>(undefined);
 
+/** 문서 언어. 화면 낭독기 발음, 한자 글꼴, 줄바꿈·하이픈 규칙이 이것을 따른다. */
+const DOCUMENT_LANG: Record<Language, string> = { ko_KR: "ko", en_US: "en", zh_CN: "zh-CN" };
+
 interface I18nProviderProps {
   lang: Language;
   children: React.ReactNode;
@@ -16,6 +19,9 @@ interface I18nProviderProps {
 
 export function I18nProvider({ lang, children }: I18nProviderProps) {
   const t = useMemo(() => translations[lang], [lang]);
+  useEffect(() => {
+    document.documentElement.lang = DOCUMENT_LANG[lang];
+  }, [lang]);
 
   const value = useMemo(
     () => ({
