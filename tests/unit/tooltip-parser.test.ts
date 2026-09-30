@@ -658,3 +658,18 @@ test("mLevel 이 없는 브레이크포인트는 1레벨이고 그 증가량은 
   // 인게임 1~20레벨: 40 50 … 110 130 … 210 250 … 410 450 490. 툴팁 범위는 18레벨까지
   assert.equal(renderCalculation("Calc", 1, data), "(40 ~ 410)");
 });
+
+test("CDragon 이 필드명을 풀어 내보내도 1레벨·18레벨 값 파트를 읽는다 (나르 P 메가 나르 체력)", () => {
+  const withFields = (fields: Record<string, string>) => ({
+    DataValues: { MegaHealthStartingValue: Array(7).fill(100), MegaHealthEndingValue: Array(7).fill(831) },
+    mSpellCalculations: {
+      Calc: { __type: "GameCalculation", mFormulaParts: [{ __type: "{ee18a47b}", ...fields }] },
+    },
+  }) as unknown as CommunityDragonSpellData;
+  const hashed = withFields({ "{0589a59c}": "MegaHealthStartingValue", "{0b65bc23}": "MegaHealthEndingValue" });
+  const resolved = withFields({ StartDataValue: "MegaHealthStartingValue", EndDataValue: "MegaHealthEndingValue" });
+  const unknown = withFields({ SomeFutureName: "MegaHealthStartingValue", OtherFutureName: "MegaHealthEndingValue" });
+  for (const data of [hashed, resolved, unknown]) {
+    assert.equal(renderCalculation("Calc", 1, data), "(100 ~ 831)");
+  }
+});

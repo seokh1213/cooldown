@@ -188,16 +188,18 @@ export interface EvaluatorContext {
 /**
  * DataValue 이름 두 개로 레벨 값을 정하는 파트.
  *
- * CDragon 이 타입명·필드명을 해시로 남겨 __type 으로는 못 알아본다. 필드 해시로 가른다.
- *   {0589a59c}·{0b65bc23}: 1레벨 값·18레벨 값 ("LightningDamageLevel1", "MegaHealthEndingValue")
- *   {91d404a5}·{b2cd0eb0}: 1레벨 값·레벨당 증가량 (이렐리아 P "OnHitBaseDamage", "OnHitPerLevel" → 10 ~ 61)
- * 이름이 비슷해도 뜻이 달라, 구조만 보고 앞은 시작·뒤는 끝으로 읽으면 이렐리아 P 가 (10 ~ 3) 이 된다.
+ * 두 가지가 있다. 이름이 비슷해도 뜻이 달라, 앞은 시작·뒤는 끝으로만 읽으면 이렐리아 P 가 (10 ~ 3) 이 된다.
+ *   시작·끝 값: 1레벨 값·18레벨 값 ("LightningDamageLevel1", "MegaHealthEndingValue")
+ *   1레벨 값·레벨당 증가량: 이렐리아 P "OnHitBaseDamage", "OnHitPerLevel" → 10 ~ 61
+ * CDragon 은 필드명을 해시로 남겼다가 해시 목록이 늘면 이름으로 풀어 다시 내보낸다
+ * ({0589a59c} → StartDataValue). 그래서 해시와 풀린 이름을 함께 받고, 둘 다 아니면 문자열 필드가
+ * 정확히 둘일 때 뒤 DataValue 이름이 PerLevel 로 끝나는지로 가른다. DataValue 이름은 해시가 풀려도 그대로다.
  */
-const NAMED_LEVEL_PAIR_FIELDS = {
-  start: "{0589a59c}",
-  end: "{0b65bc23}",
-  level1: "{91d404a5}",
-  perLevel: "{b2cd0eb0}",
+const LEVEL_PAIR_FIELDS = {
+  start: ["{0589a59c}", "StartDataValue"],
+  end: ["{0b65bc23}", "EndDataValue"],
+  level1: ["{91d404a5}"],
+  perLevel: ["{b2cd0eb0}"],
 } as const;
 
 function readLevelPair(
@@ -205,25 +207,37 @@ function readLevelPair(
   ctx: EvaluatorContext,
 ): PartResult | null {
   const record = part as unknown as Record<string, unknown>;
-  const scalar = (field: string): number | null => {
-    const name = record[field];
-    if (typeof name !== "string") return null;
-    const value = ctx.evaluateDataValue(name);
+  const nameOf = (fields: readonly string[]): string | undefined => {
+    const field = fields.find((key) => typeof record[key] === "string");
+    return field ? (record[field] as string) : undefined;
+  };
+  const scalar = (name: string, optional: boolean): number | null => {
+    const value = ctx.evaluateDataValue(name, { optional });
     return value == null || isVector(value) ? null : value;
   };
-  const has = (field: string) => typeof record[field] === "string";
+  const pairOf = (first: string, second: string, optional: boolean): number[] | null => {
+    const a = scalar(first, optional);
+    const b = scalar(second, optional);
+    if (a == null || b == null) return null;
+    return /PerLevel$/i.test(second) ? breakpointLevelValues(a, b, []) : interpolationLevelValues(a, b);
+  };
 
+  const start = nameOf(LEVEL_PAIR_FIELDS.start);
+  const end = nameOf(LEVEL_PAIR_FIELDS.end);
+  const level1 = nameOf(LEVEL_PAIR_FIELDS.level1);
+  const perLevel = nameOf(LEVEL_PAIR_FIELDS.perLevel);
   let values: number[] | null = null;
-  if (has(NAMED_LEVEL_PAIR_FIELDS.start) && has(NAMED_LEVEL_PAIR_FIELDS.end)) {
-    const start = scalar(NAMED_LEVEL_PAIR_FIELDS.start);
-    const end = scalar(NAMED_LEVEL_PAIR_FIELDS.end);
-    if (start != null && end != null) values = interpolationLevelValues(start, end);
-  } else if (has(NAMED_LEVEL_PAIR_FIELDS.level1) && has(NAMED_LEVEL_PAIR_FIELDS.perLevel)) {
-    const level1 = scalar(NAMED_LEVEL_PAIR_FIELDS.level1);
-    const perLevel = scalar(NAMED_LEVEL_PAIR_FIELDS.perLevel);
-    if (level1 != null && perLevel != null) values = breakpointLevelValues(level1, perLevel, []);
+  if (start && end) values = interpolationLevelValues(scalar(start, false) ?? NaN, scalar(end, false) ?? NaN);
+  else if (level1 && perLevel) values = pairOf(level1, perLevel, false);
+  else {
+    // 모르는 필드명: 구조로 본다. 시험 삼아 찾는 것이라 없어도 진단에 남기지 않는다
+    // (버프 중첩 파트의 mBuffName "{8682fc00}" 도 문자열 둘이라 여기 걸린다)
+    const entries = Object.entries(record).filter(([key]) => key !== "__type");
+    if (entries.length === 2 && entries.every(([, value]) => typeof value === "string")) {
+      values = pairOf(entries[0][1] as string, entries[1][1] as string, true);
+    }
   }
-  if (!values) return null;
+  if (!values || values.some((value) => !Number.isFinite(value))) return null;
   const range = levelRange(values);
   return isVector(range)
     ? { base: range, statParts: [], isLevelRange: true }
