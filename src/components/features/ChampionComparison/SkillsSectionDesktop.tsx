@@ -21,6 +21,7 @@ import { SkillTooltip } from "./SkillTooltip";
 import { SkillRankCooldown } from "./SkillRankCooldown";
 import { getCooldownForLevel } from "./utils";
 import { useTranslation } from "@/i18n";
+import { fill } from "@/i18n/fill";
 import {
   DndContext,
   closestCenter,
@@ -319,7 +320,7 @@ export function SkillsSectionDesktop({
                   )}
                   style={{ left: 0 }}
                 >
-                  {row.level}{t.common.level}
+                  {fill(t.common.levelN, { n: row.level })}
                 </TableCell>
                 {row.skills.map((championSkills, champIdx) => {
                   const champion = champions[champIdx];

@@ -22,8 +22,9 @@ export function ItemCell(props: {
 }) {
   const { item, ddragonVersion, isSelected, onSelect } = props;
   const { t } = useTranslation();
-  const priceLabel = getItemPriceLabel(item, t);
-  const compactPrice = priceLabel === t.encyclopedia.items.price.unavailable;
+  const fullPrice = getItemPriceLabel(item, t);
+  const compactPrice = fullPrice === t.encyclopedia.items.price.unavailable;
+  const priceLabel = compactPrice ? t.encyclopedia.items.price.unavailableShort : fullPrice;
   return (
     <button
       type="button"

@@ -17,6 +17,7 @@ import { SkillTooltip } from "./SkillTooltip";
 import { SkillRankCooldown } from "./SkillRankCooldown";
 import { getCooldownForLevel } from "./utils";
 import { useTranslation } from "@/i18n";
+import { fill } from "@/i18n/fill";
 
 export function SkillsSectionMobile({
   champions,
@@ -127,7 +128,7 @@ export function SkillsSectionMobile({
                         )}
                         style={{ left: 0 }}
                       >
-                        {row.level}{t.common.level}
+                        {fill(t.common.levelN, { n: row.level })}
                       </TableCell>
                       {row.skills.map((championSkills, champIdx) => (
                         <TableCell

@@ -103,6 +103,8 @@ export interface Translations {
       detailEmpty: string;
       price: {
         unavailable: string;
+        /** 아이템 칸 아래 가격 자리. 칸 폭(36px)을 넘지 않는 말. */
+        unavailableShort: string;
         free: string;
       };
       stats: {
@@ -205,6 +207,8 @@ export interface Translations {
   };
   common: {
     level: string;
+    /** "{n}" 에 레벨 숫자가 들어간다. */
+    levelN: string;
     cooldown: string;
     seconds: string;
     noCost: string;

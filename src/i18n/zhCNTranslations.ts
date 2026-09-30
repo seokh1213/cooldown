@@ -99,7 +99,7 @@ export const zhCNTranslations: Translations = {
       searchPlaceholder: "搜索装备名称…",
       listTitle: "装备",
       detailEmpty: "从左侧选择装备，即可在此查看合成路线和说明。",
-      price: { unavailable: "不可购买", free: "免费" },
+      price: { unavailable: "不可购买", unavailableShort: "不可购买", free: "免费" },
       stats: {
         abilityPower: "法术强度",
         attackDamage: "攻击力",
@@ -200,6 +200,7 @@ export const zhCNTranslations: Translations = {
   },
     common: {
       level: "等级",
+      levelN: "{n}级",
       cooldown: "冷却时间",
     seconds: "秒",
     noCost: "无消耗",

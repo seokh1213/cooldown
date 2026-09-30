@@ -108,6 +108,7 @@ export const koKRTranslations: Translations = {
           "왼쪽에서 아이템을 선택하면 여기에서 아이템 트리와 설명을 볼 수 있어요.",
         price: {
           unavailable: "구매 불가",
+          unavailableShort: "구매 불가",
           free: "무료",
         },
         stats: {
@@ -214,6 +215,7 @@ export const koKRTranslations: Translations = {
     },
     common: {
       level: "레벨",
+      levelN: "{n}레벨",
       cooldown: "쿨다운",
       seconds: "초",
       noCost: "소모값 없음",

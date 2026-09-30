@@ -108,6 +108,7 @@ export const enUSTranslations: Translations = {
           "Select an item on the left to see its tree and description here.",
         price: {
           unavailable: "Unavailable",
+          unavailableShort: "N/A",
           free: "Free",
         },
         stats: {
@@ -214,6 +215,7 @@ export const enUSTranslations: Translations = {
     },
     common: {
       level: "Level",
+      levelN: "Level {n}",
       cooldown: "Cooldown",
       seconds: "s",
       noCost: "No Cost",
