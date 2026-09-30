@@ -105,7 +105,7 @@ export function extractPassiveSpell(
   if (!isRecord(spellObject) || !isRecord(spellObject.mSpell)) return null;
 
   const mSpell = spellObject.mSpell;
-  const spellData: ExtractedPassiveSpell["spellData"] = {};
+  const spellData: ExtractedPassiveSpell["spellData"] = { isPassive: true };
   const dataValues = extractDataValues(mSpell);
   if (dataValues) spellData.DataValues = dataValues;
   if (isRecord(mSpell.mSpellCalculations)) {

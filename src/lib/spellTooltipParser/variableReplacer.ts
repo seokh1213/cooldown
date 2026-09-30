@@ -10,6 +10,7 @@ import { parseExpression } from "./expressionParser";
 import { replaceData } from "./dataValueHandler";
 import { replaceCalculateData } from "./spellCalculationHandler";
 import { applyFormulaToValue } from "./dataValueUtils";
+import { resolveReferenceFirstRank } from "./rankZeroReferences";
 import { resolveRuntimeTokenAlias } from "./runtimeTokenAliases";
 import { valueToTooltipString } from "./valueUtils";
 import {
@@ -256,8 +257,14 @@ export function replaceVariable(
   // 다른 스킬 값은 그 스킬의 랭크 축으로 읽는다. 부르는 쪽 랭크 수로 자르면
   // 패시브(랭크 1)가 부른 일라오이 Q 배율이 1랭크 값(×1.1)으로 굳는다.
   const isSibling = Boolean(targetData && targetData !== communityDragonData);
+  const siblingMaxRank = isSibling ? targetData?.maxRank : undefined;
   const valueSpell: ChampionSpell =
-    isSibling && targetData?.maxRank ? { ...spell, maxrank: targetData.maxRank } : spell;
+    siblingMaxRank ? { ...spell, maxrank: siblingMaxRank } : spell;
+  // 대상 스킬을 배우기 전에도 보이는 값이면 0랭크부터 읽는다 (피오라 패시브 → FioraR 20/30/40/50%)
+  const firstRank =
+    siblingMaxRank && targetData
+      ? resolveReferenceFirstRank(spell.id, communityDragonData, targetData, parseResult)
+      : 1;
   const reportSiblingDrop = reportDrop && isSibling
     ? (entry: DroppedCalculation) =>
         reportDrop({ ...entry, key: `${parseResult.spellRef}:${entry.key}` })
@@ -276,11 +283,11 @@ export function replaceVariable(
   if (bySpellField !== null) return bySpellField;
 
   // 1. DataValues 먼저 시도
-  const byData = replaceData(parseResult, valueSpell, data);
+  const byData = replaceData(parseResult, valueSpell, data, firstRank);
   if (byData !== null) return byData;
 
   // 2. 안 되면 mSpellCalculations
-  return replaceCalculateData(parseResult, valueSpell, data, lang, reportSiblingDrop);
+  return replaceCalculateData(parseResult, valueSpell, data, lang, reportSiblingDrop, firstRank);
 }
 
 /**

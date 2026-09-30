@@ -28,6 +28,7 @@ import {
 function createDataValueEvaluator(
   dataValues: CommunityDragonSpellData["DataValues"],
   maxRank: number,
+  firstRank: 0 | 1,
   reportDrop?: EvaluatorContext["reportDrop"],
 ): DataValueEvaluator {
   return (name, options) => {
@@ -40,7 +41,7 @@ function createDataValueEvaluator(
       if (!options?.optional) reportDrop?.({ reason: "missing-data-value", detail: name });
       return null;
     }
-    const value = getDataValueByName(dataValues, name, maxRank);
+    const value = getDataValueByName(dataValues, name, maxRank, firstRank);
     if (value == null && !options?.optional) {
       logger.debug(`DataValue "${name}" missing`);
       reportDrop?.({ reason: "missing-data-value", detail: name });
@@ -237,6 +238,8 @@ export function evaluateSpellCalculation(input: {
   lang: TooltipLocale;
   /** 값을 버린 자리를 알린다 (합산 실패·배율 생략 등). 툴팁 진단으로 모인다. */
   reportDrop?: (entry: DroppedCalculation) => void;
+  /** 0 이면 DataValues 를 0랭크 값부터 읽는다 (getDataValueByName) */
+  firstRank?: 0 | 1;
 }): CalcResult {
   if (!input.data.mSpellCalculations) {
     throw new Error("mSpellCalculations is undefined");
@@ -252,6 +255,7 @@ export function evaluateSpellCalculation(input: {
   const evaluateDataValue = createDataValueEvaluator(
     input.data.DataValues,
     input.spell.maxrank,
+    input.firstRank ?? 1,
     reportDrop,
   );
 

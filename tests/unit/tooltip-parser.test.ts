@@ -357,8 +357,90 @@ test("다른 스킬 계산식은 그 스킬의 랭크 축으로 읽는다 (일�
     { siblings: { illaoiq: illaoiQ } } as CommunityDragonSpellData,
     "en_US",
   );
-  // 예전에는 패시브 랭크 1 로 잘려 ×1.1 이 접힌 (9.9 ~ 198) 이었다
-  assert.equal(html, "((9 ~ 200.12) + ([[si:scaleap]]40% Ability Power)) × 1.1/1.15/1.2/1.25/1.3");
+  // 촉수는 Q 를 배우기 전에도 내려친다. 위키: Q 랭크 0~5 에 0/10/15/20/25/30% 증가 (rankZeroReferences.ts)
+  assert.equal(html, "((9 ~ 200.12) + ([[si:scaleap]]40% Ability Power)) × 1/1.1/1.15/1.2/1.25/1.3");
+});
+
+// 다른 스킬 값의 0랭크(아직 배우지 않은 상태) 칸. rankZeroReferences.ts
+function renderSiblingReference(
+  template: string,
+  owner: { id: string; isPassive?: boolean },
+  targetName: string,
+  target: Partial<CommunityDragonSpellData>,
+): string {
+  const spell = { id: owner.id, maxrank: owner.isPassive ? 1 : 5, cooldown: [] } as ChampionSpell;
+  const data = {
+    isPassive: owner.isPassive,
+    siblings: { [targetName.toLowerCase()]: target },
+  } as CommunityDragonSpellData;
+  return parseSpellTooltip(template, spell, data, "en_US");
+}
+
+test("패시브가 부른 R 값은 R 을 배우기 전(0랭크) 값부터 적는다 (피오라 패시브 → FioraR)", () => {
+  const html = renderSiblingReference(
+    "grants {{ spell.FioraR:PercentMS*100 }}% Move Speed",
+    { id: "FioraPassive", isPassive: true },
+    "FioraR",
+    { maxRank: 3, firstRankLevel: 6, DataValues: { PercentMS: [0.2, 0.3, 0.4, 0.5, 0.6] } },
+  );
+  // 위키: R 랭크 0~3 에 20/30/40/50%
+  assert.equal(html, "grants 20/30/40/50% Move Speed");
+});
+
+test("패시브가 부른 R 계산식도 0랭크 값부터 읽는다 (멜 패시브 → MelR PassiveFlatDamage)", () => {
+  const html = renderSiblingReference(
+    "{{ spell.MelR:PassiveFlatDamage }}",
+    { id: "MelPassive", isPassive: true },
+    "MelR",
+    {
+      maxRank: 3,
+      firstRankLevel: 6,
+      DataValues: { BasePassiveFlatDamage: [50, 60, 70, 80, 90] },
+      mSpellCalculations: {
+        PassiveFlatDamage: {
+          __type: "GameCalculation",
+          mFormulaParts: [
+            { __type: "NamedDataValueCalculationPart", mDataValue: "BasePassiveFlatDamage" },
+            { __type: "StatByCoefficientCalculationPart", mCoefficient: 0.1 },
+          ],
+        },
+      } as unknown as CommunityDragonSpellData["mSpellCalculations"],
+    },
+  );
+  assert.equal(html, "(50/60/70/80 + ([[si:scaleap]]10% Ability Power))");
+});
+
+test("기본 스킬이 부른 R 값에는 0랭크를 붙이지 않는다 (아니비아 Q → GlacialStorm)", () => {
+  const html = renderSiblingReference(
+    "Slowing them by {{ spell.GlacialStorm:SlowAmount }}%",
+    { id: "FlashFrost" },
+    "GlacialStorm",
+    { maxRank: 3, firstRankLevel: 6, DataValues: { SlowAmount: [20, 20, 30, 40, 50] } },
+  );
+  // 위키: 20/30/40%. 둔화는 R 랭크를 따라 커지고 0랭크는 1랭크와 같은 20% 다
+  assert.equal(html, "Slowing them by 20/30/40%");
+});
+
+test("R 을 1레벨부터 가진 챔피언은 패시브가 불러도 0랭크를 붙이지 않는다 (엘리스 패시브 → EliseR)", () => {
+  const html = renderSiblingReference(
+    "up to {{ spell.EliseR:BaseSpiderlingsStored }}",
+    { id: "ElisePassive", isPassive: true },
+    "EliseR",
+    { maxRank: 4, firstRankLevel: 1, DataValues: { BaseSpiderlingsStored: [2, 2, 3, 4, 5, 6] } },
+  );
+  // 위키: 2/3/4/5. 엘리스는 시작부터 R 1랭크라 0번 칸은 쓰지 않는 자리다
+  assert.equal(html, "up to 2/3/4/5");
+});
+
+test("규칙 밖이어도 표에 적은 참조는 0랭크 값부터 읽는다 (그나르 W → GnarR)", () => {
+  const html = renderSiblingReference(
+    "grants {{ spell.GnarR:RHyperMovementSpeedPercent }}% Move Speed",
+    { id: "GnarW" },
+    "GnarR",
+    { maxRank: 3, firstRankLevel: 6, DataValues: { RHyperMovementSpeedPercent: [20, 40, 60, 80, 100] } },
+  );
+  // 위키: GNAR! 랭크 0~3 에 20/40/60/80%. W 이동 속도는 R 을 배우기 전에도 붙는다
+  assert.equal(html, "grants 20/40/60/80% Move Speed");
 });
 
 test("배율이 겹치면 이어 곱하고, 풀지 못한 항은 진단에 남긴다 (아크샨 E CriticalCalc)", () => {

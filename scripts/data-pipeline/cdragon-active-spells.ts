@@ -138,6 +138,43 @@ function extractSpellObject(
   return result;
 }
 
+/** SpellLevelUpInfo 목록이 없는 챔피언의 1랭크 레벨 (Q·W·E·R 순서). 게임 기본값이다. */
+const DEFAULT_FIRST_RANK_LEVELS = [1, 1, 1, 6];
+
+function isSpellLevelUpInfoList(value: unknown): value is { List: Record<string, unknown>[] } {
+  return (
+    isRecord(value) &&
+    Array.isArray(value.List) &&
+    value.List.length > 0 &&
+    value.List.every((entry) => isRecord(entry) && entry.__type === "SpellLevelUpInfo")
+  );
+}
+
+/**
+ * 기본 스킬(슬롯 순서)의 1랭크를 배울 수 있는 챔피언 레벨.
+ *
+ * 배움 조건이 게임 기본값과 다른 챔피언만 루트에 SpellLevelUpInfo 목록을 싣는다.
+ * 원소마다 mRequirements 가 랭크별 조건이고 첫 칸이 1랭크 조건이다.
+ * CharacterLevelRequirement 가 없거나 mLevel 이 비어 있으면 1레벨부터다.
+ *   엘리스 R  첫 칸이 비어 있다 → 시작부터 1랭크 (1)
+ *   아지르 Q  mLevel 2 → 2
+ * 목록을 담은 필드 이름이 해시({1abb82c0})로 남아 있어 이름 대신 원소의 __type 으로 찾는다.
+ */
+function firstRankLevels(root: Record<string, unknown>, count: number): number[] {
+  const list = Object.values(root).find(isSpellLevelUpInfoList)?.List;
+  return Array.from({ length: count }, (_, index) => {
+    const info = list?.[index];
+    if (!info) return DEFAULT_FIRST_RANK_LEVELS[index] ?? 1;
+    const firstRank = Array.isArray(info.mRequirements) ? info.mRequirements[0] : undefined;
+    const requirements =
+      isRecord(firstRank) && Array.isArray(firstRank.mRequirements) ? firstRank.mRequirements : [];
+    const level = requirements.find(
+      (requirement) => isRecord(requirement) && requirement.__type === "CharacterLevelRequirement",
+    )?.mLevel;
+    return typeof level === "number" && level > 1 ? level : 1;
+  });
+}
+
 function findChampionRootPath(
   data: Record<string, unknown>,
   championId: string
@@ -155,8 +192,13 @@ export function extractActiveSpells(
   const spellPaths = isRecord(root) && Array.isArray(root.spells)
     ? root.spells.filter((path): path is string => typeof path === "string")
     : [];
+  const levels = firstRankLevels(isRecord(root) ? root : {}, spellPaths.length);
   const ordered = spellPaths
-    .map((path) => extractSpell(data, path))
+    .map((path, index) => {
+      const spell = extractSpell(data, path);
+      if (spell) spell.firstRankLevel = levels[index];
+      return spell;
+    })
     .filter((spell): spell is ExtractedActiveSpellData => spell !== null);
   const aliases: Record<string, ExtractedActiveSpellData> = {};
 

@@ -62,6 +62,8 @@ test("패시브 SpellObject 추출", () => {
     "Spell_MonkeyKingPassive_Tooltip"
   );
   assert.deepEqual(passive.spellData.DataValues?.MaxStacks, Array(7).fill(5));
+  // 다른 스킬의 0랭크 값을 적을지 가르는 표시 (rankZeroReferences.ts)
+  assert.equal(passive.spellData.isPassive, true);
 });
 
 for (const [locale, template] of Object.entries(templates)) {

@@ -3,13 +3,16 @@ import { binHashKey } from "./binHash";
 
 /**
  * DataValues에서 이름으로 값 가져오기
- * 0번 인덱스는 버퍼, 1 ~ maxRank 까지만 사용
+ * 배열 칸 번호가 곧 랭크이고 0번 칸은 0랭크(아직 배우지 않은 상태)다.
+ * 보통은 1 ~ maxRank 만 쓴다. 0랭크 값이 실제로 보이는 참조만 firstRank 0 으로 읽는다
+ * (rankZeroReferences.ts).
  * 모든 값이 같으면 스칼라, 아니면 벡터
  */
 export function getDataValueByName(
   dataValues: Record<string, number[]>,
   key: string,
-  maxRank: number
+  maxRank: number,
+  firstRank: 0 | 1 = 1
 ): Value | null {
   if (!key || typeof key !== "string") return null;
 
@@ -29,7 +32,7 @@ export function getDataValueByName(
   if (!entry) return null;
 
   const [, raw] = entry;
-  const levelData = raw.slice(1, maxRank + 1); // 여기서 slice(1, maxRank+1)
+  const levelData = raw.slice(firstRank, maxRank + 1);
 
   if (levelData.length === 0) return null;
 
