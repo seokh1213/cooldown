@@ -97,6 +97,8 @@ export function sideOfNewName(question: string, names: string[]): "mine" | "enem
       new RegExp(`\\b(vs\\.?|versus|against|into|face|facing|fight|get|meet|if it'?s|laning (vs|against)|what about|how about|and)\\s+${n}\\s*\\??$`, "i"),
       new RegExp(`\\b(vs\\.?|versus|against|into|face|facing|fight|get|meet|if it'?s|laning (vs|against))\\s+${n}\\b`, "i"),
       new RegExp(`(对面|遇到|碰到|对上|对线|打|对)\\s*(换成)?\\s*${n}`),
+      // "那菲奥娜呢?" — 상성 대화 중 이름만 던지는 중국어 문형(한국어 "피오라는?", 영어 "what about fiora?")
+      new RegExp(`(那|换成)?\\s*${n}\\s*呢`),
     ];
     const isMine = mine.some((re) => re.test(question));
     const isEnemy = enemy.some((re) => re.test(question));
