@@ -12,6 +12,7 @@ import { championAliases, collectEffectTags, type AdvisorData } from "../../../s
 import { encodeJudgeRow, JUDGE_SPECIAL, readJudgeHead, scoreJudge, type JudgeHead, type JudgeHeadMeta, type JudgeQuestion } from "../../../src/lib/advisor/judge";
 import { AutoTokenizer, type PreTrainedTokenizer } from "@huggingface/transformers";
 import { ADVISOR_MODEL } from "../../../src/lib/advisor/config";
+import { offlineJudge } from "../../../src/lib/advisor/offlineJudge";
 
 export const ROOT = path.resolve(import.meta.dirname, "../../..");
 export const PATCH = "26.19";
@@ -136,10 +137,23 @@ export function kevJudge(url: string): Judge {
   };
 }
 
+/** 모델 없는 기기의 오프라인 판정기(`public/models/offline/judge.{json,bin}`)를 Node 에서 읽어 판정기 꼴로 돌려준다. 헤드 이름은 무시한다. */
+export function offlineFileJudge(): Judge {
+  return offlineJudge(async (file) => {
+    const buf = await fs.promises.readFile(path.join(ROOT, "public", file));
+    return buf.buffer.slice(buf.byteOffset, buf.byteOffset + buf.byteLength) as ArrayBuffer;
+  });
+}
+
 /** 앱 판정기와 같은 답: 질문마다 선택지 확률 */
 /** JUDGE_URL 을 주면 앱 판정기 자리에 kev 서버를 끼운다(B 의 판정기로 A 를 다시 잴 때). */
 /** HIDDEN_JUDGE 를 주면 앱 그래프·앱 헤드 그대로(`hiddenJudge`) 잰다. */
-const judgeOverride = process.env.JUDGE_URL ? kevJudge(process.env.JUDGE_URL) : process.env.HIDDEN_JUDGE ? hiddenJudge(process.env.HIDDEN_JUDGE) : undefined;
+/** JUDGE=offline 이면 모델 없이 오프라인 판정기(`offlineFileJudge`)로 잰다 — 서버가 필요 없다. */
+const judgeOverride =
+  process.env.JUDGE === "offline" ? offlineFileJudge()
+  : process.env.JUDGE_URL ? kevJudge(process.env.JUDGE_URL)
+  : process.env.HIDDEN_JUDGE ? hiddenJudge(process.env.HIDDEN_JUDGE)
+  : undefined;
 /** JUDGE_HEAD 를 주면 앱이 부르는 헤드 이름을 그것으로 바꿔 잰다(새 헤드 실험용, research/llm-evals/kev-agent/heads 에서 찾는다). */
 // 실험용: 흐름 판정 lookup 의 확신 문턱(`plan.ts` continueMatchup)을 환경 변수로 바꿔 잰다
 if (process.env.ACT_LOOKUP_MIN) (globalThis as { ACT_LOOKUP_MIN?: number }).ACT_LOOKUP_MIN = Number(process.env.ACT_LOOKUP_MIN);

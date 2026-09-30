@@ -80,7 +80,9 @@ async function main() {
     process.stderr.write(".");
   }
   saveJudgeCache();
-  const out = path.join(ROOT, `research/llm-evals/kev-agent/a-results-app${model ? "" : "-nomodel"}.json`);
+  // --out 결과.json 을 주면 거기에 쓴다(다른 판정기로 잴 때 기준 결과를 덮지 않게)
+  const outArg = process.argv.indexOf("--out");
+  const out = outArg >= 0 ? path.resolve(process.argv[outArg + 1]) : path.join(ROOT, `research/llm-evals/kev-agent/a-results-app${model ? "" : "-nomodel"}.json`);
   fs.writeFileSync(out, JSON.stringify(rows, null, 1));
   console.log(`\n${model ? "판정기" : "모델 없음"} → ${path.relative(ROOT, out)}`);
   for (const [k, [ok, n]] of Object.entries(table).sort()) console.log(`  ${k}\t${ok}/${n} (${((ok / n) * 10).toFixed(1)})`);
