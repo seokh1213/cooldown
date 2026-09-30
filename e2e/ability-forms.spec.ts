@@ -45,6 +45,19 @@ test.describe("touch input on the original cooldown route", () => {
   });
 });
 
+test.describe("touch input on the VS route", () => {
+  test.use({ hasTouch: true, isMobile: true, viewport: { width: 390, height: 844 } });
+  test("closing a skill dialog does not reopen the hover tooltip", async ({ page }) => {
+    await page.goto("./vs?a=Jayce&t=Nidalee");
+    const trigger = page.getByTestId("vs-mine-Q").getByRole("button");
+    await trigger.tap();
+    await page.getByRole("dialog").getByRole("button", { name: "Close" }).tap();
+    await expect(page.getByRole("dialog")).toHaveCount(0);
+    await expect(trigger).toBeFocused();
+    await expect(page.getByRole("tooltip")).toHaveCount(0);
+  });
+});
+
 test("Elise and Gnar preserve passive form versus cast cooldown", async ({ page }) => {
   await page.goto("./vs?a=Elise&t=Gnar");
   await expect(page.getByTestId("vs-mine-E").locator("[data-form-half]")).toHaveCount(2);

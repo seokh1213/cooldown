@@ -103,7 +103,7 @@ export function VsCooldownMatrix({ sides, version, onSelect, actions }: { sides:
             {columns.map(({ side, slot, name, championId, ability }, index) => (
               <Fragment key={side + slot}>
                 {index === ACTIVE_SLOTS.length && <th scope="col" className="border-b border-border/60 px-0 text-center align-bottom text-[11px] font-normal text-muted-foreground">{t.comparison.levelColumn}</th>}
-                <VsMatrixSkill side={side} slot={slot} name={name} championId={championId} ability={ability} version={version} boxClass={slotOffsetClass(index)} onSelect={(selectedAbility, trigger) => { returnFocus.current = trigger; setSelected({ ability: selectedAbility, name, slot }); }} />
+                <VsMatrixSkill side={side} slot={slot} name={name} championId={championId} ability={ability} version={version} boxClass={slotOffsetClass(index)} mobile={isMobile} onSelect={(selectedAbility, trigger) => { returnFocus.current = trigger; setSelected({ ability: selectedAbility, name, slot }); }} />
               </Fragment>
             ))}
           </tr>}
