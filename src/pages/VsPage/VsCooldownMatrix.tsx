@@ -55,10 +55,12 @@ export function VsCooldownMatrix({ sides, version, onSelect }: { sides: MatrixSi
    * 그러니 가운데에 밑줄을 긋지 않는 빈 열을 세운다. 아래 구역의 `gap-x-8` 과
    * 같은 32px 다.
    *
-   *   순위 32 | 내 4열 | 빈 열 32 | 상대 4열 | 빈 열 32
+   *   내 4열 | 레벨 열 32 | 상대 4열
    *
-   * 양 끝 빈 열이 순위 열과 짝이 되어 가운데가 정중앙에 온다. 밑줄은 순위 열과
-   * 오른쪽 빈 열까지 이어지므로 아래 블록과 좌우 끝이 같아진다.
+   * 레벨 숫자는 그 빈 열 안에 둔다. 예전에는 왼쪽 끝에 순위 열을 두고 오른쪽 끝에
+   * 빈 열을 세워 폭만 맞췄는데, 왼쪽 카드 안에는 숫자가 들어가고 오른쪽 카드 안에는
+   * 빈 칸이 들어가 아이콘 정렬이 어긋나 보였다. 숫자 하나가 양쪽을 다 가리키니
+   * 가운데가 제자리다. 두 카드는 정확히 스킬 4열씩만 덮는다.
    */
   const hasDetails = sides.some(({ detail }) => detail);
   // A/B legend under the table: one line per champion that has forms, unique (key, label) pairs in A→B order.
@@ -74,18 +76,16 @@ export function VsCooldownMatrix({ sides, version, onSelect }: { sides: MatrixSi
       <table className="w-full table-fixed border-separate border-spacing-0" aria-label={t.comparison.baseCooldowns}>
         <caption className="sr-only">{t.comparison.tableNote}</caption>
         <colgroup>
-          <col className="w-8" />
           {columns.slice(0, ACTIVE_SLOTS.length).map((column) => <col key={column.side + column.slot} />)}
-          <col className="w-2 sm:w-8" />
+          <col className="w-7 sm:w-8" />
           {columns.slice(ACTIVE_SLOTS.length).map((column) => <col key={column.side + column.slot} />)}
-          <col className="w-0 sm:w-8" />
         </colgroup>
         <thead>
           <tr>
             {sides.map(({ side, id, result }, index) => (
               <Fragment key={side}>
                 {index === 1 && <th aria-hidden="true" />}
-                <th scope="colgroup" colSpan={ACTIVE_SLOTS.length + 1} className="border-b border-border pb-2 pt-px align-top font-normal">
+                <th scope="colgroup" colSpan={ACTIVE_SLOTS.length} className="border-b border-border pb-2 pt-px align-top font-normal">
                   <div id={"vs-header-" + side}>
                     <VsChampionHeader id={id} side={side} label={t.comparison[side]} version={version} result={result} onSelect={() => onSelect(side)} />
                   </div>
@@ -94,33 +94,29 @@ export function VsCooldownMatrix({ sides, version, onSelect }: { sides: MatrixSi
             ))}
           </tr>
           {hasDetails && <tr>
-            <th scope="col" className="border-b border-border/60 px-1 text-left text-[11px] font-normal text-muted-foreground">{t.comparison.skill}</th>
             {columns.map(({ side, slot, name, championId, ability }, index) => (
               <Fragment key={side + slot}>
-                {index === ACTIVE_SLOTS.length && <td aria-hidden="true" className="p-0" />}
+                {index === ACTIVE_SLOTS.length && <th scope="col" className="border-b border-border/60 px-0 text-center align-bottom text-[11px] font-normal text-muted-foreground">{t.comparison.levelColumn}</th>}
                 <VsMatrixSkill side={side} slot={slot} name={name} championId={championId} ability={ability} version={version} onSelect={(selectedAbility, trigger) => { returnFocus.current = trigger; setSelected({ ability: selectedAbility, name, slot }); }} />
               </Fragment>
             ))}
-            <td className="border-b border-border/60 p-0" />
           </tr>}
         </thead>
         <tbody>
           {!hasDetails && (
-            <tr><td colSpan={columns.length + 3} className="px-2 py-8 text-center text-xs text-muted-foreground">{t.comparison.empty}</td></tr>
+            <tr><td colSpan={columns.length + 1} className="px-2 py-8 text-center text-xs text-muted-foreground">{t.comparison.empty}</td></tr>
           )}
           {hasDetails && Array.from({ length: rowCount }, (_, index) => (
             <tr key={index} data-rank-row={index + 1} className="hover:bg-muted/40">
-              <th id={"vs-rank-" + (index + 1)} scope="row" className="border-b border-border/50 px-1 py-1 text-left text-xs font-normal tabular-nums text-muted-foreground">{index + 1}</th>
               {values.map(({ side, slot, ability, cooldowns, recharges }, columnIndex) => (
                 <Fragment key={side + slot}>
-                {columnIndex === ACTIVE_SLOTS.length && <td aria-hidden="true" className="p-0" />}
+                {columnIndex === ACTIVE_SLOTS.length && <th id={"vs-rank-" + (index + 1)} scope="row" className="border-b border-border/50 px-0 py-1 text-center align-middle text-xs font-normal tabular-nums text-muted-foreground">{index + 1}</th>}
                 <td headers={"vs-rank-" + (index + 1) + " vs-" + side + "-" + slot} className="border-b border-border/50 px-0.5 py-1 text-center align-middle">
                   {ability?.forms ? <VsFormCooldown ability={ability} peer={values[peerIndex(columnIndex)]?.ability} rank={index + 1} side={side} slot={slot} format={formatter.format} /> : <VsCooldownValue value={cooldowns[index]} peer={comparisonCooldownAtRank(values[peerIndex(columnIndex)]?.ability, index + 1)} kind="cooldown" side={side} slot={slot} rank={index + 1} format={formatter.format} />}
                   {recharges[index] !== null && <span className="mt-0.5 block text-[11px] leading-4 text-muted-foreground">{t.common.rechargeTime} <VsCooldownValue value={recharges[index]} peer={values[peerIndex(columnIndex)]?.recharges[index] ?? null} kind="recharge" side={side} slot={slot} rank={index + 1} format={formatter.format} /></span>}
                 </td>
                 </Fragment>
               ))}
-              <td className="border-b border-border/50 p-0" />
             </tr>
           ))}
         </tbody>
@@ -132,7 +128,7 @@ export function VsCooldownMatrix({ sides, version, onSelect }: { sides: MatrixSi
                 return (
                   <Fragment key={side}>
                   {index === 1 && <td aria-hidden="true" />}
-                  <td colSpan={ACTIVE_SLOTS.length + 1} className="pb-1 pt-2 pl-1 text-[11px] leading-4 text-muted-foreground sm:pl-2">
+                  <td colSpan={ACTIVE_SLOTS.length} className="pb-1 pt-2 pl-1 text-[11px] leading-4 text-muted-foreground sm:pl-2">
                     {forms.length > 0 && (
                       <p data-form-labels data-side={side}>
                         <span className="mr-1.5 text-foreground/80">{detail?.champion.name}</span>

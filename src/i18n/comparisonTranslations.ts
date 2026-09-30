@@ -19,7 +19,7 @@ export interface ComparisonLabels {
   empty: string;
   rank: string;
   baseCooldowns: string;
-  skill: string;
+  levelColumn: string;
   champion: string;
   tableNote: string;
   cooldownNote: string;
@@ -75,7 +75,7 @@ export const koComparison: ComparisonLabels = {
   empty: "챔피언을 선택하면 스킬과 쿨타임이 표시됩니다.",
   rank: "스킬 랭크",
   baseCooldowns: "스킬 쿨타임",
-  skill: "스킬",
+  levelColumn: "레벨",
   champion: "챔피언",
   tableNote:
     "Q·W·E·R마다 내 챔피언과 상대를 나란히 비교합니다. 행은 챔피언 레벨이 아닌 스킬 랭크입니다.",
@@ -106,7 +106,7 @@ export const enComparison: ComparisonLabels = {
   empty: "Select a champion to see abilities and cooldowns.",
   rank: "Ability rank",
   baseCooldowns: "Ability cooldowns",
-  skill: "Skill",
+  levelColumn: "Lv",
   champion: "Champion",
   tableNote:
     "Each Q/W/E/R group pairs your champion with the opponent. Rows are ability ranks, not champion levels.",
@@ -136,7 +136,7 @@ export const zhComparison: ComparisonLabels = {
   empty: "选择英雄后即可查看技能与冷却时间。",
   rank: "技能等级",
   baseCooldowns: "技能冷却时间",
-  skill: "技能",
+  levelColumn: "等级",
   champion: "英雄",
   tableNote: "Q/W/E/R 各组并排比较双方英雄。行表示技能等级，而非英雄等级。",
   shorter: "同一技能、同一等级下更短的冷却时间",
