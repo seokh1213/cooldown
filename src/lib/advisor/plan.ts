@@ -341,7 +341,10 @@ async function answerByVector({ question, ctx, data, ask, recentItem, matchup, r
   if (found.related?.length) {
     // 확신이 없으면 "자료 없음" 대신 가까운 자료 셋을 고르게 한다. 누르면 그 자료를 보인다(`showDoc`).
     const titles = new Map(buildRetrievalDocs(data, ctx.lang).map((doc) => [doc.id, doc.title]));
-    return { type: "code", answer: ctx.copy.card.relatedPrompt, related: found.related.map((id) => ({ id, title: titles.get(id) ?? id })) };
+    // 검색 벡터 목록에는 자료에서 뺀 절의 id 가 남아 있을 수 있다(벡터를 다시 만들기 전). 이름을 못 찾는 id 는 보이지 않는다.
+    const related = found.related.filter((id) => titles.has(id)).map((id) => ({ id, title: titles.get(id)! }));
+    if (!related.length) return { type: "code", answer: ctx.copy.noLiteAnswer };
+    return { type: "code", answer: ctx.copy.card.relatedPrompt, related };
   }
   return { type: "code", answer: ctx.copy.noLiteAnswer };
 }

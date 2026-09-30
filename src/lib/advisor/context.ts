@@ -293,6 +293,9 @@ function sentenceWith(body: string, term: string): string | undefined {
  * **아이템을 둘 이상 물었으면 구조를 쓰지 않는다** — 카드는 하나뿐인데 둘을 담으면
  * 한쪽이 소리 없이 사라진다. 그때는 예전처럼 설명문을 그대로 낸다.
  */
+/** 방금 다룬 아이템을 가리키는 말 */
+const ITEM_REFERENCE = /거기|그거|이거|그 아이템|이 아이템|\b(it|that|this)\b|这个|那个|它/i;
+
 export function buildItemCard(
   data: AdvisorData,
   question: string,
@@ -300,11 +303,11 @@ export function buildItemCard(
   recent?: string,
 ): AdvisorAnswer | undefined {
   const named = findItems(data, question);
-  // 이름이 없어도 효과 낱말을 물었으면 방금 다룬 아이템에 대한 질문이다.
-  const items =
-    named.length === 0 && recent && data.effectTags.some((tag) => question.includes(tag))
-      ? data.items.filter((item) => String(item.id) === recent).slice(0, 1)
-      : named;
+  // 이름이 없어도 효과 낱말·가격·지시어("거기", "그거")를 물었으면 방금 다룬 아이템에 대한 질문이다.
+  // "쇼진의 창 효과" 뒤의 "가격은?" 이 검색 벡터 길로 가 "혹시 이 자료?" 로 빠졌다(2026-09-30 브라우저 시험).
+  const followsRecent =
+    named.length === 0 && Boolean(recent) && (data.effectTags.some((tag) => question.includes(tag)) || asksPrice(question) || ITEM_REFERENCE.test(question));
+  const items = followsRecent ? data.items.filter((item) => String(item.id) === recent).slice(0, 1) : named;
   if (items.length === 0) return undefined;
   if (items.length > 1) {
     const text = buildItemAnswer(data, question);
