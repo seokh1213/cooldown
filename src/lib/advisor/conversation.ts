@@ -66,6 +66,8 @@ export function matchupStateOf(answers: Array<AdvisorAnswer | undefined>): Match
     const answer = answers[i];
     if (!answer) continue;
     if (answer.kind === "compare" && answer.matchup && answer.cards.length >= 2) return { mine: answer.cards[0], enemy: answer.cards[1] };
+    // 상성 대화 중의 조회 표(쿨타임 등)는 건너뛰고 그 앞의 상성을 본다. 끊었더니 표 다음의 "어떤 템 가야 해?" 가 한 챔피언 소개 카드로 갔다.
+    if (answer.kind === "compare" && answer.inMatchup) continue;
     // 챔피언을 다룬 다른 답이 더 최근이면 상성 맥락은 끝났다
     if (answer.kind === "compare" || answer.kind === "champion" || answer.kind === "spell") return undefined;
   }

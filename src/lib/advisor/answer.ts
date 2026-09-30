@@ -111,6 +111,8 @@ export type AdvisorAnswer =
       headline?: Fact;
       /** 상성 질문. cards[0] 이 내 챔피언, cards[1] 이 상대다. 해설이 그 시점으로 쓴다. */
       matchup?: boolean;
+      /** 상성 대화 중의 수치 조회 표(쿨타임 등). 상성 답은 아니지만 상성 맥락을 끊지 않는다 — 표 다음의 "그럼 템은?" 은 그 상성의 이어 묻기다. */
+      inMatchup?: boolean;
       /** 상성 노트. 내 챔피언을 플레이할 때(이 상대 한정 우선) / 상대를 상대할 때. 사람이 검증. */
       /** `derived` 는 mine 앞쪽의 코드가 도출한 문장 수. 뒤는 사람이 쓴 플레이북 노트다. */
       notes?: MatchupNotes;

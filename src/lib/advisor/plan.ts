@@ -471,9 +471,10 @@ async function continueMatchup(intent: Intent, deps: PlanDeps): Promise<AnswerPl
    * 갈래(`askFromWords`)일 뿐 판정기와 합치지(OR) 않는다 — 합치면 낱말이 판정기의 이어 묻기를 덮는다.
    */
   if (act === "lookup" && champions.length === 0) {
+    const table = buildCompareCard([state.mine, state.enemy], question, intent.slot, { lang: ctx.lang });
     return {
       type: "card",
-      answer: buildCompareCard([state.mine, state.enemy], question, intent.slot, { lang: ctx.lang }),
+      answer: table.kind === "compare" ? { ...table, inMatchup: true } : table,
       notice: ctx.notice ?? fill(ctx.copy.card.fromChat, { name: `${state.mine.name}·${state.enemy.name}` }),
     };
   }
@@ -608,7 +609,9 @@ async function answerChampion(intent: Intent): Promise<AnswerPlan | undefined> {
   // 견주게 했을 때는 30초 걸리고 "665이고," 에서 끊기기도 했다.
   if (asksComparison(question, about.champions.length) || about.champions.length > 1) {
     // 여럿을 한데 묻는 말도 나란히 놓은 표로 답한다
-    return { type: "card", answer: buildCompareCard(about.champions, question, slot, { lang: ctx.lang }), notice: about.notice };
+    // 상성 대화 중의 조회 표는 상성 맥락을 잇는다(`matchupStateOf`)
+    const card = buildCompareCard(about.champions, question, slot, { lang: ctx.lang });
+    return { type: "card", answer: intent.matchup && card.kind === "compare" ? { ...card, inMatchup: true } : card, notice: about.notice };
   }
   return answerOneChampion(intent, about.champions[0], about.notice);
 }
