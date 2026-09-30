@@ -86,8 +86,7 @@ export const koComparison: ComparisonLabels = {
   details: "스킬 상세",
   skillDetails: "스킬 설명",
   seconds: "초",
-  cooldownNote:
-    "기본 쿨타임 · 스킬 가속 미적용",
+  cooldownNote: "기본 쿨타임",
   baseStats: "레벨별 능력치",
   statBase: "1레벨",
   statGrowth: "레벨당",
@@ -118,8 +117,7 @@ export const enComparison: ComparisonLabels = {
   details: "Ability details",
   skillDetails: "Ability descriptions",
   seconds: "sec",
-  cooldownNote:
-    "Base cooldowns · Before ability haste",
+  cooldownNote: "Base cooldown",
   baseStats: "Stats by level",
   statBase: "Level 1",
   statGrowth: "Per level",
@@ -148,8 +146,7 @@ export const zhComparison: ComparisonLabels = {
   details: "技能详情",
   skillDetails: "技能说明",
   seconds: "秒",
-  cooldownNote:
-    "基础冷却时间 · 未计算技能急速",
+  cooldownNote: "基础冷却时间",
   baseStats: "各等级属性",
   statBase: "1级",
   statGrowth: "每级",
