@@ -206,7 +206,7 @@ const CASES: Case[] = [
   { name: "VS 화면 둘 + 비교", question: "누가 체력 더 높아?", screen: ["MonkeyKing", "Rumble"], want: "card compare MonkeyKing,Rumble · 화면의 오공·럼블 기준입니다.", calls: [] },
   { name: "VS 화면 둘 + \"두 챔피언\" 은 규칙 문서가 아니라 나란히", question: "두 챔피언에 대해 스킬 쿨타임도 알려줘", screen: ["MonkeyKing", "Rumble"], want: "card compare MonkeyKing,Rumble · 화면의 오공·럼블 기준입니다.", calls: [] },
   { name: "모델이 있어도 \"두 챔피언\" 은 검색 벡터를 건너뛴다", question: "두 챔피언에 대해 스킬 쿨타임도 알려줘", model: true, search: [{ id: "mech:챔피언-분류-—-두-외부-출처를-함께-쓴다", score: 0.9 }], screen: ["MonkeyKing", "Rumble"], want: "card compare MonkeyKing,Rumble · 화면의 오공·럼블 기준입니다.", calls: ["judge kind (refused)"] },
-  { name: "둘을 다룬 뒤의 스킬 쿨타임은 앞쪽 챔피언 것", question: "스킬 쿨타임", turns: answered({ kind: "compare", cards: [card("ko_KR", "Garen"), card("ko_KR", "Darius")], rows: [] }), want: "card champion Garen focus=cooldown · 앞서 말한 가렌 기준입니다.", calls: [] },
+  { name: "둘을 다룬 뒤의 스킬 쿨타임은 둘의 표(한쪽만 주면 나머지를 되물어야 한다)", question: "스킬 쿨타임", turns: answered({ kind: "compare", cards: [card("ko_KR", "Garen"), card("ko_KR", "Darius")], rows: [] }), want: "card compare Garen,Darius · 앞서 말한 가렌·다리우스 기준입니다.", calls: [] },
   { name: "대화 챔피언이 화면보다 먼저", question: "E 는?", turns: championTurns("Garen"), screen: ["Malphite"], want: "card spell Garen E · 앞서 말한 가렌 기준입니다.", calls: [] },
   { name: "챔피언 스킬 하나", question: "가렌 Q", want: "card spell Garen Q", calls: [] },
   { name: "패시브와 스킬 전체는 스킬 소개", question: "가렌 패시브와 네 가지 스킬을 각각 설명해줘", want: "card champion Garen view=skills notes=both 3/3 \"Q 결정타는 걸려 있는\"", calls: [] },

@@ -173,8 +173,6 @@ export function planFlags(model: boolean): Pick<PlanContext, "judge" | "consente
 /** 결과 표·파일 이름에 적는 판정기 단계 이름 */
 export const JUDGE_TIER_LABELS: Record<JudgeTier, string> = { model: "판정기", offline: "오프라인 판정기", none: "모델 없음" };
 /** JUDGE_HEAD 를 주면 앱이 부르는 헤드 이름을 그것으로 바꿔 잰다(새 헤드 실험용, research/llm-evals/kev-agent/heads 에서 찾는다). */
-// 실험용: 흐름 판정 lookup 의 확신 문턱(`plan.ts` continueMatchup)을 환경 변수로 바꿔 잰다
-if (process.env.ACT_LOOKUP_MIN) (globalThis as { ACT_LOOKUP_MIN?: number }).ACT_LOOKUP_MIN = Number(process.env.ACT_LOOKUP_MIN);
 export const appJudge: Judge = async (headName, state, questions) => {
   headName = process.env.JUDGE_HEAD ?? headName;
   if (judgeOverride) return judgeOverride(headName, state, questions);

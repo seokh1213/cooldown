@@ -369,3 +369,32 @@ kev 헤드(PointerHead q·k 1024→256)만 이어 배웠다. LoRA 본체는 그�
 산출물: `research/llm-evals/kev-agent/lookup-test.jsonl`, `scripts/llm/kev-agent/eval-lookup.ts`, `b3/build_lookup.py` · `extract_features.py` · `train_head.py`,
 헤드 `heads/kev-b3e-lookupC5.{json,bin}`, 브랜치 `exp/path1-judge-first`(1) · `exp/path1b-union`(1b) · `exp/path3p-pure`(3p·3T, 마지막 commit 이 3T) · `worktree-agent-a9a1b83bdc6a7c275`(2).
 `JUDGE_HEAD=<헤드 이름>` 으로 평가 스크립트의 헤드를 바꿔 잰다(`lib.ts appJudge`).
+
+### 채택: 갈래 한 곳(2) + 흐름 헤드 분리(3T) + 모델 없는 기기용 오프라인 판정기(6) (2026-09-30 밤)
+
+세 갈래 측정 뒤 사용자가 2 + 3T 를 골랐고, "더 개선할 방법" 여덟 가지 중 재 본 것과 결과다.
+
+| 항목 | 한 일 | 결과 |
+|---|---|---|
+| 1 `new` 설명문 정리 | "another champion's" → "a third champion's abilities or numbers". 흐름 행 4,190 을 다시 뽑아(Colab T4 두 세션 + 로컬 CPU 630행) 흐름 헤드만 이어 배움 | dev act 342 → 348/359, lookup-dev 74 → 78/81. 새 시험 조회 20/20 |
+| 2 헤드를 판정마다 따로 | `ROUTE_HEAD`·`TOPIC_HEAD`(kev-b3e 복사)·`ACT_HEAD`(새 헤드) | 갈래 374·주제가 원래대로(338). 한 헤드로 다시 배웠을 때의 A 270 234 가 236 으로 |
+| 3 갈래 헤드에 보강 72행 | kind 행 72 로 이어 배움 | dev 149/154 그대로, 새 시험 조회의 spellStat 13/20 그대로 → 쓰지 않음(복사본 유지) |
+| 4 판정 한 번에 세 질문 | — | 갈래·주제 상태 문구("Question: …")와 흐름("Earlier in this chat …")이 달라 LoRA 재학습 없이는 불가. 보류 |
+| 5 확신 문턱 되묻기 | lookup 확률 문턱 0.5·0.7 | 270턴 그대로, 새 시험만 37 → 35. 폐기 |
+| 6 오프라인 분류기 | 문자 1~3-gram + 낱말, FNV-1a 2^14 버킷, 다항 LR, fp16 0.83MB, 순수 TS(`offlineJudge.ts`). 모델 없는 기기의 판정기(`PlanContext.judge: "model" \| "offline" \| "none"`) | A 270 낱말 114 → **221**(모델 240), 흐름 60 57 → 58, 새 39 34 → 38 |
+| 7 실제 말투 시험 | — | 앱에서 내보낸 평가 기록이 로컬에 없어 불가. 기록이 모이면 `feedback-to-tests.ts` |
+| 8 LoRA 본체 재학습 | — | 하지 않음(1~3 으로 충분, 22MB 재배포 회피) |
+
+최종(master 반영) — 모델 판정기 / 오프라인 판정기 / (참고) 이전 master:
+
+| | 새 39 | 조회 20 | route3 374 | act 60 | 흐름 60 판정기/없음 | A 270 |
+|---|---|---|---|---|---|---|
+| 모델 판정기(세 헤드) | **38** | **20** | 338 | 51 | 58 / 57 | 236 |
+| 오프라인 판정기(모델 없는 기기) | 38 | 20 | 318 | 38 | 58 / — | 221 |
+| 이전 master(낱말 패치, 판정기 kev-b3e 하나) | 27 | 12 | 338 | 55 | 59 / 57 | 240 |
+
+- 비용은 판정기 단독 act 60 −4(55 → 51: 게임 규칙·잡담을 new 가 아니라 followup/lookup 으로 — 앱에서는 낱말·`new` 불신 정책이 먼저 받아 흐름 60 은 −1)와 A 270 −4(영어 "tips" 세 턴이 more 로, 상대 챔피언 수치 한 턴이 followup 으로)다.
+- 모델 없는 기기는 낱말 규칙 114 → 오프라인 판정기 221 로 가장 크게 올랐다. 낱말 규칙(`askFromWords`·`actFromWords`)은 오프라인 파일마저 못 받을 때의 마지막 길로만 남는다.
+- 남은 실패 1건(새 39)은 "闪现交了是不是击杀窗口" 가 점멸 규칙 카드로 가는 것(규칙 문서 우선 순위, 이전부터).
+- 헤드 파일: `public/models/judge/kev-b3e-{route,topic,act}.{json,bin}`. `kev-b3e.{json,bin}` 은 옛 도구용으로 남김. 앱은 세 헤드를 미리 받는다(`useAdvisor`).
+- 분류기: `public/models/offline/judge.{json,bin}`, 학습 `scripts/llm/offline-classifier/train.py`, 기록 `research/llm-evals/offline-classifier/README.md`.

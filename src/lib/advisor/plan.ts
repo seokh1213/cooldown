@@ -41,7 +41,6 @@ import {
 import { topicFromJudge, topicFromWords, topicQuestions } from "./topicJudge";
 import { championPriceAnswer, gameMetaAnswer } from "./gameMeta";
 import {
-  ACT_LABELS,
   actFromProbs,
   actFromWords,
   actQuestion,
@@ -446,12 +445,8 @@ async function continueMatchup(intent: Intent, deps: PlanDeps): Promise<AnswerPl
     (!named && ctx.judge !== "none"
       ? await deps
           .judge(ACT_HEAD, actState(state.mine.name, state.enemy.name, question, champions[0]?.name), [actQuestion(state.mine.name, state.enemy.name)])
-          .then(([probs]) => {
-            const chosen = actFromProbs(probs);
-            // 조회(lookup)는 확신이 낮으면 이어 묻기로 받는다 — 틀린 표보다 해설이 덜 어긋난다. 문턱은 실험용 전역으로 바꿔 잰다(측정 뒤 상수로).
-            const lookupMin = (globalThis as { ACT_LOOKUP_MIN?: number }).ACT_LOOKUP_MIN ?? 0;
-            return chosen === "lookup" && probs[ACT_LABELS.indexOf("lookup")] < lookupMin ? "followup" : chosen;
-          })
+          // lookup 에 확신 문턱을 두어 봤지만(0.5·0.7) 대화 270턴은 그대로고 새 시험만 잃어(37 → 35) 두지 않는다
+          .then(([probs]) => actFromProbs(probs))
           .catch(() => undefined)
       : undefined);
   /*
@@ -619,7 +614,7 @@ async function answerChampion(intent: Intent): Promise<AnswerPlan | undefined> {
  * 먼저, 없으면 화면에 떠 있는 것 — 표를 보면서 "W 쿨타임" 이라 물으면 화면의 W 다.
  * 누구 것인지 정할 수 없으면 답(되묻기·나란히 놓기)을 돌려준다.
  */
-function championsFromContext({ question, ctx, data, recent, slot }: Intent): AnswerPlan | { champions: ChampionCard[]; notice?: string } {
+function championsFromContext({ question, ctx, data, recent, slot, ask }: Intent): AnswerPlan | { champions: ChampionCard[]; notice?: string } {
   const onScreen = ctx.championIds.map((id) => data.cardById.get(id)).filter((card): card is ChampionCard => Boolean(card));
   const source = recent.length ? recent : onScreen;
   const fromWhere = recent.length ? ctx.copy.card.fromChat : ctx.copy.card.fromScreen;
@@ -633,6 +628,8 @@ function championsFromContext({ question, ctx, data, recent, slot }: Intent): An
     return { type: "card", answer: buildCompareCard(source, question, slot, { lang: ctx.lang }), notice: ctx.notice ?? fill(fromWhere, { name: names }) };
   }
   // 상성을 말한 뒤의 "스킬 쿨타임" 은 내 챔피언(앞쪽) 것이다.
+  // 상성·비교 뒤의 스킬 수치 조회("list their ability cooldowns")는 둘의 표다. 한쪽만 주면 나머지를 되물어야 한다.
+  if (recent.length === 2 && ask === "spellStat") return { champions: source, notice: ctx.notice ?? fill(fromWhere, { name: source.map((card) => card.name).join("·") }) };
   if (recent.length) return { champions: [source[0]], notice: ctx.notice ?? fill(fromWhere, { name: source[0].name }) };
   // 화면에 둘이 있는데 슬롯도 비교도 아니면 누구 것인지 묻는다.
   return { type: "code", answer: { kind: "suggestion", original: question, candidates: source, reason: "ambiguous" }, pending: true };
