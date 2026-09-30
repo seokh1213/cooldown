@@ -31,6 +31,9 @@ export function AdvisorComposer({ draft, onDraftChange, busy, showBusyHint, plac
         value={draft}
         onChange={(event) => onDraftChange(event.target.value)}
         onKeyDown={(event) => {
+          // 한글 조합 중의 Enter 는 조합 확정용이다. 여기서 보내고 비우면 확정된 마지막 글자("줘")가 입력칸에 남는다.
+          // Safari 는 확정 뒤 isComposing 없이 keyCode 229 로 한 번 더 보낸다.
+          if (event.nativeEvent.isComposing || event.keyCode === 229) return;
           if (event.key === "Enter" && !event.shiftKey) {
             event.preventDefault();
             onSubmit();
