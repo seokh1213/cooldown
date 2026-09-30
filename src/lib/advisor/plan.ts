@@ -444,6 +444,19 @@ async function continueMatchup(intent: Intent, deps: PlanDeps): Promise<AnswerPl
    * 함께 있으면 그 갈래의 이어 묻기다 — "쿨감 템 먼저 가는 게 나아?", "should I rush a cdr item?", "先出冷却缩减装备好吗" 가
    * "스킬 가속" 절 원문으로 답했다. 갈래 낱말이 없는 "쿨타임 감소 계산 어떻게 해?" 는 그대로 문서다.
    */
+  /*
+   * 같은 쌍의 이름 + 슬롯만 던진 말("럼블 E", "오공 궁 쿨")은 그 스킬 카드다. 상성 이어 묻기로 받으면 앞 답을 그대로 반복했다
+   * (2026-10-01 브라우저 시험). "피오라 W 어떻게 빼" 처럼 운용을 묻는 말은 남는 낱말이 있어 종전대로 이어 묻기다.
+   */
+  if (champions.length === 1 && intent.slot && bareSlotAsk(question, champions[0], data, intent.slot)) return undefined;
+  // 이름 없이 슬롯만 던진 말("그럼 궁은?", "W 쿨")은 두 챔피언의 그 스킬 표다. 판정기가 잡담으로 갈라 자료 없음이 됐다(2026-10-01 브라우저 시험).
+  if (champions.length === 0 && intent.slot && bareSlotAsk(question, undefined, data, intent.slot)) {
+    return {
+      type: "card",
+      answer: { ...buildCompareCard([state.mine, state.enemy], question, intent.slot, { lang: ctx.lang }), inMatchup: true } as AdvisorAnswer,
+      notice: ctx.notice ?? fill(ctx.copy.card.fromChat, { name: `${state.mine.name}·${state.enemy.name}` }),
+    };
+  }
   const named =
     champions.length === 0 &&
     (Boolean(buildItemCard(data, question, intent.recentItem)) || (Boolean(buildMechanicsAnswer(data, question)) && !topicFromWords(question)));
@@ -502,14 +515,26 @@ async function continueMatchup(intent: Intent, deps: PlanDeps): Promise<AnswerPl
   return { type: "matchup", mine: turn.mine, enemy: turn.enemy, notice: ctx.notice ?? pairNotice, focus: topic, more: turn.act === "more" };
 }
 
+/** 이름과 슬롯을 떼면 수치·설명 낱말만 남는가. "럼블 E", "럼블 E 쿨타임", "오공 궁 계수" 는 참, "피오라 W 어떻게 빼" 는 거짓. */
+function bareSlotAsk(question: string, card: ChampionCard | undefined, data: AdvisorData, slot: string): boolean {
+  let rest = question;
+  for (const name of card ? [card.name, ...(data.aliases.get(card.id) ?? [])] : []) rest = rest.split(name).join(" ");
+  rest = rest.replace(/그럼|그러면|그리고|근데|then|and|那/gi, " ");
+  rest = rest.replace(/[QWER]|궁극기|궁|패시브|기본\s*지속\s*효과|ult(imate)?|passive|大招|被动/gi, " ");
+  rest = rest.replace(/쿨타임|쿨다운|쿨|재사용\s*대기\s*시간|계수|마나|코스트|소모|사거리|범위|피해|데미지|효과|설명|뭐야|뭐|알려줘|얼마|몇\s*초|cooldown|cd|cost|mana|ratio|range|damage|effect|explain|冷却|耗蓝|加成|射程|伤害|效果/gi, " ");
+  return rest.replace(/[\s?？!.,의은는이가을를도로]/g, "").length <= 1 && slot !== "";
+}
+
 /** 이름 없는 말이 앞 상성을 떠나 다른 것을 묻는가 */
-async function leaveMatchup({ question, ctx, data, ask }: Intent, deps: PlanDeps): Promise<AnswerPlan | undefined> {
+async function leaveMatchup({ question, ctx, data, ask, slot }: Intent, deps: PlanDeps): Promise<AnswerPlan | undefined> {
   /*
    * 게임과 무관한 말("내일 날씨 어때?", "라면 맛있게 끓이는 법")은 앞 상성의 이어 묻기가 아니다. 갈래가 잡담이고,
    * 문형("왜?", "풀어서")·조언 요청("팁 좀", "any tips?")이 없을 때만. 대화 흐름 시험에서 이어 묻기 133 중 0 을 끊고
    * 답 없는 질문 119 중 무관한 것 9 를 잡았다. `OFF_TOPIC` 은 갈래와 상관없이 본다 — 판정기가 잡담으로 못 가른 것도 잡는다.
    */
-  if (OFF_TOPIC.test(question) || (ask === "chat" && !actFromWords(question) && !FOLLOWUP_GUARD.test(question))) {
+  // 스킬 슬롯이나 챔피언 낱말이 든 말은 판정기가 잡담이라 해도 잡담이 아니다 — "그럼 궁은?" 이 자료 없음으로 갔다(2026-10-01 브라우저 시험)
+  const championish = Boolean(slot) || looksChampionDirected(question, slot);
+  if (OFF_TOPIC.test(question) || (ask === "chat" && !championish && !actFromWords(question) && !FOLLOWUP_GUARD.test(question))) {
     return { type: "code", answer: ctx.copy.noLiteAnswer };
   }
   /*
