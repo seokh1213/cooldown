@@ -106,6 +106,8 @@ export interface CalcResult {
     statParts: StatPart[];
     /** base 를 퍼센트로 적어야 하는지 여부 */
     isPercent?: boolean;
+    /** base 가 [1레벨값, 18레벨값] 범위인지 여부 */
+    isLevelRange?: boolean;
   };
   /**
    * 소수점 자릿수 (CommunityDragon GameCalculation.mPrecision)

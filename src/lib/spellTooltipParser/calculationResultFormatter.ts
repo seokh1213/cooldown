@@ -136,10 +136,14 @@ function formatStatPart(
  */
 function formatStatMultiplier(result: CalcResult): string | null {
   if (!result.statMultiplier) return null;
-  const { base, statParts, isPercent } = result.statMultiplier;
+  const { base, statParts, isPercent, isLevelRange } = result.statMultiplier;
   const terms: string[] = [];
 
-  if (!isZeroValue(base)) {
+  if (isLevelRange && isVector(base) && base.length === 2) {
+    // 레벨 범위 배율은 랭크 값("1.3/1.6")으로 읽히지 않게 범위로 적는다
+    const [minimum, maximum] = (isPercent ? scaleBy100(base) as number[] : base).map(formatNumber);
+    terms.push(isPercent ? `(${minimum}% ~ ${maximum}%)` : `(${minimum} ~ ${maximum})`);
+  } else if (!isZeroValue(base)) {
     // 퍼센트로 적는 계산식을 배율로 쓰면 base 도 퍼센트여야 한다.
     // 세트 W 의 투지 전환율이 "0.25" 가 아니라 "25%" 로 나와야 하는 경우.
     terms.push(
@@ -164,7 +168,9 @@ function formatStatMultiplier(result: CalcResult): string | null {
   if (terms.length === 0) return null;
   // 항이 하나라도 "40% 공격력" 처럼 스탯 이름이 붙으면 괄호로 묶는다.
   // "… × 40% 공격력" 은 40% 가 어디까지 걸리는지 읽히지 않는다.
-  const single = terms.length === 1 && !/\s/.test(terms[0]);
+  // 레벨 범위 "(1.3 ~ 1.6)" 은 이미 괄호로 묶여 있다
+  const single =
+    terms.length === 1 && (!/\s/.test(terms[0]) || /^\([^()]*\)$/.test(terms[0]));
   return single ? terms[0] : `(${terms.join(" + ")})`;
 }
 

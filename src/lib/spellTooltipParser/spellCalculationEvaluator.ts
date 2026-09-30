@@ -16,7 +16,7 @@ import type {
   TooltipLocale,
   Value,
 } from "./types";
-import { add, mul } from "./valueUtils";
+import { add, isVector, mul } from "./valueUtils";
 import {
   evaluatePart,
   evaluateRange,
@@ -68,7 +68,51 @@ function resolveMultiplier(
   return null;
 }
 
+interface ScaleTarget {
+  base: Value;
+  statParts: StatPart[];
+  extraRanges?: Value[];
+  /** base 가 [1레벨값, 18레벨값] 범위인지 여부 */
+  isLevelRange?: boolean;
+}
+
+/**
+ * 숫자 배율을 base·스탯 계수·레벨 범위 항에 곱해 접는다.
+ *
+ * 랭크 벡터(길이 = 최대 랭크)와 레벨 범위(길이 2, [1레벨, 18레벨])는 축이 달라
+ * 원소끼리 곱하면 안 된다. 한쪽이 랭크, 다른 쪽이 레벨이면 접지 않고 null 을 돌려
+ * 호출부가 "× 배율" 로 따로 적게 한다. 길이가 우연히 같아도(최대 랭크 2) 섞지 않는다.
+ */
+function scaleResult(
+  target: ScaleTarget,
+  multiplier: PartResult,
+): { base: Value; statParts: StatPart[]; extraRanges?: Value[] } | null {
+  const scale = multiplier.base;
+  if (multiplier.isLevelRange) {
+    // 레벨 범위 배율은 레벨 범위 base 나 상수에만 접는다.
+    // 스탯 계수에 곱하면 "15.6/19.2% 주문력" 처럼 랭크 값으로 읽힌다.
+    const baseIsRank = isVector(target.base) && !target.isLevelRange;
+    if (baseIsRank || target.statParts.length > 0 || target.extraRanges) return null;
+  } else if (isVector(scale)) {
+    if (target.isLevelRange || target.extraRanges) return null;
+  }
+  try {
+    return {
+      base: mul(target.base, scale),
+      statParts: target.statParts.map((part) => ({
+        ...part,
+        ratio: mul(part.ratio, scale),
+      })),
+      extraRanges: target.extraRanges?.map((range) => mul(range, scale)),
+    };
+  } catch (error) {
+    logger.warn("multiplier 적용 실패", error);
+    return null;
+  }
+}
+
 function evaluateGameCalculation(
+  key: string,
   calc: GameCalculation,
   ctx: EvaluatorContext,
   visited: Set<string>,
@@ -76,9 +120,12 @@ function evaluateGameCalculation(
   const range = evaluateRange(calc);
   if (range) return range;
 
-  let base: Value = 0;
+  // 랭크 값과 레벨 범위([1레벨, 18레벨])는 따로 모은다.
+  // 한 줄로 더하면 항 순서에 따라 결과가 갈린다. 레벨 범위가 먼저 오면
+  // 뒤에 오는 랭크 벡터가 길이 불일치로 버려졌다 (우디르 W 각성 보호막의 ShieldBase).
+  let rankBase: Value = 0;
+  let levelBase: Value = 0;
   const statParts: StatPart[] = [];
-  const extraRanges: Value[] = [];
   let hasLevelRange = false;
 
   for (const part of calc.mFormulaParts ?? []) {
@@ -89,19 +136,29 @@ function evaluateGameCalculation(
       continue;
     }
     try {
-      base = add(base, evaluated.base);
-      if (evaluated.isLevelRange) hasLevelRange = true;
-    } catch (error) {
-      // 랭크 벡터와 레벨 범위는 길이가 달라 못 더한다. 버리지 말고 옆에 붙인다.
       if (evaluated.isLevelRange) {
-        extraRanges.push(evaluated.base);
-        statParts.push(...evaluated.statParts);
-        continue;
+        levelBase = add(levelBase, evaluated.base);
+        hasLevelRange = true;
+      } else {
+        rankBase = add(rankBase, evaluated.base);
       }
-      logger.debug("GameCalculation: 항 합산 실패", error);
+    } catch (error) {
+      logger.warn(`GameCalculation "${key}": 항 합산 실패`, error);
       continue;
     }
     statParts.push(...evaluated.statParts);
+  }
+
+  // 레벨 범위와 랭크 값은 길이가 다르면 못 더한다. 버리지 말고 옆에 붙인다.
+  let base: Value = rankBase;
+  const extraRanges: Value[] = [];
+  if (hasLevelRange) {
+    try {
+      base = add(rankBase, levelBase);
+    } catch {
+      extraRanges.push(levelBase);
+      hasLevelRange = false;
+    }
   }
 
   let statMultiplier: PartResult | undefined;
@@ -110,14 +167,24 @@ function evaluateGameCalculation(
     // 스탯 의존 배율은 스탯 0 을 가정한 숫자로 접지 않고 따로 노출한다
     statMultiplier = multiplier;
   } else if (multiplier) {
-    try {
-      const scale = multiplier.base;
-      base = mul(base, scale);
-      for (const statPart of statParts) {
-        statPart.ratio = mul(statPart.ratio, scale);
-      }
-    } catch (error) {
-      logger.debug("GameCalculation: multiplier 적용 실패", error);
+    const scaled = scaleResult(
+      {
+        base,
+        statParts,
+        extraRanges: extraRanges.length > 0 ? extraRanges : undefined,
+        isLevelRange: hasLevelRange,
+      },
+      multiplier,
+    );
+    if (scaled) {
+      base = scaled.base;
+      statParts.splice(0, statParts.length, ...scaled.statParts);
+      extraRanges.splice(0, extraRanges.length, ...(scaled.extraRanges ?? []));
+      if (multiplier.isLevelRange && isVector(base)) hasLevelRange = true;
+    } else {
+      // 레벨 범위 × 랭크 배율처럼 한 벡터로 접을 수 없으면 "× 배율" 로 남긴다
+      // (일라오이 Q 의 TentacleDamageTotal: (9 ~ 180) × (1 + 10/15/20/25/30%))
+      statMultiplier = multiplier;
     }
   }
 
@@ -171,7 +238,7 @@ export function evaluateSpellCalculation(input: {
     visited.add(key);
 
     if (raw.__type === "GameCalculation") {
-      return evaluateGameCalculation(raw, ctx, visited);
+      return evaluateGameCalculation(key, raw, ctx, visited);
     }
 
     // 버프 보유 등 런타임 조건으로 갈리는 계산식은 기본 쪽을 쓴다
@@ -198,20 +265,25 @@ export function evaluateSpellCalculation(input: {
         return { ...inner, statMultiplier: inner.statMultiplier ?? multiplier };
       }
 
-      try {
+      const innerIsLevelRange = Boolean(inner.isBreakpointRange || inner.isCharLevelRange);
+      const scaled = scaleResult({ ...inner, isLevelRange: innerIsLevelRange }, multiplier);
+      if (scaled) {
         return {
           ...inner,
-          base: mul(inner.base, multiplier.base),
-          statParts: inner.statParts.map((part) => ({
-            ...part,
-            ratio: mul(part.ratio, multiplier.base),
-          })),
+          ...scaled,
+          isBreakpointRange:
+            inner.isBreakpointRange ||
+            (multiplier.isLevelRange && isVector(scaled.base)) ||
+            undefined,
         };
-      } catch (error) {
-        // 랭크 벡터와 레벨 범위처럼 길이가 다르면 배율만 생략한다
-        logger.debug("GameCalculationModified: multiplier 적용 실패", error);
-        return inner;
       }
+      // 랭크 값 × 레벨 범위처럼 접을 수 없으면 "× 배율" 로 남긴다
+      // (유미 R 의 EnhancedHealPerWave: (30/50/70 + 12% 주문력) × (1.3 ~ 1.6))
+      if (!inner.statMultiplier) return { ...inner, statMultiplier: multiplier };
+      logger.warn(
+        `GameCalculationModified "${key}": 배율이 이미 있어 추가 배율 생략`,
+      );
+      return inner;
     }
 
     throw new Error(`Unsupported mSpellCalculation type: ${rawType}`);

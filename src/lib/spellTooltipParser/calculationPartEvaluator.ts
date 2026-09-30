@@ -283,6 +283,9 @@ export function evaluatePart(
         base: inner.base,
         statParts: inner.statParts,
         isPercent: inner.isPercent,
+        // 참조한 계산식이 레벨 범위면 그 표시를 잃지 않게 넘긴다 (유미 R 의 AllyHealingPerc)
+        isLevelRange:
+          Boolean(inner.isBreakpointRange || inner.isCharLevelRange) || undefined,
       };
     } catch (error) {
       logger.debug(`SpellCalculation reference "${referenceKey}" failed`, error);

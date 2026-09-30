@@ -8,6 +8,8 @@ import { test } from "node:test";
 import { parseSpellTooltip } from "../../src/lib/spellTooltipParser/parser";
 import type { ChampionSpell } from "../../src/types";
 import type { CommunityDragonSpellData } from "../../src/lib/spellTooltipParser/types";
+import { evaluateSpellCalculation } from "../../src/lib/spellTooltipParser/spellCalculationEvaluator";
+import { formatCalculationResult } from "../../src/lib/spellTooltipParser/calculationResultFormatter";
 
 // 테스트 케이스 정의
 interface TestCase {
@@ -133,3 +135,109 @@ for (const testCase of testCases) {
     assert.deepEqual(errors, [], `결과: ${result.substring(0, 100)}...`);
   });
 }
+
+// 랭크 벡터와 레벨 범위([1레벨, 18레벨])가 섞인 계산식 (CI 로그의 "Vector length mismatch")
+function renderCalculation(
+  key: string,
+  maxrank: number,
+  data: CommunityDragonSpellData,
+): string | null {
+  const spell = { id: "Test", maxrank } as ChampionSpell;
+  return formatCalculationResult(
+    evaluateSpellCalculation({ key, spell, data, lang: "en_US" }),
+    "en_US",
+  );
+}
+
+test("레벨 범위 뒤에 오는 랭크 값도 합산한다 (우디르 W RecastShield)", () => {
+  const data = {
+    DataValues: { ShieldBase: [25, 45, 65, 85, 105, 125, 145] },
+    mSpellCalculations: {
+      RecastShield: {
+        __type: "GameCalculation",
+        mFormulaParts: [
+          { __type: "ByCharLevelInterpolationCalculationPart", mStartValue: 20, mEndValue: 150 },
+          { __type: "NamedDataValueCalculationPart", mDataValue: "ShieldBase" },
+        ],
+      },
+    },
+  } as unknown as CommunityDragonSpellData;
+  assert.equal(
+    renderCalculation("RecastShield", 6, data),
+    "(45/65/85/105/125/145 + (20 ~ 150))",
+  );
+});
+
+test("레벨 범위 base 에 랭크 배율은 접지 않고 × 로 남긴다 (일라오이 Q TentacleDamageTotal)", () => {
+  const data = {
+    DataValues: { Amp: [0, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35] },
+    mSpellCalculations: {
+      Total: {
+        __type: "GameCalculation",
+        mFormulaParts: [
+          { __type: "ByCharLevelInterpolationCalculationPart", mStartValue: 9, mEndValue: 180 },
+          { __type: "StatByCoefficientCalculationPart", mCoefficient: 0.4 },
+        ],
+        mMultiplier: {
+          __type: "SumOfSubPartsCalculationPart",
+          mSubparts: [
+            { __type: "NumberCalculationPart", mNumber: 1 },
+            { __type: "NamedDataValueCalculationPart", mDataValue: "Amp" },
+          ],
+        },
+      },
+    },
+  } as unknown as CommunityDragonSpellData;
+  assert.equal(
+    renderCalculation("Total", 5, data),
+    "((9 ~ 180) + ([[si:scaleap]]40% Ability Power)) × 1.1/1.15/1.2/1.25/1.3",
+  );
+});
+
+test("랭크 값에 레벨 범위 배율은 범위로 붙인다 (유미 R EnhancedHealPerWave)", () => {
+  const data = {
+    DataValues: { BaseHeal: [10, 30, 50, 70, 90] },
+    mSpellCalculations: {
+      Heal: {
+        __type: "GameCalculation",
+        mFormulaParts: [{ __type: "NamedDataValueCalculationPart", mDataValue: "BaseHeal" }],
+      },
+      Perc: {
+        __type: "GameCalculation",
+        mFormulaParts: [
+          {
+            __type: "ByCharLevelBreakpointsCalculationPart",
+            mLevel1Value: 1.3,
+            mBreakpoints: [
+              { __type: "Breakpoint", mLevel: 7, mBonusPerLevelAtAndAfter: 0.05 },
+              { __type: "Breakpoint", mLevel: 13 },
+            ],
+          },
+        ],
+      },
+      Enhanced: {
+        __type: "GameCalculationModified",
+        mModifiedGameCalculation: "Heal",
+        mMultiplier: { __type: "{f3cbe7b2}", mSpellCalculationKey: "Perc" },
+      },
+    },
+  } as unknown as CommunityDragonSpellData;
+  assert.equal(renderCalculation("Enhanced", 3, data), "30/50/70 × (1.3 ~ 1.6)");
+});
+
+test("상수 배율은 옆에 붙은 레벨 범위 항에도 곱한다 (조이 Q 최대 피해)", () => {
+  const data = {
+    DataValues: { Base: [0, 50, 80, 110, 140, 170] },
+    mSpellCalculations: {
+      Max: {
+        __type: "GameCalculation",
+        mFormulaParts: [
+          { __type: "NamedDataValueCalculationPart", mDataValue: "Base" },
+          { __type: "ByCharLevelInterpolationCalculationPart", mStartValue: 2, mEndValue: 34 },
+        ],
+        mMultiplier: { mNumber: 2.5 },
+      },
+    },
+  } as unknown as CommunityDragonSpellData;
+  assert.equal(renderCalculation("Max", 5, data), "(125/200/275/350/425 + (5 ~ 85))");
+});
