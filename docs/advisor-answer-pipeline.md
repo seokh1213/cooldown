@@ -4,6 +4,12 @@
 답을 만드는 방식, 품질을 지키는 장치, 측정 결과와 하지 않기로 한 것을 적는다. 수치의 원자료는
 `research/llm-evals/` 아래에 있다.
 
+![도우미 전체 구조](images/advisor-architecture.png)
+
+![질문 하나가 답이 되기까지](images/advisor-flow.png)
+
+![도우미 코드 지도](images/advisor-code-map.png)
+
 ## 1. 흐름
 
 ```

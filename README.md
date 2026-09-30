@@ -1,82 +1,52 @@
 # cooldown
 
-리그 오브 레전드 게임 시작 전에 내 챔피언과 상대의 스킬 쿨타임을 비교하고, 아이템·룬·소환사 주문의 정보를 확인하는 정적 웹 앱입니다.
+**English** · [한국어](README.ko.md) · [简体中文](README.zh-CN.md)
 
-서비스: https://seokh1213.github.io/cooldown/
+Check ability cooldowns before the game starts. A static web app for League of Legends that shows every champion's ability cooldowns with the full in-game description, and puts your champion and the opponent side by side.
 
-## 제공 기능
+Live: https://seokh1213.github.io/cooldown/
 
-- 173개 챔피언의 P/Q/W/E/R 이름, 본문, 비용, 쿨다운, 레벨값, 계수와 계산 진단
-- 여러 챔피언 쿨다운·기본 능력치 비교와 1:1 VS 보기
-- 기존 쿨타임 페이지와 별개인 VS 메뉴: 전체 랭크 쿨타임 비교표, 챔피언 선택 저장과 URL 공유
-- 효과별로 구분한 아이템 설명과 원본에서 확인된 피해 공식·재사용 대기시간
-- 대상 레벨·체력·방어력·마법 저항력·피해 감소를 반영한 평타/스킬 콤보 계산
-- Ability v2 실제 산식과 스킬 랭크를 반영한 피해 계산 및 계수 내역 표시
-- 점화, 직접 피해 룬, CDragon 계산 원본으로 검증된 아이템 효과 합산
-- 조건부 피해 적용/제외, 빠른 레벨·체력 프리셋과 URL 공유·복원
-- 룬, 아이템, 소환사 주문 백과사전
-- 한국어, 영어, 중국어와 데스크톱·모바일·PWA 오프라인 경로 지원
-- 롤 지식 도우미: 스킬·상성·아이템·룰을 묻는 대화창. 모델은 브라우저 안에서만 돌고 서버로 보내지 않습니다
+## Ability cooldowns and descriptions
 
-기존 시뮬레이션은 메뉴와 화면 간 진입 버튼에서 제외했습니다. 콤보 계산 기능과 `/simulation` 공유 URL은 기존 링크 호환을 위해 보존합니다.
+All 173 champions. P/Q/W/E/R cooldowns by rank, cost, per-rank values and scaling ratios, with the in-game description rendered from Riot's own calculation data. Champions with two forms, such as Jayce, show both as A and B.
 
-정적 데이터는 GitHub Actions에서 현재 패치의 Data Dragon과 CommunityDragon을 내려받아 미리 계산합니다. 브라우저는 Riot 계산 AST를 다시 해석하지 않고, 버전과 출처가 고정된 Ability v2 결과와 구조화된 아이템 정보를 읽습니다.
+![Champion cooldown table with the Aatrox Q tooltip open next to Jayce's A/B cooldowns](docs/images/cooldown-desktop.png)
 
-## 데이터 흐름
+## VS matchup
 
-```text
-Data Dragon + CommunityDragon
-  -> scripts/data-pipeline (수집, 정규화, 계산, 진단, 검증)
-  -> public/data/<patch> (3개 언어 정적 산출물)
-  -> src/data repositories (스키마 검사, 버전 캐시)
-  -> React 비교·백과·시뮬레이션 화면
-```
+Pick your champion and the opponent. Every rank's cooldown in one table, base stats by level, swap and share by URL. Works on phones.
 
-현재 산출물의 정확한 패치와 원본 버전은 `public/data/version.json`에서 확인할 수 있습니다. `26.18`과 `16.18.1`처럼 보이는 표기는 각각 Riot 표시 패치와 Data Dragon 배포 버전이라 의도적으로 형식이 다릅니다.
+![VS matchup: Aatrox against Fiora, cooldowns by rank and stats by level](docs/images/vs-desktop.png)
 
-## 롤 지식 도우미
+<img src="docs/images/vs-mobile.png" alt="VS matchup on a phone" width="320">
 
-화면 오른쪽 아래의 대화창입니다. 모델(Qwen3.5 0.8B + kev LoRA 판정·검색 가지, 약 570MB)은 동의한 뒤에만 내려받고 Web Worker에서 WebGPU로 돕니다. 서버 호출은 없습니다. 모델을 받지 않아도 코드가 만든 카드와 문장으로 대부분의 질문에 답합니다.
+## Also included
 
-![도우미 전체 구조](docs/images/advisor-architecture.png)
+- Runes, items and summoner spells encyclopedia
+- Korean, English and Simplified Chinese
+- Installable PWA that works offline
+- Optional LoL knowledge helper. The model runs inside the browser and nothing is sent to a server. See `docs/advisor-answer-pipeline.md`.
 
-답할 길은 모델이 아니라 코드가 고릅니다. 질문을 정해진 순서로 검사해 먼저 걸리는 곳에서 답하고, 모델은 판정(무엇을 묻는지)과 이름 없는 질문의 벡터 검색만 맡습니다. 답 글은 코드가 카드·노트·미리 쓴 답으로 조립합니다.
+## Data
 
-![질문 하나가 답이 되기까지](docs/images/advisor-flow.png)
+A GitHub Actions workflow checks Data Dragon and CommunityDragon every hour, regenerates the static data, runs the tests and deploys to GitHub Pages. The browser reads precomputed results only. There is no server. The current patch and source versions are in `public/data/version.json`.
 
-![도우미 코드 지도](docs/images/advisor-code-map.png)
+## Development
 
-답을 만드는 방식, 품질 관리, 측정 결과는 `docs/advisor-answer-pipeline.md`에 있습니다.
-
-## 개발
-
-Node.js 24와 npm을 사용합니다.
+Node.js 24.
 
 ```bash
 npm ci
 npm run dev
 ```
 
-사용자 확인용 로컬 미리보기는 최신 소스와 데이터를 빌드한 뒤 실행합니다.
+Local preview with the production build and PWA (`http://127.0.0.1:4173/cooldown/`):
 
 ```bash
 npm run preview:local
 ```
 
-주소는 `http://127.0.0.1:4173/cooldown/`입니다. `dev-dist/preview`에 별도로 빌드하며 **배포와 동일하게 PWA를 유지**합니다. 서버 터미널을 열어 둬야 새 버전을 내려받을 수 있습니다. 배포용 빌드와 미리보기는 기존 `npm run build`와 `npm run preview`를 사용합니다. 수정 후 다시 빌드하면 이미 열린 PWA가 새 릴리스를 감지합니다.
-
-### PWA 버전 갱신
-
-- 게임 패치(`26.18`)와 별도로 소스·정적 에셋의 `appVersion`, 데이터 파일 내용의 `dataVersion`, 두 버전을 묶은 `releaseId`를 빌드 시 생성합니다. 같은 패치의 설명 수정도 새 버전입니다.
-- 브라우저는 진입·탭 복귀·온라인 복귀와 활성 탭의 60초 주기마다 캐시를 우회해 `release.json`을 확인합니다. 게임 매니페스트는 현재 앱의 데이터 버전에 고정하고, 새 릴리스로 전환할 때 함께 교체합니다.
-- 데이터는 `data/releases/<dataVersion>/...`의 변경 불가능한 주소로 제공하며, 앱의 세션 캐시도 릴리스별로 분리합니다. `public/data`의 원본 경로는 기존 링크 호환용으로 유지합니다.
-- 새 서비스 워커가 화면 파일·기본 데이터를 설치하고 사용 중인 데이터도 준비되면 전환합니다. 자동 갱신이 꺼져 있으면 안내에서 승인할 때까지 기존 버전을 유지합니다. 열린 다른 탭도 전환된 워커에 맞춰 현재 URL로 갱신합니다.
-- 오프라인·설치 실패·데이터 준비 실패 시 현재 버전과 기존 캐시를 유지하고 다음 확인에서 재시도합니다. 사용자 선택·설정이나 다른 앱의 저장소를 초기화하지 않습니다.
-- 이전 세대 PWA도 기존 `sw.js` 주소에서 새 워커로 업데이트합니다. 등록 해제용 워커나 `Clear site data`는 사용하지 않습니다.
-
-빌드 산출물 전체를 함께 배포해야 합니다. `release.json`/`sw.js`만 별도로 교체하지 마세요. 원시 개발 서버(`npm run dev`)는 HMR을 쓰며 PWA를 새로 등록하지 않습니다. 브라우저 회귀 검사는 사용자 미리보기와 충돌하지 않도록 기본 4180 포트를 사용합니다.
-
-전체 검증:
+Full checks:
 
 ```bash
 npm run type-check
@@ -86,19 +56,15 @@ npm run build
 npm run test:e2e
 ```
 
-현재 패치 데이터를 로컬에서 다시 생성하려면 다음 명령을 실행합니다.
+Regenerate the current patch's data locally with `npm run generate-static-data`.
 
-```bash
-npm run generate-static-data
-```
+## More
 
-## 자동화
+- `docs/product-roadmap.md`: priorities and done criteria
+- `docs/pwa-updates.md`: PWA release and update rules
+- `docs/versioning.md`: patch and source version rules
+- `docs/local-llm-advisor.md`, `knowledge/README.md`: the knowledge helper
 
-`Update Static Data` 워크플로는 매시간 17분에 원본 버전을 확인합니다. 데이터가 바뀌었거나 `master`가 갱신되면 타입 검사, 린트, 전체 데이터 테스트, 프로덕션 빌드, Playwright를 통과한 산출물만 GitHub Pages에 배포합니다. 브라우저 테스트는 세 언어의 데스크톱·모바일 화면과 PWA 오프라인 직접 진입도 검사합니다.
-
-로컬 LLM 매치업 생성기는 별도의 수동 워크플로입니다. 사용법과 지식 계층 계약은 `docs/local-llm-advisor.md`와 `knowledge/README.md`를 참고하세요.
-제품 우선순위와 완료 기준은 `docs/product-roadmap.md`에 정리되어 있습니다.
-
-## 라이선스
+## License
 
 Apache License 2.0
