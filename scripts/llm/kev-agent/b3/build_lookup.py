@@ -32,7 +32,8 @@ def act_criteria(m, e):
         "enemy": f"Still plays {m} but now asks about facing a different champion",
         "mine": f"Now plays a different champion against {e}",
         "flip": f"Asks from {e}'s side: how {e} should play against {m}",
-        "new": "A new question not about this matchup: an item, rune, summoner spell, game rule, another champion's abilities or numbers, or small talk",
+        # "another champion's" 가 이 두 챔피언의 수치(lookup)와 겹쳐 헤드가 경계에서 흔들렸다(맨 조회 → new, 룬 쿨타임 → lookup). "a third champion's" 로 가른다.
+        "new": "A new question not about this matchup: an item, rune, summoner spell, game rule, a third champion's abilities or numbers, or small talk",
         "lookup": f"Asks for a number about {m}'s or {e}'s ability: a cooldown, mana cost, ratio or range",
     }
 def act_state(m, e, msg, named=None):
@@ -74,6 +75,31 @@ for lang in ("ko_KR", "en_US", "zh_CN"):
         for _ in range(9):
             m, e = pair(lang); add(lang, m, e, t, "followup")
 
+# 대조: 다른 챔피언의 수치(이름 있음) · 룬/소환사 주문 쿨타임 · 게임 규칙 · 잡담 → new. 없이 배우면 act 60 이 55 → 49 였다.
+OTHER = {"ko_KR": ["{X} 궁 사거리 몇이야", "{X} Q 쿨타임 몇 초?", "{X} W 마나 얼마야", "{X} E 계수 알려줘", "{X} 궁 쿨 몇이야"],
+         "en_US": ["{X} r range?", "{X} q cooldown?", "how much mana is {X} w", "{X} e ratio?", "{X} ult cd?"],
+         "zh_CN": ["{X}大招距离多少", "{X}的Q冷却几秒", "{X}W耗多少蓝", "{X}E加成多少", "{X}大招CD多少"]}
+RUNE = {"ko_KR": ["감전 쿨타임 몇이야", "점화 쿨 얼마야", "점멸 쿨타임 몇 초야", "정복자 쿨 있어?", "텔포 쿨타임 알려줘", "콩콩이 쿨 몇이야"],
+        "en_US": ["electrocute cd?", "flash cooldown?", "ignite cooldown how long", "conqueror cooldown?", "teleport cd at level 1?", "aery cooldown?"],
+        "zh_CN": ["电刑冷却几秒", "闪现CD多少", "点燃冷却多久", "征服者有冷却吗", "传送CD多少", "彗星冷却几秒"]}
+GAME = {"ko_KR": ["몇 분부터 항복 돼?", "닷지하면 LP 얼마 깎여?", "조기 항복은 몇 분?", "전령 몇 분에 나와", "다시하기 언제까지 돼?", "챔피언 가격 얼마야"],
+        "en_US": ["when can we surrender?", "how much lp for a dodge", "when does herald spawn", "remake time limit?", "how much BE is a champ", "baron respawn timer?"],
+        "zh_CN": ["几分钟可以投降", "秒退扣多少分", "先锋几分钟刷新", "重开有时间限制吗", "英雄多少精粹", "大龙多久刷新"]}
+CHAT = {"ko_KR": ["고마워", "감사합니다 덕분이에요", "ㄳㄳ", "오늘 이겼다 고마워", "넌 누구야?", "심심해"],
+        "en_US": ["thanks a lot", "gg thanks", "you're the best", "won thanks to you", "who are you?", "i'm bored"],
+        "zh_CN": ["谢谢", "感谢感谢", "赢了谢了", "你是谁", "无聊", "太感谢了"]}
+contrast = []
+for lang in ("ko_KR", "en_US", "zh_CN"):
+    for t in OTHER[lang]:
+        for _ in range(8):
+            m, e = pair(lang); x = rng.choice([n for n in NAMES[lang] if n not in (m, e)])
+            contrast.append({"lang": lang, "state": act_state(m, e, t.replace("{X}", x), x), "questions": {"act": {"type": "choice", "instructions": ACT_INSTRUCTIONS, "criteria": act_criteria(m, e), "label": "new"}}})
+    for T in (RUNE, GAME, CHAT):
+        for t in T[lang]:
+            for _ in range(5):
+                m, e = pair(lang)
+                contrast.append({"lang": lang, "state": act_state(m, e, t), "questions": {"act": {"type": "choice", "instructions": ACT_INSTRUCTIONS, "criteria": act_criteria(m, e), "label": "new"}}})
+
 rng.shuffle(rows)
 dev_n = len(rows) // 8
 lookup_dev, lookup_train = rows[:dev_n], rows[dev_n:]
@@ -96,11 +122,13 @@ topic = read("topic-train.jsonl")
 rng.shuffle(topic)
 topic_train, topic_dev = topic[:600], topic[600:660]
 
-train = lookup_train + act_train + route3_train + topic_train
+train = lookup_train + contrast + act_train + route3_train + topic_train
 dev = lookup_dev + act_dev + route3_dev + topic_dev
 rng.shuffle(train)
-for name, data in (("head_train", train), ("head_dev", dev), ("lookup_dev", lookup_dev)):
+act_only_train = [r for r in train if "act" in r["questions"]]
+act_only_dev = [r for r in dev if "act" in r["questions"]]
+for name, data in (("head_train", train), ("head_dev", dev), ("lookup_dev", lookup_dev), ("act_train", act_only_train), ("act_dev", act_only_dev)):
     with open(os.path.join(out, f"{name}.jsonl"), "w") as f:
         for r in data: f.write(json.dumps(r, ensure_ascii=False) + "\n")
-print(f"lookup {len(rows)} (train {len(lookup_train)} dev {len(lookup_dev)}) · act {len(act_train)}/{len(act_dev)} · route3 {len(route3_train)}/{len(route3_dev)} · topic {len(topic_train)}/{len(topic_dev)}")
+print(f"lookup {len(rows)} (train {len(lookup_train)} dev {len(lookup_dev)}) · 대조 {len(contrast)} · act {len(act_train)}/{len(act_dev)} · route3 {len(route3_train)}/{len(route3_dev)} · topic {len(topic_train)}/{len(topic_dev)}")
 print(f"→ head_train {len(train)} · head_dev {len(dev)}")

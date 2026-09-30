@@ -4,7 +4,7 @@
 기존 헤드(kev-b3e.bin)에서 시작해 작은 학습률로 이어 배우므로 갈래·주제 판정은 거의 그대로 두고 새 칸(lookup)만 익힌다.
 
   uv run --python 3.13 --with torch --with numpy python train_head.py <feats-dir> <feats-dev-dir> <init.bin> <init.json> <out-prefix>
-      [--epochs 4] [--lr 5e-5] [--anchor 1.0] [--upweight-lookup 1]
+      [--epochs 4] [--lr 5e-5] [--anchor 1.0] [--upweight-lookup 1] [--task act|kind,mine|topic,perspective]
 
   anchor: 처음 가중치에서 멀어지는 것에 대한 벌점(L2). 갈래·주제를 잃지 않게 붙든다.
 """
@@ -31,6 +31,9 @@ def load(d):
     return samples
 
 train, dev = load(train_dir), load(dev_dir)
+# 판정마다 헤드를 따로 둔다(--task kind,mine). 한 헤드로 세 판정을 다시 배우면 주제 판정이 흔들려 A 270 이 240 → 234 였다.
+TASKS = sys.argv[sys.argv.index("--task") + 1].split(",") if "--task" in sys.argv else None
+if TASKS: train = [s for s in train if s[3] in TASKS]; dev = [s for s in dev if s[3] in TASKS]
 # lookup 행을 몇 배로 더 본다. 대조 행(룬 쿨타임·게임 규칙 → new)을 넣으면 "W 쿨타임 알려줘" 같은 맨 조회가 new 로 밀렸다.
 UP = arg("upweight-lookup", 1)
 if UP > 1: train = train + [s for s in train if s[3] == "act" and s[2] == 6] * (UP - 1)
