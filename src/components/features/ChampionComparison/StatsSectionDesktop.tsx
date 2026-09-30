@@ -272,7 +272,6 @@ export function StatsSectionDesktop({
         </Table>
         </div>
       </DndContext>
-      <p className="mt-3 text-xs leading-relaxed text-muted-foreground">{t.comparison.baseGrowth} · {t.comparison.growthNote}</p>
       {showAddSlot && onAddChampion && championList && (
         <ChampionSelector
           championList={championList}

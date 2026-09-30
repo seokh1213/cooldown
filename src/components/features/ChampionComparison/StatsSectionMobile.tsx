@@ -28,7 +28,6 @@ export function StatsSectionMobile({
     
     return (
       <div className="overflow-x-auto -mx-4 px-4">
-        <p className="mb-3 text-xs leading-relaxed text-muted-foreground">{t.comparison.baseGrowth} · {t.comparison.growthNote}</p>
       <div className="min-w-full">
           <div className="relative">
             <div className="border border-border/30 rounded-lg overflow-hidden">
@@ -103,7 +102,6 @@ export function StatsSectionMobile({
 
   return (
     <div className="overflow-x-auto -mx-4 px-4">
-      <p className="mb-3 text-xs leading-relaxed text-muted-foreground">{t.comparison.baseGrowth} · {t.comparison.growthNote}</p>
       <div className="min-w-full">
         <div className="relative">
           <div className="border border-border/30 rounded-lg overflow-hidden">

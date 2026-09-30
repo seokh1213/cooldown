@@ -29,8 +29,6 @@ export interface ComparisonLabels {
   details: string;
   skillDetails: string;
   seconds: string;
-  baseGrowth: string;
-  growthNote: string;
   shorter: string;
   formRankNote: string;
 }
@@ -81,8 +79,6 @@ export const koComparison: ComparisonLabels = {
     "Q·W·E·R마다 내 챔피언과 상대를 나란히 비교합니다. 행은 챔피언 레벨이 아닌 스킬 랭크입니다.",
   shorter: "같은 스킬·랭크에서 더 짧은 쿨타임",
   formRankNote: "스킬 효과 수치: R 랭크 기준",
-  baseGrowth: "기본 + 성장",
-  growthNote: "성장값은 레벨에 따른 증가 기준값이며, 매 레벨 고정 증가량은 아닙니다. 공격 속도 성장은 %입니다.",
   details: "스킬 상세",
   skillDetails: "스킬 설명",
   seconds: "초",
@@ -112,8 +108,6 @@ export const enComparison: ComparisonLabels = {
     "Each Q/W/E/R group pairs your champion with the opponent. Rows are ability ranks, not champion levels.",
   shorter: "Shorter cooldown at the same ability rank",
   formRankNote: "Effect values scale with R rank",
-  baseGrowth: "Base + growth",
-  growthNote: "Growth is the stat’s level-scaling value, not a fixed increase each level. Attack speed growth is a percentage.",
   details: "Ability details",
   skillDetails: "Ability descriptions",
   seconds: "sec",
@@ -141,8 +135,6 @@ export const zhComparison: ComparisonLabels = {
   tableNote: "Q/W/E/R 各组并排比较双方英雄。行表示技能等级，而非英雄等级。",
   shorter: "同一技能、同一等级下更短的冷却时间",
   formRankNote: "技能效果数值随 R 等级变化",
-  baseGrowth: "基础 + 成长",
-  growthNote: "成长值是随英雄等级变化的计算基准，并非每级固定增量。攻击速度成长以百分比表示。",
   details: "技能详情",
   skillDetails: "技能说明",
   seconds: "秒",
