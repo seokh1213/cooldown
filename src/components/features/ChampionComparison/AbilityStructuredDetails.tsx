@@ -1,15 +1,24 @@
+import { Fragment } from "react";
 import type { NormalizedSpellScaling } from "@/types/combatNormalized";
 import type {
+  AbilityLevelValues,
   AbilitySimulation,
   AbilitySimulationStat,
   AbilitySimulationTerm,
 } from "@/data/contracts/championData";
 import { StatKey, type FormulaPart } from "@/types/combatStats";
 import { formatExpr, stacksLabelFor } from "@/lib/abilitySimulationExpr";
+import { levelTableColumns, type LevelTableCell, type LevelTableHead } from "@/lib/championLevelTable";
+import { formatLevelRangeLabel } from "@/lib/spellTooltipParser/calculationResultFormatter";
+import { LEVEL_GLYPH, LEVEL_ICON_CLASS, statIconUrl } from "@/lib/spellTooltipParser/statIcons";
 import { useTranslation } from "@/i18n";
+import { fill } from "@/i18n/fill";
+
+type SkillTooltipLabels = ReturnType<typeof useTranslation>["t"]["skillTooltip"];
 
 interface AbilityStructuredDetailsProps {
   rankValues?: Array<{ label: string; values: string }>;
+  levelValues?: AbilityLevelValues[];
   scalings?: NormalizedSpellScaling[];
   conditions?: string[];
   diagnostics?: { unresolvedTokens: string[] };
@@ -94,6 +103,73 @@ function simulationScalingRows(
   }));
 }
 
+function levelHeadText(head: LevelTableHead, labels: SkillTooltipLabels): string {
+  if (head.kind === "perLevel") return labels.perLevel;
+  if (head.onward) return fill(labels.levelOnward, { level: head.from });
+  if (head.to != null) return fill(labels.levelSpan, { from: head.from, to: head.to });
+  return fill(labels.levelSingle, { level: head.from });
+}
+
+/** "레벨당" 머리 아래 증가량은 머리가 이미 레벨당이라 "씩" 을 붙이지 않는다 */
+function levelCellText(cell: LevelTableCell, head: LevelTableHead, labels: SkillTooltipLabels): string {
+  if (cell.kind === "value") return cell.text;
+  if (cell.kind === "growth") return `${cell.first} → ${cell.last}`;
+  return head.kind === "perLevel" ? cell.text : fill(labels.perLevelStep, { value: cell.text });
+}
+
+/** 툴팁 본문의 레벨 범위 "(a ~ b⌃)" 와 같은 모양. 어느 범위의 표인지 본문과 맞대 볼 수 있다 */
+function LevelRangeLabel({ entry }: { entry: AbilityLevelValues }) {
+  const label = formatLevelRangeLabel(entry);
+  return (
+    <span className="whitespace-nowrap pt-px">
+      {label.slice(0, -1)}
+      <img src={statIconUrl(LEVEL_GLYPH)} alt="" decoding="async" className={LEVEL_ICON_CLASS} />
+      )
+    </span>
+  );
+}
+
+/** 레벨 범위마다 레벨 머리와 값 두 줄. 칸을 고르는 규칙은 `levelTableColumns` */
+function LevelValuesSection({ entries, labels }: { entries: AbilityLevelValues[]; labels: SkillTooltipLabels }) {
+  return (
+    <section aria-label={labels.levelValuesTitle}>
+      <div className="mb-1 font-semibold text-foreground">{labels.levelValuesTitle}</div>
+      <div className="grid grid-cols-[auto_minmax(0,1fr)] items-start gap-x-3 gap-y-1.5">
+        {entries.map((entry, index) => {
+          const columns = levelTableColumns(entry);
+          return (
+            <Fragment key={index}>
+              <LevelRangeLabel entry={entry} />
+              <div className="overflow-x-auto">
+                <table className="border-collapse tabular-nums">
+                  <thead>
+                    <tr>
+                      {columns.map((column, columnIndex) => (
+                        <th key={columnIndex} scope="col" className="whitespace-nowrap py-px pr-2 text-left font-medium">
+                          {levelHeadText(column.head, labels)}
+                        </th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      {columns.map((column, columnIndex) => (
+                        <td key={columnIndex} className="whitespace-nowrap py-px pr-2 font-semibold text-foreground">
+                          {levelCellText(column.cell, column.head, labels)}
+                        </td>
+                      ))}
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </Fragment>
+          );
+        })}
+      </div>
+    </section>
+  );
+}
+
 export function AbilityStructuredDetails(props: AbilityStructuredDetailsProps) {
   const { t, lang } = useTranslation();
   const normalizedScalingRows = (props.scalings ?? []).flatMap((scaling) => {
@@ -117,6 +193,9 @@ export function AbilityStructuredDetails(props: AbilityStructuredDetailsProps) {
 
   return (
     <div className="space-y-3 border-t pt-3 text-[11px] leading-relaxed text-muted-foreground">
+      {props.levelValues && props.levelValues.length > 0 && (
+        <LevelValuesSection entries={props.levelValues} labels={t.skillTooltip} />
+      )}
       {props.rankValues && props.rankValues.length > 0 && (
         <section aria-label={t.skillTooltip.rankValuesTitle}>
           <div className="mb-1 font-semibold text-foreground">{t.skillTooltip.rankValuesTitle}</div>

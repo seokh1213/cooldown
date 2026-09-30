@@ -2,7 +2,7 @@ import type { ChampionSpell } from "@/types";
 import { logger } from "@/lib/logger";
 import { binHashKey } from "./binHash";
 import { resolveCalculationOverride } from "./runtimeTokenAliases";
-import { formatCalculationResult } from "./calculationResultFormatter";
+import { formatCalculationResult, type LevelValuesReporter } from "./calculationResultFormatter";
 import { evaluateSpellCalculation } from "./spellCalculationEvaluator";
 import type {
   CommunityDragonSpellData,
@@ -14,6 +14,7 @@ import type {
 /**
  * mSpellCalculations에서 대소문자를 구분하지 않고 계산식을 찾아 표시 문자열로 변환한다.
  * @param firstRank 0 이면 계산식 안의 DataValues 를 0랭크 값부터 읽는다
+ * @param reportLevelValues 적은 레벨 범위의 레벨별 값을 받는다
  */
 export function replaceCalculateData(
   parseResult: ParseResult,
@@ -22,6 +23,7 @@ export function replaceCalculateData(
   lang: TooltipLocale = "ko_KR",
   reportDrop?: (entry: DroppedCalculation) => void,
   firstRank: 0 | 1 = 1,
+  reportLevelValues?: LevelValuesReporter,
 ): string | null {
   const calculations = communityDragonData?.mSpellCalculations;
   if (!communityDragonData || !calculations) return null;
@@ -61,7 +63,7 @@ export function replaceCalculateData(
         });
       }
     }
-    return formatCalculationResult(result, lang);
+    return formatCalculationResult(result, lang, reportLevelValues);
   } catch (error) {
     logger.error("Failed to evaluate calculation:", error);
     return null;

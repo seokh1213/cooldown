@@ -1,4 +1,6 @@
 import { ChampionSpell } from "@/types";
+import type { AbilityLevelValues } from "@/data/contracts/championData";
+import type { LevelValuesReporter } from "./calculationResultFormatter";
 import {
   CommunityDragonSpellData,
   DroppedCalculation,
@@ -34,6 +36,8 @@ interface VariableReplacementResult {
   unresolvedTokens: string[];
   /** 계산식을 평가하다 값을 버린 자리 (툴팁에는 남은 항만 적힌다) */
   droppedCalculations: DroppedCalculation[];
+  /** 적은 레벨 범위의 레벨별 값. 문구에 나온 순서이고 같은 값은 한 번만 싣는다 */
+  levelValues: AbilityLevelValues[];
 }
 
 function replaceVariableTokens(
@@ -48,6 +52,11 @@ function replaceVariableTokens(
   const reportDrop = (entry: DroppedCalculation): void => {
     const id = `${entry.key}|${entry.reason}|${entry.detail ?? ""}`;
     if (!dropped.has(id)) dropped.set(id, entry);
+  };
+  const levelValues = new Map<string, AbilityLevelValues>();
+  const reportLevelValues: LevelValuesReporter = (entry) => {
+    const id = JSON.stringify(entry);
+    if (!levelValues.has(id)) levelValues.set(id, entry);
   };
 
   const replaced = text.replace(variableRegex, (_match, variableName) => {
@@ -91,7 +100,8 @@ function replaceVariableTokens(
       spell,
       communityDragonData,
       lang,
-      reportDrop
+      reportDrop,
+      reportLevelValues
     );
 
     if (replacement !== null) {
@@ -110,6 +120,7 @@ function replaceVariableTokens(
     droppedCalculations: [...dropped.values()].sort((left, right) =>
       `${left.key}|${left.reason}`.localeCompare(`${right.key}|${right.reason}`)
     ),
+    levelValues: [...levelValues.values()],
   };
 }
 
@@ -147,7 +158,8 @@ function cleanupPlaceholdersAndIcons(text: string): string {
   result = result.replace(/\s+%\s+/g, " "); // 공백으로 둘러싸인 % 제거
   // 숫자(또는 미해석 표시)와 붙어 있지 않은 % 만 제거한다.
   // 레벨 범위 "(1 ~ 10)%" 의 % 는 값에 붙은 것이라 남긴다 (세나 P "(1 ~ 10)% 현재 체력").
-  result = result.replace(/(?<![\d?]|~ -?[\d.]+\))\s*%\s*(?![\d?])/g, "");
+  // 범위 괄호 안 끝에는 레벨 글리프 자리 표시가 붙어 있다.
+  result = result.replace(/(?<![\d?]|~ -?[\d.]+(?:\[\[si:scalelevel]])?\))\s*%\s*(?![\d?])/g, "");
   // 시작/끝 부분의 % 도, 숫자와 붙어있지 않은 경우에만 제거
   result = result.replace(/^\s*%\s*(?![\d?])/g, ""); // 시작 부분의 단독 % 제거
   result = result.replace(/(?<![\d?])\s*%\s*$/g, ""); // 끝 부분의 단독 % 제거
@@ -188,7 +200,7 @@ export function replaceVariablesWithDiagnostics(
   communityDragonData?: CommunityDragonSpellData,
   lang: TooltipLocale = "ko_KR"
 ): VariableReplacementResult {
-  if (!spell) return { text, unresolvedTokens: [], droppedCalculations: [] };
+  if (!spell) return { text, unresolvedTokens: [], droppedCalculations: [], levelValues: [] };
 
   let result = text;
 
@@ -217,6 +229,7 @@ export function replaceVariablesWithDiagnostics(
     text: result,
     unresolvedTokens: replacement.unresolvedTokens,
     droppedCalculations: replacement.droppedCalculations,
+    levelValues: replacement.levelValues,
   };
 }
 
@@ -232,7 +245,8 @@ export function replaceVariable(
   spell: ChampionSpell,
   communityDragonData?: CommunityDragonSpellData,
   lang: TooltipLocale = "ko_KR",
-  reportDrop?: (entry: DroppedCalculation) => void
+  reportDrop?: (entry: DroppedCalculation) => void,
+  reportLevelValues?: LevelValuesReporter
 ): string | null {
   const effectAlias = /^Effect(\d+)Amount(.*)$/i.exec(trimmedVar);
   const runtimeAlias = resolveRuntimeTokenAlias(spell.id, trimmedVar);
@@ -288,7 +302,7 @@ export function replaceVariable(
   if (byData !== null) return byData;
 
   // 2. 안 되면 mSpellCalculations
-  return replaceCalculateData(parseResult, valueSpell, data, lang, reportSiblingDrop, firstRank);
+  return replaceCalculateData(parseResult, valueSpell, data, lang, reportSiblingDrop, firstRank, reportLevelValues);
 }
 
 /**

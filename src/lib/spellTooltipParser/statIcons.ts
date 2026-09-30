@@ -39,13 +39,28 @@ export function statIconToken(icon: string | undefined): string {
   return icon ? `[[si:${icon}]]` : "";
 }
 
+/** 챔피언 레벨에 따라 달라지는 값의 글리프. 게임도 레벨 범위 끝에 붙인다 */
+export const LEVEL_GLYPH = "scalelevel";
+export const LEVEL_ICON = statIconToken(LEVEL_GLYPH);
+
+/** 레벨 글리프는 범위 괄호 안 끝에 붙어 오른쪽 여백 없이 따로 그린다(`src/index.css`) */
+export const LEVEL_ICON_CLASS = "level-icon inline-block";
+
+/**
+ * 레벨 범위 "(a ~ b⌃)" 전체. 글리프가 그림이라 그 앞뒤에서 줄이 바뀌어 ")" 만 다음 줄로 넘어가던 것을
+ * 범위째 한 줄로 묶는다.
+ */
+const LEVEL_RANGE = /\((-?[\d.]+%? ~ -?[\d.]+%?)\[\[si:scalelevel]]\)/g;
+
 /** 자리 표시를 실제 `<img>` 로 바꾼다 (툴팁 HTML 전용) */
 export function renderStatIconTokens(text: string): string {
-  return text.replace(
-    STAT_ICON_TOKEN,
-    (_match, icon: string) =>
-      `<img src="${ICON_BASE()}${icon}.webp" alt="" decoding="async" class="${ICON_CLASS}" />`,
-  );
+  return text
+    .replace(LEVEL_RANGE, (_match, range: string) => `<span class="whitespace-nowrap">(${range}${LEVEL_ICON})</span>`)
+    .replace(
+      STAT_ICON_TOKEN,
+      (_match, icon: string) =>
+        `<img src="${ICON_BASE()}${icon}.webp" alt="" decoding="async" class="${icon === LEVEL_GLYPH ? LEVEL_ICON_CLASS : ICON_CLASS}" />`,
+    );
 }
 
 /**

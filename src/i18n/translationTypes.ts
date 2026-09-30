@@ -152,6 +152,14 @@ export interface Translations {
     skillDescription: string;
     viewDetail: string;
     rankValuesTitle: string;
+    levelValuesTitle: string;
+    /** 챔피언 레벨 표 머리. {level}, {from}, {to} 에 레벨 숫자가 들어간다 */
+    levelSingle: string;
+    levelSpan: string;
+    levelOnward: string;
+    perLevel: string;
+    /** 레벨마다 더해지는 양. {value} 에 "+10" 이 들어간다 */
+    perLevelStep: string;
     scalingsTitle: string;
     conditionsTitle: string;
     diagnosticsTitle: string;

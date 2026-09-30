@@ -1,8 +1,13 @@
+import type { AbilityLevelValues } from "@/data/contracts/championData";
 import type { CalcResult, StatPart, TooltipLocale, Value } from "./types";
 import { getTranslations } from "@/i18n";
+import { ABILITY_SCALING_MAX_LEVEL, CHAMPION_MAX_LEVEL } from "@/lib/championLevel";
 import { logger } from "@/lib/logger";
-import { statIconToken } from "./statIcons";
+import { LEVEL_ICON, statIconToken } from "./statIcons";
 import { add, isVector, scaleBy100, valueToTooltipString } from "./valueUtils";
+
+/** 툴팁에 레벨 범위를 하나 적을 때마다 그 범위의 레벨별 값을 받는다 */
+export type LevelValuesReporter = (entry: AbilityLevelValues) => void;
 
 function scalePercent(value: Value, precision?: number): Value {
   if (precision == null) return scaleBy100(value);
@@ -99,50 +104,90 @@ function isZeroValue(value: Value): boolean {
 /** 자릿수가 정해지지 않은 배율·스탯 계수 레벨 범위는 소수 둘째 자리까지 적는다 */
 const LEVEL_RANGE_DEFAULT_DIGITS = 2;
 
+type LevelValueFormat = Pick<AbilityLevelValues, "digits" | "trimZeros">;
+
+/** 레벨별 값 하나를 적는다. 툴팁 범위 끝값과 챔피언 레벨별 수치 표가 같이 쓴다 */
+export function formatLevelValue(value: number, format: LevelValueFormat): string {
+  if (!Number.isFinite(value)) return String(value);
+  return format.trimZeros
+    ? formatFixed(value, format.digits)
+    : roundDecimal(value, format.digits).toFixed(format.digits);
+}
+
+/** 레벨 범위 문구 "(a ~ b)". 끝값은 1레벨과 18레벨 값이다 */
+export function formatLevelRangeLabel(entry: AbilityLevelValues): string {
+  const suffix = entry.percent ? "%" : "";
+  const minimum = formatLevelValue(entry.values[0], entry);
+  const maximum = formatLevelValue(entry.values[ABILITY_SCALING_MAX_LEVEL - 1], entry);
+  return `(${minimum}${suffix} ~ ${maximum}${suffix})`;
+}
+
 /**
- * 기본 수치의 [1레벨, 18레벨] 범위를 인게임 툴팁처럼 적는다. value 는 이미 퍼센트로 바꾼 값이다.
+ * 레벨별 값을 "(a ~ b)" 로 적고 끝에 레벨 글리프를 붙인다. series 는 이미 퍼센트로 바꾼 값이다.
+ * 적은 범위의 레벨별 값은 report 로 넘긴다. float32 잡음은 유효숫자 7자리로 걷어 싣는다.
+ */
+function formatLevelSeries(
+  series: readonly number[],
+  suffix: string,
+  format: LevelValueFormat,
+  report?: LevelValuesReporter,
+): string {
+  const entry: AbilityLevelValues = {
+    values: series.map((value) => Number(value.toPrecision(7))),
+    digits: format.digits,
+    ...(format.trimZeros ? { trimZeros: true as const } : {}),
+    ...(suffix === "%" ? { percent: true as const } : {}),
+  };
+  report?.(entry);
+  // 표의 줄 이름도 formatLevelRangeLabel 로 적어 툴팁 문구와 같다
+  return `${formatLevelRangeLabel(entry).slice(0, -1)}${LEVEL_ICON})`;
+}
+
+/**
+ * 기본 수치의 레벨 범위를 인게임 툴팁처럼 적는다. series 는 이미 퍼센트로 바꾼 값이다.
  * 자릿수는 mPrecision 그대로(없으면 정수, -1 이면 반올림하지 않음)이고 끝자리 0 도 남긴다
  * (인게임: 카시오페아 P (5% ~ 36%), 나르 P 방어력 (4 ~ 55), 공격 속도 (5.5% ~ 99.0%), 샤코 P (23 ~ 75)).
  */
-function formatGameLevelRange(range: readonly number[], suffix: string, precision?: number): string {
-  const format = (entry: number): string => {
-    if (!Number.isFinite(entry)) return String(entry);
-    if (precision === EXACT_PRECISION) return formatFixed(entry, EXACT_DIGITS);
-    const digits = precision ?? 0;
-    return roundDecimal(entry, digits).toFixed(digits);
-  };
-  const [minimum, maximum] = range.map(format);
-  return `(${minimum}${suffix} ~ ${maximum}${suffix})`;
+function formatGameLevelRange(
+  series: readonly number[],
+  suffix: string,
+  precision: number | undefined,
+  report?: LevelValuesReporter,
+): string {
+  const format: LevelValueFormat = precision === EXACT_PRECISION
+    ? { digits: EXACT_DIGITS, trimZeros: true }
+    : { digits: precision ?? 0 };
+  return formatLevelSeries(series, suffix, format, report);
 }
 
 /**
- * 배율·스탯 계수의 [1레벨, 18레벨] 범위를 "(a ~ b)" 로 적는다. value 는 이미 퍼센트로 바꾼 값이다.
+ * 배율·스탯 계수의 레벨 범위를 "(a ~ b)" 로 적는다. series 는 이미 퍼센트로 바꾼 값이다.
  * 정수로 자르면 "× (1.3 ~ 1.6)" 이나 "(3.5% ~ 10.5%) 공격력" 의 뜻이 망가져 소수 둘째 자리까지 둔다.
  */
 function formatLevelRange(
-  range: readonly number[],
+  series: readonly number[],
   suffix: string,
-  precision?: number,
+  precision: number | undefined,
+  report?: LevelValuesReporter,
 ): string {
-  const digits = precision ?? LEVEL_RANGE_DEFAULT_DIGITS;
-  const [minimum, maximum] = range.map((entry) => formatFixed(entry, digits));
-  return `(${minimum}${suffix} ~ ${maximum}${suffix})`;
+  return formatLevelSeries(series, suffix, { digits: precision ?? LEVEL_RANGE_DEFAULT_DIGITS, trimZeros: true }, report);
 }
 
-function isRangePair(value: Value): value is [number, number] {
-  return isVector(value) && value.length === 2;
+/** 레벨 범위 값은 1~20레벨 값 배열이다. 랭크 값 배열은 이 길이가 되지 않는다 */
+function isLevelSeries(value: Value): value is number[] {
+  return isVector(value) && value.length === CHAMPION_MAX_LEVEL;
 }
 
-function formatRange(result: CalcResult, base: Value): string | null {
+function formatRange(result: CalcResult, base: Value, report?: LevelValuesReporter): string | null {
   const isRange = result.isCharLevelRange || result.isBreakpointRange;
-  if (!isRange || !isRangePair(base)) return null;
-  return formatGameLevelRange(base, result.isPercent ? "%" : "", result.precision);
+  if (!isRange || !isLevelSeries(base)) return null;
+  return formatGameLevelRange(base, result.isPercent ? "%" : "", result.precision, report);
 }
 
-function formatBase(result: CalcResult, base: Value): string | null {
+function formatBase(result: CalcResult, base: Value, report?: LevelValuesReporter): string | null {
   if (isZeroValue(base)) return null;
 
-  const range = formatRange(result, base);
+  const range = formatRange(result, base, report);
   if (range) return range;
 
   const digits = detailDigits(result.precision);
@@ -178,7 +223,8 @@ function scaleRatio(ratio: Value, factor: number): Value {
 function formatStatPart(
   part: StatPart,
   lang: TooltipLocale,
-  precision?: number,
+  precision: number | undefined,
+  report?: LevelValuesReporter,
 ): string {
   const tiny = Boolean(part.name) && isTinyRatio(part.ratio);
   const ratioValue = tiny ? scaleRatio(part.ratio, 100) : part.ratio;
@@ -186,9 +232,9 @@ function formatStatPart(
   const template = getTranslations(lang).common.perHundredStat;
 
   // 레벨 범위 계수는 "5/45%" 처럼 랭크 값으로 읽히지 않게 "(5% ~ 45%)" 로 적는다
-  if (part.isLevelRange && isRangePair(ratioValue)) {
-    if (!tiny) return `(${icon}${formatLevelRange(ratioValue, "%", precision)} ${part.name})`;
-    return `(${icon}${template.replace("{stat}", part.name).replace("{value}", formatLevelRange(ratioValue, "", precision))})`;
+  if (part.isLevelRange && isLevelSeries(ratioValue)) {
+    if (!tiny) return `(${icon}${formatLevelRange(ratioValue, "%", precision, report)} ${part.name})`;
+    return `(${icon}${template.replace("{stat}", part.name).replace("{value}", formatLevelRange(ratioValue, "", precision, report))})`;
   }
 
   const ratio = precision == null
@@ -206,15 +252,16 @@ function formatStatPart(
  */
 function formatStatMultiplier(
   multiplierResult: CalcResult["statMultiplier"],
+  report?: LevelValuesReporter,
 ): string | null {
   if (!multiplierResult) return null;
   const { base, statParts, isPercent, isLevelRange } = multiplierResult;
   const terms: string[] = [];
 
-  if (isLevelRange && isRangePair(base)) {
+  if (isLevelRange && isLevelSeries(base)) {
     // 레벨 범위 배율은 랭크 값("1.3/1.6")으로 읽히지 않게 범위로 적는다
     const scaled = isPercent ? (scaleBy100(base) as number[]) : base;
-    terms.push(formatLevelRange(scaled, isPercent ? "%" : "", detailDigits(multiplierResult.precision)));
+    terms.push(formatLevelRange(scaled, isPercent ? "%" : "", detailDigits(multiplierResult.precision), report));
   } else if (!isZeroValue(base)) {
     // 퍼센트로 적는 계산식을 배율로 쓰면 base 도 퍼센트여야 한다.
     // 세트 W 의 투지 전환율이 "0.25" 가 아니라 "25%" 로 나와야 하는 경우.
@@ -230,8 +277,8 @@ function formatStatMultiplier(
     // 0% 항은 정보가 없고 문장만 늘린다
     if (isZeroValue(scaled)) continue;
     // 레벨 범위 계수는 "19/40%" 처럼 랭크 값으로 읽히지 않게 "(19% ~ 40%)" 로 적는다
-    const value = part.isLevelRange && isRangePair(scaled)
-      ? formatLevelRange(scaled, "%", detailDigits(multiplierResult.precision))
+    const value = part.isLevelRange && isLevelSeries(scaled)
+      ? formatLevelRange(scaled, "%", detailDigits(multiplierResult.precision), report)
       : `${valueToTooltipString(scaled)}%`;
     terms.push(part.name ? `${statIconToken(part.icon)}${value} ${part.name}` : value);
   }
@@ -245,9 +292,14 @@ function formatStatMultiplier(
   return single ? terms[0] : `(${terms.join(" + ")})`;
 }
 
+/**
+ * 계산 결과를 툴팁 문구로 적는다.
+ * reportLevelValues 는 적은 레벨 범위마다 그 레벨별 값을 문구에 나온 순서대로 받는다.
+ */
 export function formatCalculationResult(
   result: CalcResult,
   lang: TooltipLocale = "ko_KR",
+  reportLevelValues?: LevelValuesReporter,
 ): string | null {
   const base = result.isPercent
     ? scalePercent(result.base, result.precision)
@@ -261,21 +313,22 @@ export function formatCalculationResult(
   });
 
   // 랭크 값과 길이가 달라 합치지 못한 레벨 범위는 옆에 별도 항으로 붙인다
-  const rangeParts = (result.extraRanges ?? []).map((range) => {
-    if (!isRangePair(range)) return valueToTooltipString(range);
+  const formatExtraRange = (range: Value): string => {
+    if (!isLevelSeries(range)) return valueToTooltipString(range);
     const scaled = result.isPercent ? (scalePercent(range, result.precision) as number[]) : range;
-    return formatGameLevelRange(scaled, result.isPercent ? "%" : "", result.precision);
-  });
+    return formatGameLevelRange(scaled, result.isPercent ? "%" : "", result.precision, reportLevelValues);
+  };
 
+  // 적는 순서대로 부른다. 레벨별 값도 이 순서로 넘어간다
   const parts = [
-    formatBase(result, base),
-    ...rangeParts,
-    ...statParts.map((part) => formatStatPart(part, lang, detailDigits(result.precision))),
+    formatBase(result, base, reportLevelValues),
+    ...(result.extraRanges ?? []).map(formatExtraRange),
+    ...statParts.map((part) => formatStatPart(part, lang, detailDigits(result.precision), reportLevelValues)),
   ].filter((part): part is string => part !== null);
 
   // 배율이 여럿이면 차례로 곱한다 (아크샨 E 치명타: … × (1 + 30% 추가 공격 속도) × 100% 치명타 피해량)
   const multipliers = [result.statMultiplier, ...(result.extraMultipliers ?? [])]
-    .map(formatStatMultiplier)
+    .map((entry) => formatStatMultiplier(entry, reportLevelValues))
     .filter((entry): entry is string => entry !== null);
   const multiplier = multipliers.length > 0 ? multipliers.join(" × ") : null;
   if (parts.length === 0) return multiplier;

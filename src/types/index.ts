@@ -1,5 +1,5 @@
 import type { NormalizedSpellScaling } from "./combatNormalized";
-import type { AbilitySimulation } from "@/data/contracts/championData";
+import type { AbilityLevelValues, AbilitySimulation } from "@/data/contracts/championData";
 
 export interface ChampionSkin {
   num: number;
@@ -40,6 +40,8 @@ export interface ChampionSpell {
   rangeBurn?: string;
   image?: { full: string };
   rankValues?: Array<{ label: string; values: string }>;
+  /** 툴팁 레벨 범위의 챔피언 레벨별 값 (툴팁에 나온 순서) */
+  levelValues?: AbilityLevelValues[];
   scalings?: NormalizedSpellScaling[];
   conditions?: string[];
   simulation?: AbilitySimulation;
@@ -61,6 +63,8 @@ export interface ChampionPassive {
   spellId?: string;
   tooltipSource?: "communitydragon";
   rankValues?: Array<{ label: string; values: string }>;
+  /** 툴팁 레벨 범위의 챔피언 레벨별 값 (툴팁에 나온 순서) */
+  levelValues?: AbilityLevelValues[];
   scalings?: NormalizedSpellScaling[];
   conditions?: string[];
   simulation?: AbilitySimulation;

@@ -12,6 +12,19 @@ export interface AbilityRankValue {
   values: string;
 }
 
+/**
+ * 툴팁 레벨 범위 하나의 챔피언 레벨별 값.
+ * values 는 1~20레벨 값이고, 퍼센트로 적는 값은 100 을 곱해 둔다.
+ * 툴팁 범위와 같은 자릿수로 적도록 digits·trimZeros 를 함께 싣는다.
+ */
+export interface AbilityLevelValues {
+  values: number[];
+  digits: number;
+  /** 끝자리 0 을 지운다 (배율·스탯 계수 범위, 반올림하지 않는 값) */
+  trimZeros?: true;
+  percent?: true;
+}
+
 export interface AbilityResourceCost {
   values: number[];
   resource: string;
@@ -119,6 +132,7 @@ export interface AbilityV2 {
   cost?: AbilityResourceCost;
   range: number[];
   rankValues: AbilityRankValue[];
+  levelValues?: AbilityLevelValues[];
   scalings: NormalizedSpellScaling[];
   simulation: AbilitySimulation;
   conditions: string[];

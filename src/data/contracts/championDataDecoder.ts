@@ -7,6 +7,7 @@ import {
   decodeStaticDataMetadata,
   isRecord,
 } from "./staticDataDecoder";
+import { CHAMPION_MAX_LEVEL } from "@/lib/championLevel";
 
 const ABILITY_SLOTS: AbilitySlot[] = ["P", "Q", "W", "E", "R"];
 const SIMULATION_STATS = new Set([
@@ -154,6 +155,23 @@ function assertSimulation(value: unknown): void {
   }
 }
 
+function assertLevelValues(value: unknown): void {
+  if (value === undefined) return;
+  if (!Array.isArray(value)) throw new Error("Invalid ability level values");
+  for (const entry of value) {
+    if (
+      !isRecord(entry) ||
+      !Array.isArray(entry.values) ||
+      entry.values.length !== CHAMPION_MAX_LEVEL ||
+      !entry.values.every(Number.isFinite) ||
+      !Number.isInteger(entry.digits) ||
+      (entry.digits as number) < 0
+    ) {
+      throw new Error("Invalid ability level values");
+    }
+  }
+}
+
 function assertAbility(value: unknown, slot: AbilitySlot): void {
   if (
     !isRecord(value) ||
@@ -170,6 +188,7 @@ function assertAbility(value: unknown, slot: AbilitySlot): void {
     throw new Error(`Invalid ${slot} ability data`);
   }
   assertSimulation(value.simulation);
+  assertLevelValues(value.levelValues);
   if (value.forms !== undefined) assertAbilityForms(value.forms);
 }
 

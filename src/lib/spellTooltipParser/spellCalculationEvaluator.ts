@@ -51,7 +51,7 @@ function createDataValueEvaluator(
 }
 
 /**
- * 레벨 브레이크포인트를 1~18레벨 값으로 펼친다.
+ * 레벨 브레이크포인트를 1~20레벨 값으로 펼친다.
  * - mAdditionalBonusAtThisLevel: 그 레벨에서 한 번 더해지는 값
  * - mBonusPerLevelAtAndAfter: 그 레벨부터 레벨당 붙는 증가량.
  *   이 필드가 없는 브레이크포인트는 "증가 종료" 를 뜻해 0 으로 덮어쓴다.
@@ -79,16 +79,16 @@ interface ScaleTarget {
   base: Value;
   statParts: StatPart[];
   extraRanges?: Value[];
-  /** base 가 [1레벨값, 18레벨값] 범위인지 여부 */
+  /** base 가 1~20레벨 값인 레벨 범위인지 여부 */
   isLevelRange?: boolean;
 }
 
 /**
  * 숫자 배율을 base·스탯 계수·레벨 범위 항에 곱해 접는다.
  *
- * 랭크 벡터(길이 = 최대 랭크)와 레벨 범위(길이 2, [1레벨, 18레벨])는 축이 달라
+ * 랭크 벡터(길이 = 최대 랭크)와 레벨 범위(길이 20, 1~20레벨)는 축이 달라
  * 원소끼리 곱하면 안 된다. 한쪽이 랭크, 다른 쪽이 레벨이면 접지 않고 null 을 돌려
- * 호출부가 "× 배율" 로 따로 적게 한다. 길이가 우연히 같아도(최대 랭크 2) 섞지 않는다.
+ * 호출부가 "× 배율" 로 따로 적게 한다.
  */
 function scaleResult(
   target: ScaleTarget,
@@ -173,7 +173,7 @@ function evaluateGameCalculation(
   const range = evaluateRange(calc);
   if (range) return applyMultiplier(key, { ...range, precision }, calc.mMultiplier, ctx, visited);
 
-  // 랭크 값과 레벨 범위([1레벨, 18레벨])는 따로 모은다.
+  // 랭크 값과 레벨 범위(1~20레벨 값)는 따로 모은다.
   // 한 줄로 더하면 항 순서에 따라 결과가 갈린다. 레벨 범위가 먼저 오면
   // 뒤에 오는 랭크 벡터가 길이 불일치로 버려졌다 (우디르 W 각성 보호막의 ShieldBase).
   let rankBase: Value = 0;

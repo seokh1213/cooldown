@@ -29,7 +29,7 @@ test("renders precomputed passive and Q values", async ({ page }) => {
   await expect(qTooltip).toContainText("20/45/70/95/120");
   await expect(qTooltip).toContainText("방어력이 10/15/20/25/30%");
   await expect(qTooltip).toContainText("피해를 입힐 때 효과가 발동합니다");
-  await expect(qTooltip.getByLabel("레벨별 수치")).toContainText("20/45/70/95/120");
+  await expect(qTooltip.getByLabel("스킬 레벨별 수치")).toContainText("20/45/70/95/120");
   await expect(qTooltip.getByLabel("계수")).toContainText("추가 공격력");
   await expect(qTooltip.getByLabel("계수")).toContainText("50%");
   await expect(qTooltip).not.toContainText("인게임 툴팁");

@@ -94,6 +94,7 @@ function applyActiveTooltip(
       },
     });
     spell.formDiagnostics = formDiagnostics.length > 0 ? formDiagnostics : undefined;
+    spell.levelValues = localized.levelValues.length > 0 ? localized.levelValues : undefined;
     if (localized.name) spell.name = localized.name;
   });
 }
@@ -189,6 +190,7 @@ export async function localizePassiveTooltips(
     ddragonPassive.tooltipDiagnostics = localized.droppedCalculations
       ? { unresolvedTokens: [], droppedCalculations: localized.droppedCalculations }
       : undefined;
+    ddragonPassive.levelValues = localized.levelValues;
     if (localized.name) ddragonPassive.name = localized.name;
   }
 }

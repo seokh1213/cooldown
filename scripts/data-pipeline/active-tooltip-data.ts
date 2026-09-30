@@ -1,4 +1,5 @@
 import type { ChampionSpell } from "../../src/types";
+import type { AbilityLevelValues } from "../../src/data/contracts/championData";
 import { parseSpellTooltipWithDiagnostics } from "../../src/lib/spellTooltipParser/parser";
 import { parseExpression } from "../../src/lib/spellTooltipParser/expressionParser";
 import type {
@@ -21,6 +22,7 @@ export interface LocalizedActiveTooltip {
   tooltip?: string;
   unresolvedTokens: string[];
   droppedCalculations: DroppedCalculation[];
+  levelValues: AbilityLevelValues[];
   calculationKeys: string[];
   calculationDamageTypes: Record<string, "physical" | "magical" | "true">;
 }
@@ -29,6 +31,7 @@ interface RenderedFragment {
   html?: string;
   unresolvedTokens: string[];
   droppedCalculations: DroppedCalculation[];
+  levelValues: AbilityLevelValues[];
   calculationKeys: string[];
   calculationDamageTypes: Record<string, "physical" | "magical" | "true">;
 }
@@ -82,6 +85,7 @@ function render(
     return {
       unresolvedTokens: [],
       droppedCalculations: [],
+      levelValues: [],
       calculationKeys: [],
       calculationDamageTypes: {},
     };
@@ -104,6 +108,7 @@ function render(
     html: html || undefined,
     unresolvedTokens: rendered.unresolvedTokens,
     droppedCalculations: rendered.droppedCalculations,
+    levelValues: rendered.levelValues,
     calculationKeys: references.keys,
     calculationDamageTypes: references.damageTypes,
   };
@@ -176,6 +181,7 @@ export function localizeActiveTooltip(
       ...tooltip.droppedCalculations,
       ...extended.droppedCalculations,
     ],
+    levelValues: [...tooltip.levelValues, ...extended.levelValues],
     calculationKeys: [
       ...new Set([...tooltip.calculationKeys, ...extended.calculationKeys]),
     ],

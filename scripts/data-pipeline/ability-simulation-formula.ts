@@ -59,8 +59,9 @@ export function rankMatrix(values: number[]): Matrix {
   return values.map((value) => Array(LEVELS).fill(value));
 }
 
+/** 시뮬레이션 행렬의 열은 1~18레벨이다. 레벨 축 값은 20레벨까지 오므로 앞 LEVELS 개만 쓴다. */
 export function levelMatrix(values: number[], maxRank: number): Matrix {
-  return Array.from({ length: maxRank }, () => [...values]);
+  return Array.from({ length: maxRank }, () => values.slice(0, LEVELS));
 }
 
 function valueFormula(values: Matrix): LinearFormula {

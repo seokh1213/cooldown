@@ -1,12 +1,15 @@
 /**
  * 스킬 수치의 챔피언 레벨 축
  *
- * 인게임 툴팁은 레벨 범위를 1~18레벨로 적는다. 챔피언은 탑 라인 역할 퀘스트로 20레벨까지 오르고,
- * 레벨 구간형 값은 19·20레벨에도 오르지만(요네 W 미니언 최소 피해 450·490) 레벨 보간형은
- * 18레벨 값에 머문다(샤코 P). 툴팁 범위와 스킬 시뮬레이션은 1~18레벨 값을 쓴다.
+ * 챔피언은 탑 라인 역할 퀘스트로 20레벨까지 오른다. 레벨 구간형 값은 19·20레벨에도 오르고
+ * (요네 W 미니언 최소 피해 450·490, 라칸 P 보호막 재사용 대기시간은 19레벨부터 증가량이 바뀐다)
+ * 레벨 보간형은 18레벨 값에 머문다(샤코 P). 인게임 툴팁은 레벨 범위를 1~18레벨 끝값으로 적는다.
  *
- * 레벨별 값 배열은 [0] 이 1레벨이고 길이는 ABILITY_SCALING_MAX_LEVEL 이다.
+ * 레벨별 값 배열은 [0] 이 1레벨이고 길이는 CHAMPION_MAX_LEVEL 이다.
  */
+export const CHAMPION_MAX_LEVEL = 20;
+
+/** 툴팁 레벨 범위의 끝 레벨이자 레벨 보간이 멈추는 레벨 */
 export const ABILITY_SCALING_MAX_LEVEL = 18;
 
 export interface LevelBreakpoint {
@@ -36,7 +39,7 @@ export function breakpointLevelValues(
   const perLevelAtLevel1 = atLevel1.reduce((sum, entry) => sum + (entry.mBonusPerLevelAtAndAfter ?? 0), 0);
   const additionalAtLevel1 = atLevel1.reduce((sum, entry) => sum + (entry.mAdditionalBonusAtThisLevel ?? 0), 0);
   const values = [level1 + perLevelAtLevel1 + additionalAtLevel1];
-  for (let level = 2; level <= ABILITY_SCALING_MAX_LEVEL; level += 1) {
+  for (let level = 2; level <= CHAMPION_MAX_LEVEL; level += 1) {
     let perLevel = initialPerLevel;
     let activeLevel = -1;
     let additional = 0;
@@ -63,7 +66,7 @@ function statProgression(level: number): number {
 }
 
 /**
- * 1레벨 start, 18레벨 end 인 레벨 보간을 레벨별 값으로 편다.
+ * 1레벨 start, 18레벨 end 인 레벨 보간을 레벨별 값으로 편다. 19·20레벨은 18레벨 값이다.
  *
  * scaleByStatProgression 이면(자료의 mScaleByStatProgressionMultiplier) 레벨마다 같은 몫이 아니라
  * 스탯 성장 곡선을 따라 오른다. 끝값은 같고 중간 레벨 값이 달라진다
@@ -75,8 +78,9 @@ export function interpolationLevelValues(
   scaleByStatProgression = false,
 ): number[] {
   const span = statProgression(ABILITY_SCALING_MAX_LEVEL);
-  return Array.from({ length: ABILITY_SCALING_MAX_LEVEL }, (_, index) => {
-    const progress = scaleByStatProgression ? statProgression(index + 1) : index;
+  return Array.from({ length: CHAMPION_MAX_LEVEL }, (_, index) => {
+    const level = Math.min(index + 1, ABILITY_SCALING_MAX_LEVEL);
+    const progress = scaleByStatProgression ? statProgression(level) : level - 1;
     return start + ((end - start) * progress) / span;
   });
 }
@@ -86,11 +90,11 @@ export function interpolationLevelValues(
  *
  * values[i] 가 i레벨 값이다. [0] 은 0레벨이라 쓰지 않는다
  * (럭스 P `[20, 30, 40, …]` 의 1레벨은 30, 위키 30 ~ 200).
- * 18레벨까지 값이 없으면 마지막 값으로 채운다.
+ * 20레벨까지 값이 없으면 마지막 값으로 채운다.
  */
 export function listedLevelValues(values: readonly number[]): number[] {
-  const byLevel = values.slice(1, ABILITY_SCALING_MAX_LEVEL + 1);
+  const byLevel = values.slice(1, CHAMPION_MAX_LEVEL + 1);
   if (byLevel.length === 0) return [];
-  while (byLevel.length < ABILITY_SCALING_MAX_LEVEL) byLevel.push(byLevel[byLevel.length - 1]);
+  while (byLevel.length < CHAMPION_MAX_LEVEL) byLevel.push(byLevel[byLevel.length - 1]);
   return byLevel;
 }

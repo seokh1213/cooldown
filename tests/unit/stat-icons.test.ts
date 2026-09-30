@@ -55,3 +55,9 @@ test("스탯 아이콘 img 에 stat-icon 클래스와 그림자 제거 스타일
   const css = readFileSync(new URL("../../src/index.css", import.meta.url), "utf8");
   assert.match(css, /img\.stat-icon\s*\{\s*box-shadow:\s*none;/);
 });
+
+test("레벨 범위는 글리프까지 한 줄로 묶고 레벨 글리프는 level-icon 으로 그린다", () => {
+  const html = renderStatIconTokens("최소 (40 ~ 410[[si:scalelevel]])입니다. ([[si:scalehealth]](4% ~ 12.8%[[si:scalelevel]]) 체력)");
+  assert.match(html, /^최소 <span class="whitespace-nowrap">\(40 ~ 410<img [^>]*class="level-icon inline-block" \/>\)<\/span>입니다\. /);
+  assert.match(html, /<img [^>]*class="stat-icon [^"]*" \/><span class="whitespace-nowrap">\(4% ~ 12\.8%<img [^>]*level-icon[^>]*\/>\)<\/span> 체력\)$/);
+});

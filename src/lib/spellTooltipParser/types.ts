@@ -1,4 +1,5 @@
 import { ChampionSpell } from "@/types";
+import type { AbilityLevelValues } from "@/data/contracts/championData";
 
 export type TooltipLocale = "ko_KR" | "en_US" | "zh_CN";
 
@@ -26,6 +27,8 @@ export interface TooltipRenderResult {
   unresolvedTokens: string[];
   /** 계산식을 평가하다 값을 버린 자리 */
   droppedCalculations: DroppedCalculation[];
+  /** 툴팁에 적은 레벨 범위의 레벨별 값. 툴팁에 나온 순서이고 같은 값은 한 번만 싣는다 */
+  levelValues: AbilityLevelValues[];
 }
 
 /**
@@ -122,7 +125,7 @@ export interface StatPart {
   isCoefficient?: boolean;
   /** 어떤 스탯인지 한눈에 보이도록 앞에 붙이는 아이콘 이름 */
   icon?: string;
-  /** ratio 가 [1레벨, 18레벨] 범위인지 여부. 아니면 길이 2 벡터를 랭크 값으로 읽는다 */
+  /** ratio 가 1~20레벨 값인 레벨 범위인지 여부. 아니면 벡터를 랭크 값으로 읽는다 */
   isLevelRange?: boolean;
 }
 
@@ -161,7 +164,7 @@ export interface CalcResult {
     statParts: StatPart[];
     /** base 를 퍼센트로 적어야 하는지 여부 */
     isPercent?: boolean;
-    /** base 가 [1레벨값, 18레벨값] 범위인지 여부 */
+    /** base 가 1~20레벨 값인 레벨 범위인지 여부 */
     isLevelRange?: boolean;
     /** 배율이 다른 계산식이면 그 계산식의 소수점 자릿수 */
     precision?: number;

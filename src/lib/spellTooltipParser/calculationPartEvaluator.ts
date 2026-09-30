@@ -52,11 +52,12 @@ export type DataValueEvaluator = (
   options?: { optional?: boolean },
 ) => Value | null;
 
-/** 레벨별 값을 [1레벨, 18레벨] 범위로 줄인다. 두 값이 같으면 하나로 접는다. */
+/**
+ * 레벨별 값(1~20레벨)을 레벨 범위 값으로 쓴다. 모든 레벨 값이 같으면 하나로 접는다.
+ * 툴팁은 1·18레벨 끝값만 적지만, 합·곱·배율을 레벨마다 따로 적용해야 레벨별 수치 표가 맞다.
+ */
 function levelRange(values: readonly number[]): Value {
-  const first = values[0];
-  const last = values[values.length - 1];
-  return first === last ? first : [first, last];
+  return values.every((value) => value === values[0]) ? values[0] : [...values];
 }
 
 /**
@@ -127,12 +128,12 @@ export function evaluateRange(calc: GameCalculation): CalcResult | null {
 
   const breakpoint = part as ByCharLevelBreakpointsCalculationPart;
   // 표시 6 은 "레벨 범위로 적기", 퍼센트 + 레벨당 증가는 범위 계산식이다.
-  // 둘 다 1~18레벨을 편 값으로 범위를 만든다.
+  // 둘 다 레벨별 값을 편 채로 범위를 만든다.
   const isDisplayRange = calc.mSimpleTooltipCalculationDisplay === 6;
   if (!isDisplayRange && (!isPercent || !breakpoint.mInitialBonusPerLevel)) return null;
   const values = breakpointValues(breakpoint);
   return {
-    base: [values[0], values[values.length - 1]],
+    base: values,
     statParts: [],
     isPercent,
     ...(isDisplayRange ? { isBreakpointRange: true } : { isCharLevelRange: true }),
@@ -448,7 +449,7 @@ export function evaluatePart(
   }
 
   if (type === "ByCharLevelBreakpointsCalculationPart") {
-    // 레벨에 따라 값이 바뀌면 1~18레벨 범위로 노출한다. 레벨당 증가 없이 특정 레벨에서만
+    // 레벨에 따라 값이 바뀌면 레벨 범위로 노출한다. 레벨당 증가 없이 특정 레벨에서만
     // 더해지는 값도 범위다 (니달리 W 덫 개수 4 → 6·11·16레벨에 +2 → 10)
     const range = levelRange(breakpointValues(part as ByCharLevelBreakpointsCalculationPart));
     return isVector(range)

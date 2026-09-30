@@ -39,7 +39,7 @@ export function parseSpellTooltipWithDiagnostics(
   communityDragonData?: CommunityDragonSpellData,
   lang: TooltipLocale = "ko_KR"
 ): TooltipRenderResult {
-  if (!text) return { html: "", unresolvedTokens: [], droppedCalculations: [] };
+  if (!text) return { html: "", unresolvedTokens: [], droppedCalculations: [], levelValues: [] };
 
   const converted = convertXmlTagsToHtml(text);
   const replaced = replaceVariablesWithDiagnostics(
@@ -54,6 +54,7 @@ export function parseSpellTooltipWithDiagnostics(
     html: cleanUnresolvedMarks(sanitizeHtml(replaced.text).replace(/\n/g, "<br />")),
     unresolvedTokens: replaced.unresolvedTokens,
     droppedCalculations: replaced.droppedCalculations,
+    levelValues: replaced.levelValues,
   };
 }
 

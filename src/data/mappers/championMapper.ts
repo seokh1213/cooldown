@@ -59,6 +59,7 @@ export function toSpell(ability: AbilityV2): ChampionSpell {
     rangeBurn: ability.range.join("/"),
     image: { full: ability.iconFile },
     rankValues: ability.rankValues,
+    levelValues: ability.levelValues,
     scalings: ability.scalings,
     conditions: ability.conditions,
     simulation: ability.simulation,
@@ -101,6 +102,7 @@ export function toChampion(detail: ChampionDetailV2): Champion {
       tooltipSource:
         passive.source === "communitydragon" ? "communitydragon" : undefined,
       rankValues: passive.rankValues,
+      levelValues: passive.levelValues,
       scalings: passive.scalings,
       conditions: passive.conditions,
       simulation: passive.simulation,

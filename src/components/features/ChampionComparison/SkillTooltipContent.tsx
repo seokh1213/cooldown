@@ -51,6 +51,7 @@ function PassiveContent(props: SkillTooltipContentProps) {
       )}
       <AbilityStructuredDetails
         rankValues={passive.rankValues}
+        levelValues={passive.levelValues}
         scalings={passive.scalings}
         conditions={passive.conditions}
         diagnostics={passive.tooltipDiagnostics}
@@ -128,6 +129,7 @@ function ActiveSkillContent(props: SkillTooltipContentProps) {
       )}
       <AbilityStructuredDetails
         rankValues={skill.rankValues}
+        levelValues={skill.levelValues}
         scalings={skill.scalings}
         conditions={skill.conditions}
         diagnostics={skill.tooltipDiagnostics}

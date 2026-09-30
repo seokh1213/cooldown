@@ -1,4 +1,5 @@
 import type { ChampionSpell } from "../src/types";
+import type { AbilityLevelValues } from "../src/data/contracts/championData";
 import { parseSpellTooltipWithDiagnostics } from "../src/lib/spellTooltipParser/parser";
 import type {
   CommunityDragonSpellData,
@@ -39,6 +40,8 @@ export interface LocalizedPassiveTooltip {
   tooltip?: string;
   /** 고른 툴팁을 그리며 값을 버린 계산식 자리 */
   droppedCalculations?: DroppedCalculation[];
+  /** 고른 툴팁에 적은 레벨 범위의 레벨별 값 */
+  levelValues?: AbilityLevelValues[];
 }
 
 interface CommunityDragonDataValue {
@@ -137,6 +140,7 @@ function renderTemplate(
   stringTable: StringTable,
   siblings?: Record<string, CommunityDragonSpellData>,
   dropped?: DroppedCalculation[],
+  levels?: AbilityLevelValues[],
 ): string | undefined {
   if (!template) return undefined;
   const spell: ChampionSpell = {
@@ -173,6 +177,7 @@ function renderTemplate(
     locale
   );
   dropped?.push(...result.droppedCalculations);
+  levels?.push(...result.levelValues);
   const rendered = result.html.trim();
   return rendered || undefined;
 }
@@ -186,6 +191,8 @@ export function localizePassiveTooltip(
 ): LocalizedPassiveTooltip {
   const primaryDropped: DroppedCalculation[] = [];
   const alternateDropped: DroppedCalculation[] = [];
+  const primaryLevels: AbilityLevelValues[] = [];
+  const alternateLevels: AbilityLevelValues[] = [];
   const primary = renderTemplate(
     lookupString(stringTable, passive.locKeys.keyTooltip),
     passive,
@@ -193,21 +200,24 @@ export function localizePassiveTooltip(
     stringTable,
     siblings,
     primaryDropped,
+    primaryLevels,
   );
   const buffTooltip = lookupString(
     stringTable,
     `game_buff_tooltip_${passive.id}`,
   );
   const alternate = renderTemplate(
-    buffTooltip, passive, locale, stringTable, siblings, alternateDropped,
+    buffTooltip, passive, locale, stringTable, siblings, alternateDropped, alternateLevels,
   );
   const tooltip = pickTooltip(primary, alternate);
   const dropped = tooltip === primary ? primaryDropped : alternateDropped;
+  const levels = tooltip === primary ? primaryLevels : alternateLevels;
   return {
     name: lookupString(stringTable, passive.locKeys.keyName),
     summary: lookupString(stringTable, passive.locKeys.keySummary),
     tooltip,
     droppedCalculations: dropped.length > 0 ? dropped : undefined,
+    levelValues: levels.length > 0 ? levels : undefined,
   };
 }
 
