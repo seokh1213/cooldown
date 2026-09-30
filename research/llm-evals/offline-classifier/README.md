@@ -10,8 +10,9 @@
 - 파일: `public/models/offline/judge.json` (2.3KB) + `judge.bin` (832KB, fp16). 세 언어 갈래·주제·흐름·내 챔피언 네 헤드
 - 시험: `tests/unit/offline-judge.test.ts` — 파이썬과 TS 가 같은 해시(FNV-1a 32)·버킷·확률을 내는지(`tests/fixtures/offline-judge.json`)
 - 재기: `JUDGE=offline npx tsx scripts/llm/kev-agent/eval-{a,b3,lookup}.ts`, `npx tsx scripts/llm/offline-classifier/bench.ts`
-- **plan.ts 에는 아직 끼우지 않았다**(다른 갈래가 plan.ts 를 고치는 중). 끼울 자리는 `understand` 의 `judging` 조건 — 모델이 없어도
-  `judge` 가 있으면 판정하게 하고, `PlanDeps.judge` 에 `offlineJudge(read)` 를 넣으면 된다.
+- 앱: `PlanContext.judge`(`JudgeTier` = model · offline · none)가 판정기 단계다. `useAskAdvisor` 가 모델을 받아 동의한 기기는 모델
+  판정기(거절하면 오프라인), 그 밖은 오프라인 판정기를 `PlanDeps.judge` 에 끼운다. 오프라인 파일은 판정 헤드와 같은 캐시(`fetchJudgeFile`)에
+  둔다. 낱말 규칙은 판정이 거절될 때(파일도 못 받음)의 마지막 길로만 남는다. 측정 스크립트의 `--no-model` 은 그 낱말 규칙 기준선이다.
 
 ## 결과 (낱말 규칙 / 오프라인 판정기 / 모델 판정기)
 
@@ -27,6 +28,7 @@
 | act 60(판정기만) | — | 39 | 55 |
 | 흐름 60(앱) | 57 | 58 | 59 |
 | lookup 39 흐름(앱) | 32 | 32 | 27 |
+| lookup 39 흐름(앱, 헤드 분리·lookup 칸 뒤 다시 잼) | 34 | 35 | — |
 | 주제 72(손으로 쓴 것, 판정기만) | 낱말 25 | 64 | 64 |
 
 언어별(대화 270턴, 오프라인): T1 ko 29/32 · en 29/33 · zh 26/33, F ko 33/36 · en 34/38 · zh 28/38.
@@ -35,6 +37,8 @@ route-large3 분류기만(앱 보정 없이): 329/374 (ko 112/124, en 106/125, z
 - 크기: json 2,257B + bin 851,968B = 0.83MB (버킷 2^14 × (9+8+7+2)칸 × fp16). 2^15 로 늘려도 개발·시험 점수가 같았다(1.6MB).
 - 속도: 판정 한 번(특징 뽑기 + 내적) 0.07ms(M 시리즈, Node). 파일 읽고 fp16 풀기 7ms.
 - 모델 판정기 기준 값은 `research/llm-evals/kev-agent/a-results-app.json` 과 앞선 기록(route3 338, act 55, 흐름 59, lookup 27).
+- 앱에 끼운 뒤(판정마다 헤드 분리 + 흐름 lookup 칸이 든 갈래 위에서, 2026-09-30) 서버 없이 다시 잼: 대화 270턴 114 → 221, route3 318,
+  흐름 60 은 57 → 58, lookup 39 흐름은 34 → 35(그 갈래에서 낱말 규칙 기준선이 32 → 34). 흐름 판정기만의 act 는 일곱 칸 질문으로 38/60.
 
 ### 틀리는 자리
 
