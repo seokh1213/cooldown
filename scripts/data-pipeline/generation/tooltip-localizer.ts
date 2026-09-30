@@ -74,9 +74,16 @@ function applyActiveTooltip(
     spell.summary = localized.summary ?? spell.description;
     spell.tooltip = localized.tooltip;
     spell.tooltipSource = "communitydragon";
-    spell.tooltipDiagnostics = localized.unresolvedTokens.length > 0
-      ? { unresolvedTokens: localized.unresolvedTokens }
-      : undefined;
+    spell.tooltipDiagnostics =
+      localized.unresolvedTokens.length > 0 || localized.droppedCalculations.length > 0
+        ? {
+            unresolvedTokens: localized.unresolvedTokens,
+            droppedCalculations:
+              localized.droppedCalculations.length > 0
+                ? localized.droppedCalculations
+                : undefined,
+          }
+        : undefined;
     spell.forms = buildAbilityForms({ champion, spell, slot: (["Q", "W", "E", "R"] as const)[index], locale, table: stringTable, aliases, cdragonVersion });
     if (localized.name) spell.name = localized.name;
   });
@@ -170,6 +177,9 @@ export async function localizePassiveTooltips(
     ddragonPassive.description = localized.tooltip;
     ddragonPassive.spellId = passive.id;
     ddragonPassive.tooltipSource = "communitydragon";
+    ddragonPassive.tooltipDiagnostics = localized.droppedCalculations
+      ? { unresolvedTokens: [], droppedCalculations: localized.droppedCalculations }
+      : undefined;
     if (localized.name) ddragonPassive.name = localized.name;
   }
 }

@@ -24,11 +24,52 @@ export type Value = number | number[];
 export interface TooltipRenderResult {
   html: string;
   unresolvedTokens: string[];
+  /** 계산식을 평가하다 값을 버린 자리 */
+  droppedCalculations: DroppedCalculation[];
 }
 
 /**
  * Community Dragon 스킬 데이터 구조
  */
+/**
+ * 계산식을 평가하다 값을 버린 자리.
+ * 툴팁에는 남은 항만 적히므로 겉보기엔 멀쩡하다. 진단으로 모아 기준선에서 막는다.
+ */
+export interface DroppedCalculation {
+  /** 값을 버린 계산식 키 (참조된 안쪽 계산식이면 그 키) */
+  key: string;
+  reason: DroppedCalculationReason;
+  detail?: string;
+}
+
+export type DroppedCalculationReason =
+  /** mFormulaParts 의 항 하나를 풀지 못해 그 항만 빠졌다 */
+  | "unresolved-part"
+  /** 길이가 다른 랭크 벡터끼리라 더하지 못했다 */
+  | "sum-mismatch"
+  /** mMultiplier 를 풀지 못해 배율이 빠졌다 */
+  | "unresolved-multiplier"
+  /** 이름으로 찾는 DataValue 가 없다 (detail: 이름) */
+  | "missing-data-value"
+  /** effectBurn[n] 이 없다 (detail: n) */
+  | "missing-effect-burn"
+  /** 참조한 다른 계산식을 평가하지 못했다 (detail: 키) */
+  | "unresolved-reference"
+  /** 모르는 계산 파트 타입 (detail: 타입) */
+  | "unsupported-part"
+  /** Sum/Clamp 서브 파트를 더하지 못했다 */
+  | "sub-sum-mismatch"
+  /** Clamp 안의 스탯 항은 런타임 스탯 없이 clamp 할 수 없어 뺐다 */
+  | "clamp-stat-dropped"
+  /** StatBySubPart 안의 스탯 비율은 표기할 수 없어 뺐다 */
+  | "stat-subpart-dropped"
+  /** 스탯 × 스탯 곱은 표기할 수 없다 */
+  | "stat-product-unsupported"
+  /** 곱셈의 두 벡터 길이가 달랐다 */
+  | "product-mismatch"
+  /** 어떤 스탯인지 모르는 비율 항이라 툴팁에서 뺐다 (detail: mStat) */
+  | "unknown-stat";
+
 export interface CommunityDragonSpellData {
   DataValues?: Record<string, number[]>;
   mSpellCalculations?: Record<string, SpellCalculation>;
@@ -46,6 +87,11 @@ export interface CommunityDragonSpellData {
    * 제이스·나피리같이 다른 스킬을 가리킬 때도 있어서 형제 스킬 맵이 필요하다.
    */
   siblings?: Record<string, CommunityDragonSpellData>;
+  /**
+   * 이 스킬의 최대 랭크 (DDragon maxrank).
+   * 다른 스킬이 `spell.<이름>:<값>` 으로 이 스킬 값을 부를 때 랭크 축을 맞추는 데 쓴다.
+   */
+  maxRank?: number;
   /** CDragon 원문 툴팁이 실제로 참조한 계산식 키 (등장 순서). */
   preferredSimulationCalculationKeys?: string[];
   /** 원문 피해 태그에서 확인한 계산식별 피해 유형. */
@@ -109,6 +155,8 @@ export interface CalcResult {
     /** base 가 [1레벨값, 18레벨값] 범위인지 여부 */
     isLevelRange?: boolean;
   };
+  /** statMultiplier 뒤에 이어 곱하는 배율 (배율이 겹친 GameCalculationModified) */
+  extraMultipliers?: NonNullable<CalcResult["statMultiplier"]>[];
   /**
    * 소수점 자릿수 (CommunityDragon GameCalculation.mPrecision)
    * - undefined 이면 기존처럼 정수(또는 formatNumber 기본 규칙)로 처리

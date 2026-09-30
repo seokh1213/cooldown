@@ -13,6 +13,7 @@ import type {
   ByCharLevelFormulaCalculationPart,
   ByCharLevelInterpolationCalculationPart,
   CalcResult,
+  DroppedCalculation,
   CalculationPart,
   ClampSubPartsCalculationPart,
   CommunityDragonSpellData,
@@ -38,7 +39,14 @@ import {
   isVector,
 } from "./valueUtils";
 
-export type DataValueEvaluator = (name: string) => Value | null;
+/**
+ * DataValue 이름 → 값.
+ * optional 이면 없어도 진단에 남기지 않는다 (구조 판별용 시험 조회, 게임이 0 으로 읽는 빈 이름).
+ */
+export type DataValueEvaluator = (
+  name: string,
+  options?: { optional?: boolean },
+) => Value | null;
 
 const MAX_CHAMPION_LEVEL = 18;
 
@@ -49,13 +57,17 @@ function expandLevelBreakpoints(part: ByCharLevelBreakpointsCalculationPart): {
 } {
   const level1 = Number(part.mLevel1Value) || 0;
   const breakpoints = part.mBreakpoints ?? [];
-  const hasPerLevel = breakpoints.some(
-    (entry) => typeof entry.mBonusPerLevelAtAndAfter === "number",
-  );
+  // mInitialBonusPerLevel 은 2레벨부터 첫 브레이크포인트 전까지의 레벨당 증가량이다.
+  // 빼먹으면 가렌 P 재생이 1.5% ~ 10.1% 가 아니라 1.5% ~ 2.5%, 아칼리 P 가 35 ~ 182 가 아니라
+  // 35 ~ 164 로 나온다 (위키 대조).
+  const initialPerLevel = Number(part.mInitialBonusPerLevel) || 0;
+  const hasPerLevel =
+    initialPerLevel !== 0 ||
+    breakpoints.some((entry) => typeof entry.mBonusPerLevelAtAndAfter === "number");
 
   let value = level1;
   for (let level = 2; level <= MAX_CHAMPION_LEVEL; level += 1) {
-    let perLevel = 0;
+    let perLevel = initialPerLevel;
     let perLevelFrom = -1;
     for (const entry of breakpoints) {
       if (typeof entry.mLevel !== "number" || level < entry.mLevel) continue;
@@ -110,32 +122,18 @@ export function evaluateRange(calc: GameCalculation): CalcResult | null {
 
   if (part.__type !== "ByCharLevelBreakpointsCalculationPart") return null;
 
-  const breakpoint = part as ByCharLevelBreakpointsCalculationPart & {
-    mInitialBonusPerLevel?: number;
-  };
-  const start = breakpoint.mLevel1Value ?? 0;
-  if (calc.mSimpleTooltipCalculationDisplay === 6) {
-    const end = (breakpoint.mBreakpoints ?? []).reduce(
-      (value, entry) => value + (entry.mAdditionalBonusAtThisLevel ?? 0),
-      start,
-    );
-    return {
-      base: [start, end],
-      statParts: [],
-      isPercent,
-      isBreakpointRange: true,
-    };
-  }
-  if (!isPercent || !breakpoint.mInitialBonusPerLevel) return null;
-
-  const finalLevel = breakpoint.mBreakpoints?.[0]?.mLevel;
-  if (!finalLevel) return null;
-  const steps = Math.max(finalLevel - 2, 0);
+  const breakpoint = part as ByCharLevelBreakpointsCalculationPart;
+  // 표시 6 은 "레벨 범위로 적기", 퍼센트 + 레벨당 증가는 범위 계산식이다.
+  // 둘 다 1~18레벨을 펼친 값으로 범위를 만든다. (예전에는 표시 6 은 한 번 더해지는 값만,
+  // 퍼센트는 첫 브레이크포인트까지만 셌다. 가렌 P 가 1.5% ~ 2.5% 로 끊겼다)
+  const isDisplayRange = calc.mSimpleTooltipCalculationDisplay === 6;
+  if (!isDisplayRange && (!isPercent || !breakpoint.mInitialBonusPerLevel)) return null;
+  const { level1, maxLevel } = expandLevelBreakpoints(breakpoint);
   return {
-    base: [start, start + steps * breakpoint.mInitialBonusPerLevel],
+    base: [level1, maxLevel],
     statParts: [],
-    isPercent: true,
-    isCharLevelRange: true,
+    isPercent,
+    ...(isDisplayRange ? { isBreakpointRange: true } : { isCharLevelRange: true }),
   };
 }
 
@@ -143,6 +141,7 @@ function effectValue(
   spell: ChampionSpell,
   index: number,
   data?: CommunityDragonSpellData,
+  reportDrop?: EvaluatorContext["reportDrop"],
 ): Value | null {
   // CDragon 템플릿은 CDragon 단위를 기대한다. DDragon 값과 단위가 다를 수 있어
   // CDragon 쪽이 있으면 그것을 먼저 쓴다.
@@ -151,6 +150,7 @@ function effectValue(
     logger.debug(`EffectValueCalculationPart: effectBurn[${index}] is missing`, {
       spellId: spell.id,
     });
+    reportDrop?.({ reason: "missing-effect-burn", detail: String(index) });
     return null;
   }
   const values = source
@@ -169,6 +169,11 @@ export interface EvaluatorContext {
   evaluateDataValue: DataValueEvaluator;
   /** 다른 계산식 참조용 */
   evaluateCalculation: (key: string, visited: Set<string>) => CalcResult;
+  /**
+   * 값을 버린 자리를 알린다 (툴팁 진단용).
+   * key 를 비우면 지금 평가 중인 계산식 키가 채워진다.
+   */
+  reportDrop?: (entry: Omit<DroppedCalculation, "key"> & { key?: string }) => void;
 }
 
 /**
@@ -197,8 +202,10 @@ function readLevelPair(
   }
 
   const [startName, endName] = names as [string, string];
-  const start = ctx.evaluateDataValue(startName);
-  const end = ctx.evaluateDataValue(endName);
+  // 구조만 보고 시험 삼아 찾는 것이라 없어도 진단에 남기지 않는다
+  // (버프 중첩 파트의 mBuffName "{8682fc00}" 도 문자열 둘이라 여기 걸린다)
+  const start = ctx.evaluateDataValue(startName, { optional: true });
+  const end = ctx.evaluateDataValue(endName, { optional: true });
   if (start == null || end == null) return null;
   if (isVector(start) || isVector(end)) return null;
   if (start === end) return { base: start, statParts: [] };
@@ -215,6 +222,15 @@ function readLevelPair(
  * 항목의 역할은 DataValue 이름 끝말로 가른다. Riot 이 일관되게 붙이는 이름이고,
  * 못 알아보면 기존처럼 항을 비우므로 틀린 숫자가 나갈 위험은 없다.
  */
+// {4ce08984} 파트의 필드 해시 (CDragon 이 이름을 풀지 못한 BIN 필드)
+const NAMED_BREAKPOINT_FIELDS = {
+  level1: "{91d404a5}",
+  initialBonusPerLevel: "{bbd778a2}",
+  breakpoints: "{9823b29a}",
+  additionalBonusAtThisLevel: "{ae9b464d}",
+  bonusPerLevelAtAndAfter: "{b0d8b2ac}",
+} as const;
+
 function readNamedBreakpoints(
   part: CalculationPart,
   ctx: EvaluatorContext,
@@ -228,9 +244,27 @@ function readNamedBreakpoints(
     .map(([, value]) => value as string);
   if (!listEntry || names.length === 0) return null;
 
-  const level1Name = names.find((name) => /level ?1$/i.test(name)) ?? names[0];
+  // 게임은 없는 DataValue 이름을 0 으로 읽는다 (아칼리 P 의 MSBonusPerLevelAtAndAfter,
+  // 벨베스 P 의 AdditionalBonusAtThisLevel 은 정의되지 않은 이름이다).
+  const optionalScalar = (name: unknown): number | undefined => {
+    if (typeof name !== "string") return undefined;
+    const value = ctx.evaluateDataValue(name, { optional: true });
+    return value == null || isVector(value) ? undefined : value;
+  };
+
+  const level1Name =
+    (typeof record[NAMED_BREAKPOINT_FIELDS.level1] === "string"
+      ? (record[NAMED_BREAKPOINT_FIELDS.level1] as string)
+      : undefined) ??
+    names.find((name) => /level ?1$/i.test(name)) ??
+    names[0];
   const level1 = ctx.evaluateDataValue(level1Name);
   if (level1 == null || isVector(level1)) return null;
+  // 2레벨부터 첫 브레이크포인트 전까지의 레벨당 증가량 (벨베스 P ASPerStackInitialBonusPerLevel).
+  // 빼먹으면 벨베스 P 가 0.1 ~ 2 가 아니라 0.1 ~ 1.8 로 나온다 (위키 대조).
+  const initialBonusPerLevel = optionalScalar(
+    record[NAMED_BREAKPOINT_FIELDS.initialBonusPerLevel],
+  );
 
   const breakpoints: Array<{
     mLevel?: number;
@@ -245,12 +279,22 @@ function readNamedBreakpoints(
     if (level == null) return null;
 
     const point: (typeof breakpoints)[number] = { mLevel: level };
-    for (const value of Object.values(entry)) {
-      if (typeof value !== "string") continue;
-      const resolved = ctx.evaluateDataValue(value);
-      if (resolved == null || isVector(resolved)) continue;
-      if (/AdditionalBonus/i.test(value)) point.mAdditionalBonusAtThisLevel = resolved;
-      else if (/PerLevel/i.test(value)) point.mBonusPerLevelAtAndAfter = resolved;
+    const additional = entry[NAMED_BREAKPOINT_FIELDS.additionalBonusAtThisLevel];
+    const perLevel = entry[NAMED_BREAKPOINT_FIELDS.bonusPerLevelAtAndAfter];
+    if (additional !== undefined || perLevel !== undefined) {
+      const additionalValue = optionalScalar(additional);
+      if (additionalValue !== undefined) point.mAdditionalBonusAtThisLevel = additionalValue;
+      // 브레이크포인트의 레벨당 증가량 자리는 비어 있어도 "여기서 증가가 바뀐다" 는 뜻이라 0 으로 둔다
+      point.mBonusPerLevelAtAndAfter = optionalScalar(perLevel) ?? 0;
+    } else {
+      // 필드 해시가 다르면 예전처럼 DataValue 이름 끝말로 역할을 가른다
+      for (const [key, value] of Object.entries(entry)) {
+        if (key === "__type" || typeof value !== "string") continue;
+        const resolved = optionalScalar(value);
+        if (resolved === undefined) continue;
+        if (/AdditionalBonus/i.test(value)) point.mAdditionalBonusAtThisLevel = resolved;
+        else if (/PerLevel/i.test(value)) point.mBonusPerLevelAtAndAfter = resolved;
+      }
     }
     breakpoints.push(point);
   }
@@ -259,6 +303,7 @@ function readNamedBreakpoints(
   const { level1: start, maxLevel } = expandLevelBreakpoints({
     __type: "ByCharLevelBreakpointsCalculationPart",
     mLevel1Value: level1,
+    mInitialBonusPerLevel: initialBonusPerLevel,
     mBreakpoints: breakpoints,
   });
   if (start === maxLevel) return { base: start, statParts: [] };
@@ -289,6 +334,7 @@ export function evaluatePart(
       };
     } catch (error) {
       logger.debug(`SpellCalculation reference "${referenceKey}" failed`, error);
+      ctx.reportDrop?.({ reason: "unresolved-reference", detail: referenceKey });
       return null;
     }
   }
@@ -305,7 +351,7 @@ export function evaluatePart(
 
   if (type === "EffectValueCalculationPart") {
     const index = (part as EffectValueCalculationPart).mEffectIndex ?? 0;
-    const value = effectValue(ctx.spell, index, ctx.data);
+    const value = effectValue(ctx.spell, index, ctx.data, ctx.reportDrop);
     return value == null ? null : { base: value, statParts: [] };
   }
 
@@ -425,6 +471,7 @@ export function evaluatePart(
         base = add(base, result.base);
       } catch (error) {
         logger.debug("SumOfSubPartsCalculationPart: 합산 실패", error);
+        ctx.reportDrop?.({ reason: "sub-sum-mismatch" });
         return null;
       }
       statParts.push(...result.statParts);
@@ -433,8 +480,10 @@ export function evaluatePart(
   }
 
   if (type === "ProductOfSubPartsCalculationPart") {
-    return evaluateProductPart(part as ProductOfSubPartsCalculationPart, (sub) =>
-      evaluatePart(sub as CalculationPart, ctx, visited),
+    return evaluateProductPart(
+      part as ProductOfSubPartsCalculationPart,
+      (sub) => evaluatePart(sub as CalculationPart, ctx, visited),
+      ctx.reportDrop,
     );
   }
 
@@ -448,12 +497,14 @@ export function evaluatePart(
       // 스탯 비율은 런타임 스탯 없이 clamp 할 수 없어 버린다
       if (result.statParts.length > 0) {
         logger.debug("ClampSubPartsCalculationPart: 스탯 항 제외 (clamp 불가)", sub);
+        ctx.reportDrop?.({ reason: "clamp-stat-dropped" });
       }
       try {
         base = add(base, result.base);
         resolved += 1;
       } catch (error) {
         logger.debug("ClampSubPartsCalculationPart: 합산 실패", error);
+        ctx.reportDrop?.({ reason: "sub-sum-mismatch" });
       }
     }
     if (resolved === 0) return null;
@@ -476,6 +527,7 @@ export function evaluatePart(
     if (!inner) return null;
     if (inner.statParts.length > 0) {
       logger.debug("StatBySubPartCalculationPart: 내부 스탯 비율은 표기 불가", part);
+      ctx.reportDrop?.({ reason: "stat-subpart-dropped" });
     }
     return {
       base: 0,
@@ -518,6 +570,7 @@ export function evaluatePart(
   }
 
   logger.debug(`Unsupported calculation part type "${type}"`, part);
+  ctx.reportDrop?.({ reason: "unsupported-part", detail: type });
   return null;
 }
 

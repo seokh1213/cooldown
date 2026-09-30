@@ -39,7 +39,7 @@ export function parseSpellTooltipWithDiagnostics(
   communityDragonData?: CommunityDragonSpellData,
   lang: TooltipLocale = "ko_KR"
 ): TooltipRenderResult {
-  if (!text) return { html: "", unresolvedTokens: [] };
+  if (!text) return { html: "", unresolvedTokens: [], droppedCalculations: [] };
 
   const converted = convertXmlTagsToHtml(text);
   const replaced = replaceVariablesWithDiagnostics(
@@ -53,6 +53,7 @@ export function parseSpellTooltipWithDiagnostics(
     // 무엇을 못 풀었는지는 계속 보이게 한다.
     html: cleanUnresolvedMarks(sanitizeHtml(replaced.text).replace(/\n/g, "<br />")),
     unresolvedTokens: replaced.unresolvedTokens,
+    droppedCalculations: replaced.droppedCalculations,
   };
 }
 

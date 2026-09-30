@@ -3,6 +3,7 @@ import { test } from "node:test";
 import type { Champion, ChampionSpell } from "../../src/types";
 import {
   assertActiveTooltipReport,
+  pruneAllowlist,
   validateActiveTooltips,
 } from "../../scripts/data-pipeline/active-tooltip-validation";
 import type {
@@ -74,6 +75,7 @@ test("집계와 문제 목록, 허용 목록 안이면 통과", () => {
     fallback: 2,
     withDiagnostics: 3,
     uniqueUnresolvedTokens: 3,
+    droppedCalculations: 0,
   });
   assert.deepEqual(
     report.issues.map(({ championId, locale }) => `${championId}:${locale}`),
@@ -85,4 +87,59 @@ test("집계와 문제 목록, 허용 목록 안이면 통과", () => {
 test("새 토큰이 생기면 막는다", () => {
   report.unexpectedTokens.push("NewToken");
   assert.throws(() => assertActiveTooltipReport(report), /1 new tokens/);
+});
+
+test("값을 버린 계산식 자리는 허용 목록(사유 포함) 밖이면 막고, 해소되면 걷어낸다", () => {
+  const dropped = {
+    tooltipSource: "communitydragon" as const,
+    tooltipDiagnostics: {
+      unresolvedTokens: [],
+      droppedCalculations: [{ key: "TotalDamage", reason: "sum-mismatch" as const }],
+    },
+  };
+  const champions: ChampionsByLocale = new Map([
+    ["ko_KR", new Map([["Test", createChampion("Test", [createSpell("TestQ", dropped)])]])],
+    ["en_US", new Map([["Test", createChampion("Test", [createSpell("TestQ", dropped)])]])],
+  ]);
+  const input = {
+    championsByLocale: champions,
+    patchVersion: "26.17",
+    sources: { ddragon: "16.17.1", cdragon: "16.17" },
+  };
+
+  const blocked = validateActiveTooltips({
+    ...input,
+    allowlist: { unresolvedTokens: [], missingTooltips: [] },
+  });
+  assert.equal(blocked.totals.droppedCalculations, 2);
+  assert.deepEqual(blocked.unexpectedDroppedCalculations, ["Test:Q:TotalDamage:sum-mismatch"]);
+  assert.throws(() => assertActiveTooltipReport(blocked), /1 new dropped calculations/);
+
+  const allowed = validateActiveTooltips({
+    ...input,
+    allowlist: {
+      unresolvedTokens: [],
+      missingTooltips: [],
+      droppedCalculations: [
+        { id: "Test:Q:TotalDamage:sum-mismatch", why: "시험용" },
+        { id: "Gone:W:Old:unresolved-part", why: "해소됨" },
+      ],
+    },
+  });
+  assert.doesNotThrow(() => assertActiveTooltipReport(allowed));
+  assert.deepEqual(allowed.staleAllowedDroppedCalculations, ["Gone:W:Old:unresolved-part"]);
+  const pruned = pruneAllowlist(
+    {
+      unresolvedTokens: [],
+      missingTooltips: [],
+      droppedCalculations: [
+        { id: "Test:Q:TotalDamage:sum-mismatch", why: "시험용" },
+        { id: "Gone:W:Old:unresolved-part", why: "해소됨" },
+      ],
+    },
+    allowed,
+  );
+  assert.deepEqual(pruned.allowlist.droppedCalculations, [
+    { id: "Test:Q:TotalDamage:sum-mismatch", why: "시험용" },
+  ]);
 });

@@ -22,6 +22,8 @@ export interface ChampionSpell {
   tooltipSource?: "communitydragon";
   tooltipDiagnostics?: {
     unresolvedTokens: string[];
+    /** 생성 때만 쓰는 진단. 계산식을 평가하다 값을 버린 자리 */
+    droppedCalculations?: import("@/lib/spellTooltipParser/types").DroppedCalculation[];
   };
   leveltip?: {
     label: string[];
@@ -55,6 +57,8 @@ export interface ChampionPassive {
   simulation?: AbilitySimulation;
   tooltipDiagnostics?: {
     unresolvedTokens: string[];
+    /** 생성 때만 쓰는 진단. 계산식을 평가하다 값을 버린 자리 */
+    droppedCalculations?: import("@/lib/spellTooltipParser/types").DroppedCalculation[];
   };
   image: {
     full: string;

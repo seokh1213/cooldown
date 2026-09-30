@@ -1,4 +1,9 @@
-import type { ProductOfSubPartsCalculationPart, StatPart, Value } from "./types";
+import type {
+  DroppedCalculation,
+  ProductOfSubPartsCalculationPart,
+  StatPart,
+  Value,
+} from "./types";
 import { logger } from "@/lib/logger";
 import { mul } from "./valueUtils";
 
@@ -56,6 +61,7 @@ function isZeroWithoutItems(part: unknown): boolean {
 export function evaluateProductPart(
   part: ProductOfSubPartsCalculationPart,
   evaluatePart: PartEvaluator,
+  reportDrop?: (entry: Omit<DroppedCalculation, "key"> & { key?: string }) => void,
 ): PartResult | null {
   const left = evaluatePart(part.mPart1);
   const right = evaluatePart(part.mPart2);
@@ -70,6 +76,7 @@ export function evaluateProductPart(
       return { base: 0, statParts: [] };
     }
     logger.debug("ProductOfSubPartsCalculationPart: 스탯끼리의 곱은 표기 불가", part);
+    reportDrop?.({ reason: "stat-product-unsupported" });
     return null;
   }
 
@@ -83,6 +90,7 @@ export function evaluateProductPart(
     };
   } catch (error) {
     logger.debug("ProductOfSubPartsCalculationPart: 곱셈 실패", error);
+    reportDrop?.({ reason: "product-mismatch" });
     return null;
   }
 }

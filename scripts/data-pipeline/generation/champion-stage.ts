@@ -131,6 +131,13 @@ async function fetchCDragonChampionData(
     }
   }
   const activeSpells = extractActiveSpells(source, championId.toLowerCase());
+  // 다른 스킬이 `spell.<이름>:<값>` 으로 부를 때 그 스킬의 랭크 축으로 읽도록 최대 랭크를 싣는다.
+  // (일라오이 패시브가 부르는 IllaoiQ:TentacleDamageTotal 이 패시브 랭크 1 로 잘리지 않게)
+  const ddragonSpells = [...championsByLocale.values()][0]?.get(championId)?.spells ?? [];
+  activeSpells.ordered.forEach((spell, index) => {
+    const maxRank = ddragonSpells[index]?.maxrank;
+    if (maxRank) spell.maxRank = maxRank;
+  });
   const passive = extractPassiveSpell(source, championId);
   const spellData = buildSpellData(activeSpells, passive);
 

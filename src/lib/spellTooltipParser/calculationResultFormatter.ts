@@ -134,9 +134,11 @@ function formatStatPart(
  * 치명타 확률·추가 공격 속도처럼 런타임 스탯이 필요한 배율은 숫자로 접으면
  * "스탯 0" 가정 값이 되어 실제보다 작아진다. 접지 않고 곱해지는 항으로 남긴다.
  */
-function formatStatMultiplier(result: CalcResult): string | null {
-  if (!result.statMultiplier) return null;
-  const { base, statParts, isPercent, isLevelRange } = result.statMultiplier;
+function formatStatMultiplier(
+  multiplierResult: CalcResult["statMultiplier"],
+): string | null {
+  if (!multiplierResult) return null;
+  const { base, statParts, isPercent, isLevelRange } = multiplierResult;
   const terms: string[] = [];
 
   if (isLevelRange && isVector(base) && base.length === 2) {
@@ -205,7 +207,11 @@ export function formatCalculationResult(
     ...statParts.map((part) => formatStatPart(part, lang, result.precision)),
   ].filter((part): part is string => part !== null);
 
-  const multiplier = formatStatMultiplier(result);
+  // 배율이 여럿이면 차례로 곱한다 (아크샨 E 치명타: … × (1 + 30% 추가 공격 속도) × 100% 치명타 피해량)
+  const multipliers = [result.statMultiplier, ...(result.extraMultipliers ?? [])]
+    .map(formatStatMultiplier)
+    .filter((entry): entry is string => entry !== null);
+  const multiplier = multipliers.length > 0 ? multipliers.join(" × ") : null;
   if (parts.length === 0) return multiplier;
 
   const output = parts.join(" + ");

@@ -1,7 +1,8 @@
 import type { ChampionSpell } from "../src/types";
-import { parseSpellTooltip } from "../src/lib/spellTooltipParser/parser";
+import { parseSpellTooltipWithDiagnostics } from "../src/lib/spellTooltipParser/parser";
 import type {
   CommunityDragonSpellData,
+  DroppedCalculation,
   TooltipLocale,
 } from "../src/lib/spellTooltipParser/types";
 import {
@@ -36,6 +37,8 @@ export interface LocalizedPassiveTooltip {
   name?: string;
   summary?: string;
   tooltip?: string;
+  /** 고른 툴팁을 그리며 값을 버린 계산식 자리 */
+  droppedCalculations?: DroppedCalculation[];
 }
 
 interface CommunityDragonDataValue {
@@ -133,6 +136,7 @@ function renderTemplate(
   locale: TooltipLocale,
   stringTable: StringTable,
   siblings?: Record<string, CommunityDragonSpellData>,
+  dropped?: DroppedCalculation[],
 ): string | undefined {
   if (!template) return undefined;
   const spell: ChampionSpell = {
@@ -162,12 +166,14 @@ function renderTemplate(
         : lookupString(stringTable, `${prefix}${variant}${suffix}`) ?? token;
     },
   );
-  const rendered = parseSpellTooltip(
+  const result = parseSpellTooltipWithDiagnostics(
     toParserTemplate(expandStringReferences(resolvedTemplate, stringTable)),
     spell,
     spellData,
     locale
-  ).trim();
+  );
+  dropped?.push(...result.droppedCalculations);
+  const rendered = result.html.trim();
   return rendered || undefined;
 }
 
@@ -178,22 +184,30 @@ export function localizePassiveTooltip(
   /** 같은 챔피언의 다른 스킬 데이터. `@Spell.SonaQ:…@` 같은 참조를 푸는 데 쓴다. */
   siblings?: Record<string, CommunityDragonSpellData>,
 ): LocalizedPassiveTooltip {
+  const primaryDropped: DroppedCalculation[] = [];
+  const alternateDropped: DroppedCalculation[] = [];
   const primary = renderTemplate(
     lookupString(stringTable, passive.locKeys.keyTooltip),
     passive,
     locale,
     stringTable,
     siblings,
+    primaryDropped,
   );
   const buffTooltip = lookupString(
     stringTable,
     `game_buff_tooltip_${passive.id}`,
   );
-  const alternate = renderTemplate(buffTooltip, passive, locale, stringTable, siblings);
+  const alternate = renderTemplate(
+    buffTooltip, passive, locale, stringTable, siblings, alternateDropped,
+  );
+  const tooltip = pickTooltip(primary, alternate);
+  const dropped = tooltip === primary ? primaryDropped : alternateDropped;
   return {
     name: lookupString(stringTable, passive.locKeys.keyName),
     summary: lookupString(stringTable, passive.locKeys.keySummary),
-    tooltip: pickTooltip(primary, alternate),
+    tooltip,
+    droppedCalculations: dropped.length > 0 ? dropped : undefined,
   };
 }
 

@@ -1,6 +1,7 @@
 import { ChampionSpell } from "@/types";
 import {
   CommunityDragonSpellData,
+  DroppedCalculation,
   ParseResult,
   TooltipLocale,
   Value,
@@ -30,6 +31,8 @@ const UNRESOLVED_MARK = "?";
 interface VariableReplacementResult {
   text: string;
   unresolvedTokens: string[];
+  /** 계산식을 평가하다 값을 버린 자리 (툴팁에는 남은 항만 적힌다) */
+  droppedCalculations: DroppedCalculation[];
 }
 
 function replaceVariableTokens(
@@ -40,6 +43,11 @@ function replaceVariableTokens(
 ): VariableReplacementResult {
   const variableRegex = /\{\{([^}]+)}}/g;
   const unresolvedTokens = new Set<string>();
+  const dropped = new Map<string, DroppedCalculation>();
+  const reportDrop = (entry: DroppedCalculation): void => {
+    const id = `${entry.key}|${entry.reason}|${entry.detail ?? ""}`;
+    if (!dropped.has(id)) dropped.set(id, entry);
+  };
 
   const replaced = text.replace(variableRegex, (_match, variableName) => {
     const trimmedVar = String(variableName).trim();
@@ -81,7 +89,8 @@ function replaceVariableTokens(
       effectiveVar,
       spell,
       communityDragonData,
-      lang
+      lang,
+      reportDrop
     );
 
     if (replacement !== null) {
@@ -97,6 +106,9 @@ function replaceVariableTokens(
   return {
     text: replaced,
     unresolvedTokens: [...unresolvedTokens].sort(),
+    droppedCalculations: [...dropped.values()].sort((left, right) =>
+      `${left.key}|${left.reason}`.localeCompare(`${right.key}|${right.reason}`)
+    ),
   };
 }
 
@@ -131,8 +143,9 @@ function cleanupPlaceholdersAndIcons(text: string): string {
 
   // 치환 후 남은 "%" 기호가 혼자 있는 경우 제거
   result = result.replace(/\s+%\s+/g, " "); // 공백으로 둘러싸인 % 제거
-  // 숫자(또는 미해석 표시)와 붙어 있지 않은 % 만 제거한다
-  result = result.replace(/(?<![\d?])\s*%\s*(?![\d?])/g, "");
+  // 숫자(또는 미해석 표시)와 붙어 있지 않은 % 만 제거한다.
+  // 레벨 범위 "(1 ~ 10)%" 의 % 는 값에 붙은 것이라 남긴다 (세나 P "(1 ~ 10)% 현재 체력").
+  result = result.replace(/(?<![\d?]|~ -?[\d.]+\))\s*%\s*(?![\d?])/g, "");
   // 시작/끝 부분의 % 도, 숫자와 붙어있지 않은 경우에만 제거
   result = result.replace(/^\s*%\s*(?![\d?])/g, ""); // 시작 부분의 단독 % 제거
   result = result.replace(/(?<![\d?])\s*%\s*$/g, ""); // 끝 부분의 단독 % 제거
@@ -173,7 +186,7 @@ export function replaceVariablesWithDiagnostics(
   communityDragonData?: CommunityDragonSpellData,
   lang: TooltipLocale = "ko_KR"
 ): VariableReplacementResult {
-  if (!spell) return { text, unresolvedTokens: [] };
+  if (!spell) return { text, unresolvedTokens: [], droppedCalculations: [] };
 
   let result = text;
 
@@ -198,7 +211,11 @@ export function replaceVariablesWithDiagnostics(
   // 4. 잔여 플레이스홀더/아이콘/공백 정리
   result = cleanupPlaceholdersAndIcons(result);
 
-  return { text: result, unresolvedTokens: replacement.unresolvedTokens };
+  return {
+    text: result,
+    unresolvedTokens: replacement.unresolvedTokens,
+    droppedCalculations: replacement.droppedCalculations,
+  };
 }
 
 /**
@@ -212,7 +229,8 @@ export function replaceVariable(
   trimmedVar: string,
   spell: ChampionSpell,
   communityDragonData?: CommunityDragonSpellData,
-  lang: TooltipLocale = "ko_KR"
+  lang: TooltipLocale = "ko_KR",
+  reportDrop?: (entry: DroppedCalculation) => void
 ): string | null {
   const effectAlias = /^Effect(\d+)Amount(.*)$/i.exec(trimmedVar);
   const runtimeAlias = resolveRuntimeTokenAlias(spell.id, trimmedVar);
@@ -235,13 +253,22 @@ export function replaceVariable(
     return null;
   }
   const data = targetData ?? communityDragonData;
+  // 다른 스킬 값은 그 스킬의 랭크 축으로 읽는다. 부르는 쪽 랭크 수로 자르면
+  // 패시브(랭크 1)가 부른 일라오이 Q 배율이 1랭크 값(×1.1)으로 굳는다.
+  const isSibling = Boolean(targetData && targetData !== communityDragonData);
+  const valueSpell: ChampionSpell =
+    isSibling && targetData?.maxRank ? { ...spell, maxrank: targetData.maxRank } : spell;
+  const reportSiblingDrop = reportDrop && isSibling
+    ? (entry: DroppedCalculation) =>
+        reportDrop({ ...entry, key: `${parseResult.spellRef}:${entry.key}` })
+    : reportDrop;
 
   // 0. 다른 스킬의 단축키를 가리키는 토큰 (에코 R 의 spell.EkkoW:HotKey)
   const byHotKey = replaceHotKey(parseResult);
   if (byHotKey !== null) return byHotKey;
 
   // 0. effectBurn 기반 eN 변수(e1, e2, e3, ...) 우선 처리
-  const byEffectBurn = replaceEffectBurn(parseResult, spell, data);
+  const byEffectBurn = replaceEffectBurn(parseResult, valueSpell, data);
   if (byEffectBurn !== null) return byEffectBurn;
 
   // 0.5 DDragon 스킬 자체 필드(cost, maxammo)를 가리키는 토큰
@@ -249,11 +276,11 @@ export function replaceVariable(
   if (bySpellField !== null) return bySpellField;
 
   // 1. DataValues 먼저 시도
-  const byData = replaceData(parseResult, spell, data);
+  const byData = replaceData(parseResult, valueSpell, data);
   if (byData !== null) return byData;
 
   // 2. 안 되면 mSpellCalculations
-  return replaceCalculateData(parseResult, spell, data, lang);
+  return replaceCalculateData(parseResult, valueSpell, data, lang, reportSiblingDrop);
 }
 
 /**

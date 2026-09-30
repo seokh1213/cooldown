@@ -6,6 +6,7 @@ import { formatCalculationResult } from "./calculationResultFormatter";
 import { evaluateSpellCalculation } from "./spellCalculationEvaluator";
 import type {
   CommunityDragonSpellData,
+  DroppedCalculation,
   ParseResult,
   TooltipLocale,
 } from "./types";
@@ -18,6 +19,7 @@ export function replaceCalculateData(
   spell: ChampionSpell,
   communityDragonData?: CommunityDragonSpellData,
   lang: TooltipLocale = "ko_KR",
+  reportDrop?: (entry: DroppedCalculation) => void,
 ): string | null {
   const calculations = communityDragonData?.mSpellCalculations;
   if (!communityDragonData || !calculations) return null;
@@ -44,7 +46,18 @@ export function replaceCalculateData(
       spell,
       data,
       lang,
+      reportDrop,
     });
+    // 이름을 모르는 스탯 비율은 표기에서 빠진다 (formatCalculationResult). 진단에 남긴다.
+    for (const part of result.statParts) {
+      if (!part.name) {
+        reportDrop?.({
+          key: calculationKey,
+          reason: "unknown-stat",
+          detail: String(part.ratio),
+        });
+      }
+    }
     return formatCalculationResult(result, lang);
   } catch (error) {
     logger.error("Failed to evaluate calculation:", error);

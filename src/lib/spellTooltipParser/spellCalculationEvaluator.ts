@@ -8,6 +8,7 @@ import type {
   CalcResult,
   CalculationPart,
   CommunityDragonSpellData,
+  DroppedCalculation,
   GameCalculation,
   GameCalculationConditional,
   GameCalculationModified,
@@ -27,18 +28,23 @@ import {
 function createDataValueEvaluator(
   dataValues: CommunityDragonSpellData["DataValues"],
   maxRank: number,
+  reportDrop?: EvaluatorContext["reportDrop"],
 ): DataValueEvaluator {
-  return (name) => {
+  return (name, options) => {
     if (!name || typeof name !== "string") {
       logger.debug(`DataValue name is invalid: ${name}`);
       return null;
     }
     if (!dataValues) {
       logger.debug("dataValues is undefined");
+      if (!options?.optional) reportDrop?.({ reason: "missing-data-value", detail: name });
       return null;
     }
     const value = getDataValueByName(dataValues, name, maxRank);
-    if (value == null) logger.debug(`DataValue "${name}" missing`);
+    if (value == null && !options?.optional) {
+      logger.debug(`DataValue "${name}" missing`);
+      reportDrop?.({ reason: "missing-data-value", detail: name });
+    }
     return value;
   };
 }
@@ -105,10 +111,52 @@ function scaleResult(
       })),
       extraRanges: target.extraRanges?.map((range) => mul(range, scale)),
     };
-  } catch (error) {
-    logger.warn("multiplier 적용 실패", error);
+  } catch {
+    // 길이가 다른 랭크 벡터끼리처럼 접을 수 없으면 호출부가 "× 배율" 로 남긴다
     return null;
   }
+}
+
+/**
+ * 계산 결과에 mMultiplier 를 적용한다.
+ * 접을 수 있으면 접고, 접을 수 없으면 "× 배율" 로 남긴다. 배율을 풀지 못하면 진단에 남긴다.
+ */
+function applyMultiplier(
+  key: string,
+  result: CalcResult,
+  rawMultiplier: CalcMultiplier | undefined,
+  ctx: EvaluatorContext,
+  visited: Set<string>,
+): CalcResult {
+  if (!rawMultiplier) return result;
+  const multiplier = resolveMultiplier(rawMultiplier, ctx, visited);
+  if (!multiplier) {
+    ctx.reportDrop?.({ key, reason: "unresolved-multiplier" });
+    return result;
+  }
+  if (multiplier.statParts.length === 0) {
+    const isLevelRange = Boolean(result.isBreakpointRange || result.isCharLevelRange);
+    const scaled = scaleResult({ ...result, isLevelRange }, multiplier);
+    if (scaled) {
+      return {
+        ...result,
+        ...scaled,
+        extraRanges: scaled.extraRanges?.length ? scaled.extraRanges : undefined,
+        isBreakpointRange:
+          result.isBreakpointRange ||
+          (multiplier.isLevelRange && isVector(scaled.base)) ||
+          undefined,
+      };
+    }
+  }
+  // 스탯 의존 배율, 또는 랭크 값 × 레벨 범위처럼 접을 수 없는 배율은 "× 배율" 로 남긴다
+  // (일라오이 Q TentacleDamageTotal: (9 ~ 180) × 1.1/…/1.3, 유미 R: 30/50/70 × (1.3 ~ 1.6))
+  if (!result.statMultiplier) return { ...result, statMultiplier: multiplier };
+  // 배율이 겹치면 뒤에 이어 곱한다 (아크샨 E CriticalCalc = DamageToDeal × 치명타 배율)
+  return {
+    ...result,
+    extraMultipliers: [...(result.extraMultipliers ?? []), multiplier],
+  };
 }
 
 function evaluateGameCalculation(
@@ -117,8 +165,10 @@ function evaluateGameCalculation(
   ctx: EvaluatorContext,
   visited: Set<string>,
 ): CalcResult {
+  // 레벨 범위 항 하나뿐인 계산식도 mMultiplier 는 적용한다
+  // (가렌 P RegenCalc ×0.01, 람머스 Q MinimumMoveSpeed × MSMultiplier)
   const range = evaluateRange(calc);
-  if (range) return range;
+  if (range) return applyMultiplier(key, range, calc.mMultiplier, ctx, visited);
 
   // 랭크 값과 레벨 범위([1레벨, 18레벨])는 따로 모은다.
   // 한 줄로 더하면 항 순서에 따라 결과가 갈린다. 레벨 범위가 먼저 오면
@@ -132,7 +182,9 @@ function evaluateGameCalculation(
     const evaluated = evaluatePart(part, ctx, visited);
     if (!evaluated) {
       // 해석 못 한 항은 그 항만 비우고 나머지 수치는 그대로 보여준다
-      logger.debug("GameCalculation: 해석 못 한 항 생략", (part as { __type?: string }).__type);
+      const partType = (part as { __type?: string }).__type;
+      logger.debug(`GameCalculation "${key}": 해석 못 한 항 생략`, partType);
+      ctx.reportDrop?.({ key, reason: "unresolved-part", detail: partType });
       continue;
     }
     try {
@@ -143,7 +195,12 @@ function evaluateGameCalculation(
         rankBase = add(rankBase, evaluated.base);
       }
     } catch (error) {
-      logger.warn(`GameCalculation "${key}": 항 합산 실패`, error);
+      logger.debug(`GameCalculation "${key}": 항 합산 실패`, error);
+      ctx.reportDrop?.({
+        key,
+        reason: "sum-mismatch",
+        detail: error instanceof Error ? error.message : String(error),
+      });
       continue;
     }
     statParts.push(...evaluated.statParts);
@@ -161,60 +218,41 @@ function evaluateGameCalculation(
     }
   }
 
-  let statMultiplier: PartResult | undefined;
-  const multiplier = resolveMultiplier(calc.mMultiplier, ctx, visited);
-  if (multiplier && multiplier.statParts.length > 0) {
-    // 스탯 의존 배율은 스탯 0 을 가정한 숫자로 접지 않고 따로 노출한다
-    statMultiplier = multiplier;
-  } else if (multiplier) {
-    const scaled = scaleResult(
-      {
-        base,
-        statParts,
-        extraRanges: extraRanges.length > 0 ? extraRanges : undefined,
-        isLevelRange: hasLevelRange,
-      },
-      multiplier,
-    );
-    if (scaled) {
-      base = scaled.base;
-      statParts.splice(0, statParts.length, ...scaled.statParts);
-      extraRanges.splice(0, extraRanges.length, ...(scaled.extraRanges ?? []));
-      if (multiplier.isLevelRange && isVector(base)) hasLevelRange = true;
-    } else {
-      // 레벨 범위 × 랭크 배율처럼 한 벡터로 접을 수 없으면 "× 배율" 로 남긴다
-      // (일라오이 Q 의 TentacleDamageTotal: (9 ~ 180) × (1 + 10/15/20/25/30%))
-      statMultiplier = multiplier;
-    }
-  }
-
-  return {
+  return applyMultiplier(key, {
     base,
     statParts,
     isPercent: Boolean(calc.mDisplayAsPercent),
     isBreakpointRange: hasLevelRange || undefined,
     extraRanges: extraRanges.length > 0 ? extraRanges : undefined,
-    statMultiplier,
     precision:
       typeof calc.mPrecision === "number" && calc.mPrecision >= 0
         ? calc.mPrecision + 1
         : undefined,
-  };
+  }, calc.mMultiplier, ctx, visited);
 }
-
 export function evaluateSpellCalculation(input: {
   key: string;
   spell: ChampionSpell;
   data: CommunityDragonSpellData;
   lang: TooltipLocale;
+  /** 값을 버린 자리를 알린다 (합산 실패·배율 생략 등). 툴팁 진단으로 모인다. */
+  reportDrop?: (entry: DroppedCalculation) => void;
 }): CalcResult {
   if (!input.data.mSpellCalculations) {
     throw new Error("mSpellCalculations is undefined");
   }
   const calculations: Record<string, SpellCalculation> = input.data.mSpellCalculations;
+  // 값을 버린 자리를 어느 계산식에서 버렸는지 알 수 있게 평가 중인 키를 쌓아 둔다
+  const keyStack: string[] = [];
+  const report = input.reportDrop;
+  const reportDrop: EvaluatorContext["reportDrop"] = report
+    ? (entry) =>
+        report({ ...entry, key: entry.key ?? keyStack[keyStack.length - 1] ?? input.key })
+    : undefined;
   const evaluateDataValue = createDataValueEvaluator(
     input.data.DataValues,
     input.spell.maxrank,
+    reportDrop,
   );
 
   const ctx: EvaluatorContext = {
@@ -223,9 +261,19 @@ export function evaluateSpellCalculation(input: {
     lang: input.lang,
     evaluateDataValue,
     evaluateCalculation: (key, visited) => evaluate(key, visited),
+    reportDrop,
   };
 
   function evaluate(key: string, visited = new Set<string>()): CalcResult {
+    keyStack.push(key);
+    try {
+      return evaluateOne(key, visited);
+    } finally {
+      keyStack.pop();
+    }
+  }
+
+  function evaluateOne(key: string, visited: Set<string>): CalcResult {
     // 이름이 지워지고 해시만 남은 계산식도 있다 (로크 R 의 ExecuteTooltipCalc)
     const raw = (calculations[key] ?? calculations[binHashKey(key)]) as
       | SpellCalculation
@@ -258,32 +306,7 @@ export function evaluateSpellCalculation(input: {
         throw new Error("mModifiedGameCalculation is missing");
       }
       const inner = evaluate(modified.mModifiedGameCalculation, visited);
-      const multiplier = resolveMultiplier(modified.mMultiplier, ctx, visited);
-      if (!multiplier) return inner;
-
-      if (multiplier.statParts.length > 0) {
-        return { ...inner, statMultiplier: inner.statMultiplier ?? multiplier };
-      }
-
-      const innerIsLevelRange = Boolean(inner.isBreakpointRange || inner.isCharLevelRange);
-      const scaled = scaleResult({ ...inner, isLevelRange: innerIsLevelRange }, multiplier);
-      if (scaled) {
-        return {
-          ...inner,
-          ...scaled,
-          isBreakpointRange:
-            inner.isBreakpointRange ||
-            (multiplier.isLevelRange && isVector(scaled.base)) ||
-            undefined,
-        };
-      }
-      // 랭크 값 × 레벨 범위처럼 접을 수 없으면 "× 배율" 로 남긴다
-      // (유미 R 의 EnhancedHealPerWave: (30/50/70 + 12% 주문력) × (1.3 ~ 1.6))
-      if (!inner.statMultiplier) return { ...inner, statMultiplier: multiplier };
-      logger.warn(
-        `GameCalculationModified "${key}": 배율이 이미 있어 추가 배율 생략`,
-      );
-      return inner;
+      return applyMultiplier(key, inner, modified.mMultiplier, ctx, visited);
     }
 
     throw new Error(`Unsupported mSpellCalculation type: ${rawType}`);

@@ -2,12 +2,30 @@ import type { DataLocale } from "./localization";
 import type { Champion } from "../../src/types";
 import type { ChampionsByLocale } from "./champion-source";
 import type { StaticDataSources } from "../../src/data/contracts/staticData";
+import type { DroppedCalculation } from "../../src/lib/spellTooltipParser/types";
 
 const ABILITY_SLOTS = ["Q", "W", "E", "R"] as const;
+
+/** 값을 버린 계산식 자리 중 지금은 고칠 수 없어 기준선에 두는 것. 사유를 반드시 적는다. */
+export interface AllowedDroppedCalculation {
+  /** `<챔피언>:<슬롯>:<계산식 키>:<사유 코드>` */
+  id: string;
+  why: string;
+}
 
 export interface ActiveTooltipAllowlist {
   unresolvedTokens: string[];
   missingTooltips: string[];
+  droppedCalculations?: AllowedDroppedCalculation[];
+}
+
+export interface DroppedCalculationIssue extends DroppedCalculation {
+  /** 언어와 무관한 식별자 `<챔피언>:<슬롯>:<계산식 키>:<사유 코드>` */
+  id: string;
+  championId: string;
+  locale: DataLocale;
+  slot: "P" | (typeof ABILITY_SLOTS)[number];
+  spellId: string;
 }
 
 export interface ActiveTooltipIssue {
@@ -28,12 +46,21 @@ export interface ActiveTooltipValidationReport {
     fallback: number;
     withDiagnostics: number;
     uniqueUnresolvedTokens: number;
+    /** 값을 버린 계산식 자리 (언어별로 센다) */
+    droppedCalculations: number;
   };
   issues: ActiveTooltipIssue[];
+  /**
+   * 계산식을 평가하다 값을 버린 자리 (합산 실패·배율 생략·해석 못 한 항).
+   * 툴팁에는 남은 항만 적혀 겉보기엔 멀쩡하므로 따로 모아 기준선으로 막는다.
+   */
+  droppedCalculations: DroppedCalculationIssue[];
   unexpectedTokens: string[];
   unexpectedMissingTooltips: string[];
+  unexpectedDroppedCalculations: string[];
   staleAllowedTokens: string[];
   staleAllowedMissingTooltips: string[];
+  staleAllowedDroppedCalculations: string[];
 }
 
 interface ChampionLocaleEntry {
@@ -80,17 +107,50 @@ export function validateActiveTooltips({
   allowlist,
 }: ActiveTooltipValidationInput): ActiveTooltipValidationReport {
   const issues: ActiveTooltipIssue[] = [];
+  const dropped: DroppedCalculationIssue[] = [];
   const missing = new Set<string>();
+  const collectDropped = (
+    championId: string,
+    locale: DataLocale,
+    slot: DroppedCalculationIssue["slot"],
+    spellId: string,
+    entries: DroppedCalculation[] | undefined,
+  ): void => {
+    for (const entry of entries ?? []) {
+      dropped.push({
+        id: `${championId}:${slot}:${entry.key}:${entry.reason}`,
+        championId,
+        locale,
+        slot,
+        spellId,
+        ...entry,
+      });
+    }
+  };
   let abilities = 0;
   let localized = 0;
 
   for (const { championId, locale, champion } of sortedChampionLocaleEntries(
     championsByLocale,
   )) {
+    collectDropped(
+      championId,
+      locale,
+      "P",
+      champion.passive?.spellId ?? "unknown",
+      champion.passive?.tooltipDiagnostics?.droppedCalculations,
+    );
     (champion.spells ?? []).forEach((spell, index) => {
       const slot = ABILITY_SLOTS[index];
       if (!slot) return;
       abilities += 1;
+      collectDropped(
+        championId,
+        locale,
+        slot,
+        spell.id ?? "unknown",
+        spell.tooltipDiagnostics?.droppedCalculations,
+      );
       if (spell.tooltipSource === "communitydragon") localized += 1;
       else missing.add(`${championId}:${slot}`);
 
@@ -109,6 +169,10 @@ export function validateActiveTooltips({
   const tokens = [...new Set(issues.flatMap((issue) => issue.unresolvedTokens))];
   const allowedTokens = new Set(allowlist.unresolvedTokens);
   const allowedMissing = new Set(allowlist.missingTooltips);
+  const droppedIds = [...new Set(dropped.map((entry) => entry.id))];
+  const allowedDropped = new Set(
+    (allowlist.droppedCalculations ?? []).map((entry) => entry.id),
+  );
   return {
     schemaVersion: 2,
     patchVersion,
@@ -119,17 +183,25 @@ export function validateActiveTooltips({
       fallback: abilities - localized,
       withDiagnostics: issues.length,
       uniqueUnresolvedTokens: tokens.length,
+      droppedCalculations: dropped.length,
     },
     issues,
+    droppedCalculations: dropped,
     unexpectedTokens: tokens.filter((token) => !allowedTokens.has(token)).sort(),
     unexpectedMissingTooltips: [...missing]
       .filter((key) => !allowedMissing.has(key))
+      .sort(),
+    unexpectedDroppedCalculations: droppedIds
+      .filter((id) => !allowedDropped.has(id))
       .sort(),
     staleAllowedTokens: allowlist.unresolvedTokens
       .filter((token) => !tokens.includes(token))
       .sort(),
     staleAllowedMissingTooltips: allowlist.missingTooltips
       .filter((key) => !missing.has(key))
+      .sort(),
+    staleAllowedDroppedCalculations: [...allowedDropped]
+      .filter((id) => !droppedIds.includes(id))
       .sort(),
   };
 }
@@ -147,7 +219,8 @@ export function assertActiveTooltipReport(
 ): void {
   if (
     report.unexpectedTokens.length === 0 &&
-    report.unexpectedMissingTooltips.length === 0
+    report.unexpectedMissingTooltips.length === 0 &&
+    report.unexpectedDroppedCalculations.length === 0
   ) {
     return;
   }
@@ -155,7 +228,9 @@ export function assertActiveTooltipReport(
     `Active tooltip baseline regressed: ${report.unexpectedTokens.length} new tokens ` +
       `[${report.unexpectedTokens.slice(0, 5).join(", ")}], ` +
       `${report.unexpectedMissingTooltips.length} new missing tooltips ` +
-      `[${report.unexpectedMissingTooltips.slice(0, 5).join(", ")}]`,
+      `[${report.unexpectedMissingTooltips.slice(0, 5).join(", ")}], ` +
+      `${report.unexpectedDroppedCalculations.length} new dropped calculations ` +
+      `[${report.unexpectedDroppedCalculations.slice(0, 5).join(", ")}]`,
   );
 }
 
@@ -169,7 +244,8 @@ export function pruneAllowlist(
 ): { allowlist: ActiveTooltipAllowlist; changed: boolean } {
   const staleTokens = new Set(report.staleAllowedTokens);
   const staleMissing = new Set(report.staleAllowedMissingTooltips);
-  if (staleTokens.size === 0 && staleMissing.size === 0) {
+  const staleDropped = new Set(report.staleAllowedDroppedCalculations);
+  if (staleTokens.size === 0 && staleMissing.size === 0 && staleDropped.size === 0) {
     return { allowlist, changed: false };
   }
   return {
@@ -179,6 +255,9 @@ export function pruneAllowlist(
       ),
       missingTooltips: allowlist.missingTooltips.filter(
         (key) => !staleMissing.has(key),
+      ),
+      droppedCalculations: (allowlist.droppedCalculations ?? []).filter(
+        (entry) => !staleDropped.has(entry.id),
       ),
     },
     changed: true,

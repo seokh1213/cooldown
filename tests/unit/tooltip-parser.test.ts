@@ -5,7 +5,10 @@
 
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { parseSpellTooltip } from "../../src/lib/spellTooltipParser/parser";
+import {
+  parseSpellTooltip,
+  parseSpellTooltipWithDiagnostics,
+} from "../../src/lib/spellTooltipParser/parser";
 import type { ChampionSpell } from "../../src/types";
 import type { CommunityDragonSpellData } from "../../src/lib/spellTooltipParser/types";
 import { evaluateSpellCalculation } from "../../src/lib/spellTooltipParser/spellCalculationEvaluator";
@@ -240,4 +243,180 @@ test("상수 배율은 옆에 붙은 레벨 범위 항에도 곱한다 (조이 Q
     },
   } as unknown as CommunityDragonSpellData;
   assert.equal(renderCalculation("Max", 5, data), "(125/200/275/350/425 + (5 ~ 85))");
+});
+
+const levelRangeOnly = (key: string, calc: unknown): CommunityDragonSpellData =>
+  ({ mSpellCalculations: { [key]: calc } }) as unknown as CommunityDragonSpellData;
+
+test("레벨 범위 항 하나뿐인 계산식도 mMultiplier 를 적용한다 (가렌 P RegenCalc)", () => {
+  const data = levelRangeOnly("RegenCalc", {
+    __type: "GameCalculation",
+    mDisplayAsPercent: true,
+    mMultiplier: { __type: "NumberCalculationPart", mNumber: 0.01 },
+    mFormulaParts: [
+      {
+        __type: "ByCharLevelBreakpointsCalculationPart",
+        mLevel1Value: 1.5,
+        mInitialBonusPerLevel: 0.2,
+        mBreakpoints: [
+          { __type: "Breakpoint", mLevel: 7, mBonusPerLevelAtAndAfter: 0.8 },
+          { __type: "Breakpoint", mLevel: 14, mBonusPerLevelAtAndAfter: 0.4 },
+        ],
+      },
+    ],
+  });
+  // 위키: 1.5% – 10.1% (예전에는 배율을 버려 150% ~ 250%)
+  assert.equal(renderCalculation("RegenCalc", 1, data), "(1.5% ~ 10.1%)");
+});
+
+test("mInitialBonusPerLevel 은 첫 브레이크포인트 전까지 레벨당 더한다 (아칼리 P)", () => {
+  const data = levelRangeOnly("Damage", {
+    __type: "GameCalculation",
+    mFormulaParts: [
+      {
+        __type: "ByCharLevelBreakpointsCalculationPart",
+        mLevel1Value: 35,
+        mInitialBonusPerLevel: 3,
+        mBreakpoints: [
+          { __type: "Breakpoint", mLevel: 8, mBonusPerLevelAtAndAfter: 9 },
+          { __type: "Breakpoint", mLevel: 14, mBonusPerLevelAtAndAfter: 15 },
+        ],
+      },
+      { __type: "StatByCoefficientCalculationPart", mCoefficient: 0.55 },
+    ],
+  });
+  // 위키: 35 – 182 (예전 35 ~ 164)
+  assert.equal(
+    renderCalculation("Damage", 1, data),
+    "((35 ~ 182) + ([[si:scaleap]]55% Ability Power))",
+  );
+});
+
+test("이름 브레이크포인트 파트의 레벨당 증가량 필드를 읽고, 없는 이름은 0 으로 본다 (벨베스 P)", () => {
+  const data = {
+    DataValues: {
+      Level1: [0.1, 0.1],
+      Initial: [0.05, 0.05],
+      Level6: [0.1, 0.1],
+      Level11: [0.15, 0.15],
+    },
+    mSpellCalculations: {
+      AttackSpeedPerStack: {
+        __type: "GameCalculation",
+        mFormulaParts: [
+          {
+            __type: "{4ce08984}",
+            "{91d404a5}": "Level1",
+            "{bbd778a2}": "Initial",
+            "{9823b29a}": [
+              { __type: "{0333530c}", level: 6, "{ae9b464d}": "AdditionalBonusAtThisLevel", "{b0d8b2ac}": "Level6" },
+              { __type: "{0333530c}", level: 11, "{ae9b464d}": "AdditionalBonusAtThisLevel", "{b0d8b2ac}": "Level11" },
+            ],
+          },
+        ],
+      },
+    },
+  } as unknown as CommunityDragonSpellData;
+  const spell = { id: "BelvethPassive", maxrank: 1, cooldown: [] } as ChampionSpell;
+  const rendered = parseSpellTooltipWithDiagnostics(
+    "{{ AttackSpeedPerStack }}",
+    spell,
+    data,
+    "en_US",
+  );
+  // 위키: 0.1% – 2% (예전 0.1 ~ 1.8). 없는 이름·__type 해시는 값 누락 진단으로 잡지 않는다.
+  assert.equal(rendered.html, "(0.1 ~ 2)");
+  assert.deepEqual(rendered.droppedCalculations, []);
+});
+
+test("다른 스킬 계산식은 그 스킬의 랭크 축으로 읽는다 (일라오이 패시브 → IllaoiQ)", () => {
+  const illaoiQ = {
+    maxRank: 5,
+    DataValues: { Amp: [0, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35] },
+    mSpellCalculations: {
+      TentacleDamageTotal: {
+        __type: "GameCalculation",
+        mFormulaParts: [
+          { __type: "ByCharLevelInterpolationCalculationPart", mStartValue: 9, mEndValue: 180 },
+          { __type: "StatByCoefficientCalculationPart", mCoefficient: 0.4 },
+        ],
+        mMultiplier: {
+          __type: "SumOfSubPartsCalculationPart",
+          mSubparts: [
+            { __type: "NumberCalculationPart", mNumber: 1 },
+            { __type: "NamedDataValueCalculationPart", mDataValue: "Amp" },
+          ],
+        },
+      },
+    },
+  } as unknown as CommunityDragonSpellData;
+  const passive = { id: "IllaoiPassive", maxrank: 1, cooldown: [] } as ChampionSpell;
+  const html = parseSpellTooltip(
+    "{{ spell.IllaoiQ:TentacleDamageTotal }}",
+    passive,
+    { siblings: { illaoiq: illaoiQ } } as CommunityDragonSpellData,
+    "en_US",
+  );
+  // 예전에는 패시브 랭크 1 로 잘려 ×1.1 이 접힌 (9.9 ~ 198) 이었다
+  assert.equal(html, "((9 ~ 180) + ([[si:scaleap]]40% Ability Power)) × 1.1/1.15/1.2/1.25/1.3");
+});
+
+test("배율이 겹치면 이어 곱하고, 풀지 못한 항은 진단에 남긴다 (아크샨 E CriticalCalc)", () => {
+  const data = {
+    DataValues: { Base: [0, 8, 16, 24, 32, 40], CritMod: [0.5, 0.5, 0.5, 0.5, 0.5, 0.5] },
+    mSpellCalculations: {
+      Damage: {
+        __type: "GameCalculation",
+        mFormulaParts: [
+          { __type: "NamedDataValueCalculationPart", mDataValue: "Base" },
+          { __type: "NamedDataValueCalculationPart", mDataValue: "Missing" },
+        ],
+        mMultiplier: {
+          __type: "SumOfSubPartsCalculationPart",
+          mSubparts: [
+            { __type: "NumberCalculationPart", mNumber: 1 },
+            { __type: "StatByCoefficientCalculationPart", mStat: 4, mStatFormula: 2, mCoefficient: 0.3 },
+          ],
+        },
+      },
+      Critical: {
+        __type: "GameCalculationModified",
+        mModifiedGameCalculation: "Damage",
+        mMultiplier: {
+          __type: "ProductOfSubPartsCalculationPart",
+          mPart1: { __type: "NamedDataValueCalculationPart", mDataValue: "CritMod" },
+          mPart2: { __type: "StatByCoefficientCalculationPart", mStat: 9, mCoefficient: 1 },
+        },
+      },
+    },
+  } as unknown as CommunityDragonSpellData;
+  const spell = { id: "AkshanE", maxrank: 5, cooldown: [] } as ChampionSpell;
+  const rendered = parseSpellTooltipWithDiagnostics("{{ Critical }}", spell, data, "en_US");
+  assert.equal(
+    rendered.html,
+    "8/16/24/32/40 × (1 + [[si:scaleas]]30% bonus Attack Speed) × ([[si:scalecritmult]]50% Critical Strike Damage)",
+  );
+  assert.deepEqual(
+    rendered.droppedCalculations.map(({ key, reason }) => `${key}:${reason}`).sort(),
+    ["Damage:missing-data-value", "Damage:unresolved-part"],
+  );
+});
+
+test("레벨 범위 뒤에 붙은 % 는 지우지 않는다 (세나 P)", () => {
+  const data = levelRangeOnly("BonusCurrentHealthDamage", {
+    __type: "GameCalculation",
+    mFormulaParts: [
+      {
+        __type: "ByCharLevelBreakpointsCalculationPart",
+        mLevel1Value: 1,
+        mInitialBonusPerLevel: 1,
+        mBreakpoints: [{ __type: "Breakpoint", mLevel: 11 }],
+      },
+    ],
+  });
+  const spell = { id: "SennaPassive", maxrank: 1, cooldown: [] } as ChampionSpell;
+  assert.equal(
+    parseSpellTooltip("deals {{ BonusCurrentHealthDamage }}% current Health", spell, data, "en_US"),
+    "deals (1 ~ 10)% current Health",
+  );
 });

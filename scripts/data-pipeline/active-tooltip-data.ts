@@ -3,6 +3,7 @@ import { parseSpellTooltipWithDiagnostics } from "../../src/lib/spellTooltipPars
 import { parseExpression } from "../../src/lib/spellTooltipParser/expressionParser";
 import type {
   CommunityDragonSpellData,
+  DroppedCalculation,
   TooltipLocale,
 } from "../../src/lib/spellTooltipParser/types";
 import type { ExtractedActiveSpellData } from "./cdragon-active-spells";
@@ -19,6 +20,7 @@ export interface LocalizedActiveTooltip {
   summary?: string;
   tooltip?: string;
   unresolvedTokens: string[];
+  droppedCalculations: DroppedCalculation[];
   calculationKeys: string[];
   calculationDamageTypes: Record<string, "physical" | "magical" | "true">;
 }
@@ -26,6 +28,7 @@ export interface LocalizedActiveTooltip {
 interface RenderedFragment {
   html?: string;
   unresolvedTokens: string[];
+  droppedCalculations: DroppedCalculation[];
   calculationKeys: string[];
   calculationDamageTypes: Record<string, "physical" | "magical" | "true">;
 }
@@ -76,7 +79,12 @@ function render(
   siblings?: Record<string, CommunityDragonSpellData>
 ): RenderedFragment {
   if (!template) {
-    return { unresolvedTokens: [], calculationKeys: [], calculationDamageTypes: {} };
+    return {
+      unresolvedTokens: [],
+      droppedCalculations: [],
+      calculationKeys: [],
+      calculationDamageTypes: {},
+    };
   }
   const parserTemplate = toParserTemplate(expandStringReferences(template, stringTable));
   const references = referencedCalculations(parserTemplate, source);
@@ -95,6 +103,7 @@ function render(
   return {
     html: html || undefined,
     unresolvedTokens: rendered.unresolvedTokens,
+    droppedCalculations: rendered.droppedCalculations,
     calculationKeys: references.keys,
     calculationDamageTypes: references.damageTypes,
   };
@@ -163,6 +172,10 @@ export function localizeActiveTooltip(
     unresolvedTokens: [
       ...new Set([...tooltip.unresolvedTokens, ...extended.unresolvedTokens]),
     ].sort(),
+    droppedCalculations: [
+      ...tooltip.droppedCalculations,
+      ...extended.droppedCalculations,
+    ],
     calculationKeys: [
       ...new Set([...tooltip.calculationKeys, ...extended.calculationKeys]),
     ],

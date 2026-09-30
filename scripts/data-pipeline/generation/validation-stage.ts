@@ -51,14 +51,16 @@ async function validateActiveAbilities(
     );
     console.log(
       `🧹 해소된 항목을 허용 목록에서 제거: 토큰 ${report.staleAllowedTokens.length}종, ` +
-        `툴팁 누락 ${report.staleAllowedMissingTooltips.length}건`,
+        `툴팁 누락 ${report.staleAllowedMissingTooltips.length}건, ` +
+        `값 누락 ${report.staleAllowedDroppedCalculations.length}건`,
     );
   }
 
   assertActiveTooltipReport(report);
   console.log(
     `✅ Precomputed ${report.totals.localized}/${report.totals.abilities} ` +
-      `localized Q/W/E/R tooltips (${report.totals.withDiagnostics} diagnostics)`,
+      `localized Q/W/E/R tooltips (${report.totals.withDiagnostics} diagnostics, ` +
+      `${report.totals.droppedCalculations} dropped calculations)`,
   );
 }
 
