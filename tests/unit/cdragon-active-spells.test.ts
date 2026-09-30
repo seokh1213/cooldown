@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { test } from "node:test";
 import { extractActiveSpells } from "../../scripts/data-pipeline/cdragon-active-spells";
 
 const spellPath = "Characters/Test/Spells/TestQAbility/TestQ";
@@ -29,15 +30,15 @@ const data: Record<string, unknown> = {
   },
 };
 
-const result = extractActiveSpells(data, "Test");
-assert.equal(result.ordered.length, 1);
-assert.equal(result.aliases["0"], result.aliases.TestQ);
-assert.deepEqual(result.ordered[0].DataValues?.Damage, [0, 10, 20]);
-assert.deepEqual(result.ordered[0].source.cooldowns, [8, 8, 7]);
-assert.deepEqual(result.ordered[0].source.costs, [40, 40, 45]);
-assert.equal(
-  result.ordered[0].source.locKeys.keyTooltip,
-  "Spell_TestQ_Tooltip"
-);
-
-console.log("✅ CDragon active spell extraction passed");
+test("CDragon 활성 스킬 추출", () => {
+  const result = extractActiveSpells(data, "Test");
+  assert.equal(result.ordered.length, 1);
+  assert.equal(result.aliases["0"], result.aliases.TestQ);
+  assert.deepEqual(result.ordered[0].DataValues?.Damage, [0, 10, 20]);
+  assert.deepEqual(result.ordered[0].source.cooldowns, [8, 8, 7]);
+  assert.deepEqual(result.ordered[0].source.costs, [40, 40, 45]);
+  assert.equal(
+    result.ordered[0].source.locKeys.keyTooltip,
+    "Spell_TestQ_Tooltip"
+  );
+});

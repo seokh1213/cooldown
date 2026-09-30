@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { test } from "node:test";
 import { VersionedCache, type CacheStorage } from "../../src/data/cache/versionedCache";
 import { ChampionRepository } from "../../src/data/repositories/championRepository";
 import type { StaticDataClient } from "../../src/data/http/staticDataClient";
@@ -37,27 +38,31 @@ const repository = new ChampionRepository(
   new VersionedCache("test:v2", storage)
 );
 
-const first = await repository.getIndex(identity, "ko_KR");
-const second = await repository.getIndex(identity, "ko_KR");
-assert.equal(first.champions[0].name, "시험");
-assert.equal(second, first);
-assert.deepEqual(requests, ["data/26.17/champions/ko_KR/index.json"]);
+test("색인을 한 번만 받아 캐시한다", async () => {
+  const first = await repository.getIndex(identity, "ko_KR");
+  const second = await repository.getIndex(identity, "ko_KR");
+  assert.equal(first.champions[0].name, "시험");
+  assert.equal(second, first);
+  assert.deepEqual(requests, ["data/26.17/champions/ko_KR/index.json"]);
+});
 
-await assert.rejects(
-  repository.getIndex(
-    {
-      patchVersion: "26.17",
-      sources: { ddragon: "16.16.1", cdragon: "16.16" },
-    },
-    "ko_KR",
-  ),
-  /identity mismatch/,
-);
-assert.equal(requests.length, 2);
+test("원본 판이 다르면 거부한다", async () => {
+  await assert.rejects(
+    repository.getIndex(
+      {
+        patchVersion: "26.17",
+        sources: { ddragon: "16.16.1", cdragon: "16.16" },
+      },
+      "ko_KR",
+    ),
+    /identity mismatch/,
+  );
+  assert.equal(requests.length, 2);
+});
 
-const staleKey = "test:v2:champions:26.17:16.16.1:16.16:ko_KR:index";
-storage.setItem(staleKey, "{}");
-repository.clearExceptRelease(identity);
-assert.equal(storage.getItem(staleKey), null);
-
-console.log("✅ Champion repository path and versioned cache passed");
+test("현재 판이 아닌 캐시를 지운다", () => {
+  const staleKey = "test:v2:champions:26.17:16.16.1:16.16:ko_KR:index";
+  storage.setItem(staleKey, "{}");
+  repository.clearExceptRelease(identity);
+  assert.equal(storage.getItem(staleKey), null);
+});

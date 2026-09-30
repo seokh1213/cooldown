@@ -17,6 +17,7 @@
 import assert from "node:assert/strict";
 import * as fs from "node:fs";
 import * as path from "node:path";
+import { test } from "node:test";
 import type { ChampionCard } from "../../src/lib/knowledge/facts";
 import { PUBLIC_DATA_ROOT, resolvePatchVersion } from "../../scripts/llm/lib/data";
 import { fingerprint, loadFingerprints, spellNameLine } from "../../scripts/llm/lib/championFingerprint";
@@ -70,13 +71,10 @@ if (reworded.length) {
   console.log("    설명만 다듬은 것일 수 있습니다. 읽어 보고 npm run llm:stamp -- <ChampionId> 로 다시 찍으십시오.");
 }
 
-assert.equal(
-  reworked.length,
-  0,
-  `스킬 이름이 바뀐 챔피언이 있습니다. 리워크로 보이며 그 챔피언의 노트와 보정을 다시 봐야 합니다.\n\n    ${reworked.join("\n\n    ")}\n`,
-);
-
-console.log(
-  `✅ 챔피언 변동 검사 통과 (지문 ${Object.keys(rows).length}종 · 문구 변동 ${reworded.length}종 · ` +
-    `노트 미작성 ${unwritten.length}종)`,
-);
+test("스킬 이름이 바뀐 챔피언 없음", () => {
+  assert.equal(
+    reworked.length,
+    0,
+    `스킬 이름이 바뀐 챔피언이 있습니다. 리워크로 보이며 그 챔피언의 노트와 보정을 다시 봐야 합니다.\n\n    ${reworked.join("\n\n    ")}\n`,
+  );
+});

@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import * as fs from "node:fs";
 import * as os from "node:os";
 import * as path from "node:path";
+import { after, test } from "node:test";
 import type { Champion, ChampionSpell } from "../../src/types";
 import type { ActiveSpellSourceData } from "../../scripts/data-pipeline/cdragon-active-spells";
 import { validateGeneratedAbilities } from "../../scripts/data-pipeline/ability-validation";
@@ -35,6 +36,7 @@ function createSource(path: string): ActiveSpellSourceData {
 }
 
 const directory = fs.mkdtempSync(path.join(os.tmpdir(), "ability-validation-"));
+after(() => fs.rmSync(directory, { recursive: true }));
 const allowlistPath = path.join(directory, "allowlist.json");
 fs.writeFileSync(
   allowlistPath,
@@ -66,34 +68,36 @@ const report = validateGeneratedAbilities({
   ]),
 });
 
-assert.deepEqual(report.summary, {
-  champions: 2,
-  abilities: 8,
-  tooltipKeys: 7,
-  cooldownMatches: 8,
-  costMatches: 7,
-  knownIssues: 1,
-  unexpectedIssues: 1,
+test("검증 요약", () => {
+  assert.deepEqual(report.summary, {
+    champions: 2,
+    abilities: 8,
+    tooltipKeys: 7,
+    cooldownMatches: 8,
+    costMatches: 7,
+    knownIssues: 1,
+    unexpectedIssues: 1,
+  });
 });
-assert.deepEqual(
-  report.issues.map(({ key, allowlisted, reason }) => ({
-    key,
-    allowlisted,
-    reason,
-  })),
-  [
-    {
-      key: "Alpha:Q:missing-tooltip-key",
-      allowlisted: true,
-      reason: "known source gap",
-    },
-    {
-      key: "Beta:Q:missing-cost",
-      allowlisted: false,
-      reason: undefined,
-    },
-  ]
-);
 
-fs.rmSync(directory, { recursive: true });
-console.log("✅ Ability source validation passed");
+test("허용 목록과 예상 밖 문제", () => {
+  assert.deepEqual(
+    report.issues.map(({ key, allowlisted, reason }) => ({
+      key,
+      allowlisted,
+      reason,
+    })),
+    [
+      {
+        key: "Alpha:Q:missing-tooltip-key",
+        allowlisted: true,
+        reason: "known source gap",
+      },
+      {
+        key: "Beta:Q:missing-cost",
+        allowlisted: false,
+        reason: undefined,
+      },
+    ]
+  );
+});

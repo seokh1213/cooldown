@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { test } from "node:test";
 import { parseVsState, serializeVsState } from "../../src/pages/VsPage/vsState";
 import {
   rankCooldowns,
@@ -13,60 +14,70 @@ import { decodeDataManifest } from "../../src/data/contracts/dataManifest";
 const state = parseVsState(
   "a=Aatrox&t=Fiora&ah=25&th=10&ar=3.1.2.1&tr=1.1.1.1",
 );
-assert.equal(state.mine.id, "Aatrox");
-assert.equal(isShorterCooldown(6, 8), true);
-assert.equal(isShorterCooldown(0, 1), true);
-assert.equal(isShorterCooldown(6, 6), false);
-assert.equal(isShorterCooldown(8, 6), false);
-assert.equal(isShorterCooldown(null, 6), false);
-assert.equal(isShorterCooldown(6, null), false);
-assert.equal(isShorterCooldown(NaN, 6), false);
-assert.equal(isShorterCooldown(-1, 6), false);
-assert.equal(state.opponent.id, "Fiora");
-assert.deepEqual(parseVsState(serializeVsState(state)), state);
-assert.deepEqual(parseVsState(""), {
-  mine: { id: "" },
-  opponent: { id: "" },
+
+test("VS 주소를 읽고 다시 쓴다", () => {
+  assert.equal(state.mine.id, "Aatrox");
+  assert.equal(state.opponent.id, "Fiora");
+  assert.deepEqual(parseVsState(serializeVsState(state)), state);
+  assert.deepEqual(parseVsState(""), {
+    mine: { id: "" },
+    opponent: { id: "" },
+  });
+  // Old shared links still select the pair, but rank selections no longer affect the table.
+  assert.equal(serializeVsState(state), "a=Aatrox&t=Fiora");
+  assert.deepEqual(parseVsState("ar=99.-2.NaN.2.5"), parseVsState(""));
 });
-// Old shared links still select the pair, but rank selections no longer affect the table.
-assert.equal(serializeVsState(state), "a=Aatrox&t=Fiora");
-assert.deepEqual(parseVsState("ar=99.-2.NaN.2.5"), parseVsState(""));
-assert.deepEqual(
-  rankCooldowns({
-    ability: { maxRank: 5 },
-    values: [14, 12, 10, 8, 6],
-    columns: 5,
-  }),
-  [14, 12, 10, 8, 6],
-);
-assert.deepEqual(
-  rankCooldowns({
-    ability: { maxRank: 3 },
-    values: [120, 100, 80],
-    columns: 5,
-  }),
-  [120, 100, 80, null, null],
-);
-assert.deepEqual(
-  rankCooldowns({ ability: { maxRank: 3 }, values: [10], columns: 5 }),
-  [10, 10, 10, null, null],
-);
-assert.deepEqual(
-  rankCooldowns({
-    ability: { maxRank: 5 },
-    values: [0, NaN, -1, Infinity],
-    columns: 5,
-  }),
-  [0, null, null, null, null],
-);
-assert.deepEqual(
-  rankCooldowns({ ability: undefined, values: [10], columns: 5 }),
-  [null, null, null, null, null],
-);
-assert.deepEqual(
-  rankCooldowns({ ability: { maxRank: 5 }, values: [], columns: 5 }),
-  [null, null, null, null, null],
-);
+
+test("더 짧은 쿨타임 판정", () => {
+  assert.equal(isShorterCooldown(6, 8), true);
+  assert.equal(isShorterCooldown(0, 1), true);
+  assert.equal(isShorterCooldown(6, 6), false);
+  assert.equal(isShorterCooldown(8, 6), false);
+  assert.equal(isShorterCooldown(null, 6), false);
+  assert.equal(isShorterCooldown(6, null), false);
+  assert.equal(isShorterCooldown(NaN, 6), false);
+  assert.equal(isShorterCooldown(-1, 6), false);
+});
+
+test("랭크별 쿨타임 칸 채우기", () => {
+  assert.deepEqual(
+    rankCooldowns({
+      ability: { maxRank: 5 },
+      values: [14, 12, 10, 8, 6],
+      columns: 5,
+    }),
+    [14, 12, 10, 8, 6],
+  );
+  assert.deepEqual(
+    rankCooldowns({
+      ability: { maxRank: 3 },
+      values: [120, 100, 80],
+      columns: 5,
+    }),
+    [120, 100, 80, null, null],
+  );
+  assert.deepEqual(
+    rankCooldowns({ ability: { maxRank: 3 }, values: [10], columns: 5 }),
+    [10, 10, 10, null, null],
+  );
+  assert.deepEqual(
+    rankCooldowns({
+      ability: { maxRank: 5 },
+      values: [0, NaN, -1, Infinity],
+      columns: 5,
+    }),
+    [0, null, null, null, null],
+  );
+  assert.deepEqual(
+    rankCooldowns({ ability: undefined, values: [10], columns: 5 }),
+    [null, null, null, null, null],
+  );
+  assert.deepEqual(
+    rankCooldowns({ ability: { maxRank: 5 }, values: [], columns: 5 }),
+    [null, null, null, null, null],
+  );
+});
+
 const manifest = decodeDataManifest(
   JSON.parse(
     readFileSync(
@@ -89,21 +100,26 @@ const champion = (id: string): ChampionDetailV2 =>
       "utf8",
     ),
   );
-assert.equal(champion("Udyr").champion.abilities.R.maxRank, 6);
-assert.equal(cooldownRankCount([]), 5);
-assert.equal(cooldownRankCount([undefined, { maxRank: 3 }, { maxRank: 5 }]), 5);
-assert.equal(cooldownRankCount(ACTIVE_SLOTS.map((slot) => champion("Udyr").champion.abilities[slot])), 6);
-assert.equal(cooldownRankCount(ACTIVE_SLOTS.map((slot) => champion("Teemo").champion.abilities[slot])), 5);
-const teemoR = champion("Teemo").champion.abilities.R;
-assert.deepEqual(
-  rankCooldowns({
-    ability: teemoR,
-    values: teemoR.rechargeSeconds ?? [],
-    columns: 5,
-  }),
-  [35, 30, 25, null, null],
-);
-const swapped = { mine: state.opponent, opponent: state.mine };
-assert.equal(parseVsState(serializeVsState(swapped)).mine.id, "Fiora");
-assert.equal(parseVsState(serializeVsState(swapped)).opponent.id, "Aatrox");
-console.log("✅ Independent VS state and all-rank cooldown table passed");
+
+test("실제 데이터의 랭크 수와 충전 시간", () => {
+  assert.equal(champion("Udyr").champion.abilities.R.maxRank, 6);
+  assert.equal(cooldownRankCount([]), 5);
+  assert.equal(cooldownRankCount([undefined, { maxRank: 3 }, { maxRank: 5 }]), 5);
+  assert.equal(cooldownRankCount(ACTIVE_SLOTS.map((slot) => champion("Udyr").champion.abilities[slot])), 6);
+  assert.equal(cooldownRankCount(ACTIVE_SLOTS.map((slot) => champion("Teemo").champion.abilities[slot])), 5);
+  const teemoR = champion("Teemo").champion.abilities.R;
+  assert.deepEqual(
+    rankCooldowns({
+      ability: teemoR,
+      values: teemoR.rechargeSeconds ?? [],
+      columns: 5,
+    }),
+    [35, 30, 25, null, null],
+  );
+});
+
+test("두 챔피언을 뒤바꿔도 주소가 맞다", () => {
+  const swapped = { mine: state.opponent, opponent: state.mine };
+  assert.equal(parseVsState(serializeVsState(swapped)).mine.id, "Fiora");
+  assert.equal(parseVsState(serializeVsState(swapped)).opponent.id, "Aatrox");
+});

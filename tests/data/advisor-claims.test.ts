@@ -11,6 +11,7 @@
 import assert from "node:assert/strict";
 import * as fs from "node:fs";
 import * as path from "node:path";
+import { test } from "node:test";
 import type { ChampionCard } from "../../src/lib/knowledge/facts";
 import { PUBLIC_DATA_ROOT, resolvePatchVersion } from "../../scripts/llm/lib/data";
 import { loadPlaybooks } from "../../scripts/llm/lib/playbook";
@@ -80,9 +81,6 @@ function badParticle(text: string, names: string[]): string | undefined {
   return undefined;
 }
 
-let generated = 0;
-let withNuance = 0;
-
 /**
  * 사람이 적은 한 문장을 본다.
  *
@@ -91,7 +89,6 @@ let withNuance = 0;
  */
 function checkNuance(nuance: string, card: ChampionCard, where: string): void {
   if (!nuance) return;
-  withNuance += 1;
   assert.ok(nuance.endsWith("다."), `${where}: nuance 는 합니다체로 끝나야 합니다`);
   const bare = card.spells.reduce((acc, s) => acc.split(s.name).join(" "), nuance);
   assert.ok(!/\d/.test(bare), `${where}: nuance 에 수치가 있습니다`);
@@ -101,12 +98,13 @@ function checkNuance(nuance: string, card: ChampionCard, where: string): void {
   assert.ok(nuance.length <= 200, `${where}: nuance 가 너무 깁니다 (${nuance.length}자)`);
 }
 
-for (const [champion, book] of playbooks) {
-  for (const entry of [...book.playing, ...book.against]) {
-    if (!entry.generated) continue;
-    generated += 1;
-    const where = `${champion} ${entry.id ?? entry.category}`;
+const generatedEntries = [...playbooks].flatMap(([champion, book]) =>
+  [...book.playing, ...book.against].filter((entry) => entry.generated).map((entry) => ({ champion, entry })),
+);
 
+for (const { champion, entry } of generatedEntries) {
+  const where = `${champion} ${entry.id ?? entry.category}`;
+  test(where, () => {
     // 본문은 빌드가 채운다. 손으로 적어 두면 어느 쪽이 참인지 알 수 없다.
     assert.equal(entry.text, "", `${where}: generated 항목의 text 는 비어 있어야 합니다`);
 
@@ -125,7 +123,7 @@ for (const [champion, book] of playbooks) {
       const wrongOne = badParticle(made, card.spells.map((s) => s.name));
       assert.equal(wrongOne, undefined, `${where}: 조사가 어긋났습니다 — "${wrongOne}"`);
       checkNuance(entry.nuance ?? "", card, where);
-      continue;
+      return;
     }
 
     if (entry.generated === "escape-window") {
@@ -147,7 +145,7 @@ for (const [champion, book] of playbooks) {
       assert.ok(!/[PQWE]을\s|R를\s/.test(madeEscape), `${where}: 슬롯 뒤 조사가 어긋났습니다`);
       assert.ok(!madeEscape.includes("|"), `${where}: 스킬 이름에 구분자가 남았습니다`);
       checkNuance(entry.nuance ?? "", card, where);
-      continue;
+      return;
     }
 
     const claims = deriveItemClaims(card);
@@ -197,10 +195,13 @@ for (const [champion, book] of playbooks) {
     assert.equal(wrong, undefined, `${where}: 조사가 어긋났습니다 — "${wrong}"`);
 
     checkNuance(entry.nuance ?? "", card, where);
-  }
+  });
 }
 
-assert.ok(generated >= 360, `도출 항목이 ${generated}건뿐입니다`);
+test("도출 항목 수", () => {
+  assert.ok(generatedEntries.length >= 360, `도출 항목이 ${generatedEntries.length}건뿐입니다`);
+});
+
 /*
  * 상성 도출 문장이 세 언어로 나오는지 본다.
  *
@@ -211,20 +212,24 @@ assert.ok(generated >= 360, `도출 항목이 ${generated}건뿐입니다`);
  * 문장은 옮겨 적은 말이 아니라 그 서버가 실제로 쓰는 말이어야 한다. armor / 护甲,
  * penetration / 穿透 이 나오는지 집어 확인한다.
  */
-{
-  // 방어력 벽 문장은 1·18레벨 모두 매우 높은 앞라인에게만 나온다(럼블 36 은 아니다). 말파이트로 본다.
+// 방어력 벽 문장은 1·18레벨 모두 매우 높은 앞라인에게만 나온다(럼블 36 은 아니다). 말파이트로 본다.
+function matchupPair() {
   const me = cards.find((card) => card.id === "MonkeyKing");
   const enemy = cards.find((card) => card.id === "Malphite");
   assert.ok(me && enemy, "오공·말파이트 카드");
   const claims = deriveMatchupClaims(me, enemy);
   assert.notEqual(claims.mine.damage, "불명", "내 피해 유형이 잡혀야 한다");
   assert.notEqual(claims.theirs.damage, "불명", "상대 피해 유형이 잡혀야 한다");
+  return { me, enemy, claims };
+}
 
-  for (const [lang, must] of [
-    ["ko_KR", ["방어력", "관통"]],
-    ["en_US", ["armor", "penetration"]],
-    ["zh_CN", ["护甲", "穿透"]],
-  ] as const) {
+for (const [lang, must] of [
+  ["ko_KR", ["방어력", "관통"]],
+  ["en_US", ["armor", "penetration"]],
+  ["zh_CN", ["护甲", "穿透"]],
+] as const) {
+  test(`상성 도출 문장 (${lang})`, () => {
+    const { me, enemy, claims } = matchupPair();
     const lines = renderMatchupClaims(me, enemy, claims, lang);
     assert.ok(lines.length >= 2, `${lang}: 도출 문장이 ${lines.length}줄뿐이다`);
     const joined = lines.join(" ");
@@ -233,7 +238,5 @@ assert.ok(generated >= 360, `도출 항목이 ${generated}건뿐입니다`);
     }
     // 다른 언어의 말이 섞이면 안 된다.
     if (lang !== "ko_KR") assert.doesNotMatch(joined, /방어력|마법 저항력|관통을/, `${lang}: 한국어가 섞였다`);
-  }
+  });
 }
-
-console.log(`✅ 도출 노트 통과 (생성 ${generated}건, 그중 nuance ${withNuance}건)`);

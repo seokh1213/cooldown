@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { test } from "node:test";
 import type { Champion, ChampionSpell } from "../../src/types";
 import {
   assertActiveTooltipReport,
@@ -65,20 +66,23 @@ const report = validateActiveTooltips({
     missingTooltips: ["Test:Q", "Test:W"],
   },
 });
-assert.deepEqual(report.totals, {
-  abilities: 4,
-  localized: 2,
-  fallback: 2,
-  withDiagnostics: 3,
-  uniqueUnresolvedTokens: 3,
+
+test("집계와 문제 목록, 허용 목록 안이면 통과", () => {
+  assert.deepEqual(report.totals, {
+    abilities: 4,
+    localized: 2,
+    fallback: 2,
+    withDiagnostics: 3,
+    uniqueUnresolvedTokens: 3,
+  });
+  assert.deepEqual(
+    report.issues.map(({ championId, locale }) => `${championId}:${locale}`),
+    ["Test:en_US", "Test:ko_KR", "Zed:ko_KR"],
+  );
+  assert.doesNotThrow(() => assertActiveTooltipReport(report));
 });
-assert.deepEqual(
-  report.issues.map(({ championId, locale }) => `${championId}:${locale}`),
-  ["Test:en_US", "Test:ko_KR", "Zed:ko_KR"],
-);
-assert.doesNotThrow(() => assertActiveTooltipReport(report));
 
-report.unexpectedTokens.push("NewToken");
-assert.throws(() => assertActiveTooltipReport(report), /1 new tokens/);
-
-console.log("✅ Active tooltip regression validation passed");
+test("새 토큰이 생기면 막는다", () => {
+  report.unexpectedTokens.push("NewToken");
+  assert.throws(() => assertActiveTooltipReport(report), /1 new tokens/);
+});

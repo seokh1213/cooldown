@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import fs from "node:fs/promises";
 import path from "node:path";
+import { test } from "node:test";
 import { fileURLToPath } from "node:url";
 import {
   decodeChampionDetail,
@@ -28,15 +29,18 @@ const wukong = decodeChampionDetail(JSON.parse(
   await fs.readFile(path.join(versionDir, "champions/ko_KR/MonkeyKing.json"), "utf8")
 ));
 const wukongQ = wukong.champion.abilities.Q;
-assert.equal(wukong.champion.baseStats.attackDamage.perLevel, 3.5);
-assert.match(wukongQ.bodyHtml, /사거리가 135\/145\/155\/165\/175 증가/);
-assert.match(wukongQ.bodyHtml, /방어력이 10\/15\/20\/25\/30%/);
-assert.deepEqual(wukongQ.rankValues[0], {
-  label: "피해량",
-  values: "20/45/70/95/120",
+
+test("오공 Q 원문·랭크 값·시뮬레이션", () => {
+  assert.equal(wukong.champion.baseStats.attackDamage.perLevel, 3.5);
+  assert.match(wukongQ.bodyHtml, /사거리가 135\/145\/155\/165\/175 증가/);
+  assert.match(wukongQ.bodyHtml, /방어력이 10\/15\/20\/25\/30%/);
+  assert.deepEqual(wukongQ.rankValues[0], {
+    label: "피해량",
+    values: "20/45/70/95/120",
+  });
+  assert.deepEqual(wukongQ.simulation.primary?.baseByRank, [20, 45, 70, 95, 120]);
+  assert.equal(wukongQ.simulation.primary?.terms[0].stat, "bonusAttackDamage");
 });
-assert.deepEqual(wukongQ.simulation.primary?.baseByRank, [20, 45, 70, 95, 120]);
-assert.equal(wukongQ.simulation.primary?.terms[0].stat, "bonusAttackDamage");
 
 const englishIndex = decodeChampionIndex(JSON.parse(
   await fs.readFile(path.join(versionDir, "champions/en_US/index.json"), "utf8")
@@ -59,82 +63,84 @@ function assertExpressionCurves(node: AbilitySimulationExpr, maxRank: number): v
 const simulationCounts = { complete: 0, expression: 0, unsupported: 0, unavailable: 0 };
 
 for (const entry of englishIndex.champions) {
-  let passiveLocalized = true;
-  for (const locale of locales) {
+  test(entry.id, async () => {
+    let passiveLocalized = true;
+    for (const locale of locales) {
+      const detail = decodeChampionDetail(JSON.parse(
+        await fs.readFile(
+          path.join(versionDir, `champions/${locale}/${entry.id}.json`),
+          "utf8"
+        )
+      ));
+      const passive = detail.champion.abilities.P;
+      assert.doesNotMatch(passive.bodyHtml, /@[^@]+@|\{\{[^}]+}}/);
+      if (passive.source !== "communitydragon") passiveLocalized = false;
+    }
+    if (passiveLocalized) detailedPassiveCount += 1;
+    else assert.ok(allowedPassiveFallbacks.has(entry.id), entry.id);
+
     const detail = decodeChampionDetail(JSON.parse(
-      await fs.readFile(
-        path.join(versionDir, `champions/${locale}/${entry.id}.json`),
-        "utf8"
-      )
+      await fs.readFile(path.join(versionDir, `champions/en_US/${entry.id}.json`), "utf8")
     ));
-    const passive = detail.champion.abilities.P;
-    assert.doesNotMatch(passive.bodyHtml, /@[^@]+@|\{\{[^}]+}}/);
-    if (passive.source !== "communitydragon") passiveLocalized = false;
-  }
-  if (passiveLocalized) detailedPassiveCount += 1;
-  else assert.ok(allowedPassiveFallbacks.has(entry.id), entry.id);
-
-  const detail = decodeChampionDetail(JSON.parse(
-    await fs.readFile(path.join(versionDir, `champions/en_US/${entry.id}.json`), "utf8")
-  ));
-  for (const slot of slots) {
-    const ability = detail.champion.abilities[slot];
-    assert.equal(ability.maxRank > 0, true, `${entry.id} ${slot} maxRank`);
-    activeAbilityCount += 1;
-    if (ability.source === "communitydragon") precomputedSpellCount += 1;
-    simulationCounts[ability.simulation.status] += 1;
-    if (ability.simulation.status === "complete") {
-      const primary = ability.simulation.primary!;
-      if (primary.baseByRank) assert.equal(primary.baseByRank.length, ability.maxRank);
-      if (primary.baseByRankAndLevel) {
-        assert.equal(primary.baseByRankAndLevel.length, ability.maxRank);
-      }
-      for (const term of ability.simulation.primary?.terms ?? []) {
-        if (term.coefficientsByRank) {
-          assert.equal(term.coefficientsByRank.length, ability.maxRank);
+    for (const slot of slots) {
+      const ability = detail.champion.abilities[slot];
+      assert.equal(ability.maxRank > 0, true, `${entry.id} ${slot} maxRank`);
+      activeAbilityCount += 1;
+      if (ability.source === "communitydragon") precomputedSpellCount += 1;
+      simulationCounts[ability.simulation.status] += 1;
+      if (ability.simulation.status === "complete") {
+        const primary = ability.simulation.primary!;
+        if (primary.baseByRank) assert.equal(primary.baseByRank.length, ability.maxRank);
+        if (primary.baseByRankAndLevel) {
+          assert.equal(primary.baseByRankAndLevel.length, ability.maxRank);
         }
-        if (term.coefficientsByRankAndLevel) {
-          assert.equal(term.coefficientsByRankAndLevel.length, ability.maxRank);
+        for (const term of ability.simulation.primary?.terms ?? []) {
+          if (term.coefficientsByRank) {
+            assert.equal(term.coefficientsByRank.length, ability.maxRank);
+          }
+          if (term.coefficientsByRankAndLevel) {
+            assert.equal(term.coefficientsByRankAndLevel.length, ability.maxRank);
+          }
         }
       }
+      if (ability.simulation.status === "expression") {
+        const expression = ability.simulation.expression!;
+        assert.equal(ability.simulation.primary, undefined);
+        assertExpressionCurves(expression.root, ability.maxRank);
+        assert.equal(
+          expression.requiresBuffStacks,
+          JSON.stringify(expression.root).includes('"buffStacks"'),
+        );
+      }
     }
-    if (ability.simulation.status === "expression") {
-      const expression = ability.simulation.expression!;
-      assert.equal(ability.simulation.primary, undefined);
-      assertExpressionCurves(expression.root, ability.maxRank);
-      assert.equal(
-        expression.requiresBuffStacks,
-        JSON.stringify(expression.root).includes('"buffStacks"'),
-      );
-    }
-  }
+  });
 }
 
-assert.equal(activeAbilityCount, englishIndex.champions.length * 4);
-// 모든 Q/W/E/R 이 CDragon 원문으로 렌더된다 (allowlist.missingTooltips 가 비어 있음)
-assert.equal(precomputedSpellCount, activeAbilityCount);
-assert.equal(detailedPassiveCount, englishIndex.champions.length - allowedPassiveFallbacks.size);
-assert.equal(
-  simulationCounts.complete +
-    simulationCounts.expression +
-    simulationCounts.unsupported +
-    simulationCounts.unavailable,
-  activeAbilityCount
-);
-assert.deepEqual(simulationReport.summary, {
-  abilities: activeAbilityCount,
-  ...simulationCounts,
+test("스킬 집계가 시뮬레이션 검증 보고서와 맞다", () => {
+  assert.equal(activeAbilityCount, englishIndex.champions.length * 4);
+  // 모든 Q/W/E/R 이 CDragon 원문으로 렌더된다 (allowlist.missingTooltips 가 비어 있음)
+  assert.equal(precomputedSpellCount, activeAbilityCount);
+  assert.equal(detailedPassiveCount, englishIndex.champions.length - allowedPassiveFallbacks.size);
+  assert.equal(
+    simulationCounts.complete +
+      simulationCounts.expression +
+      simulationCounts.unsupported +
+      simulationCounts.unavailable,
+    activeAbilityCount
+  );
+  assert.deepEqual(simulationReport.summary, {
+    abilities: activeAbilityCount,
+    ...simulationCounts,
+  });
 });
-await assert.rejects(fs.access(path.join(versionDir, "spells")));
-for (const locale of locales) {
-  await assert.rejects(fs.access(path.join(versionDir, `champions-normalized-${locale}.json`)));
-}
-const championEntries = await fs.readdir(path.join(versionDir, "champions"), {
-  withFileTypes: true,
+
+test("옛 산출물이 남아 있지 않다", async () => {
+  await assert.rejects(fs.access(path.join(versionDir, "spells")));
+  for (const locale of locales) {
+    await assert.rejects(fs.access(path.join(versionDir, `champions-normalized-${locale}.json`)));
+  }
+  const championEntries = await fs.readdir(path.join(versionDir, "champions"), {
+    withFileTypes: true,
+  });
+  assert.equal(championEntries.every((entry) => entry.isDirectory()), true);
 });
-assert.equal(championEntries.every((entry) => entry.isDirectory()), true);
-console.log(
-  `✅ Ability v2: ${precomputedSpellCount}/${activeAbilityCount} active tooltips, ` +
-    `${detailedPassiveCount}/${englishIndex.champions.length} passives, ` +
-    `simulation ${JSON.stringify(simulationCounts)}`
-);

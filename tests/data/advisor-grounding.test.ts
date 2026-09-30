@@ -7,6 +7,7 @@
 import assert from "node:assert/strict";
 import * as fs from "node:fs";
 import * as path from "node:path";
+import { test } from "node:test";
 import type { ChampionCard } from "../../src/lib/knowledge/facts";
 import { PUBLIC_DATA_ROOT, resolvePatchVersion } from "../../scripts/llm/lib/data";
 import { groundCommentary } from "../../src/lib/advisor/grounding";
@@ -46,7 +47,7 @@ assert.ok(ult.effects.includes("에어본"), "R 에 에어본이 있어야 이 �
 const q = malphite.spells.find((s) => s.slot === "Q");
 assert.ok(q && !q.effects.includes("에어본"), "Q 에는 에어본이 없어야 한다");
 
-{
+test("틀린 짝 문장은 걷어낸다", () => {
   // 짝이 틀린 문장은 걷어낸다. 에어본은 R 것이지 Q 것이 아니다.
   const text = `${q.name}으로 에어본을 겁니다. 한타에서는 진입 순서를 먼저 정합니다.`;
   const result = groundCommentary(text, answer);
@@ -54,21 +55,21 @@ assert.ok(q && !q.effects.includes("에어본"), "Q 에는 에어본이 없어�
   assert.equal(result.dropped[0].verdict, "card-wrong");
   assert.match(result.text, /진입 순서/, "멀쩡한 문장은 남는다");
   assert.doesNotMatch(result.text, /에어본/, "틀린 문장은 사라진다");
-}
+});
 
-{
+test("맞는 짝은 남긴다", () => {
   // 맞는 짝은 남긴다.
   const text = `${ult.name}으로 에어본을 걸어 한타를 엽니다.`;
   const result = groundCommentary(text, answer);
   assert.equal(result.dropped.length, 0, "맞는 짝은 지우지 않는다");
-}
+});
 
 /*
  * 카드의 효과 태그는 성글다 — 스킬 865개 중 196개(23%)가 비어 있다. 태그 하나라도
  * 어긋나면 틀렸다고 하던 규칙이 사람이 검증한 노트 36문장을 버렸다. 아래 셋을 더해
  * 17문장으로 줄였다. 모르는 것을 틀렸다고 하지 않는 것이 요지다.
  */
-{
+test("모르는 것을 틀렸다고 하지 않는다", () => {
   // 짝이 하나라도 맞으면 맞다고 본다. "광역 기절" 은 한 덩어리 표현이지 두 주장이 아니다.
   const both = `${ult.name}은 즉시 터지는 광역 에어본입니다.`;
   assert.equal(groundCommentary(both, answer).dropped.length, 0, "하나라도 맞으면 통과");
@@ -89,58 +90,58 @@ assert.ok(q && !q.effects.includes("에어본"), "Q 에는 에어본이 없어�
     const text = `${withText.name}은 ${tag}를 겁니다.`;
     assert.equal(groundCommentary(text, answer).dropped.length, 0, "툴팁에 있으면 통과");
   }
-}
+});
 
-{
+test("숫자는 걷어낸다", () => {
   // 숫자는 해설에 쓰지 말라고 일러 두었다. 새어 나오면 대조할 방법이 없다.
   const result = groundCommentary("궁극기 쿨타임은 130초입니다.", answer);
   assert.equal(result.dropped[0]?.verdict, "number");
-}
+});
 
-{
+test("근거 없는 이음말은 남긴다", () => {
   // 근거 없는 이음말은 남긴다. 다 지우면 해설이 토막 난다.
   const text = "한타에서는 진입 타이밍이 가장 중요합니다.";
   assert.equal(groundCommentary(text, answer).dropped.length, 0, "근거가 없다고 지우지는 않는다");
-}
+});
 
-{
+test("노트에서 온 문장은 남긴다", () => {
   // 노트에서 온 문장은 정의상 옳다.
   const text = "화강암 방패가 살아 있을 때 딜 교환을 시작합니다.";
   assert.equal(groundCommentary(text, answer).dropped.length, 0, "노트 문장은 남는다");
-}
+});
 
-{
+test("덜 쓴 문장은 건드리지 않는다", () => {
   // 스트리밍 중이다. 끝나지 않은 꼬리는 아직 판단하지 않는다.
   const result = groundCommentary(`${q.name}으로 에어본을`, answer);
   assert.equal(result.dropped.length, 0, "덜 쓴 문장은 건드리지 않는다");
-}
+});
 
-{
+test("카드가 없으면 그대로 둔다", () => {
   // 대조할 자료가 없는 답(스킬 하나·아이템·규칙)은 손대지 않는다.
   const text = "아무 말이나 130 썼습니다.";
   assert.equal(groundCommentary(text, undefined).text, text, "카드가 없으면 그대로 둔다");
-}
+});
 
-{
+test("굵은 소제목은 대조하지 않는다", () => {
   // 굵은 소제목은 사실을 주장하지 않는다.
   const result = groundCommentary("**플레이할 때**", answer);
   assert.equal(result.dropped.length, 0, "소제목은 대조 대상이 아니다");
-}
+});
 
-{
+test("소수점을 문장 끝으로 읽지 않는다", () => {
   // 소수점은 문장 끝이 아니다. 쿨타임 "8/7.5/7" 을 문장 경계로 읽어 토막 내던 버그다.
   const text = `${ult.name} 재사용 대기시간은 130/115/100초입니다. 뒤 문장입니다.`;
   const result = groundCommentary(text, answer);
   assert.equal(result.dropped.length, 1, "숫자 문장 하나만 걸린다");
   assert.equal(result.text, "뒤 문장입니다.", "나머지는 온전히 남는다");
-}
+});
 
-{
+test("소수점 문장이 토막 나지 않는다", () => {
   // 소수점이 든 문장이 남아야 할 때도 토막 나면 안 된다.
   const kept = groundCommentary("쿨은 8/7.5/7초입니다.", answer);
   assert.equal(kept.dropped.length, 1, "숫자 규칙에 걸린다");
   assert.equal(kept.text, "", "쪼개진 토막이 남지 않는다");
-}
+});
 
 /**
  * 모델을 권할 기기인지 가리는 관문.
@@ -148,7 +149,7 @@ assert.ok(q && !q.effects.includes("에어본"), "Q 에는 에어본이 없어�
  * f16 을 모델과 무관하게 따지면 Pascal 같은 카드가 16비트를 안 쓰는 판본까지 못 쓴다.
  * 반대로 아예 안 따지면 q4f16 을 못 도는 기기에 받게 한다.
  */
-{
+test("모델을 권할 기기인지 가린다", () => {
   const needs: AdvisorModel = { id: "a", dtype: "q4f16", downloadMb: 1, needsF16: true };
   const free: AdvisorModel = { id: "b", dtype: "q4", downloadMb: 1, needsF16: false };
   const withF16 = { supported: true, f16: true };
@@ -163,9 +164,9 @@ assert.ok(q && !q.effects.includes("에어본"), "Q 에는 에어본이 없어�
   assert.equal(canOfferModel(free, withF16, "mobile"), false, "휴대폰에는 권하지 않는다");
   // 모델이 하나뿐이라 f16 없는 기기(GTX 10xx)에서도 돌아야 한다
   assert.equal(ADVISOR_MODEL.needsF16, false, "쓰는 모델은 16비트를 요구하지 않는다");
-}
+});
 
-{
+test("앞에서 한 말의 되풀이를 버린다", () => {
   /*
     앞에서 한 말을 다시 하면 버린다. "오공 상대법" 에 같은 문단이 머리말만 바꿔
     두 번 나왔다. 틀린 말은 아니지만 읽는 사람의 시간을 버린다.
@@ -178,7 +179,7 @@ assert.ok(q && !q.effects.includes("에어본"), "Q 에는 에어본이 없어�
   // 다른 말은 둘 다 남는다. 너무 세게 지우면 해설이 토막 난다.
   const two = groundCommentary("R은 저지 불가라 끊을 수 없습니다. 방패가 깨진 뒤에 붙어 싸웁니다.", answer);
   assert.equal(two.dropped.length, 0, "다른 말은 남는다");
-}
+});
 
 /*
  * 묻지 않은 관점은 화면에 안 나간다.
@@ -186,7 +187,7 @@ assert.ok(q && !q.effects.includes("에어본"), "Q 에는 에어본이 없어�
  * "오공 상대법" 을 물었는데 답이 **상대할 때** 와 **플레이할 때** 둘 다 나왔다.
  * 프롬프트가 이미 못 박아 두지만 작은 모델은 그 지시를 흘린다.
  */
-{
+test("묻지 않은 관점은 내보내지 않는다", () => {
   const asked: AdvisorAnswer = {
     kind: "champion",
     card: malphite,
@@ -205,9 +206,9 @@ assert.ok(q && !q.effects.includes("에어본"), "Q 에는 에어본이 없어�
   // 다 잘라 내면 원문을 둔다. 빈 해설보다는 관점이 섞인 해설이 낫다.
   const onlyOther = "**플레이할 때**\n방패를 채워 두고 시작합니다.";
   assert.match(groundCommentary(onlyOther, asked).text, /방패를 채워/, "다 지워질 바엔 그대로 둔다");
-}
+});
 
-{
+test("인사말과 지시문 베끼기를 걷어낸다", () => {
   /*
    * 인사말과 지시문 베끼기를 걷어낸다.
    *
@@ -228,9 +229,9 @@ assert.ok(q && !q.effects.includes("에어본"), "Q 에는 에어본이 없어�
   const reworded = w.closing.champion.replace(/^- /, "").replace("말하십시오", "설명합니다");
   const softened = groundCommentary(`${reworded} 화강암 방패가 살아 있을 때 딜 교환을 시작합니다.`, answer);
   assert.equal(softened.dropped.filter((d) => d.verdict === "boilerplate").length, 1, "어미만 바꾼 베끼기도 잡는다");
-}
+});
 
-{
+test("상성 답에서 남의 스킬을 갖다 붙이면 걷어낸다", () => {
   /*
    * 상성 답에서 남의 스킬을 갖다 붙이는 것.
    *
@@ -254,9 +255,9 @@ assert.ok(q && !q.effects.includes("에어본"), "Q 에는 에어본이 없어�
   const dodge = `오공은 럼블의 P ${theirs.name}을 피하고 W ${mine.name}로 빠집니다.`;
   assert.equal(groundCommentary(dodge, versus).dropped.length, 0, "상대 스킬을 피한다는 말은 남는다");
   assert.match(groundCommentary(dodge, versus).text, new RegExp(mine.name), "내 스킬도 남는다");
-}
+});
 
-{
+test("한다체를 합니다체로 돌린다", () => {
   /*
    * 한다체로 끝난 문장은 합니다체로 돌려서 내보낸다.
    *
@@ -268,9 +269,9 @@ assert.ok(q && !q.effects.includes("에어본"), "Q 에는 에어본이 없어�
   assert.match(kept, /시작합니다/, "한다체 종결을 합니다체로 바꾼다");
   assert.match(kept, /벌립니다/, "두 번째 문장도 바꾼다");
   assert.doesNotMatch(kept, /시작한다|벌린다/, "한다체가 남지 않는다");
-}
+});
 
-{
+test("스킬 이름 앞 슬롯 문자를 붙이고 바로잡는다", () => {
   /*
    * 스킬 이름 앞에 슬롯 문자를 붙이고, 틀린 글자는 바로잡는다.
    *
@@ -305,9 +306,9 @@ assert.ok(q && !q.effects.includes("에어본"), "Q 에는 에어본이 없어�
   const short = cards.flatMap((c) => c.spells.map((s) => ({ c, s }))).find(({ s }) => s.name.length === 2);
   assert.ok(short, "두 글자 스킬 이름");
   assert.equal(labelSlots(`${short.s.name}에 걸린 적`, [short.c]), `${short.s.name}에 걸린 적`, "짧은 이름은 건드리지 않는다");
-}
+});
 
-{
+test("쉼표로 이어 가는 되풀이도 끊는다", () => {
   /*
    * 문장을 끝내지 않고 쉼표로 이어 가는 되풀이도 끊는다.
    *
@@ -338,16 +339,14 @@ assert.ok(q && !q.effects.includes("에어본"), "Q 에는 에어본이 없어�
   for (let i = 0; i < fine.length; i += 2) flagged = calm.feed(fine.slice(i, i + 2)) || flagged;
   assert.equal(flagged, false, "멀쩡한 글은 끊지 않는다");
   assert.equal(trimLoop(fine), fine, "되풀이가 없으면 손대지 않는다");
-}
+});
 
 /**
  * 자료 패널을 펼쳐도 뒤 페이지가 제 구실을 하는가. VS 화면은 두 표가 나란히 서야 해서 1280px 에서는 접은 채로 연다.
  */
-{
+test("자료 패널을 펼쳐도 페이지가 제 구실을 한다", () => {
   assert.equal(referenceFitsPage(1280, "vs"), false, "1280 VS: 자료 패널을 펼치면 표가 가려진다");
   assert.equal(referenceFitsPage(1512, "vs"), true, "1512 VS: 넉넉하다");
   assert.equal(referenceFitsPage(1280, "cooldown"), true, "쿨타임 표는 줄어든다");
   assert.equal(referenceFitsPage(1194, "cooldown"), true, "태블릿 가로(1194)에서도 쿨타임 표는 보인다");
-}
-
-console.log("✅ 근거 검사 통과 (62건)");
+});

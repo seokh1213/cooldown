@@ -10,6 +10,7 @@
  *   RECORD=1 npx tsx tests/data/advisor-plan.test.ts   지금 값을 표 꼴로 찍는다
  */
 import assert from "node:assert/strict";
+import { test } from "node:test";
 import { koKRTranslations } from "../../src/i18n/koKRTranslations";
 import { enUSTranslations } from "../../src/i18n/enUSTranslations";
 import type { Language } from "../../src/i18n";
@@ -228,27 +229,23 @@ const CASES: Case[] = [
   { name: "영어 상성(판정기)", question: "how do I play Yasuo into Malphite?", lang: "en_US", model: true, judge: { kind: "matchup", mine: "Malphite", topic: "laning" }, want: "matchup Yasuo>Malphite focus=general", calls: ["judge kind+mine"] },
 ];
 
-async function main() {
-  let checks = 0;
+test("자료가 없으면 모델에게", async () => {
   const noData = await planAnswer("가렌 Q", { data: null, lang: "ko_KR", copy: koKRTranslations.advisor, turns: [], championIds: [], consented: false, canUseModel: false, retrieval: false }, {
     judge: () => Promise.reject(new Error("부르면 안 된다")),
     search: () => Promise.reject(new Error("부르면 안 된다")),
   });
   assert.equal(noData.type, "respond", "자료가 없으면 모델에게");
-  checks += 1;
+});
 
-  const record = Boolean(process.env.RECORD);
-  for (const c of CASES) {
+const record = Boolean(process.env.RECORD);
+for (const c of CASES) {
+  test(c.name, async () => {
     const got = await run(c);
     if (record) {
       console.log(`  ${c.name}: ${JSON.stringify(got.want)}, ${JSON.stringify(got.calls)}`);
-      continue;
+      return;
     }
     assert.equal(got.want, c.want, `${c.name}: ${c.question}`);
     assert.deepEqual(got.calls, c.calls, `${c.name}: 판정기·검색 호출`);
-    checks += 2;
-  }
-  if (!record) console.log(`advisor plan tests passed (${checks} checks, ${CASES.length} cases)`);
+  });
 }
-
-void main();

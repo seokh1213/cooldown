@@ -15,6 +15,7 @@
 import assert from "node:assert/strict";
 import * as fs from "node:fs";
 import * as path from "node:path";
+import { test } from "node:test";
 import type { ChampionCard } from "../../src/lib/knowledge/facts";
 import { PUBLIC_DATA_ROOT, resolvePatchVersion } from "../../scripts/llm/lib/data";
 import { digestSpellText, loadSpellOverrides } from "../../scripts/llm/lib/spellOverrides";
@@ -40,80 +41,71 @@ const TAGS = new Set([
 const DAMAGE_TYPES = new Set(["물리", "마법", "고정"]);
 
 const overrides = loadSpellOverrides();
-let tags = 0;
-let types = 0;
-let emptied = 0;
-let stamped = 0;
 
 for (const [key, override] of Object.entries(overrides)) {
-  const [championId, slot] = key.split(":");
-  assert.ok(slot, `${key}: 키는 "<ChampionId>:<슬롯>" 꼴이어야 합니다`);
+  test(key, () => {
+    const [championId, slot] = key.split(":");
+    assert.ok(slot, `${key}: 키는 "<ChampionId>:<슬롯>" 꼴이어야 합니다`);
 
-  const card = byId.get(championId);
-  assert.ok(card, `${key}: 없는 챔피언입니다`);
-  const spell = card.spells.find((s) => s.slot === slot);
-  assert.ok(spell, `${key}: 없는 슬롯입니다`);
+    const card = byId.get(championId);
+    assert.ok(card, `${key}: 없는 챔피언입니다`);
+    const spell = card.spells.find((s) => s.slot === slot);
+    assert.ok(spell, `${key}: 없는 슬롯입니다`);
 
-  /*
-   * 리워크를 잡는 자리다.
-   *
-   * 보정은 **그때 그 문구**를 보고 적은 것이라, 챔피언이 리워크되면 그대로 남아
-   * 조용히 틀린다. 규칙으로 뽑는 태그는 새 문구에서 다시 도출되므로 저절로
-   * 따라가지만 이쪽은 그러지 못한다. 지문이 어긋나면 사람이 다시 봐야 한다.
-   *
-   * 지문은 수치를 지우고 찍으므로 밸런스 판올림으로는 울지 않는다.
-   */
-  if (override.textDigest) {
-    const now = digestSpellText(spell.text);
-    assert.equal(
-      now,
-      override.textDigest,
-      `${key}: 툴팁 문구가 바뀌었습니다. 보정을 다시 확인하고 textDigest 를 "${now}" 로 바꾸십시오`,
-    );
-    stamped += 1;
-  }
-
-  assert.ok(override.why?.trim(), `${key}: why 가 비어 있습니다`);
-  assert.ok(/^https?:\/\//.test(override.source ?? ""), `${key}: source 가 주소가 아닙니다`);
-  // 주석과 같은 결로 적는다. 합니다체가 섞이면 파일 안에서 말투가 갈린다.
-  assert.ok(!/습니다\.|입니다\./.test(override.why), `${key}: why 는 평서형으로 씁니다`);
-
-  // 규칙이 이미 잡는 것을 또 적으면, 규칙을 고친 뒤에도 보정이 남아 다음 사람이
-  // "이건 왜 여기 있지" 를 다시 따지게 된다. 이동기·돌진은 위키 판정에서 오므로 뺀다.
-  const derived = new Set(
-    detectEffects(spell.text, card.spells.map((s) => s.name)),
-  );
-  for (const tag of override.add ?? []) {
-    assert.ok(TAGS.has(tag), `${key}: 모르는 태그 "${tag}"`);
-    if (tag !== "이동기" && tag !== "돌진") {
-      assert.ok(!derived.has(tag), `${key}: "${tag}" 은 규칙이 이미 잡습니다. 보정을 지웁니다`);
+    /*
+     * 리워크를 잡는 자리다.
+     *
+     * 보정은 **그때 그 문구**를 보고 적은 것이라, 챔피언이 리워크되면 그대로 남아
+     * 조용히 틀린다. 규칙으로 뽑는 태그는 새 문구에서 다시 도출되므로 저절로
+     * 따라가지만 이쪽은 그러지 못한다. 지문이 어긋나면 사람이 다시 봐야 한다.
+     *
+     * 지문은 수치를 지우고 찍으므로 밸런스 판올림으로는 울지 않는다.
+     */
+    if (override.textDigest) {
+      const now = digestSpellText(spell.text);
+      assert.equal(
+        now,
+        override.textDigest,
+        `${key}: 툴팁 문구가 바뀌었습니다. 보정을 다시 확인하고 textDigest 를 "${now}" 로 바꾸십시오`,
+      );
     }
-    tags += 1;
-  }
-  for (const tag of override.remove ?? []) {
-    assert.ok(TAGS.has(tag), `${key}: 모르는 태그 "${tag}"`);
-  }
-  for (const type of override.damageTypes ?? []) {
-    assert.ok(DAMAGE_TYPES.has(type), `${key}: 모르는 피해 유형 "${type}"`);
-    types += 1;
-  }
 
-  // 비었음을 확인한 자리는 고칠 것이 없는 것이 정상이다. 다만 둘을 함께 적으면
-  // 무엇이 참인지 알 수 없으므로 막는다.
-  const changes =
-    (override.add?.length ?? 0) + (override.remove?.length ?? 0) + (override.damageTypes?.length ?? 0);
-  if (override.confirmedEmpty) {
-    assert.equal(changes, 0, `${key}: 비었음을 확인해 놓고 보정도 적었습니다`);
-  }
-  if (override.confirmedEmpty || override.confirmedNoDamage) {
-    emptied += 1;
-  } else {
-    assert.ok(changes > 0, `${key}: 보정할 내용이 없습니다`);
-  }
+    assert.ok(override.why?.trim(), `${key}: why 가 비어 있습니다`);
+    assert.ok(/^https?:\/\//.test(override.source ?? ""), `${key}: source 가 주소가 아닙니다`);
+    // 주석과 같은 결로 적는다. 합니다체가 섞이면 파일 안에서 말투가 갈린다.
+    assert.ok(!/습니다\.|입니다\./.test(override.why), `${key}: why 는 평서형으로 씁니다`);
+
+    // 규칙이 이미 잡는 것을 또 적으면, 규칙을 고친 뒤에도 보정이 남아 다음 사람이
+    // "이건 왜 여기 있지" 를 다시 따지게 된다. 이동기·돌진은 위키 판정에서 오므로 뺀다.
+    const derived = new Set(
+      detectEffects(spell.text, card.spells.map((s) => s.name)),
+    );
+    for (const tag of override.add ?? []) {
+      assert.ok(TAGS.has(tag), `${key}: 모르는 태그 "${tag}"`);
+      if (tag !== "이동기" && tag !== "돌진") {
+        assert.ok(!derived.has(tag), `${key}: "${tag}" 은 규칙이 이미 잡습니다. 보정을 지웁니다`);
+      }
+    }
+    for (const tag of override.remove ?? []) {
+      assert.ok(TAGS.has(tag), `${key}: 모르는 태그 "${tag}"`);
+    }
+    for (const type of override.damageTypes ?? []) {
+      assert.ok(DAMAGE_TYPES.has(type), `${key}: 모르는 피해 유형 "${type}"`);
+    }
+
+    // 비었음을 확인한 자리는 고칠 것이 없는 것이 정상이다. 다만 둘을 함께 적으면
+    // 무엇이 참인지 알 수 없으므로 막는다.
+    const changes =
+      (override.add?.length ?? 0) + (override.remove?.length ?? 0) + (override.damageTypes?.length ?? 0);
+    if (override.confirmedEmpty) {
+      assert.equal(changes, 0, `${key}: 비었음을 확인해 놓고 보정도 적었습니다`);
+    }
+    if (!override.confirmedEmpty && !override.confirmedNoDamage) {
+      assert.ok(changes > 0, `${key}: 보정할 내용이 없습니다`);
+    }
+  });
 }
 
-assert.ok(Object.keys(overrides).length > 0, "보정 항목이 하나도 없습니다");
-console.log(
-  `✅ 보정 항목 통과 (${Object.keys(overrides).length}자리 · 태그 ${tags}건 · ` +
-    `피해 유형 ${types}건 · 사람이 확인 ${emptied}자리 · 지문 ${stamped}자리)`,
-);
+test("보정 항목이 하나 이상 있다", () => {
+  assert.ok(Object.keys(overrides).length > 0, "보정 항목이 하나도 없습니다");
+});

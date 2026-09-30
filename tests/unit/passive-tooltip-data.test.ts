@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { test } from "node:test";
 import {
   extractPassiveSpell,
   localizePassiveTooltip,
@@ -52,49 +53,55 @@ const templates = {
 } as const;
 
 const passive = extractPassiveSpell(bin, "MonkeyKing");
-assert.ok(passive);
-assert.equal(passive.id, "MonkeyKingPassive");
-assert.equal(
-  passive.locKeys.keyTooltip,
-  "Spell_MonkeyKingPassive_Tooltip"
-);
-assert.deepEqual(passive.spellData.DataValues?.MaxStacks, Array(7).fill(5));
+
+test("패시브 SpellObject 추출", () => {
+  assert.ok(passive);
+  assert.equal(passive.id, "MonkeyKingPassive");
+  assert.equal(
+    passive.locKeys.keyTooltip,
+    "Spell_MonkeyKingPassive_Tooltip"
+  );
+  assert.deepEqual(passive.spellData.DataValues?.MaxStacks, Array(7).fill(5));
+});
 
 for (const [locale, template] of Object.entries(templates)) {
-  const localized = localizePassiveTooltip(
-    passive,
-    {
-      entries: {
-        spell_monkeykingpassive_name: "Wukong Passive",
-        spell_monkeykingpassive_tooltip: template,
+  test(`패시브 툴팁 현지화 (${locale})`, () => {
+    assert.ok(passive);
+    const localized = localizePassiveTooltip(
+      passive,
+      {
+        entries: {
+          spell_monkeykingpassive_name: "Wukong Passive",
+          spell_monkeykingpassive_tooltip: template,
+        },
       },
-    },
-    locale as keyof typeof templates
-  );
-  assert.match(localized.tooltip ?? "", /\(6 ~ 10\)/);
-  assert.match(localized.tooltip ?? "", /0\.35%/);
-  assert.match(localized.tooltip ?? "", /5/);
-  assert.doesNotMatch(localized.tooltip ?? "", /[@{}]/);
+      locale as keyof typeof templates
+    );
+    assert.match(localized.tooltip ?? "", /\(6 ~ 10\)/);
+    assert.match(localized.tooltip ?? "", /0\.35%/);
+    assert.match(localized.tooltip ?? "", /5/);
+    assert.doesNotMatch(localized.tooltip ?? "", /[@{}]/);
+  });
 }
 
-const modePassive = extractPassiveSpell({
-  "Characters/Test/CharacterRecords/Root": {
-    mCharacterPassiveSpell: "Characters/Test/Spells/TestPassive",
-  },
-  "Characters/Test/Spells/TestPassive": {
-    mScriptName: "TestPassive",
-    mSpell: {
-      DataValues: [{ name: "GameModeInteger", values: Array(7).fill(1) }],
-      mClientData: { mTooltipData: { mLocKeys: { keyTooltip: "Test_Tooltip" } } },
+test("게임 모드별 툴팁 키는 소환사의 협곡 문구를 고른다", () => {
+  const modePassive = extractPassiveSpell({
+    "Characters/Test/CharacterRecords/Root": {
+      mCharacterPassiveSpell: "Characters/Test/Spells/TestPassive",
     },
-  },
-}, "Test");
-assert.ok(modePassive);
-assert.equal(localizePassiveTooltip(modePassive, {
-  entries: {
-    test_tooltip: "{{Test_Tooltip_@GameModeInteger@}}",
-    test_tooltip_1: "Summoner's Rift passive",
-  },
-}, "en_US").tooltip, "Summoner's Rift passive");
-
-console.log("✅ Passive SpellObject localization pipeline passed");
+    "Characters/Test/Spells/TestPassive": {
+      mScriptName: "TestPassive",
+      mSpell: {
+        DataValues: [{ name: "GameModeInteger", values: Array(7).fill(1) }],
+        mClientData: { mTooltipData: { mLocKeys: { keyTooltip: "Test_Tooltip" } } },
+      },
+    },
+  }, "Test");
+  assert.ok(modePassive);
+  assert.equal(localizePassiveTooltip(modePassive, {
+    entries: {
+      test_tooltip: "{{Test_Tooltip_@GameModeInteger@}}",
+      test_tooltip_1: "Summoner's Rift passive",
+    },
+  }, "en_US").tooltip, "Summoner's Rift passive");
+});

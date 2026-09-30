@@ -10,6 +10,7 @@
 import assert from "node:assert/strict";
 import * as fs from "node:fs";
 import * as path from "node:path";
+import { test } from "node:test";
 import { groupItemsByTier } from "../../src/pages/EncyclopediaPage/itemCatalogModel";
 import type { NormalizedItem } from "../../src/types/combatNormalized";
 
@@ -57,20 +58,22 @@ const CASES: Array<[string, number, Array<[string, string]>]> = [
 ];
 
 for (const [locale, minimum, checks] of CASES) {
-  const items = load(locale);
-  const withAliases = items.filter((item) => (item.aliases?.length ?? 0) > 0);
-  assert.ok(
-    withAliases.length >= minimum,
-    `${locale}: 별칭이 붙은 아이템이 ${withAliases.length}개뿐이다 (최소 ${minimum}). 파이프라인이 colloq 를 버리고 있다`,
-  );
-  for (const [query, expected] of checks) {
-    const hits = search(items, query);
-    assert.ok(hits.includes(expected), `${locale}: "${query}" 로 ${expected} 를 못 찾는다 (${hits.slice(0, 5).join(", ") || "결과 없음"})`);
-  }
+  test(`${locale} 별칭 검색`, () => {
+    const items = load(locale);
+    const withAliases = items.filter((item) => (item.aliases?.length ?? 0) > 0);
+    assert.ok(
+      withAliases.length >= minimum,
+      `${locale}: 별칭이 붙은 아이템이 ${withAliases.length}개뿐이다 (최소 ${minimum}). 파이프라인이 colloq 를 버리고 있다`,
+    );
+    for (const [query, expected] of checks) {
+      const hits = search(items, query);
+      assert.ok(hits.includes(expected), `${locale}: "${query}" 로 ${expected} 를 못 찾는다 (${hits.slice(0, 5).join(", ") || "결과 없음"})`);
+    }
+  });
 }
 
 // 이름 검색이 망가지지 않았는지. 별칭을 얹느라 원래 길을 막으면 안 된다.
-assert.ok(search(load("ko_KR"), "장화").includes("장화"), "이름으로도 찾혀야 한다");
-assert.ok(search(load("ko_KR"), "ㅁㅊㅅ").includes("민첩성의 망토"), "초성 검색이 그대로 돌아야 한다");
-
-console.log(`✅ 아이템 별칭 검색 통과 (로케일 ${CASES.length}종)`);
+test("이름·초성 검색 유지", () => {
+  assert.ok(search(load("ko_KR"), "장화").includes("장화"), "이름으로도 찾혀야 한다");
+  assert.ok(search(load("ko_KR"), "ㅁㅊㅅ").includes("민첩성의 망토"), "초성 검색이 그대로 돌아야 한다");
+});

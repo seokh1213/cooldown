@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
+import { test } from "node:test";
 import { structureItemDescription } from "../../scripts/data-pipeline/normalization/item-description";
 import { attachItemEffectDetails } from "../../scripts/data-pipeline/normalization/item-effect-details";
 import { itemDamageFormula } from "../../src/pages/EncyclopediaPage/itemFormula";
@@ -8,32 +9,35 @@ import { decodeNormalizedItems } from "../../src/data/contracts/normalizedDataDe
 const description =
   "<mainText><stats>공격력 <attention>20</attention><br>체력 100</stats><br><br><passive>첫 효과</passive><br>첫 설명.<br><br><active>두 번째 효과</active><br>둘째 설명.<br><rules>예외 조건</rules></mainText>";
 const parsed = structureItemDescription("1", description);
-assert.equal(parsed.statDescriptions.length, 2);
-assert.deepEqual(
-  parsed.effects.map((effect) => [effect.name, effect.kind]),
-  [
-    ["첫 효과", "passive"],
-    ["두 번째 효과", "active"],
-  ],
-);
-assert.equal(parsed.effects[0].description, "첫 설명.");
-assert.match(parsed.effects[1].description, /예외 조건/);
-assert.doesNotMatch(parsed.effects[0].description, /공격력|체력|둘째/);
-assert.equal(
-  structureItemDescription(
-    "1",
-    "<mainText><stats>이동 속도 25</stats></mainText>",
-  ).effects.length,
-  0,
-);
-assert.equal(
-  structureItemDescription(
-    "1",
-    "<mainText>사용하면 체력을 회복합니다.</mainText>",
-  ).effects[0].description,
-  "사용하면 체력을 회복합니다.",
-);
-assert.equal(structureItemDescription("1", undefined).effects.length, 0);
+
+test("아이템 설명을 스탯과 효과로 나눈다", () => {
+  assert.equal(parsed.statDescriptions.length, 2);
+  assert.deepEqual(
+    parsed.effects.map((effect) => [effect.name, effect.kind]),
+    [
+      ["첫 효과", "passive"],
+      ["두 번째 효과", "active"],
+    ],
+  );
+  assert.equal(parsed.effects[0].description, "첫 설명.");
+  assert.match(parsed.effects[1].description, /예외 조건/);
+  assert.doesNotMatch(parsed.effects[0].description, /공격력|체력|둘째/);
+  assert.equal(
+    structureItemDescription(
+      "1",
+      "<mainText><stats>이동 속도 25</stats></mainText>",
+    ).effects.length,
+    0,
+  );
+  assert.equal(
+    structureItemDescription(
+      "1",
+      "<mainText>사용하면 체력을 회복합니다.</mainText>",
+    ).effects[0].description,
+    "사용하면 체력을 회복합니다.",
+  );
+  assert.equal(structureItemDescription("1", undefined).effects.length, 0);
+});
 
 const calculation = {
   mDataValues: [
@@ -57,32 +61,35 @@ const calculation = {
     ]),
   ),
 };
-const bork = attachItemEffectDetails({
-  id: "3153",
-  effects: parsed.effects,
-  damage: [],
-  calculation,
-});
-assert.deepEqual(bork[0].healthDamage, {
-  damageType: "physical",
-  health: "current",
-  melee: 0.09,
-  ranged: 0.06,
-});
-assert.equal(bork[1].cooldownSeconds, 15);
-assert.equal(parsed.effects[0].healthDamage, undefined);
-assert.equal(
-  attachItemEffectDetails({
+
+test("원천 계산식에서 체력 비례 피해와 쿨타임을 붙인다", () => {
+  const bork = attachItemEffectDetails({
     id: "3153",
     effects: parsed.effects,
     damage: [],
-    calculation: { mDataValues: calculation.mDataValues },
-  })[0].healthDamage,
-  undefined,
-);
+    calculation,
+  });
+  assert.deepEqual(bork[0].healthDamage, {
+    damageType: "physical",
+    health: "current",
+    melee: 0.09,
+    ranged: 0.06,
+  });
+  assert.equal(bork[1].cooldownSeconds, 15);
+  assert.equal(parsed.effects[0].healthDamage, undefined);
+  assert.equal(
+    attachItemEffectDetails({
+      id: "3153",
+      effects: parsed.effects,
+      damage: [],
+      calculation: { mDataValues: calculation.mDataValues },
+    })[0].healthDamage,
+    undefined,
+  );
+});
 
 const release = JSON.parse(readFileSync("public/data/version.json", "utf8"));
-for (const locale of ["ko_KR", "en_US", "zh_CN"]) {
+for (const locale of ["ko_KR", "en_US", "zh_CN"]) test(`정규화 아이템 데이터 (${locale})`, () => {
   const data = decodeNormalizedItems(
     JSON.parse(
       readFileSync(
@@ -116,7 +123,4 @@ for (const locale of ["ko_KR", "en_US", "zh_CN"]) {
   const blade = data.items.find((item) => item.id === "3153")!;
   assert.ok(blade.effects[0].healthDamage);
   assert.ok(blade.effects[1].cooldownSeconds);
-}
-console.log(
-  "✅ Structured item descriptions and source-backed formulas passed",
-);
+});

@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { test } from "node:test";
 import { FORMULA_GROUPS } from "../../src/data/gameFormulas";
 import { translations } from "../../src/i18n/translations";
 
@@ -29,10 +30,12 @@ function collectSharedLeaves(
   ));
 }
 
-const sharedLeaves = collectSharedLeaves(translations.en_US, translations.zh_CN);
-assert.deepEqual(sharedLeaves, [], `Chinese UI still falls back to English: ${sharedLeaves.join(", ")}`);
-assert.equal(translations.zh_CN.comparison.copySuccess, "已复制当前对位的链接。");
-assert.equal(translations.zh_CN.skillTooltip.scalingsTitle, "加成");
+test("중국어 UI 가 영어로 되돌아가지 않는다", () => {
+  const sharedLeaves = collectSharedLeaves(translations.en_US, translations.zh_CN);
+  assert.deepEqual(sharedLeaves, [], `Chinese UI still falls back to English: ${sharedLeaves.join(", ")}`);
+  assert.equal(translations.zh_CN.comparison.copySuccess, "已复制当前对位的链接。");
+  assert.equal(translations.zh_CN.skillTooltip.scalingsTitle, "加成");
+});
 
 /*
  * 영어·중국어 자리에 한글이 남아 있으면 잡는다.
@@ -46,8 +49,7 @@ assert.equal(translations.zh_CN.skillTooltip.scalingsTitle, "加成");
  * 같은 일이 다시 생기지 않게, 세 언어를 담는 자리를 통째로 훑는다.
  */
 const HANGUL = /[가-힣]/;
-const leaked: string[] = [];
-function walkLocalized(value: unknown, path: string[]): void {
+function walkLocalized(value: unknown, path: string[], leaked: string[]): void {
   if (!value || typeof value !== "object") return;
   const record = value as Record<string, unknown>;
   if (typeof record.ko_KR === "string" && typeof record.en_US === "string" && typeof record.zh_CN === "string") {
@@ -57,9 +59,11 @@ function walkLocalized(value: unknown, path: string[]): void {
     }
     return;
   }
-  for (const [key, child] of Object.entries(record)) walkLocalized(child, [...path, key]);
+  for (const [key, child] of Object.entries(record)) walkLocalized(child, [...path, key], leaked);
 }
-walkLocalized(FORMULA_GROUPS, ["FORMULA_GROUPS"]);
-assert.deepEqual(leaked.slice(0, 5), [], `영어·중국어 자리에 한글이 남아 있다 ${leaked.length}건`);
 
-console.log(`✅ Chinese UI translation coverage passed (수치 공식 ${FORMULA_GROUPS.reduce((n, g) => n + g.entries.length, 0)}항 포함)`);
+test("수치 공식 표의 영어·중국어 자리에 한글이 없다", () => {
+  const leaked: string[] = [];
+  walkLocalized(FORMULA_GROUPS, ["FORMULA_GROUPS"], leaked);
+  assert.deepEqual(leaked.slice(0, 5), [], `영어·중국어 자리에 한글이 남아 있다 ${leaked.length}건`);
+});

@@ -10,6 +10,7 @@
 import assert from "node:assert/strict";
 import * as fs from "node:fs";
 import * as path from "node:path";
+import { test } from "node:test";
 import { formIconKey, runeIconKey } from "../../src/data/assets/riotAssetUrls";
 import { FORMULA_GROUPS } from "../../src/data/gameFormulas";
 import { STAT_DEFINITIONS } from "../../src/types/combatStats";
@@ -25,7 +26,9 @@ const release = JSON.parse(fs.readFileSync(path.join(dataDir, "version.json"), "
 const imgRoot = path.join(root, "public/img");
 const out = path.join(imgRoot, release.sources.ddragon);
 
-assert.ok(fs.existsSync(out), `썸네일 폴더가 없다: ${out}. \`npm run generate-thumbnails\` 를 돌려야 한다`);
+test("썸네일 폴더가 있다", () => {
+  assert.ok(fs.existsSync(out), `썸네일 폴더가 없다: ${out}. \`npm run generate-thumbnails\` 를 돌려야 한다`);
+});
 
 /*
  * 그림 주소에는 **늘 판본이 들어간다.**
@@ -34,7 +37,10 @@ assert.ok(fs.existsSync(out), `썸네일 폴더가 없다: ${out}. \`npm run gen
  * 서비스워커가 옛 그림을 영영 쥐고 있었다. 예외가 없어야 그 일이 안 생기므로, 판본
  * 폴더 말고 다른 것이 남아 있으면 잡는다.
  */
-const stale = fs.readdirSync(imgRoot).filter((entry) => entry !== release.sources.ddragon);
+test("지난 판본 썸네일이 없다", () => {
+  const stale = fs.readdirSync(imgRoot).filter((entry) => entry !== release.sources.ddragon);
+  assert.deepEqual(stale, [], "지난 판본 썸네일이 남아 있다. 저장소가 패치마다 불어난다");
+});
 
 /*
  * 묶음이 아는 판본과 그림이 놓인 판본이 같아야 한다.
@@ -42,8 +48,9 @@ const stale = fs.readdirSync(imgRoot).filter((entry) => entry !== release.source
  * 스탯 글리프처럼 React 밖에서 주소를 짓는 자리는 이 값을 보고 판본을 채운다. 둘이
  * 어긋나면 그 그림만 404 가 되는데, 화면은 빈 칸을 그릴 뿐 아무 말도 안 한다.
  */
-assert.equal(IMAGE_VERSION, release.sources.ddragon, "묶음이 아는 그림 판본이 자료와 다르다");
-assert.deepEqual(stale, [], "지난 판본 썸네일이 남아 있다. 저장소가 패치마다 불어난다");
+test("묶음이 아는 그림 판본이 자료와 같다", () => {
+  assert.equal(IMAGE_VERSION, release.sources.ddragon, "묶음이 아는 그림 판본이 자료와 다르다");
+});
 
 const championIds = fs
   .readdirSync(path.join(dataDir, release.patchVersion, "champions", "ko_KR"))
@@ -72,7 +79,6 @@ const runeKeys = [
       .concat(Object.values(RUNE_TREE_META).map((tree) => runeIconKey(tree.icon))),
   ),
 ];
-assert.ok(runeKeys.length > 40, `룬 아이콘이 ${runeKeys.length}개뿐이다`);
 
 /** 소환사 주문 아이콘. 백과 네 탭 중 마지막으로 우리 자리로 옮긴 것이다. */
 const summonerIcons = [
@@ -86,7 +92,6 @@ const summonerIcons = [
       .filter(Boolean),
   ),
 ].sort();
-assert.ok(summonerIcons.length > 20, `소환사 주문 아이콘이 ${summonerIcons.length}개뿐이다`);
 
 /*
  * 챔피언 스킬·패시브 아이콘. 마지막까지 Data Dragon 을 직접 보던 것이다.
@@ -116,9 +121,6 @@ for (const id of championIds) {
     for (const form of ability?.forms ?? []) formKeys.push(formIconKey(form.iconPath));
   }
 }
-assert.ok(abilityIcons.length > 500, `스킬 아이콘이 ${abilityIcons.length}개뿐이다`);
-assert.ok(passiveIcons.length > 150, `패시브 아이콘이 ${passiveIcons.length}개뿐이다`);
-assert.ok(formKeys.length > 20, `변신 아이콘이 ${formKeys.length}개뿐이다`);
 
 /*
  * 스탯 글리프. 툴팁의 계수 항과 아이템 능력치 줄이 함께 쓴다.
@@ -134,35 +136,49 @@ for (const id of championIds) {
   const raw = fs.readFileSync(path.join(dataDir, release.patchVersion, "champions", "ko_KR", `${id}.json`), "utf8");
   for (const token of raw.matchAll(/\[\[si:([a-z]+)]]/g)) statIcons.add(token[1]);
 }
-assert.ok(statIcons.size > 15, `스탯 글리프가 ${statIcons.size}개뿐이다`);
-const missingStatIcons = [...statIcons].filter((name) => !fs.existsSync(path.join(out, "stat", `${name}.webp`)));
-assert.deepEqual(missingStatIcons, [], `스탯 글리프가 빠진 것 ${missingStatIcons.length}건`);
 
-const missing: string[] = [];
-for (const id of championIds) if (!fs.existsSync(path.join(out, "champion", `${id}.webp`))) missing.push(`champion/${id}`);
-for (const id of itemIds) if (!fs.existsSync(path.join(out, "item", `${id}.webp`))) missing.push(`item/${id}`);
-for (const key of runeKeys) if (!fs.existsSync(path.join(out, "runes", `${key}.webp`))) missing.push(`runes/${key}`);
-for (const name of summonerIcons) if (!fs.existsSync(path.join(out, "summoner", `${name}.webp`))) missing.push(`summoner/${name}`);
-for (const name of new Set(abilityIcons)) if (!fs.existsSync(path.join(out, "spell", `${name}.webp`))) missing.push(`spell/${name}`);
-for (const name of new Set(passiveIcons)) if (!fs.existsSync(path.join(out, "passive", `${name}.webp`))) missing.push(`passive/${name}`);
-for (const key of new Set(formKeys)) if (!fs.existsSync(path.join(out, "form", `${key}.webp`))) missing.push(`form/${key}`);
-assert.deepEqual(missing.slice(0, 20), [], `썸네일이 빠진 것 ${missing.length}건`);
+test("자료에서 모은 그림 수가 충분하다", () => {
+  assert.ok(runeKeys.length > 40, `룬 아이콘이 ${runeKeys.length}개뿐이다`);
+  assert.ok(summonerIcons.length > 20, `소환사 주문 아이콘이 ${summonerIcons.length}개뿐이다`);
+  assert.ok(abilityIcons.length > 500, `스킬 아이콘이 ${abilityIcons.length}개뿐이다`);
+  assert.ok(passiveIcons.length > 150, `패시브 아이콘이 ${passiveIcons.length}개뿐이다`);
+  assert.ok(formKeys.length > 20, `변신 아이콘이 ${formKeys.length}개뿐이다`);
+  assert.ok(statIcons.size > 15, `스탯 글리프가 ${statIcons.size}개뿐이다`);
+  assert.ok(championIds.length > 150, `챔피언이 ${championIds.length}명뿐이다. 자료를 못 읽은 것이다`);
+  assert.ok(itemIds.length > 500, `아이템이 ${itemIds.length}개뿐이다. 자료를 못 읽은 것이다`);
+});
 
-assert.ok(championIds.length > 150, `챔피언이 ${championIds.length}명뿐이다. 자료를 못 읽은 것이다`);
-assert.ok(itemIds.length > 500, `아이템이 ${itemIds.length}개뿐이다. 자료를 못 읽은 것이다`);
+test("스탯 글리프가 다 있다", () => {
+  const missingStatIcons = [...statIcons].filter((name) => !fs.existsSync(path.join(out, "stat", `${name}.webp`)));
+  assert.deepEqual(missingStatIcons, [], `스탯 글리프가 빠진 것 ${missingStatIcons.length}건`);
+});
+
+test("자료에 있는 모든 그림에 썸네일이 있다", () => {
+  const missing: string[] = [];
+  for (const id of championIds) if (!fs.existsSync(path.join(out, "champion", `${id}.webp`))) missing.push(`champion/${id}`);
+  for (const id of itemIds) if (!fs.existsSync(path.join(out, "item", `${id}.webp`))) missing.push(`item/${id}`);
+  for (const key of runeKeys) if (!fs.existsSync(path.join(out, "runes", `${key}.webp`))) missing.push(`runes/${key}`);
+  for (const name of summonerIcons) if (!fs.existsSync(path.join(out, "summoner", `${name}.webp`))) missing.push(`summoner/${name}`);
+  for (const name of new Set(abilityIcons)) if (!fs.existsSync(path.join(out, "spell", `${name}.webp`))) missing.push(`spell/${name}`);
+  for (const name of new Set(passiveIcons)) if (!fs.existsSync(path.join(out, "passive", `${name}.webp`))) missing.push(`passive/${name}`);
+  for (const key of new Set(formKeys)) if (!fs.existsSync(path.join(out, "form", `${key}.webp`))) missing.push(`form/${key}`);
+  assert.deepEqual(missing.slice(0, 20), [], `썸네일이 빠진 것 ${missing.length}건`);
+});
 
 /*
  * 크기도 본다. 줄이는 것이 목적인데 원본만 한 파일이 들어가 있으면 헛일이다.
  * 챔피언 96px WebP 가 평균 2.3KB, 아이템 64px 가 1KB 남짓이다. 넉넉히 잡아 8KB.
  */
-const heavy: string[] = [];
-for (const kind of ["champion", "item"] as const) {
-  for (const file of fs.readdirSync(path.join(out, kind))) {
-    const bytes = fs.statSync(path.join(out, kind, file)).size;
-    if (bytes > 8 * 1024) heavy.push(`${kind}/${file} ${Math.round(bytes / 1024)}KB`);
+test("썸네일이 줄어 있다", () => {
+  const heavy: string[] = [];
+  for (const kind of ["champion", "item"] as const) {
+    for (const file of fs.readdirSync(path.join(out, kind))) {
+      const bytes = fs.statSync(path.join(out, kind, file)).size;
+      if (bytes > 8 * 1024) heavy.push(`${kind}/${file} ${Math.round(bytes / 1024)}KB`);
+    }
   }
-}
-assert.deepEqual(heavy.slice(0, 10), [], "줄어들지 않은 썸네일이 있다");
+  assert.deepEqual(heavy.slice(0, 10), [], "줄어들지 않은 썸네일이 있다");
+});
 
 /*
  * 스프라이트와 그 목록이 자료와 맞는지 본다.
@@ -177,40 +193,42 @@ for (const [kind, source, dir] of [
   ["summoner", summonerIcons, out],
   ["rune", runeKeys, out],
 ] as const) {
-  /*
-   * 차례는 **이름순**이다.
-   *
-   * 예전에는 자료에 실린 차례를 그대로 봤다. 그래서 이 시험은 생성기와 자기 자신이
-   * 같은지만 확인했고, 정작 화면이 다른 차례로 세고 있는 것은 못 잡았다 — 가렌
-   * 자리에 아트록스가 나오는 채로 통과했다. 이제 양쪽이 같은 비교를 쓰므로
-   * 여기서도 그 비교로 견준다.
-   */
-  const expected = [...new Set<string>(source)].sort();
-  const sheetFile = path.join(dir, `${kind}s.webp`);
-  const listFile = path.join(dir, `${kind}s.json`);
-  assert.ok(fs.existsSync(sheetFile), `${kind} 스프라이트가 없다`);
-  /*
-   * AVIF 사본도 짝으로 있어야 한다.
-   *
-   * 화면은 `image-set` 으로 둘을 함께 걸고 브라우저가 읽을 수 있는 쪽을 집는다.
-   * AVIF 쪽만 없으면 읽을 수 있는 브라우저가 404 를 받아 배경이 빈다 — 그것도
-   * 화면은 조용하다. 그리고 줄어들지 않았으면 만들 까닭이 없으므로 크기도 본다.
-   */
-  const avifFile = path.join(dir, `${kind}s.avif`);
-  assert.ok(fs.existsSync(avifFile), `${kind} AVIF 사본이 없다`);
-  assert.ok(
-    fs.statSync(avifFile).size < fs.statSync(sheetFile).size,
-    `${kind}: AVIF 사본이 WebP 보다 크다. 만들 까닭이 없다`,
-  );
-  const list = JSON.parse(fs.readFileSync(listFile, "utf8")) as { size: number; cols: number; rows: number; ids: string[] };
-  assert.deepEqual(list.ids, expected, `${kind}: 스프라이트 차례가 자료와 다르다`);
-  assert.ok(list.cols * list.rows >= list.ids.length, `${kind}: 격자가 칸 수보다 작다`);
-  assert.ok(list.size > 0, `${kind}: 칸 크기가 없다`);
-  /*
-   * 화면은 목록 파일을 받지 않고 열 수를 스스로 센다. 그 셈이 생성기와 같아야 한다 —
-   * 어긋나면 아이콘이 통째로 밀리는데 눈으로는 고장으로 안 보인다.
-   */
-  assert.equal(list.cols, Math.max(1, Math.ceil(Math.sqrt(list.ids.length))), `${kind}: 열 수 셈이 화면과 다르다`);
+  test(`스프라이트: ${kind}`, () => {
+    /*
+     * 차례는 **이름순**이다.
+     *
+     * 예전에는 자료에 실린 차례를 그대로 봤다. 그래서 이 시험은 생성기와 자기 자신이
+     * 같은지만 확인했고, 정작 화면이 다른 차례로 세고 있는 것은 못 잡았다 — 가렌
+     * 자리에 아트록스가 나오는 채로 통과했다. 이제 양쪽이 같은 비교를 쓰므로
+     * 여기서도 그 비교로 견준다.
+     */
+    const expected = [...new Set<string>(source)].sort();
+    const sheetFile = path.join(dir, `${kind}s.webp`);
+    const listFile = path.join(dir, `${kind}s.json`);
+    assert.ok(fs.existsSync(sheetFile), `${kind} 스프라이트가 없다`);
+    /*
+     * AVIF 사본도 짝으로 있어야 한다.
+     *
+     * 화면은 `image-set` 으로 둘을 함께 걸고 브라우저가 읽을 수 있는 쪽을 집는다.
+     * AVIF 쪽만 없으면 읽을 수 있는 브라우저가 404 를 받아 배경이 빈다 — 그것도
+     * 화면은 조용하다. 그리고 줄어들지 않았으면 만들 까닭이 없으므로 크기도 본다.
+     */
+    const avifFile = path.join(dir, `${kind}s.avif`);
+    assert.ok(fs.existsSync(avifFile), `${kind} AVIF 사본이 없다`);
+    assert.ok(
+      fs.statSync(avifFile).size < fs.statSync(sheetFile).size,
+      `${kind}: AVIF 사본이 WebP 보다 크다. 만들 까닭이 없다`,
+    );
+    const list = JSON.parse(fs.readFileSync(listFile, "utf8")) as { size: number; cols: number; rows: number; ids: string[] };
+    assert.deepEqual(list.ids, expected, `${kind}: 스프라이트 차례가 자료와 다르다`);
+    assert.ok(list.cols * list.rows >= list.ids.length, `${kind}: 격자가 칸 수보다 작다`);
+    assert.ok(list.size > 0, `${kind}: 칸 크기가 없다`);
+    /*
+     * 화면은 목록 파일을 받지 않고 열 수를 스스로 센다. 그 셈이 생성기와 같아야 한다 —
+     * 어긋나면 아이콘이 통째로 밀리는데 눈으로는 고장으로 안 보인다.
+     */
+    assert.equal(list.cols, Math.max(1, Math.ceil(Math.sqrt(list.ids.length))), `${kind}: 열 수 셈이 화면과 다르다`);
+  });
 }
 
 /*
@@ -222,17 +240,19 @@ for (const [kind, source, dir] of [
  * 아이콘이 통째로 안 나오는데, 요청이 404 로 끝나 화면은 조용하다.
  */
 const abilityStripDir = path.join(out, "ability");
-assert.ok(fs.existsSync(abilityStripDir), "스킬 띠 폴더가 없다. `npm run generate-thumbnails` 를 돌려야 한다");
-const missingStrips = championIds.filter(
-  (id) => !fs.existsSync(path.join(abilityStripDir, `${id}.webp`)) || !fs.existsSync(path.join(abilityStripDir, `${id}.avif`)),
-);
-assert.deepEqual(missingStrips.slice(0, 10), [], `스킬 띠가 빠진 챔피언 ${missingStrips.length}명`);
-// 다섯 칸짜리 한 줄이라 낱장 다섯 장과 엇비슷해야 한다. 크게 벗어나면 붙이는 규칙이 바뀐 것이다.
-const fatStrips = fs
-  .readdirSync(abilityStripDir)
-  .filter((file) => file.endsWith(".webp") && fs.statSync(path.join(abilityStripDir, file)).size > 24 * 1024);
-assert.deepEqual(fatStrips.slice(0, 5), [], "스킬 띠가 낱장 다섯 장보다 훨씬 무겁다");
 
-const total = [...championIds.map((id) => path.join(out, "champion", `${id}.webp`)), ...itemIds.map((id) => path.join(out, "item", `${id}.webp`))]
-  .reduce((sum, file) => sum + fs.statSync(file).size, 0);
-console.log(`✅ 썸네일 통과 (${championIds.length + itemIds.length}장 · ${(total / 1024 / 1024).toFixed(1)}MB)`);
+test("스킬 띠가 챔피언마다 있다", () => {
+  assert.ok(fs.existsSync(abilityStripDir), "스킬 띠 폴더가 없다. `npm run generate-thumbnails` 를 돌려야 한다");
+  const missingStrips = championIds.filter(
+    (id) => !fs.existsSync(path.join(abilityStripDir, `${id}.webp`)) || !fs.existsSync(path.join(abilityStripDir, `${id}.avif`)),
+  );
+  assert.deepEqual(missingStrips.slice(0, 10), [], `스킬 띠가 빠진 챔피언 ${missingStrips.length}명`);
+});
+
+// 다섯 칸짜리 한 줄이라 낱장 다섯 장과 엇비슷해야 한다. 크게 벗어나면 붙이는 규칙이 바뀐 것이다.
+test("스킬 띠가 낱장 다섯 장보다 무겁지 않다", () => {
+  const fatStrips = fs
+    .readdirSync(abilityStripDir)
+    .filter((file) => file.endsWith(".webp") && fs.statSync(path.join(abilityStripDir, file)).size > 24 * 1024);
+  assert.deepEqual(fatStrips.slice(0, 5), [], "스킬 띠가 낱장 다섯 장보다 훨씬 무겁다");
+});

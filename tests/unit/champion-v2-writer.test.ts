@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import * as fs from "node:fs";
 import * as os from "node:os";
 import * as path from "node:path";
+import { after, test } from "node:test";
 import type { Champion } from "../../src/types";
 import type { NormalizedChampion } from "../../src/types/combatNormalized";
 import { writeChampionV2Dataset } from "../../scripts/data-pipeline/champion-v2-writer";
@@ -48,8 +49,9 @@ const normalized = {
 } as unknown as NormalizedChampion;
 
 const outputRoot = fs.mkdtempSync(path.join(os.tmpdir(), "champion-v2-writer-"));
+after(() => fs.rmSync(outputRoot, { recursive: true, force: true }));
 
-try {
+test("챔피언 v2 데이터셋을 쓴다", () => {
   const count = writeChampionV2Dataset({
     versionDir: outputRoot,
     patchVersion: "26.17",
@@ -71,8 +73,4 @@ try {
   assert.equal(JSON.parse(fs.readFileSync(detailPath, "utf-8")).champion.id, "Test");
   assert.equal(JSON.parse(fs.readFileSync(indexPath, "utf-8")).champions.length, 1);
   assert.equal(fs.existsSync(path.join(outputRoot, "spells", "Test.json")), false);
-} finally {
-  fs.rmSync(outputRoot, { recursive: true, force: true });
-}
-
-console.log("✅ Champion v2 map writer passed");
+});

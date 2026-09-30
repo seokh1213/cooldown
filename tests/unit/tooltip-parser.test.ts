@@ -3,6 +3,8 @@
  * npm run test:one tests/unit/tooltip-parser.test.ts 로 실행
  */
 
+import assert from "node:assert/strict";
+import { test } from "node:test";
 import { parseSpellTooltip } from "../../src/lib/spellTooltipParser/parser";
 import type { ChampionSpell } from "../../src/types";
 import type { CommunityDragonSpellData } from "../../src/lib/spellTooltipParser/types";
@@ -94,83 +96,40 @@ const testCases: TestCase[] = [
   },
 ];
 
-async function runTests() {
-  console.log("=== Tooltip Parser 테스트 시작 ===\n");
+for (const testCase of testCases) {
+  test(testCase.name, () => {
+    const result = parseSpellTooltip(
+      testCase.tooltip,
+      testCase.spell,
+      testCase.communityDragonData,
+      testCase.lang || "ko_KR"
+    );
 
-  let passed = 0;
-  let failed = 0;
+    const errors: string[] = [];
 
-  const allCases = testCases;
-
-  for (const testCase of allCases) {
-    try {
-      const result = parseSpellTooltip(
-        testCase.tooltip,
-        testCase.spell,
-        testCase.communityDragonData,
-        testCase.lang || "ko_KR"
-      );
-
-      let testPassed = true;
-      const errors: string[] = [];
-
-      // expectedContains 검증
-      if (testCase.expectedContains) {
-        for (const expected of testCase.expectedContains) {
-          if (!result.includes(expected)) {
-            testPassed = false;
-            errors.push(`예상된 문자열 "${expected}"을 찾을 수 없습니다.`);
-          }
+    // expectedContains 검증
+    if (testCase.expectedContains) {
+      for (const expected of testCase.expectedContains) {
+        if (!result.includes(expected)) {
+          errors.push(`예상된 문자열 "${expected}"을 찾을 수 없습니다.`);
         }
       }
-
-      // expectedNotContains 검증
-      if (testCase.expectedNotContains) {
-        for (const notExpected of testCase.expectedNotContains) {
-          if (result.includes(notExpected)) {
-            testPassed = false;
-            errors.push(`예상치 못한 문자열 "${notExpected}"이 포함되어 있습니다.`);
-          }
-        }
-      }
-
-      // 커스텀 검증 로직
-      if (testCase.assert) {
-        const customErrors = testCase.assert(result);
-        if (customErrors.length > 0) {
-          testPassed = false;
-          errors.push(...customErrors);
-        }
-      }
-
-      if (testPassed) {
-        console.log(`✅ ${testCase.name}`);
-        passed++;
-      } else {
-        console.log(`❌ ${testCase.name}`);
-        console.log(`   결과: ${result.substring(0, 100)}...`);
-        errors.forEach((error) => console.log(`   - ${error}`));
-        failed++;
-      }
-    } catch (error) {
-      console.log(`❌ ${testCase.name}`);
-      console.log(`   에러: ${error instanceof Error ? error.message : String(error)}`);
-      failed++;
     }
-  }
 
-  console.log(`\n=== 테스트 완료 ===`);
-  console.log(`통과: ${passed}, 실패: ${failed}, 총: ${testCases.length}`);
+    // expectedNotContains 검증
+    if (testCase.expectedNotContains) {
+      for (const notExpected of testCase.expectedNotContains) {
+        if (result.includes(notExpected)) {
+          errors.push(`예상치 못한 문자열 "${notExpected}"이 포함되어 있습니다.`);
+        }
+      }
+    }
 
-  if (failed > 0) {
-    console.log("\n⚠️  일부 테스트가 실패했습니다.");
-    process.exit(1);
-  } else {
-    console.log("\n✅ 모든 테스트가 통과했습니다!");
-    process.exit(0);
-  }
+    // 커스텀 검증 로직
+    if (testCase.assert) {
+      errors.push(...testCase.assert(result));
+    }
+
+    assert.deepEqual(errors, [], `결과: ${result.substring(0, 100)}...`);
+  });
 }
-runTests().catch((error) => {
-  console.error("❌ 테스트 실행 중 예기치 못한 에러가 발생했습니다.", error);
-  process.exit(1);
-});

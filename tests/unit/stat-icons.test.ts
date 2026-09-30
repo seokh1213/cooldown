@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
+import { test } from "node:test";
 import { parseSpellTooltip } from "../../src/lib/spellTooltipParser/parser";
 import { evaluateSpellCalculation } from "../../src/lib/spellTooltipParser/spellCalculationEvaluator";
 import { renderStatIconTokens, stripStatIconTokens } from "../../src/lib/spellTooltipParser/statIcons";
@@ -32,7 +33,7 @@ const data: CommunityDragonSpellData = {
   },
 };
 
-for (const lang of ["ko_KR", "en_US", "zh_CN"] as const) {
+for (const lang of ["ko_KR", "en_US", "zh_CN"] as const) test(`수정 계산식이 스탯 아이콘과 메타데이터를 유지한다 (${lang})`, () => {
   const result = evaluateSpellCalculation({ key: "ChampionHeal", spell, data, lang });
   assert.deepEqual(result.base, [39, 57, 75, 93, 111]);
   assert.deepEqual(result.statParts.map(({ icon, isCoefficient }) => ({ icon, isCoefficient })), [
@@ -47,9 +48,10 @@ for (const lang of ["ko_KR", "en_US", "zh_CN"] as const) {
   const nested = parseSpellTooltip("{{ NestedHeal }}", spell, data, lang);
   assert.match(nested, /\[\[si:scalehealth]]12%/);
   assert.match(nested, /\[\[si:scaleap]]108%/);
-}
+});
 
-assert.match(renderStatIconTokens("[[si:scaleap]]"), /class="stat-icon /);
-const css = readFileSync(new URL("../../src/index.css", import.meta.url), "utf8");
-assert.match(css, /img\.stat-icon\s*\{\s*box-shadow:\s*none;/);
-console.log("✅ Modified calculations preserve stat icons and metadata in all locales");
+test("스탯 아이콘 img 에 stat-icon 클래스와 그림자 제거 스타일", () => {
+  assert.match(renderStatIconTokens("[[si:scaleap]]"), /class="stat-icon /);
+  const css = readFileSync(new URL("../../src/index.css", import.meta.url), "utf8");
+  assert.match(css, /img\.stat-icon\s*\{\s*box-shadow:\s*none;/);
+});

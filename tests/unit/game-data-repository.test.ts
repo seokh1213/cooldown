@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { test } from "node:test";
 import { VersionedCache, type CacheStorage } from "../../src/data/cache/versionedCache";
 import { GameDataRepository } from "../../src/data/repositories/gameDataRepository";
 import { ManifestRepository } from "../../src/data/repositories/manifestRepository";
@@ -60,76 +61,84 @@ const repository = new GameDataRepository(
   new VersionedCache("test:game-data")
 );
 
-const [firstRunes, secondRunes] = await Promise.all([
-  repository.getRunes(identity, "ko_KR"),
-  repository.getRunes(identity, "ko_KR"),
-]);
-assert.equal(firstRunes, secondRunes);
-assert.equal(requests.filter((path) => path.includes("runes-")).length, 1);
-assert.equal((await repository.getItems(identity, "ko_KR")).items[0].name, "장화");
-assert.equal(
-  (await repository.getSummoners(identity, "ko_KR")).spells[0].name,
-  "점멸"
-);
-
-const mismatchClient: StaticDataClient = {
-  async getJson() {
-    return {
-      ...itemResponse,
-      sources: { ddragon: "16.16.1", cdragon: "16.16" },
-    };
-  },
-};
-await assert.rejects(
-  new GameDataRepository(
-    mismatchClient,
-    new VersionedCache("test:mismatch")
-  ).getItems(identity, "ko_KR"),
-  /identity mismatch/
-);
-
-const failingStorage: CacheStorage = {
-  get length(): number { throw new Error("disabled"); },
-  getItem() { throw new Error("disabled"); },
-  setItem() { throw new Error("quota"); },
-  removeItem() { throw new Error("disabled"); },
-  key() { throw new Error("disabled"); },
-};
-const resilientCache = new VersionedCache("test:resilient", failingStorage);
-assert.equal(resilientCache.get("missing", (value) => value), undefined);
-assert.deepEqual(resilientCache.set("available", { ok: true }), { ok: true });
-assert.deepEqual(resilientCache.get("available", (value) => value), { ok: true });
-resilientCache.clearExceptIdentity("26.17:16.17.1:16.17");
-
-let manifestRequests = 0;
-const manifestRepository = new ManifestRepository({
-  async getJson(path) {
-    manifestRequests += 1;
-    assert.equal(path, "data/version.json");
-    return {
-      schemaVersion: 2,
-      patchVersion: "26.17",
-      sources: { ddragon: "16.17.1", cdragon: "16.17" },
-    };
-  },
+test("동시 요청을 하나로 합치고 디코딩한다", async () => {
+  const [firstRunes, secondRunes] = await Promise.all([
+    repository.getRunes(identity, "ko_KR"),
+    repository.getRunes(identity, "ko_KR"),
+  ]);
+  assert.equal(firstRunes, secondRunes);
+  assert.equal(requests.filter((path) => path.includes("runes-")).length, 1);
+  assert.equal((await repository.getItems(identity, "ko_KR")).items[0].name, "장화");
+  assert.equal(
+    (await repository.getSummoners(identity, "ko_KR")).spells[0].name,
+    "점멸"
+  );
 });
-const [firstManifest, secondManifest] = await Promise.all([
-  manifestRepository.get(),
-  manifestRepository.get(),
-]);
-assert.equal(firstManifest, secondManifest);
-assert.equal(manifestRequests, 1);
 
-let retryRequests = 0;
-const retryingManifestRepository = new ManifestRepository({
-  async getJson() {
-    retryRequests += 1;
-    if (retryRequests === 1) throw new Error("temporary failure");
-    return metadata;
-  },
+test("원본 판이 다르면 거부한다", async () => {
+  const mismatchClient: StaticDataClient = {
+    async getJson() {
+      return {
+        ...itemResponse,
+        sources: { ddragon: "16.16.1", cdragon: "16.16" },
+      };
+    },
+  };
+  await assert.rejects(
+    new GameDataRepository(
+      mismatchClient,
+      new VersionedCache("test:mismatch")
+    ).getItems(identity, "ko_KR"),
+    /identity mismatch/
+  );
 });
-await assert.rejects(retryingManifestRepository.get(), /temporary failure/);
-assert.equal((await retryingManifestRepository.get()).patchVersion, "26.17");
-assert.equal(retryRequests, 2);
 
-console.log("✅ Game data repositories, decoders, dedupe, and cache resilience passed");
+test("저장소가 막혀도 캐시가 버틴다", () => {
+  const failingStorage: CacheStorage = {
+    get length(): number { throw new Error("disabled"); },
+    getItem() { throw new Error("disabled"); },
+    setItem() { throw new Error("quota"); },
+    removeItem() { throw new Error("disabled"); },
+    key() { throw new Error("disabled"); },
+  };
+  const resilientCache = new VersionedCache("test:resilient", failingStorage);
+  assert.equal(resilientCache.get("missing", (value) => value), undefined);
+  assert.deepEqual(resilientCache.set("available", { ok: true }), { ok: true });
+  assert.deepEqual(resilientCache.get("available", (value) => value), { ok: true });
+  resilientCache.clearExceptIdentity("26.17:16.17.1:16.17");
+});
+
+test("manifest 동시 요청을 하나로 합친다", async () => {
+  let manifestRequests = 0;
+  const manifestRepository = new ManifestRepository({
+    async getJson(path) {
+      manifestRequests += 1;
+      assert.equal(path, "data/version.json");
+      return {
+        schemaVersion: 2,
+        patchVersion: "26.17",
+        sources: { ddragon: "16.17.1", cdragon: "16.17" },
+      };
+    },
+  });
+  const [firstManifest, secondManifest] = await Promise.all([
+    manifestRepository.get(),
+    manifestRepository.get(),
+  ]);
+  assert.equal(firstManifest, secondManifest);
+  assert.equal(manifestRequests, 1);
+});
+
+test("manifest 실패 뒤 다시 요청한다", async () => {
+  let retryRequests = 0;
+  const retryingManifestRepository = new ManifestRepository({
+    async getJson() {
+      retryRequests += 1;
+      if (retryRequests === 1) throw new Error("temporary failure");
+      return metadata;
+    },
+  });
+  await assert.rejects(retryingManifestRepository.get(), /temporary failure/);
+  assert.equal((await retryingManifestRepository.get()).patchVersion, "26.17");
+  assert.equal(retryRequests, 2);
+});

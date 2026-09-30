@@ -11,6 +11,7 @@
  * 싣는 것이 맞고, 억지로 규칙을 늘리면 멀쩡한 판정이 같이 무너진다.
  */
 import assert from "node:assert/strict";
+import { test } from "node:test";
 import { noteOrder, notePerspective, type NoteCategory, type NotePerspective } from "../../src/lib/advisor/noteSelect";
 import { asksMatchup } from "../../src/lib/advisor/askWords";
 import { matchupSidesDetailed } from "../../src/lib/advisor/matchupSides";
@@ -47,30 +48,38 @@ const CASES: Array<[question: string, category: NoteCategory, side: NotePerspect
 ];
 
 for (const [question, category, side] of CASES) {
-  assert.equal(noteOrder(question)[0], category, `"${question}" 의 갈래`);
-  assert.equal(notePerspective(question), side, `"${question}" 의 관점`);
+  test(`물음: ${question}`, () => {
+    assert.equal(noteOrder(question)[0], category, `"${question}" 의 갈래`);
+    assert.equal(notePerspective(question), side, `"${question}" 의 관점`);
+  });
 }
 
 // "상대로" 의 `로` 가 "말파로" 의 `로` 로 읽히면 관점이 통째로 무너진다.
-assert.equal(notePerspective("빅토르 상대로 어떻게 해"), "against", "상대로 는 플레이 표시가 아닙니다");
-assert.equal(notePerspective("빅토르로 어떻게 해"), "playing", "…로 는 플레이 표시입니다");
+test("상대로 는 플레이 표시가 아닙니다", () => {
+  assert.equal(notePerspective("빅토르 상대로 어떻게 해"), "against", "상대로 는 플레이 표시가 아닙니다");
+  assert.equal(notePerspective("빅토르로 어떻게 해"), "playing", "…로 는 플레이 표시입니다");
+});
 
 // 화면의 칩은 물었던 문장에 관점만 덧붙여 다시 묻는다. 주제는 그대로 남아야 한다.
 for (const [original, category] of [
   ["제드 라인전 어떻게 풀어", "laning"],
   ["그레이브즈 한타에서 뭐 해야 돼", "teamfight"],
 ] as const) {
-  assert.equal(notePerspective(original), "both", `"${original}" 은 문장만으로 못 가립니다`);
-  for (const [suffix, side] of [["상대할 때", "against"], ["내가 할 때", "playing"]] as const) {
-    const asked = `${original} (${suffix})`;
-    assert.equal(notePerspective(asked), side, `"${asked}" 의 관점`);
-    assert.equal(noteOrder(asked)[0], category, `"${asked}" 의 갈래가 바뀌면 안 됩니다`);
-  }
+  test(`칩: ${original}`, () => {
+    assert.equal(notePerspective(original), "both", `"${original}" 은 문장만으로 못 가립니다`);
+    for (const [suffix, side] of [["상대할 때", "against"], ["내가 할 때", "playing"]] as const) {
+      const asked = `${original} (${suffix})`;
+      assert.equal(notePerspective(asked), side, `"${asked}" 의 관점`);
+      assert.equal(noteOrder(asked)[0], category, `"${asked}" 의 갈래가 바뀌면 안 됩니다`);
+    }
+  });
 }
 
 // 갈래가 늘면 기본 순서에도 들어 있어야 한다. 빠지면 그 갈래는 영영 안 뽑힌다.
 for (const category of ["situational-item", "escape-window"] as const) {
-  assert.ok(noteOrder("아무 말").includes(category), `기본 순서에 ${category} 가 없습니다`);
+  test(`기본 순서: ${category}`, () => {
+    assert.ok(noteOrder("아무 말").includes(category), `기본 순서에 ${category} 가 없습니다`);
+  });
 }
 
 /*
@@ -98,15 +107,15 @@ const SIDES: Array<[string, string, boolean]> = [
 ];
 
 for (const [question, expected, confident] of SIDES) {
-  const found = [...NAMES]
-    .filter((name) => question.includes(name))
-    .sort((left, right) => question.indexOf(left) - question.indexOf(right))
-    .map((name) => ({ name }));
-  assert.equal(found.length, 2, `"${question}" 에서 챔피언 둘을 찾아야 한다`);
-  assert.ok(asksMatchup(question), `"${question}" 은 상성 질문이어야 한다`);
-  const detail = matchupSidesDetailed(question, found);
-  assert.equal(detail.sides[0].name, expected, `"${question}" 의 내 챔피언`);
-  assert.equal(detail.confident, confident, `"${question}" 의 확신 여부`);
+  test(`시점: ${question}`, () => {
+    const found = [...NAMES]
+      .filter((name) => question.includes(name))
+      .sort((left, right) => question.indexOf(left) - question.indexOf(right))
+      .map((name) => ({ name }));
+    assert.equal(found.length, 2, `"${question}" 에서 챔피언 둘을 찾아야 한다`);
+    assert.ok(asksMatchup(question), `"${question}" 은 상성 질문이어야 한다`);
+    const detail = matchupSidesDetailed(question, found);
+    assert.equal(detail.sides[0].name, expected, `"${question}" 의 내 챔피언`);
+    assert.equal(detail.confident, confident, `"${question}" 의 확신 여부`);
+  });
 }
-
-console.log(`✅ 노트 선택 통과 (물음 ${CASES.length}개 · 시점 ${SIDES.length}개)`);

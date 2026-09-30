@@ -4,6 +4,8 @@
  * 노트 원본을 통째로 고치는 변환이라, 규칙이 어긋나면 9천 문장이 한꺼번에 상한다.
  * 실제 노트에서 가장 많이 나온 종결 스물다섯 가지를 그대로 담는다.
  */
+import assert from "node:assert/strict";
+import { test } from "node:test";
 import { toPoliteSentence, toPoliteText } from "../../src/lib/knowledge/politeStyle";
 
 const CASES: Array<[string, string]> = [
@@ -46,25 +48,14 @@ const CASES: Array<[string, string]> = [
   ["궁을 아껴 두고", "궁을 아껴 두고"],
 ];
 
-let failed = 0;
 for (const [input, want] of CASES) {
-  const got = toPoliteSentence(input);
-  if (got !== want) {
-    failed += 1;
-    console.error(`✖ ${input}\n   기대 ${want}\n   실제 ${got}`);
-  }
+  test(input, () => {
+    assert.equal(toPoliteSentence(input), want);
+  });
 }
 
-// 여러 문장이 이어진 글
-const long = "W는 다음 평타를 강화한다. E는 상대 공격 속도를 깎으니 나중에 쓴다. 물몸 상대는 한 사이클에 정리된다.";
-const wantLong = "W는 다음 평타를 강화합니다. E는 상대 공격 속도를 깎으니 나중에 씁니다. 물몸 상대는 한 사이클에 정리됩니다.";
-if (toPoliteText(long) !== wantLong) {
-  failed += 1;
-  console.error(`✖ 여러 문장\n   기대 ${wantLong}\n   실제 ${toPoliteText(long)}`);
-}
-
-if (failed > 0) {
-  console.error(`\n${failed}건 실패`);
-  process.exit(1);
-}
-console.log(`✅ 합니다체 변환 통과 (${CASES.length + 1}건)`);
+test("여러 문장이 이어진 글", () => {
+  const long = "W는 다음 평타를 강화한다. E는 상대 공격 속도를 깎으니 나중에 쓴다. 물몸 상대는 한 사이클에 정리된다.";
+  const wantLong = "W는 다음 평타를 강화합니다. E는 상대 공격 속도를 깎으니 나중에 씁니다. 물몸 상대는 한 사이클에 정리됩니다.";
+  assert.equal(toPoliteText(long), wantLong);
+});
