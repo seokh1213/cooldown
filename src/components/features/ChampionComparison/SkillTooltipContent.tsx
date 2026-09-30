@@ -92,7 +92,7 @@ function ActiveSkillHeader(props: SkillTooltipContentProps & { skill: ChampionSp
 function ActiveSkillContent(props: SkillTooltipContentProps) {
   const { skill } = props;
   if (!skill) return null;
-  if (skill.forms) return <AbilityFormDetails forms={skill.forms} />;
+  if (skill.forms) return <AbilityFormDetails forms={skill.forms} ddragonVersion={props.ddragonVersion} />;
   return (
     <>
       <ActiveSkillHeader {...props} skill={skill} />

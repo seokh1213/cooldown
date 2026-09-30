@@ -84,7 +84,7 @@ export function VsAbilityItem(props: { ability?: AbilityV2; slot: ListSlot; side
         {ability && (
           <div data-ability-body className="mt-1">
             {ability.forms
-              ? <AbilityFormDetails forms={ability.forms} />
+              ? <AbilityFormDetails forms={ability.forms} ddragonVersion={props.version} />
               : <SafeBlockHtml html={ability.bodyHtml || ability.summary} className="break-words text-xs leading-relaxed text-foreground/80" />}
             <VsAbilityCooldowns ability={ability} />
           </div>
@@ -114,8 +114,8 @@ export function VsSkillList(props: { side: VsSideKey; detail: ChampionDetailV2; 
   );
 }
 
-export function VsAbilityBody({ ability }: { ability: AbilityV2 }) {
-  if (ability.forms) return <div data-ability-body><AbilityFormDetails forms={ability.forms} /></div>;
+export function VsAbilityBody({ ability, version }: { ability: AbilityV2; version: string }) {
+  if (ability.forms) return <div data-ability-body><AbilityFormDetails forms={ability.forms} ddragonVersion={version} /></div>;
   return (
     <div data-ability-body className="mt-3 border-t border-border/60 pt-3">
       <SafeBlockHtml

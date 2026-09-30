@@ -28,7 +28,7 @@ export function VsMatrixSkill(props: {
         {ability && (
           <TooltipContent side="top" className="w-[min(28rem,calc(100vw-2rem))] p-4 text-left font-normal">
             <p className="mb-3 text-sm font-semibold">{name} · {slot} {ability.name}</p>
-            {ability.forms ? <AbilityFormDetails forms={ability.forms} /> : <SafeBlockHtml html={ability.bodyHtml || ability.summary} className="break-words text-sm leading-relaxed" />}
+            {ability.forms ? <AbilityFormDetails forms={ability.forms} ddragonVersion={version} /> : <SafeBlockHtml html={ability.bodyHtml || ability.summary} className="break-words text-sm leading-relaxed" />}
           </TooltipContent>
         )}
       </Tooltip>

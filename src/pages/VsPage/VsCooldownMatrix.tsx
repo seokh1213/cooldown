@@ -153,7 +153,7 @@ export function VsCooldownMatrix({ sides, version, onSelect }: { sides: MatrixSi
         <DialogContent onCloseAutoFocus={(event) => { event.preventDefault(); returnFocus.current?.focus(); }} className="max-h-[85dvh] w-[calc(100%-2rem)] max-w-2xl overflow-y-auto">
           <DialogTitle className="pr-6 leading-normal">{selected?.name} · {selected?.slot} {selected?.ability.name}</DialogTitle>
           <DialogDescription>{t.comparison.details}</DialogDescription>
-          {selected && <VsAbilityBody ability={selected.ability} />}
+          {selected && <VsAbilityBody ability={selected.ability} version={version} />}
         </DialogContent>
       </Dialog>
     </section>
