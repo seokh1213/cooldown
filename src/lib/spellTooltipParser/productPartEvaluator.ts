@@ -5,13 +5,13 @@ import type {
   Value,
 } from "./types";
 import { logger } from "@/lib/logger";
-import { mul } from "./valueUtils";
+import { isVector, mul } from "./valueUtils";
 
 /** 계산 파트 하나의 평가 결과 */
 export interface PartResult {
   base: Value;
   statParts: StatPart[];
-  /** base 가 [1레벨값, 18레벨값] 범위인지 여부 */
+  /** base 가 [1레벨값, 최대 레벨값] 범위인지 여부 */
   isLevelRange?: boolean;
   /** base 를 퍼센트로 적어야 하는지 여부 (참조한 계산식의 mDisplayAsPercent) */
   isPercent?: boolean;
@@ -80,13 +80,22 @@ export function evaluateProductPart(
     return null;
   }
 
+  // 레벨 범위와 곱하면 결과도 레벨 범위다. 스탯 계수도 상대가 레벨 범위면 레벨 범위가 된다.
+  const scaleStat = (sp: StatPart, other: PartResult): StatPart => {
+    const ratio = mul(sp.ratio, other.base);
+    return sp.isLevelRange || (other.isLevelRange && isVector(ratio))
+      ? { ...sp, ratio, isLevelRange: true }
+      : { ...sp, ratio };
+  };
   try {
+    const base = mul(left.base, right.base);
     return {
-      base: mul(left.base, right.base),
+      base,
       statParts: [
-        ...left.statParts.map((sp) => ({ ...sp, ratio: mul(sp.ratio, right.base) })),
-        ...right.statParts.map((sp) => ({ ...sp, ratio: mul(sp.ratio, left.base) })),
+        ...left.statParts.map((sp) => scaleStat(sp, right)),
+        ...right.statParts.map((sp) => scaleStat(sp, left)),
       ],
+      ...((left.isLevelRange || right.isLevelRange) && isVector(base) ? { isLevelRange: true } : {}),
     };
   } catch (error) {
     logger.debug("ProductOfSubPartsCalculationPart: 곱셈 실패", error);

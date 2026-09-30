@@ -114,6 +114,8 @@ export interface StatPart {
   isCoefficient?: boolean;
   /** 어떤 스탯인지 한눈에 보이도록 앞에 붙이는 아이콘 이름 */
   icon?: string;
+  /** ratio 가 [1레벨, 최대 레벨] 범위인지 여부. 아니면 길이 2 벡터를 랭크 값으로 읽는다 */
+  isLevelRange?: boolean;
 }
 
 /**
@@ -152,8 +154,10 @@ export interface CalcResult {
     statParts: StatPart[];
     /** base 를 퍼센트로 적어야 하는지 여부 */
     isPercent?: boolean;
-    /** base 가 [1레벨값, 18레벨값] 범위인지 여부 */
+    /** base 가 [1레벨값, 최대 레벨값] 범위인지 여부 */
     isLevelRange?: boolean;
+    /** 배율이 다른 계산식이면 그 계산식의 소수점 자릿수 */
+    precision?: number;
   };
   /** statMultiplier 뒤에 이어 곱하는 배율 (배율이 겹친 GameCalculationModified) */
   extraMultipliers?: NonNullable<CalcResult["statMultiplier"]>[];
@@ -307,6 +311,8 @@ export interface ByCharLevelInterpolationCalculationPart {
   __type: "ByCharLevelInterpolationCalculationPart";
   mStartValue?: number;
   mEndValue?: number;
+  /** false 면 19레벨부터 18레벨 값에 머문다 */
+  mScalePastDefaultMaxLevel?: boolean;
 }
 
 /**

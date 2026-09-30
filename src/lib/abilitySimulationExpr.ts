@@ -4,8 +4,9 @@ import type {
   AbilitySimulationExpr,
   AbilitySimulationStat,
 } from "@/data/contracts/championData";
+import { CHAMPION_MAX_LEVEL } from "@/lib/championLevel";
 
-const LEVELS = 18;
+const LEVELS = CHAMPION_MAX_LEVEL;
 
 /** 스킬 레벨과 챔피언 레벨을 1부터 받는다. 범위를 벗어나면 가장 가까운 값으로 붙인다. */
 function clampIndex(value: number, length: number): number {

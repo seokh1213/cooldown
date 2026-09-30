@@ -139,7 +139,7 @@ for (const testCase of testCases) {
   });
 }
 
-// 랭크 벡터와 레벨 범위([1레벨, 18레벨])가 섞인 계산식 (CI 로그의 "Vector length mismatch")
+// 랭크 벡터와 레벨 범위([1레벨, 최대 레벨])가 섞인 계산식 (CI 로그의 "Vector length mismatch")
 function renderCalculation(
   key: string,
   maxrank: number,
@@ -167,7 +167,7 @@ test("레벨 범위 뒤에 오는 랭크 값도 합산한다 (우디르 W Recast
   } as unknown as CommunityDragonSpellData;
   assert.equal(
     renderCalculation("RecastShield", 6, data),
-    "(45/65/85/105/125/145 + (20 ~ 150))",
+    "(45/65/85/105/125/145 + (20 ~ 165.29))",
   );
 });
 
@@ -193,7 +193,7 @@ test("레벨 범위 base 에 랭크 배율은 접지 않고 × 로 남긴다 (�
   } as unknown as CommunityDragonSpellData;
   assert.equal(
     renderCalculation("Total", 5, data),
-    "((9 ~ 180) + ([[si:scaleap]]40% Ability Power)) × 1.1/1.15/1.2/1.25/1.3",
+    "((9 ~ 200.12) + ([[si:scaleap]]40% Ability Power)) × 1.1/1.15/1.2/1.25/1.3",
   );
 });
 
@@ -242,7 +242,7 @@ test("상수 배율은 옆에 붙은 레벨 범위 항에도 곱한다 (조이 Q
       },
     },
   } as unknown as CommunityDragonSpellData;
-  assert.equal(renderCalculation("Max", 5, data), "(125/200/275/350/425 + (5 ~ 85))");
+  assert.equal(renderCalculation("Max", 5, data), "(125/200/275/350/425 + (5 ~ 94.41))");
 });
 
 const levelRangeOnly = (key: string, calc: unknown): CommunityDragonSpellData =>
@@ -265,8 +265,8 @@ test("레벨 범위 항 하나뿐인 계산식도 mMultiplier 를 적용한다 (
       },
     ],
   });
-  // 위키: 1.5% – 10.1% (예전에는 배율을 버려 150% ~ 250%)
-  assert.equal(renderCalculation("RegenCalc", 1, data), "(1.5% ~ 10.1%)");
+  // 위키: 18레벨 10.1%, 20레벨 10.9% (배율 0.01 을 적용해야 1.5% 부터 시작한다)
+  assert.equal(renderCalculation("RegenCalc", 1, data), "(1.5% ~ 10.9%)");
 });
 
 test("mInitialBonusPerLevel 은 첫 브레이크포인트 전까지 레벨당 더한다 (아칼리 P)", () => {
@@ -285,10 +285,10 @@ test("mInitialBonusPerLevel 은 첫 브레이크포인트 전까지 레벨당 �
       { __type: "StatByCoefficientCalculationPart", mCoefficient: 0.55 },
     ],
   });
-  // 위키: 35 – 182 (예전 35 ~ 164)
+  // 위키: 18레벨 182, 20레벨 212
   assert.equal(
     renderCalculation("Damage", 1, data),
-    "((35 ~ 182) + ([[si:scaleap]]55% Ability Power))",
+    "((35 ~ 212) + ([[si:scaleap]]55% Ability Power))",
   );
 });
 
@@ -324,8 +324,8 @@ test("이름 브레이크포인트 파트의 레벨당 증가량 필드를 읽�
     data,
     "en_US",
   );
-  // 위키: 0.1% – 2% (예전 0.1 ~ 1.8). 없는 이름·__type 해시는 값 누락 진단으로 잡지 않는다.
-  assert.equal(rendered.html, "(0.1 ~ 2)");
+  // 위키: 18레벨 2%, 20레벨 2.3%. 없는 이름·__type 해시는 값 누락 진단으로 잡지 않는다.
+  assert.equal(rendered.html, "(0.1 ~ 2.3)");
   assert.deepEqual(rendered.droppedCalculations, []);
 });
 
@@ -358,7 +358,7 @@ test("다른 스킬 계산식은 그 스킬의 랭크 축으로 읽는다 (일�
     "en_US",
   );
   // 예전에는 패시브 랭크 1 로 잘려 ×1.1 이 접힌 (9.9 ~ 198) 이었다
-  assert.equal(html, "((9 ~ 180) + ([[si:scaleap]]40% Ability Power)) × 1.1/1.15/1.2/1.25/1.3");
+  assert.equal(html, "((9 ~ 200.12) + ([[si:scaleap]]40% Ability Power)) × 1.1/1.15/1.2/1.25/1.3");
 });
 
 test("배율이 겹치면 이어 곱하고, 풀지 못한 항은 진단에 남긴다 (아크샨 E CriticalCalc)", () => {
@@ -419,4 +419,132 @@ test("레벨 범위 뒤에 붙은 % 는 지우지 않는다 (세나 P)", () => {
     parseSpellTooltip("deals {{ BonusCurrentHealthDamage }}% current Health", spell, data, "en_US"),
     "deals (1 ~ 10)% current Health",
   );
+});
+
+// 챔피언 레벨은 탑 라인 역할 퀘스트로 20 까지 오른다. 레벨 범위의 끝값은 20레벨 값이다.
+function levelCalculation(parts: unknown[], extra: Record<string, unknown> = {}): CommunityDragonSpellData {
+  return {
+    mSpellCalculations: { Calc: { __type: "GameCalculation", mFormulaParts: parts, ...extra } },
+  } as unknown as CommunityDragonSpellData;
+}
+
+test("19레벨 브레이크포인트가 있으면 그 증가량으로 20레벨까지 잇는다 (라칸 P 재사용 대기시간)", () => {
+  const data = levelCalculation([{
+    __type: "ByCharLevelBreakpointsCalculationPart",
+    mLevel1Value: 40,
+    mInitialBonusPerLevel: -1.5,
+    mBreakpoints: [{ __type: "Breakpoint", mLevel: 19, mBonusPerLevelAtAndAfter: -0.875 }],
+  }], { mPrecision: 1, mSimpleTooltipCalculationDisplay: 6 });
+  // 위키: 40 to 14.5 for 18; then -0.875*x for 2
+  assert.equal(renderCalculation("Calc", 1, data), "(40 ~ 12.75)");
+});
+
+test("마지막 브레이크포인트 증가량은 20레벨까지 이어진다 (조이 Q 레벨 항)", () => {
+  const data = levelCalculation([{
+    __type: "ByCharLevelBreakpointsCalculationPart",
+    mLevel1Value: 2,
+    mInitialBonusPerLevel: 2,
+    mBreakpoints: [
+      { __type: "Breakpoint", mLevel: 10, mBonusPerLevelAtAndAfter: 3 },
+      { __type: "Breakpoint", mLevel: 14, mBonusPerLevelAtAndAfter: 4 },
+    ],
+  }], { mSimpleTooltipCalculationDisplay: 6 });
+  // 위키: 2; then +2*x for 8; then +3*x for 4; then +4*x for 7
+  assert.equal(renderCalculation("Calc", 1, data), "(2 ~ 58)");
+});
+
+test("mPrecision 자릿수는 float32 잡음을 걷어낸 10진 값으로 반올림한다 (쉔 P 재사용 대기시간 감소)", () => {
+  const data = levelCalculation([{
+    __type: "ByCharLevelBreakpointsCalculationPart",
+    mLevel1Value: 4,
+    mInitialBonusPerLevel: 0.23499999940395355,
+    mBreakpoints: [{ __type: "Breakpoint", mLevel: 19, mBonusPerLevelAtAndAfter: 0.125 }],
+  }], { mPrecision: 1, mSimpleTooltipCalculationDisplay: 6 });
+  // 위키: 4 to 8 for 18; then +0.125*x for 2
+  assert.equal(renderCalculation("Calc", 1, data), "(4 ~ 8.25)");
+});
+
+test("레벨별 값 나열은 values[i] 가 i레벨이다 (럭스 P 폭발 피해)", () => {
+  const values = Array.from({ length: 31 }, (_, level) => 20 + 10 * level);
+  const data = levelCalculation([{ __type: "ByCharLevelFormulaCalculationPart", values }]);
+  // 위키: 30 to 200 (18레벨), 20레벨 220
+  assert.equal(renderCalculation("Calc", 1, data), "(30 ~ 220)");
+});
+
+test("자릿수가 없는 레벨 범위는 소수 둘째 자리까지 적는다 (신짜오 W 미니언 피해)", () => {
+  const data = levelCalculation([{
+    __type: "ByCharLevelBreakpointsCalculationPart",
+    mLevel1Value: 50,
+    mInitialBonusPerLevel: 3.3329999446868896,
+    mBreakpoints: [{ __type: "Breakpoint", mLevel: 16, mAdditionalBonusAtThisLevel: 3.3399999141693115 }],
+  }], { mSimpleTooltipCalculationDisplay: 6 });
+  assert.equal(renderCalculation("Calc", 1, data), "(50 ~ 100)");
+});
+
+test("스탯 계수가 레벨 범위면 랭크 값이 아니라 범위로 적는다 (마오카이 P 회복)", () => {
+  const data = levelCalculation([{
+    __type: "StatBySubPartCalculationPart",
+    mStat: 12,
+    mSubpart: {
+      __type: "ByCharLevelBreakpointsCalculationPart",
+      mLevel1Value: 0.03999999910593033,
+      mInitialBonusPerLevel: 0.0020000000949949026,
+      mBreakpoints: [{ __type: "Breakpoint", mLevel: 7, mBonusPerLevelAtAndAfter: 0.006500000134110451 }],
+    },
+  }], { mSimpleTooltipCalculationDisplay: 6 });
+  assert.equal(renderCalculation("Calc", 1, data), "([[si:scalehealth]](4% ~ 14.1%) Health)");
+});
+
+test("특정 레벨에서만 더해지는 값도 레벨 범위로 적는다 (니달리 W 덫 개수)", () => {
+  const data = levelCalculation([
+    {
+      __type: "ByCharLevelBreakpointsCalculationPart",
+      mLevel1Value: 4,
+      mBreakpoints: [6, 11, 16].map((level) => ({
+        __type: "Breakpoint", mLevel: level, mAdditionalBonusAtThisLevel: 2,
+      })),
+    },
+    { __type: "NumberCalculationPart", mNumber: 0 },
+  ]);
+  assert.equal(renderCalculation("Calc", 1, data), "(4 ~ 10)");
+});
+
+test("mScalePastDefaultMaxLevel 이 false 인 레벨 보간은 18레벨 값에서 멈춘다 (오른 P)", () => {
+  const data = levelCalculation([{
+    __type: "ByCharLevelInterpolationCalculationPart",
+    mStartValue: 90,
+    mEndValue: 10,
+    mScalePastDefaultMaxLevel: false,
+  }]);
+  assert.equal(renderCalculation("Calc", 1, data), "(90 ~ 10)");
+});
+
+test("19레벨부터 부호가 뒤집히는 값은 0 에서 멈춘다 (아이번 P 숲 생성 비용)", () => {
+  const data = levelCalculation([{
+    __type: "ByCharLevelBreakpointsCalculationPart",
+    mLevel1Value: 15,
+    mInitialBonusPerLevel: -0.8820000290870667,
+  }], { mSimpleTooltipCalculationDisplay: 6 });
+  assert.equal(renderCalculation("Calc", 1, data), "(15 ~ 0)");
+});
+
+test("합 안의 레벨 범위도 레벨 범위로 남는다 (케이틀린 P 헤드샷 계수)", () => {
+  const data = levelCalculation([{
+    __type: "StatBySubPartCalculationPart",
+    mStat: 2,
+    mSubpart: {
+      __type: "SumOfSubPartsCalculationPart",
+      mSubparts: [
+        {
+          __type: "ByCharLevelBreakpointsCalculationPart",
+          mLevel1Value: 0.6000000238418579,
+          mBreakpoints: [7, 13].map((level) => ({
+            __type: "Breakpoint", mLevel: level, mAdditionalBonusAtThisLevel: 0.20000000298023224,
+          })),
+        },
+        { __type: "NumberCalculationPart", mNumber: 0 },
+      ],
+    },
+  }]);
+  assert.equal(renderCalculation("Calc", 1, data), "([[si:scalead]](60% ~ 100%) Attack Damage)");
 });

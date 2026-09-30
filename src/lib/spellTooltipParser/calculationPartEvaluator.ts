@@ -26,7 +26,6 @@ import type {
   StatByCoefficientCalculationPart,
   StatByNamedDataValueCalculationPart,
   StatBySubPartCalculationPart,
-  StatPart,
   SumOfSubPartsCalculationPart,
   TooltipLocale,
   Value,
@@ -38,6 +37,11 @@ import {
   getStatName,
   isVector,
 } from "./valueUtils";
+import {
+  breakpointLevelValues,
+  interpolationLevelValues,
+  listedLevelValues,
+} from "@/lib/championLevel";
 
 /**
  * DataValue 이름 → 값.
@@ -48,44 +52,48 @@ export type DataValueEvaluator = (
   options?: { optional?: boolean },
 ) => Value | null;
 
-const MAX_CHAMPION_LEVEL = 18;
+/** 레벨별 값을 [1레벨, 최대 레벨] 범위로 줄인다. 두 값이 같으면 하나로 접는다. */
+function levelRange(values: readonly number[]): Value {
+  const first = values[0];
+  const last = values[values.length - 1];
+  return first === last ? first : [first, last];
+}
 
-function expandLevelBreakpoints(part: ByCharLevelBreakpointsCalculationPart): {
-  level1: number;
-  maxLevel: number;
-  hasPerLevel: boolean;
-} {
-  const level1 = Number(part.mLevel1Value) || 0;
-  const breakpoints = part.mBreakpoints ?? [];
-  // mInitialBonusPerLevel 은 2레벨부터 첫 브레이크포인트 전까지의 레벨당 증가량이다.
-  // 빼먹으면 가렌 P 재생이 1.5% ~ 10.1% 가 아니라 1.5% ~ 2.5%, 아칼리 P 가 35 ~ 182 가 아니라
-  // 35 ~ 164 로 나온다 (위키 대조).
-  const initialPerLevel = Number(part.mInitialBonusPerLevel) || 0;
-  const hasPerLevel =
-    initialPerLevel !== 0 ||
-    breakpoints.some((entry) => typeof entry.mBonusPerLevelAtAndAfter === "number");
-
-  let value = level1;
-  for (let level = 2; level <= MAX_CHAMPION_LEVEL; level += 1) {
-    let perLevel = initialPerLevel;
-    let perLevelFrom = -1;
-    for (const entry of breakpoints) {
-      if (typeof entry.mLevel !== "number" || level < entry.mLevel) continue;
-      if (entry.mLevel < perLevelFrom) continue;
-      perLevelFrom = entry.mLevel;
-      perLevel = entry.mBonusPerLevelAtAndAfter ?? 0;
-    }
-    value += perLevel;
-
-    for (const entry of breakpoints) {
-      if (typeof entry.mAdditionalBonusAtThisLevel !== "number") continue;
-      if (entry.mLevel == null || entry.mLevel === level) {
-        value += entry.mAdditionalBonusAtThisLevel;
-      }
+/**
+ * 하위 결과의 base 를 더한다. 레벨 범위 항은 따로 모아 끝에서 더하고, 결과가 레벨 범위인지 알린다.
+ * 랭크 벡터와 레벨 범위는 축이 달라 더할 수 없으므로 던진다.
+ */
+function sumBases(results: readonly PartResult[]): { base: Value; isLevelRange: boolean } {
+  let rankBase: Value = 0;
+  let levelBase: Value = 0;
+  let hasLevelRange = false;
+  for (const result of results) {
+    if (result.isLevelRange) {
+      levelBase = add(levelBase, result.base);
+      hasLevelRange = true;
+    } else {
+      rankBase = add(rankBase, result.base);
     }
   }
+  if (!hasLevelRange) return { base: rankBase, isLevelRange: false };
+  if (isVector(rankBase)) throw new Error("rank values and a level range cannot be summed");
+  const base = add(rankBase, levelBase);
+  return { base, isLevelRange: isVector(base) };
+}
 
-  return { level1, maxLevel: value, hasPerLevel };
+function breakpointValues(part: ByCharLevelBreakpointsCalculationPart): number[] {
+  // mInitialBonusPerLevel 은 2레벨부터 첫 브레이크포인트 전까지의 레벨당 증가량이다
+  // (가렌 P 재생 1.5% ~, 아칼리 P 35 ~ 가 이 값으로 오른다).
+  return breakpointLevelValues(
+    Number(part.mLevel1Value) || 0,
+    Number(part.mInitialBonusPerLevel) || 0,
+    part.mBreakpoints ?? [],
+  );
+}
+
+function interpolationValues(part: ByCharLevelInterpolationCalculationPart): number[] {
+  const start = part.mStartValue ?? 0;
+  return interpolationLevelValues(start, part.mEndValue ?? start, part.mScalePastDefaultMaxLevel !== false);
 }
 
 export function evaluateRange(calc: GameCalculation): CalcResult | null {
@@ -95,42 +103,36 @@ export function evaluateRange(calc: GameCalculation): CalcResult | null {
   const isPercent = Boolean(calc.mDisplayAsPercent);
 
   if (part.__type === "ByCharLevelInterpolationCalculationPart") {
-    const interpolation = part as ByCharLevelInterpolationCalculationPart;
-    const start = interpolation.mStartValue ?? 0;
     return {
-      base: [start, interpolation.mEndValue ?? start],
+      base: levelRange(interpolationValues(part as ByCharLevelInterpolationCalculationPart)),
       statParts: [],
       isPercent,
       isCharLevelRange: true,
     };
   }
 
-  // 레벨별 값을 통째로 나열한 파트 (values[0] = 1레벨)
+  // 레벨별 값을 통째로 나열한 파트
   if (part.__type === "ByCharLevelFormulaCalculationPart") {
-    const values = (part as ByCharLevelFormulaCalculationPart).values ?? [];
-    if (values.length >= 2) {
-      const last = Math.min(values.length - 1, MAX_CHAMPION_LEVEL - 1);
-      return {
-        base: [values[0], values[last]],
-        statParts: [],
-        isPercent,
-        isBreakpointRange: true,
-      };
-    }
-    return null;
+    const values = listedLevelValues((part as ByCharLevelFormulaCalculationPart).values ?? []);
+    if (values.length === 0) return null;
+    return {
+      base: levelRange(values),
+      statParts: [],
+      isPercent,
+      isBreakpointRange: true,
+    };
   }
 
   if (part.__type !== "ByCharLevelBreakpointsCalculationPart") return null;
 
   const breakpoint = part as ByCharLevelBreakpointsCalculationPart;
   // 표시 6 은 "레벨 범위로 적기", 퍼센트 + 레벨당 증가는 범위 계산식이다.
-  // 둘 다 1~18레벨을 펼친 값으로 범위를 만든다. (예전에는 표시 6 은 한 번 더해지는 값만,
-  // 퍼센트는 첫 브레이크포인트까지만 셌다. 가렌 P 가 1.5% ~ 2.5% 로 끊겼다)
+  // 둘 다 1레벨부터 최대 레벨까지 편 값으로 범위를 만든다.
   const isDisplayRange = calc.mSimpleTooltipCalculationDisplay === 6;
   if (!isDisplayRange && (!isPercent || !breakpoint.mInitialBonusPerLevel)) return null;
-  const { level1, maxLevel } = expandLevelBreakpoints(breakpoint);
+  const values = breakpointValues(breakpoint);
   return {
-    base: [level1, maxLevel],
+    base: [values[0], values[values.length - 1]],
     statParts: [],
     isPercent,
     ...(isDisplayRange ? { isBreakpointRange: true } : { isCharLevelRange: true }),
@@ -208,8 +210,11 @@ function readLevelPair(
   const end = ctx.evaluateDataValue(endName, { optional: true });
   if (start == null || end == null) return null;
   if (isVector(start) || isVector(end)) return null;
-  if (start === end) return { base: start, statParts: [] };
-  return { base: [start, end], statParts: [], isLevelRange: true };
+  // 이름이 "…Level1 / …Level18" 인 두 값이라 레벨 보간과 같은 선으로 최대 레벨까지 잇는다
+  const range = levelRange(interpolationLevelValues(start, end));
+  return isVector(range)
+    ? { base: range, statParts: [], isLevelRange: true }
+    : { base: range, statParts: [] };
 }
 
 /**
@@ -300,14 +305,10 @@ function readNamedBreakpoints(
   }
   if (breakpoints.length === 0) return null;
 
-  const { level1: start, maxLevel } = expandLevelBreakpoints({
-    __type: "ByCharLevelBreakpointsCalculationPart",
-    mLevel1Value: level1,
-    mInitialBonusPerLevel: initialBonusPerLevel,
-    mBreakpoints: breakpoints,
-  });
-  if (start === maxLevel) return { base: start, statParts: [] };
-  return { base: [start, maxLevel], statParts: [], isLevelRange: true };
+  const range = levelRange(breakpointLevelValues(level1, initialBonusPerLevel ?? 0, breakpoints));
+  return isVector(range)
+    ? { base: range, statParts: [], isLevelRange: true }
+    : { base: range, statParts: [] };
 }
 
 export function evaluatePart(
@@ -420,14 +421,12 @@ export function evaluatePart(
   }
 
   if (type === "ByCharLevelBreakpointsCalculationPart") {
-    const { level1, maxLevel, hasPerLevel } = expandLevelBreakpoints(
-      part as ByCharLevelBreakpointsCalculationPart,
-    );
-    // 레벨당 증가가 있으면 단일 값으로 접지 않고 1~18레벨 범위로 노출한다
-    if (hasPerLevel && maxLevel !== level1) {
-      return { base: [level1, maxLevel], statParts: [], isLevelRange: true };
-    }
-    return { base: maxLevel, statParts: [] };
+    // 레벨에 따라 값이 바뀌면 1레벨 ~ 최대 레벨 범위로 노출한다. 레벨당 증가 없이 특정 레벨에서만
+    // 더해지는 값도 범위다 (니달리 W 덫 개수 4 → 6·11·16레벨에 +2 → 10)
+    const range = levelRange(breakpointValues(part as ByCharLevelBreakpointsCalculationPart));
+    return isVector(range)
+      ? { base: range, statParts: [], isLevelRange: true }
+      : { base: range, statParts: [] };
   }
 
   // CommunityDragon 이 타입명을 해시로 남긴 파트 중, 필드가 "1레벨 값 / 18레벨 값"
@@ -441,42 +440,45 @@ export function evaluatePart(
 
   // 레벨별 값 나열. 단독일 때는 evaluateRange 가 처리하고, 섞여 있으면 여기로 온다.
   if (type === "ByCharLevelFormulaCalculationPart") {
-    const values = (part as ByCharLevelFormulaCalculationPart).values ?? [];
-    if (values.length < 2) return null;
-    const last = Math.min(values.length - 1, MAX_CHAMPION_LEVEL - 1);
-    if (values[0] === values[last]) return { base: values[0], statParts: [] };
-    return { base: [values[0], values[last]], statParts: [], isLevelRange: true };
+    const values = listedLevelValues((part as ByCharLevelFormulaCalculationPart).values ?? []);
+    if (values.length === 0) return null;
+    const range = levelRange(values);
+    return isVector(range)
+      ? { base: range, statParts: [], isLevelRange: true }
+      : { base: range, statParts: [] };
   }
 
   // 레벨 선형 보간. 다른 항과 섞이면 evaluateRange 를 타지 않아 버려지고 있었다.
   if (type === "ByCharLevelInterpolationCalculationPart") {
-    const interpolation = part as ByCharLevelInterpolationCalculationPart;
-    const start = interpolation.mStartValue ?? 0;
-    const end = interpolation.mEndValue ?? start;
-    if (start === end) return { base: start, statParts: [] };
-    return { base: [start, end], statParts: [], isLevelRange: true };
+    const range = levelRange(interpolationValues(part as ByCharLevelInterpolationCalculationPart));
+    return isVector(range)
+      ? { base: range, statParts: [], isLevelRange: true }
+      : { base: range, statParts: [] };
   }
 
   if (type === "SumOfSubPartsCalculationPart") {
     const subparts = (part as SumOfSubPartsCalculationPart).mSubparts ?? [];
     if (subparts.length === 0) return null;
 
-    let base: Value = 0;
-    const statParts: StatPart[] = [];
+    const results: PartResult[] = [];
     for (const sub of subparts) {
       const result = evaluatePart(sub, ctx, visited);
       // 항 하나라도 못 구하면 합 자체가 틀린다
       if (!result) return null;
-      try {
-        base = add(base, result.base);
-      } catch (error) {
-        logger.debug("SumOfSubPartsCalculationPart: 합산 실패", error);
-        ctx.reportDrop?.({ reason: "sub-sum-mismatch" });
-        return null;
-      }
-      statParts.push(...result.statParts);
+      results.push(result);
     }
-    return { base, statParts };
+    try {
+      const { base, isLevelRange } = sumBases(results);
+      return {
+        base,
+        statParts: results.flatMap((result) => result.statParts),
+        ...(isLevelRange ? { isLevelRange: true } : {}),
+      };
+    } catch (error) {
+      logger.debug("SumOfSubPartsCalculationPart: 합산 실패", error);
+      ctx.reportDrop?.({ reason: "sub-sum-mismatch" });
+      return null;
+    }
   }
 
   if (type === "ProductOfSubPartsCalculationPart") {
@@ -489,8 +491,7 @@ export function evaluatePart(
 
   if (type === "ClampSubPartsCalculationPart") {
     const clamp = part as ClampSubPartsCalculationPart;
-    let base: Value = 0;
-    let resolved = 0;
+    const results: PartResult[] = [];
     for (const sub of clamp.mSubparts ?? []) {
       const result = evaluatePart(sub, ctx, visited);
       if (!result) return null;
@@ -499,15 +500,18 @@ export function evaluatePart(
         logger.debug("ClampSubPartsCalculationPart: 스탯 항 제외 (clamp 불가)", sub);
         ctx.reportDrop?.({ reason: "clamp-stat-dropped" });
       }
-      try {
-        base = add(base, result.base);
-        resolved += 1;
-      } catch (error) {
-        logger.debug("ClampSubPartsCalculationPart: 합산 실패", error);
-        ctx.reportDrop?.({ reason: "sub-sum-mismatch" });
-      }
+      results.push(result);
     }
-    if (resolved === 0) return null;
+    if (results.length === 0) return null;
+    let summed: { base: Value; isLevelRange: boolean };
+    try {
+      summed = sumBases(results);
+    } catch (error) {
+      logger.debug("ClampSubPartsCalculationPart: 합산 실패", error);
+      ctx.reportDrop?.({ reason: "sub-sum-mismatch" });
+      return null;
+    }
+    const { base } = summed;
 
     const limit = (value: number): number => {
       let next = value;
@@ -518,6 +522,7 @@ export function evaluatePart(
     return {
       base: isVector(base) ? base.map(limit) : limit(base as number),
       statParts: [],
+      ...(summed.isLevelRange ? { isLevelRange: true } : {}),
     };
   }
 
@@ -537,6 +542,7 @@ export function evaluatePart(
           icon: getStatIcon(statSubPart.mStat),
           ratio: inner.base,
           isCoefficient: true,
+          ...(inner.isLevelRange ? { isLevelRange: true } : {}),
         },
       ],
     };

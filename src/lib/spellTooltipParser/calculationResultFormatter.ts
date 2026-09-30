@@ -1,5 +1,4 @@
 import type { CalcResult, StatPart, TooltipLocale, Value } from "./types";
-import { formatNumber } from "./formatters";
 import { getTranslations } from "@/i18n";
 import { logger } from "@/lib/logger";
 import { statIconToken } from "./statIcons";
@@ -12,11 +11,26 @@ function scalePercent(value: Value, precision?: number): Value {
     : value * 100;
 }
 
+/**
+ * 소수 digits 자리에서 반올림해 적는다.
+ *
+ * 게임 자료는 float32 라 0.235 가 0.23499999940395355 로 들어온다. 유효숫자 7자리로 잡음을
+ * 걷어낸 뒤, 2진 표현이 아니라 10진 값으로 반올림한다. toFixed 는 8.245 를 8.2449999… 로 보고
+ * 8.24 로 내린다 (쉔 P 20레벨 8.25, 18레벨 7.995 → 8).
+ */
+function formatFixed(value: number, digits: number): string {
+  if (!Number.isFinite(value)) return String(value);
+  const denoised = Number(value.toPrecision(7));
+  const text = String(Math.abs(denoised));
+  const rounded = text.includes("e")
+    ? Number(Math.abs(denoised).toFixed(digits))
+    : Number(`${Math.round(Number(`${text}e${digits}`))}e-${digits}`);
+  const signed = denoised < 0 && rounded !== 0 ? -rounded : rounded;
+  return signed.toFixed(digits).replace(/\.0+$|(\.\d*?)0+$/, "$1");
+}
+
 function formatValueWithPrecision(value: Value, precision: number): string {
-  const formatEntry = (entry: number): string => {
-    if (!Number.isFinite(entry)) return String(entry);
-    return entry.toFixed(precision).replace(/\.?0+$/, "");
-  };
+  const formatEntry = (entry: number): string => formatFixed(entry, precision);
   if (!isVector(value)) return formatEntry(value);
   const formatted = value.map(formatEntry);
   return formatted.every((entry) => entry === formatted[0])
@@ -66,13 +80,31 @@ function isZeroValue(value: Value): boolean {
     : value === 0;
 }
 
+/** 자릿수가 정해지지 않은 레벨 범위 끝값은 소수 둘째 자리까지 적는다 (신짜오 W 미니언 피해 100.002 → 100) */
+const LEVEL_RANGE_DEFAULT_DIGITS = 2;
+
+/**
+ * [1레벨, 최대 레벨] 범위를 "(a ~ b)" 로 적는다. value 는 이미 퍼센트로 바꾼 값이다.
+ * 기본 수치·합치지 못한 범위·배율·스탯 계수가 모두 이 함수로 범위를 적는다.
+ */
+function formatLevelRange(
+  range: readonly number[],
+  suffix: string,
+  precision?: number,
+): string {
+  const digits = precision ?? LEVEL_RANGE_DEFAULT_DIGITS;
+  const [minimum, maximum] = range.map((entry) => formatFixed(entry, digits));
+  return `(${minimum}${suffix} ~ ${maximum}${suffix})`;
+}
+
+function isRangePair(value: Value): value is [number, number] {
+  return isVector(value) && value.length === 2;
+}
+
 function formatRange(result: CalcResult, base: Value): string | null {
   const isRange = result.isCharLevelRange || result.isBreakpointRange;
-  if (!isRange || !isVector(base) || base.length !== 2) return null;
-  const [minimum, maximum] = base.map(formatNumber);
-  return result.isPercent
-    ? `(${minimum}% ~ ${maximum}%)`
-    : `(${minimum} ~ ${maximum})`;
+  if (!isRange || !isRangePair(base)) return null;
+  return formatLevelRange(base, result.isPercent ? "%" : "", result.precision);
 }
 
 function formatBase(result: CalcResult, base: Value): string | null {
@@ -117,14 +149,19 @@ function formatStatPart(
 ): string {
   const tiny = Boolean(part.name) && isTinyRatio(part.ratio);
   const ratioValue = tiny ? scaleRatio(part.ratio, 100) : part.ratio;
+  const icon = statIconToken(part.icon);
+  const template = getTranslations(lang).common.perHundredStat;
+
+  // 레벨 범위 계수는 "5/45%" 처럼 랭크 값으로 읽히지 않게 "(5% ~ 45%)" 로 적는다
+  if (part.isLevelRange && isRangePair(ratioValue)) {
+    if (!tiny) return `(${icon}${formatLevelRange(ratioValue, "%", precision)} ${part.name})`;
+    return `(${icon}${template.replace("{stat}", part.name).replace("{value}", formatLevelRange(ratioValue, "", precision))})`;
+  }
+
   const ratio = precision == null
     ? valueToTooltipString(ratioValue)
     : formatValueWithPrecision(ratioValue, precision);
-
-  const icon = statIconToken(part.icon);
   if (!tiny) return `(${icon}${ratio}% ${part.name})`;
-
-  const template = getTranslations(lang).common.perHundredStat;
   return `(${icon}${template.replace("{stat}", part.name).replace("{value}", ratio)})`;
 }
 
@@ -141,10 +178,10 @@ function formatStatMultiplier(
   const { base, statParts, isPercent, isLevelRange } = multiplierResult;
   const terms: string[] = [];
 
-  if (isLevelRange && isVector(base) && base.length === 2) {
+  if (isLevelRange && isRangePair(base)) {
     // 레벨 범위 배율은 랭크 값("1.3/1.6")으로 읽히지 않게 범위로 적는다
-    const [minimum, maximum] = (isPercent ? scaleBy100(base) as number[] : base).map(formatNumber);
-    terms.push(isPercent ? `(${minimum}% ~ ${maximum}%)` : `(${minimum} ~ ${maximum})`);
+    const scaled = isPercent ? (scaleBy100(base) as number[]) : base;
+    terms.push(formatLevelRange(scaled, isPercent ? "%" : "", multiplierResult.precision));
   } else if (!isZeroValue(base)) {
     // 퍼센트로 적는 계산식을 배율로 쓰면 base 도 퍼센트여야 한다.
     // 세트 W 의 투지 전환율이 "0.25" 가 아니라 "25%" 로 나와야 하는 경우.
@@ -159,12 +196,11 @@ function formatStatMultiplier(
     const scaled = scaleBy100(part.ratio);
     // 0% 항은 정보가 없고 문장만 늘린다
     if (isZeroValue(scaled)) continue;
-    const ratio = valueToTooltipString(scaled);
-    terms.push(
-      part.name
-        ? `${statIconToken(part.icon)}${ratio}% ${part.name}`
-        : `${ratio}%`,
-    );
+    // 레벨 범위 계수는 "19/40%" 처럼 랭크 값으로 읽히지 않게 "(19% ~ 40%)" 로 적는다
+    const value = part.isLevelRange && isRangePair(scaled)
+      ? formatLevelRange(scaled, "%", multiplierResult.precision)
+      : `${valueToTooltipString(scaled)}%`;
+    terms.push(part.name ? `${statIconToken(part.icon)}${value} ${part.name}` : value);
   }
 
   if (terms.length === 0) return null;
@@ -193,12 +229,9 @@ export function formatCalculationResult(
 
   // 랭크 값과 길이가 달라 합치지 못한 레벨 범위는 옆에 별도 항으로 붙인다
   const rangeParts = (result.extraRanges ?? []).map((range) => {
-    if (!isVector(range) || range.length !== 2) return valueToTooltipString(range);
-    const scaled = result.isPercent ? scalePercent(range, result.precision) : range;
-    const [minimum, maximum] = (scaled as number[]).map(formatNumber);
-    return result.isPercent
-      ? `(${minimum}% ~ ${maximum}%)`
-      : `(${minimum} ~ ${maximum})`;
+    if (!isRangePair(range)) return valueToTooltipString(range);
+    const scaled = result.isPercent ? (scalePercent(range, result.precision) as number[]) : range;
+    return formatLevelRange(scaled, result.isPercent ? "%" : "", result.precision);
   });
 
   const parts = [

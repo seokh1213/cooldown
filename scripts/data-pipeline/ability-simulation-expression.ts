@@ -10,6 +10,7 @@ import {
   effectValue,
   isRecord,
   levelBreakpoints,
+  levelFormula,
   levelInterpolation,
   levelMatrix,
   matrix,
@@ -17,7 +18,6 @@ import {
   rankValues,
   statForPart,
   UnsupportedFormulaError,
-  LEVELS,
   type LeafContext,
   type Matrix,
 } from "./ability-simulation-formula";
@@ -104,10 +104,7 @@ export function compileExprPart(
     return constant(levelMatrix(levelInterpolation(value), ctx.maxRank));
   }
   if (type === "ByCharLevelFormulaCalculationPart") {
-    if (!Array.isArray(value.values) || value.values.length < LEVELS) {
-      throw new UnsupportedFormulaError(type);
-    }
-    return constant(levelMatrix(value.values.slice(0, LEVELS).map(Number), ctx.maxRank));
+    return constant(levelMatrix(levelFormula(value), ctx.maxRank));
   }
   if (type === "StatByNamedDataValueCalculationPart" || type === "StatByCoefficientCalculationPart") {
     const coefficient = type === "StatByNamedDataValueCalculationPart"

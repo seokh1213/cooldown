@@ -2,6 +2,13 @@ import type {
   AbilitySimulationStat,
 } from "../../src/data/contracts/championData";
 import type { CommunityDragonSpellData } from "../../src/lib/spellTooltipParser/types";
+import {
+  CHAMPION_MAX_LEVEL,
+  breakpointLevelValues,
+  interpolationLevelValues,
+  listedLevelValues,
+  type LevelBreakpoint,
+} from "../../src/lib/championLevel";
 
 type RawPart = Record<string, unknown>;
 export type Matrix = number[][];
@@ -27,7 +34,7 @@ export class UnsupportedFormulaError extends Error {
   }
 }
 
-export const LEVELS = 18;
+export const LEVELS = CHAMPION_MAX_LEVEL;
 
 export function isRecord(value: unknown): value is RawPart {
   return typeof value === "object" && value !== null;
@@ -101,25 +108,22 @@ export function statForPart(part: RawPart): AbilitySimulationStat {
 }
 
 export function levelBreakpoints(part: RawPart): number[] {
-  const result = [Number(part.mLevel1Value) || 0];
-  const breakpoints = Array.isArray(part.mBreakpoints)
-    ? part.mBreakpoints.filter(isRecord)
-    : [];
-  for (let level = 2; level <= LEVELS; level += 1) {
-    let value = result[level - 2];
-    const active = breakpoints
-      .filter((entry) => typeof entry.mLevel === "number" && level >= entry.mLevel)
-      .sort((left, right) => Number(right.mLevel) - Number(left.mLevel))[0];
-    value += typeof active?.mBonusPerLevelAtAndAfter === "number"
-      ? active.mBonusPerLevelAtAndAfter
-      : Number(part.mInitialBonusPerLevel) || 0;
-    for (const entry of breakpoints) {
-      if (typeof entry.mAdditionalBonusAtThisLevel !== "number") continue;
-      if (entry.mLevel == null || entry.mLevel === level) value += entry.mAdditionalBonusAtThisLevel;
-    }
-    result.push(value);
-  }
-  return result;
+  const breakpoints: LevelBreakpoint[] = (Array.isArray(part.mBreakpoints) ? part.mBreakpoints : [])
+    .filter(isRecord)
+    .map((entry) => ({
+      mLevel: typeof entry.mLevel === "number" ? entry.mLevel : undefined,
+      mAdditionalBonusAtThisLevel: typeof entry.mAdditionalBonusAtThisLevel === "number"
+        ? entry.mAdditionalBonusAtThisLevel
+        : undefined,
+      mBonusPerLevelAtAndAfter: typeof entry.mBonusPerLevelAtAndAfter === "number"
+        ? entry.mBonusPerLevelAtAndAfter
+        : undefined,
+    }));
+  return breakpointLevelValues(
+    Number(part.mLevel1Value) || 0,
+    Number(part.mInitialBonusPerLevel) || 0,
+    breakpoints,
+  );
 }
 
 export function levelInterpolation(part: RawPart): number[] {
@@ -128,8 +132,16 @@ export function levelInterpolation(part: RawPart): number[] {
   if (!Number.isFinite(start) || !Number.isFinite(end)) {
     throw new UnsupportedFormulaError("ByCharLevelInterpolationCalculationPart");
   }
-  return Array.from({ length: LEVELS }, (_, index) =>
-    start + ((end - start) * index) / (LEVELS - 1));
+  return interpolationLevelValues(start, end, part.mScalePastDefaultMaxLevel !== false);
+}
+
+export function levelFormula(part: RawPart): number[] {
+  const values = Array.isArray(part.values) ? part.values.map(Number) : [];
+  const byLevel = listedLevelValues(values);
+  if (byLevel.length === 0 || !byLevel.every(Number.isFinite)) {
+    throw new UnsupportedFormulaError("ByCharLevelFormulaCalculationPart");
+  }
+  return byLevel;
 }
 
 function addMatrix(left: Matrix, right: Matrix): Matrix {
@@ -191,10 +203,7 @@ export function compilePart(
     return valueFormula(levelMatrix(levelInterpolation(value), ctx.maxRank));
   }
   if (type === "ByCharLevelFormulaCalculationPart") {
-    if (!Array.isArray(value.values) || value.values.length < LEVELS) {
-      throw new UnsupportedFormulaError(type);
-    }
-    return valueFormula(levelMatrix(value.values.slice(0, LEVELS).map(Number), ctx.maxRank));
+    return valueFormula(levelMatrix(levelFormula(value), ctx.maxRank));
   }
   if (type === "StatByNamedDataValueCalculationPart" || type === "StatByCoefficientCalculationPart") {
     const coefficients = type === "StatByNamedDataValueCalculationPart"
