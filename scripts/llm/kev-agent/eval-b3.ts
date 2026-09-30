@@ -84,7 +84,7 @@ async function main() {
       const e = data.cardById.get(a.enemy)!.name;
       // 앱과 같게: 새 말에서 찾은 첫 챔피언 이름을 붙인다
       const other = detectChampions(data, a.text)[0]?.name;
-      const [p] = await judge(KEV_HEAD, actState(m, e, a.text, other), [actQuestion(m, e)]);
+      const [p] = await judge(process.env.ACT_HEAD_EVAL ?? KEV_HEAD, actState(m, e, a.text, other), [actQuestion(m, e)]);
       const got = actFromProbs(p);
       add("act 전체", got === a.act);
       const want =

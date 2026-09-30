@@ -140,7 +140,9 @@ export function kevJudge(url: string): Judge {
 /** JUDGE_URL 을 주면 앱 판정기 자리에 kev 서버를 끼운다(B 의 판정기로 A 를 다시 잴 때). */
 /** HIDDEN_JUDGE 를 주면 앱 그래프·앱 헤드 그대로(`hiddenJudge`) 잰다. */
 const judgeOverride = process.env.JUDGE_URL ? kevJudge(process.env.JUDGE_URL) : process.env.HIDDEN_JUDGE ? hiddenJudge(process.env.HIDDEN_JUDGE) : undefined;
+/** JUDGE_HEAD 를 주면 앱이 부르는 헤드 이름을 그것으로 바꿔 잰다(새 헤드 실험용, research/llm-evals/kev-agent/heads 에서 찾는다). */
 export const appJudge: Judge = async (headName, state, questions) => {
+  headName = process.env.JUDGE_HEAD ?? headName;
   if (judgeOverride) return judgeOverride(headName, state, questions);
   const key = JSON.stringify([headName, state, questions]);
   const hit = judgeCache.get(key);
