@@ -255,7 +255,7 @@ export function SkillsSectionDesktop({
                       <Plus className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors" />
                     </div>
                     <div className="text-[10px] text-muted-foreground group-hover:text-primary transition-colors whitespace-nowrap">
-                      추가
+                      {t.encyclopedia.add}
                     </div>
                   </Button>
                 </TableHead>

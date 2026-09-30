@@ -15,7 +15,7 @@ import type { SpellFocus } from "@/lib/advisor/spellFocus";
 import { AdvisorAnswerCard } from "./AdvisorAnswerCard";
 import type { useReferencePanelSize } from "./useReferencePanelSize";
 
-/** 자료 탭에 쓰는 한 글자짜리 사실 이름. "재사용 대기시간" 은 탭에 안 들어간다. */
+/** 자료 탭에 쓰는 한 글자짜리 사실 이름(한국어). "재사용 대기시간" 은 탭에 안 들어간다. 다른 언어는 카드 어휘를 그대로 쓴다. */
 const FOCUS_SHORT: Record<SpellFocus, string> = { cooldown: "쿨", cost: "소모", ratio: "계수", damage: "피해", effect: "효과" };
 
 export function referenceTitle(answer: AdvisorAnswer, copy: Translations["advisor"], lang: Language): { title: string; kind: string } {
@@ -41,12 +41,12 @@ export function referenceTitle(answer: AdvisorAnswer, copy: Translations["adviso
 }
 
 /** 탭 이름. 300px 에 여섯 개쯤 들어가야 하니 아이콘 + 한두 글자. */
-function tabLabel(answer: AdvisorAnswer, copy: Translations["advisor"]): string {
+function tabLabel(answer: AdvisorAnswer, copy: Translations["advisor"], lang: Language): string {
   switch (answer.kind) {
     case "spell":
       return answer.spell.slot;
     case "champion":
-      return answer.focus ? FOCUS_SHORT[answer.focus] : answer.view === "skills" ? copy.card.skills : copy.card.champion;
+      return answer.focus ? (lang === "ko_KR" ? FOCUS_SHORT[answer.focus] : focusLabel(answer.focus, lang)) : answer.view === "skills" ? copy.card.skills : copy.card.champion;
     case "compare":
       return answer.matchup ? copy.card.matchupTool : copy.card.compare;
     case "item":
@@ -109,7 +109,7 @@ export function ReferenceTabs({ tabs, activeKey, onSelect, ddragonVersion }: Ref
             <span className="flex -space-x-1">
               <AnswerIcons answer={answer} ddragonVersion={ddragonVersion} className="h-3.5 w-3.5 rounded-sm ring-1 ring-background" />
             </span>
-            {tabLabel(answer, copy)}
+            {tabLabel(answer, copy, lang)}
           </button>
         );
       })}
