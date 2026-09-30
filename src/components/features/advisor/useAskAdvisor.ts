@@ -40,13 +40,18 @@ const offline = offlineJudge(async (file) => {
 });
 
 /** 모델 판정기가 거절하면(헤드를 못 받음·다른 모델용·워커 오류) 오프라인 판정기로. 그마저 거절하면 부르는 단계가 낱말 규칙으로 간다. */
+/** 모델 판정기가 시간 초과로 거절된 뒤에는 이 세션에서 다시 부르지 않는다 — 부를 때마다 30초를 기다리게 된다(판정 6회 연속 시간 초과, 2026-09-30). */
+let modelJudgeStalled = false;
 const modelThenOffline =
   (model: PlanDeps["judge"]): PlanDeps["judge"] =>
   (headName, state, questions) =>
-    model(headName, state, questions).catch((error: unknown) => {
-      console.warn("[advisor] 모델 판정기 거절 — 오프라인 판정기로", error);
-      return offline(headName, state, questions);
-    });
+    modelJudgeStalled
+      ? offline(headName, state, questions)
+      : model(headName, state, questions).catch((error: unknown) => {
+          console.warn("[advisor] 모델 판정기 거절 — 오프라인 판정기로", error);
+          if (/timeout/.test(String((error as Error)?.message ?? error))) modelJudgeStalled = true;
+          return offline(headName, state, questions);
+        });
 
 export function useAskAdvisor({ advisor, data, championIds, canUseModel }: AskAdvisorOptions) {
   const { t, lang } = useTranslation();

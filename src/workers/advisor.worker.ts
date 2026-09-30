@@ -23,6 +23,17 @@ if (env.backends.onnx.wasm) {
   env.backends.onnx.wasm.wasmPaths = `${import.meta.env.BASE_URL}ort/`;
 }
 
+/*
+ * 판정·검색 요청은 한 번에 하나씩 돈다. `judgeHidden` 은 상태 접두사의 KV 캐시(`hiddenPrefix`)를 하나만 들고 있어, 두 요청이
+ * 겹치면 한쪽이 다른 쪽의 캐시를 지운 채 이어 쓰다 그래프가 멈췄다(2026-09-30 브라우저 시험: 판정 6회 연속 30초 시간 초과).
+ */
+let queue: Promise<unknown> = Promise.resolve();
+const serialized = <T>(run: () => Promise<T>): Promise<T> => {
+  const next = queue.then(run, run);
+  queue = next.catch(() => undefined);
+  return next;
+};
+
 onRequest((request) => {
   if (request.type === "load") {
     load(request.model).catch((error: unknown) => {
@@ -31,9 +42,10 @@ onRequest((request) => {
     return;
   }
   if (request.type === "judge") {
-    (request.feature === "hidden"
-      ? judgeHidden(request.id, request.model, request.state, request.questions)
-      : judge(request.id, request.model, request.state, request.questions, request.subset)
+    serialized(() =>
+      request.feature === "hidden"
+        ? judgeHidden(request.id, request.model, request.state, request.questions)
+        : judge(request.id, request.model, request.state, request.questions, request.subset),
     ).catch((error: unknown) => {
       const message = (error as Error).message;
       // 생성과 같다 — GPU 가 한 번 깨지면 쥐고 있던 것을 놓아야 다음 요청이 모델을 다시 올린다
@@ -48,7 +60,7 @@ onRequest((request) => {
     return;
   }
   if (request.type === "embed") {
-    embedText(request.id, request.model, request.text).catch((error: unknown) => {
+    serialized(() => embedText(request.id, request.model, request.text)).catch((error: unknown) => {
       post({ type: "error", id: request.id, message: (error as Error).message });
     });
     return;
