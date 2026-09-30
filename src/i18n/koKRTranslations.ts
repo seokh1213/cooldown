@@ -230,6 +230,7 @@ export const koKRTranslations: Translations = {
       noCost: "소모값 없음",
       mana: "마나",
       rechargeTime: "재충전 대기시간",
+      rechargeShort: "재충전",
       max: "최대",
       items: "개",
       bonus: "추가",

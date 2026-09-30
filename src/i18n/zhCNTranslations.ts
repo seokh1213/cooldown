@@ -216,6 +216,7 @@ export const zhCNTranslations: Translations = {
     noCost: "无消耗",
     mana: "法力值",
     rechargeTime: "充能时间",
+    rechargeShort: "充能",
     max: "最大",
     items: "装备",
     bonus: "额外",

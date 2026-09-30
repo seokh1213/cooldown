@@ -220,6 +220,7 @@ export interface Translations {
     noCost: string;
     mana: string;
     rechargeTime: string;
+    rechargeShort: string;
     max: string;
     items: string;
     bonus: string;

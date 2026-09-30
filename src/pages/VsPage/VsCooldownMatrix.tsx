@@ -8,7 +8,7 @@ import { VsChampionHeader } from "./VsChampionColumn";
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from "@/components/ui/dialog";
 import { useTranslation } from "@/i18n";
 import { VsAbilityBody } from "./VsAbilityRow";
-import { ACTIVE_SLOTS, comparisonCooldownAtRank, cooldownRankCount, rankCooldowns } from "./vsCooldownTable";
+import { ACTIVE_SLOTS, comparisonCooldownAtRank, cooldownRankCount, rankCooldowns, slotOffsetClass } from "./vsCooldownTable";
 import type { useVsChampion } from "./useVsWorkspace";
 import type { VsSideKey } from "./vsState";
 
@@ -73,7 +73,7 @@ export function VsCooldownMatrix({ sides, version, onSelect }: { sides: MatrixSi
     <TooltipProvider delayDuration={150} skipDelayDuration={100}>
     <section aria-label={t.comparison.baseCooldowns}>
       <h2 className="mb-2 px-0.5 text-sm font-semibold tracking-tight">{t.comparison.baseCooldowns}</h2>
-      <table className="w-full table-fixed border-separate border-spacing-0" aria-label={t.comparison.baseCooldowns}>
+      <table className="w-full table-fixed border-separate border-spacing-0 [--vs-icon:1.75rem] sm:[--vs-icon:2rem]" aria-label={t.comparison.baseCooldowns}>
         <caption className="sr-only">{t.comparison.tableNote}</caption>
         <colgroup>
           {columns.slice(0, ACTIVE_SLOTS.length).map((column) => <col key={column.side + column.slot} />)}
@@ -97,7 +97,7 @@ export function VsCooldownMatrix({ sides, version, onSelect }: { sides: MatrixSi
             {columns.map(({ side, slot, name, championId, ability }, index) => (
               <Fragment key={side + slot}>
                 {index === ACTIVE_SLOTS.length && <th scope="col" className="border-b border-border/60 px-0 text-center align-bottom text-[11px] font-normal text-muted-foreground">{t.comparison.levelColumn}</th>}
-                <VsMatrixSkill side={side} slot={slot} name={name} championId={championId} ability={ability} version={version} onSelect={(selectedAbility, trigger) => { returnFocus.current = trigger; setSelected({ ability: selectedAbility, name, slot }); }} />
+                <VsMatrixSkill side={side} slot={slot} name={name} championId={championId} ability={ability} version={version} boxClass={slotOffsetClass(index)} onSelect={(selectedAbility, trigger) => { returnFocus.current = trigger; setSelected({ ability: selectedAbility, name, slot }); }} />
               </Fragment>
             ))}
           </tr>}
@@ -112,8 +112,10 @@ export function VsCooldownMatrix({ sides, version, onSelect }: { sides: MatrixSi
                 <Fragment key={side + slot}>
                 {columnIndex === ACTIVE_SLOTS.length && <th id={"vs-rank-" + (index + 1)} scope="row" className="border-b border-border/50 px-0 py-1 text-center align-middle text-xs font-normal tabular-nums text-muted-foreground">{index + 1}</th>}
                 <td headers={"vs-rank-" + (index + 1) + " vs-" + side + "-" + slot} className="border-b border-border/50 px-0.5 py-1 text-center align-middle">
+                  <div className={slotOffsetClass(columnIndex)}>
                   {ability?.forms ? <VsFormCooldown ability={ability} peer={values[peerIndex(columnIndex)]?.ability} rank={index + 1} side={side} slot={slot} format={formatter.format} /> : <VsCooldownValue value={cooldowns[index]} peer={comparisonCooldownAtRank(values[peerIndex(columnIndex)]?.ability, index + 1)} kind="cooldown" side={side} slot={slot} rank={index + 1} format={formatter.format} />}
-                  {recharges[index] !== null && <span className="mt-0.5 block text-[11px] leading-4 text-muted-foreground">{t.common.rechargeTime} <VsCooldownValue value={recharges[index]} peer={values[peerIndex(columnIndex)]?.recharges[index] ?? null} kind="recharge" side={side} slot={slot} rank={index + 1} format={formatter.format} /></span>}
+                  {recharges[index] !== null && <span className="mt-0.5 block whitespace-nowrap text-[11px] leading-4 text-muted-foreground"><span className="sm:hidden">{t.common.rechargeShort}</span><span className="hidden sm:inline">{t.common.rechargeTime}</span> <VsCooldownValue value={recharges[index]} peer={values[peerIndex(columnIndex)]?.recharges[index] ?? null} kind="recharge" side={side} slot={slot} rank={index + 1} format={formatter.format} /></span>}
+                  </div>
                 </td>
                 </Fragment>
               ))}
