@@ -56,8 +56,8 @@ export interface UseAdvisorResult {
    */
   respond: (question: string, plan: RespondPlan) => void;
   /**
-   * 판정기로 고른다. 글을 쓰지 않는다. 질문마다 선택지 확률을 돌려준다.
-   * 헤드가 지금 모델용이 아니거나 모델이 없으면 거절하므로 부르는 쪽이 규칙으로 되돌아간다.
+   * 모델 판정기로 고른다. 글을 쓰지 않는다. 질문마다 선택지 확률을 돌려준다.
+   * 헤드가 지금 모델용이 아니거나 동의 전이면 거절하므로 부르는 쪽(`useAskAdvisor`)이 오프라인 판정기로 되돌아간다.
    */
   judge: (headName: string, state: string, questions: JudgeQuestion[]) => Promise<number[][]>;
   /**

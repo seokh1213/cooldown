@@ -7,6 +7,10 @@
  * 판정기는 가짜다. 문항마다 갈래·내 챔피언·주제·흐름을 정해 주고, 정해 주지 않은 것을 물으면 거절한다
  * (앱에서 판정이 실패한 것과 같다). 검색 벡터도 정해 준 점수를 돌려준다.
  *
+ * 판정기 단계(`PlanContext.judge`)는 세 가지다. `model`(판정기·검색 벡터·동의 있음), `offline`(모델 없는 기기의 오프라인 판정기 —
+ * 판정기는 있지만 동의·검색 벡터가 없다), 둘 다 아니면 `none`(판정기 없이 낱말 규칙만). 오프라인 판정기의 확률 자체는
+ * `tests/unit/offline-judge.test.ts` 가 파이썬과 맞춰 보고, 여기서는 같은 가짜로 "판정기는 부르되 동의·검색 없는 길" 만 본다.
+ *
  *   RECORD=1 npx tsx tests/data/advisor-plan.test.ts   지금 값을 표 꼴로 찍는다
  */
 import assert from "node:assert/strict";
@@ -16,7 +20,7 @@ import { enUSTranslations } from "../../src/i18n/enUSTranslations";
 import { zhCNTranslations } from "../../src/i18n/zhCNTranslations";
 import type { Language } from "../../src/i18n";
 import type { AdvisorAnswer } from "../../src/lib/advisor/answer";
-import { planAnswer, type AnswerPlan, type PlanContext, type PlanTurn } from "../../src/lib/advisor/plan";
+import { planAnswer, type AnswerPlan, type JudgeTier, type PlanContext, type PlanTurn } from "../../src/lib/advisor/plan";
 import { JUDGE_KIND_INSTRUCTIONS, JUDGE_MINE_INSTRUCTIONS } from "../../src/lib/advisor/routeAsk";
 import { TOPIC_INSTRUCTIONS } from "../../src/lib/advisor/topicJudge";
 import { ACT_INSTRUCTIONS } from "../../src/lib/advisor/conversation";
@@ -35,8 +39,10 @@ interface Case {
   name: string;
   question: string;
   lang?: Lang;
-  /** 판정기·검색 벡터를 쓸 수 있고 동의했다. 없으면 모델 없이 써보기 */
+  /** 모델 판정기·검색 벡터를 쓸 수 있고 동의했다. `offline` 도 아니면 판정기 없이 낱말 규칙만 */
   model?: boolean;
+  /** 모델 없는 기기의 오프라인 판정기(동의 전, 검색 벡터 없음). 판정기는 `judge` 의 가짜 그대로 */
+  offline?: boolean;
   /** 모델은 있는데 검색 벡터 가지가 없다 */
   noRetrieval?: boolean;
   /** 가짜 판정기가 고를 이름. 없는 것을 물으면 거절한다 */
@@ -134,6 +140,7 @@ async function run(c: Case): Promise<{ want: string; calls: string[] }> {
   // 검색 실패는 경고를 남기고 낱말 길로 간다. 경고도 부른 순서에 적는다.
   const warn = console.warn;
   console.warn = () => calls.push("warn");
+  const tier: JudgeTier = c.model ? "model" : c.offline ? "offline" : "none";
   const ctx: PlanContext = {
     data: loadData(lang),
     lang: lang as Language,
@@ -143,6 +150,7 @@ async function run(c: Case): Promise<{ want: string; calls: string[] }> {
     consented: Boolean(c.model),
     canUseModel: Boolean(c.model),
     retrieval: Boolean(c.model) && !c.noRetrieval,
+    judge: tier,
     notice: c.notice,
   };
   try {
@@ -248,10 +256,11 @@ const CASES: Case[] = [
   { name: "판정기 없이 챔피언 하나 + 게임 메타 낱말은 게임 메타", question: "킨드레드 하는 중인데 첫 바론 몇 분에 나와", want: "code text \"내셔 남작은 20분에 나오고, 잡히면 6분 \"", calls: [] },
   { name: "재질문의 안내는 그대로 실린다", question: "럼블 E", notice: "럼블로 알아들었어요", screen: ["Malphite"], want: "card spell Rumble E · 럼블로 알아들었어요", calls: [] },
   { name: "영어 상성(판정기)", question: "how do I play Yasuo into Malphite?", lang: "en_US", model: true, judge: { kind: "matchup", mine: "Malphite", topic: "laning" }, want: "matchup Yasuo>Malphite focus=general", calls: ["judge kind+mine"] },
+
 ];
 
 test("자료가 없으면 모델에게", async () => {
-  const noData = await planAnswer("가렌 Q", { data: null, lang: "ko_KR", copy: koKRTranslations.advisor, turns: [], championIds: [], consented: false, canUseModel: false, retrieval: false }, {
+  const noData = await planAnswer("가렌 Q", { data: null, lang: "ko_KR", copy: koKRTranslations.advisor, turns: [], championIds: [], consented: false, canUseModel: false, retrieval: false, judge: "none" }, {
     judge: () => Promise.reject(new Error("부르면 안 된다")),
     search: () => Promise.reject(new Error("부르면 안 된다")),
   });

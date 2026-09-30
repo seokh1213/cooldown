@@ -9,8 +9,9 @@
  *
  * 검색 벡터(`model.retrieval`)는 Node 에서 돌리지 못해 끈 채로 잰다 — 상성 대화 중 벡터가 새 질문을 빼내는 길은 빠진다.
  *
- * 판정기: app(앱 판정기 서버 + public 의 헤드) 또는 kev 서버.
+ * 판정기: app(앱 판정기 서버 + public 의 헤드) 또는 kev 서버. JUDGE=offline 이면 서버 없이 오프라인 판정기(모델 없는 기기의 판정기)로 잰다.
  *   npx tsx scripts/llm/kev-agent/eval-b3.ts --judges app,b3=http://127.0.0.1:8013
+ *   JUDGE=offline npx tsx scripts/llm/kev-agent/eval-b3.ts
  */
 import * as fs from "node:fs";
 import * as path from "node:path";
@@ -19,7 +20,7 @@ import type { AdvisorAnswer } from "../../../src/lib/advisor/answer";
 import { detectChampions } from "../../../src/lib/advisor/intent";
 import { actFromProbs, actQuestion, actState } from "../../../src/lib/advisor/conversation";
 import { ACT_HEAD, planAnswer, understand, type AnswerPlan, type PlanContext, type PlanDeps, type PlanTurn } from "../../../src/lib/advisor/plan";
-import { ROOT, appJudge, kevJudge, loadData, readJsonl, saveJudgeCache, type Judge, type Lang } from "./lib";
+import { JUDGE_TIER_LABELS, ROOT, appJudge, judgeTierOf, kevJudge, loadData, planFlags, readJsonl, saveJudgeCache, type Judge, type Lang } from "./lib";
 
 const arg = (name: string) => {
   const i = process.argv.indexOf(`--${name}`);
@@ -29,18 +30,9 @@ const arg = (name: string) => {
 interface Case { lang: Lang; question: string; kind3: string; mine?: string }
 interface ActCase { lang: Lang; mine: string; enemy: string; text: string; act: string; named: string | null }
 
-/** 모델을 받아 동의한 기기(판정기 있음), 또는 모델 없이 써보기 */
+/** 판정기 있는 기기(모델 판정기, JUDGE=offline 이면 오프라인 판정기) 또는 판정기 없이 낱말 규칙만(`planFlags`) */
 function contextOf(lang: Lang, model: boolean, turns: PlanTurn[] = []): PlanContext {
-  return {
-    data: loadData(lang),
-    lang,
-    copy: translations[lang].advisor,
-    turns,
-    championIds: [],
-    consented: model,
-    canUseModel: model,
-    retrieval: false,
-  };
+  return { data: loadData(lang), lang, copy: translations[lang].advisor, turns, championIds: [], ...planFlags(model) };
 }
 
 /** 방금 상성을 답한 대화 */
@@ -93,7 +85,8 @@ async function main() {
         : a.act === "enemy" ? `${a.mine}>${a.named}`
         : a.act === "mine" ? `${a.named}>${a.enemy}`
         : `${a.mine}>${a.enemy}`;
-      for (const [label, model] of [["흐름(앱, 판정기)", true], ["흐름(앱, 모델 없음)", false]] as const) {
+      for (const model of [true, false]) {
+        const label = `흐름(앱, ${JUDGE_TIER_LABELS[judgeTierOf(model)]})`;
         const have = pairOf(await planAnswer(a.text, contextOf(a.lang, model, matchupTurns(a.lang, a.mine, a.enemy)), deps));
         add(label, have === want);
         if (model) rows.push({ set: "flow", judge: name, ...a, have, want, ok: have === want });
@@ -105,7 +98,9 @@ async function main() {
     console.log(`== ${name}`);
     for (const [k, [ok, n]] of Object.entries(score)) console.log(`  ${k}\t${ok}/${n} (${((ok / n) * 10).toFixed(1)})`);
   }
-  fs.writeFileSync(arg("out") ?? path.join(ROOT, "research/llm-evals/kev-agent/b3-results.json"), JSON.stringify(rows, null, 1));
+  // 기본 결과 파일은 판정기 단계마다 다르다(오프라인 판정기로 잰 것이 모델 판정기 기록을 덮지 않게)
+  const suffix = judgeTierOf(true) === "offline" ? "-offline" : "";
+  fs.writeFileSync(arg("out") ?? path.join(ROOT, `research/llm-evals/kev-agent/b3-results${suffix}.json`), JSON.stringify(rows, null, 1));
 }
 
 void main().then(() => saveJudgeCache());

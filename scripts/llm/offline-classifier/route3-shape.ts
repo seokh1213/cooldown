@@ -31,7 +31,7 @@ async function main() {
   const cases = (JSON.parse(fs.readFileSync(path.join(ROOT, "research/llm-evals/kev-agent/route-large3.json"), "utf8")) as { cases: Case[] }).cases;
   const judge = offlineFileJudge();
   const deps: PlanDeps = { judge, search: () => Promise.reject(new Error("Node 에는 검색 벡터가 없다")) };
-  for (const [label, model] of [["오프라인 판정기", true], ["모델 없음(낱말 규칙)", false]] as const) {
+  for (const [label, judgeTier] of [["오프라인 판정기", "offline"], ["모델 없음(낱말 규칙)", "none"]] as const) {
     const score: Record<string, [number, number]> = {};
     const add = (key: string, ok: boolean) => {
       const c = (score[key] ??= [0, 0]);
@@ -39,7 +39,8 @@ async function main() {
       c[1] += 1;
     };
     for (const c of cases) {
-      const ctx: PlanContext = { data: loadData(c.lang), lang: c.lang, copy: translations[c.lang].advisor, turns: [], championIds: [], consented: model, canUseModel: model, retrieval: false };
+      // 모델 없는 기기 그대로(동의 전, 모델 없음). 판정기 단계만 다르다.
+      const ctx: PlanContext = { data: loadData(c.lang), lang: c.lang, copy: translations[c.lang].advisor, turns: [], championIds: [], consented: false, canUseModel: false, retrieval: false, judge: judgeTier };
       let plan = await planAnswer(c.question, ctx, deps);
       if (plan.type === "retry") plan = await planAnswer(plan.question, { ...ctx, notice: plan.notice }, deps);
       const got = shapeOf(plan);

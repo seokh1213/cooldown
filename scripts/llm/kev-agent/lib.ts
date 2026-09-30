@@ -13,6 +13,7 @@ import { encodeJudgeRow, JUDGE_SPECIAL, readJudgeHead, scoreJudge, type JudgeHea
 import { AutoTokenizer, type PreTrainedTokenizer } from "@huggingface/transformers";
 import { ADVISOR_MODEL } from "../../../src/lib/advisor/config";
 import { offlineJudge } from "../../../src/lib/advisor/offlineJudge";
+import type { JudgeTier, PlanContext } from "../../../src/lib/advisor/plan";
 
 export const ROOT = path.resolve(import.meta.dirname, "../../..");
 export const PATCH = "26.19";
@@ -154,6 +155,23 @@ const judgeOverride =
   : process.env.JUDGE_URL ? kevJudge(process.env.JUDGE_URL)
   : process.env.HIDDEN_JUDGE ? hiddenJudge(process.env.HIDDEN_JUDGE)
   : undefined;
+
+/**
+ * 측정 설정의 판정기 단계와 그에 맞는 `PlanContext` 칸.
+ *
+ * `model` 이 false 면(`--no-model`, "모델 없음" 행) 판정기 없이 낱말 규칙만 — 기준선이다. true 면 `JUDGE=offline` 일 때 모델 없는
+ * 기기의 오프라인 판정기(동의 전·모델 없음 그대로: `consented`·`canUseModel` false), 그 밖은 모델을 받아 동의한 기기의 모델 판정기.
+ * 검색 벡터는 Node 에서 돌리지 못해 늘 끈다.
+ */
+export function judgeTierOf(model: boolean): JudgeTier {
+  return !model ? "none" : process.env.JUDGE === "offline" ? "offline" : "model";
+}
+export function planFlags(model: boolean): Pick<PlanContext, "judge" | "consented" | "canUseModel" | "retrieval"> {
+  const judge = judgeTierOf(model);
+  return { judge, consented: judge === "model", canUseModel: judge === "model", retrieval: false };
+}
+/** 결과 표·파일 이름에 적는 판정기 단계 이름 */
+export const JUDGE_TIER_LABELS: Record<JudgeTier, string> = { model: "판정기", offline: "오프라인 판정기", none: "모델 없음" };
 /** JUDGE_HEAD 를 주면 앱이 부르는 헤드 이름을 그것으로 바꿔 잰다(새 헤드 실험용, research/llm-evals/kev-agent/heads 에서 찾는다). */
 // 실험용: 흐름 판정 lookup 의 확신 문턱(`plan.ts` continueMatchup)을 환경 변수로 바꿔 잰다
 if (process.env.ACT_LOOKUP_MIN) (globalThis as { ACT_LOOKUP_MIN?: number }).ACT_LOOKUP_MIN = Number(process.env.ACT_LOOKUP_MIN);

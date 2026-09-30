@@ -13,7 +13,9 @@ import { matchupNotes } from "@/lib/advisor/playbookNotes";
 import { suggestChampions } from "@/lib/advisor/championTypo";
 import { nicknames } from "@/lib/advisor/intent";
 import { loadPrecomputed, precomputedDigest, precomputedMore } from "@/lib/advisor/precomputed";
-import { planAnswer, type AnswerPlan } from "@/lib/advisor/plan";
+import { planAnswer, type AnswerPlan, type JudgeTier, type PlanDeps } from "@/lib/advisor/plan";
+import { offlineJudge } from "@/lib/advisor/offlineJudge";
+import { fetchJudgeFile } from "@/lib/advisor/storage";
 import { docAnswer } from "@/lib/advisor/questionDocs";
 import { josa } from "@/lib/knowledge/text";
 import type { ChampionCard } from "@/lib/knowledge/facts";
@@ -25,6 +27,26 @@ interface AskAdvisorOptions {
   championIds: string[];
   canUseModel: boolean;
 }
+
+/**
+ * 오프라인 판정기(`public/models/offline/judge.{json,bin}`, 0.8MB) — 모델을 받지 않았거나 동의 전인 기기, 그리고 모델 판정이
+ * 거절된 때의 판정기. 정적 파일이고 기기 밖으로 나가는 것이 없어 동의를 묻지 않는다. 처음 판정할 때 한 번 받아 들고 있고,
+ * 판정 헤드와 같은 캐시(`fetchJudgeFile`)에 두어 한 번 받은 기기는 네트워크 없이도 돈다. 못 받으면 거절하고 낱말 규칙이 받는다.
+ */
+const offline = offlineJudge(async (file) => {
+  const response = await fetchJudgeFile(`${import.meta.env.BASE_URL}${file}`);
+  if (!response.ok) throw new Error(`오프라인 판정기 ${file} 를 받지 못했습니다`);
+  return response.arrayBuffer();
+});
+
+/** 모델 판정기가 거절하면(헤드를 못 받음·다른 모델용·워커 오류) 오프라인 판정기로. 그마저 거절하면 부르는 단계가 낱말 규칙으로 간다. */
+const modelThenOffline =
+  (model: PlanDeps["judge"]): PlanDeps["judge"] =>
+  (headName, state, questions) =>
+    model(headName, state, questions).catch((error: unknown) => {
+      console.warn("[advisor] 모델 판정기 거절 — 오프라인 판정기로", error);
+      return offline(headName, state, questions);
+    });
 
 export function useAskAdvisor({ advisor, data, championIds, canUseModel }: AskAdvisorOptions) {
   const { t, lang } = useTranslation();
@@ -51,6 +73,8 @@ export function useAskAdvisor({ advisor, data, championIds, canUseModel }: AskAd
   const ask = async (question: string, notice?: string) => {
     // 질문을 받자마자 자리를 띄운다. 답이 정해지면 그 자리가 채워진다(`begin`).
     advisor.begin(question, copy.status.generating);
+    // 모델을 받아 동의한 기기는 모델 판정기(거절하면 오프라인), 그 밖은 오프라인 판정기. 판정기가 아예 없는 길은 앱에 없다.
+    const judge: JudgeTier = canUseModel && advisor.consented ? "model" : "offline";
     try {
       const plan = await planAnswer(
         question,
@@ -63,9 +87,10 @@ export function useAskAdvisor({ advisor, data, championIds, canUseModel }: AskAd
           consented: advisor.consented,
           canUseModel,
           retrieval: Boolean(advisor.model.retrieval),
+          judge,
           notice,
         },
-        { judge: advisor.judge, search: advisor.search },
+        { judge: judge === "model" ? modelThenOffline(advisor.judge) : offline, search: advisor.search },
       );
       await execute(question, plan);
     } finally {

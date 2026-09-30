@@ -6,7 +6,8 @@
  * 검색 벡터는 Node 에서 돌리지 못해 끈 채로 잰다.
  *
  *   HIDDEN_JUDGE=http://127.0.0.1:8014 npx tsx scripts/llm/kev-agent/eval-a.ts   (판정기: hidden_judge_serve.py)
- *   npx tsx scripts/llm/kev-agent/eval-a.ts --no-model                              (모델 없이 써보기)
+ *   JUDGE=offline npx tsx scripts/llm/kev-agent/eval-a.ts                          (모델 없는 기기: 오프라인 판정기, 서버 없이)
+ *   npx tsx scripts/llm/kev-agent/eval-a.ts --no-model                              (판정기 없이 낱말 규칙만 — 기준선)
  */
 import * as fs from "node:fs";
 import * as path from "node:path";
@@ -15,7 +16,7 @@ import type { AdvisorAnswer } from "../../../src/lib/advisor/answer";
 import { buildCompareAnswer } from "../../../src/lib/advisor/answer";
 import { matchupNotes } from "../../../src/lib/advisor/playbookNotes";
 import { planAnswer, type AnswerPlan, type PlanContext, type PlanDeps, type PlanTurn } from "../../../src/lib/advisor/plan";
-import { ROOT, appJudge, loadData, readJsonl, saveJudgeCache, type Lang } from "./lib";
+import { JUDGE_TIER_LABELS, ROOT, appJudge, judgeTierOf, loadData, planFlags, readJsonl, saveJudgeCache, type Lang } from "./lib";
 
 interface Gold { kind: string; champions: string[]; mine?: string; enemy?: string; topic?: string }
 interface Turn { type: "T1" | "F" | "R" | "P"; text: string; gold: Gold }
@@ -23,6 +24,8 @@ interface Dialog { id: string; lang: Lang; turns: Turn[] }
 interface Resolved { kind: string; champs: string[]; mine?: string; enemy?: string; topic?: string }
 
 const model = !process.argv.includes("--no-model");
+/** 판정기 단계: 모델 판정기 / 오프라인 판정기(JUDGE=offline) / 없음(--no-model) */
+const tier = judgeTierOf(model);
 const deps: PlanDeps = { judge: appJudge, search: () => Promise.reject(new Error("Node 에는 검색 벡터가 없다")) };
 
 /** 앱이 대화에 남기는 답. 상성은 `useAskAdvisor` matchupAnswer 의 카드 부분(미리 쓴 답은 뺀다 — 다음 턴 판단에 쓰지 않는다). */
@@ -69,7 +72,7 @@ async function main() {
   for (const d of dialogs) {
     const turns: PlanTurn[] = [];
     for (const [i, t] of d.turns.entries()) {
-      const ctx: PlanContext = { data: loadData(d.lang), lang: d.lang, copy: translations[d.lang].advisor, turns, championIds: [], consented: model, canUseModel: model, retrieval: false };
+      const ctx: PlanContext = { data: loadData(d.lang), lang: d.lang, copy: translations[d.lang].advisor, turns, championIds: [], ...planFlags(model) };
       const { plan, question } = await ask(t.text, ctx);
       const got = resolved(plan);
       const ok = grade(t.gold, got);
@@ -80,11 +83,12 @@ async function main() {
     process.stderr.write(".");
   }
   saveJudgeCache();
-  // --out 결과.json 을 주면 거기에 쓴다(다른 판정기로 잴 때 기준 결과를 덮지 않게)
+  // --out 결과.json 을 주면 거기에 쓴다(다른 판정기로 잴 때 기준 결과를 덮지 않게). 기본 이름은 판정기 단계마다 다르다.
   const outArg = process.argv.indexOf("--out");
-  const out = outArg >= 0 ? path.resolve(process.argv[outArg + 1]) : path.join(ROOT, `research/llm-evals/kev-agent/a-results-app${model ? "" : "-nomodel"}.json`);
+  const suffix = tier === "model" ? "" : tier === "offline" ? "-offline" : "-nomodel";
+  const out = outArg >= 0 ? path.resolve(process.argv[outArg + 1]) : path.join(ROOT, `research/llm-evals/kev-agent/a-results-app${suffix}.json`);
   fs.writeFileSync(out, JSON.stringify(rows, null, 1));
-  console.log(`\n${model ? "판정기" : "모델 없음"} → ${path.relative(ROOT, out)}`);
+  console.log(`\n${JUDGE_TIER_LABELS[tier]} → ${path.relative(ROOT, out)}`);
   for (const [k, [ok, n]] of Object.entries(table).sort()) console.log(`  ${k}\t${ok}/${n} (${((ok / n) * 10).toFixed(1)})`);
 }
 

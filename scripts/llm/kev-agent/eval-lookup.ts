@@ -7,6 +7,7 @@
  *   flow    앱(`planAnswer`)이 앞 상성을 대화에 두고 실제로 어떻게 답하는가 — 판정기 있을 때 / 모델 없을 때
  *
  *   HIDDEN_JUDGE=http://127.0.0.1:8014 npx tsx scripts/llm/kev-agent/eval-lookup.ts [--out 결과.json] [--head 헤드이름]
+ *   JUDGE=offline npx tsx scripts/llm/kev-agent/eval-lookup.ts    (서버 없이 오프라인 판정기 — 모델 없는 기기의 판정기)
  */
 import * as fs from "node:fs";
 import * as path from "node:path";
@@ -16,7 +17,7 @@ import { detectChampions } from "../../../src/lib/advisor/intent";
 import { ACT_LABELS, actQuestion, actState } from "../../../src/lib/advisor/conversation";
 import { JUDGE_KIND_INSTRUCTIONS, JUDGE_KIND9_CRITERIA, judgeRouteState } from "../../../src/lib/advisor/routeAsk";
 import { KEV_HEAD, planAnswer, type AnswerPlan, type PlanContext, type PlanDeps, type PlanTurn } from "../../../src/lib/advisor/plan";
-import { ROOT, appJudge, loadData, readJsonl, saveJudgeCache, type Lang } from "./lib";
+import { JUDGE_TIER_LABELS, ROOT, appJudge, judgeTierOf, loadData, planFlags, readJsonl, saveJudgeCache, type Lang } from "./lib";
 
 const arg = (name: string) => {
   const i = process.argv.indexOf(`--${name}`);
@@ -27,9 +28,12 @@ interface Case { lang: Lang; mine: string; enemy: string; text: string; act: "lo
 
 const HEAD = arg("head") ?? KEV_HEAD;
 
+/** 판정기 있는 기기(모델 판정기, JUDGE=offline 이면 오프라인 판정기) 또는 판정기 없이 낱말 규칙만(`planFlags`) */
 function contextOf(lang: Lang, model: boolean, turns: PlanTurn[]): PlanContext {
-  return { data: loadData(lang), lang, copy: translations[lang].advisor, turns, championIds: [], consented: model, canUseModel: model, retrieval: false };
+  return { data: loadData(lang), lang, copy: translations[lang].advisor, turns, championIds: [], ...planFlags(model) };
 }
+const WITH_JUDGE = `흐름(앱, ${JUDGE_TIER_LABELS[judgeTierOf(true)]})`;
+const WITHOUT_JUDGE = `흐름(앱, ${JUDGE_TIER_LABELS.none})`;
 
 function matchupTurns(lang: Lang, mine: string, enemy: string): PlanTurn[] {
   const data = loadData(lang);
@@ -102,10 +106,10 @@ async function main() {
     add("act7(제로샷 lookup 칸): 세 라벨 그대로", act7 === c.act);
     add(`act7:${c.act}`, act7 === c.act);
     add(`act7:${c.lang}`, act7 === c.act);
-    add("흐름(앱, 판정기)", matches(c.want, flowJudge));
-    add(`흐름(앱, 판정기):${c.act}`, matches(c.want, flowJudge));
-    add("흐름(앱, 모델 없음)", matches(c.want, flowNone));
-    add(`흐름(앱, 모델 없음):${c.act}`, matches(c.want, flowNone));
+    add(WITH_JUDGE, matches(c.want, flowJudge));
+    add(`${WITH_JUDGE}:${c.act}`, matches(c.want, flowJudge));
+    add(WITHOUT_JUDGE, matches(c.want, flowNone));
+    add(`${WITHOUT_JUDGE}:${c.act}`, matches(c.want, flowNone));
     rows.push({ ...c, kind, kindP: kindP.map((p) => +p.toFixed(2)), act6, act7, act7P: act7P.map((p) => +p.toFixed(2)), flowJudge, flowNone });
   }
   for (const [k, [ok, n]] of Object.entries(score)) console.log(`  ${k}\t${ok}/${n} (${((ok / n) * 10).toFixed(1)})`);
@@ -114,7 +118,8 @@ async function main() {
     const flag = matches(r.want as string, r.flowJudge as string) ? " " : "✗";
     console.log(`${flag} [${r.lang}] ${r.act}\t${r.text}\t${r.kind}\t${r.act6}\t${r.act7}\t${r.flowJudge}\t${r.flowNone}`);
   }
-  fs.writeFileSync(arg("out") ?? path.join(ROOT, "research/llm-evals/kev-agent/lookup-results.json"), JSON.stringify(rows, null, 1));
+  const suffix = judgeTierOf(true) === "offline" ? "-offline" : "";
+  fs.writeFileSync(arg("out") ?? path.join(ROOT, `research/llm-evals/kev-agent/lookup-results${suffix}.json`), JSON.stringify(rows, null, 1));
 }
 
 void main().then(() => saveJudgeCache());

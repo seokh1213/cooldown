@@ -7,6 +7,9 @@
  * 질문이 **무엇을 묻는지**(갈래, `Intent.ask`)는 `understand` 가 한 번만 정한다 — 판정기가 있으면 판정기, 없으면 낱말(`askFromWords`).
  * 단계는 그 갈래를 읽을 뿐 갈래를 따로 가르지 않는다. 단계에 남은 정규식은 갈래가 아닌 것(누가 내 챔피언인가, 어느 수치인가,
  * 앞 상성을 떠나는가, 둘을 견주는가)을 가른다.
+ *
+ * 판정기는 세 단계다(`PlanContext.judge`). 모델 판정기(0.8B 속내 + 헤드) → 오프라인 판정기(글자 n-gram, `offlineJudge.ts`) → 낱말 규칙.
+ * 어느 판정기를 `deps.judge` 에 끼웠는지는 부르는 쪽이 정하고 여기서는 "판정기가 있는가" 만 본다. 판정이 거절되면 낱말 규칙이 받는다.
  */
 import type { Language } from "@/i18n";
 import type { Translations } from "@/i18n/translations";
@@ -60,7 +63,7 @@ import type { ChampionCard } from "@/lib/knowledge/facts";
  *
  * 처음엔 kev-b3e 하나가 갈래(아홉 칸)·주제·대화 흐름을 다 골랐다. 대화 흐름에 lookup 칸을 더하며 그 한 헤드를 다시 배우게 했더니
  * 손대지 않은 주제 판정이 흔들렸다 — 대화 270턴 A 가 240 → 234. 판정마다 헤드를 따로 두니 237(흐름은 새 문구로, 갈래·주제는 제
- * 자료 그대로). 헤드 파일이 없으면 `judge` 가 거절하고 각 단계가 낱말 길로 간다(`useAdvisor.loadJudgeHead`).
+ * 자료 그대로). 헤드 파일이 없으면 `judge` 가 거절하고 오프라인 판정기(`useAskAdvisor`)가 받는다. 오프라인 판정기는 헤드 이름을 보지 않는다.
  */
 /** 갈래(아홉 칸)와 내 챔피언(`judgeRoute`) */
 export const ROUTE_HEAD = "kev-b3e-route";
@@ -106,6 +109,16 @@ export interface PlanTurn {
   answer?: AdvisorAnswer;
 }
 
+/**
+ * `deps.judge` 에 끼운 판정기.
+ *
+ * - `model`: 모델(0.8B)의 속내에 판정 헤드를 얹는다. 모델을 받아 동의한 기기.
+ * - `offline`: 글자 n-gram 분류기(`offlineJudge.ts`, 정적 파일 0.8MB). 모델이 없거나 동의 전이거나 모델 판정이 거절된 기기.
+ *   동의가 필요 없다 — 기기 밖으로 나가는 것이 없다. 대화 270턴에서 낱말 규칙 114, 오프라인 221, 모델 240.
+ * - `none`: 판정기 없음. 낱말 규칙만으로 답한다(측정의 기준선, 오프라인 파일도 못 받은 기기).
+ */
+export type JudgeTier = "model" | "offline" | "none";
+
 /** 질문을 받은 그 순간의 화면·대화 */
 export interface PlanContext {
   /** 챔피언·규칙 자료. 아직 없으면 모델만으로 답한다. */
@@ -115,15 +128,19 @@ export interface PlanContext {
   turns: readonly PlanTurn[];
   /** 지금 화면에 떠 있는 챔피언 */
   championIds: readonly string[];
+  /** 모델 내려받기에 동의했는가. 모델이 글을 쓰는 길(`respond`)과 낱말 검색 답의 갈림이다 — 판정기와는 무관하다. */
   consented: boolean;
   canUseModel: boolean;
   /** 지금 모델에 검색 벡터 가지가 있는가(`model.retrieval`) */
   retrieval: boolean;
+  /** `deps.judge` 가 어느 판정기인가. `none` 이면 판정기를 부르지 않는다. */
+  judge: JudgeTier;
   /** 말풍선에 붙일 안내. 오타를 고쳐 다시 물을 때 온다. */
   notice?: string;
 }
 
 export interface PlanDeps {
+  /** 판정기(`ctx.judge` 단계의 것). 거절하면(모델 없음·파일 못 받음) 부르는 단계가 낱말 규칙으로 간다. */
   judge: (headName: string, state: string, questions: JudgeQuestion[]) => Promise<number[][]>;
   search: (question: string, lang: string) => Promise<Array<{ id: string; score: number }>>;
 }
@@ -197,7 +214,8 @@ export async function planAnswer(question: string, ctx: PlanContext, deps: PlanD
 /** 질문에 적힌 이름, 갈래(판정기 또는 낱말)·주제, 대화가 남긴 맥락을 모은다. 판정기는 여기서 한 번(이름이 있으면 두 번) 부른다. */
 export async function understand(question: string, ctx: PlanContext, data: AdvisorData, deps: PlanDeps): Promise<Intent> {
   const champions = detectChampions(data, question);
-  const judging = ctx.canUseModel && ctx.consented;
+  // 판정기가 어느 단계든(모델·오프라인) 있으면 부른다. 없으면(`none`) 낱말 규칙뿐이다.
+  const judging = ctx.judge !== "none";
   const route = judging ? await judgeRoute(question, data, champions, deps) : undefined;
   const lastItem = recentItem(ctx.turns);
   // 낱말 규칙에는 자료 이름(룬·주문 규칙, 아이템, 게임 메타)이 걸렸는지만 넘긴다. 낱말 목록은 `askWords.ts` 에 있다.
@@ -232,8 +250,9 @@ export async function understand(question: string, ctx: PlanContext, data: Advis
  * 영어 1/6, 중국어 1/6 이었다 — 영어·중국어 사용자에게는 거의 아무것도 못 가린다.
  * 같은 문항을 모델에 물으니 4B 가 17/18 이다.
  *
- * 실패하거나 모델이 없으면 `undefined` 로 두고 낱말 규칙(`askFromWords`)이 갈래를 낸다. 낱말 목록을
- * 지우지 않는 까닭이 이것이다 — 모델을 안 받은 사용자에게도 답은 나와야 한다.
+ * 실패하거나 판정기가 없으면 `undefined` 로 두고 낱말 규칙(`askFromWords`)이 갈래를 낸다. 낱말 목록을
+ * 지우지 않는 까닭이 이것이다 — 모델을 안 받은 사용자는 오프라인 판정기(`JudgeTier` offline)가 받지만, 그 파일마저
+ * 못 받은 기기에도 답은 나와야 한다.
  */
 async function judgeRoute(question: string, data: AdvisorData, named: ChampionCard[], deps: PlanDeps): Promise<AskRoute | undefined> {
   const names = named.map((card) => card.name);
@@ -420,11 +439,11 @@ async function continueMatchup(intent: Intent, deps: PlanDeps): Promise<AnswerPl
     const left = await leaveMatchup(intent, deps);
     if (left) return left;
   }
-  // 문형이 분명하면("입장에서는?", "왜?", "항복 몇 분부터") 판정기보다 먼저다. 모델이 없는 기기의 길이기도 하다.
+  // 문형이 분명하면("입장에서는?", "왜?", "항복 몇 분부터") 판정기보다 먼저다. 판정기가 아예 없는 기기의 길이기도 하다.
   const worded = actFromWords(question);
   const act =
     worded ??
-    (!named && ctx.canUseModel && ctx.consented
+    (!named && ctx.judge !== "none"
       ? await deps
           .judge(ACT_HEAD, actState(state.mine.name, state.enemy.name, question, champions[0]?.name), [actQuestion(state.mine.name, state.enemy.name)])
           .then(([probs]) => {
@@ -502,7 +521,7 @@ function previousFocus(turns: readonly PlanTurn[]): string | undefined {
 async function matchupTopic(question: string, data: AdvisorData, ctx: PlanContext, pair: ChampionCard[], deps: PlanDeps): Promise<string | undefined> {
   const names = pair.map((card) => card.name);
   const worded = topicFromWords(question, [...names, ...pair.flatMap((card) => data.aliases.get(card.id) ?? [])]);
-  if (worded || !ctx.consented) return worded;
+  if (worded || ctx.judge === "none") return worded;
   return deps
     .judge(TOPIC_HEAD, judgeRouteState(question, names), topicQuestions(2))
     .then(([probs]) => topicFromJudge(probs).topic)
