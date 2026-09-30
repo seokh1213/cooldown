@@ -63,7 +63,8 @@ test("확률이 파이썬과 같다(fp16 가중치)", () => {
   const questions = {
     kind: { instructions: JUDGE_KIND_INSTRUCTIONS, options: Object.keys(JUDGE_KIND9_CRITERIA).map((name) => ({ name })) },
     topic: { instructions: TOPIC_INSTRUCTIONS, options: TOPIC_LABELS.map((name) => ({ name })) },
-    act: { ...actQuestion("M", "E"), options: [...actQuestion("M", "E").options, { name: "lookup" }] },
+    // 앱의 흐름 질문은 일곱 칸(lookup 포함)이다 — 분류기가 배운 라벨과 같다
+    act: actQuestion("M", "E"),
   };
   for (const c of fixture.cases) {
     for (const [task, want] of Object.entries(c.probs)) {
@@ -77,7 +78,9 @@ test("확률이 파이썬과 같다(fp16 가중치)", () => {
 
 test("선택지는 이름으로 맞추고, 모르는 지시문은 고른 확률", () => {
   const state = "Earlier in this chat the user asked how to play Garen against Darius.\nNew message: why?";
-  const [six, seven] = answerOffline(model, state, [actQuestion("Garen", "Darius"), { instructions: ACT_INSTRUCTIONS, options: [...actQuestion("Garen", "Darius").options, { name: "lookup" }] }]);
+  // 앱의 흐름 질문은 일곱 칸(lookup 이 마지막). 여섯 칸은 lookup 을 뺀 옛 꼴
+  const seven7 = actQuestion("Garen", "Darius");
+  const [six, seven] = answerOffline(model, state, [{ ...seven7, options: seven7.options.filter((option) => option.name !== "lookup") }, seven7]);
   assert.equal(six.length, 6);
   assert.equal(seven.length, 7);
   // 여섯 칸은 일곱 칸에서 lookup 을 뺀 뒤 다시 1 로 맞춘 것
