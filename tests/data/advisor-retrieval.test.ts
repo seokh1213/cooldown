@@ -163,6 +163,13 @@ test("슬롯 판정", () => {
   assert.equal(detectSlot("가렌 궁 뭐야?"), "R", "한글에는 \\b 가 듣지 않는다");
   assert.equal(detectSlot("제드 패시브 알려줘"), "P");
   assert.equal(detectSlot("아리 어때?"), undefined, "슬롯이 없으면 모델 경로로 간다");
+  // 영어·중국어 궁. 상성 대화 중 "give me the ult cooldowns for both" 가 슬롯 없는 네 스킬 표로 나갔다.
+  assert.equal(detectSlot("give me the ult cooldowns for both"), "R");
+  assert.equal(detectSlot("what does Garen's Ulti do"), "R", "대소문자를 가리지 않는다");
+  assert.equal(detectSlot("Zed ultimate damage"), "R");
+  assert.equal(detectSlot("两人大招CD各是多少"), "R");
+  assert.equal(detectSlot("what's the result of the matchup"), undefined, "낱말 속 ult 는 궁이 아니다");
+  assert.equal(detectSlot("is ultra fast combo possible"), undefined, "ultra 는 궁이 아니다");
 });
 
 test("럼블 E 수치", () => {

@@ -13,6 +13,7 @@ import assert from "node:assert/strict";
 import { test } from "node:test";
 import { koKRTranslations } from "../../src/i18n/koKRTranslations";
 import { enUSTranslations } from "../../src/i18n/enUSTranslations";
+import { zhCNTranslations } from "../../src/i18n/zhCNTranslations";
 import type { Language } from "../../src/i18n";
 import type { AdvisorAnswer } from "../../src/lib/advisor/answer";
 import { planAnswer, type AnswerPlan, type PlanContext, type PlanTurn } from "../../src/lib/advisor/plan";
@@ -49,7 +50,7 @@ interface Case {
   calls: string[];
 }
 
-const copyOf = (lang: Lang) => (lang === "en_US" ? enUSTranslations : koKRTranslations).advisor;
+const copyOf = (lang: Lang) => (lang === "en_US" ? enUSTranslations : lang === "zh_CN" ? zhCNTranslations : koKRTranslations).advisor;
 
 const card = (lang: Lang, id: string) => {
   const found = loadData(lang).cardById.get(id);
@@ -173,6 +174,8 @@ const CASES: Case[] = [
   { name: "상성 대화 중 W 쿨타임은 두 W", question: "W 쿨타임 알려줘", turns: matchupTurns("MonkeyKing", "Rumble"), want: "card compare MonkeyKing,Rumble slot=W · 앞서 말한 오공·럼블 기준입니다.", calls: [] },
   { name: "상성 대화 중 쿨 빠진 때는 상성 이어 묻기", question: "궁 쿨 빠지면 들어가도 돼?", turns: matchupTurns("MonkeyKing", "Rumble"), want: "matchup MonkeyKing>Rumble · 앞서 말한 오공 vs 럼블 기준입니다.", calls: [] },
   { name: "상성 대화 중 아이템 이름은 새 질문", question: "쇼진의 창 효과", turns: matchupTurns("Garen", "Darius"), want: "code item 3161 verdicts=0", calls: [] },
+  { name: "상성 대화 중 영어 ult 쿨타임은 두 R", question: "give me the ult cooldowns for both", lang: "en_US", turns: matchupTurns("Garen", "Darius", undefined, "en_US"), want: "card compare Garen,Darius slot=R · Using Garen·Darius from earlier in this chat.", calls: [] },
+  { name: "상성 대화 중 중국어 大招 CD 는 두 R", question: "两人大招CD各是多少", lang: "zh_CN", turns: matchupTurns("Garen", "Darius", undefined, "zh_CN"), want: "card compare Garen,Darius slot=R · 以刚才提到的 德玛西亚之力·诺克萨斯之手 为准。", calls: [] },
   { name: "상대법 + 앞 대화의 다른 챔피언은 상성이 아니라 공략", question: "말파이트 상대법", turns: championTurns("Garen"), want: "card champion Malphite notes=against 1/4 \"말파이트에게 방어력은 \"", calls: [] },
   { name: "앞 대화 챔피언 + 새 이름 상성", question: "제이스랑 상대한다 생각하면", turns: championTurns("Malphite"), want: "matchup Malphite>Jayce", calls: [] },
   { name: "이름 셋 상성은 자리 낱말 붙은 이름을 뺀다", question: "오공으로 럼블 상대할 때 아이번 정글이면 아이템 뭐 가?", want: "matchup MonkeyKing>Rumble · 오공 vs 럼블 상성으로 답합니다 (곁들인 이름: 아이번).", calls: [] },
