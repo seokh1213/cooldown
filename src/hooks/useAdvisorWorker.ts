@@ -105,10 +105,22 @@ export function useAdvisorWorker({ onChunk, onDone, setError }: WorkerListeners)
     ensureWorker().postMessage(request);
   }, [ensureWorker]);
 
+  /*
+   * 워커가 답을 안 주면(그래프·WebGPU 오류가 삼켜진 경우) 판정·검색 약속이 영영 안 풀려 도우미가 "생각하는 중" 에 멈춘다.
+   * 일정 시간이 지나면 거절해 낱말 규칙 길로 보낸다. 판정 1회는 1~5초라 넉넉히 잡는다.
+   */
+  const REQUEST_TIMEOUT_MS = 30_000;
   const requestJudge = useCallback(
     (request: Extract<AdvisorRequest, { type: "judge" }>) =>
       new Promise<Float32Array[]>((resolve, reject) => {
-        judgeWaiters.current.set(request.id, { resolve, reject });
+        const timer = window.setTimeout(() => {
+          judgeWaiters.current.delete(request.id);
+          reject(new Error("judge timeout"));
+        }, REQUEST_TIMEOUT_MS);
+        judgeWaiters.current.set(request.id, {
+          resolve: (value) => { window.clearTimeout(timer); resolve(value); },
+          reject: (error) => { window.clearTimeout(timer); reject(error); },
+        });
         post(request);
       }),
     [post],
@@ -117,7 +129,14 @@ export function useAdvisorWorker({ onChunk, onDone, setError }: WorkerListeners)
   const requestEmbed = useCallback(
     (request: Extract<AdvisorRequest, { type: "embed" }>) =>
       new Promise<Float32Array>((resolve, reject) => {
-        embedWaiters.current.set(request.id, { resolve, reject });
+        const timer = window.setTimeout(() => {
+          embedWaiters.current.delete(request.id);
+          reject(new Error("embed timeout"));
+        }, REQUEST_TIMEOUT_MS);
+        embedWaiters.current.set(request.id, {
+          resolve: (value) => { window.clearTimeout(timer); resolve(value); },
+          reject: (error) => { window.clearTimeout(timer); reject(error); },
+        });
         post(request);
       }),
     [post],

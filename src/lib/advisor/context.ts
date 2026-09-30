@@ -14,6 +14,7 @@
  *
  * 합쳐 7MB 남짓이다. 모델(570MB)에 비하면 작고, 한 번 받으면 캐시에 남는다.
  */
+import { revisionedDataPath } from "@/pwa/release";
 import type { ChampionCard } from "@/lib/knowledge/facts";
 import { aliasAt } from "@/lib/knowledge/searchAliases";
 import { askedRuleKinds } from "@/lib/knowledge/rules";
@@ -106,8 +107,13 @@ export interface AdvisorData {
   wikiItems: Map<string, WikiItemMeta>;
 }
 
+/**
+ * 도우미 자료 URL. 정적 자료와 같은 판(release) 경로를 쓴다 — 서비스 워커가 `data/` 아래를 CacheFirst(60일)로 잡아 두어,
+ * 같은 URL 로 다시 만든 `advisor-knowledge.json` 이 배포 뒤에도 옛것으로 남았다(2026-09-30, 규칙 문서 절을 빼고도 그 절이 답으로 나감).
+ * 판 경로는 내용 해시가 들어 있어 자료가 바뀌면 URL 이 바뀐다.
+ */
 export function dataUrl(patch: string, relative: string): string {
-  return `${import.meta.env.BASE_URL}data/${patch}/${relative}`;
+  return `${import.meta.env.BASE_URL}${revisionedDataPath(`data/${patch}/${relative}`)}`;
 }
 
 async function getJson<T>(url: string): Promise<T> {

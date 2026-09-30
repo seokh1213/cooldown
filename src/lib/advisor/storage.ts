@@ -10,6 +10,7 @@
  * 판올림 때 바뀔 수 있으므로 **이름을 박아 두지 않고** 접두사로 찾는다. Cache Storage 가 받지 못한 큰 파일은
  * OPFS 에 있다(`largeFileCache.ts`) — 재고 지울 때 함께 본다.
  */
+import { APP_VERSION } from "@/pwa/release";
 import { deleteLargeFile, deleteLargeFiles, listLargeFiles } from "./largeFileCache";
 
 /** Transformers.js 가 쓰는 캐시 이름의 앞부분. `transformers-cache` 와 해시 캐시가 걸린다. */
@@ -165,6 +166,8 @@ const JUDGE_CACHE = `${CACHE_PREFIX}-judge`;
  * 워커의 선캐시에는 넣지 않았다(4MB 를 모델을 안 쓰는 사람에게까지 받게 할 이유가 없다).
  */
 export async function fetchJudgeFile(url: string): Promise<Response> {
+  // 같은 이름으로 다시 만든 헤드·분류기 파일이 캐시에 남지 않게 앱 판(APP_VERSION)을 URL 에 붙인다. 판이 바뀌면 다시 받는다(헤드 2MB × 3 + 분류기 0.8MB).
+  url = url.includes("?") ? url : `${url}?v=${APP_VERSION}`;
   const store = cacheStorage();
   const cache = store ? await store.open(JUDGE_CACHE).catch(() => undefined) : undefined;
   const hit = await cache?.match(url).catch(() => undefined);
