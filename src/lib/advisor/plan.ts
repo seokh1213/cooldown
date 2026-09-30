@@ -323,7 +323,7 @@ async function answerByVector({ question, ctx, data, ask, recentItem, matchup, r
    * 갈래가 스킬 소개·스킬 수치여도 같다: 이름 없이 스킬을 묻는데 챔피언이 눈앞에 있으면 그 챔피언이 답이다(`answerChampion` 이 붙인다).
    * 잘못 가른 룬·게임 메타 질문은 아래 낱말 길(룬·주문 → 게임 메타 → 아이템·원리)이 그대로 받는다.
    */
-  if ((refersToContextChampions(question) || ask === "spellStat" || ask === "skills" || (ask === "item" && !buildItemCard(data, question, recentItem))) && (recent.length > 0 || ctx.championIds.length > 0)) return undefined;
+  if ((refersToContextChampions(question) || ask === "spellStat" || ask === "skills" || ask === "guide" || Boolean(topicFromWords(question)) || (ask === "item" && !buildItemCard(data, question, recentItem))) && (recent.length > 0 || ctx.championIds.length > 0)) return undefined;
   if (!(ctx.canUseModel && ctx.consented && ctx.retrieval && searchesByVector(data, question, recentItem, Boolean(matchup)))) return undefined;
   const top = await deps.search(question, ctx.lang).catch((error: unknown) => {
     console.warn("[advisor] 검색 벡터 실패 — 낱말 검색으로", error);
@@ -616,7 +616,9 @@ async function answerChampion(intent: Intent): Promise<AnswerPlan | undefined> {
   const { question, ctx, champions, slot, ask } = intent;
   // 아이템 갈래인데 아이템 이름이 없으면("그럼 템은?") 대화·화면 챔피언의 아이템 노트를 묻는 것이다
   const itemWithoutName = ask === "item" && !buildItemCard(intent.data, question, intent.recentItem);
-  const about = champions.length === 0 && (looksChampionDirected(question, slot, ask) || itemWithoutName) ? championsFromContext(intent) : { champions, notice: ctx.notice };
+  // 챔피언 카드 뒤의 "그럼 한타 때는?", "라인전은?" — 이름 없는 공략 갈래나 주제 낱말은 대화·화면 챔피언의 그 주제 노트다(2026-09-30 브라우저 시험: "자료 없음" 으로 빠짐)
+  const guideFollowup = ask === "guide" || Boolean(topicFromWords(question));
+  const about = champions.length === 0 && (looksChampionDirected(question, slot, ask) || itemWithoutName || guideFollowup) ? championsFromContext(intent) : { champions, notice: ctx.notice };
   if ("type" in about) return about;
   if (about.champions.length === 0) return undefined;
   // 둘 이상을 견주는 질문은 코드가 표로 견준다. 모델이 도구로 수치를 꺼내 글로
