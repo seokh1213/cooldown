@@ -1,13 +1,15 @@
-import { Fragment, useRef, useState } from "react";
+import { Fragment, useRef, useState, type ReactNode } from "react";
 import type { AbilityV2, ChampionDetailV2 } from "@/data/contracts/championData";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { VsMatrixSkill } from "./VsMatrixSkill";
+import { VsMatrixSkill, VsSkillContent } from "./VsMatrixSkill";
 import { VsCooldownValue } from "./VsCooldownValue";
 import { VsFormCooldown } from "./VsFormCooldown";
 import { VsChampionHeader } from "./VsChampionColumn";
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from "@/components/ui/dialog";
 import { useTranslation } from "@/i18n";
-import { VsAbilityBody } from "./VsAbilityRow";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { VisuallyHidden } from "@/components/ui/visually-hidden";
+import { useDeviceType } from "@/hooks/useDeviceType";
 import { ACTIVE_SLOTS, comparisonCooldownAtRank, cooldownRankCount, rankCooldowns, slotOffsetClass } from "./vsCooldownTable";
 import type { useVsChampion } from "./useVsWorkspace";
 import type { VsSideKey } from "./vsState";
@@ -23,7 +25,8 @@ export interface MatrixSide {
  * Rows are ranks, columns are two champion blocks of Q·W·E·R, the same grammar as the cooldown page.
  * The champion header is the first table row, so each champion sits directly above their own skills.
  */
-export function VsCooldownMatrix({ sides, version, onSelect }: { sides: MatrixSide[]; version: string; onSelect: (side: VsSideKey) => void }) {
+export function VsCooldownMatrix({ sides, version, onSelect, actions }: { sides: MatrixSide[]; version: string; onSelect: (side: VsSideKey) => void; actions?: ReactNode }) {
+  const isMobile = useDeviceType() === "mobile";
   const { t, lang } = useTranslation();
   const returnFocus = useRef<HTMLButtonElement | null>(null);
   const [selected, setSelected] = useState<{ ability: AbilityV2; name: string; slot: string }>();
@@ -72,7 +75,10 @@ export function VsCooldownMatrix({ sides, version, onSelect }: { sides: MatrixSi
   return (
     <TooltipProvider delayDuration={150} skipDelayDuration={100}>
     <section aria-label={t.comparison.baseCooldowns}>
-      <h2 className="mb-2 px-0.5 text-sm font-semibold tracking-tight">{t.comparison.baseCooldowns}</h2>
+      <div className="mb-2 flex items-center justify-between gap-2 px-0.5">
+        <h2 className="text-sm font-semibold tracking-tight">{t.comparison.baseCooldowns}</h2>
+        {actions}
+      </div>
       <table className="w-full table-fixed border-separate border-spacing-0 [--vs-icon:1.75rem] sm:[--vs-icon:2rem]" aria-label={t.comparison.baseCooldowns}>
         <caption className="sr-only">{t.comparison.tableNote}</caption>
         <colgroup>
@@ -148,10 +154,17 @@ export function VsCooldownMatrix({ sides, version, onSelect }: { sides: MatrixSi
         )}
       </table>
       <Dialog open={Boolean(selected)} onOpenChange={(open) => { if (!open) setSelected(undefined); }}>
-        <DialogContent onCloseAutoFocus={(event) => { event.preventDefault(); returnFocus.current?.focus(); }} className="max-h-[85dvh] w-[calc(100%-2rem)] max-w-2xl overflow-y-auto">
-          <DialogTitle className="pr-6 leading-normal">{selected?.name} · {selected?.slot} {selected?.ability.name}</DialogTitle>
-          <DialogDescription>{t.comparison.details}</DialogDescription>
-          {selected && <VsAbilityBody ability={selected.ability} version={version} />}
+        {/* 쿨타임 화면의 스킬 대화창(`SkillTooltip`)과 같은 크기·속. 제목은 속의 머리에 있으니 읽어 주기만 한다. */}
+        <DialogContent onCloseAutoFocus={(event) => { event.preventDefault(); returnFocus.current?.focus(); }} className={(isMobile ? "h-[70vh] max-h-[70vh] w-[calc(100vw-32px)] max-w-lg" : "h-[80vh] max-h-[80vh] w-full max-w-3xl") + " flex flex-col overflow-hidden rounded-xl p-0"}>
+          <VisuallyHidden>
+            <DialogTitle>{selected?.name} · {selected?.slot} {selected?.ability.name}</DialogTitle>
+            <DialogDescription>{t.comparison.details}</DialogDescription>
+          </VisuallyHidden>
+          <ScrollArea className="min-h-0 flex-1">
+            <div data-ability-body className="flex flex-col gap-3 p-4">
+              {selected && <VsSkillContent ability={selected.ability} slot={selected.slot} version={version} mobile={isMobile} />}
+            </div>
+          </ScrollArea>
         </DialogContent>
       </Dialog>
     </section>

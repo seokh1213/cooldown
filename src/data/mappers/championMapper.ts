@@ -31,7 +31,8 @@ export function toChampionStats(detail: ChampionDetailV2): Record<string, number
   };
 }
 
-function toSpell(ability: AbilityV2): ChampionSpell {
+/** 쿨타임 화면의 툴팁·대화창(`SkillTooltipContent`)이 읽는 꼴. VS 화면도 같은 툴팁을 쓰려고 여기서 바꾼다. */
+export function toSpell(ability: AbilityV2): ChampionSpell {
   return {
     forms: ability.forms,
     id: ability.id,

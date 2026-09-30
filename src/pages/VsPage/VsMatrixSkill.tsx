@@ -1,11 +1,26 @@
+import { useMemo, useRef } from "react";
 import type { AbilityV2 } from "@/data/contracts/championData";
+import { toSpell } from "@/data/mappers/championMapper";
 import { AbilityIcon } from "@/components/ui/ability-icon";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
-import { SafeBlockHtml } from "@/components/ui/safe-html";
 import { useTranslation } from "@/i18n";
 import type { VsSideKey } from "./vsState";
 import { AbilityFormIcon } from "@/components/features/ChampionComparison/AbilityFormIcon";
-import { AbilityFormDetails } from "@/components/features/ChampionComparison/AbilityFormDetails";
+import { SkillTooltipContent } from "@/components/features/ChampionComparison/SkillTooltipContent";
+import { SKILL_LETTERS } from "@/components/features/ChampionComparison/constants";
+import { getCooldownText, getCostText } from "@/components/features/ChampionComparison/utils";
+
+/**
+ * 툴팁과 대화창의 속은 쿨타임 화면과 같은 `SkillTooltipContent` 다. 아이콘·이름·쿨타임·비용 머리,
+ * 설명, 레벨별 수치·계수·조건까지 한 벌이라 화면마다 다르게 보이지 않는다.
+ * 아래 스킬 설명 목록(`VsAbilityRow`)은 표와 다른 글이라 그대로 둔다.
+ */
+export function VsSkillContent({ ability, slot, version, mobile }: { ability: AbilityV2; slot: string; version: string; mobile: boolean }) {
+  const { lang } = useTranslation();
+  const spell = useMemo(() => toSpell(ability), [ability]);
+  const skillIdx = Math.max(0, (SKILL_LETTERS as readonly string[]).indexOf(slot));
+  return <SkillTooltipContent skill={spell} skillIdx={skillIdx} ddragonVersion={version} cooldownText={getCooldownText(spell, lang)} costText={getCostText(spell, lang)} mobile={mobile} />;
+}
 
 /** Icon and slot letter only; the name lives in the tooltip and the champion in the row above. */
 export function VsMatrixSkill(props: {
@@ -14,12 +29,13 @@ export function VsMatrixSkill(props: {
 }) {
   const { t } = useTranslation();
   const { side, slot, name, championId, ability, version, boxClass, onSelect } = props;
+  const triggerRef = useRef<HTMLButtonElement>(null);
   // 두 챔피언은 가운데 빈 열이 가른다(VsCooldownMatrix). 여기서는 경계를 신경 쓰지 않는다.
   return (
     <th id={"vs-" + side + "-" + slot} data-testid={"vs-" + side + "-" + slot} scope="col" className="border-b border-border/60 p-0 align-top font-normal">
       <Tooltip>
         <TooltipTrigger asChild>
-          <button type="button" disabled={!ability} onClick={(event) => ability && onSelect(ability, event.currentTarget)} aria-label={name + " " + slot + " " + t.comparison.details} className="block w-full min-w-0 px-0.5 pb-2 pt-2.5 hover:bg-muted/50 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-primary disabled:cursor-default">
+          <button ref={triggerRef} type="button" disabled={!ability} onClick={(event) => ability && onSelect(ability, event.currentTarget)} aria-label={name + " " + slot + " " + t.comparison.details} className="block w-full min-w-0 px-0.5 pb-2 pt-2.5 hover:bg-muted/50 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-primary disabled:cursor-default">
             <span className={boxClass + " gap-1"}>
             {ability?.forms ? <AbilityFormIcon forms={ability.forms} label={name + " " + slot} ddragonVersion={version} className="size-7 sm:size-8" /> : ability ? <AbilityIcon championId={championId} slot={slot} ddragonVersion={version} className="block size-7 shrink-0 rounded shadow-none sm:size-8" /> : <span className="size-7 shrink-0 rounded bg-muted sm:size-8" />}
             <span className="text-[11px] leading-3 text-muted-foreground">{slot}</span>
@@ -28,9 +44,13 @@ export function VsMatrixSkill(props: {
           </button>
         </TooltipTrigger>
         {ability && (
-          <TooltipContent side="top" className="w-[min(28rem,calc(100vw-2rem))] p-4 text-left font-normal">
-            <p className="mb-3 text-sm font-semibold">{name} · {slot} {ability.name}</p>
-            {ability.forms ? <AbilityFormDetails forms={ability.forms} ddragonVersion={version} /> : <SafeBlockHtml html={ability.bodyHtml || ability.summary} className="break-words text-sm leading-relaxed" />}
+          <TooltipContent side="top" className="max-w-sm space-y-3 p-4 text-left font-normal">
+            <VsSkillContent ability={ability} slot={slot} version={version} mobile={false} />
+            <div className="flex justify-end pt-1">
+              <button type="button" className="text-[11px] text-primary hover:underline" onClick={(event) => { event.preventDefault(); event.stopPropagation(); if (triggerRef.current) onSelect(ability, triggerRef.current); }}>
+                {t.skillTooltip.viewDetail}
+              </button>
+            </div>
           </TooltipContent>
         )}
       </Tooltip>

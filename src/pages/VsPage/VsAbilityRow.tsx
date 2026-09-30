@@ -2,7 +2,6 @@ import { ChampionIcon } from "@/components/ui/champion-icon";
 import { AbilityIcon } from "@/components/ui/ability-icon";
 import type { AbilityV2, ChampionDetailV2 } from "@/data/contracts/championData";
 import { SafeBlockHtml } from "@/components/ui/safe-html";
-import { AbilityStructuredDetails } from "@/components/features/ChampionComparison/AbilityStructuredDetails";
 import { AbilityFormDetails } from "@/components/features/ChampionComparison/AbilityFormDetails";
 import { AbilityFormIcon } from "@/components/features/ChampionComparison/AbilityFormIcon";
 import { useTranslation } from "@/i18n";
@@ -111,24 +110,5 @@ export function VsSkillList(props: { side: VsSideKey; detail: ChampionDetailV2; 
         <VsAbilityItem key={slot} slot={slot} side={props.side} ability={champion.abilities[slot]} championId={champion.id} championName={champion.name} version={props.version} className={column + " " + ROW_CLASS[index + 1]} />
       ))}
     </>
-  );
-}
-
-export function VsAbilityBody({ ability, version }: { ability: AbilityV2; version: string }) {
-  if (ability.forms) return <div data-ability-body><AbilityFormDetails forms={ability.forms} ddragonVersion={version} /></div>;
-  return (
-    <div data-ability-body className="mt-3 border-t border-border/60 pt-3">
-      <SafeBlockHtml
-        html={ability.bodyHtml || ability.summary}
-        className="break-words text-sm leading-relaxed [&_img]:max-w-full"
-      />
-      <AbilityStructuredDetails
-        rankValues={ability.rankValues}
-        scalings={ability.scalings}
-        conditions={ability.conditions}
-        diagnostics={ability.diagnostics}
-        simulation={ability.simulation}
-      />
-    </div>
   );
 }
