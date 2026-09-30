@@ -10,15 +10,15 @@
 
 覆盖全部 173 位英雄。P/Q/W/E/R 各等级冷却、消耗、各等级数值与加成系数，技能说明直接由 Riot 的计算数据渲染。杰斯这类双形态英雄会分为 A/B 两栏显示。
 
-![英雄冷却表：亚托克斯 Q 的提示框与杰斯的 A/B 冷却并列](docs/images/cooldown-desktop.png)
+![英雄冷却表：打开杰斯 A/B 形态 Q 的提示框](docs/images/cooldown-desktop.zh.png)
 
 ## VS 对线比较
 
 选择你的英雄和对手。所有等级的冷却在一张表里，附带各等级基础属性，支持互换和 URL 分享。手机上也可使用。
 
-![VS 比较：亚托克斯对菲奥娜，各等级冷却与各等级属性](docs/images/vs-desktop.png)
+![VS 比较：亚托克斯对菲奥娜，各等级冷却与各等级属性](docs/images/vs-desktop.zh.png)
 
-<img src="docs/images/vs-mobile.png" alt="手机上的 VS 比较" width="320">
+<img src="docs/images/vs-mobile.zh.png" alt="手机上的 VS 比较" width="320">
 
 ## 其他功能
 

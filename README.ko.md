@@ -10,15 +10,15 @@
 
 173개 챔피언 전부. P/Q/W/E/R 랭크별 쿨타임, 비용, 랭크별 수치와 계수를 Riot 계산 데이터에서 그대로 렌더링한 인게임 설명과 함께 보여줍니다. 제이스처럼 두 폼을 가진 챔피언은 A/B 로 나눠 보입니다.
 
-![아트록스 Q 툴팁과 제이스 A/B 쿨타임이 함께 보이는 챔피언 쿨타임 표](docs/images/cooldown-desktop.png)
+![제이스 A/B Q 툴팁이 열린 챔피언 쿨타임 표](docs/images/cooldown-desktop.ko.png)
 
 ## VS 상성 비교
 
 내 챔피언과 상대를 고릅니다. 전체 랭크 쿨타임을 한 표에서, 레벨별 기본 능력치와 함께 봅니다. 교체와 URL 공유를 지원하고 휴대폰에서도 동작합니다.
 
-![VS 비교: 아트록스 대 피오라, 랭크별 쿨타임과 레벨별 능력치](docs/images/vs-desktop.png)
+![VS 비교: 아트록스 대 피오라, 랭크별 쿨타임과 레벨별 능력치](docs/images/vs-desktop.ko.png)
 
-<img src="docs/images/vs-mobile.png" alt="휴대폰에서 본 VS 비교" width="320">
+<img src="docs/images/vs-mobile.ko.png" alt="휴대폰에서 본 VS 비교" width="320">
 
 ## 그 밖에
 

@@ -10,15 +10,15 @@ Live: https://seokh1213.github.io/cooldown/
 
 All 173 champions. P/Q/W/E/R cooldowns by rank, cost, per-rank values and scaling ratios, with the in-game description rendered from Riot's own calculation data. Champions with two forms, such as Jayce, show both as A and B.
 
-![Champion cooldown table with the Aatrox Q tooltip open next to Jayce's A/B cooldowns](docs/images/cooldown-desktop.png)
+![Champion cooldown table with Jayce's A/B Q tooltip open next to Aatrox](docs/images/cooldown-desktop.en.png)
 
 ## VS matchup
 
 Pick your champion and the opponent. Every rank's cooldown in one table, base stats by level, swap and share by URL. Works on phones.
 
-![VS matchup: Aatrox against Fiora, cooldowns by rank and stats by level](docs/images/vs-desktop.png)
+![VS matchup: Aatrox against Fiora, cooldowns by rank and stats by level](docs/images/vs-desktop.en.png)
 
-<img src="docs/images/vs-mobile.png" alt="VS matchup on a phone" width="320">
+<img src="docs/images/vs-mobile.en.png" alt="VS matchup on a phone" width="320">
 
 ## Also included
 
