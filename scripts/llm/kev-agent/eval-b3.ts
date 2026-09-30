@@ -18,7 +18,7 @@ import { translations } from "../../../src/i18n/translations";
 import type { AdvisorAnswer } from "../../../src/lib/advisor/answer";
 import { detectChampions } from "../../../src/lib/advisor/intent";
 import { actFromProbs, actQuestion, actState } from "../../../src/lib/advisor/conversation";
-import { KEV_HEAD, planAnswer, understand, type AnswerPlan, type PlanContext, type PlanDeps, type PlanTurn } from "../../../src/lib/advisor/plan";
+import { ACT_HEAD, planAnswer, understand, type AnswerPlan, type PlanContext, type PlanDeps, type PlanTurn } from "../../../src/lib/advisor/plan";
 import { ROOT, appJudge, kevJudge, loadData, readJsonl, saveJudgeCache, type Judge, type Lang } from "./lib";
 
 const arg = (name: string) => {
@@ -84,11 +84,11 @@ async function main() {
       const e = data.cardById.get(a.enemy)!.name;
       // 앱과 같게: 새 말에서 찾은 첫 챔피언 이름을 붙인다
       const other = detectChampions(data, a.text)[0]?.name;
-      const [p] = await judge(process.env.ACT_HEAD_EVAL ?? KEV_HEAD, actState(m, e, a.text, other), [actQuestion(m, e)]);
+      const [p] = await judge(process.env.ACT_HEAD_EVAL ?? ACT_HEAD, actState(m, e, a.text, other), [actQuestion(m, e)]);
       const got = actFromProbs(p);
       add("act 전체", got === a.act);
       const want =
-        a.act === "new" ? "pass"
+        a.act === "new" || a.act === "lookup" ? "pass"
         : a.act === "flip" ? `${a.enemy}>${a.mine}`
         : a.act === "enemy" ? `${a.mine}>${a.named}`
         : a.act === "mine" ? `${a.named}>${a.enemy}`

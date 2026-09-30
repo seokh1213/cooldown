@@ -15,11 +15,16 @@ import type { ChampionCard } from "@/lib/knowledge/facts";
 import type { AdvisorAnswer } from "./answer";
 import { asksGameMeta } from "./askWords";
 
-export type Act = "followup" | "more" | "enemy" | "mine" | "flip" | "new";
+export type Act = "followup" | "more" | "enemy" | "mine" | "flip" | "new" | "lookup";
 
 export const ACT_INSTRUCTIONS = "What is the new message?";
 
-/** 순서가 곧 선택지 순서다. 헤드는 이 순서로 배웠다. */
+/**
+ * 순서가 곧 선택지 순서다. 흐름 헤드(`ACT_HEAD`, kev-b3e-act)는 이 순서·이 문구로 배웠다 — 한 글자도 바꾸면 헤드가 뜻을 잃는다.
+ *
+ * `lookup` 은 상성 대화 중 두 챔피언의 스킬 수치 조회다. 해설이 아니라 표가 답이라 앞 쌍에 붙이지 않고(`planTurn` 이 pass)
+ * `continueMatchup` 이 대화의 두 챔피언 표로 바로 답한다. `new` 의 "a third champion" 은 대화의 둘이 아닌 챔피언만 새 질문이라는 뜻이다.
+ */
 export function actCriteria(mine: string, enemy: string): Record<Act, string> {
   return {
     followup: `Asks more about playing ${mine} against ${enemy}: another topic, a timing or a situation`,
@@ -27,7 +32,8 @@ export function actCriteria(mine: string, enemy: string): Record<Act, string> {
     enemy: `Still plays ${mine} but now asks about facing a different champion`,
     mine: `Now plays a different champion against ${enemy}`,
     flip: `Asks from ${enemy}'s side: how ${enemy} should play against ${mine}`,
-    new: "A new question not about this matchup: an item, rune, summoner spell, game rule, another champion's abilities or numbers, or small talk",
+    new: "A new question not about this matchup: an item, rune, summoner spell, game rule, a third champion's abilities or numbers, or small talk",
+    lookup: `Asks for a number about ${mine}'s or ${enemy}'s ability: a cooldown, mana cost, ratio or range`,
   };
 }
 
@@ -142,7 +148,8 @@ export function planTurn<T extends { id: string }>(
   const { mine, enemy } = state;
   const keep = (a: Act): TurnPlan<T> => ({ kind: "matchup", mine, enemy, act: a });
   if (named.length === 0) {
-    if (entity) return { kind: "pass" };
+    // 스킬 수치 조회(lookup)는 해설이 아니다 — 대화의 두 챔피언 표로(`continueMatchup`)
+    if (entity || act === "lookup") return { kind: "pass" };
     if (act === "flip") return { kind: "matchup", mine: enemy, enemy: mine, act };
     // 이름 없이 enemy·mine 을 고르면 바꿀 챔피언이 없다. 같은 상성의 이어 묻기로 받는다.
     return keep(act === "more" ? "more" : "followup");

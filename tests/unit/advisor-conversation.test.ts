@@ -23,6 +23,7 @@ test("planTurn — 앞 상성을 이어 받을지", () => {
   eq(planTurn(state, [], false, "more"), { kind: "matchup", mine: garen, enemy: darius, act: "more" }, "더 자세히");
   eq(planTurn(state, [], false, "flip"), { kind: "matchup", mine: darius, enemy: garen, act: "flip" }, "입장 뒤집기는 둘을 맞바꾼다");
   eq(planTurn(state, [], false, "enemy"), { kind: "matchup", mine: garen, enemy: darius, act: "followup" }, "이름 없이 상대 바꾸기를 고르면 이어 묻기");
+  eq(planTurn(state, [], false, "lookup"), { kind: "pass" }, "이름 없는 스킬 수치 조회는 해설이 아니라 두 챔피언 표(continueMatchup 이 답한다)");
   eq(planTurn(state, [fiora], false, "enemy"), { kind: "matchup", mine: garen, enemy: fiora, act: "enemy" }, "새 상대");
   eq(planTurn(state, [fiora], false, "mine"), { kind: "matchup", mine: fiora, enemy: darius, act: "mine" }, "새 내 챔피언");
   eq(planTurn(state, [fiora], false, "new"), { kind: "pass" }, "다른 챔피언 자체를 묻는 말");
@@ -66,9 +67,13 @@ for (const [q, want] of [
 }
 
 test("판정기 선택지와 입력 꼴", () => {
-  eq(ACT_LABELS, ["followup", "more", "enemy", "mine", "flip", "new"], "선택지 순서는 학습 순서");
-  eq(actFromProbs([0.1, 0.1, 0.1, 0.1, 0.5, 0.1]), "flip", "가장 큰 확률");
-  eq(Object.keys(actCriteria("a", "b")).length, 6, "선택지 여섯");
+  eq(ACT_LABELS, ["followup", "more", "enemy", "mine", "flip", "new", "lookup"], "선택지 순서는 학습 순서(흐름 헤드 kev-b3e-act)");
+  eq(actFromProbs([0.1, 0.1, 0.1, 0.1, 0.5, 0.1, 0.1]), "flip", "가장 큰 확률");
+  eq(actFromProbs([0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.5]), "lookup", "일곱째 칸은 스킬 수치 조회");
+  eq(Object.keys(actCriteria("a", "b")).length, 7, "선택지 일곱");
+  // 헤드가 이 문구 그대로 배웠다. 한 글자라도 바뀌면 헤드를 다시 배워야 한다.
+  eq(actCriteria("Garen", "Darius").lookup, "Asks for a number about Garen's or Darius's ability: a cooldown, mana cost, ratio or range", "lookup 문구");
+  eq(actCriteria("Garen", "Darius").new, "A new question not about this matchup: an item, rune, summoner spell, game rule, a third champion's abilities or numbers, or small talk", "new 문구");
   eq(
     actState("가렌", "다리우스", "피오라는?", "피오라"),
     "Earlier in this chat the user asked how to play 가렌 against 다리우스.\nNew message: 피오라는?\nChampion named in the new message: 피오라",

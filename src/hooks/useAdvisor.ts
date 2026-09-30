@@ -23,7 +23,7 @@ import { readJudgeHead, scoreJudge, type JudgeHead, type JudgeHeadMeta, type Jud
 import { useTranslation } from "@/i18n";
 import { useAdvisorTurns, type AdvisorTurn } from "./useAdvisorTurns";
 import { useAdvisorWorker, type AdvisorStatus } from "./useAdvisorWorker";
-import { KEV_HEAD } from "@/lib/advisor/plan";
+import { ACT_HEAD, ROUTE_HEAD, TOPIC_HEAD } from "@/lib/advisor/plan";
 
 /** `respond` 한 번에 필요한 것. 자료는 부르는 쪽(코드)이 모아서 `system` 에 싣는다. */
 export interface RespondPlan {
@@ -93,8 +93,8 @@ export interface UseAdvisorResult {
   replaceTurns: (turns: AdvisorTurn[]) => void;
 }
 
-/** 판정 헤드. kev LoRA 헤드 하나로 모든 판정을 한다. 모델을 올리면 미리 받아 둔다. */
-const KEV_JUDGE_HEADS = [KEV_HEAD];
+/** 판정 헤드. 갈래·주제·대화 흐름이 헤드 하나씩이다(까닭은 `plan.ts` 의 헤드 상수). 모델을 올리면 미리 받아 둔다. */
+const KEV_JUDGE_HEADS = [ROUTE_HEAD, TOPIC_HEAD, ACT_HEAD];
 
 function readConsent(): boolean {
   try {

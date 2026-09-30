@@ -54,7 +54,20 @@ import { askedRules, docAnswer, isGameWord, lexicalHit, searchesByVector } from 
 import { josa } from "@/lib/knowledge/text";
 import type { ChampionCard } from "@/lib/knowledge/facts";
 
-/** 판정 헤드(`public/models/judge/kev-b3e.{json,bin}`). 이 헤드 하나로 갈래(아홉 칸)·주제·대화 흐름을 모두 가른다 */
+/*
+ * 판정 헤드(`public/models/judge/<이름>.{json,bin}`). 판정마다 헤드가 다르다.
+ *
+ * 처음엔 kev-b3e 하나가 갈래(아홉 칸)·주제·대화 흐름을 다 골랐다. 대화 흐름에 lookup 칸을 더하며 그 한 헤드를 다시 배우게 했더니
+ * 손대지 않은 주제 판정이 흔들렸다 — 대화 270턴 A 가 240 → 234. 판정마다 헤드를 따로 두니 237(흐름은 새 문구로, 갈래·주제는 제
+ * 자료 그대로). 헤드 파일이 없으면 `judge` 가 거절하고 각 단계가 낱말 길로 간다(`useAdvisor.loadJudgeHead`).
+ */
+/** 갈래(아홉 칸)와 내 챔피언(`judgeRoute`) */
+export const ROUTE_HEAD = "kev-b3e-route";
+/** 주제와 관점(`judgeTopic`·`matchupTopic`) */
+export const TOPIC_HEAD = "kev-b3e-topic";
+/** 상성 대화의 흐름(일곱 칸, lookup 포함 — `continueMatchup`) */
+export const ACT_HEAD = "kev-b3e-act";
+/** 세 판정을 한 헤드로 하던 때의 이름. 앱은 더 쓰지 않고 옛 측정 도구(`scripts/llm/kev-agent/eval-b3.ts`)가 기본값으로 남겨 둔다 */
 export const KEV_HEAD = "kev-b3e";
 /** 상성 대화에서 소환사 주문의 쓰임새를 묻는 말(규칙 카드가 아니라 이어 묻기) */
 const SPELL_USE_IN_MATCHUP = /대신|빠지|빠졌|없(을|으면|는데|을\s*때)|instead|\bis\s+down\b|\bdown\b|without|没了|没有|不带|换成/i;
@@ -225,7 +238,7 @@ async function judgeRoute(question: string, data: AdvisorData, named: ChampionCa
   const names = named.map((card) => card.name);
   // 374문항에서 0.8B 가 글로 가르면 183, 옛 헤드(route-v2) 322, 4B 가 글로 가르면 310, kev 헤드 331 이었다.
   return deps
-    .judge(KEV_HEAD, judgeRouteState(question, names), [
+    .judge(ROUTE_HEAD, judgeRouteState(question, names), [
       { instructions: JUDGE_KIND_INSTRUCTIONS, options: Object.entries(JUDGE_KIND9_CRITERIA).map(([name, description]) => ({ name, description })) },
       ...(named.length >= 2 ? [{ instructions: JUDGE_MINE_INSTRUCTIONS, options: names.map((name) => ({ name })) }] : []),
     ])
@@ -252,7 +265,7 @@ async function judgeTopic(question: string, data: AdvisorData, named: ChampionCa
   const worded = topicFromWords(question, [...names, ...named.flatMap((card) => data.aliases.get(card.id) ?? [])]);
   if (worded) return { topic: worded };
   return deps
-    .judge(KEV_HEAD, judgeRouteState(question, names), topicQuestions(named.length))
+    .judge(TOPIC_HEAD, judgeRouteState(question, names), topicQuestions(named.length))
     .then(([topic]) => topicFromJudge(topic))
     .catch(() => undefined);
 }
@@ -412,7 +425,7 @@ async function continueMatchup(intent: Intent, deps: PlanDeps): Promise<AnswerPl
     worded ??
     (!named && ctx.canUseModel && ctx.consented
       ? await deps
-          .judge(KEV_HEAD, actState(state.mine.name, state.enemy.name, question, champions[0]?.name), [actQuestion(state.mine.name, state.enemy.name)])
+          .judge(ACT_HEAD, actState(state.mine.name, state.enemy.name, question, champions[0]?.name), [actQuestion(state.mine.name, state.enemy.name)])
           .then(([probs]) => actFromProbs(probs))
           .catch(() => undefined)
       : undefined);
@@ -427,6 +440,19 @@ async function continueMatchup(intent: Intent, deps: PlanDeps): Promise<AnswerPl
    * 게임 규칙·메타 자료(`gameMeta.ts`)와 이름이 먼저 받으므로 믿어서 얻는 것이 거의 없다.
    */
   const entity = champions.length === 0 && (named || worded === "new");
+  /*
+   * 흐름 판정기가 "두 챔피언의 스킬 수치 조회"(lookup) 라 하면 해설이 아니라 그 둘의 표다. 갈래 판정기가 소환사 주문(spell)으로
+   * 헷갈린 "궁 쿨 몇 초야" 같은 말도 여기서 받는다. 갈래가 스킬 수치(`ask === "spellStat"`)인 말은 이 단계 첫머리에서 이미
+   * `answerChampion` 으로 넘어갔으니 여기는 흐름 판정기만 가른 것이다. 낱말 규칙(`asksSpellNumbers`)은 판정기가 없는 기기의
+   * 갈래(`askFromWords`)일 뿐 판정기와 합치지(OR) 않는다 — 합치면 낱말이 판정기의 이어 묻기를 덮는다.
+   */
+  if (act === "lookup" && champions.length === 0) {
+    return {
+      type: "card",
+      answer: buildCompareCard([state.mine, state.enemy], question, intent.slot, { lang: ctx.lang }),
+      notice: ctx.notice ?? fill(ctx.copy.card.fromChat, { name: `${state.mine.name}·${state.enemy.name}` }),
+    };
+  }
   // 새 이름이 내 자리인지 상대 자리인지 문형이 못 박으면 판정기보다 먼저다("오공으로 하면", "야스오 만나면")
   const side = champions.length === 1 ? sideOfNewName(question, [champions[0].name, ...(data.aliases.get(champions[0].id) ?? [])]) : undefined;
   // 새 챔피언 + 스킬 지목("제드 궁 어떻게 피해")은 상대를 바꾼 것이 아니라 그 챔피언의 스킬 질문이다
@@ -472,7 +498,7 @@ async function matchupTopic(question: string, data: AdvisorData, ctx: PlanContex
   const worded = topicFromWords(question, [...names, ...pair.flatMap((card) => data.aliases.get(card.id) ?? [])]);
   if (worded || !ctx.consented) return worded;
   return deps
-    .judge(KEV_HEAD, judgeRouteState(question, names), topicQuestions(2))
+    .judge(TOPIC_HEAD, judgeRouteState(question, names), topicQuestions(2))
     .then(([probs]) => topicFromJudge(probs).topic)
     .catch(() => undefined);
 }
