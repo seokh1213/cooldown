@@ -16,7 +16,7 @@ function scalePercent(value: Value, precision?: number): Value {
  *
  * 게임 자료는 float32 라 0.235 가 0.23499999940395355 로 들어온다. 유효숫자 7자리로 잡음을
  * 걷어낸 뒤, 2진 표현이 아니라 10진 값으로 반올림한다. toFixed 는 8.245 를 8.2449999… 로 보고
- * 8.24 로 내린다 (쉔 P 20레벨 8.25, 18레벨 7.995 → 8).
+ * 8.24 로 내린다 (쉔 P 18레벨 7.995 → 소수 둘째 자리 8).
  */
 function formatFixed(value: number, digits: number): string {
   if (!Number.isFinite(value)) return String(value);
@@ -84,7 +84,7 @@ function isZeroValue(value: Value): boolean {
 const LEVEL_RANGE_DEFAULT_DIGITS = 2;
 
 /**
- * [1레벨, 최대 레벨] 범위를 "(a ~ b)" 로 적는다. value 는 이미 퍼센트로 바꾼 값이다.
+ * [1레벨, 18레벨] 범위를 "(a ~ b)" 로 적는다. value 는 이미 퍼센트로 바꾼 값이다.
  * 기본 수치·합치지 못한 범위·배율·스탯 계수가 모두 이 함수로 범위를 적는다.
  */
 function formatLevelRange(

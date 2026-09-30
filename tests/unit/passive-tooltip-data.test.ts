@@ -79,7 +79,7 @@ for (const [locale, template] of Object.entries(templates)) {
       },
       locale as keyof typeof templates
     );
-    assert.match(localized.tooltip ?? "", /\(6 ~ 10\.47\)/);
+    assert.match(localized.tooltip ?? "", /\(6 ~ 10\)/);
     assert.match(localized.tooltip ?? "", /0\.35%/);
     assert.match(localized.tooltip ?? "", /5/);
     assert.doesNotMatch(localized.tooltip ?? "", /[@{}]/);

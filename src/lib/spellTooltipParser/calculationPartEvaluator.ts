@@ -52,7 +52,7 @@ export type DataValueEvaluator = (
   options?: { optional?: boolean },
 ) => Value | null;
 
-/** 레벨별 값을 [1레벨, 최대 레벨] 범위로 줄인다. 두 값이 같으면 하나로 접는다. */
+/** 레벨별 값을 [1레벨, 18레벨] 범위로 줄인다. 두 값이 같으면 하나로 접는다. */
 function levelRange(values: readonly number[]): Value {
   const first = values[0];
   const last = values[values.length - 1];
@@ -93,7 +93,7 @@ function breakpointValues(part: ByCharLevelBreakpointsCalculationPart): number[]
 
 function interpolationValues(part: ByCharLevelInterpolationCalculationPart): number[] {
   const start = part.mStartValue ?? 0;
-  return interpolationLevelValues(start, part.mEndValue ?? start, part.mScalePastDefaultMaxLevel !== false);
+  return interpolationLevelValues(start, part.mEndValue ?? start, part.mScaleByStatProgressionMultiplier === true);
 }
 
 export function evaluateRange(calc: GameCalculation): CalcResult | null {
@@ -127,7 +127,7 @@ export function evaluateRange(calc: GameCalculation): CalcResult | null {
 
   const breakpoint = part as ByCharLevelBreakpointsCalculationPart;
   // 표시 6 은 "레벨 범위로 적기", 퍼센트 + 레벨당 증가는 범위 계산식이다.
-  // 둘 다 1레벨부터 최대 레벨까지 편 값으로 범위를 만든다.
+  // 둘 다 1~18레벨을 편 값으로 범위를 만든다.
   const isDisplayRange = calc.mSimpleTooltipCalculationDisplay === 6;
   if (!isDisplayRange && (!isPercent || !breakpoint.mInitialBonusPerLevel)) return null;
   const values = breakpointValues(breakpoint);
@@ -186,32 +186,45 @@ export interface EvaluatorContext {
  * 해석하지 못한 타입은 null 을 돌려주고 호출부에서 그 항만 건너뛴다.
  */
 /**
- * "1레벨 값 / 18레벨 값" DataValue 두 개로 이뤄진 레벨 범위 파트인지 본다.
+ * DataValue 이름 두 개로 레벨 값을 정하는 파트.
  *
- * CDragon 이 타입명을 해시로 남겨 __type 으로는 못 알아본다. 대신 구조를 본다.
- * __type 을 뺀 필드가 정확히 문자열 둘이고, 둘 다 DataValue 로 풀리면 범위다.
+ * CDragon 이 타입명·필드명을 해시로 남겨 __type 으로는 못 알아본다. 필드 해시로 가른다.
+ *   {0589a59c}·{0b65bc23}: 1레벨 값·18레벨 값 ("LightningDamageLevel1", "MegaHealthEndingValue")
+ *   {91d404a5}·{b2cd0eb0}: 1레벨 값·레벨당 증가량 (이렐리아 P "OnHitBaseDamage", "OnHitPerLevel" → 10 ~ 61)
+ * 이름이 비슷해도 뜻이 달라, 구조만 보고 앞은 시작·뒤는 끝으로 읽으면 이렐리아 P 가 (10 ~ 3) 이 된다.
  */
+const NAMED_LEVEL_PAIR_FIELDS = {
+  start: "{0589a59c}",
+  end: "{0b65bc23}",
+  level1: "{91d404a5}",
+  perLevel: "{b2cd0eb0}",
+} as const;
+
 function readLevelPair(
   part: CalculationPart,
   ctx: EvaluatorContext,
 ): PartResult | null {
   const record = part as unknown as Record<string, unknown>;
-  const names = Object.entries(record)
-    .filter(([key]) => key !== "__type")
-    .map(([, value]) => value);
-  if (names.length !== 2 || !names.every((name) => typeof name === "string")) {
-    return null;
-  }
+  const scalar = (field: string): number | null => {
+    const name = record[field];
+    if (typeof name !== "string") return null;
+    const value = ctx.evaluateDataValue(name);
+    return value == null || isVector(value) ? null : value;
+  };
+  const has = (field: string) => typeof record[field] === "string";
 
-  const [startName, endName] = names as [string, string];
-  // 구조만 보고 시험 삼아 찾는 것이라 없어도 진단에 남기지 않는다
-  // (버프 중첩 파트의 mBuffName "{8682fc00}" 도 문자열 둘이라 여기 걸린다)
-  const start = ctx.evaluateDataValue(startName, { optional: true });
-  const end = ctx.evaluateDataValue(endName, { optional: true });
-  if (start == null || end == null) return null;
-  if (isVector(start) || isVector(end)) return null;
-  // 이름이 "…Level1 / …Level18" 인 두 값이라 레벨 보간과 같은 선으로 최대 레벨까지 잇는다
-  const range = levelRange(interpolationLevelValues(start, end));
+  let values: number[] | null = null;
+  if (has(NAMED_LEVEL_PAIR_FIELDS.start) && has(NAMED_LEVEL_PAIR_FIELDS.end)) {
+    const start = scalar(NAMED_LEVEL_PAIR_FIELDS.start);
+    const end = scalar(NAMED_LEVEL_PAIR_FIELDS.end);
+    if (start != null && end != null) values = interpolationLevelValues(start, end);
+  } else if (has(NAMED_LEVEL_PAIR_FIELDS.level1) && has(NAMED_LEVEL_PAIR_FIELDS.perLevel)) {
+    const level1 = scalar(NAMED_LEVEL_PAIR_FIELDS.level1);
+    const perLevel = scalar(NAMED_LEVEL_PAIR_FIELDS.perLevel);
+    if (level1 != null && perLevel != null) values = breakpointLevelValues(level1, perLevel, []);
+  }
+  if (!values) return null;
+  const range = levelRange(values);
   return isVector(range)
     ? { base: range, statParts: [], isLevelRange: true }
     : { base: range, statParts: [] };
@@ -421,7 +434,7 @@ export function evaluatePart(
   }
 
   if (type === "ByCharLevelBreakpointsCalculationPart") {
-    // 레벨에 따라 값이 바뀌면 1레벨 ~ 최대 레벨 범위로 노출한다. 레벨당 증가 없이 특정 레벨에서만
+    // 레벨에 따라 값이 바뀌면 1~18레벨 범위로 노출한다. 레벨당 증가 없이 특정 레벨에서만
     // 더해지는 값도 범위다 (니달리 W 덫 개수 4 → 6·11·16레벨에 +2 → 10)
     const range = levelRange(breakpointValues(part as ByCharLevelBreakpointsCalculationPart));
     return isVector(range)

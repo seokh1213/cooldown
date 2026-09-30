@@ -3,7 +3,7 @@ import type {
 } from "../../src/data/contracts/championData";
 import type { CommunityDragonSpellData } from "../../src/lib/spellTooltipParser/types";
 import {
-  CHAMPION_MAX_LEVEL,
+  ABILITY_SCALING_MAX_LEVEL,
   breakpointLevelValues,
   interpolationLevelValues,
   listedLevelValues,
@@ -34,7 +34,7 @@ export class UnsupportedFormulaError extends Error {
   }
 }
 
-export const LEVELS = CHAMPION_MAX_LEVEL;
+export const LEVELS = ABILITY_SCALING_MAX_LEVEL;
 
 export function isRecord(value: unknown): value is RawPart {
   return typeof value === "object" && value !== null;
@@ -132,7 +132,7 @@ export function levelInterpolation(part: RawPart): number[] {
   if (!Number.isFinite(start) || !Number.isFinite(end)) {
     throw new UnsupportedFormulaError("ByCharLevelInterpolationCalculationPart");
   }
-  return interpolationLevelValues(start, end, part.mScalePastDefaultMaxLevel !== false);
+  return interpolationLevelValues(start, end, part.mScaleByStatProgressionMultiplier === true);
 }
 
 export function levelFormula(part: RawPart): number[] {

@@ -18,7 +18,7 @@ test("renders precomputed passive and Q values", async ({ page }) => {
 
   await page.getByAltText("Passive").hover();
   const passiveTooltip = page.getByRole("tooltip");
-  await expect(passiveTooltip).toContainText("(6 ~ 10.47)");
+  await expect(passiveTooltip).toContainText("(6 ~ 10)");
   await expect(passiveTooltip).toContainText("0.35%");
   await expect(passiveTooltip).toContainText("최대 5회");
   await expect(passiveTooltip).not.toContainText("인게임 툴팁");
