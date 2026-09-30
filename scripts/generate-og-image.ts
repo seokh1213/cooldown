@@ -1,4 +1,4 @@
-import { chromium } from 'playwright';
+import { chromium } from '@playwright/test';
 import { join } from 'path';
 import { spawn, ChildProcess } from 'child_process';
 import { setTimeout } from 'timers/promises';
