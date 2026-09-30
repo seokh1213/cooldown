@@ -372,8 +372,16 @@ async function continueMatchup(intent: Intent, deps: PlanDeps): Promise<AnswerPl
   if (!state || champions.length > 1) return undefined;
   // 이름 없이 스킬 수치를 찾으면 해설이 아니라 두 챔피언의 표다(`answerChampion` 이 대화의 두 챔피언을 붙인다)
   if (champions.length === 0 && asksSpellNumbers(question)) return undefined;
-  // 아이템 이름·게임 규칙 문서가 걸리면 새 질문이다
-  const named = champions.length === 0 && (Boolean(buildItemCard(data, question, intent.recentItem)) || Boolean(buildMechanicsAnswer(data, question)));
+  /*
+   * 아이템 이름·게임 규칙 문서가 걸리면 새 질문이다.
+   *
+   * 다만 게임 규칙 문서는 낱말 하나("쿨감", "cdr", "冷却缩减")로도 걸리므로, 상성의 갈래를 못 박는 낱말(아이템·한타·라인전 …)이
+   * 함께 있으면 그 갈래의 이어 묻기다 — "쿨감 템 먼저 가는 게 나아?", "should I rush a cdr item?", "先出冷却缩减装备好吗" 가
+   * "스킬 가속" 절 원문으로 답했다. 갈래 낱말이 없는 "쿨타임 감소 계산 어떻게 해?" 는 그대로 문서다.
+   */
+  const named =
+    champions.length === 0 &&
+    (Boolean(buildItemCard(data, question, intent.recentItem)) || (Boolean(buildMechanicsAnswer(data, question)) && !topicFromWords(question)));
   if (!named && champions.length === 0) {
     const left = await leaveMatchup(intent, deps);
     if (left) return left;

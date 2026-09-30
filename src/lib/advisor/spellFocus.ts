@@ -1,3 +1,5 @@
+import { aliasAt, aliasesOf } from "@/lib/knowledge/searchAliases";
+
 export type SpellFocus =
   | "cooldown"
   | "cost"
@@ -65,6 +67,9 @@ export function detectSpellFocus(question: string): { focus: SpellFocus; keyword
 export function asksSpellNumbers(question: string): boolean {
   const focus = detectSpellFocus(question)?.focus;
   if (focus !== "cooldown" && focus !== "cost" && focus !== "ratio") return false;
+  // 스킬 가속(쿨감·cdr·冷却缩减)은 능력치이지 스킬 수치가 아니다. 쿨타임 낱말이 그 안에 들어 있어 "쿨감 템 먼저 가는 게 나아?",
+  // "should I rush a cdr item?", "先出冷却缩减装备好吗" 가 상성 대화에서 수치 조회로 빠져나가 "스킬 가속" 절 원문을 받았다.
+  if (aliasesOf("mech:스킬-가속").some((alias) => aliasAt(question, alias) >= 0)) return false;
   // 코스트·계수 낱말은 스킬 밖에서도 쓴다. 스킬을 가리키는 말이 함께 있어야 한다.
   if (focus !== "cooldown" && !/스킬|기술|궁|패시브|(?<![a-z])[qwer](?![a-z])|\b(skill|ability|spell|ult)\b|技能|大招/i.test(question)) return false;
   return !/빠지|돌아|돌 때|들어가|노려|때[는에]?|이후|동안|어떻게|언제|\b(when|after|while|how to)\b|之后|的时候|怎么/i.test(question);

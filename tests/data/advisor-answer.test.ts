@@ -35,7 +35,7 @@ import {
   looksChampionDirected,
 } from "../../src/lib/advisor/askWords";
 import { buildCommentaryPrompt } from "../../src/lib/advisor/commentaryPrompt";
-import { detectSpellFocus } from "../../src/lib/advisor/spellFocus";
+import { asksSpellNumbers, detectSpellFocus } from "../../src/lib/advisor/spellFocus";
 import { editDistance, suggestChampions } from "../../src/lib/advisor/championTypo";
 import { TAGS, DAMAGE, GRADE, RANGE, RATIO_STATS, missingCardWords } from "../../src/lib/knowledge/cardWords";
 import { readPageContext } from "../../src/lib/advisor/pageContext";
@@ -85,6 +85,16 @@ test("묻는 사실 가려내기", () => {
   });
   assert.equal(detectSpellFocus("럼블 E 둔화 몇 퍼")?.focus, "effect");
   assert.equal(detectSpellFocus("럼블 E 뭐야"), undefined, "사실을 안 짚으면 초점 없음");
+});
+
+// 스킬 가속(쿨감·cdr·冷却缩减)은 능력치라 스킬 수치 조회가 아니다. 상성 대화에서 수치 조회로 빠져 "스킬 가속" 절 원문을 받았다.
+test("스킬 수치 조회와 스킬 가속 낱말", () => {
+  assert.equal(asksSpellNumbers("W 쿨타임 알려줘"), true);
+  assert.equal(asksSpellNumbers("두 챔피언에 대해 스킬 쿨타임도 알려줘"), true);
+  assert.equal(asksSpellNumbers("궁 쿨 빠지면 들어가도 돼?"), false, "때를 묻는 말은 공략");
+  assert.equal(asksSpellNumbers("쿨감 템 먼저 가는 게 나아?"), false);
+  assert.equal(asksSpellNumbers("should I rush a cdr item?"), false);
+  assert.equal(asksSpellNumbers("先出冷却缩减装备好吗"), false);
 });
 
 // ── 스킬 답: 쿨타임은 헤드라인으로 ─────────────────────────────────────

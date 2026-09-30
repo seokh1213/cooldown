@@ -178,6 +178,11 @@ const CASES: Case[] = [
   { name: "상성 대화 중 중국어 大招 CD 는 두 R", question: "两人大招CD各是多少", lang: "zh_CN", turns: matchupTurns("Garen", "Darius", undefined, "zh_CN"), want: "card compare Garen,Darius slot=R · 以刚才提到的 德玛西亚之力·诺克萨斯之手 为准。", calls: [] },
   // "champions" 가 "챔피언 분류" 절의 검색어였다. 모델 없이는 영어 스킬 낱말이 대화 챔피언을 붙이지 못해 모델에게 넘어간다(문서가 아니라는 것이 요점)
   { name: "상성 대화 중 영어 champions 는 문서 검색어가 아니다", question: "show me both champions' ability cooldowns", lang: "en_US", turns: matchupTurns("Garen", "Darius", undefined, "en_US"), want: "respond", calls: [] },
+  { name: "상성 대화 중 쿨감 템 조언은 아이템 이어 묻기", question: "쿨감 템 먼저 가는 게 나아?", turns: matchupTurns("Garen", "Darius"), want: "matchup Garen>Darius focus=situational-item · 앞서 말한 가렌 vs 다리우스 기준입니다.", calls: [] },
+  { name: "상성 대화 중 영어 cdr 템 조언은 아이템 이어 묻기", question: "should I rush a cdr item?", lang: "en_US", turns: matchupTurns("Garen", "Darius", undefined, "en_US"), want: "matchup Garen>Darius focus=situational-item · Using Garen vs Darius from earlier in this chat.", calls: [] },
+  { name: "상성 대화 중 중국어 冷却缩减 장비 조언은 아이템 이어 묻기", question: "先出冷却缩减装备好吗", lang: "zh_CN", turns: matchupTurns("Garen", "Darius", undefined, "zh_CN"), want: "matchup Garen>Darius focus=situational-item · 以刚才提到的 德玛西亚之力 vs 诺克萨斯之手 为准。", calls: [] },
+  { name: "상성 대화 중 갈래 낱말 없는 쿨타임 감소 계산은 게임 원리 문서", question: "쿨타임 감소 계산 어떻게 해?", turns: matchupTurns("Garen", "Darius"), want: "code text \"### 스킬 가속\n```\n쿨타임 감소율 = \"", calls: [] },
+  { name: "상성 대화 밖의 쿨타임 감소 계산은 게임 원리 문서", question: "쿨타임 감소 계산 어떻게 해?", want: "code text \"### 스킬 가속\n```\n쿨타임 감소율 = \"", calls: [] },
   { name: "상대법 + 앞 대화의 다른 챔피언은 상성이 아니라 공략", question: "말파이트 상대법", turns: championTurns("Garen"), want: "card champion Malphite notes=against 1/4 \"말파이트에게 방어력은 \"", calls: [] },
   { name: "앞 대화 챔피언 + 새 이름 상성", question: "제이스랑 상대한다 생각하면", turns: championTurns("Malphite"), want: "matchup Malphite>Jayce", calls: [] },
   { name: "이름 셋 상성은 자리 낱말 붙은 이름을 뺀다", question: "오공으로 럼블 상대할 때 아이번 정글이면 아이템 뭐 가?", want: "matchup MonkeyKing>Rumble · 오공 vs 럼블 상성으로 답합니다 (곁들인 이름: 아이번).", calls: [] },
