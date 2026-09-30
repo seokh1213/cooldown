@@ -22,6 +22,7 @@ import {
   buildCompareAnswer as buildCompareCard,
   buildRuleAnswer as buildRuleCard,
   buildSpellAnswer as buildSpellCard,
+  detectStat,
   type AdvisorAnswer,
 } from "./answer";
 import { askFromWords, asksComparison, asksGuide, asksMatchup, asksWholeKit, looksChampionDirected, refersToContextChampions } from "./askWords";
@@ -585,6 +586,8 @@ async function answerMatchupOfMany({ question, ctx, data, champions, ask, topic 
  */
 async function answerMatchupOfTwo({ question, ctx, champions, ask, route, topic }: Intent): Promise<AnswerPlan | undefined> {
   if (champions.length !== 2 || ask !== "matchup") return undefined;
+  // "아리 vs 럼블 누가 더 빨라?" — 이름 둘에 비교 낱말과 능력치 낱말이 있으면 상성 해설이 아니라 능력치 표다(판정기는 이름 둘이면 상성으로 가른다)
+  if (asksComparison(question, 2) && detectStat(question)) return undefined;
   const [mine, enemy] = pickMatchupSides(question, champions, route);
   return { type: "matchup", mine, enemy, notice: ctx.notice, focus: (await topic())?.topic };
 }

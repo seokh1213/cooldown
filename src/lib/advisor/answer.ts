@@ -391,10 +391,10 @@ const STAT_LEXICON: Array<[StatName, RegExp]> = [
   ["healthRegen", /체력\s*재생|체젠|health\s*regen|生命(值)?回复/i],
   ["magicResist", /마법\s*저항|마저|마방|magic\s*resist|\bmr\b|魔抗|魔法抗性/i],
   ["attackSpeed", /공격\s*속도|공속|attack\s*speed|\bas\b|攻(击)?速(度)?/i],
-  ["moveSpeed", /이동\s*속도|이속|무빙|move(ment)?\s*speed|\bms\b|移动速度|移速/i],
+  ["moveSpeed", /이동\s*속도|이속|무빙|빨라|빠르|빠른|move(ment)?\s*speed|\bms\b|\bfaster\b|移动速度|移速|更快/i],
   ["attackDamage", /공격력|깡뎀|\bad\b|attack\s*damage|攻击力/i],
   ["armor", /방어력|방어|아머|\barmor\b|护甲/i],
-  ["health", /체력|피통|\bhp\b|\bhealth\b|生命值/i],
+  ["health", /체력|피통|단단|튼튼|탱키|\bhp\b|\bhealth\b|\btank(y|ier)\b|生命值|更肉|坦/i],
 ];
 
 export function detectStat(question: string): StatName | undefined {
