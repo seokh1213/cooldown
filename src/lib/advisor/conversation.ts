@@ -13,6 +13,7 @@
  */
 import type { ChampionCard } from "@/lib/knowledge/facts";
 import type { AdvisorAnswer } from "./answer";
+import { asksGameMeta } from "./askWords";
 
 export type Act = "followup" | "more" | "enemy" | "mine" | "flip" | "new";
 
@@ -102,17 +103,15 @@ export function sideOfNewName(question: string, names: string[]): "mine" | "enem
  */
 const FLIP_WORDS = /입장에서|입장이면|쪽에서는|반대로|반대 입장|거꾸로|\bfrom \S+('s)? side\b|\bthe other way\b|\breverse\b|\bflip( it)?\b|反过来|那一方|那边怎么/i;
 const MORE_WORDS = /^(왜|왜요|왜\?)|더 자세히|자세히|풀어서|이유가|무슨 말|^\s*why\b|\bwhy is that\b|\btell me more\b|\bmore detail|\bexplain\b|\bbreak (that|it) down\b|为什么|为啥|详细|具体点|再多讲|什么意思|讲细/i;
-/**
- * 게임 규칙·메타 낱말. 이런 말이면 앞 상성과 상관없는 새 질문이다(아이템·룬 이름은 자료가 따로 가른다).
- * 챔피언 가격·항복·다시하기·랭크·스킨 … 판정기 sub-v1 의 game 갈래와 같은 영역이다.
- */
-const GAME_WORDS =
-  /항복|서렌|조기 항복|닷지|다시하기|리메이크|승점|\bLP\b|승급|티어|듀오|정수|RP|챔피언 가격|챔프 가격|가격 얼마|스킨|환불|몇 분에 나와|몇 분부터|등장 시간|젠 시간|리젠|\bsurrender\b|\bff\b|\bremake\b|\bdodg|\branked\b|\bpromos?\b|blue essence|\bBE\b|\bskins?\b|\bspawns?\b|respawn|投降|重开|秒退|胜点|排位|蓝色精粹|精粹|皮肤|退款|刷新|几分钟/i;
 
+/**
+ * 게임 규칙·메타 낱말(`asksGameMeta`: 항복·닷지·랭크·스킨 …)이면 앞 상성과 상관없는 새 질문이다(아이템·룬 이름은 자료가 따로 가른다).
+ * 갈래 판정기의 game 은 여기 쓰지 않는다 — 판정기 둘이 동의할 때 새 질문으로 쳐 봤더니 이어 묻기를 더 잃었다(`planTurn`).
+ */
 export function actFromWords(question: string): Act | undefined {
   if (FLIP_WORDS.test(question)) return "flip";
   if (MORE_WORDS.test(question)) return "more";
-  if (GAME_WORDS.test(question)) return "new";
+  if (asksGameMeta(question)) return "new";
   return undefined;
 }
 
@@ -125,7 +124,7 @@ export type TurnPlan<T> = { kind: "matchup"; mine: T; enemy: T; act: Act } | { k
  * @param entity  아이템·룬·소환사 주문·게임 규칙 이름이 있는가(있으면 새 질문이다)
  * @param act     판정기가 고른 것. 없으면 규칙으로 가른다
  * @param side    새 이름의 자리를 문형이 못 박았으면 그것(`sideOfNewName`). 판정기보다 먼저다
- * @param alone   이번 말을 따로 가른 갈래(route 판정). 새 이름의 스킬·수치·아이템 질문이면 앞 쌍에 붙이지 않는다
+ * @param alone   이번 말을 따로 가른 갈래(`Intent.ask`). 새 이름의 스킬·수치·아이템 질문이면 앞 쌍에 붙이지 않는다
  *
  * 이름 없는 말에서 판정기의 "new" 는 따르지 않는다. 손으로 쓴 시험에서 이어 묻기 15개 중 8개를 새 질문으로
  * 보냈다("궁극기 언제 아껴야 해", "점멸 대신 방어막 들어도 돼?"). 새 질문은 `entity`(아이템·규칙 이름,

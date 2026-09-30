@@ -176,8 +176,9 @@ const CASES: Case[] = [
   { name: "상성 대화 중 아이템 이름은 새 질문", question: "쇼진의 창 효과", turns: matchupTurns("Garen", "Darius"), want: "code item 3161 verdicts=0", calls: [] },
   { name: "상성 대화 중 영어 ult 쿨타임은 두 R", question: "give me the ult cooldowns for both", lang: "en_US", turns: matchupTurns("Garen", "Darius", undefined, "en_US"), want: "card compare Garen,Darius slot=R · Using Garen·Darius from earlier in this chat.", calls: [] },
   { name: "상성 대화 중 중국어 大招 CD 는 두 R", question: "两人大招CD各是多少", lang: "zh_CN", turns: matchupTurns("Garen", "Darius", undefined, "zh_CN"), want: "card compare Garen,Darius slot=R · 以刚才提到的 德玛西亚之力·诺克萨斯之手 为准。", calls: [] },
-  // "champions" 가 "챔피언 분류" 절의 검색어였다. 모델 없이는 영어 스킬 낱말이 대화 챔피언을 붙이지 못해 모델에게 넘어간다(문서가 아니라는 것이 요점)
-  { name: "상성 대화 중 영어 champions 는 문서 검색어가 아니다", question: "show me both champions' ability cooldowns", lang: "en_US", turns: matchupTurns("Garen", "Darius", undefined, "en_US"), want: "respond", calls: [] },
+  // "champions" 가 "챔피언 분류" 절의 검색어였다. 갈래를 한 곳(`askFromWords`)에서 정한 뒤로는 모델 없이도 영어 "cooldowns" 가
+  // 스킬 수치 갈래가 되어 대화의 두 챔피언 표로 답한다(그 전에는 대화 챔피언을 붙이지 못해 모델에게 넘어갔다 — 문서가 아니라는 것이 요점)
+  { name: "상성 대화 중 영어 champions 는 문서 검색어가 아니다", question: "show me both champions' ability cooldowns", lang: "en_US", turns: matchupTurns("Garen", "Darius", undefined, "en_US"), want: "card compare Garen,Darius · Using Garen·Darius from earlier in this chat.", calls: [] },
   { name: "상성 대화 중 쿨감 템 조언은 아이템 이어 묻기", question: "쿨감 템 먼저 가는 게 나아?", turns: matchupTurns("Garen", "Darius"), want: "matchup Garen>Darius focus=situational-item · 앞서 말한 가렌 vs 다리우스 기준입니다.", calls: [] },
   { name: "상성 대화 중 영어 cdr 템 조언은 아이템 이어 묻기", question: "should I rush a cdr item?", lang: "en_US", turns: matchupTurns("Garen", "Darius", undefined, "en_US"), want: "matchup Garen>Darius focus=situational-item · Using Garen vs Darius from earlier in this chat.", calls: [] },
   { name: "상성 대화 중 중국어 冷却缩减 장비 조언은 아이템 이어 묻기", question: "先出冷却缩减装备好吗", lang: "zh_CN", turns: matchupTurns("Garen", "Darius", undefined, "zh_CN"), want: "matchup Garen>Darius focus=situational-item · 以刚才提到的 德玛西亚之力 vs 诺克萨斯之手 为准。", calls: [] },
@@ -235,6 +236,12 @@ const CASES: Case[] = [
   { name: "상성 대화: 판정기 잡담이어도 조언 요청은 이어 묻기", question: "팁 좀 줘", model: true, judge: { kind: "chat", act: "followup", topic: "general" }, turns: matchupTurns("Garen", "Darius"), search: [], want: "matchup Garen>Darius focus=general · 앞서 말한 가렌 vs 다리우스 기준입니다.", calls: ["judge kind", "search", "judge act"] },
   { name: "상성 대화: 더 자세히는 주제 판정을 부르지 않는다", question: "좀 더 알려줘", model: true, judge: { kind: "guide", act: "more" }, turns: matchupTurns("Garen", "Darius", "teamfight"), search: [], want: "matchup Garen>Darius focus=teamfight more · 앞서 말한 가렌 vs 다리우스 기준입니다.", calls: ["judge kind", "search", "judge act"] },
   { name: "상성 대화: 새 챔피언 스킬 지목은 그 챔피언 스킬", question: "제드 궁 어떻게 피해", model: true, judge: { kind: "skills", act: "enemy", topic: "skill" }, turns: matchupTurns("Garen", "Darius"), want: "card spell Zed R focus=damage", calls: ["judge kind", "judge act"] },
+  // 갈래는 하나(`Intent.ask`)다. 판정기가 가른 스킬 수치·스킬 소개는 이름이 없어도 상성 이어 묻기·검색 벡터보다 앞이다.
+  { name: "상성 대화: 판정기가 스킬 수치라 하면 해설이 아니라 두 챔피언 표", question: "두 챔피언에 대해 스킬 쿨타임도 알려줘", model: true, judge: { kind: "spellStat", act: "followup" }, turns: matchupTurns("MonkeyKing", "Rumble"), want: "card compare MonkeyKing,Rumble · 앞서 말한 오공·럼블 기준입니다.", calls: ["judge kind"] },
+  // "champions" 라 쓰면 게임 원리 "챔피언 분류" 절의 영어 검색어에 걸린다(색인은 미리 만든 자료라 여기서 못 고친다). 그 문제는 이 시험의 것이 아니다.
+  { name: "상성 대화: 판정기가 스킬 수치라 하면(영어) 두 챔피언 표", question: "show me both champs' ability cooldowns", lang: "en_US", model: true, judge: { kind: "spellStat", act: "followup" }, turns: matchupTurns("MonkeyKing", "Rumble", undefined, "en_US"), want: "card compare MonkeyKing,Rumble · Using Wukong·Rumble from earlier in this chat.", calls: ["judge kind"] },
+  { name: "화면 챔피언 + 판정기 스킬 소개(영어)는 검색 벡터를 건너뛴다", question: "explain the abilities", lang: "en_US", model: true, judge: { kind: "skills", topic: "general" }, search: [{ id: "mech:스킬-가속", score: 0.9 }], screen: ["Malphite"], want: "card champion Malphite view=skills notes=both 3/3 \"For Malphite\" · Using Malphite from the current page.", calls: ["judge kind"] },
+  { name: "판정기 없이 챔피언 하나 + 게임 메타 낱말은 게임 메타", question: "킨드레드 하는 중인데 첫 바론 몇 분에 나와", want: "code text \"내셔 남작은 20분에 나오고, 잡히면 6분 \"", calls: [] },
   { name: "재질문의 안내는 그대로 실린다", question: "럼블 E", notice: "럼블로 알아들었어요", screen: ["Malphite"], want: "card spell Rumble E · 럼블로 알아들었어요", calls: [] },
   { name: "영어 상성(판정기)", question: "how do I play Yasuo into Malphite?", lang: "en_US", model: true, judge: { kind: "matchup", mine: "Malphite", topic: "laning" }, want: "matchup Yasuo>Malphite focus=general", calls: ["judge kind+mine"] },
 ];

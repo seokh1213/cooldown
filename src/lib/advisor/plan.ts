@@ -3,6 +3,10 @@
  *
  * 판정기(`judge`)와 검색 벡터(`search`)는 인자로 받는다. 답을 내는 일은 부르는 쪽(`AdvisorPanel`)이 한다.
  * 먼저 질문을 읽고(`understand`), 단계를 차례로 돌려 처음 답한 단계의 답을 쓴다. 순서가 곧 우선순위다.
+ *
+ * 질문이 **무엇을 묻는지**(갈래, `Intent.ask`)는 `understand` 가 한 번만 정한다 — 판정기가 있으면 판정기, 없으면 낱말(`askFromWords`).
+ * 단계는 그 갈래를 읽을 뿐 갈래를 따로 가르지 않는다. 단계에 남은 정규식은 갈래가 아닌 것(누가 내 챔피언인가, 어느 수치인가,
+ * 앞 상성을 떠나는가, 둘을 견주는가)을 가른다.
  */
 import type { Language } from "@/i18n";
 import type { Translations } from "@/i18n/translations";
@@ -17,16 +21,8 @@ import {
   buildSpellAnswer as buildSpellCard,
   type AdvisorAnswer,
 } from "./answer";
-import {
-  asksComparison,
-  asksGuide,
-  asksMatchup,
-  asksSkillsOverview,
-  asksWholeKit,
-  looksChampionDirected,
-  refersToContextChampions,
-} from "./askWords";
-import { asksSpellNumbers, detectSpellFocus } from "./spellFocus";
+import { askFromWords, asksComparison, asksWholeKit, looksChampionDirected, refersToContextChampions } from "./askWords";
+import { detectSpellFocus } from "./spellFocus";
 import { suggestChampions } from "./championTypo";
 import { matchupPair, matchupSides, matchupSidesByPhrase, matchupSidesDetailed } from "./matchupSides";
 import { asksAboutHelper, detectChampions, isSmallTalk, nicknames } from "./intent";
@@ -36,6 +32,7 @@ import {
   JUDGE_MINE_INSTRUCTIONS,
   judgeRouteState,
   routeFromKind9,
+  type AskKind,
   type AskRoute,
 } from "./routeAsk";
 import { topicFromJudge, topicFromWords, topicQuestions } from "./topicJudge";
@@ -122,7 +119,12 @@ export interface Intent {
   question: string;
   ctx: PlanContext;
   data: AdvisorData;
-  /** 판정기가 가른 갈래. 모델이 없거나 판정이 실패하면 없고, 단계마다 낱말 규칙이 대신한다. */
+  /**
+   * 질문이 무엇을 묻는지. 판정기가 가른 갈래(`route.kind`), 판정기가 없거나 실패하면 낱말 규칙(`askFromWords`).
+   * 단계들은 이것 하나를 읽는다 — 단계마다 제 낱말로 갈래를 다시 가르지 않는다.
+   */
+  ask: AskKind;
+  /** 판정기가 가른 갈래와 내 챔피언. 모델이 없거나 판정이 실패하면 없다. 갈래는 `ask` 로 읽고, 여기서는 `mine` 만 쓴다. */
   route?: AskRoute;
   /**
    * 판정기(또는 갈래를 못 박는 낱말)가 가른 주제. 이름이 있을 때만. 쓰는 단계가 처음 부를 때 한 번만 판정한다 —
@@ -178,22 +180,33 @@ export async function planAnswer(question: string, ctx: PlanContext, deps: PlanD
   return { type: "respond", plan: { system: advisorSystemPrompt(ctx.lang), withoutConsent: copy.noModel } };
 }
 
-/** 질문에 적힌 이름, 판정기의 갈래·주제, 대화가 남긴 맥락을 모은다. 판정기는 여기서 한 번(이름이 있으면 두 번) 부른다. */
+/** 질문에 적힌 이름, 갈래(판정기 또는 낱말)·주제, 대화가 남긴 맥락을 모은다. 판정기는 여기서 한 번(이름이 있으면 두 번) 부른다. */
 export async function understand(question: string, ctx: PlanContext, data: AdvisorData, deps: PlanDeps): Promise<Intent> {
   const champions = detectChampions(data, question);
   const judging = ctx.canUseModel && ctx.consented;
   const route = judging ? await judgeRoute(question, data, champions, deps) : undefined;
+  const lastItem = recentItem(ctx.turns);
+  // 낱말 규칙에는 자료 이름(룬·주문 규칙, 아이템, 게임 메타)이 걸렸는지만 넘긴다. 낱말 목록은 `askWords.ts` 에 있다.
+  const ask =
+    route?.kind ??
+    askFromWords(question, {
+      champions: champions.length,
+      rule: askedRules(data, question)[0]?.subject,
+      item: Boolean(buildItemCard(data, question, lastItem)),
+      game: Boolean(gameMetaAnswer(question, ctx.lang)),
+    });
   let topic: Promise<ReturnType<typeof topicFromJudge> | undefined> | undefined;
   return {
     question,
     ctx,
     data,
+    ask,
     route,
     topic: () => (topic ??= judging ? judgeTopic(question, data, champions, deps) : Promise.resolve(undefined)),
     champions,
     matchup: matchupStateOf(ctx.turns.map((turn) => (turn.role === "assistant" ? turn.answer : undefined))),
     recent: recentChampions(data, ctx.turns),
-    recentItem: recentItem(ctx.turns),
+    recentItem: lastItem,
     slot: detectSlot(question),
   };
 }
@@ -205,7 +218,7 @@ export async function understand(question: string, ctx: PlanContext, data: Advis
  * 영어 1/6, 중국어 1/6 이었다 — 영어·중국어 사용자에게는 거의 아무것도 못 가린다.
  * 같은 문항을 모델에 물으니 4B 가 17/18 이다.
  *
- * 실패하거나 모델이 없으면 `undefined` 로 두고 예전 규칙이 돈다. 낱말 목록을
+ * 실패하거나 모델이 없으면 `undefined` 로 두고 낱말 규칙(`askFromWords`)이 갈래를 낸다. 낱말 목록을
  * 지우지 않는 까닭이 이것이다 — 모델을 안 받은 사용자에게도 답은 나와야 한다.
  */
 async function judgeRoute(question: string, data: AdvisorData, named: ChampionCard[], deps: PlanDeps): Promise<AskRoute | undefined> {
@@ -271,9 +284,13 @@ function recentItem(turns: readonly PlanTurn[]): string | undefined {
  * 챔피언 이름 오타 후보가 있어도 찾지 않는다 — "럼미 E" 는 럼블 질문이다(오타 단계가 고친다).
  * 검색이 실패하면(그래프·파일) 아래 낱말 길이 처음부터 그대로 돈다.
  */
-async function answerByVector({ question, ctx, data, recentItem, matchup, recent }: Intent, deps: PlanDeps): Promise<AnswerPlan | undefined> {
-  // "두 챔피언에 대해 스킬 쿨타임도" — 가리키는 챔피언이 화면·대화에 있으면 문서 검색이 아니다. 검색은 "챔피언 분류" 절을 골랐다.
-  if (refersToContextChampions(question) && (recent.length > 0 || ctx.championIds.length > 0)) return undefined;
+async function answerByVector({ question, ctx, data, ask, recentItem, matchup, recent }: Intent, deps: PlanDeps): Promise<AnswerPlan | undefined> {
+  /*
+   * "두 챔피언에 대해 스킬 쿨타임도" — 가리키는 챔피언이 화면·대화에 있으면 문서 검색이 아니다. 검색은 "챔피언 분류" 절을 골랐다.
+   * 갈래가 스킬 소개·스킬 수치여도 같다: 이름 없이 스킬을 묻는데 챔피언이 눈앞에 있으면 그 챔피언이 답이다(`answerChampion` 이 붙인다).
+   * 잘못 가른 룬·게임 메타 질문은 아래 낱말 길(룬·주문 → 게임 메타 → 아이템·원리)이 그대로 받는다.
+   */
+  if ((refersToContextChampions(question) || ask === "spellStat" || ask === "skills") && (recent.length > 0 || ctx.championIds.length > 0)) return undefined;
   if (!(ctx.canUseModel && ctx.consented && ctx.retrieval && searchesByVector(data, question, recentItem, Boolean(matchup)))) return undefined;
   const top = await deps.search(question, ctx.lang).catch((error: unknown) => {
     console.warn("[advisor] 검색 벡터 실패 — 낱말 검색으로", error);
@@ -343,16 +360,16 @@ function fixChampionTypo({ question, ctx, data, champions, matchup }: Intent): A
 
 /*
  * 게임 규칙·메타(항복·다시하기·오브젝트 시간·챔피언 가격·닷지 …). 공식 위키에서 옮긴 사실로 답한다(`gameMeta.ts`).
- * 이름이 없으면 낱말로, 챔피언 하나가 곁들여졌으면 판정기가 그 밖·게임 규칙으로 가른 때만("킨드레드 하는 중인데
+ * 이름이 없으면 낱말로, 챔피언 하나가 곁들여졌으면 갈래가 게임 규칙일 때만("킨드레드 하는 중인데
  * 첫 바론 몇 분에 나와"). 상성 대화 중이어도 새 질문이다.
  */
-function answerGameFact({ question, ctx, data, champions, route }: Intent): AnswerPlan | undefined {
+function answerGameFact({ question, ctx, data, champions, ask }: Intent): AnswerPlan | undefined {
   if (champions.length === 1) {
     const price = championPriceAnswer(question, champions[0], ctx.lang);
     // "피오라 굶주린 히드라 가격" 은 아이템 가격이다 — 아이템 이름이 있으면 챔피언 가격 대신 아이템 카드로 답한다
     if (price) return { type: "code", answer: buildItemCard(data, question, undefined) ?? price, notice: ctx.notice };
   }
-  if (champions.length === 0 || (champions.length === 1 && (route?.kind === "other" || route?.kind === "game"))) {
+  if (champions.length === 0 || (champions.length === 1 && ask === "game")) {
     const fact = gameMetaAnswer(question, ctx.lang);
     if (fact) return { type: "code", answer: fact, notice: ctx.notice };
   }
@@ -368,10 +385,13 @@ function answerGameFact({ question, ctx, data, champions, route }: Intent): Answ
  * 까닭과 측정은 `conversation.ts`.
  */
 async function continueMatchup(intent: Intent, deps: PlanDeps): Promise<AnswerPlan | undefined> {
-  const { question, ctx, data, champions, matchup: state, route } = intent;
+  const { question, ctx, data, champions, matchup: state, ask } = intent;
   if (!state || champions.length > 1) return undefined;
-  // 이름 없이 스킬 수치를 찾으면 해설이 아니라 두 챔피언의 표다(`answerChampion` 이 대화의 두 챔피언을 붙인다)
-  if (champions.length === 0 && asksSpellNumbers(question)) return undefined;
+  /*
+   * 이름 없이 스킬 수치를 찾으면 해설이 아니라 두 챔피언의 표다(`answerChampion` 이 대화의 두 챔피언을 붙인다).
+   * 이 단계가 갈래를 안 보던 때 "두 챔피언에 대해 스킬 쿨타임도 알려줘" 가 한타·아이템 해설로 나갔다.
+   */
+  if (champions.length === 0 && ask === "spellStat") return undefined;
   /*
    * 아이템 이름·게임 규칙 문서가 걸리면 새 질문이다.
    *
@@ -410,7 +430,7 @@ async function continueMatchup(intent: Intent, deps: PlanDeps): Promise<AnswerPl
   // 새 이름이 내 자리인지 상대 자리인지 문형이 못 박으면 판정기보다 먼저다("오공으로 하면", "야스오 만나면")
   const side = champions.length === 1 ? sideOfNewName(question, [champions[0].name, ...(data.aliases.get(champions[0].id) ?? [])]) : undefined;
   // 새 챔피언 + 스킬 지목("제드 궁 어떻게 피해")은 상대를 바꾼 것이 아니라 그 챔피언의 스킬 질문이다
-  const alone = champions.length === 1 && intent.slot ? "skills" : route?.kind;
+  const alone = champions.length === 1 && intent.slot ? "skills" : ask;
   const turn = planTurn(state, champions, entity, act, side, alone);
   if (turn.kind !== "matchup") return undefined;
   const topic = turn.act === "more" ? previousFocus(ctx.turns) : await matchupTopic(question, data, ctx, [turn.mine, turn.enemy], deps);
@@ -419,13 +439,13 @@ async function continueMatchup(intent: Intent, deps: PlanDeps): Promise<AnswerPl
 }
 
 /** 이름 없는 말이 앞 상성을 떠나 다른 것을 묻는가 */
-async function leaveMatchup({ question, ctx, data, route }: Intent, deps: PlanDeps): Promise<AnswerPlan | undefined> {
+async function leaveMatchup({ question, ctx, data, ask }: Intent, deps: PlanDeps): Promise<AnswerPlan | undefined> {
   /*
-   * 게임과 무관한 말("내일 날씨 어때?", "라면 맛있게 끓이는 법")은 앞 상성의 이어 묻기가 아니다. 판정기(kev)가 잡담이라 가르고,
+   * 게임과 무관한 말("내일 날씨 어때?", "라면 맛있게 끓이는 법")은 앞 상성의 이어 묻기가 아니다. 갈래가 잡담이고,
    * 문형("왜?", "풀어서")·조언 요청("팁 좀", "any tips?")이 없을 때만. 대화 흐름 시험에서 이어 묻기 133 중 0 을 끊고
-   * 답 없는 질문 119 중 무관한 것 9 를 잡았다.
+   * 답 없는 질문 119 중 무관한 것 9 를 잡았다. `OFF_TOPIC` 은 갈래와 상관없이 본다 — 판정기가 잡담으로 못 가른 것도 잡는다.
    */
-  if (OFF_TOPIC.test(question) || (route?.kind === "chat" && !actFromWords(question) && !FOLLOWUP_GUARD.test(question))) {
+  if (OFF_TOPIC.test(question) || (ask === "chat" && !actFromWords(question) && !FOLLOWUP_GUARD.test(question))) {
     return { type: "code", answer: ctx.copy.noLiteAnswer };
   }
   /*
@@ -461,10 +481,11 @@ async function matchupTopic(question: string, data: AdvisorData, ctx: PlanContex
  * 대화 맥락의 상성. "말파이트 설명해줘" 다음의 "제이스랑 상대한다 생각하면" 은 말파이트로
  * 제이스를 상대하는 질문이다. 방금 다룬 챔피언이 내 챔피언, 새 이름이 상대.
  */
-async function answerMatchupWithRecent({ question, ctx, champions, route, recent, topic }: Intent): Promise<AnswerPlan | undefined> {
-  // "말파이트 상대법" 은 그 챔피언의 공략을 달라는 말이다. 앞 대화에 다른 챔피언이
+async function answerMatchupWithRecent({ ctx, champions, ask, recent, topic }: Intent): Promise<AnswerPlan | undefined> {
+  // "말파이트 상대법" 은 그 챔피언의 공략을 달라는 말이다(갈래 guide). 앞 대화에 다른 챔피언이
   // 있다고 짝을 지으면 묻지 않은 상성이 된다. 그때는 아래 챔피언 경로로 내려간다.
-  if (champions.length !== 1 || !(route ? route.kind === "matchup" : asksMatchup(question) && !asksGuide(question))) return undefined;
+  // 판정기는 이름 하나를 상성으로 가르지 않으므로(`routeFromKind9`) 이 길은 낱말 갈래(`askFromWords`)의 것이다.
+  if (champions.length !== 1 || ask !== "matchup") return undefined;
   const mine = recent.find((card) => card.id !== champions[0].id);
   return mine ? { type: "matchup", mine, enemy: champions[0], notice: ctx.notice, focus: (await topic())?.topic } : undefined;
 }
@@ -475,9 +496,9 @@ async function answerMatchupWithRecent({ question, ctx, champions, route, recent
  * 프롬프트가 2,300토큰이 넘어 실행이 죽었다. 자리 낱말로 곁들인 이름을 빼고 둘로 답한다.
  * 시점은 판정기에 묻지 않는다 — 이름 둘로 배운 헤드라 셋 앞에서는 12문항 중 6개만 맞혔다.
  */
-async function answerMatchupOfMany({ question, ctx, data, champions, route, topic }: Intent): Promise<AnswerPlan | undefined> {
+async function answerMatchupOfMany({ question, ctx, data, champions, ask, topic }: Intent): Promise<AnswerPlan | undefined> {
   // 셋을 한꺼번에 견주는 질문("오공 럼블 아이번 중 누가 세?")은 아래 비교 표가 받는다
-  if (champions.length < 3 || asksComparison(question, champions.length) || !(route ? route.kind === "matchup" : asksMatchup(question))) return undefined;
+  if (champions.length < 3 || asksComparison(question, champions.length) || ask !== "matchup") return undefined;
   const aliasesOf = (card: ChampionCard) => [card.name, ...(data.aliases.get(card.id) ?? [])];
   const pair = matchupPair(question, champions, aliasesOf);
   if (!pair) return undefined;
@@ -496,8 +517,8 @@ async function answerMatchupOfMany({ question, ctx, data, champions, route, topi
  * 상대를 먼저 말하면 통째로 뒤집혔다 — "럼블 상대로 오공 하는데" 가 럼블 시점이
  * 됐다. 열 문장으로 재 보니 어순은 4/10, 조사는 9/10 이다.
  */
-async function answerMatchupOfTwo({ question, ctx, champions, route, topic }: Intent): Promise<AnswerPlan | undefined> {
-  if (champions.length !== 2 || !(route ? route.kind === "matchup" : asksMatchup(question))) return undefined;
+async function answerMatchupOfTwo({ question, ctx, champions, ask, route, topic }: Intent): Promise<AnswerPlan | undefined> {
+  if (champions.length !== 2 || ask !== "matchup") return undefined;
   const [mine, enemy] = pickMatchupSides(question, champions, route);
   return { type: "matchup", mine, enemy, notice: ctx.notice, focus: (await topic())?.topic };
 }
@@ -529,8 +550,8 @@ function answerItemOrMechanics({ question, data, champions, recentItem }: Intent
 
 /** 챔피언 질문. 이름이 없으면 대화·화면의 챔피언을 붙인다. */
 async function answerChampion(intent: Intent): Promise<AnswerPlan | undefined> {
-  const { question, ctx, champions, slot } = intent;
-  const about = champions.length === 0 && looksChampionDirected(question, slot) ? championsFromContext(intent) : { champions, notice: ctx.notice };
+  const { question, ctx, champions, slot, ask } = intent;
+  const about = champions.length === 0 && looksChampionDirected(question, slot, ask) ? championsFromContext(intent) : { champions, notice: ctx.notice };
   if ("type" in about) return about;
   if (about.champions.length === 0) return undefined;
   // 둘 이상을 견주는 질문은 코드가 표로 견준다. 모델이 도구로 수치를 꺼내 글로
@@ -579,7 +600,7 @@ function championsFromContext({ question, ctx, data, recent, slot }: Intent): An
  * 4건·3건으로 줄인 것은 프롬프트가 6천 자에 닿으면 브라우저 런타임이 죽기 때문이었는데,
  * 여기는 화면에 바로 나가는 글이라 그 제약이 없다.
  */
-async function answerOneChampion({ question, ctx, data, route, topic: judgeTopicOnce, slot }: Intent, card: ChampionCard, notice: string | undefined): Promise<AnswerPlan> {
+async function answerOneChampion({ question, ctx, data, ask, topic: judgeTopicOnce, slot }: Intent, card: ChampionCard, notice: string | undefined): Promise<AnswerPlan> {
   // "패시브와 네 가지 스킬을 각각" 은 패시브 한 칸이 아니라 스킬 전체 소개다
   const spell = slot && !asksWholeKit(question) ? card.spells.find((entry) => entry.slot === slot) : undefined;
   if (spell) return { type: "card", answer: buildSpellCard(card, spell, question, ctx.lang), notice };
@@ -588,7 +609,7 @@ async function answerOneChampion({ question, ctx, data, route, topic: judgeTopic
   const tagAnswer = buildTagAnswer(data, card, question);
   if (tagAnswer) return { type: "code", answer: tagAnswer, notice };
   // "말파이트 스킬 설명해줘": 스킬 다섯 개의 요약 + 운용 노트. 능력치 표는 뺀다.
-  if ((route ? route.kind === "skills" : asksSkillsOverview(question)) || asksWholeKit(question)) {
+  if (ask === "skills" || asksWholeKit(question)) {
     return { type: "card", answer: { kind: "champion", card, view: "skills", notes: championNotes(data, card, question, undefined, await judgeTopicOnce()) }, notice };
   }
   // "말파이트 스킬 쿨타임": 슬롯 없이 사실 하나를 물으면 스킬 다섯 개의 그 사실을 표로.
@@ -607,14 +628,14 @@ async function answerOneChampion({ question, ctx, data, route, topic: judgeTopic
 }
 
 /** 어느 이름도 없고 벡터 검색도 답을 못 냈다. 질문 낱말로 찾는다. 동의 전이면 모델에게 넘긴다. */
-function answerFromNotes({ question, ctx, data, route }: Intent): AnswerPlan | undefined {
+function answerFromNotes({ question, ctx, data, ask }: Intent): AnswerPlan | undefined {
   if (!ctx.consented) return undefined;
   const corpus = buildSearchCorpus(data, ctx.lang);
   /*
-   * 게임 규칙·메타(항복·오브젝트 시간·챔피언 가격·랭크)는 자료에 없는 것이 많다. 판정기가 게임 규칙으로 가른 질문이
+   * 게임 규칙·메타(항복·오브젝트 시간·챔피언 가격·랭크)는 자료에 없는 것이 많다. 갈래가 게임 규칙인 질문이
    * 낱말 검색에도 안 걸리면 자료가 없다는 안내(`noGameData`)를 보인다.
    */
-  if (route?.kind === "game" && !lexicalSearch(corpus, question).length) return { type: "code", answer: ctx.copy.noGameData };
+  if (ask === "game" && !lexicalSearch(corpus, question).length) return { type: "code", answer: ctx.copy.noGameData };
   // 모델은 카드 없는 답을 쓰지 않는다. 질문 낱말로 찾아 걸린 자료 문장을 그대로 보인다(`hitsToAnswer`). 없으면 자료가 없다고 말한다.
   const shown = hitsToAnswer(lexicalSearch(corpus, question), question);
   return { type: "code", answer: shown ? `${shown}\n\n${ctx.copy.fromNotes}` : ctx.copy.noLiteAnswer };
