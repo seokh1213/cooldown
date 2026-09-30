@@ -15,6 +15,9 @@ permissions:
   contents: write
   # 지식 계층 점검 결과를 이슈로 남긴다. 이슈 알림이 곧 메일이다.
   issues: write
+  # GitHub Pages 에 Actions 로 바로 배포한다(gh-pages 브랜치를 거치지 않는다).
+  pages: write
+  id-token: write
 
 concurrency:
   group: update-static-data
@@ -51,6 +54,8 @@ jobs:
     needs: check
     if: needs.check.outputs.run == 'true'
     runs-on: ubuntu-latest
+    outputs:
+      deploy: ${{ steps.pages-artifact.outcome == 'success' }}
 
     steps:
       - name: Checkout repository
@@ -162,16 +167,35 @@ jobs:
           test "$(printf '%s\n' "$release_dir" | wc -l)" -eq 1
           diff --recursive --brief public/data "$release_dir"
 
-      - name: Install Playwright browser
+      # 브라우저(약 170MB)는 Playwright 판본마다 같으므로 캐시한다. 시스템 라이브러리는 apt 라 매번 깐다.
+      - name: Read Playwright version
         if: github.event_name != 'schedule' || steps.git-check.outputs.changed == 'true'
+        id: playwright
+        run: echo "version=$(node -p "require('@playwright/test/package.json').version")" >> "$GITHUB_OUTPUT"
+
+      - name: Cache Playwright browser
+        if: github.event_name != 'schedule' || steps.git-check.outputs.changed == 'true'
+        id: playwright-cache
+        uses: actions/cache@v6
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ steps.playwright.outputs.version }}
+
+      - name: Install Playwright browser
+        if: (github.event_name != 'schedule' || steps.git-check.outputs.changed == 'true') && steps.playwright-cache.outputs.cache-hit != 'true'
         run: npx playwright install --with-deps chromium
+
+      - name: Install Playwright system dependencies
+        if: (github.event_name != 'schedule' || steps.git-check.outputs.changed == 'true') && steps.playwright-cache.outputs.cache-hit == 'true'
+        run: npx playwright install-deps chromium
 
       - name: Run browser smoke tests
         if: github.event_name != 'schedule' || steps.git-check.outputs.changed == 'true'
         run: npm run test:e2e
 
+      # 성공한 회차의 보고서는 볼 일이 없다. 실패했을 때만 남긴다.
       - name: Upload visual regression report
-        if: github.event_name != 'schedule' || steps.git-check.outputs.changed == 'true'
+        if: failure()
         uses: actions/upload-artifact@v7
         with:
           name: playwright-visual-report-${{ github.run_id }}
@@ -190,9 +214,25 @@ jobs:
           done
           exit 1
 
-      - name: Deploy to GitHub Pages
+      # 예전에는 dist 를 gh-pages 브랜치에 커밋했다(peaceiris/actions-gh-pages). 그러면 옛 파일을
+      # 하나씩 지우는 로그가 5천 줄 넘게 찍히고, 브랜치 기록이 배포마다 쌓이고(2,639 커밋·182MB),
+      # 그 push 를 받아 GitHub 이 Pages 빌드를 한 번 더 돌렸다. 이제 산출물을 바로 올린다.
+      - name: Upload GitHub Pages artifact
         if: github.event_name != 'schedule' || steps.git-check.outputs.changed == 'true'
-        uses: peaceiris/actions-gh-pages@v4
+        id: pages-artifact
+        uses: actions/upload-pages-artifact@v5
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./dist
+          path: ./dist
+
+  # 배포만 따로 둔다. environment 를 update-data 에 달면 배포하지 않는 매시 회차에도 배포 기록이 쌓인다.
+  deploy:
+    needs: update-data
+    if: needs.update-data.outputs.deploy == 'true'
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v5

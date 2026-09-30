@@ -38,3 +38,55 @@ jobs:
 
       - name: Data tests
         run: npm run test:data
+
+  # master 에서는 update-static-data 가 같은 스모크를 돌린다. 화면을 바꾼 브랜치도 합치기 전에 본다.
+  e2e:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: '24'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci --no-audit --no-fund
+
+      - name: Build project
+        run: npm run build
+
+      - name: Prepare GitHub Pages artifact
+        run: npm run prepare-pages
+
+      - name: Read Playwright version
+        id: playwright
+        run: echo "version=$(node -p "require('@playwright/test/package.json').version")" >> "$GITHUB_OUTPUT"
+
+      - name: Cache Playwright browser
+        id: playwright-cache
+        uses: actions/cache@v6
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ steps.playwright.outputs.version }}
+
+      - name: Install Playwright browser
+        if: steps.playwright-cache.outputs.cache-hit != 'true'
+        run: npx playwright install --with-deps chromium
+
+      - name: Install Playwright system dependencies
+        if: steps.playwright-cache.outputs.cache-hit == 'true'
+        run: npx playwright install-deps chromium
+
+      - name: Run browser smoke tests
+        run: npm run test:e2e
+
+      - name: Upload visual regression report
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: playwright-visual-report-${{ github.run_id }}
+          path: playwright-report
+          retention-days: 14

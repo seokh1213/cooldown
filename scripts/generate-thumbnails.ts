@@ -16,8 +16,9 @@
  * 내려받은 것을 그대로 두지 않고 **자료에 있는 챔피언·아이템만** 만든다. 목록이
  * 곧 만들 대상이라 빠지는 것이 생길 수 없고, 시험이 그 짝을 확인한다.
  */
+import { createHash } from "node:crypto";
 import { existsSync } from "node:fs";
-import { mkdir, readFile, readdir, rm, writeFile } from "node:fs/promises";
+import { mkdir, readFile, readdir, rm, stat, writeFile } from "node:fs/promises";
 import path from "node:path";
 import sharp from "sharp";
 import { FORMULA_GROUPS } from "../src/data/gameFormulas";
@@ -59,6 +60,16 @@ const AVIF_QUALITY = 50;
 // 8 까지 올리면 5% 더 줄지만 CI 시간이 세 배가 된다. 4 가 그 사이다.
 const AVIF_EFFORT = 4;
 
+/**
+ * 이미 만든 것은 다시 만들지 않는다. `--force` 를 주면 모두 새로 만든다.
+ *
+ * 그림 자리에는 판본이 들어가고(`public/img/<판본>/`) 판본이 바뀌면 폴더를 통째로 지운다.
+ * 그러니 같은 판본 안에서 이미 있는 낱장은 원본이 같다. 예전에는 자료가 그대로인 push 마다
+ * 낱장을 모두 다시 받고 시트를 다시 인코딩해 CI 에서 90초 남짓을 썼다.
+ * 크기·품질을 바꿨을 때는 `npm run generate-thumbnails -- --force` 로 다시 만든다.
+ */
+const FORCE = process.argv.includes("--force");
+
 /** 같은 파일을 여러 번 받지 않도록 한 번에 여덟 개씩만 받는다. */
 const CONCURRENCY = 8;
 
@@ -74,10 +85,11 @@ async function fetchImage(url: string): Promise<Buffer> {
   return Buffer.from(await response.arrayBuffer());
 }
 
-async function run(jobs: Job[]): Promise<{ bytesIn: number; bytesOut: number; missing: string[] }> {
+async function run(jobs: Job[]): Promise<{ bytesIn: number; bytesOut: number; missing: string[]; reused: number }> {
   const missing: string[] = [];
   let bytesIn = 0;
   let bytesOut = 0;
+  let reused = 0;
   let next = 0;
   const worker = async () => {
     for (;;) {
@@ -85,6 +97,10 @@ async function run(jobs: Job[]): Promise<{ bytesIn: number; bytesOut: number; mi
       next += 1;
       if (index >= jobs.length) return;
       const job = jobs[index];
+      if (!FORCE && existsSync(job.file)) {
+        reused += 1;
+        continue;
+      }
       try {
         const source = await fetchImage(job.url);
         const thumb = await sharp(source).resize(job.size, job.size, { fit: "cover" }).webp({ quality: QUALITY }).toBuffer();
@@ -99,7 +115,7 @@ async function run(jobs: Job[]): Promise<{ bytesIn: number; bytesOut: number; mi
     }
   };
   await Promise.all(Array.from({ length: Math.min(CONCURRENCY, jobs.length) }, worker));
-  return { bytesIn, bytesOut, missing };
+  return { bytesIn, bytesOut, missing, reused };
 }
 
 async function generateThumbnails() {
@@ -309,7 +325,8 @@ async function generateThumbnails() {
     await mkdir(path.dirname(path.join(runeOut, runeKey(iconPath))), { recursive: true });
   }
 
-  const { bytesIn, bytesOut, missing } = await run(jobs);
+  const { bytesIn, bytesOut, missing, reused } = await run(jobs);
+  const stamps = await readStamps(out);
 
   /*
    * 낱장을 한 장으로 합친다.
@@ -325,10 +342,10 @@ async function generateThumbnails() {
    * 없다. 목록만 합친 것을 본다.
    */
   const sheets = [
-    await buildSheet("champion", championIds, CHAMPION_SIZE, out, QUALITY),
-    await buildSheet("summoner", summonerIcons, SUMMONER_SIZE, out, QUALITY),
+    await buildSheet("champion", championIds, CHAMPION_SIZE, out, QUALITY, stamps),
+    await buildSheet("summoner", summonerIcons, SUMMONER_SIZE, out, QUALITY, stamps),
     // 룬은 낱장이 `runes/` 아래 모이고 시트는 그 위에 둔다. 칸 이름은 경로를 눕힌 꼴이다.
-    await buildSheet("rune", runePaths.map(runeKey), RUNE_SIZE, runeOut, QUALITY, out),
+    await buildSheet("rune", runePaths.map(runeKey), RUNE_SIZE, runeOut, QUALITY, stamps, out),
     /*
      * 아이템 시트만 압축을 더 건다.
      *
@@ -336,14 +353,16 @@ async function generateThumbnails() {
      * 된다. 더 내려도 55 에서 901KB 로 얻는 것이 줄고, 32px 로 그리는 그림이라
      * 70 아래부터는 눈에 띈다.
      */
-    await buildSheet("item", items.map((item) => item.id), ITEM_SIZE, out, 70),
+    await buildSheet("item", items.map((item) => item.id), ITEM_SIZE, out, 70, stamps),
   ];
-  const strips = await buildAbilityStrips(abilityStrips, out);
+  const strips = await buildAbilityStrips(abilityStrips, out, stamps);
+  await writeStamps(out, stamps);
   await writeSheetIndex(sheets);
   await writeAssetVersion(ddragon);
   const mb = (bytes: number) => `${(bytes / 1024 / 1024).toFixed(1)}MB`;
   console.log(`썸네일 ${jobs.length}장 (챔피언 ${championIds.length} · 아이템 ${items.length} · 룬 ${runePaths.length} · 소환사 주문 ${summonerIcons.length} · 스킬 ${abilityIcons.size} · 패시브 ${passiveIcons.size} · 변신 ${formIcons.size} · 스탯 글리프 ${statIcons.size})`);
-  console.log(`  원본 ${mb(bytesIn)} → ${mb(bytesOut)} (${Math.round((1 - bytesOut / bytesIn) * 100)}% 절감)`);
+  if (reused > 0) console.log(`  이미 있는 ${reused}장은 다시 받지 않음 (--force 로 모두 새로 만든다)`);
+  if (bytesIn > 0) console.log(`  원본 ${mb(bytesIn)} → ${mb(bytesOut)} (${Math.round((1 - bytesOut / bytesIn) * 100)}% 절감)`);
   console.log(`  ${out}`);
   for (const sheet of sheets) {
     const saved = Math.round((1 - sheet.avifBytes / sheet.bytes) * 100);
@@ -441,6 +460,7 @@ export const ABILITY_SLOTS = ["P", "Q", "W", "E", "R"] as const;
 async function buildAbilityStrips(
   strips: Map<string, Array<string | undefined>>,
   out: string,
+  stamps: Stamps,
 ): Promise<{ count: number; bytes: number; avifBytes: number }> {
   const cell = (name: string | undefined, slot: string) => {
     if (!name) return undefined;
@@ -458,6 +478,16 @@ async function buildAbilityStrips(
       composite.push({ input: await readFile(file), left: index * ABILITY_SIZE, top: 0 });
     }
     if (composite.length === 0) continue;
+    const webpFile = path.join(out, "ability", `${championId}.webp`);
+    const avifFile = path.join(out, "ability", `${championId}.avif`);
+    const stampKey = `ability/${championId}`;
+    const hash = stampOf([ABILITY_SIZE, QUALITY, AVIF_QUALITY, AVIF_EFFORT], composite);
+    if (await unchanged(stamps, stampKey, hash, [webpFile, avifFile])) {
+      bytes += (await stat(webpFile)).size;
+      avifBytes += (await stat(avifFile)).size;
+      count += 1;
+      continue;
+    }
     // 시트와 같은 까닭으로 합친 그림을 먼저 굳히고 꼴마다 새로 인코딩한다.
     const flat = await sharp({
       create: {
@@ -472,13 +502,49 @@ async function buildAbilityStrips(
       .toBuffer();
     const strip = await sharp(flat).webp({ quality: QUALITY }).toBuffer();
     const avif = await sharp(flat).avif({ quality: AVIF_QUALITY, effort: AVIF_EFFORT }).toBuffer();
-    await writeFile(path.join(out, "ability", `${championId}.webp`), strip);
-    await writeFile(path.join(out, "ability", `${championId}.avif`), avif);
+    await writeFile(webpFile, strip);
+    await writeFile(avifFile, avif);
+    stamps[stampKey] = hash;
     bytes += strip.length;
     avifBytes += avif.length;
     count += 1;
   }
   return { count, bytes, avifBytes };
+}
+
+/**
+ * 합친 그림(시트·스킬 띠)의 재료 지문. 재료 낱장·배치·인코딩 설정이 같으면 결과도 같다.
+ *
+ * AVIF 인코딩이 이 스크립트에서 가장 오래 걸린다. 게다가 macOS 와 CI(Linux)의 libavif 가
+ * 달라 로컬에서 돌리면 내용이 같아도 .avif 177개가 바뀐 것으로 나왔다. 지문이 같으면
+ * 인코딩하지 않으므로 둘 다 사라진다.
+ */
+type Stamps = Record<string, string>;
+
+const stampFile = (out: string) => path.join(out, "encode-stamps.json");
+
+async function readStamps(out: string): Promise<Stamps> {
+  if (FORCE) return {};
+  try {
+    return JSON.parse(await readFile(stampFile(out), "utf8")) as Stamps;
+  } catch {
+    return {};
+  }
+}
+
+async function writeStamps(out: string, stamps: Stamps): Promise<void> {
+  const sorted = Object.fromEntries(Object.entries(stamps).sort(([a], [b]) => a.localeCompare(b)));
+  await writeFile(stampFile(out), `${JSON.stringify(sorted, null, 2)}\n`);
+}
+
+function stampOf(settings: unknown[], composite: Array<{ input: Buffer; left: number; top: number }>): string {
+  const hash = createHash("sha1").update(JSON.stringify(settings));
+  for (const part of composite) hash.update(`${part.left},${part.top};`).update(part.input);
+  return hash.digest("hex");
+}
+
+async function unchanged(stamps: Stamps, key: string, hash: string, files: string[]): Promise<boolean> {
+  return !FORCE && stamps[key] === hash && files.every((file) => existsSync(file));
 }
 
 interface SheetInfo {
@@ -512,6 +578,7 @@ async function buildSheet(
   size: number,
   out: string,
   quality: number,
+  stamps: Stamps,
   /** 시트를 둘 자리. 안 주면 낱장이 있는 자리에 함께 둔다. */
   sheetDir = out,
 ): Promise<SheetInfo> {
@@ -527,6 +594,12 @@ async function buildSheet(
       top: Math.floor(index / cols) * size,
     })),
   );
+  const files = ["webp", "avif", "json"].map((ext) => path.join(sheetDir, `${kind}s.${ext}`));
+  const hash = stampOf([size, cols, quality, AVIF_QUALITY, AVIF_EFFORT], composite);
+  if (await unchanged(stamps, `sheet/${kind}`, hash, files)) {
+    const [bytes, avifBytes] = await Promise.all(files.slice(0, 2).map(async (file) => (await stat(file)).size));
+    return { kind, count: present.length, cols, rows, bytes, avifBytes, ids: present };
+  }
   /*
    * 합친 그림을 먼저 손실 없이 굳히고, 꼴마다 **새로 인코딩한다.**
    *
@@ -545,5 +618,6 @@ async function buildSheet(
   await writeFile(path.join(sheetDir, `${kind}s.webp`), sheet);
   await writeFile(path.join(sheetDir, `${kind}s.avif`), avif);
   await writeFile(path.join(sheetDir, `${kind}s.json`), `${JSON.stringify({ size, cols, rows, ids: present })}\n`);
+  stamps[`sheet/${kind}`] = hash;
   return { kind, count: present.length, cols, rows, bytes: sheet.length, avifBytes: avif.length, ids: present };
 }
