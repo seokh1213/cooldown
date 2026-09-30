@@ -1,8 +1,7 @@
 /**
  * kev 에이전트 실험 공용 — Node 에서 앱 재료를 읽고, 앱 판정기와 kev 서버를 부른다.
  *
- * 앱 판정기(route-v2·topic-v1)는 `app_judge_serve.py` 가 특징(logits 2048개)을 내고 헤드 계산은
- * 앱의 `scoreJudge` 가 한다. 브라우저 워커와 같은 계산이다(끊어 넣기 차이 3e-5).
+ * 앱 판정은 `hidden_judge_serve.py` 가 앱 그래프의 은닉 상태를 내고 헤드 계산은 앱의 `scoreJudge` 가 한다.
  * kev 는 jaredpalmer/kev 의 `python -m kev.serve` (POST /v1/systemone).
  */
 import * as fs from "node:fs";

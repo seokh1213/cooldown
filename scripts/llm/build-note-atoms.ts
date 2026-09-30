@@ -45,7 +45,7 @@ export const CODEX_MODEL = arg("model") ?? process.env.CODEX_MODEL ?? "gpt-6-sol
  */
 const WITH_WIKI = process.argv.includes("--wiki");
 
-/** 평가 30문항(eval-connector)에 나오는 챔피언. */
+/** 평가 챔피언(bench). */
 export const EVAL_CHAMPIONS = [
   "MonkeyKing", "Rumble", "Yasuo", "Malphite", "Garen", "Darius", "Zed", "Lux", "Ahri", "Fiora", "Aatrox",
   "Teemo", "Nasus", "Jax", "Vayne", "Caitlyn", "Thresh", "Blitzcrank", "LeeSin", "Graves", "Sett", "Mordekaiser",

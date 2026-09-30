@@ -57,7 +57,8 @@
   쌍만 다시 쓴다. 전부 다시 쓰면 Opus 로 약 $700 이라 한꺼번에 다시 쓰지 않는다 — 패치마다 바뀐 쌍만 v2 로 쌓는다.
 - 파일은 내 챔피언별(평균 약 115KB, 전체 20MB). 물은 칸이 비었거나 칸이 하나뿐이면 노트 조립으로 간다.
 - 영어·중국어: `<id>.<lang>.json` 이 있으면 쓴다. 번역(`scripts/llm/translate-matchups.ts`, 저장은
-  `knowledge/matchup-translations/`)은 **en 13% · zh 11% 에서 멈춘 상태**이고 앱에 나간 번역 파일은 아직 없다.
+  `knowledge/matchup-translations/`)은 일부만 옮겼다. 2026-09-29 에 옮긴 칸(en 17,319 · zh 14,147)을 `--emit` 으로
+  170명 × en·zh 파일로 지어 앱에 실었다(`npm run llm:translate-matchups -- --lang en_US --emit`).
 - 표시: 칸 첫머리의 이음말("이후", "그때", "이 틈에" …)은 앱이 뗀다(`leadClean`). 은행 칸의 0.7~1.9% 가 이렇게 시작했다.
 - 비용: 쌍당 약 27초(Codex 때). 사용량 한도를 알리거나 연속 실패하면 스스로 멈춘다.
 

@@ -114,7 +114,8 @@
 
 숫자 `id` 로 우리 한국어 데이터와 대응된다. 협곡 아이템 254개 중 193개가 매칭되고
 2026년 신규 61개는 위키에 아직 없다. **위키 분류가 있으면 그것을 쓰고, 없으면 스탯 조합으로 추정한다.**
-추정 규칙은 `scripts/llm/lib/itemArchetype.ts` 에 있다.
+추정 규칙은 `scripts/llm/lib/itemArchetype.ts` 에 있었으나 앱·자료 생성 어디에서도 쓰지 않아 2026-09-30 에 걷어냈다
+(`git show 43b003c16:scripts/llm/lib/itemArchetype.ts`).
 
 상점 탭은 한 아이템이 여러 개에 걸린다(칠흑의 양날 도끼 = fighter + assassin).
 그래서 후보 판정은 "제외 역할군이 하나라도 있으면 배제" 가 아니라
