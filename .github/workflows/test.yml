@@ -34,9 +34,13 @@ jobs:
           npm run lint
 
       - name: Unit tests
+        env:
+          NODE_OPTIONS: --test-reporter=dot
         run: npm run test:unit
 
       - name: Data tests
+        env:
+          NODE_OPTIONS: --test-reporter=dot
         run: npm run test:data
 
   # master 에서는 update-static-data 가 같은 스모크를 돌린다. 화면을 바꾼 브랜치도 합치기 전에 본다.

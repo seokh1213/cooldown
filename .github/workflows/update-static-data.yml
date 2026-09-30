@@ -120,11 +120,16 @@ jobs:
           npm run lint
 
       # 코드만 보는 시험. 새로 받은 자료와 무관하게 깨지면 코드 탓이다.
+      # 1,200건을 한 줄씩 찍으면 로그가 그것으로 찬다. 점으로 찍고, 실패만 이름과 함께 보인다.
       - name: Unit tests
+        env:
+          NODE_OPTIONS: --test-reporter=dot
         run: npm run test:unit
 
       # 방금 만든 public/data 를 읽는 시험. 여기서만 깨지면 새 자료(패치·리워크)를 먼저 의심한다.
       - name: Data tests
+        env:
+          NODE_OPTIONS: --test-reporter=dot
         run: npm run test:data
 
       # `src/data/generated` 도 생성물이다. 시트에 무엇이 몇째 칸에 있는지를 적어 둔
@@ -217,12 +222,21 @@ jobs:
       # 예전에는 dist 를 gh-pages 브랜치에 커밋했다(peaceiris/actions-gh-pages). 그러면 옛 파일을
       # 하나씩 지우는 로그가 5천 줄 넘게 찍히고, 브랜치 기록이 배포마다 쌓이고(2,639 커밋·182MB),
       # 그 push 를 받아 GitHub 이 Pages 빌드를 한 번 더 돌렸다. 이제 산출물을 바로 올린다.
+      # actions/upload-pages-artifact 와 같은 일(dist 를 tar 로 묶어 github-pages 로 올림)을 한다.
+      # 그 action 은 tar -v 로 파일 5,800개 이름을 모두 찍어서 직접 묶는다.
+      - name: Archive GitHub Pages artifact
+        if: github.event_name != 'schedule' || steps.git-check.outputs.changed == 'true'
+        run: tar --dereference --hard-dereference --directory dist -cf "$RUNNER_TEMP/artifact.tar" --exclude=.git --exclude=.github .
+
       - name: Upload GitHub Pages artifact
         if: github.event_name != 'schedule' || steps.git-check.outputs.changed == 'true'
         id: pages-artifact
-        uses: actions/upload-pages-artifact@v5
+        uses: actions/upload-artifact@v7
         with:
-          path: ./dist
+          name: github-pages
+          path: ${{ runner.temp }}/artifact.tar
+          retention-days: 1
+          if-no-files-found: error
 
   # 배포만 따로 둔다. environment 를 update-data 에 달면 배포하지 않는 매시 회차에도 배포 기록이 쌓인다.
   deploy:

@@ -11,7 +11,8 @@ import path from "node:path";
 export async function fetchJson<T>(url: string, retries = 4): Promise<T> {
   for (let attempt = 0; attempt < retries; attempt += 1) {
     try {
-      console.log(`Fetching: ${url}${attempt > 0 ? ` (retry ${attempt})` : ""}`);
+      // 받을 때마다 찍으면 CI 로그가 700줄 넘게 이 줄로 찬다. 다시 받을 때만 남긴다.
+      if (attempt > 0) console.log(`Fetching: ${url} (retry ${attempt})`);
       const response = await fetch(url);
       if (!response.ok) {
         const error = new Error(`HTTP ${response.status}: ${url}`);
