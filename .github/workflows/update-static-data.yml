@@ -109,11 +109,18 @@ jobs:
             gh issue create --title "$title" --body-file knowledge-drift-report.md
           fi
 
-      - name: Validate project
+      - name: Type-check and lint
         run: |
           npm run type-check
           npm run lint
-          npm test
+
+      # 코드만 보는 시험. 새로 받은 자료와 무관하게 깨지면 코드 탓이다.
+      - name: Unit tests
+        run: npm run test:unit
+
+      # 방금 만든 public/data 를 읽는 시험. 여기서만 깨지면 새 자료(패치·리워크)를 먼저 의심한다.
+      - name: Data tests
+        run: npm run test:data
 
       # `src/data/generated` 도 생성물이다. 시트에 무엇이 몇째 칸에 있는지를 적어 둔
       # 파일이라, 챔피언이나 아이템이 늘면 시트와 함께 바뀐다. 여기 안 넣으면 그림만
