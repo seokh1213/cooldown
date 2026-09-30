@@ -91,8 +91,9 @@ export function VsCooldownMatrix({ sides, version, onSelect, actions }: { sides:
             {sides.map(({ side, id, result }, index) => (
               <Fragment key={side}>
                 {index === 1 && <th aria-hidden="true" />}
-                <th scope="colgroup" colSpan={ACTIVE_SLOTS.length} className="border-b border-border pb-2 pt-px align-top font-normal">
-                  <div id={"vs-header-" + side}>
+                {/* 한쪽 이름만 두 줄로 꺾이면 두 버튼 키를 맞춘다. 칸 높이 1px 은 h-full 이 행 높이를 따르게 하는 표 칸 관례다. */}
+                <th scope="colgroup" colSpan={ACTIVE_SLOTS.length} className="h-px border-b border-border pb-2 pt-px align-top font-normal">
+                  <div id={"vs-header-" + side} className="h-full">
                     <VsChampionHeader id={id} side={side} label={t.comparison[side]} version={version} result={result} onSelect={() => onSelect(side)} />
                   </div>
                 </th>

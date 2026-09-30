@@ -22,12 +22,12 @@ export function VsChampionHeader(props: ChampionHeaderProps) {
   const { t } = useTranslation();
   const { detail, error, retry } = props.result;
   return (
-    <section className="min-w-0" aria-label={props.label}>
+    <section className="flex h-full min-w-0 flex-col" aria-label={props.label}>
       <button
         type="button"
         onClick={props.onSelect}
         aria-label={props.label + " " + t.comparison.select}
-        className="group flex w-full min-w-0 items-center gap-2.5 rounded-md border border-border bg-card px-2 py-1.5 text-left shadow-xs hover:border-primary/60 hover:bg-muted/40 focus-visible:outline-2 focus-visible:outline-primary"
+        className="group flex w-full min-w-0 flex-1 items-center gap-1.5 rounded-md border border-border bg-card px-1.5 py-1.5 text-left shadow-xs sm:gap-2.5 sm:px-2 hover:border-primary/60 hover:bg-muted/40 focus-visible:outline-2 focus-visible:outline-primary"
       >
         {props.id ? (
           <ChampionIcon key={props.id} id={props.id} ddragonVersion={props.version} className="block size-7 shrink-0 rounded-md shadow-none sm:size-9" />
@@ -37,12 +37,13 @@ export function VsChampionHeader(props: ChampionHeaderProps) {
           </span>
         )}
         <span className="min-w-0 flex-1">
-          <span className="block truncate text-[13px] font-semibold leading-5 group-hover:text-primary sm:text-[15px]">
+          {/* 휴대폰은 칸이 좁아 이름을 두 줄까지 띄어쓰기에서 꺾는다. 한 줄로 자르면 "누누와 …" 만 남는다. */}
+          <span className="line-clamp-2 break-keep-ko text-[13px] font-semibold leading-5 group-hover:text-primary sm:line-clamp-1 sm:text-[15px]">
             {detail?.champion.name ?? t.comparison.select}
           </span>
           <span className="hidden truncate text-[11px] leading-4 text-muted-foreground sm:block">{detail?.champion.title ?? t.comparison.empty}</span>
         </span>
-        <ChevronDown aria-hidden="true" className="size-4 shrink-0 text-muted-foreground group-hover:text-primary" />
+        <ChevronDown aria-hidden="true" className="hidden size-4 shrink-0 text-muted-foreground group-hover:text-primary sm:block" />
       </button>
       {props.id && !detail && (
         <div role="status" className="mt-1 px-1 text-[11px] text-muted-foreground">
