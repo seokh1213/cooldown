@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo, type ReactNode } from "react";
 import { useTranslation } from "@/i18n";
 import type { DataLocale, StaticDataSources } from "@/data/contracts/staticData";
 import { VsStatList } from "./VsChampionColumn";
@@ -13,6 +13,8 @@ interface ComparisonProps {
   sources: StaticDataSources;
   locale: DataLocale;
   onSelect: (side: VsSideKey) => void;
+  /** 쿨타임 표 제목 줄 오른쪽에 설 버튼 묶음 */
+  actions?: ReactNode;
 }
 
 const SIDES = ["mine", "opponent"] as const;
@@ -32,7 +34,7 @@ export function VsComparison(props: ComparisonProps) {
   const version = props.sources.ddragon;
   return (
     <div>
-      <VsCooldownMatrix key={props.state.mine.id + ":" + props.state.opponent.id + ":" + props.locale} sides={sides} version={version} onSelect={props.onSelect} />
+      <VsCooldownMatrix key={props.state.mine.id + ":" + props.state.opponent.id + ":" + props.locale} sides={sides} version={version} onSelect={props.onSelect} actions={props.actions} />
       {hasDetails && (
         <>
           <section className="mt-8" aria-label={t.comparison.baseStats}>

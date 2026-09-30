@@ -108,7 +108,7 @@ function Nav({
           top: "0px"
         }}
       >
-        <div className="px-4 md:px-6 flex items-center gap-3 w-full h-full pointer-events-auto">
+        <div className="px-4 md:px-6 flex items-center gap-1 md:gap-3 w-full h-full pointer-events-auto">
           {/* Mobile: Menu button */}
           {isMobile && onMenuToggle && (
             <Button
@@ -123,12 +123,23 @@ function Nav({
           )}
           
           {/* Page title */}
+          {/*
+            휴대폰에서는 오른쪽에 44px 버튼 셋이 서니 제목 자리가 좁다. 패치 표기까지 한 줄에
+            두면 제목이 세로로 찌그러져서, 휴대폰에서는 패치를 제목 밑 작은 줄로 내린다.
+          */}
           {(isEncyclopediaPage || isChampionCooldownPage || isVsPage) && (
-            <h1 className="text-base md:text-lg font-medium flex-1 text-foreground/70 leading-none">
-              {isEncyclopediaPage && t.nav.encyclopedia}
-              {isVsPage && t.comparison.title}
-              {isChampionCooldownPage && t.sidebar.championCooldown}
-            </h1>
+            <div className="min-w-0 flex-1">
+              <h1 className="truncate whitespace-nowrap text-[15px] md:text-lg font-medium text-foreground/70 leading-tight md:leading-none">
+                {isEncyclopediaPage && t.nav.encyclopedia}
+                {isVsPage && t.comparison.title}
+                {isChampionCooldownPage && t.sidebar.championCooldown}
+              </h1>
+              {isMobile && patchVersion && !isVersionMismatch && (
+                <div className="mt-0.5 text-[11px] font-medium leading-none tabular-nums text-muted-foreground">
+                  {patchLabel(patchVersion)}
+                </div>
+              )}
+            </div>
           )}
           {!(isEncyclopediaPage || isChampionCooldownPage || isVsPage) && <div className="flex-1" />}
           {/* Version with mismatch icon */}
@@ -172,8 +183,8 @@ function Nav({
               </PopoverContent>
             </Popover>
           )}
-          {/* 모바일에서도 보인다. 모바일에는 화면마다 수치가 어느 패치 기준인지 적을 자리가 여기 하나뿐이다. */}
-          {patchVersion && !isVersionMismatch && (
+          {/* 모바일에서도 보인다. 모바일에는 화면마다 수치가 어느 패치 기준인지 적을 자리가 여기 하나뿐이라 제목 밑에 둔다. */}
+          {!isMobile && patchVersion && !isVersionMismatch && (
             <div className="text-xs font-medium leading-none tabular-nums text-muted-foreground">
               {patchLabel(patchVersion)}
             </div>

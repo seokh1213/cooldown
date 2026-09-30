@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ArrowLeftRight, Check, Copy, RotateCcw } from "lucide-react";
+import { ArrowLeftRight, Check, RotateCcw, Share } from "lucide-react";
 import ChampionSelector from "@/components/features/ChampionSelector";
 import { Button } from "@/components/ui/button";
 import { copyTextToClipboard } from "@/lib/clipboard";
@@ -20,8 +20,11 @@ interface VsPageProps {
   sources: StaticDataSources;
 }
 
-function VsHeader(props: {
-  patchVersion: string;
+/**
+ * 바꾸기·공유·초기화. 쿨타임 표 제목과 같은 줄 오른쪽에 선다(`VsCooldownMatrix` 가 자리를 준다).
+ * 휴대폰에서는 아이콘만 남기고, 공유는 복사 아이콘이 아니라 공유 아이콘(네모 위 화살표)이다.
+ */
+function VsActions(props: {
   copied: boolean;
   onShare: () => void;
   onReset: () => void;
@@ -29,39 +32,17 @@ function VsHeader(props: {
 }) {
   const { t } = useTranslation();
   return (
-    <div className="mb-2 flex items-center justify-between gap-2">
-      <div className="min-w-0 px-0.5">
-        <h1 className="sr-only">
-          {t.comparison.title}
-        </h1>
-        <p className="hidden truncate text-xs text-muted-foreground sm:block">{t.comparison.description}</p>
-      </div>
-      <div className="flex shrink-0 items-center gap-1">
-        <Button variant="ghost" size="icon" aria-label={t.comparison.swap} onClick={props.onSwap}>
-          <ArrowLeftRight aria-hidden="true" className="size-4" />
-        </Button>
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={props.onShare}
-          className="gap-1.5"
-        >
-          {props.copied ? (
-            <Check aria-hidden="true" className="size-4" />
-          ) : (
-            <Copy aria-hidden="true" className="size-4" />
-          )}
-          {t.comparison.share}
-        </Button>
-        <Button
-          variant="ghost"
-          size="icon"
-          aria-label={t.encyclopedia.reset}
-          onClick={props.onReset}
-        >
-          <RotateCcw aria-hidden="true" className="size-4" />
-        </Button>
-      </div>
+    <div className="flex shrink-0 items-center gap-0.5 sm:gap-1">
+      <Button variant="ghost" size="icon" className="size-8" aria-label={t.comparison.swap} title={t.comparison.swap} onClick={props.onSwap}>
+        <ArrowLeftRight aria-hidden="true" className="size-4" />
+      </Button>
+      <Button variant="ghost" size="sm" className="h-8 gap-1.5 px-2" aria-label={t.comparison.share} title={t.comparison.share} onClick={props.onShare}>
+        {props.copied ? <Check aria-hidden="true" className="size-4" /> : <Share aria-hidden="true" className="size-4" />}
+        <span className="hidden sm:inline">{t.comparison.share}</span>
+      </Button>
+      <Button variant="ghost" size="icon" className="size-8" aria-label={t.encyclopedia.reset} title={t.encyclopedia.reset} onClick={props.onReset}>
+        <RotateCcw aria-hidden="true" className="size-4" />
+      </Button>
     </div>
   );
 }
@@ -85,13 +66,7 @@ export default function VsPage(props: VsPageProps) {
   };
   return (
     <div className="mx-auto w-full max-w-[800px] px-2 py-4 sm:px-6 md:py-5">
-      <VsHeader
-        patchVersion={props.patchVersion}
-        copied={Boolean(shared?.success)}
-        onShare={copyLink}
-        onReset={() => update(parseVsState(""))}
-        onSwap={() => update({ mine: state.opponent, opponent: state.mine })}
-      />
+      <h1 className="sr-only">{t.comparison.title}</h1>
       <div
         role="status"
         className={
@@ -110,6 +85,14 @@ export default function VsPage(props: VsPageProps) {
         patchVersion={props.patchVersion}
         sources={props.sources}
         locale={props.lang}
+        actions={
+          <VsActions
+            copied={Boolean(shared?.success)}
+            onShare={copyLink}
+            onReset={() => update(parseVsState(""))}
+            onSwap={() => update({ mine: state.opponent, opponent: state.mine })}
+          />
+        }
         onSelect={setSelecting}
       />
       {selecting && (
