@@ -317,13 +317,13 @@ function recentItem(turns: readonly PlanTurn[]): string | undefined {
  * 챔피언 이름 오타 후보가 있어도 찾지 않는다 — "럼미 E" 는 럼블 질문이다(오타 단계가 고친다).
  * 검색이 실패하면(그래프·파일) 아래 낱말 길이 처음부터 그대로 돈다.
  */
-async function answerByVector({ question, ctx, data, ask, recentItem, matchup, recent }: Intent, deps: PlanDeps): Promise<AnswerPlan | undefined> {
+async function answerByVector({ question, ctx, data, ask, recentItem, matchup, recent, slot }: Intent, deps: PlanDeps): Promise<AnswerPlan | undefined> {
   /*
    * "두 챔피언에 대해 스킬 쿨타임도" — 가리키는 챔피언이 화면·대화에 있으면 문서 검색이 아니다. 검색은 "챔피언 분류" 절을 골랐다.
    * 갈래가 스킬 소개·스킬 수치여도 같다: 이름 없이 스킬을 묻는데 챔피언이 눈앞에 있으면 그 챔피언이 답이다(`answerChampion` 이 붙인다).
    * 잘못 가른 룬·게임 메타 질문은 아래 낱말 길(룬·주문 → 게임 메타 → 아이템·원리)이 그대로 받는다.
    */
-  if ((refersToContextChampions(question) || ask === "spellStat" || ask === "skills" || ask === "guide" || Boolean(topicFromWords(question)) || (ask === "item" && !buildItemCard(data, question, recentItem))) && (recent.length > 0 || ctx.championIds.length > 0)) return undefined;
+  if ((refersToContextChampions(question) || Boolean(slot) || ask === "spellStat" || ask === "skills" || ask === "guide" || Boolean(topicFromWords(question)) || (ask === "item" && !buildItemCard(data, question, recentItem))) && (recent.length > 0 || ctx.championIds.length > 0)) return undefined;
   if (!(ctx.canUseModel && ctx.consented && ctx.retrieval && searchesByVector(data, question, recentItem, Boolean(matchup)))) return undefined;
   const top = await deps.search(question, ctx.lang).catch((error: unknown) => {
     console.warn("[advisor] 검색 벡터 실패 — 낱말 검색으로", error);
