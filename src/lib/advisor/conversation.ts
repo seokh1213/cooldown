@@ -62,12 +62,19 @@ export interface MatchupState<T = ChampionCard> {
 }
 
 export function matchupStateOf(answers: Array<AdvisorAnswer | undefined>): MatchupState | undefined {
+  // 상성 대화 중 같은 쌍의 한 명을 다룬 스킬·챔피언 카드("럼블 E")는 맥락을 끊지 않는다. 다른 챔피언이면 끊는다.
+  let single: string | undefined;
   for (let i = answers.length - 1; i >= 0; i -= 1) {
     const answer = answers[i];
     if (!answer) continue;
-    if (answer.kind === "compare" && answer.matchup && answer.cards.length >= 2) return { mine: answer.cards[0], enemy: answer.cards[1] };
+    if (answer.kind === "compare" && answer.matchup && answer.cards.length >= 2) {
+      const state = { mine: answer.cards[0], enemy: answer.cards[1] };
+      return !single || single === state.mine.id || single === state.enemy.id ? state : undefined;
+    }
     // 상성 대화 중의 조회 표(쿨타임 등)는 건너뛰고 그 앞의 상성을 본다. 끊었더니 표 다음의 "어떤 템 가야 해?" 가 한 챔피언 소개 카드로 갔다.
     if (answer.kind === "compare" && answer.inMatchup) continue;
+    if (answer.kind === "spell" && !single) { single = answer.championId; continue; }
+    if (answer.kind === "champion" && !single) { single = answer.card.id; continue; }
     // 챔피언을 다룬 다른 답이 더 최근이면 상성 맥락은 끝났다
     if (answer.kind === "compare" || answer.kind === "champion" || answer.kind === "spell") return undefined;
   }

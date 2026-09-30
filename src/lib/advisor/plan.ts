@@ -436,6 +436,14 @@ async function continueMatchup(intent: Intent, deps: PlanDeps): Promise<AnswerPl
    * 이름 없이 스킬 수치를 찾으면 해설이 아니라 두 챔피언의 표다(`answerChampion` 이 대화의 두 챔피언을 붙인다).
    * 이 단계가 갈래를 안 보던 때 "두 챔피언에 대해 스킬 쿨타임도 알려줘" 가 한타·아이템 해설로 나갔다.
    */
+  // 이름 없이 슬롯만 던진 말("그럼 궁은?", "W 쿨")은 두 챔피언의 그 스킬 표다. 판정기가 잡담으로 갈라 자료 없음이 됐다(2026-10-01 브라우저 시험).
+  if (champions.length === 0 && intent.slot && bareSlotAsk(question, undefined, data, intent.slot)) {
+    return {
+      type: "card",
+      answer: { ...buildCompareCard([state.mine, state.enemy], question, intent.slot, { lang: ctx.lang }), inMatchup: true } as AdvisorAnswer,
+      notice: ctx.notice ?? fill(ctx.copy.card.fromChat, { name: `${state.mine.name}·${state.enemy.name}` }),
+    };
+  }
   if (champions.length === 0 && ask === "spellStat") return undefined;
   /*
    * 아이템 이름·게임 규칙 문서가 걸리면 새 질문이다.
@@ -449,14 +457,6 @@ async function continueMatchup(intent: Intent, deps: PlanDeps): Promise<AnswerPl
    * (2026-10-01 브라우저 시험). "피오라 W 어떻게 빼" 처럼 운용을 묻는 말은 남는 낱말이 있어 종전대로 이어 묻기다.
    */
   if (champions.length === 1 && intent.slot && bareSlotAsk(question, champions[0], data, intent.slot)) return undefined;
-  // 이름 없이 슬롯만 던진 말("그럼 궁은?", "W 쿨")은 두 챔피언의 그 스킬 표다. 판정기가 잡담으로 갈라 자료 없음이 됐다(2026-10-01 브라우저 시험).
-  if (champions.length === 0 && intent.slot && bareSlotAsk(question, undefined, data, intent.slot)) {
-    return {
-      type: "card",
-      answer: { ...buildCompareCard([state.mine, state.enemy], question, intent.slot, { lang: ctx.lang }), inMatchup: true } as AdvisorAnswer,
-      notice: ctx.notice ?? fill(ctx.copy.card.fromChat, { name: `${state.mine.name}·${state.enemy.name}` }),
-    };
-  }
   const named =
     champions.length === 0 &&
     (Boolean(buildItemCard(data, question, intent.recentItem)) || (Boolean(buildMechanicsAnswer(data, question)) && !topicFromWords(question)));
