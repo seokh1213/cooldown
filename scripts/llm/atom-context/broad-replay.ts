@@ -7,7 +7,7 @@ import { loadData, offlineFileJudge } from "../kev-agent/lib";
 import type { AtomFile } from "../build-note-atoms";
 import { planDialogue } from "../../../src/lib/advisor/dialoguePlanner";
 import { assembleDialogueReply, dialogueAnswerText } from "../../../src/lib/advisor/dialogueReply";
-import { composeMatchupReply } from "../../../src/lib/advisor/matchupReply";
+import { composeMatchupEvidence as composeMatchupReply } from "../../../src/lib/advisor/matchupReply";
 import { emptyDialogue, type DialogueHistoryTurn, type DialogueMemory } from "../../../src/lib/advisor/dialogueState";
 import type { AnswerPlan } from "../../../src/lib/advisor/planTypes";
 import type { PrecomputedFile, PrecomputedPair } from "../../../src/lib/advisor/precomputed";
