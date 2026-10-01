@@ -19,7 +19,7 @@ import * as crypto from "crypto";
 import * as fs from "fs";
 import * as path from "path";
 import type { ChampionCard } from "../../../src/lib/knowledge/facts";
-import { withoutNumbers } from "../../../src/lib/knowledge/tooltip-sentences";
+import { normalizeTooltipText } from "./tooltipFingerprint";
 
 export const FINGERPRINT_FILE = path.resolve(process.cwd(), "knowledge", "champion-fingerprints.json");
 
@@ -44,7 +44,7 @@ export function spellNameLine(card: ChampionCard): string {
 
 export function fingerprint(card: ChampionCard, patch: string): ChampionFingerprint {
   const names = spellNameLine(card);
-  const text = card.spells.map((s) => withoutNumbers(s.text)).join(" ").replace(/\s+/g, " ").trim();
+  const text = normalizeTooltipText(card.spells.map((s) => s.text).join(" "));
   return { names: hash(names), text: hash(text), checkedPatch: patch, spells: names };
 }
 

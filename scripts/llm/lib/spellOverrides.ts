@@ -19,13 +19,13 @@ import * as crypto from "crypto";
 import * as fs from "fs";
 import * as path from "path";
 import type { SpellOverrides } from "../../../src/lib/knowledge/facts";
-import { withoutNumbers } from "../../../src/lib/knowledge/tooltip-sentences";
+import { normalizeTooltipText } from "./tooltipFingerprint";
 
 export const SPELL_OVERRIDE_FILE = path.resolve(process.cwd(), "knowledge", "spell-effects.json");
 
 /** 문구만 남긴 지문. 수치가 바뀌어도 그대로다. */
 export function digestSpellText(text: string): string {
-  const words = withoutNumbers(text).replace(/\s+/g, " ").trim();
+  const words = normalizeTooltipText(text);
   return crypto.createHash("sha256").update(words).digest("hex").slice(0, 12);
 }
 
