@@ -4,10 +4,13 @@ import { asksSkillHandling, asksWholeKit } from "./askWords";
 import type { AnswerPlan, PlanContext } from "./planTypes";
 import { askedRules, ruleCooldown } from "./questionDocs";
 import type { ResolvedQuestion } from "./resolvedQuestion";
+import { unavailableStatPlan } from "./unavailableStats";
 
 const ADVICE = /빠졌|빠진|없으면|대신|들어가|진입|상대법|교환|언제|어떻게|피하|피해\s*버|좋아|추천|\b(when|should|instead|without|bait|avoid|engage)\b|怎么|何时|没了|没有|换成|推荐/i;
 
 export function directFactPlan(resolved: ResolvedQuestion, ctx: PlanContext): AnswerPlan | undefined {
+  const unavailable = unavailableStatPlan(resolved, ctx);
+  if (unavailable) return unavailable;
   const { text: question, champions, slot, spellFocus } = resolved;
   if (!ctx.data || !spellFocus || ADVICE.test(question) || asksSkillHandling(question) || asksWholeKit(question)) return undefined;
   if (!["cooldown", "cost", "range", "ratio"].includes(spellFocus.focus)) return undefined;

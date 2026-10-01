@@ -14,6 +14,8 @@ import type { LexicalHit } from "./searchFallback";
 import { findMentionedRules, type RuleNotes } from "@/lib/knowledge/rules";
 import { detectSpellFocus } from "./spellFocus";
 import { findMechanics } from "@/lib/knowledge/mechanics";
+import { detectStat } from "./statQuery";
+import { unavailableStatName } from "./unavailableStats";
 
 /** 검색 벡터로 찾을 질문인가(모델·동의 조건은 뺀 것). 평가 하네스도 이 조건으로 가른다. */
 export function searchesByVector(data: AdvisorData, question: string, recentItem: string | undefined, inMatchup: boolean): boolean {
@@ -27,10 +29,12 @@ export function searchesByVector(data: AdvisorData, question: string, recentItem
   );
 }
 
-/** 게임 낱말(게임 메타·룬·주문 이름·은어). 챔피언 이름 오타로 보지 않는다(`suggestChampions`). */
+/** 능력치·게임 원리·게임 메타·룬·주문 이름과 은어는 챔피언 이름 오타로 보지 않는다. */
 export function isGameWord(data: AdvisorData, token: string): boolean {
   return Boolean(
     findGameMeta(token) ||
+      detectStat(token) || unavailableStatName(token) ||
+      findMechanics(data.mechanics, token).length > 0 ||
       findMentionedRules(data.ruleIndex, token).length > 0 ||
       // 아이템 이름·줄임말("리안드리" 가 리산드라 오타로 잡혔다)
       (token.length >= 3 && data.items.some((item) => item.name?.includes(token))) ||
