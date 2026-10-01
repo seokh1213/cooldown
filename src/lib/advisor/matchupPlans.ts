@@ -1,10 +1,9 @@
 /** 상성의 이어 묻기·관점·새 상대를 해석한다. 기존 판정 순서를 유지한다. */
 import { fill } from "@/i18n/fill";
 import { buildItemCard, buildMechanicsAnswer, type AdvisorData } from "./context";
-import { buildCompareAnswer as buildCompareCard, detectStat, type AdvisorAnswer } from "./answer";
-import { asksGenericAdvice, asksReason, asksComparison, asksGuide, asksMatchup, looksChampionDirected } from "./askWords";
-import { matchupPair, matchupSides, matchupSidesByPhrase, matchupSidesDetailed } from "./matchupSides";
-import { judgeRouteState, type AskRoute } from "./routeAsk";
+import { buildCompareAnswer as buildCompareCard, type AdvisorAnswer } from "./answer";
+import { asksGenericAdvice, asksReason, looksChampionDirected } from "./askWords";
+import { judgeRouteState } from "./routeAsk";
 import { topicFromJudge, topicFromWords, topicQuestions } from "./topicJudge";
 import { actFromProbs, actFromWords, actQuestion, actState, planTurn, sideOfNewName } from "./conversation";
 import { docAnswer } from "./questionDocs";
@@ -169,68 +168,4 @@ async function matchupTopic(question: string, { data, ctx, pair }: { data: Advis
     .judge(TOPIC_HEAD, judgeRouteState(question, names), topicQuestions(2))
     .then(([probs]) => topicFromJudge(probs).topic)
     .catch(() => undefined);
-}
-
-/**
- * 대화 맥락의 상성. "말파이트 설명해줘" 다음의 "제이스랑 상대한다 생각하면" 은 말파이트로
- * 제이스를 상대하는 질문이다. 방금 다룬 챔피언이 내 챔피언, 새 이름이 상대.
- */
-export async function answerMatchupWithRecent({ question, ctx, champions, ask, recent, topic }: Intent): Promise<AnswerPlan | undefined> {
-  // "말파이트 상대법" 은 그 챔피언의 공략을 달라는 말이다(갈래 guide). 앞 대화에 다른 챔피언이
-  // 있다고 짝을 지으면 묻지 않은 상성이 된다. 그때는 아래 챔피언 경로로 내려간다.
-  // 판정기는 이름 하나를 상성으로 가르지 않고(`routeFromKind9`) 공략(guide)으로 준다. 그래서 "가렌 설명해줘" 뒤의
-  // "제이스랑 상대한다 생각하면" 이 판정기가 있는 기기에서는 제이스 공략 카드로 갔다(2026-09-30 브라우저 시험). 공략 갈래여도
-  // 상성 낱말("상대한다", "만나면")이 있고 공략 요청 낱말("상대법")이 없으면 앞 대화의 챔피언과 짝을 짓는다.
-  const pairs = ask === "matchup" || (ask === "guide" && asksMatchup(question) && !asksGuide(question));
-  if (champions.length !== 1 || !pairs) return undefined;
-  const mine = recent.find((card) => card.id !== champions[0].id);
-  return mine ? { type: "matchup", mine, enemy: champions[0], notice: ctx.notice, focus: (await topic())?.topic } : undefined;
-}
-
-/**
- * 이름이 셋 이상인 상성 질문. "오공으로 럼블 상대할 때 아이번 정글이면 아이템 뭐 가?" 는
- * 오공 vs 럼블 을 묻고 아이번은 곁들인 말이다. 예전에는 셋을 다 0.8B 에 실어 글을 쓰게 했고,
- * 프롬프트가 2,300토큰이 넘어 실행이 죽었다. 자리 낱말로 곁들인 이름을 빼고 둘로 답한다.
- * 시점은 판정기에 묻지 않는다 — 이름 둘로 배운 헤드라 셋 앞에서는 12문항 중 6개만 맞혔다.
- */
-export async function answerMatchupOfMany({ question, ctx, data, champions, ask, topic }: Intent): Promise<AnswerPlan | undefined> {
-  // 셋을 한꺼번에 견주는 질문("오공 럼블 아이번 중 누가 세?")은 아래 비교 표가 받는다
-  if (champions.length < 3 || asksComparison(question, champions.length) || ask !== "matchup") return undefined;
-  const aliasesOf = (card: ChampionCard) => [card.name, ...(data.aliases.get(card.id) ?? [])];
-  const pair = matchupPair(question, champions, aliasesOf);
-  if (!pair) return undefined;
-  const phrased = matchupSidesByPhrase(question, pair, aliasesOf);
-  const [mine, enemy] = phrased ? [phrased, pair.find((card) => card.id !== phrased.id) ?? pair[1]] : matchupSides(question, pair);
-  const others = champions.filter((card) => !pair.includes(card)).map((card) => card.name).join(", ");
-  const notice = ctx.notice ?? fill(ctx.copy.card.pairFromMany, { mine: mine.name, enemy: enemy.name, others });
-  return { type: "matchup", mine, enemy, notice, focus: (await topic())?.topic };
-}
-
-/*
- * "오공이랑 말파이트랑 싸우면 누가 유리해?" — 둘을 다 말했고 싸움을 묻는다.
- * 능력치 비교표가 아니라 상성 카드와 시점 있는 해설, 그리고 VS 링크.
- *
- * 누가 내 챔피언인지는 **조사가** 가린다. 예전에는 먼저 말한 쪽으로 정했는데,
- * 상대를 먼저 말하면 통째로 뒤집혔다 — "럼블 상대로 오공 하는데" 가 럼블 시점이
- * 됐다. 열 문장으로 재 보니 어순은 4/10, 조사는 9/10 이다.
- */
-export async function answerMatchupOfTwo({ question, ctx, champions, ask, route, topic }: Intent): Promise<AnswerPlan | undefined> {
-  if (champions.length !== 2 || ask !== "matchup") return undefined;
-  // "아리 vs 럼블 누가 더 빨라?" — 이름 둘에 비교 낱말과 능력치 낱말이 있으면 상성 해설이 아니라 능력치 표다(판정기는 이름 둘이면 상성으로 가른다)
-  if (asksComparison(question, 2) && detectStat(question)) return undefined;
-  const [mine, enemy] = pickMatchupSides(question, champions, route);
-  return { type: "matchup", mine, enemy, notice: ctx.notice, focus: (await topic())?.topic };
-}
-
-/**
- * 이름 둘 상성의 내 챔피언·상대.
- *
- * 조사가 확실히 가르면("오공으로", "럼블 상대로") 그것이 먼저다. 판정기가 "오공으로 럼블 너무
- * 어려운데 팁 없나?" 를 럼블 시점으로 골랐다. 조사 규칙이 틀린 것은 모두 조사가 없어 어순으로
- * 떨어진 경우였다(`matchupSidesDetailed`). 그때만 판정기(영어·중국어는 문형 보정)를 따른다.
- */
-export function pickMatchupSides(question: string, champions: ChampionCard[], route: AskRoute | undefined): [ChampionCard, ChampionCard] {
-  const byJosa = matchupSidesDetailed(question, champions);
-  const picked = !byJosa.confident && route?.mine && champions.includes(route.mine) ? route.mine : undefined;
-  return picked ? [picked, champions.find((card) => card.id !== picked.id) ?? champions[1]] : byJosa.sides;
 }

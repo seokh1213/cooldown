@@ -4,13 +4,14 @@ import { asksAboutHelper, isSmallTalk } from "./intent";
 import { type AnswerPlan, type PlanContext, type PlanDeps, type Step } from "./planTypes";
 import { understand } from "./questionUnderstanding";
 import { answerByVector, answerRuleQuestion, fixChampionTypo, answerGameFact, answerFromNotes } from "./knowledgePlans";
-import { continueMatchup, answerMatchupWithRecent, answerMatchupOfMany, answerMatchupOfTwo } from "./matchupPlans";
+import { continueMatchup } from "./matchupPlans";
+import { answerNewMatchup } from "./newMatchupPlan";
 import { answerItemOrMechanics, answerChampion } from "./championPlans";
 
-/** 기존 11개 처리기의 우선순위. 앞 단계가 답하면 다음 단계로 가지 않는다. */
+/** 자료 계획의 9개 처리기. 새 상성의 이름 수별 3개 처리기를 하나로 합쳐 기존 우선순위를 유지한다. */
 const ANSWER_STAGES = {
   knowledge: [answerByVector, answerRuleQuestion, fixChampionTypo, answerGameFact],
-  matchup: [continueMatchup, answerMatchupWithRecent, answerMatchupOfMany, answerMatchupOfTwo],
+  matchup: [continueMatchup, answerNewMatchup],
   entity: [answerItemOrMechanics, answerChampion],
   notes: [answerFromNotes],
 } satisfies Record<string, Step[]>;
@@ -43,5 +44,5 @@ export async function planAnswer(question: string, ctx: PlanContext, deps: PlanD
 export type { AnswerPlan, PlanTurn, JudgeTier, PlanContext, PlanDeps, Intent } from "./planTypes";
 export { ROUTE_HEAD, TOPIC_HEAD, ACT_HEAD, KEV_HEAD } from "./judgeHeads";
 export { understand } from "./questionUnderstanding";
-export { pickMatchupSides } from "./matchupPlans";
+export { pickMatchupSides } from "./newMatchupPlan";
 export { GENERIC_ADVICE } from "./askWords";
