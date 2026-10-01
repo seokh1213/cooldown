@@ -30,7 +30,11 @@ export function checkMatchupFacts(text: string, cards: readonly ChampionCard[]):
 export function checkedMatchupPair(pair: PrecomputedPair, cards: readonly ChampionCard[]): PrecomputedPair {
   return Object.fromEntries(Object.entries(pair).map(([key, text]) => {
     if (typeof text !== "string") return [key, undefined];
-    const bad = new Set(checkMatchupFacts(text, cards).map(issue => issue.sentence));
-    return [key, evidenceSentences(text).filter(sentence => !bad.has(sentence)).join(" ") || undefined];
+    return [key, checkedMatchupText(text, cards) || undefined];
   }));
+}
+
+export function checkedMatchupText(text: string, cards: readonly ChampionCard[]): string {
+  const bad = new Set(checkMatchupFacts(text, cards).map(issue => issue.sentence));
+  return evidenceSentences(text).filter(sentence => !bad.has(sentence)).join(" ");
 }

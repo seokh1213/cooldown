@@ -7,7 +7,7 @@ import { matchupNotes } from "./playbookNotes";
 import { loadPrecomputed, selectPrecomputed, type PrecomputedPair } from "./precomputed";
 import type { ScenarioCondition } from "./dialogueState";
 import { digestSections } from "./prose";
-import { checkMatchupFacts } from "./matchupFactCheck";
+import { checkedMatchupText } from "./matchupFactCheck";
 import { labelSlots } from "./slotLabels";
 
 interface MatchupRequest {
@@ -44,7 +44,7 @@ export function selectMatchupReply(answer: AdvisorAnswer, pair: PrecomputedPair 
     if (selected.text) return { answer: { ...answer, precomputed: selected.text }, topics: selected.topics };
     if (mode === "advance") return { answer: { kind: "text", text: exhaustedText(lang) }, topics: [] };
   }
-  const sections = digestSections(answer, lang, "cue-all-general").map(section => ({ ...section, lines: section.lines.filter(line => !checkMatchupFacts(line, answer.cards).length) })).filter(section => section.lines.length);
+  const sections = digestSections(answer, lang, "cue-all-general").map(section => ({ ...section, lines: section.lines.map(line => checkedMatchupText(line, answer.cards)).filter(Boolean) })).filter(section => section.lines.length);
   const picked = mode === "advance" ? sections.filter(section => !request.shownTopics?.includes(section.key)).slice(0, 3)
     : mode === "explain" ? sections.slice(0, 2) : request.focus && request.focus !== "general" ? sections.slice(0, 1) : sections;
   if (!picked.length && mode === "advance") return { answer: { kind: "text", text: exhaustedText(lang) }, topics: [] };
