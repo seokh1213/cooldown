@@ -10,6 +10,13 @@ import { judgeRouteState } from "./routeAsk";
 import { topicFromJudge, topicFromWords, topicQuestions } from "./topicJudge";
 import type { DialogueMemory } from "./dialogueState";
 
+const RETURN_TO_MATCHUP = /^(?:아까|이전|방금)\s*(?:그\s*)?상성(?:에서|으로\s*돌아가서)?\s*[,，:：]?\s*|^(?:back to|returning to)\s+(?:that|the|earlier|previous)\s+matchup\s*[:,]?\s*|^(?:回到|继续)(?:之前|刚才|这个)(?:的)?对局\s*[，,:：]?\s*/i;
+
+/** 이전 상성을 가리키는 앞말을 빼고 남은 요청으로 일반 조언 여부를 정한다. */
+function asksMoreMatchupAdvice(question: string): boolean {
+  return asksGenericAdvice(question.replace(RETURN_TO_MATCHUP, ""));
+}
+
 function dialogueAct(question: string) {
   return actFromWords(question) ?? (asksReason(question) ? "more" as const : undefined);
 }
@@ -37,7 +44,7 @@ function pairForQuestion(question: string, memory: DialogueMemory, ctx: PlanCont
     if (prior.some(p => p.id === card.id) && (focus || /언제\s*(써|쓰)|어떻게|상대|한타|라인전/i.test(question))) return prior;
     return undefined;
   }
-  const returns = /아까|돌아|다시.*상성|earlier|back to|之前|回到/i.test(question);
+  const returns = RETURN_TO_MATCHUP.test(question) || /아까|돌아|다시.*상성|earlier|back to|之前|回到/i.test(question);
   const advice = /빠졌|빠진|정정.*[QWER]|교환|진입|버텨|어떻게|언제.*(써|쓰|들어)/i.test(question);
   if (returns || (memory.active === "matchup" && (focus || act === "more" || asksGenericAdvice(question) || advice))) return prior;
   return undefined;
@@ -49,7 +56,7 @@ export async function matchupPlan(question: string, memory: DialogueMemory, ctx:
   if (!pair) return undefined;
   const names = pair.map(c => c.name);
   const same = memory.matchup?.mine === pair[0].id && memory.matchup.enemy === pair[1].id;
-  const reason = dialogueAct(question) === "more" || same && asksGenericAdvice(question);
+  const reason = dialogueAct(question) === "more" || same && asksMoreMatchupAdvice(question);
   let focus = topicFromWords(question, names);
   if (/타워\s*밑|포탑\s*밑|막타|미니언|\bCS\b|wave|tower|补刀/i.test(question) && !/한타|teamfight|团战/i.test(question)) focus = "laning";
   if (!focus && /빠졌|빠진|정정.*[QWER]/i.test(question)) focus = "escape-window";

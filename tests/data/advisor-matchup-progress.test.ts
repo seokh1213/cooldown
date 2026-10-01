@@ -101,3 +101,32 @@ test("한국어·영어·중국어 일반 조언과 이유 질문을 같은 대�
     assert.equal(plan.continuation, /왜|why/.test(question) ? "explain" : "advance");
   }
 });
+
+test("다른 규칙을 조회하고 저장 복원한 뒤 이전 상성의 일반 팁은 남은 칸을 이어간다", async () => {
+  const prior = { ...memory, active: "rule" as const, rule: { title: "스킬 가속", text: "가속 계산" }, matchup: { ...memory.matchup, shownTopics: Object.keys(pair) } };
+  const stored = dehydrateTurn({ id: 1, role: "assistant", content: "가속 계산", memory: prior });
+  const restored = reviveTurn(JSON.parse(JSON.stringify(stored)), data)!;
+  const ctx = { data, lang: "ko_KR" as const, copy: translations.ko_KR.advisor, turns: [restored], championIds: [], consented: false, canUseModel: false, retrieval: false, judge: "none" as const };
+  const deps = { judge: async () => { throw new Error("일반 조언에 판정은 필요 없다"); }, search: async () => [] };
+  for (const question of ["아까 상성에서 팁 좀 줘", "이전 상성으로 돌아가서 팁 더", "back to that matchup, any tips?", "回到之前的对局，有建议吗"]) {
+    const dialogue = await planDialogue(question, ctx, deps);
+    const plan = dialogue.parts[0].plan;
+    if (plan.type !== "matchup") assert.fail(`${question}: 이전 상성으로 돌아가야 한다`);
+    assert.equal(plan.continuation, "advance", question);
+    const selected = selectMatchupReply({ kind: "compare", cards, rows: [], matchup: true }, pair, { ...plan, question, shownTopics: dialogue.memory.matchup?.shownTopics }, "ko_KR");
+    assert.equal(selected.answer.kind, "text", question);
+    if (selected.answer.kind === "text") assert.match(selected.answer.text, /모두 보여드렸/);
+  }
+});
+
+test("이전 상성에서 특정 주제를 다시 요청하면 진행 소진과 관계없이 그 주제를 보여준다", async () => {
+  const prior = { ...memory, active: "rule" as const, matchup: { ...memory.matchup, shownTopics: Object.keys(pair) } };
+  const ctx = { data, lang: "ko_KR" as const, copy: translations.ko_KR.advisor, turns: [{ role: "assistant" as const, memory: prior }], championIds: [], consented: false, canUseModel: false, retrieval: false, judge: "none" as const };
+  const deps = { judge: async () => { throw new Error("주제 요청에 판정은 필요 없다"); }, search: async () => [] };
+  const dialogue = await planDialogue("아까 상성에서 아이템 팁 좀 줘", ctx, deps);
+  const plan = dialogue.parts[0].plan;
+  if (plan.type !== "matchup") assert.fail("이전 상성의 아이템을 보여줘야 한다");
+  assert.equal(plan.continuation, undefined);
+  const selected = selectMatchupReply({ kind: "compare", cards, rows: [], matchup: true }, pair, { ...plan, question: "아이템 팁", shownTopics: dialogue.memory.matchup?.shownTopics, scope: "topic" }, "ko_KR");
+  assert.deepEqual(selected.topics, ["build"]);
+});
