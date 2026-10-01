@@ -10,6 +10,7 @@ import type { SpellFocus } from "./spellFocus";
 import type { AdvisorData } from "./context";
 import type { NotePerspective } from "./noteSelect";
 import type { AdvisorTurn } from "@/hooks/useAdvisorTurns";
+import type { DialogueMemory } from "./dialogueState";
 
 export const CONVERSATIONS_KEY = "cooldown.advisor.conversations.v1";
 /** 남기는 대화 수. 넘으면 오래된 것부터 버린다. */
@@ -77,6 +78,7 @@ export interface StoredTurn {
    */
   byCode?: boolean;
   answer?: StoredAnswer;
+  memory?: DialogueMemory;
 }
 
 export interface Conversation {
@@ -209,6 +211,7 @@ export function dehydrateTurn(turn: AdvisorTurn): StoredTurn {
   if (turn.notice) stored.notice = turn.notice;
   if (turn.byCode) stored.byCode = true;
   if (turn.answer) stored.answer = dehydrateAnswer(turn.answer);
+  if (turn.memory) stored.memory = structuredClone(turn.memory);
   return stored;
 }
 
@@ -223,6 +226,7 @@ export function reviveTurn(stored: StoredTurn, data: AdvisorData): AdvisorTurn |
   if (stored.sources) turn.sources = stored.sources;
   if (stored.notice) turn.notice = stored.notice;
   if (stored.byCode) turn.byCode = true;
+  if (stored.memory?.patch === data.patch) turn.memory = structuredClone(stored.memory);
   if (stored.answer) {
     const answer = reviveAnswer(stored.answer, data);
     if (!answer) return undefined;

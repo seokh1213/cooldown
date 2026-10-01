@@ -2,7 +2,8 @@ import { useCallback, useRef, useState } from "react";
 import { answerChampionIds, type AdvisorAnswer } from "@/lib/advisor/answer";
 import { matchupStateOf } from "@/lib/advisor/conversation";
 import { appendFeedback } from "@/lib/advisor/feedback";
-import { answerProse } from "@/lib/advisor/prose";
+import { dialogueAnswerText } from "@/lib/advisor/dialogueReply";
+import type { DialogueMemory } from "@/lib/advisor/dialogueState";
 import type { Language } from "@/i18n";
 import type { AdvisorChatMessage, AdvisorResponse } from "@/lib/advisor/protocol";
 import { useRevealText } from "./useRevealText";
@@ -45,6 +46,8 @@ export interface AdvisorTurn extends AdvisorChatMessage {
    * 근거 검사도 모델이 쓴 글에만 돌린다 — 코드가 쓴 글은 카드에서 옮긴 값이다.
    */
   byCode?: boolean;
+  /** 이 답이 확정한 대화 대상·사용자 조건. 기록을 복원하면 함께 되살린다. */
+  memory?: DialogueMemory;
 }
 
 type DoneMessage = Extract<AdvisorResponse, { type: "done" }>;
@@ -149,15 +152,23 @@ export function useAdvisorTurns(lang: Language, setError: (error: string | null)
     (question: string, answer: string | AdvisorAnswer, notice?: string, related?: AdvisorTurn["related"]) => {
       setError(null);
       // 카드는 바로, 글은 흘려서 보인다(`reveal`)
-      const full = typeof answer === "string" ? answer : answerProse(answer, lang);
+      const full = typeof answer === "string" ? answer : dialogueAnswerText(answer, lang);
       const id =
         typeof answer === "string"
-          ? place(question, { role: "assistant", content: "", notice, related })
+          ? place(question, { role: "assistant", content: "", notice, related, byCode: true })
           : place(question, { role: "assistant", content: "", answer, notice, byCode: true });
       reveal(id, full);
     },
     [lang, place, reveal, setError],
   );
+
+  const remember = useCallback((memory: DialogueMemory) => {
+    setTurns(prev => {
+      const last = prev[prev.length - 1];
+      if (last?.role !== "assistant") return prev;
+      return [...prev.slice(0, -1), { ...last, memory: structuredClone(memory) }];
+    });
+  }, []);
 
   /*
    * 기록은 상태 갱신 함수 밖에서 남긴다. 갱신 함수 안에서 남기면 개발 모드(StrictMode)가 갱신 함수를 두 번 불러
@@ -226,6 +237,7 @@ export function useAdvisorTurns(lang: Language, setError: (error: string | null)
     appendChunk,
     completeReply,
     answerWithoutModel,
+    remember,
     rate,
     reset,
     replaceTurns,

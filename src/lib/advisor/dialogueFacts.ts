@@ -1,0 +1,158 @@
+/** 명시적인 조회와 최근 조회의 생략을 해석한다. 수치 계산은 카드의 값으로만 한다. */
+import type { ChampionCard, SpellFact } from "@/lib/knowledge/facts";
+import { buildCompareAnswer, buildRuleAnswer, buildSpellAnswer, type AdvisorAnswer } from "./answer";
+import { buildItemCard, detectSlot } from "./context";
+import { detectChampions } from "./intent";
+import { askedRules } from "./questionDocs";
+import { asksWholeKit } from "./askWords";
+import type { AnswerPlan, PlanContext } from "./plan";
+import { inferredSpellFocus, numericConditions, type DialogueMemory } from "./dialogueState";
+import { resolveDialogueRule } from "./dialogueRules";
+import { josa } from "@/lib/knowledge/text";
+
+export interface FactResolution {
+  plan?: AnswerPlan;
+  pending?: DialogueMemory["pending"];
+  numeric?: DialogueMemory["numeric"];
+  relation?: "penetration";
+}
+const ADVICE = /언제\s*(써|쓰|사용|들어|진입)|어떻게\s*(써|쓰|빼|교환)|빠졌|빠진|상대법|교환|라인전|한타|when.*(use|engage)|how.*(use|bait)|怎么.*(用|打)/i;
+const RETURN = /아까|앞서|다시|그대로|같은\s*조건|earlier|same|回到|之前/i;
+const QUERY = /쿨|몇\s*초|마나|소모|계수|설명|효과|말한|기준|비교|돌아|cooldown|cost|ratio|冷却|耗蓝|比较/i;
+const round = (value: number) => Number(value.toFixed(2)).toString();
+
+function numberList(value: string | undefined): number[] | undefined {
+  if (!value) return undefined;
+  const values = value.split("/").map(Number);
+  return values.every(v => Number.isFinite(v) && v >= 0) ? values : undefined;
+}
+
+function adjustedCooldown(spell: SpellFact, numeric: DialogueMemory["numeric"]) {
+  const all = numberList(spell.recharge ?? spell.cooldown);
+  if (!all) return undefined;
+  if (numeric?.rank !== undefined && numeric.rank > all.length && all.length !== 1) return undefined;
+  const base = numeric?.rank ? [all[Math.min(numeric.rank - 1, all.length - 1)]] : all;
+  const haste = numeric?.haste ?? 0;
+  if (!Number.isFinite(haste) || haste < 0 || haste > 500) return undefined;
+  return { base, value: base.map(v => round(v * 100 / (100 + haste))).join("/") };
+}
+
+function withCalculation(answer: AdvisorAnswer, numeric: DialogueMemory["numeric"]): AdvisorAnswer {
+  if (!numeric || answer.kind !== "spell") return answer;
+  const adjusted = adjustedCooldown(answer.spell, numeric);
+  if (!adjusted) return answer;
+  const rank = numeric.rank ? `스킬 ${numeric.rank}랭크` : "스킬 랭크 순서";
+  const haste = numeric.haste === undefined ? "" : ` · 가속 ${numeric.haste}`;
+  const label = answer.spell.recharge ? "재충전 대기시간" : "재사용 대기시간";
+  return {
+    ...answer, focus: "cooldown", headline: { label: `${rank}${haste} 기준 ${label}`, value: `${adjusted.value}초` },
+    facts: [{ label: "기본 대기시간", value: `${adjusted.base.join("/")}초` }, ...answer.facts.filter(f => !f.label.includes("대기시간"))],
+  };
+}
+
+function comparison(cards: ChampionCard[], slot: string, numeric: DialogueMemory["numeric"], ctx: PlanContext): AdvisorAnswer {
+  const answer = buildCompareAnswer(cards, `${slot} 쿨타임 비교`, slot, { lang: ctx.lang });
+  if (answer.kind !== "compare" || !numeric) return answer;
+  const values = cards.map(card => {
+    const spell = card.spells.find(s => s.slot === slot);
+    return spell ? adjustedCooldown(spell, numeric)?.value : undefined;
+  });
+  if (values.some(v => v === undefined)) return answer;
+  const label = `${slot}${numeric.rank ? ` · 스킬 ${numeric.rank}랭크` : " · 스킬 랭크 순서"}${numeric.haste === undefined ? "" : ` · 가속 ${numeric.haste}`} 기준 대기시간`;
+  return { ...answer, headline: { label, value: cards.map((c, i) => `${c.name} ${values[i]}초`).join(" · ") }, rows: answer.rows.map(row => row.hit ? { ...row, values: values.map(v => `${v}초`) } : row) };
+}
+
+function resolveTargets(question: string, named: ChampionCard[], memory: DialogueMemory, ctx: PlanContext): ChampionCard[] {
+  const data = ctx.data!;
+  const from = (ids: string[]) => ids.map(id => data.cardById.get(id)).filter((card): card is ChampionCard => Boolean(card));
+  if (/둘|둘\s*중|비교|both|compare|两个|比较/i.test(question) && named.length < 2) {
+    const prior = memory.compared ?? (named.length && memory.spell ? [memory.spell.champion]
+      : memory.matchup ? [memory.matchup.mine, memory.matchup.enemy] : memory.spell ? [memory.spell.champion] : []);
+    return from([...new Set([...prior, ...named.map(c => c.id)])]);
+  }
+  if (named.length) return named;
+  if (memory.matchup && /상대|enemy|对面/i.test(question)) return from([memory.matchup.enemy]);
+  if (memory.matchup && /내\s*[QWER]|내\s*궁|\bmy\b|我的/i.test(question)) return from([memory.matchup.mine]);
+  if (memory.spell && (memory.active === "spell" || RETURN.test(question))) return from([memory.spell.champion]);
+  if (memory.pending) return from(memory.pending.candidates);
+  if (memory.active === "matchup" && memory.matchup) return from([memory.matchup.mine, memory.matchup.enemy]);
+  return from([...ctx.championIds]);
+}
+
+function hasteFormula(question: string, memory: DialogueMemory): FactResolution | undefined {
+  const numeric = numericConditions(question, undefined);
+  const haste = numeric?.haste;
+  if (haste === undefined || haste > 500 || ADVICE.test(question)) return undefined;
+  const base = /(?:기본\s*)?쿨타임\s*(?:이|은)?\s*(\d+(?:\.\d+)?)\s*초|\b(\d+(?:\.\d+)?)\s*second.*cooldown/i.exec(question);
+  if (base) {
+    const seconds = Number(base[1] ?? base[2]);
+    const final = round(seconds * 100 / (100 + haste));
+    return { plan: { type: "code", answer: { kind: "text", text: `기본 ${seconds}초에 스킬 가속 ${haste}이면 ${final}초입니다. ${seconds} × 100 / (100 + ${haste}) = ${final}초로 계산합니다.` } } };
+  }
+  if (memory.active === "spell" && /얼마|몇|줄어|줄|same|같은/i.test(question)) return undefined;
+  if (detectSlot(question)) return undefined;
+  return { plan: { type: "code", answer: { kind: "text", text: `스킬 가속 ${haste}이면 쿨타임이 ${round(haste * 100 / (100 + haste))}% 줄어듭니다. 최종 쿨타임은 기본 쿨타임 × 100 / (100 + ${haste})입니다.` } } };
+}
+
+function explicitEntity(question: string, memory: DialogueMemory, ctx: PlanContext): FactResolution | undefined {
+  const data = ctx.data!;
+  const item = buildItemCard(data, question, memory.active === "item" && /그거|그\s*아이템|효과|가격|골드/.test(question) ? memory.item : undefined);
+  if (item) return { plan: { type: "card", answer: item } };
+  const rules = askedRules(data, question);
+  const named = detectChampions(data, question);
+  if (named.length || !rules.length || rules.some(r => r.subject === "gameplay")) return undefined;
+  const cooldown = /쿨|cooldown|冷却/i.test(question);
+  const best = rules.find(r => r.subject === "summoner") ?? rules[0];
+  const names = new Set([best.name, best.nameEn, best.nameZh]);
+  const spell = cooldown && best.subject === "summoner" ? data.summoners.find(s => names.has(s.name) && s.modes?.includes("CLASSIC")) : undefined;
+  const answer = buildRuleAnswer(best, rules.map(r => r.name), ctx.lang, rules, spell?.cooldown?.[0]);
+  return { plan: { type: "card", answer } };
+}
+
+function penetrationAnswer(answer: AdvisorAnswer, question: string, memory: DialogueMemory, ctx: PlanContext): FactResolution | undefined {
+  const carries = memory.spell?.relation === "penetration" && !QUERY.test(question);
+  const follows = memory.rule?.title.includes("관통") && /적용|평타|기본\s*공격/.test(question);
+  if (!carries && !follows) return undefined;
+  const source = ctx.data!.mechanics.find(m => m.id === "저항과-피해-감소");
+  if (!source?.text.includes("방어력은 물리 피해")) return undefined;
+  if (answer.kind !== "spell") return undefined;
+  const damage = answer.spell.damageTypes;
+  const text = damage.length === 1 && damage[0] === "물리" ? "물리 피해이므로 물리 관통력과 방어구 관통력이 적용됩니다."
+    : damage.length === 1 && damage[0] === "고정" ? "고정 피해이므로 물리 관통력이나 방어구 관통력으로 피해가 늘어나지 않습니다." : undefined;
+  return text ? { plan: { type: "card", answer: { ...answer, headline: undefined, highlighted: [`${answer.championName} ${answer.spell.slot} ${josa(answer.spell.name, "은/는")} ${text}`] } }, relation: "penetration" } : undefined;
+}
+
+export function resolveDialogueFact(question: string, memory: DialogueMemory, ctx: PlanContext): FactResolution | undefined {
+  if (!ctx.data || ctx.lang !== "ko_KR") return undefined;
+  const formula = hasteFormula(question, memory);
+  if (formula) return formula;
+  const rule = resolveDialogueRule(question, ctx);
+  if (rule) return { plan: rule };
+  const entity = explicitEntity(question, memory, ctx);
+  if (entity) return entity;
+  if (ADVICE.test(question) || asksWholeKit(question)) return undefined;
+  const numeric = numericConditions(question, memory.numeric);
+  const named = detectChampions(ctx.data, question);
+  const slot = detectSlot(question) ?? memory.pending?.slot ?? ((memory.active === "spell" && (QUERY.test(question) || numeric !== undefined)) ? memory.spell?.slot : undefined);
+  if (!slot && /그\s*스킬|그거.*쿨|that (ability|skill)|那个技能/i.test(question) && !named.length) return { pending: { slot: "?", focus: inferredSpellFocus(question, memory), candidates: [] } };
+  if (!slot || (!QUERY.test(question) && !detectSlot(question) && JSON.stringify(numeric) === JSON.stringify(memory.numeric))) return undefined;
+  const cards = resolveTargets(question, named, memory, ctx);
+  if (!cards.length) return { pending: { slot, focus: inferredSpellFocus(question, memory), candidates: [] } };
+  const shared = /그대로|같은\s*조건|same/i.test(question) || memory.active === "spell";
+  const applied = shared || /가속|랭크|레벨/.test(question) ? numeric : undefined;
+  if (cards.length > 1) return { plan: { type: "card", answer: comparison(cards, slot, applied, ctx) }, numeric: applied, pending: { slot, focus: inferredSpellFocus(question, memory), candidates: cards.map(c => c.id) } };
+  const [card] = cards;
+  const spell = card.spells.find(s => s.slot === slot);
+  if (!spell) return undefined;
+  const focus = inferredSpellFocus(question, memory);
+  let answer = buildSpellAnswer(card, spell, `${question}${focus === "cooldown" ? " 쿨타임" : focus === "cost" ? " 마나 소모" : ""}`, ctx.lang);
+  const related = penetrationAnswer(answer, question, memory, ctx);
+  if (related) return related;
+  answer = focus === "cooldown" || applied ? withCalculation(answer, applied) : answer;
+  if (answer.kind === "spell" && focus === "cost" && !spell.cost) {
+    const passive = card.spells.find(s => s.slot === "P");
+    const resource = /스킬을 사용할 때마다 열기/.test(passive?.text ?? "") ? " 패시브 자료에서는 스킬을 사용할 때마다 열기를 얻는다고 설명합니다." : "";
+    answer = { ...answer, focus: "cost", highlighted: [`${card.name} ${slot} ${spell.name}의 마나 소모값은 자료에 기재되어 있지 않습니다.${resource}`] };
+  }
+  return { plan: { type: "card", answer }, numeric: applied };
+}
