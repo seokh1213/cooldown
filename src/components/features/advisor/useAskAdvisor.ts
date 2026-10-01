@@ -11,10 +11,9 @@ import type { AdvisorData } from "@/lib/advisor/context";
 import type { AdvisorAnswer } from "@/lib/advisor/answer";
 import { suggestChampions } from "@/lib/advisor/championTypo";
 import { nicknames } from "@/lib/advisor/intent";
-import { planAnswer, type AnswerPlan, type JudgeTier, type PlanDeps } from "@/lib/advisor/plan";
-import { planDialogue } from "@/lib/advisor/dialoguePlanner";
-import { assembleDialogueReply } from "@/lib/advisor/dialogueReply";
-import { buildMatchupReply } from "@/lib/advisor/matchupReply";
+import type { JudgeTier, PlanDeps } from "@/lib/advisor/planTypes";
+import { answerDialogue } from "@/lib/advisor/dialogueFlow";
+import type { DialogueReply } from "@/lib/advisor/dialogueReply";
 import { dialogueMemoryOf, rememberAnswer } from "@/lib/advisor/dialogueState";
 import { offlineJudge } from "@/lib/advisor/offlineJudge";
 import { fetchJudgeFile } from "@/lib/advisor/storage";
@@ -63,6 +62,13 @@ export function useAskAdvisor({ advisor, data, championIds, canUseModel }: AskAd
   // 카드 위 해설은 모델이 쓰지 않는다. 답은 코드가 노트로 조립한다(`answerProse`).
   const deliver = (question: string, answer: AdvisorAnswer, notice?: string) => advisor.answerWithoutModel(question, answer, notice);
 
+  /** 답변과 해당 시점의 기억을 같은 대화 턴에 기록한다. */
+  const recordReply = (question: string, reply: DialogueReply, notice?: string) => {
+    if (reply.respond) advisor.respond(question, reply.respond.plan);
+    else advisor.answerWithoutModel(question, reply.answer ?? reply.text, reply.notice ?? notice, reply.related);
+    if (reply.memory.patch) advisor.remember(reply.memory);
+  };
+
   /** "혹시 이 자료를?" 에서 고른 자료를 보인다. 검색을 다시 돌리지 않는다. */
   const showDoc = (id: string, title: string) => {
     const answer = data ? docAnswer(data, lang, id, title) : undefined;
@@ -97,40 +103,11 @@ export function useAskAdvisor({ advisor, data, championIds, canUseModel }: AskAd
         notice,
       };
       const deps = { judge: judge === "model" ? modelThenOffline(advisor.judge) : offline, search: advisor.search };
-      if (!data) { await execute(question, await planAnswer(question, ctx, deps)); return; }
-      const dialogue = await planDialogue(question, ctx, deps, "combined");
+      const { dialogue, reply } = await answerDialogue(question, ctx, deps);
       if (dialogue.parts.some(p => p.plan.type === "code" && p.plan.pending)) pendingQuestion.current = question;
-      const reply = await assembleDialogueReply(dialogue, data, lang);
-      if (reply.respond) advisor.respond(question, reply.respond.plan);
-      else advisor.answerWithoutModel(question, reply.answer ?? reply.text, reply.notice ?? notice, reply.related);
-      advisor.remember(reply.memory);
+      recordReply(question, reply, notice);
     } finally {
       advisor.settle();
-    }
-  };
-
-  const execute = async (question: string, plan: AnswerPlan) => {
-    switch (plan.type) {
-      case "card":
-        deliver(question, plan.answer, plan.notice);
-        return;
-      case "matchup":
-        if (data) advisor.answerWithoutModel(question, await buildMatchupReply(data, lang, { question, mine: plan.mine, enemy: plan.enemy, focus: plan.focus, more: plan.more }), plan.notice);
-        return;
-      case "code":
-        if (plan.pending) pendingQuestion.current = question;
-        advisor.answerWithoutModel(question, plan.answer, plan.notice, plan.related);
-        return;
-      case "retry":
-        void ask(plan.question, plan.notice);
-        return;
-      case "respond":
-        advisor.respond(question, plan.plan);
-        return;
-      default: {
-        const exhaustive: never = plan;
-        return exhaustive;
-      }
     }
   };
 

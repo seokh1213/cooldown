@@ -27,11 +27,12 @@ export function dialogueAnswerText(answer: AdvisorAnswer, lang: Language): strin
   return prose;
 }
 
-async function partReply(part: DialoguePlan["parts"][number], options: { data: AdvisorData; lang: Language; memory: DialogueMemory }): Promise<Omit<DialogueReply, "memory">> {
+async function partReply(part: DialoguePlan["parts"][number], options: { data: AdvisorData | null; lang: Language; memory: DialogueMemory }): Promise<Omit<DialogueReply, "memory">> {
   const { plan, question } = part;
   const { data, lang, memory } = options;
   if (plan.type === "respond") return { text: "", respond: plan };
   if (plan.type === "retry") throw new Error("대화 계획은 오타 재시도를 먼저 풀어야 합니다");
+  if (!data) throw new Error("자료 답변에는 준비된 자료가 필요합니다");
   if (plan.type === "matchup") {
     const answer = await buildMatchupReply(data, lang, { question, mine: plan.mine, enemy: plan.enemy, focus: plan.focus, more: plan.more, scope: "topic", conditions: memory.conditions });
     return { answer, text: dialogueAnswerText(answer, lang), notice: plan.notice };
@@ -41,7 +42,7 @@ async function partReply(part: DialoguePlan["parts"][number], options: { data: A
   return { answer, text: dialogueAnswerText(answer, lang), notice: plan.notice };
 }
 
-export async function assembleDialogueReply(dialogue: DialoguePlan, data: AdvisorData, lang: Language): Promise<DialogueReply> {
+export async function assembleDialogueReply(dialogue: DialoguePlan, data: AdvisorData | null, lang: Language): Promise<DialogueReply> {
   const memory = structuredClone(dialogue.memory);
   const replies: Array<Omit<DialogueReply, "memory">> = [];
   for (const part of dialogue.parts) replies.push(await partReply(part, { data, lang, memory }));

@@ -3,6 +3,8 @@ import type { AdvisorAnswer } from "./answer";
 import type { AdvisorData } from "./context";
 import { detectSlot } from "./context";
 import { detectSpellFocus, type SpellFocus } from "./spellFocus";
+import type { AnswerPlan } from "./planTypes";
+import type { FactResolution } from "./dialogueFacts";
 
 export interface SpellReference { champion: string; slot: string; focus?: SpellFocus; relation?: "penetration" }
 export interface ScenarioCondition {
@@ -125,4 +127,29 @@ export function inferredSpellFocus(question: string, memory: DialogueMemory): Sp
   if (direct) return direct;
   if (/몇\s*초|얼마나\s*줄|더\s*빨리\s*돌|how long|几秒/i.test(question)) return "cooldown";
   return memory.active === "spell" || memory.pending ? (memory.pending?.focus ?? memory.spell?.focus) : undefined;
+}
+
+function rememberPlan(memory: DialogueMemory, plan: AnswerPlan): DialogueMemory {
+  if (plan.type === "matchup") {
+    const changed = memory.matchup?.mine !== plan.mine.id || memory.matchup.enemy !== plan.enemy.id;
+    return { ...memory, active: "matchup", matchup: { mine: plan.mine.id, enemy: plan.enemy.id, focus: plan.focus }, conditions: changed ? [] : memory.conditions, pending: undefined };
+  }
+  if (plan.type === "card" || (plan.type === "code" && typeof plan.answer !== "string")) return rememberAnswer(memory, plan.answer as Exclude<typeof plan.answer, string>);
+  if (plan.type === "code" && typeof plan.answer === "string") {
+    const title = /^###\s+([^\n]+)/.exec(plan.answer)?.[1];
+    if (title) return { ...memory, active: "rule", rule: { title, text: plan.answer } };
+  }
+  return memory;
+}
+
+export function rememberDialoguePlan(memory: DialogueMemory, plan: AnswerPlan, resolution?: Pick<FactResolution, "numeric" | "relation">): DialogueMemory {
+  const next = rememberPlan(memory, plan);
+  if (!resolution) return next;
+  if (resolution.numeric !== undefined) next.numeric = resolution.numeric;
+  if (resolution.relation && next.spell) next.spell.relation = resolution.relation;
+  if (plan.type === "code" && typeof plan.answer !== "string" && plan.answer.kind === "text" && /^스킬 가속|^기본 .*스킬 가속/.test(plan.answer.text)) {
+    next.active = "rule";
+    next.rule = { title: "스킬 가속", text: plan.answer.text };
+  }
+  return next;
 }
