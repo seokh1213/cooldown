@@ -88,7 +88,7 @@ const FOLLOWUP_GUARD = /팁|조언|어떻게|방법|요령|왜|\btips?\b|\badvic
 const SPELL_HANDLING =
   /(어떻게|어케|언제|뭐로)\s*\S*\s*(빼|피하|피해(?!량)|막|대처|대응|받아|흘리)|(빼|피하|막|대처하)는\s*(법|방법|요령)|\b(dodge|avoid|bait|play around|deal with|counter|block)\b|怎么(躲|骗|应对|处理|防)|如何(躲|骗|应对)/i;
 /** 주제 없는 조언 요청("팁 좀", "tips"). 상성 대화 중이면 같은 답을 되풀이하지 말고 남은 칸을 보인다. */
-const GENERIC_ADVICE = /^\s*(팁|꿀팁|조언|요령|도움)(\s*(좀|있어|있나|없어|없나|줘|주세요|부탁|해줘|알려줘))*\s*[?？!.]*\s*$|^\s*(any\s+)?(tips?|advice|help)\s*(pls|please)?\s*[?!.]*\s*$|^\s*(有)?(什么)?(建议|技巧|攻略)(吗|呢)?\s*[?？]*\s*$/i;
+export const GENERIC_ADVICE = /^\s*(팁|꿀팁|조언|요령|도움)(\s*(좀|있어|있나|없어|없나|줘|주세요|부탁|해줘|알려줘))*\s*[?？!.]*\s*$|^\s*(any\s+)?(tips?|advice|help)\s*(pls|please)?\s*[?!.]*\s*$|^\s*(有)?(什么)?(建议|技巧|攻略)(吗|呢)?\s*[?？]*\s*$/i;
 /** 상성 대화 중 이름 없는 말을 새 질문으로 볼 검색 벡터 점수(낱말 가산점 없이) */
 const CONVERSATION_NEW_QUESTION = 0.55;
 

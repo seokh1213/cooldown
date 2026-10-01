@@ -4,7 +4,7 @@ import { asksMatchup } from "./askWords";
 import { actFromWords, sideOfNewName } from "./conversation";
 import { detectChampions } from "./intent";
 import { matchupSidesDetailed } from "./matchupSides";
-import { planAnswer, TOPIC_HEAD, type AnswerPlan, type PlanContext, type PlanDeps } from "./plan";
+import { GENERIC_ADVICE, planAnswer, TOPIC_HEAD, type AnswerPlan, type PlanContext, type PlanDeps } from "./plan";
 import { judgeRouteState } from "./routeAsk";
 import { topicFromJudge, topicFromWords, topicQuestions } from "./topicJudge";
 import { resolveDialogueFact, type FactResolution } from "./dialogueFacts";
@@ -71,7 +71,8 @@ async function matchupPlan(question: string, memory: DialogueMemory, ctx: PlanCo
   if (!pair) return undefined;
   const names = pair.map(c => c.name);
   const same = memory.matchup?.mine === pair[0].id && memory.matchup.enemy === pair[1].id;
-  const reason = dialogueAct(question) === "more";
+  // 주제 없는 조언 요청("팁 좀 줘", "tips")은 같은 쌍의 남은 칸이다. "팁" 이 주제 낱말(general)로 잡혀 첫 답을 되풀이했다(2026-10-01 브라우저 시험).
+  const reason = dialogueAct(question) === "more" || (same && GENERIC_ADVICE.test(question));
   let focus = topicFromWords(question, names);
   if (/타워\s*밑|포탑\s*밑|막타|미니언|\bCS\b|wave|tower|补刀/i.test(question) && !/한타|teamfight|团战/i.test(question)) focus = "laning";
   if (!focus && /빠졌|빠진|정정.*[QWER]/i.test(question)) focus = "escape-window";
