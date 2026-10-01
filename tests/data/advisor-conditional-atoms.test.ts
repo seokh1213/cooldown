@@ -7,8 +7,9 @@ import { emptyDialogue, scenarioConditions } from "../../src/lib/advisor/dialogu
 
 const data = loadData("ko_KR");
 const { atoms } = buildConditional();
+const pair = (mine: string, enemy: string) => currentPair(mine, enemy, data.patch);
 function request(mine = "Jax", enemy = "Fiora", question = "피오라 W 응수 어떻게 빼?"): DecisionRequest {
-  return { mine, enemy, question, pair: currentPair(mine, enemy), memory: emptyDialogue(data.patch), baseline: "현재 답변" };
+  return { mine, enemy, question, pair: pair(mine, enemy), memory: emptyDialogue(data.patch), baseline: "현재 답변" };
 }
 
 test("W가 빠지면 잭스의 현재 콤보 근거를 쓰고 살아 있을 때 경고를 제외한다", () => {
@@ -71,7 +72,7 @@ test("출처 내용이 바뀌거나 다른 상대에게만 맞는 노트면 현�
   assert.deepEqual(selectDecisionAnswer(data, atoms, input), { text: "현재 답변", fallback: "source-drift" });
   const source = atoms.find(atom => atom.id === "aatrox-fiora-w-ready")!;
   const wrong: DecisionSeed = { ...source, id: "wrong-owner", mine: "Jax", reason: source.reason, action: source.action };
-  assert.throws(() => compileDecisionAtoms(data, [wrong], currentPair), /현재 출처에서 인용을 찾지 못함/);
+  assert.throws(() => compileDecisionAtoms(data, [wrong], pair), /현재 출처에서 인용을 찾지 못함/);
 });
 
 test("W와 관계없는 라인전·아이템 질문은 기존 답변을 유지한다", () => {

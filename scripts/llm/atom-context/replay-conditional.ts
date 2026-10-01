@@ -41,7 +41,7 @@ export async function replayConditional(questionsPath = questions) {
   const rows = replay.rows.map(row => {
     const selected = selectDecisionAnswer(data, locked.atoms, {
       question: row.question, mine: row.plan.mine, enemy: row.plan.enemy,
-      memory: row.memory, baseline: row.current, pair: currentPair(row.plan.mine, row.plan.enemy),
+      memory: row.memory, baseline: row.current, pair: currentPair(row.plan.mine, row.plan.enemy, data.patch),
     });
     return { id: row.id, turn: row.turn, question: row.question, plan: row.plan, conditions: row.memory.conditions,
       current: row.current, selected, currentIssues: issues(row.current, row.plan.mine, row.memory.conditions), selectedIssues: issues(selected.text, row.plan.mine, row.memory.conditions) };

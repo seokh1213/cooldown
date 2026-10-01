@@ -7,8 +7,9 @@ import { compileDecisionAtoms, type DecisionSeed } from "./conditional";
 
 export const directory = "research/llm-evals/atoms/conditional-fiora";
 
-export function currentPair(mine: string, enemy: string): PrecomputedPair {
-  const bank = JSON.parse(readFileSync(`public/data/26.19/llm/matchups/${mine}.json`, "utf8")) as PrecomputedFile;
+export function currentPair(mine: string, enemy: string, patch: string): PrecomputedPair {
+  const bank = JSON.parse(readFileSync(`public/data/${patch}/llm/matchups/${mine}.json`, "utf8")) as PrecomputedFile;
+  if (bank.patch !== patch) throw new Error(`상성 답 은행 패치 불일치: ${mine}`);
   if (!bank.pairs[enemy]) throw new Error(`상성 답 은행 없음: ${mine}/${enemy}`);
   return bank.pairs[enemy];
 }
@@ -16,7 +17,7 @@ export function currentPair(mine: string, enemy: string): PrecomputedPair {
 export function buildConditional() {
   const data = loadData("ko_KR");
   const seeds = JSON.parse(readFileSync(`${directory}/atoms.seed.json`, "utf8")) as DecisionSeed[];
-  const atoms = compileDecisionAtoms(data, seeds, currentPair);
+  const atoms = compileDecisionAtoms(data, seeds, (mine, enemy) => currentPair(mine, enemy, data.patch));
   return { patch: data.patch, atoms };
 }
 
