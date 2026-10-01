@@ -3,7 +3,7 @@ import { fill } from "@/i18n/fill";
 import type { ChampionCard } from "@/lib/knowledge/facts";
 import { detectStat } from "./answer";
 import { asksComparison, asksGuide, asksMatchup } from "./askWords";
-import { matchupPair, matchupSides, matchupSidesByPhrase, matchupSidesDetailed } from "./matchupSides";
+import { matchupPair, matchupSidesByPhrase, matchupSidesDetailed } from "./matchupSides";
 import type { AnswerPlan, Intent } from "./planTypes";
 import type { AskRoute } from "./routeAsk";
 
@@ -25,8 +25,9 @@ function resolveTarget(intent: Intent): MatchupTarget | undefined {
     const mine = recent.find(card => card.id !== champions[0].id);
     return mine ? { mine, enemy: champions[0], notice: ctx.notice } : undefined;
   }
-  if (ask !== "matchup" || champions.length < 2) return undefined;
+  if (champions.length < 2) return undefined;
   if (champions.length === 2) {
+    if (ask !== "matchup") return undefined;
     if (asksComparison(question, 2) && detectStat(question)) return undefined;
     const [mine, enemy] = pickMatchupSides(question, champions, route);
     return { mine, enemy, notice: ctx.notice };
@@ -37,7 +38,11 @@ function resolveTarget(intent: Intent): MatchupTarget | undefined {
   const pair = matchupPair(question, champions, aliasesOf);
   if (!pair) return undefined;
   const phrased = matchupSidesByPhrase(question, pair, aliasesOf);
-  const [mine, enemy] = phrased ? [phrased, pair.find(card => card.id !== phrased.id) ?? pair[1]] : matchupSides(question, pair);
+  const byJosa = matchupSidesDetailed(question, pair);
+  // 두 이름으로 학습한 판정기는 곁들인 세 번째 이름 때문에 item/guide를 고르기도 한다.
+  // 상성 문구와 명확한 관점이 함께 있을 때만 그 판정을 보완한다.
+  if (ask !== "matchup" && !(asksMatchup(question) && (phrased || byJosa.confident))) return undefined;
+  const [mine, enemy] = phrased ? [phrased, pair.find(card => card.id !== phrased.id) ?? pair[1]] : byJosa.sides;
   const others = champions.filter(card => !pair.includes(card)).map(card => card.name).join(", ");
   const notice = ctx.notice ?? fill(ctx.copy.card.pairFromMany, { mine: mine.name, enemy: enemy.name, others });
   return { mine, enemy, notice };

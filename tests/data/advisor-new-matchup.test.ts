@@ -54,3 +54,24 @@ test("확실한 조사 관점은 판정기와 충돌해도 보존하고 모호�
   assert.equal(clear.mine.id, "MonkeyKing");
   assert.equal(ambiguous.mine.id, "Rumble");
 });
+
+test("세 번째 정글 이름 때문에 다른 갈래로 판정돼도 명시한 상성의 두 주체를 보존한다", async () => {
+  for (const ask of ["guide", "item"] as const) {
+    const entry = request("오공으로 럼블 상대할 때 아이번 정글이면 아이템 뭐 가?", ["MonkeyKing", "Rumble", "Ivern"], { ask });
+    const plan = await answerNewMatchup(entry.intent);
+    if (plan?.type !== "matchup") assert.fail("명시한 내 챔피언과 상대의 상성이어야 한다");
+    assert.deepEqual([plan.mine.id, plan.enemy.id], ["MonkeyKing", "Rumble"]);
+    assert.equal(entry.topicCalls(), 1);
+  }
+});
+
+test("갈래 보완은 세 명의 비교나 관점 없는 나열, 두 명의 일반 질문을 상성으로 바꾸지 않는다", async () => {
+  for (const entry of [
+    request("오공 럼블 아이번 중 누가 세?", ["MonkeyKing", "Rumble", "Ivern"], { ask: "guide" }),
+    request("오공 럼블 아이번 아이템", ["MonkeyKing", "Rumble", "Ivern"], { ask: "item" }),
+    request("오공 럼블 상대법", ["MonkeyKing", "Rumble"], { ask: "guide" }),
+  ]) {
+    assert.equal(await answerNewMatchup(entry.intent), undefined);
+    assert.equal(entry.topicCalls(), 0);
+  }
+});
