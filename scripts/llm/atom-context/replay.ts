@@ -42,8 +42,8 @@ function bankAnswer(plan: AtomRequest, dialogue: Awaited<ReturnType<typeof planD
   return { text: dialogueAnswerText(selected.answer, "ko_KR"), answer: selected.answer };
 }
 
-export async function replayAtoms() {
-  const cases = JSON.parse(readFileSync(`${directory}/questions.json`, "utf8")) as Array<{ id: string; turns: string[] }>;
+export async function replayAtoms(questionsPath = `${directory}/questions.json`) {
+  const cases = JSON.parse(readFileSync(questionsPath, "utf8")) as Array<{ id: string; turns: string[] }>;
   const rows: ReplayRow[] = [];
   const skipped: Array<{ id: string; turn: number; question: string; plans: string[] }> = [];
   for (const item of cases) {
