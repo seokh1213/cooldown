@@ -113,7 +113,7 @@ export interface AdvisorData {
  * 판 경로는 내용 해시가 들어 있어 자료가 바뀌면 URL 이 바뀐다.
  */
 export function dataUrl(patch: string, relative: string): string {
-  return `${import.meta.env.BASE_URL}${revisionedDataPath(`data/${patch}/${relative}`)}`;
+  return `${import.meta.env?.BASE_URL ?? "/"}${revisionedDataPath(`data/${patch}/${relative}`)}`;
 }
 
 async function getJson<T>(url: string): Promise<T> {

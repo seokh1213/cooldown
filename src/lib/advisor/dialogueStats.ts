@@ -7,7 +7,7 @@ import { findGameMeta } from "./gameMeta";
 import type { AnswerPlan, PlanContext } from "./planTypes";
 import type { ResolvedQuestion } from "./resolvedQuestion";
 import type { DialogueMemory } from "./dialogueState";
-import { detectStat, explicitStatLevel, isStatLevel, type ChampionStatQuery } from "./statQuery";
+import { detectStat, explicitStatLevel, isStatLevel, STAT_QUERY_TERMS, type ChampionStatQuery } from "./statQuery";
 
 const OTHER_QUERY = /스킬|패시브|궁|쿨|사거리|피해량|계수|마나|소모|아이템|회복\s*물약|가속|랭크|(?<![A-Za-z])[PQWER](?![A-Za-z])|\b(?:ability|abilities|skill|passive|ult|cooldown|range|ratio|mana|item|haste|rank)\b|技能|被动|冷却|射程|法力|装备/i;
 const ADVICE = /상대법|카운터|싸우|싸워|교환|진입|템|빌드|추천|어떻게\s*(?:싸|버|이|피|굴)|\b(?:counter|fight|engage|build|recommend)\b|怎么打|出装|推荐/i;
@@ -61,11 +61,19 @@ export function dialogueStatPlan(resolved: ResolvedQuestion, memory: DialogueMem
         : `当前资料没有${query.level}级属性。可查询等级：1、6、11、18。`;
     return { type: "code", answer: { kind: "text", text } };
   }
-  const cards = query.champions.map(id => ctx.data!.cardById.get(id)!);
-  const answer = buildCompareAnswer(cards, resolved.text, undefined, { lang: ctx.lang, statQuery: query });
+  return statPlanForQuery(query, resolved, ctx);
+}
+
+/** 검증한 조회를 기존 카드와 문장으로 조립한다. 실험 판정도 같은 경로를 사용한다. */
+export function statPlanForQuery(query: ChampionStatQuery, resolved: ResolvedQuestion, ctx: PlanContext): AnswerPlan | undefined {
+  if (!ctx.data || !isStatLevel(query.level) || !Object.prototype.hasOwnProperty.call(STAT_QUERY_TERMS, query.field) || !query.champions.length) return undefined;
+  const cards = query.champions.map(id => ctx.data!.cardById.get(id));
+  const present = cards.filter((card): card is ChampionCard => Boolean(card));
+  if (present.length !== query.champions.length) return undefined;
+  const answer = buildCompareAnswer(present, resolved.text, undefined, { lang: ctx.lang, statQuery: query });
   if (answer.kind !== "compare") return undefined;
   const hit = answer.rows.find(row => row.hit);
-  if (cards.length > 1) return { type: "card", answer };
-  return { type: "card", answer: { kind: "champion", card: cards[0], statQuery: query,
-    headline: { label: `${cards[0].name} ${answer.headline?.label ?? hit?.label ?? ""}`, value: hit?.values[0] || "—" } } };
+  if (present.length > 1) return { type: "card", answer };
+  return { type: "card", answer: { kind: "champion", card: present[0], statQuery: query,
+    headline: { label: `${present[0].name} ${answer.headline?.label ?? hit?.label ?? ""}`, value: hit?.values[0] || "—" } } };
 }

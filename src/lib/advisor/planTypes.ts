@@ -8,7 +8,9 @@ import type { topicFromJudge } from "./topicJudge";
 import { type MatchupState } from "./conversation";
 import type { JudgeQuestion } from "./judge";
 import type { ChampionCard } from "@/lib/knowledge/facts";
-import type { DialogueHistoryTurn } from "./dialogueState";
+import type { DialogueHistoryTurn, DialogueMemory } from "./dialogueState";
+import type { ResolvedQuestion } from "./resolvedQuestion";
+import type { ChampionStatQuery } from "./statQuery";
 
 /** 자료 조회·상성·확인·생성 중 질문 하나를 답할 계획. 조립 단계가 실행한다. */
 export type AnswerPlan =
@@ -61,6 +63,8 @@ export interface PlanContext {
 }
 
 export interface PlanDeps {
+  /** 실험용 능력치 판정. 명확한 규칙 조회가 실패한 경우에만 호출한다. */
+  inferStatQuery?: (question: ResolvedQuestion, memory: DialogueMemory, ctx: PlanContext) => Promise<ChampionStatQuery | undefined>;
   /** 판정기(`ctx.judge` 단계의 것). 거절하면(모델 없음·파일 못 받음) 부르는 단계가 낱말 규칙으로 간다. */
   judge: (headName: string, state: string, questions: JudgeQuestion[]) => Promise<number[][]>;
   search: (question: string, lang: string) => Promise<Array<{ id: string; score: number }>>;

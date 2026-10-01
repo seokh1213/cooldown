@@ -5,7 +5,7 @@ import type { AnswerPlan, PlanContext, PlanDeps } from "./planTypes";
 import { resolveDialogueFact } from "./dialogueFacts";
 import { ruleEllipsis } from "./dialogueRules";
 import { matchupPlan } from "./dialogueMatchup";
-import { dialogueStatPlan } from "./dialogueStats";
+import { dialogueStatPlan, statPlanForQuery } from "./dialogueStats";
 import { conditionHint, prepareDialogueRequest, type DialogueRequest, type DialogueVariant } from "./dialogueRequest";
 import { rememberDialoguePlan, scenarioConditions, type DialogueMemory } from "./dialogueState";
 
@@ -35,7 +35,11 @@ export async function planPreparedDialogue(request: DialogueRequest, ctx: PlanCo
   if (!ctx.data) return { parts: [{ question: request.questions[0], plan: await planAnswer(request.questions[0], ctx, deps) }], memory };
   for (const question of request.questions) {
     const resolved = resolveQuestion(question, ctx.data);
-    const stat = dialogueStatPlan(resolved, memory, ctx);
+    let stat = dialogueStatPlan(resolved, memory, ctx);
+    if (!stat && deps.inferStatQuery) {
+      const query = await deps.inferStatQuery(resolved, memory, ctx).catch(() => undefined);
+      if (query) stat = statPlanForQuery(query, resolved, ctx);
+    }
     const fact = stat ? undefined : resolveDialogueFact(resolved, memory, ctx);
     const asksCompare = /비교|둘\s*중|둘|both|compare|比较|两个/i.test(question);
     const shouldAsk = fact?.pending && (!fact.pending.candidates.length || fact.pending.candidates.length > 1 && !asksCompare);

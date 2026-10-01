@@ -3,6 +3,10 @@ import type { StatName } from "@/lib/knowledge/facts";
 import type { AdvisorAnswer } from "./answer";
 
 export type StatLevel = 1 | 6 | 11 | 18;
+export const STAT_QUERY_TERMS: Record<StatName, string> = {
+  health: "체력", healthRegen: "체력 재생", armor: "방어력", magicResist: "마법 저항력",
+  attackDamage: "공격력", attackSpeed: "공격 속도", moveSpeed: "이동 속도",
+};
 export interface ChampionStatQuery {
   kind: "championStat";
   champions: string[];

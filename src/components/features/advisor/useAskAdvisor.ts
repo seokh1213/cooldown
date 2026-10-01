@@ -39,6 +39,12 @@ const offline = offlineJudge(async (file) => {
   return response.arrayBuffer();
 });
 
+const inferStatQuery: PlanDeps["inferStatQuery"] = import.meta.env.DEV && import.meta.env.VITE_STAT_CLASSIFIER_EXPERIMENT === "1"
+  ? async (question, memory, ctx) => {
+    const experiment = await import("../../../../scripts/llm/stat-classifier/browser");
+    return experiment.inferStatQuery(question, memory, ctx);
+  } : undefined;
+
 /** 모델 판정기가 거절하면(헤드를 못 받음·다른 모델용·워커 오류) 오프라인 판정기로. 그마저 거절하면 부르는 단계가 낱말 규칙으로 간다. */
 /** 모델 판정기가 시간 초과로 거절된 뒤에는 이 세션에서 다시 부르지 않는다 — 부를 때마다 30초를 기다리게 된다(판정 6회 연속 시간 초과, 2026-09-30). */
 let modelJudgeStalled = false;
@@ -102,7 +108,7 @@ export function useAskAdvisor({ advisor, data, championIds, canUseModel }: AskAd
         judge,
         notice,
       };
-      const deps = { judge: judge === "model" ? modelThenOffline(advisor.judge) : offline, search: advisor.search };
+      const deps = { judge: judge === "model" ? modelThenOffline(advisor.judge) : offline, search: advisor.search, inferStatQuery };
       const { dialogue, reply } = await answerDialogue(question, ctx, deps);
       if (dialogue.parts.some(p => p.plan.type === "code" && p.plan.pending)) pendingQuestion.current = question;
       recordReply(question, reply, notice);
