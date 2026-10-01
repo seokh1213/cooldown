@@ -62,7 +62,7 @@ function championsFromContext({ question, ctx, data, recent, slot, ask }: Intent
   }
   // 상성을 말한 뒤의 "스킬 쿨타임" 은 내 챔피언(앞쪽) 것이다.
   // 상성·비교 뒤의 스킬 수치 조회("list their ability cooldowns")는 둘의 표다. 한쪽만 주면 나머지를 되물어야 한다.
-  if (recent.length === 2 && ask === "spellStat") return { champions: source, notice: ctx.notice ?? fill(fromWhere, { name: source.map((card) => card.name).join("·") }) };
+  if (recent.length >= 2 && ask === "spellStat") return { champions: source, notice: ctx.notice ?? fill(fromWhere, { name: source.map((card) => card.name).join("·") }) };
   if (recent.length) return { champions: [source[0]], notice: ctx.notice ?? fill(fromWhere, { name: source[0].name }) };
   // 화면에 둘이 있는데 슬롯도 비교도 아니면 누구 것인지 묻는다.
   return { type: "code", answer: { kind: "suggestion", original: question, candidates: source, reason: "ambiguous" }, pending: true };

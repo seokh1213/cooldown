@@ -217,3 +217,25 @@ test("사용자가 조건을 명시적으로 취소하면 비운다", () => {
   const previous = scenarioConditions("상대 W는 있고 Q가 빠진 거야", [], 1);
   assert.deepEqual(scenarioConditions("아까 조건은 취소할게", previous, 2), []);
 });
+
+test("내 챔피언을 바꿨다고 말하며 상대 스킬을 물으면 두 이름의 새 관점을 적용한다", async () => {
+  const memory = remembered({ active: "matchup", matchup: { mine: "Aatrox", enemy: "Fiora" } });
+  const result = await planDialogue("내 챔피언은 잭스로 바꿨어 피오라 W 응수는 어떻게 빼?", context(memory), deps);
+  assert.equal(result.memory.matchup?.mine, "Jax");
+  assert.equal(result.memory.matchup?.enemy, "Fiora");
+});
+
+test("내 챔피언이라는 명시적 지칭은 새 챔피언을 상대 자리로 넣지 않는다", async () => {
+  const memory = remembered({ active: "matchup", matchup: { mine: "Ahri", enemy: "Zed" } });
+  const result = await planDialogue("내 챔피언이 럭스면 제드 궁에는 어떻게 대응해?", context(memory), deps);
+  assert.equal(result.memory.matchup?.mine, "Lux");
+  assert.equal(result.memory.matchup?.enemy, "Zed");
+});
+
+test("상대 스킬을 어떻게 상대하는지 물으면 수치 비교 표를 만들지 않는다", async () => {
+  const result = await planDialogue("베인으로 잭스 상대할 때 E 반격을 어떻게 상대해?", context(), deps);
+  const plan = result.parts[0].plan;
+  if (plan.type !== "matchup") assert.fail("스킬 대처를 묻는 상성 질문이어야 한다");
+  assert.equal(plan.mine.id, "Vayne");
+  assert.equal(plan.enemy.id, "Jax");
+});

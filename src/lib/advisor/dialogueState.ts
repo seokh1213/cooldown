@@ -16,7 +16,7 @@ export interface ScenarioCondition {
 }
 export interface DialogueMemory {
   patch: string;
-  active?: "matchup" | "spell" | "item" | "rule";
+  active?: "matchup" | "spell" | "compare" | "item" | "rule";
   matchup?: { mine: string; enemy: string; focus?: string; shownTopics?: string[] };
   spell?: SpellReference;
   compared?: string[];
@@ -72,10 +72,11 @@ export function rememberAnswer(previous: DialogueMemory, answer: AdvisorAnswer):
     memory.active = "spell";
     memory.pending = undefined;
     memory.compared = undefined;
-  } else if (answer.kind === "compare" && answer.slot) {
+  } else if (answer.kind === "compare") {
     memory.compared = answer.cards.map(card => card.id);
-    memory.spell = { champion: answer.cards[0].id, slot: answer.slot, focus: answer.focus };
-    memory.active = "spell";
+    memory.spell = answer.slot ? { champion: answer.cards[0].id, slot: answer.slot, focus: answer.focus } : undefined;
+    memory.active = answer.slot ? "spell" : "compare";
+    memory.pending = undefined;
   } else if (answer.kind === "item") {
     memory.item = answer.itemId;
     memory.active = "item";
@@ -126,6 +127,7 @@ export function inferredSpellFocus(question: string, memory: DialogueMemory): Sp
   const direct = detectSpellFocus(question)?.focus;
   if (direct) return direct;
   if (/몇\s*초|얼마나\s*줄|더\s*빨리\s*돌|how long|几秒/i.test(question)) return "cooldown";
+  if (memory.active === "compare") return detectSpellFocus(memory.lastReply?.question ?? "")?.focus;
   return memory.active === "spell" || memory.pending ? (memory.pending?.focus ?? memory.spell?.focus) : undefined;
 }
 

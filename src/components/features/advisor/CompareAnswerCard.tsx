@@ -51,7 +51,7 @@ export function CompareAnswerCard({
               : undefined
       }
       tool={answer.matchup ? copy.matchupTool : copy.compare}
-      footer={<PatchLinkFooter patch={patch} to={vsLink} label={copy.openInVs} onNavigate={onNavigate} />}
+      footer={<PatchLinkFooter patch={patch} to={vsLink} label={cards.length > 2 ? fill(copy.goVs, { a: first.name, b: second.name }) : copy.openInVs} onNavigate={onNavigate} />}
     >
       {answer.headline && (
         <div className="mb-2 rounded-md bg-muted px-2.5 py-2 text-[13px] leading-relaxed">
@@ -71,41 +71,43 @@ export function CompareAnswerCard({
 function CompareTable({ cards, rows }: { cards: ChampionCard[]; rows: CompareRow[] }) {
   const hasHit = rows.some((row) => row.hit);
   return (
-    <table className="w-full border-collapse text-[13px]">
-      <thead>
-        <tr className="border-b text-[11px] text-muted-foreground">
-          <th className="w-[28%] py-1 pr-2 text-left font-medium" />
-          {cards.map((card) => (
-            <th key={card.id} className="py-1 pr-2 text-left font-medium">
-              {card.name}
-            </th>
-          ))}
-        </tr>
-      </thead>
-      <tbody>
-        {rows.map((row) => {
-          const dim = hasHit && !row.hit;
-          return (
-            <tr key={row.label} className={`border-b last:border-b-0 ${dim ? "text-muted-foreground" : ""}`}>
-              <td className={`py-1.5 pr-2 align-top ${row.hit ? "font-semibold" : "text-muted-foreground"}`}>{row.label}</td>
-              {row.values.map((value, i) => {
-                // VS 화면과 같은 규칙: 이긴 쪽 굵게, 진 쪽 회색, 동률은 보통.
-                const won = row.winner === i;
-                const lost = row.winner !== undefined && !won;
-                return (
-                  <td
-                    key={cards[i].id}
-                    className={`py-1.5 pr-2 align-top tabular-nums ${won ? "font-semibold" : ""} ${lost && !dim ? "text-muted-foreground" : ""}`}
-                  >
-                    {value || "—"}
-                  </td>
-                );
-              })}
-            </tr>
-          );
-        })}
-      </tbody>
-    </table>
+    <div className="max-w-full overflow-x-auto [scrollbar-width:thin]" tabIndex={cards.length > 2 ? 0 : undefined}>
+      <table className="w-full border-collapse text-[13px]" style={cards.length > 2 ? { minWidth: `${160 + cards.length * 120}px` } : undefined}>
+        <thead>
+          <tr className="border-b text-[11px] text-muted-foreground">
+            <th className="w-[28%] py-1 pr-2 text-left font-medium" />
+            {cards.map((card) => (
+              <th key={card.id} className="py-1 pr-2 text-left font-medium">
+                {card.name}
+              </th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {rows.map((row) => {
+            const dim = hasHit && !row.hit;
+            return (
+              <tr key={row.label} className={`border-b last:border-b-0 ${dim ? "text-muted-foreground" : ""}`}>
+                <td className={`py-1.5 pr-2 align-top ${row.hit ? "font-semibold" : "text-muted-foreground"}`}>{row.label}</td>
+                {row.values.map((value, i) => {
+                  // VS 화면과 같은 규칙: 이긴 쪽 굵게, 진 쪽 회색, 동률은 보통.
+                  const won = row.winner === i;
+                  const lost = row.winner !== undefined && !won;
+                  return (
+                    <td
+                      key={cards[i].id}
+                      className={`py-1.5 pr-2 align-top tabular-nums ${won ? "font-semibold" : ""} ${lost && !dim ? "text-muted-foreground" : ""}`}
+                    >
+                      {value || "—"}
+                    </td>
+                  );
+                })}
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
+    </div>
   );
 }
 

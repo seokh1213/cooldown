@@ -16,7 +16,7 @@ export interface FactResolution {
   numeric?: DialogueMemory["numeric"];
   relation?: "penetration";
 }
-const ADVICE = /언제\s*(써|쓰|사용|들어|진입)|어떻게\s*(써|쓰|빼|교환)|빠졌|빠진|상대법|교환|라인전|한타|when.*(use|engage)|how.*(use|bait)|怎么.*(用|打)/i;
+const ADVICE = /언제\s*(써|쓰|사용|들어|진입)|어떻게\s*(써|쓰|빼|교환|상대)|빠졌|빠진|상대법|교환|라인전|한타|when.*(use|engage)|how.*(use|bait)|怎么.*(用|打)/i;
 const RETURN = /아까|앞서|다시|그대로|같은\s*조건|earlier|same|回到|之前/i;
 const QUERY = /사거리|범위|range|射程|쿨|몇\s*초|마나|소모|계수|설명|효과|말한|기준|비교|돌아|cooldown|cost|ratio|冷却|耗蓝|比较/i;
 const round = (value: number) => Number(value.toFixed(2)).toString();
@@ -74,6 +74,7 @@ function resolveTargets(question: string, named: ChampionCard[], memory: Dialogu
   if (named.length) return named;
   if (memory.matchup && /상대|enemy|对面/i.test(question)) return from([memory.matchup.enemy]);
   if (memory.matchup && /내\s*[QWER]|내\s*궁|\bmy\b|我的/i.test(question)) return from([memory.matchup.mine]);
+  if (memory.compared && (memory.active === "compare" || memory.active === "spell")) return from(memory.compared);
   if (memory.spell && (memory.active === "spell" || RETURN.test(question))) return from([memory.spell.champion]);
   if (memory.pending) return from(memory.pending.candidates);
   if (memory.active === "matchup" && memory.matchup) return from([memory.matchup.mine, memory.matchup.enemy]);
@@ -130,6 +131,8 @@ export function resolveDialogueFact(input: QuestionInput, memory: DialogueMemory
   if (ADVICE.test(question) || asksSkillHandling(question) || asksWholeKit(question)) return undefined;
   const numeric = numericConditions(question, memory.numeric);
   const named = resolved.champions;
+  // 여러 이름의 전체 조회를 이전에 물었던 단일 슬롯으로 좁히지 않는다.
+  if (named.length > 1 && !resolved.slot) return undefined;
   const slot = resolved.slot ?? memory.pending?.slot ?? ((memory.active === "spell" && (QUERY.test(question) || numeric !== undefined)) ? memory.spell?.slot : undefined);
   if (!slot && /그\s*스킬|그거.*쿨|that (ability|skill)|那个技能/i.test(question) && !named.length) return { pending: { slot: "?", focus: inferredSpellFocus(question, memory), candidates: [] } };
   if (!slot || (!QUERY.test(question) && !resolved.slot && JSON.stringify(numeric) === JSON.stringify(memory.numeric))) return undefined;
@@ -139,7 +142,13 @@ export function resolveDialogueFact(input: QuestionInput, memory: DialogueMemory
   const applied = shared || /가속|랭크|레벨/.test(question) ? numeric : undefined;
   const focus = inferredSpellFocus(question, memory);
   const focusedQuestion = `${question} ${focus === "cooldown" ? "쿨타임" : focus === "cost" ? "마나 소모" : focus === "range" ? "사거리" : ""}`;
-  if (cards.length > 1) return { plan: { type: "card", answer: comparison(cards, slot, { question: focusedQuestion, focus, numeric: applied }, ctx) }, numeric: applied, pending: { slot, focus: inferredSpellFocus(question, memory), candidates: cards.map(c => c.id) } };
+  if (cards.length > 1) {
+    const selected = named.length > 1 || memory.active === "compare" || memory.active === "spell" && Boolean(memory.compared);
+    return {
+      plan: { type: "card", answer: comparison(cards, slot, { question: focusedQuestion, focus, numeric: applied }, ctx) }, numeric: applied,
+      pending: selected ? undefined : { slot, focus, candidates: cards.map(c => c.id) },
+    };
+  }
   const [card] = cards;
   const spell = card.spells.find(s => s.slot === slot);
   if (!spell) return undefined;

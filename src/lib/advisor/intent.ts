@@ -60,7 +60,7 @@ function buildNicknames(cards: ChampionCard[]): Map<string, ChampionCard> {
 
 /** 짧은 한글 이름 뒤에 올 수 있는 것: 공백·문장부호·끝·조사, 그리고 이름 다음에 흔히 붙는 말. */
 const HANGUL_NAME_END =
-  "\\s|[,.?!~/·]|$|[A-Za-z0-9]|으로|로|이|가|은|는|을|를|랑|이랑|과|와|의|도|만|한테|에게|상대|전|vs|하|해|했|할|잡|픽|인|이야|야|라|궁|패시브|스킬|카운터|대처|공략";
+  "\\s|[,.?!~/·]|$|[A-Za-z0-9]|으로|로|이|가|은|는|을|를|랑|이랑|과|와|의|도|만|면|한테|에게|상대|전|vs|하|해|했|할|잡|픽|인|이야|야|라|궁|패시브|스킬|카운터|대처|공략";
 
 /**
  * 문장에서 이름 하나를 찾는다. 글자 체계마다 규칙이 다르다.
@@ -259,20 +259,19 @@ function latinNames(data: AdvisorData): Array<{ id: string; name: string }> {
  * 질문에 나온 챔피언을 모두 돌려준다.
  *
  * 한 명일 때만 자료를 붙이면 "럼블 마법저항력 1렙에 몇이고 오공은 몇이야" 가
- * 빈손으로 나간다. 자료 양이 문제이므로 수만 제한한다.
+ * 빈손으로 나간다. 언급한 대상을 인원수로 자르지 않는다.
  */
 export function detectChampions(
   data: AdvisorData,
   text: string,
-  limit = 3,
 ): ChampionCard[] {
-  return detectChampionMentions(data, text, limit)
+  return detectChampionMentions(data, text)
     .map((mention) => mention.card);
 }
 
 /** 이름과 별명 모두 원문 위치를 보존한다. 대화의 스킬 주인을 찾을 때도 같은 해석을 쓴다. */
-export function detectChampionMentions(data: AdvisorData, text: string, limit = 3): ChampionMention[] {
-  return findMentions(data, text).slice(0, limit);
+export function detectChampionMentions(data: AdvisorData, text: string): ChampionMention[] {
+  return findMentions(data, text);
 }
 
 /**

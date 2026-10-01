@@ -1,5 +1,5 @@
 /** 대상과 수치 칸이 명확한 조회는 판정·검색보다 먼저 카드로 답한다. */
-import { buildRuleAnswer, buildSpellAnswer } from "./answer";
+import { buildCompareAnswer, buildRuleAnswer, buildSpellAnswer } from "./answer";
 import { asksSkillHandling, asksWholeKit } from "./askWords";
 import type { AnswerPlan, PlanContext } from "./planTypes";
 import { askedRules, ruleCooldown } from "./questionDocs";
@@ -16,9 +16,13 @@ export function directFactPlan(resolved: ResolvedQuestion, ctx: PlanContext): An
     const rule = rules[0];
     return { type: "card", answer: buildRuleAnswer(rule, [rule.name], ctx.lang, rules, ruleCooldown(ctx.data, rule, question)), notice: ctx.notice };
   }
-  if (rules.length || champions.length !== 1 || !slot) return undefined;
+  if (rules.length || !champions.length) return undefined;
   // 복합 계산과 정정은 숫자 기억을 다루는 대화 조회에 맡긴다.
   if (/가속|랭크|레벨|haste|rank|level|急速|等级/i.test(question)) return undefined;
+  if (champions.length > 1 && (slot || spellFocus.focus === "cooldown")) {
+    return { type: "card", answer: buildCompareAnswer(champions, question, slot, { lang: ctx.lang }), notice: ctx.notice };
+  }
+  if (champions.length !== 1 || !slot) return undefined;
   const spell = champions[0].spells.find(s => s.slot === slot);
   return spell ? { type: "card", answer: buildSpellAnswer(champions[0], spell, question, ctx.lang), notice: ctx.notice } : undefined;
 }
