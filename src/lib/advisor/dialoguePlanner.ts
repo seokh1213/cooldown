@@ -5,7 +5,7 @@ import type { AnswerPlan, PlanContext, PlanDeps } from "./planTypes";
 import { resolveDialogueFact } from "./dialogueFacts";
 import { ruleEllipsis } from "./dialogueRules";
 import { matchupPlan } from "./dialogueMatchup";
-import { conditionOwner, prepareDialogueRequest, type DialogueRequest, type DialogueVariant } from "./dialogueRequest";
+import { conditionHint, prepareDialogueRequest, type DialogueRequest, type DialogueVariant } from "./dialogueRequest";
 import { rememberDialoguePlan, scenarioConditions, type DialogueMemory } from "./dialogueState";
 
 export type { DialogueVariant } from "./dialogueRequest";
@@ -45,7 +45,7 @@ export async function planPreparedDialogue(request: DialogueRequest, ctx: PlanCo
     plan ??= await planAnswer(resolved, ctx, deps);
     if (plan.type === "retry") plan = await planAnswer(plan.question, ctx, deps);
     memory = rememberDialoguePlan(memory, plan, fact);
-    if (memory.active === "matchup") memory.conditions = scenarioConditions(question, memory.conditions, ctx.turns.length, conditionOwner(resolved, memory, ctx));
+    if (memory.active === "matchup") memory.conditions = scenarioConditions(question, memory.conditions, ctx.turns.length, conditionHint(resolved, memory, ctx));
     parts.push({ question, plan });
   }
   return { parts, memory };

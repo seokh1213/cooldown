@@ -49,6 +49,32 @@ test("스킬 주인이 없는 부재 진술은 상대 상태로 만들어 저장
   assert.deepEqual(scenarioConditions("Q 빠졌어", [], 1), []);
 });
 
+test("상성에서 이름만 말한 스킬의 상태와 빠지면 조건을 기억한다", async () => {
+  const memory = remembered({ active: "matchup", matchup: { mine: "Aatrox", enemy: "Fiora" } });
+  const result = await planDialogue("응수가 빠지면 무엇부터 해?", context(memory), deps);
+  assert.equal(result.parts[0].plan.type, "matchup");
+  assert.deepEqual(result.memory.conditions.map(c => [c.owner, c.slot, c.status]), [["enemy", "W", "down"]]);
+});
+
+test("스킬 이름과 슬롯 문자가 섞인 문장에서도 두 조건을 보관한다", async () => {
+  const memory = remembered({ active: "matchup", matchup: { mine: "Jax", enemy: "Fiora" } });
+  const result = await planDialogue("응수가 빠졌고 상대 Q는 있어. 어떻게 교환해?", context(memory), deps);
+  assert.deepEqual(result.memory.conditions.map(c => [c.owner, c.slot, c.status]), [["enemy", "W", "down"], ["enemy", "Q", "ready"]]);
+});
+
+test("두 스킬의 상태가 한 문장에 섞여도 각자 주인과 상태를 보관한다", async () => {
+  const memory = remembered({ active: "matchup", matchup: { mine: "Aatrox", enemy: "Fiora" } });
+  const first = await planDialogue("아트록스로 피오라 상대할 때 W 있고 내 Q는 빠졌어. 어떻게 해?", context(memory), deps);
+  assert.deepEqual(first.memory.conditions.map(c => [c.owner, c.slot, c.status]), [["enemy", "W", "ready"], ["mine", "Q", "down"]]);
+  const next = await planDialogue("내 Q는 돌아왔고 상대 W는 아직 있어. 어떻게 유도해?", context(first.memory), deps);
+  assert.deepEqual(next.memory.conditions.map(c => [c.owner, c.slot, c.status]), [["enemy", "W", "ready"], ["mine", "Q", "ready"]]);
+});
+
+test("내 Q가 없다는 표현을 상대 W 부재와 분리한다", async () => {
+  const result = await planDialogue("잭스로 피오라 상대할 때 W는 빠졌지만 내 Q가 없는데 어떻게 해?", context(), deps);
+  assert.deepEqual(result.memory.conditions.map(c => [c.owner, c.slot, c.status]), [["enemy", "W", "down"], ["mine", "Q", "down"]]);
+});
+
 test("상대를 바꾸면 이전 쌍의 스킬 조건을 비운다", async () => {
   const memory = remembered({ active: "matchup", matchup: { mine: "Jax", enemy: "Fiora" }, conditions: scenarioConditions("상대 W가 빠졌으면?", [], 1) });
   const result = await planDialogue("상대가 레넥톤이면?", context(memory), deps);
@@ -238,4 +264,30 @@ test("상대 스킬을 어떻게 상대하는지 물으면 수치 비교 표를 
   if (plan.type !== "matchup") assert.fail("스킬 대처를 묻는 상성 질문이어야 한다");
   assert.equal(plan.mine.id, "Vayne");
   assert.equal(plan.enemy.id, "Jax");
+});
+
+test("처음부터 두 이름을 말하고 응수를 빼는 법을 물으면 상성으로 계획한다", async () => {
+  const result = await planDialogue("잭스로 피오라 W 응수 어떻게 빼?", context(), deps);
+  const plan = result.parts[0].plan;
+  if (plan.type !== "matchup") assert.fail("피오라 W 대처 상성이어야 한다");
+  assert.deepEqual([plan.mine.id, plan.enemy.id], ["Jax", "Fiora"]);
+});
+
+test("상대 이름 뒤에 내 챔피언을 말해도 관점과 W 정정을 이어 간다", async () => {
+  const first = await planDialogue("피오라 W 응수 빠졌어. 잭스라면 지금 어떻게 싸워?", context(), deps);
+  assert.equal(first.memory.matchup?.mine, "Jax");
+  assert.equal(first.memory.matchup?.enemy, "Fiora");
+  assert.deepEqual(first.memory.conditions.map(c => [c.owner, c.slot, c.status]), [["enemy", "W", "down"]]);
+  const second = await planDialogue("사실 W는 아직 있어. E 기절은?", context(first.memory), deps);
+  assert.equal(second.parts[0].plan.type, "matchup");
+  assert.deepEqual(second.memory.conditions.map(c => [c.owner, c.slot, c.status]), [["enemy", "W", "ready"]]);
+});
+
+test("상성 중 응수 상태를 정정하고 이유를 물어도 스킬 카드로 빠지지 않는다", async () => {
+  const memory = remembered({ active: "matchup", matchup: { mine: "Jax", enemy: "Fiora", focus: "skill" } });
+  const correction = await planDialogue("정정, 상대 W는 있고 Q가 빠진 거야", context(memory), deps);
+  assert.equal(correction.parts[0].plan.type, "matchup");
+  assert.deepEqual(correction.memory.conditions.map(c => [c.slot, c.status]), [["W", "ready"], ["Q", "down"]]);
+  const reason = await planDialogue("왜 E 재발동을 조심해야 해?", context(correction.memory), deps);
+  assert.equal(reason.parts[0].plan.type, "matchup");
 });

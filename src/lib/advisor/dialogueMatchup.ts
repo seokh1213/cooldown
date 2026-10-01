@@ -1,6 +1,6 @@
 /** 대화에서 새 상성·관점 전환·이전 상성으로 돌아오기와 주제를 해석한다. */
 import type { ChampionCard } from "@/lib/knowledge/facts";
-import { asksMatchup, asksGenericAdvice, asksReason } from "./askWords";
+import { asksMatchup, asksGenericAdvice, asksReason, asksSkillHandling } from "./askWords";
 import { actFromWords, sideOfNewName } from "./conversation";
 import { resolveQuestion, type QuestionInput, type ResolvedQuestion } from "./resolvedQuestion";
 import { matchupSidesDetailed } from "./matchupSides";
@@ -28,8 +28,8 @@ function pairForQuestion(resolved: ResolvedQuestion, memory: DialogueMemory, ctx
   const prior = current ? [data.cardById.get(current.mine)!, data.cardById.get(current.enemy)!] as [ChampionCard, ChampionCard] : undefined;
   const act = dialogueAct(question);
   const focus = topicFromWords(question);
-  const explicitMine = prior && named.find(card => sideOfNewName(question, [card.name, ...(data.aliases.get(card.id) ?? [])]) === "mine");
-  if (named.length === 2 && explicitMine) return [explicitMine, named.find(card => card.id !== explicitMine.id)!];
+  const explicitMine = named.find(card => sideOfNewName(question, [card.name, ...(data.aliases.get(card.id) ?? [])]) === "mine");
+  if (named.length === 2 && explicitMine && (prior || asksMatchup(question) || asksSkillHandling(question))) return [explicitMine, named.find(card => card.id !== explicitMine.id)!];
   if (named.length === 2 && (asksMatchup(question) || /타워\s*밑|포탑\s*밑/.test(question))) {
     const parsed = matchupSidesDetailed(question, named);
     if (parsed.confident) return parsed.sides;
@@ -47,7 +47,7 @@ function pairForQuestion(resolved: ResolvedQuestion, memory: DialogueMemory, ctx
     return undefined;
   }
   const returns = RETURN_TO_MATCHUP.test(question) || /아까|돌아|다시.*상성|earlier|back to|之前|回到/i.test(question);
-  const advice = /빠졌|빠진|정정.*[QWER]|교환|진입|버텨|어떻게|언제.*(써|쓰|들어)/i.test(question);
+  const advice = /빠졌|빠진|빠지면|정정.*[QWER]|사실.*[QWER]|교환|진입|버텨|어떻게|언제.*(써|쓰|들어)/i.test(question);
   if (returns || (memory.active === "matchup" && (focus || act === "more" || asksGenericAdvice(question) || advice))) return prior;
   return undefined;
 }

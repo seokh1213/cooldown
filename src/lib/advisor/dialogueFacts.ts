@@ -4,7 +4,7 @@ import { buildCompareAnswer, buildSpellAnswer, type AdvisorAnswer } from "./answ
 import { buildItemCard, detectSlot } from "./context";
 import { resolveQuestion, type QuestionInput } from "./resolvedQuestion";
 import { askedRules } from "./questionDocs";
-import { asksWholeKit, asksSkillHandling } from "./askWords";
+import { asksWholeKit, asksSkillHandling, asksMatchup, asksReason } from "./askWords";
 import type { AnswerPlan, PlanContext } from "./plan";
 import { inferredSpellFocus, numericConditions, type DialogueMemory } from "./dialogueState";
 import { resolveDialogueRule, isPenetrationRule } from "./dialogueRules";
@@ -16,7 +16,7 @@ export interface FactResolution {
   numeric?: DialogueMemory["numeric"];
   relation?: "penetration";
 }
-const ADVICE = /언제\s*(써|쓰|사용|들어|진입)|어떻게\s*(써|쓰|빼|교환|상대)|빠졌|빠진|상대법|교환|라인전|한타|when.*(use|engage)|how.*(use|bait)|怎么.*(用|打)/i;
+const ADVICE = /언제\s*(써|쓰|사용|들어|진입)|어떻게\s*(써|쓰|빼|교환|상대)|빠졌|빠진|빠지면|상대법|교환|라인전|한타|when.*(use|engage)|how.*(use|bait)|怎么.*(用|打)/i;
 const RETURN = /아까|앞서|다시|그대로|같은\s*조건|earlier|same|回到|之前/i;
 const QUERY = /사거리|범위|range|射程|쿨|몇\s*초|마나|소모|계수|설명|효과|말한|기준|비교|돌아|cooldown|cost|ratio|冷却|耗蓝|比较/i;
 const round = (value: number) => Number(value.toFixed(2)).toString();
@@ -128,6 +128,7 @@ export function resolveDialogueFact(input: QuestionInput, memory: DialogueMemory
   if (entity) return entity;
   // 룬·주문은 knowledgePlans의 공통 계획으로 넘긴다. 최근 스킬의 생략으로 읽지 않는다.
   if (askedRules(ctx.data, question).some(rule => rule.subject !== "gameplay")) return undefined;
+  if (memory.active === "matchup" && !QUERY.test(question) && (asksMatchup(question) || asksReason(question) || /정정|사실.*[QWER]|빠지면/.test(question))) return undefined;
   if (ADVICE.test(question) || asksSkillHandling(question) || asksWholeKit(question)) return undefined;
   const numeric = numericConditions(question, memory.numeric);
   const named = resolved.champions;

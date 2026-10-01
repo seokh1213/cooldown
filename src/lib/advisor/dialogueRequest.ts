@@ -21,7 +21,21 @@ export function conditionOwner(input: QuestionInput, memory: DialogueMemory, ctx
   if (slot === undefined) return undefined;
   const named = resolved.mentions.filter(mention => mention.index < slot);
   const last = named[named.length - 1]?.card;
-  return last?.id === memory.matchup.mine ? "mine" : last?.id === memory.matchup.enemy ? "enemy" : undefined;
+  if (last?.id === memory.matchup.mine) return "mine";
+  if (last?.id === memory.matchup.enemy) return "enemy";
+  const prior = memory.conditions.filter(c => c.slot === resolved.slot);
+  return prior.length === 1 ? prior[0].owner : undefined;
+}
+
+/** 스킬 이름과 슬롯 문자가 섞인 조건에서 현재 상성의 스킬 주인을 연결한다. */
+export function conditionHint(input: QuestionInput, memory: DialogueMemory, ctx: PlanContext) {
+  const owner = conditionOwner(input, memory, ctx);
+  if (!memory.matchup || !ctx.data) return { owner, spells: [] };
+  const pair = [["mine", memory.matchup.mine], ["enemy", memory.matchup.enemy]] as const;
+  const spells = pair.flatMap(([side, id]) => ctx.data!.cardById.get(id)?.spells
+    .filter(spell => spell.name.length > 1)
+    .map(spell => ({ owner: side, slot: spell.slot, name: spell.name })) ?? []);
+  return { owner, spells };
 }
 
 export function prepareDialogueRequest(question: string, ctx: PlanContext, variant: DialogueVariant): DialogueRequest {

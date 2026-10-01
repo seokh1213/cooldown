@@ -26,7 +26,7 @@ export function asksComparison(question: string, championCount: number): boolean
  * 대화에서 방금 다룬 챔피언이 있으면 그가 내 챔피언, 새로 나온 이름이 상대다.
  */
 const MATCHUP =
-  /상대|맞상대|맞붙|라인전|만나면|만났을|만날\s*때|카운터|어떻게\s*(해야|하지|해\b|되|풀)|이길|이겨|이기|싸우|붙으면|붙었|유리|불리|\bvs\b|\b(against|into|counter|matchup|lane)\b|\bbeat\b|对线|对位|克制|怎么打|打得过/i;
+  /상대|맞상대|맞붙|라인전|만나면|만났을|만날\s*때|카운터|어떻게\s*(해야|하지|해\b|되|풀)|이길|이겨|이기|싸우|싸워|붙으면|붙었|유리|불리|\bvs\b|\b(against|into|counter|matchup|lane)\b|\bbeat\b|对线|对位|克制|怎么打|打得过/i;
 
 export function asksMatchup(question: string): boolean {
   return MATCHUP.test(question);
