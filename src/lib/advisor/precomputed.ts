@@ -89,12 +89,7 @@ export function selectPrecomputed(input: PrecomputedPair, request: PrecomputedRe
     keys = digestKeys(request.focus);
     if (!pair[keys[0]] || keys.filter(key => pair[key]).length < 2) return { topics: [] };
   } else keys = focusedKeys(pair, request);
-  const selection = renderSelection(pair, keys, cards, lang);
-  if (lang === "ko_KR" && request.conditions?.length && selection.text && request.mode !== "advance") {
-    const caption = request.conditions.map(c => `${c.owner === "mine" ? "내" : "상대"} ${c.slot} ${c.status === "ready" ? "사용 가능" : "재사용 대기 중"}`).join(" · ");
-    selection.text = `말씀하신 조건: ${caption}.\n\n${selection.text}`;
-  }
-  return selection;
+  return renderSelection(pair, keys, cards, lang);
 }
 
 /** 기존 단일 질문 조회의 문자열 API. 대화 조립은 selectPrecomputed로 실제 칸을 기록한다. */

@@ -193,7 +193,7 @@ test("포탑 아래 생존 질문은 일반 한타 분류보다 라인전 맥락
 test("정정으로 상대 핵심 스킬이 준비되어 있으면 주의 근거를 먼저 보여준다", () => {
   const cards = [data.cardById.get("Jax")!, data.cardById.get("Fiora")!];
   const answer = precomputedFocus({ watch: "응수가 살아 있으면 강한 공격을 아낍니다.", escape: "스킬이 빠지면 들어갑니다." }, { focus: "escape-window", conditions: scenarioConditions("상대 W는 있고 Q가 빠진 거야", [], 1) }, cards)!;
-  assert.match(answer, /W 사용 가능.*Q 재사용 대기 중/);
+  assert.doesNotMatch(answer, /말씀하신 조건:/);
   assert.match(answer, /응수가 살아/);
   assert.doesNotMatch(answer, /스킬이 빠지면 들어/);
 });

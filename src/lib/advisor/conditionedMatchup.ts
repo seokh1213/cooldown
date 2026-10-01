@@ -20,14 +20,6 @@ interface Candidate extends AdviceUnit { topic: string; score: number; side: "mi
 export interface ConditionedText { text: string; rejected: number; alternatives: number; topics: string[]; abstained: boolean; retainedBlocks?: number[] }
 const TOPIC: Record<string, string> = { skill: "watch", "escape-window": "escape", "situational-item": "build" };
 
-export function conditionCaption(conditions: readonly ScenarioCondition[], lang: Language): string {
-  if (!conditions.length) return "";
-  const text = conditions.map(c => lang === "en_US" ? `${c.owner === "mine" ? "My" : "Enemy"} ${c.slot} ${c.status === "down" ? "on cooldown" : "available"}`
-    : lang === "zh_CN" ? `${c.owner === "mine" ? "我的" : "对面"} ${c.slot} ${c.status === "down" ? "冷却中" : "可用"}`
-    : `${c.owner === "mine" ? "내" : "상대"} ${c.slot} ${c.status === "down" ? "재사용 대기 중" : "사용 가능"}`).join(" · ");
-  return `${lang === "en_US" ? "Your stated conditions" : lang === "zh_CN" ? "你提供的条件" : "말씀하신 조건"}: ${text}.`;
-}
-
 function alternatives(data: AdvisorData, lang: Language, request: ConditionedRequest, query: AdviceQuestion = adviceQuestion(request.question, request)): Candidate[] {
   const selected = selectPlaybook(data.playbooks, request.mine, request.enemy);
   const practical = request.conditions?.some(c => c.owner === "mine" && c.status === "down")
@@ -90,8 +82,7 @@ export function conditionMatchupText(data: AdvisorData, lang: Language, request:
   if (!conditions.some(c => c.status === "down") && !targeted) return { text: baseline, rejected: 0, alternatives: 0, topics: [], abstained: false };
   const selected = selectExecutableText(baseline, request, conditions);
   if (!selected.rejected && !targeted) return { ...selected, alternatives: 0, topics: [], abstained: false, retainedBlocks: selected.keptBlocks };
-  const caption = conditionCaption(conditions, lang);
-  const safe = selected.text.split(/\n\s*\n/).filter(block => block.trim() && block !== caption && !/^(?:말씀하신 조건|Your stated conditions|你提供的条件):/.test(block))
+  const safe = selected.text.split(/\n\s*\n/).filter(block => block.trim() && !/^(?:말씀하신 조건|Your stated conditions|你提供的条件):/.test(block))
     .filter(block => !targeted || mentionsAbility(block, { ...request, defaultOwner: block.startsWith(`**${request.mine.name}**`) ? "mine" : "enemy" }, query.target!));
   let candidates = alternatives(data, lang, request).filter(c => !safe.some(block => block.includes(c.text)));
   const defensive = !targeted && query.intent === "engage" && !candidates.length;
@@ -111,8 +102,9 @@ export function conditionMatchupText(data: AdvisorData, lang: Language, request:
   const gap = target ? lang === "en_US" ? `I couldn't find another supported response to ${target} under these conditions.`
     : lang === "zh_CN" ? `这些条件下没有找到针对 ${target} 的其他有依据的应对。`
     : `현재 조건에서 ${target}에 대응할 다른 행동은 근거 자료에서 찾지 못했어요.` : unavailable;
-  const reason = selected.rejected ? unavailableReason(request, baseline, lang) : "";
-  return { text: [caption, reason, advice || gap].filter(Boolean).join("\n\n"), rejected: selected.rejected, alternatives: picked.length,
+  // 대안이 있으면 그 행동부터 답한다. 답을 못 찾았을 때만 필요한 스킬의 부재를 설명한다.
+  const reason = selected.rejected && !advice ? unavailableReason(request, baseline, lang) : "";
+  return { text: [reason, advice || gap].filter(Boolean).join("\n\n"), rejected: selected.rejected, alternatives: picked.length,
     topics: picked.map(c => c.topic), abstained: !advice,
     retainedBlocks: selected.keptBlocks.filter((_, i) => safe.includes(selected.text.split(/\n\s*\n/)[i])) };
 }

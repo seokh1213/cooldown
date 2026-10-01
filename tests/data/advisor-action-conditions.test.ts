@@ -78,7 +78,7 @@ test("출처 변경으로 복귀해도 조건과 충돌하는 현재 답을 그�
     memory: { ...emptyDialogue(data.patch), conditions: scenarioConditions("상대 W가 빠졌고 내 Q도 없어", [], 1) } };
   const reply = selectDecisionAnswer(data, atoms, input);
   assert.doesNotMatch(reply.text, /Q 빛의 속박을 맞힙/);
-  assert.ok(reply.text.includes("내 Q 재사용 대기 중"));
+  assert.doesNotMatch(reply.text, /말씀하신 조건:/);
 });
 
 test("내 스킬 부재를 정정하면 해당 콤보를 다시 사용할 수 있다", () => {
