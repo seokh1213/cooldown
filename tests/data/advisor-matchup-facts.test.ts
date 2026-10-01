@@ -5,6 +5,7 @@ import { checkMatchupFacts, checkedMatchupPair } from "../../src/lib/advisor/mat
 import { matchupNotes } from "../../src/lib/advisor/playbookNotes";
 import { buildCompareAnswer } from "../../src/lib/advisor/answer";
 import { answerProse } from "../../src/lib/advisor/prose";
+import { deriveItemClaims, renderItemClaims } from "../../src/lib/knowledge/claims";
 
 const data = loadData("ko_KR");
 const cards = ["Garen", "Darius"].map(id => data.cardById.get(id)!);
@@ -31,6 +32,9 @@ test("서로 다른 이름의 앞부분이 같아도 스킬 주인 오류로 보
 });
 test("은행이 없는 오공 대 럼블도 도출 문장이 방어력을 무용하다고 단정하지 않는다", () => {
   const mine = data.cardById.get("MonkeyKing")!, enemy = data.cardById.get("Rumble")!;
+  const derived = renderItemClaims(enemy, deriveItemClaims(enemy));
+  assert.match(derived, /기본 공격과 다른 적/);
+  assert.doesNotMatch(derived, /한 푼|저항력만 실효/);
   const notes = matchupNotes(data, mine, enemy, "ko_KR");
   const answer = buildCompareAnswer([mine, enemy], "아이템 뭐 가?", undefined, { matchup: true, notes, lang: "ko_KR" });
   const text = answerProse(answer, "ko_KR");

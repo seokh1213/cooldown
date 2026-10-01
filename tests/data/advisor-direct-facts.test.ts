@@ -42,3 +42,7 @@ test("별명과 다른 언어 이름을 섞어도 마지막 스킬 주인을 원
   const parsed = resolveQuestion("잭스인데 fiora W가 빠졌어", ctx.data!);
   assert.equal(conditionOwner(parsed, memory, ctx), "enemy");
 });
+test("Rumble의 R과 영어 소문자 슬롯을 구별해 조건 주인을 찾는다", () => {
+  const memory = { ...emptyDialogue(ctx.data!.patch), matchup: { mine: "Rumble", enemy: "MonkeyKing" } };
+  assert.equal(conditionOwner(resolveQuestion("Rumble e 빠졌어", ctx.data!), memory, ctx), "mine");
+});

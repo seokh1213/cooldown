@@ -9,6 +9,7 @@ export interface ResolvedQuestion {
   champions: ChampionMention["card"][];
   mentions: ChampionMention[];
   slot?: string;
+  slotIndex?: number;
   spellFocus: ReturnType<typeof detectSpellFocus>;
 }
 export type QuestionInput = string | ResolvedQuestion;
@@ -16,5 +17,7 @@ export type QuestionInput = string | ResolvedQuestion;
 export function resolveQuestion(input: QuestionInput, data: AdvisorData): ResolvedQuestion {
   if (typeof input !== "string") return input;
   const mentions = detectChampionMentions(data, input);
-  return { text: input, mentions, champions: mentions.map(m => m.card), slot: detectSlot(input), spellFocus: detectSpellFocus(input) };
+  const letter = /(^|[^A-Za-z])([QWERqwer])($|[^A-Za-z])/.exec(input);
+  const slotIndex = letter ? letter.index + letter[1].length : undefined;
+  return { text: input, mentions, champions: mentions.map(m => m.card), slot: detectSlot(input), slotIndex, spellFocus: detectSpellFocus(input) };
 }

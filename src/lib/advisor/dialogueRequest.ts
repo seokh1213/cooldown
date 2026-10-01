@@ -17,8 +17,7 @@ export function splitDialogueQuestions(question: string): string[] {
 export function conditionOwner(input: QuestionInput, memory: DialogueMemory, ctx: PlanContext): "mine" | "enemy" | undefined {
   if (!memory.matchup || !ctx.data) return undefined;
   const resolved = resolveQuestion(input, ctx.data);
-  const question = resolved.text;
-  const slot = /[QWER]/.exec(question)?.index;
+  const slot = resolved.slotIndex;
   if (slot === undefined) return undefined;
   const named = resolved.mentions.filter(mention => mention.index < slot);
   const last = named[named.length - 1]?.card;
