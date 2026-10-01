@@ -2,6 +2,7 @@
 import { advisorSystemPrompt } from "./persona";
 import { asksAboutHelper, isSmallTalk } from "./intent";
 import { type AnswerPlan, type PlanContext, type PlanDeps, type Step } from "./planTypes";
+import { resolveQuestion, type QuestionInput } from "./resolvedQuestion";
 import { understand } from "./questionUnderstanding";
 import { answerByVector, answerRuleQuestion, fixChampionTypo, answerGameFact, answerFromNotes } from "./knowledgePlans";
 import { continueMatchup } from "./matchupPlans";
@@ -17,8 +18,9 @@ const ANSWER_STAGES = {
 } satisfies Record<string, Step[]>;
 
 /** 질문을 한 번 이해하고, 각 책임의 자료 처리기를 차례로 실행한다. */
-export async function planAnswer(question: string, ctx: PlanContext, deps: PlanDeps): Promise<AnswerPlan> {
+export async function planAnswer(input: QuestionInput, ctx: PlanContext, deps: PlanDeps): Promise<AnswerPlan> {
   const { data, copy } = ctx;
+  const question = typeof input === "string" ? input : input.text;
   if (!data) return { type: "respond", plan: { system: advisorSystemPrompt(ctx.lang), withoutConsent: copy.noModel } };
 
   // 잡담·도우미 자신은 자료로 답할 것이 아니다. 상성 대화 중이어도 먼저 받는다("고마워 덕분에 이겼다" 가 상성 이어 묻기로 갔다).
@@ -31,7 +33,7 @@ export async function planAnswer(question: string, ctx: PlanContext, deps: PlanD
   */
   if (asksAboutHelper(question)) return { type: "code", answer: copy.identity };
 
-  const intent = await understand(question, ctx, data, deps);
+  const intent = await understand(resolveQuestion(input, data), ctx, data, deps);
   for (const steps of Object.values(ANSWER_STAGES)) {
     for (const step of steps) {
       const plan = await step(intent, deps);

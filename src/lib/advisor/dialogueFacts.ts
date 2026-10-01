@@ -2,7 +2,7 @@
 import type { ChampionCard, SpellFact } from "@/lib/knowledge/facts";
 import { buildCompareAnswer, buildSpellAnswer, type AdvisorAnswer } from "./answer";
 import { buildItemCard, detectSlot } from "./context";
-import { detectChampions } from "./intent";
+import { resolveQuestion, type QuestionInput } from "./resolvedQuestion";
 import { askedRules } from "./questionDocs";
 import { asksWholeKit, asksSkillHandling } from "./askWords";
 import type { AnswerPlan, PlanContext } from "./plan";
@@ -115,8 +115,10 @@ function penetrationAnswer(answer: AdvisorAnswer, question: string, memory: Dial
   return text ? { plan: { type: "card", answer: { ...answer, headline: undefined, highlighted: [`${answer.championName} ${answer.spell.slot} ${josa(answer.spell.name, "은/는")} ${text}`] } }, relation: "penetration" } : undefined;
 }
 
-export function resolveDialogueFact(question: string, memory: DialogueMemory, ctx: PlanContext): FactResolution | undefined {
+export function resolveDialogueFact(input: QuestionInput, memory: DialogueMemory, ctx: PlanContext): FactResolution | undefined {
   if (!ctx.data || ctx.lang !== "ko_KR") return undefined;
+  const resolved = resolveQuestion(input, ctx.data);
+  const question = resolved.text;
   const formula = hasteFormula(question, memory);
   if (formula) return formula;
   const rule = resolveDialogueRule(question, ctx);
@@ -127,10 +129,10 @@ export function resolveDialogueFact(question: string, memory: DialogueMemory, ct
   if (askedRules(ctx.data, question).some(rule => rule.subject !== "gameplay")) return undefined;
   if (ADVICE.test(question) || asksSkillHandling(question) || asksWholeKit(question)) return undefined;
   const numeric = numericConditions(question, memory.numeric);
-  const named = detectChampions(ctx.data, question);
-  const slot = detectSlot(question) ?? memory.pending?.slot ?? ((memory.active === "spell" && (QUERY.test(question) || numeric !== undefined)) ? memory.spell?.slot : undefined);
+  const named = resolved.champions;
+  const slot = resolved.slot ?? memory.pending?.slot ?? ((memory.active === "spell" && (QUERY.test(question) || numeric !== undefined)) ? memory.spell?.slot : undefined);
   if (!slot && /그\s*스킬|그거.*쿨|that (ability|skill)|那个技能/i.test(question) && !named.length) return { pending: { slot: "?", focus: inferredSpellFocus(question, memory), candidates: [] } };
-  if (!slot || (!QUERY.test(question) && !detectSlot(question) && JSON.stringify(numeric) === JSON.stringify(memory.numeric))) return undefined;
+  if (!slot || (!QUERY.test(question) && !resolved.slot && JSON.stringify(numeric) === JSON.stringify(memory.numeric))) return undefined;
   const cards = resolveTargets(question, named, memory, ctx);
   if (!cards.length) return { pending: { slot, focus: inferredSpellFocus(question, memory), candidates: [] } };
   const shared = /그대로|같은\s*조건|same/i.test(question) || memory.active === "spell";

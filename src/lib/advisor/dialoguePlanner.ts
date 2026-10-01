@@ -1,4 +1,5 @@
 /** 이번 요청의 사실 조회·상성·확인 질문을 계획하고 코드 기억을 갱신한다. 자료를 읽거나 화면에 쓰지 않는다. */
+import { resolveQuestion } from "./resolvedQuestion";
 import { planAnswer } from "./plan";
 import type { AnswerPlan, PlanContext, PlanDeps } from "./planTypes";
 import { resolveDialogueFact } from "./dialogueFacts";
@@ -32,15 +33,16 @@ export async function planPreparedDialogue(request: DialogueRequest, ctx: PlanCo
   const parts: DialoguePlan["parts"] = [];
   if (!ctx.data) return { parts: [{ question: request.questions[0], plan: await planAnswer(request.questions[0], ctx, deps) }], memory };
   for (const question of request.questions) {
-    const fact = resolveDialogueFact(question, memory, ctx);
+    const resolved = resolveQuestion(question, ctx.data);
+    const fact = resolveDialogueFact(resolved, memory, ctx);
     const asksCompare = /비교|둘\s*중|둘|both|compare|比较|两个/i.test(question);
     const shouldAsk = fact?.pending && (!fact.pending.candidates.length || fact.pending.candidates.length > 1 && !asksCompare);
     if (shouldAsk && (request.variant === "clarify" || request.variant === "combined")) {
       memory.pending = fact.pending;
       return { parts, memory, clarification: clarificationText(fact.pending!, ctx) };
     }
-    let plan = fact?.plan ?? ruleEllipsis(question, memory, ctx) ?? await matchupPlan(question, memory, ctx, deps);
-    plan ??= await planAnswer(question, ctx, deps);
+    let plan = fact?.plan ?? ruleEllipsis(question, memory, ctx) ?? await matchupPlan(resolved, memory, ctx, deps);
+    plan ??= await planAnswer(resolved, ctx, deps);
     if (plan.type === "retry") plan = await planAnswer(plan.question, ctx, deps);
     memory = rememberDialoguePlan(memory, plan, fact);
     if (memory.active === "matchup") memory.conditions = scenarioConditions(question, memory.conditions, ctx.turns.length, conditionOwner(question, memory, ctx));

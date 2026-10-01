@@ -2,7 +2,7 @@
 import type { ChampionCard } from "@/lib/knowledge/facts";
 import { asksMatchup, asksGenericAdvice, asksReason } from "./askWords";
 import { actFromWords, sideOfNewName } from "./conversation";
-import { detectChampions } from "./intent";
+import { resolveQuestion, type QuestionInput, type ResolvedQuestion } from "./resolvedQuestion";
 import { matchupSidesDetailed } from "./matchupSides";
 import type { AnswerPlan, PlanContext, PlanDeps } from "./planTypes";
 import { TOPIC_HEAD } from "./judgeHeads";
@@ -21,9 +21,9 @@ function dialogueAct(question: string) {
   return actFromWords(question) ?? (asksReason(question) ? "more" as const : undefined);
 }
 
-function pairForQuestion(question: string, memory: DialogueMemory, ctx: PlanContext): [ChampionCard, ChampionCard] | undefined {
+function pairForQuestion(resolved: ResolvedQuestion, memory: DialogueMemory, ctx: PlanContext): [ChampionCard, ChampionCard] | undefined {
   const data = ctx.data!;
-  const named = detectChampions(data, question);
+  const { text: question, champions: named } = resolved;
   const current = memory.matchup;
   const prior = current ? [data.cardById.get(current.mine)!, data.cardById.get(current.enemy)!] as [ChampionCard, ChampionCard] : undefined;
   const act = dialogueAct(question);
@@ -50,9 +50,11 @@ function pairForQuestion(question: string, memory: DialogueMemory, ctx: PlanCont
   return undefined;
 }
 
-export async function matchupPlan(question: string, memory: DialogueMemory, ctx: PlanContext, deps: PlanDeps): Promise<AnswerPlan | undefined> {
+export async function matchupPlan(input: QuestionInput, memory: DialogueMemory, ctx: PlanContext, deps: PlanDeps): Promise<AnswerPlan | undefined> {
   if (!ctx.data) return undefined;
-  const pair = pairForQuestion(question, memory, ctx);
+  const resolved = resolveQuestion(input, ctx.data);
+  const question = resolved.text;
+  const pair = pairForQuestion(resolved, memory, ctx);
   if (!pair) return undefined;
   const names = pair.map(c => c.name);
   const same = memory.matchup?.mine === pair[0].id && memory.matchup.enemy === pair[1].id;

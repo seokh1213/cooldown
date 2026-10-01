@@ -1,9 +1,9 @@
 /** 질문의 이름·갈래·최근 대상을 한 번 읽고, 필요한 주제 판정은 지연한다. */
-import { buildItemCard, detectSlot, type AdvisorData } from "./context";
+import { buildItemCard, type AdvisorData } from "./context";
 import { answerChampionIds } from "./answer";
 import { askFromWords } from "./askWords";
 import { matchupSidesByPhrase } from "./matchupSides";
-import { detectChampions } from "./intent";
+import { resolveQuestion, type QuestionInput } from "./resolvedQuestion";
 import { JUDGE_KIND9_CRITERIA, JUDGE_KIND_INSTRUCTIONS, JUDGE_MINE_INSTRUCTIONS, judgeRouteState, routeFromKind9, type AskRoute } from "./routeAsk";
 import { topicFromJudge, topicFromWords, topicQuestions } from "./topicJudge";
 import { gameMetaAnswer } from "./gameMeta";
@@ -14,8 +14,8 @@ import { type PlanTurn, type PlanContext, type PlanDeps, type Intent } from "./p
 import { ROUTE_HEAD, TOPIC_HEAD } from "./judgeHeads";
 
 /** 질문에 적힌 이름, 갈래(판정기 또는 낱말)·주제, 대화가 남긴 맥락을 모은다. 판정기는 여기서 한 번(이름이 있으면 두 번) 부른다. */
-export async function understand(question: string, ctx: PlanContext, data: AdvisorData, deps: PlanDeps): Promise<Intent> {
-  const champions = detectChampions(data, question);
+export async function understand(input: QuestionInput, ctx: PlanContext, data: AdvisorData, deps: PlanDeps): Promise<Intent> {
+  const { text: question, champions, slot } = resolveQuestion(input, data);
   // 판정기가 어느 단계든(모델·오프라인) 있으면 부른다. 없으면(`none`) 낱말 규칙뿐이다.
   const judging = ctx.judge !== "none";
   const route = judging ? await judgeRoute(question, data, champions, deps) : undefined;
@@ -41,7 +41,7 @@ export async function understand(question: string, ctx: PlanContext, data: Advis
     matchup: matchupStateOf(ctx.turns.map((turn) => (turn.role === "assistant" ? turn.answer : undefined))),
     recent: recentChampions(data, ctx.turns),
     recentItem: lastItem,
-    slot: detectSlot(question),
+    slot,
   };
 }
 
