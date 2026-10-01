@@ -5,20 +5,26 @@ import { round } from "./text";
 /** "(105% 주문력)", "(50% 추가 공격력)", "최대 체력의 8%" 같은 계수 표기를 스탯별 최대값으로 수집 */
 const RATIO_STATS =
   "주문력|추가 공격력|공격력|총 공격력|추가 체력|최대 체력|체력|추가 방어력|방어력|추가 마법 저항력|마법 저항력|추가 공격 속도";
-const RATIO_PAREN_RE = new RegExp(`\\((\\d+(?:\\.\\d+)?)% (${RATIO_STATS})\\)`, "g");
-const RATIO_MAXHP_RE = /(?:최대|추가) 체력의 ([\d./]+)%/g;
+const NUMBER = "\\d+(?:\\.\\d+)?";
+const PERCENT_VALUES = `${NUMBER}%?(?:\\s*(?:~|/)\\s*${NUMBER}%?)*`;
+const RATIO_PAREN_RE = new RegExp(`\\((${PERCENT_VALUES})\\)?\\s+(${RATIO_STATS})\\)`, "g");
+const RATIO_HP_RE = new RegExp(`((?:최대|추가) 체력)의\\s+\\(?(${PERCENT_VALUES})\\)?`, "g");
+
+function maximumPercent(value: string): number | undefined {
+  if (!value.includes("%")) return undefined;
+  const values = value.match(/\d+(?:\.\d+)?/g)?.map(Number);
+  return values?.length ? Math.max(...values) : undefined;
+}
 
 export function detectRatios(text: string): Record<string, number> {
   const out: Record<string, number> = {};
-  for (const m of text.matchAll(RATIO_PAREN_RE)) {
-    const value = Number(m[1]);
-    const stat = m[2];
-    out[stat] = Math.max(out[stat] ?? 0, value);
+  for (const match of text.matchAll(RATIO_PAREN_RE)) {
+    const value = maximumPercent(match[1]);
+    if (value !== undefined) out[match[2]] = Math.max(out[match[2]] ?? 0, value);
   }
-  for (const m of text.matchAll(RATIO_MAXHP_RE)) {
-    // "6/6.5/7/7.5/8" → 최대 랭크 값
-    const parts = m[1].split("/").map(Number).filter((n) => !Number.isNaN(n));
-    if (parts.length) out["최대 체력"] = Math.max(out["최대 체력"] ?? 0, parts[parts.length - 1]);
+  for (const match of text.matchAll(RATIO_HP_RE)) {
+    const value = maximumPercent(match[2]);
+    if (value !== undefined) out[match[1]] = Math.max(out[match[1]] ?? 0, value);
   }
   return out;
 }
