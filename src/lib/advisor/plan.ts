@@ -3,6 +3,7 @@ import { advisorSystemPrompt } from "./persona";
 import { asksAboutHelper, isSmallTalk } from "./intent";
 import { type AnswerPlan, type PlanContext, type PlanDeps, type Step } from "./planTypes";
 import { resolveQuestion, type QuestionInput } from "./resolvedQuestion";
+import { directFactPlan } from "./directFactPlan";
 import { understand } from "./questionUnderstanding";
 import { answerByVector, answerRuleQuestion, fixChampionTypo, answerGameFact, answerFromNotes } from "./knowledgePlans";
 import { continueMatchup } from "./matchupPlans";
@@ -33,7 +34,10 @@ export async function planAnswer(input: QuestionInput, ctx: PlanContext, deps: P
   */
   if (asksAboutHelper(question)) return { type: "code", answer: copy.identity };
 
-  const intent = await understand(resolveQuestion(input, data), ctx, data, deps);
+  const resolved = resolveQuestion(input, data);
+  const fact = directFactPlan(resolved, ctx);
+  if (fact) return fact;
+  const intent = await understand(resolved, ctx, data, deps);
   for (const steps of Object.values(ANSWER_STAGES)) {
     for (const step of steps) {
       const plan = await step(intent, deps);

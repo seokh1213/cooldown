@@ -1,6 +1,6 @@
 /** 대화 기억을 복원하고 이번 요청을 준비한다. 분리·확인의 비교 실험 설정도 이곳에서 정한다. */
 import type { PlanContext } from "./planTypes";
-import { detectChampions } from "./intent";
+import { resolveQuestion, type QuestionInput } from "./resolvedQuestion";
 import { dialogueMemoryOf, emptyDialogue, type DialogueMemory } from "./dialogueState";
 
 export type DialogueVariant = "memory" | "decompose" | "clarify" | "combined";
@@ -14,13 +14,14 @@ export function splitDialogueQuestions(question: string): string[] {
   return pieces.every(q => asks.test(q)) ? pieces : [question];
 }
 
-export function conditionOwner(question: string, memory: DialogueMemory, ctx: PlanContext): "mine" | "enemy" | undefined {
-  if (!memory.matchup) return undefined;
+export function conditionOwner(input: QuestionInput, memory: DialogueMemory, ctx: PlanContext): "mine" | "enemy" | undefined {
+  if (!memory.matchup || !ctx.data) return undefined;
+  const resolved = resolveQuestion(input, ctx.data);
+  const question = resolved.text;
   const slot = /[QWER]/.exec(question)?.index;
   if (slot === undefined) return undefined;
-  const before = question.slice(0, slot);
-  const named = detectChampions(ctx.data!, before).sort((a, b) => before.lastIndexOf(a.name) - before.lastIndexOf(b.name));
-  const last = named[named.length - 1];
+  const named = resolved.mentions.filter(mention => mention.index < slot);
+  const last = named[named.length - 1]?.card;
   return last?.id === memory.matchup.mine ? "mine" : last?.id === memory.matchup.enemy ? "enemy" : undefined;
 }
 

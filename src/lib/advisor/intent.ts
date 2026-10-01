@@ -7,7 +7,7 @@ import type { ChampionCard } from "@/lib/knowledge/facts";
 import type { AdvisorData } from "./context";
 import championAliasFile from "../../../knowledge/champion-aliases.json";
 
-interface Mention {
+export interface ChampionMention {
   card: ChampionCard;
   index: number;
 }
@@ -136,8 +136,8 @@ function maskCommonWords(text: string, data: AdvisorData): string {
  * 이름이 긴 쪽을 먼저 맞춰야 한다. "미스 포츈" 을 "포츈" 으로 자르거나
  * "리 신" 을 놓치면 엉뚱한 상성이 된다.
  */
-function findMentions(data: AdvisorData, text: string): Mention[] {
-  const mentions: Mention[] = [];
+function findMentions(data: AdvisorData, text: string): ChampionMention[] {
+  const mentions: ChampionMention[] = [];
   const taken: Array<[number, number]> = [];
   const take = (card: ChampionCard, at: [number, number] | undefined): boolean => {
     if (!at) return false;
@@ -266,9 +266,13 @@ export function detectChampions(
   text: string,
   limit = 3,
 ): ChampionCard[] {
-  return findMentions(data, text)
-    .slice(0, limit)
+  return detectChampionMentions(data, text, limit)
     .map((mention) => mention.card);
+}
+
+/** 이름과 별명 모두 원문 위치를 보존한다. 대화의 스킬 주인을 찾을 때도 같은 해석을 쓴다. */
+export function detectChampionMentions(data: AdvisorData, text: string, limit = 3): ChampionMention[] {
+  return findMentions(data, text).slice(0, limit);
 }
 
 /**

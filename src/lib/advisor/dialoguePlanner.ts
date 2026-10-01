@@ -45,7 +45,7 @@ export async function planPreparedDialogue(request: DialogueRequest, ctx: PlanCo
     plan ??= await planAnswer(resolved, ctx, deps);
     if (plan.type === "retry") plan = await planAnswer(plan.question, ctx, deps);
     memory = rememberDialoguePlan(memory, plan, fact);
-    if (memory.active === "matchup") memory.conditions = scenarioConditions(question, memory.conditions, ctx.turns.length, conditionOwner(question, memory, ctx));
+    if (memory.active === "matchup") memory.conditions = scenarioConditions(question, memory.conditions, ctx.turns.length, conditionOwner(resolved, memory, ctx));
     parts.push({ question, plan });
   }
   return { parts, memory };
