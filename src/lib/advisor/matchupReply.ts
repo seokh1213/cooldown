@@ -6,9 +6,10 @@ import { buildCompareAnswer, type AdvisorAnswer } from "./answer";
 import { matchupNotes } from "./playbookNotes";
 import { loadPrecomputed, selectPrecomputed, type PrecomputedPair } from "./precomputed";
 import type { ScenarioCondition } from "./dialogueState";
-import { digestSections } from "./prose";
+import { answerProse, digestSections } from "./prose";
 import { checkedMatchupText } from "./matchupFactCheck";
 import { labelSlots } from "./slotLabels";
+import { conditionMatchupText } from "./conditionedMatchup";
 
 interface MatchupRequest {
   question: string;
@@ -52,8 +53,8 @@ export function selectMatchupReply(answer: AdvisorAnswer, pair: PrecomputedPair 
   return { answer: { ...answer, precomputed: text || undefined }, topics: picked.map(section => section.key) };
 }
 
-/** 답 은행을 이미 읽은 호출자도 앱과 같은 조립 경로를 사용한다. */
-export function composeMatchupReply(data: AdvisorData, lang: Language, request: MatchupRequest, pair?: PrecomputedPair): MatchupReply {
+/** 조건 검사 전 은행·노트의 근거 본문을 조립한다. 평가의 비교 기준도 이 함수를 쓴다. */
+export function composeMatchupEvidence(data: AdvisorData, lang: Language, request: MatchupRequest, pair?: PrecomputedPair): MatchupReply {
   const { mine, enemy, question, focus } = request;
   const notes = matchupNotes(data, mine, enemy, lang);
   if (notes.plan && focus) notes.plan.focus = focus;
@@ -61,6 +62,18 @@ export function composeMatchupReply(data: AdvisorData, lang: Language, request: 
   const answer = buildCompareAnswer([mine, enemy], question, undefined, { matchup: true, notes, lang });
   if (answer.kind === "compare") answer.more = request.more || undefined;
   return selectMatchupReply(answer, pair, request, lang);
+}
+
+/** 은행·노트 조립의 최종 답 모두 같은 실행 조건 검사를 거친다. */
+export function composeMatchupReply(data: AdvisorData, lang: Language, request: MatchupRequest, pair?: PrecomputedPair): MatchupReply {
+  const reply = composeMatchupEvidence(data, lang, request, pair);
+  if (reply.answer.kind !== "compare") return reply;
+  const text = reply.answer.precomputed ?? answerProse(reply.answer, lang);
+  const checked = conditionMatchupText(data, lang, request, text);
+  if (!checked.rejected) return reply;
+  const blocks = text.split(/\n\s*\n/).filter(block => block.startsWith("**"));
+  const topics = reply.topics.filter((_, i) => blocks[i] && checked.text.includes(blocks[i]));
+  return { answer: { ...reply.answer, precomputed: checked.text }, topics: [...new Set([...topics, ...checked.topics])] };
 }
 
 export async function buildMatchupReply(data: AdvisorData, lang: Language, request: MatchupRequest): Promise<MatchupReply> {

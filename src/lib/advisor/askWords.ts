@@ -169,3 +169,5 @@ const SPELL_HANDLING = /(어떻게|어케|언제|뭐로)\s*\S*\s*(빼|피하|피
 export const asksGenericAdvice = (question: string): boolean => GENERIC_ADVICE.test(question);
 export const asksSkillHandling = (question: string): boolean => SPELL_HANDLING.test(question);
 export const asksReason = (question: string): boolean => /(?:^|\s)왜(?=\s|[?？]|$)|어째서|이유|\bwhy\b|为什么/i.test(question);
+/** 수치 조회와 상성 복귀가 같은 상황 조언 문형을 사용한다. */
+export const asksScenarioAdvice = (question: string): boolean => /언제\s*(써|쓰|사용|들어|진입)|어떻게\s*(써|쓰|빼|교환|상대|싸|해|들어|대응|버텨)|그래도\s*(들어|싸|진입)|빠졌|빠진|빠지면|상대법|콤보|교환|라인전|한타|when.*(use|engage)|how.*(use|bait)|怎么.*(用|打)/i.test(question);

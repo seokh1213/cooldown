@@ -43,14 +43,20 @@ function statedStatus(text: string): ScenarioCondition["status"] | undefined {
 
 export function scenarioConditions(question: string, previous: ScenarioCondition[], turn: number, hint?: ConditionHint): ScenarioCondition[] {
   if (/(?:조건|가정).*(?:초기화|잊어|지워|취소|없던)/.test(question)) return [];
-  const correction = /정정|아니|잘못|correction|actually|更正|不是/i.test(question);
-  const conditions = correction ? [] : [...previous];
+  const conditions = [...previous];
   const refs = references(question, hint);
   let owner = hint?.owner;
   for (const [index, ref] of refs.entries()) {
     const prefix = question.slice(refs[index - 1]?.end ?? 0, ref.index);
     owner = ownerBefore(prefix) ?? ref.owner ?? owner;
-    const suffix = question.slice(ref.end, refs[index + 1]?.index ?? question.length).split(/[.;]/)[0];
+    let suffix = question.slice(ref.end, refs[index + 1]?.index ?? question.length).split(/[.;]/)[0];
+    // "내 E와 R이 없어"처럼 상태가 나열의 맨 뒤에만 붙으면 같은 나열 안에서 공유한다.
+    let nextIndex = index + 1;
+    while (!statedStatus(suffix) && /^\s*(?:(?:와|과|랑|및|and|,|·|\/)\s*(?:상대|내|enemy|my|对面|我的)?)?\s*$/i.test(suffix) && refs[nextIndex]) {
+      const next = refs[nextIndex];
+      suffix = question.slice(next.end, refs[nextIndex + 1]?.index ?? question.length).split(/[.;]/)[0];
+      nextIndex++;
+    }
     const status = statedStatus(suffix);
     if (!owner || !status) continue;
     const entry = { owner, slot: ref.slot, status, hypothetical: /면|if\b|假如|如果/i.test(suffix), turn };
@@ -58,5 +64,5 @@ export function scenarioConditions(question: string, previous: ScenarioCondition
     if (at < 0) conditions.push(entry);
     else conditions[at] = entry;
   }
-  return conditions.length || !correction ? conditions : [...previous];
+  return conditions;
 }

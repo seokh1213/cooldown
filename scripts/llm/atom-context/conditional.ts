@@ -7,6 +7,8 @@ import { selectPlaybook } from "../../../src/lib/knowledge/playbookCore";
 import { atomTarget } from "./target";
 import { asksReason } from "../../../src/lib/advisor/askWords";
 import { topicFromWords } from "../../../src/lib/advisor/topicJudge";
+import { adviceUnit, actionEligible, type ActionRequirement } from "../../../src/lib/advisor/adviceActions";
+import { conditionMatchupText } from "../../../src/lib/advisor/conditionedMatchup";
 
 type Condition = Pick<ScenarioCondition, "owner" | "slot" | "status">;
 type Source = { kind: "bank"; key: PrecomputedKey }
@@ -27,6 +29,8 @@ interface Evidence extends EvidenceSeed { patch: string; sourceHash: string; ver
 export interface DecisionAtom extends Omit<DecisionSeed, "reason" | "action"> {
   reason: Evidence[];
   action: Evidence[];
+  /** 이전 실험 파일은 없을 수 있다. 그때도 현재 카드로 같은 조건을 복원한다. */
+  actionRequirements?: ActionRequirement[];
 }
 export interface DecisionRequest {
   question: string;
@@ -38,9 +42,17 @@ export interface DecisionRequest {
   focus?: string;
   continuation?: "explain" | "advance";
 }
-export interface DecisionResult { text: string; atom?: string; fallback?: "scope" | "condition" | "source-drift" }
+export interface DecisionResult { text: string; atom?: string; fallback?: "scope" | "condition" | "source-drift"; rejected?: number; alternatives?: number; abstained?: boolean }
 
 const hash = (text: string) => createHash("sha256").update(text).digest("hex").slice(0, 16);
+
+function decisionRequirements(atom: Pick<DecisionSeed, "mine" | "enemy" | "reason" | "action">, data: AdvisorData): ActionRequirement[] {
+  const subjects = { mine: data.cardById.get(atom.mine)!, enemy: data.cardById.get(atom.enemy)! };
+  return [...atom.reason, ...atom.action].flatMap(e => adviceUnit(e.quote, {
+    ...subjects, defaultOwner: e.source.kind === "playbook" ? e.source.side === "against" ? "enemy" : "mine"
+      : e.source.key === "watch" ? "enemy" : "mine",
+  }).requirements);
+}
 
 function sourceText(data: AdvisorData, request: Pick<DecisionRequest, "mine" | "enemy" | "pair">, source: Source): { text: string; verifiedPatch?: string } | undefined {
   if (source.kind === "bank") {
@@ -69,7 +81,10 @@ export function compileDecisionAtoms(data: AdvisorData, seeds: DecisionSeed[], p
       if (!source?.text.includes(evidence.quote)) throw new Error(`현재 출처에서 인용을 찾지 못함: ${seed.id}`);
       return { ...evidence, patch: data.patch, sourceHash: hash(source.text), verifiedPatch: source.verifiedPatch };
     };
-    return { ...seed, reason: seed.reason.map(bind), action: seed.action.map(bind) };
+    const reason = seed.reason.map(bind);
+    const action = seed.action.map(bind);
+    const actionRequirements = decisionRequirements({ ...seed, reason, action }, data);
+    return { ...seed, reason, action, actionRequirements };
   });
 }
 
@@ -77,7 +92,8 @@ function state(memory: DialogueMemory, condition: Condition): boolean {
   return memory.conditions.some(item => item.owner === condition.owner && item.slot === condition.slot && item.status === condition.status);
 }
 
-function applies(atom: DecisionAtom, memory: DialogueMemory, explicit: boolean): boolean {
+function applies(atom: DecisionAtom, memory: DialogueMemory, explicit: boolean, data: AdvisorData): boolean {
+  if (!actionEligible({ text: "", requirements: atom.actionRequirements ?? decisionRequirements(atom, data) }, memory.conditions)) return false;
   if (atom.excludes.some(condition => state(memory, condition))) return false;
   return atom.requires.every(condition => state(memory, condition)
     || explicit && condition.owner === (atom.target?.owner ?? "enemy") && condition.slot === (atom.target?.slot ?? "W") && condition.status === "ready"
@@ -89,15 +105,21 @@ function evidenceIsCurrent(data: AdvisorData, request: DecisionRequest, evidence
   return evidence.patch === data.patch && !!source && hash(source.text) === evidence.sourceHash && source.text.includes(evidence.quote);
 }
 
-/** 주제·스킬 주인·상태가 맞는 단위만 쓴다. 적용 밖 질문은 이번 턴의 기존 답변을 돌려준다. */
+/** 주제·스킬 주인·상태가 맞는 단위만 쓴다. 복귀 답도 실행 조건 검사로 검증한다. */
 export function selectDecisionAnswer(data: AdvisorData, atoms: DecisionAtom[], request: DecisionRequest): DecisionResult {
+  const fallback = (why: DecisionResult["fallback"]): DecisionResult => {
+    const checked = conditionMatchupText(data, "ko_KR", { ...request, conditions: request.memory.conditions,
+      mine: data.cardById.get(request.mine)!, enemy: data.cardById.get(request.enemy)! }, request.baseline);
+    return checked.rejected ? { text: checked.text, fallback: why, rejected: checked.rejected,
+      alternatives: checked.alternatives, abstained: checked.abstained } : { text: request.baseline, fallback: why };
+  };
   const focus = request.focus ?? topicFromWords(request.question);
-  if (request.continuation === "advance" || focus && !["skill", "general", "escape-window", "combo"].includes(focus)) return { text: request.baseline, fallback: "scope" };
+  if (request.continuation === "advance" || focus && !["skill", "general", "escape-window", "combo"].includes(focus)) return fallback("scope");
   const mine = data.cardById.get(request.mine)!;
   const enemy = data.cardById.get(request.enemy)!;
   const target = atomTarget(data, { ...request, mine, enemy });
   const followUp = /교환|들어|붙|어떻게|왜|조심|싸|콤보|빠졌|빠진|빠지면|기절/i.test(request.question);
-  if (!target.explicit && !followUp) return { text: request.baseline, fallback: "scope" };
+  if (!target.explicit && !followUp) return fallback("scope");
   const scoped = atoms.filter(atom => {
     if (atom.mine !== request.mine || atom.enemy !== request.enemy) return false;
     const subject = atom.target ?? { owner: "enemy", slot: "W" };
@@ -109,10 +131,14 @@ export function selectDecisionAnswer(data: AdvisorData, atoms: DecisionAtom[], r
     return /빠|없|쿨|정정|어떻게|왜/.test(request.question)
       && atom.requires.some(c => c.owner === relative && c.slot === target.slot && state(request.memory, c));
   });
-  const atom = scoped.find(item => applies(item, request.memory, target.explicit));
-  if (!atom) return { text: request.baseline, fallback: "condition" };
+  const exact = (item: DecisionAtom) => {
+    const subject = item.target ?? { owner: "enemy", slot: "W" };
+    return subject.slot === target.slot && (!target.owner || target.owner === (subject.owner === "mine" ? request.mine : request.enemy));
+  };
+  const atom = [...scoped.filter(exact), ...scoped.filter(item => !exact(item))].find(item => applies(item, request.memory, target.explicit, data));
+  if (!atom) return fallback("condition");
   if (![...atom.reason, ...atom.action].every(evidence => evidenceIsCurrent(data, request, evidence))) {
-    return { text: request.baseline, fallback: "source-drift" };
+    return fallback("source-drift");
   }
   const conditions = request.memory.conditions.map(c => `${c.owner === "enemy" ? "상대" : "내"} ${c.slot} ${c.status === "down" ? "재사용 대기 중" : "사용 가능"}`).join(" · ");
   const caption = conditions ? `말씀하신 조건: ${conditions}.\n\n` : "";
