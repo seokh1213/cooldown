@@ -52,13 +52,18 @@ export function selectMatchupReply(answer: AdvisorAnswer, pair: PrecomputedPair 
   return { answer: { ...answer, precomputed: text || undefined }, topics: picked.map(section => section.key) };
 }
 
-export async function buildMatchupReply(data: AdvisorData, lang: Language, request: MatchupRequest): Promise<MatchupReply> {
+/** 답 은행을 이미 읽은 호출자도 앱과 같은 조립 경로를 사용한다. */
+export function composeMatchupReply(data: AdvisorData, lang: Language, request: MatchupRequest, pair?: PrecomputedPair): MatchupReply {
   const { mine, enemy, question, focus } = request;
   const notes = matchupNotes(data, mine, enemy, lang);
   if (notes.plan && focus) notes.plan.focus = focus;
   if (notes.plan) notes.plan.question = question;
   const answer = buildCompareAnswer([mine, enemy], question, undefined, { matchup: true, notes, lang });
   if (answer.kind === "compare") answer.more = request.more || undefined;
-  const pair = (await loadPrecomputed(data.patch, mine.id, lang))?.pairs[enemy.id];
   return selectMatchupReply(answer, pair, request, lang);
+}
+
+export async function buildMatchupReply(data: AdvisorData, lang: Language, request: MatchupRequest): Promise<MatchupReply> {
+  const pair = (await loadPrecomputed(data.patch, request.mine.id, lang))?.pairs[request.enemy.id];
+  return composeMatchupReply(data, lang, request, pair);
 }

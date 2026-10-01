@@ -29,14 +29,15 @@ export function dialogueAnswerText(answer: AdvisorAnswer, lang: Language): strin
   return prose;
 }
 
-async function partReply(part: DialoguePlan["parts"][number], options: { data: AdvisorData | null; lang: Language; memory: DialogueMemory }): Promise<Omit<DialogueReply, "memory">> {
+interface ReplyDependencies { matchup: typeof buildMatchupReply }
+async function partReply(part: DialoguePlan["parts"][number], options: { data: AdvisorData | null; lang: Language; memory: DialogueMemory; deps: ReplyDependencies }): Promise<Omit<DialogueReply, "memory">> {
   const { plan, question } = part;
   const { data, lang, memory } = options;
   if (plan.type === "respond") return { text: "", respond: plan };
   if (plan.type === "retry") throw new Error("대화 계획은 오타 재시도를 먼저 풀어야 합니다");
   if (!data) throw new Error("자료 답변에는 준비된 자료가 필요합니다");
   if (plan.type === "matchup") {
-    const { answer, topics } = await buildMatchupReply(data, lang, { question, mine: plan.mine, enemy: plan.enemy, focus: plan.focus, more: plan.more, continuation: plan.continuation, shownTopics: memory.matchup?.shownTopics, scope: "topic", conditions: memory.conditions });
+    const { answer, topics } = await options.deps.matchup(data, lang, { question, mine: plan.mine, enemy: plan.enemy, focus: plan.focus, more: plan.more, continuation: plan.continuation, shownTopics: memory.matchup?.shownTopics, scope: "topic", conditions: memory.conditions });
     if (memory.matchup?.mine === plan.mine.id && memory.matchup.enemy === plan.enemy.id) {
       memory.matchup.shownTopics = [...new Set([...(memory.matchup.shownTopics ?? []), ...topics])];
       if (plan.continuation === "advance" && topics.length) memory.matchup.focus = focusOfMatchupTopic(topics[0]);
@@ -48,10 +49,10 @@ async function partReply(part: DialoguePlan["parts"][number], options: { data: A
   return { answer, text: dialogueAnswerText(answer, lang), notice: plan.notice };
 }
 
-export async function assembleDialogueReply(dialogue: DialoguePlan, data: AdvisorData | null, lang: Language): Promise<DialogueReply> {
+export async function assembleDialogueReply(dialogue: DialoguePlan, data: AdvisorData | null, lang: Language, deps: ReplyDependencies = { matchup: buildMatchupReply }): Promise<DialogueReply> {
   const memory = structuredClone(dialogue.memory);
   const replies: Array<Omit<DialogueReply, "memory">> = [];
-  for (const part of dialogue.parts) replies.push(await partReply(part, { data, lang, memory }));
+  for (const part of dialogue.parts) replies.push(await partReply(part, { data, lang, memory, deps }));
   const unavailable = lang === "en_US" ? "I couldn't find supporting information for this part." : lang === "zh_CN" ? "这部分没有找到可用的资料。" : "이 부분은 근거 자료에서 답을 찾지 못했습니다.";
   const text = replies.map((r, i) => r.text || (replies.length > 1 ? `${dialogue.parts[i].question}\n${unavailable}` : "")).filter(Boolean).join("\n\n");
   if (dialogue.clarification) return { text: [text, dialogue.clarification].filter(Boolean).join("\n\n"), memory };
