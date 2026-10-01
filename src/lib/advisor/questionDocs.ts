@@ -11,7 +11,8 @@ import { suggestChampions } from "./championTypo";
 import { asksAboutHelper, detectChampions, nicknames } from "./intent";
 import { asksPriceTiers, findGameMeta, gameMetaById } from "./gameMeta";
 import type { LexicalHit } from "./searchFallback";
-import { findMentionedRules } from "@/lib/knowledge/rules";
+import { findMentionedRules, type RuleNotes } from "@/lib/knowledge/rules";
+import { detectSpellFocus } from "./spellFocus";
 import { findMechanics } from "@/lib/knowledge/mechanics";
 
 /** 검색 벡터로 찾을 질문인가(모델·동의 조건은 뺀 것). 평가 하네스도 이 조건으로 가른다. */
@@ -58,6 +59,21 @@ export function askedRules(data: AdvisorData, question: string) {
   return metaFirst ? [] : named;
 }
 
+/**
+ * 룬·소환사 주문의 재사용 대기시간을 물었으면 그 값. 낱말 길(`answerRuleQuestion`)과 검색 벡터 길(`docAnswer`)이 함께 쓴다 —
+ * 낱말 길에만 두었더니 브라우저(검색 벡터 있음)에서 "감전 쿨타임" 이 20초 없이 나갔다(2026-10-01).
+ * 소환사 주문은 협곡(CLASSIC) 판을 고른다 — 아레나 점멸은 0.25초다.
+ */
+export function ruleCooldown(data: AdvisorData, rule: RuleNotes, question: string): number | string | undefined {
+  if ((rule.subject !== "summoner" && rule.subject !== "rune") || detectSpellFocus(question)?.focus !== "cooldown") return undefined;
+  const names = new Set([rule.name, rule.nameEn, rule.nameZh].filter(Boolean));
+  if (rule.subject === "rune") return data.runes.find((entry) => names.has(entry.name))?.cooldown;
+  const spell =
+    data.summoners.find((entry) => names.has(entry.name) && entry.modes?.includes("CLASSIC")) ??
+    data.summoners.find((entry) => names.has(entry.name) && !entry.modes?.includes("CHERRY"));
+  return spell?.cooldown?.[0];
+}
+
 /** 검색이 고른 문서(`rule:점화` · `meta:surrender` · `mech:스킬-가속`)를 답으로. 규칙은 함께 부른 다른 규칙 이름이 든 문장을 밝힌다. */
 export function docAnswer(data: AdvisorData, lang: Language, id: string, question: string): AdvisorAnswer | string | undefined {
   if (id.startsWith("rule:")) {
@@ -70,7 +86,7 @@ export function docAnswer(data: AdvisorData, lang: Language, id: string, questio
     const named = findMentionedRules(data.ruleIndex, question);
     const all = named.some((entry) => entry.name === rule.name) ? named : [rule, ...named];
     const names = all.map((entry) => entry.name);
-    const cards = all.map((entry) => buildRuleCard(entry, names, lang, all));
+    const cards = all.map((entry) => buildRuleCard(entry, names, lang, all, ruleCooldown(data, entry, question)));
     return cards.find((card) => card.kind === "rule" && card.highlighted.length > 0) ?? cards[all.indexOf(rule)];
   }
   if (id.startsWith("meta:")) return gameMetaById(id, lang);

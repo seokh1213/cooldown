@@ -54,9 +54,8 @@ import {
 import { buildSearchCorpus, hitsToAnswer, buildRetrievalDocs, hybridSearch, lexicalSearch } from "./searchFallback";
 import { questionLanguage } from "./questionLanguage";
 import type { JudgeQuestion } from "./judge";
-import { askedRules, docAnswer, isGameWord, lexicalHit, searchesByVector } from "./questionDocs";
+import { askedRules, docAnswer, ruleCooldown, isGameWord, lexicalHit, searchesByVector } from "./questionDocs";
 import { josa } from "@/lib/knowledge/text";
-import type { RuleNotes } from "@/lib/knowledge/rules";
 import type { ChampionCard } from "@/lib/knowledge/facts";
 
 /*
@@ -374,15 +373,7 @@ function answerRuleQuestion({ question, ctx, data, matchup }: Intent): AnswerPla
   const names = named.map((rule) => rule.name);
   // 소환사 주문의 재사용 대기시간을 물으면 자료(summoner-normalized)의 값을 첫 줄로. 협곡(CLASSIC) 판을 고른다 — 아레나 점멸은 0.25초다.
   // 룬은 runes-normalized 의 cooldown(툴팁 끝줄에서 읽은 값)을 쓴다. "감전 쿨타임" 에 규칙 문장만 나왔다(2026-09-30 브라우저 시험).
-  const cooldownOf = (rule: RuleNotes): number | string | undefined => {
-    if ((rule.subject !== "summoner" && rule.subject !== "rune") || detectSpellFocus(question)?.focus !== "cooldown") return undefined;
-    // 자료의 이름은 화면 언어라 규칙의 세 언어 이름 중 하나와 맞춘다
-    const names = new Set([rule.name, rule.nameEn, rule.nameZh].filter(Boolean));
-    if (rule.subject === "rune") return data.runes.find((entry) => names.has(entry.name))?.cooldown;
-    const spell = data.summoners.find((entry) => names.has(entry.name) && entry.modes?.includes("CLASSIC")) ?? data.summoners.find((entry) => names.has(entry.name) && !entry.modes?.includes("CHERRY"));
-    return spell?.cooldown?.[0];
-  };
-  const cards = named.map((rule) => buildRuleCard(rule, names, ctx.lang, named, cooldownOf(rule)));
+  const cards = named.map((rule) => buildRuleCard(rule, names, ctx.lang, named, ruleCooldown(data, rule, question)));
   const best = cards.find((card) => card.kind === "rule" && card.highlighted.length > 0) ?? cards[0];
   return { type: "card", answer: best, notice: ctx.notice };
 }
@@ -468,7 +459,8 @@ async function continueMatchup(intent: Intent, deps: PlanDeps): Promise<AnswerPl
     champions.length === 0 &&
     (Boolean(buildItemCard(data, question, intent.recentItem)) || (Boolean(buildMechanicsAnswer(data, question)) && !topicFromWords(question)));
   // 문형이 분명하면("입장에서는?", "왜?", "항복 몇 분부터") 판정기보다 먼저다. 판정기가 아예 없는 기기의 길이기도 하다.
-  const worded = actFromWords(question);
+  // "팁 좀", "tips" 는 판정기에 맡기지 않는다 — 판정기가 상대 바꾸기·뒤집기 등으로 골라 같은 답을 되풀이했다(2026-10-01 브라우저 시험). 남은 칸을 보인다.
+  const worded = actFromWords(question) ?? (champions.length === 0 && GENERIC_ADVICE.test(question) ? "more" : undefined);
   const act =
     worded ??
     (!named && ctx.judge !== "none"
@@ -522,7 +514,7 @@ async function continueMatchup(intent: Intent, deps: PlanDeps): Promise<AnswerPl
     const pairNotice = fill(ctx.copy.card.fromChat, { name: `${turn.mine.name} vs ${turn.enemy.name}` });
     return { type: "matchup", mine: turn.mine, enemy: turn.enemy, notice: ctx.notice ?? pairNotice, focus: "general", more: true };
   }
-  const topic = turn.act === "more" ? previousFocus(ctx.turns) : await matchupTopic(question, data, ctx, [turn.mine, turn.enemy], deps);
+  const topic = turn.act === "more" ? previousFocus(ctx.turns) ?? "general" : await matchupTopic(question, data, ctx, [turn.mine, turn.enemy], deps);
   const pairNotice = fill(ctx.copy.card.fromChat, { name: `${turn.mine.name} vs ${turn.enemy.name}` });
   return { type: "matchup", mine: turn.mine, enemy: turn.enemy, notice: ctx.notice ?? pairNotice, focus: topic, more: turn.act === "more" };
 }
