@@ -3,7 +3,7 @@ import type { ChampionCard, SpellFact } from "@/lib/knowledge/facts";
 import { buildCompareAnswer, buildRuleAnswer, buildSpellAnswer, type AdvisorAnswer } from "./answer";
 import { buildItemCard, detectSlot } from "./context";
 import { detectChampions } from "./intent";
-import { askedRules } from "./questionDocs";
+import { ruleCooldown, askedRules } from "./questionDocs";
 import { asksWholeKit } from "./askWords";
 import type { AnswerPlan, PlanContext } from "./plan";
 import { inferredSpellFocus, numericConditions, type DialogueMemory } from "./dialogueState";
@@ -101,11 +101,9 @@ function explicitEntity(question: string, memory: DialogueMemory, ctx: PlanConte
   const rules = askedRules(data, question);
   const named = detectChampions(data, question);
   if (named.length || !rules.length || rules.some(r => r.subject === "gameplay")) return undefined;
-  const cooldown = /쿨|cooldown|冷却/i.test(question);
   const best = rules.find(r => r.subject === "summoner") ?? rules[0];
-  const names = new Set([best.name, best.nameEn, best.nameZh]);
-  const spell = cooldown && best.subject === "summoner" ? data.summoners.find(s => names.has(s.name) && s.modes?.includes("CLASSIC")) : undefined;
-  const answer = buildRuleAnswer(best, rules.map(r => r.name), ctx.lang, rules, spell?.cooldown?.[0]);
+  // 쿨타임 값은 계획기·검색 길과 같은 헬퍼로 — 여기서 소환사 주문만 따로 찾았더니 "감전 쿨타임" 에 20초가 빠졌다(2026-10-01 브라우저 시험)
+  const answer = buildRuleAnswer(best, rules.map(r => r.name), ctx.lang, rules, ruleCooldown(data, best, question));
   return { plan: { type: "card", answer } };
 }
 

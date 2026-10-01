@@ -29,7 +29,12 @@ export async function buildMatchupReply(data: AdvisorData, lang: Language, reque
   answer.more = request.more || undefined;
   const pair = (await loadPrecomputed(data.patch, mine.id, lang))?.pairs[enemy.id];
   if (pair) {
-    answer.precomputed = request.scope === "topic"
+    // "더 자세히"·주제 없는 조언 요청(focus general)은 처음 답에 싣지 않은 칸이다. precomputedFocus 는 general 을 "조심할 것" 하나로 받아
+    // 첫 답과 같은 칸을 되풀이했다("팁 좀 줘", "tips" — 2026-10-01 브라우저 시험).
+    const restOnly = request.more && (!focus || focus === "general") && !request.conditions?.length;
+    answer.precomputed = restOnly
+      ? precomputedMore(pair, focus, [mine, enemy], lang) ?? precomputedDigest(pair, focus, [mine, enemy], lang)
+      : request.scope === "topic"
       ? precomputedFocus(pair, { focus, reason: request.more, conditions: request.conditions }, [mine, enemy], lang)
       : (request.more ? precomputedMore : precomputedDigest)(pair, focus, [mine, enemy], lang);
   }
