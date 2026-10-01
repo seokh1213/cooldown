@@ -6,6 +6,7 @@ import { answerDialogue } from "../../src/lib/advisor/dialogueFlow";
 import { emptyDialogue, type DialogueMemory } from "../../src/lib/advisor/dialogueState";
 import { dehydrateTurn, reviveTurn } from "../../src/lib/advisor/history";
 import type { PlanContext, PlanDeps } from "../../src/lib/advisor/planTypes";
+import { findGameMeta } from "../../src/lib/advisor/gameMeta";
 
 const data = loadData("ko_KR");
 const deps: PlanDeps = { judge: async () => { throw new Error("이 사실 조회에는 판정이 필요 없다"); }, search: async () => [] };
@@ -113,4 +114,29 @@ test("피오라 W 대처법은 상대가 누구인지 추측하지 않고 방법
   assert.doesNotMatch(reply.text, /아트록스/);
   const stored = dehydrateTurn({ id: 1, role: "assistant", content: reply.text, answer: reply.answer, memory: reply.memory });
   assert.equal(reviveTurn(JSON.parse(JSON.stringify(stored)), data)?.answer?.kind, "champion");
+});
+
+test("상성 뒤 제목 없는 규칙 요약을 조회해도 저장 복원한 지칭은 그 규칙을 따른다", async () => {
+  const memory = { ...emptyDialogue(data.patch), active: "matchup" as const, matchup: { mine: "Rumble", enemy: "MonkeyKing", focus: "general" } };
+  const first = await answerDialogue("물리 관통력이랑 방어구 관통력 차이가 뭐야?", context(memory), deps);
+  assert.equal(first.reply.memory.active, "rule");
+  assert.equal(first.reply.memory.rule?.id, "meta:lethality");
+  assert.doesNotMatch(first.reply.text, /^###/);
+  const stored = dehydrateTurn({ id: 1, role: "assistant", content: first.reply.text, memory: first.reply.memory });
+  const restored = reviveTurn(JSON.parse(JSON.stringify(stored)), data)!;
+  const next = await answerDialogue("그거 평타에도 적용돼?", { ...context(), turns: [restored] }, deps);
+  assert.match(next.reply.text, /물리 피해인 기본 공격에는 적용/);
+  assert.doesNotMatch(next.reply.text, /럼블|오공|한타/);
+  assert.equal(next.reply.memory.matchup?.mine, "Rumble");
+});
+
+test("벡터 검색으로 선택한 규칙 요약도 본문 제목 없이 주제를 기억한다", async () => {
+  const rule = findGameMeta("물리 관통력")!;
+  const modelContext = { ...context(), consented: true, canUseModel: true, retrieval: true };
+  const vectorDeps = { ...deps, search: async () => [{ id: `meta:${rule.id}`, score: 1 }] };
+  const first = await answerDialogue("물리 관통력이랑 방어구 관통력 차이가 뭐야?", modelContext, vectorDeps);
+  assert.doesNotMatch(first.reply.text, /^###/);
+  assert.equal(first.reply.memory.active, "rule");
+  const next = await answerDialogue("그거 평타에도 적용돼?", context(first.reply.memory), deps);
+  assert.match(next.reply.text, /물리 피해인 기본 공격에는 적용/);
 });

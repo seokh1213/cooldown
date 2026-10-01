@@ -9,7 +9,7 @@ import { buildItemCard, buildMechanicsAnswerById, type AdvisorData } from "./con
 import { buildRuleAnswer as buildRuleCard, type AdvisorAnswer } from "./answer";
 import { suggestChampions } from "./championTypo";
 import { asksAboutHelper, detectChampions, nicknames } from "./intent";
-import { asksPriceTiers, findGameMeta, gameMetaById } from "./gameMeta";
+import { asksPriceTiers, findGameMeta, gameMetaById, gameMetaDocs } from "./gameMeta";
 import type { LexicalHit } from "./searchFallback";
 import { findMentionedRules, type RuleNotes } from "@/lib/knowledge/rules";
 import { detectSpellFocus } from "./spellFocus";
@@ -72,6 +72,13 @@ export function ruleCooldown(data: AdvisorData, rule: RuleNotes, question: strin
     data.summoners.find((entry) => names.has(entry.name) && entry.modes?.includes("CLASSIC")) ??
     data.summoners.find((entry) => names.has(entry.name) && !entry.modes?.includes("CHERRY"));
   return spell?.cooldown?.[0];
+}
+
+/** 본문 표시 형식과 별개로 이번에 고른 자료의 주제를 기억에 넘긴다. */
+export function knowledgeReference(data: AdvisorData, lang: Language, id: string): { id: string; title: string } | undefined {
+  const title = id.startsWith("meta:") ? gameMetaDocs(lang).find(doc => doc.id === id)?.title
+    : id.startsWith("mech:") ? data.mechanics.find(section => `mech:${section.id}` === id)?.title : undefined;
+  return title ? { id, title } : undefined;
 }
 
 /** 검색이 고른 문서(`rule:점화` · `meta:surrender` · `mech:스킬-가속`)를 답으로. 규칙은 함께 부른 다른 규칙 이름이 든 문장을 밝힌다. */

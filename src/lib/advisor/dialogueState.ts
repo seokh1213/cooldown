@@ -21,7 +21,7 @@ export interface DialogueMemory {
   spell?: SpellReference;
   compared?: string[];
   item?: string;
-  rule?: { title: string; text: string };
+  rule?: { id?: string; title: string; text: string };
   numeric?: { haste?: number; rank?: number };
   conditions: ScenarioCondition[];
   pending?: { slot: string; focus?: SpellFocus; candidates: string[] };
@@ -136,8 +136,8 @@ function rememberPlan(memory: DialogueMemory, plan: AnswerPlan): DialogueMemory 
   }
   if (plan.type === "card" || (plan.type === "code" && typeof plan.answer !== "string")) return rememberAnswer(memory, plan.answer as Exclude<typeof plan.answer, string>);
   if (plan.type === "code" && typeof plan.answer === "string") {
-    const title = /^###\s+([^\n]+)/.exec(plan.answer)?.[1];
-    if (title) return { ...memory, active: "rule", rule: { title, text: plan.answer } };
+    const title = plan.knowledge?.title ?? /^###\s+([^\n]+)/.exec(plan.answer)?.[1];
+    if (title) return { ...memory, active: "rule", rule: { id: plan.knowledge?.id, title, text: plan.answer } };
   }
   return memory;
 }

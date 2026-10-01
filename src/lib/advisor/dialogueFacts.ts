@@ -7,7 +7,7 @@ import { askedRules } from "./questionDocs";
 import { asksWholeKit, asksSkillHandling } from "./askWords";
 import type { AnswerPlan, PlanContext } from "./plan";
 import { inferredSpellFocus, numericConditions, type DialogueMemory } from "./dialogueState";
-import { resolveDialogueRule } from "./dialogueRules";
+import { resolveDialogueRule, isPenetrationRule } from "./dialogueRules";
 import { josa } from "@/lib/knowledge/text";
 
 export interface FactResolution {
@@ -104,7 +104,7 @@ function explicitEntity(question: string, memory: DialogueMemory, ctx: PlanConte
 
 function penetrationAnswer(answer: AdvisorAnswer, question: string, memory: DialogueMemory, ctx: PlanContext): FactResolution | undefined {
   const carries = memory.spell?.relation === "penetration" && !QUERY.test(question);
-  const follows = memory.rule?.title.includes("관통") && /적용|평타|기본\s*공격/.test(question);
+  const follows = isPenetrationRule(memory.rule) && /적용|평타|기본\s*공격/.test(question);
   if (!carries && !follows) return undefined;
   const source = ctx.data!.mechanics.find(m => m.id === "저항과-피해-감소");
   if (!source?.text.includes("방어력은 물리 피해")) return undefined;

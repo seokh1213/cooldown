@@ -4,6 +4,10 @@ import type { DialogueMemory } from "./dialogueState";
 
 const rulePlan = (title: string, text: string): AnswerPlan => ({ type: "code", answer: `### ${title}\n${text}` });
 
+export function isPenetrationRule(rule: DialogueMemory["rule"]): boolean {
+  return rule?.id === "meta:lethality" || /관통|치명력/.test(rule?.title ?? "");
+}
+
 export function resolveDialogueRule(question: string, ctx: PlanContext): AnswerPlan | undefined {
   if (ctx.lang !== "ko_KR" || !ctx.data) return undefined;
   const penetration = ctx.data.mechanics.find(m => m.id === "관통과-감소,-그리고-적용-순서");
@@ -27,7 +31,7 @@ export function resolveDialogueRule(question: string, ctx: PlanContext): AnswerP
 }
 
 export function ruleEllipsis(question: string, memory: DialogueMemory, ctx: PlanContext): AnswerPlan | undefined {
-  if (ctx.lang !== "ko_KR" || memory.active !== "rule" || !memory.rule?.title.includes("관통")) return undefined;
+  if (ctx.lang !== "ko_KR" || memory.active !== "rule" || !isPenetrationRule(memory.rule)) return undefined;
   if (!/그거|그럼|관통/.test(question) || !/평타|기본\s*공격/.test(question)) return undefined;
   const source = ctx.data!.mechanics.find(m => m.id === "저항과-피해-감소");
   if (!source?.text.includes("방어력은 물리 피해")) return undefined;

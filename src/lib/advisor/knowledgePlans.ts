@@ -7,10 +7,10 @@ import { detectSpellFocus } from "./spellFocus";
 import { suggestChampions } from "./championTypo";
 import { nicknames } from "./intent";
 import { topicFromWords } from "./topicJudge";
-import { championPriceAnswer, gameMetaAnswer } from "./gameMeta";
+import { championPriceAnswer, gameMetaAnswer, findGameMeta } from "./gameMeta";
 import { buildSearchCorpus, hitsToAnswer, buildRetrievalDocs, hybridSearch, lexicalSearch } from "./searchFallback";
 import { questionLanguage } from "./questionLanguage";
-import { ruleCooldown, askedRules, docAnswer, isGameWord, lexicalHit, searchesByVector } from "./questionDocs";
+import { ruleCooldown, askedRules, docAnswer, knowledgeReference, isGameWord, lexicalHit, searchesByVector } from "./questionDocs";
 import { josa } from "@/lib/knowledge/text";
 import { type AnswerPlan, type PlanDeps, type Intent } from "./planTypes";
 
@@ -43,7 +43,7 @@ export async function answerByVector({ question, ctx, data, ask, recentItem, mat
   const bm25 = lexicalSearch(buildRetrievalDocs(data, asked, true), question, 100);
   const found = hybridSearch(top, bm25, lexicalHit(data, question));
   const answer = found.answer ? docAnswer(data, ctx.lang, found.answer, question) : undefined;
-  if (typeof answer === "string") return { type: "code", answer, notice: ctx.notice };
+  if (typeof answer === "string") return { type: "code", answer, knowledge: found.answer ? knowledgeReference(data, ctx.lang, found.answer) : undefined, notice: ctx.notice };
   if (answer) return { type: "card", answer, notice: ctx.notice };
   if (found.related?.length) {
     // 확신이 없으면 "자료 없음" 대신 가까운 자료 셋을 고르게 한다. 누르면 그 자료를 보인다(`showDoc`).
@@ -118,7 +118,10 @@ export function answerGameFact({ question, ctx, data, champions, ask }: Intent):
   }
   if (champions.length === 0 || (champions.length === 1 && ask === "game")) {
     const fact = gameMetaAnswer(question, ctx.lang);
-    if (fact) return { type: "code", answer: fact, notice: ctx.notice };
+    if (fact) {
+      const named = findGameMeta(question);
+      return { type: "code", answer: fact, knowledge: named ? knowledgeReference(data, ctx.lang, `meta:${named.id}`) : undefined, notice: ctx.notice };
+    }
   }
   return undefined;
 }
