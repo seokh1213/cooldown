@@ -51,6 +51,22 @@ test("은행이 없는 쌍도 노트가 없으면 소진 안내로 답한다", (
   assert.equal(selected.answer.kind, "text");
 });
 
+test("은행 없이 노트를 조립할 때도 표시한 칸을 제외하고 소진을 알린다", () => {
+  const answer: AdvisorAnswer = { kind: "compare", cards, rows: [], matchup: true, notes: {
+    mine: [], enemy: [], plan: { focus: "laning", mine: [{ category: "laning", text: "짧게 교환합니다." }], enemy: [],
+      claims: [{ kind: "pinned", text: "응수를 조심합니다." }, { kind: "defense", text: "방어력을 먼저 올립니다." }] },
+  } };
+  const request = { question: "라인전", mine: cards[0], enemy: cards[1], focus: "laning", scope: "topic" as const };
+  const first = selectMatchupReply(answer, undefined, request, "ko_KR");
+  assert.deepEqual(first.topics, ["fight"]);
+  const next = selectMatchupReply(answer, undefined, { ...request, continuation: "advance", shownTopics: first.topics }, "ko_KR");
+  assert.deepEqual(next.topics, ["watch", "build"]);
+  if (next.answer.kind !== "compare") assert.fail("남은 노트를 보여줘야 한다");
+  assert.doesNotMatch(next.answer.precomputed!, /짧게 교환/);
+  const exhausted = selectMatchupReply(answer, undefined, { ...request, continuation: "advance", shownTopics: [...first.topics, ...next.topics] }, "ko_KR");
+  assert.equal(exhausted.answer.kind, "text");
+});
+
 test("조언 진행 상태는 저장 후 복원되고 패치가 바뀌면 초기화된다", () => {
   const stored = dehydrateTurn({ id: 1, role: "assistant", content: "조언", memory });
   const restored = reviveTurn(JSON.parse(JSON.stringify(stored)), data)!;
