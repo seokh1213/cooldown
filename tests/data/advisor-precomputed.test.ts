@@ -7,7 +7,7 @@ import * as path from "node:path";
 import { test } from "node:test";
 import type { ChampionCard } from "../../src/lib/knowledge/facts";
 import { PUBLIC_DATA_ROOT, resolvePatchVersion } from "../../scripts/llm/lib/data";
-import { precomputedDigest } from "../../src/lib/advisor/precomputed";
+import { precomputedDigest, type PrecomputedFile } from "../../src/lib/advisor/precomputed";
 
 const cards = (JSON.parse(fs.readFileSync(path.join(PUBLIC_DATA_ROOT, resolvePatchVersion(), "llm", "champion-cards-ko_KR.json"), "utf8")) as { cards: ChampionCard[] }).cards;
 const pairCards = ["Jax", "Fiora"].map((id) => cards.find((c) => c.id === id)!);
@@ -42,4 +42,12 @@ test("스킬 질문은 조심할 것부터", () => {
 
 test("칸 첫머리의 이음말을 뗀다", () => {
   assert.ok(!/\*\*\n이후에는/.test(precomputedDigest({ ...pair, fight: "이후에는 짧게 딜 교환합니다." }, "general", pairCards)!));
+});
+
+test("말파이트 대 제이스의 실제 미리 쓴 답은 물리 견제에 방어력을 우선한다", () => {
+  const file = JSON.parse(fs.readFileSync(path.join(PUBLIC_DATA_ROOT, resolvePatchVersion(), "llm", "matchups", "Malphite.json"), "utf8")) as PrecomputedFile;
+  const build = file.pairs.Jayce.build!;
+  assert.match(build, /물리 피해.*방어력을 먼저/);
+  assert.doesNotMatch(build, /마법 저항력을 먼저|마법무효화의 망토를 먼저/);
+  assert.match(build, /마법 피해는 방어력으로 줄일 수 없/);
 });
