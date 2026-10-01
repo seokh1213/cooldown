@@ -70,7 +70,7 @@ onRequest((request) => {
     return;
   }
   if (request.type === "generate") {
-    generate(request.id, request.model, request.messages, request.system, request.maxTokens, request.loopGuard ?? true).catch((error: unknown) => {
+    serialized(() => generate(request)).catch((error: unknown) => {
       const message = (error as Error).message;
       /*
        * GPU 쪽이 한 번 깨지면 세션이 살아 있어도 못 쓴다.

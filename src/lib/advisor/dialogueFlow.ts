@@ -6,11 +6,16 @@
 import type { PlanContext, PlanDeps } from "./planTypes";
 import { prepareDialogueRequest } from "./dialogueRequest";
 import { planPreparedDialogue } from "./dialoguePlanner";
+import { summarizeGroundedReply, type SummaryExperiment } from "./groundedSummary";
 import { assembleDialogueReply } from "./dialogueReply";
 
-export async function answerDialogue(question: string, ctx: PlanContext, deps: PlanDeps) {
+export async function answerDialogue(question: string, ctx: PlanContext, deps: PlanDeps, summary?: SummaryExperiment) {
   const request = prepareDialogueRequest(question, ctx, "combined");
   const dialogue = await planPreparedDialogue(request, ctx, deps);
   const reply = await assembleDialogueReply(dialogue, ctx.data, ctx.lang);
+  if (summary && ctx.consented && ctx.canUseModel && ctx.lang === "ko_KR") {
+    const result = await summarizeGroundedReply(dialogue, reply, summary);
+    return { dialogue, ...result };
+  }
   return { dialogue, reply };
 }

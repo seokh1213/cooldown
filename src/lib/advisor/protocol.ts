@@ -40,6 +40,8 @@ export type AdvisorRequest =
        * 검색어처럼 한 줄만 필요한 회차는 짧게 끊어야 기다림이 눈에 안 띈다.
        */
       maxTokens?: number;
+      /** 근거 문장 복사를 반복으로 막지 않는, 검사 전 요약 후보. */
+      purpose?: "grounded-summary";
       /**
        * 거짓이면 반복 차단을 걸지 않는다. 번호만 쓰는 XML(`<fact id="3"/>` 이 줄지어 나온다)은
        * 같은 글자가 되풀이되는 것이 정상이라 차단이 멀쩡한 답을 자른다.

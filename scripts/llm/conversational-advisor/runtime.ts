@@ -86,9 +86,9 @@ export function createRuntime() {
     return hits;
   }
 
-  async function generate(system: string, question: string, maxTokens = 48) {
+  async function generate(system: string, question: string, maxTokens = 48, purpose?: "grounded-summary") {
     const start = performance.now();
-    const result = await request({ type: "generate", id: nextId++, model: ADVISOR_MODEL, system, messages: [{ role: "user", content: question }], maxTokens }, "done");
+    const result = await request({ type: "generate", id: nextId++, model: ADVISOR_MODEL, system, messages: [{ role: "user", content: question }], maxTokens, purpose }, "done");
     calls.push({ task: "generate", cached: false, seconds: (performance.now() - start) / 1000 });
     return result;
   }

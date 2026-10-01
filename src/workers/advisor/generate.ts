@@ -6,7 +6,7 @@ import {
 } from "@huggingface/transformers";
 import { MAX_NEW_TOKENS, NO_REPEAT_NGRAM } from "@/lib/advisor/config";
 import { createLoopGuard, trimLoop } from "@/lib/advisor/loopGuard";
-import type { AdvisorModelSpec } from "@/lib/advisor/protocol";
+import type { AdvisorRequest } from "@/lib/advisor/protocol";
 import { getModel, getTokenizer, load } from "./model";
 import { post } from "./port";
 
@@ -22,14 +22,8 @@ const PROMPT_LIMIT = 1900;
 
 type ChatMessage = { role: string; content: string };
 
-export async function generate(
-  id: number,
-  spec: AdvisorModelSpec,
-  messages: ChatMessage[],
-  system?: string,
-  maxTokens?: number,
-  loopGuard = true,
-) {
+export async function generate(request: Extract<AdvisorRequest, { type: "generate" }>) {
+  const { id, model: spec, messages, system, maxTokens, loopGuard = true, purpose } = request;
   await load(spec);
   const tokenizer = getTokenizer();
   const model = getModel();
@@ -66,7 +60,8 @@ export async function generate(
       if (firstTokenAt === 0) firstTokenAt = performance.now();
       text += chunk;
       tokens += 1;
-      post({ type: "chunk", id, text: chunk });
+      // 요약 후보는 완료 후 검사한다. 검증되지 않은 조각은 화면에 흘리지 않는다.
+      if (purpose !== "grounded-summary") post({ type: "chunk", id, text: chunk });
       if (loopGuard && !looped && guard.feed(chunk)) {
         looped = true;
         stopper.interrupt();
@@ -80,7 +75,7 @@ export async function generate(
     do_sample: false,
     // 탐욕 복호화만으로는 같은 구절을 반복해 찍는다. 살짝만 눌러 준다. 크게 주면
     // 스킬 이름처럼 되풀이해야 하는 낱말까지 피하려 들어 글이 이상해진다.
-    repetition_penalty: 1.1,
+    repetition_penalty: purpose === "grounded-summary" ? 1 : 1.1,
     /*
      * 같은 20토큰이 두 번 나오지 못하게 한다. 끊는 것보다 앞에서 막는다.
      *
@@ -90,7 +85,7 @@ export async function generate(
      * 되풀이 한 바퀴는 18토큰 남짓이었다("1레벨 기준 전체 챔피언 중 하위권이라는 점,
      * 그리고 오공이 "). 20 이면 이름은 막지 않고 바퀴는 두 번째에서 막힌다.
      */
-    no_repeat_ngram_size: NO_REPEAT_NGRAM,
+    no_repeat_ngram_size: purpose === "grounded-summary" ? 0 : NO_REPEAT_NGRAM,
     streamer,
     // 중단 요청이 오면 다음 토큰에서 멈춘다
     stopping_criteria: stopper,

@@ -12,6 +12,8 @@ import type { DialogueMemory } from "./dialogueState";
 export interface DialogueReply {
   answer?: AdvisorAnswer;
   text: string;
+  /** 검사에 통과한 요약. 원래 카드·본문·기억을 대체하지 않는다. */
+  summary?: string;
   memory: DialogueMemory;
   notice?: string;
   related?: Array<{ id: string; title: string }>;
