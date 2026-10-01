@@ -8,6 +8,7 @@
  */
 import type { Language } from "@/i18n";
 import type { ChampionCard } from "@/lib/knowledge/facts";
+import { checkedMatchupPair } from "./matchupFactCheck";
 import { labelSlots } from "./slotLabels";
 import { DIGEST_HEADINGS, FIGHT_TITLES } from "./prose";
 import { dataUrl } from "./context";
@@ -78,7 +79,8 @@ function renderSelection(pair: PrecomputedPair, keys: PrecomputedKey[], cards: C
 }
 
 /** 실제로 보여준 칸을 함께 반환한다. 남은 칸이 없으면 이전 답으로 되돌아가지 않는다. */
-export function selectPrecomputed(pair: PrecomputedPair, request: PrecomputedRequest, cards: ChampionCard[], lang: Language = "ko_KR"): PrecomputedSelection {
+export function selectPrecomputed(input: PrecomputedPair, request: PrecomputedRequest, cards: ChampionCard[], lang: Language = "ko_KR"): PrecomputedSelection {
+  const pair = checkedMatchupPair(input, cards);
   let keys: PrecomputedKey[];
   if (request.mode === "advance") {
     const shown = new Set(request.shownTopics ?? []);

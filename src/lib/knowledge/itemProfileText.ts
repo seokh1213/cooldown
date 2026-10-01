@@ -12,9 +12,9 @@ export function profileLine(card: ChampionCard, claims: ItemClaims): string | un
   // 마법이니 방어력은 값이 없다" 고 하면 코그모 상대로 정반대 조언이 된다.
   const clean =
     profile.unknown.length === 0 && profile.exceptions.length === 0 && !profile.autoAttacker;
-  for (const [type, joined, resist, other, otherJoined] of [
-    ["마법", "마법이라", "마법 저항력", "방어력", "물리라"],
-    ["물리", "물리라", "방어력", "마법 저항력", "마법이라"],
+  for (const [type, joined, resist, otherJoined] of [
+    ["마법", "마법이라", "마법 저항력", "물리라"],
+    ["물리", "물리라", "방어력", "마법이라"],
   ] as const) {
     if (profile.mix !== type) continue;
     // 두 유형을 함께 내는 슬롯은 여기서도 빼야 한다. 넣으면 "P 가 물리" 라고 해 놓고
@@ -24,7 +24,7 @@ export function profileLine(card: ChampionCard, claims: ItemClaims): string | un
       (profile.byType[type] ?? []).filter((slot) => !profile.both.includes(slot)),
     );
     if (clean) {
-      return `${name}의 피해는 ${slots}까지 모두 ${joined} ${other}은 한 푼도 값을 하지 않고 ${resist}만 실효 체력으로 바뀝니다.`;
+      return `${name}의 ${slots} 피해는 ${joined} 이 스킬 피해에 대비하려면 ${resist}을 챙깁니다. 기본 공격과 다른 적의 피해 유형도 확인해 저항을 고릅니다.`;
     }
     const head = `${name}의 주력 피해는 ${josa(slots, "이/가")} ${type}이므로 ${resist}이 먼저입니다.`;
     const tails: string[] = [];
