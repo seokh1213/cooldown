@@ -28,7 +28,12 @@ function pairForQuestion(resolved: ResolvedQuestion, memory: DialogueMemory, ctx
   const prior = current ? [data.cardById.get(current.mine)!, data.cardById.get(current.enemy)!] as [ChampionCard, ChampionCard] : undefined;
   const act = dialogueAct(question);
   const focus = topicFromWords(question);
+  // “피오라 대 다리우스로 돌아가자”의 마지막 -로는 내 챔피언을 바꾸는 표지가 아니다.
+  const versus = resolved.mentions.find((m, i, mentions) => mentions[i + 1]
+    && /\s+(?:대|vs\.?|versus)\s*$/i.test(question.slice(m.index, mentions[i + 1].index)))?.card;
   const explicitMine = named.find(card => sideOfNewName(question, [card.name, ...(data.aliases.get(card.id) ?? [])]) === "mine");
+  if (named.length === 2 && explicitMine && /내가|내\s*챔피언|\bi (?:am|play)\b|我/i.test(question)) return [explicitMine, named.find(card => card.id !== explicitMine.id)!];
+  if (named.length === 2 && versus) return [versus, named.find(card => card.id !== versus.id)!];
   if (named.length === 2 && explicitMine && (prior || asksMatchup(question) || asksSkillHandling(question))) return [explicitMine, named.find(card => card.id !== explicitMine.id)!];
   if (named.length === 2 && (asksMatchup(question) || /타워\s*밑|포탑\s*밑/.test(question))) {
     const parsed = matchupSidesDetailed(question, named);

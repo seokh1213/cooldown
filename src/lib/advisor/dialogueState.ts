@@ -1,10 +1,10 @@
 /** 대화 기억. 사용자가 말한 조건과 조회 대상을 보관하며 게임의 실시간 상태로 취급하지 않는다. */
 import type { AdvisorAnswer } from "./answer";
 import type { AdvisorData } from "./context";
-import { detectSlot } from "./context";
 import { detectSpellFocus, type SpellFocus } from "./spellFocus";
 import type { AnswerPlan } from "./planTypes";
 import type { FactResolution } from "./dialogueFacts";
+export { scenarioConditions } from "./scenarioConditions";
 
 export interface SpellReference { champion: string; slot: string; focus?: SpellFocus; relation?: "penetration" }
 export interface ScenarioCondition {
@@ -85,31 +85,6 @@ export function rememberAnswer(previous: DialogueMemory, answer: AdvisorAnswer):
     memory.active = "rule";
   }
   return memory;
-}
-
-/** 조건은 사용자 정정을 반영한다. 다른 상성으로 바뀌면 rememberAnswer가 비운다. */
-export function scenarioConditions(question: string, previous: ScenarioCondition[], turn: number, hint?: { owner?: ScenarioCondition["owner"]; spells?: Array<{ owner: ScenarioCondition["owner"]; slot: string; name: string }> }): ScenarioCondition[] {
-  if (/(?:조건|가정).*(?:초기화|잊어|지워|취소|없던)/.test(question)) return [];
-  const correction = /정정|아니|잘못|correction|actually|更正|不是/i.test(question);
-  const conditions = correction ? [] : [...previous];
-  let owner = hint?.owner;
-  for (const clause of question.split(/[,.;]|(?<=고)\s+|(?<=면)\s+|(?<=지만)\s+/)) {
-    const named = hint?.spells?.filter(spell => clause.includes(spell.name)) ?? [];
-    const spell = named.length === 1 ? named[0] : undefined;
-    if (/상대|enemy|对面/.test(clause)) owner = "enemy";
-    else if (/내\s*[QWER]|\bmy\b|我的/.test(clause)) owner = "mine";
-    else if (spell) owner = spell.owner;
-    const slot = detectSlot(clause) ?? spell?.slot;
-    if (!slot || !owner) continue;
-    const down = /빠졌|빠진|빠지면|없으면|없고|없어|없는데|없는|is down|on cooldown|没了|冷却中/i.test(clause);
-    const ready = /살아|남아|는\s*있|가\s*있|있고|아직\s*있|있어|돌아왔|준비|사용\s*가능|is up|available|还在|有技能/i.test(clause);
-    if (!down && !ready) continue;
-    const entry = { owner, slot, status: down ? "down" as const : "ready" as const, hypothetical: /면|if\b|假如|如果/i.test(question), turn };
-    const at = conditions.findIndex(c => c.owner === owner && c.slot === slot);
-    if (at < 0) conditions.push(entry);
-    else conditions[at] = entry;
-  }
-  return conditions.length || !correction ? conditions : [...previous];
 }
 
 export function numericConditions(question: string, previous: DialogueMemory["numeric"]): DialogueMemory["numeric"] {

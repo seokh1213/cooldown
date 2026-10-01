@@ -16,9 +16,9 @@ export interface FactResolution {
   numeric?: DialogueMemory["numeric"];
   relation?: "penetration";
 }
-const ADVICE = /언제\s*(써|쓰|사용|들어|진입)|어떻게\s*(써|쓰|빼|교환|상대)|빠졌|빠진|빠지면|상대법|교환|라인전|한타|when.*(use|engage)|how.*(use|bait)|怎么.*(用|打)/i;
+const ADVICE = /언제\s*(써|쓰|사용|들어|진입)|어떻게\s*(써|쓰|빼|교환|상대|싸|해|들어|대응)|빠졌|빠진|빠지면|상대법|교환|라인전|한타|when.*(use|engage)|how.*(use|bait)|怎么.*(用|打)/i;
 const RETURN = /아까|앞서|다시|그대로|같은\s*조건|earlier|same|回到|之前/i;
-const QUERY = /사거리|범위|range|射程|쿨|몇\s*초|마나|소모|계수|설명|효과|말한|기준|비교|돌아|cooldown|cost|ratio|冷却|耗蓝|比较/i;
+const QUERY = /사거리|범위|range|射程|쿨|몇\s*초|마나|소모|계수|설명|효과|말한|기준|비교|돌아(?!왔|가)|cooldown|cost|ratio|冷却|耗蓝|比较/i;
 const round = (value: number) => Number(value.toFixed(2)).toString();
 
 function numberList(value: string | undefined): number[] | undefined {
