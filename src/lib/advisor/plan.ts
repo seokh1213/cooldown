@@ -85,6 +85,11 @@ const OFF_TOPIC =
   /날씨|기온|저녁|점심|레시피|끓이|맛집|영화|드라마|숙제|과제|이력서|자기소개서|코딩|파이썬|주식|여행|weather|recipe|dinner|lunch|movie|tv show|homework|resume|python|javascript|stock market|天气|菜谱|做饭|怎么做好吃|电影|电视剧|作业|简历|代码|股票|旅游|失眠|减肥/i;
 /** 판정기가 잡담이라 해도 이어 묻기일 수 있는 말(조언 요청·되묻기) */
 const FOLLOWUP_GUARD = /팁|조언|어떻게|방법|요령|왜|\btips?\b|\badvice\b|\bhow\b|\bwhy\b|建议|技巧|怎么|攻略|为啥|为什么/i;
+/** 스킬을 상대하는 법을 묻는 말(빼기·피하기·막기). "궁 피해량" 의 피해와 섞이지 않게 묻는 꼴(어떻게·언제·법)과 함께 본다. */
+const SPELL_HANDLING =
+  /(어떻게|어케|언제|뭐로)\s*\S*\s*(빼|피하|피해(?!량)|막|대처|대응|받아|흘리)|(빼|피하|막|대처하)는\s*(법|방법|요령)|\b(dodge|avoid|bait|play around|deal with|counter|block)\b|怎么(躲|骗|应对|处理|防)|如何(躲|骗|应对)/i;
+/** 주제 없는 조언 요청("팁 좀", "tips"). 상성 대화 중이면 같은 답을 되풀이하지 말고 남은 칸을 보인다. */
+const GENERIC_ADVICE = /^\s*(팁|꿀팁|조언|요령|도움)(\s*(좀|있어|있나|없어|없나|줘|주세요|부탁|해줘|알려줘))*\s*[?？!.]*\s*$|^\s*(any\s+)?(tips?|advice|help)\s*(pls|please)?\s*[?!.]*\s*$|^\s*(有)?(什么)?(建议|技巧|攻略)(吗|呢)?\s*[?？]*\s*$/i;
 /** 상성 대화 중 이름 없는 말을 새 질문으로 볼 검색 벡터 점수(낱말 가산점 없이) */
 const CONVERSATION_NEW_QUESTION = 0.55;
 
@@ -510,6 +515,11 @@ async function continueMatchup(intent: Intent, deps: PlanDeps): Promise<AnswerPl
   const alone = champions.length === 1 && intent.slot ? "skills" : ask;
   const turn = planTurn(state, champions, entity, act, side, alone);
   if (turn.kind !== "matchup") return undefined;
+  // "팁 좀", "tips" — 주제 없는 조언 요청을 같은 칸으로 다시 받으면 앞 답을 그대로 되풀이한다(2026-10-01 브라우저 시험). 처음 답에 싣지 않은 칸을 보인다.
+  if (turn.act === "followup" && champions.length === 0 && GENERIC_ADVICE.test(question)) {
+    const pairNotice = fill(ctx.copy.card.fromChat, { name: `${turn.mine.name} vs ${turn.enemy.name}` });
+    return { type: "matchup", mine: turn.mine, enemy: turn.enemy, notice: ctx.notice ?? pairNotice, focus: "general", more: true };
+  }
   const topic = turn.act === "more" ? previousFocus(ctx.turns) : await matchupTopic(question, data, ctx, [turn.mine, turn.enemy], deps);
   const pairNotice = fill(ctx.copy.card.fromChat, { name: `${turn.mine.name} vs ${turn.enemy.name}` });
   return { type: "matchup", mine: turn.mine, enemy: turn.enemy, notice: ctx.notice ?? pairNotice, focus: topic, more: turn.act === "more" };
@@ -705,6 +715,13 @@ function championsFromContext({ question, ctx, data, recent, slot, ask }: Intent
 async function answerOneChampion({ question, ctx, data, ask, topic: judgeTopicOnce, slot }: Intent, card: ChampionCard, notice: string | undefined): Promise<AnswerPlan> {
   // "패시브와 네 가지 스킬을 각각" 은 패시브 한 칸이 아니라 스킬 전체 소개다
   const spell = slot && !asksWholeKit(question) ? card.spells.find((entry) => entry.slot === slot) : undefined;
+  /*
+   * "피오라 W 어떻게 빼?", "제드 궁 어떻게 피해" — 스킬 설명이 아니라 그 스킬을 상대하는 법이다. 스킬 카드를 냈더니 W 응수 설명만
+   * 나오고 "W 응수를 빼내는 법" 노트는 묻혔다(2026-10-01 브라우저 시험). 상대 관점·스킬 주제 노트로 답한다.
+   */
+  if (spell && SPELL_HANDLING.test(question)) {
+    return { type: "card", answer: { kind: "champion", card, notes: championNotes(data, card, question, "against", { topic: "skill", perspective: "against" }) }, notice };
+  }
   if (spell) return { type: "card", answer: buildSpellCard(card, spell, question, ctx.lang), notice };
   // 효과 태그 예/아니오는 코드가 바로 답한다. 태그가 없다는 사실을 근거로
   // "아니다" 라고 말하는 것을 모델이 못 한다.
