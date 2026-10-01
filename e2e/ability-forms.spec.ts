@@ -27,6 +27,33 @@ for (const locale of ["ko_KR", "en_US", "zh_CN"]) {
   });
 }
 
+for (const locale of ["ko_KR", "en_US", "zh_CN"]) {
+  for (const width of [1440, 390]) {
+    test(`Jayce R shows level tables for both forms: ${locale} at ${width}`, async ({ page }) => {
+      await page.setViewportSize({ width, height: 1000 });
+      await page.addInitScript((language) => localStorage.setItem("language", language), locale);
+      await page.goto("./vs?a=Jayce&t=Nidalee");
+      const trigger = page.getByTestId("vs-mine-R").getByRole("button");
+      if (width < 768) await trigger.click();
+      else await trigger.hover();
+      const details = page.getByRole(width < 768 ? "dialog" : "tooltip");
+      await expect(details).toBeInViewport({ ratio: 0.99 });
+      const cannon = details.locator('[data-ability-form="A"]');
+      await expect(cannon.getByRole("table")).toHaveCount(1);
+      await expect(cannon.getByRole("cell")).toHaveText(["20%", "25%", "30%", "35%"]);
+      await expect(cannon.getByRole("columnheader")).toHaveText(
+        locale === "ko_KR" ? ["Lv 1", "Lv 6", "Lv 11", "Lv 16~"]
+          : locale === "en_US" ? ["Lv 1", "Lv 6", "Lv 11", "Lv 16+"]
+            : ["1级", "6级", "11级", "16级起"],
+      );
+      const hammer = details.locator('[data-ability-form="B"]');
+      await expect(hammer.getByRole("table")).toHaveCount(2);
+      await expect(hammer.getByRole("table").nth(0).getByRole("cell")).toHaveText(["5", "12", "19", "26"]);
+      await expect(hammer.getByRole("table").nth(1).getByRole("cell")).toHaveText(["25", "60", "95", "130"]);
+    });
+  }
+}
+
 test.describe("touch input on the original cooldown route", () => {
   test.use({ hasTouch: true, isMobile: true, viewport: { width: 390, height: 844 } });
   test("one tap opens both forms and closing restores the skill button", async ({ page }) => {
@@ -90,5 +117,11 @@ for (const width of [1440, 390]) {
     await expect(details.locator("[data-ability-form]")).toHaveCount(2);
     await expect(details.locator('[data-ability-form="A"]')).toContainText("하늘로!");
     await expect(details.locator('[data-ability-form="B"]')).toContainText("전격 폭발");
+    await page.keyboard.press("Escape");
+    const r = page.locator('[data-form-icon][aria-label="R"]:visible');
+    if (width < 768) await r.click();
+    else await r.hover();
+    await expect(details.locator('[data-ability-form="A"]').getByRole("cell")).toHaveText(["20%", "25%", "30%", "35%"]);
+    await expect(details.locator('[data-ability-form="B"]').getByRole("table")).toHaveCount(2);
   });
 }

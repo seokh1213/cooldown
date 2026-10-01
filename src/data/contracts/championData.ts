@@ -151,6 +151,7 @@ export interface AbilityForm {
   iconPath: string;
   iconVersion: string;
   bodyHtml: string;
+  levelValues?: AbilityLevelValues[];
   cooldownSeconds: number[];
   tooltipRankSource: AbilitySlot;
   diagnostics: { unresolvedTokens: string[] };

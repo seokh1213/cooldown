@@ -3,6 +3,7 @@ import { AbilityIcon } from "@/components/ui/ability-icon";
 import type { AbilityV2, ChampionDetailV2 } from "@/data/contracts/championData";
 import { SafeBlockHtml } from "@/components/ui/safe-html";
 import { AbilityFormDetails } from "@/components/features/ChampionComparison/AbilityFormDetails";
+import { AbilityStructuredDetails } from "@/components/features/ChampionComparison/AbilityStructuredDetails";
 import { AbilityFormIcon } from "@/components/features/ChampionComparison/AbilityFormIcon";
 import { useTranslation } from "@/i18n";
 import type { VsSideKey } from "./vsState";
@@ -87,6 +88,11 @@ export function VsAbilityItem(props: { ability?: AbilityV2; slot: ListSlot; side
             {ability.forms
               ? <AbilityFormDetails forms={ability.forms} ddragonVersion={props.version} />
               : <SafeBlockHtml html={ability.bodyHtml || ability.summary} className="break-words text-xs leading-relaxed text-foreground/80" />}
+            {!ability.forms && ability.levelValues && ability.levelValues.length > 0 && (
+              <div className="mt-3">
+                <AbilityStructuredDetails levelValues={ability.levelValues} />
+              </div>
+            )}
             <VsAbilityCooldowns ability={ability} />
           </div>
         )}
