@@ -67,6 +67,17 @@ test("은행 없이 노트를 조립할 때도 표시한 칸을 제외하고 소
   assert.equal(exhausted.answer.kind, "text");
 });
 
+test("은행 없이 일반 상대법을 조립해도 첫 위협의 대처 문장을 보존한다", () => {
+  const answer: AdvisorAnswer = { kind: "compare", cards, rows: [], matchup: true, notes: {
+    mine: [], enemy: [], plan: { focus: "general", question: "피오라 상대법", claims: [], mine: [],
+      enemy: [{ category: "skill", text: "피오라 W 응수는 기절을 막습니다. 응수가 살아 있으면 E 재발동을 늦춥니다." }] },
+  } };
+  const selected = selectMatchupReply(answer, undefined, { question: "피오라 상대법", mine: cards[0], enemy: cards[1], focus: "general", scope: "topic" }, "ko_KR");
+  if (selected.answer.kind !== "compare") assert.fail("노트로 답해야 한다");
+  assert.match(selected.answer.precomputed!, /응수가 살아 있으면.*재발동을 늦/);
+  assert.deepEqual(selected.topics, ["watch"]);
+});
+
 test("조언 진행 상태는 저장 후 복원되고 패치가 바뀌면 초기화된다", () => {
   const stored = dehydrateTurn({ id: 1, role: "assistant", content: "조언", memory });
   const restored = reviveTurn(JSON.parse(JSON.stringify(stored)), data)!;
