@@ -158,6 +158,11 @@ export interface NormalizedRune extends NormalizedEntityBase {
    * 로컬라이즈된 툴팁/설명 (HTML 포함 가능, 현재 lang 기준)
    */
   tooltip?: string;
+  /**
+   * 재사용 대기시간(초). 툴팁 끝줄에서 읽는다. 레벨에 따라 주는 룬은 "25~15" 같은 문자열이다.
+   * 쿨타임이 없거나 툴팁의 값이 풀리지 않은 룬은 비운다.
+   */
+  cooldown?: number | string;
 }
 
 export interface NormalizedStatShard extends NormalizedEntityBase {

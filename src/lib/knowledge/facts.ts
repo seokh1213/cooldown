@@ -62,6 +62,12 @@ export interface SpellFact {
   recharge?: string;
   maxCharges?: number;
   cost?: string;
+  /**
+   * 시전 사거리. 랭크마다 다르면 배열(녹턴 R 2500/3250/4000). 자기 시전·전역 스킬은 없다.
+   * CDragon BIN 에서 받은 값이다(`npm run llm:fetch-ranges`). 챔피언 자료의 DDragon range 는
+   * castRange 가 없는 스킬에 기본값 400 을 채우고 제한 없음을 25000 으로 적어 쓰지 않는다.
+   */
+  range?: number | number[];
   damageTypes: DamageType[];
   effects: string[];
   /** 툴팁에서 뽑은 계수 (스탯 → 최대 % 값). 예: { "주문력": 105, "추가 공격력": 50 } */
@@ -285,6 +291,8 @@ export function createChampionCardBuilder(
    * `fs` 를 알면 안 된다. 대시 판정을 넘겨받는 것과 같은 방식이다.
    */
   overrides: SpellOverrides = {},
+  /** CDragon BIN 에서 받은 시전 사거리. `"Zed:R"` → 625. 파일 읽기는 대시 판정처럼 부르는 쪽이 한다. */
+  ranges: Record<string, number | number[]> = {},
 ): ChampionCardBuilder {
   // 스탯별 전체 분포를 미리 계산 (백분위용)
   const distributions = new Map<string, number[]>();
@@ -336,6 +344,7 @@ export function createChampionCardBuilder(
         recharge: formatLevels(ability.rechargeSeconds),
         maxCharges: ability.maxCharges,
         cost: formatLevels(ability.cost?.values),
+        range: ranges[`${champ.id}:${slot}`],
         damageTypes: applyDamageTypeOverride(detectDamageTypes(text), overrides[`${champ.id}:${slot}`]),
         // 이동기와 돌진은 규칙표로 잡지 않는다.
         //

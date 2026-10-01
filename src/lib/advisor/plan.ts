@@ -373,10 +373,12 @@ function answerRuleQuestion({ question, ctx, data, matchup }: Intent): AnswerPla
   if (!named.length || spellInMatchup) return undefined;
   const names = named.map((rule) => rule.name);
   // 소환사 주문의 재사용 대기시간을 물으면 자료(summoner-normalized)의 값을 첫 줄로. 협곡(CLASSIC) 판을 고른다 — 아레나 점멸은 0.25초다.
-  const cooldownOf = (rule: RuleNotes): number | undefined => {
-    if (rule.subject !== "summoner" || detectSpellFocus(question)?.focus !== "cooldown") return undefined;
+  // 룬은 runes-normalized 의 cooldown(툴팁 끝줄에서 읽은 값)을 쓴다. "감전 쿨타임" 에 규칙 문장만 나왔다(2026-09-30 브라우저 시험).
+  const cooldownOf = (rule: RuleNotes): number | string | undefined => {
+    if ((rule.subject !== "summoner" && rule.subject !== "rune") || detectSpellFocus(question)?.focus !== "cooldown") return undefined;
     // 자료의 이름은 화면 언어라 규칙의 세 언어 이름 중 하나와 맞춘다
     const names = new Set([rule.name, rule.nameEn, rule.nameZh].filter(Boolean));
+    if (rule.subject === "rune") return data.runes.find((entry) => names.has(entry.name))?.cooldown;
     const spell = data.summoners.find((entry) => names.has(entry.name) && entry.modes?.includes("CLASSIC")) ?? data.summoners.find((entry) => names.has(entry.name) && !entry.modes?.includes("CHERRY"));
     return spell?.cooldown?.[0];
   };

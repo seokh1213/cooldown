@@ -116,6 +116,39 @@ test("스킬 답: 쿨타임은 헤드라인으로", () => {
   assert.match(spellOneLiner(spellOf("Rumble", "E")), /^재충전 6/, "한 줄 요약도 재충전을 앞세운다");
 });
 
+// ── 스킬 답: 사거리는 헤드라인으로 ─────────────────────────────────────
+test("스킬 답: 사거리는 헤드라인으로", () => {
+  // "제드 궁 사거리" 에 본문 문장만 나오고 625 가 없었다(2026-09-30 브라우저 시험)
+  const answer = buildSpellAnswer(card("Zed"), spellOf("Zed", "R"), "제드 궁 사거리");
+  assert.equal(answer.kind, "spell");
+  if (answer.kind === "spell") {
+    assert.equal(answer.focus, "range");
+    assert.deepEqual(answer.headline, { label: "사거리", value: "625" });
+    assert.ok(!answer.facts.some((f) => f.label === "사거리"), "헤드라인에 올린 사실은 표에 되풀이하지 않는다");
+  }
+  const nocturne = buildSpellAnswer(card("Nocturne"), spellOf("Nocturne", "R"), "녹턴 궁 사거리");
+  if (nocturne.kind === "spell") assert.equal(nocturne.headline?.value, "2500/3250/4000", "랭크마다 다르면 끊어 적는다");
+  // 사거리가 없는 스킬(전역)은 본문 문장으로 내려간다
+  const ashe = buildSpellAnswer(card("Ashe"), spellOf("Ashe", "R"), "애쉬 궁 사거리");
+  if (ashe.kind === "spell") assert.equal(ashe.headline, undefined, "애쉬 R 은 사거리 숫자가 없다");
+  assert.equal(spellFocusValue(spellOf("Zed", "E"), "range"), "290");
+  // 두 챔피언 같은 슬롯 비교에도 사거리 행
+  const compare = buildCompareAnswer([card("Zed"), card("Ahri")], "제드 아리 Q 사거리", "Q");
+  if (compare.kind === "compare") {
+    assert.deepEqual(compare.rows.find((row) => row.label === "사거리")?.values, ["900", "970"]);
+    assert.equal(compare.headline?.value, "제드 900 · 아리 970");
+  }
+});
+
+// ── 룬 답: 재사용 대기시간은 첫 줄로 ───────────────────────────────────
+test("룬 답: 재사용 대기시간은 첫 줄로", () => {
+  const electrocute = ruleOf("감전");
+  const answer = buildRuleAnswer(electrocute, [], "ko_KR", [], 20);
+  if (answer.kind === "rule") assert.equal(answer.highlighted[0], "재사용 대기시간 20초");
+  const scaling = buildRuleAnswer(electrocute, [], "ko_KR", [], "25~15");
+  if (scaling.kind === "rule") assert.equal(scaling.highlighted[0], "재사용 대기시간 25~15초");
+});
+
 // ── 스킬 답: 효과 수치는 본문 문장으로 ──────────────────────────────────
 test("스킬 답: 효과 수치는 본문 문장으로", () => {
   const answer = buildSpellAnswer(card("Rumble"), spellOf("Rumble", "E"), "럼블 E 마저 몇 깎여?");

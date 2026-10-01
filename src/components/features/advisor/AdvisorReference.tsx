@@ -16,7 +16,7 @@ import { AdvisorAnswerCard } from "./AdvisorAnswerCard";
 import type { useReferencePanelSize } from "./useReferencePanelSize";
 
 /** 자료 탭에 쓰는 한 글자짜리 사실 이름(한국어). "재사용 대기시간" 은 탭에 안 들어간다. 다른 언어는 카드 어휘를 그대로 쓴다. */
-const FOCUS_SHORT: Record<SpellFocus, string> = { cooldown: "쿨", cost: "소모", ratio: "계수", damage: "피해", effect: "효과" };
+const FOCUS_SHORT: Record<SpellFocus, string> = { cooldown: "쿨", cost: "소모", ratio: "계수", range: "사거리", damage: "피해", effect: "효과" };
 
 export function referenceTitle(answer: AdvisorAnswer, copy: Translations["advisor"], lang: Language): { title: string; kind: string } {
   switch (answer.kind) {

@@ -124,6 +124,30 @@ function shardStatsById(data: RuneStatShardData | null): Map<number, StatContrib
   return result;
 }
 
+/** 툴팁의 재사용 대기시간 머리말. 영어 기민함은 "Cooldown for damage restoration: 8s" 처럼 사이에 말이 낀다. */
+const RUNE_COOLDOWN_LABEL = /(?:재사용 대기시간|Cooldown(?: for [^:：<]{1,40})?|冷却时间)\s*[:：]\s*/gi;
+const RUNE_COOLDOWN_VALUE = /^(\d+(?:\.\d+)?)\s*(?:초|秒|seconds?|s)?\s*(?:[~-]\s*(\d+(?:\.\d+)?))?/i;
+
+/**
+ * 룬 툴팁의 재사용 대기시간(초).
+ *
+ * 라이엇 자료에는 룬 쿨타임 칸이 없고 설명 끝줄에만 있다. "감전 쿨타임" 에 규칙 문장만 나오고 20초가
+ * 어디에도 없었다(2026-09-30 브라우저 시험).
+ *   감전       "재사용 대기시간: 20초"                     → 20
+ *   어둠의 수확 "재사용 대기시간: 35초 (처치 관여 시 …)"     → 35 (괄호 안 조건은 버린다)
+ *   선제공격    "재사용 대기시간: <scaleLevel>25~15</scaleLevel>초" → "25~15" (레벨에 따라 준다)
+ * 값이 풀리지 않은 툴팁("최초 교환의 재사용 대기시간: @f3@초", 봉인 풀린 주문서)은 비운다. 짐작으로 채우지 않는다.
+ */
+export function parseRuneCooldown(tooltip: string | undefined): number | string | undefined {
+  const text = (tooltip ?? "").replace(/<[^>]+>/g, "");
+  for (const match of text.matchAll(RUNE_COOLDOWN_LABEL)) {
+    const value = RUNE_COOLDOWN_VALUE.exec(text.slice((match.index ?? 0) + match[0].length));
+    if (!value) continue;
+    return value[2] ? `${value[1]}~${value[2]}` : Number(value[1]);
+  }
+  return undefined;
+}
+
 function normalizeRunes(locale: string, raw: unknown): NormalizedRune[] {
   if (!Array.isArray(raw)) return [];
   const overrides = getNormalizationOverrides()?.runes?.[locale];
@@ -142,6 +166,8 @@ function normalizeRunes(locale: string, raw: unknown): NormalizedRune[] {
           damageEffects: damageEffects(rune.id),
           tooltip: rune.longDesc || rune.shortDesc || "",
         };
+        const cooldown = parseRuneCooldown(normalized.tooltip);
+        if (cooldown !== undefined) normalized.cooldown = cooldown;
         return overrides?.[normalized.id]
           ? { ...normalized, ...overrides[normalized.id] }
           : normalized;

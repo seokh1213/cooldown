@@ -49,6 +49,19 @@ function loadDashes(): Record<string, { dash: boolean; self: boolean }> {
   ).abilities ?? {};
 }
 
+/**
+ * CDragon BIN 에서 받아 둔 스킬 사거리를 읽는다. 없으면 카드에 사거리가 비고 "사거리" 물음은
+ * 툴팁 문장으로 내려간다. `npm run llm:fetch-ranges` 로 만든다.
+ */
+function loadRanges(): Record<string, number | number[]> {
+  const file = path.join(PUBLIC_DATA_ROOT, resolvePatchVersion(), "llm", "ability-ranges.json");
+  if (!fs.existsSync(file)) {
+    console.warn("사거리 파일 부재 — 카드에 사거리 없이 짓는다 (npm run llm:fetch-ranges)");
+    return {};
+  }
+  return (JSON.parse(fs.readFileSync(file, "utf8")) as { abilities?: Record<string, number | number[]> }).abilities ?? {};
+}
+
 function main() {
   const lang = parseLang(process.argv.slice(2));
   const data = loadStaticData(lang);
@@ -58,6 +71,7 @@ function main() {
     data.wikiMeta,
     loadDashes(),
     loadSpellOverrides(),
+    loadRanges(),
   );
   const cards = builder.buildAll();
 

@@ -167,6 +167,9 @@ const CASES: Case[] = [
   { name: "게임 요소만 걸리고 게임 메타가 있으면 메타", question: "미니언 웨이브 생성 주기", want: "code text \"미니언 웨이브는 0분 30초부터 30초마다 \"", calls: [] },
   { name: "상성 대화 중 주문 쓰임새는 규칙 카드가 아니다", question: "점멸 빠지면 물어도 돼?", turns: matchupTurns("Garen", "Darius"), want: "matchup Garen>Darius · 앞서 말한 가렌 vs 다리우스 기준입니다.", calls: [] },
   { name: "상성 대화 밖의 주문 질문은 규칙 카드", question: "점멸 빠지면 물어도 돼?", want: "card rule 점멸 highlighted=0", calls: [] },
+  // 룬 쿨타임은 runes-normalized 의 cooldown 을 첫 줄로 올린다(highlighted 1). 전에는 규칙 문장만 있었다(highlighted 0).
+  { name: "룬 쿨타임은 자료의 값을 첫 줄로", question: "감전 쿨타임", want: "card rule 감전 highlighted=1", calls: [] },
+  { name: "영어 룬 쿨타임", question: "electrocute cooldown", lang: "en_US", want: "card rule 감전 highlighted=1", calls: [] },
   { name: "오타 하나는 고쳐 다시 묻는다(말파이트 화면)", question: "럼미 E", screen: ["Malphite"], want: "retry \"럼블 E\" · 럼블로 이해했습니다.", calls: [] },
   { name: "오타 후보가 여럿이면 고르게 한다", question: "제라 e", want: "code suggestion \"제라\" [Zeri,Zed] pending", calls: [] },
   { name: "상성 대화 중 두 글자 낱말은 오타로 보지 않는다", question: "라인 어떻게 서", turns: matchupTurns("Garen", "Darius"), want: "matchup Garen>Darius · 앞서 말한 가렌 vs 다리우스 기준입니다.", calls: [] },
@@ -219,6 +222,11 @@ const CASES: Case[] = [
   { name: "앞 대화의 아이템에 이어 묻기", question: "거기 둔화 있어?", turns: answered({ kind: "item", itemId: "3161", itemName: "쇼진의 창", stats: [], effects: [], verdicts: [] }), want: "code item 3161 verdicts=1", calls: [] },
   { name: "게임 원리", question: "스킬 가속이 뭐야", want: "code text \"### 스킬 가속\n```\n쿨타임 감소율 = \"", calls: [] },
   { name: "화면 챔피언의 스킬", question: "W 쿨타임", screen: ["Malphite"], want: "card spell Malphite W focus=cooldown · 화면의 말파이트 기준입니다.", calls: [] },
+  // 사거리는 효과 문장이 아니라 카드의 칸이다(전에는 focus=effect 로 본문 문장만 나왔다)
+  { name: "스킬 사거리", question: "제드 궁 사거리", want: "card spell Zed R focus=range", calls: [] },
+  { name: "화면 챔피언의 스킬 사거리", question: "E 사거리", screen: ["Zed"], want: "card spell Zed E focus=range · 화면의 제드 기준입니다.", calls: [] },
+  { name: "영어 스킬 사거리", question: "ahri q range", lang: "en_US", want: "card spell Ahri Q focus=range", calls: [] },
+  { name: "중국어 스킬 사거리", question: "阿狸Q射程", lang: "zh_CN", want: "card spell Ahri Q focus=range", calls: [] },
   { name: "VS 화면 둘 + 슬롯은 두 W 나란히", question: "W 쿨타임", screen: ["MonkeyKing", "Rumble"], want: "card compare MonkeyKing,Rumble slot=W · 화면의 오공·럼블 기준입니다.", calls: [] },
   { name: "VS 화면 둘 + 슬롯 없음은 누구 것인지 묻는다", question: "스킬 설명해줘", screen: ["MonkeyKing", "Rumble"], want: "code suggestion \"스킬 설명해줘\" [MonkeyKing,Rumble] ambiguous pending", calls: [] },
   { name: "VS 화면 둘 + 비교", question: "누가 체력 더 높아?", screen: ["MonkeyKing", "Rumble"], want: "card compare MonkeyKing,Rumble · 화면의 오공·럼블 기준입니다.", calls: [] },

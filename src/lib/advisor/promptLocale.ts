@@ -46,6 +46,8 @@ export interface CardLabels {
   damageType: string;
   effects: string;
   ratios: string;
+  /** 시전 사거리. 값은 "625" 또는 랭크별 "2500/3250/4000" */
+  range: string;
   /** 초 단위. 값은 "9/8/7/6/5" 처럼 레벨별로 끊긴 문자열일 수 있다. */
   seconds: (value: string) => string;
   /** 충전형 스킬의 충전 횟수 */
@@ -67,6 +69,7 @@ const CARD_LABELS: Record<Language, CardLabels> = {
     damageType: "피해 유형",
     effects: "효과",
     ratios: "계수",
+    range: "사거리",
     seconds: (value) => `${value}초`,
     charges: (n) => `${n}회 충전`,
     recast: (seconds) => `연속 시전 ${seconds}초`,
@@ -82,6 +85,7 @@ const CARD_LABELS: Record<Language, CardLabels> = {
     damageType: "Damage type",
     effects: "Effects",
     ratios: "Ratios",
+    range: "Range",
     seconds: (value) => `${value}s`,
     charges: (n) => `${n} charges`,
     recast: (seconds) => `recast ${seconds}s`,
@@ -97,6 +101,7 @@ const CARD_LABELS: Record<Language, CardLabels> = {
     damageType: "伤害类型",
     effects: "效果",
     ratios: "加成系数",
+    range: "射程",
     seconds: (value) => `${value}秒`,
     charges: (n) => `${n}层充能`,
     recast: (seconds) => `连续施放 ${seconds}秒`,

@@ -2,6 +2,7 @@
  * 새 패치로 넘어간 도우미 자료를 새 자료로 다시 짓는다
  *
  * `generate-static-data` 가 옛 패치의 `llm/` 을 새 패치로 옮겨 두면(`.carried-from`) 여기서:
+ *   0. 스킬 사거리를 새 패치의 CDragon BIN 에서 다시 받는다  llm:fetch-ranges
  *   1. 카드(세 언어)를 새 툴팁·능력치로 다시 짓는다        llm:build
  *   2. 이름 색인·지식 묶음·노트 번역을 다시 짓는다          llm:names · llm:bundle · llm:note-tr
  *   3. 미리 쓴 상성 답은 재료 지문이 그대로인 쌍만 남긴다   (리워크·툴팁 변경 쌍은 노트 조립으로)
@@ -40,6 +41,8 @@ async function main() {
   // --matchups-only: 카드·묶음은 이미 새 자료로 지어져 있고 미리 쓴 상성 답만 새 재료에 맞대 거른다
   // (옛 패치에서 새로 써 온 쌍을 들일 때)
   if (!process.argv.includes("--matchups-only")) {
+    // 사거리는 패치마다 바뀌는 BIN 값이라 옮겨 온 옛 파일을 쓰지 않고 새로 받는다
+    run("npm run --silent llm:fetch-ranges");
     for (const lang of ["ko_KR", "en_US", "zh_CN"]) run(`npm run --silent llm:build -- --lang ${lang}`);
     run("npm run --silent llm:names");
     run("npm run --silent llm:bundle");

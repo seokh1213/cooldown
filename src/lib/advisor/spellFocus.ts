@@ -5,6 +5,8 @@ export type SpellFocus =
   | "cost"
   | "ratio"
   | "damage"
+  /** 시전 사거리. 카드에 숫자가 있으면 그것을, 없으면 본문의 사거리 문장을 보인다. */
+  | "range"
   /** 툴팁 본문에서 찾아야 하는 효과 수치 (마저 감소, 둔화율 …) */
   | "effect";
 
@@ -36,22 +38,27 @@ const FOCUS_LEXICON: Array<[SpellFocus, RegExp]> = [
  * 찾을 낱말도 세 언어를 함께 담는다. 툴팁 본문이 그 나라 말이므로, 영어로 물으면
  * 영어 툴팁에서 영어 낱말을 찾아야 한다. 어느 하나만 맞으면 그 문장이 걸린다.
  */
-const EFFECT_ALIASES: Array<[RegExp, string[]]> = [
+const EFFECT_ALIASES: Array<[RegExp, string[], SpellFocus?]> = [
   [/마저|마법\s*저항|magic\s*resist|魔抗|魔法抗性/i, ["마법 저항력", "Magic Resist", "魔法抗性"]],
   [/방깎|방어력\s*감소|방어력|\barmor\b|护甲/i, ["방어력", "Armor", "护甲"]],
   [/둔화|슬로우|\bslow\b|减速/i, ["둔화", "Slow", "减速"]],
   [/기절|스턴|\bstun\b|眩晕/i, ["기절", "Stun", "眩晕"]],
   [/보호막|실드|\bshield\b|护盾/i, ["보호막", "Shield", "护盾"]],
   [/회복|힐|\bheal\b|治疗|回复/i, ["회복", "Heal", "治疗", "回复"]],
-  [/사거리|거리|범위|\brange\b|射程|范围/i, ["사거리", "범위", "Range", "射程", "范围"]],
+  /*
+   * 사거리는 효과가 아니라 카드의 칸이다(SpellFact.range). 효과로 두었더니 "제드 궁 사거리" 에
+   * 툴팁 문장만 나오고 625 가 없었다(2026-09-30 브라우저 시험). 숫자가 없는 스킬(자기 시전·전역)은
+   * 같은 낱말로 본문 문장을 찾는다. 자리는 그대로 둔다 — 표 순서가 곧 우선순위다.
+   */
+  [/사거리|거리|범위|\brange\b|射程|范围/i, ["사거리", "범위", "Range", "射程", "范围"], "range"],
   [/지속(시간)?|초\s*동안|duration|持续/i, ["초 동안", "초간", "second", "seconds", "秒"]],
   [/침묵|silence|沉默/i, ["침묵", "Silence", "沉默"]],
   [/에어본|띄우|공중|airborne|knock\s*up|击飞/i, ["공중", "띄", "Airborne", "击飞"]],
 ];
 
 export function detectSpellFocus(question: string): { focus: SpellFocus; keywords: string[] } | undefined {
-  for (const [alias, words] of EFFECT_ALIASES) {
-    if (alias.test(question)) return { focus: "effect", keywords: words };
+  for (const [alias, words, focus] of EFFECT_ALIASES) {
+    if (alias.test(question)) return { focus: focus ?? "effect", keywords: words };
   }
   for (const [focus, pattern] of FOCUS_LEXICON) {
     if (pattern.test(question)) return { focus, keywords: [] };

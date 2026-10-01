@@ -17,9 +17,10 @@
 import type { Language } from "@/i18n";
 import type { AdvisorAnswer } from "./answer";
 import type { ChampionCard, SpellFact } from "@/lib/knowledge/facts";
-import { cooldownFact, focusLabel as cardFocusLabel, spellOneLiner } from "./answer";
+import { cooldownFact, focusLabel as cardFocusLabel, rangeFact, spellOneLiner } from "./answer";
 import { translateRatioStat, translateTag } from "./promptLocale";
 import { labelSlots } from "./slotLabels";
+import { josa } from "@/lib/knowledge/text";
 
 interface ProseWords {
   /** "{champion}의 {label}입니다." 처럼 값 하나를 알리는 말 */
@@ -37,7 +38,8 @@ interface ProseWords {
 
 const WORDS: Record<Language, ProseWords> = {
   ko_KR: {
-    is: (subject, value) => `${subject}은 ${value}입니다.`,
+    // 조사는 머리말 끝 글자로 고른다. "은" 으로 박아 두었더니 "사거리은 625입니다" 가 나왔다(계수도 같았다).
+    is: (subject, value) => `${josa(subject, "은/는")} ${value}입니다.`,
     perSkill: (champion, label) => `${champion}의 스킬별 ${label}입니다.`,
     skillset: (champion) => `${champion}의 스킬 구성입니다.`,
     effects: (subject, list) => `${subject}의 효과는 ${list}입니다.`,
@@ -72,6 +74,7 @@ const WORDS: Record<Language, ProseWords> = {
 function focusValue(spell: SpellFact, focus: string, lang: Language): string | undefined {
   if (focus === "cooldown") return cooldownFact(spell, lang)?.value;
   if (focus === "cost") return spell.cost || undefined;
+  if (focus === "range") return rangeFact(spell, lang)?.value;
   if (focus === "ratio") {
     const ratios = Object.entries(spell.ratios ?? {});
     return ratios.length ? ratios.map(([stat, value]) => `${translateRatioStat(stat, lang)} ${value}%`).join(", ") : undefined;

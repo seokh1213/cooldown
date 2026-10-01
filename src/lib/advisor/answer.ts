@@ -206,6 +206,16 @@ export function cooldownFact(spell: SpellFact, lang: Language = "ko_KR"): Fact |
 }
 
 /**
+ * 시전 사거리. 랭크마다 다르면 "2500/3250/4000". 자기 시전·전역 스킬은 값이 없다(`SpellFact.range`).
+ * "제드 궁 사거리" 에 본문 문장만 보이고 625 가 없었다(2026-09-30 브라우저 시험).
+ */
+export function rangeFact(spell: SpellFact, lang: Language = "ko_KR"): Fact | undefined {
+  if (spell.range === undefined) return undefined;
+  const value = Array.isArray(spell.range) ? spell.range.join("/") : String(spell.range);
+  return { label: cardLabels(lang).range, value };
+}
+
+/**
  * 스킬 답. 질문이 가리키는 사실을 앞에 놓는다.
  *
  * 구조 필드(쿨·소모·계수)는 값이 바로 있으니 headline 으로 올린다.
@@ -223,6 +233,8 @@ export function buildSpellAnswer(
   const cooldown = cooldownFact(spell, lang);
   if (cooldown) facts.push(cooldown);
   if (spell.cost) facts.push({ label: w.cost, value: spell.cost });
+  const range = rangeFact(spell, lang);
+  if (range) facts.push(range);
   if (spell.damageTypes.length) {
     facts.push({ label: w.damageType, value: spell.damageTypes.map((type) => translateDamage(type, lang)).join("·") });
   }
@@ -240,7 +252,10 @@ export function buildSpellAnswer(
     headline = { label: w.cost, value: spell.cost };
   } else if (detected?.focus === "ratio" && ratios.length) {
     headline = { label: w.ratios, value: ratioText(ratios, lang) };
-  } else if (detected?.focus === "effect") {
+  } else if (detected?.focus === "range" && range) {
+    headline = range;
+  } else if (detected?.focus === "effect" || detected?.focus === "range") {
+    // 사거리 숫자가 없는 스킬(자기 시전·전역)은 본문의 사거리 문장으로 내려간다
     highlighted = sentencesWith(spell.text, detected.keywords);
   } else if (detected?.focus === "damage") {
     highlighted = sentencesWith(spell.text, ["피해"]);
@@ -265,7 +280,7 @@ export function buildSpellAnswer(
  * "정복자에 점화 들어가?" 는 점화 규칙 9문장 중 "정복자" 가 든 한 문장이 답이다.
  * 이름을 담은 문장이 없으면 전부 rest 로 두고 카드가 원문을 보인다.
  */
-export function buildRuleAnswer(rule: RuleNotes, mentionedNames: string[], lang = "ko_KR", mentioned: RuleNotes[] = [], cooldownSeconds?: number): AdvisorAnswer {
+export function buildRuleAnswer(rule: RuleNotes, mentionedNames: string[], lang = "ko_KR", mentioned: RuleNotes[] = [], cooldownSeconds?: number | string): AdvisorAnswer {
   // "점멸 쿨타임" 은 판정 규칙이 아니라 수치를 묻는 것이다. 규칙 문장만 보였더니 300초가 어디에도 없었다(2026-09-30 브라우저 시험).
   const cooldownLine =
     cooldownSeconds === undefined ? undefined : `${cardLabels(lang as Language).cooldown} ${cooldownSeconds}${translations[lang as Language].comparison.seconds}`;
@@ -365,7 +380,7 @@ export function answerChampionIds(answer: AdvisorAnswer): string[] {
 
 export function focusLabel(focus: SpellFocus, lang: Language = "ko_KR"): string {
   const w = cardLabels(lang);
-  return { cooldown: w.cooldown, cost: w.cost, ratio: w.ratios, damage: w.damageType, effect: w.effects }[focus];
+  return { cooldown: w.cooldown, cost: w.cost, ratio: w.ratios, range: w.range, damage: w.damageType, effect: w.effects }[focus];
 }
 
 /** 스킬 하나에서 사실 하나를 글로. 스킬 표(챔피언 카드의 focus)와 비교 표가 같이 쓴다. */
@@ -377,6 +392,8 @@ export function spellFocusValue(spell: SpellFact, focus: SpellFocus, lang: Langu
       return spell.cost ?? "";
     case "ratio":
       return ratioText(Object.entries(spell.ratios ?? {}), lang);
+    case "range":
+      return rangeFact(spell, lang)?.value ?? "";
     case "damage":
       return spell.damageTypes.map((type) => translateDamage(type, lang)).join("·");
     case "effect":
@@ -475,6 +492,7 @@ export function buildCompareAnswer(
       focus === "cooldown",
     );
     push(w.cost, (spell) => spell.cost, focus === "cost");
+    push(w.range, (spell) => rangeFact(spell, lang)?.value, focus === "range");
     push(w.damageType, (spell) => spell.damageTypes.map((type) => translateDamage(type, lang)).join("·"), focus === "damage");
     push(w.effects, (spell) => spell.effects.map((tag) => translateTag(tag, lang)).join(", "), focus === "effect");
     push(
