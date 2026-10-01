@@ -42,6 +42,16 @@ test("제이스 형태 이름", () => {
   assert.deepEqual(jayce.R.forms?.map((form) => form.name), ["머큐리 캐논", "머큐리 해머"]);
 });
 
+for (const locale of DATA_LOCALES) {
+  test(`${locale} 제이스 궁극기 양쪽 형태의 챔피언 레벨별 수치`, () => {
+    const forms = readChampion("Jayce", locale).champion.abilities.R.forms!;
+    const steps = (values: number[]) => values.flatMap((value) => Array(5).fill(value));
+    assert.deepEqual(forms[0].levelValues?.map((entry) => entry.values), [steps([20, 25, 30, 35])]);
+    assert.equal(forms[0].levelValues?.[0].percent, true);
+    assert.deepEqual(forms[1].levelValues?.map((entry) => entry.values), [steps([5, 12, 19, 26]), steps([25, 60, 95, 130])]);
+  });
+}
+
 test("제이스 형태별 쿨타임", () => {
   assert.equal(formCooldownAtRank(jayce.Q, jayce.Q.forms![0], 1), 16);
   assert.equal(formCooldownAtRank(jayce.Q, jayce.Q.forms![1], 6), 8);
@@ -70,6 +80,12 @@ test("디코더의 잘못된 형태 거부", () => {
   assert.throws(() => decodeChampionDetail(invalid), /Invalid ability form/);
   invalid.champion.abilities.Q.forms = [jayce.Q.forms![0]];
   assert.throws(() => decodeChampionDetail(invalid), /Invalid ability forms/);
+});
+
+test("디코더의 잘못된 형태별 레벨 수치 거부", () => {
+  const invalid = readChampion("Jayce");
+  invalid.champion.abilities.R.forms![0].levelValues = [{ values: [20, 35], digits: 0, percent: true }];
+  assert.throws(() => decodeChampionDetail(invalid), /Invalid ability level values/);
 });
 
 test("형태 도입 전 캐시 교체 후 재사용", async () => {

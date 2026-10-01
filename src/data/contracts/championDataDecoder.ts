@@ -205,6 +205,7 @@ function assertAbilityForms(value: unknown): void {
       throw new Error("Invalid ability form");
     }
     assertFiniteNumbers(form.cooldownSeconds, "form cooldown");
+    assertLevelValues(form.levelValues);
   }
 }
 

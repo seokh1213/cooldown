@@ -2,6 +2,7 @@ import type { AbilityForm } from "@/data/contracts/championData";
 import { formIconUrl } from "@/data/assets/riotAssetUrls";
 import { SafeBlockHtml } from "@/components/ui/safe-html";
 import { useTranslation } from "@/i18n";
+import { AbilityStructuredDetails } from "./AbilityStructuredDetails";
 
 /**
  * 변신 스킬의 형태별 설명. 표에서는 두 아이콘을 대각선으로 겹쳐 A/B 딱지를 붙이는데,
@@ -23,6 +24,11 @@ export function AbilityFormDetails({ forms, ddragonVersion }: { forms: AbilityFo
           <p className="mb-2 text-xs text-muted-foreground">{t.comparison.cooldownNote} · {form.cooldownSeconds.length ? form.cooldownSeconds.join(" / ") + " " + t.comparison.seconds : "—"}</p>
           {form.tooltipRankSource === "R" && <p className="mb-2 text-xs text-muted-foreground">{t.comparison.formRankNote}</p>}
           <SafeBlockHtml html={form.bodyHtml} className="break-words text-sm leading-relaxed" />
+          {form.levelValues && form.levelValues.length > 0 && (
+            <div className="mt-3">
+              <AbilityStructuredDetails levelValues={form.levelValues} />
+            </div>
+          )}
         </section>
       ))}
     </div>

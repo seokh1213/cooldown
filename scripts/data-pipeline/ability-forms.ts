@@ -68,6 +68,7 @@ export function buildAbilityForms(input: {
       key, label: definition.labels[locale][index], id,
       name: names.length === 2 ? names[index] : localized.name ?? names[0],
       iconPath: source.source.iconPath, iconVersion: input.cdragonVersion, bodyHtml: localized.tooltip,
+      levelValues: localized.levelValues.length > 0 ? localized.levelValues : undefined,
       cooldownSeconds: champion.id === "Gnar" && slot === "W" && key === "A" ? [] : cooldown,
       tooltipRankSource, diagnostics: { unresolvedTokens: localized.unresolvedTokens },
     };
