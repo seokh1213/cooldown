@@ -75,3 +75,11 @@ test("갈래 보완은 세 명의 비교나 관점 없는 나열, 두 명의 일
     assert.equal(entry.topicCalls(), 0);
   }
 });
+
+test("상성 상황을 곁들인 구체적인 스킬 조회 판정은 새 상성이 덮어쓰지 않는다", async () => {
+  for (const ask of ["skills", "spellStat"] as const) {
+    const entry = request("오공으로 럼블 상대하고 아이번 정글인데 오공 Q 쿨타임 알려줘", ["MonkeyKing", "Rumble", "Ivern"], { ask });
+    assert.equal(await answerNewMatchup(entry.intent), undefined);
+    assert.equal(entry.topicCalls(), 0);
+  }
+});

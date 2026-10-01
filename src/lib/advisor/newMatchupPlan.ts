@@ -41,7 +41,8 @@ function resolveTarget(intent: Intent): MatchupTarget | undefined {
   const byJosa = matchupSidesDetailed(question, pair);
   // 두 이름으로 학습한 판정기는 곁들인 세 번째 이름 때문에 item/guide를 고르기도 한다.
   // 상성 문구와 명확한 관점이 함께 있을 때만 그 판정을 보완한다.
-  if (ask !== "matchup" && !(asksMatchup(question) && (phrased || byJosa.confident))) return undefined;
+  const canCorrect = (ask === "item" || ask === "guide") && asksMatchup(question) && (phrased || byJosa.confident);
+  if (ask !== "matchup" && !canCorrect) return undefined;
   const [mine, enemy] = phrased ? [phrased, pair.find(card => card.id !== phrased.id) ?? pair[1]] : byJosa.sides;
   const others = champions.filter(card => !pair.includes(card)).map(card => card.name).join(", ");
   const notice = ctx.notice ?? fill(ctx.copy.card.pairFromMany, { mine: mine.name, enemy: enemy.name, others });
