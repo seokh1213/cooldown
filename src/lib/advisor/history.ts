@@ -39,7 +39,7 @@ export type StoredAnswer =
        * 저장된 것을 고쳐 쓰지 않는 이유는, 옛 기록이 그때 무엇을 보여 줬는지가
        * 남아야 하기 때문이다. 없으면 예전 순서("플레이할 때" 먼저)가 된다.
        */
-      notes?: { playing: string[]; against: string[]; perspective?: NotePerspective };
+      notes?: { playing: string[]; against: string[]; perspective?: NotePerspective; detail?: "full" };
     }
   | { kind: "rule"; ruleName: string; highlighted: string[]; rest: string[] }
   | { kind: "suggestion"; original: string; candidateIds: string[]; reason?: "typo" | "ambiguous" }
@@ -48,6 +48,7 @@ export type StoredAnswer =
       cardIds: string[];
       level?: 1 | 6 | 11 | 18;
       slot?: string;
+      focus?: SpellFocus;
       rows: CompareRow[];
       headline?: Fact;
       matchup?: boolean;
@@ -119,6 +120,7 @@ export function dehydrateAnswer(answer: AdvisorAnswer): StoredAnswer {
         cardIds: answer.cards.map((card) => card.id),
         level: answer.level,
         slot: answer.slot,
+        focus: answer.focus,
         rows: answer.rows,
         headline: answer.headline,
         matchup: answer.matchup,
@@ -181,6 +183,7 @@ export function reviveAnswer(stored: StoredAnswer, data: AdvisorData): AdvisorAn
         cards: cards as NonNullable<(typeof cards)[number]>[],
         level: stored.level,
         slot: stored.slot,
+        focus: stored.focus,
         rows: stored.rows,
         headline: stored.headline,
         matchup: stored.matchup,

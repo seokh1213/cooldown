@@ -3,6 +3,7 @@ import { fill } from "@/i18n/fill";
 import { buildItemCard } from "./context";
 import { buildRuleAnswer as buildRuleCard } from "./answer";
 import { refersToContextChampions } from "./askWords";
+import { detectSpellFocus } from "./spellFocus";
 import { suggestChampions } from "./championTypo";
 import { nicknames } from "./intent";
 import { topicFromWords } from "./topicJudge";
@@ -73,6 +74,10 @@ export function answerRuleQuestion({ question, ctx, data, matchup }: Intent): An
   if (!named.length || spellInMatchup) return undefined;
   const names = named.map((rule) => rule.name);
   const cards = named.map((rule) => buildRuleCard(rule, names, ctx.lang, named, ruleCooldown(data, rule, question)));
+  if (named.length > 1 && detectSpellFocus(question)?.focus === "cooldown") {
+    const text = cards.flatMap(card => card.kind === "rule" ? [`### ${card.rule.name}\n${card.highlighted.join("\n")}`] : []).join("\n\n");
+    return { type: "code", answer: text, notice: ctx.notice };
+  }
   const best = cards.find((card) => card.kind === "rule" && card.highlighted.length > 0) ?? cards[0];
   return { type: "card", answer: best, notice: ctx.notice };
 }

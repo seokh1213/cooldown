@@ -1,10 +1,10 @@
 /** 명시적인 조회와 최근 조회의 생략을 해석한다. 수치 계산은 카드의 값으로만 한다. */
 import type { ChampionCard, SpellFact } from "@/lib/knowledge/facts";
-import { buildCompareAnswer, buildRuleAnswer, buildSpellAnswer, type AdvisorAnswer } from "./answer";
+import { buildCompareAnswer, buildSpellAnswer, type AdvisorAnswer } from "./answer";
 import { buildItemCard, detectSlot } from "./context";
 import { detectChampions } from "./intent";
-import { ruleCooldown, askedRules } from "./questionDocs";
-import { asksWholeKit } from "./askWords";
+import { askedRules } from "./questionDocs";
+import { asksWholeKit, asksSkillHandling } from "./askWords";
 import type { AnswerPlan, PlanContext } from "./plan";
 import { inferredSpellFocus, numericConditions, type DialogueMemory } from "./dialogueState";
 import { resolveDialogueRule } from "./dialogueRules";
@@ -18,7 +18,7 @@ export interface FactResolution {
 }
 const ADVICE = /언제\s*(써|쓰|사용|들어|진입)|어떻게\s*(써|쓰|빼|교환)|빠졌|빠진|상대법|교환|라인전|한타|when.*(use|engage)|how.*(use|bait)|怎么.*(用|打)/i;
 const RETURN = /아까|앞서|다시|그대로|같은\s*조건|earlier|same|回到|之前/i;
-const QUERY = /쿨|몇\s*초|마나|소모|계수|설명|효과|말한|기준|비교|돌아|cooldown|cost|ratio|冷却|耗蓝|比较/i;
+const QUERY = /사거리|범위|range|射程|쿨|몇\s*초|마나|소모|계수|설명|효과|말한|기준|비교|돌아|cooldown|cost|ratio|冷却|耗蓝|比较/i;
 const round = (value: number) => Number(value.toFixed(2)).toString();
 
 function numberList(value: string | undefined): number[] | undefined {
@@ -50,9 +50,10 @@ function withCalculation(answer: AdvisorAnswer, numeric: DialogueMemory["numeric
   };
 }
 
-function comparison(cards: ChampionCard[], slot: string, numeric: DialogueMemory["numeric"], ctx: PlanContext): AdvisorAnswer {
-  const answer = buildCompareAnswer(cards, `${slot} 쿨타임 비교`, slot, { lang: ctx.lang });
-  if (answer.kind !== "compare" || !numeric) return answer;
+function comparison(cards: ChampionCard[], slot: string, request: { question: string; focus?: string; numeric: DialogueMemory["numeric"] }, ctx: PlanContext): AdvisorAnswer {
+  const { numeric, focus, question } = request;
+  const answer = buildCompareAnswer(cards, question, slot, { lang: ctx.lang });
+  if (answer.kind !== "compare" || focus !== "cooldown" || !numeric) return answer;
   const values = cards.map(card => {
     const spell = card.spells.find(s => s.slot === slot);
     return spell ? adjustedCooldown(spell, numeric)?.value : undefined;
@@ -98,13 +99,7 @@ function explicitEntity(question: string, memory: DialogueMemory, ctx: PlanConte
   const data = ctx.data!;
   const item = buildItemCard(data, question, memory.active === "item" && /그거|그\s*아이템|효과|가격|골드/.test(question) ? memory.item : undefined);
   if (item) return { plan: { type: "card", answer: item } };
-  const rules = askedRules(data, question);
-  const named = detectChampions(data, question);
-  if (named.length || !rules.length || rules.some(r => r.subject === "gameplay")) return undefined;
-  const best = rules.find(r => r.subject === "summoner") ?? rules[0];
-  // 쿨타임 값은 계획기·검색 길과 같은 헬퍼로 — 여기서 소환사 주문만 따로 찾았더니 "감전 쿨타임" 에 20초가 빠졌다(2026-10-01 브라우저 시험)
-  const answer = buildRuleAnswer(best, rules.map(r => r.name), ctx.lang, rules, ruleCooldown(data, best, question));
-  return { plan: { type: "card", answer } };
+  return undefined;
 }
 
 function penetrationAnswer(answer: AdvisorAnswer, question: string, memory: DialogueMemory, ctx: PlanContext): FactResolution | undefined {
@@ -128,7 +123,9 @@ export function resolveDialogueFact(question: string, memory: DialogueMemory, ct
   if (rule) return { plan: rule };
   const entity = explicitEntity(question, memory, ctx);
   if (entity) return entity;
-  if (ADVICE.test(question) || asksWholeKit(question)) return undefined;
+  // 룬·주문은 knowledgePlans의 공통 계획으로 넘긴다. 최근 스킬의 생략으로 읽지 않는다.
+  if (askedRules(ctx.data, question).some(rule => rule.subject !== "gameplay")) return undefined;
+  if (ADVICE.test(question) || asksSkillHandling(question) || asksWholeKit(question)) return undefined;
   const numeric = numericConditions(question, memory.numeric);
   const named = detectChampions(ctx.data, question);
   const slot = detectSlot(question) ?? memory.pending?.slot ?? ((memory.active === "spell" && (QUERY.test(question) || numeric !== undefined)) ? memory.spell?.slot : undefined);
@@ -138,15 +135,16 @@ export function resolveDialogueFact(question: string, memory: DialogueMemory, ct
   if (!cards.length) return { pending: { slot, focus: inferredSpellFocus(question, memory), candidates: [] } };
   const shared = /그대로|같은\s*조건|same/i.test(question) || memory.active === "spell";
   const applied = shared || /가속|랭크|레벨/.test(question) ? numeric : undefined;
-  if (cards.length > 1) return { plan: { type: "card", answer: comparison(cards, slot, applied, ctx) }, numeric: applied, pending: { slot, focus: inferredSpellFocus(question, memory), candidates: cards.map(c => c.id) } };
+  const focus = inferredSpellFocus(question, memory);
+  const focusedQuestion = `${question} ${focus === "cooldown" ? "쿨타임" : focus === "cost" ? "마나 소모" : focus === "range" ? "사거리" : ""}`;
+  if (cards.length > 1) return { plan: { type: "card", answer: comparison(cards, slot, { question: focusedQuestion, focus, numeric: applied }, ctx) }, numeric: applied, pending: { slot, focus: inferredSpellFocus(question, memory), candidates: cards.map(c => c.id) } };
   const [card] = cards;
   const spell = card.spells.find(s => s.slot === slot);
   if (!spell) return undefined;
-  const focus = inferredSpellFocus(question, memory);
-  let answer = buildSpellAnswer(card, spell, `${question}${focus === "cooldown" ? " 쿨타임" : focus === "cost" ? " 마나 소모" : ""}`, ctx.lang);
+  let answer = buildSpellAnswer(card, spell, focusedQuestion, ctx.lang);
   const related = penetrationAnswer(answer, question, memory, ctx);
   if (related) return related;
-  answer = focus === "cooldown" || applied ? withCalculation(answer, applied) : answer;
+  answer = focus === "cooldown" ? withCalculation(answer, applied) : answer;
   if (answer.kind === "spell" && focus === "cost" && !spell.cost) {
     const passive = card.spells.find(s => s.slot === "P");
     const resource = /스킬을 사용할 때마다 열기/.test(passive?.text ?? "") ? " 패시브 자료에서는 스킬을 사용할 때마다 열기를 얻는다고 설명합니다." : "";

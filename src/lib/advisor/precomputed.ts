@@ -45,58 +45,65 @@ function leadClean(text: string): string {
   return text.replace(/^(이후에는|이후에도|이후|그 뒤에는|그 뒤|그다음에는|그다음|그때는|그때|이때는|이때|이 틈에|그 틈에|그 사이에|그 순간|그래서|또한|또|다만|반대로|하지만|그러나)\s+/, "");
 }
 
-/** 맨 앞은 물은 칸, 그 뒤로 조심할 것·아이템·싸우는 법 중 남은 것. 세 칸까지. */
-export function precomputedDigest(pair: PrecomputedPair, focus: string | undefined, cards: ChampionCard[], lang: Language = "ko_KR"): string | undefined {
+export interface PrecomputedSelection { text?: string; topics: PrecomputedKey[] }
+export interface PrecomputedRequest {
+  focus?: string;
+  mode: "digest" | "topic" | "explain" | "advance";
+  conditions?: ScenarioCondition[];
+  shownTopics?: readonly string[];
+}
+const MORE_ORDER: PrecomputedKey[] = ["laning", "combo", "escape", "teamfight", "phase", "watch", "build", "fight"];
+
+function digestKeys(focus: string | undefined): PrecomputedKey[] {
   const lead = LEAD[focus ?? "general"] ?? "watch";
-  const order = [lead, ...(["watch", "build", "fight"] as PrecomputedKey[]).filter((key) => key !== lead)].slice(0, 3);
-  const heading = DIGEST_HEADINGS[lang] ?? DIGEST_HEADINGS.ko_KR;
-  const titleOf = (key: PrecomputedKey) =>
-    key === "watch" || key === "build" || key === "fight" ? heading[key] : ((FIGHT_TITLES[lang] ?? FIGHT_TITLES.ko_KR)[TOPIC_OF[key] ?? ""] ?? heading.fight);
-  const sections = order.filter((key) => pair[key]).map((key) => `**${titleOf(key)}**\n${labelSlots(leadClean(pair[key]!), cards)}`);
-  // 물은 칸이 비었으면 미리 쓴 답을 쓰지 않는다 — 노트 조립이 그 칸을 더 잘 채운다
-  if (!pair[lead] || sections.length < 2) return undefined;
-  return sections.join("\n\n");
+  return [lead, ...(["watch", "build", "fight"] as PrecomputedKey[]).filter(key => key !== lead)].slice(0, 3);
 }
 
-/**
- * "더 자세히" — 처음 답(`precomputedDigest`)에 싣지 않은 칸. 주제 여덟 칸 중 남은 것을 세 칸까지.
- * 남은 칸이 없으면 undefined(노트 조립을 펼쳐 보인다).
- */
-export function precomputedMore(pair: PrecomputedPair, focus: string | undefined, cards: ChampionCard[], lang: Language = "ko_KR"): string | undefined {
-  const lead = LEAD[focus ?? "general"] ?? "watch";
-  const shown = new Set([lead, ...(["watch", "build", "fight"] as PrecomputedKey[]).filter((key) => key !== lead)].slice(0, 3));
-  const heading = DIGEST_HEADINGS[lang] ?? DIGEST_HEADINGS.ko_KR;
-  const titleOf = (key: PrecomputedKey) =>
-    key === "watch" || key === "build" || key === "fight" ? heading[key] : ((FIGHT_TITLES[lang] ?? FIGHT_TITLES.ko_KR)[TOPIC_OF[key] ?? ""] ?? heading.fight);
-  const rest = (["laning", "combo", "escape", "teamfight", "phase", "watch", "build", "fight"] as PrecomputedKey[]).filter((key) => !shown.has(key) && pair[key]);
-  if (!rest.length) return undefined;
-  return rest
-    .slice(0, 3)
-    .map((key) => `**${titleOf(key)}**\n${labelSlots(leadClean(pair[key]!), cards)}`)
-    .join("\n\n");
-}
-
-/** 구체적인 질문은 해당 문단으로 답한다. 이유 질문은 같은 조건을 설명하는 주의 문단을 덧붙인다. */
-export function precomputedFocus(
-  pair: PrecomputedPair,
-  request: { focus?: string; reason?: boolean; conditions?: ScenarioCondition[] },
-  cards: ChampionCard[],
-  lang: Language = "ko_KR",
-): string | undefined {
+function focusedKeys(pair: PrecomputedPair, request: PrecomputedRequest): PrecomputedKey[] {
   const conditions = request.conditions ?? [];
   let lead: PrecomputedKey = conditions.length && (request.focus === "skill" || request.focus === "general") ? "escape" : LEAD[request.focus ?? "general"] ?? "watch";
   if ((lead === "escape" || lead === "watch") && conditions.some(c => c.owner === "enemy" && c.status === "ready") && pair.watch) lead = "watch";
-  if (request.focus === "general" && !conditions.length && !request.reason) return precomputedDigest(pair, request.focus, cards, lang);
-  if (!pair[lead]) return undefined;
-  const keys: PrecomputedKey[] = [lead];
-  if (request.reason && lead !== "watch" && pair.watch) keys.push("watch");
+  if (!pair[lead]) return [];
+  return request.mode === "explain" && lead !== "watch" && pair.watch ? [lead, "watch"] : [lead];
+}
+
+function renderSelection(pair: PrecomputedPair, keys: PrecomputedKey[], cards: ChampionCard[], lang: Language): PrecomputedSelection {
   const heading = DIGEST_HEADINGS[lang] ?? DIGEST_HEADINGS.ko_KR;
-  const paragraphs = keys.map(key => {
+  const topics = keys.filter(key => pair[key]);
+  const paragraphs = topics.map(key => {
     const title = key === "watch" || key === "build" || key === "fight" ? heading[key] : (FIGHT_TITLES[lang] ?? FIGHT_TITLES.ko_KR)[TOPIC_OF[key] ?? ""] ?? heading.fight;
     return `**${title}**\n${labelSlots(leadClean(pair[key]!), cards)}`;
   });
-  const caption = lang === "ko_KR" && conditions.length ? `말씀하신 조건: ${conditions.map(c => `${c.owner === "mine" ? "내" : "상대"} ${c.slot} ${c.status === "ready" ? "사용 가능" : "재사용 대기 중"}`).join(" · ")}.` : undefined;
-  return [caption, ...paragraphs].filter(Boolean).join("\n\n");
+  return { text: paragraphs.join("\n\n") || undefined, topics };
+}
+
+/** 실제로 보여준 칸을 함께 반환한다. 남은 칸이 없으면 이전 답으로 되돌아가지 않는다. */
+export function selectPrecomputed(pair: PrecomputedPair, request: PrecomputedRequest, cards: ChampionCard[], lang: Language = "ko_KR"): PrecomputedSelection {
+  let keys: PrecomputedKey[];
+  if (request.mode === "advance") {
+    const shown = new Set(request.shownTopics ?? []);
+    keys = MORE_ORDER.filter(key => !shown.has(key) && pair[key]).slice(0, 3);
+  } else if (request.mode === "digest" || request.mode === "topic" && request.focus === "general" && !request.conditions?.length) {
+    keys = digestKeys(request.focus);
+    if (!pair[keys[0]] || keys.filter(key => pair[key]).length < 2) return { topics: [] };
+  } else keys = focusedKeys(pair, request);
+  const selection = renderSelection(pair, keys, cards, lang);
+  if (lang === "ko_KR" && request.conditions?.length && selection.text && request.mode !== "advance") {
+    const caption = request.conditions.map(c => `${c.owner === "mine" ? "내" : "상대"} ${c.slot} ${c.status === "ready" ? "사용 가능" : "재사용 대기 중"}`).join(" · ");
+    selection.text = `말씀하신 조건: ${caption}.\n\n${selection.text}`;
+  }
+  return selection;
+}
+
+/** 기존 단일 질문 조회의 문자열 API. 대화 조립은 selectPrecomputed로 실제 칸을 기록한다. */
+export function precomputedDigest(pair: PrecomputedPair, focus: string | undefined, cards: ChampionCard[], lang: Language = "ko_KR"): string | undefined {
+  return selectPrecomputed(pair, { focus, mode: "digest" }, cards, lang).text;
+}
+export function precomputedMore(pair: PrecomputedPair, focus: string | undefined, cards: ChampionCard[], lang: Language = "ko_KR"): string | undefined {
+  return selectPrecomputed(pair, { focus, mode: "advance", shownTopics: digestKeys(focus) }, cards, lang).text;
+}
+export function precomputedFocus(pair: PrecomputedPair, request: { focus?: string; reason?: boolean; conditions?: ScenarioCondition[] }, cards: ChampionCard[], lang: Language = "ko_KR"): string | undefined {
+  return selectPrecomputed(pair, { ...request, mode: request.reason ? "explain" : "topic" }, cards, lang).text;
 }
 
 const files = new Map<string, Promise<PrecomputedFile | undefined>>();

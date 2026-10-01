@@ -107,6 +107,7 @@ export type AdvisorAnswer =
       level?: 1 | 6 | 11 | 18;
       /** 스킬 비교면 슬롯 */
       slot?: string;
+      focus?: SpellFocus;
       rows: CompareRow[];
       /** 질문이 가리킨 행의 결론. "체력 (1레벨)" → "말파이트 665 > 럼블 640" */
       headline?: Fact;
@@ -504,7 +505,7 @@ export function buildCompareAnswer(
     const headline = hit
       ? { label: `${slot} ${hit.label}`, value: cards.map((card, i) => `${card.name} ${hit.values[i] || "—"}`).join(" · ") }
       : undefined;
-    return { kind: "compare", cards, slot, rows, headline };
+    return { kind: "compare", cards, slot, focus, rows, headline };
   }
   if (detectSpellFocus(question)?.focus === "cooldown") {
     // 슬롯 없이 "두 챔피언 스킬 쿨타임" 이면 네 스킬의 쿨타임을 한 줄씩. 능력치 표를 내면 물은 것이 없다.

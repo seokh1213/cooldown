@@ -17,7 +17,7 @@ export interface ScenarioCondition {
 export interface DialogueMemory {
   patch: string;
   active?: "matchup" | "spell" | "item" | "rule";
-  matchup?: { mine: string; enemy: string; focus?: string };
+  matchup?: { mine: string; enemy: string; focus?: string; shownTopics?: string[] };
   spell?: SpellReference;
   compared?: string[];
   item?: string;
@@ -64,7 +64,7 @@ export function rememberAnswer(previous: DialogueMemory, answer: AdvisorAnswer):
   if (answer.kind === "compare" && answer.matchup) {
     const [mine, enemy] = answer.cards;
     const changed = memory.matchup?.mine !== mine.id || memory.matchup.enemy !== enemy.id;
-    memory.matchup = { mine: mine.id, enemy: enemy.id, focus: answer.notes?.plan?.focus };
+    memory.matchup = { mine: mine.id, enemy: enemy.id, focus: answer.notes?.plan?.focus, shownTopics: changed ? [] : memory.matchup?.shownTopics };
     memory.active = "matchup";
     if (changed) { memory.conditions = []; memory.pending = undefined; }
   } else if (answer.kind === "spell") {
@@ -74,7 +74,7 @@ export function rememberAnswer(previous: DialogueMemory, answer: AdvisorAnswer):
     memory.compared = undefined;
   } else if (answer.kind === "compare" && answer.slot) {
     memory.compared = answer.cards.map(card => card.id);
-    memory.spell = { champion: answer.cards[0].id, slot: answer.slot, focus: "cooldown" };
+    memory.spell = { champion: answer.cards[0].id, slot: answer.slot, focus: answer.focus };
     memory.active = "spell";
   } else if (answer.kind === "item") {
     memory.item = answer.itemId;
@@ -132,7 +132,7 @@ export function inferredSpellFocus(question: string, memory: DialogueMemory): Sp
 function rememberPlan(memory: DialogueMemory, plan: AnswerPlan): DialogueMemory {
   if (plan.type === "matchup") {
     const changed = memory.matchup?.mine !== plan.mine.id || memory.matchup.enemy !== plan.enemy.id;
-    return { ...memory, active: "matchup", matchup: { mine: plan.mine.id, enemy: plan.enemy.id, focus: plan.focus }, conditions: changed ? [] : memory.conditions, pending: undefined };
+    return { ...memory, active: "matchup", matchup: { mine: plan.mine.id, enemy: plan.enemy.id, focus: plan.focus, shownTopics: changed ? [] : memory.matchup?.shownTopics }, conditions: changed ? [] : memory.conditions, pending: undefined };
   }
   if (plan.type === "card" || (plan.type === "code" && typeof plan.answer !== "string")) return rememberAnswer(memory, plan.answer as Exclude<typeof plan.answer, string>);
   if (plan.type === "code" && typeof plan.answer === "string") {

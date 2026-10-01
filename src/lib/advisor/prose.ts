@@ -559,7 +559,7 @@ function championDigest(answer: Extract<AdvisorAnswer, { kind: "champion" }>, la
   if (!notes || (!notes.playing.length && !notes.against.length)) return "";
   const heading = DIGEST_HEADINGS[lang] ?? DIGEST_HEADINGS.ko_KR;
   const block = (title: string, lines: string[], size: number) =>
-    lines.length ? `**${title}**\n${labelSlots(lines.slice(0, size).map(firstSentence).join(" "), [answer.card])}` : "";
+    lines.length ? `**${title}**\n${labelSlots(lines.slice(0, size).map(line => notes.detail === "full" ? line : firstSentence(line)).join(" "), [answer.card])}` : "";
   const size = { main: 3, side: 1 };
   const parts =
     notes.perspective === "against"

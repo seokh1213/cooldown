@@ -84,9 +84,10 @@ function championsFromContext({ question, ctx, data, recent, slot, ask }: Intent
 async function answerOneChampion({ question, ctx, data, ask, topic: judgeTopicOnce, slot }: Intent, card: ChampionCard, notice: string | undefined): Promise<AnswerPlan> {
   // "패시브와 네 가지 스킬을 각각" 은 패시브 한 칸이 아니라 스킬 전체 소개다
   const spell = slot && !asksWholeKit(question) ? card.spells.find((entry) => entry.slot === slot) : undefined;
-  if (spell && asksSkillHandling(question)) return {
-    type: "card", answer: { kind: "champion", card, notes: championNotes(data, card, question, "against", { topic: "skill", perspective: "against" }) }, notice,
-  };
+  if (spell && asksSkillHandling(question)) {
+    const notes = championNotes(data, card, question, "against", { topic: "skill", perspective: "against" });
+    return { type: "card", answer: { kind: "champion", card, notes: { ...notes, playing: [], against: notes.against.slice(0, 1), detail: "full" } }, notice };
+  }
   if (spell) return { type: "card", answer: buildSpellCard(card, spell, question, ctx.lang), notice };
   // 효과 태그 예/아니오는 코드가 바로 답한다. 태그가 없다는 사실을 근거로
   // "아니다" 라고 말하는 것을 모델이 못 한다.

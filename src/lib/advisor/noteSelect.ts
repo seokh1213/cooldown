@@ -179,6 +179,8 @@ export interface SelectedNotes {
   playing: string[];
   against: string[];
   perspective: NotePerspective;
+  /** 스킬 대처법처럼 절차를 물었으면 고른 노트의 방법까지 표시한다. */
+  detail?: "full";
 }
 
 /**

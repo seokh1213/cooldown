@@ -5,7 +5,7 @@ import type { AdvisorAnswer } from "./answer";
 import type { AdvisorData } from "./context";
 import type { AnswerPlan } from "./plan";
 import { answerProse } from "./prose";
-import { buildMatchupReply } from "./matchupReply";
+import { buildMatchupReply, focusOfMatchupTopic } from "./matchupReply";
 import type { DialoguePlan } from "./dialoguePlanner";
 import type { DialogueMemory } from "./dialogueState";
 
@@ -34,7 +34,11 @@ async function partReply(part: DialoguePlan["parts"][number], options: { data: A
   if (plan.type === "retry") throw new Error("대화 계획은 오타 재시도를 먼저 풀어야 합니다");
   if (!data) throw new Error("자료 답변에는 준비된 자료가 필요합니다");
   if (plan.type === "matchup") {
-    const answer = await buildMatchupReply(data, lang, { question, mine: plan.mine, enemy: plan.enemy, focus: plan.focus, more: plan.more, scope: "topic", conditions: memory.conditions });
+    const { answer, topics } = await buildMatchupReply(data, lang, { question, mine: plan.mine, enemy: plan.enemy, focus: plan.focus, more: plan.more, continuation: plan.continuation, shownTopics: memory.matchup?.shownTopics, scope: "topic", conditions: memory.conditions });
+    if (memory.matchup?.mine === plan.mine.id && memory.matchup.enemy === plan.enemy.id) {
+      memory.matchup.shownTopics = [...new Set([...(memory.matchup.shownTopics ?? []), ...topics])];
+      if (plan.continuation === "advance" && topics.length) memory.matchup.focus = focusOfMatchupTopic(topics[0]);
+    }
     return { answer, text: dialogueAnswerText(answer, lang), notice: plan.notice };
   }
   const answer = plan.answer;

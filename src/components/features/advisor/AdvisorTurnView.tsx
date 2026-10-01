@@ -68,7 +68,8 @@ export function AdvisorTurnView(props: AdvisorTurnViewProps) {
       <ArrowRight className="h-3 w-3" />
     </Link>
   ));
-  const commentary = <TurnCommentary turn={turn} />;
+  // 짧은 코드 답은 카드 본문이 곧 답이다. 같은 내용을 해설로 다시 표시하지 않는다.
+  const commentary = turn.byCode && (turn.answer?.kind === "text" || turn.answer?.kind === "rule" || turn.answer?.kind === "suggestion") ? null : <TurnCommentary turn={turn} />;
   /*
    * 관점을 문장으로 못 가린 자리에만 한 번 물어본다.
    *

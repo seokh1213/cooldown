@@ -4,7 +4,7 @@ import type { ChampionCard } from "@/lib/knowledge/facts";
 import type { AdvisorData } from "./context";
 import { buildCompareAnswer, type AdvisorAnswer } from "./answer";
 import { matchupNotes } from "./playbookNotes";
-import { loadPrecomputed, precomputedDigest, precomputedMore, precomputedFocus } from "./precomputed";
+import { loadPrecomputed, selectPrecomputed, type PrecomputedPair } from "./precomputed";
 import type { ScenarioCondition } from "./dialogueState";
 import { digestSections } from "./prose";
 import { labelSlots } from "./slotLabels";
@@ -15,33 +15,49 @@ interface MatchupRequest {
   enemy: ChampionCard;
   focus?: string;
   more?: boolean;
+  continuation?: "explain" | "advance";
+  shownTopics?: readonly string[];
   scope?: "digest" | "topic";
   conditions?: ScenarioCondition[];
 }
 
-export async function buildMatchupReply(data: AdvisorData, lang: Language, request: MatchupRequest): Promise<AdvisorAnswer> {
+export interface MatchupReply { answer: AdvisorAnswer; topics: string[] }
+
+/** 이어서 보여준 첫 주제를 다음 이유 질문의 대상으로 삼는다. */
+export function focusOfMatchupTopic(topic: string): string {
+  return ({ watch: "skill", build: "situational-item", fight: "general", escape: "escape-window" } as Record<string, string>)[topic] ?? topic;
+}
+
+function exhaustedText(lang: Language): string {
+  return lang === "en_US" ? "I've shown all the available advice for this matchup. Which topic would you like to revisit?"
+    : lang === "zh_CN" ? "这个对局现有的建议已经全部讲过了。你想再看哪个主题？"
+    : "이 상성에서 준비된 조언은 모두 보여드렸어요. 라인전·아이템·콤보 중 다시 보고 싶은 주제를 알려주세요.";
+}
+
+/** 은행과 노트 모두 같은 진행 상태를 사용한다. 실제로 고른 칸만 기록한다. */
+export function selectMatchupReply(answer: AdvisorAnswer, pair: PrecomputedPair | undefined, request: MatchupRequest, lang: Language): MatchupReply {
+  if (answer.kind !== "compare") return { answer, topics: [] };
+  const mode = request.continuation ?? (request.more ? "explain" : request.scope === "topic" ? "topic" : "digest");
+  if (pair) {
+    const selected = selectPrecomputed(pair, { focus: request.focus, mode, conditions: request.conditions, shownTopics: request.shownTopics }, answer.cards, lang);
+    if (selected.text) return { answer: { ...answer, precomputed: selected.text }, topics: selected.topics };
+    if (mode === "advance") return { answer: { kind: "text", text: exhaustedText(lang) }, topics: [] };
+  }
+  const sections = digestSections(answer, lang, "focus-cue-all").filter(section => section.lines.length);
+  const picked = mode === "advance" ? sections.filter(section => !request.shownTopics?.includes(section.key)).slice(0, 3)
+    : mode === "explain" ? sections.slice(0, 2) : request.focus && request.focus !== "general" ? sections.slice(0, 1) : sections;
+  if (!picked.length && mode === "advance") return { answer: { kind: "text", text: exhaustedText(lang) }, topics: [] };
+  const text = picked.map(section => `**${section.title}**\n${labelSlots(section.lines.join(" "), answer.cards)}`).join("\n\n");
+  return { answer: { ...answer, precomputed: text || undefined }, topics: picked.map(section => section.key) };
+}
+
+export async function buildMatchupReply(data: AdvisorData, lang: Language, request: MatchupRequest): Promise<MatchupReply> {
   const { mine, enemy, question, focus } = request;
   const notes = matchupNotes(data, mine, enemy, lang);
   if (notes.plan && focus) notes.plan.focus = focus;
   if (notes.plan) notes.plan.question = question;
   const answer = buildCompareAnswer([mine, enemy], question, undefined, { matchup: true, notes, lang });
-  if (answer.kind !== "compare") return answer;
-  answer.more = request.more || undefined;
+  if (answer.kind === "compare") answer.more = request.more || undefined;
   const pair = (await loadPrecomputed(data.patch, mine.id, lang))?.pairs[enemy.id];
-  if (pair) {
-    // "더 자세히"·주제 없는 조언 요청(focus general)은 처음 답에 싣지 않은 칸이다. precomputedFocus 는 general 을 "조심할 것" 하나로 받아
-    // 첫 답과 같은 칸을 되풀이했다("팁 좀 줘", "tips" — 2026-10-01 브라우저 시험).
-    const restOnly = request.more && (!focus || focus === "general") && !request.conditions?.length;
-    answer.precomputed = restOnly
-      ? precomputedMore(pair, focus, [mine, enemy], lang) ?? precomputedDigest(pair, focus, [mine, enemy], lang)
-      : request.scope === "topic"
-      ? precomputedFocus(pair, { focus, reason: request.more, conditions: request.conditions }, [mine, enemy], lang)
-      : (request.more ? precomputedMore : precomputedDigest)(pair, focus, [mine, enemy], lang);
-  }
-  if (!answer.precomputed && request.scope === "topic" && focus && focus !== "general") {
-    const sections = digestSections(answer, lang, "focus-cue-all");
-    const picked = request.more ? sections.slice(0, 2) : sections.slice(0, 1);
-    answer.precomputed = picked.filter(section => section.lines.length).map(section => `**${section.title}**\n${labelSlots(section.lines.join(" "), answer.cards)}`).join("\n\n") || undefined;
-  }
-  return answer;
+  return selectMatchupReply(answer, pair, request, lang);
 }
