@@ -214,7 +214,7 @@ export function detectSlot(question: string): string | undefined {
   // 한글에는 \b 가 듣지 않는다. "가렌 궁 뭐야" 를 놓쳤다.
   // 영어 "ult·ulti·ultimate" 와 중국어 "大招" 도 궁이다. 상성 대화 중 "give me the ult cooldowns for both",
   // "两人大招CD各是多少" 가 슬롯 없이 네 스킬 표로 나갔다. 영어는 낱말 경계로 잰다("result", "ultra" 에 걸리면 안 된다).
-  if (/궁극기|궁(?=[\s을은이의로]|$)|\bult(?:i|imate)?\b|大招/i.test(question)) return "R";
+  if (/궁극기|궁(?=[\s을은이의로에만도]|$)|\bult(?:i|imate)?\b|大招/i.test(question)) return "R";
   const match = /(^|[^A-Za-z])([QWERqwer])($|[^A-Za-z])/.exec(question);
   return match ? match[2].toUpperCase() : undefined;
 }

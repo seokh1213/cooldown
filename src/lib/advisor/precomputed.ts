@@ -11,6 +11,7 @@ import type { ChampionCard } from "@/lib/knowledge/facts";
 import { labelSlots } from "./slotLabels";
 import { DIGEST_HEADINGS, FIGHT_TITLES } from "./prose";
 import { dataUrl } from "./context";
+import type { ScenarioCondition } from "./dialogueState";
 
 export type PrecomputedKey = "watch" | "build" | "fight" | "laning" | "combo" | "escape" | "phase" | "teamfight";
 export type PrecomputedPair = Partial<Record<PrecomputedKey, string>>;
@@ -73,6 +74,29 @@ export function precomputedMore(pair: PrecomputedPair, focus: string | undefined
     .slice(0, 3)
     .map((key) => `**${titleOf(key)}**\n${labelSlots(leadClean(pair[key]!), cards)}`)
     .join("\n\n");
+}
+
+/** 구체적인 질문은 해당 문단으로 답한다. 이유 질문은 같은 조건을 설명하는 주의 문단을 덧붙인다. */
+export function precomputedFocus(
+  pair: PrecomputedPair,
+  request: { focus?: string; reason?: boolean; conditions?: ScenarioCondition[] },
+  cards: ChampionCard[],
+  lang: Language = "ko_KR",
+): string | undefined {
+  const conditions = request.conditions ?? [];
+  let lead: PrecomputedKey = conditions.length && (request.focus === "skill" || request.focus === "general") ? "escape" : LEAD[request.focus ?? "general"] ?? "watch";
+  if ((lead === "escape" || lead === "watch") && conditions.some(c => c.owner === "enemy" && c.status === "ready") && pair.watch) lead = "watch";
+  if (request.focus === "general" && !conditions.length && !request.reason) return precomputedDigest(pair, request.focus, cards, lang);
+  if (!pair[lead]) return undefined;
+  const keys: PrecomputedKey[] = [lead];
+  if (request.reason && lead !== "watch" && pair.watch) keys.push("watch");
+  const heading = DIGEST_HEADINGS[lang] ?? DIGEST_HEADINGS.ko_KR;
+  const paragraphs = keys.map(key => {
+    const title = key === "watch" || key === "build" || key === "fight" ? heading[key] : (FIGHT_TITLES[lang] ?? FIGHT_TITLES.ko_KR)[TOPIC_OF[key] ?? ""] ?? heading.fight;
+    return `**${title}**\n${labelSlots(leadClean(pair[key]!), cards)}`;
+  });
+  const caption = lang === "ko_KR" && conditions.length ? `말씀하신 조건: ${conditions.map(c => `${c.owner === "mine" ? "내" : "상대"} ${c.slot} ${c.status === "ready" ? "사용 가능" : "재사용 대기 중"}`).join(" · ")}.` : undefined;
+  return [caption, ...paragraphs].filter(Boolean).join("\n\n");
 }
 
 const files = new Map<string, Promise<PrecomputedFile | undefined>>();

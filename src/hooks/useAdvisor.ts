@@ -18,6 +18,7 @@ import { deleteModelCache, fetchJudgeFile, pruneOtherModels } from "@/lib/adviso
 import { loadDocVectors, ranked, type DocVectors } from "@/lib/advisor/docVectors";
 import { questionLanguage } from "@/lib/advisor/questionLanguage";
 import type { AdvisorAnswer } from "@/lib/advisor/answer";
+import type { DialogueMemory } from "@/lib/advisor/dialogueState";
 import type { AdvisorFileProgress } from "@/lib/advisor/protocol";
 import { readJudgeHead, scoreJudge, type JudgeHead, type JudgeHeadMeta, type JudgeQuestion } from "@/lib/advisor/judge";
 import { useTranslation } from "@/i18n";
@@ -67,6 +68,8 @@ export interface UseAdvisorResult {
   search: (question: string, lang: string) => Promise<Array<{ id: string; score: number }>>;
   /** 모델 없이 코드가 만든 답을 그대로 보여 준다. 동의 전이나 WebGPU 가 없을 때 쓴다. */
   answerWithoutModel: (question: string, answer: string | AdvisorAnswer, notice?: string, related?: AdvisorTurn["related"]) => void;
+  /** 방금 확정한 답의 맥락을 대화 발화와 함께 남긴다. */
+  remember: (memory: DialogueMemory) => void;
   /**
    * 질문을 받자마자 말풍선 자리를 띄우고 "생각하는 중" 을 보인다. 답(`answerWithoutModel`·`respond`)이 이 자리를 채운다.
    * 판정기·노트 찾기가 1~3초 걸리는 동안 화면이 멈춘 것처럼 보이지 않게 한다. 이미 띄운 자리가 있으면 아무것도 안 한다.
@@ -124,6 +127,7 @@ export function useAdvisor(): UseAdvisorResult {
     appendChunk,
     completeReply,
     answerWithoutModel,
+    remember,
     rate,
     reset,
     replaceTurns,
@@ -328,6 +332,7 @@ export function useAdvisor(): UseAdvisorResult {
     judge,
     search,
     answerWithoutModel,
+    remember,
     begin,
     settle,
     working,

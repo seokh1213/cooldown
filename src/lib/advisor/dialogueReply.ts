@@ -1,0 +1,54 @@
+/** 대화 계획의 근거 문장을 조립한다. 이 단계는 새로운 게임 지식을 생성하지 않는다. */
+import type { Language } from "@/i18n";
+import { ruleLines } from "@/lib/knowledge/rules";
+import type { AdvisorAnswer } from "./answer";
+import type { AdvisorData } from "./context";
+import type { AnswerPlan } from "./plan";
+import { answerProse } from "./prose";
+import { buildMatchupReply } from "./matchupReply";
+import type { DialoguePlan } from "./dialoguePlanner";
+import type { DialogueMemory } from "./dialogueState";
+
+export interface DialogueReply {
+  answer?: AdvisorAnswer;
+  text: string;
+  memory: DialogueMemory;
+  notice?: string;
+  related?: Array<{ id: string; title: string }>;
+  respond?: Extract<AnswerPlan, { type: "respond" }>;
+}
+
+export function dialogueAnswerText(answer: AdvisorAnswer, lang: Language): string {
+  if (answer.kind === "text") return answer.text;
+  if (answer.kind === "rule") return (answer.highlighted.length ? answer.highlighted : ruleLines(answer.rule, lang)).join("\n");
+  const prose = answerProse(answer, lang);
+  if (answer.kind === "compare" && !prose) return answer.rows.map(row => `${row.label}: ${answer.cards.map((card, i) => `${card.name} ${row.values[i] || "—"}`).join(" · ")}`).join("\n");
+  if (answer.kind === "item" && !answer.askedPrice && answer.effects.length) return `${prose}\n${answer.effects.map(e => e.text).filter(Boolean).join("\n")}`;
+  return prose;
+}
+
+async function partReply(part: DialoguePlan["parts"][number], options: { data: AdvisorData; lang: Language; memory: DialogueMemory }): Promise<Omit<DialogueReply, "memory">> {
+  const { plan, question } = part;
+  const { data, lang, memory } = options;
+  if (plan.type === "respond") return { text: "", respond: plan };
+  if (plan.type === "retry") throw new Error("대화 계획은 오타 재시도를 먼저 풀어야 합니다");
+  if (plan.type === "matchup") {
+    const answer = await buildMatchupReply(data, lang, { question, mine: plan.mine, enemy: plan.enemy, focus: plan.focus, more: plan.more, scope: "topic", conditions: memory.conditions });
+    return { answer, text: dialogueAnswerText(answer, lang), notice: plan.notice };
+  }
+  const answer = plan.answer;
+  if (typeof answer === "string") return { text: answer, notice: plan.notice, related: plan.type === "code" ? plan.related : undefined };
+  return { answer, text: dialogueAnswerText(answer, lang), notice: plan.notice };
+}
+
+export async function assembleDialogueReply(dialogue: DialoguePlan, data: AdvisorData, lang: Language): Promise<DialogueReply> {
+  const memory = structuredClone(dialogue.memory);
+  const replies: Array<Omit<DialogueReply, "memory">> = [];
+  for (const part of dialogue.parts) replies.push(await partReply(part, { data, lang, memory }));
+  const unavailable = lang === "en_US" ? "I couldn't find supporting information for this part." : lang === "zh_CN" ? "这部分没有找到可用的资料。" : "이 부분은 근거 자료에서 답을 찾지 못했습니다.";
+  const text = replies.map((r, i) => r.text || (replies.length > 1 ? `${dialogue.parts[i].question}\n${unavailable}` : "")).filter(Boolean).join("\n\n");
+  if (dialogue.clarification) return { text: [text, dialogue.clarification].filter(Boolean).join("\n\n"), memory };
+  memory.lastReply = { question: dialogue.parts.map(p => p.question).join(" / "), text, focus: memory.matchup?.focus };
+  if (replies.length === 1) return { ...replies[0], memory };
+  return { text, memory };
+}

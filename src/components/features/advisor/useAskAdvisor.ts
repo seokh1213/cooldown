@@ -1,24 +1,25 @@
 /**
- * 질문을 받아 답을 낸다 — 답 고르기(`planAnswer`)를 부르고, 고른 길(`AnswerPlan`)대로 대화에 얹는다.
+ * 질문을 받아 코드 기억에서 대상을 복원하고, 질문별 검증 문장과 카드를 대화에 얹는다.
  *
  * 오타 후보·관점을 고르면 원래 질문을 고쳐 다시 묻는다. 그 원래 질문을 여기서 들고 있다.
  */
 import { useRef } from "react";
-import { useTranslation, type Language } from "@/i18n";
+import { useTranslation } from "@/i18n";
 import { fill } from "@/i18n/fill";
 import type { UseAdvisorResult } from "@/hooks/useAdvisor";
 import type { AdvisorData } from "@/lib/advisor/context";
-import { buildCompareAnswer as buildCompareCard, type AdvisorAnswer } from "@/lib/advisor/answer";
-import { matchupNotes } from "@/lib/advisor/playbookNotes";
+import type { AdvisorAnswer } from "@/lib/advisor/answer";
 import { suggestChampions } from "@/lib/advisor/championTypo";
 import { nicknames } from "@/lib/advisor/intent";
-import { loadPrecomputed, precomputedDigest, precomputedMore } from "@/lib/advisor/precomputed";
 import { planAnswer, type AnswerPlan, type JudgeTier, type PlanDeps } from "@/lib/advisor/plan";
+import { planDialogue } from "@/lib/advisor/dialoguePlanner";
+import { assembleDialogueReply } from "@/lib/advisor/dialogueReply";
+import { buildMatchupReply } from "@/lib/advisor/matchupReply";
+import { dialogueMemoryOf, rememberAnswer } from "@/lib/advisor/dialogueState";
 import { offlineJudge } from "@/lib/advisor/offlineJudge";
 import { fetchJudgeFile } from "@/lib/advisor/storage";
 import { docAnswer } from "@/lib/advisor/questionDocs";
 import { josa } from "@/lib/knowledge/text";
-import type { ChampionCard } from "@/lib/knowledge/facts";
 
 interface AskAdvisorOptions {
   advisor: UseAdvisorResult;
@@ -59,19 +60,21 @@ export function useAskAdvisor({ advisor, data, championIds, canUseModel }: AskAd
   // 오타 후보를 물었을 때의 원래 질문. 고르면 그 말만 바꿔 다시 묻는다.
   const pendingQuestion = useRef<string>("");
 
-  const deliverMatchup = async (question: string, mine: ChampionCard, enemy: ChampionCard, notice?: string, focus?: string, more = false) => {
-    if (!data) return;
-    advisor.answerWithoutModel(question, await matchupAnswer(data, lang, question, mine, enemy, focus, more), notice);
-  };
-
   // 카드 위 해설은 모델이 쓰지 않는다. 답은 코드가 노트로 조립한다(`answerProse`).
   const deliver = (question: string, answer: AdvisorAnswer, notice?: string) => advisor.answerWithoutModel(question, answer, notice);
 
   /** "혹시 이 자료를?" 에서 고른 자료를 보인다. 검색을 다시 돌리지 않는다. */
   const showDoc = (id: string, title: string) => {
     const answer = data ? docAnswer(data, lang, id, title) : undefined;
-    if (typeof answer === "string") advisor.answerWithoutModel(title, answer);
-    else if (answer) deliver(title, answer);
+    if (!data || !answer) return;
+    const previous = dialogueMemoryOf(advisor.turns, data);
+    if (typeof answer === "string") {
+      advisor.answerWithoutModel(title, answer);
+      advisor.remember({ ...previous, active: "rule", rule: { title, text: answer } });
+    } else {
+      deliver(title, answer);
+      advisor.remember(rememberAnswer(previous, answer));
+    }
   };
 
   /** 오타를 고쳐 다시 들어올 수 있어 submit 과 분리했다. */
@@ -81,23 +84,26 @@ export function useAskAdvisor({ advisor, data, championIds, canUseModel }: AskAd
     // 모델을 받아 동의한 기기는 모델 판정기(거절하면 오프라인), 그 밖은 오프라인 판정기. 판정기가 아예 없는 길은 앱에 없다.
     const judge: JudgeTier = canUseModel && advisor.consented ? "model" : "offline";
     try {
-      const plan = await planAnswer(
-        question,
-        {
-          data,
-          lang,
-          copy,
-          turns: advisor.turns,
-          championIds,
-          consented: advisor.consented,
-          canUseModel,
-          retrieval: Boolean(advisor.model.retrieval),
-          judge,
-          notice,
-        },
-        { judge: judge === "model" ? modelThenOffline(advisor.judge) : offline, search: advisor.search },
-      );
-      await execute(question, plan);
+      const ctx = {
+        data,
+        lang,
+        copy,
+        turns: advisor.turns,
+        championIds,
+        consented: advisor.consented,
+        canUseModel,
+        retrieval: Boolean(advisor.model.retrieval),
+        judge,
+        notice,
+      };
+      const deps = { judge: judge === "model" ? modelThenOffline(advisor.judge) : offline, search: advisor.search };
+      if (!data) { await execute(question, await planAnswer(question, ctx, deps)); return; }
+      const dialogue = await planDialogue(question, ctx, deps, "combined");
+      if (dialogue.parts.some(p => p.plan.type === "code" && p.plan.pending)) pendingQuestion.current = question;
+      const reply = await assembleDialogueReply(dialogue, data, lang);
+      if (reply.respond) advisor.respond(question, reply.respond.plan);
+      else advisor.answerWithoutModel(question, reply.answer ?? reply.text, reply.notice ?? notice, reply.related);
+      advisor.remember(reply.memory);
     } finally {
       advisor.settle();
     }
@@ -109,7 +115,7 @@ export function useAskAdvisor({ advisor, data, championIds, canUseModel }: AskAd
         deliver(question, plan.answer, plan.notice);
         return;
       case "matchup":
-        await deliverMatchup(question, plan.mine, plan.enemy, plan.notice, plan.focus, plan.more);
+        if (data) advisor.answerWithoutModel(question, await buildMatchupReply(data, lang, { question, mine: plan.mine, enemy: plan.enemy, focus: plan.focus, more: plan.more }), plan.notice);
         return;
       case "code":
         if (plan.pending) pendingQuestion.current = question;
@@ -156,59 +162,4 @@ export function useAskAdvisor({ advisor, data, championIds, canUseModel }: AskAd
   };
 
   return { ask, showDoc, askPerspective, pickChampion };
-}
-
-/**
- * 상성 카드 + 내 챔피언 시점 해설. 재료는 사람이 검증한 지식 카드만.
- *
- * **모델 크기로 갈래를 두지 않는다.**
- *
- * 한때 가벼운 모델에게는 해설을 맡기지 않았다. 0.8B 가 상성에서 카드를 통째로
- * 되읊길래 뺐는데, 그러면 상성 질문에 카드만 뜨고 한 글자도 안 나온다. 모델을
- * 올려 두었는데 말을 안 하는 것은 고장으로 보인다.
- *
- * 그래서 모델마다 재료를 달리 주는 쪽을 재 봤다. 스킬 표를 빼고 할 일을 두세
- * 문장으로 좁히는 판본이다. 0.8B 는 덜 망가졌지만(걷어냄 71 → 48, 고리 5 → 1)
- * 나아진 것이 아니라 조용해진 것이었다 — 남은 문장의 54% 가 노트 베끼기이고
- * 시점 놓침은 오히려 가장 나빴다(5/14). 같은 판본을 4B 에 주니 529 자 답이
- * 194 자로 깎였다. 좋은 모델을 망가뜨려 나쁜 모델을 덜 티 나게 만드는 거래다.
- *
- * 게다가 저 `고리 5` 는 재는 도구 탓이 크다. 워커에는 같은 문장이 세 번 나오면
- * 끊는 장치가 있는데 평가 하네스에는 없다.
- *
- * 모델과 무관한 장치가 뒤를 받친다 — 근거 검사가 틀린 문장을 걷어내고 슬롯을
- * 바로잡으며, 워커가 반복을 끊는다.
- *
- * 가벼운 모델(0.8B)은 **해설을 쓰지 않는다.** 칸 나눠 쓰기, 짧은 프롬프트와 예시,
- * 바꿔 쓰기, int8 판본까지 재 봤지만 14쌍 1~5점 채점에서 전부 1~2점이었다. 대신
- * 검증된 노트를 코드가 골라 조립한다(`matchupDigest`, 3.8점). 모델이 없는 기기와 같은
- * 길이다. 0.8B 는 판정기로만 쓴다(`judge.ts`). (4B 를 쓰던 때에는 4B 가 그대로 해설을 썼다.)
- */
-async function matchupAnswer(
-  data: AdvisorData,
-  lang: Language,
-  question: string,
-  mine: ChampionCard,
-  enemy: ChampionCard,
-  focus: string | undefined,
-  more: boolean,
-): Promise<AdvisorAnswer> {
-  const notes = matchupNotes(data, mine, enemy, lang);
-  if (notes.plan && focus) notes.plan.focus = focus;
-  if (notes.plan) notes.plan.question = question;
-  const answer = buildCompareCard([mine, enemy], question, undefined, { matchup: true, notes, lang });
-  // 미리 써 둔 답이 있으면 그것을 보인다. 없으면 아래에서 노트를 조립한다.
-  if (answer.kind === "compare") {
-    answer.more = more || undefined;
-    const pair = (await loadPrecomputed(data.patch, mine.id, lang))?.pairs[enemy.id];
-    // "더 자세히" 는 처음 답에 싣지 않은 칸을 보인다. 남은 칸이 없으면 노트를 펼친다.
-    const text = pair
-      ? more
-        ? precomputedMore(pair, notes.plan?.focus, [mine, enemy], lang)
-        : precomputedDigest(pair, notes.plan?.focus, [mine, enemy], lang)
-      : undefined;
-    // 큰 모델이 검증된 재료로 미리 쓴 글이다
-    if (text) answer.precomputed = text;
-  }
-  return answer;
 }
