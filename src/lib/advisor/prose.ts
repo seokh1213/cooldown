@@ -121,6 +121,7 @@ export function answerProse(answer: AdvisorAnswer, lang: Language = "ko_KR"): st
   }
 
   if (answer.kind === "champion") {
+    if (answer.statQuery && answer.headline) return w.is(answer.headline.label, answer.headline.value);
     const name = answer.card.name;
     const focus = answer.focus;
     if (focus) {

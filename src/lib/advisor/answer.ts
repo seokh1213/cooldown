@@ -15,6 +15,8 @@ import type { Language } from "@/i18n";
 import { translations } from "@/i18n/translations";
 import type { SelectedNotes } from "./noteSelect";
 import { detectSpellFocus, type SpellFocus } from "./spellFocus";
+import { detectStat, detectLevel, type ChampionStatQuery } from "./statQuery";
+export { detectStat, detectLevel } from "./statQuery";
 import {
   cardLabels,
   promptWords,
@@ -69,6 +71,8 @@ export type AdvisorAnswer =
   | {
       kind: "champion";
       card: ChampionCard;
+      statQuery?: ChampionStatQuery;
+      headline?: Fact;
       /** "말파이트 스킬 쿨타임" 처럼 슬롯 없이 사실 하나를 물으면 스킬 다섯 개의 그 사실만 */
       focus?: SpellFocus;
       /** "스킬 설명해줘": 능력치 대신 스킬 다섯 개의 요약 */
@@ -103,6 +107,7 @@ export type AdvisorAnswer =
        */
       kind: "compare";
       cards: ChampionCard[];
+      statQuery?: ChampionStatQuery;
       /** 능력치 비교면 어느 레벨 값인지 */
       level?: 1 | 6 | 11 | 18;
       /** 스킬 비교면 슬롯 */
@@ -359,9 +364,9 @@ export function answerKey(answer: AdvisorAnswer): string {
     case "spell":
       return `spell:${answer.championId}:${answer.spell.slot}`;
     case "champion":
-      return `champion:${answer.card.id}:${answer.view ?? ""}:${answer.focus ?? ""}`;
+      return `champion:${answer.card.id}:${answer.view ?? ""}:${answer.focus ?? ""}:${answer.statQuery?.field ?? ""}:${answer.statQuery?.level ?? ""}`;
     case "compare":
-      return `compare:${answer.cards.map((card) => card.id).join(",")}:${answer.slot ?? ""}:${answer.matchup ? "m" : ""}`;
+      return `compare:${answer.cards.map((card) => card.id).join(",")}:${answer.slot ?? ""}:${answer.matchup ? "m" : ""}:${answer.statQuery?.field ?? ""}:${answer.level ?? ""}`;
     case "rule":
       return `rule:${answer.rule.name}`;
     case "item":
@@ -404,37 +409,6 @@ export function spellFocusValue(spell: SpellFact, focus: SpellFocus, lang: Langu
 
 // ── 비교 ──────────────────────────────────────────────────────────────
 
-/** 능력치를 가리키는 말. FOCUS_LEXICON 과 같은 성격의 의도 어휘고, 역시 세 언어를 담는다. */
-const STAT_LEXICON: Array<[StatName, RegExp]> = [
-  ["healthRegen", /체력\s*재생|체젠|health\s*regen|生命(值)?回复/i],
-  ["magicResist", /마법\s*저항|마저|마방|magic\s*resist|\bmr\b|魔抗|魔法抗性/i],
-  ["attackSpeed", /공격\s*속도|공속|attack\s*speed|\bas\b|攻(击)?速(度)?/i],
-  ["moveSpeed", /이동\s*속도|이속|무빙|빨라|빠르|빠른|move(ment)?\s*speed|\bms\b|\bfaster\b|移动速度|移速|更快/i],
-  ["attackDamage", /공격력|깡뎀|\bad\b|attack\s*damage|攻击力/i],
-  ["armor", /방어력|방어|아머|\barmor\b|护甲/i],
-  ["health", /체력|피통|단단|튼튼|탱키|\bhp\b|\bhealth\b|\btank(y|ier)\b|生命值|更肉|坦/i],
-];
-
-export function detectStat(question: string): StatName | undefined {
-  // 긴 것이 먼저 걸려야 한다. "체력 재생" 은 "체력" 을, "magic resist" 는 "resist" 를 품는다.
-  return STAT_LEXICON.find(([, pattern]) => pattern.test(question))?.[0];
-}
-
-/**
- * 질문이 가리킨 레벨. 없으면 1레벨. 자료가 1·6·11·18 만 있다.
- *
- * 숫자는 언어를 안 타지만 그 옆에 붙는 말은 탄다. 한국어만 적어 두었더니
- * "at level 18", "18级" 이 모두 1레벨로 떨어졌다.
- */
-const LEVEL_WORD = String.raw`\s*(레벨|렙|level|lv\.?|급|级)`;
-export function detectLevel(question: string): 1 | 6 | 11 | 18 {
-  if (/만렙|풀\s*레벨|후반|max\s*level|full\s*build|满级/i.test(question)) return 18;
-  if (new RegExp(`18${LEVEL_WORD}|level\\s*18|lv\\.?\\s*18`, "i").test(question)) return 18;
-  if (new RegExp(`11${LEVEL_WORD}|level\\s*11|lv\\.?\\s*11`, "i").test(question)) return 11;
-  if (new RegExp(`6${LEVEL_WORD}|level\\s*6|lv\\.?\\s*6`, "i").test(question)) return 6;
-  return 1;
-}
-
 function levelKey(level: 1 | 6 | 11 | 18): "lv1" | "lv6" | "lv11" | "lv18" {
   return `lv${level}` as "lv1" | "lv6" | "lv11" | "lv18";
 }
@@ -467,7 +441,7 @@ export function buildCompareAnswer(
   cards: ChampionCard[],
   question: string,
   slot?: string,
-  options: { matchup?: boolean; notes?: MatchupNotes; lang?: Language } = {},
+  options: { matchup?: boolean; notes?: MatchupNotes; lang?: Language; statQuery?: ChampionStatQuery } = {},
 ): AdvisorAnswer {
   const lang = options.lang ?? "ko_KR";
   const w = cardLabels(lang);
@@ -518,14 +492,14 @@ export function buildCompareAnswer(
     if (rows.length) return { kind: "compare", cards, rows };
   }
 
-  const level = detectLevel(question);
-  const asked = detectStat(question);
+  const level = options.statQuery?.level ?? detectLevel(question);
+  const asked = options.statQuery?.field ?? detectStat(question);
   const key = levelKey(level);
   const stats: StatName[] = asked && !CARD_STATS.includes(asked) ? [...CARD_STATS, asked] : CARD_STATS;
   const rows: CompareRow[] = stats.map((stat) => {
     const numbers = cards.map((card) => card.stats[stat]?.[key]);
     return {
-      label: translateStat(stat, lang),
+      label: stat === "healthRegen" ? `${translateStat(stat, lang)} (${lang === "ko_KR" ? "5초당" : lang === "en_US" ? "per 5s" : "每5秒"})` : translateStat(stat, lang),
       values: numbers.map((n) => (n === undefined ? "" : String(n))),
       hit: stat === asked,
       winner: argmax(numbers),
@@ -536,7 +510,7 @@ export function buildCompareAnswer(
   if (hit) {
     // 큰 쪽부터. "말파이트 665 > 럼블 640", 동률은 "=".
     const order = cards
-      .map((card, i) => ({ name: card.name, value: Number(hit.values[i]) }))
+      .map((card, i) => ({ name: card.name, value: hit.values[i] === "" ? NaN : Number(hit.values[i]) }))
       .filter((entry) => Number.isFinite(entry.value))
       .sort((a, b) => b.value - a.value);
     const value = order
@@ -544,7 +518,8 @@ export function buildCompareAnswer(
       .join(" ");
     headline = { label: `${hit.label} (${w.level(level)})`, value };
   }
-  return { kind: "compare", cards, level, rows, headline };
+  const statQuery = options.statQuery ?? (asked ? { kind: "championStat" as const, champions: cards.map(card => card.id), field: asked, level } : undefined);
+  return { kind: "compare", cards, level, rows, headline, statQuery };
 }
 
 /**

@@ -4,6 +4,7 @@ import type { AdvisorData } from "./context";
 import { detectSpellFocus, type SpellFocus } from "./spellFocus";
 import type { AnswerPlan } from "./planTypes";
 import type { FactResolution } from "./dialogueFacts";
+import { statQueryFromAnswer, isStatLevel, type ChampionStatQuery } from "./statQuery";
 export { scenarioConditions } from "./scenarioConditions";
 
 export interface SpellReference { champion: string; slot: string; focus?: SpellFocus; relation?: "penetration" }
@@ -16,10 +17,12 @@ export interface ScenarioCondition {
 }
 export interface DialogueMemory {
   patch: string;
-  active?: "matchup" | "spell" | "compare" | "item" | "rule";
+  active?: "matchup" | "champion" | "spell" | "compare" | "stat" | "item" | "rule";
+  champion?: string;
   matchup?: { mine: string; enemy: string; focus?: string; shownTopics?: string[] };
   spell?: SpellReference;
   compared?: string[];
+  stat?: ChampionStatQuery;
   item?: string;
   rule?: { id?: string; title: string; text: string };
   numeric?: { haste?: number; rank?: number };
@@ -41,7 +44,9 @@ export function emptyDialogue(patch: string): DialogueMemory {
 function validMemory(memory: DialogueMemory, data: AdvisorData): boolean {
   if (memory.patch !== data.patch || !Array.isArray(memory.conditions)) return false;
   if (memory.matchup && (!data.cardById.has(memory.matchup.mine) || !data.cardById.has(memory.matchup.enemy))) return false;
+  if (memory.champion && !data.cardById.has(memory.champion)) return false;
   if (memory.spell && !data.cardById.get(memory.spell.champion)?.spells.some(s => s.slot === memory.spell!.slot)) return false;
+  if (memory.stat && (!isStatLevel(memory.stat.level) || !memory.stat.champions.length || memory.stat.champions.some(id => !data.cardById.has(id)))) return false;
   return true;
 }
 
@@ -54,6 +59,10 @@ export function dialogueMemoryOf(turns: readonly DialogueHistoryTurn[], data: Ad
     if (turn.role !== "assistant") continue;
     if (turn.memory && validMemory(turn.memory, data)) memory = structuredClone(turn.memory);
     else if (turn.answer) memory = rememberAnswer(memory, turn.answer);
+    if (memory.active === "compare" && !memory.stat && turn.answer) {
+      const stat = statQueryFromAnswer(turn.answer);
+      if (stat) memory = rememberAnswer(memory, turn.answer);
+    }
     if (turn.content) memory.lastReply = { question, text: turn.content, focus: memory.matchup?.focus };
   }
   return memory;
@@ -61,6 +70,15 @@ export function dialogueMemoryOf(turns: readonly DialogueHistoryTurn[], data: Ad
 
 export function rememberAnswer(previous: DialogueMemory, answer: AdvisorAnswer): DialogueMemory {
   const memory = structuredClone(previous);
+  const stat = statQueryFromAnswer(answer);
+  if (stat) {
+    memory.stat = structuredClone(stat);
+    memory.compared = stat.champions.length > 1 ? [...stat.champions] : undefined;
+    memory.spell = undefined;
+    memory.pending = undefined;
+    memory.active = "stat";
+    return memory;
+  }
   if (answer.kind === "compare" && answer.matchup) {
     const [mine, enemy] = answer.cards;
     const changed = memory.matchup?.mine !== mine.id || memory.matchup.enemy !== enemy.id;
@@ -76,6 +94,12 @@ export function rememberAnswer(previous: DialogueMemory, answer: AdvisorAnswer):
     memory.compared = answer.cards.map(card => card.id);
     memory.spell = answer.slot ? { champion: answer.cards[0].id, slot: answer.slot, focus: answer.focus } : undefined;
     memory.active = answer.slot ? "spell" : "compare";
+    memory.pending = undefined;
+  } else if (answer.kind === "champion") {
+    memory.champion = answer.card.id;
+    memory.active = "champion";
+    memory.compared = undefined;
+    memory.spell = undefined;
     memory.pending = undefined;
   } else if (answer.kind === "item") {
     memory.item = answer.itemId;

@@ -42,6 +42,13 @@ export function ChampionAnswerCard({
     <ChampionIcon id={card.id} ddragonVersion={ddragonVersion} className="block h-9 w-9 shrink-0 rounded-md" />
   );
   const footer = <PatchLinkFooter patch={patch} to={`/vs?a=${card.id}`} label={copy.openInVs} onNavigate={onNavigate} />;
+  if (answer.statQuery && answer.headline) {
+    return (
+      <Frame icon={header} title={card.name} subtitle={copy.stats} tool={copy.champion} footer={footer}>
+        <KvTable rows={[{ ...answer.headline, hit: true }]} />
+      </Frame>
+    );
+  }
   // "말파이트 스킬 쿨타임": 스킬 다섯 개의 그 사실만. 능력치도 운용 노트도 없다 —
   // 수치 하나를 물은 자리에 노트를 얹었더니 무엇을 답한 것인지 흐려졌다.
   if (answer.focus) {

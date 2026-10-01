@@ -11,6 +11,7 @@ import type { AdvisorData } from "./context";
 import type { NotePerspective } from "./noteSelect";
 import type { AdvisorTurn } from "@/hooks/useAdvisorTurns";
 import type { DialogueMemory } from "./dialogueState";
+import type { ChampionStatQuery } from "./statQuery";
 
 export const CONVERSATIONS_KEY = "cooldown.advisor.conversations.v1";
 /** 남기는 대화 수. 넘으면 오래된 것부터 버린다. */
@@ -32,6 +33,8 @@ export type StoredAnswer =
   | {
       kind: "champion";
       cardId: string;
+      statQuery?: ChampionStatQuery;
+      headline?: Fact;
       focus?: SpellFocus;
       view?: "skills";
       /**
@@ -46,6 +49,7 @@ export type StoredAnswer =
   | {
       kind: "compare";
       cardIds: string[];
+      statQuery?: ChampionStatQuery;
       level?: 1 | 6 | 11 | 18;
       slot?: string;
       focus?: SpellFocus;
@@ -104,7 +108,7 @@ export function dehydrateAnswer(answer: AdvisorAnswer): StoredAnswer {
         highlighted: answer.highlighted,
       };
     case "champion":
-      return { kind: "champion", cardId: answer.card.id, focus: answer.focus, view: answer.view, notes: answer.notes };
+      return { kind: "champion", cardId: answer.card.id, focus: answer.focus, view: answer.view, notes: answer.notes, statQuery: answer.statQuery, headline: answer.headline };
     case "rule":
       return { kind: "rule", ruleName: answer.rule.name, highlighted: answer.highlighted, rest: answer.rest };
     case "suggestion":
@@ -118,6 +122,7 @@ export function dehydrateAnswer(answer: AdvisorAnswer): StoredAnswer {
       return {
         kind: "compare",
         cardIds: answer.cards.map((card) => card.id),
+        statQuery: answer.statQuery,
         level: answer.level,
         slot: answer.slot,
         focus: answer.focus,
@@ -163,7 +168,7 @@ export function reviveAnswer(stored: StoredAnswer, data: AdvisorData): AdvisorAn
       const card = data.cardById.get(stored.cardId);
       if (!card) return undefined;
       const notes = stored.notes ? { ...stored.notes, perspective: stored.notes.perspective ?? ("both" as const) } : undefined;
-      return { kind: "champion", card, focus: stored.focus, view: stored.view, notes };
+      return { kind: "champion", card, focus: stored.focus, view: stored.view, notes, statQuery: stored.statQuery, headline: stored.headline };
     }
     case "rule": {
       const rule = data.ruleIndex.get(stored.ruleName);
@@ -181,6 +186,7 @@ export function reviveAnswer(stored: StoredAnswer, data: AdvisorData): AdvisorAn
       return {
         kind: "compare",
         cards: cards as NonNullable<(typeof cards)[number]>[],
+        statQuery: stored.statQuery,
         level: stored.level,
         slot: stored.slot,
         focus: stored.focus,
