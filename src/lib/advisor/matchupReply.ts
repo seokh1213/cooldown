@@ -70,9 +70,10 @@ export function composeMatchupReply(data: AdvisorData, lang: Language, request: 
   if (reply.answer.kind !== "compare") return reply;
   const text = reply.answer.precomputed ?? answerProse(reply.answer, lang);
   const checked = conditionMatchupText(data, lang, request, text);
-  if (!checked.rejected) return reply;
+  if (checked.text === text) return reply;
   const blocks = text.split(/\n\s*\n/).filter(block => block.startsWith("**"));
-  const topics = reply.topics.filter((_, i) => blocks[i] && checked.text.includes(blocks[i]));
+  const blockIndices = text.split(/\n\s*\n/).flatMap((block, i) => block.startsWith("**") ? [i] : []);
+  const topics = reply.topics.filter((_, i) => blocks[i] && (checked.retainedBlocks?.includes(blockIndices[i]) || checked.text.includes(blocks[i])));
   return { answer: { ...reply.answer, precomputed: checked.text }, topics: [...new Set([...topics, ...checked.topics])] };
 }
 

@@ -9,6 +9,7 @@ import { asksReason } from "../../../src/lib/advisor/askWords";
 import { topicFromWords } from "../../../src/lib/advisor/topicJudge";
 import { adviceUnit, actionEligible, type ActionRequirement } from "../../../src/lib/advisor/adviceActions";
 import { conditionMatchupText } from "../../../src/lib/advisor/conditionedMatchup";
+import { checkMatchupFacts } from "../../../src/lib/advisor/matchupFactCheck";
 
 type Condition = Pick<ScenarioCondition, "owner" | "slot" | "status">;
 type Source = { kind: "bank"; key: PrecomputedKey }
@@ -42,7 +43,7 @@ export interface DecisionRequest {
   focus?: string;
   continuation?: "explain" | "advance";
 }
-export interface DecisionResult { text: string; atom?: string; fallback?: "scope" | "condition" | "source-drift"; rejected?: number; alternatives?: number; abstained?: boolean }
+export interface DecisionResult { text: string; atom?: string; fallback?: "scope" | "condition" | "source-drift" | "source-claim"; rejected?: number; alternatives?: number; abstained?: boolean }
 
 const hash = (text: string) => createHash("sha256").update(text).digest("hex").slice(0, 16);
 
@@ -140,6 +141,7 @@ export function selectDecisionAnswer(data: AdvisorData, atoms: DecisionAtom[], r
   if (![...atom.reason, ...atom.action].every(evidence => evidenceIsCurrent(data, request, evidence))) {
     return fallback("source-drift");
   }
+  if ([...atom.reason, ...atom.action].some(e => checkMatchupFacts(e.quote, [mine, enemy]).length)) return fallback("source-claim");
   const conditions = request.memory.conditions.map(c => `${c.owner === "enemy" ? "상대" : "내"} ${c.slot} ${c.status === "down" ? "재사용 대기 중" : "사용 가능"}`).join(" · ");
   const caption = conditions ? `말씀하신 조건: ${conditions}.\n\n` : "";
   const reason = atom.reason.map(item => item.quote).join(" ");

@@ -10,7 +10,11 @@ export interface DialogueRequest { questions: string[]; memory: DialogueMemory; 
 export function splitDialogueQuestions(question: string): string[] {
   const pieces = question.split(/(?:알려주고|설명해주고)\s*[,，]?\s*|[,;]\s*(?:그리고|추가로)?\s*|\n+(?:그리고\s*)?|\s+그리고\s+|\s+and also\s+|另外|还有/i).map(q => q.trim()).filter(Boolean);
   if (pieces.length < 2 || pieces.length > 3) return [question];
-  const asks = /[QWER]|궁|쿨|정복자|점화|템|효과|가격|한타|라인전|어떻게|알려|ability|cooldown|rune|item|技能|冷却|团战/i;
+  const asks = /(?<![A-Za-z])[QWER](?![A-Za-z])|궁|쿨|정복자|점화|템|효과|가격|한타|라인전|어떻게|알려|ability|cooldown|rune|item|技能|冷却|团战/i;
+  const stateOnly = (text: string) => /(?<![A-Za-z])[QWER](?![A-Za-z])/i.test(text)
+    && /없|빠졌|빠진|돌아왔|사용\s*가능|재사용\s*대기\s*중|is down|available|冷却中|可用/i.test(text)
+    && !/\?|？|알려|설명|어떻게|언제|how|what|when|怎么|多少/i.test(text);
+  if (pieces.some(stateOnly)) return [question];
   return pieces.every(q => asks.test(q)) ? pieces : [question];
 }
 

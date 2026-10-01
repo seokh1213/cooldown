@@ -19,8 +19,8 @@ import type { AdvisorAnswer } from "../../../src/lib/advisor/answer";
 const directory = "research/llm-evals/atoms/action-conditions";
 type Mode = "before" | "guarded" | "guardedAtoms";
 type MemoryPolicy = "baseline-shared" | "independent";
-interface Question { q: string; want: Record<string, unknown>; must?: string[]; avoid?: string[]; conditions?: Array<["mine" | "enemy", string, "ready" | "down"]> }
-interface Case { id: string; lang?: Language; holdout?: boolean; turns: Question[] }
+export interface Question { q: string; want: Record<string, unknown>; must?: string[]; avoid?: string[]; conditions?: Array<["mine" | "enemy", string, "ready" | "down"]> }
+export interface Case { id: string; lang?: Language; holdout?: boolean; turns: Question[] }
 interface Output {
   text: string; plan: Record<string, unknown>; memory: DialogueMemory; route?: boolean;
   checks: Array<{ label: string; pass: boolean }>; conditions: Array<{ label: string; pass: boolean }>;
@@ -37,7 +37,7 @@ const knownFailures: Record<string, RegExp> = {
   "h04:2": /E 매혹(?:을|으로).*?(맞히|맞힙|끊)/s,
 };
 
-function pairFor(mine: string, enemy: string, lang: Language) {
+export function pairFor(mine: string, enemy: string, lang: Language) {
   const key = `${mine}:${lang}`;
   if (!banks.has(key)) {
     const file = lang === "ko_KR" ? `${mine}.json` : `${mine}.${lang}.json`;
@@ -48,7 +48,7 @@ function pairFor(mine: string, enemy: string, lang: Language) {
   return banks.get(key)!.pairs[enemy];
 }
 
-function describe(plan: AnswerPlan): Record<string, unknown> {
+export function describe(plan: AnswerPlan): Record<string, unknown> {
   if (plan.type === "matchup") return { kind: "matchup", mine: plan.mine.id, enemy: plan.enemy.id, focus: plan.focus };
   if (plan.type === "respond" || plan.type === "retry") return { kind: plan.type };
   if (typeof plan.answer === "string") return { kind: "code" };
@@ -59,7 +59,7 @@ function describe(plan: AnswerPlan): Record<string, unknown> {
   return { kind: a.kind };
 }
 
-function diagnostics(entry: Question, id: string, turn: number, text: string) {
+export function diagnostics(entry: Question, id: string, turn: number, text: string) {
   const bad = knownFailures[`${id}:${turn}`];
   return [...checksFor(id, turn).map(c => ({ label: c.label, pass: c.test(text) })),
     ...(entry.must ?? []).map(p => ({ label: `필요: ${p}`, pass: new RegExp(p, "s").test(text) })),

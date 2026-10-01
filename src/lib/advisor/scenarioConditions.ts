@@ -5,7 +5,7 @@ type Owner = ScenarioCondition["owner"];
 interface Reference { index: number; end: number; slot: string; owner?: Owner }
 interface ConditionHint { owner?: Owner; spells?: Array<{ owner: Owner; slot: string; name: string }> }
 const DOWN = /빠졌|빠진|빠지면|없(?:으면|고|어|는데|는)|재사용\s*대기\s*중|쿨타임(?:이|은)?\s*(?:중|돌)|is down|on cooldown|没了|冷却中/gi;
-const READY = /살아|남아|(?:는|가)\s*있|있(?:고|으면|어)|돌아왔|준비|사용\s*가능|(?:이|가)\s*(?:오면|들어오)|is up|available|还在|有技能/gi;
+const READY = /살아|남아|(?:는|가)\s*있|있(?:고|으면|어)|돌아왔|준비|사용\s*가능|(?:이|가)\s*(?:오면|들어오)|is up|available|还在|有技能|可用/gi;
 
 function references(question: string, hint?: ConditionHint): Reference[] {
   const rows: Reference[] = [];

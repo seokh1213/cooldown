@@ -77,3 +77,8 @@ Codex 라벨로 거른 판을 Codex 만 높게 본다(자기 선호). Claude 기
 
 결과 파일: `judge-rep-*`(E1) · `judge-e2*-*`(E2) · `judge-e4-*` · `relevance-oracle.json`(E4) ·
 `judge-e5-*`(포함 문장 제거 후) · `lang-*`, `lang3-*`(E3).
+
+## 후속 개선
+
+[답변 직접성과 로컬 실행 속도](answer-quality/README.md): 기존 228턴과 새 20턴,
+조건에 맞는 행동 대안·원문 검증·0.8B 로컬 노트 선택 실험.
