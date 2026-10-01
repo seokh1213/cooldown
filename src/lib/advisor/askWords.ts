@@ -162,3 +162,10 @@ function championKind(question: string, champions: number): AskKind | undefined 
   if (asksSpellNumbers(question)) return "spellStat";
   return undefined;
 }
+
+/** 주제 없는 조언과 스킬을 상대하는 질문은 모든 계획기가 같은 문형을 쓴다. */
+export const GENERIC_ADVICE = /^\s*(팁|꿀팁|조언|요령|도움)(\s*(좀|더|있어|있나|없어|없나|줘|주세요|부탁|해줘|알려줘))*\s*[?？!.]*\s*$|^\s*(any\s+)?(tips?|advice|help)\s*(pls|please)?\s*[?!.]*\s*$|^\s*(有)?(什么)?(建议|技巧|攻略)(吗|呢)?\s*[?？]*\s*$/i;
+const SPELL_HANDLING = /(어떻게|어케|언제|뭐로)\s*\S*\s*(빼|피하|피해(?!량)|막|대처|대응|받아|흘리)|(빼|피하|막|대처하)는\s*(법|방법|요령)|\b(dodge|avoid|bait|play around|deal with|counter|block)\b|怎么(躲|骗|应对|处理|防)|如何(躲|骗|应对)/i;
+export const asksGenericAdvice = (question: string): boolean => GENERIC_ADVICE.test(question);
+export const asksSkillHandling = (question: string): boolean => SPELL_HANDLING.test(question);
+export const asksReason = (question: string): boolean => /(?:^|\s)왜(?=\s|[?？]|$)|어째서|이유|\bwhy\b|为什么/i.test(question);

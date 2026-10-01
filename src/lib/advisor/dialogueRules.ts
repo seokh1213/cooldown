@@ -1,5 +1,6 @@
 /** 문서의 공식으로 계산할 수 있는 규칙과, 없는 지식을 다른 문서로 대신하지 않는 범위 처리. */
 import type { AnswerPlan, PlanContext } from "./plan";
+import type { DialogueMemory } from "./dialogueState";
 
 const rulePlan = (title: string, text: string): AnswerPlan => ({ type: "code", answer: `### ${title}\n${text}` });
 
@@ -23,4 +24,12 @@ export function resolveDialogueRule(question: string, ctx: PlanContext): AnswerP
     return rulePlan("프리징", "현재 자료에는 프리징을 푸는 절차가 정리되어 있지 않습니다. 내 챔피언과 상대 챔피언을 알려주면 저장된 라인전 조언을 찾아드릴 수 있습니다.");
   }
   return undefined;
+}
+
+export function ruleEllipsis(question: string, memory: DialogueMemory, ctx: PlanContext): AnswerPlan | undefined {
+  if (ctx.lang !== "ko_KR" || memory.active !== "rule" || !memory.rule?.title.includes("관통")) return undefined;
+  if (!/그거|그럼|관통/.test(question) || !/평타|기본\s*공격/.test(question)) return undefined;
+  const source = ctx.data!.mechanics.find(m => m.id === "저항과-피해-감소");
+  if (!source?.text.includes("방어력은 물리 피해")) return undefined;
+  return { type: "code", answer: { kind: "text", text: "물리 피해인 기본 공격에는 적용됩니다. 물리 관통력과 방어구 관통력은 방어력을 계산할 때 쓰므로, 같은 공격에 섞인 마법 피해나 고정 피해에는 적용되지 않습니다." } };
 }
