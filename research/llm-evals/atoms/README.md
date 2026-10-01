@@ -1,6 +1,7 @@
 # 노트 원자 조립 실험 (2026-09-24)
 
 현재 대화 구조에서 다시 비교한 결과: [대화 기억을 사용한 아톰 선택 재실험](context-replay/README.md).
+피오라 파일럿 이후의 최신 비교: [23상성·158턴 확장 실험](broad-replay/README.md).
 아래 점수는 당시 조립판에 대한 평가이며 현재 상성 답 은행의 품질 점수는 아니다.
 
 평가 30문항(`scripts/llm/eval-connector.ts evalItems`), 맹검 1~5점. 채점자는 Claude CLI 와 Codex 두 명.

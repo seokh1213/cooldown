@@ -4,6 +4,9 @@ import type { AdvisorData } from "../../../src/lib/advisor/context";
 import type { DialogueMemory, ScenarioCondition } from "../../../src/lib/advisor/dialogueState";
 import type { PrecomputedPair, PrecomputedKey } from "../../../src/lib/advisor/precomputed";
 import { selectPlaybook } from "../../../src/lib/knowledge/playbookCore";
+import { atomTarget } from "./target";
+import { asksReason } from "../../../src/lib/advisor/askWords";
+import { topicFromWords } from "../../../src/lib/advisor/topicJudge";
 
 type Condition = Pick<ScenarioCondition, "owner" | "slot" | "status">;
 type Source = { kind: "bank"; key: PrecomputedKey }
@@ -13,6 +16,8 @@ export interface DecisionSeed {
   id: string;
   mine: string;
   enemy: string;
+  /** 기존 피오라 시드의 기본 대상은 상대 W다. 확장 실험은 대상을 명시한다. */
+  target?: { owner: "mine" | "enemy"; slot: string };
   requires: Condition[];
   excludes: Condition[];
   reason: EvidenceSeed[];
@@ -30,6 +35,8 @@ export interface DecisionRequest {
   memory: DialogueMemory;
   baseline: string;
   pair: PrecomputedPair;
+  focus?: string;
+  continuation?: "explain" | "advance";
 }
 export interface DecisionResult { text: string; atom?: string; fallback?: "scope" | "condition" | "source-drift" }
 
@@ -70,11 +77,11 @@ function state(memory: DialogueMemory, condition: Condition): boolean {
   return memory.conditions.some(item => item.owner === condition.owner && item.slot === condition.slot && item.status === condition.status);
 }
 
-function applies(atom: DecisionAtom, memory: DialogueMemory, explicitW: boolean): boolean {
+function applies(atom: DecisionAtom, memory: DialogueMemory, explicit: boolean): boolean {
   if (atom.excludes.some(condition => state(memory, condition))) return false;
   return atom.requires.every(condition => state(memory, condition)
-    || explicitW && condition.owner === "enemy" && condition.slot === "W" && condition.status === "ready"
-      && !memory.conditions.some(item => item.owner === "enemy" && item.slot === "W"));
+    || explicit && condition.owner === (atom.target?.owner ?? "enemy") && condition.slot === (atom.target?.slot ?? "W") && condition.status === "ready"
+      && !memory.conditions.some(item => item.owner === condition.owner && item.slot === condition.slot));
 }
 
 function evidenceIsCurrent(data: AdvisorData, request: DecisionRequest, evidence: Evidence): boolean {
@@ -82,14 +89,27 @@ function evidenceIsCurrent(data: AdvisorData, request: DecisionRequest, evidence
   return evidence.patch === data.patch && !!source && hash(source.text) === evidence.sourceHash && source.text.includes(evidence.quote);
 }
 
-/** W 질문에만 좁게 적용한다. 다른 상대·스킬·상태에서는 이번 턴의 기존 답변을 돌려준다. */
+/** 주제·스킬 주인·상태가 맞는 단위만 쓴다. 적용 밖 질문은 이번 턴의 기존 답변을 돌려준다. */
 export function selectDecisionAnswer(data: AdvisorData, atoms: DecisionAtom[], request: DecisionRequest): DecisionResult {
-  const explicitW = /응수|(?:^|[^A-Za-z])W(?![A-Za-z])/i.test(request.question);
-  const rememberedW = request.memory.conditions.some(c => c.owner === "enemy" && c.slot === "W");
+  const focus = request.focus ?? topicFromWords(request.question);
+  if (request.continuation === "advance" || focus && !["skill", "general", "escape-window", "combo"].includes(focus)) return { text: request.baseline, fallback: "scope" };
+  const mine = data.cardById.get(request.mine)!;
+  const enemy = data.cardById.get(request.enemy)!;
+  const target = atomTarget(data, { ...request, mine, enemy });
   const followUp = /교환|들어|붙|어떻게|왜|조심|싸|콤보|빠졌|빠진|빠지면|기절/i.test(request.question);
-  if (!explicitW && !(rememberedW && followUp)) return { text: request.baseline, fallback: "scope" };
-  const scoped = atoms.filter(atom => atom.mine === request.mine && atom.enemy === request.enemy);
-  const atom = scoped.find(item => applies(item, request.memory, explicitW));
+  if (!target.explicit && !followUp) return { text: request.baseline, fallback: "scope" };
+  const scoped = atoms.filter(atom => {
+    if (atom.mine !== request.mine || atom.enemy !== request.enemy) return false;
+    const subject = atom.target ?? { owner: "enemy", slot: "W" };
+    const owner = subject.owner === "mine" ? request.mine : request.enemy;
+    if (subject.slot === target.slot && (!target.owner || owner === target.owner)) return true;
+    if (asksReason(request.question) && (!target.owner || target.owner === request.mine)
+      && [...atom.reason, ...atom.action].some(e => new RegExp(`(?:^|[^A-Za-z])${target.slot}(?![A-Za-z])`).test(e.quote))) return true;
+    const relative = target.owner === request.mine ? "mine" : target.owner === request.enemy ? "enemy" : undefined;
+    return /빠|없|쿨|정정|어떻게|왜/.test(request.question)
+      && atom.requires.some(c => c.owner === relative && c.slot === target.slot && state(request.memory, c));
+  });
+  const atom = scoped.find(item => applies(item, request.memory, target.explicit));
   if (!atom) return { text: request.baseline, fallback: "condition" };
   if (![...atom.reason, ...atom.action].every(evidence => evidenceIsCurrent(data, request, evidence))) {
     return { text: request.baseline, fallback: "source-drift" };

@@ -3,7 +3,7 @@ import type { AtomFile, Atom } from "../build-note-atoms";
 import type { AdvisorData } from "../../../src/lib/advisor/context";
 import type { ChampionCard } from "../../../src/lib/knowledge/facts";
 import { selectPlaybook } from "../../../src/lib/knowledge/playbookCore";
-import { resolveQuestion } from "../../../src/lib/advisor/resolvedQuestion";
+import { atomTarget } from "./target";
 import { checkedMatchupText } from "../../../src/lib/advisor/matchupFactCheck";
 import { labelSlots } from "../../../src/lib/advisor/slotLabels";
 import type { DialogueMemory } from "../../../src/lib/advisor/dialogueState";
@@ -47,14 +47,7 @@ function relevance(atom: Atom, request: AtomRequest, target: { slot?: string; ow
 }
 
 function candidates(data: AdvisorData, files: Map<string, AtomFile>, request: AtomRequest): Candidate[] {
-  const resolved = resolveQuestion(request.question, data);
-  const lastCondition = request.memory.conditions.at(-1);
-  const slot = resolved.slot ?? lastCondition?.slot;
-  const spellOwner = [request.mine, request.enemy].find(card => card.spells.some(s => s.slot === slot && s.name.length > 1 && request.question.includes(s.name)))?.id;
-  const namedOwner = resolved.slotIndex === undefined ? undefined : resolved.mentions.filter(m => m.index < resolved.slotIndex!).at(-1)?.card.id;
-  const relativeOwner = /상대|enemy|对面/i.test(request.question) ? request.enemy.id : /내\s*[QWER]|\bmy\b|我的/i.test(request.question) ? request.mine.id
-    : lastCondition ? lastCondition.owner === "enemy" ? request.enemy.id : request.mine.id : undefined;
-  const target = { slot, owner: spellOwner ?? namedOwner ?? relativeOwner };
+  const target = atomTarget(data, request);
   const rows: Candidate[] = [];
   for (const [owner, peer, perspective] of [[request.mine, request.enemy, "playing"], [request.enemy, request.mine, "against"]] as const) {
     for (const atom of files.get(owner.id)?.atoms ?? []) {
