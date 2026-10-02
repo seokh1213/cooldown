@@ -26,10 +26,15 @@ export function asksComparison(question: string, championCount: number): boolean
  * 대화에서 방금 다룬 챔피언이 있으면 그가 내 챔피언, 새로 나온 이름이 상대다.
  */
 const MATCHUP =
-  /상대|맞상대|맞붙|라인전|만나면|만났을|만날\s*때|카운터|어떻게\s*(해야|하지|해\b|되|풀)|이길|이겨|이기|싸우|싸워|붙으면|붙었|유리|불리|\bvs\b|\b(against|into|counter|matchup|lane)\b|\bbeat\b|对线|对位|克制|怎么打|打得过/i;
+  /상대|맞상대|맞붙|라인전|만나면|만났을|만날\s*때|카운터|어떻게\s*(해야|하지|해(?=\s|[?？!.]|$)|되|풀)|이길|이겨|이기|싸우|싸워|붙으면|붙었|유리|불리|\bvs\b|\b(against|into|counter|matchup|lane)\b|\bbeat\b|对线|对位|克制|怎么打|打得过/i;
 
 export function asksMatchup(question: string): boolean {
-  return MATCHUP.test(question);
+  return MATCHUP.test(question) || asksMatchupHelp(question);
+}
+
+/** 어려운 상대에게 도움을 구하는 표현. 수치·설명 질문 자체의 어려움과 구분한다. */
+export function asksMatchupHelp(question: string): boolean {
+  return /(?:어렵|어려|힘들|빡세|빡센|못\s*이기|못\s*이겨).*(?:방법|어떻게|어케|팁|조언|도와|답\s*없)|(?:방법|답)\s*(?:없나|없어)|\bstruggl(?:e|ing)\b.*\b(?:against|into|help|tips?)\b|(?:难打|打不过).*(?:怎么办|怎么|建议)/i.test(question);
 }
 
 /**

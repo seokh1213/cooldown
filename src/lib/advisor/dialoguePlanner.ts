@@ -6,13 +6,14 @@ import { resolveDialogueFact } from "./dialogueFacts";
 import { ruleEllipsis } from "./dialogueRules";
 import { matchupPlan } from "./dialogueMatchup";
 import { dialogueStatPlan, statPlanForQuery } from "./dialogueStats";
+import { asksGenericAdvice } from "./askWords";
 import { conditionHint, prepareDialogueRequest, type DialogueRequest, type DialogueVariant } from "./dialogueRequest";
-import { rememberDialoguePlan, scenarioConditions, type DialogueMemory } from "./dialogueState";
+import { rememberDialoguePlan, scenarioConditions, type DialogueMemory, type MatchupContext } from "./dialogueState";
 
 export type { DialogueVariant } from "./dialogueRequest";
 export { splitDialogueQuestions } from "./dialogueRequest";
 export interface DialoguePlan {
-  parts: Array<{ question: string; plan: AnswerPlan }>;
+  parts: Array<{ question: string; plan: AnswerPlan; matchup?: MatchupContext }>;
   memory: DialogueMemory;
   clarification?: string;
 }
@@ -35,6 +36,13 @@ export async function planPreparedDialogue(request: DialogueRequest, ctx: PlanCo
   if (!ctx.data) return { parts: [{ question: request.questions[0], plan: await planAnswer(request.questions[0], ctx, deps) }], memory };
   for (const question of request.questions) {
     const resolved = resolveQuestion(question, ctx.data);
+    if (request.groupedMatchups) {
+      const prior = request.memory.matchups?.find(pair => resolved.champions.some(c => c.id === pair.mine) && resolved.champions.some(c => c.id === pair.enemy));
+      if (prior) {
+        const { conditions, ...matchup } = prior;
+        memory = { ...memory, active: "matchup", matchup: structuredClone(matchup), conditions: structuredClone(conditions) };
+      }
+    }
     let stat = dialogueStatPlan(resolved, memory, ctx);
     if (!stat && deps.inferStatQuery) {
       const query = await deps.inferStatQuery(resolved, memory, ctx).catch(() => undefined);
@@ -50,9 +58,15 @@ export async function planPreparedDialogue(request: DialogueRequest, ctx: PlanCo
     let plan = stat ?? fact?.plan ?? ruleEllipsis(question, memory, ctx) ?? await matchupPlan(resolved, memory, ctx, deps);
     plan ??= await planAnswer(resolved, ctx, deps);
     if (plan.type === "retry") plan = await planAnswer(plan.question, ctx, deps);
+    if (request.groupedMatchups && plan.type === "matchup" && asksGenericAdvice(request.groupedMatchups)) {
+      plan = { ...plan, more: true, continuation: "advance" };
+    }
     memory = rememberDialoguePlan(memory, plan, fact);
     if (memory.active === "matchup") memory.conditions = scenarioConditions(question, memory.conditions, ctx.turns.length, conditionHint(resolved, memory, ctx));
-    parts.push({ question, plan });
+    const matchup = plan.type === "matchup" && memory.matchup ? { ...memory.matchup, conditions: structuredClone(memory.conditions) } : undefined;
+    parts.push({ question, plan, matchup });
   }
+  if (request.groupedMatchups) memory.matchups = parts.flatMap(part => part.matchup ? [structuredClone(part.matchup)] : []);
+  else if (parts.some(part => part.plan.type === "matchup")) memory.matchups = undefined;
   return { parts, memory };
 }

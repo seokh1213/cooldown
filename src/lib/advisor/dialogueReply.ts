@@ -37,7 +37,13 @@ async function partReply(part: DialoguePlan["parts"][number], options: { data: A
   if (plan.type === "retry") throw new Error("대화 계획은 오타 재시도를 먼저 풀어야 합니다");
   if (!data) throw new Error("자료 답변에는 준비된 자료가 필요합니다");
   if (plan.type === "matchup") {
-    const { answer, topics } = await options.deps.matchup(data, lang, { question, mine: plan.mine, enemy: plan.enemy, focus: plan.focus, more: plan.more, continuation: plan.continuation, shownTopics: memory.matchup?.shownTopics, scope: "topic", conditions: memory.conditions });
+    const context = part.matchup ?? { ...memory.matchup, conditions: memory.conditions };
+    const { answer, topics } = await options.deps.matchup(data, lang, { question, mine: plan.mine, enemy: plan.enemy, focus: plan.focus, more: plan.more, continuation: plan.continuation, shownTopics: context.shownTopics, scope: "topic", conditions: context.conditions });
+    const grouped = memory.matchups?.find(pair => pair.mine === plan.mine.id && pair.enemy === plan.enemy.id);
+    if (grouped) {
+      grouped.shownTopics = [...new Set([...(grouped.shownTopics ?? []), ...topics])];
+      if (plan.continuation === "advance" && topics.length) grouped.focus = focusOfMatchupTopic(topics[0]);
+    }
     if (memory.matchup?.mine === plan.mine.id && memory.matchup.enemy === plan.enemy.id) {
       memory.matchup.shownTopics = [...new Set([...(memory.matchup.shownTopics ?? []), ...topics])];
       if (plan.continuation === "advance" && topics.length) memory.matchup.focus = focusOfMatchupTopic(topics[0]);
@@ -54,7 +60,11 @@ export async function assembleDialogueReply(dialogue: DialoguePlan, data: Adviso
   const replies: Array<Omit<DialogueReply, "memory">> = [];
   for (const part of dialogue.parts) replies.push(await partReply(part, { data, lang, memory, deps }));
   const unavailable = lang === "en_US" ? "I can't yet confirm this part." : lang === "zh_CN" ? "这部分暂时无法确认。" : "이 부분은 아직 확인할 수 없어요.";
-  const text = replies.map((r, i) => r.text || (replies.length > 1 ? `${dialogue.parts[i].question}\n${unavailable}` : "")).filter(Boolean).join("\n\n");
+  const text = replies.map((r, i) => {
+    const plan = dialogue.parts[i].plan;
+    const heading = replies.length > 1 && plan.type === "matchup" ? `### ${plan.mine.name} vs ${plan.enemy.name}\n` : "";
+    return heading + (r.text || (replies.length > 1 ? `${dialogue.parts[i].question}\n${unavailable}` : ""));
+  }).filter(Boolean).join("\n\n");
   if (dialogue.clarification) return { text: [text, dialogue.clarification].filter(Boolean).join("\n\n"), memory };
   memory.lastReply = { question: dialogue.parts.map(p => p.question).join(" / "), text, focus: memory.matchup?.focus };
   if (replies.length === 1) return { ...replies[0], memory };

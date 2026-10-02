@@ -10,6 +10,7 @@ import championAliasFile from "../../../knowledge/champion-aliases.json";
 export interface ChampionMention {
   card: ChampionCard;
   index: number;
+  length: number;
 }
 
 /**
@@ -145,7 +146,7 @@ function findMentions(data: AdvisorData, text: string): ChampionMention[] {
     // 이미 잡힌 구간과 겹치면 건너뛴다 (긴 이름이 먼저 잡혔다는 뜻)
     if (taken.some(([s, e]) => index < e && index + length > s)) return false;
     taken.push([index, index + length]);
-    mentions.push({ card, index });
+    mentions.push({ card, index, length });
     return true;
   };
 

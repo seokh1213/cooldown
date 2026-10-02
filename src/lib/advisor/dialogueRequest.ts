@@ -2,9 +2,10 @@
 import type { PlanContext } from "./planTypes";
 import { resolveQuestion, type QuestionInput } from "./resolvedQuestion";
 import { dialogueMemoryOf, emptyDialogue, type DialogueMemory } from "./dialogueState";
+import { matchupQuestions } from "./matchupRequests";
 
 export type DialogueVariant = "memory" | "decompose" | "clarify" | "combined";
-export interface DialogueRequest { questions: string[]; memory: DialogueMemory; variant: DialogueVariant }
+export interface DialogueRequest { questions: string[]; memory: DialogueMemory; variant: DialogueVariant; groupedMatchups?: string }
 
 /** 별개 요청이 연결된 문장만 나눈다. 스킬 목록과 챔피언 이름을 나열한 비교는 유지한다. */
 export function splitDialogueQuestions(question: string): string[] {
@@ -45,5 +46,7 @@ export function conditionHint(input: QuestionInput, memory: DialogueMemory, ctx:
 export function prepareDialogueRequest(question: string, ctx: PlanContext, variant: DialogueVariant): DialogueRequest {
   const memory = ctx.data ? dialogueMemoryOf(ctx.turns, ctx.data) : emptyDialogue("");
   const split = ctx.data && (variant === "decompose" || variant === "combined");
+  const matchups = split ? matchupQuestions(question, memory, ctx) : undefined;
+  if (matchups) return { questions: matchups, memory, variant, groupedMatchups: question };
   return { questions: split ? splitDialogueQuestions(question) : [question], memory, variant };
 }

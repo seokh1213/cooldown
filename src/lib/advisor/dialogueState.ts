@@ -15,11 +15,19 @@ export interface ScenarioCondition {
   hypothetical: boolean;
   turn: number;
 }
+export interface MatchupContext {
+  mine: string;
+  enemy: string;
+  focus?: string;
+  shownTopics?: string[];
+  conditions: ScenarioCondition[];
+}
 export interface DialogueMemory {
   patch: string;
   active?: "matchup" | "champion" | "spell" | "compare" | "stat" | "item" | "rule";
   champion?: string;
   matchup?: { mine: string; enemy: string; focus?: string; shownTopics?: string[] };
+  matchups?: MatchupContext[];
   spell?: SpellReference;
   compared?: string[];
   stat?: ChampionStatQuery;
@@ -44,6 +52,7 @@ export function emptyDialogue(patch: string): DialogueMemory {
 function validMemory(memory: DialogueMemory, data: AdvisorData): boolean {
   if (memory.patch !== data.patch || !Array.isArray(memory.conditions)) return false;
   if (memory.matchup && (!data.cardById.has(memory.matchup.mine) || !data.cardById.has(memory.matchup.enemy))) return false;
+  if (memory.matchups && (!Array.isArray(memory.matchups) || memory.matchups.some(pair => !data.cardById.has(pair.mine) || !data.cardById.has(pair.enemy) || !Array.isArray(pair.conditions)))) return false;
   if (memory.champion && !data.cardById.has(memory.champion)) return false;
   if (memory.spell && !data.cardById.get(memory.spell.champion)?.spells.some(s => s.slot === memory.spell!.slot)) return false;
   if (memory.stat && (!isStatLevel(memory.stat.level) || !memory.stat.champions.length || memory.stat.champions.some(id => !data.cardById.has(id)))) return false;

@@ -77,6 +77,12 @@ const ROLE_WORDS = /정글|서폿|서포터|원딜|바텀|미드|support|supp|ju
 
 export function matchupPair<T>(question: string, found: T[], names: (card: T) => string[]): [T, T] | undefined {
   if (found.length < 3) return found.length === 2 ? [found[0], found[1]] : undefined;
+  const kept = matchupParticipants(question, found, names);
+  return kept.length >= 2 ? [kept[0], kept[1]] : undefined;
+}
+
+/** 정글·서폿 등으로 곁들인 이름은 맞상대 목록에서 제외한다. */
+export function matchupParticipants<T>(question: string, found: T[], names: (card: T) => string[]): T[] {
   const escape = (value: string) => value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
   const side = (card: T) => {
     const alt = names(card).filter((name) => name.length >= 2).map(escape).join("|");
@@ -85,8 +91,7 @@ export function matchupPair<T>(question: string, found: T[], names: (card: T) =>
     for (const m of question.matchAll(re)) if (ROLE_WORDS.test(m[1]) || ROLE_WORDS.test(m[2])) return true;
     return false;
   };
-  const kept = found.filter((card) => !side(card));
-  return kept.length >= 2 ? [kept[0], kept[1]] : undefined;
+  return found.filter((card) => !side(card));
 }
 
 /**
