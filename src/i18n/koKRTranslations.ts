@@ -351,6 +351,7 @@ export const koKRTranslations: Translations = {
       },
     },
     history: {
+      loading: "이전 대화를 불러오는 중이에요. 질문을 미리 입력할 수 있어요.",
       title: "대화 기록",
       open: "대화 기록",
       newChat: "새 대화",

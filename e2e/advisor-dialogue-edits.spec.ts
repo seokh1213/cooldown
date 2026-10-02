@@ -21,6 +21,12 @@ test("제외·이름 변경을 저장하고 새로고침 뒤 남은 항목을 �
   await ask("문도는 빼고 보여줘");
   await expect(page.getByText("아리 590", { exact: false }).last()).toBeVisible();
   await ask("체젠은 빼줘");
+  let releaseHistory!: () => void;
+  const historyReady = new Promise<void>(resolve => { releaseHistory = resolve; });
+  await page.route("**/llm/advisor-knowledge.json", async route => {
+    await historyReady;
+    await route.continue();
+  });
   await page.reload();
   await page.getByRole("button", { name: "롤 지식 도우미 열기", exact: true }).click();
   ask = async text => {
@@ -28,6 +34,13 @@ test("제외·이름 변경을 저장하고 새로고침 뒤 남은 항목을 �
     await page.getByRole("button", { name: "보내기", exact: true }).click();
     await expect(page.getByRole("button", { name: "중단", exact: true })).toBeHidden();
   };
+  await page.getByRole("textbox", { name: "롤 질문 입력", exact: true }).fill("그럼 제드는?");
+  try {
+    await expect(page.getByText("이전 대화를 불러오는 중이에요. 질문을 미리 입력할 수 있어요.", { exact: true })).toBeVisible();
+    await expect(page.getByRole("button", { name: "보내기", exact: true })).toBeDisabled();
+  } finally {
+    releaseHistory();
+  }
   await ask("그럼 제드는?");
   await expect(page.getByText("제드 654", { exact: true }).last()).toBeVisible();
   await expect(page.getByText("제드 29", { exact: true }).last()).toBeVisible();

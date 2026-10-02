@@ -334,6 +334,7 @@ export const zhCNTranslations: Translations = {
       },
     },
     history: {
+      loading: "正在恢复之前的对话，你可以先输入问题。",
       title: "对话记录",
       open: "对话记录",
       newChat: "新对话",

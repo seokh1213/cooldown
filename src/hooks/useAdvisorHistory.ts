@@ -25,6 +25,7 @@ const SAVE_DELAY_MS = 400;
 export interface UseAdvisorHistoryResult {
   conversations: Conversation[];
   currentId: string;
+  restoring: boolean;
   startNew: () => void;
   open: (id: string) => void;
   remove: (id: string) => void;
@@ -33,6 +34,7 @@ export interface UseAdvisorHistoryResult {
 export function useAdvisorHistory(advisor: UseAdvisorResult, data: AdvisorData | null): UseAdvisorHistoryResult {
   const [conversations, setConversations] = useState<Conversation[]>(readConversations);
   const [currentId, setCurrentId] = useState(newConversationId);
+  const [restoring, setRestoring] = useState(conversations.length > 0);
   const restored = useRef(false);
   const saveTimer = useRef<number | undefined>(undefined);
   const { turns, replaceTurns, reset } = advisor;
@@ -42,6 +44,7 @@ export function useAdvisorHistory(advisor: UseAdvisorResult, data: AdvisorData |
   useEffect(() => {
     if (restored.current || !data) return;
     restored.current = true;
+    setRestoring(false);
     const latest = conversations[0];
     if (!latest || turns.length > 0) return;
     const revived = reviveTurns(latest.turns, data);
@@ -52,7 +55,7 @@ export function useAdvisorHistory(advisor: UseAdvisorResult, data: AdvisorData |
 
   // 완료된 답은 즉시 저장한다. 생성 중에만 모아서 쓰고, 페이지를 떠나면 남은 저장을 처리한다.
   useEffect(() => {
-    if (turns.length === 0) return;
+    if (restoring || turns.length === 0) return;
     window.clearTimeout(saveTimer.current);
     const save = () => {
       const previous = readConversations();
@@ -75,9 +78,11 @@ export function useAdvisorHistory(advisor: UseAdvisorResult, data: AdvisorData |
       window.clearTimeout(saveTimer.current);
       window.removeEventListener("pagehide", save);
     };
-  }, [turns, currentId, busy]);
+  }, [turns, currentId, busy, restoring]);
 
   const startNew = useCallback(() => {
+    restored.current = true;
+    setRestoring(false);
     window.clearTimeout(saveTimer.current);
     reset();
     setCurrentId(newConversationId());
@@ -107,5 +112,5 @@ export function useAdvisorHistory(advisor: UseAdvisorResult, data: AdvisorData |
     [currentId, startNew],
   );
 
-  return { conversations, currentId, startNew, open, remove };
+  return { conversations, currentId, restoring, startNew, open, remove };
 }

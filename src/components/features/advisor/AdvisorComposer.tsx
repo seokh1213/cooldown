@@ -11,6 +11,7 @@ interface AdvisorComposerProps {
   draft: string;
   onDraftChange: (draft: string) => void;
   busy: boolean;
+  restoringHistory: boolean;
   /** 답을 쓰는 중에 보내려 했다. 조용히 먹히면 고장으로 보여서 한 줄 알린다. */
   showBusyHint: boolean;
   placeholder: string;
@@ -18,11 +19,12 @@ interface AdvisorComposerProps {
   onStop: () => void;
 }
 
-export function AdvisorComposer({ draft, onDraftChange, busy, showBusyHint, placeholder, onSubmit, onStop }: AdvisorComposerProps) {
+export function AdvisorComposer({ draft, onDraftChange, busy, restoringHistory, showBusyHint, placeholder, onSubmit, onStop }: AdvisorComposerProps) {
   const { t } = useTranslation();
   const copy = t.advisor;
   return (
     <footer className="flex flex-col gap-1.5 border-t p-3 pb-[max(0.75rem,env(safe-area-inset-bottom))]">
+      {restoringHistory && <p role="status" className="px-1 text-xs text-muted-foreground">{copy.history.loading}</p>}
       {showBusyHint && (
         <p className="px-1 text-[11px] leading-4 text-muted-foreground">{copy.busyHint}</p>
       )}
@@ -51,7 +53,7 @@ export function AdvisorComposer({ draft, onDraftChange, busy, showBusyHint, plac
           <Square className="h-4 w-4" />
         </Button>
       ) : (
-        <Button size="icon" className="h-11 w-11 touch-manipulation" onClick={onSubmit} disabled={!draft.trim()} aria-label={copy.send}>
+        <Button size="icon" className="h-11 w-11 touch-manipulation" onClick={onSubmit} disabled={restoringHistory || !draft.trim()} aria-label={copy.send}>
           <Send className="h-4 w-4" />
         </Button>
       )}

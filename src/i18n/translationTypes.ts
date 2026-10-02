@@ -368,6 +368,7 @@ export interface Translations {
     };
     /** 저장된 대화 목록. 새 대화·열기·삭제 */
     history: {
+      loading: string;
       title: string;
       open: string;
       newChat: string;

@@ -129,7 +129,7 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
 
   const submit = () => {
     const question = draft.trim();
-    if (!question) return;
+    if (!question || history.restoring) return;
     if (busy) {
       setPressedWhileBusy(true);
       return;
@@ -297,7 +297,7 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
             lastTurnRef={lastTurnRef}
             turns={advisor.turns}
             error={advisor.error}
-            loading={loading}
+            loading={loading || history.restoring}
             busy={busy}
             contextCards={contextCards}
             context={context}
@@ -319,6 +319,7 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
             draft={draft}
             onDraftChange={setDraft}
             busy={busy}
+            restoringHistory={history.restoring}
             showBusyHint={pressedWhileBusy && busy}
             placeholder={placeholder}
             onSubmit={submit}

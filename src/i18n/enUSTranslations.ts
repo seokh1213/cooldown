@@ -349,6 +349,7 @@ export const enUSTranslations: Translations = {
       },
     },
     history: {
+      loading: "Loading your previous conversation. You can type your question now.",
       title: "Conversations",
       open: "Conversations",
       newChat: "New conversation",
