@@ -2,6 +2,7 @@ import { getRuntimeBasePath } from "../lib/staticDataUtils";
 import { decodeAppRelease, RELEASE_ID } from "./release";
 import { prepareReleaseData } from "./staticDataRevision";
 import { readWorkerRelease } from "./workerRelease";
+import { PwaStartupGate } from "./startupGate";
 
 type UpdateListener = () => void;
 
@@ -15,8 +16,12 @@ export class PwaUpdateManager {
   private preparing?: Promise<void>;
   private applying = false;
   private reloading = false;
+  private startup?: PwaStartupGate;
+  private startupActivation = false;
 
-  start(): void {
+  start(options: { autoUpdateEnabled: boolean }): Promise<void> {
+    this.startup = new PwaStartupGate(options.autoUpdateEnabled &&
+      Boolean(navigator.serviceWorker.controller) && navigator.onLine);
     const check = () => { void this.check(); };
     window.addEventListener("focus", check);
     window.addEventListener("pageshow", check);
@@ -27,6 +32,7 @@ export class PwaUpdateManager {
       void this.reloadForNewController();
     });
     check();
+    return this.startup.ready;
   }
 
   subscribe(listener: UpdateListener): () => void {
@@ -64,6 +70,7 @@ export class PwaUpdateManager {
       // again would only race the install and activation.
     } while (this.recheck && !foundUpdate && navigator.onLine);
     this.releaseRequested = false;
+    if (!foundUpdate && !this.startupActivation) this.startup?.finish();
   }
 
   private async register(): Promise<ServiceWorkerRegistration> {
@@ -78,6 +85,7 @@ export class PwaUpdateManager {
       const worker = registration.installing;
       worker?.addEventListener("statechange", () => {
         if (worker.state === "installed") void this.prepareWaiting();
+        if (worker.state === "redundant") this.startup?.finish();
       });
     };
     registration.addEventListener("updatefound", watchInstalling);
@@ -105,6 +113,7 @@ export class PwaUpdateManager {
     if (this.preparing) return this.preparing;
     this.preparing = this.prepareCandidate().catch(() => {
       // A later focus/online/interval check retries preparation, without reloading.
+      this.startup?.finish();
     }).finally(() => { this.preparing = undefined; });
     return this.preparing;
   }
@@ -121,6 +130,10 @@ export class PwaUpdateManager {
     await prepareReleaseData(release);
     if (this.registration?.waiting !== worker) return;
     this.preparedWorker = worker;
+    if (this.startup?.pending && !this.applying) {
+      this.startupActivation = true;
+      worker.postMessage({ type: "SKIP_WAITING" });
+    }
     for (const listener of this.listeners) listener();
   }
 
@@ -146,11 +159,18 @@ export class PwaUpdateManager {
     const worker = navigator.serviceWorker.controller;
     if (!worker || this.reloading) return;
     try {
-      if ((await readWorkerRelease(worker)).releaseId === RELEASE_ID) return;
+      if ((await readWorkerRelease(worker)).releaseId === RELEASE_ID) {
+        this.startup?.finish();
+        return;
+      }
+      // A slow activation must not interrupt a screen already opened by timeout.
+      if (this.startupActivation && !this.startup?.pending) return;
       this.reloading = true;
+      this.startup?.holdForReload();
       window.location.reload();
     } catch {
       // Never reload just because a metadata message failed.
+      this.startup?.finish();
     }
   }
 }

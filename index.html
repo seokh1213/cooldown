@@ -2,6 +2,19 @@
 <html lang="ko" style="height: 100%;">
   <head>
     <meta charset="utf-8" />
+    <script>
+      (() => {
+        let theme;
+        try { theme = localStorage.getItem("theme"); } catch { /* Use the system theme. */ }
+        const dark = theme === "dark" ||
+          (theme !== "light" && matchMedia("(prefers-color-scheme: dark)").matches);
+        document.documentElement.classList.toggle("dark", dark);
+      })();
+    </script>
+    <style>
+      html { background-color: hsl(240 10% 96%); color-scheme: light; }
+      html.dark { background-color: hsl(240 10% 6%); color-scheme: dark; }
+    </style>
     <!--
       절대 경로로 둔다. Vite 가 빌드 때 base(/cooldown/)를 붙인다.
       상대 경로였을 때 /cooldown/vs/ 같은 하위 경로에서 /cooldown/vs/favicon.ico 를 찾아 404 가 났고,

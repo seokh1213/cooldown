@@ -10,7 +10,7 @@ export const zhCNTranslations: Translations = {
     updateReady: "新版本已准备就绪。",
     updateDescription: "刷新应用即可更新到最新版本。",
     currentBuild: "当前版本",
-    autoUpdate: "今后自动应用新版本",
+    autoUpdate: "打开应用时自动更新",
     later: "稍后",
     refreshNow: "立即刷新",
     loadError: "无法加载游戏数据。",

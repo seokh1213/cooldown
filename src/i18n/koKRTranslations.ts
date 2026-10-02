@@ -10,7 +10,7 @@ export const koKRTranslations: Translations = {
       updateReady: "새 버전이 준비되었습니다.",
       updateDescription: "앱을 새로고침하면 최신 버전으로 업데이트됩니다.",
       currentBuild: "현재 빌드",
-      autoUpdate: "다음부터 자동으로 새 버전 적용",
+      autoUpdate: "앱 실행 시 자동 업데이트",
       later: "나중에",
       refreshNow: "지금 새로고침",
       loadError: "데이터를 불러오지 못했습니다.",

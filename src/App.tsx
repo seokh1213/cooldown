@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { BrowserRouter } from "react-router-dom";
 import SplashScreen from "@/components/layout/SplashScreen";
 import { I18nProvider } from "@/i18n";
-import { applyPWAUpdate, subscribeToPWAUpdate } from "@/pwa";
+import { subscribeToPWAUpdate } from "@/pwa";
 import { AppRouter } from "@/app/AppRouter";
 import { BootstrapError } from "@/app/BootstrapError";
 import { UpdateBanner } from "@/app/UpdateBanner";
@@ -28,9 +28,8 @@ export default function App() {
   }, [ddragonVersion]);
 
   useEffect(() => subscribeToPWAUpdate(() => {
-    if (preferences.autoUpdateEnabled) void applyPWAUpdate();
-    else setPwaUpdateAvailable(true);
-  }), [preferences.autoUpdateEnabled]);
+    setPwaUpdateAvailable(true);
+  }), []);
 
   return (
     <I18nProvider lang={preferences.language}>

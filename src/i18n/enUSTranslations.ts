@@ -10,7 +10,7 @@ export const enUSTranslations: Translations = {
       updateReady: "A new version is ready.",
       updateDescription: "Refresh the app to update to the latest version.",
       currentBuild: "Current build",
-      autoUpdate: "Apply new versions automatically",
+      autoUpdate: "Update automatically when opening the app",
       later: "Later",
       refreshNow: "Refresh now",
       loadError: "Unable to load game data.",

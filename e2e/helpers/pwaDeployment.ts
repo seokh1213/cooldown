@@ -58,6 +58,8 @@ self.addEventListener('fetch', (event) => {
 export async function startPwaDeployment(builds: ReleaseBuilds) {
   let current = builds.a;
   let blocked: RegExp | undefined;
+  let held: RegExp | undefined;
+  const pendingResponses: (() => void)[] = [];
   let legacy = false;
   const requests: string[] = [];
   const failedRequests: string[] = [];
@@ -75,16 +77,21 @@ export async function startPwaDeployment(builds: ReleaseBuilds) {
       response.writeHead(503).end("Partial deployment");
       return;
     }
-    const relative = url.pathname.replace(/^\/cooldown\//, "");
-    const file = path.join(current, relative);
-    if (!file.startsWith(`${current}${path.sep}`)) { response.writeHead(404).end(); return; }
-    const extension = path.extname(relative);
-    try {
-      response.setHeader("Content-Type", contentTypes[extension || ".html"] ?? "application/octet-stream");
-      response.end(readFileSync(extension ? file : path.join(current, "index.html")));
-    } catch {
-      response.writeHead(404).end("Not found");
-    }
+    const send = () => {
+      if (response.destroyed) return;
+      const relative = url.pathname.replace(/^\/cooldown\//, "");
+      const file = path.join(current, relative);
+      if (file !== current && !file.startsWith(`${current}${path.sep}`)) { response.writeHead(404).end(); return; }
+      const extension = path.extname(relative);
+      try {
+        response.setHeader("Content-Type", contentTypes[extension || ".html"] ?? "application/octet-stream");
+        response.end(readFileSync(extension ? file : path.join(current, "index.html")));
+      } catch {
+        response.writeHead(404).end("Not found");
+      }
+    };
+    if (held?.test(url.pathname)) pendingResponses.push(send);
+    else send();
   });
   await new Promise<void>((resolve) => server.listen(0, "127.0.0.1", resolve));
   const address = server.address();
@@ -96,6 +103,10 @@ export async function startPwaDeployment(builds: ReleaseBuilds) {
     deploy: (name: "a" | "b" | "c") => { current = builds[name]; legacy = false; },
     serveLegacy: () => { legacy = true; },
     block: (pattern?: RegExp) => { blocked = pattern; },
+    hold: (pattern?: RegExp) => {
+      held = pattern;
+      if (!pattern) for (const send of pendingResponses.splice(0)) send();
+    },
     close: () => new Promise<void>((resolve) => {
       server.close(() => resolve());
       server.closeAllConnections();

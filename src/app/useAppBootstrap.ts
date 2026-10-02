@@ -6,6 +6,7 @@ import { championRepository } from "@/data/repositories/championRepository";
 import { gameDataRepository } from "@/data/repositories/gameDataRepository";
 import { manifestRepository } from "@/data/repositories/manifestRepository";
 import type { StaticDataSources } from "@/data/contracts/staticData";
+import { waitForPWAStartup } from "@/pwa";
 
 export interface AppRuntimeData {
   patchVersion: string;
@@ -30,6 +31,8 @@ export function useAppBootstrap(language: Language): {
     setState({ status: "loading" });
     void (async () => {
       try {
+        await waitForPWAStartup();
+        if (!active) return;
         const manifest = await manifestRepository.get();
         championRepository.clearExceptRelease(manifest);
         gameDataRepository.clearExceptRelease(manifest);
