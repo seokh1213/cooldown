@@ -34,6 +34,26 @@ for (const width of [390, 1280]) {
       await page.screenshot({ path: "research/llm-evals/crowd-control/mobile.png" });
     }
   });
+  test(`리신 궁 아이콘과 종류에서 순서로 바뀐 질문: ${width}px`, async ({ page }) => {
+    await page.setViewportSize({ width, height: 900 });
+    const ask = await openAdvisor(page);
+    await ask("리신 궁에는 CC가 뭐뭐 종류가뭐지?");
+    const icon = page.getByRole("img", { name: "리 신 R 용의 분노", exact: true });
+    await expect(icon).toBeVisible();
+    const decoded = await icon.evaluate(async element => {
+      const src = getComputedStyle(element).backgroundImage.match(/url\(["']?(.*?)["']?\)/)?.[1];
+      if (!src) return false;
+      const img = new Image();
+      img.src = src;
+      await img.decode();
+      return img.naturalWidth > 0;
+    });
+    expect(decoded).toBe(true);
+    await ask("리신 궁은 속박먼저하고 날라가나?");
+    await expect(page.getByText(/주 대상은 먼저 속박되고, 그다음 발차기로 밀쳐집니다/).last()).toBeVisible();
+    await expect(page.getByText("용의 분노", { exact: true })).toHaveCount(1);
+    if (width === 390) await page.screenshot({ path: "research/llm-evals/crowd-control/leesin-mobile.png" });
+  });
 }
 
 test("브라우저에서 기존 툴팁보다 부활·정화·치감 판정 노트를 먼저 답한다", async ({ page }) => {

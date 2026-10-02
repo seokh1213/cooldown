@@ -1,7 +1,7 @@
 /** 검증한 상호작용 및 CC 조회. 모델의 추측이나 일반 상성 조언보다 확인된 사실을 먼저 쓴다. */
 import { CROWD_CONTROL, controlText } from "@/lib/knowledge/crowdControl";
 import { matchesMechanicsQuestion } from "@/lib/knowledge/mechanics";
-import { asksCrowdControl } from "./crowdControlQuestion";
+import { asksCrowdControl, asksCrowdControlSequence } from "./crowdControlQuestion";
 import { asksSkillHandling, asksScenarioAdvice } from "./askWords";
 import { buildSpellAnswer } from "./spellAnswer";
 import type { ResolvedQuestion } from "./resolvedQuestion";
@@ -50,9 +50,10 @@ export function knowledgeFactPlan(resolved: ResolvedQuestion, ctx: PlanContext):
     }
   }
   const interaction = curatedInteraction(question, ctx);
-  const propertyQuestion = smite || /정화|수은|강인함|치감|cleanse|qss|tenacity|净化|水银|韧性/i.test(question);
+  const propertyQuestion = smite || /정화|수은|미카엘|강인함|치감|해제|풀(?:면|어|리|려|린|렸)|cleanse|qss|mikael|tenacity|dispel|remove|净化|水银|米凯尔|韧性|解除/i.test(question);
   if (interaction && (!champions.length || propertyQuestion)) return interaction;
   if (asksSkillHandling(question) || asksScenarioAdvice(question) || resolved.matchup) return undefined;
+  if (interaction && asksCrowdControlSequence(question)) return interaction;
   if (!champions.length || !(asksCrowdControl(question) || smite)) return interaction;
   if (champions.length === 1 && slot && !smite) {
     const spell = champions[0].spells.find(s => s.slot === slot);

@@ -13,6 +13,7 @@
 import { useTranslation } from "@/i18n";
 import { fill } from "@/i18n/fill";
 import { ItemIcon } from "@/components/ui/item-icon";
+import { AbilityIcon } from "@/components/ui/ability-icon";
 import { ruleVerdict, type AdvisorAnswer } from "@/lib/advisor/answer";
 import { ruleName } from "@/lib/knowledge/rules";
 import { AdvisorMarkdown } from "./AdvisorMarkdown";
@@ -39,7 +40,7 @@ export function AdvisorAnswerCard({ answer, ddragonVersion, patch, onPickChampio
     case "suggestion":
       return <SuggestionAnswer answer={answer} onPickChampion={onPickChampion} />;
     case "spell":
-      return <SpellAnswerCard answer={answer} patch={patch} onNavigate={onNavigate} />;
+      return <SpellAnswerCard answer={answer} ddragonVersion={ddragonVersion} patch={patch} onNavigate={onNavigate} />;
     case "champion":
       return <ChampionAnswerCard answer={answer} ddragonVersion={ddragonVersion} patch={patch} onNavigate={onNavigate} />;
     case "compare":
@@ -146,10 +147,12 @@ function SuggestionAnswer({
 /** M1-B 스킬: 표 카드에서 묻은 행만 굵게, 나머지는 흐리게, 설명 전문은 접음 */
 function SpellAnswerCard({
   answer,
+  ddragonVersion,
   patch,
   onNavigate,
 }: {
   answer: Extract<AdvisorAnswer, { kind: "spell" }>;
+  ddragonVersion: string;
   patch: string;
   onNavigate?: () => void;
 }) {
@@ -165,7 +168,8 @@ function SpellAnswerCard({
   if (answer.headline) rows.unshift({ label: answer.headline.label, value: answer.headline.value, dim: false, hit: true } as never);
   return (
     <Frame
-      icon={<SlotBadge slot={spell.slot} />}
+      icon={<AbilityIcon championId={answer.championId} slot={spell.slot} ddragonVersion={ddragonVersion}
+        alt={`${answer.championName} ${spell.slot} ${spell.name}`} className="block h-9 w-9 shrink-0 rounded-md" />}
       title={spell.name}
       subtitle={`${answer.championName} · ${spell.slot}`}
       tool={copy.spell}

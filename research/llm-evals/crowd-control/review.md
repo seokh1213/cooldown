@@ -1,7 +1,13 @@
 # CC 분류와 위키 세부 판정 — 2026-10-02
 
-기준 커밋: `d0eb4d360`, PC 롤 자료 패치: `26.19`.
+최초 검토 기준 커밋: `d0eb4d360`, PC 롤 자료 패치: `26.19`.
 배포 전 `987fa7166`의 패치 기록 화면 변경을 합친 뒤 검사와 빌드를 다시 확인했다.
+
+이하 표는 최초 CC 분류 작업 당시의 결과다. 이후 `00981056f`를 기준으로 리 신 궁 이미지와
+CC 순서·해제 질문을 보완했다. 현재 `after.json`과 `questions.json`은 56대화·60턴이며,
+출처 노트는 25개, 번들 판정 문서는 32개다. 후속 검사는 단위·자료 `1,897/1,897`,
+질문 평가 양쪽 `60/60`, 브라우저 `5/5`를 통과했다.
+판정 조사와 요청별 확인은 [리 신 R 후속 보고서](./leesin-review.md)에 기록했다.
 
 ## 요청별 확인
 
@@ -61,7 +67,7 @@
 ```bash
 npx tsx scripts/llm/attach-crowd-control.ts
 npm run llm:bundle
-npx tsx scripts/llm/eval-dialogue-coverage.ts research/llm-evals/crowd-control/after.json research/llm-evals/crowd-control/questions.json d0eb4d360
+npx tsx scripts/llm/eval-dialogue-coverage.ts research/llm-evals/crowd-control/after.json research/llm-evals/crowd-control/questions.json 00981056f
 npm run test:e2e -- e2e/advisor-crowd-control.spec.ts --retries 0
 ```
 
