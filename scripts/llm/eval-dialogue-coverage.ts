@@ -78,7 +78,7 @@ for (const judge of ["none", "offline"] as const) {
     }
   }
 }
-fs.writeFileSync(process.argv[2] ?? `${directory}/after.json`, JSON.stringify({ baseline: "00f286fa6", cases: cases.length, rows }, null, 2) + "\n");
+fs.writeFileSync(process.argv[2] ?? `${directory}/after.json`, JSON.stringify({ baseline: process.argv[4] ?? "00f286fa6", cases: cases.length, rows }, null, 2) + "\n");
 for (const judge of ["none", "offline"]) {
   const subset = rows.filter(r => r.judge === judge);
   console.log(`${judge}: ${subset.filter(r => r.pass).length}/${subset.length}`);

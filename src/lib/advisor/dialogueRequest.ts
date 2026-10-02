@@ -6,15 +6,19 @@ import { matchupQuestions } from "./matchupRequests";
 import { requestScope, unsupportedCondition } from "./requestContract";
 import type { GuidanceReason } from "./requestGuidance";
 import { detectStats } from "./statQuery";
+import { championTypoPlan } from "./championTypoPlan";
 
 export type DialogueVariant = "memory" | "decompose" | "clarify" | "combined";
 export interface DialogueRequest { questions: QuestionInput[]; memory: DialogueMemory; variant: DialogueVariant; groupedMatchups?: boolean; rejected?: GuidanceReason }
 
 /** 별개 요청이 연결된 문장만 나눈다. 스킬 목록과 챔피언 이름을 나열한 비교는 유지한다. */
 export function splitDialogueQuestions(question: string, data?: PlanContext["data"]): string[] {
+  const asks = /(?<![A-Za-z])[QWER](?![A-Za-z])|궁|쿨|정복자|점화|템|효과|가격|한타|라인전|상대|공략|어떻게|알려|ability|cooldown|rune|item|matchup|\bvs\b|\bhow\b|\btips?\b|技能|冷却|团战/i;
+  // 독립 요청을 먼저 나누면 첫 요청의 부재 조건·쉼표가 뒤의 조회까지 삼키지 않는다.
+  const independent = question.split(/(?:(?:알려|설명해|비교해|정리해|보여)주고)\s*[,，]?\s*|\s+그리고\s+|\s+and also\s+|\s+and\s+(?=\w+\s+(?:vs\.?|versus)\s)|另外|还有/i).map(q => q.trim()).filter(Boolean);
+  if (independent.length > 1 && independent.every(q => asks.test(q) || detectStats(q).length)) return independent.flatMap(piece => splitDialogueQuestions(piece, data));
   const pieces = question.split(/(?:(?:알려|설명해|비교해|정리해|보여)주고)\s*[,，]?\s*|[,;]\s*(?:그리고|추가로)?\s*|\n+(?:그리고\s*)?|\s+그리고\s+|\s+and also\s+|\s+and\s+(?=\w+\s+(?:vs\.?|versus)\s)|另外|还有/i).map(q => q.trim()).filter(Boolean);
   if (pieces.length < 2) return [question];
-  const asks = /(?<![A-Za-z])[QWER](?![A-Za-z])|궁|쿨|정복자|점화|템|효과|가격|한타|라인전|상대|공략|어떻게|알려|ability|cooldown|rune|item|matchup|\bvs\b|\bhow\b|\btips?\b|技能|冷却|团战/i;
   const stateOnly = (text: string) => /(?<![A-Za-z])[QWER](?![A-Za-z])/i.test(text)
     && /없|빠졌|빠진|돌아왔|사용\s*가능|재사용\s*대기\s*중|is down|available|冷却中|可用/i.test(text)
     && !/\?|？|알려|설명|어떻게|언제|how|what|when|怎么|多少/i.test(text);
@@ -56,7 +60,13 @@ export function prepareDialogueRequest(question: string, ctx: PlanContext, varia
   const memory = ctx.data ? dialogueMemoryOf(ctx.turns, ctx.data) : emptyDialogue("");
   const split = ctx.data && (variant === "decompose" || variant === "combined");
   if (!ctx.data) return { questions: [question], memory, variant };
-  const pieces = (split ? splitDialogueQuestions(question, ctx.data) : [question]).map(q => resolveQuestion(q, ctx.data!));
+  const pieces = (split ? splitDialogueQuestions(question, ctx.data) : [question]).map(q => {
+    const resolved = resolveQuestion(q, ctx.data!);
+    // 이름이 있는 스킬 질문을 '누구의 스킬?' 확인 단계가 먼저 가로채지 않게 한다.
+    if (resolved.champions.length || !resolved.slot) return resolved;
+    const typo = championTypoPlan(q, ctx.data!, { champions: [], inMatchup: Boolean(memory.matchup) });
+    return typo?.type === "retry" ? resolveQuestion(typo.question, ctx.data!) : resolved;
+  });
   const questions = pieces.flatMap(resolved => split ? matchupQuestions(resolved, memory, ctx) ?? [resolved] : [resolved]);
   const rejected = requestScope(questions, memory, ctx) ?? (questions.length === 1 ? unsupportedCondition(question) : undefined);
   return { questions, memory, variant, groupedMatchups: questions.some(q => Boolean(q.matchup)), rejected };

@@ -86,7 +86,9 @@ export function conditionMatchupText(data: AdvisorData, lang: Language, request:
   if (!conditions.some(c => c.status === "down") && !targeted) return { text: baseline, rejected: 0, alternatives: 0, topics: [], abstained: false };
   const selected = selectExecutableText(baseline, request, conditions);
   if (!selected.rejected && !targeted) return { ...selected, alternatives: 0, topics: [], abstained: false, retainedBlocks: selected.keptBlocks };
-  const safe = selected.text.split(/\n\s*\n/).filter(block => block.trim() && !/^(?:말씀하신 조건|Your stated conditions|你提供的条件):/.test(block))
+  // 궁을 피하는 질문에 궁 이름이 포함된 일반 진입 조언을 그대로 남기지 않는다.
+  const needsDefence = targeted && query.intent === "survive";
+  const safe = selected.text.split(/\n\s*\n/).filter(block => !needsDefence && block.trim() && !/^(?:말씀하신 조건|Your stated conditions|你提供的条件):/.test(block))
     .filter(block => !targeted || mentionsAbility(block, { ...request, defaultOwner: block.startsWith(`**${request.mine.name}**`) ? "mine" : "enemy" }, query.target!));
   let candidates = alternatives(data, lang, request).filter(c => !safe.some(block => block.includes(c.text)));
   const defensive = !targeted && query.intent === "engage" && !candidates.length;

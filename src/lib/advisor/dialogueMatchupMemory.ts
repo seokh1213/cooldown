@@ -17,6 +17,17 @@ export function rememberMatchupSelection(memory: DialogueMemory, selected: Match
   if (!selected.length) return;
   const catalog = new Map((memory.matchups ?? []).map(pair => [`${pair.mine}:${pair.enemy}`, pair]));
   selected.forEach(pair => catalog.set(`${pair.mine}:${pair.enemy}`, structuredClone(pair)));
+  const next = selected[0];
+  const group = memory.matchupGroup;
+  // 기존 상대 중 한 명을 둔 채 내 챔피언을 바꾸면, '둘 다'의 관점도 함께 바뀐다.
+  if (selected.length === 1 && group?.length && group.every(pair => pair.mine !== next.mine)
+    && group.some(pair => pair.enemy === next.enemy)) {
+    memory.matchupGroup = group.map(({ enemy }) => ({ mine: next.mine, enemy }));
+    memory.matchupGroup.forEach(pair => {
+      const key = `${pair.mine}:${pair.enemy}`;
+      if (!catalog.has(key)) catalog.set(key, { ...pair, conditions: [] });
+    });
+  }
   memory.matchups = [...catalog.values()];
   memory.matchupScope = selected.length > 1 ? "group" : "single";
   if (selected.length > 1) memory.matchupGroup = selected.map(({ mine, enemy }) => ({ mine, enemy }));

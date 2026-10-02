@@ -1,6 +1,7 @@
 /** 능력치 질문의 어휘와 조회 계약. 모델도 수치 대신 이 계약을 출력할 수 있다. */
 import type { StatName } from "@/lib/knowledge/facts";
 import type { AdvisorAnswer } from "./answer";
+import { excludesMention } from "./selectionWords";
 
 export type StatLevel = 1 | 6 | 11 | 18;
 export const STAT_QUERY_TERMS: Record<StatName, string> = {
@@ -32,14 +33,21 @@ export function detectStat(question: string): StatName | undefined {
 }
 
 /** 긴 어휘가 덮는 짧은 어휘만 제외한다. 별도로 물은 체력은 체젠과 함께 남긴다. */
-export function detectStats(question: string): StatName[] {
+function statMentions(question: string) {
   const matches = STAT_LEXICON.flatMap(([field, pattern]) => [...question.matchAll(new RegExp(pattern.source, "gi"))]
     .filter(match => !(field === "attackSpeed" && match.index === 0 && /^as\b.*\b(?:against|into)\b/i.test(question)))
     .map(match => ({ field, index: match.index, end: match.index + match[0].length })));
-  const distinct = matches.filter(match => !/^(?:은|는|이|가|을|를|도)?\s*(?:말고|제외|빼고)/i.test(question.slice(match.end))
-    && !matches.some(other => other !== match && other.index <= match.index && other.end >= match.end
+  return matches.filter(match => !matches.some(other => other !== match && other.index <= match.index && other.end >= match.end
       && other.end - other.index > match.end - match.index));
-  return [...new Set(distinct.sort((a, b) => a.index - b.index).map(match => match.field))];
+}
+
+export function detectStats(question: string): StatName[] {
+  return [...new Set(statMentions(question).filter(match => !excludesMention(question, match.end))
+    .sort((a, b) => a.index - b.index).map(match => match.field))];
+}
+
+export function excludedStats(question: string): StatName[] {
+  return [...new Set(statMentions(question).filter(match => excludesMention(question, match.end)).map(match => match.field))];
 }
 
 export function statFields(query: ChampionStatQuery): StatName[] {

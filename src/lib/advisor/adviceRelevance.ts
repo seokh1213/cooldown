@@ -1,15 +1,15 @@
 /** 질문의 행동과 대상을 원문 단위에 연결한다. 스킬 부재 자체를 질문의 대상으로 삼지 않는다. */
 import type { AdviceSubjects } from "./adviceActions";
+import { mentionsAbilityState } from "./abilityStatus";
 
 export type AdviceIntent = "engage" | "survive" | "trade" | "combo" | "general";
 export interface AdviceQuestion { intent: AdviceIntent; target?: { owner: "mine" | "enemy"; slot: string } }
 const INTENTS: Array<[AdviceIntent, RegExp]> = [
   ["combo", /콤보|연계|\bcombo\b|连招/i],
-  ["survive", /버텨|생존|피하|피해\s*가는|대응|대처|막아|빠져|도망|surviv|avoid|dodge|escape|躲|逃|应对/i],
+  ["survive", /버텨|생존|피하|피해\s*가는|대응|대처|막아|빠져|도망|surviv|avoid|dodge|escape|respond|躲|逃|应对/i],
   ["engage", /진입|들어가|붙어|붙는|올인|이니시|engage|go in|all.?in|进场|开团/i],
   ["trade", /딜교|교환|견제|\btrad(e|ing)\b|harass|换血|消耗/i],
 ];
-const STATE = /^(?:\s|[이가은는도와랑])*.*?(?:없|빠졌|빠진|쿨타임|재사용\s*대기|돌아왔|있(?:고|어|으면)|살아|사용\s*가능|is down|on cooldown|available|冷却|可用)/i;
 const escape = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
 export function adviceQuestion(question: string, subjects: AdviceSubjects): AdviceQuestion {
@@ -20,18 +20,18 @@ export function adviceQuestion(question: string, subjects: AdviceSubjects): Advi
   for (const [i, ref] of refs.entries()) {
     const prefix = question.slice(i ? refs[i - 1].index! + refs[i - 1][0].length : 0, ref.index);
     const markers = (["mine", "enemy"] as const).flatMap(side =>
-      [...prefix.matchAll(new RegExp(`${escape(subjects[side].name)}|${side === "mine" ? "내(?=\\s*$)|\\bmy\\b|我的" : "상대|\\benemy\\b|对面"}`, "gi"))]
+      [...prefix.matchAll(new RegExp(`${escape(subjects[side].name)}|${side === "mine" ? "내(?=\\s*$)|\\bmy\\b|我的" : "상대|\\b(?:enemy|his|her|their)\\b|对面"}`, "gi"))]
         .map(m => ({ side, at: m.index })));
     const explicitOwner = markers.sort((a, b) => b.at - a.at)[0]?.side;
     owner = explicitOwner ?? (/[.!?。！？]/.test(prefix) ? undefined : owner);
     const suffix = question.slice(ref.index! + ref[0].length, refs[i + 1]?.index ?? question.length);
-    const state = STATE.test(suffix.split(/[.!?。！？]/)[0]);
+    const state = mentionsAbilityState(suffix.split(/[.!?。！？]/)[0]);
     // 조건의 '내 E'를 별도로 물은 '궁 대응'의 주인으로 이어 붙이지 않는다.
     if (!explicitOwner && !state && intent === "survive" && /대응|대처|피하|피할|피하려|avoid|dodge|respond|应对|躲/i.test(suffix)) owner = "enemy";
     if (owner && !state) targets.push({ owner, slot: ref[1]?.toUpperCase() ?? "R" });
   }
   const named = (["mine", "enemy"] as const).flatMap(side => subjects[side].spells
-    .filter(s => s.name.length > 1 && question.includes(s.name) && !STATE.test(question.slice(question.indexOf(s.name) + s.name.length)))
+    .filter(s => s.name.length > 1 && question.includes(s.name) && !mentionsAbilityState(question.slice(question.indexOf(s.name) + s.name.length)))
     .map(s => ({ owner: side, slot: s.slot })));
   return { intent, target: targets[targets.length - 1] ?? (named.length === 1 ? named[0] : undefined) };
 }

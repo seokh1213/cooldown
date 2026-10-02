@@ -3,13 +3,12 @@ import { buildItemCard } from "./context";
 import { buildRuleAnswer as buildRuleCard } from "./answer";
 import { refersToContextChampions } from "./askWords";
 import { detectSpellFocus } from "./spellFocus";
-import { suggestChampions } from "./championTypo";
-import { nicknames } from "./intent";
+import { championTypoPlan } from "./championTypoPlan";
 import { topicFromWords } from "./topicJudge";
 import { championPriceAnswer, gameMetaAnswer, findGameMeta } from "./gameMeta";
 import { buildSearchCorpus, hitsToAnswer, buildRetrievalDocs, hybridSearch, lexicalSearch } from "./searchFallback";
 import { questionLanguage } from "./questionLanguage";
-import { ruleCooldown, askedRules, docAnswer, knowledgeReference, isGameWord, lexicalHit, searchesByVector } from "./questionDocs";
+import { ruleCooldown, askedRules, docAnswer, knowledgeReference, lexicalHit, searchesByVector } from "./questionDocs";
 import { type AnswerPlan, type PlanDeps, type Intent } from "./planTypes";
 
 /** 상성 대화에서 소환사 주문의 쓰임새를 묻는 말(규칙 카드가 아니라 이어 묻기) */
@@ -86,20 +85,7 @@ export function answerRuleQuestion({ question, ctx, data, matchup }: Intent): An
  * 후보가 하나면 바로 간다. 이미 찾은 챔피언은 오타 후보에서 뺀다.
  */
 export function fixChampionTypo({ question, data, champions, matchup }: Intent): AnswerPlan | undefined {
-  const known = new Set(champions.map((card) => card.id));
-  // 상성 대화를 이어 가는 중이면 두 글자 낱말은 오타로 보지 않는다(`suggestChampions` 의 minLength)
-  const typo = suggestChampions(question, data.cards, nicknames(data.cards), known, matchup ? 3 : 1, (token) => isGameWord(data, token));
-  if (typo?.candidates.length === 1) {
-    const [card] = typo.candidates;
-    return {
-      type: "retry",
-      question: question.replace(typo.original, card.name),
-    };
-  }
-  if (typo && typo.candidates.length > 1) {
-    return { type: "code", answer: { kind: "suggestion", original: typo.original, candidates: typo.candidates }, pending: true };
-  }
-  return undefined;
+  return championTypoPlan(question, data, { champions, inMatchup: Boolean(matchup) });
 }
 
 /*
