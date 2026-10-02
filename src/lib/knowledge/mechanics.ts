@@ -185,5 +185,8 @@ export function findMechanics(
 
 export function mechanicsToText(sections: MechanicsSection[]): string | undefined {
   if (!sections.length) return undefined;
-  return sections.map((s) => `### ${s.title}\n${s.text}`).join("\n\n");
+  return sections.map((s) => {
+    const text = s.text.replace(/^(?:\*\*)?조언에 쓰는 규칙(?:\*\*)?(?::[ \t]*|[ \t]*$)/gm, "");
+    return `### ${s.title}\n${text}`;
+  }).join("\n\n");
 }

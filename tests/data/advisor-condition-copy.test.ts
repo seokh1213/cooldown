@@ -33,14 +33,14 @@ test("조건 머리말을 빼도 저장 복원 뒤 E의 복귀와 R의 부재를
   };
   const first = await ask("아리로 제드를 상대하고 내 E가 없는데 상대 궁에 어떻게 대응해?");
   assert.ok(first.memory.conditions.some(c => c.owner === "mine" && c.slot === "E" && c.status === "down"));
-  assert.match(first.text, /내 E.*추천할 수 없/);
+  assert.match(first.text, /내 E 없이.*제드 R.*확인하지 못/);
   assert.doesNotMatch(first.text, /매혹으로 콤보를 끊|군중 제어를 걸어/);
 
   const second = await ask("내 R도 없고 E만 돌아왔어. 상대 궁에 어떻게 대응해?");
   assert.ok(second.memory.conditions.some(c => c.owner === "mine" && c.slot === "E" && c.status === "ready"));
   assert.ok(second.memory.conditions.some(c => c.owner === "mine" && c.slot === "R" && c.status === "down"));
   assert.match(second.text, /아리 E 매혹/);
-  assert.match(second.text, /군중 제어를 걸어 콤보를 끊/);
+  assert.match(second.text, /아리 E 매혹을 걸어 콤보를 끊/);
   assert.doesNotMatch(second.text, /내 R.*추천할 수 없|R 혼령 질주로.*(?:접근|진입)/);
 });
 

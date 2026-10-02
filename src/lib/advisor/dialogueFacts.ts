@@ -159,8 +159,8 @@ export function resolveDialogueFact(input: QuestionInput, memory: DialogueMemory
   answer = focus === "cooldown" ? withCalculation(answer, applied) : answer;
   if (answer.kind === "spell" && focus === "cost" && !spell.cost) {
     const passive = card.spells.find(s => s.slot === "P");
-    const resource = /스킬을 사용할 때마다 열기/.test(passive?.text ?? "") ? " 패시브 자료에서는 스킬을 사용할 때마다 열기를 얻는다고 설명합니다." : "";
-    answer = { ...answer, focus: "cost", highlighted: [`${card.name} ${slot} ${spell.name}의 마나 소모값은 자료에 기재되어 있지 않습니다.${resource}`] };
+    const resource = /스킬을 사용할 때마다 열기/.test(passive?.text ?? "") ? " 스킬을 사용할 때마다 열기를 얻습니다." : "";
+    answer = { ...answer, focus: "cost", highlighted: [`${card.name} ${slot} ${spell.name}의 마나 소모량은 아직 확인할 수 없어요.${resource}`] };
   }
   return { plan: { type: "card", answer }, numeric: applied };
 }

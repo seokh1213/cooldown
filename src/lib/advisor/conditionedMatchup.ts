@@ -54,24 +54,28 @@ function alternatives(data: AdvisorData, lang: Language, request: ConditionedReq
   })).sort((a, b) => b.score - a.score);
 }
 
-function unavailableReason(request: ConditionedRequest, baseline: string, lang: Language): string {
+function unavailableText(request: ConditionedRequest, baseline: string, query: AdviceQuestion, lang: Language): string {
   const missing = adviceUnit(baseline, request).requirements.flatMap(r => r.owner === "mine"
     ? r.anyOf.filter(slot => request.conditions?.some(c => c.owner === "mine" && c.slot === slot && c.status === "down")) : []);
   const slots = [...new Set(missing)].join("·");
-  if (!slots) return "";
-  const intent = adviceQuestion(request.question, request).intent;
-  const action = intent === "engage" ? "진입" : intent === "combo" ? "콤보" : intent === "trade" ? "딜 교환" : intent === "survive" ? "대응" : "행동";
-  return lang === "en_US" ? `The prepared advice needs my ${slots}, which you said is unavailable. I can't recommend that action now.`
-    : lang === "zh_CN" ? `已有建议需要我的 ${slots}，但你说这些技能还在冷却，因此现在不能推荐该行动。`
-    : `내 ${slots} 스킬이 필요한 ${josa(action, "을/를")} 지금 추천할 수 없어요.`;
+  const target = query.target?.owner === "enemy" && request.continuation !== "advance" ? `${request.enemy.name} ${query.target.slot}` : "";
+  const intent = query.intent;
+  const action = intent === "engage" ? "진입" : intent === "combo" ? "콤보" : intent === "trade" ? "딜 교환" : "대응";
+  return lang === "en_US" ? `${slots ? `Without your ${slots}, ` : ""}I can't yet confirm another ${target ? `response to ${target}` : "option"}.`
+    : lang === "zh_CN" ? `${slots ? `你的 ${slots} 不可用时，` : ""}暂时无法确认${target ? `应对 ${target} 的` : ""}其他办法。`
+    : `${slots ? `내 ${slots} 없이 ` : ""}${target ? `${target}에 대응할 다른` : action} 방법은 아직 확인하지 못했어요.`;
 }
 
 function alternativeText(candidate: Candidate, request: ConditionedRequest, lang: Language): string {
   const controls = controlLabels(candidate, request, request.conditions ?? []);
-  const means = controls.length ? lang === "en_US" ? `Crowd control referred to here: ${controls.join(" / ")}.`
-    : lang === "zh_CN" ? `这里提到的控制技能：${controls.join(" / ")}。`
-    : `이 조언에서 말하는 군중 제어 수단: ${controls.join(" / ")}.` : "";
-  return [`**${request[candidate.side].name}**`, means, labelSlots(candidate.text, [request.mine, request.enemy])].filter(Boolean).join("\n");
+  let text = labelSlots(candidate.text, [request.mine, request.enemy]);
+  if (controls.length) {
+    const label = controls.join(lang === "en_US" ? " or " : lang === "zh_CN" ? "或" : " 또는 ");
+    text = lang === "en_US" ? text.replace(/((?:apply|use) )crowd control/gi, (_, verb: string) => verb + label)
+      : lang === "zh_CN" ? text.replace(/((?:用(?:你的|己方|自身)?|施加)\s*)控制/g, (_, verb: string) => verb + label)
+      : text.replace(/군중\s*제어를(?=\s*(?:걸|넣|사용))/g, josa(label, "을/를")).replace(/CC로(?=\s*(?:끊|막))/g, josa(label, "로/으로"));
+  }
+  return [`**${request[candidate.side].name}**`, text].join("\n");
 }
 
 /** 조건을 만족하는 원문만 표시한다. 실시간 스킬 상태를 추측하지 않는다. */
@@ -95,16 +99,7 @@ export function conditionMatchupText(data: AdvisorData, lang: Language, request:
   });
   const defensiveLabel = lang === "en_US" ? "**Defense and spacing**" : lang === "zh_CN" ? "**防守和距离管理**" : "**방어·거리 관리**";
   const advice = [...safe, ...(defensive && picked.length ? [defensiveLabel] : []), ...picked.map(c => alternativeText(c, request, lang))].join("\n\n");
-  const unavailable = lang === "en_US" ? "I couldn't find a supported action for these conditions. I can't recommend a combo that needs an ability you said is unavailable."
-    : lang === "zh_CN" ? "这些条件下没有找到有依据的行动建议，不能推荐需要已说明不可用技能的连招。"
-    : "현재 조건에서 추천할 행동을 근거 자료에서 찾지 못했어요. 없다고 말씀하신 스킬이 필요한 콤보는 추천하기 어렵습니다.";
-  const target = targeted ? `${request.enemy.name} ${query.target!.slot}` : "";
-  const gap = target ? lang === "en_US" ? `I couldn't find another supported response to ${target} under these conditions.`
-    : lang === "zh_CN" ? `这些条件下没有找到针对 ${target} 的其他有依据的应对。`
-    : `현재 조건에서 ${target}에 대응할 다른 행동은 근거 자료에서 찾지 못했어요.` : unavailable;
-  // 대안이 있으면 그 행동부터 답한다. 답을 못 찾았을 때만 필요한 스킬의 부재를 설명한다.
-  const reason = selected.rejected && !advice ? unavailableReason(request, baseline, lang) : "";
-  return { text: [reason, advice || gap].filter(Boolean).join("\n\n"), rejected: selected.rejected, alternatives: picked.length,
+  return { text: advice || unavailableText(request, baseline, query, lang), rejected: selected.rejected, alternatives: picked.length,
     topics: picked.map(c => c.topic), abstained: !advice,
     retainedBlocks: selected.keptBlocks.filter((_, i) => safe.includes(selected.text.split(/\n\s*\n/)[i])) };
 }

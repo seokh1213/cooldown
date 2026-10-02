@@ -65,7 +65,7 @@ test("알려진 네 실패에서 은행·노트·조건 묶음 복귀 모두 없
     assert.equal(reply.answer.kind, "compare");
     const text = reply.answer.kind === "compare" ? reply.answer.precomputed! : "";
     assert.doesNotMatch(text, entry.bad);
-    assert.ok(text.length > 60);
+    assert.ok(text.trim().length > 0, entry.question);
     const selected = selectDecisionAnswer(data, atoms, { ...entry, pair: pair ?? {}, focus: "general", baseline: "**콤보**\n" + (entry.mine === "Vayne" ? "Q로 각을 잡은 뒤 E로 벽에 박습니다." : `${cards.mine.name} ${entry.slot}를 맞힙니다.`),
       memory: { ...emptyDialogue(data.patch), conditions } });
     assert.doesNotMatch(selected.text, entry.bad);

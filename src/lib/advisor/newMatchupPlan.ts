@@ -1,5 +1,4 @@
 /** 새 상성의 대상 선택. 이름 수에 따른 차이를 풀고 같은 계획으로 조립한다. */
-import { fill } from "@/i18n/fill";
 import type { ChampionCard } from "@/lib/knowledge/facts";
 import { detectStat } from "./answer";
 import { asksComparison, asksGuide, asksMatchup } from "./askWords";
@@ -44,9 +43,7 @@ function resolveTarget(intent: Intent): MatchupTarget | undefined {
   const canCorrect = (ask === "item" || ask === "guide") && asksMatchup(question) && (phrased || byJosa.confident);
   if (ask !== "matchup" && !canCorrect) return undefined;
   const [mine, enemy] = phrased ? [phrased, pair.find(card => card.id !== phrased.id) ?? pair[1]] : byJosa.sides;
-  const others = champions.filter(card => !pair.includes(card)).map(card => card.name).join(", ");
-  const notice = ctx.notice ?? fill(ctx.copy.card.pairFromMany, { mine: mine.name, enemy: enemy.name, others });
-  return { mine, enemy, notice };
+  return { mine, enemy, notice: ctx.notice };
 }
 
 /** 대상이 확정된 새 상성에서만 주제를 판정한다. 이어 묻기는 저장 상태를 사용하는 별도 처리기다. */

@@ -1,5 +1,4 @@
 /** 문서 검색, 룬·주문 규칙, 이름 정정, 게임 사실과 마지막 낱말 검색. */
-import { fill } from "@/i18n/fill";
 import { buildItemCard } from "./context";
 import { buildRuleAnswer as buildRuleCard } from "./answer";
 import { refersToContextChampions } from "./askWords";
@@ -11,7 +10,6 @@ import { championPriceAnswer, gameMetaAnswer, findGameMeta } from "./gameMeta";
 import { buildSearchCorpus, hitsToAnswer, buildRetrievalDocs, hybridSearch, lexicalSearch } from "./searchFallback";
 import { questionLanguage } from "./questionLanguage";
 import { ruleCooldown, askedRules, docAnswer, knowledgeReference, isGameWord, lexicalHit, searchesByVector } from "./questionDocs";
-import { josa } from "@/lib/knowledge/text";
 import { type AnswerPlan, type PlanDeps, type Intent } from "./planTypes";
 
 /** 상성 대화에서 소환사 주문의 쓰임새를 묻는 말(규칙 카드가 아니라 이어 묻기) */
@@ -87,7 +85,7 @@ export function answerRuleQuestion({ question, ctx, data, matchup }: Intent): An
  * 치면 럼블이지 말파이트가 아니고, "말파이트랑 럼베 중" 은 둘을 견주는 질문이다.
  * 후보가 하나면 바로 간다. 이미 찾은 챔피언은 오타 후보에서 뺀다.
  */
-export function fixChampionTypo({ question, ctx, data, champions, matchup }: Intent): AnswerPlan | undefined {
+export function fixChampionTypo({ question, data, champions, matchup }: Intent): AnswerPlan | undefined {
   const known = new Set(champions.map((card) => card.id));
   // 상성 대화를 이어 가는 중이면 두 글자 낱말은 오타로 보지 않는다(`suggestChampions` 의 minLength)
   const typo = suggestChampions(question, data.cards, nicknames(data.cards), known, matchup ? 3 : 1, (token) => isGameWord(data, token));
@@ -96,7 +94,6 @@ export function fixChampionTypo({ question, ctx, data, champions, matchup }: Int
     return {
       type: "retry",
       question: question.replace(typo.original, card.name),
-      notice: fill(ctx.copy.card.understoodAs, { name: card.name, nameWith: josa(card.name, "로/으로") }),
     };
   }
   if (typo && typo.candidates.length > 1) {
@@ -137,5 +134,5 @@ export function answerFromNotes({ question, ctx, data, ask }: Intent): AnswerPla
   if (ask === "game" && !lexicalSearch(corpus, question).length) return { type: "code", answer: ctx.copy.noGameData };
   // 모델은 카드 없는 답을 쓰지 않는다. 질문 낱말로 찾아 걸린 자료 문장을 그대로 보인다(`hitsToAnswer`). 없으면 자료가 없다고 말한다.
   const shown = hitsToAnswer(lexicalSearch(corpus, question), question);
-  return { type: "code", answer: shown ? `${shown}\n\n${ctx.copy.fromNotes}` : ctx.copy.noLiteAnswer };
+  return { type: "code", answer: shown || ctx.copy.noLiteAnswer };
 }

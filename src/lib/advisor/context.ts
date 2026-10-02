@@ -259,7 +259,7 @@ export function buildTagAnswer(
     );
     for (const hit of hits) lines.push(`- ${hit.slot} ${hit.name}: ${hit.summary}`);
   }
-  return `${lines.join("\n")}\n\n패치 ${data.patch} 기준 스킬 효과입니다.`;
+  return `${lines.join("\n")}\n\n_v${data.patch}_`;
 }
 
 /** 받침 유무로 조사를 고른다. "보호막는" 처럼 나가면 답이 어설퍼 보인다. */
@@ -368,7 +368,7 @@ export function buildItemAnswer(data: AdvisorData, question: string): string | u
         : `## ${item.name}\n${body}`,
     );
   }
-  return `${blocks.join("\n\n")}\n\n패치 ${data.patch} 기준 아이템 설명입니다.`;
+  return `${blocks.join("\n\n")}\n\n_v${data.patch}_`;
 }
 
 /**
@@ -385,7 +385,7 @@ export function buildMechanicsAnswer(
 ): string | undefined {
   const text = mechanicsToText(findMechanics(data.mechanics, question));
   if (!text) return undefined;
-  return `${text}\n\n패치 ${data.patch} 기준으로 정리해 둔 규칙을 그대로 옮긴 것입니다.`;
+  return `${text}\n\n_v${data.patch}_`;
 }
 
 /** 문서 id(`mech:스킬-가속`)로 답한다. 검색 벡터가 고른 절을 보일 때 쓴다. */
@@ -393,7 +393,7 @@ export function buildMechanicsAnswerById(data: AdvisorData, id: string): string 
   const section = data.mechanics.find((entry) => `mech:${entry.id}` === id);
   const text = section ? mechanicsToText([section]) : undefined;
   if (!text) return undefined;
-  return `${text}\n\n패치 ${data.patch} 기준으로 정리해 둔 규칙을 그대로 옮긴 것입니다.`;
+  return `${text}\n\n_v${data.patch}_`;
 }
 
 /** 설명문은 HTML 이라 그대로 실으면 태그가 답에 샌다. */

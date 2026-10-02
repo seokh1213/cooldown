@@ -264,8 +264,6 @@ export interface Translations {
       /** 코드가 자료를 찾아낸 뒤 */
       searched: string;
     };
-    /** 가벼운 모델이 검색 자료를 그대로 옮겨 보였을 때 붙이는 말 */
-    fromNotes: string;
     /** 가벼운 모델이 자료를 못 찾았을 때(모델이 글을 쓰지 않으므로) */
     noLiteAnswer: string;
     /** 게임 규칙·메타 질문인데 자료에 없을 때. 모델이 지어내지 않게 이 말로 답한다. */
@@ -292,10 +290,6 @@ export interface Translations {
       verdictYes: string;
       verdictNo: string;
       ruleSource: string;
-      understoodAs: string;
-      /** 이름이 셋 이상인 상성 질문에서 맞붙는 둘만 골랐을 때 */
-      pairFromMany: string;
-      fromScreen: string;
       suggestPrefix: string;
       /** 검색이 확신하지 못해 가까운 자료를 고르게 할 때 */
       relatedPrompt: string;
@@ -328,8 +322,6 @@ export interface Translations {
       /** 상성 카드 부제. {a}로 {b} 상대 */
       matchup: string;
       matchupTool: string;
-      /** 대화에서 방금 다룬 챔피언을 붙였을 때 */
-      fromChat: string;
       /** 화면에 둘이 있는데 누구 것인지 모를 때 */
       whichOne: string;
       /** 운용 노트 제목. {name} 플레이할 때 / 상대할 때 */

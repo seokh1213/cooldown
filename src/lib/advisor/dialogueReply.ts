@@ -53,7 +53,7 @@ export async function assembleDialogueReply(dialogue: DialoguePlan, data: Adviso
   const memory = structuredClone(dialogue.memory);
   const replies: Array<Omit<DialogueReply, "memory">> = [];
   for (const part of dialogue.parts) replies.push(await partReply(part, { data, lang, memory, deps }));
-  const unavailable = lang === "en_US" ? "I couldn't find supporting information for this part." : lang === "zh_CN" ? "这部分没有找到可用的资料。" : "이 부분은 근거 자료에서 답을 찾지 못했습니다.";
+  const unavailable = lang === "en_US" ? "I can't yet confirm this part." : lang === "zh_CN" ? "这部分暂时无法确认。" : "이 부분은 아직 확인할 수 없어요.";
   const text = replies.map((r, i) => r.text || (replies.length > 1 ? `${dialogue.parts[i].question}\n${unavailable}` : "")).filter(Boolean).join("\n\n");
   if (dialogue.clarification) return { text: [text, dialogue.clarification].filter(Boolean).join("\n\n"), memory };
   memory.lastReply = { question: dialogue.parts.map(p => p.question).join(" / "), text, focus: memory.matchup?.focus };

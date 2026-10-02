@@ -5,7 +5,6 @@
  */
 import { useRef } from "react";
 import { useTranslation } from "@/i18n";
-import { fill } from "@/i18n/fill";
 import type { UseAdvisorResult } from "@/hooks/useAdvisor";
 import type { AdvisorData } from "@/lib/advisor/context";
 import type { AdvisorAnswer } from "@/lib/advisor/answer";
@@ -18,7 +17,6 @@ import { dialogueMemoryOf, rememberAnswer } from "@/lib/advisor/dialogueState";
 import { offlineJudge } from "@/lib/advisor/offlineJudge";
 import { fetchJudgeFile } from "@/lib/advisor/storage";
 import { docAnswer } from "@/lib/advisor/questionDocs";
-import { josa } from "@/lib/knowledge/text";
 
 interface AskAdvisorOptions {
   advisor: UseAdvisorResult;
@@ -141,7 +139,7 @@ export function useAskAdvisor({ advisor, data, championIds, canUseModel }: AskAd
     const typo = suggestChampions(original, data.cards, nicknames(data.cards));
     // 오타였으면 그 말을 바꾸고, 화면의 둘 중 하나를 고른 것이면 이름을 앞에 붙인다.
     const fixed = typo ? original.replace(typo.original, card.name) : `${card.name} ${original}`;
-    void ask(fixed, fill(copy.card.understoodAs, { name: card.name, nameWith: josa(card.name, "로/으로") }));
+    void ask(fixed);
   };
 
   return { ask, showDoc, askPerspective, pickChampion };

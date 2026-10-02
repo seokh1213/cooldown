@@ -1,5 +1,4 @@
 /** 아이템·원리·챔피언 자료의 계획. 수치 조회와 운용 노트를 구분한다. */
-import { fill } from "@/i18n/fill";
 import { championNotes } from "./playbookNotes";
 import { buildItemCard, buildTagAnswer, buildMechanicsAnswer } from "./context";
 import { buildCompareAnswer as buildCompareCard, buildSpellAnswer as buildSpellCard } from "./answer";
@@ -50,20 +49,18 @@ export async function answerChampion(intent: Intent): Promise<AnswerPlan | undef
 function championsFromContext({ question, ctx, data, recent, slot, ask }: Intent): AnswerPlan | { champions: ChampionCard[]; notice?: string } {
   const onScreen = ctx.championIds.map((id) => data.cardById.get(id)).filter((card): card is ChampionCard => Boolean(card));
   const source = recent.length ? recent : onScreen;
-  const fromWhere = recent.length ? ctx.copy.card.fromChat : ctx.copy.card.fromScreen;
-  if (source.length === 1) return { champions: source, notice: ctx.notice ?? fill(fromWhere, { name: source[0].name }) };
+  if (source.length === 1) return { champions: source, notice: ctx.notice };
   if (source.length === 0) return { champions: [], notice: ctx.notice };
-  if (asksComparison(question, source.length)) return { champions: source, notice: ctx.notice ?? fill(fromWhere, { name: source.map((card) => card.name).join("·") }) };
+  if (asksComparison(question, source.length)) return { champions: source, notice: ctx.notice };
   if (slot) {
     // VS 화면에 둘이 떠 있는데 "W 쿨타임" 이면 둘의 W 를 나란히 놓는다. 견주러 온
     // 화면에서 "누구 것?" 하고 되묻는 것보다 둘 다 보여 주는 쪽이 답이다.
-    const names = source.map((card) => card.name).join("·");
-    return { type: "card", answer: buildCompareCard(source, question, slot, { lang: ctx.lang }), notice: ctx.notice ?? fill(fromWhere, { name: names }) };
+    return { type: "card", answer: buildCompareCard(source, question, slot, { lang: ctx.lang }), notice: ctx.notice };
   }
   // 상성을 말한 뒤의 "스킬 쿨타임" 은 내 챔피언(앞쪽) 것이다.
   // 상성·비교 뒤의 스킬 수치 조회("list their ability cooldowns")는 둘의 표다. 한쪽만 주면 나머지를 되물어야 한다.
-  if (recent.length >= 2 && ask === "spellStat") return { champions: source, notice: ctx.notice ?? fill(fromWhere, { name: source.map((card) => card.name).join("·") }) };
-  if (recent.length) return { champions: [source[0]], notice: ctx.notice ?? fill(fromWhere, { name: source[0].name }) };
+  if (recent.length >= 2 && ask === "spellStat") return { champions: source, notice: ctx.notice };
+  if (recent.length) return { champions: [source[0]], notice: ctx.notice };
   // 화면에 둘이 있는데 슬롯도 비교도 아니면 누구 것인지 묻는다.
   return { type: "code", answer: { kind: "suggestion", original: question, candidates: source, reason: "ambiguous" }, pending: true };
 }

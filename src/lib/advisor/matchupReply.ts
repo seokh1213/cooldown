@@ -33,7 +33,7 @@ export function focusOfMatchupTopic(topic: string): string {
 function exhaustedText(lang: Language): string {
   return lang === "en_US" ? "I've shown all the available advice for this matchup. Which topic would you like to revisit?"
     : lang === "zh_CN" ? "这个对局现有的建议已经全部讲过了。你想再看哪个主题？"
-    : "이 상성에서 준비된 조언은 모두 보여드렸어요. 라인전·아이템·콤보 중 다시 보고 싶은 주제를 알려주세요.";
+    : "이 상성의 조언은 모두 보여드렸어요. 라인전·아이템·콤보 중 다시 보고 싶은 주제를 알려주세요.";
 }
 
 /** 은행과 노트 모두 같은 진행 상태를 사용한다. 실제로 고른 칸만 기록한다. */

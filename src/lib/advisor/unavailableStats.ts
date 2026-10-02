@@ -38,8 +38,8 @@ export function unavailableStatPlan(resolved: ResolvedQuestion, ctx: PlanContext
   const stat = findStat(resolved.text);
   if (!stat) return undefined;
   const name = stat.names[ctx.lang];
-  const text = ctx.lang === "ko_KR" ? `${name} 항목은 알아봤지만, 현재 챔피언 기본 능력치 자료에 해당 수치가 없습니다. 아이템·스킬에 따른 값도 계산하지 않습니다.`
-    : ctx.lang === "en_US" ? `I recognized ${name}, but its value is not in the current base champion stats. Item and ability contributions are not calculated.`
-      : `已识别${name}，但当前英雄基础属性资料没有该数值，也不计算装备和技能的加成。`;
+  const text = ctx.lang === "ko_KR" ? `${name} 수치는 아직 확인할 수 없어요.`
+    : ctx.lang === "en_US" ? `I can't yet confirm the ${name.toLowerCase()} value.`
+      : `暂时无法确认${name}的数值。`;
   return { type: "code", answer: { kind: "text", text } };
 }

@@ -24,14 +24,14 @@ test("내 스킬 부재와 상대 궁 대응 대상을 구분한다", () => {
 test("매혹이 없는 제드 궁 대응을 파밍 조언으로 대신하지 않는다", () => {
   const request = { ...pair("Ahri", "Zed"), question: "내 E가 없는데 상대 궁에 어떻게 대응해?", conditions: unavailable("내 E가 없어") };
   const result = conditionMatchupText(data, "ko_KR", request, "제드 R 죽음의 표식이 붙으면 아리 E 매혹으로 콤보를 끊습니다.");
-  assert.match(result.text, /제드 R.*다른 행동.*찾지 못/);
+  assert.match(result.text, /제드 R.*다른 방법.*확인하지 못/);
   assert.doesNotMatch(result.text, /파밍|Q 견제/);
 });
 
 test("내 궁이 없어도 매혹이 돌아왔다면 궁 대응의 군중 제어 수단을 표시한다", () => {
   const result = conditionMatchupText(data, "ko_KR", { ...pair("Ahri", "Zed"), question: "상대 궁에 어떻게 대응해?", conditions: unavailable("내 R은 없고 내 E는 돌아왔어") }, "아리 R 혼령 질주로 접근해 E 매혹을 맞힙니다.");
-  assert.match(result.text, /군중 제어 수단: 아리 E 매혹/);
-  assert.match(result.text, /표식.*군중 제어를 걸어 콤보를 끊/);
+  assert.match(result.text, /아리 E 매혹을 걸어/);
+  assert.match(result.text, /표식.*아리 E 매혹을 걸어 콤보를 끊/);
   assert.doesNotMatch(result.text, /R가/);
 });
 

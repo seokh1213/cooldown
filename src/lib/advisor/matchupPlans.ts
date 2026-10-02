@@ -1,5 +1,4 @@
 /** 상성의 이어 묻기·관점·새 상대를 해석한다. 기존 판정 순서를 유지한다. */
-import { fill } from "@/i18n/fill";
 import { buildItemCard, buildMechanicsAnswer, type AdvisorData } from "./context";
 import { buildCompareAnswer as buildCompareCard, type AdvisorAnswer } from "./answer";
 import { asksGenericAdvice, asksReason, looksChampionDirected } from "./askWords";
@@ -45,7 +44,7 @@ export async function continueMatchup(intent: Intent, deps: PlanDeps): Promise<A
     return {
       type: "card",
       answer: { ...buildCompareCard([state.mine, state.enemy], question, intent.slot, { lang: ctx.lang }), inMatchup: true } as AdvisorAnswer,
-      notice: ctx.notice ?? fill(ctx.copy.card.fromChat, { name: `${state.mine.name}·${state.enemy.name}` }),
+      notice: ctx.notice,
     };
   }
   if (champions.length === 0 && ask === "spellStat") return undefined;
@@ -105,7 +104,7 @@ export async function continueMatchup(intent: Intent, deps: PlanDeps): Promise<A
     return {
       type: "card",
       answer: table.kind === "compare" ? { ...table, inMatchup: true } : table,
-      notice: ctx.notice ?? fill(ctx.copy.card.fromChat, { name: `${state.mine.name}·${state.enemy.name}` }),
+      notice: ctx.notice,
     };
   }
   // 새 이름이 내 자리인지 상대 자리인지 문형이 못 박으면 판정기보다 먼저다("오공으로 하면", "야스오 만나면")
@@ -115,8 +114,7 @@ export async function continueMatchup(intent: Intent, deps: PlanDeps): Promise<A
   const turn = planTurn(state, champions, entity, act, side, alone);
   if (turn.kind !== "matchup") return undefined;
   const topic = turn.act === "more" ? previousFocus(ctx.turns) ?? "general" : await matchupTopic(question, { data, ctx, pair: [turn.mine, turn.enemy] }, deps);
-  const pairNotice = fill(ctx.copy.card.fromChat, { name: `${turn.mine.name} vs ${turn.enemy.name}` });
-  return { type: "matchup", mine: turn.mine, enemy: turn.enemy, notice: ctx.notice ?? pairNotice, focus: topic, more: turn.act === "more", continuation: turn.act === "more" ? (asksReason(question) ? "explain" : "advance") : undefined };
+  return { type: "matchup", mine: turn.mine, enemy: turn.enemy, notice: ctx.notice, focus: topic, more: turn.act === "more", continuation: turn.act === "more" ? (asksReason(question) ? "explain" : "advance") : undefined };
 }
 
 /** 이름과 슬롯을 떼면 수치·설명 낱말만 남는가. "럼블 E", "럼블 E 쿨타임", "오공 궁 계수" 는 참, "피오라 W 어떻게 빼" 는 거짓. */

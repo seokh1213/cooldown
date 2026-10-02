@@ -22,10 +22,10 @@ export function resolveDialogueRule(question: string, ctx: PlanContext): AnswerP
   }
   if (/치유\s*감소|치감|고통스러운\s*상처/.test(question) && /중첩|보호막|실드/.test(question)) {
     const topic = /중첩/.test(question) ? "치유 감소의 중첩 여부" : "치유 감소가 보호막에 적용되는지";
-    return rulePlan("치유 감소", `${topic}는 현재 규칙 자료에 정리되어 있지 않습니다. 아이템 설명에 있는 치유 감소 수치만으로 이 상호작용을 단정할 수 없습니다.`);
+    return rulePlan("치유 감소", `${topic}는 아직 확인할 수 없어요.`);
   }
   if (/프리징|freeze|freezing/i.test(question) && /풀|해제|깨|break/i.test(question)) {
-    return rulePlan("프리징", "현재 자료에는 프리징을 푸는 절차가 정리되어 있지 않습니다. 내 챔피언과 상대 챔피언을 알려주면 저장된 라인전 조언을 찾아드릴 수 있습니다.");
+    return rulePlan("프리징", "프리징을 푸는 방법은 아직 확인할 수 없어요. 내 챔피언과 상대 챔피언을 알려주면 라인전 조언을 드릴 수 있어요.");
   }
   return undefined;
 }

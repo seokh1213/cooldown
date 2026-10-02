@@ -25,7 +25,7 @@ export type AnswerPlan =
    */
   | { type: "code"; answer: AdvisorAnswer | string; knowledge?: { id: string; title: string }; notice?: string; related?: Array<{ id: string; title: string }>; pending?: true }
   /** 오타 하나를 고쳐 다시 묻는다 */
-  | { type: "retry"; question: string; notice: string }
+  | { type: "retry"; question: string; notice?: string }
   /** 모델에게 넘긴다(`respond`) */
   | { type: "respond"; plan: { system: string; withoutConsent: string } };
 

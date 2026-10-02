@@ -241,12 +241,11 @@ export function buildRuleAnswer(rules: RuleNotes[], patch: string): string | und
     return `## ${rule.name}\n${body}`;
   });
   const answerFirst = crossed.length
-    ? [`## 질문에 직접 답하는 줄\n${crossed.flatMap((n) => renderNote(n)).join("\n")}`]
+    ? [`## 관련 규칙\n${crossed.flatMap((n) => renderNote(n)).join("\n")}`]
     : [];
   return [
     ...answerFirst,
     ...blocks,
-    `_패치 ${patch} 기준 위키(CC BY-SA) 판정 규칙을 그대로 옮긴 것입니다. ` +
-      "요약하지 않았으므로 부정과 예외를 그대로 읽어 주십시오._",
+    `_v${patch} · 위키 판정 규칙 (CC BY-SA)_`,
   ].join("\n\n");
 }

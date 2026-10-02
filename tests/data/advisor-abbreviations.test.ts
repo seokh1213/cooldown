@@ -43,7 +43,7 @@ for (const [word, label] of [["피흡", "생명력 흡수"], ["흡혈", "생명�
     for (const question of [word, `문도 ${word}은?`]) {
       const row = await appChat({}).ask(question, null);
       assert.match(row.text, new RegExp(label));
-      assert.match(row.text, /해당 수치가 없습니다/);
+      assert.match(row.text, /수치는 아직 확인할 수 없어요/);
       assert.equal(row.answerKind, "text");
       assert.equal(row.query, null);
     }
