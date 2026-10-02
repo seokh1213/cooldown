@@ -4,6 +4,7 @@ import { asksAboutHelper, isSmallTalk } from "./intent";
 import { type AnswerPlan, type PlanContext, type PlanDeps, type Step } from "./planTypes";
 import { resolveQuestion, type QuestionInput } from "./resolvedQuestion";
 import { directFactPlan } from "./directFactPlan";
+import { knowledgeFactPlan } from "./knowledgeFactPlan";
 import { understand } from "./questionUnderstanding";
 import { answerByVector, answerRuleQuestion, fixChampionTypo, answerGameFact, answerFromNotes } from "./knowledgePlans";
 import { continueMatchup } from "./matchupPlans";
@@ -35,6 +36,8 @@ export async function planAnswer(input: QuestionInput, ctx: PlanContext, deps: P
   if (asksAboutHelper(question)) return { type: "code", answer: copy.identity };
 
   const resolved = resolveQuestion(input, data);
+  const knowledgeFact = knowledgeFactPlan(resolved, ctx);
+  if (knowledgeFact) return knowledgeFact;
   const fact = directFactPlan(resolved, ctx);
   if (fact) return fact;
   const intent = await understand(resolved, ctx, data, deps);

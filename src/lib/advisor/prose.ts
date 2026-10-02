@@ -21,6 +21,7 @@ import { cooldownFact, focusLabel as cardFocusLabel, rangeFact, spellOneLiner } 
 import { translateRatioStat, translateTag } from "./promptLocale";
 import { labelSlots } from "./slotLabels";
 import { josa } from "@/lib/knowledge/text";
+import { controlHeading } from "@/lib/knowledge/crowdControl";
 
 interface ProseWords {
   /** "{champion}의 {label}입니다." 처럼 값 하나를 알리는 말 */
@@ -114,7 +115,7 @@ export function answerProse(answer: AdvisorAnswer, lang: Language = "ko_KR"): st
     else lines.push(spellOneLiner(answer.spell, lang));
     // 두 번째 문장에서 이름을 다시 대면 "말파이트 R 멈출 수 없는 힘" 이 두 줄 연속으로
     // 나온다. 앞에서 누구인지 밝혔으므로 여기서는 가리키는 말이면 된다.
-    if (answer.spell.effects.length && answer.headline) {
+    if (answer.spell.effects.length && answer.headline && answer.headline.label !== controlHeading(lang)) {
       lines.push(w.effects(w.it, answer.spell.effects.map((tag) => translateTag(tag, lang)).join(w.joiner)));
     }
     return lines.join(" ");

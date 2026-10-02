@@ -25,6 +25,11 @@ export interface MechanicsSection {
   /** 이 절을 가리키는 말들. 문서에서 뽑는다. */
   keywords: string[];
   text: string;
+  /** 큐레이션 판정 노트: 각 그룹에서 하나 이상 언급되어야 직접 답한다. */
+  questionGroups?: string[][];
+  sources?: string[];
+  reviewedAt?: string;
+  localized?: Partial<Record<"en_US" | "zh_CN", { title: string; text: string }>>;
 }
 
 export type MechanicsIndex = MechanicsSection[];
@@ -140,6 +145,12 @@ export function parseMechanics(markdown: string): MechanicsIndex {
 
 const escapeRegExp = (text: string) => text.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
+export function matchesMechanicsQuestion(section: Pick<MechanicsSection, "questionGroups">, question: string): boolean {
+  if (!section.questionGroups?.length) return true;
+  return section.questionGroups.every(group => group.some(term => /^[ -~]+$/.test(term)
+    ? aliasAt(question, term) >= 0 : question.includes(term)));
+}
+
 /**
  * 영문 낱말은 낱말 경계로만 찾는다. 한국어·중국어는 낱말 경계가 없으니 들어 있으면.
  *
@@ -169,6 +180,7 @@ export function findMechanics(
   if (askedRuleKinds(question).size > 0) return [];
   const text = question.toLowerCase();
   return index
+    .filter(section => matchesMechanicsQuestion(section, question))
     .map((section) => ({
       section,
       score: [

@@ -171,7 +171,7 @@ test("치유 감소 중첩으로 주제를 바꾸면 최근 아이템이나 소�
   const result = await planDialogue("치감은 여러 명이 걸어도 중첩돼?", context(memory), deps);
   const plan = result.parts[0].plan;
   if (plan.type !== "code" || typeof plan.answer !== "string") assert.fail("규칙 자료 범위를 알려야 한다");
-  assert.match(plan.answer, /치유 감소의 중첩 여부는 아직 확인할 수 없어요/);
+  assert.match(plan.answer, /치유 감소율은 여러 개를 적용해도 합산되지 않습니다/);
   assert.equal(result.memory.active, "rule");
 });
 

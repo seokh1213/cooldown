@@ -27,6 +27,7 @@ import {
 } from "../../src/lib/knowledge/claims";
 import type { RuleNotes } from "../../src/lib/knowledge/rules";
 import { parseMechanics, type MechanicsIndex } from "../../src/lib/knowledge/mechanics";
+import { loadMechanicsNotes } from "./lib/mechanicsNotes";
 
 export const ADVISOR_BUNDLE_FILE = "advisor-knowledge.json";
 
@@ -116,6 +117,7 @@ function main() {
   const mechanics: MechanicsIndex = fs.existsSync(mechanicsFile)
     ? parseMechanics(fs.readFileSync(mechanicsFile, "utf8"))
     : [];
+  mechanics.push(...loadMechanicsNotes());
 
   /*
    * **카드를 기준으로 돈다.** 플레이북 파일을 기준으로 돌면 파일이 없는 챔피언은

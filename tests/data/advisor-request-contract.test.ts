@@ -119,11 +119,11 @@ test("승리 보장과 롤 밖 질문은 요청에 맞는 안내를 준다", asy
   }
 });
 
-test("현재 아이템 설명으로 치감의 뜻을 답하고 중첩 여부는 추측하지 않는다", async () => {
+test("치감의 뜻과 출처가 추가된 중첩 판정을 답한다", async () => {
   const definition = await ask("치감이 정확히 무슨뜻인가요?");
   assert.match(definition.reply.text, /줄임말[\s\S]*치유 및 회복 효과를 감소/);
   const interaction = await ask("치감 중첩돼?");
-  assert.match(interaction.reply.text, /중첩 여부는 아직 확인할 수 없어요/);
+  assert.match(interaction.reply.text, /치유 감소율은 여러 개를 적용해도 합산되지 않습니다/);
 });
 
 test("상대 이름만 다른 동일한 아이템 근거도 공통으로 한 번 보여 준다", async () => {

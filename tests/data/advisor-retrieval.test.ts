@@ -285,6 +285,7 @@ const searchCorpus: SearchDoc[] = [
     kind: "mechanics" as const,
     title: section.title,
     text: section.text,
+    questionGroups: section.questionGroups,
   })),
 ];
 

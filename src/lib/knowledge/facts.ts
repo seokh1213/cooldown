@@ -22,6 +22,7 @@ import { formatLevels, round, stripHtml } from "./text";
 import { detectDamageTypes, detectEffects } from "./facts-analysis";
 import { abilityCausesDash, championMovesItself } from "./facts-movement";
 import { buildScalingProfile, detectRatios, ratiosFromSimulation } from "./facts-ratios";
+import type { SpellCrowdControl } from "./crowdControl";
 
 export type StatName =
   | "health"
@@ -70,6 +71,7 @@ export interface SpellFact {
   range?: number | number[];
   damageTypes: DamageType[];
   effects: string[];
+  crowdControl?: SpellCrowdControl;
   /** 툴팁에서 뽑은 계수 (스탯 → 최대 % 값). 예: { "주문력": 105, "추가 공격력": 50 } */
   ratios: Record<string, number>;
 }

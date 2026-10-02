@@ -5,6 +5,8 @@ import type { AdvisorAnswer, Fact } from "./answer";
 import { detectSpellFocus } from "./spellFocus";
 import { cardLabels, translateDamage, translateRatioStat, translateTag } from "./promptLocale";
 import { sentencesWith } from "./answerText";
+import { controlText, controlHeading } from "@/lib/knowledge/crowdControl";
+import { asksCrowdControl } from "./crowdControlQuestion";
 
 /**
  * 계수 목록을 글로. "주문력 105%" 의 능력치 이름은 툴팁에서 읽어 낸 한국어라 옮긴다.
@@ -67,12 +69,16 @@ export function buildSpellAnswer(
   if (spell.effects.length) {
     facts.push({ label: w.effects, value: spell.effects.map((tag) => translateTag(tag, lang)).join(", ") });
   }
+  const control = spell.crowdControl ? { label: controlHeading(lang), value: controlText(spell.crowdControl, lang) } : undefined;
+  if (control) facts.push(control);
   const ratios = Object.entries(spell.ratios ?? {});
   if (ratios.length) facts.push({ label: w.ratios, value: ratioText(ratios, lang) });
 
   let headline: Fact | undefined;
   let highlighted: string[] = [];
-  if (detected?.focus === "cooldown" && cooldown) {
+  if (control && asksCrowdControl(question)) {
+    headline = control;
+  } else if (detected?.focus === "cooldown" && cooldown) {
     headline = cooldown;
   } else if (detected?.focus === "cost" && spell.cost) {
     headline = { label: w.cost, value: spell.cost };
@@ -95,8 +101,7 @@ export function buildSpellAnswer(
     focus: detected?.focus,
     headline,
     // headline 을 이미 올렸으면 같은 사실을 facts 에 되풀이하지 않는다.
-    facts: headline ? facts.filter((fact) => fact.label !== headline?.label) : facts,
+    facts: headline === control ? [] : headline ? facts.filter((fact) => fact.label !== headline?.label) : facts,
     highlighted,
   };
 }
-

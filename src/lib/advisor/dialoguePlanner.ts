@@ -11,6 +11,7 @@ import { requestGuidance } from "./requestGuidance";
 import { conditionHint, prepareDialogueRequest, type DialogueRequest, type DialogueVariant } from "./dialogueRequest";
 import { rememberDialoguePlan, scenarioConditions, type DialogueMemory, type MatchupContext } from "./dialogueState";
 import { priorMatchup, rememberMatchupSelection } from "./dialogueMatchupMemory";
+import { knowledgeFactPlan } from "./knowledgeFactPlan";
 
 export type { DialogueVariant } from "./dialogueRequest";
 export { splitDialogueQuestions } from "./dialogueRequest";
@@ -57,7 +58,7 @@ export async function planPreparedDialogue(request: DialogueRequest, ctx: PlanCo
       parts.push({ question, request: contract, plan: { type: "code", answer: { kind: "text", text: requestGuidance(unsupported, ctx.lang) } } });
       continue;
     }
-    const preferred = resolved.matchup ? await matchupPlan(resolved, memory, ctx, deps) : undefined;
+    const preferred = knowledgeFactPlan(resolved, ctx) ?? (resolved.matchup ? await matchupPlan(resolved, memory, ctx, deps) : undefined);
     let stat = preferred ? undefined : dialogueStatPlan(resolved, memory, ctx);
     if (!preferred && !stat && deps.inferStatQuery) {
       const query = await deps.inferStatQuery(resolved, memory, ctx).catch(() => undefined);

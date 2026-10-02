@@ -1,0 +1,18 @@
+import fs from "node:fs";
+import path from "node:path";
+import type { MechanicsIndex } from "../../../src/lib/knowledge/mechanics";
+
+/** 원문 복사 대신 검증한 판정을 적는다. 출처와 검토일을 번들에도 보존한다. */
+export function loadMechanicsNotes(): MechanicsIndex {
+  const file = path.resolve("knowledge", "mechanics-notes.json");
+  const data = JSON.parse(fs.readFileSync(file, "utf8")) as { notes: MechanicsIndex };
+  const seen = new Set<string>();
+  for (const note of data.notes) {
+    if (seen.has(note.id) || !note.sources?.length || !note.reviewedAt || !note.questionGroups?.length
+      || note.questionGroups.some(group => !group.length) || !note.localized?.en_US || !note.localized.zh_CN) {
+      throw new Error(`Invalid mechanics note: ${note.id}`);
+    }
+    seen.add(note.id);
+  }
+  return data.notes;
+}

@@ -22,6 +22,7 @@ import type { AdvisorData } from "./context";
 import { aliasesOf } from "@/lib/knowledge/searchAliases";
 import { gameMetaDocs } from "./gameMeta";
 import { ruleLines, ruleName } from "@/lib/knowledge/rules";
+import { matchesMechanicsQuestion, type MechanicsSection } from "@/lib/knowledge/mechanics";
 
 export interface SearchDoc {
   /** 검색 문서 id(`rule:점화`). 하이브리드 검색이 벡터 점수와 맞춘다 */
@@ -29,6 +30,13 @@ export interface SearchDoc {
   kind: "rule" | "mechanics" | "meta";
   title: string;
   text: string;
+  questionGroups?: string[][];
+}
+
+function mechanicsDoc(section: MechanicsSection, lang: string): SearchDoc & { id: string } {
+  const localized = lang === "en_US" || lang === "zh_CN" ? section.localized?.[lang] : undefined;
+  return { id: `mech:${section.id}`, kind: "mechanics", title: localized?.title ?? section.title,
+    text: localized?.text ?? section.text, questionGroups: section.questionGroups };
 }
 
 export interface SearchHit {
@@ -50,7 +58,7 @@ export function buildSearchCorpus(data: AdvisorData, lang = "ko_KR"): SearchDoc[
     docs.push({ kind: "rule", title: ruleName(rule, lang), text: ruleLines(rule, lang).join("\n") });
   }
   for (const section of data.mechanics) {
-    docs.push({ kind: "mechanics", title: section.title, text: section.text });
+    docs.push(mechanicsDoc(section, lang));
   }
   return docs;
 }
@@ -93,6 +101,7 @@ const TITLE_WEIGHT = 3;
  * 그래서 문턱을 두지 않고 셋을 그대로 모델에게 넘겨 고르게 한다.
  */
 export function lexicalSearch(docs: SearchDoc[], query: string, top = 3): SearchHit[] {
+  docs = docs.filter(doc => matchesMechanicsQuestion(doc, query));
   const terms = tokenize(query);
   if (terms.length === 0 || docs.length === 0) return [];
 
@@ -188,7 +197,7 @@ export function buildRetrievalDocs(data: AdvisorData, lang: string, withAliases 
   for (const rule of new Set(data.ruleIndex.values())) {
     docs.push({ id: `rule:${rule.name}`, kind: "rule", title: ruleName(rule, lang), text: ruleLines(rule, lang).join("\n") });
   }
-  for (const section of data.mechanics) docs.push({ id: `mech:${section.id}`, kind: "mechanics", title: section.title, text: section.text });
+  for (const section of data.mechanics) docs.push(mechanicsDoc(section, lang));
   for (const fact of gameMetaDocs(lang)) docs.push({ ...fact, kind: "meta" });
   return withAliases ? docs.map((doc) => ({ ...doc, text: `${doc.text}\n${aliasesOf(doc.id).join(" ")}` })) : docs;
 }

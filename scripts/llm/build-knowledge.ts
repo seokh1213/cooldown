@@ -18,6 +18,7 @@ import {
 import { DAMAGE, GRADE, RANGE, RATIO_STATS, TAGS, missingCardWords } from "../../src/lib/knowledge/cardWords";
 import { createChampionCardBuilder, type ChampionCard } from "../../src/lib/knowledge/facts";
 import { loadSpellOverrides } from "./lib/spellOverrides";
+import { attachCrowdControl } from "./lib/crowdControl";
 
 export interface ChampionCardFile {
   schemaVersion: 1;
@@ -74,6 +75,7 @@ function main() {
     loadRanges(),
   );
   const cards = builder.buildAll();
+  let koreanCards = cards;
 
   /*
    * 효과 태그와 피해 유형을 한국어에서 가져다 쓴다.
@@ -113,6 +115,7 @@ function main() {
       loadDashes(),
       loadSpellOverrides(),
     ).buildAll();
+    koreanCards = base;
     const bySlot = new Map<string, { damageTypes: ChampionCard["spells"][number]["damageTypes"]; effects: string[] }>();
     const byId = new Map<string, ChampionCard>();
     for (const card of base) {
@@ -162,6 +165,7 @@ function main() {
   }
 
   const outDir = path.join(PUBLIC_DATA_ROOT, data.patch, "llm");
+  attachCrowdControl(cards, data.patch, koreanCards);
   fs.mkdirSync(outDir, { recursive: true });
   const outFile = path.join(outDir, `champion-cards-${lang}.json`);
   const file: ChampionCardFile = {
