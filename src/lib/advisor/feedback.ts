@@ -4,6 +4,9 @@
  * 지금은 평가 케이스 10건으로 내가 재는 게 전부다. 실제로 어떤 질문이 어떤 답을 받았고
  * 사용자가 어떻게 봤는지는 알 방법이 없다. 기기 안에만 쌓고 서버로 보내지 않는다.
  */
+import type { DialogueMemory } from "./dialogueState";
+import type { DialogueTrace } from "./requestContract";
+
 export interface AdvisorFeedback {
   at: string;
   question: string;
@@ -21,6 +24,9 @@ export interface AdvisorFeedback {
   /** 이 답이 무엇이었나(상성·챔피언·규칙 …)와 다룬 챔피언 id */
   answerKind?: string;
   champions?: string[];
+  previousMemory?: DialogueMemory;
+  memory?: DialogueMemory;
+  trace?: DialogueTrace;
 }
 
 const FEEDBACK_KEY = "cooldown.advisor.feedback.v1";

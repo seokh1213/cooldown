@@ -69,8 +69,8 @@ export function useAskAdvisor({ advisor, data, championIds, canUseModel }: AskAd
   /** 답변과 해당 시점의 기억을 같은 대화 턴에 기록한다. */
   const recordReply = (question: string, reply: DialogueReply, notice?: string) => {
     if (reply.respond) advisor.respond(question, reply.respond.plan);
-    else advisor.answerWithoutModel(question, reply.answer ?? reply.text, reply.notice ?? notice, reply.related);
-    if (reply.memory.patch) advisor.remember(reply.memory);
+    else advisor.answerWithoutModel(question, reply.answers?.length ? { text: reply.text, answers: reply.answers } : reply.answer ?? reply.text, reply.notice ?? notice, reply.related);
+    if (reply.memory.patch) advisor.remember(reply.memory, reply.trace);
   };
 
   /** "혹시 이 자료를?" 에서 고른 자료를 보인다. 검색을 다시 돌리지 않는다. */

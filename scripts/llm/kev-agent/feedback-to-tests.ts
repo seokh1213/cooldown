@@ -8,31 +8,21 @@
  *   npx tsx scripts/llm/kev-agent/feedback-to-tests.ts <내보낸 파일.json...> > research/llm-evals/kev-agent/act-real-draft.jsonl
  */
 import * as fs from "node:fs";
-
-interface Feedback {
-  at: string;
-  question: string;
-  rating: "up" | "down";
-  lang?: string;
-  previousQuestion?: string;
-  previousMatchup?: { mine: string; enemy: string };
-  answerKind?: string;
-  champions?: string[];
-}
+import type { AdvisorFeedback } from "../../../src/lib/advisor/feedback";
 
 const seen = new Set<string>();
 for (const file of process.argv.slice(2)) {
-  const { feedback } = JSON.parse(fs.readFileSync(file, "utf8")) as { feedback: Feedback[] };
+  const { feedback } = JSON.parse(fs.readFileSync(file, "utf8")) as { feedback: AdvisorFeedback[] };
   for (const f of feedback) {
-    if (!f.previousMatchup || !f.question) continue;
-    const key = `${f.previousMatchup.mine}|${f.previousMatchup.enemy}|${f.question}`;
+    if ((!f.previousMatchup && !f.trace) || !f.question) continue;
+    const key = JSON.stringify([f.previousMemory ?? f.previousMatchup, f.question]);
     if (seen.has(key)) continue;
     seen.add(key);
     console.log(
       JSON.stringify({
         lang: f.lang ?? "ko_KR",
-        mine: f.previousMatchup.mine,
-        enemy: f.previousMatchup.enemy,
+        mine: f.previousMatchup?.mine,
+        enemy: f.previousMatchup?.enemy,
         text: f.question,
         act: "",
         named: null,
@@ -40,6 +30,10 @@ for (const file of process.argv.slice(2)) {
         rating: f.rating,
         previousQuestion: f.previousQuestion,
         answeredAs: { kind: f.answerKind, champions: f.champions },
+        previousMemory: f.previousMemory,
+        trace: f.trace,
+        // 사람이 정답을 채울 때까지 평가·학습 입력으로 사용하지 않는다.
+        expected: null,
       }),
     );
   }

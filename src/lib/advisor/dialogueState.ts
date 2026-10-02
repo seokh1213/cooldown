@@ -42,6 +42,7 @@ export interface DialogueHistoryTurn {
   role: "user" | "assistant" | "system";
   content?: string;
   answer?: AdvisorAnswer;
+  answers?: AdvisorAnswer[];
   memory?: DialogueMemory;
 }
 

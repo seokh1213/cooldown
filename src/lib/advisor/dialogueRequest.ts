@@ -3,15 +3,17 @@ import type { PlanContext } from "./planTypes";
 import { resolveQuestion, type QuestionInput } from "./resolvedQuestion";
 import { dialogueMemoryOf, emptyDialogue, type DialogueMemory } from "./dialogueState";
 import { matchupQuestions } from "./matchupRequests";
+import { requestScope, unsupportedCondition } from "./requestContract";
+import type { GuidanceReason } from "./requestGuidance";
 
 export type DialogueVariant = "memory" | "decompose" | "clarify" | "combined";
-export interface DialogueRequest { questions: string[]; memory: DialogueMemory; variant: DialogueVariant; groupedMatchups?: string }
+export interface DialogueRequest { questions: QuestionInput[]; memory: DialogueMemory; variant: DialogueVariant; groupedMatchups?: boolean; rejected?: GuidanceReason }
 
 /** 별개 요청이 연결된 문장만 나눈다. 스킬 목록과 챔피언 이름을 나열한 비교는 유지한다. */
 export function splitDialogueQuestions(question: string): string[] {
-  const pieces = question.split(/(?:알려주고|설명해주고)\s*[,，]?\s*|[,;]\s*(?:그리고|추가로)?\s*|\n+(?:그리고\s*)?|\s+그리고\s+|\s+and also\s+|另外|还有/i).map(q => q.trim()).filter(Boolean);
+  const pieces = question.split(/(?:알려주고|설명해주고)\s*[,，]?\s*|[,;]\s*(?:그리고|추가로)?\s*|\n+(?:그리고\s*)?|\s+그리고\s+|\s+and also\s+|\s+and\s+(?=\w+\s+(?:vs\.?|versus)\s)|另外|还有/i).map(q => q.trim()).filter(Boolean);
   if (pieces.length < 2 || pieces.length > 3) return [question];
-  const asks = /(?<![A-Za-z])[QWER](?![A-Za-z])|궁|쿨|정복자|점화|템|효과|가격|한타|라인전|어떻게|알려|ability|cooldown|rune|item|技能|冷却|团战/i;
+  const asks = /(?<![A-Za-z])[QWER](?![A-Za-z])|궁|쿨|정복자|점화|템|효과|가격|한타|라인전|상대|공략|어떻게|알려|ability|cooldown|rune|item|matchup|\bvs\b|\bhow\b|\btips?\b|技能|冷却|团战/i;
   const stateOnly = (text: string) => /(?<![A-Za-z])[QWER](?![A-Za-z])/i.test(text)
     && /없|빠졌|빠진|돌아왔|사용\s*가능|재사용\s*대기\s*중|is down|available|冷却中|可用/i.test(text)
     && !/\?|？|알려|설명|어떻게|언제|how|what|when|怎么|多少/i.test(text);
@@ -46,7 +48,9 @@ export function conditionHint(input: QuestionInput, memory: DialogueMemory, ctx:
 export function prepareDialogueRequest(question: string, ctx: PlanContext, variant: DialogueVariant): DialogueRequest {
   const memory = ctx.data ? dialogueMemoryOf(ctx.turns, ctx.data) : emptyDialogue("");
   const split = ctx.data && (variant === "decompose" || variant === "combined");
-  const matchups = split ? matchupQuestions(question, memory, ctx) : undefined;
-  if (matchups) return { questions: matchups, memory, variant, groupedMatchups: question };
-  return { questions: split ? splitDialogueQuestions(question) : [question], memory, variant };
+  if (!ctx.data) return { questions: [question], memory, variant };
+  const pieces = (split ? splitDialogueQuestions(question) : [question]).map(q => resolveQuestion(q, ctx.data!));
+  const questions = pieces.flatMap(resolved => split ? matchupQuestions(resolved, memory, ctx) ?? [resolved] : [resolved]);
+  const rejected = requestScope(questions, memory, ctx) ?? unsupportedCondition(question);
+  return { questions, memory, variant, groupedMatchups: questions.some(q => Boolean(q.matchup)), rejected };
 }

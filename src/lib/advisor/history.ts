@@ -12,6 +12,7 @@ import type { NotePerspective } from "./noteSelect";
 import type { AdvisorTurn } from "@/hooks/useAdvisorTurns";
 import type { DialogueMemory } from "./dialogueState";
 import type { ChampionStatQuery } from "./statQuery";
+import type { DialogueTrace } from "./requestContract";
 
 export const CONVERSATIONS_KEY = "cooldown.advisor.conversations.v1";
 /** 남기는 대화 수. 넘으면 오래된 것부터 버린다. */
@@ -83,7 +84,9 @@ export interface StoredTurn {
    */
   byCode?: boolean;
   answer?: StoredAnswer;
+  answers?: StoredAnswer[];
   memory?: DialogueMemory;
+  trace?: DialogueTrace;
 }
 
 export interface Conversation {
@@ -220,7 +223,9 @@ export function dehydrateTurn(turn: AdvisorTurn): StoredTurn {
   if (turn.notice) stored.notice = turn.notice;
   if (turn.byCode) stored.byCode = true;
   if (turn.answer) stored.answer = dehydrateAnswer(turn.answer);
+  if (turn.answers) stored.answers = turn.answers.map(dehydrateAnswer);
   if (turn.memory) stored.memory = structuredClone(turn.memory);
+  if (turn.trace) stored.trace = structuredClone(turn.trace);
   return stored;
 }
 
@@ -236,10 +241,16 @@ export function reviveTurn(stored: StoredTurn, data: AdvisorData): AdvisorTurn |
   if (stored.notice) turn.notice = stored.notice;
   if (stored.byCode) turn.byCode = true;
   if (stored.memory?.patch === data.patch) turn.memory = structuredClone(stored.memory);
+  if (stored.trace) turn.trace = structuredClone(stored.trace);
   if (stored.answer) {
     const answer = reviveAnswer(stored.answer, data);
     if (!answer) return undefined;
     turn.answer = answer;
+  }
+  if (stored.answers) {
+    const answers = stored.answers.map(answer => reviveAnswer(answer, data));
+    if (answers.some(answer => !answer)) return undefined;
+    turn.answers = answers as AdvisorAnswer[];
   }
   return turn;
 }

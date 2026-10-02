@@ -24,6 +24,10 @@ export function resolveDialogueRule(question: string, ctx: PlanContext): AnswerP
     const topic = /중첩/.test(question) ? "치유 감소의 중첩 여부" : "치유 감소가 보호막에 적용되는지";
     return rulePlan("치유 감소", `${topic}는 아직 확인할 수 없어요.`);
   }
+  if (/치감|치유\s*감소|고통스러운\s*상처/.test(question) && /뜻|뭐|무슨|의미/.test(question)) {
+    const source = ctx.data.items.find(item => item.description?.includes("고통스러운 상처") && item.description.includes("치유 및 회복 효과를 감소"));
+    if (source) return { type: "code", answer: { kind: "text", text: "치감은 ‘치유 감소’의 줄임말이에요. 아이템 설명에서 ‘고통스러운 상처’로 표시되며, 치유 및 회복 효과를 감소시킵니다." } };
+  }
   if (/프리징|freeze|freezing/i.test(question) && /풀|해제|깨|break/i.test(question)) {
     return rulePlan("프리징", "프리징을 푸는 방법은 아직 확인할 수 없어요. 내 챔피언과 상대 챔피언을 알려주면 라인전 조언을 드릴 수 있어요.");
   }

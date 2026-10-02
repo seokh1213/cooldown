@@ -2,8 +2,9 @@ import { useCallback, useRef, useState } from "react";
 import { answerChampionIds, type AdvisorAnswer } from "@/lib/advisor/answer";
 import { matchupStateOf } from "@/lib/advisor/conversation";
 import { appendFeedback } from "@/lib/advisor/feedback";
-import { dialogueAnswerText } from "@/lib/advisor/dialogueReply";
+import { dialogueAnswerText, type AnswerDelivery } from "@/lib/advisor/dialogueReply";
 import type { DialogueMemory } from "@/lib/advisor/dialogueState";
+import type { DialogueTrace } from "@/lib/advisor/requestContract";
 import type { Language } from "@/i18n";
 import type { AdvisorChatMessage, AdvisorResponse } from "@/lib/advisor/protocol";
 import { useRevealText } from "./useRevealText";
@@ -34,6 +35,7 @@ export interface AdvisorTurn extends AdvisorChatMessage {
    * 이것이 있으면 `content` 는 카드 위에 놓이는 모델 해설이다.
    */
   answer?: AdvisorAnswer;
+  answers?: AdvisorAnswer[];
   /** 답 위에 작게 붙는 알림. "럼블로 이해했습니다" 같은 것. */
   notice?: string;
   /** "혹시 이 자료를 찾으셨나요?" 에 붙는 자료 버튼. 검색이 확신하지 못했을 때만. 누르면 그 자료를 보인다. */
@@ -48,6 +50,7 @@ export interface AdvisorTurn extends AdvisorChatMessage {
   byCode?: boolean;
   /** 이 답이 확정한 대화 대상·사용자 조건. 기록을 복원하면 함께 되살린다. */
   memory?: DialogueMemory;
+  trace?: DialogueTrace;
 }
 
 type DoneMessage = Extract<AdvisorResponse, { type: "done" }>;
@@ -149,24 +152,26 @@ export function useAdvisorTurns(lang: Language, setError: (error: string | null)
    * 카드에 이미 있는 값을 옮기는 것이라 틀릴 자리가 없다.
    */
   const answerWithoutModel = useCallback(
-    (question: string, answer: string | AdvisorAnswer, notice?: string, related?: AdvisorTurn["related"]) => {
+    (question: string, answer: AnswerDelivery, notice?: string, related?: AdvisorTurn["related"]) => {
       setError(null);
       // 카드는 바로, 글은 흘려서 보인다(`reveal`)
-      const full = typeof answer === "string" ? answer : dialogueAnswerText(answer, lang);
+      const full = typeof answer === "string" ? answer : "answers" in answer ? answer.text : dialogueAnswerText(answer, lang);
       const id =
         typeof answer === "string"
           ? place(question, { role: "assistant", content: "", notice, related, byCode: true })
-          : place(question, { role: "assistant", content: "", answer, notice, byCode: true });
+          : "answers" in answer
+            ? place(question, { role: "assistant", content: "", answers: answer.answers, notice, related, byCode: true })
+            : place(question, { role: "assistant", content: "", answer, notice, byCode: true });
       reveal(id, full);
     },
     [lang, place, reveal, setError],
   );
 
-  const remember = useCallback((memory: DialogueMemory) => {
+  const remember = useCallback((memory: DialogueMemory, trace?: DialogueTrace) => {
     setTurns(prev => {
       const last = prev[prev.length - 1];
       if (last?.role !== "assistant") return prev;
-      return [...prev.slice(0, -1), { ...last, memory: structuredClone(memory) }];
+      return [...prev.slice(0, -1), { ...last, memory: structuredClone(memory), trace: trace ? structuredClone(trace) : undefined }];
     });
   }, []);
 
@@ -187,6 +192,7 @@ export function useAdvisorTurns(lang: Language, setError: (error: string | null)
     const questionAt = question ? before.lastIndexOf(question) : -1;
     const previousQuestion = [...before.slice(0, Math.max(0, questionAt))].reverse().find((t) => t.role === "user");
     const state = matchupStateOf(before.slice(0, Math.max(0, questionAt)).map((t) => (t.role === "assistant" ? t.answer : undefined)));
+    const previousMemory = [...before.slice(0, Math.max(0, questionAt))].reverse().find(t => t.role === "assistant" && t.memory)?.memory;
     const answer = turns[index].answer;
     try {
       appendFeedback({
@@ -197,9 +203,13 @@ export function useAdvisorTurns(lang: Language, setError: (error: string | null)
         patch,
         lang,
         previousQuestion: previousQuestion?.content,
-        previousMatchup: state ? { mine: state.mine.id, enemy: state.enemy.id } : undefined,
-        answerKind: answer?.kind,
-        champions: answer ? answerChampionIds(answer) : undefined,
+        previousMatchup: previousMemory?.matchup ? { mine: previousMemory.matchup.mine, enemy: previousMemory.matchup.enemy }
+          : state ? { mine: state.mine.id, enemy: state.enemy.id } : undefined,
+        answerKind: turns[index].answers?.length ? "multiple" : answer?.kind,
+        champions: turns[index].answers?.length ? [...new Set(turns[index].answers!.flatMap(answerChampionIds))] : answer ? answerChampionIds(answer) : undefined,
+        previousMemory,
+        memory: turns[index].memory,
+        trace: turns[index].trace,
       });
     } catch {
       // 저장에 실패해도 화면 표시는 유지한다

@@ -64,11 +64,12 @@ for (const question of ["오공 럼블 모데카이저 체력 비교", "오공�
   });
 }
 
-test("상대 아홉 명을 물어도 모든 상성을 계획한다", async () => {
+test("상대 아홉 명을 물으면 일부를 빠뜨리지 않고 범위 조정을 안내한다", async () => {
   const enemies = ["럼블", "모데카이저", "가렌", "다리우스", "제드", "아리", "피오라", "잭스", "티모"];
-  const { plan } = await reply(`오공으로 ${enemies.join(", ")} 상대법 알려줘`);
-  assert.equal(plan.parts.length, enemies.length);
-  assert.ok(plan.parts.every(part => part.plan.type === "matchup" && part.plan.mine.id === "MonkeyKing"));
+  const { plan, result } = await reply(`오공으로 ${enemies.join(", ")} 상대법 알려줘`);
+  assert.equal(plan.parts.length, 0);
+  assert.match(result.text, /두 쌍까지[\s\S]*내 챔피언과 상대 한두 명/);
+  assert.equal(result.answer, undefined);
 });
 
 test("저장 후 둘 다 아이템을 묻고 한 상대만 고르는 대화에서도 대상이 유지된다", async () => {

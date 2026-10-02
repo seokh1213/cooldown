@@ -22,6 +22,7 @@ function dialogueAct(question: string) {
 }
 
 function pairForQuestion(resolved: ResolvedQuestion, memory: DialogueMemory, ctx: PlanContext): [ChampionCard, ChampionCard] | undefined {
+  if (resolved.matchup) return [resolved.matchup.mine, resolved.matchup.enemy];
   const data = ctx.data!;
   const { text: question, champions: named } = resolved;
   const current = memory.matchup;

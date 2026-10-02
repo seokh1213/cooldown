@@ -2,7 +2,7 @@
  * 대화의 말풍선 하나 — 사용자 질문, 또는 답(카드·코드가 쓴 글·모델 해설)과 그 곁의 칩·링크·평가.
  */
 import { Link } from "react-router-dom";
-import { ArrowRight, Loader2, ThumbsDown, ThumbsUp } from "lucide-react";
+import { ArrowRight, Loader2 } from "lucide-react";
 import { useTranslation } from "@/i18n";
 import type { Translations } from "@/i18n/translations";
 import { fill } from "@/i18n/fill";
@@ -10,6 +10,8 @@ import type { AdvisorTurn } from "@/hooks/useAdvisorTurns";
 import { groundCommentary } from "@/lib/advisor/grounding";
 import { answerKey, answerLinks, itemHeadline, spellSummary, type AdvisorAnswer } from "@/lib/advisor/answer";
 import { AdvisorAnswerCard } from "./AdvisorAnswerCard";
+import { CompareAnswerCard } from "./CompareAnswerCard";
+import { AdvisorTurnFooter as TurnFooter } from "./AdvisorTurnFooter";
 import { AdvisorMarkdown } from "./AdvisorMarkdown";
 import { AnswerIcons, referenceTitle } from "./AdvisorReference";
 
@@ -49,8 +51,8 @@ function linkLabel(link: ReturnType<typeof answerLinks>[number], copy: Translati
   }
 }
 
-export function AdvisorTurnView(props: AdvisorTurnViewProps) {
-  const { ref, turn, index, previousAnswer, asReference, busy, ddragonVersion, patch, onNavigate } = props;
+function useTurnPresentation(props: AdvisorTurnViewProps) {
+  const { turn, index, previousAnswer, onNavigate } = props;
   const { t } = useTranslation();
   const copy = t.advisor;
   // 같은 챔피언을 이어 물으면 "VS 화면으로 이동" 이 답마다 붙는다. 직전 답에 있던 링크는 뺀다.
@@ -93,19 +95,34 @@ export function AdvisorTurnView(props: AdvisorTurnViewProps) {
         {copy.card.commentaryPending}
       </span>
     ) : null;
+  return { linkButtons, commentary, perspectiveChips, pending };
+}
+
+export function AdvisorTurnView(props: AdvisorTurnViewProps) {
+  const { ref, turn, previousAnswer, asReference, busy, ddragonVersion, patch, onNavigate } = props;
+  const { linkButtons, commentary, perspectiveChips, pending } = useTurnPresentation(props);
   return (
     <div
       ref={ref}
       className={
         turn.role === "user"
           ? "ml-auto w-fit max-w-[85%] rounded-2xl rounded-br-sm bg-primary px-3 py-2 text-primary-foreground"
-          : turn.answer
+          : turn.answer || turn.answers?.length
             ? "w-full"
             : "mr-auto w-fit max-w-[95%] rounded-2xl rounded-bl-sm bg-muted px-3 py-2"
       }
     >
       {turn.notice && <p className="mb-1.5 text-[11px] text-muted-foreground">{turn.notice}</p>}
-      {turn.answer && asReference ? (
+      {turn.answers?.length ? (
+        <div className="space-y-3">
+          <AdvisorMarkdown text={turn.content} />
+          <div className="grid gap-2">
+            {turn.answers.map(answer => answer.kind === "compare" && answer.matchup
+              ? <CompareAnswerCard key={answerKey(answer)} answer={answer} ddragonVersion={ddragonVersion} patch={patch} onNavigate={onNavigate} presentation="reference" />
+              : <AdvisorAnswerCard key={answerKey(answer)} answer={answer} ddragonVersion={ddragonVersion} patch={patch} onPickChampion={props.onPickChampion} onNavigate={onNavigate} />)}
+          </div>
+        </div>
+      ) : turn.answer && asReference ? (
         // 카드는 자료 패널에 있다(L1). 대화에는 질문이 짚은 사실 한 줄, 해설, 자료 칩만.
         <div className="space-y-2">
           <ReferenceDigest answer={turn.answer} />
@@ -163,7 +180,7 @@ export function AdvisorTurnView(props: AdvisorTurnViewProps) {
       {turn.role === "assistant" && linkButtons.length > 0 && !asReference && (
         <div className="mt-2 flex flex-wrap gap-1.5">{linkButtons}</div>
       )}
-      {turn.role === "assistant" && (turn.content || turn.answer) && <TurnFooter turn={turn} patch={patch} onRate={props.onRate} />}
+      {turn.role === "assistant" && (turn.content || turn.answer || Boolean(turn.answers?.length)) && <TurnFooter turn={turn} patch={patch} onRate={props.onRate} />}
     </div>
   );
 }
@@ -366,53 +383,5 @@ function ReferenceChip({ answer, active, sameAsPrevious, ddragonVersion, onClick
       <span className="shrink-0 text-muted-foreground">{sameAsPrevious ? copy.card.sameReference : kind}</span>
       <ArrowRight className="h-3 w-3 shrink-0 text-primary" />
     </button>
-  );
-}
-
-function TurnFooter({ turn, patch, onRate }: { turn: AdvisorTurn; patch: string; onRate: AdvisorTurnViewProps["onRate"] }) {
-  const { t } = useTranslation();
-  const copy = t.advisor;
-  return (
-    <div className="mt-1 flex items-center gap-2 text-[11px] text-muted-foreground">
-      {turn.stats && (
-        <span>
-          {turn.stats.tokens} tok · {turn.stats.seconds.toFixed(1)}s
-          {turn.stats.ttft !== undefined && (
-            <>
-              {" "}
-              (읽기 {turn.stats.ttft.toFixed(1)}s
-              {turn.stats.promptTokens ? ` · 프롬프트 ${turn.stats.promptTokens} tok` : ""})
-            </>
-          )}
-        </span>
-      )}
-      {/* 평가는 기기 안에만 쌓인다. 서버로 보내지 않는다. */}
-      <button
-        type="button"
-        aria-label={copy.rateUp}
-        aria-pressed={turn.rating === "up"}
-        onClick={() => onRate(turn.id, "up", patch)}
-        className={
-          turn.rating === "up"
-            ? "text-emerald-400"
-            : "text-muted-foreground transition-colors hover:text-foreground"
-        }
-      >
-        <ThumbsUp className="h-3.5 w-3.5" />
-      </button>
-      <button
-        type="button"
-        aria-label={copy.rateDown}
-        aria-pressed={turn.rating === "down"}
-        onClick={() => onRate(turn.id, "down", patch)}
-        className={
-          turn.rating === "down"
-            ? "text-destructive"
-            : "text-muted-foreground transition-colors hover:text-foreground"
-        }
-      >
-        <ThumbsDown className="h-3.5 w-3.5" />
-      </button>
-    </div>
   );
 }

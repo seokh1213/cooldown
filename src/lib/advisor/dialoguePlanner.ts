@@ -6,16 +6,18 @@ import { resolveDialogueFact } from "./dialogueFacts";
 import { ruleEllipsis } from "./dialogueRules";
 import { matchupPlan } from "./dialogueMatchup";
 import { dialogueStatPlan, statPlanForQuery } from "./dialogueStats";
-import { asksGenericAdvice } from "./askWords";
+import { describeRequest, planMismatch, type RequestContract, type DialogueTrace } from "./requestContract";
+import { requestGuidance } from "./requestGuidance";
 import { conditionHint, prepareDialogueRequest, type DialogueRequest, type DialogueVariant } from "./dialogueRequest";
 import { rememberDialoguePlan, scenarioConditions, type DialogueMemory, type MatchupContext } from "./dialogueState";
 
 export type { DialogueVariant } from "./dialogueRequest";
 export { splitDialogueQuestions } from "./dialogueRequest";
 export interface DialoguePlan {
-  parts: Array<{ question: string; plan: AnswerPlan; matchup?: MatchupContext }>;
+  parts: Array<{ question: string; plan: AnswerPlan; matchup?: MatchupContext; request?: RequestContract }>;
   memory: DialogueMemory;
   clarification?: string;
+  trace?: DialogueTrace;
 }
 
 function clarificationText(pending: NonNullable<DialogueMemory["pending"]>, ctx: PlanContext): string {
@@ -33,40 +35,63 @@ export async function planDialogue(question: string, ctx: PlanContext, deps: Pla
 export async function planPreparedDialogue(request: DialogueRequest, ctx: PlanContext, deps: PlanDeps): Promise<DialoguePlan> {
   let memory = request.memory;
   const parts: DialoguePlan["parts"] = [];
-  if (!ctx.data) return { parts: [{ question: request.questions[0], plan: await planAnswer(request.questions[0], ctx, deps) }], memory };
-  for (const question of request.questions) {
-    const resolved = resolveQuestion(question, ctx.data);
+  const trace: DialogueTrace = { judge: ctx.judge, parts: [], rejected: request.rejected };
+  if (request.rejected) return { parts, memory, clarification: requestGuidance(request.rejected, ctx.lang), trace };
+  if (!ctx.data) {
+    const input = request.questions[0];
+    return { parts: [{ question: typeof input === "string" ? input : input.text, plan: await planAnswer(input, ctx, deps) }], memory };
+  }
+  for (const input of request.questions) {
+    const resolved = resolveQuestion(input, ctx.data);
+    const question = resolved.text;
     if (request.groupedMatchups) {
-      const prior = request.memory.matchups?.find(pair => resolved.champions.some(c => c.id === pair.mine) && resolved.champions.some(c => c.id === pair.enemy));
+      const prior = request.memory.matchups?.find(pair => pair.mine === resolved.matchup?.mine.id && pair.enemy === resolved.matchup?.enemy.id);
       if (prior) {
         const { conditions, ...matchup } = prior;
         memory = { ...memory, active: "matchup", matchup: structuredClone(matchup), conditions: structuredClone(conditions) };
       }
     }
-    let stat = dialogueStatPlan(resolved, memory, ctx);
-    if (!stat && deps.inferStatQuery) {
+    let contract = describeRequest(resolved, memory, ctx);
+    const preferred = resolved.matchup ? await matchupPlan(resolved, memory, ctx, deps) : undefined;
+    let stat = preferred ? undefined : dialogueStatPlan(resolved, memory, ctx);
+    if (!preferred && !stat && deps.inferStatQuery) {
       const query = await deps.inferStatQuery(resolved, memory, ctx).catch(() => undefined);
-      if (query) stat = statPlanForQuery(query, resolved, ctx);
+      if (query) {
+        stat = statPlanForQuery(query, resolved, ctx);
+        if (stat) contract = { ...contract, operation: "lookup", stat: query, targets: query.champions };
+      }
     }
-    const fact = stat ? undefined : resolveDialogueFact(resolved, memory, ctx);
+    const fact = stat || preferred ? undefined : resolveDialogueFact(resolved, memory, ctx);
     const asksCompare = /비교|둘\s*중|둘|both|compare|比较|两个/i.test(question);
     const shouldAsk = fact?.pending && (!fact.pending.candidates.length || fact.pending.candidates.length > 1 && !asksCompare);
     if (shouldAsk && (request.variant === "clarify" || request.variant === "combined")) {
       memory.pending = fact.pending;
-      return { parts, memory, clarification: clarificationText(fact.pending!, ctx) };
+      return { parts, memory, clarification: clarificationText(fact.pending!, ctx), trace };
     }
-    let plan = stat ?? fact?.plan ?? ruleEllipsis(question, memory, ctx) ?? await matchupPlan(resolved, memory, ctx, deps);
+    let plan = preferred ?? stat ?? fact?.plan ?? ruleEllipsis(question, memory, ctx) ?? await matchupPlan(resolved, memory, ctx, deps);
     plan ??= await planAnswer(resolved, ctx, deps);
     if (plan.type === "retry") plan = await planAnswer(plan.question, ctx, deps);
-    if (request.groupedMatchups && plan.type === "matchup" && asksGenericAdvice(request.groupedMatchups)) {
-      plan = { ...plan, more: true, continuation: "advance" };
+    const noEvidence = plan.type === "respond" || plan.type === "code" && typeof plan.answer === "string"
+      && [ctx.copy.noLiteAnswer, ctx.copy.noGameData, ctx.copy.noModel].includes(plan.answer);
+    const rejected = planMismatch(contract, plan) ?? (noEvidence ? "unsupported" : undefined);
+    trace.parts.push({ question, request: contract, plan: plan.type, rejected });
+    if (rejected) plan = { type: "code", answer: { kind: "text", text: requestGuidance(rejected, ctx.lang) } };
+    if (!rejected) {
+      if (plan.type === "matchup") {
+        const selected = plan;
+        const prior = request.memory.matchups?.find(pair => pair.mine === selected.mine.id && pair.enemy === selected.enemy.id);
+        if (prior && (memory.matchup?.mine !== prior.mine || memory.matchup?.enemy !== prior.enemy)) {
+          const { conditions, ...matchup } = structuredClone(prior);
+          memory = { ...memory, matchup, conditions };
+        }
+      }
+      memory = rememberDialoguePlan(memory, plan, fact);
+      if (memory.active === "matchup") memory.conditions = scenarioConditions(question, memory.conditions, ctx.turns.length, conditionHint(resolved, memory, ctx));
     }
-    memory = rememberDialoguePlan(memory, plan, fact);
-    if (memory.active === "matchup") memory.conditions = scenarioConditions(question, memory.conditions, ctx.turns.length, conditionHint(resolved, memory, ctx));
     const matchup = plan.type === "matchup" && memory.matchup ? { ...memory.matchup, conditions: structuredClone(memory.conditions) } : undefined;
-    parts.push({ question, plan, matchup });
+    parts.push({ question, plan, matchup, request: contract });
   }
-  if (request.groupedMatchups) memory.matchups = parts.flatMap(part => part.matchup ? [structuredClone(part.matchup)] : []);
+  if (request.groupedMatchups || parts.filter(p => p.matchup).length > 1) memory.matchups = parts.flatMap(part => part.matchup ? [structuredClone(part.matchup)] : []);
   else if (parts.some(part => part.plan.type === "matchup")) memory.matchups = undefined;
-  return { parts, memory };
+  return { parts, memory, trace };
 }

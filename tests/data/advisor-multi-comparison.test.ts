@@ -29,7 +29,7 @@ test("별명과 영어 이름을 섞어도 네 번째 챔피언을 빠뜨리지 
   assert.deepEqual(detectChampions(data, "오공 Zoe 벡스 Jayce 스킬 쿨타임").map(c => c.id), ids.slice(0, 4));
 });
 
-for (const count of [4, 10, 15]) {
+for (const count of [4, 10]) {
   test(`${count}명의 스킬 쿨타임 요청은 모든 대상을 표와 본문에 담는다`, async () => {
     const selected = [...ids, "Zed", "Rumble", "Annie", "Teemo", "Nasus"].slice(0, count);
     const { reply } = await answerDialogue(`${names(selected)} 스킬 쿨타임 알려줘`, context(), deps);
@@ -41,6 +41,13 @@ for (const count of [4, 10, 15]) {
     assert.ok(selected.every(id => reply.text.includes(data.cardById.get(id)!.name)));
   });
 }
+
+test("15명 비교는 일부만 잘라 내지 않고 10명까지 줄이도록 안내한다", async () => {
+  const selected = [...ids, "Zed", "Rumble", "Annie", "Teemo", "Nasus"];
+  const { reply } = await answerDialogue(`${names(selected)} 스킬 쿨타임 알려줘`, context(), deps);
+  assert.equal(reply.answer, undefined);
+  assert.match(reply.text, /수치 비교는 챔피언 10명까지/);
+});
 
 test("명시적으로 10명의 Q를 물으면 대상 확인 없이 모두 비교한다", async () => {
   const { reply } = await answerDialogue(`${names(ids)} Q 쿨타임 알려줘`, context(), deps);

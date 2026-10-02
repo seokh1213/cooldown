@@ -39,7 +39,12 @@ export function AdvisorMarkdown({ text }: { text: string }): ReactNode {
     // 해설이 "**플레이할 때**" / "**상대할 때**" 로 두 관점을 가르는데, 그냥 굵은
     // 글씨로 두면 본문에 묻힌다. `##` 머리말과 같은 모양으로 맞춰 눈에 띄게 한다.
     const boldOnly = /^\s*\*\*(.+?)\*\*\s*$/.exec(line);
-    const heading = boldOnly ?? /^#{2,3}\s+(.*)$/.exec(line);
+    const section = /^#{2,3}\s+(.*)$/.exec(line);
+    if (section) {
+      nodes.push(<h3 key={i} className="mt-5 border-b pb-2 text-sm font-semibold text-foreground first:mt-0">{inline(section[1])}</h3>);
+      continue;
+    }
+    const heading = boldOnly;
     if (heading) {
       nodes.push(
         <p
