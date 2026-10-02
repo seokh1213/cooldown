@@ -36,6 +36,7 @@ export function useAdvisorHistory(advisor: UseAdvisorResult, data: AdvisorData |
   const restored = useRef(false);
   const saveTimer = useRef<number | undefined>(undefined);
   const { turns, replaceTurns, reset } = advisor;
+  const busy = advisor.status === "generating" || advisor.working;
 
   // 처음 자료가 오면 마지막 대화를 이어 붙인다. 새로 고쳐도 대화가 끊기지 않는다.
   useEffect(() => {
@@ -49,27 +50,32 @@ export function useAdvisorHistory(advisor: UseAdvisorResult, data: AdvisorData |
     replaceTurns(revived);
   }, [data, conversations, turns.length, replaceTurns]);
 
-  // 발화가 바뀌면 저장한다. 해설이 스트리밍되는 동안 글자마다 쓰지 않도록 잠깐 모은다.
+  // 완료된 답은 즉시 저장한다. 생성 중에만 모아서 쓰고, 페이지를 떠나면 남은 저장을 처리한다.
   useEffect(() => {
     if (turns.length === 0) return;
     window.clearTimeout(saveTimer.current);
-    saveTimer.current = window.setTimeout(() => {
-      setConversations((prev) => {
-        const existing = prev.find((entry) => entry.id === currentId);
-        const now = new Date().toISOString();
-        const next = upsertConversation(prev, {
-          id: currentId,
-          title: conversationTitle(turns),
-          createdAt: existing?.createdAt ?? now,
-          updatedAt: now,
-          turns: turns.slice(-TURN_LIMIT).map(dehydrateTurn),
-        });
-        writeConversations(next);
-        return next;
+    const save = () => {
+      const previous = readConversations();
+      const existing = previous.find(entry => entry.id === currentId);
+      const now = new Date().toISOString();
+      const next = upsertConversation(previous, {
+        id: currentId,
+        title: conversationTitle(turns),
+        createdAt: existing?.createdAt ?? now,
+        updatedAt: now,
+        turns: turns.slice(-TURN_LIMIT).map(dehydrateTurn),
       });
-    }, SAVE_DELAY_MS);
-    return () => window.clearTimeout(saveTimer.current);
-  }, [turns, currentId]);
+      writeConversations(next);
+      setConversations(next);
+    };
+    if (busy) saveTimer.current = window.setTimeout(save, SAVE_DELAY_MS);
+    else save();
+    window.addEventListener("pagehide", save);
+    return () => {
+      window.clearTimeout(saveTimer.current);
+      window.removeEventListener("pagehide", save);
+    };
+  }, [turns, currentId, busy]);
 
   const startNew = useCallback(() => {
     window.clearTimeout(saveTimer.current);
