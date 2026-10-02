@@ -44,6 +44,7 @@ const EFFECT_ALIASES: Array<[RegExp, string[], SpellFocus?]> = [
   [/둔화|슬로우|\bslow\b|减速/i, ["둔화", "Slow", "减速"]],
   [/기절|스턴|\bstun\b|眩晕/i, ["기절", "Stun", "眩晕"]],
   [/보호막|실드|\bshield\b|护盾/i, ["보호막", "Shield", "护盾"]],
+  [/이속|이동\s*속도|\b(?:move|movement)\s*speed\b|移速|移动速度/i, ["이동 속도", "Move Speed", "Movement Speed", "移动速度"]],
   [/회복|힐|\bheal\b|治疗|回复/i, ["회복", "Heal", "治疗", "回复"]],
   /*
    * 사거리는 효과가 아니라 카드의 칸이다(SpellFact.range). 효과로 두었더니 "제드 궁 사거리" 에

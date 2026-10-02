@@ -5,6 +5,7 @@ import { buildItemCard } from "./context";
 import { askedRules } from "./questionDocs";
 import { findGameMeta } from "./gameMeta";
 import { asksMatchupHelp } from "./askWords";
+import { isBasicAttackMechanicQuestion } from "./basicAttackQuestion";
 import type { AnswerPlan, PlanContext } from "./planTypes";
 import type { ResolvedQuestion } from "./resolvedQuestion";
 import type { DialogueMemory } from "./dialogueState";
@@ -21,7 +22,8 @@ type StatResolution = ChampionStatQuery | { kind: "unsupportedStatLevel"; level:
 /** 이름만 줄이거나 레벨만 바꾼 후속 질문에도 나머지 조회 조건을 보존한다. */
 export function resolveStatQuery(resolved: ResolvedQuestion, memory: DialogueMemory, ctx: PlanContext): StatResolution | undefined {
   const question = resolved.text.replace(/(?:스킬|패시브)\s*말고/g, "");
-  if (!ctx.data || resolved.matchup || OTHER_QUERY.test(question) || ADVICE.test(question) || asksMatchupHelp(question)) return undefined;
+  if (!ctx.data || resolved.matchup || OTHER_QUERY.test(question) || ADVICE.test(question)
+    || asksMatchupHelp(question) || isBasicAttackMechanicQuestion(question)) return undefined;
   if (/뜻|원리|메커니즘|적용|meaning|mechanic|how.*work|原理|是什么/i.test(question)) return undefined;
   const cards = statTargets(resolved, memory, ctx);
   if (cards.some(card => card.spells.some(spell => spell.name.length > 1 && question.includes(spell.name)))) return undefined;

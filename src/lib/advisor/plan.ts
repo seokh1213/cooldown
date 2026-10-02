@@ -5,6 +5,7 @@ import { type AnswerPlan, type PlanContext, type PlanDeps, type Step } from "./p
 import { resolveQuestion, type QuestionInput } from "./resolvedQuestion";
 import { directFactPlan } from "./directFactPlan";
 import { knowledgeFactPlan } from "./knowledgeFactPlan";
+import { passiveMechanicPlan } from "./passiveMechanicPlan";
 import { understand } from "./questionUnderstanding";
 import { answerByVector, answerRuleQuestion, fixChampionTypo, answerGameFact, answerFromNotes } from "./knowledgePlans";
 import { continueMatchup } from "./matchupPlans";
@@ -38,6 +39,8 @@ export async function planAnswer(input: QuestionInput, ctx: PlanContext, deps: P
   const resolved = resolveQuestion(input, data);
   const knowledgeFact = knowledgeFactPlan(resolved, ctx);
   if (knowledgeFact) return knowledgeFact;
+  const passive = passiveMechanicPlan(resolved, ctx);
+  if (passive) return passive;
   const fact = directFactPlan(resolved, ctx);
   if (fact) return fact;
   const intent = await understand(resolved, ctx, data, deps);

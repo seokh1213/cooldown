@@ -12,6 +12,7 @@ import { conditionHint, prepareDialogueRequest, type DialogueRequest, type Dialo
 import { rememberDialoguePlan, scenarioConditions, type DialogueMemory, type MatchupContext } from "./dialogueState";
 import { priorMatchup, rememberMatchupSelection } from "./dialogueMatchupMemory";
 import { knowledgeFactPlan } from "./knowledgeFactPlan";
+import { passiveMechanicPlan } from "./passiveMechanicPlan";
 
 export type { DialogueVariant } from "./dialogueRequest";
 export { splitDialogueQuestions } from "./dialogueRequest";
@@ -58,7 +59,12 @@ export async function planPreparedDialogue(request: DialogueRequest, ctx: PlanCo
       parts.push({ question, request: contract, plan: { type: "code", answer: { kind: "text", text: requestGuidance(unsupported, ctx.lang) } } });
       continue;
     }
-    const preferred = knowledgeFactPlan(resolved, ctx, memory) ?? (resolved.matchup ? await matchupPlan(resolved, memory, ctx, deps) : undefined);
+    const passive = passiveMechanicPlan(resolved, ctx, memory);
+    const preferred = knowledgeFactPlan(resolved, ctx, memory) ?? passive
+      ?? (resolved.matchup ? await matchupPlan(resolved, memory, ctx, deps) : undefined);
+    if (passive?.type === "card" && passive.answer.kind === "spell" && preferred === passive) {
+      contract = { operation: "explain", targets: [passive.answer.championId] };
+    }
     let stat = preferred ? undefined : dialogueStatPlan(resolved, memory, ctx);
     if (!preferred && !stat && deps.inferStatQuery) {
       const query = await deps.inferStatQuery(resolved, memory, ctx).catch(() => undefined);

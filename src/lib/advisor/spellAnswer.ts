@@ -7,6 +7,8 @@ import { cardLabels, translateDamage, translateRatioStat, translateTag } from ".
 import { sentencesWith } from "./answerText";
 import { controlText, controlHeading } from "@/lib/knowledge/crowdControl";
 import { asksCrowdControl } from "./crowdControlQuestion";
+import { passiveAttackEvidence } from "./basicAttackQuestion";
+import { passiveStatEvidence } from "./passiveStatQuestion";
 
 /**
  * 계수 목록을 글로. "주문력 105%" 의 능력치 이름은 툴팁에서 읽어 낸 한국어라 옮긴다.
@@ -92,6 +94,10 @@ export function buildSpellAnswer(
   } else if (detected?.focus === "damage") {
     highlighted = sentencesWith(spell.text, ["피해"]);
   }
+  const attackEvidence = passiveAttackEvidence(spell, question);
+  if (!headline && attackEvidence.length) highlighted = attackEvidence;
+  const statEvidence = passiveStatEvidence(spell, question);
+  if (!headline && statEvidence.length) highlighted = statEvidence;
 
   return {
     kind: "spell",
