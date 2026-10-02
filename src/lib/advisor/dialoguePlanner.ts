@@ -58,7 +58,7 @@ export async function planPreparedDialogue(request: DialogueRequest, ctx: PlanCo
       parts.push({ question, request: contract, plan: { type: "code", answer: { kind: "text", text: requestGuidance(unsupported, ctx.lang) } } });
       continue;
     }
-    const preferred = knowledgeFactPlan(resolved, ctx) ?? (resolved.matchup ? await matchupPlan(resolved, memory, ctx, deps) : undefined);
+    const preferred = knowledgeFactPlan(resolved, ctx, memory) ?? (resolved.matchup ? await matchupPlan(resolved, memory, ctx, deps) : undefined);
     let stat = preferred ? undefined : dialogueStatPlan(resolved, memory, ctx);
     if (!preferred && !stat && deps.inferStatQuery) {
       const query = await deps.inferStatQuery(resolved, memory, ctx).catch(() => undefined);

@@ -57,6 +57,9 @@ const EFFECT_ALIASES: Array<[RegExp, string[], SpellFocus?]> = [
 ];
 
 export function detectSpellFocus(question: string): { focus: SpellFocus; keywords: string[] } | undefined {
+  // “기절 스킬 쿨타임”의 기절은 수식어다. 명시한 구조 수치를 효과 낱말보다 먼저 읽는다.
+  const numeric = FOCUS_LEXICON.find(([focus, pattern]) => focus !== "damage" && pattern.test(question));
+  if (numeric) return { focus: numeric[0], keywords: [] };
   for (const [alias, words, focus] of EFFECT_ALIASES) {
     if (alias.test(question)) return { focus: focus ?? "effect", keywords: words };
   }

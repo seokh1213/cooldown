@@ -11,9 +11,11 @@ import type { ChampionCard } from "@/lib/knowledge/facts";
 import type { DialogueHistoryTurn, DialogueMemory } from "./dialogueState";
 import type { ResolvedQuestion } from "./resolvedQuestion";
 import type { ChampionStatQuery } from "./statQuery";
+import type { CrowdControlType } from "@/lib/knowledge/crowdControl";
 
 /** 자료 조회·상성·확인·생성 중 질문 하나를 답할 계획. 조립 단계가 실행한다. */
-export type AnswerPlan =
+export interface ControlContext { champions: string[]; slot?: string; types?: CrowdControlType[] }
+export type AnswerPlan = (
   /** 코드가 만든 카드(`deliver`) */
   | { type: "card"; answer: AdvisorAnswer; notice?: string }
   /** 상성 카드 + 미리 써 둔 답(`deliverMatchup`) */
@@ -27,7 +29,8 @@ export type AnswerPlan =
   /** 오타 하나를 고쳐 다시 묻는다 */
   | { type: "retry"; question: string; notice?: string }
   /** 모델에게 넘긴다(`respond`) */
-  | { type: "respond"; plan: { system: string; withoutConsent: string } };
+  | { type: "respond"; plan: { system: string; withoutConsent: string } }
+) & { controlContext?: ControlContext };
 
 /** 구조화된 답과 코드 기억을 함께 담는 대화 턴. */
 export type PlanTurn = DialogueHistoryTurn;

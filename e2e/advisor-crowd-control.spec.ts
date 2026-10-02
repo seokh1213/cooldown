@@ -54,6 +54,26 @@ for (const width of [390, 1280]) {
     await expect(page.getByText("용의 분노", { exact: true })).toHaveCount(1);
     if (width === 390) await page.screenshot({ path: "research/llm-evals/crowd-control/leesin-mobile.png" });
   });
+  test(`CC 해제 후속 질문과 슬롯 변경: ${width}px`, async ({ page }) => {
+    await page.setViewportSize({ width, height: 900 });
+    const ask = await openAdvisor(page);
+    await ask("나미 Q CC 종류 알려줘");
+    await expect(page.getByRole("img", { name: "나미 Q 물의 감옥", exact: true })).toBeVisible();
+    await ask("그럼 수은은?");
+    await expect(page.getByText(/정화·수은·미카엘로 기절을 해제할 수 있습니다/).last()).toBeVisible();
+    await ask("R은 수은으로 풀려?");
+    await expect(page.getByRole("heading", { name: /^나미 R / }).last()).toBeVisible();
+    await expect(page.getByText(/에어본 중에는 수은을 사용할 수도 없습니다/).last()).toBeVisible();
+    if (width === 390) await page.screenshot({ path: "research/llm-evals/control-audit/mobile.png" });
+    await ask("그럼 강타는?");
+    await expect(page.getByText(/강타 사용을 막지 않습니다/).last()).toBeVisible();
+    await ask("수호천사 부활 중 강타 써져?");
+    await expect(page.getByText(/수호천사가 발동해 부활을 기다리는 동안에는 강타를 쓸 수 없습니다/).last()).toBeVisible();
+    await ask("말자하 궁 정화로 풀려?");
+    await expect(page.getByText(/정화로 제압을 풀 수 없습니다/).last()).toBeVisible();
+    await ask("그럼 수은은?");
+    await expect(page.getByText(/말자하 궁극기의 연결 피해/).last()).toBeVisible();
+  });
 }
 
 test("브라우저에서 기존 툴팁보다 부활·정화·치감 판정 노트를 먼저 답한다", async ({ page }) => {

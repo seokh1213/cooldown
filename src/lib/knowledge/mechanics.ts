@@ -18,6 +18,7 @@
  */
 import { askedRuleKinds } from "./rules";
 import { aliasAt, aliasesOf } from "./searchAliases";
+import type { CrowdControlType } from "./crowdControl";
 
 export interface MechanicsSection {
   id: string;
@@ -27,6 +28,10 @@ export interface MechanicsSection {
   text: string;
   /** 큐레이션 판정 노트: 각 그룹에서 하나 이상 언급되어야 직접 답한다. */
   questionGroups?: string[][];
+  /** 특정 스킬의 예외 판정. 다른 슬롯에 같은 챔피언 이름이 있어도 적용하지 않는다. */
+  subjects?: Array<{ champion: string; slot: string }>;
+  /** 일반 CC 규칙의 주제. 후속 질문에서 본문 낱말을 다시 추측하지 않는다. */
+  controls?: CrowdControlType[];
   sources?: string[];
   reviewedAt?: string;
   localized?: Partial<Record<"en_US" | "zh_CN", { title: string; text: string }>>;

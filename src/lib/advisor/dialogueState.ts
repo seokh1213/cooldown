@@ -2,9 +2,10 @@
 import type { AdvisorAnswer } from "./answer";
 import type { AdvisorData } from "./context";
 import { detectSpellFocus, type SpellFocus } from "./spellFocus";
-import type { AnswerPlan } from "./planTypes";
+import type { AnswerPlan, ControlContext } from "./planTypes";
 import type { FactResolution } from "./dialogueFacts";
 import { statQueryFromAnswer, isStatLevel, validStatFields, type ChampionStatQuery } from "./statQuery";
+import { CROWD_CONTROL } from "@/lib/knowledge/crowdControl";
 export { scenarioConditions } from "./scenarioConditions";
 
 export interface SpellReference { champion: string; slot: string; focus?: SpellFocus; relation?: "penetration" }
@@ -31,6 +32,8 @@ export interface DialogueMemory {
   matchupGroup?: Array<{ mine: string; enemy: string }>;
   matchupScope?: "single" | "group";
   spell?: SpellReference;
+  /** 직전 CC 판정 답변의 스킬 또는 유형. 다른 주제의 답변이 나오면 지운다. */
+  control?: ControlContext;
   compared?: string[];
   stat?: ChampionStatQuery;
   item?: string;
@@ -59,6 +62,11 @@ function validMemory(memory: DialogueMemory, data: AdvisorData): boolean {
   if (memory.matchupGroup && (!Array.isArray(memory.matchupGroup) || memory.matchupGroup.some(pair => !data.cardById.has(pair.mine) || !data.cardById.has(pair.enemy)))) return false;
   if (memory.champion && !data.cardById.has(memory.champion)) return false;
   if (memory.spell && !data.cardById.get(memory.spell.champion)?.spells.some(s => s.slot === memory.spell!.slot)) return false;
+  if (memory.control && (!Array.isArray(memory.control.champions)
+    || !memory.control.champions.length && !memory.control.types?.length
+    || memory.control.types !== undefined && (!Array.isArray(memory.control.types) || memory.control.types.some(type => !(type in CROWD_CONTROL)))
+    || memory.control.champions.some(id => !data.cardById.has(id) || memory.control!.slot
+      && !data.cardById.get(id)?.spells.some(s => s.slot === memory.control!.slot)))) return false;
   if (memory.stat && (!isStatLevel(memory.stat.level) || !validStatFields(memory.stat) || !memory.stat.champions.length || memory.stat.champions.some(id => !data.cardById.has(id)))) return false;
   return true;
 }
@@ -161,6 +169,11 @@ function rememberPlan(memory: DialogueMemory, plan: AnswerPlan): DialogueMemory 
 
 export function rememberDialoguePlan(memory: DialogueMemory, plan: AnswerPlan, resolution?: Pick<FactResolution, "numeric" | "relation">): DialogueMemory {
   const next = rememberPlan(memory, plan);
+  next.control = plan.controlContext ? structuredClone(plan.controlContext) : undefined;
+  if (next.control?.champions.length === 1 && next.control.slot) {
+    next.spell = { champion: next.control.champions[0], slot: next.control.slot };
+    next.active = "spell";
+  }
   if (!resolution) return next;
   if (resolution.numeric !== undefined) next.numeric = resolution.numeric;
   if (resolution.relation && next.spell) next.spell.relation = resolution.relation;
