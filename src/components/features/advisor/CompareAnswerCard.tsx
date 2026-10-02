@@ -8,6 +8,7 @@ import type { AdvisorAnswer, CompareRow, MatchupNotes } from "@/lib/advisor/answ
 import type { ChampionCard } from "@/lib/knowledge/facts";
 import { josa } from "@/lib/knowledge/text";
 import { Frame, NoteList, PatchLinkFooter } from "./AnswerCardFrame";
+import { MatchupReferenceCard } from "./MatchupReferenceCard";
 
 export function CompareAnswerCard({
   answer,
@@ -27,6 +28,9 @@ export function CompareAnswerCard({
   const { cards } = answer;
   const [first, second] = cards;
   const vsLink = second ? `/vs?a=${first.id}&t=${second.id}` : `/vs?a=${first.id}`;
+  if (presentation === "reference" && answer.matchup) {
+    return <MatchupReferenceCard answer={answer} ddragonVersion={ddragonVersion} patch={patch} onNavigate={onNavigate} />;
+  }
   return (
     <Frame
       icon={
@@ -55,15 +59,15 @@ export function CompareAnswerCard({
       tool={answer.matchup ? copy.matchupTool : copy.compare}
       footer={<PatchLinkFooter patch={patch} to={vsLink} label={cards.length > 2 ? fill(copy.goVs, { a: first.name, b: second.name }) : copy.openInVs} onNavigate={onNavigate} />}
     >
-      {presentation === "full" && answer.headline && (
+      {answer.headline && (
         <div className="mb-2 rounded-md bg-muted px-2.5 py-2 text-[13px] leading-relaxed">
           <span className="text-muted-foreground">{answer.headline.label}</span>
           <span className="ml-2 font-semibold tabular-nums">{answer.headline.value}</span>
         </div>
       )}
-      {presentation === "full" && <CompareTable cards={cards} rows={answer.rows} />}
+      <CompareTable cards={cards} rows={answer.rows} />
       {/* 상성 노트. "누가 유리해" 의 실전 답은 능력치 표가 아니라 여기 있다. */}
-      {presentation === "full" && answer.matchup && second && answer.notes && (answer.notes.mine.length > 0 || answer.notes.enemy.length > 0) && (
+      {answer.matchup && second && answer.notes && (answer.notes.mine.length > 0 || answer.notes.enemy.length > 0) && (
         <MatchupNoteBlock mine={first} enemy={second} notes={answer.notes} />
       )}
     </Frame>

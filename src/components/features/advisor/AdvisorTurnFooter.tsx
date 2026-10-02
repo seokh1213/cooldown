@@ -8,7 +8,7 @@ export function AdvisorTurnFooter({ turn, patch, onRate }: { turn: AdvisorTurn; 
   const { t } = useTranslation();
   const copy = t.advisor;
   return (
-    <div className="mt-1 flex items-center gap-2 text-[11px] text-muted-foreground">
+    <div className="mt-2 flex flex-wrap items-center gap-1 text-[11px] text-muted-foreground">
       {turn.stats && (
         <span>
           {turn.stats.tokens} tok · {turn.stats.seconds.toFixed(1)}s
@@ -25,28 +25,30 @@ export function AdvisorTurnFooter({ turn, patch, onRate }: { turn: AdvisorTurn; 
       <button
         type="button"
         aria-label={copy.rateUp}
+        title={copy.rateUp}
         aria-pressed={turn.rating === "up"}
         onClick={() => onRate(turn.id, "up", patch)}
-        className={
+        className={`flex h-11 w-11 items-center justify-center rounded-md touch-manipulation focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring transition-colors hover:bg-muted motion-reduce:transition-none ${
           turn.rating === "up"
             ? "text-emerald-400"
             : "text-muted-foreground transition-colors hover:text-foreground"
-        }
+        }`}
       >
-        <ThumbsUp className="h-3.5 w-3.5" />
+        <ThumbsUp className="h-4 w-4" aria-hidden="true" />
       </button>
       <button
         type="button"
         aria-label={copy.rateDown}
+        title={copy.rateDown}
         aria-pressed={turn.rating === "down"}
         onClick={() => onRate(turn.id, "down", patch)}
-        className={
+        className={`flex h-11 w-11 items-center justify-center rounded-md touch-manipulation focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring transition-colors hover:bg-muted motion-reduce:transition-none ${
           turn.rating === "down"
             ? "text-destructive"
             : "text-muted-foreground transition-colors hover:text-foreground"
-        }
+        }`}
       >
-        <ThumbsDown className="h-3.5 w-3.5" />
+        <ThumbsDown className="h-4 w-4" aria-hidden="true" />
       </button>
     </div>
   );

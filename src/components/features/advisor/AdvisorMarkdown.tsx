@@ -37,11 +37,11 @@ export function AdvisorMarkdown({ text }: { text: string }): ReactNode {
     const line = lines[i];
     // 줄 전체가 굵은 글씨면 구획 머리말로 본다.
     // 해설이 "**플레이할 때**" / "**상대할 때**" 로 두 관점을 가르는데, 그냥 굵은
-    // 글씨로 두면 본문에 묻힌다. `##` 머리말과 같은 모양으로 맞춰 눈에 띄게 한다.
+    // 글씨로 두면 본문에 묻힌다. 상성 제목보다 작은 소제목으로 구분한다.
     const boldOnly = /^\s*\*\*(.+?)\*\*\s*$/.exec(line);
     const section = /^#{2,3}\s+(.*)$/.exec(line);
     if (section) {
-      nodes.push(<h3 key={i} className="mt-5 border-b pb-2 text-sm font-semibold text-foreground first:mt-0">{inline(section[1])}</h3>);
+      nodes.push(<h3 key={i} className="mt-6 border-b pb-2 text-base font-semibold leading-6 text-foreground text-balance first:mt-0">{inline(section[1])}</h3>);
       continue;
     }
     const heading = boldOnly;
@@ -49,7 +49,7 @@ export function AdvisorMarkdown({ text }: { text: string }): ReactNode {
       nodes.push(
         <p
           key={i}
-          className="mt-3 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground first:mt-0"
+          className="mt-3 text-xs font-semibold leading-5 text-foreground/80 first:mt-0"
         >
           {inline(heading[1])}
         </p>,
@@ -83,5 +83,5 @@ export function AdvisorMarkdown({ text }: { text: string }): ReactNode {
     );
   }
 
-  return <div className="space-y-0.5">{nodes}</div>;
+  return <div className="space-y-0.5 break-words">{nodes}</div>;
 }

@@ -363,6 +363,7 @@ export const zhCNTranslations: Translations = {
       feedbackExport: "导出",
     },
     sources: "已找到",
+    questionLabel: "输入英雄联盟问题",
     placeholder: "例如：点燃会给征服者叠层吗？",
     busyHint: "正在生成回答。完成后再发送，或按 ■ 停止。",
     send: "发送",

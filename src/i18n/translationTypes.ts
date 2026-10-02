@@ -414,6 +414,7 @@ export interface Translations {
      * 고르므로, 실제로 답에 쓰이지 않은 것도 섞여 있다.
      */
     sources: string;
+    questionLabel: string;
     placeholder: string;
     /** 생성 중에 Enter 를 눌렀을 때. 조용히 먹히면 고장으로 보인다 */
     busyHint: string;

@@ -6,7 +6,7 @@
 import { useRef } from "react";
 import { useTranslation } from "@/i18n";
 import type { UseAdvisorResult } from "@/hooks/useAdvisor";
-import type { AdvisorData } from "@/lib/advisor/context";
+import { loadAdvisorData, type AdvisorData } from "@/lib/advisor/context";
 import type { AdvisorAnswer } from "@/lib/advisor/answer";
 import { suggestChampions } from "@/lib/advisor/championTypo";
 import { nicknames } from "@/lib/advisor/intent";
@@ -21,6 +21,7 @@ import { docAnswer } from "@/lib/advisor/questionDocs";
 interface AskAdvisorOptions {
   advisor: UseAdvisorResult;
   data: AdvisorData | null;
+  patch: string;
   /** 지금 화면에 떠 있는 챔피언. 이름을 생략한 질문이 여기에 기댄다. */
   championIds: string[];
   canUseModel: boolean;
@@ -57,7 +58,7 @@ const modelThenOffline =
           return offline(headName, state, questions);
         });
 
-export function useAskAdvisor({ advisor, data, championIds, canUseModel }: AskAdvisorOptions) {
+export function useAskAdvisor({ advisor, data, patch, championIds, canUseModel }: AskAdvisorOptions) {
   const { t, lang } = useTranslation();
   const copy = t.advisor;
   // 오타 후보를 물었을 때의 원래 질문. 고르면 그 말만 바꿔 다시 묻는다.
@@ -94,8 +95,10 @@ export function useAskAdvisor({ advisor, data, championIds, canUseModel }: AskAd
     // 모델을 받아 동의한 기기는 모델 판정기(거절하면 오프라인), 그 밖은 오프라인 판정기. 판정기가 아예 없는 길은 앱에 없다.
     const judge: JudgeTier = canUseModel && advisor.consented ? "model" : "offline";
     try {
+      // 첫 질문이 자료 다운로드보다 빠를 수 있다. 위젯과 같은 Promise를 기다린 뒤 판정한다.
+      const readyData = data ?? await loadAdvisorData(patch, lang).catch(() => null);
       const ctx = {
-        data,
+        data: readyData,
         lang,
         copy,
         turns: advisor.turns,

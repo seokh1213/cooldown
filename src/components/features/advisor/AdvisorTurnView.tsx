@@ -115,11 +115,13 @@ export function AdvisorTurnView(props: AdvisorTurnViewProps) {
       {turn.notice && <p className="mb-1.5 text-[11px] text-muted-foreground">{turn.notice}</p>}
       {turn.answers?.length ? (
         <div className="space-y-3">
-          <AdvisorMarkdown text={turn.content} />
-          <div className="grid gap-2">
+          <div className="grid gap-2" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 18rem), 1fr))" }}>
             {turn.answers.map(answer => answer.kind === "compare" && answer.matchup
               ? <CompareAnswerCard key={answerKey(answer)} answer={answer} ddragonVersion={ddragonVersion} patch={patch} onNavigate={onNavigate} presentation="reference" />
               : <AdvisorAnswerCard key={answerKey(answer)} answer={answer} ddragonVersion={ddragonVersion} patch={patch} onPickChampion={props.onPickChampion} onNavigate={onNavigate} />)}
+          </div>
+          <div className="text-sm leading-7">
+            <AdvisorMarkdown text={turn.content} />
           </div>
         </div>
       ) : turn.answer && asReference ? (

@@ -378,6 +378,7 @@ export const enUSTranslations: Translations = {
       feedbackExport: "Export",
     },
     sources: "Retrieved",
+    questionLabel: "Enter a League of Legends question",
     placeholder: "e.g. How do I play Wukong into Rumble?",
     busyHint: "Still answering. Send when it finishes, or stop with ■.",
     send: "Send",

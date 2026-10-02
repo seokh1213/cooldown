@@ -22,12 +22,15 @@ export function AdvisorComposer({ draft, onDraftChange, busy, showBusyHint, plac
   const { t } = useTranslation();
   const copy = t.advisor;
   return (
-    <footer className="flex flex-col gap-1.5 border-t p-3">
+    <footer className="flex flex-col gap-1.5 border-t p-3 pb-[max(0.75rem,env(safe-area-inset-bottom))]">
       {showBusyHint && (
         <p className="px-1 text-[11px] leading-4 text-muted-foreground">{copy.busyHint}</p>
       )}
       <div className="flex items-end gap-2">
       <textarea
+        aria-label={copy.questionLabel}
+        name="advisor-question"
+        autoComplete="off"
         value={draft}
         onChange={(event) => onDraftChange(event.target.value)}
         onKeyDown={(event) => {
@@ -41,14 +44,14 @@ export function AdvisorComposer({ draft, onDraftChange, busy, showBusyHint, plac
         }}
         rows={1}
         placeholder={placeholder}
-        className="max-h-32 min-h-9 flex-1 resize-none rounded-md border bg-transparent px-3 py-2 text-base md:text-sm outline-hidden transition-colors focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-ring/40"
+        className="max-h-32 min-h-11 flex-1 resize-none rounded-md border bg-transparent px-3 py-2 text-base md:text-sm outline-hidden transition-colors focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-ring/40 motion-reduce:transition-none"
       />
       {busy ? (
-        <Button size="icon" variant="outline" onClick={onStop} aria-label={copy.stop}>
+        <Button size="icon" className="h-11 w-11 touch-manipulation" variant="outline" onClick={onStop} aria-label={copy.stop}>
           <Square className="h-4 w-4" />
         </Button>
       ) : (
-        <Button size="icon" onClick={onSubmit} disabled={!draft.trim()} aria-label={copy.send}>
+        <Button size="icon" className="h-11 w-11 touch-manipulation" onClick={onSubmit} disabled={!draft.trim()} aria-label={copy.send}>
           <Send className="h-4 w-4" />
         </Button>
       )}

@@ -91,7 +91,7 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
   };
   // 생성 중에 보내려 했는지. 조용히 먹히면 고장으로 보여서 한 줄 알린다.
   const [pressedWhileBusy, setPressedWhileBusy] = useState(false);
-  const { ask, showDoc, askPerspective, pickChampion } = useAskAdvisor({ advisor, data, championIds: context.championIds, canUseModel });
+  const { ask, showDoc, askPerspective, pickChampion } = useAskAdvisor({ advisor, data, patch, championIds: context.championIds, canUseModel });
 
   // 답을 찾는 중(판정기·노트)과 코드 답을 흘려 보이는 중에도 바쁘다. 그 사이 새 질문이 끼면 자리가 엉킨다.
   const busy = advisor.status === "generating" || advisor.working;
