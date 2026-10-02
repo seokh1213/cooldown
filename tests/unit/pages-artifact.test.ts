@@ -17,6 +17,7 @@ test("GitHub Pages 산출물 준비", async () => {
       "404.html",
       "encyclopedia/index.html",
       "vs/index.html",
+      "patch-notes/index.html",
     ]) {
       assert.equal(await readFile(path.join(directory, relativePath), "utf8"), indexHtml);
     }

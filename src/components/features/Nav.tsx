@@ -13,6 +13,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { VisuallyHidden } from "@/components/ui/visually-hidden";
 import { TutorialContent } from "./TutorialContent";
 import { useTranslation } from "@/i18n";
+import { patchNotesLabels } from "@/pages/PatchNotesPage/labels";
 
 /**
  * 고를 수 있는 언어. 이름은 그 언어로 적는다.
@@ -63,6 +64,7 @@ function Nav({
   const currentPath = location.pathname.replace(/\/+$/, "") || "/";
   const isEncyclopediaPage = currentPath === "/encyclopedia";
   const isVsPage = currentPath === "/vs";
+  const isPatchNotesPage = currentPath === "/patch-notes";
   const isChampionCooldownPage = currentPath === "/";
   const [isMobile, setIsMobile] = useState(false);
   const [tutorialOpen, setTutorialOpen] = useState(false);
@@ -126,12 +128,13 @@ function Nav({
             휴대폰에서는 오른쪽에 44px 버튼 셋이 서니 제목 자리가 좁다. 패치 표기까지 한 줄에
             두면 제목이 세로로 찌그러져서, 휴대폰에서는 패치를 제목 밑 작은 줄로 내린다.
           */}
-          {(isEncyclopediaPage || isChampionCooldownPage || isVsPage) && (
+          {(isEncyclopediaPage || isChampionCooldownPage || isVsPage || isPatchNotesPage) && (
             <div className="min-w-0 flex-1">
               {/* 좁은 휴대폰에서 영어 제목은 한 줄에 안 들어간다. 잘라서 "Champion …" 만 남기지 않고 두 줄로 꺾는다. */}
               <h1 className="line-clamp-2 break-keep-ko text-[15px] md:line-clamp-1 md:text-lg font-medium text-foreground/70 leading-tight md:leading-none">
                 {isEncyclopediaPage && t.nav.encyclopedia}
                 {isVsPage && t.comparison.title}
+                {isPatchNotesPage && patchNotesLabels[lang as keyof typeof patchNotesLabels]?.title}
                 {isChampionCooldownPage && t.sidebar.championCooldown}
               </h1>
               {isMobile && patchVersion && !isVersionMismatch && (
@@ -141,7 +144,7 @@ function Nav({
               )}
             </div>
           )}
-          {!(isEncyclopediaPage || isChampionCooldownPage || isVsPage) && <div className="flex-1" />}
+          {!(isEncyclopediaPage || isChampionCooldownPage || isVsPage || isPatchNotesPage) && <div className="flex-1" />}
           {/* Version with mismatch icon */}
           {isVersionMismatch && (
             <Popover open={versionPopoverOpen} onOpenChange={setVersionPopoverOpen}>

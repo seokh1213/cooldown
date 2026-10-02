@@ -16,7 +16,9 @@ export function toOfficialPatchVersion(ddragonVersion: string): string {
   if (!match) {
     throw new Error(`Invalid Data Dragon release: ${ddragonVersion}`);
   }
-  return `${Number(match[1]) + PATCH_YEAR_OFFSET}.${Number(match[2])}`;
+  const major = Number(match[1]);
+  // 2025년부터 공식 패치명이 연도 표기(25.x)로 바뀌었다. 그 이전은 14.x 등을 쓴다.
+  return `${major >= 15 ? major + PATCH_YEAR_OFFSET : major}.${Number(match[2])}`;
 }
 
 export function toCommunityDragonVersion(ddragonVersion: string): string {

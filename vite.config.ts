@@ -99,7 +99,7 @@ export default defineConfig(({ mode }) => {
          * 목록 JSON 도 넣지 않는다 — 화면이 칸 자리를 스스로 세므로 받을 일이 없고,
          * 그 파일은 생성기와 화면의 셈이 같은지 시험이 맞춰 보는 용도로만 남는다.
          */
-        globPatterns: ["**/*.{js,css,html,png,svg,ico}"],
+        globPatterns: ["**/*.{js,css,html,png,svg,ico}", "patch-notes/*.json", "patch-notes/skills/*.json", "patch-notes/icons/*.webp"],
         runtimeCaching: [
           {
             urlPattern: /\/cooldown\/release\.json$/,

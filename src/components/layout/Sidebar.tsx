@@ -10,11 +10,12 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import { X, BookOpen, Clock, Swords } from "lucide-react";
+import { X, BookOpen, Clock, Swords, FileClock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
 import { useTranslation } from "@/i18n";
+import { patchNotesLabels } from "@/pages/PatchNotesPage/labels";
 
 interface SidebarProps {
   isOpen: boolean;
@@ -29,7 +30,7 @@ interface NavItem {
 }
 
 function Sidebar({ isOpen, isMobile, onClose }: SidebarProps) {
-  const { t } = useTranslation();
+  const { t, lang } = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -37,6 +38,7 @@ function Sidebar({ isOpen, isMobile, onClose }: SidebarProps) {
     { path: "/", label: t.sidebar.championCooldown, icon: Clock },
     { path: "/vs", label: t.comparison.title, icon: Swords },
     { path: "/encyclopedia", label: t.sidebar.encyclopedia, icon: BookOpen },
+    { path: "/patch-notes", label: patchNotesLabels[lang].title, icon: FileClock },
   ];
 
   const handleNavigate = useCallback(

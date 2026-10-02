@@ -35,6 +35,9 @@ interface SkillTooltipProps {
   /** Data Dragon CDN 요청용 내부 버전 */
   ddragonVersion: string;
   passive?: ChampionPassive;
+  children?: React.ReactNode;
+  triggerClassName?: string;
+  headerIcon?: React.ReactNode;
 }
 
 export function SkillTooltip({
@@ -43,6 +46,9 @@ export function SkillTooltip({
   patchVersion,
   ddragonVersion,
   passive,
+  children,
+  triggerClassName,
+  headerIcon,
 }: SkillTooltipProps) {
   const { t, lang } = useTranslation();
   const deviceType = useDeviceType();
@@ -51,7 +57,8 @@ export function SkillTooltip({
   const [tooltipOpen, setTooltipOpen] = React.useState(false);
   const triggerRef = React.useRef<HTMLButtonElement>(null);
   const closeTimeoutRef = React.useRef<number | null>(null);
-  const tooltipIdRef = React.useRef<string>("");
+  const hoverSuppressedRef = React.useRef(false);
+  const tooltipId = React.useId();
   const [desktopSide, setDesktopSide] = React.useState<"top" | "bottom">("bottom");
   const [desktopMaxHeight, setDesktopMaxHeight] = React.useState<number | undefined>(
     undefined
@@ -59,20 +66,16 @@ export function SkillTooltip({
   
   const cooldownText = skill ? getCooldownText(skill, lang) : null;
   const costText = skill ? getCostText(skill, lang) : null;
-  const abilityId = passive?.spellId ?? skill?.id ?? "unknown";
 
   const iconSize = "min-w-8 min-h-8 w-8 h-8";
 
   const openTooltip = React.useCallback(() => {
-    if (isMobile) return;
-    if (!tooltipIdRef.current) {
-      tooltipIdRef.current = `${abilityId}-${skillIdx}-${patchVersion}`;
-    }
+    if (isMobile || open || hoverSuppressedRef.current) return;
     // 다른 스킬 툴팁들은 모두 닫고 현재 것만 열리도록 글로벌 이벤트 전파
     if (typeof window !== "undefined") {
       window.dispatchEvent(
         new CustomEvent(ACTIVE_SKILL_TOOLTIP_EVENT, {
-          detail: tooltipIdRef.current,
+          detail: tooltipId,
         })
       );
     }
@@ -81,7 +84,7 @@ export function SkillTooltip({
       closeTimeoutRef.current = null;
     }
     setTooltipOpen(true);
-  }, [abilityId, isMobile, skillIdx, patchVersion]);
+  }, [isMobile, open, tooltipId]);
 
   const scheduleCloseTooltip = React.useCallback(() => {
     if (isMobile) return;
@@ -94,8 +97,19 @@ export function SkillTooltip({
     }, 40);
   }, [isMobile]);
 
+  const openDialog = () => {
+    hoverSuppressedRef.current = true;
+    window.dispatchEvent(new CustomEvent(ACTIVE_SKILL_TOOLTIP_EVENT, { detail: tooltipId }));
+    setTooltipOpen(false);
+    setOpen(true);
+  };
+
   React.useEffect(() => {
     if (isMobile || !tooltipOpen) {
+      if (isMobile) {
+        hoverSuppressedRef.current = true;
+        setTooltipOpen(false);
+      }
       setDesktopMaxHeight(undefined);
       return;
     }
@@ -142,8 +156,7 @@ export function SkillTooltip({
     const handleActiveChange = (event: Event) => {
       const customEvent = event as CustomEvent<string>;
       const activeId = customEvent.detail;
-      if (!tooltipIdRef.current) return;
-      if (activeId !== tooltipIdRef.current) {
+      if (activeId !== tooltipId) {
         if (closeTimeoutRef.current !== null) {
           window.clearTimeout(closeTimeoutRef.current);
           closeTimeoutRef.current = null;
@@ -166,31 +179,39 @@ export function SkillTooltip({
         handleActiveChange as EventListener
       );
     };
-  }, []);
+  }, [tooltipId]);
 
   const triggerButton = (
     <button
       type="button"
       aria-label={passive ? passive.name : SKILL_LETTERS[skillIdx] + " " + (skill?.name ?? "")}
       ref={triggerRef}
-      className={`flex flex-col items-center gap-0.5 p-1 -m-1 touch-manipulation ${isMobile ? "cursor-pointer" : "cursor-help"}`}
+      className={cn(`flex flex-col items-center gap-0.5 p-1 -m-1 touch-manipulation ${isMobile ? "cursor-pointer" : "cursor-help"}`, triggerClassName)}
+      data-skill-trigger
+      data-skill-patch={patchVersion}
       onClick={(e) => {
         e.stopPropagation();
-        setTooltipOpen(false);
-        setOpen(true);
+        openDialog();
       }}
-      onPointerEnter={() => {
-        if (!isMobile) {
+      onPointerEnter={(event) => {
+        if (!isMobile && event.pointerType !== "touch") {
+          openTooltip();
+        }
+      }}
+      onPointerMove={(event) => {
+        if (!isMobile && !open && event.pointerType !== "touch" && hoverSuppressedRef.current) {
+          hoverSuppressedRef.current = false;
           openTooltip();
         }
       }}
       onPointerLeave={() => {
         if (!isMobile) {
+          hoverSuppressedRef.current = false;
           scheduleCloseTooltip();
         }
       }}
     >
-      {passive ? (
+      {children ?? (passive ? (
         <>
           <img
             src={passiveIconUrl(ddragonVersion, passive.image.full)}
@@ -210,7 +231,7 @@ export function SkillTooltip({
             {SKILL_LETTERS[skillIdx]}
           </span>
         </>
-      ) : null}
+      ) : null)}
     </button>
   );
 
@@ -223,13 +244,19 @@ export function SkillTooltip({
       cooldownText={cooldownText}
       costText={costText}
       mobile={isMobile}
+      headerIcon={headerIcon}
     />
   );
   
   const skillDialog = (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent
-        onCloseAutoFocus={(event) => { event.preventDefault(); triggerRef.current?.focus(); }}
+        onCloseAutoFocus={(event) => {
+          event.preventDefault();
+          // 포커스 복귀·오버레이 제거로 생기는 pointerenter는 실제 호버가 아니다.
+          hoverSuppressedRef.current = true;
+          triggerRef.current?.focus();
+        }}
         className={cn(
           isMobile
             ? "w-[calc(100vw-32px)] max-w-lg h-[70vh] max-h-[70vh]"
@@ -285,8 +312,7 @@ export function SkillTooltip({
           onClick={(e) => {
             e.preventDefault();
             e.stopPropagation();
-            setTooltipOpen(false);
-            setOpen(true);
+            openDialog();
           }}
         >
           {t.skillTooltip.viewDetail}
@@ -314,6 +340,7 @@ export function SkillTooltip({
             }
             onPointerEnter={openTooltip}
             onPointerLeave={scheduleCloseTooltip}
+            onEscapeKeyDown={() => setTooltipOpen(false)}
           >
             {tooltipInner}
           </TooltipContent>
@@ -341,6 +368,7 @@ export function SkillTooltip({
           }
           onPointerEnter={openTooltip}
           onPointerLeave={scheduleCloseTooltip}
+          onEscapeKeyDown={() => setTooltipOpen(false)}
         >
           {tooltipInner}
         </TooltipContent>

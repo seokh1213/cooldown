@@ -76,6 +76,9 @@ jobs:
       - name: Generate static data
         run: npm run generate-static-data
 
+      - name: Generate and archive patch changes
+        run: npm run generate-patch-notes -- --current
+
       # 새 패치로 넘어가면 생성기가 옛 패치의 도우미 자료(llm/)를 옮겨 둔다. 새 툴팁으로 카드·지식
       # 묶음·번역을 다시 짓고, 미리 쓴 상성 답은 재료가 그대로인 쌍만 남긴다. 옮긴 것이 없으면 그냥 끝난다.
       - name: Carry advisor data to the new patch
@@ -138,7 +141,7 @@ jobs:
       - name: Check for changes
         id: git-check
         run: |
-          if [[ -n "$(git status --porcelain --untracked-files=all -- public/data public/img src/data/generated scripts/active-tooltip-allowlist.json)" ]]; then
+          if [[ -n "$(git status --porcelain --untracked-files=all -- public/data public/img public/patch-notes data/patch-notes src/data/generated scripts/active-tooltip-allowlist.json)" ]]; then
             echo "changed=true" >> "$GITHUB_OUTPUT"
           fi
 
@@ -147,8 +150,8 @@ jobs:
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
-          git add public/data/ public/img/ src/data/generated/ scripts/active-tooltip-allowlist.json
-          git commit -m "chore: update static data [skip ci]"
+          git add public/data/ public/img/ public/patch-notes/ data/patch-notes/ src/data/generated/ scripts/active-tooltip-allowlist.json
+          git commit -m "chore: 정적 데이터와 패치 변경 기록 갱신 [skip ci]"
 
       - name: Build project
         if: github.event_name != 'schedule' || steps.git-check.outputs.changed == 'true'
@@ -165,6 +168,13 @@ jobs:
           test -f dist/404.html
           test -f dist/encyclopedia/index.html
           test -f dist/vs/index.html
+          test -f dist/patch-notes/index.html
+          diff --recursive --brief --exclude=index.html public/patch-notes dist/patch-notes
+          test ! -d dist/patch-notes/sources
+          test ! -d dist/patch-notes/snapshots
+          test ! -d dist/patch-notes/reviews
+          test ! -d dist/patch-notes/skill-catalogs
+          test ! -d dist/patch-notes/icon-catalogs
           # 빌드가 data/releases/<데이터 해시>/ 에 데이터 사본을 하나 더 만든다(PWA 릴리스 캐시).
           # 원본 트리와 그 사본이 각각 public/data 와 같아야 한다.
           diff --recursive --brief --exclude=releases public/data dist/data

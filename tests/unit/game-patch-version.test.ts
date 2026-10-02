@@ -10,6 +10,7 @@ import {
 test("공식 패치 버전 변환", () => {
   assert.equal(toOfficialPatchVersion("15.17.1"), "25.17");
   assert.equal(toOfficialPatchVersion("16.17.1"), "26.17");
+  assert.equal(toOfficialPatchVersion("14.24.1"), "14.24");
 });
 
 test("CDragon 버전 변환", () => {

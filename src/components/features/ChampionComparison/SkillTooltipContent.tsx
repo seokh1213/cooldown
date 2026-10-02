@@ -1,4 +1,5 @@
 import type { ChampionPassive, ChampionSpell } from "@/types";
+import type { ReactNode } from "react";
 import { passiveIconUrl, spellIconUrl } from "@/data/assets/riotAssetUrls";
 import { SKILL_LETTERS } from "./constants";
 import { SafeBlockHtml } from "@/components/ui/safe-html";
@@ -13,19 +14,20 @@ interface SkillTooltipContentProps {
   cooldownText: string | null;
   costText: string | null;
   mobile: boolean;
+  headerIcon?: ReactNode;
 }
 
 /** 액티브 스킬 머리(`ActiveSkillHeader`)와 같은 꼴. 패시브만 아이콘 없이 이름 글자로 시작하던 것을 맞춘다. */
-function PassiveHeader({ passive, ddragonVersion }: { passive: ChampionPassive; ddragonVersion: string }) {
+function PassiveHeader({ passive, ddragonVersion, headerIcon }: { passive: ChampionPassive; ddragonVersion: string; headerIcon?: ReactNode }) {
   return (
     <div className="flex items-start gap-3 border-b pb-3 pr-6">
-      <img
+      {headerIcon ?? <img
         src={passiveIconUrl(ddragonVersion, passive.image.full)}
         alt="P"
         width={48}
         height={48}
         className="w-12 h-12 min-w-12 min-h-12 rounded shrink-0"
-      />
+      />}
       <div className="flex-1 min-w-0">
         {passive.name && (
           <div className="font-semibold text-sm">
@@ -42,7 +44,7 @@ function PassiveContent(props: SkillTooltipContentProps) {
   if (!passive) return null;
   return (
     <>
-      <PassiveHeader passive={passive} ddragonVersion={props.ddragonVersion} />
+      <PassiveHeader passive={passive} ddragonVersion={props.ddragonVersion} headerIcon={props.headerIcon} />
       {passive.description && (
         <SafeBlockHtml
           className="text-xs leading-relaxed"
@@ -74,36 +76,33 @@ function CooldownText({ value }: { value: string }) {
   );
 }
 
+function ActiveSkillNumbers(props: SkillTooltipContentProps) {
+  return <div className={props.mobile ? "mt-1 text-left" : "shrink-0 text-right"}>
+    {props.cooldownText && <div className="text-xs text-muted-foreground"><CooldownText value={props.cooldownText} /></div>}
+    {props.costText && <div className="mt-1 text-xs text-muted-foreground">{props.costText}</div>}
+  </div>;
+}
+
 function ActiveSkillHeader(props: SkillTooltipContentProps & { skill: ChampionSpell }) {
   const letter = SKILL_LETTERS[props.skillIdx];
   return (
     <div className="flex items-start gap-3 border-b pb-3 pr-6">
-      <img
+      {props.headerIcon ?? <img
         src={spellIconUrl(props.ddragonVersion, props.skill.id)}
         alt={letter}
         width={48}
         height={48}
         className="w-12 h-12 min-w-12 min-h-12 rounded shrink-0"
-      />
+      />}
       <div className="flex-1 min-w-0">
         {props.skill.name && (
           <div className="font-semibold text-sm">
             [{letter}] {props.skill.name}
           </div>
         )}
+        {props.mobile && <ActiveSkillNumbers {...props} />}
       </div>
-      <div className="text-right shrink-0">
-        {props.cooldownText && (
-          <div className="text-xs text-muted-foreground">
-            <CooldownText value={props.cooldownText} />
-          </div>
-        )}
-        {props.costText && (
-          <div className="text-xs text-muted-foreground mt-1 whitespace-nowrap">
-            {props.costText}
-          </div>
-        )}
-      </div>
+      {!props.mobile && <ActiveSkillNumbers {...props} />}
     </div>
   );
 }
