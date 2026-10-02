@@ -145,7 +145,7 @@ export function answerProse(answer: AdvisorAnswer, lang: Language = "ko_KR"): st
   }
 
   if (answer.kind === "compare" && answer.headline) {
-    return w.is(answer.headline.label, answer.headline.value);
+    return (answer.headlines ?? [answer.headline]).map(fact => w.is(fact.label, fact.value)).join("\n\n");
   }
 
   if (answer.kind === "compare" && answer.matchup) return answer.precomputed ?? matchupDigest(answer, lang, answer.more ? "focus-full" : undefined);

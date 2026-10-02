@@ -8,6 +8,7 @@ import type { AdvisorAnswer, CompareRow, MatchupNotes } from "@/lib/advisor/answ
 import type { ChampionCard } from "@/lib/knowledge/facts";
 import { josa } from "@/lib/knowledge/text";
 import { Frame, NoteList, PatchLinkFooter } from "./AnswerCardFrame";
+import { ComparisonHeadlines } from "./ComparisonHeadlines";
 import { MatchupReferenceCard } from "./MatchupReferenceCard";
 
 export function CompareAnswerCard({
@@ -59,12 +60,7 @@ export function CompareAnswerCard({
       tool={answer.matchup ? copy.matchupTool : copy.compare}
       footer={<PatchLinkFooter patch={patch} to={vsLink} label={cards.length > 2 ? fill(copy.goVs, { a: first.name, b: second.name }) : copy.openInVs} onNavigate={onNavigate} />}
     >
-      {answer.headline && (
-        <div className="mb-2 rounded-md bg-muted px-2.5 py-2 text-[13px] leading-relaxed">
-          <span className="text-muted-foreground">{answer.headline.label}</span>
-          <span className="ml-2 font-semibold tabular-nums">{answer.headline.value}</span>
-        </div>
-      )}
+      <div className="mb-3"><ComparisonHeadlines answer={answer} /></div>
       <CompareTable cards={cards} rows={answer.rows} />
       {/* 상성 노트. "누가 유리해" 의 실전 답은 능력치 표가 아니라 여기 있다. */}
       {answer.matchup && second && answer.notes && (answer.notes.mine.length > 0 || answer.notes.enemy.length > 0) && (
@@ -94,7 +90,7 @@ function CompareTable({ cards, rows }: { cards: ChampionCard[]; rows: CompareRow
             const dim = hasHit && !row.hit;
             return (
               <tr key={row.label} className={`border-b last:border-b-0 ${dim ? "text-muted-foreground" : ""}`}>
-                <td className={`py-1.5 pr-2 align-top ${row.hit ? "font-semibold" : "text-muted-foreground"}`}>{row.label}</td>
+                <td className={`whitespace-nowrap py-1.5 pr-2 align-top ${row.hit ? "font-semibold" : "text-muted-foreground"}`}>{row.label}</td>
                 {row.values.map((value, i) => {
                   // VS 화면과 같은 규칙: 이긴 쪽 굵게, 진 쪽 회색, 동률은 보통.
                   const won = row.winner === i;

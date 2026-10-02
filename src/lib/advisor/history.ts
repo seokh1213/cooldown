@@ -56,6 +56,7 @@ export type StoredAnswer =
       focus?: SpellFocus;
       rows: CompareRow[];
       headline?: Fact;
+      headlines?: Fact[];
       matchup?: boolean;
       notes?: { mine: string[]; enemy: string[] };
     }
@@ -131,6 +132,7 @@ export function dehydrateAnswer(answer: AdvisorAnswer): StoredAnswer {
         focus: answer.focus,
         rows: answer.rows,
         headline: answer.headline,
+        headlines: answer.headlines,
         matchup: answer.matchup,
         notes: answer.notes,
       };
@@ -195,6 +197,7 @@ export function reviveAnswer(stored: StoredAnswer, data: AdvisorData): AdvisorAn
         focus: stored.focus,
         rows: stored.rows,
         headline: stored.headline,
+        headlines: stored.headlines,
         matchup: stored.matchup,
         notes: stored.notes,
       };

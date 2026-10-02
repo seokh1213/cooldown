@@ -8,7 +8,7 @@ import { asksMatchupHelp } from "./askWords";
 import type { AnswerPlan, PlanContext } from "./planTypes";
 import type { ResolvedQuestion } from "./resolvedQuestion";
 import type { DialogueMemory } from "./dialogueState";
-import { detectStat, explicitStatLevel, isStatLevel, STAT_QUERY_TERMS, type ChampionStatQuery } from "./statQuery";
+import { detectStats, statFields, validStatFields, explicitStatLevel, isStatLevel, type ChampionStatQuery } from "./statQuery";
 
 const OTHER_QUERY = /스킬|패시브|궁|쿨|사거리|피해량|계수|마나|소모|아이템|회복\s*물약|가속|랭크|(?<![A-Za-z])[PQWER](?![A-Za-z])|\b(?:ability|abilities|skill|passive|ult|cooldown|range|ratio|mana|item|haste|rank)\b|技能|被动|冷却|射程|法力|装备/i;
 const ADVICE = /상대법|상대할|카운터|싸우|싸워|교환|진입|템|빌드|추천|올려|사면|사야|맞춰|어떻게\s*(?:싸|버|이|피|굴)|\b(?:counter|fight|engage|build|recommend|buy)\b|how.*\b(?:survive|play|respond|deal with)\b|怎么打|出装|推荐/i;
@@ -44,13 +44,16 @@ export function resolveStatQuery(resolved: ResolvedQuestion, memory: DialogueMem
   const continuing = memory.active === "stat" || memory.active === "compare" && Boolean(memory.stat);
   const level = explicitStatLevel(question);
   const healingStat = HEALING.test(question) && (continuing || STAT_CONTEXT.test(question));
-  const field = healingStat ? "healthRegen" : detectStat(question)
-    ?? (continuing && (level !== undefined || resolved.champions.length && /만|only|只/i.test(question)) ? memory.stat?.field : undefined);
+  let fields = detectStats(question);
+  if (!fields.length && healingStat) fields = ["healthRegen"];
+  if (continuing && memory.stat && /도\s*같이|추가|also|as well|也|加上/i.test(question)) fields = [...new Set([...statFields(memory.stat), ...fields])];
+  if (!fields.length && continuing && memory.stat && (level !== undefined || resolved.champions.length && /만|only|只/i.test(question))) fields = statFields(memory.stat);
+  const field = fields[0];
   if (!field) return undefined;
   // 회복 효과/치유 여부는 스킬 질문이다. 기본 능력치 맥락에서만 재생 수치로 해석한다.
   if (field === "healthRegen" && !continuing && !STAT_CONTEXT.test(question) && /스킬|패시브|효과|있어|있나|있니|\b(?:heal|effect)\b/i.test(question)) return undefined;
   if (level !== undefined && !isStatLevel(level)) return { kind: "unsupportedStatLevel", level };
-  return { kind: "championStat", champions: cards.map(card => card.id), field,
+  return { kind: "championStat", champions: cards.map(card => card.id), field, ...(fields.length > 1 ? { fields } : {}),
     level: level ?? (continuing ? memory.stat?.level : undefined) ?? 1 };
 }
 
@@ -68,14 +71,14 @@ export function dialogueStatPlan(resolved: ResolvedQuestion, memory: DialogueMem
 
 /** 검증한 조회를 기존 카드와 문장으로 조립한다. 실험 판정도 같은 경로를 사용한다. */
 export function statPlanForQuery(query: ChampionStatQuery, resolved: ResolvedQuestion, ctx: PlanContext): AnswerPlan | undefined {
-  if (!ctx.data || !isStatLevel(query.level) || !Object.prototype.hasOwnProperty.call(STAT_QUERY_TERMS, query.field) || !query.champions.length) return undefined;
+  if (!ctx.data || !isStatLevel(query.level) || !validStatFields(query) || !query.champions.length) return undefined;
   const cards = query.champions.map(id => ctx.data!.cardById.get(id));
   const present = cards.filter((card): card is ChampionCard => Boolean(card));
   if (present.length !== query.champions.length) return undefined;
   const answer = buildCompareAnswer(present, resolved.text, undefined, { lang: ctx.lang, statQuery: query });
   if (answer.kind !== "compare") return undefined;
   const hit = answer.rows.find(row => row.hit);
-  if (present.length > 1) return { type: "card", answer };
+  if (present.length > 1 || statFields(query).length > 1) return { type: "card", answer };
   return { type: "card", answer: { kind: "champion", card: present[0], statQuery: query,
     headline: { label: `${present[0].name} ${answer.headline?.label ?? hit?.label ?? ""}`, value: hit?.values[0] || "—" } } };
 }

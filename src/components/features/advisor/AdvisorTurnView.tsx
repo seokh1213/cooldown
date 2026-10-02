@@ -1,6 +1,7 @@
 /**
  * 대화의 말풍선 하나 — 사용자 질문, 또는 답(카드·코드가 쓴 글·모델 해설)과 그 곁의 칩·링크·평가.
  */
+import { ComparisonHeadlines } from "./ComparisonHeadlines";
 import { Link } from "react-router-dom";
 import { ArrowRight, Loader2 } from "lucide-react";
 import { useTranslation } from "@/i18n";
@@ -71,7 +72,9 @@ function useTurnPresentation(props: AdvisorTurnViewProps) {
     </Link>
   ));
   // 짧은 코드 답은 카드 본문이 곧 답이다. 같은 내용을 해설로 다시 표시하지 않는다.
-  const commentary = turn.byCode && (turn.answer?.kind === "text" || turn.answer?.kind === "rule" || turn.answer?.kind === "suggestion") ? null : <TurnCommentary turn={turn} />;
+  const statConclusion = turn.answer?.kind === "compare" && Boolean(turn.answer.statQuery && turn.answer.headline);
+  const commentary = turn.byCode && (turn.answer?.kind === "text" || turn.answer?.kind === "rule"
+    || turn.answer?.kind === "suggestion" || statConclusion) ? null : <TurnCommentary turn={turn} />;
   /*
    * 관점을 문장으로 못 가린 자리에만 한 번 물어본다.
    *
@@ -128,7 +131,7 @@ export function AdvisorTurnView(props: AdvisorTurnViewProps) {
         // 카드는 자료 패널에 있다(L1). 대화에는 질문이 짚은 사실 한 줄, 해설, 자료 칩만.
         <div className="space-y-2">
           <ReferenceDigest answer={turn.answer} />
-          {/* 스킬·아이템은 위의 사실 줄이 곧 답이다. 코드가 쓴 글(answerProse)은 같은 문장을 되풀이하므로 그리지 않는다. */}
+          {/* 구조화한 조회의 결론은 위에서 모두 보여준다. 상성 조언과 모델 해설은 본문을 유지한다. */}
           {!(turn.byCode && (turn.answer.kind === "spell" || turn.answer.kind === "item")) && commentary}
           {perspectiveChips}
           {pending}
@@ -346,12 +349,7 @@ function ReferenceDigest({ answer }: { answer: AdvisorAnswer }) {
           )}
         </div>
       )}
-      {answer.kind === "compare" && answer.headline && (
-        <div className="border-l-2 border-foreground pl-2.5">
-          <div className="text-[15px] font-semibold tabular-nums">{answer.headline.value}</div>
-          <div className="text-[11px] text-muted-foreground">{answer.headline.label}</div>
-        </div>
-      )}
+      {answer.kind === "compare" && <ComparisonHeadlines answer={answer} />}
     </>
   );
 }

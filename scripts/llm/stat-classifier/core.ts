@@ -103,5 +103,9 @@ export function queryFor(question: string, memory: DialogueMemory, ctx: PlanCont
   const query = resolveStatQuery(resolveQuestion(requested, ctx.data), memory, ctx);
   if (query?.kind !== "championStat") return null;
   // 조회의 대상·레벨과 차단 규칙은 공통 코드에서 얻고, 항목은 모델의 판정을 사용한다.
-  return field ? { ...query, field } : query;
+  if (label === "inherit" && memory.stat?.fields) return { ...query, field: memory.stat.field, fields: memory.stat.fields };
+  if (!field) return query;
+  const single = { ...query, field };
+  delete single.fields;
+  return single;
 }

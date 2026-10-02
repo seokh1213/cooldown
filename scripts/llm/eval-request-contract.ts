@@ -26,7 +26,7 @@ for (const judge of ["none", "offline"] as const) {
       const targets = reply.answer ? answerChampionIds(reply.answer) : [];
       const stat = reply.answer && "statQuery" in reply.answer ? reply.answer.statQuery?.field : undefined;
       const guide = !pairs.length && !targets.length && /예:|example|예시|예를|Try|例如/.test(reply.text)
-        && /줄|범위|확인|못|어느|누구|챔피언|어려/.test(reply.text);
+        && /줄|범위|확인|못|어느|누구|챔피언|어려|보장/.test(reply.text);
       const pass = Boolean(reply.text) && (!expected.pairs || JSON.stringify(pairs) === JSON.stringify(expected.pairs))
         && (!expected.targets || JSON.stringify(targets) === JSON.stringify(expected.targets))
         && (!expected.stat || stat === expected.stat) && (!expected.kind || reply.answer?.kind === expected.kind)

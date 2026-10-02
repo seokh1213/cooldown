@@ -110,11 +110,12 @@ test("동일한 근거 문단만 한 번 묶고 조건이나 주제가 다른 �
   assert.doesNotMatch(groupedReply([{ text: common }, { text: conditional }], "ko_KR"), /공통 조언/);
 });
 
-test("무조건 승리와 롤 밖 질문은 다음에 물을 수 있는 질문을 안내한다", async () => {
-  for (const question of ["오공으로 다리우스 무조건 이기게 해줘", "저녁에 김치찌개 만드는 법 알려줘"]) {
+test("승리 보장과 롤 밖 질문은 요청에 맞는 안내를 준다", async () => {
+  for (const [question, guidance] of [["오공으로 다리우스 무조건 이기게 해줘", /승리를 보장[\s\S]*예:/],
+    ["저녁에 김치찌개 만드는 법 알려줘", /해결하기 어려워요[\s\S]*예:/]] as const) {
     const { reply } = await ask(question);
     assert.ok(!reply.answer || reply.answer.kind === "text");
-    assert.match(reply.text, /해결하기 어려워요[\s\S]*예:/);
+    assert.match(reply.text, guidance);
   }
 });
 

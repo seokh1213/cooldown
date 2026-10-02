@@ -11,6 +11,7 @@ import { resolveQuestion, type ResolvedQuestion } from "./resolvedQuestion";
 import { topicFromWords } from "./topicJudge";
 import type { DialogueMemory } from "./dialogueState";
 import type { PlanContext } from "./planTypes";
+import { matchupGroup } from "./dialogueMatchupMemory";
 
 const CONNECTOR = /^(?:\s|[,，、/·]|이랑|랑|과|와|하고|및|그리고|또는|and|or|和|跟|或者)*$/i;
 
@@ -30,8 +31,10 @@ export function matchupQuestions(input: string | ResolvedQuestion, memory: Dialo
     if (enemies.length < 2 || enemies.some((m, i) => i > 0 && !CONNECTOR.test(question.slice(enemies[i - 1].index + enemies[i - 1].length, m.index)))) return undefined;
     return enemies.map(enemy => ({ ...resolved, matchup: { mine: mine.card, enemy: enemy.card } }));
   }
-  const group = memory.matchups;
-  if (!group?.length || group.length < 2 || memory.active !== "matchup") return undefined;
+  const group = matchupGroup(memory);
+  const both = /둘\s*다|모두|양쪽|전부|\bboth\b|\ball\b|两个|全部/i.test(question);
+  if (group.length < 2 || memory.matchupScope === "single" && !both
+    || !memory.matchupScope && memory.active !== "matchup" && !both) return undefined;
   if (resolved.champions.some(c => c.id !== group[0].mine)) return undefined;
   if (buildItemCard(ctx.data, question) || askedRules(ctx.data, question).length || findGameMeta(question)) return undefined;
   return group.map(pair => ({ ...resolved, matchup: { mine: ctx.data!.cardById.get(pair.mine)!, enemy: ctx.data!.cardById.get(pair.enemy)! } }));

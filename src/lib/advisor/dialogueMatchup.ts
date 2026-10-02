@@ -35,21 +35,26 @@ function pairForQuestion(resolved: ResolvedQuestion, memory: DialogueMemory, ctx
   const explicitMine = named.find(card => sideOfNewName(question, [card.name, ...(data.aliases.get(card.id) ?? [])]) === "mine");
   if (named.length === 2 && explicitMine && /내가|내\s*챔피언|\bi (?:am|play)\b|我/i.test(question)) return [explicitMine, named.find(card => card.id !== explicitMine.id)!];
   if (named.length === 2 && versus) return [versus, named.find(card => card.id !== versus.id)!];
-  if (named.length === 2 && explicitMine && (prior || asksMatchup(question) || asksSkillHandling(question))) return [explicitMine, named.find(card => card.id !== explicitMine.id)!];
+  if (named.length === 2 && explicitMine && (prior || asksMatchup(question) || asksSkillHandling(question) || asksScenarioAdvice(question))) return [explicitMine, named.find(card => card.id !== explicitMine.id)!];
   if (named.length === 2 && (asksMatchup(question) || /타워\s*밑|포탑\s*밑/.test(question))) {
     const parsed = matchupSidesDetailed(question, named);
     if (parsed.confident) return parsed.sides;
     if (prior && named.every(c => prior.some(p => p.id === c.id))) return prior;
     return parsed.sides;
   }
-  if (!prior) return undefined;
+  if (!prior) {
+    const mine = memory.active === "spell" && memory.spell ? data.cardById.get(memory.spell.champion) : undefined;
+    return named.length === 1 && mine && mine.id !== named[0].id && asksScenarioAdvice(question)
+      && /상대|대응|against|respond|对面|应对/i.test(question) ? [mine, named[0]] : undefined;
+  }
   if (act === "flip") return [prior[1], prior[0]];
   if (named.length === 1) {
     const card = named[0];
     const side = sideOfNewName(question, [card.name, ...(data.aliases.get(card.id) ?? [])]);
     if (side === "mine" && /바꾸|바꿔|바꿨|바꿨어|내가|내\s*챔피언|\bas\b|play|换|我是/i.test(question)) return [card, prior[1]];
     if (side === "enemy" || /상대가|상대로|만나면|against|对面/i.test(question)) return [prior[0], card];
-    if (prior.some(p => p.id === card.id) && (focus || /언제\s*(써|쓰)|어떻게|상대|한타|라인전/i.test(question))) return prior;
+    if (prior.some(p => p.id === card.id) && (focus || asksScenarioAdvice(question) || asksGenericAdvice(question)
+      || /언제\s*(써|쓰)|어떻게|상대|한타|라인전/i.test(question))) return prior;
     return undefined;
   }
   const returns = RETURN_TO_MATCHUP.test(question) || /아까|돌아|다시.*상성|earlier|back to|之前|回到/i.test(question);

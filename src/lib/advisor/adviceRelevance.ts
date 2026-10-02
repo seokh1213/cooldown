@@ -22,9 +22,13 @@ export function adviceQuestion(question: string, subjects: AdviceSubjects): Advi
     const markers = (["mine", "enemy"] as const).flatMap(side =>
       [...prefix.matchAll(new RegExp(`${escape(subjects[side].name)}|${side === "mine" ? "내(?=\\s*$)|\\bmy\\b|我的" : "상대|\\benemy\\b|对面"}`, "gi"))]
         .map(m => ({ side, at: m.index })));
-    owner = markers.sort((a, b) => b.at - a.at)[0]?.side ?? owner;
+    const explicitOwner = markers.sort((a, b) => b.at - a.at)[0]?.side;
+    owner = explicitOwner ?? (/[.!?。！？]/.test(prefix) ? undefined : owner);
     const suffix = question.slice(ref.index! + ref[0].length, refs[i + 1]?.index ?? question.length);
-    if (owner && !STATE.test(suffix)) targets.push({ owner, slot: ref[1]?.toUpperCase() ?? "R" });
+    const state = STATE.test(suffix.split(/[.!?。！？]/)[0]);
+    // 조건의 '내 E'를 별도로 물은 '궁 대응'의 주인으로 이어 붙이지 않는다.
+    if (!explicitOwner && !state && intent === "survive" && /대응|대처|피하|피할|피하려|avoid|dodge|respond|应对|躲/i.test(suffix)) owner = "enemy";
+    if (owner && !state) targets.push({ owner, slot: ref[1]?.toUpperCase() ?? "R" });
   }
   const named = (["mine", "enemy"] as const).flatMap(side => subjects[side].spells
     .filter(s => s.name.length > 1 && question.includes(s.name) && !STATE.test(question.slice(question.indexOf(s.name) + s.name.length)))

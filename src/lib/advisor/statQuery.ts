@@ -11,6 +11,8 @@ export interface ChampionStatQuery {
   kind: "championStat";
   champions: string[];
   field: StatName;
+  /** 요청 순서. 단일 항목과 과거 기록은 field만 사용한다. */
+  fields?: StatName[];
   level: StatLevel;
 }
 
@@ -27,6 +29,27 @@ const STAT_LEXICON: Array<[StatName, RegExp]> = [
 export function detectStat(question: string): StatName | undefined {
   // 체력 재생처럼 긴 이름을 체력보다 먼저 찾는다.
   return STAT_LEXICON.find(([, pattern]) => pattern.test(question))?.[0];
+}
+
+/** 긴 어휘가 덮는 짧은 어휘만 제외한다. 별도로 물은 체력은 체젠과 함께 남긴다. */
+export function detectStats(question: string): StatName[] {
+  const matches = STAT_LEXICON.flatMap(([field, pattern]) => [...question.matchAll(new RegExp(pattern.source, "gi"))]
+    .filter(match => !(field === "attackSpeed" && match.index === 0 && /^as\b.*\b(?:against|into)\b/i.test(question)))
+    .map(match => ({ field, index: match.index, end: match.index + match[0].length })));
+  const distinct = matches.filter(match => !/^(?:은|는|이|가|을|를|도)?\s*(?:말고|제외|빼고)/i.test(question.slice(match.end))
+    && !matches.some(other => other !== match && other.index <= match.index && other.end >= match.end
+      && other.end - other.index > match.end - match.index));
+  return [...new Set(distinct.sort((a, b) => a.index - b.index).map(match => match.field))];
+}
+
+export function statFields(query: ChampionStatQuery): StatName[] {
+  return query.fields?.length ? query.fields : [query.field];
+}
+
+export function validStatFields(query: ChampionStatQuery): boolean {
+  const fields = statFields(query);
+  return fields[0] === query.field && new Set(fields).size === fields.length
+    && fields.every(field => Object.prototype.hasOwnProperty.call(STAT_QUERY_TERMS, field));
 }
 
 /** 레벨 생략과 미지원 레벨을 구별한다. 기본 레벨을 조용히 대신 넣지 않는다. */
@@ -50,7 +73,7 @@ export function statQueryFromAnswer(answer: AdvisorAnswer): ChampionStatQuery | 
   if (answer.kind === "champion") return answer.statQuery;
   if (answer.kind !== "compare" || answer.matchup || answer.slot) return undefined;
   if (answer.statQuery) return answer.statQuery;
-  const hit = answer.rows.find(row => row.hit);
-  const field = hit && detectStat(hit.label);
-  return field ? { kind: "championStat", champions: answer.cards.map(card => card.id), field, level: answer.level ?? 1 } : undefined;
+  const fields = answer.rows.filter(row => row.hit).flatMap(row => detectStats(row.label));
+  return fields.length ? { kind: "championStat", champions: answer.cards.map(card => card.id), field: fields[0],
+    ...(fields.length > 1 ? { fields } : {}), level: answer.level ?? 1 } : undefined;
 }

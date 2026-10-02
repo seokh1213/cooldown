@@ -35,6 +35,9 @@ test("모델이 정한 항목을 사용하면서 코드가 대상과 레벨을 �
     kind: "championStat", champions: ["DrMundo"], field: "health", level: 18,
   });
   assert.equal(queryFor("문도만", { ...memory, active: "spell" }, "inherit"), null);
+  assert.deepEqual(queryFor("문도만 18레벨", { ...memory, stat: { ...memory.stat!, fields: ["health", "healthRegen"] } }, "inherit"), {
+    kind: "championStat", champions: ["DrMundo"], field: "health", fields: ["health", "healthRegen"], level: 18,
+  });
 });
 
 test("학습한 항목도 스킬·아이템·미지원 레벨 차단을 우회하지 않는다", () => {

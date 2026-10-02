@@ -15,14 +15,18 @@ import type { Language } from "@/i18n";
 import { translations } from "@/i18n/translations";
 import type { SelectedNotes } from "./noteSelect";
 import { detectSpellFocus, type SpellFocus } from "./spellFocus";
-import { detectStat, detectLevel, type ChampionStatQuery } from "./statQuery";
+import type { ChampionStatQuery } from "./statQuery";
+import { cooldownFact, rangeFact, ratioText } from "./spellAnswer";
+import { splitSentences } from "./answerText";
+export { splitSentences } from "./answerText";
+export { buildSpellAnswer, cooldownFact, rangeFact } from "./spellAnswer";
+import { buildStatComparison } from "./statComparison";
 export { detectStat, detectLevel } from "./statQuery";
 import {
   cardLabels,
   promptWords,
   translateDamage,
   translateGrade,
-  translateRatioStat,
   translateStat,
   translateTag,
 } from "./promptLocale";
@@ -116,6 +120,8 @@ export type AdvisorAnswer =
       rows: CompareRow[];
       /** 질문이 가리킨 행의 결론. "체력 (1레벨)" → "말파이트 665 > 럼블 640" */
       headline?: Fact;
+      /** 여러 능력치를 요청한 순서대로 보여준다. */
+      headlines?: Fact[];
       /** 상성 질문. cards[0] 이 내 챔피언, cards[1] 이 상대다. 해설이 그 시점으로 쓴다. */
       matchup?: boolean;
       /** 상성 대화 중의 수치 조회 표(쿨타임 등). 상성 답은 아니지만 상성 맥락을 끊지 않는다 — 표 다음의 "그럼 템은?" 은 그 상성의 이어 묻기다. */
@@ -173,113 +179,6 @@ export interface CompareRow {
 }
 
 /** 툴팁 평문을 문장으로 가른다. 한국어 종결 "다." 와 마침표를 경계로 본다. */
-export function splitSentences(text: string): string[] {
-  return text
-    .split(/(?<=[.다]\.)\s+|(?<=습니다\.)|(?<=입니다\.)|(?<=됩니다\.)|(?<=합니다\.)/)
-    .map((s) => s.trim())
-    .filter((s) => s.length > 0);
-}
-
-/** 문장 중 낱말이 들어 있는 것만. 순서는 원문대로. */
-function sentencesWith(text: string, keywords: string[]): string[] {
-  if (keywords.length === 0) return [];
-  return splitSentences(text).filter((sentence) => keywords.some((word) => sentence.includes(word)));
-}
-
-/**
- * 계수 목록을 글로. "주문력 105%" 의 능력치 이름은 툴팁에서 읽어 낸 한국어라 옮긴다.
- *
- * 한 줄 요약·표·헤드라인이 저마다 같은 식을 적고 있었다. 옮길 자리가 늘자 한 곳을
- * 빠뜨려 영어 카드에 "Ratios 주문력 50%" 가 나왔다. 식을 한 곳에 모은다.
- */
-function ratioText(ratios: Array<[string, number]>, lang: Language): string {
-  return ratios.map(([stat, value]) => `${translateRatioStat(stat, lang)} ${value}%`).join(", ");
-}
-
-/**
- * 쿨타임 행. 충전형 스킬(럼블 E, 아칼리 R…)은 쿨타임 필드가 연속 시전 간격 0.5초여서
- * 그대로 내면 틀린 답이 된다. 쿨타임 표와 같은 관례로 재충전 시간을 앞세운다.
- */
-export function cooldownFact(spell: SpellFact, lang: Language = "ko_KR"): Fact | undefined {
-  const w = cardLabels(lang);
-  if (spell.recharge) {
-    const charges = spell.maxCharges ? ` · ${w.charges(spell.maxCharges)}` : "";
-    const gap = spell.cooldown ? ` · ${w.recast(spell.cooldown)}` : "";
-    return { label: w.recharge, value: `${w.seconds(spell.recharge)}${charges}${gap}` };
-  }
-  if (spell.cooldown) return { label: w.cooldown, value: w.seconds(spell.cooldown) };
-  return undefined;
-}
-
-/**
- * 시전 사거리. 랭크마다 다르면 "2500/3250/4000". 자기 시전·전역 스킬은 값이 없다(`SpellFact.range`).
- * "제드 궁 사거리" 에 본문 문장만 보이고 625 가 없었다(2026-09-30 브라우저 시험).
- */
-export function rangeFact(spell: SpellFact, lang: Language = "ko_KR"): Fact | undefined {
-  if (spell.range === undefined) return undefined;
-  const value = Array.isArray(spell.range) ? spell.range.join("/") : String(spell.range);
-  return { label: cardLabels(lang).range, value };
-}
-
-/**
- * 스킬 답. 질문이 가리키는 사실을 앞에 놓는다.
- *
- * 구조 필드(쿨·소모·계수)는 값이 바로 있으니 headline 으로 올린다.
- * 효과 수치는 본문 문장에만 있으니 그 문장을 골라 highlighted 로 올린다.
- */
-export function buildSpellAnswer(
-  card: ChampionCard,
-  spell: SpellFact,
-  question: string,
-  lang: Language = "ko_KR",
-): AdvisorAnswer {
-  const w = cardLabels(lang);
-  const detected = detectSpellFocus(question);
-  const facts: Fact[] = [];
-  const cooldown = cooldownFact(spell, lang);
-  if (cooldown) facts.push(cooldown);
-  if (spell.cost) facts.push({ label: w.cost, value: spell.cost });
-  const range = rangeFact(spell, lang);
-  if (range) facts.push(range);
-  if (spell.damageTypes.length) {
-    facts.push({ label: w.damageType, value: spell.damageTypes.map((type) => translateDamage(type, lang)).join("·") });
-  }
-  if (spell.effects.length) {
-    facts.push({ label: w.effects, value: spell.effects.map((tag) => translateTag(tag, lang)).join(", ") });
-  }
-  const ratios = Object.entries(spell.ratios ?? {});
-  if (ratios.length) facts.push({ label: w.ratios, value: ratioText(ratios, lang) });
-
-  let headline: Fact | undefined;
-  let highlighted: string[] = [];
-  if (detected?.focus === "cooldown" && cooldown) {
-    headline = cooldown;
-  } else if (detected?.focus === "cost" && spell.cost) {
-    headline = { label: w.cost, value: spell.cost };
-  } else if (detected?.focus === "ratio" && ratios.length) {
-    headline = { label: w.ratios, value: ratioText(ratios, lang) };
-  } else if (detected?.focus === "range" && range) {
-    headline = range;
-  } else if (detected?.focus === "effect" || detected?.focus === "range") {
-    // 사거리 숫자가 없는 스킬(자기 시전·전역)은 본문의 사거리 문장으로 내려간다
-    highlighted = sentencesWith(spell.text, detected.keywords);
-  } else if (detected?.focus === "damage") {
-    highlighted = sentencesWith(spell.text, ["피해"]);
-  }
-
-  return {
-    kind: "spell",
-    championId: card.id,
-    championName: card.name,
-    spell,
-    focus: detected?.focus,
-    headline,
-    // headline 을 이미 올렸으면 같은 사실을 facts 에 되풀이하지 않는다.
-    facts: headline ? facts.filter((fact) => fact.label !== headline?.label) : facts,
-    highlighted,
-  };
-}
-
 /**
  * 규칙 답. 질문에 함께 나온 **다른 이름**을 담은 문장을 앞에 놓는다.
  *
@@ -325,64 +224,7 @@ export function itemHeadline(answer: Extract<AdvisorAnswer, { kind: "item" }>): 
  * 있고, 모델에게 맡기면 없는 id 를 지어낸다. 상성·비교 답은 VS 화면, 룬·소환사 주문 규칙과
  * 아이템은 백과사전의 그 탭이다. 챔피언·스킬 답은 자료 카드 꼬리의 링크만 쓴다.
  */
-export type AnswerLink =
-  | { kind: "vs"; to: string; names: [string, string] }
-  | { kind: "runes" | "summoner"; to: string }
-  | { kind: "item"; to: string; name: string };
-
-export function answerLinks(answer: AdvisorAnswer): AnswerLink[] {
-  switch (answer.kind) {
-    case "compare": {
-      const [a, b] = answer.cards;
-      if (!b) return [];
-      return [{ kind: "vs", to: `/vs?a=${a.id}&t=${b.id}`, names: [a.name, b.name] }];
-    }
-    // 챔피언 하나·스킬 하나의 답에는 대화 안에 링크를 붙이지 않는다. "오공 Q 쿨", "W는?" 마다
-    // "오공 VS 화면으로 이동" 이 따라붙어 대화가 버튼으로 어지러웠다. 그 챔피언의 VS 화면은
-    // 자료 카드 꼬리("VS 화면에서 보기") 한 곳에서 간다. 대화 링크는 답이 곧 다음 행동인 것만 —
-    // 상성·비교(둘을 VS 에서 보기), 규칙·아이템(백과사전에서 보기).
-    case "champion":
-    case "spell":
-      return [];
-    case "rule":
-      if (answer.rule.subject === "rune") return [{ kind: "runes", to: "/encyclopedia?tab=runes" }];
-      if (answer.rule.subject === "summoner") return [{ kind: "summoner", to: "/encyclopedia?tab=summoner" }];
-      return [];
-    case "item":
-      return [{ kind: "item", to: `/encyclopedia?tab=items&item=${encodeURIComponent(answer.itemId)}`, name: answer.itemName }];
-    default:
-      return [];
-  }
-}
-
-/**
- * 답의 자료가 같은지 가리는 열쇠. 같은 열쇠의 카드가 직전 답에 있으면 다시 그리지 않는다.
- * "오공 Q 쿨, W 쿨, E 쿨" 은 카드 세 장이 아니라 헤드라인 세 줄이어야 한다.
- */
-export function answerKey(answer: AdvisorAnswer): string {
-  switch (answer.kind) {
-    case "spell":
-      return `spell:${answer.championId}:${answer.spell.slot}`;
-    case "champion":
-      return `champion:${answer.card.id}:${answer.view ?? ""}:${answer.focus ?? ""}:${answer.statQuery?.field ?? ""}:${answer.statQuery?.level ?? ""}`;
-    case "compare":
-      return `compare:${answer.cards.map((card) => card.id).join(",")}:${answer.slot ?? ""}:${answer.matchup ? "m" : ""}:${answer.statQuery?.field ?? ""}:${answer.level ?? ""}`;
-    case "rule":
-      return `rule:${answer.rule.name}`;
-    case "item":
-      return `item:${answer.itemId}`;
-    default:
-      return answer.kind;
-  }
-}
-
-/** 답이 다룬 챔피언. 다음 질문이 이름을 생략하면 이들이 맥락이다. */
-export function answerChampionIds(answer: AdvisorAnswer): string[] {
-  if (answer.kind === "spell") return [answer.championId];
-  if (answer.kind === "champion") return [answer.card.id];
-  if (answer.kind === "compare") return answer.cards.map((card) => card.id);
-  return [];
-}
+export { answerLinks, answerKey, answerChampionIds, type AnswerLink } from "./answerIdentity";
 
 export function focusLabel(focus: SpellFocus, lang: Language = "ko_KR"): string {
   const w = cardLabels(lang);
@@ -408,27 +250,6 @@ export function spellFocusValue(spell: SpellFact, focus: SpellFocus, lang: Langu
 }
 
 // ── 비교 ──────────────────────────────────────────────────────────────
-
-function levelKey(level: 1 | 6 | 11 | 18): "lv1" | "lv6" | "lv11" | "lv18" {
-  return `lv${level}` as "lv1" | "lv6" | "lv11" | "lv18";
-}
-
-/** 가장 큰 값의 열. 동률이면 undefined. */
-function argmax(values: Array<number | undefined>): number | undefined {
-  let best: number | undefined;
-  let tie = false;
-  values.forEach((value, index) => {
-    if (value === undefined) return;
-    const current = best === undefined ? undefined : values[best];
-    if (current === undefined || value > current) {
-      best = index;
-      tie = false;
-    } else if (value === current) {
-      tie = true;
-    }
-  });
-  return tie ? undefined : best;
-}
 
 /**
  * 챔피언 둘 이상을 견준다.
@@ -492,34 +313,7 @@ export function buildCompareAnswer(
     if (rows.length) return { kind: "compare", cards, rows };
   }
 
-  const level = options.statQuery?.level ?? detectLevel(question);
-  const asked = options.statQuery?.field ?? detectStat(question);
-  const key = levelKey(level);
-  const stats: StatName[] = asked && !CARD_STATS.includes(asked) ? [...CARD_STATS, asked] : CARD_STATS;
-  const rows: CompareRow[] = stats.map((stat) => {
-    const numbers = cards.map((card) => card.stats[stat]?.[key]);
-    return {
-      label: stat === "healthRegen" ? `${translateStat(stat, lang)} (${lang === "ko_KR" ? "5초당" : lang === "en_US" ? "per 5s" : "每5秒"})` : translateStat(stat, lang),
-      values: numbers.map((n) => (n === undefined ? "" : String(n))),
-      hit: stat === asked,
-      winner: argmax(numbers),
-    };
-  });
-  const hit = rows.find((row) => row.hit);
-  let headline: Fact | undefined;
-  if (hit) {
-    // 큰 쪽부터. "말파이트 665 > 럼블 640", 동률은 "=".
-    const order = cards
-      .map((card, i) => ({ name: card.name, value: hit.values[i] === "" ? NaN : Number(hit.values[i]) }))
-      .filter((entry) => Number.isFinite(entry.value))
-      .sort((a, b) => b.value - a.value);
-    const value = order
-      .map((entry, i) => (i === 0 ? `${entry.name} ${entry.value}` : `${entry.value === order[i - 1].value ? "=" : ">"} ${entry.name} ${entry.value}`))
-      .join(" ");
-    headline = { label: `${hit.label} (${w.level(level)})`, value };
-  }
-  const statQuery = options.statQuery ?? (asked ? { kind: "championStat" as const, champions: cards.map(card => card.id), field: asked, level } : undefined);
-  return { kind: "compare", cards, level, rows, headline, statQuery };
+  return buildStatComparison(cards, question, { lang, query: options.statQuery, defaultFields: CARD_STATS });
 }
 
 /**

@@ -4,7 +4,7 @@ import type { AdvisorData } from "./context";
 import { detectSpellFocus, type SpellFocus } from "./spellFocus";
 import type { AnswerPlan } from "./planTypes";
 import type { FactResolution } from "./dialogueFacts";
-import { statQueryFromAnswer, isStatLevel, type ChampionStatQuery } from "./statQuery";
+import { statQueryFromAnswer, isStatLevel, validStatFields, type ChampionStatQuery } from "./statQuery";
 export { scenarioConditions } from "./scenarioConditions";
 
 export interface SpellReference { champion: string; slot: string; focus?: SpellFocus; relation?: "penetration" }
@@ -28,6 +28,8 @@ export interface DialogueMemory {
   champion?: string;
   matchup?: { mine: string; enemy: string; focus?: string; shownTopics?: string[] };
   matchups?: MatchupContext[];
+  matchupGroup?: Array<{ mine: string; enemy: string }>;
+  matchupScope?: "single" | "group";
   spell?: SpellReference;
   compared?: string[];
   stat?: ChampionStatQuery;
@@ -54,9 +56,10 @@ function validMemory(memory: DialogueMemory, data: AdvisorData): boolean {
   if (memory.patch !== data.patch || !Array.isArray(memory.conditions)) return false;
   if (memory.matchup && (!data.cardById.has(memory.matchup.mine) || !data.cardById.has(memory.matchup.enemy))) return false;
   if (memory.matchups && (!Array.isArray(memory.matchups) || memory.matchups.some(pair => !data.cardById.has(pair.mine) || !data.cardById.has(pair.enemy) || !Array.isArray(pair.conditions)))) return false;
+  if (memory.matchupGroup && (!Array.isArray(memory.matchupGroup) || memory.matchupGroup.some(pair => !data.cardById.has(pair.mine) || !data.cardById.has(pair.enemy)))) return false;
   if (memory.champion && !data.cardById.has(memory.champion)) return false;
   if (memory.spell && !data.cardById.get(memory.spell.champion)?.spells.some(s => s.slot === memory.spell!.slot)) return false;
-  if (memory.stat && (!isStatLevel(memory.stat.level) || !memory.stat.champions.length || memory.stat.champions.some(id => !data.cardById.has(id)))) return false;
+  if (memory.stat && (!isStatLevel(memory.stat.level) || !validStatFields(memory.stat) || !memory.stat.champions.length || memory.stat.champions.some(id => !data.cardById.has(id)))) return false;
   return true;
 }
 

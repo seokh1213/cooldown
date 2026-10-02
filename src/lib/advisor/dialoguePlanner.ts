@@ -6,10 +6,11 @@ import { resolveDialogueFact } from "./dialogueFacts";
 import { ruleEllipsis } from "./dialogueRules";
 import { matchupPlan } from "./dialogueMatchup";
 import { dialogueStatPlan, statPlanForQuery } from "./dialogueStats";
-import { describeRequest, planMismatch, type RequestContract, type DialogueTrace } from "./requestContract";
+import { describeRequest, planMismatch, unsupportedCondition, type RequestContract, type DialogueTrace } from "./requestContract";
 import { requestGuidance } from "./requestGuidance";
 import { conditionHint, prepareDialogueRequest, type DialogueRequest, type DialogueVariant } from "./dialogueRequest";
 import { rememberDialoguePlan, scenarioConditions, type DialogueMemory, type MatchupContext } from "./dialogueState";
+import { priorMatchup, rememberMatchupSelection } from "./dialogueMatchupMemory";
 
 export type { DialogueVariant } from "./dialogueRequest";
 export { splitDialogueQuestions } from "./dialogueRequest";
@@ -44,14 +45,18 @@ export async function planPreparedDialogue(request: DialogueRequest, ctx: PlanCo
   for (const input of request.questions) {
     const resolved = resolveQuestion(input, ctx.data);
     const question = resolved.text;
-    if (request.groupedMatchups) {
-      const prior = request.memory.matchups?.find(pair => pair.mine === resolved.matchup?.mine.id && pair.enemy === resolved.matchup?.enemy.id);
-      if (prior) {
-        const { conditions, ...matchup } = prior;
-        memory = { ...memory, active: "matchup", matchup: structuredClone(matchup), conditions: structuredClone(conditions) };
-      }
+    const prior = priorMatchup(resolved, request.memory);
+    if (prior) {
+      const { conditions, ...matchup } = prior;
+      memory = { ...memory, active: "matchup", matchup: structuredClone(matchup), conditions: structuredClone(conditions) };
     }
     let contract = describeRequest(resolved, memory, ctx);
+    const unsupported = unsupportedCondition(question);
+    if (unsupported) {
+      trace.parts.push({ question, request: contract, plan: "code", rejected: unsupported });
+      parts.push({ question, request: contract, plan: { type: "code", answer: { kind: "text", text: requestGuidance(unsupported, ctx.lang) } } });
+      continue;
+    }
     const preferred = resolved.matchup ? await matchupPlan(resolved, memory, ctx, deps) : undefined;
     let stat = preferred ? undefined : dialogueStatPlan(resolved, memory, ctx);
     if (!preferred && !stat && deps.inferStatQuery) {
@@ -66,7 +71,11 @@ export async function planPreparedDialogue(request: DialogueRequest, ctx: PlanCo
     const shouldAsk = fact?.pending && (!fact.pending.candidates.length || fact.pending.candidates.length > 1 && !asksCompare);
     if (shouldAsk && (request.variant === "clarify" || request.variant === "combined")) {
       memory.pending = fact.pending;
-      return { parts, memory, clarification: clarificationText(fact.pending!, ctx), trace };
+      const clarification = clarificationText(fact.pending!, ctx);
+      if (request.questions.length === 1) return { parts, memory, clarification, trace };
+      trace.parts.push({ question, request: contract, plan: "code" });
+      parts.push({ question, request: contract, plan: { type: "code", answer: { kind: "text", text: clarification } } });
+      continue;
     }
     let plan = preferred ?? stat ?? fact?.plan ?? ruleEllipsis(question, memory, ctx) ?? await matchupPlan(resolved, memory, ctx, deps);
     plan ??= await planAnswer(resolved, ctx, deps);
@@ -91,7 +100,6 @@ export async function planPreparedDialogue(request: DialogueRequest, ctx: PlanCo
     const matchup = plan.type === "matchup" && memory.matchup ? { ...memory.matchup, conditions: structuredClone(memory.conditions) } : undefined;
     parts.push({ question, plan, matchup, request: contract });
   }
-  if (request.groupedMatchups || parts.filter(p => p.matchup).length > 1) memory.matchups = parts.flatMap(part => part.matchup ? [structuredClone(part.matchup)] : []);
-  else if (parts.some(part => part.plan.type === "matchup")) memory.matchups = undefined;
+  rememberMatchupSelection(memory, parts.flatMap(part => part.matchup ? [part.matchup] : []));
   return { parts, memory, trace };
 }

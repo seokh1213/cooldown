@@ -19,6 +19,10 @@ test("내 스킬 부재와 상대 궁 대응 대상을 구분한다", () => {
   const subjects = pair("Ahri", "Zed");
   assert.deepEqual(adviceQuestion("내 E가 없는데 상대 궁에 어떻게 대응해?", subjects).target, { owner: "enemy", slot: "R" });
   assert.equal(adviceQuestion("상대 W는 있고 내 E도 없어. 어떻게 해?", subjects).target, undefined);
+  for (const q of ["내 E 없이 궁 대응은?", "내 E는 돌아왔고 R은 없어. 아까 상성에서 궁 대응은?"]) {
+    assert.deepEqual(adviceQuestion(q, subjects).target, { owner: "enemy", slot: "R" });
+  }
+  assert.deepEqual(adviceQuestion("내 궁으로 어떻게 대응해?", subjects).target, { owner: "mine", slot: "R" });
 });
 
 test("매혹이 없는 제드 궁 대응을 파밍 조언으로 대신하지 않는다", () => {

@@ -83,7 +83,13 @@ test("저장 후 둘 다 아이템을 묻고 한 상대만 고르는 대화에�
   const selected = await reply("모데카이저만 한타는?", context("none", both.result.memory));
   assert.equal(selected.plan.parts.length, 1);
   assert.equal(selected.result.memory.matchup?.enemy, "Mordekaiser");
-  assert.equal(selected.result.memory.matchups, undefined);
+  assert.equal(selected.result.memory.matchupScope, "single");
+  assert.deepEqual(selected.result.memory.matchups?.map(pair => pair.enemy), ["Rumble", "Mordekaiser"]);
+  const continuation = await reply("라인전은?", context("none", selected.result.memory));
+  assert.equal(continuation.plan.parts.length, 1);
+  assert.equal(continuation.result.memory.matchup?.enemy, "Mordekaiser");
+  const returned = await reply("아까 둘 다 아이템은?", context("none", continuation.result.memory));
+  assert.deepEqual(returned.plan.parts.flatMap(p => p.matchup ? [p.matchup.enemy] : []), ["Rumble", "Mordekaiser"]);
 });
 
 test("팁을 반복하면 각 상대의 미표시 주제를 이어 보여주고 끝을 알린다", async () => {
