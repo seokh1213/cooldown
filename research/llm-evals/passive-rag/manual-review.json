@@ -1,0 +1,77 @@
+{
+  "criterion": "질문에서 요구한 효과·대상·발동 횟수·조건·추가/기본 구분·숫자를 모두 충족하고 새 사실을 만들지 않음. 내용만 채점하며 반복·형식·잘린 답은 별도 기록. 조건 누락/필요 답 누락은 통과하지 않음.",
+  "reviewer": "작업 assistant의 원문 수동 검토. 독립 맹검이나 대표 표본의 정확도가 아니다.",
+  "cases30": 30,
+  "passSets": {
+    "baseline": [
+      "a01",
+      "a02",
+      "a03",
+      "a04",
+      "a05",
+      "a06",
+      "a07",
+      "a08",
+      "p01",
+      "p02",
+      "p03",
+      "p04",
+      "p07",
+      "d01-1",
+      "d02-1",
+      "d02-2",
+      "h01",
+      "h02",
+      "h03",
+      "h04",
+      "c02"
+    ],
+    "oracle": [
+      "p04",
+      "h01",
+      "h02",
+      "h04"
+    ],
+    "rag": [
+      "a04",
+      "p01",
+      "p03",
+      "p04",
+      "d02-2",
+      "h02",
+      "h03"
+    ],
+    "english-full": [
+      "h01",
+      "h04"
+    ],
+    "english-atoms": [],
+    "short-chat": [
+      "a04",
+      "p01"
+    ],
+    "short-raw-template": [
+      "a04",
+      "p01"
+    ],
+    "browser-korean-rag": [
+      "a04"
+    ],
+    "browser-english-atoms": [],
+    "browser-short-reference": ["p01"],
+    "prefix-korean-rag": ["p01"],
+    "prefix-english-atoms": []
+  },
+  "partialExamples": {
+    "baseline:p05": "전환 비율은 맞지만 요청한 140/14=10 계산은 없음.",
+    "baseline:p08": "14당 1은 맞지만 800%가 비축 계수라는 설명을 하지 않음.",
+    "oracle:a07": "보호막은 설명하지만 세 번째 적중 추가 마법 피해는 빠짐.",
+    "browser-korean-rag:p06": "첫 문장에서 기본 체력 전환을 부정하지만 긴 본문 복사 도중 잘림.",
+    "browser-english-atoms:p08": "800% 전환을 부정하지만 실제 14당 1 비율은 답하지 않음."
+  },
+  "formatLimitations": [
+    "원문 반복·질문 복사·머리말·불완전한 문장·길이 초과는 내용 통과와 별개다.",
+    "q4 tokens는 기존 워커의 스트리머 콜백 횟수이므로 Ollama outputTokens와 비교하지 않는다."
+  ],
+  "shortTemplateCheck": "8/8에서 chat과 공식 토크나이저 raw=true의 생성 본문이 동일."
+}

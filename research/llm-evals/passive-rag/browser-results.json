@@ -1,0 +1,210 @@
+{
+  "backend": "actual app q4 WebGPU worker; LoRA gates off for generation",
+  "model": {
+    "id": "onnx-community/Qwen3.5-0.8B-Text-ONNX",
+    "dtype": "q4",
+    "downloadMb": 570,
+    "needsF16": false,
+    "graph": "models/kev/b3e/model_q4.onnx",
+    "retrieval": {
+      "vectors": "models/kev/b3e/doc-vectors",
+      "threshold": 0.39
+    }
+  },
+  "retrieval": "same precomputed Snowflake semantic results, not app retrieval branch",
+  "seconds": 94.74790000003576,
+  "rows": [
+    {
+      "id": "a01",
+      "question": "아크샨은 평타 한대 치면 어떻게되지?",
+      "korean-rag": {
+        "type": "done",
+        "id": 1,
+        "text": "아크샨은 평타 한대 치면 2 초간 40~280의 피해를 흡수하는 보호막을 얻습니다.\n",
+        "looped": false,
+        "tokens": 11,
+        "seconds": 3.659,
+        "ttftSeconds": 1.7846000000238418,
+        "promptTokens": 655
+      },
+      "english-atoms": {
+        "type": "done",
+        "id": 2,
+        "text": "아크샨은 평타 한대 치면 40/50/60/70/80%의 물리적 피해와 20% + 5% per 100 Ability Power 이동 속도가 1 초마다 감소하는 공격을 수행합니다.\n",
+        "looped": false,
+        "tokens": 21,
+        "seconds": 4.398299999952316,
+        "ttftSeconds": 0.8003999999761582,
+        "promptTokens": 355
+      }
+    },
+    {
+      "id": "p01",
+      "question": "파이크는 체력 템 가면 어떻게되지?",
+      "korean-rag": {
+        "type": "done",
+        "id": 3,
+        "text": "현재 질문: 파이크는 체력 템 가면 어떻게되지?\n\n답: 파이크는 체력 템 가면 100%의 체력을 회복합니다.\n",
+        "looped": false,
+        "tokens": 15,
+        "seconds": 3.0455,
+        "ttftSeconds": 0.868,
+        "promptTokens": 613
+      },
+      "english-atoms": {
+        "type": "done",
+        "id": 4,
+        "text": "Pyke의 체력 템 가면은 1.25 + (1% Lethality) 초 동안 100/150/200/250/300 + (100% bonus Attack Damage)의 물리적 피해를 입힌 뒤, 1% Lethality를 높을수록 더 오래 지속됩니다.\n",
+        "looped": false,
+        "tokens": 26,
+        "seconds": 5.319799999952316,
+        "ttftSeconds": 0.6695999999642372,
+        "promptTokens": 352
+      }
+    },
+    {
+      "id": "p02",
+      "question": "파이크 체력템을가도되나? 패시브나 이런곳에 뭐 있엇던것같은데",
+      "korean-rag": {
+        "type": "done",
+        "id": 5,
+        "text": "네, 파이크 체력템을 가도 되나요?\n\n**근거:**\n[Pyke:P] 파이크 P 가라앉은 자들의 축복\n[Pyke:R] 파이크 R 깊은 바다의 처형\n\n**요약:**\n파이크는 적 챔피언에게 받는 피해량의 (9% + (0.2% 물리 관통력)), 주변에 적이 둘 이상 있을 때는 최대 (40% + (0.4% 물리 관통력))만큼을 체력으로 비축합니다. 최대 (80 + (800% 추가 공격력))까지 비축되며 적에게 보이지 않는 상태가 되면 비축한 만큼 체력을 빠르게 회복합니다. 또한 파이크가 최대 체력을 모두 공격력으로 전환합니다.",
+        "looped": false,
+        "tokens": 67,
+        "seconds": 10.779399999976158,
+        "ttftSeconds": 0.9455,
+        "promptTokens": 628
+      },
+      "english-atoms": {
+        "type": "done",
+        "id": 6,
+        "text": "네, 파이크 체력템을 가도 되지만, 해당 스킬은 현재 스킬 목록에 없습니다.\n",
+        "looped": false,
+        "tokens": 11,
+        "seconds": 2.168599999964237,
+        "ttftSeconds": 0.5658000000119209,
+        "promptTokens": 319
+      }
+    },
+    {
+      "id": "a04",
+      "question": "아크샨 두 번째 평타 취소하면?",
+      "korean-rag": {
+        "type": "done",
+        "id": 7,
+        "text": "현재 질문은 \"아크샨 두 번째 평타 취소하면?\"입니다.\n\n근거에서 확인할 수 있는 정보:\n- 아크샨의 기본 공격 후 두 번째 공격을 도중에 취소하면 이동 속도가 증가합니다.\n- 이동 속도가 20 ~ 75 × (1 + 100% 추가 공격 속도) 증가했습니다.\n\n따라서 두 번째 평타 취소하면 이동 속도가 20 ~ 75 × (1 + 100% 추가 공격 속도) 증가했습니다.\n",
+        "looped": false,
+        "tokens": 57,
+        "seconds": 8.272899999976158,
+        "ttftSeconds": 1.1298000000119208,
+        "promptTokens": 827
+      },
+      "english-atoms": {
+        "type": "done",
+        "id": 8,
+        "text": "아크샨의 두 번째 평타 취소는 20~75의 이동속도 증가와 15~150의 추가 마력 피해를 주는 추가 스킬을 적용합니다.\n",
+        "looped": false,
+        "tokens": 16,
+        "seconds": 3.3542000000476837,
+        "ttftSeconds": 0.8123000000119209,
+        "promptTokens": 376
+      }
+    },
+    {
+      "id": "a06",
+      "question": "아크샨 평타 한 대만 치면 보호막 생겨?",
+      "korean-rag": {
+        "type": "done",
+        "id": 9,
+        "text": "아크샨 평타 한 대만 치면 보호막 생겨?",
+        "looped": true,
+        "tokens": 35,
+        "seconds": 6.4595999999642375,
+        "ttftSeconds": 1.0860999999642371,
+        "promptTokens": 656
+      },
+      "english-atoms": {
+        "type": "done",
+        "id": 10,
+        "text": "아크샨 평타 한 대만 치면 보호막이 생성됩니다.",
+        "looped": true,
+        "tokens": 35,
+        "seconds": 4.950300000011921,
+        "ttftSeconds": 0.7414000000357628,
+        "promptTokens": 356
+      }
+    },
+    {
+      "id": "p06",
+      "question": "파이크는 기본 체력까지 전부 공격력으로 바뀌어?",
+      "korean-rag": {
+        "type": "done",
+        "id": 11,
+        "text": "네, 파이크는 기본 체력까지 전부 공격력으로 바뀌는 것은 아닙니다.\n\n**근거:**\n[Pyke:P]\n파이크 P 가라앉은 자들의 축복\n요약: 파이크가 적에게 보이지 않는 상태가 되면 최근 적 챔피언에게 잃었던 체력의 일부를 빠르게 회복합니다. 또한, 어떤 방법으로든 파이크가 획득한 추가 최대 체력은 모두 추가 공격력으로 전환됩니다.\n\n**본문:**\n파이크는 적 챔피언에게 받는 피해량의 (9% + (0.2% 물리 관통력)), 주변에 적이 둘 이상 있을 때는 최대 (40% + (0.4% 물리 관통력))만큼을 체력으로 비축합니다. 최대 (80 + (800",
+        "looped": false,
+        "tokens": 72,
+        "seconds": 10.67119999998808,
+        "ttftSeconds": 0.7683999999761582,
+        "promptTokens": 486
+      },
+      "english-atoms": {
+        "type": "done",
+        "id": 12,
+        "text": "네, Pyke의 기본 체력 (Attack Damage) 는 250 ~ 550 범위 내에서 80%의 공격력 증가를 받습니다.\nPyke의 기본 체력 (Attack Damage) 는 125 ~ 275 범위 내에서 40%의 공격력 증가를 받습니다.\n",
+        "looped": false,
+        "tokens": 31,
+        "seconds": 5.071900000035763,
+        "ttftSeconds": 0.5979000000357628,
+        "promptTokens": 349
+      }
+    },
+    {
+      "id": "p08",
+      "question": "파이크 체력템 살 때 800%로 공격력 전환되는 거야?",
+      "korean-rag": {
+        "type": "done",
+        "id": 13,
+        "text": "네, 파이크 체력 800%를 전환하는 조건은 **적 챔피언이 800%의 공격력**을 가지고 있는 경우입니다.\n\n**근거:**\n[Pyke:P]\n파이크 P 가라앉은 자들의 축복\n요약: 파이크가 적에게 보이지 않는 상태가 되면 최근 적 챔피언에게 잃었던 체력의 일부를 빠르게 회복합니다. 또한, 어떤 방법으로든 파이크가 획득한 추가 최대 체력은 모두 추가 공격력으로 전환됩니다.\n\n**본문:**\n파이크는 적 챔피언에게 받는 피해량의 (9% + (0.2% 물리 관통력)), 주변에 적이 둘 이상 있을 때는 최대 (40% + (0.4% 물리 관통력",
+        "looped": false,
+        "tokens": 70,
+        "seconds": 10.886399999976158,
+        "ttftSeconds": 0.9345,
+        "promptTokens": 623
+      },
+      "english-atoms": {
+        "type": "done",
+        "id": 14,
+        "text": "네, 파이크 체력템을 800%로 전환하는 것은 아닙니다. 800%는 Pyke의 80 + 800% Bonus Attack Damage를 의미하며, 이는 체력템을 800%로 전환하는 데 필요한 조건이 아닙니다.\n",
+        "looped": false,
+        "tokens": 24,
+        "seconds": 4.6305,
+        "ttftSeconds": 0.657800000011921,
+        "promptTokens": 392
+      }
+    },
+    {
+      "id": "d02-3",
+      "question": "그럼 체력 140이면?",
+      "korean-rag": {
+        "type": "done",
+        "id": 15,
+        "text": "현재 질문: 파이크는 체력 140이면?\n답: 140이므로 140%의 체력이 140%의 공격력입니다.\n",
+        "looped": false,
+        "tokens": 11,
+        "seconds": 3.5265,
+        "ttftSeconds": 0.8729000000357627,
+        "promptTokens": 621
+      },
+      "english-atoms": {
+        "type": "done",
+        "id": 16,
+        "text": "Pyke의 체력 140은 100/150/200/250/300 + (75% bonus Attack Damage)의 체력 140을 기준으로",
+        "looped": true,
+        "tokens": 25,
+        "seconds": 7.478100000023842,
+        "ttftSeconds": 0.680800000011921,
+        "promptTokens": 360
+      }
+    }
+  ]
+}
