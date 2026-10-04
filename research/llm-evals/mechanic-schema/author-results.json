@@ -1,0 +1,207 @@
+{
+  "backend": "Ollama Q8_0",
+  "schema": "v1; identical schema at all seeds; temperature=.4",
+  "system": "Extract only mechanics supported by the supplied passive description. Output one rule per supported type, omit unsupported types. Never guess conditions, stats or numbers.\nThis is a selected-coverage schema: unsupported damage/storage formulas and level curves are omitted. capacityBonusADRatio is the coefficient on bonus AD in the storage limit; 800%=8.\nUse the exact permitted field names and enum values. Source metadata, patch, champion and review status are assigned by code, never by the model.\nSchema: {\"type\":\"object\",\"properties\":{\"rules\":{\"type\":\"array\",\"items\":{\"oneOf\":[{\"type\":\"object\",\"properties\":{\"type\":{\"const\":\"stat_conversion\"},\"from\":{\"type\":\"string\",\"enum\":[\"bonus_max_health\",\"bonus_attack_damage\",\"move_speed\"]},\"to\":{\"type\":\"string\",\"enum\":[\"bonus_max_health\",\"bonus_attack_damage\",\"move_speed\"]},\"inputPerOutput\":{\"type\":\"number\",\"exclusiveMinimum\":0},\"replaceInput\":{\"type\":\"boolean\"}},\"required\":[\"type\",\"from\",\"to\",\"inputPerOutput\",\"replaceInput\"],\"additionalProperties\":false},{\"type\":\"object\",\"properties\":{\"type\":{\"const\":\"followup_attack\"},\"trigger\":{\"const\":\"basic_attack\"},\"attack\":{\"const\":\"followup\"}},\"required\":[\"type\",\"trigger\",\"attack\"],\"additionalProperties\":false},{\"type\":\"object\",\"properties\":{\"type\":{\"const\":\"stat_buff\"},\"trigger\":{\"const\":\"cancel_followup\"},\"stat\":{\"type\":\"string\",\"enum\":[\"bonus_max_health\",\"bonus_attack_damage\",\"move_speed\"]},\"decaySeconds\":{\"type\":\"number\",\"minimum\":0}},\"required\":[\"type\",\"trigger\",\"stat\",\"decaySeconds\"],\"additionalProperties\":false},{\"type\":\"object\",\"properties\":{\"type\":{\"const\":\"damage_proc\"},\"trigger\":{\"const\":\"stack_threshold\"},\"scope\":{\"const\":\"same_target\"},\"threshold\":{\"type\":\"integer\",\"minimum\":1},\"damageType\":{\"type\":\"string\",\"enum\":[\"magic\",\"physical\",\"true\"]}},\"required\":[\"type\",\"trigger\",\"scope\",\"threshold\",\"damageType\"],\"additionalProperties\":false},{\"type\":\"object\",\"properties\":{\"type\":{\"const\":\"shield\"},\"trigger\":{\"const\":\"stack_threshold\"},\"scope\":{\"const\":\"same_target\"},\"threshold\":{\"type\":\"integer\",\"minimum\":1},\"target\":{\"const\":\"champion\"},\"requiresReady\":{\"type\":\"boolean\"}},\"required\":[\"type\",\"trigger\",\"scope\",\"threshold\",\"target\",\"requiresReady\"],\"additionalProperties\":false},{\"type\":\"object\",\"properties\":{\"type\":{\"const\":\"damage_storage\"},\"damageSource\":{\"const\":\"enemy_champion\"},\"resource\":{\"const\":\"grey_health\"},\"capacityBonusADRatio\":{\"type\":\"number\",\"minimum\":0}},\"required\":[\"type\",\"damageSource\",\"resource\",\"capacityBonusADRatio\"],\"additionalProperties\":false},{\"type\":\"object\",\"properties\":{\"type\":{\"const\":\"recovery\"},\"condition\":{\"const\":\"unseen_by_enemies\"},\"resource\":{\"const\":\"grey_health\"}},\"required\":[\"type\",\"condition\",\"resource\"],\"additionalProperties\":false}]},\"minItems\":1,\"maxItems\":16}},\"required\":[\"rules\"],\"additionalProperties\":false}",
+  "rows": [
+    {
+      "champion": "Pyke",
+      "seed": 11,
+      "generated": {
+        "text": "{\"rules\":[{\"type\":\"stat_conversion\",\"from\":\"bonus_attack_damage\",\"to\":\"bonus_max_health\",\"inputPerOutput\":0,\"replaceInput\":true},{\"type\":\"followup_attack\",\"trigger\":\"basic_attack\",\"attack\":\"followup\"}]}",
+        "seconds": 0.8496837920000034,
+        "doneReason": "stop",
+        "outputTokens": 49,
+        "promptTokens": 767
+      },
+      "value": {
+        "rules": [
+          {
+            "type": "stat_conversion",
+            "from": "bonus_attack_damage",
+            "to": "bonus_max_health",
+            "inputPerOutput": 0,
+            "replaceInput": true
+          },
+          {
+            "type": "followup_attack",
+            "trigger": "basic_attack",
+            "attack": "followup"
+          }
+        ]
+      },
+      "errors": [
+        "schema: data.rules[0].inputPerOutput should be > 0, data.rules[0] should NOT have additional properties, data.rules[0] should NOT have additional properties, data.rules[0] should NOT have additional properties, data.rules[0] should NOT have additional properties, data.rules[0].type should be equal to constant, data.rules[0] should have required property 'trigger', data.rules[0] should have required property 'attack', data.rules[0] should NOT have additional properties, data.rules[0] should NOT have additional properties, data.rules[0] should NOT have additional properties, data.rules[0] should NOT have additional properties, data.rules[0].type should be equal to constant, data.rules[0] should have required property 'trigger', data.rules[0] should have required property 'stat', data.rules[0] should have required property 'decaySeconds', data.rules[0] should NOT have additional properties, data.rules[0] should NOT have additional properties, data.rules[0] should NOT have additional properties, data.rules[0] should NOT have additional properties, data.rules[0].type should be equal to constant, data.rules[0] should have required property 'trigger', data.rules[0] should have required property 'scope', data.rules[0] should have required property 'threshold', data.rules[0] should have required property 'damageType', data.rules[0] should NOT have additional properties, data.rules[0] should NOT have additional properties, data.rules[0] should NOT have additional properties, data.rules[0] should NOT have additional properties, data.rules[0].type should be equal to constant, data.rules[0] should have required property 'trigger', data.rules[0] should have required property 'scope', data.rules[0] should have required property 'threshold', data.rules[0] should have required property 'target', data.rules[0] should have required property 'requiresReady', data.rules[0] should NOT have additional properties, data.rules[0] should NOT have additional properties, data.rules[0] should NOT have additional properties, data.rules[0] should NOT have additional properties, data.rules[0].type should be equal to constant, data.rules[0] should have required property 'damageSource', data.rules[0] should have required property 'resource', data.rules[0] should have required property 'capacityBonusADRatio', data.rules[0] should NOT have additional properties, data.rules[0] should NOT have additional properties, data.rules[0] should NOT have additional properties, data.rules[0] should NOT have additional properties, data.rules[0].type should be equal to constant, data.rules[0] should have required property 'condition', data.rules[0] should have required property 'resource', data.rules[0] should match exactly one schema in oneOf"
+      ],
+      "publishStatus": "candidate"
+    },
+    {
+      "champion": "Pyke",
+      "seed": 22,
+      "generated": {
+        "text": "{\"rules\":[{\"type\":\"stat_conversion\",\"from\":\"bonus_attack_damage\",\"to\":\"bonus_max_health\",\"inputPerOutput\":0,\"replaceInput\":true},{\"type\":\"followup_attack\",\"trigger\":\"basic_attack\",\"attack\":\"followup\"}]}",
+        "seconds": 0.6029300830000066,
+        "doneReason": "stop",
+        "outputTokens": 49,
+        "promptTokens": 767
+      },
+      "value": {
+        "rules": [
+          {
+            "type": "stat_conversion",
+            "from": "bonus_attack_damage",
+            "to": "bonus_max_health",
+            "inputPerOutput": 0,
+            "replaceInput": true
+          },
+          {
+            "type": "followup_attack",
+            "trigger": "basic_attack",
+            "attack": "followup"
+          }
+        ]
+      },
+      "errors": [
+        "schema: data.rules[0].inputPerOutput should be > 0, data.rules[0] should NOT have additional properties, data.rules[0] should NOT have additional properties, data.rules[0] should NOT have additional properties, data.rules[0] should NOT have additional properties, data.rules[0].type should be equal to constant, data.rules[0] should have required property 'trigger', data.rules[0] should have required property 'attack', data.rules[0] should NOT have additional properties, data.rules[0] should NOT have additional properties, data.rules[0] should NOT have additional properties, data.rules[0] should NOT have additional properties, data.rules[0].type should be equal to constant, data.rules[0] should have required property 'trigger', data.rules[0] should have required property 'stat', data.rules[0] should have required property 'decaySeconds', data.rules[0] should NOT have additional properties, data.rules[0] should NOT have additional properties, data.rules[0] should NOT have additional properties, data.rules[0] should NOT have additional properties, data.rules[0].type should be equal to constant, data.rules[0] should have required property 'trigger', data.rules[0] should have required property 'scope', data.rules[0] should have required property 'threshold', data.rules[0] should have required property 'damageType', data.rules[0] should NOT have additional properties, data.rules[0] should NOT have additional properties, data.rules[0] should NOT have additional properties, data.rules[0] should NOT have additional properties, data.rules[0].type should be equal to constant, data.rules[0] should have required property 'trigger', data.rules[0] should have required property 'scope', data.rules[0] should have required property 'threshold', data.rules[0] should have required property 'target', data.rules[0] should have required property 'requiresReady', data.rules[0] should NOT have additional properties, data.rules[0] should NOT have additional properties, data.rules[0] should NOT have additional properties, data.rules[0] should NOT have additional properties, data.rules[0].type should be equal to constant, data.rules[0] should have required property 'damageSource', data.rules[0] should have required property 'resource', data.rules[0] should have required property 'capacityBonusADRatio', data.rules[0] should NOT have additional properties, data.rules[0] should NOT have additional properties, data.rules[0] should NOT have additional properties, data.rules[0] should NOT have additional properties, data.rules[0].type should be equal to constant, data.rules[0] should have required property 'condition', data.rules[0] should have required property 'resource', data.rules[0] should match exactly one schema in oneOf"
+      ],
+      "publishStatus": "candidate"
+    },
+    {
+      "champion": "Pyke",
+      "seed": 33,
+      "generated": {
+        "text": "{\"rules\":[{\"type\":\"stat_conversion\",\"from\":\"bonus_attack_damage\",\"to\":\"bonus_max_health\",\"inputPerOutput\":0,\"replaceInput\":true},{\"type\":\"damage_storage\",\"damageSource\":\"enemy_champion\",\"resource\":\"grey_health\",\"capacityBonusADRatio\":8}]}",
+        "seconds": 0.656585583,
+        "doneReason": "stop",
+        "outputTokens": 57,
+        "promptTokens": 767
+      },
+      "value": {
+        "rules": [
+          {
+            "type": "stat_conversion",
+            "from": "bonus_attack_damage",
+            "to": "bonus_max_health",
+            "inputPerOutput": 0,
+            "replaceInput": true
+          },
+          {
+            "type": "damage_storage",
+            "damageSource": "enemy_champion",
+            "resource": "grey_health",
+            "capacityBonusADRatio": 8
+          }
+        ]
+      },
+      "errors": [
+        "schema: data.rules[0].inputPerOutput should be > 0, data.rules[0] should NOT have additional properties, data.rules[0] should NOT have additional properties, data.rules[0] should NOT have additional properties, data.rules[0] should NOT have additional properties, data.rules[0].type should be equal to constant, data.rules[0] should have required property 'trigger', data.rules[0] should have required property 'attack', data.rules[0] should NOT have additional properties, data.rules[0] should NOT have additional properties, data.rules[0] should NOT have additional properties, data.rules[0] should NOT have additional properties, data.rules[0].type should be equal to constant, data.rules[0] should have required property 'trigger', data.rules[0] should have required property 'stat', data.rules[0] should have required property 'decaySeconds', data.rules[0] should NOT have additional properties, data.rules[0] should NOT have additional properties, data.rules[0] should NOT have additional properties, data.rules[0] should NOT have additional properties, data.rules[0].type should be equal to constant, data.rules[0] should have required property 'trigger', data.rules[0] should have required property 'scope', data.rules[0] should have required property 'threshold', data.rules[0] should have required property 'damageType', data.rules[0] should NOT have additional properties, data.rules[0] should NOT have additional properties, data.rules[0] should NOT have additional properties, data.rules[0] should NOT have additional properties, data.rules[0].type should be equal to constant, data.rules[0] should have required property 'trigger', data.rules[0] should have required property 'scope', data.rules[0] should have required property 'threshold', data.rules[0] should have required property 'target', data.rules[0] should have required property 'requiresReady', data.rules[0] should NOT have additional properties, data.rules[0] should NOT have additional properties, data.rules[0] should NOT have additional properties, data.rules[0] should NOT have additional properties, data.rules[0].type should be equal to constant, data.rules[0] should have required property 'damageSource', data.rules[0] should have required property 'resource', data.rules[0] should have required property 'capacityBonusADRatio', data.rules[0] should NOT have additional properties, data.rules[0] should NOT have additional properties, data.rules[0] should NOT have additional properties, data.rules[0] should NOT have additional properties, data.rules[0].type should be equal to constant, data.rules[0] should have required property 'condition', data.rules[0] should have required property 'resource', data.rules[0] should match exactly one schema in oneOf"
+      ],
+      "publishStatus": "candidate"
+    },
+    {
+      "champion": "Akshan",
+      "seed": 11,
+      "generated": {
+        "text": "{\"rules\":[{\"type\":\"stat_conversion\",\"from\":\"bonus_attack_damage\",\"to\":\"bonus_max_health\",\"inputPerOutput\":1.0,\"replaceInput\":false},{\"type\":\"followup_attack\",\"trigger\":\"basic_attack\",\"attack\":\"followup\"},{\"type\":\"stat_buff\",\"trigger\":\"cancel_followup\",\"stat\":\"move_speed\",\"decaySeconds\":1}]}",
+        "seconds": 1.1750339999999997,
+        "doneReason": "stop",
+        "outputTokens": 72,
+        "promptTokens": 806
+      },
+      "value": {
+        "rules": [
+          {
+            "type": "stat_conversion",
+            "from": "bonus_attack_damage",
+            "to": "bonus_max_health",
+            "inputPerOutput": 1,
+            "replaceInput": false
+          },
+          {
+            "type": "followup_attack",
+            "trigger": "basic_attack",
+            "attack": "followup"
+          },
+          {
+            "type": "stat_buff",
+            "trigger": "cancel_followup",
+            "stat": "move_speed",
+            "decaySeconds": 1
+          }
+        ]
+      },
+      "errors": [
+        "source_review: 승인된 규칙과 조건·수치·범위가 다름"
+      ],
+      "publishStatus": "candidate"
+    },
+    {
+      "champion": "Akshan",
+      "seed": 22,
+      "generated": {
+        "text": "{\"rules\":[{\"type\":\"stat_conversion\",\"from\":\"bonus_attack_damage\",\"to\":\"move_speed\",\"inputPerOutput\":7.5,\"replaceInput\":true},{\"type\":\"stat_buff\",\"trigger\":\"cancel_followup\",\"stat\":\"move_speed\",\"decaySeconds\":100},{\"type\":\"damage_storage\",\"damageSource\":\"enemy_champion\",\"resource\":\"grey_health\",\"capacityBonusADRatio\":8}]}",
+        "seconds": 0.9428755420000016,
+        "doneReason": "stop",
+        "outputTokens": 81,
+        "promptTokens": 806
+      },
+      "value": {
+        "rules": [
+          {
+            "type": "stat_conversion",
+            "from": "bonus_attack_damage",
+            "to": "move_speed",
+            "inputPerOutput": 7.5,
+            "replaceInput": true
+          },
+          {
+            "type": "stat_buff",
+            "trigger": "cancel_followup",
+            "stat": "move_speed",
+            "decaySeconds": 100
+          },
+          {
+            "type": "damage_storage",
+            "damageSource": "enemy_champion",
+            "resource": "grey_health",
+            "capacityBonusADRatio": 8
+          }
+        ]
+      },
+      "errors": [
+        "source_review: 승인된 규칙과 조건·수치·범위가 다름"
+      ],
+      "publishStatus": "candidate"
+    },
+    {
+      "champion": "Akshan",
+      "seed": 33,
+      "generated": {
+        "text": "{\"rules\":[{\"type\":\"stat_conversion\",\"from\":\"bonus_attack_damage\",\"to\":\"move_speed\",\"inputPerOutput\":7.5,\"replaceInput\":true},{\"type\":\"followup_attack\",\"trigger\":\"basic_attack\",\"attack\":\"followup\"}]}",
+        "seconds": 0.5583234999999986,
+        "doneReason": "stop",
+        "outputTokens": 50,
+        "promptTokens": 806
+      },
+      "value": {
+        "rules": [
+          {
+            "type": "stat_conversion",
+            "from": "bonus_attack_damage",
+            "to": "move_speed",
+            "inputPerOutput": 7.5,
+            "replaceInput": true
+          },
+          {
+            "type": "followup_attack",
+            "trigger": "basic_attack",
+            "attack": "followup"
+          }
+        ]
+      },
+      "errors": [
+        "source_review: 승인된 규칙과 조건·수치·범위가 다름"
+      ],
+      "publishStatus": "candidate"
+    }
+  ]
+}

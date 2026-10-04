@@ -1,0 +1,92 @@
+[
+  {
+    "schemaVersion": 1,
+    "patch": "26.19",
+    "champion": "Pyke",
+    "slot": "P",
+    "coverage": "partial",
+    "reviewStatus": "reviewed",
+    "crowdControl": {
+      "status": "known",
+      "effects": []
+    },
+    "source": {
+      "file": "public/data/26.19/llm/champion-cards-en_US.json",
+      "sha256": "59f8ebc6ceae168b5c30884f2ae8ee03d681d5ce7375d837b90439330ccd00df",
+      "text": "When Pyke is hidden from enemies, he regenerates damage that he has recently taken from champions. Pyke also cannot gain extra Maximum Health from any source, and instead gains Bonus AD.\nPyke stores (9% + (0.2% Lethality)) of damage taken from champions, increased to (40% + (0.4% Lethality)) when there's more than one enemy nearby. Pyke can store up to (80 + (800% bonus Attack Damage)) damage. While unseen by enemies, he rapidly regenerates this stored damage. Additionally, Pyke converts all Maximum Health increases to Attack Damage instead at a rate of 14 Health to 1 Attack Damage.",
+      "urls": [
+        "https://www.leagueoflegends.com/en-us/champions/pyke/",
+        "https://wiki.leagueoflegends.com/en-us/Template:Data_Pyke/Gift_of_the_Drowned_Ones"
+      ]
+    },
+    "rules": [
+      {
+        "type": "stat_conversion",
+        "from": "bonus_max_health",
+        "to": "bonus_attack_damage",
+        "inputPerOutput": 14,
+        "replaceInput": true
+      },
+      {
+        "type": "damage_storage",
+        "damageSource": "enemy_champion",
+        "resource": "grey_health",
+        "capacityBonusADRatio": 8
+      },
+      {
+        "type": "recovery",
+        "condition": "unseen_by_enemies",
+        "resource": "grey_health"
+      }
+    ]
+  },
+  {
+    "schemaVersion": 1,
+    "patch": "26.19",
+    "champion": "Akshan",
+    "slot": "P",
+    "coverage": "partial",
+    "reviewStatus": "reviewed",
+    "crowdControl": {
+      "status": "known",
+      "effects": []
+    },
+    "source": {
+      "file": "public/data/26.19/llm/champion-cards-en_US.json",
+      "sha256": "0a3932fcb277d5cd02d6ce76df4574d55acf4d9c4090c595e81f2583a8a5e8b7",
+      "text": "Every three hits from Akshan's Attacks and Abilities deals bonus damage and grants him a Shield if the target was a champion. When Akshan Attacks, he fires an additional Attack for reduced damage. If he cancels the additional Attack, he instead gains Move Speed.\nAfter launching an Attack, Akshan will fire an additional shot for (50% Attack Damage) physical damage. He can cancel this shot to instead gain (20 ~ 75) × (1 + 100% bonus Attack Speed) Move Speed decaying over 1 second. Every three hits from Attacks or Abilities deals an additional ((15 ~ 150) + (60% Ability Power)) magic damage. Against champions, Akshan also gains ((40 ~ 280) + (35% bonus Attack Damage)) Shield for 2 seconds ((16 ~ 4) second Cooldown).",
+      "urls": [
+        "https://www.leagueoflegends.com/en-us/champions/akshan/",
+        "https://wiki.leagueoflegends.com/en-us/Template:Data_Akshan/Dirty_Fighting"
+      ]
+    },
+    "rules": [
+      {
+        "type": "followup_attack",
+        "trigger": "basic_attack",
+        "attack": "followup"
+      },
+      {
+        "type": "stat_buff",
+        "trigger": "cancel_followup",
+        "stat": "move_speed",
+        "decaySeconds": 1
+      },
+      {
+        "type": "damage_proc",
+        "trigger": "stack_threshold",
+        "scope": "same_target",
+        "threshold": 3,
+        "damageType": "magic"
+      },
+      {
+        "type": "shield",
+        "trigger": "stack_threshold",
+        "scope": "same_target",
+        "threshold": 3,
+        "target": "champion",
+        "requiresReady": true
+      }
+    ]
+  }
+]

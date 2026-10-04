@@ -1,0 +1,219 @@
+{
+  "type": "object",
+  "properties": {
+    "rules": {
+      "type": "array",
+      "items": {
+        "oneOf": [
+          {
+            "type": "object",
+            "properties": {
+              "type": {
+                "const": "stat_conversion"
+              },
+              "from": {
+                "type": "string",
+                "enum": [
+                  "bonus_max_health",
+                  "bonus_attack_damage",
+                  "move_speed"
+                ]
+              },
+              "to": {
+                "type": "string",
+                "enum": [
+                  "bonus_max_health",
+                  "bonus_attack_damage",
+                  "move_speed"
+                ]
+              },
+              "inputPerOutput": {
+                "type": "number",
+                "exclusiveMinimum": 0
+              },
+              "replaceInput": {
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "type",
+              "from",
+              "to",
+              "inputPerOutput",
+              "replaceInput"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "type": {
+                "const": "followup_attack"
+              },
+              "trigger": {
+                "const": "basic_attack"
+              },
+              "attack": {
+                "const": "followup"
+              }
+            },
+            "required": [
+              "type",
+              "trigger",
+              "attack"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "type": {
+                "const": "stat_buff"
+              },
+              "trigger": {
+                "const": "cancel_followup"
+              },
+              "stat": {
+                "type": "string",
+                "enum": [
+                  "bonus_max_health",
+                  "bonus_attack_damage",
+                  "move_speed"
+                ]
+              },
+              "decaySeconds": {
+                "type": "number",
+                "minimum": 0
+              }
+            },
+            "required": [
+              "type",
+              "trigger",
+              "stat",
+              "decaySeconds"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "type": {
+                "const": "damage_proc"
+              },
+              "trigger": {
+                "const": "stack_threshold"
+              },
+              "scope": {
+                "const": "same_target"
+              },
+              "threshold": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "damageType": {
+                "type": "string",
+                "enum": [
+                  "magic",
+                  "physical",
+                  "true"
+                ]
+              }
+            },
+            "required": [
+              "type",
+              "trigger",
+              "scope",
+              "threshold",
+              "damageType"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "type": {
+                "const": "shield"
+              },
+              "trigger": {
+                "const": "stack_threshold"
+              },
+              "scope": {
+                "const": "same_target"
+              },
+              "threshold": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "target": {
+                "const": "champion"
+              },
+              "requiresReady": {
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "type",
+              "trigger",
+              "scope",
+              "threshold",
+              "target",
+              "requiresReady"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "type": {
+                "const": "damage_storage"
+              },
+              "damageSource": {
+                "const": "enemy_champion"
+              },
+              "resource": {
+                "const": "grey_health"
+              },
+              "capacityBonusADRatio": {
+                "type": "number",
+                "minimum": 0
+              }
+            },
+            "required": [
+              "type",
+              "damageSource",
+              "resource",
+              "capacityBonusADRatio"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "type": {
+                "const": "recovery"
+              },
+              "condition": {
+                "const": "unseen_by_enemies"
+              },
+              "resource": {
+                "const": "grey_health"
+              }
+            },
+            "required": [
+              "type",
+              "condition",
+              "resource"
+            ],
+            "additionalProperties": false
+          }
+        ]
+      },
+      "minItems": 1,
+      "maxItems": 16
+    }
+  },
+  "required": [
+    "rules"
+  ],
+  "additionalProperties": false
+}

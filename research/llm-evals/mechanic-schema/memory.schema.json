@@ -1,0 +1,150 @@
+{
+  "type": "object",
+  "properties": {
+    "topic": {
+      "type": "string",
+      "enum": [
+        "conversion",
+        "basic_attack",
+        "stack_proc",
+        "recovery",
+        "unsupported",
+        "inherit"
+      ]
+    },
+    "asked": {
+      "type": "string",
+      "enum": [
+        "overview",
+        "movement_speed",
+        "shield",
+        "damage",
+        "converted_attack_damage",
+        "both_stats",
+        "coefficient",
+        "stun",
+        "inherit"
+      ]
+    },
+    "scenario": {
+      "type": "object",
+      "properties": {
+        "healthAmount": {
+          "anyOf": [
+            {
+              "type": "number",
+              "minimum": 0
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "healthKind": {
+          "anyOf": [
+            {
+              "type": "string",
+              "enum": [
+                "bonus",
+                "base",
+                "growth"
+              ]
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "followup": {
+          "anyOf": [
+            {
+              "type": "string",
+              "enum": [
+                "cancelled",
+                "fired"
+              ]
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "hits": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": 0
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "target": {
+          "anyOf": [
+            {
+              "type": "string",
+              "enum": [
+                "champion",
+                "minion"
+              ]
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "shieldReady": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "visibleToEnemies": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "healthAmount",
+        "healthKind",
+        "followup",
+        "hits",
+        "target",
+        "shieldReady",
+        "visibleToEnemies"
+      ],
+      "additionalProperties": false
+    },
+    "schemaVersion": {
+      "const": 1
+    },
+    "champion": {
+      "type": "string",
+      "minLength": 1
+    },
+    "patch": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+$"
+    }
+  },
+  "required": [
+    "topic",
+    "asked",
+    "scenario",
+    "schemaVersion",
+    "champion",
+    "patch"
+  ],
+  "additionalProperties": false
+}

@@ -1,0 +1,578 @@
+{
+  "purpose": "same schema, simplified English prompt without numeric examples; prompt/keyword language also changed, so not an isolated numeric-example causal estimate",
+  "querySystem": "Extract fields from the CURRENT QUESTION only. Do not answer the question. No unstated numbers or conditions: use null.\nUse conversion for health becoming attack damage; basic_attack for second shot/cancel/move speed; stack_proc for hit count/shield; recovery for healing; inherit for an omitted topic; unsupported otherwise.\nFor asked, choose the effect explicitly requested, otherwise inherit. Copy a health amount only if the question explicitly gives a health quantity. Percentages are not health quantities.\nhealthKind: bonus for item/additional health, base for initial/base health, growth for level growth.\nfollowup: fired if the second shot was fired, cancelled if explicitly cancelled, otherwise null. hits: explicitly stated hit count. target: champion or minion only when stated.\nshieldReady and visibleToEnemies must be null unless explicitly stated. Previous state is context only: do not copy its values.\nSchema: {\"type\":\"object\",\"properties\":{\"topic\":{\"type\":\"string\",\"enum\":[\"conversion\",\"basic_attack\",\"stack_proc\",\"recovery\",\"unsupported\",\"inherit\"]},\"asked\":{\"type\":\"string\",\"enum\":[\"overview\",\"movement_speed\",\"shield\",\"damage\",\"converted_attack_damage\",\"both_stats\",\"coefficient\",\"stun\",\"inherit\"]},\"scenario\":{\"type\":\"object\",\"properties\":{\"healthAmount\":{\"anyOf\":[{\"type\":\"number\",\"minimum\":0},{\"type\":\"null\"}]},\"healthKind\":{\"anyOf\":[{\"type\":\"string\",\"enum\":[\"bonus\",\"base\",\"growth\"]},{\"type\":\"null\"}]},\"followup\":{\"anyOf\":[{\"type\":\"string\",\"enum\":[\"cancelled\",\"fired\"]},{\"type\":\"null\"}]},\"hits\":{\"anyOf\":[{\"type\":\"integer\",\"minimum\":0},{\"type\":\"null\"}]},\"target\":{\"anyOf\":[{\"type\":\"string\",\"enum\":[\"champion\",\"minion\"]},{\"type\":\"null\"}]},\"shieldReady\":{\"anyOf\":[{\"type\":\"boolean\"},{\"type\":\"null\"}]},\"visibleToEnemies\":{\"anyOf\":[{\"type\":\"boolean\"},{\"type\":\"null\"}]}},\"required\":[\"healthAmount\",\"healthKind\",\"followup\",\"hits\",\"target\",\"shieldReady\",\"visibleToEnemies\"],\"additionalProperties\":false}},\"required\":[\"topic\",\"asked\",\"scenario\"],\"additionalProperties\":false}",
+  "authorSystem": "Extract only mechanics supported by the supplied passive source. Omit unsupported types and do not guess.\nOne rule per type. capacityBonusADRatio is a fractional coefficient on bonus attack damage in the stored-health limit.\nThe metadata is supplied by code. Output only the rules. Schema: {\"type\":\"object\",\"properties\":{\"rules\":{\"type\":\"array\",\"items\":{\"oneOf\":[{\"type\":\"object\",\"properties\":{\"type\":{\"const\":\"stat_conversion\"},\"from\":{\"type\":\"string\",\"enum\":[\"bonus_max_health\",\"bonus_attack_damage\",\"move_speed\"]},\"to\":{\"type\":\"string\",\"enum\":[\"bonus_max_health\",\"bonus_attack_damage\",\"move_speed\"]},\"inputPerOutput\":{\"type\":\"number\",\"exclusiveMinimum\":0},\"replaceInput\":{\"type\":\"boolean\"}},\"required\":[\"type\",\"from\",\"to\",\"inputPerOutput\",\"replaceInput\"],\"additionalProperties\":false},{\"type\":\"object\",\"properties\":{\"type\":{\"const\":\"followup_attack\"},\"trigger\":{\"const\":\"basic_attack\"},\"attack\":{\"const\":\"followup\"}},\"required\":[\"type\",\"trigger\",\"attack\"],\"additionalProperties\":false},{\"type\":\"object\",\"properties\":{\"type\":{\"const\":\"stat_buff\"},\"trigger\":{\"const\":\"cancel_followup\"},\"stat\":{\"type\":\"string\",\"enum\":[\"bonus_max_health\",\"bonus_attack_damage\",\"move_speed\"]},\"decaySeconds\":{\"type\":\"number\",\"minimum\":0}},\"required\":[\"type\",\"trigger\",\"stat\",\"decaySeconds\"],\"additionalProperties\":false},{\"type\":\"object\",\"properties\":{\"type\":{\"const\":\"damage_proc\"},\"trigger\":{\"const\":\"stack_threshold\"},\"scope\":{\"const\":\"same_target\"},\"threshold\":{\"type\":\"integer\",\"minimum\":1},\"damageType\":{\"type\":\"string\",\"enum\":[\"magic\",\"physical\",\"true\"]}},\"required\":[\"type\",\"trigger\",\"scope\",\"threshold\",\"damageType\"],\"additionalProperties\":false},{\"type\":\"object\",\"properties\":{\"type\":{\"const\":\"shield\"},\"trigger\":{\"const\":\"stack_threshold\"},\"scope\":{\"const\":\"same_target\"},\"threshold\":{\"type\":\"integer\",\"minimum\":1},\"target\":{\"const\":\"champion\"},\"requiresReady\":{\"type\":\"boolean\"}},\"required\":[\"type\",\"trigger\",\"scope\",\"threshold\",\"target\",\"requiresReady\"],\"additionalProperties\":false},{\"type\":\"object\",\"properties\":{\"type\":{\"const\":\"damage_storage\"},\"damageSource\":{\"const\":\"enemy_champion\"},\"resource\":{\"const\":\"grey_health\"},\"capacityBonusADRatio\":{\"type\":\"number\",\"minimum\":0}},\"required\":[\"type\",\"damageSource\",\"resource\",\"capacityBonusADRatio\"],\"additionalProperties\":false},{\"type\":\"object\",\"properties\":{\"type\":{\"const\":\"recovery\"},\"condition\":{\"const\":\"unseen_by_enemies\"},\"resource\":{\"const\":\"grey_health\"}},\"required\":[\"type\",\"condition\",\"resource\"],\"additionalProperties\":false}]},\"minItems\":1,\"maxItems\":16}},\"required\":[\"rules\"],\"additionalProperties\":false}",
+  "queryRows": [
+    {
+      "id": "a01",
+      "group": "a01",
+      "question": "아크샨은 평타 한대 치면 어떻게되지?",
+      "split": "earlier",
+      "checks": [
+        "두 번째",
+        "취소",
+        "이동 속도"
+      ],
+      "raw": {
+        "text": "{\n  \"topic\": \"conversion\",\n  \"asked\": \"overview\",\n  \"scenario\": {\n    \"healthAmount\": null,\n    \"healthKind\": null,\n    \"followup\": null,\n    \"hits\": null,\n    \"target\": null,\n    \"shieldReady\": null,\n    \"visibleToEnemies\": null\n  }\n}",
+        "seconds": 1.0344569160000001,
+        "doneReason": "stop",
+        "outputTokens": 84,
+        "promptTokens": 481
+      },
+      "result": {
+        "text": "이 자료에서 체력의 공격력 전환은 확인할 수 없어.",
+        "rules": [],
+        "status": "unsupported"
+      },
+      "memory": {
+        "schemaVersion": 1,
+        "champion": "Akshan",
+        "patch": "26.19",
+        "topic": "conversion",
+        "asked": "overview",
+        "scenario": {
+          "healthAmount": null,
+          "healthKind": null,
+          "followup": null,
+          "hits": null,
+          "target": null,
+          "shieldReady": null,
+          "visibleToEnemies": null
+        }
+      },
+      "query": {
+        "topic": "conversion",
+        "asked": "overview",
+        "scenario": {
+          "healthAmount": null,
+          "healthKind": null,
+          "followup": null,
+          "hits": null,
+          "target": null,
+          "shieldReady": null,
+          "visibleToEnemies": null
+        }
+      },
+      "grade": {
+        "pass": false,
+        "missing": [
+          "두 번째",
+          "취소",
+          "이동 속도"
+        ],
+        "forbidden": []
+      }
+    },
+    {
+      "id": "a05",
+      "group": "a05",
+      "question": "아크샨 평타 두 대 다 치면 이속도 올라?",
+      "split": "earlier",
+      "checks": [
+        "발동하지 않아"
+      ],
+      "raw": {
+        "text": "{\n  \"topic\": \"conversion\",\n  \"asked\": \"overview\",\n  \"scenario\": {\n    \"healthAmount\": null,\n    \"healthKind\": null,\n    \"followup\": null,\n    \"hits\": null,\n    \"target\": null,\n    \"shieldReady\": null,\n    \"visibleToEnemies\": null\n  }\n}",
+        "seconds": 0.9610890410000001,
+        "doneReason": "stop",
+        "outputTokens": 84,
+        "promptTokens": 483
+      },
+      "result": {
+        "text": "이 자료에서 체력의 공격력 전환은 확인할 수 없어.",
+        "rules": [],
+        "status": "unsupported"
+      },
+      "memory": {
+        "schemaVersion": 1,
+        "champion": "Akshan",
+        "patch": "26.19",
+        "topic": "conversion",
+        "asked": "overview",
+        "scenario": {
+          "healthAmount": null,
+          "healthKind": null,
+          "followup": null,
+          "hits": null,
+          "target": null,
+          "shieldReady": null,
+          "visibleToEnemies": null
+        }
+      },
+      "query": {
+        "topic": "conversion",
+        "asked": "overview",
+        "scenario": {
+          "healthAmount": null,
+          "healthKind": null,
+          "followup": null,
+          "hits": null,
+          "target": null,
+          "shieldReady": null,
+          "visibleToEnemies": null
+        }
+      },
+      "grade": {
+        "pass": false,
+        "missing": [
+          "발동하지 않아"
+        ],
+        "forbidden": []
+      }
+    },
+    {
+      "id": "a08",
+      "group": "a08",
+      "question": "아크샨 미니언한테 평타 세대 맞추면 보호막도 생겨?",
+      "split": "earlier",
+      "checks": [
+        "미니언에게는 보호막이 생기지 않아"
+      ],
+      "raw": {
+        "text": "{\n  \"topic\": \"conversion\",\n  \"asked\": \"overview\",\n  \"scenario\": {\n    \"healthAmount\": null,\n    \"healthKind\": null,\n    \"followup\": null,\n    \"hits\": null,\n    \"target\": null,\n    \"shieldReady\": null,\n    \"visibleToEnemies\": null\n  }\n}",
+        "seconds": 0.9477495420000001,
+        "doneReason": "stop",
+        "outputTokens": 84,
+        "promptTokens": 484
+      },
+      "result": {
+        "text": "이 자료에서 체력의 공격력 전환은 확인할 수 없어.",
+        "rules": [],
+        "status": "unsupported"
+      },
+      "memory": {
+        "schemaVersion": 1,
+        "champion": "Akshan",
+        "patch": "26.19",
+        "topic": "conversion",
+        "asked": "overview",
+        "scenario": {
+          "healthAmount": null,
+          "healthKind": null,
+          "followup": null,
+          "hits": null,
+          "target": null,
+          "shieldReady": null,
+          "visibleToEnemies": null
+        }
+      },
+      "query": {
+        "topic": "conversion",
+        "asked": "overview",
+        "scenario": {
+          "healthAmount": null,
+          "healthKind": null,
+          "followup": null,
+          "hits": null,
+          "target": null,
+          "shieldReady": null,
+          "visibleToEnemies": null
+        }
+      },
+      "grade": {
+        "pass": false,
+        "missing": [
+          "미니언에게는 보호막이 생기지 않아"
+        ],
+        "forbidden": []
+      }
+    },
+    {
+      "id": "p01",
+      "group": "p01",
+      "question": "파이크는 체력 템 가면 어떻게되지?",
+      "split": "earlier",
+      "checks": [
+        "추가 체력",
+        "추가 공격력",
+        "14"
+      ],
+      "raw": {
+        "text": "{\n  \"topic\": \"conversion\",\n  \"asked\": \"overview\",\n  \"scenario\": {\n    \"healthAmount\": null,\n    \"healthKind\": null,\n    \"followup\": null,\n    \"hits\": null,\n    \"target\": null,\n    \"shieldReady\": null,\n    \"visibleToEnemies\": null\n  }\n}",
+        "seconds": 0.9401841669999998,
+        "doneReason": "stop",
+        "outputTokens": 84,
+        "promptTokens": 477
+      },
+      "result": {
+        "text": "아이템 등으로 얻는 추가 체력은 최대 체력에 붙지 않고 추가 공격력으로 바뀌어. 추가 체력 14당 추가 공격력 1로 전환돼.",
+        "rules": [
+          "stat_conversion"
+        ],
+        "status": "answered"
+      },
+      "memory": {
+        "schemaVersion": 1,
+        "champion": "Pyke",
+        "patch": "26.19",
+        "topic": "conversion",
+        "asked": "overview",
+        "scenario": {
+          "healthAmount": null,
+          "healthKind": null,
+          "followup": null,
+          "hits": null,
+          "target": null,
+          "shieldReady": null,
+          "visibleToEnemies": null
+        }
+      },
+      "query": {
+        "topic": "conversion",
+        "asked": "overview",
+        "scenario": {
+          "healthAmount": null,
+          "healthKind": null,
+          "followup": null,
+          "hits": null,
+          "target": null,
+          "shieldReady": null,
+          "visibleToEnemies": null
+        }
+      },
+      "grade": {
+        "pass": true,
+        "missing": [],
+        "forbidden": []
+      }
+    },
+    {
+      "id": "p05",
+      "group": "p05",
+      "question": "파이크 체력 140짜리 템이면 공격력 얼마나 받아?",
+      "split": "earlier",
+      "checks": [
+        "공격력 10"
+      ],
+      "raw": {
+        "text": "{\n\"topic\": \"conversion\",\n\"asked\": \"overview\",\n\"scenario\": {\n    \"healthAmount\": 140,\n    \"healthKind\": \"base\",\n    \"followup\": null,\n    \"hits\": null,\n    \"target\": null,\n    \"shieldReady\": null,\n    \"visibleToEnemies\": null\n}\n}",
+        "seconds": 0.9649498750000003,
+        "doneReason": "stop",
+        "outputTokens": 84,
+        "promptTokens": 484
+      },
+      "result": {
+        "text": "기본 체력과 레벨 성장 체력은 전환되지 않아. 추가 체력 14당 추가 공격력 1로 전환돼.",
+        "rules": [
+          "stat_conversion"
+        ],
+        "status": "answered"
+      },
+      "memory": {
+        "schemaVersion": 1,
+        "champion": "Pyke",
+        "patch": "26.19",
+        "topic": "conversion",
+        "asked": "overview",
+        "scenario": {
+          "healthAmount": 140,
+          "healthKind": "base",
+          "followup": null,
+          "hits": null,
+          "target": null,
+          "shieldReady": null,
+          "visibleToEnemies": null
+        }
+      },
+      "query": {
+        "topic": "conversion",
+        "asked": "overview",
+        "scenario": {
+          "healthAmount": 140,
+          "healthKind": "base",
+          "followup": null,
+          "hits": null,
+          "target": null,
+          "shieldReady": null,
+          "visibleToEnemies": null
+        }
+      },
+      "grade": {
+        "pass": false,
+        "missing": [
+          "공격력 10"
+        ],
+        "forbidden": []
+      }
+    },
+    {
+      "id": "p06",
+      "group": "p06",
+      "question": "파이크는 기본 체력까지 전부 공격력으로 바뀌어?",
+      "split": "earlier",
+      "checks": [
+        "기본 체력",
+        "전환되지 않아"
+      ],
+      "raw": {
+        "text": "{\n  \"topic\": \"conversion\",\n  \"asked\": \"overview\",\n  \"scenario\": {\n    \"healthAmount\": null,\n    \"healthKind\": null,\n    \"followup\": null,\n    \"hits\": null,\n    \"target\": null,\n    \"shieldReady\": null,\n    \"visibleToEnemies\": null\n  }\n}",
+        "seconds": 0.9558527919999997,
+        "doneReason": "stop",
+        "outputTokens": 84,
+        "promptTokens": 480
+      },
+      "result": {
+        "text": "아이템 등으로 얻는 추가 체력은 최대 체력에 붙지 않고 추가 공격력으로 바뀌어. 추가 체력 14당 추가 공격력 1로 전환돼.",
+        "rules": [
+          "stat_conversion"
+        ],
+        "status": "answered"
+      },
+      "memory": {
+        "schemaVersion": 1,
+        "champion": "Pyke",
+        "patch": "26.19",
+        "topic": "conversion",
+        "asked": "overview",
+        "scenario": {
+          "healthAmount": null,
+          "healthKind": null,
+          "followup": null,
+          "hits": null,
+          "target": null,
+          "shieldReady": null,
+          "visibleToEnemies": null
+        }
+      },
+      "query": {
+        "topic": "conversion",
+        "asked": "overview",
+        "scenario": {
+          "healthAmount": null,
+          "healthKind": null,
+          "followup": null,
+          "hits": null,
+          "target": null,
+          "shieldReady": null,
+          "visibleToEnemies": null
+        }
+      },
+      "grade": {
+        "pass": false,
+        "missing": [
+          "기본 체력",
+          "전환되지 않아"
+        ],
+        "forbidden": []
+      }
+    },
+    {
+      "id": "p08",
+      "group": "p08",
+      "question": "파이크 체력템 살 때 800%로 공격력 전환되는 거야?",
+      "split": "earlier",
+      "checks": [
+        "14",
+        "800%",
+        "비축"
+      ],
+      "raw": {
+        "text": "{\n\"topic\": \"conversion\",\n\"asked\": \"overview\",\n\"scenario\": {\n    \"healthAmount\": null,\n    \"healthKind\": \"bonus\",\n    \"followup\": null,\n    \"hits\": null,\n    \"target\": null,\n    \"shieldReady\": null,\n    \"visibleToEnemies\": null\n}\n}",
+        "seconds": 0.9487678340000002,
+        "doneReason": "stop",
+        "outputTokens": 81,
+        "promptTokens": 487
+      },
+      "result": {
+        "text": "아이템 등으로 얻는 추가 체력은 최대 체력에 붙지 않고 추가 공격력으로 바뀌어. 추가 체력 14당 추가 공격력 1로 전환돼.",
+        "rules": [
+          "stat_conversion"
+        ],
+        "status": "answered"
+      },
+      "memory": {
+        "schemaVersion": 1,
+        "champion": "Pyke",
+        "patch": "26.19",
+        "topic": "conversion",
+        "asked": "overview",
+        "scenario": {
+          "healthAmount": null,
+          "healthKind": "bonus",
+          "followup": null,
+          "hits": null,
+          "target": null,
+          "shieldReady": null,
+          "visibleToEnemies": null
+        }
+      },
+      "query": {
+        "topic": "conversion",
+        "asked": "overview",
+        "scenario": {
+          "healthAmount": null,
+          "healthKind": "bonus",
+          "followup": null,
+          "hits": null,
+          "target": null,
+          "shieldReady": null,
+          "visibleToEnemies": null
+        }
+      },
+      "grade": {
+        "pass": false,
+        "missing": [
+          "800%",
+          "비축"
+        ],
+        "forbidden": []
+      }
+    },
+    {
+      "id": "n04",
+      "group": "n04",
+      "split": "new",
+      "question": "아크샨 쉴드 쿨 남아 있는데 챔피언 세대 때리면?",
+      "checks": [
+        "보호막 쿨이 남아",
+        "생기지 않아",
+        "마법"
+      ],
+      "raw": {
+        "text": "{\n  \"topic\": \"inherit\",\n  \"asked\": \"overview\",\n  \"scenario\": {\n    \"healthAmount\": null,\n    \"healthKind\": null,\n    \"followup\": null,\n    \"hits\": null,\n    \"target\": null,\n    \"shieldReady\": null,\n    \"visibleToEnemies\": null\n  }\n}",
+        "seconds": 0.9440465839999997,
+        "doneReason": "stop",
+        "outputTokens": 84,
+        "promptTokens": 483
+      },
+      "result": {
+        "text": "이번에 구조화한 패시브 규칙으로는 확인할 수 없어. 궁금한 스킬이나 조건을 조금 더 알려 줘.",
+        "rules": [],
+        "status": "unsupported"
+      },
+      "memory": {
+        "schemaVersion": 1,
+        "champion": "Akshan",
+        "patch": "26.19",
+        "topic": "unsupported",
+        "asked": "overview",
+        "scenario": {
+          "healthAmount": null,
+          "healthKind": null,
+          "followup": null,
+          "hits": null,
+          "target": null,
+          "shieldReady": null,
+          "visibleToEnemies": null
+        }
+      },
+      "query": {
+        "topic": "inherit",
+        "asked": "overview",
+        "scenario": {
+          "healthAmount": null,
+          "healthKind": null,
+          "followup": null,
+          "hits": null,
+          "target": null,
+          "shieldReady": null,
+          "visibleToEnemies": null
+        }
+      },
+      "grade": {
+        "pass": false,
+        "missing": [
+          "보호막 쿨이 남아",
+          "생기지 않아",
+          "마법"
+        ],
+        "forbidden": []
+      }
+    }
+  ],
+  "authorRows": [
+    {
+      "champion": "Pyke",
+      "raw": {
+        "text": "{\"rules\":[{\"type\":\"stat_conversion\",\"from\":\"bonus_attack_damage\",\"to\":\"bonus_max_health\",\"inputPerOutput\":0,\"replaceInput\":true},{\"type\":\"followup_attack\",\"trigger\":\"basic_attack\",\"attack\":\"followup\"},{\"type\":\"damage_proc\",\"trigger\":\"stack_threshold\",\"scope\":\"same_target\",\"threshold\":1,\"damageType\":\"magic\"},{\"type\":\"shield\",\"trigger\":\"stack_threshold\",\"scope\":\"same_target\",\"threshold\":1,\"target\":\"champion\",\"requiresReady\":false},{\"type\":\"recovery\",\"condition\":\"unseen_by_enemies\",\"resource\":\"grey_health\"}]}",
+        "seconds": 1.3440600420000002,
+        "doneReason": "stop",
+        "outputTokens": 119,
+        "promptTokens": 717
+      },
+      "value": {
+        "rules": [
+          {
+            "type": "stat_conversion",
+            "from": "bonus_attack_damage",
+            "to": "bonus_max_health",
+            "inputPerOutput": 0,
+            "replaceInput": true
+          },
+          {
+            "type": "followup_attack",
+            "trigger": "basic_attack",
+            "attack": "followup"
+          },
+          {
+            "type": "damage_proc",
+            "trigger": "stack_threshold",
+            "scope": "same_target",
+            "threshold": 1,
+            "damageType": "magic"
+          },
+          {
+            "type": "shield",
+            "trigger": "stack_threshold",
+            "scope": "same_target",
+            "threshold": 1,
+            "target": "champion",
+            "requiresReady": false
+          },
+          {
+            "type": "recovery",
+            "condition": "unseen_by_enemies",
+            "resource": "grey_health"
+          }
+        ]
+      },
+      "errors": [
+        "schema: data.rules[0].inputPerOutput should be > 0, data.rules[0] should NOT have additional properties, data.rules[0] should NOT have additional properties, data.rules[0] should NOT have additional properties, data.rules[0] should NOT have additional properties, data.rules[0].type should be equal to constant, data.rules[0] should have required property 'trigger', data.rules[0] should have required property 'attack', data.rules[0] should NOT have additional properties, data.rules[0] should NOT have additional properties, data.rules[0] should NOT have additional properties, data.rules[0] should NOT have additional properties, data.rules[0].type should be equal to constant, data.rules[0] should have required property 'trigger', data.rules[0] should have required property 'stat', data.rules[0] should have required property 'decaySeconds', data.rules[0] should NOT have additional properties, data.rules[0] should NOT have additional properties, data.rules[0] should NOT have additional properties, data.rules[0] should NOT have additional properties, data.rules[0].type should be equal to constant, data.rules[0] should have required property 'trigger', data.rules[0] should have required property 'scope', data.rules[0] should have required property 'threshold', data.rules[0] should have required property 'damageType', data.rules[0] should NOT have additional properties, data.rules[0] should NOT have additional properties, data.rules[0] should NOT have additional properties, data.rules[0] should NOT have additional properties, data.rules[0].type should be equal to constant, data.rules[0] should have required property 'trigger', data.rules[0] should have required property 'scope', data.rules[0] should have required property 'threshold', data.rules[0] should have required property 'target', data.rules[0] should have required property 'requiresReady', data.rules[0] should NOT have additional properties, data.rules[0] should NOT have additional properties, data.rules[0] should NOT have additional properties, data.rules[0] should NOT have additional properties, data.rules[0].type should be equal to constant, data.rules[0] should have required property 'damageSource', data.rules[0] should have required property 'resource', data.rules[0] should have required property 'capacityBonusADRatio', data.rules[0] should NOT have additional properties, data.rules[0] should NOT have additional properties, data.rules[0] should NOT have additional properties, data.rules[0] should NOT have additional properties, data.rules[0].type should be equal to constant, data.rules[0] should have required property 'condition', data.rules[0] should have required property 'resource', data.rules[0] should match exactly one schema in oneOf"
+      ]
+    },
+    {
+      "champion": "Akshan",
+      "raw": {
+        "text": "{\"rules\":[{\"type\":\"stat_conversion\",\"from\":\"bonus_attack_damage\",\"to\":\"bonus_max_health\",\"inputPerOutput\":1.75,\"replaceInput\":true},{\"type\":\"followup_attack\",\"trigger\":\"basic_attack\",\"attack\":\"followup\"},{\"type\":\"stat_buff\",\"trigger\":\"cancel_followup\",\"stat\":\"move_speed\",\"decaySeconds\":200},{\"type\":\"damage_proc\",\"trigger\":\"stack_threshold\",\"scope\":\"same_target\",\"threshold\":3,\"damageType\":\"physical\"}]}",
+        "seconds": 1.1778656659999998,
+        "doneReason": "stop",
+        "outputTokens": 99,
+        "promptTokens": 756
+      },
+      "value": {
+        "rules": [
+          {
+            "type": "stat_conversion",
+            "from": "bonus_attack_damage",
+            "to": "bonus_max_health",
+            "inputPerOutput": 1.75,
+            "replaceInput": true
+          },
+          {
+            "type": "followup_attack",
+            "trigger": "basic_attack",
+            "attack": "followup"
+          },
+          {
+            "type": "stat_buff",
+            "trigger": "cancel_followup",
+            "stat": "move_speed",
+            "decaySeconds": 200
+          },
+          {
+            "type": "damage_proc",
+            "trigger": "stack_threshold",
+            "scope": "same_target",
+            "threshold": 3,
+            "damageType": "physical"
+          }
+        ]
+      },
+      "errors": [
+        "source_review: 승인된 규칙과 조건·수치·범위가 다름"
+      ]
+    }
+  ],
+  "generations": 10
+}
