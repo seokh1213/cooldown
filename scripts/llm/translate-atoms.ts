@@ -14,6 +14,7 @@
  *      다시 옮긴다 — 노트의 절반 미만만 옮겨지면 build-note-translations 가 노트째 빼므로 두 번 돌린다.
  *
  * 사용: npx tsx scripts/llm/translate-atoms.ts --lang en_US --champions bench|all|A,B [--model gpt-6-sol]
+ * --checker none --store <staging>: 구조 점검만 통과한 후보를 저장하며, 뜻 검수와 승인은 별도로 한다.
  */
 import { spawn } from "child_process";
 import * as fs from "fs";
@@ -22,6 +23,8 @@ import * as path from "path";
 import type { ChampionCard } from "../../src/lib/knowledge/facts";
 import { PUBLIC_DATA_ROOT, resolvePatchVersion } from "./lib/data";
 import { CODEX_MODEL, EVAL_CHAMPIONS, type AtomFile } from "./build-note-atoms";
+import { runCodexTranslation } from "./lib/matchup-translation-runtime";
+import { requireStagingStore, translationMeaningVerdict } from "./lib/translation-meaning-check";
 
 const arg = (name: string): string | undefined => {
   const index = process.argv.indexOf(`--${name}`);
@@ -29,7 +32,16 @@ const arg = (name: string): string | undefined => {
 };
 const LANG = (arg("lang") ?? "en_US") as "en_US" | "zh_CN";
 const CONCURRENCY = Number(arg("concurrency") ?? 3);
+const CHECKER = arg("checker") ?? "claude";
+const CHECKER_MODEL = arg("checker-model") ?? CODEX_MODEL;
 const LANG_NAME = { en_US: "English", zh_CN: "简体中文" };
+const ATOM_DIR = arg("store") ?? path.join("knowledge", "atoms");
+requireStagingStore(CHECKER, arg("store"));
+if (CHECKER === "none" && process.argv.includes("--recheck")) {
+  throw new Error("--recheck는 뜻 검수기가 필요하므로 --checker none과 함께 사용할 수 없습니다.");
+}
+let emptyCheckerReplies = 0;
+const MAX_EMPTY_CHECKER = 3;
 
 const patch = resolvePatchVersion();
 const cardsOf = (lang: string) =>
@@ -41,31 +53,29 @@ const cardsOf = (lang: string) =>
 const koCards = cardsOf("ko_KR");
 const targetCards = cardsOf(LANG);
 
-function codex(prompt: string): Promise<string> {
-  return new Promise((resolve) => {
-    const dir = fs.mkdtempSync(path.join(os.tmpdir(), "codex-tr-"));
-    const out = path.join(dir, "out.txt");
-    const child = spawn("codex", ["exec", "--ephemeral", "--skip-git-repo-check", "-s", "read-only", "-m", CODEX_MODEL, "-C", dir, "-o", out, "-"], {
-      cwd: dir,
-    });
+const codex = (prompt: string, id: string) =>
+  runCodexTranslation(prompt, { model: CODEX_MODEL, stage: "atoms", lang: LANG, id, logPath: process.env.TRANSLATION_RUN_LOG });
+
+function claude(prompt: string): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const child = spawn("claude", ["-p", "--tools", "", "--no-session-persistence", "--setting-sources", "", ...(CHECKER === "sonnet" ? ["--model", "sonnet"] : [])], { cwd: os.tmpdir() });
+    let out = "";
+    const timeout = setTimeout(() => child.kill("SIGTERM"), 10 * 60 * 1000);
+    child.stdout.on("data", (chunk: Buffer) => (out += chunk));
+    child.stderr.resume();
     child.stdin.end(prompt);
-    child.on("close", () => {
-      const text = fs.existsSync(out) ? fs.readFileSync(out, "utf8") : "";
-      fs.rmSync(dir, { recursive: true, force: true });
-      resolve(text);
+    child.on("close", (code) => {
+      clearTimeout(timeout);
+      if (code !== 0) reject(new Error("뜻 검수기 실행이 실패했습니다."));
+      else resolve(out);
     });
   });
 }
 
-function claude(prompt: string): Promise<string> {
-  return new Promise((resolve) => {
-    const child = spawn("claude", ["-p", "--tools", "", "--no-session-persistence", "--setting-sources", ""], { cwd: os.tmpdir() });
-    let out = "";
-    child.stdout.on("data", (chunk: Buffer) => (out += chunk));
-    child.stdin.end(prompt);
-    child.on("close", () => resolve(out));
-  });
-}
+const meaningCheck = (prompt: string, id: string) =>
+  CHECKER === "codex"
+    ? runCodexTranslation(prompt, { model: CHECKER_MODEL, stage: "atom-meaning-check", lang: LANG, id, logPath: process.env.TRANSLATION_RUN_LOG })
+    : claude(prompt);
 
 function jsonObject<T>(text: string): T | undefined {
   const start = text.indexOf("{");
@@ -78,7 +88,7 @@ function jsonObject<T>(text: string): T | undefined {
 }
 
 async function translate(id: string): Promise<[number, number, number]> {
-  const file = JSON.parse(fs.readFileSync(`knowledge/atoms/${id}.json`, "utf8")) as AtomFile & { atoms: Array<{ text: Record<string, string> }> };
+  const file = JSON.parse(fs.readFileSync(path.join(ATOM_DIR, `${id}.json`), "utf8")) as AtomFile & { atoms: Array<{ text: Record<string, string> }> };
   const ko = koCards.get(id)!;
   // 이미 옮긴 원자는 두고 빠진 것만 옮긴다(검사를 고친 뒤 탈락분만 다시 돌리려고)
   const todo = file.atoms.map((_, i) => i).filter((i) => !file.atoms[i].text[LANG]);
@@ -100,7 +110,7 @@ async function translate(id: string): Promise<[number, number, number]> {
     // 번호는 0 부터 새로 매긴다. 원자 번호(37, 52 …)를 주면 Codex 가 0 부터 다시 매겨 답해, 탈락분만 다시 옮길 때 전부 어긋났다.
     ...todo.map((i, k) => `${k}. ${file.atoms[i].text.ko}`),
   ].join("\n");
-  const raw = await codex(prompt);
+  const raw = await codex(prompt, id);
   if (process.env.TR_DEBUG) fs.writeFileSync(`${process.env.TR_DEBUG}/${id}-${LANG}.txt`, `${prompt}\n=====\n${raw}`);
   const result = jsonObject<Record<string, string>>(raw) ?? {};
   let kept = 0;
@@ -147,7 +157,11 @@ async function translate(id: string): Promise<[number, number, number]> {
     "",
     'Reply with ONE JSON object only: {"0": true, "1": false, ...}',
   ].join("\n");
-  const verdict = passed.length ? (jsonObject<Record<string, boolean>>(await claude(check)) ?? jsonObject<Record<string, boolean>>(await claude(check))) : {};
+  const verdict = await translationMeaningVerdict(CHECKER, passed.length, () => meaningCheck(check, id));
+  if (passed.length && (!verdict || !Object.keys(verdict).length)) {
+    emptyCheckerReplies += 1;
+    if (emptyCheckerReplies >= MAX_EMPTY_CHECKER) throw new Error(`뜻 검수에서 연속 ${MAX_EMPTY_CHECKER}회 답을 읽지 못해 중단합니다.`);
+  } else if (Object.keys(verdict ?? {}).length) emptyCheckerReplies = 0;
   passed.forEach((p, k) => {
     const typed = file.atoms[p.i] as unknown as {
       text: Record<string, string>;
@@ -161,19 +175,19 @@ async function translate(id: string): Promise<[number, number, number]> {
     }
   });
   // 옮기는 동안 원자 파일이 바뀌었을 수 있으니 다시 읽어 번역만 얹는다
-  const fresh = JSON.parse(fs.readFileSync(`knowledge/atoms/${id}.json`, "utf8")) as typeof file;
-  const byId = new Map(file.atoms.map((a) => [(a as unknown as { id: string }).id, a.text[LANG]]));
+  const fresh = JSON.parse(fs.readFileSync(path.join(ATOM_DIR, `${id}.json`), "utf8")) as typeof file;
+  const byId = new Map(file.atoms.map((a) => [(a as unknown as { id: string }).id, { ko: a.text.ko, translated: a.text[LANG] }]));
   for (const a of fresh.atoms) {
-    const t = byId.get((a as unknown as { id: string }).id);
-    if (t) a.text[LANG] = t;
+    const result = byId.get((a as unknown as { id: string }).id);
+    if (result?.ko === a.text.ko && result.translated) a.text[LANG] = result.translated;
   }
-  fs.writeFileSync(`knowledge/atoms/${id}.json`, `${JSON.stringify(fresh, null, 2)}\n`);
+  fs.writeFileSync(path.join(ATOM_DIR, `${id}.json`), `${JSON.stringify(fresh, null, 2)}\n`);
   return [kept, rejected, meaning];
 }
 
 /** --recheck: 뜻 대조 없이 실렸던 번역(평가 22명)을 다시 가린다. 떨어진 번역은 지워 다음 실행이 다시 옮긴다. */
 async function recheck(id: string): Promise<[number, number, number]> {
-  const file = JSON.parse(fs.readFileSync(`knowledge/atoms/${id}.json`, "utf8")) as AtomFile & { atoms: Array<{ text: Record<string, string> }> };
+  const file = JSON.parse(fs.readFileSync(path.join(ATOM_DIR, `${id}.json`), "utf8")) as AtomFile & { atoms: Array<{ text: Record<string, string> }> };
   const target = targetCards.get(id)!;
   const done = file.atoms.map((_, i) => i).filter((i) => file.atoms[i].text[LANG]);
   if (!done.length) return [0, 0, 0];
@@ -186,7 +200,7 @@ async function recheck(id: string): Promise<[number, number, number]> {
     "",
     'Reply with ONE JSON object only: {"0": true, "1": false, ...}',
   ].join("\n");
-  const verdict = jsonObject<Record<string, boolean>>(await claude(check)) ?? jsonObject<Record<string, boolean>>(await claude(check));
+  const verdict = await translationMeaningVerdict(CHECKER, done.length, () => meaningCheck(check, id));
   // 판정을 못 읽으면 건드리지 않는다
   if (!verdict) return [done.length, 0, 0];
   let dropped = 0;
@@ -196,7 +210,7 @@ async function recheck(id: string): Promise<[number, number, number]> {
       dropped += 1;
     }
   });
-  fs.writeFileSync(`knowledge/atoms/${id}.json`, `${JSON.stringify(file, null, 2)}\n`);
+  fs.writeFileSync(path.join(ATOM_DIR, `${id}.json`), `${JSON.stringify(file, null, 2)}\n`);
   return [done.length - dropped, dropped, dropped];
 }
 
@@ -214,7 +228,7 @@ async function main(): Promise<void> {
     (arg("champions") === "bench"
       ? EVAL_CHAMPIONS
       : arg("champions") === "all"
-        ? fs.readdirSync("knowledge/atoms").map((f) => f.replace(/\.json$/, ""))
+        ? fs.readdirSync(ATOM_DIR).map((f) => f.replace(/\.json$/, ""))
         : (arg("champions") ?? "").split(",").filter(Boolean));
   let next = 0;
   let kept = 0;

@@ -13,6 +13,7 @@
  *      원자를 다시 지어 이어 붙인 글이 바뀌면 build-note-translations 가 다듬은 글을 쓰지 않는다.
  *
  * 사용: npx tsx scripts/llm/polish-note-translations.ts --lang en_US [--champions A,B] [--concurrency 2]
+ * --checker none --store <staging>: 구조 점검만 통과한 후보를 저장하며, 뜻 검수와 승인은 별도로 한다.
  */
 import { spawn } from "child_process";
 import * as fs from "fs";
@@ -23,6 +24,8 @@ import type { Playbook } from "../../src/lib/knowledge/playbookCore";
 import { PUBLIC_DATA_ROOT, resolvePatchVersion } from "./lib/data";
 import { CODEX_MODEL, type AtomFile } from "./build-note-atoms";
 import { joinedNotes } from "./build-note-translations";
+import { runCodexTranslation } from "./lib/matchup-translation-runtime";
+import { requireStagingStore, translationMeaningVerdict } from "./lib/translation-meaning-check";
 
 const arg = (name: string): string | undefined => {
   const index = process.argv.indexOf(`--${name}`);
@@ -31,8 +34,14 @@ const arg = (name: string): string | undefined => {
 const LANG = (arg("lang") ?? "en_US") as "en_US" | "zh_CN";
 // 옆 세션이 Codex 를 동시 6 으로 쓰는 중이라 기본을 낮춘다
 const CONCURRENCY = Number(arg("concurrency") ?? 2);
+const CHECKER = arg("checker") ?? "claude";
+const CHECKER_MODEL = arg("checker-model") ?? CODEX_MODEL;
 const LANG_NAME = { en_US: "English", zh_CN: "简体中文" };
-const STORE = path.join("knowledge", "note-translations", `${LANG}.json`);
+let emptyCheckerReplies = 0;
+const MAX_EMPTY_CHECKER = 3;
+const STORE = arg("store") ?? path.join("knowledge", "note-translations", `${LANG}.json`);
+requireStagingStore(CHECKER, arg("store"));
+const ATOM_DIR = arg("atoms") ?? path.join("knowledge", "atoms");
 
 export interface PolishedStore {
   lang: string;
@@ -49,26 +58,34 @@ const cardsOf = (lang: string) =>
 const koCards = cardsOf("ko_KR");
 const targetCards = cardsOf(LANG);
 
-function spawnText(cmd: string, args: string[], input: string, cwd: string): Promise<string> {
+function spawnText(cmd: string, args: string[], input: string, cwd: string): Promise<{ text: string; code: number | null }> {
   return new Promise((resolve) => {
     const child = spawn(cmd, args, { cwd });
     let out = "";
+    const timeout = setTimeout(() => child.kill("SIGTERM"), 10 * 60 * 1000);
     child.stdout.on("data", (chunk: Buffer) => (out += chunk));
+    child.stderr.resume();
     child.stdin.end(input);
-    child.on("close", () => resolve(out));
+    child.on("close", (code) => {
+      clearTimeout(timeout);
+      resolve({ text: out, code });
+    });
   });
 }
 
-async function codex(prompt: string): Promise<string> {
-  const dir = fs.mkdtempSync(path.join(os.tmpdir(), "codex-polish-"));
-  const out = path.join(dir, "out.txt");
-  await spawnText("codex", ["exec", "--ephemeral", "--skip-git-repo-check", "-s", "read-only", "-m", CODEX_MODEL, "-C", dir, "-o", out, "-"], prompt, dir);
-  const text = fs.existsSync(out) ? fs.readFileSync(out, "utf8") : "";
-  fs.rmSync(dir, { recursive: true, force: true });
-  return text;
-}
+const codex = (prompt: string, id: string) =>
+  runCodexTranslation(prompt, { model: CODEX_MODEL, stage: "note-polish", lang: LANG, id, logPath: process.env.TRANSLATION_RUN_LOG });
 
-const claude = (prompt: string) => spawnText("claude", ["-p", "--tools", "", "--no-session-persistence", "--setting-sources", ""], prompt, os.tmpdir());
+const claude = async (prompt: string) => {
+  const result = await spawnText("claude", ["-p", "--tools", "", "--no-session-persistence", "--setting-sources", "", ...(CHECKER === "sonnet" ? ["--model", "sonnet"] : [])], prompt, os.tmpdir());
+  if (result.code !== 0) throw new Error("뜻 검수기 실행이 실패했습니다.");
+  return result.text;
+};
+
+const meaningCheck = (prompt: string, id: string) =>
+  CHECKER === "codex"
+    ? runCodexTranslation(prompt, { model: CHECKER_MODEL, stage: "note-meaning-check", lang: LANG, id, logPath: process.env.TRANSLATION_RUN_LOG })
+    : claude(prompt);
 
 function jsonObject<T>(text: string): T | undefined {
   const start = text.indexOf("{");
@@ -95,7 +112,7 @@ async function polish(id: string, joined: Map<string, string>, store: PolishedSt
   const ko = koCards.get(id)!;
   const target = targetCards.get(id)!;
   // 원자 하나짜리 노트는 이어 붙인 것이 아니라 다듬을 것이 없다. 이미 다듬었고 바탕이 그대로면 건너뛴다.
-  const atomsOf = (JSON.parse(fs.readFileSync(`knowledge/atoms/${id}.json`, "utf8")) as AtomFile).atoms;
+  const atomsOf = (JSON.parse(fs.readFileSync(path.join(ATOM_DIR, `${id}.json`), "utf8")) as AtomFile).atoms;
   const count = (noteId: string) => atomsOf.filter((a) => a.source === `playbook:${noteId}` && a.text[LANG]).length;
   const todo = [...book.playing, ...book.against].filter(
     (n): n is typeof n & { id: string } => !!n.id && !!n.text && joined.has(n.id) && count(n.id) >= 2 && store.notes[n.id]?.basis !== joined.get(n.id),
@@ -112,7 +129,7 @@ async function polish(id: string, joined: Map<string, string>, store: PolishedSt
     "",
     ...todo.flatMap((n, k) => [`${k}. KO: ${n.text}`, `   ${LANG}: ${joined.get(n.id)}`]),
   ].join("\n");
-  const result = jsonObject<Record<string, string>>(await codex(prompt)) ?? {};
+  const result = jsonObject<Record<string, string>>(await codex(prompt, id)) ?? {};
   let rejected = 0;
   const passed: Array<{ id: string; ko: string; basis: string; text: string }> = [];
   todo.forEach((n, k) => {
@@ -140,7 +157,11 @@ async function polish(id: string, joined: Map<string, string>, store: PolishedSt
     "",
     'Reply with ONE JSON object only: {"0": true, "1": false, ...}',
   ].join("\n");
-  const verdict = passed.length ? (jsonObject<Record<string, boolean>>(await claude(check)) ?? jsonObject<Record<string, boolean>>(await claude(check))) : {};
+  const verdict = await translationMeaningVerdict(CHECKER, passed.length, () => meaningCheck(check, id));
+  if (passed.length && (!verdict || !Object.keys(verdict).length)) {
+    emptyCheckerReplies += 1;
+    if (emptyCheckerReplies >= MAX_EMPTY_CHECKER) throw new Error(`뜻 검수에서 연속 ${MAX_EMPTY_CHECKER}회 답을 읽지 못해 중단합니다.`);
+  } else if (Object.keys(verdict ?? {}).length) emptyCheckerReplies = 0;
   let kept = 0;
   let meaning = 0;
   passed.forEach((p, k) => {
@@ -156,9 +177,9 @@ async function polish(id: string, joined: Map<string, string>, store: PolishedSt
 }
 
 async function main(): Promise<void> {
-  const joined = new Map(Object.entries(joinedNotes(LANG).notes));
+  const joined = new Map(Object.entries(joinedNotes(LANG, ATOM_DIR).notes));
   const store: PolishedStore = fs.existsSync(STORE) ? (JSON.parse(fs.readFileSync(STORE, "utf8")) as PolishedStore) : { lang: LANG, notes: {} };
-  const ids = arg("champions")?.split(",") ?? fs.readdirSync("knowledge/atoms").map((f) => f.replace(/\.json$/, ""));
+  const ids = arg("champions")?.split(",") ?? fs.readdirSync(ATOM_DIR).map((f) => f.replace(/\.json$/, ""));
   fs.mkdirSync(path.dirname(STORE), { recursive: true });
   const save = () => {
     // 노트 id 순으로 적어 diff 가 흔들리지 않게 한다

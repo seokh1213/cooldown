@@ -24,12 +24,12 @@ const LANGS = ["en_US", "zh_CN"] as const;
 const ATOM_DIR = path.join(process.cwd(), "knowledge", "atoms");
 
 /** 같은 노트의 번역 원자를 순서대로 이은 글. 절반 미만만 번역된 노트는 뺀다. */
-export function joinedNotes(lang: (typeof LANGS)[number]): { notes: Record<string, string>; skipped: number } {
-  const files = fs.existsSync(ATOM_DIR) ? fs.readdirSync(ATOM_DIR).filter((f) => f.endsWith(".json")) : [];
+export function joinedNotes(lang: (typeof LANGS)[number], atomDir = ATOM_DIR): { notes: Record<string, string>; skipped: number } {
+  const files = fs.existsSync(atomDir) ? fs.readdirSync(atomDir).filter((f) => f.endsWith(".json")) : [];
   const notes: Record<string, string> = {};
   let skipped = 0;
   for (const file of files) {
-    const atoms = (JSON.parse(fs.readFileSync(path.join(ATOM_DIR, file), "utf8")) as AtomFile).atoms;
+    const atoms = (JSON.parse(fs.readFileSync(path.join(atomDir, file), "utf8")) as AtomFile).atoms;
     const bySource = new Map<string, typeof atoms>();
     for (const atom of atoms) {
       if (!atom.source.startsWith("playbook:")) continue;

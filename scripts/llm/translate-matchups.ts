@@ -24,6 +24,8 @@ import * as path from "path";
 import type { ChampionCard } from "../../src/lib/knowledge/facts";
 import { PUBLIC_DATA_ROOT, resolvePatchVersion } from "./lib/data";
 import { CODEX_MODEL } from "./build-note-atoms";
+import { groupMatchupJobs, maskNameOccurrences, runCodexTranslation } from "./lib/matchup-translation-runtime";
+import { requireStagingStore } from "./lib/translation-meaning-check";
 
 const arg = (name: string): string | undefined => {
   const index = process.argv.indexOf(`--${name}`);
@@ -31,17 +33,25 @@ const arg = (name: string): string | undefined => {
 };
 const LANG = (arg("lang") ?? "en_US") as "en_US" | "zh_CN";
 const CONCURRENCY = Number(arg("concurrency") ?? 2);
-const BATCH = Number(arg("batch") ?? 4);
+const BATCH = Number(arg("batch") ?? 8);
 const TRANSLATOR = arg("translator") ?? "codex";
 const CHECKER = arg("checker") ?? "claude";
+const CHECKER_MODEL = arg("checker-model") ?? CODEX_MODEL;
 const PROBE = arg("probe");
+const RUN_LOG = arg("run-log");
+const EMIT_EVERY = CHECKER === "none" ? 0 : Number(arg("emit-every") ?? 25);
+const MAX_BATCH_JOBS = 64;
 const probeRows: Array<{ me: string; enemy: string; slot: string; ko: string; text?: string; stage: "code" | "meaning" | "kept" }> = [];
 const LANG_NAME = { en_US: "English", zh_CN: "简体中文" };
 
 const patch = resolvePatchVersion();
 const llmDir = path.join(PUBLIC_DATA_ROOT, patch, "llm");
 const SRC = arg("src") ?? path.join(llmDir, "matchups");
-const STORE = path.join("knowledge", "matchup-translations", LANG);
+const STORE = arg("store") ?? path.join("knowledge", "matchup-translations", LANG);
+requireStagingStore(CHECKER, arg("store"));
+if (CHECKER === "none" && process.argv.includes("--emit")) {
+  throw new Error("뜻 검수 없이 저장한 staging 후보는 --emit으로 제공할 수 없습니다.");
+}
 
 type Sections = Record<string, string>;
 interface MatchupFile {
@@ -71,23 +81,23 @@ const itemPairs = [...koItems]
   .filter((p): p is { ko: string; target: string } => !!p.target && p.ko.replace(/\s/g, "").length >= 3)
   .sort((a, b) => b.ko.length - a.ko.length);
 
-function spawnText(cmd: string, args: string[], input: string, cwd: string): Promise<string> {
+function spawnText(cmd: string, args: string[], input: string, cwd: string): Promise<{ text: string; code: number | null }> {
   return new Promise((resolve) => {
     const child = spawn(cmd, args, { cwd });
     let out = "";
+    const timeout = setTimeout(() => child.kill("SIGTERM"), 10 * 60 * 1000);
     child.stdout.on("data", (chunk: Buffer) => (out += chunk));
+    child.stderr.resume();
     child.stdin.end(input);
-    child.on("close", () => resolve(out));
+    child.on("close", (code) => {
+      clearTimeout(timeout);
+      resolve({ text: out, code });
+    });
   });
 }
 
-async function codex(prompt: string): Promise<string> {
-  const dir = fs.mkdtempSync(path.join(os.tmpdir(), "codex-mu-"));
-  const out = path.join(dir, "out.txt");
-  await spawnText("codex", ["exec", "--ephemeral", "--skip-git-repo-check", "-s", "read-only", "-m", CODEX_MODEL, "-C", dir, "-o", out, "-"], prompt, dir);
-  const text = fs.existsSync(out) ? fs.readFileSync(out, "utf8") : "";
-  fs.rmSync(dir, { recursive: true, force: true });
-  return text;
+async function codex(prompt: string, me: string): Promise<string> {
+  return runCodexTranslation(prompt, { model: CODEX_MODEL, stage: "matchups", lang: LANG, id: me, logPath: RUN_LOG });
 }
 
 /** 로컬 Ollama. JSON 한 덩어리로 답하게 한다. 사고 모드가 있는 모델은 끈다. */
@@ -99,10 +109,18 @@ async function ollama(model: string, prompt: string): Promise<string> {
   return res.ok ? (((await res.json()) as { message?: { content?: string } }).message?.content ?? "") : "";
 }
 
-const translate = (prompt: string) => (TRANSLATOR.startsWith("ollama:") ? ollama(TRANSLATOR.slice("ollama:".length), prompt) : codex(prompt));
+const translate = (prompt: string, me: string) => (TRANSLATOR.startsWith("ollama:") ? ollama(TRANSLATOR.slice("ollama:".length), prompt) : codex(prompt, me));
 
-const claude = (prompt: string) =>
-  spawnText("claude", ["-p", "--tools", "", "--no-session-persistence", "--setting-sources", "", ...(CHECKER === "sonnet" ? ["--model", "sonnet"] : [])], prompt, os.tmpdir());
+const claude = async (prompt: string) => {
+  const result = await spawnText("claude", ["-p", "--tools", "", "--no-session-persistence", "--setting-sources", "", ...(CHECKER === "sonnet" ? ["--model", "sonnet"] : [])], prompt, os.tmpdir());
+  if (result.code !== 0) throw new Error("뜻 검수기 실행이 실패했습니다.");
+  return result.text;
+};
+
+const meaningCheck = (prompt: string, id: string) =>
+  CHECKER === "codex"
+    ? runCodexTranslation(prompt, { model: CHECKER_MODEL, stage: "matchup-meaning-check", lang: LANG, id, logPath: RUN_LOG })
+    : claude(prompt);
 
 function jsonObject<T>(text: string): T | undefined {
   const start = text.indexOf("{");
@@ -117,22 +135,29 @@ function jsonObject<T>(text: string): T | undefined {
 /** 원문에 나온 이름(스킬·챔피언·아이템)과 그 언어 이름 */
 function namesIn(ko: string, ids: string[]): Array<{ ko: string; target: string }> {
   const out: Array<{ ko: string; target: string }> = [];
+  const recognized: string[] = [];
   for (const id of ids) {
     const k = koCards.get(id);
     const t = targetCards.get(id);
     if (!k || !t) continue;
-    if (ko.includes(k.name)) out.push({ ko: k.name, target: t.name });
+    if (ko.includes(k.name)) {
+      out.push({ ko: k.name, target: t.name });
+      recognized.push(k.name);
+    }
     for (const s of k.spells) {
       // 이름이 둘인 스킬("도주 / 억압")은 두 이름을 모두 대조한다. 앞 이름만 보다가 "潜掠 / 压制"(정답 潜掠/强掳)가 통과했다.
       const koNames = s.name.split(/\s*[/|]\s*/);
       const tNames = t.spells.find((x) => x.slot === s.slot)?.name.split(/\s*[/|]\s*/) ?? [];
       koNames.forEach((koName, i) => {
         const tName = tNames[i] ?? tNames[0];
-        if (tName && koName.length >= 2 && ko.includes(koName)) out.push({ ko: koName, target: tName });
+        if (tName && koName.length >= 2 && ko.includes(koName)) {
+          out.push({ ko: koName, target: tName });
+          recognized.push(koName);
+        }
       });
     }
   }
-  let rest = ko;
+  let rest = maskNameOccurrences(ko, recognized);
   for (const item of itemPairs) {
     if (rest.includes(item.ko)) {
       out.push(item);
@@ -150,6 +175,7 @@ function missingNames(text: string, names: Array<{ ko: string; target: string }>
 
 /** 연달아 받은 빈 답의 수. Codex 한도에 걸리면 답이 비어 모든 칸이 "탈락" 으로 헛돌았다. */
 let emptyReplies = 0;
+let emptyCheckerReplies = 0;
 const MAX_EMPTY = 3;
 
 type Job = { enemy: string; slot: string; ko: string };
@@ -174,7 +200,7 @@ function batchPrompt(me: string, jobs: Job[]): string {
 }
 
 async function translateBatch(me: string, jobs: Job[], store: Store): Promise<[number, number, number]> {
-  return acceptBatch(me, jobs, await translate(batchPrompt(me, jobs)), store);
+  return acceptBatch(me, jobs, await translate(batchPrompt(me, jobs), me), store);
 }
 
 /** 번역기가 낸 글을 코드로 대조하고 뜻 대조를 거쳐 통과한 칸만 저장소에 싣는다. `--import` 도 이 길을 탄다. */
@@ -213,17 +239,23 @@ async function acceptBatch(me: string, jobs: Job[], reply: string, store: Store)
     CHECKER === "none"
       ? Object.fromEntries(passed.map((_, k) => [String(k), true]))
       : passed.length
-        ? (jsonObject<Record<string, boolean>>(await claude(check)) ?? jsonObject<Record<string, boolean>>(await claude(check)))
+        ? (jsonObject<Record<string, boolean>>(await meaningCheck(check, me)) ?? jsonObject<Record<string, boolean>>(await meaningCheck(check, me)))
         : {};
+  if (passed.length && (!verdict || !Object.keys(verdict).length)) {
+    emptyCheckerReplies += 1;
+    if (emptyCheckerReplies >= MAX_EMPTY) throw new Error(`뜻 검수에서 연속 ${MAX_EMPTY}회 답을 읽지 못해 중단합니다.`);
+  } else if (Object.keys(verdict ?? {}).length) emptyCheckerReplies = 0;
   let kept = 0;
   let meaning = 0;
+  const latest = readSource(me);
   passed.forEach((p, k) => {
     const ok = verdict?.[String(k)] === true;
     if (PROBE) probeRows.push({ me, enemy: p.job.enemy, slot: p.job.slot, ko: p.job.ko, text: p.text, stage: ok ? "kept" : "meaning" });
-    if (ok) {
+    const current = latest?.pairs[p.job.enemy]?.[p.job.slot];
+    if (ok && current === p.job.ko) {
       (store.pairs[p.job.enemy] ??= {})[p.job.slot] = { basis: p.job.ko, text: p.text };
       kept += 1;
-    } else {
+    } else if (!ok) {
       rejected += 1;
       meaning += 1;
     }
@@ -298,11 +330,7 @@ async function main(): Promise<void> {
         .map(([slot, ko]) => ({ enemy, slot, ko })),
     );
     // 한 번에 BATCH 쌍어치 칸(쌍마다 칸 여러 개)을 보낸다
-    const byEnemy = [...new Set(jobs.map((j) => j.enemy))];
-    for (let i = 0; i < byEnemy.length; i += BATCH) {
-      const group = new Set(byEnemy.slice(i, i + BATCH));
-      tasks.push({ me, jobs: jobs.filter((j) => group.has(j.enemy)) });
-    }
+    for (const group of groupMatchupJobs(jobs, BATCH, MAX_BATCH_JOBS)) tasks.push({ me, jobs: group });
   }
   // --max-tasks: 시험 삼아 앞 몇 묶음만
   if (arg("max-tasks")) tasks.splice(Number(arg("max-tasks")));
@@ -318,13 +346,13 @@ async function main(): Promise<void> {
   }
   if (arg("import")) return importReplies(arg("import")!);
   let next = 0;
+  let completed = 0;
   const total = [0, 0, 0];
   await Promise.all(
     Array.from({ length: CONCURRENCY }, async () => {
       while (next < tasks.length) {
         if (emptyReplies >= MAX_EMPTY) {
-          console.log(`번역기 빈 답이 ${MAX_EMPTY}번 이어져 멈춘다(한도·오류). 다시 돌리면 이어서 옮긴다.`);
-          return;
+          throw new Error(`번역기 빈 답이 ${MAX_EMPTY}번 이어져 중단합니다.`);
         }
         const task = tasks[next++];
         const store = stores.get(task.me)!;
@@ -334,6 +362,8 @@ async function main(): Promise<void> {
         total[0] += k;
         total[1] += r;
         total[2] += m;
+        completed += 1;
+        if (!PROBE && EMIT_EVERY > 0 && completed % EMIT_EVERY === 0) emit();
         console.log(`${LANG} ${task.me} (${next}/${tasks.length}): 번역 ${k} · 탈락 ${r}(뜻 대조 ${m}) · ${((Date.now() - started) / 1000).toFixed(0)}초`);
       }
     }),
