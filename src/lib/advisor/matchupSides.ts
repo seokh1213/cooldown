@@ -25,6 +25,7 @@ const FACES = /^\s*(을|를|이|가|은|는|와|과|랑|이랑)?\s*(상대|전�
  * 차이가 0 이 되고 어순으로 떨어졌다.
  */
 const FACED_BEFORE = /(상대|맞상대)\s*(가|는|이)\s*$|\b(vs\.?|versus)\s*$/i;
+const PLAYED_BEFORE = /(?:^|[\s,.!?])(?:제가|나는|저는|내가|나|저)\s*$/;
 
 export interface MatchupSides<T> {
   sides: [T, T];
@@ -52,6 +53,7 @@ export function matchupSidesDetailed<T extends { name: string }>(question: strin
     const before = question.slice(0, at);
     let value = 0;
     if (PLAYS.test(after.slice(0, 4))) value += 2;
+    if (PLAYED_BEFORE.test(before) && /^\s*(?:인데|입니다|이면|면)/.test(after)) value += 2;
     if (FACES.test(after)) value -= 2;
     if (FACED_BEFORE.test(before)) value -= 2;
     return value;

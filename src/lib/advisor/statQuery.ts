@@ -29,13 +29,21 @@ const STAT_LEXICON: Array<[StatName, RegExp]> = [
 
 export function detectStat(question: string): StatName | undefined {
   // 체력 재생처럼 긴 이름을 체력보다 먼저 찾는다.
-  return STAT_LEXICON.find(([, pattern]) => pattern.test(question))?.[0];
+  const fields = new Set(statMentions(question).map(mention => mention.field));
+  return STAT_LEXICON.find(([field]) => fields.has(field))?.[0];
+}
+
+function isPerspectiveAs(question: string, index: number, word: string): boolean {
+  if (!/^as$/i.test(word)) return false;
+  const after = question.slice(index + word.length);
+  if ((word === "As" || word === "as") && /^\s+(?!at\b|level\b|lv\b)[A-Za-z]/i.test(after)) return true;
+  return /^\s*$/.test(question.slice(0, index)) && /^\s*as\b.*\b(?:against|into|vs|versus)\b/i.test(question);
 }
 
 /** 긴 어휘가 덮는 짧은 어휘만 제외한다. 별도로 물은 체력은 체젠과 함께 남긴다. */
 function statMentions(question: string) {
   const matches = STAT_LEXICON.flatMap(([field, pattern]) => [...question.matchAll(new RegExp(pattern.source, "gi"))]
-    .filter(match => !(field === "attackSpeed" && match.index === 0 && /^as\b.*\b(?:against|into)\b/i.test(question)))
+    .filter(match => !(field === "attackSpeed" && isPerspectiveAs(question, match.index, match[0])))
     .map(match => ({ field, index: match.index, end: match.index + match[0].length })));
   return matches.filter(match => !matches.some(other => other !== match && other.index <= match.index && other.end >= match.end
       && other.end - other.index > match.end - match.index));
