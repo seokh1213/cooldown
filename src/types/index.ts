@@ -84,6 +84,8 @@ export interface Champion {
   key: string;
   title: string;
   ddragonVersion?: string;
+  /** Data Dragon의 공식 자원 이름(마나·기력·분노 등). */
+  partype?: string;
   hangul?: string;
   skins?: ChampionSkin[];
   lore?: string;

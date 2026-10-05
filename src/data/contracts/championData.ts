@@ -168,6 +168,7 @@ export interface ChampionDetailV2 {
     name: string;
     title: string;
     tags: string[];
+    resource?: string;
     baseStats: ChampionBaseStats;
     baseStatContributions: StatContribution[];
     abilities: Record<AbilitySlot, AbilityV2>;

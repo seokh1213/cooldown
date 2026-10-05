@@ -51,7 +51,7 @@ for (const width of [390, 1280]) {
     expect(decoded).toBe(true);
     await ask("리신 궁은 속박먼저하고 날라가나?");
     await expect(page.getByText(/주 대상은 먼저 속박되고, 그다음 발차기로 밀쳐집니다/).last()).toBeVisible();
-    await expect(page.getByText("용의 분노", { exact: true })).toHaveCount(1);
+    await expect(page.getByRole("button", { name: "R 용의 분노", exact: true }).last()).toBeVisible();
     if (width === 390) await page.screenshot({ path: "research/llm-evals/crowd-control/leesin-mobile.png" });
   });
   test(`CC 해제 후속 질문과 슬롯 변경: ${width}px`, async ({ page }) => {

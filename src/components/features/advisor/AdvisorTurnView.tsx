@@ -149,6 +149,10 @@ export function AdvisorTurnView(props: AdvisorTurnViewProps) {
       ) : turn.answer ? (
         // 규칙·오타 후보·글은 짧아서 대화 안에 그대로 둔다.
         <div className="space-y-2">
+          {turn.answer.kind === "compare" && turn.answer.cards.length === 1 && turn.answer.statQuery && (
+            <ComparisonHeadlines answer={turn.answer} />
+          )}
+          {commentary}
           <AdvisorAnswerCard
             answer={turn.answer}
             ddragonVersion={ddragonVersion}
@@ -156,7 +160,6 @@ export function AdvisorTurnView(props: AdvisorTurnViewProps) {
             onPickChampion={props.onPickChampion}
             onNavigate={onNavigate}
           />
-          {commentary}
           {perspectiveChips}
           {pending}
         </div>

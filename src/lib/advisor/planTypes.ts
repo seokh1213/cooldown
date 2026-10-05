@@ -12,6 +12,7 @@ import type { DialogueHistoryTurn, DialogueMemory } from "./dialogueState";
 import type { ResolvedQuestion } from "./resolvedQuestion";
 import type { ChampionStatQuery } from "./statQuery";
 import type { CrowdControlType } from "@/lib/knowledge/crowdControl";
+import type { RequestIntent } from "./requestIntent";
 
 /** 자료 조회·상성·확인·생성 중 질문 하나를 답할 계획. 조립 단계가 실행한다. */
 export interface ControlContext { champions: string[]; slot?: string; types?: CrowdControlType[] }
@@ -66,6 +67,7 @@ export interface PlanContext {
 }
 
 export interface PlanDeps {
+  classifyRequest?: (question: ResolvedQuestion) => Promise<RequestIntent | undefined>;
   /** 실험용 능력치 판정. 명확한 규칙 조회가 실패한 경우에만 호출한다. */
   inferStatQuery?: (question: ResolvedQuestion, memory: DialogueMemory, ctx: PlanContext) => Promise<ChampionStatQuery | undefined>;
   /** 판정기(`ctx.judge` 단계의 것). 거절하면(모델 없음·파일 못 받음) 부르는 단계가 낱말 규칙으로 간다. */
@@ -99,6 +101,7 @@ export interface Intent {
   /** 대화에서 가장 최근에 다룬 아이템 */
   recentItem?: string;
   slot?: string;
+  requestIntent?: RequestIntent;
 }
 
 export type Step = (intent: Intent, deps: PlanDeps) => AnswerPlan | undefined | Promise<AnswerPlan | undefined>;

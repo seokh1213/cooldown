@@ -27,7 +27,7 @@ export async function answerChampion(intent: Intent): Promise<AnswerPlan | undef
   // 아이템 갈래인데 아이템 이름이 없으면("그럼 템은?") 대화·화면 챔피언의 아이템 노트를 묻는 것이다
   const itemWithoutName = ask === "item" && !buildItemCard(intent.data, question, intent.recentItem);
   // 챔피언 카드 뒤의 "그럼 한타 때는?", "라인전은?" — 이름 없는 공략 갈래나 주제 낱말은 대화·화면 챔피언의 그 주제 노트다(2026-09-30 브라우저 시험: "자료 없음" 으로 빠짐)
-  const guideFollowup = ask === "guide" || Boolean(topicFromWords(question));
+  const guideFollowup = ask === "guide" || Boolean(intent.requestIntent ? intent.requestIntent.topic : topicFromWords(question));
   const about = champions.length === 0 && (looksChampionDirected(question, slot, ask) || itemWithoutName || guideFollowup) ? championsFromContext(intent) : { champions, notice: ctx.notice };
   if ("type" in about) return about;
   if (about.champions.length === 0) return undefined;
@@ -79,14 +79,16 @@ function championsFromContext({ question, ctx, data, recent, slot, ask }: Intent
  * 4건·3건으로 줄인 것은 프롬프트가 6천 자에 닿으면 브라우저 런타임이 죽기 때문이었는데,
  * 여기는 화면에 바로 나가는 글이라 그 제약이 없다.
  */
-async function answerOneChampion({ question, ctx, data, ask, topic: judgeTopicOnce, slot }: Intent, card: ChampionCard, notice: string | undefined): Promise<AnswerPlan> {
+async function answerOneChampion({ question, ctx, data, ask, topic: judgeTopicOnce, slot, requestIntent }: Intent, card: ChampionCard, notice: string | undefined): Promise<AnswerPlan> {
   // 판정기가 skills를 골라도 명시적인 연계 질문은 절차를 답한다.
-  if (asksCombo(question) && !asksSkillHandling(question)) {
+  const combo = requestIntent ? requestIntent.scope === "combo" : asksCombo(question) && !asksSkillHandling(question);
+  if (combo) {
     return { type: "card", answer: { kind: "champion", card, notes: championNotes(data, card, question, "playing", { topic: "combo" }) }, notice };
   }
   // "패시브와 네 가지 스킬을 각각" 은 패시브 한 칸이 아니라 스킬 전체 소개다
-  const spell = slot && !asksWholeKit(question) ? card.spells.find((entry) => entry.slot === slot) : undefined;
-  if (spell && asksSkillHandling(question)) {
+  const wholeKit = requestIntent ? requestIntent.scope === "skills" : asksWholeKit(question);
+  const spell = slot && !wholeKit ? card.spells.find((entry) => entry.slot === slot) : undefined;
+  if (spell && (requestIntent ? requestIntent.scope === "counterplay" : asksSkillHandling(question))) {
     const notes = championNotes(data, card, question, "against", { topic: "skill", perspective: "against" });
     return { type: "card", answer: { kind: "champion", card, notes: { ...notes, playing: [], against: notes.against.slice(0, 1), detail: "full" } }, notice };
   }
@@ -96,7 +98,7 @@ async function answerOneChampion({ question, ctx, data, ask, topic: judgeTopicOn
   const tagAnswer = buildTagAnswer(data, card, question);
   if (tagAnswer) return { type: "code", answer: tagAnswer, notice };
   // "말파이트 스킬 설명해줘": 스킬 다섯 개의 요약 + 운용 노트. 능력치 표는 뺀다.
-  if (ask === "skills" || asksWholeKit(question)) {
+  if (requestIntent ? requestIntent.scope === "skills" : ask === "skills" || wholeKit) {
     return { type: "card", answer: { kind: "champion", card, view: "skills", notes: championNotes(data, card, question, undefined, await judgeTopicOnce()) }, notice };
   }
   // "말파이트 스킬 쿨타임": 슬롯 없이 사실 하나를 물으면 스킬 다섯 개의 그 사실을 표로.

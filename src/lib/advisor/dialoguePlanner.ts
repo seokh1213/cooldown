@@ -14,6 +14,10 @@ import { priorMatchup, rememberMatchupSelection } from "./dialogueMatchupMemory"
 import { knowledgeFactPlan } from "./knowledgeFactPlan";
 import { passiveMechanicPlan } from "./passiveMechanicPlan";
 import { comboAdvicePlan } from "./comboPlan";
+import { classifyRequestInput } from "./classifyRequestInput";
+import { requestIntentPlan } from "./requestIntentPlan";
+import { answerChampionIds } from "./answer";
+import { statQueryFromAnswer } from "./statQuery";
 
 export type { DialogueVariant } from "./dialogueRequest";
 export { splitDialogueQuestions } from "./dialogueRequest";
@@ -46,7 +50,7 @@ export async function planPreparedDialogue(request: DialogueRequest, ctx: PlanCo
     return { parts: [{ question: typeof input === "string" ? input : input.text, plan: await planAnswer(input, ctx, deps) }], memory };
   }
   for (const input of request.questions) {
-    const resolved = resolveQuestion(input, ctx.data);
+    const resolved = await classifyRequestInput(resolveQuestion(input, ctx.data), deps);
     const question = resolved.text;
     const prior = priorMatchup(resolved, request.memory);
     if (prior) {
@@ -66,7 +70,10 @@ export async function planPreparedDialogue(request: DialogueRequest, ctx: PlanCo
     const passive = passiveMechanicPlan(resolved, ctx, memory);
     const knowledge = knowledgeFactPlan(resolved, ctx, memory);
     const combo = comboAdvicePlan(resolved, ctx, memory);
-    const preferred = combo ?? (knowledge?.controlContext && mechanic?.memory.topic !== "control_resistance" ? knowledge : undefined) ?? mechanic?.plan ?? knowledge ?? passive
+    const learned = requestIntentPlan(resolved, memory, ctx);
+    if (learned?.type === "card") contract = { operation: resolved.requestIntent?.scope === "statsAll" ? "lookup" : "explain",
+      targets: answerChampionIds(learned.answer), stat: statQueryFromAnswer(learned.answer) };
+    const preferred = learned ?? combo ?? (knowledge?.controlContext && mechanic?.memory.topic !== "control_resistance" ? knowledge : undefined) ?? mechanic?.plan ?? knowledge ?? passive
       ?? (resolved.matchup ? await matchupPlan(resolved, memory, ctx, deps) : undefined);
     if (passive?.type === "card" && passive.answer.kind === "spell" && preferred === passive) {
       contract = { operation: "explain", targets: [passive.answer.championId] };

@@ -20,6 +20,7 @@ import { AdvisorMarkdown } from "./AdvisorMarkdown";
 import { Disclosure, Frame, KvTable, PatchLinkFooter, SlotBadge } from "./AnswerCardFrame";
 import { ChampionAnswerCard } from "./ChampionAnswerCard";
 import { CompareAnswerCard } from "./CompareAnswerCard";
+import { championReferenceOf } from "@/lib/advisor/championReference";
 
 interface AdvisorAnswerCardProps {
   answer: AdvisorAnswer;
@@ -32,6 +33,9 @@ interface AdvisorAnswerCardProps {
 }
 
 export function AdvisorAnswerCard({ answer, ddragonVersion, patch, onPickChampion, onNavigate }: AdvisorAnswerCardProps) {
+  const reference = championReferenceOf(answer);
+  if (reference) return <ChampionAnswerCard answer={reference} selectedSpell={answer.kind === "spell" ? answer : undefined}
+    ddragonVersion={ddragonVersion} patch={patch} onNavigate={onNavigate} />;
   switch (answer.kind) {
     case "text":
       return <AdvisorMarkdown text={answer.text} />;

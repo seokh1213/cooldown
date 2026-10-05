@@ -23,6 +23,8 @@ import { labelSlots } from "./slotLabels";
 import { josa } from "@/lib/knowledge/text";
 import { controlHeading } from "@/lib/knowledge/crowdControl";
 import { comboDigest } from "./comboNotes";
+import { overviewProse } from "./overviewProse";
+import { spellSummary } from "./answer";
 
 interface ProseWords {
   /** "{champion}의 {label}입니다." 처럼 값 하나를 알리는 말 */
@@ -123,6 +125,7 @@ export function answerProse(answer: AdvisorAnswer, lang: Language = "ko_KR"): st
   }
 
   if (answer.kind === "champion") {
+    if (answer.view === "overview") return overviewProse(answer.card, lang);
     if (answer.statQuery && answer.headline) return w.is(answer.headline.label, answer.headline.value);
     const name = answer.card.name;
     const focus = answer.focus;
@@ -140,7 +143,7 @@ export function answerProse(answer: AdvisorAnswer, lang: Language = "ko_KR"): st
     // 이름만 늘어놓으면 "P 화강암 방패, Q 지진의 파편…" 으로 끝나 아무것도 안 알려 준다.
     // 스킬마다 쿨·효과 한 줄을 붙인다. 카드에 이미 있는 값이라 지어내는 부분이 없다.
     if (answer.view === "skills") {
-      const lines = answer.card.spells.map((spell) => `- ${spell.slot} ${spell.name}: ${spellOneLiner(spell, lang)}`);
+      const lines = answer.card.spells.map((spell) => `- **${spell.slot} ${spell.name}:** ${spellSummary(spell)}`);
       return [w.skillset(name), ...lines].join("\n");
     }
     return championDigest(answer, lang);

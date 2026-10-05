@@ -103,6 +103,7 @@ export function buildSpellAnswer(
     kind: "spell",
     championId: card.id,
     championName: card.name,
+    card,
     spell,
     focus: detected?.focus,
     headline,

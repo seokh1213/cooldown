@@ -17,6 +17,7 @@ import { dialogueMemoryOf, rememberAnswer } from "@/lib/advisor/dialogueState";
 import { offlineJudge } from "@/lib/advisor/offlineJudge";
 import { fetchJudgeFile } from "@/lib/advisor/storage";
 import { docAnswer } from "@/lib/advisor/questionDocs";
+import { requestClassifier } from "@/lib/advisor/requestIntent";
 
 interface AskAdvisorOptions {
   advisor: UseAdvisorResult;
@@ -35,6 +36,12 @@ interface AskAdvisorOptions {
 const offline = offlineJudge(async (file) => {
   const response = await fetchJudgeFile(`${import.meta.env.BASE_URL}${file}`);
   if (!response.ok) throw new Error(`오프라인 판정기 ${file} 를 받지 못했습니다`);
+  return response.arrayBuffer();
+});
+
+const classifyRequest = requestClassifier(async (file) => {
+  const response = await fetchJudgeFile(`${import.meta.env.BASE_URL}${file}`);
+  if (!response.ok) throw new Error("요청 판정기를 받지 못했습니다");
   return response.arrayBuffer();
 });
 
@@ -109,7 +116,7 @@ export function useAskAdvisor({ advisor, data, patch, championIds, canUseModel }
         judge,
         notice,
       };
-      const deps = { judge: judge === "model" ? modelThenOffline(advisor.judge) : offline, search: advisor.search, inferStatQuery };
+      const deps = { judge: judge === "model" ? modelThenOffline(advisor.judge) : offline, search: advisor.search, inferStatQuery, classifyRequest };
       const { dialogue, reply } = await answerDialogue(question, ctx, deps);
       if (dialogue.parts.some(p => p.plan.type === "code" && p.plan.pending)) pendingQuestion.current = question;
       recordReply(question, reply, notice);

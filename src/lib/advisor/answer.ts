@@ -63,6 +63,8 @@ export type AdvisorAnswer =
       kind: "spell";
       championId: string;
       championName: string;
+      /** 채팅은 해당 스킬만 답하고, 자료 카드는 챔피언 전체 스킬을 보여준다. 저장은 id만 한다. */
+      card?: ChampionCard;
       spell: SpellFact;
       focus?: SpellFocus;
       /** 질문이 가리킨 사실. 카드 맨 위에 크게 놓는다. */
@@ -80,7 +82,7 @@ export type AdvisorAnswer =
       /** "말파이트 스킬 쿨타임" 처럼 슬롯 없이 사실 하나를 물으면 스킬 다섯 개의 그 사실만 */
       focus?: SpellFocus;
       /** "스킬 설명해줘": 능력치 대신 스킬 다섯 개의 요약 */
-      view?: "skills";
+      view?: "skills" | "overview";
       /**
        * 사람이 검증한 운용 노트. 플레이할 때 / 상대할 때.
        * `perspective` 는 질문이 어느 쪽을 물었는지로, 카드가 그쪽을 먼저 보인다.

@@ -21,6 +21,7 @@ type StatResolution = ChampionStatQuery | { kind: "unsupportedStatLevel"; level:
 
 /** 이름만 줄이거나 레벨만 바꾼 후속 질문에도 나머지 조회 조건을 보존한다. */
 export function resolveStatQuery(resolved: ResolvedQuestion, memory: DialogueMemory, ctx: PlanContext): StatResolution | undefined {
+  if (resolved.requestIntent && resolved.requestIntent.scope !== "stats") return undefined;
   const question = resolved.text.replace(/(?:스킬|패시브)\s*말고/g, "");
   if (!ctx.data || resolved.matchup || OTHER_QUERY.test(question) || ADVICE.test(question)
     || asksMatchupHelp(question) || isBasicAttackMechanicQuestion(question)) return undefined;
@@ -57,12 +58,16 @@ export function dialogueStatPlan(resolved: ResolvedQuestion, memory: DialogueMem
     return { type: "code", answer: { kind: "text", text } };
   }
   if (query.kind === "unsupportedStatLevel") {
-    const text = ctx.lang === "ko_KR" ? `${query.level}레벨 능력치는 현재 자료에 없습니다. 1·6·11·18레벨 값을 조회할 수 있습니다.`
-      : ctx.lang === "en_US" ? `Level ${query.level} stats are not in the current data. Available levels: 1, 6, 11, 18.`
-        : `当前资料没有${query.level}级属性。可查询等级：1、6、11、18。`;
-    return { type: "code", answer: { kind: "text", text } };
+    return unsupportedStatLevelPlan(query.level, ctx);
   }
   return statPlanForQuery(query, resolved, ctx);
+}
+
+export function unsupportedStatLevelPlan(level: number, ctx: PlanContext): AnswerPlan {
+  const text = ctx.lang === "ko_KR" ? `${level}레벨 능력치는 현재 자료에 없습니다. 1·6·11·18레벨 값을 조회할 수 있습니다.`
+    : ctx.lang === "en_US" ? `Level ${level} stats are not in the current data. Available levels: 1, 6, 11, 18.`
+      : `当前资料没有${level}级属性。可查询等级：1、6、11、18。`;
+  return { type: "code", answer: { kind: "text", text } };
 }
 
 /** 검증한 조회를 기존 카드와 문장으로 조립한다. 실험 판정도 같은 경로를 사용한다. */

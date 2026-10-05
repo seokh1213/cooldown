@@ -8,6 +8,7 @@ export const STAT_QUERY_TERMS: Record<StatName, string> = {
   health: "체력", healthRegen: "체력 재생", armor: "방어력", magicResist: "마법 저항력",
   attackDamage: "공격력", attackSpeed: "공격 속도", moveSpeed: "이동 속도",
 };
+export const ALL_CHAMPION_STATS = Object.keys(STAT_QUERY_TERMS) as StatName[];
 export interface ChampionStatQuery {
   kind: "championStat";
   champions: string[];

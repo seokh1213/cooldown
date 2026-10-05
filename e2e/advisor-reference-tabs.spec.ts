@@ -25,7 +25,7 @@ for (const width of [390, 1280]) test(`자료 탭을 챔피언 이름으로 구�
     await expect(panel.getByText(champion === "오공" ? "전사 · 탱커 · 근접" : "전사 · 근접", { exact: true })).toBeVisible();
     const stats = panel.getByRole("table").first();
     await expect(stats).not.toContainText(/상위|하위/);
-    await expect(stats.getByRole("row").filter({ hasText: /^체력/ })).toContainText(champion === "오공" ? "+99" : "+114");
+    await expect(stats.getByRole("row").filter({ has: page.getByRole("cell", { name: "체력", exact: true }) })).toContainText(champion === "오공" ? "+99" : "+114");
   }
   await expect(panel.getByRole("button", { name: "챔피언", exact: true })).toHaveCount(0);
   await page.screenshot({ path: `/tmp/cooldown-reference-tabs-${width}.png` });

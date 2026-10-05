@@ -9,6 +9,7 @@ import { unavailableStatPlan } from "./unavailableStats";
 const ADVICE = /빠졌|빠진|없으면|대신|들어가|진입|상대법|교환|언제|어떻게|피하|피해\s*버|좋아|추천|\b(when|should|instead|without|bait|avoid|engage)\b|怎么|何时|没了|没有|换成|推荐/i;
 
 export function directFactPlan(resolved: ResolvedQuestion, ctx: PlanContext): AnswerPlan | undefined {
+  if (resolved.requestIntent && ["overview", "statsAll", "skills", "combo", "advice", "counterplay"].includes(resolved.requestIntent.scope)) return undefined;
   const unavailable = unavailableStatPlan(resolved, ctx);
   if (unavailable) return unavailable;
   const { text: question, champions, slot, spellFocus } = resolved;

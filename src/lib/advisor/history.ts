@@ -37,7 +37,7 @@ export type StoredAnswer =
       statQuery?: ChampionStatQuery;
       headline?: Fact;
       focus?: SpellFocus;
-      view?: "skills";
+      view?: "skills" | "overview";
       /**
        * `perspective` 는 나중에 생긴 값이라 옛 대화에는 없다. 되살릴 때 채운다.
        * 저장된 것을 고쳐 쓰지 않는 이유는, 옛 기록이 그때 무엇을 보여 줬는지가
@@ -162,6 +162,7 @@ export function reviveAnswer(stored: StoredAnswer, data: AdvisorData): AdvisorAn
         kind: "spell",
         championId: card.id,
         championName: card.name,
+        card,
         spell,
         focus: stored.focus,
         headline: stored.headline,

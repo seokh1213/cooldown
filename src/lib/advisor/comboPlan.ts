@@ -27,11 +27,12 @@ function unavailableAbilities(question: string, previous: string[]): string[] {
 
 export function comboAdvicePlan(resolved: ResolvedQuestion, ctx: PlanContext, memory?: DialogueMemory): AnswerPlan | undefined {
   const { text: question, champions } = resolved;
-  const explicit = asksCombo(question);
+  const explicit = resolved.requestIntent ? resolved.requestIntent.scope === "combo" : asksCombo(question);
   const followup = memory?.active === "champion" && memory.combo
     && (mentionsAbilityState(question) || /without\s+(?:my\s+)?(?:ult|R|flash)/i.test(question))
     && !/쿨타임|몇\s*초|사거리|계수|cooldown|range|ratio/i.test(question);
-  if (!ctx.data || (!explicit && !followup) || resolved.matchup || champions.length > 1 || asksSkillHandling(question)) return undefined;
+  const handling = resolved.requestIntent ? resolved.requestIntent.scope === "counterplay" : asksSkillHandling(question);
+  if (!ctx.data || (!explicit && !followup) || resolved.matchup || champions.length > 1 || handling) return undefined;
   if (!champions.length && memory?.active === "matchup") return undefined;
   const id = champions[0]?.id ?? memory?.combo?.champion ?? memory?.champion ?? ctx.championIds[0];
   if (!id || (!explicit && id !== memory?.combo?.champion)) return undefined;

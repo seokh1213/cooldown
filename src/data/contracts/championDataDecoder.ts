@@ -218,6 +218,7 @@ export function decodeChampionDetail(value: unknown): ChampionDetailV2 {
   if (
     typeof value.champion.id !== "string" ||
     typeof value.champion.name !== "string" ||
+    (value.champion.resource !== undefined && typeof value.champion.resource !== "string") ||
     !isRecord(value.champion.baseStats)
   ) {
     throw new Error("Invalid champion identity or stats");

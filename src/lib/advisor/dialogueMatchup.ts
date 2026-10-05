@@ -28,7 +28,7 @@ function pairForQuestion(resolved: ResolvedQuestion, memory: DialogueMemory, ctx
   const current = memory.matchup;
   const prior = current ? [data.cardById.get(current.mine)!, data.cardById.get(current.enemy)!] as [ChampionCard, ChampionCard] : undefined;
   const act = dialogueAct(question);
-  const focus = topicFromWords(question);
+  const focus = resolved.requestIntent ? resolved.requestIntent.topic : topicFromWords(question);
   // “피오라 대 다리우스로 돌아가자”의 마지막 -로는 내 챔피언을 바꾸는 표지가 아니다.
   const versus = resolved.mentions.find((m, i, mentions) => mentions[i + 1]
     && /\s+(?:대|vs\.?|versus)\s*$/i.test(question.slice(m.index, mentions[i + 1].index)))?.card;
@@ -66,14 +66,15 @@ function pairForQuestion(resolved: ResolvedQuestion, memory: DialogueMemory, ctx
 export async function matchupPlan(input: QuestionInput, memory: DialogueMemory, ctx: PlanContext, deps: PlanDeps): Promise<AnswerPlan | undefined> {
   if (!ctx.data) return undefined;
   const resolved = resolveQuestion(input, ctx.data);
+  if (resolved.requestIntent && !["advice", "counterplay"].includes(resolved.requestIntent.scope)) return undefined;
   const question = resolved.text;
   const pair = pairForQuestion(resolved, memory, ctx);
   if (!pair) return undefined;
   const names = pair.map(c => c.name);
   const same = memory.matchup?.mine === pair[0].id && memory.matchup.enemy === pair[1].id;
   const reason = dialogueAct(question) === "more" || same && asksMoreMatchupAdvice(question);
-  let focus = topicFromWords(question, names);
-  if (/타워\s*밑|포탑\s*밑|막타|미니언|\bCS\b|wave|tower|补刀/i.test(question) && !/한타|teamfight|团战/i.test(question)) focus = "laning";
+  let focus = resolved.requestIntent ? resolved.requestIntent.topic ?? "general" : topicFromWords(question, names);
+  if (!resolved.requestIntent && /타워\s*밑|포탑\s*밑|막타|미니언|\bCS\b|wave|tower|补刀/i.test(question) && !/한타|teamfight|团战/i.test(question)) focus = "laning";
   if (!focus && /빠졌|빠진|정정.*[QWER]/i.test(question)) focus = "escape-window";
   if (reason && same) focus = memory.matchup?.focus as typeof focus;
   if (!focus && /바꾸|입장|상대가|면\s*\?$/i.test(question)) focus = same ? memory.matchup?.focus as typeof focus : "general";

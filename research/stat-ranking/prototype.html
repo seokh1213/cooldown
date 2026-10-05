@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>챔피언 능력치 순위 · 쿨다운 시안</title>
+  <link rel="stylesheet" href="prototype.css">
+</head>
+<body>
+  <!-- 현재 앱의 회색 바탕·보라색 강조색을 유지한 독립 시안. 아이템과 룬 없는 기본 수치만 비교한다. -->
+  <header class="site-header"><a class="brand" href="/cooldown/"><img src="../../public/poro_logo.png" alt="" width="32" height="32">쿨다운</a>
+    <nav aria-label="주 메뉴"><a href="/cooldown/">쿨타임 비교</a><a class="active" href="#ranking" aria-current="page">능력치 순위</a></nav>
+    <span class="draft">페이지 시안</span>
+  </header>
+  <main id="ranking">
+    <div class="page-heading"><div><p class="eyebrow">CHAMPION STATS</p><h1>어떤 챔피언이 더 높을까?</h1><p class="intro">레벨과 능력치를 골라 비교해 보세요.</p></div><span id="patch" class="patch"></span></div>
+    <section class="filters" aria-label="순위 조건">
+      <div id="stat-tabs" class="stat-tabs" role="group" aria-label="능력치 선택"></div>
+      <div class="filter-row"><div class="level-control"><label for="level">챔피언 레벨 <output id="level-label">1</output></label><input id="level" type="range" min="1" max="18" value="1"><div class="level-presets"><button data-level="1">1레벨</button><button data-level="6">6레벨</button><button data-level="11">11레벨</button><button data-level="18">18레벨</button></div></div>
+        <div class="filter-inputs"><label>공식 역할군<select id="role"><option value="">전체 역할군</option><option value="Fighter">전사</option><option value="Tank">탱커</option><option value="Mage">마법사</option><option value="Assassin">암살자</option><option value="Marksman">원거리 딜러</option><option value="Support">서포터</option></select></label><label>챔피언 찾기<input id="search" type="search" placeholder="이름으로 검색" autocomplete="off"></label></div>
+      </div>
+    </section>
+    <section class="ranking-panel" aria-labelledby="ranking-title">
+      <div class="ranking-heading"><div><h2 id="ranking-title">체력 순위</h2><p id="result-count" aria-live="polite"></p></div><div class="view-switch" role="group" aria-label="순위 표시 방식"><button data-view="table" aria-pressed="true">표</button><button data-view="bars" aria-pressed="false">막대</button></div></div>
+      <div class="table-wrap"><table><thead><tr><th>순위</th><th>챔피언</th><th class="roles">역할군</th><th class="value" id="value-heading">1레벨 체력</th><th class="growth">성장치</th><th class="select-heading">비교</th></tr></thead><tbody id="rows"></tbody></table></div>
+      <div id="empty" hidden><h3>조건에 맞는 챔피언이 없어요</h3><p>이름이나 역할군을 바꿔 보세요.</p><button id="reset">필터 초기화</button></div>
+      <div class="table-footer"><span>동일한 수치는 같은 순위로 표시해요.</span><span>아이템 · 룬 · 일시적 효과 제외</span></div>
+    </section>
+    <p class="growth-note">성장치는 원본의 레벨당 성장값이에요. 실제 레벨별 수치에는 게임의 성장 곡선을 적용해요. 챔피언 고유 패시브와 변신 효과는 여기서 계산하지 않아요.</p>
+  </main>
+  <aside class="compare-dock" aria-label="선택한 챔피언 비교"><div class="dock-inner"><div id="selected"><span class="dock-hint">궁금한 챔피언 두 명을 골라 보세요.</span></div><a id="compare" aria-disabled="true">두 명 비교하기 <span aria-hidden="true">→</span></a></div><p id="selection-message" aria-live="polite"></p></aside>
+  <script src="champions.js"></script><script type="module" src="prototype.js"></script>
+</body>
+</html>

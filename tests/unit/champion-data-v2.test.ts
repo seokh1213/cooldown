@@ -18,6 +18,7 @@ const champion = {
   name: "시험",
   title: "테스트 챔피언",
   tags: ["Mage"],
+  partype: "기력",
   passive: {
     name: "지속 효과",
     description: "완성된 패시브",
@@ -68,6 +69,7 @@ const detail = buildChampionDetailV2({
 });
 
 test("상세 자료 조립", () => {
+  assert.equal(detail.champion.resource, "기력");
   assert.equal(detail.patchVersion, "26.17");
   assert.equal(detail.sources.ddragon, "16.17.1");
   assert.equal(detail.champion.abilities.P.bodyHtml, "완성된 패시브");

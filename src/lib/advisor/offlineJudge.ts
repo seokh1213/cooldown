@@ -206,10 +206,10 @@ export const OFFLINE_JUDGE_FILES = { meta: "models/offline/judge.json", weights:
  * @param read  경로(`models/offline/judge.json` 처럼 public 아래 상대 경로)를 받아 바이트를 돌려준다.
  *              브라우저는 `fetch(BASE_URL + path).arrayBuffer()`, Node 는 `fs.readFile`.
  */
-export function offlineJudge(read: (path: string) => Promise<ArrayBuffer>): (headName: string, state: string, questions: JudgeQuestion[]) => Promise<number[][]> {
+export function offlineJudge(read: (path: string) => Promise<ArrayBuffer>, files: { meta: string; weights: string } = OFFLINE_JUDGE_FILES): (headName: string, state: string, questions: JudgeQuestion[]) => Promise<number[][]> {
   let pending: Promise<OfflineModel> | undefined;
   const load = () => {
-    pending ??= Promise.all([read(OFFLINE_JUDGE_FILES.meta), read(OFFLINE_JUDGE_FILES.weights)]).then(([meta, bin]) =>
+    pending ??= Promise.all([read(files.meta), read(files.weights)]).then(([meta, bin]) =>
       readOfflineModel(JSON.parse(new TextDecoder().decode(meta)) as OfflineJudgeMeta, bin),
     );
     pending.catch(() => (pending = undefined));

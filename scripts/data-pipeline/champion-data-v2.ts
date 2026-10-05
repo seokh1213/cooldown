@@ -246,6 +246,7 @@ export function buildChampionDetailV2(
       name: champion.name,
       title: champion.title,
       tags: champion.tags ?? [],
+      resource: champion.partype,
       baseStats: normalized.baseStats,
       baseStatContributions: normalized.baseStatContributions,
       abilities: {

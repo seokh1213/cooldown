@@ -6,33 +6,32 @@
 import { useTranslation } from "@/i18n";
 import { fill } from "@/i18n/fill";
 import { ChampionIcon } from "@/components/ui/champion-icon";
-import {
-  CARD_STATS,
-  focusLabel,
-  spellFocusValue,
-  spellOneLiner,
-  spellSummary,
-  type AdvisorAnswer,
-} from "@/lib/advisor/answer";
+import type { AdvisorAnswer } from "@/lib/advisor/answer";
 import type { SelectedNotes } from "@/lib/advisor/noteSelect";
-import { translateRange, translateStat, translateTag } from "@/lib/advisor/promptLocale";
+import { translateRange, translateTag } from "@/lib/advisor/promptLocale";
 import type { ChampionCard } from "@/lib/knowledge/facts";
-import { Frame, KvTable, NoteList, PatchLinkFooter } from "./AnswerCardFrame";
+import { Frame, NoteList, PatchLinkFooter } from "./AnswerCardFrame";
+import { ChampionReferenceStats } from "./ChampionReferenceStats";
+import { ChampionReferenceSkills } from "./ChampionReferenceSkills";
+import { useAdvisorChampionDetail } from "./useAdvisorChampionDetail";
 
 export function ChampionAnswerCard({
   answer,
   ddragonVersion,
   patch,
   onNavigate,
+  selectedSpell,
 }: {
   answer: Extract<AdvisorAnswer, { kind: "champion" }>;
   ddragonVersion: string;
   patch: string;
   onNavigate?: () => void;
+  selectedSpell?: Extract<AdvisorAnswer, { kind: "spell" }>;
 }) {
   const { t, lang } = useTranslation();
   const copy = t.advisor.card;
   const { card } = answer;
+  const detail = useAdvisorChampionDetail(patch, lang, card.id, ddragonVersion);
   const subtitle = [
     ...card.roleTags.map((role) => t.championProfile.roleNames[role.toLowerCase()]),
     translateRange(card.riot?.attackType ?? card.rangeType, lang),
@@ -43,57 +42,7 @@ export function ChampionAnswerCard({
     <ChampionIcon id={card.id} ddragonVersion={ddragonVersion} className="block h-9 w-9 shrink-0 rounded-md" />
   );
   const footer = <PatchLinkFooter patch={patch} to={`/vs?a=${card.id}`} label={copy.openInVs} onNavigate={onNavigate} />;
-  if (answer.statQuery && answer.headline) {
-    return (
-      <Frame icon={header} title={card.name} subtitle={copy.stats} tool={copy.champion} footer={footer}>
-        <KvTable rows={[{ ...answer.headline, hit: true }]} />
-      </Frame>
-    );
-  }
-  // "말파이트 스킬 쿨타임": 스킬 다섯 개의 그 사실만. 능력치도 운용 노트도 없다 —
-  // 수치 하나를 물은 자리에 노트를 얹었더니 무엇을 답한 것인지 흐려졌다.
-  if (answer.focus) {
-    const focus = answer.focus;
-    return (
-      <Frame icon={header} title={card.name} subtitle={`${copy.skills} · ${focusLabel(focus, lang)}`} tool={copy.champion} footer={footer}>
-        <KvTable
-          rows={card.spells.map((spell) => ({
-            label: `${spell.slot} ${spell.name}`,
-            value: spellFocusValue(spell, focus, lang) || "—",
-            hit: true,
-          }))}
-        />
-      </Frame>
-    );
-  }
-  const statRows = CARD_STATS.map((stat) => {
-    const snap = card.stats[stat];
-    if (!snap) return undefined;
-    return {
-      label: translateStat(stat, lang),
-      value: (
-        <>
-          {snap.lv1} → {snap.lv18}
-          {snap.perLevel !== undefined && (
-            <span
-              className="ml-1.5 whitespace-nowrap text-[11px] text-muted-foreground"
-              title={copy.statGrowthNote}
-              aria-label={`${copy.statGrowth} ${snap.perLevel}`}
-            >
-              {snap.perLevel >= 0 ? "+" : ""}{snap.perLevel}{stat === "attackSpeed" ? "%" : ""}
-            </span>
-          )}
-        </>
-      ),
-    };
-  }).filter((row): row is NonNullable<typeof row> => Boolean(row));
-  // "스킬 설명해줘" 면 한 줄 요약(무엇을 하는 스킬인지), 아니면 쿨·효과·계수 한 줄.
-  const skillsView = answer.view === "skills";
-  const skillRows = card.spells.map((spell) => ({
-    label: `${spell.slot} ${spell.name}`,
-    value: skillsView ? spellSummary(spell) : spellOneLiner(spell, lang),
-    hit: skillsView,
-  }));
+  const skillsView = answer.view === "skills" || Boolean(answer.focus);
   return (
     <Frame
       icon={header}
@@ -108,13 +57,11 @@ export function ChampionAnswerCard({
       footer={footer}
     >
       {!skillsView && (
-        <>
-          <div className="mb-1 text-[11px] font-medium text-muted-foreground">{copy.stats} · {copy.statGrowth}</div>
-          <KvTable rows={statRows} />
-        </>
+        <ChampionReferenceStats card={card} detail={detail} query={answer.statQuery} />
       )}
-      <div className={`mb-1 text-[11px] font-medium text-muted-foreground ${skillsView ? "" : "mt-3"}`}>{copy.skills}</div>
-      <KvTable rows={skillRows} />
+      <div className={skillsView ? "" : "mt-3"}>
+        <ChampionReferenceSkills answer={answer} detail={detail} selectedSpell={selectedSpell} patch={patch} ddragonVersion={ddragonVersion} />
+      </div>
       {!skillsView && card.mechanics.length > 0 && (
         <div className="mt-2.5 flex flex-wrap gap-1">
           {card.mechanics.map((tag) => (

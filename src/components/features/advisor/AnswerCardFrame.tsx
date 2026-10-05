@@ -58,7 +58,7 @@ export function SlotBadge({ slot }: { slot: string }) {
 }
 
 /** 라벨·값 표. `hit` 행은 굵게, `dim` 행은 흐리게. */
-export function KvTable({ rows }: { rows: Array<{ label: string; value: React.ReactNode; hit?: boolean; dim?: boolean }> }) {
+export function KvTable({ rows }: { rows: Array<{ label: string; labelContent?: React.ReactNode; value: React.ReactNode; hit?: boolean; dim?: boolean }> }) {
   if (rows.length === 0) return null;
   return (
     <table className="w-full border-collapse text-[13px]">
@@ -66,9 +66,10 @@ export function KvTable({ rows }: { rows: Array<{ label: string; value: React.Re
         {rows.map((row) => (
           <tr
             key={row.label}
-            className={`border-b last:border-b-0 ${row.hit ? "font-semibold" : ""} ${row.dim ? "text-muted-foreground" : ""}`}
+            data-highlighted={row.hit || undefined}
+            className={`border-b last:border-b-0 ${row.hit ? "bg-primary/5 font-semibold" : ""} ${row.dim ? "text-muted-foreground" : ""}`}
           >
-            <td className={`w-[34%] py-1.5 pr-2 align-top ${row.hit ? "" : "text-muted-foreground"}`}>{row.label}</td>
+            <td className={`w-[34%] py-1.5 pr-2 align-top ${row.hit ? "" : "text-muted-foreground"}`}>{row.labelContent ?? row.label}</td>
             <td className="py-1.5 align-top tabular-nums">{row.value}</td>
           </tr>
         ))}

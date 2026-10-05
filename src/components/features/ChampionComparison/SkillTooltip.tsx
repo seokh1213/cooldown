@@ -38,6 +38,7 @@ interface SkillTooltipProps {
   children?: React.ReactNode;
   triggerClassName?: string;
   headerIcon?: React.ReactNode;
+  dialogClassName?: string;
 }
 
 export function SkillTooltip({
@@ -49,6 +50,7 @@ export function SkillTooltip({
   children,
   triggerClassName,
   headerIcon,
+  dialogClassName,
 }: SkillTooltipProps) {
   const { t, lang } = useTranslation();
   const deviceType = useDeviceType();
@@ -261,7 +263,8 @@ export function SkillTooltip({
           isMobile
             ? "w-[calc(100vw-32px)] max-w-lg h-[70vh] max-h-[70vh]"
             : "w-full max-w-3xl h-[80vh] max-h-[80vh]",
-          "p-0 rounded-xl overflow-hidden flex flex-col"
+          "p-0 rounded-xl overflow-hidden flex flex-col",
+          dialogClassName,
         )}
       >
         <VisuallyHidden>

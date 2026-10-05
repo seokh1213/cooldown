@@ -120,6 +120,7 @@ function penetrationAnswer(answer: AdvisorAnswer, question: string, memory: Dial
 export function resolveDialogueFact(input: QuestionInput, memory: DialogueMemory, ctx: PlanContext): FactResolution | undefined {
   if (!ctx.data || ctx.lang !== "ko_KR") return undefined;
   const resolved = resolveQuestion(input, ctx.data);
+  if (resolved.requestIntent && ["overview", "statsAll", "skills", "combo", "advice", "counterplay"].includes(resolved.requestIntent.scope)) return undefined;
   const question = resolved.text;
   const formula = hasteFormula(question, memory);
   if (formula) return formula;

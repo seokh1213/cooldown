@@ -3,6 +3,7 @@ import type { AdvisorData } from "./context";
 import { detectSlot } from "./context";
 import { detectChampionMentions, type ChampionMention } from "./intent";
 import { detectSpellFocus } from "./spellFocus";
+import type { RequestIntent } from "./requestIntent";
 
 export interface ResolvedQuestion {
   text: string;
@@ -11,6 +12,7 @@ export interface ResolvedQuestion {
   slot?: string;
   slotIndex?: number;
   spellFocus: ReturnType<typeof detectSpellFocus>;
+  requestIntent?: RequestIntent;
   /** 원문을 다시 쓰지 않고 특정 상성을 요청한다. mentions는 원문의 위치를 유지한다. */
   matchup?: { mine: ChampionMention["card"]; enemy: ChampionMention["card"] };
 }

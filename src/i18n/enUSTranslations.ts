@@ -299,6 +299,7 @@ export const enUSTranslations: Translations = {
       stats: "Stats (lv 1 → 18)",
       statGrowth: "Growth",
       statGrowthNote: "Growth per level. Actual gains depend on the level growth curve.",
+      resourceRegen: "{resource} regeneration (per 5 sec)",
       skills: "Abilities",
       compare: "Compare",
       atLevel: "At level {n}",
