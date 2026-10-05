@@ -40,13 +40,14 @@ export function referenceTitle(answer: AdvisorAnswer, copy: Translations["adviso
   }
 }
 
-/** 탭 이름. 300px 에 여섯 개쯤 들어가야 하니 아이콘 + 한두 글자. */
+/** 챔피언 탭은 이름으로 구분하고, 같은 챔피언의 스킬·조회 항목도 함께 표시한다. */
 function tabLabel(answer: AdvisorAnswer, copy: Translations["advisor"], lang: Language): string {
   switch (answer.kind) {
     case "spell":
       return answer.spell.slot;
     case "champion":
-      return answer.focus ? (lang === "ko_KR" ? FOCUS_SHORT[answer.focus] : focusLabel(answer.focus, lang)) : answer.view === "skills" ? copy.card.skills : copy.card.champion;
+      if (answer.focus) return `${answer.card.name} · ${lang === "ko_KR" ? FOCUS_SHORT[answer.focus] : focusLabel(answer.focus, lang)}`;
+      return answer.view === "skills" ? `${answer.card.name} · ${copy.card.skills}` : answer.card.name;
     case "compare":
       return answer.matchup ? copy.card.matchupTool : copy.card.compare;
     case "item":
