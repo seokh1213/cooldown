@@ -45,20 +45,9 @@ export function rangeFact(spell: SpellFact, lang: Language = "ko_KR"): Fact | un
   return { label: cardLabels(lang).range, value };
 }
 
-/**
- * 스킬 답. 질문이 가리키는 사실을 앞에 놓는다.
- *
- * 구조 필드(쿨·소모·계수)는 값이 바로 있으니 headline 으로 올린다.
- * 효과 수치는 본문 문장에만 있으니 그 문장을 골라 highlighted 로 올린다.
- */
-export function buildSpellAnswer(
-  card: ChampionCard,
-  spell: SpellFact,
-  question: string,
-  lang: Language = "ko_KR",
-): AdvisorAnswer {
+/** 질문과 독립적인 스킬 전체 정보. 카드의 모든 행과 답변이 같은 사실을 사용한다. */
+export function spellFacts(spell: SpellFact, lang: Language = "ko_KR"): Fact[] {
   const w = cardLabels(lang);
-  const detected = detectSpellFocus(question);
   const facts: Fact[] = [];
   const cooldown = cooldownFact(spell, lang);
   if (cooldown) facts.push(cooldown);
@@ -75,6 +64,23 @@ export function buildSpellAnswer(
   if (control) facts.push(control);
   const ratios = Object.entries(spell.ratios ?? {});
   if (ratios.length) facts.push({ label: w.ratios, value: ratioText(ratios, lang) });
+  return facts;
+}
+
+/** 질문이 가리킨 수치나 본문 문장을 답의 앞에 놓는다. */
+export function buildSpellAnswer(
+  card: ChampionCard,
+  spell: SpellFact,
+  question: string,
+  lang: Language = "ko_KR",
+): AdvisorAnswer {
+  const w = cardLabels(lang);
+  const detected = detectSpellFocus(question);
+  const facts = spellFacts(spell, lang);
+  const cooldown = cooldownFact(spell, lang);
+  const range = rangeFact(spell, lang);
+  const control = facts.find(fact => fact.label === controlHeading(lang));
+  const ratios = Object.entries(spell.ratios ?? {});
 
   let headline: Fact | undefined;
   let highlighted: string[] = [];

@@ -72,6 +72,29 @@ test("세 언어에서 소개와 명시적인 스킬 요청은 다른 카드가 
   }
 });
 
+test("전체 소개 뒤 스킬을 바꿔 물어도 지정한 슬롯에 답하고 기억을 갱신한다", async () => {
+  for (const [lang, questions] of [
+    ["ko_KR", [
+      ["오공 Q 스킬정보 알려줘", "Q"], ["오공 W 스킬정보 알려줘", "W"],
+      ["오공 E 스킬정보 알려줘", "E"], ["오공 R 스킬정보 알려줘", "R"],
+      ["오공 패시브 스킬정보 알려줘", "P"], ["오공 궁 스킬정보 알려줘", "R"],
+    ]],
+    ["en_US", [["Wukong Q skill information please", "Q"], ["Wukong W skill information please", "W"],
+      ["Wukong E skill information please", "E"], ["Wukong R skill information please", "R"]]],
+    ["zh_CN", [["孙悟空Q技能信息说下", "Q"], ["孙悟空W技能信息说下", "W"],
+      ["孙悟空E技能信息说下", "E"], ["孙悟空R技能信息说下", "R"]]],
+  ] as const) {
+    const ctx = context(lang);
+    ctx.turns = [{ role: "assistant", answer: { kind: "champion", card: ctx.data!.cardById.get("MonkeyKing")!, view: "overview" } }];
+    for (const [question, slot] of questions) {
+      const { reply } = await answerDialogue(question, ctx, deps);
+      assert.equal(reply.answer?.kind === "spell" && reply.answer.spell.slot, slot, question);
+      assert.equal(reply.memory.spell?.slot, slot, question);
+      ctx.turns = [...ctx.turns, { role: "user", content: question }, { role: "assistant", answer: reply.answer, memory: reply.memory }];
+    }
+  }
+});
+
 test("콤보·상대법은 학습된 요청 의도를 뒤의 조회 규칙이 덮어쓰지 않는다", async () => {
   const ctx = context();
   const combo = await answerDialogue("오공 콤보 알려주라", ctx, deps);

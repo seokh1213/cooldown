@@ -8,7 +8,7 @@ import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "@/i18n";
 import { fill } from "@/i18n/fill";
 import type { AdvisorData } from "@/lib/advisor/context";
-import { answerKey } from "@/lib/advisor/answer";
+import { referenceKey } from "@/lib/advisor/referenceIdentity";
 import type { ChampionCard } from "@/lib/knowledge/facts";
 import { usePageContext } from "@/hooks/usePageContext";
 import { WIDE_VIEWPORT_MIN, useViewportWidth } from "@/hooks/useWideViewport";
@@ -160,7 +160,7 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
   const referenceTabStrip = (
     <ReferenceTabs
       tabs={referenceTabsOf(referenceTurns)}
-      activeKey={refTurn?.answer ? answerKey(refTurn.answer) : undefined}
+      activeKey={refTurn?.answer ? referenceKey(refTurn.answer) : undefined}
       onSelect={selectReference}
       ddragonVersion={ddragonVersion}
     />

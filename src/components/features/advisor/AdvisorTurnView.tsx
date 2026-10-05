@@ -15,6 +15,7 @@ import { CompareAnswerCard } from "./CompareAnswerCard";
 import { AdvisorTurnFooter as TurnFooter } from "./AdvisorTurnFooter";
 import { AdvisorMarkdown } from "./AdvisorMarkdown";
 import { AnswerIcons, referenceTitle } from "./AdvisorReference";
+import { referenceKey } from "@/lib/advisor/referenceIdentity";
 
 interface AdvisorTurnViewProps {
   ref?: React.Ref<HTMLDivElement>;
@@ -139,7 +140,7 @@ export function AdvisorTurnView(props: AdvisorTurnViewProps) {
               answer={turn.answer}
               active={props.shownInReference}
               // 직전 답과 같은 자료면 칩만 흐리게. "오공 Q 쿨, W 쿨" 은 카드 두 장이 아니다.
-              sameAsPrevious={Boolean(previousAnswer && answerKey(turn.answer) === answerKey(previousAnswer))}
+              sameAsPrevious={Boolean(previousAnswer && referenceKey(turn.answer) === referenceKey(previousAnswer))}
               ddragonVersion={ddragonVersion}
               onClick={() => props.onShowReference(turn.id)}
             />
@@ -343,9 +344,9 @@ interface ReferenceChipProps {
 
 /** 자료 패널(좁은 화면이면 카드 화면)로 가는 칩 */
 function ReferenceChip({ answer, active, sameAsPrevious, ddragonVersion, onClick }: ReferenceChipProps) {
-  const { t, lang } = useTranslation();
+  const { t } = useTranslation();
   const copy = t.advisor;
-  const { title, kind } = referenceTitle(answer, copy, lang);
+  const { title, kind } = referenceTitle(answer, copy);
   return (
     <button
       type="button"

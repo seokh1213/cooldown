@@ -1,0 +1,15 @@
+/** 대화 답의 식별자와 자료의 식별자는 다르다. Q·R 답은 각각 남기되 전체 스킬 자료는 공유한다. */
+import { answerKey, type AdvisorAnswer } from "./answer";
+
+export function referenceKey(answer: AdvisorAnswer): string {
+  if (answer.kind === "spell") return `skills:${answer.championId}`;
+  if (answer.kind === "champion" && (answer.view === "skills" || answer.focus)) return `skills:${answer.card.id}`;
+  return answerKey(answer);
+}
+
+/** 같은 자료는 최신 답의 포커스만 갱신한다. 탭의 위치는 처음 열었을 때의 순서를 유지한다. */
+export function referenceTabsOf<T extends { answer?: AdvisorAnswer }>(turns: T[]): T[] {
+  const bySource = new Map<string, T>();
+  for (const turn of turns) if (turn.answer) bySource.set(referenceKey(turn.answer), turn);
+  return [...bySource.values()];
+}

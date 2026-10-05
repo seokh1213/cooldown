@@ -20,6 +20,8 @@ for (const width of [390, 1280]) test(`기본 소개·전체 스탯 정정·스�
   const tables = panel.getByRole("table");
   await expect(tables).toHaveCount(2);
   await expect(tables.first()).toContainText("체력");
+  // 상세 자료가 마나 행을 추가하기 전에 호버하면 로딩 중 이동한 아이콘에서 포인터가 벗어난다.
+  await expect(tables.first()).toContainText("마나");
   const skills = tables.last();
   await expect(skills.locator("[data-skill-icon]")).toHaveCount(5);
   const q = skills.getByRole("button", { name: "Q 파쇄격", exact: true });

@@ -19,18 +19,18 @@ for (const width of [390, 1280]) {
     await page.setViewportSize({ width, height: 900 });
     const ask = await openAdvisor(page);
     await ask("아리 E CC 종류 알려줘");
-    await expect(page.getByText(/매혹 \(하드/).last()).toBeVisible();
+    await expect(page.getByText(/매혹 \(하드/).filter({ visible: true }).last()).toBeVisible();
     await ask("그럼 강타는?");
     await expect(page.getByText(/강타 사용을 막지 않습니다/).last()).toBeVisible();
     await ask("말자하 R CC 종류 알려줘");
-    await expect(page.getByText(/제압 \(하드/).last()).toBeVisible();
+    await expect(page.getByText(/제압 \(하드/).filter({ visible: true }).last()).toBeVisible();
     await ask("그럼 강타는?");
     await expect(page.getByText(/제압·정지가 유지되는 동안 강타를 쓸 수 없습니다/).last()).toBeVisible();
     await ask("룰루 W CC 종류 알려줘");
-    await expect(page.getByText(/변이 \(소프트/).last()).toBeVisible();
-    await expect(page.getByText(/군중 제어.*강제 이동/)).toHaveCount(0);
+    await expect(page.getByText(/변이 \(소프트/).filter({ visible: true }).last()).toBeVisible();
+    await expect(page.getByText(/군중 제어.*강제 이동/).filter({ visible: true })).toHaveCount(0);
     if (width === 390) {
-      await page.getByText(/변이 \(소프트/).last().scrollIntoViewIfNeeded();
+      await page.getByText(/변이 \(소프트/).filter({ visible: true }).last().scrollIntoViewIfNeeded();
       await page.screenshot({ path: "research/llm-evals/crowd-control/mobile.png" });
     }
   });

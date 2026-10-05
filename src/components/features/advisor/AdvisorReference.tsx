@@ -6,30 +6,24 @@ import { PanelLeftClose } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ItemIcon } from "@/components/ui/item-icon";
 import { ChampionIcon } from "@/components/ui/champion-icon";
-import { useTranslation, type Language } from "@/i18n";
+import { useTranslation } from "@/i18n";
 import type { Translations } from "@/i18n/translations";
 import { REFERENCE_MAX_WIDTH, REFERENCE_MIN_WIDTH } from "@/hooks/useWideViewport";
 import type { AdvisorTurn } from "@/hooks/useAdvisorTurns";
-import { focusLabel, answerChampionIds, answerKey, type AdvisorAnswer } from "@/lib/advisor/answer";
-import type { SpellFocus } from "@/lib/advisor/spellFocus";
+import { answerChampionIds, type AdvisorAnswer } from "@/lib/advisor/answer";
+import { referenceKey } from "@/lib/advisor/referenceIdentity";
+export { referenceTabsOf } from "@/lib/advisor/referenceIdentity";
 import { AdvisorAnswerCard } from "./AdvisorAnswerCard";
 import type { useReferencePanelSize } from "./useReferencePanelSize";
 
-/** 자료 탭에 쓰는 한 글자짜리 사실 이름(한국어). "재사용 대기시간" 은 탭에 안 들어간다. 다른 언어는 카드 어휘를 그대로 쓴다. */
-const FOCUS_SHORT: Record<SpellFocus, string> = { cooldown: "쿨", cost: "소모", ratio: "계수", range: "사거리", damage: "피해", effect: "효과" };
-
-export function referenceTitle(answer: AdvisorAnswer, copy: Translations["advisor"], lang: Language): { title: string; kind: string } {
+export function referenceTitle(answer: AdvisorAnswer, copy: Translations["advisor"]): { title: string; kind: string } {
   switch (answer.kind) {
     case "spell":
-      return { title: `${answer.championName} · ${answer.spell.slot} ${answer.spell.name}`, kind: copy.card.spell };
+      return { title: answer.championName, kind: copy.card.skills };
     case "champion":
       return {
         title: answer.card.name,
-        kind: answer.focus
-          ? `${copy.card.skills} · ${focusLabel(answer.focus, lang)}`
-          : answer.view === "skills"
-            ? copy.card.skills
-            : copy.card.champion,
+        kind: answer.focus || answer.view === "skills" ? copy.card.skills : copy.card.champion,
       };
     case "compare":
       return { title: answer.cards.map((card) => card.name).join(" vs "), kind: answer.matchup ? copy.card.matchupTool : copy.card.compare };
@@ -41,13 +35,12 @@ export function referenceTitle(answer: AdvisorAnswer, copy: Translations["adviso
 }
 
 /** 챔피언 탭은 이름으로 구분하고, 같은 챔피언의 스킬·조회 항목도 함께 표시한다. */
-function tabLabel(answer: AdvisorAnswer, copy: Translations["advisor"], lang: Language): string {
+function tabLabel(answer: AdvisorAnswer, copy: Translations["advisor"]): string {
   switch (answer.kind) {
     case "spell":
-      return answer.spell.slot;
+      return `${answer.championName} · ${copy.card.skills}`;
     case "champion":
-      if (answer.focus) return `${answer.card.name} · ${lang === "ko_KR" ? FOCUS_SHORT[answer.focus] : focusLabel(answer.focus, lang)}`;
-      return answer.view === "skills" ? `${answer.card.name} · ${copy.card.skills}` : answer.card.name;
+      return answer.focus || answer.view === "skills" ? `${answer.card.name} · ${copy.card.skills}` : answer.card.name;
     case "compare":
       return answer.matchup ? copy.card.matchupTool : copy.card.compare;
     case "item":
@@ -68,18 +61,6 @@ export function AnswerIcons({ answer, ddragonVersion, className }: { answer: Adv
   );
 }
 
-// 자료 패널의 탭 줄(R1). 이 대화에서 나온 카드가 자료별로 하나씩, 최근에 나온 것이 오른쪽.
-// 같은 자료가 다시 나오면 탭을 새로 만들지 않고 오른쪽 끝으로 옮긴다.
-export function referenceTabsOf(referenceTurns: AdvisorTurn[]): AdvisorTurn[] {
-  const byKey = new Map<string, AdvisorTurn>();
-  for (const turn of referenceTurns) {
-    const key = answerKey(turn.answer!);
-    byKey.delete(key);
-    byKey.set(key, turn);
-  }
-  return [...byKey.values()];
-}
-
 interface ReferenceTabsProps {
   tabs: AdvisorTurn[];
   activeKey: string | undefined;
@@ -88,21 +69,22 @@ interface ReferenceTabsProps {
 }
 
 export function ReferenceTabs({ tabs, activeKey, onSelect, ddragonVersion }: ReferenceTabsProps) {
-  const { t, lang } = useTranslation();
+  const { t } = useTranslation();
   const copy = t.advisor;
   if (tabs.length <= 1) return null;
   return (
     <div className="flex gap-1 overflow-x-auto border-b px-2 pt-1.5 text-[11px] [scrollbar-width:thin]">
       {tabs.map((turn) => {
         const answer = turn.answer!;
-        const active = answerKey(answer) === activeKey;
+        const active = referenceKey(answer) === activeKey;
         return (
           <button
-            key={answerKey(answer)}
+            key={referenceKey(answer)}
             type="button"
             onClick={() => onSelect(turn.id)}
             ref={active ? (node) => node?.scrollIntoView({ block: "nearest", inline: "nearest" }) : undefined}
-            title={`${referenceTitle(answer, copy, lang).title} · ${referenceTitle(answer, copy, lang).kind}`}
+            title={`${referenceTitle(answer, copy).title} · ${referenceTitle(answer, copy).kind}`}
+            aria-pressed={active}
             className={`flex shrink-0 items-center gap-1 whitespace-nowrap rounded-t-md border-b-2 px-2 py-1.5 transition-colors focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring/40 ${
               active ? "border-primary font-semibold text-foreground" : "border-transparent text-muted-foreground hover:text-foreground"
             }`}
@@ -110,7 +92,7 @@ export function ReferenceTabs({ tabs, activeKey, onSelect, ddragonVersion }: Ref
             <span className="flex -space-x-1">
               <AnswerIcons answer={answer} ddragonVersion={ddragonVersion} className="h-3.5 w-3.5 rounded-sm ring-1 ring-background" />
             </span>
-            {tabLabel(answer, copy, lang)}
+            {tabLabel(answer, copy)}
           </button>
         );
       })}
@@ -136,7 +118,7 @@ interface ReferenceAsideProps extends ReferenceCardProps {
   같은 오공 카드가 열 번 나와도 여기 하나다. 표를 보면서 다음 질문을 칠 수 있다.
 */
 export function ReferenceAside({ size, tabs, answer, ddragonVersion, patch, onPickChampion, onNavigate }: ReferenceAsideProps) {
-  const { t, lang } = useTranslation();
+  const { t } = useTranslation();
   const copy = t.advisor;
   return (
     <aside
@@ -164,7 +146,7 @@ export function ReferenceAside({ size, tabs, answer, ddragonVersion, patch, onPi
         <span className="font-semibold">{copy.card.reference}</span>
         {answer && (
           <span className="min-w-0 flex-1 truncate text-muted-foreground">
-            {referenceTitle(answer, copy, lang).title} · {referenceTitle(answer, copy, lang).kind}
+            {referenceTitle(answer, copy).title} · {referenceTitle(answer, copy).kind}
           </span>
         )}
         <Button variant="ghost" size="icon" className="h-7 w-7 shrink-0 text-muted-foreground hover:text-foreground" onClick={size.toggleReference} aria-label={copy.card.collapseReference}>
@@ -183,7 +165,7 @@ export function ReferenceAside({ size, tabs, answer, ddragonVersion, patch, onPi
 export function ReferenceCard({ answer, ddragonVersion, patch, onPickChampion, onNavigate }: ReferenceCardProps) {
   const { t } = useTranslation();
   return answer ? (
-    <AdvisorAnswerCard answer={answer} ddragonVersion={ddragonVersion} patch={patch} onPickChampion={onPickChampion} onNavigate={onNavigate} />
+    <AdvisorAnswerCard key={referenceKey(answer)} answer={answer} ddragonVersion={ddragonVersion} patch={patch} onPickChampion={onPickChampion} onNavigate={onNavigate} />
   ) : (
     <p className="text-xs text-muted-foreground">{t.advisor.card.referenceEmpty}</p>
   );

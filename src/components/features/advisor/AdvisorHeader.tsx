@@ -28,7 +28,7 @@ interface AdvisorHeaderProps {
 
 export function AdvisorHeader(props: AdvisorHeaderProps) {
   const { view, onViewChange, busy, showingConsent, cardAnswer, wide, referenceOpen, onToggleReference, onClose } = props;
-  const { t, lang } = useTranslation();
+  const { t } = useTranslation();
   const copy = t.advisor;
   return (
     <header className="flex shrink-0 items-center justify-between border-b px-4 py-3">
@@ -44,7 +44,7 @@ export function AdvisorHeader(props: AdvisorHeaderProps) {
         {/* 카드 화면은 대화를 덮으므로 지금 무엇을 보고 있는지 머리에 적는다. */}
         {view === "card" && cardAnswer && (
           <span className="min-w-0 truncate text-xs font-normal text-muted-foreground">
-            › {referenceTitle(cardAnswer, copy, lang).title} · {referenceTitle(cardAnswer, copy, lang).kind}
+            › {referenceTitle(cardAnswer, copy).title} · {referenceTitle(cardAnswer, copy).kind}
           </span>
         )}
         {view === "chat" && busy && (
