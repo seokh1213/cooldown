@@ -1,0 +1,290 @@
+{
+  "model": {
+    "id": "onnx-community/Qwen3.5-0.8B-Text-ONNX",
+    "dtype": "q4",
+    "downloadMb": 570,
+    "needsF16": false,
+    "graph": "models/kev/b3e/model_q4.onnx",
+    "retrieval": {
+      "vectors": "models/kev/b3e/doc-vectors",
+      "threshold": 0.39
+    }
+  },
+  "variant": "structured",
+  "group": "holdout",
+  "sources": {
+    "scripts/llm/offline-classifier/prepare-request-browser.ts": "a1b73024f27855468ddb38c21daec4a99d885ee515e6377bab26b25f401ad3db",
+    "scripts/llm/offline-classifier/request-scope-holdout.json": "d7c3de75dd99db5c2496da6db4c3680a8f7722286c7baee5654b8bbae9d4205b",
+    "src/lib/advisor/requestScopePrompt.json": "7713055de2823a3d6dc1be170039fe45926ac34facbad49b8b33ca6da5de1cb1",
+    "src/lib/advisor/requestScopeModel.ts": "fed4963794431125d0c2b2ce2e7b41be1858e552f70b399e001a994fab1d0aeb",
+    "public/models/offline/request-v1.bin": "85f58a951654985647710704802d2dd58f5f4339ee19fc8a3866e1898ffa121d",
+    "src/workers/advisor/generate.ts": "d7741f56a035af254201f53e48093876d1c4abf02e4657be9fcf342ed6ff9b72",
+    "src/workers/advisor/lora.ts": "5c8a4222a0fc9811f1ab0258c95eb4cfb578e4ed6c7ad125f311c06a71a02dd8"
+  },
+  "rows": [
+    {
+      "language": "ko_KR",
+      "question": "오공이 가진 능력과 기본 능력치를 같이 소개해 줄래?",
+      "expected": "overview",
+      "text": "◇ 이 가진 능력과 기본 능력치를 같이 소개해 줄래?",
+      "type": "done",
+      "id": 1,
+      "looped": false,
+      "tokens": 1,
+      "seconds": 2.150099999964237,
+      "ttftSeconds": 2.087699999988079,
+      "promptTokens": 828,
+      "output": "{\"scope\":\"overview\",\"slots\":[],\"breadth\":\"mixed\"}\n",
+      "scope": "overview",
+      "usedModel": true
+    },
+    {
+      "language": "ko_KR",
+      "question": "능력치는 됐고 오공 기술을 빠짐없이 설명해",
+      "expected": "skills",
+      "text": "능력치는 됐고 ◇ 기술을 빠짐없이 설명해",
+      "type": "done",
+      "id": 2,
+      "looped": false,
+      "tokens": 1,
+      "seconds": 2.0550999999642374,
+      "ttftSeconds": 1.9920999999642373,
+      "promptTokens": 825,
+      "output": "{\"scope\":\"skills\",\"slots\":[],\"breadth\":\"all\"}\n",
+      "scope": "skills",
+      "usedModel": true
+    },
+    {
+      "language": "ko_KR",
+      "question": "오공 마지막 스킬 R의 효과만 궁금해",
+      "expected": "ability",
+      "text": "◇ 마지막 스킬 r의 효과만 궁금해",
+      "fastIntent": {
+        "scope": "ability",
+        "confidence": 0.6888372354742085
+      },
+      "scope": "ability",
+      "usedModel": false
+    },
+    {
+      "language": "ko_KR",
+      "question": "오공 기본 능력치를 전부 한눈에 볼래",
+      "expected": "statsAll",
+      "text": "◇ 기본 능력치를 전부 한눈에 볼래",
+      "fastIntent": {
+        "scope": "statsAll",
+        "confidence": 0.9961376647686434
+      },
+      "scope": "statsAll",
+      "usedModel": false
+    },
+    {
+      "language": "ko_KR",
+      "question": "오공 딜교할 때 버튼을 어떻게 이어 눌러야 해?",
+      "expected": "combo",
+      "text": "◇ 딜교할 때 버튼을 어떻게 이어 눌러야 해?",
+      "fastIntent": {
+        "scope": "counterplay",
+        "confidence": 0.6808098215755677
+      },
+      "scope": "counterplay",
+      "usedModel": false
+    },
+    {
+      "language": "ko_KR",
+      "question": "오공의 기본 공격 속도 수치만 알려 줄래?",
+      "expected": "stats",
+      "text": "◇ 의 기본 공격 속도 수치만 알려 줄래?",
+      "fastIntent": {
+        "scope": "stats",
+        "confidence": 0.8482797037214054
+      },
+      "scope": "stats",
+      "usedModel": false
+    },
+    {
+      "language": "en_US",
+      "question": "Give me Wukong background basics alongside a rundown of his abilities",
+      "expected": "overview",
+      "text": "give me ◇ background basics alongside a rundown of his abilities",
+      "type": "done",
+      "id": 3,
+      "looped": false,
+      "tokens": 1,
+      "seconds": 2.087099999964237,
+      "ttftSeconds": 2.019,
+      "promptTokens": 808,
+      "output": "{\"scope\":\"overview\",\"slots\":[],\"breadth\":\"mixed\"}\n",
+      "scope": "overview",
+      "usedModel": true
+    },
+    {
+      "language": "en_US",
+      "question": "Enough numbers, walk me through every move Wukong has",
+      "expected": "skills",
+      "text": "enough numbers, walk me through every move ◇ has",
+      "type": "done",
+      "id": 4,
+      "looped": false,
+      "tokens": 1,
+      "seconds": 2.1625,
+      "ttftSeconds": 2.096600000023842,
+      "promptTokens": 808,
+      "output": "{\"scope\":\"overview\",\"slots\":[],\"breadth\":\"unspecified\"}\n",
+      "usedModel": true
+    },
+    {
+      "language": "en_US",
+      "question": "Focus on Wukong R alone, what does that spell do?",
+      "expected": "ability",
+      "text": "focus on ◇ r alone, what does that spell do?",
+      "type": "done",
+      "id": 5,
+      "looped": false,
+      "tokens": 1,
+      "seconds": 2.1277999999523165,
+      "ttftSeconds": 2.064199999988079,
+      "promptTokens": 809,
+      "output": "{\"scope\":\"skills\",\"slots\":[\"R\"],\"breadth\":\"specific\"}\n",
+      "usedModel": true
+    },
+    {
+      "language": "en_US",
+      "question": "I want every base attribute Wukong starts with in one table",
+      "expected": "statsAll",
+      "text": "i want every base attribute ◇ starts with in one table",
+      "type": "done",
+      "id": 6,
+      "looped": false,
+      "tokens": 1,
+      "seconds": 2.1565,
+      "ttftSeconds": 2.0938999999761583,
+      "promptTokens": 808,
+      "output": "{\"scope\":\"statsAll\",\"slots\":[],\"breadth\":\"all\"}\n",
+      "scope": "statsAll",
+      "usedModel": true
+    },
+    {
+      "language": "en_US",
+      "question": "In a quick exchange, which Wukong buttons should follow each other?",
+      "expected": "combo",
+      "text": "in a quick exchange, which ◇ buttons should follow each other?",
+      "type": "done",
+      "id": 7,
+      "looped": false,
+      "tokens": 1,
+      "seconds": 2.126,
+      "ttftSeconds": 2.064300000011921,
+      "promptTokens": 810,
+      "output": "{\"scope\":\"overview\",\"slots\":[],\"breadth\":\"mixed\"}\n",
+      "scope": "overview",
+      "usedModel": true
+    },
+    {
+      "language": "en_US",
+      "question": "What is the starting attack speed value for Wukong?",
+      "expected": "stats",
+      "text": "what is the starting attack speed value for ◇ ?",
+      "type": "done",
+      "id": 8,
+      "looped": false,
+      "tokens": 1,
+      "seconds": 2.1183000000119208,
+      "ttftSeconds": 2.055300000011921,
+      "promptTokens": 807,
+      "output": "{\"scope\":\"overview\",\"slots\":[],\"breadth\":\"unspecified\"}\n",
+      "usedModel": true
+    },
+    {
+      "language": "zh_CN",
+      "question": "把齐天大圣的基础资料和技能概况一起介绍一下",
+      "expected": "overview",
+      "text": "把 ◇ 的基础资料和技能概况一起介绍一下",
+      "type": "done",
+      "id": 9,
+      "looped": false,
+      "tokens": 1,
+      "seconds": 2.0231000000238417,
+      "ttftSeconds": 1.9503000000119208,
+      "promptTokens": 785,
+      "output": "{\"scope\":\"overview\",\"slots\":[],\"breadth\":\"mixed\"}\n",
+      "scope": "overview",
+      "usedModel": true
+    },
+    {
+      "language": "zh_CN",
+      "question": "数值不用再讲了，把齐天大圣的技能逐个讲完",
+      "expected": "skills",
+      "text": "数值不用再讲了，把 ◇ 的技能逐个讲完",
+      "type": "done",
+      "id": 10,
+      "looped": false,
+      "tokens": 1,
+      "seconds": 2.018199999988079,
+      "ttftSeconds": 1.955699999988079,
+      "promptTokens": 787,
+      "output": "{\"scope\":\"skills\",\"slots\":[],\"breadth\":\"all\"}\n",
+      "scope": "skills",
+      "usedModel": true
+    },
+    {
+      "language": "zh_CN",
+      "question": "只说齐天大圣的R，这个技能有什么效果？",
+      "expected": "ability",
+      "text": "只说 ◇ 的r，这个技能有什么效果？",
+      "type": "done",
+      "id": 11,
+      "looped": false,
+      "tokens": 1,
+      "seconds": 2.060699999988079,
+      "ttftSeconds": 1.9983000000119209,
+      "promptTokens": 788,
+      "output": "{\"scope\":\"skills\",\"slots\":[\"r\"],\"breadth\":\"all\"}\n",
+      "usedModel": true
+    },
+    {
+      "language": "zh_CN",
+      "question": "齐天大圣所有初始属性放在一张表里给我",
+      "expected": "statsAll",
+      "text": "◇ 所有初始属性放在一张表里给我",
+      "type": "done",
+      "id": 12,
+      "looped": false,
+      "tokens": 1,
+      "seconds": 2.1175,
+      "ttftSeconds": 2.0546999999880793,
+      "promptTokens": 786,
+      "output": "{\"scope\":\"statsAll\",\"slots\":[],\"breadth\":\"all\"}\n",
+      "scope": "statsAll",
+      "usedModel": true
+    },
+    {
+      "language": "zh_CN",
+      "question": "齐天大圣短时间换血时先按哪个再按哪个？",
+      "expected": "combo",
+      "text": "◇ 短时间换血时先按哪个再按哪个？",
+      "type": "done",
+      "id": 13,
+      "looped": false,
+      "tokens": 1,
+      "seconds": 2.1568000000119207,
+      "ttftSeconds": 2.0931999999880793,
+      "promptTokens": 789,
+      "output": "{\"scope\":\"advice\",\"slots\":[],\"breadth\":\"unspecified\"}\n",
+      "scope": "advice",
+      "usedModel": true
+    },
+    {
+      "language": "zh_CN",
+      "question": "齐天大圣初始攻击速度具体是多少？",
+      "expected": "stats",
+      "text": "◇ 初始攻击速度具体是多少？",
+      "fastIntent": {
+        "scope": "stats",
+        "confidence": 0.6478199844942888
+      },
+      "scope": "stats",
+      "usedModel": false
+    }
+  ]
+}

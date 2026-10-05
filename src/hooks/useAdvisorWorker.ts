@@ -28,6 +28,11 @@ export function useAdvisorWorker({ onChunk, onDone, setError }: WorkerListeners)
   /** 판정 요청을 기다리는 쪽. 답 id 로 찾는다. */
   const judgeWaiters = useRef(new Map<number, { resolve: (features: Float32Array[]) => void; reject: (error: Error) => void }>());
   const embedWaiters = useRef(new Map<number, { resolve: (vector: Float32Array) => void; reject: (error: Error) => void }>());
+  const generateWaiters = useRef(new Map<number, { resolve: (text: string) => void; reject: (error: Error) => void }>());
+  const rejectGeneration = useCallback((error: Error) => {
+    for (const waiter of generateWaiters.current.values()) waiter.reject(error);
+    generateWaiters.current.clear();
+  }, []);
 
   /** 워커는 동의 후에만 만든다 */
   const ensureWorker = useCallback((): Worker => {
@@ -56,9 +61,16 @@ export function useAdvisorWorker({ onChunk, onDone, setError }: WorkerListeners)
           setStatus((prev) => (prev === "generating" ? prev : "ready"));
           break;
         case "chunk":
+          if (message.id < 0) break;
           onChunk(message.id, message.text);
           break;
         case "done": {
+          if (message.id < 0) {
+            const waiter = generateWaiters.current.get(message.id);
+            generateWaiters.current.delete(message.id);
+            waiter?.resolve(message.text);
+            break;
+          }
           onDone(message);
           setStatus("ready");
           break;
@@ -76,14 +88,17 @@ export function useAdvisorWorker({ onChunk, onDone, setError }: WorkerListeners)
           break;
         }
         case "error": {
+          if (message.id === undefined) rejectGeneration(new Error(message.message));
           // 판정 요청이 실패했으면 부르는 쪽에 알린다. 화면 오류로는 띄우지 않는다 — 규칙으로 되돌아간다.
-          const waiter = message.id !== undefined ? judgeWaiters.current.get(message.id) ?? embedWaiters.current.get(message.id) : undefined;
+          const waiter = message.id !== undefined ? judgeWaiters.current.get(message.id) ?? embedWaiters.current.get(message.id) ?? generateWaiters.current.get(message.id) : undefined;
           if (waiter) {
             judgeWaiters.current.delete(message.id!);
             embedWaiters.current.delete(message.id!);
+            generateWaiters.current.delete(message.id!);
             waiter.reject(new Error(message.message));
             break;
           }
+          if (message.id !== undefined && message.id < 0) break;
           setError(message.message);
           setStatus("error");
           break;
@@ -92,14 +107,17 @@ export function useAdvisorWorker({ onChunk, onDone, setError }: WorkerListeners)
           break;
       }
     });
+    worker.addEventListener("error", () => rejectGeneration(new Error("request worker failed")));
+    worker.addEventListener("messageerror", () => rejectGeneration(new Error("request worker failed")));
     workerRef.current = worker;
     return worker;
-  }, [onChunk, onDone, setError]);
+  }, [onChunk, onDone, setError, rejectGeneration]);
 
   useEffect(() => () => {
     workerRef.current?.terminate();
     workerRef.current = null;
-  }, []);
+    rejectGeneration(new Error("request generation stopped"));
+  }, [rejectGeneration]);
 
   const post = useCallback((request: AdvisorRequest) => {
     ensureWorker().postMessage(request);
@@ -142,20 +160,41 @@ export function useAdvisorWorker({ onChunk, onDone, setError }: WorkerListeners)
     [post],
   );
 
+  /** 내부 판정 id는 음수여서 늦게 온 응답도 채팅에 섞이지 않는다. */
+  const requestGenerate = useCallback(
+    (request: Extract<AdvisorRequest, { type: "generate" }>) =>
+      new Promise<string>((resolve, reject) => {
+        if (request.id >= 0) { reject(new Error("internal generation requires a negative id")); return; }
+        const timer = window.setTimeout(() => {
+          generateWaiters.current.delete(request.id);
+          reject(new Error("request generation timeout"));
+        }, REQUEST_TIMEOUT_MS);
+        generateWaiters.current.set(request.id, {
+          resolve: value => { window.clearTimeout(timer); resolve(value); },
+          reject: error => { window.clearTimeout(timer); reject(error); },
+        });
+        try { post(request); }
+        catch (error) { generateWaiters.current.delete(request.id); window.clearTimeout(timer); reject(error); }
+      }),
+    [post],
+  );
+
   const interrupt = useCallback(() => {
+    rejectGeneration(new Error("request generation interrupted"));
     workerRef.current?.postMessage({ type: "stop" } satisfies AdvisorRequest);
-  }, []);
+  }, [rejectGeneration]);
 
   const hasWorker = useCallback(() => workerRef.current !== null, []);
 
   const shutdown = useCallback(() => {
+    rejectGeneration(new Error("request generation stopped"));
     workerRef.current?.terminate();
     workerRef.current = null;
     setModelReady(false);
     setStatus("idle");
     setProgress({ loadedBytes: 0, totalBytes: 0, files: [] });
     setError(null);
-  }, [setError]);
+  }, [setError, rejectGeneration]);
 
-  return { status, setStatus, progress, modelReady, post, requestJudge, requestEmbed, interrupt, hasWorker, shutdown };
+  return { status, setStatus, progress, modelReady, post, requestJudge, requestEmbed, requestGenerate, interrupt, hasWorker, shutdown };
 }

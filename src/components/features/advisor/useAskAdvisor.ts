@@ -18,6 +18,7 @@ import { offlineJudge } from "@/lib/advisor/offlineJudge";
 import { fetchJudgeFile } from "@/lib/advisor/storage";
 import { docAnswer } from "@/lib/advisor/questionDocs";
 import { requestClassifier } from "@/lib/advisor/requestIntent";
+import { withRequestModel } from "@/lib/advisor/requestScopeModel";
 
 interface AskAdvisorOptions {
   advisor: UseAdvisorResult;
@@ -116,7 +117,8 @@ export function useAskAdvisor({ advisor, data, patch, championIds, canUseModel }
         judge,
         notice,
       };
-      const deps = { judge: judge === "model" ? modelThenOffline(advisor.judge) : offline, search: advisor.search, inferStatQuery, classifyRequest };
+      const deps = { judge: judge === "model" ? modelThenOffline(advisor.judge) : offline, search: advisor.search, inferStatQuery,
+        classifyRequest: withRequestModel(classifyRequest, canUseModel ? advisor.inferRequestScope : undefined) };
       const { dialogue, reply } = await answerDialogue(question, ctx, deps);
       if (dialogue.parts.some(p => p.plan.type === "code" && p.plan.pending)) pendingQuestion.current = question;
       recordReply(question, reply, notice);

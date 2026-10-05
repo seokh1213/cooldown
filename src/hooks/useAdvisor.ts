@@ -27,6 +27,8 @@ import { useTranslation } from "@/i18n";
 import { useAdvisorTurns, type AdvisorTurn } from "./useAdvisorTurns";
 import { useAdvisorWorker, type AdvisorStatus } from "./useAdvisorWorker";
 import { ACT_HEAD, ROUTE_HEAD, TOPIC_HEAD } from "@/lib/advisor/plan";
+import { readRequestScope, requestScopePrompt } from "@/lib/advisor/requestScopeModel";
+import type { RequestIntent } from "@/lib/advisor/requestIntent";
 
 /** `respond` 한 번에 필요한 것. 자료는 부르는 쪽(코드)이 모아서 `system` 에 싣는다. */
 export interface RespondPlan {
@@ -68,6 +70,7 @@ export interface UseAdvisorResult {
    * 낱말 점수와 합치고 문턱을 보는 것은 부르는 쪽(`hybridSearch`)이다. 모델에 검색 가지가 없거나 동의 전이면 거절하므로 부르는 쪽이 낱말 검색으로 되돌아간다.
    */
   search: (question: string, lang: string) => Promise<Array<{ id: string; score: number }>>;
+  inferRequestScope: (text: string) => Promise<RequestIntent | undefined>;
   /** 모델 없이 코드가 만든 답을 그대로 보여 준다. 동의 전이나 WebGPU 가 없을 때 쓴다. */
   answerWithoutModel: (question: string, answer: AnswerDelivery, notice?: string, related?: AdvisorTurn["related"]) => void;
   /** 방금 확정한 답의 맥락을 대화 발화와 함께 남긴다. */
@@ -131,7 +134,7 @@ export function useAdvisor(): UseAdvisorResult {
     reset,
     replaceTurns,
   } = useAdvisorTurns(lang, setError);
-  const { status, setStatus, progress, modelReady, post, requestJudge, requestEmbed, interrupt, hasWorker, shutdown } = useAdvisorWorker({
+  const { status, setStatus, progress, modelReady, post, requestJudge, requestEmbed, requestGenerate, interrupt, hasWorker, shutdown } = useAdvisorWorker({
     onChunk: appendChunk,
     onDone: completeReply,
     setError,
@@ -142,6 +145,21 @@ export function useAdvisor(): UseAdvisorResult {
   /** 받아 둔 판정 헤드. 이름으로 찾는다. */
   const judgeHeads = useRef(new Map<string, Promise<JudgeHead>>());
   const model = ADVISOR_MODEL;
+  const requestModelStalled = useRef(false);
+  useEffect(() => { if (!modelReady) requestModelStalled.current = false; }, [modelReady]);
+
+  const inferRequestScope = useCallback(async (text: string): Promise<RequestIntent | undefined> => {
+    if (!consented || !modelReady || requestModelStalled.current) return undefined;
+    const prompt = requestScopePrompt(text, questionLanguage(text) ?? lang);
+    try {
+      // 기존 모델과 검증 후 공개하는 생성 경로를 재사용한다. 새 모델은 적재하지 않는다.
+      const output = await requestGenerate({ type: "generate", id: -takeId(), model, ...prompt, purpose: "grounded-summary", loopGuard: false });
+      return readRequestScope(output);
+    } catch (error) {
+      if (/timeout/.test(String(error))) requestModelStalled.current = true;
+      return undefined;
+    }
+  }, [consented, modelReady, lang, model, requestGenerate, takeId]);
 
   useEffect(() => {
     void detectWebGpu().then(setWebgpu);
@@ -330,6 +348,7 @@ export function useAdvisor(): UseAdvisorResult {
     respond,
     judge,
     search,
+    inferRequestScope,
     answerWithoutModel,
     remember,
     begin,
