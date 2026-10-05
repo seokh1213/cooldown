@@ -1,0 +1,1781 @@
+{
+  "training": 665,
+  "selection": "개발 73문항의 macro F1로만 설정 선택",
+  "sources": {
+    "request-training.json": "0cf42b5bbd3034583986a81ffd5609f3ab651eca8738206cb77d1e0dd2145f78",
+    "request-holdout.json": "b95349487aaa64c6f01fbaf7b0339844326c47f34cb2896772376361965e3964",
+    "request-test.json": "021fc73cb5cd4301421c3e0ddb7095d463e9ada92855cad0f2d9fd8438f0cf76",
+    "request-challenge.json": "7e7502deb9eab3cbd8540c9cae217bf4cbcddd9d61d7fdb117c9f2c67944c265",
+    "compare-request.py": "b15f80007bd92056a98db6b1311969337d5f341f922b5be4589f6e4892ab2b38"
+  },
+  "embedding": {
+    "model": "snowflake-arctic-embed2:latest",
+    "digest": "5de93a84837d0ff00da872e90830df5d973f616cbf1e5c198731ab19dd7b776b",
+    "prefix": "query: ",
+    "engineBytes": 1160296718,
+    "cacheMisses": 0,
+    "encodeBatchSeconds": 0.017,
+    "warmSingleQueryLatency": {
+      "p50Ms": 17.303,
+      "p95Ms": 18.589
+    }
+  },
+  "models": [
+    {
+      "name": "shipped-hash-logistic",
+      "setting": "app fp16 weights",
+      "classifierBytes": 721802,
+      "requiresEmbedding": false,
+      "development": {
+        "correct": 71,
+        "total": 73,
+        "macroF1": 0.974,
+        "perLanguage": {
+          "ko_KR": {
+            "correct": 45,
+            "total": 47
+          },
+          "en_US": {
+            "correct": 15,
+            "total": 15
+          },
+          "zh_CN": {
+            "correct": 11,
+            "total": 11
+          }
+        },
+        "accepted": 64,
+        "acceptedWrong": 1,
+        "errors": [
+          {
+            "text": "◇ 능력치는 전체적으로 어떻게 돼?",
+            "expected": "statsAll",
+            "language": "ko_KR",
+            "predicted": "overview",
+            "score": 0.427
+          },
+          {
+            "text": "◇ 대처 방법 좀 알려줄래",
+            "expected": "counterplay",
+            "language": "ko_KR",
+            "predicted": "advice",
+            "score": 0.632
+          }
+        ]
+      },
+      "test": {
+        "correct": 64,
+        "total": 66,
+        "macroF1": 0.9695,
+        "perLanguage": {
+          "ko_KR": {
+            "correct": 41,
+            "total": 43
+          },
+          "en_US": {
+            "correct": 12,
+            "total": 12
+          },
+          "zh_CN": {
+            "correct": 11,
+            "total": 11
+          }
+        },
+        "accepted": 53,
+        "acceptedWrong": 0,
+        "errors": [
+          {
+            "text": "◇ 기본 연계 방법 추천",
+            "expected": "combo",
+            "language": "ko_KR",
+            "predicted": "advice",
+            "score": 0.343
+          },
+          {
+            "text": "◇ 스탯을 모데궁이 빼앗는지",
+            "expected": "other",
+            "language": "ko_KR",
+            "predicted": "statsAll",
+            "score": 0.51
+          }
+        ]
+      },
+      "challenge": {
+        "correct": 75,
+        "total": 99,
+        "macroF1": 0.75,
+        "perLanguage": {
+          "ko_KR": {
+            "correct": 28,
+            "total": 33
+          },
+          "en_US": {
+            "correct": 21,
+            "total": 33
+          },
+          "zh_CN": {
+            "correct": 26,
+            "total": 33
+          }
+        },
+        "accepted": 56,
+        "acceptedWrong": 3,
+        "errors": [
+          {
+            "text": "앞에서 본 둘 마저만 다시 비교해줄래",
+            "expected": "stats",
+            "language": "ko_KR",
+            "predicted": "other",
+            "score": 0.547
+          },
+          {
+            "text": "◇가 가진 패시브랑 액티브들을 전부 요약해줘",
+            "expected": "skills",
+            "language": "ko_KR",
+            "predicted": "overview",
+            "score": 0.358
+          },
+          {
+            "text": "기본 능력치는 알았으니 ◇ 스킬 구성 전체를 듣고 싶어",
+            "expected": "skills",
+            "language": "ko_KR",
+            "predicted": "statsAll",
+            "score": 0.621
+          },
+          {
+            "text": "◇로 딜교하려면 스킬을 어떤 순서로 이어 써",
+            "expected": "combo",
+            "language": "ko_KR",
+            "predicted": "advice",
+            "score": 0.465
+          },
+          {
+            "text": "◇ 하면서 첫 귀환에 뭘 사야 할지 모르겠어",
+            "expected": "advice",
+            "language": "ko_KR",
+            "predicted": "ability",
+            "score": 0.253
+          },
+          {
+            "text": "Could you cover both the basic profile and abilities of ◇",
+            "expected": "overview",
+            "language": "en_US",
+            "predicted": "skills",
+            "score": 0.67
+          },
+          {
+            "text": "I'd like to understand ◇ as a character overall",
+            "expected": "overview",
+            "language": "en_US",
+            "predicted": "counterplay",
+            "score": 0.313
+          },
+          {
+            "text": "For the two champions above, compare magic resistance only",
+            "expected": "stats",
+            "language": "en_US",
+            "predicted": "other",
+            "score": 0.371
+          },
+          {
+            "text": "What do Q W E and R each do for ◇",
+            "expected": "skills",
+            "language": "en_US",
+            "predicted": "ability",
+            "score": 0.382
+          },
+          {
+            "text": "How should I sequence ◇ spells during a short trade",
+            "expected": "combo",
+            "language": "en_US",
+            "predicted": "counterplay",
+            "score": 0.427
+          },
+          {
+            "text": "Suggest a ◇ combo with auto attacks between spells",
+            "expected": "combo",
+            "language": "en_US",
+            "predicted": "counterplay",
+            "score": 0.226
+          },
+          {
+            "text": "Give me one ◇ combo that uses Flash",
+            "expected": "combo",
+            "language": "en_US",
+            "predicted": "overview",
+            "score": 0.394
+          },
+          {
+            "text": "I play ◇ and keep losing to ◇; how should I face them",
+            "expected": "counterplay",
+            "language": "en_US",
+            "predicted": "advice",
+            "score": 0.548
+          },
+          {
+            "text": "Please tell me about ◇ R skill information",
+            "expected": "ability",
+            "language": "en_US",
+            "predicted": "overview",
+            "score": 0.591
+          },
+          {
+            "text": "That cleared it up, thank you so much",
+            "expected": "chat",
+            "language": "en_US",
+            "predicted": "identity",
+            "score": 0.318
+          },
+          {
+            "text": "Hi, hope you're having a good day",
+            "expected": "chat",
+            "language": "en_US",
+            "predicted": "identity",
+            "score": 0.564
+          },
+          {
+            "text": "How am I supposed to use this assistant",
+            "expected": "identity",
+            "language": "en_US",
+            "predicted": "counterplay",
+            "score": 0.295
+          },
+          {
+            "text": "刚才那两个英雄只比较魔抗吧",
+            "expected": "stats",
+            "language": "zh_CN",
+            "predicted": "other",
+            "score": 0.45
+          },
+          {
+            "text": "属性我知道了，想看◇整套技能说明",
+            "expected": "skills",
+            "language": "zh_CN",
+            "predicted": "statsAll",
+            "score": 0.299
+          },
+          {
+            "text": "◇短换血时技能应该按什么顺序连起来",
+            "expected": "combo",
+            "language": "zh_CN",
+            "predicted": "skills",
+            "score": 0.228
+          },
+          {
+            "text": "给一个◇配合闪现的连招吧",
+            "expected": "combo",
+            "language": "zh_CN",
+            "predicted": "counterplay",
+            "score": 0.287
+          },
+          {
+            "text": "用◇打团时我应该怎么站位",
+            "expected": "advice",
+            "language": "zh_CN",
+            "predicted": "counterplay",
+            "score": 0.738
+          },
+          {
+            "text": "玩◇第一次回城买什么比较合适",
+            "expected": "advice",
+            "language": "zh_CN",
+            "predicted": "counterplay",
+            "score": 0.328
+          },
+          {
+            "text": "解释一下◇使用W之后会发生什么",
+            "expected": "ability",
+            "language": "zh_CN",
+            "predicted": "overview",
+            "score": 0.221
+          }
+        ]
+      },
+      "warmClassifierLatency": {
+        "p50Ms": 0.132,
+        "p95Ms": 0.164
+      }
+    },
+    {
+      "name": "tfidf-logistic",
+      "setting": "C=2",
+      "developmentMacroF1": 0.9466,
+      "classifierBytes": 1383023,
+      "requiresEmbedding": false,
+      "development": {
+        "correct": 69,
+        "total": 73,
+        "macroF1": 0.9466,
+        "perLanguage": {
+          "ko_KR": {
+            "correct": 43,
+            "total": 47
+          },
+          "en_US": {
+            "correct": 15,
+            "total": 15
+          },
+          "zh_CN": {
+            "correct": 11,
+            "total": 11
+          }
+        },
+        "accepted": 5,
+        "acceptedWrong": 0,
+        "errors": [
+          {
+            "text": "◇ 능력치 말고 QWER 소개",
+            "expected": "skills",
+            "language": "ko_KR",
+            "predicted": "statsAll",
+            "score": 0.3
+          },
+          {
+            "text": "◇ Q를 활용하는 요령",
+            "expected": "advice",
+            "language": "ko_KR",
+            "predicted": "counterplay",
+            "score": 0.269
+          },
+          {
+            "text": "너 사용법 좀 알려줘",
+            "expected": "identity",
+            "language": "ko_KR",
+            "predicted": "overview",
+            "score": 0.178
+          },
+          {
+            "text": "체력 스탯이 무슨 뜻이야",
+            "expected": "other",
+            "language": "ko_KR",
+            "predicted": "statsAll",
+            "score": 0.212
+          }
+        ]
+      },
+      "test": {
+        "correct": 62,
+        "total": 66,
+        "macroF1": 0.9401,
+        "perLanguage": {
+          "ko_KR": {
+            "correct": 39,
+            "total": 43
+          },
+          "en_US": {
+            "correct": 12,
+            "total": 12
+          },
+          "zh_CN": {
+            "correct": 11,
+            "total": 11
+          }
+        },
+        "accepted": 6,
+        "acceptedWrong": 0,
+        "errors": [
+          {
+            "text": "◇ 1렙 피통 궁금해",
+            "expected": "stats",
+            "language": "ko_KR",
+            "predicted": "ability",
+            "score": 0.151
+          },
+          {
+            "text": "◇ 능력 구성을 알려줘",
+            "expected": "skills",
+            "language": "ko_KR",
+            "predicted": "statsAll",
+            "score": 0.186
+          },
+          {
+            "text": "◇ W 설명 부탁",
+            "expected": "ability",
+            "language": "ko_KR",
+            "predicted": "overview",
+            "score": 0.216
+          },
+          {
+            "text": "◇ 스탯을 모데궁이 빼앗는지",
+            "expected": "other",
+            "language": "ko_KR",
+            "predicted": "statsAll",
+            "score": 0.217
+          }
+        ]
+      },
+      "challenge": {
+        "correct": 83,
+        "total": 99,
+        "macroF1": 0.8396,
+        "perLanguage": {
+          "ko_KR": {
+            "correct": 27,
+            "total": 33
+          },
+          "en_US": {
+            "correct": 28,
+            "total": 33
+          },
+          "zh_CN": {
+            "correct": 28,
+            "total": 33
+          }
+        },
+        "accepted": 3,
+        "acceptedWrong": 0,
+        "errors": [
+          {
+            "text": "기본 능력치는 알았으니 ◇ 스킬 구성 전체를 듣고 싶어",
+            "expected": "skills",
+            "language": "ko_KR",
+            "predicted": "statsAll",
+            "score": 0.362
+          },
+          {
+            "text": "◇로 딜교하려면 스킬을 어떤 순서로 이어 써",
+            "expected": "combo",
+            "language": "ko_KR",
+            "predicted": "counterplay",
+            "score": 0.187
+          },
+          {
+            "text": "◇ 하면서 첫 귀환에 뭘 사야 할지 모르겠어",
+            "expected": "advice",
+            "language": "ko_KR",
+            "predicted": "identity",
+            "score": 0.174
+          },
+          {
+            "text": "이 도우미를 어떻게 사용하는 건지 알려줘",
+            "expected": "identity",
+            "language": "ko_KR",
+            "predicted": "counterplay",
+            "score": 0.229
+          },
+          {
+            "text": "정화가 제압을 지울 수 있는지 궁금해",
+            "expected": "other",
+            "language": "ko_KR",
+            "predicted": "ability",
+            "score": 0.162
+          },
+          {
+            "text": "치유 감소 아이템 두 개면 효과가 합쳐져",
+            "expected": "other",
+            "language": "ko_KR",
+            "predicted": "ability",
+            "score": 0.147
+          },
+          {
+            "text": "Could you cover both the basic profile and abilities of ◇",
+            "expected": "overview",
+            "language": "en_US",
+            "predicted": "skills",
+            "score": 0.267
+          },
+          {
+            "text": "Please tell me about ◇ R skill information",
+            "expected": "ability",
+            "language": "en_US",
+            "predicted": "overview",
+            "score": 0.256
+          },
+          {
+            "text": "Describe what happens when ◇ uses W",
+            "expected": "ability",
+            "language": "en_US",
+            "predicted": "other",
+            "score": 0.191
+          },
+          {
+            "text": "Hi, hope you're having a good day",
+            "expected": "chat",
+            "language": "en_US",
+            "predicted": "identity",
+            "score": 0.181
+          },
+          {
+            "text": "What sorts of questions can I ask this chatbot",
+            "expected": "identity",
+            "language": "en_US",
+            "predicted": "overview",
+            "score": 0.126
+          },
+          {
+            "text": "刚才那两个英雄只比较魔抗吧",
+            "expected": "stats",
+            "language": "zh_CN",
+            "predicted": "overview",
+            "score": 0.19
+          },
+          {
+            "text": "属性我知道了，想看◇整套技能说明",
+            "expected": "skills",
+            "language": "zh_CN",
+            "predicted": "statsAll",
+            "score": 0.145
+          },
+          {
+            "text": "用◇打团时我应该怎么站位",
+            "expected": "advice",
+            "language": "zh_CN",
+            "predicted": "counterplay",
+            "score": 0.32
+          },
+          {
+            "text": "解释一下◇使用W之后会发生什么",
+            "expected": "ability",
+            "language": "zh_CN",
+            "predicted": "overview",
+            "score": 0.157
+          },
+          {
+            "text": "净化到底能不能移除压制",
+            "expected": "other",
+            "language": "zh_CN",
+            "predicted": "ability",
+            "score": 0.127
+          }
+        ]
+      },
+      "warmClassifierLatency": {
+        "p50Ms": 0.266,
+        "p95Ms": 0.415
+      }
+    },
+    {
+      "name": "tfidf-svm",
+      "setting": "C=0.5, calibration=3fold",
+      "developmentMacroF1": 0.9321,
+      "classifierBytes": 3612834,
+      "requiresEmbedding": false,
+      "development": {
+        "correct": 68,
+        "total": 73,
+        "macroF1": 0.9321,
+        "perLanguage": {
+          "ko_KR": {
+            "correct": 44,
+            "total": 47
+          },
+          "en_US": {
+            "correct": 15,
+            "total": 15
+          },
+          "zh_CN": {
+            "correct": 9,
+            "total": 11
+          }
+        },
+        "accepted": 30,
+        "acceptedWrong": 0,
+        "errors": [
+          {
+            "text": "◇ 능력치 말고 QWER 소개",
+            "expected": "skills",
+            "language": "ko_KR",
+            "predicted": "statsAll",
+            "score": 0.541
+          },
+          {
+            "text": "请介绍◇全部技能",
+            "expected": "skills",
+            "language": "zh_CN",
+            "predicted": "ability",
+            "score": 0.327
+          },
+          {
+            "text": "◇ 대처 방법 좀 알려줄래",
+            "expected": "counterplay",
+            "language": "ko_KR",
+            "predicted": "advice",
+            "score": 0.412
+          },
+          {
+            "text": "체력 스탯이 무슨 뜻이야",
+            "expected": "other",
+            "language": "ko_KR",
+            "predicted": "statsAll",
+            "score": 0.339
+          },
+          {
+            "text": "护甲穿透和固定穿透有什么区别",
+            "expected": "other",
+            "language": "zh_CN",
+            "predicted": "stats",
+            "score": 0.263
+          }
+        ]
+      },
+      "test": {
+        "correct": 61,
+        "total": 66,
+        "macroF1": 0.925,
+        "perLanguage": {
+          "ko_KR": {
+            "correct": 38,
+            "total": 43
+          },
+          "en_US": {
+            "correct": 12,
+            "total": 12
+          },
+          "zh_CN": {
+            "correct": 11,
+            "total": 11
+          }
+        },
+        "accepted": 31,
+        "acceptedWrong": 0,
+        "errors": [
+          {
+            "text": "◇ 1렙 피통 궁금해",
+            "expected": "stats",
+            "language": "ko_KR",
+            "predicted": "ability",
+            "score": 0.319
+          },
+          {
+            "text": "◇ 스탯 대신 기술 설명",
+            "expected": "skills",
+            "language": "ko_KR",
+            "predicted": "statsAll",
+            "score": 0.447
+          },
+          {
+            "text": "◇ 능력 구성을 알려줘",
+            "expected": "skills",
+            "language": "ko_KR",
+            "predicted": "statsAll",
+            "score": 0.378
+          },
+          {
+            "text": "◇ W 설명 부탁",
+            "expected": "ability",
+            "language": "ko_KR",
+            "predicted": "overview",
+            "score": 0.422
+          },
+          {
+            "text": "◇ 스탯을 모데궁이 빼앗는지",
+            "expected": "other",
+            "language": "ko_KR",
+            "predicted": "statsAll",
+            "score": 0.399
+          }
+        ]
+      },
+      "challenge": {
+        "correct": 81,
+        "total": 99,
+        "macroF1": 0.8194,
+        "perLanguage": {
+          "ko_KR": {
+            "correct": 27,
+            "total": 33
+          },
+          "en_US": {
+            "correct": 29,
+            "total": 33
+          },
+          "zh_CN": {
+            "correct": 25,
+            "total": 33
+          }
+        },
+        "accepted": 41,
+        "acceptedWrong": 1,
+        "errors": [
+          {
+            "text": "기본 능력치는 알았으니 ◇ 스킬 구성 전체를 듣고 싶어",
+            "expected": "skills",
+            "language": "ko_KR",
+            "predicted": "statsAll",
+            "score": 0.589
+          },
+          {
+            "text": "◇로 딜교하려면 스킬을 어떤 순서로 이어 써",
+            "expected": "combo",
+            "language": "ko_KR",
+            "predicted": "counterplay",
+            "score": 0.349
+          },
+          {
+            "text": "◇ 하면서 첫 귀환에 뭘 사야 할지 모르겠어",
+            "expected": "advice",
+            "language": "ko_KR",
+            "predicted": "identity",
+            "score": 0.436
+          },
+          {
+            "text": "이 도우미를 어떻게 사용하는 건지 알려줘",
+            "expected": "identity",
+            "language": "ko_KR",
+            "predicted": "counterplay",
+            "score": 0.417
+          },
+          {
+            "text": "정화가 제압을 지울 수 있는지 궁금해",
+            "expected": "other",
+            "language": "ko_KR",
+            "predicted": "ability",
+            "score": 0.367
+          },
+          {
+            "text": "치유 감소 아이템 두 개면 효과가 합쳐져",
+            "expected": "other",
+            "language": "ko_KR",
+            "predicted": "ability",
+            "score": 0.375
+          },
+          {
+            "text": "Could you cover both the basic profile and abilities of ◇",
+            "expected": "overview",
+            "language": "en_US",
+            "predicted": "skills",
+            "score": 0.477
+          },
+          {
+            "text": "I play ◇ and keep losing to ◇; how should I face them",
+            "expected": "counterplay",
+            "language": "en_US",
+            "predicted": "advice",
+            "score": 0.54
+          },
+          {
+            "text": "Where should I move to avoid ◇ ultimate",
+            "expected": "counterplay",
+            "language": "en_US",
+            "predicted": "advice",
+            "score": 0.403
+          },
+          {
+            "text": "Please tell me about ◇ R skill information",
+            "expected": "ability",
+            "language": "en_US",
+            "predicted": "overview",
+            "score": 0.444
+          },
+          {
+            "text": "刚才那两个英雄只比较魔抗吧",
+            "expected": "stats",
+            "language": "zh_CN",
+            "predicted": "overview",
+            "score": 0.348
+          },
+          {
+            "text": "属性我知道了，想看◇整套技能说明",
+            "expected": "skills",
+            "language": "zh_CN",
+            "predicted": "statsAll",
+            "score": 0.352
+          },
+          {
+            "text": "用◇打团时我应该怎么站位",
+            "expected": "advice",
+            "language": "zh_CN",
+            "predicted": "counterplay",
+            "score": 0.616
+          },
+          {
+            "text": "玩◇第一次回城买什么比较合适",
+            "expected": "advice",
+            "language": "zh_CN",
+            "predicted": "ability",
+            "score": 0.25
+          },
+          {
+            "text": "解释一下◇使用W之后会发生什么",
+            "expected": "ability",
+            "language": "zh_CN",
+            "predicted": "overview",
+            "score": 0.383
+          },
+          {
+            "text": "能讲一下这个助手应该怎么使用吗",
+            "expected": "identity",
+            "language": "zh_CN",
+            "predicted": "advice",
+            "score": 0.283
+          },
+          {
+            "text": "净化到底能不能移除压制",
+            "expected": "other",
+            "language": "zh_CN",
+            "predicted": "ability",
+            "score": 0.299
+          },
+          {
+            "text": "两件重伤装备的减疗效果会叠加吗",
+            "expected": "other",
+            "language": "zh_CN",
+            "predicted": "ability",
+            "score": 0.411
+          }
+        ]
+      },
+      "warmClassifierLatency": {
+        "p50Ms": 1.397,
+        "p95Ms": 1.562
+      }
+    },
+    {
+      "name": "tfidf-knn",
+      "setting": "k=5, cosine, distance",
+      "developmentMacroF1": 0.8659,
+      "classifierBytes": 676745,
+      "requiresEmbedding": false,
+      "development": {
+        "correct": 63,
+        "total": 73,
+        "macroF1": 0.8659,
+        "perLanguage": {
+          "ko_KR": {
+            "correct": 39,
+            "total": 47
+          },
+          "en_US": {
+            "correct": 15,
+            "total": 15
+          },
+          "zh_CN": {
+            "correct": 9,
+            "total": 11
+          }
+        },
+        "accepted": 43,
+        "acceptedWrong": 1,
+        "errors": [
+          {
+            "text": "◇ 능력치는 전체적으로 어떻게 돼?",
+            "expected": "statsAll",
+            "language": "ko_KR",
+            "predicted": "overview",
+            "score": 0.436
+          },
+          {
+            "text": "◇의 스탯을 모두 보여줄래",
+            "expected": "statsAll",
+            "language": "ko_KR",
+            "predicted": "stats",
+            "score": 0.416
+          },
+          {
+            "text": "◇와 ◇ 체젠 수치가 궁금해",
+            "expected": "stats",
+            "language": "ko_KR",
+            "predicted": "ability",
+            "score": 0.578
+          },
+          {
+            "text": "◇ 능력치 말고 QWER 소개",
+            "expected": "skills",
+            "language": "ko_KR",
+            "predicted": "statsAll",
+            "score": 0.59
+          },
+          {
+            "text": "请介绍◇全部技能",
+            "expected": "skills",
+            "language": "zh_CN",
+            "predicted": "ability",
+            "score": 0.79
+          },
+          {
+            "text": "◇ 궁에 어떤 군중제어가 붙어",
+            "expected": "ability",
+            "language": "ko_KR",
+            "predicted": "identity",
+            "score": 0.388
+          },
+          {
+            "text": "잘 자요",
+            "expected": "chat",
+            "language": "ko_KR",
+            "predicted": "overview",
+            "score": 0.527
+          },
+          {
+            "text": "너 사용법 좀 알려줘",
+            "expected": "identity",
+            "language": "ko_KR",
+            "predicted": "stats",
+            "score": 0.396
+          },
+          {
+            "text": "체력 스탯이 무슨 뜻이야",
+            "expected": "other",
+            "language": "ko_KR",
+            "predicted": "ability",
+            "score": 0.241
+          },
+          {
+            "text": "护甲穿透和固定穿透有什么区别",
+            "expected": "other",
+            "language": "zh_CN",
+            "predicted": "stats",
+            "score": 0.405
+          }
+        ]
+      },
+      "test": {
+        "correct": 53,
+        "total": 66,
+        "macroF1": 0.8089,
+        "perLanguage": {
+          "ko_KR": {
+            "correct": 33,
+            "total": 43
+          },
+          "en_US": {
+            "correct": 11,
+            "total": 12
+          },
+          "zh_CN": {
+            "correct": 9,
+            "total": 11
+          }
+        },
+        "accepted": 43,
+        "acceptedWrong": 3,
+        "errors": [
+          {
+            "text": "◇ 1렙 피통 궁금해",
+            "expected": "stats",
+            "language": "ko_KR",
+            "predicted": "ability",
+            "score": 0.577
+          },
+          {
+            "text": "◇ 스킬만 간단히 소개해줄 수 있나",
+            "expected": "skills",
+            "language": "ko_KR",
+            "predicted": "overview",
+            "score": 0.575
+          },
+          {
+            "text": "◇ 스탯 대신 기술 설명",
+            "expected": "skills",
+            "language": "ko_KR",
+            "predicted": "statsAll",
+            "score": 0.597
+          },
+          {
+            "text": "能说明◇每个技能的效果吗",
+            "expected": "skills",
+            "language": "zh_CN",
+            "predicted": "ability",
+            "score": 0.671
+          },
+          {
+            "text": "◇ 풀 콤보 순서가 궁금해",
+            "expected": "combo",
+            "language": "ko_KR",
+            "predicted": "ability",
+            "score": 0.732
+          },
+          {
+            "text": "Can you list some ◇ ability combos?",
+            "expected": "combo",
+            "language": "en_US",
+            "predicted": "ability",
+            "score": 0.443
+          },
+          {
+            "text": "◇ W 빼내려면",
+            "expected": "counterplay",
+            "language": "ko_KR",
+            "predicted": "ability",
+            "score": 0.574
+          },
+          {
+            "text": "◇ 아이템을 뭐부터 사면 좋아",
+            "expected": "advice",
+            "language": "ko_KR",
+            "predicted": "skills",
+            "score": 0.34
+          },
+          {
+            "text": "◇ W 설명 부탁",
+            "expected": "ability",
+            "language": "ko_KR",
+            "predicted": "overview",
+            "score": 0.651
+          },
+          {
+            "text": "이 AI 도우미 설명 부탁",
+            "expected": "identity",
+            "language": "ko_KR",
+            "predicted": "overview",
+            "score": 0.444
+          },
+          {
+            "text": "무슨 모델을 사용하는거야",
+            "expected": "identity",
+            "language": "ko_KR",
+            "predicted": "ability",
+            "score": 0.473
+          },
+          {
+            "text": "请介绍你这个助手",
+            "expected": "identity",
+            "language": "zh_CN",
+            "predicted": "overview",
+            "score": 0.506
+          },
+          {
+            "text": "◇ 스탯을 모데궁이 빼앗는지",
+            "expected": "other",
+            "language": "ko_KR",
+            "predicted": "statsAll",
+            "score": 0.595
+          }
+        ]
+      },
+      "challenge": {
+        "correct": 79,
+        "total": 99,
+        "macroF1": 0.793,
+        "perLanguage": {
+          "ko_KR": {
+            "correct": 26,
+            "total": 33
+          },
+          "en_US": {
+            "correct": 28,
+            "total": 33
+          },
+          "zh_CN": {
+            "correct": 25,
+            "total": 33
+          }
+        },
+        "accepted": 58,
+        "acceptedWrong": 5,
+        "errors": [
+          {
+            "text": "◇가 가진 패시브랑 액티브들을 전부 요약해줘",
+            "expected": "skills",
+            "language": "ko_KR",
+            "predicted": "ability",
+            "score": 0.74
+          },
+          {
+            "text": "기본 능력치는 알았으니 ◇ 스킬 구성 전체를 듣고 싶어",
+            "expected": "skills",
+            "language": "ko_KR",
+            "predicted": "statsAll",
+            "score": 0.702
+          },
+          {
+            "text": "◇로 딜교하려면 스킬을 어떤 순서로 이어 써",
+            "expected": "combo",
+            "language": "ko_KR",
+            "predicted": "counterplay",
+            "score": 0.393
+          },
+          {
+            "text": "◇ 하면서 첫 귀환에 뭘 사야 할지 모르겠어",
+            "expected": "advice",
+            "language": "ko_KR",
+            "predicted": "ability",
+            "score": 0.381
+          },
+          {
+            "text": "안녕 오늘도 잘 부탁해",
+            "expected": "chat",
+            "language": "ko_KR",
+            "predicted": "overview",
+            "score": 0.391
+          },
+          {
+            "text": "정화가 제압을 지울 수 있는지 궁금해",
+            "expected": "other",
+            "language": "ko_KR",
+            "predicted": "ability",
+            "score": 1.0
+          },
+          {
+            "text": "치유 감소 아이템 두 개면 효과가 합쳐져",
+            "expected": "other",
+            "language": "ko_KR",
+            "predicted": "ability",
+            "score": 0.564
+          },
+          {
+            "text": "Could you cover both the basic profile and abilities of ◇",
+            "expected": "overview",
+            "language": "en_US",
+            "predicted": "skills",
+            "score": 0.57
+          },
+          {
+            "text": "I play ◇ and keep losing to ◇; how should I face them",
+            "expected": "counterplay",
+            "language": "en_US",
+            "predicted": "advice",
+            "score": 0.553
+          },
+          {
+            "text": "Hi, hope you're having a good day",
+            "expected": "chat",
+            "language": "en_US",
+            "predicted": "identity",
+            "score": 0.407
+          },
+          {
+            "text": "What sorts of questions can I ask this chatbot",
+            "expected": "identity",
+            "language": "en_US",
+            "predicted": "overview",
+            "score": 0.402
+          },
+          {
+            "text": "Do two anti-heal items stack their healing reduction",
+            "expected": "other",
+            "language": "en_US",
+            "predicted": "stats",
+            "score": 0.399
+          },
+          {
+            "text": "把◇的被动和所有主动技能都讲一下",
+            "expected": "skills",
+            "language": "zh_CN",
+            "predicted": "ability",
+            "score": 0.538
+          },
+          {
+            "text": "属性我知道了，想看◇整套技能说明",
+            "expected": "skills",
+            "language": "zh_CN",
+            "predicted": "statsAll",
+            "score": 0.596
+          },
+          {
+            "text": "用◇打团时我应该怎么站位",
+            "expected": "advice",
+            "language": "zh_CN",
+            "predicted": "counterplay",
+            "score": 0.816
+          },
+          {
+            "text": "玩◇第一次回城买什么比较合适",
+            "expected": "advice",
+            "language": "zh_CN",
+            "predicted": "stats",
+            "score": 0.211
+          },
+          {
+            "text": "解释一下◇使用W之后会发生什么",
+            "expected": "ability",
+            "language": "zh_CN",
+            "predicted": "advice",
+            "score": 0.361
+          },
+          {
+            "text": "能讲一下这个助手应该怎么使用吗",
+            "expected": "identity",
+            "language": "zh_CN",
+            "predicted": "overview",
+            "score": 0.345
+          },
+          {
+            "text": "净化到底能不能移除压制",
+            "expected": "other",
+            "language": "zh_CN",
+            "predicted": "stats",
+            "score": 0.205
+          },
+          {
+            "text": "两件重伤装备的减疗效果会叠加吗",
+            "expected": "other",
+            "language": "zh_CN",
+            "predicted": "ability",
+            "score": 0.621
+          }
+        ]
+      },
+      "warmClassifierLatency": {
+        "p50Ms": 0.732,
+        "p95Ms": 0.992
+      }
+    },
+    {
+      "name": "embedding-knn",
+      "setting": "k=1, cosine, distance",
+      "developmentMacroF1": 0.9595,
+      "classifierBytes": 2730287,
+      "requiresEmbedding": true,
+      "development": {
+        "correct": 70,
+        "total": 73,
+        "macroF1": 0.9595,
+        "perLanguage": {
+          "ko_KR": {
+            "correct": 46,
+            "total": 47
+          },
+          "en_US": {
+            "correct": 15,
+            "total": 15
+          },
+          "zh_CN": {
+            "correct": 9,
+            "total": 11
+          }
+        },
+        "accepted": 73,
+        "acceptedWrong": 3,
+        "errors": [
+          {
+            "text": "◇ 18레벨 체력은 어느 정도야",
+            "expected": "stats",
+            "language": "ko_KR",
+            "predicted": "statsAll",
+            "score": 1.0
+          },
+          {
+            "text": "对线◇有什么应对技巧",
+            "expected": "counterplay",
+            "language": "zh_CN",
+            "predicted": "advice",
+            "score": 1.0
+          },
+          {
+            "text": "护甲穿透和固定穿透有什么区别",
+            "expected": "other",
+            "language": "zh_CN",
+            "predicted": "stats",
+            "score": 1.0
+          }
+        ]
+      },
+      "test": {
+        "correct": 62,
+        "total": 66,
+        "macroF1": 0.9401,
+        "perLanguage": {
+          "ko_KR": {
+            "correct": 41,
+            "total": 43
+          },
+          "en_US": {
+            "correct": 10,
+            "total": 12
+          },
+          "zh_CN": {
+            "correct": 11,
+            "total": 11
+          }
+        },
+        "accepted": 66,
+        "acceptedWrong": 4,
+        "errors": [
+          {
+            "text": "◇ HP at level 18 please",
+            "expected": "stats",
+            "language": "en_US",
+            "predicted": "statsAll",
+            "score": 1.0
+          },
+          {
+            "text": "◇ 스탯 대신 기술 설명",
+            "expected": "skills",
+            "language": "ko_KR",
+            "predicted": "statsAll",
+            "score": 1.0
+          },
+          {
+            "text": "Can you list some ◇ ability combos?",
+            "expected": "combo",
+            "language": "en_US",
+            "predicted": "skills",
+            "score": 1.0
+          },
+          {
+            "text": "◇ Q 재사용 대기시간은",
+            "expected": "ability",
+            "language": "ko_KR",
+            "predicted": "advice",
+            "score": 1.0
+          }
+        ]
+      },
+      "challenge": {
+        "correct": 86,
+        "total": 99,
+        "macroF1": 0.8628,
+        "perLanguage": {
+          "ko_KR": {
+            "correct": 29,
+            "total": 33
+          },
+          "en_US": {
+            "correct": 28,
+            "total": 33
+          },
+          "zh_CN": {
+            "correct": 29,
+            "total": 33
+          }
+        },
+        "accepted": 99,
+        "acceptedWrong": 13,
+        "errors": [
+          {
+            "text": "◇의 기본 공속 수치가 몇이지",
+            "expected": "stats",
+            "language": "ko_KR",
+            "predicted": "statsAll",
+            "score": 1.0
+          },
+          {
+            "text": "기본 능력치는 알았으니 ◇ 스킬 구성 전체를 듣고 싶어",
+            "expected": "skills",
+            "language": "ko_KR",
+            "predicted": "statsAll",
+            "score": 1.0
+          },
+          {
+            "text": "◇ 하면서 첫 귀환에 뭘 사야 할지 모르겠어",
+            "expected": "advice",
+            "language": "ko_KR",
+            "predicted": "ability",
+            "score": 1.0
+          },
+          {
+            "text": "치유 감소 아이템 두 개면 효과가 합쳐져",
+            "expected": "other",
+            "language": "ko_KR",
+            "predicted": "stats",
+            "score": 1.0
+          },
+          {
+            "text": "For the two champions above, compare magic resistance only",
+            "expected": "stats",
+            "language": "en_US",
+            "predicted": "other",
+            "score": 1.0
+          },
+          {
+            "text": "What do Q W E and R each do for ◇",
+            "expected": "skills",
+            "language": "en_US",
+            "predicted": "ability",
+            "score": 1.0
+          },
+          {
+            "text": "I already know the stats; walk through all ◇ abilities",
+            "expected": "skills",
+            "language": "en_US",
+            "predicted": "statsAll",
+            "score": 1.0
+          },
+          {
+            "text": "What should I buy on my first recall as ◇",
+            "expected": "advice",
+            "language": "en_US",
+            "predicted": "ability",
+            "score": 1.0
+          },
+          {
+            "text": "Do two anti-heal items stack their healing reduction",
+            "expected": "other",
+            "language": "en_US",
+            "predicted": "statsAll",
+            "score": 1.0
+          },
+          {
+            "text": "◇的Q W E R各自有什么作用",
+            "expected": "skills",
+            "language": "zh_CN",
+            "predicted": "ability",
+            "score": 1.0
+          },
+          {
+            "text": "属性我知道了，想看◇整套技能说明",
+            "expected": "skills",
+            "language": "zh_CN",
+            "predicted": "statsAll",
+            "score": 1.0
+          },
+          {
+            "text": "用◇打团时我应该怎么站位",
+            "expected": "advice",
+            "language": "zh_CN",
+            "predicted": "counterplay",
+            "score": 1.0
+          },
+          {
+            "text": "两件重伤装备的减疗效果会叠加吗",
+            "expected": "other",
+            "language": "zh_CN",
+            "predicted": "stats",
+            "score": 1.0
+          }
+        ]
+      },
+      "warmClassifierLatency": {
+        "p50Ms": 0.876,
+        "p95Ms": 1.042
+      }
+    },
+    {
+      "name": "embedding-logistic",
+      "setting": "C=8",
+      "developmentMacroF1": 0.9718,
+      "classifierBytes": 46229,
+      "requiresEmbedding": true,
+      "development": {
+        "correct": 71,
+        "total": 73,
+        "macroF1": 0.9718,
+        "perLanguage": {
+          "ko_KR": {
+            "correct": 45,
+            "total": 47
+          },
+          "en_US": {
+            "correct": 15,
+            "total": 15
+          },
+          "zh_CN": {
+            "correct": 11,
+            "total": 11
+          }
+        },
+        "accepted": 65,
+        "acceptedWrong": 0,
+        "errors": [
+          {
+            "text": "◇ 패시브부터 궁까지 설명해줄래",
+            "expected": "skills",
+            "language": "ko_KR",
+            "predicted": "ability",
+            "score": 0.56
+          },
+          {
+            "text": "◇ 궁에 어떤 군중제어가 붙어",
+            "expected": "ability",
+            "language": "ko_KR",
+            "predicted": "other",
+            "score": 0.523
+          }
+        ]
+      },
+      "test": {
+        "correct": 65,
+        "total": 66,
+        "macroF1": 0.9847,
+        "perLanguage": {
+          "ko_KR": {
+            "correct": 42,
+            "total": 43
+          },
+          "en_US": {
+            "correct": 12,
+            "total": 12
+          },
+          "zh_CN": {
+            "correct": 11,
+            "total": 11
+          }
+        },
+        "accepted": 63,
+        "acceptedWrong": 0,
+        "errors": [
+          {
+            "text": "◇ 1렙 피통 궁금해",
+            "expected": "stats",
+            "language": "ko_KR",
+            "predicted": "ability",
+            "score": 0.31
+          }
+        ]
+      },
+      "challenge": {
+        "correct": 96,
+        "total": 99,
+        "macroF1": 0.9694,
+        "perLanguage": {
+          "ko_KR": {
+            "correct": 33,
+            "total": 33
+          },
+          "en_US": {
+            "correct": 32,
+            "total": 33
+          },
+          "zh_CN": {
+            "correct": 31,
+            "total": 33
+          }
+        },
+        "accepted": 88,
+        "acceptedWrong": 3,
+        "errors": [
+          {
+            "text": "I already know the stats; walk through all ◇ abilities",
+            "expected": "skills",
+            "language": "en_US",
+            "predicted": "statsAll",
+            "score": 0.652
+          },
+          {
+            "text": "属性我知道了，想看◇整套技能说明",
+            "expected": "skills",
+            "language": "zh_CN",
+            "predicted": "statsAll",
+            "score": 0.692
+          },
+          {
+            "text": "能讲一下这个助手应该怎么使用吗",
+            "expected": "identity",
+            "language": "zh_CN",
+            "predicted": "advice",
+            "score": 0.644
+          }
+        ]
+      },
+      "warmClassifierLatency": {
+        "p50Ms": 0.059,
+        "p95Ms": 0.068
+      }
+    },
+    {
+      "name": "embedding-centroid",
+      "setting": "normalized mean per class",
+      "classifierBytes": 45786,
+      "requiresEmbedding": true,
+      "development": {
+        "correct": 70,
+        "total": 73,
+        "macroF1": 0.9627,
+        "perLanguage": {
+          "ko_KR": {
+            "correct": 45,
+            "total": 47
+          },
+          "en_US": {
+            "correct": 15,
+            "total": 15
+          },
+          "zh_CN": {
+            "correct": 10,
+            "total": 11
+          }
+        },
+        "accepted": null,
+        "acceptedWrong": null,
+        "errors": [
+          {
+            "text": "◇ 궁에 어떤 군중제어가 붙어",
+            "expected": "ability",
+            "language": "ko_KR",
+            "predicted": "other",
+            "score": 0.603
+          },
+          {
+            "text": "◇大招的冷却是多少",
+            "expected": "ability",
+            "language": "zh_CN",
+            "predicted": "other",
+            "score": 0.31
+          },
+          {
+            "text": "체력 스탯이 무슨 뜻이야",
+            "expected": "other",
+            "language": "ko_KR",
+            "predicted": "statsAll",
+            "score": 0.878
+          }
+        ]
+      },
+      "test": {
+        "correct": 59,
+        "total": 66,
+        "macroF1": 0.8937,
+        "perLanguage": {
+          "ko_KR": {
+            "correct": 36,
+            "total": 43
+          },
+          "en_US": {
+            "correct": 12,
+            "total": 12
+          },
+          "zh_CN": {
+            "correct": 11,
+            "total": 11
+          }
+        },
+        "accepted": null,
+        "acceptedWrong": null,
+        "errors": [
+          {
+            "text": "◇ 스탯 한 개보다 챔피언 전반이 궁금해",
+            "expected": "overview",
+            "language": "ko_KR",
+            "predicted": "statsAll",
+            "score": 0.711
+          },
+          {
+            "text": "◇ 체력 공속 방어력 같은 수치 모두",
+            "expected": "statsAll",
+            "language": "ko_KR",
+            "predicted": "stats",
+            "score": 0.534
+          },
+          {
+            "text": "◇ 마법저항 수치 부탁",
+            "expected": "stats",
+            "language": "ko_KR",
+            "predicted": "other",
+            "score": 0.39
+          },
+          {
+            "text": "◇ 1렙 피통 궁금해",
+            "expected": "stats",
+            "language": "ko_KR",
+            "predicted": "ability",
+            "score": 0.215
+          },
+          {
+            "text": "◇ 기본 연계 방법 추천",
+            "expected": "combo",
+            "language": "ko_KR",
+            "predicted": "advice",
+            "score": 0.513
+          },
+          {
+            "text": "이 AI 도우미 설명 부탁",
+            "expected": "identity",
+            "language": "ko_KR",
+            "predicted": "overview",
+            "score": 0.435
+          },
+          {
+            "text": "체력이 무슨 원리로 증가하지",
+            "expected": "other",
+            "language": "ko_KR",
+            "predicted": "stats",
+            "score": 0.617
+          }
+        ]
+      },
+      "challenge": {
+        "correct": 88,
+        "total": 99,
+        "macroF1": 0.8867,
+        "perLanguage": {
+          "ko_KR": {
+            "correct": 33,
+            "total": 33
+          },
+          "en_US": {
+            "correct": 26,
+            "total": 33
+          },
+          "zh_CN": {
+            "correct": 29,
+            "total": 33
+          }
+        },
+        "accepted": null,
+        "acceptedWrong": null,
+        "errors": [
+          {
+            "text": "Could you cover both the basic profile and abilities of ◇",
+            "expected": "overview",
+            "language": "en_US",
+            "predicted": "statsAll",
+            "score": 0.546
+          },
+          {
+            "text": "For the two champions above, compare magic resistance only",
+            "expected": "stats",
+            "language": "en_US",
+            "predicted": "other",
+            "score": 0.411
+          },
+          {
+            "text": "What do Q W E and R each do for ◇",
+            "expected": "skills",
+            "language": "en_US",
+            "predicted": "ability",
+            "score": 0.742
+          },
+          {
+            "text": "I already know the stats; walk through all ◇ abilities",
+            "expected": "skills",
+            "language": "en_US",
+            "predicted": "statsAll",
+            "score": 0.785
+          },
+          {
+            "text": "How should I sequence ◇ spells during a short trade",
+            "expected": "combo",
+            "language": "en_US",
+            "predicted": "advice",
+            "score": 0.465
+          },
+          {
+            "text": "What position should I take with ◇ in a team fight",
+            "expected": "advice",
+            "language": "en_US",
+            "predicted": "counterplay",
+            "score": 0.516
+          },
+          {
+            "text": "Please tell me about ◇ R skill information",
+            "expected": "ability",
+            "language": "en_US",
+            "predicted": "skills",
+            "score": 0.436
+          },
+          {
+            "text": "刚才那两个英雄只比较魔抗吧",
+            "expected": "stats",
+            "language": "zh_CN",
+            "predicted": "other",
+            "score": 0.571
+          },
+          {
+            "text": "◇的Q W E R各自有什么作用",
+            "expected": "skills",
+            "language": "zh_CN",
+            "predicted": "ability",
+            "score": 0.398
+          },
+          {
+            "text": "属性我知道了，想看◇整套技能说明",
+            "expected": "skills",
+            "language": "zh_CN",
+            "predicted": "statsAll",
+            "score": 0.453
+          },
+          {
+            "text": "能讲一下这个助手应该怎么使用吗",
+            "expected": "identity",
+            "language": "zh_CN",
+            "predicted": "advice",
+            "score": 0.651
+          }
+        ]
+      },
+      "warmClassifierLatency": {
+        "p50Ms": 0.013,
+        "p95Ms": 0.017
+      }
+    }
+  ],
+  "limits": [
+    "수작업 문장 평가이며 실사용 전체 정확도를 뜻하지 않음",
+    "추가 질문 99개 중 알려진 R 오분류 사례 1개 포함",
+    "대상·조건 추출과 답변 품질은 별도 시험",
+    "kNN 투표값은 보정된 확률이 아님",
+    "임베딩 모델은 한 종류이며 LoRA·생성 LLM 비교는 포함하지 않음",
+    "문자 분류 시간은 특징 추출 포함, 임베딩 분류 시간은 임베딩 계산을 별도 기록"
+  ]
+}
