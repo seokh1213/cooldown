@@ -297,6 +297,8 @@ export const enUSTranslations: Translations = {
       top: "top {n}%",
       bottom: "bottom {n}%",
       stats: "Stats (lv 1 → 18)",
+      statGrowth: "Growth",
+      statGrowthNote: "Growth per level. Actual gains depend on the level growth curve.",
       skills: "Abilities",
       compare: "Compare",
       atLevel: "At level {n}",

@@ -36,6 +36,8 @@ export type StatName =
 export type StatGrade = "매우 낮음" | "낮음" | "보통" | "높음" | "매우 높음";
 
 export interface StatSnapshot {
+  /** 원본의 레벨당 성장치. 공격 속도는 %, 실제 증가량에는 레벨 성장 곡선이 적용된다. */
+  perLevel?: number;
   lv1: number;
   lv6: number;
   lv11: number;
@@ -315,6 +317,7 @@ export function createChampionCardBuilder(
       const p1 = percentileOf(lv1, distributions.get(`${stat}:1`) ?? []);
       const p18 = percentileOf(lv18, distributions.get(`${stat}:18`) ?? []);
       out[stat] = {
+        perLevel: champ.baseStats[stat].perLevel,
         lv1: round(lv1),
         lv6: round(valueOf(champ, stat, 6)),
         lv11: round(valueOf(champ, stat, 11)),

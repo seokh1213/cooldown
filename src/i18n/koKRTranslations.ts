@@ -299,6 +299,8 @@ export const koKRTranslations: Translations = {
       top: "상위 {n}%",
       bottom: "하위 {n}%",
       stats: "능력치 (1레벨 → 18레벨)",
+      statGrowth: "성장치",
+      statGrowthNote: "레벨당 성장치입니다. 실제 증가량은 레벨 성장 곡선에 따라 달라집니다.",
       skills: "스킬",
       compare: "비교",
       atLevel: "{n}레벨 기준",

@@ -306,6 +306,8 @@ export interface Translations {
       top: string;
       bottom: string;
       stats: string;
+      statGrowth: string;
+      statGrowthNote: string;
       skills: string;
       compare: string;
       atLevel: string;

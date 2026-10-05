@@ -282,6 +282,8 @@ export const zhCNTranslations: Translations = {
       top: "前 {n}%",
       bottom: "后 {n}%",
       stats: "属性（1 级 → 18 级）",
+      statGrowth: "成长值",
+      statGrowthNote: "每级成长值。实际增加量按等级成长曲线计算。",
       skills: "技能",
       compare: "对比",
       atLevel: "{n} 级",

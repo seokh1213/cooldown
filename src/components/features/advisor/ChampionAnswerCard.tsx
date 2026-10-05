@@ -1,7 +1,7 @@
 /**
  * 챔피언 한 명의 답 카드
  *
- *   M2-B  능력치 전부 + 스킬 한 줄씩, 극단 능력치 행만 굵게
+ *   공식 역할군 + 능력치·성장치 + 스킬 한 줄씩
  */
 import { useTranslation } from "@/i18n";
 import { fill } from "@/i18n/fill";
@@ -9,8 +9,6 @@ import { ChampionIcon } from "@/components/ui/champion-icon";
 import {
   CARD_STATS,
   focusLabel,
-  isExtremeGrade,
-  percentileLabel,
   spellFocusValue,
   spellOneLiner,
   spellSummary,
@@ -35,7 +33,10 @@ export function ChampionAnswerCard({
   const { t, lang } = useTranslation();
   const copy = t.advisor.card;
   const { card } = answer;
-  const subtitle = [card.wiki?.subclass, translateRange(card.rangeType, lang), card.wiki?.positions?.[0]]
+  const subtitle = [
+    ...card.roleTags.map((role) => t.championProfile.roleNames[role.toLowerCase()]),
+    translateRange(card.riot?.attackType ?? card.rangeType, lang),
+  ]
     .filter(Boolean)
     .join(" · ");
   const header = (
@@ -68,15 +69,20 @@ export function ChampionAnswerCard({
   const statRows = CARD_STATS.map((stat) => {
     const snap = card.stats[stat];
     if (!snap) return undefined;
-    const { side, value } = percentileLabel(snap.percentileLv1);
-    const pct = fill(side === "top" ? copy.top : copy.bottom, { n: value });
     return {
       label: translateStat(stat, lang),
-      hit: isExtremeGrade(snap.gradeLv1),
       value: (
         <>
           {snap.lv1} → {snap.lv18}
-          <span className="ml-1.5 text-[11px] text-muted-foreground">{pct}</span>
+          {snap.perLevel !== undefined && (
+            <span
+              className="ml-1.5 whitespace-nowrap text-[11px] text-muted-foreground"
+              title={copy.statGrowthNote}
+              aria-label={`${copy.statGrowth} ${snap.perLevel}`}
+            >
+              {snap.perLevel >= 0 ? "+" : ""}{snap.perLevel}{stat === "attackSpeed" ? "%" : ""}
+            </span>
+          )}
         </>
       ),
     };
@@ -103,7 +109,7 @@ export function ChampionAnswerCard({
     >
       {!skillsView && (
         <>
-          <div className="mb-1 text-[11px] font-medium text-muted-foreground">{copy.stats}</div>
+          <div className="mb-1 text-[11px] font-medium text-muted-foreground">{copy.stats} · {copy.statGrowth}</div>
           <KvTable rows={statRows} />
         </>
       )}
